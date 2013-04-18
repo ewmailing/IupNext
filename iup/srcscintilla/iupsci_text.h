@@ -24,7 +24,7 @@ int iupScintillaSetInsertTextAttrib(Ihandle* ih, int pos, const char* value);
 int iupScintillaSetClearAllAttrib(Ihandle* ih, const char* value);
 int iupScintillaSetClearDocumentAttrib(Ihandle* ih, const char* value);
 int iupScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value);
-char* iupScintillaGetCharAtAttrib(Ihandle* ih, int pos);
+char* iupScintillaGetCharAttrib(Ihandle* ih, int pos);
 
 
 #ifdef __cplusplus

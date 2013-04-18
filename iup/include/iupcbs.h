@@ -21,6 +21,7 @@ typedef int (*IFniii)(Ihandle*, int, int, int); /* trayclick_cb, edition_cb */
 typedef int (*IFniiii)(Ihandle*, int, int, int, int); /* dragdrop_cb */
 typedef int (*IFniiiiiiC)(Ihandle*, int, int, int, int, int, int, void*);  /* draw_cb */
 typedef int (*IFniiiiii)(Ihandle*, int, int, int, int, int, int);  /* OLD draw_cb */
+typedef int (*IFniiis)(Ihandle*, int, int, int, char*); /* dblclick_cb */
 
 typedef int (*IFnff)(Ihandle*, float, float);    /* canvas_action */
 typedef int (*IFniff)(Ihandle*,int,float,float);  /* scroll_cb */

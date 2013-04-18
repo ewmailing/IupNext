@@ -23,7 +23,7 @@
 #include "iup.h"
 #include "iup_scintilla.h"
 #include "iupcbs.h"
-#include "iup_mask.h"
+#include "iup_key.h"
 
 #include "iup_class.h"
 #include "iup_object.h"
@@ -32,7 +32,6 @@
 #include "iup_drv.h"
 #include "iup_drvfont.h"
 #include "iup_register.h"
-#include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_assert.h"
 
@@ -124,115 +123,6 @@ static int iScintillaConvertXYToPos(Ihandle* ih, int x, int y)
 
 
 /***** GENERAL FUNCTIONS *****/
-static char* iScintillaGetMaskDataAttrib(Ihandle* ih)
-{
-  /* Used only by the OLD iupmask API */
-  return (char*)ih->data->mask;
-}
-
-static char* iScintillaGetMaskAttrib(Ihandle* ih)
-{
-  if (ih->data->mask)
-    return iupMaskGetStr((Imask*)ih->data->mask);
-  else
-    return NULL;
-}
-
-static int iScintillaSetValueMaskedAttrib(Ihandle* ih, const char* value)
-{
-  if (value)
-  {
-    if (ih->data->mask && iupMaskCheck((Imask*)ih->data->mask, value)==0)
-      return 0; /* abort */
-    IupStoreAttribute(ih, "VALUE", value);
-  }
-  return 0;
-}
-
-static int iScintillaSetMaskAttrib(Ihandle* ih, const char* value)
-{
-  if (!value)
-  {
-    if (ih->data->mask)
-    {
-      iupMaskDestroy((Imask*)ih->data->mask);
-      ih->data->mask = NULL;
-    }
-  }
-  else
-  {
-    int casei = iupAttribGetInt(ih, "MASKCASEI");
-    Imask* mask = iupMaskCreate(value,casei);
-    if (mask)
-    {
-      if (ih->data->mask)
-        iupMaskDestroy((Imask*)ih->data->mask);
-
-      ih->data->mask = mask;
-      return 0;
-    }
-  }
-
-  return 0;
-}
-
-static int iScintillaSetMaskIntAttrib(Ihandle* ih, const char* value)
-{
-  if (!value)
-  {
-    if (ih->data->mask)
-    {
-      iupMaskDestroy((Imask*)ih->data->mask);
-      ih->data->mask = NULL;
-    }
-  }
-  else
-  {
-    Imask* mask;
-    int min, max;
-
-    if (iupStrToIntInt(value, &min, &max, ':')!=2)
-      return 0;
-
-    mask = iupMaskCreateInt(min,max);
-
-    if (ih->data->mask)
-      iupMaskDestroy((Imask*)ih->data->mask);
-
-    ih->data->mask = mask;
-  }
-
-  return 0;
-}
-
-static int iScintillaSetMaskFloatAttrib(Ihandle* ih, const char* value)
-{
-  if (!value)
-  {
-    if (ih->data->mask)
-    {
-      iupMaskDestroy((Imask*)ih->data->mask);
-      ih->data->mask = NULL;
-    }
-  }
-  else
-  {
-    Imask* mask;
-    float min, max;
-
-    if (iupStrToFloatFloat(value, &min, &max, ':')!=2)
-      return 0;
-
-    mask = iupMaskCreateFloat(min,max);
-
-    if (ih->data->mask)
-      iupMaskDestroy((Imask*)ih->data->mask);
-
-    ih->data->mask = mask;
-  }
-
-  return 0;
-}
 
 static int iScintillaSetAppendNewlineAttrib(Ihandle* ih, const char* value)
 {
@@ -281,55 +171,76 @@ static int iScintillaSetScrollbarAttrib(Ihandle* ih, const char* value)
 }
 
 /***** NOTIFICATIONS *****
-Mapping callbacks!
-Notifications not implemented yet:
-SCN_STYLENEEDED
-SCN_CHARADDED
+
+atualizar doc
+
 SCN_SAVEPOINTREACHED
 SCN_SAVEPOINTLEFT
-SCN_MODIFYATTEMPTRO
-SCN_KEY
-SCN_UPDATEUI
-SCN_MACRORECORD
-SCN_NEEDSHOWN
-SCN_PAINTED
-SCN_USERLISTSELECTION
-SCN_URIDROPPED
-SCN_ZOOM
-SCN_HOTSPOTDOUBLECLICK
-SCN_HOTSPOTRELEASECLICK
-SCN_INDICATORCLICK
-SCN_INDICATORRELEASE
-SCN_CALLTIPCLICK
-SCN_AUTOCSELECTION
-SCN_AUTOCCANCELLED
-SCN_AUTOCCHARDELETED
+
+ACTION
+
+MASK - rafael
 */
+
+static void iScintillaKeySetStatus(int state, char* status, int doubleclick)
+{
+  if (state & SCMOD_SHIFT)
+    iupKEY_SETSHIFT(status);
+
+  if (state & SCMOD_CTRL)
+    iupKEY_SETCONTROL(status); 
+
+  iupKEY_SETBUTTON1(status);
+
+  if (state & SCMOD_ALT)
+    iupKEY_SETALT(status);
+
+  if (state & SCMOD_META) /* Apple/Win */
+    iupKEY_SETSYS(status);
+
+  if (doubleclick)
+    iupKEY_SETDOUBLE(status);
+}
+
 static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
 {
-  int lineClick = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pMsg->position, 0);
+  int lin = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pMsg->position, 0);
+  int col = iupScintillaSendMessage(ih, SCI_GETCOLUMN, pMsg->position, 0);
 
   switch(pMsg->nmhdr.code)
   {
     case SCN_MARGINCLICK:
     {
-      IFnii cb = (IFnii)IupGetCallback(ih, "MARGINCLICK_CB");
+      IFniis cb = (IFniis)IupGetCallback(ih, "MARGINCLICK_CB");
       if (cb)
-        cb(ih, pMsg->margin, lineClick);
+      {
+        char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+        iScintillaKeySetStatus(pMsg->modifiers, status, 0);
+        cb(ih, pMsg->margin, lin, status);
+      }
     }
     break;
     case SCN_DOUBLECLICK:
     {
-      IFnii cb = (IFnii)IupGetCallback(ih, "DBLCLICK_CB");
+      IFniiis cb = (IFniiis)IupGetCallback(ih, "DBLCLICK_CB");
       if (cb)
-        cb(ih, pMsg->modifiers, lineClick);
+      {
+        char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+        iScintillaKeySetStatus(pMsg->modifiers, status, 1);
+        cb(ih, pMsg->position, lin, col, status);
+      }
     }
     break;
+    case SCN_HOTSPOTDOUBLECLICK:
     case SCN_HOTSPOTCLICK:
     {
-      IFnii cb = (IFnii)IupGetCallback(ih, "HOTSPOTCLICK_CB");
+      IFniiis cb = (IFniiis)IupGetCallback(ih, "HOTSPOTCLICK_CB");
       if (cb)
-        cb(ih, pMsg->modifiers, lineClick);
+      {
+        char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+        iScintillaKeySetStatus(pMsg->modifiers, status, pMsg->nmhdr.code==SCN_HOTSPOTDOUBLECLICK? 1: 0);
+        cb(ih, pMsg->position, lin, col, status);
+      }
     }
     break;
     case SCN_MODIFIED:
@@ -497,9 +408,6 @@ static int iScintillaMapMethod(Ihandle* ih)
   ih->handle = scintilla_new();
   if (!ih->handle)
     return IUP_ERROR;
-
-  //TODO: why????
-//  scintilla_set_id(SCINTILLA(ih->handle), 0);
 
   gtk_widget_show(ih->handle);
 
@@ -673,7 +581,7 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic,   "VALUE", iupScintillaGetValueAttrib, iupScintillaSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "INSERT", NULL, iupScintillaSetInsertTextAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "LINE", iupScintillaGetLineAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "CHARAT", iupScintillaGetCharAtAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "CHAR", iupScintillaGetCharAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "DELETERANGE", NULL, iupScintillaSetDeleteRangeAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "READONLY", iupScintillaGetReadOnlyAttrib, iupScintillaSetReadOnlyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "CLEARALL", NULL, iupScintillaSetClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -748,14 +656,8 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, IUPAF_SAMEASSYSTEM, "30", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VISIBLELINES",   NULL, NULL, IUPAF_SAMEASSYSTEM, "10", IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "VALUEMASKED", NULL, iScintillaSetValueMaskedAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MASKCASEI", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MASK", iScintillaGetMaskAttrib, iScintillaSetMaskAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MASKINT", NULL, iScintillaSetMaskIntAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iScintillaSetMaskFloatAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iScintillaGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-
   iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MULTILINE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   return ic;
 }

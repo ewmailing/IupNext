@@ -207,7 +207,7 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
 
   if (code == K_cTAB)
   {
-    int is_multiline = (IupClassMatch(ih, "text") && IupGetInt(ih, "MULTILINE"));
+    int is_multiline = IupGetInt(ih, "MULTILINE");
     if (is_multiline)
     {
       if (shift)
@@ -219,7 +219,7 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
   }
   else if (code == K_TAB || code == K_sTAB)
   {
-    int is_multiline = (IupClassMatch(ih, "text") && IupGetInt(ih, "MULTILINE"));
+    int is_multiline = IupGetInt(ih, "MULTILINE");
     if (!is_multiline)
     {
       if (code == K_sTAB || shift)
@@ -251,7 +251,7 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
   }
   else if (code==K_CR || code==K_cCR)
   {
-    int is_multiline = (IupClassMatch(ih, "text") && IupGetInt(ih, "MULTILINE"));
+    int is_multiline = IupGetInt(ih, "MULTILINE");
     if ((code==K_CR && !is_multiline) || (code==K_cCR && is_multiline))
     {
       Ihandle* bt = IupGetAttributeHandle(IupGetDialog(ih), "DEFAULTENTER");

@@ -145,8 +145,9 @@ visible.</p>
 selection, sets the caret at pos and scrolls the view to make the caret visible, 
 if necessary.</p>
 
-<p><strong>CHARAT<em>pos</em></strong> (<font size="3">non inheritable, read-only</font>): 
-returns the character considering the position &quot;pos&quot;.</p>
+<p><strong>CHAR<em>id</em></strong> (<font size="3">non inheritable, read-only</font>): 
+returns the character at a given position, considering the &quot;id&quot; as the 
+position. </p>
 <p><strong>CLEARALL</strong> (<font size="3">non inheritable, </font>
 write-only): deletes all the text (unless the document is read-only).</p>
 <p><strong>CLEARDOCUMENTSTYLE</strong> (<font size="3">non inheritable, </font>
@@ -182,7 +183,7 @@ level is useful to decide how to handle user folding requests.</p>
 Determines if the fold point (line number) may be either expanded, displaying 
 all its child lines, or contracted, hiding all the child lines. </p>
 
-<p><strong>INSERTid</strong> (<font size="3">non inheritable, </font>write-only): Inserts a text string at position 
+<p><strong>INSERT<em>id</em></strong> (<font size="3">non inheritable, </font>write-only): Inserts a text string at position 
 &quot;id&quot; or at the current position if pos is -1 or omitted. If the current position is after 
 the insertion point then it is moved along with its surrounding text but no 
 scrolling is performed.</p>
@@ -198,8 +199,8 @@ eiffel, fortran, hypertext (HTML), xml, lisp, lua (Lua), makefile, matlab, mysql
 nsis, pascal, perl, python, ruby, smalltalk, sql, tcl, tex, vb (Visual Basic), 
 and many others. </p>
 
-<p><strong>LINEid</strong> (<font size="3">non inheritable, </font>read-only): 
-returns the text considering the &quot;id&quot; line number. It does not include the &quot;\n&quot; 
+<p><strong>LINE<em>id</em></strong> (<font size="3">non inheritable, </font>read-only): 
+returns the text of the line, considering the &quot;id&quot; as the line number. It does not include the &quot;\n&quot; 
 character. Number lines starts at 0.</p>
 
 <p><strong>LINECOUNT</strong> (<font size="3">non inheritable, </font>read-only): returns the number of lines in the 
@@ -238,8 +239,6 @@ Defines the folding marker number and its marker symbol. Format: &quot;<strong>m
 &quot;CIRCLEPLUSCONNECTED&quot;, &quot;CIRCLEMINUS&quot;, &quot;CIRCLEMINUSCONNECTED&quot;, &quot;BACKGROUND&quot;, 
 &quot;DOTDOTDOT&quot;, &quot;ARROWS&quot;, &quot;PIXMAP&quot;, &quot;FULLRECT&quot;, &quot;LEFTRECT&quot;, &quot;AVAILABLE&quot;, 
 &quot;UNDERLINE&quot;, &quot;RGBAIMAGE&quot;&nbsp; and &quot;CHARACTER&quot;.</p>
-<p><a href="../attrib/iup_mask.html">MASK</a> (<font size="3">non inheritable</font>): Defines a mask that will filter 
-interactive text input.</p>
 
 <p><b>OVERWRITE</b> (<font size="3">non inheritable</font>): turns the overwrite mode ON or OFF. 
 When overwrite is enabled, each typed character replaces the character to the 
@@ -331,8 +330,7 @@ Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, ver
 g b&quot;)</span>.</p>
 <p><strong>STYLEFONT<em>id</em></strong> (<font size="3">non inheritable</font>): sets 
 and gets the font name (See <a href="#StyleDefinition">Style Definition</a>). 
-IupScintilla tracks fonts by name and does care about the casing of font names. 
-On GTK+, Pango is used to display text.</p>
+Scintilla caches fonts by their names, but the cache is case sensitive. </p>
 
 <p><strong>STYLEFONTSIZE<em>id</em></strong> (<font size="3">non inheritable</font>): 
 sets and gets the font size (See <a href="#StyleDefinition">Style Definition</a>), 
@@ -371,8 +369,6 @@ between 1 and 999 with 1 being very light and 999 very heavy.</p>
   Text entered by the user. The &quot;\n&quot; character indicates a new line. After the element is mapped and if there 
 is no text will return the empty string "". This replaces all the text in the 
 document with the zero terminated text string you pass in.</p>
-<p><b>VALUEMASKED </b>(<font size="3">non inheritable</font>, write-only): sets 
-VALUE but first checks if it is validated by MASK. If not does nothing.</p>
 
 <p><strong>VISIBLECOLUMNS</strong>: Defines the number of visible columns for 
 the <strong>Natural</strong> <strong>Size</strong>, this means that will act 
@@ -469,17 +465,20 @@ Action generated when the user double click </span>in editor.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>modifiers</strong>, int <strong>line</strong>); [in C]<br><strong>elem</strong>:dblclick_cb(<strong>modifiers</strong>, <b>line</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>status</strong>); [in C]<br><strong>elem</strong>:dblclick_cb(<strong>pos</strong>, <b>lin</b>, <strong>col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br>
+  event.<br><strong>pos</strong>: the character position in the document that 
+corresponds to the double click.<br><strong>lin</strong>: line in the document that corresponds to the 
+double 
+click.<br><strong>col</strong>: column in the document that corresponds to the 
+double click.<br>
 
-	<strong>modifiers</strong>: the key modifiers held down.<br>
-
-	<strong>line</strong>: line in the document that corresponds to the double 
-click.</p>
+<strong>status</strong>: status of mouse buttons and certain keyboard keys at 
+the moment the event was generated. The same macros used for
+<a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status.</p>
 
 <p><a href="../call/iup_dropfiles_cb.html">DROPFILES_CB</a>: Action generated when one or 
   more files are dropped in the element.</p>
@@ -494,17 +493,21 @@ clicks on text that is in a style with the hotspot attribute set</span>.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>modifiers</strong>, int <strong>line</strong>); [in C]<br><strong>elem</strong>:hotspotclick_cb(<strong>modifiers</strong>, <b>line</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>status</strong>); [in C]<br><strong>elem</strong>:hotspotclick_cb(<strong>pos</strong>, <b>lin</b>, <strong>col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br>
+  event.<br><strong>pos</strong>: the character position in the document that 
+corresponds to the hotspot click.<br><strong>lin</strong>: line in the document that corresponds to the hotspot 
+click.<br><strong>col</strong>: column in the document that corresponds to the 
+hotspot click.<br>
 
-	<strong>modifiers</strong>: the key modifiers held down.<br>
+<strong>status</strong>: status of mouse buttons and certain keyboard keys at 
+the moment the event was generated. The same macros used for
+<a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status.<br>
 
-	<strong>line</strong>: line in the document that corresponds to the hotspot 
-click.</p>
+	</p>
 
   
   
@@ -580,15 +583,15 @@ are supported. See Notes bellow.</p>
 
 
 <p>
-  List of numbered styles used to set text attributes. The 
-  &quot;id&quot; number are used in STYLE attributes. Default style 
-  is used (id = 0) when the id is not specified in the attribute. Lexer styles 
-  can be set from 0 to 255. Invalid IDs are ignored.</p>
+  Scintilla will format the text using the Lexer and defined Styles. Styles are 
+  numbered from 0 to 255, invalid IDs are ignored. When the id is not specified 
+  for an attributes the style 0 is assumed. Each Lexer will use the available 
+  styles with its own rules, but several Lexers share many ids.</p>
 <p>
   Notice that language keywords and styles are not pre-defined internally. The 
-  application must define them, the Scintillar Lexer will only parse the source 
-  code and attribute the styles accordingly.
-  Here are some known style ids of C++ and Lua:</p>
+  application must define them.</p>
+<p>
+  Here are some known styles for C++ and Lua:</p>
 
 <table align="center">
 

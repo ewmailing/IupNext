@@ -22,8 +22,9 @@
 
 /***** TEXT RETRIEVAL AND MODIFICATION *****
 Attributes not implement yet:
-SCI_GETTEXTRANGE(<unused>, Sci_TextRange *tr)
 SCI_SETSAVEPOINT
+
+SCI_GETTEXTRANGE(<unused>, Sci_TextRange *tr)
 SCI_ALLOCATE(int bytes, <unused>)
 SCI_ADDSTYLEDTEXT(int length, cell *s)
 SCI_GETSTYLEDTEXT(<unused>, Sci_TextRange *tr)
@@ -130,7 +131,7 @@ int iupScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupScintillaGetCharAtAttrib(Ihandle* ih, int pos)
+char* iupScintillaGetCharAttrib(Ihandle* ih, int pos)
 {
   return (char*)iupScintillaSendMessage(ih, SCI_GETCHARAT, pos, 0);
 }
