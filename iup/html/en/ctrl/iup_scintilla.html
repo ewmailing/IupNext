@@ -459,27 +459,6 @@ the clipboard.</p>
 
   
   
-<p><b>DBLCLICK_CB</b>:
-  <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">
-Action generated when the user double click </span>in editor.</p>
-
-  
-    
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>status</strong>); [in C]<br><strong>elem</strong>:dblclick_cb(<strong>pos</strong>, <b>lin</b>, <strong>col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-
-    
-<p class="info"><strong>ih</strong>:
-  identifier of the element that activated the 
-  event.<br><strong>pos</strong>: the character position in the document that 
-corresponds to the double click.<br><strong>lin</strong>: line in the document that corresponds to the 
-double 
-click.<br><strong>col</strong>: column in the document that corresponds to the 
-double click.<br>
-
-<strong>status</strong>: status of mouse buttons and certain keyboard keys at 
-the moment the event was generated. The same macros used for
-<a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status.</p>
-
 <p><a href="../call/iup_dropfiles_cb.html">DROPFILES_CB</a>: Action generated when one or 
   more files are dropped in the element.</p>
 
@@ -517,7 +496,7 @@ marked as sensitive.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>margin</strong>, int <strong>line</strong>); [in C]<br><strong>elem</strong>:marginclick_cb(<strong>margin</strong>, <b>line</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>margin</strong>, int <strong>lin</strong>, char* <strong>status</strong>); [in C]<br><strong>elem</strong>:marginclick_cb(<strong>margin</strong>, <b>lin</b>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -526,8 +505,12 @@ marked as sensitive.</p>
 
 	<strong>margin</strong>: the margin number that was clicked.<br>
 
-	<strong>line</strong>: line in the document that corresponds to the margin 
-click.</p>
+	<strong>lin</strong>: line in the document that corresponds to the margin 
+click.<br>
+
+<strong>status</strong>: status of mouse buttons and certain keyboard keys at 
+the moment the event was generated. The same macros used for
+<a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status.</p>
 
   
 

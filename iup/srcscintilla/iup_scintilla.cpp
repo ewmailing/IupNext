@@ -56,8 +56,9 @@
 #include "iupsci.h"
 
 
-#define WM_IUPCARET WM_APP+1   /* Custom IUP message */
-
+#ifndef GTK
+//#define WM_IUPCARET WM_APP+1   /* Custom IUP message */
+#endif
 
 sptr_t iupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam, sptr_t lParam)
 {
@@ -170,17 +171,9 @@ static int iScintillaSetScrollbarAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-/***** NOTIFICATIONS *****
 
-atualizar doc
+/***** NOTIFICATIONS *****/
 
-SCN_SAVEPOINTREACHED
-SCN_SAVEPOINTLEFT
-
-ACTION
-
-MASK - rafael
-*/
 
 static void iScintillaKeySetStatus(int state, char* status, int doubleclick)
 {
@@ -220,17 +213,6 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
       }
     }
     break;
-    case SCN_DOUBLECLICK:
-    {
-      IFniiis cb = (IFniiis)IupGetCallback(ih, "DBLCLICK_CB");
-      if (cb)
-      {
-        char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
-        iScintillaKeySetStatus(pMsg->modifiers, status, 1);
-        cb(ih, pMsg->position, lin, col, status);
-      }
-    }
-    break;
     case SCN_HOTSPOTDOUBLECLICK:
     case SCN_HOTSPOTCLICK:
     {
@@ -245,11 +227,6 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
     break;
     case SCN_MODIFIED:
     {
-      /* Not mapped here:
-      SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_MOD_CHANGEMARKER, SC_MOD_CHANGEINDICATOR, SC_MOD_CHANGELINESTATE,
-      SC_MOD_LEXERSTATE, SC_MOD_CHANGEMARGIN, SC_MOD_CHANGEANNOTATION, SC_MOD_CONTAINER, SC_MODEVENTMASKALL,
-      SC_PERFORMED_USER, SC_STARTACTION */
-
       if((pMsg->modificationType & SC_PERFORMED_UNDO) || (pMsg->modificationType & SC_PERFORMED_REDO) ||
          (pMsg->modificationType & SC_MOD_BEFOREINSERT) || (pMsg->modificationType & SC_MOD_BEFOREDELETE) ||
          (pMsg->modificationType & SC_MULTISTEPUNDOREDO) || (pMsg->modificationType & SC_MULTILINEUNDOREDO))
@@ -263,7 +240,7 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
             cb(ih, pMsg->text[0], (char*)pMsg->text);
 
 #ifndef GTK
-          PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
+//          PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
 #endif
         }
       }
@@ -353,7 +330,7 @@ static int winScintillaProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         *result = 0;
         return 1;
       }
-      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
+      //PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_MBUTTONUP:
@@ -365,14 +342,14 @@ static int winScintillaProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         *result = 0;
         return 1;
       }
-      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
+      //PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
       break;
     }
-  case WM_IUPCARET:
-    {
-      iScintillaCallCaretCb(ih);
-      break;
-    }
+  //case WM_IUPCARET:
+  //  {
+  //    iScintillaCallCaretCb(ih);
+  //    break;
+  //  }
   case WM_MOUSEMOVE:
     {
       iupwinMouseMove(ih, msg, wp, lp);
@@ -553,9 +530,8 @@ static Iclass* iupScintillaNewClass(void)
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
 
   /* Callbacks */
-  iupClassRegisterCallback(ic, "MARGINCLICK_CB", "ii");
-  iupClassRegisterCallback(ic, "DBLCLICK_CB", "ii");
-  iupClassRegisterCallback(ic, "HOTSPOTCLICK_CB", "ii");
+  iupClassRegisterCallback(ic, "MARGINCLICK_CB", "iis");
+  iupClassRegisterCallback(ic, "HOTSPOTCLICK_CB", "iiis");
   iupClassRegisterCallback(ic, "BUTTON_CB", "iiiis");
   iupClassRegisterCallback(ic, "MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "CARET_CB", "iii");
@@ -679,3 +655,17 @@ Ihandle *IupScintilla(void)
 {
   return IupCreate("scintilla");
 }
+
+/*****  TODO
+
+- line numbers - how to?
+- FONTxSTYLEFONT default
+- Enter key processing
+- Other attributes
+- Binding Lua
+- Callbacks
+  SCN_SAVEPOINTREACHED/SCN_SAVEPOINTLEFT
+  ACTION
+  CARET_CB
+  VALUECHANGED_CB
+*/

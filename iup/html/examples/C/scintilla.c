@@ -29,91 +29,62 @@ const char* sampleCode = {
   "  return EXIT_SUCCESS;\n}\n"
 };
 
-int marginclick_cb(Ihandle *self, int margin, int line)
+static int marginclick_cb(Ihandle *self, int margin, int line, char* status)
 {
-  char buffer[100], str[100];
+  printf("MARGINCLICK_CB(Margin: %d, Line: %d, Status:%s)\n", margin, line, status);
 
-  sprintf(buffer, "%d", line);
-  sprintf(str, "FOLDLEVEL%d", line);
-
-  printf("MARGINCLICK_CB = Margin: %d, Line: %d\n", margin, line);
-  printf("Fold Level = %s\n", IupGetAttribute(self, str));
-
-  IupSetAttribute(self, "FOLDTOGGLE", buffer);
+  printf("Fold Level = %s\n", IupGetAttributeId(self, "FOLDLEVEL", line));
+  IupSetfAttribute(self, "FOLDTOGGLE", "%d", line);
 
   return IUP_DEFAULT;
 }
 
-int doubleclick_cb(Ihandle *self, int mod, int line)
+static int hotspotclick_cb(Ihandle *self, int pos, int line, int col, char* status)
 {
-  char buffer[100]; 
-  sprintf(buffer, "%d", line);
+  char *text = IupGetAttributeId(self, "LINE", line);
 
-  IupSetAttribute(self, "FOLDTOGGLE", buffer);
-
-  printf("DBLCLICK_CB = Modifier: %d, Line: %d\n", mod, line);
-  if(mod == 1) printf("SHIFT pressed\n\n");
-  else if(mod == 2) printf("CTRL pressed\n\n");
-  else if(mod == 4) printf("ALT pressed\n\n");
-  else if(mod == 6) printf("ALT GR pressed\n\n");
-  else printf("\n\n");
-
-  (void)self;
-  return IUP_DEFAULT;
-}
-
-int hotspotclick_cb(Ihandle *self, int mod, int line)
-{
-  char buffer[100], str[100];
-  char *text;
-  
-  sprintf(buffer, "%d", line);
-  sprintf(str, "LINE%d", line);
-  
-  text = IupGetAttribute(self, str);
-
-  printf("HOTSPOTCLICK_CB = Modifier: %d, Line: %d\n", mod, line);
-  printf("Getting line text = %s\n", text);
+  printf("HOTSPOTCLICK_CB (Pos: %d, Line: %d, Col: %d, Status:%s)\n", pos, line, col, status);
+  printf("    line text = %s\n", text);
 
   return IUP_DEFAULT;
 }
 
-int button_cb(Ihandle* self, int button, int pressed, int x, int y, char* status)
+static int button_cb(Ihandle* self, int button, int pressed, int x, int y, char* status)
 {
   printf("BUTTON_CB = button: %d, pressed: %d, x: %d, y: %d, status: %s\n", button, pressed, x, y, status);
   (void)self;
   return IUP_DEFAULT;
 }
 
-int motion_cb(Ihandle *self, int x, int y, char *status)
+static int motion_cb(Ihandle *self, int x, int y, char *status)
 {
   printf("MOTION_CB = x: %d, y: %d, status: %s\n", x, y, status);
   (void)self;
   return IUP_DEFAULT;
 }
 
-int caret_cb(Ihandle *self, int lin, int col, int pos)
+static int caret_cb(Ihandle *self, int lin, int col, int pos)
 {
   printf("CARET_CB = lin: %d, col: %d, pos: %d\n", lin, col, pos);
   (void)self;
   return IUP_DEFAULT;
 }
 
-int valuechanged_cb(Ihandle *self)
+static int valuechanged_cb(Ihandle *self)
 {
   printf("VALUECHANGED_CB\n");
   (void)self;
   return IUP_DEFAULT;
 }
 
-int action_cb(Ihandle *self, int key, char *txt)
+static int action_cb(Ihandle *self, int key, char *txt)
 {
   printf("ACTION = key: %d, text: %s\n", key, txt);
   (void)self;
   return IUP_IGNORE;
 }
 
-void set_attribs (Ihandle *sci)
+static void set_attribs (Ihandle *sci)
 {
   IupSetAttribute(sci, "CLEARALL", "");
   IupSetAttribute(sci, "LEXERLANGUAGE", "cpp");
@@ -188,10 +159,9 @@ void ScintillaTest(void)
   IupSetAttribute(sci, "EXPAND", "Yes");
 
   IupSetCallback(sci, "MARGINCLICK_CB", (Icallback)marginclick_cb);
-  IupSetCallback(sci, "DBLCLICK_CB", (Icallback)doubleclick_cb);
   IupSetCallback(sci, "HOTSPOTCLICK_CB", (Icallback)hotspotclick_cb);
-  IupSetCallback(sci, "BUTTON_CB", (Icallback)button_cb);
-  IupSetCallback(sci, "MOTION_CB", (Icallback)motion_cb);
+//  IupSetCallback(sci, "BUTTON_CB", (Icallback)button_cb);
+//  IupSetCallback(sci, "MOTION_CB", (Icallback)motion_cb);
   IupSetCallback(sci, "CARET_CB", (Icallback)caret_cb);
   IupSetCallback(sci, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
   IupSetCallback(sci, "ACTION", (Icallback)action_cb);
