@@ -209,8 +209,9 @@ text.</p>
 <p><strong>LINEVALUE</strong> (<font size="3">non inheritable, </font>read-only): returns the text of the line where 
 the caret is. It does not include the &quot;\n&quot; character.</p>
 
-<p><b>MARGINMASK<em>id</em> </b>(<font size="3">non inheritable</font>): determines if a 
-margin is folding or non-folding. Can be: MASK_FOLDERS or NO_MASK_FOLDERS.</p>
+<p><b>MARGINMASKFOLDERS<em>id</em> </b>(<font size="3">non inheritable</font>): 
+defines if a 
+margin is folding or non-folding. Can be: Yes or No.</p>
 
 <p><b>MARGINSENSITIVE<em>id</em> </b>(<font size="3">non inheritable</font>): determines 
 if a margin is sensitive or not. Margins that are not sensitive act as selection 
@@ -220,19 +221,20 @@ are insensitive. Can be: YES or NO.</p>
 <p><b>MARGINTYPE<em>id</em> </b>(<font size="3">non inheritable</font>): set and get the 
 type of a margin. The margin argument should be 0, 1, 2, 3 or 4.&nbsp; Each 
 margin can be set to display only symbols, line numbers, or text. You can use 
-the predefined values &quot;MARGIN_SYMBOL&quot;, &quot;MARGIN_NUMBER&quot;, &quot;MARGIN_TEXT&quot;, 
-&quot;MARGIN_RTEXT&quot;, &quot;MARGIN_BACK&quot; or &quot;MARGIN_FORE&quot; (the latter two used for symbol 
+the predefined values &quot;SYMBOL&quot;, &quot;NUMBER&quot;, &quot;TEXT&quot;, 
+&quot;RTEXT&quot; (right justify text), &quot;BACKGROUND&quot; or &quot;FOREGROUND&quot; (the latter two used for symbol 
 margins that set their background or foreground using the style default colors).</p>
 
 <p><b>MARGINWIDTH<em>id</em> </b>(<font size="3">non inheritable</font>): width of a 
-margin in pixels (Default value: 16). A margin with zero width is invisible. The 
+margin in pixels (Default value: 0). A margin with width=0 is invisible. The 
 margins are numbered 0 to 4. By default, Scintilla margin 0 is set to display 
 line numbers, margin 1 is set to display non-folding symbols, and margin 2 is 
 set to display folding symbols. Margins 3 and 4 are free for user default. 
-However, you can set the margins to be whatever you wish using MARGINTYPENid.</p>
+However, you can set the margins to be whatever you wish using MARGINTYPEid.</p>
 <p><strong>MARKERDEFINE</strong> (<font size="3">non inheritable, write-only</font>): 
-Defines the folding marker number and its marker symbol. Format: &quot;<strong>markerNumber,markerSymbol</strong>&quot;. Marker numbers: &quot;FOLDEREND&quot;, &quot;FOLDEROPENMID&quot;, &quot;FOLDERMIDTAIL&quot;, &quot;FOLDERSUB&quot;, 
-&quot;FOLDER&quot; and &quot;FOLDEROPEN&quot;. Marker symbols: &quot;CIRCLE&quot;, &quot;ROUNDRECT&quot;, &quot;ARROW&quot;, 
+Defines the folding marker number and its marker symbol. Format: &quot;number=symbol&quot;. </p>
+<p class="info"><strong>Marker numbers</strong>: &quot;FOLDEREND&quot;, &quot;FOLDEROPENMID&quot;, &quot;FOLDERMIDTAIL&quot;, &quot;FOLDERSUB&quot;, 
+&quot;FOLDER&quot; and &quot;FOLDEROPEN&quot;.<br><strong>Marker symbols:</strong> &quot;CIRCLE&quot;, &quot;ROUNDRECT&quot;, &quot;ARROW&quot;, 
 &quot;SMALLRECT&quot;, &quot;SHORTARROW&quot;, &quot;EMPTY&quot;, &quot;ARROWDOWN&quot;, &quot;MINUS&quot;, &quot;PLUS&quot;, &quot;VLINE&quot;, 
 &quot;LCORNER&quot;, &quot;TCORNER&quot;, &quot;BOXPLUS&quot;, &quot;BOXPLUSCONNECTED&quot;, &quot;BOXMINUS&quot;, 
 &quot;BOXMINUSCONNECTED&quot;, &quot;LCORNERCURVE&quot;, &quot;TCORNERCURVE&quot;, &quot;CIRCLEPLUS&quot;, 
@@ -251,10 +253,10 @@ the caret.</p>
 automatically inserted after the prepended text if the current text is not empty 
 (APPENDNEWLINE default is YES).</p>
 <p><strong>PROPERTY</strong> (<font size="3">non inheritable</font>): 
-sets and gets lexers using keyword:value string pairs. There is no limit to the 
-number of keyword pairs you can set, other than available memory. Format: &quot;<strong>key,val</strong>&quot;, 
-where key is a case sensitive keyword, value is a string that is associated with 
-the keyword.</p>
+sets and gets Lexer properties using &quot;keyword=value&quot; string pairs, where keyword is case sensitive 
+and value is a string that is associated with 
+the keyword. There is no limit to the number of keyword pairs you can set, other 
+than available memory. </p>
 <p><strong>READONLY </strong>(<font size="3">non inheritable</font>): Allows the user only to read the contents, 
   without changing it. Restricts the insertion using keyboard input and 
 attributes. Navigation keys are still available. Possible values: "YES" and "NO". 
@@ -1024,7 +1026,52 @@ depending on the driver.</p>
 <h3><a name="Examples">Examples</a></h3>
 
 <p><a href="../../examples/">Browse for Example Files</a></p>
+<pre> IupSetAttribute(ih, "LEXERLANGUAGE", "cpp");
 
+IupSetAttribute(ih, "KEYWORDS0", "void struct union enum char short int long double float signed unsigned const static extern auto register volatile bool class private protected public friend inline template virtual asm explicit typename mutable"
+                                  "if else switch case default break goto return for while do continue typedef sizeof NULL new delete throw try catch namespace operator this const_cast static_cast dynamic_cast reinterpret_cast true false using"
+                                  "typeid and and_eq bitand bitor compl not not_eq or or_eq xor xor_eq");
+
+//IupSetAttribute(ih, "STYLEFONT32", "Courier New");
+IupSetAttribute(ih, "STYLEFONT32", "Consolas");
+IupSetAttribute(ih, "STYLEFONTSIZE32", "11");
+IupSetAttribute(ih, "STYLECLEARALL", "Yes");  /* sets all styles to have the same attributes as 32 */
+
+IupSetAttribute(ih, "STYLEFGCOLOR1", "0 128 0");    // 1-C comment 
+IupSetAttribute(ih, "STYLEFGCOLOR2", "0 128 0");    // 2-C++ comment line 
+IupSetAttribute(ih, "STYLEFGCOLOR4", "128 0 0");    // 4-Number 
+IupSetAttribute(ih, "STYLEFGCOLOR5", "0 0 255");    // 5-Keyword 
+IupSetAttribute(ih, "STYLEFGCOLOR6", "160 20 20");  // 6-String 
+IupSetAttribute(ih, "STYLEFGCOLOR7", "128 0 0");    // 7-Character 
+IupSetAttribute(ih, "STYLEFGCOLOR9", "0 0 255");    // 9-Preprocessor block 
+IupSetAttribute(ih, "STYLEFGCOLOR10", "255 0 255"); // 10-Operator 
+IupSetAttribute(ih, "STYLEBOLD10", "YES");
+
+IupSetAttribute(ih, "STYLEHOTSPOT6", "YES");
+  
+IupSetAttribute(ih, "MARGINWIDTH0", "50");
+
+IupSetAttribute(ih, "PROPERTY", "fold=1");
+IupSetAttribute(ih, "PROPERTY", "fold.compact=0");
+IupSetAttribute(ih, "PROPERTY", "fold.comment=1");
+IupSetAttribute(ih, "PROPERTY", "fold.preprocessor=1");
+
+IupSetAttribute(ih, "MARGINWIDTH1", "20");
+IupSetAttribute(ih, "MARGINTYPE1",  "SYMBOL");
+IupSetAttribute(ih, "MARGINMASKFOLDERS1",  "Yes");
+
+IupSetAttribute(ih, "MARKERDEFINE", "FOLDER=PLUS");
+IupSetAttribute(ih, "MARKERDEFINE", "FOLDEROPEN=MINUS");
+IupSetAttribute(ih, "MARKERDEFINE", "FOLDEREND=EMPTY");
+IupSetAttribute(ih, "MARKERDEFINE", "FOLDERMIDTAIL=EMPTY");
+IupSetAttribute(ih, "MARKERDEFINE", "FOLDEROPENMID=EMPTY");
+IupSetAttribute(ih, "MARKERDEFINE", "FOLDERSUB=EMPTY");
+IupSetAttribute(ih, "MARKERDEFINE", "FOLDERTAIL=EMPTY");
+
+IupSetAttribute(ih, "FOLDFLAGS", "LINEAFTER_CONTRACTED");
+
+IupSetAttribute(ih, "MARGINSENSITIVE1", "YES");
+</pre>
 <table align="center">
 
 	<tr>

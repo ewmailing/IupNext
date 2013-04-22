@@ -113,26 +113,26 @@ static void set_attribs (Ihandle *sci)
   
   IupSetAttribute(sci, "INSERT0", sampleCode);
 
-  IupSetAttribute(sci, "MARGINWIDTHN0", "50");
+  IupSetAttribute(sci, "MARGINWIDTH0", "50");
 
   if (1)
   {
-    IupSetAttribute(sci, "PROPERTY", "fold,1");
-    IupSetAttribute(sci, "PROPERTY", "fold.compact,0");
-    IupSetAttribute(sci, "PROPERTY", "fold.comment,1");
-    IupSetAttribute(sci, "PROPERTY", "fold.preprocessor,1");
+    IupSetAttribute(sci, "PROPERTY", "fold=1");
+    IupSetAttribute(sci, "PROPERTY", "fold.compact=0");
+    IupSetAttribute(sci, "PROPERTY", "fold.comment=1");
+    IupSetAttribute(sci, "PROPERTY", "fold.preprocessor=1");
 
-    IupSetAttribute(sci, "MARGINWIDTH1", "0");
-    IupSetAttribute(sci, "MARGINTYPE1",  "MARGIN_SYMBOL");
-    IupSetAttribute(sci, "MARGINMASK1",  "MASK_FOLDERS");
     IupSetAttribute(sci, "MARGINWIDTH1", "20");
-    IupSetAttribute(sci, "MARKERDEFINE", "FOLDER,PLUS");
-    IupSetAttribute(sci, "MARKERDEFINE", "FOLDEROPEN,MINUS");
-    IupSetAttribute(sci, "MARKERDEFINE", "FOLDEREND,EMPTY");
-    IupSetAttribute(sci, "MARKERDEFINE", "FOLDERMIDTAIL,EMPTY");
-    IupSetAttribute(sci, "MARKERDEFINE", "FOLDEROPENMID,EMPTY");
-    IupSetAttribute(sci, "MARKERDEFINE", "FOLDERSUB,EMPTY");
-    IupSetAttribute(sci, "MARKERDEFINE", "FOLDERTAIL,EMPTY");
+    IupSetAttribute(sci, "MARGINTYPE1",  "SYMBOL");
+    IupSetAttribute(sci, "MARGINMASKFOLDERS1",  "Yes");
+
+    IupSetAttribute(sci, "MARKERDEFINE", "FOLDER=PLUS");
+    IupSetAttribute(sci, "MARKERDEFINE", "FOLDEROPEN=MINUS");
+    IupSetAttribute(sci, "MARKERDEFINE", "FOLDEREND=EMPTY");
+    IupSetAttribute(sci, "MARKERDEFINE", "FOLDERMIDTAIL=EMPTY");
+    IupSetAttribute(sci, "MARKERDEFINE", "FOLDEROPENMID=EMPTY");
+    IupSetAttribute(sci, "MARKERDEFINE", "FOLDERSUB=EMPTY");
+    IupSetAttribute(sci, "MARKERDEFINE", "FOLDERTAIL=EMPTY");
 
     IupSetAttribute(sci, "FOLDFLAGS", "LINEAFTER_CONTRACTED");
 

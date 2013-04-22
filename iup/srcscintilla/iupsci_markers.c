@@ -49,7 +49,7 @@ int iupScintillaSetMarkerDefineAttrib(Ihandle* ih, const char* value)
   char strSymb[25];
   int markerNumber, markerSymbol;
 
-  iupStrToStrStr(value, strNumb, strSymb, ',');
+  iupStrToStrStr(value, strNumb, strSymb, '=');
 
   /* Setting marker numbers */
   if (iupStrEqualNoCase(strNumb, "FOLDEREND"))

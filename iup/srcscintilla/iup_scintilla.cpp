@@ -638,7 +638,7 @@ static Iclass* iupScintillaNewClass(void)
   /* Margin Attributes */
   iupClassRegisterAttributeId(ic, "MARGINTYPE", iupScintillaGetMarginTypeAttribId, iupScintillaSetMarginTypeAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARGINWIDTH", iupScintillaGetMarginWidthAttribId, iupScintillaSetMarginWidthAttribId, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARGINMASK", iupScintillaGetMarginMaskAttribId, iupScintillaSetMarginMaskAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARGINMASKFOLDERS", iupScintillaGetMarginMaskFoldersAttribId, iupScintillaSetMarginMaskFoldersAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARGINSENSITIVE", iupScintillaGetMarginSensitiveAttribId, iupScintillaSetMarginSensitiveAttribId, IUPAF_NO_INHERIT);
 
   /* Marker Attributes */
@@ -678,7 +678,6 @@ Ihandle *IupScintilla(void)
 }
 
 /*****  TODO
-- line numbers - how to?
 - FONTxSTYLEFONT default
 - Enter key processing
 - Other attributes

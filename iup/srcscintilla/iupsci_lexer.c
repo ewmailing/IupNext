@@ -95,7 +95,7 @@ int iupScintillaSetPropertyAttrib(Ihandle* ih, const char* value)
   char strKey[50];
   char strVal[50];
 
-  iupStrToStrStr(value, strKey, strVal, ',');
+  iupStrToStrStr(value, strKey, strVal, '=');
 
   iupScintillaSendMessage(ih, SCI_SETPROPERTY, (uptr_t)strKey, (sptr_t)strVal);
 

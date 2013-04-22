@@ -16,8 +16,8 @@ char* iupScintillaGetMarginTypeAttribId(Ihandle* ih, int margin);
 int iupScintillaSetMarginTypeAttribId(Ihandle* ih, int margin, const char* value);
 char* iupScintillaGetMarginWidthAttribId(Ihandle* ih, int margin);
 int iupScintillaSetMarginWidthAttribId(Ihandle* ih, int margin, const char* value);
-char* iupScintillaGetMarginMaskAttribId(Ihandle* ih, int margin);
-int iupScintillaSetMarginMaskAttribId(Ihandle* ih, int margin, const char* value);
+char* iupScintillaGetMarginMaskFoldersAttribId(Ihandle* ih, int margin);
+int iupScintillaSetMarginMaskFoldersAttribId(Ihandle* ih, int margin, const char* value);
 char* iupScintillaGetMarginSensitiveAttribId(Ihandle* ih, int margin);
 int iupScintillaSetMarginSensitiveAttribId(Ihandle* ih, int margin, const char* value);
 
