@@ -47,7 +47,9 @@ char* iupScintillaGetValueAttrib(Ihandle* ih)
 
 int iupScintillaSetValueAttrib(Ihandle* ih, const char* value)
 {
+  ih->data->ignore_change = 1;
   iupScintillaSendMessage(ih, SCI_SETTEXT, 0, (sptr_t)value);
+  ih->data->ignore_change = 0;
   return 0;
 }
 
@@ -81,10 +83,12 @@ int iupScintillaSetPrependTextAttrib(Ihandle* ih, const char* value)
 {
   int len = strlen(value);
 
+  ih->data->ignore_change = 1;
   iupScintillaSendMessage(ih, SCI_ADDTEXT, len, (sptr_t)value);
 
   if(ih->data->append_newline)
     iupScintillaSendMessage(ih, SCI_ADDTEXT, 1, (sptr_t)"\n");
+  ih->data->ignore_change = 0;
 
   return 0;
 }
@@ -93,16 +97,21 @@ int iupScintillaSetAppendTextAttrib(Ihandle* ih, const char* value)
 {
   int len = strlen(value);
 
+  ih->data->ignore_change = 1;
   if(ih->data->append_newline)
     iupScintillaSendMessage(ih, SCI_APPENDTEXT, 1, (sptr_t)"\n");
 
   iupScintillaSendMessage(ih, SCI_APPENDTEXT, len, (sptr_t)value);
+  ih->data->ignore_change = 0;
+
   return 0;
 }
 
 int iupScintillaSetInsertTextAttrib(Ihandle* ih, int pos, const char* value)
 {
+  ih->data->ignore_change = 1;
   iupScintillaSendMessage(ih, SCI_INSERTTEXT, pos, (sptr_t)value);
+  ih->data->ignore_change = 0;
   return 0;
 }
 
@@ -110,7 +119,9 @@ int iupScintillaSetClearAllAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
 
+  ih->data->ignore_change = 1;
   iupScintillaSendMessage(ih, SCI_CLEARALL, 0, 0);
+  ih->data->ignore_change = 0;
   return 0;
 }
 
@@ -127,7 +138,9 @@ int iupScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value)
   int pos, len;
   iupStrToIntInt(value, &pos, &len, ',');
 
+  ih->data->ignore_change = 1;
   iupScintillaSendMessage(ih, SCI_DELETERANGE, pos, len);
+  ih->data->ignore_change = 0;
   return 0;
 }
 

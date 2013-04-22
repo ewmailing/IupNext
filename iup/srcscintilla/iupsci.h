@@ -19,6 +19,7 @@ struct _IcontrolData
   int sb;
   int append_newline;
   int last_caret_pos;
+  int ignore_change;
 };
 
 

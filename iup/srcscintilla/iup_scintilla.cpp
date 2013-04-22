@@ -57,7 +57,7 @@
 
 
 #ifndef GTK
-//#define WM_IUPCARET WM_APP+1   /* Custom IUP message */
+#define WM_IUPCARET WM_APP+1   /* Custom IUP message */
 #endif
 
 sptr_t iupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam, sptr_t lParam)
@@ -235,6 +235,14 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
     break;
   case SCN_MODIFIED:
     {
+      if (ih->data->ignore_change)
+      {
+#ifndef GTK
+        PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
+#endif
+        break;
+      }
+
       if (pMsg->modificationType&SC_PERFORMED_USER ||
           pMsg->modificationType&SC_PERFORMED_UNDO || 
           pMsg->modificationType&SC_PERFORMED_REDO)
@@ -256,9 +264,9 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
           if (value_cb)
             value_cb(ih);
 
-//#ifndef GTK
-////          PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
-//#endif
+#ifndef GTK
+          PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
+#endif
         }
       }
     }
@@ -266,27 +274,21 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
   }
 }
 
-//SCN_UPDATEUI
-//Symbol	Value	Meaning
-//SC_UPDATE_CONTENT	0x01	Contents, styling or markers have been changed.
-//SC_UPDATE_SELECTION	0x02	Selection has been changed.
-//SC_UPDATE_V_SCROLL	0x04	Scrolled vertically.
-//SC_UPDATE_H_SCROLL	0x08	Scrolled horizontally.
-
-
 static void iScintillaCallCaretCb(Ihandle* ih)
 {
-  int col, lin, pos;
+  int pos;
 
   IFniii cb = (IFniii)IupGetCallback(ih, "CARET_CB");
   if (!cb)
     return;
 
-  iupStrToIntInt(iupScintillaGetCaretAttrib(ih), &lin, &col, ',');
-  iupStrToInt(iupScintillaGetCaretPosAttrib(ih), &pos);
+  pos = iupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0);
 
   if (pos != ih->data->last_caret_pos)
   {
+    int col, lin;
+    IupScintillaConvertPosToLinCol(ih, pos, &lin, &col);
+
     ih->data->last_caret_pos = pos;
 
     cb(ih, lin, col, pos);
@@ -313,9 +315,17 @@ static void gtkScintillaMoveCursor(GtkWidget *w, GtkMovementStep step, gint coun
   (void)extend_selection;
 }
 
+static gboolean gtkTextKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
+{
+  iScintillaCallCaretCb(ih);
+  (void)widget;
+  (void)evt;
+  return FALSE;
+}
+
 static gboolean gtkScintillaButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
 {
-  gtkScintillaMoveCursor(NULL, (GtkMovementStep)0, 0, 0, ih);
+  iScintillaCallCaretCb(ih);
   return iupgtkButtonEvent(widget, evt, ih);
 }
 
@@ -335,6 +345,16 @@ static int winScintillaProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
 {
   switch (msg)
   {
+  case WM_KEYDOWN:
+    {
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
+      break;
+    }
+  case WM_KEYUP:
+    {
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
+      break;
+    }
   case WM_LBUTTONDBLCLK:
   case WM_MBUTTONDBLCLK:
   case WM_RBUTTONDBLCLK:
@@ -347,7 +367,7 @@ static int winScintillaProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         *result = 0;
         return 1;
       }
-      //PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
       break;
     }
   case WM_MBUTTONUP:
@@ -359,14 +379,14 @@ static int winScintillaProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         *result = 0;
         return 1;
       }
-      //PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
+      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
       break;
     }
-  //case WM_IUPCARET:
-  //  {
-  //    iScintillaCallCaretCb(ih);
-  //    break;
-  //  }
+  case WM_IUPCARET:
+    {
+      iScintillaCallCaretCb(ih);
+      break;
+    }
   case WM_MOUSEMOVE:
     {
       iupwinMouseMove(ih, msg, wp, lp);
@@ -399,9 +419,11 @@ static int iScintillaMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "key-press-event",    G_CALLBACK(iupgtkKeyPressEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "show-help",          G_CALLBACK(iupgtkShowHelp), ih);
 
   g_signal_connect_after(G_OBJECT(ih->handle), "move-cursor", G_CALLBACK(gtkScintillaMoveCursor), ih);  /* only report some caret movements */
+  g_signal_connect_after(G_OBJECT(ih->handle), "key-release-event", G_CALLBACK(gtkScintillaKeyReleaseEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkScintillaButtonEvent), ih);  /* if connected "after" then it is ignored */
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event", G_CALLBACK(gtkScintillaButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event", G_CALLBACK(iupgtkMotionNotifyEvent), ih);
@@ -656,12 +678,8 @@ Ihandle *IupScintilla(void)
 }
 
 /*****  TODO
-
 - line numbers - how to?
 - FONTxSTYLEFONT default
 - Enter key processing
 - Other attributes
-- Binding Lua
-- Callbacks
-  CARET_CB
 */
