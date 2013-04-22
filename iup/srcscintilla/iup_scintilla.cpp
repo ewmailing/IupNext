@@ -679,6 +679,5 @@ Ihandle *IupScintilla(void)
 
 /*****  TODO
 - FONTxSTYLEFONT default
-- Enter key processing
 - Other attributes
 */
