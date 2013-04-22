@@ -202,7 +202,15 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
 
   switch(pMsg->nmhdr.code)
   {
-    case SCN_MARGINCLICK:
+  case SCN_SAVEPOINTREACHED:
+  case SCN_SAVEPOINTLEFT:
+    {
+      IFni cb = (IFni)IupGetCallback(ih, "SAVEPOINT_CB");
+      if (cb)
+        cb(ih, pMsg->nmhdr.code==SCN_SAVEPOINTREACHED? 1: 0);
+    }
+    break;
+  case SCN_MARGINCLICK:
     {
       IFniis cb = (IFniis)IupGetCallback(ih, "MARGINCLICK_CB");
       if (cb)
@@ -213,8 +221,8 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
       }
     }
     break;
-    case SCN_HOTSPOTDOUBLECLICK:
-    case SCN_HOTSPOTCLICK:
+  case SCN_HOTSPOTDOUBLECLICK:
+  case SCN_HOTSPOTCLICK:
     {
       IFniiis cb = (IFniiis)IupGetCallback(ih, "HOTSPOTCLICK_CB");
       if (cb)
@@ -225,37 +233,46 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
       }
     }
     break;
-    case SCN_MODIFIED:
+  case SCN_MODIFIED:
     {
-      if((pMsg->modificationType & SC_PERFORMED_UNDO) || (pMsg->modificationType & SC_PERFORMED_REDO) ||
-         (pMsg->modificationType & SC_MOD_BEFOREINSERT) || (pMsg->modificationType & SC_MOD_BEFOREDELETE) ||
-         (pMsg->modificationType & SC_MULTISTEPUNDOREDO) || (pMsg->modificationType & SC_MULTILINEUNDOREDO))
+      if (pMsg->modificationType&SC_PERFORMED_USER ||
+          pMsg->modificationType&SC_PERFORMED_UNDO || 
+          pMsg->modificationType&SC_PERFORMED_REDO)
       {
-        IFnis cb = (IFnis)IupGetCallback(ih, "ACTION");
-        if (cb && pMsg->text)
+        if (pMsg->modificationType&SC_MOD_BEFOREINSERT ||
+            pMsg->modificationType&SC_MOD_BEFOREDELETE)
         {
-          if(pMsg->length != 1)
-            cb(ih, 0, (char*)pMsg->text);
-          else
-            cb(ih, pMsg->text[0], (char*)pMsg->text);
+          IFn value_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
+          IFniiis cb = (IFniiis)IupGetCallback(ih, "ACTION");
+          if (cb)
+          {
+            int insert = 1;
+            if (pMsg->modificationType&SC_MOD_BEFOREDELETE)
+              insert = 0;
 
-#ifndef GTK
-//          PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
-#endif
+            cb(ih, insert, pMsg->position, pMsg->length, (char*)pMsg->text);
+          }
+
+          if (value_cb)
+            value_cb(ih);
+
+//#ifndef GTK
+////          PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
+//#endif
         }
-      }
-
-      if((pMsg->modificationType & SC_MOD_INSERTTEXT) || (pMsg->modificationType & SC_MOD_DELETETEXT) ||
-         (pMsg->modificationType & SC_LASTSTEPINUNDOREDO))
-      {
-        IFn cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
-        if (cb)
-          cb(ih);
       }
     }
     break;
   }
 }
+
+//SCN_UPDATEUI
+//Symbol	Value	Meaning
+//SC_UPDATE_CONTENT	0x01	Contents, styling or markers have been changed.
+//SC_UPDATE_SELECTION	0x02	Selection has been changed.
+//SC_UPDATE_V_SCROLL	0x04	Scrolled vertically.
+//SC_UPDATE_H_SCROLL	0x08	Scrolled horizontally.
+
 
 static void iScintillaCallCaretCb(Ihandle* ih)
 {
@@ -359,22 +376,6 @@ static int winScintillaProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
 
   return iupwinBaseProc(ih, msg, wp, lp, result);
 }
-
-static int winScintillaWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
-{
-  int cmd = HIWORD(wp);
-  switch (cmd)
-  {
-  case SCEN_CHANGE:
-    {
-      iupBaseCallValueChangedCb(ih);
-      break;
-    }
-  }
-
-  (void)lp;
-  return 0; /* not used */
-}
 #endif
 
 /*****************************************************************************/
@@ -405,7 +406,7 @@ static int iScintillaMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event", G_CALLBACK(gtkScintillaButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event", G_CALLBACK(iupgtkMotionNotifyEvent), ih);
 
-  g_signal_connect(ih->handle, "sci-notify", G_CALLBACK(gtkScintillaNotify), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "sci-notify", G_CALLBACK(gtkScintillaNotify), ih);
 
   gtk_widget_realize(ih->handle);
 #else
@@ -427,11 +428,8 @@ static int iScintillaMapMethod(Ihandle* ih)
   /* Process Scintilla Notifications */
   IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winScintillaWmNotify);
 
-  /* Process ACTION_CB and CARET_CB */
+  /* Process BUTTON_CB, MOTION_CB and CARET_CB */
   IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winScintillaProc);
-
-  /* Process WM_COMMAND */
-  IupSetCallback(ih, "_IUPWIN_COMMAND_CB", (Icallback)winScintillaWmCommand);
 #endif
 
   /* configure for DROP of files */
@@ -530,13 +528,14 @@ static Iclass* iupScintillaNewClass(void)
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
 
   /* Callbacks */
+  iupClassRegisterCallback(ic, "SAVEPOINT_CB", "i");
   iupClassRegisterCallback(ic, "MARGINCLICK_CB", "iis");
   iupClassRegisterCallback(ic, "HOTSPOTCLICK_CB", "iiis");
   iupClassRegisterCallback(ic, "BUTTON_CB", "iiiis");
   iupClassRegisterCallback(ic, "MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "CARET_CB", "iii");
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
-  iupClassRegisterCallback(ic, "ACTION", "is");
+  iupClassRegisterCallback(ic, "ACTION", "iiis");
 
   /* Common Callbacks */
   iupBaseRegisterCommonCallbacks(ic);
@@ -664,8 +663,5 @@ Ihandle *IupScintilla(void)
 - Other attributes
 - Binding Lua
 - Callbacks
-  SCN_SAVEPOINTREACHED/SCN_SAVEPOINTLEFT
-  ACTION
   CARET_CB
-  VALUECHANGED_CB
 */

@@ -77,9 +77,9 @@ static int valuechanged_cb(Ihandle *self)
   return IUP_DEFAULT;
 }
 
-static int action_cb(Ihandle *self, int key, char *txt)
+static int action_cb(Ihandle *self, int insert, int pos, int length, char* text)
 {
-  printf("ACTION = key: %d, text: %s\n", key, txt);
+  printf("ACTION = insert: %d, pos: %d, lenght:%d, text: %s\n", insert, pos, length, text);
   (void)self;
   return IUP_IGNORE;
 }

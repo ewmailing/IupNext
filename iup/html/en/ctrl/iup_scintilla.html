@@ -419,17 +419,19 @@ the clipboard.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>c</strong>, char *<strong>new_value</strong>); [in C]<br><strong>elem</strong>:action(<strong>c</strong>: number, <strong>new_value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>insert</strong>, int <strong>pos</strong>, int <strong>length</strong>, char* <strong>text</strong> ); [in C]<br><strong>elem</strong>:action(<strong>insert</strong>: boolean, <strong>pos</strong>, <strong>length</strong>: number, <strong>text</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
 
-	<strong>c</strong>: valid alpha numeric character or 0.<br>
+	<strong>insert</strong>: =1 when text is inserted, =0 when text is deleted.<br>
+<strong>pos</strong>: 0 based character position when change started.<br>
+<strong>length</strong>: size of the change.<br>
 
-    <strong>new_value</strong>:
-    Represents the new text value.</p>
+    <strong>text</strong>:
+    the inserted text value. It is NULL when insert=0.</p>
 
     
   
@@ -519,6 +521,24 @@ the moment the event was generated. The same macros used for
   Action generated when the mouse is moved. Use 
 <a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> 
 	to convert (x,y) coordinates in character positioning.</p>
+
+  
+  
+<p><b>SAVEPOINT_CB</b>:
+  Notifies the application that a save point was reached (1) or left (0). Can be 
+used to controls whether to display a saved or modified document. To set the 
+save point use the SAVEPOINT attribute.</p>
+
+  
+    
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>status</strong>); [in C]<br><strong>elem</strong>:savepoint_cb(<strong>status</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+	<strong>status</strong>: can be 1 (reached) or 0 (left).</p>
 
   
   
