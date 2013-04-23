@@ -125,8 +125,8 @@ then it will be automatically enabled.</p>
 
   
 <p><b>OVERWRITE</b> (<font size="3">non inheritable</font>): turns the overwrite mode ON or OFF. 
-When overwrite is enabled, each typed character replaces the character to the 
-right of the text caret. When overtype is disabled, characters are inserted at 
+When enabled, each typed character replaces the character to the right of the 
+text caret. When disabled, characters are inserted at 
 the caret.</p>
 <p><a href="../attrib/iup_size.html">SIZE</a> (<font size="3">non inheritable</font>): 
 	Since the contents can be changed by the user, the <strong>Natural</strong>
@@ -152,6 +152,10 @@ to NULL after map to use it as an initial value. Default: 10.</p>
 
 <p><strong>WORDWRAP</strong> (<font size="3">non inheritable</font>): If enabled will force a word wrap of lines that are 
 greater than the with of the control, and the horizontal scrollbar will be removed. Default: NO.</p>
+<p><strong>WORDWRAPVISUALFLAGS</strong> (<font size="3">non inheritable</font>):
+<span>enable the drawing of visual flags to indicate a line is wrapped.&nbsp;Can be: 
+MARGIN (at the line number margin), START (start of wrapped line), END (end of 
+wrapped line) or NONE. Default: NONE.</span></p>
 <h4>Text Retrieval and Modification</h4>
 <p><strong>APPEND</strong> (<font size="3">non inheritable, </font>write-only):
   Inserts a text at the <strong>end</strong> of the current text. If APPENDNEWLINE=YES, a "\n" character will be 
@@ -308,6 +312,17 @@ margins are numbered 0 to 4. By default, Scintilla margin 0 is set to display
 line numbers, margin 1 is set to display non-folding symbols, and margin 2 is 
 set to display folding symbols. Margins 3 and 4 are free for user default. 
 However, you can set the margins to be whatever you wish using MARGINTYPEid.</p>
+<p><strong>MARGINLEFT</strong> (<font size="3">non inheritable</font>): size of 
+the blank margin on the left side. Default: 1.</p>
+<p>&nbsp;<strong>MARGINRIGHT</strong> (<font size="3">non inheritable</font>): 
+size of the blank margin on the right side. Default: 1.</p>
+<p><b>MARGINTEXT<em>id</em> </b>(<font size="3">non inheritable</font>): 
+controls the text of each line of a text margin. id is the line number.</p>
+<p><b>MARGINTEXTSTYLE<em>id</em> </b>(<font size="3">non inheritable</font>): 
+controls the style of the text of each line of a text margin. id is the line 
+number.</p>
+<p>&nbsp;<strong>MARGINTEXTCLEARALL</strong> (<font size="3">non inheritable, write-only</font>): 
+clear all text and styles of a text margin.</p>
 <h4>Markers</h4>
 <p><strong>MARKERDEFINE</strong> (<font size="3">non inheritable, write-only</font>): 
 Defines the folding marker number and its marker symbol. Format: &quot;number=symbol&quot;. </p>
@@ -325,6 +340,8 @@ Defines the folding marker number and its marker symbol. Format: &quot;number=sy
 keyword list used by the current lexer. Until 9 lists of keywords can set up 
 using id from 0 to 8. The value is a list of keywords separated by spaces, tabs, 
 &quot;\n&quot; or &quot;\r&quot; or any combination of these.</p>
+<p><strong>KEYWORDSETS</strong> (<font size="3">non inheritable, read only</font>): 
+returns a description of all of the keyword sets separated by &quot;\n&quot;.</p>
 <p><strong>LEXERLANGUAGE</strong> (<font size="3">non inheritable</font>): 
 associate the lexer language name. It is case sensitive. Default: not defined. 
 Set to NULL to clear the association. Can be: any name supported by Scintilla. 
@@ -338,6 +355,9 @@ name is case sensitive
 and value is the associated string. There is no limit to the number of keyword pairs you can set, other 
 than available memory. To retrieve a property first set the PROPERTYNAME 
 attribute, the PROPERTY attribute will return its value.</p>
+<p><strong>PROPERTYNAMES</strong> (<font size="3">non inheritable, read only</font>): 
+returns a list of property names separated by &quot;\n&quot;. If the lexer does not 
+support this information then an empty string is returned.&nbsp;</p>
 <h4>Scrolling</h4>
 <p><strong>SCROLLBAR</strong> (creation only): Associates an automatic horizontal and/or vertical scrollbar. Can be: "VERTICAL", "HORIZONTAL", "YES" (both) or "NO" (none). 
 	Default: "YES". For all systems, when SCROLLBAR is NO, the natural size will 
@@ -350,6 +370,8 @@ reference of the CARET attribute ("lin,col&quot; or &quot;col&quot; starting at 
 <p><strong>SCROLLTOPOS</strong> (<font size="3">non inheritable, write only</font>): 
 Scroll the text to make the given position visible. It uses the same format and 
 reference of the CARETPOS attribute (&quot;pos&quot; starting at 0).</p>
+<p><strong>SCROLLWIDTH</strong> (<font size="3">non inheritable): controls the 
+document width in pixels. Default: 2000.</font></p>
 <h4>Styles</h4>
 
   

@@ -14,6 +14,8 @@ extern "C" {
 
 char* iupScintillaGetWordWrapAttrib(Ihandle *ih);
 int iupScintillaSetWordWrapAttrib(Ihandle *ih, const char *value);
+char* iupScintillaGetWordWrapVisualFlagsAttrib(Ihandle *ih);
+int iupScintillaSetWordWrapVisualFlagsAttrib(Ihandle *ih, const char *value);
 
 
 #ifdef __cplusplus

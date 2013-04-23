@@ -21,19 +21,23 @@
 #include "iupsci.h"
 
 /***** FOLDING *****
-SCI_VISIBLEFROMDOCLINE(int docLine)
-SCI_DOCLINEFROMVISIBLE(int displayLine)
-SCI_SHOWLINES(int lineStart, int lineEnd)
-SCI_HIDELINES(int lineStart, int lineEnd)
-SCI_GETLINEVISIBLE(int line)
-SCI_GETALLLINESVISIBLE
-SCI_GETLASTCHILD(int line, int level)
-SCI_GETFOLDPARENT(int line)
-SCI_SETFOLDEXPANDED(int line, bool expanded)
-SCI_GETFOLDEXPANDED(int line)
-SCI_CONTRACTEDFOLDNEXT(int lineStart)
-SCI_ENSUREVISIBLE(int line)
-SCI_ENSUREVISIBLEENFORCEPOLICY(int line)
+--SCI_VISIBLEFROMDOCLINE(int docLine)
+--SCI_DOCLINEFROMVISIBLE(int displayLine)
+--SCI_SHOWLINES(int lineStart, int lineEnd)
+--SCI_HIDELINES(int lineStart, int lineEnd)
+--SCI_GETLINEVISIBLE(int line)
+--SCI_GETALLLINESVISIBLE
+SCI_SETFOLDLEVEL(int line, int level)
+SCI_GETFOLDLEVEL(int line)
+SCI_SETFOLDFLAGS(int flags)
+--SCI_GETLASTCHILD(int line, int level)
+--SCI_GETFOLDPARENT(int line)
+--SCI_SETFOLDEXPANDED(int line, bool expanded)
+--SCI_GETFOLDEXPANDED(int line)
+--SCI_CONTRACTEDFOLDNEXT(int lineStart)
+SCI_TOGGLEFOLD(int line)
+--SCI_ENSUREVISIBLE(int line)
+--SCI_ENSUREVISIBLEENFORCEPOLICY(int line)
 */
 
 int iupScintillaSetFoldFlagsAttrib(Ihandle* ih, const char* value)

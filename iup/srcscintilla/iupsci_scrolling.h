@@ -14,6 +14,9 @@ extern "C" {
 
 int iupScintillaSetScrollToAttrib(Ihandle *ih, const char *value);
 int iupScintillaSetScrollToPosAttrib(Ihandle *ih, const char *value);
+int iupScintillaSetScrollCaretAttrib(Ihandle *ih, const char *value);
+char* iupScintillaGetScrollWidthAttrib(Ihandle* ih);
+int iupScintillaSetScrollWidthAttrib(Ihandle* ih, const char* value);
 
 
 #ifdef __cplusplus

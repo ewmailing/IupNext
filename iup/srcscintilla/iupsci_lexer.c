@@ -22,26 +22,24 @@
 #include "iupsci.h"
 
 /***** LEXER *****
-Attributes not implement yet:
-SCI_LOADLEXERLIBRARY(<unused>, const char *path)
-SCI_COLOURISE(int start, int end)
-SCI_CHANGELEXERSTATE(int start, int end)
+SCI_SETLEXER(int lexer)
+SCI_GETLEXER
+SCI_SETLEXERLANGUAGE(<unused>, const char *name)
+SCI_GETLEXERLANGUAGE(<unused>, char *name)
+--SCI_LOADLEXERLIBRARY(<unused>, const char *path)
+--SCI_COLOURISE(int start, int end)
+--SCI_CHANGELEXERSTATE(int start, int end)
 SCI_PROPERTYNAMES(<unused>, char *names)
-SCI_PROPERTYTYPE(const char *name)
-SCI_DESCRIBEPROPERTY(const char *name, char *description)
-SCI_GETPROPERTYEXPANDED(const char *key, char *value)
-SCI_GETPROPERTYINT(const char *key, int default)
+--SCI_PROPERTYTYPE(const char *name)
+--SCI_DESCRIBEPROPERTY(const char *name, char *description)
+SCI_SETPROPERTY(const char *key, const char *value)
+SCI_GETPROPERTY(const char *key, char *value)
+--SCI_GETPROPERTYEXPANDED(const char *key, char *value)
+--SCI_GETPROPERTYINT(const char *key, int default)
 SCI_DESCRIBEKEYWORDSETS(<unused>, char *descriptions)
-SCI_GETSTYLEBITSNEEDED
-SCI_GETSUBSTYLEBASES(<unused>, char *styles)
-SCI_DISTANCETOSECONDARYSTYLES
-SCI_ALLOCATESUBSTYLES(int styleBase, int numberStyles)
-SCI_FREESUBSTYLES
-SCI_GETSUBSTYLESSTART(int styleBase)
-SCI_GETSUBSTYLESLENGTH(int styleBase)
-SCI_SETIDENTIFIERS(int style, const char *identifiers)
+SCI_SETKEYWORDS(int keyWordSet, const char *keyWordList)
+--SCI_GETSTYLEBITSNEEDED
 */
-
 
 char* iupScintillaGetLexerLanguageAttrib(Ihandle* ih)
 {
@@ -101,3 +99,22 @@ int iupScintillaSetPropertyAttrib(Ihandle* ih, const char* value)
 
   return 0;
 }
+
+char* iupScintillaGetDescribeKeywordSetsAttrib(Ihandle* ih)
+{
+  int len = (int)iupScintillaSendMessage(ih, SCI_DESCRIBEKEYWORDSETS, 0, 0);
+  char *str = iupStrGetMemory(len+1);
+
+  iupScintillaSendMessage(ih, SCI_DESCRIBEKEYWORDSETS, 0, (sptr_t)str);
+  return str;
+}
+
+char* iupScintillaGetPropertyNamessAttrib(Ihandle* ih)
+{
+  int len = (int)iupScintillaSendMessage(ih, SCI_PROPERTYNAMES, 0, 0);
+  char *str = iupStrGetMemory(len+1);
+
+  iupScintillaSendMessage(ih, SCI_PROPERTYNAMES, 0, (sptr_t)str);
+  return str;
+}
+

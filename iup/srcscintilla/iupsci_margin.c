@@ -21,25 +21,33 @@
 #include "iupsci.h"
 
 /***** MARGIN *****
-SCI_SETMARGINCURSORN(int margin, int cursor)
-SCI_GETMARGINCURSORN(int margin)
+SCI_SETMARGINTYPEN(int margin, int type)
+SCI_GETMARGINTYPEN(int margin)
+SCI_SETMARGINWIDTHN(int margin, int pixelWidth)
+SCI_GETMARGINWIDTHN(int margin)
+SCI_SETMARGINMASKN(int margin, int mask)
+SCI_GETMARGINMASKN(int margin)
+SCI_SETMARGINSENSITIVEN(int margin, bool sensitive)
+SCI_GETMARGINSENSITIVEN(int margin)
+--SCI_SETMARGINCURSORN(int margin, int cursor)
+--SCI_GETMARGINCURSORN(int margin)
 SCI_SETMARGINLEFT(<unused>, int pixels)
 SCI_GETMARGINLEFT
 SCI_SETMARGINRIGHT(<unused>, int pixels)
 SCI_GETMARGINRIGHT
-SCI_SETFOLDMARGINCOLOUR(bool useSetting, int colour)
-SCI_SETFOLDMARGINHICOLOUR(bool useSetting, int colour)
+--SCI_SETFOLDMARGINCOLOUR(bool useSetting, int colour)
+--SCI_SETFOLDMARGINHICOLOUR(bool useSetting, int colour)
 SCI_MARGINSETTEXT(int line, char *text)
 SCI_MARGINGETTEXT(int line, char *text)
 SCI_MARGINSETSTYLE(int line, int style)
 SCI_MARGINGETSTYLE(int line)
-SCI_MARGINSETSTYLES(int line, char *styles)
-SCI_MARGINGETSTYLES(int line, char *styles)
+--SCI_MARGINSETSTYLES(int line, char *styles)
+--SCI_MARGINGETSTYLES(int line, char *styles)
 SCI_MARGINTEXTCLEARALL
-SCI_MARGINSETSTYLEOFFSET(int style)
-SCI_MARGINGETSTYLEOFFSET
-SCI_SETMARGINOPTIONS(int marginOptions)
-SCI_GETMARGINOPTIONS
+--SCI_MARGINSETSTYLEOFFSET(int style)
+--SCI_MARGINGETSTYLEOFFSET
+--SCI_SETMARGINOPTIONS(int marginOptions)
+--SCI_GETMARGINOPTIONS
 */
 
 char* iupScintillaGetMarginTypeAttribId(Ihandle* ih, int margin)
@@ -135,6 +143,96 @@ int iupScintillaSetMarginSensitiveAttribId(Ihandle* ih, int margin, const char* 
     iupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 1);
   else
     iupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 0);
+
+  return 0;
+}
+
+char* iupScintillaGetMarginLeftAttrib(Ihandle* ih)
+{
+  int pixels = iupScintillaSendMessage(ih, SCI_GETMARGINLEFT, 0, 0);
+  char* str = iupStrGetMemory(15);
+
+  sprintf(str, "%d", pixels);
+
+  return str;
+}
+
+int iupScintillaSetMarginLeftAttrib(Ihandle* ih, const char* value)
+{
+  int pixels;
+
+  iupStrToInt(value, &pixels);
+  
+  if(pixels < 1)
+    pixels = 16;
+
+  iupScintillaSendMessage(ih, SCI_SETMARGINLEFT, 0, pixels);
+
+  return 0;
+}
+
+char* iupScintillaGetMarginRightAttrib(Ihandle* ih)
+{
+  int pixels = iupScintillaSendMessage(ih, SCI_GETMARGINRIGHT, 0, 0);
+  char* str = iupStrGetMemory(15);
+
+  sprintf(str, "%d", pixels);
+
+  return str;
+}
+
+int iupScintillaSetMarginRightAttrib(Ihandle* ih, const char* value)
+{
+  int pixels;
+
+  iupStrToInt(value, &pixels);
+  
+  if(pixels < 1)
+    pixels = 16;
+
+  iupScintillaSendMessage(ih, SCI_SETMARGINRIGHT, 0, pixels);
+
+  return 0;
+}
+
+char* iupScintillaGetMarginTextAttribId(Ihandle* ih, int line)
+{
+  int len = iupScintillaSendMessage(ih, SCI_MARGINGETTEXT, line, 0);
+  char* str = iupStrGetMemory(len+1);
+  iupScintillaSendMessage(ih, SCI_MARGINGETTEXT, line, (sptr_t)str);
+  return str;
+}
+
+int iupScintillaSetMarginTextAttribId(Ihandle* ih, int line, const char* value)
+{
+  iupScintillaSendMessage(ih, SCI_MARGINSETTEXT, line, (sptr_t)value);
+  return 0;
+}
+
+int iupScintillaSetMarginTextClearAllAttrib(Ihandle* ih, const char* value)
+{
+  (void)value;
+  iupScintillaSendMessage(ih, SCI_MARGINTEXTCLEARALL, 0, 0);
+  return 0;
+}
+
+char* iupScintillaGetMarginTextStyleAttribId(Ihandle* ih, int line)
+{
+  int style = iupScintillaSendMessage(ih, SCI_MARGINGETSTYLE, line, 0);
+  char* str = iupStrGetMemory(15);
+
+  sprintf(str, "%d", style);
+
+  return str;
+}
+
+int iupScintillaSetMarginTextStyleAttribId(Ihandle* ih, int line, const char* value)
+{
+  int style;
+
+  iupStrToInt(value, &style);
+  
+  iupScintillaSendMessage(ih, SCI_MARGINSETSTYLE, line, style);
 
   return 0;
 }

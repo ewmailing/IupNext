@@ -614,6 +614,7 @@ static Iclass* iupScintillaNewClass(void)
 
   /* Line wrapping */
   iupClassRegisterAttribute(ic, "WORDWRAP", iupScintillaGetWordWrapAttrib, iupScintillaSetWordWrapAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WORDWRAPVISUALFLAGS", iupScintillaGetWordWrapVisualFlagsAttrib, iupScintillaSetWordWrapVisualFlagsAttrib, IUPAF_SAMEASSYSTEM, "NONE", IUPAF_NO_INHERIT);
 
   /* Style Definition Attributes */
   iupClassRegisterAttribute(ic,   "STYLERESET", NULL, iupScintillaSetResetDefaultStyleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -638,6 +639,8 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic,   "PROPERTYNAME", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "PROPERTY", iupScintillaGetPropertyAttrib, iupScintillaSetPropertyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "KEYWORDS", NULL, iupScintillaSetKeyWordsAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "PROPERTYNAMES", iupScintillaGetPropertyNamessAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "KEYWORDSETS", iupScintillaGetDescribeKeywordSetsAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Folding Attributes */
   iupClassRegisterAttribute(ic,   "FOLDFLAGS", NULL, iupScintillaSetFoldFlagsAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -649,6 +652,11 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttributeId(ic, "MARGINWIDTH", iupScintillaGetMarginWidthAttribId, iupScintillaSetMarginWidthAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARGINMASKFOLDERS", iupScintillaGetMarginMaskFoldersAttribId, iupScintillaSetMarginMaskFoldersAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARGINSENSITIVE", iupScintillaGetMarginSensitiveAttribId, iupScintillaSetMarginSensitiveAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARGINLEFT", iupScintillaGetMarginLeftAttrib, iupScintillaSetMarginLeftAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARGINRIGHT", iupScintillaGetMarginRightAttrib, iupScintillaSetMarginRightAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARGINTEXT", iupScintillaGetMarginTextAttribId, iupScintillaSetMarginTextAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARGINTEXTSTYLE", iupScintillaGetMarginTextStyleAttribId, iupScintillaSetMarginTextStyleAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARGINTEXTCLEARALL", NULL, iupScintillaSetMarginTextClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* Marker Attributes */
   iupClassRegisterAttribute(ic, "MARKERDEFINE", NULL, iupScintillaSetMarkerDefineAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -657,6 +665,8 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic, "SCROLLBAR", iScintillaGetScrollbarAttrib, iScintillaSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTO", NULL, iupScintillaSetScrollToAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, iupScintillaSetScrollToPosAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLCARET", NULL, iupScintillaSetScrollCaretAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLWIDTH", iupScintillaGetScrollWidthAttrib, iupScintillaSetScrollWidthAttrib, IUPAF_SAMEASSYSTEM, "2000", IUPAF_NO_INHERIT);
 
   /* General */
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, IUPAF_SAMEASSYSTEM, "30", IUPAF_NO_INHERIT);
@@ -689,17 +699,28 @@ Ihandle *IupScintilla(void)
 /*****  TODO
 - Search & Replace
 - Multiple Selection and Virtual Space
+- Macro recording
+- Printing
+- Long lines
+- Call tips
+- Indicators
+- Caret, selection, and hotspot styles
+
+- White space
+- Cursor
+- Annotations
+- Brace highlighting
+- Autocompletion/User lists
+- Zooming
+
+SCI_USEPOPUP(bool bEnablePopup)
+
+IupScintillaConvertLinColToPos
+IupScintillaConvertPosToLinCol
 
 - FONT/BGCOLOR/FGCOLOR x STYLE*
-- Other attributes
-  iupsci_folding.c
-  iupsci_lexer.c
-  iupsci_margin.c
-  iupsci_markers.c
-  iupsci_overtype.c
-  iupsci_scrolling.c
+- iupsci_markers.c
   iupsci_selection.c
   iupsci_style.c
   iupsci_tab.c
-  iupsci_wordwrap.c
 */

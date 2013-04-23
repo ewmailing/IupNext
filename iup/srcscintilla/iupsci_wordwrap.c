@@ -21,22 +21,23 @@
 #include "iupsci.h"
 
 /***** LINE WRAPPING ****
-Attributes not implement yet:
+SCI_SETWRAPMODE
+SCI_GETWRAPMODE
 SCI_SETWRAPVISUALFLAGS(int wrapVisualFlags)
 SCI_GETWRAPVISUALFLAGS
 SCI_SETWRAPVISUALFLAGSLOCATION(int wrapVisualFlagsLocation)
 SCI_GETWRAPVISUALFLAGSLOCATION
-SCI_SETWRAPINDENTMODE(int indentMode)
-SCI_GETWRAPINDENTMODE
-SCI_SETWRAPSTARTINDENT(int indent)
-SCI_GETWRAPSTARTINDENT
-SCI_SETLAYOUTCACHE(int cacheMode)
-SCI_GETLAYOUTCACHE
-SCI_SETPOSITIONCACHE(int size)
-SCI_GETPOSITIONCACHE
-SCI_LINESSPLIT(int pixelWidth)
-SCI_LINESJOIN
-SCI_WRAPCOUNT(int docLine)
+--SCI_SETWRAPINDENTMODE(int indentMode)
+--SCI_GETWRAPINDENTMODE
+--SCI_SETWRAPSTARTINDENT(int indent)
+--SCI_GETWRAPSTARTINDENT
+--SCI_SETLAYOUTCACHE(int cacheMode)
+--SCI_GETLAYOUTCACHE
+--SCI_SETPOSITIONCACHE(int size)
+--SCI_GETPOSITIONCACHE
+--SCI_LINESSPLIT(int pixelWidth)
+--SCI_LINESJOIN
+--SCI_WRAPCOUNT(int docLine)
 */
 
 char* iupScintillaGetWordWrapAttrib(Ihandle *ih)
@@ -62,3 +63,32 @@ int iupScintillaSetWordWrapAttrib(Ihandle *ih, const char *value)
 
   return 0;
 }
+
+char* iupScintillaGetWordWrapVisualFlagsAttrib(Ihandle *ih)
+{
+  int type = iupScintillaSendMessage(ih, SCI_GETWRAPVISUALFLAGS, 0, 0);
+
+  if(type == SC_WRAPVISUALFLAG_MARGIN)
+    return "MARGIN";
+  else if(type == SC_WRAPVISUALFLAG_START)
+    return "START";
+  else if(type == SC_WRAPVISUALFLAG_END)
+    return "END";
+  else
+    return "NONE";
+}
+
+int iupScintillaSetWordWrapVisualFlagsAttrib(Ihandle *ih, const char *value)
+{
+  if (iupStrEqualNoCase(value, "MARGIN"))
+    iupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_MARGIN, 0);
+  else if (iupStrEqualNoCase(value, "START"))
+    iupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_START, 0);
+  else if (iupStrEqualNoCase(value, "END"))
+    iupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_END, 0);
+  else
+    iupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_NONE, 0);
+
+  return 0;
+}
+
