@@ -471,6 +471,9 @@ static int iScintillaMapMethod(Ihandle* ih)
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)iScintillaConvertXYToPos);
 
+  iupScintillaSendMessage(ih, SCI_SETPASTECONVERTENDINGS, 1, 0);
+  iupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_LF, 0);
+
   return IUP_NOERROR;
 }
 
@@ -583,6 +586,7 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic,   "READONLY", iupScintillaGetReadOnlyAttrib, iupScintillaSetReadOnlyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "CLEARALL", NULL, iupScintillaSetClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "CLEARDOCUMENTSTYLE", NULL, iupScintillaSetClearDocumentAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "SAVEPOINT", NULL, iupScintillaSetSavePointAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* Selection and information */
   iupClassRegisterAttribute(ic, "CARET", iupScintillaGetCaretAttrib, iupScintillaSetCaretAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
@@ -595,7 +599,12 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic, "SELECTIONPOS", iupScintillaGetSelectionPosAttrib, iupScintillaSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Cut, Copy and Paste */
-  iupClassRegisterAttribute(ic, "CLIPBOARD", NULL, iupScintillaSetClipboardAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIPBOARD", iupScintillaGetCanPasteAttrib, iupScintillaSetClipboardAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+
+  /* Undo, Redo */
+  iupClassRegisterAttribute(ic, "UNDO", iupScintillaGetUndoAttrib, iupScintillaSetUndoAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REDO", iupScintillaGetRedoAttrib, iupScintillaSetRedoAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "UNDOCOLLECT", iupScintillaGetUndoCollectAttrib, iupScintillaSetUndoCollectAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 
   /* Overtype */
   iupClassRegisterAttribute(ic, "OVERWRITE", iupScintillaGetOvertypeAttrib, iupScintillaSetOvertypeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -678,6 +687,19 @@ Ihandle *IupScintilla(void)
 }
 
 /*****  TODO
-- FONTxSTYLEFONT default
+- Search & Replace
+- Multiple Selection and Virtual Space
+
+- FONT/BGCOLOR/FGCOLOR x STYLE*
 - Other attributes
+  iupsci_folding.c
+  iupsci_lexer.c
+  iupsci_margin.c
+  iupsci_markers.c
+  iupsci_overtype.c
+  iupsci_scrolling.c
+  iupsci_selection.c
+  iupsci_style.c
+  iupsci_tab.c
+  iupsci_wordwrap.c
 */

@@ -23,6 +23,7 @@ int iupScintillaSetAppendTextAttrib(Ihandle* ih, const char* value);
 int iupScintillaSetInsertTextAttrib(Ihandle* ih, int pos, const char* value);
 int iupScintillaSetClearAllAttrib(Ihandle* ih, const char* value);
 int iupScintillaSetClearDocumentAttrib(Ihandle* ih, const char* value);
+int iupScintillaSetSavePointAttrib(Ihandle* ih, const char* value);
 int iupScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value);
 char* iupScintillaGetCharAttrib(Ihandle* ih, int pos);
 

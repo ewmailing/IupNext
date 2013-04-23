@@ -13,6 +13,14 @@ extern "C" {
 
 
 int iupScintillaSetClipboardAttrib(Ihandle *ih, const char *value);
+char* iupScintillaGetCanPasteAttrib(Ihandle* ih);
+
+int iupScintillaSetUndoAttrib(Ihandle *ih, const char *value);
+char* iupScintillaGetUndoAttrib(Ihandle* ih);
+int iupScintillaSetRedoAttrib(Ihandle *ih, const char *value);
+char* iupScintillaGetRedoAttrib(Ihandle* ih);
+int iupScintillaSetUndoCollectAttrib(Ihandle *ih, const char *value);
+char* iupScintillaGetUndoCollectAttrib(Ihandle* ih);
 
 
 #ifdef __cplusplus

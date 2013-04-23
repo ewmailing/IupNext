@@ -106,13 +106,7 @@ Lua control
 
 
   
-<p><strong>APPEND</strong> (<font size="3">non inheritable, </font>write-only):
-  Inserts a text at the <strong>end</strong> of the current text. If APPENDNEWLINE=YES, a "\n" character will be 
-automatically inserted before the appended text if the current text is not empty 
-(APPENDNEWLINE default is YES).</p>
-
-<p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: Background color of the 
-text. Default: the global attribute TXTBGCOLOR.</p>
+<h4>General</h4>
 
   
 <p><b>BORDER </b>(creation only):
@@ -120,6 +114,104 @@ text. Default: the global attribute TXTBGCOLOR.</p>
   Default: "YES".</p>
 
 <p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the control. In Windows the control will still get the focus when clicked. Default: YES.</p>
+
+  
+<p><strong>CLIPBOARD</strong> (<font size="3">non inheritable</font>): clear, cut, copy or paste the selection to 
+or from the clipboard. Values: "CLEAR", "CUT", "COPY", "PASTE". Returns Yes or 
+No, if data can be pasted from the clipboard.</p>
+<p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drop of 
+files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
+then it will be automatically enabled.</p>
+
+  
+<p><b>OVERWRITE</b> (<font size="3">non inheritable</font>): turns the overwrite mode ON or OFF. 
+When overwrite is enabled, each typed character replaces the character to the 
+right of the text caret. When overtype is disabled, characters are inserted at 
+the caret.</p>
+<p><a href="../attrib/iup_size.html">SIZE</a> (<font size="3">non inheritable</font>): 
+	Since the contents can be changed by the user, the <strong>Natural</strong>
+	<strong>Size</strong> is not affected by the text contents. In 
+	IUP 2.x the <strong>Natural</strong> <strong>Size</strong> was defined by 
+	the number of lines in the text and the with of the largest line. For IUP 3, 
+	use VISIBLECOLUMNS and VISIBLELINES to control the <strong>Natural Size</strong>.</p>
+
+<p><b>TABSIZE</b> (<font size="3">non inheritable</font>): Controls the number of characters for a tab stop. 
+	Default: 8.</p>
+
+<p><strong>VISIBLECOLUMNS</strong>: Defines the number of visible columns for 
+the <strong>Natural</strong> <strong>Size</strong>, this means that will act 
+also as minimum number of visible columns. It uses a wider character size then the one used for the SIZE 
+attribute so strings will fit better without the need of extra columns. As for 
+SIZE you can set to NULL after map to use it as an initial value. Default: 
+50.</p>
+
+<p><strong>VISIBLELINES</strong>: Defines the number of 
+visible lines for the <strong>Natural</strong> <strong>Size</strong>, this means 
+that will act also as minimum number of visible lines. As for SIZE you can set 
+to NULL after map to use it as an initial value. Default: 10.</p>
+
+<p><strong>WORDWRAP</strong> (<font size="3">non inheritable</font>): If enabled will force a word wrap of lines that are 
+greater than the with of the control, and the horizontal scrollbar will be removed. Default: NO.</p>
+<h4>Text Retrieval and Modification</h4>
+<p><strong>APPEND</strong> (<font size="3">non inheritable, </font>write-only):
+  Inserts a text at the <strong>end</strong> of the current text. If APPENDNEWLINE=YES, a "\n" character will be 
+automatically inserted before the appended text if the current text is not empty 
+(APPENDNEWLINE default is YES).</p>
+
+<p><strong>CHAR<em>id</em></strong> (<font size="3">non inheritable, read-only</font>): 
+returns the character at a given position, considering the &quot;id&quot; as the 
+position. </p>
+<p><strong>CLEARALL</strong> (<font size="3">non inheritable, </font>
+write-only): deletes all the text (unless the document is read-only).</p>
+<p><strong>CLEARDOCUMENTSTYLE</strong> (<font size="3">non inheritable, </font>
+write-only): clear all styling information and reset the folding state.</p>
+
+<p><strong>DELETERANGE</strong> (<font SIZE="3">non inheritable, write-only</font>): 
+Deletes a range of text in the document. It uses a string format &quot;<strong>pos</strong>:<strong>len</strong>&quot; 
+in order to indicate the start position and text length to delete.</p>
+
+<p><strong>INSERT<em>id</em></strong> (<font size="3">non inheritable, </font>write-only): Inserts a text string at position 
+&quot;id&quot; or at the current position if pos is -1 or omitted. If the current position is after 
+the insertion point then it is moved along with its surrounding text but no 
+scrolling is performed.</p>
+
+<p><strong>LINE<em>id</em></strong> (<font size="3">non inheritable, </font>read-only): 
+returns the text of the line, considering the &quot;id&quot; as the line number. It does not include the &quot;\n&quot; 
+character. Number lines starts at 0.</p>
+
+  
+<p><strong>PREPEND</strong> (<font size="3">non inheritable, </font>write-only):
+  Inserts a text at the <strong>begin</strong> of the current text. If APPENDNEWLINE=YES, a "\n" character will be 
+automatically inserted after the prepended text if the current text is not empty 
+(APPENDNEWLINE default is YES).</p>
+<p><strong>READONLY </strong>(<font size="3">non inheritable</font>): Allows the user only to read the contents, 
+  without changing it. Restricts the insertion using keyboard input and 
+attributes. Navigation keys are still available. Possible values: "YES" and "NO". 
+Default: NO.</p>
+<p><strong>SAVEPOINT</strong> (<font size="3">non inheritable, </font>
+write-only): sets the current state of the document to saved.&nbsp;If editing is done 
+the SAVEPOINT_CB callback is called with status=0. Is undo is performed back to 
+the save point the callback is called again with status=1. </p>
+
+  
+<p><b>VALUE </b>(<font size="3">non inheritable</font>):
+  Text entered by the user. The &quot;\n&quot; character indicates a new line. After the element is mapped and if there 
+is no text will return the empty string "". This replaces all the text in the 
+document with the zero terminated text string you pass in.</p>
+
+  
+<h4>Undo and Redo</h4>
+
+<p><strong>REDO</strong><b> </b>(<font size="3">non inheritable</font>): redo 
+the last operation if set to Yes, clears the undo information otherwise. Returns 
+Yes or No if redo can be performed.</p>
+
+<p><strong>UNDO</strong><b> </b>(<font size="3">non inheritable</font>): undo 
+the last operation if set to Yes, clears the undo information otherwise. Returns 
+Yes or No if undo can be performed.</p>
+<p><strong>UNDOCOLLECT</strong> (<font size="3">non inheritable</font>): enable 
+or disable the undo collect of information. Can be Yes or No. Default: Yes.</p>
+<h4>Selection and Information</h4>
 
   
 <p><strong>CARET</strong> (<font size="3">non inheritable</font>):
@@ -145,135 +237,14 @@ visible.</p>
 selection, sets the caret at pos and scrolls the view to make the caret visible, 
 if necessary.</p>
 
-<p><strong>CHAR<em>id</em></strong> (<font size="3">non inheritable, read-only</font>): 
-returns the character at a given position, considering the &quot;id&quot; as the 
-position. </p>
-<p><strong>CLEARALL</strong> (<font size="3">non inheritable, </font>
-write-only): deletes all the text (unless the document is read-only).</p>
-<p><strong>CLEARDOCUMENTSTYLE</strong> (<font size="3">non inheritable, </font>
-write-only): clear all styling information and reset the folding state.</p>
-<p><strong>CLIPBOARD</strong> (<font size="3">non inheritable, </font>write-only): clear, cut, copy or paste the selection to 
-or from the clipboard. Values: "CLEAR", "CUT", "COPY", "PASTE", &quot;UNDO&quot;, and 
-&quot;REDO&quot;.</p>
 <p><strong>COUNT</strong> (<font size="3">non inheritable, </font>read-only): returns the number of characters in the 
 text.</p>
-
-<p><strong>DELETERANGE</strong> (<font SIZE="3">non inheritable, write-only</font>): 
-Deletes a range of text in the document. It uses a string format &quot;<strong>pos</strong>:<strong>len</strong>&quot; 
-in order to indicate the start position and text length to delete.</p>
-<p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drop of 
-files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
-then it will be automatically enabled.</p>
-
-  
-<p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: the 
-global attribute TXTFGCOLOR.</p>
-
-<p><strong>FOLDFLAGS</strong> (<font size="3">non inheritable, write-only</font>): 
-determines how folding lines are drawn. Can be: &quot;LEVELNUMBERS&quot;, 
-&quot;LINEBEFORE_EXPANDED&quot;, &quot;LINEBEFORE_CONTRACTED&quot;, &quot;LINEAFTER_EXPANDED&quot; or 
-&quot;LINEAFTER_CONTRACTED &quot; (default).</p>
-<p><strong>FOLDLEVEL<em>id</em></strong> (<font size="3">non inheritable</font>): sets 
-and gets the fold level of a &quot;id&quot; line. Can be: &quot;WHITEFLAG&quot;, &quot;HEADERFLAG&quot;, 
-&quot;NUMBERMASK&quot; or &quot;BASE&quot; (default). If you use a lexer, it is not recommend to set 
-the fold level (this is far better handled by the lexer). By contrast, get fold 
-level is useful to decide how to handle user folding requests.</p>
-
-<p><b>FOLDTOGGLE</b> (<font size="3">non inheritable, write-only</font>): 
-Determines if the fold point (line number) may be either expanded, displaying 
-all its child lines, or contracted, hiding all the child lines. </p>
-
-<p><strong>INSERT<em>id</em></strong> (<font size="3">non inheritable, </font>write-only): Inserts a text string at position 
-&quot;id&quot; or at the current position if pos is -1 or omitted. If the current position is after 
-the insertion point then it is moved along with its surrounding text but no 
-scrolling is performed.</p>
-<p><strong>KEYWORD<em>id</em></strong> (<font size="3">non inheritable, write-only</font>): 
-keyword list used by the current lexer. Until 9 lists of keywords can set up 
-using id from 0 to 8. The value is a list of keywords separated by spaces, tabs, 
-&quot;\n&quot; or &quot;\r&quot; or any combination of these.</p>
-<p><strong>LEXERLANGUAGE</strong> (<font size="3">non inheritable</font>): 
-associate the lexer language name. It is case sensitive. Default: not defined. 
-Set to NULL to clear the association. Can be: any name supported by Scintilla. 
-For instance: asm, bash, freebasic, cmake, COBOL, cpp (C++), css, d, diff, 
-eiffel, fortran, hypertext (HTML), xml, lisp, lua (Lua), makefile, matlab, mysql, 
-nsis, pascal, perl, python, ruby, smalltalk, sql, tcl, tex, vb (Visual Basic), 
-and many others. </p>
-
-<p><strong>LINE<em>id</em></strong> (<font size="3">non inheritable, </font>read-only): 
-returns the text of the line, considering the &quot;id&quot; as the line number. It does not include the &quot;\n&quot; 
-character. Number lines starts at 0.</p>
 
 <p><strong>LINECOUNT</strong> (<font size="3">non inheritable, </font>read-only): returns the number of lines in the 
 text.</p>
 
 <p><strong>LINEVALUE</strong> (<font size="3">non inheritable, </font>read-only): returns the text of the line where 
 the caret is. It does not include the &quot;\n&quot; character.</p>
-
-<p><b>MARGINMASKFOLDERS<em>id</em> </b>(<font size="3">non inheritable</font>): 
-defines if a 
-margin is folding or non-folding. Can be: Yes or No.</p>
-
-<p><b>MARGINSENSITIVE<em>id</em> </b>(<font size="3">non inheritable</font>): determines 
-if a margin is sensitive or not. Margins that are not sensitive act as selection 
-margins which make it easy to select ranges of lines. By default, all margins 
-are insensitive. Can be: YES or NO.</p>
-
-<p><b>MARGINTYPE<em>id</em> </b>(<font size="3">non inheritable</font>): set and get the 
-type of a margin. The margin argument should be 0, 1, 2, 3 or 4.&nbsp; Each 
-margin can be set to display only symbols, line numbers, or text. You can use 
-the predefined values &quot;SYMBOL&quot;, &quot;NUMBER&quot;, &quot;TEXT&quot;, 
-&quot;RTEXT&quot; (right justify text), &quot;BACKGROUND&quot; or &quot;FOREGROUND&quot; (the latter two used for symbol 
-margins that set their background or foreground using the style default colors).</p>
-
-<p><b>MARGINWIDTH<em>id</em> </b>(<font size="3">non inheritable</font>): width of a 
-margin in pixels (Default value: 0). A margin with width=0 is invisible. The 
-margins are numbered 0 to 4. By default, Scintilla margin 0 is set to display 
-line numbers, margin 1 is set to display non-folding symbols, and margin 2 is 
-set to display folding symbols. Margins 3 and 4 are free for user default. 
-However, you can set the margins to be whatever you wish using MARGINTYPEid.</p>
-<p><strong>MARKERDEFINE</strong> (<font size="3">non inheritable, write-only</font>): 
-Defines the folding marker number and its marker symbol. Format: &quot;number=symbol&quot;. </p>
-<p class="info"><strong>Marker numbers</strong>: &quot;FOLDEREND&quot;, &quot;FOLDEROPENMID&quot;, &quot;FOLDERMIDTAIL&quot;, &quot;FOLDERSUB&quot;, 
-&quot;FOLDER&quot; and &quot;FOLDEROPEN&quot;.<br><strong>Marker symbols:</strong> &quot;CIRCLE&quot;, &quot;ROUNDRECT&quot;, &quot;ARROW&quot;, 
-&quot;SMALLRECT&quot;, &quot;SHORTARROW&quot;, &quot;EMPTY&quot;, &quot;ARROWDOWN&quot;, &quot;MINUS&quot;, &quot;PLUS&quot;, &quot;VLINE&quot;, 
-&quot;LCORNER&quot;, &quot;TCORNER&quot;, &quot;BOXPLUS&quot;, &quot;BOXPLUSCONNECTED&quot;, &quot;BOXMINUS&quot;, 
-&quot;BOXMINUSCONNECTED&quot;, &quot;LCORNERCURVE&quot;, &quot;TCORNERCURVE&quot;, &quot;CIRCLEPLUS&quot;, 
-&quot;CIRCLEPLUSCONNECTED&quot;, &quot;CIRCLEMINUS&quot;, &quot;CIRCLEMINUSCONNECTED&quot;, &quot;BACKGROUND&quot;, 
-&quot;DOTDOTDOT&quot;, &quot;ARROWS&quot;, &quot;PIXMAP&quot;, &quot;FULLRECT&quot;, &quot;LEFTRECT&quot;, &quot;AVAILABLE&quot;, 
-&quot;UNDERLINE&quot;, &quot;RGBAIMAGE&quot;&nbsp; and &quot;CHARACTER&quot;.</p>
-
-<p><b>OVERWRITE</b> (<font size="3">non inheritable</font>): turns the overwrite mode ON or OFF. 
-When overwrite is enabled, each typed character replaces the character to the 
-right of the text caret. When overtype is disabled, characters are inserted at 
-the caret.</p>
-
-  
-<p><strong>PREPEND</strong> (<font size="3">non inheritable, </font>write-only):
-  Inserts a text at the <strong>begin</strong> of the current text. If APPENDNEWLINE=YES, a "\n" character will be 
-automatically inserted after the prepended text if the current text is not empty 
-(APPENDNEWLINE default is YES).</p>
-<p><strong>PROPERTY</strong> (<font size="3">non inheritable</font>): 
-sets and gets Lexer properties using &quot;keyword=value&quot; string pairs, where keyword is case sensitive 
-and value is a string that is associated with 
-the keyword. There is no limit to the number of keyword pairs you can set, other 
-than available memory. </p>
-<p><strong>READONLY </strong>(<font size="3">non inheritable</font>): Allows the user only to read the contents, 
-  without changing it. Restricts the insertion using keyboard input and 
-attributes. Navigation keys are still available. Possible values: "YES" and "NO". 
-Default: NO.</p>
-
-  
-<p><strong>SCROLLBAR</strong> (creation only): Associates an automatic horizontal and/or vertical scrollbar. Can be: "VERTICAL", "HORIZONTAL", "YES" (both) or "NO" (none). 
-	Default: "YES". For all systems, when SCROLLBAR is NO, the natural size will 
-always include its size even if the native system hides the scrollbar.</p>
-
-<p><strong>SCROLLTO</strong> (<font size="3">non inheritable, write only</font>): 
-Scroll the text to make the given position visible. It uses the same format and 
-reference of the CARET attribute ("lin,col&quot; or &quot;col&quot; starting at 0).</p>
-
-<p><strong>SCROLLTOPOS</strong> (<font size="3">non inheritable, write only</font>): 
-Scroll the text to make the given position visible. It uses the same format and 
-reference of the CARETPOS attribute (&quot;pos&quot; starting at 0).</p>
 
   
 <p><strong>SELECTEDTEXT</strong> (<font size="3">non inheritable</font>):
@@ -297,13 +268,100 @@ correspond to the character after the last selected character. The values ALL an
 	The values ALL and NONE are also accepted.</p>
 
   
-<p><a href="../attrib/iup_size.html">SIZE</a> (<font size="3">non inheritable</font>): 
-	Since the contents can be changed by the user, the <strong>Natural</strong>
-	<strong>Size</strong> is not affected by the text contents. In 
-	IUP 2.x the <strong>Natural</strong> <strong>Size</strong> was defined by 
-	the number of lines in the text and the with of the largest line. For IUP 3, 
-	use VISIBLECOLUMNS and VISIBLELINES to control the <strong>Natural Size</strong>.</p>
+<h4>Folding</h4>
 
+<p><strong>FOLDFLAGS</strong> (<font size="3">non inheritable, write-only</font>): 
+determines how folding lines are drawn. Can be: &quot;LEVELNUMBERS&quot;, 
+&quot;LINEBEFORE_EXPANDED&quot;, &quot;LINEBEFORE_CONTRACTED&quot;, &quot;LINEAFTER_EXPANDED&quot; or 
+&quot;LINEAFTER_CONTRACTED &quot; (default).</p>
+<p><strong>FOLDLEVEL<em>id</em></strong> (<font size="3">non inheritable</font>): sets 
+and gets the fold level of a &quot;id&quot; line. Can be: &quot;WHITEFLAG&quot;, &quot;HEADERFLAG&quot;, 
+&quot;NUMBERMASK&quot; or &quot;BASE&quot; (default). If you use a lexer, it is not recommend to set 
+the fold level (this is far better handled by the lexer). By contrast, get fold 
+level is useful to decide how to handle user folding requests.</p>
+
+<p><b>FOLDTOGGLE</b> (<font size="3">non inheritable, write-only</font>): 
+Determines if the fold point (line number) may be either expanded, displaying 
+all its child lines, or contracted, hiding all the child lines. </p>
+
+<h4>Margins</h4>
+
+<p><b>MARGINMASKFOLDERS<em>id</em> </b>(<font size="3">non inheritable</font>): 
+defines if a 
+margin is folding or non-folding. Can be: Yes or No.</p>
+
+<p><b>MARGINSENSITIVE<em>id</em> </b>(<font size="3">non inheritable</font>): determines 
+if a margin is sensitive or not. Margins that are not sensitive act as selection 
+margins which make it easy to select ranges of lines. By default, all margins 
+are insensitive. Can be: YES or NO.</p>
+
+<p><b>MARGINTYPE<em>id</em> </b>(<font size="3">non inheritable</font>): set and get the 
+type of a margin. The margin argument should be 0, 1, 2, 3 or 4.&nbsp; Each 
+margin can be set to display only symbols, line numbers, or text. You can use 
+the predefined values &quot;SYMBOL&quot;, &quot;NUMBER&quot;, &quot;TEXT&quot;, 
+&quot;RTEXT&quot; (right justify text), &quot;BACKGROUND&quot; or &quot;FOREGROUND&quot; (the latter two used for symbol 
+margins that set their background or foreground using the style default colors).</p>
+
+<p><b>MARGINWIDTH<em>id</em> </b>(<font size="3">non inheritable</font>): width of a 
+margin in pixels (Default value: 0). A margin with width=0 is invisible. The 
+margins are numbered 0 to 4. By default, Scintilla margin 0 is set to display 
+line numbers, margin 1 is set to display non-folding symbols, and margin 2 is 
+set to display folding symbols. Margins 3 and 4 are free for user default. 
+However, you can set the margins to be whatever you wish using MARGINTYPEid.</p>
+<h4>Markers</h4>
+<p><strong>MARKERDEFINE</strong> (<font size="3">non inheritable, write-only</font>): 
+Defines the folding marker number and its marker symbol. Format: &quot;number=symbol&quot;. </p>
+<p class="info"><strong>Marker numbers</strong>: &quot;FOLDEREND&quot;, &quot;FOLDEROPENMID&quot;, &quot;FOLDERMIDTAIL&quot;, &quot;FOLDERSUB&quot;, 
+&quot;FOLDER&quot; and &quot;FOLDEROPEN&quot;.<br><strong>Marker symbols:</strong> &quot;CIRCLE&quot;, &quot;ROUNDRECT&quot;, &quot;ARROW&quot;, 
+&quot;SMALLRECT&quot;, &quot;SHORTARROW&quot;, &quot;EMPTY&quot;, &quot;ARROWDOWN&quot;, &quot;MINUS&quot;, &quot;PLUS&quot;, &quot;VLINE&quot;, 
+&quot;LCORNER&quot;, &quot;TCORNER&quot;, &quot;BOXPLUS&quot;, &quot;BOXPLUSCONNECTED&quot;, &quot;BOXMINUS&quot;, 
+&quot;BOXMINUSCONNECTED&quot;, &quot;LCORNERCURVE&quot;, &quot;TCORNERCURVE&quot;, &quot;CIRCLEPLUS&quot;, 
+&quot;CIRCLEPLUSCONNECTED&quot;, &quot;CIRCLEMINUS&quot;, &quot;CIRCLEMINUSCONNECTED&quot;, &quot;BACKGROUND&quot;, 
+&quot;DOTDOTDOT&quot;, &quot;ARROWS&quot;, &quot;PIXMAP&quot;, &quot;FULLRECT&quot;, &quot;LEFTRECT&quot;, &quot;AVAILABLE&quot;, 
+&quot;UNDERLINE&quot;, &quot;RGBAIMAGE&quot;&nbsp; and &quot;CHARACTER&quot;.</p>
+<h4>Lexer</h4>
+
+<p><strong>KEYWORD<em>id</em></strong> (<font size="3">non inheritable, write-only</font>): 
+keyword list used by the current lexer. Until 9 lists of keywords can set up 
+using id from 0 to 8. The value is a list of keywords separated by spaces, tabs, 
+&quot;\n&quot; or &quot;\r&quot; or any combination of these.</p>
+<p><strong>LEXERLANGUAGE</strong> (<font size="3">non inheritable</font>): 
+associate the lexer language name. It is case sensitive. Default: not defined. 
+Set to NULL to clear the association. Can be: any name supported by Scintilla. 
+For instance: asm, bash, freebasic, cmake, COBOL, cpp (C++), css, d, diff, 
+eiffel, fortran, hypertext (HTML), xml, lisp, lua (Lua), makefile, matlab, mysql, 
+nsis, pascal, perl, python, ruby, smalltalk, sql, tcl, tex, vb (Visual Basic), 
+and many others. </p>
+<p><strong>PROPERTY</strong> (<font size="3">non inheritable</font>): 
+sets and gets Lexer properties using &quot;name=value&quot; string pairs, where 
+name is case sensitive 
+and value is the associated string. There is no limit to the number of keyword pairs you can set, other 
+than available memory. To retrieve a property first set the PROPERTYNAME 
+attribute, the PROPERTY attribute will return its value.</p>
+<h4>Scrolling</h4>
+<p><strong>SCROLLBAR</strong> (creation only): Associates an automatic horizontal and/or vertical scrollbar. Can be: "VERTICAL", "HORIZONTAL", "YES" (both) or "NO" (none). 
+	Default: "YES". For all systems, when SCROLLBAR is NO, the natural size will 
+always include its size even if the native system hides the scrollbar.</p>
+
+<p><strong>SCROLLTO</strong> (<font size="3">non inheritable, write only</font>): 
+Scroll the text to make the given position visible. It uses the same format and 
+reference of the CARET attribute ("lin,col&quot; or &quot;col&quot; starting at 0).</p>
+
+<p><strong>SCROLLTOPOS</strong> (<font size="3">non inheritable, write only</font>): 
+Scroll the text to make the given position visible. It uses the same format and 
+reference of the CARETPOS attribute (&quot;pos&quot; starting at 0).</p>
+<h4>Styles</h4>
+
+  
+<p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: Background color of the 
+text. Default: the global attribute TXTBGCOLOR.</p>
+
+  
+<p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: the 
+global attribute TXTFGCOLOR.</p>
+<p>
+<a href="../attrib/iup_font.html">FONT</a>: the text font. Default: the global 
+attribute DEFAULTFONT.</p>
 <p><strong>STYLEBGCOLOR<em>id</em></strong> (<font size="3">non inheritable</font>): 
 background color for a style (See <a href="#StyleDefinition">Style Definition</a>). 
 Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
@@ -364,29 +422,6 @@ weight of a font (See <a href="#StyleDefinition">Style Definition</a>).
 Predefined values: NORMAL, SEMIBOLD and BOLD. The weight can also be a number 
 between 1 and 999 with 1 being very light and 999 very heavy.</p>
 
-<p><b>TABSIZE</b> (<font size="3">non inheritable</font>): Controls the number of characters for a tab stop. 
-	Default: 8.</p>
-
-<p><b>VALUE </b>(<font size="3">non inheritable</font>):
-  Text entered by the user. The &quot;\n&quot; character indicates a new line. After the element is mapped and if there 
-is no text will return the empty string "". This replaces all the text in the 
-document with the zero terminated text string you pass in.</p>
-
-<p><strong>VISIBLECOLUMNS</strong>: Defines the number of visible columns for 
-the <strong>Natural</strong> <strong>Size</strong>, this means that will act 
-also as minimum number of visible columns. It uses a wider character size then the one used for the SIZE 
-attribute so strings will fit better without the need of extra columns. As for 
-SIZE you can set to NULL after map to use it as an initial value. Default: 
-50.</p>
-
-<p><strong>VISIBLELINES</strong>: Defines the number of 
-visible lines for the <strong>Natural</strong> <strong>Size</strong>, this means 
-that will act also as minimum number of visible lines. As for SIZE you can set 
-to NULL after map to use it as an initial value. Default: 10.</p>
-
-<p><strong>WORDWRAP</strong> (<font size="3">non inheritable</font>): If enabled will force a word wrap of lines that are 
-greater than the with of the control, and the horizontal scrollbar will be removed. Default: NO.</p>
-
   
 <blockquote>
     
@@ -395,8 +430,7 @@ greater than the with of the control, and the horizontal scrollbar will be remov
 
 <p>
 <a href="../attrib/iup_active.html">ACTIVE</a>,
-<a href="../attrib/iup_font.html">FONT</a>, 
-    <a href="../attrib/iup_expand.html">EXPAND</a>, <a href="../attrib/iup_screenposition.html">SCREENPOSITION</a>, 
+<a href="../attrib/iup_expand.html">EXPAND</a>, <a href="../attrib/iup_screenposition.html">SCREENPOSITION</a>, 
 <a href="../attrib/iup_position.html">
 POSITION</a>, <a href="../attrib/iup_minsize.html">
 MINSIZE</a>, <a href="../attrib/iup_maxsize.html">
@@ -588,12 +622,16 @@ are supported. See Notes bellow.</p>
 
 
 <p>
-  Scintilla will format the text using the Lexer and defined Styles. Styles are 
-  numbered from 0 to 255, invalid IDs are ignored. When the id is not specified 
-  for an attributes the style 0 is assumed. Each Lexer will use the available 
-  styles with its own rules, but several Lexers share many ids.</p>
+  Scintilla can automatically format the text using the Lexer or the application 
+  can manually format the text. In both cases only 256 different styles are 
+  available. Styles are 
+  numbered from 0 to 255, invalid IDs are simply ignored. When the id is not 
+  specified for an attributes the style 0 is assumed. </p>
 <p>
-  Notice that language keywords and styles are not pre-defined internally. The 
+  Each Lexer will use the available 
+  styles with its own rules, but several Lexers share many ids.
+  Notice that language keywords and styles definitions are not pre-defined internally, 
+  the 
   application must define them.</p>
 <p>
   Here are some known styles for C++ and Lua:</p>

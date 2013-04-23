@@ -21,22 +21,32 @@
 #include "iupsci.h"
 
 /***** TEXT RETRIEVAL AND MODIFICATION *****
-Attributes not implement yet:
+SCI_GETTEXT(int length, char *text)
+SCI_SETTEXT(<unused>, const char *text)
 SCI_SETSAVEPOINT
-
-SCI_GETTEXTRANGE(<unused>, Sci_TextRange *tr)
-SCI_ALLOCATE(int bytes, <unused>)
-SCI_ADDSTYLEDTEXT(int length, cell *s)
-SCI_GETSTYLEDTEXT(<unused>, Sci_TextRange *tr)
-SCI_GETSTYLEAT(int position)
-SCI_SETSTYLEBITS(int bits)
-SCI_GETSTYLEBITS
-SCI_RELEASEALLEXTENDEDSTYLES
-SCI_ALLOCATEEXTENDEDSTYLES(int numberStyles)
-SCI_TARGETASUTF8(<unused>, char *s)  // only GTK
-SCI_ENCODEDFROMUTF8(const char *utf8, char *encoded)  // only GTK
-SCI_SETLENGTHFORENCODE(int bytes)  // only GTK
+SCI_GETLINE(int line, char *text)
+   --SCI_REPLACESEL(<unused>, const char *text)
+SCI_SETREADONLY(bool readOnly)
+SCI_GETREADONLY
+   --SCI_GETTEXTRANGE(<unused>, Sci_TextRange *tr)
+   --SCI_ALLOCATE(int bytes, <unused>)
+SCI_ADDTEXT(int length, const char *s)
+   --SCI_ADDSTYLEDTEXT(int length, cell *s)
+SCI_APPENDTEXT(int length, const char *s)
+SCI_INSERTTEXT(int pos, const char *text)
+SCI_CLEARALL
+SCI_DELETERANGE(int pos, int deleteLength)
+SCI_CLEARDOCUMENTSTYLE
+SCI_GETCHARAT(int position)
+   --SCI_GETSTYLEAT(int position)
+   --SCI_GETSTYLEDTEXT(<unused>, Sci_TextRange *tr)
+   --SCI_SETSTYLEBITS(int bits)
+   --SCI_GETSTYLEBITS
+   --SCI_TARGETASUTF8(<unused>, char *s)
+   --SCI_ENCODEDFROMUTF8(const char *utf8, char *encoded)
+   --SCI_SETLENGTHFORENCODE(int bytes)
 */
+
 char* iupScintillaGetValueAttrib(Ihandle* ih)
 {
   int len = iupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
@@ -130,6 +140,14 @@ int iupScintillaSetClearDocumentAttrib(Ihandle* ih, const char* value)
   (void)value;
 
   iupScintillaSendMessage(ih, SCI_CLEARDOCUMENTSTYLE, 0, 0);
+  return 0;
+}
+
+int iupScintillaSetSavePointAttrib(Ihandle* ih, const char* value)
+{
+  (void)value;
+
+  iupScintillaSendMessage(ih, SCI_SETSAVEPOINT, 0, 0);
   return 0;
 }
 
