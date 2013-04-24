@@ -265,9 +265,13 @@ static int iTextSetMultilineAttrib(Ihandle* ih, const char* value)
   {
     ih->data->is_multiline = 1;
     ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;  /* reset SCROLLBAR to YES */
+    iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", "1");
   }
   else
+  {
     ih->data->is_multiline = 0;
+    iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", NULL);
+  }
 
   return 0;
 }
@@ -358,6 +362,7 @@ static int iMultilineCreateMethod(Ihandle* ih, void** params)
   (void)params;
   ih->data->is_multiline = 1;
   ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;  /* default is YES */
+  iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", "1");
   return IUP_NOERROR;
 }
 
@@ -419,6 +424,8 @@ static void iTextDestroyMethod(Ihandle* ih)
 
 /******************************************************************************/
 
+typedef void (*Iconvertlincol2pos)(Ihandle* ih, int lin, int col, int *pos);
+typedef void (*Iconvertpos2lincol)(Ihandle* ih, int pos, int *lin, int *col);
 
 void IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
@@ -435,6 +442,12 @@ void IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
       iupdrvTextConvertLinColToPos(ih, lin, col, pos);
     else
       *pos = col - 1; /* IUP starts at 1 */
+  }
+  else 
+  {
+    Iconvertlincol2pos convert = (Iconvertlincol2pos)IupGetCallback(ih, "_IUP_LINCOL2POS_CB");
+    if (convert)
+      convert(ih, lin, col, pos);
   }
 }
 
@@ -456,6 +469,12 @@ void IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
       *col = pos + 1; /* IUP starts at 1 */
       *lin = 1;
     }
+  }
+  else 
+  {
+    Iconvertpos2lincol convert = (Iconvertpos2lincol)IupGetCallback(ih, "_IUP_POS2LINCOL_CB");
+    if (convert)
+      convert(ih, pos, lin, col);
   }
 }
 

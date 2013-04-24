@@ -137,6 +137,9 @@ the caret.</p>
 
 <p><b>TABSIZE</b> (<font size="3">non inheritable</font>): Controls the number of characters for a tab stop. 
 	Default: 8.</p>
+<p><strong>USEPOPUP</strong> (<font size="3">non inheritable</font>): allows to 
+disable the default editing menu shown when the user clicks with the right 
+button. Default: Yes.</p>
 
 <p><strong>VISIBLECOLUMNS</strong>: Defines the number of visible columns for 
 the <strong>Natural</strong> <strong>Size</strong>, this means that will act 
@@ -325,15 +328,23 @@ number.</p>
 clear all text and styles of a text margin.</p>
 <h4>Markers</h4>
 <p><strong>MARKERDEFINE</strong> (<font size="3">non inheritable, write-only</font>): 
-Defines the folding marker number and its marker symbol. Format: &quot;number=symbol&quot;. </p>
-<p class="info"><strong>Marker numbers</strong>: &quot;FOLDEREND&quot;, &quot;FOLDEROPENMID&quot;, &quot;FOLDERMIDTAIL&quot;, &quot;FOLDERSUB&quot;, 
-&quot;FOLDER&quot; and &quot;FOLDEROPEN&quot;.<br><strong>Marker symbols:</strong> &quot;CIRCLE&quot;, &quot;ROUNDRECT&quot;, &quot;ARROW&quot;, 
+Defines a marker using its number and its symbol. Format: &quot;number=symbol&quot;. </p>
+<p class="info"><strong>Marker numbers</strong>: can be a number in the range 0 
+to 31, or the pre-defined names: &quot;FOLDEREND&quot;, &quot;FOLDEROPENMID&quot;, &quot;FOLDERMIDTAIL&quot;, &quot;FOLDERSUB&quot;, 
+&quot;FOLDER&quot; and &quot;FOLDEROPEN&quot;.<br><strong>Marker symbols:</strong> 
+(see MARKERSYMBOL).</p>
+<p><strong>MARKERSYMBOL<em>id</em></strong> (<font size="3">non inheritable</font>): 
+Defines a marker symbol given its number. id can be from 0 to 31.</p>
+<p class="info"><strong>Marker symbols:</strong> &quot;CIRCLE&quot;, &quot;ROUNDRECT&quot;, &quot;ARROW&quot;, 
 &quot;SMALLRECT&quot;, &quot;SHORTARROW&quot;, &quot;EMPTY&quot;, &quot;ARROWDOWN&quot;, &quot;MINUS&quot;, &quot;PLUS&quot;, &quot;VLINE&quot;, 
 &quot;LCORNER&quot;, &quot;TCORNER&quot;, &quot;BOXPLUS&quot;, &quot;BOXPLUSCONNECTED&quot;, &quot;BOXMINUS&quot;, 
 &quot;BOXMINUSCONNECTED&quot;, &quot;LCORNERCURVE&quot;, &quot;TCORNERCURVE&quot;, &quot;CIRCLEPLUS&quot;, 
-&quot;CIRCLEPLUSCONNECTED&quot;, &quot;CIRCLEMINUS&quot;, &quot;CIRCLEMINUSCONNECTED&quot;, &quot;BACKGROUND&quot;, 
-&quot;DOTDOTDOT&quot;, &quot;ARROWS&quot;, &quot;PIXMAP&quot;, &quot;FULLRECT&quot;, &quot;LEFTRECT&quot;, &quot;AVAILABLE&quot;, 
-&quot;UNDERLINE&quot;, &quot;RGBAIMAGE&quot;&nbsp; and &quot;CHARACTER&quot;.</p>
+&quot;CIRCLEPLUSCONNECTED&quot;, &quot;CIRCLEMINUS&quot;, &quot;CIRCLEMINUSCONNECTED&quot;, &quot;BACKGROUND&quot; 
+(line background color), 
+&quot;DOTDOTDOT&quot;, &quot;ARROWS&quot;, &quot;FULLRECT&quot; (margin 
+background color), &quot;LEFTRECT&quot;,&nbsp; 
+&quot;UNDERLINE&quot; (underline across the line), &quot;RGBAIMAGE&quot;&nbsp; and &quot;CHARACTER+c&quot; 
+(where c is an ASCii character code).</p>
 <h4>Lexer</h4>
 
 <p><strong>KEYWORD<em>id</em></strong> (<font size="3">non inheritable, write-only</font>): 
@@ -629,14 +640,8 @@ are supported. See Notes bellow.</p>
 
 
 <h3>Auxiliary Functions</h3>
-
-<pre>void <strong>IupScintillaConvertLinColToPos</strong>(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int *<strong>pos</strong>); [in C]<br><b>iup.</b><strong>ScintillaConvertLinColToPos</strong>(<b>ih</b>: ihandle, <strong>lin</strong>, <strong>col</strong>: number) -&gt; <strong>pos</strong>: number [in Lua]</pre>
-
-<p>Converts a (lin, col) character positioning into an absolute position.</p>
-
-<pre>void <strong>IupScintillaConvertPosToLinCol</strong>(Ihandle* <strong>ih</strong>, int <strong>pos</strong>, int *<strong>lin</strong>, int *<strong>col</strong>); [in C]<br><b>iup.</b><strong>ScintillaConvertPosToLinCol</strong>(<b>ih</b>: ihandle, <strong>pos</strong>: number) -&gt; <strong>lin</strong>, <strong>col</strong>: number [in Lua]</pre>
-
-<p>Converts an absolute position into a (lin, col) character positioning.</p>
+<p><a href="../elem/iuptext.html#AUX">IupText</a> auxiliary functions <strong>IupTextConvertLinColToPos</strong> 
+and <strong>IupTextConvertPosToLinCol</strong> can also be used.</p>
 
 
 

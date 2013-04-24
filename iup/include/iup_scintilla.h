@@ -16,9 +16,6 @@ void IupScintillaOpen(void);
 
 Ihandle *IupScintilla(void);
 
-void IupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
-void IupScintillaConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
-
 
 #ifdef __cplusplus
 }

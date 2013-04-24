@@ -56,7 +56,7 @@ int iupScintillaSetScrollToPosAttrib(Ihandle *ih, const char *value)
   int pos, lin, col;
   iupStrToInt(value, &pos);
 
-  IupScintillaConvertPosToLinCol(ih, pos, &lin, &col);
+  iupScintillaConvertPosToLinCol(ih, pos, &lin, &col);
 
   iupScintillaSendMessage(ih, SCI_LINESCROLL, col, lin);
 

@@ -59,6 +59,7 @@
     <ClCompile Include="..\src\iup_classattrib.c" />
     <ClCompile Include="..\src\iup_classbase.c" />
     <ClCompile Include="..\src\iup_dlglist.c" />
+    <ClCompile Include="..\src\iup_expander.c" />
     <ClCompile Include="..\src\iup_focus.c" />
     <ClCompile Include="..\src\iup_font.c" />
     <ClCompile Include="..\src\iup_func.c" />

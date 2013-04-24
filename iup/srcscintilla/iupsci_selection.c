@@ -105,7 +105,7 @@ char* iupScintillaGetCaretAttrib(Ihandle* ih)
   char* str = iupStrGetMemory(100);
 
   pos = iupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0);
-  IupScintillaConvertPosToLinCol(ih, pos, &lin, &col);
+  iupScintillaConvertPosToLinCol(ih, pos, &lin, &col);
 
   sprintf(str, "%d,%d", lin, col);
 
@@ -119,7 +119,7 @@ int iupScintillaSetCaretAttrib(Ihandle* ih, const char* value)
   if (lin < 1) lin = 1;
   if (col < 1) col = 1;
   
-  IupScintillaConvertLinColToPos(ih, lin, col, &pos);
+  iupScintillaConvertLinColToPos(ih, lin, col, &pos);
 
   iupScintillaSendMessage(ih, SCI_GOTOPOS, pos, 0);
 

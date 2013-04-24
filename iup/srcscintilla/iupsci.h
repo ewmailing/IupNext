@@ -11,6 +11,8 @@
 extern "C" {
 #endif
 
+void iupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
+void iupScintillaConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
 
 sptr_t iupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 

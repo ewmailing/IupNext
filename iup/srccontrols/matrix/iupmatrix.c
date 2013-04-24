@@ -1256,6 +1256,17 @@ static char* iMatrixGetCellFgColorAttrib(Ihandle* ih, int lin, int col)
     return NULL;
 }
 
+static void iMatrixConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
+{
+  *pos=lin*ih->data->columns.num + col;
+}
+
+static void iMatrixConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
+{
+  *lin = pos / ih->data->columns.num;
+  *col = pos % ih->data->columns.num;
+}
+
 static int iMatrixConvertXYToPos(Ihandle* ih, int x, int y)
 {
   int lin, col;
@@ -1448,6 +1459,8 @@ static int iMatrixMapMethod(Ihandle* ih)
   iupMatrixMemAlloc(ih);
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)iMatrixConvertXYToPos);
+  IupSetCallback(ih, "_IUP_POS2LINCOL_CB", (Icallback)iMatrixConvertPosToLinCol);
+  IupSetCallback(ih, "_IUP_LINCOL2POS_CB", (Icallback)iMatrixConvertLinColToPos);
 
   return IUP_NOERROR;
 }

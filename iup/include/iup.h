@@ -209,7 +209,7 @@ Ihandle*  IupTree       (void);
 Ihandle*  IupLink       (const char* url, const char* title);
 
 
-/* Deprecated controls use SPIN attribute of IupText */
+/* Deprecated controls, use SPIN attribute of IupText */
 Ihandle*  IupSpin       (void);
 Ihandle*  IupSpinbox    (Ihandle* child);
 
@@ -217,11 +217,11 @@ Ihandle*  IupSpinbox    (Ihandle* child);
 /* IupImage utility */
 int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name);
 
-/* IupText utilities */
+/* IupText and IupScintilla utilities */
 void  IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
 void  IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
 
-/* IupText, IupList and IupTree utility */
+/* IupText, IupList, IupTree, IupMatrix and IupScintilla utility */
 int   IupConvertXYToPos(Ihandle* ih, int x, int y);
 
 /* IupTree utilities */

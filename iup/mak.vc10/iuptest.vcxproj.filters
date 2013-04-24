@@ -71,5 +71,6 @@
     <ClCompile Include="..\test\zbox.c" />
     <ClCompile Include="..\test\link.c" />
     <ClCompile Include="..\test\gridbox.c" />
+    <ClCompile Include="..\test\expander.c" />
   </ItemGroup>
 </Project>

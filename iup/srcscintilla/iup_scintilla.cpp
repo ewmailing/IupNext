@@ -72,49 +72,29 @@ sptr_t iupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam
 
 /***** AUXILIARY ATTRIBUTES *****/
 
-void IupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
+void iupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return;
-
-  if (!ih->handle)
-    return;
+  *pos = iupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
     
-  if (IupClassMatch(ih, "scintilla"))
+  if(*pos != -1)
   {
-    *pos = iupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
-    
-    if(*pos != -1)
-    {
-      int line_length = iupScintillaSendMessage(ih, SCI_GETLINEENDPOSITION, lin, 0) - iupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
-      if(col <= line_length)
-        *pos += col;
-      else
-        *pos += line_length;
-    }
+    int line_length = iupScintillaSendMessage(ih, SCI_GETLINEENDPOSITION, lin, 0) - iupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
+    if(col <= line_length)
+      *pos += col;
     else
-    {
-      /* "lin" is greater than the lines in the document */
-      *pos = iupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
-    }
+      *pos += line_length;
+  }
+  else
+  {
+    /* "lin" is greater than the lines in the document */
+    *pos = iupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
   }
 }
 
-void IupScintillaConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
+void iupScintillaConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
 {
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return;
-
-  if (!ih->handle)
-    return;
-    
-  if (IupClassMatch(ih, "scintilla"))
-  {
-    *lin = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pos, 0);
-    *col = iupScintillaSendMessage(ih, SCI_GETCOLUMN, pos, 0);
-  }
+  *lin = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pos, 0);
+  *col = iupScintillaSendMessage(ih, SCI_GETCOLUMN, pos, 0);
 }
 
 static int iScintillaConvertXYToPos(Ihandle* ih, int x, int y)
@@ -124,6 +104,12 @@ static int iScintillaConvertXYToPos(Ihandle* ih, int x, int y)
 
 
 /***** GENERAL FUNCTIONS *****/
+
+static int iScintillaSetUsePopupAttrib(Ihandle* ih, const char* value)
+{
+  iupScintillaSendMessage(ih, SCI_USEPOPUP, iupStrBoolean(value), 0);
+  return 1;  /* there is no get */
+}
 
 static int iScintillaSetAppendNewlineAttrib(Ihandle* ih, const char* value)
 {
@@ -287,7 +273,7 @@ static void iScintillaCallCaretCb(Ihandle* ih)
   if (pos != ih->data->last_caret_pos)
   {
     int col, lin;
-    IupScintillaConvertPosToLinCol(ih, pos, &lin, &col);
+    iupScintillaConvertPosToLinCol(ih, pos, &lin, &col);
 
     ih->data->last_caret_pos = pos;
 
@@ -470,6 +456,8 @@ static int iScintillaMapMethod(Ihandle* ih)
     iupScintillaSendMessage(ih, SCI_SETVSCROLLBAR, 0, 0);
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)iScintillaConvertXYToPos);
+  IupSetCallback(ih, "_IUP_POS2LINCOL_CB", (Icallback)iupScintillaConvertPosToLinCol);
+  IupSetCallback(ih, "_IUP_LINCOL2POS_CB", (Icallback)iupScintillaConvertLinColToPos);
 
   iupScintillaSendMessage(ih, SCI_SETPASTECONVERTENDINGS, 1, 0);
   iupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_LF, 0);
@@ -522,6 +510,7 @@ static int iScintillaCreateMethod(Ihandle* ih, void **params)
   ih->data = iupALLOCCTRLDATA();
   ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
   ih->data->append_newline = 1;
+  iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", "1");
   return IUP_NOERROR;
 }
 
@@ -660,6 +649,7 @@ static Iclass* iupScintillaNewClass(void)
 
   /* Marker Attributes */
   iupClassRegisterAttribute(ic, "MARKERDEFINE", NULL, iupScintillaSetMarkerDefineAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERSYMBOL", iupScintillaGetMarkerSymbolAttribId, iupScintillaSetMarkerSymbolAttribId, IUPAF_NO_INHERIT);
 
   /* Scrolling and automatic scrolling */
   iupClassRegisterAttribute(ic, "SCROLLBAR", iScintillaGetScrollbarAttrib, iScintillaSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -674,6 +664,8 @@ static Iclass* iupScintillaNewClass(void)
 
   iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MULTILINE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "USEPOPUP", NULL, iScintillaSetUsePopupAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   return ic;
 }
@@ -712,15 +704,10 @@ Ihandle *IupScintilla(void)
 - Brace highlighting
 - Autocompletion/User lists
 - Zooming
-
-SCI_USEPOPUP(bool bEnablePopup)
-
-IupScintillaConvertLinColToPos
-IupScintillaConvertPosToLinCol
+- Markers
 
 - FONT/BGCOLOR/FGCOLOR x STYLE*
-- iupsci_markers.c
-  iupsci_selection.c
+- iupsci_selection.c
   iupsci_style.c
   iupsci_tab.c
 */
