@@ -76,6 +76,7 @@ void SplitTest(void);
 void ClipboardTest(void);
 void CharacTest(void);
 void LinkTest(void);
+void ExpanderTest(void);
 
 
 void HelpTest(void)
@@ -105,6 +106,7 @@ static TestItems test_list[] = {
   {"Colorbar", ColorbarTest},
   {"Dial", DialTest},
   {"Dialog", DialogTest},
+  {"Expander", ExpanderTest},
   {"Frame", FrameTest},
 #ifdef USE_OPENGL
   {"GLCanvas", GLCanvasTest},

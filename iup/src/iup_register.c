@@ -100,6 +100,7 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupSboxNewClass());
   iupRegisterClass(iupNormalizerNewClass());
   iupRegisterClass(iupSplitNewClass());
+  iupRegisterClass(iupExpanderNewClass());
 
   iupRegisterClass(iupMenuNewClass());
   iupRegisterClass(iupItemNewClass());
