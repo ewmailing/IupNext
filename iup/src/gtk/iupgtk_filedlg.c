@@ -272,7 +272,8 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     int len = strlen(dir);
     iupAttribStoreStr(ih, "DIRECTORY", dir);
     free(dir);
-    iupAttribStoreStr(ih, "FILE", value+len);
+
+    iupAttribStoreStr(ih, "FILE", value+len);  /* remove DIRECTORY from FILE */
   }
 
   value = iupAttribGet(ih, "DIRECTORY");
@@ -459,8 +460,23 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
           int ret = file_cb(ih, iupgtkStrConvertFromFilename(filename), "OK");
           g_free(filename);
           
-          if (ret == IUP_IGNORE)
+          if (ret == IUP_IGNORE || ret == IUP_CONTINUE)
           {
+            if (ret == IUP_CONTINUE)
+            {
+              value = iupAttribGet(ih, "FILE");
+              if (value)
+              {
+                if (action == GTK_FILE_CHOOSER_ACTION_SAVE)
+                  gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), iupgtkStrConvertToFilename(value));
+                else
+                {
+                  if (iupdrvIsFile(value))  /* check if file exists */
+                    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), iupgtkStrConvertToFilename(value));
+                }
+              }
+            }
+
             response = GTK_RESPONSE_HELP; /* to leave the dialog open */
             continue;
           }

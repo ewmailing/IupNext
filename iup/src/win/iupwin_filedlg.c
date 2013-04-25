@@ -179,16 +179,31 @@ static int winFileDlgWmNotify(HWND hWnd, LPOFNOTIFY pofn)
           int ret;
           char* file_msg;
 
-          if (!iupdrvIsFile(filename))
-            file_msg = "OTHER";
-          else if (pofn->hdr.code == CDN_FILEOK)
+          if (pofn->hdr.code == CDN_FILEOK)
             file_msg = "OK";
-          else 
-            file_msg = "SELECT";
+          else
+          {
+            if (iupdrvIsFile(filename))
+              file_msg = "SELECT";
+            else
+              file_msg = "OTHER";
+          }
 
           ret = cb(ih, filename, file_msg);
-          if (pofn->hdr.code == CDN_FILEOK && ret == IUP_IGNORE) 
+
+          if (pofn->hdr.code == CDN_FILEOK && (ret == IUP_IGNORE || ret == IUP_CONTINUE)) 
           {
+            if (ret == IUP_CONTINUE) 
+            {
+              char* value = iupAttribGet(ih, "FILE");
+              if (value)
+              {
+                strncpy(filename, value, IUP_MAX_FILENAME_SIZE);
+                winFileDlgStrReplacePathSlash(filename);
+                SendMessage(GetParent(hWnd), CDM_SETCONTROLTEXT, (WPARAM)IUP_EDIT, (LPARAM)filename);
+              }
+            }
+
             SetWindowLongPtr(hWnd, DWLP_MSGRESULT, 1L);
             return 1; /* will refuse the file */
           }

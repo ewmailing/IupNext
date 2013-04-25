@@ -70,7 +70,7 @@ filedlg() [in LED]</pre>
 	directory of the selected file.</p>
   <blockquote>
     
-  <p>In Motif or GTK, if not defined the dialog opens in the current directory. </p>
+  <p>In Motif or GTK, if not defined, the dialog opens in the current directory. </p>
     
   <p>In Windows, if not defined and the application has used the dialog in the 
 	past, the path most recently used is selected as the initial directory. 
@@ -90,7 +90,7 @@ filedlg() [in LED]</pre>
 	Files|*.*&quot;.</p>
   <p><strong>FILE</strong>:
   Name of the file initially shown in the 
-  &quot;File Name&quot; field in the dialog. If contains a path, then it is used 
+  &quot;File Name&quot; field in the dialog. If contains a full path, then it is used 
   as the initial directory and <strong style="font-weight: 400">DIRECTORY</strong> is ignored.</p>
   <p><strong>FILEEXIST</strong> (read-only):
   Indicates if the file defined by the FILE attribute exists or not.
@@ -131,7 +131,7 @@ For example:</p>
   
   <p><b>SHOWHIDDEN</b>: Show hidden files. Default: NO. (since 3.0) (GTK 2.6)</p>
     
-  <p><strong>SHOWPREVIEW</strong>:  A preview area is shown inside the File Dialog.
+  <p><strong>SHOWPREVIEW</strong>:  A preview area is shown inside the file dialog.
     Can have values &quot;YES&quot; or &quot;NO&quot;. Default: &quot;NO&quot;. In Windows, you must link with the 
     &quot;iup.rc&quot; resource file so the preview area can be enabled (not 
     necessary if using &quot;iup.dll&quot;). Valid only if the FILE_CB callback 
@@ -150,11 +150,11 @@ For example:</p>
 	<strong>&nbsp;&nbsp;&nbsp; </strong>Also the attributes WID, HWND, XWINDOW and XDISPLAY are valid and are 
 	relative to the preview area.</p>
 	<p>If the attribute PREVIEWGLCANVAS is defined then it is used as the name 
-	of an existent IupGLCanvas control to be mapped internally to the preview 
-	canvas. Notice that this is not a fully implemented IupGLCanvas that 
-	inherits from IupCanvas. This does the minimum necessary so you can use 
-	IupGLCanvas auxiliary functions for the preview canvas and call OpenGL 
-	functions. No IupCanvas attributes or callbacks are available. (since 3.0)</p>
+	of an existent <strong>IupGLCanvas</strong> control to be mapped internally to the preview 
+	canvas. Notice that this is not a fully implemented <strong>IupGLCanvas</strong> that 
+	inherits from <strong>IupCanvas</strong>. This does the minimum necessary so you can use 
+	<strong>IupGLCanvas</strong> auxiliary functions for the preview canvas and call OpenGL 
+	functions. No <strong>IupCanvas</strong> attributes or callbacks are available. (since 3.0)</p>
     
   </blockquote>
     
@@ -201,12 +201,15 @@ For example:</p>
 		<li>&quot;OTHER&quot; - an invalid file or a directory is selected. file_name is 
 		the one selected. (Since 3.0)</li>
         <li>&quot;OK&quot; - the user pressed the OK button. If returns 
-        IUP_IGNORE the action is refused and the dialog is not closed.</li>
+        IUP_IGNORE, the action is refused and the dialog is not closed, if 
+		returns IUP_CONTINUE does the same, but if the FILE 
+		  attribute is defined the current filename is updated (since 3.8).</li>
         <li>&quot;PAINT&quot; - the preview area must be redrawn.<br>Used only when SHOWPREVIEW=YES. 
         If an invalid file or a directory is selected, file_name is NULL.</li>
 		  <li>&quot;FILTER&quot; - when a filter is changed. (Windows Only) (since 3.6)<br>
-		  FILTERUSED attribute will be updated to reflect the change. FILE 
-		  attribute can be used to change the current filename.</li>
+		  FILTERUSED attribute will be updated to reflect the change. If returns 
+		  IUP_CONTINUE, the FILE 
+		  attribute if defined will update the current filename.</li>
 </ul>
     
 </blockquote>
@@ -223,13 +226,20 @@ For example:</p>
 <p>The dialog is mapped only inside <b>IupPopup</b>, <b>IupMap</b> does nothing.</p>
 <p>
   The <a href="iupgetfile.html">
-  IupGetFile</a> function simply creates and popup a IupFileDlg.</p>
+  IupGetFile</a> function simply creates and popup a <strong>IupFileDlg</strong>.</p>
 <p>
   In Windows, the FILE and the DIRECTORY attributes also accept strings containing 
   &quot;/&quot; as path separators, but the VALUE attribute will always return strings 
   using the &quot;\&quot; character.</p>
 <p>In Windows, the dialog will be modal relative only to its parent or to the 
 active dialog.&nbsp;</p>
+<p>When saving a file, the overwrite check is done before the FILE_CB callback 
+is called with status=OK. If the application wants to add an extension to the 
+file name inside the FILE_CB callback when status=OK, then it must manually 
+check if the file with the extension exits and asks the user if the file should 
+be replaced, if not then the callback can set the FILE attribute and returns 
+IUP_CONTINUE, so the file dialog will remain open and the user will have an 
+opportunity to change the file name now that it contains the extension.</p>
 
 <h3><a name="Examples">Examples</a></h3>
 <pre>Ihandle *dlg = IupFileDlg(); 

@@ -88,7 +88,7 @@ static int motFileDlgAskUser(Widget parent, const char* message)
     return 0;
 }
 
-static int motFileDlgCheckValue(Ihandle* ih, Widget w)
+static int motFileDlgCheckValue(Ihandle* ih, Widget filebox)
 {
   char* value = iupAttribGet(ih, "VALUE");
   int dialogtype = iupAttribGetInt(ih, "_IUPDLG_DIALOGTYPE");
@@ -127,7 +127,7 @@ static int motFileDlgCheckValue(Ihandle* ih, Widget w)
     }
     else if (dialogtype == IUP_DIALOGSAVE && !iupAttribGetInt(ih, "NOOVERWRITEPROMPT"))
     {
-      if (!motFileDlgAskUser(w, iupStrMessageGet("IUP_FILEOVERWRITE")))
+      if (!motFileDlgAskUser(filebox, iupStrMessageGet("IUP_FILEOVERWRITE")))
         return 0;
     }
   }
@@ -191,9 +191,8 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
   return 1;
 }
 
-static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallbackStruct* call_data)
+static void motFileDlgCallback(Widget filebox, Ihandle* ih, XmFileSelectionBoxCallbackStruct* call_data)
 {
-  (void)w;
   if (call_data->reason == XmCR_OK)
   {
     int dialogtype = iupAttribGetInt(ih, "_IUPDLG_DIALOGTYPE");
@@ -202,8 +201,8 @@ static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallback
     iupAttribStoreStr(ih, "VALUE", filename);
     XtFree(filename);
 
-    if (!motFileDlgCheckValue(ih, w))
-      return;
+    if (!motFileDlgCheckValue(ih, filebox))
+      return;  /* do not update STATUS */
 
     if (dialogtype == IUP_DIALOGDIR)
     {
@@ -212,7 +211,7 @@ static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallback
     }
     else if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
     {
-      Widget wList = XmFileSelectionBoxGetChild(w, XmDIALOG_LIST);
+      Widget wList = XmFileSelectionBoxGetChild(filebox, XmDIALOG_LIST);
 
       /* VALUE obtained above contains exactly the DIRECTORY */
       char* dir = iupAttribGet(ih, "VALUE");
@@ -223,7 +222,7 @@ static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallback
       if (!motFileDlgGetMultipleFiles(ih, iupAttribGet(ih, "DIRECTORY"), wList))
       {
         iupStrMessageShowError(ih, "IUP_FILENOTEXIST");
-        return;
+        return; /* do not update STATUS */
       }
 
       iupAttribSetStr(ih, "STATUS", "0");
@@ -233,8 +232,24 @@ static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallback
     {
       IFnss file_cb = (IFnss)IupGetCallback(ih, "FILE_CB");
       filename = iupAttribGet(ih, "VALUE");
-      if (file_cb && file_cb(ih, filename, "OK") == IUP_IGNORE)
-        return;
+      if (file_cb)
+      {
+        int ret = file_cb(ih, filename, "OK");
+        if (ret == IUP_IGNORE || ret == IUP_CONTINUE)
+        {
+          if (ret == IUP_CONTINUE)
+          {
+            char* file = iupAttribGet(ih, "FILE");
+            if (file)
+            {
+              iupmotSetString(filebox, XmNdirSpec, "");
+              iupmotSetString(filebox, XmNdirSpec, file);
+            }
+          }
+
+          return;  /* do not update STATUS */
+        }
+      }
 
       /* store the DIRECTORY */
       {
@@ -260,7 +275,7 @@ static void motFileDlgCallback(Widget w, Ihandle* ih, XmFileSelectionBoxCallback
       /* XmFileSelection does not change the current directory */
       XmString xm_dir;
       char* dir;
-      XtVaGetValues(w, XmNdirectory, &xm_dir, NULL);
+      XtVaGetValues(filebox, XmNdirectory, &xm_dir, NULL);
       XmStringGetLtoR(xm_dir, XmSTRING_DEFAULT_CHARSET, &dir);
       iupdrvSetCurrentDirectory(dir);
       XtFree(dir);
@@ -571,8 +586,8 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
         free(cur_dir);
     }
 
-  /* clear value before setting. Do not know why we have to do this, 
-     but if not cleared it will fail to set the XmNdirSpec value. */
+    /* clear value before setting. Do not know why we have to do this, 
+       but if not cleared it will fail to set the XmNdirSpec value. */
     iupmotSetString(filebox, XmNdirSpec, "");
     iupmotSetString(filebox, XmNdirSpec, file);
 
