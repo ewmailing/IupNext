@@ -352,7 +352,7 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
   border = winButtonGetBorder();
 
-  if ((ih->data->type & IUP_BUTTON_IMAGE) && 
+  if (ih->data->type&IUP_BUTTON_IMAGE && 
       iupAttribGet(ih, "IMPRESS") && 
       !iupAttribGetBoolean(ih, "IMPRESSBORDER"))
   {
@@ -507,7 +507,7 @@ static char* winButtonGetBgColorAttrib(Ihandle* ih)
 {
   /* the most important use of this is to provide
      the correct background for images */
-  if (iupwin_comctl32ver6 && !iupAttribGet(ih, "IMPRESS"))
+  if (iupwin_comctl32ver6 && ih->data->type&IUP_BUTTON_IMAGE && !iupAttribGet(ih, "IMPRESS"))
   {
     COLORREF cr;
     if (iupwinDrawGetThemeButtonBgColor(ih->handle, &cr))

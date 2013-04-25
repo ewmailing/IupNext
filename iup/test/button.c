@@ -334,6 +334,7 @@ void ButtonTest(void)
   IupSetAttribute(button, "RASTERSIZE", "30x30");
   IupSetAttribute(button, "BGCOLOR", "255 128 92");
   IupSetAttribute(button, "NAME", "color");
+//  IupSetAttribute(button, "FLAT", "Yes");
   set_callbacks(button);
   IupAppend(box1, button);
 
