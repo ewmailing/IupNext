@@ -873,6 +873,10 @@ wb_usr.tree =
               link= "elem/iupcbox.html"
             },
             {
+              name= {nl= "IupExpand"},
+              link= "elem/iupexpander.html"
+            },
+            {
               name= {nl= "IupSbox"},
               link= "elem/iupsbox.html"
             },
