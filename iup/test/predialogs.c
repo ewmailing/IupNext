@@ -195,8 +195,8 @@ static int file_cb(Ihandle* ih, const char* filename, const char* status)
   }
   else if (strcmp(status, "OK")==0)
   {
-    IupSetAttribute(ih, "FILE", "test");
-    return IUP_CONTINUE; 
+//    IupSetAttribute(ih, "FILE", "test");
+//    return IUP_CONTINUE; 
   }
 
   return IUP_DEFAULT; 
