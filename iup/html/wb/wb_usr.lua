@@ -772,6 +772,10 @@ wb_usr.tree =
             {
               name= {nl= "Display"},
               link= "layout_guide.html#Display"
+            },
+            {
+              name= {nl= "Element Update"},
+              link= "layout_guide.html#Update"
             }
           }
         },

@@ -266,9 +266,8 @@ positioning can be manually updated using
   <a href="func/iuprefresh.html">IupRefresh</a>, even if the dialog is not 
 mapped.</p>
 <p>After changing containers attributes or element sizes that affect the layout the elements are NOT immediately repositioned. Call
-  <b>IupRefresh</b> for an element inside the dialog to update the dialog layout. To force a redraw of an element 
-without layout update call
-<a href="func/iupupdate.html">IupUpdate</a>.</p>
+  <b>IupRefresh</b> for an element inside the dialog to update the dialog 
+layout. </p>
 <p>The Layout update is done in two phases. First the layout is computed, this 
 can be done without the dialog being mapped. Second is the native elements 
 update from the computed values.</p>
@@ -289,6 +288,31 @@ the inner elements on the layout hierarchy (first the element then the
 	<li>Finally the position is computed starting at the dialog down to the 
 	inner elements on the layout hierarchy, after all sizes are computed.</li>
 </ul>
+
+<h3><a name="Update">Element Update</a></h3>
+<p>Usually IUP automatically updates everything for the application, for 
+instance there is no need to force a display update after an attribute is 
+changed. But there are some situations where you need to force an update. Here 
+is a summary of the functions that can be used to update an element state:</p>
+<p>
+<a href="func/iupupdate.html">IupUpdate</a> - update the element look by letting 
+the system to schedule a redraw. Rarely used.</p>
+<p><a href="func/iupredraw.html">IupRedraw</a> - has the same effect of <strong>
+IupUpdate</strong> but forces the element to redraw now.&nbsp; </p>
+<p>&nbsp;<a href="func/iuprefresh.html">IupRefresh</a> - if the application 
+changed some attribute that affects the natural size, for instance SIZE or 
+RASTERSIZE among others, the actual element size is NOT immediately updated. 
+That's because it can affect the size and position of other elements in the 
+dialog. <strong>IupRefresh</strong> will force an update in the layout of the 
+hole dialog, and of course if an element has its size changed its appearance 
+will be automatically updated.</p>
+<p>&nbsp;<a href="func/iupflush.html">IupFlush</a> - process all events that are 
+waiting to be processed. When you set an attribute, a system event is generated, 
+but it will wait until is processed by the event loop. Sometimes the application 
+needs an immediate result, so calling <strong>IupFlush</strong> will process 
+that event but it will also process every other event that was waiting to be 
+processed, so other callbacks could be trigger during <strong>IupFlush</strong> 
+call.</p>
 
 </body>
 
