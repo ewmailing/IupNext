@@ -33,7 +33,7 @@ INCLUDES = ../include .
 # Windows XP minimum
 WIN32VER = 0x0501
 
-SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font.c \
+SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font.c iup_expander.c \
       iup_globalattrib.c iup_object.c iup_key.c iup_layout.c iup_ledlex.c iup_names.c iup_open.c \
       iup_ledparse.c iup_predialogs.c iup_register.c iup_scanf.c iup_show.c iup_str.c iup_table.c \
       iup_func.c iup_childtree.c iup.c iup_classattrib.c iup_dialog.c iup_assert.c iup_canvas.c \

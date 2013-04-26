@@ -10,6 +10,7 @@ IupCreatev
 IupDestroy
 IupDetach
 IupDialog
+IupExpander
 IupFileDlg
 IupFill
 IupFlush

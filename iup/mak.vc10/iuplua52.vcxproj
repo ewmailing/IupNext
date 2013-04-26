@@ -52,6 +52,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\srclua5\il_expander.c" />
+    <ClCompile Include="..\srclua5\il_link.c" />
     <ClCompile Include="..\srclua5\il_scrollbox.c" />
     <ClCompile Include="..\srclua5\iuplua.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level4</WarningLevel>
@@ -101,6 +103,7 @@
     <ClCompile Include="..\srclua5\iuplua_tree_aux.c" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\srclua5\expander.lua" />
     <None Include="..\srclua5\iuplua.def" />
     <None Include="..\srclua5\constants.lua" />
     <None Include="..\srclua5\ctrl_template.lua" />
@@ -122,6 +125,7 @@
     <None Include="..\srclua5\imagergba.lua" />
     <None Include="..\srclua5\item.lua" />
     <None Include="..\srclua5\label.lua" />
+    <None Include="..\srclua5\link.lua" />
     <None Include="..\srclua5\list.lua" />
     <None Include="..\srclua5\menu.lua" />
     <None Include="..\srclua5\messagedlg.lua" />
