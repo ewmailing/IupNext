@@ -68,6 +68,8 @@ SRC += scrollbox.c
 SRC += clipboard.c
 SRC += split.c
 SRC += link.c
+SRC += gridbox.c
+SRC += expander.c
 
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
@@ -87,7 +89,7 @@ SRC += glcanvas.c
 SRC += glcanvas_cube.c
 SRC += charac.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += cdgl
+  LIBS += cdgl ftgl
   LDIR += $(CD)/lib/$(TEC_UNAME)
 else
   SLIB += $(CDLIB)/libcdgl.a $(CDLIB)/libftgl.a 
