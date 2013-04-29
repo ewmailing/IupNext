@@ -21,7 +21,6 @@ typedef int (*IFniii)(Ihandle*, int, int, int); /* trayclick_cb, edition_cb */
 typedef int (*IFniiii)(Ihandle*, int, int, int, int); /* dragdrop_cb */
 typedef int (*IFniiiiiiC)(Ihandle*, int, int, int, int, int, int, void*);  /* draw_cb */
 typedef int (*IFniiiiii)(Ihandle*, int, int, int, int, int, int);  /* OLD draw_cb */
-typedef int (*IFniiis)(Ihandle*, int, int, int, char*); /* dblclick_cb */
 
 typedef int (*IFnff)(Ihandle*, float, float);    /* canvas_action */
 typedef int (*IFniff)(Ihandle*,int,float,float);  /* scroll_cb */
@@ -39,7 +38,7 @@ typedef int (*IFnsi)(Ihandle*, char *, int);  /* copydata_cb */
 typedef int (*IFnis)(Ihandle*, int, char *);  /* text_action, multiline_action, edit_cb, rename_cb */
 typedef int (*IFnsii)(Ihandle*, char*, int, int);  /* list_action */
 typedef int (*IFniis)(Ihandle*, int, int, char*);  /* motion_cb, click_cb, value_edit_cb */
-typedef int (*IFniiis)(Ihandle*, int, int, int, char*);  /* touch_cb */
+typedef int (*IFniiis)(Ihandle*, int, int, int, char*);  /* touch_cb, dblclick_cb */
 typedef int (*IFniiiis)(Ihandle*, int, int, int, int, char*);  /* button_cb, matrix_action, mousemotion_cb */
 typedef int (*IFniiiiiis)(Ihandle*, int, int, int, int, int, int, char*);  /* mouseclick_cb */
 
