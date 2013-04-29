@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
+#include <string.h>
 
 #include "iup.h"
 
@@ -363,6 +364,66 @@ void* iupdrvImageCreateMask(Ihandle *ih)
 #endif
 }
 
+static GdkPixbuf *gtkImageLoadFactoryIcon(const char* name, int render_icon_size)
+{
+  GdkPixbuf *pixbuf = NULL;
+  GtkIconSet* icon_set = gtk_icon_factory_lookup_default(name);
+  if (icon_set)
+  {
+#if GTK_CHECK_VERSION(3, 0, 0)
+    GtkStyleContext* style_context = gtk_style_context_new();
+    pixbuf = gtk_icon_set_render_icon_pixbuf(icon_set, style_context, render_icon_size);
+    g_object_unref(style_context);
+#else
+    GtkStyle* style = gtk_style_new();
+    pixbuf = gtk_icon_set_render_icon(icon_set, style, GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL,
+                                      render_icon_size, NULL, NULL);
+    g_object_unref(style);
+#endif
+  }
+  else
+  {
+    if (strstr(name, "-ltr")!=0)
+    {
+      char sname[50];
+      strcpy(sname, name);
+      sname[strlen(name)-4]=0;
+      pixbuf = gtkImageLoadFactoryIcon(sname, render_icon_size);
+      icon_set = gtk_icon_factory_lookup_default(sname);
+      if (icon_set)
+      {
+#if GTK_CHECK_VERSION(3, 0, 0)
+#else
+        GtkStyle* style = gtk_style_new();
+        pixbuf = gtk_icon_set_render_icon(icon_set, style, GTK_TEXT_DIR_LTR, GTK_STATE_NORMAL,
+                                          render_icon_size, NULL, NULL);
+        g_object_unref(style);
+#endif
+      }
+    }
+    else if (strstr(name, "-rtl")!=0)
+    {
+      char sname[50];
+      strcpy(sname, name);
+      sname[strlen(name)-4]=0;
+      pixbuf = gtkImageLoadFactoryIcon(sname, render_icon_size);
+      icon_set = gtk_icon_factory_lookup_default(sname);
+      if (icon_set)
+      {
+#if GTK_CHECK_VERSION(3, 0, 0)
+#else
+        GtkStyle* style = gtk_style_new();
+        pixbuf = gtk_icon_set_render_icon(icon_set, style, GTK_TEXT_DIR_RTL, GTK_STATE_NORMAL,
+                                          render_icon_size, NULL, NULL);
+        g_object_unref(style);
+#endif
+      }
+    }
+  }
+
+  return pixbuf;
+}
+
 static void gtkImageGetIconSize(const char* gtk_icon_size, int *theme_size, GtkIconSize *render_icon_size)
 {
   if (iupStrEqualNoCase(gtk_icon_size, "MENU"))
@@ -431,27 +492,11 @@ void* iupdrvImageLoad(const char* name, int type)
 
     /* approach for newer GTK version */
     if (!pixbuf)
-    {
-      GtkIconSet* icon_set = gtk_icon_factory_lookup_default(name);
-      if (icon_set)
-      {
-#if GTK_CHECK_VERSION(3, 0, 0)
-        GtkStyleContext* style_context = gtk_style_context_new();
-        pixbuf = gtk_icon_set_render_icon_pixbuf(icon_set, style_context, render_icon_size);
-        g_object_unref(style_context);
-#else
-        GtkStyle* style = gtk_style_new();
-        pixbuf = gtk_icon_set_render_icon(icon_set, style, GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL,
-                                          render_icon_size, NULL, NULL);
-        g_object_unref(style);
-#endif
-      }
-    }
+      pixbuf = gtkImageLoadFactoryIcon(name, render_icon_size);
 
     if (!pixbuf)
     {
       GError *error = NULL;
-printf("NOT PIXBUF(%s)\n", name);
       pixbuf = gdk_pixbuf_new_from_file(name, &error);    
       if (error)
         g_error_free(error);
