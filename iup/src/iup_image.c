@@ -110,6 +110,7 @@ static void iImageStockLoad(const char *name)
         ih = IupImageRGBA(w,h,NULL);
       else
         ih = IupImageRGB(w,h,NULL);
+      iupAttribSetStr(ih, "_IUPIMAGE_PRELOADED", (char*)handle);
       IupSetHandle(native_name, ih);
     }
   }
@@ -448,6 +449,10 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
     if (!ih)
       return NULL;
   }
+
+  handle = iupAttribGet(ih, "_IUPIMAGE_PRELOADED");
+  if (handle)
+    return handle;
 
   bgcolor = iupAttribGet(ih, "BGCOLOR");
   if (ih_parent && !bgcolor)
