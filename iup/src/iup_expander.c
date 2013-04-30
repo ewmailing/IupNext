@@ -24,6 +24,8 @@
 #include "iup_draw.h"
 
 
+#define IEXPAND_HANDLE_SIZE 10
+
 enum { IEXPANDER_LEFT, IEXPANDER_RIGHT, IEXPANDER_TOP, IEXPANDER_BOTTOM };
 enum { IEXPANDER_CLOSE, IEXPANDER_OPEN };
 
@@ -32,12 +34,20 @@ struct _IcontrolData
   /* attributes */
   int position;
   int state;
-  int barHeight, barWidth;
+  int barSize;
 };
 
 
-static void iExpanderOpenCloseChild(Ihandle* child, int flag)
+static void iExpanderOpenCloseChild(Ihandle* ih, int flag)
 {
+  Ihandle *child = ih->firstchild->brother;
+
+  if (ih->firstchild->handle);
+    iupdrvPostRedraw(ih->firstchild);
+
+  if (!child)
+    return;
+
   if (flag == IEXPANDER_CLOSE)
   {
     if (IupGetInt(child, "VISIBLE"))
@@ -54,39 +64,25 @@ static void iExpanderOpenCloseChild(Ihandle* child, int flag)
       IupSetAttribute(child, "VISIBLE", "YES");
     }
   }
+
+  IupRefresh(child); /* this will recompute the layout of the hole dialog */
 }
 
-static int iExpanderGetWidth(Ihandle* ih)
+static int iExpanderGetBarSize(Ihandle* ih)
 {
-  /* This is the space available for the child,
-     It does NOT depends on the child. */
-  int width = ih->currentwidth - ih->data->barWidth;
-  if (width < 0) width = 0;
-  return width;
-}
+  int bar_size;
+  if (ih->data->barSize == -1)
+  {
+    iupdrvFontGetCharSize(ih, NULL, &bar_size); 
+    bar_size += 5;
 
-static int iExpanderGetHeight(Ihandle* ih)
-{
-  /* This is the space available for the child,
-     It does NOT depends on the child. */
-  int height = ih->currentheight - ih->data->barHeight;
-  if (height < 0) height = 0;
-  return height;
-}
+    if (bar_size < IEXPAND_HANDLE_SIZE)
+      bar_size = IEXPAND_HANDLE_SIZE;
+  }
+  else
+    bar_size = ih->data->barSize;
 
-static char* iExpanderGetTitle(Ihandle *ih)
-{
-  char* value = iupAttribGetStr(ih, "TITLE");
-  if(!value) value = "";
-  value = iupStrProcessMnemonic(value, NULL, 0);
-  return value;
-}
-
-static int iExpanderGetTitleWidth(Ihandle *ih)
-{
-  char* str = iupStrGetMemory(50);  
-  sprintf(str, "[+] %s", iExpanderGetTitle(ih));
-  return iupdrvFontGetStringWidth(ih, str);
+  return bar_size;
 }
 
 /*****************************************************************************\
@@ -98,23 +94,24 @@ static int iExpanderAction_CB(Ihandle* bar)
   Ihandle *ih = bar->parent;
   IdrawCanvas *dc = iupDrawCreateCanvas(bar);
   unsigned char r = 160, g = 160, b = 160, bg_r, bg_g, bg_b;
-  char* str = iupStrGetMemory(50);
+  char str[50];
+  char* title = iupAttribGetStr(ih, "TITLE");
   int len;
   
   iupDrawParentBackground(dc);
 
   if(ih->data->state == IEXPANDER_CLOSE)
-    sprintf(str, "[+] %s", iExpanderGetTitle(ih));
+    sprintf(str, "[+] %s", title);
   else
-    sprintf(str, "[-] %s", iExpanderGetTitle(ih));
+    sprintf(str, "[-] %s", title);
 
-  iupStrToRGB(IupGetAttribute(ih, "COLOR"), &r, &g, &b);
+  iupStrToRGB(IupGetAttribute(ih, "FGCOLOR"), &r, &g, &b);
   if (r+g+b > 3*190)
     { bg_r = 100; bg_g = 100; bg_b = 100; }
   else
     { bg_r = 255; bg_g = 255; bg_b = 255; }
 
-  iupStrNextLine(str, &len);
+  iupStrNextLine(str, &len);  /* get the length of the first line */
   iupDrawText(dc, str, len, 0, 0, r, g, b, IupGetAttribute(ih, "FONT"));
 
   iupDrawFlush(dc);
@@ -124,47 +121,21 @@ static int iExpanderAction_CB(Ihandle* bar)
   return IUP_DEFAULT;
 }
 
-static int iExpanderMotion_CB(Ihandle* bar, int x, int y, char *status)
-{
-  (void)bar;
-  (void)x;
-  (void)y;
-  (void)status;
-  return IUP_DEFAULT;
-}
-
 static int iExpanderButton_CB(Ihandle* bar, int button, int pressed, int x, int y, char* status)
 {
   Ihandle* ih = bar->parent;
 
-  if (button!=IUP_BUTTON1)
-    return IUP_DEFAULT;
-
-  if(pressed)
+  if (button==IUP_BUTTON1 && pressed)
   {
     /* Update the state: OPEN ==> collapsed, CLOSE ==> expanded */
-     ih->data->state = (ih->data->state == IEXPANDER_OPEN ? IEXPANDER_CLOSE : IEXPANDER_OPEN);
-     iExpanderOpenCloseChild(ih->firstchild->brother, ih->data->state);
-  }
-  else
-  {
-    IupRefreshChildren(ih);  /* Always refresh when releasing the mouse */
-    iupdrvPostRedraw(bar);
+     ih->data->state = (ih->data->state == IEXPANDER_OPEN? IEXPANDER_CLOSE: IEXPANDER_OPEN);
+
+     iExpanderOpenCloseChild(ih, ih->data->state);
   }
 
   (void)x;
   (void)y;
   (void)status;
-  return IUP_DEFAULT;
-}
-
-static int iExpanderFocus_CB(Ihandle* bar, int focus)
-{
-  Ihandle* ih = bar->parent;
-
-  if (!ih || focus) /* use only kill focus */
-    return IUP_DEFAULT;
-
   return IUP_DEFAULT;
 }
 
@@ -172,6 +143,40 @@ static int iExpanderFocus_CB(Ihandle* bar, int focus)
 /*****************************************************************************\
 |* Attributes                                                                *|
 \*****************************************************************************/
+
+
+static char* iExpanderGetClientSizeAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(20);
+  int width = ih->currentwidth;
+  int height = ih->currentheight;
+  int bar_size = iExpanderGetBarSize(ih);
+
+  if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
+    width -= bar_size;
+  else
+    height -= bar_size;
+
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+  sprintf(str, "%dx%d", width, height);
+  return str;
+}
+
+static char* iExpanderGetClientOffsetAttrib(Ihandle* ih)
+{
+  int dx = 0, dy = 0;
+  char* str = iupStrGetMemory(20);
+  int bar_size = iExpanderGetBarSize(ih);
+
+  if (ih->data->position == IEXPANDER_LEFT)
+    dx += bar_size;
+  else if (ih->data->position == IEXPANDER_TOP)
+    dy += bar_size;
+
+  sprintf(str, "%dx%d", dx, dy);
+  return str;
+}
 
 static int iExpanderSetPositionAttrib(Ihandle* ih, const char* value)
 {
@@ -192,20 +197,22 @@ static int iExpanderSetPositionAttrib(Ihandle* ih, const char* value)
 
 static int iExpanderSetBarSizeAttrib(Ihandle* ih, const char* value)
 {
-  if(iupStrToIntInt(value, &ih->data->barWidth, &ih->data->barHeight, 'x') && ih->handle)
-    IupRefreshChildren(ih);
-
+  if (!value)
+    ih->data->barSize = -1;
+  else
+    iupStrToInt(value, &ih->data->barSize);  /* must manually update layout */
   return 0; /* do not store value in hash table */
 }
 
 static char* iExpanderGetBarSizeAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(30);
-  sprintf(str, "%dx%d", ih->data->barWidth, ih->data->barHeight);
+  int bar_size = iExpanderGetBarSize(ih);
+  sprintf(str, "%d", bar_size);
   return str;
 }
 
-static int iExpanderSetColorAttrib(Ihandle* ih, const char* value)
+static int iExpanderSetUpdateAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
   iupdrvPostRedraw(ih);
@@ -219,6 +226,8 @@ static int iExpanderSetStateAttrib(Ihandle* ih, const char* value)
   else
     ih->data->state = IEXPANDER_CLOSE;
 
+  iExpanderOpenCloseChild(ih, ih->data->state);
+
   return 0; /* do not store value in hash table */
 }
 
@@ -230,6 +239,7 @@ static char* iExpanderGetStateAttrib(Ihandle* ih)
     return "CLOSE";
 }
 
+
 /*****************************************************************************\
 |* Methods                                                                   *|
 \*****************************************************************************/
@@ -237,37 +247,50 @@ static char* iExpanderGetStateAttrib(Ihandle* ih)
 
 static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  int natural_w = 0, 
-      natural_h = 0;
+  int title_size = 0,
+      child_expand = 0,
+      natural_w, natural_h;
   Ihandle *child = ih->firstchild->brother;
-
-  /* update bar size */
-  iupdrvFontGetCharSize(ih, NULL, &ih->data->barHeight);
-  ih->data->barWidth = iExpanderGetTitleWidth(ih);
+  int bar_size = iExpanderGetBarSize(ih);
+  char* title = iupAttribGetStr(ih, "TITLE");
+  iupdrvFontGetMultiLineStringSize(ih, title, &title_size, NULL);
 
   /* bar */
-  natural_w += ih->data->barWidth;
-  natural_h += ih->data->barHeight;
+  if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
+  {
+    natural_w = bar_size;
+    natural_h = title_size + IEXPAND_HANDLE_SIZE;
+  }
+  else
+  {
+    natural_w = title_size + IEXPAND_HANDLE_SIZE;
+    natural_h = bar_size;
+  }
 
   if (child)
   {
-    /* update child natural size first */
-    iupBaseComputeNaturalSize(child);
+    /* update child natural bar_size first */
+    if (!(child->flags & IUP_FLOATING_IGNORE))
+      iupBaseComputeNaturalSize(child);
 
-    if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
+    if (!(child->flags & IUP_FLOATING))
     {
-      natural_w += child->naturalwidth;
-      natural_h = iupMAX(natural_h, child->naturalheight);
-    }
-    else
-    {
-      natural_w = iupMAX(natural_w, child->naturalwidth);
-      natural_h += child->naturalheight;
-    }
+      if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
+      {
+        natural_w += child->naturalwidth;
+        natural_h = iupMAX(natural_h, child->naturalheight);
+      }
+      else
+      {
+        natural_w = iupMAX(natural_w, child->naturalwidth);
+        natural_h += child->naturalheight;
+      }
 
-    *expand = child->expand;
+      child_expand = child->expand;
+    }
   }
 
+  *expand = child_expand;
   *w = natural_w;
   *h = natural_h;
 }
@@ -275,87 +298,73 @@ static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
 static void iExpanderSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
   Ihandle *child = ih->firstchild->brother;
+  int width = ih->currentwidth;
+  int height = ih->currentheight;
+  int bar_size = iExpanderGetBarSize(ih);
 
   if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
   {
-    int width = iExpanderGetWidth(ih);
-
-    if (child)
-    {
-      iupBaseSetCurrentSize(child, width, ih->currentheight, shrink);
-
-      if (child->currentwidth > width)
-      {
-        /* has a minimum size, must fix value */
-        width = child->currentwidth;
-      }
-    }
-
     /* bar */
-    ih->firstchild->currentwidth  = ih->data->barWidth;
+    ih->firstchild->currentwidth  = bar_size;
     ih->firstchild->currentheight = ih->currentheight;
+
+    if (ih->currentwidth < bar_size)
+      ih->currentwidth = bar_size;
+
+    width = ih->currentwidth - bar_size;
   }
   else /* IEXPANDER_TOP OR IEXPANDER_BOTTOM */
   {
-    int height = iExpanderGetHeight(ih);
-
-    if (child)
-    {
-      iupBaseSetCurrentSize(child, ih->currentwidth, height, shrink);
-
-      if (child->currentheight > height)
-      {
-        /* has a minimum size, must fix value */
-        height = child->currentheight;
-      }
-    }
-
     /* bar */
     ih->firstchild->currentwidth  = ih->currentwidth;
-    ih->firstchild->currentheight = ih->data->barHeight;
+    ih->firstchild->currentheight = bar_size;
+
+    if (ih->currentheight < bar_size)
+      ih->currentheight = bar_size;
+
+    height = ih->currentheight - bar_size;
+  }
+
+  if (child)
+  {
+    if (!(child->flags & IUP_FLOATING) ||
+        !(child->flags & IUP_FLOATING_IGNORE))
+      iupBaseSetCurrentSize(child, width, height, shrink);
   }
 }
 
 static void iExpanderSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   Ihandle *child = ih->firstchild->brother;
+  int bar_size = iExpanderGetBarSize(ih);
 
+  /* always position bar */
   if (ih->data->position == IEXPANDER_LEFT)
   {
-    /* bar */
     iupBaseSetPosition(ih->firstchild, x, y);
-    x += ih->data->barWidth;
-
-    if (child)
-      iupBaseSetPosition(child, x, y);
+    x += bar_size;
   }
   else if (ih->data->position == IEXPANDER_RIGHT)
-  {
-    if (child)
-      iupBaseSetPosition(child, x, y);
-
-    /* bar */
-    x +=  iExpanderGetWidth(ih);
-    iupBaseSetPosition(ih->firstchild, x, y);
-  }
+    iupBaseSetPosition(ih->firstchild, x + ih->currentwidth - bar_size, y);
   else if (ih->data->position == IEXPANDER_BOTTOM)
-  {
-    if (child)
-      iupBaseSetPosition(child, x, y);
-
-    /* bar */
-    y += iExpanderGetHeight(ih);
-    iupBaseSetPosition(ih->firstchild, x, y);
-  }
+    iupBaseSetPosition(ih->firstchild, x, y + ih->currentheight - bar_size);
   else /* IEXPANDER_TOP */
   {
-    /* bar */
     iupBaseSetPosition(ih->firstchild, x, y);
-    y += ih->data->barHeight;
+    y += bar_size;
+  }
 
-    if (child)
+  if (child)
+  {
+    if (!(child->flags & IUP_FLOATING))
       iupBaseSetPosition(child, x, y);
   }
+}
+
+static void iExpanderChildAddedMethod(Ihandle* ih, Ihandle* child)
+{
+  iExpanderOpenCloseChild(ih, ih->data->state);
+  (void)child;
 }
 
 static int iExpanderCreateMethod(Ihandle* ih, void** params)
@@ -366,8 +375,7 @@ static int iExpanderCreateMethod(Ihandle* ih, void** params)
 
   ih->data->position = IEXPANDER_TOP;
   ih->data->state = IEXPANDER_OPEN;
-  ih->data->barHeight = 5;
-  ih->data->barWidth  = 5;
+  ih->data->barSize = -1;
 
   bar = IupCanvas(NULL);
   iupChildTreeAppend(ih, bar);  /* bar will always be the firstchild */
@@ -379,8 +387,6 @@ static int iExpanderCreateMethod(Ihandle* ih, void** params)
 
   /* Setting callbacks */
   IupSetCallback(bar, "BUTTON_CB", (Icallback) iExpanderButton_CB);
-  IupSetCallback(bar, "FOCUS_CB",  (Icallback) iExpanderFocus_CB);
-  IupSetCallback(bar, "MOTION_CB", (Icallback) iExpanderMotion_CB);
   IupSetCallback(bar, "ACTION",    (Icallback) iExpanderAction_CB);
 
   if (params)
@@ -407,6 +413,7 @@ Iclass* iupExpanderNewClass(void)
   ic->New     = iupExpanderNewClass;
   ic->Create  = iExpanderCreateMethod;
   ic->Map     = iupBaseTypeVoidMapMethod;
+  ic->ChildAdded = iExpanderChildAddedMethod;
 
   ic->ComputeNaturalSize     = iExpanderComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iExpanderSetChildrenCurrentSizeMethod;
@@ -417,15 +424,15 @@ Iclass* iupExpanderNewClass(void)
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iExpanderGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iExpanderGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* IupExpander only */
-  iupClassRegisterAttribute(ic, "POSITION", NULL, iExpanderSetPositionAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BARSIZE", iExpanderGetBarSizeAttrib, iExpanderSetBarSizeAttrib, IUPAF_SAMEASSYSTEM, "5x5", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BARPOSITION", NULL, iExpanderSetPositionAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BARSIZE", iExpanderGetBarSizeAttrib, iExpanderSetBarSizeAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATE", iExpanderGetStateAttrib, iExpanderSetStateAttrib, IUPAF_SAMEASSYSTEM, "OPEN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "COLOR", NULL, iExpanderSetColorAttrib, IUPAF_SAMEASSYSTEM, "160 160 160", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iExpanderSetUpdateAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, iExpanderSetUpdateAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }
@@ -437,3 +444,13 @@ Ihandle* IupExpander(Ihandle* child)
   children[1] = NULL;
   return IupCreatev("expander", children);
 }
+
+/* TODO:
+- desenhar +- ><
+- texto na vertical?
+- alinhamento?
+- atributo para desenhar um triangulo apontando para a esquerda e para baixo, em vez de + e –
+
+- expand automatico com mousemove e timer
+- feedback de mouseover
+*/

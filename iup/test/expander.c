@@ -6,14 +6,14 @@ void ExpanderTest(void)
   Ihandle *dlg, *bt, *exp, *vbox, *bt2;
 
   bt = IupButton("Button ONE", NULL);
-  IupSetAttribute(bt, "EXPAND", "YES");
-  IupSetAttribute(bt, "MINSIZE", "30x");
-  IupSetAttribute(bt, "RASTERSIZE", "30x");
+//  IupSetAttribute(bt, "EXPAND", "YES");
+//  IupSetAttribute(bt, "MINSIZE", "30x");
+//  IupSetAttribute(bt, "RASTERSIZE", "30x");
   
   exp = IupExpander(bt);
-  IupSetAttribute(exp, "POSITION", "TOP");
-  IupSetAttribute(exp, "COLOR", "0 0 255");
-  IupSetAttribute(exp, "TITLE", "My Expand Collapse Container");
+//  IupSetAttribute(exp, "BARPOSITION", "TOP");
+//  IupSetAttribute(exp, "FGCOLOR", "0 0 255");
+  IupSetAttribute(exp, "TITLE", "IupExpander Title");
   IupSetAttribute(exp, "STATE", "OPEN");
 
   bt2 = IupButton("Button TWO", NULL);
