@@ -29,7 +29,8 @@ int iupScintillaSetMarginTextAttribId(Ihandle* ih, int line, const char* value);
 int iupScintillaSetMarginTextClearAllAttrib(Ihandle* ih, const char* value);
 char* iupScintillaGetMarginTextStyleAttribId(Ihandle* ih, int line);
 int iupScintillaSetMarginTextStyleAttribId(Ihandle* ih, int line, const char* value);
-
+char* iupScintillaGetMarginCursorAttribId(Ihandle* ih, int margin);
+int iupScintillaSetMarginCursorAttribId(Ihandle* ih, int margin, const char* value);
 
 #ifdef __cplusplus
 }

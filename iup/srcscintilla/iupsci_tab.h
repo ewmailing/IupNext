@@ -14,7 +14,8 @@ extern "C" {
 
 char* iupScintillaGetTabSizeAttrib(Ihandle *ih);
 int iupScintillaSetTabSizeAttrib(Ihandle *ih, const char *value);
-
+char* iupScintillaGetHighlightGuideAttrib(Ihandle *ih);
+int iupScintillaSetHighlightGuideAttrib(Ihandle *ih, const char *value);
 
 #ifdef __cplusplus
 }

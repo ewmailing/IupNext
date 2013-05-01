@@ -236,3 +236,22 @@ int iupScintillaSetMarginTextStyleAttribId(Ihandle* ih, int line, const char* va
 
   return 0;
 }
+
+char* iupScintillaGetMarginCursorAttribId(Ihandle* ih, int margin)
+{
+  if(iupScintillaSendMessage(ih, SCI_GETMARGINCURSORN, margin, 0) == SC_CURSORARROW)
+    return "ARROW";
+  else
+    return "REVERSEARROW";
+}
+
+int iupScintillaSetMarginCursorAttribId(Ihandle* ih, int margin, const char* value)
+{
+  if (iupStrEqualNoCase(value, "ARROW"))
+    iupScintillaSendMessage(ih, SCI_SETMARGINCURSORN, margin, SC_CURSORARROW);
+  else  /* REVERSEARROW */
+    iupScintillaSendMessage(ih, SCI_SETMARGINCURSORN, margin, SC_CURSORREVERSEARROW);
+
+  return 0;
+}
+

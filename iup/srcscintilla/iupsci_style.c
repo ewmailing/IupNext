@@ -26,20 +26,6 @@ SCI_STYLESETCHANGEABLE(int styleNumber, bool changeable)
 SCI_STYLEGETCHANGEABLE(int styleNumber)  
 */
 
-static long iupScintillaEncodeColor(unsigned char r, unsigned char g, unsigned char b)
-{
-  return (((unsigned long)r) <<  0) |
-         (((unsigned long)g) <<  8) |
-         (((unsigned long)b) << 16);
-}
-
-static void iupScintillaDecodeColor(long color, unsigned char *r, unsigned char *g, unsigned char *b)
-{
-  *r = (unsigned char)(((color) >>  0) & 0xFF);
-  *g = (unsigned char)(((color) >>  8) & 0xFF);
-  *b = (unsigned char)(((color) >> 16) & 0xFF);
-}
-
 char* iupScintillaGetCaseStyleAttrib(Ihandle* ih, int style)
 {
   int caseSty;

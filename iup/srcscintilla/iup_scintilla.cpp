@@ -53,6 +53,9 @@
 #include "iupsci_scrolling.h"
 #include "iupsci_tab.h"
 #include "iupsci_wordwrap.h"
+#include "iupsci_whitespace.h"
+#include "iupsci_cursor.h"
+#include "iupsci_bracelight.h"
 #include "iupsci.h"
 
 
@@ -71,6 +74,20 @@ sptr_t iupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam
 
 
 /***** AUXILIARY ATTRIBUTES *****/
+
+long iupScintillaEncodeColor(unsigned char r, unsigned char g, unsigned char b)
+{
+  return (((unsigned long)r) <<  0) |
+         (((unsigned long)g) <<  8) |
+         (((unsigned long)b) << 16);
+}
+
+void iupScintillaDecodeColor(long color, unsigned char *r, unsigned char *g, unsigned char *b)
+{
+  *r = (unsigned char)(((color) >>  0) & 0xFF);
+  *g = (unsigned char)(((color) >>  8) & 0xFF);
+  *b = (unsigned char)(((color) >> 16) & 0xFF);
+}
 
 void iupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
@@ -219,6 +236,16 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
       }
     }
     break;
+  case SCN_ZOOM:
+    {
+      IFni cb = (IFni)IupGetCallback(ih, "ZOOM_CB");
+      if (cb)
+      {
+        int points = iupScintillaSendMessage(ih, SCI_GETZOOM, 0, 0);
+        cb(ih, points);
+      }
+    }
+    break;
   case SCN_MODIFIED:
     {
       if (ih->data->ignore_change)
@@ -301,7 +328,7 @@ static void gtkScintillaMoveCursor(GtkWidget *w, GtkMovementStep step, gint coun
   (void)extend_selection;
 }
 
-static gboolean gtkTextKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
+static gboolean gtkScintillaKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
   iScintillaCallCaretCb(ih);
   (void)widget;
@@ -510,6 +537,10 @@ static int iScintillaCreateMethod(Ihandle* ih, void **params)
   ih->data = iupALLOCCTRLDATA();
   ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
   ih->data->append_newline = 1;
+  ih->data->useWSForeColour = 1;
+  ih->data->useWSBackColour = 1;
+  ih->data->useBraceHLIndicator = 1;
+  ih->data->useBraceBLIndicator = 1;
   iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", "1");
   return IUP_NOERROR;
 }
@@ -550,6 +581,7 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterCallback(ic, "CARET_CB", "iii");
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
   iupClassRegisterCallback(ic, "ACTION", "iiis");
+  iupClassRegisterCallback(ic, "ZOOM_CB", "i");
 
   /* Common Callbacks */
   iupBaseRegisterCommonCallbacks(ic);
@@ -593,13 +625,14 @@ static Iclass* iupScintillaNewClass(void)
   /* Undo, Redo */
   iupClassRegisterAttribute(ic, "UNDO", iupScintillaGetUndoAttrib, iupScintillaSetUndoAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDO", iupScintillaGetRedoAttrib, iupScintillaSetRedoAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "UNDOCOLLECT", iupScintillaGetUndoCollectAttrib, iupScintillaSetUndoCollectAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "UNDOCOLLECT", iupScintillaGetUndoCollectAttrib, iupScintillaSetUndoCollectAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   /* Overtype */
   iupClassRegisterAttribute(ic, "OVERWRITE", iupScintillaGetOvertypeAttrib, iupScintillaSetOvertypeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Tabs and Indentation Guides */
   iupClassRegisterAttribute(ic, "TABSIZE", iupScintillaGetTabSizeAttrib, iupScintillaSetTabSizeAttrib, IUPAF_SAMEASSYSTEM, "8", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "HIGHLIGHTGUIDE", iupScintillaGetHighlightGuideAttrib, iupScintillaSetHighlightGuideAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Line wrapping */
   iupClassRegisterAttribute(ic, "WORDWRAP", iupScintillaGetWordWrapAttrib, iupScintillaSetWordWrapAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -646,10 +679,36 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttributeId(ic, "MARGINTEXT", iupScintillaGetMarginTextAttribId, iupScintillaSetMarginTextAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARGINTEXTSTYLE", iupScintillaGetMarginTextStyleAttribId, iupScintillaSetMarginTextStyleAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "MARGINTEXTCLEARALL", NULL, iupScintillaSetMarginTextClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARGINCURSOR", iupScintillaGetMarginCursorAttribId, iupScintillaSetMarginCursorAttribId, IUPAF_NO_INHERIT);
 
   /* Marker Attributes */
   iupClassRegisterAttribute(ic, "MARKERDEFINE", NULL, iupScintillaSetMarkerDefineAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARKERSYMBOL", iupScintillaGetMarkerSymbolAttribId, iupScintillaSetMarkerSymbolAttribId, IUPAF_NO_INHERIT);
+
+  /* White space Attributes */
+  iupClassRegisterAttribute(ic, "EXTRAASCENT",  iupScintillaGetWSExtraDescentAttrib, iupScintillaSetWSExtraDescentAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXTRADESCENT", iupScintillaGetWSExtraAscentAttrib, iupScintillaSetWSExtraAscentAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WHITESPACEVIEW", iupScintillaGetViewWSAttrib, iupScintillaSetViewWSAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WHITESPACESIZE", iupScintillaGetWSSizeAttrib, iupScintillaSetWSSizeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WHITESPACEFGCOLOR", NULL, iupScintillaSetWSFgColorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WHITESPACEBGCOLOR", NULL, iupScintillaSetWSBgColorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "USEWHITESPACEFGCOLOR", iupScintillaGetWSUseFgColorAttrib, iupScintillaSetWSUseFgColorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "USEWHITESPACEBGCOLOR", iupScintillaGetWSUseBgColorAttrib, iupScintillaSetWSUseBgColorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  /* Brace highlighting Attributes */
+  iupClassRegisterAttribute(ic, "BRACEHIGHLIGHT", NULL, iupScintillaSetBraceHighlightAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BRACEBADLIGHT",  NULL, iupScintillaSetBraceBadlightAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BRACEHLINDICATOR", NULL, iupScintillaSetBraceHighlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BRACEBLINDICATOR", NULL, iupScintillaSetBraceBadlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "USEBRACEHLINDICATOR", iupScintillaGetUseBraceHLIndicatorAttrib, iupScintillaSetUseBraceHLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "USEBRACEBLINDICATOR", iupScintillaGetUseBraceBLIndicatorAttrib, iupScintillaSetUseBraceBLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "BRACEMATCH", iupScintillaGetBraceMatchAttribId, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+
+  /* Cursor and Zooming Attributes */
+  iupClassRegisterAttribute(ic, "CURSOR",  iupScintillaGetCursorAttrib, iupScintillaSetCursorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ZOOMIN",  NULL, iupScintillaSetZoomInAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ZOOMOUT", NULL, iupScintillaSetZoomOutAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ZOOM",    iupScintillaGetZoomAttrib, iupScintillaSetZoomAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Scrolling and automatic scrolling */
   iupClassRegisterAttribute(ic, "SCROLLBAR", iScintillaGetScrollbarAttrib, iScintillaSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -698,12 +757,8 @@ Ihandle *IupScintilla(void)
 - Indicators
 - Caret, selection, and hotspot styles
 
-- White space
-- Cursor
 - Annotations
-- Brace highlighting
 - Autocompletion/User lists
-- Zooming
 - Markers
 
 - FONT/BGCOLOR/FGCOLOR x STYLE*

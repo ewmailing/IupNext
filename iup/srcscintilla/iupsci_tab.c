@@ -35,8 +35,6 @@ SCI_GETLINEINDENTATION(int line)
 SCI_GETLINEINDENTPOSITION(int line)
 SCI_SETINDENTATIONGUIDES(int indentView)
 SCI_GETINDENTATIONGUIDES
-SCI_SETHIGHLIGHTGUIDE(int column)
-SCI_GETHIGHLIGHTGUIDE
 */
 
 char* iupScintillaGetTabSizeAttrib(Ihandle *ih)
@@ -59,6 +57,27 @@ int iupScintillaSetTabSizeAttrib(Ihandle *ih, const char *value)
     widthInChars = 2;
 
   iupScintillaSendMessage(ih, SCI_SETTABWIDTH, widthInChars, 0);
+
+  return 0;
+}
+
+char* iupScintillaGetHighlightGuideAttrib(Ihandle *ih)
+{
+  int col = iupScintillaSendMessage(ih, SCI_GETHIGHLIGHTGUIDE, 0, 0);
+  char* str = iupStrGetMemory(15);
+
+  sprintf(str, "%d", col);
+
+  return str;
+}
+
+int iupScintillaSetHighlightGuideAttrib(Ihandle *ih, const char *value)
+{
+  int col;
+  if (!iupStrToInt(value, &col))
+    return 0;
+
+  iupScintillaSendMessage(ih, SCI_SETHIGHLIGHTGUIDE, col, 0);
 
   return 0;
 }
