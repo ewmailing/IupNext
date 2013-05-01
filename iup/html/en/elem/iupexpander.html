@@ -25,12 +25,12 @@
 
 <h2>IupExpander <span class="style1">(since 3.8)</span></h2>
 <p>Creates a void container that can contain elements in its client area. This 
-control allows to show or hide its child by clicking in the title bar 
+control allows to show or hide its child by clicking in the bar 
 handler in order to expand or collapse the container.</p>
 
   <p>
   It does not have a native representation, but it contains also a <strong>IupCanvas</strong> to implement 
-	the title bar handler.</p>
+	the bar handler.</p>
 
 <h3><a name="Creation">Creation</a></h3>
 
@@ -58,7 +58,7 @@ systems. Will use the background color of the native parent.</p>
 	global attribute DLGFGCOLOR.</p>
 
 
-<p><strong>BARPOSITION</strong> (creation only): Indicates the title bar handler 
+<p><strong>BARPOSITION</strong> (creation only): Indicates the bar handler 
 position. 
 Possible values are &quot;TOP&quot;, 
 &quot;BOTTOM&quot;, &quot;LEFT&quot; or &quot;RIGHT&quot;. Default: &quot;TOP&quot;.</p>
@@ -69,7 +69,8 @@ the container elements. Possible values: &quot;OPEN&quot; (expanded) or &quot;CL
 OPEN. Setting this attribute will automatically change the layout of the entire 
 dialog so the child can be recomposed.</p>
 <p><strong>TITLE</strong> (<font SIZE="3">non inheritable</font>): the title, 
-shown in the title bar near the expand or collapse symbol.</p>
+shown in the title bar near the expand or collapse symbol. Shown only when 
+BARPOSITION=TOP.</p>
 
   <p><b>WID</b> (read-only): returns -1 if mapped.</p>
 
@@ -96,6 +97,8 @@ IupGetNextChild</strong>.</p>
 <p>The container can be created with no elements and be dynamic filled using
   <a href="../func/iupappend.html">IupAppend</a> or
 <a href="../func/iupinsert.html">IupInsert</a>.</p>
+<p>When the TITLE is defined and BARPOSITION=TOP then the expand/collapse symbol 
+is left aligned. In all other situations the expand/collapse symbol is centered.</p>
 
 
 <h3><a name="Examples">Examples</a></h3>

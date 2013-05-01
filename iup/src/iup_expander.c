@@ -24,7 +24,7 @@
 #include "iup_draw.h"
 
 
-#define IEXPAND_HANDLE_SIZE 16
+#define IEXPAND_HANDLE_SIZE 20
 #define IEXPAND_HANDLE_SPC   3
 
 enum { IEXPANDER_LEFT, IEXPANDER_RIGHT, IEXPANDER_TOP, IEXPANDER_BOTTOM };
@@ -50,15 +50,9 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int flag)
     return;
 
   if (flag == IEXPANDER_CLOSE)
-  {
-    if (IupGetInt(child, "VISIBLE"))
-      IupSetAttribute(child, "VISIBLE", "NO");
-  }
+    IupSetAttribute(child, "VISIBLE", "NO");
   else 
-  {
-    if (!IupGetInt(child, "VISIBLE"))
-      IupSetAttribute(child, "VISIBLE", "YES");
-  }
+    IupSetAttribute(child, "VISIBLE", "YES");
 
   IupRefresh(child); /* this will recompute the layout of the hole dialog */
 }
@@ -69,7 +63,6 @@ static int iExpanderGetBarSize(Ihandle* ih)
   if (ih->data->barSize == -1)
   {
     iupdrvFontGetCharSize(ih, NULL, &bar_size); 
-    bar_size += 5;
 
     if (bar_size < IEXPAND_HANDLE_SIZE)
       bar_size = IEXPAND_HANDLE_SIZE;
@@ -87,43 +80,82 @@ static int iExpanderGetBarSize(Ihandle* ih)
 static void iExpanderDrawTriangle(IdrawCanvas *dc, int x, int y, unsigned char r, unsigned char g, unsigned char b, int dir)
 {
   int points[6];
+
+  /* fix for smooth triangle */
+  int delta = (IEXPAND_HANDLE_SIZE - 2*IEXPAND_HANDLE_SPC)/2;
+
   switch(dir)
   {
   case IEXPANDER_LEFT:  /* arrow points left */
-    points[0] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    x += 3;  /* fix center */
+    points[0] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - delta;
     points[1] = y + IEXPAND_HANDLE_SPC;
-    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - delta;
     points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
     points[4] = x + IEXPAND_HANDLE_SPC;
     points[5] = y + IEXPAND_HANDLE_SIZE/2;
     break;
   case IEXPANDER_TOP:    /* arrow points top */
+    y += 3;  /* fix center */
     points[0] = x + IEXPAND_HANDLE_SPC;
-    points[1] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[1] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - (delta-1);
     points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
-    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - (delta-1);
     points[4] = x + IEXPAND_HANDLE_SIZE/2;
     points[5] = y + IEXPAND_HANDLE_SPC;
     break;
   case IEXPANDER_RIGHT:  /* arrow points right */
+    x += 3;  /* fix center */
     points[0] = x + IEXPAND_HANDLE_SPC;
     points[1] = y + IEXPAND_HANDLE_SPC;
     points[2] = x + IEXPAND_HANDLE_SPC;
     points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
-    points[4] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[4] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - delta;
     points[5] = y + IEXPAND_HANDLE_SIZE/2;
     break;
   case IEXPANDER_BOTTOM:  /* arrow points bottom */
+    y += 3;  /* fix center */
     points[0] = x + IEXPAND_HANDLE_SPC;
     points[1] = y + IEXPAND_HANDLE_SPC;
     points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
     points[3] = y + IEXPAND_HANDLE_SPC;
     points[4] = x + IEXPAND_HANDLE_SIZE/2;
-    points[5] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[5] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - (delta-1);
+
+    /* fix for simmetry */
+    iupDrawLine(dc, x+IEXPAND_HANDLE_SPC, y+IEXPAND_HANDLE_SPC, x+IEXPAND_HANDLE_SIZE-IEXPAND_HANDLE_SPC, y+IEXPAND_HANDLE_SPC, r, g, b, IUP_DRAW_STROKE);
     break;
   }
 
   iupDrawPolygon(dc, points, 3, r, g, b, IUP_DRAW_FILL);
+}
+
+static void iExpanderDrawArrow(IdrawCanvas *dc, int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b, int dir)
+{
+  unsigned char sr, sg, sb;
+
+  sr = (r+bg_r)/2;
+  sg = (g+bg_g)/2;
+  sb = (b+bg_b)/2;
+
+  /* to smooth the arrow border */
+  switch(dir)
+  {
+  case IEXPANDER_LEFT:  /* arrow points left */
+    iExpanderDrawTriangle(dc, x-1, y, sr, sg, sb, dir);
+    break;
+  case IEXPANDER_TOP:    /* arrow points top */
+    iExpanderDrawTriangle(dc, x, y-1, sr, sg, sb, dir);
+    break;
+  case IEXPANDER_RIGHT:  /* arrow points right */
+    iExpanderDrawTriangle(dc, x+1, y, sr, sg, sb, dir);
+    break;
+  case IEXPANDER_BOTTOM:  /* arrow points bottom */
+    iExpanderDrawTriangle(dc, x, y+1, sr, sg, sb, dir);
+    break;
+  }
+
+  iExpanderDrawTriangle(dc, x, y, r, g, b, dir);
 }
 
 static int iExpanderAction_CB(Ihandle* bar)
@@ -131,11 +163,13 @@ static int iExpanderAction_CB(Ihandle* bar)
   Ihandle *ih = bar->parent;
   IdrawCanvas *dc = iupDrawCreateCanvas(bar);
   unsigned char r=0, g=0, b=0;
+  unsigned char bg_r=0, bg_g=0, bg_b=0;
   char* title = iupAttribGetStr(ih, "TITLE");
   
-  iupDrawParentBackground(dc);
-
+  iupStrToRGB(iupBaseNativeParentGetBgColorAttrib(ih), &bg_r, &bg_g, &bg_b);
   iupStrToRGB(IupGetAttribute(ih, "FGCOLOR"), &r, &g, &b);
+
+  iupDrawParentBackground(dc);
 
   if (ih->data->position == IEXPANDER_TOP && title)
   {
@@ -143,9 +177,9 @@ static int iExpanderAction_CB(Ihandle* bar)
     int len;
 
     if (ih->data->state == IEXPANDER_CLOSE)
-      iExpanderDrawTriangle(dc, 0, 0, r, g, b, IEXPANDER_RIGHT);
+      iExpanderDrawArrow(dc, 1, 0, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT);
     else
-      iExpanderDrawTriangle(dc, 0, 0, r, g, b, IEXPANDER_BOTTOM);
+      iExpanderDrawArrow(dc, 0, 0, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM);
 
     iupStrNextLine(title, &len);  /* get the length of the first line */
     iupDrawText(dc, title, len, IEXPAND_HANDLE_SIZE, 0, r, g, b, IupGetAttribute(ih, "FONT"));
@@ -160,33 +194,33 @@ static int iExpanderAction_CB(Ihandle* bar)
       x = 0;
       y = (bar->currentheight - IEXPAND_HANDLE_SIZE)/2;
       if (ih->data->state == IEXPANDER_CLOSE)
-        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_RIGHT);
+        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT);
       else
-        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_LEFT);
+        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_LEFT);
       break;
     case IEXPANDER_TOP:
       x = (bar->currentwidth - IEXPAND_HANDLE_SIZE)/2;
       y = 0;
       if (ih->data->state == IEXPANDER_CLOSE)
-        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_BOTTOM);
+        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM);
       else
-        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_TOP);
+        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_TOP);
       break;
     case IEXPANDER_RIGHT:
       x = 0;
       y = (bar->currentheight - IEXPAND_HANDLE_SIZE)/2;
       if (ih->data->state == IEXPANDER_CLOSE)
-        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_LEFT);
+        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_LEFT);
       else
-        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_RIGHT);
+        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT);
       break;
     case IEXPANDER_BOTTOM:
       x = (bar->currentwidth - IEXPAND_HANDLE_SIZE)/2;
       y = 0;
       if (ih->data->state == IEXPANDER_CLOSE)
-        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_TOP);
+        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_TOP);
       else
-        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_BOTTOM);
+        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM);
       break;
     }
   }
@@ -348,6 +382,7 @@ static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
         int title_size = 0;
         iupdrvFontGetMultiLineStringSize(ih, title, &title_size, NULL);
         natural_w += title_size;
+        natural_h += 2*IEXPAND_HANDLE_SPC;
       }
     }
   }
@@ -410,7 +445,7 @@ static void iExpanderSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
   if (child)
   {
-//    if (IupGetInt(child, "VISIBLE"))
+    if (IupGetInt(child, "VISIBLE"))
       iupBaseSetCurrentSize(child, width, height, shrink);
   }
 }
@@ -438,7 +473,7 @@ static void iExpanderSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   if (child)
   {
-//    if (IupGetInt(child, "VISIBLE"))
+    if (IupGetInt(child, "VISIBLE"))
       iupBaseSetPosition(child, x, y);
   }
 }
@@ -528,8 +563,6 @@ Ihandle* IupExpander(Ihandle* child)
 }
 
 /* TODO:
-- melhor aparencia com imagem?
-- alinhar o texto verticalmente
 - expand automatico com mousemove e timer
 - feedback de mouseover
 */
