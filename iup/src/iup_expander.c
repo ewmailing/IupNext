@@ -24,7 +24,7 @@
 #include "iup_draw.h"
 
 
-#define IEXPAND_HANDLE_SIZE 15
+#define IEXPAND_HANDLE_SIZE 16
 #define IEXPAND_HANDLE_SPC   3
 
 enum { IEXPANDER_LEFT, IEXPANDER_RIGHT, IEXPANDER_TOP, IEXPANDER_BOTTOM };
@@ -43,7 +43,7 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int flag)
 {
   Ihandle *child = ih->firstchild->brother;
 
-  if (ih->firstchild->handle);
+  if (ih->firstchild->handle)
     iupdrvPostRedraw(ih->firstchild);
 
   if (!child)
@@ -52,18 +52,12 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int flag)
   if (flag == IEXPANDER_CLOSE)
   {
     if (IupGetInt(child, "VISIBLE"))
-    {
-      IupSetAttribute(child, "FLOATING", "IGNORE");
       IupSetAttribute(child, "VISIBLE", "NO");
-    }
   }
   else 
   {
     if (!IupGetInt(child, "VISIBLE"))
-    {
-      IupSetAttribute(child, "FLOATING", "NO");
       IupSetAttribute(child, "VISIBLE", "YES");
-    }
   }
 
   IupRefresh(child); /* this will recompute the layout of the hole dialog */
@@ -96,11 +90,11 @@ static void iExpanderDrawTriangle(IdrawCanvas *dc, int x, int y, unsigned char r
   switch(dir)
   {
   case IEXPANDER_LEFT:  /* arrow points left */
-    points[0] = x + IEXPAND_HANDLE_SPC;
+    points[0] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
     points[1] = y + IEXPAND_HANDLE_SPC;
-    points[2] = x + IEXPAND_HANDLE_SPC;
+    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
     points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
-    points[4] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[4] = x + IEXPAND_HANDLE_SPC;
     points[5] = y + IEXPAND_HANDLE_SIZE/2;
     break;
   case IEXPANDER_TOP:    /* arrow points top */
@@ -112,11 +106,11 @@ static void iExpanderDrawTriangle(IdrawCanvas *dc, int x, int y, unsigned char r
     points[5] = y + IEXPAND_HANDLE_SPC;
     break;
   case IEXPANDER_RIGHT:  /* arrow points right */
-    points[0] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[0] = x + IEXPAND_HANDLE_SPC;
     points[1] = y + IEXPAND_HANDLE_SPC;
-    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[2] = x + IEXPAND_HANDLE_SPC;
     points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
-    points[4] = x + IEXPAND_HANDLE_SPC;
+    points[4] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
     points[5] = y + IEXPAND_HANDLE_SIZE/2;
     break;
   case IEXPANDER_BOTTOM:  /* arrow points bottom */
@@ -149,7 +143,7 @@ static int iExpanderAction_CB(Ihandle* bar)
     int len;
 
     if (ih->data->state == IEXPANDER_CLOSE)
-      iExpanderDrawTriangle(dc, 0, 0, r, g, b, IEXPANDER_LEFT);
+      iExpanderDrawTriangle(dc, 0, 0, r, g, b, IEXPANDER_RIGHT);
     else
       iExpanderDrawTriangle(dc, 0, 0, r, g, b, IEXPANDER_BOTTOM);
 
@@ -298,7 +292,7 @@ static char* iExpanderGetBarSizeAttrib(Ihandle* ih)
 static int iExpanderSetUpdateAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
-  iupdrvPostRedraw(ih);
+  iupdrvPostRedraw(ih->firstchild);
   return 1;  /* store value in hash table */
 }
 
@@ -361,24 +355,22 @@ static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
   if (child)
   {
     /* update child natural bar_size first */
-    if (!(child->flags & IUP_FLOATING_IGNORE))
-      iupBaseComputeNaturalSize(child);
+    iupBaseComputeNaturalSize(child);
 
-    if (!(child->flags & IUP_FLOATING))
+    if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
     {
-      if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
-      {
+      if (IupGetInt(child, "VISIBLE"))
         natural_w += child->naturalwidth;
-        natural_h = iupMAX(natural_h, child->naturalheight);
-      }
-      else
-      {
-        natural_w = iupMAX(natural_w, child->naturalwidth);
-        natural_h += child->naturalheight;
-      }
-
-      child_expand = child->expand;
+      natural_h = iupMAX(natural_h, child->naturalheight);
     }
+    else
+    {
+      natural_w = iupMAX(natural_w, child->naturalwidth);
+      if (IupGetInt(child, "VISIBLE"))
+        natural_h += child->naturalheight;
+    }
+
+    child_expand = child->expand;
   }
 
   *expand = child_expand;
@@ -418,8 +410,7 @@ static void iExpanderSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
   if (child)
   {
-    if (!(child->flags & IUP_FLOATING) ||
-        !(child->flags & IUP_FLOATING_IGNORE))
+//    if (IupGetInt(child, "VISIBLE"))
       iupBaseSetCurrentSize(child, width, height, shrink);
   }
 }
@@ -447,7 +438,7 @@ static void iExpanderSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   if (child)
   {
-    if (!(child->flags & IUP_FLOATING))
+//    if (IupGetInt(child, "VISIBLE"))
       iupBaseSetPosition(child, x, y);
   }
 }
@@ -537,8 +528,8 @@ Ihandle* IupExpander(Ihandle* child)
 }
 
 /* TODO:
-- melhor com imagem
-- o tamanho natural não depende do FLOATING
+- melhor aparencia com imagem?
+- alinhar o texto verticalmente
 - expand automatico com mousemove e timer
 - feedback de mouseover
 */

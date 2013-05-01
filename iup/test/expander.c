@@ -12,6 +12,8 @@ void ExpanderTest(void)
   
   exp = IupExpander(bt);
 //  IupSetAttribute(exp, "BARPOSITION", "LEFT");
+//  IupSetAttribute(exp, "BARPOSITION", "BOTTOM");
+//  IupSetAttribute(exp, "BARPOSITION", "RIGHT");
 //  IupSetAttribute(exp, "FGCOLOR", "0 0 255");
 //  IupSetAttribute(exp, "TITLE", "IupExpander Title");
   IupSetAttribute(exp, "STATE", "OPEN");
