@@ -24,7 +24,8 @@
 #include "iup_draw.h"
 
 
-#define IEXPAND_HANDLE_SIZE 10
+#define IEXPAND_HANDLE_SIZE 15
+#define IEXPAND_HANDLE_SPC   3
 
 enum { IEXPANDER_LEFT, IEXPANDER_RIGHT, IEXPANDER_TOP, IEXPANDER_BOTTOM };
 enum { IEXPANDER_CLOSE, IEXPANDER_OPEN };
@@ -89,30 +90,112 @@ static int iExpanderGetBarSize(Ihandle* ih)
 |* Callbacks of canvas bar                                                   *|
 \*****************************************************************************/
 
+static void iExpanderDrawTriangle(IdrawCanvas *dc, int x, int y, unsigned char r, unsigned char g, unsigned char b, int dir)
+{
+  int points[6];
+  switch(dir)
+  {
+  case IEXPANDER_LEFT:  /* arrow points left */
+    points[0] = x + IEXPAND_HANDLE_SPC;
+    points[1] = y + IEXPAND_HANDLE_SPC;
+    points[2] = x + IEXPAND_HANDLE_SPC;
+    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[4] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[5] = y + IEXPAND_HANDLE_SIZE/2;
+    break;
+  case IEXPANDER_TOP:    /* arrow points top */
+    points[0] = x + IEXPAND_HANDLE_SPC;
+    points[1] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[4] = x + IEXPAND_HANDLE_SIZE/2;
+    points[5] = y + IEXPAND_HANDLE_SPC;
+    break;
+  case IEXPANDER_RIGHT:  /* arrow points right */
+    points[0] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[1] = y + IEXPAND_HANDLE_SPC;
+    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[4] = x + IEXPAND_HANDLE_SPC;
+    points[5] = y + IEXPAND_HANDLE_SIZE/2;
+    break;
+  case IEXPANDER_BOTTOM:  /* arrow points bottom */
+    points[0] = x + IEXPAND_HANDLE_SPC;
+    points[1] = y + IEXPAND_HANDLE_SPC;
+    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    points[3] = y + IEXPAND_HANDLE_SPC;
+    points[4] = x + IEXPAND_HANDLE_SIZE/2;
+    points[5] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
+    break;
+  }
+
+  iupDrawPolygon(dc, points, 3, r, g, b, IUP_DRAW_FILL);
+}
+
 static int iExpanderAction_CB(Ihandle* bar)
 {
   Ihandle *ih = bar->parent;
   IdrawCanvas *dc = iupDrawCreateCanvas(bar);
-  unsigned char r = 160, g = 160, b = 160, bg_r, bg_g, bg_b;
-  char str[50];
+  unsigned char r=0, g=0, b=0;
   char* title = iupAttribGetStr(ih, "TITLE");
-  int len;
   
   iupDrawParentBackground(dc);
 
-  if(ih->data->state == IEXPANDER_CLOSE)
-    sprintf(str, "[+] %s", title);
-  else
-    sprintf(str, "[-] %s", title);
-
   iupStrToRGB(IupGetAttribute(ih, "FGCOLOR"), &r, &g, &b);
-  if (r+g+b > 3*190)
-    { bg_r = 100; bg_g = 100; bg_b = 100; }
-  else
-    { bg_r = 255; bg_g = 255; bg_b = 255; }
 
-  iupStrNextLine(str, &len);  /* get the length of the first line */
-  iupDrawText(dc, str, len, 0, 0, r, g, b, IupGetAttribute(ih, "FONT"));
+  if (ih->data->position == IEXPANDER_TOP && title)
+  {
+    /* left align everything */
+    int len;
+
+    if (ih->data->state == IEXPANDER_CLOSE)
+      iExpanderDrawTriangle(dc, 0, 0, r, g, b, IEXPANDER_LEFT);
+    else
+      iExpanderDrawTriangle(dc, 0, 0, r, g, b, IEXPANDER_BOTTOM);
+
+    iupStrNextLine(title, &len);  /* get the length of the first line */
+    iupDrawText(dc, title, len, IEXPAND_HANDLE_SIZE, 0, r, g, b, IupGetAttribute(ih, "FONT"));
+  }
+  else
+  {
+    /* center align the arrow */
+    int x, y;
+    switch(ih->data->position)
+    {
+    case IEXPANDER_LEFT:
+      x = 0;
+      y = (bar->currentheight - IEXPAND_HANDLE_SIZE)/2;
+      if (ih->data->state == IEXPANDER_CLOSE)
+        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_RIGHT);
+      else
+        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_LEFT);
+      break;
+    case IEXPANDER_TOP:
+      x = (bar->currentwidth - IEXPAND_HANDLE_SIZE)/2;
+      y = 0;
+      if (ih->data->state == IEXPANDER_CLOSE)
+        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_BOTTOM);
+      else
+        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_TOP);
+      break;
+    case IEXPANDER_RIGHT:
+      x = 0;
+      y = (bar->currentheight - IEXPAND_HANDLE_SIZE)/2;
+      if (ih->data->state == IEXPANDER_CLOSE)
+        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_LEFT);
+      else
+        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_RIGHT);
+      break;
+    case IEXPANDER_BOTTOM:
+      x = (bar->currentwidth - IEXPAND_HANDLE_SIZE)/2;
+      y = 0;
+      if (ih->data->state == IEXPANDER_CLOSE)
+        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_TOP);
+      else
+        iExpanderDrawTriangle(dc, x, y, r, g, b, IEXPANDER_BOTTOM);
+      break;
+    }
+  }
 
   iupDrawFlush(dc);
 
@@ -247,24 +330,32 @@ static char* iExpanderGetStateAttrib(Ihandle* ih)
 
 static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
-  int title_size = 0,
-      child_expand = 0,
+  int child_expand = 0,
       natural_w, natural_h;
   Ihandle *child = ih->firstchild->brother;
   int bar_size = iExpanderGetBarSize(ih);
-  char* title = iupAttribGetStr(ih, "TITLE");
-  iupdrvFontGetMultiLineStringSize(ih, title, &title_size, NULL);
 
   /* bar */
   if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
   {
     natural_w = bar_size;
-    natural_h = title_size + IEXPAND_HANDLE_SIZE;
+    natural_h = IEXPAND_HANDLE_SIZE;
   }
   else
   {
-    natural_w = title_size + IEXPAND_HANDLE_SIZE;
+    natural_w = IEXPAND_HANDLE_SIZE;
     natural_h = bar_size;
+
+    if (ih->data->position == IEXPANDER_TOP)
+    {
+      char* title = iupAttribGetStr(ih, "TITLE");
+      if (title)
+      {
+        int title_size = 0;
+        iupdrvFontGetMultiLineStringSize(ih, title, &title_size, NULL);
+        natural_w += title_size;
+      }
+    }
   }
 
   if (child)
@@ -446,11 +537,8 @@ Ihandle* IupExpander(Ihandle* child)
 }
 
 /* TODO:
-- desenhar +- ><
-- texto na vertical?
-- alinhamento?
-- atributo para desenhar um triangulo apontando para a esquerda e para baixo, em vez de + e –
-
+- melhor com imagem
+- o tamanho natural não depende do FLOATING
 - expand automatico com mousemove e timer
 - feedback de mouseover
 */

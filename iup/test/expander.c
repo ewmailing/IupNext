@@ -11,9 +11,9 @@ void ExpanderTest(void)
 //  IupSetAttribute(bt, "RASTERSIZE", "30x");
   
   exp = IupExpander(bt);
-//  IupSetAttribute(exp, "BARPOSITION", "TOP");
+//  IupSetAttribute(exp, "BARPOSITION", "LEFT");
 //  IupSetAttribute(exp, "FGCOLOR", "0 0 255");
-  IupSetAttribute(exp, "TITLE", "IupExpander Title");
+//  IupSetAttribute(exp, "TITLE", "IupExpander Title");
   IupSetAttribute(exp, "STATE", "OPEN");
 
   bt2 = IupButton("Button TWO", NULL);
