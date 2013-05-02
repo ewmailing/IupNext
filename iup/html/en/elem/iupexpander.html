@@ -45,6 +45,9 @@ expander(<strong>child</strong>) [in LED]</pre>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
+<p><strong>AUTOSHOW</strong> (<font SIZE="3">non inheritable</font>): enables 
+the automatic show of the child when mouse is over the handler more than 1 
+second. Default: No.</p>
 <p><strong>BARSIZE</strong> (<font SIZE="3">non inheritable</font>): controls 
 the size of the bar handler. Default: the height of a text line plus 5 pixels.</p>
 
@@ -99,6 +102,9 @@ IupGetNextChild</strong>.</p>
 <a href="../func/iupinsert.html">IupInsert</a>.</p>
 <p>When the TITLE is defined and BARPOSITION=TOP then the expand/collapse symbol 
 is left aligned. In all other situations the expand/collapse symbol is centered.</p>
+<p>When AUTOSHOW=Yes the dialog layout is NOT recalculated. The child is shown 
+on top of the dialog, so the other children will not move or redraw. After the 
+mouse is move away from the child then it is automatically hidden.</p>
 
 
 <h3><a name="Examples">Examples</a></h3>

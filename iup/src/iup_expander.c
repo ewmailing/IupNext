@@ -266,6 +266,15 @@ static int iExpanderGlobalMotion_cb(int x, int y)
   Ihandle* ih = (Ihandle*)IupGetGlobal("_IUP_EXPANDER_GLOBAL");
   Ihandle *child = ih->firstchild->brother;
 
+  if (ih->data->state != IEXPANDER_OPEN_FLOAT)
+  {
+    IupSetGlobal("_IUP_EXPANDER_GLOBAL", NULL);
+    IupSetFunction("GLOBALMOTION_CB", IupGetFunction("_IUP_OLD_GLOBALMOTION_CB"));
+    IupSetFunction("_IUP_OLD_GLOBALMOTION_CB", NULL);
+    IupSetGlobal("INPUTCALLBACKS", "No");
+    return IUP_DEFAULT;
+  }
+
   child_x = 0, child_y = 0;
   iupdrvClientToScreen(ih->firstchild, &child_x, &child_y);
   if (x > child_x && x < child_x+ih->firstchild->currentwidth &&
@@ -284,6 +293,7 @@ static int iExpanderGlobalMotion_cb(int x, int y)
     IupSetFunction("_IUP_OLD_GLOBALMOTION_CB", NULL);
     IupSetGlobal("INPUTCALLBACKS", "No");
   }
+
   return IUP_DEFAULT;
 }
 
@@ -406,9 +416,6 @@ static char* iExpanderGetClientOffsetAttrib(Ihandle* ih)
 
 static int iExpanderSetPositionAttrib(Ihandle* ih, const char* value)
 {
-  if (ih->handle) /* only before map */
-    return 0;
-
   if (iupStrEqualNoCase(value, "LEFT"))
     ih->data->position = IEXPANDER_LEFT;
   else if (iupStrEqualNoCase(value, "RIGHT"))
