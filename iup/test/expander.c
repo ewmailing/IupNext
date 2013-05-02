@@ -525,7 +525,7 @@ void ExpanderTest(void)
   _hbox_2 = IupHbox(IupSetAttributes(IupFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
             IupSetAttributes(IupFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
             NULL);
-  _hbox_2 = IupExpander(_hbox_2);
+  _hbox_2 = IupExpander(IupFrame(_hbox_2));
   IupSetAttribute(_hbox_2, "BARPOSITION", "BOTTOM");
   IupSetAttribute(_hbox_2, "AUTOSHOW", "Yes");
 

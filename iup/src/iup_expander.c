@@ -300,6 +300,7 @@ static int iExpanderGlobalMotion_cb(int x, int y)
 static int iExpanderTimer_cb(Ihandle* timer)
 {
   Ihandle* ih = (Ihandle*)iupAttribGet(timer, "_IUP_EXPANDER");
+  Ihandle *child = ih->firstchild->brother;
 
   /* run timer just once each time */
   IupSetAttribute(timer, "RUN", "No");
@@ -309,6 +310,7 @@ static int iExpanderTimer_cb(Ihandle* timer)
   ih->data->state = IEXPANDER_OPEN_FLOAT;
   iExpanderOpenCloseChild(ih, 0);
   IupRefreshChildren(ih);
+  IupSetAttribute(child, "ZORDER", "TOP"); 
 
   /* now monitor mouse move */
   IupSetGlobal("INPUTCALLBACKS", "Yes");
