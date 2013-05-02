@@ -36,6 +36,8 @@ struct _IcontrolData
   int position;
   int state;
   int barSize;
+
+  int highlight;
 };
 
 
@@ -158,6 +160,23 @@ static void iExpanderDrawArrow(IdrawCanvas *dc, int x, int y, unsigned char r, u
   iExpanderDrawTriangle(dc, x, y, r, g, b, dir);
 }
 
+static void iExpanderHighligh(unsigned char *r, unsigned char *g, unsigned char *b)
+{
+  int i = (*r+*g+*b)/3;
+  if (i < 128)
+  {
+    *r = (*r+255)/2;
+    *g = (*g+255)/2;
+    *b = (*b+255)/2;
+  }
+  else
+  {
+    *r = (*r+0)/2;
+    *g = (*g+0)/2;
+    *b = (*b+0)/2;
+  }
+}
+
 static int iExpanderAction_CB(Ihandle* bar)
 {
   Ihandle *ih = bar->parent;
@@ -175,19 +194,25 @@ static int iExpanderAction_CB(Ihandle* bar)
   {
     /* left align everything */
     int len;
+    iupStrNextLine(title, &len);  /* get the length of the first line */
+    iupDrawText(dc, title, len, IEXPAND_HANDLE_SIZE, 0, r, g, b, IupGetAttribute(ih, "FONT"));
+
+    if (ih->data->highlight)
+      iExpanderHighligh(&r, &g, &b);
 
     if (ih->data->state == IEXPANDER_CLOSE)
       iExpanderDrawArrow(dc, 1, 0, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT);
     else
       iExpanderDrawArrow(dc, 0, 0, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM);
-
-    iupStrNextLine(title, &len);  /* get the length of the first line */
-    iupDrawText(dc, title, len, IEXPAND_HANDLE_SIZE, 0, r, g, b, IupGetAttribute(ih, "FONT"));
   }
   else
   {
     /* center align the arrow */
     int x, y;
+
+    if (ih->data->highlight)
+      iExpanderHighligh(&r, &g, &b);
+
     switch(ih->data->position)
     {
     case IEXPANDER_LEFT:
@@ -229,6 +254,28 @@ static int iExpanderAction_CB(Ihandle* bar)
 
   iupDrawKillCanvas(dc);
 
+  return IUP_DEFAULT;
+}
+
+static int iExpanderLeaveWindow_cb(Ihandle* bar)
+{
+  Ihandle* ih = bar->parent;
+  if (ih->data->highlight)
+  {
+    ih->data->highlight = 0;
+    iupdrvPostRedraw(ih->firstchild);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iExpanderEnterWindow_cb(Ihandle* bar)
+{
+  Ihandle* ih = bar->parent;
+  if (!ih->data->highlight)
+  {
+    ih->data->highlight = 1;
+    iupdrvPostRedraw(ih->firstchild);
+  }
   return IUP_DEFAULT;
 }
 
@@ -505,6 +552,9 @@ static int iExpanderCreateMethod(Ihandle* ih, void** params)
   /* Setting callbacks */
   IupSetCallback(bar, "BUTTON_CB", (Icallback) iExpanderButton_CB);
   IupSetCallback(bar, "ACTION",    (Icallback) iExpanderAction_CB);
+  IupSetCallback(bar, "ACTION",    (Icallback) iExpanderAction_CB);
+  IupSetCallback(bar, "ENTERWINDOW_CB", (Icallback)iExpanderEnterWindow_cb);
+  IupSetCallback(bar, "LEAVEWINDOW_CB", (Icallback)iExpanderLeaveWindow_cb);
 
   if (params)
   {
@@ -564,5 +614,4 @@ Ihandle* IupExpander(Ihandle* child)
 
 /* TODO:
 - expand automatico com mousemove e timer
-- feedback de mouseover
 */
