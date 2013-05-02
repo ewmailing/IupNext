@@ -28,7 +28,7 @@
 #define IEXPAND_HANDLE_SPC   3
 
 enum { IEXPANDER_LEFT, IEXPANDER_RIGHT, IEXPANDER_TOP, IEXPANDER_BOTTOM };
-enum { IEXPANDER_CLOSE, IEXPANDER_OPEN };
+enum { IEXPANDER_CLOSE, IEXPANDER_OPEN, IEXPANDER_OPEN_FLOAT };
 
 struct _IcontrolData
 {
@@ -37,11 +37,13 @@ struct _IcontrolData
   int state;
   int barSize;
 
-  int highlight;
+  int highlight,
+      auto_show;
+  Ihandle* timer;
 };
 
 
-static void iExpanderOpenCloseChild(Ihandle* ih, int flag)
+static void iExpanderOpenCloseChild(Ihandle* ih, int refresh)
 {
   Ihandle *child = ih->firstchild->brother;
 
@@ -51,12 +53,13 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int flag)
   if (!child)
     return;
 
-  if (flag == IEXPANDER_CLOSE)
+  if (ih->data->state == IEXPANDER_CLOSE)
     IupSetAttribute(child, "VISIBLE", "NO");
   else 
     IupSetAttribute(child, "VISIBLE", "YES");
 
-  IupRefresh(child); /* this will recompute the layout of the hole dialog */
+  if (refresh)
+    IupRefresh(child); /* this will recompute the layout of the hole dialog */
 }
 
 static int iExpanderGetBarSize(Ihandle* ih)
@@ -257,6 +260,54 @@ static int iExpanderAction_CB(Ihandle* bar)
   return IUP_DEFAULT;
 }
 
+static int iExpanderGlobalMotion_cb(int x, int y)
+{
+  int child_x, child_y;
+  Ihandle* ih = (Ihandle*)IupGetGlobal("_IUP_EXPANDER_GLOBAL");
+  Ihandle *child = ih->firstchild->brother;
+
+  child_x = 0, child_y = 0;
+  iupdrvClientToScreen(ih->firstchild, &child_x, &child_y);
+  if (x > child_x && x < child_x+ih->firstchild->currentwidth &&
+      y > child_y && y < child_y+ih->firstchild->currentheight)
+    return IUP_DEFAULT;  /* ignore if inside the bar */
+
+  child_x = 0, child_y = 0;
+  iupdrvClientToScreen(child, &child_x, &child_y);
+  if (x < child_x || x > child_x+child->currentwidth ||
+      y < child_y || y > child_y+child->currentheight)
+  {
+    ih->data->state = IEXPANDER_CLOSE;
+    iExpanderOpenCloseChild(ih, 0);
+    IupSetGlobal("_IUP_EXPANDER_GLOBAL", NULL);
+    IupSetFunction("GLOBALMOTION_CB", IupGetFunction("_IUP_OLD_GLOBALMOTION_CB"));
+    IupSetFunction("_IUP_OLD_GLOBALMOTION_CB", NULL);
+    IupSetGlobal("INPUTCALLBACKS", "No");
+  }
+  return IUP_DEFAULT;
+}
+
+static int iExpanderTimer_cb(Ihandle* timer)
+{
+  Ihandle* ih = (Ihandle*)iupAttribGet(timer, "_IUP_EXPANDER");
+
+  /* run timer just once each time */
+  IupSetAttribute(timer, "RUN", "No");
+
+  /* just show child on top,
+     that's why child must be a native container when using autoshow. */
+  ih->data->state = IEXPANDER_OPEN_FLOAT;
+  iExpanderOpenCloseChild(ih, 0);
+  IupRefreshChildren(ih);
+
+  /* now monitor mouse move */
+  IupSetGlobal("INPUTCALLBACKS", "Yes");
+  IupSetFunction("_IUP_OLD_GLOBALMOTION_CB", IupGetFunction("GLOBALMOTION_CB"));
+  IupSetGlobal("_IUP_EXPANDER_GLOBAL", (char*)ih);
+  IupSetFunction("GLOBALMOTION_CB", (Icallback)iExpanderGlobalMotion_cb);
+  return IUP_DEFAULT;
+}
+
 static int iExpanderLeaveWindow_cb(Ihandle* bar)
 {
   Ihandle* ih = bar->parent;
@@ -264,6 +315,12 @@ static int iExpanderLeaveWindow_cb(Ihandle* bar)
   {
     ih->data->highlight = 0;
     iupdrvPostRedraw(ih->firstchild);
+
+    if (ih->data->auto_show)
+    {
+      if (IupGetInt(ih->data->timer, "RUN"))
+        IupSetAttribute(ih->data->timer, "RUN", "No");
+    }
   }
   return IUP_DEFAULT;
 }
@@ -275,6 +332,11 @@ static int iExpanderEnterWindow_cb(Ihandle* bar)
   {
     ih->data->highlight = 1;
     iupdrvPostRedraw(ih->firstchild);
+
+    if (ih->data->auto_show && 
+        ih->firstchild->brother &&
+        ih->data->state==IEXPANDER_CLOSE)
+      IupSetAttribute(ih->data->timer, "RUN", "Yes");
   }
   return IUP_DEFAULT;
 }
@@ -283,12 +345,18 @@ static int iExpanderButton_CB(Ihandle* bar, int button, int pressed, int x, int 
 {
   Ihandle* ih = bar->parent;
 
+  if (ih->data->auto_show)
+  {
+    if (IupGetInt(ih->data->timer, "RUN"))
+      IupSetAttribute(ih->data->timer, "RUN", "No");
+  }
+
   if (button==IUP_BUTTON1 && pressed)
   {
     /* Update the state: OPEN ==> collapsed, CLOSE ==> expanded */
      ih->data->state = (ih->data->state == IEXPANDER_OPEN? IEXPANDER_CLOSE: IEXPANDER_OPEN);
 
-     iExpanderOpenCloseChild(ih, ih->data->state);
+     iExpanderOpenCloseChild(ih, 1);
   }
 
   (void)x;
@@ -384,7 +452,7 @@ static int iExpanderSetStateAttrib(Ihandle* ih, const char* value)
   else
     ih->data->state = IEXPANDER_CLOSE;
 
-  iExpanderOpenCloseChild(ih, ih->data->state);
+  iExpanderOpenCloseChild(ih, 1);
 
   return 0; /* do not store value in hash table */
 }
@@ -395,6 +463,35 @@ static char* iExpanderGetStateAttrib(Ihandle* ih)
     return "OPEN";
   else
     return "CLOSE";
+}
+
+static int iExpanderSetAutoShowAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->auto_show = iupStrBoolean(value);
+  if (ih->data->auto_show)
+  {
+    if (!ih->data->timer)
+    {
+      ih->data->timer = IupTimer();
+      IupSetAttribute(ih->data->timer, "TIME", "1000");  /* 1 second */
+      IupSetCallback(ih->data->timer, "ACTION_CB", iExpanderTimer_cb);
+      iupAttribSetStr(ih->data->timer, "_IUP_EXPANDER", (char*)ih);  /* 1 second */
+    }
+  }
+  else
+  {
+    if (ih->data->timer)
+      IupSetAttribute(ih->data->timer, "RUN", "NO");
+  }
+  return 0; /* do not store value in hash table */
+}
+
+static char* iExpanderGetAutoShowAttrib(Ihandle* ih)
+{
+  if (ih->data->auto_show)
+    return "Yes";
+  else
+    return "No";
 }
 
 
@@ -441,14 +538,14 @@ static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
 
     if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
     {
-      if (IupGetInt(child, "VISIBLE"))
+      if (ih->data->state == IEXPANDER_OPEN)  /* only open, not float */
         natural_w += child->naturalwidth;
       natural_h = iupMAX(natural_h, child->naturalheight);
     }
     else
     {
       natural_w = iupMAX(natural_w, child->naturalwidth);
-      if (IupGetInt(child, "VISIBLE"))
+      if (ih->data->state == IEXPANDER_OPEN)  /* only open, not float */
         natural_h += child->naturalheight;
     }
 
@@ -492,8 +589,10 @@ static void iExpanderSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
   if (child)
   {
-    if (IupGetInt(child, "VISIBLE"))
+    if (ih->data->state == IEXPANDER_OPEN)
       iupBaseSetCurrentSize(child, width, height, shrink);
+    else if (ih->data->state == IEXPANDER_OPEN_FLOAT)  /* simply set to the natural size */
+      iupBaseSetCurrentSize(child, child->currentwidth, child->currentheight, shrink);
   }
 }
 
@@ -520,14 +619,23 @@ static void iExpanderSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   if (child)
   {
-    if (IupGetInt(child, "VISIBLE"))
+    if (ih->data->state == IEXPANDER_OPEN)
       iupBaseSetPosition(child, x, y);
+    else if (ih->data->state == IEXPANDER_OPEN_FLOAT)
+    {
+      if (ih->data->position == IEXPANDER_RIGHT)
+        x -= child->currentwidth;
+      else if (ih->data->position == IEXPANDER_BOTTOM)
+        y -= child->currentheight;
+
+      iupBaseSetPosition(child, x, y);
+    }
   }
 }
 
 static void iExpanderChildAddedMethod(Ihandle* ih, Ihandle* child)
 {
-  iExpanderOpenCloseChild(ih, ih->data->state);
+  iExpanderOpenCloseChild(ih, 0);
   (void)child;
 }
 
@@ -566,6 +674,12 @@ static int iExpanderCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
+static void iExpanderDestroyMethod(Ihandle* ih)
+{
+  if (ih->data->timer)
+    IupDestroy(ih->data->timer);
+}
+
 Iclass* iupExpanderNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
@@ -579,6 +693,7 @@ Iclass* iupExpanderNewClass(void)
   /* Class functions */
   ic->New     = iupExpanderNewClass;
   ic->Create  = iExpanderCreateMethod;
+  ic->Destroy  = iExpanderDestroyMethod;
   ic->Map     = iupBaseTypeVoidMapMethod;
   ic->ChildAdded = iExpanderChildAddedMethod;
 
@@ -600,6 +715,7 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "STATE", iExpanderGetStateAttrib, iExpanderSetStateAttrib, IUPAF_SAMEASSYSTEM, "OPEN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iExpanderSetUpdateAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLE", NULL, iExpanderSetUpdateAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AUTOSHOW", iExpanderGetAutoShowAttrib, iExpanderSetAutoShowAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   return ic;
 }
@@ -611,7 +727,3 @@ Ihandle* IupExpander(Ihandle* child)
   children[1] = NULL;
   return IupCreatev("expander", children);
 }
-
-/* TODO:
-- expand automatico com mousemove e timer
-*/
