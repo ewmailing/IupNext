@@ -25,9 +25,11 @@
 
 <h2>IupNormalizer <span class="style1">(since 3.0)</span></h2>
 
-<p>Normalizes all controls from a list so their natural size to be the biggest natural size among 
+<p>It is a void container that does not affects the dialog layout. It act by normalizing all 
+child controls so their natural size to be the biggest natural size among 
 them. All natural width will be set to the biggest width, and all natural height 
-will be set to the biggest height according to is value. </p>
+will be set to the biggest height according to is value. The child controls must 
+be inside a valid container in the dialog. </p>
 
 <h3><a name="Creation">Creation</a></h3>
 <pre>Ihandle* IupNormalizer(Ihandle *<strong>ih_first</strong>, ...); [in C]

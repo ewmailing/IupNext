@@ -522,10 +522,11 @@ void ExpanderTest(void)
 //  IupSetAttribute(_cnv_1,"CANFOCUS","NO");
   set_callbacks(_cnv_1);
 
-  _hbox_2 = IupHbox(IupSetAttributes(IupFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
+  _hbox_2 = IupFrame(IupHbox(IupSetAttributes(IupFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
             IupSetAttributes(IupFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
-            NULL);
-  _hbox_2 = IupExpander(IupFrame(_hbox_2));
+            NULL));
+IupSetAttribute(_hbox_2, "BGCOLOR", IupGetAttribute(_hbox_2, "BGCOLOR"));
+  _hbox_2 = IupExpander(_hbox_2);
   IupSetAttribute(_hbox_2, "BARPOSITION", "BOTTOM");
   IupSetAttribute(_hbox_2, "AUTOSHOW", "Yes");
 

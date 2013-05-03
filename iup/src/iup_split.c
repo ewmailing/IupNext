@@ -392,7 +392,7 @@ static int iSplitFocus_CB(Ihandle* bar, int focus)
 static int iSplitSetColorAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
-  iupdrvPostRedraw(ih);
+  IupUpdate(ih);
   return 1;  /* store value in hash table */
 }
 

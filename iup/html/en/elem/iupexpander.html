@@ -9,6 +9,9 @@
 .style1 {
 	font-size: large;
 }
+.style2 {
+	color: #FF0000;
+}
 </style>
 </head>
 <body>
@@ -45,7 +48,7 @@ expander(<strong>child</strong>) [in LED]</pre>
 
 <p><strong>AUTOSHOW</strong> (<font SIZE="3">non inheritable</font>): enables 
 the automatic show of the child when mouse is over the handler more than 1 
-second. Default: No.</p>
+second. Default: No. See <a href="#Notes">Notes</a> bellow.</p>
 <p><strong>BARSIZE</strong> (<font SIZE="3">non inheritable</font>): controls 
 the size of the bar handler. Default: the height of a text line plus 5 pixels.</p>
 
@@ -91,7 +94,7 @@ MINSIZE</a>, <a href="../attrib/iup_maxsize.html">
 MAXSIZE</a>: 
 also accepted.</p>
 
-<h3>Notes</h3>
+<h3><a name="Notes">Notes</a></h3>
 <p>The <strong>IupCanvas</strong> bar handler is always the first child of the 
 split. It can be obtained using <strong>IupGetChild</strong> or <strong>
 IupGetNextChild</strong>.</p>
@@ -102,7 +105,8 @@ IupGetNextChild</strong>.</p>
 is left aligned. In all other situations the expand/collapse symbol is centered.</p>
 <p>When AUTOSHOW=Yes the dialog layout is NOT recalculated. The child is shown 
 on top of the dialog, so the other children will not move or redraw. After the 
-mouse is move away from the child then it is automatically hidden. IMPORTANT: 
+mouse is move away from the child then it is automatically hidden. 
+<span class="style2"><strong>IMPORTANT</strong></span>: 
 this feature will ONLY work if the child is a native container like <strong>
 IupFrame</strong>, <strong>IupScrollBar</strong> or <strong>IupTabs</strong>.</p>
 

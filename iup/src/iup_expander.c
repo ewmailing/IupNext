@@ -47,8 +47,7 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int refresh)
 {
   Ihandle *child = ih->firstchild->brother;
 
-  if (ih->firstchild->handle)
-    iupdrvPostRedraw(ih->firstchild);
+  IupUpdate(ih->firstchild);
 
   if (!child)
     return;
@@ -326,7 +325,7 @@ static int iExpanderLeaveWindow_cb(Ihandle* bar)
   if (ih->data->highlight)
   {
     ih->data->highlight = 0;
-    iupdrvPostRedraw(ih->firstchild);
+    IupUpdate(ih->firstchild);
 
     if (ih->data->auto_show)
     {
@@ -343,7 +342,7 @@ static int iExpanderEnterWindow_cb(Ihandle* bar)
   if (!ih->data->highlight)
   {
     ih->data->highlight = 1;
-    iupdrvPostRedraw(ih->firstchild);
+    IupUpdate(ih->firstchild);
 
     if (ih->data->auto_show && 
         ih->firstchild->brother &&
@@ -450,7 +449,7 @@ static char* iExpanderGetBarSizeAttrib(Ihandle* ih)
 static int iExpanderSetUpdateAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
-  iupdrvPostRedraw(ih->firstchild);
+  IupUpdate(ih->firstchild);
   return 1;  /* store value in hash table */
 }
 

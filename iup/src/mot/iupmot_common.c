@@ -145,6 +145,7 @@ void iupdrvReparent(Ihandle* ih)
   Widget new_parent = iupChildTreeGetNativeParentHandle(ih);
   Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");  /* here is used as the native child because is the outmost component of the elemement */
   if (!widget) widget = ih->handle;
+
   if (XtParent(widget) != new_parent)
   {
     int old_visible = IupGetInt(ih, "VISIBLE");
@@ -310,6 +311,8 @@ int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
   if (iupdrvIsVisible(ih))
   {
     Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
+  if (!widget) widget = ih->handle;
+
     if (iupStrEqualNoCase(value, "TOP"))
       XRaiseWindow(iupmot_display, XtWindow(widget));
     else

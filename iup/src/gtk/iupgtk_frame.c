@@ -136,8 +136,10 @@ static int gtkFrameMapMethod(Ihandle* ih)
 
   /* the container that will receive the child element. */
   inner_parent = iupgtkNativeContainerNew();
+
   if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
     iupgtkNativeContainerSetHasWindow(inner_parent, TRUE);
+
   gtk_container_add((GtkContainer*)ih->handle, inner_parent);
   gtk_widget_show(inner_parent);
 
