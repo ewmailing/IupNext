@@ -24,9 +24,7 @@
 </div>
 
 <h2>IupExpander <span class="style1">(since 3.8)</span></h2>
-<p>Creates a void container that can contain elements in its client area. This 
-control allows to show or hide its child by clicking in the bar 
-handler in order to expand or collapse the container.</p>
+<p>Creates a void container that can interactively show or hide its child.</p>
 
   <p>
   It does not have a native representation, but it contains also a <strong>IupCanvas</strong> to implement 
@@ -104,7 +102,9 @@ IupGetNextChild</strong>.</p>
 is left aligned. In all other situations the expand/collapse symbol is centered.</p>
 <p>When AUTOSHOW=Yes the dialog layout is NOT recalculated. The child is shown 
 on top of the dialog, so the other children will not move or redraw. After the 
-mouse is move away from the child then it is automatically hidden.</p>
+mouse is move away from the child then it is automatically hidden. IMPORTANT: 
+this feature will ONLY work if the child is a native container like <strong>
+IupFrame</strong>, <strong>IupScrollBar</strong> or <strong>IupTabs</strong>.</p>
 
 
 <h3><a name="Examples">Examples</a></h3>
