@@ -22,6 +22,7 @@
 #include "iup_drv.h"
 #include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
+#include "iup_frame.h"
 
 #include "iupgtk_drv.h"
 
@@ -56,21 +57,27 @@ static int gtkFrameSetTitleAttrib(Ihandle* ih, const char* value)
 static int gtkFrameSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
-  GtkWidget* label = gtk_frame_get_label_widget((GtkFrame*)ih->handle);
+  GtkWidget* widget = gtk_frame_get_label_widget((GtkFrame*)ih->handle);
+
+  if (!iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
+  {
+    /* ignore given value, must use only from parent */
+    value = iupBaseNativeParentGetBgColor(ih);
+  }
 
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
 
-  if (label)
-    iupgtkSetBgColor(label, r, g, b);
+  if (widget)
+    iupgtkSetBgColor(widget, r, g, b);
+
+  widget = gtk_bin_get_child((GtkBin*)ih->handle);
+  iupgtkSetBgColor(widget, r, g, b);
 
   if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
-  {
-    GtkWidget* inner_parent = gtk_bin_get_child((GtkBin*)ih->handle);
-    iupgtkSetBgColor(inner_parent, r, g, b);
-  }
-
-  return 1;
+    return 1;  /* save on the hash table */
+  else
+    return 0;
 }
 
 static int gtkFrameSetFgColorAttrib(Ihandle* ih, const char* value)
@@ -137,8 +144,8 @@ static int gtkFrameMapMethod(Ihandle* ih)
   /* the container that will receive the child element. */
   inner_parent = iupgtkNativeContainerNew();
 
-  if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
-    iupgtkNativeContainerSetHasWindow(inner_parent, TRUE);
+  /* must set this so IupFrame will be always a full native containter */
+  iupgtkNativeContainerSetHasWindow(inner_parent, TRUE);
 
   gtk_container_add((GtkContainer*)ih->handle, inner_parent);
   gtk_widget_show(inner_parent);
@@ -163,7 +170,7 @@ void iupdrvFrameInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkFrameSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupFrameGetBgColorAttrib, gtkFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkFrameSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT);

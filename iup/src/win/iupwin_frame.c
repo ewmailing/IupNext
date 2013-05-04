@@ -56,14 +56,6 @@ static char* winFrameGetClientOffsetAttrib(Ihandle* ih)
   return "0x0";
 }
 
-static char* winFrameGetBgColorAttrib(Ihandle* ih)
-{
-  if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
-    return NULL;
-  else
-    return iupBaseNativeParentGetBgColorAttrib(ih);
-}
-
 static int winFrameSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
@@ -71,7 +63,7 @@ static int winFrameSetBgColorAttrib(Ihandle* ih, const char* value)
   if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
   {
     IupUpdate(ih); /* post a redraw */
-    return 1;
+    return 1;  /* save on the hash table */
   }
   else
     return 0;
@@ -240,7 +232,7 @@ void iupdrvFrameInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", winFrameGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", winFrameGetBgColorAttrib, winFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE|IUPAF_DEFAULT);  
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupFrameGetBgColorAttrib, winFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE|IUPAF_DEFAULT);  
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NOT_MAPPED);

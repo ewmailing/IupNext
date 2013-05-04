@@ -36,6 +36,14 @@ static void iFrameGetDecorSize(Ihandle* ih, int *width, int *height)
     (*height) += iupFrameGetTitleHeight(ih);
 }
 
+char* iupFrameGetBgColorAttrib(Ihandle* ih)
+{
+  if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
+    return NULL;  /* get from the hash table */
+  else
+    return iupBaseNativeParentGetBgColorAttrib(ih);
+}
+
 static char* iFrameGetClientSizeAttrib(Ihandle* ih)
 {
   int width, height, decorwidth, decorheight;

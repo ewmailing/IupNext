@@ -23,6 +23,7 @@
 #include "iup_str.h"
 #include "iup_dialog.h"
 #include "iup_image.h"
+#include "iup_frame.h"
 #include "iup_drv.h"
 #include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
@@ -69,10 +70,12 @@ static int motFrameSetBgColorAttrib(Ihandle* ih, const char* value)
         iupmotSetBgColor(title_label, color);
     }
     else
+    {
       iupmotSetBgColor(child_manager, color);
-
-    return 1;
+      return 1;  /* save on the hash table */
+    }
   }
+
   return 0; 
 }
 
@@ -269,7 +272,7 @@ void iupdrvFrameInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, motFrameSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupFrameGetBgColorAttrib, motFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motFrameSetBackgroundAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 
   /* Special */

@@ -15,6 +15,7 @@ int iupdrvFrameHasClientOffset(void);
 void iupdrvFrameInitClass(Iclass* ic);
 void iupdrvFrameGetDecorOffset(int *x, int *y);
 int iupFrameGetTitleHeight(Ihandle* ih);
+char* iupFrameGetBgColorAttrib(Ihandle* ih);
 
 #ifdef __cplusplus
 }
