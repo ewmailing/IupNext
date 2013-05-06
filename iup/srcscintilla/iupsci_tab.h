@@ -16,6 +16,11 @@ char* iupScintillaGetTabSizeAttrib(Ihandle *ih);
 int iupScintillaSetTabSizeAttrib(Ihandle *ih, const char *value);
 char* iupScintillaGetHighlightGuideAttrib(Ihandle *ih);
 int iupScintillaSetHighlightGuideAttrib(Ihandle *ih, const char *value);
+char* iupScintillaGetUseTabsAttrib(Ihandle* ih);
+int iupScintillaSetUseTabsAttrib(Ihandle* ih, const char* value);
+int iupScintillaSetIndentationGuidesAttrib(Ihandle *ih, const char *value);
+char* iupScintillaGetIndentationGuidesAttrib(Ihandle *ih);
+
 
 #ifdef __cplusplus
 }

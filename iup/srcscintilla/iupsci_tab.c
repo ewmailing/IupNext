@@ -21,20 +21,23 @@
 #include "iupsci.h"
 
 /***** TABS AND INDENTATION GUIDES ****
-Attributes not implement yet:
+SCI_SETTABWIDTH(int widthInChars)
+SCI_GETTABWIDTH
 SCI_SETUSETABS(bool useTabs)
 SCI_GETUSETABS
-SCI_SETINDENT(int widthInChars)
-SCI_GETINDENT
-SCI_SETTABINDENTS(bool tabIndents)
-SCI_GETTABINDENTS
-SCI_SETBACKSPACEUNINDENTS(bool bsUnIndents)
-SCI_GETBACKSPACEUNINDENTS
-SCI_SETLINEINDENTATION(int line, int indentation)
-SCI_GETLINEINDENTATION(int line)
-SCI_GETLINEINDENTPOSITION(int line)
+--SCI_SETINDENT(int widthInChars)
+--SCI_GETINDENT
+--SCI_SETTABINDENTS(bool tabIndents)
+--SCI_GETTABINDENTS
+--SCI_SETBACKSPACEUNINDENTS(bool bsUnIndents)
+--SCI_GETBACKSPACEUNINDENTS
+--SCI_SETLINEINDENTATION(int line, int indentation)
+--SCI_GETLINEINDENTATION(int line)
+--SCI_GETLINEINDENTPOSITION(int line)
 SCI_SETINDENTATIONGUIDES(int indentView)
 SCI_GETINDENTATIONGUIDES
+SCI_SETHIGHLIGHTGUIDE(int column)
+SCI_GETHIGHLIGHTGUIDE
 */
 
 char* iupScintillaGetTabSizeAttrib(Ihandle *ih)
@@ -80,4 +83,43 @@ int iupScintillaSetHighlightGuideAttrib(Ihandle *ih, const char *value)
   iupScintillaSendMessage(ih, SCI_SETHIGHLIGHTGUIDE, col, 0);
 
   return 0;
+}
+
+char* iupScintillaGetIndentationGuidesAttrib(Ihandle *ih)
+{
+  int indentView = iupScintillaSendMessage(ih, SCI_GETINDENTATIONGUIDES, 0, 0);
+  char* str[] = {"NONE", "REAL", "LOOKFORWARD", "LOOKBOTH"};
+  return str[indentView];
+}
+
+int iupScintillaSetIndentationGuidesAttrib(Ihandle *ih, const char *value)
+{
+  int indentView;
+
+  if (iupStrEqualNoCase(value, "REAL"))
+    indentView = SC_IV_REAL;
+  else if (iupStrEqualNoCase(value, "LOOKFORWARD"))
+    indentView = SC_IV_LOOKFORWARD;
+  else if (iupStrEqualNoCase(value, "LOOKBOTH"))
+    indentView = SC_IV_LOOKBOTH;
+  else /* NONE */
+    indentView = SC_IV_NONE;
+
+  iupScintillaSendMessage(ih, SCI_SETINDENTATIONGUIDES, indentView, 0);
+
+  return 0;
+}
+
+int iupScintillaSetUseTabsAttrib(Ihandle* ih, const char* value)
+{
+  iupScintillaSendMessage(ih, SCI_SETUSETABS, iupStrBoolean(value), 0);
+  return 0;
+}
+
+char* iupScintillaGetUseTabsAttrib(Ihandle* ih)
+{
+  if (iupScintillaSendMessage(ih, SCI_GETUSETABS, 0, 0))
+    return "YES";
+  else
+    return "NO";
 }

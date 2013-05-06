@@ -754,8 +754,9 @@ USEBRACEHLINDICATOR (non inheritable): enable or disable the indicator to highli
 USEBRACEBLINDICATOR (non inheritable): enable or disable the indicator to highlight non matching brace. Can be YES or NO. Default: YES.
 
 - Annotations
-- Autocompletion/User lists
 - Markers
+
+- Autocompletion/User lists
 
 - FONT/BGCOLOR/FGCOLOR x STYLE*
 - iupsci_selection.c
