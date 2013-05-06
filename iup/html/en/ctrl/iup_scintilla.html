@@ -135,8 +135,6 @@ the caret.</p>
 	the number of lines in the text and the with of the largest line. For IUP 3, 
 	use VISIBLECOLUMNS and VISIBLELINES to control the <strong>Natural Size</strong>.</p>
 
-<p><b>TABSIZE</b> (<font size="3">non inheritable</font>): Controls the number of characters for a tab stop. 
-	Default: 8.</p>
 <p><strong>USEPOPUP</strong> (<font size="3">non inheritable</font>): allows to 
 disable the default editing menu shown when the user clicks with the right 
 button. Default: Yes.</p>
@@ -205,6 +203,24 @@ the save point the callback is called again with status=1. </p>
   Text entered by the user. The &quot;\n&quot; character indicates a new line. After the element is mapped and if there 
 is no text will return the empty string "". This replaces all the text in the 
 document with the zero terminated text string you pass in.</p>
+
+  
+<h4>Tabs and Indentation Guides</h4>
+
+<p><b>TABSIZE</b> (<font size="3">non inheritable</font>): Controls the number of characters for a tab stop. 
+	Default: 8.</p>
+
+<p><strong>INDENTATIONGUIDES</strong> (<font size="3">non inheritable</font>): 
+dotted vertical lines that appear within indentation white space every indent 
+size columns. Can be: NONE, REAL, LOOKFORWARD, LOOKBOTH. Default: NONE.</p>
+
+<p><strong>HIGHLIGHTGUIDE</strong> (<font size="3">non inheritable</font>): 
+Highlights the indentation guide of a given column. When brace highlighting 
+occurs, the indentation guide corresponding to the braces may be highlighted 
+with the brace highlighting style (See <a href="#StyleDefinition">Style Definition</a>, 
+id = 34). Set column to 0 to cancel this highlight.</p>
+<p><strong>USETABS</strong> (<font size="3">non inheritable</font>): 
+Use tabs also for indentation or only spaces. Can be Yes or No. Default: Yes.</p>
 
   
 <h4>Undo and Redo</h4>
@@ -421,11 +437,6 @@ reset the definition and use the Lexer again.</p>
 highlights the brace, defined by its initial and final positions (format: &quot;<strong>pos1</strong>:<strong>pos2</strong>&quot;). Up to two characters can be 
 highlighted in a 'brace highlighting style', which is defined as style number 
 (See <a href="#StyleDefinition">Style Definition</a>, id = 34).</p>
-<p><strong>HIGHLIGHTGUIDE</strong> (<font size="3">non inheritable</font>): 
-highlights the indent, based on a column position. When brace highlighting 
-occurs, the indentation guide corresponding to the braces may be highlighted 
-with the brace highlighting style (See <a href="#StyleDefinition">Style Definition</a>, 
-id = 34). Set column to 0 to cancel this highlight.</p>
 <p><strong>BRACEBADLIGHT</strong> (<font size="3">non inheritable, write only</font>): 
 highlights the non matching brace, based on a position. If there is no matching 
 brace then the brace badlighting style (See <a href="#StyleDefinition">Style Definition</a>, 

@@ -622,7 +622,9 @@ static Iclass* iupScintillaNewClass(void)
 
   /* Tabs and Indentation Guides */
   iupClassRegisterAttribute(ic, "TABSIZE", iupScintillaGetTabSizeAttrib, iupScintillaSetTabSizeAttrib, IUPAF_SAMEASSYSTEM, "8", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "INDENTATIONGUIDES", iupScintillaGetIndentationGuidesAttrib, iupScintillaSetIndentationGuidesAttrib, IUPAF_SAMEASSYSTEM, "NONE", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIGHLIGHTGUIDE", iupScintillaGetHighlightGuideAttrib, iupScintillaSetHighlightGuideAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "USETABS", iupScintillaGetUseTabsAttrib, iupScintillaSetUseTabsAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 
   /* Line wrapping */
   iupClassRegisterAttribute(ic, "WORDWRAP", iupScintillaGetWordWrapAttrib, iupScintillaSetWordWrapAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -758,6 +760,4 @@ USEBRACEBLINDICATOR (non inheritable): enable or disable the indicator to highli
 - FONT/BGCOLOR/FGCOLOR x STYLE*
 - iupsci_selection.c
   iupsci_style.c
-  iupsci_tab.c
-
 */
