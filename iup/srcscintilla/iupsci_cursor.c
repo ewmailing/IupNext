@@ -36,7 +36,7 @@ char* iupScintillaGetCursorAttrib(Ihandle *ih)
 int iupScintillaSetCursorAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrEqualNoCase(value, "WAIT"))
-    iupScintillaSendMessage(ih, SCI_SETCURSOR, SC_CURSORWAIT, 0);
+    iupScintillaSendMessage(ih, SCI_SETCURSOR, (uptr_t)SC_CURSORWAIT, 0);
   else  /* NORMAL */
     iupScintillaSendMessage(ih, SCI_SETCURSOR, (uptr_t)SC_CURSORNORMAL, 0);
 

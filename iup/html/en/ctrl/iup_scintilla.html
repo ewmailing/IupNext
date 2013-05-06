@@ -386,36 +386,36 @@ than -10 points.</p>
 <p><strong>ZOOM</strong> (<font size="3">non inheritable</font>): 
 sets and gets the zoom factor directly. Limits: -10 points to zoom out and 20 
 points to zoom in.</p>
-<h4>White space</h4>
+<h4>White Space</h4>
+
+<p><strong>EXTRAASCENT</strong> (<font size="3">non inheritable</font>): 
+sets and gets the space to be added to the maximum ascent, in order to allow for 
+more space between lines. Default: 0.</p>
+<p><strong>EXTRADESCENT</strong> (<font size="3">non inheritable</font>): sets 
+and gets the space to be added to the maximum descent, in order to allow for 
+more space between lines. Default: 0.</p>
 
 <p><strong>WHITESPACEVIEW</strong> (<font size="3">non inheritable</font>): sets 
 and gets the white space display mode. The white spaces can be: &quot;INVISIBLE&quot; 
-(shown as an empty background colour), &quot;VISIBLEALWAYS&quot; (drawn as dots and 
+(shown as an empty background color), &quot;VISIBLEALWAYS&quot; (drawn as dots and 
 arrows) or &quot;VISIBLEAFTERINDENT&quot; (white space used for indentation is displayed 
-normally but after the first visible character, it is shown as dots and arrows).</p>
+normally but after the first visible character, it is shown as dots and arrows). 
+Default: INVISIBLE.</p>
 <p><strong>WHITESPACESIZE</strong> (<font size="3">non inheritable</font>): 
-sets and gets the size of the dots used for mark space characters.</p>
-<p><strong>EXTRAASCENT</strong> (<font size="3">non inheritable</font>): 
-sets and gets the space to be added to the maximum ascent, in order to allow for 
-more space between lines.</p>
-<p><strong>EXTRADESCENT</strong> (<font size="3">non inheritable</font>): 
-sets and gets the space to be added to the maximum descent, in order to allow 
-for more space between lines.</p>
+sets and gets the size of the dots used for mark space characters. Default: 1.</p>
 <p><strong>WHITESPACEFGCOLOR</strong> (<font size="3">non inheritable, write 
 only</font>): 
-defines the foreground colour of visible white space. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
-g b&quot;)</span>.</p>
+defines the foreground color of visible white space. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>. By default the color will be defined by the Lexer, but 
+defining this attribute will overriding&nbsp;the Lexer definition. Set to NULL to 
+reset the definition and use the Lexer again.</p>
 <p><strong>WHITESPACEBGCOLOR</strong> (<font size="3">non inheritable, write 
 only</font>): 
-defines the background colour of visible white space. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
-g b&quot;)</span>.</p>
-<p><strong>USEWHITESPACEFGCOLOR</strong> (<font size="3">non inheritable</font>): 
-enable or disable the foreground colour of visible white space. Can be YES or 
-NO. Default: YES.</p>
-<p><strong>USEWHITESPACEBGCOLOR</strong> (<font size="3">non inheritable</font>): 
-enable or disable the background colour of visible white space. Can be YES or 
-NO. Default: YES.</p>
-<h4>Brace highlighting</h4>
+defines the background color of visible white space. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>. By default the color will be defined by the Lexer, but 
+defining this attribute will overriding&nbsp;the Lexer definition. Set to NULL to 
+reset the definition and use the Lexer again.</p>
+<h4>Brace Highlighting</h4>
 
 <p><strong>BRACEHIGHLIGHT</strong> (<font size="3">non inheritable, write only</font>): 
 highlights the brace, defined by its initial and final positions (format: &quot;<strong>pos1</strong>:<strong>pos2</strong>&quot;). Up to two characters can be 
@@ -436,18 +436,6 @@ only</font>): finds a corresponding matching brace given id, the position of one
 brace. The brace characters handled are '(', ')', '[', ']', '{', '}', '&lt;', and 
 '&gt;'. If the character at position is not a brace character, or a matching brace 
 cannot be found, the return value is -1.</p>
-<p><strong>BRACEHLINDICATOR</strong> (<font size="3">non inheritable, write only</font>): 
-defines a specified indicator to highlight matching braces instead of changing 
-their style (See <a href="#IndicatorStyles">Indicator Styles</a>).</p>
-<p><strong>BRACEBLINDICATOR </strong>(<font size="3">non inheritable, write only</font>): 
-defines a specified indicator to highlight non matching brace instead of 
-changing its style (See <a href="#IndicatorStyles">Indicator Styles</a>).</p>
-<p><strong>USEBRACEHLINDICATOR</strong> (<font size="3">non inheritable</font>): 
-enable or disable the indicator to highlight matching braces. Can be YES or NO. 
-Default: YES.</p>
-<p><strong>USEBRACEBLINDICATOR</strong> (<font size="3">non inheritable</font>): 
-enable or disable the indicator to highlight non matching brace. Can be YES or 
-NO. Default: YES.</p>
 <h4>Scrolling</h4>
 <p><strong>SCROLLBAR</strong> (creation only): Associates an automatic horizontal and/or vertical scrollbar. Can be: "VERTICAL", "HORIZONTAL", "YES" (both) or "NO" (none). 
 	Default: "YES". For all systems, when SCROLLBAR is NO, the natural size will 
@@ -494,7 +482,7 @@ sets all styles to have the same attributes as default global style (id = 32) (S
 <p><strong>STYLEEOLFILLED<em>id</em></strong> (<font size="3">non inheritable</font>): If 
 the last character in the line has a style with this attribute set, the 
 remainder of the line up to the right edge of the window is filled with the 
-background colour set for the last character (See <a href="#StyleDefinition">Style Definition</a>). 
+background color set for the last character (See <a href="#StyleDefinition">Style Definition</a>). 
 Can be YES (italic) or NO.</p>
 <p><strong>STYLEFGCOLOR<em>id</em></strong> (<font size="3">non inheritable</font>): 
 foreground color for a style (See <a href="#StyleDefinition">Style Definition</a>). 

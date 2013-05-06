@@ -26,8 +26,8 @@ struct _IcontrolData
   int append_newline;
   int last_caret_pos;
   int ignore_change;
-  int useWSForeColour;
-  int useWSBackColour;
+
+  /* unused for now */
   int useBraceHLIndicator;
   int useBraceBLIndicator;
 };

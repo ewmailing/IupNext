@@ -22,10 +22,7 @@ int iupScintillaSetWSExtraAscentAttrib(Ihandle *ih, const char *value);
 char* iupScintillaGetWSExtraAscentAttrib(Ihandle* ih);
 int iupScintillaSetWSExtraDescentAttrib(Ihandle *ih, const char *value);
 char* iupScintillaGetWSExtraDescentAttrib(Ihandle* ih);
-int iupScintillaSetWSUseFgColorAttrib(Ihandle *ih, const char *value);
-char* iupScintillaGetWSUseFgColorAttrib(Ihandle* ih);
-int iupScintillaSetWSUseBgColorAttrib(Ihandle *ih, const char *value);
-char* iupScintillaGetWSUseBgColorAttrib(Ihandle* ih);
+
 
 #ifdef __cplusplus
 }

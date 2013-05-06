@@ -346,7 +346,7 @@ static gboolean gtkScintillaButtonEvent(GtkWidget *widget, GdkEventButton *evt, 
 
 static int winScintillaWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 {
-  SCNotification *pMsg = (SCNotification*)msg_info;
+  struct SCNotification *pMsg = (struct SCNotification*)msg_info;
 
   iScintillaNotify(ih, pMsg);
 
@@ -537,11 +537,11 @@ static int iScintillaCreateMethod(Ihandle* ih, void **params)
   ih->data = iupALLOCCTRLDATA();
   ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
   ih->data->append_newline = 1;
-  ih->data->useWSForeColour = 1;
-  ih->data->useWSBackColour = 1;
+  iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", "1");
+
+  /* unused for now */
   ih->data->useBraceHLIndicator = 1;
   ih->data->useBraceBLIndicator = 1;
-  iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", "1");
   return IUP_NOERROR;
 }
 
@@ -688,20 +688,19 @@ static Iclass* iupScintillaNewClass(void)
   /* White space Attributes */
   iupClassRegisterAttribute(ic, "EXTRAASCENT",  iupScintillaGetWSExtraDescentAttrib, iupScintillaSetWSExtraDescentAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRADESCENT", iupScintillaGetWSExtraAscentAttrib, iupScintillaSetWSExtraAscentAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "WHITESPACEVIEW", iupScintillaGetViewWSAttrib, iupScintillaSetViewWSAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "WHITESPACESIZE", iupScintillaGetWSSizeAttrib, iupScintillaSetWSSizeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WHITESPACEVIEW", iupScintillaGetViewWSAttrib, iupScintillaSetViewWSAttrib, IUPAF_SAMEASSYSTEM, "INVISIBLE", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WHITESPACESIZE", iupScintillaGetWSSizeAttrib, iupScintillaSetWSSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WHITESPACEFGCOLOR", NULL, iupScintillaSetWSFgColorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WHITESPACEBGCOLOR", NULL, iupScintillaSetWSBgColorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "USEWHITESPACEFGCOLOR", iupScintillaGetWSUseFgColorAttrib, iupScintillaSetWSUseFgColorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "USEWHITESPACEBGCOLOR", iupScintillaGetWSUseBgColorAttrib, iupScintillaSetWSUseBgColorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Brace highlighting Attributes */
   iupClassRegisterAttribute(ic, "BRACEHIGHLIGHT", NULL, iupScintillaSetBraceHighlightAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BRACEBADLIGHT",  NULL, iupScintillaSetBraceBadlightAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BRACEHLINDICATOR", NULL, iupScintillaSetBraceHighlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BRACEBLINDICATOR", NULL, iupScintillaSetBraceBadlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "USEBRACEHLINDICATOR", iupScintillaGetUseBraceHLIndicatorAttrib, iupScintillaSetUseBraceHLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "USEBRACEBLINDICATOR", iupScintillaGetUseBraceBLIndicatorAttrib, iupScintillaSetUseBraceBLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  /* unused until we support Indicators */
+/*  iupClassRegisterAttribute(ic, "BRACEHLINDICATOR", NULL, iupScintillaSetBraceHighlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);  */
+/*  iupClassRegisterAttribute(ic, "BRACEBLINDICATOR", NULL, iupScintillaSetBraceBadlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);   */
+/*  iupClassRegisterAttribute(ic, "USEBRACEHLINDICATOR", iupScintillaGetUseBraceHLIndicatorAttrib, iupScintillaSetUseBraceHLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  */
+/*  iupClassRegisterAttribute(ic, "USEBRACEBLINDICATOR", iupScintillaGetUseBraceBLIndicatorAttrib, iupScintillaSetUseBraceBLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  */
   iupClassRegisterAttributeId(ic, "BRACEMATCH", iupScintillaGetBraceMatchAttribId, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Cursor and Zooming Attributes */
@@ -754,8 +753,13 @@ Ihandle *IupScintilla(void)
 - Printing
 - Long lines
 - Call tips
-- Indicators
 - Caret, selection, and hotspot styles
+- Indicators
+- Brace Highlighting with Indicators
+BRACEHLINDICATOR (non inheritable, write only): defines a specified indicator to highlight matching braces instead of changing their style (See Indicator Styles).
+BRACEBLINDICATOR (non inheritable, write only): defines a specified indicator to highlight non matching brace instead of changing its style (See Indicator Styles).
+USEBRACEHLINDICATOR (non inheritable): enable or disable the indicator to highlight matching braces. Can be YES or NO. Default: YES.
+USEBRACEBLINDICATOR (non inheritable): enable or disable the indicator to highlight non matching brace. Can be YES or NO. Default: YES.
 
 - Annotations
 - Autocompletion/User lists
@@ -765,4 +769,5 @@ Ihandle *IupScintilla(void)
 - iupsci_selection.c
   iupsci_style.c
   iupsci_tab.c
+
 */

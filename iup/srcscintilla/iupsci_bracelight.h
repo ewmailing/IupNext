@@ -14,9 +14,11 @@ extern "C" {
 
 int iupScintillaSetBraceHighlightAttrib(Ihandle* ih, const char* value);
 int iupScintillaSetBraceBadlightAttrib(Ihandle* ih, const char* value);
+char* iupScintillaGetBraceMatchAttribId(Ihandle* ih, int pos);
+
+/* unused until we support Indicators */
 int iupScintillaSetBraceHighlightIndicatorAttrib(Ihandle* ih, const char* value);
 int iupScintillaSetBraceBadlightIndicatorAttrib(Ihandle* ih, const char* value);
-char* iupScintillaGetBraceMatchAttribId(Ihandle* ih, int pos);
 int iupScintillaSetUseBraceHLIndicatorAttrib(Ihandle *ih, const char *value);
 char* iupScintillaGetUseBraceHLIndicatorAttrib(Ihandle* ih);
 int iupScintillaSetUseBraceBLIndicatorAttrib(Ihandle *ih, const char *value);

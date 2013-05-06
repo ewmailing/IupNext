@@ -44,10 +44,10 @@ SRCSCINTILLA = src/AutoComplete.cxx src/CallTip.cxx src/Catalogue.cxx src/CellBu
                src/ContractionState.cxx src/Decoration.cxx src/Document.cxx src/Editor.cxx src/ExternalLexer.cxx \
                src/Indicator.cxx src/KeyMap.cxx src/LineMarker.cxx src/PerLine.cxx src/PositionCache.cxx \
                src/RESearch.cxx src/RunStyles.cxx src/ScintillaBase.cxx src/Selection.cxx src/Style.cxx \
-			   src/UniConversion.cxx src/ViewStyle.cxx src/XPM.cxx
+               src/UniConversion.cxx src/ViewStyle.cxx src/XPM.cxx
 
 SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers/LexAPDL.cxx lexers/LexAsm.cxx \
-			    lexers/LexAsn1.cxx lexers/LexASY.cxx lexers/LexAU3.cxx lexers/LexAVE.cxx lexers/LexAVS.cxx \
+				lexers/LexAsn1.cxx lexers/LexASY.cxx lexers/LexAU3.cxx lexers/LexAVE.cxx lexers/LexAVS.cxx \
 				lexers/LexBaan.cxx lexers/LexBash.cxx lexers/LexBasic.cxx lexers/LexBullant.cxx lexers/LexCaml.cxx \
 				lexers/LexCLW.cxx lexers/LexCmake.cxx lexers/LexCOBOL.cxx lexers/LexCoffeeScript.cxx \
 				lexers/LexConf.cxx lexers/LexCPP.cxx lexers/LexCrontab.cxx lexers/LexCsound.cxx lexers/LexCSS.cxx \
@@ -69,7 +69,7 @@ SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers
 				
 SRCSCINTILLA += lexlib/Accessor.cxx lexlib/CharacterSet.cxx lexlib/LexerBase.cxx lexlib/LexerModule.cxx \
                 lexlib/LexerNoExceptions.cxx lexlib/LexerSimple.cxx lexlib/PropSetSimple.cxx \
-				lexlib/StyleContext.cxx lexlib/WordList.cxx
+                lexlib/StyleContext.cxx lexlib/WordList.cxx
 
 ifdef USE_GTK
   SRCSCINTILLA += gtk/PlatGTK.cxx gtk/ScintillaGTK.cxx gtk/scintilla-marshal.c
@@ -77,6 +77,7 @@ else
   SRCSCINTILLA += win32/PlatWin.cxx win32/ScintillaWin.cxx
 endif
 
-SRC = iupsci_clipboard.c iupsci_folding.c iupsci_lexer.c iupsci_margin.c iupsci_markers.c \
+SRC = $(SRCSCINTILLA) iupsci_clipboard.c iupsci_folding.c iupsci_lexer.c iupsci_margin.c \
       iupsci_overtype.c iupsci_scrolling.c iupsci_selection.c iupsci_style.c iupsci_tab.c \
-	  iupsci_text.c iupsci_wordwrap.c $(SRCSCINTILLA) iup_scintilla.cpp
+      iupsci_text.c iupsci_wordwrap.c iupsci_markers.c iupsci_bracelight.c iupsci_cursor.c \
+      iupsci_whitespace.c iup_scintilla.cpp

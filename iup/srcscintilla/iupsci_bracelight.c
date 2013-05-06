@@ -77,21 +77,6 @@ int iupScintillaSetBraceBadlightIndicatorAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupScintillaGetBraceMatchAttribId(Ihandle* ih, int pos)
-{
-  int value;
-  char* str = iupStrGetMemory(15);
-
-  if (pos < 0)
-    return "-1";
-
-  value = iupScintillaSendMessage(ih, SCI_BRACEMATCH, pos, 0);
-
-  sprintf(str, "%d", value);
-
-  return str;
-}
-
 int iupScintillaSetUseBraceHLIndicatorAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
@@ -124,4 +109,19 @@ char* iupScintillaGetUseBraceBLIndicatorAttrib(Ihandle* ih)
     return "YES";
   else
     return "NO";
+}
+
+char* iupScintillaGetBraceMatchAttribId(Ihandle* ih, int pos)
+{
+  int value;
+  char* str = iupStrGetMemory(15);
+
+  if (pos < 0)
+    return "-1";
+
+  value = iupScintillaSendMessage(ih, SCI_BRACEMATCH, pos, 0);
+
+  sprintf(str, "%d", value);
+
+  return str;
 }

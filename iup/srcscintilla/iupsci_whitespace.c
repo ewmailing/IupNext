@@ -60,24 +60,39 @@ char* iupScintillaGetViewWSAttrib(Ihandle* ih)
 
 int iupScintillaSetWSFgColorAttrib(Ihandle *ih, const char *value)
 {
-  unsigned char r, g, b;
-  if (!iupStrToRGB(value, &r, &g, &b))
+  if (!value)
+  {
+    iupScintillaSendMessage(ih, SCI_SETWHITESPACEFORE, 0, 0);
     return 0;
+  }
+  else
+  {
+    unsigned char r, g, b;
+    if (!iupStrToRGB(value, &r, &g, &b))
+      return 0;
 
-  iupScintillaSendMessage(ih, SCI_SETWHITESPACEFORE, ih->data->useWSForeColour, iupScintillaEncodeColor(r, g, b));
-
-  return 0;
+    iupScintillaSendMessage(ih, SCI_SETWHITESPACEFORE, 1, iupScintillaEncodeColor(r, g, b));
+    return 1;
+  }
 }
 
 int iupScintillaSetWSBgColorAttrib(Ihandle *ih, const char *value)
 {
-  unsigned char r, g, b;
-  if (!iupStrToRGB(value, &r, &g, &b))
+  if (!value)
+  {
+    iupScintillaSendMessage(ih, SCI_SETWHITESPACEBACK, 0, 0);
     return 0;
+  }
+  else
+  {
+    unsigned char r, g, b;
+    if (!iupStrToRGB(value, &r, &g, &b))
+      return 0;
 
-  iupScintillaSendMessage(ih, SCI_SETWHITESPACEBACK, ih->data->useWSForeColour, iupScintillaEncodeColor(r, g, b));
+    iupScintillaSendMessage(ih, SCI_SETWHITESPACEBACK, 1, iupScintillaEncodeColor(r, g, b));
 
-  return 0;
+    return 1;
+  }
 }
 
 int iupScintillaSetWSSizeAttrib(Ihandle *ih, const char *value)
@@ -143,36 +158,3 @@ char* iupScintillaGetWSExtraDescentAttrib(Ihandle* ih)
   return str;
 }
 
-int iupScintillaSetWSUseFgColorAttrib(Ihandle *ih, const char *value)
-{
-  if (iupStrBoolean(value))
-    ih->data->useWSForeColour = 1;
-  else
-    ih->data->useWSForeColour = 0;
-  return 0;
-}
-
-char* iupScintillaGetWSUseFgColorAttrib(Ihandle* ih)
-{
-  if (ih->data->useWSForeColour)
-    return "YES";
-  else
-    return "NO";
-}
-
-int iupScintillaSetWSUseBgColorAttrib(Ihandle *ih, const char *value)
-{
-  if (iupStrBoolean(value))
-    ih->data->useWSBackColour = 1;
-  else
-    ih->data->useWSBackColour = 0;
-  return 0;
-}
-
-char* iupScintillaGetWSUseBgColorAttrib(Ihandle* ih)
-{
-  if (ih->data->useWSBackColour)
-    return "YES";
-  else
-    return "NO";
-}
