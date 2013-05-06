@@ -58,10 +58,14 @@
   <ItemGroup>
     <ClCompile Include="..\srcscintilla\gtk\PlatGTK.cxx" />
     <ClCompile Include="..\srcscintilla\gtk\scintilla-marshal.c" />
-    <ClCompile Include="..\srcscintilla\gtk\scintilla-marshal.cpp" />
+    <ClCompile Include="..\srcscintilla\gtk\ScintillaGTK.cxx" />
     <ClCompile Include="..\srcscintilla\iup_scintilla.cpp">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\srcscintilla\gtk\Converter.h" />
+    <ClInclude Include="..\srcscintilla\gtk\scintilla-marshal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

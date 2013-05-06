@@ -68,13 +68,13 @@ IUP = ../../..
 #  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupimglib.a
 #endif
 
-USE_CD = Yes
-SRC = canvas1.c
+#USE_CD = Yes
+#SRC = canvas1.c
 #SRC = canvas2.c
 #SRC = canvas3.c
 #SRC = scrollbar.c
 
-LIBS = cdcontextplus gdiplus
+#LIBS = cdcontextplus gdiplus
 
 #USE_OPENGL = Yes
 #SRC = glcanvas.c
@@ -138,7 +138,7 @@ ifdef IUPMGLPLOT_SAMPLE
   endif
 endif
 
-#IUPSCINTILLA_SAMPLE=Yes
+IUPSCINTILLA_SAMPLE=Yes
 ifdef IUPSCINTILLA_SAMPLE
   USE_IUPCONTROLS = Yes
   LINKER = g++  
@@ -146,11 +146,7 @@ ifdef IUPSCINTILLA_SAMPLE
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     LIBS += iup_scintilla
   else
-    ifdef USE_GTK3
-      SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_scintillagtk3.a
-	else
-      SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_scintillagtk.a
-	endif
+    SLIB += $(IUP)/lib/$(TEC_UNAME)d/libiup_scintilla.a
   endif
 endif
 

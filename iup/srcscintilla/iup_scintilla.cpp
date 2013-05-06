@@ -319,15 +319,6 @@ static void gtkScintillaNotify(GtkWidget *w, gint wp, gpointer lp, Ihandle *ih)
   (void)wp;
 }
 
-static void gtkScintillaMoveCursor(GtkWidget *w, GtkMovementStep step, gint count, gboolean extend_selection, Ihandle* ih)
-{
-  iScintillaCallCaretCb(ih);
-  (void)w;
-  (void)step;
-  (void)count;
-  (void)extend_selection;
-}
-
 static gboolean gtkScintillaKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
   iScintillaCallCaretCb(ih);
@@ -435,7 +426,6 @@ static int iScintillaMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "key-press-event",    G_CALLBACK(iupgtkKeyPressEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "show-help",          G_CALLBACK(iupgtkShowHelp), ih);
 
-  g_signal_connect_after(G_OBJECT(ih->handle), "move-cursor", G_CALLBACK(gtkScintillaMoveCursor), ih);  /* only report some caret movements */
   g_signal_connect_after(G_OBJECT(ih->handle), "key-release-event", G_CALLBACK(gtkScintillaKeyReleaseEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkScintillaButtonEvent), ih);  /* if connected "after" then it is ignored */
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event", G_CALLBACK(gtkScintillaButtonEvent), ih);

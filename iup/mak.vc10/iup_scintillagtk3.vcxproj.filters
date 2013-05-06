@@ -8,7 +8,7 @@
     <ClCompile Include="..\srcscintilla\gtk\scintilla-marshal.c">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\gtk\scintilla-marshal.cpp">
+    <ClCompile Include="..\srcscintilla\gtk\ScintillaGTK.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
   </ItemGroup>

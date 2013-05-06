@@ -13,10 +13,13 @@
     <Filter Include="Scintilla">
       <UniqueIdentifier>{8c0cd754-c304-4772-81e0-c2ad0d081fd8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scintilla\inc">
+      <UniqueIdentifier>{103074ac-7c09-405d-9923-e714aac1edcc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\win32\PlatWin.h">
-      <Filter>Scintilla</Filter>
+      <Filter>Scintilla\inc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

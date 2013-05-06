@@ -61,7 +61,7 @@
   <ItemGroup>
     <ClCompile Include="..\srcscintilla\gtk\PlatGTK.cxx" />
     <ClCompile Include="..\srcscintilla\gtk\scintilla-marshal.c" />
-    <ClCompile Include="..\srcscintilla\gtk\scintilla-marshal.cpp" />
+    <ClCompile Include="..\srcscintilla\gtk\ScintillaGTK.cxx" />
     <ClCompile Include="..\srcscintilla\iup_scintilla.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
