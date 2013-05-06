@@ -81,7 +81,7 @@ char* iupScintillaGetReadOnlyAttrib(Ihandle* ih)
 
 int iupScintillaSetReadOnlyAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     iupScintillaSendMessage(ih, SCI_SETREADONLY, 1, 0);
   else
     iupScintillaSendMessage(ih, SCI_SETREADONLY, 0, 0);

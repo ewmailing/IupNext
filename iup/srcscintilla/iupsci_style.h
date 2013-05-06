@@ -42,6 +42,8 @@ char* iupScintillaGetBgColorStyleAttrib(Ihandle* ih, int style);
 int iupScintillaSetBgColorStyleAttrib(Ihandle* ih, int style, const char* value);
 int iupScintillaSetClearAllStyleAttrib(Ihandle* ih, const char* value);
 int iupScintillaSetResetDefaultStyleAttrib(Ihandle* ih, const char* value);
+int iupScintillaSetStartStylingAttrib(Ihandle *ih, const char *value);
+int iupScintillaSetStylingAttrib(Ihandle *ih, int style, const char *value);
 
 
 #ifdef __cplusplus

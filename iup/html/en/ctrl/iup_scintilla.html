@@ -119,6 +119,10 @@ Lua control
 <p><strong>CLIPBOARD</strong> (<font size="3">non inheritable</font>): clear, cut, copy or paste the selection to 
 or from the clipboard. Values: "CLEAR", "CUT", "COPY", "PASTE". Returns Yes or 
 No, if data can be pasted from the clipboard.</p>
+
+<p><strong>CURSOR</strong> (<font size="3">non inheritable</font>): defines the 
+cursor type. Can be: &quot;NORMAL&quot; or &quot;WAIT&quot; (displays a wait cursor when the mouse 
+is over or owned by the control).</p>
 <p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drop of 
 files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
 then it will be automatically enabled.</p>
@@ -128,6 +132,16 @@ then it will be automatically enabled.</p>
 When enabled, each typed character replaces the character to the right of the 
 text caret. When disabled, characters are inserted at 
 the caret.</p>
+<p><strong>READONLY </strong>(<font size="3">non inheritable</font>): Allows the user only to read the contents, 
+  without changing it. Restricts the insertion using keyboard input and 
+attributes. Navigation keys are still available. Possible values: "YES" and "NO". 
+Default: NO.</p>
+<p><strong>SAVEPOINT</strong> (<font size="3">non inheritable, </font>
+write-only): sets the current state of the document to saved.&nbsp;If editing is done 
+the SAVEPOINT_CB callback is called with status=0. Is undo is performed back to 
+the save point the callback is called again with status=1. </p>
+
+  
 <p><a href="../attrib/iup_size.html">SIZE</a> (<font size="3">non inheritable</font>): 
 	Since the contents can be changed by the user, the <strong>Natural</strong>
 	<strong>Size</strong> is not affected by the text contents. In 
@@ -168,8 +182,9 @@ returns the character at a given position, considering the &quot;id&quot; as the
 position. </p>
 <p><strong>CLEARALL</strong> (<font size="3">non inheritable, </font>
 write-only): deletes all the text (unless the document is read-only).</p>
-<p><strong>CLEARDOCUMENTSTYLE</strong> (<font size="3">non inheritable, </font>
-write-only): clear all styling information and reset the folding state.</p>
+
+<p><strong>COUNT</strong> (<font size="3">non inheritable, </font>read-only): returns the number of characters in the 
+text.</p>
 
 <p><strong>DELETERANGE</strong> (<font SIZE="3">non inheritable, write-only</font>): 
 Deletes a range of text in the document. It uses a string format &quot;<strong>pos,len</strong>&quot; 
@@ -184,19 +199,17 @@ scrolling is performed.</p>
 returns the text of the line, considering the &quot;id&quot; as the line number. It does not include the &quot;\n&quot; 
 character. Number lines starts at 0.</p>
 
+<p><strong>LINECOUNT</strong> (<font size="3">non inheritable, </font>read-only): returns the number of lines in the 
+text.</p>
+
+<p><strong>LINEVALUE</strong> (<font size="3">non inheritable, </font>read-only): returns the text of the line where 
+the caret is. It does not include the &quot;\n&quot; character.</p>
+
   
 <p><strong>PREPEND</strong> (<font size="3">non inheritable, </font>write-only):
   Inserts a text at the <strong>begin</strong> of the current text. If APPENDNEWLINE=YES, a "\n" character will be 
 automatically inserted after the prepended text if the current text is not empty 
 (APPENDNEWLINE default is YES).</p>
-<p><strong>READONLY </strong>(<font size="3">non inheritable</font>): Allows the user only to read the contents, 
-  without changing it. Restricts the insertion using keyboard input and 
-attributes. Navigation keys are still available. Possible values: "YES" and "NO". 
-Default: NO.</p>
-<p><strong>SAVEPOINT</strong> (<font size="3">non inheritable, </font>
-write-only): sets the current state of the document to saved.&nbsp;If editing is done 
-the SAVEPOINT_CB callback is called with status=0. Is undo is performed back to 
-the save point the callback is called again with status=1. </p>
 
   
 <p><b>VALUE </b>(<font size="3">non inheritable</font>):
@@ -205,36 +218,23 @@ is no text will return the empty string "". This replaces all the text in the
 document with the zero terminated text string you pass in.</p>
 
   
-<h4>Tabs and Indentation Guides</h4>
+<h4>Brace Highlighting</h4>
 
-<p><b>TABSIZE</b> (<font size="3">non inheritable</font>): Controls the number of characters for a tab stop. 
-	Default: 8.</p>
-
-<p><strong>INDENTATIONGUIDES</strong> (<font size="3">non inheritable</font>): 
-dotted vertical lines that appear within indentation white space every indent 
-size columns. Can be: NONE, REAL, LOOKFORWARD, LOOKBOTH. Default: NONE.</p>
-
-<p><strong>HIGHLIGHTGUIDE</strong> (<font size="3">non inheritable</font>): 
-Highlights the indentation guide of a given column. When brace highlighting 
-occurs, the indentation guide corresponding to the braces may be highlighted 
-with the brace highlighting style (See <a href="#StyleDefinition">Style Definition</a>, 
-id = 34). Set column to 0 to cancel this highlight.</p>
-<p><strong>USETABS</strong> (<font size="3">non inheritable</font>): 
-Use tabs also for indentation or only spaces. Can be Yes or No. Default: Yes.</p>
-
-  
-<h4>Undo and Redo</h4>
-
-<p><strong>REDO</strong><b> </b>(<font size="3">non inheritable</font>): redo 
-the last operation if set to Yes, clears the undo information otherwise. Returns 
-Yes or No if redo can be performed.</p>
-
-<p><strong>UNDO</strong><b> </b>(<font size="3">non inheritable</font>): undo 
-the last operation if set to Yes, clears the undo information otherwise. Returns 
-Yes or No if undo can be performed.</p>
-<p><strong>UNDOCOLLECT</strong> (<font size="3">non inheritable</font>): enable 
-or disable the undo collect of information. Can be Yes or No. Default: Yes.</p>
-<h4>Selection and Information</h4>
+<p><strong>BRACEHIGHLIGHT</strong> (<font size="3">non inheritable, write only</font>): 
+highlights the brace, defined by its initial and final positions (format: &quot;<strong>pos1</strong>:<strong>pos2</strong>&quot;). Up to two characters can be 
+highlighted in a 'brace highlighting style', which is defined as style number 
+(See <a href="#StyleDefinition">Style Definition</a>, id = 34).</p>
+<p><strong>BRACEBADLIGHT</strong> (<font size="3">non inheritable, write only</font>): 
+highlights the non matching brace, based on a position. If there is no matching 
+brace then the brace badlighting style (See <a href="#StyleDefinition">Style Definition</a>, 
+id = 35) can be used to show the brace that is unmatched. Set -1 as position 
+removes the highlight.</p>
+<p><strong>BRACEMATCH<em>id</em></strong> (<font size="3">non inheritable, read 
+only</font>): finds a corresponding matching brace given id, the position of one 
+brace. The brace characters handled are '(', ')', '[', ']', '{', '}', '&lt;', and 
+'&gt;'. If the character at position is not a brace character, or a matching brace 
+cannot be found, the return value is -1.</p>
+<h4>Caret and Selection</h4>
 
   
 <p><strong>CARET</strong> (<font size="3">non inheritable</font>):
@@ -259,15 +259,6 @@ visible.</p>
 &quot;pos&quot;. Useful for indexing the VALUE string. This removes any 
 selection, sets the caret at pos and scrolls the view to make the caret visible, 
 if necessary.</p>
-
-<p><strong>COUNT</strong> (<font size="3">non inheritable, </font>read-only): returns the number of characters in the 
-text.</p>
-
-<p><strong>LINECOUNT</strong> (<font size="3">non inheritable, </font>read-only): returns the number of lines in the 
-text.</p>
-
-<p><strong>LINEVALUE</strong> (<font size="3">non inheritable, </font>read-only): returns the text of the line where 
-the caret is. It does not include the &quot;\n&quot; character.</p>
 
   
 <p><strong>SELECTEDTEXT</strong> (<font size="3">non inheritable</font>):
@@ -306,6 +297,31 @@ level is useful to decide how to handle user folding requests.</p>
 <p><b>FOLDTOGGLE</b> (<font size="3">non inheritable, write-only</font>): 
 Determines if the fold point (line number) may be either expanded, displaying 
 all its child lines, or contracted, hiding all the child lines. </p>
+
+<h4>Lexer</h4>
+
+<p><strong>KEYWORD<em>id</em></strong> (<font size="3">non inheritable, write-only</font>): 
+keyword list used by the current lexer. Until 9 lists of keywords can set up 
+using id from 0 to 8. The value is a list of keywords separated by spaces, tabs, 
+&quot;\n&quot; or &quot;\r&quot; or any combination of these.</p>
+<p><strong>KEYWORDSETS</strong> (<font size="3">non inheritable, read only</font>): 
+returns a description of all of the keyword sets separated by &quot;\n&quot;.</p>
+<p><strong>LEXERLANGUAGE</strong> (<font size="3">non inheritable</font>): 
+associate the lexer language name. It is case sensitive. Default: not defined. 
+Set to NULL to clear the association. Can be: any name supported by Scintilla. 
+For instance: asm, bash, freebasic, cmake, COBOL, cpp (C++), css, d, diff, 
+eiffel, fortran, hypertext (HTML), xml, lisp, lua (Lua), makefile, matlab, mysql, 
+nsis, pascal, perl, python, ruby, smalltalk, sql, tcl, tex, vb (Visual Basic), 
+and many others. </p>
+<p><strong>PROPERTY</strong> (<font size="3">non inheritable</font>): 
+sets and gets Lexer properties using &quot;name=value&quot; string pairs, where 
+name is case sensitive 
+and value is the associated string. There is no limit to the number of keyword pairs you can set, other 
+than available memory. To retrieve a property first set the PROPERTYNAME 
+attribute, the PROPERTY attribute will return its value.</p>
+<p><strong>PROPERTYNAMES</strong> (<font size="3">non inheritable, read only</font>): 
+returns a list of property names separated by &quot;\n&quot;. If the lexer does not 
+support this information then an empty string is returned.&nbsp;</p>
 
 <h4>Margins</h4>
 
@@ -364,89 +380,6 @@ Defines a marker symbol given its number. id can be from 0 to 31.</p>
 background color), &quot;LEFTRECT&quot;,&nbsp; 
 &quot;UNDERLINE&quot; (underline across the line), &quot;RGBAIMAGE&quot;&nbsp; and &quot;CHARACTER+c&quot; 
 (where c is an ASCii character code).</p>
-<h4>Lexer</h4>
-
-<p><strong>KEYWORD<em>id</em></strong> (<font size="3">non inheritable, write-only</font>): 
-keyword list used by the current lexer. Until 9 lists of keywords can set up 
-using id from 0 to 8. The value is a list of keywords separated by spaces, tabs, 
-&quot;\n&quot; or &quot;\r&quot; or any combination of these.</p>
-<p><strong>KEYWORDSETS</strong> (<font size="3">non inheritable, read only</font>): 
-returns a description of all of the keyword sets separated by &quot;\n&quot;.</p>
-<p><strong>LEXERLANGUAGE</strong> (<font size="3">non inheritable</font>): 
-associate the lexer language name. It is case sensitive. Default: not defined. 
-Set to NULL to clear the association. Can be: any name supported by Scintilla. 
-For instance: asm, bash, freebasic, cmake, COBOL, cpp (C++), css, d, diff, 
-eiffel, fortran, hypertext (HTML), xml, lisp, lua (Lua), makefile, matlab, mysql, 
-nsis, pascal, perl, python, ruby, smalltalk, sql, tcl, tex, vb (Visual Basic), 
-and many others. </p>
-<p><strong>PROPERTY</strong> (<font size="3">non inheritable</font>): 
-sets and gets Lexer properties using &quot;name=value&quot; string pairs, where 
-name is case sensitive 
-and value is the associated string. There is no limit to the number of keyword pairs you can set, other 
-than available memory. To retrieve a property first set the PROPERTYNAME 
-attribute, the PROPERTY attribute will return its value.</p>
-<p><strong>PROPERTYNAMES</strong> (<font size="3">non inheritable, read only</font>): 
-returns a list of property names separated by &quot;\n&quot;. If the lexer does not 
-support this information then an empty string is returned.&nbsp;</p>
-<h4>Cursor and Zooming</h4>
-
-<p><strong>CURSOR</strong> (<font size="3">non inheritable</font>): defines the 
-cursor type. Can be: &quot;NORMAL&quot; or &quot;WAIT&quot; (displays a wait cursor when the mouse 
-is over or owned by the control).</p>
-<p><strong>ZOOMIN</strong> (<font size="3">non inheritable, write only</font>): 
-increases the zoom factor by one point if the current zoom factor is less than 
-20 points.</p>
-<p><strong>ZOOMOUT</strong> (<font size="3">non inheritable, write only</font>): 
-decreases the zoom factor by one point if the current zoom factor is greater 
-than -10 points.</p>
-<p><strong>ZOOM</strong> (<font size="3">non inheritable</font>): 
-sets and gets the zoom factor directly. Limits: -10 points to zoom out and 20 
-points to zoom in.</p>
-<h4>White Space</h4>
-
-<p><strong>EXTRAASCENT</strong> (<font size="3">non inheritable</font>): 
-sets and gets the space to be added to the maximum ascent, in order to allow for 
-more space between lines. Default: 0.</p>
-<p><strong>EXTRADESCENT</strong> (<font size="3">non inheritable</font>): sets 
-and gets the space to be added to the maximum descent, in order to allow for 
-more space between lines. Default: 0.</p>
-
-<p><strong>WHITESPACEVIEW</strong> (<font size="3">non inheritable</font>): sets 
-and gets the white space display mode. The white spaces can be: &quot;INVISIBLE&quot; 
-(shown as an empty background color), &quot;VISIBLEALWAYS&quot; (drawn as dots and 
-arrows) or &quot;VISIBLEAFTERINDENT&quot; (white space used for indentation is displayed 
-normally but after the first visible character, it is shown as dots and arrows). 
-Default: INVISIBLE.</p>
-<p><strong>WHITESPACESIZE</strong> (<font size="3">non inheritable</font>): 
-sets and gets the size of the dots used for mark space characters. Default: 1.</p>
-<p><strong>WHITESPACEFGCOLOR</strong> (<font size="3">non inheritable, write 
-only</font>): 
-defines the foreground color of visible white space. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
-g b&quot;)</span>. By default the color will be defined by the Lexer, but 
-defining this attribute will overriding&nbsp;the Lexer definition. Set to NULL to 
-reset the definition and use the Lexer again.</p>
-<p><strong>WHITESPACEBGCOLOR</strong> (<font size="3">non inheritable, write 
-only</font>): 
-defines the background color of visible white space. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
-g b&quot;)</span>. By default the color will be defined by the Lexer, but 
-defining this attribute will overriding&nbsp;the Lexer definition. Set to NULL to 
-reset the definition and use the Lexer again.</p>
-<h4>Brace Highlighting</h4>
-
-<p><strong>BRACEHIGHLIGHT</strong> (<font size="3">non inheritable, write only</font>): 
-highlights the brace, defined by its initial and final positions (format: &quot;<strong>pos1</strong>:<strong>pos2</strong>&quot;). Up to two characters can be 
-highlighted in a 'brace highlighting style', which is defined as style number 
-(See <a href="#StyleDefinition">Style Definition</a>, id = 34).</p>
-<p><strong>BRACEBADLIGHT</strong> (<font size="3">non inheritable, write only</font>): 
-highlights the non matching brace, based on a position. If there is no matching 
-brace then the brace badlighting style (See <a href="#StyleDefinition">Style Definition</a>, 
-id = 35) can be used to show the brace that is unmatched. Set -1 as position 
-removes the highlight.</p>
-<p><strong>BRACEMATCH<em>id</em></strong> (<font size="3">non inheritable, read 
-only</font>): finds a corresponding matching brace given id, the position of one 
-brace. The brace characters handled are '(', ')', '[', ']', '{', '}', '&lt;', and 
-'&gt;'. If the character at position is not a brace character, or a matching brace 
-cannot be found, the return value is -1.</p>
 <h4>Scrolling</h4>
 <p><strong>SCROLLBAR</strong> (creation only): Associates an automatic horizontal and/or vertical scrollbar. Can be: "VERTICAL", "HORIZONTAL", "YES" (both) or "NO" (none). 
 	Default: "YES". For all systems, when SCROLLBAR is NO, the natural size will 
@@ -461,18 +394,19 @@ Scroll the text to make the given position visible. It uses the same format and
 reference of the CARETPOS attribute (&quot;pos&quot; starting at 0).</p>
 <p><strong>SCROLLWIDTH</strong> (<font size="3">non inheritable): controls the 
 document width in pixels. Default: 2000.</font></p>
-<h4>Styles</h4>
+<h4>Style Definition (See <a href="#StyleDefinition">Style Definition</a>)</h4>
 
   
 <p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: Background color of the 
-text. Default: the global attribute TXTBGCOLOR.</p>
+text. Default: the global attribute TXTBGCOLOR. If changed it will affect the 
+default style.</p>
 
   
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: the 
-global attribute TXTFGCOLOR.</p>
+global attribute TXTFGCOLOR. If changed it will affect the default style.</p>
 <p>
 <a href="../attrib/iup_font.html">FONT</a>: the text font. Default: the global 
-attribute DEFAULTFONT.</p>
+attribute DEFAULTFONT. If changed it will affect the default style.</p>
 <p><strong>STYLEBGCOLOR<em>id</em></strong> (<font size="3">non inheritable</font>): 
 background color for a style (See <a href="#StyleDefinition">Style Definition</a>). 
 Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
@@ -532,6 +466,86 @@ determines if the text is visible (YES) or hidden (NO) (See <a href="#StyleDefin
 weight of a font (See <a href="#StyleDefinition">Style Definition</a>). 
 Predefined values: NORMAL, SEMIBOLD and BOLD. The weight can also be a number 
 between 1 and 999 with 1 being very light and 999 very heavy.</p>
+<h4>Styling</h4>
+<p><strong>CLEARDOCUMENTSTYLE</strong> (<font size="3">non inheritable, </font>
+write-only): clear all styling information and reset the folding state.</p>
+
+<p><strong>STARTSTYLING</strong> (<font size="3">non inheritable, write only</font>): 
+prepares for styling by setting the styling position.</p>
+<p><strong>STYLING<em>id</em></strong> (<font size="3">non inheritable, write 
+only</font>): sets the style of&nbsp;given length&nbsp;characters starting at the styling 
+position and then increases the styling position by&nbsp;length. id is the style.</p>
+
+  
+<h4>Tabs and Indentation Guides</h4>
+
+<p><b>TABSIZE</b> (<font size="3">non inheritable</font>): Controls the number of characters for a tab stop. 
+	Default: 8.</p>
+
+<p><strong>INDENTATIONGUIDES</strong> (<font size="3">non inheritable</font>): 
+dotted vertical lines that appear within indentation white space every indent 
+size columns. Can be: NONE, REAL, LOOKFORWARD, LOOKBOTH. Default: NONE.</p>
+
+<p><strong>HIGHLIGHTGUIDE</strong> (<font size="3">non inheritable</font>): 
+Highlights the indentation guide of a given column. When brace highlighting 
+occurs, the indentation guide corresponding to the braces may be highlighted 
+with the brace highlighting style (See <a href="#StyleDefinition">Style Definition</a>, 
+id = 34). Set column to 0 to cancel this highlight.</p>
+<p><strong>USETABS</strong> (<font size="3">non inheritable</font>): 
+Use tabs also for indentation or only spaces. Can be Yes or No. Default: Yes.</p>
+
+  
+<h4>Undo and Redo</h4>
+
+<p><strong>REDO</strong><b> </b>(<font size="3">non inheritable</font>): redo 
+the last operation if set to Yes, clears the undo information otherwise. Returns 
+Yes or No if redo can be performed.</p>
+
+<p><strong>UNDO</strong><b> </b>(<font size="3">non inheritable</font>): undo 
+the last operation if set to Yes, clears the undo information otherwise. Returns 
+Yes or No if undo can be performed.</p>
+<p><strong>UNDOCOLLECT</strong> (<font size="3">non inheritable</font>): enable 
+or disable the undo collect of information. Can be Yes or No. Default: Yes.</p>
+<h4>White Space</h4>
+
+<p><strong>EXTRAASCENT</strong> (<font size="3">non inheritable</font>): 
+sets and gets the space to be added to the maximum ascent, in order to allow for 
+more space between lines. Default: 0.</p>
+<p><strong>EXTRADESCENT</strong> (<font size="3">non inheritable</font>): sets 
+and gets the space to be added to the maximum descent, in order to allow for 
+more space between lines. Default: 0.</p>
+
+<p><strong>WHITESPACEVIEW</strong> (<font size="3">non inheritable</font>): sets 
+and gets the white space display mode. The white spaces can be: &quot;INVISIBLE&quot; 
+(shown as an empty background color), &quot;VISIBLEALWAYS&quot; (drawn as dots and 
+arrows) or &quot;VISIBLEAFTERINDENT&quot; (white space used for indentation is displayed 
+normally but after the first visible character, it is shown as dots and arrows). 
+Default: INVISIBLE.</p>
+<p><strong>WHITESPACESIZE</strong> (<font size="3">non inheritable</font>): 
+sets and gets the size of the dots used for mark space characters. Default: 1.</p>
+<p><strong>WHITESPACEFGCOLOR</strong> (<font size="3">non inheritable, write 
+only</font>): 
+defines the foreground color of visible white space. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>. By default the color will be defined by the Lexer, but 
+defining this attribute will overriding&nbsp;the Lexer definition. Set to NULL to 
+reset the definition and use the Lexer again.</p>
+<p><strong>WHITESPACEBGCOLOR</strong> (<font size="3">non inheritable, write 
+only</font>): 
+defines the background color of visible white space. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>. By default the color will be defined by the Lexer, but 
+defining this attribute will overriding&nbsp;the Lexer definition. Set to NULL to 
+reset the definition and use the Lexer again.&nbsp;</p>
+<h4>Zooming</h4>
+
+<p><strong>ZOOMIN</strong> (<font size="3">non inheritable, write only</font>): 
+increases the zoom factor by one point if the current zoom factor is less than 
+20 points.</p>
+<p><strong>ZOOMOUT</strong> (<font size="3">non inheritable, write only</font>): 
+decreases the zoom factor by one point if the current zoom factor is greater 
+than -10 points.</p>
+<p><strong>ZOOM</strong> (<font size="3">non inheritable</font>): 
+sets and gets the zoom factor directly. Limits: -10 points to zoom out and 20 
+points to zoom in.&nbsp;</p>
 
   
 <blockquote>
@@ -757,8 +771,6 @@ and <strong>IupTextConvertPosToLinCol</strong> can also be used.</p>
   Notice that language keywords and styles definitions are not pre-defined internally, 
   the 
   application must define them.</p>
-<p>
-  Here are some known styles for C++ and Lua:</p>
 
 <table align="center">
 
@@ -767,7 +779,7 @@ and <strong>IupTextConvertPosToLinCol</strong> can also be used.</p>
 
 		<th>ID</th>
 
-		<th colspan="2">Global styles</th>
+		<th >Global styles</th>
 
 	</tr>
 
@@ -775,7 +787,7 @@ and <strong>IupTextConvertPosToLinCol</strong> can also be used.</p>
 
 		<td class="auto-style2">32</td>
 
-		<td colspan="2">This style defines the attributes that all styles 
+		<td >This style defines the attributes that all styles 
 		receive when the STYLECLEARALL attribute is used.</td>
 
 	</tr>
@@ -784,7 +796,7 @@ and <strong>IupTextConvertPosToLinCol</strong> can also be used.</p>
 
 		<td class="auto-style2">33</td>
 
-		<td colspan="2">This style sets the attributes of the text used to 
+		<td >This style sets the attributes of the text used to 
 		display line numbers in a line number margin.</td>
 
 	</tr>
@@ -793,7 +805,7 @@ and <strong>IupTextConvertPosToLinCol</strong> can also be used.</p>
 
 		<td class="auto-style2">34</td>
 
-		<td colspan="2">This style sets the attributes used when highlighting 
+		<td >This style sets the attributes used when highlighting 
 		braces with the BRACEHIGHLIGHT and HIGHLIGHTGUIDE attributes.</td>
 
 	</tr>
@@ -802,11 +814,36 @@ and <strong>IupTextConvertPosToLinCol</strong> can also be used.</p>
 
 		<td class="auto-style2">35</td>
 
-		<td colspan="2">This style sets the attributes used
-		<span style="color: rgb(0, 0, 0); font-family: sans-serif; font-size: 16px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">
-		when marking an unmatched brace with the BRACEBADLIGHT attribute. </span></td>
+		<td >This style sets the attributes used
+		when marking an unmatched brace with the BRACEBADLIGHT attribute. </td>
 
 	</tr>
+	<tr>
+
+		<td class="auto-style2">36</td>
+
+		<td >This style sets the font used when drawing control 
+		characters.</td>
+
+	</tr>
+	<tr>
+
+		<td class="auto-style2">37</td>
+
+		<td >This style sets the foreground and background colors 
+		used when drawing the indentation guides. Used when 
+		INDENTATIONGUIDES!=NONE. </td>
+
+	</tr>
+	
+  </tbody>
+</table>
+<p>
+  Here are some known styles for C++ and Lua:</p>
+
+<table align="center">
+
+	<tbody>
 
 		<tr>
 
@@ -1044,7 +1081,7 @@ and <strong>IupTextConvertPosToLinCol</strong> can also be used.</p>
   </tbody>
 </table>
 
-
+<!--
 
 <h3><a name="IndicatorStyles">Indicator Styles</a></h3>
 
@@ -1175,7 +1212,7 @@ and <strong>IupTextConvertPosToLinCol</strong> can also be used.</p>
 		</tr>
 </table>
 
-
+-->
 
 <h3><a name="Notes">Notes</a></h3>
 

@@ -32,7 +32,7 @@ char* iupScintillaGetOvertypeAttrib(Ihandle *ih)
 
 int iupScintillaSetOvertypeAttrib(Ihandle *ih, const char *value)
 {
-  if (iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     iupScintillaSendMessage(ih, SCI_SETOVERTYPE, 1, 0);
   else
     iupScintillaSendMessage(ih, SCI_SETOVERTYPE, 0, 0);

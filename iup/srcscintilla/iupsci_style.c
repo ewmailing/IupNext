@@ -20,8 +20,9 @@
 #include "iupsci_style.h"
 #include "iupsci.h"
 
+
 /***** STYLE DEFINITION *****
-Attributes not implement yet:
+Attributes not implement:
 SCI_STYLESETCHANGEABLE(int styleNumber, bool changeable)
 SCI_STYLEGETCHANGEABLE(int styleNumber)  
 */
@@ -74,7 +75,7 @@ int iupScintillaSetVisibleStyleAttrib(Ihandle* ih, int style, const char* value)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if (iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     iupScintillaSendMessage(ih, SCI_STYLESETVISIBLE, style, 1);
   else
     iupScintillaSendMessage(ih, SCI_STYLESETVISIBLE, style, 0);
@@ -98,7 +99,7 @@ int iupScintillaSetHotSpotStyleAttrib(Ihandle* ih, int style, const char* value)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if (iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     iupScintillaSendMessage(ih, SCI_STYLESETHOTSPOT, style, 1);
   else
     iupScintillaSendMessage(ih, SCI_STYLESETHOTSPOT, style, 0);
@@ -167,7 +168,7 @@ int iupScintillaSetEolFilledStyleAttrib(Ihandle* ih, int style, const char* valu
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if (iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     iupScintillaSendMessage(ih, SCI_STYLESETEOLFILLED, style, 1);
   else
     iupScintillaSendMessage(ih, SCI_STYLESETEOLFILLED, style, 0);
@@ -277,7 +278,7 @@ int iupScintillaSetWeightStyleAttrib(Ihandle* ih, int style, const char* value)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if (iupStrEqualNoCase(value, "NORMAL"))
+  if (!value || value[0]=0 || iupStrEqualNoCase(value, "NORMAL"))
     weight = 400;
   else if (iupStrEqualNoCase(value, "SEMIBOLD"))
     weight = 600;
@@ -313,10 +314,10 @@ int iupScintillaSetUnderlineStyleAttrib(Ihandle* ih, int style, const char* valu
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if (iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     iupScintillaSendMessage(ih, SCI_STYLESETUNDERLINE, style, 1);
   else
-    iupScintillaSendMessage(ih, SCI_STYLESETITALIC, style, 0);
+    iupScintillaSendMessage(ih, SCI_STYLESETUNDERLINE, style, 0);
 
   return 0;
 }
@@ -337,7 +338,7 @@ int iupScintillaSetItalicStyleAttrib(Ihandle* ih, int style, const char* value)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if (iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     iupScintillaSendMessage(ih, SCI_STYLESETITALIC, style, 1);
   else
     iupScintillaSendMessage(ih, SCI_STYLESETITALIC, style, 0);
@@ -361,7 +362,7 @@ int iupScintillaSetBoldStyleAttrib(Ihandle* ih, int style, const char* value)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if (iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     iupScintillaSendMessage(ih, SCI_STYLESETBOLD, style, 1);
   else
     iupScintillaSendMessage(ih, SCI_STYLESETBOLD, style, 0);
@@ -444,5 +445,22 @@ int iupScintillaSetResetDefaultStyleAttrib(Ihandle* ih, const char* value)
   (void)value;
 
   iupScintillaSendMessage(ih, SCI_STYLERESETDEFAULT, 0, 0);
+  return 0;
+}
+
+int iupScintillaSetStartStylingAttrib(Ihandle *ih, const char *value)
+{
+  int pos;
+  if (iupStrToInt(value, &pos))
+    iupScintillaSendMessage(ih, SCI_STARTSTYLING, pos, 0x1f);  /* mask=31 */
+
+  return 0;
+}
+
+int iupScintillaSetStylingAttrib(Ihandle* ih, int style, const char* value)
+{
+  int length;
+  if (iupStrToInt(value, &length))
+    iupScintillaSendMessage(ih, SCI_SETSTYLING, length, style);
   return 0;
 }

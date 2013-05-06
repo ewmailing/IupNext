@@ -139,7 +139,7 @@ char* iupScintillaGetMarginSensitiveAttribId(Ihandle* ih, int margin)
 
 int iupScintillaSetMarginSensitiveAttribId(Ihandle* ih, int margin, const char* value)
 {
-  if (iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     iupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 1);
   else
     iupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 0);

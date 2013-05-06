@@ -122,6 +122,43 @@ static int iScintillaConvertXYToPos(Ihandle* ih, int x, int y)
 
 /***** GENERAL FUNCTIONS *****/
 
+
+static int iScintillaSetStandardFontAttrib(Ihandle* ih, const char* value)
+{
+  int size = 0;
+  int is_bold = 0,
+    is_italic = 0, 
+    is_underline = 0,
+    is_strikeout = 0;
+  char typeface[1024];
+
+  if (!value)
+    return 0;
+  
+  if (!iupGetFontInfo(value, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return 0;
+
+  iupScintillaSetFontStyleAttrib(ih, 0, typeface);
+  iupScintillaSendMessage(ih, SCI_STYLESETSIZE, 0, size);
+  iupScintillaSetBoldStyleAttrib(ih, 0, is_bold? "Yes": "No");
+  iupScintillaSetItalicStyleAttrib(ih, 0, is_italic? "Yes": "No");
+  iupScintillaSetUnderlineStyleAttrib(ih, 0, is_underline? "Yes": "No");
+
+  return iupdrvSetStandardFontAttrib(ih, value);
+}
+
+static int iScintillaSetFgColorAttrib(Ihandle *ih, const char *value)
+{
+  iupScintillaSetFgColorStyleAttrib(ih, 0, value);
+  return 1;
+}
+
+static int iScintillaSetBgColorAttrib(Ihandle *ih, const char *value)
+{
+  iupScintillaSetBgColorStyleAttrib(ih, 0, value);
+  return 1;
+}
+
 static int iScintillaSetUsePopupAttrib(Ihandle* ih, const char* value)
 {
   iupScintillaSendMessage(ih, SCI_USEPOPUP, iupStrBoolean(value), 0);
@@ -582,6 +619,10 @@ static Iclass* iupScintillaNewClass(void)
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);
 
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iScintillaSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iScintillaSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_DEFAULT);  
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iScintillaSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_NOT_MAPPED);  /* usually black */    
+
   /* Drag&Drop */
   iupdrvRegisterDragDropAttrib(ic);
 
@@ -647,6 +688,8 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttributeId(ic, "STYLECASE", iupScintillaGetCaseStyleAttrib, iupScintillaSetCaseStyleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "STYLEVISIBLE", iupScintillaGetVisibleStyleAttrib, iupScintillaSetVisibleStyleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "STYLEHOTSPOT", iupScintillaGetHotSpotStyleAttrib, iupScintillaSetHotSpotStyleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "STARTSTYLING", NULL, iupScintillaSetStartStylingAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "STYLING", NULL, iupScintillaSetStylingAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* Lexer Attributes */
   iupClassRegisterAttribute(ic,   "LEXERLANGUAGE", iupScintillaGetLexerLanguageAttrib, iupScintillaSetLexerLanguageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -758,7 +801,5 @@ USEBRACEBLINDICATOR (non inheritable): enable or disable the indicator to highli
 
 - Autocompletion/User lists
 
-- FONT/BGCOLOR/FGCOLOR x STYLE*
 - iupsci_selection.c
-  iupsci_style.c
 */
