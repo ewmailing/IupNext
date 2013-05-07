@@ -151,6 +151,14 @@ int iupScintillaSetSavePointAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+char* iupScintillaGetModifyAttrib(Ihandle* ih)
+{
+  if (iupScintillaSendMessage(ih, SCI_GETMODIFY, 0, 0))
+    return "YES";
+  else
+    return "NO";
+}
+
 int iupScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value)
 {
   int pos, len;

@@ -278,7 +278,7 @@ int iupScintillaSetWeightStyleAttrib(Ihandle* ih, int style, const char* value)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if (!value || value[0]=0 || iupStrEqualNoCase(value, "NORMAL"))
+  if (!value || value[0]==0 || iupStrEqualNoCase(value, "NORMAL"))
     weight = 400;
   else if (iupStrEqualNoCase(value, "SEMIBOLD"))
     weight = 600;

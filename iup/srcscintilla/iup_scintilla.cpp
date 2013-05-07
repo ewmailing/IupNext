@@ -783,7 +783,7 @@ Ihandle *IupScintilla(void)
   return IupCreate("scintilla");
 }
 
-/*****  TODO
+/*****  TODO  (by-demand)
 - Search & Replace
 - Multiple Selection and Virtual Space
 - Macro recording
@@ -797,9 +797,5 @@ BRACEHLINDICATOR (non inheritable, write only): defines a specified indicator to
 BRACEBLINDICATOR (non inheritable, write only): defines a specified indicator to highlight non matching brace instead of changing its style (See Indicator Styles).
 USEBRACEHLINDICATOR (non inheritable): enable or disable the indicator to highlight matching braces. Can be YES or NO. Default: YES.
 USEBRACEBLINDICATOR (non inheritable): enable or disable the indicator to highlight non matching brace. Can be YES or NO. Default: YES.
-
-- Annotations
-- Markers
-
-- Autocompletion/User lists
+- Autocompletion
 */

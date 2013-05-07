@@ -16,6 +16,7 @@ char* iupScintillaGetCaretAttrib(Ihandle* ih);
 int iupScintillaSetCaretAttrib(Ihandle* ih, const char* value);
 char* iupScintillaGetCaretPosAttrib(Ihandle* ih);
 int iupScintillaSetCaretPosAttrib(Ihandle* ih, const char* value);
+int iupScintillaSetCaretToViewAttrib(Ihandle *ih, const char *value);
 char* iupScintillaGetCountAttrib(Ihandle* ih);
 char* iupScintillaGetLineCountAttrib(Ihandle* ih);
 char* iupScintillaGetCurrentLineAttrib(Ihandle* ih);
@@ -25,6 +26,7 @@ char* iupScintillaGetSelectionAttrib(Ihandle* ih);
 int iupScintillaSetSelectionAttrib(Ihandle* ih, const char* value);
 char* iupScintillaGetSelectionPosAttrib(Ihandle* ih);
 int iupScintillaSetSelectionPosAttrib(Ihandle* ih, const char* value);
+char* iupScintillaGetVisibleLinesCountAttrib(Ihandle* ih);
 
 
 #ifdef __cplusplus

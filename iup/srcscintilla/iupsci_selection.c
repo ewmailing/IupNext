@@ -25,8 +25,6 @@
 Attributes not implement yet:
 SCI_SETFIRSTVISIBLELINE(int lineDisplay)
 SCI_GETFIRSTVISIBLELINE
-SCI_LINESONSCREEN
-SCI_GETMODIFY
 SCI_GOTOLINE(int line)
 SCI_SETCURRENTPOS(int position)
 SCI_GETCURRENTPOS
@@ -37,7 +35,6 @@ SCI_GETSELECTIONSTART
 SCI_SETSELECTIONEND(int position)
 SCI_GETSELECTIONEND
 SCI_SETEMPTYSELECTION(int pos)
-SCI_SELECTALL
 SCI_LINEFROMPOSITION(int position)
 SCI_POSITIONFROMLINE(int line)
 SCI_GETLINEENDPOSITION(int line)
@@ -56,7 +53,6 @@ SCI_SETSELECTIONMODE(int mode)
 SCI_GETSELECTIONMODE
 SCI_GETLINESELSTARTPOSITION(int line)
 SCI_GETLINESELENDPOSITION(int line)
-SCI_MOVECARETINSIDEVIEW
 SCI_WORDENDPOSITION(int position, bool onlyWordCharacters)
 SCI_WORDSTARTPOSITION(int position, bool onlyWordCharacters)
 SCI_POSITIONBEFORE(int position)
@@ -147,6 +143,13 @@ int iupScintillaSetCaretPosAttrib(Ihandle* ih, const char* value)
 
   iupScintillaSendMessage(ih, SCI_GOTOPOS, pos, 0);
 
+  return 0;
+}
+
+int iupScintillaSetCaretToViewAttrib(Ihandle *ih, const char *value)
+{
+  (void)value;
+  iupScintillaSendMessage(ih, SCI_MOVECARETINSIDEVIEW, 0, 0);
   return 0;
 }
 
@@ -272,4 +275,12 @@ int iupScintillaSetSelectionPosAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+char* iupScintillaGetVisibleLinesCountAttrib(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(100);
+  int count = iupScintillaSendMessage(ih, SCI_LINESONSCREEN, 0, 0);
+  
+  sprintf(str, "%d", count);
 
+  return str;
+}
