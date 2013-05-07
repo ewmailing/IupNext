@@ -136,10 +136,11 @@ the caret.</p>
   without changing it. Restricts the insertion using keyboard input and 
 attributes. Navigation keys are still available. Possible values: "YES" and "NO". 
 Default: NO.</p>
-<p><strong>SAVEPOINT</strong> (<font size="3">non inheritable, </font>
-write-only): sets the current state of the document to saved.&nbsp;If editing is done 
-the SAVEPOINT_CB callback is called with status=0. Is undo is performed back to 
-the save point the callback is called again with status=1. </p>
+<p><strong><a name="SAVEDSTATE">SAVEDSTATE</a></strong> (<font size="3">non inheritable</font>): sets the current state of the document to saved 
+(given value is ignored), returns Yes or No if the document has been modified.&nbsp;After 
+setting the SAVEDSTATE, when editing is done the <a href="#SAVEPOINT_CB">
+SAVEPOINT_CB</a> callback is called with status=0. When undo is performed back to 
+the point were the saved state was set the callback is called again with status=1. </p>
 
   
 <p><a href="../attrib/iup_size.html">SIZE</a> (<font size="3">non inheritable</font>): 
@@ -164,6 +165,8 @@ SIZE you can set to NULL after map to use it as an initial value. Default:
 visible lines for the <strong>Natural</strong> <strong>Size</strong>, this means 
 that will act also as minimum number of visible lines. As for SIZE you can set 
 to NULL after map to use it as an initial value. Default: 10.</p>
+<p><strong>VISIBLELINESCOUNT</strong> (<font size="3">non inheritable, read-only</font>): 
+returns the number of actual visible lines.</p>
 
 <p><strong>WORDWRAP</strong> (<font size="3">non inheritable</font>): If enabled will force a word wrap of lines that are 
 greater than the with of the control, and the horizontal scrollbar will be removed. Default: NO.</p>
@@ -237,7 +240,7 @@ cannot be found, the return value is -1.</p>
 <h4>Caret and Selection</h4>
 
   
-<p><strong>CARET</strong> (<font size="3">non inheritable</font>):
+<p><strong><a name="CARET">CARET</a></strong> (<font size="3">non inheritable</font>):
   Position of the insertion point. The 
 	first position, <strong>lin</strong> or <strong>col</strong>, is "0". It 
 uses a string format "<strong>lin</strong>,<strong>col</strong>" in order to 
@@ -255,10 +258,12 @@ indicate the caret position, where <strong>lin</strong> and
 visible.</p>
 
   
-<p><strong>CARETPOS</strong> (<font size="3">non inheritable</font>): Position of the insertion point using a zero based character unique index 
+<p><strong><a name="CARETPOS">CARETPOS</a></strong> (<font size="3">non inheritable</font>): Position of the insertion point using a zero based character unique index 
 &quot;pos&quot;. Useful for indexing the VALUE string. This removes any 
 selection, sets the caret at pos and scrolls the view to make the caret visible, 
 if necessary.</p>
+<p><strong>CARETTOVIEW</strong> (<font size="3">non inheritable, write only</font>): 
+Moves the caret to the nearest visible line.&nbsp;Any selection is lost.</p>
 
   
 <p><strong>SELECTEDTEXT</strong> (<font size="3">non inheritable</font>):
@@ -387,11 +392,13 @@ always include its size even if the native system hides the scrollbar.</p>
 
 <p><strong>SCROLLTO</strong> (<font size="3">non inheritable, write only</font>): 
 Scroll the text to make the given position visible. It uses the same format and 
-reference of the CARET attribute ("lin,col&quot; or &quot;col&quot; starting at 0).</p>
+reference of the <a href="#CARET">CARET</a> attribute ("lin,col&quot; or &quot;col&quot; starting at 0).</p>
+<p><strong>SCROLLTOCARET</strong> (<font size="3">non inheritable, write only</font>): 
+Scroll the text to make the caret position visible.</p>
 
 <p><strong>SCROLLTOPOS</strong> (<font size="3">non inheritable, write only</font>): 
 Scroll the text to make the given position visible. It uses the same format and 
-reference of the CARETPOS attribute (&quot;pos&quot; starting at 0).</p>
+reference of the <a href="#CARETPOS">CARETPOS</a> attribute (&quot;pos&quot; starting at 0).</p>
 <p><strong>SCROLLWIDTH</strong> (<font size="3">non inheritable): controls the 
 document width in pixels. Default: 2000.</font></p>
 <h4>Style Definition (See <a href="#StyleDefinition">Style Definition</a>)</h4>
@@ -685,10 +692,10 @@ the moment the event was generated. The same macros used for
 
   
   
-<p><b>SAVEPOINT_CB</b>:
+<p><b><a name="SAVEPOINT_CB">SAVEPOINT_CB</a></b>:
   Notifies the application that a save point was reached (1) or left (0). Can be 
 used to controls whether to display a saved or modified document. To set the 
-save point use the SAVEPOINT attribute.</p>
+save point use the <a href="#SAVEDSTATE">SAVEDSTATE</a> attribute.</p>
 
   
     
@@ -1223,6 +1230,13 @@ and <strong>IupTextConvertPosToLinCol</strong> can also be used.</p>
 <p>Internal Drag&amp;Drop support is enabled by default.</p>
 <p><strong>IupScintilla</strong> uses attributes and callbacks very similar to 
 the <strong>IupText</strong> control, except for text formatting. </p>
+<p>Although the <strong>IupScintilla</strong> documentation should be sufficient 
+for most uses, some advanced features will be better understood if the
+<a href="http://www.scintilla.org/ScintillaDoc.html">Scintilla Documentation</a> 
+is consulted. Also some Scintilla features are not available in <strong>
+IupScintilla</strong>, so by consulting that documentation you will be able to 
+check which one and if necessary you can request the implementation in <strong>
+IupScintilla</strong>.</p>
 
 <h4>Navigation, Selection and Clipboard Keys</h4>
 
@@ -1434,7 +1448,8 @@ IupSetAttribute(ih, "MARGINSENSITIVE1", "YES");
 <h3><a name="SeeAlso">See Also</a></h3>
 
 
-<p><a href="../elem/iuptext.html">IupText</a></p>
+<p><a href="../elem/iuptext.html">IupText</a>,
+<a href="http://www.scintilla.org/">Scintilla</a></p>
 
 
 </body>

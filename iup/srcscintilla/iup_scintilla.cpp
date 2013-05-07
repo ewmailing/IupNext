@@ -638,17 +638,19 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic,   "READONLY", iupScintillaGetReadOnlyAttrib, iupScintillaSetReadOnlyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "CLEARALL", NULL, iupScintillaSetClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "CLEARDOCUMENTSTYLE", NULL, iupScintillaSetClearDocumentAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "SAVEPOINT", NULL, iupScintillaSetSavePointAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "SAVEDSTATE", iupScintillaGetModifyAttrib, iupScintillaSetSavePointAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Selection and information */
   iupClassRegisterAttribute(ic, "CARET", iupScintillaGetCaretAttrib, iupScintillaSetCaretAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CARETPOS", iupScintillaGetCaretPosAttrib, iupScintillaSetCaretPosAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETTOVIEW", NULL, iupScintillaSetCaretToViewAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COUNT", iupScintillaGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LINECOUNT", iupScintillaGetLineCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LINEVALUE", iupScintillaGetCurrentLineAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTEDTEXT", iupScintillaGetSelectedTextAttrib, iupScintillaSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", iupScintillaGetSelectionAttrib, iupScintillaSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTIONPOS", iupScintillaGetSelectionPosAttrib, iupScintillaSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLELINESCOUNT", iupScintillaGetVisibleLinesCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Cut, Copy and Paste */
   iupClassRegisterAttribute(ic, "CLIPBOARD", iupScintillaGetCanPasteAttrib, iupScintillaSetClipboardAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
@@ -748,7 +750,7 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic, "SCROLLBAR", iScintillaGetScrollbarAttrib, iScintillaSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTO", NULL, iupScintillaSetScrollToAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, iupScintillaSetScrollToPosAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLCARET", NULL, iupScintillaSetScrollCaretAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTOCARET", NULL, iupScintillaSetScrollCaretAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLWIDTH", iupScintillaGetScrollWidthAttrib, iupScintillaSetScrollWidthAttrib, IUPAF_SAMEASSYSTEM, "2000", IUPAF_NO_INHERIT);
 
   /* General */
@@ -800,6 +802,4 @@ USEBRACEBLINDICATOR (non inheritable): enable or disable the indicator to highli
 - Markers
 
 - Autocompletion/User lists
-
-- iupsci_selection.c
 */
