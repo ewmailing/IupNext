@@ -38,6 +38,17 @@
    TODO: I would like a form to always show the feedback, but could not understand how WM_CHANGEUISTATE works.
          Neither SystemParametersInfo(SPI_SETKEYBOARDCUES, TRUE) or SystemParametersInfo(SPI_SETKEYBOARDPREF, TRUE) worked.
 */
+
+int iupwinGetKeyBoardCues(void)
+{
+  BOOL cues = 0;
+  SystemParametersInfo(SPI_GETKEYBOARDCUES, 0, &cues, 0);
+  if (cues)
+    return 1;
+  else
+    return 0;
+}
+
 void iupdrvSetFocus(Ihandle *ih)
 {
   SetFocus(ih->handle);

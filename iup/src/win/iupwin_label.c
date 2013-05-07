@@ -82,7 +82,7 @@ static void winLabelDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
     DeleteObject(hMask);
 }
 
-static void winLabelDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_height)
+static void winLabelDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_height, UINT itemState)
 {
   int xpad = ih->data->horiz_padding, 
       ypad = ih->data->vert_padding;
@@ -122,6 +122,9 @@ static void winLabelDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_heig
   /* WORDWRAP and ELLIPSIS */
   style |= ih->data->text_style;
 
+  if (itemState & ODS_NOACCEL && !iupwinGetKeyBoardCues())
+    style |= DT_HIDEPREFIX;
+
   iupwinDrawText(hDC, title, x, y, width, height, hFont, fgcolor, style);
 }
 
@@ -144,7 +147,7 @@ static void winLabelDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   if (ih->data->type == IUP_LABEL_IMAGE)
     winLabelDrawImage(ih, hDC, width, height);
   else
-    winLabelDrawText(ih, hDC, width, height);
+    winLabelDrawText(ih, hDC, width, height, drawitem->itemState);
 
   iupwinDrawDestroyBitmapDC(&bmpDC);
 }

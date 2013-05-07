@@ -22,6 +22,7 @@ void iupwinShowLastError(void);
 
 /* focus */
 void iupwinWmSetFocus(Ihandle *ih);
+int iupwinGetKeyBoardCues(void);
 
 /* key */
 int iupwinKeyEvent(Ihandle* ih, int wincode, int press);
