@@ -28,6 +28,15 @@
 #include "iupwin_draw.h"
 
 
+/* Not defined in MingW and Cygwin */
+#ifndef ODS_NOACCEL
+#define ODS_NOACCEL   0x0100
+#endif
+#ifndef DT_HIDEPREFIX
+#define DT_HIDEPREFIX   0x00100000
+#endif
+
+
 static void winLabelDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_height)
 {
   int xpad = ih->data->horiz_padding, 
