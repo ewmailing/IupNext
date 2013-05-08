@@ -123,7 +123,11 @@ ifneq ($(findstring dll, $(TEC_UNAME)), )
   DEFINES += IUP_DLL
   INCLUDES += ../etc
   SRC += ../etc/iup.rc
-  DEF_FILE = iup.def
+  ifdef USE_GTK
+    DEF_FILE = iupgtk.def
+  else
+    DEF_FILE = iup.def
+  endif
 endif
 
 ifeq "$(TEC_UNAME)" "vc6"

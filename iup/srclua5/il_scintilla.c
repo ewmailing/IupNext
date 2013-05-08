@@ -79,3 +79,20 @@ int iupscintillalua_open(lua_State * L)
   return 0;
 }
 
+ 
+int iup_scintillalua_open(lua_State* L)
+{
+  if (iuplua_opencall_internal(L))
+    IupScintillaOpen();
+    
+  iuplua_get_env(L);
+  iupscintillalua_open(L);
+  return 0;
+}
+
+/* obligatory to use require"iuplua_scintilla" */
+int luaopen_iuplua_scintilla(lua_State* L)
+{
+  return iup_scintillalua_open(L);
+}
+
