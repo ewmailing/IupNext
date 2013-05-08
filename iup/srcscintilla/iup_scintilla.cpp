@@ -566,8 +566,6 @@ static int iScintillaCreateMethod(Ihandle* ih, void **params)
   ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
   ih->data->append_newline = 1;
   iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", "1");
-  ih->data->last_marker_handle = 0;
-  ih->data->last_marker_found = 0;
 
   /* unused for now */
   ih->data->useBraceHLIndicator = 1;
@@ -737,10 +735,10 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic,   "MARKERDELETEALL", NULL, iupScintillaSetMarkerDeleteAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARKERNEXT", NULL, iupScintillaSetMarkerNextAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARKERPREVIOUS", NULL, iupScintillaSetMarkerPreviousAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "MARKERLINEFROMHANDLE", NULL, iupScintillaSetMarkerLineFromHandleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERLINEFROMHANDLE", iupScintillaGetMarkerLineFromHandleAttribId, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "MARKERDELETEHANDLE", NULL, iupScintillaSetMarkerDeleteHandleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "LASTMARKERHANDLE", iupScintillaGetLastMarkerHandle, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "LASTMARKERFOUND", iupScintillaGetLastMarkerFound, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "LASTMARKERADDHANDLE", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "LASTMARKERFOUND", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* White space Attributes */
   iupClassRegisterAttribute(ic, "EXTRAASCENT",  iupScintillaGetWSExtraDescentAttrib, iupScintillaSetWSExtraDescentAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -770,7 +768,7 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttributeId(ic, "ANNOTATIONTEXT", iupScintillaGetAnnotationTextAttribId, iupScintillaSetAnnotationTextAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "ANNOTATIONSTYLE", iupScintillaGetAnnotationStyleAttribId, iupScintillaSetAnnotationStyleAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "ANNOTATIONSTYLEOFFSET", iupScintillaGetAnnotationStyleOffsetAttrib, iupScintillaSetAnnotationStyleOffsetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "ANNOTATIONVISIBLE",  iupScintillaGetAnnotationVisibleAttrib, iupScintillaSetAnnotationVisibleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "ANNOTATIONVISIBLE",  iupScintillaGetAnnotationVisibleAttrib, iupScintillaSetAnnotationVisibleAttrib, IUPAF_SAMEASSYSTEM, "HIDDEN", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "ANNOTATIONCLEARALL", NULL, iupScintillaSetAnnotationClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* Scrolling and automatic scrolling */

@@ -68,11 +68,9 @@ char* iupScintillaGetAnnotationStyleAttribId(Ihandle* ih, int line)
 
 int iupScintillaSetAnnotationStyleOffsetAttrib(Ihandle* ih, const char* value)
 {
-  int style;
-  iupStrToInt(value, &style);
-  if(style >= 0 && style <= 255)
-    iupScintillaSendMessage(ih, SCI_ANNOTATIONSETSTYLEOFFSET, style, 0);
-
+  int style_offset;
+  iupStrToInt(value, &style_offset);
+  iupScintillaSendMessage(ih, SCI_ANNOTATIONSETSTYLEOFFSET, style_offset, 0);
   return 0;
 }
 
@@ -90,7 +88,7 @@ int iupScintillaSetAnnotationVisibleAttrib(Ihandle *ih, const char *value)
     iupScintillaSendMessage(ih, SCI_ANNOTATIONSETVISIBLE, ANNOTATION_STANDARD, 0);
   else if (iupStrEqualNoCase(value, "BOXED"))
     iupScintillaSendMessage(ih, SCI_ANNOTATIONSETVISIBLE, ANNOTATION_BOXED, 0);
-  else  // "HIDDEN"
+  else  /* "HIDDEN" */
     iupScintillaSendMessage(ih, SCI_ANNOTATIONSETVISIBLE, ANNOTATION_HIDDEN, 0);
   return 0;
 }
@@ -101,7 +99,7 @@ char* iupScintillaGetAnnotationVisibleAttrib(Ihandle* ih)
     return "STANDARD";
   else if (iupScintillaSendMessage(ih, SCI_ANNOTATIONGETVISIBLE, 0, 0) == ANNOTATION_BOXED)
     return "BOXED";
-  else  // ANNOTATION_HIDDEN
+  else  /* ANNOTATION_HIDDEN */
     return "HIDDEN";
 }
 

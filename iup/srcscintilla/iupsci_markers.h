@@ -28,10 +28,8 @@ char* iupScintillaGetMarkerGetAttribId(Ihandle* ih, int line);
 int iupScintillaSetMarkerDeleteAllAttrib(Ihandle* ih, const char* value);
 int iupScintillaSetMarkerNextAttribId(Ihandle* ih, int lineStart, const char* value);
 int iupScintillaSetMarkerPreviousAttribId(Ihandle* ih, int lineStart, const char* value);
-int iupScintillaSetMarkerLineFromHandleAttrib(Ihandle* ih, const char* value);
+char* iupScintillaGetMarkerLineFromHandleAttribId(Ihandle* ih, int markerHandle);
 int iupScintillaSetMarkerDeleteHandleAttrib(Ihandle* ih, const char* value);
-char* iupScintillaGetLastMarkerHandle(Ihandle* ih);
-char* iupScintillaGetLastMarkerFound(Ihandle* ih);
 
 
 #ifdef __cplusplus

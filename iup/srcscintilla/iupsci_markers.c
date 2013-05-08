@@ -188,16 +188,20 @@ int iupScintillaSetMarkerDefineAttrib(Ihandle* ih, const char* value)
 int iupScintillaSetMarkerDefineRGBAImageId(Ihandle* ih, int markerNumber, const char* value)
 {
   void* img = iupImageGetImage(value, ih, 0);
-
   if (img)
   {
-    int w, h;
-    iupdrvImageGetInfo(img, &w, &h, NULL);
-    
-    iupScintillaSendMessage(ih, SCI_RGBAIMAGESETWIDTH,  w, 0);
-    iupScintillaSendMessage(ih, SCI_RGBAIMAGESETHEIGHT, h, 0);
-
-    iupScintillaSendMessage(ih, SCI_MARKERDEFINERGBAIMAGE, markerNumber, (sptr_t)img);
+    int w, h, bpp;
+    iupdrvImageGetInfo(img, &w, &h, &bpp);
+    if (bpp == 32)
+    {
+      unsigned char* imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
+      if (imgdata)
+      {
+        iupScintillaSendMessage(ih, SCI_RGBAIMAGESETWIDTH,  w, 0);
+        iupScintillaSendMessage(ih, SCI_RGBAIMAGESETHEIGHT, h, 0);
+        iupScintillaSendMessage(ih, SCI_MARKERDEFINERGBAIMAGE, markerNumber, (sptr_t)imgdata);
+      }
+    }
   }
 
   return 0;
@@ -275,10 +279,11 @@ int iupScintillaSetMarkerEnableHighlightAttrib(Ihandle *ih, const char *value)
 
 int iupScintillaSetMarkerAddAttribId(Ihandle* ih, int line, const char* value)
 {
-  int markerNumber;
+  int markerNumber, markerID;
   iupStrToInt(value, &markerNumber);
 
-  ih->data->last_marker_handle = iupScintillaSendMessage(ih, SCI_MARKERADD, line, markerNumber);
+  markerID = iupScintillaSendMessage(ih, SCI_MARKERADD, line, markerNumber);
+  iupAttribSetInt(ih, "LASTMARKERADDHANDLE", markerID);
 
   return 0;
 }
@@ -297,9 +302,7 @@ char* iupScintillaGetMarkerGetAttribId(Ihandle* ih, int line)
 {
   int markers = iupScintillaSendMessage(ih, SCI_MARKERGET, line, 0);
   char* str = iupStrGetMemory(15);
-  
   sprintf(str, "%d", markers);
-
   return str;
 }
 
@@ -315,32 +318,32 @@ int iupScintillaSetMarkerDeleteAllAttrib(Ihandle* ih, const char* value)
 
 int iupScintillaSetMarkerNextAttribId(Ihandle* ih, int lineStart, const char* value)
 {
-  int markerMask;
+  int markerMask, last_marker_found;
   iupStrToInt(value, &markerMask);
 
-  ih->data->last_marker_found = iupScintillaSendMessage(ih, SCI_MARKERNEXT, lineStart, markerMask);
+  last_marker_found = iupScintillaSendMessage(ih, SCI_MARKERNEXT, lineStart, markerMask);
+  iupAttribSetInt(ih, "LASTMARKERFOUND", last_marker_found);
 
   return 0;
 }
 
 int iupScintillaSetMarkerPreviousAttribId(Ihandle* ih, int lineStart, const char* value)
 {
-  int markerMask;
+  int markerMask, last_marker_found;
   iupStrToInt(value, &markerMask);
 
-  ih->data->last_marker_found = iupScintillaSendMessage(ih, SCI_MARKERPREVIOUS, lineStart, markerMask);
+  last_marker_found = iupScintillaSendMessage(ih, SCI_MARKERPREVIOUS, lineStart, markerMask);
+  iupAttribSetInt(ih, "LASTMARKERFOUND", last_marker_found);
 
   return 0;
 }
 
-int iupScintillaSetMarkerLineFromHandleAttrib(Ihandle* ih, const char* value)
+char* iupScintillaGetMarkerLineFromHandleAttribId(Ihandle* ih, int markerHandle)
 {
-  int markerHandle;
-  iupStrToInt(value, &markerHandle);
-
-  ih->data->last_marker_found = iupScintillaSendMessage(ih, SCI_MARKERLINEFROMHANDLE, markerHandle, 0);
-
-  return 0;
+  int line = iupScintillaSendMessage(ih, SCI_MARKERLINEFROMHANDLE, markerHandle, 0);
+  char* str = iupStrGetMemory(15);
+  sprintf(str, "%d", line);
+  return str;
 }
 
 int iupScintillaSetMarkerDeleteHandleAttrib(Ihandle* ih, const char* value)
@@ -351,18 +354,4 @@ int iupScintillaSetMarkerDeleteHandleAttrib(Ihandle* ih, const char* value)
   iupScintillaSendMessage(ih, SCI_MARKERDELETEHANDLE, markerHandle, 0);
 
   return 0;
-}
-
-char* iupScintillaGetLastMarkerHandle(Ihandle* ih)
-{
-  char* str = iupStrGetMemory(15);
-  sprintf(str, "%d", ih->data->last_marker_handle);
-  return str;
-}
-
-char* iupScintillaGetLastMarkerFound(Ihandle* ih)
-{
-  char* str = iupStrGetMemory(15);
-  sprintf(str, "%d", ih->data->last_marker_found);
-  return str;
 }

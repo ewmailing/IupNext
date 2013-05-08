@@ -233,11 +233,11 @@ sets and gets a particular style to the annotation, considering the &quot;id&quo
 line number.</p>
 
 <p><strong>ANNOTATIONSTYLEOFFSET</strong><b> </b>(<font size="3">non inheritable</font>): 
-sets and gets a style offset, in order to use standard text styles in 
-annotations (range: 0..255).</p>
+sets and gets a style offset, in order to separate standard text styles from 
+annotation styles.</p>
 <p><strong>ANNOTATIONVISIBLE</strong> (<font size="3">non inheritable</font>): enable 
 or disable annotations. Can be &quot;HIDDEN&quot; (not displayed), &quot;STANDARD&quot; (displayed) 
-or &quot;BOXED&quot; (displayed and surrounded by a box).</p>
+or &quot;BOXED&quot; (displayed and surrounded by a box). Default HIDDEN.</p>
 <p><strong>ANNOTATIONCLEARALL</strong> (<font size="3">non inheritable, </font>
 write-only): deletes all annotations.</p>
 
@@ -425,16 +425,18 @@ translucently when there are no margins.</p>
 only</font>): 
 defines the image name to be used on a marker number. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
-	associate an image to a name. See also <a href="../elem/iupimage.html">IupImage</a>.</p>
+	associate an image to a name. See also <a href="../elem/iupimage.html">IupImage</a>. 
+It must be an image created with the <strong>IupImageRGBA</strong> constructor, 
+it can not be a image loaded from stock or resources.</p>
 <p><strong>MARKERRGBAIMAGESCALE </strong>(<font size="3">non inheritable, write 
 only</font>): 
-defines the image scale factor, in percentual.</p>
+defines the image scale factor, in percent (1-100).</p>
 <p><strong>MARKERHIGHLIGHT</strong> (<font size="3">non inheritable</font>): enable 
 or disable the the highlight folding block when it is selected. (i.e. block that 
-contains the caret). Can be Yes or No.</p>
+contains the caret). Can be Yes or No. Default: No.</p>
 <p><strong>MARKERADD<em>id</em></strong> (<font size="3">non inheritable, </font>
 write-only): adds marker number to a line (id). Internally, sets the marker 
-handle number (LASTMARKERHANDLE attribute) that identifies the added marker (or 
+handle number (LASTMARKERADDHANDLE attribute) that identifies the added marker (or 
 -1 for invalid line and out of memory), which may be useful to find where a 
 marker is after moving or combining lines removes markers of the given number 
 from all lines. If marker number is -1, it deletes all markers from all lines.</p>
@@ -457,15 +459,16 @@ write</font>-only): searches a given marker number, starting at line number (id)
 and continuing backwards to the start of the file. Internally, sets the the line 
 number of the first line that contains the marker (LASTMARKERFOUND attribute) or 
 -1, if no marker is found.</p>
-<p><strong>MARKERLINEFROMHANDLE</strong> (<font size="3">non inheritable, </font>
-write-only): searches the document for the marker with this handle (use the 
-LASTMARKERHANDLE as attribute value). Internally, returns the line number of the 
-first line that contains the marker (LASTMARKERFOUND attribute) or -1, if no 
+<p><strong>MARKERLINEFROMHANDLE<em>id</em></strong> (<font size="3">non inheritable, 
+read</font>-only): searches the document for the marker given its handle 
+returned in MARKERADDid (use the 
+LASTMARKERADDHANDLE as attribute value) and returns the line number of the 
+first line that contains the marker or -1, if no 
 marker is found.</p>
 <p><strong>MARKERDELETEHANDLE</strong> (<font size="3">non inheritable, </font>
 write-only): searches the document for the marker with this handle (use the 
-LASTMARKERHANDLE as attribute value) and deletes the marker if it is found.</p>
-<p><strong>LASTMARKERHANDLE</strong> (<font size="3">non inheritable, read</font>-only): 
+LASTMARKERADDHANDLE as attribute value) and deletes the marker if it is found.</p>
+<p><strong>LASTMARKERADDHANDLE</strong> (<font size="3">non inheritable, read</font>-only): 
 returns the last marker handle set by the MARKERADDid attribute.</p>
 <p><strong>LASTMARKERFOUND</strong> (<font size="3">non inheritable, read</font>-only): 
 returns the last line number that contains a marker found by the MARKERNEXTid, 
