@@ -16,7 +16,6 @@
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
-#include "iup_image.h"
 
 #include "iupsci_markers.h"
 #include "iupsci.h"
@@ -187,16 +186,17 @@ int iupScintillaSetMarkerDefineAttrib(Ihandle* ih, const char* value)
 
 int iupScintillaSetMarkerDefineRGBAImageId(Ihandle* ih, int markerNumber, const char* value)
 {
-  void* img = iupImageGetImage(value, ih, 0);
-  if (img)
+  Ihandle* ih_image = IupGetHandle(value);
+  if (ih_image)
   {
-    int w, h, bpp;
-    iupdrvImageGetInfo(img, &w, &h, &bpp);
+    int bpp = IupGetInt(ih_image, "BPP");
     if (bpp == 32)
     {
-      unsigned char* imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
+      unsigned char* imgdata = (unsigned char*)IupGetAttribute(ih, "WID");
       if (imgdata)
       {
+        int w = IupGetInt(ih, "WIDTH");
+        int h = IupGetInt(ih, "HEIGHT");
         iupScintillaSendMessage(ih, SCI_RGBAIMAGESETWIDTH,  w, 0);
         iupScintillaSendMessage(ih, SCI_RGBAIMAGESETHEIGHT, h, 0);
         iupScintillaSendMessage(ih, SCI_MARKERDEFINERGBAIMAGE, markerNumber, (sptr_t)imgdata);
