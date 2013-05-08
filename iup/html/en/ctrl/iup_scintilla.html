@@ -221,6 +221,27 @@ is no text will return the empty string "". This replaces all the text in the
 document with the zero terminated text string you pass in.</p>
 
   
+<h4>Annotation&nbsp;</h4>
+
+<p><strong>ANNOTATIONTEXT</strong><b><strong><em>id</em></strong>&nbsp; </b>(<font size="3">non inheritable</font>): 
+defines and returns an annotation displayed underneath a specific line, 
+considering the &quot;id&quot; as the line number. An annotation may consist of multiple 
+lines separated by '\n'.</p>
+
+<p><strong>ANNOTATIONSTYLE</strong><b><strong><em>id</em></strong>&nbsp; </b>(<font size="3">non inheritable</font>): 
+sets and gets a particular style to the annotation, considering the &quot;id&quot; as the 
+line number.</p>
+
+<p><strong>ANNOTATIONSTYLEOFFSET</strong><b> </b>(<font size="3">non inheritable</font>): 
+sets and gets a style offset, in order to use standard text styles in 
+annotations (range: 0..255).</p>
+<p><strong>ANNOTATIONVISIBLE</strong> (<font size="3">non inheritable</font>): enable 
+or disable annotations. Can be &quot;HIDDEN&quot; (not displayed), &quot;STANDARD&quot; (displayed) 
+or &quot;BOXED&quot; (displayed and surrounded by a box).</p>
+<p><strong>ANNOTATIONCLEARALL</strong> (<font size="3">non inheritable, </font>
+write-only): deletes all annotations.</p>
+
+  
 <h4>Brace Highlighting</h4>
 
 <p><strong>BRACEHIGHLIGHT</strong> (<font size="3">non inheritable, write only</font>): 
@@ -385,6 +406,70 @@ Defines a marker symbol given its number. id can be from 0 to 31.</p>
 background color), &quot;LEFTRECT&quot;,&nbsp; 
 &quot;UNDERLINE&quot; (underline across the line), &quot;RGBAIMAGE&quot;&nbsp; and &quot;CHARACTER+c&quot; 
 (where c is an ASCii character code).</p>
+<p><strong>MARKERFGCOLOR<em>id</em> </strong>(<font size="3">non inheritable, write 
+only</font>): 
+defines the foreground color of a marker number (id). Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>.</p>
+<p><strong>MARKERBGCOLOR<em>id</em></strong> (<font size="3">non inheritable, write 
+only</font>): defines the background color of a marker number (id). Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>.</p>
+<p><strong>MARKERBGCOLORSEL<em>id</em></strong> (<font size="3">non inheritable, write 
+only</font>): defines the highlight background colour of a marker number (id) 
+when its folding block is selected. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>.</p>
+<p><strong>MARKERALPHA<em>id</em> </strong>(<font size="3">non inheritable, write 
+only</font>): 
+defines the alpha value of a marker number (id). Markers may be drawn 
+translucently when there are no margins.</p>
+<p><strong>MARKERRGBAIMAGE<em>id</em> </strong>(<font size="3">non inheritable, write 
+only</font>): 
+defines the image name to be used on a marker number. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. See also <a href="../elem/iupimage.html">IupImage</a>.</p>
+<p><strong>MARKERRGBAIMAGESCALE </strong>(<font size="3">non inheritable, write 
+only</font>): 
+defines the image scale factor, in percentual.</p>
+<p><strong>MARKERHIGHLIGHT</strong> (<font size="3">non inheritable</font>): enable 
+or disable the the highlight folding block when it is selected. (i.e. block that 
+contains the caret). Can be Yes or No.</p>
+<p><strong>MARKERADD<em>id</em></strong> (<font size="3">non inheritable, </font>
+write-only): adds marker number to a line (id). Internally, sets the marker 
+handle number (LASTMARKERHANDLE attribute) that identifies the added marker (or 
+-1 for invalid line and out of memory), which may be useful to find where a 
+marker is after moving or combining lines removes markers of the given number 
+from all lines. If marker number is -1, it deletes all markers from all lines.</p>
+<p><strong>MARKERDELETE<em>id</em></strong> (<font size="3">non inheritable, </font>
+write-only): deletes marker number given a line number (id). If marker number is 
+-1, all markers are deleted from the line.</p>
+<p><strong>MARKERDELETEALL</strong> (<font size="3">non inheritable, </font>
+write-only): removes markers of the given number from all lines. If marker 
+number is -1, it deletes all markers from all lines.</p>
+<p><strong>MARKERGET<em>id</em></strong> (<font size="3">non inheritable, read</font>-only): 
+returns a 32-bit integer that indicates which markers were present on the line 
+(id). Bit 0 is set if marker 0 is present, bit 1 for marker 1 and so on.</p>
+<p><strong>MARKERNEXT<em>id</em></strong> (<font size="3">non inheritable, write</font>-only): 
+searches a given marker number, starting at line number (id) and continuing 
+forwards to the end of the file. Internally, sets the the line number of the 
+first line that contains the marker (LASTMARKERFOUND attribute) or -1, if no 
+marker is found.</p>
+<p><strong>MARKERPREVIOUS<em>id</em></strong> (<font size="3">non inheritable, 
+write</font>-only): searches a given marker number, starting at line number (id) 
+and continuing backwards to the start of the file. Internally, sets the the line 
+number of the first line that contains the marker (LASTMARKERFOUND attribute) or 
+-1, if no marker is found.</p>
+<p><strong>MARKERLINEFROMHANDLE</strong> (<font size="3">non inheritable, </font>
+write-only): searches the document for the marker with this handle (use the 
+LASTMARKERHANDLE as attribute value). Internally, returns the line number of the 
+first line that contains the marker (LASTMARKERFOUND attribute) or -1, if no 
+marker is found.</p>
+<p><strong>MARKERDELETEHANDLE</strong> (<font size="3">non inheritable, </font>
+write-only): searches the document for the marker with this handle (use the 
+LASTMARKERHANDLE as attribute value) and deletes the marker if it is found.</p>
+<p><strong>LASTMARKERHANDLE</strong> (<font size="3">non inheritable, read</font>-only): 
+returns the last marker handle set by the MARKERADDid attribute.</p>
+<p><strong>LASTMARKERFOUND</strong> (<font size="3">non inheritable, read</font>-only): 
+returns the last line number that contains a marker found by the MARKERNEXTid, 
+MARKERPREVIOUSid or MARKERLINEFROMHANDLE attributes.</p>
 <h4>Scrolling</h4>
 <p><strong>SCROLLBAR</strong> (creation only): Associates an automatic horizontal and/or vertical scrollbar. Can be: "VERTICAL", "HORIZONTAL", "YES" (both) or "NO" (none). 
 	Default: "YES". For all systems, when SCROLLBAR is NO, the natural size will 

@@ -26,6 +26,8 @@ struct _IcontrolData
   int append_newline;
   int last_caret_pos;
   int ignore_change;
+  int last_marker_handle;
+  int last_marker_found;
 
   /* unused for now */
   int useBraceHLIndicator;

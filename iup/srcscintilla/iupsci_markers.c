@@ -16,6 +16,7 @@
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
+#include "iup_image.h"
 
 #include "iupsci_markers.h"
 #include "iupsci.h"
@@ -23,19 +24,19 @@
 /***** MARKERS *****
 SCI_MARKERDEFINE(int markerNumber, int markerSymbols)
 --SCI_MARKERDEFINEPIXMAP(int markerNumber, const char *xpm)
---SCI_RGBAIMAGESETWIDTH(int width)
---SCI_RGBAIMAGESETHEIGHT(int height)
---SCI_RGBAIMAGESETSCALE(int scalePercent)
---SCI_MARKERDEFINERGBAIMAGE(int markerNumber, const char *pixels)
+SCI_RGBAIMAGESETWIDTH(int width)
+SCI_RGBAIMAGESETHEIGHT(int height)
+SCI_RGBAIMAGESETSCALE(int scalePercent)
+SCI_MARKERDEFINERGBAIMAGE(int markerNumber, const char *pixels)
 SCI_MARKERSYMBOLDEFINED(int markerNumber) 
---SCI_MARKERSETFORE(int markerNumber, int colour)
---SCI_MARKERSETBACK(int markerNumber, int colour)
---SCI_MARKERSETBACKSELECTED(int markerNumber, int colour)
---SCI_MARKERENABLEHIGHLIGHT(int enabled)
---SCI_MARKERSETALPHA(int markerNumber, int alpha)
---SCI_MARKERADD(int line, int markerNumber)
+SCI_MARKERSETFORE(int markerNumber, int colour)
+SCI_MARKERSETBACK(int markerNumber, int colour)
+SCI_MARKERSETBACKSELECTED(int markerNumber, int colour)
+SCI_MARKERENABLEHIGHLIGHT(int enabled)
+SCI_MARKERSETALPHA(int markerNumber, int alpha)
+SCI_MARKERADD(int line, int markerNumber)
 --SCI_MARKERADDSET(int line, int markerMask)
---SCI_MARKERDELETE(int line, int markerNumber)
+SCI_MARKERDELETE(int line, int markerNumber)
 --SCI_MARKERDELETEALL(int markerNumber)
 --SCI_MARKERGET(int line)
 --SCI_MARKERNEXT(int lineStart, int markerMask)
@@ -182,4 +183,186 @@ int iupScintillaSetMarkerDefineAttrib(Ihandle* ih, const char* value)
 
   iupScintillaSetMarkerSymbolAttribId(ih, markerNumber, strSymb);
   return 0;
+}
+
+int iupScintillaSetMarkerDefineRGBAImageId(Ihandle* ih, int markerNumber, const char* value)
+{
+  void* img = iupImageGetImage(value, ih, 0);
+
+  if (img)
+  {
+    int w, h;
+    iupdrvImageGetInfo(img, &w, &h, NULL);
+    
+    iupScintillaSendMessage(ih, SCI_RGBAIMAGESETWIDTH,  w, 0);
+    iupScintillaSendMessage(ih, SCI_RGBAIMAGESETHEIGHT, h, 0);
+
+    iupScintillaSendMessage(ih, SCI_MARKERDEFINERGBAIMAGE, markerNumber, (sptr_t)img);
+  }
+
+  return 0;
+}
+
+int iupScintillaSetRGBAImageSetScale(Ihandle* ih, const char* value)
+{
+  int scale;
+  iupStrToInt(value, &scale);
+  
+  if(scale <= 0) scale = 1;
+  
+  iupScintillaSendMessage(ih, SCI_RGBAIMAGESETSCALE, scale, 0);
+  
+  return 0;
+}
+
+int iupScintillaSetMarkerFgColorAttribId(Ihandle* ih, int markerNumber, const char* value)
+{
+  unsigned char r, g, b;
+
+  if (!iupStrToRGB(value, &r, &g, &b))
+    return 0;
+
+  iupScintillaSendMessage(ih, SCI_MARKERSETFORE, markerNumber, iupScintillaEncodeColor(r, g, b));
+
+  return 0;
+}
+
+int iupScintillaSetMarkerBgColorAttribId(Ihandle* ih, int markerNumber, const char* value)
+{
+  unsigned char r, g, b;
+
+  if (!iupStrToRGB(value, &r, &g, &b))
+    return 0;
+
+  iupScintillaSendMessage(ih, SCI_MARKERSETBACK, markerNumber, iupScintillaEncodeColor(r, g, b));
+
+  return 0;
+}
+
+int iupScintillaSetMarkerBgColorSelectedAttribId(Ihandle* ih, int markerNumber, const char* value)
+{
+  unsigned char r, g, b;
+
+  if (!iupStrToRGB(value, &r, &g, &b))
+    return 0;
+
+  iupScintillaSendMessage(ih, SCI_MARKERSETBACKSELECTED, markerNumber, iupScintillaEncodeColor(r, g, b));
+
+  return 0;
+}
+
+int iupScintillaSetMarkerAlphaAttribId(Ihandle* ih, int markerNumber, const char* value)
+{
+  int alpha;
+  iupStrToInt(value, &alpha);
+
+  if (alpha < 0 || alpha > 255)
+    return 0;
+
+  iupScintillaSendMessage(ih, SCI_MARKERSETALPHA, markerNumber, alpha);
+
+  return 0;
+}
+
+int iupScintillaSetMarkerEnableHighlightAttrib(Ihandle *ih, const char *value)
+{
+  if (iupStrBoolean(value))
+    iupScintillaSendMessage(ih, SCI_MARKERENABLEHIGHLIGHT, 1, 0);
+  else
+    iupScintillaSendMessage(ih, SCI_MARKERENABLEHIGHLIGHT, 0, 0);
+  return 0;
+}
+
+int iupScintillaSetMarkerAddAttribId(Ihandle* ih, int line, const char* value)
+{
+  int markerNumber;
+  iupStrToInt(value, &markerNumber);
+
+  ih->data->last_marker_handle = iupScintillaSendMessage(ih, SCI_MARKERADD, line, markerNumber);
+
+  return 0;
+}
+
+int iupScintillaSetMarkerDeleteAttribId(Ihandle* ih, int line, const char* value)
+{
+  int markerNumber;
+  iupStrToInt(value, &markerNumber);
+
+  iupScintillaSendMessage(ih, SCI_MARKERDELETE, line, markerNumber);
+
+  return 0;
+}
+
+char* iupScintillaGetMarkerGetAttribId(Ihandle* ih, int line)
+{
+  int markers = iupScintillaSendMessage(ih, SCI_MARKERGET, line, 0);
+  char* str = iupStrGetMemory(15);
+  
+  sprintf(str, "%d", markers);
+
+  return str;
+}
+
+int iupScintillaSetMarkerDeleteAllAttrib(Ihandle* ih, const char* value)
+{
+  int markerNumber;
+  iupStrToInt(value, &markerNumber);
+
+  iupScintillaSendMessage(ih, SCI_MARKERDELETEALL, markerNumber, 0);
+
+  return 0;
+}
+
+int iupScintillaSetMarkerNextAttribId(Ihandle* ih, int lineStart, const char* value)
+{
+  int markerMask;
+  iupStrToInt(value, &markerMask);
+
+  ih->data->last_marker_found = iupScintillaSendMessage(ih, SCI_MARKERNEXT, lineStart, markerMask);
+
+  return 0;
+}
+
+int iupScintillaSetMarkerPreviousAttribId(Ihandle* ih, int lineStart, const char* value)
+{
+  int markerMask;
+  iupStrToInt(value, &markerMask);
+
+  ih->data->last_marker_found = iupScintillaSendMessage(ih, SCI_MARKERPREVIOUS, lineStart, markerMask);
+
+  return 0;
+}
+
+int iupScintillaSetMarkerLineFromHandleAttrib(Ihandle* ih, const char* value)
+{
+  int markerHandle;
+  iupStrToInt(value, &markerHandle);
+
+  ih->data->last_marker_found = iupScintillaSendMessage(ih, SCI_MARKERLINEFROMHANDLE, markerHandle, 0);
+
+  return 0;
+}
+
+int iupScintillaSetMarkerDeleteHandleAttrib(Ihandle* ih, const char* value)
+{
+  int markerHandle;
+  iupStrToInt(value, &markerHandle);
+
+  iupScintillaSendMessage(ih, SCI_MARKERDELETEHANDLE, markerHandle, 0);
+
+  return 0;
+}
+
+char* iupScintillaGetLastMarkerHandle(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(15);
+  sprintf(str, "%d", ih->data->last_marker_handle);
+  return str;
+}
+
+char* iupScintillaGetLastMarkerFound(Ihandle* ih)
+{
+  char* str = iupStrGetMemory(15);
+  sprintf(str, "%d", ih->data->last_marker_found);
+  return str;
 }

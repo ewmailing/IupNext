@@ -56,6 +56,7 @@
 #include "iupsci_whitespace.h"
 #include "iupsci_cursor.h"
 #include "iupsci_bracelight.h"
+#include "iupsci_annotation.h"
 #include "iupsci.h"
 
 
@@ -565,6 +566,8 @@ static int iScintillaCreateMethod(Ihandle* ih, void **params)
   ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
   ih->data->append_newline = 1;
   iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", "1");
+  ih->data->last_marker_handle = 0;
+  ih->data->last_marker_found = 0;
 
   /* unused for now */
   ih->data->useBraceHLIndicator = 1;
@@ -719,8 +722,25 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttributeId(ic, "MARGINCURSOR", iupScintillaGetMarginCursorAttribId, iupScintillaSetMarginCursorAttribId, IUPAF_NO_INHERIT);
 
   /* Marker Attributes */
-  iupClassRegisterAttribute(ic, "MARKERDEFINE", NULL, iupScintillaSetMarkerDefineAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARKERDEFINE", NULL, iupScintillaSetMarkerDefineAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARKERSYMBOL", iupScintillaGetMarkerSymbolAttribId, iupScintillaSetMarkerSymbolAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERFGCOLOR", NULL, iupScintillaSetMarkerFgColorAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERBGCOLOR", NULL, iupScintillaSetMarkerBgColorAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERBGCOLORSEL", NULL, iupScintillaSetMarkerBgColorSelectedAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERALPHA", NULL, iupScintillaSetMarkerAlphaAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERRGBAIMAGE", NULL, iupScintillaSetMarkerDefineRGBAImageId, IUPAF_IHANDLENAME|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARKERRGBAIMAGESCALE", NULL, iupScintillaSetRGBAImageSetScale, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARKERHIGHLIGHT", NULL, iupScintillaSetMarkerEnableHighlightAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERADD", NULL, iupScintillaSetMarkerAddAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERDELETE", NULL, iupScintillaSetMarkerDeleteAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERGET", iupScintillaGetMarkerGetAttribId, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARKERDELETEALL", NULL, iupScintillaSetMarkerDeleteAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERNEXT", NULL, iupScintillaSetMarkerNextAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERPREVIOUS", NULL, iupScintillaSetMarkerPreviousAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARKERLINEFROMHANDLE", NULL, iupScintillaSetMarkerLineFromHandleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARKERDELETEHANDLE", NULL, iupScintillaSetMarkerDeleteHandleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "LASTMARKERHANDLE", iupScintillaGetLastMarkerHandle, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "LASTMARKERFOUND", iupScintillaGetLastMarkerFound, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* White space Attributes */
   iupClassRegisterAttribute(ic, "EXTRAASCENT",  iupScintillaGetWSExtraDescentAttrib, iupScintillaSetWSExtraDescentAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -745,6 +765,13 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic, "ZOOMIN",  NULL, iupScintillaSetZoomInAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ZOOMOUT", NULL, iupScintillaSetZoomOutAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ZOOM",    iupScintillaGetZoomAttrib, iupScintillaSetZoomAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+
+  /* Annotation Attributes */
+  iupClassRegisterAttributeId(ic, "ANNOTATIONTEXT", iupScintillaGetAnnotationTextAttribId, iupScintillaSetAnnotationTextAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ANNOTATIONSTYLE", iupScintillaGetAnnotationStyleAttribId, iupScintillaSetAnnotationStyleAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "ANNOTATIONSTYLEOFFSET", iupScintillaGetAnnotationStyleOffsetAttrib, iupScintillaSetAnnotationStyleOffsetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "ANNOTATIONVISIBLE",  iupScintillaGetAnnotationVisibleAttrib, iupScintillaSetAnnotationVisibleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "ANNOTATIONCLEARALL", NULL, iupScintillaSetAnnotationClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* Scrolling and automatic scrolling */
   iupClassRegisterAttribute(ic, "SCROLLBAR", iScintillaGetScrollbarAttrib, iScintillaSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -782,6 +809,7 @@ Ihandle *IupScintilla(void)
 {
   return IupCreate("scintilla");
 }
+
 
 /*****  TODO  (by-demand)
 - Search & Replace
