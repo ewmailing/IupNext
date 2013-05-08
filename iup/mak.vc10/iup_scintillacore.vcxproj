@@ -55,6 +55,7 @@
     <CustomBuildStep Include="..\include\iup_scintilla.h" />
     <ClInclude Include="..\include\iup_scintilla.h" />
     <ClInclude Include="..\srcscintilla\iupsci.h" />
+    <ClInclude Include="..\srcscintilla\iupsci_annotation.h" />
     <ClInclude Include="..\srcscintilla\iupsci_bracelight.h" />
     <ClInclude Include="..\srcscintilla\iupsci_clipboard.h" />
     <ClInclude Include="..\srcscintilla\iupsci_cursor.h" />
@@ -110,6 +111,7 @@
     <ClInclude Include="..\srcscintilla\lexlib\WordList.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\srcscintilla\iupsci_annotation.c" />
     <ClCompile Include="..\srcscintilla\iupsci_bracelight.c" />
     <ClCompile Include="..\srcscintilla\iupsci_clipboard.c" />
     <ClCompile Include="..\srcscintilla\iupsci_cursor.c" />

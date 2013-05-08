@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.6
+VERSION = 4.7
 
 
 #---------------------------------#
@@ -993,6 +993,7 @@ endif
 ifdef LINK_FREETYPE
   FREETYPE = freetype
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
+    # To be compatible with the existing DLLs of cygwin
     FREETYPE = freetype-6
   endif
   
@@ -1137,21 +1138,23 @@ ifdef USE_GTK
       ifndef USE_GTK3
         STDINCS += $(GTK)/lib/x86_64-linux-gnu/gtk-2.0/include
       endif
-    else ifeq ($(TEC_SYSARCH), ia64)
-      STDINCS += $(GTK)/lib64/glib-2.0/include 
-      ifndef USE_GTK3
-        STDINCS += $(GTK)/lib64/gtk-2.0/include
-      endif
-    else
-      STDINCS += $(GTK)/lib/glib-2.0/include 
-      ifndef USE_GTK3
-        STDINCS += $(GTK)/lib/gtk-2.0/include
-      endif
-      
-      # Add also support for newer instalations
-      STDINCS += $(GTK)/lib/i386-linux-gnu/glib-2.0/include
-      ifndef USE_GTK3
-        STDINCS += $(GTK)/lib/i386-linux-gnu/gtk-2.0/include
+    else 
+      ifeq ($(TEC_SYSARCH), ia64)
+        STDINCS += $(GTK)/lib64/glib-2.0/include 
+        ifndef USE_GTK3
+          STDINCS += $(GTK)/lib64/gtk-2.0/include
+        endif
+      else
+        STDINCS += $(GTK)/lib/glib-2.0/include 
+        ifndef USE_GTK3
+          STDINCS += $(GTK)/lib/gtk-2.0/include
+        endif
+        
+        # Add also support for newer instalations
+        STDINCS += $(GTK)/lib/i386-linux-gnu/glib-2.0/include
+        ifndef USE_GTK3
+          STDINCS += $(GTK)/lib/i386-linux-gnu/gtk-2.0/include
+        endif
       endif
     endif
     
