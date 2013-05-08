@@ -34,10 +34,21 @@ ifdef USE_GTK
   endif
   INCLUDES += ../src/gtk ../srcscintilla/lexlib ../srcscintilla/src ../srcscintilla/include ../srcscintilla/gtk
   INCLUDES += gtk
+  ifneq ($(findstring cygw, $(TEC_UNAME)), )
+    INCLUDES += $(GTK)/include/cairo
+    LIBS += pangocairo-1.0 cairo
+  endif
 else
   INCLUDES += ../src/win ../srcscintilla/lexlib ../srcscintilla/src ../srcscintilla/include ../srcscintilla/win32
   INCLUDES += win
   LIBS += imm32
+  
+  ifneq ($(findstring gcc, $(TEC_UNAME)), )
+    DEFINES += _WIN32 DISABLE_D2D
+  endif
+  ifneq ($(findstring dllg, $(TEC_UNAME)), )
+    DEFINES += _WIN32 DISABLE_D2D
+  endif
 endif
 
 SRCSCINTILLA = src/AutoComplete.cxx src/CallTip.cxx src/Catalogue.cxx src/CellBuffer.cxx src/CharClassify.cxx \
@@ -80,4 +91,4 @@ endif
 SRC = $(SRCSCINTILLA) iupsci_clipboard.c iupsci_folding.c iupsci_lexer.c iupsci_margin.c \
       iupsci_overtype.c iupsci_scrolling.c iupsci_selection.c iupsci_style.c iupsci_tab.c \
       iupsci_text.c iupsci_wordwrap.c iupsci_markers.c iupsci_bracelight.c iupsci_cursor.c \
-      iupsci_whitespace.c iup_scintilla.cpp
+      iupsci_whitespace.c iup_scintilla.cpp 
