@@ -16,6 +16,7 @@ if "%1"=="dll11" goto stub_dll11
 if "%1"=="dll11_64" goto stub_dll11_64
 if "%1"=="dllg4" goto stub_dllg4
 if "%1"=="dllw4" goto stub_dllw4
+if "%1"=="dllw4_64" goto stub_dllw4_64
 if "%1"=="all" goto all_dll
 if "%1"=="all-dll" goto all_dll
 goto fim
@@ -73,6 +74,11 @@ goto fim
 :stub_dllw4
 call tecmake mingw4 "MF=iupstub" %2 %3 %4 %5 %6 %7
 move /y ..\lib\mingw4\libiupstub.a ..\lib\dllw4
+goto fim
+
+:stub_dllw4_64
+call tecmake mingw4_64 "MF=iupstub" %2 %3 %4 %5 %6 %7
+move /y ..\lib\mingw4_64\libiupstub.a ..\lib\dllw4_64
 goto fim
 
 :stub_dllg4
