@@ -49,7 +49,8 @@ static struct {
   { "iupole",     0 },
   { "iupweb",     0 },
   { "iup_pplot",  0 },
-  { "iup_mglplot",  0 }
+  { "iup_mglplot",  0 },
+  { "iup_scintilla",  0 }
 };
 #define nheaders (sizeof(headerfile)/sizeof(headerfile[0]))
 
@@ -60,7 +61,8 @@ enum headers {
   IUPOLE_H,
   IUPWEB_H,
   IUPPPLOT_H,
-  IUPMGLPLOT_H
+  IUPMGLPLOT_H,
+  IUPSCINTILLA_H
 };
 
 static void check_empty( Telem* elem );
@@ -68,6 +70,7 @@ static void check_image( Telem* elem );
 static void check_imagergb( Telem* elem );
 static void check_imagergba( Telem* elem );
 static void check_string( Telem* elem );
+static void check_string2( Telem* elem );
 static void check_cb( Telem* elem );
 static void check_elem( Telem* elem );
 static void check_elemlist( Telem* elem );
@@ -81,7 +84,7 @@ static void code_image( Telem* elem );
 static void code_iupCpi( Telem* elem );
 static void code_empty( Telem* elem );
 static void code_string( Telem* elem );
-static void code_string_cb( Telem* elem );
+static void code_string2( Telem* elem );
 static void code_elem( Telem* elem );
 static void code_elemlist( Telem* elem );
 static void code_elemlist2( Telem* elem );
@@ -105,7 +108,7 @@ elems[] =
   { "ImageRGB",     code_image,        check_imagergb,    0  },    
   { "ImageRGBA",    code_image,        check_imagergba,   0  },    
   { "User",         code_empty,        check_empty,       0  },
-  { "Button",       code_string_cb,    check_string_cb,   0  },
+  { "Button",       code_string2,      check_string_cb,   0  },
   { "Canvas",       code_string,       check_cb,          0  },
   { "Colorbar",     code_empty,        check_empty,       IUPCONTROLS_H  },
   { "ColorBrowser", code_empty,        check_empty,       IUPCONTROLS_H  },
@@ -121,12 +124,13 @@ elems[] =
   { "Gauge",        code_empty,        check_empty,       IUPCONTROLS_H  },
   { "GLCanvas",     code_string,       check_cb,          IUPGL_H  },
   { "Hbox",         code_elemlist,     check_elemlist,    0  },
-  { "Item",         code_string_cb,    check_string_cb,   0  },
+  { "Item",         code_string2,      check_string_cb,   0  },
   { "Label",        code_string,       check_string,      0  },
   { "List",         code_string,       check_cb,          0  },
   { "Matrix",       code_string,       check_cb,          IUPCONTROLS_H  },
   { "Sbox",         code_elem,         check_elem,        0  },
   { "ScrollBox",    code_elem,         check_elem,        0  },
+  { "Expander",     code_elem,         check_elem,        0  },
   { "Menu",         code_elemlist,     check_elemlist,    0  },
   { "MultiLine",    code_string,       check_cb,          0  },
   { "Radio",        code_elem,         check_elem,        0  },
@@ -136,10 +140,12 @@ elems[] =
   { "Val",          code_string,       check_string,      0  },
   { "Tree",         code_empty,        check_empty,       0  },
   { "Tabs",         code_elemlist,     check_elemlist,    0  },
-  { "Toggle",       code_string_cb,    check_string_cb,   0  },
+  { "Toggle",       code_string2,      check_string_cb,   0  },
   { "Vbox",         code_elemlist,     check_elemlist,    0  },
   { "Zbox",         code_elemlist,     check_elemlist,    0  },
-  { "Normalizer",   code_elemlist,     check_elemlist_rep,    0  },
+  { "GridBox",      code_elemlist,     check_elemlist,    0  },
+  { "Normalizer",   code_elemlist,     check_elemlist_rep,0  },
+  { "Link",         code_string2,      check_string2,     0  },
   { "OleControl",   code_string,       check_cb,          IUPOLE_H  },
   { "Cbox",         code_elemlist,     check_elemlist,    0  },
   { "Cells",        code_empty,        check_empty,       IUPCONTROLS_H  },
@@ -149,6 +155,7 @@ elems[] =
   { "PPlot",        code_empty,        check_empty,       IUPPPLOT_H  },
   { "MglPlot",      code_empty,        check_empty,       IUPMGLPLOT_H  },
   { "WebBrowser",   code_empty,        check_empty,       IUPWEB_H  },
+  { "Scintilla",    code_empty,        check_empty,       IUPSCINTILLA_H  },
   { "@@@",          code_iupCpi,       check_iupCpi,      0  }
 };
 #define nelems (sizeof(elems)/sizeof(elems[0]))
@@ -418,6 +425,13 @@ static void check_string_cb( Telem* elem )
   param_callback( elem->params, 2 );
 }
 
+static void check_string2( Telem* elem )
+{
+  if (!verify_nparams( 2, 2, elem )) return;
+  param_string( elem->params, 1 );
+  param_string( elem->params, 2 );
+}
+
 static void check_string_elem( Telem* elem )
 {
   if (!verify_nparams( 2, 2, elem )) return;
@@ -674,7 +688,7 @@ static void code_string( Telem* elem )
   fprintf( outfile, "( \"%s\" )", elem->params[0]->data.name );
 }
 
-static void code_string_cb( Telem* elem )
+static void code_string2( Telem* elem )
 {
   fprintf( outfile, "( \"%s\", \"%s\" )", elem->params[0]->data.name, elem->params[1]->data.name );
 }
