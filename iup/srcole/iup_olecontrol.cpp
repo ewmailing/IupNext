@@ -93,6 +93,12 @@ static int iOleControlResize_CB(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
+static int iOleControlAction_CB(Ihandle *ih)
+{
+  (void)ih; /* does nothing to avoid background repaint */
+  return IUP_DEFAULT;
+}
+
 static void iOleControlComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
 {
   long natural_w = 0, natural_h = 0;
@@ -134,6 +140,7 @@ static int iOleControlCreateMethod(Ihandle* ih, void **params)
   iupAttribSetStr(ih, "BORDER", "NO");
 
   /* IupCanvas callbacks */
+  IupSetCallback(ih,"ACTION",(Icallback)iOleControlAction_CB);
   IupSetCallback(ih,"RESIZE_CB",(Icallback)iOleControlResize_CB);
 
   if (!params || !(params[0]))
