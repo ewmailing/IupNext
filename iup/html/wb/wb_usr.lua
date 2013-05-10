@@ -1383,6 +1383,10 @@ wb_usr.tree =
               link= "ctrl/iupole.html"
             },
             {
+              name= {nl= "IupScintilla"},
+              link= "ctrl/iupscintilla.html"
+            },
+            {
               name= {nl= "IupWebBrowser"},
               link= "ctrl/iupweb.html"
             },
