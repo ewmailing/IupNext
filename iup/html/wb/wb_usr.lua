@@ -1384,7 +1384,7 @@ wb_usr.tree =
             },
             {
               name= {nl= "IupScintilla"},
-              link= "ctrl/iupscintilla.html"
+              link= "ctrl/iup_scintilla.html"
             },
             {
               name= {nl= "IupWebBrowser"},
