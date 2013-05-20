@@ -4,7 +4,7 @@
 *  Used always for buttons, used only for labels with images.
 *
 * See Copyright Notice in iup.h
-* $Id: windraw.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
+* $Id: windraw.c,v 1.2 2013-05-20 20:13:53 scuri Exp $
 */
 
 #include <windows.h>
@@ -13,7 +13,12 @@
 #undef  _WIN32_WINNT
 #define _WIN32_WINNT 0x0501
 #include <uxtheme.h>
+
+#if (_MSC_VER >= 1700)  /* Visual C++ 11.0 ( Visual Studio 2012) */
+#include <vssym32.h>
+#else
 #include <tmschema.h>
+#endif
 
 #include "iglobal.h"
 #include "idrv.h"

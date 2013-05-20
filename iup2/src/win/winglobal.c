@@ -2,7 +2,7 @@
  * \brief Windows Driver iupdrvSetGlobal
  *
  * See Copyright Notice in iup.h
- * $Id: winglobal.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
+ * $Id: winglobal.c,v 1.2 2013-05-20 20:13:53 scuri Exp $
  */
 
 #include <stdio.h>
@@ -30,6 +30,12 @@ int iupdrvSetGlobal(const char *name, const char *value)
       iupwinSetMouseHook(0);
     return 1;
   }
+  else if(iupStrEqual(name, "DLL_HINSTANCE"))
+  {
+    iupwin_hinstance = (HINSTANCE)value;
+    return 1;
+  }
+  
   return 0;
 }
 

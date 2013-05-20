@@ -19,7 +19,7 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 
   INCLUDES += win
 
-  DEFINES += _WIN32_WINNT=0x0500 _WIN32_IE=0x0500 WINVER=0x0500
+  DEFINES += _WIN32_WINNT=0x0501 _WIN32_IE=0x600 WINVER=0x0501
 
 	ifneq ($(findstring dll, $(TEC_UNAME)), )
 	  DEFINES += _IUPDLL
