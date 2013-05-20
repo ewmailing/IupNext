@@ -92,3 +92,11 @@ SRC = $(SRCSCINTILLA) iupsci_clipboard.c iupsci_folding.c iupsci_lexer.c iupsci_
       iupsci_overtype.c iupsci_scrolling.c iupsci_selection.c iupsci_style.c iupsci_tab.c \
       iupsci_text.c iupsci_wordwrap.c iupsci_markers.c iupsci_bracelight.c iupsci_cursor.c \
       iupsci_whitespace.c iupsci_annotation.c iup_scintilla.cpp 
+
+      
+      
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  ifneq ($(TEC_SYSMINOR), 4)
+    BUILD_DYLIB=Yes
+  endif
+endif
