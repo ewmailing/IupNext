@@ -16,6 +16,9 @@
 <h2>IupSetFunction</h2>
 <p>Associates a function to an action.</p>
 <p>This function is now deprecated. The applications should use <b>IupSetCallback</b> instead.</p>
+<p>It is deprecated because it uses a global name and the application may set 
+the same name for two different functions by mistake. <strong>IupSetCallback</strong> 
+does not depends on global names.</p>
 <h3>
 Parameters/Return</h3>
 <pre>Icallback IupSetFunction(const char *<strong>name</strong>, Icallback <strong>func</strong>); [in C]

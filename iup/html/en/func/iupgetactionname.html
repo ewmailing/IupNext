@@ -14,9 +14,9 @@
 <body>
 
 <h2>IupGetActionName</h2>
-<p>Should return the name of the action being 
-  executed by the application. In fact returns only the name of the action last retrieved in 
-<b>IupGetFunction</b>.</p>
+<p>Should return the name of the action being executed by the application. It 
+works only if the application used <a href="iupsetfunction.html">IupSetFunction</a>, 
+which is now deprecated.</p>
 <h3>
 Parameters/Return</h3>
 <pre>const char* IupGetActionName(void); [in C]
@@ -24,7 +24,7 @@ Parameters/Return</h3>
 <p><span class="style1">Returns:</span> the name of the action.</p>
 <h3>See Also</h3>
 <p>
-<a href="../call/iup_default_action.html">DEFAULT_ACTION</a></p>
+<a href="../call/iup_default_action.html">DEFAULT_ACTION</a>, <a href="iupsetfunction.html">IupSetFunction</a></p>
 
 </body>
 
