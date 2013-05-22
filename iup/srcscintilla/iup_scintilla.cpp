@@ -166,6 +166,20 @@ static int iScintillaSetUsePopupAttrib(Ihandle* ih, const char* value)
   return 1;  /* there is no get */
 }
 
+static int iScintillaSetKeysUnicodeAttrib(Ihandle* ih, const char* value)
+{
+  iupScintillaSendMessage(ih, SCI_SETKEYSUNICODE, iupStrBoolean(value), 0);
+  return 0;
+}
+
+static char* iScintillaGetKeysUnicodeAttrib(Ihandle* ih)
+{
+  if (iupScintillaSendMessage(ih, SCI_GETKEYSUNICODE, 0, 0))
+    return "YES";
+  else
+    return "NO";
+}
+
 static int iScintillaSetAppendNewlineAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
@@ -786,6 +800,7 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic, "MULTILINE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "USEPOPUP", NULL, iScintillaSetUsePopupAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "KEYSUNICODE", iScintillaGetKeysUnicodeAttrib, iScintillaSetKeysUnicodeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }
