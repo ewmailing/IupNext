@@ -185,10 +185,7 @@ static char* getfileformat(int all)
 static char* StrUpper(const char* sstr)
 {
   static char buf[10];
-  char* dstr = &buf[0];
-  for (; *sstr; sstr++, dstr++)
-    *dstr = (char)toupper(*sstr);
-  *dstr = 0;
+  iupStrUpper(buf, sstr);
   return buf;
 }
 
@@ -920,26 +917,146 @@ static Ihandle* mainDialog(void)
   return main_dialog;
 }
 
-int main (int argc, char **argv)
+static int converter_usage(void)
 {
-  Ihandle* main_dialog;
+  fprintf(stderr, 
+    "iupview [-h] [-t type] [-o out_file] in_files\n"
+    "  IUP version: %s\n"
+    "  Converts image files to source code that creates an IupImage.\n"
+    "  Can pack several files in a single output file.\n"
+    "  Each image will correspond to a function called load_image_<filetitle>,\n"
+    "  where <filetitle> is the file name of the input image without path.\n"
+    "  -h            print this help\n"
+    "  -t            output format, can be LED, LUA or C (default: C)\n"
+    "  -o out_file   place output in file <out_file> (default: images.c)\n"
+    , IupVersion());
+  return -1;
+}
+
+static void replace_dots(char* sstr)
+{
+  for (; *sstr; sstr++)
+  {
+    if (*sstr == '.')
+      *sstr = '_';
+  }
+}
+
+static int image_converter(int argc, char **argv)
+{
+  char* outname = NULL;
+  char* imgtype = NULL;
+  char* intitle;
+  FILE* outfile;
+
+  while (argc > 1)
+  {
+    char *op = *(argv+1);
+    if (op[0] != '-') break;
+    argc--;
+    argv++;
+    switch (op[1])
+    {
+      case 'h':
+        return converter_usage();
+      case 'o':
+        if (argc>1) 
+        {
+          argc--;
+          argv++;
+          outname = *argv;
+          break;
+        }
+        else 
+          return converter_usage();
+      case 't':
+        if (argc>1) 
+        {
+          argc--;
+          argv++;
+          imgtype = *argv;
+          break;
+        }
+        else 
+          return converter_usage();
+      default:
+        return converter_usage();
+    }
+  }
+
+  if (!outname)  outname  = "images.c";
+  if (!imgtype)  imgtype  = "C";
+
+  outfile = fopen(outname, "wb");
+  if (!outfile)
+  {
+    printf("Error: Failed to open the output file.");
+    return -1;
+  }
 
   IupOpen(&argc, &argv);
-#ifndef USE_NO_OPENGL  
-  IupGLCanvasOpen();
-#endif  
-  IupControlsOpen();
-  IupImageLibOpen();
 
-  mainUpdateInternals();
+  while (--argc > 0)
+  {
+    char* inname = *++argv;
+    Ihandle* image = IupLoadImage(inname);
+    if (!image)
+    {
+      printf("Error: %s\n", IupGetGlobal("IUPIM_LASTERROR"));
 
-  main_dialog = mainDialog();
-  IupShow(main_dialog);
+      fclose(outfile);
+      IupClose();
+      return -1;
+    }
 
-  IupMainLoop();
+    intitle = iupStrFileGetTitle(inname);
+    replace_dots(intitle);
 
-  IupControlsClose();
+    if (!iupSaveImageAsText(image, outfile, imgtype, intitle))
+    {
+      printf("Error: Failed to write to the output file.");
+
+      free(intitle);
+      IupDestroy(image);
+
+      fclose(outfile);
+      IupClose();
+      return -1;
+    }
+
+    free(intitle);
+    IupDestroy(image);
+  }
+
+  fclose(outfile);
   IupClose();
   return 0;
+}
+
+int main (int argc, char **argv)
+{
+  if (argc < 2) 
+  {
+    Ihandle* main_dialog;
+
+    IupOpen(&argc, &argv);
+#ifndef USE_NO_OPENGL  
+    IupGLCanvasOpen();
+#endif  
+    IupControlsOpen();
+    IupImageLibOpen();
+
+    mainUpdateInternals();
+
+    main_dialog = mainDialog();
+    IupShow(main_dialog);
+
+    IupMainLoop();
+    IupClose();
+
+    return 0;
+  }
+  else
+    return image_converter(argc, argv);
 }
 
