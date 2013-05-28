@@ -423,3 +423,17 @@ Iclass* iupWebBrowserNewClass(void)
 
   return ic;
 }
+
+/*
+IWebBrowser2::ExecWB
+WebBrowser1.ExecWB OLECMDID_PRINT, OLECMDEXECOPT_PROMPTUSER, 2, vbNull
+
+    '' Another way for printing...
+    Me.WebBrowser1.Navigate2 "javascript:window.print()"
+
+WebBrowser1.ExecWB OLECMDID_SELECTALL, OLECMDEXECOPT_DONTPROMPTUSER, vbNull, vbNull
+WebBrowser1.ExecWB OLECMDID_COPY, OLECMDEXECOPT_DONTPROMPTUSER, vbNull, vbNull
+
+WebBrowser1.ExecWB OLECMDID_ZOOM, OLECMDEXECOPT_DONTPROMPTUSER, Z, Null
+WebBrowser1.ExecWB OLECMDID_OPTICAL_ZOOM, OLECMDEXECOPT_DONTPROMPTUSER, CLng(zoom), vbNull
+*/

@@ -351,3 +351,15 @@ Iclass* iupWebBrowserNewClass(void)
 
   return ic;
 }
+
+/*
+WebKitWebFrame *    webkit_web_view_get_main_frame      (WebKitWebView *web_view);
+webkit_web_frame_print ()
+gfloat              webkit_web_view_get_zoom_level      (WebKitWebView *web_view);
+void                webkit_web_view_zoom_in             (WebKitWebView *web_view);
+void                webkit_web_view_zoom_out            (WebKitWebView *web_view);
+void                webkit_web_view_set_zoom_level      (WebKitWebView *web_view,
+                                                         gfloat zoom_level);
+void                webkit_web_view_select_all          (WebKitWebView *web_view);
+void                webkit_web_view_copy_clipboard      (WebKitWebView *web_view);
+*/
