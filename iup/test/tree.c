@@ -213,11 +213,8 @@ static int togglevalue_cb(Ihandle* ih, int id, int status)
 static int selection_cb(Ihandle *ih, int id, int status)
 {
   (void)ih;
-  if (status==1)
-  {
   printf("SELECTION_CB(id=%d, status=%d)\n", id, status);
   printf("    USERDATA=%s\n", IupGetAttributeId(ih, "USERDATA", id));
-  }
   return IUP_DEFAULT;
 }
 
