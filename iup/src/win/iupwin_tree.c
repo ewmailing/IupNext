@@ -1506,13 +1506,15 @@ static void winTreeRemoveItemData(Ihandle* ih, HTREEITEM hItem, IFns cb, int id)
 
 static void winTreeRemoveNodeDataRec(Ihandle* ih, HTREEITEM hItem, IFns cb, int *id)
 {
-  int old_id = *id;
+  int node_id = *id;
 
   /* Check whether we have child items */
   /* remove from children first */
   HTREEITEM hChildItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItem);
   while (hChildItem)
   {
+    (*id)++;
+
     /* go recursive to children */
     winTreeRemoveNodeDataRec(ih, hChildItem, cb, id);
 
@@ -1521,10 +1523,10 @@ static void winTreeRemoveNodeDataRec(Ihandle* ih, HTREEITEM hItem, IFns cb, int 
   }
 
   /* actually do it for the node */
-  ih->data->node_count--;
-  (*id)++;
+  winTreeRemoveItemData(ih, hItem, cb, node_id);
 
-  winTreeRemoveItemData(ih, hItem, cb, old_id);
+  /* update count */
+  ih->data->node_count--;
 }
 
 static void winTreeRemoveNodeData(Ihandle* ih, HTREEITEM hItem, int call_cb)
@@ -1532,12 +1534,12 @@ static void winTreeRemoveNodeData(Ihandle* ih, HTREEITEM hItem, int call_cb)
   IFns cb = call_cb? (IFns)IupGetCallback(ih, "NODEREMOVED_CB"): NULL;
   int old_count = ih->data->node_count;
   int id = iupTreeFindNodeId(ih, hItem);
-  int old_id = id;
+  int start_id = id;
 
   winTreeRemoveNodeDataRec(ih, hItem, cb, &id);
 
   if (call_cb)
-    iupTreeDelFromCache(ih, old_id, old_count-ih->data->node_count);
+    iupTreeDelFromCache(ih, start_id, old_count-ih->data->node_count);
 }
 
 static void winTreeRemoveAllNodeData(Ihandle* ih, int call_cb)

@@ -403,13 +403,15 @@ static void gtkTreeCallNodeRemovedRec(Ihandle* ih, GtkTreeModel* model, GtkTreeI
 {
   GtkTreeIter iterChild;
   int hasItem;
-  int old_id = *id;
+  int node_id = *id;
 
   /* Check whether we have child items */
   /* remove from children first */
   hasItem = gtk_tree_model_iter_children(model, &iterChild, iterItem);  /* get the firstchild */
   while(hasItem)
   {
+    (*id)++;
+
     /* go recursive to children */
     gtkTreeCallNodeRemovedRec(ih, model, &iterChild, cb, id);
 
@@ -417,18 +419,18 @@ static void gtkTreeCallNodeRemovedRec(Ihandle* ih, GtkTreeModel* model, GtkTreeI
     hasItem = gtk_tree_model_iter_next(model, &iterChild);
   }
 
-  /* actually do it for the node */
-  ih->data->node_count--;
-  (*id)++;
+  /* actually do it for the node, in GTK this is just the callback */
+  cb(ih, (char*)ih->data->node_cache[node_id].userdata);
 
-  cb(ih, (char*)ih->data->node_cache[old_id].userdata);
+  /* update count */
+  ih->data->node_count--;
 }
 
 static void gtkTreeCallNodeRemoved(Ihandle* ih, GtkTreeModel* model, GtkTreeIter *iterItem)
 {
   int old_count = ih->data->node_count;
   int id = gtkTreeFindNodeId(ih, iterItem);
-  int old_id = id;
+  int start_id = id;
 
   IFns cb = (IFns)IupGetCallback(ih, "NODEREMOVED_CB");
   if (cb) 
@@ -439,7 +441,7 @@ static void gtkTreeCallNodeRemoved(Ihandle* ih, GtkTreeModel* model, GtkTreeIter
     ih->data->node_count -= removed_count;
   }
 
-  iupTreeDelFromCache(ih, old_id, old_count-ih->data->node_count);
+  iupTreeDelFromCache(ih, start_id, old_count-ih->data->node_count);
 }
 
 static void gtkTreeCallNodeRemovedAll(Ihandle* ih)

@@ -522,26 +522,27 @@ static void motTreeRemoveNodeRec(Ihandle* ih, Widget wItem, int del_data, IFns c
 {
   WidgetList itemChildList = NULL;
   int i, numChild;
-  int old_id = *id;
+  int node_id = *id;
 
   /* Check whether we have child items */
   /* remove from children first */
   numChild = XmContainerGetItemChildren(ih->handle, wItem, &itemChildList);
   for (i = 0; i < numChild; i++)
   {
+    (*id)++;
+
     /* go recursive to children */
     motTreeRemoveNodeRec(ih, itemChildList[i], del_data, cb, id);
   }
   if (itemChildList) XtFree((char*)itemChildList);
 
   /* actually do it for the node */
-  ih->data->node_count--;
-  (*id)++;
-
   if (del_data || cb)
-    motTreeDestroyItemData(ih, wItem, del_data, cb, old_id);
-
+    motTreeDestroyItemData(ih, wItem, del_data, cb, node_id);
   XtDestroyWidget(wItem);  /* must manually destroy each node, this is NOT recursive */
+
+  /* update count */
+  ih->data->node_count--;
 }
 
 static void motTreeRemoveNode(Ihandle* ih, Widget wItem, int del_data, int call_cb)
@@ -549,12 +550,12 @@ static void motTreeRemoveNode(Ihandle* ih, Widget wItem, int del_data, int call_
   IFns cb = call_cb? (IFns)IupGetCallback(ih, "NODEREMOVED_CB"): NULL;
   int old_count = ih->data->node_count;
   int id = iupTreeFindNodeId(ih, wItem);
-  int old_id = id;
+  int start_id = id;
 
   motTreeRemoveNodeRec(ih, wItem, del_data, cb, &id);
 
   if (call_cb)
-    iupTreeDelFromCache(ih, old_id, old_count-ih->data->node_count);
+    iupTreeDelFromCache(ih, start_id, old_count-ih->data->node_count);
 }
 
 static void motTreeSetFocusNode(Ihandle* ih, Widget wItem)

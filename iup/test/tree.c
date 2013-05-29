@@ -213,7 +213,11 @@ static int togglevalue_cb(Ihandle* ih, int id, int status)
 static int selection_cb(Ihandle *ih, int id, int status)
 {
   (void)ih;
-  printf("SELECTION_CB(%d, %d)\n", id, status);
+  if (status==1)
+  {
+  printf("SELECTION_CB(id=%d, status=%d)\n", id, status);
+  printf("    USERDATA=%s\n", IupGetAttributeId(ih, "USERDATA", id));
+  }
   return IUP_DEFAULT;
 }
 
@@ -271,7 +275,7 @@ static int branchclose_cb(Ihandle* ih, int id)
 
 static int noderemoved_cb(Ihandle* ih, void* data)
 {
-  printf("NODEREMOVED_CB(%p)\n", data);
+  printf("NODEREMOVED_CB(userdata=%s)\n", data);
   return IUP_DEFAULT;
 }
 
@@ -500,6 +504,18 @@ static void init_tree_nodes(void)
   IupSetAttributeHandle(tree, "IMAGE8", load_image_LogoTecgraf());
   IupSetAttributeHandle(tree, "IMAGE7", load_image_TestImage());
   IupSetAttribute(tree, "IMAGE6", IupGetAttribute(tree, "IMAGE8"));
+
+  IupSetAttribute(tree, "USERDATA0", "0");
+  IupSetAttribute(tree, "USERDATA1", "1");
+  IupSetAttribute(tree, "USERDATA2", "2");
+  IupSetAttribute(tree, "USERDATA3", "3");
+  IupSetAttribute(tree, "USERDATA4", "4");
+  IupSetAttribute(tree, "USERDATA5", "5");
+  IupSetAttribute(tree, "USERDATA6", "6");
+  IupSetAttribute(tree, "USERDATA7", "7");
+  IupSetAttribute(tree, "USERDATA8", "8");
+  IupSetAttribute(tree, "USERDATA9", "9");
+
 }
 
 /* Initializes IupTree and registers callbacks */
@@ -535,10 +551,10 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
 //  IupSetAttribute(tree, "BGCOLOR", "128 0 255");
 
-  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
+//  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
 //  IupSetAttribute(tree, "SHOWRENAME",   "YES");
 //  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
+//  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
 //  IupSetAttribute(tree, "SHOWTOGGLE",   "3STATE");
 //  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
 
