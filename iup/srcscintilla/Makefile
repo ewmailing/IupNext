@@ -7,5 +7,5 @@ endif
 .PHONY: do_all iup_scintilla
 do_all: iup_scintilla
 
-iup_mglplot:
+iup_scintilla:
 	@$(TECMAKE_CMD) 
