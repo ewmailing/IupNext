@@ -28,9 +28,13 @@
 #include "iupwin_draw.h"
 
 
+#ifndef ODS_NOFOCUSRECT
+#define ODS_NOFOCUSRECT   0x0200
+#endif
 #ifndef CDIS_SHOWKEYBOARDCUES
 #define CDIS_SHOWKEYBOARDCUES   0x0200
 #endif
+
 
 void iupdrvToggleAddCheckBox(int *x, int *y)
 {
@@ -255,7 +259,9 @@ static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
   winToggleDrawImage(ih, hDC, width, height, border, drawitem->itemState);
 
-  if (drawitem->itemState & ODS_FOCUS)
+  if (drawitem->itemState & ODS_FOCUS &&
+      !(drawitem->itemState & ODS_NOFOCUSRECT) &&
+      iupAttribGetBoolean(ih, "CANFOCUS"))
   {
     border--;
     iupdrvDrawFocusRect(ih, hDC, border, border, width-2*border, height-2*border);
@@ -536,8 +542,11 @@ static int winToggleImageWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       else if (customdraw->uItemState & CDIS_DEFAULT)
         drawitem.itemState |= ODS_DEFAULT;
 
-      if (customdraw->uItemState & CDIS_FOCUS && (customdraw->uItemState & CDIS_SHOWKEYBOARDCUES))
+      if (customdraw->uItemState & CDIS_FOCUS)
         drawitem.itemState |= ODS_FOCUS;
+
+      if (!(customdraw->uItemState & CDIS_SHOWKEYBOARDCUES))
+        drawitem.itemState |= ODS_NOFOCUSRECT | ODS_NOACCEL;
 
       drawitem.hDC = customdraw->hdc;
       drawitem.rcItem = customdraw->rc;
