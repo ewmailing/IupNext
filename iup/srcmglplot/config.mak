@@ -7,6 +7,9 @@ USE_MACOS_OPENGL = Yes
 
 ifdef DBG
   DEFINES += IUP_ASSERT
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    LIBNAME := $(LIBNAME)_debug
+  endif
 endif  
 
 INCLUDES = ../include ../src . ../srcmglplot/ftgl ../srcmglplot/freetype

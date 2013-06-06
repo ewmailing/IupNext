@@ -4,13 +4,16 @@ OPT = YES
 
 ifdef DBG
   DEFINES += IUP_ASSERT
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    LIBNAME := $(LIBNAME)_debug
+  endif
 endif  
 
 INCLUDES =  ../include ../src .
 LDIR = ../lib/$(TEC_UNAME)
 LIBS = iup
 
-DEFINES += STATIC_BUILD SCI_LEXER
+DEFINES += STATIC_BUILD SCI_LEXER SCI_NAMESPACE
 
 # Supported only in Windows and GTK
 
@@ -92,8 +95,6 @@ SRC = $(SRCSCINTILLA) iupsci_clipboard.c iupsci_folding.c iupsci_lexer.c iupsci_
       iupsci_overtype.c iupsci_scrolling.c iupsci_selection.c iupsci_style.c iupsci_tab.c \
       iupsci_text.c iupsci_wordwrap.c iupsci_markers.c iupsci_bracelight.c iupsci_cursor.c \
       iupsci_whitespace.c iupsci_annotation.c iup_scintilla.cpp 
-
-      
       
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   ifneq ($(TEC_SYSMINOR), 4)
