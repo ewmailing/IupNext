@@ -9,6 +9,7 @@
 #include <im_counter.h>
 #include <im_util.h>
 #include <im_image.h>
+#include <im_raw.h>
 
 #include "iup.h"
 #include "iupim.h"
@@ -89,9 +90,8 @@ static void iSaveErrorMsg(int error)
 
 Ihandle* IupLoadImage(const char* file_name)
 {
-  long palette[256];
   int i, error, width, height, color_mode, flags,
-      data_type, palette_count, has_alpha = 0;
+      data_type, has_alpha = 0;
   Ihandle* iup_image = NULL;
   const unsigned char* transp_index;
   void* image_data = NULL;
@@ -137,24 +137,26 @@ Ihandle* IupLoadImage(const char* file_name)
       iup_image = IupImageRGBA(width, height, (unsigned char*)image_data);
     else
       iup_image = IupImageRGB(width, height, (unsigned char*)image_data);
-    palette_count = 0;
   }
   else
   {
+    int palette_count;
+    long palette[256];
+
     imFileGetPalette(ifile, palette, &palette_count);
     iup_image = IupImage(width, height, (unsigned char*)image_data);
-  }
 
-  for (i = 0; i < palette_count; i++)
-  {
-    char attr[6], color[30];
-    unsigned char r, g, b;
+    for (i = 0; i < palette_count; i++)
+    {
+      char attr[6], color[30];
+      unsigned char r, g, b;
 
-    sprintf(attr, "%d", i);
-    imColorDecode(&r, &g, &b, palette[i]);
-    sprintf(color, "%d %d %d", (int)r, (int)g, (int)b);
+      sprintf(attr, "%d", i);
+      imColorDecode(&r, &g, &b, palette[i]);
+      sprintf(color, "%d %d %d", (int)r, (int)g, (int)b);
 
-    IupStoreAttribute(iup_image, attr, color); 
+      IupStoreAttribute(iup_image, attr, color); 
+    }
   }
 
   transp_index = imFileGetAttribute(ifile, "TransparencyIndex", NULL, NULL);
@@ -166,6 +168,96 @@ Ihandle* IupLoadImage(const char* file_name)
   }
 
 load_finish:
+  imCounterSetCallback(NULL, old_callback);
+  if (ifile) imFileClose(ifile);
+  if (image_data) free(image_data);
+  iSaveErrorMsg(error);
+  return iup_image;
+}
+
+/* Study. Not public yet */
+Ihandle* IupLoadImageRaw(const char* file_name, 
+                         int width, int height, int data_type, int color_mode,
+                         int switch_type, int byte_order, int padding, int start_offset, int ascii)
+{
+  int error, has_alpha = 0, i, flags, color_space;
+  Ihandle* iup_image = NULL;
+  void* image_data = NULL;
+  imCounterCallback old_callback;
+  imFile* ifile;
+
+  old_callback = imCounterSetCallback(NULL, NULL);
+
+  ifile = imFileOpenRaw(file_name, &error);
+  if (error)
+    goto load_raw_finish;
+
+  /* the bitmap data configuration */
+  flags = IM_TOPDOWN;
+  flags |= IM_PACKED;
+  if (imColorModeHasAlpha(color_mode))
+  {
+    has_alpha = 1;
+    flags |= IM_ALPHA;
+  }
+
+  color_space = imColorModeToBitmap(color_mode);
+
+  image_data = malloc(imImageDataSize(width, height, flags|color_space, IM_BYTE));
+  if (!image_data)
+    goto load_raw_finish;
+
+  /* the original data configuration */
+  imFileSetAttribute(ifile, "Width", IM_INT, 1, &width);
+  imFileSetAttribute(ifile, "Height", IM_INT, 1, &height);
+  imFileSetAttribute(ifile, "ColorMode", IM_INT, 1, &color_mode);
+  imFileSetAttribute(ifile, "DataType", IM_INT, 1, &data_type);
+
+  imFileSetAttribute(ifile, "SwitchType", IM_INT, 1, &switch_type);
+  imFileSetAttribute(ifile, "ByteOrder", IM_INT, 1, &byte_order);
+  imFileSetAttribute(ifile, "Padding", IM_INT, 1, &padding);
+  imFileSetAttribute(ifile, "StartOffset", IM_INT, 1, &start_offset);
+
+  if (ascii)
+    imFileSetInfo(ifile, "ASCII");
+
+  error = imFileReadImageInfo(ifile, 0, NULL, NULL, NULL, NULL);
+  if (error)
+    goto load_raw_finish;
+  
+  error = imFileReadImageData(ifile, image_data, 1, flags);
+  if (error)
+    goto load_raw_finish;
+
+  if (color_mode == IM_RGB)
+  {
+    if (has_alpha)
+      iup_image = IupImageRGBA(width, height, (unsigned char*)image_data);
+    else
+      iup_image = IupImageRGB(width, height, (unsigned char*)image_data);
+  }
+  else
+  {
+    int palette_count;
+    long palette[256];
+
+    imFileGetPalette(ifile, palette, &palette_count);
+    iup_image = IupImage(width, height, (unsigned char*)image_data);
+
+    for (i = 0; i < palette_count; i++)
+    {
+      char attr[6], color[30];
+      unsigned char r, g, b;
+
+      sprintf(attr, "%d", i);
+      imColorDecode(&r, &g, &b, palette[i]);
+      sprintf(color, "%d %d %d", (int)r, (int)g, (int)b);
+
+      IupStoreAttribute(iup_image, attr, color); 
+    }
+  }
+
+load_raw_finish:
   imCounterSetCallback(NULL, old_callback);
   if (ifile) imFileClose(ifile);
   if (image_data) free(image_data);
