@@ -53,6 +53,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\srclua5\il_expander.c" />
+    <ClCompile Include="..\srclua5\il_gridbox.c" />
     <ClCompile Include="..\srclua5\il_link.c" />
     <ClCompile Include="..\srclua5\iuplua.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level4</WarningLevel>
@@ -104,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\srclua5\expander.lua" />
+    <None Include="..\srclua5\gridbox.lua" />
     <None Include="..\srclua5\iuplua.def" />
     <None Include="..\srclua5\constants.lua" />
     <None Include="..\srclua5\ctrl_template.lua" />
