@@ -256,6 +256,8 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
   int lin = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pMsg->position, 0);
   int col = iupScintillaSendMessage(ih, SCI_GETCOLUMN, pMsg->position, 0);
 
+printf("code=%d\n", pMsg->nmhdr.code);
+
   switch(pMsg->nmhdr.code)
   {
   case SCN_SAVEPOINTREACHED:
@@ -402,6 +404,17 @@ static int winScintillaProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
 {
   switch (msg)
   {
+  case WM_CHAR:
+    {
+      /* TODO: workaround for Scintilla behavior, 
+         check again if still present in newer versions. */
+      if (wp==VK_ESCAPE)
+      {
+        *result = 0;
+        return 1;
+      }
+      break;
+    }
   case WM_KEYDOWN:
     {
       PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
