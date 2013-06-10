@@ -141,7 +141,7 @@ struct Iclass_
   void (*ChildAdded)(Ihandle* ih, Ihandle* child);
 
   /** Notifies the element that a child was removed using IupDetach. \n
-   * Called only from IupDetach or IupReparent. The child is not mapped, but the parent can be mapped.
+   * Called only from IupDetach or IupReparent. The child is already detached, but mapped state was not changed.
    */
   void (*ChildRemoved)(Ihandle* ih, Ihandle* child);
 

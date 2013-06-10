@@ -107,7 +107,6 @@ static int cbType(Ihandle* ih, int v)
       break;
     }
 
-    IupSetAttribute(tabs, "UPDATE", NULL);
     IupRefresh(tabs); /* update children layout */
   }
   return IUP_DEFAULT;
@@ -130,7 +129,6 @@ static int cbOrientation(Ihandle* ih, int v)
       break;
     }
 
-    IupSetAttribute(tabs, "UPDATE", NULL);
     IupRefresh(tabs); /* update children layout */
   }
   return IUP_DEFAULT;
@@ -148,7 +146,6 @@ static int cbAddTab(Ihandle* ih)
   IupAppend(tabs, vbox);
   IupMap(vbox);
 
-  IupSetAttribute(tabs, "UPDATE", NULL);
   IupRefresh(tabs); /* update children layout */
 
   return IUP_DEFAULT;
@@ -167,7 +164,6 @@ static int cbInsertTab(Ihandle* ih)
   IupInsert(tabs, ref_vbox, vbox);
   IupMap(vbox);
 
-  IupSetAttribute(tabs, "UPDATE", NULL);
   IupRefresh(tabs); /* update children layout */
 
   return IUP_DEFAULT;
@@ -180,7 +176,6 @@ static int cbRemoveTab(Ihandle* ih)
 
   IupDestroy(vbox);
 
-  IupSetAttribute(tabs, "UPDATE", NULL);
   IupRefresh(tabs); /* update children layout */
 
   return IUP_DEFAULT;
@@ -218,7 +213,6 @@ static int cbInactive(Ihandle *ih, int state)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
   IupSetAttribute(tabs, "ACTIVE", state? "NO": "YES");
-  IupSetAttribute(tabs, "UPDATE", NULL);
   return IUP_DEFAULT;
 }
 

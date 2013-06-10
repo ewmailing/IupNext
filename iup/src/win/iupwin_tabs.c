@@ -720,6 +720,24 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
   }
 }
 
+static int winTabsGetPageWindowPos(Ihandle* ih, HWND tab_page)
+{
+  TCITEM tie;
+  int pos, num_tabs;
+
+  num_tabs = (int)SendMessage(ih->handle, TCM_GETITEMCOUNT, 0, 0);
+  tie.mask = TCIF_PARAM;
+
+  for (pos=0; pos<num_tabs; pos++)
+  {
+    SendMessage(ih->handle, TCM_GETITEM, pos, (LPARAM)&tie);
+    if (tab_page == (HWND)tie.lParam)
+      return pos;
+  }
+
+  return -1;
+}
+
 static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
 {
   if (ih->handle)
@@ -727,7 +745,8 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
     HWND tab_page = (HWND)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (tab_page)
     {
-      int pos = IupGetChildPos(ih, child);
+      /* can not use IupGetChild here, because child has already been detached */
+      int pos = winTabsGetPageWindowPos(ih, tab_page);
       int p = winTabsPosFixToWin(ih, pos);  
 
       iupTabsCheckCurrentTab(ih, pos);
