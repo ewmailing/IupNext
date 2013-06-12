@@ -165,6 +165,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuplua_scintilla52", "iuplu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iup_scintillacore", "iup_scintillacore.vcxproj", "{22AD4898-ABC1-EF25-A8A8-DF17F12D38B2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupmatrixex", "iupmatrixex.vcxproj", "{5EABE977-C56D-13FA-45DD-12A8972EA8CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -291,6 +293,8 @@ Global
 		{1EB37A53-1AF2-345B-8C7F-CE67F71F17D8}.Debug|Win32.Build.0 = Debug|Win32
 		{22AD4898-ABC1-EF25-A8A8-DF17F12D38B2}.Debug|Win32.ActiveCfg = Debug|Win32
 		{22AD4898-ABC1-EF25-A8A8-DF17F12D38B2}.Debug|Win32.Build.0 = Debug|Win32
+		{5EABE977-C56D-13FA-45DD-12A8972EA8CC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5EABE977-C56D-13FA-45DD-12A8972EA8CC}.Debug|Win32.Build.0 = Debug|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

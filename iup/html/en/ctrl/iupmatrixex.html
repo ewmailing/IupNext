@@ -1,0 +1,302 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+
+  <meta http-equiv="Content-Language" content="en-us">
+
+
+  <title>IupMatrixEx</title>
+  <link rel="stylesheet" type="text/css" href="../../style.css">
+
+  <style type="text/css">
+.style1 {
+	margin-left: 40px;
+}
+  .auto-style1 {
+	  background-color: #E1E1E1;
+  }
+  .auto-style2 {
+	  text-align: center;
+  }
+  .auto-style3 {
+	  font-size: medium;
+	  letter-spacing: normal;
+	  background-color: #FFFFFF;
+  }
+  .style4 {
+	font-size: large;
+}
+  </style>
+</head>
+
+
+<body>
+
+<div id="navigation">
+  
+<ul>
+
+    <li><a href="#Creation">Creation</a></li>
+
+    <li><a href="#Attributes">Attributes</a></li>
+
+    <li><a href="#Callbacks">Callbacks</a></li>
+
+    <li><a href="#Notes">Notes</a></li>
+
+    <li><a href="#Examples">Examples</a></li>
+
+    <li><a href="#SeeAlso">See Also</a></li>
+
+  
+</ul>
+
+</div>
+
+
+<h2>IupMatrixEx <span class="style4">(since 3.9)</span></h2>
+
+
+  
+<p>
+  <strong>IupMatrix</strong> expansion library.</p>
+<p>
+  This library adds new features to the <strong>IupMatrix</strong> in order to 
+  expand the current features to wider the <strong>IupMatrix</strong> 
+  applications.</p>
+<p>
+  The expansion can be used in two different ways: using a new control called
+  <strong>IupMatrixEx</strong>, or by calling <strong>IupMatrixExInit</strong> 
+  for an existing <strong>IupMatrix</strong> control.</p>
+<p>
+  Each feature can be enabled or disabled individually, and it will have an 
+  exclusive set of attributes and/or callbacks. </p>
+  <h3>Initialization and Usage</h3>
+<p>
+The<span class="Apple-converted-space">&nbsp;</span><b>IupMatrixExOpen</b><span class="Apple-converted-space">&nbsp;</span>function 
+must be called after a<span class="Apple-converted-space">&nbsp;</span><b>IupOpen</b>, 
+so that the control can be used. The &quot;iupmatrixex.h&quot; file must also be 
+included in the source code. The program must be linked to the controls library 
+(iupmatrixex), and it depends on the <a href="../iupcontrols.html">Controls 
+Library</a>.</p>
+<p>To make the control available in Lua use require&quot;iupluamatrixex&quot; or manually 
+call the initialization function in C, 
+<b>iupmatrixexlua_open</b>, after calling <b>iuplua_open</b>.
+  &nbsp;When manually calling the function the iupluamatrixex.h file must also be included in the source code 
+and the program must be linked to the 
+Lua control 
+  library (iupluamatrixex).</p>
+
+
+<h3><a name="Creation">Creation</a></h3>
+
+<pre>Ihandle* IupMatrixEx(void); [in C]<br>iup.matrixex{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]<br>matrixex(<strong>action</strong>) [in LED]</pre>
+
+  
+<p>
+  This function returns the identifier of the 
+  created editing component, or NULL if an error occurs.</p>
+
+
+<h3><a name="Attributes">Attributes</a></h3>
+
+
+<p>The 
+  <strong>IupMatrixEx</strong> element handle all attributes defined for a
+<a href="iupmatrix_attrib.html">IupMatrix</a> control.</p>
+<blockquote>
+  <hr>
+</blockquote>
+<p><strong>FREEZE:</strong> freezes the scroll of columns and lines up to the 
+given cell. Can be: &quot;Yes&quot; - uses the value of the FOCUS_CELL attribute, &quot;<em>L</em>:<em>C</em>&quot; 
+where L and C are the line and column, or &quot;No&quot; clear the freeze state. 
+Internally will set the NUMLIN_NOSCROLL and NUMCOL_NOSCROLL, and change the 
+FRAMEHORIZCOLOR of the line and the FRAMEVERTCOLOR of the column to the color 
+defined by FREEZEBGCOLOR.</p>
+<p>
+<strong>FREEZEBGCOLOR</strong>:
+  color used for the freeze lines. Default: &quot;0 0 255&quot;. Used only by the FREEZE 
+attribute.</p>
+
+
+
+  
+<h3><a name="Callbacks">Callbacks</a></h3>
+
+<p>The 
+  <strong>IupMatrixEx</strong> element understands all callbacks defined for a
+<a href="iupmatrix_cb.html">IupMatrix</a> control.</p>
+
+    
+<hr class="style1">
+
+<p>&nbsp;</p>
+
+
+
+<h3>Auxiliary Functions</h3>
+<pre>void <b>IupMatrixExInit</b>(Ihandle* <b>ih</b>); [in C]
+<b>iup.MatrixExInit</b>(<b>ih</b>: ihandle) [in Lua]</pre>
+<p>Register the new attributes and callbacks in a regular <strong>IupMatrix</strong> 
+control.</p>
+
+
+
+<!--
+
+<h3><a name="IndicatorStyles">Indicator Styles</a></h3>
+
+
+<p>
+  Indicators are used to display additional information over the top of styling. 
+  They can be used to show, for example, syntax errors, deprecated names and bad 
+  indentation by drawing underlines under text or boxes around text.</p>
+<p>
+  The indicator styles currently available in Scintilla are:</p>
+
+<table align="center">
+
+		<tr>
+
+		<th style="width: 214px">IupScintilla Enumeration</th>
+
+		<th>Visual Effect&nbsp;</th>
+
+		</tr>
+
+	<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_PLAIN</td>
+
+		<td>Underlined with a single, straight line.</td>
+
+	</tr>
+
+	<tr>
+
+		<td style="width: 214px;">IUP_SCINTILLA_SQUIGGLE</td>
+
+		<td>A squiggly underline. Requires 3 pixels of 
+		descender space.</td>
+
+	</tr>
+
+	<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_TT</td>
+
+		<td>A line of small T shapes.</td>
+
+	</tr>
+
+	<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_DIAGONAL</td>
+
+		<td>Diagonal hatching.</td>
+
+	</tr>
+
+		<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_STRIKE</td>
+
+		<td>Strike out.</td>
+
+		</tr>
+		<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_HIDDEN</td>
+
+		<td>An indicator with no visual effect.</td>
+
+		</tr>
+		<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_BOX</td>
+
+		<td>A rectangle around the text.</td>
+
+		</tr>
+		<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_ROUNDBOX</td>
+
+		<td>A rectangle with rounded corners around the text using translucent 
+		drawing with the interior usually more transparent than the border.</td>
+
+		</tr>
+		<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_STRAIGHTBOX</td>
+
+		<td>A rectangle around the text using translucent drawing with the 
+		interior usually more transparent than the border.</td>
+
+		</tr>
+		<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_DASH</td>
+
+		<td>A dashed underline.</td>
+
+		</tr>
+		<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_DOTS</td>
+
+		<td>A dotted underline.</td>
+
+		</tr>
+		<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_SQUIGGLELOW</td>
+
+		<td>Similar to IUP_SCINTILLA_SQUIGGLE but only using 2 vertical pixels 
+		so will fit under small fonts.</td>
+
+		</tr>
+		<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_DOTBOX</td>
+
+		<td>A dotted rectangle around the text using translucent drawing.</td>
+
+		</tr>
+		<tr>
+
+		<td style="width: 214px">IUP_SCINTILLA_SQUIGGLEPIXMAP</td>
+
+		<td>A version of IUP_SCINTILLA_SQUIGGLE that draws using a pixmap 
+		instead of as a series of line segments for performance.</td>
+
+		</tr>
+</table>
+
+-->
+
+<h3><a name="Notes">Notes</a></h3>
+<p>&nbsp;</p>
+
+
+<h3><a name="Examples">Examples</a></h3>
+
+<p><a href="../../examples/">Browse for Example Files</a></p>
+<table align="center">
+
+	<tr>
+
+		<td>&nbsp;</td>
+
+	</tr>
+</table>
+
+	
+<h3><a name="SeeAlso">See Also</a></h3>
+
+
+<p><a href="iupmatrix.html">IupMatrix</a></p>
+
+
+</body>
+</html>

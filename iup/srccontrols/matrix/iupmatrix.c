@@ -1165,13 +1165,15 @@ static int iMatrixSetFontAttrib(Ihandle* ih, int lin, int col, const char* value
 
 static int iMatrixSetFrameHorizColorAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
-  ih->data->checkframecolor = value!=NULL;
+  if (value)
+    ih->data->checkframecolor = 1;
   return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FRAMEHORIZCOLOR);
 }
 
 static int iMatrixSetFrameVertColorAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
-  ih->data->checkframecolor = value!=NULL;
+  if (value)
+    ih->data->checkframecolor = 1;
   return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FRAMEVERTCOLOR);
 }
 

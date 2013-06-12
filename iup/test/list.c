@@ -302,8 +302,8 @@ void ListTest(void)
 //  IupSetAttribute(list1, "PADDING", "10x10");
 //  IupSetAttribute(list3, "PADDING", "10x10");
 
-  IupSetAttribute(list3, "SPACING", "10");
-  IupSetAttribute(list4, "SPACING", "10");
+//  IupSetAttribute(list3, "SPACING", "10");
+//  IupSetAttribute(list4, "SPACING", "10");
 
   printf("COUNT(list1)=%s\n", IupGetAttribute(list1, "COUNT"));
   printf("COUNT(list2)=%s\n", IupGetAttribute(list2, "COUNT"));
