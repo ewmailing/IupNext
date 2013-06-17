@@ -50,8 +50,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iupmatrixex.h" />
+    <ClInclude Include="..\srcmatrixex\iup_matrixex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\srcmatrixex\iupmatex_clipboard.c" />
     <ClCompile Include="..\srcmatrixex\iup_matrixex.c" />
   </ItemGroup>
   <ItemGroup>

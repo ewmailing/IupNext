@@ -4,8 +4,8 @@
  * See Copyright Notice in "iup.h"
  */
  
-#ifndef __IUPPPLOT_H 
-#define __IUPPPLOT_H
+#ifndef __IUP_PPLOT_H 
+#define __IUP_PPLOT_H
 
 #ifdef __cplusplus
 extern "C" {

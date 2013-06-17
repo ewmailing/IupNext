@@ -20,7 +20,43 @@
 #include "iup_register.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
+#include "iup_matrixex.h"
 
+
+#if 0
+int Dmatrix::_ACT_mtx   (Ihandle *h,int c,int lin,int col,int active,char *after)
+{
+  Dmatrix *D = Dmatrix::GetSelf(h);
+  if (!active)
+  {
+    switch (c)
+    {
+    case K_cA: { D->SelectAll(); return IUP_CONTINUE;}
+    case K_cC: { D->Copy()     ; return IUP_IGNORE  ;}
+    case K_cV: { D->Paste()    ; return IUP_IGNORE  ;}
+    case K_cZ: { Dmatrix::_ACT_it_undo(h)   ; return IUP_IGNORE  ;}
+    case K_cY: { Dmatrix::_ACT_it_redo(h)   ; return IUP_IGNORE  ;}
+    case K_cU: { D->UndoList() ; return IUP_IGNORE  ;}
+    case K_sUP   :{D->selblock.SetEnd(lin-1,col);D->selblock.Select(h);break;}
+    case K_sDOWN :{D->selblock.SetEnd(lin+1,col);D->selblock.Select(h);break;}
+    case K_sRIGHT:{D->selblock.SetEnd(lin,col+1);D->selblock.Select(h);break;}
+    case K_sLEFT :{D->selblock.SetEnd(lin,col-1);D->selblock.Select(h);break;}
+    case K_UP    :{D->selblock.SetAnchor(lin-1,col);break;}
+    case K_DOWN  :{D->selblock.SetAnchor(lin+1,col);break;}
+    case K_RIGHT :{D->selblock.SetAnchor(lin,col+1);break;}
+    case K_LEFT  :{D->selblock.SetAnchor(lin,col-1);break;}
+    case K_cF: {D->Find(); return IUP_IGNORE;}
+    case K_mF3:{D->Find(); return IUP_IGNORE;}
+    case K_F3: {D->FindNext();return IUP_IGNORE;}
+    case K_sF3:{D->FindPrev();return IUP_IGNORE;}
+    case K_ESC:{D->finder.CloseDlg(); return IUP_CONTINUE;}
+    }
+  }
+  if (D->_act_mtx_client!=NULL)
+    return ((ActFcnType)D->_act_mtx_client)(h,c,lin,col,active,after);
+  return IUP_DEFAULT;
+}
+#endif
 
 static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
 {
@@ -72,6 +108,8 @@ static void iMatrixExInitAttribCb(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "FREEZE", NULL, iMatrixExSetFreezeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupMatrixExRegisterClipboard(ic);
 }
 
 static Iclass* iMatrixExNewClass(void)
