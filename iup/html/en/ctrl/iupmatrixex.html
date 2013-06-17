@@ -107,6 +107,17 @@ Lua control
 <blockquote>
   <hr>
 </blockquote>
+<p><strong>COPY</strong> (write-only): copies the selected cells to the 
+clipboard. Title cells are not copied, even when a line or column is fully 
+selected. Cells are separated with tabs ('\t') and lines are separated with line 
+feeds ('\n'). If the column or line is invisible (its size=0) it is not copied. 
+When MARKMODE=CELLS and sparse cells are selected there are two options for copy 
+according to the <strong>COPYKEEPSTRUCT</strong> attribute, if &quot;Yes&quot; the copied 
+data will fit a rectangular region that contains all the selected cells and the 
+non selected cells inside the region will be copied as empty spaces (' '), if 
+&quot;No&quot; only the selected cells will be copied but they must contain a matrix 
+consistent structure, in other words the selected column pattern must be 
+consistent along lines.</p>
 <p><strong>FREEZE:</strong> freezes the scroll of columns and lines up to the 
 given cell. Can be: &quot;Yes&quot; - uses the value of the FOCUS_CELL attribute, &quot;<em>L</em>:<em>C</em>&quot; 
 where L and C are the line and column, or &quot;No&quot; clear the freeze state. 
