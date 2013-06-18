@@ -938,7 +938,7 @@ Iclass* iupCellsNewClass(void)
   iupClassRegisterCallback(ic, "SCROLLING_CB", "ii");
   iupClassRegisterCallback(ic, "MOUSEMOTION_CB", "iiiis");
   iupClassRegisterCallback(ic, "MOUSECLICK_CB", "iiiiiis");
-  iupClassRegisterCallback(ic, "DRAW_CB", "iiiiiiv");
+  iupClassRegisterCallback(ic, "DRAW_CB", "iiiiiiC");
   iupClassRegisterCallback(ic, "VSPAN_CB", "ii");
   iupClassRegisterCallback(ic, "HSPAN_CB", "ii");
   iupClassRegisterCallback(ic, "NCOLS_CB", "");

@@ -6,8 +6,8 @@
  */
 
 
-#ifndef __IUP_PPLOT_H
-#define __IUP_PPLOT_H
+#ifndef __IUP_PPLOT_HPP
+#define __IUP_PPLOT_HPP
 
 /*
   PPainterIup class definition

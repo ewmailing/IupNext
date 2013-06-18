@@ -3050,15 +3050,15 @@ static Iclass* iPPlotNewClass(void)
   ic->UnMap   = iPPlotUnMapMethod;
 
   /* IupPPlot Callbacks */
-  iupClassRegisterCallback(ic, "POSTDRAW_CB", "v");
-  iupClassRegisterCallback(ic, "PREDRAW_CB", "v");
+  iupClassRegisterCallback(ic, "POSTDRAW_CB", "C");
+  iupClassRegisterCallback(ic, "PREDRAW_CB", "C");
   iupClassRegisterCallback(ic, "DELETE_CB", "iiff");
   iupClassRegisterCallback(ic, "DELETEBEGIN_CB", "");
   iupClassRegisterCallback(ic, "DELETEEND_CB", "");
   iupClassRegisterCallback(ic, "SELECT_CB", "iiffi");
   iupClassRegisterCallback(ic, "SELECTBEGIN_CB", "");
   iupClassRegisterCallback(ic, "SELECTEND_CB", "");
-  iupClassRegisterCallback(ic, "EDIT_CB", "iiffvv");
+  iupClassRegisterCallback(ic, "EDIT_CB", "iiffff");
   iupClassRegisterCallback(ic, "EDITBEGIN_CB", "");
   iupClassRegisterCallback(ic, "EDITEND_CB", "");
 

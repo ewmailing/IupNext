@@ -5263,7 +5263,7 @@ static Iclass* iMglPlotNewClass(void)
 //   iupClassRegisterCallback(ic, "SELECT_CB", "iiffi");
 //   iupClassRegisterCallback(ic, "SELECTBEGIN_CB", "");
 //   iupClassRegisterCallback(ic, "SELECTEND_CB", "");
-//   iupClassRegisterCallback(ic, "EDIT_CB", "iiffvv");
+//   iupClassRegisterCallback(ic, "EDIT_CB", "iiffff");
 //   iupClassRegisterCallback(ic, "EDITBEGIN_CB", "");
 //   iupClassRegisterCallback(ic, "EDITEND_CB", "");
 

@@ -15,12 +15,12 @@ static int compare(const void *a, const void *b)
   return strcmp( * ( char** ) a, * ( char** ) b );
 }
 
-static char* getParameters(const char* format)
+static char* getClassParameters(const char* format)
 {
   static char str[100], *pstr;
   pstr = &str[0];
 
-  pstr += sprintf(pstr, "Ihandle*");
+  str[0] = 0;  /* clear for the case where there is no parameters */
 
   if (format && format[0]!=0)
   {
@@ -37,18 +37,95 @@ static char* getParameters(const char* format)
       case 'i': fstr = "int"; break;
       case 'j': fstr = "int*"; break;
       case 'f': fstr = "float"; break;
-      case 'd': fstr = "double"; break;
       case 's': fstr = "char*"; break;
       case 'a': fstr = "char*"; break;
       case 'h': fstr = "Ihandle*"; break;
       case 'g': fstr = "Ihandle**"; break;
-      case 'v': fstr = "void*"; break;
+      }
+
+      if (fstr)
+      {
+        if (i!=0)
+          pstr += sprintf(pstr, ", ");
+
+        pstr += sprintf(pstr, fstr);
+      }
+      else
+      {
+        IupMessagef("Internal Error:", "Invalid class format: %s", format);
+        return NULL;
+      }
+    }
+  }
+
+  return str;
+}
+
+static char* getCallbackReturn(const char* format)
+{
+  char* fstr = NULL;
+  static char str[100];
+
+  switch(format[0])
+  {
+  case 'c': fstr = "unsigned char"; break;
+  case 'i': fstr = "int"; break;
+  case 'I': fstr = "int*"; break;
+  case 'f': fstr = "float"; break;
+  case 'd': fstr = "double"; break;
+  case 's': fstr = "char*"; break;
+  case 'C': fstr = "void*"; break;
+  case 'n': fstr = "Ihandle*"; break;
+  }
+
+  if (fstr)
+    sprintf(str, fstr);
+  else
+  {
+    IupMessagef("Internal Error:", "Invalid callback return format: %c", format[0]);
+    return NULL;
+  }
+
+  return str;
+}
+
+
+static char* getCallbackParameters(const char* format)
+{
+  static char str[100], *pstr;
+  pstr = &str[0];
+
+  pstr += sprintf(pstr, "Ihandle*");  /* First parameter in all callbacks */
+
+  if (format && format[0]!=0)
+  {
+    int i, count = strlen(format);
+
+    for (i=0; i<count; i++)
+    {
+      char* fstr = NULL;
+
+      switch(format[i])
+      {
+      case 'c': fstr = "unsigned char"; break;
+      case 'i': fstr = "int"; break;
+      case 'I': fstr = "int*"; break;
+      case 'f': fstr = "float"; break;
+      case 'd': fstr = "double"; break;
+      case 's': fstr = "char*"; break;
+      case 'C': fstr = "void*"; break;
+      case 'n': fstr = "Ihandle*"; break;
       }
 
       if (fstr)
       {
         pstr += sprintf(pstr, ", ");
         pstr += sprintf(pstr, fstr);
+      }
+      else
+      {
+        IupMessagef("Internal Error:", "Invalid callback format: %s", format);
+        return NULL;
       }
     }
   }
@@ -68,9 +145,9 @@ static int callbacksList_ActionCB (Ihandle *ih, char *callName, int pos, int sta
     char* format = iupClassCallbackGetFormat(ic, callName);
     const char* ret = strchr(format, '=');
     if (ret!=NULL)
-      IupSetfAttribute(labelInfo, "TITLE", "%s %s(%s)", callName, getParameters(ret+1));
+      IupSetfAttribute(labelInfo, "TITLE", "%s %s(%s)", getCallbackReturn(format), callName, getCallbackParameters(ret+1));
     else
-      IupSetfAttribute(labelInfo, "TITLE", "Ihandle* %s(%s)", callName, getParameters(format));
+      IupSetfAttribute(labelInfo, "TITLE", "Ihandle* %s(%s)", callName, getCallbackParameters(format));
   }
 
   (void)pos;
@@ -176,7 +253,7 @@ static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int stat
                                          "%s\n"
                                          "%s\n",
                                          ic->name,
-                                         getParameters(ic->format),
+                                         getClassParameters(ic->format),
                                          getNativeType(ic->nativetype),
                                          getChildType(ic->childtype),
                                          ic->is_interactive? "Is Interactive": "NOT Interactive",
@@ -222,7 +299,7 @@ void ClassInfo(void)
   IupSetCallback(listCallbacks,  "ACTION", (Icallback)  callbacksList_ActionCB);
 
   labelInfo = IupLabel(NULL);
-  IupSetAttribute(labelInfo, "SIZE", "x50");
+  IupSetAttribute(labelInfo, "SIZE", "x60");
   IupSetAttribute(labelInfo, "EXPAND", "HORIZONTAL");
   IupSetAttribute(labelInfo, "NAME", "labelInfo");
 
