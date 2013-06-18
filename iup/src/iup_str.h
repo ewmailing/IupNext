@@ -55,7 +55,7 @@ int iupStrFalse(const char* str);
  * \ingroup str */
 int iupStrLineCount(const char* str);
 
-/** Returns the a pointer to the next line and the size of the current line.
+/** Returns a pointer to the next line and the size of the current line.
  * It works for UNIX, DOS and MAC line ends. The size does not includes the line end.
  * If str is NULL it will return NULL.
  * \ingroup str */
