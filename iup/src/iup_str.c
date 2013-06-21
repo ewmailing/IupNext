@@ -136,6 +136,22 @@ const char* iupStrNextLine(const char* str, int *len)
     return str;  /* no next line */
 }
 
+const char* iupStrNextValue(const char* str, int str_len, int *len, char sep)
+{
+  *len = 0;
+
+  while(*str!=0 && *str!=sep && *len<str_len) 
+  {
+    (*len)++;
+    str++;
+  }
+
+  if (*str==sep)
+    return str+1;
+  else 
+    return str;  /* no next value */
+}
+
 int iupStrLineCount(const char* str)
 {
   int num_lin = 1;
@@ -163,13 +179,13 @@ int iupStrLineCount(const char* str)
   return num_lin;
 }
 
-int iupStrCountChar(const char *str, int c)
+int iupStrCountChar(const char *str, char c)
 {
   int n;
   if (!str) return 0;
   for (n=0; *str; str++)
   {
-    if (*str==(char)c)
+    if (*str==c)
       n++;
   }
   return n;
@@ -183,7 +199,7 @@ void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_str)
   dst_str[size-1] = 0;
 }
 
-char *iupStrCopyUntil(char **str, int c)
+char *iupStrCopyUntil(char **str, char c)
 {
   char *p_str,*new_str;
   if (!str || *str==NULL)

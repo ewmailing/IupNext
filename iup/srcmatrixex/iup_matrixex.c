@@ -6,12 +6,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-//#include <limits.h>
-//#include <stdarg.h>
 #include <string.h>
 
 
 #include "iup.h"
+#include "iupcbs.h"
 #include "iupcontrols.h"
 #include "iupmatrixex.h"
 
@@ -20,8 +19,153 @@
 #include "iup_register.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
+#include "iup_assert.h"
 #include "iup_matrixex.h"
 
+
+void iupMatrixExBusyStart(Ihandle* ih, int count, const char* busyname)
+{
+  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+
+  /* can not start a new one if already busy */
+  iupASSERT(matex_data->busy_cb);
+  if (matex_data->busy_cb)
+    return;
+
+  matex_data->busy_cb = (IFniis)IupGetCallback(ih, "BUSY_CB");
+  if (matex_data->busy_cb)
+  {
+    matex_data->busy_cb(ih, 1, count, (char*)busyname);
+    matex_data->busy_count = 0;
+  }
+}
+
+int iupMatrixExBusyInc(Ihandle* ih)
+{
+  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+  if (matex_data->busy_cb)
+  {
+    int ret = matex_data->busy_cb(ih, 2, matex_data->busy_count, NULL);
+    if (ret == IUP_IGNORE)
+    {
+      iupMatrixExBusyEnd(ih);
+      return 0;
+    }
+
+    matex_data->busy_count++;
+  }
+  return 1;
+}
+
+void iupMatrixExBusyEnd(Ihandle* ih)
+{
+  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+  if (matex_data->busy_cb)
+  {
+    matex_data->busy_cb(ih, 0, 0, NULL);
+
+    matex_data->busy_count = 0;
+    matex_data->busy_cb = NULL;
+  }
+}
+
+static int iMatrixSetBusyAttrib(Ihandle* ih, const char* value)
+{
+  /* can only be canceled */
+  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+  if (matex_data->busy_cb && !iupStrBoolean(value))
+    iupMatrixExBusyEnd(ih);
+  return 0;
+}
+
+static char* iMatrixGetBusyAttrib(Ihandle* ih)
+{
+  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+  if (matex_data->busy_cb)
+    return "Yes";
+  else
+    return "No";
+}
+
+int iupMatrixExIsColumnVisible(Ihandle* ih, int col)
+{
+  int width = 0;
+  char str[100];
+  char* value;
+
+  if (col==0)
+    return (IupGetIntId(ih, "RASTERWIDTH", 0) != 0);
+
+  /* to be invisible must exist the attribute and must be set to 0 (zero), 
+     or else is visible */
+
+  sprintf(str, "WIDTH%d", col);
+  value = iupAttribGet(ih, str);
+  if (!value)
+  {
+    sprintf(str, "RASTERWIDTH%d", col);
+    value = iupAttribGet(ih, str);
+    if (!value)
+      return 1;
+  }
+
+  if (iupStrToInt(value, &width)==1)
+  {
+    if (width==0)
+      return 0;
+  }
+
+  return 1;
+}
+
+int iupMatrixExIsLineVisible(Ihandle* ih, int lin)
+{
+  int height = 0;
+  char str[100];
+  char* value;
+
+  if (lin==0)
+    return (IupGetIntId(ih, "RASTERHEIGHT", 0) != 0);
+
+  sprintf(str, "HEIGHT%d", lin);
+  value = iupAttribGet(ih, str);
+  if(!value)
+  {
+    sprintf(str, "RASTERHEIGHT%d", lin);
+    value = iupAttribGet(ih, str);
+    if(!value)
+      return 1;
+  }
+
+  if (iupStrToInt(value, &height)==1)
+  {
+    if (height==0)
+      return 0;
+  }
+
+  return 1;
+}
+
+char* iupMatrixExGetCell(Ihandle* ih, int lin, int col, sIFnii value_cb)
+{
+  char* value;
+  if (value_cb)
+    value = value_cb(ih, lin, col);
+  else
+    value = IupGetAttributeId2(ih, "", lin, col);
+  return value;
+}
+
+void iupMatrixExSetCell(Ihandle *ih, int lin, int col, const char* value, IFniiii edition_cb, IFniis value_edit_cb)
+{
+  if (edition_cb && edition_cb(ih,lin,col,1,1)==IUP_IGNORE)
+    return;
+
+  if (value_edit_cb)
+    value_edit_cb(ih,lin,col,(char*)value);
+  else
+    IupSetAttributeId2(ih,"",lin,col,value);
+}
 
 #if 0
 int Dmatrix::_ACT_mtx   (Ihandle *h,int c,int lin,int col,int active,char *after)
@@ -77,11 +221,15 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
 
   if (!freeze)
   {
-    IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", IupGetInt(ih,"NUMLIN_NOSCROLL"), -1, NULL);
-    IupSetAttributeId2(ih,"FRAMEVERTCOLOR", -1, IupGetInt(ih,"NUMCOL_NOSCROLL"), NULL);
+    lin = IupGetInt(ih,"NUMLIN_NOSCROLL");
+    col = IupGetInt(ih,"NUMCOL_NOSCROLL");
+    IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", lin, -1, NULL);
+    IupSetAttributeId2(ih,"FRAMEVERTCOLOR", -1, col, NULL);
 
     IupSetAttribute(ih,"NUMLIN_NOSCROLL","0");
     IupSetAttribute(ih,"NUMCOL_NOSCROLL","0");
+
+//    iupMatrixExPushUndoCmd(ih, "FREEZE=%d:%d", lin, col);
   }
   else
   {
@@ -92,22 +240,36 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
 
     IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", lin, -1, fzcolor);
     IupSetAttributeId2(ih,"FRAMEVERTCOLOR",-1, col, fzcolor);
+
+ //   iupMatrixExPushUndoCmd(ih, "FREEZE=NO");
   }
 
-  IupUpdate(ih);
+  IupSetAttribute(ih,"REDRAW","ALL");
   return 1;  /* store freeze state */
 }
 
 static int iMatrixExCreateMethod(Ihandle* ih, void **params)
 {
+  ImatExData* matex_data = (ImatExData*)malloc(sizeof(ImatExData));
+  memset(matex_data, 0, sizeof(ImatExData));
+  iupAttribSetStr(ih, "_IUP_MATEX_DATA", (char*)matex_data);
+
   (void)params;
   return IUP_NOERROR;
+}
+
+static void iMatrixExDestroyMethod(Ihandle* ih)
+{
+  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+  free(matex_data);
 }
 
 static void iMatrixExInitAttribCb(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "FREEZE", NULL, iMatrixExSetFreezeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "BUSY", iMatrixGetBusyAttrib, iMatrixSetBusyAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   iupMatrixExRegisterClipboard(ic);
 }
@@ -126,6 +288,7 @@ static Iclass* iMatrixExNewClass(void)
   /* Class functions */
   ic->New = iMatrixExNewClass;
   ic->Create  = iMatrixExCreateMethod;
+  ic->Destroy  = iMatrixExDestroyMethod;
   
   iMatrixExInitAttribCb(ic);
 
@@ -154,3 +317,4 @@ Ihandle* IupMatrixEx(void)
 {
   return IupCreate("matrixex");
 }
+

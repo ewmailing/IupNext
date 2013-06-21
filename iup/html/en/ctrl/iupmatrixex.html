@@ -71,6 +71,8 @@
 <p>
   Each feature can be enabled or disabled individually, and it will have an 
   exclusive set of attributes and/or callbacks. </p>
+<p>
+  The matrix can be used in callback mode or in standard more.</p>
   <h3>Initialization and Usage</h3>
 <p>
 The<span class="Apple-converted-space">&nbsp;</span><b>IupMatrixExOpen</b><span class="Apple-converted-space">&nbsp;</span>function 
@@ -107,17 +109,22 @@ Lua control
 <blockquote>
   <hr>
 </blockquote>
+<p><strong>BUSY</strong>: returns Yes if the library is changing the matrix 
+contents internally as a result of an operation such as paste or duplicate. Can 
+be canceled setting to No. See the BUSY_CB callback for more information.</p>
 <p><strong>COPY</strong> (write-only): copies the selected cells to the 
 clipboard in TEXT format. Title cells are not copied, even when a line or column is fully 
 selected. Cells are separated with tabs ('\t') and lines are separated with line 
-feeds ('\n'). If the column or line is invisible (its size=0) it is not copied. 
-When MARKMODE=CELLS and sparse cells are selected there are two options for copy 
+feeds ('\n'). If the column or line is invisible (its size=0) it is not copied.</p>
+<p class="info">When MARKMODE=CELLS and sparse cells are selected there are two options for copy 
 according to the <strong>COPYKEEPSTRUCT</strong> attribute, if &quot;Yes&quot; the copied 
 data will fit a rectangular region that contains all the selected cells and the 
 non selected cells inside the region will be copied as empty spaces (' '), if 
 &quot;No&quot; only the selected cells will be copied but they must contain a matrix 
 consistent structure, in other words the selected column pattern must be 
-consistent along lines.</p>
+consistent along lines.<br>LASTERROR can be set to &quot;NOMARKED&quot; (no selected 
+cells) or &quot;MARKEDCONSISTENCY&quot; (when COPYKEEPSTRUCT=NO and inconsistent 
+selection).</p>
 <p><strong>FREEZE:</strong> freezes the scroll of columns and lines up to the 
 given cell. Can be: &quot;Yes&quot; - uses the value of the FOCUS_CELL attribute, &quot;<em>L</em>:<em>C</em>&quot; 
 where L and C are the line and column, or &quot;No&quot; clear the freeze state. 
@@ -128,6 +135,36 @@ defined by FREEZEBGCOLOR.</p>
 <strong>FREEZEBGCOLOR</strong>:
   color used for the freeze lines. Default: &quot;0 0 255&quot;. Used only by the FREEZE 
 attribute.</p>
+<p>
+<strong>LASTERROR</strong> (read-only): set when an error occurred during an 
+operation. It is reset to NULL at the start of every operation that sets its 
+value.</p>
+<p>
+<strong>PASTE</strong> (write-only): paste data from the clipboard. Data is 
+obtained from the clipboard in TEXT format. Value is the insert position, it can 
+be &quot;FOCUS&quot; to use the <a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a> 
+attribute, can be &quot;SELECTION&quot; to use the start of the selected groups of cells 
+(top-left selected cell), or can be a cell address &quot;L:C&quot;.</p>
+<p class="info">Data must be in plain text format. Lines can be separated in 
+DOS, UNIX or MAC format. Columns can be separated with tabs ('\t'), with 
+semicolon (';') or a custom value defined by the TEXTSEPARATOR attribute. Data 
+must contain an exact matrix organization. Use the attribute TEXTSKIPLINES to 
+skip a number of lines in the beginning of the data. If data at the insert 
+position will have more lines or columns than the current matrix, then the
+<a href="#PASTESIZE_CB">PASTESIZE_CB</a> callback is called. Only visible cells 
+will be updated. If defined the <a href="iupmatrix_cb.html#EDITION_CB">
+EDITION_CB</a> callback will be called before the cell value is set. LASTERROR 
+can be set to &quot;NOTEXT&quot; (data is empty or NULL), &quot;INVALIDMATRIX&quot; (not a matrix 
+data).</p>
+<p>
+<strong>PASTEDATA</strong> (write-only): paste data from a memory buffer. Value 
+is the data. Insert position is obtained from the
+<a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a> attribute. See PASTE 
+for more details.</p>
+<p>
+<strong>PASTEFILE</strong> (write-only): paste data from a file. Value is the 
+file name to be loaded. Insert position is always &quot;0:0&quot;. See PASTE for more 
+details. LASTERROR can also be set to &quot;INVALIDFILENAME&quot; (failed to open).</p>
 
 
 
@@ -141,7 +178,48 @@ attribute.</p>
     
 <hr class="style1">
 
-<p>&nbsp;</p>
+
+<p><strong>BUSY_CB</strong>: Action generated when the library is changing the 
+matrix contents as a result of an operation such as paste or copy. </p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>status</strong>, int <strong>count</strong>, char* <strong>name</strong>); [in C]<br><strong>elem</strong>:busy_cb(<strong>status</strong>,<strong>count</strong>: number, <strong>name</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>status</strong>: can be 1=process started, 2=iteration, 
+0=process finished.<br><strong>count</strong>: when status=1 is the total number 
+of iterations. when status=2 is the current iteration. ignored when status=0.<br>
+<strong>name</strong>: valid only when status=1, otherwise is NULL. Can be 
+&quot;PASTE&quot;, &quot;PASTEDATA&quot;, &quot;PASTEFILE&quot;.</p>
+
+<p class="info"><u>Returns</u>: When status=2 and IUP_IGNORE is returned the 
+processing is aborted. When process is aborted the callback will be called once 
+more with status=0.</p>
+<p><strong><a name="PASTESIZE_CB">PASTESIZE_CB</a></strong>: Action generated 
+when pasting and data at the insert position will have more lines or columns 
+than the current matrix. The application can change the NUMLIN and NUMCOL 
+attributes to receive the new data.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>num_lin</strong>, int <strong>num_col</strong>); [in C]<br><strong>elem</strong>:busy_cb(<strong>num_lin</strong>,<strong>num_col</strong>: number, <strong>name</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>status</strong>: can be 1=process started, 2=iteration, 
+0=process finished.<br><strong>count</strong>: when status=1 is the total number 
+of iterations. when status=2 is the current iteration. ignored when status=0.<br>
+<strong>name</strong>: valid only when status=1, otherwise is NULL. Can be 
+&quot;PASTE&quot;, &quot;PASTEDATA&quot;, &quot;PASTEFILE&quot;.</p>
+
+<p class="info"><u>Returns</u>: if returns IUP_IGNORE the process will be 
+aborted. if returns IUP_CONTINUE, the NUMLIN and NUMCOL attributes will be 
+automatically changed to the given values. Otherwise and if the callback does 
+not exist nothing is done, and the exceeding data will be discarded. </p>
 
 
 

@@ -259,6 +259,7 @@ iupStrRemove
 iupStrProcessMnemonic
 iupStrFindMnemonic
 iupStrNextLine
+iupStrNextValue
 iupStrMessageShowError
 iupStrMessageGet
 iupStrLower

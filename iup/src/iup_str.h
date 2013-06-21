@@ -61,9 +61,15 @@ int iupStrLineCount(const char* str);
  * \ingroup str */
 const char* iupStrNextLine(const char* str, int *len);
 
+/** Returns a pointer to the next value and the size of the current value.
+ * The size does not includes the separator.
+ * If str is NULL it will return NULL.
+ * \ingroup str */
+const char* iupStrNextValue(const char* str, int str_len, int *len, char sep);
+
 /** Returns the number of repetitions of the character occours in the string.
  * \ingroup str */
-int iupStrCountChar(const char *str, int c);
+int iupStrCountChar(const char *str, char c);
 
 /** Returns a copy of the given string.
  * If str is NULL it will return NULL.
@@ -73,7 +79,7 @@ char* iupStrDup(const char* str);
 /** Returns a new string containing a copy of the string up to the character.
  * The string is then incremented to after the position of the character.
  * \ingroup str */
-char *iupStrCopyUntil(char **str, int c);
+char *iupStrCopyUntil(char **str, char c);
 
 /** Copy the string to the buffer, but limited to the max_size of the buffer.
  * buffer is always properly ended.
