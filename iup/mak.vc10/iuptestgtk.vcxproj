@@ -110,6 +110,7 @@
     <ClCompile Include="..\test\pplot.c" />
     <ClCompile Include="..\test\predialogs.c" />
     <ClCompile Include="..\test\progressbar.c" />
+    <ClCompile Include="..\test\progressdlg.c" />
     <ClCompile Include="..\test\sample.c" />
     <ClCompile Include="..\test\sbox.c" />
     <ClCompile Include="..\test\scanf.c" />
