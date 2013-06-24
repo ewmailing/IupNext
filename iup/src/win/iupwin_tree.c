@@ -2887,7 +2887,10 @@ static void winTreeUnMapMethod(Ihandle* ih)
 
   hEdit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   if (hEdit)
+  {
     iupwinHandleRemove(hEdit);
+    iupAttribSetStr(ih, "_IUPWIN_EDITBOX", NULL);
+  }
 
   image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_NORMAL, 0);
   if (image_list)
@@ -2899,7 +2902,10 @@ static void winTreeUnMapMethod(Ihandle* ih)
 
   bmp_array = (Iarray*)iupAttribGet(ih, "_IUPWIN_BMPARRAY");
   if (bmp_array)
+  {
     iupArrayDestroy(bmp_array);
+    iupAttribSetStr(ih, "_IUPWIN_BMPARRAY", NULL);
+  }
 
   iupdrvBaseUnMapMethod(ih);
 }

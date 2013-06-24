@@ -844,11 +844,17 @@ static void winTabsUnMapMethod(Ihandle* ih)
 
   iarray = (Iarray*)iupAttribGet(ih, "_IUPWIN_BMPARRAY");
   if (iarray)
+  {
+    iupAttribSetStr(ih, "_IUPWIN_BMPARRAY", NULL);
     iupArrayDestroy(iarray);
+  }
 
   iarray = (Iarray*)iupAttribGet(ih, "_IUPWIN_VISIBLEARRAY");
   if (iarray)
+  {
+    iupAttribSetStr(ih, "_IUPWIN_VISIBLEARRAY", NULL);
     iupArrayDestroy(iarray);
+  }
 
   iupdrvBaseUnMapMethod(ih);
 }

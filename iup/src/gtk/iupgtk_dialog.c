@@ -582,7 +582,10 @@ static void gtkDialogUnMapMethod(Ihandle* ih)
 #if GTK_CHECK_VERSION(2, 10, 0)
   status_icon = (GtkStatusIcon*)iupAttribGet(ih, "_IUPDLG_STATUSICON");
   if (status_icon)
+  {
     g_object_unref(status_icon);
+    iupAttribSetStr(ih, "_IUPDLG_STATUSICON", NULL);
+  }
 #endif
 
   inner_parent = gtk_bin_get_child((GtkBin*)ih->handle);

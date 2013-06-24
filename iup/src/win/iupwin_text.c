@@ -2011,6 +2011,7 @@ static void winTextUnMapMethod(Ihandle* ih)
   {
     iupwinHandleRemove(hSpin);
     DestroyWindow(hSpin);
+    iupAttribSetStr(ih, "_IUPWIN_SPIN", NULL);
   }
 
   iupdrvBaseUnMapMethod(ih);
