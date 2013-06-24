@@ -1086,6 +1086,10 @@ wb_usr.tree =
               name= {nl= "IupFontDlg"},
               link= "dlg/iupfontdlg.html"
             },
+            {
+              name= {nl= "IupProgressDlg"},
+              link= "dlg/iupprogressdlg.html"
+            },
             { link= "", name= {en= "" } },
             {
               name= {nl= "IupAlarm"},
