@@ -17,6 +17,7 @@ Iclass* iupMessageDlgNewClass(void);
 Iclass* iupColorDlgNewClass(void);
 Iclass* iupFontDlgNewClass(void);
 Iclass* iupFileDlgNewClass(void);
+Iclass* iupProgressDlgNewClass(void);
 
 Iclass* iupLabelNewClass(void);
 Iclass* iupButtonNewClass(void);

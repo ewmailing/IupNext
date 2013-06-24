@@ -76,6 +76,7 @@
     <ClCompile Include="..\src\iup_names.c" />
     <ClCompile Include="..\src\iup_object.c" />
     <ClCompile Include="..\src\iup_open.c" />
+    <ClCompile Include="..\src\iup_progressdlg.c" />
     <ClCompile Include="..\src\iup_recplay.c" />
     <ClCompile Include="..\src\iup_register.c" />
     <ClCompile Include="..\src\iup_show.c" />

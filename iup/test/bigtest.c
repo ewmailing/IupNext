@@ -59,6 +59,7 @@ void TextTest(void);
 void SpinTest(void);
 void SampleTest(void);
 void ProgressbarTest(void);
+void ProgressDlgTest(void);
 void PreDialogsTest(void);
 #ifdef PPLOT_TEST
 void PPlotTest(void);
@@ -135,6 +136,7 @@ static TestItems test_list[] = {
 #endif
   {"PreDialogs", PreDialogsTest},
   {"Progressbar", ProgressbarTest},
+  {"ProgressDlg", ProgressDlgTest},
   {"Sample", SampleTest},
   {"Sbox", SboxTest},
   {"ScrollBox", ScrollBoxTest},

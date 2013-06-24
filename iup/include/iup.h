@@ -208,11 +208,14 @@ Ihandle*  IupTabsv      (Ihandle* *children);
 Ihandle*  IupTree       (void);
 Ihandle*  IupLink       (const char* url, const char* title);
 
-
 /* Deprecated controls, use SPIN attribute of IupText */
 Ihandle*  IupSpin       (void);
 Ihandle*  IupSpinbox    (Ihandle* child);
 
+
+/************************************************************************/
+/*                      Utilities                                       */
+/************************************************************************/
 
 /* IupImage utility */
 int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name);
@@ -247,6 +250,7 @@ Ihandle* IupFileDlg(void);
 Ihandle* IupMessageDlg(void);
 Ihandle* IupColorDlg(void);
 Ihandle* IupFontDlg(void);
+Ihandle* IupProgressDlg(void);
 
 int  IupGetFile(char *arq);
 void IupMessage(const char *title, const char *msg);

@@ -1098,6 +1098,7 @@ int iuplua_open(lua_State * L)
   iupuserlua_open(L);
   iuptreelua_open(L);
   iupclipboardlua_open(L);
+  iupprogressdlglua_open(L);
 
   return 0; /* nothing in stack */
 }

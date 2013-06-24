@@ -55,6 +55,7 @@
     <ClCompile Include="..\srclua5\il_expander.c" />
     <ClCompile Include="..\srclua5\il_gridbox.c" />
     <ClCompile Include="..\srclua5\il_link.c" />
+    <ClCompile Include="..\srclua5\il_progressdlg.c" />
     <ClCompile Include="..\srclua5\iuplua.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level4</WarningLevel>
     </ClCompile>
@@ -134,6 +135,7 @@
     <None Include="..\srclua5\multiline.lua" />
     <None Include="..\srclua5\normalizer.lua" />
     <None Include="..\srclua5\progressbar.lua" />
+    <None Include="..\srclua5\progressdlg.lua" />
     <None Include="..\srclua5\radio.lua" />
     <None Include="..\srclua5\sbox.lua" />
     <None Include="..\srclua5\scrollbox.lua" />

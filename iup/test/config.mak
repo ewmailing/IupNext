@@ -47,6 +47,7 @@ SRC += toggle.c
 SRC += vbox.c
 SRC += hbox.c
 SRC += progressbar.c
+SRC += progressdlg.c
 SRC += text.c
 SRC += val.c
 SRC += tabs.c

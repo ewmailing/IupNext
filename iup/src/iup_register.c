@@ -83,6 +83,7 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupColorDlgNewClass());
   iupRegisterClass(iupFontDlgNewClass());
   iupRegisterClass(iupFileDlgNewClass());
+  iupRegisterClass(iupProgressDlgNewClass());
 
   iupRegisterClass(iupTimerNewClass());
   iupRegisterClass(iupImageNewClass());

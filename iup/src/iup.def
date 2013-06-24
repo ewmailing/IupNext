@@ -12,6 +12,7 @@ IupDetach
 IupDialog
 IupExpander
 IupFileDlg
+IupProgressDlg
 IupFill
 IupFlush
 IupFrame
