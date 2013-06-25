@@ -113,14 +113,31 @@ checking the STATE attribute. </p>
   return IUP_CONTINUE;
 }
 
+...
 Ihandle* dlg = IupProgressDlg();
   
 IupSetAttribute(dlg, "TITLE", "IupProgressDlg Test");
-IupSetAttribute(dlg, "DESCRIPTION", "Description first line\nSecond Line");
+IupSetAttribute(dlg, "DESCRIPTION", "Description first line\nSecond Line"); // Actually can have any number of lines.
 IupSetCallback(dlg, "CANCEL_CB", cancel_cb);
 IupSetAttribute(dlg, "TOTALCOUNT", "300");
   
 IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+...
+
+// Called from inside the application processing loop
+static int update_progress(Ihandle* ih)
+{
+  IupSetAttribute(ih, "INC", NULL);
+  
+  // This is just an example, the application can control the loop in other ways
+  if (IupGetInt(ih, "COUNT")==IupGetInt(ih, "TOTALCOUNT"))
+  {
+    IupHide(ih);
+    return 0;
+  }
+    
+  return 1;
+}
 </pre>
 <div align="center">
   <center>
