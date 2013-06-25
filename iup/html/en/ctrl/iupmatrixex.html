@@ -115,7 +115,10 @@ be canceled setting to No. See the BUSY_CB callback for more information.</p>
 <p><strong>BUSYPROGRESS</strong>: flag to display a progress dialog while data 
 is being changed. Can be Yes or No. Default: No.</p>
 <p><strong>COPY</strong> (write-only): copies the selected cells to the 
-clipboard in TEXT format. Title cells are not copied, even when a line or column is fully 
+clipboard in TEXT format. If value is ALL, all cells are copied regardless if 
+there is a selection. If value is MARKED or NULL the
+<a href="iupmatrix_attrib.html#MARKED">MARKED</a> attribute is used to define 
+the selection. Title cells are not copied, even when a line or column is fully 
 selected. Cells are separated with tabs ('\t') and lines are separated with line 
 feeds ('\n'). If the column or line is invisible (its size=0) it is not copied.</p>
 <p class="info">When MARKMODE=CELLS and sparse cells are selected there are two options for copy 
