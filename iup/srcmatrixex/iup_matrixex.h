@@ -14,8 +14,9 @@ extern "C" {
 
 typedef struct _ImatExData
 {
-  int busy_count;
+  int busy, busy_count, busy_progress_abort;
   IFniis busy_cb;
+  Ihandle* busy_progress;
 } ImatExData;
 
 void iupMatrixExBusyStart(Ihandle* ih, int count, const char* busyname);

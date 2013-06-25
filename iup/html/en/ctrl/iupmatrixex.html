@@ -112,6 +112,8 @@ Lua control
 <p><strong>BUSY</strong>: returns Yes if the library is changing the matrix 
 contents internally as a result of an operation such as paste or duplicate. Can 
 be canceled setting to No. See the BUSY_CB callback for more information.</p>
+<p><strong>BUSYPROGRESS</strong>: flag to display a progress dialog while data 
+is being changed. Can be Yes or No. Default: No.</p>
 <p><strong>COPY</strong> (write-only): copies the selected cells to the 
 clipboard in TEXT format. Title cells are not copied, even when a line or column is fully 
 selected. Cells are separated with tabs ('\t') and lines are separated with line 
@@ -155,7 +157,7 @@ position will have more lines or columns than the current matrix, then the
 will be updated. If defined the <a href="iupmatrix_cb.html#EDITION_CB">
 EDITION_CB</a> callback will be called before the cell value is set. LASTERROR 
 can be set to &quot;NOTEXT&quot; (data is empty or NULL), &quot;INVALIDMATRIX&quot; (not a matrix 
-data).</p>
+data). BUSY will be set to Yes during the operation.</p>
 <p>
 <strong>PASTEDATA</strong> (write-only): paste data from a memory buffer. Value 
 is the data. Insert position is obtained from the
