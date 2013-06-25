@@ -16,6 +16,7 @@
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
+#include "iup_strmessage.h"
 #include "iup_stdcontrols.h"
 #include "iup_register.h"
 #include "iup_childtree.h"
@@ -242,7 +243,7 @@ static int iProgressDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(marquee,"MARQUEE","Yes");
   IupSetAttribute(marquee,"VISIBLE","No");
 
-  cancel = IupButton("Cancel", NULL);
+  cancel = IupButton(iupStrMessageGet("IUP_CANCEL"), NULL);
   IupSetAttribute(cancel,"PADDING","5x3");
   IupSetCallback(cancel, "ACTION", (Icallback) iProgressDlgCancel_CB);
   IupSetAttributeHandle(ih, "DEFAULTESC", cancel);
