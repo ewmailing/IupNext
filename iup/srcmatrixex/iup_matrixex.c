@@ -200,6 +200,52 @@ int iupMatrixExIsLineVisible(Ihandle* ih, int lin)
   return 1;
 }
 
+static char* iMatrixGetVisibleColAttribId(Ihandle *ih, int id)
+{
+  if (iupMatrixExIsColumnVisible(ih, id))
+    return "Yes";
+  else
+    return "No";
+}
+
+static int iMatrixSetVisibleColAttribId(Ihandle *ih, int id, const char* value)
+{
+  char str[100];
+  sprintf(str, "WIDTH%d", id);  /* this is enough */
+  if (iupStrBoolean(value))
+    iupAttribSetStr(ih, str, "0");
+  else
+  {
+    iupAttribSetStr(ih, str, NULL);  /* this may be insufficient */
+    sprintf(str, "RASTERWIDTH%d", id);
+    iupAttribSetStr(ih, str, NULL);
+  }
+  return 0;
+}
+
+static char* iMatrixGetVisibleLinAttribId(Ihandle *ih, int id)
+{
+  if (iupMatrixExIsLineVisible(ih, id))
+    return "Yes";
+  else
+    return "No";
+}
+
+static int iMatrixSetVisibleLinAttribId(Ihandle *ih, int id, const char* value)
+{
+  char str[100];
+  sprintf(str, "HEIGHT%d", id);
+  if (iupStrBoolean(value))
+    iupAttribSetStr(ih, str, "0");
+  else
+  {
+    iupAttribSetStr(ih, str, NULL);  /* this may be insufficient */
+    sprintf(str, "RASTERHEIGHT%d", id);
+    iupAttribSetStr(ih, str, NULL);
+  }
+  return 0;
+}
+
 char* iupMatrixExGetCell(Ihandle* ih, int lin, int col, sIFnii value_cb)
 {
   char* value;
@@ -322,6 +368,9 @@ static void iMatrixExDestroyMethod(Ihandle* ih)
 
 static void iMatrixExInitAttribCb(Iclass* ic)
 {
+  iupClassRegisterAttributeId(ic, "VISIBLECOL", iMatrixGetVisibleColAttribId, iMatrixSetVisibleColAttribId, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "VISIBLELIN", iMatrixGetVisibleLinAttribId, iMatrixSetVisibleLinAttribId, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "FREEZE", NULL, iMatrixExSetFreezeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 

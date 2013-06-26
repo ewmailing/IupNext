@@ -188,6 +188,18 @@ for more details.</p>
 <strong>PASTEFILE</strong> (write-only): paste data from a file. Value is the 
 file name to be loaded. Insert position is always &quot;0:0&quot;. See PASTE for more 
 details. LASTERROR can also be set to &quot;INVALIDFILENAME&quot; (failed to open).</p>
+<p>
+<strong>VISIBLECOL<em>id</em></strong>: returns if the column is visible (&quot;Yes&quot; 
+or &quot;No&quot;). Actually checks for WIDTHid and RASTERWIDTHid if they are defined and 
+non zero, but more complex logic when id=0. When changed will simply set those 
+attributes to zero or NULL (when setting to NULL and col=0 not necessarily the 
+column will became visible because of the internal matrix logic for titles). </p>
+<p>
+<strong>VISIBLELIN<em>id</em></strong>: returns if the line is visible (&quot;Yes&quot; or 
+&quot;No&quot;). Actually checks for HEIGHTid and RASTERHEIGHTid if they are defined and 
+non zero, but more complex logic when id=0. When changed will simply set those 
+attributes to zero or NULL (when setting to NULL and lin=0 not necessarily the 
+line will became visible because of the internal matrix logic for titles). </p>
 
 
 
