@@ -115,10 +115,10 @@ be canceled setting to No. See the BUSY_CB callback for more information.</p>
 <p><strong>BUSYPROGRESS</strong>: flag to display a progress dialog while data 
 is being changed. Can be Yes or No. Default: No.</p>
 <p><strong>COPY</strong> (write-only): copies the selected cells to the 
-clipboard in TEXT format. If value is ALL, all cells are copied regardless if 
-there is a selection. If value is MARKED or NULL the
+clipboard in TEXT format. If value is ALL then all cells are copied regardless if 
+there is a selection. If value is MARKED then the
 <a href="iupmatrix_attrib.html#MARKED">MARKED</a> attribute is used to define 
-the selection. Title cells are not copied, even when a line or column is fully 
+the selection. Value can also be a range of cells in the format &quot;L1:C1-L2:C2&quot;. Title cells are not copied, even when a line or column is fully 
 selected. Cells are separated with tabs ('\t') and lines are separated with line 
 feeds ('\n'). If the column or line is invisible (its size=0) it is not copied.</p>
 <p class="info">When MARKMODE=CELLS and sparse cells are selected there are two options for copy 
@@ -130,6 +130,24 @@ consistent structure, in other words the selected column pattern must be
 consistent along lines.<br>LASTERROR can be set to &quot;NOMARKED&quot; (no selected 
 cells) or &quot;MARKEDCONSISTENCY&quot; (when COPYKEEPSTRUCT=NO and inconsistent 
 selection).</p>
+<p><strong>COPYDATA</strong>: Use the same parameters of the COPY attributes but 
+will copy to an internal buffer. To retrieve the buffer get the attribute value 
+after setting it. To clear the internal buffer set it to NULL.</p>
+<p><strong>COPYFILE</strong> (write-only): copies all visible cells to a given 
+file. Value is the file name to be saved. LASTERROR can also be set to 
+&quot;INVALIDFILENAME&quot; (failed to open). Data will be in plain text format, but the 
+file format will be defined by the TEXTFORMAT attribute, can be &quot;TXT&quot; (default), 
+&quot;HTML&quot; or &quot;LaTeX&quot;. The COPYCAPTION attribute can be used to define a caption 
+that will be added to the file before the data, depending on the file format.</p>
+<p class="info">When using TXT format, the TEXTSEPARATOR attribute can used to 
+define a column separator (default is tab '\t') and line separator will be line 
+feeds ('\n').<br>When using LaTeX format, the LATEXLABEL attribute can used to 
+define a label for the table.<br>When using HTML format, the attributes 
+&quot;HTML&lt;TABLE&gt;&quot;, &quot;HTML&lt;TR&gt;&quot;, &quot;HTML&lt;TH&gt;&quot;, &quot;HTML&lt;TD&gt;&quot;, &quot;HTML&lt;CAPTION&gt;&quot; can use used 
+to define a complement to be inserted in the respective tag definition, so a &quot; 
+style=..&quot; or a &quot; class=..&quot; complements can be added. The HTMLADDFORMAT can be 
+used to add the attributes ALIGNMENT?, BGCOLOR?:?, FGCOLOR?:? and FONT?:? to the 
+&quot;style&quot; complement of the &quot;TD&quot; tag.</p>
 <p><strong>FREEZE:</strong> freezes the scroll of columns and lines up to the 
 given cell. Can be: &quot;Yes&quot; - uses the value of the FOCUS_CELL attribute, &quot;<em>L</em>:<em>C</em>&quot; 
 where L and C are the line and column, or &quot;No&quot; clear the freeze state. 
