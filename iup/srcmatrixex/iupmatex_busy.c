@@ -48,6 +48,8 @@ static void iMatrixExBusyShowProgress(ImatExData* matex_data, int count, const c
   IupSetfAttribute(matex_data->busy_progress, "TOTALCOUNT", "%d", count);
   IupSetAttribute(matex_data->busy_progress, "COUNT", "0");
 
+  IupSetAttribute(IupGetDialog(matex_data->ih),"ACTIVE","NO");
+
   IupRefresh(matex_data->busy_progress);
 
   x = IupGetInt(matex_data->ih, "X") + (matex_data->ih->currentwidth-matex_data->busy_progress->currentwidth)/2;
@@ -122,11 +124,17 @@ void iupMatrixExBusyEnd(ImatExData* matex_data)
       matex_data->busy_cb(matex_data->ih, 0, 0, NULL);
 
     if (matex_data->busy == 2)
+    {
       IupHide(matex_data->busy_progress);
+      IupSetAttribute(IupGetDialog(matex_data->ih),"ACTIVE","Yes");
+      IupSetFocus(matex_data->ih);
+    }
 
     matex_data->busy_count = 0;
     matex_data->busy_cb = NULL;
     matex_data->busy = 0;
+
+    IupSetAttribute(matex_data->ih,"REDRAW","ALL");
   }
 }
 

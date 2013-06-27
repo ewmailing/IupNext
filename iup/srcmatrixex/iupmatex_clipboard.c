@@ -179,11 +179,11 @@ static void iMatrixExCopyGetDataMarkedCol(ImatExData* matex_data, Iarray* data, 
   int lin, col;
   int add_sep;
 
-  for(lin = 1; lin <= num_lin; ++lin)
+  for(lin = 1; lin <= num_lin; ++lin)  /* all lines */
   {
     add_sep = 0;
 
-    if (iupMatrixExIsLineVisible(matex_data->ih, lin))
+    if (iupMatrixExIsLineVisible(matex_data->ih, lin))  /* only marked columns, but maintain original structure */
     {
       for(col = 1; col <= num_col; ++col)
       {
@@ -208,13 +208,13 @@ static void iMatrixExCopyGetDataMarkedLin(ImatExData* matex_data, Iarray* data, 
   int lin, col;
   int add_sep;
 
-  for(lin = 1; lin <= num_lin; ++lin)
+  for(lin = 1; lin <= num_lin; ++lin)  /* only marked lines, but maintain original structure */
   {
     add_sep = 0;
 
     if (iupMatrixExIsLineVisible(matex_data->ih, lin))
     {
-      for(col = 1; col <= num_col; ++col)
+      for(col = 1; col <= num_col; ++col)    /* all columns */
       {
         if (marked[lin-1] == '1' && iupMatrixExIsColumnVisible(matex_data->ih, col))
         {
@@ -470,6 +470,8 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
 
   iupMatrixExInitCellAccess(matex_data);
 
+//  iupMatrixExUndoPushBlock(matex_data, lin, col, data_num_lin, data_num_col);
+
   iupMatrixExBusyStart(matex_data, data_num_lin*data_num_col, busyname);
 
   lin = start_lin;
@@ -602,11 +604,7 @@ static void iMatrixExPasteData(Ihandle *ih, const char* data, int lin, int col, 
     }
   }
 
-//  iupMatrixExPushUndoBlock(ih, lin, col, data_num_lin, data_num_col);
-
   iMatrixExPasteSetData(ih, data, data_num_lin, data_num_col, sep, lin, col, num_lin, num_col, busyname);
-
-  IupSetAttribute(ih,"REDRAW","ALL");
 }
 
 static int iMatrixExSetPasteAttrib(Ihandle *ih, const char* value)

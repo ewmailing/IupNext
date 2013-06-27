@@ -113,7 +113,7 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
     IupSetAttribute(ih,"NUMLIN_NOSCROLL","0");
     IupSetAttribute(ih,"NUMCOL_NOSCROLL","0");
 
-//    iupMatrixExPushUndoCmd(ih, "FREEZE=%d:%d", lin, col);
+//    iupMatrixExUndoPushCmd(ih, "FREEZE=%d:%d", lin, col);
   }
   else
   {
@@ -125,7 +125,7 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
     IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", lin, -1, fzcolor);
     IupSetAttributeId2(ih,"FRAMEVERTCOLOR",-1, col, fzcolor);
 
- //   iupMatrixExPushUndoCmd(ih, "FREEZE=NO");
+ //   iupMatrixExUndoPushCmd(ih, "FREEZE=NO");
   }
 
   IupSetAttribute(ih,"REDRAW","ALL");

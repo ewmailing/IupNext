@@ -391,8 +391,7 @@ static void iMatrixExCopyLaTeX(Ihandle *ih, FILE* file, int num_lin, int num_col
 
 static int iMatrixExSetCopyFileAttrib(Ihandle *ih, const char* value)
 {
-  int num_lin, 
-      num_col;
+  int num_lin, num_col;
   char buffer[1024];
   char* format;
 
