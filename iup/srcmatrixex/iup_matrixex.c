@@ -23,7 +23,7 @@
 #include "iup_matrixex.h"
 
 
-void iupMatrixExInitDataAccess(ImatExData* matex_data)
+void iupMatrixExInitCellAccess(ImatExData* matex_data)
 {
   matex_data->value_cb = (sIFnii)IupGetCallback(matex_data->ih, "VALUE_CB");
   matex_data->value_edit_cb = (IFniis) IupGetCallback(matex_data->ih,"VALUE_EDIT_CB");

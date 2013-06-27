@@ -30,6 +30,31 @@ static int iMatrixExBusyProgressCancel_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static void iMatrixExBusyShowProgress(ImatExData* matex_data, int count, const char* busyname)
+{
+  int x, y;
+
+  if (!matex_data->busy_progress)
+  {
+    matex_data->busy_progress = IupProgressDlg();
+    IupSetCallback(matex_data->busy_progress, "CANCEL_CB", iMatrixExBusyProgressCancel_CB);
+    IupSetAttributeHandle(matex_data->busy_progress, "PARENTDIALOG", IupGetDialog(matex_data->ih));
+    IupSetAttribute(matex_data->busy_progress, "_IUP_MATEX_DATA", (char*)matex_data);
+
+    IupMap(matex_data->busy_progress); /* to compute dialog size */
+  }
+  
+  IupStoreAttribute(matex_data->busy_progress, "DESCRIPTION", busyname);
+  IupSetfAttribute(matex_data->busy_progress, "TOTALCOUNT", "%d", count);
+  IupSetAttribute(matex_data->busy_progress, "COUNT", "0");
+
+  IupRefresh(matex_data->busy_progress);
+
+  x = IupGetInt(matex_data->ih, "X") + (matex_data->ih->currentwidth-matex_data->busy_progress->currentwidth)/2;
+  y = IupGetInt(matex_data->ih, "Y") + (matex_data->ih->currentheight-matex_data->busy_progress->currentheight)/2;
+  IupShowXY(matex_data->busy_progress, x, y);
+}
+
 void iupMatrixExBusyStart(ImatExData* matex_data, int count, const char* busyname)
 {
   /* can not start a new one if already busy */
@@ -40,33 +65,16 @@ void iupMatrixExBusyStart(ImatExData* matex_data, int count, const char* busynam
   matex_data->busy = 1;
   matex_data->busy_count = 0;
 
+  IupStoreAttribute(matex_data->ih, "_IUPMATEX_OLDCURSOR", IupGetAttribute(matex_data->ih, "CURSOR"));
+  IupSetAttribute(matex_data->ih, "CURSOR", "BUSY");
+
   matex_data->busy_cb = (IFniis)IupGetCallback(matex_data->ih, "BUSY_CB");
   if (matex_data->busy_cb)
     matex_data->busy_cb(matex_data->ih, 1, count, (char*)busyname);
 
   if (iupAttribGetBoolean(matex_data->ih, "BUSYPROGRESS"))
   {
-    int x, y;
-
-    if (!matex_data->busy_progress)
-    {
-      matex_data->busy_progress = IupProgressDlg();
-      IupSetCallback(matex_data->busy_progress, "CANCEL_CB", iMatrixExBusyProgressCancel_CB);
-      IupSetAttributeHandle(matex_data->busy_progress, "PARENTDIALOG", IupGetDialog(matex_data->ih));
-      IupSetAttribute(matex_data->busy_progress, "_IUP_MATEX_DATA", (char*)matex_data);
-
-      IupMap(matex_data->busy_progress); /* to compute dialog size */
-    }
-  
-    IupStoreAttribute(matex_data->busy_progress, "DESCRIPTION", busyname);
-    IupSetfAttribute(matex_data->busy_progress, "TOTALCOUNT", "%d", count);
-    IupSetAttribute(matex_data->busy_progress, "COUNT", "0");
-
-    IupRefresh(matex_data->busy_progress);
-
-    x = IupGetInt(matex_data->ih, "X") + (matex_data->ih->currentwidth-matex_data->busy_progress->currentwidth)/2;
-    y = IupGetInt(matex_data->ih, "Y") + (matex_data->ih->currentheight-matex_data->busy_progress->currentheight)/2;
-    IupShowXY(matex_data->busy_progress, x, y);
+    iMatrixExBusyShowProgress(matex_data, count, busyname);
 
     matex_data->busy_progress_abort = 0;
     matex_data->busy = 2;
@@ -107,6 +115,9 @@ void iupMatrixExBusyEnd(ImatExData* matex_data)
 {
   if (matex_data->busy)
   {
+    IupStoreAttribute(matex_data->ih, "CURSOR", IupGetAttribute(matex_data->ih, "_IUPMATEX_OLDCURSOR"));
+    IupSetAttribute(matex_data->ih, "_IUPMATEX_OLDCURSOR", NULL);
+
     if (matex_data->busy_cb)
       matex_data->busy_cb(matex_data->ih, 0, 0, NULL);
 

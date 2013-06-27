@@ -14,13 +14,13 @@ extern "C" {
 
 typedef struct _ImatExData
 {
-  Ihandle* ih;
+  Ihandle* ih;  /* self reference */
 
   int busy, busy_count, busy_progress_abort;
   IFniis busy_cb;
   Ihandle* busy_progress;
 
-  /* Temporary callbacks, valid only after iupMatrixExInitDataAccess */
+  /* Temporary callbacks, valid only after iupMatrixExInitCellAccess */
   sIFnii value_cb;
   IFniis value_edit_cb;
   IFniiii edition_cb;
@@ -33,8 +33,7 @@ void iupMatrixExBusyEnd(ImatExData* matex_data);
 int iupMatrixExIsColumnVisible(Ihandle* ih, int col);
 int iupMatrixExIsLineVisible(Ihandle* ih, int lin);
 
-void iupMatrixExInitDataAccess(ImatExData* matex_data);
-
+void iupMatrixExInitCellAccess(ImatExData* matex_data);
 char* iupMatrixExGetCell(ImatExData* matex_data, int lin, int col);
 void iupMatrixExSetCell(ImatExData* matex_data, int lin, int col, const char* value);
 
@@ -42,6 +41,7 @@ void iupMatrixExRegisterClipboard(Iclass* ic);
 void iupMatrixExRegisterBusy(Iclass* ic);
 void iupMatrixExRegisterVisible(Iclass* ic);
 void iupMatrixExRegisterExport(Iclass* ic);
+
 
 #ifdef __cplusplus
 }

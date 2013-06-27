@@ -188,7 +188,7 @@ static void iMatrixExSetCopyData(ImatExData* matex_data, Iarray* data, const cha
   num_lin = IupGetInt(matex_data->ih, "NUMLIN");
   num_col = IupGetInt(matex_data->ih, "NUMCOL");
 
-  iupMatrixExInitDataAccess(matex_data);
+  iupMatrixExInitCellAccess(matex_data);
 
   if (iupStrEqualNoCase(value, "MARKED"))
   {
@@ -439,7 +439,7 @@ static void iMatrixExParseText(Ihandle *ih, const char* data, int data_num_lin, 
   char* value = NULL;
   int value_max_size = 0, value_len;
 
-  iupMatrixExInitDataAccess(matex_data);
+  iupMatrixExInitCellAccess(matex_data);
 
   iupMatrixExBusyStart(matex_data, data_num_lin*data_num_col, busyname);
 
