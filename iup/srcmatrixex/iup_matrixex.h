@@ -14,24 +14,34 @@ extern "C" {
 
 typedef struct _ImatExData
 {
+  Ihandle* ih;
+
   int busy, busy_count, busy_progress_abort;
   IFniis busy_cb;
   Ihandle* busy_progress;
+
+  /* Temporary callbacks, valid only after iupMatrixExInitDataAccess */
+  sIFnii value_cb;
+  IFniis value_edit_cb;
+  IFniiii edition_cb;
 } ImatExData;
 
-void iupMatrixExBusyStart(Ihandle* ih, int count, const char* busyname);
-int iupMatrixExBusyInc(Ihandle* ih);
-void iupMatrixExBusyEnd(Ihandle* ih);
+void iupMatrixExBusyStart(ImatExData* matex_data, int count, const char* busyname);
+int iupMatrixExBusyInc(ImatExData* matex_data);
+void iupMatrixExBusyEnd(ImatExData* matex_data);
 
 int iupMatrixExIsColumnVisible(Ihandle* ih, int col);
 int iupMatrixExIsLineVisible(Ihandle* ih, int lin);
 
-char* iupMatrixExGetCell(Ihandle* ih, int lin, int col, sIFnii value_cb);
-void iupMatrixExSetCell(Ihandle *ih, int lin, int col, const char* value, IFniiii edition_cb, IFniis value_edit_cb);
+void iupMatrixExInitDataAccess(ImatExData* matex_data);
 
+char* iupMatrixExGetCell(ImatExData* matex_data, int lin, int col);
+void iupMatrixExSetCell(ImatExData* matex_data, int lin, int col, const char* value);
 
 void iupMatrixExRegisterClipboard(Iclass* ic);
-
+void iupMatrixExRegisterBusy(Iclass* ic);
+void iupMatrixExRegisterVisible(Iclass* ic);
+void iupMatrixExRegisterExport(Iclass* ic);
 
 #ifdef __cplusplus
 }

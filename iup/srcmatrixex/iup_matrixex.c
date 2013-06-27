@@ -23,248 +23,32 @@
 #include "iup_matrixex.h"
 
 
-static int iMatrixExBusyProgressCancel_CB(Ihandle* ih)
+void iupMatrixExInitDataAccess(ImatExData* matex_data)
 {
-  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  matex_data->busy_progress_abort = 1;
-  return IUP_DEFAULT;
+  matex_data->value_cb = (sIFnii)IupGetCallback(matex_data->ih, "VALUE_CB");
+  matex_data->value_edit_cb = (IFniis) IupGetCallback(matex_data->ih,"VALUE_EDIT_CB");
+  matex_data->edition_cb  = (IFniiii)IupGetCallback(matex_data->ih,"EDITION_CB");
 }
 
-void iupMatrixExBusyStart(Ihandle* ih, int count, const char* busyname)
-{
-  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-
-  /* can not start a new one if already busy */
-  iupASSERT(matex_data->busy);
-  if (matex_data->busy)
-    return;
-
-  matex_data->busy = 1;
-  matex_data->busy_count = 0;
-
-  matex_data->busy_cb = (IFniis)IupGetCallback(ih, "BUSY_CB");
-  if (matex_data->busy_cb)
-    matex_data->busy_cb(ih, 1, count, (char*)busyname);
-
-  if (iupAttribGetBoolean(ih, "BUSYPROGRESS"))
-  {
-    int x, y;
-
-    if (!matex_data->busy_progress)
-    {
-      matex_data->busy_progress = IupProgressDlg();
-      IupSetCallback(matex_data->busy_progress, "CANCEL_CB", iMatrixExBusyProgressCancel_CB);
-      IupSetAttributeHandle(matex_data->busy_progress, "PARENTDIALOG", IupGetDialog(ih));
-      IupSetAttribute(matex_data->busy_progress, "_IUP_MATEX_DATA", (char*)matex_data);
-
-      IupMap(matex_data->busy_progress); /* to compute dialog size */
-    }
-  
-    IupStoreAttribute(matex_data->busy_progress, "DESCRIPTION", busyname);
-    IupSetfAttribute(matex_data->busy_progress, "TOTALCOUNT", "%d", count);
-    IupSetAttribute(matex_data->busy_progress, "COUNT", "0");
-
-    IupRefresh(matex_data->busy_progress);
-
-    x = IupGetInt(ih, "X") + (ih->currentwidth-matex_data->busy_progress->currentwidth)/2;
-    y = IupGetInt(ih, "Y") + (ih->currentheight-matex_data->busy_progress->currentheight)/2;
-    IupShowXY(matex_data->busy_progress, x, y);
-
-    matex_data->busy_progress_abort = 0;
-    matex_data->busy = 2;
-  }
-}
-
-int iupMatrixExBusyInc(Ihandle* ih)
-{
-  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  if (matex_data->busy)
-  {
-    matex_data->busy_count++;
-
-    if (matex_data->busy_cb)
-    {
-      int ret = matex_data->busy_cb(ih, 2, matex_data->busy_count, NULL);
-      if (ret == IUP_IGNORE)
-      {
-        iupMatrixExBusyEnd(ih);
-        return 0;
-      }
-    }
-
-    if (matex_data->busy == 2)
-    {
-      IupSetAttribute(matex_data->busy_progress, "INC", NULL);
-
-      if (matex_data->busy_progress_abort)
-      {
-        iupMatrixExBusyEnd(ih);
-        return 0;
-      }
-    }
-  }
-  return 1;
-}
-
-void iupMatrixExBusyEnd(Ihandle* ih)
-{
-  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  if (matex_data->busy)
-  {
-    if (matex_data->busy_cb)
-      matex_data->busy_cb(ih, 0, 0, NULL);
-
-    if (matex_data->busy == 2)
-      IupHide(matex_data->busy_progress);
-
-    matex_data->busy_count = 0;
-    matex_data->busy_cb = NULL;
-    matex_data->busy = 0;
-  }
-}
-
-static int iMatrixSetBusyAttrib(Ihandle* ih, const char* value)
-{
-  /* can only be canceled */
-  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  if (matex_data->busy && !iupStrBoolean(value))
-    iupMatrixExBusyEnd(ih);
-  return 0;
-}
-
-static char* iMatrixGetBusyAttrib(Ihandle* ih)
-{
-  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  if (matex_data->busy)
-    return "Yes";
-  else
-    return "No";
-}
-
-int iupMatrixExIsColumnVisible(Ihandle* ih, int col)
-{
-  int width = 0;
-  char str[100];
-  char* value;
-
-  if (col==0)
-    return (IupGetIntId(ih, "RASTERWIDTH", 0) != 0);
-
-  /* to be invisible must exist the attribute and must be set to 0 (zero), 
-     or else is visible */
-
-  sprintf(str, "WIDTH%d", col);
-  value = iupAttribGet(ih, str);
-  if (!value)
-  {
-    sprintf(str, "RASTERWIDTH%d", col);
-    value = iupAttribGet(ih, str);
-    if (!value)
-      return 1;
-  }
-
-  if (iupStrToInt(value, &width)==1)
-  {
-    if (width==0)
-      return 0;
-  }
-
-  return 1;
-}
-
-int iupMatrixExIsLineVisible(Ihandle* ih, int lin)
-{
-  int height = 0;
-  char str[100];
-  char* value;
-
-  if (lin==0)
-    return (IupGetIntId(ih, "RASTERHEIGHT", 0) != 0);
-
-  sprintf(str, "HEIGHT%d", lin);
-  value = iupAttribGet(ih, str);
-  if(!value)
-  {
-    sprintf(str, "RASTERHEIGHT%d", lin);
-    value = iupAttribGet(ih, str);
-    if(!value)
-      return 1;
-  }
-
-  if (iupStrToInt(value, &height)==1)
-  {
-    if (height==0)
-      return 0;
-  }
-
-  return 1;
-}
-
-static char* iMatrixGetVisibleColAttribId(Ihandle *ih, int id)
-{
-  if (iupMatrixExIsColumnVisible(ih, id))
-    return "Yes";
-  else
-    return "No";
-}
-
-static int iMatrixSetVisibleColAttribId(Ihandle *ih, int id, const char* value)
-{
-  char str[100];
-  sprintf(str, "WIDTH%d", id);  /* this is enough */
-  if (iupStrBoolean(value))
-    iupAttribSetStr(ih, str, "0");
-  else
-  {
-    iupAttribSetStr(ih, str, NULL);  /* this may be insufficient */
-    sprintf(str, "RASTERWIDTH%d", id);
-    iupAttribSetStr(ih, str, NULL);
-  }
-  return 0;
-}
-
-static char* iMatrixGetVisibleLinAttribId(Ihandle *ih, int id)
-{
-  if (iupMatrixExIsLineVisible(ih, id))
-    return "Yes";
-  else
-    return "No";
-}
-
-static int iMatrixSetVisibleLinAttribId(Ihandle *ih, int id, const char* value)
-{
-  char str[100];
-  sprintf(str, "HEIGHT%d", id);
-  if (iupStrBoolean(value))
-    iupAttribSetStr(ih, str, "0");
-  else
-  {
-    iupAttribSetStr(ih, str, NULL);  /* this may be insufficient */
-    sprintf(str, "RASTERHEIGHT%d", id);
-    iupAttribSetStr(ih, str, NULL);
-  }
-  return 0;
-}
-
-char* iupMatrixExGetCell(Ihandle* ih, int lin, int col, sIFnii value_cb)
+char* iupMatrixExGetCell(ImatExData* matex_data, int lin, int col)
 {
   char* value;
-  if (value_cb)
-    value = value_cb(ih, lin, col);
+  if (matex_data->value_cb)
+    value = matex_data->value_cb(matex_data->ih, lin, col);
   else
-    value = IupGetAttributeId2(ih, "", lin, col);
+    value = IupGetAttributeId2(matex_data->ih, "", lin, col);
   return value;
 }
 
-void iupMatrixExSetCell(Ihandle *ih, int lin, int col, const char* value, IFniiii edition_cb, IFniis value_edit_cb)
+void iupMatrixExSetCell(ImatExData* matex_data, int lin, int col, const char* value)
 {
-  if (edition_cb && edition_cb(ih,lin,col,1,1)==IUP_IGNORE)
+  if (matex_data->edition_cb && matex_data->edition_cb(matex_data->ih,lin,col,1,1)==IUP_IGNORE)
     return;
 
-  if (value_edit_cb)
-    value_edit_cb(ih,lin,col,(char*)value);
+  if (matex_data->value_edit_cb)
+    matex_data->value_edit_cb(matex_data->ih,lin,col,(char*)value);
   else
-    IupSetAttributeId2(ih,"",lin,col,value);
+    IupSetAttributeId2(matex_data->ih,"",lin,col,value);
 }
 
 #if 0
@@ -352,7 +136,9 @@ static int iMatrixExCreateMethod(Ihandle* ih, void **params)
 {
   ImatExData* matex_data = (ImatExData*)malloc(sizeof(ImatExData));
   memset(matex_data, 0, sizeof(ImatExData));
+
   iupAttribSetStr(ih, "_IUP_MATEX_DATA", (char*)matex_data);
+  matex_data->ih = ih;
 
   (void)params;
   return IUP_NOERROR;
@@ -368,16 +154,13 @@ static void iMatrixExDestroyMethod(Ihandle* ih)
 
 static void iMatrixExInitAttribCb(Iclass* ic)
 {
-  iupClassRegisterAttributeId(ic, "VISIBLECOL", iMatrixGetVisibleColAttribId, iMatrixSetVisibleColAttribId, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "VISIBLELIN", iMatrixGetVisibleLinAttribId, iMatrixSetVisibleLinAttribId, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-
   iupClassRegisterAttribute(ic, "FREEZE", NULL, iMatrixExSetFreezeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "BUSY", iMatrixGetBusyAttrib, iMatrixSetBusyAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUSYPROGRESS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-
   iupMatrixExRegisterClipboard(ic);
+  iupMatrixExRegisterBusy(ic);
+  iupMatrixExRegisterVisible(ic);
+  iupMatrixExRegisterExport(ic);
 }
 
 static Iclass* iMatrixExNewClass(void)
