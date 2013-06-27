@@ -3,12 +3,25 @@
   <ItemGroup>
     <ClCompile Include="..\srcmatrixex\iup_matrixex.c" />
     <ClCompile Include="..\srcmatrixex\iupmatex_clipboard.c" />
+    <ClCompile Include="..\srcmatrixex\iupmatex_busy.c" />
+    <ClCompile Include="..\srcmatrixex\iupmatex_visible.c" />
+    <ClCompile Include="..\srcmatrixex\iupmatex_export.c" />
+    <ClCompile Include="..\srcmatrixex\iupmatex_copy.c" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\srcmatrixex\iupmatrixex.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\iupmatrixex.h" />
-    <ClInclude Include="..\srcmatrixex\iup_matrixex.h" />
+    <ClInclude Include="..\srcmatrixex\iup_matrixex.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupmatrixex.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="inc">
+      <UniqueIdentifier>{9daef96b-243a-49df-bd80-af193abee58a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

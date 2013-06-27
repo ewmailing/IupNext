@@ -19,7 +19,7 @@
 #include "iup_matrixex.h"
 
 
-static void iMatrixExCopyNoSepTXT(char* buffer, const char* str, char sep)
+static void iMatrixExStrCopyNoSepTXT(char* buffer, const char* str, char sep)
 {
   while (*str)
   {
@@ -34,7 +34,7 @@ static void iMatrixExCopyNoSepTXT(char* buffer, const char* str, char sep)
   *buffer = 0;
 }
 
-static void iMatrixExCopyNoSepHTML(char* buffer, const char* str)
+static void iMatrixExStrCopyNoSepHTML(char* buffer, const char* str)
 {
   while (*str)
   {
@@ -54,7 +54,7 @@ static void iMatrixExCopyNoSepHTML(char* buffer, const char* str)
   *buffer = 0;
 }
 
-static void iMatrixExCopyNoSepLaTeX(char* buffer, const char* str)
+static void iMatrixExStrCopyNoSepLaTeX(char* buffer, const char* str)
 {
   while (*str)
   {
@@ -107,7 +107,7 @@ static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col, 
           str = iupMatrixExGetCell(matex_data, lin, col);
           if (str)
           {
-            iMatrixExCopyNoSepTXT(buffer, str, sep);
+            iMatrixExStrCopyNoSepTXT(buffer, str, sep);
             fprintf(file, "%s", buffer);
           }
           else
@@ -277,7 +277,7 @@ static void iMatrixExCopyHTML(Ihandle *ih, FILE* file, int num_lin, int num_col,
           str = iupMatrixExGetCell(matex_data, lin, col);
           if (str)
           {
-            iMatrixExCopyNoSepHTML(buffer, str);
+            iMatrixExStrCopyNoSepHTML(buffer, str);
             fprintf(file, "%s", buffer);
           }
           else
@@ -360,7 +360,7 @@ static void iMatrixExCopyLaTeX(Ihandle *ih, FILE* file, int num_lin, int num_col
           str = iupMatrixExGetCell(matex_data, lin, col);
           if (str)
           {
-            iMatrixExCopyNoSepLaTeX(buffer, str);
+            iMatrixExStrCopyNoSepLaTeX(buffer, str);
             fprintf(file, "%s", buffer);
           }
           else

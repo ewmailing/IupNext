@@ -82,47 +82,47 @@ int iupMatrixExIsLineVisible(Ihandle* ih, int lin)
   return 1;
 }
 
-static char* iMatrixGetVisibleColAttribId(Ihandle *ih, int id)
+static char* iMatrixGetVisibleColAttribId(Ihandle *ih, int col)
 {
-  if (iupMatrixExIsColumnVisible(ih, id))
+  if (iupMatrixExIsColumnVisible(ih, col))
     return "Yes";
   else
     return "No";
 }
 
-static char* iMatrixGetVisibleLinAttribId(Ihandle *ih, int id)
+static char* iMatrixGetVisibleLinAttribId(Ihandle *ih, int lin)
 {
-  if (iupMatrixExIsLineVisible(ih, id))
+  if (iupMatrixExIsLineVisible(ih, lin))
     return "Yes";
   else
     return "No";
 }
 
-static int iMatrixSetVisibleColAttribId(Ihandle *ih, int id, const char* value)
+static int iMatrixSetVisibleColAttribId(Ihandle *ih, int col, const char* value)
 {
   char str[100];
-  sprintf(str, "WIDTH%d", id);  /* this is enough */
+  sprintf(str, "WIDTH%d", col);  /* this is enough */
   if (iupStrBoolean(value))
     iupAttribSetStr(ih, str, "0");
   else
   {
     iupAttribSetStr(ih, str, NULL);  /* this may be insufficient */
-    sprintf(str, "RASTERWIDTH%d", id);
+    sprintf(str, "RASTERWIDTH%d", col);
     iupAttribSetStr(ih, str, NULL);
   }
   return 0;
 }
 
-static int iMatrixSetVisibleLinAttribId(Ihandle *ih, int id, const char* value)
+static int iMatrixSetVisibleLinAttribId(Ihandle *ih, int lin, const char* value)
 {
   char str[100];
-  sprintf(str, "HEIGHT%d", id);  /* this is enough */
+  sprintf(str, "HEIGHT%d", lin);  /* this is enough */
   if (iupStrBoolean(value))
     iupAttribSetStr(ih, str, "0");
   else
   {
     iupAttribSetStr(ih, str, NULL);  /* this may be insufficient */
-    sprintf(str, "RASTERHEIGHT%d", id);
+    sprintf(str, "RASTERHEIGHT%d", lin);
     iupAttribSetStr(ih, str, NULL);
   }
   return 0;
