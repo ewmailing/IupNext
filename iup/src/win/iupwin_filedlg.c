@@ -85,7 +85,7 @@ static void winFileDlgGetFolder(Ihandle *ih)
   InativeHandle* parent = iupDialogGetNativeParent(ih);
   BROWSEINFO browseinfo;
   char buffer[MAX_PATH];
-  ITEMIDLIST *selecteditem;
+  LPITEMIDLIST selecteditem;
 
   if (!parent)
     parent = GetActiveWindow();
