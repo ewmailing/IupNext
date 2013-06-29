@@ -83,7 +83,7 @@ static void iMatrixExCopyColToSetData(ImatExData* matex_data, int lin, int col, 
   free(value);
 }
 
-static int iMatrixExGetMarkedLines(Ihandle *ih, int num_lin, int num_col, char* selection, int *selection_count)
+static int iMatrixExGetMarkedLines(Ihandle *ih, int num_lin, int num_col, int col, char* selection, int *selection_count)
 {
   char *marked = IupGetAttribute(ih, "MARKED");
   if (!marked)  /* no marked cells */
@@ -118,13 +118,75 @@ static int iMatrixExGetMarkedLines(Ihandle *ih, int num_lin, int num_col, char* 
   }
   else
   {
+    int lin;
+
+    for(lin = 1; lin <= num_lin; ++lin)
+    {
+      if (iupMatrixExIsLineVisible(ih, lin))
+      {
+        int pos = (lin-1) * num_col + (col-1);  /* marked array does not include titles */
+        if (marked[pos] == '1')
+        {
+          selection[lin] = '1';
+          (*selection_count)++;
+        }
+        else
+          selection[lin] = '0';
+      }
+      else
+        selection[lin] = '0';
+    }
   }
 
   return 1;
 }
 
-static int iMatrixExGetInterval(Ihandle *ih, int num_lin, int num_col, const char* value, char* selection, int *selection_count)
+static int iMatrixExGetInterval(Ihandle *ih, int num_lin, int num_col, const char* interval, char* selection, int *selection_count)
 {
+  int lin1, lin2;
+  char value[100];
+
+  memset(selection, '0', num_lin+1);
+  *selection_count = 0;
+
+//  for (value=strtok((char*)interval,","); value!=NULL; value=strtok(NULL,","))
+  {
+          const char* next_value = iupStrNextValue(interval, len, &value_len, ',');
+
+          value = iMatrixExStrCopyValue(value, &value_max_size, data, value_len);
+
+          interval = next_value;
+
+    int ret = iupStrToIntInt(value, &lin1, &lin2, '-');
+    if (ret == 1)
+    {
+      if (lin1<=0) lin1 = 1;
+      if (lin1>num_lin) lin1 = num_lin;
+
+      selection[lin1] = '1';
+      (*selection_count)++;
+    }
+    else if (ret == 2)
+    {
+      int lin;
+
+      if (lin1>lin2) {int l=lin1; lin1=lin2; lin2=l;}
+      if (lin1<=0) lin1 = 1;
+      if (lin2<=0) {lin2 = 1; lin1 = 1;}
+      if (lin1>num_lin) lin1 = num_lin;
+      if (lin2>num_lin) lin2 = num_lin;
+
+      for(lin = lin1; lin <= lin2; ++lin)
+      {
+        selection[lin] = '1';
+        (*selection_count)++;
+      }
+    }
+    else
+      return 0;
+  }
+
+  return 1;
 }
 
 static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const char* value)
@@ -165,8 +227,11 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
     int selection_count;
     char* selection = (char*)malloc(num_lin+1);
 
-    if (!iMatrixExGetMarkedLines(ih, num_lin, num_col, selection, &selection_count))
+    iupAttribSetStr(ih, "LASTERROR", NULL);
+
+    if (!iMatrixExGetMarkedLines(ih, num_lin, num_col, col, selection, &selection_count))
     {
+      iupAttribSetStr(ih, "LASTERROR", "NOMARKED");
       free(selection);
       return 0;
     }
@@ -181,8 +246,11 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
     int selection_count;
     char* selection = (char*)malloc(num_lin+1);
 
+    iupAttribSetStr(ih, "LASTERROR", NULL);
+
     if (!iMatrixExGetInterval(ih, num_lin, num_col, value, selection, &selection_count))
     {
+      iupAttribSetStr(ih, "LASTERROR", "INVALIDINTERVAL");
       free(selection);
       return 0;
     }
