@@ -362,7 +362,7 @@ static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* 
     if (!iupStrEqualNoCase(value, "ALL"))
     {
       char* value2 = (char*)value;
-      char* value1 = iupStrCopyUntil(&value2, '-');
+      char* value1 = iupStrDupUntil(&value2, '-');
       if (!value1)
         return;
 
@@ -494,6 +494,7 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
           iupMatrixExSetCell(matex_data, lin, col, value);
 
           data = next_value;
+          len -= value_len+1;
 
           if (!iupMatrixExBusyInc(matex_data))
           {
@@ -560,16 +561,16 @@ static void iMatrixExPasteData(Ihandle *ih, const char* data, int lin, int col, 
   if (skip_lines)
   {
     int i, len;
-    const char *pdata;
+    const char *next_line;
     for (i=0; i<skip_lines; i++)
     {
-      pdata = iupStrNextLine(data, &len);
-      if (pdata==data) /* no next line */ 
+      next_line = iupStrNextLine(data, &len);
+      if (next_line==data) /* no next line */ 
       {
         iupAttribSetStr(ih, "LASTERROR", "NOTEXT");
         return;
       }
-      data = (char*)pdata;
+      data = (char*)next_line;
     }
   }
 

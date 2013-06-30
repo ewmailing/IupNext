@@ -148,6 +148,11 @@ to define a complement to be inserted in the respective tag definition, so a &qu
 style=..&quot; or a &quot; class=..&quot; complements can be added. The HTMLADDFORMAT can be 
 used to add the attributes ALIGNMENT?, BGCOLOR?:?, FGCOLOR?:? and FONT?:? to the 
 &quot;style&quot; complement of the &quot;TD&quot; tag.</p>
+<p><strong>COPYCOLTO<em>L:C</em></strong> (write-only): copies the value of the 
+given cell to a specified range of cells in the same column. Value can be &quot;ALL&quot; 
+(for all lines), TOP (for all lines before the given line), BOTTOM (for all 
+lines after the given line), MARKED (for all lines where the cell is marked), or 
+a series of intervals in the format &quot;L1-L2,L3-L4,L5,L6-L7,...&quot;.</p>
 <p><strong>FREEZE:</strong> freezes the scroll of columns and lines up to the 
 given cell. Can be: &quot;Yes&quot; - uses the value of the FOCUS_CELL attribute, &quot;<em>L</em>:<em>C</em>&quot; 
 where L and C are the line and column, or &quot;No&quot; clear the freeze state. 

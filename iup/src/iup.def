@@ -281,7 +281,7 @@ iupStrEqualNoCase
 iupStrEqual
 iupStrDup
 iupStrCountChar
-iupStrCopyUntil
+iupStrDupUntil
 iupStrCopyN
 iupStrBoolean
 iupStrFalse

@@ -87,12 +87,12 @@ static void gtkTextParseParagraphFormat(Ihandle* formattag, GtkTextTag* tag)
 
     while (format)
     {
-      str = iupStrCopyUntil((char**)&format, ' ');
+      str = iupStrDupUntil((char**)&format, ' ');
       if (!str) break;
       pos = atoi(str);
       free(str);
 
-      str = iupStrCopyUntil((char**)&format, ' ');
+      str = iupStrDupUntil((char**)&format, ' ');
       if (!str) break;
 
 /*      if (iupStrEqualNoCase(str, "DECIMAL"))    unsupported for now

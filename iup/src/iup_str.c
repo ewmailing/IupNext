@@ -199,7 +199,7 @@ void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_str)
   dst_str[size-1] = 0;
 }
 
-char *iupStrCopyUntil(char **str, char c)
+char* iupStrDupUntil(char **str, char c)
 {
   char *p_str,*new_str;
   if (!str || *str==NULL)
@@ -211,9 +211,9 @@ char *iupStrCopyUntil(char **str, char c)
   else
   {
     int i;
-    int sl=(int)(p_str - (*str));
+    int sl = (int)(p_str - (*str));
 
-    new_str = (char *) malloc (sl + 1);
+    new_str = (char *)malloc(sl + 1);
     if (!new_str) return NULL;
 
     for (i = 0; i < sl; ++i)
@@ -226,7 +226,7 @@ char *iupStrCopyUntil(char **str, char c)
   }
 }
 
-char *iupStrCopyUntilNoCase(char **str, int c)
+static char *iStrDupUntilNoCase(char **str, int c)
 {
   char *p_str,*new_str;
   if (!str || *str==NULL)
@@ -409,7 +409,7 @@ int iupStrToIntInt(const char *str, int *i1, int *i2, char sep)
   }
   else 
   {
-    char* p_str = iupStrCopyUntilNoCase((char**)&str, sep);
+    char* p_str = iStrDupUntilNoCase((char**)&str, sep);
     
     if (!p_str)   /* no separator means no second value */
     {        
@@ -453,7 +453,7 @@ int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
   }
   else 
   {
-    char* p_str = iupStrCopyUntilNoCase((char**)&str, sep);
+    char* p_str = iStrDupUntilNoCase((char**)&str, sep);
     
     if (!p_str)   /* no separator means no second value */
     {        
@@ -490,7 +490,7 @@ int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
   }
   else 
   {
-    char* p_str = iupStrCopyUntilNoCase((char**)&str, sep);
+    char* p_str = iStrDupUntilNoCase((char**)&str, sep);
     
     if (!p_str)   /* no separator means no second value */
     {        

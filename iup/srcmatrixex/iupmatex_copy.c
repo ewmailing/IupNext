@@ -141,50 +141,56 @@ static int iMatrixExGetMarkedLines(Ihandle *ih, int num_lin, int num_col, int co
   return 1;
 }
 
-static int iMatrixExGetInterval(Ihandle *ih, int num_lin, int num_col, const char* interval, char* selection, int *selection_count)
+static int iMatrixExStrGetInterval(const char* interval, int num_lin, char* selection, int *selection_count)
 {
-  int lin1, lin2;
+  int lin1, lin2, len, value_len, ret;
   char value[100];
 
   memset(selection, '0', num_lin+1);
   *selection_count = 0;
 
-//  for (value=strtok((char*)interval,","); value!=NULL; value=strtok(NULL,","))
+  len = strlen(interval);
+
+  do
   {
-          const char* next_value = iupStrNextValue(interval, len, &value_len, ',');
-
-          value = iMatrixExStrCopyValue(value, &value_max_size, data, value_len);
-
-          interval = next_value;
-
-    int ret = iupStrToIntInt(value, &lin1, &lin2, '-');
-    if (ret == 1)
+    const char* next_value = iupStrNextValue(interval, len, &value_len, ',');
+    if (value_len)
     {
-      if (lin1<=0) lin1 = 1;
-      if (lin1>num_lin) lin1 = num_lin;
+      memcpy(value, interval, value_len);
+      value[value_len] = 0;
 
-      selection[lin1] = '1';
-      (*selection_count)++;
-    }
-    else if (ret == 2)
-    {
-      int lin;
-
-      if (lin1>lin2) {int l=lin1; lin1=lin2; lin2=l;}
-      if (lin1<=0) lin1 = 1;
-      if (lin2<=0) {lin2 = 1; lin1 = 1;}
-      if (lin1>num_lin) lin1 = num_lin;
-      if (lin2>num_lin) lin2 = num_lin;
-
-      for(lin = lin1; lin <= lin2; ++lin)
+      ret = iupStrToIntInt(value, &lin1, &lin2, '-');
+      if (ret == 1)
       {
-        selection[lin] = '1';
+        if (lin1<=0) lin1 = 1;
+        if (lin1>num_lin) lin1 = num_lin;
+
+        selection[lin1] = '1';
         (*selection_count)++;
       }
+      else if (ret == 2)
+      {
+        int lin;
+
+        if (lin1>lin2) {int l=lin1; lin1=lin2; lin2=l;}
+        if (lin1<=0) lin1 = 1;
+        if (lin2<=0) {lin2 = 1; lin1 = 1;}
+        if (lin1>num_lin) lin1 = num_lin;
+        if (lin2>num_lin) lin2 = num_lin;
+
+        for(lin = lin1; lin <= lin2; ++lin)
+        {
+          selection[lin] = '1';
+          (*selection_count)++;
+        }
+      }
+      else
+        return 0;
     }
-    else
-      return 0;
-  }
+
+    interval = next_value;
+    len -= value_len+1;
+  } while (value_len);
 
   return 1;
 }
@@ -248,7 +254,7 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
 
     iupAttribSetStr(ih, "LASTERROR", NULL);
 
-    if (!iMatrixExGetInterval(ih, num_lin, num_col, value, selection, &selection_count))
+    if (!iMatrixExStrGetInterval(value, num_lin, selection, &selection_count))
     {
       iupAttribSetStr(ih, "LASTERROR", "INVALIDINTERVAL");
       free(selection);
