@@ -41,12 +41,13 @@ int iupStrEqualPartial(const char* str1, const char* str2);
 int iupStrEqualNoCasePartial(const char* str1, const char* str2);
 
 /** Returns 1 if the string is "1", "YES", "ON" or "TRUE". \n
- * Returns 0 otherwise.
+ * Returns 0 otherwise (including NULL or empty).
  * \ingroup str */
 int iupStrBoolean(const char* str);
 
 /** Returns 1 if the string is "NO", "OFF" or "FALSE". \n
- * Returns 0 otherwise.
+ * Returns 0 otherwise (including NULL or empty). \n
+ * To be used when value can be "False" or others different than "True".
  * \ingroup str */
 int iupStrFalse(const char* str);
 

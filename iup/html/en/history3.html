@@ -58,7 +58,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>CVS (25/Jun/2013)</h3>
+<h3>CVS (03/Jul/2013)</h3>
 
 <ul>
 
@@ -69,6 +69,16 @@ version 3.x.</p>
 	code that creates an IupImage.</li>
 	<li><span class="hist_new">New:</span> <a href="dlg/iupprogressdlg.html">
 	IupProgressDlg</a> pre-defined dialog. </li>
+	<li><span class="hist_new">New:</span> utility functions <strong>IupSetInt</strong>,
+	<strong>IupSetIntInt</strong>, <strong>IupSetFloat</strong>, <strong>
+	IupSetIntId</strong>, <strong>IupSetFloatId</strong>, <strong>IupSetIntId2</strong> 
+	and <strong>IupSetFloatId2</strong>. </li>
+	<li><strong><span class="hist_changed">Changed:</span></strong> 
+	preserve of FRAMEVERTCOLOR*, 
+	FRAMEHORIZCOLOR*, SORTSIGN*, MASK*, WIDTH*, RASTERWIDTH*, HEIGHT* and 
+	RASTERHEIGHT* attributes when lines or columns are added or removed in
+	<strong>IupMatrix</strong>.</li>
+
 	<li><span class="hist_fixed">Fixed:</span> repaint of the <strong>
 	IupOleControl</strong> that affected the <strong>IupWebBrowser</strong> on 
 	Windows.</li>

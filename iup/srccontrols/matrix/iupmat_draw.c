@@ -307,7 +307,7 @@ static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int
 
   sprintf(str, "SORTSIGN%d", col);
   sort = iupAttribGet(ih, str);
-  if (!sort || iupStrEqualNoCase(sort, "NO"))
+  if (!iupStrBoolean(sort))
     return 0;
 
   /* Remove the space between text and cell frame */

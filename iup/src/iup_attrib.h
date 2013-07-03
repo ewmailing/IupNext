@@ -30,55 +30,79 @@ extern "C" {
  * \ingroup attrib */
 #define iupATTRIB_ISINTERNAL(_name) ((_name[0] == '_' && _name[1] == 'I' && _name[2] == 'U' && _name[3] == 'P')? 1: 0)
 
-/** Returns true if the attribute name is a known pointer.
+/** Returns true if the attribute name is a known pointer. \n
  * \ingroup attrib */
 int iupAttribIsPointer(Ihandle* ih, const char *name);
 
-/** Sets the attribute only in the hash table as a pointer.
+
+
+/** Sets the attribute only in the hash table as a pointer. \n
  * It ignores children.
  * \ingroup attrib */
 void iupAttribSetStr(Ihandle* ih, const char* name, const char* value);
 
-/** Sets the attribute only in the hash table as a string. 
- * The string is internally duplicated.
+/** Sets the attribute only in the hash table as a string. \n 
+ * The string is internally duplicated. \n
  * It ignores children.
  * \ingroup attrib */
 void iupAttribStoreStr(Ihandle* ih, const char* name, const char* value);
 
-/** Sets the attribute only in the hash table as a string. 
- * The string is internally duplicated. Use same format as sprintf.
+/** Sets the attribute only in the hash table as a string. \n 
+ * The string is internally duplicated. Use same format as sprintf. \n
  * It ignores children.
  * \ingroup attrib */
 void iupAttribSetStrf(Ihandle *ih, const char* name, const char* format, ...);
 
-/** Sets an integer attribute only in the hash table.
- * It will be stored as a string.
+/** Sets an integer attribute only in the hash table. \n
+ * It will be stored as a string. \n
  * It ignores children.
  * \ingroup attrib */
 void iupAttribSetInt(Ihandle *ih, const char* name, int num);
 
-/** Sets an floating point attribute only in the hash table.
- * It will be stored as a string.
+/** Same as \ref iupAttribSetStr with an id.
+ * \ingroup attrib */
+void iupAttribSetStrId(Ihandle *ih, const char* name, int id, const char* value);
+
+/** Same as \ref iupAttribStoreStr with an id.
+ * \ingroup attrib */
+void iupAttribStoreStrId(Ihandle *ih, const char* name, int id, const char* value);
+
+/** Same as \ref iupAttribSetStr with lin and col.
+ * \ingroup attrib */
+void iupAttribSetStrId2(Ihandle *ih, const char* name, int lin, int col, const char* value);
+
+/** Same as \ref iupAttribStoreStr with lin and col.
+ * \ingroup attrib */
+void iupAttribStoreStrId2(Ihandle *ih, const char* name, int lin, int col, const char* value);
+
+/** Same as \ref iupAttribSetInt with an id.
+ * \ingroup attrib */
+void iupAttribSetIntId(Ihandle *ih, const char* name, int id, int num);
+
+/** Same as \ref iupAttribSetInt with lin and col.
+ * \ingroup attrib */
+void iupAttribSetIntId2(Ihandle *ih, const char* name, int lin, int col, int num);
+
+/** Sets an floating point attribute only in the hash table. \n
+ * It will be stored as a string. \n
  * It ignores children.
  * \ingroup attrib */
 void iupAttribSetFloat(Ihandle *ih, const char* name, float num);
 
-/** Returns the attribute from the hash table only. 
- * NO inheritance, NO control implementation, NO defalt value here.
+/** Same as \ref iupAttribSetFloat with an id.
+ * \ingroup attrib */
+void iupAttribSetFloatId(Ihandle *ih, const char* name, int id, float num);
+
+/** Same as \ref iupAttribSetFloat with lin and col.
+ * \ingroup attrib */
+void iupAttribSetFloatId2(Ihandle *ih, const char* name, int lin, int col, float num);
+
+
+
+/** Returns the attribute from the hash table only.  \n
+ * NO inheritance, NO control implementation, NO defalt value here. \n
  * \ingroup attrib */
 char* iupAttribGet(Ihandle* ih, const char* name);
-
-/** Returns the attribute from the hash table only, 
- * but if not defined then checks in its parent tree.
- * NO control implementation, NO defalt value here.
- * \ingroup attrib */
-char* iupAttribGetInherit(Ihandle* ih, const char* name);
-
-/** Returns the attribute from the hash table of a native parent.
- * Don't check for default values. Don't check at the element.
- * Used for BGCOLOR and BACKGROUND attributes.
- * \ingroup attrib */
-char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name);
 
 /** Returns the attribute from the hash table as a string, 
  * but if not defined then checks in its parent tree if allowed by the control implementation, 
@@ -86,13 +110,6 @@ char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name);
  * NO control implementation, only checks inheritance and default value from it.
  * \ingroup attrib */
 char* iupAttribGetStr(Ihandle* ih, const char* name);   
-
-/** Returns the attribute from the hash table as a string, 
- * but if not defined then checks in the control implementation, 
- * if still not defined then returns the registered default value if any. \n
- * NO inheritance here. Used only in the IupLayoutDialog.
- * \ingroup attrib */
-char* iupAttribGetLocal(Ihandle* ih, const char* name);
 
 /** Same as \ref iupAttribGetStr but returns an integer number.
  * Checks also for boolean values.
@@ -108,6 +125,62 @@ int iupAttribGetBoolean(Ihandle* ih, const char* name);
  * \ingroup attrib */
 float iupAttribGetFloat(Ihandle* ih, const char* name);
 
+/** Same as \ref iupAttribGet but with an id.
+ * \ingroup attrib */
+char* iupAttribGetId(Ihandle* ih, const char* name, int id);
+
+/** Same as \ref iupAttribGetInt but with an id.
+ * \ingroup attrib */
+int iupAttribGetIntId(Ihandle* ih, const char* name, int id);
+
+/** Same as \ref iupAttribGetBoolean but with an id.
+ * \ingroup attrib */
+int iupAttribGetBooleanId(Ihandle* ih, const char* name, int id);
+
+/** Same as \ref iupAttribGetFloat but with an id.
+ * \ingroup attrib */
+float iupAttribGetFloatId(Ihandle* ih, const char* name, int id);
+
+/** Same as \ref iupAttribGet but with an lin and col.
+ * \ingroup attrib */
+char* iupAttribGetId2(Ihandle* ih, const char* name, int lin, int col);
+
+/** Same as \ref iupAttribGetInt but with lin and col.
+ * \ingroup attrib */
+int iupAttribGetIntId2(Ihandle* ih, const char* name, int lin, int col);
+
+/** Same as \ref iupAttribGetBoolean but with lin and col.
+ * \ingroup attrib */
+int iupAttribGetBooleanId2(Ihandle* ih, const char* name, int lin, int col);
+
+/** Same as \ref iupAttribGetFloat but with lin and col.
+ * \ingroup attrib */
+float iupAttribGetFloatId2(Ihandle* ih, const char* name, int lin, int col);
+
+
+
+/** Returns the attribute from the hash table only, 
+ * but if not defined then checks in its parent tree. \n
+ * NO control implementation, NO defalt value here. \n
+ * Used for EXPAND and internal attributes inside a dialog.
+ * \ingroup attrib */
+char* iupAttribGetInherit(Ihandle* ih, const char* name);
+
+/** Returns the attribute from the hash table of a native parent.
+ * Don't check for default values. Don't check at the element.
+ * Used for BGCOLOR and BACKGROUND attributes.
+ * \ingroup attrib */
+char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name);
+
+/** Returns the attribute from the hash table as a string, 
+ * but if not defined then checks in the control implementation, 
+ * if still not defined then returns the registered default value if any. \n
+ * NO inheritance here. Used only in the IupLayoutDialog.
+ * \ingroup attrib */
+char* iupAttribGetLocal(Ihandle* ih, const char* name);
+
+
+
 /** Set an internal name to a handle.
  * \ingroup attrib */
 void iupAttribSetHandleName(Ihandle *ih);
@@ -115,6 +188,7 @@ void iupAttribSetHandleName(Ihandle *ih);
 /** Returns the internal name if set.
  * \ingroup attrib */
 char* iupAttribGetHandleName(Ihandle *ih);
+
 
 
 /* For all attributes in the evironment, call the class SetAttribute only.

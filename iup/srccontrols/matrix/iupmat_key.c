@@ -142,14 +142,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
             {
               if (iupMatrixAuxCallEditionCbLinCol(ih, lin, col, 1, 1) != IUP_IGNORE)
               {
-                IFniis value_edit_cb;
-
-                iupMatrixCellSetValue(ih, lin, col, NULL);
-
-                value_edit_cb = (IFniis)IupGetCallback(ih, "VALUE_EDIT_CB");
-                if (value_edit_cb)
-                  value_edit_cb(ih, lin, col, NULL);
-
+                iupMatrixCellSetValue(ih, lin, col, NULL, 1);
                 iupMatrixDrawCells(ih, lin, col, lin, col);
               }
             }

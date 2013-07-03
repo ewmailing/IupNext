@@ -279,9 +279,9 @@ static char* iGaugeGetMaxAttrib(Ihandle* ih)
 
 static int iGaugeSetShowTextAttrib(Ihandle* ih, const char* value)
 {
-  if(iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     ih->data->show_text = 1;
-  else if(iupStrEqualNoCase(value, "NO"))
+  else 
     ih->data->show_text = 0;
 
   iGaugeRepaint(ih);
@@ -312,9 +312,9 @@ static char* iGaugeGetPaddingAttrib(Ihandle* ih)
 
 static int iGaugeSetDashedAttrib(Ihandle* ih, const char* value)
 {
-  if(iupStrEqualNoCase(value, "YES"))
+  if (iupStrBoolean(value))
     ih->data->dashed = 1;
-  else if(iupStrEqualNoCase(value, "NO"))
+  else 
     ih->data->dashed = 0;
 
   iGaugeRepaint(ih);

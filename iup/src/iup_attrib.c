@@ -361,6 +361,20 @@ void IupSetfAttributeId(Ihandle *ih, const char* name, int id, const char* f, ..
   IupStoreAttributeId(ih, name, id, value);
 }
 
+void IupSetIntId(Ihandle* ih, const char* name, int id, int num)
+{
+  char value[20];  /* +4,294,967,296 */
+  sprintf(value, "%d", num);
+  IupStoreAttributeId(ih, name, id, value);
+}
+
+void IupSetFloatId(Ihandle* ih, const char* name, int id, float num)
+{
+  char value[40];
+  sprintf(value, "%g", (double)num);
+  IupStoreAttributeId(ih, name, id, value);
+}
+
 int IupGetIntId2(Ihandle* ih, const char* name, int lin, int col)
 {
   int i = 0;
@@ -393,6 +407,20 @@ void IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const 
   va_start(arglist, f);
   vsnprintf(value, size, f, arglist);
   va_end(arglist);
+  IupStoreAttributeId2(ih, name, lin, col, value);
+}
+
+void IupSetIntId2(Ihandle* ih, const char* name, int lin, int col, int num)
+{
+  char value[20];  /* +4,294,967,296 */
+  sprintf(value, "%d", num);
+  IupStoreAttributeId2(ih, name, lin, col, value);
+}
+
+void IupSetFloatId2(Ihandle* ih, const char* name, int lin, int col, float num)
+{
+  char value[40];
+  sprintf(value, "%g", (double)num);
   IupStoreAttributeId2(ih, name, lin, col, value);
 }
 
@@ -594,6 +622,27 @@ void IupSetfAttribute(Ihandle *ih, const char* name, const char* f, ...)
   IupStoreAttribute(ih, name, value);
 }
 
+void IupSetInt(Ihandle* ih, const char* name, int num)
+{
+  char value[20];  /* +4,294,967,296 */
+  sprintf(value, "%d", num);
+  IupStoreAttribute(ih, name, value);
+}
+
+void IupSetIntInt(Ihandle *ih, const char* name, int num1, char sep, int num2)
+{
+  char value[40];
+  sprintf(value, "%d%c%d", num1, sep, num2);
+  IupStoreAttribute(ih, name, value);
+}
+
+void IupSetFloat(Ihandle* ih, const char* name, float num)
+{
+  char value[40];
+  sprintf(value, "%g", (double)num);
+  IupStoreAttribute(ih, name, value);
+}
+
 void iupAttribSetHandleName(Ihandle *ih)
 {
   char str_name[100];
@@ -694,12 +743,128 @@ void iupAttribSetStrf(Ihandle *ih, const char* name, const char* f, ...)
 
 void iupAttribSetInt(Ihandle *ih, const char* name, int num)
 {
-  iupAttribSetStrf(ih, name, "%d", num);
+  char value[20];  /* +4,294,967,296 */
+  sprintf(value, "%d", num);
+  iupAttribStoreStr(ih, name, value);
 }
 
 void iupAttribSetFloat(Ihandle *ih, const char* name, float num)
 {
-  iupAttribSetStrf(ih, name, "%g", (double)num);
+  char value[40];
+  sprintf(value, "%g", (double)num);
+  iupAttribStoreStr(ih, name, value);
+}
+
+void iupAttribSetStrId(Ihandle *ih, const char* name, int id, const char* value)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d", name, id);
+  iupAttribSetStr(ih, nameid, value);
+}
+
+void iupAttribStoreStrId(Ihandle *ih, const char* name, int id, const char* value)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d", name, id);
+  iupAttribStoreStr(ih, nameid, value);
+}
+
+void iupAttribSetStrId2(Ihandle *ih, const char* name, int lin, int col, const char* value)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d:%d", name, lin, col);
+  iupAttribSetStr(ih, nameid, value);
+}
+
+void iupAttribStoreStrId2(Ihandle *ih, const char* name, int lin, int col, const char* value)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d:%d", name, lin, col);
+  iupAttribStoreStr(ih, nameid, value);
+}
+
+void iupAttribSetIntId(Ihandle *ih, const char* name, int id, int num)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d", name, id);
+  iupAttribSetInt(ih, nameid, num);
+}
+
+void iupAttribSetIntId2(Ihandle *ih, const char* name, int lin, int col, int num)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d:%d", name, lin, col);
+  iupAttribSetInt(ih, nameid, num);
+}
+
+void iupAttribSetFloatId(Ihandle *ih, const char* name, int id, float num)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d", name, id);
+  iupAttribSetFloat(ih, nameid, num);
+}
+
+void iupAttribSetFloatId2(Ihandle *ih, const char* name, int lin, int col, float num)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d:%d", name, lin, col);
+  iupAttribSetFloat(ih, nameid, num);
+}
+
+char* iupAttribGetId(Ihandle* ih, const char* name, int id)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d", name, id);
+  return iupAttribGet(ih, nameid);
+}
+
+int iupAttribGetIntId(Ihandle* ih, const char* name, int id)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d", name, id);
+  return iupAttribGetInt(ih, nameid);
+}
+
+int iupAttribGetBooleanId(Ihandle* ih, const char* name, int id)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d", name, id);
+  return iupAttribGetBoolean(ih, nameid);
+}
+
+float iupAttribGetFloatId(Ihandle* ih, const char* name, int id)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d", name, id);
+  return iupAttribGetFloat(ih, nameid);
+}
+
+char* iupAttribGetId2(Ihandle* ih, const char* name, int lin, int col)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d:%d", name, lin, col);
+  return iupAttribGet(ih, nameid);
+}
+
+int iupAttribGetIntId2(Ihandle* ih, const char* name, int lin, int col)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d:%d", name, lin, col);
+  return iupAttribGetInt(ih, nameid);
+}
+
+int iupAttribGetBooleanId2(Ihandle* ih, const char* name, int lin, int col)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d:%d", name, lin, col);
+  return iupAttribGetBoolean(ih, nameid);
+}
+
+float iupAttribGetFloatId2(Ihandle* ih, const char* name, int lin, int col)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d:%d", name, lin, col);
+  return iupAttribGetFloat(ih, nameid);
 }
 
 int iupAttribGetBoolean(Ihandle* ih, const char* name)

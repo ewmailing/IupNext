@@ -23,7 +23,7 @@ Ihandle *IupGauge(void);
 Ihandle *IupDial(const char* type);
 Ihandle* IupMatrix(const char *action);
 
-/* IupMatrix utilities */
+/* IupMatrix utilities (deprecated, use IupSetAttributeId2 functions) */
 void  IupMatSetAttribute  (Ihandle* ih, const char* name, int lin, int col, const char* value);
 void  IupMatStoreAttribute(Ihandle* ih, const char* name, int lin, int col, const char* value);
 char* IupMatGetAttribute  (Ihandle* ih, const char* name, int lin, int col);

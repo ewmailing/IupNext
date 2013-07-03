@@ -51,5 +51,6 @@ typedef int (*IFniIIII)(Ihandle*, int, int*, int*, int*, int*); /* multitouch_cb
 
 typedef char* (*sIFnii)(Ihandle*, int, int);  /* value_cb, font_cb */
 typedef char* (*sIFni)(Ihandle*, int);  /* cell_cb */
+typedef double (*dIFnii)(Ihandle*, int, int);  /* valuenumeric_cb */
 
 #endif

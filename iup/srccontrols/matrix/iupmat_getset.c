@@ -38,23 +38,86 @@ int iupMatrixCheckCellPos(Ihandle* ih, int lin, int col)
   return 1;
 }
 
-void iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value)
-{
-  if (ih->data->callback_mode)
-    return;
+void iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value, int edited)
+{  
+  /* not called before map */
+  if (!ih->data->callback_mode)
+  {
+    if (ih->data->cells[lin][col].value)
+      free(ih->data->cells[lin][col].value);
 
-  if (ih->data->cells[lin][col].value)
-    free(ih->data->cells[lin][col].value);
+    ih->data->cells[lin][col].value = iupStrDup(value);
+  }
 
-  ih->data->cells[lin][col].value = iupStrDup(value);
+  if (edited)
+  {
+    /* value_edit_cb called only when value is edited, 
+       but also works in normal mode */
+    IFniis value_edit_cb = (IFniis)IupGetCallback(ih, "VALUE_EDIT_CB");
+    if (value_edit_cb)
+      value_edit_cb(ih, lin, col, (char*)value);
+  }
 
   ih->data->need_redraw = 1;
   if (lin==0 || col==0)
     ih->data->need_calcsize = 1;
 }
 
-char* iupMatrixCellGetValue (Ihandle* ih, int lin, int col)
+static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col)
 {
+  char* value, *format=NULL;
+  double number;
+
+  if (ih->data->callback_mode)
+  {
+    /* only called in callback mode */
+    sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
+    value = value_cb(ih, lin, col);
+  }
+  else
+    value = ih->data->cells[lin][col].value;
+
+  if (lin==0 && ih->data->numeric_columns[col].flags & IMAT_HAS_FORMATTITLE)
+    format = iupAttribGetId(ih, "NUMERICFORMATTITLE", col);
+  else if (lin!=0 && ih->data->numeric_columns[col].flags & IMAT_HAS_FORMAT)
+    format = iupAttribGetId(ih, "NUMERICFORMAT", col);
+
+  if ((ih->data->numeric_columns[col].unit_shown==ih->data->numeric_columns[col].unit) &&
+      (format==NULL))
+    return value;
+
+  if (format==NULL)
+    format = iupAttribGetStr(ih, "NUMERICFORMATDEF");
+
+  if (!value)
+  {
+    dIFnii value_cb = (dIFnii)IupGetCallback(ih, "VALUENUMERIC_CB");
+    if (value_cb)
+      number = value_cb(ih, lin, col);
+    else
+      return NULL;
+  }
+  else
+  {
+    if (sscanf(value, "%lf", &number) != 1) 
+      return value;
+  }
+
+  if (ih->data->numeric_columns[col].unit_shown!=ih->data->numeric_columns[col].unit) 
+    number = ih->data->numeric_columns[col].convert_func(number, ih->data->numeric_columns[col].unit_shown, ih->data->numeric_columns[col].unit);
+
+  sprintf(ih->data->numeric_buffer, format, number);
+  return ih->data->numeric_buffer;
+}
+
+
+//SetValue
+//TODO DROP_CB e MENUDROP_CB
+
+
+char* iupMatrixCellGetValue (Ihandle* ih, int lin, int col)
+{  
+  /* can be called before map */
   if (!ih->handle)
   {
     char str[100];
@@ -63,13 +126,19 @@ char* iupMatrixCellGetValue (Ihandle* ih, int lin, int col)
   }
   else
   {
-    if (ih->data->callback_mode)
-    {
-      sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
-      return value_cb(ih, lin, col);
-    }
+    if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
+      return iMatrixGetValueNumeric(ih, lin, col);
     else
-      return ih->data->cells[lin][col].value;
+    {
+      if (ih->data->callback_mode)
+      {
+        /* only called in callback mode */
+        sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
+        return value_cb(ih, lin, col);
+      }
+      else
+        return ih->data->cells[lin][col].value;
+    }
   }
 }
 
@@ -116,15 +185,8 @@ void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int
 
 void iupMatrixCellUpdateValue(Ihandle* ih)
 {
-  IFniis value_edit_cb;
   char *value = iupMatrixEditGetValue(ih);
-
-  iupMatrixCellSetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value);
-
-  value_edit_cb = (IFniis)IupGetCallback(ih, "VALUE_EDIT_CB");
-  if (value_edit_cb)
-    value_edit_cb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value);
-
+  iupMatrixCellSetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value, 1);
   iupMatrixPrepareDrawData(ih);
   iupMatrixDrawCells(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 }

@@ -95,6 +95,9 @@ int       IupGetInt2       (Ihandle* ih, const char* name);
 int       IupGetIntInt     (Ihandle *ih, const char* name, int *i1, int *i2);
 float     IupGetFloat      (Ihandle* ih, const char* name);
 void      IupSetfAttribute (Ihandle* ih, const char* name, const char* format, ...);
+void      IupSetInt        (Ihandle* ih, const char* name, int value);
+void      IupSetIntInt     (Ihandle *ih, const char* name, int value1, char sep, int value2);
+void      IupSetFloat      (Ihandle* ih, const char* name, float value);
 void      IupResetAttribute(Ihandle *ih, const char* name);
 int       IupGetAllAttributes(Ihandle* ih, char** names, int n);
 Ihandle*  IupSetAtt(const char* handle_name, Ihandle* ih, const char* name, ...);
@@ -105,6 +108,8 @@ char* IupGetAttributeId(Ihandle *ih, const char* name, int id);
 float IupGetFloatId(Ihandle *ih, const char* name, int id);
 int   IupGetIntId(Ihandle *ih, const char* name, int id);
 void  IupSetfAttributeId(Ihandle *ih, const char* name, int id, const char* format, ...);
+void  IupSetIntId(Ihandle* ih, const char* name, int id, int value);
+void  IupSetFloatId(Ihandle* ih, const char* name, int id, float value);
 
 void  IupSetAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
 void  IupStoreAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
@@ -112,6 +117,8 @@ char* IupGetAttributeId2(Ihandle* ih, const char* name, int lin, int col);
 int   IupGetIntId2(Ihandle* ih, const char* name, int lin, int col);
 float IupGetFloatId2(Ihandle* ih, const char* name, int lin, int col);
 void  IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
+void  IupSetIntId2(Ihandle* ih, const char* name, int lin, int col, int value);
+void  IupSetFloatId2(Ihandle* ih, const char* name, int lin, int col, float value);
 
 void      IupSetGlobal     (const char* name, const char* value);
 void      IupStoreGlobal   (const char* name, const char* value);

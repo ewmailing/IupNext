@@ -31,17 +31,44 @@
 #include "iupmat_draw.h"
 
 
+/* Always preserve these attributes here because they are actually stored in the hash table.
+   Some of there also have flags, but flags are only used to signal that an attribute was set 
+   and we must be consistent between flags and hash table.
+   BGCOLOR
+   FGCOLOR
+   FONT
+   FRAMEHORIZCOLOR
+   FRAMEVERTCOLOR
+   MASK
+   SORTSIGN
+   ALIGNMENT
+   RASTERWIDTH   
+   WIDTH
+   RASTERHEIGHT  
+   HEIGHT
+   NUMERICFORMAT
+   NUMERICFORMATTITLE
+
+   Obs: L:C, MARKED and MARK are not stored in the hash table.
+*/
+
 static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int add)
 {
-#define IMAT_NUM_ATTRIB_LINE 6
-#define IMAT_ATTRIB_LINE_ONLY 3
+#define IMAT_NUM_ATTRIB_LINE 12
+#define IMAT_ATTRIB_LINE_ONLY 6
   char* attrib_format[IMAT_NUM_ATTRIB_LINE] = {
+    "RASTERHEIGHT%d",  
+    "HEIGHT%d",
     "BGCOLOR%d:*",
     "FGCOLOR%d:*",
     "FONT%d:*",
+    "FRAMEHORIZCOLOR%d:*",
     "BGCOLOR%d:%d",
     "FGCOLOR%d:%d",
-    "FONT%d:%d"};
+    "FONT%d:%d",
+    "MASK%d:%d",
+    "FRAMEHORIZCOLOR%d:%d",
+    "FRAMEVERTCOLOR%d:%d"};
   char attrib[100];
   int a, lin, col;
   char* value;
@@ -135,16 +162,25 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
 
 static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int add)
 {
-#define IMAT_NUM_ATTRIB_COL 7
-#define IMAT_ATTRIB_COL_ONLY 4
+#define IMAT_NUM_ATTRIB_COL 16
+#define IMAT_ATTRIB_COL_ONLY 10
   char* attrib_format[IMAT_NUM_ATTRIB_COL] = { 
+    "NUMERICFORMAT%d",
+    "NUMERICFORMATTITLE%d",
+    "SORTSIGN%d",
     "ALIGNMENT%d",
+    "RASTERWIDTH%d",
+    "WIDTH%d",
     "BGCOLOR*:%d",
     "FGCOLOR*:%d",
     "FONT*:%d",
+    "FRAMEVERTCOLOR*:%d",
     "BGCOLOR%d:%d",
     "FGCOLOR%d:%d",
-    "FONT%d:%d"};
+    "FONT%d:%d",
+    "MASK%d:%d",
+    "FRAMEHORIZCOLOR%d:%d",
+    "FRAMEVERTCOLOR%d:%d"};
   char attrib[100];
   int a, col, lin;
   char* value;
@@ -295,7 +331,7 @@ int iupMatrixSetAddLinAttrib(Ihandle* ih, const char* value)
   int base, count, lines_num = ih->data->lines.num;
 
   if (!ih->handle)  /* do not do the action before map */
-    return 0;
+    return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
   if (!iMatrixGetStartEnd(value, &base, &count, lines_num, 0))
     return 0;
@@ -330,7 +366,7 @@ int iupMatrixSetDelLinAttrib(Ihandle* ih, const char* value)
   int base, count, lines_num = ih->data->lines.num;
 
   if (!ih->handle)  /* do not do the action before map */
-    return 0;
+    return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
   if (!iMatrixGetStartEnd(value, &base, &count, lines_num, 1))
     return 0;
@@ -370,7 +406,7 @@ int iupMatrixSetAddColAttrib(Ihandle* ih, const char* value)
   int base, count, columns_num = ih->data->columns.num;
 
   if (!ih->handle)  /* do not do the action before map */
-    return 0;
+    return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
   if (!iMatrixGetStartEnd(value, &base, &count, columns_num, 0))
     return 0;
@@ -405,7 +441,7 @@ int iupMatrixSetDelColAttrib(Ihandle* ih, const char* value)
   int base, count, columns_num = ih->data->columns.num;
 
   if (!ih->handle)  /* do not do the action before map */
-    return 0;
+    return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
   if (!iMatrixGetStartEnd(value, &base, &count, columns_num, 1))
     return 0;

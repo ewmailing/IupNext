@@ -731,14 +731,14 @@ static char* iCellsGetLimitsAttrib(Ihandle* ih, int i, int j)
 
 static int iCellsSetBufferizeAttrib(Ihandle* ih, const char* value)
 {
-  if (value == NULL || iupStrEqualNoCase(value, "NO"))
+  if (iupStrBoolean(value))
+    ih->data->bufferize = 1;
+  else
   { 
     ih->data->bufferize = 0;
     iCellsAdjustScrolls(ih, ih->data->w, ih->data->h);
     iCellsRepaint(ih);
   }
-  else
-    ih->data->bufferize = 1;
 
   return 0;
 }
@@ -811,11 +811,7 @@ static char* iCellsGetNonScrollableLinesAttrib(Ihandle* ih)
 
 static int iCellsSetBoxedAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "NO"))
-    ih->data->boxed = 0;
-  else
-    ih->data->boxed = 1;
-
+  ih->data->boxed = iupStrBoolean(value);
   iCellsRepaint(ih);
   return 0;
 }
@@ -830,11 +826,7 @@ static char* iCellsGetBoxedAttrib(Ihandle* ih)
 
 static int iCellsSetClippedAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "NO"))
-    ih->data->clipped = 0;
-  else
-    ih->data->clipped = 1;
-
+  ih->data->clipped = iupStrBoolean(value);
   iCellsRepaint(ih);
   return 0;
 }

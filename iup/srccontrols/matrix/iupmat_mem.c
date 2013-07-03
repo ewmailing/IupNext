@@ -77,6 +77,8 @@ void iupMatrixMemAlloc(Ihandle* ih)
   ih->data->columns.flags = (unsigned char*)calloc(ih->data->columns.num_alloc, sizeof(unsigned char));
   ih->data->lines.sizes = (int*)calloc(ih->data->lines.num_alloc, sizeof(int));
   ih->data->columns.sizes = (int*)calloc(ih->data->columns.num_alloc, sizeof(int));
+
+  /* numeric colums are allocated when a NUMERIC* attribute is set */
 }
 
 void iupMatrixMemRelease(Ihandle* ih)
@@ -124,6 +126,12 @@ void iupMatrixMemRelease(Ihandle* ih)
   {
     free(ih->data->lines.sizes);
     ih->data->lines.sizes = NULL;
+  }
+
+  if (ih->data->numeric_columns)
+  {
+    free(ih->data->numeric_columns);
+    ih->data->numeric_columns = NULL;
   }
 }
 
@@ -243,6 +251,8 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
 
     ih->data->columns.sizes = (int*)realloc(ih->data->columns.sizes, ih->data->columns.num_alloc*sizeof(int));
     ih->data->columns.flags = (unsigned char*)realloc(ih->data->columns.flags, ih->data->columns.num_alloc*sizeof(unsigned char));
+    if (ih->data->numeric_columns)
+      ih->data->numeric_columns = (ImatNumericData*)realloc(ih->data->numeric_columns, ih->data->columns.num_alloc*sizeof(ImatNumericData));
   }
 
   if (old_num==num)
@@ -265,6 +275,8 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
           memmove(ih->data->cells[lin]+end, ih->data->cells[lin]+base, shift_num*sizeof(ImatCell));
       memmove(ih->data->columns.sizes+end, ih->data->columns.sizes+base, shift_num*sizeof(int));
       memmove(ih->data->columns.flags+end, ih->data->columns.flags+base, shift_num*sizeof(unsigned char));
+      if (ih->data->numeric_columns)
+        memmove(ih->data->numeric_columns+end, ih->data->numeric_columns+base, shift_num*sizeof(ImatNumericData));
     }
 
     /* then clear the openned space starting at base */
@@ -273,6 +285,8 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
         memset(ih->data->cells[lin]+base, 0, diff_num*sizeof(ImatCell));
     memset(ih->data->columns.sizes+base, 0, diff_num*sizeof(int));
     memset(ih->data->columns.flags+base, 0, diff_num*sizeof(unsigned char));
+    if (ih->data->numeric_columns)
+      memset(ih->data->numeric_columns+base, 0, diff_num*sizeof(ImatNumericData));
   }
   else /* DEL */
   {
@@ -307,6 +321,8 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
           memmove(ih->data->cells[lin]+base, ih->data->cells[lin]+end, shift_num*sizeof(ImatCell));
       memmove(ih->data->columns.sizes+base, ih->data->columns.sizes+end, shift_num*sizeof(int));
       memmove(ih->data->columns.flags+base, ih->data->columns.flags+end, shift_num*sizeof(unsigned char));
+      if (ih->data->numeric_columns)
+        memmove(ih->data->numeric_columns+base, ih->data->numeric_columns+end, shift_num*sizeof(ImatNumericData));
     }
 
     /* then clear the remaining space starting at num */
@@ -315,5 +331,7 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
         memset(ih->data->cells[lin]+num, 0, diff_num*sizeof(ImatCell));
     memset(ih->data->columns.sizes+num, 0, diff_num*sizeof(int));
     memset(ih->data->columns.flags+num, 0, diff_num*sizeof(unsigned char));
+    if (ih->data->numeric_columns)
+      memset(ih->data->numeric_columns+num, 0, diff_num*sizeof(ImatNumericData));
   }
 }

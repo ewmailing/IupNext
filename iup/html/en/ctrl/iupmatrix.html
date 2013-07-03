@@ -203,25 +203,22 @@ matrix(<strong>action_cb</strong>) [in LED]</pre>
   </p>
 <h3>Utility Functions </h3>
 <p>These functions can be used to help set and get attributes from the matrix:</p>
-<pre>void  IupMatSetAttribute(Ihandle* ih, const char* name, int lin, int col, const char* value);
-void  IupMatStoreAttribute(Ihandle* ih, const char* name, int lin, int col, const char* value);
-char* IupMatGetAttribute(Ihandle* ih, const char* name, int lin, int col);
-int   IupMatGetInt(Ihandle* ih, const char* name, int lin, int col);
-float IupMatGetFloat(Ihandle* ih, const char* name, int lin, int col);
-void  IupMatSetfAttribute(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);</pre>
+<pre>void  IupSetAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
+char* IupGetAttributeId2(Ihandle* ih, const char* name, int lin, int col);
+int   IupGetIntId2(Ihandle* ih, const char* name, int lin, int col);
+float IupGetFloatId2(Ihandle* ih, const char* name, int lin, int col);
+void  IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
+void  IupSetIntId2(Ihandle* ih, const char* name, int lin, int col, int value);
+void  IupSetFloatId2(Ihandle* ih, const char* name, int lin, int col, float value);</pre>
 <p>They work just like the respective traditional set and get functions. But the attribute string is complemented with 
   the L and C values. When only one value is needed then use the Iup*AttributeId 
 functions. For ex:</p>
-<pre>IupMatSetAttribute(ih, &quot;&quot;, 30, 10, value) == IupSetAttribute(ih, &quot;30:10&quot;, value)
-IupMatSetAttribute(ih, &quot;BGCOLOR&quot;, 30, 10, value) == IupSetAttribute(ih, &quot;BGCOLOR30:10&quot;, value)
-IupSetAttributeId(ih, &quot;ALIGNMENT&quot;, 10, value) == IupSetAttribute(ih, &quot;ALIGNMENT10&quot;, value)</pre>
+<pre>IupSetAttributeId2(ih, &quot;&quot;, 30, 10, value) == IupSetAttribute(ih, &quot;30:10&quot;, value)
+IupSetAttributeId2(ih, &quot;BGCOLOR&quot;, 30, 10, value) == IupSetAttribute(ih, &quot;BGCOLOR30:10&quot;, value)
+IupSetAttributeId2(ih, &quot;ALIGNMENT&quot;, 10, value) == IupSetAttribute(ih, &quot;ALIGNMENT10&quot;, value)</pre>
 <p>But these functions are faster than the traditional functions because they do 
 not need to parse the attribute name string and the application does not need to 
 concatenate the attribute name with the id.</p>
-<p>Some of these functions are also available in Lua:</p>
-<pre>iup.MatSetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>lin</strong>: number, <strong>col</strong>: number, <strong>value</strong>: string)
-iup.MatStoreAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>lin</strong>: number, <strong>col</strong>: number, <strong>value</strong>: string)
-iup.MatGetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>lin</strong>: number, <strong>col</strong>: number) -&gt; <strong>value</strong>: string</pre>
 <p>They are used by the additional methods in Lua:</p>
 <pre><strong>elem</strong>:setcell(<strong>lin, col</strong>: number, <strong>value</strong>: string)
 <strong>elem</strong>:getcell(<strong>lin, col</strong>: number) -&gt; (<strong>cell</strong>: string)</pre>

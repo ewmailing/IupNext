@@ -170,8 +170,8 @@ FRAMECOLOR is used. For a title cell defines bottom and top frames. If value is
 but for all the cells of the line L. (since 3.5)</p>
 <p><strong><a name="VALUE">VALUE</a></strong>:
   Allows setting or verifying the value of the 
-  current cell. Is the same as obtaining the current cell from 
-FOCUS_CELL value and using it as the attribute name for &quot;L:C&quot;. 
+  current cell. Is the same as obtaining the current cell line and column from 
+FOCUS_CELL attribute, and then using them to access the &quot;L:C&quot; attribute. 
 But when updated or retrieved during cell editing, the edit control will be 
 updated or consulted instead of the matrix cell. When retrieved inside the 
 EDITION_CB callback when mode is 0, then the return value is the new value 
@@ -226,11 +226,11 @@ the width of the title of the column. Finally if the condition is not true or
 the width of the title of the column is 0, then the default value WIDTHDEF is 
 used.</p>
 <p><strong><a name="RASTERWIDTHn">RASTERWIDTHn</a></strong>: Same as WIDTHn but in pixels. 
-Has lower priority than WIDTHn.</p>
+Has lower priority than WIDTHn. The returned value is the actual computed size.</p>
 <p><strong><a name="WIDTHn">WIDTHn</a></strong>: Width of column n in SIZE 
 units, where n is the number of the column (n&gt;=0). If the width value is 0, the 
 column will not be shown on the screen. It does not includes the decoration size 
-occupied by the frame lines.</p>
+occupied by the frame lines. The returned value is the actual computed size.</p>
 <p><strong><a name="WIDTHDEF">WIDTHDEF</a></strong>:
   Default column width in SIZE units. Not used for the title column. Default: 
 80 (width corresponding to 20 characters).</p>
@@ -248,13 +248,15 @@ height of the title of the line is 0, then the default value HEIGHTDEF is used.<
 <p><strong><a name="HEIGHTn">HEIGHTn</a></strong>: Height of line n in SIZE 
 units, where n is the number of the line (n&gt;=0). If the height value is 0, the 
 line will not be shown on the screen. It does not includes the decoration size 
-occupied by the frame lines.</p>
+occupied by the frame lines. The returned value is the actual computed size.</p>
 <p><strong><a name="HEIGHTDEF">HEIGHTDEF</a></strong>:
   Default line height in SIZE units. Not used for the title line. Default: 
 8 (height corresponding to 1 line).</p>
 <p><strong><a name="RASTERHEIGHTn">RASTERHEIGHTn</a></strong>: Same as HEIGHTn but in pixels. 
-Has lower priority than HEIGHTn.</p>
+Has lower priority than HEIGHTn. The returned value is the actual computed size.</p>
 <h3>Number of Cells Attributes</h3>
+<p>When lines or columns are added or removed the existing cell, line and column 
+attributes are preserved, except custom application attributes.</p>
 <p><strong><a name="ADDCOL">ADDCOL</a></strong> (write-only):
   Adds a new column to the matrix after the 
   specified column. To insert a column at the top of the spreadsheet, value 0 

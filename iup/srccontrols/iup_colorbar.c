@@ -421,13 +421,13 @@ static char* iColorbarGetSecondaryCellAttrib(Ihandle* ih)
 
 static int iColorbarSetBufferizeAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "NO"))
+  if (iupStrBoolean(value))
+    ih->data->bufferize = 1;
+  else
   { 
     ih->data->bufferize = 0;
     iColorbarRepaint(ih);
   }
-  else
-    ih->data->bufferize = 1;
 
   return 0;
 }
@@ -489,11 +489,7 @@ static char* iColorbarGetOrientationAttrib(Ihandle* ih)
 
 static int iColorbarSetSquaredAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "NO"))
-    ih->data->squared = 0;
-  else
-    ih->data->squared = 1;
-  
+  ih->data->squared = iupStrBoolean(value);
   iColorbarRepaint(ih);
   return 0;
 }
@@ -508,11 +504,7 @@ static char* iColorbarGetSquaredAttrib(Ihandle* ih)
 
 static int iColorbarSetShadowedAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "NO"))
-    ih->data->shadowed = 0;
-  else
-    ih->data->shadowed = 1;
-
+  ih->data->shadowed = iupStrBoolean(value);
   iColorbarRepaint(ih);
   return 0;
 }
@@ -527,11 +519,7 @@ static char* iColorbarGetShadowedAttrib(Ihandle* ih)
 
 static int iColorbarSetShowSecondaryAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "NO"))
-    ih->data->show_secondary = 0;
-  else
-    ih->data->show_secondary = 1;
-  
+  ih->data->show_secondary = iupStrBoolean(value);
   iColorbarRepaint(ih);
   return 0;
 }
@@ -546,10 +534,10 @@ static char* iColorbarGetShowSecondaryAttrib(Ihandle* ih)
 
 static int iColorbarSetShowPreviewAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "NO"))
-    ih->data->preview_size = 0;
-  else
+  if (iupStrBoolean(value))
     ih->data->preview_size = -1;  /* reset to automatic */
+  else
+    ih->data->preview_size = 0;
   
   iColorbarRepaint(ih);
   return 1;

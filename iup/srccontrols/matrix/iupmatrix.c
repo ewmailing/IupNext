@@ -246,7 +246,7 @@ static int iMatrixSetValueAttrib(Ihandle* ih, const char* value)
   if (IupGetInt(ih->data->datah, "VISIBLE"))
     IupStoreAttribute(ih->data->datah, "VALUE", value);
   else 
-    iupMatrixCellSetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value);
+    iupMatrixCellSetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value, 0);
   return 0;
 }
 
@@ -808,6 +808,81 @@ static char* iMatrixGetRasterHeightAttrib(Ihandle* ih, int lin)
   return iupMatrixGetSize(ih, lin, IMAT_PROCESS_LIN, 1);
 }
 
+static int iMatrixInitNumericColumns(Ihandle* ih, int col)
+{
+  if (!iupMATRIX_CHECK_COL(ih, col))
+    return 0;
+
+  if (!ih->data->numeric_columns)
+    ih->data->numeric_columns = (ImatNumericData*)calloc(ih->data->columns.num_alloc, sizeof(ImatNumericData));
+
+  return 1;
+}
+
+static int iMatrixSetNumericFlag(Ihandle* ih, int col, unsigned char attr, int set)
+{
+  if (!iMatrixInitNumericColumns(ih, col))
+    return 0;
+
+  if (set)
+    ih->data->numeric_columns[col].flags |= attr;
+  else
+    ih->data->numeric_columns[col].flags &= ~attr;
+
+  return 1;
+}
+
+static int iMatrixSetNumericQuantityIndexAttrib(Ihandle* ih, int col, const char* value)
+{
+  int set = value!=NULL && !iupStrFalse(value);
+  if (iMatrixSetNumericFlag(ih, col, IMAT_IS_NUMERIC, set) && set)
+  {
+    int quantity;
+    iupStrToInt(value, &quantity);
+    ih->data->numeric_columns[col].quantity = (unsigned char)quantity;
+    ih->data->numeric_columns[col].convert_func = (ImatNumericConvertFunc)IupGetCallback(ih, "_IUPMAT_NUMERICCONVERT_CB");
+  }
+  return 1;
+}
+
+static int iMatrixSetNumericFormatAttrib(Ihandle* ih, int col, const char* value)
+{
+  return iMatrixSetNumericFlag(ih, col, IMAT_HAS_FORMAT, value!=NULL);
+}
+
+static int iMatrixSetNumericFormatTitleAttrib(Ihandle* ih, int col, const char* value)
+{
+  return iMatrixSetNumericFlag(ih, col, IMAT_HAS_FORMATTITLE, value!=NULL);
+}
+
+static int iMatrixSetNumericUnitIndexAttrib(Ihandle* ih, int col, const char* value)
+{
+  int unit;
+  if (iupStrToInt(value, &unit))
+  {
+    if (!iMatrixInitNumericColumns(ih, col))
+      return 0;
+
+    ih->data->numeric_columns[col].unit = (unsigned char)unit;
+    return 1;
+  }
+  return 0;
+}
+
+static int iMatrixSetNumericUnitShownIndexAttrib(Ihandle* ih, int col, const char* value)
+{
+  int unit_shown;
+  if (iupStrToInt(value, &unit_shown))
+  {
+    if (!iMatrixInitNumericColumns(ih, col))
+      return 0;
+
+    ih->data->numeric_columns[col].unit_shown = (unsigned char)unit_shown;
+    return 1;
+  }
+  return 0;
+}
+
 static char* iMatrixGetAlignmentAttrib(Ihandle* ih, int col)
 {
   char* align;
@@ -834,7 +909,7 @@ static char* iMatrixGetAlignmentAttrib(Ihandle* ih, int col)
 static int iMatrixSetIdValueAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
   if (iupMatrixCheckCellPos(ih, lin, col))
-    iupMatrixCellSetValue(ih, lin, col, value);
+    iupMatrixCellSetValue(ih, lin, col, value, 0);
   return 0;
 }
 
@@ -1664,6 +1739,7 @@ Iclass* iupMatrixNewClass(void)
   /* --- Callback Mode --- */
   iupClassRegisterCallback(ic, "VALUE_CB", "ii=s");
   iupClassRegisterCallback(ic, "VALUE_EDIT_CB", "iis");
+  iupClassRegisterCallback(ic, "VALUENUMERIC_CB", "ii=d");
   iupClassRegisterCallback(ic, "MARK_CB", "ii");
   iupClassRegisterCallback(ic, "MARKEDIT_CB", "iii");
 
@@ -1728,7 +1804,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "MARKMULTIPLE", iMatrixGetMarkMultipleAttrib, iMatrixSetMarkMultipleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - ACTION (only mapped) */
-  iupClassRegisterAttribute(ic, "ADDLIN", NULL, iupMatrixSetAddLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ADDLIN", NULL, iupMatrixSetAddLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);  /* allowing these methods to be called before map will avoid its storage in the hash table */
   iupClassRegisterAttribute(ic, "DELLIN", NULL, iupMatrixSetDelLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ADDCOL", NULL, iupMatrixSetAddColAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DELCOL", NULL, iupMatrixSetDelColAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -1746,6 +1822,14 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "SELECTION", iMatrixGetSelectionAttrib, iMatrixSetSelectionAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MULTILINE", iMatrixGetMultilineAttrib, iMatrixSetMultilineAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MASK", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  /* IupMatrix Attributes - Numeric Columns */
+  iupClassRegisterAttributeId(ic, "NUMERICQUANTITYINDEX", NULL, iMatrixSetNumericQuantityIndexAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICFORMAT", NULL, iMatrixSetNumericFormatAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICFORMATTITLE", NULL, iMatrixSetNumericFormatTitleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICUNITINDEX", NULL, iMatrixSetNumericUnitIndexAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWNINDEX", NULL, iMatrixSetNumericUnitShownIndexAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICFORMATDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "%f", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "USETITLESIZE", iMatrixGetUseTitleSizeAttrib, iMatrixSetUseTitleSizeAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -1818,3 +1902,4 @@ void IupMatSetfAttribute(Ihandle* ih, const char* name, int lin, int col, const 
   va_end(arglist);
   IupStoreAttributeId2(ih, name, lin, col, value);
 }
+

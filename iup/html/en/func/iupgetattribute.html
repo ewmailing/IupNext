@@ -12,6 +12,9 @@
 .style1 {
 	text-decoration: underline;
 }
+.style2 {
+	background-color: #CEE7FF;
+}
 </style>
 </head>
 
@@ -28,7 +31,11 @@
 Parameters/Return</h3>
 
 <pre>char *IupGetAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>); [in C]<br>iup.GetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string) -&gt; <strong>value</strong>: string [in Lua]
-char *IupGetAttributeId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>); [in C]<br>iup.GetAttributeId(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>id</strong>: number) -&gt; <strong>value</strong>: string [in Lua]</pre>
+
+char *IupGetAttributeId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>); [in C]<br>iup.GetAttributeId(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>id</strong>: number) -&gt; <strong>value</strong>: string [in Lua]
+
+char* IupGetAttributeId2(Ihandle* ih, const char* name, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+iup.GetAttributeId2(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>lin</strong>, <strong>col</strong>: number) -&gt; <strong>value</strong>: string [in Lua] </pre>
 
 <p><b>ih</b>: Identifier of the interface element. If
   NULL will retrieve from the global environment.<br>
@@ -41,6 +48,23 @@ if
   the attribute is not set or does not exist.<br>
 
 </p>
+
+
+<h3>Utility Functions </h3>
+<p>These functions can also be used to get attributes from the element:</p>
+<pre>int   IupGetInt   (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>);
+int   IupGetIntInt(Ihandle*<strong> ih</strong>, const char* <strong>name</strong>, int *<strong>i1</strong>, int *<strong>i2</strong>); // Two integers separated by &#39;x&#39; or &#39;:&#39; 
+int   IupGetInt2  (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>);  // The second integer only
+float IupGetFloat (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>);
+
+int   IupGetIntId  (Ihandle*<strong> ih</strong>, const char*<strong> name</strong>, int <strong>id</strong>);          
+float IupGetFloatId(Ihandle*<strong> ih</strong>, const char*<strong> name</strong>, int <strong>id</strong><span class="style2">)</span>;
+
+int   IupGetIntId2  (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>);
+float IupGetFloatId2(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>);
+
+[There is no equivalent in Lua]
+</pre>
 <h3>Notes</h3>
 
 <p>See the <a href="../attrib_guide.html">Attributes Guide</a> for more details.</p>

@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-void  iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value);
+void  iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value, int edited);
 char* iupMatrixCellGetValue(Ihandle* ih, int lin, int col);
 
 void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int set);

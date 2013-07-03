@@ -207,4 +207,3 @@ Ihandle* IupMatrixEx(void)
 {
   return IupCreate("matrixex");
 }
-

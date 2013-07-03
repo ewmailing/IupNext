@@ -31,11 +31,18 @@ extern "C" {
 #define IMAT_HAS_FRAMEHORIZCOLOR 16  /* Has FRAMEHORIZCOLORL:C */
 #define IMAT_HAS_FRAMEVERTCOLOR  32  /* Has FRAMEVERTCOLORL:C */
 
+/* Numeric Column flags */
+#define IMAT_IS_NUMERIC  1   /* Is numeric */
+#define IMAT_HAS_FORMAT  2   /* has format for lin!= 0 */
+#define IMAT_HAS_FORMATTITLE 4   /* has format for lin== 0 */
+
 enum{IMAT_EDITNEXT_LIN, 
      IMAT_EDITNEXT_COL, 
      IMAT_EDITNEXT_LINCR, 
      IMAT_EDITNEXT_COLCR,
      IMAT_EDITNEXT_NONE};
+
+typedef double (*ImatNumericConvertFunc)(double number, int dst_units, int src_units);
 
 
 /***************************************************************************/
@@ -69,6 +76,16 @@ typedef struct _ImatLinColData
 
   int focus_cell;   /* index of the current cell */
 } ImatLinColData;
+
+
+typedef struct _ImatNumericData
+{
+  unsigned char quantity;    /* Unused here, it is just stored */
+  unsigned char unit, unit_shown;
+  ImatNumericConvertFunc convert_func;
+  unsigned char flags;  
+} ImatNumericData;
+
 
 struct _IcontrolData
 {
@@ -125,6 +142,10 @@ struct _IcontrolData
 
   /* Clipping AUX for cell  */
   int clip_x1, clip_x2, clip_y1, clip_y2;
+
+  /* Numeric Columns */
+  char numeric_buffer[512];
+  ImatNumericData* numeric_columns;   /* information for numeric columns (allocated after map) */
 };
 
 
@@ -134,7 +155,6 @@ int iupMatrixIsValid(Ihandle* ih, int check_cells);
 
 #define iupMATRIX_CHECK_COL(_ih, _col) ((_col >= 0) && (_col < (_ih)->data->columns.num))
 #define iupMATRIX_CHECK_LIN(_ih, _lin) ((_lin >= 0) && (_lin < (_ih)->data->lines.num))
-
 
 
 #ifdef __cplusplus
