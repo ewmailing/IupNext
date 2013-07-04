@@ -411,7 +411,7 @@ void iuplua_plugstate(lua_State *L, Ihandle *ih)
     int ref;
     lua_pushthread(L);
     ref = luaL_ref(L, LUA_REGISTRYINDEX);   /* keep ref for L, L maybe a thread */
-    IupSetfAttribute(ih, "_IUPLUA_STATE_THREAD", "%d", ref);
+    IupSetInt(ih, "_IUPLUA_STATE_THREAD", ref);
   }
 }
 
@@ -669,7 +669,7 @@ static int SetWidget(lua_State *L)
   if (!sref)
   {
     int ref = luaL_ref(L, LUA_REGISTRYINDEX);
-    IupSetfAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", "%d", ref);
+    IupSetInt(ih, "_IUPLUA_WIDGET_TABLE_REF", ref);
     IupSetCallback(ih, "LDESTROY_CB", il_destroy_cb);
   }
   return 0;

@@ -33,30 +33,22 @@ void iupValCropValue(Ihandle* ih)
 
 char* iupValGetShowTicksAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(30);
-  sprintf(str, "%d", ih->data->show_ticks);
-  return str;
+  return iupStrReturnFloat((float)ih->data->show_ticks);
 }
 
 char* iupValGetValueAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(30);
-  sprintf(str, "%g", ih->data->val);
-  return str;
+  return iupStrReturnFloat((float)ih->data->val);
 }
 
 char* iupValGetStepAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(30);
-  sprintf(str, "%g", ih->data->step);
-  return str;
+  return iupStrReturnFloat((float)ih->data->step);
 }
 
 char* iupValGetPageStepAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(30);
-  sprintf(str, "%g", ih->data->pagestep);
-  return str;
+  return iupStrReturnFloat((float)ih->data->pagestep);
 }
 
 static int iValSetMaxAttrib(Ihandle* ih, const char* value)
@@ -68,9 +60,7 @@ static int iValSetMaxAttrib(Ihandle* ih, const char* value)
 
 static char* iValGetMaxAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(30);
-  sprintf(str, "%g", ih->data->vmax);
-  return str;
+  return iupStrReturnFloat((float)ih->data->vmax);
 }
 
 static int iValSetMinAttrib(Ihandle* ih, const char* value)
@@ -82,9 +72,7 @@ static int iValSetMinAttrib(Ihandle* ih, const char* value)
 
 static char* iValGetMinAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(30);
-  sprintf(str, "%g", ih->data->vmin);
-  return str;
+  return iupStrReturnFloat((float)ih->data->vmin);
 }
 
 static int iValSetOrientationAttrib(Ihandle* ih, const char *value)

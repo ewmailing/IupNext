@@ -69,8 +69,8 @@ static int iScrollBoxMotion_CB(Ihandle *ih, int x, int y, char* status)
     int dy = y - start_y;
     int posx = iupAttribGetInt(ih, "_IUP_START_POSX");
     int posy = iupAttribGetInt(ih, "_IUP_START_POSY");
-    IupSetfAttribute(ih, "POSX", "%d", posx-dx);  /* drag direction is oposite to scrollbar */
-    IupSetfAttribute(ih, "POSY", "%d", posy-dy);
+    IupSetInt(ih, "POSX", posx-dx);  /* drag direction is oposite to scrollbar */
+    IupSetInt(ih, "POSY", posy-dy);
     iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
   }
   return IUP_DEFAULT;
@@ -132,8 +132,8 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
     iupBaseSetCurrentSize(ih->firstchild, w, h, shrink);
 
-    IupSetfAttribute(ih, "XMAX", "%d", ih->firstchild->currentwidth);
-    IupSetfAttribute(ih, "YMAX", "%d", ih->firstchild->currentheight);
+    IupSetInt(ih, "XMAX", ih->firstchild->currentwidth);
+    IupSetInt(ih, "YMAX", ih->firstchild->currentheight);
   }
   else
   {
@@ -172,8 +172,8 @@ static void iScrollBoxLayoutUpdate(Ihandle* ih)
   if (ih->firstchild->currentheight > ih->currentheight)
     dx -= iupdrvGetScrollbarSize();
 
-  IupSetfAttribute(ih, "DX", "%d", dx);
-  IupSetfAttribute(ih, "DY", "%d", dy);
+  IupSetInt(ih, "DX", dx);
+  IupSetInt(ih, "DY", dy);
 
   if (ih->firstchild)
   {

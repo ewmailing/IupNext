@@ -594,8 +594,8 @@ static void iMatrixExPasteData(Ihandle *ih, const char* data, int lin, int col, 
         return;
       else if (ret == IUP_CONTINUE)
       {
-        if (lin+vis_num_lin>num_lin) IupSetfAttribute(ih, "NUMLIN", "%d", lin+vis_num_lin);
-        if (col+vis_num_col>num_col) IupSetfAttribute(ih, "NUMCOL", "%d", col+vis_num_col);
+        if (lin+vis_num_lin>num_lin) IupSetInt(ih, "NUMLIN", lin+vis_num_lin);
+        if (col+vis_num_col>num_col) IupSetInt(ih, "NUMCOL", col+vis_num_col);
       }
     }
   }

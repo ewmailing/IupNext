@@ -145,7 +145,7 @@ int iupLexInt(void)
 float iupLexFloat(void)
 {
   float f;
-  sscanf(ilex.name,"%g", &f);
+  sscanf(ilex.name,"%f", &f);
   return f;
 }
 

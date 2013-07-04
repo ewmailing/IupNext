@@ -101,7 +101,6 @@ float     IupGetFloat      (Ihandle* ih, const char* name);
 void      IupGetRGB        (Ihandle *ih, const char* name, unsigned char *r, unsigned char *g, unsigned char *b);
 void      IupSetfAttribute (Ihandle* ih, const char* name, const char* format, ...);
 void      IupSetInt        (Ihandle* ih, const char* name, int value);
-void      IupSetIntInt     (Ihandle *ih, const char* name, int value1, char sep, int value2);
 void      IupSetFloat      (Ihandle* ih, const char* name, float value);
 void      IupSetRGB        (Ihandle *ih, const char* name, unsigned char r, unsigned char g, unsigned char b);
 

@@ -124,9 +124,9 @@ static void iColorBrowserDlgHex_TXT_Update(IcolorDlgData* colordlg_data)
 \*************************************************/
 static void iColorBrowserDlgHSI_TXT_Update(IcolorDlgData* colordlg_data)
 {
-  IupSetfAttribute(colordlg_data->hue_txt, "VALUE", "%d", iupROUND(colordlg_data->hue));
-  IupSetfAttribute(colordlg_data->saturation_txt, "VALUE", "%d", iupROUND(colordlg_data->saturation * 100));
-  IupSetfAttribute(colordlg_data->intensity_txt, "VALUE", "%d", iupROUND(colordlg_data->intensity * 100));
+  IupSetInt(colordlg_data->hue_txt, "VALUE", iupROUND(colordlg_data->hue));
+  IupSetInt(colordlg_data->saturation_txt, "VALUE", iupROUND(colordlg_data->saturation * 100));
+  IupSetInt(colordlg_data->intensity_txt, "VALUE", iupROUND(colordlg_data->intensity * 100));
 }
 
 /*************************************************\
@@ -134,9 +134,9 @@ static void iColorBrowserDlgHSI_TXT_Update(IcolorDlgData* colordlg_data)
 \*************************************************/
 static void iColorBrowserDlgRGB_TXT_Update(IcolorDlgData* colordlg_data)
 {
-  IupSetfAttribute(colordlg_data->red_txt, "VALUE", "%d", (int) colordlg_data->red);
-  IupSetfAttribute(colordlg_data->green_txt, "VALUE", "%d", (int) colordlg_data->green);
-  IupSetfAttribute(colordlg_data->blue_txt, "VALUE", "%d", (int) colordlg_data->blue);
+  IupSetInt(colordlg_data->red_txt, "VALUE", (int) colordlg_data->red);
+  IupSetInt(colordlg_data->green_txt, "VALUE", (int) colordlg_data->green);
+  IupSetInt(colordlg_data->blue_txt, "VALUE", (int) colordlg_data->blue);
 }
 
 static void iColorBrowserDlgBrowserRGB_Update(IcolorDlgData* colordlg_data)
@@ -146,7 +146,7 @@ static void iColorBrowserDlgBrowserRGB_Update(IcolorDlgData* colordlg_data)
 
 static void iColorBrowserDlgBrowserHSI_Update(IcolorDlgData* colordlg_data)
 {
-  IupSetfAttribute(colordlg_data->color_browser, "HSI", "%g %g %g", (double)colordlg_data->hue, (double)colordlg_data->saturation, (double)colordlg_data->intensity);
+  IupSetfAttribute(colordlg_data->color_browser, "HSI", "%.6f %.6f %.6f", (double)colordlg_data->hue, (double)colordlg_data->saturation, (double)colordlg_data->intensity);
 }
 
 /*****************************************\
@@ -455,7 +455,7 @@ static int iColorBrowserDlgAlphaVal_CB(Ihandle* ih, double val)
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   colordlg_data->alpha = (unsigned char)val;
-  IupSetfAttribute(colordlg_data->alpha_txt, "VALUE", "%d", (int)colordlg_data->alpha);
+  IupSetInt(colordlg_data->alpha_txt, "VALUE", (int)colordlg_data->alpha);
 
   colordlg_data->color = cdEncodeAlpha(colordlg_data->color, colordlg_data->alpha);
   iColorBrowserDlgColorCnvRepaint(colordlg_data);
@@ -471,7 +471,7 @@ static int iColorBrowserDlgAlphaAction_CB(Ihandle* ih, int c, char* value)
   if (iupStrToInt(value, &vi))
   {
     colordlg_data->alpha = (unsigned char)vi;
-    IupSetfAttribute(colordlg_data->alpha_val, "VALUE", "%d", (int)colordlg_data->alpha);
+    IupSetInt(colordlg_data->alpha_val, "VALUE", (int)colordlg_data->alpha);
 
     colordlg_data->color = cdEncodeAlpha(colordlg_data->color, colordlg_data->alpha);
     iColorBrowserDlgColorCnvRepaint(colordlg_data);
@@ -486,7 +486,7 @@ static int iColorBrowserDlgAlphaSpin_CB(Ihandle* ih, int vi)
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   colordlg_data->alpha = (unsigned char)vi;
-  IupSetfAttribute(colordlg_data->alpha_val, "VALUE", "%d", (int)colordlg_data->alpha);
+  IupSetInt(colordlg_data->alpha_val, "VALUE", (int)colordlg_data->alpha);
 
   colordlg_data->color = cdEncodeAlpha(colordlg_data->color, colordlg_data->alpha);
   iColorBrowserDlgColorCnvRepaint(colordlg_data);
@@ -526,8 +526,8 @@ static int iColorBrowserDlgColorCnvButton_CB(Ihandle* ih, int b, int press, int 
     colordlg_data->blue = cdBlue(colordlg_data->previous_color);
     colordlg_data->alpha = cdAlpha(colordlg_data->previous_color);
 
-    IupSetfAttribute(colordlg_data->alpha_txt, "VALUE", "%d", (int)colordlg_data->alpha);
-    IupSetfAttribute(colordlg_data->alpha_val, "VALUE", "%d", (int)colordlg_data->alpha);
+    IupSetInt(colordlg_data->alpha_txt, "VALUE", (int)colordlg_data->alpha);
+    IupSetInt(colordlg_data->alpha_val, "VALUE", (int)colordlg_data->alpha);
 
     iColorBrowserDlgRGB_TXT_Update(colordlg_data);
     iColorBrowserDlgRGBChanged(colordlg_data);
@@ -653,8 +653,8 @@ static int iColorBrowserDlgSetAlphaAttrib(Ihandle* ih, const char* value)
   if (iupStrToInt(value, &alpha))
   {
     colordlg_data->alpha = (unsigned char)alpha;
-    IupSetfAttribute(colordlg_data->alpha_txt, "VALUE", "%d", (int)colordlg_data->alpha);
-    IupSetfAttribute(colordlg_data->alpha_val, "VALUE", "%d", (int)colordlg_data->alpha);
+    IupSetInt(colordlg_data->alpha_txt, "VALUE", (int)colordlg_data->alpha);
+    IupSetInt(colordlg_data->alpha_val, "VALUE", (int)colordlg_data->alpha);
 
     colordlg_data->color = cdEncodeAlpha(colordlg_data->color, colordlg_data->alpha);
     colordlg_data->previous_color = cdEncodeAlpha(colordlg_data->previous_color, colordlg_data->alpha);
@@ -711,8 +711,8 @@ static int iColorBrowserDlgSetValueAttrib(Ihandle* ih, const char* value)
 
   if (ret == 4)
   {
-    IupSetfAttribute(colordlg_data->alpha_txt, "VALUE", "%d", (int)colordlg_data->alpha);
-    IupSetfAttribute(colordlg_data->alpha_val, "VALUE", "%d", (int)colordlg_data->alpha);
+    IupSetInt(colordlg_data->alpha_txt, "VALUE", (int)colordlg_data->alpha);
+    IupSetInt(colordlg_data->alpha_val, "VALUE", (int)colordlg_data->alpha);
 
     if (!ih->handle)  /* do it only before map */
       IupSetAttribute(ih, "SHOWALPHA", "YES");

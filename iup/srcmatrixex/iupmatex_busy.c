@@ -45,7 +45,7 @@ static void iMatrixExBusyShowProgress(ImatExData* matex_data, int count, const c
   }
   
   IupStoreAttribute(matex_data->busy_progress, "DESCRIPTION", busyname);
-  IupSetfAttribute(matex_data->busy_progress, "TOTALCOUNT", "%d", count);
+  IupSetInt(matex_data->busy_progress, "TOTALCOUNT", count);
   IupSetAttribute(matex_data->busy_progress, "COUNT", "0");
 
   IupSetAttribute(IupGetDialog(matex_data->ih),"ACTIVE","NO");

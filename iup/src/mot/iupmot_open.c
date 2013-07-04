@@ -103,10 +103,10 @@ int iupdrvOpen(int *argc, char ***argv)
     int major = xmUseVersion/1000;
     int minor = xmUseVersion - major * 1000;
     IupSetfAttribute(NULL, "MOTIFVERSION", "%d.%d", major, minor);
-    IupSetfAttribute(NULL, "MOTIFNUMBER", "%d", (XmVERSION * 1000 + XmREVISION * 100 + XmUPDATE_LEVEL));
+    IupSetInt(NULL, "MOTIFNUMBER", (XmVERSION * 1000 + XmREVISION * 100 + XmUPDATE_LEVEL));
 
     IupSetGlobal("XSERVERVENDOR", ServerVendor(iupmot_display));
-    IupSetfAttribute(NULL, "XVENDORRELEASE", "%d", VendorRelease(iupmot_display));
+    IupSetInt(NULL, "XVENDORRELEASE", VendorRelease(iupmot_display));
   }
 
   iupmotColorInit();

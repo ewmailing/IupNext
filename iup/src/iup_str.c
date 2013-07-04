@@ -369,7 +369,7 @@ char* iupStrReturnInt(int i)
 char* iupStrReturnFloat(float f)
 {
   char* str = iupStrGetMemory(80);
-  sprintf(str, "%g", f);
+  sprintf(str, "%.9f", f);  /* maximum float precision */
   return str;
 }
 
@@ -409,7 +409,7 @@ char* iupStrReturnIntInt(int i1, int i2, char sep)
 char* iupStrReturnFloatFloat(float f1, float f2, char sep)
 {
   char* str = iupStrGetMemory(160);
-  sprintf(str, "%g%c%g", f1, sep, f2);
+  sprintf(str, "%.9f%c%.9f", f1, sep, f2);   /* maximum float precision */
   return str;
 }
 

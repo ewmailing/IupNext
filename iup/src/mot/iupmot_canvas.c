@@ -220,7 +220,7 @@ static void motCanvasInputCallback(Widget w, Ihandle *ih, XtPointer call_data)
           int delta = but_evt->button==Button4? 1: -1;
           int op = but_evt->button==Button4? IUP_SBUP: IUP_SBDN;
           posy -= delta*iupAttribGetFloat(ih, "DY")/10.0f;
-          IupSetfAttribute(ih, "POSY", "%g", posy);
+          IupSetFloat(ih, "POSY", posy);
           if (scb)
             scb(ih,op,ih->data->posx,ih->data->posy);
         }

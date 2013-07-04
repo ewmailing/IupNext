@@ -303,5 +303,5 @@ void iupKeySetMnemonic(Ihandle* ih, int code, int pos)
 
   IupSetAttribute(ih_dialog, attrib, (char*)ih);
   if (IupClassMatch(ih, "tabs"))
-    IupSetfAttribute(ih, attrib, "%d", pos);
+    IupSetInt(ih, attrib, pos);
 }

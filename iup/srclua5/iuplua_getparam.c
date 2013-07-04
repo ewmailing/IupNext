@@ -182,10 +182,7 @@ static int GetParamParam(lua_State *L)
 {
   Ihandle *dialog = iuplua_checkihandle(L, 1);
   int param_index = luaL_checkint(L, 2);
-  Ihandle* param;
-  char param_str[50];
-  sprintf(param_str, "PARAM%d", param_index);
-  param = (Ihandle*)IupGetAttribute(dialog, param_str);
+  Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", param_index);
   iuplua_plugstate(L, param);
   iuplua_pushihandle(L, param);
   return 1;

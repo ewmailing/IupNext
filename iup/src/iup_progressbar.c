@@ -32,9 +32,7 @@ void iProgressBarCropValue(Ihandle* ih)
 
 char* iProgressBarGetValueAttrib(Ihandle* ih)
 {
-  char* value = iupStrGetMemory(30);
-  sprintf(value, "%g", ih->data->value);
-  return value;
+  return iupStrReturnFloat(ih->data->value);
 }
 
 char* iProgressBarGetDashedAttrib(Ihandle* ih)

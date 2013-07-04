@@ -682,7 +682,7 @@ static int iColorBrowserKeypress_CB(Ihandle* ih, int c, int press)
 static char* iColorBrowserGetHSIAttrib(Ihandle* ih)
 {
   char* buffer = iupStrGetMemory(3*80);
-  sprintf(buffer, "%g %g %g", (double)ih->data->hue, (double)ih->data->saturation, (double)ih->data->intensity);
+  sprintf(buffer, "%.6f %.6f %.6f", (double)ih->data->hue, (double)ih->data->saturation, (double)ih->data->intensity);
   return buffer;
 }
 

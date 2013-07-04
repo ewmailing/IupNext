@@ -99,7 +99,7 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
   {
     if (op<1 || op>size) op=1;
     iupAttribSetInt(dlg, "_IUP_LIST_NUMBER", op-1);
-    IupSetfAttribute(lst,"VALUE","%d",op);
+    IupSetInt(lst,"VALUE",op);
     IupSetCallback(lst, "ACTION", (Icallback)CB_list);
     IupSetCallback(lst, "DBLCLICK_CB", (Icallback)CB_dblclick);
   }
@@ -114,8 +114,8 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
   }
 
   if (max_lin < 4) max_lin = 4;
-  IupSetfAttribute(lst, "VISIBLELINES", "%d", max_lin);
-  IupSetfAttribute(lst, "VISIBLECOLUMNS", "%d", max_col);
+  IupSetInt(lst, "VISIBLELINES", max_lin);
+  IupSetInt(lst, "VISIBLECOLUMNS", max_col);
 
   IupSetAttribute(dlg,"TITLE", title);
   IupSetAttribute(dlg,"MINBOX","NO");
@@ -272,8 +272,8 @@ int  iupDataEntry(int    maxlin,
   {
     txt[i] = IupText(NULL);
     IupSetAttribute(txt[i],"VALUE",data[i]);
-    IupSetfAttribute(txt[i],"VISIBLECOLUMNS","%dx", maxscr[i]);
-    IupSetfAttribute(txt[i],"NC", "%d", maxcol[i]);
+    IupSetInt(txt[i],"VISIBLECOLUMNS", maxscr[i]);
+    IupSetInt(txt[i],"NC", maxcol[i]);
     IupSetAttribute(txt[i],"EXPAND","HORIZONTAL");
 
     hb = IupHbox(lbl[i] = IupLabel(text[i]), txt[i], NULL);

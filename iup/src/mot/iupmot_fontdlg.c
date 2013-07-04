@@ -120,7 +120,7 @@ static void motFontDlgInitSizeList(Ihandle* ih, const char* fontface, int size)
     {
       if (sz == size)
         selected = j;
-      IupSetfAttributeId(list3, "", j, "%d", sz);
+      IupSetIntId(list3, "", j, sz);
       prev_sz = sz;
       j++;
     }
@@ -129,8 +129,8 @@ static void motFontDlgInitSizeList(Ihandle* ih, const char* fontface, int size)
 
   if (selected != -1)
   {
-    IupSetfAttribute(list3, "VALUE", "%d", selected);
-    IupSetfAttribute(list3, "TOPITEM", "%d", selected);
+    IupSetInt(list3, "VALUE", selected);
+    IupSetInt(list3, "TOPITEM", selected);
   }
 
   XFreeFontNames(font_list_str);
@@ -155,8 +155,8 @@ static void motFontDlgSelectFontFace(Ihandle* ih, char* fontface, int select)
     {
       if (iupStrEqualNoCase(fontface, IupGetAttributeId(list1, "", i+1)))
       {
-        IupSetfAttribute(list1, "VALUE", "%d", i+1);
-        IupSetfAttribute(list1, "TOPITEM", "%d", i+1);
+        IupSetInt(list1, "VALUE", i+1);
+        IupSetInt(list1, "TOPITEM", i+1);
         break;
       }
     }

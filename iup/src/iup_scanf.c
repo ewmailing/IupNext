@@ -157,12 +157,12 @@ int IupScanf (const char *format, ...)
     case 'G':
       if (s[-3]=='l')
       {
-        if (sscanf(text[i],"%lg",((double *)va_arg(va,double *)))!=1)
+        if (sscanf(text[i],"%lf",((double *)va_arg(va,double *)))!=1)
           if (error < 0) error = fields_out_count;
       }
       else
       {
-        if (sscanf(text[i], "%g", ((float *)va_arg(va,float *)))!=1)
+        if (sscanf(text[i], "%f", ((float *)va_arg(va,float *)))!=1)
           if (error < 0) error = fields_out_count;
       }
       break;

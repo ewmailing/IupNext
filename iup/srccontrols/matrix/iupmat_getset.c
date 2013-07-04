@@ -41,6 +41,31 @@ int iupMatrixCheckCellPos(Ihandle* ih, int lin, int col)
 void iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value, int edited)
 {  
   /* not called before map */
+  if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
+  {
+    double number;
+    if (sscanf(value, "%lf", &number) != 1)   /* lf=double */
+    {
+      IFniid setvalue_cb;
+
+      if (ih->data->numeric_columns[col].unit_shown!=ih->data->numeric_columns[col].unit) 
+        number = ih->data->numeric_columns[col].convert_func(number, ih->data->numeric_columns[col].unit, 
+                                                                     ih->data->numeric_columns[col].unit_shown);
+
+      setvalue_cb = (IFniid)IupGetCallback(ih, "NUMERICSETVALUE_CB");
+      if (setvalue_cb)
+      {
+        setvalue_cb(ih, lin, col, number);
+        return;
+      }
+      else
+      {
+        sprintf(ih->data->numeric_buffer_set, "%.18g", number);  /* maximum double precision */
+        value = ih->data->numeric_buffer_set;
+      }
+    }
+  }
+
   if (!ih->data->callback_mode)
   {
     if (ih->data->cells[lin][col].value)
@@ -63,54 +88,63 @@ void iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value, int
     ih->data->need_calcsize = 1;
 }
 
-static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col)
+static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col, const char* value)
 {
-  char* value, *format=NULL;
+  char *format=NULL;
   double number;
 
-  if (ih->data->callback_mode)
+  if (lin==0)
   {
-    /* only called in callback mode */
-    sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
-    value = value_cb(ih, lin, col);
-  }
-  else
-    value = ih->data->cells[lin][col].value;
+    if (ih->data->numeric_columns[col].flags & IMAT_HAS_FORMATTITLE)
+      format = iupAttribGetId(ih, "NUMERICFORMATTITLE", col);
 
-  if (lin==0 && ih->data->numeric_columns[col].flags & IMAT_HAS_FORMATTITLE)
-    format = iupAttribGetId(ih, "NUMERICFORMATTITLE", col);
-  else if (lin!=0 && ih->data->numeric_columns[col].flags & IMAT_HAS_FORMAT)
+    if (format)
+    {
+      const char* unit = ih->data->numeric_info_func(ih->data->numeric_columns[col].quantity, ih->data->numeric_columns[col].unit_shown);
+      if (value)
+        sprintf(ih->data->numeric_buffer_get, format, value, unit);
+      else
+        sprintf(ih->data->numeric_buffer_get, format, unit);
+      return ih->data->numeric_buffer_get;
+    }
+
+    return (char*)value;
+  }
+
+  /* from here lin!=0 */
+
+  if (ih->data->numeric_columns[col].flags & IMAT_HAS_FORMAT)
     format = iupAttribGetId(ih, "NUMERICFORMAT", col);
 
   if ((ih->data->numeric_columns[col].unit_shown==ih->data->numeric_columns[col].unit) &&
       (format==NULL))
-    return value;
+    return (char*)value;
 
   if (format==NULL)
     format = iupAttribGetStr(ih, "NUMERICFORMATDEF");
 
   if (!value)
   {
-    dIFnii value_cb = (dIFnii)IupGetCallback(ih, "VALUENUMERIC_CB");
-    if (value_cb)
-      number = value_cb(ih, lin, col);
+    dIFnii getvalue_cb = (dIFnii)IupGetCallback(ih, "NUMERICGETVALUE_CB");
+    if (getvalue_cb)
+      number = getvalue_cb(ih, lin, col);
     else
       return NULL;
   }
   else
   {
     if (sscanf(value, "%lf", &number) != 1)   /* lf=double */
-      return value;
+      return (char*)value;
   }
 
   if (ih->data->numeric_columns[col].unit_shown!=ih->data->numeric_columns[col].unit) 
-    number = ih->data->numeric_columns[col].convert_func(number, ih->data->numeric_columns[col].unit_shown, ih->data->numeric_columns[col].unit);
+    number = ih->data->numeric_columns[col].convert_func(number, ih->data->numeric_columns[col].unit_shown, 
+                                                                 ih->data->numeric_columns[col].unit);
 
-  sprintf(ih->data->numeric_buffer, format, number);
-  return ih->data->numeric_buffer;
+  sprintf(ih->data->numeric_buffer_get, format, number);
+  return ih->data->numeric_buffer_get;
 }
 
-//title
 //SetValue
 //TODO DROP_CB e MENUDROP_CB
 
@@ -122,19 +156,20 @@ char* iupMatrixCellGetValue (Ihandle* ih, int lin, int col)
     return iupAttribGetId2(ih, "", lin, col);
   else
   {
-    if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
-      return iMatrixGetValueNumeric(ih, lin, col);
-    else
+    char* value;
+    if (ih->data->callback_mode)
     {
-      if (ih->data->callback_mode)
-      {
-        /* only called in callback mode */
-        sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
-        return value_cb(ih, lin, col);
-      }
-      else
-        return ih->data->cells[lin][col].value;
+      /* only called in callback mode */
+      sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
+      value = value_cb(ih, lin, col);
     }
+    else
+      value = ih->data->cells[lin][col].value;
+
+    if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
+      return iMatrixGetValueNumeric(ih, lin, col, value);
+    else
+      return value;
   }
 }
 

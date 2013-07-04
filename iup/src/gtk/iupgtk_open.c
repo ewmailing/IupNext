@@ -170,7 +170,7 @@ static void gtkSetGlobalAttrib(void)
   IupSetGlobal("XDISPLAY", (char*)xdisplay);
   IupSetGlobal("XSCREEN", (char*)XDefaultScreen(xdisplay));
   IupSetGlobal("XSERVERVENDOR", ServerVendor(xdisplay));
-  IupSetfAttribute(NULL, "XVENDORRELEASE", "%d", VendorRelease(xdisplay));
+  IupSetInt(NULL, "XVENDORRELEASE", VendorRelease(xdisplay));
 }
 
 #endif

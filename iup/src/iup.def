@@ -65,7 +65,6 @@ IupSetAttribute
 IupSetAttributes
 IupSetfAttribute
 IupSetInt   
-IupSetIntInt
 IupSetFloat 
 IupSetIntId
 IupSetFloatId

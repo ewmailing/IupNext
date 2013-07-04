@@ -54,7 +54,7 @@ static void iProgressDlgSetPercent(IprogressDlgData* progress_data, int percent)
     if (percent != progress_data->percent)
     {
       progress_data->percent = percent;
-      IupSetfAttribute(progress_data->progress, "VALUE", "%d", percent);
+      IupSetInt(progress_data->progress, "VALUE", percent);
       IupFlush();
       progress_data->last_clock = (int)clock();
     }

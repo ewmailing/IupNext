@@ -24,7 +24,8 @@ int iupwinIsVistaOrNew(void)
   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   GetVersionEx(&osvi);
 
-  if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT && osvi.dwMajorVersion >= 6)
+  if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT && 
+      osvi.dwMajorVersion >= 6)
     return 1;
 
   return 0;

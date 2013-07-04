@@ -307,8 +307,8 @@ static void iCellsSetFullVisible(Ihandle* ih, int i, int j)
   posy += dy;
 
   /* Setting iup scrollbars' attributes */
-  IupSetfAttribute(ih, "POSX", "%d", posx); 
-  IupSetfAttribute(ih, "POSY", "%d", posy); 
+  IupSetInt(ih, "POSX", posx); 
+  IupSetInt(ih, "POSY", posy); 
 }
 
 /* Function used to make a cell the first visible one */
@@ -327,7 +327,7 @@ static void iCellsAdjustOrigin(Ihandle* ih, int lin, int col)
   else if (lin <= iCellsGetNLines(ih))
   { 
      ymin_sum = iCellsGetRangedHeight(ih, ih->data->non_scrollable_lins+1, lin-1);
-     IupSetfAttribute(ih, "POSY", "%d", ymin_sum); 
+     IupSetInt(ih, "POSY", ymin_sum); 
   }
 
   /* As said before... */
@@ -338,7 +338,7 @@ static void iCellsAdjustOrigin(Ihandle* ih, int lin, int col)
   else if (col <= iCellsGetNCols(ih))
   { 
      xmin_sum = iCellsGetRangedWidth(ih, ih->data->non_scrollable_cols+1, col-1);
-     IupSetfAttribute(ih, "POSX", "%d", xmin_sum); 
+     IupSetInt(ih, "POSX", xmin_sum); 
   }
 }
 
@@ -351,12 +351,12 @@ static void iCellsAdjustScrolls(Ihandle* ih, int w, int h)
   /* Getting the virtual size */
   iCellsGetVirtualSize(ih, &virtual_width, &virtual_height); 
 
-  IupSetfAttribute(ih, "YMAX", "%d", virtual_height-1);
-  IupSetfAttribute(ih, "XMAX", "%d", virtual_width-1);
+  IupSetInt(ih, "YMAX", virtual_height-1);
+  IupSetInt(ih, "XMAX", virtual_width-1);
 
   /* Setting the object scrollbar position */
-  IupSetfAttribute(ih, "DY",   "%d", h);
-  IupSetfAttribute(ih, "DX",   "%d", w);
+  IupSetInt(ih, "DY", h);
+  IupSetInt(ih, "DX", w);
 }
 
 /* Function used to call the client; is used when a cell must be repainted. */

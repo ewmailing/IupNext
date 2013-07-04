@@ -4147,7 +4147,7 @@ static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
 static char* iMglPlotGetZoomAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(50);
-  sprintf(str, "%g,%g:%g,%g", ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
+  sprintf(str, "%.6f,%.6f:%.6f,%.6f", ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
   return str;
 }
 
@@ -4175,7 +4175,7 @@ static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
 static char* iMglPlotGetRotateAttrib(Ihandle* ih)
 {
   char* str = iupStrGetMemory(50);
-  sprintf(str, "%g:%g:%g", ih->data->rotX, ih->data->rotY, ih->data->rotZ);
+  sprintf(str, "%.6f:%.6f:%.6f", ih->data->rotX, ih->data->rotY, ih->data->rotZ);
   return str;
 }
 

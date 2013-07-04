@@ -196,7 +196,7 @@ static int iParamValAction_CB(Ihandle *self)
     iupAttribSetFloat(param, "VALUE", old_value);
 
     if (!iupAttribGetInt(param, "ANGLE"))
-      IupSetfAttribute(self, "VALUE", "%g", old_value);
+      IupSetFloat(self, "VALUE", old_value);
 
     /* there is no IUP_IGNORE for IupVal */
     return IUP_DEFAULT;
@@ -206,7 +206,7 @@ static int iParamValAction_CB(Ihandle *self)
   if (iupStrEqual(type, "INTEGER"))
     IupSetfAttribute(text, "VALUE", "%d", (int)val);
   else
-    IupSetfAttribute(text, "VALUE", "%g", val);
+    IupSetFloat(text, "VALUE", val);
 
   if (IupGetInt(text, "SPIN"))
   {
@@ -399,12 +399,12 @@ static int iParamSpinReal_CB(Ihandle *self, int pos)
       return IUP_IGNORE;
   }
 
-  IupSetfAttribute(text, "VALUE", "%g", (double)val);
+  IupSetFloat(text, "VALUE", val);
 
   {
     Ihandle* aux = (Ihandle*)iupAttribGet(param, "AUXCONTROL");
     if (aux)
-      IupSetfAttribute(aux, "VALUE", "%g", (double)val);
+      IupSetFloat(aux, "VALUE", val);
   }
 
   return IUP_DEFAULT;
@@ -431,12 +431,12 @@ static int iParamSpinInt_CB(Ihandle *self, int pos)
       return IUP_IGNORE;
   }
 
-  IupSetfAttribute(text, "VALUE", "%g", (double)pos);
+  IupSetInt(text, "VALUE", pos);
 
   {
     Ihandle* aux = (Ihandle*)iupAttribGet(param, "AUXCONTROL");
     if (aux)
-      IupSetfAttribute(aux, "VALUE", "%g", (double)pos);
+      IupSetInt(aux, "VALUE", pos);
   }
 
   return IUP_DEFAULT;
@@ -684,7 +684,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         float step = iupAttribGetFloat(param, "STEP");
         float val = iupAttribGetFloat(param, "VALUE");
         if (step == 0) step = (max-min)/20.0f;
-        IupSetfAttribute(ctrl, "MASKFLOAT", "%g:%g", (double)min, (double)max);
+        IupSetfAttribute(ctrl, "MASKFLOAT", "%.6f:%.6f", (double)min, (double)max);
                              
         /* here spin is always [0-spinmax] converted to [min-max] */
 
@@ -705,7 +705,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         if (min == 0)
           IupSetAttribute(ctrl, "MASK", IUP_MASK_UFLOAT);
         else
-          IupSetfAttribute(ctrl, "MASKFLOAT", "%g:%g", (double)min, (double)1.0e10);
+          IupSetfAttribute(ctrl, "MASKFLOAT", "%.6f:%.6f", (double)min, (double)1.0e10);
         IupAppend(box, ctrl);
       }
       else
@@ -771,7 +771,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         aux = IupCreate("dial");  /* Use IupCreate to avoid depending on the IupControls library */
         if (aux)  /* If IupControls library is not available it will fail */
         {
-          IupSetfAttribute(aux, "VALUE", "%g", (double)(iupAttribGetFloat(param, "VALUE")/RAD2DEG));
+          IupSetFloat(aux, "VALUE", iupAttribGetFloat(param, "VALUE")/RAD2DEG);
           IupSetAttribute(aux, "SIZE", "50x10");
         }
       }
@@ -787,9 +787,9 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         iupAttribSetStr(param, "EXPAND", "1");
         step = iupAttribGet(param, "STEP");
         if (step)
-          IupSetfAttribute(aux, "STEP", "%g", iupAttribGetFloat(param, "STEP")/(iupAttribGetFloat(param, "MAX")-iupAttribGetFloat(param, "MIN")));
+          IupSetFloat(aux, "STEP", iupAttribGetFloat(param, "STEP")/(iupAttribGetFloat(param, "MAX")-iupAttribGetFloat(param, "MIN")));
         else if (iupStrEqual(type, "INTEGER"))
-          IupSetfAttribute(aux, "STEP", "%g", 1.0/(iupAttribGetFloat(param, "MAX")-iupAttribGetFloat(param, "MIN")));
+          IupSetFloat(aux, "STEP", 1.0f/(iupAttribGetFloat(param, "MAX")-iupAttribGetFloat(param, "MIN")));
       }
 
       if (aux)

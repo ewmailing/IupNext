@@ -25,8 +25,9 @@ void IupSetfAttributeId2(Ihandle* <strong>ih</strong>, const char* <strong>name<
   .<br>
   ...: values of the attribute.</p>
 <h3>Notes</h3>
-<p>This function is very useful because we usually have integer values and want 
-to pass them to IUP attributes, but this is done by means of a string.</p>
+<p>This function is very when a combination of values must be combined into one 
+string.</p>
+<p>When passing float values, use the format &quot;%.6f&quot; to maximize precision.</p>
 <p>Internally will call <strong>IupStoreAttribute</strong>.</p>
 <h3>See Also</h3>
 <p><a href="iupgetattribute.html">IupGetAttribute</a>, 

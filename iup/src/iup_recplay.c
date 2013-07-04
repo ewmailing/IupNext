@@ -38,7 +38,7 @@ static void iRecWriteInt(FILE* file, int value, int mode)
 static void iRecWriteFloat(FILE* file, float value, int mode)
 {
   if (mode == IUP_RECTEXT)
-    fprintf(file, "%g ", (double)value);
+    fprintf(file, "%.6f ", value);
   else
     fwrite(&value, sizeof(float), 1, file);
 }
@@ -191,7 +191,7 @@ static void iPlayReadInt(FILE* file, int *value, int mode)
 static void iPlayReadFloat(FILE* file, float *value, int mode)
 {
   if (mode == IUP_RECTEXT)
-    fscanf(file, "%g ", value);
+    fscanf(file, "%f ", value);
   else
     fread(value, sizeof(float), 1, file);
 }
@@ -257,7 +257,7 @@ static int iPlayAction(FILE* file, int mode)
       if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
       if (ferror(file)) return -1;
 
-      /*IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, button, (int)status);*/
+      /* IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, button, (int)status);*/
       iupdrvSendMouse(x, y, (int)button, (int)status);
 
       /* Process all messages between button press and release without interruption.
@@ -292,10 +292,10 @@ static int iPlayAction(FILE* file, int mode)
       if (ferror(file)) return -1;
 
       if (pressed)
-        /* IupSetfAttribute(NULL, "KEYPRESS", "%d", key); */
+        /* IupSetInt(NULL, "KEYPRESS", key); */
         iupdrvSendKey(key, 0x01);
       else
-        /* IupSetfAttribute(NULL, "KEYRELEASE", "%d", key); */
+        /* IupSetInt(NULL, "KEYRELEASE", key); */
         iupdrvSendKey(key, 0x02);
       break;
     }
@@ -309,7 +309,7 @@ static int iPlayAction(FILE* file, int mode)
       if (mode == IUP_RECBINARY) iPlayReadByte(file, &eol, mode);
       if (ferror(file)) return -1;
 
-      /*IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, 'W', (int)delta);*/
+      /* IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, 'W', (int)delta);*/
       iupdrvSendMouse(x, y, 'W', (int)delta);
       break;
     }
@@ -419,7 +419,7 @@ int IupPlayInput(const char* filename)
   IupSetCallback(timer, "ACTION_CB", (Icallback)iPlayTimer_CB);
   IupSetAttribute(timer, "TIME", "20");
   IupSetAttribute(timer, "_IUP_PLAYFILE", (char*)file);
-  IupSetfAttribute(timer, "_IUP_PLAYMODE", "%d", mode);
+  IupSetInt(timer, "_IUP_PLAYMODE", mode);
   IupSetAttribute(timer, "RUN", "YES");
 
   IupSetGlobal("_IUP_PLAYTIMER", (char*)timer);

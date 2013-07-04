@@ -350,7 +350,7 @@ void IupSetIntId(Ihandle* ih, const char* name, int id, int num)
 void IupSetFloatId(Ihandle* ih, const char* name, int id, float num)
 {
   char value[80];
-  sprintf(value, "%g", (double)num);
+  sprintf(value, "%.6f", (double)num);  /* maximum float precision */
   IupStoreAttributeId(ih, name, id, value);
 }
 
@@ -409,7 +409,7 @@ void IupSetIntId2(Ihandle* ih, const char* name, int lin, int col, int num)
 void IupSetFloatId2(Ihandle* ih, const char* name, int lin, int col, float num)
 {
   char value[80];
-  sprintf(value, "%g", (double)num);
+  sprintf(value, "%.6f", (double)num);   /* maximum float precision */
   IupStoreAttributeId2(ih, name, lin, col, value);
 }
 
@@ -628,17 +628,10 @@ void IupSetInt(Ihandle* ih, const char* name, int num)
   IupStoreAttribute(ih, name, value);
 }
 
-void IupSetIntInt(Ihandle *ih, const char* name, int num1, char sep, int num2)
-{
-  char value[40];
-  sprintf(value, "%d%c%d", num1, sep, num2);
-  IupStoreAttribute(ih, name, value);
-}
-
 void IupSetFloat(Ihandle* ih, const char* name, float num)
 {
   char value[80];
-  sprintf(value, "%g", (double)num);
+  sprintf(value, "%.6f", (double)num);  /* maximum float precision */
   IupStoreAttribute(ih, name, value);
 }
 
@@ -757,7 +750,7 @@ void iupAttribSetInt(Ihandle *ih, const char* name, int num)
 void iupAttribSetFloat(Ihandle *ih, const char* name, float num)
 {
   char value[80];
-  sprintf(value, "%g", (double)num);
+  sprintf(value, "%.6f", (double)num);  /* maximum float precision */
   iupAttribStoreStr(ih, name, value);
 }
 

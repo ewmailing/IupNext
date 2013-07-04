@@ -155,12 +155,12 @@ int iupluaScanf(lua_State *L)
     case 'G':
       if (s[-3] == 'l') {
         double l = 0;
-        sscanf(text[i], "%lg", &l);
+        sscanf(text[i], "%lf", &l);
         lua_pushnumber(L, l);
         total++;
       } else {
         float l = 0;
-        sscanf(text[i], "%g", &l);
+        sscanf(text[i], "%f", &l);
         lua_pushnumber(L, l);
         total++;
       }

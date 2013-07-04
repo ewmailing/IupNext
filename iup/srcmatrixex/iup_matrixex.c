@@ -128,8 +128,8 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
   {
     char* fzcolor = IupGetAttribute(ih, "FREEZECOLOR");
 
-    IupSetfAttribute(ih,"NUMLIN_NOSCROLL","%d",lin);
-    IupSetfAttribute(ih,"NUMCOL_NOSCROLL","%d",col);  
+    IupSetInt(ih,"NUMLIN_NOSCROLL",lin);
+    IupSetInt(ih,"NUMCOL_NOSCROLL",col);  
 
     IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", lin, IUP_INVALID_ID, fzcolor);
     IupSetAttributeId2(ih,"FRAMEVERTCOLOR",IUP_INVALID_ID, col, fzcolor);

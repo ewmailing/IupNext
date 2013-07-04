@@ -42,7 +42,8 @@ enum{IMAT_EDITNEXT_LIN,
      IMAT_EDITNEXT_COLCR,
      IMAT_EDITNEXT_NONE};
 
-typedef double (*ImatNumericConvertFunc)(double number, int dst_units, int src_units);
+typedef double      (*ImatNumericConvertFunc)(double number, int dst_units, int src_units);
+typedef const char* (*ImatNumericInfoFunc)(int quantity, int units);
 
 
 /***************************************************************************/
@@ -80,7 +81,7 @@ typedef struct _ImatLinColData
 
 typedef struct _ImatNumericData
 {
-  unsigned char quantity;    /* Unused here, it is just stored */
+  unsigned char quantity;
   unsigned char unit, unit_shown;
   ImatNumericConvertFunc convert_func;
   unsigned char flags;  
@@ -144,8 +145,10 @@ struct _IcontrolData
   int clip_x1, clip_x2, clip_y1, clip_y2;
 
   /* Numeric Columns */
-  char numeric_buffer[512];
+  char numeric_buffer_get[80];
+  char numeric_buffer_set[80];
   ImatNumericData* numeric_columns;   /* information for numeric columns (allocated after map) */
+  ImatNumericInfoFunc numeric_info_func;
 };
 
 

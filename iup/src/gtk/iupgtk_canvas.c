@@ -209,13 +209,13 @@ static gboolean gtkCanvasScrollEvent(GtkWidget *widget, GdkEventScroll *evt, Iha
     {
       float posy = ih->data->posy;
       posy -= delta*iupAttribGetFloat(ih, "DY")/10.0f;
-      IupSetfAttribute(ih, "POSY", "%g", posy);
+      IupSetFloat(ih, "POSY", posy);
     }
     else
     {
       float posx = ih->data->posx;
       posx -= delta*iupAttribGetFloat(ih, "DX")/10.0f;
-      IupSetfAttribute(ih, "POSX", "%g", posx);
+      IupSetFloat(ih, "POSX", posx);
     }
 
     if (scb)

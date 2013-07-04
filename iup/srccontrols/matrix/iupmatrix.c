@@ -797,6 +797,9 @@ static int iMatrixSetNumericQuantityIndexAttrib(Ihandle* ih, int col, const char
     iupStrToInt(value, &quantity);
     ih->data->numeric_columns[col].quantity = (unsigned char)quantity;
     ih->data->numeric_columns[col].convert_func = (ImatNumericConvertFunc)IupGetCallback(ih, "_IUPMAT_NUMERICCONVERT_CB");
+
+    if (!ih->data->numeric_info_func)
+      ih->data->numeric_info_func = (ImatNumericInfoFunc)IupGetCallback(ih, "_IUPMAT_NUMERICINFO_CB");
   }
   return 1;
 }
@@ -1732,13 +1735,13 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "MULTILINE", iMatrixGetMultilineAttrib, iMatrixSetMultilineAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MASK", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  /* IupMatrix Attributes - Numeric Columns */
+  /* IupMatrix Attributes - Numeric Columns (undocumented, will be exposed in IupMatrixEx) */
   iupClassRegisterAttributeId(ic, "NUMERICQUANTITYINDEX", NULL, iMatrixSetNumericQuantityIndexAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICFORMAT", NULL, iMatrixSetNumericFormatAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICFORMATTITLE", NULL, iMatrixSetNumericFormatTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITINDEX", NULL, iMatrixSetNumericUnitIndexAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWNINDEX", NULL, iMatrixSetNumericUnitShownIndexAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NUMERICFORMATDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "%f", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICFORMATDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "%.2lf", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "USETITLESIZE", iMatrixGetUseTitleSizeAttrib, iMatrixSetUseTitleSizeAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
