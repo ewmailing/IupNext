@@ -26,6 +26,9 @@
   .style4 {
 	font-size: large;
 }
+  .style5 {
+	text-decoration: underline;
+}
   </style>
 </head>
 
@@ -168,6 +171,43 @@ attribute.</p>
 operation. It is reset to NULL at the start of every operation that sets its 
 value.</p>
 <p>
+<strong>NUMERICFORMAT<em>id</em></strong>: format to convert the numeric data 
+into strings at the given column (id). If not defined the NUMERICFORMATDEF 
+attribute will be used. Uses the same format specification of the <strong>
+sprintf</strong> function in C, but only one value will be processed, can not 
+contain other strings.</p>
+<p>
+<strong>NUMERICFORMATDEF</strong>: default value used when NUMERICFORMATid is 
+not specified. Default: &quot;%.2lf&quot;.</p>
+<p>
+<strong>NUMERICFORMATTITLE<em>id</em></strong>: format of the title at the given 
+column (id). Uses the same format specification of the <strong>sprintf</strong> 
+function in C. It can contain other strings, and will receive two parameters the 
+current column title string (&quot;0:C&quot;) and the current column unit shown. If the 
+current title is NULL, then only the unit parameter is passed. If not specified 
+then only the title string (&quot;0:C&quot;) is used.</p>
+<p>
+<strong>NUMERICQUANTITY<em>id</em></strong>: Quantity used to define units for 
+the numeric data at the given column (id). Must set this attribute for the other 
+NUMERIC* attributes to work. For the available option see <a href="#UNITS">
+Available Quantity and Units</a> notes bellow. To improve the precision consider 
+using the <a href="#NUMERICGETVALUE_CB">NUMERICGETVALUE_CB</a> and
+<a href="#NUMERICSETVALUE_CB">NUMERICSETVALUE_CB</a> callbacks.</p>
+<p>
+<strong>NUMERICUNIT<em>id</em></strong>: Unit of the numbers set into the matrix 
+at the given column (id). Must be in the same category of the NUMERICFORMAT 
+attribute. The application must process numbers for the column only in this 
+unit, when getting or setting attributes. But the values passed to the 
+<a href="iupmatrix_cb.html#DROP_CB">DROP_CB</a> 
+and <a href="iupmatrix_cb.html#MENUDROP_CB">MENUDROP_CB</a> callbacks will not be processed because they can contain 
+strings.</p>
+<p>
+<strong>NUMERICUNITSHOWN<em>id</em></strong>: Unit to be displayed at the given 
+column (id). Must be in the same category of the NUMERICFORMAT attribute. 
+Default value is equal to the NUMERICUNIT attribute. The library will 
+automatically convert the numeric data to and from the shown and data units when 
+the data is displayed or modified.</p>
+<p>
 <strong>PASTE</strong> (write-only): paste data from the clipboard. Data is 
 obtained from the clipboard in TEXT format. Value is the insert position, it can 
 be &quot;FOCUS&quot; to use the <a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a> 
@@ -238,6 +278,33 @@ of iterations. when status=2 is the current iteration. ignored when status=0.<br
 <p class="info"><u>Returns</u>: When status=2 and IUP_IGNORE is returned the 
 processing is aborted. When process is aborted the callback will be called once 
 more with status=0.</p>
+<p><a name="NUMERICGETVALUE_CB"><strong>NUMERICGETVALUE_CB</strong></a>: Action 
+generated when a cell value is being retrieved from a numeric column. It is only 
+called if the cell value is NULL in normal mode, or the
+<a href="iupmatrix_cb.html#VALUE_CB">VALUE_CB</a> returned value 
+is NULL in callback mode, and the column has <strong>NUMERICQUANTITY<em>id </em>
+</strong>defined. Not called for lin=0.</p>
+<pre>double function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<strong>elem</strong>:numericgetvalue_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+    Identifier of the matrix interacting with 
+    the user.<br>
+    <strong>lin</strong>, <strong>col</strong>:
+    Coordinates of the cell.</p>
+<p class="info"><span><span class="style5">Returns</span>:</span> the number to be drawn. </p>
+<p><a name="NUMERICSETVALUE_CB"><strong>NUMERICSETVALUE_CB</strong></a>: Action 
+generated when a cell value is being modified at a numeric column. It is only 
+called if the column has <strong>NUMERICQUANTITY<em>id </em>
+</strong>defined. Not called for lin=0. If defined the value will not be updated 
+as string in normal mode and&nbsp; <a href="iupmatrix_cb.html#VALUE_EDIT_CB">
+VALUE_EDIT_CB</a> will not be called in callback mode.</p>
+<pre>int function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, double <strong>value</strong>); [in C]
+<strong>elem</strong>:numericsetvalue_cb(<strong>lin, col</strong>, <strong>value</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+    Identifier of the matrix interacting with 
+    the user.<br>
+    <strong>lin</strong>, <strong>col</strong>:
+    Coordinates of the cell.<br><strong>value</strong>: new value of the cell.</p>
 <p><strong><a name="PASTESIZE_CB">PASTESIZE_CB</a></strong>: Action generated 
 when pasting and data at the insert position will have more lines or columns 
 than the current matrix. The application can change the NUMLIN and NUMCOL 
@@ -405,7 +472,8 @@ control.</p>
 -->
 
 <h3><a name="Notes">Notes</a></h3>
-<p>&nbsp;</p>
+<h4><a name="UNITS">Available Quantity and Units</a></h4>
+<p>fvdfb</p>
 
 
 <h3><a name="Examples">Examples</a></h3>

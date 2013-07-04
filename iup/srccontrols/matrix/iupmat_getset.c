@@ -58,8 +58,9 @@ void iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value, int
         setvalue_cb(ih, lin, col, number);
         return;
       }
-      else
+      else if (ih->data->numeric_columns[col].unit_shown!=ih->data->numeric_columns[col].unit) 
       {
+        /* only use the number if a conversion occurred */
         sprintf(ih->data->numeric_buffer_set, "%.18g", number);  /* maximum double precision */
         value = ih->data->numeric_buffer_set;
       }
@@ -144,8 +145,6 @@ static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col, const char* v
   sprintf(ih->data->numeric_buffer_get, format, number);
   return ih->data->numeric_buffer_get;
 }
-
-//TODO DROP_CB e MENUDROP_CB
 
 char* iupMatrixCellGetValue (Ihandle* ih, int lin, int col)
 {  
