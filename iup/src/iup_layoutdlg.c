@@ -869,7 +869,7 @@ static int iLayoutGetParamOpacity_CB(Ihandle* dialog, int param_index, void* use
     Ihandle* dlg = (Ihandle*)user_data;
     Ihandle* param = (Ihandle*)IupGetAttribute(dialog, "PARAM0");
     int opacity = IupGetInt(param, "VALUE");
-    IupSetfAttribute(dlg,"OPACITY", "%d", opacity);
+    IupSetInt(dlg,"OPACITY", opacity);
   }
   return 1;
 }
@@ -888,7 +888,7 @@ static int iLayoutMenuOpacity_CB(Ihandle* ih)
   if (opacity == 0 || opacity == 255)
     IupSetAttribute(dlg, "OPACITY", NULL);
   else
-    IupSetfAttribute(dlg,"OPACITY", "%d", opacity);
+    IupSetInt(dlg,"OPACITY", opacity);
 
   return IUP_DEFAULT;
 }
@@ -1558,11 +1558,7 @@ static void iLayoutPropertiesUpdateIdList(Ihandle *showidlist, Ihandle *ih, int 
       start_id = 1;
 
     for (id=start_id ; id<count+start_id ; id++)
-    {
-      char str[50];
-      sprintf(str, "%d", id);
-      IupSetAttributeId(showidlist, "", id-start_id+1, str);
-    }
+      IupSetIntId(showidlist, "", id-start_id+1, id);
   }
 }
 
@@ -2393,7 +2389,7 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
         int old_id = IupGetInt(layoutdlg->tree, "VALUE");
         Ihandle* old_elem = (Ihandle*)IupTreeGetUserId(layoutdlg->tree, old_id);
         iLayoutTreeSetNodeColor(layoutdlg->tree, old_id, old_elem);
-        IupSetfAttribute(layoutdlg->tree, "VALUE", "%d", id);
+        IupSetInt(layoutdlg->tree, "VALUE", id);
         iLayoutUpdateMark(layoutdlg, elem, id);
       }
     }
@@ -2556,7 +2552,7 @@ static int iLayoutDialogKAny_CB(Ihandle* dlg, int key)
       if (opacity == 0 || opacity == 255)
         IupSetAttribute(dlg, "OPACITY", NULL);
       else
-        IupSetfAttribute(dlg,"OPACITY", "%d", opacity);
+        IupSetInt(dlg,"OPACITY", opacity);
       break;
     }
   }

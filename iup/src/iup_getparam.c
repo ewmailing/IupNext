@@ -127,13 +127,13 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
       float step = iupAttribGetFloat(self, "_IUPGP_INCSTEP");
       float val;
       if (iupStrToFloat(after, &val))
-        IupSetfAttribute(self, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
+        IupSetInt(self, "SPINVALUE", (int)((val-min)/step + 0.5));
     }
     else
     {
       int val;
       if (iupStrToInt(after, &val))
-        IupSetfAttribute(self, "SPINVALUE", "%d", val);
+        IupSetInt(self, "SPINVALUE", val);
     }
   }
 
@@ -204,7 +204,7 @@ static int iParamValAction_CB(Ihandle *self)
 
   type = iupAttribGet(param, "TYPE");
   if (iupStrEqual(type, "INTEGER"))
-    IupSetfAttribute(text, "VALUE", "%d", (int)val);
+    IupSetInt(text, "VALUE", (int)val);
   else
     IupSetFloat(text, "VALUE", val);
 
@@ -215,12 +215,12 @@ static int iParamValAction_CB(Ihandle *self)
       float min = iupAttribGetFloat(param, "MIN");
       float step = iupAttribGetFloat(text, "_IUPGP_INCSTEP");
       float val = IupGetFloat(text, "VALUE");
-      IupSetfAttribute(text, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
+      IupSetInt(text, "SPINVALUE", (int)((val-min)/step + 0.5));
     }
     else
     {
       int val = IupGetInt(text, "VALUE");
-      IupSetfAttribute(text, "SPINVALUE", "%d", val);
+      IupSetInt(text, "SPINVALUE", val);
     }
   }
 
@@ -243,7 +243,7 @@ static int iParamListAction_CB(Ihandle *self, char *t, int i, int v)
     {
       /* Undo */
       iupAttribSetInt(param, "VALUE", old_i);
-      IupSetfAttribute(self, "VALUE", "%d", old_i+1);
+      IupSetInt(self, "VALUE", old_i+1);
 
       /* there is no IUP_IGNORE for IupList */
       return IUP_DEFAULT;
@@ -507,18 +507,16 @@ static Ihandle* iParamCreateBox(Ihandle* param)
   }
   else if (iupStrEqual(type, "LIST"))
   {
-    char str[20] = "0";
     int i = 0;
     ctrl = IupList(NULL);
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamListAction_CB);
     IupSetAttribute(ctrl, "DROPDOWN", "YES");
-    IupSetfAttribute(ctrl, "VALUE", "%d", iupAttribGetInt(param, "VALUE")+1);
+    IupSetInt(ctrl, "VALUE", iupAttribGetInt(param, "VALUE")+1);
 
-    while (*iupAttribGet(param, str) != 0)
+    while (*iupAttribGetId(param, "", i) != 0)
     {
-      IupStoreAttributeId(ctrl, "", i+1, iupAttribGet(param, str));
+      IupStoreAttributeId(ctrl, "", i+1, iupAttribGetId(param, "", i));
       i++;
-      sprintf(str, "%d", i);
     }
     IupStoreAttributeId(ctrl, "", i+1, NULL);
 
@@ -527,21 +525,19 @@ static Ihandle* iParamCreateBox(Ihandle* param)
   else if (iupStrEqual(type, "OPTIONS"))
   {
     Ihandle* tgl;
-    char str[20] = "0";
     int i = 0;
     ctrl = IupHbox(NULL);
     IupSetAttribute(ctrl, "GAP", "5");
 
-    while (*iupAttribGet(param, str) != 0)
+    while (*iupAttribGetId(param, "", i) != 0)
     {
-      tgl = IupToggle(iupAttribGet(param, str), NULL);
-      IupStoreAttribute(tgl, "OPT", str);
+      tgl = IupToggle(iupAttribGetId(param, "", i), NULL);
+      IupSetInt(tgl, "OPT", i);
       IupSetCallback(tgl, "ACTION", (Icallback)iParamOptionsAction_CB);
 
       IupAppend(ctrl, tgl);
 
       i++;
-      sprintf(str, "%d", i);
     }
 
     IupAppend(box, IupRadio(ctrl));
@@ -684,7 +680,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         float step = iupAttribGetFloat(param, "STEP");
         float val = iupAttribGetFloat(param, "VALUE");
         if (step == 0) step = (max-min)/20.0f;
-        IupSetfAttribute(ctrl, "MASKFLOAT", "%.6f:%.6f", (double)min, (double)max);
+        IupSetfAttribute(ctrl, "MASKFLOAT", "%.9f:%.9f", (double)min, (double)max);
                              
         /* here spin is always [0-spinmax] converted to [min-max] */
 
@@ -693,8 +689,8 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         IupAppend(box, ctrl);
         IupSetCallback(ctrl, "SPIN_CB", (Icallback)iParamSpinReal_CB);
         /* SPINMIN=0 and SPININC=1 */
-        IupSetfAttribute(ctrl, "SPINMAX", "%d", (int)((max-min)/step + 0.5));
-        IupSetfAttribute(ctrl, "SPINVALUE", "%d", (int)((val-min)/step + 0.5));
+        IupSetInt(ctrl, "SPINMAX", (int)((max-min)/step + 0.5));
+        IupSetInt(ctrl, "SPINVALUE", (int)((val-min)/step + 0.5));
 
         iupAttribSetFloat(ctrl, "_IUPGP_INCSTEP", step);
         iupAttribSetStr(ctrl, "_IUPGP_SPINREAL", "1");
@@ -705,7 +701,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         if (min == 0)
           IupSetAttribute(ctrl, "MASK", IUP_MASK_UFLOAT);
         else
-          IupSetfAttribute(ctrl, "MASKFLOAT", "%.6f:%.6f", (double)min, (double)1.0e10);
+          IupSetfAttribute(ctrl, "MASKFLOAT", "%.9f:%.9f", (double)min, (double)1.0e10);
         IupAppend(box, ctrl);
       }
       else
@@ -724,7 +720,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
       IupAppend(box, ctrl);
       IupSetCallback(ctrl, "SPIN_CB", (Icallback)iParamSpinInt_CB);
       iupAttribSetStr(ctrl, "_IUPGP_INCSTEP", "1");
-      IupSetfAttribute(ctrl, "SPINVALUE", "%d", val);
+      IupSetInt(ctrl, "SPINVALUE", val);
 
       /* here spin is always [min-max] */
 
@@ -736,10 +732,10 @@ static Ihandle* iParamCreateBox(Ihandle* param)
         if (step)
         {
           iupAttribSetInt(ctrl, "_IUPGP_INCSTEP", step);
-          IupSetfAttribute(ctrl, "SPININC", "%d", step);
+          IupSetInt(ctrl, "SPININC", step);
         }
-        IupSetfAttribute(ctrl, "SPINMAX", "%d", max);
-        IupSetfAttribute(ctrl, "SPINMIN", "%d", min);
+        IupSetInt(ctrl, "SPINMAX", max);
+        IupSetInt(ctrl, "SPINMIN", min);
         IupSetfAttribute(ctrl, "MASKINT", "%d:%d", min, max);
       }
       else if (iupAttribGetInt(param, "PARTIAL"))
@@ -749,7 +745,7 @@ static Ihandle* iParamCreateBox(Ihandle* param)
           IupSetAttribute(ctrl, "MASK", IUP_MASK_UINT);
         else
           IupSetfAttribute(ctrl, "MASKINT", "%d:2147483647", min);
-        IupSetfAttribute(ctrl, "SPINMIN", "%d", min);
+        IupSetInt(ctrl, "SPINMIN", min);
         IupSetAttribute(ctrl, "SPINMAX", "2147483647");
       }
       else                             
