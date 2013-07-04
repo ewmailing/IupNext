@@ -400,7 +400,7 @@ char *iupdrvGetGlobal(const char *name)
                     (LPTSTR)&lpMsgBuf, 0, NULL);
       if (lpMsgBuf)
       {
-        char* str = iupStrGetMemoryCopy((const char*)lpMsgBuf);
+        char* str = iupStrReturnStr((const char*)lpMsgBuf);
         LocalFree(lpMsgBuf);
         return str;
       }

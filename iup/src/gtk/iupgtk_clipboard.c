@@ -132,7 +132,7 @@ static char* gtkClipboardGetFormatDataAttrib(Ihandle *ih)
   data = iupStrGetMemory(size);
   memcpy(data, clip_data, size);
 
-  iupAttribSetStrf(ih, "FORMATDATASIZE", "%d", size);
+  iupAttribSetInt(ih, "FORMATDATASIZE", size);
   return data;
 }
 

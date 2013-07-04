@@ -33,7 +33,7 @@ void iupError(const char* format, ...)
   fprintf(stderr, "%s", msg);
 #else
   if (iupIsOpened())
-    iupStrMessageShowError(NULL, iupStrGetMemoryCopy(msg));
+    iupStrMessageShowError(NULL, msg);
   else
     fprintf(stderr, "%s", msg);
 #endif

@@ -204,7 +204,7 @@ static char* winClipboardGetTextAttrib(Ihandle *ih)
     return NULL;
   }
   
-  str = iupStrGetMemoryCopy((char*)GlobalLock(hHandle));
+  str = iupStrReturnStr((char*)GlobalLock(hHandle));
  
   GlobalUnlock(hHandle);
   CloseClipboard();
@@ -373,7 +373,7 @@ static char* winClipboardGetFormatDataAttrib(Ihandle *ih)
   GlobalUnlock(hHandle);
   CloseClipboard();
 
-  iupAttribSetStrf(ih, "FORMATDATASIZE", "%d", size);
+  iupAttribSetInt(ih, "FORMATDATASIZE", size);
   return data;
 }
 

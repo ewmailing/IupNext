@@ -328,7 +328,7 @@ static char* winWebBrowserGetValueAttrib(Ihandle* ih)
   {
     char* str = iupwinStrWide2Char(pbstrLocationURL);
     SysFreeString(pbstrLocationURL);
-    char* value = iupStrGetMemoryCopy(str);
+    char* value = iupStrReturnStr(str);
     free(str);
     return value;
   }

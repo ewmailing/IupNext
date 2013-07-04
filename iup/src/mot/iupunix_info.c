@@ -29,7 +29,7 @@
 
 char* iupdrvLocaleInfo(void)
 {
-  return iupStrGetMemoryCopy(nl_langinfo(CODESET));
+  return iupStrReturnStr(nl_langinfo(CODESET));
 }
 
 int iupdrvMakeDirectory(const char* name) 

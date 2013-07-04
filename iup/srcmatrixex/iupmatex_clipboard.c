@@ -361,14 +361,9 @@ static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* 
 
     if (!iupStrEqualNoCase(value, "ALL"))
     {
-      char* value2 = (char*)value;
-      char* value1 = iupStrDupUntil(&value2, '-');
-      if (!value1)
-        return;
-
-      iupStrToIntInt(value1, &lin1, &col1, ':');
-      iupStrToIntInt(value2, &lin2, &col2, ':');
-      free(value1);
+      sscanf(value, "%d:%d-%d:%d", &lin1, &col1, &lin2, &col2);
+      iupMatrixExCheckLimitsOrder(&lin1, &lin2, 1, num_lin);
+      iupMatrixExCheckLimitsOrder(&col1, &col2, 1, num_col);
     }
 
     iMatrixExCopyGetData(matex_data, data, lin1, col1, lin2, col2);

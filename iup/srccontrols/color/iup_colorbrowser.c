@@ -681,7 +681,7 @@ static int iColorBrowserKeypress_CB(Ihandle* ih, int c, int press)
 
 static char* iColorBrowserGetHSIAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(100);
+  char* buffer = iupStrGetMemory(3*80);
   sprintf(buffer, "%g %g %g", (double)ih->data->hue, (double)ih->data->saturation, (double)ih->data->intensity);
   return buffer;
 }
@@ -711,9 +711,7 @@ static int iColorBrowserSetHSIAttrib(Ihandle* ih, const char* value)
 
 static char* iColorBrowserGetRGBAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(20);
-  sprintf(buffer, "%d %d %d", (int) ih->data->red, (int) ih->data->green, (int) ih->data->blue);
-  return buffer;
+  return iupStrReturnRGB(ih->data->red, ih->data->green, ih->data->blue);
 }
 
 static int iColorBrowserSetRGBAttrib(Ihandle* ih, const char* value)

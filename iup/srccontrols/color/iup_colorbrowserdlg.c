@@ -119,18 +119,6 @@ static void iColorBrowserDlgHex_TXT_Update(IcolorDlgData* colordlg_data)
   IupSetfAttribute(colordlg_data->colorhex_txt, "VALUE", "#%02X%02X%02X", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue);
 }
 
-static int iupStrHexToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned char *b)
-{
-  unsigned int ri = 0, gi = 0, bi = 0;
-  if (!str) return 0;
-  if (sscanf(str, "#%2X%2X%2X", &ri, &gi, &bi) != 3) return 0;
-  if (ri > 255 || gi > 255 || bi > 255) return 0;
-  *r = (unsigned char)ri;
-  *g = (unsigned char)gi;
-  *b = (unsigned char)bi;
-  return 1;
-}
-
 /*************************************************\
 * Updates text fields with the current HSI values *
 \*************************************************/
@@ -194,7 +182,6 @@ static void iColorBrowserDlgRGBChanged(IcolorDlgData* colordlg_data)
 \***********************************************/
 static void iColorBrowserDlgInit_Defaults(IcolorDlgData* colordlg_data)
 {
-  char* str = iupStrGetMemory(100);
   Ihandle* box;
   int i;
 
@@ -227,10 +214,7 @@ static void iColorBrowserDlgInit_Defaults(IcolorDlgData* colordlg_data)
   IupSetAttribute(box, "VISIBLE", "NO");
 
   for(i = 0; i < 20; i++)
-  {
-    sprintf(str, "CELL%d", i);
-    IupSetAttribute(colordlg_data->colortable_cbar, str, default_colortable_cells[i]);
-  }
+    IupSetAttributeId(colordlg_data->colortable_cbar, "CELL", i, default_colortable_cells[i]);
 }
 
 
@@ -433,7 +417,7 @@ static int iColorBrowserDlgHexAction_CB(Ihandle* ih, int c, char* value)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
-  if (iupStrHexToRGB(value, &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue))
+  if (iupStrToRGB(value, &(colordlg_data->red), &(colordlg_data->green), &(colordlg_data->blue)))
   {
     iColorBrowserDlgRGB2HSI(colordlg_data);
     iColorBrowserDlgBrowserRGB_Update(colordlg_data);
@@ -512,12 +496,9 @@ static int iColorBrowserDlgAlphaSpin_CB(Ihandle* ih, int vi)
 
 static int iColorBrowserDlgColorTableSelect_CB(Ihandle* ih, int cell, int type)
 {
-  char* str = iupStrGetMemory(30);
-
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
-  sprintf(str, "CELL%d", cell);
-  iupStrToRGB(IupGetAttribute(ih, str), &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue);
+  iupStrToRGB(IupGetAttributeId(ih, "CELL", cell), &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue);
 
   iColorBrowserDlgRGB_TXT_Update(colordlg_data);
   iColorBrowserDlgRGBChanged(colordlg_data);
@@ -688,16 +669,40 @@ static int iColorBrowserDlgSetAlphaAttrib(Ihandle* ih, const char* value)
 
 static char* iColorBrowserDlgGetAlphaAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(100);
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
-  sprintf(buffer, "%d", (int)colordlg_data->alpha);
-  return buffer;
+  return iupStrReturnInt((int)colordlg_data->alpha);
+}
+
+static int iStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)
+{
+  unsigned int ri = 0, gi = 0, bi = 0, ai = 0, ret;
+  if (!str) return 0;
+  if (str[0]=='#')
+  {
+    str++;
+    ret = sscanf(str, "%2X%2X%2X%2X", &ri, &gi, &bi, &ai);
+  }
+  else
+    ret = sscanf(str, "%u %u %u %u", &ri, &gi, &bi, &ai);
+
+  if (ret < 3) return 0;
+  if (ri > 255 || gi > 255 || bi > 255 || ai > 255) return 0;
+  *r = (unsigned char)ri;
+  *g = (unsigned char)gi;
+  *b = (unsigned char)bi;
+  if (ret == 4)
+  {
+    *a = (unsigned char)ai;
+    return 4;
+  }
+  else
+    return 3;
 }
 
 static int iColorBrowserDlgSetValueAttrib(Ihandle* ih, const char* value)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
-  int ret = iupStrToRGBA(value, &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue, &colordlg_data->alpha);
+  int ret = iStrToRGBA(value, &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue, &colordlg_data->alpha);
   if (!ret)
     return 0;
   
@@ -721,13 +726,15 @@ static int iColorBrowserDlgSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* iColorBrowserDlgGetValueAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(100);
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   if (iupAttribGetBoolean(ih, "SHOWALPHA"))
+  {
+    char* buffer = iupStrGetMemory(2*20);
     sprintf(buffer, "%d %d %d %d", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue, (int)colordlg_data->alpha);
+    return buffer;
+  }
   else
-    sprintf(buffer, "%d %d %d", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue);
-  return buffer;
+    return iupStrReturnRGB(colordlg_data->red, colordlg_data->green, colordlg_data->blue);
 }
 
 static int iupStrToHSI_Int(const char *str, int *h, int *s, int *i)
@@ -765,9 +772,9 @@ static int iColorBrowserDlgSetValueHSIAttrib(Ihandle* ih, const char* value)
 
 static char* iColorBrowserDlgGetValueHSIAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(100);
+  char* buffer = iupStrGetMemory(3*20);
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
-  sprintf(buffer, "%d %d %d", (int)colordlg_data->hue, (int)(colordlg_data->saturation*100), (int)(colordlg_data->intensity*100));
+  sprintf(buffer, "%d %d %d",(int)colordlg_data->hue, (int)(colordlg_data->saturation*100), (int)(colordlg_data->intensity*100));
   return buffer;
 }
 
@@ -775,7 +782,7 @@ static int iColorBrowserDlgSetValueHexAttrib(Ihandle* ih, const char* value)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
-  if (!iupStrHexToRGB(value, &colordlg_data->red, &colordlg_data->green, &colordlg_data->blue))
+  if (!iupStrToRGB(value, &(colordlg_data->red), &(colordlg_data->green), &(colordlg_data->blue)))
     return 0;
 
   colordlg_data->previous_color = cdEncodeColor(colordlg_data->red, colordlg_data->green, colordlg_data->blue);
@@ -791,7 +798,7 @@ static int iColorBrowserDlgSetValueHexAttrib(Ihandle* ih, const char* value)
 
 static char* iColorBrowserDlgGetValueHexAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(100);
+  char* buffer = iupStrGetMemory(20);
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   sprintf(buffer, "#%02X%02X%02X", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue);
   return buffer;
@@ -801,12 +808,11 @@ static char* iColorBrowserDlgGetColorTableAttrib(Ihandle* ih)
 {
   int i, inc, off = 0;
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
-  char* color_str, attrib_str[30];
-  char* str = iupStrGetMemory(300);
+  char* color_str;
+  char* str = iupStrGetMemory(20*3*20);
   for (i=0; i < 20; i++)
   {
-    sprintf(attrib_str, "CELL%d", i);
-    color_str = IupGetAttribute(colordlg_data->colortable_cbar, attrib_str);
+    color_str = IupGetAttributeId(colordlg_data->colortable_cbar, "CELL", i);
     inc = strlen(color_str);
     memcpy(str+off, color_str, inc);
     memcpy(str+off+inc, ";", 1);
@@ -820,7 +826,6 @@ static int iColorBrowserDlgSetColorTableAttrib(Ihandle* ih, const char* value)
 {
   int i = 0;
   unsigned char r, g, b;
-  char str[30];
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   if (!ih->handle)    /* do it only before map */
@@ -829,10 +834,7 @@ static int iColorBrowserDlgSetColorTableAttrib(Ihandle* ih, const char* value)
   while (value && *value && i < 20)
   {
     if (iupStrToRGB(value, &r, &g, &b))
-    {
-      sprintf(str, "CELL%d", i);
-      IupSetfAttribute(colordlg_data->colortable_cbar, str, "%d %d %d", (int)r, (int)g, (int)b);
-    }
+      IupSetRGBId(colordlg_data->colortable_cbar, "CELL", i, r, g, b);
 
     value = strchr(value, ';');
     if (value) value++;

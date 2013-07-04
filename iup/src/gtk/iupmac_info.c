@@ -374,5 +374,5 @@ char *iupdrvGetUserName(void)
 
 char* iupdrvLocaleInfo(void)
 {
-  return iupStrGetMemoryCopy(nl_langinfo(CODESET));
+  return iupStrReturnStr(nl_langinfo(CODESET));
 }

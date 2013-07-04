@@ -45,11 +45,7 @@ static char* gtkWebBrowserGetItemHistoryAttrib(Ihandle* ih, int id)
   WebKitWebBackForwardList *back_forward_list = webkit_web_view_get_back_forward_list ((WebKitWebView*)ih->handle);
   WebKitWebHistoryItem* item = webkit_web_back_forward_list_get_nth_item(back_forward_list, id);
   if (item)
-  {
-    char* str = iupStrGetMemory(1024);
-    sprintf(str, "%s", webkit_web_history_item_get_uri(item));
-    return str;
-  }
+    return iupStrReturnStr(webkit_web_history_item_get_uri(item));
   else
     return NULL;
 }
@@ -57,17 +53,13 @@ static char* gtkWebBrowserGetItemHistoryAttrib(Ihandle* ih, int id)
 static char* gtkWebBrowserGetForwardCountAttrib(Ihandle* ih)
 {
   WebKitWebBackForwardList *back_forward_list = webkit_web_view_get_back_forward_list ((WebKitWebView*)ih->handle);
-  char* str = iupStrGetMemory(30);
-  sprintf(str, "%d", webkit_web_back_forward_list_get_forward_length(back_forward_list));
-  return str;
+  return iupStrReturnInt(webkit_web_back_forward_list_get_forward_length(back_forward_list));
 }
 
 static char* gtkWebBrowserGetBackCountAttrib(Ihandle* ih)
 {
   WebKitWebBackForwardList *back_forward_list = webkit_web_view_get_back_forward_list ((WebKitWebView*)ih->handle);
-  char* str = iupStrGetMemory(30);
-  sprintf(str, "%d", webkit_web_back_forward_list_get_back_length(back_forward_list));
-  return str;
+  return iupStrReturnInt(webkit_web_back_forward_list_get_back_length(back_forward_list));
 }
 
 static int gtkWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
@@ -123,7 +115,7 @@ static int gtkWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
 static char* gtkWebBrowserGetValueAttrib(Ihandle* ih)
 {
   const gchar* value = webkit_web_view_get_uri((WebKitWebView*)ih->handle);
-  return iupStrGetMemoryCopy(value);
+  return iupStrReturnStr(value);
 }
 
 /*********************************************************************************************/

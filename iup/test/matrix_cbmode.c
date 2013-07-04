@@ -69,7 +69,7 @@ static int edition_cb(Ihandle *self, int lin, int col, int mode, int update)
 #ifndef BIG_MATRIX
     if (value && strcmp(value, data[lin-1][col-1])!=0)
 #else
-    char* cell = IupMatGetAttribute(self, "", lin, col);
+    char* cell = IupGetAttributeId2(self, "", lin, col);
     if (value && cell && strcmp(value, cell)!=0)
 #endif
       return IUP_IGNORE;
@@ -133,8 +133,8 @@ static Ihandle* create_matrix(void)
   {
     for (col = 0; col < 20; col++)
     {
-      IupMatSetAttribute(mat,"BGCOLOR", lin, col, "192 192 192");
-      IupMatSetAttribute(mat,"FGCOLOR", lin, col, "1 1 1");
+      IupSetAttributeId2(mat,"BGCOLOR", lin, col, "192 192 192");
+      IupSetAttributeId2(mat,"FGCOLOR", lin, col, "1 1 1");
     }
   }
 #endif

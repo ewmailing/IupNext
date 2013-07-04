@@ -165,7 +165,7 @@ IupTreeSetAttributeHandle
 IupTreeStoreAttribute
 IupTreeGetAttribute  
 IupTreeGetInt        
-IupTreeGetFloat      
+IupTreeGetFloat 
 IupTreeSetfAttribute
 IupTree
 IupTreeGetId
@@ -186,6 +186,12 @@ IupGetFloatId2
 IupSetfAttributeId2
 IupRecordInput
 IupPlayInput
+IupGetRGB
+IupSetRGB
+IupGetRGBId
+IupSetRGBId
+IupGetRGBId2
+IupSetRGBId2
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib
@@ -255,13 +261,18 @@ iupTableClear
 iupStrToUnix
 iupStrToStrStr
 iupStrToRGB
-iupStrToRGBA
 iupStrToMac
 iupStrToIntInt
 iupStrToInt
 iupStrToFloatFloat
 iupStrToFloat
 iupStrToDos
+iupStrReturnRGB
+iupStrReturnInt
+iupStrReturnIntInt
+iupStrReturnFloat
+iupStrReturnStrStr
+iupStrReturnFloatFloat
 iupStrReplace
 iupStrRemove
 iupStrProcessMnemonic
@@ -275,7 +286,7 @@ iupStrUpper
 iupStrHasSpace
 iupStrLineCount
 iupStrInsert
-iupStrGetMemoryCopy
+iupStrReturnStr
 iupStrGetMemory
 iupStrGetLargeMem
 iupStrFileMakeFileName

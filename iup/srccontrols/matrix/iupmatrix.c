@@ -56,16 +56,12 @@ int iupMatrixIsValid(Ihandle* ih, int check_cells)
 
 static char* iMatrixGetOriginAttrib(Ihandle* ih)
 {
-  char* val = iupStrGetMemory(100);
-  sprintf(val, "%d:%d", ih->data->lines.first, ih->data->columns.first);
-  return val;
+  return iupStrReturnIntInt(ih->data->lines.first, ih->data->columns.first, ':');
 }
 
 static char* iMatrixGetOriginOffsetAttrib(Ihandle* ih)
 {
-  char* val = iupStrGetMemory(100);
-  sprintf(val, "%d:%d", ih->data->lines.first_offset, ih->data->columns.first_offset);
-  return val;
+  return iupStrReturnIntInt(ih->data->lines.first_offset, ih->data->columns.first_offset, ':');
 }
 
 static int iMatrixSetOriginAttrib(Ihandle* ih, const char* value)
@@ -173,9 +169,7 @@ static int iMatrixSetFocusCellAttrib(Ihandle* ih, const char* value)
 
 static char* iMatrixGetFocusCellAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(100);
-  sprintf(str, "%d:%d", ih->data->lines.focus_cell, ih->data->columns.focus_cell);
-  return str;
+  return iupStrReturnIntInt(ih->data->lines.focus_cell, ih->data->columns.focus_cell, ':');
 }
 
 static int iMatrixSetUseTitleSizeAttrib(Ihandle* ih, const char* value)
@@ -297,23 +291,17 @@ static char* iMatrixGetMultilineAttrib(Ihandle* ih)
 
 static char* iMatrixGetCountAttrib(Ihandle* ih)
 {
-  char* num = iupStrGetMemory(100);
-  sprintf(num, "%d", ih->data->lines.num>ih->data->columns.num? ih->data->lines.num: ih->data->columns.num);
-  return num;
+  return iupStrReturnInt(ih->data->lines.num>ih->data->columns.num? ih->data->lines.num: ih->data->columns.num);
 }
 
 static char* iMatrixGetNumLinAttrib(Ihandle* ih)
 {
-  char* num = iupStrGetMemory(100);
-  sprintf(num, "%d", ih->data->lines.num-1);  /* the attribute does not include the title */
-  return num;
+  return iupStrReturnInt(ih->data->lines.num-1);  /* the attribute does not include the title */
 }
 
 static char* iMatrixGetNumColAttrib(Ihandle* ih)
 {
-  char* num = iupStrGetMemory(100);
-  sprintf(num, "%d", ih->data->columns.num-1);  /* the attribute does not include the title */
-  return num;
+  return iupStrReturnInt(ih->data->columns.num-1);  /* the attribute does not include the title */
 }
 
 static int iMatrixSetMarkModeAttrib(Ihandle* ih, const char* value)
@@ -445,31 +433,17 @@ static int iMatrixSetActiveAttrib(Ihandle* ih, const char* value)
 
 static int iMatrixHasColWidth(Ihandle* ih, int col)
 {
-  char str[100];
-  char* value;
-
-  sprintf(str, "WIDTH%d", col);
-  value = iupAttribGet(ih, str);
+  char* value = iupAttribGetId(ih, "WIDTH", col);
   if (!value)
-  {
-    sprintf(str, "RASTERWIDTH%d", col);
-    value = iupAttribGet(ih, str);
-  }
+    value = iupAttribGetId(ih, "RASTERWIDTH", col);
   return (value!=NULL);
 }
 
 static int iMatrixHasLineHeight(Ihandle* ih, int lin)
 {
-  char str[100];
-  char* value;
-
-  sprintf(str, "HEIGHT%d", lin);
-  value = iupAttribGet(ih, str);
+  char* value = iupAttribGetId(ih, "HEIGHT", lin);
   if (!value)
-  {
-    sprintf(str, "RASTERHEIGHT%d", lin);
-    value = iupAttribGet(ih, str);
-  }
+    value = iupAttribGetId(ih, "RASTERHEIGHT", lin);
   return (value!=NULL);
 }
 
@@ -519,15 +493,11 @@ static void iMatrixFitLines(Ihandle* ih, int height)
   if (empty_num && empty_lin_visible)
   {
     int i;
-    char str[100];
 
     line_height = height/empty_lin_visible - (IMAT_PADDING_H + IMAT_FRAME_H);
 
     for(i = 0; i < empty_num; i++)
-    {
-      sprintf(str, "RASTERHEIGHT%d", empty_lines[i]);
-      iupAttribSetInt(ih, str, line_height);
-    }
+      iupAttribSetIntId(ih, "RASTERHEIGHT", empty_lines[i], line_height);
   }
 
   free(empty_lines);
@@ -579,15 +549,11 @@ static void iMatrixFitColumns(Ihandle* ih, int width)
   if (empty_num && empty_col_visible)
   {
     int i;
-    char str[100];
 
     column_width = width/empty_col_visible - (IMAT_PADDING_W + IMAT_FRAME_W);
 
     for(i = 0; i < empty_num; i++)
-    {
-      sprintf(str, "RASTERWIDTH%d", empty_columns[i]);
-      iupAttribSetInt(ih, str, column_width);
-    }
+      iupAttribSetIntId(ih, "RASTERWIDTH", empty_columns[i], column_width);
   }
 
   free(empty_columns);
@@ -633,7 +599,6 @@ static void iMatrixFitColText(Ihandle* ih, int col)
 {
   /* find the largest cel in the col */
   int lin, max_width = 0, max;
-  char str[100];
 
   for(lin = 0; lin < ih->data->lines.num; lin++)
   {
@@ -647,20 +612,17 @@ static void iMatrixFitColText(Ihandle* ih, int col)
     }
   }
 
-  sprintf(str, "FITMAXWIDTH%d", col);
-  max = iupAttribGetInt(ih, str);
+  max = iupAttribGetIntId(ih, "FITMAXWIDTH", col);
   if (max && max > max_width)
     max_width = max;
 
-  sprintf(str, "RASTERWIDTH%d", col);
-  iupAttribSetInt(ih, str, max_width);
+  iupAttribSetIntId(ih, "RASTERWIDTH", col, max_width);
 }
 
 static void iMatrixFitLineText(Ihandle* ih, int line)
 {
   /* find the highest cel in the line */
   int col, max_height = 0, max;
-  char str[100];
 
   for(col = 0; col < ih->data->columns.num; col++)
   {
@@ -674,13 +636,11 @@ static void iMatrixFitLineText(Ihandle* ih, int line)
     }
   }
 
-  sprintf(str, "FITMAXHEIGHT%d", line);
-  max = iupAttribGetInt(ih, str);
+  max = iupAttribGetIntId(ih, "FITMAXHEIGHT", line);
   if (max && max > max_height)
     max_height = max;
 
-  sprintf(str, "RASTERHEIGHT%d", line);
-  iupAttribSetInt(ih, str, max_height);
+  iupAttribSetIntId(ih, "RASTERHEIGHT", line, max_height);
 }
 
 static int iMatrixSetFitToTextAttrib(Ihandle* ih, const char* value)
@@ -767,16 +727,12 @@ static int iMatrixSetNumLinNoScrollAttrib(Ihandle* ih, const char* value)
 
 static char* iMatrixGetNumColNoScrollAttrib(Ihandle* ih)
 {
-  char* num = iupStrGetMemory(100);
-  sprintf(num, "%d", ih->data->columns.num_noscroll-1);  /* the attribute does not include the title */
-  return num;
+  return iupStrReturnInt(ih->data->columns.num_noscroll-1);  /* the attribute does not include the title */
 }
 
 static char* iMatrixGetNumLinNoScrollAttrib(Ihandle* ih)
 {
-  char* num = iupStrGetMemory(100);
-  sprintf(num, "%d", ih->data->lines.num_noscroll-1);  /* the attribute does not include the title */
-  return num;
+  return iupStrReturnInt(ih->data->lines.num_noscroll-1);  /* the attribute does not include the title */
 }
 
 static int iMatrixSetSizeAttrib(Ihandle* ih, int pos, const char* value)
@@ -885,10 +841,7 @@ static int iMatrixSetNumericUnitShownIndexAttrib(Ihandle* ih, int col, const cha
 
 static char* iMatrixGetAlignmentAttrib(Ihandle* ih, int col)
 {
-  char* align;
-  char str[100];
-  sprintf(str, "ALIGNMENT%d", col);
-  align = iupAttribGet(ih, str);
+  char* align = iupAttribGetId(ih, "ALIGNMENT", col);
   if (!align)
   {
     align = iupAttribGet(ih, "ALIGNMENT");
@@ -926,11 +879,7 @@ static char* iMatrixGetCellOffsetAttrib(Ihandle* ih, int lin, int col)
   {
     int x, y;
     if (iupMatrixGetCellOffset(ih, lin, col, &x, &y))
-    {
-      char* buffer = iupStrGetMemory(50);
-      sprintf(buffer, "%dx%d", x, y);
-      return buffer;
-    }
+      return iupStrReturnIntInt(x, y, 'x');
   }
   return NULL;
 }
@@ -938,11 +887,7 @@ static char* iMatrixGetCellOffsetAttrib(Ihandle* ih, int lin, int col)
 static char* iMatrixGetCellSizeAttrib(Ihandle* ih, int lin, int col)
 {
   if (iupMatrixCheckCellPos(ih, lin, col))
-  {
-    char* buffer = iupStrGetMemory(50);
-    sprintf(buffer, "%dx%d", ih->data->columns.sizes[col], ih->data->lines.sizes[lin]);
-    return buffer;
-  }
+    return iupStrReturnIntInt(ih->data->columns.sizes[col], ih->data->lines.sizes[lin], 'x');
   return NULL;
 }
 
@@ -954,53 +899,27 @@ static int iMatrixSetNeedRedraw(Ihandle* ih)
 
 static void iMatrixClearAttrib(Ihandle* ih, unsigned char *flags, int lin, int col)
 {
-  char name[50], id[40];
   int is_marked = (*flags) & IMAT_IS_MARKED;
 
-  if (lin == IUP_INVALID_ID)
-    sprintf(id, "*:%d", col);
-  else if (col == IUP_INVALID_ID)
-    sprintf(id, "%d:*", lin);
-  else
-    sprintf(id, "%d:%d", lin, col);
-
   if ((*flags) & IMAT_HAS_FONT)
-  {
-    sprintf(name, "FONT%s", id);
-    iupAttribSetStr(ih, name, NULL);
-  }
+    iupAttribSetStrId2(ih, "FONT", lin, col, NULL);
 
   if ((*flags) & IMAT_HAS_FGCOLOR)
-  {
-    sprintf(name, "FGCOLOR%s", id);
-    iupAttribSetStr(ih, name, NULL);
-  }
+    iupAttribSetStrId2(ih, "FGCOLOR", lin, col, NULL);
 
   if ((*flags) & IMAT_HAS_BGCOLOR)
-  {
-    sprintf(name, "BGCOLOR%s", id);
-    iupAttribSetStr(ih, name, NULL);
-  }
+    iupAttribSetStrId2(ih, "BGCOLOR", lin, col, NULL);
 
   if ((*flags) & IMAT_HAS_FRAMEHORIZCOLOR)
-  {
-    sprintf(name, "FRAMEHORIZCOLOR%s", id);
-    iupAttribSetStr(ih, name, NULL);
-  }
+    iupAttribSetStrId2(ih, "FRAMEHORIZCOLOR", lin, col, NULL);
 
   if ((*flags) & IMAT_HAS_FRAMEVERTCOLOR)
-  {
-    sprintf(name, "FRAMEHORIZCOLOR%s", id);
-    iupAttribSetStr(ih, name, NULL);
-  }
+    iupAttribSetStrId2(ih, "FRAMEHORIZCOLOR", lin, col, NULL);
 
   if (lin == IUP_INVALID_ID)
   {
-    sprintf(name, "ALIGNMENT%d", col);
-    iupAttribSetStr(ih, name, NULL);
-
-    sprintf(name, "SORTSIGN%d", col);
-    iupAttribSetStr(ih, name, NULL);
+    iupAttribSetStrId(ih, "ALIGNMENT", col, NULL);
+    iupAttribSetStrId(ih, "SORTSIGN", col, NULL);
   }
 
   *flags = 0;
@@ -1279,7 +1198,6 @@ static char* iMatrixGetCellBgColorAttrib(Ihandle* ih, int lin, int col)
 {
   if (iupMatrixCheckCellPos(ih, lin, col))
   {
-    char* buffer;
     unsigned char r = 255, g = 255, b = 255;
     int active = iupdrvIsActive(ih);
     char* mark = iupMatrixGetMarkAttrib(ih, lin, col);
@@ -1300,9 +1218,7 @@ static char* iMatrixGetCellBgColorAttrib(Ihandle* ih, int lin, int col)
       b = cdIupLIGTHER(b);
     }
 
-    buffer = iupStrGetMemory(30);
-    sprintf(buffer, "%d %d %d", r, g, b);
-    return buffer;
+    return iupStrReturnRGB(r, g, b);
   }
   else
     return NULL;
@@ -1312,7 +1228,6 @@ static char* iMatrixGetCellFgColorAttrib(Ihandle* ih, int lin, int col)
 {
   if (iupMatrixCheckCellPos(ih, lin, col))
   {
-    char* buffer;
     unsigned char r = 255, g = 255, b = 255;
     char* mark = iupMatrixGetMarkAttrib(ih, lin, col);
 
@@ -1325,9 +1240,7 @@ static char* iMatrixGetCellFgColorAttrib(Ihandle* ih, int lin, int col)
       b = IMAT_ATENUATION(b);
     }
 
-    buffer = iupStrGetMemory(30);
-    sprintf(buffer, "%d %d %d", r, g, b);
-    return buffer;
+    return iupStrReturnRGB(r, g, b);
   }
   else
     return NULL;
@@ -1354,16 +1267,12 @@ static int iMatrixConvertXYToPos(Ihandle* ih, int x, int y)
 
 static char* iMatrixGetNumColVisibleAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(50);
-  sprintf(buffer, "%d", ih->data->columns.last - ih->data->columns.first);
-  return buffer;
+  return iupStrReturnInt(ih->data->columns.last - ih->data->columns.first);
 }
 
 static char* iMatrixGetNumLinVisibleAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(50);
-  sprintf(buffer, "%d", ih->data->lines.last - ih->data->lines.first);
-  return buffer;
+  return iupStrReturnInt(ih->data->lines.last - ih->data->lines.first);
 }
 
 static char* iMatrixGetMaskDataAttrib(Ihandle* ih)

@@ -105,7 +105,6 @@ char* iupScintillaGetDescribeKeywordSetsAttrib(Ihandle* ih)
 {
   int len = (int)iupScintillaSendMessage(ih, SCI_DESCRIBEKEYWORDSETS, 0, 0);
   char *str = iupStrGetMemory(len+1);
-
   iupScintillaSendMessage(ih, SCI_DESCRIBEKEYWORDSETS, 0, (sptr_t)str);
   return str;
 }
@@ -114,7 +113,6 @@ char* iupScintillaGetPropertyNamessAttrib(Ihandle* ih)
 {
   int len = (int)iupScintillaSendMessage(ih, SCI_PROPERTYNAMES, 0, 0);
   char *str = iupStrGetMemory(len+1);
-
   iupScintillaSendMessage(ih, SCI_PROPERTYNAMES, 0, (sptr_t)str);
   return str;
 }

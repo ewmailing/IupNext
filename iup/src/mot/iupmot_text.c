@@ -243,7 +243,7 @@ static char* motTextGetLineCountAttrib(Ihandle* ih)
 static char* motTextGetSelectedTextAttrib(Ihandle* ih)
 {
   char* selectedtext = XmTextGetSelection(ih->handle);
-  char* str = iupStrGetMemoryCopy(selectedtext);
+  char* str = iupStrReturnStr(selectedtext);
   XtFree(selectedtext);
   return str;
 }
@@ -404,7 +404,7 @@ static int motTextSetCaretAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    sscanf(value,"%i",&pos);
+    iupStrToInt(value, &pos);
     pos--; /* IUP starts at 1 */
   }
 
@@ -446,7 +446,7 @@ static int motTextSetCaretPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 0) pos = 0;
 
   XmTextSetInsertionPosition(ih->handle, (XmTextPosition)pos);
@@ -485,7 +485,7 @@ static int motTextSetScrollToAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    sscanf(value,"%i",&pos);
+    iupStrToInt(value, &pos);
     if (pos < 1) pos = 1;
     pos--;  /* return to Motif referece */
   }
@@ -502,7 +502,7 @@ static int motTextSetScrollToPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 0) pos = 0;
 
   XmTextShowPosition(ih->handle, (XmTextPosition)pos);
@@ -752,7 +752,7 @@ static int motTextSetValueAttrib(Ihandle* ih, const char* value)
 static char* motTextGetValueAttrib(Ihandle* ih)
 {
   char* value = XmTextGetString(ih->handle);
-  char* str = iupStrGetMemoryCopy(value);
+  char* str = iupStrReturnStr(value);
   XtFree(value);
   return str;
 }

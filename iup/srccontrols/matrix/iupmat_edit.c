@@ -336,20 +336,20 @@ int iupMatrixEditShow(Ihandle* ih)
   IupStoreAttribute(ih->data->datah, "FGCOLOR", iupMatrixGetFgColor(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell));
   IupSetAttribute(ih->data->datah, "FONT", iupMatrixGetFont(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell));
 
-  mask = IupMatGetAttribute(ih,"MASK", ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+  mask = IupGetAttributeId2(ih,"MASK", ih->data->lines.focus_cell, ih->data->columns.focus_cell);
   if (mask)
   {
-    IupSetAttribute(ih->data->datah, "MASKCASEI", IupMatGetAttribute(ih,"MASKCASEI", ih->data->lines.focus_cell, ih->data->columns.focus_cell));
+    IupSetAttribute(ih->data->datah, "MASKCASEI", IupGetAttributeId2(ih,"MASKCASEI", ih->data->lines.focus_cell, ih->data->columns.focus_cell));
     IupSetAttribute(ih->data->datah, "MASK", mask);
   }
   else
   {
-    mask = IupMatGetAttribute(ih,"MASKINT", ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+    mask = IupGetAttributeId2(ih,"MASKINT", ih->data->lines.focus_cell, ih->data->columns.focus_cell);
     if (mask)
       IupSetAttribute(ih->data->datah, "MASKINT", mask);
     else
     {
-      mask = IupMatGetAttribute(ih,"MASKFLOAT", ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+      mask = IupGetAttributeId2(ih,"MASKFLOAT", ih->data->lines.focus_cell, ih->data->columns.focus_cell);
       if (mask)
         IupSetAttribute(ih->data->datah, "MASKFLOAT", mask);
       else

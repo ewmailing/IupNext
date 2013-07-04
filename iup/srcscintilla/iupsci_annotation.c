@@ -62,9 +62,7 @@ int iupScintillaSetAnnotationStyleAttribId(Ihandle* ih, int line, const char* va
 char* iupScintillaGetAnnotationStyleAttribId(Ihandle* ih, int line)
 {
   int style = iupScintillaSendMessage(ih, SCI_ANNOTATIONGETSTYLE, line, 0);
-  char* str = iupStrGetMemory(15);
-  sprintf(str, "%d", style);
-  return str;
+  return iupStrReturnInt(style);
 }
 
 int iupScintillaSetAnnotationStyleOffsetAttrib(Ihandle* ih, const char* value)
@@ -78,9 +76,7 @@ int iupScintillaSetAnnotationStyleOffsetAttrib(Ihandle* ih, const char* value)
 char* iupScintillaGetAnnotationStyleOffsetAttrib(Ihandle* ih)
 {
   int style = iupScintillaSendMessage(ih, SCI_ANNOTATIONGETSTYLEOFFSET, 0, 0);
-  char* str = iupStrGetMemory(15);
-  sprintf(str, "%d", style);
-  return str;
+  return iupStrReturnInt(style);
 }
 
 int iupScintillaSetAnnotationVisibleAttrib(Ihandle *ih, const char *value)

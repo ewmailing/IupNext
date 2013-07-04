@@ -70,43 +70,30 @@ char* iupScintillaGetCurrentLineAttrib(Ihandle* ih)
 {
   int textLen = iupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
   char* str = iupStrGetMemory(textLen+1);
-  
   iupScintillaSendMessage(ih, SCI_GETCURLINE, textLen, (sptr_t)str);
-  
   return str;
 }
 
 char* iupScintillaGetCountAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(100);
   int count = iupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
-  
-  sprintf(str, "%d", count);
-
-  return str;
+  return iupStrReturnInt(count);
 }
 
 char* iupScintillaGetLineCountAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(100);
   int count = iupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
-  
-  sprintf(str, "%d", count);
-
-  return str;
+  return iupStrReturnInt(count);
 }
 
 char* iupScintillaGetCaretAttrib(Ihandle* ih)
 {
   int col, lin, pos;
-  char* str = iupStrGetMemory(100);
 
   pos = iupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0);
   iupScintillaConvertPosToLinCol(ih, pos, &lin, &col);
 
-  sprintf(str, "%d,%d", lin, col);
-
-  return str;
+  return iupStrReturnIntInt(lin, col, ',');
 }
 
 int iupScintillaSetCaretAttrib(Ihandle* ih, const char* value)
@@ -125,11 +112,7 @@ int iupScintillaSetCaretAttrib(Ihandle* ih, const char* value)
 
 char* iupScintillaGetCaretPosAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(100);
-
-  sprintf(str, "%d", (int)iupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0));
-
-  return str;
+  return iupStrReturnInt(iupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0));
 }
 
 int iupScintillaSetCaretPosAttrib(Ihandle* ih, const char* value)
@@ -139,7 +122,7 @@ int iupScintillaSetCaretPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);    /* be permissive in SetCaret, do not abort if invalid */
+  iupStrToInt(value, &pos);    /* be permissive in SetCaret, do not abort if invalid */
   if (pos < 0) pos = 0;
 
   iupScintillaSendMessage(ih, SCI_GOTOPOS, pos, 0);
@@ -165,7 +148,6 @@ char* iupScintillaGetSelectedTextAttrib(Ihandle* ih)
 
   str = iupStrGetMemory(end - start + 1 + 1);
   iupScintillaSendMessage(ih, SCI_GETSELTEXT, 0, (sptr_t)str);
-
   return str;
 }
 
@@ -235,18 +217,13 @@ int iupScintillaSetSelectionAttrib(Ihandle* ih, const char* value)
 
 char* iupScintillaGetSelectionPosAttrib(Ihandle* ih)
 {
-  char* str;
   int start = iupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
   int end   = iupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
 
   if (start == end)
     return NULL;
 
-  str = iupStrGetMemory(100);
-
-  sprintf(str,"%d:%d", start, end);
-
-  return str;
+  return iupStrReturnIntInt(start, end, ':');
 }
 
 int iupScintillaSetSelectionPosAttrib(Ihandle* ih, const char* value)
@@ -278,10 +255,6 @@ int iupScintillaSetSelectionPosAttrib(Ihandle* ih, const char* value)
 
 char* iupScintillaGetVisibleLinesCountAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(100);
   int count = iupScintillaSendMessage(ih, SCI_LINESONSCREEN, 0, 0);
-  
-  sprintf(str, "%d", count);
-
-  return str;
+  return iupStrReturnInt(count);
 }

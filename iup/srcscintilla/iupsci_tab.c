@@ -44,12 +44,8 @@ SCI_GETHIGHLIGHTGUIDE
 char* iupScintillaGetTabSizeAttrib(Ihandle *ih)
 {
   int widthInChars;
-  char* str = iupStrGetMemory(100);
-
   widthInChars = iupScintillaSendMessage(ih, SCI_GETTABWIDTH, 0, 0);
-  sprintf(str, "%d", widthInChars);
-
-  return str;
+  return iupStrReturnInt(widthInChars);
 }
 
 int iupScintillaSetTabSizeAttrib(Ihandle *ih, const char *value)
@@ -68,11 +64,7 @@ int iupScintillaSetTabSizeAttrib(Ihandle *ih, const char *value)
 char* iupScintillaGetHighlightGuideAttrib(Ihandle *ih)
 {
   int col = iupScintillaSendMessage(ih, SCI_GETHIGHLIGHTGUIDE, 0, 0);
-  char* str = iupStrGetMemory(15);
-
-  sprintf(str, "%d", col);
-
-  return str;
+  return iupStrReturnInt(col);
 }
 
 int iupScintillaSetHighlightGuideAttrib(Ihandle *ih, const char *value)

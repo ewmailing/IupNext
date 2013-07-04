@@ -56,20 +56,19 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
 {
 #define IMAT_NUM_ATTRIB_LINE 12
 #define IMAT_ATTRIB_LINE_ONLY 6
-  char* attrib_format[IMAT_NUM_ATTRIB_LINE] = {
-    "RASTERHEIGHT%d",  
-    "HEIGHT%d",
-    "BGCOLOR%d:*",
-    "FGCOLOR%d:*",
-    "FONT%d:*",
-    "FRAMEHORIZCOLOR%d:*",
-    "BGCOLOR%d:%d",
-    "FGCOLOR%d:%d",
-    "FONT%d:%d",
-    "MASK%d:%d",
-    "FRAMEHORIZCOLOR%d:%d",
-    "FRAMEVERTCOLOR%d:%d"};
-  char attrib[100];
+  char* attrib[IMAT_NUM_ATTRIB_LINE] = {
+    "RASTERHEIGHT",  
+    "HEIGHT",
+    "BGCOLOR",
+    "FGCOLOR",
+    "FONT",
+    "FRAMEHORIZCOLOR",
+    "BGCOLOR",
+    "FGCOLOR",
+    "FONT",
+    "MASK",
+    "FRAMEHORIZCOLOR",
+    "FRAMEVERTCOLOR"};
   int a, lin, col;
   char* value;
 
@@ -83,21 +82,18 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
     {
       for(lin = ih->data->lines.num-1; lin >= base+count; lin--)
       {
-        /* Update the line attributes */
-        if (a < IMAT_ATTRIB_LINE_ONLY)
+        if (a < IMAT_ATTRIB_LINE_ONLY)  /* Update the line attributes */
         {
-          sprintf(attrib, attrib_format[a], lin-count);
-          value = iupAttribGet(ih, attrib);
-          sprintf(attrib, attrib_format[a], lin);
-          iupAttribStoreStr(ih, attrib, value);
+          value = iupAttribGetId2(ih, attrib[a], lin-count, IUP_INVALID_ID);
+          iupAttribStoreStrId2(ih, attrib[a], lin, IUP_INVALID_ID, value);
         }
-        /* Update the cell attribute */
-        else for(col = 0; col < ih->data->columns.num; col++)
+        else  /* Update the cell attribute */
         {
-          sprintf(attrib, attrib_format[a], lin-count, col);
-          value = iupAttribGet(ih, attrib);
-          sprintf(attrib, attrib_format[a], lin, col);
-          iupAttribStoreStr(ih, attrib, value);
+          for(col = 0; col < ih->data->columns.num; col++)
+          {
+            value = iupAttribGetId2(ih, attrib[a], lin-count, col);
+            iupAttribStoreStrId2(ih, attrib[a], lin, col, value);
+          }
         }
       }
 
@@ -105,13 +101,12 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
       {
         if (a < IMAT_ATTRIB_LINE_ONLY)
         {
-          sprintf(attrib, attrib_format[a], lin);
-          iupAttribSetStr(ih, attrib, NULL);
+          iupAttribSetStrId2(ih, attrib[a], lin, IUP_INVALID_ID, NULL);
         }
-        else for(col = 0; col < ih->data->columns.num; col++)
+        else 
         {
-          sprintf(attrib, attrib_format[a], lin, col);
-          iupAttribSetStr(ih, attrib, NULL);
+          for(col = 0; col < ih->data->columns.num; col++)
+            iupAttribSetStrId2(ih, attrib[a], lin, col, NULL);
         }
       }
     }
@@ -125,21 +120,18 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
     {
       for(lin = base; lin < ih->data->lines.num; lin++)
       {
-        /* Update the line attributes */     
-        if (a < IMAT_ATTRIB_LINE_ONLY)      
+        if (a < IMAT_ATTRIB_LINE_ONLY)  /* Update the line attributes */     
         {
-          sprintf(attrib, attrib_format[a], lin+count);
-          value = iupAttribGet(ih, attrib);
-          sprintf(attrib, attrib_format[a], lin);
-          iupAttribStoreStr(ih, attrib, value);
+          value = iupAttribGetId2(ih, attrib[a], lin+count, IUP_INVALID_ID);
+          iupAttribStoreStrId2(ih, attrib[a], lin, IUP_INVALID_ID, value);
         }
-        /* Update each cell attribute */
-        else for(col = 0; col < ih->data->columns.num; col++) 
+        else  /* Update each cell attribute */
         {
-          sprintf(attrib, attrib_format[a], lin+count, col);
-          value = iupAttribGet(ih, attrib);
-          sprintf(attrib, attrib_format[a], lin, col);
-          iupAttribStoreStr(ih, attrib, value);
+          for(col = 0; col < ih->data->columns.num; col++) 
+          {
+            value = iupAttribGetId2(ih, attrib[a], lin+count, col);
+            iupAttribStoreStrId2(ih, attrib[a], lin, col, value);
+          }
         }
       }
 
@@ -147,13 +139,12 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
       {
         if (a < IMAT_ATTRIB_LINE_ONLY)
         {
-          sprintf(attrib, attrib_format[a], lin);
-          iupAttribSetStr(ih, attrib, NULL);
+          iupAttribSetStrId2(ih, attrib[a], lin, IUP_INVALID_ID, NULL);
         }
-        else for(col = 0; col < ih->data->columns.num; col++)
+        else 
         {
-          sprintf(attrib, attrib_format[a], lin, col);
-          iupAttribSetStr(ih, attrib, NULL);
+          for(col = 0; col < ih->data->columns.num; col++)
+            iupAttribSetStrId2(ih, attrib[a], lin, col, NULL);
         }
       }
     }
@@ -164,24 +155,23 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
 {
 #define IMAT_NUM_ATTRIB_COL 16
 #define IMAT_ATTRIB_COL_ONLY 10
-  char* attrib_format[IMAT_NUM_ATTRIB_COL] = { 
-    "NUMERICFORMAT%d",
-    "NUMERICFORMATTITLE%d",
-    "SORTSIGN%d",
-    "ALIGNMENT%d",
-    "RASTERWIDTH%d",
-    "WIDTH%d",
-    "BGCOLOR*:%d",
-    "FGCOLOR*:%d",
-    "FONT*:%d",
-    "FRAMEVERTCOLOR*:%d",
-    "BGCOLOR%d:%d",
-    "FGCOLOR%d:%d",
-    "FONT%d:%d",
-    "MASK%d:%d",
-    "FRAMEHORIZCOLOR%d:%d",
-    "FRAMEVERTCOLOR%d:%d"};
-  char attrib[100];
+  char* attrib[IMAT_NUM_ATTRIB_COL] = { 
+    "NUMERICFORMAT",
+    "NUMERICFORMATTITLE",
+    "SORTSIGN",
+    "ALIGNMENT",
+    "RASTERWIDTH",
+    "WIDTH",
+    "BGCOLOR",
+    "FGCOLOR",
+    "FONT",
+    "FRAMEVERTCOLOR",
+    "BGCOLOR",
+    "FGCOLOR",
+    "FONT",
+    "MASK",
+    "FRAMEHORIZCOLOR",
+    "FRAMEVERTCOLOR"};
   int a, col, lin;
   char* value;
 
@@ -195,21 +185,18 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
     {
       for(col = ih->data->columns.num-1; col >= base+count; col--)
       {
-        /* Update the column attributes */
-        if (a < IMAT_ATTRIB_COL_ONLY)
+        if (a < IMAT_ATTRIB_COL_ONLY)  /* Update the column attributes */
         {
-          sprintf(attrib, attrib_format[a], col-count);
-          value = iupAttribGet(ih, attrib);
-          sprintf(attrib,attrib_format[a],col);
-          iupAttribStoreStr(ih, attrib, value);
+          value = iupAttribGetId2(ih, attrib[a], IUP_INVALID_ID, col-count);
+          iupAttribStoreStrId2(ih, attrib[a], IUP_INVALID_ID, col, value);
         }
-        /* Update the cell attributes */
-        else for(lin = 0; lin < ih->data->lines.num; lin++)
+        else  /* Update the cell attributes */
         {
-          sprintf(attrib, attrib_format[a], lin, col-count);
-          value = iupAttribGet(ih, attrib);
-          sprintf(attrib, attrib_format[a], lin, col);
-          iupAttribStoreStr(ih, attrib, value);
+          for(lin = 0; lin < ih->data->lines.num; lin++)
+          {
+            value = iupAttribGetId2(ih, attrib[a], lin, col-count);
+            iupAttribStoreStrId2(ih, attrib[a], lin, col, value);
+          }
         }
       }
 
@@ -217,13 +204,12 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
       {
         if (a < IMAT_ATTRIB_COL_ONLY)
         {
-          sprintf(attrib, attrib_format[a], col);
-          iupAttribSetStr(ih, attrib, NULL);
+          iupAttribSetStrId2(ih, attrib[a], IUP_INVALID_ID, col, NULL);
         }
-        else for(lin = 0; lin < ih->data->lines.num; lin++)
+        else 
         {
-          sprintf(attrib, attrib_format[a], lin, col);
-          iupAttribSetStr(ih, attrib, NULL);
+          for(lin = 0; lin < ih->data->lines.num; lin++)
+            iupAttribSetStrId2(ih, attrib[a], lin, col, NULL);
         }
       }
     }
@@ -237,21 +223,18 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
     {
       for(col = base; col < ih->data->columns.num; col++)
       {
-        /* Update the column attributes */
-        if (a < IMAT_ATTRIB_COL_ONLY)
+        if (a < IMAT_ATTRIB_COL_ONLY)  /* Update the column attributes */
         {
-          sprintf(attrib, attrib_format[a], col+count);
-          value = iupAttribGet(ih, attrib);
-          sprintf(attrib, attrib_format[a], col);
-          iupAttribStoreStr(ih, attrib, value);
+          value = iupAttribGetId2(ih, attrib[a], IUP_INVALID_ID, col+count);
+          iupAttribStoreStrId2(ih, attrib[a], IUP_INVALID_ID, col, value);
         }
-        /* Update the cell attributes */
-        else for(lin = 0; lin < ih->data->lines.num; lin++)
+        else  /* Update the cell attributes */
         {
-          sprintf(attrib, attrib_format[a], lin, col+count);
-          value = iupAttribGet(ih, attrib);
-          sprintf(attrib, attrib_format[a], lin, col);
-          iupAttribStoreStr(ih, attrib, value);
+          for(lin = 0; lin < ih->data->lines.num; lin++)
+          {
+            value = iupAttribGetId2(ih, attrib[a], lin, col+count);
+            iupAttribStoreStrId2(ih, attrib[a], lin, col, value);
+          }
         }
       }
 
@@ -259,13 +242,12 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
       {
         if (a < IMAT_ATTRIB_COL_ONLY)
         {
-          sprintf(attrib, attrib_format[a], col);
-          iupAttribSetStr(ih, attrib, NULL);
+          iupAttribSetStrId2(ih, attrib[a], IUP_INVALID_ID, col, NULL);
         }
-        else for(lin = 0; lin < ih->data->lines.num; lin++)
+        else 
         {
-          sprintf(attrib, attrib_format[a], lin, col);
-          iupAttribSetStr(ih, attrib, NULL);
+          for(lin = 0; lin < ih->data->lines.num; lin++)
+            iupAttribSetStrId2(ih, attrib[a], lin, col, NULL);
         }
       }
     }
@@ -282,7 +264,7 @@ static int iMatrixGetStartEnd(const char* value, int *base, int *count, int max,
   *base = 0; 
   *count = 1;
 
-  ret = sscanf(value, "%d-%d", base, count);
+  ret = iupStrToIntInt(value, base, count, '-');
   if (ret <= 0 || ret > 2)
     return 0;
   if (ret == 1)

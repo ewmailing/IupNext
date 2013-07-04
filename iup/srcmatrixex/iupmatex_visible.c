@@ -26,7 +26,6 @@
 int iupMatrixExIsColumnVisible(Ihandle* ih, int col)
 {
   int width = 0;
-  char str[100];
   char* value;
 
   if (col==0)
@@ -35,12 +34,10 @@ int iupMatrixExIsColumnVisible(Ihandle* ih, int col)
   /* to be invisible must exist the attribute and must be set to 0 (zero), 
      or else is visible */
 
-  sprintf(str, "WIDTH%d", col);
-  value = iupAttribGet(ih, str);
+  value = iupAttribGetId(ih, "WIDTH", col);
   if (!value)
   {
-    sprintf(str, "RASTERWIDTH%d", col);
-    value = iupAttribGet(ih, str);
+    value = iupAttribGetId(ih, "RASTERWIDTH", col);
     if (!value)
       return 1;
   }
@@ -57,18 +54,15 @@ int iupMatrixExIsColumnVisible(Ihandle* ih, int col)
 int iupMatrixExIsLineVisible(Ihandle* ih, int lin)
 {
   int height = 0;
-  char str[100];
   char* value;
 
   if (lin==0)
     return (IupGetIntId(ih, "RASTERHEIGHT", 0) != 0);
 
-  sprintf(str, "HEIGHT%d", lin);
-  value = iupAttribGet(ih, str);
+  value = iupAttribGetId(ih, "HEIGHT", lin);
   if(!value)
   {
-    sprintf(str, "RASTERHEIGHT%d", lin);
-    value = iupAttribGet(ih, str);
+    value = iupAttribGet(ih, "RASTERHEIGHT", lin);
     if(!value)
       return 1;
   }
@@ -100,30 +94,24 @@ static char* iMatrixGetVisibleLinAttribId(Ihandle *ih, int lin)
 
 static int iMatrixSetVisibleColAttribId(Ihandle *ih, int col, const char* value)
 {
-  char str[100];
-  sprintf(str, "WIDTH%d", col);  /* this is enough */
   if (iupStrBoolean(value))
-    iupAttribSetStr(ih, str, "0");
+    iupAttribSetStrId(ih, "WIDTH", col, "0");    /* this is enough */
   else
   {
-    iupAttribSetStr(ih, str, NULL);  /* this may be insufficient */
-    sprintf(str, "RASTERWIDTH%d", col);
-    iupAttribSetStr(ih, str, NULL);
+    iupAttribSetStrId(ih, "WIDTH", col, NULL);  /* this may be insufficient */
+    iupAttribSetStrId(ih, "RASTERWIDTH", col, NULL);
   }
   return 0;
 }
 
 static int iMatrixSetVisibleLinAttribId(Ihandle *ih, int lin, const char* value)
 {
-  char str[100];
-  sprintf(str, "HEIGHT%d", lin);  /* this is enough */
   if (iupStrBoolean(value))
-    iupAttribSetStr(ih, str, "0");
+    iupAttribSetStrId(ih, "HEIGHT", lin, "0");    /* this is enough */
   else
   {
-    iupAttribSetStr(ih, str, NULL);  /* this may be insufficient */
-    sprintf(str, "RASTERHEIGHT%d", lin);
-    iupAttribSetStr(ih, str, NULL);
+    iupAttribSetStrId(ih, "HEIGHT", lin, NULL);  /* this may be insufficient */
+    iupAttribSetStrId(ih, "RASTERHEIGHT", lin, NULL);
   }
   return 0;
 }

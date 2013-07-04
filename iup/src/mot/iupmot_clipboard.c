@@ -218,7 +218,7 @@ static char* motClipboardGetFormatDataAttrib(Ihandle *ih)
   if (XmClipboardRetrieve(iupmot_display, window, format, data, size, NULL, NULL)!=ClipboardSuccess)
     return NULL;
 
-  iupAttribSetStrf(ih, "FORMATDATASIZE", "%d", size);
+  iupAttribSetInt(ih, "FORMATDATASIZE", size);
   return data;
 }
 

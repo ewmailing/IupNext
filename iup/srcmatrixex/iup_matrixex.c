@@ -23,6 +23,15 @@
 #include "iup_matrixex.h"
 
 
+void iupMatrixExCheckLimitsOrder(int *v1, int *v2, int min, int max)
+{
+  if (*v1<min) *v1 = min;
+  if (*v2<min) *v2 = min;
+  if (*v1>max) *v1 = max;
+  if (*v2>max) *v2 = max;
+  if (*v1>*v2) {int v=*v1; *v1=*v2; *v2=v;}
+}
+
 void iupMatrixExInitCellAccess(ImatExData* matex_data)
 {
   matex_data->value_cb = (sIFnii)IupGetCallback(matex_data->ih, "VALUE_CB");
@@ -107,8 +116,8 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
   {
     lin = IupGetInt(ih,"NUMLIN_NOSCROLL");
     col = IupGetInt(ih,"NUMCOL_NOSCROLL");
-    IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", lin, -1, NULL);
-    IupSetAttributeId2(ih,"FRAMEVERTCOLOR", -1, col, NULL);
+    IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", lin, IUP_INVALID_ID, NULL);
+    IupSetAttributeId2(ih,"FRAMEVERTCOLOR", IUP_INVALID_ID, col, NULL);
 
     IupSetAttribute(ih,"NUMLIN_NOSCROLL","0");
     IupSetAttribute(ih,"NUMCOL_NOSCROLL","0");
@@ -122,8 +131,8 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
     IupSetfAttribute(ih,"NUMLIN_NOSCROLL","%d",lin);
     IupSetfAttribute(ih,"NUMCOL_NOSCROLL","%d",col);  
 
-    IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", lin, -1, fzcolor);
-    IupSetAttributeId2(ih,"FRAMEVERTCOLOR",-1, col, fzcolor);
+    IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", lin, IUP_INVALID_ID, fzcolor);
+    IupSetAttributeId2(ih,"FRAMEVERTCOLOR",IUP_INVALID_ID, col, fzcolor);
 
  //   iupMatrixExUndoPushCmd(ih, "FREEZE=NO");
   }

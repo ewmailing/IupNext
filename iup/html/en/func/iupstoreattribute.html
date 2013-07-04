@@ -35,14 +35,17 @@ use <strong>IupStoreAttribute*</strong> internally):</p>
 void IupSetInt       (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>value</strong>);
 void IupSetIntInt    (Ihandle *<strong>ih</strong>, const char* <strong>name</strong>, int <strong>value1</strong>, char <strong>sep</strong>, int <strong>value2</strong>);
 void IupSetFloat     (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, float <strong>value</strong>);
+void IupSetRGB       (Ihandle *<strong>ih</strong>, const char* <strong>name</strong>, unsigned char <strong>r</strong>, unsigned char <strong>g</strong>, unsigned char <strong>b</strong>);
 
 void IupSetfAttributeId(Ihandle *<strong>ih</strong>, const char* <strong>name</strong>, int <strong>id</strong>, const char* <strong>format</strong>, ...);
 void IupSetIntId       (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>id</strong>, int <strong>value</strong>);
 void IupSetFloatId     (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>id</strong>, float <strong>value</strong>);
+void IupSetRGBId       (Ihandle *<strong>ih</strong>, const char* <strong>name, </strong>int<strong> id</strong>, unsigned char <strong>r</strong>, unsigned char <strong>g</strong>, unsigned char <strong>b</strong>);
 
 void IupSetfAttributeId2(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>, const char* <strong>format</strong>, ...);
 void IupSetIntId2       (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>value</strong>);
 void IupSetFloatId2     (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>, float <strong>value</strong>);
+void IupSetRGBId2       (Ihandle *<strong>ih</strong>, const char* <strong>name, </strong>int<strong> lin</strong>, int <strong>col</strong>, unsigned char <strong>r</strong>, unsigned char <strong>g</strong>, unsigned char <strong>b</strong>);
 
 [There is no equivalent in Lua]</pre>
 <h3>Notes</h3>

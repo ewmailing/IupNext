@@ -126,29 +126,21 @@ static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col, 
 static char* iMatrixExGetCellAttrib(Ihandle* ih, const char* attrib, int lin, int col)
 {
   char* value = NULL;
-  char attrib_id[100];
 
   /* 1 -  check for this cell */
-  sprintf(attrib_id, "%s%d:%d", attrib, lin, col);
-  value = iupAttribGet(ih, attrib_id);
+  value = iupAttribGetId2(ih, attrib, lin, col);
 
   if (!value)
   {
     /* 2 - check for this line, if not title col */
     if (col != 0)
-    {
-      sprintf(attrib_id, "%s%d:*", attrib, lin);
-      value = iupAttribGet(ih, attrib_id);
-    }
+      value = iupAttribGetId2(ih, attrib, lin, IUP_INVALID_ID);
 
     if (!value)
     {
       /* 3 - check for this column, if not title line */
       if (lin != 0)
-      {
-        sprintf(attrib_id,"%s*:%d", attrib, col);
-        value = iupAttribGet(ih, attrib_id);
-      }
+        value = iupAttribGetId2(ih, attrib, IUP_INVALID_ID, col);
     }
   }
 
@@ -158,14 +150,12 @@ static char* iMatrixExGetCellAttrib(Ihandle* ih, const char* attrib, int lin, in
 static char* iMatrixExGetCellFormat(Ihandle *ih, int lin, int col, char* format)
 {
   char* value, *init = "style=\"";
-  char str[100];
 
 #define _STRCATFORMAT {if (value) { if (init) {strcpy(format, init); init=NULL;} strcat(format, value); }}
 
   *format = 0;
 
-  sprintf(str, "ALIGNMENT%d", col);
-  value = iupAttribGet(ih, str);
+  value = iupAttribGetId(ih, "ALIGNMENT", col);
   if (value)
   {
     if (iupStrEqualNoCase(value, "ARIGHT"))
@@ -299,14 +289,12 @@ static void iMatrixExCopyHTML(Ihandle *ih, FILE* file, int num_lin, int num_col,
 
 static int iMatrixExIsBoldLine(Ihandle* ih, int lin)
 {
-  char str[100];
   char* value;
 
   if (lin==0)
     return 0;
 
-  sprintf(str, "FONT%d:*", lin);
-  value = iupAttribGet(ih, str);
+  value = iupAttribGetId2(ih, "FONT", lin, IUP_INVALID_ID);
   if (value)
   {
     if (strstr(value, "Bold")||strstr(value, "BOLD"))

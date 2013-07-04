@@ -1,4 +1,3 @@
--- This file is executed with the "iup" table already as the globalindex
 
 ----------------------------------------------------------------------------
 --  Common return values              
@@ -7,6 +6,7 @@ iup.ERROR   =  1
 iup.NOERROR =  0
 iup.OPENED  = -1
 iup.INVALID = -1
+iup.INVALID_ID = -10
 
 ----------------------------------------------------------------------------
 --  Callback return values              

@@ -82,9 +82,5 @@ int iupScintillaSetZoomAttrib(Ihandle *ih, const char *value)
 char* iupScintillaGetZoomAttrib(Ihandle* ih)
 {
   int points = iupScintillaSendMessage(ih, SCI_GETZOOM, 0, 0);
-  char* str = iupStrGetMemory(15);
-
-  sprintf(str, "%d", points);
-
-  return str;
+  return iupStrReturnInt(points);
 }

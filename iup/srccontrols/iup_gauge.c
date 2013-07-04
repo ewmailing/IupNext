@@ -67,6 +67,7 @@ static void iGaugeDrawText(Ihandle* ih, int xmid)
 {
   int x, y, xmin, xmax, ymin, ymax;
   char* text = ih->data->text;
+  char buffer[30];
 
   cdIupSetFont(ih, ih->data->cddbuffer, IupGetAttribute(ih, "FONT"));
   cdCanvasTextAlignment(ih->data->cddbuffer, CD_CENTER);
@@ -75,11 +76,10 @@ static void iGaugeDrawText(Ihandle* ih, int xmid)
   x = (int)(0.5 * ih->data->w);
   y = (int)(0.5 * ih->data->h);
 
-  if(text == NULL)
+  if (text == NULL)
   {
-    char* m = iupStrGetMemory(30);
-    sprintf(m, "%.1f%%", 100 * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
-    text = m;
+    sprintf(buffer, "%.1f%%", 100 * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
+    text = buffer;
   }
 
   cdCanvasGetTextBox(ih->data->cddbuffer, x, y, text, &xmin, &xmax, &ymin, &ymax);
@@ -241,9 +241,7 @@ static int iGaugeSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* iGaugeGetValueAttrib(Ihandle* ih)
 {
-  char* value = iupStrGetMemory(30);
-  sprintf(value, "%g", ih->data->value);
-  return value;
+  return iupStrReturnFloat((float)ih->data->value);
 }
 
 static int iGaugeSetMinAttrib(Ihandle* ih, const char* value)
@@ -257,9 +255,7 @@ static int iGaugeSetMinAttrib(Ihandle* ih, const char* value)
 
 static char* iGaugeGetMinAttrib(Ihandle* ih)
 {
-  char* value = iupStrGetMemory(30);
-  sprintf(value, "%g", ih->data->vmin);
-  return value;
+  return iupStrReturnFloat((float)ih->data->vmin);
 }
 
 static int iGaugeSetMaxAttrib(Ihandle* ih, const char* value)
@@ -272,9 +268,7 @@ static int iGaugeSetMaxAttrib(Ihandle* ih, const char* value)
 
 static char* iGaugeGetMaxAttrib(Ihandle* ih)
 {
-  char* value = iupStrGetMemory(30);
-  sprintf(value, "%g", ih->data->vmax);
-  return value;
+  return iupStrReturnFloat((float)ih->data->vmax);
 }
 
 static int iGaugeSetShowTextAttrib(Ihandle* ih, const char* value)
@@ -305,9 +299,7 @@ static int iGaugeSetPaddingAttrib(Ihandle* ih, const char* value)
 
 static char* iGaugeGetPaddingAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", ih->data->horiz_padding, ih->data->vert_padding);
-  return str;
+  return iupStrReturnIntInt(ih->data->horiz_padding, ih->data->vert_padding, 'x');
 }
 
 static int iGaugeSetDashedAttrib(Ihandle* ih, const char* value)

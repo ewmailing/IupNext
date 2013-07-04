@@ -213,7 +213,7 @@ static char* gtkListGetIdValueAttrib(Ihandle* ih, int id)
       gtk_tree_model_get(model, &iter, IUPGTK_LIST_TEXT, &text, -1);
       if (text)
       {
-        char* ret_str = iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(text));
+        char* ret_str = iupStrReturnStr(iupgtkStrConvertFromUTF8(text));
         g_free(text);
         return ret_str;
       }
@@ -341,7 +341,7 @@ static char* gtkListGetValueAttrib(Ihandle* ih)
   if (ih->data->has_editbox)
   {
     GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
-    return iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(gtk_entry_get_text(entry)));
+    return iupStrReturnStr(iupgtkStrConvertFromUTF8(gtk_entry_get_text(entry)));
   }
   else 
   {
@@ -696,7 +696,7 @@ static char* gtkListGetSelectedTextAttrib(Ihandle* ih)
   if (gtk_editable_get_selection_bounds(GTK_EDITABLE(entry), &start, &end))
   {
     char* selectedtext = gtk_editable_get_chars(GTK_EDITABLE(entry), start, end);
-    char* str = iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(selectedtext));
+    char* str = iupStrReturnStr(iupgtkStrConvertFromUTF8(selectedtext));
     g_free(selectedtext);
     return str;
   }
@@ -713,7 +713,7 @@ static int gtkListSetCaretAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   pos--; /* IUP starts at 1 */
   if (pos < 0) pos = 0;
 
@@ -747,7 +747,7 @@ static int gtkListSetCaretPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 0) pos = 0;
 
   entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
@@ -779,7 +779,7 @@ static int gtkListSetScrollToAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 1) pos = 1;
   pos--;  /* return to GTK reference */
 
@@ -798,7 +798,7 @@ static int gtkListSetScrollToPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 0) pos = 0;
 
   entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
@@ -1192,7 +1192,7 @@ static int gtkListCallEditCb(Ihandle* ih, GtkEditable *editable, const char* ins
   if (!cb && !ih->data->mask)
     return -1; /* continue */
 
-  value = iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(gtk_entry_get_text(GTK_ENTRY(editable))));
+  value = iupStrReturnStr(iupgtkStrConvertFromUTF8(gtk_entry_get_text(GTK_ENTRY(editable))));
 
   if (!insert_value)
   {
@@ -1269,7 +1269,7 @@ static void gtkListEditInsertText(GtkEditable *editable, char *insert_value, int
   if (iupAttribGet(ih, "_IUPGTK_DISABLE_TEXT_CB"))
     return;
 
-  ret = gtkListCallEditCb(ih, editable, iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(insert_value)), len, *pos, *pos);
+  ret = gtkListCallEditCb(ih, editable, iupStrReturnStr(iupgtkStrConvertFromUTF8(insert_value)), len, *pos, *pos);
   if (ret == 0)
     g_signal_stop_emission_by_name(editable, "insert_text");
   else if (ret != -1)

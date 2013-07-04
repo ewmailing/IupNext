@@ -129,7 +129,6 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     case K_DEL:
       {
         int lin, col;
-        char str[100];
         IFnii mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
 
         iupMatrixPrepareDrawData(ih);
@@ -138,7 +137,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
         {
           for(col = 1; col < ih->data->columns.num; col++)
           {
-            if (iupMatrixMarkCellGet(ih, lin, col, mark_cb, str))
+            if (iupMatrixMarkCellGet(ih, lin, col, mark_cb))
             {
               if (iupMatrixAuxCallEditionCbLinCol(ih, lin, col, 1, 1) != IUP_IGNORE)
               {

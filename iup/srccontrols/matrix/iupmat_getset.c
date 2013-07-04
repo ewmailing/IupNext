@@ -99,7 +99,7 @@ static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col)
   }
   else
   {
-    if (sscanf(value, "%lf", &number) != 1) 
+    if (sscanf(value, "%lf", &number) != 1)   /* lf=double */
       return value;
   }
 
@@ -110,7 +110,7 @@ static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col)
   return ih->data->numeric_buffer;
 }
 
-
+//title
 //SetValue
 //TODO DROP_CB e MENUDROP_CB
 
@@ -119,11 +119,7 @@ char* iupMatrixCellGetValue (Ihandle* ih, int lin, int col)
 {  
   /* can be called before map */
   if (!ih->handle)
-  {
-    char str[100];
-    sprintf(str, "%d:%d", lin, col);
-    return iupAttribGet(ih, str);
-  }
+    return iupAttribGetId2(ih, "", lin, col);
   else
   {
     if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
@@ -212,7 +208,6 @@ void iupMatrixPrepareDrawData(Ihandle* ih)
 static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int col, int native_parent)
 {
   char* value = NULL;
-  char attrib_id[100];
   const char* attrib = NULL;
   char* attrib_global = NULL; 
 
@@ -234,20 +229,14 @@ static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int 
 
   /* 1 -  check for this cell */
   if (ih->data->callback_mode || ih->data->cells[lin][col].flags & attr)
-  {
-    sprintf(attrib_id, "%s%d:%d", attrib, lin, col);
-    value = iupAttribGet(ih, attrib_id);
-  }
+    value = iupAttribGetId2(ih, attrib, lin, col);
   if (!value)
   {
     /* 2 - check for this line, if not title col */
     if (col != 0)
     {
       if (ih->data->lines.flags[lin] & attr)
-      {
-        sprintf(attrib_id, "%s%d:*", attrib, lin);
-        value = iupAttribGet(ih, attrib_id);
-      }
+        value = iupAttribGetId(ih, attrib, lin);
     }
 
     if (!value)
@@ -256,10 +245,7 @@ static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int 
       if (lin != 0)
       {
         if (ih->data->columns.flags[col] & attr)
-        {
-          sprintf(attrib_id,"%s*:%d", attrib, col);
-          value = iupAttribGet(ih, attrib_id);
-        }
+          value = iupAttribGetId(ih, attrib, col);
       }
 
       if (!value)
@@ -303,11 +289,7 @@ char* iupMatrixGetFgColor(Ihandle* ih, int lin, int col)
     return fgcolor;
   }
   else
-  {
-    char* buffer = iupStrGetMemory(30);
-    sprintf(buffer, "%d %d %d", r, g, b);
-    return buffer;
-  }
+    return iupStrReturnRGB(r, g, b);
 }
 
 void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b)
@@ -339,11 +321,7 @@ char* iupMatrixGetBgColor(Ihandle* ih, int lin, int col)
     return iMatrixGetCellAttrib(ih, IMAT_HAS_BGCOLOR, lin, col, native_parent);
   }
   else
-  {
-    char* buffer = iupStrGetMemory(30);
-    sprintf(buffer, "%d %d %d", r, g, b);
-    return buffer;
-  }
+    return iupStrReturnRGB(r, g, b);
 }
 
 #define IMAT_DARKER(_x)    (((_x)*9)/10)
@@ -381,17 +359,14 @@ char* iupMatrixGetFont(Ihandle* ih, int lin, int col)
 int iupMatrixGetColumnWidth(Ihandle* ih, int col, int use_value)
 {
   int width = 0, pixels = 0;
-  char str[100];
   char* value;
 
   /* can be called for invalid columns (col>numcol) */
 
-  sprintf(str, "WIDTH%d", col);
-  value = iupAttribGet(ih, str);
+  value = iupAttribGetId(ih, "WIDTH", col);
   if (!value)
   {
-    sprintf(str, "RASTERWIDTH%d", col);
-    value = iupAttribGet(ih, str);
+    value = iupAttribGetId(ih, "RASTERWIDTH", col);
     if (value)
       pixels = 1;
   }
@@ -453,17 +428,14 @@ int iupMatrixGetColumnWidth(Ihandle* ih, int col, int use_value)
 int iupMatrixGetLineHeight(Ihandle* ih, int lin, int use_value)
 {
   int height = 0, pixels = 0;
-  char str[100];
   char* value;
 
   /* can be called for invalid lines (lin>numlin) */
 
-  sprintf(str, "HEIGHT%d", lin);
-  value = iupAttribGet(ih, str);
+  value = iupAttribGetId(ih, "HEIGHT", lin);
   if(!value)
   {
-    sprintf(str, "RASTERHEIGHT%d", lin);
-    value = iupAttribGet(ih, str);
+    value = iupAttribGetId(ih, "RASTERHEIGHT", lin);
     if(value)
       pixels = 1;
   }
@@ -524,7 +496,6 @@ int iupMatrixGetLineHeight(Ihandle* ih, int lin, int use_value)
 
 char *iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels_unit)
 {
-  char* str;
   int size;
   ImatLinColData *p;
 
@@ -560,9 +531,7 @@ char *iupMatrixGetSize(Ihandle* ih, int index, int m, int pixels_unit)
     }
   }
 
-  str = iupStrGetMemory(100);
-  sprintf(str, "%d", size);
-  return str;
+  return iupStrReturnInt(size);
 }
 
 static int iMatrixGetOffset(int index, int *offset, ImatLinColData *p)

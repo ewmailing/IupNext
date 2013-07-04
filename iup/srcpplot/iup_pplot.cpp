@@ -734,11 +734,7 @@ static int iPPlotGetCDFontStyle(const char* value)
 static char* iPPlotGetPlotFontSize(int size)
 {
   if (size)
-  {
-    char* buffer = iupStrGetMemory(50);
-    sprintf(buffer, "%d", size);
-    return buffer;
-  }
+    return iupStrReturnInt(size);
   else
     return NULL;
 }
@@ -831,9 +827,7 @@ static int iPPlotSetRedrawAttrib(Ihandle* ih, const char* value)
 /* total number of datasets (read only) */
 static char* iPPlotGetCountAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", ih->data->plt->_plot.mPlotDataContainer.GetPlotCount());
-  return buffer;
+  return iupStrReturnInt(ih->data->plt->_plot.mPlotDataContainer.GetPlotCount());
 }
 
 /* legend box visibility */
@@ -893,12 +887,10 @@ static int iPPlotSetBGColorAttrib(Ihandle* ih, const char* value)
 
 static char* iPPlotGetBGColorAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d %d %d",
+  return iupStrReturnRGB(
           ih->data->plt->_plot.mPlotBackground.mPlotRegionBackColor.mR,
           ih->data->plt->_plot.mPlotBackground.mPlotRegionBackColor.mG,
           ih->data->plt->_plot.mPlotBackground.mPlotRegionBackColor.mB);
-  return buffer;
 }
 
 
@@ -916,12 +908,10 @@ static int iPPlotSetFGColorAttrib(Ihandle* ih, const char* value)
 
 static char* iPPlotGetFGColorAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d %d %d",
+  return iupStrReturnRGB(
           ih->data->plt->_plot.mPlotBackground.mTitleColor.mR,
           ih->data->plt->_plot.mPlotBackground.mTitleColor.mG,
           ih->data->plt->_plot.mPlotBackground.mTitleColor.mB);
-  return buffer;
 }
 
 
@@ -939,10 +929,7 @@ static int iPPlotSetTitleAttrib(Ihandle* ih, const char* value)
 
 static char* iPPlotGetTitleAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(256);
-  strncpy(buffer, ih->data->plt->_plot.mPlotBackground.mTitle.c_str(), 256);
-  buffer[255]='\0';
-  return buffer;
+  return iupStrReturnStr(ih->data->plt->_plot.mPlotBackground.mTitle.c_str());
 }
 
 
@@ -1058,30 +1045,22 @@ static int iPPlotSetMarginBottomAttrib(Ihandle* ih, const char* value)
 
 static char* iPPlotGetMarginLeftAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", ih->data->plt->_plot.mMargins.mLeft);
-  return buffer;
+  return iupStrReturnInt(ih->data->plt->_plot.mMargins.mLeft);
 }
 
 static char* iPPlotGetMarginRightAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", ih->data->plt->_plot.mMargins.mRight);
-  return buffer;
+  return iupStrReturnInt(ih->data->plt->_plot.mMargins.mRight);
 }
 
 static char* iPPlotGetMarginTopAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", ih->data->plt->_plot.mMargins.mTop);
-  return buffer;
+  return iupStrReturnInt(ih->data->plt->_plot.mMargins.mTop);
 }
 
 static char* iPPlotGetMarginBottomAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", ih->data->plt->_plot.mMargins.mBottom);
-  return buffer;
+  return iupStrReturnInt(ih->data->plt->_plot.mMargins.mBottom);
 }
 
 /* plot grid color */
@@ -1098,12 +1077,10 @@ static int iPPlotSetGridColorAttrib(Ihandle* ih, const char* value)
 
 static char* iPPlotGetGridColorAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d %d %d",
+  return iupStrReturnRGB(
           ih->data->plt->_plot.mGridInfo.mGridColor.mR,
           ih->data->plt->_plot.mGridInfo.mGridColor.mG,
           ih->data->plt->_plot.mGridInfo.mGridColor.mB);
-  return buffer;
 }
 
 /* plot grid line style */
@@ -1174,9 +1151,7 @@ static int iPPlotSetCurrentAttrib(Ihandle* ih, const char* value)
 
 static char* iPPlotGetCurrentAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", ih->data->plt->_currentDataSetIndex);
-  return buffer;
+  return iupStrReturnInt(ih->data->plt->_currentDataSetIndex);
 }
 
 /* remove a dataset */
@@ -1253,9 +1228,7 @@ static char* iPPlotGetDSLineWidthAttrib(Ihandle* ih)
     return NULL;
 
   DataDrawerBase* drawer = ih->data->plt->_plot.mPlotDataContainer.GetDataDrawer(ih->data->plt->_currentDataSetIndex);
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", drawer->mStyle.mPenWidth);
-  return buffer;
+  return iupStrReturnInt(drawer->mStyle.mPenWidth);
 }
 
 /* current plot mark style */
@@ -1307,9 +1280,7 @@ static char* iPPlotGetDSMarkSizeAttrib(Ihandle* ih)
     return NULL;
 
   DataDrawerBase* drawer = ih->data->plt->_plot.mPlotDataContainer.GetDataDrawer(ih->data->plt->_currentDataSetIndex);
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", drawer->mStyle.mMarkSize);
-  return buffer;
+  return iupStrReturnInt(drawer->mStyle.mMarkSize);
 }
 
 /* current dataset legend */
@@ -1337,10 +1308,7 @@ static char* iPPlotGetDSLegendAttrib(Ihandle* ih)
     return NULL;
 
   LegendData* legend = ih->data->plt->_plot.mPlotDataContainer.GetLegendData(ih->data->plt->_currentDataSetIndex);
-  char* buffer = iupStrGetMemory(256);
-  strncpy(buffer, legend->mName.c_str(), 255);
-  buffer[255]='\0';
-  return buffer;
+  return iupStrReturnStr(legend->mName.c_str());
 }
 
 /* current dataset line and legend color */
@@ -1368,9 +1336,7 @@ static char* iPPlotGetDSColorAttrib(Ihandle* ih)
     return NULL;
 
   LegendData* legend = ih->data->plt->_plot.mPlotDataContainer.GetLegendData(ih->data->plt->_currentDataSetIndex);
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d %d %d", legend->mColor.mR, legend->mColor.mG, legend->mColor.mB);
-  return buffer;
+  return iupStrReturnRGB(legend->mColor.mR, legend->mColor.mG, legend->mColor.mB);
 }
 
 /* show values */
@@ -1498,10 +1464,8 @@ static char* iPPlotGetDSCountAttrib(Ihandle* ih)
     return NULL;
 
   {
-    char* buffer = iupStrGetMemory(30);
     int count = ih->data->plt->_plot.mPlotDataContainer.GetCount(ih->data->plt->_currentDataSetIndex);
-    sprintf(buffer, "%d", count);
-    return buffer;
+    return iupStrReturnInt(count);
   }
 }
 
@@ -1543,19 +1507,13 @@ static int iPPlotSetAxisYLabelAttrib(Ihandle* ih, const char* value)
 static char* iPPlotGetAxisXLabelAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
-  char* buffer = iupStrGetMemory(256);
-  strncpy(buffer, axis->mLabel.c_str(), 255);
-  buffer[255]='\0';
-  return buffer;
+  return iupStrReturnStr(axis->mLabel.c_str());
 }
 
 static char* iPPlotGetAxisYLabelAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
-  char* buffer = iupStrGetMemory(256);
-  strncpy(buffer, axis->mLabel.c_str(), 255);
-  buffer[255]='\0';
-  return buffer;
+  return iupStrReturnStr(axis->mLabel.c_str());
 }
 
 /* axis title position */
@@ -1633,23 +1591,19 @@ static int iPPlotSetAxisYColorAttrib(Ihandle* ih, const char* value)
 static char* iPPlotGetAxisXColorAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d %d %d",
+  return iupStrReturnRGB(
           axis->mColor.mR,
           axis->mColor.mG,
           axis->mColor.mB);
-  return buffer;
 }
 
 static char* iPPlotGetAxisYColorAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d %d %d",
+  return iupStrReturnRGB(
           axis->mColor.mR,
           axis->mColor.mG,
           axis->mColor.mB);
-  return buffer;
 }
 
 /* autoscaling */
@@ -1774,17 +1728,13 @@ static int iPPlotSetAxisYMinAttrib(Ihandle* ih, const char* value)
 static char* iPPlotGetAxisXMinAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%g", axis->mMin);
-  return buffer;
+  return iupStrReturnFloat(axis->mMin);
 }
 
 static char* iPPlotGetAxisYMinAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%g", axis->mMin);
-  return buffer;
+  return iupStrReturnFloat(axis->mMin);
 }
 
 /* max visible val */
@@ -1815,17 +1765,13 @@ static int iPPlotSetAxisYMaxAttrib(Ihandle* ih, const char* value)
 static char* iPPlotGetAxisXMaxAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%g", axis->mMax);
-  return buffer;
+  return iupStrReturnFloat(axis->mMax);
 }
 
 static char* iPPlotGetAxisYMaxAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%g", axis->mMax);
-  return buffer;
+  return iupStrReturnFloat(axis->mMax);
 }
 
 /* values from left/top to right/bottom */
@@ -1982,41 +1928,35 @@ static int iPPlotSetAxisYScaleAttrib(Ihandle* ih, const char* value)
 static char* iPPlotGetAxisXScaleAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
-  char* buffer = iupStrGetMemory(30);
 
   if (axis->mLogScale)
   {
     if (axis->mLogBase == 10.0)
-      strcpy(buffer, "LOG10");
+      return "LOG10";
     else if (axis->mLogBase == 2.0)
-      strcpy(buffer, "LOG2");
+      return "LOG2";
     else
-      strcpy(buffer, "LOGN");
+      return "LOGN";
   }
   else
-    strcpy(buffer, "LIN");
-
-  return buffer;
+    return "LIN";
 }
 
 static char* iPPlotGetAxisYScaleAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
-  char* buffer = iupStrGetMemory(30);
 
   if (axis->mLogScale)
   {
     if (axis->mLogBase == 10.0)
-      strcpy(buffer, "LOG10");
+      return "LOG10";
     else if (axis->mLogBase == 2.0)
-      strcpy(buffer, "LOG2");
+      return "LOG2";
     else
-      strcpy(buffer, "LOGN");
+      return "LOGN";
   }
   else
-    strcpy(buffer, "LIN");
-
-  return buffer;
+    return "LIN";
 }
 
 /* axis label font size */
@@ -2168,17 +2108,13 @@ static int iPPlotSetAxisYTickSizeAttrib(Ihandle* ih, const char* value)
 static char* iPPlotGetAxisXTickSizeAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", axis->mTickInfo.mMinorTickScreenSize);
-  return buffer;
+  return iupStrReturnInt(axis->mTickInfo.mMinorTickScreenSize);
 }
 
 static char* iPPlotGetAxisYTickSizeAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", axis->mTickInfo.mMinorTickScreenSize);
-  return buffer;
+  return iupStrReturnInt(axis->mTickInfo.mMinorTickScreenSize);
 }
 
 /* size of major ticks (in pixels) */
@@ -2209,17 +2145,13 @@ static int iPPlotSetAxisYTickMajorSizeAttrib(Ihandle* ih, const char* value)
 static char* iPPlotGetAxisXTickMajorSizeAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", axis->mTickInfo.mMajorTickScreenSize);
-  return buffer;
+  return iupStrReturnInt(axis->mTickInfo.mMajorTickScreenSize);
 }
 
 static char* iPPlotGetAxisYTickMajorSizeAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", axis->mTickInfo.mMajorTickScreenSize);
-  return buffer;
+  return iupStrReturnInt(axis->mTickInfo.mMajorTickScreenSize);
 }
 
 /* axis ticks font size */
@@ -2330,19 +2262,13 @@ static int iPPlotSetAxisYTickFormatAttrib(Ihandle* ih, const char* value)
 static char* iPPlotGetAxisXTickFormatAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
-  char* buffer = iupStrGetMemory(256);
-  strncpy(buffer, axis->mTickInfo.mFormatString.c_str(), 255);
-  buffer[255]='\0';
-  return buffer;
+  return iupStrReturnStr(axis->mTickInfo.mFormatString.c_str());
 }
 
 static char* iPPlotGetAxisYTickFormatAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
-  char* buffer = iupStrGetMemory(256);
-  strncpy(buffer, axis->mTickInfo.mFormatString.c_str(), 255);
-  buffer[255]='\0';
-  return buffer;
+  return iupStrReturnStr(axis->mTickInfo.mFormatString.c_str());
 }
 
 /* axis ticks */
@@ -2420,17 +2346,13 @@ static int iPPlotSetAxisYTickMajorSpanAttrib(Ihandle* ih, const char* value)
 static char* iPPlotGetAxisXTickMajorSpanAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%g", axis->mTickInfo.mMajorTickSpan);
-  return buffer;
+  return iupStrReturnFloat(axis->mTickInfo.mMajorTickSpan);
 }
 
 static char* iPPlotGetAxisYTickMajorSpanAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%g", axis->mTickInfo.mMajorTickSpan);
-  return buffer;
+  return iupStrReturnFloat(axis->mTickInfo.mMajorTickSpan);
 }
 
 /* number of ticks between major ticks */
@@ -2461,17 +2383,13 @@ static int iPPlotSetAxisYTickDivisionAttrib(Ihandle* ih, const char* value)
 static char* iPPlotGetAxisXTickDivisionAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", axis->mTickInfo.mTickDivision);
-  return buffer;
+  return iupStrReturnInt(axis->mTickInfo.mTickDivision);
 }
 
 static char* iPPlotGetAxisYTickDivisionAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", axis->mTickInfo.mTickDivision);
-  return buffer;
+  return iupStrReturnInt(axis->mTickInfo.mTickDivision);
 }
 
 /* auto tick spacing */

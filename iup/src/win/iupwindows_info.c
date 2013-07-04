@@ -20,7 +20,7 @@ char* iupdrvLocaleInfo(void)
 {
   CPINFOEX info;
   GetCPInfoEx(CP_ACP, 0, &info);
-  return iupStrGetMemoryCopy(info.CodePageName);
+  return iupStrReturnStr(info.CodePageName);
 }
 
 int iupdrvMakeDirectory(const char* name) 

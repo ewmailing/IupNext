@@ -1051,7 +1051,7 @@ static int winTextSetCaretAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    sscanf(value,"%i",&pos);
+    iupStrToInt(value, &pos);
     if (pos < 1) pos = 1;
     pos--; /* IUP starts at 1 */
   }
@@ -1086,7 +1086,7 @@ static int winTextSetCaretPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);    /* be permissive in SetCaret, do not abort if invalid */
+  iupStrToInt(value, &pos);    /* be permissive in SetCaret, do not abort if invalid */
   if (pos < 0) pos = 0;
 
   if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
@@ -1132,7 +1132,7 @@ static int winTextSetScrollToAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    sscanf(value,"%i",&col);
+    iupStrToInt(value, &col);
     if (col < 1) col = 1;
   }
 
@@ -1151,7 +1151,7 @@ static int winTextSetScrollToPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 0) pos = 0;
 
   if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */

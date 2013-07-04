@@ -114,15 +114,8 @@ char* iupScintillaGetUseBraceBLIndicatorAttrib(Ihandle* ih)
 
 char* iupScintillaGetBraceMatchAttribId(Ihandle* ih, int pos)
 {
-  int value;
-  char* str = iupStrGetMemory(15);
-
   if (pos < 0)
     return "-1";
 
-  value = iupScintillaSendMessage(ih, SCI_BRACEMATCH, pos, 0);
-
-  sprintf(str, "%d", value);
-
-  return str;
+  return iupStrReturnInt(iupScintillaSendMessage(ih, SCI_BRACEMATCH, pos, 0));
 }

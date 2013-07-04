@@ -713,7 +713,7 @@ static char* gtkDialogGetTitleAttrib(Ihandle* ih)
   if (!title || title[0] == 0)
     return NULL;
   else
-    return iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(title));
+    return iupStrReturnStr(iupgtkStrConvertFromUTF8(title));
 }    
 
 static char* gtkDialogGetClientSizeAttrib(Ihandle *ih)

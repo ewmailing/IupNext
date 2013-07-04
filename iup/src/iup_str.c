@@ -346,7 +346,7 @@ char *iupStrGetMemory(int size)
 #undef MAX_BUFFERS
 }
 
-char *iupStrGetMemoryCopy(const char* str)
+char *iupStrReturnStr(const char* str)
 {
   if (str)
   {
@@ -359,30 +359,73 @@ char *iupStrGetMemoryCopy(const char* str)
     return NULL;
 }
 
-int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)
+char* iupStrReturnInt(int i)
 {
-  unsigned int ri = 0, gi = 0, bi = 0, ai = 0, ret;
-  if (!str) return 0;
-  ret = sscanf(str, "%u %u %u %u", &ri, &gi, &bi, &ai);
-  if (ret < 3) return 0;
-  if (ri > 255 || gi > 255 || bi > 255 || ai > 255) return 0;
-  *r = (unsigned char)ri;
-  *g = (unsigned char)gi;
-  *b = (unsigned char)bi;
-  if (ret == 4)
+  char* str = iupStrGetMemory(20);
+  sprintf(str, "%d", i);
+  return str;
+}
+
+char* iupStrReturnFloat(float f)
+{
+  char* str = iupStrGetMemory(80);
+  sprintf(str, "%g", f);
+  return str;
+}
+
+char* iupStrReturnRGB(unsigned char r, unsigned char g, unsigned char b)
+{
+  char* str = iupStrGetMemory(60);
+  sprintf(str, "%d %d %d", (int)r, (int)g, (int)b);
+  return str;
+}
+
+char* iupStrReturnStrStr(const char *str1, const char *str2, char sep)
+{
+  if (str1 || str2)
   {
-    *a = (unsigned char)ai;
-    return 4;
+    char* ret_str;
+    int size1=0, size2=0;
+    if (str1) size1 = strlen(str1);
+    if (str2) size2 = strlen(str2);
+    ret_str = iupStrGetMemory(size1+size2+2);
+    if (str1 && size1) memcpy(ret_str, str1, size1);
+    ret_str[size1] = sep;
+    if (str2 && size2) memcpy(ret_str+size1+1, str2, size2);
+    ret_str[size1+1+size2] = 0;
+    return ret_str;
   }
   else
-    return 3;
+    return NULL;
+}
+
+char* iupStrReturnIntInt(int i1, int i2, char sep)
+{
+  char* str = iupStrGetMemory(40);
+  sprintf(str, "%d%c%d", i1, sep, i2);
+  return str;
+}
+
+char* iupStrReturnFloatFloat(float f1, float f2, char sep)
+{
+  char* str = iupStrGetMemory(160);
+  sprintf(str, "%g%c%g", f1, sep, f2);
+  return str;
 }
 
 int iupStrToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned char *b)
 {
   unsigned int ri = 0, gi = 0, bi = 0;
   if (!str) return 0;
-  if (sscanf(str, "%u %u %u", &ri, &gi, &bi) != 3) return 0;
+  if (str[0]=='#')
+  {
+    str++;
+    if (sscanf(str, "%2X%2X%2X", &ri, &gi, &bi) != 3) return 0;
+  }
+  else
+  {
+    if (sscanf(str, "%u %u %u", &ri, &gi, &bi) != 3) return 0;
+  }
   if (ri > 255 || gi > 255 || bi > 255) return 0;
   *r = (unsigned char)ri;
   *g = (unsigned char)gi;

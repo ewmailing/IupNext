@@ -33,6 +33,8 @@ void iupMatrixExBusyEnd(ImatExData* matex_data);
 int iupMatrixExIsColumnVisible(Ihandle* ih, int col);
 int iupMatrixExIsLineVisible(Ihandle* ih, int lin);
 
+void iupMatrixExCheckLimitsOrder(int *v1, int *v2, int min, int max);
+
 void iupMatrixExInitCellAccess(ImatExData* matex_data);
 char* iupMatrixExGetCell(ImatExData* matex_data, int lin, int col);
 void iupMatrixExSetCell(ImatExData* matex_data, int lin, int col, const char* value);

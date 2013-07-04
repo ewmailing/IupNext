@@ -137,10 +137,8 @@ char* iupScintillaGetMarkerSymbolAttribId(Ihandle* ih, int markerNumber)
     
   if (markerSymbol>SC_MARK_CHARACTER)
   {
-    char* str = iupStrGetMemory(15);
-    int c = markerSymbol-SC_MARK_CHARACTER;
-    sprintf(str, "%s%c", markerSymbolStr[31], (char)c);
-    return str;
+    char c = (char)(markerSymbol-SC_MARK_CHARACTER);
+    return iupStrReturnStrStr(markerSymbolStr[31], "", c);
   }
 
   if (markerSymbol<0 || markerSymbol>31)
@@ -302,9 +300,7 @@ int iupScintillaSetMarkerDeleteAttribId(Ihandle* ih, int line, const char* value
 char* iupScintillaGetMarkerGetAttribId(Ihandle* ih, int line)
 {
   int markers = iupScintillaSendMessage(ih, SCI_MARKERGET, line, 0);
-  char* str = iupStrGetMemory(15);
-  sprintf(str, "%d", markers);
-  return str;
+  return iupStrReturnInt(markers);
 }
 
 int iupScintillaSetMarkerDeleteAllAttrib(Ihandle* ih, const char* value)
@@ -342,9 +338,7 @@ int iupScintillaSetMarkerPreviousAttribId(Ihandle* ih, int lineStart, const char
 char* iupScintillaGetMarkerLineFromHandleAttribId(Ihandle* ih, int markerHandle)
 {
   int line = iupScintillaSendMessage(ih, SCI_MARKERLINEFROMHANDLE, markerHandle, 0);
-  char* str = iupStrGetMemory(15);
-  sprintf(str, "%d", line);
-  return str;
+  return iupStrReturnInt(line);
 }
 
 int iupScintillaSetMarkerDeleteHandleAttrib(Ihandle* ih, const char* value)

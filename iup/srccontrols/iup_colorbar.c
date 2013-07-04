@@ -371,9 +371,7 @@ static int iColorbarSetNumPartsAttrib(Ihandle* ih, const char* value)
 
 static char* iColorbarGetNumPartsAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(100);
-  sprintf(buffer, "%d", ih->data->num_parts);
-  return buffer;
+  return iupStrReturnInt(ih->data->num_parts);
 }
 
 static int iColorbarSetPrimaryCellAttrib(Ihandle* ih, const char* value)
@@ -392,9 +390,7 @@ static int iColorbarSetPrimaryCellAttrib(Ihandle* ih, const char* value)
 
 static char* iColorbarGetPrimaryCellAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(100);
-  sprintf(buffer, "%d", ih->data->fgcolor_idx);
-  return buffer;
+  return iupStrReturnInt(ih->data->fgcolor_idx);
 }
 
 static int iColorbarSetSecondaryCellAttrib(Ihandle* ih, const char* value)
@@ -414,9 +410,7 @@ static int iColorbarSetSecondaryCellAttrib(Ihandle* ih, const char* value)
 
 static char* iColorbarGetSecondaryCellAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(100);
-  sprintf(buffer, "%d", ih->data->bgcolor_idx);
-  return buffer;
+  return iupStrReturnInt(ih->data->bgcolor_idx);
 }
 
 static int iColorbarSetBufferizeAttrib(Ihandle* ih, const char* value)
@@ -463,9 +457,7 @@ static int iColorbarSetNumCellsAttrib(Ihandle* ih, const char* value)
 
 static char* iColorbarGetNumCellsAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(100);
-  sprintf(buffer, "%d", ih->data->num_cells);
-  return buffer;
+  return iupStrReturnInt(ih->data->num_cells);
 }
 
 static int iColorbarSetOrientationAttrib(Ihandle* ih, const char* value)
@@ -555,11 +547,7 @@ static char* iColorbarGetPreviewSizeAttrib(Ihandle* ih)
   if (ih->data->preview_size == -1)  /* automatic */
     return NULL;
   else 
-  {
-    char* buffer = iupStrGetMemory(100);
-    sprintf(buffer, "%d", ih->data->preview_size);
-    return buffer;
-  }
+    return iupStrReturnInt(ih->data->preview_size);
 }
 
 static int iColorbarSetCellAttrib(Ihandle* ih, int id, const char* value)
@@ -575,15 +563,13 @@ static int iColorbarSetCellAttrib(Ihandle* ih, int id, const char* value)
 
 static char* iColorbarGetCellAttrib(Ihandle* ih, int id)
 {
-  char* buffer = iupStrGetMemory(100);
   long color;
   
   if (id < 0 || id >= ih->data->num_cells)
     return NULL;
 
   color = ih->data->colors[id];
-  sprintf(buffer, "%d %d %d", cdRed(color), cdGreen(color), cdBlue(color));
-  return buffer;
+  return iupStrReturnRGB(cdRed(color), cdGreen(color), cdBlue(color));
 }
 
 static int iColorbarSetTransparencyAttrib(Ihandle* ih, const char* value)
@@ -602,11 +588,7 @@ static char* iColorbarGetTransparencyAttrib(Ihandle* ih)
   if (ih->data->transparency == ICOLORBAR_NO_COLOR)
     return NULL;
   else
-  {
-    char* buffer = iupStrGetMemory(100);
-    sprintf(buffer, "%d %d %d", cdRed(ih->data->transparency), cdGreen(ih->data->transparency), cdBlue(ih->data->transparency));
-    return buffer;
-  }
+    return iupStrReturnRGB(cdRed(ih->data->transparency), cdGreen(ih->data->transparency), cdBlue(ih->data->transparency));
 }
 
 static int iColorbarSetBgColorAttrib(Ihandle* ih, const char* value)

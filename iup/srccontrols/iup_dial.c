@@ -642,9 +642,7 @@ static int iDialWheel_CB(Ihandle* ih, float delta)
 
 static char* iDialGetValueAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(20);
-  sprintf(str, "%g", ih->data->angle);
-  return str;
+  return iupStrReturnFloat((float)ih->data->angle);
 }
 
 static int iDialSetValueAttrib(Ihandle* ih, const char* value)
@@ -667,9 +665,7 @@ static int iDialSetDensityAttrib(Ihandle* ih, const char* value)
 
 static char* iDialGetDensityAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(20);
-  sprintf(str, "%g", ih->data->density);
-  return str;
+  return iupStrReturnFloat((float)ih->data->density);
 }
 
 static int iDialSetBgColorAttrib(Ihandle* ih, const char* value)

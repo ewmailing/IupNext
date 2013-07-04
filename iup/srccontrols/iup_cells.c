@@ -708,21 +708,17 @@ static char* iCellsGetCanvasAttrib(Ihandle* ih)
 
 static char* iCellsGetFirstLineAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(80);
-  sprintf( buffer, "%d", iCellsGetFirstLine(ih) );
-  return buffer;
+  return iupStrReturnInt(iCellsGetFirstLine(ih));
 }
 
 static char* iCellsGetFirstColAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(80);
-  sprintf(buffer, "%d", iCellsGetFirstCol(ih) );
-  return buffer;
+  return iupStrReturnInt(iCellsGetFirstCol(ih));
 }
 
 static char* iCellsGetLimitsAttrib(Ihandle* ih, int i, int j)
 {
-  char* buffer = iupStrGetMemory(80);
+  char* buffer = iupStrGetMemory(4*20);
   int xmin, xmax, ymin, ymax;
   iCellsGetLimits(ih, i, j, &xmin, &xmax, &ymin, &ymax);
   sprintf(buffer, "%d:%d:%d:%d", xmin, xmax, ymin, ymax);
@@ -790,9 +786,7 @@ static int iCellsSetNonScrollableColsAttrib(Ihandle* ih, const char* value)
 
 static char* iCellsGetNonScrollableColsAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(80);
-  sprintf(buffer, "%d", ih->data->non_scrollable_cols);
-  return buffer;
+  return iupStrReturnInt(ih->data->non_scrollable_cols);
 }
 
 static int iCellsSetNonScrollableLinesAttrib(Ihandle* ih, const char* value)
@@ -804,9 +798,7 @@ static int iCellsSetNonScrollableLinesAttrib(Ihandle* ih, const char* value)
 
 static char* iCellsGetNonScrollableLinesAttrib(Ihandle* ih)
 {
-  char* buffer = iupStrGetMemory(80);
-  sprintf(buffer, "%d", ih->data->non_scrollable_lins);
-  return buffer;
+  return iupStrReturnInt(ih->data->non_scrollable_lins);
 }
 
 static int iCellsSetBoxedAttrib(Ihandle* ih, const char* value)

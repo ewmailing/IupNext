@@ -213,10 +213,13 @@ void  IupSetFloatId2(Ihandle* ih, const char* name, int lin, int col, float valu
 <p>They work just like the respective traditional set and get functions. But the attribute string is complemented with 
   the L and C values. When only one value is needed then use the Iup*AttributeId 
 functions. For ex:</p>
-<pre>IupSetAttributeId2(ih, &quot;&quot;, 30, 10, value) == IupSetAttribute(ih, &quot;30:10&quot;, value)
-IupSetAttributeId2(ih, &quot;BGCOLOR&quot;, 30, 10, value) == IupSetAttribute(ih, &quot;BGCOLOR30:10&quot;, value)
-IupSetAttributeId2(ih, &quot;ALIGNMENT&quot;, 10, value) == IupSetAttribute(ih, &quot;ALIGNMENT10&quot;, value)</pre>
-<p>But these functions are faster than the traditional functions because they do 
+<pre>IupSetAttribute(ih, &quot;30:10&quot;, value)        =&gt; IupSetAttributeId2(ih, &quot;&quot;, 30, 10, value)
+IupSetAttribute(ih, &quot;BGCOLOR30:10&quot;, value) =&gt; IupSetAttributeId2(ih, &quot;BGCOLOR&quot;, 30, 10, value)
+IupSetAttribute(ih, &quot;ALIGNMENT10&quot;, value)  =&gt; IupSetAttributeId(ih, &quot;ALIGNMENT&quot;, 10, value)</pre>
+<p>When one of the indices is the asterisk, use IUP_INVALID_ID as the parameter. 
+For ex:</p>
+<pre>IupSetAttribute(ih, &quot;BGCOLOR30:*&quot;, value) =&gt; IupSetAttributeId2(ih, &quot;BGCOLOR&quot;, 30, IUP_INVALID_ID, value)</pre>
+<p>These functions are faster than the traditional functions because they do 
 not need to parse the attribute name string and the application does not need to 
 concatenate the attribute name with the id.</p>
 <p>They are used by the additional methods in Lua:</p>

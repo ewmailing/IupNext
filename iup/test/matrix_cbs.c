@@ -57,7 +57,7 @@ static int dropcheck(Ihandle *self, int lin, int col)
 
 static int click(Ihandle *self, int lin, int col)
 {
-  char* value = IupMatGetAttribute(self, "", lin, col);
+  char* value = IupGetAttributeId2(self, "", lin, col);
   if (!value) value = "NULL";
   printf("click_cb(%d, %d)\n", lin, col);
   printf("  VALUE%d:%d = %s\n", lin, col, value);

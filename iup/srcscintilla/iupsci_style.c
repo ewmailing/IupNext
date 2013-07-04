@@ -180,16 +180,13 @@ int iupScintillaSetEolFilledStyleAttrib(Ihandle* ih, int style, const char* valu
 char* iupScintillaGetFontSizeFracStyleAttrib(Ihandle* ih, int style)
 {
   int size;
-  char* str = iupStrGetMemory(15);
 
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
   size = iupScintillaSendMessage(ih, SCI_STYLESETSIZEFRACTIONAL, style, 0);
 
-  sprintf(str, "%f", (double)(size / SC_FONT_SIZE_MULTIPLIER));
-
-  return str;
+  return iupStrReturnFloat((float)size / SC_FONT_SIZE_MULTIPLIER);
 }
 
 int iupScintillaSetFontSizeFracStyleAttrib(Ihandle* ih, int style, const char* value)
@@ -209,16 +206,12 @@ int iupScintillaSetFontSizeFracStyleAttrib(Ihandle* ih, int style, const char* v
 char* iupScintillaGetFontSizeStyleAttrib(Ihandle* ih, int style)
 {
   int size;
-  char* str = iupStrGetMemory(15);
 
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
   size = iupScintillaSendMessage(ih, SCI_STYLEGETSIZE, style, 0);
-
-  sprintf(str, "%d", size);
-
-  return str;
+  return iupStrReturnInt(size);
 }
 
 int iupScintillaSetFontSizeStyleAttrib(Ihandle* ih, int style, const char* value)
@@ -260,16 +253,12 @@ int iupScintillaSetFontStyleAttrib(Ihandle* ih, int style, const char* value)
 char* iupScintillaGetWeightStyleAttrib(Ihandle* ih, int style)
 {
   int weight = iupScintillaSendMessage(ih, SCI_STYLEGETWEIGHT, style, 0);
-  char* str = iupStrGetMemory(15);
 
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
   weight = iupScintillaSendMessage(ih, SCI_STYLEGETWEIGHT, style, 0);
-
-  sprintf(str, "%d", weight);
-
-  return str;
+  return iupStrReturnInt(weight);
 }
 
 int iupScintillaSetWeightStyleAttrib(Ihandle* ih, int style, const char* value)
@@ -374,7 +363,6 @@ int iupScintillaSetBoldStyleAttrib(Ihandle* ih, int style, const char* value)
 char* iupScintillaGetFgColorStyleAttrib(Ihandle* ih, int style)
 {
   long color;
-  char* str = iupStrGetMemory(15);
   unsigned char r, g, b;
 
   if(style == IUP_INVALID_ID)
@@ -382,9 +370,7 @@ char* iupScintillaGetFgColorStyleAttrib(Ihandle* ih, int style)
 
   color = iupScintillaSendMessage(ih, SCI_STYLEGETFORE, style, 0);
   iupScintillaDecodeColor(color, &r, &g, &b);
-  sprintf(str, "%d %d %d", r, g, b);
-
-  return str;
+  return iupStrReturnRGB(r, g, b);
 }
 
 int iupScintillaSetFgColorStyleAttrib(Ihandle* ih, int style, const char* value)
@@ -405,7 +391,6 @@ int iupScintillaSetFgColorStyleAttrib(Ihandle* ih, int style, const char* value)
 char* iupScintillaGetBgColorStyleAttrib(Ihandle* ih, int style)
 {
   long color;
-  char* str = iupStrGetMemory(70);
   unsigned char r, g, b;
 
   if(style == IUP_INVALID_ID)
@@ -413,9 +398,7 @@ char* iupScintillaGetBgColorStyleAttrib(Ihandle* ih, int style)
 
   color = iupScintillaSendMessage(ih, SCI_STYLEGETBACK, style, 0);
   iupScintillaDecodeColor(color, &r, &g, &b);
-  sprintf(str, "%d %d %d", r, g, b);
-
-  return str;
+  return iupStrReturnRGB(r, g, b);
 }
 
 int iupScintillaSetBgColorStyleAttrib(Ihandle* ih, int style, const char* value)

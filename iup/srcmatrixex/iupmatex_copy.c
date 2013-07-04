@@ -172,11 +172,7 @@ static int iMatrixExStrGetInterval(const char* interval, int num_lin, char* sele
       {
         int lin;
 
-        if (lin1>lin2) {int l=lin1; lin1=lin2; lin2=l;}
-        if (lin1<=0) lin1 = 1;
-        if (lin2<=0) {lin2 = 1; lin1 = 1;}
-        if (lin1>num_lin) lin1 = num_lin;
-        if (lin2>num_lin) lin2 = num_lin;
+        iupMatrixExCheckLimitsOrder(&lin1, &lin2, 1, num_lin);
 
         for(lin = lin1; lin <= lin2; ++lin)
         {
@@ -267,11 +263,7 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
     return 0;
   }
 
-  if (lin1>lin2) {int l=lin1; lin1=lin2; lin2=l;}
-  if (lin1<=0) lin1 = 1;
-  if (lin2<=0) {lin2 = 1; lin1 = 1;}
-  if (lin1>num_lin) lin1 = num_lin;
-  if (lin2>num_lin) lin2 = num_lin;
+  iupMatrixExCheckLimitsOrder(&lin1, &lin2, 1, num_lin);
 
   iMatrixExCopyColToSetData(matex_data, lin, col, lin1, lin2, busyname);
   return 0;

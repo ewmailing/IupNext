@@ -148,24 +148,15 @@ Ihandle* IupLoadImage(const char* file_name)
 
     for (i = 0; i < palette_count; i++)
     {
-      char attr[6], color[30];
       unsigned char r, g, b;
-
-      sprintf(attr, "%d", i);
       imColorDecode(&r, &g, &b, palette[i]);
-      sprintf(color, "%d %d %d", (int)r, (int)g, (int)b);
-
-      IupStoreAttribute(iup_image, attr, color); 
+      IupSetRGBId(iup_image, "", i, r, g, b); 
     }
   }
 
   transp_index = imFileGetAttribute(ifile, "TransparencyIndex", NULL, NULL);
   if (transp_index)
-  {
-    char attr[6];
-    sprintf(attr, "%d", (int)(*transp_index));
-    IupSetAttribute(iup_image, attr, "BGCOLOR"); 
-  }
+    IupSetAttributeId(iup_image, "", (int)(*transp_index), "BGCOLOR"); 
 
 load_finish:
   imCounterSetCallback(NULL, old_callback);
@@ -246,14 +237,9 @@ Ihandle* IupLoadImageRaw(const char* file_name,
 
     for (i = 0; i < palette_count; i++)
     {
-      char attr[6], color[30];
       unsigned char r, g, b;
-
-      sprintf(attr, "%d", i);
       imColorDecode(&r, &g, &b, palette[i]);
-      sprintf(color, "%d %d %d", (int)r, (int)g, (int)b);
-
-      IupStoreAttribute(iup_image, attr, color); 
+      IupSetRGBId(iup_image, "", i, r, g, b); 
     }
   }
 
@@ -302,12 +288,7 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
   {
     for(i = 0; i < 256; i++)
     {
-      unsigned int r, g, b;
-      char str[20];
-      char* color;
-
-      sprintf(str, "%d", i);
-      color = IupGetAttribute(ih, str);
+      char* color = IupGetAttributeId(ih, "", i);
       if (!color)
         break;
 
@@ -319,8 +300,9 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
       }
       else
       {
-        sscanf(color, "%d %d %d", &r, &g, &b);
-        palette[i] = imColorEncode((unsigned char)r, (unsigned char)g, (unsigned char)b);
+        unsigned char r, g, b;
+        iupStrToRGB(color, &r, &g, &b);
+        palette[i] = imColorEncode(r, g, b);
       }
     }
 

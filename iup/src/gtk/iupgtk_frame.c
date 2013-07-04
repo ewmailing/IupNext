@@ -41,7 +41,7 @@ int iupdrvFrameHasClientOffset(void)
 static char* gtkFrameGetTitleAttrib(Ihandle* ih)
 {
   GtkFrame* frame = (GtkFrame*)ih->handle;
-  return iupStrGetMemoryCopy(iupgtkStrConvertFromUTF8(gtk_frame_get_label(frame)));
+  return iupStrReturnStr(iupgtkStrConvertFromUTF8(gtk_frame_get_label(frame)));
 }
 
 static int gtkFrameSetTitleAttrib(Ihandle* ih, const char* value)

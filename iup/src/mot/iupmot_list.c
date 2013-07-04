@@ -315,7 +315,7 @@ static char* motListGetValueAttrib(Ihandle* ih)
     Widget cbedit;
     XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
     xstr = XmTextFieldGetString(cbedit);
-    str = iupStrGetMemoryCopy(xstr);
+    str = iupStrReturnStr(xstr);
     XtFree(xstr);
     return str;
   }
@@ -618,7 +618,7 @@ static char* motListGetSelectedTextAttrib(Ihandle* ih)
     Widget cbedit;
     XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
     selectedtext = XmTextFieldGetSelection(cbedit);
-    str = iupStrGetMemoryCopy(selectedtext);
+    str = iupStrReturnStr(selectedtext);
     XtFree(selectedtext);
     return str;
   }
@@ -772,7 +772,7 @@ static int motListSetCaretAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   pos--; /* IUP starts at 1 */
 
   XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
@@ -809,7 +809,7 @@ static int motListSetCaretPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 0) pos = 0;
 
   XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
@@ -845,7 +845,7 @@ static int motListSetScrollToAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 1) pos = 1;
   pos--;  /* return to Motif referece */
 
@@ -865,7 +865,7 @@ static int motListSetScrollToPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 0) pos = 0;
 
   XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);

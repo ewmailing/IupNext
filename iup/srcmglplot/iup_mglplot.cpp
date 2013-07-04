@@ -2124,9 +2124,7 @@ static int iMglPlotSetColor(Ihandle* ih, const char* value, mglColor& color)
 
 static char* iMglPlotGetColorAttrib(const mglColor& color)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d %d %d", iQuant(color.r), iQuant(color.g), iQuant(color.b));
-  return buffer;
+  return iupStrReturnRGB(iQuant(color.r), iQuant(color.g), iQuant(color.b));
 }
 
 static int iMglPlotSetBoolean(Ihandle* ih, const char* value, bool& num)
@@ -2170,16 +2168,12 @@ static int iMglPlotSetFloat(Ihandle* ih, const char* value, float& num)
 
 static char* iMglPlotGetFloat(float num)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%g", num);
-  return buffer;
+  return iupStrReturnFloat(num);
 }
 
 static char* iMglPlotGetInt(int num)
 {
-  char* buffer = iupStrGetMemory(30);
-  sprintf(buffer, "%d", num);
-  return buffer;
+  return iupStrReturnInt(num);
 }
 
 static char* iMglPlotGetBoolean(bool num)
@@ -3034,7 +3028,7 @@ static char* iMglPlotGetDSDimAttrib(Ihandle* ih)
     IdataSet* ds = &ih->data->dataSet[ih->data->dataSetCurrent];
     if (iMglPlotIsPlanarOrVolumetricData(ds))
     {
-      char* buffer = iupStrGetMemory(30);
+      char* buffer = iupStrGetMemory(60);
       sprintf(buffer, "%dx%dx%d", (int)ds->dsX->nx, (int)ds->dsX->ny, (int)ds->dsX->nz);
       return buffer;
     }

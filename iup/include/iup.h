@@ -85,63 +85,70 @@ int       IupHide          (Ihandle* ih);
 int       IupMap           (Ihandle* ih);
 void      IupUnmap         (Ihandle *ih);
 
+void      IupResetAttribute(Ihandle *ih, const char* name);
+int       IupGetAllAttributes(Ihandle* ih, char** names, int n);
+Ihandle*  IupSetAtt(const char* handle_name, Ihandle* ih, const char* name, ...);
+Ihandle*  IupSetAttributes (Ihandle* ih, const char *str);
+char*     IupGetAttributes (Ihandle* ih);
+
 void      IupSetAttribute  (Ihandle* ih, const char* name, const char* value);
 void      IupStoreAttribute(Ihandle* ih, const char* name, const char* value);
-Ihandle*  IupSetAttributes (Ihandle* ih, const char *str);
 char*     IupGetAttribute  (Ihandle* ih, const char* name);
-char*     IupGetAttributes (Ihandle* ih);
 int       IupGetInt        (Ihandle* ih, const char* name);
 int       IupGetInt2       (Ihandle* ih, const char* name);
 int       IupGetIntInt     (Ihandle *ih, const char* name, int *i1, int *i2);
 float     IupGetFloat      (Ihandle* ih, const char* name);
+void      IupGetRGB        (Ihandle *ih, const char* name, unsigned char *r, unsigned char *g, unsigned char *b);
 void      IupSetfAttribute (Ihandle* ih, const char* name, const char* format, ...);
 void      IupSetInt        (Ihandle* ih, const char* name, int value);
 void      IupSetIntInt     (Ihandle *ih, const char* name, int value1, char sep, int value2);
 void      IupSetFloat      (Ihandle* ih, const char* name, float value);
-void      IupResetAttribute(Ihandle *ih, const char* name);
-int       IupGetAllAttributes(Ihandle* ih, char** names, int n);
-Ihandle*  IupSetAtt(const char* handle_name, Ihandle* ih, const char* name, ...);
+void      IupSetRGB        (Ihandle *ih, const char* name, unsigned char r, unsigned char g, unsigned char b);
 
 void  IupSetAttributeId(Ihandle *ih, const char* name, int id, const char *value);
 void  IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char *value);
 char* IupGetAttributeId(Ihandle *ih, const char* name, int id);
-float IupGetFloatId(Ihandle *ih, const char* name, int id);
 int   IupGetIntId(Ihandle *ih, const char* name, int id);
+float IupGetFloatId(Ihandle *ih, const char* name, int id);
+void  IupGetRGBId(Ihandle *ih, const char* name, int id, unsigned char *r, unsigned char *g, unsigned char *b);
 void  IupSetfAttributeId(Ihandle *ih, const char* name, int id, const char* format, ...);
 void  IupSetIntId(Ihandle* ih, const char* name, int id, int value);
 void  IupSetFloatId(Ihandle* ih, const char* name, int id, float value);
+void  IupSetRGBId(Ihandle *ih, const char* name, int id, unsigned char r, unsigned char g, unsigned char b);
 
 void  IupSetAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
 void  IupStoreAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
 char* IupGetAttributeId2(Ihandle* ih, const char* name, int lin, int col);
 int   IupGetIntId2(Ihandle* ih, const char* name, int lin, int col);
 float IupGetFloatId2(Ihandle* ih, const char* name, int lin, int col);
+void  IupGetRGBId2(Ihandle *ih, const char* name, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b);
 void  IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
 void  IupSetIntId2(Ihandle* ih, const char* name, int lin, int col, int value);
 void  IupSetFloatId2(Ihandle* ih, const char* name, int lin, int col, float value);
+void  IupSetRGBId2(Ihandle *ih, const char* name, int lin, int col, unsigned char r, unsigned char g, unsigned char b);
 
-void      IupSetGlobal     (const char* name, const char* value);
-void      IupStoreGlobal   (const char* name, const char* value);
-char*     IupGetGlobal     (const char* name);
+void      IupSetGlobal  (const char* name, const char* value);
+void      IupStoreGlobal(const char* name, const char* value);
+char*     IupGetGlobal  (const char* name);
 
-Ihandle*  IupSetFocus      (Ihandle* ih);
-Ihandle*  IupGetFocus      (void);
-Ihandle*  IupPreviousField (Ihandle* ih);  
-Ihandle*  IupNextField     (Ihandle* ih);
+Ihandle*  IupSetFocus     (Ihandle* ih);
+Ihandle*  IupGetFocus     (void);
+Ihandle*  IupPreviousField(Ihandle* ih);  
+Ihandle*  IupNextField    (Ihandle* ih);
 
-Icallback IupGetCallback(Ihandle* ih, const char *name);
-Icallback IupSetCallback(Ihandle* ih, const char *name, Icallback func);
+Icallback IupGetCallback (Ihandle* ih, const char *name);
+Icallback IupSetCallback (Ihandle* ih, const char *name, Icallback func);
 Ihandle*  IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...);
 
-Icallback   IupGetFunction   (const char *name);
-Icallback   IupSetFunction   (const char *name, Icallback func);
-const char* IupGetActionName (void);
+Icallback   IupGetFunction  (const char *name);
+Icallback   IupSetFunction  (const char *name, Icallback func);
+const char* IupGetActionName(void);
 
-Ihandle*  IupGetHandle     (const char *name);
-Ihandle*  IupSetHandle     (const char *name, Ihandle* ih);
-int       IupGetAllNames   (char** names, int n);
-int       IupGetAllDialogs (char** names, int n);
-char*     IupGetName       (Ihandle* ih);
+Ihandle*  IupGetHandle    (const char *name);
+Ihandle*  IupSetHandle    (const char *name, Ihandle* ih);
+int       IupGetAllNames  (char** names, int n);
+int       IupGetAllDialogs(char** names, int n);
+char*     IupGetName      (Ihandle* ih);
 
 void      IupSetAttributeHandle(Ihandle* ih, const char* name, Ihandle* ih_named);
 Ihandle*  IupGetAttributeHandle(Ihandle* ih, const char* name);
@@ -282,12 +289,14 @@ Ihandle* IupElementPropertiesDialog(Ihandle* elem);
 #endif
 
 /************************************************************************/
-/*                   Common Return Values                               */
+/*                   Common Flags and Return Values                     */
 /************************************************************************/
 #define IUP_ERROR     1
 #define IUP_NOERROR   0
 #define IUP_OPENED   -1
 #define IUP_INVALID  -1
+#define IUP_INVALID_ID -10
+
 
 /************************************************************************/
 /*                   Callback Return Values                             */

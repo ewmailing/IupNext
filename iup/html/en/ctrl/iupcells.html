@@ -226,6 +226,25 @@ pixels). Default is 60 pixels.</p>
 <a href="../call/iup_k_any.html">K_ANY</a>,
   <a href="../call/iup_help_cb.html">HELP_CB</a>: All common callbacks are 
 supported.</p>
+<h3>Utility Functions </h3>
+<p>These functions can be used to help set and get attributes from the control:</p>
+<pre>void  IupSetAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
+char* IupGetAttributeId2(Ihandle* ih, const char* name, int lin, int col);
+int   IupGetIntId2(Ihandle* ih, const char* name, int lin, int col);
+float IupGetFloatId2(Ihandle* ih, const char* name, int lin, int col);
+void  IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
+void  IupSetIntId2(Ihandle* ih, const char* name, int lin, int col, int value);
+void  IupSetFloatId2(Ihandle* ih, const char* name, int lin, int col, float value);</pre>
+<p>&nbsp;</p>
+<pre>IupSetAttribute(ih, &quot;30:10&quot;, value)        =&gt; IupSetAttributeId2(ih, &quot;&quot;, 30, 10, value)
+IupSetAttribute(ih, &quot;BGCOLOR30:10&quot;, value) =&gt; IupSetAttributeId2(ih, &quot;BGCOLOR&quot;, 30, 10, value)
+IupSetAttribute(ih, &quot;ALIGNMENT10&quot;, value)  =&gt; IupSetAttributeId(ih, &quot;ALIGNMENT&quot;, 10, value)</pre>
+<p>When one of the indices is the asterisk, use IUP_INVALID_ID as the parameter. 
+For ex:</p>
+<pre>IupSetAttribute(ih, &quot;BGCOLOR30:*&quot;, value) =&gt; IupSetAttributeId2(ih, &quot;BGCOLOR&quot;, 30, IUP_INVALID_ID, value)</pre>
+<p>These functions are faster than the traditional functions because they do 
+not need to parse the attribute name string and the application does not need to 
+concatenate the attribute name with the id.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <p align="center"><b>Checkerboard Pattern<br>

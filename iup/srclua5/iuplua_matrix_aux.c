@@ -133,6 +133,7 @@ static int MatStoreAttribute(lua_State *L)
 
 void iuplua_matrixfuncs_open (lua_State *L)
 {
+  /* backward compatibility */
   iuplua_register(L, MatGetAttribute, "MatGetAttribute");
   iuplua_register(L, MatStoreAttribute, "MatStoreAttribute");
   iuplua_register(L, MatStoreAttribute, "MatSetAttribute");

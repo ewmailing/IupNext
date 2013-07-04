@@ -397,7 +397,7 @@ static char* winListGetIdValueAttrib(Ihandle* ih, int id)
   if (pos >= 0)
   {
     char* str = winListGetText(ih, pos);
-    char* value = iupStrGetMemoryCopy(str);
+    char* value = iupStrReturnStr(str);
     free(str);
     return value;
   }
@@ -870,7 +870,7 @@ static int winListSetCaretAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 1) pos = 1;
   pos--; /* IUP starts at 1 */
 
@@ -904,7 +904,7 @@ static int winListSetCaretPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);    /* be permissive in SetCaret, do not abort if invalid */
+  iupStrToInt(value, &pos);    /* be permissive in SetCaret, do not abort if invalid */
   if (pos < 0) pos = 0;
 
   cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
@@ -937,7 +937,7 @@ static int winListSetScrollToAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 1) pos = 1;
 
   pos--;  /* return to Windows reference */
@@ -958,7 +958,7 @@ static int winListSetScrollToPosAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  sscanf(value,"%i",&pos);
+  iupStrToInt(value, &pos);
   if (pos < 0) pos = 0;
 
   cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");

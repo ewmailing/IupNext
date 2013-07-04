@@ -74,11 +74,7 @@ int iupScintillaSetScrollCaretAttrib(Ihandle *ih, const char *value)
 char* iupScintillaGetScrollWidthAttrib(Ihandle* ih)
 {
   int pixelWidth = iupScintillaSendMessage(ih, SCI_GETSCROLLWIDTH, 0, 0);
-  char* str = iupStrGetMemory(15);
-
-  sprintf(str, "%d", pixelWidth);
-
-  return str;
+  return iupStrReturnInt(pixelWidth);
 }
 
 int iupScintillaSetScrollWidthAttrib(Ihandle* ih, const char* value)

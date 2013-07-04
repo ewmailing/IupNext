@@ -69,15 +69,17 @@ version 3.x.</p>
 	code that creates an IupImage.</li>
 	<li><span class="hist_new">New:</span> <a href="dlg/iupprogressdlg.html">
 	IupProgressDlg</a> pre-defined dialog. </li>
-	<li><span class="hist_new">New:</span> utility functions <strong>IupSetInt</strong>,
-	<strong>IupSetIntInt</strong>, <strong>IupSetFloat</strong>, <strong>
-	IupSetIntId</strong>, <strong>IupSetFloatId</strong>, <strong>IupSetIntId2</strong> 
-	and <strong>IupSetFloatId2</strong>. </li>
+	<li><span class="hist_new">New:</span> utility functions <strong>IupSetInt*</strong>,
+	<strong>IupSetFloat*</strong>, <strong>IupSetRGB* </strong>and<strong> 
+	IupGetRGB*</strong>. </li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	preserve of FRAMEVERTCOLOR*, 
 	FRAMEHORIZCOLOR*, SORTSIGN*, MASK*, WIDTH*, RASTERWIDTH*, HEIGHT* and 
 	RASTERHEIGHT* attributes when lines or columns are added or removed in
 	<strong>IupMatrix</strong>.</li>
+	<li><strong><span class="hist_changed">Changed:</span></strong> 
+	all color values in attributes now accepts also the notation &quot;#RRGGBB&quot; in 
+	hexadecimal.</li>
 
 	<li><span class="hist_fixed">Fixed:</span> repaint of the <strong>
 	IupOleControl</strong> that affected the <strong>IupWebBrowser</strong> on 

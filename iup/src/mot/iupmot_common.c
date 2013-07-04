@@ -80,7 +80,7 @@ void iupmotSetString(Widget w, const char *resource, const char* value)
 char* iupmotConvertString(XmString str)
 {
   char* text = (char*)XmStringUnparse(str, NULL, XmCHARSET_TEXT, XmCHARSET_TEXT, NULL, 0, XmOUTPUT_ALL);
-  char* buf = iupStrGetMemoryCopy(text);
+  char* buf = iupStrReturnStr(text);
   XtFree(text);
   return buf;
 }

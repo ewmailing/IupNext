@@ -892,7 +892,7 @@ static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FI
   {
     int c;
     char* color;
-    unsigned int r, g, b;
+    unsigned char r, g, b;
     char str[20];
 
     fprintf(file, "    colors = {\n");
@@ -908,8 +908,8 @@ static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FI
         fprintf(file, "      \"BGCOLOR\",\n");
       else
       {
-        sscanf(color, "%d %d %d", &r, &g, &b);
-        fprintf(file, "      \"%d %d %d\",\n", r, g, b);
+        iupStrToRGB(color, &r, &g, &b);
+        fprintf(file, "      \"%d %d %d\",\n", (int)r, (int)g, (int)b);
       }
     }
 
@@ -951,7 +951,7 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
   if (channels == 1)
   {
     int c;
-    unsigned int r, g, b;
+    unsigned char r, g, b;
     char str[20];
     char* color;
 
@@ -982,8 +982,8 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
         fprintf(file, "  %d = \"BGCOLOR\"", c);
       else
       {
-        sscanf(color, "%d %d %d", &r, &g, &b);
-        fprintf(file, "  %d = \"%d %d %d\"", c, r, g, b);
+        iupStrToRGB(color, &r, &g, &b);
+        fprintf(file, "  %d = \"%d %d %d\"", c, (int)r, (int)g, (int)b);
       }
     }
     fprintf(file, "\n]\n");

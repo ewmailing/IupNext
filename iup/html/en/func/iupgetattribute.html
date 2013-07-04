@@ -56,12 +56,15 @@ if
 int   IupGetIntInt(Ihandle*<strong> ih</strong>, const char* <strong>name</strong>, int *<strong>i1</strong>, int *<strong>i2</strong>); // Two integers separated by &#39;x&#39; or &#39;:&#39; 
 int   IupGetInt2  (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>);  // The second integer only
 float IupGetFloat (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>);
+void  IupGetRGB   (Ihandle *<strong>ih</strong>, const char* <strong>name</strong>, unsigned char *<strong>r</strong>, unsigned char *<strong>g</strong>, unsigned char *<strong>b</strong>);
 
 int   IupGetIntId  (Ihandle*<strong> ih</strong>, const char*<strong> name</strong>, int <strong>id</strong>);          
 float IupGetFloatId(Ihandle*<strong> ih</strong>, const char*<strong> name</strong>, int <strong>id</strong><span class="style2">)</span>;
+void  IupGetRGBId  (Ihandle *<strong>ih</strong>, const char* <strong>name, </strong>int<strong> id</strong>, unsigned char *<strong>r</strong>, unsigned char *<strong>g</strong>, unsigned char *<strong>b</strong>);
 
 int   IupGetIntId2  (Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>);
 float IupGetFloatId2(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>);
+void  IupGetRGBId2  (Ihandle *<strong>ih</strong>, const char* <strong>name, </strong>int<strong> lin</strong>, int <strong>col</strong>, unsigned char *<strong>r</strong>, unsigned char *<strong>g</strong>, unsigned char *<strong>b</strong>);
 
 [There is no equivalent in Lua]
 </pre>

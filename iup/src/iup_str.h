@@ -93,10 +93,6 @@ void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_str);
  * \ingroup str */
 char *iupStrGetMemory(int size);
 
-/** Returns a buffer that contains a copy of the given buffer using \ref iupStrGetMemory.
- * \ingroup str */
-char *iupStrGetMemoryCopy(const char* str);
-
 /** Returns a very large buffer to be used in unknown size string construction.
  * Use snprintf or vsnprintf with the given size.
  * \ingroup str */
@@ -114,13 +110,37 @@ void iupStrUpper(char* dstr, const char* sstr);
  * \ingroup str */
 int iupStrHasSpace(const char* str);
 
+/** Returns a string value in a string using \ref iupStrGetMemory.
+ * \ingroup str */
+char* iupStrReturnStr(const char* str);
+
+/** Returns an int value in a string using \ref iupStrGetMemory.
+ * \ingroup str */
+char* iupStrReturnInt(int i);
+
+/** Returns a float value in a string using \ref iupStrGetMemory.
+ * \ingroup str */
+char* iupStrReturnFloat(float f);
+
+/** Returns a RGB value in a string using \ref iupStrGetMemory.
+ * \ingroup str */
+char* iupStrReturnRGB(unsigned char r, unsigned char g, unsigned char b);
+
+/** Returns two string values in a string using \ref iupStrGetMemory.
+ * \ingroup str */
+char* iupStrReturnStrStr(const char *str1, const char *str2, char sep);
+
+/** Returns two int values in a string using \ref iupStrGetMemory.
+ * \ingroup str */
+char* iupStrReturnIntInt(int i1, int i2, char sep);
+
+/** Returns two float values in a string using \ref iupStrGetMemory.
+ * \ingroup str */
+char* iupStrReturnFloatFloat(float f1, float f2, char sep);
+
 /** Extract a RGB triple from the string. Returns 0 or 1.
  * \ingroup str */
 int iupStrToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned char *b);
-
-/** Extract a RGBA quad from the string, alpha is optional. Returns 0, 3 or 4.
- * \ingroup str */
-int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a);
 
 /** Converts the string to an int. The string must contains only the integer value.
  * Returns a a non zero value if sucessfull.

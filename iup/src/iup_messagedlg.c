@@ -71,5 +71,5 @@ void IupMessagef(const char *title, const char *format, ...)
   va_start(arglist, format);
   vsnprintf(str, size, format, arglist);
   va_end (arglist);
-  IupMessage(title, iupStrGetMemoryCopy(str));
+  IupMessage(title, str);
 }

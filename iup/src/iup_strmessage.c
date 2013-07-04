@@ -67,7 +67,7 @@ void iupStrMessageShowError(Ihandle* parent, const char* message)
   str_message = iupStrMessageGet(message);
   if (!str_message)
     str_message = (char*)message;
-  IupSetAttribute(dlg, "VALUE", str_message);
+  IupStoreAttribute(dlg, "VALUE", str_message);
 
   IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
 

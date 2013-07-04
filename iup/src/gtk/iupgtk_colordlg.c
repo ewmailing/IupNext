@@ -95,6 +95,32 @@ static void gtkColorDlgSetPalette(GtkColorSelection* colorsel, char* str)
                                      "gtk_color_selection_palette_to_string");
 }
 
+static int iStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)
+{
+  unsigned int ri = 0, gi = 0, bi = 0, ai = 0, ret;
+  if (!str) return 0;
+  if (str[0]=='#')
+  {
+    str++;
+    ret = sscanf(str, "%2X%2X%2X%2X", &ri, &gi, &bi, &ai);
+  }
+  else
+    ret = sscanf(str, "%u %u %u %u", &ri, &gi, &bi, &ai);
+
+  if (ret < 3) return 0;
+  if (ri > 255 || gi > 255 || bi > 255 || ai > 255) return 0;
+  *r = (unsigned char)ri;
+  *g = (unsigned char)gi;
+  *b = (unsigned char)bi;
+  if (ret == 4)
+  {
+    *a = (unsigned char)ai;
+    return 4;
+  }
+  else
+    return 3;
+}
+
 static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
 {
   InativeHandle* parent = iupDialogGetNativeParent(ih);
@@ -115,7 +141,7 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
   if (parent)
     gtk_window_set_transient_for((GtkWindow*)dialog, (GtkWindow*)parent);
 
-  ret = iupStrToRGBA(iupAttribGet(ih, "VALUE"), &r, &g, &b, &a);
+  ret = iStrToRGBA(iupAttribGet(ih, "VALUE"), &r, &g, &b, &a);
 
   g_object_get(dialog, "color-selection", &colorsel, NULL);
   iupgdkColorSet(&color, r, g, b);

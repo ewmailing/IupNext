@@ -79,7 +79,6 @@ int iupMatrixColResStart(Ihandle* ih, int x, int y)
 
 void iupMatrixColResFinish(Ihandle* ih, int x)
 {
-  char str[100];
   int delta = x - ih->data->colres_drag_col_start_x;
   int width = ih->data->columns.sizes[ih->data->colres_drag_col] + delta;
   if (width < 0)
@@ -100,10 +99,8 @@ void iupMatrixColResFinish(Ihandle* ih, int x)
 
   ih->data->colres_dragging = 0;
 
-  sprintf(str, "RASTERWIDTH%d", ih->data->colres_drag_col);
-  iupAttribSetInt(ih, str, width-IMAT_PADDING_W-IMAT_FRAME_W);
-  sprintf(str, "WIDTH%d", ih->data->colres_drag_col);
-  iupAttribSetStr(ih, str, NULL);
+  iupAttribSetIntId(ih, "RASTERWIDTH", ih->data->colres_drag_col, width-IMAT_PADDING_W-IMAT_FRAME_W);
+  iupAttribSetStrId(ih, "WIDTH", ih->data->colres_drag_col, NULL);
 
   ih->data->need_calcsize = 1;
   iupMatrixDraw(ih, 0);

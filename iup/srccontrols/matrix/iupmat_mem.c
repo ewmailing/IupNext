@@ -31,14 +31,12 @@ static void iMatrixGetInitialValues(Ihandle* ih)
 {
   int lin, col;
   char* value;
-  char attr[100];
 
   for (lin=0; lin<ih->data->lines.num; lin++)
   {
     for (col=0; col<ih->data->columns.num; col++)
     {
-      sprintf(attr, "%d:%d", lin, col);
-      value = iupAttribGet(ih, attr);
+      value = iupAttribGetId2(ih, "", lin, col);
       if (value)
       {
         /* get the initial value and remove it from the hash table */
@@ -46,7 +44,7 @@ static void iMatrixGetInitialValues(Ihandle* ih)
         if (*value)
           ih->data->cells[lin][col].value = iupStrDup(value);
 
-        iupAttribSetStr(ih, attr, NULL);
+        iupAttribSetStrId2(ih, "", lin, col, NULL);
       }
     }
   }

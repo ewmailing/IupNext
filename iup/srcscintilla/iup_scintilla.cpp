@@ -618,7 +618,7 @@ static Iclass* iupScintillaNewClass(void)
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype  = IUP_CHILDNONE;
   ic->is_interactive = 1;
-  ic->has_attrib_id  = 2;   /* has attributes with IDs that must be parsed */
+  ic->has_attrib_id  = 1;   /* has attributes with IDs that must be parsed */
 
   /* Class functions */
   ic->New     = iupScintillaNewClass;

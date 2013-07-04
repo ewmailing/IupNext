@@ -110,11 +110,7 @@ int iupScintillaSetWSSizeAttrib(Ihandle *ih, const char *value)
 char* iupScintillaGetWSSizeAttrib(Ihandle* ih)
 {
   int size = iupScintillaSendMessage(ih, SCI_GETWHITESPACESIZE, 0, 0);
-  char* str = iupStrGetMemory(15);
-
-  sprintf(str, "%d", size);
-
-  return str;
+  return iupStrReturnInt(size);
 }
 
 int iupScintillaSetWSExtraAscentAttrib(Ihandle *ih, const char *value)
@@ -131,11 +127,7 @@ int iupScintillaSetWSExtraAscentAttrib(Ihandle *ih, const char *value)
 char* iupScintillaGetWSExtraAscentAttrib(Ihandle* ih)
 {
   int asc = iupScintillaSendMessage(ih, SCI_GETEXTRAASCENT, 0, 0);
-  char* str = iupStrGetMemory(15);
-
-  sprintf(str, "%d", asc);
-
-  return str;
+  return iupStrReturnInt(asc);
 }
 
 int iupScintillaSetWSExtraDescentAttrib(Ihandle *ih, const char *value)
@@ -152,10 +144,6 @@ int iupScintillaSetWSExtraDescentAttrib(Ihandle *ih, const char *value)
 char* iupScintillaGetWSExtraDescentAttrib(Ihandle* ih)
 {
   int desc = iupScintillaSendMessage(ih, SCI_GETEXTRADESCENT, 0, 0);
-  char* str = iupStrGetMemory(15);
-
-  sprintf(str, "%d", desc);
-
-  return str;
+  return iupStrReturnInt(desc);
 }
 

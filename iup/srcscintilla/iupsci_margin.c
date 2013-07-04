@@ -90,11 +90,7 @@ int iupScintillaSetMarginTypeAttribId(Ihandle* ih, int margin, const char* value
 char* iupScintillaGetMarginWidthAttribId(Ihandle* ih, int margin)
 {
   int pixelWidth = iupScintillaSendMessage(ih, SCI_GETMARGINWIDTHN, margin, 0);
-  char* str = iupStrGetMemory(15);
-
-  sprintf(str, "%d", pixelWidth);
-
-  return str;
+  return iupStrReturnInt(pixelWidth);
 }
 
 int iupScintillaSetMarginWidthAttribId(Ihandle* ih, int margin, const char* value)
@@ -151,11 +147,7 @@ int iupScintillaSetMarginSensitiveAttribId(Ihandle* ih, int margin, const char* 
 char* iupScintillaGetMarginLeftAttrib(Ihandle* ih)
 {
   int pixels = iupScintillaSendMessage(ih, SCI_GETMARGINLEFT, 0, 0);
-  char* str = iupStrGetMemory(15);
-
-  sprintf(str, "%d", pixels);
-
-  return str;
+  return iupStrReturnInt(pixels);
 }
 
 int iupScintillaSetMarginLeftAttrib(Ihandle* ih, const char* value)
@@ -175,11 +167,7 @@ int iupScintillaSetMarginLeftAttrib(Ihandle* ih, const char* value)
 char* iupScintillaGetMarginRightAttrib(Ihandle* ih)
 {
   int pixels = iupScintillaSendMessage(ih, SCI_GETMARGINRIGHT, 0, 0);
-  char* str = iupStrGetMemory(15);
-
-  sprintf(str, "%d", pixels);
-
-  return str;
+  return iupStrReturnInt(pixels);
 }
 
 int iupScintillaSetMarginRightAttrib(Ihandle* ih, const char* value)
@@ -220,11 +208,7 @@ int iupScintillaSetMarginTextClearAllAttrib(Ihandle* ih, const char* value)
 char* iupScintillaGetMarginTextStyleAttribId(Ihandle* ih, int line)
 {
   int style = iupScintillaSendMessage(ih, SCI_MARGINGETSTYLE, line, 0);
-  char* str = iupStrGetMemory(15);
-
-  sprintf(str, "%d", style);
-
-  return str;
+  return iupStrReturnInt(style);
 }
 
 int iupScintillaSetMarginTextStyleAttribId(Ihandle* ih, int line, const char* value)

@@ -50,7 +50,7 @@ int iupMaskCheck(Imask* mask, const char *val)
   case 'I':
     {
       int ival = 0;
-      sscanf(val,"%d",&ival);
+      iupStrToInt(val, &ival);
       if(ival < mask->imin || ival > mask->imax)
         return 0;
       break;
@@ -58,7 +58,7 @@ int iupMaskCheck(Imask* mask, const char *val)
   case 'F':
     {
       float fval = 0;
-      sscanf(val,"%f",&fval);
+      iupStrToFloat(val, &fval);
       if(fval < mask->fmin || fval > mask->fmax)
         return 0;
       break;

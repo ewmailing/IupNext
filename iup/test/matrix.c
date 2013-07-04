@@ -44,7 +44,7 @@ static int click(Ihandle *self, int lin, int col)
 {
   printf("click_cb(%d, %d)\n", lin, col);
   IupSetAttribute(self,"MARKED", NULL);  /* clear all marks */
-  IupMatSetAttribute(self,"MARK", lin, 0, "1");
+  IupSetAttributeId2(self,"MARK", lin, 0, "1");
   IupSetfAttribute(self,"REDRAW", "L%d", lin);
   return IUP_DEFAULT;
 }
@@ -52,7 +52,7 @@ static int click(Ihandle *self, int lin, int col)
 static int enteritem_cb(Ihandle *ih, int lin, int col)
 {
   IupSetAttribute(ih,"MARKED", NULL);  /* clear all marks */
-  IupMatSetAttribute(ih,"MARK", lin, 0, "1");
+  IupSetAttributeId2(ih,"MARK", lin, 0, "1");
   IupSetfAttribute(ih,"REDRAW", "L%d", lin);
   return IUP_DEFAULT;
 }
@@ -148,9 +148,9 @@ static Ihandle* create_matrix(void)
   //{
   //  char* v;
   //  IupSetAttribute(mat, "MTX_LINE_ACTIVE_FLAG3:4", "Test1");
-  //  IupMatSetAttribute(mat, "MTX_LINE_ACTIVE_FLAG", 5, 7, "Test2");
+  //  IupSetAttributeId2(mat, "MTX_LINE_ACTIVE_FLAG", 5, 7, "Test2");
   //  printf("Test1=%s\n", IupGetAttribute(mat, "MTX_LINE_ACTIVE_FLAG3:4"));
-  //  printf("Test2=%s\n", IupMatGetAttribute(mat, "MTX_LINE_ACTIVE_FLAG", 5, 7));
+  //  printf("Test2=%s\n", IupGetAttributeId2(mat, "MTX_LINE_ACTIVE_FLAG", 5, 7));
   //}
 
   IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
