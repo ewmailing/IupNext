@@ -145,9 +145,7 @@ static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col, const char* v
   return ih->data->numeric_buffer_get;
 }
 
-//SetValue
 //TODO DROP_CB e MENUDROP_CB
-
 
 char* iupMatrixCellGetValue (Ihandle* ih, int lin, int col)
 {  

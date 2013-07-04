@@ -62,7 +62,7 @@ int iupMatrixExIsLineVisible(Ihandle* ih, int lin)
   value = iupAttribGetId(ih, "HEIGHT", lin);
   if(!value)
   {
-    value = iupAttribGet(ih, "RASTERHEIGHT", lin);
+    value = iupAttribGetId(ih, "RASTERHEIGHT", lin);
     if(!value)
       return 1;
   }
