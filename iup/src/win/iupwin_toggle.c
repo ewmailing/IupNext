@@ -562,7 +562,7 @@ static int winToggleImageWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   return 0; /* result not used */
 }
 
-static int winToggleImageFlatProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winToggleImageFlatMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   /* Called only when (ih->data->type==IUP_TOGGLE_IMAGE && ih->data->flat) */
 
@@ -581,10 +581,10 @@ static int winToggleImageFlatProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, L
     break;
   }
 
-  return iupwinBaseProc(ih, msg, wp, lp, result);
+  return iupwinBaseMsgProc(ih, msg, wp, lp, result);
 }
 
-static int winToggleImageOldProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winToggleImageClassicMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   /* Called only when (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && !ih->data->flat) */
 
@@ -614,7 +614,7 @@ static int winToggleImageOldProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LR
   else if (msg == WM_LBUTTONUP)
     winToggleUpdateImage(ih, 1, 0);
 
-  return iupwinBaseProc(ih, msg, wp, lp, result);
+  return iupwinBaseMsgProc(ih, msg, wp, lp, result);
 }
 
 static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
@@ -772,7 +772,7 @@ static int winToggleMapMethod(Ihandle* ih)
     {
       IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winToggleImageWmNotify);  /* Process WM_NOTIFY */
       if (ih->data->flat)
-        IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winToggleImageFlatProc);
+        IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winToggleImageFlatMsgProc);
     }
     else
     {
@@ -780,11 +780,11 @@ static int winToggleMapMethod(Ihandle* ih)
       {
         iupAttribSetStr(ih, "FLAT_ALPHA", "NO");
         IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winToggleDrawItem);  /* Process WM_DRAWITEM */
-        IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winToggleImageFlatProc);
+        IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winToggleImageFlatMsgProc);
       }
       else
       {
-        IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winToggleImageOldProc);
+        IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winToggleImageClassicMsgProc);
         iupAttribSetStr(ih, "_IUPWIN_ACTIVE", "YES");
       }
     }

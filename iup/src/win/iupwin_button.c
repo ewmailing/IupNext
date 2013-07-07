@@ -540,7 +540,7 @@ static int winButtonSetFgColorAttrib(Ihandle* ih, const char* value)
 
 /****************************************************************************************/
 
-static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   if (ih->data->type != IUP_BUTTON_TEXT)
   {
@@ -655,7 +655,7 @@ static int winButtonProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
     break;
   }
 
-  return iupwinBaseProc(ih, msg, wp, lp, result);
+  return iupwinBaseMsgProc(ih, msg, wp, lp, result);
 }
 
 static int winButtonWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
@@ -774,7 +774,7 @@ static int winButtonMapMethod(Ihandle* ih)
   IupSetCallback(ih, "_IUPWIN_COMMAND_CB", (Icallback)winButtonWmCommand);
 
   /* Process BUTTON_CB and others */
-  IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winButtonProc);
+  IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winButtonMsgProc);
 
   if (iupwin_comctl32ver6)
     IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winButtonWmNotify);  /* Process WM_NOTIFY */

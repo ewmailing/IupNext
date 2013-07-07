@@ -280,7 +280,7 @@ static int winLabelSetUpdateAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static int winLabelProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winLabelMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   switch (msg)
   {
@@ -315,7 +315,7 @@ static int winLabelProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *re
     }
   }
 
-  return iupwinBaseProc(ih, msg, wp, lp, result);
+  return iupwinBaseMsgProc(ih, msg, wp, lp, result);
 }
 
 static int winLabelMapMethod(Ihandle* ih)
@@ -360,7 +360,7 @@ static int winLabelMapMethod(Ihandle* ih)
   if (ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)
   {
     /* replace the WinProc to handle other messages */
-    IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winLabelProc);
+    IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winLabelMsgProc);
 
     IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winLabelDrawItem);
   }

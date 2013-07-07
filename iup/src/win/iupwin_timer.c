@@ -21,7 +21,7 @@
 
 static Itable* wintimer_id_table = NULL; /* table indexed by ID containing Ihandle* address */
 
-static void CALLBACK winTimerProc(HWND hwnd, UINT msg, UINT_PTR wid, DWORD time)
+static VOID CALLBACK winTimerFunc(HWND hwnd, UINT msg, UINT_PTR wid, DWORD time)
 {
   Icallback cb;
   Ihandle *ih;
@@ -53,7 +53,7 @@ void iupdrvTimerRun(Ihandle *ih)
   time_ms = iupAttribGetInt(ih, "TIME");
   if (time_ms > 0)
   {
-    ih->serial = SetTimer(NULL, 0, time_ms, (TIMERPROC)winTimerProc);
+    ih->serial = SetTimer(NULL, 0, time_ms, winTimerFunc);
     iupTableSet(wintimer_id_table, (const char*)ih->serial, ih, IUPTABLE_POINTER);
   }
 }

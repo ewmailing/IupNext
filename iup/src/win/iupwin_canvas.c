@@ -375,7 +375,7 @@ static char* winCanvasGetDrawSizeAttrib(Ihandle* ih)
   return str;
 }
 
-static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   switch (msg)
   {
@@ -509,7 +509,7 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
         SendMessage(ih->handle, WM_SETCURSOR, (WPARAM)ih->handle, MAKELPARAM(1,WM_MOUSEMOVE));
       }
 
-      break; /* let iupwinBaseProc process enter/leavewin */
+      break; /* let iupwinBaseMsgProc process enter/leavewin */
     }
   case WM_XBUTTONUP:
   case WM_LBUTTONUP:
@@ -567,9 +567,9 @@ static int winCanvasProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
 
   /* can be a container */
   if (ih->firstchild)
-    return iupwinBaseContainerProc(ih, msg, wp, lp, result);
+    return iupwinBaseContainerMsgProc(ih, msg, wp, lp, result);
   else
-    return iupwinBaseProc(ih, msg, wp, lp, result);
+    return iupwinBaseMsgProc(ih, msg, wp, lp, result);
 }
 
 static int winCanvasMapMethod(Ihandle* ih)
@@ -630,7 +630,7 @@ static int winCanvasMapMethod(Ihandle* ih)
   if (!iupwinCreateWindow(ih, classname, dwExStyle, dwStyle, clientdata))
     return IUP_ERROR;
 
-  IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winCanvasProc);
+  IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winCanvasMsgProc);
 
   /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))

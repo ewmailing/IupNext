@@ -199,7 +199,7 @@ void iupwinSetStyle(Ihandle* ih, DWORD value, int set)
   SetWindowLong(ih->handle, GWL_STYLE, dwStyle);
 }
 
-int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 { 
   switch (msg)
   {
@@ -356,11 +356,11 @@ int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
   return 0;
 }
 
-LRESULT CALLBACK iupwinBaseWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+LRESULT CALLBACK iupwinBaseWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {   
   int ret;
   LRESULT result = 0;
-  IwinProc winProc;
+  IwinMsgProc MsgProc;
   Ihandle *ih;
 
   ih = iupwinHandleGet(hwnd); 
@@ -368,18 +368,18 @@ LRESULT CALLBACK iupwinBaseWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     return DefWindowProc(hwnd, msg, wp, lp);  /* should never happen */
 
   /* check if the element defines a custom procedure */
-  winProc = (IwinProc)IupGetCallback(ih, "_IUPWIN_CTRLPROC_CB");
-  if (winProc)
-    ret = winProc(ih, msg, wp, lp, &result);
+  MsgProc = (IwinMsgProc)IupGetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB");
+  if (MsgProc)
+    ret = MsgProc(ih, msg, wp, lp, &result);
   else
-    ret = iupwinBaseProc(ih, msg, wp, lp, &result);
+    ret = iupwinBaseMsgProc(ih, msg, wp, lp, &result);
 
   if (ret)
     return result;
   else
   {
     /* retrieve the control previous procedure for subclassing */
-    WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDPROC_CB");
+    WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
     return CallWindowProc(oldProc, hwnd, msg, wp, lp);
   }
 }
@@ -431,7 +431,7 @@ static int winCheckParent(Ihandle* child, Ihandle* ih)
   }
 }
 
-int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   /* All messages here are sent to the parent Window, 
      but they are usefull for child controls.  */
@@ -539,7 +539,7 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         Ihandle *child = iupwinHandleGet(lpDrag->hWnd);
         if (child && winCheckParent(child, ih))
         {
-          *result = iupwinListProcessDND(child, lpDrag->uNotification, lpDrag->ptCursor);
+          *result = iupwinListDND(child, lpDrag->uNotification, lpDrag->ptCursor);
           return 1;
         }
       }
@@ -547,22 +547,22 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     }
   }
 
-  return iupwinBaseProc(ih, msg, wp, lp, result);
+  return iupwinBaseMsgProc(ih, msg, wp, lp, result);
 }
 
-void iupwinChangeProc(Ihandle *ih, WNDPROC new_proc)
+void iupwinChangeWndProc(Ihandle *ih, WNDPROC newProc)
 {
-  IupSetCallback(ih, "_IUPWIN_OLDPROC_CB", (Icallback)GetWindowLongPtr(ih->handle, GWLP_WNDPROC));
-  SetWindowLongPtr(ih->handle, GWLP_WNDPROC, (LONG_PTR)new_proc);
+  IupSetCallback(ih, "_IUPWIN_OLDWNDPROC_CB", (Icallback)GetWindowLongPtr(ih->handle, GWLP_WNDPROC));
+  SetWindowLongPtr(ih->handle, GWLP_WNDPROC, (LONG_PTR)newProc);
 }
 
 void iupdrvBaseUnMapMethod(Ihandle* ih)
 {
-  WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDPROC_CB");
+  WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
   if (oldProc)
   {
     SetWindowLongPtr(ih->handle, GWLP_WNDPROC, (LONG_PTR)oldProc);
-    IupSetCallback(ih, "_IUPWIN_OLDPROC_CB",  NULL);
+    IupSetCallback(ih, "_IUPWIN_OLDWNDPROC_CB",  NULL);
   }
 
   iupwinTipsDestroy(ih);
@@ -934,7 +934,7 @@ int iupwinCreateWindow(Ihandle* ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD 
   iupwinHandleAdd(ih, ih->handle);
 
   /* replace the WinProc to handle base callbacks */
-  iupwinChangeProc(ih, iupwinBaseWinProc);
+  iupwinChangeWndProc(ih, iupwinBaseWndProc);
 
   return 1;
 }

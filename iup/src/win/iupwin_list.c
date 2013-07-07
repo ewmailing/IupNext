@@ -1049,7 +1049,7 @@ static int winInClient(HWND hWnd, POINT pt)
   return PtInRect(&rect, pt);
 }
 
-int iupwinListProcessDND(Ihandle *ih, UINT uNotification, POINT pt)
+int iupwinListDND(Ihandle *ih, UINT uNotification, POINT pt)
 {
   switch(uNotification)
   {
@@ -1328,7 +1328,7 @@ static int winListCallEditCb(Ihandle* ih, HWND cbedit, const char* insert_value,
     else if (cb_ret!=0 && key!=0 && 
              cb_ret != IUP_DEFAULT && cb_ret != IUP_CONTINUE)  
     {
-      WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDPROC_CB");
+      WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDWNDPROC_CB");
       CallWindowProc(oldProc, cbedit, WM_CHAR, cb_ret, 0);  /* replace key */
       ret = 0;     /* abort processing */
     }
@@ -1344,7 +1344,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
 
   if (msg==WM_KEYDOWN) /* process K_ANY before text callbacks */
   {
-    ret = iupwinBaseProc(ih, msg, wp, lp, result);
+    ret = iupwinBaseMsgProc(ih, msg, wp, lp, result);
 
     if (ret) 
     {
@@ -1453,7 +1453,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
       if (cb)
       {
         char* value;
-        WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDPROC_CB");
+        WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDWNDPROC_CB");
         CallWindowProc(oldProc, cbedit, WM_UNDO, 0, 0);
 
         value = winListGetValueAttrib(ih);
@@ -1493,11 +1493,11 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
     if (msg==WM_KEYDOWN)
       return 0;
     else
-      return iupwinBaseProc(ih, msg, wp, lp, result);
+      return iupwinBaseMsgProc(ih, msg, wp, lp, result);
   }
 }
 
-static LRESULT CALLBACK winListEditWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+static LRESULT CALLBACK winListEditWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {   
   int ret = 0;
   LRESULT result = 0;
@@ -1509,7 +1509,7 @@ static LRESULT CALLBACK winListEditWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARA
     return DefWindowProc(hwnd, msg, wp, lp);  /* should never happen */
 
   /* retrieve the control previous procedure for subclassing */
-  oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDPROC_CB");
+  oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDWNDPROC_CB");
 
   ret = winListEditProc(ih, hwnd, msg, wp, lp, &result);
 
@@ -1548,17 +1548,17 @@ static int winListComboListProc(Ihandle* ih, HWND cblist, UINT msg, WPARAM wp, L
     break;
   case WM_MOUSEMOVE:
     iupwinMouseMove(ih, msg, wp, lp);
-    iupwinBaseProc(ih, msg, wp, lp, result); /* to process ENTER/LEAVE */
+    iupwinBaseMsgProc(ih, msg, wp, lp, result); /* to process ENTER/LEAVE */
     break;
   case WM_MOUSELEAVE:
-    iupwinBaseProc(ih, msg, wp, lp, result); /* to process ENTER/LEAVE */
+    iupwinBaseMsgProc(ih, msg, wp, lp, result); /* to process ENTER/LEAVE */
     break;
   }
 
   return 0;
 }
 
-static LRESULT CALLBACK winListComboListWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+static LRESULT CALLBACK winListComboListWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {   
   int ret = 0;
   LRESULT result = 0;
@@ -1570,7 +1570,7 @@ static LRESULT CALLBACK winListComboListWinProc(HWND hwnd, UINT msg, WPARAM wp, 
     return DefWindowProc(hwnd, msg, wp, lp);  /* should never happen */
 
   /* retrieve the control previous procedure for subclassing */
-  oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_LISTOLDPROC_CB");
+  oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_LISTOLDWNDPROC_CB");
 
   ret = winListComboListProc(ih, hwnd, msg, wp, lp, &result);
 
@@ -1580,7 +1580,7 @@ static LRESULT CALLBACK winListComboListWinProc(HWND hwnd, UINT msg, WPARAM wp, 
     return CallWindowProc(oldProc, hwnd, msg, wp, lp);
 }
 
-static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winListMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   if (!ih->data->is_dropdown && !ih->data->has_editbox)
   {
@@ -1631,7 +1631,7 @@ static int winListProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     break;
   }
 
-  return iupwinBaseProc(ih, msg, wp, lp, result);
+  return iupwinBaseMsgProc(ih, msg, wp, lp, result);
 }
 
 static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
@@ -1843,7 +1843,7 @@ static int winListMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   /* Custom Procedure */
-  IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winListProc);
+  IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winListMsgProc);
 
   /* Process background color */
   IupSetCallback(ih, "_IUPWIN_CTLCOLOR_CB", (Icallback)winListCtlColor);
@@ -1864,8 +1864,8 @@ static int winListMapMethod(Ihandle* ih)
     iupAttribSetStr(ih, "_IUPWIN_LISTBOX", (char*)boxinfo.hwndList);
 
     /* subclass the list box. */
-    IupSetCallback(ih, "_IUPWIN_LISTOLDPROC_CB", (Icallback)GetWindowLongPtr(boxinfo.hwndList, GWLP_WNDPROC));
-    SetWindowLongPtr(boxinfo.hwndList, GWLP_WNDPROC, (LONG_PTR)winListComboListWinProc);
+    IupSetCallback(ih, "_IUPWIN_LISTOLDWNDPROC_CB", (Icallback)GetWindowLongPtr(boxinfo.hwndList, GWLP_WNDPROC));
+    SetWindowLongPtr(boxinfo.hwndList, GWLP_WNDPROC, (LONG_PTR)winListComboListWndProc);
 
     if (ih->data->has_editbox)
     {
@@ -1873,8 +1873,8 @@ static int winListMapMethod(Ihandle* ih)
       iupAttribSetStr(ih, "_IUPWIN_EDITBOX", (char*)boxinfo.hwndItem);
 
       /* subclass the edit box. */
-      IupSetCallback(ih, "_IUPWIN_EDITOLDPROC_CB", (Icallback)GetWindowLongPtr(boxinfo.hwndItem, GWLP_WNDPROC));
-      SetWindowLongPtr(boxinfo.hwndItem, GWLP_WNDPROC, (LONG_PTR)winListEditWinProc);
+      IupSetCallback(ih, "_IUPWIN_EDITOLDWNDPROC_CB", (Icallback)GetWindowLongPtr(boxinfo.hwndItem, GWLP_WNDPROC));
+      SetWindowLongPtr(boxinfo.hwndItem, GWLP_WNDPROC, (LONG_PTR)winListEditWndProc);
 
       /* set defaults */
       SendMessage(ih->handle, CB_LIMITTEXT, 0, 0L);

@@ -172,7 +172,7 @@ static void winFrameDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   iupwinDrawDestroyBitmapDC(&bmpDC);
 }
 
-static int winFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winFrameMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   switch (msg)
   {
@@ -194,7 +194,7 @@ static int winFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *re
     }
   }
 
-  return iupwinBaseContainerProc(ih, msg, wp, lp, result);
+  return iupwinBaseContainerMsgProc(ih, msg, wp, lp, result);
 }
 
 static int winFrameMapMethod(Ihandle* ih)
@@ -222,7 +222,7 @@ static int winFrameMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   /* replace the WinProc to handle other messages */
-  IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winFrameProc);
+  IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winFrameMsgProc);
 
   /* Process WM_DRAWITEM */
   IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winFrameDrawItem);  

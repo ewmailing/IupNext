@@ -211,6 +211,8 @@ int main(int argc, char **argv)
   /* Initializes IUP */
   IupOpen(&argc, &argv);
 
+  IupSetGlobal("UTF8MODE", "Yes");
+
   /* Creates a text */
   text = IupText( NULL );                                  
   

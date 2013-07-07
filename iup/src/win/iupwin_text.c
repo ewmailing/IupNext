@@ -1648,7 +1648,7 @@ static int winTextCallActionCb(Ihandle* ih, const char* insert_value, int key, i
     else if (cb_ret!=0 && key!=0 && 
              cb_ret != IUP_DEFAULT && cb_ret != IUP_CONTINUE)  
     {
-      WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDPROC_CB");
+      WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
       CallWindowProc(oldProc, ih->handle, WM_CHAR, cb_ret, 0);  /* replace key */
       ret = 0;     /* abort processing */
     }
@@ -1686,13 +1686,13 @@ static int winTextSpinWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   return 0; /* result not used */
 }
 
-static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   int ret = 0;
 
   if (msg==WM_KEYDOWN) /* process K_ANY before text callbacks */
   {
-    ret = iupwinBaseProc(ih, msg, wp, lp, result);
+    ret = iupwinBaseMsgProc(ih, msg, wp, lp, result);
     if (ret) 
     {
       iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", "1");
@@ -1840,7 +1840,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
       if (cb)
       {
         char* value;
-        WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDPROC_CB");
+        WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
         CallWindowProc(oldProc, ih->handle, WM_UNDO, 0, 0);
 
         value = winTextGetValueAttrib(ih);
@@ -1909,7 +1909,7 @@ static int winTextProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     return 1;
   }
   else
-    return iupwinBaseProc(ih, msg, wp, lp, result);
+    return iupwinBaseMsgProc(ih, msg, wp, lp, result);
 }
 
 static void winTextCreateSpin(Ihandle* ih)
@@ -2080,7 +2080,7 @@ static int winTextMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   /* Process ACTION_CB and CARET_CB */
-  IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winTextProc);
+  IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winTextMsgProc);
 
   /* Process background color */
   IupSetCallback(ih, "_IUPWIN_CTLCOLOR_CB", (Icallback)winTextCtlColor);

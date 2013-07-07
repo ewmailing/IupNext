@@ -22,7 +22,7 @@
   In the simple and ideal world we need only Unicode windows and handle the convertion when necessary.
   The same convertion would exist anyway if using the ANSI API.
 */
-static int iupwin_utf8mode = 0;
+static int iupwin_utf8mode = 1;
 
 int iupwinSetUTF8Mode(void)
 {
@@ -38,19 +38,23 @@ int iupwinSetUTF8Mode(void)
 static void winStrWide2Char(const WCHAR* wstr, char* str, int len)
 {
   if (iupwin_utf8mode)
-    WideCharToMultiByte(CP_UTF8, 0, wstr, len, str, len, NULL, NULL);
+    len = WideCharToMultiByte(CP_UTF8, 0, wstr, len, str, 2*len, NULL, NULL);  /* str must has a large buffer */
   else
-    WideCharToMultiByte(CP_ACP, 0, wstr, len, str, len, NULL, NULL);
-  str[len] = 0;
+    len = WideCharToMultiByte(CP_ACP, 0, wstr, len, str, 2*len, NULL, NULL);
+
+  if (len>0)
+    str[len] = 0;
 }
 
 static void winStrChar2Wide(const char* str, WCHAR* wstr, int len)
 {
   if (iupwin_utf8mode)
-    MultiByteToWideChar(CP_UTF8, 0, str, len, wstr, len);
+    len = MultiByteToWideChar(CP_UTF8, 0, str, len, wstr, len);
   else
-    MultiByteToWideChar(CP_ACP, 0, str, len, wstr, len);
-  wstr[len] = 0;
+    len = MultiByteToWideChar(CP_ACP, 0, str, len, wstr, len);
+
+  if (len>0)
+    wstr[len] = 0;
 }
 
 WCHAR* iupwinStrChar2Wide(const char* str)
@@ -71,7 +75,7 @@ char* iupwinStrWide2Char(const WCHAR* wstr)
   if (wstr)
   {
     int len = (int)wcslen(wstr);
-    char* str = (char*)malloc((len+1) * sizeof(char));
+    char* str = (char*)malloc((2*len+1) * sizeof(char));   /* str must has a large buffer */
     winStrWide2Char(wstr, str, len);
     return str;
   }
@@ -126,7 +130,7 @@ char* iupwinStrFromSystem(const TCHAR* wstr)
   if (wstr)
   {
     int len = (int)wcslen(wstr);
-    char* str = (char*)iupwinStrGetMemory((len+1) * sizeof(char));
+    char* str = (char*)iupwinStrGetMemory((2*len+1) * sizeof(char));    /* str must has a large buffer */
     winStrWide2Char(wstr, str, len);
     return str;
   }

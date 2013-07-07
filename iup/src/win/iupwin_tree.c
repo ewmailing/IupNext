@@ -2002,7 +2002,7 @@ static int winTreeEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
   return 0;
 }
 
-static LRESULT CALLBACK winTreeEditWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+static LRESULT CALLBACK winTreeEditWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {   
   int ret = 0;
   LRESULT result = 0;
@@ -2014,7 +2014,7 @@ static LRESULT CALLBACK winTreeEditWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARA
     return DefWindowProc(hwnd, msg, wp, lp);  /* should never happen */
 
   /* retrieve the control previous procedure for subclassing */
-  oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDPROC_CB");
+  oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDWNDPROC_CB");
 
   ret = winTreeEditProc(ih, hwnd, msg, wp, lp, &result);
 
@@ -2265,7 +2265,7 @@ static HTREEITEM winTreeHitTestToggle(Ihandle* ih, int x, int y)
     return hItem;
 }
 
-static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   switch (msg)
   {
@@ -2316,7 +2316,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
   case WM_KEYDOWN:
   case WM_SYSKEYDOWN:
     {
-      if (iupwinBaseProc(ih, msg, wp, lp, result)==1)
+      if (iupwinBaseMsgProc(ih, msg, wp, lp, result)==1)
         return 1;
 
       if (wp == VK_RETURN)
@@ -2520,7 +2520,7 @@ static int winTreeProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     }
   }
 
-  return iupwinBaseProc(ih, msg, wp, lp, result);
+  return iupwinBaseMsgProc(ih, msg, wp, lp, result);
 }
 
 static COLORREF winTreeInvertColor(COLORREF color)
@@ -2587,8 +2587,8 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     iupAttribSetStr(ih, "_IUPWIN_EDITBOX", (char*)hEdit);
 
     /* subclass the edit box. */
-    IupSetCallback(ih, "_IUPWIN_EDITOLDPROC_CB", (Icallback)GetWindowLongPtr(hEdit, GWLP_WNDPROC));
-    SetWindowLongPtr(hEdit, GWLP_WNDPROC, (LONG_PTR)winTreeEditWinProc);
+    IupSetCallback(ih, "_IUPWIN_EDITOLDWNDPROC_CB", (Icallback)GetWindowLongPtr(hEdit, GWLP_WNDPROC));
+    SetWindowLongPtr(hEdit, GWLP_WNDPROC, (LONG_PTR)winTreeEditWndProc);
 
     value = iupAttribGetStr(ih, "RENAMECARET");
     if (value)
@@ -2814,7 +2814,7 @@ static int winTreeMapMethod(Ihandle* ih)
   else
     SendMessage(ih->handle, TVM_SETEXTENDEDSTYLE, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
 
-  IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winTreeProc);
+  IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winTreeMsgProc);
   IupSetCallback(ih, "_IUPWIN_NOTIFY_CB",   (Icallback)winTreeWmNotify);
 
   /* Force background update before setting the images */

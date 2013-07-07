@@ -315,7 +315,7 @@ static void winTabsDrawPageBackground(Ihandle* ih, HDC hDC, RECT* rect)
   FillRect(hDC, rect, (HBRUSH)GetStockObject(DC_BRUSH));
 }
 
-static LRESULT CALLBACK winTabsPageWinProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
+static LRESULT CALLBACK winTabsPageWndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {   
   switch (msg)
   {
@@ -663,13 +663,13 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   return 0; /* result not used */
 }
 
-static int winTabsProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   switch(msg)
   {
   case WM_SIZE:
     {
-      WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDPROC_CB");
+      WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
       CallWindowProc(oldProc, ih->handle, msg, wp, lp);
 
       winTabsPlacePageWindows(ih, LOWORD(lp), HIWORD(lp));
@@ -679,7 +679,7 @@ static int winTabsProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *res
     }
   }
 
-  return iupwinBaseContainerProc(ih, msg, wp, lp, result);
+  return iupwinBaseContainerMsgProc(ih, msg, wp, lp, result);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -794,7 +794,7 @@ static int winTabsMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   /* replace the WinProc to handle other messages */
-  IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winTabsProc);
+  IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winTabsMsgProc);
 
   /* Process WM_NOTIFY */
   IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winTabsWmNotify);
@@ -865,7 +865,7 @@ static void winTabsRegisterClass(void)
   
   wndclass.hInstance      = iupwin_hinstance;
   wndclass.lpszClassName  = TEXT("IupTabsPage");
-  wndclass.lpfnWndProc    = (WNDPROC)winTabsPageWinProc;
+  wndclass.lpfnWndProc    = (WNDPROC)winTabsPageWndProc;
   wndclass.hCursor        = LoadCursor(NULL, IDC_ARROW);
   wndclass.style          = CS_PARENTDC;
   wndclass.hbrBackground  = NULL;  /* remove the background to optimize redraw */

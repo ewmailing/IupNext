@@ -75,30 +75,31 @@ typedef int (*IFnotify)(Ihandle* ih, void* msg_info, int *result);
 /* Definition of a callback used to process WM_COMMAND messages called "_IUPWIN_COMMAND_CB". */
 typedef int (*IFwmCommand)(Ihandle* ih, WPARAM wp, LPARAM lp);
 
-/* Definition of callback used for custom WinProc. Can return 0 or 1.
+/* Definition of callback used for custom Message Processing. Can return 0 or 1.
    0 = do default processing. 
    1 = ABORT default processing and the result value should be returned.
+   NOT the same as a WndProc.
 */
-typedef int (*IwinProc)(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result);
+typedef int (*IwinMsgProc)(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result);
+
+/* Base IwinMsgProc callback used by native controls. */
+int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result);
+
+/* Base IwinMsgProc callback used by native containers. 
+   Handle messages that are sent to the parent Window.  */
+int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result);
 
 /* Base WinProc used by all native elements. Configure base message handling 
-   and custom IwinProc using "_IUPWIN_CTRLPROC_CB" callback. */
-LRESULT CALLBACK iupwinBaseWinProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
+   and custom IwinMsgProc using "_IUPWIN_CTRLMSGPROC_CB" callback. */
+LRESULT CALLBACK iupwinBaseWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
 
-/* Base IwinProc callback used by native controls. */
-int iupwinBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result);
-
-/* Base IwinProc callback used by native containers. 
-   Handle messages that are sent to the parent Window.  */
-int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result);
-
-void iupwinChangeProc(Ihandle *ih, WNDPROC new_proc);
+void iupwinChangeWndProc(Ihandle *ih, WNDPROC newProc);
 
 int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 
-int iupwinListProcessDND(Ihandle *ih, UINT uNotification, POINT pt);
+int iupwinListDND(Ihandle *ih, UINT uNotification, POINT pt);
 
 
 /*********************/
@@ -108,7 +109,7 @@ int iupwinListProcessDND(Ihandle *ih, UINT uNotification, POINT pt);
 HWND iupwinCreateWindowEx(HWND hParent, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, int serial, void* clientdata);
 
 /* Creates the Window with native parent and child ID, associate HWND with Ihandle*, 
-   and replace the WinProc by iupwinBaseWinProc */
+   and replace the WinProc by iupwinBaseWndProc */
 int iupwinCreateWindow(Ihandle* ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void* clientdata);
 
 void iupwinGetNativeParentStyle(Ihandle* ih, DWORD *dwExStyle, DWORD *dwStyle);

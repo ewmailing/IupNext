@@ -453,7 +453,7 @@ iupGetFontInfo
 
 iupwinMouseMove
 iupwinCreateWindow
-iupwinBaseProc
+iupwinBaseMsgProc
 iupdrvRegisterDragDropAttrib
 iupwinButtonUp
 iupwinButtonDown

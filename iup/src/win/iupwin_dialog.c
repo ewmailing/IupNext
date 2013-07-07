@@ -296,7 +296,7 @@ static void winDialogResize(Ihandle* ih, int width, int height)
 
 static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
-  if (iupwinBaseContainerProc(ih, msg, wp, lp, result))
+  if (iupwinBaseContainerMsgProc(ih, msg, wp, lp, result))
     return 1;
 
   iupwinMenuDialogProc(ih, msg, wp, lp);
@@ -554,7 +554,7 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
   return 0;
 }
 
-static LRESULT CALLBACK winDialogProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+static LRESULT CALLBACK winDialogWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {   
   LRESULT result;
   Ihandle *ih = iupwinHandleGet(hwnd); 
@@ -576,7 +576,7 @@ static LRESULT CALLBACK winDialogProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
   return DefWindowProc(hwnd, msg, wp, lp);
 }
 
-static LRESULT CALLBACK winDialogMDIChildProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+static LRESULT CALLBACK winDialogMDIChildWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {   
   LRESULT result;
   Ihandle *ih = iupwinHandleGet(hwnd); 
@@ -608,7 +608,7 @@ static LRESULT CALLBACK winDialogMDIChildProc(HWND hwnd, UINT msg, WPARAM wp, LP
   return DefMDIChildProc(hwnd, msg, wp, lp);
 }
 
-static LRESULT CALLBACK winDialogMDIFrameProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+static LRESULT CALLBACK winDialogMDIFrameWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {   
   LRESULT result;
   HWND hWndClient = NULL;
@@ -659,18 +659,18 @@ static void winDialogRegisterClass(int mdi)
 {
   TCHAR* name;
   WNDCLASS wndclass;
-  WNDPROC winproc;
+  WNDPROC wndProc;
   ZeroMemory(&wndclass, sizeof(WNDCLASS));
   
   if (mdi == 2)
   {
     name = TEXT("IupDialogMDIChild");
-    winproc = (WNDPROC)winDialogMDIChildProc;
+    wndProc = (WNDPROC)winDialogMDIChildWndProc;
   }
   else if (mdi == 1)
   {
     name = TEXT("IupDialogMDIFrame");
-    winproc = (WNDPROC)winDialogMDIFrameProc;
+    wndProc = (WNDPROC)winDialogMDIFrameWndProc;
   }
   else
   {
@@ -678,12 +678,12 @@ static void winDialogRegisterClass(int mdi)
       name = TEXT("IupDialogControl");
     else
       name = TEXT("IupDialog");
-    winproc = (WNDPROC)winDialogProc;
+    wndProc = (WNDPROC)winDialogWndProc;
   }
 
   wndclass.hInstance      = iupwin_hinstance;
   wndclass.lpszClassName  = name;
-  wndclass.lpfnWndProc    = (WNDPROC)winproc;
+  wndclass.lpfnWndProc    = (WNDPROC)wndProc;
   wndclass.hCursor        = LoadCursor(NULL, IDC_ARROW);
 
   /* To use a standard system color, must increase the background-color value by one */
