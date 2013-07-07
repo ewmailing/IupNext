@@ -218,6 +218,8 @@ int main(int argc, char **argv)
 
   IupOpen(&argc, &argv);
 
+  IupSetGlobal("UTF8MODE", "Yes");
+
   list = IupList ("list_act");
   IupSetAttributes (list, "1=Gold, 2=Silver, 3=Bronze, 4=Tecgraf, 5=None,"
                           "SHOWIMAGE=YES, SHOWDRAGDROP=YES, XXX_SPACING=4, VALUE=4");
