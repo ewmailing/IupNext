@@ -2278,7 +2278,8 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
         HDC hDC = (HDC)wp;
         COLORREF cr;
 
-        SetTextColor(hDC, itemData->color);
+        if (itemData)
+          SetTextColor(hDC, itemData->color);
 
         cr = (COLORREF)SendMessage(ih->handle, TVM_GETBKCOLOR, 0, 0);
         SetBkColor(hDC, cr);

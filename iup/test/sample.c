@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iup.h>
-#include <iupcontrols.h>
+//#include <iupcontrols.h>
 
 static Ihandle* load_image_Tecgraf(void)
 {
@@ -280,6 +280,7 @@ static void globalwheel_cb(float delta,int x, int y, char* status)
   printf("GLOBALWHEEL_CB(delta=%g, x=%d, y=%d, status=%s)\n", delta, x, y, status);
 }
 
+#ifdef IUP_CONTROLS
 static Ihandle* create_matrix(void)
 {
   Ihandle* mat = IupMatrix(NULL); 
@@ -361,6 +362,7 @@ static Ihandle* create_matrix(void)
 
   return mat;
 }
+#endif
 
 void SampleTest(void)
 {
@@ -524,8 +526,10 @@ void SampleTest(void)
             IupSetAttributes(IupFrame(IupHbox(pbar, NULL)), "TITLE=IupProgressBar"),
             IupSetAttributes(IupFrame(IupHbox(tabs, NULL)), "TITLE=IupTabs"),
             NULL),
+#ifdef IUP_CONTROLS
     IupHbox(IupSetAttributes(IupFrame(IupHbox(create_matrix(), NULL)), "TITLE=IupMatrix"),
             NULL),
+#endif
     IupHbox(IupSetAttributes(IupFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
             IupSetAttributes(IupFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
             NULL),
@@ -584,7 +588,9 @@ void SampleTest(void)
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
+#ifdef IUP_CONTROLS
   IupControlsOpen();
+#endif
 
   IupSetGlobal("SINGLEINSTANCE", "Iup Sample");
   if (!IupGetGlobal("SINGLEINSTANCE"))
