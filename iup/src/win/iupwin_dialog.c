@@ -32,6 +32,7 @@
 #include "iupwin_handle.h"
 #include "iupwin_brush.h"
 #include "iupwin_info.h"
+#include "iupwin_str.h"
 
 
 #define IUPWIN_TRAY_NOTIFICATION 102
@@ -656,27 +657,27 @@ static LRESULT CALLBACK winDialogMDIFrameProc(HWND hwnd, UINT msg, WPARAM wp, LP
 
 static void winDialogRegisterClass(int mdi)
 {
-  char* name;
+  TCHAR* name;
   WNDCLASS wndclass;
   WNDPROC winproc;
   ZeroMemory(&wndclass, sizeof(WNDCLASS));
   
   if (mdi == 2)
   {
-    name = "IupDialogMDIChild";
+    name = TEXT("IupDialogMDIChild");
     winproc = (WNDPROC)winDialogMDIChildProc;
   }
   else if (mdi == 1)
   {
-    name = "IupDialogMDIFrame";
+    name = TEXT("IupDialogMDIFrame");
     winproc = (WNDPROC)winDialogMDIFrameProc;
   }
   else
   {
     if (mdi == -1)
-      name = "IupDialogControl";
+      name = TEXT("IupDialogControl");
     else
-      name = "IupDialog";
+      name = TEXT("IupDialog");
     winproc = (WNDPROC)winDialogProc;
   }
 
@@ -697,9 +698,8 @@ static void winDialogRegisterClass(int mdi)
   if (mdi == -1)
     wndclass.style |=  CS_HREDRAW | CS_VREDRAW;
     
-  RegisterClass(&wndclass);
+  RegisterClass(&wndclass); 
 }
-
 
 /****************************************************************
                      dialog class functions
@@ -712,7 +712,7 @@ static int winDialogMapMethod(Ihandle* ih)
         dwExStyle = 0;
   int has_titlebar = 0,
       has_border = 0;
-  char* classname = "IupDialog";
+  TCHAR* classname = TEXT("IupDialog");
 
   char* title = iupAttribGet(ih, "TITLE"); 
   if (title)
@@ -760,7 +760,7 @@ static int winDialogMapMethod(Ihandle* ih)
     /* store the mdi client handle in each mdi child also */
     iupAttribSetStr(ih, "MDICLIENT_HANDLE", (char*)client);
 
-    classname = "IupDialogMDIChild";
+    classname = TEXT("IupDialogMDIChild");
 
     /* The actual parent is the mdi client */
     native_parent = client->handle;
@@ -810,7 +810,7 @@ static int winDialogMapMethod(Ihandle* ih)
       iupAttribSetStrf(ih, "_IUPWIN_BACKGROUND_COLOR", "%d %d %d", (int)GetRValue(color), 
                                                                    (int)GetGValue(color), 
                                                                    (int)GetBValue(color));
-      classname = "IupDialogMDIFrame";
+      classname = TEXT("IupDialogMDIFrame");
     }
   }
 
@@ -830,7 +830,7 @@ static int winDialogMapMethod(Ihandle* ih)
     /* TODO: this were used by LuaCom to create embeded controls, 
        don't know if it is still working */
     dwStyle = WS_CHILD | WS_TABSTOP | WS_CLIPCHILDREN;
-    classname = "IupDialogControl";
+    classname = TEXT("IupDialogControl");
   }
 
   /* CreateWindowEx will send WM_GETMINMAXINFO before Ihandle is associated with HWND */
@@ -841,8 +841,9 @@ static int winDialogMapMethod(Ihandle* ih)
   /* position will be updated in iupDialogShowXY              */
 
   if (iupAttribGetBoolean(ih, "MDICHILD"))
+  {
     ih->handle = CreateMDIWindow(classname, 
-                                title,              /* title */
+                                iupwinStrToSystem(title), /* title */
                                 dwStyle,            /* style */
                                 0,                  /* x-position */
                                 0,                  /* y-position */
@@ -851,26 +852,29 @@ static int winDialogMapMethod(Ihandle* ih)
                                 native_parent,      /* owner window */
                                 iupwin_hinstance,   /* instance of app. */
                                 0);                 /* no creation parameters */
+  }
   else
-    ih->handle = CreateWindowEx(dwExStyle,          /* extended styles */
-                              classname,          /* class */
-                              title,              /* title */
-                              dwStyle,            /* style */
-                              0,                  /* x-position */
-                              0,                  /* y-position */
-                              100,                /* horizontal size - set this to avoid size calculation problems */
-                              100,                /* vertical size */
-                              native_parent,      /* owner window */
-                              (HMENU)0,           /* Menu or child-window identifier */
-                              iupwin_hinstance,   /* instance of app. */
-                              NULL);              /* no creation parameters */
+  {
+      ih->handle = CreateWindowEx(dwExStyle,          /* extended styles */
+                                classname,          /* class */
+                                iupwinStrToSystem(title), /* title */
+                                dwStyle,            /* style */
+                                0,                  /* x-position */
+                                0,                  /* y-position */
+                                100,                /* horizontal size - set this to avoid size calculation problems */
+                                100,                /* vertical size */
+                                native_parent,      /* owner window */
+                                (HMENU)0,           /* Menu or child-window identifier */
+                                iupwin_hinstance,   /* instance of app. */
+                                NULL);              /* no creation parameters */
+  }
   if (!ih->handle)
     return IUP_ERROR;
 
   /* associate HWND with Ihandle*, all Win32 controls must call this. */
   iupwinHandleAdd(ih, ih->handle);
 
-  if (iupStrEqual(classname, "IupDialogMDIChild")) /* hides the mdi child */
+  if (iupAttribGetBoolean(ih, "MDICHILD"))  /* hides the mdi child */
     ShowWindow(ih->handle, SW_HIDE);
 
   /* configure for DROP of files */
@@ -938,19 +942,6 @@ static void winDialogLayoutUpdateMethod(Ihandle *ih)
 
   ih->data->ignore_resize = 0;
 }
-
-static void winDialogReleaseMethod(Iclass* ic)
-{
-  (void)ic;
-  if (iupwinClassExist("IupDialog"))
-  {
-    UnregisterClass("IupDialog", iupwin_hinstance);
-    UnregisterClass("IupDialogControl", iupwin_hinstance);
-    UnregisterClass("IupDialogMDIChild", iupwin_hinstance);
-    UnregisterClass("IupDialogMDIFrame", iupwin_hinstance);
-  }
-}
-
 
 
 /****************************************************************************
@@ -1093,7 +1084,7 @@ static int winDialogSetOpacityAttrib(Ihandle *ih, const char *value)
 
     if (!mySetLayeredWindowAttributes)
     {
-      HMODULE hinstDll = LoadLibrary("user32.dll");
+      HMODULE hinstDll = LoadLibrary(TEXT("user32.dll"));
       if (hinstDll)
         mySetLayeredWindowAttributes = (winSetLayeredWindowAttributes)GetProcAddress(hinstDll, "SetLayeredWindowAttributes");
     }
@@ -1429,7 +1420,7 @@ static int winDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
 
 void iupdrvDialogInitClass(Iclass* ic)
 {
-  if (!iupwinClassExist("IupDialog"))
+  if (!iupwinClassExist(TEXT("IupDialog")))
   {
     winDialogRegisterClass(0);
     winDialogRegisterClass(1);
@@ -1443,7 +1434,6 @@ void iupdrvDialogInitClass(Iclass* ic)
   ic->Map = winDialogMapMethod;
   ic->UnMap = winDialogUnMapMethod;
   ic->LayoutUpdate = winDialogLayoutUpdateMethod;
-  ic->Release = winDialogReleaseMethod;
 
   /* Callback Windows Only*/
   iupClassRegisterCallback(ic, "MDIACTIVATE_CB", "");

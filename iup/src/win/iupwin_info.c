@@ -17,52 +17,59 @@
 
 #include "iupwin_info.h"
 
+#include <windows.h>
+#include <stdio.h>
+
+/* No need to test for UTF8MODE here */
+
+/* other method, wait for Windows 8.1 */
+static BOOL winCheckWindowsVersion(DWORD major, DWORD minor) 
+{
+  OSVERSIONINFOEX osvi;
+  DWORDLONG dwlConditionMask = 0;
+
+  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+  osvi.dwMajorVersion = major;
+  osvi.dwMinorVersion = minor;
+
+  VER_SET_CONDITION(dwlConditionMask, VER_MAJORVERSION, VER_GREATER_EQUAL);
+  VER_SET_CONDITION(dwlConditionMask, VER_MINORVERSION, VER_GREATER_EQUAL);
+
+  return VerifyVersionInfo(&osvi, VER_MAJORVERSION|VER_MINORVERSION, dwlConditionMask);
+}
+        
+int iupwinCheckWindowsVersion(DWORD major, DWORD minor)
+{
+  OSVERSIONINFO osvi;
+  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+  GetVersionEx(&osvi);
+
+  if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT && 
+      (osvi.dwMajorVersion > major || (osvi.dwMajorVersion == major && osvi.dwMinorVersion >= minor)))
+    return 1;
+
+  return 0;
+}
+
+int iupwinIsWinXPOrNew(void)
+{
+  return iupwinCheckWindowsVersion(5, 1);
+}
 
 int iupwinIsVistaOrNew(void)
 {
-  OSVERSIONINFO osvi;
-  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  GetVersionEx(&osvi);
-
-  if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT && 
-      osvi.dwMajorVersion >= 6)
-    return 1;
-
-  return 0;
+  return iupwinCheckWindowsVersion(6, 0);
 }
 
-int iupwinIs7OrNew(void)
+int iupwinIsWin7OrNew(void)
 {
-  OSVERSIONINFO osvi;
-  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  GetVersionEx(&osvi);
-
-  if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT && 
-     (osvi.dwMajorVersion > 6 || (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1)))
-    return 1;
-
-  return 0;
+  return iupwinCheckWindowsVersion(6, 1);
 }
 
-int iupwinIs8OrNew(void)
+int iupwinIsWin8OrNew(void)
 {
-  OSVERSIONINFO osvi;
-  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  GetVersionEx(&osvi);
-
-  if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT && 
-     (osvi.dwMajorVersion > 6 || (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 2)))
-    return 1;
-
-  return 0;
-}
-
-int iupwinGetSystemMajorVersion(void)
-{
-  OSVERSIONINFO osvi;
-  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  GetVersionEx(&osvi);
-  return osvi.dwMajorVersion;
+  return iupwinCheckWindowsVersion(6, 2);
 }
 
 char *iupwinGetSystemLanguage(void)
@@ -231,39 +238,38 @@ typedef HRESULT (CALLBACK* DLLGETVERSIONPROC)(DLLVERSIONINFO *);
 
 static DWORD winGetDllVersion(LPCTSTR lpszDllName)
 {
-  HINSTANCE hinstDll;
   DWORD dwVersion = 0;
+  DLLGETVERSIONPROC pDllGetVersion;
+  HINSTANCE hinstDll;
 
   /* For security purposes, LoadLibrary should be provided with a 
   fully-qualified path to the DLL. The lpszDllName variable should be
   tested to ensure that it is a fully qualified path before it is used. */
   hinstDll = LoadLibrary(lpszDllName);
+  if (!hinstDll)
+    return 0;
 
-  if (hinstDll)
+  pDllGetVersion = (DLLGETVERSIONPROC)GetProcAddress(hinstDll, "DllGetVersion");
+
+  /* Because some DLLs might not implement this function, you
+  must test for it explicitly. Depending on the particular 
+  DLL, the lack of a DllGetVersion function can be a useful
+  indicator of the version. */
+
+  if (pDllGetVersion)
   {
-    DLLGETVERSIONPROC pDllGetVersion;
-    pDllGetVersion = (DLLGETVERSIONPROC)GetProcAddress(hinstDll, "DllGetVersion");
+    DLLVERSIONINFO dvi;
+    HRESULT hr;
 
-    /* Because some DLLs might not implement this function, you
-    must test for it explicitly. Depending on the particular 
-    DLL, the lack of a DllGetVersion function can be a useful
-    indicator of the version. */
+    ZeroMemory(&dvi, sizeof(dvi));
+    dvi.cbSize = sizeof(dvi);
 
-    if (pDllGetVersion)
-    {
-      DLLVERSIONINFO dvi;
-      HRESULT hr;
-
-      ZeroMemory(&dvi, sizeof(dvi));
-      dvi.cbSize = sizeof(dvi);
-
-      hr = pDllGetVersion(&dvi);
-      if (SUCCEEDED(hr))
-        dwVersion = PACKVERSION(dvi.dwMajorVersion, dvi.dwMinorVersion);
-    }
-
-    FreeLibrary(hinstDll);
+    hr = pDllGetVersion(&dvi);
+    if (SUCCEEDED(hr))
+      dwVersion = PACKVERSION(dvi.dwMajorVersion, dvi.dwMinorVersion);
   }
+
+  FreeLibrary(hinstDll);
 
   return dwVersion;
 }
@@ -285,7 +291,7 @@ int iupwinIsAppThemed(void)
   static winIsAppThemed myIsAppThemed = NULL;
   if (!myIsAppThemed)
   {
-    HMODULE hinstDll = LoadLibrary("uxtheme.dll");
+    HMODULE hinstDll = LoadLibrary(TEXT("uxtheme.dll"));
     if (hinstDll)
       myIsAppThemed = (winIsAppThemed)GetProcAddress(hinstDll, "IsAppThemed");
   }

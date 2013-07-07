@@ -32,6 +32,7 @@
 #include "iupwin_drv.h"
 #include "iupwin_info.h"
 #include "iupwin_draw.h"
+#include "iupwin_str.h"
 
 
 #ifndef TABP_AEROWIZARDBODY
@@ -71,14 +72,14 @@ void iupwinDrawInit(void)
 {
   if (!winAlphaBlend)
   {
-    HINSTANCE lib = LoadLibrary("Msimg32");
+    HINSTANCE lib = LoadLibrary(TEXT("Msimg32"));
     if (lib)
       winAlphaBlend = (_winAlphaBlendFunc)GetProcAddress(lib, "AlphaBlend");
   }
 
   if (!winThemeOpenData && iupwin_comctl32ver6)
   {
-    HMODULE hinstDll = LoadLibrary("uxtheme.dll");
+    HMODULE hinstDll = LoadLibrary(TEXT("uxtheme.dll"));
     if (hinstDll)
     {
       winThemeOpenData = (_winThemeOpenData)GetProcAddress(hinstDll, "OpenThemeData");
@@ -223,7 +224,7 @@ void iupwinDrawRemoveTheme(HWND hwnd)
   static winSetWindowTheme mySetWindowTheme = NULL;
   if (!mySetWindowTheme)
   {
-    HMODULE hinstDll = LoadLibrary("uxtheme.dll");
+    HMODULE hinstDll = LoadLibrary(TEXT("uxtheme.dll"));
     if (hinstDll)
       mySetWindowTheme = (winSetWindowTheme)GetProcAddress(hinstDll, "SetWindowTheme");
   }
@@ -242,7 +243,7 @@ void iupwinDrawText(HDC hDC, const char* text, int x, int y, int width, int heig
 {
   COLORREF oldcolor;
   RECT rect;
-  HFONT hOldFont = SelectObject(hDC, hFont);
+  HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
 
   rect.left = x;
   rect.top = y;
@@ -253,7 +254,7 @@ void iupwinDrawText(HDC hDC, const char* text, int x, int y, int width, int heig
   SetBkMode(hDC, TRANSPARENT);
   oldcolor = SetTextColor(hDC, fgcolor);
 
-  DrawText(hDC, text, -1, &rect, style|DT_NOCLIP);
+  DrawText(hDC, iupwinStrToSystem(text), -1, &rect, style|DT_NOCLIP);
 
   SelectObject(hDC, hOldFont);
   SetTextColor(hDC, oldcolor);
@@ -599,7 +600,7 @@ void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsig
   SetTextColor(dc->hBitmapDC, RGB(r, g, b));
   hOldFont = SelectObject(dc->hBitmapDC, hFont);
 
-  TextOut(dc->hBitmapDC, x, y, text, len);
+  TextOut(dc->hBitmapDC, x, y, iupwinStrToSystemLen(text, len), len);
 
   SelectObject(dc->hBitmapDC, hOldFont);
 }
@@ -608,7 +609,7 @@ void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, i
 {
   int bpp;
   HBITMAP hMask = NULL;
-  HBITMAP hBitmap = iupImageGetImage(name, dc->ih, make_inactive);
+  HBITMAP hBitmap = (HBITMAP)iupImageGetImage(name, dc->ih, make_inactive);
   if (!hBitmap)
     return;
 

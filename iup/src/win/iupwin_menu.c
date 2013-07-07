@@ -25,6 +25,7 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 #include "iupwin_brush.h"
+#include "iupwin_str.h"
 
 
 Ihandle* iupwinMenuGetHandle(HMENU hMenu)
@@ -285,21 +286,24 @@ static int winMenuSetBgColorAttrib(Ihandle* ih, const char* value)
 static int winMenuAddParentSubmenu(Ihandle* ih)
 {
   int pos;
-  MENUITEMINFO menuiteminfo;
 
   pos = IupGetChildPos(ih->parent, ih);
   ih->serial = iupMenuGetChildId(ih);
 
-  menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
-  menuiteminfo.fMask = MIIM_ID|MIIM_DATA|MIIM_SUBMENU|MIIM_STRING; 
-  menuiteminfo.dwTypeData = ""; /* must set or it will be not possible to update */
-  menuiteminfo.cch = 0;
-  menuiteminfo.wID = (UINT)ih->serial;
-  menuiteminfo.dwItemData = (ULONG_PTR)ih; 
-  menuiteminfo.hSubMenu = (HMENU)ih->firstchild->handle;
+  {
+    MENUITEMINFO menuiteminfo;
 
-  if (!InsertMenuItem((HMENU)ih->parent->handle, pos, TRUE, &menuiteminfo))
-    return IUP_ERROR;
+    menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
+    menuiteminfo.fMask = MIIM_ID|MIIM_DATA|MIIM_SUBMENU|MIIM_STRING; 
+    menuiteminfo.dwTypeData = TEXT(""); /* must set or it will be not possible to update */
+    menuiteminfo.cch = 0;
+    menuiteminfo.wID = (UINT)ih->serial;
+    menuiteminfo.dwItemData = (ULONG_PTR)ih; 
+    menuiteminfo.hSubMenu = (HMENU)ih->firstchild->handle;
+
+    if (!InsertMenuItem((HMENU)ih->parent->handle, pos, TRUE, &menuiteminfo))
+      return IUP_ERROR;
+  }
 
   ih->handle = ih->parent->handle; /* gets the HMENU of the parent */
 
@@ -451,7 +455,6 @@ static int winItemSetImpressAttrib(Ihandle* ih, const char* value)
 static int winItemSetTitleAttrib(Ihandle* ih, const char* value)
 {
   char *str;
-  MENUITEMINFO menuiteminfo;
 
   if (ih->handle == (InativeHandle*)-1) /* check if submenu is actually created */
     return 1;
@@ -464,13 +467,18 @@ static int winItemSetTitleAttrib(Ihandle* ih, const char* value)
   else
     str = iupMenuProcessTitle(ih, value);
 
-  menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
-  menuiteminfo.fMask = MIIM_TYPE;
-  menuiteminfo.fType = MFT_STRING;
-  menuiteminfo.dwTypeData = str;
-  menuiteminfo.cch = strlen(str);
+  {
+    TCHAR* tstr = iupwinStrToSystem(str);
+    int len = lstrlen(tstr);
+    MENUITEMINFO menuiteminfo;
+    menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
+    menuiteminfo.fMask = MIIM_TYPE;
+    menuiteminfo.fType = MFT_STRING;
+    menuiteminfo.dwTypeData = tstr;
+    menuiteminfo.cch = len;
 
-  SetMenuItemInfo((HMENU)ih->handle, (UINT)ih->serial, FALSE, &menuiteminfo);
+    SetMenuItemInfo((HMENU)ih->handle, (UINT)ih->serial, FALSE, &menuiteminfo);
+  }
 
   if (str != value) free(str);
 
@@ -482,18 +490,19 @@ static int winItemSetTitleAttrib(Ihandle* ih, const char* value)
 static int winItemSetTitleImageAttrib(Ihandle* ih, const char* value)
 {
   HBITMAP hBitmap;
-  MENUITEMINFO menuiteminfo;
 
   if (ih->handle == (InativeHandle*)-1) /* check if submenu is actually created */
     return 1;
 
   hBitmap = iupImageGetImage(value, ih, 0);
 
-  menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
-  menuiteminfo.fMask = MIIM_BITMAP; 
-  menuiteminfo.hbmpItem = hBitmap;
-
-  SetMenuItemInfo((HMENU)ih->handle, (UINT)ih->serial, FALSE, &menuiteminfo);
+  {
+    MENUITEMINFO menuiteminfo;
+    menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
+    menuiteminfo.fMask = MIIM_BITMAP; 
+    menuiteminfo.hbmpItem = hBitmap;
+    SetMenuItemInfo((HMENU)ih->handle, (UINT)ih->serial, FALSE, &menuiteminfo);
+  }
 
   winMenuUpdateBar(ih);
 
@@ -558,7 +567,6 @@ static char* winItemGetValueAttrib(Ihandle* ih)
 static int winItemMapMethod(Ihandle* ih)
 {
   int pos;
-  MENUITEMINFO menuiteminfo;
 
   if (!ih->parent || !IsMenu((HMENU)ih->parent->handle))
     return IUP_ERROR;
@@ -566,15 +574,18 @@ static int winItemMapMethod(Ihandle* ih)
   pos = IupGetChildPos(ih->parent, ih);
   ih->serial = iupMenuGetChildId(ih);
 
-  menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
-  menuiteminfo.fMask = MIIM_ID|MIIM_DATA|MIIM_STRING; 
-  menuiteminfo.dwTypeData = ""; /* must set or it will be not possible to update */
-  menuiteminfo.cch = 0;
-  menuiteminfo.wID = (UINT)ih->serial;
-  menuiteminfo.dwItemData = (ULONG_PTR)ih; 
+  {
+    MENUITEMINFO menuiteminfo;
+    menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
+    menuiteminfo.fMask = MIIM_ID|MIIM_DATA|MIIM_STRING; 
+    menuiteminfo.dwTypeData = TEXT(""); /* must set or it will be not possible to update */
+    menuiteminfo.cch = 0;
+    menuiteminfo.wID = (UINT)ih->serial;
+    menuiteminfo.dwItemData = (ULONG_PTR)ih; 
 
-  if (!InsertMenuItem((HMENU)ih->parent->handle, pos, TRUE, &menuiteminfo))
-    return IUP_ERROR;
+    if (!InsertMenuItem((HMENU)ih->parent->handle, pos, TRUE, &menuiteminfo))
+      return IUP_ERROR;
+  }
 
   ih->handle = ih->parent->handle; /* gets the HMENU of the parent */
   winMenuUpdateBar(ih);
@@ -639,7 +650,6 @@ void iupdrvSubmenuInitClass(Iclass* ic)
 static int winSeparatorMapMethod(Ihandle* ih)
 {
   int pos;
-  MENUITEMINFO menuiteminfo;
 
   if (!ih->parent || !IsMenu((HMENU)ih->parent->handle))
     return IUP_ERROR;
@@ -647,14 +657,17 @@ static int winSeparatorMapMethod(Ihandle* ih)
   pos = IupGetChildPos(ih->parent, ih);
   ih->serial = iupMenuGetChildId(ih);
 
-  menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
-  menuiteminfo.fMask = MIIM_FTYPE|MIIM_ID|MIIM_DATA; 
-  menuiteminfo.fType = MFT_SEPARATOR; 
-  menuiteminfo.wID = (UINT)ih->serial;
-  menuiteminfo.dwItemData = (ULONG_PTR)ih; 
+  {
+    MENUITEMINFO menuiteminfo;
+    menuiteminfo.cbSize = sizeof(MENUITEMINFO); 
+    menuiteminfo.fMask = MIIM_FTYPE|MIIM_ID|MIIM_DATA; 
+    menuiteminfo.fType = MFT_SEPARATOR; 
+    menuiteminfo.wID = (UINT)ih->serial;
+    menuiteminfo.dwItemData = (ULONG_PTR)ih; 
 
-  if (!InsertMenuItem((HMENU)ih->parent->handle, pos, TRUE, &menuiteminfo))
-    return IUP_ERROR;
+    if (!InsertMenuItem((HMENU)ih->parent->handle, pos, TRUE, &menuiteminfo))
+      return IUP_ERROR;
+  }
 
   ih->handle = ih->parent->handle; /* gets the HMENU of the parent */
   winMenuUpdateBar(ih);

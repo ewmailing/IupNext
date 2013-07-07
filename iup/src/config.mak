@@ -104,7 +104,7 @@ ifdef USE_MOTIF
   INCLUDES += mot
 else
   SRC += win/iupwin_common.c win/iupwin_brush.c win/iupwin_focus.c win/iupwin_font.c \
-         win/iupwin_globalattrib.c win/iupwin_handle.c win/iupwin_key.c \
+         win/iupwin_globalattrib.c win/iupwin_handle.c win/iupwin_key.c win/iupwin_str.c \
          win/iupwin_loop.c win/iupwin_open.c win/iupwin_tips.c win/iupwin_info.c \
          win/iupwin_dialog.c win/iupwin_messagedlg.c win/iupwin_timer.c \
          win/iupwin_image.c win/iupwin_label.c win/iupwin_canvas.c win/iupwin_frame.c \
@@ -117,6 +117,7 @@ else
 
   INCLUDES += win
   DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=0x600 WINVER=$(WIN32VER) NOTREEVIEW
+#  DEFINES += UNICODE
 endif
 endif
 

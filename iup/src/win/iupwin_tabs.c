@@ -31,6 +31,7 @@
 #include "iupwin_handle.h"
 #include "iupwin_draw.h"
 #include "iupwin_info.h"
+#include "iupwin_str.h"
 
 
 #ifndef WS_EX_COMPOSITED
@@ -354,9 +355,7 @@ static HWND winTabCreatePageWindow(Ihandle* ih)
 
   iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 
-  hWnd = CreateWindowEx(dwExStyle, "IupTabsPage", NULL, dwStyle, 
-                        0, 0, CW_USEDEFAULT, CW_USEDEFAULT, 
-                        ih->handle, NULL, iupwin_hinstance, NULL); 
+  hWnd = iupwinCreateWindowEx(ih->handle, TEXT("IupTabsPage"), dwExStyle, dwStyle, 0, NULL);
 
   iupwinHandleAdd(ih, hWnd);
 
@@ -393,8 +392,8 @@ static void winTabInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_page
   if (tabtitle)
   {
     tie.mask |= TCIF_TEXT;
-    tie.pszText = tabtitle;
-    tie.cchTextMax = strlen(tabtitle);
+    tie.pszText = iupwinStrToSystem(tabtitle);
+    tie.cchTextMax = lstrlen(tie.pszText);
 
     iupwinSetMnemonicTitle(ih, pos, tabtitle);
   }
@@ -515,8 +514,8 @@ static int winTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
       TCITEM tie;
 
       tie.mask = TCIF_TEXT;
-      tie.pszText = (char*)value;
-      tie.cchTextMax = strlen(value);
+      tie.pszText = iupwinStrToSystem(value);
+      tie.cchTextMax = lstrlen(tie.pszText);
 
       iupwinSetMnemonicTitle(ih, pos, value);
 
@@ -791,7 +790,7 @@ static int winTabsMapMethod(Ihandle* ih)
     dwStyle |= TCS_MULTILINE;
   }
 
-  if (!iupwinCreateWindowEx(ih, WC_TABCONTROL, dwExStyle, dwStyle))
+  if (!iupwinCreateWindow(ih, WC_TABCONTROL, dwExStyle, dwStyle, NULL))
     return IUP_ERROR;
 
   /* replace the WinProc to handle other messages */
@@ -865,7 +864,7 @@ static void winTabsRegisterClass(void)
   ZeroMemory(&wndclass, sizeof(WNDCLASS));
   
   wndclass.hInstance      = iupwin_hinstance;
-  wndclass.lpszClassName  = "IupTabsPage";
+  wndclass.lpszClassName  = TEXT("IupTabsPage");
   wndclass.lpfnWndProc    = (WNDPROC)winTabsPageWinProc;
   wndclass.hCursor        = LoadCursor(NULL, IDC_ARROW);
   wndclass.style          = CS_PARENTDC;
@@ -876,7 +875,7 @@ static void winTabsRegisterClass(void)
 
 void iupdrvTabsInitClass(Iclass* ic)
 {
-  if (!iupwinClassExist("IupTabsPage"))
+  if (!iupwinClassExist(TEXT("IupTabsPage")))
     winTabsRegisterClass();
 
   /* Driver Dependent Class functions */

@@ -26,6 +26,7 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 #include "iupwin_draw.h"
+#include "iupwin_str.h"
 
 
 #ifndef ODS_NOFOCUSRECT
@@ -756,7 +757,7 @@ static int winToggleMapMethod(Ihandle* ih)
       dwStyle |= BS_AUTOCHECKBOX;
   }
 
-  if (!iupwinCreateWindowEx(ih, "BUTTON", 0, dwStyle))
+  if (!iupwinCreateWindow(ih, WC_BUTTON, 0, dwStyle, NULL))
     return IUP_ERROR;
 
   /* Process WM_COMMAND */

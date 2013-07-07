@@ -5,6 +5,7 @@
  */
 
 #include <windows.h>
+#include <commctrl.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -26,6 +27,7 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 #include "iupwin_draw.h"
+#include "iupwin_str.h"
 
 
 /* Not defined in MingW and Cygwin */
@@ -352,7 +354,7 @@ static int winLabelMapMethod(Ihandle* ih)
       ih->data->type = IUP_LABEL_TEXT;
   }
 
-  if (!iupwinCreateWindowEx(ih, "STATIC", 0, dwStyle))
+  if (!iupwinCreateWindow(ih, WC_STATIC, 0, dwStyle, NULL))
     return IUP_ERROR;
 
   if (ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)

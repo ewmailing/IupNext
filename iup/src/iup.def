@@ -194,16 +194,12 @@ IupSetRGBId2
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib
-iupdrvSetCurrentDirectory
 iupdrvSetActive
 iupdrvScreenToClient
 iupdrvClientToScreen
 iupdrvReparent
-iupdrvMakeDirectory
 iupdrvLocaleInfo
 iupdrvIsVisible
-iupdrvIsFile
-iupdrvIsDirectory
 iupdrvIsActive
 iupdrvGetUserName
 iupdrvGetSystemVersion
@@ -217,7 +213,6 @@ iupdrvGetKeyState
 iupdrvGetFullSize
 iupdrvGetDisplay
 iupdrvGetCursorPos
-iupdrvGetCurrentDirectory
 iupdrvGetComputerName
 iupdrvFontGetStringWidth
 iupdrvFontGetMultiLineStringSize
@@ -457,8 +452,11 @@ iupDrawFocusRect
 iupGetFontInfo
 
 iupwinMouseMove
-iupwinCreateWindowEx
+iupwinCreateWindow
 iupwinBaseProc
 iupdrvRegisterDragDropAttrib
 iupwinButtonUp
 iupwinButtonDown
+iupwinStrFromSystem
+iupwinStrToSystem
+iupwinStrToSystemLen

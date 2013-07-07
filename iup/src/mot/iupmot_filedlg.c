@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include <Xm/Xm.h>
 #include <Xm/MwmUtil.h>
@@ -36,6 +38,65 @@
 
 enum {IUP_DIALOGOPEN, IUP_DIALOGSAVE, IUP_DIALOGDIR};
 
+
+static int motIsFile(const char* name)
+{
+  struct stat status;
+  if (stat(name, &status) != 0)
+    return 0;
+  if (S_ISDIR(status.st_mode))
+    return 0;
+  return 1;
+}
+
+static int motIsDirectory(const char* name)
+{
+  struct stat status;
+  if (stat(name, &status) != 0)
+    return 0;
+  if (S_ISDIR(status.st_mode))
+    return 1;
+  return 0;
+}            
+
+static int motSetCurrentDirectory(const char* dir)
+{
+  return chdir(dir) == 0? 1: 0;
+}
+
+static char* motGetCurrentDirectory(void)
+{
+  size_t size = 256;
+  char *buffer = (char *)malloc(size);
+
+  for (;;)
+  {
+    if (getcwd(buffer, size) != NULL)
+      return buffer;
+
+    if (errno != ERANGE)
+    {
+      free(buffer);
+      return NULL;
+    }
+
+    size += size;
+    buffer = (char *)realloc(buffer, size);
+  }
+
+  return NULL;
+}
+
+static int motMakeDirectory(const char* name) 
+{
+  mode_t oldmask = umask((mode_t)0);
+  int fail =  mkdir(name, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
+                          S_IWGRP | S_IXGRP | S_IROTH | S_IXOTH);
+  umask (oldmask);
+  if (fail)
+    return 0;
+  return 1;
+}
 
 static void motFileDlgAskUserCBclose(Widget w, XtPointer client_data, XtPointer call_data)
 {
@@ -95,7 +156,7 @@ static int motFileDlgCheckValue(Ihandle* ih, Widget filebox)
 
   if (dialogtype == IUP_DIALOGDIR)
   {
-    if (!iupdrvIsDirectory(value))               /* if does not exist or not a directory */
+    if (!motIsDirectory(value))               /* if does not exist or not a directory */
     {
       iupStrMessageShowError(ih, "IUP_INVALIDDIR");
       return 0;
@@ -103,12 +164,12 @@ static int motFileDlgCheckValue(Ihandle* ih, Widget filebox)
   }
   else if (!iupAttribGetBoolean(ih, "MULTIPLEFILES"))
   {
-    if (iupdrvIsDirectory(value))  /* selected a directory */
+    if (motIsDirectory(value))  /* selected a directory */
     {
       iupStrMessageShowError(ih, "IUP_INVALIDDIR");
       return 0;
     }
-    else if (!iupdrvIsFile(value))      /* not a file == new file */
+    else if (!motIsFile(value))      /* not a file == new file */
     {
       value = iupAttribGet(ih, "ALLOWNEW");
       if (!value)
@@ -258,7 +319,7 @@ static void motFileDlgCallback(Widget filebox, Ihandle* ih, XmFileSelectionBoxCa
         free(dir);
       }
 
-      if (iupdrvIsFile(filename))  /* check if file exists */
+      if (motIsFile(filename))  /* check if file exists */
       {
         iupAttribSetStr(ih, "FILEEXIST", "YES");
         iupAttribSetStr(ih, "STATUS", "0");
@@ -277,7 +338,7 @@ static void motFileDlgCallback(Widget filebox, Ihandle* ih, XmFileSelectionBoxCa
       char* dir;
       XtVaGetValues(filebox, XmNdirectory, &xm_dir, NULL);
       XmStringGetLtoR(xm_dir, XmSTRING_DEFAULT_CHARSET, &dir);
-      iupdrvSetCurrentDirectory(dir);
+      motSetCurrentDirectory(dir);
       XtFree(dir);
     }
   }
@@ -369,7 +430,7 @@ static void motFileDlgNewFolderCallback(Widget w, Widget filebox, XtPointer call
     {
       char* dir;
       XmStringGetLtoR(xm_dir, XmSTRING_DEFAULT_CHARSET, &dir);
-      iupdrvMakeDirectory(dir);
+      motMakeDirectory(dir);
       XtFree(dir);
     }
 
@@ -437,7 +498,7 @@ static void motFileDlgPreviewCanvasExposeCallback(Widget w, Ihandle *ih, XtPoint
 
   /* callback here always exists */
   cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-  if (iupdrvIsFile(filename))
+  if (motIsFile(filename))
     cb(ih, filename, "PAINT");
   else
     cb(ih, NULL, "PAINT");
@@ -456,7 +517,7 @@ static void motFileDlgBrowseSelectionCallback(Widget w, Ihandle* ih, XmListCallb
 
   /* callback here always exists */
   cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-  if (iupdrvIsFile(filename))
+  if (motIsFile(filename))
     cb(ih, filename, "SELECT");
   else
     cb(ih, filename, "OTHER");
@@ -576,7 +637,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
       char* dir = iupAttribGet(ih, "DIRECTORY");
       if (!dir)
       {
-        cur_dir = iupdrvGetCurrentDirectory();
+        cur_dir = motGetCurrentDirectory();
         dir = cur_dir;
       }
 

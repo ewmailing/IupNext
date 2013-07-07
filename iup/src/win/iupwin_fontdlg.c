@@ -18,6 +18,7 @@
 
 #include "iupwin_drv.h"
 #include "iupwin_info.h"
+#include "iupwin_str.h"
 
 
 #define IUP_FONTFAMILYCOMBOBOX        0x0470
@@ -33,7 +34,7 @@ static UINT_PTR winFontDlgHookProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM 
 
     char* value = iupAttribGet(ih, "TITLE");
     if (value)
-      SetWindowText(hWnd, value);
+      SetWindowText(hWnd, iupwinStrToSystem(value));
 
     ih->handle = hWnd;
     iupDialogUpdatePosition(ih);
@@ -103,7 +104,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   choosefont.Flags = CF_SCREENFONTS | CF_EFFECTS | CF_INITTOLOGFONTSTRUCT;
   choosefont.lCustData = (LPARAM)ih;
 
-  if (!iupwinIs8OrNew() || iupAttribGetBoolean(ih, "WIN8_FONT_HOOK"))
+  if (!iupwinIsWin8OrNew() || iupAttribGetBoolean(ih, "WIN8_FONT_HOOK"))
   {
     choosefont.lpfnHook = (LPCFHOOKPROC)winFontDlgHookProc;
     choosefont.Flags |= CF_ENABLEHOOK;
@@ -112,7 +113,8 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   if (IupGetCallback(ih, "HELP_CB"))
     choosefont.Flags |= CF_SHOWHELP;
 
-  strcpy(logfont.lfFaceName, typeface);
+  iupwinStrCopy(logfont.lfFaceName, typeface, 32);
+
   logfont.lfHeight = height_pixels;
   logfont.lfWeight = (is_bold)? FW_BOLD: FW_NORMAL;
   logfont.lfItalic = (BYTE)is_italic;

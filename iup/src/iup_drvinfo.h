@@ -78,26 +78,6 @@ void iupdrvGetCursorPos(int *x, int *y);
  * \ingroup drvinfo */
 void* iupdrvGetDisplay(void);
 
-/** Returns the current directory.
- * \ingroup drvinfo */
-char* iupdrvGetCurrentDirectory(void);
-
-/** Changes the current directory.
- * \ingroup drvinfo */
-int iupdrvSetCurrentDirectory(const char* dir);
-
-/** Returns true if the given name is an existant file.
- * \ingroup drvinfo */
-int iupdrvIsFile(const char* name);
-
-/** Returns true if the given name is an existant directory.
- * \ingroup drvinfo */
-int iupdrvIsDirectory(const char* name);
-
-/** Creates a new direcotry.
- * \ingroup drvinfo */
-int iupdrvMakeDirectory(const char* name);
-
 /** Returns the current locale name.
  * \ingroup drvinfo */
 char* iupdrvLocaleInfo(void);

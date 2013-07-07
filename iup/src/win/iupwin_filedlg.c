@@ -19,6 +19,7 @@
 #include "iup_drvinfo.h"
 
 #include "iupwin_drv.h"
+#include "iupwin_str.h"
 
 
 /* Not defined for Cygwin or MingW */
@@ -35,14 +36,24 @@
 enum {IUP_DIALOGOPEN, IUP_DIALOGSAVE, IUP_DIALOGDIR};
 
 
-static void winFileDlgStrReplacePathSlash(char* name)
+static int winIsFile(const TCHAR* name)
+{
+  DWORD attrib = GetFileAttributes(name);
+  if (attrib == INVALID_FILE_ATTRIBUTES)
+    return 0;
+  if (attrib & FILE_ATTRIBUTE_DIRECTORY)
+    return 0;
+  return 1;
+}
+
+static void winFileDlgStrReplacePathSlash(TCHAR* name)
 {
   /* check for "/" */
-  int i, len = strlen(name);
+  int i, len = lstrlen(name);
   for (i = 0; i < len; i++)
   {
-    if (name[i] == '/')
-      name[i] = '\\';
+    if (name[i] == TEXT('/'))
+      name[i] = TEXT('\\');
   }
 }
 
@@ -61,21 +72,20 @@ static INT CALLBACK winFileDlgBrowseCallback(HWND hWnd, UINT uMsg, LPARAM lParam
     value = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
     if (value)
     {
-      winFileDlgStrReplacePathSlash(value);
-      SendMessage(hWnd, BFFM_SETSELECTION, TRUE, (LPARAM)value);
+      TCHAR* wstr = iupwinStrToSystem(value);
+      winFileDlgStrReplacePathSlash(wstr);
+      SendMessage(hWnd, BFFM_SETSELECTION, TRUE, (LPARAM)wstr);
       free(value);
     }
   }
   else if (uMsg == BFFM_SELCHANGED)
   {
-    char buffer[IUP_MAX_FILENAME_SIZE];
+    TCHAR buffer[IUP_MAX_FILENAME_SIZE];
     ITEMIDLIST* selecteditem = (ITEMIDLIST*)lParam;
-    buffer[0] = 0;
-    SHGetPathFromIDList(selecteditem, buffer);
-    if (buffer[0] == 0)
-      SendMessage(hWnd, BFFM_ENABLEOK, 0, (LPARAM)FALSE);
-    else
+    if (SHGetPathFromIDList(selecteditem, buffer) && lstrlen(buffer) != 0)
       SendMessage(hWnd, BFFM_ENABLEOK, 0, (LPARAM)TRUE);
+    else
+      SendMessage(hWnd, BFFM_ENABLEOK, 0, (LPARAM)FALSE);
   }
   return 0;
 }
@@ -84,14 +94,14 @@ static void winFileDlgGetFolder(Ihandle *ih)
 {
   InativeHandle* parent = iupDialogGetNativeParent(ih);
   BROWSEINFO browseinfo;
-  char buffer[MAX_PATH];
+  TCHAR buffer[MAX_PATH];
   LPITEMIDLIST selecteditem;
 
   if (!parent)
     parent = GetActiveWindow();
 
   ZeroMemory(&browseinfo, sizeof(BROWSEINFO));
-  browseinfo.lpszTitle = iupAttribGet(ih, "TITLE");
+  browseinfo.lpszTitle = iupwinStrToSystem(iupAttribGet(ih, "TITLE"));
   browseinfo.pszDisplayName = buffer; 
   browseinfo.lpfn = winFileDlgBrowseCallback;
   browseinfo.lParam = (LPARAM)ih;
@@ -107,7 +117,7 @@ static void winFileDlgGetFolder(Ihandle *ih)
   else
   {
     SHGetPathFromIDList(selecteditem, buffer);
-    iupAttribStoreStr(ih, "VALUE", buffer);
+    iupAttribStoreStr(ih, "VALUE", iupwinStrFromSystem(buffer));
     iupAttribSetStr(ih, "STATUS", "0");
   }
 
@@ -117,7 +127,7 @@ static void winFileDlgGetFolder(Ihandle *ih)
 
 /************************************************************************************************/
 
-static int winFileDlgGetSelectedFile(Ihandle* ih, HWND hWnd, char* filename)
+static int winFileDlgGetSelectedFile(Ihandle* ih, HWND hWnd, TCHAR* filename)
 {
   int ret = CommDlg_OpenSave_GetFilePath(GetParent(hWnd), filename, IUP_MAX_FILENAME_SIZE);
   if (ret < 0)
@@ -129,7 +139,7 @@ static int winFileDlgGetSelectedFile(Ihandle* ih, HWND hWnd, char* filename)
     int found = 0;
     while(*filename != 0)
     {            
-      if (*filename == '"')
+      if (*filename == TEXT('"'))
       {
         if (!found)
           found = 1;
@@ -173,7 +183,7 @@ static int winFileDlgWmNotify(HWND hWnd, LPOFNOTIFY pofn)
       IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
       if (cb)
       {
-        char filename[IUP_MAX_FILENAME_SIZE];
+        TCHAR filename[IUP_MAX_FILENAME_SIZE];
         if (winFileDlgGetSelectedFile(ih, hWnd, filename))
         {
           int ret;
@@ -183,13 +193,13 @@ static int winFileDlgWmNotify(HWND hWnd, LPOFNOTIFY pofn)
             file_msg = "OK";
           else
           {
-            if (iupdrvIsFile(filename))
+            if (winIsFile(filename))
               file_msg = "SELECT";
             else
               file_msg = "OTHER";
           }
 
-          ret = cb(ih, filename, file_msg);
+          ret = cb(ih, iupwinStrFromSystem(filename), file_msg);
 
           if (pofn->hdr.code == CDN_FILEOK && (ret == IUP_IGNORE || ret == IUP_CONTINUE)) 
           {
@@ -198,7 +208,7 @@ static int winFileDlgWmNotify(HWND hWnd, LPOFNOTIFY pofn)
               char* value = iupAttribGet(ih, "FILE");
               if (value)
               {
-                strncpy(filename, value, IUP_MAX_FILENAME_SIZE);
+                iupwinStrCopy(filename, value, IUP_MAX_FILENAME_SIZE);
                 winFileDlgStrReplacePathSlash(filename);
                 SendMessage(GetParent(hWnd), CDM_SETCONTROLTEXT, (WPARAM)IUP_EDIT, (LPARAM)filename);
               }
@@ -220,16 +230,16 @@ static int winFileDlgWmNotify(HWND hWnd, LPOFNOTIFY pofn)
       IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
       if (cb)
       {
-        char filename[IUP_MAX_FILENAME_SIZE];
+        TCHAR filename[IUP_MAX_FILENAME_SIZE];
         if (winFileDlgGetSelectedFile(ih, hWnd, filename))
         {
           iupAttribSetInt(ih, "FILTERUSED", (int)pofn->lpOFN->nFilterIndex);
-          if (cb(ih, filename, "FILTER") == IUP_CONTINUE)
+          if (cb(ih, iupwinStrFromSystem(filename), "FILTER") == IUP_CONTINUE)
           {
             char* value = iupAttribGet(ih, "FILE");
             if (value)
             {
-              strncpy(filename, value, IUP_MAX_FILENAME_SIZE);
+              iupwinStrCopy(filename, value, IUP_MAX_FILENAME_SIZE);
               winFileDlgStrReplacePathSlash(filename);
               SendMessage(GetParent(hWnd), CDM_SETCONTROLTEXT, (WPARAM)IUP_EDIT, (LPARAM)filename);
             }
@@ -358,12 +368,12 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
         Ihandle* ih = (Ihandle*)GetWindowLongPtr(hWnd, DWLP_USER);
         /* callback here always exists */
         IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-        char filename[IUP_MAX_FILENAME_SIZE];
+        TCHAR filename[IUP_MAX_FILENAME_SIZE];
         iupAttribSetStr(ih, "PREVIEWDC", (char*)lpDrawItem->hDC);
         if (winFileDlgGetSelectedFile(ih, hWnd, filename))
         {
-          if (iupdrvIsFile(filename))
-            cb(ih, filename, "PAINT");
+          if (winIsFile(filename))
+            cb(ih, iupwinStrFromSystem(filename), "PAINT");
           else
             cb(ih, NULL, "PAINT");
         }
@@ -432,7 +442,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   InativeHandle* parent = iupDialogGetNativeParent(ih);
   OPENFILENAME openfilename;
   int result, dialogtype;
-  char *value;
+  char *value, *extfilter=NULL, *dir=NULL;
 
   iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
@@ -459,11 +469,12 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   openfilename.lStructSize = sizeof(OPENFILENAME);
   openfilename.hwndOwner = parent;
 
-  value = iupAttribGet(ih, "EXTFILTER");
-  if (value)
+  extfilter = iupAttribGet(ih, "EXTFILTER");
+  if (extfilter)
   {
     int index;
-    openfilename.lpstrFilter = winFileDlgStrReplaceSeparator(value);
+    extfilter = winFileDlgStrReplaceSeparator(extfilter);
+    openfilename.lpstrFilter = iupwinStrToSystem(extfilter);
 
     value = iupAttribGet(ih, "FILTERUSED");
     if (iupStrToInt(value, &index))
@@ -484,20 +495,21 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
       /* concat FILTERINFO+FILTER */
       sz1 = strlen(info)+1;
       sz2 = strlen(value)+1;
-      openfilename.lpstrFilter = (char*)malloc(sz1+sz2+1);
-      memcpy((char*)openfilename.lpstrFilter, info, sz1);
-      memcpy((char*)openfilename.lpstrFilter+sz1, value, sz2);
-      ((char*)openfilename.lpstrFilter)[sz1+sz2] = 0; /* additional 0 at the end */
+      extfilter = (char*)malloc((sz1+sz2+1));
+      memcpy(extfilter, info, sz1);
+      memcpy(extfilter+sz1, value, sz2);
+      extfilter[sz1+sz2] = 0;
 
+      openfilename.lpstrFilter = iupwinStrToSystem(extfilter);
       openfilename.nFilterIndex = 1;
     }
   }
 
-  openfilename.lpstrFile = (char*)malloc(IUP_MAX_FILENAME_SIZE+1);
+  openfilename.lpstrFile = (TCHAR*)malloc((IUP_MAX_FILENAME_SIZE+1)*sizeof(TCHAR));
   value = iupAttribGet(ih, "FILE");
   if (value)
   {
-    strncpy(openfilename.lpstrFile, value, IUP_MAX_FILENAME_SIZE);
+    iupwinStrCopy(openfilename.lpstrFile, value, IUP_MAX_FILENAME_SIZE);
     winFileDlgStrReplacePathSlash(openfilename.lpstrFile);
   }
   else
@@ -505,11 +517,12 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
 
   openfilename.nMaxFile = IUP_MAX_FILENAME_SIZE;
 
-  openfilename.lpstrInitialDir = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
+  dir = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
+  openfilename.lpstrInitialDir = iupwinStrToSystem(dir);
   if (openfilename.lpstrInitialDir)
-    winFileDlgStrReplacePathSlash((char*)openfilename.lpstrInitialDir);
+    winFileDlgStrReplacePathSlash((TCHAR*)openfilename.lpstrInitialDir);
 
-  openfilename.lpstrTitle = iupAttribGet(ih, "TITLE");
+  openfilename.lpstrTitle = iupwinStrToSystem(iupAttribGet(ih, "TITLE"));
   openfilename.Flags = OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
 
   if (!iupAttribGetBoolean(ih, "NOOVERWRITEPROMPT"))
@@ -545,7 +558,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   {
     openfilename.Flags |= OFN_ENABLETEMPLATE;
     openfilename.hInstance = iupwin_dll_hinstance? iupwin_dll_hinstance: iupwin_hinstance;
-    openfilename.lpTemplateName = "iupPreviewDlg";
+    openfilename.lpTemplateName = TEXT("iupPreviewDlg");
     openfilename.lpfnHook = winFileDlgPreviewHook;
   }
 
@@ -559,7 +572,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
 
   if (result)
   {
-    char* dir = iupStrFileGetPath(openfilename.lpstrFile);
+    char* dir = iupStrFileGetPath(iupwinStrFromSystem(openfilename.lpstrFile));
     iupAttribStoreStr(ih, "DIRECTORY", dir);
     free(dir);
 
@@ -574,10 +587,10 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
         while (openfilename.lpstrFile[i] != 0 || openfilename.lpstrFile[i+1] != 0)
         {
           if (openfilename.lpstrFile[i]==0)
-            openfilename.lpstrFile[i] = '|';
+            openfilename.lpstrFile[i] = TEXT('|');
           i++;
         }
-        openfilename.lpstrFile[i] = '|';
+        openfilename.lpstrFile[i] = TEXT('|');
       }
 
       iupAttribSetStr(ih, "STATUS", "0");
@@ -585,7 +598,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
     }
     else
     {
-      if (iupdrvIsFile(openfilename.lpstrFile))  /* check if file exists */
+      if (winIsFile(openfilename.lpstrFile))  /* check if file exists */
       {
         iupAttribSetStr(ih, "FILEEXIST", "YES");
         iupAttribSetStr(ih, "STATUS", "0");
@@ -597,7 +610,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
       }
     }
 
-    iupAttribStoreStr(ih, "VALUE", openfilename.lpstrFile);
+    iupAttribStoreStr(ih, "VALUE", iupwinStrFromSystem(openfilename.lpstrFile));
     iupAttribSetInt(ih, "FILTERUSED", (int)openfilename.nFilterIndex);
   }
   else
@@ -609,8 +622,8 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
     iupAttribSetStr(ih, "STATUS", "-1");
   }
 
-  if (openfilename.lpstrFilter) free((char*)openfilename.lpstrFilter);
-  if (openfilename.lpstrInitialDir) free((char*)openfilename.lpstrInitialDir);
+  if (extfilter) free(extfilter);
+  if (dir) free(dir);
   if (openfilename.lpstrFile) free(openfilename.lpstrFile);
 
   return IUP_NOERROR;

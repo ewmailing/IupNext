@@ -18,6 +18,7 @@
 #include "iup_image.h"
 
 #include "iupwin_drv.h"
+#include "iupwin_str.h"
 
 
 /* ATTENTION:
@@ -104,7 +105,7 @@ static int winClipboardSetSaveEMFAttrib(Ihandle *ih, const char *value)
   
   GetEnhMetaFileBits(Handle, dwSize, buffer);
   
-  hFile = CreateFile(value, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+  hFile = CreateFile(iupwinStrToSystem(value), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
   if (hFile)
   {
     WriteFile(hFile, buffer, dwSize, &nBytesWrite, NULL);
@@ -142,7 +143,7 @@ static int winClipboardSetSaveWMFAttrib(Ihandle *ih, const char *value)
   
   GetMetaFileBitsEx(lpMFP->hMF, dwSize, buffer);
   
-  hFile = CreateFile(value, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+  hFile = CreateFile(iupwinStrToSystem(value), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
   if (hFile)
   {
     winWritePlacebleFile(hFile, buffer, dwSize, lpMFP->mm, lpMFP->xExt, lpMFP->yExt);
@@ -296,7 +297,7 @@ static int winClipboardGetFormatId(Ihandle *ih)
   char* format = iupAttribGetStr(ih, "FORMAT");
   if (!format)
     return 0;
-  return RegisterClipboardFormat(format);
+  return RegisterClipboardFormat(iupwinStrToSystem(format));
 }
 
 static int winClipboardSetFormatDataAttrib(Ihandle *ih, const char *value)
@@ -437,7 +438,7 @@ static char* winClipboardGetFormatAvailableAttrib(Ihandle *ih)
 static int winClipboardSetAddFormatAttrib(Ihandle *ih, const char *value)
 {
   if (value)
-    RegisterClipboardFormat(value);
+    RegisterClipboardFormat(iupwinStrToSystem(value));
 
   (void)ih;
   return 0;

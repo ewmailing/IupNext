@@ -44,7 +44,7 @@ static BOOL (WINAPI *winIsTouchWindow)(HWND hwnd, PULONG pulFlags) = NULL;
 
 void iupwinTouchInit(void)
 {
-  HINSTANCE lib = LoadLibrary("user32");
+  HINSTANCE lib = LoadLibrary(TEXT("user32"));
   
   winGetTouchInputInfo = (BOOL (WINAPI *)(HTOUCHINPUT,UINT,TOUCHINPUT *,int))GetProcAddress(lib, "GetTouchInputInfo");
   winCloseTouchInputHandle = (BOOL (WINAPI *)(HTOUCHINPUT))GetProcAddress(lib, "CloseTouchInputHandle");

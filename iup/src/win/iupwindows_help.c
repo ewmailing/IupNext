@@ -14,7 +14,7 @@
 
 int IupHelp(const char* url)
 {
-  int err = (int)ShellExecute(GetDesktopWindow(), "open", url, NULL, NULL, SW_SHOWNORMAL);
+  int err = (int)ShellExecuteA(GetDesktopWindow(), "open", url, NULL, NULL, SW_SHOWNORMAL);
   if (err <= 32) 
   {
     switch (err) 

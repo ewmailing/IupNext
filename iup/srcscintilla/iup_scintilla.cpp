@@ -513,7 +513,7 @@ static int iScintillaMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "BORDER"))
     dwExStyle |= WS_EX_CLIENTEDGE;
   
-  if (!iupwinCreateWindowEx(ih, "Scintilla", dwExStyle, dwStyle))
+  if (!iupwinCreateWindow(ih, TEXT("Scintilla"), dwExStyle, dwStyle, NULL))
     return IUP_ERROR;
 
   /* Process Scintilla Notifications */

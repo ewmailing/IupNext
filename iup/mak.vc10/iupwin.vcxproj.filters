@@ -27,6 +27,9 @@
     <ClInclude Include="..\src\win\iupwin_info.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\win\iupwin_str.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\win\iupwin_brush.c">
@@ -130,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="..\src\win\iupwin_val.c">
       <Filter>src_controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\iupwin_str.c">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

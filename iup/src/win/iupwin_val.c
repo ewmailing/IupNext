@@ -27,6 +27,7 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 #include "iupwin_draw.h"
+#include "iupwin_str.h"
 
 
 void iupdrvValGetMinSize(Ihandle* ih, int *w, int *h)
@@ -294,7 +295,7 @@ static int winValMapMethod(Ihandle* ih)
       dwStyle |= TBS_TOP;     /* same as TBS_LEFT  */
   }
 
-  if (!iupwinCreateWindowEx(ih, TRACKBAR_CLASS, 0, dwStyle))
+  if (!iupwinCreateWindow(ih, TRACKBAR_CLASS, 0, dwStyle, NULL))
     return IUP_ERROR;
 
   /* Process Keyboard */

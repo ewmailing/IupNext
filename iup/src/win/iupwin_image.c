@@ -18,6 +18,8 @@
 #include "iup_image.h"
 
 #include "iupwin_drv.h"
+#include "iupwin_str.h"
+
 
 /* RGB in RGBA DIBs are pre-multiplied by alpha to AlphaBlend usage. */
 #define iupALPHAPRE(_src, _alpha) (((_src)*(_alpha))/255)
@@ -623,11 +625,11 @@ void* iupdrvImageCreateMask(Ihandle *ih)
 void* iupdrvImageLoad(const char* name, int type)
 {
   int iup2win[3] = {IMAGE_BITMAP, IMAGE_ICON, IMAGE_CURSOR};
-  HANDLE hImage = LoadImage(iupwin_hinstance, (LPCTSTR)name, iup2win[type], 0, 0, type==0?LR_CREATEDIBSECTION:0);
+  HANDLE hImage = LoadImage(iupwin_hinstance, iupwinStrToSystem(name), iup2win[type], 0, 0, type==0?LR_CREATEDIBSECTION:0);
   if (!hImage && iupwin_dll_hinstance)
-    hImage = LoadImage(iupwin_dll_hinstance, (LPCTSTR)name, iup2win[type], 0, 0, type==0?LR_CREATEDIBSECTION:0);
+    hImage = LoadImage(iupwin_dll_hinstance, iupwinStrToSystem(name), iup2win[type], 0, 0, type==0?LR_CREATEDIBSECTION:0);
   if (!hImage)
-    hImage = LoadImage(NULL, (LPCTSTR)name, iup2win[type], 0, 0, LR_LOADFROMFILE|(type==0?LR_CREATEDIBSECTION:0));
+    hImage = LoadImage(NULL, iupwinStrToSystem(name), iup2win[type], 0, 0, LR_LOADFROMFILE|(type==0?LR_CREATEDIBSECTION:0));
   return hImage;
 }
 

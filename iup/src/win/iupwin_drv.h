@@ -14,10 +14,12 @@ extern "C" {
 
 /* global variables */
 /* declared where they are initialized */
-extern HINSTANCE iupwin_hinstance;      /* winopen.c */
-extern HINSTANCE iupwin_dll_hinstance;  /* winmain.c */
-extern int       iupwin_comctl32ver6;   /* winopen.c */
+extern HINSTANCE iupwin_hinstance;      /* iupwin_open.c */
+extern int       iupwin_comctl32ver6;   /* iupwin_open.c */
+extern HINSTANCE iupwin_dll_hinstance;  /* iupwindows_main.c */
 
+
+/* open */
 void iupwinShowLastError(void);
 
 /* focus */
@@ -54,7 +56,10 @@ void iupwinMenuDialogProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 Ihandle* iupwinMenuGetItemHandle(HMENU hmenu, int menuId);
 Ihandle* iupwinMenuGetHandle(HMENU hMenu);
 
-/* common */
+
+/***************************/
+/* Procedures and Messages */
+/***************************/
 
 /* Definition of a callback used to return the background brush of controls called "_IUPWIN_CTLCOLOR_CB". */
 typedef int (*IFctlColor)(Ihandle* ih, HDC hdc, LRESULT *result);
@@ -89,28 +94,36 @@ int iupwinBaseContainerProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
 
 void iupwinChangeProc(Ihandle *ih, WNDPROC new_proc);
 
-/* Creates the Window with native parent and child ID, associate HWND with Ihandle*, 
-   and replace the WinProc by iupwinBaseWinProc */
-int iupwinCreateWindowEx(Ihandle* ih, LPCSTR lpClassName, DWORD dwExStyle, DWORD dwStyle);
-int iupwinWCreateWindowEx(Ihandle* ih, LPCWSTR lpClassName, DWORD dwExStyle, DWORD dwStyle);
-
-void iupwinGetNativeParentStyle(Ihandle* ih, DWORD *dwExStyle, DWORD *dwStyle);
-void iupwinMergeStyle(Ihandle* ih, DWORD old_mask, DWORD value);
-void iupwinSetStyle(Ihandle* ih, DWORD value, int set);
-
-int iupwinClassExist(const char* name);
-
-int iupwinGetColorRef(Ihandle *ih, char *name, COLORREF *color);
-int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr);
-
-WCHAR* iupwinStrChar2Wide(const char* str);
-char* iupwinStrWide2Char(const WCHAR* wstr);
-
 int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 
 int iupwinListProcessDND(Ihandle *ih, UINT uNotification, POINT pt);
+
+
+/*********************/
+/* Window Management */
+/*********************/
+
+HWND iupwinCreateWindowEx(HWND hParent, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, int serial, void* clientdata);
+
+/* Creates the Window with native parent and child ID, associate HWND with Ihandle*, 
+   and replace the WinProc by iupwinBaseWinProc */
+int iupwinCreateWindow(Ihandle* ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void* clientdata);
+
+void iupwinGetNativeParentStyle(Ihandle* ih, DWORD *dwExStyle, DWORD *dwStyle);
+void iupwinMergeStyle(Ihandle* ih, DWORD old_mask, DWORD value);
+void iupwinSetStyle(Ihandle* ih, DWORD value, int set);
+
+int iupwinClassExist(const TCHAR* name);
+
+
+/*********************/
+/*      Utilities    */
+/*********************/
+
+int iupwinGetColorRef(Ihandle *ih, char *name, COLORREF *color);
+int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr);
 
 char* iupwinGetClipboardText(Ihandle* ih);
 int iupwinSetAutoRedrawAttrib(Ihandle* ih, const char* value);
@@ -121,7 +134,6 @@ int iupwinGetScreenRes(void);
 /* pixel = (point/72)*(pixel/inch) */
 #define iupWIN_PT2PIXEL(_pt, _res)    MulDiv(_pt, _res, 72)     /* (((_pt)*(_res))/72)    */
 #define iupWIN_PIXEL2PT(_pixel, _res) MulDiv(_pixel, 72, _res)  /* (((_pixel)*72)/(_res)) */
-
 
 /* child window identifier of the first MDI child window created,
    should not conflict with any other command identifiers. */

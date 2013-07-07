@@ -27,6 +27,7 @@
 #include "iupwin_handle.h"
 #include "iupwin_draw.h"
 #include "iupwin_info.h"
+#include "iupwin_str.h"
 
 
 /* Not defined in MingW and Cygwin */
@@ -766,7 +767,7 @@ static int winButtonMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "CANFOCUS"))
     dwStyle |= WS_TABSTOP;
 
-  if (!iupwinCreateWindowEx(ih, "BUTTON", 0, dwStyle))
+  if (!iupwinCreateWindow(ih, WC_BUTTON, 0, dwStyle, NULL))
     return IUP_ERROR;
 
   /* Process WM_COMMAND */

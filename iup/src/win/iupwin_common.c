@@ -29,6 +29,7 @@
 #include "iupwin_handle.h"
 #include "iupwin_brush.h"
 #include "iupwin_info.h"
+#include "iupwin_str.h"
 
 
 static UINT WM_DRAGLISTMSG = 0;
@@ -44,7 +45,7 @@ static UINT WM_DRAGLISTMSG = 0;
 #define WS_EX_COMPOSITED 0x02000000L
 #endif
 
-int iupwinClassExist(const char* name)
+int iupwinClassExist(const TCHAR* name)
 {
   WNDCLASS WndClass;
   if (GetClassInfo(iupwin_hinstance, name, &WndClass))
@@ -79,32 +80,6 @@ void iupdrvActivate(Ihandle* ih)
 
   /* remove highlight */
   SendMessage(ih->handle, BM_SETSTATE, FALSE, 0);
-}
-
-WCHAR* iupwinStrChar2Wide(const char* str)
-{
-  if (str)
-  {
-    int len = (int)strlen(str)+1;
-    WCHAR* wstr = malloc(len * sizeof(WCHAR));
-    MultiByteToWideChar(CP_ACP, 0, str, -1, wstr, len);
-    return wstr;
-  }
-
-  return NULL;
-}
-
-char* iupwinStrWide2Char(const WCHAR* wstr)
-{
-  if (wstr)
-  {
-    int len = (int)wcslen(wstr)+1;
-    char* str = malloc(len * sizeof(char));
-    WideCharToMultiByte(CP_ACP, 0, wstr, -1, str, len, NULL, NULL);
-    return str;
-  }
-
-  return NULL;
 }
 
 int iupdrvGetScrollbarSize(void)
@@ -662,7 +637,7 @@ void iupdrvSetActive(Ihandle* ih, int enable)
 int iupdrvBaseSetTitleAttrib(Ihandle* ih, const char* value)
 {
   if (!value) value = "";
-  SetWindowText(ih->handle, value);
+  SetWindowText(ih->handle, iupwinStrToSystem(value));
   return 0;
 }
 
@@ -687,7 +662,7 @@ char* iupdrvBaseGetTitleAttrib(Ihandle* ih)
   if (nc)
   {
     char* str = iupStrGetMemory(nc+1);
-    GetWindowText(ih->handle, str, nc+1);
+    iupwinGetWindowText(ih->handle, str, nc+1);
     return str;
   }
   else
@@ -707,7 +682,7 @@ char* iupdrvBaseGetTitleAttrib(Ihandle* ih)
 static HCURSOR winLoadComCtlCursor(LPCTSTR lpCursorName)
 {
   HCURSOR cur = NULL;
-  HINSTANCE hinstDll = LoadLibrary("comctl32.dll");
+  HINSTANCE hinstDll = LoadLibrary(TEXT("comctl32.dll"));
   if (hinstDll)
   {
     cur = LoadCursor(hinstDll, lpCursorName);
@@ -720,7 +695,7 @@ static HCURSOR winGetCursor(Ihandle* ih, const char* name)
 {
   static struct {
     const char* iupname;
-    const char* sysname;
+    const TCHAR* sysname;
   } table[] = {
     {"NONE",      NULL}, 
     {"NULL",      NULL}, 
@@ -808,7 +783,7 @@ void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "HFONT", iupwinGetHFontAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 
-  if (iupwinIs7OrNew())
+  if (iupwinIsWin7OrNew())
     iupwinTouchRegisterAttrib(ic);
 
   iupClassRegisterAttribute(ic, "TIPBALLOON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
@@ -931,52 +906,27 @@ void iupwinGetNativeParentStyle(Ihandle* ih, DWORD *dwExStyle, DWORD *dwStyle)
     *dwExStyle |= WS_EX_COMPOSITED;
 }
 
-int iupwinWCreateWindowEx(Ihandle* ih, LPCWSTR lpClassName, DWORD dwExStyle, DWORD dwStyle)
+HWND iupwinCreateWindowEx(HWND hParent, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, int serial, void* clientdata)
 {
-  ih->serial = iupDialogGetChildId(ih);
-
-  ih->handle = CreateWindowExW(dwExStyle,  /* extended window style */
+  return CreateWindowEx(dwExStyle,  /* extended window style */
     lpClassName,                  /* window class */
     NULL,                         /* title */
     dwStyle,                      /* window style */
     0,                            /* x-position */
     0,                            /* y-position */
-    10,                           /* default width to avoid 0 */
-    10,                           /* default height to avoid 0 */
-    iupChildTreeGetNativeParentHandle(ih),     /* window parent */
-    (HMENU)ih->serial,            /* child identifier */
+    CW_USEDEFAULT,                /* default width to avoid 0 */
+    CW_USEDEFAULT,                /* default height to avoid 0 */
+    hParent,                      /* window parent */
+    (HMENU)serial,                /* child identifier */
     iupwin_hinstance,             /* instance of app. */
-    NULL);
-
-  if (!ih->handle)
-    return 0;
-
-  /* associate HWND with Ihandle*, all Win32 controls must call this. */
-  iupwinHandleAdd(ih, ih->handle);
-
-  /* replace the WinProc to handle base callbacks */
-  iupwinChangeProc(ih, iupwinBaseWinProc);
-
-  return 1;
+    clientdata);
 }
 
-int iupwinCreateWindowEx(Ihandle* ih, LPCSTR lpClassName, DWORD dwExStyle, DWORD dwStyle)
+int iupwinCreateWindow(Ihandle* ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void* clientdata)
 {
   ih->serial = iupDialogGetChildId(ih);
 
-  ih->handle = CreateWindowExA(dwExStyle,  /* extended window style */
-    lpClassName,                  /* window class */
-    NULL,                         /* title */
-    dwStyle,                      /* window style */
-    0,                            /* x-position */
-    0,                            /* y-position */
-    10,                           /* default width to avoid 0 */
-    10,                           /* default height to avoid 0 */
-    iupChildTreeGetNativeParentHandle(ih),     /* window parent */
-    (HMENU)ih->serial,            /* child identifier */
-    iupwin_hinstance,             /* instance of app. */
-    NULL);
-
+  ih->handle = iupwinCreateWindowEx(iupChildTreeGetNativeParentHandle(ih), lpClassName, dwExStyle, dwStyle, ih->serial, clientdata);
   if (!ih->handle)
     return 0;
 
@@ -1194,3 +1144,4 @@ void iupdrvSleep(int time)
 {
   Sleep(time);
 }
+

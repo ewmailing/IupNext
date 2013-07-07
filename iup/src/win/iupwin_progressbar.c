@@ -24,6 +24,7 @@
 
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
+#include "iupwin_str.h"
 
 
 /* Not defined in Cygwin and MingW */
@@ -133,7 +134,7 @@ static int winProgressBarMapMethod(Ihandle* ih)
     ih->data->marquee = 1;
   }
 
-  if (!iupwinCreateWindowEx(ih, PROGRESS_CLASS, 0, dwStyle))
+  if (!iupwinCreateWindow(ih, PROGRESS_CLASS, 0, dwStyle, NULL))
     return IUP_ERROR;
 
   /* configure the native range */

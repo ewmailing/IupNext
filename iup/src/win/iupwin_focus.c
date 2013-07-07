@@ -43,6 +43,7 @@ int iupwinGetKeyBoardCues(void)
 {
   BOOL cues = 0;
   SystemParametersInfo(SPI_GETKEYBOARDCUES, 0, &cues, 0);
+
   if (cues)
     return 1;
   else

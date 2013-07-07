@@ -5,6 +5,7 @@
  */
 
 #include <gtk/gtk.h>
+#include <glib/gstdio.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -25,6 +26,16 @@
 
 #include "iupgtk_drv.h"
 
+
+static int gtkIsFile(const char* name)
+{
+  return g_file_test(name, G_FILE_TEST_IS_REGULAR);
+}
+
+static int gtkIsDirectory(const char* name)
+{
+  return g_file_test(name, G_FILE_TEST_IS_DIR);
+}            
 
 static void iupStrRemoveChar(char* str, char c)
 {
@@ -168,7 +179,7 @@ static gboolean gtkFileDlgPreviewExposeEvent(GtkWidget *widget, GdkEventExpose *
 
   /* callback here always exists */
   IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-  if (iupdrvIsFile(filename))
+  if (gtkIsFile(filename))
     cb(ih, iupgtkStrConvertFromFilename(filename), "PAINT");
   else
     cb(ih, NULL, "PAINT");
@@ -186,7 +197,7 @@ static void gtkFileDlgUpdatePreview(GtkFileChooser *file_chooser, Ihandle* ih)
 
   /* callback here always exists */
   IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-  if (iupdrvIsFile(filename))
+  if (gtkIsFile(filename))
     cb(ih, iupgtkStrConvertFromFilename(filename), "SELECT");
   else
     cb(ih, iupgtkStrConvertFromFilename(filename), "OTHER");
@@ -287,7 +298,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), iupgtkStrConvertToFilename(value));
     else
     {
-      if (iupdrvIsFile(value))  /* check if file exists */
+      if (gtkIsFile(value))  /* check if file exists */
         gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), iupgtkStrConvertToFilename(value));
     }
   }
@@ -413,8 +424,8 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     else if (response == GTK_RESPONSE_OK)
     {
       char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-      int file_exist = iupdrvIsFile(filename);
-      int dir_exist = iupdrvIsDirectory(filename);
+      int file_exist = gtkIsFile(filename);
+      int dir_exist = gtkIsDirectory(filename);
       g_free(filename);
 
       if (action == GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER)
@@ -471,7 +482,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
                   gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), iupgtkStrConvertToFilename(value));
                 else
                 {
-                  if (iupdrvIsFile(value))  /* check if file exists */
+                  if (gtkIsFile(value))  /* check if file exists */
                     gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), iupgtkStrConvertToFilename(value));
                 }
               }
@@ -539,8 +550,8 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     {
       char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
       iupAttribStoreStr(ih, "VALUE", iupgtkStrConvertFromFilename(filename));
-      file_exist = iupdrvIsFile(filename);
-      dir_exist = iupdrvIsDirectory(filename);
+      file_exist = gtkIsFile(filename);
+      dir_exist = gtkIsDirectory(filename);
 
       /* store the DIRECTORY */
       {
@@ -577,7 +588,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       char* dir = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog));
       if (dir) 
       {
-        iupdrvSetCurrentDirectory(dir);
+        g_chdir(dir);
         g_free(dir);
       }
     }

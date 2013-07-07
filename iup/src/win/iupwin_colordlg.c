@@ -15,6 +15,9 @@
 #include "iup_str.h"
 #include "iup_dialog.h"
 
+#include "iupwin_drv.h"
+#include "iupwin_str.h"
+
 
 #define IUP_COLOR_RED        706
 
@@ -29,7 +32,7 @@ static UINT_PTR winColorDlgHookProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
 
     char* value = iupAttribGet(ih, "TITLE");
     if (value)
-      SetWindowText(hWnd, value);
+      SetWindowText(hWnd, iupwinStrToSystem(value));
 
     ih->handle = hWnd;
     iupDialogUpdatePosition(ih);

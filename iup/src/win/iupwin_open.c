@@ -24,6 +24,7 @@
 #include "iupwin_handle.h"
 #include "iupwin_brush.h"
 #include "iupwin_draw.h"
+#include "iupwin_str.h"
 
 
 #ifndef ICC_LINK_CLASS
@@ -43,19 +44,23 @@ void iupwinShowLastError(void)
   DWORD error = GetLastError();
   if (error)
   {
-    LPVOID lpMsgBuf = NULL;
+    LPTSTR lpMsgBuf = NULL;
     FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|
                   FORMAT_MESSAGE_FROM_SYSTEM|
                   FORMAT_MESSAGE_IGNORE_INSERTS,
                   NULL, error, 0, 
-                  (LPTSTR)&lpMsgBuf, 0, NULL);
+                  (LPTSTR)&lpMsgBuf, /* weird but that's correct */
+                  0, NULL);
+
     if (lpMsgBuf)
     {
-      MessageBox(NULL, (LPCTSTR)lpMsgBuf, "GetLastError:", MB_OK|MB_ICONERROR);
+      MessageBox(NULL, lpMsgBuf, TEXT("GetLastError:"), MB_OK|MB_ICONERROR);
       LocalFree(lpMsgBuf);
     }
     else
-      MessageBox(NULL, "Unknown Error", "GetLastError:", MB_OK|MB_ICONERROR);
+    {
+      MessageBox(NULL, TEXT("Unknown Error"), TEXT("GetLastError:"), MB_OK|MB_ICONERROR);
+    }
   }
 }
 
@@ -72,7 +77,7 @@ int iupdrvOpen(int *argc, char ***argv)
   (void)argc; /* unused in the Windows driver */
   (void)argv;
 
-  if (iupwinGetSystemMajorVersion() < 5) /* older than Windows 2000 */
+  if (!iupwinIsWinXPOrNew()) /* older than Windows XP */
     return IUP_ERROR;
 
   IupSetGlobal("DRIVER",  "Win32");
@@ -118,7 +123,7 @@ int iupdrvOpen(int *argc, char ***argv)
   iupwinBrushInit();
   iupwinDrawInit();
 
-  if (iupwinIs7OrNew())
+  if (iupwinIsWin7OrNew())
     iupwinTouchInit();
 
 #ifdef __WATCOMC__ 
@@ -136,6 +141,7 @@ void iupdrvClose(void)
 {
   iupwinHandleFinish();
   iupwinBrushFinish();
+  iupwinStrGetMemory(-1);
 
   if (IupGetGlobal("_IUPWIN_OLEINITIALIZE"))
 	  OleUninitialize();

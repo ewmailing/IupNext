@@ -30,6 +30,7 @@
 #include "iupwin_handle.h"
 #include "iupwin_draw.h"
 #include "iupwin_info.h"
+#include "iupwin_str.h"
 
 
 
@@ -182,7 +183,7 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
 
   ZeroMemory(&item, sizeof(TVITEM));
   item.mask = TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT; 
-  item.pszText = (char*)title;
+  item.pszText = iupwinStrToSystem(title);
   item.lParam = (LPARAM)itemData;
 
   iupwinGetColor(iupAttribGetStr(ih, "FGCOLOR"), &itemData->color);
@@ -473,7 +474,7 @@ static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM hParent
 {
   TVITEM item; 
   TVINSERTSTRUCT tvins;
-  char* title = iupStrGetMemory(255);
+  TCHAR title[255];
 
   item.hItem = hItem;
   item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT | TVIF_STATE | TVIF_PARAM;
@@ -484,7 +485,7 @@ static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM hParent
   if (is_copy) /* during a copy the itemdata reference is not reused */
   {
     /* create a new one */
-    winTreeItemData* itemDataNew = malloc(sizeof(winTreeItemData));
+    winTreeItemData* itemDataNew = (winTreeItemData*)malloc(sizeof(winTreeItemData));
     memcpy(itemDataNew, (void*)item.lParam, sizeof(winTreeItemData));
     item.lParam = (LPARAM)itemDataNew;
   }
@@ -1113,23 +1114,24 @@ static void winTreeSetRenameSelectionPos(HWND hEdit, const char* value)
   SendMessage(hEdit, EM_SETSEL, (WPARAM)start, (LPARAM)end);
 }
 
-static char* winTreeGetTitle(Ihandle* ih, HTREEITEM hItem)
+static void winTreeGetTitle(Ihandle* ih, HTREEITEM hItem, TCHAR* title)
 {
   TVITEM item;
   item.hItem = hItem;
   item.mask = TVIF_HANDLE | TVIF_TEXT; 
-  item.pszText = iupStrGetMemory(255);
+  item.pszText = title;
   item.cchTextMax = 255;
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
-  return item.pszText;
 }
 
 static char* winTreeGetTitleAttrib(Ihandle* ih, int id)
 {
+  TCHAR title[255];
   HTREEITEM hItem = iupTreeGetNode(ih, id);
   if (!hItem)
     return NULL;
-  return winTreeGetTitle(ih, hItem);
+  winTreeGetTitle(ih, hItem, title);
+  return iupStrReturnStr(iupwinStrFromSystem(title));
 }
 
 static int winTreeSetTitleAttrib(Ihandle* ih, int id, const char* value)
@@ -1144,7 +1146,7 @@ static int winTreeSetTitleAttrib(Ihandle* ih, int id, const char* value)
 
   item.hItem = hItem;
   item.mask = TVIF_HANDLE | TVIF_TEXT; 
-  item.pszText = (char*)value;
+  item.pszText = iupwinStrToSystem(value);
   SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(const LPTVITEM)&item);
   return 0;
 }
@@ -1184,10 +1186,15 @@ static int winTreeSetTitleFontAttrib(Ihandle* ih, int id, const char* value)
     if (itemData->hFont)
     {
       TV_ITEM item;
+      TCHAR title[255];
+
+      winTreeGetTitle(ih, hItem, title);
+
       item.mask = TVIF_STATE | TVIF_HANDLE | TVIF_TEXT;
       item.stateMask = TVIS_BOLD;
       item.hItem = hItem;
-      item.pszText = winTreeGetTitle(ih, hItem);   /* reset text to resize item */
+      item.pszText = title;   /* reset text to resize item */
+      item.cchTextMax = 255;
       item.state = (strstr(value, "Bold")||strstr(value, "BOLD"))? TVIS_BOLD: 0;
       SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)&item);
     }
@@ -2622,7 +2629,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
     if (cbRename)
     {
-      if (cbRename(ih, iupTreeFindNodeId(ih, info->item.hItem), info->item.pszText) == IUP_IGNORE)
+      if (cbRename(ih, iupTreeFindNodeId(ih, info->item.hItem), iupwinStrFromSystem(info->item.pszText)) == IUP_IGNORE)
       {
         *result = FALSE;
         return 1;
@@ -2743,7 +2750,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       value = IupGetAttribute(ih, "TIP");  /* get again, because it could has been changed inside the callback */
     }
 
-    iupStrCopyN(tip_info->pszText, tip_info->cchTextMax, value);
+    iupwinStrCopy(tip_info->pszText, value, tip_info->cchTextMax);
 
     iupwinTipsUpdateInfo(ih, tips_hwnd);
   }
@@ -2799,7 +2806,7 @@ static int winTreeMapMethod(Ihandle* ih)
   if (!ih->parent)
     return IUP_ERROR;
 
-  if (!iupwinCreateWindowEx(ih, WC_TREEVIEW, 0, dwStyle))
+  if (!iupwinCreateWindow(ih, WC_TREEVIEW, 0, dwStyle, NULL))
     return IUP_ERROR;
 
   if (!iupwin_comctl32ver6)  /* To improve drawing of items when TITLEFONT is set */
@@ -2818,7 +2825,7 @@ static int winTreeMapMethod(Ihandle* ih)
       winTreeSetBgColorAttrib(ih, value);
       iupAttribSetStr(ih, "BGCOLOR", NULL);
     }
-    else if (!iupwin_comctl32ver6 || iupwinGetSystemMajorVersion()<6) /* force background in XP because of the editbox background */
+    else if (!iupwin_comctl32ver6 || !iupwinIsVistaOrNew()) /* force background in XP because of the editbox background */
       winTreeSetBgColorAttrib(ih, IupGetGlobal("TXTBGCOLOR"));
   }
 

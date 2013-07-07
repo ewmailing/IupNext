@@ -30,6 +30,7 @@
 
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
+#include "iupwin_str.h"
 
 
 /* Not defined for Cygwin and MingW */
@@ -353,9 +354,9 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
     /* Map standard names to native names */
     const char* mapped_name = iupFontGetWinName(format);
     if (mapped_name)
-      strcpy(charformat->szFaceName, mapped_name);
+      iupwinStrCopy(charformat->szFaceName, mapped_name, 32);
     else
-      strcpy(charformat->szFaceName, format);
+      iupwinStrCopy(charformat->szFaceName, format, 32);
     charformat->dwMask |= CFM_FACE;
   }
 
@@ -449,7 +450,7 @@ static void winTextUpdateFontFormat(CHARFORMAT2* charformat, const char* value)
     strcpy(typeface, mapped_name);
 
   charformat->dwMask |= CFM_FACE;
-  strcpy(charformat->szFaceName, typeface);
+  iupwinStrCopy(charformat->szFaceName, typeface, 32);
 
   /* (1/1440 of an inch, or 1/20 of a printer's point) */
   charformat->dwMask |= CFM_SIZE;
@@ -694,7 +695,7 @@ static int winTextSetValueAttrib(Ihandle* ih, const char* value)
   if (!value) value = "";
   str = winTextStrConvert(ih, value);
   ih->data->disable_callbacks = 1;
-  SetWindowText(ih->handle, str);
+  SetWindowText(ih->handle, iupwinStrToSystem(str));
   ih->data->disable_callbacks = 0;
   if (str != value) free(str);
   return 0;
@@ -706,7 +707,7 @@ static char* winTextGetValueAttrib(Ihandle* ih)
   if (count)
   {
     char* str = iupStrGetMemory(count+1);
-    GetWindowText(ih->handle, str, count+1);  /* notice that this function always returns in DOS format */
+    iupwinGetWindowText(ih->handle, str, count+1);  /* notice that this function always returns in DOS format */
     if (ih->data->is_multiline)
       iupStrToUnix(str);
     return str;
@@ -766,7 +767,7 @@ static char* winTextGetSelectedTextAttrib(Ihandle* ih)
     else
     {
       str = iupStrGetMemory(count+1);
-      GetWindowText(ih->handle, str, count+1);  /* notice that this function always returns in DOS format */
+      iupwinGetWindowText(ih->handle, str, count+1);  /* notice that this function always returns in DOS format */
       /* returns only the selected text */
       str[end] = 0;
       str += start;
@@ -1248,7 +1249,7 @@ static int winTextSetCueBannerAttrib(Ihandle *ih, const char *value)
   if (!ih->data->is_multiline && iupwin_comctl32ver6)
   {
     WCHAR* wstr = iupwinStrChar2Wide(value);
-    SendMessage(ih->handle, EM_SETCUEBANNER, (WPARAM)FALSE, (LPARAM)wstr);
+    SendMessage(ih->handle, EM_SETCUEBANNER, (WPARAM)FALSE, (LPARAM)wstr);  /* always an Unicode string here */
     free(wstr);
     return 1;
   }
@@ -1928,19 +1929,7 @@ static void winTextCreateSpin(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "SPINAUTO"))
     dwStyle |= UDS_SETBUDDYINT;
 
-  hSpin = CreateWindowEx(0, /* extended window style */
-    UPDOWN_CLASS,           /* window class */
-    NULL,                   /* title */
-    dwStyle,                /* window style */
-    0,                      /* x-position */
-    0,                      /* y-position */
-    10,                     /* default width to avoid 0 */
-    10,                     /* default height to avoid 0 */
-    GetParent(ih->handle),  /* window parent */
-    (HMENU)serial,          /* child identifier */
-    iupwin_hinstance,       /* instance of app. */
-    NULL);
-
+  hSpin = iupwinCreateWindowEx(GetParent(ih->handle), UPDOWN_CLASS, 0, dwStyle, serial, NULL);
   if (!hSpin)
     return;
 
@@ -2021,7 +2010,8 @@ static int winTextMapMethod(Ihandle* ih)
 {
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, 
       dwExStyle = 0;
-  char* winclass = "EDIT", *value;
+  char* value;
+  TCHAR* winclass = WC_EDIT;
 
   if (!ih->parent)
     return IUP_ERROR;
@@ -2034,7 +2024,7 @@ static int winTextMapMethod(Ihandle* ih)
     /* enable richedit 3.0 */
     static HMODULE richedit = NULL;
     if (!richedit)
-      richedit = LoadLibrary("Riched20.dll");
+      richedit = LoadLibrary(TEXT("Riched20.dll"));
     if (!richedit)
       return IUP_ERROR;
 
@@ -2086,7 +2076,7 @@ static int winTextMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "BORDER"))
     dwExStyle |= WS_EX_CLIENTEDGE;
 
-  if (!iupwinCreateWindowEx(ih, winclass, dwExStyle, dwStyle))
+  if (!iupwinCreateWindow(ih, winclass, dwExStyle, dwStyle, NULL))
     return IUP_ERROR;
 
   /* Process ACTION_CB and CARET_CB */

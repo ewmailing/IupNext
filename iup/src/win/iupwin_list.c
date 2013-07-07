@@ -29,6 +29,7 @@
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 #include "iupwin_draw.h"
+#include "iupwin_str.h"
 
 
 /* Not defined in Cygwin and MingW */
@@ -412,7 +413,7 @@ static char* winListGetValueAttrib(Ihandle* ih)
     if (nc)
     {
       char* str = iupStrGetMemory(nc+1);
-      GetWindowText(ih->handle, str, nc+1);
+      iupwinGetWindowText(ih->handle, str, nc+1);
       return str;
     }
   }
@@ -600,7 +601,7 @@ static int winListSetCueBannerAttrib(Ihandle *ih, const char *value)
   {
     WCHAR* wstr = iupwinStrChar2Wide(value);
     HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
-    SendMessage(cbedit, EM_SETCUEBANNER, (WPARAM)FALSE, (LPARAM)wstr);
+    SendMessage(cbedit, EM_SETCUEBANNER, (WPARAM)FALSE, (LPARAM)wstr);  /* always an Unicode string here */
     free(wstr);
     return 1;
   }
@@ -670,7 +671,7 @@ static char* winListGetSelectedTextAttrib(Ihandle* ih)
       return NULL;
 
     str = iupStrGetMemory(nc+1);
-    GetWindowText(cbedit, str, nc+1);
+    iupwinGetWindowText(cbedit, str, nc+1);
     str[end] = 0; /* returns only the selected text */
     str += start;
 
@@ -1770,7 +1771,7 @@ static void winListUnMapMethod(Ihandle* ih)
 
 static int winListMapMethod(Ihandle* ih)
 {
-  char* class_name;
+  TCHAR* class_name;
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS,
       dwExStyle = WS_EX_CLIENTEDGE;
 
@@ -1779,7 +1780,7 @@ static int winListMapMethod(Ihandle* ih)
 
   if (ih->data->is_dropdown || ih->data->has_editbox)
   {
-    class_name = "COMBOBOX";
+    class_name = TEXT("COMBOBOX");
 
     dwStyle |= CBS_NOINTEGRALHEIGHT;
 
@@ -1813,7 +1814,7 @@ static int winListMapMethod(Ihandle* ih)
   }
   else
   {
-    class_name = "LISTBOX";
+    class_name = TEXT("LISTBOX");
 
     dwStyle |= LBS_NOINTEGRALHEIGHT|LBS_NOTIFY;
 
@@ -1838,7 +1839,7 @@ static int winListMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "CANFOCUS"))
     dwStyle |= WS_TABSTOP;
 
-  if (!iupwinCreateWindowEx(ih, class_name, dwExStyle, dwStyle))
+  if (!iupwinCreateWindow(ih, class_name, dwExStyle, dwStyle, NULL))
     return IUP_ERROR;
 
   /* Custom Procedure */

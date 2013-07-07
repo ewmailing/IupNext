@@ -32,65 +32,6 @@ char* iupdrvLocaleInfo(void)
   return iupStrReturnStr(nl_langinfo(CODESET));
 }
 
-int iupdrvMakeDirectory(const char* name) 
-{
-  mode_t oldmask = umask((mode_t)0);
-  int fail =  mkdir(name, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
-                          S_IWGRP | S_IXGRP | S_IROTH | S_IXOTH);
-  umask (oldmask);
-  if (fail)
-    return 0;
-  return 1;
-}
-
-int iupdrvIsFile(const char* name)
-{
-  struct stat status;
-  if (stat(name, &status) != 0)
-    return 0;
-  if (S_ISDIR(status.st_mode))
-    return 0;
-  return 1;
-}
-
-int iupdrvIsDirectory(const char* name)
-{
-  struct stat status;
-  if (stat(name, &status) != 0)
-    return 0;
-  if (S_ISDIR(status.st_mode))
-    return 1;
-  return 0;
-}            
-
-char* iupdrvGetCurrentDirectory(void)
-{
-  size_t size = 256;
-  char *buffer = (char *)malloc(size);
-
-  for (;;)
-  {
-    if (getcwd(buffer, size) != NULL)
-      return buffer;
-
-    if (errno != ERANGE)
-    {
-      free(buffer);
-      return NULL;
-    }
-
-    size += size;
-    buffer = (char *)realloc(buffer, size);
-  }
-
-  return NULL;
-}
-
-int iupdrvSetCurrentDirectory(const char* dir)
-{
-  return chdir(dir) == 0? 1: 0;
-}
-
 static int xGetWorkAreaSize(Display* display, int screen, int *width, int *height)
 {
   /* _NET_WORKAREA, x, y, width, height CARDINAL[][4]/32 */

@@ -17,7 +17,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -92,6 +92,7 @@
     <ClInclude Include="..\src\win\iupwin_drv.h" />
     <ClInclude Include="..\src\win\iupwin_handle.h" />
     <ClInclude Include="..\src\win\iupwin_info.h" />
+    <ClInclude Include="..\src\win\iupwin_str.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\win\iupwin_brush.c" />
@@ -106,6 +107,7 @@
     <ClCompile Include="..\src\win\iupwin_key.c" />
     <ClCompile Include="..\src\win\iupwin_loop.c" />
     <ClCompile Include="..\src\win\iupwin_open.c" />
+    <ClCompile Include="..\src\win\iupwin_str.c" />
     <ClCompile Include="..\src\win\iupwin_tips.c" />
     <ClCompile Include="..\src\win\iupwin_touch.c" />
     <ClCompile Include="..\src\win\iupwin_button.c" />

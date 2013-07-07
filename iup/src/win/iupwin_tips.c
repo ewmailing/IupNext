@@ -20,6 +20,7 @@
 
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
+#include "iupwin_str.h"
 
 
 #ifndef TTM_POPUP   /* Not defined for MingW and Cygwin */
@@ -29,9 +30,7 @@
 static HWND winTipsCreate(HWND hParent)
 {
   RECT rect = {1,1,1,1};
-  HWND tips_hwnd = CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, (LPSTR) NULL, TTS_ALWAYSTIP|TTS_NOPREFIX, 
-                                  CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 
-                                  hParent, (HMENU)NULL, iupwin_hinstance, NULL); 
+  HWND tips_hwnd = iupwinCreateWindowEx(hParent, TOOLTIPS_CLASS, WS_EX_TOPMOST, TTS_ALWAYSTIP|TTS_NOPREFIX, 0, NULL);
   SendMessage(tips_hwnd, TTM_SETMAXTIPWIDTH, 0, (LPARAM)(INT)3000); 
   SendMessage(tips_hwnd, TTM_SETMARGIN, (WPARAM)0, (LPARAM)&rect);
   return tips_hwnd;
@@ -39,10 +38,10 @@ static HWND winTipsCreate(HWND hParent)
 
 static void winTipsSendMessage(Ihandle* ih, HWND tips_hwnd, UINT msg)
 {
-  TOOLINFO ti;
+  TTTOOLINFO ti;
 
-  ZeroMemory(&ti, sizeof(TOOLINFO));
-  ti.cbSize = sizeof(TOOLINFO); 
+  ZeroMemory(&ti, sizeof(TTTOOLINFO));
+  ti.cbSize = sizeof(TTTOOLINFO); 
   ti.uFlags = TTF_SUBCLASS;
   ti.hinst = iupwin_hinstance; 
   ti.uId = 0; 
@@ -164,12 +163,12 @@ void iupwinTipsUpdateInfo(Ihandle* ih, HWND tips_hwnd)
 
     if (balloon)
     {
-      char* balloon_title = IupGetAttribute(ih, "TIPBALLOONTITLE"); /* must use IupGetAttribute to use inheritance */
       int balloon_icon = IupGetInt(ih, "TIPBALLOONTITLEICON");  /* must use IupGetInt to use inheritance */
-      SendMessage(tips_hwnd, TTM_SETTITLEA, balloon_icon, (LPARAM)balloon_title);
+      TCHAR* balloon_title = iupwinStrToSystem(IupGetAttribute(ih, "TIPBALLOONTITLE")); /* must use IupGetAttribute to use inheritance */
+      SendMessage(tips_hwnd, TTM_SETTITLE, balloon_icon, (LPARAM)balloon_title);
     }
     else
-      SendMessage(tips_hwnd, TTM_SETTITLEA, 0, 0);
+      SendMessage(tips_hwnd, TTM_SETTITLE, 0, 0);
   }
 
   {
@@ -180,10 +179,10 @@ void iupwinTipsUpdateInfo(Ihandle* ih, HWND tips_hwnd)
   }
 
   {
-    TOOLINFO ti;
+    TTTOOLINFO ti;
 
-    ZeroMemory(&ti, sizeof(TOOLINFO));
-    ti.cbSize = sizeof(TOOLINFO); 
+    ZeroMemory(&ti, sizeof(TTTOOLINFO));
+    ti.cbSize = sizeof(TTTOOLINFO); 
     ti.uId = 0; 
     ti.hwnd = ih->handle;
 
@@ -204,9 +203,9 @@ void iupwinTipsUpdateInfo(Ihandle* ih, HWND tips_hwnd)
 
 void iupwinTipsGetDispInfo(LPARAM lp)
 {
-  NMTTDISPINFO* tips_info;
   Ihandle* ih;
   HWND tips_hwnd;
+  NMTTDISPINFO* tips_info;
   IFnii cb;
 
   if (!lp) 
@@ -232,7 +231,7 @@ void iupwinTipsGetDispInfo(LPARAM lp)
     cb(ih, x, y);
   }
 
-  tips_info->lpszText = IupGetAttribute(ih, "TIP");  /* must use IupGetAttribute to use inheritance */
+  tips_info->lpszText = iupwinStrToSystem(IupGetAttribute(ih, "TIP"));  /* must use IupGetAttribute to use inheritance */
 
   iupwinTipsUpdateInfo(ih, tips_hwnd);
 }

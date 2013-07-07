@@ -26,6 +26,7 @@
 #include "iupwin_handle.h"
 #include "iupwin_draw.h"
 #include "iupwin_info.h"
+#include "iupwin_str.h"
 
 
 void iupdrvFrameGetDecorOffset(int *x, int *y)
@@ -77,7 +78,11 @@ static void winFrameDrawText(HDC hDC, const char* text, int x, int y, COLORREF f
   SetBkMode(hDC, TRANSPARENT);
   oldcolor = SetTextColor(hDC, fgcolor);
 
-  TextOut(hDC, x, y, text, strlen(text));
+  {
+    TCHAR* str = iupwinStrToSystem(text);
+    int len = lstrlen(str);
+    TextOut(hDC, x, y, str, len);
+  }
 
   SetTextColor(hDC, oldcolor);
   SetBkMode(hDC, OPAQUE);
@@ -106,7 +111,11 @@ static void winFrameDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
     y = drawitem->rcItem.top;
 
     hOldFont = SelectObject(hDC, hFont);
-    GetTextExtentPoint32(hDC, title, strlen(title), &size);
+    {
+      TCHAR* str = iupwinStrToSystem(title);
+      int len = lstrlen(str);
+      GetTextExtentPoint32(hDC, str, len, &size);
+    }
     ExcludeClipRect(hDC, x-2, y, x+size.cx+2, y+size.cy);
 
     drawitem->rcItem.top += txt_height/2;
@@ -209,7 +218,7 @@ static int winFrameMapMethod(Ihandle* ih)
 
   iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 
-  if (!iupwinCreateWindowEx(ih, "BUTTON", dwExStyle, dwStyle))
+  if (!iupwinCreateWindow(ih, WC_BUTTON, dwExStyle, dwStyle, NULL))
     return IUP_ERROR;
 
   /* replace the WinProc to handle other messages */
