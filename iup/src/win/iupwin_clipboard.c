@@ -484,3 +484,6 @@ Iclass* iupClipboardNewClass(void)
 
   return ic;
 }
+
+//TODO is there an UTF-8 format?
+

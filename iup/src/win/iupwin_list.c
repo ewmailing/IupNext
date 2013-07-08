@@ -799,7 +799,7 @@ static int winListSetInsertAttrib(Ihandle* ih, const char* value)
   if (value && ih->data->has_editbox)
   {
     HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
-    SendMessage(cbedit, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)value);
+    SendMessage(cbedit, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)iupwinStrToSystem(value));
   }
   return 0;
 }
@@ -816,7 +816,7 @@ static int winListSetAppendAttrib(Ihandle* ih, const char* value)
   cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   len = GetWindowTextLength(cbedit)+1;
   SendMessage(cbedit, EM_SETSEL, (WPARAM)len, (LPARAM)len);
-  SendMessage(cbedit, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)value);
+  SendMessage(cbedit, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)iupwinStrToSystem(value));
 
   return 0;
 }
@@ -1301,7 +1301,7 @@ static int winListCallEditCb(Ihandle* ih, HWND cbedit, const char* insert_value,
 
   if (cb)
   {
-    int cb_ret = cb(ih, key, (char*)new_value);
+    int cb_ret = cb(ih, key, new_value);
     if (cb_ret==IUP_IGNORE)
       ret = 0;     /* abort processing */
     else if (cb_ret==IUP_CLOSE)
@@ -1344,6 +1344,8 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
   {
   case WM_CHAR:
     {
+      TCHAR c = (TCHAR)wp;
+
       if (iupAttribGet(ih, "_IUPWIN_IGNORE_CHAR"))
       {
         iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", NULL);
@@ -1351,12 +1353,12 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
         return 1;
       }
 
-      if ((char)wp == '\b')
+      if (c == TEXT('\b'))
       {              
         if (!winListCallEditCb(ih, cbedit, NULL, 0, -1))
           ret = 1;
       }
-      else if ((char)wp == '\n' || (char)wp == '\r')
+      else if (c == TEXT('\n') || c == TEXT('\r'))
       {
         ret = 1;
       }
@@ -1365,11 +1367,11 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
                  GetKeyState(VK_LWIN) & 0x8000 || 
                  GetKeyState(VK_RWIN) & 0x8000))
       {
-        char insert_value[2];
-        insert_value[0] = (char)wp;
+        TCHAR insert_value[2];
+        insert_value[0] = c;
         insert_value[1] = 0;
 
-        if (!winListCallEditCb(ih, cbedit, insert_value, wp, 1))
+        if (!winListCallEditCb(ih, cbedit, iupwinStrFromSystem(insert_value), wp, 1))
           ret = 1;
       }
 

@@ -949,6 +949,8 @@ char* iupwinGetClipboardText(Ihandle* ih)
   HANDLE Handle;
   char* str;
 
+  //TODO e UTF8 como fica? usa CF_UNICODETEXT?
+
   if (!IsClipboardFormatAvailable(CF_TEXT))
     return NULL;
 

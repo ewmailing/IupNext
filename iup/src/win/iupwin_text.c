@@ -354,9 +354,9 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
     /* Map standard names to native names */
     const char* mapped_name = iupFontGetWinName(format);
     if (mapped_name)
-      iupwinStrCopy(charformat->szFaceName, mapped_name, 32);
+      iupwinStrCopy(charformat->szFaceName, mapped_name, sizeof(charformat->szFaceName));
     else
-      iupwinStrCopy(charformat->szFaceName, format, 32);
+      iupwinStrCopy(charformat->szFaceName, format, sizeof(charformat->szFaceName));
     charformat->dwMask |= CFM_FACE;
   }
 
@@ -450,7 +450,7 @@ static void winTextUpdateFontFormat(CHARFORMAT2* charformat, const char* value)
     strcpy(typeface, mapped_name);
 
   charformat->dwMask |= CFM_FACE;
-  iupwinStrCopy(charformat->szFaceName, typeface, 32);
+  iupwinStrCopy(charformat->szFaceName, typeface, sizeof(charformat->szFaceName));
 
   /* (1/1440 of an inch, or 1/20 of a printer's point) */
   charformat->dwMask |= CFM_SIZE;
@@ -1592,6 +1592,23 @@ static void winTextCallCaretCb(Ihandle* ih)
   }
 }
 
+/* TODO
+  mudar 
+    winListCallEditCb
+    iupwinGetClipboardText
+    winTextCallActionCb
+  para que insert_value seja TCHAR*
+    
+  criar 
+    iupwinStrDup
+    iupwinStrInsert
+    iupwinStrRemove
+  para processar TCHAR*
+
+  TCHAR* new_value
+
+  Só na hora de chamar a callback usa iupwinStrFromSystem
+*/
 static int winTextCallActionCb(Ihandle* ih, const char* insert_value, int key, int dir)
 {
   int start, end, ret = 1;
@@ -1601,7 +1618,7 @@ static int winTextCallActionCb(Ihandle* ih, const char* insert_value, int key, i
   if (!cb && !ih->data->mask)
     return 1;
 
-  winTextGetSelection(ih, &start, &end);
+  winTextGetSelection(ih, &start, &end);   // TODO UTF8 indexing?
 
   value = winTextGetValueAttrib(ih);
 
@@ -1632,7 +1649,7 @@ static int winTextCallActionCb(Ihandle* ih, const char* insert_value, int key, i
 
   if (cb)
   {
-    int cb_ret = cb(ih, key, (char*)new_value);
+    int cb_ret = cb(ih, key, new_value);    //TODO translate UTF-8 key?
     if (cb_ret==IUP_IGNORE)
       ret = 0;     /* abort processing */
     else if (cb_ret==IUP_CLOSE)
@@ -1702,6 +1719,8 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
   {
   case WM_CHAR:
     {
+      TCHAR c = (TCHAR)wp;
+
       /* even aborting WM_KEYDOWN, a WM_CHAR will be sent, so ignore it also */
       /* if a dialog was shown, the loop will be processed, so ignore out of focus WM_CHAR messages */
       if (GetFocus() != ih->handle || iupAttribGet(ih, "_IUPWIN_IGNORE_CHAR"))
@@ -1711,12 +1730,12 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
         return 1;
       }
 
-      if ((char)wp == '\b')
+      if (c == TEXT('\b'))
       {              
         if (!winTextCallActionCb(ih, NULL, 0, -1))
           ret = 1;
       }
-      else if ((char)wp == '\n' || (char)wp == '\r')
+      else if (c == TEXT('\n') || c == TEXT('\r'))
       {
         if (ih->data->is_multiline && 
             !ih->data->has_formatting && !(GetKeyState(VK_CONTROL) & 0x8000)) /* when formatting is processed in WM_KEYDOWN */
@@ -1734,11 +1753,11 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
                  GetKeyState(VK_LWIN) & 0x8000 || 
                  GetKeyState(VK_RWIN) & 0x8000))
       {
-        char insert_value[2];
-        insert_value[0] = (char)wp;
+        TCHAR insert_value[2];
+        insert_value[0] = c;
         insert_value[1] = 0;
 
-        if (!winTextCallActionCb(ih, insert_value, wp, 1))
+        if (!winTextCallActionCb(ih, iupwinStrFromSystem(insert_value), wp, 1))
           ret = 1;
       }
 

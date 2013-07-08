@@ -1178,7 +1178,7 @@ static void winDialogTrayMessage(HWND hWnd, DWORD dwMessage, HICON hIcon, const 
     if (value) 
     {
       tnd.uFlags |= NIF_TIP;
-      iupStrCopyN((char*)tnd.szTip, sizeof(tnd.szTip), value);
+      iupwinStrCopy(tnd.szTip, value, sizeof(tnd.szTip));
     }
   }
 
@@ -1200,13 +1200,13 @@ static void winDialogTrayBalloonMessage(Ihandle *ih, const char* value)
   {
     char* balloon_title;
 
-    iupStrCopyN((char*)tnd.szInfo, sizeof(tnd.szInfo), value);
+    iupwinStrCopy(tnd.szInfo, value, sizeof(tnd.szInfo));
 
     tnd.uTimeout = IupGetInt(ih, "TRAYTIPBALLOONDELAY"); /* must use IupGetInt to use inheritance */
 
     balloon_title = IupGetAttribute(ih, "TRAYTIPBALLOONTITLE");
     if (balloon_title)
-      iupStrCopyN((char*)tnd.szInfoTitle, sizeof(tnd.szInfoTitle), balloon_title);
+      iupwinStrCopy(tnd.szInfoTitle, balloon_title, sizeof(tnd.szInfoTitle));
 
     tnd.dwInfoFlags = IupGetInt(ih, "TRAYTIPBALLOONTITLEICON");
   }

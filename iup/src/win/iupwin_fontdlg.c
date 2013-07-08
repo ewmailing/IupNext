@@ -113,7 +113,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   if (IupGetCallback(ih, "HELP_CB"))
     choosefont.Flags |= CF_SHOWHELP;
 
-  iupwinStrCopy(logfont.lfFaceName, typeface, 32);
+  iupwinStrCopy(logfont.lfFaceName, typeface, sizeof(logfont.lfFaceName));
 
   logfont.lfHeight = height_pixels;
   logfont.lfWeight = (is_bold)? FW_BOLD: FW_NORMAL;
@@ -149,7 +149,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   else
     height = iupWIN_PIXEL2PT(-height_pixels, res);   /* return in points */
 
-  iupAttribSetStrf(ih, "VALUE", "%s, %s%s%s%s %d", logfont.lfFaceName, 
+  iupAttribSetStrf(ih, "VALUE", "%s, %s%s%s%s %d", iupwinStrFromSystem(logfont.lfFaceName), 
                                                     is_bold?"Bold ":"", 
                                                     is_italic?"Italic ":"", 
                                                     is_underline?"Underline ":"", 
