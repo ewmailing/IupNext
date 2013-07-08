@@ -701,9 +701,9 @@ static int gtkDialogSetTitleAttrib(Ihandle* ih, const char* value)
 static char* gtkDialogGetActiveWindowAttrib(Ihandle* ih)
 {
   if (gtk_window_is_active((GtkWindow*)ih->handle))
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }    
 
 static char* gtkDialogGetTitleAttrib(Ihandle* ih)

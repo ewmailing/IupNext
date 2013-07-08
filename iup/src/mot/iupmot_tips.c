@@ -183,9 +183,9 @@ char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih)
     return NULL;
 
   if (mot_tips.Visible)
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }
 
 void iupmotTipEnterNotify(Ihandle *ih)

@@ -1570,9 +1570,9 @@ static char* gtkTreeGetToggleVisibleAttrib(Ihandle* ih, int id)
   gtk_tree_model_get(GTK_TREE_MODEL(store), &iterItem, IUPGTK_NODE_TOGGLEVISIBLE, &value, -1);
 
   if (value)
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }
 
 static int gtkTreeSetToggleVisibleAttrib(Ihandle* ih, int id, const char* value)

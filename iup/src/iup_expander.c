@@ -497,9 +497,9 @@ static int iExpanderSetAutoShowAttrib(Ihandle* ih, const char* value)
 static char* iExpanderGetAutoShowAttrib(Ihandle* ih)
 {
   if (ih->data->auto_show)
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }
 
 

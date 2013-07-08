@@ -111,9 +111,9 @@ char* iupScintillaGetMarginMaskFoldersAttribId(Ihandle* ih, int margin)
 {
   int mask = iupScintillaSendMessage(ih, SCI_GETMARGINMASKN, margin, 0);
   if(mask & SC_MASK_FOLDERS)
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }
 
 int iupScintillaSetMarginMaskFoldersAttribId(Ihandle* ih, int margin, const char* value)

@@ -135,9 +135,9 @@ char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih)
 
   tip_window = gtk_widget_get_tooltip_window(widget);
   if (tip_window && iupgtkIsVisible((GtkWidget*)tip_window))
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 #else
   return NULL;
 #endif

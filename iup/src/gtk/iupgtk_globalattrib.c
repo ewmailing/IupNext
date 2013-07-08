@@ -203,16 +203,16 @@ char *iupdrvGetGlobal(const char *name)
   if (iupStrEqual(name, "UTF8MODE"))
   {
     if (iupgtkStrGetUTF8Mode())
-      return "Yes";
+      return "YES";
     else
-      return "No";
+      return "NO";
   }
   if (iupStrEqual(name, "UTF8AUTOCONVERT"))
   {
     if (!iupgtkStrGetUTF8Mode())
-      return "Yes";
+      return "YES";
     else
-      return "No";
+      return "NO";
   }
   if (iupStrEqual(name, "SHOWMENUIMAGES"))
   {

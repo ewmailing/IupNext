@@ -718,11 +718,9 @@ static char* iCellsGetFirstColAttrib(Ihandle* ih)
 
 static char* iCellsGetLimitsAttrib(Ihandle* ih, int i, int j)
 {
-  char* buffer = iupStrGetMemory(4*20);
   int xmin, xmax, ymin, ymax;
   iCellsGetLimits(ih, i, j, &xmin, &xmax, &ymin, &ymax);
-  sprintf(buffer, "%d:%d:%d:%d", xmin, xmax, ymin, ymax);
-  return buffer;
+  return iupStrReturnf("%d:%d:%d:%d", xmin, xmax, ymin, ymax);
 }
 
 static int iCellsSetBufferizeAttrib(Ihandle* ih, const char* value)

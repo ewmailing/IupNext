@@ -262,6 +262,7 @@ iupStrToFloatFloat
 iupStrToFloat
 iupStrToDos
 iupStrReturnRGB
+iupStrReturnBoolean
 iupStrReturnInt
 iupStrReturnIntInt
 iupStrReturnFloat
@@ -281,6 +282,7 @@ iupStrHasSpace
 iupStrLineCount
 iupStrInsert
 iupStrReturnStr
+iupStrReturnStrf
 iupStrGetMemory
 iupStrGetLargeMem
 iupStrFileMakeFileName

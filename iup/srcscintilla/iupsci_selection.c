@@ -166,7 +166,6 @@ int iupScintillaSetSelectedTextAttrib(Ihandle* ih, const char* value)
 
 char* iupScintillaGetSelectionAttrib(Ihandle* ih)
 {
-  char* str;
   int start = iupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
   int end   = iupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
   int start_col, start_lin, end_col, end_lin;
@@ -174,17 +173,13 @@ char* iupScintillaGetSelectionAttrib(Ihandle* ih)
   if (start == end)
     return NULL;
 
-  str = iupStrGetMemory(100);
-
   start_lin = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, start, 0);
   start_col = iupScintillaSendMessage(ih, SCI_GETCOLUMN, start, 0);
 
   end_lin = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, end, 0);
   end_col = iupScintillaSendMessage(ih, SCI_GETCOLUMN, end, 0);
 
-  sprintf(str,"%d,%d:%d,%d", start_lin, start_col, end_lin, end_col);
-
-  return str;
+  return iupStrReturnf("%d,%d:%d,%d", start_lin, start_col, end_lin, end_col);
 }
 
 int iupScintillaSetSelectionAttrib(Ihandle* ih, const char* value)

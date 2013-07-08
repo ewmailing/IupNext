@@ -110,9 +110,17 @@ void iupStrUpper(char* dstr, const char* sstr);
  * \ingroup str */
 int iupStrHasSpace(const char* str);
 
+/** Returns combined values in a formated string using \ref iupStrGetMemory.
+ * \ingroup str */
+char* iupStrReturnf(const char* format, ...);
+
 /** Returns a string value in a string using \ref iupStrGetMemory.
  * \ingroup str */
 char* iupStrReturnStr(const char* str);
+
+/** Returns a boolean value (as YES or NO) in a string.
+ * \ingroup str */
+char* iupStrReturnBoolean(int i);
 
 /** Returns an int value in a string using \ref iupStrGetMemory.
  * \ingroup str */

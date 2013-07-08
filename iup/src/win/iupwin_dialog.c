@@ -1288,9 +1288,9 @@ static char* winDialogGetActiveWindowAttrib(Ihandle* ih)
   wininfo.cbSize = sizeof(WINDOWINFO);
   GetWindowInfo(ih->handle, &wininfo);
   if (wininfo.dwWindowStatus & WS_ACTIVECAPTION)
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }    
 
 static int winDialogSetTopMostAttrib(Ihandle *ih, const char *value)

@@ -79,17 +79,17 @@ int iupMatrixExIsLineVisible(Ihandle* ih, int lin)
 static char* iMatrixGetVisibleColAttribId(Ihandle *ih, int col)
 {
   if (iupMatrixExIsColumnVisible(ih, col))
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }
 
 static char* iMatrixGetVisibleLinAttribId(Ihandle *ih, int lin)
 {
   if (iupMatrixExIsLineVisible(ih, lin))
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }
 
 static int iMatrixSetVisibleColAttribId(Ihandle *ih, int col, const char* value)

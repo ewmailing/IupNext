@@ -346,7 +346,18 @@ char *iupStrGetMemory(int size)
 #undef MAX_BUFFERS
 }
 
-char *iupStrReturnStr(const char* str)
+char* iupStrReturnf(const char* format, ...)
+{
+  int size;
+  char* value = iupStrGetLargeMem(&size);
+  va_list arglist;
+  va_start(arglist, format);
+  vsnprintf(value, size, format, arglist);
+  va_end(arglist);
+  return value;
+}
+
+char* iupStrReturnStr(const char* str)
 {
   if (str)
   {
@@ -357,6 +368,14 @@ char *iupStrReturnStr(const char* str)
   }
   else
     return NULL;
+}
+
+char* iupStrReturnBoolean(int b)
+{
+  if (b)
+    return "YES";
+  else
+    return "NO";
 }
 
 char* iupStrReturnInt(int i)

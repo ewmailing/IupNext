@@ -39,9 +39,9 @@ static int iToggleSetFlatAttrib(Ihandle* ih, const char* value)
 static char* iToggleGetFlatAttrib(Ihandle *ih)
 {
   if (ih->data->flat)
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }
 
 char* iupToggleGetPaddingAttrib(Ihandle* ih)

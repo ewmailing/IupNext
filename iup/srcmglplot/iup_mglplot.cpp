@@ -3027,11 +3027,7 @@ static char* iMglPlotGetDSDimAttrib(Ihandle* ih)
   {
     IdataSet* ds = &ih->data->dataSet[ih->data->dataSetCurrent];
     if (iMglPlotIsPlanarOrVolumetricData(ds))
-    {
-      char* buffer = iupStrGetMemory(60);
-      sprintf(buffer, "%dx%dx%d", (int)ds->dsX->nx, (int)ds->dsX->ny, (int)ds->dsX->nz);
-      return buffer;
-    }
+      return iupStrReturnf("%dx%dx%d", (int)ds->dsX->nx, (int)ds->dsX->ny, (int)ds->dsX->nz);
     else
       return iMglPlotGetInt(ds->dsDim);
   }
@@ -4146,9 +4142,7 @@ static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetZoomAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(50);
-  sprintf(str, "%.9f,%.9f:%.9f,%.9f", ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
-  return str;
+  return iupStrReturnf("%.9f,%.9f:%.9f,%.9f", ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
 }
 
 static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
@@ -4174,9 +4168,7 @@ static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetRotateAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(50);
-  sprintf(str, "%.9f:%.9f:%.9f", ih->data->rotX, ih->data->rotY, ih->data->rotZ);
-  return str;
+  return iupStrReturnf("%.9f:%.9f:%.9f", ih->data->rotX, ih->data->rotY, ih->data->rotZ);
 }
 
 

@@ -107,9 +107,9 @@ char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih)
     return NULL;
 
   if (IsWindowVisible(tips_hwnd))
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }
 
 void iupwinTipsUpdateInfo(Ihandle* ih, HWND tips_hwnd)

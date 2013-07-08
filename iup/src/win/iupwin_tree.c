@@ -1428,9 +1428,9 @@ static char* winTreeGetTipVisibleAttrib(Ihandle* ih)
     return NULL;
 
   if (IsWindowVisible(tips_hwnd))
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }
 
 static char* winTreeGetChildCountAttrib(Ihandle* ih, int id)
@@ -1764,9 +1764,9 @@ static char* winTreeGetToggleVisibleAttrib(Ihandle* ih, int id)
     return NULL;
 
   if (winTreeGetToggleVisible(ih, hItem))
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }
 
 static int winTreeSetToggleVisibleAttrib(Ihandle* ih, int id, const char* value)

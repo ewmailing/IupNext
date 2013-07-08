@@ -74,9 +74,9 @@ static char* winGetTouchAttrib(Ihandle* ih)
 {
   ULONG pulFlags = 0;
   if (win_touch_loaded && winIsTouchWindow(ih->handle, &pulFlags))
-    return "Yes";
+    return "YES";
   else
-    return "No";
+    return "NO";
 }
 
 void iupwinTouchRegisterAttrib(Iclass* ic)
