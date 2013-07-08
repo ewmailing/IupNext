@@ -41,6 +41,12 @@
 .style14 {
 	text-decoration: underline;
 }
+.style15 {
+	font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif;
+}
+.style16 {
+	font-size: small;
+}
 </style>
 </head>
 <body>
@@ -184,27 +190,25 @@ charset.</p>
 <p>IUP uses the default locale in ANSI-C. This means that it does not adopts a 
 specific charset, and so the results can be different if the developer charset 
 is different than the run time charset where the user is running the 
-application. The advantage is that different charsets can be used. For example, 
+application. For example, 
 if the developer is using a charset, and its user is also using the same 
 encoding, then everything will work fine without the need of text encoding 
-conversions.</p>
-<p>GTK uses UTF-8 (ISO10646-1) as its charset for all displayed text, so IUP 
-will automatically convert all strings to (SetAttribute) and from (GetAttribute) 
-UTF-8. If you want to specify strings in the UTF-8 charset at the GTK driver, 
-then set the global attribute UTF8AUTOCONVERT to NO, the default is YES. If the 
-default locale is already UTF-8, but the given string is not UTF-8 then it will 
-be assumed that the string uses the ISO8859-1 charset.</p>
-<p>In the future IUP should also support Unicode strings, increasing application 
-portability.</p>
+conversions. The advantage is that any charset can be used, and localization is 
+usually done in that way. </p>
+<p>Since version 3.9, IUP supports also the <a href="#UTF-8">UTF-8</a> 
+(ISO10646-1) encoding in the GTK and Windows driver. To specify string in UTF-8 
+encoding set the &quot;UTF8MODE&quot; attribute to &quot;Yes&quot;.</p>
 <h4>ISO8859-1 and Windows-1252 Displayable Characters </h4>
 
 <p>The Latin-1 charset (ISO8859-1) defines an encoding for all of the characters 
-used in Western languages. The first half of Latin-1 is standard ASCII, while 
-the second half (with the eighth bit set) contains accented characters needed 
+used in Western languages. It is the most common encoding, besides
+<a href="#UTF-8">UTF-8</a>.</p>
+<p>The first half of Latin-1 is standard ASCII (128 characters), while 
+the second half (with the highest bit set) contains accented characters needed 
 for Western languages other than English. In Windows, the ISO8859-1 charset was 
 changed, and some control characters were replaced to include more display 
-characters, this new charset is named Windows-1252. These characters are marked 
-in the table below with thick borders.</p>
+characters, this new charset is named Windows-1252 (these characters are marked 
+in the table below with thick borders).</p>
 
 <table width="100%" style="border: 1px #808080 solid; text-align: center; font-family: monospace; border-collapse: collapse" class="style9">
 <tr>
@@ -1004,6 +1008,493 @@ in the table below with thick borders.</p>
 <p>Adapted from 
 <a target="_blank" href="http://en.wikipedia.org/wiki/Windows-1252">
 http://en.wikipedia.org/wiki/Windows-1252</a>.</p>
+<h4><a name="UTF-8">UTF-8</a></h4>
+<p>&quot;Universal character set&nbsp;Transformation Format - 8 bits&quot; is part of the 
+Unicode standard that is used in most modern Web applications and it is becoming 
+widely used in desktop applications too. </p>
+<p>It allows the application to use a regular &quot;char*&quot; for strings, but it is a 
+variable width encoding, meaning that a single character may have up to four 
+bytes in sequence. And the code &quot;\0&quot; is still used as a string terminator 
+(NULL). So all the regular <strong>strstr</strong>, <strong>strcmp</strong>,
+<strong>strlen</strong>, <strong>strcpy</strong> and <strong>strcat</strong> 
+functions will work normally, except <strong>strchr</strong> because it will 
+search only for 1 byte characters. Notice that <strong>strlen</strong> will 
+return the number of bytes, not the number of multi-byte charcters. And <strong>
+strcmp</strong> will compare byte encodings.</p>
+<p>The first 128 characters of Unicode, which correspond one-to-one with&nbsp;<a href="http://en.wikipedia.org/wiki/ASCII">ASCII</a>, 
+are encoded using a single octet with the same binary value as ASCII, making 
+valid ASCII text valid UTF-8-encoded Unicode as well. If the highest bit is 1 
+then one to three more bytes will follow to the define the actual character 
+encoding. The number of bytes following is determined by the number of bits set 
+to 1 after the highest bit.</p>
+<p>The next 1920 characters need two bytes to encode. This covers the remainder 
+of almost all&nbsp;<a href="http://en.wikipedia.org/wiki/Latin-derived_alphabet">Latin-derived 
+alphabets</a>, and also <a href="http://en.wikipedia.org/wiki/Greek_alphabet">
+Greek</a>,&nbsp;<a href="http://en.wikipedia.org/wiki/Cyrillic_script">Cyrillic</a>,&nbsp;<a href="http://en.wikipedia.org/wiki/Coptic_alphabet">Coptic</a>,&nbsp;<a href="http://en.wikipedia.org/wiki/Armenian_alphabet">Armenian</a>,&nbsp;<a href="http://en.wikipedia.org/wiki/Hebrew_alphabet">Hebrew</a>,&nbsp;<a href="http://en.wikipedia.org/wiki/Arabic_alphabet">Arabic</a>,&nbsp;<a href="http://en.wikipedia.org/wiki/Syriac_alphabet">Syriac</a>&nbsp;and&nbsp;<a href="http://en.wikipedia.org/wiki/T&#257;na">T&#257;na</a>&nbsp;alphabets, 
+as well as&nbsp;<a href="http://en.wikipedia.org/wiki/Combining_Diacritical_Marks">Combining 
+Diacritical Marks</a>. Three bytes are needed for characters in the rest of the
+<a href="http://en.wikipedia.org/wiki/Mapping_of_Unicode_character_planes">Basic 
+Multilingual Plane</a>&nbsp;(which contains virtually all characters in common use<a href="http://en.wikipedia.org/wiki/UTF-8#cite_note-unicode-ch02-bmp-11">[11]</a>). 
+Four bytes are needed for characters in the&nbsp;<a href="http://en.wikipedia.org/wiki/Mapping_of_Unicode_characters">other 
+planes of Unicode</a>, which include less common&nbsp;<a href="http://en.wikipedia.org/wiki/CJK_characters">CJK 
+characters</a>&nbsp;and various historic scripts and mathematical symbols. </p>
+<p>The bytes 0xFE and 0xFF do not appear, so a valid UTF-8 string can cannot be 
+confused with an UTF-16 sequence.</p>
+<p>The second half (128-255) of the Latin-1 charset characters found in the 
+previous table, are called &quot;Latin-1 Supplement&quot; in the Unicode standard. They 
+all have two bytes, except some of the additional Windows 1252 characters. And 
+they have the following encoding in UTF-8 (codes in 
+hexadecimal):</p>
+
+
+<table width="100%" style="border: 1px #808080 solid; text-align: center; border-collapse: collapse" class="style15">
+<tr>
+<td style="border-width:3px" class="style5">€<br>
+
+<br>
+<span class="style16">E2 82 AC</span></td>
+<td style="border-width:3px">&nbsp;<br><br>
+<br>
+	</td>
+<td style="border-width:3px" class="style5">‚<br>
+<br>
+<span class="style16">E2 80 9A</span></td>
+<td style="border-width:3px" class="style5">ƒ<br>
+<br>
+
+C6 92</td>
+<td style="border-width:3px" class="style5">„<br>
+<br>
+<span class="style16">E2 80 9E</span></td>
+<td style="border-width:3px" class="style5">…<br>
+<br>
+<span class="style16">E2 80 A6</span></td>
+<td style="border-width:3px" class="style5">†<br>
+<br>
+
+<span class="style16">E2 80 A0</span></td>
+<td style="border-width:3px" class="style5">‡<br>
+<br>
+<span class="style16">E2 80 A1</span></td>
+<td style="border-width:3px" class="style5">ˆ<br>
+<br>
+CB 86</td>
+<td style="border-width:3px" class="style5">‰<br>
+<br>
+
+<span class="style16">E2 80 B0</span></td>
+<td style="border-width:3px" class="style8">Š<br>
+<br>
+C5 A0</td>
+<td style="border-width:3px" class="style5">‹<br>
+<br>
+<span class="style16">E2 80 B9</span></td>
+<td style="border-width:3px" class="style8">Œ<br>
+<br>
+
+C5 92</td>
+<td style="border-width:3px">&nbsp;<br>
+<br>
+	</td>
+<td style="border-width:3px" class="style8">Ž<br>
+<br>
+C5 BD</td>
+<td style="border-width:3px">&nbsp;<br>
+<br>
+	</td>
+</tr>
+<tr>
+<td style="border-width:3px">&nbsp;<br>
+<br>
+	</td>
+<td style="border-width:3px" class="style5">‘<br>
+<br>
+<span class="style16">E2 80 98</span></td>
+<td style="border-width:3px" class="style5">’<br>
+
+<br>
+<span class="style16">E2 80 99</span></td>
+<td style="border-width:3px" class="style5">“<br>
+<br>
+<span class="style16">E2 80 9C</span></td>
+<td style="border-width:3px" class="style5">”<br>
+<br>
+<span class="style16">E2 80 9D</span></td>
+<td style="border-width:3px" class="style5">•<br>
+
+<br>
+<span class="style16">E2 80 A2</span></td>
+<td style="border-width:3px" class="style5">–<br>
+<br>
+<span class="style16">E2 80 93</span></td>
+<td style="border-width:3px" class="style5">—<br>
+<br>
+<span class="style16">E2 80 94</span></td>
+<td style="border-width:3px" class="style5">˜<br>
+
+<br>
+CB 9C</td>
+<td style="border-width:3px" class="style5">™<br>
+<br>
+<span class="style16">E2 84 A2</span></td>
+<td style="border-width:3px" class="style8">š<br>
+<br>
+C5 A1</td>
+<td style="border-width:3px" class="style5">›<br>
+
+<br>
+<span class="style16">E2 80 BA</span></td>
+<td style="border-width:3px" class="style8">œ<br>
+<br>
+C5 93</td>
+<td style="border-width:3px">&nbsp;<br>
+<br>
+	</td>
+<td style="border-width:3px" class="style8">ž<br>
+<br>
+
+C5 BE</td>
+<td style="border-width:3px" class="style8">Ÿ<br>
+<br>
+C5 B8</td>
+</tr>
+<tr>
+<td class="style5"><br>
+<br>
+
+C2 A0</td>
+<td class="style5">¡<br>
+<br>
+C2 A1</td>
+<td class="style5">¢<br>
+<br>
+C2 A2</td>
+<td class="style5">£<br>
+<br>
+
+C2 A3</td>
+<td class="style5">¤<br>
+<br>
+C2 A4</td>
+<td class="style5">¥<br>
+<br>
+C2 A5</td>
+<td class="style5">¦<br>
+<br>
+
+C2 A6</td>
+<td class="style5">§<br>
+<br>
+C2 A7</td>
+<td class="style5">¨<br>
+<br>
+C2 A8</td>
+<td class="style5">©<br>
+<br>
+
+C2 A9</td>
+<td class="style5">ª<br>
+<br>
+C2 AA</td>
+<td class="style5">«<br>
+<br>
+C2 AB</td>
+<td class="style5">¬<br>
+<br>
+
+C2 AC</td>
+<td class="style5"><br>
+<br>
+C2 AD</td>
+<td class="style5">®<br>
+<br>
+C2 AE</td>
+<td class="style5">¯<br>
+<br>
+
+C2 AF</td>
+</tr>
+<tr>
+<td class="style5">°<br>
+<br>
+C2 B0</td>
+<td class="style5">±<br>
+<br>
+
+C2 B1</td>
+<td class="style5">²<br>
+<br>
+C2 B2</td>
+<td class="style5">³<br>
+<br>
+C2 B3</td>
+<td class="style5">´<br>
+<br>
+
+C2 B4</td>
+<td class="style5">µ<br>
+<br>
+C2 B5</td>
+<td class="style5">¶<br>
+<br>
+C2 B6</td>
+<td class="style5">·<br>
+<br>
+
+C2 B7</td>
+<td class="style5">¸<br>
+<br>
+C2 B8</td>
+<td class="style5">¹<br>
+<br>
+C2 B9</td>
+<td class="style5">º<br>
+<br>
+
+C2 BA</td>
+<td class="style5">»<br>
+<br>
+C2 BB</td>
+<td class="style5">¼<br>
+<br>
+C2 BC</td>
+<td class="style5">½<br>
+<br>
+
+C2 BD</td>
+<td class="style5">¾<br>
+<br>
+C2 BE</td>
+<td class="style5">¿<br>
+<br>
+C2 BF</td>
+</tr>
+<tr>
+<td class="style8">À<br>
+<br>
+C3 80</td>
+<td class="style8">Á<br>
+<br>
+C3 81</td>
+<td class="style8">Â<br>
+
+<br>
+C3 82</td>
+<td class="style8">Ã<br>
+<br>
+C3 83</td>
+<td class="style8">Ä<br>
+<br>
+C3 84</td>
+<td class="style8">Å<br>
+
+<br>
+C3 85</td>
+<td class="style8">Æ<br>
+<br>
+C3 86</td>
+<td class="style8">Ç<br>
+<br>
+C3 87</td>
+<td class="style8">È<br>
+
+<br>
+C3 88</td>
+<td class="style8">É<br>
+<br>
+C3 89</td>
+<td class="style8">Ê<br>
+<br>
+C3 8A</td>
+<td class="style8">Ë<br>
+
+<br>
+C3 8B</td>
+<td class="style8">Ì<br>
+<br>
+C3 8C</td>
+<td class="style8">Í<br>
+<br>
+C3 8D</td>
+<td class="style8">Î<br>
+
+<br>
+C3 8E</td>
+<td class="style8">Ï<br>
+<br>
+C3 8F</td>
+</tr>
+<tr>
+<td class="style8">Ð<br>
+
+<br>
+C3 90</td>
+<td class="style8">Ñ<br>
+<br>
+C3 91</td>
+<td class="style8">Ò<br>
+<br>
+C3 92</td>
+<td class="style8">Ó<br>
+
+<br>
+C3 93</td>
+<td class="style8">Ô<br>
+<br>
+C3 94</td>
+<td class="style8">Õ<br>
+<br>
+C3 95</td>
+<td class="style8">Ö<br>
+
+<br>
+C3 96</td>
+<td class="style5">×<br>
+<br>
+C3 97</td>
+<td class="style8">Ø<br>
+<br>
+C3 98</td>
+<td class="style8">Ù<br>
+
+<br>
+C3 99</td>
+<td class="style8">Ú<br>
+<br>
+C3 9A</td>
+<td class="style8">Û<br>
+<br>
+C3 9B</td>
+<td class="style8">Ü<br>
+
+<br>
+C3 9C</td>
+<td class="style8">Ý<br>
+<br>
+C3 9D</td>
+<td class="style8">Þ<br>
+<br>
+C3 9E</td>
+<td class="style8">ß<br>
+
+<br>
+C3 9F</td>
+</tr>
+<tr>
+<td class="style8">à<br>
+<br>
+C3 A0</td>
+<td class="style8">á<br>
+
+<br>
+C3 A1</td>
+<td class="style8">â<br>
+<br>
+C3 A2</td>
+<td class="style8">ã<br>
+<br>
+C3 A3</td>
+<td class="style8">ä<br>
+
+<br>
+C3 A4</td>
+<td class="style8">å<br>
+<br>
+C3 A5</td>
+<td class="style8">æ<br>
+<br>
+C3 A6</td>
+<td class="style8">ç<br>
+
+<br>
+C3 A7</td>
+<td class="style8">è<br>
+<br>
+C3 A8</td>
+<td class="style8">é<br>
+<br>
+C3 A9</td>
+<td class="style8">ê<br>
+
+<br>
+C3 AA</td>
+<td class="style8">ë<br>
+<br>
+C3 AB</td>
+<td class="style8">ì<br>
+<br>
+C3 AC</td>
+<td class="style8">í<br>
+
+<br>
+C3 AD</td>
+<td class="style8">î<br>
+<br>
+C3 AE</td>
+<td class="style8">ï<br>
+<br>
+C3 AF</td>
+</tr>
+
+<tr>
+<td class="style8">ð<br>
+<br>
+C3 B0</td>
+<td class="style8">ñ<br>
+<br>
+C3 B1</td>
+
+<td class="style8">ò<br>
+<br>
+C3 B2</td>
+<td class="style8">ó<br>
+<br>
+C3 B3</td>
+<td class="style8">ô<br>
+<br>
+C3 B4</td>
+
+<td class="style8">õ<br>
+<br>
+C3 B5</td>
+<td class="style8">ö<br>
+<br>
+C3 B6</td>
+<td class="style5">÷<br>
+<br>
+C3 B7</td>
+
+<td class="style8">ø<br>
+<br>
+C3 B8</td>
+<td class="style8">ù<br>
+<br>
+C3 B9</td>
+<td class="style8">ú<br>
+<br>
+C3 BA</td>
+
+<td class="style8">û<br>
+<br>
+C3 BB</td>
+<td class="style8">ü<br>
+<br>
+C3 BC</td>
+<td class="style8">ý<br>
+<br>
+C3 BD</td>
+
+<td class="style8">þ<br>
+<br>
+C3 BE</td>
+<td class="style8">ÿ<br>
+<br>
+C3 BF</td>
+</tr>
+</table>
+
+	<p>Adapted from 
+<a href="http://en.wikipedia.org/wiki/UTF-8">http://en.wikipedia.org/wiki/UTF-8</a></p>
 </body>
 
 </html>
