@@ -339,12 +339,12 @@ int iupdrvOpen(int *argc, char ***argv)
 
   value = getenv("UBUNTU_MENUPROXY");  /* for now only in Ubuntu */
   if (value && iupStrEqualNoCase(value, "libappmenu.so"))
-    iupgtk_globalmenu = 1;
+    IupSetGlobal("GLOBALMENU", "Yes");
   
   return IUP_NOERROR;
 }
 
 void iupdrvClose(void)
 {
-  iupgtkReleaseConvertUTF8();
+  iupgtkStrReleaseConvertUTF8();
 }

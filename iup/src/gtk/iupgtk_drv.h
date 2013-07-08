@@ -15,10 +15,6 @@ extern "C" {
 #define iupCOLOR8ToDouble(_x) ((double)_x/255.0)
 
 
-/* global variables, declared in iupgtk_globalattrib.c */
-extern int iupgtk_utf8autoconvert;         
-extern int iupgtk_globalmenu;
-
 
 /* common */
 gboolean iupgtkEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing *evt, Ihandle* ih);
@@ -27,11 +23,6 @@ gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih);
 gboolean iupgtkShowHelp(GtkWidget *widget, GtkWidgetHelpType *arg1, Ihandle* ih);
 
 int iupgtkSetMnemonicTitle(Ihandle* ih, GtkLabel* label, const char* value);
-char* iupgtkStrConvertToUTF8(const char* str);
-char* iupgtkStrConvertFromUTF8(const char* str);
-void iupgtkReleaseConvertUTF8(void);
-char* iupgtkStrConvertFromFilename(const char* str);
-char* iupgtkStrConvertToFilename(const char* str);
 void iupgtkUpdateMnemonic(Ihandle* ih);
 
 void iupgdkColorSet(GdkColor* color, unsigned char r, unsigned char g, unsigned char b);
@@ -49,6 +40,17 @@ GtkWidget* iupgtkNativeContainerNew(void);
 void iupgtkNativeContainerAdd(GtkWidget* container, GtkWidget* widget);
 void iupgtkNativeContainerMove(GtkWidget* container, GtkWidget* widget, int x, int y);
 void iupgtkNativeContainerSetHasWindow(GtkWidget* container, int has_window);
+
+
+/* str */
+char* iupgtkStrConvertToUTF8(const char* str);
+char* iupgtkStrConvertFromUTF8(const char* str);
+void  iupgtkStrReleaseConvertUTF8(void);
+char* iupgtkStrConvertFromFilename(const char* str);
+char* iupgtkStrConvertToFilename(const char* str);
+void  iupgtkStrSetUTF8Mode(int utf8mode);
+int   iupgtkStrGetUTF8Mode(void);
+
 
 /* focus */
 gboolean iupgtkFocusInOutEvent(GtkWidget *widget, GdkEventFocus *evt, Ihandle* ih);

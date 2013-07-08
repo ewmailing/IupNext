@@ -21,9 +21,6 @@
 #include "iupgtk_drv.h"
 
 
-int iupgtk_utf8autoconvert = 1;
-int iupgtk_globalmenu = 0;
-
 
 static void iGdkEventFunc(GdkEvent *evt, gpointer	data)
 {
@@ -126,12 +123,14 @@ int iupdrvSetGlobal(const char *name, const char *value)
       gdk_event_handler_set((GdkEventFunc)gtk_main_do_event, NULL, NULL);
     return 1;
   }
+  if (iupStrEqual(name, "UTF8MODE"))
+  {
+    iupgtkStrSetUTF8Mode(iupStrBoolean(value));
+    return 1;
+  }
   if (iupStrEqual(name, "UTF8AUTOCONVERT"))
   {
-    if (!value || iupStrBoolean(value))
-      iupgtk_utf8autoconvert = 1;
-    else
-      iupgtk_utf8autoconvert = 0;
+    iupgtkStrSetUTF8Mode(!iupStrBoolean(value));
     return 0;
   }
   if (iupStrEqual(name, "SHOWMENUIMAGES"))
@@ -143,14 +142,6 @@ int iupdrvSetGlobal(const char *name, const char *value)
       g_object_set (gtk_settings_get_default (), "gtk-menu-images", TRUE, NULL);
     else
       g_object_set (gtk_settings_get_default (), "gtk-menu-images", FALSE, NULL);
-  }
-  if (iupStrEqual(name, "GLOBALMENU"))
-  {
-    if (iupStrBoolean(value))
-      iupgtk_globalmenu = 1;
-    else
-      iupgtk_globalmenu = 0;
-    return 0;
   }
   return 1;
 }
@@ -209,25 +200,25 @@ char *iupdrvGetGlobal(const char *name)
     else
       return "NO";
   }
+  if (iupStrEqual(name, "UTF8MODE"))
+  {
+    if (iupgtkStrGetUTF8Mode())
+      return "Yes";
+    else
+      return "No";
+  }
   if (iupStrEqual(name, "UTF8AUTOCONVERT"))
   {
-    if (iupgtk_utf8autoconvert)
-      return "YES";
+    if (!iupgtkStrGetUTF8Mode())
+      return "Yes";
     else
-      return "NO";
+      return "No";
   }
   if (iupStrEqual(name, "SHOWMENUIMAGES"))
   {
     gboolean menu_images;
     g_object_get (gtk_settings_get_default (), "gtk-menu-images", &menu_images, NULL);
     if (menu_images)
-      return "YES";
-    else
-      return "NO";
-  }
-  if (iupStrEqual(name, "GLOBALMENU"))
-  {
-    if (iupgtk_globalmenu)
       return "YES";
     else
       return "NO";

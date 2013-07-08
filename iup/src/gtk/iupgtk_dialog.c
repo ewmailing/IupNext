@@ -102,8 +102,8 @@ static int gtkDialogGetMenuSize(Ihandle* ih)
 {
 #ifdef HILDON
   return 0;
-#else
-  if (ih->data->menu && !iupgtk_globalmenu)
+#else                    
+  if (ih->data->menu && !iupStrBoolean(IupGetGlobal("GLOBALMENU")))
     return iupdrvMenuGetMenuBarSize(ih->data->menu);
   else
     return 0;
