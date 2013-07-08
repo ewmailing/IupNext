@@ -765,7 +765,7 @@ static char* winTextGetSelectedTextAttrib(Ihandle* ih)
   {
     str = iupwinGetWindowText(ih->handle);  
 
-    /* returns only the selected text TODO:UTF8 */
+    /* returns only the selected text TODOUTF8 */
     str[end] = 0;
     str += start;
   }
@@ -1592,7 +1592,7 @@ static void winTextCallCaretCb(Ihandle* ih)
   }
 }
 
-/* TODO
+/* TODOUTF8
   mudar 
     winListCallEditCb
     iupwinGetClipboardText
@@ -1618,7 +1618,7 @@ static int winTextCallActionCb(Ihandle* ih, const char* insert_value, int key, i
   if (!cb && !ih->data->mask)
     return 1;
 
-  winTextGetSelection(ih, &start, &end);   // TODO UTF8 indexing?
+  winTextGetSelection(ih, &start, &end);   // TODOUTF8 indexing?
 
   value = winTextGetValueAttrib(ih);
 
@@ -1649,7 +1649,7 @@ static int winTextCallActionCb(Ihandle* ih, const char* insert_value, int key, i
 
   if (cb)
   {
-    int cb_ret = cb(ih, key, new_value);    //TODO translate UTF-8 key?
+    int cb_ret = cb(ih, key, new_value);    //TODOUTF8 translate UTF-8 key?
     if (cb_ret==IUP_IGNORE)
       ret = 0;     /* abort processing */
     else if (cb_ret==IUP_CLOSE)
