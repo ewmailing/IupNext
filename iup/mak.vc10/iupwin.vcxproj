@@ -68,7 +68,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\src;..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WIN32_WINNT=0x0501;_WIN32_IE=0x0600;WINVER=0x0501;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;NOTREEVIEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WIN32_WINNT=0x0501;_WIN32_IE=0x0600;WINVER=0x0501;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;NOTREEVIEW;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -79,6 +79,7 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4306</DisableSpecificWarnings>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>iupcore.lib;%(AdditionalDependencies)</AdditionalDependencies>

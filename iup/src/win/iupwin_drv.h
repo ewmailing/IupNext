@@ -123,6 +123,8 @@ int iupwinClassExist(const TCHAR* name);
 /*      Utilities    */
 /*********************/
 
+char* iupwinGetWindowText(HWND hWnd);
+
 int iupwinGetColorRef(Ihandle *ih, char *name, COLORREF *color);
 int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr);
 

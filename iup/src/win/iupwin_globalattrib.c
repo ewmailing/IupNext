@@ -57,12 +57,14 @@ static int winGlobalSetMutex(const char* name)
 
 static BOOL CALLBACK winGlobalEnumWindowProc(HWND hWnd, LPARAM lParam)
 {
-  char* name = (char*)lParam;
-  char str[256];
-  int len = iupwinGetWindowText(hWnd, str, 256);
+  TCHAR* name = (TCHAR*)lParam;
+  int name_len = lstrlen(name);
+  TCHAR str[256];
+  int len = GetWindowText(hWnd, str, 256);
   if (len)
   {
-    if (iupStrEqualPartial(str, name))
+    if (len > name_len) len = name_len;
+    if (CompareString(LOCALE_INVARIANT, 0, str, len, name, name_len)==CSTR_EQUAL)
     {
       win_findwindow = hWnd;
       return FALSE;
@@ -75,7 +77,7 @@ static BOOL CALLBACK winGlobalEnumWindowProc(HWND hWnd, LPARAM lParam)
 static HWND winGlobalFindWindow(const char* name)
 {
   win_findwindow = NULL;
-  EnumWindows(winGlobalEnumWindowProc, (LPARAM)name);
+  EnumWindows(winGlobalEnumWindowProc, (LPARAM)iupwinStrToSystem(name));
   return win_findwindow;
 }
 

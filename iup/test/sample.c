@@ -1,7 +1,17 @@
+#if 0
+/* To check for memory leaks */
+#define VLD_MAX_DATA_DUMP 80
+#include <vld.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <iup.h>
-//#include <iupcontrols.h>
+
+//#define IUP_CONTROLS
+#ifdef IUP_CONTROLS
+#include <iupcontrols.h>
+#endif
 
 static Ihandle* load_image_Tecgraf(void)
 {

@@ -656,17 +656,22 @@ void iupwinSetMnemonicTitle(Ihandle *ih, int pos, const char* value)
   }
 }
 
-char* iupdrvBaseGetTitleAttrib(Ihandle* ih)
+char* iupwinGetWindowText(HWND hWnd)
 {
-  int nc = GetWindowTextLength(ih->handle);
+  int nc = GetWindowTextLength(hWnd);
   if (nc)
   {
-    char* str = iupStrGetMemory(nc+1);
-    iupwinGetWindowText(ih->handle, str, nc+1);
-    return str;
+    TCHAR* str = (TCHAR*)iupStrGetMemory((nc+1)*sizeof(TCHAR));
+    GetWindowText(hWnd, str, nc+1);
+    return iupwinStrFromSystem(str);
   }
   else
     return NULL;
+}
+
+char* iupdrvBaseGetTitleAttrib(Ihandle* ih)
+{
+  return iupwinGetWindowText(ih->handle);
 }
 
 #ifndef IDC_HAND

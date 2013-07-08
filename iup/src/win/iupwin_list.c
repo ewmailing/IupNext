@@ -63,6 +63,9 @@ typedef struct _winListItemData
   HBITMAP hBitmap;
 } winListItemData;
 
+static void winListUpdateScrollWidthItem(Ihandle* ih, int item_width, int add);
+static void winListUpdateShowImageItemHeight(Ihandle* ih, winListItemData* itemdata, int pos);
+
 static winListItemData* winListGetItemData(Ihandle* ih, int pos)
 {
   LRESULT ret = SendMessage(ih->handle, WIN_GETITEMDATA(ih), pos, 0);
@@ -85,7 +88,31 @@ static int winListRemoveItemData(Ihandle* ih, int pos)
   return 0;
 }
 
-static void winListUpdateScrollWidthItem(Ihandle* ih, int item_width, int add);
+static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hBitmap)
+{
+  winListItemData* itemdata = winListGetItemData(ih, pos);
+
+  if (!itemdata)
+  {
+    itemdata = malloc(sizeof(winListItemData));
+    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)itemdata);
+  }
+
+  if (str)
+  {
+    itemdata->text_width = iupdrvFontGetStringWidth(ih, str);
+    winListUpdateScrollWidthItem(ih, itemdata->text_width, 1);
+  }
+  else
+    itemdata->text_width = 0;
+
+  if (ih->data->show_image)
+  {
+    itemdata->hBitmap = hBitmap;
+
+    winListUpdateShowImageItemHeight(ih, itemdata, pos);
+  }
+}
 
 static void winListUpdateShowImageItemHeight(Ihandle* ih, winListItemData* itemdata, int pos)
 {
@@ -127,32 +154,6 @@ static void winListUpdateShowImageItemHeight(Ihandle* ih, winListItemData* itemd
     height = 255;
 
   SendMessage(ih->handle, WIN_SETITEMHEIGHT(ih), pos, height);
-}
-
-static void winListSetItemData(Ihandle* ih, int pos, const char* str, HBITMAP hBitmap)
-{
-  winListItemData* itemdata = winListGetItemData(ih, pos);
-
-  if (!itemdata)
-  {
-    itemdata = malloc(sizeof(winListItemData));
-    SendMessage(ih->handle, WIN_SETITEMDATA(ih), pos, (LPARAM)itemdata);
-  }
-
-  if (str)
-  {
-    itemdata->text_width = iupdrvFontGetStringWidth(ih, str);
-    winListUpdateScrollWidthItem(ih, itemdata->text_width, 1);
-  }
-  else
-    itemdata->text_width = 0;
-
-  if (ih->data->show_image)
-  {
-    itemdata->hBitmap = hBitmap;
-
-    winListUpdateShowImageItemHeight(ih, itemdata, pos);
-  }
 }
 
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
@@ -272,13 +273,13 @@ static void winListUpdateScrollWidthItem(Ihandle* ih, int item_width, int add)
 
 void iupdrvListAppendItem(Ihandle* ih, const char* value)
 {
-  int pos = SendMessage(ih->handle, WIN_ADDSTRING(ih), 0, (LPARAM)value);
+  int pos = SendMessage(ih->handle, WIN_ADDSTRING(ih), 0, (LPARAM)iupwinStrToSystem(value));
   winListSetItemData(ih, pos, value, NULL);
 }
 
 void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value)
 {
-  SendMessage(ih->handle, WIN_INSERTSTRING(ih), pos, (LPARAM)value);
+  SendMessage(ih->handle, WIN_INSERTSTRING(ih), pos, (LPARAM)iupwinStrToSystem(value));
   winListSetItemData(ih, pos, value, NULL);
   iupListUpdateOldValue(ih, pos, 0);
 }
@@ -353,10 +354,11 @@ static int winListGetCaretPos(HWND cbedit)
 static char* winListGetText(Ihandle* ih, int pos)
 {
   int len = SendMessage(ih->handle, WIN_GETTEXTLEN(ih), (WPARAM)pos, 0);
-  char* str = calloc(len+1, 1);
+  TCHAR* str = (TCHAR*)iupStrGetMemory((len+1)*sizeof(TCHAR));
   SendMessage(ih->handle, WIN_GETTEXT(ih), (WPARAM)pos, (LPARAM)str);
-  return str;
+  return iupwinStrFromSystem(str);
 }
+
 
 /*********************************************************************************/
 
@@ -369,7 +371,6 @@ static void winListUpdateItemWidth(Ihandle* ih)
     winListItemData* itemdata = winListGetItemData(ih, i);
     char* str = winListGetText(ih, i);
     itemdata->text_width = iupdrvFontGetStringWidth(ih, str);
-    free(str);
   }
 }
 
@@ -396,27 +397,14 @@ static char* winListGetIdValueAttrib(Ihandle* ih, int id)
 {
   int pos = iupListGetPosAttrib(ih, id);
   if (pos >= 0)
-  {
-    char* str = winListGetText(ih, pos);
-    char* value = iupStrReturnStr(str);
-    free(str);
-    return value;
-  }
+    return winListGetText(ih, pos);
   return NULL;
 }
 
 static char* winListGetValueAttrib(Ihandle* ih)
 {
   if (ih->data->has_editbox)
-  {
-    int nc = GetWindowTextLength(ih->handle);
-    if (nc)
-    {
-      char* str = iupStrGetMemory(nc+1);
-      iupwinGetWindowText(ih->handle, str, nc+1);
-      return str;
-    }
-  }
+    return iupwinGetWindowText(ih->handle);
   else 
   {
     if (ih->data->is_dropdown || !ih->data->is_multiple)
@@ -654,24 +642,22 @@ static int winListSetSelectedTextAttrib(Ihandle* ih, const char* value)
 
 static char* winListGetSelectedTextAttrib(Ihandle* ih)
 {
-  int nc;
+  char* str;
   HWND cbedit;
+
   if (!ih->data->has_editbox)
     return 0;
 
   cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
-  nc = GetWindowTextLength(cbedit);
-  if (nc)
+  str = iupwinGetWindowText(cbedit);
+  if (str)
   {
     int start = 0, end = 0;
-    char* str;
     
     SendMessage(cbedit, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
     if (start == end)
       return NULL;
 
-    str = iupStrGetMemory(nc+1);
-    iupwinGetWindowText(cbedit, str, nc+1);
     str[end] = 0; /* returns only the selected text */
     str += start;
 
@@ -1114,8 +1100,6 @@ int iupwinListDND(Ihandle *ih, UINT uNotification, POINT pt)
         /* Remove the Drag item if moving */
         if (!is_ctrl)
           iupdrvListRemoveItem(ih, idDrag);  /* starts at 0 */
-
-        free(text);
       }
 
       iupdrvRedrawNow(ih);  /* Redraw the list */
@@ -1712,7 +1696,6 @@ static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   if (drawitem->itemState & ODS_FOCUS)
     iupdrvDrawFocusRect(ih, hDC, 0, 0, width, height);
 
-  free(text);
   iupwinDrawDestroyBitmapDC(&bmpDC);
 }
 

@@ -22,7 +22,8 @@
   In the simple and ideal world we need only Unicode windows and handle the convertion when necessary.
   The same convertion would exist anyway if using the ANSI API.
 */
-static int iupwin_utf8mode = 1;
+//static int iupwin_utf8mode = 0;
+static int iupwin_utf8mode = 1;  // while we are debuging UTF8MODE
 
 int iupwinSetUTF8Mode(void)
 {
@@ -92,20 +93,6 @@ void iupwinStrCopy(TCHAR* dst_wstr, const char* src_str, int max_size)
     if (len > max_size) len = max_size;
     lstrcpyn(dst_wstr, src_wstr, len);
   }
-}
-
-int iupwinGetWindowText(HWND hWnd, LPSTR str, int nMaxCount)
-{
-#ifdef UNICODE
-  WCHAR* wstr = (WCHAR*)malloc(nMaxCount*sizeof(WCHAR));
-  int len = GetWindowTextW(hWnd, wstr, nMaxCount);
-  if (len)
-    winStrWide2Char(wstr, str, len+1);
-  free(wstr);
-  return len;
-#else
-  return GetWindowTextA(hWnd, str, nMaxCount);
-#endif
 }
 
 TCHAR* iupwinStrToSystem(const char* str)

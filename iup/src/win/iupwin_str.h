@@ -25,8 +25,6 @@ char* iupwinStrWide2Char(const WCHAR* wstr);
 
 void iupwinStrCopy(TCHAR* dst_wstr, const char* src_str, int max_size);
 
-int iupwinGetWindowText(HWND hWnd, LPSTR lpString, int nMaxCount);
-
 
 #ifdef __cplusplus
 }

@@ -703,11 +703,10 @@ static int winTextSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* winTextGetValueAttrib(Ihandle* ih)
 {
-  int count = GetWindowTextLength(ih->handle);
-  if (count)
+  char* str = iupwinGetWindowText(ih->handle);  
+  if (str)
   {
-    char* str = iupStrGetMemory(count+1);
-    iupwinGetWindowText(ih->handle, str, count+1);  /* notice that this function always returns in DOS format */
+    /* notice that GetWindowText always returns in DOS format */
     if (ih->data->is_multiline)
       iupStrToUnix(str);
     return str;
@@ -749,36 +748,32 @@ static int winTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
 
 static char* winTextGetSelectedTextAttrib(Ihandle* ih)
 {
-  int count = GetWindowTextLength(ih->handle);
-  if (count)
-  {
-    int start = 0, end = 0;
-    char* str;
+  int start = 0, end = 0;
+  char* str;
     
-    SendMessage(ih->handle, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
-    if (start == end)
-      return NULL;
+  SendMessage(ih->handle, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
+  if (start == end)
+    return NULL;
 
-    if (ih->data->has_formatting)
-    {
-      str = iupStrGetMemory(end-start+1);
-      SendMessage(ih->handle, EM_GETSELTEXT, 0, (LPARAM)str);
-    }
-    else
-    {
-      str = iupStrGetMemory(count+1);
-      iupwinGetWindowText(ih->handle, str, count+1);  /* notice that this function always returns in DOS format */
-      /* returns only the selected text */
-      str[end] = 0;
-      str += start;
-    }
-
-    if (ih->data->is_multiline)
-      iupStrToUnix(str);
-    return str;
+  if (ih->data->has_formatting)
+  {
+    TCHAR* tstr = (TCHAR*)iupStrGetMemory((end-start+1)*sizeof(TCHAR));
+    SendMessage(ih->handle, EM_GETSELTEXT, 0, (LPARAM)tstr);
+    str = iupwinStrFromSystem(tstr);
   }
   else
-    return NULL;
+  {
+    str = iupwinGetWindowText(ih->handle);  
+
+    /* returns only the selected text TODO:UTF8 */
+    str[end] = 0;
+    str += start;
+  }
+
+  /* notice that GetWindowText always returns in DOS format */
+  if (ih->data->is_multiline)
+    iupStrToUnix(str);
+  return str;
 }
 
 static int winTextSetNCAttrib(Ihandle* ih, const char* value)
