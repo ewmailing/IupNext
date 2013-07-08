@@ -48,7 +48,7 @@ static int iupwin_utf8mode_file = 0;
 - melhorar o suporte a teclas no IUP 
 */
 
-int iupwinSetUTF8Mode(int utf8mode)
+int iupwinStrSetUTF8Mode(int utf8mode)
 {
 #ifdef UNICODE
   iupwin_utf8mode = utf8mode;
@@ -58,7 +58,7 @@ int iupwinSetUTF8Mode(int utf8mode)
 #endif
 }
 
-int iupwinSetUTF8ModeFile(int utf8mode)
+int iupwinStrSetUTF8ModeFile(int utf8mode)
 {
 #ifdef UNICODE
   iupwin_utf8mode_file = utf8mode;
@@ -66,6 +66,71 @@ int iupwinSetUTF8ModeFile(int utf8mode)
 #else
   return 0;
 #endif
+}
+
+static void* winStrGetMemory(int size)
+{
+#define MAX_BUFFERS 10
+  static void* buffers[MAX_BUFFERS];
+  static int buffers_sizes[MAX_BUFFERS];
+  static int buffers_index = -1;
+
+  int i;
+
+  if (size == -1) /* Frees memory */
+  {
+    buffers_index = -1;
+    for (i = 0; i < MAX_BUFFERS; i++)
+    {
+      if (buffers[i]) 
+      {
+        free(buffers[i]);
+        buffers[i] = NULL;
+      }
+      buffers_sizes[i] = 0;
+    }
+    return NULL;
+  }
+  else
+  {
+    void* ret_buffer;
+
+    /* init buffers array */
+    if (buffers_index == -1)
+    {
+      memset(buffers, 0, sizeof(void*)*MAX_BUFFERS);
+      memset(buffers_sizes, 0, sizeof(int)*MAX_BUFFERS);
+      buffers_index = 0;
+    }
+
+    /* first alocation */
+    if (!(buffers[buffers_index]))
+    {
+      buffers_sizes[buffers_index] = size+1;
+      buffers[buffers_index] = malloc(buffers_sizes[buffers_index]);
+    }
+    else if (buffers_sizes[buffers_index] < size+1)  /* reallocate if necessary */
+    {
+      buffers_sizes[buffers_index] = size+1;
+      buffers[buffers_index] = realloc(buffers[buffers_index], buffers_sizes[buffers_index]);
+    }
+
+    /* clear memory */
+    memset(buffers[buffers_index], 0, buffers_sizes[buffers_index]);
+    ret_buffer = buffers[buffers_index];
+
+    buffers_index++;
+    if (buffers_index == MAX_BUFFERS)
+      buffers_index = 0;
+
+    return ret_buffer;
+  }
+#undef MAX_BUFFERS
+}
+
+void iupwinStrRelease(void)
+{
+  winStrGetMemory(-1);
 }
 
 static void winStrWide2Char(const WCHAR* wstr, char* str, int len)
@@ -153,7 +218,7 @@ TCHAR* iupwinStrToSystem(const char* str)
   if (str)
   {
     int len = (int)strlen(str);
-    WCHAR* wstr = (WCHAR*)iupwinStrGetMemory((len+1) * sizeof(WCHAR));
+    WCHAR* wstr = (WCHAR*)winStrGetMemory((len+1) * sizeof(WCHAR));
     winStrChar2Wide(str, wstr, len);
     return wstr;
   }
@@ -169,7 +234,7 @@ char* iupwinStrFromSystem(const TCHAR* wstr)
   if (wstr)
   {
     int len = (int)wcslen(wstr);
-    char* str = (char*)iupwinStrGetMemory((2*len+1) * sizeof(char));    /* str must has a large buffer */
+    char* str = (char*)winStrGetMemory((2*len+1) * sizeof(char));    /* str must has a large buffer */
     winStrWide2Char(wstr, str, len);
     return str;
   }
@@ -184,7 +249,7 @@ TCHAR* iupwinStrToSystemLen(const char* str, int len)
 #ifdef UNICODE
   if (str)
   {
-    WCHAR* wstr = (WCHAR*)iupwinStrGetMemory((len+1) * sizeof(WCHAR));
+    WCHAR* wstr = (WCHAR*)winStrGetMemory((len+1) * sizeof(WCHAR));
     winStrChar2Wide(str, wstr, len);
     return wstr;
   }
@@ -195,62 +260,3 @@ TCHAR* iupwinStrToSystemLen(const char* str, int len)
 #endif
 }
 
-void* iupwinStrGetMemory(int size)
-{
-#define MAX_BUFFERS 10
-  static void* buffers[MAX_BUFFERS];
-  static int buffers_sizes[MAX_BUFFERS];
-  static int buffers_index = -1;
-
-  int i;
-
-  if (size == -1) /* Frees memory */
-  {
-    buffers_index = -1;
-    for (i = 0; i < MAX_BUFFERS; i++)
-    {
-      if (buffers[i]) 
-      {
-        free(buffers[i]);
-        buffers[i] = NULL;
-      }
-      buffers_sizes[i] = 0;
-    }
-    return NULL;
-  }
-  else
-  {
-    void* ret_buffer;
-
-    /* init buffers array */
-    if (buffers_index == -1)
-    {
-      memset(buffers, 0, sizeof(void*)*MAX_BUFFERS);
-      memset(buffers_sizes, 0, sizeof(int)*MAX_BUFFERS);
-      buffers_index = 0;
-    }
-
-    /* first alocation */
-    if (!(buffers[buffers_index]))
-    {
-      buffers_sizes[buffers_index] = size+1;
-      buffers[buffers_index] = malloc(buffers_sizes[buffers_index]);
-    }
-    else if (buffers_sizes[buffers_index] < size+1)  /* reallocate if necessary */
-    {
-      buffers_sizes[buffers_index] = size+1;
-      buffers[buffers_index] = realloc(buffers[buffers_index], buffers_sizes[buffers_index]);
-    }
-
-    /* clear memory */
-    memset(buffers[buffers_index], 0, buffers_sizes[buffers_index]);
-    ret_buffer = buffers[buffers_index];
-
-    buffers_index++;
-    if (buffers_index == MAX_BUFFERS)
-      buffers_index = 0;
-
-    return ret_buffer;
-  }
-#undef MAX_BUFFERS
-}

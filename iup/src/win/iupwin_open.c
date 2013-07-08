@@ -141,7 +141,7 @@ void iupdrvClose(void)
 {
   iupwinHandleFinish();
   iupwinBrushFinish();
-  iupwinStrGetMemory(-1);
+  iupwinStrRelease();
 
   if (IupGetGlobal("_IUPWIN_OLEINITIALIZE"))
 	  OleUninitialize();

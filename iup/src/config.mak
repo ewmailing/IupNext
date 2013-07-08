@@ -61,7 +61,7 @@ ifdef USE_GTK
          gtk/iupgtk_text.c gtk/iupgtk_frame.c gtk/iupgtk_progressbar.c \
          gtk/iupgtk_tabs.c gtk/iupgtk_menu.c gtk/iupgtk_list.c gtk/iupgtk_tree.c \
          gtk/iupgtk_canvas.c gtk/iupgtk_image.c gtk/iupgtk_dialog.c \
-         gtk/iupgtk_common.c
+         gtk/iupgtk_common.c gtk/iupgtk_str.c
            
   ifdef USE_GTK3
     SRC += gtk/iupgtk_draw_cairo.c

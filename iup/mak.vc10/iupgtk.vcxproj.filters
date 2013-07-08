@@ -111,6 +111,9 @@
     <ClCompile Include="..\src\gtk\iupmac_info.c">
       <Filter>mac</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\gtk\iupgtk_str.c">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\gtk\iupgtk_drv.h">

@@ -12,8 +12,8 @@ extern "C" {
 #endif
 
 
-int iupwinSetUTF8Mode(int utf8mode);
-int iupwinSetUTF8ModeFile(int utf8mode);
+int iupwinStrSetUTF8Mode(int utf8mode);
+int iupwinStrSetUTF8ModeFile(int utf8mode);
 
 char* iupwinStrFromSystem(const TCHAR* str);
 TCHAR* iupwinStrToSystem(const char* str);
@@ -21,7 +21,7 @@ TCHAR* iupwinStrToSystemLen(const char* str, int len);
 TCHAR* iupwinStrToSystemFilename(const char* str);
 char* iupwinStrFromSystemFilename(const TCHAR* str);
 
-void* iupwinStrGetMemory(int size);
+void iupwinStrRelease(void);
 
 WCHAR* iupwinStrChar2Wide(const char* str);
 char* iupwinStrWide2Char(const WCHAR* wstr);

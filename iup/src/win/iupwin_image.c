@@ -629,7 +629,7 @@ void* iupdrvImageLoad(const char* name, int type)
   if (!hImage && iupwin_dll_hinstance)
     hImage = LoadImage(iupwin_dll_hinstance, iupwinStrToSystem(name), iup2win[type], 0, 0, type==0?LR_CREATEDIBSECTION:0);
   if (!hImage)
-    hImage = LoadImage(NULL, iupwinStrToSystem(name), iup2win[type], 0, 0, LR_LOADFROMFILE|(type==0?LR_CREATEDIBSECTION:0));
+    hImage = LoadImage(NULL, iupwinStrToSystemFilename(name), iup2win[type], 0, 0, LR_LOADFROMFILE|(type==0?LR_CREATEDIBSECTION:0));
   return hImage;
 }
 

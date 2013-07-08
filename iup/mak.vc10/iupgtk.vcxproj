@@ -94,6 +94,7 @@
     <ClCompile Include="..\src\gtk\iupgtk_key.c" />
     <ClCompile Include="..\src\gtk\iupgtk_loop.c" />
     <ClCompile Include="..\src\gtk\iupgtk_open.c" />
+    <ClCompile Include="..\src\gtk\iupgtk_str.c" />
     <ClCompile Include="..\src\gtk\iupgtk_tips.c" />
     <ClCompile Include="..\src\gtk\iupgtk_button.c" />
     <ClCompile Include="..\src\gtk\iupgtk_canvas.c" />
