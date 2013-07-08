@@ -72,6 +72,8 @@ version 3.x.</p>
 	<li><span class="hist_new">New:</span> utility functions <strong>IupSetInt*</strong>,
 	<strong>IupSetFloat*</strong>, <strong>IupSetRGB* </strong>and<strong> 
 	IupGetRGB*</strong>. </li>
+	<li><span class="hist_new">New:</span> support for UTF-8 strings in the 
+	Windows and GTK driver using the UTF8MODE global attribute.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	preserve of FRAMEVERTCOLOR*, 
 	FRAMEHORIZCOLOR*, SORTSIGN*, MASK*, WIDTH*, RASTERWIDTH*, HEIGHT* and 
@@ -82,6 +84,8 @@ version 3.x.</p>
 	hexadecimal.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	removed Windows 2000 compatibility.</li>
+	<li><strong><span class="hist_changed">Changed:</span></strong> 
+	UTF8AUTOCONVERT global attribute renamed to UTF8MODE with inverted meaning. </li>
 
 	<li><span class="hist_fixed">Fixed:</span> repaint of the <strong>
 	IupOleControl</strong> that affected the <strong>IupWebBrowser</strong> on 
