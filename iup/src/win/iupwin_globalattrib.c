@@ -328,11 +328,9 @@ int iupdrvSetGlobal(const char* name, const char* value)
     return 1;
   }
   if (iupStrEqual(name, "UTF8MODE"))
-  {
-    if (iupStrBoolean(value))
-      return iupwinSetUTF8Mode();  /* can only be changed once, and only with Unicode build */
-    return 0;
-  }
+    return iupwinSetUTF8Mode(iupStrBoolean(value));
+  if (iupStrEqual(name, "UTF8MODE_FILE"))
+    return iupwinSetUTF8ModeFile(iupStrBoolean(value));
   if (iupStrEqual(name, "DLL_HINSTANCE"))
   {
     iupwin_dll_hinstance = (HINSTANCE)value;

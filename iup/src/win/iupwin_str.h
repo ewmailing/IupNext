@@ -12,11 +12,14 @@ extern "C" {
 #endif
 
 
-int iupwinSetUTF8Mode(void);
+int iupwinSetUTF8Mode(int utf8mode);
+int iupwinSetUTF8ModeFile(int utf8mode);
 
 char* iupwinStrFromSystem(const TCHAR* str);
 TCHAR* iupwinStrToSystem(const char* str);
 TCHAR* iupwinStrToSystemLen(const char* str, int len);
+TCHAR* iupwinStrToSystemFilename(const char* str);
+char* iupwinStrFromSystemFilename(const TCHAR* str);
 
 void* iupwinStrGetMemory(int size);
 

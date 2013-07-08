@@ -428,8 +428,6 @@ static char* winListGetValueAttrib(Ihandle* ih)
       return str;
     }
   }
-
-  return NULL;
 }
 
 static int winListSetValueAttrib(Ihandle* ih, const char* value)

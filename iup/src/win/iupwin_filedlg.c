@@ -72,7 +72,7 @@ static INT CALLBACK winFileDlgBrowseCallback(HWND hWnd, UINT uMsg, LPARAM lParam
     value = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
     if (value)
     {
-      TCHAR* wstr = iupwinStrToSystem(value);
+      TCHAR* wstr = iupwinStrToSystemFilename(value);
       winFileDlgStrReplacePathSlash(wstr);
       SendMessage(hWnd, BFFM_SETSELECTION, TRUE, (LPARAM)wstr);
       free(value);
@@ -94,7 +94,7 @@ static void winFileDlgGetFolder(Ihandle *ih)
 {
   InativeHandle* parent = iupDialogGetNativeParent(ih);
   BROWSEINFO browseinfo;
-  TCHAR buffer[MAX_PATH];
+  TCHAR filename[MAX_PATH];
   LPITEMIDLIST selecteditem;
 
   if (!parent)
@@ -102,7 +102,7 @@ static void winFileDlgGetFolder(Ihandle *ih)
 
   ZeroMemory(&browseinfo, sizeof(BROWSEINFO));
   browseinfo.lpszTitle = iupwinStrToSystem(iupAttribGet(ih, "TITLE"));
-  browseinfo.pszDisplayName = buffer; 
+  browseinfo.pszDisplayName = filename; 
   browseinfo.lpfn = winFileDlgBrowseCallback;
   browseinfo.lParam = (LPARAM)ih;
   browseinfo.ulFlags = IupGetGlobal("_IUPWIN_COINIT_MULTITHREADED")? 0: BIF_NEWDIALOGSTYLE;
@@ -116,8 +116,8 @@ static void winFileDlgGetFolder(Ihandle *ih)
   }
   else
   {
-    SHGetPathFromIDList(selecteditem, buffer);
-    iupAttribStoreStr(ih, "VALUE", iupwinStrFromSystem(buffer));
+    SHGetPathFromIDList(selecteditem, filename);
+    iupAttribStoreStr(ih, "VALUE", iupwinStrFromSystemFilename(filename));
     iupAttribSetStr(ih, "STATUS", "0");
   }
 
@@ -199,7 +199,7 @@ static int winFileDlgWmNotify(HWND hWnd, LPOFNOTIFY pofn)
               file_msg = "OTHER";
           }
 
-          ret = cb(ih, iupwinStrFromSystem(filename), file_msg);
+          ret = cb(ih, iupwinStrFromSystemFilename(filename), file_msg);
 
           if (pofn->hdr.code == CDN_FILEOK && (ret == IUP_IGNORE || ret == IUP_CONTINUE)) 
           {
@@ -234,7 +234,7 @@ static int winFileDlgWmNotify(HWND hWnd, LPOFNOTIFY pofn)
         if (winFileDlgGetSelectedFile(ih, hWnd, filename))
         {
           iupAttribSetInt(ih, "FILTERUSED", (int)pofn->lpOFN->nFilterIndex);
-          if (cb(ih, iupwinStrFromSystem(filename), "FILTER") == IUP_CONTINUE)
+          if (cb(ih, iupwinStrFromSystemFilename(filename), "FILTER") == IUP_CONTINUE)
           {
             char* value = iupAttribGet(ih, "FILE");
             if (value)
@@ -373,7 +373,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
         if (winFileDlgGetSelectedFile(ih, hWnd, filename))
         {
           if (winIsFile(filename))
-            cb(ih, iupwinStrFromSystem(filename), "PAINT");
+            cb(ih, iupwinStrFromSystemFilename(filename), "PAINT");
           else
             cb(ih, NULL, "PAINT");
         }
@@ -474,7 +474,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   {
     int index;
     extfilter = winFileDlgStrReplaceSeparator(extfilter);
-    openfilename.lpstrFilter = iupwinStrToSystem(extfilter);
+    openfilename.lpstrFilter = iupwinStrToSystemFilename(extfilter);
 
     value = iupAttribGet(ih, "FILTERUSED");
     if (iupStrToInt(value, &index))
@@ -500,7 +500,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
       memcpy(extfilter+sz1, value, sz2);
       extfilter[sz1+sz2] = 0;
 
-      openfilename.lpstrFilter = iupwinStrToSystem(extfilter);
+      openfilename.lpstrFilter = iupwinStrToSystemFilename(extfilter);
       openfilename.nFilterIndex = 1;
     }
   }
@@ -518,7 +518,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   openfilename.nMaxFile = IUP_MAX_FILENAME_SIZE;
 
   dir = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
-  openfilename.lpstrInitialDir = iupwinStrToSystem(dir);
+  openfilename.lpstrInitialDir = iupwinStrToSystemFilename(dir);
   if (openfilename.lpstrInitialDir)
     winFileDlgStrReplacePathSlash((TCHAR*)openfilename.lpstrInitialDir);
 
@@ -572,7 +572,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
 
   if (result)
   {
-    char* dir = iupStrFileGetPath(iupwinStrFromSystem(openfilename.lpstrFile));
+    char* dir = iupStrFileGetPath(iupwinStrFromSystemFilename(openfilename.lpstrFile));
     iupAttribStoreStr(ih, "DIRECTORY", dir);
     free(dir);
 
@@ -610,7 +610,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
       }
     }
 
-    iupAttribStoreStr(ih, "VALUE", iupwinStrFromSystem(openfilename.lpstrFile));
+    iupAttribStoreStr(ih, "VALUE", iupwinStrFromSystemFilename(openfilename.lpstrFile));
     iupAttribSetInt(ih, "FILTERUSED", (int)openfilename.nFilterIndex);
   }
   else

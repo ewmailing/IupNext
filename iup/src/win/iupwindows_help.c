@@ -14,6 +14,7 @@
 
 int IupHelp(const char* url)
 {
+  /* no need to convert from UTF8 here */
   int err = (int)ShellExecuteA(GetDesktopWindow(), "open", url, NULL, NULL, SW_SHOWNORMAL);
   if (err <= 32) 
   {

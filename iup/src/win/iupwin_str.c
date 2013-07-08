@@ -21,15 +21,30 @@
   So, there is no point in doing a lib that calls both ANSI and Unicode API. 
   In the simple and ideal world we need only Unicode windows and handle the convertion when necessary.
   The same convertion would exist anyway if using the ANSI API.
+- By default, file I/O functions use ANSI file names. 
+  But if your files have Unicode names, then you may consider using UTF-8 
+  so later the aplication can recover the original Unicode version.
 */
-//static int iupwin_utf8mode = 0;
-static int iupwin_utf8mode = 1;  // while we are debuging UTF8MODE
+static int iupwin_utf8mode = 1;  // TODOUTF8 while we are debuging UTF8MODE
+//static int iupwin_utf8mode = 0;    /* default is NOT using UTF-8 */
+static int iupwin_utf8mode_file = 0;  
+// TODOUTF8 Testar arquivos com "зг" em FAT e NTFS
 
-int iupwinSetUTF8Mode(void)
+
+int iupwinSetUTF8Mode(int utf8mode)
 {
-  /* can only be changed once, and only with Unicode build */
 #ifdef UNICODE
-  iupwin_utf8mode = 1;
+  iupwin_utf8mode = utf8mode;
+  return 1;
+#else
+  return 0;
+#endif
+}
+
+int iupwinSetUTF8ModeFile(int utf8mode)
+{
+#ifdef UNICODE
+  iupwin_utf8mode_file = utf8mode;
   return 1;
 #else
   return 0;
@@ -93,6 +108,26 @@ void iupwinStrCopy(TCHAR* dst_wstr, const char* src_str, int max_size)
     if (len > max_size) len = max_size;
     lstrcpyn(dst_wstr, src_wstr, len);
   }
+}
+
+TCHAR* iupwinStrToSystemFilename(const char* str)
+{
+  TCHAR* wstr;
+  int old_utf8mode = iupwin_utf8mode;
+  iupwin_utf8mode = iupwin_utf8mode_file;
+  wstr = iupwinStrToSystem(str);
+  iupwin_utf8mode = old_utf8mode;
+  return wstr;
+}
+
+char* iupwinStrFromSystemFilename(const TCHAR* wstr)
+{
+  char* str;
+  int old_utf8mode = iupwin_utf8mode;
+  iupwin_utf8mode = iupwin_utf8mode_file;
+  str = iupwinStrFromSystem(wstr);
+  iupwin_utf8mode = old_utf8mode;
+  return str;
 }
 
 TCHAR* iupwinStrToSystem(const char* str)
