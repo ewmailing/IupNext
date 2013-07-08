@@ -25,11 +25,28 @@
   But if your files have Unicode names, then you may consider using UTF-8 
   so later the aplication can recover the original Unicode version.
 */
-static int iupwin_utf8mode = 1;  // TODOUTF8 while we are debuging UTF8MODE
+static int iupwin_utf8mode = 1;  // somente para facilitar o uso dos testes existentes, depois remover
 //static int iupwin_utf8mode = 0;    /* default is NOT using UTF-8 */
 static int iupwin_utf8mode_file = 0;  
-// TODOUTF8 Testar arquivos com "çã" em FAT e NTFS
 
+/* TODOUTF8:
+1) procurar no código do iupwin outras possiveis falhas
+2) Testar arquivos com "çã" em FAT e NTFS
+3) clipboard com UTF-8 ou Unicode?
+4) Attributos CARET e SELECTION do IupText/IupList como indexam a string?
+   Como é no GTK?
+5) Tentar juntar a edição de texto do IupText e do IupList 
+   usando funções genéricas que encapsulem ambos, 
+   tentar passar como parametro coisas que são diferentes em ambos
+-------------------------------
+- outros controles
+    iupglcanvas
+    iupolecontrol
+    iupscintilla
+    iupweb
+- suporte para UTF8 no driver Win32 do CD
+- melhorar o suporte a teclas no IUP 
+*/
 
 int iupwinSetUTF8Mode(int utf8mode)
 {

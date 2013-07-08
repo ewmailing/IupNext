@@ -183,6 +183,7 @@ static int winClipboardSetTextAttrib(Ihandle *ih, const char *value)
   CopyMemory(clip_str, value, size);
   GlobalUnlock(hHandle);
 
+//TODOUTF8 is there an UTF-8 format?
   SetClipboardData(CF_TEXT, hHandle);
   CloseClipboard();
 
@@ -485,5 +486,4 @@ Iclass* iupClipboardNewClass(void)
   return ic;
 }
 
-//TODOUTF8 is there an UTF-8 format?
 
