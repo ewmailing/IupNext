@@ -49,8 +49,8 @@ void iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value, int
       IFniid setvalue_cb;
 
       if (ih->data->numeric_columns[col].unit_shown!=ih->data->numeric_columns[col].unit) 
-        number = ih->data->numeric_columns[col].convert_func(number, ih->data->numeric_columns[col].unit, 
-                                                                     ih->data->numeric_columns[col].unit_shown);
+        number = ih->data->numeric_columns[col].convert_func(number, ih->data->numeric_columns[col].unit_shown,  /* from */
+                                                                     ih->data->numeric_columns[col].unit);       /* to */
 
       setvalue_cb = (IFniid)IupGetCallback(ih, "NUMERICSETVALUE_CB");
       if (setvalue_cb)
@@ -101,12 +101,15 @@ static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col, const char* v
 
     if (format)
     {
-      const char* unit = ih->data->numeric_info_func(ih->data->numeric_columns[col].quantity, ih->data->numeric_columns[col].unit_shown);
-      if (value)
-        sprintf(ih->data->numeric_buffer_get, format, value, unit);
-      else
-        sprintf(ih->data->numeric_buffer_get, format, unit);
-      return ih->data->numeric_buffer_get;
+      char* unit_symbol = iupAttribGetId(ih, "NUMERICUNITSHOWNSYMBOL", col);
+      if (unit_symbol)
+      {
+        if (value)
+          sprintf(ih->data->numeric_buffer_get, format, value, unit_symbol);
+        else
+          sprintf(ih->data->numeric_buffer_get, format, unit_symbol);
+        return ih->data->numeric_buffer_get;
+      }
     }
 
     return (char*)value;
@@ -139,8 +142,8 @@ static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col, const char* v
   }
 
   if (ih->data->numeric_columns[col].unit_shown!=ih->data->numeric_columns[col].unit) 
-    number = ih->data->numeric_columns[col].convert_func(number, ih->data->numeric_columns[col].unit_shown, 
-                                                                 ih->data->numeric_columns[col].unit);
+    number = ih->data->numeric_columns[col].convert_func(number, ih->data->numeric_columns[col].unit, /* from */
+                                                                 ih->data->numeric_columns[col].unit_shown);  /* to */
 
   sprintf(ih->data->numeric_buffer_get, format, number);
   return ih->data->numeric_buffer_get;

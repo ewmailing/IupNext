@@ -300,6 +300,7 @@ iupStrFileGetExt
 iupStrEqualPartial
 iupStrEqualNoCasePartial
 iupStrEqualNoCase
+iupStrEqualNoCaseNoSpace
 iupStrEqual
 iupStrDup
 iupStrCountChar

@@ -7,6 +7,7 @@
     <ClCompile Include="..\srcmatrixex\iupmatex_visible.c" />
     <ClCompile Include="..\srcmatrixex\iupmatex_export.c" />
     <ClCompile Include="..\srcmatrixex\iupmatex_copy.c" />
+    <ClCompile Include="..\srcmatrixex\iupmatex_units.c" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\srcmatrixex\iupmatrixex.def" />

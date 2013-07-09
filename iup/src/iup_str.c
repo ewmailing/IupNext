@@ -29,15 +29,36 @@ int iupStrEqual(const char* str1, const char* str2)
   return (strcmp(str1, str2)==0)? 1: 0;
 }
 
+int iupStrEqualNoCaseNoSpace(const char* str1, const char* str2) 
+{
+  int i = 0;
+  if (str1 == str2) return 1;
+  if (!str1 || !str2 || 
+      tolower(*str1) != tolower(*str2)) 
+    return 0;       
+
+  while (str1[i] && str2[i] && tolower(str1[i])==tolower(str2[i])) 
+  {
+    if (str1[i] == ' ')  /* ignore spaces */
+      i++;
+    i++;
+  }
+  if (str1[i] == str2[i]) return 1;  /* check also for terminator */
+
+  return 0;
+}
+
 int iupStrEqualNoCase(const char* str1, const char* str2) 
 {
   int i = 0;
   if (str1 == str2) return 1;
-  if (!str1 || !str2 || tolower(*str1) != tolower(*str2)) return 0;
+  if (!str1 || !str2 || 
+      tolower(*str1) != tolower(*str2)) 
+    return 0;
 
   while (str1[i] && str2[i] && tolower(str1[i])==tolower(str2[i])) 
     i++;
-  if (str1[i] == str2[i]) return 1; 
+  if (str1[i] == str2[i]) return 1;  /* check also for terminator */
 
   return 0;
 }
@@ -46,12 +67,14 @@ int iupStrEqualNoCasePartial(const char* str1, const char* str2)
 {
   int i = 0;
   if (str1 == str2) return 1;
-  if (!str1 || !str2 || tolower(*str1) != tolower(*str2)) return 0;
+  if (!str1 || !str2 || 
+      tolower(*str1) != tolower(*str2)) 
+    return 0;
 
   while (str1[i] && str2[i] && tolower(str1[i])==tolower(str2[i])) 
     i++;
-  if (str1[i] == str2[i]) return 1; 
-  if (str2[i] == 0) return 1;
+  if (str1[i] == str2[i]) return 1;  /* check also for terminator */
+  if (str2[i] == 0) return 1;  /* is second string is at terminator, then it is partially equal */
 
   return 0;
 }

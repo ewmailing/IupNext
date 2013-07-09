@@ -44,6 +44,7 @@ void iupMatrixExRegisterBusy(Iclass* ic);
 void iupMatrixExRegisterVisible(Iclass* ic);
 void iupMatrixExRegisterExport(Iclass* ic);
 void iupMatrixExRegisterCopy(Iclass* ic);
+void iupMatrixExRegisterUnits(Iclass* ic);
 
 
 #ifdef __cplusplus

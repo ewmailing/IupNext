@@ -171,6 +171,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   iupMatrixExRegisterVisible(ic);
   iupMatrixExRegisterExport(ic);
   iupMatrixExRegisterCopy(ic);
+  iupMatrixExRegisterUnits(ic);
 }
 
 static Iclass* iMatrixExNewClass(void)

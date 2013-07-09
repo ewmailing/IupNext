@@ -91,6 +91,7 @@
     <ClCompile Include="..\srcmatrixex\iupmatex_clipboard.c" />
     <ClCompile Include="..\srcmatrixex\iupmatex_copy.c" />
     <ClCompile Include="..\srcmatrixex\iupmatex_export.c" />
+    <ClCompile Include="..\srcmatrixex\iupmatex_units.c" />
     <ClCompile Include="..\srcmatrixex\iupmatex_visible.c" />
     <ClCompile Include="..\srcmatrixex\iup_matrixex.c" />
   </ItemGroup>

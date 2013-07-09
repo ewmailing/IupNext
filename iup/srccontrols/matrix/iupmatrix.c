@@ -775,16 +775,15 @@ static int iMatrixSetNumericFlag(Ihandle* ih, int col, unsigned char attr, int s
 
 static int iMatrixSetNumericQuantityIndexAttrib(Ihandle* ih, int col, const char* value)
 {
-  int set = value!=NULL && !iupStrFalse(value);
+  int quantity;
+  int set = iupStrToInt(value, &quantity);
   if (iMatrixSetNumericFlag(ih, col, IMAT_IS_NUMERIC, set) && set)
   {
-    int quantity;
-    iupStrToInt(value, &quantity);
+    /* no need to check for a valid quantity since it is done by the actual unit implementation */
     ih->data->numeric_columns[col].quantity = (unsigned char)quantity;
-    ih->data->numeric_columns[col].convert_func = (ImatNumericConvertFunc)IupGetCallback(ih, "_IUPMAT_NUMERICCONVERT_CB");
-
-    if (!ih->data->numeric_info_func)
-      ih->data->numeric_info_func = (ImatNumericInfoFunc)IupGetCallback(ih, "_IUPMAT_NUMERICINFO_CB");
+    ih->data->numeric_columns[col].convert_func = (ImatNumericConvertFunc)IupGetCallback(ih, "NUMERICCONVERT_FUNC");  /* valid only during set of NUMERICQUANTITY */
+    ih->data->numeric_columns[col].unit = 0;   /* Reset units when change quantity */
+    ih->data->numeric_columns[col].unit_shown = 0;
   }
   return 1;
 }
@@ -807,6 +806,7 @@ static int iMatrixSetNumericUnitIndexAttrib(Ihandle* ih, int col, const char* va
     if (!iMatrixInitNumericColumns(ih, col))
       return 0;
 
+    /* no need to check for a valid unit since it is done by the actual unit implementation */
     ih->data->numeric_columns[col].unit = (unsigned char)unit;
     return 1;
   }
@@ -821,6 +821,7 @@ static int iMatrixSetNumericUnitShownIndexAttrib(Ihandle* ih, int col, const cha
     if (!iMatrixInitNumericColumns(ih, col))
       return 0;
 
+    /* no need to check for a valid unit since it is done by the actual unit implementation */
     ih->data->numeric_columns[col].unit_shown = (unsigned char)unit_shown;
     return 1;
   }
