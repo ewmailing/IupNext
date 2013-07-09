@@ -268,13 +268,19 @@ char *iupStrGetLargeMem(int *size)
   /* init buffers array */
   if (buffers_index == -1)
   {
+    int i;
+
     memset(buffers, 0, sizeof(char*)*LARGE_MAX_BUFFERS);
     buffers_index = 0;
+
+    /* clear all memory only once */
+    for (i=0; i<LARGE_MAX_BUFFERS; i++)
+      memset(buffers[i], 0, sizeof(char)*LARGE_SIZE);
   }
 
-  /* clear memory */
-  memset(buffers[buffers_index], 0, LARGE_SIZE);
+  /* DON'T clear memory everytime because the buffer is too large */
   ret_str = buffers[buffers_index];
+  ret_str[0] = 0;
 
   buffers_index++;
   if (buffers_index == LARGE_MAX_BUFFERS)
@@ -301,7 +307,7 @@ static char* iupStrGetSmallMem(void)
     buffers_index = 0;
   }
 
-  /* clear memory */
+  /* always clear memory before returning a new buffer */
   memset(buffers[buffers_index], 0, SMALL_SIZE);
   ret_str = buffers[buffers_index];
 
@@ -361,7 +367,7 @@ char *iupStrGetMemory(int size)
       buffers[buffers_index] = (char*)realloc(buffers[buffers_index], buffers_sizes[buffers_index]);
     }
 
-    /* clear memory */
+    /* always clear memory before returning a new buffer */
     memset(buffers[buffers_index], 0, buffers_sizes[buffers_index]);
     ret_str = buffers[buffers_index];
 
@@ -376,11 +382,10 @@ char *iupStrGetMemory(int size)
 
 char* iupStrReturnStrf(const char* format, ...)
 {
-  int size;
-  char* value = iupStrGetLargeMem(&size);
+  char* value = iupStrGetMemory(1024);
   va_list arglist;
   va_start(arglist, format);
-  vsnprintf(value, size, format, arglist);
+  vsnprintf(value, 1024, format, arglist);
   va_end(arglist);
   return value;
 }

@@ -55,21 +55,22 @@ char* IupGetAttributes(Ihandle *ih)
   char *buffer;
   char *name, *value;
   char sb[128];
+  int size;
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return NULL;
 
-  buffer = iupStrGetLargeMem(NULL);
+  buffer = iupStrGetLargeMem(&size);
   buffer[0] = 0;
 
   name = iupTableFirst(ih->attrib);
-  while (name)
+  while (name && size)
   {
     if (!iupATTRIB_ISINTERNAL(name))
     {
       if (buffer[0] != 0)
-        strcat(buffer,",");
+        { strcat(buffer,","); size--; }
 
       value = iupTableGetCurr(ih->attrib);
       if (iupAttribIsPointer(ih, name))
@@ -77,10 +78,11 @@ char* IupGetAttributes(Ihandle *ih)
         sprintf(sb, "%p", (void*) value);
         value = sb;
       }
-      strcat(buffer, name);
-      strcat(buffer,"=\"");
-      strcat(buffer, value);
-      strcat(buffer,"\"");
+
+      strcat(buffer, name);  size -= strlen(name);
+      strcat(buffer,"=\"");  size--;
+      strcat(buffer, value);  size -= strlen(value);
+      strcat(buffer,"\"");  size--;
     }
 
     name = iupTableNext(ih->attrib);
@@ -791,11 +793,10 @@ void iupAttribSetStr(Ihandle* ih, const char* name, const char* value)
 
 void iupAttribSetStrf(Ihandle *ih, const char* name, const char* f, ...)
 {
-  int size;
-  char* value = iupStrGetLargeMem(&size);
+  char* value = iupStrGetMemory(1024);
   va_list arglist;
   va_start(arglist, f);
-  vsnprintf(value, size, f, arglist);
+  vsnprintf(value, 1024, f, arglist);
   va_end(arglist);
   iupAttribSetStr(ih, name, value);
 }

@@ -123,6 +123,8 @@ int iupStrHasSpace(const char* str);
 
 
 /** Returns combined values in a formated string using \ref iupStrGetMemory.
+ * This is not supposed to be used for very large strings,
+ * just for combinations of numeric data or constant strings.
  * \ingroup str */
 char* iupStrReturnStrf(const char* format, ...);
 

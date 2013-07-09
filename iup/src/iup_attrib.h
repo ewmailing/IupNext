@@ -49,8 +49,10 @@ void iupAttribSet(Ihandle* ih, const char* name, const char* value);
 void iupAttribSetStr(Ihandle* ih, const char* name, const char* value);
 
 /** Sets the attribute only in the hash table as a string. \n 
- * The string is internally duplicated. Use same format as sprintf. \n
- * It ignores children.
+ * Use same format as sprintf. \n
+ * It ignores children. \n
+ * This is not supposed to be used for very large strings,
+ * just for combinations of numeric data or constant strings.
  * \ingroup attrib */
 void iupAttribSetStrf(Ihandle *ih, const char* name, const char* format, ...);
 
