@@ -56,7 +56,7 @@ static int gtkLabelSetTitleAttrib(Ihandle* ih, const char* value)
         if (next->handle)
           gtk_label_set_mnemonic_widget(label, next->handle);
         else
-          iupAttribSetStr(next, "_IUPGTK_LABELMNEMONIC", (char*)label);  /* used by iupgtkUpdateMnemonic */
+          iupAttribSet(next, "_IUPGTK_LABELMNEMONIC", (char*)label);  /* used by iupgtkUpdateMnemonic */
       }
     }
     return 1;
@@ -294,7 +294,7 @@ static int gtkLabelMapMethod(Ihandle* ih)
   {
     GtkWidget *box = gtk_event_box_new();
     gtk_container_add((GtkContainer*)box, ih->handle);
-    iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)box);
+    iupAttribSet(ih, "_IUP_EXTRAPARENT", (char*)box);
 
     gtk_widget_add_events(box, 
       GDK_POINTER_MOTION_MASK| GDK_POINTER_MOTION_HINT_MASK|
@@ -314,7 +314,7 @@ static int gtkLabelMapMethod(Ihandle* ih)
 
   /* configure for DRAG&DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
-    iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
+    iupAttribSet(ih, "DROPFILESTARGET", "YES");
 
   return IUP_NOERROR;
 }

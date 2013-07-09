@@ -23,9 +23,7 @@
 
 char* iupButtonGetPaddingAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", ih->data->horiz_padding, ih->data->vert_padding);
-  return str;
+  return iupStrReturnIntInt(ih->data->horiz_padding, ih->data->vert_padding, 'x');
 }
 
 static int iButtonSetImagePositionAttrib(Ihandle* ih, const char* value)
@@ -47,14 +45,12 @@ static int iButtonSetImagePositionAttrib(Ihandle* ih, const char* value)
 static char* iButtonGetImagePositionAttrib(Ihandle *ih)
 {
   char* img_pos2str[4] = {"LEFT", "RIGHT", "TOP", "BOTTOM"};
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%s", img_pos2str[ih->data->img_position]);
-  return str;
+  return iupStrReturnStr(img_pos2str[ih->data->img_position]);
 }
 
 static int iButtonSetFocusOnClickAttrib(Ihandle* ih, const char* value)
 {
-  iupAttribSetStr(ih, "CANFOCUS", value);
+  iupAttribSet(ih, "CANFOCUS", value);
   return 1;
 }
 
@@ -67,9 +63,7 @@ static int iButtonSetSpacingAttrib(Ihandle* ih, const char* value)
 
 static char* iButtonGetSpacingAttrib(Ihandle *ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->data->spacing);
-  return str;
+  return iupStrReturnInt(ih->data->spacing);
 }
 
 
@@ -80,8 +74,8 @@ static int iButtonCreateMethod(Ihandle* ih, void** params)
 {
   if (params)
   {
-    if (params[0]) iupAttribStoreStr(ih, "TITLE", (char*)(params[0]));
-    if (params[1]) iupAttribStoreStr(ih, "ACTION", (char*)(params[1]));
+    if (params[0]) iupAttribSetStr(ih, "TITLE", (char*)(params[0]));
+    if (params[1]) iupAttribSetStr(ih, "ACTION", (char*)(params[1]));
   }
   ih->data = iupALLOCCTRLDATA();
 

@@ -146,7 +146,7 @@ static int iMatrixExCreateMethod(Ihandle* ih, void **params)
   ImatExData* matex_data = (ImatExData*)malloc(sizeof(ImatExData));
   memset(matex_data, 0, sizeof(ImatExData));
 
-  iupAttribSetStr(ih, "_IUP_MATEX_DATA", (char*)matex_data);
+  iupAttribSet(ih, "_IUP_MATEX_DATA", (char*)matex_data);
   matex_data->ih = ih;
 
   (void)params;

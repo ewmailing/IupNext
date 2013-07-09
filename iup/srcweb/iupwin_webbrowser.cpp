@@ -119,7 +119,7 @@ public:
   void STDMETHODCALLTYPE NavigateError(IDispatch *pDisp, VARIANT *url, VARIANT *TargetFrameName, 
                      VARIANT *StatusCode, VARIANT_BOOL *Cancel)
   {
-    iupAttribSetStr(ih, "_IUPWEB_FAILED", "1");
+    iupAttribSet(ih, "_IUPWEB_FAILED", "1");
     IFns cb = (IFns)IupGetCallback(ih, "ERROR_CB");
     if (cb)
     {
@@ -172,7 +172,7 @@ static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
   pweb->get_Document(&lpDispatch);
   if (!lpDispatch)
   {
-    iupAttribSetStr(ih, "_IUPWEB_FAILED", NULL);
+    iupAttribSet(ih, "_IUPWEB_FAILED", NULL);
 
     pweb->Navigate(L"about:blank", NULL, NULL, NULL, NULL);
     IupFlush();
@@ -212,7 +212,7 @@ static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
   pweb->get_Document(&lpDispatch);
   if (!lpDispatch)
   {
-    iupAttribSetStr(ih, "_IUPWEB_FAILED", NULL);
+    iupAttribSet(ih, "_IUPWEB_FAILED", NULL);
 
     pweb->Navigate(L"about:blank", NULL, NULL, NULL, NULL);
     IupFlush();
@@ -312,7 +312,7 @@ static int winWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
     var.vt = VT_ARRAY | VT_UI1;
     var.bstrVal = L"_top";
 
-    iupAttribSetStr(ih, "_IUPWEB_FAILED", NULL);
+    iupAttribSet(ih, "_IUPWEB_FAILED", NULL);
 
     pweb->Navigate(wvalue, NULL, &var, NULL, NULL);
     free(wvalue);
@@ -346,7 +346,7 @@ static int winWebBrowserCreateMethod(Ihandle* ih, void **params)
 
   IWebBrowser2 *pweb = NULL;
   punk->QueryInterface(IID_IWebBrowser2, (void **)&pweb);
-  iupAttribSetStr(ih, "_IUPWEB_BROWSER", (char*)pweb);
+  iupAttribSet(ih, "_IUPWEB_BROWSER", (char*)pweb);
 
   /* CComModule implements a COM server module, 
      allowing a client to access the module's components  */
@@ -364,8 +364,8 @@ static int winWebBrowserCreateMethod(Ihandle* ih, void **params)
   /* Connecting to the server's outgoing interface */
   sink->DispEventAdvise(punk);
 
-  iupAttribSetStr(ih, "_IUPWEB_MODULE", (char*)module);
-  iupAttribSetStr(ih, "_IUPWEB_SINK", (char*)sink);
+  iupAttribSet(ih, "_IUPWEB_MODULE", (char*)module);
+  iupAttribSet(ih, "_IUPWEB_SINK", (char*)sink);
   punk->Release();
 
   return IUP_NOERROR; 

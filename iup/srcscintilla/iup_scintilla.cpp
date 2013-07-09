@@ -175,10 +175,7 @@ static int iScintillaSetKeysUnicodeAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetKeysUnicodeAttrib(Ihandle* ih)
 {
-  if (iupScintillaSendMessage(ih, SCI_GETKEYSUNICODE, 0, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_GETKEYSUNICODE, 0, 0)); 
 }
 
 static int iScintillaSetAppendNewlineAttrib(Ihandle* ih, const char* value)
@@ -192,10 +189,7 @@ static int iScintillaSetAppendNewlineAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetAppendNewlineAttrib(Ihandle* ih)
 {
-  if (ih->data->append_newline)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->append_newline); 
 }
 
 static char* iScintillaGetScrollbarAttrib(Ihandle* ih)
@@ -464,7 +458,7 @@ static int winScintillaProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     }
   }
 
-  return iupwinBaseProc(ih, msg, wp, lp, result);
+  return iupwinBaseMsgProc(ih, msg, wp, lp, result);
 }
 #endif
 
@@ -525,7 +519,7 @@ static int iScintillaMapMethod(Ihandle* ih)
 
   /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
-    iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
+    iupAttribSet(ih, "DROPFILESTARGET", "YES");
 
   /* add scrollbar */
   if (ih->data->sb & IUP_SB_HORIZ)
@@ -593,7 +587,7 @@ static int iScintillaCreateMethod(Ihandle* ih, void **params)
   ih->data = iupALLOCCTRLDATA();
   ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
   ih->data->append_newline = 1;
-  iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", "1");
+  iupAttribSet(ih, "_IUP_MULTILINE_TEXT", "1");
 
   /* unused for now */
   ih->data->useBraceHLIndicator = 1;

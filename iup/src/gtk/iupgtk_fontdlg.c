@@ -94,14 +94,14 @@ static int gtkFontDlgPopup(Ihandle* ih, int x, int y)
 #else
     char* fontname = gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dialog));
 #endif
-    iupAttribStoreStr(ih, "VALUE", fontname);
+    iupAttribSetStr(ih, "VALUE", fontname);
     g_free(fontname);
-    iupAttribSetStr(ih, "STATUS", "1");
+    iupAttribSet(ih, "STATUS", "1");
   }
   else
   {
-    iupAttribSetStr(ih, "VALUE", NULL);
-    iupAttribSetStr(ih, "STATUS", NULL);
+    iupAttribSet(ih, "VALUE", NULL);
+    iupAttribSet(ih, "STATUS", NULL);
   }
 
   gtk_widget_destroy(GTK_WIDGET(dialog));  

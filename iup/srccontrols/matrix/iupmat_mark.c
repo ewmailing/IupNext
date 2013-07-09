@@ -71,9 +71,9 @@ static void iMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark, IFniii m
     else
     {
       if (mark)
-        iupAttribSetStrId2(ih, "MARK", lin, col, "1");
+        iupAttribSetId2(ih, "MARK", lin, col, "1");
       else
-        iupAttribSetStrId2(ih, "MARK", lin, col, NULL);
+        iupAttribSetId2(ih, "MARK", lin, col, NULL);
     }
   }
   else
@@ -616,11 +616,11 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, int lin, int col, const char* value)
         {
           if (mark)
           {
-            iupAttribSetStrId2(ih, "MARK", lin, col, "1");
+            iupAttribSetId2(ih, "MARK", lin, col, "1");
             ret = 1;
           }
           else
-            iupAttribSetStrId2(ih, "MARK", lin, col, NULL);
+            iupAttribSetId2(ih, "MARK", lin, col, NULL);
         }
       }
       else

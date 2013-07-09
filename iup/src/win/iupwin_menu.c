@@ -376,7 +376,7 @@ static int winMenuMapMethod(Ihandle* ih)
       if (!ih->handle)
         return IUP_ERROR;
 
-      iupAttribSetStr(ih, "_IUPWIN_POPUP_MENU", "1");
+      iupAttribSet(ih, "_IUPWIN_POPUP_MENU", "1");
     }
   }
 
@@ -529,10 +529,7 @@ static char* winItemGetActiveAttrib(Ihandle* ih)
   if (ih->handle == (InativeHandle*)-1) /* check if submenu is actually created */
     return NULL;
 
-  if (GetMenuState((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND) & MF_GRAYED)
-    return "NO";
-  else
-    return "YES";
+  return iupStrReturnBoolean(!(GetMenuState((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND) & MF_GRAYED));
 }
 
 static int winItemSetValueAttrib(Ihandle* ih, const char* value)
@@ -558,10 +555,7 @@ static int winItemSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* winItemGetValueAttrib(Ihandle* ih)
 {
-  if (GetMenuState((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND) & MF_CHECKED)
-    return "ON";
-  else
-    return "OFF";
+  return iupStrReturnChecked(GetMenuState((HMENU)ih->handle, (UINT)ih->serial, MF_BYCOMMAND) & MF_CHECKED);
 }
 
 static int winItemMapMethod(Ihandle* ih)

@@ -37,10 +37,7 @@ char* iProgressBarGetValueAttrib(Ihandle* ih)
 
 char* iProgressBarGetDashedAttrib(Ihandle* ih)
 {
-  if(ih->data->dashed)
-    return "YES";
-  else 
-    return "NO";
+  return iupStrReturnBoolean(ih->data->dashed);
 }
 
 static int iProgressBarSetMinAttrib(Ihandle* ih, const char* value)

@@ -387,11 +387,9 @@ char* iupmotGetBgColorAttrib(Ihandle* ih)
 {
   unsigned char r, g, b;
   Pixel color;
-  char* str = iupStrGetMemory(20);
   XtVaGetValues(ih->handle, XmNbackground, &color, NULL); 
   iupmotColorGetRGB(color, &r, &g, &b);
-  sprintf(str, "%d %d %d", (int)r, (int)g, (int)b);
-  return str;
+  return iupStrReturnStrf("%d %d %d", (int)r, (int)g, (int)b);
 }
 
 int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
@@ -499,7 +497,7 @@ static Cursor motGetCursor(Ihandle* ih, const char* name)
     cur = (Cursor)iupImageGetCursor(name);
   }
 
-  iupAttribSetStr(ih, str, (char*)cur);
+  iupAttribSet(ih, str, (char*)cur);
   return cur;
 }
 

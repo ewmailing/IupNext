@@ -912,7 +912,7 @@ static Iarray* winCreateTypesList(const char* value)
   char valueTemp[256];
   int i = 0;
 
-  sprintf(valueCopy, "%s", value);
+  strcpy(valueCopy, value);
   while(iupStrToStrStr(valueCopy, valueTemp, valueCopy, ',') > 0)
   {
     newListData = (char**)iupArrayInc(newList);
@@ -938,7 +938,7 @@ static int winSetDropTypesAttrib(Ihandle* ih, const char* value)
   if (drop_types_list)
   {
     winDestroyTypesList(drop_types_list);
-    iupAttribSetStr(ih, "_IUPWIN_DROP_TYPES", NULL);
+    iupAttribSet(ih, "_IUPWIN_DROP_TYPES", NULL);
   }
 
   if(!value)
@@ -946,7 +946,7 @@ static int winSetDropTypesAttrib(Ihandle* ih, const char* value)
 
   drop_types_list = winCreateTypesList(value);
   if (drop_types_list)
-    iupAttribSetStr(ih, "_IUPWIN_DROP_TYPES", (char*)drop_types_list);
+    iupAttribSet(ih, "_IUPWIN_DROP_TYPES", (char*)drop_types_list);
 
   return 1;
 }
@@ -975,7 +975,7 @@ static int winSetDropTargetAttrib(Ihandle* ih, const char* value)
     RevokeDragDrop(ih->handle);
     CoLockObjectExternal((LPUNKNOWN)pDropTarget, FALSE, TRUE);
     ((IDropTarget*)pDropTarget)->lpVtbl->Release((IDropTarget*)pDropTarget);
-    iupAttribSetStr(ih, "_IUPWIN_DROPTARGET", NULL);
+    iupAttribSet(ih, "_IUPWIN_DROPTARGET", NULL);
   }
 
   if (iupStrBoolean(value))
@@ -983,7 +983,7 @@ static int winSetDropTargetAttrib(Ihandle* ih, const char* value)
     pDropTarget = winRegisterDrop(ih);
     CoLockObjectExternal((LPUNKNOWN)pDropTarget, TRUE, FALSE);
     RegisterDragDrop(ih->handle, (IDropTarget*)pDropTarget);
-    iupAttribSetStr(ih, "_IUPWIN_DROPTARGET", (char*)pDropTarget);
+    iupAttribSet(ih, "_IUPWIN_DROPTARGET", (char*)pDropTarget);
   }
 
   return 1;
@@ -995,7 +995,7 @@ static int winSetDragTypesAttrib(Ihandle* ih, const char* value)
   if (drag_types_list)
   {
     winDestroyTypesList(drag_types_list);
-    iupAttribSetStr(ih, "_IUPWIN_DRAG_TYPES", NULL);
+    iupAttribSet(ih, "_IUPWIN_DRAG_TYPES", NULL);
   }
 
   if(!value)
@@ -1003,7 +1003,7 @@ static int winSetDragTypesAttrib(Ihandle* ih, const char* value)
 
   drag_types_list = winCreateTypesList(value);
   if (drag_types_list)
-    iupAttribSetStr(ih, "_IUPWIN_DRAG_TYPES", (char*)drag_types_list);
+    iupAttribSet(ih, "_IUPWIN_DRAG_TYPES", (char*)drag_types_list);
 
   return 1;
 }
@@ -1081,7 +1081,7 @@ void iupwinDestroyDragDrop(Ihandle* ih)
   {
     CoLockObjectExternal((LPUNKNOWN)pDropTarget, TRUE, FALSE);
     ((IDropTarget*)pDropTarget)->lpVtbl->Release((IDropTarget*)pDropTarget);
-    iupAttribSetStr(ih, "_IUPWIN_DROPTARGET", NULL);
+    iupAttribSet(ih, "_IUPWIN_DROPTARGET", NULL);
   }
 }
 

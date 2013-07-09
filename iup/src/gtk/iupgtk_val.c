@@ -76,7 +76,7 @@ static gboolean gtkValButtonReleaseEvent(GtkWidget *widget, GdkEventButton *evt,
 {
   (void)widget;
   (void)evt;
-  iupAttribSetStr(ih, "_IUP_BUTTON_RELEASE", "1");
+  iupAttribSet(ih, "_IUP_BUTTON_RELEASE", "1");
   return FALSE;
 }
 
@@ -109,7 +109,7 @@ static gboolean gtkValChangeValue(GtkRange *range, GtkScrollType scroll, double 
       if (iupAttribGet(ih, "_IUP_BUTTON_RELEASE"))
       {
         cb_old = (IFnd)IupGetCallback(ih, "BUTTON_RELEASE_CB");
-        iupAttribSetStr(ih, "_IUP_BUTTON_RELEASE", NULL);
+        iupAttribSet(ih, "_IUP_BUTTON_RELEASE", NULL);
       }
       else
         cb_old = (IFnd)IupGetCallback(ih, "MOUSEMOVE_CB");

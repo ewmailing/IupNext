@@ -614,7 +614,7 @@ static GdkCursor* gtkGetCursor(Ihandle* ih, const char* name)
   }
 
   /* save the cursor in cache */
-  iupAttribSetStr(ih, str, (char*)cur);
+  iupAttribSet(ih, str, (char*)cur);
 
   return cur;
 }

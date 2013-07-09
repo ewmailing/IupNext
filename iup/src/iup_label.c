@@ -85,11 +85,7 @@ char* iupLabelGetPaddingAttrib(Ihandle* ih)
   /* this method can be called before map */
   int type = iupLabelGetTypeBeforeMap(ih);
   if (type != IUP_LABEL_SEP_HORIZ && type != IUP_LABEL_SEP_VERT)
-  {
-    char *str = iupStrGetMemory(50);
-    sprintf(str, "%dx%d", ih->data->horiz_padding, ih->data->vert_padding);
-    return str;
-  }
+    return iupStrReturnIntInt(ih->data->horiz_padding, ih->data->vert_padding, 'x');
   else
     return NULL;
 }
@@ -101,7 +97,7 @@ char* iupLabelGetPaddingAttrib(Ihandle* ih)
 static int iLabelCreateMethod(Ihandle* ih, void** params)
 {
   if (params && params[0])
-    iupAttribStoreStr(ih, "TITLE", (char*)(params[0]));
+    iupAttribSetStr(ih, "TITLE", (char*)(params[0]));
   
   ih->data = iupALLOCCTRLDATA();
 

@@ -391,37 +391,25 @@ static int winClipboardIsAvailable(UINT format_id)
 static char* winClipboardGetTextAvailableAttrib(Ihandle *ih)
 {
   (void)ih;
-  if (winClipboardIsAvailable(CF_TEXT))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (winClipboardIsAvailable(CF_TEXT)); 
 }
 
 static char* winClipboardGetImageAvailableAttrib(Ihandle *ih)
 {
   (void)ih;
-  if (winClipboardIsAvailable(CF_DIB))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (winClipboardIsAvailable(CF_DIB)); 
 }
 
 static char* winClipboardGetWMFAvailableAttrib(Ihandle *ih)
 {
   (void)ih;
-  if (winClipboardIsAvailable(CF_METAFILEPICT))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (winClipboardIsAvailable(CF_METAFILEPICT)); 
 }
 
 static char* winClipboardGetEMFAvailableAttrib(Ihandle *ih)
 {
   (void)ih;
-  if (winClipboardIsAvailable(CF_ENHMETAFILE))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (winClipboardIsAvailable(CF_ENHMETAFILE)); 
 }
 
 static char* winClipboardGetFormatAvailableAttrib(Ihandle *ih)
@@ -430,10 +418,7 @@ static char* winClipboardGetFormatAvailableAttrib(Ihandle *ih)
   if (format_id==0)
     return NULL;
 
-  if (winClipboardIsAvailable(format_id))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (winClipboardIsAvailable(format_id)); 
 }
 
 static int winClipboardSetAddFormatAttrib(Ihandle *ih, const char *value)

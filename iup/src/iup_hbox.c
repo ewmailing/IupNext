@@ -38,7 +38,7 @@ static int iHboxSetRasterSizeAttrib(Ihandle* ih, const char* value)
       ih->userwidth = s;
     }
   }
-  iupAttribSetStr(ih, "SIZE", NULL); /* clear SIZE in hash table */
+  iupAttribSet(ih, "SIZE", NULL); /* clear SIZE in hash table */
   return 0;
 }
 

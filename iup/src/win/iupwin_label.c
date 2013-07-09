@@ -204,9 +204,7 @@ static char* winLabelGetAlignmentAttrib(Ihandle *ih)
   {
     char* horiz_align2str[3] = {"ALEFT", "ACENTER", "ARIGHT"};
     char* vert_align2str[3] = {"ATOP", "ACENTER", "ABOTTOM"};
-    char *str = iupStrGetMemory(50);
-    sprintf(str, "%s:%s", horiz_align2str[ih->data->horiz_alignment], vert_align2str[ih->data->vert_alignment]);
-    return str;
+    return iupStrReturnStrf("%s:%s", horiz_align2str[ih->data->horiz_alignment], vert_align2str[ih->data->vert_alignment]);
   }
   else
     return NULL;
@@ -367,7 +365,7 @@ static int winLabelMapMethod(Ihandle* ih)
 
   /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
-    iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
+    iupAttribSet(ih, "DROPFILESTARGET", "YES");
 
   return IUP_NOERROR;
 }

@@ -229,11 +229,11 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
     int selection_count;
     char* selection = (char*)malloc(num_lin+1);
 
-    iupAttribSetStr(ih, "LASTERROR", NULL);
+    iupAttribSet(ih, "LASTERROR", NULL);
 
     if (!iMatrixExGetMarkedLines(ih, num_lin, num_col, col, selection, &selection_count))
     {
-      iupAttribSetStr(ih, "LASTERROR", "NOMARKED");
+      iupAttribSet(ih, "LASTERROR", "NOMARKED");
       free(selection);
       return 0;
     }
@@ -248,11 +248,11 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
     int selection_count;
     char* selection = (char*)malloc(num_lin+1);
 
-    iupAttribSetStr(ih, "LASTERROR", NULL);
+    iupAttribSet(ih, "LASTERROR", NULL);
 
     if (!iMatrixExStrGetInterval(value, num_lin, selection, &selection_count))
     {
-      iupAttribSetStr(ih, "LASTERROR", "INVALIDINTERVAL");
+      iupAttribSet(ih, "LASTERROR", "INVALIDINTERVAL");
       free(selection);
       return 0;
     }

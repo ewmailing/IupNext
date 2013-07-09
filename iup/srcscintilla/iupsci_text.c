@@ -74,10 +74,7 @@ char* iupScintillaGetLineAttrib(Ihandle* ih, int line)
 
 char* iupScintillaGetReadOnlyAttrib(Ihandle* ih)
 {
-  if(iupScintillaSendMessage(ih, SCI_GETREADONLY, 0, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_GETREADONLY, 0, 0));
 }
 
 int iupScintillaSetReadOnlyAttrib(Ihandle* ih, const char* value)
@@ -154,10 +151,7 @@ int iupScintillaSetSavePointAttrib(Ihandle* ih, const char* value)
 
 char* iupScintillaGetModifyAttrib(Ihandle* ih)
 {
-  if (iupScintillaSendMessage(ih, SCI_GETMODIFY, 0, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_GETMODIFY, 0, 0)); 
 }
 
 int iupScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value)

@@ -168,7 +168,7 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
 static void iDialogSetModal(Ihandle* ih_popup)
 {
   Ihandle *ih;
-  iupAttribSetStr(ih_popup, "MODAL", "YES");
+  iupAttribSet(ih_popup, "MODAL", "YES");
 
   /* disable all visible dialogs, and mark popup level */
   for (ih = iupDlgListFirst(); ih; ih = iupDlgListNext())
@@ -192,7 +192,7 @@ static void iDialogUnSetModal(Ihandle* ih_popup)
   if (!iupAttribGetBoolean(ih_popup, "MODAL"))
     return;
 
-  iupAttribSetStr(ih_popup, "MODAL", NULL);
+  iupAttribSet(ih_popup, "MODAL", NULL);
 
   /* must enable all visible dialogs at the marked popup level */
   for (ih = iupDlgListFirst(); ih; ih = iupDlgListNext())
@@ -344,10 +344,8 @@ int iupDialogGetChildId(Ihandle* ih)
 
 char* iupDialogGetChildIdStr(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
   Ihandle* dialog = IupGetDialog(ih);
-  sprintf(str, "iup-%s-%d", ih->iclass->name, dialog->data->child_id);
-  return str;
+  return iupStrReturnStrf("iup-%s-%d", ih->iclass->name, dialog->data->child_id);
 }
 
 int iupDialogPopup(Ihandle* ih, int x, int y)
@@ -579,7 +577,6 @@ static int iDialogSetSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iDialogGetSizeAttrib(Ihandle* ih)
 {
-  char* str;
   int charwidth, charheight, width, height;
 
   if (ih->handle)
@@ -597,10 +594,7 @@ static char* iDialogGetSizeAttrib(Ihandle* ih)
   if (charwidth == 0 || charheight == 0)
     return NULL;  /* if font failed get from the hash table */
 
-  str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", iupRASTER2WIDTH(width, charwidth), 
-                        iupRASTER2HEIGHT(height, charheight));
-  return str;
+  return iupStrReturnIntInt(iupRASTER2WIDTH(width, charwidth), iupRASTER2HEIGHT(height, charheight), 'x');
 }
 
 static int iDialogSetRasterSizeAttrib(Ihandle* ih, const char* value)
@@ -630,7 +624,6 @@ static int iDialogSetRasterSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iDialogGetRasterSizeAttrib(Ihandle* ih)
 {
-  char* str;
   int width, height;
 
   if (ih->handle)
@@ -647,9 +640,7 @@ static char* iDialogGetRasterSizeAttrib(Ihandle* ih)
   if (!width && !height)
     return NULL;
 
-  str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", width, height);
-  return str;
+  return iupStrReturnIntInt(width, height, 'x');
 }
 
 static int iDialogSetVisibleAttrib(Ihandle* ih, const char* value)
@@ -696,44 +687,38 @@ static int iDialogSetDialogFrameAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
   {
-    iupAttribSetStr(ih, "RESIZE", "NO");
-    iupAttribSetStr(ih, "MAXBOX", "NO");
-    iupAttribSetStr(ih, "MINBOX", "NO");
+    iupAttribSet(ih, "RESIZE", "NO");
+    iupAttribSet(ih, "MAXBOX", "NO");
+    iupAttribSet(ih, "MINBOX", "NO");
   }
   else
   {
-    iupAttribSetStr(ih, "RESIZE", NULL);
-    iupAttribSetStr(ih, "MAXBOX", NULL);
-    iupAttribSetStr(ih, "MINBOX", NULL);
+    iupAttribSet(ih, "RESIZE", NULL);
+    iupAttribSet(ih, "MAXBOX", NULL);
+    iupAttribSet(ih, "MINBOX", NULL);
   }
   return 1;
 }
 
 static char* iDialogGetXAttrib(Ihandle *ih)
 {
-  char* str = iupStrGetMemory(20);
   int x = 0;
   iupdrvDialogGetPosition(ih, NULL, &x, NULL);
-  sprintf(str, "%d", x);
-  return str;
+  return iupStrReturnInt(x);
 }
 
 static char* iDialogGetYAttrib(Ihandle *ih)
 {
-  char* str = iupStrGetMemory(20);
   int y = 0;
   iupdrvDialogGetPosition(ih, NULL, NULL, &y);
-  sprintf(str, "%d", y);
-  return str;
+  return iupStrReturnInt(y);
 }
 
 static char* iDialogGetScreenPositionAttrib(Ihandle *ih)
 {
   int x = 0, y = 0;
-  char* str = iupStrGetMemory(20);
   iupdrvDialogGetPosition(ih, NULL, &x, &y);
-  sprintf(str, "%d,%d", x, y);
-  return str;
+  return iupStrReturnIntInt(x, y, ',');
 }
 
 static int iDialogSetMenuAttrib(Ihandle* ih, const char* value)

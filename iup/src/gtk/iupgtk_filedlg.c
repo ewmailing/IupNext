@@ -83,7 +83,7 @@ static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
       all_names = iupArrayAdd(names_array, dir_len+1);
       memcpy(all_names+cur_len, filename, dir_len);
       all_names[cur_len+dir_len] = '0';
-      iupAttribStoreStr(ih, "DIRECTORY", all_names);
+      iupAttribSetStr(ih, "DIRECTORY", all_names);
       all_names[cur_len+dir_len] = '|';
 
       dir_len++; /* skip separator */
@@ -103,7 +103,7 @@ static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
   all_names = iupArrayInc(names_array);
   all_names[cur_len+1] = 0;
 
-  iupAttribStoreStr(ih, "VALUE", iupgtkStrConvertFromFilename(all_names));
+  iupAttribSetStr(ih, "VALUE", iupgtkStrConvertFromFilename(all_names));
 
   iupArrayDestroy(names_array);
 }
@@ -125,9 +125,9 @@ static void gtkFileDlgUpdatePreviewGLCanvas(Ihandle* ih)
   {
 #ifndef GTK_MAC
   #ifdef WIN32                                 
-      iupAttribSetStr(glcanvas, "HWND", iupAttribGet(ih, "HWND"));
+      iupAttribSet(glcanvas, "HWND", iupAttribGet(ih, "HWND"));
   #else
-      iupAttribSetStr(glcanvas, "XWINDOW", iupAttribGet(ih, "XWINDOW"));
+      iupAttribSet(glcanvas, "XWINDOW", iupAttribGet(ih, "XWINDOW"));
   #endif
 #endif
     glcanvas->iclass->Map(glcanvas);
@@ -136,15 +136,15 @@ static void gtkFileDlgUpdatePreviewGLCanvas(Ihandle* ih)
 
 static void gtkFileDlgPreviewRealize(GtkWidget *widget, Ihandle *ih)
 {
-  iupAttribSetStr(ih, "PREVIEWDC", iupgtkGetNativeGraphicsContext(widget));
-  iupAttribSetStr(ih, "WID", (char*)widget);
+  iupAttribSet(ih, "PREVIEWDC", iupgtkGetNativeGraphicsContext(widget));
+  iupAttribSet(ih, "WID", (char*)widget);
 
 #ifndef GTK_MAC
   #ifdef WIN32                                 
-    iupAttribSetStr(ih, "HWND", (char*)GDK_WINDOW_HWND(iupgtkGetWindow(widget)));
+    iupAttribSet(ih, "HWND", (char*)GDK_WINDOW_HWND(iupgtkGetWindow(widget)));
   #else
-    iupAttribSetStr(ih, "XWINDOW", (char*)GDK_WINDOW_XID(iupgtkGetWindow(widget)));
-    iupAttribSetStr(ih, "XDISPLAY", (char*)iupdrvGetDisplay());
+    iupAttribSet(ih, "XWINDOW", (char*)GDK_WINDOW_XID(iupgtkGetWindow(widget)));
+    iupAttribSet(ih, "XDISPLAY", (char*)iupdrvGetDisplay());
   #endif
 #endif
 
@@ -241,7 +241,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     gtk_stock_lookup(value, &item);
     value = item.label;
 
-    iupAttribStoreStr(ih, "TITLE", iupgtkStrConvertFromUTF8(value));
+    iupAttribSetStr(ih, "TITLE", iupgtkStrConvertFromUTF8(value));
     value = iupAttribGet(ih, "TITLE");
     iupStrRemoveChar(value, '_');
   }
@@ -281,10 +281,10 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   {
     char* dir = iupStrFileGetPath(value);
     int len = strlen(dir);
-    iupAttribStoreStr(ih, "DIRECTORY", dir);
+    iupAttribSetStr(ih, "DIRECTORY", dir);
     free(dir);
 
-    iupAttribStoreStr(ih, "FILE", value+len);  /* remove DIRECTORY from FILE */
+    iupAttribSetStr(ih, "FILE", value+len);  /* remove DIRECTORY from FILE */
   }
 
   value = iupAttribGet(ih, "DIRECTORY");
@@ -336,7 +336,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
 
       sprintf(atrib, "_IUPDLG_FILTER%d", i+1);
-      iupAttribSetStr(ih, atrib, (char*)filter);
+      iupAttribSet(ih, atrib, (char*)filter);
 
       if (i+1 == filter_index)
         gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
@@ -398,7 +398,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 #endif
       g_signal_connect(preview_canvas, "realize", G_CALLBACK(gtkFileDlgPreviewRealize), ih);
 
-      iupAttribSetStr(ih, "_IUPDLG_FILE_CHOOSER", (char*)dialog);
+      iupAttribSet(ih, "_IUPDLG_FILE_CHOOSER", (char*)dialog);
 
       gtk_file_chooser_set_preview_widget(GTK_FILE_CHOOSER(dialog), frame);
     }
@@ -531,13 +531,13 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       else
       {
         char* filename = (char*)file_list->data;
-        iupAttribStoreStr(ih, "VALUE", iupgtkStrConvertFromFilename(filename));
+        iupAttribSetStr(ih, "VALUE", iupgtkStrConvertFromFilename(filename));
         g_free(filename);
 
         /* store the DIRECTORY */
         {
           char* dir = iupStrFileGetPath(iupAttribGet(ih, "VALUE"));
-          iupAttribStoreStr(ih, "DIRECTORY", dir);
+          iupAttribSetStr(ih, "DIRECTORY", dir);
           free(dir);
         }
       }
@@ -549,14 +549,14 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     else
     {
       char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-      iupAttribStoreStr(ih, "VALUE", iupgtkStrConvertFromFilename(filename));
+      iupAttribSetStr(ih, "VALUE", iupgtkStrConvertFromFilename(filename));
       file_exist = gtkIsFile(filename);
       dir_exist = gtkIsDirectory(filename);
 
       /* store the DIRECTORY */
       {
         char* dir = iupStrFileGetPath(filename);
-        iupAttribStoreStr(ih, "DIRECTORY", dir);
+        iupAttribSetStr(ih, "DIRECTORY", dir);
         free(dir);
       }
 
@@ -565,20 +565,20 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
     if (dir_exist)
     {
-      iupAttribSetStr(ih, "FILEEXIST", NULL);
-      iupAttribSetStr(ih, "STATUS", "0");
+      iupAttribSet(ih, "FILEEXIST", NULL);
+      iupAttribSet(ih, "STATUS", "0");
     }
     else
     {
       if (file_exist)  /* check if file exists */
       {
-        iupAttribSetStr(ih, "FILEEXIST", "YES");
-        iupAttribSetStr(ih, "STATUS", "0");
+        iupAttribSet(ih, "FILEEXIST", "YES");
+        iupAttribSet(ih, "STATUS", "0");
       }
       else
       {
-        iupAttribSetStr(ih, "FILEEXIST", "NO");
-        iupAttribSetStr(ih, "STATUS", "1");
+        iupAttribSet(ih, "FILEEXIST", "NO");
+        iupAttribSet(ih, "STATUS", "1");
       }
     }
 
@@ -595,10 +595,10 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   }
   else
   {
-    iupAttribSetStr(ih, "FILTERUSED", NULL);
-    iupAttribSetStr(ih, "VALUE", NULL);
-    iupAttribSetStr(ih, "FILEEXIST", NULL);
-    iupAttribSetStr(ih, "STATUS", "-1");
+    iupAttribSet(ih, "FILTERUSED", NULL);
+    iupAttribSet(ih, "VALUE", NULL);
+    iupAttribSet(ih, "FILEEXIST", NULL);
+    iupAttribSet(ih, "STATUS", "-1");
   }
 
   gtk_widget_destroy(GTK_WIDGET(dialog));  

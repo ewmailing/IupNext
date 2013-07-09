@@ -60,7 +60,7 @@ char* IupGetAttributes(Ihandle *ih)
   if (!iupObjectCheck(ih))
     return NULL;
 
-  buffer = iupStrGetMemory(10240);
+  buffer = iupStrGetLargeMem(NULL);
   buffer[0] = 0;
 
   name = iupTableFirst(ih->attrib);
@@ -219,7 +219,12 @@ void IupSetAttributeId(Ihandle *ih, const char* name, int id, const char *value)
     return;
 
   if (iupClassObjectSetAttributeId(ih, name, id, value)!=0) /* store strings and pointers */
-    iupAttribSetStrId(ih, name, id, value);
+    iupAttribSetId(ih, name, id, value);
+}
+
+void IupSetStrId(Ihandle *ih, const char* name, int id, const char *value)
+{
+  IupStoreAttributeId(ih, name, id, value);
 }
 
 void IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char *value)
@@ -233,7 +238,7 @@ void IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char *valu
     return;
 
   if (iupClassObjectSetAttributeId(ih, name, id, value)==1) /* store only strings */
-    iupAttribStoreStrId(ih, name, id, value);
+    iupAttribSetStrId(ih, name, id, value);
 }
 
 char* IupGetAttributeId(Ihandle *ih, const char* name, int id)
@@ -266,7 +271,12 @@ void IupSetAttributeId2(Ihandle* ih, const char* name, int lin, int col, const c
     return;
 
   if (iupClassObjectSetAttributeId2(ih, name, lin, col, value)!=0) /* store strings and pointers */
-    iupAttribSetStrId2(ih, name, lin, col, value);
+    iupAttribSetId2(ih, name, lin, col, value);
+}
+
+void IupSetStrId2(Ihandle* ih, const char* name, int lin, int col, const char* value)
+{
+  IupStoreAttributeId2(ih, name, lin, col, value);
 }
 
 void IupStoreAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value)
@@ -280,7 +290,7 @@ void IupStoreAttributeId2(Ihandle* ih, const char* name, int lin, int col, const
     return;
 
   if (iupClassObjectSetAttributeId2(ih, name, lin, col, value)==1) /* store only strings */
-    iupAttribStoreStrId2(ih, name, lin, col, value);
+    iupAttribSetStrId2(ih, name, lin, col, value);
 }
 
 char* IupGetAttributeId2(Ihandle* ih, const char* name, int lin, int col)
@@ -327,6 +337,17 @@ float IupGetFloatId(Ihandle *ih, const char* name, int id)
 void IupGetRGBId(Ihandle *ih, const char* name, int id, unsigned char *r, unsigned char *g, unsigned char *b)
 {
   iupStrToRGB(IupGetAttributeId(ih, name, id), r, g, b);
+}
+
+void IupSetStrfId(Ihandle *ih, const char* name, int id, const char* f, ...)
+{
+  int size;
+  char* value = iupStrGetLargeMem(&size);
+  va_list arglist;
+  va_start(arglist, f);
+  vsnprintf(value, size, f, arglist);
+  va_end(arglist);
+  IupStoreAttributeId(ih, name, id, value);
 }
 
 void IupSetfAttributeId(Ihandle *ih, const char* name, int id, const char* f, ...)
@@ -388,6 +409,17 @@ void IupGetRGBId2(Ihandle *ih, const char* name, int lin, int col, unsigned char
   iupStrToRGB(IupGetAttributeId2(ih, name, lin, col), r, g, b);
 }
 
+void IupSetStrfId2(Ihandle* ih, const char* name, int lin, int col, const char* f, ...)
+{
+  int size;
+  char* value = iupStrGetLargeMem(&size);
+  va_list arglist;
+  va_start(arglist, f);
+  vsnprintf(value, size, f, arglist);
+  va_end(arglist);
+  IupStoreAttributeId2(ih, name, lin, col, value);
+}
+
 void IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* f, ...)
 {
   int size;
@@ -439,15 +471,20 @@ void IupSetAttribute(Ihandle *ih, const char* name, const char *value)
     return;
 
   if (iupATTRIB_ISINTERNAL(name))
-    iupAttribSetStr(ih, name, value);
+    iupAttribSet(ih, name, value);
   else
   {
     if (iupClassObjectSetAttribute(ih, name, value, &inherit)!=0) /* store strings and pointers */
-      iupAttribSetStr(ih, name, value);
+      iupAttribSet(ih, name, value);
 
     if (inherit)
       iAttribNotifyChildren(ih, name, value);
   }
+}
+
+void IupSetStr(Ihandle *ih, const char* name, const char *value)
+{
+  IupStoreAttribute(ih, name, value);
 }
 
 void IupStoreAttribute(Ihandle *ih, const char* name, const char *value)
@@ -468,11 +505,11 @@ void IupStoreAttribute(Ihandle *ih, const char* name, const char *value)
     return;
 
   if (iupATTRIB_ISINTERNAL(name))
-    iupAttribStoreStr(ih, name, value);
+    iupAttribSetStr(ih, name, value);
   else
   {
     if (iupClassObjectSetAttribute(ih, name, value, &inherit)==1) /* store only strings */
-      iupAttribStoreStr(ih, name, value);
+      iupAttribSetStr(ih, name, value);
 
     if (inherit)
       iAttribNotifyChildren(ih, name, value);
@@ -487,7 +524,7 @@ static void iAttribResetChildren(Ihandle *ih, const char* name)
     /* set only if an inheritable attribute at the child */
     if (iAttribIsInherit(child, name))
     {
-      iupAttribSetStr(child, name, NULL);
+      iupAttribSet(child, name, NULL);
 
       iAttribResetChildren(child, name);
     }
@@ -506,7 +543,7 @@ void IupResetAttribute(Ihandle *ih, const char* name)
   if (!iupObjectCheck(ih))
     return;
 
-  iupAttribSetStr(ih, name, NULL);
+  iupAttribSet(ih, name, NULL);
 
   if (iAttribIsInherit(ih, name))
     iAttribResetChildren(ih, name);
@@ -584,8 +621,13 @@ int IupGetInt2(Ihandle *ih, const char* name)
   char *value = IupGetAttribute(ih, name);
   if (value)
   {
-    if (!iupStrToIntInt(value, &i1, &i2, 'x'))
-      iupStrToIntInt(value, &i1, &i2, ':');
+    char sep = 'x';
+    if (strchr(value, ':')!=NULL)
+      sep = ':';
+    else if (strchr(value, ',')!=NULL)
+      sep = ',';
+
+    iupStrToIntInt(value, &i1, &i2, sep);
   }
   return i2;
 }
@@ -596,8 +638,15 @@ int IupGetIntInt(Ihandle *ih, const char* name, int *i1, int *i2)
   char *value = IupGetAttribute(ih, name);
   if (value)
   {
-    int count = iupStrToIntInt(value, &_i1, &_i2, 'x');
-    if (!count) count = iupStrToIntInt(value, &_i1, &_i2, ':');
+    int count;
+
+    char sep = 'x';
+    if (strchr(value, ':')!=NULL)
+      sep = ':';
+    else if (strchr(value, ',')!=NULL)
+      sep = ',';
+
+    count = iupStrToIntInt(value, &_i1, &_i2, sep);
     if (i1) *i1 = _i1;
     if (i2) *i2 = _i2;
     return count;
@@ -608,6 +657,17 @@ int IupGetIntInt(Ihandle *ih, const char* name, int *i1, int *i2)
 void IupGetRGB(Ihandle *ih, const char* name, unsigned char *r, unsigned char *g, unsigned char *b)
 {
   iupStrToRGB(IupGetAttribute(ih, name), r, g, b);
+}
+
+void IupSetStrf(Ihandle *ih, const char* name, const char* f, ...)
+{
+  int size;
+  char* value = iupStrGetLargeMem(&size);
+  va_list arglist;
+  va_start(arglist, f);
+  vsnprintf(value, size, f, arglist);
+  va_end(arglist);
+  IupStoreAttribute(ih, name, value);
 }
 
 void IupSetfAttribute(Ihandle *ih, const char* name, const char* f, ...)
@@ -682,7 +742,7 @@ void IupSetAttributeHandle(Ihandle *ih, const char* name, Ihandle *ih_named)
       return;
 
     iupClassObjectSetAttribute(ih, name, handle_name, &inherit);
-    iupAttribStoreStr(ih, name, handle_name);
+    iupAttribSetStr(ih, name, handle_name);
   }
   else
     IupStoreGlobal(name, handle_name);
@@ -713,7 +773,7 @@ Ihandle* IupSetAtt(const char* handle_name, Ihandle* ih, const char* name, ...)
   return ih;
 }
 
-void iupAttribSetStr(Ihandle* ih, const char* name, const char* value)
+void iupAttribSet(Ihandle* ih, const char* name, const char* value)
 {
   if (!value)
     iupTableRemove(ih->attrib, name);
@@ -721,7 +781,7 @@ void iupAttribSetStr(Ihandle* ih, const char* name, const char* value)
     iupTableSet(ih->attrib, name, (void*)value, IUPTABLE_POINTER);
 }
 
-void iupAttribStoreStr(Ihandle* ih, const char* name, const char* value)
+void iupAttribSetStr(Ihandle* ih, const char* name, const char* value)
 {
   if (!value)
     iupTableRemove(ih->attrib, name);
@@ -737,21 +797,28 @@ void iupAttribSetStrf(Ihandle *ih, const char* name, const char* f, ...)
   va_start(arglist, f);
   vsnprintf(value, size, f, arglist);
   va_end(arglist);
-  iupAttribStoreStr(ih, name, value);
+  iupAttribSetStr(ih, name, value);
 }
 
 void iupAttribSetInt(Ihandle *ih, const char* name, int num)
 {
   char value[20];  /* +4,294,967,296 */
   sprintf(value, "%d", num);
-  iupAttribStoreStr(ih, name, value);
+  iupAttribSetStr(ih, name, value);
 }
 
 void iupAttribSetFloat(Ihandle *ih, const char* name, float num)
 {
   char value[80];
   sprintf(value, "%.9f", (double)num);  /* maximum float precision */
-  iupAttribStoreStr(ih, name, value);
+  iupAttribSetStr(ih, name, value);
+}
+
+void iupAttribSetId(Ihandle *ih, const char* name, int id, const char* value)
+{
+  char nameid[100];
+  sprintf(nameid, "%s%d", name, id);
+  iupAttribSet(ih, nameid, value);
 }
 
 void iupAttribSetStrId(Ihandle *ih, const char* name, int id, const char* value)
@@ -759,13 +826,6 @@ void iupAttribSetStrId(Ihandle *ih, const char* name, int id, const char* value)
   char nameid[100];
   sprintf(nameid, "%s%d", name, id);
   iupAttribSetStr(ih, nameid, value);
-}
-
-void iupAttribStoreStrId(Ihandle *ih, const char* name, int id, const char* value)
-{
-  char nameid[100];
-  sprintf(nameid, "%s%d", name, id);
-  iupAttribStoreStr(ih, nameid, value);
 }
 
 static void iAttribSetNameId2(char* nameid, const char* name, int lin, int col)
@@ -778,18 +838,18 @@ static void iAttribSetNameId2(char* nameid, const char* name, int lin, int col)
     sprintf(nameid, "%s%d:%d", name, lin, col);
 }
 
+void iupAttribSetId2(Ihandle *ih, const char* name, int lin, int col, const char* value)
+{
+  char nameid[100];
+  iAttribSetNameId2(nameid, name, lin, col);
+  iupAttribSet(ih, nameid, value);
+}
+
 void iupAttribSetStrId2(Ihandle *ih, const char* name, int lin, int col, const char* value)
 {
   char nameid[100];
   iAttribSetNameId2(nameid, name, lin, col);
   iupAttribSetStr(ih, nameid, value);
-}
-
-void iupAttribStoreStrId2(Ihandle *ih, const char* name, int lin, int col, const char* value)
-{
-  char nameid[100];
-  iAttribSetNameId2(nameid, name, lin, col);
-  iupAttribStoreStr(ih, nameid, value);
 }
 
 void iupAttribSetIntId(Ihandle *ih, const char* name, int id, int num)

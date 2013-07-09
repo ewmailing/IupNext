@@ -73,7 +73,6 @@ int iupBaseSetSizeAttrib(Ihandle* ih, const char* value)
 
 char* iupBaseGetSizeAttrib(Ihandle* ih)
 {
-  char* str;
   int charwidth, charheight, width, height;
 
   if (ih->handle)
@@ -91,10 +90,7 @@ char* iupBaseGetSizeAttrib(Ihandle* ih)
   if (charwidth == 0 || charheight == 0)
     return NULL;  /* if font failed get from the hash table */
 
-  str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", iupRASTER2WIDTH(width, charwidth), 
-                        iupRASTER2HEIGHT(height, charheight));
-  return str;
+  return iupStrReturnIntInt(iupRASTER2WIDTH(width, charwidth), iupRASTER2HEIGHT(height, charheight), 'x');
 }
 
 int iupBaseSetRasterSizeAttrib(Ihandle* ih, const char* value)
@@ -114,7 +110,7 @@ int iupBaseSetRasterSizeAttrib(Ihandle* ih, const char* value)
     ih->userwidth = w;
     ih->userheight = h;
   }
-  iupAttribSetStr(ih, "SIZE", NULL); /* clear SIZE in hash table */
+  iupAttribSet(ih, "SIZE", NULL); /* clear SIZE in hash table */
   return 0;
 }
 
@@ -126,7 +122,6 @@ char* iupBaseGetClientOffsetAttrib(Ihandle* ih)
 
 char* iupBaseGetRasterSizeAttrib(Ihandle* ih)
 {
-  char* str;
   int width, height;
 
   if (ih->handle)
@@ -143,37 +138,28 @@ char* iupBaseGetRasterSizeAttrib(Ihandle* ih)
   if (!width && !height)
     return NULL;
 
-  str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", width, height);
-  return str;
+  return iupStrReturnIntInt(width, height, 'x');
 }
 
 char* iupBaseGetCharSizeAttrib(Ihandle* ih)
 {
-  char* str;
   int charwidth, charheight;
 
   iupdrvFontGetCharSize(ih, &charwidth, &charheight);
   if (charwidth == 0 || charheight == 0)
     return NULL;
 
-  str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", charwidth, charheight);
-  return str;
+  return iupStrReturnIntInt(charwidth, charheight, 'x');
 }
 
 static char* iBaseGetNaturalSizeAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", ih->naturalwidth, ih->naturalheight);
-  return str;
+  return iupStrReturnIntInt(ih->naturalwidth, ih->naturalheight, 'x');
 }
 
 static char* iBaseGetPositionAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(50);
-  sprintf(str, "%d,%d", ih->x, ih->y);
-  return str;
+  return iupStrReturnIntInt(ih->x, ih->y, ',');
 }
 
 static int iBaseSetPositionAttrib(Ihandle* ih, const char* value)
@@ -185,36 +171,27 @@ static int iBaseSetPositionAttrib(Ihandle* ih, const char* value)
 static char* iBaseGetXAttrib(Ihandle *ih)
 {
   int x = 0, y = 0;
-  char* str = iupStrGetMemory(20);
   iupdrvClientToScreen(ih, &x, &y);
-  sprintf(str, "%d", x);
-  return str;
+  return iupStrReturnInt(x);
 }
 
 static char* iBaseGetYAttrib(Ihandle *ih)
 {
   int x = 0, y = 0;
-  char* str = iupStrGetMemory(20);
   iupdrvClientToScreen(ih, &x, &y);
-  sprintf(str, "%d", y);
-  return str;
+  return iupStrReturnInt(y);
 }
 
 static char* iBaseGetScreenPositionAttrib(Ihandle *ih)
 {
   int x = 0, y = 0;
-  char* str = iupStrGetMemory(20);
   iupdrvClientToScreen(ih, &x, &y);
-  sprintf(str, "%d,%d", x, y);
-  return str;
+  return iupStrReturnIntInt(x, y, ',');
 }
 
 char* iupBaseGetActiveAttrib(Ihandle *ih)
 {
-  if (iupdrvIsActive(ih))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupdrvIsActive(ih)); 
 }
 
 static int iBaseNativeParentIsActive(Ihandle* ih)
@@ -242,10 +219,7 @@ int iupBaseSetActiveAttrib(Ihandle* ih, const char* value)
 
 char* iupBaseGetVisibleAttrib(Ihandle* ih)
 {
-  if (iupdrvIsVisible(ih))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupdrvIsVisible(ih)); 
 }
 
 int iupBaseSetVisibleAttrib(Ihandle* ih, const char* value)
@@ -354,7 +328,7 @@ int iupBaseSetNameAttrib(Ihandle* ih, const char* value)
   {
     char attrib[1024] = "_IUP_DIALOG_CHILD_";
     strcat(attrib, value);
-    iupAttribSetStr(dialog, attrib, (char*)ih);
+    iupAttribSet(dialog, attrib, (char*)ih);
   }
   return 1;
 }
@@ -374,10 +348,8 @@ static char* iBaseGetFloatingAttrib(Ihandle* ih)
 {
   if (ih->flags & IUP_FLOATING_IGNORE)
     return "IGNORE";
-  else if (ih->flags & IUP_FLOATING)
-    return "YES";
-  else
-    return "NO";
+  else 
+    return iupStrReturnBoolean (ih->flags & IUP_FLOATING); 
 }
 
 int iupBaseSetMaxSizeAttrib(Ihandle* ih, const char* value)

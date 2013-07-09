@@ -384,7 +384,6 @@ static int iExpanderButton_CB(Ihandle* bar, int button, int pressed, int x, int 
 
 static char* iExpanderGetClientSizeAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(20);
   int width = ih->currentwidth;
   int height = ih->currentheight;
   int bar_size = iExpanderGetBarSize(ih);
@@ -396,14 +395,12 @@ static char* iExpanderGetClientSizeAttrib(Ihandle* ih)
 
   if (width < 0) width = 0;
   if (height < 0) height = 0;
-  sprintf(str, "%dx%d", width, height);
-  return str;
+  return iupStrReturnIntInt(width, height, 'x');
 }
 
 static char* iExpanderGetClientOffsetAttrib(Ihandle* ih)
 {
   int dx = 0, dy = 0;
-  char* str = iupStrGetMemory(20);
   int bar_size = iExpanderGetBarSize(ih);
 
   if (ih->data->position == IEXPANDER_LEFT)
@@ -411,8 +408,7 @@ static char* iExpanderGetClientOffsetAttrib(Ihandle* ih)
   else if (ih->data->position == IEXPANDER_TOP)
     dy += bar_size;
 
-  sprintf(str, "%dx%d", dx, dy);
-  return str;
+  return iupStrReturnIntInt(dx, dy, 'x');
 }
 
 static int iExpanderSetPositionAttrib(Ihandle* ih, const char* value)
@@ -440,10 +436,8 @@ static int iExpanderSetBarSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iExpanderGetBarSizeAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(30);
   int bar_size = iExpanderGetBarSize(ih);
-  sprintf(str, "%d", bar_size);
-  return str;
+  return iupStrReturnInt(bar_size);
 }
 
 static int iExpanderSetUpdateAttrib(Ihandle* ih, const char* value)
@@ -483,7 +477,7 @@ static int iExpanderSetAutoShowAttrib(Ihandle* ih, const char* value)
       ih->data->timer = IupTimer();
       IupSetAttribute(ih->data->timer, "TIME", "1000");  /* 1 second */
       IupSetCallback(ih->data->timer, "ACTION_CB", iExpanderTimer_cb);
-      iupAttribSetStr(ih->data->timer, "_IUP_EXPANDER", (char*)ih);  /* 1 second */
+      iupAttribSet(ih->data->timer, "_IUP_EXPANDER", (char*)ih);  /* 1 second */
     }
   }
   else
@@ -496,10 +490,7 @@ static int iExpanderSetAutoShowAttrib(Ihandle* ih, const char* value)
 
 static char* iExpanderGetAutoShowAttrib(Ihandle* ih)
 {
-  if (ih->data->auto_show)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->auto_show); 
 }
 
 

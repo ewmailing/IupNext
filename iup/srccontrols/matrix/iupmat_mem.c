@@ -44,7 +44,7 @@ static void iMatrixGetInitialValues(Ihandle* ih)
         if (*value)
           ih->data->cells[lin][col].value = iupStrDup(value);
 
-        iupAttribSetStrId2(ih, "", lin, col, NULL);
+        iupAttribSetId2(ih, "", lin, col, NULL);
       }
     }
   }

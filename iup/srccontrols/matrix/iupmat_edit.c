@@ -97,8 +97,8 @@ static int iMatrixEditCallMenuDropCb(Ihandle* ih, int lin, int col)
     char* value = iupMatrixCellGetValue(ih, lin, col);
     if (!value) value = "";
 
-    iupAttribSetStr(menu, "PREVIOUSVALUE", value);
-    iupAttribSetStr(menu, "_IUP_MATRIX", (char*)ih);
+    iupAttribSet(menu, "PREVIOUSVALUE", value);
+    iupAttribSet(menu, "_IUP_MATRIX", (char*)ih);
 
     ret = cb(ih, menu, lin, col);
     if (ret == IUP_DEFAULT)
@@ -206,14 +206,14 @@ static int iMatrixEditCancel(Ihandle* ih, int focus, int update, int ignore)
     if (iupAttribGet(ih, "_IUPMAT_CALL_EDITION"))
       return IUP_DEFAULT;
 
-    iupAttribSetStr(ih, "_IUPMAT_CALL_EDITION", "1");
+    iupAttribSet(ih, "_IUPMAT_CALL_EDITION", "1");
     ret = iMatrixEditCallEditionCb(ih, 0, update);
-    iupAttribSetStr(ih, "_IUPMAT_CALL_EDITION", NULL);
+    iupAttribSet(ih, "_IUPMAT_CALL_EDITION", NULL);
 
     if (ret == IUP_IGNORE && ignore)
       return IUP_IGNORE;
 
-    iupAttribSetStr(ih, "_IUPMAT_IGNOREFOCUS", "1");
+    iupAttribSet(ih, "_IUPMAT_IGNOREFOCUS", "1");
 
     IupSetAttribute(ih->data->datah, "VISIBLE", "NO");
     IupSetAttribute(ih->data->datah, "ACTIVE",  "NO");
@@ -224,7 +224,7 @@ static int iMatrixEditCancel(Ihandle* ih, int focus, int update, int ignore)
       ih->data->has_focus = 1; /* set this so even if getfocus_cb is not called the focus is drawn */
     }
 
-    iupAttribSetStr(ih, "_IUPMAT_IGNOREFOCUS", NULL);
+    iupAttribSet(ih, "_IUPMAT_IGNOREFOCUS", NULL);
 
 #ifdef SunOS
     /* Usually when the edit control is hidden the matrix is automatically repainted by the system, except in SunOS. */
@@ -243,7 +243,7 @@ static int iMatrixEditDropDown_CB(Ihandle* ih, int state)
      to another control the kill focus callback is not called. */
   Ihandle* ih_matrix = ih->parent;
   if (state == 1)
-    iupAttribSetStr(ih_matrix, "_IUPMAT_DROPDOWN", "1");
+    iupAttribSet(ih_matrix, "_IUPMAT_DROPDOWN", "1");
 
   return IUP_DEFAULT;
 }
@@ -257,8 +257,8 @@ static int iMatrixEditKillFocus_CB(Ihandle* ih)
     if (iupAttribGet(ih_matrix, "_IUPMAT_DROPDOWN") ||  /* from iMatrixEditDropDown_CB, in Motif */
         iupAttribGet(ih_matrix, "_IUPMAT_DOUBLECLICK"))  /* from iMatrixMouseLeftPress, in Motif */
     {
-      iupAttribSetStr(ih_matrix, "_IUPMAT_DOUBLECLICK", NULL);
-      iupAttribSetStr(ih_matrix, "_IUPMAT_DROPDOWN", NULL);
+      iupAttribSet(ih_matrix, "_IUPMAT_DOUBLECLICK", NULL);
+      iupAttribSet(ih_matrix, "_IUPMAT_DROPDOWN", NULL);
       return IUP_DEFAULT;
     }
   }
@@ -299,7 +299,7 @@ int iupMatrixEditShow(Ihandle* ih)
   /* work around for Windows when using Multiline */
   if (iupAttribGet(ih, "_IUPMAT_IGNORE_SHOW"))
   {
-    iupAttribSetStr(ih, "_IUPMAT_IGNORE_SHOW", NULL);
+    iupAttribSet(ih, "_IUPMAT_IGNORE_SHOW", NULL);
     return 0;
   }
 
@@ -484,7 +484,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
         if (iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Win32") && IupGetInt(ih, "MULTILINE"))
         {
           /* work around for Windows when using Multiline */
-          iupAttribSetStr(ih_matrix, "_IUPMAT_IGNORE_SHOW", "1");
+          iupAttribSet(ih_matrix, "_IUPMAT_IGNORE_SHOW", "1");
         }
 
         if (iupMatrixAuxCallLeaveCellCb(ih_matrix) != IUP_IGNORE)

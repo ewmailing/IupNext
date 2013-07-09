@@ -37,15 +37,16 @@ int iupAttribIsPointer(Ihandle* ih, const char *name);
 
 
 /** Sets the attribute only in the hash table as a pointer. \n
+ * Only generic pointers and constant strings can be set as value. \n
  * It ignores children.
  * \ingroup attrib */
-void iupAttribSetStr(Ihandle* ih, const char* name, const char* value);
+void iupAttribSet(Ihandle* ih, const char* name, const char* value);
 
 /** Sets the attribute only in the hash table as a string. \n 
  * The string is internally duplicated. \n
  * It ignores children.
  * \ingroup attrib */
-void iupAttribStoreStr(Ihandle* ih, const char* name, const char* value);
+void iupAttribSetStr(Ihandle* ih, const char* name, const char* value);
 
 /** Sets the attribute only in the hash table as a string. \n 
  * The string is internally duplicated. Use same format as sprintf. \n
@@ -59,21 +60,21 @@ void iupAttribSetStrf(Ihandle *ih, const char* name, const char* format, ...);
  * \ingroup attrib */
 void iupAttribSetInt(Ihandle *ih, const char* name, int num);
 
+/** Same as \ref iupAttribSet with an id.
+ * \ingroup attrib */
+void iupAttribSetId(Ihandle *ih, const char* name, int id, const char* value);
+
 /** Same as \ref iupAttribSetStr with an id.
  * \ingroup attrib */
 void iupAttribSetStrId(Ihandle *ih, const char* name, int id, const char* value);
 
-/** Same as \ref iupAttribStoreStr with an id.
+/** Same as \ref iupAttribSet with lin and col.
  * \ingroup attrib */
-void iupAttribStoreStrId(Ihandle *ih, const char* name, int id, const char* value);
+void iupAttribSetId2(Ihandle *ih, const char* name, int lin, int col, const char* value);
 
 /** Same as \ref iupAttribSetStr with lin and col.
  * \ingroup attrib */
 void iupAttribSetStrId2(Ihandle *ih, const char* name, int lin, int col, const char* value);
-
-/** Same as \ref iupAttribStoreStr with lin and col.
- * \ingroup attrib */
-void iupAttribStoreStrId2(Ihandle *ih, const char* name, int lin, int col, const char* value);
 
 /** Same as \ref iupAttribSetInt with an id.
  * \ingroup attrib */

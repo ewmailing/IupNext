@@ -61,7 +61,7 @@ int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
     tips_hwnd = winTipsCreate(ih->handle);
 
     iupwinHandleAdd(ih, tips_hwnd);
-    iupAttribSetStr(ih, "_IUPWIN_TIPSWIN", (char*)tips_hwnd);
+    iupAttribSet(ih, "_IUPWIN_TIPSWIN", (char*)tips_hwnd);
   }
 
   if (value)
@@ -79,7 +79,7 @@ void iupwinTipsDestroy(Ihandle* ih)
   {
     winTipsSendMessage(ih, tips_hwnd, TTM_DELTOOL);
 
-    iupAttribSetStr(ih, "_IUPWIN_TIPSWIN", NULL);
+    iupAttribSet(ih, "_IUPWIN_TIPSWIN", NULL);
 
     iupwinHandleRemove(tips_hwnd);
     DestroyWindow(tips_hwnd);
@@ -106,10 +106,7 @@ char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih)
   if (!tips_hwnd)
     return NULL;
 
-  if (IsWindowVisible(tips_hwnd))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (IsWindowVisible(tips_hwnd)); 
 }
 
 void iupwinTipsUpdateInfo(Ihandle* ih, HWND tips_hwnd)

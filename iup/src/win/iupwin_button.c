@@ -471,9 +471,7 @@ static char* winButtonGetAlignmentAttrib(Ihandle *ih)
 {
   char* horiz_align2str[3] = {"ALEFT", "ACENTER", "ARIGHT"};
   char* vert_align2str[3] = {"ATOP", "ACENTER", "ABOTTOM"};
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%s:%s", horiz_align2str[ih->data->horiz_alignment], vert_align2str[ih->data->vert_alignment]);
-  return str;
+  return iupStrReturnStrf("%s:%s", horiz_align2str[ih->data->horiz_alignment], vert_align2str[ih->data->vert_alignment]);
 }
 
 static int winButtonSetPaddingAttrib(Ihandle* ih, const char* value)
@@ -495,7 +493,7 @@ static int winButtonSetBgColorAttrib(Ihandle* ih, const char* value)
   /* update internal image cache for controls that have the IMAGE attribute */
   if (ih->data->type != IUP_BUTTON_TEXT)
   {
-    iupAttribSetStr(ih, "BGCOLOR", value);
+    iupAttribSet(ih, "BGCOLOR", value);
     iupImageUpdateParent(ih);
     iupdrvRedrawNow(ih);
   }
@@ -512,11 +510,7 @@ static char* winButtonGetBgColorAttrib(Ihandle* ih)
   {
     COLORREF cr;
     if (iupwinDrawGetThemeButtonBgColor(ih->handle, &cr))
-    {
-      char* str = iupStrGetMemory(20);
-      sprintf(str, "%d %d %d", (int)GetRValue(cr), (int)GetGValue(cr), (int)GetBValue(cr));
-      return str;
-    }
+      return iupStrReturnStrf("%d %d %d", (int)GetRValue(cr), (int)GetGValue(cr), (int)GetBValue(cr));
   }
 
   if (iupAttribGet(ih, "IMPRESS"))
@@ -567,7 +561,7 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       if ((msg==WM_LBUTTONDOWN && !iupAttribGetBoolean(ih, "CANFOCUS")) ||
           msg==WM_LBUTTONDBLCLK)
       {
-        iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", "1");
+        iupAttribSet(ih, "_IUPWINBUT_SELECTED", "1");
         iupdrvRedrawNow(ih);
       }
       break;
@@ -584,7 +578,7 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       {
         if (iupAttribGet(ih, "_IUPWINBUT_SELECTED"))
         {
-          iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", NULL);
+          iupAttribSet(ih, "_IUPWINBUT_SELECTED", NULL);
           iupdrvRedrawNow(ih);
         }
 
@@ -622,12 +616,12 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_MOUSELEAVE:
     if (!iupwin_comctl32ver6 && iupAttribGetBoolean(ih, "FLAT"))
     {
-      iupAttribSetStr(ih, "_IUPWINBUT_ENTERWIN", NULL);
+      iupAttribSet(ih, "_IUPWINBUT_ENTERWIN", NULL);
       iupdrvRedrawNow(ih);
     }
     if (iupAttribGet(ih, "_IUPWINBUT_SELECTED"))
     {
-      iupAttribSetStr(ih, "_IUPWINBUT_SELECTED", NULL);
+      iupAttribSet(ih, "_IUPWINBUT_SELECTED", NULL);
       iupdrvRedrawNow(ih);
     }
     break;
@@ -636,7 +630,7 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     {
       if (!iupAttribGet(ih, "_IUPWINBUT_ENTERWIN"))
       {
-        iupAttribSetStr(ih, "_IUPWINBUT_ENTERWIN", "1");
+        iupAttribSet(ih, "_IUPWINBUT_ENTERWIN", "1");
         iupdrvRedrawNow(ih);
       }
     }
@@ -711,14 +705,14 @@ static int winButtonWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
         if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION"))  /* to avoid double calls when pressing enter and a dialog is displayed */
         {
           int ret;
-          iupAttribSetStr(ih, "_IUPBUT_INSIDE_ACTION", "1");
+          iupAttribSet(ih, "_IUPBUT_INSIDE_ACTION", "1");
 
           ret = cb(ih);
           if (ret == IUP_CLOSE)
             IupExitLoop();
 
           if (ret!=IUP_IGNORE && iupObjectCheck(ih))
-            iupAttribSetStr(ih, "_IUPBUT_INSIDE_ACTION", NULL);
+            iupAttribSet(ih, "_IUPBUT_INSIDE_ACTION", NULL);
         }
       }
     }

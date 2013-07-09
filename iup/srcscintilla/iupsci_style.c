@@ -65,10 +65,7 @@ char* iupScintillaGetVisibleStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(iupScintillaSendMessage(ih, SCI_STYLEGETVISIBLE, style, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_STYLEGETVISIBLE, style, 0)); 
 }
 
 int iupScintillaSetVisibleStyleAttrib(Ihandle* ih, int style, const char* value)
@@ -89,10 +86,7 @@ char* iupScintillaGetHotSpotStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(iupScintillaSendMessage(ih, SCI_STYLEGETHOTSPOT, style, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_STYLEGETHOTSPOT, style, 0)); 
 }
 
 int iupScintillaSetHotSpotStyleAttrib(Ihandle* ih, int style, const char* value)
@@ -158,10 +152,7 @@ char* iupScintillaGetEolFilledStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(iupScintillaSendMessage(ih, SCI_STYLEGETEOLFILLED, style, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_STYLEGETEOLFILLED, style, 0)); 
 }
 
 int iupScintillaSetEolFilledStyleAttrib(Ihandle* ih, int style, const char* value)
@@ -293,10 +284,7 @@ char* iupScintillaGetUnderlineStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(iupScintillaSendMessage(ih, SCI_STYLEGETUNDERLINE, style, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_STYLEGETUNDERLINE, style, 0)); 
 }
 
 int iupScintillaSetUnderlineStyleAttrib(Ihandle* ih, int style, const char* value)
@@ -317,10 +305,7 @@ char* iupScintillaGetItalicStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(iupScintillaSendMessage(ih, SCI_STYLEGETITALIC, style, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_STYLEGETITALIC, style, 0)); 
 }
 
 int iupScintillaSetItalicStyleAttrib(Ihandle* ih, int style, const char* value)
@@ -341,10 +326,7 @@ char* iupScintillaGetBoldStyleAttrib(Ihandle* ih, int style)
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  if(iupScintillaSendMessage(ih, SCI_STYLEGETBOLD, style, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_STYLEGETBOLD, style, 0)); 
 }
 
 int iupScintillaSetBoldStyleAttrib(Ihandle* ih, int style, const char* value)

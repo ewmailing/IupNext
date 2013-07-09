@@ -91,14 +91,14 @@ static int winMessageDlgPopup(Ihandle* ih, int x, int y)
 
   if (result == 0)
   {
-    iupAttribSetStr(ih, "BUTTONRESPONSE", NULL);
+    iupAttribSet(ih, "BUTTONRESPONSE", NULL);
     return IUP_ERROR;
   }
 
   if (result == IDNO || result == IDCANCEL)
-    iupAttribSetStr(ih, "BUTTONRESPONSE", "2");
+    iupAttribSet(ih, "BUTTONRESPONSE", "2");
   else
-    iupAttribSetStr(ih, "BUTTONRESPONSE", "1");
+    iupAttribSet(ih, "BUTTONRESPONSE", "1");
 
   return IUP_NOERROR;
 }

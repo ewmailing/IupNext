@@ -368,11 +368,9 @@ static void winCanvasUpdateVerScroll(Ihandle* ih, WORD winop)
 
 static char* winCanvasGetDrawSizeAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(20);
   RECT rect;
   GetClientRect(ih->handle, &rect);
-  sprintf(str, "%dx%d", (int)(rect.right-rect.left), (int)(rect.bottom-rect.top));
-  return str;
+  return iupStrReturnIntInt((int)(rect.right-rect.left), (int)(rect.bottom-rect.top), 'x');
 }
 
 static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
@@ -404,13 +402,13 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(ih->handle, &ps);
-        iupAttribSetStr(ih, "HDC_WMPAINT", (char*)hdc);
+        iupAttribSet(ih, "HDC_WMPAINT", (char*)hdc);
         iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", ps.rcPaint.left, ps.rcPaint.top, ps.rcPaint.right-ps.rcPaint.left, ps.rcPaint.bottom-ps.rcPaint.top);
 
         cb(ih, ih->data->posx, ih->data->posy);
 
-        iupAttribSetStr(ih, "CLIPRECT", NULL);
-        iupAttribSetStr(ih, "HDC_WMPAINT", NULL);
+        iupAttribSet(ih, "CLIPRECT", NULL);
+        iupAttribSet(ih, "HDC_WMPAINT", NULL);
         EndPaint(ih->handle, &ps);
       }
       break;
@@ -611,9 +609,9 @@ static int winCanvasMapMethod(Ihandle* ih)
     dwStyle = WS_CHILD|WS_CLIPCHILDREN|WS_VSCROLL|WS_HSCROLL|MDIS_ALLCHILDSTYLES;
     dwExStyle = WS_EX_CLIENTEDGE;
 
-    iupAttribSetStr(ih, "BORDER", "NO");
+    iupAttribSet(ih, "BORDER", "NO");
 
-    iupAttribSetStr(IupGetDialog(ih), "MDICLIENT_HANDLE", (char*)ih);
+    iupAttribSet(IupGetDialog(ih), "MDICLIENT_HANDLE", (char*)ih);
 
     clientdata = &clientstruct;
     clientstruct.hWindowMenu = winmenu? winmenu->handle: NULL;
@@ -634,7 +632,7 @@ static int winCanvasMapMethod(Ihandle* ih)
 
   /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
-    iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
+    iupAttribSet(ih, "DROPFILESTARGET", "YES");
 
   return IUP_NOERROR;
 }

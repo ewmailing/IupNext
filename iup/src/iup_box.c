@@ -40,7 +40,6 @@ static int iBoxCreateMethod(Ihandle* ih, void** params)
 
 static char* iBoxGetClientSizeAttrib(Ihandle* ih)
 {
-  char* str;
   int width, height;
 
   if (ih->handle)
@@ -57,13 +56,10 @@ static char* iBoxGetClientSizeAttrib(Ihandle* ih)
   if (!width && !height)
     return NULL;
 
-  str = iupStrGetMemory(50);
-
   width -= 2*ih->data->margin_x;
   height -= 2*ih->data->margin_y;
 
-  sprintf(str, "%dx%d", width, height);
-  return str;
+  return iupStrReturnIntInt(width, height, 'x');
 }
 
 static int iBoxSetCGapAttrib(Ihandle* ih, const char* value)
@@ -87,20 +83,18 @@ static int iBoxSetCGapAttrib(Ihandle* ih, const char* value)
 
 static char* iBoxGetCGapAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
   if (IupClassMatch(ih, "vbox"))
   {
     int charheight;
     iupdrvFontGetCharSize(ih, NULL, &charheight);
-    sprintf(str, "%d", iupRASTER2HEIGHT(ih->data->gap, charheight));
+    return iupStrReturnInt(iupRASTER2HEIGHT(ih->data->gap, charheight));
   }
   else
   {
     int charwidth;
     iupdrvFontGetCharSize(ih, &charwidth, NULL);
-    sprintf(str, "%d", iupRASTER2WIDTH(ih->data->gap, charwidth));
+    return iupStrReturnInt(iupRASTER2WIDTH(ih->data->gap, charwidth));
   }
-  return str;
 }
 
 static int iBoxSetGapAttrib(Ihandle* ih, const char* value)
@@ -111,9 +105,7 @@ static int iBoxSetGapAttrib(Ihandle* ih, const char* value)
 
 static char* iBoxGetGapAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->data->gap);
-  return str;
+  return iupStrReturnInt(ih->data->gap);
 }
 
 static int iBoxSetHomogeneousAttrib(Ihandle* ih, const char* value)
@@ -127,10 +119,7 @@ static int iBoxSetHomogeneousAttrib(Ihandle* ih, const char* value)
 
 static char* iBoxGetHomogeneousAttrib(Ihandle* ih)
 {
-  if (ih->data->is_homogeneous)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->is_homogeneous); 
 }
 
 static int iBoxSetExpandChildrenAttrib(Ihandle* ih, const char* value)
@@ -149,10 +138,7 @@ static int iBoxSetExpandChildrenAttrib(Ihandle* ih, const char* value)
 
 static char* iBoxGetExpandChildrenAttrib(Ihandle* ih)
 {
-  if (ih->data->expand_children)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->expand_children); 
 }
 
 static int iBoxSetNormalizeSizeAttrib(Ihandle* ih, const char* value)
@@ -181,11 +167,9 @@ static int iBoxSetCMarginAttrib(Ihandle* ih, const char* value)
 
 static char* iBoxGetCMarginAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
   int charwidth, charheight;
   iupdrvFontGetCharSize(ih, &charwidth, &charheight);
-  sprintf(str, "%dx%d", iupRASTER2WIDTH(ih->data->margin_x, charwidth), iupRASTER2HEIGHT(ih->data->margin_y, charheight));
-  return str;
+  return iupStrReturnIntInt(iupRASTER2WIDTH(ih->data->margin_x, charwidth), iupRASTER2HEIGHT(ih->data->margin_y, charheight), 'x');
 }
 
 static int iBoxSetMarginAttrib(Ihandle* ih, const char* value)
@@ -196,9 +180,7 @@ static int iBoxSetMarginAttrib(Ihandle* ih, const char* value)
 
 static char* iBoxGetMarginAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", ih->data->margin_x, ih->data->margin_y);
-  return str;
+  return iupStrReturnIntInt(ih->data->margin_x, ih->data->margin_y, 'x');
 }
 
 

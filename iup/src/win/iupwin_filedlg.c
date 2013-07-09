@@ -111,18 +111,18 @@ static void winFileDlgGetFolder(Ihandle *ih)
   selecteditem = SHBrowseForFolder(&browseinfo);
   if (!selecteditem)
   {
-    iupAttribSetStr(ih, "VALUE", NULL);
-    iupAttribSetStr(ih, "STATUS", "-1");
+    iupAttribSet(ih, "VALUE", NULL);
+    iupAttribSet(ih, "STATUS", "-1");
   }
   else
   {
     SHGetPathFromIDList(selecteditem, filename);
-    iupAttribStoreStr(ih, "VALUE", iupwinStrFromSystemFilename(filename));
-    iupAttribSetStr(ih, "STATUS", "0");
+    iupAttribSetStr(ih, "VALUE", iupwinStrFromSystemFilename(filename));
+    iupAttribSet(ih, "STATUS", "0");
   }
 
-  iupAttribSetStr(ih, "FILEEXIST", NULL);
-  iupAttribSetStr(ih, "FILTERUSED", NULL);
+  iupAttribSet(ih, "FILEEXIST", NULL);
+  iupAttribSet(ih, "FILTERUSED", NULL);
 }
 
 /************************************************************************************************/
@@ -322,7 +322,7 @@ static void winFileDlgUpdatePreviewGLCanvas(Ihandle* ih)
   Ihandle* glcanvas = IupGetAttributeHandle(ih, "PREVIEWGLCANVAS");
   if (glcanvas)
   {
-    iupAttribSetStr(glcanvas, "HWND", iupAttribGet(ih, "HWND"));
+    iupAttribSet(glcanvas, "HWND", iupAttribGet(ih, "HWND"));
     glcanvas->iclass->Map(glcanvas);
   }
 }
@@ -355,8 +355,8 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
         iupAttribSetInt(ih, "PREVIEWHEIGHT", rect.bottom - rect.top);
       }
       SetWindowLongPtr(hWnd, DWLP_USER, (LONG_PTR)ih);
-      iupAttribSetStr(ih, "WID", (char*)hWndPreview);
-      iupAttribSetStr(ih, "HWND", (char*)hWndPreview);
+      iupAttribSet(ih, "WID", (char*)hWndPreview);
+      iupAttribSet(ih, "HWND", (char*)hWndPreview);
       winFileDlgUpdatePreviewGLCanvas(ih);
       break;
     }
@@ -369,7 +369,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
         /* callback here always exists */
         IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
         TCHAR filename[IUP_MAX_FILENAME_SIZE];
-        iupAttribSetStr(ih, "PREVIEWDC", (char*)lpDrawItem->hDC);
+        iupAttribSet(ih, "PREVIEWDC", (char*)lpDrawItem->hDC);
         if (winFileDlgGetSelectedFile(ih, hWnd, filename))
         {
           if (winIsFile(filename))
@@ -379,7 +379,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
         }
         else
           cb(ih, NULL, "PAINT");
-        iupAttribSetStr(ih, "PREVIEWDC", NULL);
+        iupAttribSet(ih, "PREVIEWDC", NULL);
       }
       break;
     }
@@ -573,7 +573,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   if (result)
   {
     char* dir = iupStrFileGetPath(iupwinStrFromSystemFilename(openfilename.lpstrFile));
-    iupAttribStoreStr(ih, "DIRECTORY", dir);
+    iupAttribSetStr(ih, "DIRECTORY", dir);
     free(dir);
 
     if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
@@ -593,33 +593,33 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
         openfilename.lpstrFile[i] = TEXT('|');
       }
 
-      iupAttribSetStr(ih, "STATUS", "0");
-      iupAttribSetStr(ih, "FILEEXIST", "YES");
+      iupAttribSet(ih, "STATUS", "0");
+      iupAttribSet(ih, "FILEEXIST", "YES");
     }
     else
     {
       if (winIsFile(openfilename.lpstrFile))  /* check if file exists */
       {
-        iupAttribSetStr(ih, "FILEEXIST", "YES");
-        iupAttribSetStr(ih, "STATUS", "0");
+        iupAttribSet(ih, "FILEEXIST", "YES");
+        iupAttribSet(ih, "STATUS", "0");
       }
       else
       {
-        iupAttribSetStr(ih, "FILEEXIST", "NO");
-        iupAttribSetStr(ih, "STATUS", "1");
+        iupAttribSet(ih, "FILEEXIST", "NO");
+        iupAttribSet(ih, "STATUS", "1");
       }
     }
 
-    iupAttribStoreStr(ih, "VALUE", iupwinStrFromSystemFilename(openfilename.lpstrFile));
+    iupAttribSetStr(ih, "VALUE", iupwinStrFromSystemFilename(openfilename.lpstrFile));
     iupAttribSetInt(ih, "FILTERUSED", (int)openfilename.nFilterIndex);
   }
   else
   {
-    iupAttribSetStr(ih, "FILTERUSED", NULL);
-    iupAttribSetStr(ih, "VALUE", NULL);
-    iupAttribSetStr(ih, "DIRECTORY", NULL);
-    iupAttribSetStr(ih, "FILEEXIST", NULL);
-    iupAttribSetStr(ih, "STATUS", "-1");
+    iupAttribSet(ih, "FILTERUSED", NULL);
+    iupAttribSet(ih, "VALUE", NULL);
+    iupAttribSet(ih, "DIRECTORY", NULL);
+    iupAttribSet(ih, "FILEEXIST", NULL);
+    iupAttribSet(ih, "STATUS", "-1");
   }
 
   if (extfilter) free(extfilter);

@@ -222,10 +222,10 @@ void iupMatrixCellUpdateValue(Ihandle* ih)
 void iupMatrixPrepareDrawData(Ihandle* ih)
 {
   /* FGCOLOR, BGCOLOR and FONT */
-  iupAttribStoreStr(ih, "_IUPMAT_BGCOLOR_PARENT", iupControlBaseGetParentBgColor(ih));
-  iupAttribStoreStr(ih, "_IUPMAT_BGCOLOR", IupGetAttribute(ih, "BGCOLOR"));
-  iupAttribStoreStr(ih, "_IUPMAT_FGCOLOR", IupGetAttribute(ih, "FGCOLOR"));
-  iupAttribStoreStr(ih, "_IUPMAT_FONT", IupGetAttribute(ih, "FONT"));
+  iupAttribSetStr(ih, "_IUPMAT_BGCOLOR_PARENT", iupControlBaseGetParentBgColor(ih));
+  iupAttribSetStr(ih, "_IUPMAT_BGCOLOR", IupGetAttribute(ih, "BGCOLOR"));
+  iupAttribSetStr(ih, "_IUPMAT_FGCOLOR", IupGetAttribute(ih, "FGCOLOR"));
+  iupAttribSetStr(ih, "_IUPMAT_FONT", IupGetAttribute(ih, "FONT"));
 
   ih->data->bgcolor_parent = iupAttribGet(ih, "_IUPMAT_BGCOLOR_PARENT");
   ih->data->bgcolor = iupAttribGet(ih, "_IUPMAT_BGCOLOR");

@@ -23,10 +23,7 @@
 
 static char* iToggleGetRadioAttrib(Ihandle* ih)
 {
-  if (ih->data->radio)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->radio); 
 }
 
 static int iToggleSetFlatAttrib(Ihandle* ih, const char* value)
@@ -38,25 +35,20 @@ static int iToggleSetFlatAttrib(Ihandle* ih, const char* value)
 
 static char* iToggleGetFlatAttrib(Ihandle *ih)
 {
-  if (ih->data->flat)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->flat); 
 }
 
 char* iupToggleGetPaddingAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", ih->data->horiz_padding, ih->data->vert_padding);
-  return str;
+  return iupStrReturnIntInt(ih->data->horiz_padding, ih->data->vert_padding, 'x');
 }
 
 static int iToggleCreateMethod(Ihandle* ih, void** params)
 {
   if (params)
   {
-    if (params[0]) iupAttribStoreStr(ih, "TITLE", (char*)(params[0]));
-    if (params[1]) iupAttribStoreStr(ih, "ACTION", (char*)(params[1]));
+    if (params[0]) iupAttribSetStr(ih, "TITLE", (char*)(params[0]));
+    if (params[1]) iupAttribSetStr(ih, "ACTION", (char*)(params[1]));
   }
   ih->data = iupALLOCCTRLDATA();
   return IUP_NOERROR;

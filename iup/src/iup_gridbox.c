@@ -39,7 +39,6 @@ struct _IcontrolData
 
 static char* iGridBoxGetClientSizeAttrib(Ihandle* ih)
 {
-  char* str;
   int width, height;
 
   if (ih->handle)
@@ -56,13 +55,10 @@ static char* iGridBoxGetClientSizeAttrib(Ihandle* ih)
   if (!width && !height)
     return NULL;
 
-  str = iupStrGetMemory(50);
-
   width -= 2*ih->data->margin_x;
   height -= 2*ih->data->margin_y;
 
-  sprintf(str, "%dx%d", width, height);
-  return str;
+  return iupStrReturnIntInt(width, height, 'x');
 }
 
 static int iGridBoxSetCGapColAttrib(Ihandle* ih, const char* value)
@@ -85,20 +81,16 @@ static int iGridBoxSetCGapLinAttrib(Ihandle* ih, const char* value)
 
 static char* iGridBoxGetCGapLinAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
   int charwidth;
   iupdrvFontGetCharSize(ih, &charwidth, NULL);
-  sprintf(str, "%d", iupRASTER2WIDTH(ih->data->gap_lin, charwidth));
-  return str;
+  return iupStrReturnInt(iupRASTER2WIDTH(ih->data->gap_lin, charwidth));
 }
 
 static char* iGridBoxGetCGapColAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
   int charheight;
   iupdrvFontGetCharSize(ih, NULL, &charheight);
-  sprintf(str, "%d", iupRASTER2HEIGHT(ih->data->gap_col, charheight));
-  return str;
+  return iupStrReturnInt(iupRASTER2HEIGHT(ih->data->gap_col, charheight));
 }
 
 static int iGridBoxSetGapLinAttrib(Ihandle* ih, const char* value)
@@ -109,9 +101,7 @@ static int iGridBoxSetGapLinAttrib(Ihandle* ih, const char* value)
 
 static char* iGridBoxGetGapLinAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->data->gap_lin);
-  return str;
+  return iupStrReturnInt(ih->data->gap_lin);
 }
 
 static int iGridBoxSetGapColAttrib(Ihandle* ih, const char* value)
@@ -122,9 +112,7 @@ static int iGridBoxSetGapColAttrib(Ihandle* ih, const char* value)
 
 static char* iGridBoxGetGapColAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->data->gap_col);
-  return str;
+  return iupStrReturnInt(ih->data->gap_col);
 }
 
 static int iGridBoxSetSizeLinAttrib(Ihandle* ih, const char* value)
@@ -135,9 +123,7 @@ static int iGridBoxSetSizeLinAttrib(Ihandle* ih, const char* value)
 
 static char* iGridBoxGetSizeLinAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->data->size_lin);
-  return str;
+  return iupStrReturnInt(ih->data->size_lin);
 }
 
 static int iGridBoxSetSizeColAttrib(Ihandle* ih, const char* value)
@@ -148,17 +134,12 @@ static int iGridBoxSetSizeColAttrib(Ihandle* ih, const char* value)
 
 static char* iGridBoxGetSizeColAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->data->size_col);
-  return str;
+  return iupStrReturnInt(ih->data->size_col);
 }
 
 static char* iGridBoxGetHomogeneousLinAttrib(Ihandle* ih)
 {
-  if (ih->data->is_homogeneous_lin)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->is_homogeneous_lin); 
 }
 
 static int iGridBoxSetHomogeneousLinAttrib(Ihandle* ih, const char* value)
@@ -172,10 +153,7 @@ static int iGridBoxSetHomogeneousLinAttrib(Ihandle* ih, const char* value)
 
 static char* iGridBoxGetHomogeneousColAttrib(Ihandle* ih)
 {
-  if (ih->data->is_homogeneous_col)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->is_homogeneous_col); 
 }
 
 static int iGridBoxSetHomogeneousColAttrib(Ihandle* ih, const char* value)
@@ -238,11 +216,9 @@ static int iGridBoxSetCMarginAttrib(Ihandle* ih, const char* value)
 
 static char* iGridBoxGetCMarginAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
   int charwidth, charheight;
   iupdrvFontGetCharSize(ih, &charwidth, &charheight);
-  sprintf(str, "%dx%d", iupRASTER2WIDTH(ih->data->margin_x, charwidth), iupRASTER2HEIGHT(ih->data->margin_y, charheight));
-  return str;
+  return iupStrReturnIntInt(iupRASTER2WIDTH(ih->data->margin_x, charwidth), iupRASTER2HEIGHT(ih->data->margin_y, charheight), 'x');
 }
 
 static int iGridBoxSetMarginAttrib(Ihandle* ih, const char* value)
@@ -253,9 +229,7 @@ static int iGridBoxSetMarginAttrib(Ihandle* ih, const char* value)
 
 static char* iGridBoxGetMarginAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", ih->data->margin_x, ih->data->margin_y);
-  return str;
+  return iupStrReturnIntInt(ih->data->margin_x, ih->data->margin_y, 'x');
 }
 
 static int iGridBoxSetOrientationAttrib(Ihandle* ih, const char* value)
@@ -290,41 +264,30 @@ static int iGridBoxSetNumDivAttrib(Ihandle* ih, const char* value)
 
 static char* iGridBoxGetNumDivAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->data->num_div);
-  return str;
+  return iupStrReturnInt(ih->data->num_div);
 }
 
 static char* iGridBoxGetNumColAttrib(Ihandle* ih)
 {
-  char *str;
-
   if (!ih->handle)
     iupBaseComputeNaturalSize(ih);
 
-  str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->data->num_col);
-  return str;
+  return iupStrReturnInt(ih->data->num_col);
 }
 
 static char* iGridBoxGetNumLinAttrib(Ihandle* ih)
 {
-  char *str;
-
   if (!ih->handle)
     iupBaseComputeNaturalSize(ih);
 
-  str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->data->num_lin);
-  return str;
+  return iupStrReturnInt(ih->data->num_lin);
 }
 
 static int iGridBoxGetAlignmentLin(Ihandle* ih, int lin)
 {
   int alignment_lin = ih->data->alignment_lin;
-  char align_str[20], *value;
-  sprintf(align_str, "ALIGNMENTLIN%d", lin);
-  value = iupAttribGet(ih, align_str);
+  char *value;
+  value = iupAttribGetId(ih, "ALIGNMENTLIN", lin);
   if (value)
   {
     if (iupStrEqualNoCase(value, "ABOTTOM"))
@@ -340,9 +303,8 @@ static int iGridBoxGetAlignmentLin(Ihandle* ih, int lin)
 static int iGridBoxGetAlignmentCol(Ihandle* ih, int col)
 {
   int alignment_col = ih->data->alignment_col;
-  char align_str[20], *value;
-  sprintf(align_str, "ALIGNMENTCOL%d", col);
-  value = iupAttribGet(ih, align_str);
+  char *value;
+  value = iupAttribGetId(ih, "ALIGNMENTCOL", col);
   if (value)
   {
     if (iupStrEqualNoCase(value, "ARIGHT"))
@@ -386,9 +348,7 @@ static int iGridBoxSetAlignmentColAttrib(Ihandle* ih, const char* value)
 static char* iGridBoxGetAlignmentColAttrib(Ihandle* ih)
 {
   char* align2str[3] = {"ALEFT", "ACENTER", "ARIGHT"};
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%s", align2str[ih->data->alignment_col]);
-  return str;
+  return iupStrReturnStr(align2str[ih->data->alignment_col]);
 }
 
 

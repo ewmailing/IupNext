@@ -350,12 +350,12 @@ static void motValButtonPressReleaseEvent(Widget w, Ihandle* ih, XButtonEvent* e
 
   if (evt->type==ButtonPress && evt->button==Button1)
   {
-    iupAttribSetStr(ih, "_IUPVAL_IGNOREFOCUS", "1");
+    iupAttribSet(ih, "_IUPVAL_IGNOREFOCUS", "1");
   }
   if (evt->type==ButtonRelease && evt->button==Button1)
   {
-    iupAttribSetStr(ih, "_IUPVAL_IGNOREFOCUS", NULL);
-    iupAttribSetStr(ih, "_IUPVAL_IGNOREKILLFOCUS", "1");
+    iupAttribSet(ih, "_IUPVAL_IGNOREFOCUS", NULL);
+    iupAttribSet(ih, "_IUPVAL_IGNOREKILLFOCUS", "1");
   }
 }
 
@@ -366,7 +366,7 @@ static void motValFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *
 
   if (evt->type == FocusOut && iupAttribGet(ih, "_IUPVAL_IGNOREKILLFOCUS"))
   {
-    iupAttribSetStr(ih, "_IUPVAL_IGNOREKILLFOCUS", NULL);
+    iupAttribSet(ih, "_IUPVAL_IGNOREKILLFOCUS", NULL);
     return;
   }
 

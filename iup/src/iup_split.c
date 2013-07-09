@@ -441,9 +441,7 @@ static int iSplitSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* iSplitGetValueAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(30);
-  sprintf(str, "%d", ih->data->val);
-  return str;
+  return iupStrReturnInt(ih->data->val);
 }
 
 static int iSplitSetBarSizeAttrib(Ihandle* ih, const char* value)
@@ -461,9 +459,7 @@ static int iSplitSetBarSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iSplitGetBarSizeAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(30);
-  sprintf(str, "%d", ih->data->barsize);
-  return str;
+  return iupStrReturnInt(ih->data->barsize);
 }
 
 static int iSplitSetMinMaxAttrib(Ihandle* ih, const char* value)
@@ -490,9 +486,7 @@ static int iSplitSetMinMaxAttrib(Ihandle* ih, const char* value)
 
 static char* iSplitGetMinMaxAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(30);
-  sprintf(str, "%d:%d", ih->data->min, ih->data->max);
-  return str;
+  return iupStrReturnIntInt(ih->data->min, ih->data->max, ':');
 }
 
 static int iSplitSetLayoutDragAttrib(Ihandle* ih, const char* value)
@@ -507,10 +501,7 @@ static int iSplitSetLayoutDragAttrib(Ihandle* ih, const char* value)
 
 static char* iSplitGetLayoutDragAttrib(Ihandle* ih)
 {
-  if (ih->data->layoutdrag)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->layoutdrag); 
 }
 
 static int iSplitSetShowGripAttrib(Ihandle* ih, const char* value)
@@ -530,10 +521,7 @@ static int iSplitSetShowGripAttrib(Ihandle* ih, const char* value)
 
 static char* iSplitGetShowGripAttrib(Ihandle* ih)
 {
-  if (ih->data->showgrip)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->showgrip); 
 }
 
 static int iSplitSetAutoHideAttrib(Ihandle* ih, const char* value)
@@ -565,10 +553,7 @@ static int iSplitSetAutoHideAttrib(Ihandle* ih, const char* value)
 
 static char* iSplitGetAutoHideAttrib(Ihandle* ih)
 {
-  if (ih->data->autohide)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->autohide); 
 }
 
 

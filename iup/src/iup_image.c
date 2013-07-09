@@ -96,7 +96,7 @@ static void iImageStockLoad(const char *name)
   if (ih)
   {
     IupSetHandle(name, ih);
-    iupAttribStoreStr(ih, "_IUPSTOCK_LOAD", name);
+    iupAttribSetStr(ih, "_IUPSTOCK_LOAD", name);
   }
   else if (native_name)
   {
@@ -110,7 +110,7 @@ static void iImageStockLoad(const char *name)
         ih = IupImageRGBA(w,h,NULL);
       else
         ih = IupImageRGB(w,h,NULL);
-      iupAttribSetStr(ih, "_IUPSTOCK_LOAD_HANDLE", (char*)handle);
+      iupAttribSet(ih, "_IUPSTOCK_LOAD_HANDLE", (char*)handle);
       IupSetHandle(name, ih);
     }
   }
@@ -150,7 +150,7 @@ static void iupColorSet(iupColor *c, unsigned char r, unsigned char g, unsigned 
 
 int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
 {
-  char attr[6], *value;
+  char *value;
   unsigned char red, green, blue;
   int i, has_alpha = 0;
   static iupColor default_colors[] = {
@@ -163,8 +163,7 @@ int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
 
   for (i=0;i<16;i++)
   {
-    sprintf(attr, "%d", i);
-    value = iupAttribGet(ih, attr);
+    value = iupAttribGetId(ih, "", i);
 
     if (value)
     {
@@ -189,8 +188,7 @@ int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
 
   for (;i<256;i++)
   {
-    sprintf(attr, "%d", i);
-    value = iupAttribGet(ih, attr);
+    value = iupAttribGetId(ih, "", i);
     if (!value)
       break;
 
@@ -215,23 +213,21 @@ int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
 
 void iupImageInitNonBgColors(Ihandle* ih, unsigned char *colors)
 {
-  char attr[6], *value;
+  char *value;
   int i;
 
   memset(colors, 0, 256);
 
   for (i=0;i<16;i++)
   {
-    sprintf(attr, "%d", i);
-    value = iupAttribGet(ih, attr);
+    value = iupAttribGetId(ih, "", i);
     if (!iupStrEqual(value, "BGCOLOR"))
       colors[i] = 1;
   }
 
   for (;i<256;i++)
   {
-    sprintf(attr, "%d", i);
-    value = iupAttribGet(ih, attr);
+    value = iupAttribGetId(ih, "", i);
     if (!value)
       break;
 
@@ -299,7 +295,7 @@ void* iupImageGetMask(const char* name)
   mask = iupdrvImageCreateMask(ih);
 
   /* save the mask */
-  iupAttribSetStr(ih, "_IUPIMAGE_MASK", (char*)mask);
+  iupAttribSet(ih, "_IUPIMAGE_MASK", (char*)mask);
 
   return mask;
 }
@@ -333,7 +329,7 @@ void* iupImageGetIcon(const char* name)
   icon = iupdrvImageCreateIcon(ih);
 
   /* save the icon */
-  iupAttribSetStr(ih, "_IUPIMAGE_ICON", (char*)icon);
+  iupAttribSet(ih, "_IUPIMAGE_ICON", (char*)icon);
 
   return icon;
 }
@@ -367,7 +363,7 @@ void* iupImageGetCursor(const char* name)
   cursor = iupdrvImageCreateCursor(ih);
 
   /* save the cursor */
-  iupAttribSetStr(ih, "_IUPIMAGE_CURSOR", (char*)cursor);
+  iupAttribSet(ih, "_IUPIMAGE_CURSOR", (char*)cursor);
 
   return cursor;
 }
@@ -475,13 +471,13 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
     return handle;
 
   if (ih_parent && iupAttribGetStr(ih_parent, "FLAT_ALPHA"))
-    iupAttribSetStr(ih, "FLAT_ALPHA", "1");
+    iupAttribSet(ih, "FLAT_ALPHA", "1");
 
   /* Creates the native image */
   handle = iupdrvImageCreateImage(ih, bgcolor, make_inactive);
 
   if (ih_parent && iupAttribGetStr(ih_parent, "FLAT_ALPHA"))
-    iupAttribSetStr(ih, "FLAT_ALPHA", NULL);
+    iupAttribSet(ih, "FLAT_ALPHA", NULL);
 
   if (iupAttribGet(ih, "_IUP_BGCOLOR_DEPEND") && bgcolor && !bg_concat)  /* _IUP_BGCOLOR_DEPEND could be set during creation */
   {
@@ -491,7 +487,7 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
   }
 
   /* save the native image in the cache */
-  iupAttribSetStr(ih, cache_name, (char*)handle);
+  iupAttribSet(ih, cache_name, (char*)handle);
 
   return handle;
 }
@@ -518,16 +514,12 @@ void iupImageUpdateParent(Ihandle *ih)  /* ih here is the element that contains 
 
 static char* iImageGetWidthAttrib(Ihandle *ih)
 {
-  char* str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->currentwidth);
-  return str;
+  return iupStrReturnInt(ih->currentwidth);
 }
 
 static char* iImageGetHeightAttrib(Ihandle *ih)
 {
-  char* str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->currentheight);
-  return str;
+  return iupStrReturnInt(ih->currentheight);
 }
 
 void iupImageClearCache(Ihandle* ih, void* handle)
@@ -561,14 +553,14 @@ static void iImageUnMapMethod(Ihandle* ih)
   if (handle) 
   {
     iupdrvImageDestroy(handle, IUPIMAGE_ICON);
-    iupAttribSetStr(ih, "_IUPIMAGE_ICON", NULL);
+    iupAttribSet(ih, "_IUPIMAGE_ICON", NULL);
   }
 
   handle = iupAttribGet(ih, "_IUPIMAGE_CURSOR");
   if (handle) 
   {
     iupdrvImageDestroy(handle, IUPIMAGE_CURSOR);
-    iupAttribSetStr(ih, "_IUPIMAGE_CURSOR", NULL);
+    iupAttribSet(ih, "_IUPIMAGE_CURSOR", NULL);
   }
 
   /* the remaining images are all IUPIMAGE_IMAGE */
@@ -629,7 +621,7 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
     }
   }
 
-  iupAttribSetStr(ih, "WID", (char*)imgdata);
+  iupAttribSet(ih, "WID", (char*)imgdata);
   iupAttribSetInt(ih, "BPP", bpp);
   iupAttribSetInt(ih, "CHANNELS", channels);
 
@@ -657,7 +649,7 @@ static void iImageDestroyMethod(Ihandle* ih)
   unsigned char* imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   if (imgdata)
   {
-    iupAttribSetStr(ih, "WID", NULL);
+    iupAttribSet(ih, "WID", NULL);
     free(imgdata);
   }
 
@@ -804,15 +796,13 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
   if (channels == 1)
   {
     int c;
-    char str[20];
     char* color;
 
     fprintf(file, "  Ihandle* image = IupImage(%d, %d, imgdata);\n\n", width, height);
 
     for (c = 0; c < 256; c++)
     {
-      sprintf(str, "%d", c);
-      color = IupGetAttribute(ih, str);
+      color = IupGetAttributeId(ih, "", c);
       if (!color)
         break;
 
@@ -893,14 +883,12 @@ static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FI
     int c;
     char* color;
     unsigned char r, g, b;
-    char str[20];
 
     fprintf(file, "    colors = {\n");
 
     for(c = 0; c < 256; c++)
     {
-      sprintf(str, "%d", c);
-      color = IupGetAttribute(ih, str);
+      color = IupGetAttributeId(ih, "", c);
       if (!color)
         break;
 
@@ -952,7 +940,6 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
   {
     int c;
     unsigned char r, g, b;
-    char str[20];
     char* color;
 
     if (fprintf(file, "%s = IMAGE\n", name)<0)
@@ -965,8 +952,7 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
     fprintf(file, "[\n");
     for(c = 0; c < 256; c++)
     {
-      sprintf(str, "%d", c);
-      color = IupGetAttribute(ih, str);
+      color = IupGetAttributeId(ih, "", c);
       if (!color)
       {
         if (c < 16)

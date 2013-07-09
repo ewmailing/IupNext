@@ -67,7 +67,7 @@ static int iCanvasCreateMethod(Ihandle* ih, void** params)
   if (params && params[0])
   {
     char* action = (char*)params[0];
-    iupAttribStoreStr(ih, "ACTION", action);
+    iupAttribSetStr(ih, "ACTION", action);
   }
 
   ih->data = iupALLOCCTRLDATA();

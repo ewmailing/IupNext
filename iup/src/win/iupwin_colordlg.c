@@ -38,7 +38,7 @@ static UINT_PTR winColorDlgHookProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
     iupDialogUpdatePosition(ih);
     ih->handle = NULL;  /* reset handle */
 
-    iupAttribSetStr(ih, "HWND", (char*)hWnd);  /* used by HELP_CB in winDialogBaseProc */
+    iupAttribSet(ih, "HWND", (char*)hWnd);  /* used by HELP_CB in winDialogBaseProc */
 
     hWndItem = GetDlgItem(hWnd, IUP_COLOR_RED);
     SetFocus(hWndItem);
@@ -50,7 +50,7 @@ static char* winColorDlgColorsToString(COLORREF* lpCustColors)
 {
   int i, inc, off = 0;
   char iup_str[20];
-  char* str = iupStrGetMemory(300);
+  char* str = iupStrGetMemory(16*3*20);
   for (i=0; i < 16; i++)
   {
     inc = sprintf(iup_str, "%d %d %d;", (int)GetRValue(*lpCustColors), (int)GetGValue(*lpCustColors), (int)GetBValue(*lpCustColors));
@@ -118,17 +118,17 @@ static int winColorDlgPopup(Ihandle* ih, int x, int y)
 
   if (!ChooseColor(&choosecolor))
   {
-    iupAttribSetStr(ih, "VALUE", NULL);
-    iupAttribSetStr(ih, "COLORTABLE", NULL);
-    iupAttribSetStr(ih, "STATUS", NULL);
+    iupAttribSet(ih, "VALUE", NULL);
+    iupAttribSet(ih, "COLORTABLE", NULL);
+    iupAttribSet(ih, "STATUS", NULL);
     return IUP_NOERROR;
   }
 
   iupAttribSetStrf(ih, "VALUE", "%d %d %d", GetRValue(choosecolor.rgbResult),
                                             GetGValue(choosecolor.rgbResult),
                                             GetBValue(choosecolor.rgbResult));
-  iupAttribSetStr(ih, "COLORTABLE", winColorDlgColorsToString(lpCustColors));
-  iupAttribSetStr(ih, "STATUS", "1");
+  iupAttribSet(ih, "COLORTABLE", winColorDlgColorsToString(lpCustColors));
+  iupAttribSet(ih, "STATUS", "1");
 
   return IUP_NOERROR;
 }

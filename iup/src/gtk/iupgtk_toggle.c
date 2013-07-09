@@ -141,12 +141,12 @@ static int gtkToggleSetValueAttrib(Ihandle* ih, const char* value)
     gtk_toggle_button_set_inconsistent((GtkToggleButton*)ih->handle, FALSE);
 
     /* This action causes the toggled signal to be emitted. */
-    iupAttribSetStr(ih, "_IUPGTK_IGNORE_TOGGLE", "1");
+    iupAttribSet(ih, "_IUPGTK_IGNORE_TOGGLE", "1");
     if (radio)
     {
       last_ih = (Ihandle*)IupGetAttribute(radio, "VALUE_HANDLE");
       if (last_ih)
-        iupAttribSetStr(last_ih, "_IUPGTK_IGNORE_TOGGLE", "1");
+        iupAttribSet(last_ih, "_IUPGTK_IGNORE_TOGGLE", "1");
     }
 
     if (iupStrEqualNoCase(value,"TOGGLE"))
@@ -172,9 +172,9 @@ static int gtkToggleSetValueAttrib(Ihandle* ih, const char* value)
     if (ih->data->type == IUP_TOGGLE_IMAGE)
       gtkToggleUpdateImage(ih, iupdrvIsActive(ih), gtkToggleGetCheck(ih));
 
-    iupAttribSetStr(ih, "_IUPGTK_IGNORE_TOGGLE", NULL);
+    iupAttribSet(ih, "_IUPGTK_IGNORE_TOGGLE", NULL);
     if (last_ih)
-      iupAttribSetStr(last_ih, "_IUPGTK_IGNORE_TOGGLE", NULL);
+      iupAttribSet(last_ih, "_IUPGTK_IGNORE_TOGGLE", NULL);
   }
 
   return 0;
@@ -182,13 +182,7 @@ static int gtkToggleSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* gtkToggleGetValueAttrib(Ihandle* ih)
 {
-  int check = gtkToggleGetCheck(ih);
-  if (check == -1)
-    return "NOTDEF";
-  else if (check == 1)
-    return "ON";
-  else
-    return "OFF";
+  return iupStrReturnChecked(gtkToggleGetCheck(ih));
 }
 
 static int gtkToggleSetTitleAttrib(Ihandle* ih, const char* value)
@@ -280,7 +274,7 @@ static int gtkToggleSetImageAttrib(Ihandle* ih, const char* value)
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
     if (value != iupAttribGet(ih, "IMAGE"))
-      iupAttribSetStr(ih, "IMAGE", (char*)value);
+      iupAttribSet(ih, "IMAGE", (char*)value);
     gtkToggleUpdateImage(ih, iupdrvIsActive(ih), gtkToggleGetCheck(ih));
     return 1;
   }
@@ -293,7 +287,7 @@ static int gtkToggleSetImInactiveAttrib(Ihandle* ih, const char* value)
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
     if (value != iupAttribGet(ih, "IMINACTIVE"))
-      iupAttribSetStr(ih, "IMINACTIVE", (char*)value);
+      iupAttribSet(ih, "IMINACTIVE", (char*)value);
     gtkToggleUpdateImage(ih, iupdrvIsActive(ih), gtkToggleGetCheck(ih));
     return 1;
   }
@@ -306,7 +300,7 @@ static int gtkToggleSetImPressAttrib(Ihandle* ih, const char* value)
   if (ih->data->type == IUP_TOGGLE_IMAGE)
   {
     if (value != iupAttribGet(ih, "IMPRESS"))
-      iupAttribSetStr(ih, "IMPRESS", (char*)value);
+      iupAttribSet(ih, "IMPRESS", (char*)value);
     gtkToggleUpdateImage(ih, iupdrvIsActive(ih), gtkToggleGetCheck(ih));
     return 1;
   }
@@ -473,7 +467,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
       ih->handle = gtk_radio_button_new_from_widget(last_tg);
     else
       ih->handle = gtk_radio_button_new(NULL);
-    iupAttribSetStr(radio, "_IUPGTK_LASTRADIOBUTTON", (char*)ih->handle);
+    iupAttribSet(radio, "_IUPGTK_LASTRADIOBUTTON", (char*)ih->handle);
   }
   else
   {

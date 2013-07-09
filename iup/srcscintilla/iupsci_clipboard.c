@@ -51,10 +51,7 @@ int iupScintillaSetClipboardAttrib(Ihandle *ih, const char *value)
 
 char* iupScintillaGetCanPasteAttrib(Ihandle* ih)
 {
-  if (iupScintillaSendMessage(ih, SCI_CANPASTE, 0, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_CANPASTE, 0, 0)); 
 }
 
 /***** Undo and Redo *****
@@ -81,10 +78,7 @@ int iupScintillaSetUndoAttrib(Ihandle *ih, const char *value)
 
 char* iupScintillaGetUndoAttrib(Ihandle* ih)
 {
-  if (iupScintillaSendMessage(ih, SCI_CANUNDO, 0, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_CANUNDO, 0, 0)); 
 }
 
 int iupScintillaSetRedoAttrib(Ihandle *ih, const char *value)
@@ -98,10 +92,7 @@ int iupScintillaSetRedoAttrib(Ihandle *ih, const char *value)
 
 char* iupScintillaGetRedoAttrib(Ihandle* ih)
 {
-  if (iupScintillaSendMessage(ih, SCI_CANREDO, 0, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_CANREDO, 0, 0)); 
 }
 
 int iupScintillaSetUndoCollectAttrib(Ihandle *ih, const char *value)
@@ -115,9 +106,6 @@ int iupScintillaSetUndoCollectAttrib(Ihandle *ih, const char *value)
 
 char* iupScintillaGetUndoCollectAttrib(Ihandle* ih)
 {
-  if (iupScintillaSendMessage(ih, SCI_GETUNDOCOLLECTION, 0, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_GETUNDOCOLLECTION, 0, 0)); 
 }
 

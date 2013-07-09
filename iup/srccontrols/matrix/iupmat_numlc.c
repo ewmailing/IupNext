@@ -85,14 +85,14 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
         if (a < IMAT_ATTRIB_LINE_ONLY)  /* Update the line attributes */
         {
           value = iupAttribGetId2(ih, attrib[a], lin-count, IUP_INVALID_ID);
-          iupAttribStoreStrId2(ih, attrib[a], lin, IUP_INVALID_ID, value);
+          iupAttribSetStrId2(ih, attrib[a], lin, IUP_INVALID_ID, value);
         }
         else  /* Update the cell attribute */
         {
           for(col = 0; col < ih->data->columns.num; col++)
           {
             value = iupAttribGetId2(ih, attrib[a], lin-count, col);
-            iupAttribStoreStrId2(ih, attrib[a], lin, col, value);
+            iupAttribSetStrId2(ih, attrib[a], lin, col, value);
           }
         }
       }
@@ -101,12 +101,12 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
       {
         if (a < IMAT_ATTRIB_LINE_ONLY)
         {
-          iupAttribSetStrId2(ih, attrib[a], lin, IUP_INVALID_ID, NULL);
+          iupAttribSetId2(ih, attrib[a], lin, IUP_INVALID_ID, NULL);
         }
         else 
         {
           for(col = 0; col < ih->data->columns.num; col++)
-            iupAttribSetStrId2(ih, attrib[a], lin, col, NULL);
+            iupAttribSetId2(ih, attrib[a], lin, col, NULL);
         }
       }
     }
@@ -123,14 +123,14 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
         if (a < IMAT_ATTRIB_LINE_ONLY)  /* Update the line attributes */     
         {
           value = iupAttribGetId2(ih, attrib[a], lin+count, IUP_INVALID_ID);
-          iupAttribStoreStrId2(ih, attrib[a], lin, IUP_INVALID_ID, value);
+          iupAttribSetStrId2(ih, attrib[a], lin, IUP_INVALID_ID, value);
         }
         else  /* Update each cell attribute */
         {
           for(col = 0; col < ih->data->columns.num; col++) 
           {
             value = iupAttribGetId2(ih, attrib[a], lin+count, col);
-            iupAttribStoreStrId2(ih, attrib[a], lin, col, value);
+            iupAttribSetStrId2(ih, attrib[a], lin, col, value);
           }
         }
       }
@@ -139,12 +139,12 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
       {
         if (a < IMAT_ATTRIB_LINE_ONLY)
         {
-          iupAttribSetStrId2(ih, attrib[a], lin, IUP_INVALID_ID, NULL);
+          iupAttribSetId2(ih, attrib[a], lin, IUP_INVALID_ID, NULL);
         }
         else 
         {
           for(col = 0; col < ih->data->columns.num; col++)
-            iupAttribSetStrId2(ih, attrib[a], lin, col, NULL);
+            iupAttribSetId2(ih, attrib[a], lin, col, NULL);
         }
       }
     }
@@ -188,14 +188,14 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
         if (a < IMAT_ATTRIB_COL_ONLY)  /* Update the column attributes */
         {
           value = iupAttribGetId2(ih, attrib[a], IUP_INVALID_ID, col-count);
-          iupAttribStoreStrId2(ih, attrib[a], IUP_INVALID_ID, col, value);
+          iupAttribSetStrId2(ih, attrib[a], IUP_INVALID_ID, col, value);
         }
         else  /* Update the cell attributes */
         {
           for(lin = 0; lin < ih->data->lines.num; lin++)
           {
             value = iupAttribGetId2(ih, attrib[a], lin, col-count);
-            iupAttribStoreStrId2(ih, attrib[a], lin, col, value);
+            iupAttribSetStrId2(ih, attrib[a], lin, col, value);
           }
         }
       }
@@ -204,12 +204,12 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
       {
         if (a < IMAT_ATTRIB_COL_ONLY)
         {
-          iupAttribSetStrId2(ih, attrib[a], IUP_INVALID_ID, col, NULL);
+          iupAttribSetId2(ih, attrib[a], IUP_INVALID_ID, col, NULL);
         }
         else 
         {
           for(lin = 0; lin < ih->data->lines.num; lin++)
-            iupAttribSetStrId2(ih, attrib[a], lin, col, NULL);
+            iupAttribSetId2(ih, attrib[a], lin, col, NULL);
         }
       }
     }
@@ -226,14 +226,14 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
         if (a < IMAT_ATTRIB_COL_ONLY)  /* Update the column attributes */
         {
           value = iupAttribGetId2(ih, attrib[a], IUP_INVALID_ID, col+count);
-          iupAttribStoreStrId2(ih, attrib[a], IUP_INVALID_ID, col, value);
+          iupAttribSetStrId2(ih, attrib[a], IUP_INVALID_ID, col, value);
         }
         else  /* Update the cell attributes */
         {
           for(lin = 0; lin < ih->data->lines.num; lin++)
           {
             value = iupAttribGetId2(ih, attrib[a], lin, col+count);
-            iupAttribStoreStrId2(ih, attrib[a], lin, col, value);
+            iupAttribSetStrId2(ih, attrib[a], lin, col, value);
           }
         }
       }
@@ -242,12 +242,12 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
       {
         if (a < IMAT_ATTRIB_COL_ONLY)
         {
-          iupAttribSetStrId2(ih, attrib[a], IUP_INVALID_ID, col, NULL);
+          iupAttribSetId2(ih, attrib[a], IUP_INVALID_ID, col, NULL);
         }
         else 
         {
           for(lin = 0; lin < ih->data->lines.num; lin++)
-            iupAttribSetStrId2(ih, attrib[a], lin, col, NULL);
+            iupAttribSetId2(ih, attrib[a], lin, col, NULL);
         }
       }
     }

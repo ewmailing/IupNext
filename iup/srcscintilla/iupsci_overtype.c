@@ -25,10 +25,7 @@
 
 char* iupScintillaGetOvertypeAttrib(Ihandle *ih)
 {
-  if(iupScintillaSendMessage(ih, SCI_GETOVERTYPE, 0, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_GETOVERTYPE, 0, 0));
 }
 
 int iupScintillaSetOvertypeAttrib(Ihandle *ih, const char *value)

@@ -343,10 +343,7 @@ static char* motTabsGetTabVisibleAttrib(Ihandle* ih, int pos)
   Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
   XWindowAttributes wa;
   XGetWindowAttributes(iupmot_display, XtWindow(tab_button), &wa);
-  if (wa.map_state == IsViewable)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (wa.map_state == IsViewable); 
 }
 
 
@@ -446,19 +443,19 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     XtOverrideTranslations(child_manager, XtParseTranslationTable("<Configure>: iupTabsConfigure()"));
 
-    tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
+    tabtitle = iupAttribGetId(ih, "TABTITLE", pos);
     if (!tabtitle) 
     {
       tabtitle = iupAttribGet(child, "TABTITLE");
       if (tabtitle)
-        iupTabsAttribSetStrId(ih, "TABTITLE", pos, tabtitle);
+        iupAttribSetStrId(ih, "TABTITLE", pos, tabtitle);
     }
-    tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    tabimage = iupAttribGetId(ih, "TABIMAGE", pos);
     if (!tabimage) 
     {
       tabimage = iupAttribGet(child, "TABIMAGE");
       if (tabimage)
-        iupTabsAttribSetStrId(ih, "TABIMAGE", pos, tabimage);
+        iupAttribSetStrId(ih, "TABIMAGE", pos, tabimage);
     }
     if (!tabtitle && !tabimage)
       tabtitle = "     ";
@@ -520,8 +517,8 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     XtRealizeWidget(child_manager);
     XtRealizeWidget(tab_button);
 
-    iupAttribSetStr(child, "_IUPTAB_CONTAINER", (char*)child_manager);
-    iupAttribSetStr(child, "_IUPMOT_TABBUTTON", (char*)tab_button);
+    iupAttribSet(child, "_IUPTAB_CONTAINER", (char*)child_manager);
+    iupAttribSet(child, "_IUPMOT_TABBUTTON", (char*)tab_button);
     iupAttribSetInt(child, "_IUPMOT_TABNUMBER", pos);
 
     if (pos != iupdrvTabsGetCurrentTab(ih))
@@ -549,9 +546,9 @@ static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
       /* compact the tab number usage */
       motTabsUpdatePageNumber(ih);
 
-      iupAttribSetStr(child, "_IUPTAB_CONTAINER", NULL);
-      iupAttribSetStr(child, "_IUPMOT_TABBUTTON", NULL);
-      iupAttribSetStr(child, "_IUPMOT_TABNUMBER", NULL);
+      iupAttribSet(child, "_IUPTAB_CONTAINER", NULL);
+      iupAttribSet(child, "_IUPMOT_TABBUTTON", NULL);
+      iupAttribSet(child, "_IUPMOT_TABNUMBER", NULL);
     }
   }
 }
@@ -608,7 +605,7 @@ static int motTabsMapMethod(Ihandle* ih)
   motTabsUpdateTabType(ih);
 
   /* current value is now given by the native system */
-  iupAttribSetStr(ih, "_IUPTABS_VALUE_HANDLE", NULL);
+  iupAttribSet(ih, "_IUPTABS_VALUE_HANDLE", NULL);
 
   /* initialize the widget */
   XtRealizeWidget(ih->handle);

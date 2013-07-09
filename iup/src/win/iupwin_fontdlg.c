@@ -40,7 +40,7 @@ static UINT_PTR winFontDlgHookProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM 
     iupDialogUpdatePosition(ih);
     ih->handle = NULL;  /* reset handle */
 
-    iupAttribSetStr(ih, "HWND", (char*)hWnd);  /* used by HELP_CB in winDialogBaseProc */
+    iupAttribSet(ih, "HWND", (char*)hWnd);  /* used by HELP_CB in winDialogBaseProc */
 
     hWndItem = GetDlgItem(hWnd, IUP_FONTFAMILYCOMBOBOX);
     SetFocus(hWndItem);
@@ -132,9 +132,9 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
 
   if (!ChooseFont(&choosefont))
   {
-    iupAttribSetStr(ih, "VALUE", NULL);
-    iupAttribSetStr(ih, "COLOR", NULL);
-    iupAttribSetStr(ih, "STATUS", NULL);
+    iupAttribSet(ih, "VALUE", NULL);
+    iupAttribSet(ih, "COLOR", NULL);
+    iupAttribSet(ih, "STATUS", NULL);
     return IUP_NOERROR;
   }
 
@@ -159,7 +159,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   iupAttribSetStrf(ih, "COLOR", "%d %d %d", GetRValue(choosefont.rgbColors),
                                             GetGValue(choosefont.rgbColors),
                                             GetBValue(choosefont.rgbColors));
-  iupAttribSetStr(ih, "STATUS", "1");
+  iupAttribSet(ih, "STATUS", "1");
 
   return IUP_NOERROR;
 }

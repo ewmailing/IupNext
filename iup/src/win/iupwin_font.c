@@ -177,7 +177,7 @@ static IwinFont* winFontCreateNativeFont(Ihandle *ih, const char* value)
     return NULL;
   }
 
-  iupAttribSetStr(ih, "_IUP_WINFONT", (char*)winfont);
+  iupAttribSet(ih, "_IUP_WINFONT", (char*)winfont);
   return winfont;
 }
 

@@ -143,8 +143,8 @@ void IupPPlotBegin(Ihandle* ih, int strXdata)
 
   inYData = (PlotDataBase*)new PlotData();
 
-  iupAttribSetStr(ih, "_IUP_PPLOT_XDATA",    (char*)inXData);
-  iupAttribSetStr(ih, "_IUP_PPLOT_YDATA",    (char*)inYData);
+  iupAttribSet(ih, "_IUP_PPLOT_XDATA",    (char*)inXData);
+  iupAttribSet(ih, "_IUP_PPLOT_YDATA",    (char*)inYData);
 }
 
 void IupPPlotAdd(Ihandle* ih, float x, float y)
@@ -353,8 +353,8 @@ int IupPPlotEnd(Ihandle* ih)
   legend->mStyle.mFontStyle = iPPlotGetCDFontStyle(IupGetAttribute(ih, "LEGENDFONTSTYLE"));
   legend->mStyle.mFontSize  = IupGetInt(ih, "LEGENDFONTSIZE");
 
-  iupAttribSetStr(ih, "_IUP_PPLOT_XDATA", NULL);
-  iupAttribSetStr(ih, "_IUP_PPLOT_YDATA", NULL);
+  iupAttribSet(ih, "_IUP_PPLOT_XDATA", NULL);
+  iupAttribSet(ih, "_IUP_PPLOT_YDATA", NULL);
 
   ih->data->plt->_redraw = 1;
   return ih->data->plt->_currentDataSetIndex;
@@ -844,10 +844,7 @@ static int iPPlotSetLegendShowAttrib(Ihandle* ih, const char* value)
 
 static char* iPPlotGetLegendShowAttrib(Ihandle* ih)
 {
-  if (ih->data->plt->_plot.mShowLegend)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->plt->_plot.mShowLegend); 
 }
 
 /* legend box visibility */
@@ -1364,10 +1361,7 @@ static char* iPPlotGetDSShowValuesAttrib(Ihandle* ih)
     return NULL;
 
   DataDrawerBase* drawer = ih->data->plt->_plot.mPlotDataContainer.GetDataDrawer(ih->data->plt->_currentDataSetIndex);
-  if (drawer->mShowValues)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (drawer->mShowValues); 
 }
 
 /* current dataset drawing mode */
@@ -1434,10 +1428,7 @@ static char* iPPlotGetDSEditAttrib(Ihandle* ih)
     return NULL;
 
   PlotDataSelection* dataselect = ih->data->plt->_plot.mPlotDataContainer.GetPlotDataSelection(ih->data->plt->_currentDataSetIndex);
-  if (dataselect->empty())
-    return "NO";
-  else
-    return "YES";
+  return iupStrReturnBoolean(!dataselect->empty());
 }
 
 /* remove a sample */
@@ -1547,20 +1538,14 @@ static char* iPPlotGetAxisXLabelCenteredAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if (axis->mLabelCentered)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mLabelCentered); 
 }
 
 static char* iPPlotGetAxisYLabelCenteredAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if (axis->mLabelCentered)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mLabelCentered); 
 }
 
 /* axis, ticks and label color */
@@ -1637,20 +1622,14 @@ static char* iPPlotGetAxisXAutoMinAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if (axis->mAutoScaleMin)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mAutoScaleMin); 
 }
 
 static char* iPPlotGetAxisYAutoMinAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if (axis->mAutoScaleMin)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mAutoScaleMin); 
 }
 
 /* autoscaling */
@@ -1684,20 +1663,14 @@ static char* iPPlotGetAxisXAutoMaxAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if (axis->mAutoScaleMax)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mAutoScaleMax); 
 }
 
 static char* iPPlotGetAxisYAutoMaxAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if (axis->mAutoScaleMax)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mAutoScaleMax); 
 }
 
 /* min visible val */
@@ -1805,20 +1778,14 @@ static char* iPPlotGetAxisXReverseAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if (axis->mAscending)
-    return "NO";    /* inverted for X */
-  else
-    return "YES";
+  return iupStrReturnBoolean(!axis->mAscending);  /* inverted for X */
 }
 
 static char* iPPlotGetAxisYReverseAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if (axis->mAscending)
-    return "YES";    /* NOT inverted for Y */
-  else
-    return "NO";
+  return iupStrReturnBoolean(axis->mAscending);  /* NOT inverted for Y */
 }
 
 /* axis mode */
@@ -1852,20 +1819,14 @@ static char* iPPlotGetAxisXCrossOriginAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if (axis->mCrossOrigin)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mCrossOrigin); 
 }
 
 static char* iPPlotGetAxisYCrossOriginAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if (axis->mCrossOrigin)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mCrossOrigin); 
 }
 
 /* log/lin scale */
@@ -2064,20 +2025,14 @@ static char* iPPlotGetAxisXAutoTickSizeAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if (axis->mTickInfo.mAutoTickSize)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mTickInfo.mAutoTickSize); 
 }
 
 static char* iPPlotGetAxisYAutoTickSizeAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if (axis->mTickInfo.mAutoTickSize)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mTickInfo.mAutoTickSize); 
 }
 
 /* size of ticks (in pixels) */
@@ -2302,20 +2257,14 @@ static char* iPPlotGetAxisXTickAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if (axis->mTickInfo.mTicksOn)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mTickInfo.mTicksOn); 
 }
 
 static char* iPPlotGetAxisYTickAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if (axis->mTickInfo.mTicksOn)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mTickInfo.mTicksOn); 
 }
 
 /* major tick spacing */
@@ -2423,20 +2372,14 @@ static char* iPPlotGetAxisXAutoTickAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mXAxisSetup;
 
-  if (axis->mTickInfo.mAutoTick)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mTickInfo.mAutoTick); 
 }
 
 static char* iPPlotGetAxisYAutoTickAttrib(Ihandle* ih)
 {
   AxisSetup* axis = &ih->data->plt->_plot.mYAxisSetup;
 
-  if (axis->mTickInfo.mAutoTick)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (axis->mTickInfo.mAutoTick); 
 }
 
 /* MouseButton */

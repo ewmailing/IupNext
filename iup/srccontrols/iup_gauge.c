@@ -284,10 +284,7 @@ static int iGaugeSetShowTextAttrib(Ihandle* ih, const char* value)
 
 static char* iGaugeGetShowTextAttrib(Ihandle* ih)
 {
-  if(ih->data->show_text)
-    return "YES";
-  else 
-    return "NO";
+  return iupStrReturnBoolean(ih->data->show_text);
 }
 
 static int iGaugeSetPaddingAttrib(Ihandle* ih, const char* value)
@@ -315,10 +312,7 @@ static int iGaugeSetDashedAttrib(Ihandle* ih, const char* value)
 
 static char* iGaugeGetDashedAttrib(Ihandle* ih)
 {
-  if(ih->data->dashed)
-    return "YES";
-  else 
-    return "NO";
+  return iupStrReturnBoolean(ih->data->dashed);
 }
 
 static int iGaugeSetTextAttrib(Ihandle* ih, const char* value)
@@ -373,12 +367,12 @@ static int iGaugeCreateMethod(Ihandle* ih, void **params)
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
-  iupAttribSetStr(ih, "BORDER", "NO");
+  iupAttribSet(ih, "BORDER", "NO");
   IupSetAttribute(ih, "SIZE", IGAUGE_DEFAULTSIZE);
   ih->expand = IUP_EXPAND_NONE;
 
   /* default values */
-  iupAttribSetStr(ih, "FGCOLOR", IGAUGE_DEFAULTCOLOR);
+  iupAttribSet(ih, "FGCOLOR", IGAUGE_DEFAULTCOLOR);
   ih->data->fgcolor = cdIupConvertColor(IGAUGE_DEFAULTCOLOR);
   ih->data->vmax         = 1;
   ih->data->bgcolor      = CD_GRAY;

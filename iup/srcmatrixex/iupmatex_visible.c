@@ -78,28 +78,22 @@ int iupMatrixExIsLineVisible(Ihandle* ih, int lin)
 
 static char* iMatrixGetVisibleColAttribId(Ihandle *ih, int col)
 {
-  if (iupMatrixExIsColumnVisible(ih, col))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupMatrixExIsColumnVisible(ih, col)); 
 }
 
 static char* iMatrixGetVisibleLinAttribId(Ihandle *ih, int lin)
 {
-  if (iupMatrixExIsLineVisible(ih, lin))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupMatrixExIsLineVisible(ih, lin)); 
 }
 
 static int iMatrixSetVisibleColAttribId(Ihandle *ih, int col, const char* value)
 {
   if (iupStrBoolean(value))
-    iupAttribSetStrId(ih, "WIDTH", col, "0");    /* this is enough */
+    iupAttribSetId(ih, "WIDTH", col, "0");    /* this is enough */
   else
   {
-    iupAttribSetStrId(ih, "WIDTH", col, NULL);  /* this may be insufficient */
-    iupAttribSetStrId(ih, "RASTERWIDTH", col, NULL);
+    iupAttribSetId(ih, "WIDTH", col, NULL);  /* this may be insufficient */
+    iupAttribSetId(ih, "RASTERWIDTH", col, NULL);
   }
   return 0;
 }
@@ -107,11 +101,11 @@ static int iMatrixSetVisibleColAttribId(Ihandle *ih, int col, const char* value)
 static int iMatrixSetVisibleLinAttribId(Ihandle *ih, int lin, const char* value)
 {
   if (iupStrBoolean(value))
-    iupAttribSetStrId(ih, "HEIGHT", lin, "0");    /* this is enough */
+    iupAttribSetId(ih, "HEIGHT", lin, "0");    /* this is enough */
   else
   {
-    iupAttribSetStrId(ih, "HEIGHT", lin, NULL);  /* this may be insufficient */
-    iupAttribSetStrId(ih, "RASTERHEIGHT", lin, NULL);
+    iupAttribSetId(ih, "HEIGHT", lin, NULL);  /* this may be insufficient */
+    iupAttribSetId(ih, "RASTERHEIGHT", lin, NULL);
   }
   return 0;
 }

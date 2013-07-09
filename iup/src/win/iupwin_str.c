@@ -38,6 +38,8 @@ static int iupwin_utf8mode_file = 0;
 5) Tentar juntar a edição de texto do IupText e do IupList 
    usando funções genéricas que encapsulem ambos, 
    tentar passar como parametro coisas que são diferentes em ambos
+6) Na edição de texto, na callback de action, quando iupwin_utf8mode=0
+   parece que os acentos estão sendo retornados errados.
 -------------------------------
 - outros controles
     iupglcanvas

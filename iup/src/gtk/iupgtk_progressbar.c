@@ -137,7 +137,7 @@ static int gtkProgressBarMapMethod(Ihandle* ih)
     ih->data->timer = IupTimer();
     IupSetCallback(ih->data->timer, "ACTION_CB", (Icallback)gtkProgressBarTimeCb);
     IupSetAttribute(ih->data->timer, "TIME", "100");
-    iupAttribSetStr(ih->data->timer, "_IUP_PROGRESSBAR", (char*)ih);
+    iupAttribSet(ih->data->timer, "_IUP_PROGRESSBAR", (char*)ih);
 
     gtk_progress_bar_set_pulse_step((GtkProgressBar*)ih->handle, 0.02);
   }

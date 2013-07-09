@@ -170,7 +170,7 @@ static int motProgressBarMapMethod(Ihandle* ih)
     ih->data->timer = IupTimer();
     IupSetCallback(ih->data->timer, "ACTION_CB", (Icallback)motProgressBarTimeCb);
     IupSetAttribute(ih->data->timer, "TIME", "100");
-    iupAttribSetStr(ih->data->timer, "_IUP_PROGRESSBAR", (char*)ih);
+    iupAttribSet(ih->data->timer, "_IUP_PROGRESSBAR", (char*)ih);
     iupMOT_SETARG(args, num_args, XmNslidingMode, XmSLIDER);
   }
   else

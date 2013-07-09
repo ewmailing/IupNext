@@ -44,9 +44,9 @@ int iupdrvTabsGetLineCountAttrib(Ihandle* ih)
 
 void iupdrvTabsSetCurrentTab(Ihandle* ih, int pos)
 {
-  iupAttribSetStr(ih, "_IUPGTK_IGNORE_CHANGE", "1");
+  iupAttribSet(ih, "_IUPGTK_IGNORE_CHANGE", "1");
   gtk_notebook_set_current_page((GtkNotebook*)ih->handle, pos);
-  iupAttribSetStr(ih, "_IUPGTK_IGNORE_CHANGE", NULL);
+  iupAttribSet(ih, "_IUPGTK_IGNORE_CHANGE", NULL);
 }
 
 int iupdrvTabsGetCurrentTab(Ihandle* ih)
@@ -207,10 +207,7 @@ static char* gtkTabsGetTabVisibleAttrib(Ihandle* ih, int pos)
 {
   Ihandle* child = IupGetChild(ih, pos);
   GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_PAGE");
-  if (iupgtkIsVisible(tab_page))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupgtkIsVisible(tab_page)); 
 }
 
 static int gtkTabsSetStandardFontAttrib(Ihandle* ih, const char* value)
@@ -311,19 +308,19 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     gtk_widget_show(tab_container);
     gtk_container_add((GtkContainer*)tab_page, tab_container);
 
-    tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
+    tabtitle = iupAttribGetId(ih, "TABTITLE", pos);
     if (!tabtitle) 
     {
       tabtitle = iupAttribGet(child, "TABTITLE");
       if (tabtitle)
-        iupTabsAttribSetStrId(ih, "TABTITLE", pos, tabtitle);
+        iupAttribSetStrId(ih, "TABTITLE", pos, tabtitle);
     }
-    tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    tabimage = iupAttribGetId(ih, "TABIMAGE", pos);
     if (!tabimage) 
     {
       tabimage = iupAttribGet(child, "TABIMAGE");
       if (tabimage)
-        iupTabsAttribSetStrId(ih, "TABIMAGE", pos, tabimage);
+        iupAttribSetStrId(ih, "TABIMAGE", pos, tabimage);
     }
     if (!tabtitle && !tabimage)
       tabtitle = "     ";
@@ -349,7 +346,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
         gtk_image_set_from_pixbuf((GtkImage*)tab_image, pixbuf);
     }
 
-    iupAttribSetStr(ih, "_IUPGTK_IGNORE_CHANGE", "1");
+    iupAttribSet(ih, "_IUPGTK_IGNORE_CHANGE", "1");
 
     if (tabimage && tabtitle)
     {
@@ -380,10 +377,10 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     gtk_widget_realize(tab_page);
 
-    iupAttribSetStr(child, "_IUPGTK_TABIMAGE", (char*)tab_image);  /* store it even if its NULL */
-    iupAttribSetStr(child, "_IUPGTK_TABLABEL", (char*)tab_label);
-    iupAttribSetStr(child, "_IUPTAB_CONTAINER", (char*)tab_container);
-    iupAttribSetStr(child, "_IUPTAB_PAGE", (char*)tab_page);
+    iupAttribSet(child, "_IUPGTK_TABIMAGE", (char*)tab_image);  /* store it even if its NULL */
+    iupAttribSet(child, "_IUPGTK_TABLABEL", (char*)tab_label);
+    iupAttribSet(child, "_IUPTAB_CONTAINER", (char*)tab_container);
+    iupAttribSet(child, "_IUPTAB_PAGE", (char*)tab_page);
     iupStrToRGB(IupGetAttribute(ih, "BGCOLOR"), &r, &g, &b);
     iupgtkSetBgColor(tab_container, r, g, b);
 
@@ -406,7 +403,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
       gtk_widget_realize(tab_image);
     }
 
-    iupAttribSetStr(ih, "_IUPGTK_IGNORE_CHANGE", NULL);
+    iupAttribSet(ih, "_IUPGTK_IGNORE_CHANGE", NULL);
 
     if (pos != iupdrvTabsGetCurrentTab(ih))
       gtk_widget_hide(tab_container);
@@ -424,14 +421,14 @@ static void gtkTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
 
       iupTabsCheckCurrentTab(ih, pos);
 
-      iupAttribSetStr(ih, "_IUPGTK_IGNORE_CHANGE", "1");
+      iupAttribSet(ih, "_IUPGTK_IGNORE_CHANGE", "1");
       gtk_notebook_remove_page((GtkNotebook*)ih->handle, pos);
-      iupAttribSetStr(ih, "_IUPGTK_IGNORE_CHANGE", NULL);
+      iupAttribSet(ih, "_IUPGTK_IGNORE_CHANGE", NULL);
 
-      iupAttribSetStr(child, "_IUPGTK_TABIMAGE", NULL);
-      iupAttribSetStr(child, "_IUPGTK_TABLABEL", NULL);
-      iupAttribSetStr(child, "_IUPTAB_CONTAINER", NULL);
-      iupAttribSetStr(child, "_IUPTAB_PAGE", NULL);
+      iupAttribSet(child, "_IUPGTK_TABIMAGE", NULL);
+      iupAttribSet(child, "_IUPGTK_TABLABEL", NULL);
+      iupAttribSet(child, "_IUPTAB_CONTAINER", NULL);
+      iupAttribSet(child, "_IUPTAB_PAGE", NULL);
     }
   }
 }

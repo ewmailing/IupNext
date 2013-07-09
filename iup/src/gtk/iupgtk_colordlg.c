@@ -58,7 +58,7 @@ static void gtkColorDlgGetPalette(Ihandle* ih, GtkColorSelection* colorsel)
   g_object_get(settings, "gtk-color-palette", &palette, NULL);
   
   str = gtkColorDlgPaletteToString(palette);
-  if (str) iupAttribStoreStr(ih, "COLORTABLE", str);
+  if (str) iupAttribSetStr(ih, "COLORTABLE", str);
   g_free(palette);
 }
 
@@ -224,10 +224,10 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
   }
   else
   {
-    iupAttribSetStr(ih, "ALPHA", NULL);
-    iupAttribSetStr(ih, "VALUE", NULL);
-    iupAttribSetStr(ih, "COLORTABLE", NULL);
-    iupAttribSetStr(ih, "STATUS", NULL);
+    iupAttribSet(ih, "ALPHA", NULL);
+    iupAttribSet(ih, "VALUE", NULL);
+    iupAttribSet(ih, "COLORTABLE", NULL);
+    iupAttribSet(ih, "STATUS", NULL);
   }
 
   gtk_widget_destroy(GTK_WIDGET(dialog));  

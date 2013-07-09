@@ -129,7 +129,7 @@ Ihandle* IupSetHandle(const char *name, Ihandle *ih)
 
     /* save the name in the cache if it is a valid handle */
     if (iupObjectCheck(ih))
-      iupAttribStoreStr(ih, "_IUP_LASTHANDLENAME", name);
+      iupAttribSetStr(ih, "_IUP_LASTHANDLENAME", name);
   }
   else
   {
@@ -137,7 +137,7 @@ Ihandle* IupSetHandle(const char *name, Ihandle *ih)
 
     /* clear the name from the cache if it is a valid handle */
     if (iupObjectCheck(old_ih))
-      iupAttribSetStr(old_ih, "_IUP_LASTHANDLENAME", NULL);
+      iupAttribSet(old_ih, "_IUP_LASTHANDLENAME", NULL);
   }
 
   return old_ih;

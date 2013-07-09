@@ -71,7 +71,7 @@ static void iMatrixMouseEdit(Ihandle* ih)
             Edit-KillFocus - weird, must avoid using _IUPMAT_DOUBLECLICK
          Since OpenMotif version 2.2.3 this is not necessary anymore. */
       if (atoi(IupGetGlobal("MOTIFNUMBER")) < 2203) 
-        iupAttribSetStr(ih, "_IUPMAT_DOUBLECLICK", "1");
+        iupAttribSet(ih, "_IUPMAT_DOUBLECLICK", "1");
     }
   }
 

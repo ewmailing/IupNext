@@ -428,10 +428,7 @@ static int iColorbarSetBufferizeAttrib(Ihandle* ih, const char* value)
 
 static char* iColorbarGetBufferizeAttrib(Ihandle* ih)
 {
-  if (ih->data->bufferize)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->bufferize); 
 }
 
 static int iColorbarSetNumCellsAttrib(Ihandle* ih, const char* value)
@@ -488,10 +485,7 @@ static int iColorbarSetSquaredAttrib(Ihandle* ih, const char* value)
 
 static char* iColorbarGetSquaredAttrib(Ihandle* ih)
 {
-  if (ih->data->squared) 
-    return "YES";
-  else 
-    return "NO";
+  return iupStrReturnBoolean(ih->data->squared);
 }
 
 static int iColorbarSetShadowedAttrib(Ihandle* ih, const char* value)
@@ -503,10 +497,7 @@ static int iColorbarSetShadowedAttrib(Ihandle* ih, const char* value)
 
 static char* iColorbarGetShadowedAttrib(Ihandle* ih)
 {
-  if (ih->data->shadowed) 
-    return "YES";
-  else 
-    return "NO";
+  return iupStrReturnBoolean(ih->data->shadowed);
 }
 
 static int iColorbarSetShowSecondaryAttrib(Ihandle* ih, const char* value)
@@ -518,10 +509,7 @@ static int iColorbarSetShowSecondaryAttrib(Ihandle* ih, const char* value)
 
 static char* iColorbarGetShowSecondaryAttrib(Ihandle* ih)
 {
-  if (ih->data->show_secondary) 
-    return "YES";
-  else 
-    return "NO";
+  return iupStrReturnBoolean(ih->data->show_secondary);
 }
 
 static int iColorbarSetShowPreviewAttrib(Ihandle* ih, const char* value)
@@ -967,7 +955,7 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
-  iupAttribSetStr(ih, "BORDER", "NO");
+  iupAttribSet(ih, "BORDER", "NO");
 
   /* default values */
   ih->data->num_cells = 16;

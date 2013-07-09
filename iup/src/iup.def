@@ -191,6 +191,12 @@ IupGetRGBId
 IupSetRGBId
 IupGetRGBId2
 IupSetRGBId2
+IupSetStr
+IupSetStrf
+IupSetStrId
+IupSetStrfId
+IupSetStrId2
+IupSetStrfId2
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib
@@ -263,6 +269,7 @@ iupStrToFloat
 iupStrToDos
 iupStrReturnRGB
 iupStrReturnBoolean
+iupStrReturnChecked
 iupStrReturnInt
 iupStrReturnIntInt
 iupStrReturnFloat
@@ -394,16 +401,16 @@ iupBaseSetPosition
 iupBaseComputeNaturalSize
 iupBaseSetCurrentSize
 iupBaseCallValueChangedCb
-iupAttribStoreStr
-iupAttribSetStrf
 iupAttribSetStr
+iupAttribSetStrf
+iupAttribSet
 iupAttribSetInt
 iupAttribSetHandleName
 iupAttribSetFloat
+iupAttribSetId
 iupAttribSetStrId
-iupAttribStoreStrId
+iupAttribSetId2
 iupAttribSetStrId2
-iupAttribStoreStrId2
 iupAttribSetIntId
 iupAttribSetIntId2
 iupAttribSetFloatId

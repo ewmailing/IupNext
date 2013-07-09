@@ -78,9 +78,7 @@ static int iProgressDlgSetTotalCountAttrib(Ihandle* ih, const char* value)
 static char* iProgressDlgGetTotalCountAttrib(Ihandle *ih)
 {
   IprogressDlgData* progress_data = (IprogressDlgData*)iupAttribGet(ih, "_IUP_PDLG_DATA");
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%d", progress_data->total_count);
-  return str;
+  return iupStrReturnInt(progress_data->total_count);
 }
 
 static int iProgressDlgSetCountAttrib(Ihandle* ih, const char* value)
@@ -94,9 +92,7 @@ static int iProgressDlgSetCountAttrib(Ihandle* ih, const char* value)
 static char* iProgressDlgGetCountAttrib(Ihandle *ih)
 {
   IprogressDlgData* progress_data = (IprogressDlgData*)iupAttribGet(ih, "_IUP_PDLG_DATA");
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%d", progress_data->count);
-  return str;
+  return iupStrReturnInt(progress_data->count);
 }
 
 static int iProgressDlgSetIncAttrib(Ihandle* ih, const char* value)
@@ -227,7 +223,7 @@ static int iProgressDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *lbl, *progress, *marquee, *cancel, *vbox;
   IprogressDlgData* progress_data = (IprogressDlgData*)malloc(sizeof(IprogressDlgData));
   memset(progress_data, 0, sizeof(IprogressDlgData));
-  iupAttribSetStr(ih, "_IUP_PDLG_DATA", (char*)progress_data);
+  iupAttribSet(ih, "_IUP_PDLG_DATA", (char*)progress_data);
 
   lbl = IupLabel("");
   IupSetAttribute(lbl,"EXPAND","YES");

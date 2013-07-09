@@ -157,7 +157,7 @@ static IgtkFont* gtkFontSet(Ihandle* ih, const char* value)
   IgtkFont *gtkfont = gtkFindFont(value);
   if (gtkfont)
   {
-    iupAttribSetStr(ih, "_IUP_GTKFONT", (char*)gtkfont);
+    iupAttribSet(ih, "_IUP_GTKFONT", (char*)gtkfont);
     return gtkfont;
   }
   else

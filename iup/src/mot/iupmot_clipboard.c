@@ -250,19 +250,13 @@ static int motClipboardIsAvailable(const char* format_name)
 static char* motClipboardGetTextAvailableAttrib(Ihandle *ih)
 {
   (void)ih;
-  if (motClipboardIsAvailable("STRING"))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (motClipboardIsAvailable("STRING")); 
 }
 
 static char* motClipboardGetImageAvailableAttrib(Ihandle *ih)
 {
   (void)ih;
-  if (motClipboardIsAvailable("PIXMAP"))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (motClipboardIsAvailable("PIXMAP")); 
 }
 
 static char* motClipboardGetFormatAvailableAttrib(Ihandle *ih)
@@ -271,10 +265,7 @@ static char* motClipboardGetFormatAvailableAttrib(Ihandle *ih)
   if (!format)
     return NULL;
 
-  if (motClipboardIsAvailable(format))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (motClipboardIsAvailable(format)); 
 }
 
 static int motClipboardSetAddFormatAttrib(Ihandle *ih, const char *value)

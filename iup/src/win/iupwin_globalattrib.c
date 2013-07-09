@@ -353,13 +353,11 @@ char* iupdrvGetGlobal(const char* name)
 {
   if (iupStrEqual(name, "VIRTUALSCREEN"))
   {
-    char* str = iupStrGetMemory(50);
     int x = GetSystemMetrics(SM_XVIRTUALSCREEN); 
     int y = GetSystemMetrics(SM_YVIRTUALSCREEN);
     int w = GetSystemMetrics(SM_CXVIRTUALSCREEN); 
     int h = GetSystemMetrics(SM_CYVIRTUALSCREEN);
-    sprintf(str, "%d %d %d %d", x, y, w, h);
-    return str;
+    return iupStrReturnStrf("%d %d %d %d", x, y, w, h);
   }
   if (iupStrEqual(name, "MONITORSINFO"))
   {
@@ -380,9 +378,7 @@ char* iupdrvGetGlobal(const char* name)
   }
   if (iupStrEqual(name, "TRUECOLORCANVAS"))
   {
-    if (iupdrvGetScreenDepth() > 8)
-      return "YES";
-    return "NO";
+    return iupStrReturnBoolean(iupdrvGetScreenDepth() > 8);
   }
   if (iupStrEqual(name, "DLL_HINSTANCE"))
   {

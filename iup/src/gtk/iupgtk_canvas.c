@@ -260,7 +260,7 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
       GdkRectangle rect;
       gdk_cairo_get_clip_rectangle(cr, &rect);
       iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", rect.x, rect.y, rect.x+rect.width-1, rect.y+rect.height-1);
-      iupAttribSetStr(ih, "CAIRO_CR", (char*)cr);
+      iupAttribSet(ih, "CAIRO_CR", (char*)cr);
     }
 #else
     iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", evt->area.x, evt->area.y, evt->area.x+evt->area.width-1, evt->area.y+evt->area.height-1);
@@ -268,8 +268,8 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
 
     cb(ih,ih->data->posx,ih->data->posy);
 
-    iupAttribSetStr(ih, "CLIPRECT", NULL);
-    iupAttribSetStr(ih, "CAIRO_CR", NULL);
+    iupAttribSet(ih, "CLIPRECT", NULL);
+    iupAttribSet(ih, "CAIRO_CR", NULL);
   }
 
   (void)widget;
@@ -337,9 +337,9 @@ static void gtkCanvasSizeAllocate(GtkWidget* widget, GdkRectangle *allocation, I
 
 static void gtkCanvasAdjustmentSetValue(Ihandle *ih, GtkAdjustment *adjustment, double value)
 {
-  iupAttribSetStr(ih, "_IUPGTK_SETSBPOS", "1");
+  iupAttribSet(ih, "_IUPGTK_SETSBPOS", "1");
   gtk_adjustment_set_value(adjustment, value);
-  iupAttribSetStr(ih, "_IUPGTK_SETSBPOS", NULL);
+  iupAttribSet(ih, "_IUPGTK_SETSBPOS", NULL);
 }
 
 static int gtkCanvasCheckScroll(double min, double max, double *page, double *pos)
@@ -609,14 +609,13 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
 #if !GTK_CHECK_VERSION(3, 0, 0)
     gdk_window_set_back_pixmap(iupgtkGetWindow(ih->handle), NULL, FALSE);
 #endif
-    iupAttribSetStr(ih, "_IUPGTK_NO_BGCOLOR", "1");
+    iupAttribSet(ih, "_IUPGTK_NO_BGCOLOR", "1");
     return 1;
   }
 }
 
 static char* gtkCanvasGetDrawSizeAttrib(Ihandle *ih)
 {
-  char* str = iupStrGetMemory(20);
   int w, h;
   GdkWindow* window = iupgtkGetWindow(ih->handle);
 
@@ -632,8 +631,7 @@ static char* gtkCanvasGetDrawSizeAttrib(Ihandle *ih)
   else
     return NULL;
 
-  sprintf(str, "%dx%d", w, h);
-  return str;
+  return iupStrReturnIntInt(w, h, 'x');
 }
 
 static char* gtkCanvasGetDrawableAttrib(Ihandle* ih)
@@ -679,7 +677,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   iupgtkNativeContainerAdd(sb_win, ih->handle);
   gtk_widget_show(sb_win);
 
-  iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)sb_win);
+  iupAttribSet(ih, "_IUP_EXTRAPARENT", (char*)sb_win);
 
   /* add to the parent, all GTK controls must call this. */
   iupgtkAddToParent(ih);
@@ -745,7 +743,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
     g_signal_connect(G_OBJECT(sb_horiz), "change-value",G_CALLBACK(gtkCanvasScrollHorizChangeValue), ih);
     g_signal_connect(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(sb_horiz))), "value-changed",G_CALLBACK(gtkCanvasAdjustHorizValueChanged), ih);
 
-    iupAttribSetStr(ih, "_IUPGTK_SBHORIZ", (char*)sb_horiz);
+    iupAttribSet(ih, "_IUPGTK_SBHORIZ", (char*)sb_horiz);
   }
 
   if (ih->data->sb & IUP_SB_VERT)
@@ -761,14 +759,14 @@ static int gtkCanvasMapMethod(Ihandle* ih)
 
     g_signal_connect(G_OBJECT(sb_vert), "change-value",G_CALLBACK(gtkCanvasScrollVertChangeValue), ih);
     g_signal_connect(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(sb_vert))), "value-changed",G_CALLBACK(gtkCanvasAdjustVertValueChanged), ih);
-    iupAttribSetStr(ih, "_IUPGTK_SBVERT", (char*)sb_vert);
+    iupAttribSet(ih, "_IUPGTK_SBVERT", (char*)sb_vert);
   }
 
   gtk_widget_realize(ih->handle);
 
   /* configure for DRAG&DROP */
   if (IupGetCallback(ih, "DROPFILES_CB"))
-    iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
+    iupAttribSet(ih, "DROPFILESTARGET", "YES");
 
   /* update a mnemonic in a label if necessary */
   iupgtkUpdateMnemonic(ih);

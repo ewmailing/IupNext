@@ -177,14 +177,14 @@ static void motFontDlgSelectFontFace(Ihandle* ih, char* fontface, int select)
 static int motFontDlgButtonOK_CB(Ihandle* ih)
 {
   Ihandle* sample = IupGetDialogChild(ih, "SAMPLE");
-  iupAttribStoreStr(IupGetDialog(ih), "VALUE", IupGetAttribute(sample, "FONT"));
-  iupAttribSetStr(IupGetDialog(ih), "STATUS", "1");
+  iupAttribSetStr(IupGetDialog(ih), "VALUE", IupGetAttribute(sample, "FONT"));
+  iupAttribSet(IupGetDialog(ih), "STATUS", "1");
   return IUP_CLOSE;
 }
 
 static int motFontDlgButtonCancel_CB(Ihandle* ih)
 {
-  iupAttribSetStr(IupGetDialog(ih), "STATUS", NULL);
+  iupAttribSet(IupGetDialog(ih), "STATUS", NULL);
   return IUP_CLOSE;
 }
 
@@ -193,7 +193,7 @@ static int motFontDlgButtonHelp_CB(Ihandle* ih)
   Icallback cb = IupGetCallback(IupGetDialog(ih), "HELP_CB");
   if (cb && cb(ih) == IUP_CLOSE)
   {
-    iupAttribSetStr(IupGetDialog(ih), "STATUS", NULL);
+    iupAttribSet(IupGetDialog(ih), "STATUS", NULL);
     return IUP_CLOSE;
   }
   return IUP_DEFAULT;

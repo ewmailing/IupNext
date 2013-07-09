@@ -27,10 +27,7 @@
 
 char* iupTextGetFormattingAttrib(Ihandle* ih)
 {
-  if (ih->data->has_formatting)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->has_formatting); 
 }
 
 int iupTextSetFormattingAttrib(Ihandle* ih, const char* value)
@@ -62,15 +59,13 @@ static void iTextUpdateValueAttrib(Ihandle* ih)
     int inherit;
     iupClassObjectSetAttribute(ih, "VALUE", value, &inherit);
 
-    iupAttribSetStr(ih, "VALUE", NULL); /* clear hash table */
+    iupAttribSet(ih, "VALUE", NULL); /* clear hash table */
   }
 }
 
 char* iupTextGetNCAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(100);
-  sprintf(str, "%d", ih->data->nc);
-  return str;
+  return iupStrReturnInt(ih->data->nc);
 }
 
 static void iTextAddFormatTag(Ihandle* ih, Ihandle* formattag)
@@ -265,12 +260,12 @@ static int iTextSetMultilineAttrib(Ihandle* ih, const char* value)
   {
     ih->data->is_multiline = 1;
     ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;  /* reset SCROLLBAR to YES */
-    iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", "1");
+    iupAttribSet(ih, "_IUP_MULTILINE_TEXT", "1");
   }
   else
   {
     ih->data->is_multiline = 0;
-    iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", NULL);
+    iupAttribSet(ih, "_IUP_MULTILINE_TEXT", NULL);
   }
 
   return 0;
@@ -278,10 +273,7 @@ static int iTextSetMultilineAttrib(Ihandle* ih, const char* value)
 
 static char* iTextGetMultilineAttrib(Ihandle* ih)
 {
-  if (ih->data->is_multiline)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->is_multiline); 
 }
 
 static int iTextSetAppendNewlineAttrib(Ihandle* ih, const char* value)
@@ -295,10 +287,7 @@ static int iTextSetAppendNewlineAttrib(Ihandle* ih, const char* value)
 
 static char* iTextGetAppendNewlineAttrib(Ihandle* ih)
 {
-  if (ih->data->append_newline)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->append_newline); 
 }
 
 static int iTextSetScrollbarAttrib(Ihandle* ih, const char* value)
@@ -337,9 +326,7 @@ static char* iTextGetScrollbarAttrib(Ihandle* ih)
 
 char* iupTextGetPaddingAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", ih->data->horiz_padding, ih->data->vert_padding);
-  return str;
+  return iupStrReturnIntInt(ih->data->horiz_padding, ih->data->vert_padding, 'x');
 }
 
 
@@ -350,7 +337,7 @@ static int iTextCreateMethod(Ihandle* ih, void** params)
 {
   if (params)
   {
-    if (params[0]) iupAttribStoreStr(ih, "ACTION", (char*)(params[0]));
+    if (params[0]) iupAttribSetStr(ih, "ACTION", (char*)(params[0]));
   }
   ih->data = iupALLOCCTRLDATA();
   ih->data->append_newline = 1;
@@ -362,7 +349,7 @@ static int iMultilineCreateMethod(Ihandle* ih, void** params)
   (void)params;
   ih->data->is_multiline = 1;
   ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;  /* default is YES */
-  iupAttribSetStr(ih, "_IUP_MULTILINE_TEXT", "1");
+  iupAttribSet(ih, "_IUP_MULTILINE_TEXT", "1");
   return IUP_NOERROR;
 }
 

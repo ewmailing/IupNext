@@ -28,17 +28,12 @@ static int iTimerSetRunAttrib(Ihandle *ih, const char *value)
 
 static char* iTimerGetRunAttrib(Ihandle *ih)
 {
-  if (ih->serial > 0)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->serial > 0); 
 }
 
 static char* iTimerGetWidAttrib(Ihandle *ih)
 {
-  char* str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->serial);
-  return str;
+  return iupStrReturnInt(ih->serial);
 }
 
 static void iTimerDestroyMethod(Ihandle* ih)

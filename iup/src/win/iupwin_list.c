@@ -410,9 +410,7 @@ static char* winListGetValueAttrib(Ihandle* ih)
     if (ih->data->is_dropdown || !ih->data->is_multiple)
     {
       int pos = SendMessage(ih->handle, WIN_GETCURSEL(ih), 0, 0);
-      char* str = iupStrGetMemory(50);
-      sprintf(str, "%d", pos+1);  /* IUP starts at 1 */
-      return str;
+      return iupStrReturnInt(pos+1);  /* IUP starts at 1 */
     }
     else
     {
@@ -447,7 +445,7 @@ static int winListSetValueAttrib(Ihandle* ih, const char* value)
       else
       {
         SendMessage(ih->handle, WIN_SETCURSEL(ih), (WPARAM)-1, 0);   /* no selection */
-        iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", NULL);
+        iupAttribSet(ih, "_IUPLIST_OLDVALUE", NULL);
       }
     }
     else
@@ -460,7 +458,7 @@ static int winListSetValueAttrib(Ihandle* ih, const char* value)
 
       if (!value)
       {
-        iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", NULL);
+        iupAttribSet(ih, "_IUPLIST_OLDVALUE", NULL);
         return 0;
       }
 
@@ -476,7 +474,7 @@ static int winListSetValueAttrib(Ihandle* ih, const char* value)
           SendMessage(ih->handle, LB_SETSEL, TRUE, i);
       }
 
-      iupAttribStoreStr(ih, "_IUPLIST_OLDVALUE", value);
+      iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", value);
     }
   }
 
@@ -722,7 +720,6 @@ static int winListSetSelectionAttrib(Ihandle* ih, const char* value)
 static char* winListGetSelectionAttrib(Ihandle* ih)
 {
   int start = 0, end = 0;
-  char* str;
   HWND cbedit;
   if (!ih->data->has_editbox)
     return NULL;
@@ -732,13 +729,9 @@ static char* winListGetSelectionAttrib(Ihandle* ih)
   if (start == end)
     return NULL;
 
-  str = iupStrGetMemory(100);
-
   start++; /* IUP starts at 1 */
   end++;
-  sprintf(str, "%d:%d", start, end);
-
-  return str;
+  return iupStrReturnIntInt(start, end, ':');
 }
 
 static int winListSetSelectionPosAttrib(Ihandle* ih, const char* value)
@@ -777,7 +770,6 @@ static int winListSetSelectionPosAttrib(Ihandle* ih, const char* value)
 static char* winListGetSelectionPosAttrib(Ihandle* ih)
 {
   int start = 0, end = 0;
-  char* str;
   HWND cbedit;
   if (!ih->data->has_editbox)
     return NULL;
@@ -787,9 +779,7 @@ static char* winListGetSelectionPosAttrib(Ihandle* ih)
   if (start == end)
     return NULL;
 
-  str = iupStrGetMemory(100);
-  sprintf(str, "%d:%d", start, end);
-  return str;
+  return iupStrReturnIntInt(start, end, ':');
 }
 
 static int winListSetInsertAttrib(Ihandle* ih, const char* value)
@@ -839,10 +829,7 @@ static char* winListGetReadOnlyAttrib(Ihandle* ih)
 
   cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   style = GetWindowLong(cbedit, GWL_STYLE);
-  if (style & ES_READONLY)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (style & ES_READONLY); 
 }
 
 static int winListSetCaretAttrib(Ihandle* ih, const char* value)
@@ -870,10 +857,8 @@ static char* winListGetCaretAttrib(Ihandle* ih)
 {
   if (ih->data->has_editbox)
   {
-    char* str = iupStrGetMemory(100);
     HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
-    sprintf(str, "%d", winListGetCaretPos(cbedit)+1);
-    return str;
+    return iupStrReturnInt(winListGetCaretPos(cbedit)+1);
   }
   else
     return NULL;
@@ -903,10 +888,8 @@ static char* winListGetCaretPosAttrib(Ihandle* ih)
 {
   if (ih->data->has_editbox)
   {
-    char* str = iupStrGetMemory(100);
     HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
-    sprintf(str, "%d", winListGetCaretPos(cbedit));
-    return str;
+    return iupStrReturnInt(winListGetCaretPos(cbedit));
   }
   else
     return NULL;
@@ -1046,7 +1029,7 @@ int iupwinListDND(Ihandle *ih, UINT uNotification, POINT pt)
         iupAttribSetInt(ih, "_IUPLIST_LASTITEM", -2);
         return TRUE;
       }
-      iupAttribSetStr(ih, "_IUPLIST_DRAGITEM", NULL);
+      iupAttribSet(ih, "_IUPLIST_DRAGITEM", NULL);
       break;
     }
   case DL_DRAGGING:
@@ -1101,13 +1084,13 @@ int iupwinListDND(Ihandle *ih, UINT uNotification, POINT pt)
       }
 
       iupdrvRedrawNow(ih);  /* Redraw the list */
-      iupAttribSetStr(ih, "_IUPLIST_DRAGITEM", NULL);
+      iupAttribSet(ih, "_IUPLIST_DRAGITEM", NULL);
       break;
     }
   case DL_CANCELDRAG:
     {
       winListDrawDropFeedback(ih, -2);
-      iupAttribSetStr(ih, "_IUPLIST_DRAGITEM", NULL);
+      iupAttribSet(ih, "_IUPLIST_DRAGITEM", NULL);
       break;
     }
   }
@@ -1330,12 +1313,12 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
 
     if (ret) 
     {
-      iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", "1");
+      iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", "1");
       *result = 0;
       return 1;
     }
     else
-      iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", NULL);
+      iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", NULL);
   }
 
   switch (msg)
@@ -1346,7 +1329,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
 
       if (iupAttribGet(ih, "_IUPWIN_IGNORE_CHAR"))
       {
-        iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", NULL);
+        iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", NULL);
         *result = 0;
         return 1;
       }
@@ -1739,14 +1722,14 @@ static void winListUnMapMethod(Ihandle* ih)
   if (handle)
   {
     iupwinHandleRemove(handle);
-    iupAttribSetStr(ih, "_IUPWIN_LISTBOX", NULL);
+    iupAttribSet(ih, "_IUPWIN_LISTBOX", NULL);
   }
 
   handle = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
   if (handle)
   {
     iupwinHandleRemove(handle);
-    iupAttribSetStr(ih, "_IUPWIN_EDITBOX", NULL);
+    iupAttribSet(ih, "_IUPWIN_EDITBOX", NULL);
   }
 
   iupdrvBaseUnMapMethod(ih);
@@ -1844,7 +1827,7 @@ static int winListMapMethod(Ihandle* ih)
     GetComboBoxInfo(ih->handle, &boxinfo);
 
     iupwinHandleAdd(ih, boxinfo.hwndList);
-    iupAttribSetStr(ih, "_IUPWIN_LISTBOX", (char*)boxinfo.hwndList);
+    iupAttribSet(ih, "_IUPWIN_LISTBOX", (char*)boxinfo.hwndList);
 
     /* subclass the list box. */
     IupSetCallback(ih, "_IUPWIN_LISTOLDWNDPROC_CB", (Icallback)GetWindowLongPtr(boxinfo.hwndList, GWLP_WNDPROC));
@@ -1853,7 +1836,7 @@ static int winListMapMethod(Ihandle* ih)
     if (ih->data->has_editbox)
     {
       iupwinHandleAdd(ih, boxinfo.hwndItem);
-      iupAttribSetStr(ih, "_IUPWIN_EDITBOX", (char*)boxinfo.hwndItem);
+      iupAttribSet(ih, "_IUPWIN_EDITBOX", (char*)boxinfo.hwndItem);
 
       /* subclass the edit box. */
       IupSetCallback(ih, "_IUPWIN_EDITOLDWNDPROC_CB", (Icallback)GetWindowLongPtr(boxinfo.hwndItem, GWLP_WNDPROC));
@@ -1873,7 +1856,7 @@ static int winListMapMethod(Ihandle* ih)
 
   /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
-    iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
+    iupAttribSet(ih, "DROPFILESTARGET", "YES");
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)winListConvertXYToPos);
 

@@ -10,6 +10,7 @@
 #include <stdlib.h>  
 #include <stdio.h>  
 #include <limits.h>
+#include <stdarg.h>
 
 #include "iup_str.h"
 
@@ -65,19 +66,18 @@ int iupStrEqualPartial(const char* str1, const char* str2)
 int iupStrFalse(const char* str)
 {
   if (!str || str[0]==0) return 0;
+  if (str[0]=='0' && str[1]==0) return 1;
   if (iupStrEqualNoCase(str, "NO")) return 1;
   if (iupStrEqualNoCase(str, "OFF")) return 1;
-  if (iupStrEqualNoCase(str, "FALSE")) return 1;
   return 0;
 }
 
 int iupStrBoolean(const char* str)
 {
   if (!str || str[0]==0) return 0;
-  if (iupStrEqualNoCase(str, "1")) return 1;
+  if (str[0]=='1' && str[1]==0) return 1;
   if (iupStrEqualNoCase(str, "YES")) return 1;
   if (iupStrEqualNoCase(str, "ON")) return 1;
-  if (iupStrEqualNoCase(str, "TRUE")) return 1;
   return 0;
 }
 
@@ -280,10 +280,38 @@ char *iupStrGetLargeMem(int *size)
   if (buffers_index == LARGE_MAX_BUFFERS)
     buffers_index = 0;
 
-  *size = LARGE_SIZE;
+  if (size) *size = LARGE_SIZE;
   return ret_str;
 #undef LARGE_MAX_BUFFERS
 #undef LARGE_SIZE 
+}
+
+static char* iupStrGetSmallMem(void)
+{
+#define SMALL_MAX_BUFFERS 100
+#define SMALL_SIZE 160  /* maximum for iupStrReturnFloatFloat */
+  static char buffers[SMALL_MAX_BUFFERS][SMALL_SIZE];
+  static int buffers_index = -1;
+  char* ret_str;
+
+  /* init buffers array */
+  if (buffers_index == -1)
+  {
+    memset(buffers, 0, sizeof(char*)*SMALL_MAX_BUFFERS);
+    buffers_index = 0;
+  }
+
+  /* clear memory */
+  memset(buffers[buffers_index], 0, SMALL_SIZE);
+  ret_str = buffers[buffers_index];
+
+  buffers_index++;
+  if (buffers_index == SMALL_MAX_BUFFERS)
+    buffers_index = 0;
+
+  return ret_str;
+#undef SMALL_MAX_BUFFERS
+#undef SMALL_SIZE 
 }
 
 char *iupStrGetMemory(int size)
@@ -346,7 +374,7 @@ char *iupStrGetMemory(int size)
 #undef MAX_BUFFERS
 }
 
-char* iupStrReturnf(const char* format, ...)
+char* iupStrReturnStrf(const char* format, ...)
 {
   int size;
   char* value = iupStrGetLargeMem(&size);
@@ -378,23 +406,33 @@ char* iupStrReturnBoolean(int b)
     return "NO";
 }
 
+char* iupStrReturnChecked(int check)
+{
+  if (check == -1)
+    return "NOTDEF";
+  else if (check)
+    return "ON";
+  else
+    return "OFF";
+}
+
 char* iupStrReturnInt(int i)
 {
-  char* str = iupStrGetMemory(20);
+  char* str = iupStrGetSmallMem();  /* 20 */
   sprintf(str, "%d", i);
   return str;
 }
 
 char* iupStrReturnFloat(float f)
 {
-  char* str = iupStrGetMemory(80);
+  char* str = iupStrGetSmallMem();  /* 80 */
   sprintf(str, "%.9f", f);  /* maximum float precision */
   return str;
 }
 
 char* iupStrReturnRGB(unsigned char r, unsigned char g, unsigned char b)
 {
-  char* str = iupStrGetMemory(60);
+  char* str = iupStrGetSmallMem();  /* 3*20 */
   sprintf(str, "%d %d %d", (int)r, (int)g, (int)b);
   return str;
 }
@@ -420,14 +458,14 @@ char* iupStrReturnStrStr(const char *str1, const char *str2, char sep)
 
 char* iupStrReturnIntInt(int i1, int i2, char sep)
 {
-  char* str = iupStrGetMemory(40);
+  char* str = iupStrGetSmallMem();  /* 2*20 */
   sprintf(str, "%d%c%d", i1, sep, i2);
   return str;
 }
 
 char* iupStrReturnFloatFloat(float f1, float f2, char sep)
 {
-  char* str = iupStrGetMemory(160);
+  char* str = iupStrGetSmallMem(); /* 2*80 */
   sprintf(str, "%.9f%c%.9f", f1, sep, f2);   /* maximum float precision */
   return str;
 }

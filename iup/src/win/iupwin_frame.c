@@ -209,11 +209,11 @@ static int winFrameMapMethod(Ihandle* ih)
 
   title = iupAttribGet(ih, "TITLE");
   if (title)
-    iupAttribSetStr(ih, "_IUPFRAME_HAS_TITLE", "1");
+    iupAttribSet(ih, "_IUPFRAME_HAS_TITLE", "1");
   else
   {
     if (iupAttribGet(ih, "BGCOLOR"))
-      iupAttribSetStr(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
+      iupAttribSet(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
   }
 
   iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);

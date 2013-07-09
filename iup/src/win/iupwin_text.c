@@ -796,25 +796,21 @@ static int winTextSetNCAttrib(Ihandle* ih, const char* value)
 
 static char* winTextGetCountAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(50);
   int count = GetWindowTextLength(ih->handle);
   if (ih->data->is_multiline)
   {
     int linecount = SendMessage(ih->handle, EM_GETLINECOUNT, 0, 0L);
     count -= linecount-1;  /* ignore 1 character at each line */
   }
-  sprintf(str, "%d", count);
-  return str;
+  return iupStrReturnInt(count);
 }
 
 static char* winTextGetLineCountAttrib(Ihandle* ih)
 {
   if (ih->data->is_multiline)
   {
-    char* str = iupStrGetMemory(50);
     int linecount = SendMessage(ih->handle, EM_GETLINECOUNT, 0, 0L);
-    sprintf(str, "%d", linecount);
-    return str;
+    return iupStrReturnInt(linecount);
   }
   else
     return "1";
@@ -884,29 +880,24 @@ static int winTextSetSelectionAttrib(Ihandle* ih, const char* value)
 static char* winTextGetSelectionAttrib(Ihandle* ih)
 {
   int start = 0, end = 0;
-  char* str;
 
   SendMessage(ih->handle, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
   if (start == end)
     return NULL;
-
-  str = iupStrGetMemory(100);
 
   if (ih->data->is_multiline)
   {
     int start_col, start_lin, end_col, end_lin;
     winTextGetLinColFromPosition(ih, start, &start_lin, &start_col);
     winTextGetLinColFromPosition(ih, end,   &end_lin,   &end_col);
-    sprintf(str,"%d,%d:%d,%d", start_lin, start_col, end_lin, end_col);
+    return iupStrReturnStrf("%d,%d:%d,%d", start_lin, start_col, end_lin, end_col);
   }
   else
   {
     start++; /* IUP starts at 1 */
     end++;
-    sprintf(str, "%d:%d", start, end);
+    return iupStrReturnIntInt(start, end, ':');
   }
-
-  return str;
 }
 
 static int winTextSetSelectionPosAttrib(Ihandle* ih, const char* value)
@@ -945,7 +936,6 @@ static int winTextSetSelectionPosAttrib(Ihandle* ih, const char* value)
 static char* winTextGetSelectionPosAttrib(Ihandle* ih)
 {
   int start = 0, end = 0;
-  char* str;
 
   SendMessage(ih->handle, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
   if (start == end)
@@ -957,11 +947,7 @@ static char* winTextGetSelectionPosAttrib(Ihandle* ih)
     end = winTextRemoveExtraChars(ih, end);
   }
 
-  str = iupStrGetMemory(100);
-
-  sprintf(str, "%d:%d", start, end);
-
-  return str;
+  return iupStrReturnIntInt(start, end, ':');
 }
 
 static int winTextSetInsertAttrib(Ihandle* ih, const char* value)
@@ -1010,10 +996,7 @@ static int winTextSetReadOnlyAttrib(Ihandle* ih, const char* value)
 static char* winTextGetReadOnlyAttrib(Ihandle* ih)
 {
   DWORD style = GetWindowLong(ih->handle, GWL_STYLE);
-  if (style & ES_READONLY)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (style & ES_READONLY); 
 }
 
 static int winTextSetTabSizeAttrib(Ihandle* ih, const char* value)
@@ -1061,18 +1044,12 @@ static int winTextSetCaretAttrib(Ihandle* ih, const char* value)
 static char* winTextGetCaretAttrib(Ihandle* ih)
 {
   int col, lin;
-  char* str;
-
-  str = iupStrGetMemory(100);
-
   winTextGetCaret(ih, &lin, &col);
 
   if (ih->data->is_multiline)
-    sprintf(str, "%d,%d", lin, col);
+    return iupStrReturnIntInt(lin, col, ',');
   else
-    sprintf(str, "%d", col);
-
-  return str;
+    return iupStrReturnInt(col);
 }
 
 static int winTextSetCaretPosAttrib(Ihandle* ih, const char* value)
@@ -1096,12 +1073,10 @@ static int winTextSetCaretPosAttrib(Ihandle* ih, const char* value)
 
 static char* winTextGetCaretPosAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(100);
   int pos = winTextGetCaretPos(ih);
   if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
     pos = winTextRemoveExtraChars(ih, pos);
-  sprintf(str, "%d", pos);
-  return str;
+  return iupStrReturnInt(pos);
 }
 
 static void winTextScrollTo(Ihandle* ih, int lin, int col)
@@ -1278,7 +1253,7 @@ static int winTextSetStandardFontAttrib(Ihandle* ih, const char* value)
       if (iupStrEqual(value, cur_value))
         return 0;
     }
-    iupAttribSetStr(ih, "_IUPWIN_FONTUPDATECHECK", NULL);
+    iupAttribSet(ih, "_IUPWIN_FONTUPDATECHECK", NULL);
   }
 
   return iupdrvSetStandardFontAttrib(ih, value);
@@ -1363,7 +1338,7 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag, int bulk)
   }
 
   if (iupAttribGet(formattag, "FONTSCALE") && !iupAttribGet(formattag, "FONTSIZE"))
-    iupAttribSetStr(formattag, "FONTSIZE", iupGetFontSizeAttrib(ih));
+    iupAttribSet(formattag, "FONTSIZE", iupGetFontSizeAttrib(ih));
 
   winTextParseParagraphFormat(formattag, &paraformat, convert2twips);
   if (paraformat.dwMask != 0)
@@ -1547,9 +1522,7 @@ static char* winTextGetSpinValueAttrib(Ihandle* ih)
   if (hSpin)
   {
     int pos = SendMessage(hSpin, UDM_GETPOS32, 0, 0);
-    char *str = iupStrGetMemory(50);
-    sprintf(str, "%d", pos);
-    return str;
+    return iupStrReturnInt(pos);
   }
   return NULL;
 }
@@ -1707,12 +1680,12 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     ret = iupwinBaseMsgProc(ih, msg, wp, lp, result);
     if (ret) 
     {
-      iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", "1");
+      iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", "1");
       *result = 0;
       return 1;
     }
     else
-      iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", NULL);
+      iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", NULL);
   }
 
   switch (msg)
@@ -1725,7 +1698,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       /* if a dialog was shown, the loop will be processed, so ignore out of focus WM_CHAR messages */
       if (GetFocus() != ih->handle || iupAttribGet(ih, "_IUPWIN_IGNORE_CHAR"))
       {
-        iupAttribSetStr(ih, "_IUPWIN_IGNORE_CHAR", NULL);
+        iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", NULL);
         *result = 0;
         return 1;
       }
@@ -1783,9 +1756,9 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       else if (wp == VK_INSERT && ih->data->has_formatting)
       {
         if (iupAttribGetBoolean(ih, "OVERWRITE"))
-          iupAttribSetStr(ih, "OVERWRITE", "OFF"); /* toggle from ON to OFF */
+          iupAttribSet(ih, "OVERWRITE", "OFF"); /* toggle from ON to OFF */
         else
-          iupAttribSetStr(ih, "OVERWRITE", "ON");  /* toggle from OFF to ON */
+          iupAttribSet(ih, "OVERWRITE", "ON");  /* toggle from OFF to ON */
       }
       else if (wp == 'A' && GetKeyState(VK_CONTROL) & 0x8000)   /* Ctrl+A = Select All */
       {
@@ -1953,7 +1926,7 @@ static void winTextCreateSpin(Ihandle* ih)
   IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winTextSpinWmNotify);
 
   SendMessage(hSpin, UDM_SETBUDDY, (WPARAM)ih->handle, 0);
-  iupAttribSetStr(ih, "_IUPWIN_SPIN", (char*)hSpin);
+  iupAttribSet(ih, "_IUPWIN_SPIN", (char*)hSpin);
 
   /* default values */
   ih->data->disable_callbacks = 1;
@@ -2014,7 +1987,7 @@ static void winTextUnMapMethod(Ihandle* ih)
   {
     iupwinHandleRemove(hSpin);
     DestroyWindow(hSpin);
-    iupAttribSetStr(ih, "_IUPWIN_SPIN", NULL);
+    iupAttribSet(ih, "_IUPWIN_SPIN", NULL);
   }
 
   iupdrvBaseUnMapMethod(ih);
@@ -2114,7 +2087,7 @@ static int winTextMapMethod(Ihandle* ih)
 
   /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
-    iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
+    iupAttribSet(ih, "DROPFILESTARGET", "YES");
 
   if (ih->data->has_formatting)
   {
@@ -2122,7 +2095,7 @@ static int winTextMapMethod(Ihandle* ih)
     SendMessage(ih->handle, EM_SETEVENTMASK, 0, ENM_CHANGE);
 
     /* must update FONT before updating the formattags */
-    iupAttribSetStr(ih, "_IUPWIN_FONTUPDATECHECK", "1");
+    iupAttribSet(ih, "_IUPWIN_FONTUPDATECHECK", "1");
     iupUpdateStandardFontAttrib(ih);
 
     if (ih->data->formattags)

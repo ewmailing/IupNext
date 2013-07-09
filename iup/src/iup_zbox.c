@@ -166,11 +166,7 @@ static char* iZboxGetValuePosAttrib(Ihandle* ih)
   for (pos=0, child = ih->firstchild; child; child = child->brother, pos++)
   {
     if (child == ih->data->value_handle) /* found child */
-    {
-      char *str = iupStrGetMemory(50);
-      sprintf(str, "%d", pos);
-      return str;
-    }
+      return iupStrReturnInt(pos);
   }
 
   return NULL;

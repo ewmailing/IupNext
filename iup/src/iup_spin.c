@@ -77,12 +77,12 @@ static void iSpinPrepareTimer(Ihandle* ih, char* status, char* dir)
 {
   (void)ih;
 
-  iupAttribSetStr(spin_timer, "_IUPSPIN_BUTTON", (char*)ih);
+  iupAttribSet(spin_timer, "_IUPSPIN_BUTTON", (char*)ih);
 
-  iupAttribStoreStr(spin_timer, "_IUPSPIN_STATUS", status);
+  iupAttribSetStr(spin_timer, "_IUPSPIN_STATUS", status);
 
-  iupAttribSetStr(spin_timer, "_IUPSPIN_DIR",   dir);
-  iupAttribSetStr(spin_timer, "_IUPSPIN_COUNT", "0");
+  iupAttribSet(spin_timer, "_IUPSPIN_DIR",   dir);
+  iupAttribSet(spin_timer, "_IUPSPIN_COUNT", "0");
 
   IupSetAttribute(spin_timer, "TIME",           "400");
   IupSetAttribute(spin_timer, "RUN",            "YES");
@@ -332,7 +332,7 @@ static int iSpinboxCreateMethod(Ihandle* ih, void** params)
   spin->flags |= IUP_INTERNAL;
   iupChildTreeAppend(ih, spin);  /* spin will always be the firstchild */
 
-  iupAttribSetStr(spin, "_IUPSPIN_BOX", (char*)ih);  /* will be used by the callback */
+  iupAttribSet(spin, "_IUPSPIN_BOX", (char*)ih);  /* will be used by the callback */
 
   if (params)
   {

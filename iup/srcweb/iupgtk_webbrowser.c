@@ -235,7 +235,7 @@ static int gtkWebBrowserMapMethod(Ihandle* ih)
 
   gtk_widget_show((GtkWidget*)scrolled_window);
 
-  iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)scrolled_window);
+  iupAttribSet(ih, "_IUP_EXTRAPARENT", (char*)scrolled_window);
 
   /* add to the parent, all GTK controls must call this. */
   iupgtkAddToParent(ih);

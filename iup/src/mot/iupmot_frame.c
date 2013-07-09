@@ -181,7 +181,7 @@ static int motFrameMapMethod(Ihandle* ih)
   title = iupAttribGet(ih, "TITLE");
 
   if (title)
-    iupAttribSetStr(ih, "_IUPFRAME_HAS_TITLE", "1");
+    iupAttribSet(ih, "_IUPFRAME_HAS_TITLE", "1");
   else
   {
     char* value = iupAttribGetStr(ih, "SUNKEN");
@@ -191,7 +191,7 @@ static int motFrameMapMethod(Ihandle* ih)
       iupMOT_SETARG(args, num_args, XmNshadowType, XmSHADOW_ETCHED_IN); 
 
     if (iupAttribGet(ih, "BGCOLOR"))
-      iupAttribSetStr(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
+      iupAttribSet(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
   }
 
   /* Core */
@@ -229,7 +229,7 @@ static int motFrameMapMethod(Ihandle* ih)
     iupMOT_SETARG(args, num_args, XmNchildType, XmFRAME_TITLE_CHILD);
     title_label = XtCreateManagedWidget("title_label", xmLabelWidgetClass, ih->handle, args, num_args);
     iupmotSetString(title_label, XmNlabelString, title);
-    iupAttribSetStr(ih, "_IUPMOT_FRAMELABEL", (char*)title_label);
+    iupAttribSet(ih, "_IUPMOT_FRAMELABEL", (char*)title_label);
   }
 
   child_manager = XtVaCreateManagedWidget(
@@ -249,7 +249,7 @@ static int motFrameMapMethod(Ihandle* ih)
               XmNchildType, XmFRAME_WORKAREA_CHILD,
               NULL);
 
-  iupAttribSetStr(ih, "_IUPMOT_FRAMECONTAINER", (char*)child_manager);
+  iupAttribSet(ih, "_IUPMOT_FRAMECONTAINER", (char*)child_manager);
 
   if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
     XtAddEventHandler(child_manager, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);

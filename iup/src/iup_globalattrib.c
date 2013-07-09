@@ -157,29 +157,21 @@ char *IupGetGlobal(const char *name)
     return iupGetDefaultFontSizeGlobalAttrib();
   if (iupStrEqual(name, "CURSORPOS"))
   {
-    char *str = iupStrGetMemory(50);
     int x, y;
     iupdrvGetCursorPos(&x, &y);
-    sprintf(str, "%dx%d", (int)x, (int)y);
-    return str;
+    return iupStrReturnIntInt(x, y, 'x');
   }
   if (iupStrEqual(name, "SHIFTKEY"))
   {
     char key[5];
     iupdrvGetKeyState(key);
-    if (key[0] == 'S')
-      return "ON";
-    else
-      return "OFF";
+    return iupStrReturnChecked(key[0] == 'S');
   }
   if (iupStrEqual(name, "CONTROLKEY"))
   {
     char key[5];
     iupdrvGetKeyState(key);
-    if (key[1] == 'C')
-      return "ON";
-    else
-      return "OFF";
+    return iupStrReturnChecked(key[1] == 'C');
   }
   if (iupStrEqual(name, "MODKEYSTATE"))
   {
@@ -189,26 +181,20 @@ char *IupGetGlobal(const char *name)
   }
   if (iupStrEqual(name, "SCREENSIZE"))
   {
-    char *str = iupStrGetMemory(50);
     int w, h;
     iupdrvGetScreenSize(&w, &h);
-    sprintf(str, "%dx%d", w, h);
-    return str;
+    return iupStrReturnIntInt(w, h, 'x');
   }
   if (iupStrEqual(name, "FULLSIZE"))
   {
-    char *str = iupStrGetMemory(50);
     int w, h;
     iupdrvGetFullSize(&w, &h);
-    sprintf(str, "%dx%d", w, h);
-    return str;
+    return iupStrReturnIntInt(w, h, 'x');
   }
   if (iupStrEqual(name, "SCREENDEPTH"))
   {
-    char *str = iupStrGetMemory(50);
     int bpp = iupdrvGetScreenDepth();
-    sprintf(str, "%d", bpp);
-    return str;
+    return iupStrReturnInt(bpp);
   }
   if (iupStrEqual(name, "SCREENDPI"))
   {

@@ -278,10 +278,7 @@ static int motItemSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* motItemGetValueAttrib(Ihandle* ih)
 {
-  if (XmIsToggleButton(ih->handle) && XmToggleButtonGetState(ih->handle))
-    return "ON";
-  else
-    return "OFF";
+  return iupStrReturnChecked(XmIsToggleButton(ih->handle) && XmToggleButtonGetState(ih->handle));
 }
 
 static int motItemMapMethod(Ihandle* ih)

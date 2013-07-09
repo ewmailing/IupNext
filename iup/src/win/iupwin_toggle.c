@@ -58,9 +58,9 @@ static void winToggleSetCheck(Ihandle* ih, int check)
   if (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && ih->data->flat)
   {
     if (check == BST_CHECKED)
-      iupAttribSetStr(ih, "_IUPWIN_TOGGLE_CHECK", "1");
+      iupAttribSet(ih, "_IUPWIN_TOGGLE_CHECK", "1");
     else
-      iupAttribSetStr(ih, "_IUPWIN_TOGGLE_CHECK", NULL);
+      iupAttribSet(ih, "_IUPWIN_TOGGLE_CHECK", NULL);
 
     iupdrvRedrawNow(ih);
   }
@@ -206,7 +206,7 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
     {
       x++;
       y++;
-      iupAttribSetStr(ih, "_IUPWIN_PRESSED", NULL);
+      iupAttribSet(ih, "_IUPWIN_PRESSED", NULL);
     }
   }
 
@@ -236,7 +236,7 @@ static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   if (!iupwin_comctl32ver6)
   {
     if (drawitem->itemState&ODS_SELECTED)
-      iupAttribSetStr(ih, "_IUPWIN_PRESSED", "1");
+      iupAttribSet(ih, "_IUPWIN_PRESSED", "1");
   }
 
   check = winToggleGetCheck(ih);
@@ -280,7 +280,7 @@ static int winToggleSetImageAttrib(Ihandle* ih, const char* value)
   if (ih->data->type==IUP_TOGGLE_IMAGE)
   {
     if (value != iupAttribGet(ih, "IMAGE"))
-      iupAttribSetStr(ih, "IMAGE", (char*)value);
+      iupAttribSet(ih, "IMAGE", (char*)value);
 
     if (iupwin_comctl32ver6 || ih->data->flat)
       iupdrvRedrawNow(ih);
@@ -300,7 +300,7 @@ static int winToggleSetImInactiveAttrib(Ihandle* ih, const char* value)
   if (ih->data->type==IUP_TOGGLE_IMAGE)
   {
     if (value != iupAttribGet(ih, "IMINACTIVE"))
-      iupAttribSetStr(ih, "IMINACTIVE", (char*)value);
+      iupAttribSet(ih, "IMINACTIVE", (char*)value);
 
     if (iupwin_comctl32ver6 || ih->data->flat)
       iupdrvRedrawNow(ih);
@@ -320,7 +320,7 @@ static int winToggleSetImPressAttrib(Ihandle* ih, const char* value)
   if (ih->data->type==IUP_TOGGLE_IMAGE)
   {
     if (value != iupAttribGet(ih, "IMPRESS"))
-      iupAttribSetStr(ih, "IMPRESS", (char*)value);
+      iupAttribSet(ih, "IMPRESS", (char*)value);
 
     if (iupwin_comctl32ver6 || ih->data->flat)
       iupdrvRedrawNow(ih);
@@ -365,7 +365,7 @@ static int winToggleSetValueAttrib(Ihandle* ih, const char* value)
     {
       if (iupObjectCheck(last_tg) && last_tg != ih)
           winToggleSetCheck(last_tg, BST_UNCHECKED);
-      iupAttribSetStr(radio, "_IUPWIN_LASTTOGGLE", (char*)ih);
+      iupAttribSet(radio, "_IUPWIN_LASTTOGGLE", (char*)ih);
     }
 
     if (last_tg != ih && oldcheck != check)
@@ -394,12 +394,8 @@ static int winToggleSetValueAttrib(Ihandle* ih, const char* value)
 static char* winToggleGetValueAttrib(Ihandle* ih)
 {
   int check = winToggleGetCheck(ih);
-  if (check == BST_INDETERMINATE)
-    return "NOTDEF";
-  else if (check == BST_CHECKED)
-    return "ON";
-  else
-    return "OFF";
+  if (check == BST_INDETERMINATE) check = -1;
+  return iupStrReturnChecked(check);
 }
 
 static int winToggleSetActiveAttrib(Ihandle* ih, const char* value)
@@ -418,9 +414,9 @@ static int winToggleSetActiveAttrib(Ihandle* ih, const char* value)
       int active = iupStrBoolean(value);
       int check = SendMessage(ih->handle, BM_GETCHECK, 0, 0L);
       if (active)
-        iupAttribSetStr(ih, "_IUPWIN_ACTIVE", "YES");
+        iupAttribSet(ih, "_IUPWIN_ACTIVE", "YES");
       else
-        iupAttribSetStr(ih, "_IUPWIN_ACTIVE", "NO");
+        iupAttribSet(ih, "_IUPWIN_ACTIVE", "NO");
       winToggleUpdateImage(ih, active, check);
       return 0;
     }
@@ -471,7 +467,7 @@ static int winToggleSetBgColorAttrib(Ihandle* ih, const char* value)
   if (ih->data->type==IUP_TOGGLE_IMAGE)
   {
     /* update internal image cache for controls that have the IMAGE attribute */
-    iupAttribSetStr(ih, "BGCOLOR", value);
+    iupAttribSet(ih, "BGCOLOR", value);
     iupImageUpdateParent(ih);
     iupdrvRedrawNow(ih);
   }
@@ -486,11 +482,7 @@ static char* winToggleGetBgColorAttrib(Ihandle* ih)
   {
     COLORREF cr;
     if (iupwinDrawGetThemeButtonBgColor(ih->handle, &cr))
-    {
-      char* str = iupStrGetMemory(20);
-      sprintf(str, "%d %d %d", (int)GetRValue(cr), (int)GetGValue(cr), (int)GetBValue(cr));
-      return str;
-    }
+      return iupStrReturnStrf("%d %d %d", (int)GetRValue(cr), (int)GetGValue(cr), (int)GetBValue(cr));
   }
 
   if (ih->data->type == IUP_TOGGLE_TEXT)
@@ -569,13 +561,13 @@ static int winToggleImageFlatMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp
   switch (msg)
   {
   case WM_MOUSELEAVE:
-    iupAttribSetStr(ih, "_IUPWINTOG_ENTERWIN", NULL);
+    iupAttribSet(ih, "_IUPWINTOG_ENTERWIN", NULL);
     iupdrvRedrawNow(ih);
     break;
   case WM_MOUSEMOVE:
     if (!iupAttribGet(ih, "_IUPWINTOG_ENTERWIN"))
     {
-      iupAttribSetStr(ih, "_IUPWINTOG_ENTERWIN", "1");
+      iupAttribSet(ih, "_IUPWINTOG_ENTERWIN", "1");
       iupdrvRedrawNow(ih);
     }
     break;
@@ -659,7 +651,7 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
           if (iupObjectCheck(last_tg))
             iupBaseCallValueChangedCb(last_tg);
         }
-        iupAttribSetStr(radio, "_IUPWIN_LASTTOGGLE", (char*)ih);
+        iupAttribSet(radio, "_IUPWIN_LASTTOGGLE", (char*)ih);
 
         if (last_tg != ih)
         {
@@ -746,7 +738,7 @@ static int winToggleMapMethod(Ihandle* ih)
     if (!iupAttribGet(radio, "_IUPWIN_LASTTOGGLE"))
     {
       /* this is the first toggle in the radio, and then set it with VALUE=ON */
-      iupAttribSetStr(ih, "VALUE","ON");
+      iupAttribSet(ih, "VALUE","ON");
     }
   }
   else if (!ownerdraw)
@@ -778,14 +770,14 @@ static int winToggleMapMethod(Ihandle* ih)
     {
       if (ih->data->flat)
       {
-        iupAttribSetStr(ih, "FLAT_ALPHA", "NO");
+        iupAttribSet(ih, "FLAT_ALPHA", "NO");
         IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winToggleDrawItem);  /* Process WM_DRAWITEM */
         IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winToggleImageFlatMsgProc);
       }
       else
       {
         IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winToggleImageClassicMsgProc);
-        iupAttribSetStr(ih, "_IUPWIN_ACTIVE", "YES");
+        iupAttribSet(ih, "_IUPWIN_ACTIVE", "YES");
       }
     }
   }

@@ -60,8 +60,8 @@ static int iLinkCreateMethod(Ihandle* ih, void **params)
 {
   if (params)
   {
-    if (params[0]) iupAttribStoreStr(ih, "URL", (char*)(params[0]));
-    if (params[1]) iupAttribStoreStr(ih, "TITLE", (char*)(params[1]));
+    if (params[0]) iupAttribSetStr(ih, "URL", (char*)(params[0]));
+    if (params[1]) iupAttribSetStr(ih, "TITLE", (char*)(params[1]));
   }
 
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iLinkButton_CB);

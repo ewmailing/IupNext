@@ -96,7 +96,7 @@ void iupdrvReparent(Ihandle* ih)
   {
     HWND oldParent = SetParent(ih->handle, newParent);
     if (!iupAttribGet(ih, "_IUPWIN_REPARENT"))
-      iupAttribSetStr(ih, "_IUPWIN_REPARENT", (char*)oldParent);
+      iupAttribSet(ih, "_IUPWIN_REPARENT", (char*)oldParent);
   }
 }
 
@@ -168,13 +168,13 @@ static void winCallEnterLeaveWindow(Ihandle *ih, int enter)
     if (!iupAttribGetInt(ih, "_IUPWIN_ENTERWIN"))
     {
       cb = IupGetCallback(ih,"ENTERWINDOW_CB");
-      iupAttribSetStr(ih, "_IUPWIN_ENTERWIN", "1");
+      iupAttribSet(ih, "_IUPWIN_ENTERWIN", "1");
     }
   }
   else 
   {
     cb = IupGetCallback(ih,"LEAVEWINDOW_CB");
-    iupAttribSetStr(ih, "_IUPWIN_ENTERWIN", NULL);
+    iupAttribSet(ih, "_IUPWIN_ENTERWIN", NULL);
   }
 
   if (cb)
@@ -770,7 +770,7 @@ static HCURSOR winGetCursor(Ihandle* ih, const char* name)
       cur = winLoadComCtlCursor(MAKEINTRESOURCE(135));
   }
 
-  iupAttribSetStr(ih, str, (char*)cur);
+  iupAttribSet(ih, str, (char*)cur);
   return cur;
 }
 
@@ -778,7 +778,7 @@ int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
 {
   /* Cursor can be NULL in Windows. */
   HCURSOR hCur = winGetCursor(ih, value);
-  iupAttribSetStr(ih, "_IUPWIN_HCURSOR", (char*)hCur);  /* To be used in WM_SETCURSOR */
+  iupAttribSet(ih, "_IUPWIN_HCURSOR", (char*)hCur);  /* To be used in WM_SETCURSOR */
   /* refresh the cursor */
   SendMessage(ih->handle, WM_SETCURSOR, (WPARAM)ih->handle, MAKELPARAM(1,WM_MOUSEMOVE));
   return 1;

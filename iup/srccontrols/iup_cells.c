@@ -720,7 +720,7 @@ static char* iCellsGetLimitsAttrib(Ihandle* ih, int i, int j)
 {
   int xmin, xmax, ymin, ymax;
   iCellsGetLimits(ih, i, j, &xmin, &xmax, &ymin, &ymax);
-  return iupStrReturnf("%d:%d:%d:%d", xmin, xmax, ymin, ymax);
+  return iupStrReturnStrf("%d:%d:%d:%d", xmin, xmax, ymin, ymax);
 }
 
 static int iCellsSetBufferizeAttrib(Ihandle* ih, const char* value)
@@ -739,10 +739,7 @@ static int iCellsSetBufferizeAttrib(Ihandle* ih, const char* value)
 
 static char* iCellsGetBufferizeAttrib(Ihandle* ih)
 {
-  if (ih->data->bufferize)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->bufferize); 
 }
 
 static int iCellsSetRepaintAttrib(Ihandle* ih, const char* value)
@@ -808,10 +805,7 @@ static int iCellsSetBoxedAttrib(Ihandle* ih, const char* value)
 
 static char* iCellsGetBoxedAttrib(Ihandle* ih)
 {
-  if (ih->data->boxed) 
-    return "YES";
-  else 
-    return "NO";
+  return iupStrReturnBoolean(ih->data->boxed);
 }
 
 static int iCellsSetClippedAttrib(Ihandle* ih, const char* value)
@@ -823,10 +817,7 @@ static int iCellsSetClippedAttrib(Ihandle* ih, const char* value)
 
 static char* iCellsGetClippedAttrib(Ihandle* ih)
 {
-  if (ih->data->clipped) 
-    return "YES";
-  else 
-    return "NO";
+  return iupStrReturnBoolean(ih->data->clipped);
 }
 
 static int iCellsSetFullVisibleAttrib(Ihandle* ih, const char* value)
@@ -880,8 +871,8 @@ static int iCellsCreateMethod(Ihandle* ih, void **params)
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
-  iupAttribSetStr(ih, "SCROLLBAR", "YES");
-  iupAttribSetStr(ih, "BORDER", "NO");
+  iupAttribSet(ih, "SCROLLBAR", "YES");
+  iupAttribSet(ih, "BORDER", "NO");
 
   /* default values */
   ih->data->boxed = 1;

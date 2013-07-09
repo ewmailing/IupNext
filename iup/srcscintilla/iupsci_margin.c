@@ -110,10 +110,7 @@ int iupScintillaSetMarginWidthAttribId(Ihandle* ih, int margin, const char* valu
 char* iupScintillaGetMarginMaskFoldersAttribId(Ihandle* ih, int margin)
 {
   int mask = iupScintillaSendMessage(ih, SCI_GETMARGINMASKN, margin, 0);
-  if(mask & SC_MASK_FOLDERS)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean(mask & SC_MASK_FOLDERS); 
 }
 
 int iupScintillaSetMarginMaskFoldersAttribId(Ihandle* ih, int margin, const char* value)
@@ -128,10 +125,7 @@ int iupScintillaSetMarginMaskFoldersAttribId(Ihandle* ih, int margin, const char
 
 char* iupScintillaGetMarginSensitiveAttribId(Ihandle* ih, int margin)
 {
-  if(iupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 0)); 
 }
 
 int iupScintillaSetMarginSensitiveAttribId(Ihandle* ih, int margin, const char* value)

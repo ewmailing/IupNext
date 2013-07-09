@@ -89,10 +89,7 @@ int iupScintillaSetUseBraceHLIndicatorAttrib(Ihandle *ih, const char *value)
 
 char* iupScintillaGetUseBraceHLIndicatorAttrib(Ihandle* ih)
 {
-  if (ih->data->useBraceHLIndicator)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->useBraceHLIndicator); 
 }
 
 int iupScintillaSetUseBraceBLIndicatorAttrib(Ihandle *ih, const char *value)
@@ -106,10 +103,7 @@ int iupScintillaSetUseBraceBLIndicatorAttrib(Ihandle *ih, const char *value)
 
 char* iupScintillaGetUseBraceBLIndicatorAttrib(Ihandle* ih)
 {
-  if (ih->data->useBraceBLIndicator)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->useBraceBLIndicator); 
 }
 
 char* iupScintillaGetBraceMatchAttribId(Ihandle* ih, int pos)

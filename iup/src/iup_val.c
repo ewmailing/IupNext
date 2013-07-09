@@ -125,10 +125,7 @@ static int iValSetInvertedAttrib(Ihandle* ih, const char *value)
 
 static char* iValGetInvertedAttrib(Ihandle* ih)
 {
-  if (ih->data->inverted)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->inverted); 
 }
 
 static int iValCreateMethod(Ihandle* ih, void **params)

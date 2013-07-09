@@ -802,7 +802,7 @@ static int iDialCreateMethod(Ihandle* ih, void **params)
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
-  iupAttribSetStr(ih, "BORDER", "NO");
+  iupAttribSet(ih, "BORDER", "NO");
   ih->expand = IUP_EXPAND_NONE;
 
   /* default values */

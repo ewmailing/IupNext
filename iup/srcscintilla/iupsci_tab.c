@@ -111,8 +111,5 @@ int iupScintillaSetUseTabsAttrib(Ihandle* ih, const char* value)
 
 char* iupScintillaGetUseTabsAttrib(Ihandle* ih)
 {
-  if (iupScintillaSendMessage(ih, SCI_GETUSETABS, 0, 0))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_GETUSETABS, 0, 0)); 
 }

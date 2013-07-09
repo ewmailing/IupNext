@@ -209,7 +209,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih)
       ih->data->show_state = IUP_RESTORE;
   }
 
-  iupAttribSetStr(ih, "PLACEMENT", NULL); /* reset to NORMAL */
+  iupAttribSet(ih, "PLACEMENT", NULL); /* reset to NORMAL */
 
   return 1;
 }
@@ -724,7 +724,7 @@ static int winDialogMapMethod(Ihandle* ih)
     has_border = 1;
   }
   else
-    iupAttribSetStr(ih, "MAXBOX", "NO");
+    iupAttribSet(ih, "MAXBOX", "NO");
   if (iupAttribGetBoolean(ih, "MENUBOX"))
   {
     dwStyle |= WS_SYSMENU;
@@ -758,7 +758,7 @@ static int winDialogMapMethod(Ihandle* ih)
       return IUP_ERROR;
 
     /* store the mdi client handle in each mdi child also */
-    iupAttribSetStr(ih, "MDICLIENT_HANDLE", (char*)client);
+    iupAttribSet(ih, "MDICLIENT_HANDLE", (char*)client);
 
     classname = TEXT("IupDialogMDIChild");
 
@@ -879,14 +879,14 @@ static int winDialogMapMethod(Ihandle* ih)
 
   /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
-    iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
+    iupAttribSet(ih, "DROPFILESTARGET", "YES");
 
   /* Reset attributes handled during creation that */
   /* also can be changed later, and can be consulted from the native system. */
-  iupAttribSetStr(ih, "TITLE", NULL); 
+  iupAttribSet(ih, "TITLE", NULL); 
 
   /* Ignore VISIBLE before mapping */
-  iupAttribSetStr(ih, "VISIBLE", NULL);
+  iupAttribSet(ih, "VISIBLE", NULL);
 
   /* Set the default CmdShow for ShowWindow */
   ih->data->cmd_show = SW_SHOWNORMAL;
@@ -957,11 +957,9 @@ static char* winDialogGetClientOffsetAttrib(Ihandle *ih)
 
 static char* winDialogGetClientSizeAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(20);
   RECT rect;
   GetClientRect(ih->handle, &rect);
-  sprintf(str, "%dx%d", (int)(rect.right-rect.left), (int)(rect.bottom-rect.top));
-  return str;
+  return iupStrReturnIntInt((int)(rect.right-rect.left), (int)(rect.bottom-rect.top), 'x');
 }
 
 static int winDialogSetBgColorAttrib(Ihandle* ih, const char* value)
@@ -969,8 +967,8 @@ static int winDialogSetBgColorAttrib(Ihandle* ih, const char* value)
   unsigned char r, g, b;
   if (iupStrToRGB(value, &r, &g, &b))
   {
-    iupAttribStoreStr(ih, "_IUPWIN_BACKGROUND_COLOR", value);
-    iupAttribSetStr(ih, "_IUPWIN_BACKGROUND_BITMAP", NULL);
+    iupAttribSetStr(ih, "_IUPWIN_BACKGROUND_COLOR", value);
+    iupAttribSet(ih, "_IUPWIN_BACKGROUND_BITMAP", NULL);
     RedrawWindow(ih->handle, NULL, NULL, RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN); /* post WM_ERASEBKGND and WM_PAINT */
     return 1;
   }
@@ -986,8 +984,8 @@ static int winDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     HBITMAP hBitmap = iupImageGetImage(value, ih, 0);
     if (hBitmap)
     {
-      iupAttribSetStr(ih, "_IUPWIN_BACKGROUND_COLOR", NULL);
-      iupAttribSetStr(ih, "_IUPWIN_BACKGROUND_BITMAP", (char*)hBitmap);
+      iupAttribSet(ih, "_IUPWIN_BACKGROUND_COLOR", NULL);
+      iupAttribSet(ih, "_IUPWIN_BACKGROUND_BITMAP", (char*)hBitmap);
       RedrawWindow(ih->handle, NULL, NULL, RDW_INVALIDATE|RDW_ERASE|RDW_ALLCHILDREN); /* post WM_ERASEBKGND and WM_PAINT */
       return 1;
     }
@@ -1222,7 +1220,7 @@ static int winDialogCheckTray(Ihandle *ih)
   if (iupAttribGetBoolean(ih, "TRAY"))
   {
     winDialogTrayMessage(ih->handle, NIM_ADD, NULL, NULL);
-    iupAttribSetStr(ih, "_IUPDLG_HASTRAY", "YES");
+    iupAttribSet(ih, "_IUPDLG_HASTRAY", "YES");
     return 1;
   }
 
@@ -1237,7 +1235,7 @@ static int winDialogSetTrayAttrib(Ihandle *ih, const char *value)
     if (!tray)
     {
       winDialogTrayMessage(ih->handle, NIM_DELETE, NULL, NULL);
-      iupAttribSetStr(ih, "_IUPDLG_HASTRAY", NULL);
+      iupAttribSet(ih, "_IUPDLG_HASTRAY", NULL);
     }
   }
   else
@@ -1245,7 +1243,7 @@ static int winDialogSetTrayAttrib(Ihandle *ih, const char *value)
     if (tray)
     {
       winDialogTrayMessage(ih->handle, NIM_ADD, NULL, NULL);
-      iupAttribSetStr(ih, "_IUPDLG_HASTRAY", "YES");
+      iupAttribSet(ih, "_IUPDLG_HASTRAY", "YES");
     }
   }
   return 1;
@@ -1287,10 +1285,7 @@ static char* winDialogGetActiveWindowAttrib(Ihandle* ih)
   WINDOWINFO wininfo;
   wininfo.cbSize = sizeof(WINDOWINFO);
   GetWindowInfo(ih->handle, &wininfo);
-  if (wininfo.dwWindowStatus & WS_ACTIVECAPTION)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (wininfo.dwWindowStatus & WS_ACTIVECAPTION); 
 }    
 
 static int winDialogSetTopMostAttrib(Ihandle *ih, const char *value)
@@ -1336,30 +1331,30 @@ static int winDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
       off_style = WS_BORDER | WS_THICKFRAME | WS_CAPTION | 
                   WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SYSMENU;
       new_style = GetWindowLong(ih->handle, GWL_STYLE);
-      iupAttribSetStr(ih, "_IUPWIN_FS_STYLE", (char*)new_style);
+      iupAttribSet(ih, "_IUPWIN_FS_STYLE", (char*)new_style);
       new_style &= (~off_style);
       SetWindowLong(ih->handle, GWL_STYLE, new_style);
 
       /* save the previous decoration attributes */
-      iupAttribStoreStr(ih, "_IUPWIN_FS_MAXBOX", iupAttribGet(ih, "MAXBOX"));
-      iupAttribStoreStr(ih, "_IUPWIN_FS_MINBOX", iupAttribGet(ih, "MINBOX"));
-      iupAttribStoreStr(ih, "_IUPWIN_FS_MENUBOX",iupAttribGet(ih, "MENUBOX"));
-      iupAttribStoreStr(ih, "_IUPWIN_FS_RESIZE", iupAttribGet(ih, "RESIZE"));
-      iupAttribStoreStr(ih, "_IUPWIN_FS_BORDER", iupAttribGet(ih, "BORDER"));
-      iupAttribStoreStr(ih, "_IUPWIN_FS_TITLE",  IupGetAttribute(ih, "TITLE"));  /* must use IupGetAttribute to check from the native implementation */
+      iupAttribSetStr(ih, "_IUPWIN_FS_MAXBOX", iupAttribGet(ih, "MAXBOX"));
+      iupAttribSetStr(ih, "_IUPWIN_FS_MINBOX", iupAttribGet(ih, "MINBOX"));
+      iupAttribSetStr(ih, "_IUPWIN_FS_MENUBOX",iupAttribGet(ih, "MENUBOX"));
+      iupAttribSetStr(ih, "_IUPWIN_FS_RESIZE", iupAttribGet(ih, "RESIZE"));
+      iupAttribSetStr(ih, "_IUPWIN_FS_BORDER", iupAttribGet(ih, "BORDER"));
+      iupAttribSetStr(ih, "_IUPWIN_FS_TITLE",  IupGetAttribute(ih, "TITLE"));  /* must use IupGetAttribute to check from the native implementation */
 
       /* save the previous position and size */
-      iupAttribStoreStr(ih, "_IUPWIN_FS_X", IupGetAttribute(ih, "X"));  /* must use IupGetAttribute to check from the native implementation */
-      iupAttribStoreStr(ih, "_IUPWIN_FS_Y", IupGetAttribute(ih, "Y"));
-      iupAttribStoreStr(ih, "_IUPWIN_FS_SIZE", IupGetAttribute(ih, "RASTERSIZE"));
+      iupAttribSetStr(ih, "_IUPWIN_FS_X", IupGetAttribute(ih, "X"));  /* must use IupGetAttribute to check from the native implementation */
+      iupAttribSetStr(ih, "_IUPWIN_FS_Y", IupGetAttribute(ih, "Y"));
+      iupAttribSetStr(ih, "_IUPWIN_FS_SIZE", IupGetAttribute(ih, "RASTERSIZE"));
 
       /* remove the decorations attributes */
-      iupAttribSetStr(ih, "MAXBOX", "NO");
-      iupAttribSetStr(ih, "MINBOX", "NO");
-      iupAttribSetStr(ih, "MENUBOX", "NO");
+      iupAttribSet(ih, "MAXBOX", "NO");
+      iupAttribSet(ih, "MINBOX", "NO");
+      iupAttribSet(ih, "MENUBOX", "NO");
       IupSetAttribute(ih, "TITLE", NULL);
-      iupAttribSetStr(ih, "RESIZE", "NO");
-      iupAttribSetStr(ih, "BORDER", "NO");
+      iupAttribSet(ih, "RESIZE", "NO");
+      iupAttribSet(ih, "BORDER", "NO");
 
       /* full screen size */
       iupdrvGetFullSize(&width, &height);
@@ -1379,12 +1374,12 @@ static int winDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
       BOOL visible = ShowWindow(ih->handle, SW_HIDE);
 
       /* restore the decorations attributes */
-      iupAttribStoreStr(ih, "MAXBOX", iupAttribGet(ih, "_IUPWIN_FS_MAXBOX"));
-      iupAttribStoreStr(ih, "MINBOX", iupAttribGet(ih, "_IUPWIN_FS_MINBOX"));
-      iupAttribStoreStr(ih, "MENUBOX",iupAttribGet(ih, "_IUPWIN_FS_MENUBOX"));
+      iupAttribSetStr(ih, "MAXBOX", iupAttribGet(ih, "_IUPWIN_FS_MAXBOX"));
+      iupAttribSetStr(ih, "MINBOX", iupAttribGet(ih, "_IUPWIN_FS_MINBOX"));
+      iupAttribSetStr(ih, "MENUBOX",iupAttribGet(ih, "_IUPWIN_FS_MENUBOX"));
       IupSetAttribute(ih, "TITLE",  iupAttribGet(ih, "_IUPWIN_FS_TITLE"));  /* TITLE is not stored in the HashTable */
-      iupAttribStoreStr(ih, "RESIZE", iupAttribGet(ih, "_IUPWIN_FS_RESIZE"));
-      iupAttribStoreStr(ih, "BORDER", iupAttribGet(ih, "_IUPWIN_FS_BORDER"));
+      iupAttribSetStr(ih, "RESIZE", iupAttribGet(ih, "_IUPWIN_FS_RESIZE"));
+      iupAttribSetStr(ih, "BORDER", iupAttribGet(ih, "_IUPWIN_FS_BORDER"));
 
       /* restore the decorations */
       SetWindowLong(ih->handle, GWL_STYLE, style);
@@ -1401,18 +1396,18 @@ static int winDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
         ShowWindow(ih->handle, SW_SHOW);
 
       /* remove auxiliar attributes */
-      iupAttribSetStr(ih, "_IUPWIN_FS_MAXBOX", NULL);
-      iupAttribSetStr(ih, "_IUPWIN_FS_MINBOX", NULL);
-      iupAttribSetStr(ih, "_IUPWIN_FS_MENUBOX",NULL);
-      iupAttribSetStr(ih, "_IUPWIN_FS_TITLE",  NULL);
-      iupAttribSetStr(ih, "_IUPWIN_FS_RESIZE", NULL);
-      iupAttribSetStr(ih, "_IUPWIN_FS_BORDER", NULL);
+      iupAttribSet(ih, "_IUPWIN_FS_MAXBOX", NULL);
+      iupAttribSet(ih, "_IUPWIN_FS_MINBOX", NULL);
+      iupAttribSet(ih, "_IUPWIN_FS_MENUBOX",NULL);
+      iupAttribSet(ih, "_IUPWIN_FS_TITLE",  NULL);
+      iupAttribSet(ih, "_IUPWIN_FS_RESIZE", NULL);
+      iupAttribSet(ih, "_IUPWIN_FS_BORDER", NULL);
 
-      iupAttribSetStr(ih, "_IUPWIN_FS_X", NULL);
-      iupAttribSetStr(ih, "_IUPWIN_FS_Y", NULL);
-      iupAttribSetStr(ih, "_IUPWIN_FS_SIZE", NULL);
+      iupAttribSet(ih, "_IUPWIN_FS_X", NULL);
+      iupAttribSet(ih, "_IUPWIN_FS_Y", NULL);
+      iupAttribSet(ih, "_IUPWIN_FS_SIZE", NULL);
 
-      iupAttribSetStr(ih, "_IUPWIN_FS_STYLE", NULL);
+      iupAttribSet(ih, "_IUPWIN_FS_STYLE", NULL);
     }
   }
   return 1;

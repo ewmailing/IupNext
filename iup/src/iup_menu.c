@@ -58,10 +58,8 @@ char* iupMenuGetChildIdStr(Ihandle* ih)
     return iupDialogGetChildIdStr(ih);
   else
   {
-    char *str = iupStrGetMemory(50);
     Ihandle* dialog = iMenuGetTopMenu(ih);
-    sprintf(str, "iup-%s-%d", ih->iclass->name, dialog->data->child_id);
-    return str;
+    return iupStrReturnStrf("iup-%s-%d", ih->iclass->name, dialog->data->child_id);
   }
 }
 
@@ -159,8 +157,8 @@ static int iItemCreateMethod(Ihandle* ih, void** params)
 {
   if (params)
   {
-    if (params[0]) iupAttribStoreStr(ih, "TITLE", (char*)(params[0]));
-    if (params[1]) iupAttribStoreStr(ih, "ACTION", (char*)(params[1]));
+    if (params[0]) iupAttribSetStr(ih, "TITLE", (char*)(params[0]));
+    if (params[1]) iupAttribSetStr(ih, "ACTION", (char*)(params[1]));
   }
   return IUP_NOERROR;
 }
@@ -169,7 +167,7 @@ static int iSubmenuCreateMethod(Ihandle* ih, void** params)
 {
   if (params)
   {
-    if (params[0]) iupAttribStoreStr(ih, "TITLE", (char*)(params[0]));
+    if (params[0]) iupAttribSetStr(ih, "TITLE", (char*)(params[0]));
     if (params[1]) 
     {
       Ihandle* child = (Ihandle*)(params[1]);

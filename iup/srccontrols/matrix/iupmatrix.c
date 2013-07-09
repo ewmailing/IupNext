@@ -188,10 +188,7 @@ static int iMatrixSetUseTitleSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iMatrixGetUseTitleSizeAttrib(Ihandle* ih)
 {
-  if (ih->data->use_title_size)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean(ih->data->use_title_size); 
 }
 
 static int iMatrixSetLimitExpandAttrib(Ihandle* ih, const char* value)
@@ -210,10 +207,7 @@ static int iMatrixSetLimitExpandAttrib(Ihandle* ih, const char* value)
 
 static char* iMatrixGetLimitExpandAttrib(Ihandle* ih)
 {
-  if (ih->data->limit_expand)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->limit_expand); 
 }
 
 static int iMatrixSetHiddenTextMarksAttrib(Ihandle* ih, const char* value)
@@ -227,10 +221,7 @@ static int iMatrixSetHiddenTextMarksAttrib(Ihandle* ih, const char* value)
 
 static char* iMatrixGetHiddenTextMarksAttrib(Ihandle* ih)
 {
-  if (ih->data->hidden_text_marks)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->hidden_text_marks); 
 }
 
 static int iMatrixSetValueAttrib(Ihandle* ih, const char* value)
@@ -371,10 +362,7 @@ static int iMatrixSetMarkMultipleAttrib(Ihandle* ih, const char* value)
 
 static char* iMatrixGetMarkMultipleAttrib(Ihandle* ih)
 {
-  if (ih->data->mark_multiple)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->mark_multiple); 
 }
 
 static int iMatrixSetEditModeAttrib(Ihandle* ih, const char* value)
@@ -391,10 +379,7 @@ static int iMatrixSetEditModeAttrib(Ihandle* ih, const char* value)
 
 static char* iMatrixGetEditModeAttrib(Ihandle* ih)
 {
-  if (iupMatrixEditIsVisible(ih))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (iupMatrixEditIsVisible(ih)); 
 }
 
 static int iMatrixSetEditNextAttrib(Ihandle* ih, const char* value)
@@ -905,24 +890,24 @@ static void iMatrixClearAttrib(Ihandle* ih, unsigned char *flags, int lin, int c
   int is_marked = (*flags) & IMAT_IS_MARKED;
 
   if ((*flags) & IMAT_HAS_FONT)
-    iupAttribSetStrId2(ih, "FONT", lin, col, NULL);
+    iupAttribSetId2(ih, "FONT", lin, col, NULL);
 
   if ((*flags) & IMAT_HAS_FGCOLOR)
-    iupAttribSetStrId2(ih, "FGCOLOR", lin, col, NULL);
+    iupAttribSetId2(ih, "FGCOLOR", lin, col, NULL);
 
   if ((*flags) & IMAT_HAS_BGCOLOR)
-    iupAttribSetStrId2(ih, "BGCOLOR", lin, col, NULL);
+    iupAttribSetId2(ih, "BGCOLOR", lin, col, NULL);
 
   if ((*flags) & IMAT_HAS_FRAMEHORIZCOLOR)
-    iupAttribSetStrId2(ih, "FRAMEHORIZCOLOR", lin, col, NULL);
+    iupAttribSetId2(ih, "FRAMEHORIZCOLOR", lin, col, NULL);
 
   if ((*flags) & IMAT_HAS_FRAMEVERTCOLOR)
-    iupAttribSetStrId2(ih, "FRAMEHORIZCOLOR", lin, col, NULL);
+    iupAttribSetId2(ih, "FRAMEHORIZCOLOR", lin, col, NULL);
 
   if (lin == IUP_INVALID_ID)
   {
-    iupAttribSetStrId(ih, "ALIGNMENT", col, NULL);
-    iupAttribSetStrId(ih, "SORTSIGN", col, NULL);
+    iupAttribSetId(ih, "ALIGNMENT", col, NULL);
+    iupAttribSetId(ih, "SORTSIGN", col, NULL);
   }
 
   *flags = 0;
@@ -1383,7 +1368,7 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   if (params && params[0])
   {
     char* action_cb = (char*)params[0];
-    iupAttribStoreStr(ih, "ACTION_CB", action_cb);
+    iupAttribSetStr(ih, "ACTION_CB", action_cb);
   }
 
   /* free the data allocated by IupCanvas */
@@ -1391,9 +1376,9 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
-  iupAttribSetStr(ih, "SCROLLBAR", "YES");
-  iupAttribSetStr(ih, "BORDER", "NO");
-  iupAttribSetStr(ih, "CURSOR", "IupMatrixCrossCursor");
+  iupAttribSet(ih, "SCROLLBAR", "YES");
+  iupAttribSet(ih, "BORDER", "NO");
+  iupAttribSet(ih, "CURSOR", "IupMatrixCrossCursor");
 
   /* IupCanvas callbacks */
   IupSetCallback(ih, "ACTION",      (Icallback)iMatrixRedraw_CB);
@@ -1442,7 +1427,7 @@ static int iMatrixMapMethod(Ihandle* ih)
     ih->data->callback_mode = 1;
 
     if (!IupGetCallback(ih, "VALUE_EDIT_CB"))
-      iupAttribSetStr(ih, "READONLY", "YES");
+      iupAttribSet(ih, "READONLY", "YES");
   }
 
   iupMatrixMemAlloc(ih);

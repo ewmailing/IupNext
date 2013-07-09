@@ -86,9 +86,15 @@ stored its inheritance can be completely ignored.</p>
 <span class="style1">values</span> like "YES", "NO", 
   "TOP", are case insensitive, so "Yes", "no", "top", and other variations will work. 
 </p>
-<p>Boolean attributes accept the values "1", "YES", "ON" or "TRUE" for <b>true</b>, 
-and NULL (not defined), "0", "NO", "OFF" or "FALSE" for <b>false</b>, even if in 
-the documentation is only one of these combinations.</p>
+<p>Boolean attributes accept the values "1", "YES" or "ON" for <b>true</b>, 
+and "0", "NO" or "OFF" for <b>false</b>. But they will return the value 
+described in the documentation. You can also use <strong>IupSetInt</strong> with 
+1 for <strong>true</strong> and 0 for <strong>false</strong>. <strong>IupGetInt</strong> 
+will return 1 for any of the <strong>true</strong> values, and 0 for any of the
+<strong>false</strong> values.</p>
+<p>Floating point numbers when stored as strings use the application locale for 
+decimal separator. Notice that by default C applications use the C locale, not 
+the current system locale, in this case decimal separator is &quot;.&quot;.</p>
 
 <p>There are attributes common to all the elements. In some cases, common attributes behave 
   differently in different elements, but in such cases, there are comments in 

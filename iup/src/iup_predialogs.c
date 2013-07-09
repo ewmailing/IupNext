@@ -21,13 +21,13 @@
 
 static int CB_button_OK (Ihandle* ih)
 {
-  iupAttribSetStr(IupGetDialog(ih), "STATUS", "1");
+  iupAttribSet(IupGetDialog(ih), "STATUS", "1");
   return IUP_CLOSE;
 }
 
 static int CB_button_CANCEL (Ihandle* ih)
 {
-  iupAttribSetStr(IupGetDialog(ih), "STATUS", "-1");
+  iupAttribSet(IupGetDialog(ih), "STATUS", "-1");
   return IUP_CLOSE;
 }
 
@@ -35,7 +35,7 @@ static int CB_dblclick(Ihandle *ih, int item, char *text)
 {
   (void)text;
   iupAttribSetInt(IupGetDialog(ih), "_IUP_LIST_NUMBER", item-1);
-  iupAttribSetStr(IupGetDialog(ih), "STATUS", "1");
+  iupAttribSet(IupGetDialog(ih), "STATUS", "1");
   return IUP_CLOSE;
 }
 
@@ -52,7 +52,6 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
 {
   Ihandle *lst, *ok, *dlg, *cancel, *dlg_box, *button_box;
   int i, bt;
-  char attrib_str[20];
   char *m=NULL;
 
   if (size > 999)
@@ -61,12 +60,8 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
   lst = IupList(NULL);
 
   for (i=0;i<size;i++)
-  {
-    sprintf(attrib_str,"%d",i+1);
-    IupSetAttribute(lst,attrib_str,list_str[i]);
-  }
-  sprintf(attrib_str,"%d",i+1);
-  IupSetAttribute(lst,attrib_str,NULL);
+    IupSetAttributeId(lst,"",i+1,list_str[i]);
+  IupSetAttributeId(lst,"",i+1,NULL);
   IupSetAttribute(lst,"EXPAND","YES");
 
   ok = IupButton(iupStrMessageGet("IUP_OK"), NULL);
@@ -155,7 +150,7 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
 
 static int iAlarmButtonAction_CB(Ihandle *ih)
 {
-  iupAttribSetStr(IupGetDialog(ih), "_IUP_BUTTON_NUMBER", iupAttribGet(ih, "_IUP_BUTTON_NUMBER"));
+  iupAttribSet(IupGetDialog(ih), "_IUP_BUTTON_NUMBER", iupAttribGet(ih, "_IUP_BUTTON_NUMBER"));
   return IUP_CLOSE;
 }
 
@@ -195,7 +190,7 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
   IupAppend(button_box, IupFill()); /* to center the buttons */
 
   button = IupButton(b1, NULL);
-  iupAttribSetStr(button, "_IUP_BUTTON_NUMBER", "1");
+  iupAttribSet(button, "_IUP_BUTTON_NUMBER", "1");
   IupSetAttribute(button, "PADDING", padding);
   IupAppend(button_box, button);
   IupSetCallback (button, "ACTION", (Icallback)iAlarmButtonAction_CB);
@@ -205,7 +200,7 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
   if (b2 != NULL)
   {
     button = IupButton(b2, NULL);
-    iupAttribSetStr(button, "_IUP_BUTTON_NUMBER", "2");
+    iupAttribSet(button, "_IUP_BUTTON_NUMBER", "2");
     IupSetAttribute(button, "PADDING", padding);
     IupAppend(button_box, button);
     IupSetCallback (button, "ACTION", (Icallback)iAlarmButtonAction_CB);
@@ -215,7 +210,7 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
   if (b3 != NULL)
   {
     button = IupButton(b3, NULL);
-    iupAttribSetStr(button, "_IUP_BUTTON_NUMBER", "3");
+    iupAttribSet(button, "_IUP_BUTTON_NUMBER", "3");
     IupSetAttribute(button, "PADDING", padding);
     IupAppend(button_box, button);
     IupSetCallback (button, "ACTION", (Icallback)iAlarmButtonAction_CB);

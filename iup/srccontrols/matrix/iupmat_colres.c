@@ -100,7 +100,7 @@ void iupMatrixColResFinish(Ihandle* ih, int x)
   ih->data->colres_dragging = 0;
 
   iupAttribSetIntId(ih, "RASTERWIDTH", ih->data->colres_drag_col, width-IMAT_PADDING_W-IMAT_FRAME_W);
-  iupAttribSetStrId(ih, "WIDTH", ih->data->colres_drag_col, NULL);
+  iupAttribSetId(ih, "WIDTH", ih->data->colres_drag_col, NULL);
 
   ih->data->need_calcsize = 1;
   iupMatrixDraw(ih, 0);
@@ -145,7 +145,7 @@ static void iMatrixColResResetMatrixCursor(Ihandle* ih)
   if (cursor)
   {
     IupStoreAttribute(ih, "CURSOR", cursor);
-    iupAttribSetStr(ih, "_IUPMAT_CURSOR", NULL);
+    iupAttribSet(ih, "_IUPMAT_CURSOR", NULL);
   }
 }
 
@@ -156,7 +156,7 @@ void iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y)
   if (col != -1)
   {
     if (!iupAttribGet(ih, "_IUPMAT_CURSOR"))
-      iupAttribStoreStr(ih, "_IUPMAT_CURSOR", IupGetAttribute(ih, "CURSOR"));
+      iupAttribSetStr(ih, "_IUPMAT_CURSOR", IupGetAttribute(ih, "CURSOR"));
     IupSetAttribute(ih, "CURSOR", "RESIZE_W");
   }
   else /* It is in the empty area after the last column, or inside a cell */

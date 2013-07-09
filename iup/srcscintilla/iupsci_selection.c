@@ -179,7 +179,7 @@ char* iupScintillaGetSelectionAttrib(Ihandle* ih)
   end_lin = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, end, 0);
   end_col = iupScintillaSendMessage(ih, SCI_GETCOLUMN, end, 0);
 
-  return iupStrReturnf("%d,%d:%d,%d", start_lin, start_col, end_lin, end_col);
+  return iupStrReturnStrf("%d,%d:%d,%d", start_lin, start_col, end_lin, end_col);
 }
 
 int iupScintillaSetSelectionAttrib(Ihandle* ih, const char* value)

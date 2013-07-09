@@ -48,7 +48,7 @@ static Iarray* winTabsGetVisibleArray(Ihandle* ih)
   {
     /* create the array if does not exist */
     visible_array = iupArrayCreate(count, sizeof(int));
-    iupAttribSetStr(ih, "_IUPWIN_VISIBLEARRAY", (char*)visible_array);
+    iupAttribSet(ih, "_IUPWIN_VISIBLEARRAY", (char*)visible_array);
 
     iupArrayAdd(visible_array, count);
     init = 1;
@@ -222,7 +222,7 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
   {
     /* create the array if does not exist */
     bmp_array = iupArrayCreate(50, sizeof(HBITMAP));
-    iupAttribSetStr(ih, "_IUPWIN_BMPARRAY", (char*)bmp_array);
+    iupAttribSet(ih, "_IUPWIN_BMPARRAY", (char*)bmp_array);
   }
 
   bmp_array_data = iupArrayGetData(bmp_array);
@@ -257,9 +257,9 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
     Ihandle* image = IupGetHandle(name);
     if (image)
     {
-      iupAttribSetStr(image, "_IUPIMG_NO_INVERT", "1");
+      iupAttribSet(image, "_IUPIMG_NO_INVERT", "1");
       hMask = iupdrvImageCreateMask(image);
-      iupAttribSetStr(image, "_IUPIMG_NO_INVERT", NULL);
+      iupAttribSet(image, "_IUPIMG_NO_INVERT", NULL);
     }
   }
 
@@ -368,19 +368,19 @@ static void winTabInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_page
   char *tabtitle, *tabimage;
   int old_rowcount;
 
-  tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
+  tabtitle = iupAttribGetId(ih, "TABTITLE", pos);
   if (!tabtitle) 
   {
     tabtitle = iupAttribGet(child, "TABTITLE");
     if (tabtitle)
-      iupTabsAttribSetStrId(ih, "TABTITLE", pos, tabtitle);
+      iupAttribSetStrId(ih, "TABTITLE", pos, tabtitle);
   }
-  tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+  tabimage = iupAttribGetId(ih, "TABIMAGE", pos);
   if (!tabimage) 
   {
     tabimage = iupAttribGet(child, "TABIMAGE");
     if (tabimage)
-      iupTabsAttribSetStrId(ih, "TABIMAGE", pos, tabimage);
+      iupAttribSetStrId(ih, "TABIMAGE", pos, tabimage);
   }
   if (!tabtitle && !tabimage)
     tabtitle = "     ";
@@ -467,10 +467,7 @@ static int winTabsSetMultilineAttrib(Ihandle* ih, const char* value)
 
 static char* winTabsGetMultilineAttrib(Ihandle* ih)
 {
-  if (ih->data->is_multiline)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->is_multiline); 
 }
 
 static int winTabsSetTabTypeAttrib(Ihandle* ih, const char* value)
@@ -576,11 +573,7 @@ static char* winTabsGetBgColorAttrib(Ihandle* ih)
   {
     COLORREF cr;
     if (iupwinDrawGetThemeTabsBgColor(ih->handle, &cr))
-    {
-      char* str = iupStrGetMemory(20);
-      sprintf(str, "%d %d %d", (int)GetRValue(cr), (int)GetGValue(cr), (int)GetBValue(cr));
-      return str;
-    }
+      return iupStrReturnStrf("%d %d %d", (int)GetRValue(cr), (int)GetGValue(cr), (int)GetBValue(cr));
   }
 
   return IupGetGlobal("DLGBGCOLOR");
@@ -626,7 +619,7 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     if (cb)
     {
       Ihandle* prev_child = IupGetChild(ih, prev_pos);
-      iupAttribSetStr(ih, "_IUPTABS_PREV_CHILD", (char*)prev_child);
+      iupAttribSet(ih, "_IUPTABS_PREV_CHILD", (char*)prev_child);
     }
   }
 
@@ -646,7 +639,7 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     {
       Ihandle* child = IupGetChild(ih, pos);
       Ihandle* prev_child = (Ihandle*)iupAttribGet(ih, "_IUPTABS_PREV_CHILD");
-      iupAttribSetStr(ih, "_IUPTABS_PREV_CHILD", NULL);
+      iupAttribSet(ih, "_IUPTABS_PREV_CHILD", NULL);
 
       /* avoid duplicate calls when a Tab is inside another Tab. */
       if (prev_child)
@@ -711,7 +704,7 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     winTabSetPageWindowPos(tab_page, &rect);
 
-    iupAttribSetStr(child, "_IUPTAB_CONTAINER", (char*)tab_page);
+    iupAttribSet(child, "_IUPTAB_CONTAINER", (char*)tab_page);
 
     winTabInsertItem(ih, child, pos, tab_page);
 
@@ -758,7 +751,7 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
       iupwinHandleRemove(tab_page);
       DestroyWindow(tab_page);
 
-      iupAttribSetStr(child, "_IUPTAB_CONTAINER", NULL);
+      iupAttribSet(child, "_IUPTAB_CONTAINER", NULL);
     }
   }
 }
@@ -844,14 +837,14 @@ static void winTabsUnMapMethod(Ihandle* ih)
   iarray = (Iarray*)iupAttribGet(ih, "_IUPWIN_BMPARRAY");
   if (iarray)
   {
-    iupAttribSetStr(ih, "_IUPWIN_BMPARRAY", NULL);
+    iupAttribSet(ih, "_IUPWIN_BMPARRAY", NULL);
     iupArrayDestroy(iarray);
   }
 
   iarray = (Iarray*)iupAttribGet(ih, "_IUPWIN_VISIBLEARRAY");
   if (iarray)
   {
-    iupAttribSetStr(ih, "_IUPWIN_VISIBLEARRAY", NULL);
+    iupAttribSet(ih, "_IUPWIN_VISIBLEARRAY", NULL);
     iupArrayDestroy(iarray);
   }
 

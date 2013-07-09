@@ -186,14 +186,11 @@ char *iupdrvGetSystemName(void)
 
 char *iupdrvGetSystemVersion(void)
 {
-  char* str = iupStrGetMemory(70);
+  char* str = iupStrGetMemory(100);
   SInt32 systemVersion, versionMajor, versionMinor, versionBugFix, systemArchitecture;
 
   if (Gestalt(gestaltSystemVersion, &systemVersion) != noErr)
-  {
-    printf("Unable to obtain system version\n");
     return NULL;
-  }
 
   if (systemVersion < 0x1040)
   {
@@ -210,14 +207,14 @@ char *iupdrvGetSystemVersion(void)
     sprintf(str, "%ld.%ld.%ld", (long)versionMajor, (long)versionMinor, (long)versionBugFix);
   }
 
-  if(Gestalt(gestaltSysArchitecture, &systemArchitecture) == noErr)
+  if (Gestalt(gestaltSysArchitecture, &systemArchitecture) == noErr)
   {
     if (systemArchitecture == gestalt68k)
-      sprintf(str, "%s %s", str, "(Motorola 68k)");
+      strcat(str, " (Motorola 68k)");
     else if (systemArchitecture == gestaltPowerPC)
-      sprintf(str, "%s %s", str, "(Power PC)");
+      strcat(str, " (Power PC)");
     else /* gestaltIntel */
-      sprintf(str, "%s %s", str, "(Intel)");  
+      strcat(str, " (Intel)");  
   }
 
   return str;

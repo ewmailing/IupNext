@@ -728,7 +728,7 @@ static char* iColorBrowserDlgGetValueAttrib(Ihandle* ih)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
   if (iupAttribGetBoolean(ih, "SHOWALPHA"))
-    return iupStrReturnf("%d %d %d %d", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue, (int)colordlg_data->alpha);
+    return iupStrReturnStrf("%d %d %d %d", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue, (int)colordlg_data->alpha);
   else
     return iupStrReturnRGB(colordlg_data->red, colordlg_data->green, colordlg_data->blue);
 }
@@ -769,7 +769,7 @@ static int iColorBrowserDlgSetValueHSIAttrib(Ihandle* ih, const char* value)
 static char* iColorBrowserDlgGetValueHSIAttrib(Ihandle* ih)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
-  return iupStrReturnf("%d %d %d",(int)colordlg_data->hue, (int)(colordlg_data->saturation*100), (int)(colordlg_data->intensity*100));
+  return iupStrReturnStrf("%d %d %d",(int)colordlg_data->hue, (int)(colordlg_data->saturation*100), (int)(colordlg_data->intensity*100));
 }
 
 static int iColorBrowserDlgSetValueHexAttrib(Ihandle* ih, const char* value)
@@ -793,7 +793,7 @@ static int iColorBrowserDlgSetValueHexAttrib(Ihandle* ih, const char* value)
 static char* iColorBrowserDlgGetValueHexAttrib(Ihandle* ih)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
-  return iupStrReturnf("#%02X%02X%02X", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue);
+  return iupStrReturnStrf("#%02X%02X%02X", (int)colordlg_data->red, (int)colordlg_data->green, (int)colordlg_data->blue);
 }
 
 static char* iColorBrowserDlgGetColorTableAttrib(Ihandle* ih)
@@ -866,7 +866,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
 
   IcolorDlgData* colordlg_data = (IcolorDlgData*)malloc(sizeof(IcolorDlgData));
   memset(colordlg_data, 0, sizeof(IcolorDlgData));
-  iupAttribSetStr(ih, "_IUP_GC_DATA", (char*)colordlg_data);
+  iupAttribSet(ih, "_IUP_GC_DATA", (char*)colordlg_data);
 
   /* ======================================================================= */
   /* BUTTONS   ============================================================= */

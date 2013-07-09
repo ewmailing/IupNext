@@ -157,9 +157,9 @@ static void gtkItemActivate(GtkWidget *widget, Ihandle* ih)
     if (iupAttribGetBoolean(ih, "AUTOTOGGLE"))
     {
       if (iupAttribGetBoolean(ih, "VALUE"))
-        iupAttribSetStr(ih, "VALUE", "OFF");
+        iupAttribSet(ih, "VALUE", "OFF");
       else
-        iupAttribSetStr(ih, "VALUE", "ON");
+        iupAttribSet(ih, "VALUE", "ON");
 
       gtkItemUpdateImage(ih, iupAttribGet(ih, "VALUE"), iupAttribGet(ih, "IMAGE"), iupAttribGet(ih, "IMPRESS"));
     }
@@ -232,7 +232,7 @@ static int gtkMenuMapMethod(Ihandle* ih)
     else
     {
       /* top level menu used for IupPopup */
-      iupAttribSetStr(ih, "_IUPGTK_POPUP_MENU", "1");
+      iupAttribSet(ih, "_IUPGTK_POPUP_MENU", "1");
 
       g_signal_connect(G_OBJECT(ih->handle), "map", G_CALLBACK(gtkMenuMap), ih);
       g_signal_connect(G_OBJECT(ih->handle), "unmap", G_CALLBACK(gtkPopupMenuUnMap), ih);
@@ -348,10 +348,7 @@ static int gtkItemSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* gtkItemGetValueAttrib(Ihandle* ih)
 {
-  if (GTK_IS_CHECK_MENU_ITEM(ih->handle) && gtk_check_menu_item_get_active((GtkCheckMenuItem*)ih->handle))
-    return "ON";
-  else
-    return "OFF";
+  return iupStrReturnChecked(GTK_IS_CHECK_MENU_ITEM(ih->handle) && gtk_check_menu_item_get_active((GtkCheckMenuItem*)ih->handle));
 }
 
 static int gtkItemMapMethod(Ihandle* ih)
@@ -376,7 +373,7 @@ static int gtkItemMapMethod(Ihandle* ih)
         ih->handle = gtk_radio_menu_item_new_with_label_from_widget(last_tg, "");
       else
         ih->handle = gtk_radio_menu_item_new_with_label(NULL, "");
-      iupAttribSetStr(ih->parent, "_IUPGTK_LASTRADIOITEM", (char*)ih->handle);
+      iupAttribSet(ih->parent, "_IUPGTK_LASTRADIOITEM", (char*)ih->handle);
     }
     else
     {

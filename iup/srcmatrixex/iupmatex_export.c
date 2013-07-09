@@ -386,12 +386,12 @@ static int iMatrixExSetCopyFileAttrib(Ihandle *ih, const char* value)
   FILE *file = fopen(value, "wb");
   if (!file)
   {
-    iupAttribSetStr(ih, "LASTERROR", "INVALIDFILENAME");
+    iupAttribSet(ih, "LASTERROR", "INVALIDFILENAME");
     return 0;
   }
 
   /* reset error state */
-  iupAttribSetStr(ih, "LASTERROR", NULL);
+  iupAttribSet(ih, "LASTERROR", NULL);
 
   num_lin = IupGetInt(ih, "NUMLIN");
   num_col = IupGetInt(ih, "NUMCOL");

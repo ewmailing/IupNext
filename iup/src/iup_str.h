@@ -40,16 +40,20 @@ int iupStrEqualPartial(const char* str1, const char* str2);
  * \ingroup str */
 int iupStrEqualNoCasePartial(const char* str1, const char* str2);
 
-/** Returns 1 if the string is "1", "YES", "ON" or "TRUE". \n
+
+
+/** Returns 1 if the string is "YES" or "ON". \n
  * Returns 0 otherwise (including NULL or empty).
  * \ingroup str */
 int iupStrBoolean(const char* str);
 
-/** Returns 1 if the string is "NO", "OFF" or "FALSE". \n
+/** Returns 1 if the string is "NO" or "OFF". \n
  * Returns 0 otherwise (including NULL or empty). \n
  * To be used when value can be "False" or others different than "True".
  * \ingroup str */
 int iupStrFalse(const char* str);
+
+
 
 /** Returns the number of lines in a string.
  * It works for UNIX, DOS and MAC line ends.
@@ -72,6 +76,8 @@ const char* iupStrNextValue(const char* str, int str_len, int *len, char sep);
  * \ingroup str */
 int iupStrCountChar(const char *str, char c);
 
+
+
 /** Returns a copy of the given string.
  * If str is NULL it will return NULL.
  * \ingroup str */
@@ -87,6 +93,8 @@ char *iupStrDupUntil(char **str, char c);
  * \ingroup str */
 void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_str);
 
+
+
 /** Returns a buffer with the specified size+1. \n
  * The buffer is resused after 50 calls. It must NOT be freed.
  * Use size=-1 to free all the internal buffers.
@@ -97,6 +105,8 @@ char *iupStrGetMemory(int size);
  * Use snprintf or vsnprintf with the given size.
  * \ingroup str */
 char *iupStrGetLargeMem(int *size);
+
+
 
 /** Converts a string into lower case. Can be used in-place.
  * \ingroup str */
@@ -110,9 +120,11 @@ void iupStrUpper(char* dstr, const char* sstr);
  * \ingroup str */
 int iupStrHasSpace(const char* str);
 
+
+
 /** Returns combined values in a formated string using \ref iupStrGetMemory.
  * \ingroup str */
-char* iupStrReturnf(const char* format, ...);
+char* iupStrReturnStrf(const char* format, ...);
 
 /** Returns a string value in a string using \ref iupStrGetMemory.
  * \ingroup str */
@@ -121,6 +133,10 @@ char* iupStrReturnStr(const char* str);
 /** Returns a boolean value (as YES or NO) in a string.
  * \ingroup str */
 char* iupStrReturnBoolean(int i);
+
+/** Returns a checked value (as ON, OFF or NOTDEF (-1)) in a string.
+ * \ingroup str */
+char* iupStrReturnChecked(int i);
 
 /** Returns an int value in a string using \ref iupStrGetMemory.
  * \ingroup str */
@@ -145,6 +161,8 @@ char* iupStrReturnIntInt(int i1, int i2, char sep);
 /** Returns two float values in a string using \ref iupStrGetMemory.
  * \ingroup str */
 char* iupStrReturnFloatFloat(float f1, float f2, char sep);
+
+
 
 /** Extract a RGB triple from the string. Returns 0 or 1.
  * \ingroup str */
@@ -181,6 +199,8 @@ int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep);
  * \ingroup str */
 int iupStrToStrStr(const char *str, char *str1, char *str2, char sep);
 
+
+
 /** Returns the file extension of a file name.
  * Supports UNIX and Windows directory separators.
  * \ingroup str */
@@ -203,6 +223,8 @@ char* iupStrFileMakeFileName(const char* path, const char* title);
 /** Split the filename in path and title using pre-alocated strings.
  * \ingroup str */
 void iupStrFileNameSplit(const char* filename, char* path, char* title);
+
+
 
 /** Replace a character in a string.
  * Returns the number of occurrences.
@@ -227,6 +249,8 @@ char* iupStrToDos(const char* str);
  * \ingroup str */
 char* iupStrConvertToC(const char* str);
 
+
+
 /** Remove the interval from the string. Done in-place.
  * \ingroup str */
 void iupStrRemove(char* value, int start, int end, int dir);
@@ -234,6 +258,8 @@ void iupStrRemove(char* value, int start, int end, int dir);
 /** Remove the interval from the string and insert the new string at the start.
  * \ingroup str */
 char* iupStrInsert(const char* value, const char* insert_value, int start, int end);
+
+
 
 /** Process the mnemonic in the string. If not found returns str.
  * If found returns a new string. Action can be:
@@ -246,6 +272,7 @@ char* iupStrProcessMnemonic(const char* str, char *c, int action);
 /** Returns the Mnemonic if found. Zero otherwise.
  * \ingroup str */
 int iupStrFindMnemonic(const char* str);
+
 
 
 #ifdef __cplusplus

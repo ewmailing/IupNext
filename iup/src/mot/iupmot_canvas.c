@@ -463,15 +463,12 @@ static char* motCanvasGetXWindowAttrib(Ihandle *ih)
 
 static char* motCanvasGetDrawSizeAttrib(Ihandle *ih)
 {
-  char* str = iupStrGetMemory(20);
- 
   Dimension width, height;
   XtVaGetValues(ih->handle, XmNwidth,  &width,
                             XmNheight, &height, 
                             NULL);
 
-  sprintf(str, "%dx%d", (int)width, (int)height);
-  return str;
+  return iupStrReturnIntInt((int)width, (int)height, 'x');
 }
 
 static int motCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
@@ -503,7 +500,7 @@ static int motCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
     XSetWindowAttributes attrs;
     attrs.background_pixmap = None;
     XChangeWindowAttributes(iupmot_display, XtWindow(ih->handle), CWBackPixmap, &attrs);
-    iupAttribSetStr(ih, "_IUPMOT_NO_BGCOLOR", "1");
+    iupAttribSet(ih, "_IUPMOT_NO_BGCOLOR", "1");
   }
 
   return 1;
@@ -614,7 +611,7 @@ static int motCanvasMapMethod(Ihandle* ih)
   if (visual)
     iupmotDialogResetVisual(ih);
 
-  iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)sb_win);
+  iupAttribSet(ih, "_IUP_EXTRAPARENT", (char*)sb_win);
 
   {
     XSetWindowAttributes attrs;
@@ -644,7 +641,7 @@ static int motCanvasMapMethod(Ihandle* ih)
     XtAddCallback(sb_horiz, XmNpageDecrementCallback, motCanvasScrollbarCallback, (void*)IUP_SBPGLEFT);
     XtAddCallback(sb_horiz, XmNpageIncrementCallback, motCanvasScrollbarCallback, (void*)IUP_SBPGRIGHT);
 
-    iupAttribSetStr(ih, "_IUPMOT_SBHORIZ", (char*)sb_horiz);
+    iupAttribSet(ih, "_IUPMOT_SBHORIZ", (char*)sb_horiz);
   }
 
   if (ih->data->sb & IUP_SB_VERT)
@@ -663,7 +660,7 @@ static int motCanvasMapMethod(Ihandle* ih)
     XtAddCallback(sb_vert, XmNpageDecrementCallback, motCanvasScrollbarCallback, (void*)IUP_SBPGUP);
     XtAddCallback(sb_vert, XmNpageIncrementCallback, motCanvasScrollbarCallback, (void*)IUP_SBPGDN);
 
-    iupAttribSetStr(ih, "_IUPMOT_SBVERT", (char*)sb_vert);
+    iupAttribSet(ih, "_IUPMOT_SBVERT", (char*)sb_vert);
   }
 
   XtAddCallback(ih->handle, XmNhelpCallback, (XtCallbackProc)iupmotHelpCallback, (XtPointer)ih);

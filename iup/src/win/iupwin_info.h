@@ -20,8 +20,6 @@ int   iupwinIsWinXPOrNew(void);
 int   iupwinIsWin7OrNew(void);
 int   iupwinIsWin8OrNew(void);
 
-/* color */
-void iupwinGetSysColor(char* color, int wincolor);
 
 #ifdef __cplusplus
 }

@@ -39,7 +39,7 @@ static int iVboxSetRasterSizeAttrib(Ihandle* ih, const char* value)
       ih->userwidth = 0;
     }
   }
-  iupAttribSetStr(ih, "SIZE", NULL); /* clear SIZE in hash table */
+  iupAttribSet(ih, "SIZE", NULL); /* clear SIZE in hash table */
   return 0;
 }
 
@@ -80,9 +80,7 @@ static int iVboxSetAlignmentAttrib(Ihandle* ih, const char* value)
 static char* iVboxGetAlignmentAttrib(Ihandle* ih)
 {
   char* align2str[3] = {"ALEFT", "ACENTER", "ARIGHT"};
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%s", align2str[ih->data->alignment]);
-  return str;
+  return iupStrReturnStr(align2str[ih->data->alignment]);
 }
 
 static void iVboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)

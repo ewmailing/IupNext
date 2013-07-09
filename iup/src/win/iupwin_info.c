@@ -279,12 +279,6 @@ int iupwinGetComCtl32Version(void)
   return winGetDllVersion(TEXT("comctl32.dll"));
 }
 
-void iupwinGetSysColor(char* color, int wincolor)
-{
-   COLORREF syscolor = GetSysColor(wincolor);
-   sprintf(color, "%d %d %d", (int)GetRValue(syscolor), (int)GetGValue(syscolor), (int)GetBValue(syscolor));
-}
-
 int iupwinIsAppThemed(void)
 {
   typedef BOOL (STDAPICALLTYPE *winIsAppThemed)(void);

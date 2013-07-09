@@ -70,12 +70,11 @@ static const char* iClassFindId(const char* name)
 
 static const char* iClassCutNameId(const char* name, const char* name_id)
 {
-  char* str;
+  static char str[100];
   int len = name_id - name;
   if (len == 0)
     return NULL;
 
-  str = iupStrGetMemory(len+1);
   memcpy(str, name, len);
   str[len] = 0;
   return str;
@@ -106,7 +105,7 @@ int iupClassObjectSetAttributeId2(Ihandle* ih, const char* name, int id1, int id
     if (afunc->flags & IUPAF_READONLY)
     {
       if (afunc->flags & IUPAF_NO_STRING)
-        return -1;  /* value is NOT a string, can NOT call iupAttribStoreStr */
+        return -1;  /* value is NOT a string, can NOT call iupAttribSetStr */
       return 0;
     }
 
@@ -128,7 +127,7 @@ int iupClassObjectSetAttributeId2(Ihandle* ih, const char* name, int id1, int id
     }
 
     if (afunc->flags & IUPAF_NO_STRING)
-      return -1; /* value is NOT a string, can NOT call iupAttribStoreStr */
+      return -1; /* value is NOT a string, can NOT call iupAttribSetStr */
   }
 
   return 1;
@@ -150,7 +149,7 @@ int iupClassObjectSetAttributeId(Ihandle* ih, const char* name, int id, const ch
     if (afunc->flags & IUPAF_READONLY)
     {
       if (afunc->flags & IUPAF_NO_STRING)
-        return -1;  /* value is NOT a string, can NOT call iupAttribStoreStr */
+        return -1;  /* value is NOT a string, can NOT call iupAttribSetStr */
       return 0;
     }
 
@@ -164,7 +163,7 @@ int iupClassObjectSetAttributeId(Ihandle* ih, const char* name, int id, const ch
     }
 
     if (afunc->flags & IUPAF_NO_STRING)
-      return -1; /* value is NOT a string, can NOT call iupAttribStoreStr */
+      return -1; /* value is NOT a string, can NOT call iupAttribSetStr */
   }
 
   return 1;
@@ -191,7 +190,7 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
         if (afunc->flags & IUPAF_READONLY)
         {
           if (afunc->flags & IUPAF_NO_STRING)
-            return -1;  /* value is NOT a string, can NOT call iupAttribStoreStr */
+            return -1;  /* value is NOT a string, can NOT call iupAttribSetStr */
           return 0;
         }
 
@@ -214,7 +213,7 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
         }
 
         if (afunc->flags & IUPAF_NO_STRING)
-          return -1; /* value is NOT a string, can NOT call iupAttribStoreStr */
+          return -1; /* value is NOT a string, can NOT call iupAttribSetStr */
 
         return 1; /* if the function exists, then must return here */
       }
@@ -233,7 +232,7 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
     if (afunc->flags & IUPAF_READONLY)
     {
       if (afunc->flags & IUPAF_NO_STRING)
-        return -1;  /* value is NOT a string, can NOT call iupAttribStoreStr */
+        return -1;  /* value is NOT a string, can NOT call iupAttribSetStr */
       return 0;
     }
 
@@ -264,7 +263,7 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
         ret = afunc->set(ih, value);
 
       if (ret == 1 && afunc->flags & IUPAF_NO_STRING)
-        return -1;  /* value is NOT a string, can NOT call iupAttribStoreStr */
+        return -1;  /* value is NOT a string, can NOT call iupAttribSetStr */
 
       if (*inherit)
         return 1;   /* inheritable attributes are always stored in the hash table, */
@@ -791,7 +790,7 @@ void IupSaveClassAttributes(Ihandle* ih)
           }
 
           if (!iupStrEqualNoCase(value, iupAttribGet(ih, name)))     /* NOT already stored */
-            iupAttribStoreStr(ih, name, value);
+            iupAttribSetStr(ih, name, value);
         }
       }
       else if (has_attrib_id)
@@ -813,10 +812,8 @@ void IupSaveClassAttributes(Ihandle* ih)
               value = iupClassObjectGetAttributeId2(ih, name, lin, col);
               if (value && value[0])  /* NOT NULL and not empty */
               {
-                char str[50];
-                sprintf(str, "%s%d:%d", name, lin, col);
-                if (!iupStrEqualNoCase(value, iupAttribGet(ih, str)))     /* NOT already stored */
-                  iupAttribStoreStr(ih, str, value);
+                if (!iupStrEqualNoCase(value, iupAttribGetId2(ih, name, lin, col)))     /* NOT already stored */
+                  iupAttribSetStrId2(ih, name, lin, col, value);
               }
             }
           }
@@ -829,10 +826,8 @@ void IupSaveClassAttributes(Ihandle* ih)
             value = iupClassObjectGetAttributeId(ih, name, id);
             if (value && value[0])  /* NOT NULL and not empty */
             {
-              char str[50];
-              sprintf(str, "%s%d", name, id);
-              if (!iupStrEqualNoCase(value, iupAttribGet(ih, str)))     /* NOT already stored */
-                iupAttribStoreStr(ih, str, value);
+              if (!iupStrEqualNoCase(value, iupAttribGetId(ih, name, id)))     /* NOT already stored */
+                iupAttribSetStrId(ih, name, id, value);
             }
           }
         }

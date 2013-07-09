@@ -27,23 +27,7 @@
 
 char* iupTabsGetPaddingAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%dx%d", ih->data->horiz_padding, ih->data->vert_padding);
-  return str;
-}
-
-char* iupTabsAttribGetStrId(Ihandle* ih, const char* name, int pos)
-{
-  char str[50];
-  sprintf(str, "%s%d", name, pos);
-  return iupAttribGet(ih, str);
-}
-
-void iupTabsAttribSetStrId(Ihandle* ih, const char* name, int pos, const char* value)
-{
-  char str[50];
-  sprintf(str, "%s%d", name, pos);
-  iupAttribStoreStr(ih, str, value);
+  return iupStrReturnIntInt(ih->data->horiz_padding, ih->data->vert_padding, 'x');
 }
 
 static int iTabsGetMaxWidth(Ihandle* ih)
@@ -54,9 +38,9 @@ static int iTabsGetMaxWidth(Ihandle* ih)
 
   for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
   {
-    tabtitle = iupTabsAttribGetStrId(ih, "TABTITLE", pos);
+    tabtitle = iupAttribGetId(ih, "TABTITLE", pos);
     if (!tabtitle) tabtitle = iupAttribGet(child, "TABTITLE");
-    tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    tabimage = iupAttribGetId(ih, "TABIMAGE", pos);
     if (!tabimage) tabimage = iupAttribGet(child, "TABIMAGE");
     if (!tabtitle && !tabimage)
       tabtitle = "     ";
@@ -90,7 +74,7 @@ static int iTabsGetMaxHeight(Ihandle* ih)
 
   for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
   {
-    tabimage = iupTabsAttribGetStrId(ih, "TABIMAGE", pos);
+    tabimage = iupAttribGetId(ih, "TABIMAGE", pos);
     if (!tabimage) tabimage = iupAttribGet(child, "TABIMAGE");
 
     if (tabimage)
@@ -241,7 +225,7 @@ static void iTabsSetTab(Ihandle* ih, Ihandle* child, int pos)
       iupdrvTabsSetCurrentTab(ih, pos);
   }
   else
-    iupAttribSetStr(ih, "_IUPTABS_VALUE_HANDLE", (char*)child);
+    iupAttribSet(ih, "_IUPTABS_VALUE_HANDLE", (char*)child);
 }
 
 
@@ -302,9 +286,7 @@ static char* iTabsGetValueHandleAttrib(Ihandle* ih)
 
 static char* iTabsGetCountAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(50);
-  sprintf(str, "%d", IupGetChildCount(ih));
-  return str;
+  return iupStrReturnInt(IupGetChildCount(ih));
 }
 
 static int iTabsSetValuePosAttrib(Ihandle* ih, const char* value)
@@ -327,20 +309,14 @@ static char* iTabsGetValuePosAttrib(Ihandle* ih)
   if (ih->handle)
   {
     int pos = iupdrvTabsGetCurrentTab(ih);
-    char *str = iupStrGetMemory(50);
-    sprintf(str, "%d", pos);
-    return str;
+    return iupStrReturnInt(pos);
   }
   else
   {
     Ihandle* child = (Ihandle*)iupAttribGet(ih, "_IUPTABS_VALUE_HANDLE");
     int pos = IupGetChildPos(ih, child);
     if (pos != -1) /* found child */
-    {
-      char *str = iupStrGetMemory(50);
-      sprintf(str, "%d", pos);
-      return str;
-    }
+      return iupStrReturnInt(pos);
   }
 
   return NULL;
@@ -371,7 +347,6 @@ static char* iTabsGetValueAttrib(Ihandle* ih)
 static char* iTabsGetClientSizeAttrib(Ihandle* ih)
 {
   int width, height, decorwidth, decorheight;
-  char* str = iupStrGetMemory(20);
   width = ih->currentwidth;
   height = ih->currentheight;
   iTabsGetDecorSize(ih, &decorwidth, &decorheight);
@@ -379,17 +354,14 @@ static char* iTabsGetClientSizeAttrib(Ihandle* ih)
   height -= decorheight;
   if (width < 0) width = 0;
   if (height < 0) height = 0;
-  sprintf(str, "%dx%d", width, height);
-  return str;
+  return iupStrReturnIntInt(width, height,'x');
 }
 
 static char* iTabsGetClientOffsetAttrib(Ihandle* ih)
 {
   int dx, dy;
-  char* str = iupStrGetMemory(20);
   iTabsGetDecorOffset(ih, &dx, &dy);
-  sprintf(str, "%dx%d", dx, dy);
-  return str;
+  return iupStrReturnIntInt(dx, dy, 'x');
 }
 
 void iupTabsCheckCurrentTab(Ihandle* ih, int pos)

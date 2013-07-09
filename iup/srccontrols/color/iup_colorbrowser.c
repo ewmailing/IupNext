@@ -681,7 +681,7 @@ static int iColorBrowserKeypress_CB(Ihandle* ih, int c, int press)
 
 static char* iColorBrowserGetHSIAttrib(Ihandle* ih)
 {
-  return iupStrReturnf("%.9f %.9f %.9f", (double)ih->data->hue, (double)ih->data->saturation, (double)ih->data->intensity);
+  return iupStrReturnStrf("%.9f %.9f %.9f", (double)ih->data->hue, (double)ih->data->saturation, (double)ih->data->intensity);
 }
 
 static int iColorBrowserSetHSIAttrib(Ihandle* ih, const char* value)
@@ -800,7 +800,7 @@ static int iColorBrowserCreateMethod(Ihandle* ih, void **params)
 
   /* change the IupCanvas default values */
   IupSetfAttribute(ih, "RASTERSIZE", "%dx%d", ICB_DEFAULTSIZE, ICB_DEFAULTSIZE);
-  iupAttribSetStr(ih, "BORDER", "NO");
+  iupAttribSet(ih, "BORDER", "NO");
   ih->expand = IUP_EXPAND_NONE;
 
   /* IupCanvas callbacks */

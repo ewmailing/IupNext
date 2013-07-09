@@ -31,10 +31,7 @@ struct _IcontrolData
 
 static char* iOleControlGetDesignModeAttrib(Ihandle* ih)
 {
-  if (ih->data->olehandler->m_ambientProp.getDesignMode())
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->olehandler->m_ambientProp.getDesignMode()); 
 }
 
 static int iOleControlSetDesignModeAttrib(Ihandle* ih, const char* value)
@@ -137,7 +134,7 @@ static int iOleControlCreateMethod(Ihandle* ih, void **params)
   ih->data->olehandler = new tOleHandler();
 
   /* change the IupCanvas default values */
-  iupAttribSetStr(ih, "BORDER", "NO");
+  iupAttribSet(ih, "BORDER", "NO");
 
   /* IupCanvas callbacks */
   IupSetCallback(ih,"ACTION",(Icallback)iOleControlAction_CB);

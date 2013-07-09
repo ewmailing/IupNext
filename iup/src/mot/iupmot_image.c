@@ -203,7 +203,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
   XFreeGC(iupmot_display,gc);
 
   if (bgcolor_depend || make_inactive)
-    iupAttribSetStr(ih, "_IUP_BGCOLOR_DEPEND", "1");
+    iupAttribSet(ih, "_IUP_BGCOLOR_DEPEND", "1");
 
   return (void*)pixmap;
 }

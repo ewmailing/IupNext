@@ -128,7 +128,7 @@ static int gtkFrameMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   if (title)
-    iupAttribSetStr(ih, "_IUPFRAME_HAS_TITLE", "1");
+    iupAttribSet(ih, "_IUPFRAME_HAS_TITLE", "1");
   else
   {
     value = iupAttribGetStr(ih, "SUNKEN");
@@ -138,7 +138,7 @@ static int gtkFrameMapMethod(Ihandle* ih)
       gtk_frame_set_shadow_type((GtkFrame*)ih->handle, GTK_SHADOW_ETCHED_IN);
 
     if (iupAttribGet(ih, "BGCOLOR"))
-      iupAttribSetStr(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
+      iupAttribSet(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
   }
 
   /* the container that will receive the child element. */

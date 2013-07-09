@@ -229,14 +229,14 @@ static int gtkSetDropTypesAttrib(Ihandle* ih, const char* value)
   if (targetlist)
   {
     gtk_target_list_unref(targetlist);
-    iupAttribSetStr(ih, "_IUPGTK_DROP_TARGETLIST", NULL);
+    iupAttribSet(ih, "_IUPGTK_DROP_TARGETLIST", NULL);
   }
 
   if(!value)
     return 0;
 
   targetlist = gtkCreateTargetList(value);
-  iupAttribSetStr(ih, "_IUPGTK_DROP_TARGETLIST", (char*)targetlist);
+  iupAttribSet(ih, "_IUPGTK_DROP_TARGETLIST", (char*)targetlist);
   return 1;
 }
 
@@ -272,14 +272,14 @@ static int gtkSetDragTypesAttrib(Ihandle* ih, const char* value)
   if (targetlist)
   {
     gtk_target_list_unref(targetlist);
-    iupAttribSetStr(ih, "_IUPGTK_DRAG_TARGETLIST", NULL);
+    iupAttribSet(ih, "_IUPGTK_DRAG_TARGETLIST", NULL);
   }
 
   if (!value)
     return 0;
 
   targetlist = gtkCreateTargetList(value);
-  iupAttribSetStr(ih, "_IUPGTK_DRAG_TARGETLIST", (char*)targetlist);
+  iupAttribSet(ih, "_IUPGTK_DRAG_TARGETLIST", (char*)targetlist);
   return 1;
 }
 

@@ -150,10 +150,7 @@ static int iMatrixSetBusyAttrib(Ihandle* ih, const char* value)
 static char* iMatrixGetBusyAttrib(Ihandle* ih)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  if (matex_data->busy)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (matex_data->busy); 
 }
 
 void iupMatrixExRegisterBusy(Iclass* ic)

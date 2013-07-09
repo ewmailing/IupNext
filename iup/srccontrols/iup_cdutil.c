@@ -157,7 +157,7 @@ void cdIupSetFont(Ihandle* ih, cdCanvas *canvas, const char* font)
   char* lastfont = iupAttribGetStr(ih, "_IUPLAST_FONT");
   if (!lastfont || !iupStrEqual(lastfont, font))
   {
-    iupAttribStoreStr(ih, "_IUPLAST_FONT", font);
+    iupAttribSetStr(ih, "_IUPLAST_FONT", font);
     cdCanvasNativeFont(canvas, font);
   }
 }

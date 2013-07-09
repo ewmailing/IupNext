@@ -323,12 +323,9 @@ static char* motListGetValueAttrib(Ihandle* ih)
   {
     if (ih->data->is_dropdown)
     {
-      char* str;
       int pos;
       XtVaGetValues(ih->handle, XmNselectedPosition, &pos, NULL);
-      str = iupStrGetMemory(50);
-      sprintf(str, "%d", pos+1);  /* IUP starts at 1 */
-      return str;
+      return iupStrReturnInt(pos+1);  /* IUP starts at 1 */
     }
     else
     {
@@ -337,10 +334,9 @@ static char* motListGetValueAttrib(Ihandle* ih)
       {
         if (!ih->data->is_multiple)
         {
-          char* str = iupStrGetMemory(50);
-          sprintf(str, "%d", pos[0]);  
+          int ret = pos[0];  
           XtFree((char*)pos);
-          return str;
+          return iupStrReturnInt(ret);
         }
         else
         {
@@ -370,11 +366,11 @@ static int motListSetValueAttrib(Ihandle* ih, const char* value)
     XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
     if (!value) value = "";
 
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1"); /* disable callbacks */
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", "1"); /* disable callbacks */
 
     XmTextFieldSetString(cbedit, (char*)value);
 
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   }
   else 
   {
@@ -404,7 +400,7 @@ static int motListSetValueAttrib(Ihandle* ih, const char* value)
         else
         {
           XmListDeselectAllItems(ih->handle);
-          iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", NULL);
+          iupAttribSet(ih, "_IUPLIST_OLDVALUE", NULL);
         }
       }
       else
@@ -417,7 +413,7 @@ static int motListSetValueAttrib(Ihandle* ih, const char* value)
 
         if (!value)
         {
-          iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", NULL);
+          iupAttribSet(ih, "_IUPLIST_OLDVALUE", NULL);
           return 0;
         }
 
@@ -437,7 +433,7 @@ static int motListSetValueAttrib(Ihandle* ih, const char* value)
 
         XtVaSetValues(ih->handle, XmNselectionPolicy, XmEXTENDED_SELECT, 
                                   XmNselectionMode, XmNORMAL_MODE, NULL);  /* must also restore this */
-        iupAttribStoreStr(ih, "_IUPLIST_OLDVALUE", value);
+        iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", value);
       }
     }
   }
@@ -562,10 +558,7 @@ static char* motListGetReadOnlyAttrib(Ihandle* ih)
     Widget cbedit;
     XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
     XtVaGetValues(cbedit, XmNeditable, &editable, NULL);
-    if (editable)
-      return "YES";
-    else
-      return "NO";
+    return iupStrReturnBoolean(editable);
   }
   else
     return NULL;
@@ -580,10 +573,10 @@ static int motListSetInsertAttrib(Ihandle* ih, const char* value)
   {
     Widget cbedit;
     XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1"); /* disable callbacks */
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", "1"); /* disable callbacks */
     XmTextFieldRemove(cbedit);
     XmTextFieldInsert(cbedit, XmTextFieldGetInsertionPosition(cbedit), (char*)value);
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   }
 
   return 0;
@@ -602,9 +595,9 @@ static int motListSetSelectedTextAttrib(Ihandle* ih, const char* value)
   XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
   if (XmTextFieldGetSelectionPosition(cbedit, &start, &end) && start!=end)
   {
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1"); /* disable callbacks */
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", "1"); /* disable callbacks */
     XmTextFieldReplace(cbedit, start, end, (char*)value);
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   }
 
   return 0;
@@ -634,9 +627,9 @@ static int motListSetAppendAttrib(Ihandle* ih, const char* value)
     Widget cbedit;
     XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
     pos = XmTextFieldGetLastPosition(cbedit);
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1"); /* disable callbacks */
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", "1"); /* disable callbacks */
     XmTextFieldInsert(cbedit, pos+1, (char*)value);
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   }
   return 0;
 }
@@ -683,7 +676,6 @@ static int motListSetSelectionAttrib(Ihandle* ih, const char* value)
 static char* motListGetSelectionAttrib(Ihandle* ih)
 {
   XmTextPosition start = 0, end = 0;
-  char* str;
   Widget cbedit;
   if (!ih->data->has_editbox)
     return NULL;
@@ -692,16 +684,12 @@ static char* motListGetSelectionAttrib(Ihandle* ih)
   if (!XmTextFieldGetSelectionPosition(cbedit, &start, &end) || start==end)
     return NULL;
 
-  str = iupStrGetMemory(100);
-
   /* end is inside the selection, in IUP is outside */
   end++;
 
   start++; /* IUP starts at 1 */
   end++;
-  sprintf(str, "%d:%d", (int)start, (int)end);
-
-  return str;
+  return iupStrReturnIntInt((int)start, (int)end, ':');
 }
 
 static int motListSetSelectionPosAttrib(Ihandle* ih, const char* value)
@@ -743,7 +731,6 @@ static int motListSetSelectionPosAttrib(Ihandle* ih, const char* value)
 static char* motListGetSelectionPosAttrib(Ihandle* ih)
 {
   XmTextPosition start = 0, end = 0;
-  char* str;
   Widget cbedit;
   if (!ih->data->has_editbox)
     return NULL;
@@ -752,14 +739,10 @@ static char* motListGetSelectionPosAttrib(Ihandle* ih)
   if (!XmTextFieldGetSelectionPosition(cbedit, &start, &end) || start==end)
     return NULL;
 
-  str = iupStrGetMemory(100);
-
   /* end is inside the selection, in IUP is outside */
   end++;
 
-  sprintf(str, "%d:%d", (int)start, (int)end);
-
-  return str;
+  return iupStrReturnIntInt((int)start, (int)end, ':');
 }
 
 static int motListSetCaretAttrib(Ihandle* ih, const char* value)
@@ -788,12 +771,10 @@ static char* motListGetCaretAttrib(Ihandle* ih)
   {
     XmTextPosition pos;
     Widget cbedit;
-    char* str = iupStrGetMemory(50);
     XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
     pos = XmTextFieldGetInsertionPosition(cbedit);
     pos++; /* IUP starts at 1 */
-    sprintf(str, "%d", (int)pos);
-    return str;
+    return iupStrReturnInt((int)pos);
   }
   else
     return NULL;
@@ -825,11 +806,9 @@ static char* motListGetCaretPosAttrib(Ihandle* ih)
   {
     XmTextPosition pos;
     Widget cbedit;
-    char* str = iupStrGetMemory(50);
     XtVaGetValues(ih->handle, XmNtextField, &cbedit, NULL);
     pos = XmTextFieldGetInsertionPosition(cbedit);
-    sprintf(str, "%d", (int)pos);
-    return str;
+    return iupStrReturnInt((int)pos);
   }
   else
     return NULL;
@@ -926,9 +905,9 @@ static int motListSetClipboardAttrib(Ihandle *ih, const char *value)
     XtFree(str);
 
     /* disable callbacks */
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
     XmTextFieldRemove(cbedit);
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   }
   else if (iupStrEqualNoCase(value, "PASTE"))
   {
@@ -939,17 +918,17 @@ static int motListSetClipboardAttrib(Ihandle *ih, const char *value)
     str = IupGetAttribute(clipboard, "TEXT");
 
     /* disable callbacks */
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
     XmTextFieldRemove(cbedit);
     XmTextFieldInsert(cbedit, XmTextFieldGetInsertionPosition(cbedit), str);
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   }
   else if (iupStrEqualNoCase(value, "CLEAR"))
   {
     /* disable callbacks */
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", "1");
     XmTextFieldRemove(cbedit);
-    iupAttribSetStr(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
+    iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   }
   return 0;
 }
@@ -1002,7 +981,7 @@ static void motListDragTransferProc(Widget drop_context, Ihandle* ih, Atom *selt
     }
   }
 
-  iupAttribSetStr(ih, "_IUPLIST_DROPITEM", NULL);
+  iupAttribSet(ih, "_IUPLIST_DROPITEM", NULL);
 
   (void)drop_context;
   (void)seltype;
@@ -1141,7 +1120,7 @@ static void motListDragStart(Widget w, XButtonEvent* evt, String* params, Cardin
   XtAddCallback(drop_context, XmNdragDropFinishCallback, (XtCallbackProc)motListDragDropFinishCallback, NULL);
   XtAddCallback(drop_context, XmNdragMotionCallback, (XtCallbackProc)motListDragMotionCallback, (XtPointer)ih);
 
-  iupAttribSetStr(ih, "_IUPLIST_DROPITEM", NULL);
+  iupAttribSet(ih, "_IUPLIST_DROPITEM", NULL);
 
   (void)params;
   (void)num_params;
@@ -1565,7 +1544,7 @@ static int motListMapMethod(Ihandle* ih)
       XtAddCallback(cbedit, XmNmotionVerifyCallback, (XtCallbackProc)motListEditMotionVerifyCallback, (XtPointer)ih);
       XtAddCallback(cbedit, XmNvalueChangedCallback, (XtCallbackProc)motListEditValueChangedCallback, (XtPointer)ih);
 
-      iupAttribSetStr(ih, "_IUPMOT_DND_WIDGET", (char*)cbedit);
+      iupAttribSet(ih, "_IUPMOT_DND_WIDGET", (char*)cbedit);
     }
     else
       XtAddEventHandler(cbedit, KeyPressMask, False, (XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
@@ -1588,7 +1567,7 @@ static int motListMapMethod(Ihandle* ih)
   }
   else
   {
-    iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)parent);
+    iupAttribSet(ih, "_IUP_EXTRAPARENT", (char*)parent);
     XtVaSetValues(parent, XmNworkWindow, ih->handle, NULL);
 
     XtAddEventHandler(ih->handle, FocusChangeMask, False, (XtEventHandler)iupmotFocusChangeEvent, (XtPointer)ih);

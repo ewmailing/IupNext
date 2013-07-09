@@ -764,8 +764,8 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
       gr->LoadFont(fontname, path);  // Load MathGL VFM fonts
     }
 
-    iupAttribStoreStr(ih, "_IUP_MGL_FONTNAME", typeface);
-    iupAttribStoreStr(ih, "_IUP_MGL_FONTPATH", path);
+    iupAttribSetStr(ih, "_IUP_MGL_FONTNAME", typeface);
+    iupAttribSetStr(ih, "_IUP_MGL_FONTPATH", path);
   }
 
   //IMPORTANT:
@@ -2039,7 +2039,7 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
 
   iMglPlotConfigAxesRange(ih, gr);
 
-  iupAttribSetStr(ih, "_IUP_MGLPLOT_GRAPH", (char*)gr);
+  iupAttribSet(ih, "_IUP_MGLPLOT_GRAPH", (char*)gr);
 
   IFn cb = IupGetCallback(ih, "PREDRAW_CB");
   if (cb)
@@ -2067,7 +2067,7 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
   if (cb)
     cb(ih);
 
-  iupAttribSetStr(ih, "_IUP_MGLPLOT_GRAPH", NULL);
+  iupAttribSet(ih, "_IUP_MGLPLOT_GRAPH", NULL);
 }
 
 static void iMglPlotRepaint(Ihandle* ih, int force, int flush)
@@ -2166,69 +2166,51 @@ static int iMglPlotSetFloat(Ihandle* ih, const char* value, float& num)
   return 0;
 }
 
-static char* iMglPlotGetFloat(float num)
-{
-  return iupStrReturnFloat(num);
-}
-
-static char* iMglPlotGetInt(int num)
-{
-  return iupStrReturnInt(num);
-}
-
-static char* iMglPlotGetBoolean(bool num)
-{
-  if (num)
-    return "YES";
-  else
-    return "NO";
-}
-
 static int iMglPlotSetResetAttrib(Ihandle* ih, const char* value)
 {
   (void)value;  /* not used */
   iMglPlotReset(ih);
 
   // Some attributes are stored in the hash table
-  iupAttribSetStr(ih, "TITLE", NULL);
+  iupAttribSet(ih, "TITLE", NULL);
 
-  iupAttribSetStr(ih, "DATAGRID", NULL);
-  iupAttribSetStr(ih, "PLANARVALUE", NULL);
-  iupAttribSetStr(ih, "GRADLINESCOUNT", NULL);
-  iupAttribSetStr(ih, "AXIALCOUNT", NULL);
-  iupAttribSetStr(ih, "CONTOURFILLED", NULL);
-  iupAttribSetStr(ih, "CONTOURLABELS", NULL);
-  iupAttribSetStr(ih, "CONTOURCOUNT", NULL);
-  iupAttribSetStr(ih, "DIR", NULL);
-  iupAttribSetStr(ih, "CLOUDCUBES", NULL);
-  iupAttribSetStr(ih, "SLICEX", NULL);
-  iupAttribSetStr(ih, "SLICEY", NULL);
-  iupAttribSetStr(ih, "SLICEZ", NULL);
-  iupAttribSetStr(ih, "SLICEDIR", NULL);
-  iupAttribSetStr(ih, "PROJECTVALUEX", NULL);
-  iupAttribSetStr(ih, "PROJECTVALUEY", NULL);
-  iupAttribSetStr(ih, "PROJECTVALUEZ", NULL);
-  iupAttribSetStr(ih, "PROJECT", NULL);
-  iupAttribSetStr(ih, "ISOCOUNT", NULL);
-  iupAttribSetStr(ih, "BARWIDTH", NULL);
-  iupAttribSetStr(ih, "RADARSHIFT", NULL);
-  iupAttribSetStr(ih, "PIECHART", NULL);
-  iupAttribSetStr(ih, "CRUSTRADIUS", NULL);
+  iupAttribSet(ih, "DATAGRID", NULL);
+  iupAttribSet(ih, "PLANARVALUE", NULL);
+  iupAttribSet(ih, "GRADLINESCOUNT", NULL);
+  iupAttribSet(ih, "AXIALCOUNT", NULL);
+  iupAttribSet(ih, "CONTOURFILLED", NULL);
+  iupAttribSet(ih, "CONTOURLABELS", NULL);
+  iupAttribSet(ih, "CONTOURCOUNT", NULL);
+  iupAttribSet(ih, "DIR", NULL);
+  iupAttribSet(ih, "CLOUDCUBES", NULL);
+  iupAttribSet(ih, "SLICEX", NULL);
+  iupAttribSet(ih, "SLICEY", NULL);
+  iupAttribSet(ih, "SLICEZ", NULL);
+  iupAttribSet(ih, "SLICEDIR", NULL);
+  iupAttribSet(ih, "PROJECTVALUEX", NULL);
+  iupAttribSet(ih, "PROJECTVALUEY", NULL);
+  iupAttribSet(ih, "PROJECTVALUEZ", NULL);
+  iupAttribSet(ih, "PROJECT", NULL);
+  iupAttribSet(ih, "ISOCOUNT", NULL);
+  iupAttribSet(ih, "BARWIDTH", NULL);
+  iupAttribSet(ih, "RADARSHIFT", NULL);
+  iupAttribSet(ih, "PIECHART", NULL);
+  iupAttribSet(ih, "CRUSTRADIUS", NULL);
 
-  iupAttribSetStr(ih, "LIGHT", NULL);
-  iupAttribSetStr(ih, "COLORSCHEME", NULL);
+  iupAttribSet(ih, "LIGHT", NULL);
+  iupAttribSet(ih, "COLORSCHEME", NULL);
 
-  iupAttribSetStr(ih, "COLORBAR", NULL);
-  iupAttribSetStr(ih, "COLORBARPOS", NULL);
-  iupAttribSetStr(ih, "COLORBARRANGE", NULL);
-  iupAttribSetStr(ih, "COLORBARAXISTICKS", NULL);
+  iupAttribSet(ih, "COLORBAR", NULL);
+  iupAttribSet(ih, "COLORBARPOS", NULL);
+  iupAttribSet(ih, "COLORBARRANGE", NULL);
+  iupAttribSet(ih, "COLORBARAXISTICKS", NULL);
 
-  iupAttribSetStr(ih, "AXS_XLABEL", NULL);
-  iupAttribSetStr(ih, "AXS_YLABEL", NULL);
-  iupAttribSetStr(ih, "AXS_ZLABEL", NULL);
-  iupAttribSetStr(ih, "AXS_XTICKFORMAT", NULL);
-  iupAttribSetStr(ih, "AXS_YTICKFORMAT", NULL);
-  iupAttribSetStr(ih, "AXS_ZTICKFORMAT", NULL);
+  iupAttribSet(ih, "AXS_XLABEL", NULL);
+  iupAttribSet(ih, "AXS_YLABEL", NULL);
+  iupAttribSet(ih, "AXS_ZLABEL", NULL);
+  iupAttribSet(ih, "AXS_XTICKFORMAT", NULL);
+  iupAttribSet(ih, "AXS_YTICKFORMAT", NULL);
+  iupAttribSet(ih, "AXS_ZTICKFORMAT", NULL);
 
   ih->data->redraw = true;
   return 0;
@@ -2268,7 +2250,7 @@ static int iMglPlotSetTitleFontSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetTitleFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->titleFontSizeFactor);
+  return iupStrReturnFloat(ih->data->titleFontSizeFactor);
 }
 
 static int iMglPlotSetFontStyle(Ihandle* ih, const char* value, int& fontstyle)
@@ -2295,7 +2277,7 @@ static int iMglPlotSetFontStyle(Ihandle* ih, const char* value, int& fontstyle)
 static char* iMglPlotGetFontStyle(int fontstyle)
 {
   if (fontstyle != IUP_MGLPLOT_INHERIT)
-    return iMglPlotGetInt(fontstyle);
+    return iupStrReturnInt(fontstyle);
   else
     return NULL;
 }
@@ -2332,7 +2314,7 @@ static char* iMglPlotGetLegendFontStyleAttrib(Ihandle* ih)
 
 static char* iMglPlotGetLegendFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->legendFontSizeFactor);
+  return iupStrReturnFloat(ih->data->legendFontSizeFactor);
 }
 
 static int iMglPlotSetLegendFontStyleAttrib(Ihandle* ih, const char* value)
@@ -2347,7 +2329,7 @@ static int iMglPlotSetLegendShowAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetLegendShowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->legendShow);
+  return iupStrReturnBoolean(ih->data->legendShow);
 }
 
 static int iMglPlotSetLegendBoxAttrib(Ihandle* ih, const char* value)
@@ -2357,7 +2339,7 @@ static int iMglPlotSetLegendBoxAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetLegendBoxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->legendBox);
+  return iupStrReturnBoolean(ih->data->legendBox);
 }
 
 static int iMglPlotSetLegendPosAttrib(Ihandle* ih, const char* value)
@@ -2499,7 +2481,7 @@ static char* iMglPlotGetGridAttrib(Ihandle* ih)
 
 static char* iMglPlotGetCountAttrib(Ihandle* ih)
 {
-  return iMglPlotGetInt(ih->data->dataSetCount);
+  return iupStrReturnInt(ih->data->dataSetCount);
 }
 
 static int iMglPlotSetCurrentAttrib(Ihandle* ih, const char* value)
@@ -2522,7 +2504,7 @@ static int iMglPlotSetCurrentAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetCurrentAttrib(Ihandle* ih)
 {
-  return iMglPlotGetInt(ih->data->dataSetCurrent);
+  return iupStrReturnInt(ih->data->dataSetCurrent);
 }
 
 static void iMglPlotRemoveDataSet(IdataSet* ds)
@@ -2755,7 +2737,7 @@ static char* iMglPlotGetDSLineWidthAttrib(Ihandle* ih)
   else
   {
     IdataSet* ds = &ih->data->dataSet[ih->data->dataSetCurrent];
-    return iMglPlotGetFloat(ds->dsLineWidth);
+    return iupStrReturnFloat(ds->dsLineWidth);
   }
 }
 
@@ -2840,7 +2822,7 @@ static char* iMglPlotGetDSMarkSizeAttrib(Ihandle* ih)
   else
   {
     IdataSet* ds = &ih->data->dataSet[ih->data->dataSetCurrent];
-    return iMglPlotGetFloat(ds->dsMarkSize);
+    return iupStrReturnFloat(ds->dsMarkSize);
   }
 }
 
@@ -2942,7 +2924,7 @@ static char* iMglPlotGetDSShowValuesAttrib(Ihandle* ih)
     return NULL;
 
   IdataSet* ds = &ih->data->dataSet[ih->data->dataSetCurrent];
-  return iMglPlotGetBoolean(ds->dsShowValues);
+  return iupStrReturnBoolean(ds->dsShowValues);
 }
 
 static int iMglPlotSetDSShowMarksAttrib(Ihandle* ih, const char* value)
@@ -2960,7 +2942,7 @@ static char* iMglPlotGetDSShowMarksAttrib(Ihandle* ih)
     return NULL;
 
   IdataSet* ds = &ih->data->dataSet[ih->data->dataSetCurrent];
-  return iMglPlotGetBoolean(ds->dsShowMarks);
+  return iupStrReturnBoolean(ds->dsShowMarks);
 }
 
 static int iMglPlotSetDSRemoveAttrib(Ihandle* ih, const char* value)
@@ -3015,7 +2997,7 @@ static char* iMglPlotGetDSCountAttrib(Ihandle* ih)
   else
   {
     IdataSet* ds = &ih->data->dataSet[ih->data->dataSetCurrent];
-    return iMglPlotGetInt(ds->dsCount);
+    return iupStrReturnInt(ds->dsCount);
   }
 }
 
@@ -3027,37 +3009,11 @@ static char* iMglPlotGetDSDimAttrib(Ihandle* ih)
   {
     IdataSet* ds = &ih->data->dataSet[ih->data->dataSetCurrent];
     if (iMglPlotIsPlanarOrVolumetricData(ds))
-      return iupStrReturnf("%dx%dx%d", (int)ds->dsX->nx, (int)ds->dsX->ny, (int)ds->dsX->nz);
+      return iupStrReturnStrf("%dx%dx%d", (int)ds->dsX->nx, (int)ds->dsX->ny, (int)ds->dsX->nz);
     else
-      return iMglPlotGetInt(ds->dsDim);
+      return iupStrReturnInt(ds->dsDim);
   }
 }
-
-// TODO
-//static int iMglPlotSetDSEditAttrib(Ihandle* ih, const char* value)
-//{
-//  IdataSet* ds;
-//
-//  if (ih->data->dataSetCurrent==-1)
-//    return 0;
-//
-//  ds = &ih->data->dataSet[ih->data->dataSetCurrent];
-//  if (iMglPlotIsPlanarOrVolumetricData(ds))
-//    return 0;
-//
-//  if (iupStrBoolean(value))
-//    ;
-//  else
-//    ;
-//
-//  return 0;
-//}
-//
-//static char* iMglPlotGetDSEditAttrib(Ihandle* ih)
-//{
-//  (void)ih;
-//  return "NO";
-//}
 
 static int iMglPlotSetBoxAttrib(Ihandle* ih, const char* value)
 {
@@ -3066,7 +3022,7 @@ static int iMglPlotSetBoxAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetBoxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->Box);
+  return iupStrReturnBoolean(ih->data->Box);
 }
 
 static int iMglPlotSetBoxTicksAttrib(Ihandle* ih, const char* value)
@@ -3076,7 +3032,7 @@ static int iMglPlotSetBoxTicksAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetBoxTicksAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->boxTicks);
+  return iupStrReturnBoolean(ih->data->boxTicks);
 }
 
 static int iMglPlotSetAxisLabelPosition(Ihandle* ih, const char* value, int& pos)
@@ -3154,17 +3110,17 @@ static int iMglPlotSetAxisZLabelRotationAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXLabelRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axLabelRotation);
+  return iupStrReturnBoolean(ih->data->axisX.axLabelRotation);
 }
 
 static char* iMglPlotGetAxisYLabelRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axLabelRotation);
+  return iupStrReturnBoolean(ih->data->axisY.axLabelRotation);
 }
 
 static char* iMglPlotGetAxisZLabelRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axLabelRotation);
+  return iupStrReturnBoolean(ih->data->axisZ.axLabelRotation);
 }
 
 static int iMglPlotSetAxisXLabelCenteredAttrib(Ihandle* ih, const char* value)
@@ -3193,17 +3149,17 @@ static int iMglPlotSetAxisZLabelCenteredAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXLabelCenteredAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axLabelPos==0? true: false);
+  return iupStrReturnBoolean(ih->data->axisX.axLabelPos==0? true: false);
 }
 
 static char* iMglPlotGetAxisYLabelCenteredAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axLabelPos==0? true: false);
+  return iupStrReturnBoolean(ih->data->axisY.axLabelPos==0? true: false);
 }
 
 static char* iMglPlotGetAxisZLabelCenteredAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axLabelPos==0? true: false);
+  return iupStrReturnBoolean(ih->data->axisZ.axLabelPos==0? true: false);
 }
 
 static int iMglPlotSetAxisXColorAttrib(Ihandle* ih, const char* value)
@@ -3253,17 +3209,17 @@ static int iMglPlotSetAxisZFontSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisX.axLabelFontSizeFactor);
+  return iupStrReturnFloat(ih->data->axisX.axLabelFontSizeFactor);
 }
 
 static char* iMglPlotGetAxisYFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisY.axLabelFontSizeFactor);
+  return iupStrReturnFloat(ih->data->axisY.axLabelFontSizeFactor);
 }
 
 static char* iMglPlotGetAxisZFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisZ.axLabelFontSizeFactor);
+  return iupStrReturnFloat(ih->data->axisZ.axLabelFontSizeFactor);
 }
 
 static int iMglPlotSetAxisXFontStyleAttrib(Ihandle* ih, const char* value)
@@ -3313,17 +3269,17 @@ static int iMglPlotSetAxisZTickFontSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXTickFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisX.axTickFontSizeFactor);
+  return iupStrReturnFloat(ih->data->axisX.axTickFontSizeFactor);
 }
 
 static char* iMglPlotGetAxisYTickFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisY.axTickFontSizeFactor);
+  return iupStrReturnFloat(ih->data->axisY.axTickFontSizeFactor);
 }
 
 static char* iMglPlotGetAxisZTickFontSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisZ.axTickFontSizeFactor);
+  return iupStrReturnFloat(ih->data->axisZ.axTickFontSizeFactor);
 }
 
 static int iMglPlotSetAxisXTickFontStyleAttrib(Ihandle* ih, const char* value)
@@ -3373,17 +3329,17 @@ static int iMglPlotSetAxisZTickMinorSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXTickMinorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisX.axTickMinorSizeFactor);
+  return iupStrReturnFloat(ih->data->axisX.axTickMinorSizeFactor);
 }
 
 static char* iMglPlotGetAxisYTickMinorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisY.axTickMinorSizeFactor);
+  return iupStrReturnFloat(ih->data->axisY.axTickMinorSizeFactor);
 }
 
 static char* iMglPlotGetAxisZTickMinorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisZ.axTickMinorSizeFactor);
+  return iupStrReturnFloat(ih->data->axisZ.axTickMinorSizeFactor);
 }
 
 static int iMglPlotSetAxisXTickMajorSizeAttrib(Ihandle* ih, const char* value)
@@ -3403,17 +3359,17 @@ static int iMglPlotSetAxisZTickMajorSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXTickMajorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisX.axTickMajorSize);
+  return iupStrReturnFloat(ih->data->axisX.axTickMajorSize);
 }
 
 static char* iMglPlotGetAxisYTickMajorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisY.axTickMajorSize);
+  return iupStrReturnFloat(ih->data->axisY.axTickMajorSize);
 }
 
 static char* iMglPlotGetAxisZTickMajorSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisZ.axTickMajorSize);
+  return iupStrReturnFloat(ih->data->axisZ.axTickMajorSize);
 }
 
 static int iMglPlotSetAxisXTickMajorSpanAttrib(Ihandle* ih, const char* value)
@@ -3433,17 +3389,17 @@ static int iMglPlotSetAxisZTickMajorSpanAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXTickMajorSpanAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisX.axTickMajorSpan);
+  return iupStrReturnFloat(ih->data->axisX.axTickMajorSpan);
 }
 
 static char* iMglPlotGetAxisYTickMajorSpanAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisY.axTickMajorSpan);
+  return iupStrReturnFloat(ih->data->axisY.axTickMajorSpan);
 }
 
 static char* iMglPlotGetAxisZTickMajorSpanAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisZ.axTickMajorSpan);
+  return iupStrReturnFloat(ih->data->axisZ.axTickMajorSpan);
 }
 
 static int iMglPlotSetAxisScale(Ihandle* ih, const char* value, const char** scale, char dir)
@@ -3521,17 +3477,17 @@ static int iMglPlotSetAxisZReverseAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXReverseAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axReverse);
+  return iupStrReturnBoolean(ih->data->axisX.axReverse);
 }
 
 static char* iMglPlotGetAxisYReverseAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axReverse);
+  return iupStrReturnBoolean(ih->data->axisY.axReverse);
 }
 
 static char* iMglPlotGetAxisZReverseAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axReverse);
+  return iupStrReturnBoolean(ih->data->axisZ.axReverse);
 }
 
 static int iMglPlotSetAxisXShowAttrib(Ihandle* ih, const char* value)
@@ -3551,17 +3507,17 @@ static int iMglPlotSetAxisZShowAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXShowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axShow);
+  return iupStrReturnBoolean(ih->data->axisX.axShow);
 }
 
 static char* iMglPlotGetAxisYShowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axShow);
+  return iupStrReturnBoolean(ih->data->axisY.axShow);
 }
 
 static char* iMglPlotGetAxisZShowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axShow);
+  return iupStrReturnBoolean(ih->data->axisZ.axShow);
 }
 
 static int iMglPlotSetAxisXShowArrowAttrib(Ihandle* ih, const char* value)
@@ -3581,17 +3537,17 @@ static int iMglPlotSetAxisZShowArrowAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXShowArrowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axShowArrow);
+  return iupStrReturnBoolean(ih->data->axisX.axShowArrow);
 }
 
 static char* iMglPlotGetAxisYShowArrowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axShowArrow);
+  return iupStrReturnBoolean(ih->data->axisY.axShowArrow);
 }
 
 static char* iMglPlotGetAxisZShowArrowAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axShowArrow);
+  return iupStrReturnBoolean(ih->data->axisZ.axShowArrow);
 }
 
 static int iMglPlotSetAxisXTickShowValuesAttrib(Ihandle* ih, const char* value)
@@ -3611,17 +3567,17 @@ static int iMglPlotSetAxisZTickShowValuesAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXTickShowValuesAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axTickShowValues);
+  return iupStrReturnBoolean(ih->data->axisX.axTickShowValues);
 }
 
 static char* iMglPlotGetAxisYTickShowValuesAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axTickShowValues);
+  return iupStrReturnBoolean(ih->data->axisY.axTickShowValues);
 }
 
 static char* iMglPlotGetAxisZTickShowValuesAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axTickShowValues);
+  return iupStrReturnBoolean(ih->data->axisZ.axTickShowValues);
 }
 
 static int iMglPlotSetAxisXTickAttrib(Ihandle* ih, const char* value)
@@ -3641,17 +3597,17 @@ static int iMglPlotSetAxisZTickAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXTickAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axTickShow);
+  return iupStrReturnBoolean(ih->data->axisX.axTickShow);
 }
 
 static char* iMglPlotGetAxisYTickAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axTickShow);
+  return iupStrReturnBoolean(ih->data->axisY.axTickShow);
 }
 
 static char* iMglPlotGetAxisZTickAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axTickShow);
+  return iupStrReturnBoolean(ih->data->axisZ.axTickShow);
 }
 
 static int iMglPlotSetAxisXTickAutoSizeAttrib(Ihandle* ih, const char* value)
@@ -3671,17 +3627,17 @@ static int iMglPlotSetAxisZTickAutoSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXTickAutoSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axTickAutoSize);
+  return iupStrReturnBoolean(ih->data->axisX.axTickAutoSize);
 }
 
 static char* iMglPlotGetAxisYTickAutoSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axTickAutoSize);
+  return iupStrReturnBoolean(ih->data->axisY.axTickAutoSize);
 }
 
 static char* iMglPlotGetAxisZTickAutoSizeAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axTickAutoSize);
+  return iupStrReturnBoolean(ih->data->axisZ.axTickAutoSize);
 }
 
 static int iMglPlotSetAxisXTickAutoAttrib(Ihandle* ih, const char* value)
@@ -3701,17 +3657,17 @@ static int iMglPlotSetAxisZTickAutoAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXTickAutoAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axTickAutoSpace);
+  return iupStrReturnBoolean(ih->data->axisX.axTickAutoSpace);
 }
 
 static char* iMglPlotGetAxisYTickAutoAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axTickAutoSpace);
+  return iupStrReturnBoolean(ih->data->axisY.axTickAutoSpace);
 }
 
 static char* iMglPlotGetAxisZTickAutoAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axTickAutoSpace);
+  return iupStrReturnBoolean(ih->data->axisZ.axTickAutoSpace);
 }
 
 //////////////////////////
@@ -3732,17 +3688,17 @@ static int iMglPlotSetAxisZTickValuesRotationAttrib(Ihandle* ih, const char* val
 
 static char* iMglPlotGetAxisXTickValuesRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axTickValuesRotation);
+  return iupStrReturnBoolean(ih->data->axisX.axTickValuesRotation);
 }
 
 static char* iMglPlotGetAxisYTickValuesRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axTickValuesRotation);
+  return iupStrReturnBoolean(ih->data->axisY.axTickValuesRotation);
 }
 
 static char* iMglPlotGetAxisZTickValuesRotationAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axTickValuesRotation);
+  return iupStrReturnBoolean(ih->data->axisZ.axTickValuesRotation);
 }
 
 
@@ -3763,17 +3719,17 @@ static int iMglPlotSetAxisZTickMinorDivisionAttrib(Ihandle* ih, const char* valu
 
 static char* iMglPlotGetAxisXTickMinorDivisionAttrib(Ihandle* ih)
 {
-  return iMglPlotGetInt(ih->data->axisX.axTickMinorDivision);
+  return iupStrReturnInt(ih->data->axisX.axTickMinorDivision);
 }
 
 static char* iMglPlotGetAxisYTickMinorDivisionAttrib(Ihandle* ih)
 {
-  return iMglPlotGetInt(ih->data->axisY.axTickMinorDivision);
+  return iupStrReturnInt(ih->data->axisY.axTickMinorDivision);
 }
 
 static char* iMglPlotGetAxisZTickMinorDivisionAttrib(Ihandle* ih)
 {
-  return iMglPlotGetInt(ih->data->axisZ.axTickMinorDivision);
+  return iupStrReturnInt(ih->data->axisZ.axTickMinorDivision);
 }
 
 
@@ -3794,17 +3750,17 @@ static int iMglPlotSetAxisZAutoMinAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXAutoMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axAutoScaleMin);
+  return iupStrReturnBoolean(ih->data->axisX.axAutoScaleMin);
 }
 
 static char* iMglPlotGetAxisYAutoMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axAutoScaleMin);
+  return iupStrReturnBoolean(ih->data->axisY.axAutoScaleMin);
 }
 
 static char* iMglPlotGetAxisZAutoMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axAutoScaleMin);
+  return iupStrReturnBoolean(ih->data->axisZ.axAutoScaleMin);
 }
 
 static int iMglPlotSetAxisXAutoMaxAttrib(Ihandle* ih, const char* value)
@@ -3824,17 +3780,17 @@ static int iMglPlotSetAxisZAutoMaxAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXAutoMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisX.axAutoScaleMax);
+  return iupStrReturnBoolean(ih->data->axisX.axAutoScaleMax);
 }
 
 static char* iMglPlotGetAxisYAutoMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisY.axAutoScaleMax);
+  return iupStrReturnBoolean(ih->data->axisY.axAutoScaleMax);
 }
 
 static char* iMglPlotGetAxisZAutoMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->axisZ.axAutoScaleMax);
+  return iupStrReturnBoolean(ih->data->axisZ.axAutoScaleMax);
 }
 
 static int iMglPlotSetAxisXMinAttrib(Ihandle* ih, const char* value)
@@ -3854,17 +3810,17 @@ static int iMglPlotSetAxisZMinAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisX.axMin);
+  return iupStrReturnFloat(ih->data->axisX.axMin);
 }
 
 static char* iMglPlotGetAxisYMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisY.axMin);
+  return iupStrReturnFloat(ih->data->axisY.axMin);
 }
 
 static char* iMglPlotGetAxisZMinAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisZ.axMin);
+  return iupStrReturnFloat(ih->data->axisZ.axMin);
 }
 
 static int iMglPlotSetAxisXMaxAttrib(Ihandle* ih, const char* value)
@@ -3884,17 +3840,17 @@ static int iMglPlotSetAxisZMaxAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAxisXMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisX.axMax);
+  return iupStrReturnFloat(ih->data->axisX.axMax);
 }
 
 static char* iMglPlotGetAxisYMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisY.axMax);
+  return iupStrReturnFloat(ih->data->axisY.axMax);
 }
 
 static char* iMglPlotGetAxisZMaxAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->axisZ.axMax);
+  return iupStrReturnFloat(ih->data->axisZ.axMax);
 }
 
 static int iMglPlotSetAxisCrossOrigin(Ihandle* ih, const char* value, float& origin)
@@ -3985,7 +3941,7 @@ static int iMglPlotSetAxisZOriginAttrib(Ihandle* ih, const char* value)
 static char* iMglPlotGetAxisOrigin(float Origin)
 {
   if (!isnan(Origin))
-    return iMglPlotGetFloat(Origin);
+    return iupStrReturnFloat(Origin);
   else
     return NULL;
 }
@@ -4012,7 +3968,7 @@ static int iMglPlotSetAlphaAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetAlphaAttrib(Ihandle* ih)
 {
-  return iMglPlotGetFloat(ih->data->alpha);
+  return iupStrReturnFloat(ih->data->alpha);
 }
 
 static int iMglPlotSetTransparentAttrib(Ihandle* ih, const char* value)
@@ -4022,7 +3978,7 @@ static int iMglPlotSetTransparentAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetTransparentAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->transparent);
+  return iupStrReturnBoolean(ih->data->transparent);
 }
 
 static void iMglPlotInitOpenGL2D(void)
@@ -4064,7 +4020,7 @@ static int iMglPlotSetOpenGLAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetOpenGLAttrib(Ihandle* ih)
 {
-  return iMglPlotGetBoolean(ih->data->opengl);
+  return iupStrReturnBoolean(ih->data->opengl);
 }
 
 static int iMglPlotSetAntialiasAttrib(Ihandle* ih, const char* value)
@@ -4097,10 +4053,10 @@ static int iMglPlotSetAntialiasAttrib(Ihandle* ih, const char* value)
 static char* iMglPlotGetAntialiasAttrib(Ihandle* ih)
 {
   if (!ih->data->opengl)
-    return "NO";
+    return NULL;
 
   IupGLMakeCurrent(ih);
-  return iMglPlotGetBoolean(glIsEnabled(GL_LINE_SMOOTH)==GL_TRUE);
+  return iupStrReturnBoolean(glIsEnabled(GL_LINE_SMOOTH)==GL_TRUE);
 }
 
 static char* iMglPlotGetErrorMessageAttrib(Ihandle* ih)
@@ -4142,7 +4098,7 @@ static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetZoomAttrib(Ihandle* ih)
 {
-  return iupStrReturnf("%.9f,%.9f:%.9f,%.9f", ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
+  return iupStrReturnStrf("%.9f,%.9f:%.9f,%.9f", ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
 }
 
 static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
@@ -4168,7 +4124,7 @@ static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetRotateAttrib(Ihandle* ih)
 {
-  return iupStrReturnf("%.9f:%.9f:%.9f", ih->data->rotX, ih->data->rotY, ih->data->rotZ);
+  return iupStrReturnStrf("%.9f:%.9f:%.9f", ih->data->rotX, ih->data->rotY, ih->data->rotZ);
 }
 
 
@@ -4247,10 +4203,10 @@ void IupMglPlotBegin(Ihandle* ih, int dim)
   if (dim>2)
     inZData =  iupArrayCreate(10, sizeof(float));
 
-  iupAttribSetStr(ih, "_IUP_MGLPLOT_XDATA", (char*)inXData);
-  iupAttribSetStr(ih, "_IUP_MGLPLOT_YDATA", (char*)inYData);
-  iupAttribSetStr(ih, "_IUP_MGLPLOT_ZDATA", (char*)inZData);
-  iupAttribSetStr(ih, "_IUP_MGLPLOT_NAMES", NULL);
+  iupAttribSet(ih, "_IUP_MGLPLOT_XDATA", (char*)inXData);
+  iupAttribSet(ih, "_IUP_MGLPLOT_YDATA", (char*)inYData);
+  iupAttribSet(ih, "_IUP_MGLPLOT_ZDATA", (char*)inZData);
+  iupAttribSet(ih, "_IUP_MGLPLOT_NAMES", NULL);
 }
 
 int IupMglPlotEnd(Ihandle* ih)
@@ -4305,10 +4261,10 @@ int IupMglPlotEnd(Ihandle* ih)
   if (inYData) iupArrayDestroy(inYData);
   if (inZData) iupArrayDestroy(inZData);
   if (inNames) iupArrayDestroy(inNames);
-  iupAttribSetStr(ih, "_IUP_MGLPLOT_XDATA", NULL);
-  iupAttribSetStr(ih, "_IUP_MGLPLOT_YDATA", NULL);
-  iupAttribSetStr(ih, "_IUP_MGLPLOT_ZDATA", NULL);
-  iupAttribSetStr(ih, "_IUP_MGLPLOT_NAMES", NULL);
+  iupAttribSet(ih, "_IUP_MGLPLOT_XDATA", NULL);
+  iupAttribSet(ih, "_IUP_MGLPLOT_YDATA", NULL);
+  iupAttribSet(ih, "_IUP_MGLPLOT_ZDATA", NULL);
+  iupAttribSet(ih, "_IUP_MGLPLOT_NAMES", NULL);
 
   return ds_index;
 }
@@ -4342,7 +4298,7 @@ void IupMglPlotAdd1D(Ihandle* ih, const char* inName, float inX)
     {
       if (inNames) iupArrayDestroy(inNames);
       inNames =  iupArrayCreate(10, sizeof(char*));
-      iupAttribSetStr(ih, "_IUP_MGLPLOT_NAMES", (char*)inNames);
+      iupAttribSet(ih, "_IUP_MGLPLOT_NAMES", (char*)inNames);
     }
     else
       inNames = (Iarray*)iupAttribGet(ih, "_IUP_MGLPLOT_NAMES");

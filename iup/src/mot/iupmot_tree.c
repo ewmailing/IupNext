@@ -560,7 +560,7 @@ static void motTreeRemoveNode(Ihandle* ih, Widget wItem, int del_data, int call_
 
 static void motTreeSetFocusNode(Ihandle* ih, Widget wItem)
 {
-  iupAttribSetStr(ih, "_IUPTREE_LAST_FOCUS", (char*)wItem);
+  iupAttribSet(ih, "_IUPTREE_LAST_FOCUS", (char*)wItem);
   XmProcessTraversal(wItem, XmTRAVERSE_CURRENT);
 }
 
@@ -585,7 +585,7 @@ static void motTreeEnterLeaveWindowEvent(Widget w, Ihandle *ih, XEvent *evt, Boo
   {
     if (iupAttribGet(ih, "_IUPTREE_IGNORE_ENTERLEAVE"))
     {
-      iupAttribSetStr(ih, "_IUPTREE_IGNORE_ENTERLEAVE", NULL);
+      iupAttribSet(ih, "_IUPTREE_IGNORE_ENTERLEAVE", NULL);
       return;
     }
   }
@@ -605,7 +605,7 @@ static void motTreeFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean 
   Widget wRoot = (Widget)iupAttribGet(ih, "_IUPTREE_ROOTITEM");
 
   if (XtParent(wItem) == w) /* is a node */
-    iupAttribSetStr(ih, "_IUPTREE_LAST_FOCUS", (char*)wItem);
+    iupAttribSet(ih, "_IUPTREE_LAST_FOCUS", (char*)wItem);
 
   if (wItem == NULL || wItem == wRoot)
   {
@@ -727,7 +727,7 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
     if (ih->data->node_count == 1)
     {
       /* MarkStart node */
-      iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)wItemNew);
+      iupAttribSet(ih, "_IUPTREE_MARKSTART_NODE", (char*)wItemNew);
 
       /* Set the default VALUE (focus) */
       motTreeSetFocusNode(ih, wItemNew);
@@ -736,12 +736,12 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
 
   if (kind == ITREE_BRANCH)
   {
-    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCH_CB", "1");
+    iupAttribSet(ih, "_IUP_IGNORE_BRANCH_CB", "1");
     if (ih->data->add_expanded)
       XtVaSetValues(wItemNew, XmNoutlineState, XmEXPANDED, NULL);
     else
       XtVaSetValues(wItemNew, XmNoutlineState, XmCOLLAPSED, NULL);
-    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCH_CB", NULL);
+    iupAttribSet(ih, "_IUP_IGNORE_BRANCH_CB", NULL);
   }
 
   XtRealizeWidget(wItemNew);
@@ -942,12 +942,12 @@ static int motTreeSetStateAttrib(Ihandle* ih, int id, const char* value)
   XtVaGetValues(wItem, XmNuserData, &itemData, NULL);
   if (itemData->kind == ITREE_BRANCH)
   {
-    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCH_CB", "1");
+    iupAttribSet(ih, "_IUP_IGNORE_BRANCH_CB", "1");
     if (iupStrEqualNoCase(value, "EXPANDED"))
       XtVaSetValues(wItem, XmNoutlineState, XmEXPANDED, NULL);
     else 
       XtVaSetValues(wItem, XmNoutlineState, XmCOLLAPSED, NULL);
-    iupAttribSetStr(ih, "_IUP_IGNORE_BRANCH_CB", NULL);
+    iupAttribSet(ih, "_IUP_IGNORE_BRANCH_CB", NULL);
   }
 
   return 0;
@@ -957,7 +957,6 @@ static char* motTreeGetColorAttrib(Ihandle* ih, int id)
 {
   unsigned char r, g, b;
   Pixel color;
-  char* str;
   Widget wItem = iupTreeGetNode(ih, id);  
   if (!wItem)  
     return NULL;
@@ -965,9 +964,7 @@ static char* motTreeGetColorAttrib(Ihandle* ih, int id)
   XtVaGetValues(wItem, XmNforeground, &color, NULL); 
   iupmotColorGetRGB(color, &r, &g, &b);
 
-  str = iupStrGetMemory(20);
-  sprintf(str, "%d %d %d", (int)r, (int)g, (int)b);
-  return str;
+  return iupStrReturnStrf("%d %d %d", (int)r, (int)g, (int)b);
 }
 
 static int motTreeSetColorAttrib(Ihandle* ih, int id, const char* value)
@@ -986,7 +983,6 @@ static int motTreeSetColorAttrib(Ihandle* ih, int id, const char* value)
 static char* motTreeGetDepthAttrib(Ihandle* ih, int id)
 {
   int depth = -1;
-  char* str;
   Widget wItem = iupTreeGetNode(ih, id);  
   if (!wItem)  
     return NULL;
@@ -997,9 +993,7 @@ static char* motTreeGetDepthAttrib(Ihandle* ih, int id)
     depth++;
   }
 
-  str = iupStrGetMemory(10);
-  sprintf(str, "%d", depth);
-  return str;
+  return iupStrReturnInt(depth);
 }
 
 static int motTreeSetMoveNodeAttrib(Ihandle* ih, int id, const char* value)
@@ -1061,7 +1055,6 @@ static int motTreeSetCopyNodeAttrib(Ihandle* ih, int id, const char* value)
 static char* motTreeGetParentAttrib(Ihandle* ih, int id)
 {
   Widget wItemParent;
-  char* str;
   Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return NULL;
@@ -1071,23 +1064,20 @@ static char* motTreeGetParentAttrib(Ihandle* ih, int id)
   if (!wItemParent)
     return NULL;
 
-  str = iupStrGetMemory(10);
-  sprintf(str, "%d", iupTreeFindNodeId(ih, wItemParent));
-  return str;
+  return iupStrReturnInt(iupTreeFindNodeId(ih, wItemParent));
 }
 
 static char* motTreeGetChildCountAttrib(Ihandle* ih, int id)
 {
-  char* str;
+  int ret;
   WidgetList wList = NULL;
   Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return NULL;
 
-  str = iupStrGetMemory(10);
-  sprintf(str, "%d", XmContainerGetItemChildren(ih->handle, wItem, &wList));
+  ret = XmContainerGetItemChildren(ih->handle, wItem, &wList);
   if (wList) XtFree((char*)wList);
-  return str;
+  return iupStrReturnInt(ret);
 }
 
 static char* motTreeGetKindAttrib(Ihandle* ih, int id)
@@ -1107,7 +1097,6 @@ static char* motTreeGetKindAttrib(Ihandle* ih, int id)
 
 static char* motTreeGetValueAttrib(Ihandle* ih)
 {
-  char* str;
   Widget wItem = iupdrvTreeGetFocusNode(ih);
   if (!wItem)
   {
@@ -1117,9 +1106,7 @@ static char* motTreeGetValueAttrib(Ihandle* ih)
       return "-1";
   }
 
-  str = iupStrGetMemory(10);
-  sprintf(str, "%d", iupTreeFindNodeId(ih, wItem));
-  return str;
+  return iupStrReturnInt(iupTreeFindNodeId(ih, wItem));
 }
 
 static char* motTreeGetMarkedNodesAttrib(Ihandle* ih)
@@ -1295,7 +1282,7 @@ static int motTreeSetMarkStartAttrib(Ihandle* ih, const char* value)
   if (!wItem)  
     return 0;
 
-  iupAttribSetStr(ih, "_IUPTREE_MARKSTART_NODE", (char*)wItem);
+  iupAttribSet(ih, "_IUPTREE_MARKSTART_NODE", (char*)wItem);
 
   return 1;
 }
@@ -1306,10 +1293,7 @@ static char* motTreeGetMarkedAttrib(Ihandle* ih, int id)
   if (!wItem)  
     return NULL;
 
-  if (motTreeIsNodeSelected(wItem))
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (motTreeIsNodeSelected(wItem)); 
 }
 
 static int motTreeSetMarkedAttrib(Ihandle* ih, int id, const char* value)
@@ -1366,11 +1350,8 @@ static int motTreeSetTitleFontAttrib(Ihandle* ih, int id, const char* value)
     return 0;
 
   if (value)
-  {
-    char attr[20];
-    sprintf(attr, "TITLEFOUNDRY%d", id);
-    fontlist = iupmotGetFontList(iupAttribGet(ih, attr), value);
-  }
+    fontlist = iupmotGetFontList(iupAttribGetId(ih, "TITLEFOUNDRY", id), value);
+
   XtVaSetValues(wItem, XmNrenderTable, fontlist, NULL);
 
   return 0;
@@ -1470,11 +1451,9 @@ static int motTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
 
 static char* motTreeGetIndentationAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(255);
   Dimension indent;
   XtVaGetValues(ih->handle, XmNoutlineIndentation, &indent, NULL);
-  sprintf(str, "%d", (int)indent);
-  return str;
+  return iupStrReturnInt((int)indent);
 }
 
 static int motTreeSetIndentationAttrib(Ihandle* ih, const char* value)
@@ -1837,8 +1816,8 @@ static void motTreeCallRenameCb(Ihandle* ih)
 
   XtDestroyWidget(wEdit);
 
-  iupAttribSetStr(ih, "_IUPTREE_EDITFIELD", NULL);
-  iupAttribSetStr(ih, "_IUPTREE_SELECTED",  NULL);
+  iupAttribSet(ih, "_IUPTREE_EDITFIELD", NULL);
+  iupAttribSet(ih, "_IUPTREE_SELECTED",  NULL);
 }
 
 static int motTreeCallDragDropCb(Ihandle* ih, Widget wItemDrag, Widget wItemDrop, int *is_ctrl)
@@ -1890,8 +1869,8 @@ static void motTreeEditKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Bool
     XtDestroyWidget(wEdit);
     motTreeSetFocusNode(ih, wItem);
 
-    iupAttribSetStr(ih, "_IUPTREE_EDITFIELD", NULL);
-    iupAttribSetStr(ih, "_IUPTREE_SELECTED",  NULL);
+    iupAttribSet(ih, "_IUPTREE_EDITFIELD", NULL);
+    iupAttribSet(ih, "_IUPTREE_SELECTED",  NULL);
   }
 
   (void)cont;
@@ -1973,8 +1952,8 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
   XtAddEventHandler(cbEdit, FocusChangeMask, False, (XtEventHandler)motTreeEditFocusChangeEvent, (XtPointer)ih);
   XtAddEventHandler(cbEdit, KeyPressMask,    False, (XtEventHandler)motTreeEditKeyPressEvent, (XtPointer)ih);
 
-  iupAttribSetStr(ih, "_IUPTREE_SELECTED",  (char*)wItem);
-  iupAttribSetStr(ih, "_IUPTREE_EDITFIELD", (char*)cbEdit);
+  iupAttribSet(ih, "_IUPTREE_SELECTED",  (char*)wItem);
+  iupAttribSet(ih, "_IUPTREE_EDITFIELD", (char*)cbEdit);
 
   XmProcessTraversal(cbEdit, XmTRAVERSE_CURRENT);
 
@@ -2232,7 +2211,7 @@ static void motTreeButtonEvent(Widget w, Ihandle* ih, XButtonEvent* evt, Boolean
 
   if (evt->type==ButtonPress)
   {   
-    iupAttribSetStr(ih, "_IUPTREE_IGNORE_ENTERLEAVE", "1");
+    iupAttribSet(ih, "_IUPTREE_IGNORE_ENTERLEAVE", "1");
 
     if (evt->button==Button1)
     {
@@ -2588,7 +2567,7 @@ static int motTreeMapMethod(Ihandle* ih)
 
   ih->serial = iupDialogGetChildId(ih); /* must be after using the string */
 
-  iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)parent);
+  iupAttribSet(ih, "_IUP_EXTRAPARENT", (char*)parent);
 
   XtAddEventHandler(ih->handle, EnterWindowMask, False, (XtEventHandler)motTreeEnterLeaveWindowEvent, (XtPointer)ih);
   XtAddEventHandler(ih->handle, LeaveWindowMask, False, (XtEventHandler)motTreeEnterLeaveWindowEvent, (XtPointer)ih);
@@ -2620,7 +2599,7 @@ static int motTreeMapMethod(Ihandle* ih)
     if (value)
     {
       motTreeSetBgColorAttrib(ih, value);
-      iupAttribSetStr(ih, "BGCOLOR", NULL);
+      iupAttribSet(ih, "BGCOLOR", NULL);
     }
   }
 

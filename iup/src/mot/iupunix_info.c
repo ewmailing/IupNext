@@ -212,36 +212,24 @@ void iupdrvGetKeyState(char* key)
 char *iupdrvGetSystemName(void)
 {
   struct utsname un;
-  char *str = iupStrGetMemory(50); 
-
   uname(&un);
   if (iupStrEqualNoCase(un.sysname, "Darwin"))
-    strcpy(str, "MacOS");
+    return iupStrReturnStr("MacOS");
   else
-    strcpy(str, un.sysname);
-
-  return str;
+    return iupStrReturnStr(un.sysname);
 }
 
 char *iupdrvGetSystemVersion(void)
 {
   struct utsname un;
-  char *str = iupStrGetMemory(100); 
-
   uname(&un);
   if (iupStrEqualNoCase(un.sysname, "Darwin"))
   {
     int release = atoi(un.release);
-    sprintf(str, "%d", release-4);
+    return iupStrReturnInt(release-4);
   }
   else
-  {
-    strcpy(str, un.release);
-    strcat(str, ".");
-    strcat(str, un.version);
-  }
-
-  return str;
+    return iupStrReturnStrf("%s.%s", un.release, un.version);
 }
 
 char *iupdrvGetComputerName(void)

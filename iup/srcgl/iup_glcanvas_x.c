@@ -69,7 +69,7 @@ static int xGLCanvasCreateMethod(Ihandle* ih, void** params)
 
   gldata = (IGlControlData*)malloc(sizeof(IGlControlData));
   memset(gldata, 0, sizeof(IGlControlData));
-  iupAttribSetStr(ih, "_IUP_GLCONTROLDATA", (char*)gldata);
+  iupAttribSet(ih, "_IUP_GLCONTROLDATA", (char*)gldata);
 
   IupSetCallback(ih, "RESIZE_CB", (Icallback)xGLCanvasDefaultResize);
 
@@ -192,7 +192,7 @@ static void xGLCanvasGetVisual(Ihandle* ih, IGlControlData* gldata)
   /* check out X extension */
   if (!glXQueryExtension(gldata->display, &erb, &evb))
   {
-    iupAttribSetStr(ih, "ERROR", "X server has no OpenGL GLX extension");
+    iupAttribSet(ih, "ERROR", "X server has no OpenGL GLX extension");
     return;
   }
 
@@ -200,11 +200,11 @@ static void xGLCanvasGetVisual(Ihandle* ih, IGlControlData* gldata)
   gldata->vinfo = glXChooseVisual(gldata->display, DefaultScreen(gldata->display), alist);
   if (!gldata->vinfo)
   {
-    iupAttribSetStr(ih, "ERROR", "No appropriate visual");
+    iupAttribSet(ih, "ERROR", "No appropriate visual");
     return;
   }
 
-  iupAttribSetStr(ih, "ERROR", NULL);
+  iupAttribSet(ih, "ERROR", NULL);
 }
 
 static char* xGLCanvasGetVisualAttrib(Ihandle *ih)
@@ -325,7 +325,7 @@ static int xGLCanvasMapMethod(Ihandle* ih)
     if (!CreateContextAttribsARB)
     {
       gldata->context = glXCreateContext(gldata->display, gldata->vinfo, shared_context, GL_TRUE);
-      iupAttribSetStr(ih, "ARBCONTEXT", "NO");
+      iupAttribSet(ih, "ARBCONTEXT", "NO");
     }
   }
   else
@@ -333,24 +333,24 @@ static int xGLCanvasMapMethod(Ihandle* ih)
 
   if (!gldata->context)
   {
-    iupAttribSetStr(ih, "ERROR", "Could not create a rendering context");
+    iupAttribSet(ih, "ERROR", "Could not create a rendering context");
     return IUP_NOERROR;
   }
 
-  iupAttribSetStr(ih, "CONTEXT", (char*)gldata->context);
+  iupAttribSet(ih, "CONTEXT", (char*)gldata->context);
 
   /* create colormap for index mode */
   if (iupStrEqualNoCase(iupAttribGetStr(ih,"COLOR"), "INDEX") && 
       gldata->vinfo->class != StaticColor && gldata->vinfo->class != StaticGray)
   {
     gldata->colormap = XCreateColormap(gldata->display, RootWindow(gldata->display, DefaultScreen(gldata->display)), gldata->vinfo->visual, AllocAll);
-    iupAttribSetStr(ih, "COLORMAP", (char*)gldata->colormap);
+    iupAttribSet(ih, "COLORMAP", (char*)gldata->colormap);
   }
 
   if (gldata->colormap != None)
     IupGLPalette(ih,0,1,1,1);  /* set first color as white */
 
-  iupAttribSetStr(ih, "ERROR", NULL);
+  iupAttribSet(ih, "ERROR", NULL);
   return IUP_NOERROR;
 }
 
@@ -358,7 +358,7 @@ static void xGLCanvasDestroy(Ihandle* ih)
 {
   IGlControlData* gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
   free(gldata);
-  iupAttribSetStr(ih, "_IUP_GLCONTROLDATA", NULL);
+  iupAttribSet(ih, "_IUP_GLCONTROLDATA", NULL);
 }
 
 static void xGLCanvasUnMapMethod(Ihandle* ih)
@@ -477,10 +477,10 @@ void IupGLMakeCurrent(Ihandle* ih)
     return;
 
   if (glXMakeCurrent(gldata->display, gldata->window, gldata->context)==False)
-    iupAttribSetStr(ih, "ERROR", "Failed to set new current context");
+    iupAttribSet(ih, "ERROR", "Failed to set new current context");
   else
   {
-    iupAttribSetStr(ih, "ERROR", NULL);
+    iupAttribSet(ih, "ERROR", NULL);
     glXWaitX();
   }
 }

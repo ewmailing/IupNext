@@ -365,7 +365,7 @@ void iupTreeDelFromCache(Ihandle* ih, int id, int count)
   /* minimum sanity check for LASTADDNODE */
   last_add_node = iupAttribGetInt(ih, "LASTADDNODE");
   if (last_add_node >= id && last_add_node < id+count)
-    iupAttribSetStr(ih, "LASTADDNODE", NULL);
+    iupAttribSet(ih, "LASTADDNODE", NULL);
   else if (last_add_node >= id+count)
     iupAttribSetInt(ih, "LASTADDNODE", last_add_node-count);
 
@@ -426,7 +426,7 @@ void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is
     memset(ih->data->node_cache+ih->data->node_count-count, 0, count*sizeof(InodeData));
   }
 
-  iupAttribSetStr(ih, "LASTADDNODE", NULL);
+  iupAttribSet(ih, "LASTADDNODE", NULL);
 }
 
 
@@ -435,9 +435,7 @@ void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is
 
 char* iupTreeGetSpacingAttrib(Ihandle* ih)
 {
-  char *str = iupStrGetMemory(50);
-  sprintf(str, "%d", ih->data->spacing);
-  return str;
+  return iupStrReturnInt(ih->data->spacing);
 }
 
 static char* iTreeGetMarkModeAttrib(Ihandle* ih)
@@ -481,10 +479,7 @@ static int iTreeSetCtrlAttrib(Ihandle* ih, const char* value)
 
 static char* iTreeGetShowRenameAttrib(Ihandle* ih)
 {
-  if (ih->data->show_rename)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->show_rename); 
 }
 
 static int iTreeSetShowRenameAttrib(Ihandle* ih, const char* value)
@@ -524,10 +519,7 @@ static int iTreeSetShowToggleAttrib(Ihandle* ih, const char* value)
 
 static char* iTreeGetShowDragDropAttrib(Ihandle* ih)
 {
-  if (ih->data->show_dragdrop)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->show_dragdrop); 
 }
 
 static int iTreeSetShowDragDropAttrib(Ihandle* ih, const char* value)
@@ -578,10 +570,7 @@ static int iTreeSetInsertBranchAttrib(Ihandle* ih, int id, const char* value)
 
 static char* iTreeGetAddExpandedAttrib(Ihandle* ih)
 {
-  if (ih->data->add_expanded)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (ih->data->add_expanded); 
 }
 
 static int iTreeSetAddExpandedAttrib(Ihandle* ih, const char* value)
@@ -596,21 +585,16 @@ static int iTreeSetAddExpandedAttrib(Ihandle* ih, const char* value)
 
 static char* iTreeGetCountAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(10);
-  sprintf(str, "%d", ih->data->node_count);
-  return str;
+  return iupStrReturnInt(ih->data->node_count);
 }
 
 static char* iTreeGetTotalChildCountAttrib(Ihandle* ih, int id)
 {
-  char* str;
   InodeHandle* node_handle = iupTreeGetNode(ih, id);
   if (!node_handle)
     return NULL;
 
-  str = iupStrGetMemory(10);
-  sprintf(str, "%d", iupdrvTreeTotalChildCount(ih, node_handle));
-  return str;
+  return iupStrReturnInt(iupdrvTreeTotalChildCount(ih, node_handle));
 }
 
 static char* iTreeGetUserDataAttrib(Ihandle* ih, int id)
@@ -790,7 +774,7 @@ void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, const char* f, ...
 
 void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
 {
-  char* attr = iupStrGetMemory(50);
+  char attr[50];
   sprintf(attr, "%s%d", a, id);
   IupSetAttributeHandle(ih, attr, ih_named);
 }

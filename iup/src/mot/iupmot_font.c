@@ -306,8 +306,8 @@ static ImotFont* motFontCreateNativeFont(Ihandle* ih, const char* value)
     return NULL;
   }
 
-  iupAttribSetStr(ih, "_IUPMOT_FONT", (char*)motfont);
-  iupAttribSetStr(ih, "XLFD", motfont->xlfd);
+  iupAttribSet(ih, "_IUPMOT_FONT", (char*)motfont);
+  iupAttribSet(ih, "XLFD", motfont->xlfd);
   return motfont;
 }
 

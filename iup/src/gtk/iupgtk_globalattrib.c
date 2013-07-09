@@ -165,7 +165,6 @@ char *iupdrvGetGlobal(const char *name)
 {
   if (iupStrEqual(name, "VIRTUALSCREEN"))
   {
-    char *str = iupStrGetMemory(50);
     GdkScreen *screen = gdk_screen_get_default();
     GdkWindow *root = gdk_screen_get_root_window(gdk_screen_get_default());
     int x = 0;
@@ -173,8 +172,7 @@ char *iupdrvGetGlobal(const char *name)
     int w = gdk_screen_get_width(screen); 
     int h = gdk_screen_get_height(screen);
     gdk_window_get_root_origin(root, &x, &y);
-    sprintf(str, "%d %d %d %d", x, y, w, h);
-    return str;
+    return iupStrReturnStrf("%d %d %d %d", x, y, w, h);
   }
   if (iupStrEqual(name, "MONITORSINFO"))
   {
@@ -195,33 +193,21 @@ char *iupdrvGetGlobal(const char *name)
   }
   if (iupStrEqual(name, "TRUECOLORCANVAS"))
   {
-    if (gdk_visual_get_best_depth() > 8)
-      return "YES";
-    else
-      return "NO";
+    return iupStrReturnBoolean(gdk_visual_get_best_depth() > 8);
   }
   if (iupStrEqual(name, "UTF8MODE"))
   {
-    if (iupgtkStrGetUTF8Mode())
-      return "YES";
-    else
-      return "NO";
+    return iupStrReturnBoolean(iupgtkStrGetUTF8Mode());
   }
   if (iupStrEqual(name, "UTF8AUTOCONVERT"))
   {
-    if (!iupgtkStrGetUTF8Mode())
-      return "YES";
-    else
-      return "NO";
+    return iupStrReturnBoolean(!iupgtkStrGetUTF8Mode());
   }
   if (iupStrEqual(name, "SHOWMENUIMAGES"))
   {
     gboolean menu_images;
     g_object_get (gtk_settings_get_default (), "gtk-menu-images", &menu_images, NULL);
-    if (menu_images)
-      return "YES";
-    else
-      return "NO";
+    return iupStrReturnBoolean(menu_images);
   }
   return NULL;
 }

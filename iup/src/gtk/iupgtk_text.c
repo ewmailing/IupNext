@@ -531,8 +531,6 @@ static int gtkTextSetSelectionAttrib(Ihandle* ih, const char* value)
 
 static char* gtkTextGetSelectionAttrib(Ihandle* ih)
 {
-  char *str;
-
   if (ih->data->is_multiline)
   {
     int start_col, start_lin, end_col, end_lin;
@@ -544,9 +542,7 @@ static char* gtkTextGetSelectionAttrib(Ihandle* ih)
       gtkTextGetLinColFromPosition(&start_iter, &start_lin, &start_col);
       gtkTextGetLinColFromPosition(&end_iter,   &end_lin,   &end_col);
 
-      str = iupStrGetMemory(100);
-      sprintf(str,"%d,%d:%d,%d", start_lin, start_col, end_lin, end_col);
-      return str;
+      return iupStrReturnStrf("%d,%d:%d,%d", start_lin, start_col, end_lin, end_col);
     }
   }
   else
@@ -556,9 +552,7 @@ static char* gtkTextGetSelectionAttrib(Ihandle* ih)
     {
       start++; /* IUP starts at 1 */
       end++;
-      str = iupStrGetMemory(100);
-      sprintf(str, "%d:%d", (int)start, (int)end);
-      return str;
+      return iupStrReturnIntInt((int)start, (int)end, ':');
     }
   }
 
@@ -609,7 +603,6 @@ static int gtkTextSetSelectionPosAttrib(Ihandle* ih, const char* value)
 static char* gtkTextGetSelectionPosAttrib(Ihandle* ih)
 {
   int start, end;
-  char *str;
 
   if (ih->data->is_multiline)
   {
@@ -620,19 +613,13 @@ static char* gtkTextGetSelectionPosAttrib(Ihandle* ih)
       start = gtk_text_iter_get_offset(&start_iter);
       end = gtk_text_iter_get_offset(&end_iter);
 
-      str = iupStrGetMemory(100);
-      sprintf(str, "%d:%d", (int)start, (int)end);
-      return str;
+      return iupStrReturnIntInt((int)start, (int)end, ':');
     }
   }
   else
   {
     if (gtk_editable_get_selection_bounds(GTK_EDITABLE(ih->handle), &start, &end))
-    {
-      str = iupStrGetMemory(100);
-      sprintf(str, "%d:%d", (int)start, (int)end);
-      return str;
-    }
+      return iupStrReturnIntInt((int)start, (int)end, ':');
   }
 
   return NULL;
@@ -672,22 +659,18 @@ static int gtkTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
 
 static char* gtkTextGetCountAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(50);
   GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
   int count = gtk_text_buffer_get_char_count(buffer);
-  sprintf(str, "%d", count);
-  return str;
+  return iupStrReturnInt(count);
 }
 
 static char* gtkTextGetLineCountAttrib(Ihandle* ih)
 {
   if (ih->data->is_multiline)
   {
-    char* str = iupStrGetMemory(50);
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
     int linecount = gtk_text_buffer_get_line_count(buffer);
-    sprintf(str, "%d", linecount);
-    return str;
+    return iupStrReturnInt(linecount);
   }
   else
     return "1";
@@ -752,8 +735,6 @@ static int gtkTextSetCaretAttrib(Ihandle* ih, const char* value)
 
 static char* gtkTextGetCaretAttrib(Ihandle* ih)
 {
-  char* str = iupStrGetMemory(50);
-
   if (ih->data->is_multiline)
   {
     int col, lin;
@@ -763,16 +744,14 @@ static char* gtkTextGetCaretAttrib(Ihandle* ih)
     gtk_text_buffer_get_iter_at_mark(buffer, &iter, gtk_text_buffer_get_insert(buffer));
     gtkTextGetLinColFromPosition(&iter, &lin, &col);
 
-    sprintf(str, "%d,%d", lin, col);
+    return iupStrReturnIntInt(lin, col, ',');
   }
   else
   {
     int pos = gtk_editable_get_position(GTK_EDITABLE(ih->handle));
     pos++; /* IUP starts at 1 */
-    sprintf(str, "%d", (int)pos);
+    return iupStrReturnInt(pos);
   }
-
-  return str;
 }
 
 static int gtkTextSetCaretPosAttrib(Ihandle* ih, const char* value)
@@ -802,7 +781,6 @@ static int gtkTextSetCaretPosAttrib(Ihandle* ih, const char* value)
 static char* gtkTextGetCaretPosAttrib(Ihandle* ih)
 {
   int pos;
-  char* str = iupStrGetMemory(50);
 
   if (ih->data->is_multiline)
   {
@@ -814,8 +792,7 @@ static char* gtkTextGetCaretPosAttrib(Ihandle* ih)
   else
     pos = gtk_editable_get_position(GTK_EDITABLE(ih->handle));
 
-  sprintf(str, "%d", (int)pos);
-  return str;
+  return iupStrReturnInt(pos);
 }
 
 static int gtkTextSetScrollToAttrib(Ihandle* ih, const char* value)
@@ -1113,10 +1090,7 @@ static char* gtkTextGetReadOnlyAttrib(Ihandle* ih)
     editable = gtk_text_view_get_editable(GTK_TEXT_VIEW(ih->handle));
   else
     editable = gtk_editable_get_editable(GTK_EDITABLE(ih->handle));
-  if (!editable)
-    return "YES";
-  else
-    return "NO";
+  return iupStrReturnBoolean (!editable); 
 }
 
 static int gtkTextSetBgColorAttrib(Ihandle* ih, const char* value)
@@ -1175,11 +1149,8 @@ static int gtkTextSetOverwriteAttrib(Ihandle* ih, const char* value)
 static char* gtkTextGetOverwriteAttrib(Ihandle* ih)
 {
   if (!ih->data->is_multiline)
-    return "NO";
-  if (gtk_text_view_get_overwrite(GTK_TEXT_VIEW(ih->handle)))
-    return "YES";
-  else
-    return "NO";
+    return NULL;
+  return iupStrReturnBoolean(gtk_text_view_get_overwrite(GTK_TEXT_VIEW(ih->handle))); 
 }
 
 void* iupdrvTextAddFormatTagStartBulk(Ihandle* ih)
@@ -1395,15 +1366,13 @@ static char* gtkTextGetSpinValueAttrib(Ihandle* ih)
   if (GTK_IS_SPIN_BUTTON(ih->handle))
   {
     int pos;
-    char *str = iupStrGetMemory(50);
 
     if (iupAttribGet(ih, "_IUPGTK_SPIN_NOAUTO"))
       pos = iupAttribGetInt(ih, "_IUPGTK_SPIN_VALUE");
     else
       pos = gtk_spin_button_get_value_as_int((GtkSpinButton*)ih->handle);
 
-    sprintf(str, "%d", pos);
-    return str;
+    return iupStrReturnInt(pos);
   }
   return NULL;
 }
@@ -1633,7 +1602,7 @@ static int gtkTextMapMethod(Ihandle* ih)
     gtk_container_add((GtkContainer*)scrolled_window, ih->handle);
     gtk_widget_show((GtkWidget*)scrolled_window);
 
-    iupAttribSetStr(ih, "_IUP_EXTRAPARENT", (char*)scrolled_window);
+    iupAttribSet(ih, "_IUP_EXTRAPARENT", (char*)scrolled_window);
 
     /* formatting is always supported when MULTILINE=YES */
     ih->data->has_formatting = 1;
@@ -1708,7 +1677,7 @@ static int gtkTextMapMethod(Ihandle* ih)
       if (!iupAttribGetBoolean(ih, "SPINAUTO"))
       {
         g_signal_connect(G_OBJECT(ih->handle), "input", G_CALLBACK(gtkTextSpinInput), ih);
-        iupAttribSetStr(ih, "_IUPGTK_SPIN_NOAUTO", "1");
+        iupAttribSet(ih, "_IUPGTK_SPIN_NOAUTO", "1");
       }
     }
   }
@@ -1752,7 +1721,7 @@ static int gtkTextMapMethod(Ihandle* ih)
 
   /* configure for DRAG&DROP */
   if (IupGetCallback(ih, "DROPFILES_CB"))
-    iupAttribSetStr(ih, "DROPFILESTARGET", "YES");
+    iupAttribSet(ih, "DROPFILESTARGET", "YES");
 
   /* update a mnemonic in a label if necessary */
   iupgtkUpdateMnemonic(ih);
