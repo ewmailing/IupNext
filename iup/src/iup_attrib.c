@@ -222,7 +222,7 @@ void IupSetAttributeId(Ihandle *ih, const char* name, int id, const char *value)
     iupAttribSetId(ih, name, id, value);
 }
 
-void IupSetStrId(Ihandle *ih, const char* name, int id, const char *value)
+void IupSetStrAttributeId(Ihandle *ih, const char* name, int id, const char *value)
 {
   IupStoreAttributeId(ih, name, id, value);
 }
@@ -274,7 +274,7 @@ void IupSetAttributeId2(Ihandle* ih, const char* name, int lin, int col, const c
     iupAttribSetId2(ih, name, lin, col, value);
 }
 
-void IupSetStrId2(Ihandle* ih, const char* name, int lin, int col, const char* value)
+void IupSetStrAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value)
 {
   IupStoreAttributeId2(ih, name, lin, col, value);
 }
@@ -482,7 +482,7 @@ void IupSetAttribute(Ihandle *ih, const char* name, const char *value)
   }
 }
 
-void IupSetStr(Ihandle *ih, const char* name, const char *value)
+void IupSetStrAttribute(Ihandle *ih, const char* name, const char *value)
 {
   IupStoreAttribute(ih, name, value);
 }

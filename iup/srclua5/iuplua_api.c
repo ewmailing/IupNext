@@ -808,7 +808,7 @@ static int SetGlobal(lua_State *L)
 {
   const char *a = luaL_checkstring(L,1);
   const char *v = luaL_checkstring(L,2);
-  IupSetGlobal(a,v);
+  IupStoreGlobal(a,v);
   return 0;
 }
 

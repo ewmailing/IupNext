@@ -28,17 +28,9 @@ They are used by the application to communicate with the user interface system,
 on the other hand callbacks are used by the application to receive notifications 
 from the system that the user or the system itself has interacted with the user 
 interface of the application.</p>
-<p>There are several functions to change them. See the
-<a href="func/iupsetattribute.html">IupSetAttribute</a> documentation. </p>
-
-<p>With <strong>IupSetAttribute</strong> you can also store application pointers that can be 
-strings or not. This can be very useful, for instance, used inside 
-<b>callbacks</b>. For example, by storing a C pointer of an application defined structure, the application can retrieve 
-  this pointer inside the callback through function 
-  <strong>IupGetAttribute</strong>. Therefore, even if the callbacks are global functions, 
-  the same callback can be used for several objects, even of different types.<u1:p>
-</u1:p>
-</p>
+<p>There are several functions to access attribues, see the documentation of the
+<a href="func/iupsetattribute.html">IupSetAttribute</a> and
+<a href="func/iupgetattribute.html">IupGetAttribute</a> for more options. </p>
 
 <p>When an attribute is modified (<b>Set</b>) it is  stored internally at the hash 
 table of the control only if the control class 
@@ -87,6 +79,15 @@ will return 1 for any of the <strong>true</strong> values, and 0 for any of the
 <p>Floating point numbers when stored as strings use the application locale for 
 decimal separator. Notice that by default C applications use the C locale, not 
 the current system locale, in this case decimal separator is &quot;.&quot;.</p>
+
+<p>With <strong>IupSetAttribute</strong> you can also store application pointers that can be 
+strings or not. This can be very useful, for instance, used inside 
+<b>callbacks</b>. For example, by storing a C pointer of an application defined structure, the application can retrieve 
+  this pointer inside the callback through function 
+  <strong>IupGetAttribute</strong>. Therefore, even if the callbacks are global functions, 
+  the same callback can be used for several objects, even of different types.<u1:p>
+</u1:p>
+</p>
 
 <p>There are attributes common to all the elements. In some cases, common attributes behave 
   differently in different elements, but in such cases, there are comments in 

@@ -191,11 +191,11 @@ IupGetRGBId
 IupSetRGBId
 IupGetRGBId2
 IupSetRGBId2
-IupSetStr
+IupSetStrAttribute
 IupSetStrf
-IupSetStrId
+IupSetStrAttributeId
 IupSetStrfId
-IupSetStrId2
+IupSetStrAttributeId2
 IupSetStrfId2
 IupSetStrGlobal
 
