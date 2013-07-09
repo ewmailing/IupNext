@@ -145,7 +145,12 @@ void IupStoreGlobal(const char *name, const char *value)
   iGlobalSet(name, value, 1);
 }
 
-char *IupGetGlobal(const char *name)
+void IupSetStrGlobal(const char *name, const char *value)
+{
+  iGlobalSet(name, value, 1);
+}
+
+char* IupGetGlobal(const char *name)
 {
   char* value;
   

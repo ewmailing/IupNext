@@ -400,16 +400,8 @@ wb_usr.tree =
           folder=
           {
             {
-              name= {nl= "IupStoreAttribute"},
-              link= "func/iupstoreattribute.html"
-            },
-            {
               name= {nl= "IupSetAttribute"},
               link= "func/iupsetattribute.html"
-            },
-            {
-              name= {nl= "IupSetfAttribute"},
-              link= "func/iupsetfattribute.html"
             },
             {
               name= {nl= "IupSetAttributes"},
@@ -429,10 +421,6 @@ wb_usr.tree =
             },
             { link= "", name= {en= "" } },
             {
-              name= {nl= "IupGetAttributeHandle"},
-              link= "func/iupgetattributehandle.html"
-            },
-            {
               name= {nl= "IupGetAttribute"},
               link= "func/iupgetattribute.html"
             },
@@ -445,18 +433,10 @@ wb_usr.tree =
               link= "func/iupgetattributes.html"
             },
             {
-              name= {nl= "IupGetFloat"},
-              link= "func/iupgetfloat.html"
-            },
-            {
-              name= {nl= "IupGetInt"},
-              link= "func/iupgetint.html"
+              name= {nl= "IupGetAttributeHandle"},
+              link= "func/iupgetattributehandle.html"
             },
             { link= "", name= {en= "" } },
-            {
-              name= {nl= "IupStoreGlobal"},
-              link= "func/iupstoreglobal.html"
-            },
             {
               name= {nl= "IupSetGlobal"},
               link= "func/iupsetglobal.html"

@@ -130,7 +130,7 @@ float IupGetFloatId2(Ihandle* ih, const char* name, int lin, int col);
 void  IupGetRGBId2(Ihandle *ih, const char* name, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b);
 
 void      IupSetGlobal  (const char* name, const char* value);
-void      IupStoreGlobal(const char* name, const char* value);
+void      IupSetStrGlobal(const char* name, const char* value);
 char*     IupGetGlobal  (const char* name);
 
 Ihandle*  IupSetFocus     (Ihandle* ih);
@@ -258,6 +258,7 @@ float IupTreeGetFloat      (Ihandle* ih, const char* name, int id);
 void  IupTreeSetfAttribute (Ihandle* ih, const char* name, int id, const char* format, ...);
 
 /* OLD names, kept for backward compatibility */
+void IupStoreGlobal(const char* name, const char* value);
 void IupStoreAttribute(Ihandle* ih, const char* name, const char* value);
 void IupSetfAttribute(Ihandle* ih, const char* name, const char* format, ...);
 void IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char *value);

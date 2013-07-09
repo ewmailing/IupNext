@@ -197,6 +197,7 @@ IupSetStrId
 IupSetStrfId
 IupSetStrId2
 IupSetStrfId2
+IupSetStrGlobal
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib

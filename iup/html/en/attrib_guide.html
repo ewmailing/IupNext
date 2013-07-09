@@ -28,16 +28,8 @@ They are used by the application to communicate with the user interface system,
 on the other hand callbacks are used by the application to receive notifications 
 from the system that the user or the system itself has interacted with the user 
 interface of the application.</p>
-<p>There are two functions to change them:</p>
-
-<ul type="disc">
-
-  <li><strong>IupSetAttribute</strong> stores only a pointer to the string and does not duplicate it. 
-  </li>
-
-  <li><strong>IupStoreAtribute</strong> duplicates the string, allowing you to use it for other purposes.</li>
-
-</ul>
+<p>There are several functions to change them. See the
+<a href="func/iupsetattribute.html">IupSetAttribute</a> documentation. </p>
 
 <p>With <strong>IupSetAttribute</strong> you can also store application pointers that can be 
 strings or not. This can be very useful, for instance, used inside 
@@ -48,7 +40,7 @@ strings or not. This can be very useful, for instance, used inside
 </u1:p>
 </p>
 
-<p>When an attribute is updated (<b>Set</b>) it is  stored internally at the hash 
+<p>When an attribute is modified (<b>Set</b>) it is  stored internally at the hash 
 table of the control only if the control class 
 allows it.
   If the value is NULL, the attribute will also be removed from the hash table 

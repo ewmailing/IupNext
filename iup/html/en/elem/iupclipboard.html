@@ -108,10 +108,10 @@ actual value).</p>
 
 <h3><a name="Examples">Examples</a></h3>
 <pre>Ihandle* clipboard = IupClipboard();
-IupStoreAttribute(clipboard, &quot;TEXT&quot;, IupGetAttribute(text, &quot;VALUE&quot;));
+IupSetAttribute(clipboard, &quot;TEXT&quot;, IupGetAttribute(text, &quot;VALUE&quot;));
 IupDestroy(clipboard);</pre>
 <pre>Ihandle* clipboard = IupClipboard();
-IupStoreAttribute(text, &quot;VALUE&quot;, IupGetAttribute(clipboard, &quot;TEXT&quot;));
+IupSetAttribute(text, &quot;VALUE&quot;, IupGetAttribute(clipboard, &quot;TEXT&quot;));
 IupDestroy(clipboard);</pre>
 
 </body>
