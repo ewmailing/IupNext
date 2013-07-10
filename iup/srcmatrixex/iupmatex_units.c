@@ -56,10 +56,10 @@ static const ImatExUnit IMATEX_TIME_UNITS [IMATEX_TIME_COUNT] = {
 #define IMATEX_MASS_COUNT 5               
 static const ImatExUnit IMATEX_MASS_UNITS [IMATEX_MASS_COUNT] = {
   {"kilogram"   ,"kg" , 1},
-  {"gram"       ,"g"  , 0.001          },
-  {"ton"        ,"ton", 1000           },
-  {"pound"      ,"lb" , 0.45359237     },  /* (avoirdupois) */
-  {"ounce"      ,"oz" , 0.028349523125 }}; /* (avoirdupois) */
+  {"gram"       ,"g"  , 0.001           },
+  {"ton"        ,"ton", 1000            },
+  {"pound"      ,"lb" , 0.45359237      },  /* (international avoirdupois) */
+  {"ounce"      ,"oz" , 0.45359237/16.0 }}; /* (international avoirdupois) */
 
 #define IMATEX_CELSIUS 1
 #define IMATEX_FAHRENHEIT 2
@@ -75,7 +75,7 @@ static const ImatExUnit IMATEX_AREA_UNITS [IMATEX_AREA_COUNT] = {
   {"square meter"    ,"m²"   , 1},         /* ²  \178=ISO8859-1  \xC2\xB2=UTF-8 */
   {"square inch"     ,"sq in", 6.4516e-4},
   {"square foot"     ,"sq ft", 9.290304e-2},
-  {"square kilometer","km²"  , 1.00000000e6},
+  {"square kilometer","km²"  , 1.0e6},
   {"square mile"     ,"sq mi", 2.589988110336e6},
   {"square yard"     ,"sq yd", 0.83612736},    /* (international) */
   {"acre"            ,"ac"   , 4046.8564224},  /* (international) */
@@ -93,103 +93,102 @@ static const ImatExUnit IMATEX_VOLUME_UNITS [IMATEX_VOLUME_COUNT] = {
   {"cubic mile"     ,"cu mi", 4168181825.440579584},
   {"cubic yard"     ,"cu yd", 0.764554857984}};
 
-  //PAREI AQUI
 #define IMATEX_SPEED_COUNT 6
 static const ImatExUnit IMATEX_SPEED_UNITS [IMATEX_SPEED_COUNT] = {
   {"meter per second"  ,"m/s" , 1},
-  {"inch per second"   ,"ips" , 2.545e-2   },
-  {"foot per second"   ,"fps" , 0.304800   },
-  {"kilometer per hour","km/h", 2.777778e-1},
-  {"mile per hour"     ,"mph" , 0.447040   },
-  {"knot"              ,"kn"  , 0.514444   }};
+  {"inch per second"   ,"ips" , 2.54e-2   },
+  {"foot per second"   ,"fps" , 0.3048    },
+  {"kilometer per hour","km/h", 1.0/3.6   },
+  {"mile per hour"     ,"mph" , 0.44704   },
+  {"knot"              ,"kn"  , 1.852/3.6 }};
 
 #define IMATEX_ANGULAR_SPEED_COUNT 6
 static const ImatExUnit IMATEX_ANGULAR_SPEED_UNITS [IMATEX_ANGULAR_SPEED_COUNT] = {
   {"radian per second"  ,"rad/s"  , 1},
-  {"rotation per second","RPS"    , 2*M_PI  },
-  {"degree per second"  ,"deg/s"  , M_PI/180},
-  {"radian per minute"  ,"rad/min", 60      },
-  {"rotation per minute","RPM"    , 120*M_PI},
-  {"degree per minute"  ,"deg/min", M_PI/3  }};
+  {"rotation per second","RPS"    , 2.0*M_PI  },
+  {"degree per second"  ,"deg/s"  , M_PI/180.0},
+  {"radian per minute"  ,"rad/min", 60        },
+  {"rotation per minute","RPM"    , 120.0*M_PI},
+  {"degree per minute"  ,"deg/min", M_PI/3.0  }};
 
 #define IMATEX_ACCELERATION_COUNT 3
 static const ImatExUnit IMATEX_ACCELERATION_UNITS [IMATEX_ACCELERATION_COUNT] = {
   {"meter per second squared","m/s²", 1},
-  {"inch per second squared" ,"ips²", 2.545e-2   },
-  {"knot per second"         ,"kn/s", 5.144444e-1}};
+  {"inch per second squared" ,"ips²", 2.54e-2   },
+  {"knot per second"         ,"kn/s", 1.852/3.6}};
 
 #define IMATEX_PRESSURE_COUNT 6
 static const ImatExUnit IMATEX_PRESSURE_UNITS [IMATEX_PRESSURE_COUNT] = {
   {"Pascal"              ,"Pa"  , 1},
   {"kilopascal"          ,"kPa" , 1000    },
-  {"atmosphere"          ,"atm" , 101325  },
-  {"milimiter of mercury","mmHg", 133.3224},
+  {"atmosphere"          ,"atm" , 101325  },   /* (standard) */
+  {"milimiter of mercury","mmHg", 101325.0/760.0},
   {"bar"                 ,"bar" , 1.0e5   },
-  {"torr"                ,"torr", 133.3224}};
+  {"torr"                ,"torr", 101325.0/760.0}};
 
 #define IMATEX_FORCE_COUNT 4
 static const ImatExUnit IMATEX_FORCE_UNITS [IMATEX_FORCE_COUNT] = {
   {"Newton"        ,"N"  , 1},
-  {"Kilonewton"    ,"kN" , 1.0e3    },
+  {"Kilonewton"    ,"kN" , 1000     },
   {"kilogram-force","kgf", 9.80665  },
-  {"ton-force"     ,"tnf", 9.80665e3}};
+  {"ton-force"     ,"tnf", 9.80665 * 1000}};  /* same as tonne (metric) */
 
 #define IMATEX_FORCE_PER_LENGTH_COUNT 4
 static const ImatExUnit IMATEX_FORCE_PER_LENGTH_UNITS [IMATEX_FORCE_PER_LENGTH_COUNT] = {
   {"Newton per meter"         ,"N/m"  , 1},
-  {"Kilonewton per meter"     ,"kN/m" , 1.0e3    },
+  {"Kilonewton per meter"     ,"kN/m" , 1000    },
   {"kilogram-force per meter" ,"kgf/m", 9.80665  },
-  {"ton-force per meter"      ,"tnf/m", 9.80665e3}};
+  {"ton-force per meter"      ,"tnf/m", 9.80665 * 1000}};
 
 #define IMATEX_MOMENTUM_COUNT 7
 static const ImatExUnit IMATEX_MOMENTUM_UNITS [IMATEX_MOMENTUM_COUNT] = {
   {"Newton meter"             , "N-m"   , 1},
-  {"kilogram-force meter"     , "kgf-m" , 9.8066500},
-  {"ton-force meter"          , "tnf-m" , 9.80665e3},
-  {"Newton centimeter"        , "N-cm"  , 1.00000e2},
-  {"kilogram-force centimeter", "kgf-cm", 9.80665e2},
-  {"ton-force centimeter"     , "tnf-cm", 9.80665e5},
-  {"Kilonewton-meter"         , "kN-m"  , 1.00000e3}};
+  {"kilogram-force meter"     , "kgf-m" , 9.80665  },
+  {"ton-force meter"          , "tnf-m" , 9.80665 * 1000},
+  {"Newton centimeter"        , "N-cm"  , 100      },
+  {"kilogram-force centimeter", "kgf-cm", 9.80665 * 100},
+  {"ton-force centimeter"     , "tnf-cm", 9.80665 * 1000 * 100},
+  {"Kilonewton-meter"         , "kN-m"  , 1000     }};
 
 #define IMATEX_ANGLE_COUNT 2
 static const ImatExUnit IMATEX_ANGLE_UNITS [IMATEX_ANGLE_COUNT] = {
   {"radian", "rad", 1},
-  {"degree", "deg", 0.017453292}};
+  {"degree", "deg", M_PI/180.0}};
 
 #define IMATEX_SPECIFIC_MASS_COUNT 3
 static const ImatExUnit IMATEX_SPECIFIC_MASS_UNITS [IMATEX_SPECIFIC_MASS_COUNT]  = {
   {"kilogram per cubic meter","kg/m³" , 1},
-  {"ton per cubic meter"     ,"ton/m³", 1.00e3},
-  {"kilogram per litre"      ,"kg/L"  , 1.0e-3}};
+  {"ton per cubic meter"     ,"ton/m³", 1000},
+  {"kilogram per litre"      ,"kg/L"  , 0.001}};
 
 #define IMATEX_SPECIFIC_WEIGHT_COUNT 3
 static const ImatExUnit IMATEX_SPECIFIC_WEIGHT_UNITS [IMATEX_SPECIFIC_WEIGHT_COUNT]  = {
   {"kilogram-force per cubic meter","kgf/m³", 1},
-  {"ton-force per cubic meter"     ,"tnf/m³", 1.00e3},
-  {"kilogram-force per litre"      ,"kgf/L" , 1.0e-3}};
+  {"ton-force per cubic meter"     ,"tnf/m³", 1000},
+  {"kilogram-force per litre"      ,"kgf/L" , 0.001}};
 
 #define IMATEX_ENERGY_COUNT   6
 static const ImatExUnit IMATEX_ENERGY_UNITS[IMATEX_ENERGY_COUNT]  = {
   {"Joule"          ,"J"   , 1},
-  {"Kilojoule"      ,"kJ"  , 1.0e3                 },
-  {"Calorie"        ,"cal" , 4.1868                },
-  {"BTU"            ,"BTU" , 1054.5                },
+  {"Kilojoule"      ,"kJ"  , 1000                  },
+  {"calorie"        ,"cal" , 4.1868                },  /* (International Table) */
+  {"BTU"            ,"BTU" , 1054.5                },  /* (ISO) */
   {"Kilowatt-hour"  ,"kW.h", 3.6e6                 },
-  {"Horsepower-hour","hp.h", 2.684519537696172792e6}};
+  {"horsepower-hour","hp.h", 2.684519537696172792e6}};
                                                  
 #define IMATEX_POWER_COUNT    4
 static const ImatExUnit IMATEX_POWER_UNITS[IMATEX_POWER_COUNT]  = {
   {"Watt"              ,"W"    , 1},
-  {"Kilowatt"          ,"kW"   , 1.00000e3},
-  {"Calorie per second","cal/s", 4.1868000},
-  {"Horsepower"         ,"hp"  , 735.49875 }};
+  {"Kilowatt"          ,"kW"   , 1000},
+  {"calorie per second","cal/s", 4.1868},  /* (International Table) */
+  {"horsepower"         ,"hp"  , 735.49875 }};  /* (metric) */
 
 #define IMATEX_FRACTION_COUNT 4
 static const ImatExUnit IMATEX_FRACTION_UNITS[IMATEX_FRACTION_COUNT]  = {
   {"percentage"  , "%"    , 1},
-  {"per one"     , "/1"   , 1.0e2 },
-  {"per ten"     , "/10"  , 1.0e1 },
-  {"per thousand", "/1000", 1.0e-1}};
+  {"per one"     , "/1"   , 100 },
+  {"per ten"     , "/10"  , 10  },
+  {"per thousand", "/1000", 0.1 }};
 
 typedef struct _ImatExQuantity {
   const char* name;
