@@ -42,7 +42,7 @@ enum{IMAT_EDITNEXT_LIN,
      IMAT_EDITNEXT_COLCR,
      IMAT_EDITNEXT_NONE};
 
-typedef double (*ImatNumericConvertFunc)(double number, int src_units, int dst_units);
+typedef double (*ImatNumericConvertFunc)(double number, int quantity, int src_units, int dst_units);
 
 
 /***************************************************************************/
@@ -83,7 +83,6 @@ typedef struct _ImatNumericData
   unsigned char quantity;
   unsigned char unit, unit_shown;
   unsigned char flags;  
-  ImatNumericConvertFunc convert_func;
 } ImatNumericData;
 
 
@@ -147,6 +146,7 @@ struct _IcontrolData
   char numeric_buffer_get[80];
   char numeric_buffer_set[80];
   ImatNumericData* numeric_columns;   /* information for numeric columns (allocated after map) */
+  ImatNumericConvertFunc numeric_convert_func;
 };
 
 

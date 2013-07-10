@@ -6,7 +6,6 @@
 
 #include <memory.h>
 #include <stdio.h> 
-#include <ctype.h>   
 
 #include "iup.h"
 #include "iupkey.h"
@@ -269,7 +268,8 @@ int iupKeyProcessMnemonic(Ihandle* ih, int code)
 {
   Ihandle *ih_mnemonic, *dialog = IupGetDialog(ih);
   char attrib[16] = "_IUP_MNEMONIC_ ";
-  attrib[14] = (char)toupper(code);
+  attrib[14] = (char)code;
+  iupStrUpper(attrib, attrib);
   ih_mnemonic = (Ihandle*)IupGetAttribute(dialog, attrib);
   if (iupObjectCheck(ih_mnemonic))
   {
@@ -299,7 +299,8 @@ void iupKeySetMnemonic(Ihandle* ih, int code, int pos)
 {
   Ihandle* ih_dialog = IupGetDialog(ih);
   char attrib[16] = "_IUP_MNEMONIC_ ";
-  attrib[14] = (char)toupper(code);
+  attrib[14] = (char)code;
+  iupStrUpper(attrib, attrib);
 
   IupSetAttribute(ih_dialog, attrib, (char*)ih);
   if (IupClassMatch(ih, "tabs"))

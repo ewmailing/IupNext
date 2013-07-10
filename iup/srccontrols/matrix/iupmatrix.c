@@ -781,7 +781,7 @@ static int iMatrixSetNumericQuantityIndexAttrib(Ihandle* ih, int col, const char
   {
     /* no need to check for a valid quantity since it is done by the actual unit implementation */
     ih->data->numeric_columns[col].quantity = (unsigned char)quantity;
-    ih->data->numeric_columns[col].convert_func = (ImatNumericConvertFunc)IupGetCallback(ih, "NUMERICCONVERT_FUNC");  /* valid only during set of NUMERICQUANTITY */
+    ih->data->numeric_convert_func = (ImatNumericConvertFunc)IupGetCallback(ih, "NUMERICCONVERT_FUNC");  /* valid only during set of NUMERICQUANTITY */
     ih->data->numeric_columns[col].unit = 0;   /* Reset units when change quantity */
     ih->data->numeric_columns[col].unit_shown = 0;
   }

@@ -29,17 +29,31 @@ int iupStrEqual(const char* str1, const char* str2)
   return (strcmp(str1, str2)==0)? 1: 0;
 }
 
+static char iStrUpper(char c)
+{
+  if (c >= 'a' && c <= 'z')  /* is lower */
+    return (c - 'a') + 'A';
+  return c;
+}
+
+static char iStrLower(char c)
+{
+  if (c >= 'A' && c <= 'Z')  /* is upper */
+    return (c - 'A') + 'a';
+  return c;
+}
+
 int iupStrEqualNoCaseNoSpace(const char* str1, const char* str2) 
 {
   int i = 0;
   if (str1 == str2) return 1;
   if (!str1 || !str2 || 
-      tolower(*str1) != tolower(*str2)) 
+      iStrLower(*str1) != iStrLower(*str2)) 
     return 0;       
 
-  while (str1[i] && str2[i] && tolower(str1[i])==tolower(str2[i])) 
+  while (str1[i] && str2[i] && iStrLower(str1[i])==iStrLower(str2[i])) 
   {
-    if (str1[i] == ' ')  /* ignore spaces */
+    if (str1[i] == ' ')  /* also ignore spaces */
       i++;
     i++;
   }
@@ -52,11 +66,10 @@ int iupStrEqualNoCase(const char* str1, const char* str2)
 {
   int i = 0;
   if (str1 == str2) return 1;
-  if (!str1 || !str2 || 
-      tolower(*str1) != tolower(*str2)) 
+  if (!str1 || !str2) 
     return 0;
 
-  while (str1[i] && str2[i] && tolower(str1[i])==tolower(str2[i])) 
+  while (str1[i] && str2[i] && iStrLower(str1[i])==iStrLower(str2[i])) 
     i++;
   if (str1[i] == str2[i]) return 1;  /* check also for terminator */
 
@@ -67,11 +80,10 @@ int iupStrEqualNoCasePartial(const char* str1, const char* str2)
 {
   int i = 0;
   if (str1 == str2) return 1;
-  if (!str1 || !str2 || 
-      tolower(*str1) != tolower(*str2)) 
+  if (!str1 || !str2) 
     return 0;
 
-  while (str1[i] && str2[i] && tolower(str1[i])==tolower(str2[i])) 
+  while (str1[i] && str2[i] && iStrLower(str1[i])==iStrLower(str2[i])) 
     i++;
   if (str1[i] == str2[i]) return 1;  /* check also for terminator */
   if (str2[i] == 0) return 1;  /* is second string is at terminator, then it is partially equal */
@@ -107,14 +119,14 @@ int iupStrBoolean(const char* str)
 void iupStrUpper(char* dstr, const char* sstr)
 {
   for (; *sstr; sstr++, dstr++)
-    *dstr = (char)toupper(*sstr);
+    *dstr = (char)iStrUpper(*sstr);
   *dstr = 0;
 }
 
 void iupStrLower(char* dstr, const char* sstr)
 {
   for (; *sstr; sstr++, dstr++)
-    *dstr = (char)tolower(*sstr);
+    *dstr = (char)iStrLower(*sstr);
   *dstr = 0;
 }
 
@@ -249,7 +261,7 @@ char* iupStrDupUntil(char **str, char c)
   }
 }
 
-static char *iStrDupUntilNoCase(char **str, int c)
+static char *iStrDupUntilNoCase(char **str, char c)
 {
   char *p_str,*new_str;
   if (!str || *str==NULL)
@@ -257,7 +269,7 @@ static char *iStrDupUntilNoCase(char **str, int c)
 
   p_str=strchr(*str,c); /* usually the lower case is enough */
   if (!p_str && isalpha(c)) 
-    p_str=strchr(*str, toupper(c));  /* but check also for upper case */
+    p_str=strchr(*str, iStrUpper(c));  /* but check also for upper case */
 
   /* if both fail, then abort */
   if (!p_str) 
@@ -529,7 +541,7 @@ int iupStrToIntInt(const char *str, int *i1, int *i2, char sep)
 {
   if (!str) return 0;
 
-  if (*str == sep || (isalpha(sep) && *str == toupper(sep))) /* no first value */
+  if (*str == sep || (isalpha(sep) && *str == iStrUpper(sep))) /* no first value */
   {
     str++; /* skip separator */
     if (sscanf(str, "%d", i2) != 1) return 0;
@@ -573,7 +585,7 @@ int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
 {
   if (!str) return 0;
 
-  if (*str == sep || (isalpha(sep) && *str == toupper(sep))) /* no first value */
+  if (*str == sep || (isalpha(sep) && *str == iStrUpper(sep))) /* no first value */
   {
     str++; /* skip separator */
     if (sscanf(str, "%f", f2) != 1) return 0;
@@ -610,7 +622,7 @@ int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
 {
   if (!str) return 0;
 
-  if (*str == sep || (isalpha(sep) && *str == toupper(sep))) /* no first value */
+  if (*str == sep || (isalpha(sep) && *str == iStrUpper(sep))) /* no first value */
   {
     str++; /* skip separator */
     strcpy(str2, str);

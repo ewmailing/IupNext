@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <ctype.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -952,7 +951,8 @@ static void iMglPlotConfigAxisTicks(Ihandle* ih, mglGraph *gr, char dir, const I
 
   // Setting the template, switches off automatic ticks tuning
   char attrib[16] = "AXS_?TICKFORMAT";
-  attrib[4] = (char)toupper(dir);
+  attrib[4] = dir;
+  iupStrUpper(attrib, attrib);
   char* format = iupAttribGetStr(ih, attrib);
   if (format && axis.axTickShowValues)
   {
@@ -1156,7 +1156,8 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
 static void iMglPlotDrawAxisLabel(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
 {
   char attrib[11] = "AXS_?LABEL";
-  attrib[4] = (char)toupper(dir);
+  attrib[4] = dir;
+  iupStrUpper(attrib, attrib);
   char* label = iupAttribGetStr(ih, attrib);
   if (label)
   {

@@ -25,23 +25,26 @@ int iupStrEqual(const char* str1, const char* str2);
 
 /** Returns a non zero value if the two strings are equal but ignores case.
  * str1 or str2 can be NULL.
+ * It will work only for character codes <128.
  * \ingroup str */
 int iupStrEqualNoCase(const char* str1, const char* str2);
 
-/** Returns a non zero value if the two strings are equal but ignores case and spaces.
- * str1 or str2 can be NULL.
+/** Returns a non zero value if the two strings are equal but ignores case and spaces. \n
+ * str1 or str2 can be NULL. \n
+ * It will work only for character codes <128.
  * \ingroup str */
 int iupStrEqualNoCaseNoSpace(const char* str1, const char* str2);
 
 /** Returns a non zero value if the two strings are equal 
- * up to a number of characters defined by the strlen of the second string.
+ * up to a number of characters defined by the strlen of the second string. \n
  * str1 or str2 can be NULL.
  * \ingroup str */
 int iupStrEqualPartial(const char* str1, const char* str2);
 
 /** Returns a non zero value if the two strings are equal but ignores case 
- * up to a number of characters defined by the strlen of the second string.
- * str1 or str2 can be NULL.
+ * up to a number of characters defined by the strlen of the second string. \n
+ * str1 or str2 can be NULL. \n
+ * It will work only for character codes <128.
  * \ingroup str */
 int iupStrEqualNoCasePartial(const char* str1, const char* str2);
 
@@ -114,12 +117,12 @@ char *iupStrGetLargeMem(int *size);
 
 
 /** Converts a string into lower case. Can be used in-place. \n
- * It will NOT work for UTF-8 strings that have codes >128.
+ * It will work only for character codes <128.
  * \ingroup str */
 void iupStrLower(char* dstr, const char* sstr);
 
 /** Converts a string into upper case. Can be used in-place. \n
- * It will NOT work for UTF-8 strings that have codes >128.
+ * It will work only for character codes <128.
  * \ingroup str */
 void iupStrUpper(char* dstr, const char* sstr);
 
