@@ -170,10 +170,6 @@ char* iupStrReturnStrStr(const char *str1, const char *str2, char sep);
  * \ingroup str */
 char* iupStrReturnIntInt(int i1, int i2, char sep);
 
-/** Returns two float values in a string using \ref iupStrGetMemory.
- * \ingroup str */
-char* iupStrReturnFloatFloat(float f1, float f2, char sep);
-
 
 
 /** Extract a RGB triple from the string. Returns 0 or 1.
@@ -201,6 +197,7 @@ int iupStrToFloat(const char *str, float *f);
  * separated by the given character (usually 'x' or ':').
  * Returns the number of converted values.
  * Values not extracted are not changed.
+ * ATENTION: AVOID DEFINING THIS TYPE OF ATTRIBUTE VALUE.
  * \ingroup str */
 int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep);
 

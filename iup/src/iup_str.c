@@ -330,7 +330,7 @@ char *iupStrGetLargeMem(int *size)
 static char* iupStrGetSmallMem(void)
 {
 #define SMALL_MAX_BUFFERS 100
-#define SMALL_SIZE 160  /* maximum for iupStrReturnFloatFloat */
+#define SMALL_SIZE 80  /* maximum for iupStrReturnFloat */
   static char buffers[SMALL_MAX_BUFFERS][SMALL_SIZE];
   static int buffers_index = -1;
   char* ret_str;
@@ -500,13 +500,6 @@ char* iupStrReturnIntInt(int i1, int i2, char sep)
 {
   char* str = iupStrGetSmallMem();  /* 2*20 */
   sprintf(str, "%d%c%d", i1, sep, i2);
-  return str;
-}
-
-char* iupStrReturnFloatFloat(float f1, float f2, char sep)
-{
-  char* str = iupStrGetSmallMem(); /* 2*80 */
-  sprintf(str, "%.9f%c%.9f", f1, sep, f2);   /* maximum float precision */
   return str;
 }
 

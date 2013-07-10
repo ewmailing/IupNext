@@ -275,7 +275,6 @@ iupStrReturnInt
 iupStrReturnIntInt
 iupStrReturnFloat
 iupStrReturnStrStr
-iupStrReturnFloatFloat
 iupStrReplace
 iupStrRemove
 iupStrProcessMnemonic

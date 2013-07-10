@@ -4079,12 +4079,7 @@ static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    char value1[50]="", value2[50]="";
-
-    iupStrToStrStr(value, value1, value2, ':');
-
-    iupStrToFloatFloat(value1, &ih->data->x1, &ih->data->y1, ',');
-    iupStrToFloatFloat(value2, &ih->data->x2, &ih->data->y2, ',');
+    sscanf(value, "%f:%f:%f:%f", &(ih->data->x1), &(ih->data->y1), &(ih->data->x2), &(ih->data->y2));
 
     if (ih->data->x1 < 0) ih->data->x1 = 0;
     if (ih->data->y1 < 0) ih->data->y1 = 0;
@@ -4111,12 +4106,7 @@ static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
     ih->data->rotZ = 0;
   }
   else
-  {
-    char value1[50]="", value2[100]="";
-    iupStrToStrStr(value, value1, value2, ':');
-    iupStrToFloat(value1, &ih->data->rotX);
-    iupStrToFloatFloat(value2, &ih->data->rotY, &ih->data->rotZ, ':');
-  }
+    sscanf(value, "%f:%f:%f", &(ih->data->rotX), &(ih->data->rotY), &(ih->data->rotZ));
 
   ih->data->redraw = true;
 
