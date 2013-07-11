@@ -28,7 +28,7 @@ They are used by the application to communicate with the user interface system,
 on the other hand callbacks are used by the application to receive notifications 
 from the system that the user or the system itself has interacted with the user 
 interface of the application.</p>
-<p>There are several functions to access attribues, see the documentation of the
+<p>There are several functions to access attributes, see the documentation of the
 <a href="func/iupsetattribute.html">IupSetAttribute</a> and
 <a href="func/iupgetattribute.html">IupGetAttribute</a> for more options. </p>
 
@@ -79,15 +79,26 @@ will return 1 for any of the <strong>true</strong> values, and 0 for any of the
 <p>Floating point numbers when stored as strings use the application locale for 
 decimal separator. Notice that by default C applications use the C locale, not 
 the current system locale, in this case decimal separator is &quot;.&quot;.</p>
+<p>Combination of values in a single attribute is common, but there is no 
+specific definitions on how they can be combined. Although all attributes that 
+represent sizes using width and height adopt the &quot;WxH&quot; definition, for example 
+&quot;640x480&quot;. Position usually adopt &quot;x,y&quot; definition, range is usually &quot;x1-x2&quot; but 
+can also be &quot;x1:x2&quot;, so there are variations that for compatibility reasons were 
+maintained. Cell specification is always &quot;lin:col&quot;.</p>
 
 <p>With <strong>IupSetAttribute</strong> you can also store application pointers that can be 
 strings or not. This can be very useful, for instance, used inside 
 <b>callbacks</b>. For example, by storing a C pointer of an application defined structure, the application can retrieve 
   this pointer inside the callback through function 
   <strong>IupGetAttribute</strong>. Therefore, even if the callbacks are global functions, 
-  the same callback can be used for several objects, even of different types.<u1:p>
-</u1:p>
-</p>
+  the same callback can be used for several objects, even of different types.</p>
+<p>Some controls, like <strong>IupList</strong>, <strong>IupTree</strong>,
+<strong>IupTabs</strong> and <strong>IupMatrix</strong>, have ids associated 
+with some attributes so its value will affect only the respective id item in the 
+control. For example: &quot;TITLE3&quot; will set the TITLE attribute for the item 3. To 
+set that kind of attribute <strong>IupSetAttribute</strong> can be used, but
+<strong>IupSetAttributeId</strong> can also be used specially if the id is a 
+variable.</p>
 
 <p>There are attributes common to all the elements. In some cases, common attributes behave 
   differently in different elements, but in such cases, there are comments in 
