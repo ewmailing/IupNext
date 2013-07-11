@@ -35,9 +35,7 @@ typedef struct _ImatExUnit {
   double factor;
 } ImatExUnit;
 
-//SPECIFIC_MASS ft lb ...
-//ENERGY kilocalorie, foot-pound
-//POWER Foot-pound/minute, BTU/minute
+//utf8?
 //Flow
 //Electric charge
 //Illuminance
@@ -185,12 +183,16 @@ static const ImatExUnit IMATEX_ANGLE_UNITS [IMATEX_ANGLE_COUNT] = {
   {"degree", "°", M_PI/180.0},
   {"gradian", "grad", M_PI/200.0}};
 
-#define IMATEX_SPECIFIC_MASS_COUNT 3
+#define IMATEX_SPECIFIC_MASS_COUNT 7
 static const ImatExUnit IMATEX_SPECIFIC_MASS_UNITS [IMATEX_SPECIFIC_MASS_COUNT]  = {
-  {"kilogram per cubic metre","kg/m³" , 1},
-  {"ton per cubic metre"     ,"ton/m³", 1000},
-  {"kilogram per litre"      ,"kg/L"  , 0.001}};
-
+  {"kilogram per cubic metre","kg/m³"  , 1},
+  {"gram per millilitre"     ,"g/mL"   , 1000},
+  {"kilogram per litre"      ,"kg/L"   , 1000},                       
+  {"ounce per cubic foot"    ,"oz/ft³" , 1000},    /* avoirdupois */  //1.001153961
+  {"ounce per gallon"        ,"oz/gal" , 1000},    /* US fluid */     //7.489151707
+  {"pound per cubic foot"    ,"lb/ft³" , 0.45359237/0.028316846592},
+  {"pound per gallon"        ,"lb/gal" , 0.45359237/3.785411784e-3}};
+                                                     
 #define IMATEX_SPECIFIC_WEIGHT_COUNT 6
 static const ImatExUnit IMATEX_SPECIFIC_WEIGHT_UNITS [IMATEX_SPECIFIC_WEIGHT_COUNT]  = {
   {"Newton per cubic metre"        ,"N/m³"  , 1},      
@@ -200,11 +202,12 @@ static const ImatExUnit IMATEX_SPECIFIC_WEIGHT_UNITS [IMATEX_SPECIFIC_WEIGHT_COU
   {"pound-force per cubic foot"    ,"lbf/ft³", (GRAVITY * 0.45359237) / 0.028316846592},
   {"kilogram-force per litre"      ,"kgf/L" , GRAVITY * 0.001}};
                                                               
-#define IMATEX_ENERGY_COUNT   6
+#define IMATEX_ENERGY_COUNT   7
 static const ImatExUnit IMATEX_ENERGY_UNITS[IMATEX_ENERGY_COUNT]  = {
   {"Joule"          ,"J"   , 1},                  /* J = m * N */
   {"Kilojoule"      ,"kJ"  , 1000                  },
   {"calorie"        ,"cal" , 4.1868                },  /* (International Table) */
+  {"kilocalorie"    ,"kcal", 4.1868e3              },
   {"BTU"            ,"BTU" , 1.05505585262e3       },  /* (International Table) */
   {"Kilowatt-hour"  ,"kW·h", 3.6e6                 },
   {"horsepower-hour","hp·h", 2.684519537696172792e6}}; /* hp * 3600 */
@@ -269,6 +272,7 @@ static ImatExQuantity imatex_quantities [IMATEX_QUANTITY_COUNT] = {
   { "Moment of Force"  , IMATEX_MOMENT_UNITS          , IMATEX_MOMENT_COUNT           },
   { "Angle"            , IMATEX_ANGLE_UNITS           , IMATEX_ANGLE_COUNT            },
   { "Specific Mass"    , IMATEX_SPECIFIC_MASS_UNITS   , IMATEX_SPECIFIC_MASS_COUNT    },
+  { "Density"          , IMATEX_SPECIFIC_MASS_UNITS   , IMATEX_SPECIFIC_MASS_COUNT    },
   { "Specific Weight"  , IMATEX_SPECIFIC_WEIGHT_UNITS , IMATEX_SPECIFIC_WEIGHT_COUNT  },
   { "Energy"           , IMATEX_ENERGY_UNITS          , IMATEX_ENERGY_COUNT           },
   { "Power"            , IMATEX_POWER_UNITS           , IMATEX_POWER_COUNT            },
