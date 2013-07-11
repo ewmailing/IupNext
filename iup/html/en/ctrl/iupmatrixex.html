@@ -305,7 +305,10 @@ added.</p>
 <p>
 <strong>NUMERICADDUNITFACTOR</strong>: sets the factor number in double 
 precision of the last unit added. Use &quot;%.18g&quot; in <strong>IupSetStrf</strong> or
-<strong>sprintf</strong> for maximum double precision.</p>
+<strong>sprintf</strong> for maximum double precision. The factor is the 
+reference multiplier to obtain the unit, or how much you multiply a value in the 
+reference unit to obtain a new value in this unit. For example, 1 km = 1000 m, 
+then factor=1000.</p>
 
 
 
@@ -418,7 +421,9 @@ International System of Units</a>&nbsp;(SI).</p>
 please let us know so we can include them.</p>
 <p>Obs: &quot;g&quot; in Comments is the standard gravity. All Quantity and Unit 
 names are in English only. The symbols that have extended characters will work 
-in ISO8859-1 and in UTF-8, according to the UTF8MODE global attribute.</p>
+in ISO8859-1 and in UTF-8, according to the UTF8MODE global attribute. The cell 
+background colors are just for clarity and do not imply in any standard 
+classification.</p>
 <table align="center">
 	<tr>
 		<th>Quantity<br><span class="style6">NUMERICQUANTITY</span></th>
@@ -428,8 +433,10 @@ in ISO8859-1 and in UTF-8, according to the UTF8MODE global attribute.</p>
 	</tr>
 	<tr>
 		<td class="style8">Time</td>
-		<td class="style8" valign="top">second<br>minute<br>hour <br>day <br>week </td>
-		<td class="style8" valign="top">s <br>min<br>h <br>d <br>wk </td>
+		<td class="style8" valign="top">second<br>minute<br>hour <br>day <br>week 
+		<br>millisecond <br>microsecond </td>
+		<td class="style8" valign="top">s <br>min<br>h <br>d <br>wk <br>ms <br>
+		µs </td>
 		<td class="style8" valign="top">&nbsp;</td>
 	</tr>
 	<tr>
@@ -448,13 +455,15 @@ in ISO8859-1 and in UTF-8, according to the UTF8MODE global attribute.</p>
 	</tr>
 	<tr>
 		<td class="style8">Length</td>
-		<td class="style8" valign="top">metre <br>millimetre <br>centimetre<br>kilometre <br>inch
+		<td class="style8" valign="top">metre <br>millimetre <br>centimetre<br>kilometre 
+		<br>nanometre<br>angstrom <br>micron<br>inch
 		<br>foot <br>yard        
 <br>mile <br>nautical mile        
 </td>
-		<td class="style8" valign="top">m <br>mm<br>cm<br>km<br>in<br>ft<br>yd<br>
+		<td class="style8" valign="top">m <br>mm<br>cm<br>km<br>nm<br>Å <br>µ<br>in<br>ft<br>yd<br>
 		mi<br>NM </td>
-		<td class="style8" valign="top"><br><br>- (CGS Unit)<br><br>- in = 25.4 mm 
+		<td class="style8" valign="top"><br><br>- (CGS Unit)<br><br><br><br>- 
+		micrometre<br>- in = 25.4 mm 
 		(international) <br>- ft = 12 in (international) <br>- 
 		yd = 3 ft (international) <br>- mi = 1760 yd (international) <br>- NM = 
 		6080 ft (Admiralty)&nbsp; </td>
@@ -494,17 +503,19 @@ in ISO8859-1 and in UTF-8, according to the UTF8MODE global attribute.</p>
 		<td class="style9" valign="top"><br><br><br><br>- (CGS Unit)<br><br>- kn = NM/h </td>
 	</tr>
 	<tr>
-		<td class="style9">Angular Speed</td>
-		<td class="style9">radian per second <br>rotation per second<br>degree per second
-		<br>radian per minute <br>rotation per minute<br>degree per minute </td>
-		<td class="style9">rad/s <br>rps <br>deg/s <br>rad/min<br>rpm <br>deg/min</td>
-		<td class="style9">&nbsp;</td>
+		<td class="style9">Angular Speed<br><span class="style7">(or Angular 
+		Frequency)</span></td>
+		<td class="style9">radian per second <br>radian per minute <br>degree per second
+		<br>degree per minute 
+		<br>Hertz <br>revolution per minute<br> </td>
+		<td class="style9">rad/s <br>rad/min<br>deg/s <br>deg/min<br>Hz <br>rpm <br></td>
+		<td class="style9"><br><br><br><br>- revolution per second (frequency)<br></td>
 	</tr>
 	<tr>
 		<td class="style9">Acceleration</td>
 		<td class="style9">metre per second squared<br>inch per second squared <br>knot 
-		per second<br>mile per second squared </td>
-		<td class="style9">m/s²<br>ips²<br>kn/s<br>mps² </td>
+		per second<br>mile per second squared <br>standard gravity </td>
+		<td class="style9">m/s²<br>ips²<br>kn/s<br>mps² <br>g</td>
 		<td class="style9">&nbsp;</td>
 	</tr>
 	<tr>
@@ -513,6 +524,13 @@ in ISO8859-1 and in UTF-8, according to the UTF8MODE global attribute.</p>
 		stokes </td>
 		<td class="style9">m²/s <br>ft²/s <br>St</td>
 		<td class="style9"><br><br>- (CGS Unit)</td>
+	</tr>
+	<tr>
+		<td class="style9">Dynamic Viscosity</td>
+		<td class="style9">pascal second <br>poise <br>pound per foot hour <br>
+		pound per foot second </td>
+		<td class="style9">Pa·s <br>P <br>lb/(ft·h) <br>lb/(ft·s) </td>
+		<td class="style9">&nbsp;</td>
 	</tr>
 	<tr>
 		<td class="style11">Force</td>

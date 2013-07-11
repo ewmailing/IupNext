@@ -61,6 +61,7 @@ static Ihandle* create_matrix(void)
 {
   Ihandle* mat = IupMatrix(NULL); 
   
+//  IupSetAttribute(mat, "NUMLIN", "3"); 
   IupSetAttribute(mat, "NUMLIN", "20"); 
   IupSetAttribute(mat, "NUMCOL", "8"); 
 //  IupSetAttribute(mat, "NUMCOL", "15"); 
@@ -165,14 +166,18 @@ static Ihandle* create_matrix(void)
 
 void MatrixTest(void)
 {
-  Ihandle* dlg, *box;
+  Ihandle* dlg, *box, *mat;
 
-  box = IupVbox(create_matrix(), NULL);
+  box = IupVbox(mat = create_matrix(), NULL);
   IupSetAttribute(box, "MARGIN", "10x10");
 
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupMatrix Simple Test");
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+
+//        IupSetAttribute(mat, "ADDLIN", "1");
+//        IupSetAttribute(mat,"4:0","Teste");
+//        IupSetAttribute(mat, "REDRAW", "ALL");
 }
 
 #ifndef BIG_TEST

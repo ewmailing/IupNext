@@ -35,45 +35,39 @@ typedef struct _ImatExUnit {
   double factor;
 } ImatExUnit;
 
-//POWER P erg per second erg/s g·cm2/s3 = 1.0e-7 W 
-//PRESSURE p barye Ba g/(cm·s2) = 1.0e-1 Pa 
-//VISCOSITY "Micro" poise P g/(cm·s) 
-//SPECIFIC_MASS
+//SPECIFIC_MASS ft lb ...
 //ENERGY kilocalorie, foot-pound
-//LENGHT nanometer, microns, Angstrom, PICA
 //POWER Foot-pound/minute, BTU/minute
-//ANGULAR Speed Hertz
-//ACELERATION standard gravity
-
-//dynamic viscosity
 //Flow
 //Electric charge
-//Digital Information
 //Illuminance
 
 #define GRAVITY 9.80665
 
-#define IMATEX_LENGTH_COUNT 9
+#define IMATEX_LENGTH_COUNT 12
 static const ImatExUnit IMATEX_LENGTH_UNITS [IMATEX_LENGTH_COUNT] = {
   {"metre"        ,"m" , 1},
   {"centimetre"   ,"cm", 0.01    },
   {"milimetre"    ,"mm", 0.001   },
-  {"kilometre"    ,"km", 1000    },   /* International yard and pound agreement in 1959 */                
+  {"kilometre"    ,"km", 1000    },
+  {"nanometre"    ,"nm", 1.0e-9  },
+  {"Angstrom"     ,"Å" , 1.0e-10 },   /* C3 85 */
+  {"micron"       ,"µ" , 1.0e-6  },   /* International yard and pound agreement in 1959 */                
   {"inch"         ,"in", 0.0254  },   /* 0.0254                 (in = 25.4 mm)   */
   {"foot"         ,"ft", 0.3048  },   /* 0.0254 * 12            (ft = 12 in)     */
   {"yard"         ,"yd", 0.9144  },   /* 0.0254 * 12 * 3        (yd = 3 ft)      */
   {"mile"         ,"mi", 1609.344},   /* 0.0254 * 12 * 3 * 1760 (mi = 1760 yd)   */
   {"nautical mile","NM", 1853.184}};  /* 6080 ft */
 
-#define IMATEX_TIME_COUNT 5                
+#define IMATEX_TIME_COUNT 7                
 static const ImatExUnit IMATEX_TIME_UNITS [IMATEX_TIME_COUNT] = {
   {"second","s"  , 1},
   {"minute","min", 60},
   {"hour"  ,"h"  , 3600},     /* 60 * 60 */
   {"day"   ,"d"  , 86400},    /* 60 * 60 * 24 */
   {"week"  ,"wk" , 604800},  /* 60 * 60 * 24 * 7 */
-  {"millisecond","min", 60},
-  {"microsecond","min", 60}};
+  {"millisecond","ms", 0.001 },                                       
+  {"microsecond","µs", 1.0e-6}};      /* 'µ'  \181=ISO8859-1  \xC2\xB5=UTF-8 */
 
 #define IMATEX_MASS_COUNT 5               
 static const ImatExUnit IMATEX_MASS_UNITS [IMATEX_MASS_COUNT] = {
@@ -131,19 +125,20 @@ static const ImatExUnit IMATEX_SPEED_UNITS [IMATEX_SPEED_COUNT] = {
 
 #define IMATEX_ANGULAR_SPEED_COUNT 6
 static const ImatExUnit IMATEX_ANGULAR_SPEED_UNITS [IMATEX_ANGULAR_SPEED_COUNT] = {
-  {"radian per second"  ,"rad/s"  , 1},
-  {"rotation per second","rps"    , 2.0*M_PI  },
-  {"degree per second"  ,"deg/s"  , M_PI/180.0},
-  {"radian per minute"  ,"rad/min", 60        },
-  {"rotation per minute","rpm"    , 120.0*M_PI},
-  {"degree per minute"  ,"deg/min", M_PI/3.0  }};
+  {"radian per second"    ,"rad/s"  , 1},              
+  {"radian per minute"    ,"rad/min", 60        },
+  {"degree per second"    ,"deg/s"  , M_PI/180.0},
+  {"degree per minute"    ,"deg/min", M_PI/3.0  },     /* M_PI/180.0 * 60 */
+  {"Hertz"                ,"Hz"     , 2.0*M_PI  },     /* angular speed = 2*PI * angular frequency */
+  {"revolution per minute","rpm"    , 120.0*M_PI}};
 
-#define IMATEX_ACCELERATION_COUNT 4
+#define IMATEX_ACCELERATION_COUNT 5
 static const ImatExUnit IMATEX_ACCELERATION_UNITS [IMATEX_ACCELERATION_COUNT] = {
   {"metre per second squared","m/s²", 1},
   {"inch per second squared" ,"ips²", 0.0254   },
   {"knot per second"         ,"kn/s", 1.852/3.6 },
-  {"mile per second squared" ,"mps²", 1609.344  }};
+  {"mile per second squared" ,"mps²", 1609.344  },
+  {"standard gravity"        ,"g"   , GRAVITY  }};
 
 #define IMATEX_FORCE_COUNT 7
 static const ImatExUnit IMATEX_FORCE_UNITS [IMATEX_FORCE_COUNT] = {
@@ -234,6 +229,13 @@ static const ImatExUnit IMATEX_KINEMATIC_VISCOSITY_UNITS [IMATEX_KINEMATIC_VISCO
   {"square foot per second" , "ft²/s" , 9.290304e-2},      /* 0.3048² */
   {"stokes"                 , "St"    , 1.0e-4}};
 
+#define IMATEX_DYNAMIC_VISCOSITY_COUNT 4
+static const ImatExUnit IMATEX_DYNAMIC_VISCOSITY_UNITS [IMATEX_DYNAMIC_VISCOSITY_COUNT] = {
+  {"Pascal second"        , "Pa·s"      , 1},
+  {"poise"                , "P"         , 0.1},      
+  {"pound per foot hour"  , "lb/(ft·h)" , 0.45359237/(0.3048*3600)},
+  {"pound per foot second", "lb/(ft·s)" , 0.45359237/0.3048}};
+                                                            
 
 typedef struct _ImatExQuantity {
   const char* name;
@@ -242,7 +244,7 @@ typedef struct _ImatExQuantity {
 } ImatExQuantity;
 
 #define IMATEX_TEMPERATURE 1
-#define IMATEX_QUANTITY_COUNT 26
+#define IMATEX_QUANTITY_COUNT 27
 #define IMATEX_QUANTITY_CUSTOM 25
 static int imatex_quantity_count = IMATEX_QUANTITY_COUNT;
 //static ImatExQuantity imatex_quantities [IMATEX_QUANTITY_COUNT+IMATEX_QUANTITY_CUSTOM] = {
@@ -273,6 +275,7 @@ static ImatExQuantity imatex_quantities [IMATEX_QUANTITY_COUNT] = {
   { "Heat Flow Rate"   , IMATEX_POWER_UNITS           , IMATEX_POWER_COUNT            },
   { "Fraction"         , IMATEX_FRACTION_UNITS        , IMATEX_FRACTION_COUNT         },
   { "Kinematic Viscosity", IMATEX_KINEMATIC_VISCOSITY_UNITS, IMATEX_KINEMATIC_VISCOSITY_COUNT},
+  { "Dynamic Viscosity"  , IMATEX_DYNAMIC_VISCOSITY_UNITS  , IMATEX_DYNAMIC_VISCOSITY_COUNT  },
 };
 
 #define IMATEX_UNIT_CUSTOM 20
@@ -365,6 +368,12 @@ static char* iMatrixExReturnSymbol(const char* symbol)
     if (s)
     {
       iStrReplaceCharUTF8(s, utf8_symbol, '·', "\xC2\xB7");
+      return iupStrReturnStr(utf8_symbol);             
+    }                                                  
+    s = strchr(symbol, 'µ');
+    if (s)
+    {
+      iStrReplaceCharUTF8(s, utf8_symbol, 'µ', "\xC2\xB5");
       return iupStrReturnStr(utf8_symbol);             
     }                                                  
   }
