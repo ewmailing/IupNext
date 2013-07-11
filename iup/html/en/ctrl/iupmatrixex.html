@@ -204,9 +204,9 @@ not specified. Default: &quot;%.2lf&quot;.</p>
 <p>
 <strong>NUMERICFORMATTITLE<em>id</em></strong>: format of the title at the given 
 column (id). Uses the same format specification of the <strong>sprintf</strong> 
-function in C. It can contain other strings, and will receive two parametres the 
+function in C. It can contain other strings, and will receive two parameters the 
 current column title string (&quot;0:C&quot;) and the current column unit shown. If the 
-current title is NULL, then only the unit parametre is passed. If not specified 
+current title is NULL, then only the unit parameter is passed. If not specified 
 then only the title string (&quot;0:C&quot;) is used.</p>
 <p>
 <strong>NUMERICQUANTITY<em>id</em></strong>: Quantity used to define units for 
@@ -216,7 +216,8 @@ Available Quantity and Units</a> table bellow. To improve the precision consider
 using the <a href="#NUMERICGETVALUE_CB">NUMERICGETVALUE_CB</a> and
 <a href="#NUMERICSETVALUE_CB">NUMERICSETVALUE_CB</a> callbacks. The returned 
 value is always the name of the quantity in the table, regardless the value that 
-was set.</p>
+was set. To use the numeric attributes and callbacks without using units, simply 
+set quantity to &quot;None&quot;. To disable all numeric support set quantity to NULL.</p>
 <p>
 <strong>NUMERICUNIT<em>id</em></strong>: Unit of the numbers set into the matrix 
 at the given column (id). Must be in the same category of the NUMERICFORMAT 
@@ -544,6 +545,12 @@ please let us know so we can include them.</p>
 		<td class="style12">percentage <br>per one <br>per ten <br>per thousand</td>
 		<td class="style12">% <br>/1 <br>/10 <br>/1000</td>
 		<td class="style12">&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="style12">None</td>
+		<td class="style12">&nbsp;</td>
+		<td class="style12">&nbsp;</td>
+		<td class="style12">Use numeric values <br>but without quantity.</td>
 	</tr>
 </table>
 

@@ -36,8 +36,6 @@ typedef struct _ImatExUnit {
 
 //TODO
 
-//NUMERICVALUE_CB
-
 // UTF-8
 
 // The metre (International spelling as used by the International Bureau of Weights and Measures) or 
@@ -216,7 +214,7 @@ static const ImatExUnit IMATEX_ENERGY_UNITS[IMATEX_ENERGY_COUNT]  = {
   {"calorie"        ,"cal" , 4.1868                },  /* (International Table) */
   {"BTU"            ,"BTU" , 1.05505585262e3       },  /* (International Table) */
   {"Kilowatt-hour"  ,"kW·h", 3.6e6                 },
-  {"horsepower-hour","hp·h", 2.684519537696172792e6}};
+  {"horsepower-hour","hp·h", 2.684519537696172792e6}}; /* hp * 3600 */
                                                                
 #define IMATEX_POWER_COUNT    4
 static const ImatExUnit IMATEX_POWER_UNITS[IMATEX_POWER_COUNT]  = {
@@ -241,7 +239,7 @@ typedef struct _ImatExQuantity {
 #define IMATEX_TEMPERATURE 1
 #define IMATEX_QUANTITY_COUNT 24
 const ImatExQuantity IMATEX_QUANTITIES [IMATEX_QUANTITY_COUNT] = {
-  { "NONE"             , NULL                         , 0                             },
+  { "None"             , NULL                         , 0                             },
   { "Temperature"      , IMATEX_TEMPERATURE_UNITS     , IMATEX_TEMPERATURE_COUNT      },  /* must not be change from here */
   { "Length"           , IMATEX_LENGTH_UNITS          , IMATEX_LENGTH_COUNT           },
   { "Time"             , IMATEX_TIME_UNITS            , IMATEX_TIME_COUNT             },
@@ -340,19 +338,15 @@ static int iMatrixExSetNumericQuantityAttrib(Ihandle* ih, int col, const char* v
 {
   int quantity = iMatrixFindQuantity(value);
   if (quantity < 0)
-    return 0;
-
-  if (quantity == 0)
   {
     IupSetCallback(ih, "NUMERICCONVERT_FUNC", NULL);
     IupSetAttributeId(ih, "NUMERICQUANTITYINDEX", col, NULL);
+    return 0;
   }
-  else
-  {
-    /* set the callback before setting the attribute */
-    IupSetCallback(ih, "NUMERICCONVERT_FUNC", (Icallback)iMatrixConvertFunc);
-    IupSetIntId(ih, "NUMERICQUANTITYINDEX", col, quantity);
-  }
+
+  /* set the callback before setting the attribute */
+  IupSetCallback(ih, "NUMERICCONVERT_FUNC", (Icallback)iMatrixConvertFunc);
+  IupSetIntId(ih, "NUMERICQUANTITYINDEX", col, quantity);
 
   return 0;
 }
