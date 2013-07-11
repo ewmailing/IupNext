@@ -20,6 +20,7 @@
 #include "iup_str.h"
 #include "iup_matrixex.h"
 
+
 #ifndef M_PI
 #define M_PI       3.14159265358979323846
 #endif
@@ -34,30 +35,21 @@ typedef struct _ImatExUnit {
   double factor;
 } ImatExUnit;
 
-//TODO
+//POWER P erg per second erg/s g·cm2/s3 = 1.0e-7 W 
+//PRESSURE p barye Ba g/(cm·s2) = 1.0e-1 Pa 
+//VISCOSITY "Micro" poise P g/(cm·s) 
+//SPECIFIC_MASS
+//ENERGY kilocalorie, foot-pound
+//LENGHT nanometer, microns, Angstrom, PICA
+//POWER Foot-pound/minute, BTU/minute
+//ANGULAR Speed Hertz
+//ACELERATION standard gravity
 
-// UTF-8
-
-// The metre (International spelling as used by the International Bureau of Weights and Measures) or 
-// meter (American spelling),
-// litre liter
-
-//  (m_types[cUnitType::BENDING_STIFFNESS]).add_unit("kN.m²", 1.0, 1.0);
-//  (m_types[cUnitType::BENDING_STIFFNESS]).add_unit("N.m²" , 0.001, 1000.0);
-//  (m_types[cUnitType::INERTIA]).add_unit("m^4", 1.0, 1.0);
-//  (m_types[cUnitType::INERTIA_MASS]).add_unit("(kN.s²/m).m²", 1.0, 1.0);
-//  (m_types[cUnitType::KINEMATIC_VISCOSITY]).add_unit("m²/s", 1.0, 1.0);
-//  (m_types[cUnitType::ROTATIONAL_MASS]).add_unit("kN.m.s²/rad", 1.0, 1.0);
-//  (m_types[cUnitType::ROTATIONAL_MASS]).add_unit("N.m.s²/rad", 1.0/1000.0, 1000.0);
-//  (m_types[cUnitType::ROTATIONAL_MASS]).add_unit("kN.m.s²/deg", 1.0/1.745329e-2, 1.745329e-2);
-//  (m_types[cUnitType::ROTATIONAL_MASS]).add_unit("N.m.s²/deg", 1.0/1.745329e+1, 1.745329e+1);
-//  (m_types[cUnitType::ROTATIONAL_SPRING]).add_unit("kN.m/deg", 1.0, 1.0);
-//  (m_types[cUnitType::ROTATIONAL_SPRING]).add_unit("N.m/deg", 1.0/1000.0, 1000.0);
-//  (m_types[cUnitType::ROTATIONAL_SPRING]).add_unit("kN.m/rad", 1.745329e-2, 1.0/1.745329e-2);
-//  (m_types[cUnitType::ROTATIONAL_SPRING]).add_unit("N.m/rad", 1.745329e-2/1000.0, 1000.0/1.745329e-2);
-//  (m_types[cUnitType::TRANSLATIONAL_MASS]).add_unit("kN.s²/m", 1.0, 1.0);
-//  (m_types[cUnitType::TRANSLATIONAL_MASS]).add_unit("N.s²/m", 1.0/1000.0, 1000.0);
-//  (m_types[cUnitType::THERMAL_COEFFICIENT]).add_unit("1/°C", 1.0, 1.0);
+//dynamic viscosity
+//Flow
+//Electric charge
+//Digital Information
+//Illuminance
 
 #define GRAVITY 9.80665
 
@@ -72,7 +64,6 @@ static const ImatExUnit IMATEX_LENGTH_UNITS [IMATEX_LENGTH_COUNT] = {
   {"yard"         ,"yd", 0.9144  },   /* 0.0254 * 12 * 3        (yd = 3 ft)      */
   {"mile"         ,"mi", 1609.344},   /* 0.0254 * 12 * 3 * 1760 (mi = 1760 yd)   */
   {"nautical mile","NM", 1853.184}};  /* 6080 ft */
-                                   
 
 #define IMATEX_TIME_COUNT 5                
 static const ImatExUnit IMATEX_TIME_UNITS [IMATEX_TIME_COUNT] = {
@@ -80,7 +71,9 @@ static const ImatExUnit IMATEX_TIME_UNITS [IMATEX_TIME_COUNT] = {
   {"minute","min", 60},
   {"hour"  ,"h"  , 3600},     /* 60 * 60 */
   {"day"   ,"d"  , 86400},    /* 60 * 60 * 24 */
-  {"week"  ,"wk" , 604800}};  /* 60 * 60 * 24 * 7 */
+  {"week"  ,"wk" , 604800},  /* 60 * 60 * 24 * 7 */
+  {"millisecond","min", 60},
+  {"microsecond","min", 60}};
 
 #define IMATEX_MASS_COUNT 5               
 static const ImatExUnit IMATEX_MASS_UNITS [IMATEX_MASS_COUNT] = {
@@ -112,34 +105,37 @@ static const ImatExUnit IMATEX_AREA_UNITS [IMATEX_AREA_COUNT] = {
   {"acre"             ,"ac"   , 4046.8564224},     /* 0.9144² * 4840 (4840 sq yd) */
   {"hectare"          ,"ha"   , 1.0e4}};
 
-#define IMATEX_VOLUME_COUNT 9
+#define IMATEX_VOLUME_COUNT 11
 static const ImatExUnit IMATEX_VOLUME_UNITS [IMATEX_VOLUME_COUNT] = {
-  {"cubic metre"    ,"m³"   , 1},           /* '³'  \179=ISO8859-1  \xC2\xB3=UTF-8 */
-  {"cubic kilometre","km³"  , 1.0e9},
-  {"cubic inch"     ,"cu in", 16.387064e-6},          /* 0.0254³ */
-  {"cubic foot"     ,"cu ft", 0.028316846592},        /* 0.3048³ */   
-  {"cubic yard"     ,"cu yd", 0.764554857984},        /* 0.9144³ */
-  {"cubic mile"     ,"cu mi", 4168181825.440579584},  /* 1609.344³ */
-  {"litre"          ,"L"    , 0.001           },
-  {"gallon"         ,"gal"  , 3.785411784e-3},     /* (US fluid; Wine = 231 cu in) */
-  {"barrel"         ,"bl"   , 0.158987294928}};    /* (petroleum = 42 gal) */
+  {"cubic metre"     ,"m³"   , 1},           /* '³'  \179=ISO8859-1  \xC2\xB3=UTF-8 */
+  {"cubic centimetre","cm³"  , 1.0e-6},                /* 0.01³ */
+  {"cubic millimetre","mm³"  , 1.0e-9},                /* 0.001³ */
+  {"cubic kilometre" ,"km³"  , 1.0e9},                 /* 1000³ */
+  {"cubic inch"      ,"cu in", 16.387064e-6},          /* 0.0254³ */
+  {"cubic foot"      ,"cu ft", 0.028316846592},        /* 0.3048³ */   
+  {"cubic yard"      ,"cu yd", 0.764554857984},        /* 0.9144³ */
+  {"cubic mile"      ,"cu mi", 4168181825.440579584},  /* 1609.344³ */
+  {"litre"           ,"L"    , 0.001           },
+  {"gallon"          ,"gal"  , 3.785411784e-3},     /* (US fluid; Wine = 231 cu in) */
+  {"barrel"          ,"bl"   , 0.158987294928}};    /* (petroleum = 42 gal) */
 
-#define IMATEX_SPEED_COUNT 6
+#define IMATEX_SPEED_COUNT 7
 static const ImatExUnit IMATEX_SPEED_UNITS [IMATEX_SPEED_COUNT] = {
-  {"metre per second"  ,"m/s" , 1},
-  {"inch per second"   ,"ips" , 0.0254    },
-  {"foot per second"   ,"fps" , 0.3048    },
-  {"kilometre per hour","km/h", 1.0/3.6   },
-  {"mile per hour"     ,"mph" , 0.44704   },    /* 1609.344 / 3600 */
-  {"knot"              ,"kn"  , 1.852/3.6 }};   /* kn = 1 NM/h = 1.852 km/h */
+  {"metre per second"     ,"m/s" , 1},
+  {"inch per second"      ,"ips" , 0.0254    },
+  {"foot per second"      ,"fps" , 0.3048    },
+  {"kilometre per hour"   ,"km/h", 1.0/3.6   },
+  {"centimetre per second","cm/s", 0.01      },
+  {"mile per hour"        ,"mph" , 0.44704   },    /* 1609.344 / 3600 */
+  {"knot"                 ,"kn"  , 1.852/3.6 }};   /* kn = 1 NM/h = 1.852 km/h */
 
 #define IMATEX_ANGULAR_SPEED_COUNT 6
 static const ImatExUnit IMATEX_ANGULAR_SPEED_UNITS [IMATEX_ANGULAR_SPEED_COUNT] = {
   {"radian per second"  ,"rad/s"  , 1},
-  {"rotation per second","RPS"    , 2.0*M_PI  },
+  {"rotation per second","rps"    , 2.0*M_PI  },
   {"degree per second"  ,"deg/s"  , M_PI/180.0},
   {"radian per minute"  ,"rad/min", 60        },
-  {"rotation per minute","RPM"    , 120.0*M_PI},
+  {"rotation per minute","rpm"    , 120.0*M_PI},
   {"degree per minute"  ,"deg/min", M_PI/3.0  }};
 
 #define IMATEX_ACCELERATION_COUNT 4
@@ -149,10 +145,11 @@ static const ImatExUnit IMATEX_ACCELERATION_UNITS [IMATEX_ACCELERATION_COUNT] = 
   {"knot per second"         ,"kn/s", 1.852/3.6 },
   {"mile per second squared" ,"mps²", 1609.344  }};
 
-#define IMATEX_FORCE_COUNT 6
+#define IMATEX_FORCE_COUNT 7
 static const ImatExUnit IMATEX_FORCE_UNITS [IMATEX_FORCE_COUNT] = {
   {"Newton"        ,"N"  , 1},              /* N = kg·m/s² */
   {"Kilonewton"    ,"kN" , 1000     },
+  {"dyne"          ,"dyn", 1.0e-5   },      /* g·cm/s² */
   {"kilogram-force","kgf", GRAVITY  },
   {"pound-force"   ,"lbf", GRAVITY * 0.45359237},          /* lbf = g × lb */
   {"kip-force"     ,"kip", GRAVITY * 0.45359237 * 1000},   /* kip = g × 1000 lb */
@@ -187,10 +184,11 @@ static const ImatExUnit IMATEX_MOMENT_UNITS [IMATEX_MOMENT_COUNT] = {
   {"Kilonewton-metre"         , "kN·m"  , 1000     },
   {"metre kilogram"           , "m·kg"  , 1.0/GRAVITY}};
 
-#define IMATEX_ANGLE_COUNT 2
+#define IMATEX_ANGLE_COUNT 3
 static const ImatExUnit IMATEX_ANGLE_UNITS [IMATEX_ANGLE_COUNT] = {
   {"radian", "rad", 1},
-  {"degree", "deg", M_PI/180.0}};
+  {"degree", "°", M_PI/180.0},
+  {"gradian", "grad", M_PI/200.0}};
 
 #define IMATEX_SPECIFIC_MASS_COUNT 3
 static const ImatExUnit IMATEX_SPECIFIC_MASS_UNITS [IMATEX_SPECIFIC_MASS_COUNT]  = {
@@ -230,6 +228,13 @@ static const ImatExUnit IMATEX_FRACTION_UNITS[IMATEX_FRACTION_COUNT]  = {
   {"per ten"     , "/10"  , 10  },
   {"per thousand", "/1000", 0.1 }};
 
+#define IMATEX_KINEMATIC_VISCOSITY_COUNT 3
+static const ImatExUnit IMATEX_KINEMATIC_VISCOSITY_UNITS [IMATEX_KINEMATIC_VISCOSITY_COUNT] = {
+  {"square metre per second", "m²/s"  , 1},
+  {"square foot per second" , "ft²/s" , 9.290304e-2},      /* 0.3048² */
+  {"stokes"                 , "St"    , 1.0e-4}};
+
+
 typedef struct _ImatExQuantity {
   const char* name;
   const ImatExUnit* units;
@@ -237,8 +242,11 @@ typedef struct _ImatExQuantity {
 } ImatExQuantity;
 
 #define IMATEX_TEMPERATURE 1
-#define IMATEX_QUANTITY_COUNT 24
-const ImatExQuantity IMATEX_QUANTITIES [IMATEX_QUANTITY_COUNT] = {
+#define IMATEX_QUANTITY_COUNT 26
+#define IMATEX_QUANTITY_CUSTOM 25
+static int imatex_quantity_count = IMATEX_QUANTITY_COUNT;
+//static ImatExQuantity imatex_quantities [IMATEX_QUANTITY_COUNT+IMATEX_QUANTITY_CUSTOM] = {
+static ImatExQuantity imatex_quantities [IMATEX_QUANTITY_COUNT] = {
   { "None"             , NULL                         , 0                             },
   { "Temperature"      , IMATEX_TEMPERATURE_UNITS     , IMATEX_TEMPERATURE_COUNT      },  /* must not be change from here */
   { "Length"           , IMATEX_LENGTH_UNITS          , IMATEX_LENGTH_COUNT           },
@@ -262,15 +270,21 @@ const ImatExQuantity IMATEX_QUANTITIES [IMATEX_QUANTITY_COUNT] = {
   { "Specific Weight"  , IMATEX_SPECIFIC_WEIGHT_UNITS , IMATEX_SPECIFIC_WEIGHT_COUNT  },
   { "Energy"           , IMATEX_ENERGY_UNITS          , IMATEX_ENERGY_COUNT           },
   { "Power"            , IMATEX_POWER_UNITS           , IMATEX_POWER_COUNT            },
+  { "Heat Flow Rate"   , IMATEX_POWER_UNITS           , IMATEX_POWER_COUNT            },
   { "Fraction"         , IMATEX_FRACTION_UNITS        , IMATEX_FRACTION_COUNT         },
+  { "Kinematic Viscosity", IMATEX_KINEMATIC_VISCOSITY_UNITS, IMATEX_KINEMATIC_VISCOSITY_COUNT},
 };
 
+#define IMATEX_UNIT_CUSTOM 20
+static ImatExUnit IMATEX_CUSTOM_UNITS[IMATEX_QUANTITY_CUSTOM][IMATEX_UNIT_CUSTOM];
+
+static int imatex_unity_spell = 0;
 
 /* Same definition as in IupMatrix */
 static double iMatrixConvertFunc(double number, int quantity, int unit_from, int unit_to)
 {
   /* this function is called only when unit_from!=unit_to */
-  const ImatExUnit* units = IMATEX_QUANTITIES[quantity].units;
+  const ImatExUnit* units = imatex_quantities[quantity].units;
 
   if (quantity == IMATEX_TEMPERATURE)
   {
@@ -306,16 +320,113 @@ static double iMatrixConvertFunc(double number, int quantity, int unit_from, int
   return number;
 }
 
+static void iStrReplaceCharUTF8(const char* s, char* utf8_s, char c, const char utf8_c[])
+{
+  while(*s)
+  {
+    if (*s == c)
+    {
+      *utf8_s++ = utf8_c[0];
+      *utf8_s++ = utf8_c[1];
+    }
+    else
+      *utf8_s++ = *s;
 
-/*****************************************************************************/
+    s++;
+  }
+  *utf8_s = 0;
+}
 
+static char* iMatrixExReturnSymbol(const char* symbol)
+{
+  if (IupGetInt(NULL, "UTF8MODE"))
+  {
+    /* IMPORTANT: the encoding of this file MUST be ISO8859-1, or this will not work */
+    char utf8_symbol[10];
+    const char* s = strchr(symbol, '³');
+    if (s)
+    {
+      iStrReplaceCharUTF8(s, utf8_symbol, '³', "\xC2\xB3");
+      return iupStrReturnStr(utf8_symbol);
+    }                                                  
+    s = strchr(symbol, '²');
+    if (s)
+    {
+      iStrReplaceCharUTF8(s, utf8_symbol, '²', "\xC2\xB2");
+      return iupStrReturnStr(utf8_symbol);             
+    }                                                  
+    s = strchr(symbol, '°');
+    if (s)
+    {
+      iStrReplaceCharUTF8(s, utf8_symbol, '°', "\xC2\xBA");
+      return iupStrReturnStr(utf8_symbol);             
+    }                                                  
+    s = strchr(symbol, '·');
+    if (s)
+    {
+      iStrReplaceCharUTF8(s, utf8_symbol, '·', "\xC2\xB7");
+      return iupStrReturnStr(utf8_symbol);             
+    }                                                  
+  }
+                                                       
+  return (char*)symbol;
+}
 
+static int iMatrixGetUnity(const char* name, char* am_name)
+{
+  const char* s = strstr(name, "metre");
+  if (s)
+  {
+    int off = s - name;
+    strcpy(am_name, name);
+    strncpy(am_name+off, "meter", 5);
+    return 1;
+  }
+  else
+  {
+    s = strstr(name, "litre");
+    if (s)
+    {
+      int off = s - name;
+      strcpy(am_name, name);
+      strncpy(am_name+off, "liter", 5);
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
+static char* iMatrixExReturnUnit(const char* name)
+{
+  if (imatex_unity_spell)
+  {
+    char am_name[30];
+    if (iMatrixGetUnity(name, am_name))
+      return iupStrReturnStr(am_name);
+  }
+
+  return (char*)name;
+}
+
+static int iMatrixCompareUnity(const char* name, const char* value)
+{
+  if (imatex_unity_spell)
+  {
+    char am_name[30];
+    if (iMatrixGetUnity(name, am_name))
+      return iupStrEqualNoCaseNoSpace(am_name, value);
+  }
+
+  return iupStrEqualNoCaseNoSpace(name, value);
+}
+        
 static int iMatrixFindQuantity(const char* value)
 {
   int i;
-  for (i=0; i<IMATEX_QUANTITY_COUNT; i++)
+  for (i=0; i<imatex_quantity_count; i++)
   {
-    if (iupStrEqualNoCaseNoSpace(IMATEX_QUANTITIES[i].name, value))
+    if (iupStrEqualNoCaseNoSpace(imatex_quantities[i].name, value))
       return i;
   }
 
@@ -327,11 +438,100 @@ static int iMatrixFindUnit(const ImatExUnit* units, int units_count, const char*
   int i;
   for (i=0; i<units_count; i++)
   {
-    if (iupStrEqualNoCaseNoSpace(units[i].name, value))  /* field 0 is name */
+    if (iMatrixCompareUnity(units[i].name, value))  /* field 0 is name */
       return i;
   }
 
   return -1;
+}
+
+
+/*****************************************************************************/
+
+
+static int iMatrixExSetNumericUnitSpellAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "AMERICAN"))
+    imatex_unity_spell = 1;
+  else
+    imatex_unity_spell = 0;
+
+  (void)ih;
+  return 0;
+}
+
+static int iMatrixExSetNumericAddQuantityAttrib(Ihandle* ih, const char* value)
+{
+  if (imatex_quantity_count < IMATEX_QUANTITY_CUSTOM)
+  {
+    imatex_quantities[imatex_quantity_count].name = value;
+    imatex_quantities[imatex_quantity_count].units_count = 0;
+    imatex_quantities[imatex_quantity_count].units = IMATEX_CUSTOM_UNITS[imatex_quantity_count];
+    imatex_quantity_count++;
+  }
+
+  (void)ih;
+  return 0;
+}
+
+static int iMatrixExSetNumericAddUnitAttrib(Ihandle* ih, const char* value)
+{
+  if (imatex_quantity_count > IMATEX_QUANTITY_COUNT)
+  {
+    int quantity = imatex_quantity_count-1; /* last add quantity */
+
+    if (imatex_quantities[quantity].units_count < IMATEX_UNIT_CUSTOM)
+    {
+      ImatExUnit* units = (ImatExUnit*)(imatex_quantities[quantity].units);
+      int unit = imatex_quantities[quantity].units_count;
+
+      units[unit].name = value;
+
+      imatex_quantities[quantity].units_count++;
+    }
+  }
+
+  (void)ih;
+  return 0;
+}
+
+static int iMatrixExSetNumericAddUnitSymbolAttrib(Ihandle* ih, const char* value)
+{
+  if (imatex_quantity_count > IMATEX_QUANTITY_COUNT)
+  {
+    int quantity = imatex_quantity_count-1; /* last add quantity */
+
+    if (imatex_quantities[quantity].units_count > 0)
+    {
+      int unit = imatex_quantities[quantity].units_count-1;  /* last add unit */
+      ImatExUnit* units = (ImatExUnit*)(imatex_quantities[quantity].units);
+
+      units[unit].symbol = value;
+    }
+  }
+
+  (void)ih;
+  return 0;
+}
+
+static int iMatrixExSetNumericAddUnitFactorAttrib(Ihandle* ih, const char* value)
+{
+  if (imatex_quantity_count > IMATEX_QUANTITY_COUNT)
+  {
+    int quantity = imatex_quantity_count-1; /* last add quantity */
+
+    if (imatex_quantities[quantity].units_count > 0)
+    {
+      int unit = imatex_quantities[quantity].units_count-1;  /* last add unit */
+      ImatExUnit* units = (ImatExUnit*)(imatex_quantities[quantity].units);
+      double factor = 0;
+      sscanf(value, "%lf", &factor);  /* lf=double */
+      units[unit].factor = factor;
+    }
+  }
+
+  (void)ih;
+  return 0;
 }
 
 static int iMatrixExSetNumericQuantityAttrib(Ihandle* ih, int col, const char* value)
@@ -357,7 +557,7 @@ static char* iMatrixExGetNumericQuantityAttrib(Ihandle* ih, int col)
   if (!quantity)
     return NULL;
   else
-    return (char*)IMATEX_QUANTITIES[quantity].name;
+    return (char*)imatex_quantities[quantity].name;
 }
 
 static int iMatrixExSetNumericUnitAttrib(Ihandle* ih, int col, const char* value)
@@ -367,7 +567,7 @@ static int iMatrixExSetNumericUnitAttrib(Ihandle* ih, int col, const char* value
   if (!quantity)
     return 0;
 
-  unit = iMatrixFindUnit(IMATEX_QUANTITIES[quantity].units, IMATEX_QUANTITIES[quantity].units_count, value);
+  unit = iMatrixFindUnit(imatex_quantities[quantity].units, imatex_quantities[quantity].units_count, value);
   if (unit < 0)
     return 0;
 
@@ -383,7 +583,7 @@ static char* iMatrixExGetNumericUnitAttrib(Ihandle* ih, int col)
   else
   {
     int unit = IupGetIntId(ih, "NUMERICUNITINDEX", col);
-    return (char*)IMATEX_QUANTITIES[quantity].units[unit].name;
+    return iMatrixExReturnUnit(imatex_quantities[quantity].units[unit].name);
   }
 }
 
@@ -394,7 +594,7 @@ static int iMatrixExSetNumericUnitShownAttrib(Ihandle* ih, int col, const char* 
   if (!quantity)
     return 0;
 
-  unit = iMatrixFindUnit(IMATEX_QUANTITIES[quantity].units, IMATEX_QUANTITIES[quantity].units_count, value);
+  unit = iMatrixFindUnit(imatex_quantities[quantity].units, imatex_quantities[quantity].units_count, value);
   if (unit < 0)
     return 0;
 
@@ -410,7 +610,7 @@ static char* iMatrixExGetNumericUnitShownAttrib(Ihandle* ih, int col)
   else
   {
     int unit = IupGetIntId(ih, "NUMERICUNITSHOWNINDEX", col);
-    return (char*)IMATEX_QUANTITIES[quantity].units[unit].name;
+    return iMatrixExReturnUnit(imatex_quantities[quantity].units[unit].name);
   }
 }
 
@@ -422,7 +622,7 @@ static char* iMatrixExGetNumericUnitSymbolAttrib(Ihandle* ih, int col)
   else
   {
     int unit = IupGetIntId(ih, "NUMERICUNITINDEX", col);
-    return (char*)IMATEX_QUANTITIES[quantity].units[unit].symbol;
+    return iMatrixExReturnSymbol(imatex_quantities[quantity].units[unit].symbol);
   }
 }
 
@@ -434,15 +634,21 @@ static char* iMatrixExGetNumericUnitShownSymbolAttrib(Ihandle* ih, int col)
   else
   {
     int unit = IupGetIntId(ih, "NUMERICUNITSHOWNINDEX", col);
-    return (char*)IMATEX_QUANTITIES[quantity].units[unit].symbol;
+    return iMatrixExReturnSymbol(imatex_quantities[quantity].units[unit].symbol);
   }
 }
 
 void iupMatrixExRegisterUnits(Iclass* ic)
 {
-  iupClassRegisterAttributeId(ic, "NUMERICQUANTITY", iMatrixExGetNumericQuantityAttrib, iMatrixExSetNumericQuantityAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "NUMERICUNIT", iMatrixExGetNumericUnitAttrib, iMatrixExSetNumericUnitAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWN", iMatrixExGetNumericUnitShownAttrib, iMatrixExSetNumericUnitShownAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "NUMERICUNITSYMBOL", iMatrixExGetNumericUnitSymbolAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWNSYMBOL", iMatrixExGetNumericUnitShownSymbolAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICQUANTITY", iMatrixExGetNumericQuantityAttrib, iMatrixExSetNumericQuantityAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICUNIT", iMatrixExGetNumericUnitAttrib, iMatrixExSetNumericUnitAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWN", iMatrixExGetNumericUnitShownAttrib, iMatrixExSetNumericUnitShownAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICUNITSYMBOL", iMatrixExGetNumericUnitSymbolAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWNSYMBOL", iMatrixExGetNumericUnitShownSymbolAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "NUMERICUNITSPELL", NULL, iMatrixExSetNumericUnitSpellAttrib, IUPAF_SAMEASSYSTEM, "INTERNATIONAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICADDQUANTITY", NULL, iMatrixExSetNumericAddQuantityAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICADDUNIT", NULL, iMatrixExSetNumericAddUnitAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICADDUNITSYMBOL", NULL, iMatrixExSetNumericAddUnitSymbolAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICADDUNITFACTOR", NULL, iMatrixExSetNumericAddUnitFactorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 }
