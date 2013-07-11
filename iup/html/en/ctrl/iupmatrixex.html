@@ -217,7 +217,7 @@ using the <a href="#NUMERICGETVALUE_CB">NUMERICGETVALUE_CB</a> and
 <a href="#NUMERICSETVALUE_CB">NUMERICSETVALUE_CB</a> callbacks. The returned 
 value is always the name of the quantity in the table, regardless the value that 
 was set. To use the numeric attributes and callbacks without using units, simply 
-set quantity to &quot;None&quot;. To disable all numeric support set quantity to NULL.</p>
+set quantity to &quot;None&quot;. To disable all numeric support set quantity to NULL.&nbsp; </p>
 <p>
 <strong>NUMERICUNIT<em>id</em></strong>: Unit of the numbers set into the matrix 
 at the given column (id). Must be in the same category of the NUMERICFORMAT 
@@ -280,6 +280,32 @@ column will became visible because of the internal matrix logic for titles). </p
 non zero, but more complex logic when id=0. When changed will simply set those 
 attributes to zero or NULL (when setting to NULL and lin=0 not necessarily the 
 line will became visible because of the internal matrix logic for titles). </p>
+<hr>
+<p>
+The following attributes will affect all <strong>IupMatrixEx</strong> controls. 
+So the application can register new quantities and all <strong>IupMatrixEx</strong> 
+elements will benefit. All strings must be constant strings. All attributes are 
+Write-Only and non inheritable. They all can be set without the element being 
+mapped to the native system.</p>
+<p>
+<strong>NUMERICUNITSPELL</strong>: spelling used for Unit names. The default 
+&quot;INTERNATIONAL&quot; uses the International Bureau of Weights and Measures standards: 
+metre and litre. Set to &quot;AMERICAN&quot; To use the American spelling: &quot;meter&quot; and 
+&quot;liter&quot;. </p>
+<p>
+<strong>NUMERICADDQUANTITY</strong>: adds a new quantity given its name. Can 
+have up to 25 new names.</p>
+<p>
+<strong>NUMERICADDUNIT</strong>: adds a new unit given its name for the last 
+quantity added. Can have up to 20 new names. The first unit added will be the 
+reference unit and its factor will be automatically set to 1.</p>
+<p>
+<strong>NUMERICADDUNITSYMBOL</strong>: sets the symbol name of the last unit 
+added.</p>
+<p>
+<strong>NUMERICADDUNITFACTOR</strong>: sets the factor number in double 
+precision of the last unit added. Use &quot;%.18g&quot; in <strong>IupSetStrf</strong> or
+<strong>sprintf</strong> for maximum double precision.</p>
 
 
 
@@ -373,7 +399,7 @@ control.</p>
 
 <h3><a name="Notes">Notes</a></h3>
 <h4><a name="UNITS">Available Quantity and Units</a></h4>
-<p>Unit names, symbols and conversion factors were all based on:</p>
+<p>Unit names, symbols and conversion factors were almost all based on:</p>
 <p class="info"><a href="http://en.wikipedia.org/wiki/Conversion_of_units">
 http://en.wikipedia.org/wiki/Conversion_of_units</a></p>
 <p>By definition, unit names and symbols follow the case displayed in the table. 
@@ -381,33 +407,24 @@ When setting the NUMERICQUANTITY and NUMERICUNIT attributes, the case is
 insensitive and spaces are ignored. When consulted they will return the table 
 value regardless how the value was set. Some Quantities have alternative names, 
 once used the returned values in the attribute will be the same alternative 
-name.</p>
+name. All numeric attributes all can be set without the element being mapped to 
+the native system, so the <strong>IupMatrixEx</strong> element can also be used 
+as a Quantity Units database.</p>
 <p>The unit used as a reference for conversion is always the first unit listed, 
 and it is the unit defined by the
 <a href="http://en.wikipedia.org/wiki/International_System_of_Units">
 International System of Units</a>&nbsp;(SI).</p>
-<p>These are only a small set of commonly used units. If you need other units, 
+<p>NOTICE: These are only a small set of commonly used units. If you need other units, 
 please let us know so we can include them.</p>
-<p>Obs: &quot;g&quot; in Comments is the standard gravity.</p>
+<p>Obs: &quot;g&quot; in Comments is the standard gravity. All Quantity and Unit 
+names are in English only. The symbols that have extended characters will work 
+in ISO8859-1 and in UTF-8, according to the UTF8MODE global attribute.</p>
 <table align="center">
 	<tr>
 		<th>Quantity<br><span class="style6">NUMERICQUANTITY</span></th>
 		<th>Units<br><span class="style6">NUMERICUNIT</span></th>
 		<th>Symbol<br><span class="style6">NUMERICUNITSYMBOL</span></th>
 		<th>Comments</th>
-	</tr>
-	<tr>
-		<td class="style8">Length</td>
-		<td class="style8" valign="top">metre <br>millimetre <br>centimetre<br>kilometre <br>inch
-		<br>foot <br>mile <br>yard        
-<br>nautical mile        
-</td>
-		<td class="style8" valign="top">m <br>mm<br>cm<br>km<br>in<br>ft<br>mi<br>yd<br>
-		NM </td>
-		<td class="style8" valign="top"><br><br><br><br>- in = 25.4 mm 
-		(international) <br>- ft = 12 in (international) <br>- 
-		yd = 3 ft (international) <br>- mi = 1760 yd (international) <br>- NM = 
-		6080 ft (Admiralty)&nbsp; </td>
 	</tr>
 	<tr>
 		<td class="style8">Time</td>
@@ -419,7 +436,7 @@ please let us know so we can include them.</p>
 		<td class="style8">Mass</td>
 		<td class="style8" valign="top">kilogram<br>gram <br>ton <br>pound <br>ounce </td>
 		<td class="style8" valign="top">kg <br>g <br>ton<br>lb <br>oz </td>
-		<td class="style8" valign="top"><br><br><br>- (international avoirdupois) <br>
+		<td class="style8" valign="top"><br>- (CGS Unit)<br><br>- (international avoirdupois) <br>
 		- oz = lb / 16 </td>
 	</tr>
 	<tr>
@@ -430,43 +447,57 @@ please let us know so we can include them.</p>
 		<td class="style8" valign="top">&nbsp;</td>
 	</tr>
 	<tr>
+		<td class="style8">Length</td>
+		<td class="style8" valign="top">metre <br>millimetre <br>centimetre<br>kilometre <br>inch
+		<br>foot <br>yard        
+<br>mile <br>nautical mile        
+</td>
+		<td class="style8" valign="top">m <br>mm<br>cm<br>km<br>in<br>ft<br>yd<br>
+		mi<br>NM </td>
+		<td class="style8" valign="top"><br><br>- (CGS Unit)<br><br>- in = 25.4 mm 
+		(international) <br>- ft = 12 in (international) <br>- 
+		yd = 3 ft (international) <br>- mi = 1760 yd (international) <br>- NM = 
+		6080 ft (Admiralty)&nbsp; </td>
+	</tr>
+	<tr>
 		<td class="style8">Area</td>
-		<td class="style8" valign="top">square metre <br>square inch <br>square foot <br>
-		square kilometre<br>square mile <br>square yard <br>acre <br>hectare <br>
-		square millimetre <br>square centimetre </td>
-		<td class="style8" valign="top">m² <br>sq in<br>sq ft<br>km² <br>sq mi<br>sq yd<br>ac
-		<br>ha <br>mm² <br>cm²</td>
-		<td class="style8" valign="top"><br><br><br><br><br>- (international) <br>
-		- ac = 4840 sq yd&nbsp; 
-		<br><br><br> <br> </td>
+		<td class="style8" valign="top">square metre <br>square centimetre<br>square millimetre<br>square inch <br>square foot <br>
+		square kilometre<br>square yard <br>square mile <br>acre <br>hectare <br>
+		</td>
+		<td class="style8" valign="top">m²<br>cm²<br>mm² <br>sq in<br>sq ft<br>km² <br>sq yd<br>sq mi<br>ac
+		<br>ha <br></td>
+		<td class="style8" valign="top"><br>- (CGS Unit)<br><br><br><br>&nbsp;<br>
+		&nbsp; 
+		<br><br>- ac = 4840 sq yd<br> <br> </td>
 	</tr>
 	<tr>
 		<td class="style8">Volume</td>
-		<td class="style8" valign="top">cubic metre <br>cubic inch <br>litre <br>gallon <br>barrel
-		<br>cubic foot <br>cubic kilometre<br>cubic mile <br>cubic yard </td>
-		<td class="style8" valign="top">m³ <br>cu in<br>L <br>gal <br>bl <br>cu ft<br>km³ <br>
-		cu mi<br>cu yd</td>
-		<td class="style8" valign="top"><br><br><br>- gal = 231 cu in (US fluid; Wine)&nbsp; <br>- 
-		bl = 42 gal (petroleum)&nbsp; <br><br><br><br></td>
+		<td class="style8" valign="top">cubic metre <br>cubic centimetre <br>
+		cubic millimetre <br>cubic kilometre<br>cubic inch <br>cubic foot <br>cubic mile <br>cubic yard <br>litre <br>gallon <br>barrel
+		</td>
+		<td class="style8" valign="top">m³ <br>cm³<br>mm³<br>km³ <br>cu in<br>cu ft<br>cu mi<br>cu yd<br>L <br>gal <br>bl </td>
+		<td class="style8" valign="top"><br>- (CGS Unit)<br><br><br><br><br><br>
+		<br><br>- gal = 231 cu in (US fluid; Wine)&nbsp; <br>- 
+		bl = 42 gal (petroleum)<br></td>
 	</tr>
 	<tr>
 		<td class="style8">Angle</td>
-		<td class="style8">radian<br>degree</td>
-		<td class="style8">rad<br>deg</td>
+		<td class="style8">radian<br>degree<br>gradian</td>
+		<td class="style8">rad<br>° <br>grad</td>
 		<td class="style8">&nbsp;</td>
 	</tr>
 	<tr>
 		<td class="style9">Speed<br><span class="style7">(or Velocity)</span></td>
 		<td class="style9">metre per second <br>inch per second <br>foot per second <br>
-		kilometre per hour<br>mile per hour <br>knot </td>
-		<td class="style9">m/s <br>ips <br>fps <br>km/h<br>mph <br>kn </td>
-		<td class="style9" valign="top"><br><br><br><br><br>- kn = NM/h </td>
+		kilometre per hour<br>centimetre per second <br>mile per hour <br>knot </td>
+		<td class="style9">m/s <br>ips <br>fps <br>km/h<br>cm/s<br>mph <br>kn </td>
+		<td class="style9" valign="top"><br><br><br><br>- (CGS Unit)<br><br>- kn = NM/h </td>
 	</tr>
 	<tr>
 		<td class="style9">Angular Speed</td>
 		<td class="style9">radian per second <br>rotation per second<br>degree per second
 		<br>radian per minute <br>rotation per minute<br>degree per minute </td>
-		<td class="style9">rad/s <br>RPS <br>deg/s <br>rad/min<br>RPM <br>deg/min</td>
+		<td class="style9">rad/s <br>rps <br>deg/s <br>rad/min<br>rpm <br>deg/min</td>
 		<td class="style9">&nbsp;</td>
 	</tr>
 	<tr>
@@ -477,11 +508,18 @@ please let us know so we can include them.</p>
 		<td class="style9">&nbsp;</td>
 	</tr>
 	<tr>
+		<td class="style9">Kinematic Viscosity</td>
+		<td class="style9">square metre per second<br>square foot per second<br>
+		stokes </td>
+		<td class="style9">m²/s <br>ft²/s <br>St</td>
+		<td class="style9"><br><br>- (CGS Unit)</td>
+	</tr>
+	<tr>
 		<td class="style11">Force</td>
-		<td valign="top" class="style11">Newton <br>Kilonewton <br>kilogram-force<br>ton-force <br>
+		<td valign="top" class="style11">Newton <br>Kilonewton <br> <br>kilogram-force<br>ton-force <br>
 		pound-force <br>kip-force </td>
 		<td valign="top" class="style11">N <br>kN <br>kgf<br>tnf<br>lbf<br>kip</td>
-		<td valign="top" class="style11">= kg·m/s²<br><br><br>- tnf = g · 2000 
+		<td valign="top" class="style11">= kg·m/s²<br><br>= g·cm/s² (CGS Unit)<br><br>- tnf = g · 2000 
 		lb <br>- lbf = g · lb <br>- kip = g · 1000 lb <br> </td>
 	</tr>
 	<tr>
@@ -520,21 +558,23 @@ please let us know so we can include them.</p>
 	</tr>
 	<tr>
 		<td class="style11">Specific Weight</td>
-		<td class="style11">kilogram-force per cubic metre<br>ton-force per cubic metre <br>
-		kilogram-force per litre </td>
-		<td class="style11">kgf/m³<br>tnf/m³<br>kgf/L </td>
+		<td class="style11">Newton per cubic metre <br>Kilonewton per cubic 
+		metre <br>kilogram-force per cubic metre<br>ton-force per cubic metre <br>
+		kilogram-force per litre <br>pound-force per cubic foot </td>
+		<td class="style11">N/m³ <br>kN/m³ <br>kgf/m³<br>tnf/m³<br>kgf/L <br>lbf/ft³ </td>
 		<td class="style11">&nbsp;</td>
 	</tr>
 	<tr>
 		<td class="style10">Energy</td>
-		<td class="style10">Joule <br>Kilojoule <br>calorie <br>BTU <br>Kilowatt-hour
+		<td class="style10">Joule <br>Kilojoule <br>calorie <br>British Thermal 
+		Unit <br>Kilowatt-hour
 		<br>horsepower-hour</td>
 		<td class="style10">J <br>kJ <br>cal <br>BTU <br>kW.h<br>hp.h</td>
 		<td class="style10">= m·N = kg·m²/s²<br><br>- (International Table) <br>- (International 
 		Table)<br><br><br></td>
 	</tr>
 	<tr>
-		<td class="style10">Power</td>
+		<td class="style10">Power<br><span class="style7">(or &nbsp;Heat Flow Rate)</span></td>
 		<td class="style10" valign="top">Watt <br>Kilowatt <br>calorie per second<br>horsepower </td>
 		<td class="style10" valign="top">W <br>kW <br>cal/s<br>hp</td>
 		<td class="style10" valign="top">= J/s = N·m/s = kg·m²/s³ <br><br>- (International Table) <br>

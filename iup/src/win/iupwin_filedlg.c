@@ -493,12 +493,12 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
         info = value;
 
       /* concat FILTERINFO+FILTER */
-      sz1 = strlen(info)+1;
+      sz1 = strlen(info)+1; /* each part has a terminator */
       sz2 = strlen(value)+1;
       extfilter = (char*)malloc((sz1+sz2+1));
-      memcpy(extfilter, info, sz1);
+      memcpy(extfilter, info, sz1); /* copy also the terminator */
       memcpy(extfilter+sz1, value, sz2);
-      extfilter[sz1+sz2] = 0;
+      extfilter[sz1+sz2] = 0;  /* additional terminator at the end */
 
       openfilename.lpstrFilter = iupwinStrToSystemFilename(extfilter);
       openfilename.nFilterIndex = 1;

@@ -188,7 +188,7 @@ void iupwinStrCopy(TCHAR* dst_wstr, const char* src_str, int max_size)
   if (src_str)
   {
     TCHAR* src_wstr = iupwinStrToSystem(src_str);
-    int len = lstrlen(src_wstr);
+    int len = lstrlen(src_wstr)+1;
     if (len > max_size) len = max_size;
     lstrcpyn(dst_wstr, src_wstr, len);
   }
