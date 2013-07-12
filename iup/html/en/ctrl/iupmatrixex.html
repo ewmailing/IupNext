@@ -410,7 +410,9 @@ When setting the NUMERICQUANTITY and NUMERICUNIT attributes, the case is
 insensitive and spaces are ignored. When consulted they will return the table 
 value regardless how the value was set. Some Quantities have alternative names, 
 once used the returned values in the attribute will be the same alternative 
-name. All numeric attributes all can be set without the element being mapped to 
+name. For example, you can set &quot;Specific Weight&quot; or &quot;SPECIFICWEIGHT&quot;, and you 
+can set &quot;Speed&quot; or &quot;Velocity&quot;.</p>
+<p>All numeric attributes all can be set without the element being mapped to 
 the native system, so the <strong>IupMatrixEx</strong> element can also be used 
 as a Quantity Units database.</p>
 <p>The unit used as a reference for conversion is always the first unit listed, 
@@ -441,9 +443,9 @@ classification.</p>
 	</tr>
 	<tr>
 		<td class="style8">Mass</td>
-		<td class="style8" valign="top">kilogram<br>gram <br>ton <br>pound <br>ounce </td>
-		<td class="style8" valign="top">kg <br>g <br>ton<br>lb <br>oz </td>
-		<td class="style8" valign="top"><br>- (CGS Unit)<br><br>- (international avoirdupois) <br>
+		<td class="style8" valign="top">kilogram<br>gram <br>tonne <br>pound <br>ounce </td>
+		<td class="style8" valign="top">kg <br>g <br>t<br>lb <br>oz </td>
+		<td class="style8" valign="top"><br>- (CGS Unit)<br>- metric ton <br>- (international avoirdupois) <br>
 		- oz = lb / 16 </td>
 	</tr>
 	<tr>
@@ -533,12 +535,21 @@ classification.</p>
 		<td class="style9">&nbsp;</td>
 	</tr>
 	<tr>
+		<td class="style9">Flow</td>
+		<td class="style9">cubic metre per second<br>cubic inch per second<br>cubic foot per second
+</td>
+		<td class="style9">m³/s<br>in³/s<br>ft³/s
+</td>
+		<td class="style9">&nbsp;</td>
+	</tr>
+	<tr>
 		<td class="style11">Force</td>
-		<td valign="top" class="style11">Newton <br>Kilonewton <br> <br>kilogram-force<br>ton-force <br>
-		pound-force <br>kip-force </td>
-		<td valign="top" class="style11">N <br>kN <br>kgf<br>tnf<br>lbf<br>kip</td>
-		<td valign="top" class="style11">= kg·m/s²<br><br>= g·cm/s² (CGS Unit)<br><br>- tnf = g · 2000 
-		lb <br>- lbf = g · lb <br>- kip = g · 1000 lb <br> </td>
+		<td valign="top" class="style11">Newton <br>Kilonewton <br> dyne<br>kilogram-force<br>pound-force <br>kip-force 
+		<br>ton-force </td>
+		<td valign="top" class="style11">N <br>kN <br>dyn<br>kgf<br>lbf<br>kip<br>tnf</td>
+		<td valign="top" class="style11">= kg·m/s²<br><br>= g·cm/s² (CGS Unit)<br><br>- lbf = g · lb <br>- kip = g · 1000 lb 
+		<br>- tnf = g · 2000 
+		lb <br> </td>
 	</tr>
 	<tr>
 		<td class="style11">Pressure<br><span class="style7">(or Mechanical Stress)</span></td>
@@ -599,6 +610,18 @@ classification.</p>
 		<td class="style10" valign="top">W <br>kW <br>cal/s<br>hp</td>
 		<td class="style10" valign="top">= J/s = N·m/s = kg·m²/s³ <br><br>- (International Table) <br>
 		- hp = 550 ft lbf/s (imperial mechanical) </td>
+	</tr>
+	<tr>
+		<td class="style12">Electric Charge</td>
+		<td class="style12">Coulomb<br>Faraday<br>milliampere hour</td>
+		<td class="style12">C<br>F<br>mA·h</td>
+		<td class="style12">= A·s<br><br></td>
+	</tr>
+	<tr>
+		<td class="style12">Illuminance</td>
+		<td class="style12">lux<br>footcandle<br>lumen per square inch<br>phot</td>
+		<td class="style12">lx<br>fc<br>lm/in²<br>ph</td>
+		<td class="style12">- lm/m² <br>- lumen per square foot <br><br></td>
 	</tr>
 	<tr>
 		<td class="style12">Fraction</td>
