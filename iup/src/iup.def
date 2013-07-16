@@ -305,6 +305,8 @@ iupStrDupUntil
 iupStrCopyN
 iupStrBoolean
 iupStrFalse
+iupStrRemove
+iupStrInsert
 iupSetFontStyleAttrib
 iupSetFontSizeAttrib
 iupSetFontAttrib

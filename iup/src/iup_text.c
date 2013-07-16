@@ -24,85 +24,6 @@
 #include "iup_text.h"
 #include "iup_assert.h"
 
-#define ISTR_IS_UTF8_BASE(_x)  (_x & 0xC0)  /* 11XX XXXX */
-#define ISTR_IS_UTF8_COUNT(_x) ((_x & 0xE0)? 3: ((_x & 0xF0)? 4: 2 ))
-                                /* 1110 XXXX */ /* 1111 0XXX */ /* 110X XXXX */
-
-static int iStrFixPosUTF8(const char* value, int pos)
-{
-  int p = 0, i = 0;
-  while(value[i] && p < pos)
-  {
-    if (ISTR_IS_UTF8_BASE(value[i]) != 0x80)  /* 1XXX XXXX  all UTF-8 sequence and base must have at least this bit set */
-      p++;
-    i++;
-  }
-  return i;
-}
-
-static void iStrRemove(char* value, int start, int end, int dir, int utf8)
-{
-  if (utf8)
-  {
-    if (start == end) 
-      end = start = iStrFixPosUTF8(value, start);
-    else
-    {
-      start = iStrFixPosUTF8(value, start);
-      end   = iStrFixPosUTF8(value, end);
-    }
-  }
-
-  if (start == end) 
-  {
-    if (dir==1)
-      end++;
-    else if (start == 0) /* there is nothing to remove before */
-      return;
-    else
-      start--;
-  }
-
-  value += start;
-  end -= start;
-  while (*value)
-  {
-    *value = *(value+end);
-    value++;
-  }
-}
-
-static char* iStrInsert(const char* value, const char* insert_value, int start, int end, int utf8)
-{
-  char* new_value = (char*)value;
-  int insert_len = strlen(insert_value);
-  int len = strlen(value);
-
-  if (utf8)
-  {
-    if (start == end) 
-      end = start = iStrFixPosUTF8(value, start);
-    else
-    {
-      start = iStrFixPosUTF8(value, start);
-      end   = iStrFixPosUTF8(value, end);
-    }
-  }
-
-  if (end==start || insert_len > end-start)
-  {
-    new_value = malloc(len - (end-start) + insert_len + 1);
-    memcpy(new_value, value, start);
-    memcpy(new_value+start, insert_value, insert_len);
-    memcpy(new_value+start+insert_len, value+end, len-end+1);
-  }
-  else
-  {
-    memcpy(new_value+start, insert_value, insert_len);
-    memcpy(new_value+start+insert_len, value+end, len-end+1);
-  }
-  return new_value;
-}
 
 /* Used by List and Text, implemented in Text
    Can NOT use ih->data 
@@ -121,14 +42,14 @@ int iupEditCallActionCb(Ihandle* ih, IFnis cb, const char* insert_value, int sta
   if (!insert_value)
   {
     new_value = value;
-    iStrRemove(new_value, start, end, remove_dir, utf8);
+    iupStrRemove(new_value, start, end, remove_dir, utf8);
   }
   else
   {
     if (value[0]==0)
       new_value = iupStrDup(insert_value);
     else
-      new_value = iStrInsert(value, insert_value, start, end, utf8);
+      new_value = iupStrInsert(value, insert_value, start, end, utf8);
   }
 
   if (insert_value && insert_value[0]!=0 && insert_value[1]==0)
