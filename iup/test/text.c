@@ -306,8 +306,8 @@ void TextTest(void)
   IupSetCallback(mltline, "KILLFOCUS_CB", (Icallback)killfocus_cb);
   IupSetCallback(mltline, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
   IupSetCallback(mltline, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
-  //IupSetCallback(mltline, "ACTION", (Icallback)action);
-  IupSetCallback(mltline, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
+  IupSetCallback(mltline, "ACTION", (Icallback)action);
+//  IupSetCallback(mltline, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
 //  IupSetCallback(mltline, "K_ANY", (Icallback)k_any);
   IupSetCallback(mltline, "K_F2", (Icallback)k_f2);
 //  IupSetCallback(mltline, "CARET_CB", (Icallback)caret_cb);

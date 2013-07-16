@@ -1257,7 +1257,7 @@ static int winListCallEditCb(Ihandle* ih, HWND cbedit, char* insert_value, int r
   ret = iupEditCallActionCb(ih, cb, insert_value, start, end, (char*)ih->data->mask, ih->data->nc, remove_dir, iupwinStrGetUTF8Mode());
   if (ret == 0)
     return 0;
-  if (ret == -1)
+  if (ret != -1)
   {
     WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDWNDPROC_CB");
     CallWindowProc(oldProc, cbedit, WM_CHAR, ret, 0);  /* replace key */

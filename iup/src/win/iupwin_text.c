@@ -1595,7 +1595,7 @@ static int winTextCallActionCb(Ihandle* ih, char* insert_value, int remove_dir)
   ret = iupEditCallActionCb(ih, cb, insert_value, start, end, (char*)ih->data->mask, ih->data->nc, remove_dir, iupwinStrGetUTF8Mode());
   if (ret == 0)
     return 0;
-  if (ret == -1)
+  if (ret != -1)
   {
     WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
     CallWindowProc(oldProc, ih->handle, WM_CHAR, ret, 0);  /* replace key */

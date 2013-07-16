@@ -26,16 +26,17 @@
   But if your files have Unicode names, then you may consider using UTF-8 
   so later the aplication can recover the original Unicode version.
 */
-#ifdef UNICODE
 static int iupwin_utf8mode = 0;    /* default is NOT using UTF-8 */
 static int iupwin_utf8mode_file = 0;  
-#endif
 
 /* TODOUTF8:
    testar ACTION callback do IupText
      Windows ANSI
      Windows UNICODE sem UTF8
      Windows UNICODE com UTF8
+     GTK com UTF8
+     GTK sem UTF8
+     Motif
 -------------------------------
 - outros controles
     iupglcanvas
@@ -50,6 +51,8 @@ void iupwinStrSetUTF8Mode(int utf8mode)
 {
 #ifdef UNICODE   /* can not set if not Unicode */
   iupwin_utf8mode = utf8mode;
+#else
+  (void)utf8mode;
 #endif
 }
 
@@ -57,6 +60,8 @@ void iupwinStrSetUTF8ModeFile(int utf8mode)
 {
 #ifdef UNICODE   /* can not set if not Unicode */
   iupwin_utf8mode_file = utf8mode;
+#else
+  (void)utf8mode;
 #endif
 }
 
