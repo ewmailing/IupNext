@@ -26,9 +26,11 @@
   But if your files have Unicode names, then you may consider using UTF-8 
   so later the aplication can recover the original Unicode version.
 */
+#ifdef UNICODE
 static int iupwin_utf8mode = 1;  // somente para facilitar o uso dos testes existentes, depois remover
 //static int iupwin_utf8mode = 0;    /* default is NOT using UTF-8 */
 static int iupwin_utf8mode_file = 0;  
+#endif
 
 /* TODOUTF8:
 1) Na edição de texto, na callback de action, quando iupwin_utf8mode=0
@@ -56,33 +58,28 @@ static int iupwin_utf8mode_file = 0;
 - melhorar o suporte a teclas no IUP 
 */
 
-int iupwinStrSetUTF8Mode(int utf8mode)
+void iupwinStrSetUTF8Mode(int utf8mode)
 {
-#ifdef UNICODE
+#ifdef UNICODE   /* can not set if not Unicode */
   iupwin_utf8mode = utf8mode;
-  return 1;
-#else
-  return 0;
 #endif
 }
 
-int iupwinStrSetUTF8ModeFile(int utf8mode)
+void iupwinStrSetUTF8ModeFile(int utf8mode)
 {
-#ifdef UNICODE
+#ifdef UNICODE   /* can not set if not Unicode */
   iupwin_utf8mode_file = utf8mode;
-  return 1;
-#else
-  return 0;
 #endif
 }
 
 int iupwinStrGetUTF8Mode(void)
 {
-#ifdef UNICODE
   return iupwin_utf8mode;
-#else
-  return 0;
-#endif
+}
+
+int iupwinStrGetUTF8ModeFile(void)
+{
+  return iupwin_utf8mode_file;
 }
 
 static void* winStrGetMemory(int size)

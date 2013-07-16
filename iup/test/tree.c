@@ -482,6 +482,10 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "ADDLEAF7",     "diamond");
   IupSetAttribute(tree, "INSERTLEAF6","2D");  /* new id=9 */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
+  if (IupGetInt(NULL, "UTF8MODE"))
+    IupSetAttribute(tree, "INSERTBRANCH10","Other (Γ§Γ£ΓµΓ΅Γ³Γ©)");
+  else
+    IupSetAttribute(tree, "INSERTBRANCH10","Other (ηγυασι)");
 #endif
   IupSetAttribute(tree, "TOGGLEVALUE2", "ON");
   IupSetAttribute(tree, "TOGGLEVALUE6", "ON");

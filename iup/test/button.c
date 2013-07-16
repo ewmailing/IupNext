@@ -295,7 +295,10 @@ void ButtonTest(void)
   IupAppend(box1, button);
 
   button = IupButton(NULL, NULL);
-  IupSetAttribute(button, "TITLE", "&Text && Test(ηγν)");
+  if (IupGetInt(NULL, "UTF8MODE"))
+    IupSetAttribute(button, "TITLE", "&Text && Test(Γ§Γ£ΓµΓ΅Γ³Γ©)");
+  else
+    IupSetAttribute(button, "TITLE", "&Text && Test(ηγυασι)");
   IupSetAttribute(button, "TIP", "Button & Tip");
   //IupSetAttribute(button, "PADDING", "15x15");
   //IupSetAttribute(button, "BGCOLOR", "128 128 255");

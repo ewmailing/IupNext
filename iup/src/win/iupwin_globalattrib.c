@@ -328,9 +328,15 @@ int iupdrvSetGlobal(const char* name, const char* value)
     return 1;
   }
   if (iupStrEqual(name, "UTF8MODE"))
-    return iupwinStrSetUTF8Mode(iupStrBoolean(value));
+  {
+    iupwinStrSetUTF8Mode(iupStrBoolean(value));
+    return 0;
+  }
   if (iupStrEqual(name, "UTF8MODE_FILE"))
-    return iupwinStrSetUTF8ModeFile(iupStrBoolean(value));
+  {
+    iupwinStrSetUTF8ModeFile(iupStrBoolean(value));
+    return 0;
+  }
   if (iupStrEqual(name, "DLL_HINSTANCE"))
   {
     iupwin_dll_hinstance = (HINSTANCE)value;
@@ -379,6 +385,14 @@ char* iupdrvGetGlobal(const char* name)
   if (iupStrEqual(name, "TRUECOLORCANVAS"))
   {
     return iupStrReturnBoolean(iupdrvGetScreenDepth() > 8);
+  }
+  if (iupStrEqual(name, "UTF8MODE"))
+  {
+    return iupStrReturnBoolean(iupwinStrGetUTF8Mode());
+  }
+  if (iupStrEqual(name, "UTF8MODE_FILE"))
+  {
+    return iupStrReturnBoolean(iupwinStrGetUTF8ModeFile());
   }
   if (iupStrEqual(name, "DLL_HINSTANCE"))
   {

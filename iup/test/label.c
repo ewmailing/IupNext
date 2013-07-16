@@ -100,7 +100,10 @@ void LabelTest(void)
   IupSetAttribute(box1, "PADDING", "5x5");
 
   label = IupLabel(NULL);
-  IupSetAttribute(label, "TITLE", "Text Labels (ηγν)");
+  if (IupGetInt(NULL, "UTF8MODE"))
+    IupSetAttribute(label, "TITLE", "Text Labels (Γ§Γ£ΓµΓ΅Γ³Γ©)");
+  else
+    IupSetAttribute(label, "TITLE", "Text Labels (ηγυασι)");
   //IupSetAttribute(label, "BGCOLOR", IupGetGlobal("DLGBGCOLOR"));
   IupSetAttribute(label, "PADDING", "0x0");
   IupSetAttribute(label, "TIP", "Text Label");
