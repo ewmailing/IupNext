@@ -33,8 +33,6 @@ static int iupwin_utf8mode_file = 0;
 #endif
 
 /* TODOUTF8:
-1) Na edição de texto, na callback de action, quando iupwin_utf8mode=0
-   parece que os acentos estão sendo retornados errados.
 2) Testar arquivos com "çã" no nome do arquivo em 
      FAT
      NTFS

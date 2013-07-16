@@ -337,8 +337,8 @@ void TextTest(void)
 //  IupSetAttribute(mltline, "FONT", "Arial, 12");
 //    IupSetAttribute(mltline, "FORMATTING", "YES");
 
-//  formatting = 0;
-  formatting = 1;
+  formatting = 0;
+//  formatting = 1;
   if (formatting)          /* just to make easier to comment this section */
   {
     /* formatting before Map */
