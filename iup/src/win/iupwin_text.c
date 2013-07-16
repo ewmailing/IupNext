@@ -735,7 +735,7 @@ static int winTextSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* winTextGetValueAttrib(Ihandle* ih)
 {
-  char* str = iupwinStrFromSystem(iupwinGetWindowText(ih->handle));  
+  char* str = iupStrReturnStr(iupwinStrFromSystem(iupwinGetWindowText(ih->handle)));  
   if (str)
   {
     /* notice that GetWindowText always returns in DOS format */
@@ -810,7 +810,7 @@ static char* winTextGetSelectedTextAttrib(Ihandle* ih)
   }
 
   {
-    char* str = iupwinStrFromSystem(tstr);
+    char* str = iupStrReturnStr(iupwinStrFromSystem(tstr));
 
     /* notice that GetWindowText always returns in DOS format */
     if (ih->data->is_multiline)
@@ -871,7 +871,7 @@ static char* winTextGetLineValueAttrib(Ihandle* ih)
     lin--; /* from IUP to Win */
     len = SendMessage(ih->handle, EM_GETLINE, (WPARAM)lin, (LPARAM)str);
     str[len]=0;
-    return iupwinStrFromSystem(str);
+    return iupStrReturnStr(iupwinStrFromSystem(str));
   }
   else
     return winTextGetValueAttrib(ih);
@@ -1770,12 +1770,13 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     {
       if (IupGetCallback(ih,"ACTION") || ih->data->mask) /* test before to avoid alocate clipboard text memory */
       {
-        char* insert_value = iupwinGetClipboardText(ih);
+        Ihandle* clipboard = IupClipboard();
+        char* insert_value = IupGetAttribute(clipboard, "TEXT");
+        IupDestroy(clipboard);
         if (insert_value)
         {
           if (!winTextCallActionCb(ih, insert_value, 0))
             ret = 1;
-          free(insert_value);
         }
       }
 

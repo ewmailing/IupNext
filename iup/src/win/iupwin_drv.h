@@ -128,7 +128,6 @@ TCHAR* iupwinGetWindowText(HWND hWnd);
 int iupwinGetColorRef(Ihandle *ih, char *name, COLORREF *color);
 int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr);
 
-char* iupwinGetClipboardText(Ihandle* ih);
 int iupwinSetAutoRedrawAttrib(Ihandle* ih, const char* value);
 void iupwinSetMnemonicTitle(Ihandle *ih, int pos, const char* value);
 

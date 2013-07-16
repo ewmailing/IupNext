@@ -279,6 +279,7 @@ static void new_font(void)
 
 static void new_file(char* dialogtype, int preview)
 {
+  char* v;
   Ihandle *dlg = IupFileDlg(); 
 
   IupSetAttribute(dlg, "PARENTDIALOG", "_MAIN_DIALOG_TEST_");
@@ -330,13 +331,13 @@ static void new_file(char* dialogtype, int preview)
   {
     case 1: 
       printf("OK\n");
-      printf("  New file - VALUE(%s)\n", IupGetAttribute(dlg, "VALUE")); 
-      printf("  DIRECTORY(%s)\n", IupGetAttribute(dlg, "DIRECTORY")); 
+      printf("  New file - VALUE(%s)\n", v = IupGetAttribute(dlg, "VALUE")); 
+      printf("  DIRECTORY(%s)\n", v = IupGetAttribute(dlg, "DIRECTORY")); 
       break; 
     case 0 : 
       printf("OK\n");
-      printf("  File exists - VALUE(%s)\n", IupGetAttribute(dlg, "VALUE"));
-      printf("  DIRECTORY(%s)\n", IupGetAttribute(dlg, "DIRECTORY")); 
+      printf("  File exists - VALUE(%s)\n", v = IupGetAttribute(dlg, "VALUE"));
+      printf("  DIRECTORY(%s)\n", v = IupGetAttribute(dlg, "DIRECTORY")); 
       break; 
     case -1 : 
       printf("CANCEL\n");

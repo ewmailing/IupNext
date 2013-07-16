@@ -186,6 +186,7 @@ int main(int argc, char* argv[])
   IupOpen(&argc, &argv);
   IupControlsOpen();
 
+  IupSetGlobal("UTF8MODE", "Yes");
 //  IupSetGlobal("LANGUAGE", "PORTUGUESE");
 
   dlg = IupDialog(IupVbox(list = IupList(NULL), NULL));

@@ -1051,7 +1051,7 @@ void iupwinDropFiles(HDROP hDrop, Ihandle *ih)
 
     DragQueryFile(hDrop, i, filename, numchar+1);
 
-    ret = cb(ih, iupwinStrFromSystem(filename), numFiles-i-1, (int) point.x, (int) point.y); 
+    ret = cb(ih, iupwinStrFromSystemFilename(filename), numFiles-i-1, (int) point.x, (int) point.y); 
 
     free(filename);
 

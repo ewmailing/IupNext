@@ -397,14 +397,14 @@ static char* winListGetIdValueAttrib(Ihandle* ih, int id)
 {
   int pos = iupListGetPosAttrib(ih, id);
   if (pos >= 0)
-    return winListGetText(ih, pos);
+    return iupStrReturnStr(winListGetText(ih, pos));
   return NULL;
 }
 
 static char* winListGetValueAttrib(Ihandle* ih)
 {
   if (ih->data->has_editbox)
-    return iupwinStrFromSystem(iupwinGetWindowText(ih->handle));
+    return iupStrReturnStr(iupwinStrFromSystem(iupwinGetWindowText(ih->handle)));
   else 
   {
     if (ih->data->is_dropdown || !ih->data->is_multiple)
@@ -664,7 +664,7 @@ static char* winListGetSelectedTextAttrib(Ihandle* ih)
     str[end] = 0; /* returns only the selected text */
     str += start;
 
-    return iupwinStrFromSystem(str);
+    return iupStrReturnStr(iupwinStrFromSystem(str));
   }
   else
     return NULL;
@@ -1364,12 +1364,13 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
     {
       if (IupGetCallback(ih, "EDIT_CB") || ih->data->mask) /* test before to avoid alocate clipboard text memory */
       {
-        char* insert_value = iupwinGetClipboardText(ih);
+        Ihandle* clipboard = IupClipboard();
+        char* insert_value = IupGetAttribute(clipboard, "TEXT");
+        IupDestroy(clipboard);
         if (insert_value)
         {
           if (!winListCallEditCb(ih, cbedit, insert_value, 0))
             ret = 1;
-          free(insert_value);
         }
       }
 

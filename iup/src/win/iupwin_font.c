@@ -259,6 +259,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
 
     HDC hdc = winFontGetDC(ih);
     HFONT oldhfont = (HFONT)SelectObject(hdc, winfont->hFont);
+    TCHAR* wstr = iupwinStrToSystem(str);
 
     do
     {
@@ -266,8 +267,10 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
       if (len)
       {
         size.cx = 0;
-        GetTextExtentPoint32(hdc, iupwinStrToSystemLen(curstr, len), len, &size);
+        GetTextExtentPoint32(hdc, wstr, len, &size);
         max_w = iupMAX(max_w, size.cx);
+
+        wstr += len+1;
       }
 
       curstr = nextstr;
@@ -287,8 +290,7 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
   HFONT oldhfont, hFont;
   SIZE size;
   int len;
-  char* line_end;
-
+  char* line_end;        
   if (!str || str[0]==0)
     return 0;
 

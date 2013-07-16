@@ -22,30 +22,23 @@
   In the simple and ideal world we need only the Unicode API and to handle the conversion when necessary.
   The same conversion would exist anyway if using the ANSI API.
 
-- By default, file I/O functions use ANSI file names. 
+- The standard file I/O functions, like fopen, use ANSI file names. 
   But if your files have Unicode names, then you may consider using UTF-8 
   so later the aplication can recover the original Unicode version.
 */
 #ifdef UNICODE
-static int iupwin_utf8mode = 1;  // somente para facilitar o uso dos testes existentes, depois remover
-//static int iupwin_utf8mode = 0;    /* default is NOT using UTF-8 */
+static int iupwin_utf8mode = 0;    /* default is NOT using UTF-8 */
 static int iupwin_utf8mode_file = 0;  
 #endif
 
 /* TODOUTF8:
-2) Testar arquivos com "çã" no nome do arquivo em 
-     FAT
-     NTFS
-3) clipboard com UTF-8 ou Unicode?
-   ==> Ficou CF_TEXT para UTF-8, estão [OK] as conversões para Copy e Paste!
-4) testar ACTION callback do IupText
-     ANSI
-     UNICODE sem UTF8
-     UNICODE com UTF8
+   testar ACTION callback do IupText
+     Windows ANSI
+     Windows UNICODE sem UTF8
+     Windows UNICODE com UTF8
      GTK sem UTF8
      GTK com UTF8
      Motif
-
 -------------------------------
 - outros controles
     iupglcanvas
@@ -82,7 +75,7 @@ int iupwinStrGetUTF8ModeFile(void)
 
 static void* winStrGetMemory(int size)
 {
-#define MAX_BUFFERS 10
+#define MAX_BUFFERS 50
   static void* buffers[MAX_BUFFERS];
   static int buffers_sizes[MAX_BUFFERS];
   static int buffers_index = -1;
@@ -246,7 +239,7 @@ char* iupwinStrFromSystem(const TCHAR* wstr)
   if (wstr)
   {
     int len = (int)wcslen(wstr);
-    char* str = (char*)winStrGetMemory((2*len+1) * sizeof(char));    /* str must has a large buffer */
+    char* str = (char*)winStrGetMemory((2*len+1) * sizeof(char));    /* str must has a large buffer because the UTF-8 string can be larger than the original */
     winStrWide2Char(wstr, str, len);
     return str;
   }

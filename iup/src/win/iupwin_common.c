@@ -671,7 +671,7 @@ TCHAR* iupwinGetWindowText(HWND hWnd)
 
 char* iupdrvBaseGetTitleAttrib(Ihandle* ih)
 {
-  return iupwinStrFromSystem(iupwinGetWindowText(ih->handle));
+  return iupStrReturnStr(iupwinStrFromSystem(iupwinGetWindowText(ih->handle)));
 }
 
 #ifndef IDC_HAND
@@ -942,35 +942,6 @@ int iupwinCreateWindow(Ihandle* ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD 
   iupwinChangeWndProc(ih, iupwinBaseWndProc);
 
   return 1;
-}
-
-char* iupwinGetClipboardText(Ihandle* ih)
-{
-  HANDLE Handle;
-  char* str;
-
-  if (!IsClipboardFormatAvailable(CF_TEXT))
-    return NULL;
-
-  if (!OpenClipboard(ih->handle))
-    return NULL;
-
-  Handle = GetClipboardData(CF_TEXT);
-  if (!Handle)
-  {
-    CloseClipboard();
-    return NULL;
-  }
-  
-  str = (char*)GlobalLock(Handle);
-  str = iupStrDup(str);
-  
-  GlobalUnlock(Handle);
-  
-  CloseClipboard();
-
-  return str;     //TODOUTF8
- // return iupwinStrFromSystem(str);
 }
 
 void iupdrvSendKey(int key, int press)
