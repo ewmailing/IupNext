@@ -306,7 +306,7 @@ static Atom* motCreateTargetList(const char *value, int *count)
 
   *count = 0;
 
-  strcpy(valueCopy, "%s", value);
+  strcpy(valueCopy, value);
   while(iupStrToStrStr(valueCopy, valueTemp, valueCopy, ',') > 0)
   {
     targetlist[*count] = XInternAtom(iupmot_display, (char*)valueTemp, False);

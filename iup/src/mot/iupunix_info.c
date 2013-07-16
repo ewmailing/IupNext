@@ -17,10 +17,10 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
+
 #include <sys/utsname.h>
 #include <unistd.h>
 #include <errno.h>
-#include <sys/stat.h>
 #include <langinfo.h>
 
 #include "iup_str.h"

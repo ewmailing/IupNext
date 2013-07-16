@@ -36,9 +36,6 @@ static int iupwin_utf8mode_file = 0;
      Windows ANSI
      Windows UNICODE sem UTF8
      Windows UNICODE com UTF8
-     GTK sem UTF8
-     GTK com UTF8
-     Motif
 -------------------------------
 - outros controles
     iupglcanvas
