@@ -311,7 +311,7 @@ static double iMatrixConvertFunc(double number, int quantity, int unit_from, int
   /* this function is called only when unit_from!=unit_to */
   const ImatExUnit* units = imatex_quantities[quantity].units;
 
-  if (quantity == IMATEX_TEMPERATURE)  /* the only quantity that we know that there is an offset for convertion */
+  if (quantity == IMATEX_TEMPERATURE)  /* the only quantity that we know that there is an offset for conversion */
   {
     if (unit_from!=0)
     {

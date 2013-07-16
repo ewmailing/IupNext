@@ -656,14 +656,14 @@ void iupwinSetMnemonicTitle(Ihandle *ih, int pos, const char* value)
   }
 }
 
-char* iupwinGetWindowText(HWND hWnd)
+TCHAR* iupwinGetWindowText(HWND hWnd)
 {
-  int nc = GetWindowTextLength(hWnd);
-  if (nc)
+  int len = GetWindowTextLength(hWnd);
+  if (len)
   {
-    TCHAR* str = (TCHAR*)iupStrGetMemory((nc+1)*sizeof(TCHAR));
-    GetWindowText(hWnd, str, nc+1);
-    return iupwinStrFromSystem(str);
+    TCHAR* str = (TCHAR*)iupStrGetMemory((len+1)*sizeof(TCHAR));
+    GetWindowText(hWnd, str, len+1);
+    return str;
   }
   else
     return NULL;
@@ -671,7 +671,7 @@ char* iupwinGetWindowText(HWND hWnd)
 
 char* iupdrvBaseGetTitleAttrib(Ihandle* ih)
 {
-  return iupwinGetWindowText(ih->handle);
+  return iupwinStrFromSystem(iupwinGetWindowText(ih->handle));
 }
 
 #ifndef IDC_HAND
@@ -949,8 +949,6 @@ char* iupwinGetClipboardText(Ihandle* ih)
   HANDLE Handle;
   char* str;
 
-  //TODOUTF8 como fica? usa CF_UNICODETEXT?
-
   if (!IsClipboardFormatAvailable(CF_TEXT))
     return NULL;
 
@@ -971,7 +969,8 @@ char* iupwinGetClipboardText(Ihandle* ih)
   
   CloseClipboard();
 
-  return str;
+  return str;     //TODOUTF8
+ // return iupwinStrFromSystem(str);
 }
 
 void iupdrvSendKey(int key, int press)
@@ -1151,4 +1150,3 @@ void iupdrvSleep(int time)
 {
   Sleep(time);
 }
-

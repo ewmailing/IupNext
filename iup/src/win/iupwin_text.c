@@ -490,7 +490,7 @@ static void winTextUpdateFontFormat(CHARFORMAT2* charformat, const char* value)
 
 static int winTextSetLinColToPosition(Ihandle *ih, int lin, int col)
 {
-  int linmax, colmax, lineindex;
+  int linmax, colmax, lineindex, wpos;
 
   lin--; /* IUP starts at 1 */
   col--;
@@ -505,38 +505,41 @@ static int winTextSetLinColToPosition(Ihandle *ih, int lin, int col)
   if (col > colmax)
     col = colmax;    /* after the last character */
 
-  return lineindex + col;
+  /* pos here includes the line breaks in 1 or 2 configuration */
+  wpos = lineindex + col;
+  return wpos;
 }
 
-static void winTextGetLinColFromPosition(Ihandle* ih, int pos, int* lin, int* col)
+static void winTextGetLinColFromPosition(Ihandle* ih, int wpos, int* lin, int* col)
 {
   /* here "pos" must contains the extra chars if the case */
+  /* pos here includes the line breaks in 1 or 2 configuration */
   int lineindex;
 
   if (ih->data->has_formatting)
-    *lin = SendMessage(ih->handle, EM_EXLINEFROMCHAR, (WPARAM)0, (LPARAM)pos);
+    *lin = SendMessage(ih->handle, EM_EXLINEFROMCHAR, (WPARAM)0, (LPARAM)wpos);
   else
-    *lin = SendMessage(ih->handle, EM_LINEFROMCHAR, (WPARAM)pos, (LPARAM)0L);
+    *lin = SendMessage(ih->handle, EM_LINEFROMCHAR, (WPARAM)wpos, (LPARAM)0L);
 
   lineindex = SendMessage(ih->handle, EM_LINEINDEX, (WPARAM)(*lin), (LPARAM)0L);
-  *col = pos - lineindex;  /* lineindex is at the first character of the line */
+  *col = wpos - lineindex;  /* lineindex is at the first character of the line */
 
   (*lin)++; /* IUP starts at 1 */
   (*col)++;
 }
 
-static int winTextRemoveExtraChars(Ihandle* ih, int pos)
+static int winTextRemoveExtraChars(Ihandle* ih, int wpos)
 {
   /* called only if not single line and not formatting */
-  int lin = SendMessage(ih->handle, EM_LINEFROMCHAR, (WPARAM)pos, (LPARAM)0L);
-  pos -= lin;  /* remove \r characters from count */
+  int lin = SendMessage(ih->handle, EM_LINEFROMCHAR, (WPARAM)wpos, (LPARAM)0L);
+  int pos = wpos - lin;  /* remove \r characters from count */
   return pos;
 }
 
 static int winTextAddExtraChars(Ihandle* ih, int pos)
 {
   /* called only if not single line and not formatting */
-  int lin, clin;
+  int lin, clin, wpos;
 
   clin = SendMessage(ih->handle, EM_LINEFROMCHAR, (WPARAM)pos, (LPARAM)0L);
 
@@ -548,32 +551,32 @@ static int winTextAddExtraChars(Ihandle* ih, int pos)
     clin = SendMessage(ih->handle, EM_LINEFROMCHAR, (WPARAM)(pos+lin+1), (LPARAM)0L);   /* add one because we can be at the last character */
   } while (clin != lin);                                                                /* and it will not change to the next line by 1 */
 
-  pos += lin;  /* add \r characters from count */
-  return pos;
+  wpos = pos + lin;  /* add \r characters from count */
+  return wpos;
 }
 
-static int winTextGetCaretPos(Ihandle* ih)
+static int winTextGetCaretPosition(Ihandle* ih)
 {
-  int pos = 0;
+  int wpos = 0;
   POINT point;
 
   if (GetFocus() != ih->handle || !GetCaretPos(&point))
   {
     /* if does not have the focus, or could not get caret position,
        then use the selection start position */
-    SendMessage(ih->handle, EM_GETSEL, (WPARAM)&pos, 0);
+    SendMessage(ih->handle, EM_GETSEL, (WPARAM)&wpos, 0);
   }
   else
   {
     if (ih->data->has_formatting)
     {
-      pos = SendMessage(ih->handle, EM_CHARFROMPOS, 0, (LPARAM)&point);
+      wpos = SendMessage(ih->handle, EM_CHARFROMPOS, 0, (LPARAM)&point);
     }
     else if(point.x < 0 && point.y < 0)
     {
     /* if the caret position is located outside the visible client area,
        then use the selection start position */
-      SendMessage(ih->handle, EM_GETSEL, (WPARAM)&pos, 0);
+      SendMessage(ih->handle, EM_GETSEL, (WPARAM)&wpos, 0);
     }
     else
     {
@@ -584,27 +587,32 @@ static int winTextGetCaretPos(Ihandle* ih)
         point.y += 5;
 
       ret = SendMessage(ih->handle, EM_CHARFROMPOS, 0, MAKELPARAM(point.x, point.y));
-      pos = LOWORD(ret);
+      wpos = LOWORD(ret);
     }
   }
 
-  return pos;
+  /* pos here includes the line breaks in 1 or 2 configuration */
+  return wpos;
 }
 
 static int winTextGetCaret(Ihandle* ih, int *lin, int *col)
 {
-  int pos = winTextGetCaretPos(ih);
+  int pos;
+  int wpos = winTextGetCaretPosition(ih);
 
   if (ih->data->is_multiline)
   {
-    winTextGetLinColFromPosition(ih, pos, lin, col);
+    winTextGetLinColFromPosition(ih, wpos, lin, col);
 
     if (!ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-      pos = winTextRemoveExtraChars(ih, pos);
+      pos = winTextRemoveExtraChars(ih, wpos);
+    else
+      pos = wpos;
   }
   else
   {
-    *col = pos;
+    pos = wpos;
+    *col = wpos;
     (*col)++;  /* IUP starts at 1 */
     *lin = 1;
   }
@@ -612,63 +620,88 @@ static int winTextGetCaret(Ihandle* ih, int *lin, int *col)
   return pos;
 }
 
-static void winTextGetSelection(Ihandle* ih, int *start, int *end)
+static int winTextGetSelection(Ihandle* ih, int *start, int *end)
 {
   *start = 0;
   *end = 0;
 
   SendMessage(ih->handle, EM_GETSEL, (WPARAM)start, (LPARAM)end);
+  if (*start == *end)
+    return 0;
 
   if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
   {
     (*start) = winTextRemoveExtraChars(ih, *start);
     (*end) = winTextRemoveExtraChars(ih, *end);
   }
+
+  return 1;
+}
+
+static void winTextSetSelection(Ihandle* ih, int start, int end)
+{
+  if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
+  {
+    start = winTextAddExtraChars(ih, start);
+    end = winTextAddExtraChars(ih, end);
+  }
+
+  SendMessage(ih->handle, EM_SETSEL, (WPARAM)start, (LPARAM)end);
 }
 
 void iupdrvTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
-  *pos = winTextSetLinColToPosition(ih, lin, col);
+  int wpos = winTextSetLinColToPosition(ih, lin, col);
 
   if (!ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-    *pos = winTextRemoveExtraChars(ih, *pos);
+    *pos = winTextRemoveExtraChars(ih, wpos);
+  else
+    *pos = wpos;
 }
 
 void iupdrvTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
 {
-  if (!ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-    pos = winTextAddExtraChars(ih, pos);
+  int wpos;
 
-  winTextGetLinColFromPosition(ih, pos, lin, col);
+  if (!ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
+    wpos = winTextAddExtraChars(ih, pos);
+  else
+    wpos = pos;
+
+  winTextGetLinColFromPosition(ih, wpos, lin, col);
 }
 
 static int winTextConvertXYToPos(Ihandle* ih, int x, int y)
 {
-  int pos;
+  int wpos, pos;
 
   if (ih->data->has_formatting)
   {
     POINT point;
     point.x = x;
     point.y = y;
-    pos = (int)SendMessage(ih->handle, EM_CHARFROMPOS, 0, (LPARAM)&point);
+    wpos = (int)SendMessage(ih->handle, EM_CHARFROMPOS, 0, (LPARAM)&point);
   }
   else
   {
     LRESULT ret = SendMessage(ih->handle, EM_CHARFROMPOS, 0, MAKELPARAM(x, y));
-    pos = LOWORD(ret);
+    wpos = LOWORD(ret);
   }
 
   if (ih->data->is_multiline)
   {
     if (!ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-      pos = winTextRemoveExtraChars(ih, pos);
+      pos = winTextRemoveExtraChars(ih, wpos);
+    else
+      pos = wpos;
   }
+  else
+    pos = wpos;
 
   return pos;
 }
 
-static char* winTextStrConvert(Ihandle* ih, const char* str)
+static TCHAR* winTextStrConvertToSystem(Ihandle* ih, const char* str)
 {
   if (ih->data->is_multiline)
   {
@@ -676,14 +709,14 @@ static char* winTextStrConvert(Ihandle* ih, const char* str)
     {
       if (strchr(str, '\n')!=NULL)
       {
-        str = iupStrDup(str);
+        str = iupStrReturnStr(str);
         iupStrToMac((char*)str);
       }
     }
     else
       str = iupStrToDos(str);
   }
-  return (char*)str;
+  return iupwinStrToSystem(str);
 }
 
 /***********************************************************************************************/
@@ -691,19 +724,18 @@ static char* winTextStrConvert(Ihandle* ih, const char* str)
 
 static int winTextSetValueAttrib(Ihandle* ih, const char* value)
 {
-  char* str;
+  TCHAR* str;
   if (!value) value = "";
-  str = winTextStrConvert(ih, value);
+  str = winTextStrConvertToSystem(ih, value);
   ih->data->disable_callbacks = 1;
-  SetWindowText(ih->handle, iupwinStrToSystem(str));
+  SetWindowText(ih->handle, str);
   ih->data->disable_callbacks = 0;
-  if (str != value) free(str);
   return 0;
 }
 
 static char* winTextGetValueAttrib(Ihandle* ih)
 {
-  char* str = iupwinGetWindowText(ih->handle);  
+  char* str = iupwinStrFromSystem(iupwinGetWindowText(ih->handle));  
   if (str)
   {
     /* notice that GetWindowText always returns in DOS format */
@@ -728,20 +760,26 @@ static int winTextSetPaddingAttrib(Ihandle* ih, const char* value)
     return 1; /* store until not mapped, when mapped will be set again */
 }
 
+static int winTextHasSelection(Ihandle* ih)
+{
+  int start = 0, end = 0;
+  SendMessage(ih->handle, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
+  if (start == end)
+    return 0;
+  return 1;
+}
+
 static int winTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
 {
   if (value)
   {
-    int start = 0, end = 0;
-    char* str;
+    TCHAR* str;
     
-    SendMessage(ih->handle, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
-    if (start == end)
+    if (!winTextHasSelection(ih))
       return 0;
 
-    str = winTextStrConvert(ih, value);
+    str = winTextStrConvertToSystem(ih, value);
     SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)str);
-    if (str != value) free(str);
   }
   return 0;
 }
@@ -749,7 +787,7 @@ static int winTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
 static char* winTextGetSelectedTextAttrib(Ihandle* ih)
 {
   int start = 0, end = 0;
-  char* str;
+  TCHAR* tstr;
     
   SendMessage(ih->handle, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
   if (start == end)
@@ -757,23 +795,28 @@ static char* winTextGetSelectedTextAttrib(Ihandle* ih)
 
   if (ih->data->has_formatting)
   {
-    TCHAR* tstr = (TCHAR*)iupStrGetMemory((end-start+1)*sizeof(TCHAR));
+    tstr = (TCHAR*)iupStrGetMemory((end-start+1)*sizeof(TCHAR));
     SendMessage(ih->handle, EM_GETSELTEXT, 0, (LPARAM)tstr);
-    str = iupwinStrFromSystem(tstr);
   }
   else
   {
-    str = iupwinGetWindowText(ih->handle);  
+    tstr = iupwinGetWindowText(ih->handle);  
+    if (!tstr)
+      return NULL;
 
-    /* returns only the selected text TODOUTF8 */
-    str[end] = 0;
-    str += start;
+    /* returns only the selected text */
+    tstr[end] = 0;
+    tstr += start;
   }
 
-  /* notice that GetWindowText always returns in DOS format */
-  if (ih->data->is_multiline)
-    iupStrToUnix(str);
-  return str;
+  {
+    char* str = iupwinStrFromSystem(tstr);
+
+    /* notice that GetWindowText always returns in DOS format */
+    if (ih->data->is_multiline)
+      iupStrToUnix(str);
+    return str;
+  }
 }
 
 static int winTextSetNCAttrib(Ihandle* ih, const char* value)
@@ -797,10 +840,10 @@ static int winTextSetNCAttrib(Ihandle* ih, const char* value)
 static char* winTextGetCountAttrib(Ihandle* ih)
 {
   int count = GetWindowTextLength(ih->handle);
-  if (ih->data->is_multiline)
+  if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
   {
     int linecount = SendMessage(ih->handle, EM_GETLINECOUNT, 0, 0L);
-    count -= linecount-1;  /* ignore 1 character at each line */
+    count -= linecount-1;  /* ignore 1 '\r' character at each line */
   }
   return iupStrReturnInt(count);
 }
@@ -821,14 +864,14 @@ static char* winTextGetLineValueAttrib(Ihandle* ih)
   if (ih->data->is_multiline)
   {
     int len, lin, col;
-    char* str = iupStrGetMemory(200);
+    TCHAR* str = (TCHAR*)iupStrGetMemory(256*sizeof(TCHAR));
     WORD* wstr = (WORD*)str;
-    *wstr = 200;
+    *wstr = 256;
     winTextGetCaret(ih, &lin, &col); 
     lin--; /* from IUP to Win */
     len = SendMessage(ih->handle, EM_GETLINE, (WPARAM)lin, (LPARAM)str);
     str[len]=0;
-    return str;
+    return iupwinStrFromSystem(str);
   }
   else
     return winTextGetValueAttrib(ih);
@@ -922,31 +965,15 @@ static int winTextSetSelectionPosAttrib(Ihandle* ih, const char* value)
   if(start<0 || end<0) 
     return 0;
 
-  if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-  {
-    start = winTextAddExtraChars(ih, start);
-    end = winTextAddExtraChars(ih, end);
-  }
-
-  SendMessage(ih->handle, EM_SETSEL, (WPARAM)start, (LPARAM)end);
-
+  winTextSetSelection(ih, start, end);
   return 0;
 }
 
 static char* winTextGetSelectionPosAttrib(Ihandle* ih)
 {
   int start = 0, end = 0;
-
-  SendMessage(ih->handle, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
-  if (start == end)
+  if (!winTextGetSelection(ih, &start, &end))
     return NULL;
-
-  if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-  {
-    start = winTextRemoveExtraChars(ih, start);
-    end = winTextRemoveExtraChars(ih, end);
-  }
-
   return iupStrReturnIntInt(start, end, ':');
 }
 
@@ -955,35 +982,32 @@ static int winTextSetInsertAttrib(Ihandle* ih, const char* value)
   if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (value)
-  {
-    char* str = winTextStrConvert(ih, value);
-    SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)str);
-    if (str != value) free(str);
-  }
+    SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)winTextStrConvertToSystem(ih, value));
   return 0;
 }
 
 static int winTextSetAppendAttrib(Ihandle* ih, const char* value)
 {
-  int pos;
-  char* str;
+  int wpos;
+  TCHAR* str;
+
   if (!ih->handle)  /* do not do the action before map */
     return 0;
+
   if (!value) value = "";
-  str = winTextStrConvert(ih, value);
+  str = winTextStrConvertToSystem(ih, value);
   
-  pos = GetWindowTextLength(ih->handle)+1;
-  SendMessage(ih->handle, EM_SETSEL, (WPARAM)pos, (LPARAM)pos);
-  if (ih->data->is_multiline && ih->data->append_newline && pos!=1)
+  wpos = GetWindowTextLength(ih->handle)+1;
+  SendMessage(ih->handle, EM_SETSEL, (WPARAM)wpos, (LPARAM)wpos);
+  if (ih->data->is_multiline && ih->data->append_newline && wpos!=1)
   {
     if (ih->data->has_formatting)
-      SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)FALSE, (LPARAM)"\r");
+      SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)FALSE, (LPARAM)TEXT("\r"));
     else
-      SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)FALSE, (LPARAM)"\r\n");
+      SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)FALSE, (LPARAM)TEXT("\r\n"));
   }
   SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)str);
 
-  if (str != value) free(str);
   return 0;
 }
 
@@ -1014,7 +1038,7 @@ static int winTextSetTabSizeAttrib(Ihandle* ih, const char* value)
 
 static int winTextSetCaretAttrib(Ihandle* ih, const char* value)
 {
-  int pos = 1;
+  int wpos;
 
   if (!value)
     return 0;
@@ -1026,16 +1050,18 @@ static int winTextSetCaretAttrib(Ihandle* ih, const char* value)
     if (lin < 1) lin = 1;
     if (col < 1) col = 1;
 
-    pos = winTextSetLinColToPosition(ih, lin, col);
+    wpos = winTextSetLinColToPosition(ih, lin, col);
   }
   else
   {
+    int pos = 1;
     iupStrToInt(value, &pos);
     if (pos < 1) pos = 1;
     pos--; /* IUP starts at 1 */
+    wpos = pos;
   }
 
-  SendMessage(ih->handle, EM_SETSEL, (WPARAM)pos, (LPARAM)pos);
+  SendMessage(ih->handle, EM_SETSEL, (WPARAM)wpos, (LPARAM)wpos);
   SendMessage(ih->handle, EM_SCROLLCARET, 0L, 0L);
 
   return 0;
@@ -1062,20 +1088,19 @@ static int winTextSetCaretPosAttrib(Ihandle* ih, const char* value)
   iupStrToInt(value, &pos);    /* be permissive in SetCaret, do not abort if invalid */
   if (pos < 0) pos = 0;
 
-  if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-    pos = winTextAddExtraChars(ih, pos);
-
-  SendMessage(ih->handle, EM_SETSEL, (WPARAM)pos, (LPARAM)pos);
+  winTextSetSelection(ih, pos, pos);
   SendMessage(ih->handle, EM_SCROLLCARET, 0L, 0L);
-
   return 0;
 }
 
 static char* winTextGetCaretPosAttrib(Ihandle* ih)
 {
-  int pos = winTextGetCaretPos(ih);
+  int pos;
+  int wpos = winTextGetCaretPosition(ih);
   if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-    pos = winTextRemoveExtraChars(ih, pos);
+    pos = winTextRemoveExtraChars(ih, wpos);
+  else
+    pos = wpos;
   return iupStrReturnInt(pos);
 }
 
@@ -1111,7 +1136,6 @@ static int winTextSetScrollToAttrib(Ihandle* ih, const char* value)
   col--;
 
   winTextScrollTo(ih, lin, col);
-
   return 0;
 }
 
@@ -1125,10 +1149,8 @@ static int winTextSetScrollToPosAttrib(Ihandle* ih, const char* value)
   iupStrToInt(value, &pos);
   if (pos < 0) pos = 0;
 
-  if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-    pos = winTextAddExtraChars(ih, pos);
+  iupdrvTextConvertPosToLinCol(ih, pos, &lin, &col);
 
-  winTextGetLinColFromPosition(ih, pos, &lin, &col);
   lin--;  /* return to Windows referece */
   col--;
 
@@ -1565,82 +1587,21 @@ static void winTextCallCaretCb(Ihandle* ih)
   }
 }
 
-/* TODOUTF8
-  mudar 
-    winListCallEditCb
-    iupwinGetClipboardText
-    winTextCallActionCb
-  para que insert_value seja TCHAR*
-    
-  criar 
-    iupwinStrDup
-    iupwinStrInsert
-    iupwinStrRemove
-  para processar TCHAR*
-
-  TCHAR* new_value
-
-  Só na hora de chamar a callback usa iupwinStrFromSystem
-*/
-static int winTextCallActionCb(Ihandle* ih, const char* insert_value, int key, int dir)
+static int winTextCallActionCb(Ihandle* ih, char* insert_value, int remove_dir)
 {
-  int start, end, ret = 1;
-  char *value, *new_value;
-
+  int ret, start, end;
   IFnis cb = (IFnis)IupGetCallback(ih, "ACTION");
-  if (!cb && !ih->data->mask)
-    return 1;
-
-  winTextGetSelection(ih, &start, &end);   // TODOUTF8 indexing?
-
-  value = winTextGetValueAttrib(ih);
-
-  if (value[0]==0)
-    new_value = iupStrDup(insert_value);
-  else if (insert_value)
-    new_value = iupStrInsert(value, insert_value, start, end);
-  else
+  winTextGetSelection(ih, &start, &end);
+  ret = iupEditCallActionCb(ih, cb, insert_value, start, end, (char*)ih->data->mask, ih->data->nc, remove_dir, iupwinStrGetUTF8Mode());
+  if (ret == 0)
+    return 0;
+  if (ret == -1)
   {
-    new_value = value;
-    iupStrRemove(value, start, end, dir);
+    WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
+    CallWindowProc(oldProc, ih->handle, WM_CHAR, ret, 0);  /* replace key */
+    return 0;
   }
-
-  if (!new_value)
-    return 0; /* abort */
-
-  if (ih->data->nc && (int)strlen(new_value) > ih->data->nc)
-  {
-    if (new_value != value) free(new_value);
-    return 0; /* abort */
-  }
-
-  if (ih->data->mask && iupMaskCheck(ih->data->mask, new_value)==0)
-  {
-    if (new_value != value) free(new_value);
-    return 0; /* abort */
-  }
-
-  if (cb)
-  {
-    int cb_ret = cb(ih, key, new_value);    //TODOUTF8 translate UTF-8 key?
-    if (cb_ret==IUP_IGNORE)
-      ret = 0;     /* abort processing */
-    else if (cb_ret==IUP_CLOSE)
-    {
-      IupExitLoop();
-      ret = 0;     /* abort processing */
-    }
-    else if (cb_ret!=0 && key!=0 && 
-             cb_ret != IUP_DEFAULT && cb_ret != IUP_CONTINUE)  
-    {
-      WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
-      CallWindowProc(oldProc, ih->handle, WM_CHAR, cb_ret, 0);  /* replace key */
-      ret = 0;     /* abort processing */
-    }
-  }
-
-  if (new_value != value) free(new_value);
-  return ret;
+  return 1;
 }
 
 static int winTextSpinWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
@@ -1705,7 +1666,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
 
       if (c == TEXT('\b'))
       {              
-        if (!winTextCallActionCb(ih, NULL, 0, -1))
+        if (!winTextCallActionCb(ih, NULL, -1))
           ret = 1;
       }
       else if (c == TEXT('\n') || c == TEXT('\r'))
@@ -1717,7 +1678,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
           insert_value[0] = '\n';
           insert_value[1] = 0;
 
-          if (!winTextCallActionCb(ih, insert_value, wp, 1))
+          if (!winTextCallActionCb(ih, insert_value, 0))
             ret = 1;
         }
       }
@@ -1730,7 +1691,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
         insert_value[0] = c;
         insert_value[1] = 0;
 
-        if (!winTextCallActionCb(ih, iupwinStrFromSystem(insert_value), wp, 1))
+        if (!winTextCallActionCb(ih, iupwinStrFromSystem(insert_value), 0))
           ret = 1;
       }
 
@@ -1741,7 +1702,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
         ret = 1;  /* abort default processing to avoid beep */
 
       if (ih->data->is_multiline && 
-          (wp=='\n' && (GetKeyState(VK_CONTROL) & 0x8000)))
+          (c==TEXT('\n') && (GetKeyState(VK_CONTROL) & 0x8000)))
         ret = 1;  /* abort default processing to avoid inserting a new line */
 
       break;
@@ -1750,7 +1711,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     {
       if (wp == VK_DELETE) /* Del does not generates a WM_CHAR */
       {
-        if (!winTextCallActionCb(ih, NULL, 0, 1))
+        if (!winTextCallActionCb(ih, NULL, 1))
           ret = 1;
       }
       else if (wp == VK_INSERT && ih->data->has_formatting)
@@ -1770,7 +1731,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
         insert_value[0] = '\n';
         insert_value[1] = 0;
 
-        if (!winTextCallActionCb(ih, insert_value, '\n', 1))
+        if (!winTextCallActionCb(ih, insert_value, 0))
           ret = 1;
       }
 
@@ -1791,7 +1752,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     }
   case WM_CLEAR:
     {
-      if (!winTextCallActionCb(ih, NULL, 0, 1))
+      if (!winTextCallActionCb(ih, NULL, 1))
         ret = 1;
 
       PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
@@ -1799,7 +1760,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     }
   case WM_CUT:
     {
-      if (!winTextCallActionCb(ih, NULL, 0, 1))
+      if (!winTextCallActionCb(ih, NULL, 1))
         ret = 1;
 
       PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
@@ -1812,7 +1773,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
         char* insert_value = iupwinGetClipboardText(ih);
         if (insert_value)
         {
-          if (!winTextCallActionCb(ih, insert_value, 0, 1))
+          if (!winTextCallActionCb(ih, insert_value, 0))
             ret = 1;
           free(insert_value);
         }

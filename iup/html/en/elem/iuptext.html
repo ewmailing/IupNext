@@ -100,7 +100,7 @@ text. Default: the global attribute TXTBGCOLOR.</p>
 
   
 <p><strong>CARET</strong> (<font size="3">non inheritable</font>):
-  Position of the insertion point. Its format depends in MULTILINE=YES. The 
+  <strong>Character </strong>position of the insertion point. Its format depends in MULTILINE=YES. The 
 	first position, <strong>lin</strong> or <strong>col</strong>, is "1".</p>
 
 <p class="info"><strong>For multiple lines</strong>: a string 
@@ -131,7 +131,7 @@ the text will be scrolled only when it receives the focus.</p>
 
   
 <p><strong>CARETPOS</strong> (<font size="3">non inheritable</font>):
-  Also the position of the insertion point, but using a zero based character 
+  Also the <strong>character </strong>position of the insertion point, but using a zero based character 
 	unique index "pos". Useful for indexing the VALUE string. See the 
 	Notes below if using UTF-8 strings in GTK. (since 
 	3.0)</p>
@@ -140,7 +140,7 @@ the text will be scrolled only when it receives the focus.</p>
 or from the clipboard. Values: "CLEAR", "CUT", "COPY" or "PASTE". 
 In Windows UNDO is also available, and REDO is available when FORMATTING=YES. 
 (since 3.0)</p>
-<p><strong>COUNT</strong> (read-only): returns the number of characters in the 
+<p><strong>COUNT</strong> (read-only): returns the number of <strong>characters</strong> in the 
 text. (since 3.5)</p>
 
 <p><strong>CUEBANNER</strong> [Windows Only] (<font size="3">non inheritable</font>): 
@@ -185,7 +185,7 @@ invalid, like "\t", "\r" and "\n". Default: NO. When set to Yes will also reset
 the SCROLLBAR attribute to Yes.</p>
 
 <p><strong>NC</strong>:
-  Maximum number of characters allowed for keyboard input, larger text can still 
+  Maximum number of <strong>characters</strong> allowed for keyboard input, larger text can still 
 be set using attributes. 
   The maximum value is the limit of the VALUE attribute. The "0" value is the 
 same as maximum. Default: maximum.</p>
@@ -221,14 +221,14 @@ Default: NO.</p>
 	supported.</p>
 
 <p><strong>SCROLLTO</strong> (<font size="3">non inheritable, write only</font>): 
-Scroll the text to make the given position visible. It uses the same format and 
+Scroll the text to make the given <strong>character </strong>position visible. It uses the same format and 
 reference of the CARET attribute ("lin:col" or "col" starting at 1). 
 In Windows, when FORMATTING=Yes &quot;col&quot; is ignored. (since 3.0)</p>
 
 <p><strong>SCROLLTOPOS</strong> (<font size="3">non inheritable, write only</font>): 
-Scroll the text to make the given position visible. It uses the same format and 
-reference of the CARETPOS attribute ("pos" starting at 0). In Windows, when 
-FORMATTING=Yes &quot;col&quot; is ignored. (since 3.0) </p>
+Scroll the text to make the given <strong>character </strong>position visible. 
+It uses the same format and reference of the CARETPOS attribute (&quot;pos&quot; starting 
+at 0). (since 3.0) </p>
 
   
 <p><strong>SELECTEDTEXT</strong> (<font size="3">non inheritable</font>):
@@ -237,7 +237,7 @@ FORMATTING=Yes &quot;col&quot; is ignored. (since 3.0) </p>
 
   
 <p><strong><a name="SELECTION">SELECTION</a></strong> (<font size="3">non inheritable</font>):
-  Selection interval. Returns NULL if there is no selection. Its format depends in MULTILINE=YES. The first position,
+  Selection interval in <strong>characters</strong>. Returns NULL if there is no selection. Its format depends in MULTILINE=YES. The first position,
 	<strong>lin</strong> or <strong>col</strong>, is "1".</p>
 
 <p class="info"><strong>For multiple lines</strong>: a string in the "<strong>lin1</strong>,<strong>col1</strong>:<strong>lin2</strong>,<strong>col2</strong>" format, where 
@@ -262,7 +262,7 @@ MULTILINE (since 3.0).</p>
 
   
 <p><strong>SELECTIONPOS</strong> (<font size="3">non inheritable</font>):
-  Same as SELECTION but using a zero based character 
+  Same as SELECTION but using a zero based <strong>character</strong> 
 	index "<strong>pos1</strong>:<strong>pos2</strong>". Useful for indexing the VALUE string. 
 	The values ALL and NONE are also accepted. See the Notes below if using 
 	UTF-8 strings in GTK. (since 3.0)</p>

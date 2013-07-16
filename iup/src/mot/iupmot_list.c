@@ -1155,8 +1155,8 @@ static void motListEnableDragDrop(Widget w)
 
 static void motListEditModifyVerifyCallback(Widget cbedit, Ihandle *ih, XmTextVerifyPtr text)
 {
-  int start, end, key = 0;
-  char *value, *new_value, *insert_value;
+  int start, end, remove_dir = 0, ret;
+  char *insert_value;
   KeySym motcode = 0;
   IFnis cb;
 
@@ -1181,61 +1181,35 @@ static void motListEditModifyVerifyCallback(Widget cbedit, Ihandle *ih, XmTextVe
   if (!cb && !ih->data->mask)
     return;
 
-  value = XmTextFieldGetString(cbedit);
   start = text->startPos;
   end = text->endPos;
   insert_value = text->text->ptr;
 
   if (motcode == XK_Delete)
   {
-    new_value = value;
-    iupStrRemove(value, start, end, 1);
+    insert_value = NULL;
+    remove_dir = 1;
   }
   else if (motcode == XK_BackSpace)
   {
-    new_value = value;
-    iupStrRemove(value, start, end, -1);
-  }
-  else
-  {
-    if (!value)
-      new_value = iupStrDup(insert_value);
-    else if (insert_value)
-      new_value = iupStrInsert(value, insert_value, start, end);
-    else
-      new_value = value;
+    insert_value = NULL;
+    remove_dir = -1;
   }
 
-  if (insert_value && insert_value[0]!=0 && insert_value[1]==0)
-    key = insert_value[0];
-
-  if (ih->data->mask && iupMaskCheck(ih->data->mask, new_value)==0)
+  ret = iupEditCallActionCb(ih, cb, insert_value, start, end, ih->data->mask, ih->data->nc, remove_dir, 0);
+  if (ret == 0)
   {
-    if (new_value != value) free(new_value);
-    XtFree(value);
     text->doit = False;     /* abort processing */
     return;
   }
 
-  if (cb)
+  if (ret != -1)
   {
-    int cb_ret = cb(ih, key, (char*)new_value);
-    if (cb_ret==IUP_IGNORE)
-      text->doit = False;     /* abort processing */
-    else if (cb_ret==IUP_CLOSE)
-    {
-      IupExitLoop();
-      text->doit = False;     /* abort processing */
-    }
-    else if (cb_ret!=0 && key!=0 && 
-             cb_ret != IUP_DEFAULT && cb_ret != IUP_CONTINUE)  
-    {
-      insert_value[0] = (char)cb_ret;  /* replace key */
-    }
+    insert_value = text->text->ptr;
+    insert_value[0] = (char)ret;  /* replace key */
   }
 
-  if (new_value != value) free(new_value);
-  XtFree(value);
+  (void)cbedit;
 }
 
 static void motListEditMotionVerifyCallback(Widget w, Ihandle* ih, XmTextVerifyCallbackStruct* textverify)
@@ -1330,7 +1304,7 @@ static void motListDefaultActionCallback(Widget w, Ihandle* ih, XmListCallbackSt
     if (cb)
     {
       int pos = call_data->item_position;  /* Here Motif already starts at 1 */
-      iupListSingleCallDblClickCallback(ih, cb, pos);
+      iupListSingleCallDblClickCb(ih, cb, pos);
     }
   }
 
@@ -1352,7 +1326,7 @@ static void motListComboBoxSelectionCallback(Widget w, Ihandle* ih, XmComboBoxCa
        return;
     }
     pos++;  /* IUP starts at 1 */
-    iupListSingleCallActionCallback(ih, cb, pos);
+    iupListSingleCallActionCb(ih, cb, pos);
   }
 
   if (!ih->data->has_editbox)
@@ -1367,7 +1341,7 @@ static void motListBrowseSelectionCallback(Widget w, Ihandle* ih, XmListCallback
   if (cb)
   {
     int pos = call_data->item_position;  /* Here Motif already starts at 1 */
-    iupListSingleCallActionCallback(ih, cb, pos);
+    iupListSingleCallActionCb(ih, cb, pos);
   }
 
   if (!ih->data->has_editbox)
@@ -1387,12 +1361,12 @@ static void motListExtendedSelectionCallback(Widget w, Ihandle* ih, XmListCallba
     int i;
 
     /* In Motif, the position of item is "plus one".
-       "iupListMultipleCallActionCallback" works with the list of selected items from the zero position.
+       "iupListMultipleCallActionCb" works with the list of selected items from the zero position.
        So, "minus one" here. */
     for (i = 0; i < sel_count; i++)
       pos[i] -= 1;
 
-    iupListMultipleCallActionCallback(ih, cb, multi_cb, pos, sel_count);
+    iupListMultipleCallActionCb(ih, cb, multi_cb, pos, sel_count);
   }
 
   if (!ih->data->has_editbox)

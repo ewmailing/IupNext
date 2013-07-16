@@ -260,16 +260,6 @@ char* iupStrConvertToC(const char* str);
 
 
 
-/** Remove the interval from the string. Done in-place.
- * \ingroup str */
-void iupStrRemove(char* value, int start, int end, int dir);
-
-/** Remove the interval from the string and insert the new string at the start.
- * \ingroup str */
-char* iupStrInsert(const char* value, const char* insert_value, int start, int end);
-
-
-
 /** Process the mnemonic in the string. If not found returns str.
  * If found returns a new string. Action can be:
 - 1: replace & by c

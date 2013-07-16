@@ -14,6 +14,7 @@ extern "C" {
 
 int iupwinStrSetUTF8Mode(int utf8mode);
 int iupwinStrSetUTF8ModeFile(int utf8mode);
+int iupwinStrGetUTF8Mode(void);
 
 char* iupwinStrFromSystem(const TCHAR* str);
 TCHAR* iupwinStrToSystem(const char* str);

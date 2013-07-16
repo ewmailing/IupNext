@@ -12,7 +12,7 @@ cdCanvas *cdcanvas = NULL;
    
    The drawing is a red cross from the corners of the virtual space.
    But CD must draw in the canvas space. So the position of the scrollbar
-   will define the convertion between canvas space and virtual space.
+   will define the conversion between canvas space and virtual space.
 */
 
 int action(Ihandle *ih, float posx, float posy)

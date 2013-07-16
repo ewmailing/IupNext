@@ -276,7 +276,6 @@ iupStrReturnIntInt
 iupStrReturnFloat
 iupStrReturnStrStr
 iupStrReplace
-iupStrRemove
 iupStrProcessMnemonic
 iupStrFindMnemonic
 iupStrNextLine
@@ -287,7 +286,6 @@ iupStrLower
 iupStrUpper
 iupStrHasSpace
 iupStrLineCount
-iupStrInsert
 iupStrReturnStr
 iupStrReturnStrf
 iupStrGetMemory

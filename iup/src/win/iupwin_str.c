@@ -19,8 +19,9 @@
   because the operating system must convert the ANSI strings to Unicode at run time. 
 
   So, there is no point in doing a lib that calls both ANSI and Unicode API. 
-  In the simple and ideal world we need only Unicode windows and handle the convertion when necessary.
-  The same convertion would exist anyway if using the ANSI API.
+  In the simple and ideal world we need only the Unicode API and to handle the conversion when necessary.
+  The same conversion would exist anyway if using the ANSI API.
+
 - By default, file I/O functions use ANSI file names. 
   But if your files have Unicode names, then you may consider using UTF-8 
   so later the aplication can recover the original Unicode version.
@@ -30,16 +31,21 @@ static int iupwin_utf8mode = 1;  // somente para facilitar o uso dos testes exis
 static int iupwin_utf8mode_file = 0;  
 
 /* TODOUTF8:
-1) procurar no código do iupwin outras possiveis falhas
-2) Testar arquivos com "çã" em FAT e NTFS
-3) clipboard com UTF-8 ou Unicode?
-4) Attributos CARET e SELECTION do IupText/IupList como indexam a string?
-   Como é no GTK?
-5) Tentar juntar a edição de texto do IupText e do IupList 
-   usando funções genéricas que encapsulem ambos, 
-   tentar passar como parametro coisas que são diferentes em ambos
-6) Na edição de texto, na callback de action, quando iupwin_utf8mode=0
+1) Na edição de texto, na callback de action, quando iupwin_utf8mode=0
    parece que os acentos estão sendo retornados errados.
+2) Testar arquivos com "çã" no nome do arquivo em 
+     FAT
+     NTFS
+3) clipboard com UTF-8 ou Unicode?
+   ==> Ficou CF_TEXT para UTF-8, estão [OK] as conversões para Copy e Paste!
+4) testar ACTION callback do IupText
+     ANSI
+     UNICODE sem UTF8
+     UNICODE com UTF8
+     GTK sem UTF8
+     GTK com UTF8
+     Motif
+
 -------------------------------
 - outros controles
     iupglcanvas
@@ -65,6 +71,15 @@ int iupwinStrSetUTF8ModeFile(int utf8mode)
 #ifdef UNICODE
   iupwin_utf8mode_file = utf8mode;
   return 1;
+#else
+  return 0;
+#endif
+}
+
+int iupwinStrGetUTF8Mode(void)
+{
+#ifdef UNICODE
+  return iupwin_utf8mode;
 #else
   return 0;
 #endif

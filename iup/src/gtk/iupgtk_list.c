@@ -1164,93 +1164,26 @@ static gboolean gtkListEditButtonEvent(GtkWidget *widget, GdkEventButton *evt, I
   return FALSE;
 }
 
-static int gtkListCallEditCb(Ihandle* ih, GtkEditable *editable, const char* insert_value, int len, int start, int end)
-{
-  char *new_value, *value;
-  int ret = -1, key = 0;
-
-  IFnis cb = (IFnis)IupGetCallback(ih, "EDIT_CB");
-  if (!cb && !ih->data->mask)
-    return -1; /* continue */
-
-  value = iupStrReturnStr(iupgtkStrConvertFromUTF8(gtk_entry_get_text(GTK_ENTRY(editable))));
-
-  if (!insert_value)
-  {
-    new_value = iupStrDup(value);
-    if (end<0) end = strlen(value)+1;
-    iupStrRemove(new_value, start, end, 1);
-  }
-  else
-  {
-    if (!value)
-      new_value = iupStrDup(insert_value);
-    else
-    {
-      if (len < end-start)
-      {
-        new_value = iupStrDup(value);
-        new_value = iupStrInsert(new_value, insert_value, start, end);
-      }
-      else
-        new_value = iupStrInsert(value, insert_value, start, end);
-    }
-  }
-
-  if (insert_value && insert_value[0]!=0 && insert_value[1]==0)
-    key = insert_value[0];
-
-  if (!new_value)
-    return -1; /* continue */
-
-  if (ih->data->nc && (int)strlen(new_value) > ih->data->nc)
-  {
-    if (new_value != value) free(new_value);
-    return 0; /* abort */
-  }
-
-  if (ih->data->mask && iupMaskCheck(ih->data->mask, new_value)==0)
-  {
-    if (new_value != value) free(new_value);
-    return 0; /* abort */
-  }
-
-  if (cb)
-  {
-    int cb_ret = cb(ih, key, (char*)new_value);
-    if (cb_ret==IUP_IGNORE)
-      ret = 0; /* abort */
-    else if (cb_ret==IUP_CLOSE)
-    {
-      IupExitLoop();
-      ret = 0; /* abort */
-    }
-    else if (cb_ret!=0 && key!=0 && 
-             cb_ret != IUP_DEFAULT && cb_ret != IUP_CONTINUE)  
-      ret = cb_ret; /* abort and replace */
-  }
-
-  if (new_value != value) free(new_value);
-  return ret; /* continue */
-}
-
 static void gtkListEditDeleteText(GtkEditable *editable, int start, int end, Ihandle* ih)
 {
+  IFnis cb = (IFnis)IupGetCallback(ih, "EDIT_CB");
+
   if (iupAttribGet(ih, "_IUPGTK_DISABLE_TEXT_CB"))
     return;
 
-  if (gtkListCallEditCb(ih, editable, NULL, 0, start, end)==0)
+  if (iupEditCallActionCb(ih, cb, NULL, start, end, ih->data->mask, ih->data->nc, 1, iupgtkStrGetUTF8Mode())==0)
     g_signal_stop_emission_by_name(editable, "delete_text");
 }
 
 static void gtkListEditInsertText(GtkEditable *editable, char *insert_value, int len, int *pos, Ihandle* ih)
 {
+  IFnis cb = (IFnis)IupGetCallback(ih, "EDIT_CB");
   int ret;
 
   if (iupAttribGet(ih, "_IUPGTK_DISABLE_TEXT_CB"))
     return;
 
-  ret = gtkListCallEditCb(ih, editable, iupStrReturnStr(iupgtkStrConvertFromUTF8(insert_value)), len, *pos, *pos);
+  ret = iupEditCallActionCb(ih, cb, iupgtkStrConvertFromUTF8(insert_value), *pos, *pos, ih->data->mask, ih->data->nc, 0, iupgtkStrGetUTF8Mode());
   if (ret == 0)
     g_signal_stop_emission_by_name(editable, "insert_text");
   else if (ret != -1)
@@ -1264,6 +1197,8 @@ static void gtkListEditInsertText(GtkEditable *editable, char *insert_value, int
 
     g_signal_stop_emission_by_name(editable, "insert_text"); 
   }
+
+  (void)len;
 }
 
 static void gtkListEditChanged(void* dummy, Ihandle* ih)
@@ -1295,7 +1230,7 @@ static void gtkListComboBoxChanged(GtkComboBox* widget, Ihandle* ih)
   {
     int pos = gtk_combo_box_get_active((GtkComboBox*)ih->handle);
     pos++;  /* IUP starts at 1 */
-    iupListSingleCallActionCallback(ih, cb, pos);
+    iupListSingleCallActionCb(ih, cb, pos);
   }
 
   if (!ih->data->has_editbox)
@@ -1320,7 +1255,7 @@ static void gtkListRowActivated(GtkTreeView *tree_view, GtkTreePath *path, GtkTr
   if (cb)
   {
     int* indices = gtk_tree_path_get_indices(path);
-    iupListSingleCallDblClickCallback(ih, cb, indices[0]+1);  /* IUP starts at 1 */
+    iupListSingleCallDblClickCb(ih, cb, indices[0]+1);  /* IUP starts at 1 */
   }
   (void)column;
   (void)tree_view;
@@ -1362,7 +1297,7 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
       {
         GtkTreePath *path = gtk_tree_model_get_path(tree_model, &iter);
         int* indices = gtk_tree_path_get_indices(path);
-        iupListSingleCallActionCallback(ih, cb, indices[0]+1);  /* IUP starts at 1 */
+        iupListSingleCallActionCb(ih, cb, indices[0]+1);  /* IUP starts at 1 */
         gtk_tree_path_free (path);
       }
     }
@@ -1385,7 +1320,7 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
       }
       g_list_free(list);
 
-      iupListMultipleCallActionCallback(ih, cb, multi_cb, pos, sel_count);
+      iupListMultipleCallActionCb(ih, cb, multi_cb, pos, sel_count);
       free(pos);
     }
   }

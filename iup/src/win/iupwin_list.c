@@ -404,7 +404,7 @@ static char* winListGetIdValueAttrib(Ihandle* ih, int id)
 static char* winListGetValueAttrib(Ihandle* ih)
 {
   if (ih->data->has_editbox)
-    return iupwinGetWindowText(ih->handle);
+    return iupwinStrFromSystem(iupwinGetWindowText(ih->handle));
   else 
   {
     if (ih->data->is_dropdown || !ih->data->is_multiple)
@@ -619,6 +619,15 @@ static int winListSetClipboardAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
+static int winListHasSelection(HWND cbedit)
+{
+  int start = 0, end = 0;
+  SendMessage(cbedit, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
+  if (start == end)
+    return 0;
+  return 1;
+}
+
 static int winListSetSelectedTextAttrib(Ihandle* ih, const char* value)
 {
   if (!ih->data->has_editbox)
@@ -626,19 +635,17 @@ static int winListSetSelectedTextAttrib(Ihandle* ih, const char* value)
 
   if (value)
   {
-    int start = 0, end = 0;
     HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
-    SendMessage(cbedit, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
-    if (start == end)
+    if (!winListHasSelection(cbedit))
       return 0;
-    SendMessage(cbedit, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)value);
+    SendMessage(cbedit, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)iupwinStrToSystem(value));
   }
   return 0;
 }
 
 static char* winListGetSelectedTextAttrib(Ihandle* ih)
 {
-  char* str;
+  TCHAR* str;
   HWND cbedit;
 
   if (!ih->data->has_editbox)
@@ -657,7 +664,7 @@ static char* winListGetSelectedTextAttrib(Ihandle* ih)
     str[end] = 0; /* returns only the selected text */
     str += start;
 
-    return str;
+    return iupwinStrFromSystem(str);
   }
   else
     return NULL;
@@ -1157,7 +1164,7 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
         {
           int pos = SendMessage(ih->handle, CB_GETCURSEL, 0, 0);
           pos++;  /* IUP starts at 1 */
-          iupListSingleCallDblClickCallback(ih, cb, pos);
+          iupListSingleCallDblClickCb(ih, cb, pos);
         }
         break;
       }
@@ -1168,7 +1175,7 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
         {
           int pos = SendMessage(ih->handle, CB_GETCURSEL, 0, 0);
           pos++;  /* IUP starts at 1 */
-          iupListSingleCallActionCallback(ih, cb, pos);
+          iupListSingleCallActionCb(ih, cb, pos);
         }
 
         iupBaseCallValueChangedCb(ih);
@@ -1187,7 +1194,7 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
         {
           int pos = SendMessage(ih->handle, LB_GETCURSEL, 0, 0);
           pos++;  /* IUP starts at 1 */
-          iupListSingleCallDblClickCallback(ih, cb, pos);
+          iupListSingleCallDblClickCb(ih, cb, pos);
         }
         break;
       }
@@ -1200,7 +1207,7 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
           {
             int pos = SendMessage(ih->handle, LB_GETCURSEL, 0, 0);
             pos++;  /* IUP starts at 1 */
-            iupListSingleCallActionCallback(ih, cb, pos);
+            iupListSingleCallActionCb(ih, cb, pos);
           }
         }
         else
@@ -1212,7 +1219,7 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
             int sel_count = SendMessage(ih->handle, LB_GETSELCOUNT, 0, 0);
             int* pos = malloc(sizeof(int)*sel_count);
             SendMessage(ih->handle, LB_GETSELITEMS, sel_count, (LPARAM)pos);
-            iupListMultipleCallActionCallback(ih, cb, multi_cb, pos, sel_count);
+            iupListMultipleCallActionCb(ih, cb, multi_cb, pos, sel_count);
             free(pos);
           }
         }
@@ -1242,65 +1249,21 @@ static void winListCallCaretCb(Ihandle* ih, HWND cbedit)
   }
 }
 
-static int winListCallEditCb(Ihandle* ih, HWND cbedit, const char* insert_value, int key, int dir)
+static int winListCallEditCb(Ihandle* ih, HWND cbedit, char* insert_value, int remove_dir)
 {
-  int start, end, ret = 1;
-  char *value, *new_value;
-
+  int ret, start, end;
   IFnis cb = (IFnis)IupGetCallback(ih, "EDIT_CB");
-  if (!cb && !ih->data->mask)
-    return 1;
-
   SendMessage(cbedit, EM_GETSEL, (WPARAM)&start, (LPARAM)&end);
-
-  value = winListGetValueAttrib(ih);
-
-  if (!value)
-    new_value = iupStrDup(insert_value);
-  else if (insert_value)
-    new_value = iupStrInsert(value, insert_value, start, end);
-  else
+  ret = iupEditCallActionCb(ih, cb, insert_value, start, end, (char*)ih->data->mask, ih->data->nc, remove_dir, iupwinStrGetUTF8Mode());
+  if (ret == 0)
+    return 0;
+  if (ret == -1)
   {
-    new_value = value;
-    iupStrRemove(value, start, end, dir);
+    WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDWNDPROC_CB");
+    CallWindowProc(oldProc, cbedit, WM_CHAR, ret, 0);  /* replace key */
+    return 0;
   }
-
-  if (!new_value)
-    return 0; /* abort */
-
-  if (ih->data->nc && (int)strlen(new_value) > ih->data->nc)
-  {
-    if (new_value != value) free(new_value);
-    return 0; /* abort */
-  }
-
-  if (ih->data->mask && iupMaskCheck(ih->data->mask, new_value)==0)
-  {
-    if (new_value != value) free(new_value);
-    return 0; /* abort */
-  }
-
-  if (cb)
-  {
-    int cb_ret = cb(ih, key, new_value);
-    if (cb_ret==IUP_IGNORE)
-      ret = 0;     /* abort processing */
-    else if (cb_ret==IUP_CLOSE)
-    {
-      IupExitLoop();
-      ret = 0;     /* abort processing */
-    }
-    else if (cb_ret!=0 && key!=0 && 
-             cb_ret != IUP_DEFAULT && cb_ret != IUP_CONTINUE)  
-    {
-      WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_EDITOLDWNDPROC_CB");
-      CallWindowProc(oldProc, cbedit, WM_CHAR, cb_ret, 0);  /* replace key */
-      ret = 0;     /* abort processing */
-    }
-  }
-
-  if (new_value != value) free(new_value);
-  return ret;
+  return 1;
 }
 
 static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
@@ -1336,7 +1299,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
 
       if (c == TEXT('\b'))
       {              
-        if (!winListCallEditCb(ih, cbedit, NULL, 0, -1))
+        if (!winListCallEditCb(ih, cbedit, NULL, -1))
           ret = 1;
       }
       else if (c == TEXT('\n') || c == TEXT('\r'))
@@ -1352,7 +1315,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
         insert_value[0] = c;
         insert_value[1] = 0;
 
-        if (!winListCallEditCb(ih, cbedit, iupwinStrFromSystem(insert_value), wp, 1))
+        if (!winListCallEditCb(ih, cbedit, iupwinStrFromSystem(insert_value), 0))
           ret = 1;
       }
 
@@ -1367,7 +1330,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
     {
       if (wp == VK_DELETE) /* Del does not generates a WM_CHAR */
       {
-        if (!winListCallEditCb(ih, cbedit, NULL, 0, 1))
+        if (!winListCallEditCb(ih, cbedit, NULL, 1))
           ret = 1;
       }
       else if (wp == 'A' && GetKeyState(VK_CONTROL) & 0x8000)   /* Ctrl+A = Select All */
@@ -1381,7 +1344,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
     }
   case WM_CLEAR:
     {
-      if (!winListCallEditCb(ih, cbedit, NULL, 0, 1))
+      if (!winListCallEditCb(ih, cbedit, NULL, 1))
         ret = 1;
 
       PostMessage(cbedit, WM_IUPCARET, 0, 0L);
@@ -1390,7 +1353,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
     }
   case WM_CUT:
     {
-      if (!winListCallEditCb(ih, cbedit, NULL, 0, 1))
+      if (!winListCallEditCb(ih, cbedit, NULL, 1))
         ret = 1;
 
       PostMessage(cbedit, WM_IUPCARET, 0, 0L);
@@ -1404,7 +1367,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
         char* insert_value = iupwinGetClipboardText(ih);
         if (insert_value)
         {
-          if (!winListCallEditCb(ih, cbedit, insert_value, 0, 1))
+          if (!winListCallEditCb(ih, cbedit, insert_value, 0))
             ret = 1;
           free(insert_value);
         }

@@ -21,7 +21,11 @@ void iupdrvTextAddFormatTag(Ihandle* ih, Ihandle* formattag, int bulk);
 void iupdrvTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
 void iupdrvTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
 
+/* Used by List and Text, implemented in Text */
+int iupEditCallActionCb(Ihandle* ih, IFnis cb, const char* insert_value, int start, int end, void *mask, int nc, int remove_dir, int utf8);
+
 void iupTextUpdateFormatTags(Ihandle* ih);
+
 char* iupTextGetPaddingAttrib(Ihandle* ih);
 char* iupTextGetNCAttrib(Ihandle* ih);
 int iupTextSetFormattingAttrib(Ihandle* ih, const char* value);

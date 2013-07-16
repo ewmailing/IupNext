@@ -1432,93 +1432,26 @@ static gboolean gtkTextButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihand
   return iupgtkButtonEvent(widget, evt, ih);
 }
 
-static int gtkTextCallActionCb(Ihandle* ih, const char* insert_value, int len, int start, int end)
-{
-  char *new_value, *value;
-  int ret = -1, key = 0;
-
-  IFnis cb = (IFnis)IupGetCallback(ih, "ACTION");
-  if (!cb && !ih->data->mask)
-    return -1; /* continue */
-
-  value = gtkTextGetValueAttrib(ih);  /* new_value is the internal buffer */
-
-  if (!insert_value)
-  {
-    new_value = iupStrDup(value);
-    if (end<0) end = strlen(value)+1;
-    iupStrRemove(new_value, start, end, 1);
-  }
-  else
-  {
-    if (value[0]==0)
-      new_value = iupStrDup(insert_value);
-    else
-    {
-      if (len < end-start)
-      {
-        new_value = iupStrDup(value);
-        new_value = iupStrInsert(new_value, insert_value, start, end);
-      }
-      else
-        new_value = iupStrInsert(value, insert_value, start, end);
-    }
-  }
-
-  if (insert_value && insert_value[0]!=0 && insert_value[1]==0)
-    key = insert_value[0];
-
-  if (!new_value)
-    return -1; /* continue */
-
-  if (ih->data->nc && (int)strlen(new_value) > ih->data->nc)
-  {
-    if (new_value != value) free(new_value);
-    return 0; /* abort */
-  }
-
-  if (ih->data->mask && iupMaskCheck(ih->data->mask, new_value)==0)
-  {
-    if (new_value != value) free(new_value);
-    return 0; /* abort */
-  }
-
-  if (cb)
-  {
-    int cb_ret = cb(ih, key, (char*)new_value);
-    if (cb_ret==IUP_IGNORE)
-      ret = 0; /* abort */
-    else if (cb_ret==IUP_CLOSE)
-    {
-      IupExitLoop();
-      ret = 0; /* abort */
-    }
-    else if (cb_ret!=0 && key!=0 && 
-             cb_ret != IUP_DEFAULT && cb_ret != IUP_CONTINUE)  
-      ret = cb_ret; /* abort and replace */
-  }
-
-  if (new_value != value) free(new_value);
-  return ret; /* continue */
-}
-
 static void gtkTextEntryDeleteText(GtkEditable *editable, int start, int end, Ihandle* ih)
 {
+  IFnis cb = (IFnis)IupGetCallback(ih, "ACTION");
+
   if (ih->data->disable_callbacks)
     return;
 
-  if (gtkTextCallActionCb(ih, NULL, 0, start, end)==0)
+  if (iupEditCallActionCb(ih, cb, NULL, start, end, ih->data->mask, ih->data->nc, 1, iupgtkStrGetUTF8Mode())==0)
     g_signal_stop_emission_by_name (editable, "delete_text");
 }
 
 static void gtkTextEntryInsertText(GtkEditable *editable, char *insert_value, int len, int *pos, Ihandle* ih)
 {
+  IFnis cb = (IFnis)IupGetCallback(ih, "ACTION");
   int ret;
 
   if (ih->data->disable_callbacks)
     return;
 
-  ret = gtkTextCallActionCb(ih, iupStrReturnStr(iupgtkStrConvertFromUTF8(insert_value)), len, *pos, *pos);
+  ret = iupEditCallActionCb(ih, cb, iupgtkStrConvertFromUTF8(insert_value), *pos, *pos, ih->data->mask, ih->data->nc, 0, iupgtkStrGetUTF8Mode());
   if (ret == 0)
     g_signal_stop_emission_by_name(editable, "insert_text");
   else if (ret != -1)
@@ -1531,10 +1464,13 @@ static void gtkTextEntryInsertText(GtkEditable *editable, char *insert_value, in
 
     g_signal_stop_emission_by_name(editable, "insert_text"); 
   }
+
+  (void)len;
 }
 
 static void gtkTextBufferDeleteRange(GtkTextBuffer *textbuffer, GtkTextIter *start_iter, GtkTextIter *end_iter, Ihandle* ih)
 {
+  IFnis cb = (IFnis)IupGetCallback(ih, "ACTION");
   int start, end;
   if (ih->data->disable_callbacks)
     return;
@@ -1542,12 +1478,13 @@ static void gtkTextBufferDeleteRange(GtkTextBuffer *textbuffer, GtkTextIter *sta
   start = gtk_text_iter_get_offset(start_iter);
   end = gtk_text_iter_get_offset(end_iter);
 
-  if (gtkTextCallActionCb(ih, NULL, 0, start, end)==0)
+  if (iupEditCallActionCb(ih, cb, NULL, start, end, ih->data->mask, ih->data->nc, 1, iupgtkStrGetUTF8Mode())==0)
     g_signal_stop_emission_by_name (textbuffer, "delete_range");
 }
 
 static void gtkTextBufferInsertText(GtkTextBuffer *textbuffer, GtkTextIter *pos_iter, gchar *insert_value, gint len, Ihandle* ih)
 {
+  IFnis cb = (IFnis)IupGetCallback(ih, "ACTION");
   int ret, pos;
 
   if (ih->data->disable_callbacks)
@@ -1555,7 +1492,7 @@ static void gtkTextBufferInsertText(GtkTextBuffer *textbuffer, GtkTextIter *pos_
 
   pos = gtk_text_iter_get_offset(pos_iter);
 
-  ret = gtkTextCallActionCb(ih, iupStrReturnStr(iupgtkStrConvertFromUTF8(insert_value)), len, pos, pos);
+  ret = iupEditCallActionCb(ih, cb, iupgtkStrConvertFromUTF8(insert_value), pos, pos, ih->data->mask, ih->data->nc, 0, iupgtkStrGetUTF8Mode());
   if (ret == 0)
     g_signal_stop_emission_by_name(textbuffer, "insert_text");
   else if (ret != -1)
@@ -1568,6 +1505,8 @@ static void gtkTextBufferInsertText(GtkTextBuffer *textbuffer, GtkTextIter *pos_
 
     g_signal_stop_emission_by_name(textbuffer, "insert_text"); 
   }
+
+  (void)len;
 }
 
 static void gtkTextChanged(void* dummy, Ihandle* ih)

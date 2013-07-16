@@ -25,7 +25,7 @@
 #include "iup_list.h"
 
 
-void iupListSingleCallDblClickCallback(Ihandle* ih, IFnis cb, int pos)
+void iupListSingleCallDblClickCb(Ihandle* ih, IFnis cb, int pos)
 {
   char *text;
 
@@ -82,7 +82,7 @@ void iupListUpdateOldValue(Ihandle* ih, int pos, int removed)
   }
 }
 
-void iupListSingleCallActionCallback(Ihandle* ih, IFnsii cb, int pos)
+void iupListSingleCallActionCb(Ihandle* ih, IFnsii cb, int pos)
 {
   char* old_str = iupAttribGet(ih, "_IUPLIST_OLDVALUE");
   if (old_str)
@@ -99,7 +99,7 @@ void iupListSingleCallActionCallback(Ihandle* ih, IFnsii cb, int pos)
   iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", pos);
 }
 
-void iupListMultipleCallActionCallback(Ihandle* ih, IFnsii cb, IFns multi_cb, int* pos, int sel_count)
+void iupListMultipleCallActionCb(Ihandle* ih, IFnsii cb, IFns multi_cb, int* pos, int sel_count)
 {
   int i, count = iupdrvListGetCount(ih);
 

@@ -53,7 +53,7 @@ struct _IcontrolData
   int h_x, h_y,
       si_x, si_y;
 
-  /* HSI-XY coordinate convertion */
+  /* HSI-XY coordinate conversion */
   int xc, yc,  /* center */
       R,       /* maximum radius available inside the size of the control */
       Ix,      /* x coordinate where S is 0 */

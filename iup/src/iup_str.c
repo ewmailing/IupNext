@@ -923,46 +923,6 @@ char* iupStrConvertToC(const char* str)
   return new_str;
 }
 
-void iupStrRemove(char* value, int start, int end, int dir)
-{
-  if (start == end) 
-  {
-    if (dir==1)
-      end++;
-    else if (start == 0) /* there is nothing to remove before */
-      return;
-    else
-      start--;
-  }
-  value += start;
-  end -= start;
-  while (*value)
-  {
-    *value = *(value+end);
-    value++;
-  }
-}
-
-char* iupStrInsert(const char* value, const char* insert_value, int start, int end)
-{
-  char* new_value = (char*)value;
-  int insert_len = strlen(insert_value);
-  int len = strlen(value);
-  if (end==start || insert_len > end-start)
-  {
-    new_value = malloc(len - (end-start) + insert_len + 1);
-    memcpy(new_value, value, start);
-    memcpy(new_value+start, insert_value, insert_len);
-    memcpy(new_value+start+insert_len, value+end, len-end+1);
-  }
-  else
-  {
-    memcpy(new_value+start, insert_value, insert_len);
-    memcpy(new_value+start+insert_len, value+end, len-end+1);
-  }
-  return new_value;
-}
-
 char* iupStrProcessMnemonic(const char* str, char *c, int action)
 {
   int i = 0, found = 0;

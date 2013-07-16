@@ -239,7 +239,7 @@ static void winCanvasUpdateHorScroll(Ihandle* ih, WORD winop)
   }
   else
   {
-    /* line and page convertions are the same */
+    /* line and page conversions are the same */
     linex = iupAttribGetFloat(ih,"LINEX");
     iupCanvasCalcScrollIntPos(xmin, xmax, linex, 0, 
                               IUP_SB_MIN, IUP_SB_MAX, &ilinex,  NULL);
@@ -315,7 +315,7 @@ static void winCanvasUpdateVerScroll(Ihandle* ih, WORD winop)
   }
   else
   {
-    /* line and page convertions are the same */
+    /* line and page conversions are the same */
     liney = iupAttribGetFloat(ih,"LINEY");
     iupCanvasCalcScrollIntPos(ymin, ymax, liney, 0, 
                               IUP_SB_MIN, IUP_SB_MAX, &iliney,  NULL);

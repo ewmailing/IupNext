@@ -233,6 +233,10 @@ For example:</p>
   using the &quot;\&quot; character.</p>
 <p>In Windows, the dialog will be modal relative only to its parent or to the 
 active dialog.&nbsp;</p>
+<p>In Windows, when using UTF-8 strings (UTF8MODE=Yes), file names are still 
+using the current locale. To use UTF-8 filenames (that internally will be 
+converted to UTF-16) set the global attribute
+<a href="../attrib/iup_globals.html#UTF8MODE">UTF8MODE_FILE</a> to Yes.</p>
 <p>When saving a file, the overwrite check is done before the FILE_CB callback 
 is called with status=OK. If the application wants to add an extension to the 
 file name inside the FILE_CB callback when status=OK, then it must manually 
