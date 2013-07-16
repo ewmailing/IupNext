@@ -626,15 +626,20 @@ static int winTextGetSelection(Ihandle* ih, int *start, int *end)
   *end = 0;
 
   SendMessage(ih->handle, EM_GETSEL, (WPARAM)start, (LPARAM)end);
-  if (*start == *end)
-    return 0;
 
   if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
   {
-    (*start) = winTextRemoveExtraChars(ih, *start);
-    (*end) = winTextRemoveExtraChars(ih, *end);
+    if (*start == *end)
+      (*end) = (*start) = winTextRemoveExtraChars(ih, *start);
+    else
+    {
+      (*start) = winTextRemoveExtraChars(ih, *start);
+      (*end) = winTextRemoveExtraChars(ih, *end);
+    }
   }
 
+  if (*start == *end)
+    return 0;
   return 1;
 }
 
@@ -642,8 +647,13 @@ static void winTextSetSelection(Ihandle* ih, int start, int end)
 {
   if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
   {
-    start = winTextAddExtraChars(ih, start);
-    end = winTextAddExtraChars(ih, end);
+    if (start == end)
+      end = start = winTextAddExtraChars(ih, start);
+    else
+    {
+      start = winTextAddExtraChars(ih, start);
+      end = winTextAddExtraChars(ih, end);
+    }
   }
 
   SendMessage(ih->handle, EM_SETSEL, (WPARAM)start, (LPARAM)end);

@@ -1333,7 +1333,7 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
         if (!winListCallEditCb(ih, cbedit, NULL, 1))
           ret = 1;
       }
-      else if (wp == 'A' && GetKeyState(VK_CONTROL) & 0x8000)   /* Ctrl+A = Select All */
+      else if (wp == TEXT('A') && GetKeyState(VK_CONTROL) & 0x8000)   /* Ctrl+A = Select All */
       {
         SendMessage(cbedit, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
       }

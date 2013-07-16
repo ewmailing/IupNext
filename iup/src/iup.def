@@ -470,3 +470,5 @@ iupwinButtonDown
 iupwinStrFromSystem
 iupwinStrToSystem
 iupwinStrToSystemLen
+iupwinStrChar2Wide
+iupwinStrWide2Char

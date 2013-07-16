@@ -25,33 +25,9 @@
 #include "iup_drv.h"
 #include "iup_drvfont.h"
 
-/* Duplicated from "iupwin_drv.c" */
-static WCHAR* iupwinStrChar2Wide(const char* str)
-{
-  if (str)
-  {
-    int len = (int)strlen(str)+1;
-    WCHAR* wstr = (WCHAR*)malloc(len * sizeof(WCHAR));
-    MultiByteToWideChar(CP_ACP, 0, str, -1, wstr, len);
-    return wstr;
-  }
-
-  return NULL;
-}
-
-static char* iupwinStrWide2Char(const WCHAR* wstr)
-{
-  if (wstr)
-  {
-    int len = (int)wcslen(wstr)+1;
-    char* str = (char*)malloc(len * sizeof(char));
-    WideCharToMultiByte(CP_ACP, 0, wstr, -1, str, len, NULL, NULL);
-    return str;
-  }
-
-  return NULL;
-}
-
+/* Exported from "iupwin_str.c" */
+extern "C" WCHAR* iupwinStrChar2Wide(const char* str);
+extern "C" char*  iupwinStrWide2Char(const WCHAR* wstr);
 
 #include <atlbase.h>
 #include <atlcom.h>
