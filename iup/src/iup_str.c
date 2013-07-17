@@ -1017,28 +1017,24 @@ int iupStrFindMnemonic(const char* str)
 
 static void iStrFixPosUTF8(const char* value, int *start, int *end)
 {
-  int p = 0, i = 0;
-  while(value[i] && p < *start)
+  int p = 0, i = 0, find = 0;
+  while(value[i])
   {
-    if (ISTR_UTF8_BASE(value[i]) != 0x80)  /* is 1o byte of a sequence or is 1 byte only */
-      p++;
-    i++;
-  }
-  if (*start == *end)
-  {
-    *end = *start = i;
-    return;
-  }
-  *start = i;
+    if (find==0 && p == *start)
+    {
+      *start = i;
+      find = 1;
+    }
+    if (find==1 && p == *end)
+    {
+      *end = i;
+      return;
+    }
 
-  /* continue until end */
-  while(value[i] && p < *end)
-  {
-    if (ISTR_UTF8_BASE(value[i]) != 0x80)
+    if (ISTR_UTF8_BASE(value[i+1]) != 0x80)  /* is 1o byte of a sequence or is 1 byte only */
       p++;
     i++;
   }
-  *end = i;
 }
 
 void iupStrRemove(char* value, int start, int end, int dir, int utf8)
