@@ -30,7 +30,7 @@ static int iupwin_utf8mode = 0;    /* default is NOT using UTF-8 */
 static int iupwin_utf8mode_file = 0;  
 
 /* TODOUTF8:
-- testar ACTION callback do IupText
+- re-testar ACTION callback do IupText
      Windows ANSI
      Windows UNICODE sem UTF8
      Windows UNICODE com UTF8
