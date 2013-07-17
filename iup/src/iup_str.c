@@ -1024,6 +1024,11 @@ static void iStrFixPosUTF8(const char* value, int *start, int *end)
       p++;
     i++;
   }
+  if (*start == *end)
+  {
+    *end = *start = i;
+    return;
+  }
   *start = i;
 
   /* continue until end */
@@ -1066,11 +1071,11 @@ char* iupStrInsert(const char* value, const char* insert_value, int start, int e
   int insert_len = strlen(insert_value);
   int len = strlen(value);
 
+  if (utf8)
+    iStrFixPosUTF8(value, &start, &end);
+
   if (end==start || insert_len > end-start)
   {
-    if (utf8)
-      iStrFixPosUTF8(value, &start, &end);
-
     new_value = malloc(len - (end-start) + insert_len + 1);
     memcpy(new_value, value, start);
     memcpy(new_value+start, insert_value, insert_len);
@@ -1078,11 +1083,9 @@ char* iupStrInsert(const char* value, const char* insert_value, int start, int e
   }
   else
   {
-    if (utf8)
-      iStrFixPosUTF8(value, &start, &end);
-
     memcpy(new_value+start, insert_value, insert_len);
     memcpy(new_value+start+insert_len, value+end, len-end+1);
   }
+
   return new_value;
 }
