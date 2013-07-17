@@ -34,24 +34,24 @@ static void iMatrixMarkLinSet(Ihandle* ih, int lin, int mark)
 {
   /* called when MARKMODE=LIN */
   if (mark==-1)
-    mark = !(ih->data->lines.flags[lin] & IMAT_IS_MARKED);
+    mark = !(ih->data->lines.dt[lin].flags & IMAT_IS_MARKED);
 
   if (mark)
-    ih->data->lines.flags[lin] |= IMAT_IS_MARKED;
+    ih->data->lines.dt[lin].flags |= IMAT_IS_MARKED;
   else
-    ih->data->lines.flags[lin] &= ~IMAT_IS_MARKED;
+    ih->data->lines.dt[lin].flags &= ~IMAT_IS_MARKED;
 }
 
 static void iMatrixMarkColSet(Ihandle* ih, int col, int mark)
 {
   /* called when MARKMODE=COL */
   if (mark==-1)
-    mark = !(ih->data->columns.flags[col] & IMAT_IS_MARKED);
+    mark = !(ih->data->columns.dt[col].flags & IMAT_IS_MARKED);
 
   if (mark)
-    ih->data->columns.flags[col] |= IMAT_IS_MARKED;
+    ih->data->columns.dt[col].flags |= IMAT_IS_MARKED;
   else
-    ih->data->columns.flags[col] &= ~IMAT_IS_MARKED;
+    ih->data->columns.dt[col].flags &= ~IMAT_IS_MARKED;
 }
 
 static void iMatrixMarkCellSet(Ihandle* ih, int lin, int col, int mark, IFniii markedit_cb, IFnii mark_cb)
@@ -106,7 +106,7 @@ int iupMatrixMarkCellGet(Ihandle* ih, int lin, int col, IFnii mark_cb)
   }
   else
   {
-    if (ih->data->lines.flags[lin] & IMAT_IS_MARKED || ih->data->columns.flags[col] & IMAT_IS_MARKED)
+    if (ih->data->lines.dt[lin].flags & IMAT_IS_MARKED || ih->data->columns.dt[col].flags & IMAT_IS_MARKED)
       return 1;
     else
       return 0;
@@ -333,9 +333,9 @@ static void iMatrixMarkAllLinCol(ImatLinColData *p, int mark)
   for(i = 1; i < p->num; i++)
   {
     if (mark)
-      p->flags[i] |= IMAT_IS_MARKED;
+      p->dt[i].flags |= IMAT_IS_MARKED;
     else
-      p->flags[i] &= ~IMAT_IS_MARKED;
+      p->dt[i].flags &= ~IMAT_IS_MARKED;
   }
 }
 
@@ -371,7 +371,7 @@ int iupMatrixColumnIsMarked(Ihandle* ih, int col)
       !(ih->data->mark_mode & IMAT_MARK_COL))
     return 0;
 
-  return ih->data->columns.flags[col] & IMAT_IS_MARKED;
+  return ih->data->columns.dt[col].flags & IMAT_IS_MARKED;
 }
 
 int iupMatrixLineIsMarked(Ihandle* ih, int lin)
@@ -380,7 +380,7 @@ int iupMatrixLineIsMarked(Ihandle* ih, int lin)
       !(ih->data->mark_mode & IMAT_MARK_LIN))
     return 0;
 
-  return ih->data->lines.flags[lin] & IMAT_IS_MARKED;
+  return ih->data->lines.dt[lin].flags & IMAT_IS_MARKED;
 }
 
 int iupMatrixSetMarkedAttrib(Ihandle* ih, const char* value)
@@ -524,7 +524,7 @@ char* iupMatrixGetMarkedAttrib(Ihandle* ih)
       /* look for a marked column */
       for(col = 1; col < ih->data->columns.num; col++)
       {
-        if (ih->data->columns.flags[col] & IMAT_IS_MARKED)
+        if (ih->data->columns.dt[col].flags & IMAT_IS_MARKED)
         {
           marked_cols = 1; /* at least one column is marked */
           break;
@@ -549,7 +549,7 @@ char* iupMatrixGetMarkedAttrib(Ihandle* ih)
 
       for(lin = 1; lin < ih->data->lines.num; lin++)
       {
-        if (ih->data->lines.flags[lin] & IMAT_IS_MARKED)
+        if (ih->data->lines.dt[lin].flags & IMAT_IS_MARKED)
         {
           exist_mark = 1;
           *p++ = '1';
@@ -569,7 +569,7 @@ char* iupMatrixGetMarkedAttrib(Ihandle* ih)
 
       for(col = 1; col < ih->data->columns.num; col++)
       {
-        if (ih->data->columns.flags[col] & IMAT_IS_MARKED)
+        if (ih->data->columns.dt[col].flags & IMAT_IS_MARKED)
         {
           exist_mark = 1;
           *p++ = '1';
@@ -647,17 +647,17 @@ int iupMatrixSetMarkAttrib(Ihandle* ih, int lin, int col, const char* value)
       if (ih->data->mark_mode & IMAT_MARK_LIN && lin>0)
       {
         if (mark)
-          ih->data->lines.flags[lin] |= IMAT_IS_MARKED;
+          ih->data->lines.dt[lin].flags |= IMAT_IS_MARKED;
         else
-          ih->data->lines.flags[lin] &= ~IMAT_IS_MARKED;
+          ih->data->lines.dt[lin].flags &= ~IMAT_IS_MARKED;
       }
 
       if (ih->data->mark_mode & IMAT_MARK_COL && col>0)
       {
         if (mark)
-          ih->data->columns.flags[col] |= IMAT_IS_MARKED;
+          ih->data->columns.dt[col].flags |= IMAT_IS_MARKED;
         else
-          ih->data->columns.flags[col] &= ~IMAT_IS_MARKED;
+          ih->data->columns.dt[col].flags &= ~IMAT_IS_MARKED;
       }
 
       if (ih->handle)
@@ -712,12 +712,12 @@ char* iupMatrixGetMarkAttrib(Ihandle* ih, int lin, int col)
     {
       if (ih->data->mark_mode & IMAT_MARK_LIN && 
           lin>0 && 
-          ih->data->lines.flags[lin] & IMAT_IS_MARKED)
+          ih->data->lines.dt[lin].flags & IMAT_IS_MARKED)
         return "1";
 
       if (ih->data->mark_mode & IMAT_MARK_COL && 
           col>0 && 
-          ih->data->columns.flags[col] & IMAT_IS_MARKED)
+          ih->data->columns.dt[col].flags & IMAT_IS_MARKED)
         return "1";
 
       return "0";

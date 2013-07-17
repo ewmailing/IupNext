@@ -199,6 +199,13 @@ attribute will be used. Uses the same format specification of the <strong>
 sprintf</strong> function in C, but only one value will be processed, can not 
 contain other strings.</p>
 <p>
+<strong>NUMERICFORMATPRECISION<em>id</em></strong>: will set the <strong>
+sprintf</strong> &quot;precision&quot; field in the
+<strong>NUMERICFORMAT<em>id</em></strong> attribute string if the format 
+&quot;%.&lt;precision&gt;lf&quot; . If the
+<strong>NUMERICFORMAT<em>id</em></strong> attribute is not defined returns NULL. 
+It is just a simple form to set the format attribute.</p>
+<p>
 <strong>NUMERICFORMATDEF</strong>: default value used when NUMERICFORMATid is 
 not specified. Default: &quot;%.2lf&quot;.</p>
 <p>

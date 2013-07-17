@@ -99,9 +99,9 @@ static int iMatrixSetOriginAttrib(Ihandle* ih, const char* value)
     int lin_offset, col_offset;
     if (iupStrToIntInt(value, &lin_offset, &col_offset, ':') == 2)
     {
-      if (col_offset < ih->data->columns.sizes[col])
+      if (col_offset < ih->data->columns.dt[col].size)
         ih->data->columns.first_offset = col_offset;
-      if (lin_offset < ih->data->lines.sizes[lin])
+      if (lin_offset < ih->data->lines.dt[lin].size)
         ih->data->lines.first_offset = lin_offset;
     }
   }
@@ -793,6 +793,48 @@ static int iMatrixSetNumericFormatAttrib(Ihandle* ih, int col, const char* value
   return iMatrixSetNumericFlag(ih, col, IMAT_HAS_FORMAT, value!=NULL);
 }
 
+static int iMatrixSetNumericFormatPrecisionAttrib(Ihandle* ih, int col, const char* value)
+{
+  int precision;
+  if (iupStrToInt(value, &precision))
+    IupSetStrfId(ih, "NUMERICFORMAT", col, "%%.%dlf",precision);
+  return 0;
+}
+
+static int iMatrixGetPrecisionFromFormat (const char* format)
+{
+  int precision;
+  while (*format)
+  {
+    if (*format=='.')
+     break;
+    format++;
+  }
+
+  if (*format!='.')
+    return -1;
+
+  format++;
+  if (iupStrToInt(format, &precision))
+    return precision;
+
+  return -1;
+}
+
+static char* iMatrixGetNumericFormatPrecisionAttrib(Ihandle* ih, int col)
+{
+  int precision;
+  char* value = iupAttribGetId(ih, "NUMERICFORMAT", col);
+  if (!value)
+    return NULL;
+
+  precision = iMatrixGetPrecisionFromFormat(value);
+  if (precision == -1)
+    return NULL;
+
+  return iupStrReturnInt(precision);
+}
+
 static int iMatrixSetNumericFormatTitleAttrib(Ihandle* ih, int col, const char* value)
 {
   return iMatrixSetNumericFlag(ih, col, IMAT_HAS_FORMATTITLE, value!=NULL);
@@ -825,6 +867,78 @@ static int iMatrixSetNumericUnitShownIndexAttrib(Ihandle* ih, int col, const cha
     ih->data->numeric_columns[col].unit_shown = (unsigned char)unit_shown;
     return 1;
   }
+  return 0;
+}
+
+static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
+{
+  int num_lin = ih->data->lines.num;
+  int lin, lin1=0, lin2=num_lin-1;   /* ALL */
+  ImatLinCol* dt = ih->data->lines.dt;
+
+  if (!iupMATRIX_CHECK_COL(ih, col))
+    return 0;
+
+  if (iupStrEqualNoCase(value, "RESET"))
+  {
+    for (lin=0; lin<num_lin; lin++)
+      dt[lin].index = 0;
+
+    ih->data->lines.has_index = 0;
+    iupAttribSetId(ih, "SORTSIGN", ih->data->last_sort_index, NULL);
+    ih->data->last_sort_index = 0;
+    return 0;
+  }
+
+  if (iupStrEqualNoCase(value, "INVERT"))
+  {
+    int l1, l2;
+
+    if (!ih->data->lines.has_index)
+      return 0;
+
+    for (lin=0; lin<num_lin; lin++)
+    {
+      if (dt[lin].index != 0)
+      {
+        lin1 = lin;
+        break;
+      }
+    }
+    if (lin1==0)
+      return 0;
+
+    for (lin=num_lin-1; lin>0; lin--)
+    {
+      if (dt[lin].index != 0)
+      {
+        lin2 = lin;
+        break;
+      }
+    }
+    if (lin1==lin2)
+      return 0;
+
+    for (l1=lin1,l2=lin2; l1<l2; ++l1,--l2)
+    {
+      int tmp = dt[l1].index;
+      dt[l1].index = dt[l2].index;
+      dt[l2].index = tmp;
+    }
+
+    if (iupStrEqualNoCase(iupAttribGetId(ih, "SORTSIGN", ih->data->last_sort_index), "UP"))
+      iupAttribSetId(ih, "SORTSIGN", ih->data->last_sort_index, "DOWN");
+    else
+      iupAttribSetId(ih, "SORTSIGN", ih->data->last_sort_index, "UP");
+  }
+
+  iupStrToIntInt(value, &lin1, &lin2, '-');
+  
+//int ascending, int case_sensitive
+//SORTCOLUMNORDERid  SORTCOLUMNCASEid
+
+  ih->data->lines.has_index = 1;
+  ih->data->last_sort_index = col;
   return 0;
 }
 
@@ -876,7 +990,7 @@ static char* iMatrixGetCellOffsetAttrib(Ihandle* ih, int lin, int col)
 static char* iMatrixGetCellSizeAttrib(Ihandle* ih, int lin, int col)
 {
   if (iupMatrixCheckCellPos(ih, lin, col))
-    return iupStrReturnIntInt(ih->data->columns.sizes[col], ih->data->lines.sizes[lin], 'x');
+    return iupStrReturnIntInt(ih->data->columns.dt[col].size, ih->data->lines.dt[lin].size, 'x');
   return NULL;
 }
 
@@ -934,11 +1048,11 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
 
       /* all line attributes */
       for (lin=0; lin<ih->data->lines.num; lin++)
-        iMatrixClearAttrib(ih, &(ih->data->lines.flags[lin]), lin, IUP_INVALID_ID);
+        iMatrixClearAttrib(ih, &(ih->data->lines.dt[lin].flags), lin, IUP_INVALID_ID);
 
       /* all column attributes */
       for (col=0; col<ih->data->columns.num; col++)
-        iMatrixClearAttrib(ih, &(ih->data->columns.flags[col]), IUP_INVALID_ID, col);
+        iMatrixClearAttrib(ih, &(ih->data->columns.dt[col].flags), IUP_INVALID_ID, col);
     }
     else if (iupStrEqualNoCase(value, "CONTENTS"))
     {
@@ -963,7 +1077,7 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
         return 0;
 
       if (lin1==0 && lin2==ih->data->lines.num-1)
-        iMatrixClearAttrib(ih, &(ih->data->columns.flags[col]), IUP_INVALID_ID, col);
+        iMatrixClearAttrib(ih, &(ih->data->columns.dt[col].flags), IUP_INVALID_ID, col);
 
       for (lin=lin1; lin<=lin2; lin++)
         iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
@@ -980,7 +1094,7 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
         return 0;
 
       if (col1==0 && col2==ih->data->columns.num-1)
-        iMatrixClearAttrib(ih, &(ih->data->lines.flags[lin]), lin, IUP_INVALID_ID);
+        iMatrixClearAttrib(ih, &(ih->data->lines.dt[lin].flags), lin, IUP_INVALID_ID);
 
       for (col=col1; col<=col2; col++)
         iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
@@ -1000,13 +1114,13 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
       if (lin1==0 && lin2==ih->data->lines.num-1)
       {
         for (col=0; col<ih->data->columns.num; col++)
-          iMatrixClearAttrib(ih, &(ih->data->columns.flags[col]), IUP_INVALID_ID, col);
+          iMatrixClearAttrib(ih, &(ih->data->columns.dt[col].flags), IUP_INVALID_ID, col);
       }
 
       if (col1==0 && col2==ih->data->columns.num-1)
       {
         for (lin=0; lin<ih->data->lines.num; lin++)
-          iMatrixClearAttrib(ih, &(ih->data->lines.flags[lin]), lin, IUP_INVALID_ID);
+          iMatrixClearAttrib(ih, &(ih->data->lines.dt[lin].flags), lin, IUP_INVALID_ID);
       }
 
       for (lin=lin1; lin<=lin2; lin++)
@@ -1725,10 +1839,16 @@ Iclass* iupMatrixNewClass(void)
   /* IupMatrix Attributes - Numeric Columns (undocumented, will be exposed in IupMatrixEx) */
   iupClassRegisterAttributeId(ic, "NUMERICQUANTITYINDEX", NULL, iMatrixSetNumericQuantityIndexAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICFORMAT", NULL, iMatrixSetNumericFormatAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICFORMATPRECISION", iMatrixGetNumericFormatPrecisionAttrib, iMatrixSetNumericFormatPrecisionAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICFORMATTITLE", NULL, iMatrixSetNumericFormatTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITINDEX", NULL, iMatrixSetNumericUnitIndexAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWNINDEX", NULL, iMatrixSetNumericUnitShownIndexAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMERICFORMATDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "%.2lf", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  /* IupMatrix Attributes - Sort Columns (undocumented, will be exposed in IupMatrixEx) */
+  iupClassRegisterAttributeId(ic, "SORTCOLUMN", NULL, iMatrixSetSortColumnAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "SORTCOLUMNORDER", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "SORTCOLUMNCASE", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "USETITLESIZE", iMatrixGetUseTitleSizeAttrib, iMatrixSetUseTitleSizeAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

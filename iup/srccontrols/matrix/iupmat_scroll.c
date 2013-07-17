@@ -80,7 +80,7 @@ static int iMatrixScrollGetNextNonEmpty(Ihandle* ih, int m, int index)
   else
     p = &(ih->data->columns);
 
-  while(index < p->num && p->sizes[index] == 0)
+  while(index < p->num && p->dt[index].size == 0)
     index++;
 
   if (index > p->num-1)
@@ -103,7 +103,7 @@ static int iMatrixScrollGetPrevNonEmpty(Ihandle* ih, int m, int index)
   else
     p = &(ih->data->columns);
 
-  while(index > 0 && p->sizes[index] == 0)
+  while(index > 0 && p->dt[index].size == 0)
     index--;
 
   if (index < p->num_noscroll)

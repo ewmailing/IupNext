@@ -23,7 +23,7 @@ extern "C" {
 #define IMAT_FRAME_W   2
 #define IMAT_FRAME_H   2
 
-/* Cell flags */
+/* Cell/Column/Line flags */
 #define IMAT_HAS_FONT    1     /* Has FONTL:C attribute */
 #define IMAT_HAS_FGCOLOR 2     /* Has FGCOLORL:C attribute */
 #define IMAT_HAS_BGCOLOR 4     /* Has BGCOLORL:C attribute */
@@ -50,15 +50,20 @@ typedef double (*ImatNumericConvertFunc)(double number, int quantity, int src_un
 /***************************************************************************/
 typedef struct _ImatCell
 {
-  char *value;      /* Cell value                              */
-  unsigned char flags;  
+  char *value;          /* Cell value */
+  unsigned char flags;  /* Attribute flags for the cell */
 } ImatCell;
 
+typedef struct _ImatLinCol
+{
+  int size;             /* Width/height of the column/line */
+  unsigned char flags;  /* Attribute flags for the column/line */
+  int index;            /* Remap index of the column/line */
+} ImatLinCol;
 
 typedef struct _ImatLinColData
 {
-  int* sizes;            /* Width/height of the columns/lines  (allocated after map)   */
-  unsigned char* flags;  /* Attribute flags for the columns/lines (allocated after map) */
+  ImatLinCol* dt;   /* columns/lines data (allocated after map)   */
 
   int num;          /* Number of columns/lines, default/minimum=1, always includes the non scrollable cells */
   int num_alloc;    /* Number of columns/lines allocated, default=5 */
@@ -75,6 +80,8 @@ typedef struct _ImatLinColData
   int visible_size; /* Width/height of the visible window, not including the non scrollable cells */
 
   int focus_cell;   /* index of the current cell */
+
+  int has_index;    /* has a remap index of columns/lines */
 } ImatLinColData;
 
 
@@ -109,6 +116,7 @@ struct _IcontrolData
   int need_calcsize;
   int need_redraw;
   int inside_markedit_cb;   /* avoid recursion */
+  int last_sort_index;
 
   /* attributes */
   int mark_continuous, mark_mode, mark_multiple;

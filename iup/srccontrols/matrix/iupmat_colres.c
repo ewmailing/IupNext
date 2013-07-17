@@ -31,8 +31,8 @@
 
 static int iMatrixGetColResCheck(Ihandle* ih, int x, int y)
 {
-  if (ih->data->lines.sizes[0] && 
-      y < ih->data->lines.sizes[0] && 
+  if (ih->data->lines.dt[0].size && 
+      y < ih->data->lines.dt[0].size && 
       iupAttribGetBoolean(ih, "RESIZEMATRIX"))
   {
     int x_col = 0, col;
@@ -40,7 +40,7 @@ static int iMatrixGetColResCheck(Ihandle* ih, int x, int y)
     /* Check if it is in the non scrollable columns */
     for(col = 0; col < ih->data->columns.num_noscroll; col++)
     {
-      x_col += ih->data->columns.sizes[col];
+      x_col += ih->data->columns.dt[col].size;
       if (abs(x_col-x) < IMAT_COLRES_TOL)
         return col;
     }
@@ -48,7 +48,7 @@ static int iMatrixGetColResCheck(Ihandle* ih, int x, int y)
     /* Check if it is in the visible columns */
     for(col = ih->data->columns.first; col <= ih->data->columns.last; col++)
     {
-      x_col += ih->data->columns.sizes[col];
+      x_col += ih->data->columns.dt[col].size;
       if (col == ih->data->columns.first)
         x_col -= ih->data->columns.first_offset;
 
@@ -80,14 +80,14 @@ int iupMatrixColResStart(Ihandle* ih, int x, int y)
 void iupMatrixColResFinish(Ihandle* ih, int x)
 {
   int delta = x - ih->data->colres_drag_col_start_x;
-  int width = ih->data->columns.sizes[ih->data->colres_drag_col] + delta;
+  int width = ih->data->columns.dt[ih->data->colres_drag_col].size + delta;
   if (width < 0)
     width = 0;
 
   /* delete feedback */
   if (ih->data->colres_drag_col_last_x != -1)
   {
-    int y1 = ih->data->lines.sizes[0];  /* from the bottom of the line of titles */
+    int y1 = ih->data->lines.dt[0].size;  /* from the bottom of the line of titles */
     int y2 = ih->data->h-1;             /* to the bottom of the matrix */
 
     cdCanvasWriteMode(ih->data->cdcanvas, CD_XOR);
@@ -114,11 +114,11 @@ void iupMatrixColResMove(Ihandle* ih, int x)
   int y1, y2;
 
   int delta = x - ih->data->colres_drag_col_start_x;
-  int width = ih->data->columns.sizes[ih->data->colres_drag_col] + delta;
+  int width = ih->data->columns.dt[ih->data->colres_drag_col].size + delta;
   if (width < 0)
     return;
 
-  y1 = ih->data->lines.sizes[0];  /* from the bottom of the line of titles */
+  y1 = ih->data->lines.dt[0].size;  /* from the bottom of the line of titles */
   y2 = ih->data->h-1;             /* to the bottom of the matrix */
 
   cdCanvasWriteMode(ih->data->cdcanvas, CD_XOR);

@@ -71,10 +71,8 @@ void iupMatrixMemAlloc(Ihandle* ih)
     iMatrixGetInitialValues(ih);
   }
 
-  ih->data->lines.flags = (unsigned char*)calloc(ih->data->lines.num_alloc, sizeof(unsigned char));
-  ih->data->columns.flags = (unsigned char*)calloc(ih->data->columns.num_alloc, sizeof(unsigned char));
-  ih->data->lines.sizes = (int*)calloc(ih->data->lines.num_alloc, sizeof(int));
-  ih->data->columns.sizes = (int*)calloc(ih->data->columns.num_alloc, sizeof(int));
+  ih->data->lines.dt = (ImatLinCol*)calloc(ih->data->lines.num_alloc, sizeof(ImatLinCol));
+  ih->data->columns.dt = (ImatLinCol*)calloc(ih->data->columns.num_alloc, sizeof(ImatLinCol));
 
   /* numeric colums are allocated when a NUMERIC* attribute is set */
 }
@@ -102,28 +100,16 @@ void iupMatrixMemRelease(Ihandle* ih)
     ih->data->cells = NULL;
   }
 
-  if (ih->data->columns.flags)
+  if (ih->data->columns.dt)
   {
-    free(ih->data->columns.flags);
-    ih->data->columns.flags = NULL;
+    free(ih->data->columns.dt);
+    ih->data->columns.dt = NULL;
   }
 
-  if (ih->data->lines.flags)
+  if (ih->data->lines.dt)
   {
-    free(ih->data->lines.flags);
-    ih->data->lines.flags = NULL;
-  }
-
-  if (ih->data->columns.sizes)
-  {
-    free(ih->data->columns.sizes);
-    ih->data->columns.sizes = NULL;
-  }
-
-  if (ih->data->lines.sizes)
-  {
-    free(ih->data->lines.sizes);
-    ih->data->lines.sizes = NULL;
+    free(ih->data->lines.dt);
+    ih->data->lines.dt = NULL;
   }
 
   if (ih->data->numeric_columns)
@@ -154,8 +140,7 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
         ih->data->cells[lin] = (ImatCell*)calloc(ih->data->columns.num_alloc, sizeof(ImatCell));
     }
 
-    ih->data->lines.sizes = (int*)realloc(ih->data->lines.sizes, ih->data->lines.num_alloc*sizeof(int));
-    ih->data->lines.flags = (unsigned char*)realloc(ih->data->lines.flags, ih->data->lines.num_alloc*sizeof(unsigned char));
+    ih->data->lines.dt = (ImatLinCol*)realloc(ih->data->lines.dt, ih->data->lines.num_alloc*sizeof(ImatLinCol));
   }
 
   if (old_num==num)
@@ -174,16 +159,14 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
       if (!ih->data->callback_mode)
         for (lin = shift_num-1; lin >= 0; lin--)   /* all columns, shift_num lines */
           memmove(ih->data->cells[lin+end], ih->data->cells[lin+base], ih->data->columns.num_alloc*sizeof(ImatCell));
-      memmove(ih->data->lines.sizes+end, ih->data->lines.sizes+base, shift_num*sizeof(int));
-      memmove(ih->data->lines.flags+end, ih->data->lines.flags+base, shift_num*sizeof(unsigned char));
+      memmove(ih->data->lines.dt+end, ih->data->lines.dt+base, shift_num*sizeof(ImatLinCol));
     }
 
     /* then clear the new space starting at base */
     if (!ih->data->callback_mode)
       for (lin = 0; lin < diff_num; lin++)        /* all columns, diff_num lines */
         memset(ih->data->cells[lin+base], 0, ih->data->columns.num_alloc*sizeof(ImatCell));
-    memset(ih->data->lines.sizes+base, 0, diff_num*sizeof(int));
-    memset(ih->data->lines.flags+base, 0, diff_num*sizeof(unsigned char));
+    memset(ih->data->lines.dt+base, 0, diff_num*sizeof(ImatLinCol));
   }
   else /* DEL */
   {
@@ -215,16 +198,14 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
       if (!ih->data->callback_mode)
         for (lin = 0; lin < shift_num; lin++) /* all columns, shift_num lines */
           memmove(ih->data->cells[lin+base], ih->data->cells[lin+end], ih->data->columns.num_alloc*sizeof(ImatCell));
-      memmove(ih->data->lines.sizes+base, ih->data->lines.sizes+end, shift_num*sizeof(int));
-      memmove(ih->data->lines.flags+base, ih->data->lines.flags+end, shift_num*sizeof(unsigned char));
+      memmove(ih->data->lines.dt+base, ih->data->lines.dt+end, shift_num*sizeof(ImatLinCol));
     }
 
     /* then clear the remaining space starting at num */
     if (!ih->data->callback_mode)
       for (lin = 0; lin < diff_num; lin++)   /* all columns, diff_num lines */
         memset(ih->data->cells[lin+num], 0, ih->data->columns.num_alloc*sizeof(ImatCell));
-    memset(ih->data->lines.sizes+num, 0, diff_num*sizeof(int));
-    memset(ih->data->lines.flags+num, 0, diff_num*sizeof(unsigned char));
+    memset(ih->data->lines.dt+num, 0, diff_num*sizeof(ImatLinCol));
   }
 }
 
@@ -247,8 +228,7 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
         ih->data->cells[lin] = (ImatCell*)realloc(ih->data->cells[lin], ih->data->columns.num_alloc*sizeof(ImatCell));
     }
 
-    ih->data->columns.sizes = (int*)realloc(ih->data->columns.sizes, ih->data->columns.num_alloc*sizeof(int));
-    ih->data->columns.flags = (unsigned char*)realloc(ih->data->columns.flags, ih->data->columns.num_alloc*sizeof(unsigned char));
+    ih->data->columns.dt = (ImatLinCol*)realloc(ih->data->columns.dt, ih->data->columns.num_alloc*sizeof(ImatLinCol));
     if (ih->data->numeric_columns)
       ih->data->numeric_columns = (ImatNumericData*)realloc(ih->data->numeric_columns, ih->data->columns.num_alloc*sizeof(ImatNumericData));
   }
@@ -271,8 +251,7 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
       if (!ih->data->callback_mode)
         for (lin = 0; lin < ih->data->lines.num_alloc; lin++)  /* all lines, shift_num columns */
           memmove(ih->data->cells[lin]+end, ih->data->cells[lin]+base, shift_num*sizeof(ImatCell));
-      memmove(ih->data->columns.sizes+end, ih->data->columns.sizes+base, shift_num*sizeof(int));
-      memmove(ih->data->columns.flags+end, ih->data->columns.flags+base, shift_num*sizeof(unsigned char));
+      memmove(ih->data->columns.dt+end, ih->data->columns.dt+base, shift_num*sizeof(ImatLinCol));
       if (ih->data->numeric_columns)
         memmove(ih->data->numeric_columns+end, ih->data->numeric_columns+base, shift_num*sizeof(ImatNumericData));
     }
@@ -281,8 +260,7 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
     if (!ih->data->callback_mode)
       for (lin = 0; lin < ih->data->lines.num_alloc; lin++)   /* all lines, diff_num columns */
         memset(ih->data->cells[lin]+base, 0, diff_num*sizeof(ImatCell));
-    memset(ih->data->columns.sizes+base, 0, diff_num*sizeof(int));
-    memset(ih->data->columns.flags+base, 0, diff_num*sizeof(unsigned char));
+    memset(ih->data->columns.dt+base, 0, diff_num*sizeof(ImatLinCol));
     if (ih->data->numeric_columns)
       memset(ih->data->numeric_columns+base, 0, diff_num*sizeof(ImatNumericData));
   }
@@ -317,8 +295,7 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
       if (!ih->data->callback_mode)
         for (lin = 0; lin < ih->data->lines.num_alloc; lin++)  /* all lines, shift_num columns */
           memmove(ih->data->cells[lin]+base, ih->data->cells[lin]+end, shift_num*sizeof(ImatCell));
-      memmove(ih->data->columns.sizes+base, ih->data->columns.sizes+end, shift_num*sizeof(int));
-      memmove(ih->data->columns.flags+base, ih->data->columns.flags+end, shift_num*sizeof(unsigned char));
+      memmove(ih->data->columns.dt+base, ih->data->columns.dt+end, shift_num*sizeof(ImatLinCol));
       if (ih->data->numeric_columns)
         memmove(ih->data->numeric_columns+base, ih->data->numeric_columns+end, shift_num*sizeof(ImatNumericData));
     }
@@ -327,8 +304,7 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
     if (!ih->data->callback_mode)
       for (lin = 0; lin < ih->data->lines.num_alloc; lin++)   /* all lines, diff_num columns */
         memset(ih->data->cells[lin]+num, 0, diff_num*sizeof(ImatCell));
-    memset(ih->data->columns.sizes+num, 0, diff_num*sizeof(int));
-    memset(ih->data->columns.flags+num, 0, diff_num*sizeof(unsigned char));
+    memset(ih->data->columns.dt+num, 0, diff_num*sizeof(ImatLinCol));
     if (ih->data->numeric_columns)
       memset(ih->data->numeric_columns+num, 0, diff_num*sizeof(ImatNumericData));
   }

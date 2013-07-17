@@ -30,7 +30,7 @@ int iupMatrixAuxIsFullVisibleLast(ImatLinColData *p)
 
   for(i = p->first; i <= p->last; i++)
   {
-    sum += p->sizes[i];
+    sum += p->dt[i].size;
     if (i==p->first)
       sum -= p->first_offset;
   }
@@ -86,11 +86,11 @@ void iupMatrixAuxAdjustFirstFromLast(ImatLinColData* p)
   /* adjust "first" according to "last" */
 
   i = p->last;
-  sum = p->sizes[i];
+  sum = p->dt[i].size;
   while (i>p->num_noscroll && sum < p->visible_size)
   {
     i--;
-    sum += p->sizes[i];
+    sum += p->dt[i].size;
   }
 
   if (i==p->num_noscroll && sum < p->visible_size)
@@ -116,10 +116,10 @@ void iupMatrixAuxAdjustFirstFromScrollPos(ImatLinColData* p, int scroll_pos)
   sp = 0;
   for(index = p->num_noscroll; index < p->num; index++)
   {
-    sp += p->sizes[index];
+    sp += p->dt[index].size;
     if (sp > scroll_pos)
     {
-      sp -= p->sizes[index]; /* get the previous value */
+      sp -= p->dt[index].size; /* get the previous value */
       offset = scroll_pos - sp;
       break;
     }
@@ -189,7 +189,7 @@ void iupMatrixAuxUpdateScrollPos(Ihandle* ih, int m)
   /* must check if it is a valid position */
   scroll_pos = 0;
   for(i = p->num_noscroll; i < p->first; i++)
-    scroll_pos += p->sizes[i];
+    scroll_pos += p->dt[i].size;
   scroll_pos += p->first_offset;
 
   if (scroll_pos + p->visible_size > p->total_size)
@@ -224,7 +224,7 @@ void iupMatrixAuxUpdateLast(ImatLinColData *p)
        up to the visible size */
     for(i = p->first; i < p->num; i++)
     {
-      sum += p->sizes[i];
+      sum += p->dt[i].size;
       if (i==p->first)
         sum -= p->first_offset;
 
@@ -266,12 +266,12 @@ static void iMatrixAuxFillSizeVec(Ihandle* ih, int m)
   for(i = 0; i < p->num; i++)
   {
     if (m == IMAT_PROCESS_LIN)
-      p->sizes[i] = iupMatrixGetLineHeight(ih, i, 1);
+      p->dt[i].size = iupMatrixGetLineHeight(ih, i, 1);
     else
-      p->sizes[i] = iupMatrixGetColumnWidth(ih, i, 1);
+      p->dt[i].size = iupMatrixGetColumnWidth(ih, i, 1);
 
     if (i >= p->num_noscroll)
-      p->total_size += p->sizes[i];
+      p->total_size += p->dt[i].size;
   }
 }
 
@@ -296,7 +296,7 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
 
   fixed_size = 0;
   for (i=0; i<p->num_noscroll; i++)
-    fixed_size += p->sizes[i];
+    fixed_size += p->dt[i].size;
 
   /* Matrix useful area is the current size minus the title area */
   p->visible_size = canvas_size - fixed_size;

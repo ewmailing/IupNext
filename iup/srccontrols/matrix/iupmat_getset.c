@@ -38,34 +38,55 @@ int iupMatrixCheckCellPos(Ihandle* ih, int lin, int col)
   return 1;
 }
 
+static char* iMatrixSetValueNumeric(Ihandle* ih, int lin, int col, const char* value)
+{
+  double number;
+  if (sscanf(value, "%lf", &number) != 1)   /* lf=double */
+  {
+    IFniid setvalue_cb;
+
+    if (ih->data->numeric_columns[col].unit_shown!=ih->data->numeric_columns[col].unit) 
+      number = ih->data->numeric_convert_func(number, ih->data->numeric_columns[col].quantity,
+                                                      ih->data->numeric_columns[col].unit_shown,  /* from */
+                                                      ih->data->numeric_columns[col].unit);       /* to */
+
+    setvalue_cb = (IFniid)IupGetCallback(ih, "NUMERICSETVALUE_CB");
+    if (setvalue_cb)
+    {
+      setvalue_cb(ih, lin, col, number);
+      return NULL;
+    }
+    else if (ih->data->numeric_columns[col].unit_shown!=ih->data->numeric_columns[col].unit) 
+    {
+      /* only use the number if a conversion occurred */
+      sprintf(ih->data->numeric_buffer_set, "%.18g", number);  /* maximum double precision */
+      value = ih->data->numeric_buffer_set;
+    }
+  }
+
+  return (char*)value;
+}
+
 void iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value, int edited)
 {  
-  /* not called before map */
+  /* NOTICE: this function is NOT called before map */
+
+  if (col != 0 && ih->data->columns.has_index)
+  {
+    int index = ih->data->columns.dt[col].index;
+    if (index != 0) col = index;
+  }
+  if (lin != 0 && ih->data->lines.has_index)
+  {
+    int index = ih->data->lines.dt[lin].index;
+    if (index != 0) lin = index;
+  }
+
   if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
   {
-    double number;
-    if (sscanf(value, "%lf", &number) != 1)   /* lf=double */
-    {
-      IFniid setvalue_cb;
-
-      if (ih->data->numeric_columns[col].unit_shown!=ih->data->numeric_columns[col].unit) 
-        number = ih->data->numeric_convert_func(number, ih->data->numeric_columns[col].quantity,
-                                                        ih->data->numeric_columns[col].unit_shown,  /* from */
-                                                        ih->data->numeric_columns[col].unit);       /* to */
-
-      setvalue_cb = (IFniid)IupGetCallback(ih, "NUMERICSETVALUE_CB");
-      if (setvalue_cb)
-      {
-        setvalue_cb(ih, lin, col, number);
-        return;
-      }
-      else if (ih->data->numeric_columns[col].unit_shown!=ih->data->numeric_columns[col].unit) 
-      {
-        /* only use the number if a conversion occurred */
-        sprintf(ih->data->numeric_buffer_set, "%.18g", number);  /* maximum double precision */
-        value = ih->data->numeric_buffer_set;
-      }
-    }
+    value = iMatrixSetValueNumeric(ih, lin, col, value);
+    if (!value)
+      return;
   }
 
   if (!ih->data->callback_mode)
@@ -153,12 +174,24 @@ static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col, const char* v
 
 char* iupMatrixCellGetValue (Ihandle* ih, int lin, int col)
 {  
-  /* can be called before map */
+  /* NOTICE: this function is CAN BE called before map */
   if (!ih->handle)
     return iupAttribGetId2(ih, "", lin, col);
   else
   {
     char* value;
+
+    if (col != 0 && ih->data->columns.has_index)
+    {
+      int index = ih->data->columns.dt[col].index;
+      if (index != 0) col = index;
+    }
+    if (lin != 0 && ih->data->lines.has_index)
+    {
+      int index = ih->data->lines.dt[lin].index;
+      if (index != 0) lin = index;
+    }
+
     if (ih->data->callback_mode)
     {
       /* only called in callback mode */
@@ -186,9 +219,9 @@ void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int
       return;
 
     if (set)
-      ih->data->columns.flags[col] |= attr;
+      ih->data->columns.dt[col].flags |= attr;
     else
-      ih->data->columns.flags[col] &= ~attr;
+      ih->data->columns.dt[col].flags &= ~attr;
   }
   else if (col==IUP_INVALID_ID)
   {
@@ -196,9 +229,9 @@ void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int
       return;
 
     if (set)
-      ih->data->lines.flags[lin] |= attr;
+      ih->data->lines.dt[lin].flags |= attr;
     else
-      ih->data->lines.flags[lin] &= ~attr;
+      ih->data->lines.dt[lin].flags &= ~attr;
   }
   else
   {
@@ -272,7 +305,7 @@ static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int 
     /* 2 - check for this line, if not title col */
     if (col != 0)
     {
-      if (ih->data->lines.flags[lin] & attr)
+      if (ih->data->lines.dt[lin].flags & attr)
         value = iupAttribGetId(ih, attrib, lin);
     }
 
@@ -281,7 +314,7 @@ static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int 
       /* 3 - check for this column, if not title line */
       if (lin != 0)
       {
-        if (ih->data->columns.flags[col] & attr)
+        if (ih->data->columns.dt[col].flags & attr)
           value = iupAttribGetId(ih, attrib, col);
       }
 
@@ -578,13 +611,13 @@ static int iMatrixGetOffset(int index, int *offset, ImatLinColData *p)
   *offset = 0;
 
   /* check if the cell is not empty */
-  if (!p->sizes[index])
+  if (!p->dt[index].size)
     return 0;
 
   if (index < p->num_noscroll)
   {
     for(i = 0; i < index; i++)
-      *offset += p->sizes[i];
+      *offset += p->dt[i].size;
   }
   else
   {
@@ -593,12 +626,12 @@ static int iMatrixGetOffset(int index, int *offset, ImatLinColData *p)
       return 0;
 
     for(i = 0; i < p->num_noscroll; i++)
-      *offset += p->sizes[i];
+      *offset += p->dt[i].size;
 
     /* Find the initial position */
     *offset -= p->first_offset;  /* index is always greater or equal to first */
     for(i = p->first; i < index; i++)
-      *offset += p->sizes[i];
+      *offset += p->dt[i].size;
   }
 
   return 1;
@@ -624,7 +657,7 @@ static int iMatrixGetIndexFromOffset(int pos, ImatLinColData *p)
 
   for(i = 0; i < p->num_noscroll; i++)  /* for all non scrollable cells */
   {
-    offset += p->sizes[i];
+    offset += p->dt[i].size;
 
     if (pos < offset)
       break;
@@ -634,7 +667,7 @@ static int iMatrixGetIndexFromOffset(int pos, ImatLinColData *p)
   {
     for(i = p->first; i <= p->last; i++)  /* for all visible cells */
     {
-      offset += p->sizes[i];
+      offset += p->dt[i].size;
       if (i == p->first)
         offset -= p->first_offset;
 
@@ -670,22 +703,22 @@ static void iMatrixGetCellDim(int index, int* offset, int* size, ImatLinColData 
   if (index < p->num_noscroll)
   {
     for(i = 0; i < index; i++)
-      *offset += p->sizes[i];
+      *offset += p->dt[i].size;
   }
   else
   {
     for(i = 0; i < p->num_noscroll; i++)
-      *offset += p->sizes[i];
+      *offset += p->dt[i].size;
 
     for(i = p->first; i < index; i++)
     {
-      *offset += p->sizes[i];
+      *offset += p->dt[i].size;
       if (i == p->first)
         *offset -= p->first_offset;  /* add only when index greater than first */
     }
   }
 
-  *size = p->sizes[index] - 1;
+  *size = p->dt[index].size - 1;
   if (index == p->first)
     *size -= p->first_offset;
 }
