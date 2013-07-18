@@ -539,6 +539,11 @@ static int iScintillaMapMethod(Ihandle* ih)
   iupScintillaSendMessage(ih, SCI_SETPASTECONVERTENDINGS, 1, 0);
   iupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_LF, 0);
 
+  if(IupGetInt(NULL, "UTF8MODE"))
+    iupScintillaSendMessage(ih, SCI_SETCODEPAGE, SC_CP_UTF8, 0);
+  else
+    iupScintillaSendMessage(ih, SCI_SETCODEPAGE, 0, 0);
+
   return IUP_NOERROR;
 }
 

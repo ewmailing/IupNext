@@ -113,6 +113,11 @@ static void set_attribs (Ihandle *sci)
   
   IupSetAttribute(sci, "INSERT0", sampleCode);
 
+  if (IupGetInt(NULL, "UTF8MODE"))
+    IupSetAttribute(sci, "PREPEND", "//  UTF8MODE Enabled: Γ§Γ£ΓµΓ΅Γ³Γ©");
+  else
+    IupSetAttribute(sci, "PREPEND", "//  UTF8MODE Disabled: ηγυασι");
+
   IupSetAttribute(sci, "MARGINWIDTH0", "50");
 
   if (1)
@@ -148,7 +153,8 @@ void ScintillaTest(void)
 {
   Ihandle *dlg, *sci;
 
-  IupScintillaOpen();        
+  IupScintillaOpen();
+  IupSetGlobal("UTF8MODE", "No");
 
   // Creates an instance of the Scintilla control
   sci = IupScintilla();
