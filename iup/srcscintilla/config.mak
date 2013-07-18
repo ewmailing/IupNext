@@ -45,6 +45,7 @@ else
   INCLUDES += ../src/win ../srcscintilla/lexlib ../srcscintilla/src ../srcscintilla/include ../srcscintilla/win32
   INCLUDES += win
   LIBS += imm32
+  DEFINES += UNICODE
   
   ifneq ($(findstring gcc, $(TEC_UNAME)), )
     DEFINES += _WIN32 DISABLE_D2D

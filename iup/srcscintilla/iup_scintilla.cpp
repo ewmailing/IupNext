@@ -852,6 +852,4 @@ BRACEBLINDICATOR (non inheritable, write only): defines a specified indicator to
 USEBRACEHLINDICATOR (non inheritable): enable or disable the indicator to highlight matching braces. Can be YES or NO. Default: YES.
 USEBRACEBLINDICATOR (non inheritable): enable or disable the indicator to highlight non matching brace. Can be YES or NO. Default: YES.
 - Autocompletion
-
-SCI_SETCODEPAGE(SC_CP_UTF8)
 */
