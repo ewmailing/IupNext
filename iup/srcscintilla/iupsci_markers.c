@@ -18,7 +18,6 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 
-#include "iupsci_markers.h"
 #include "iupsci.h"
 
 /***** MARKERS *****
@@ -45,7 +44,7 @@ SCI_MARKERDELETE(int line, int markerNumber)
 --SCI_MARKERDELETEHANDLE(int handle)
 */
 
-int iupScintillaSetMarkerSymbolAttribId(Ihandle* ih, int markerNumber, const char* value)
+static int iScintillaSetMarkerSymbolAttribId(Ihandle* ih, int markerNumber, const char* value)
 {
   int markerSymbol;
 
@@ -124,7 +123,7 @@ int iupScintillaSetMarkerSymbolAttribId(Ihandle* ih, int markerNumber, const cha
   return 0;
 }
 
-char* iupScintillaGetMarkerSymbolAttribId(Ihandle* ih, int markerNumber)
+static char* iScintillaGetMarkerSymbolAttribId(Ihandle* ih, int markerNumber)
 {
   char* markerSymbolStr[32] = {
     "CIRCLE", "ROUNDRECT", "ARROW", "SMALLRECT", "SHORTARROW", "EMPTY", "ARROWDOWN", "MINUS", 
@@ -147,7 +146,7 @@ char* iupScintillaGetMarkerSymbolAttribId(Ihandle* ih, int markerNumber)
   return markerSymbolStr[markerSymbol];
 }
 
-int iupScintillaSetMarkerDefineAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetMarkerDefineAttrib(Ihandle* ih, const char* value)
 {
   char strNumb[25];
   char strSymb[25];
@@ -179,11 +178,11 @@ int iupScintillaSetMarkerDefineAttrib(Ihandle* ih, const char* value)
       return 0;
   }
 
-  iupScintillaSetMarkerSymbolAttribId(ih, markerNumber, strSymb);
+  iScintillaSetMarkerSymbolAttribId(ih, markerNumber, strSymb);
   return 0;
 }
 
-int iupScintillaSetMarkerDefineRGBAImageId(Ihandle* ih, int markerNumber, const char* value)
+static int iScintillaSetMarkerDefineRGBAImageId(Ihandle* ih, int markerNumber, const char* value)
 {
   Ihandle* ih_image = IupGetHandle(value);
   if (ih_image)
@@ -206,7 +205,7 @@ int iupScintillaSetMarkerDefineRGBAImageId(Ihandle* ih, int markerNumber, const 
   return 0;
 }
 
-int iupScintillaSetRGBAImageSetScale(Ihandle* ih, const char* value)
+static int iScintillaSetRGBAImageSetScale(Ihandle* ih, const char* value)
 {
   int scale;
   iupStrToInt(value, &scale);
@@ -218,7 +217,7 @@ int iupScintillaSetRGBAImageSetScale(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetMarkerFgColorAttribId(Ihandle* ih, int markerNumber, const char* value)
+static int iScintillaSetMarkerFgColorAttribId(Ihandle* ih, int markerNumber, const char* value)
 {
   unsigned char r, g, b;
 
@@ -230,7 +229,7 @@ int iupScintillaSetMarkerFgColorAttribId(Ihandle* ih, int markerNumber, const ch
   return 0;
 }
 
-int iupScintillaSetMarkerBgColorAttribId(Ihandle* ih, int markerNumber, const char* value)
+static int iScintillaSetMarkerBgColorAttribId(Ihandle* ih, int markerNumber, const char* value)
 {
   unsigned char r, g, b;
 
@@ -242,7 +241,7 @@ int iupScintillaSetMarkerBgColorAttribId(Ihandle* ih, int markerNumber, const ch
   return 0;
 }
 
-int iupScintillaSetMarkerBgColorSelectedAttribId(Ihandle* ih, int markerNumber, const char* value)
+static int iScintillaSetMarkerBgColorSelectedAttribId(Ihandle* ih, int markerNumber, const char* value)
 {
   unsigned char r, g, b;
 
@@ -254,7 +253,7 @@ int iupScintillaSetMarkerBgColorSelectedAttribId(Ihandle* ih, int markerNumber, 
   return 0;
 }
 
-int iupScintillaSetMarkerAlphaAttribId(Ihandle* ih, int markerNumber, const char* value)
+static int iScintillaSetMarkerAlphaAttribId(Ihandle* ih, int markerNumber, const char* value)
 {
   int alpha;
   iupStrToInt(value, &alpha);
@@ -267,7 +266,7 @@ int iupScintillaSetMarkerAlphaAttribId(Ihandle* ih, int markerNumber, const char
   return 0;
 }
 
-int iupScintillaSetMarkerEnableHighlightAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetMarkerEnableHighlightAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
     iupScintillaSendMessage(ih, SCI_MARKERENABLEHIGHLIGHT, 1, 0);
@@ -276,7 +275,7 @@ int iupScintillaSetMarkerEnableHighlightAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
-int iupScintillaSetMarkerAddAttribId(Ihandle* ih, int line, const char* value)
+static int iScintillaSetMarkerAddAttribId(Ihandle* ih, int line, const char* value)
 {
   int markerNumber, markerID;
   iupStrToInt(value, &markerNumber);
@@ -287,7 +286,7 @@ int iupScintillaSetMarkerAddAttribId(Ihandle* ih, int line, const char* value)
   return 0;
 }
 
-int iupScintillaSetMarkerDeleteAttribId(Ihandle* ih, int line, const char* value)
+static int iScintillaSetMarkerDeleteAttribId(Ihandle* ih, int line, const char* value)
 {
   int markerNumber;
   iupStrToInt(value, &markerNumber);
@@ -297,13 +296,13 @@ int iupScintillaSetMarkerDeleteAttribId(Ihandle* ih, int line, const char* value
   return 0;
 }
 
-char* iupScintillaGetMarkerGetAttribId(Ihandle* ih, int line)
+static char* iScintillaGetMarkerGetAttribId(Ihandle* ih, int line)
 {
   int markers = iupScintillaSendMessage(ih, SCI_MARKERGET, line, 0);
   return iupStrReturnInt(markers);
 }
 
-int iupScintillaSetMarkerDeleteAllAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetMarkerDeleteAllAttrib(Ihandle* ih, const char* value)
 {
   int markerNumber;
   iupStrToInt(value, &markerNumber);
@@ -313,7 +312,7 @@ int iupScintillaSetMarkerDeleteAllAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetMarkerNextAttribId(Ihandle* ih, int lineStart, const char* value)
+static int iScintillaSetMarkerNextAttribId(Ihandle* ih, int lineStart, const char* value)
 {
   int markerMask, last_marker_found;
   iupStrToInt(value, &markerMask);
@@ -324,7 +323,7 @@ int iupScintillaSetMarkerNextAttribId(Ihandle* ih, int lineStart, const char* va
   return 0;
 }
 
-int iupScintillaSetMarkerPreviousAttribId(Ihandle* ih, int lineStart, const char* value)
+static int iScintillaSetMarkerPreviousAttribId(Ihandle* ih, int lineStart, const char* value)
 {
   int markerMask, last_marker_found;
   iupStrToInt(value, &markerMask);
@@ -335,13 +334,13 @@ int iupScintillaSetMarkerPreviousAttribId(Ihandle* ih, int lineStart, const char
   return 0;
 }
 
-char* iupScintillaGetMarkerLineFromHandleAttribId(Ihandle* ih, int markerHandle)
+static char* iScintillaGetMarkerLineFromHandleAttribId(Ihandle* ih, int markerHandle)
 {
   int line = iupScintillaSendMessage(ih, SCI_MARKERLINEFROMHANDLE, markerHandle, 0);
   return iupStrReturnInt(line);
 }
 
-int iupScintillaSetMarkerDeleteHandleAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetMarkerDeleteHandleAttrib(Ihandle* ih, const char* value)
 {
   int markerHandle;
   iupStrToInt(value, &markerHandle);
@@ -349,4 +348,27 @@ int iupScintillaSetMarkerDeleteHandleAttrib(Ihandle* ih, const char* value)
   iupScintillaSendMessage(ih, SCI_MARKERDELETEHANDLE, markerHandle, 0);
 
   return 0;
+}
+
+void iupScintillaRegisterMarker(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic,   "MARKERDEFINE", NULL, iScintillaSetMarkerDefineAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERSYMBOL", iScintillaGetMarkerSymbolAttribId, iScintillaSetMarkerSymbolAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERFGCOLOR", NULL, iScintillaSetMarkerFgColorAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERBGCOLOR", NULL, iScintillaSetMarkerBgColorAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERBGCOLORSEL", NULL, iScintillaSetMarkerBgColorSelectedAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERALPHA", NULL, iScintillaSetMarkerAlphaAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERRGBAIMAGE", NULL, iScintillaSetMarkerDefineRGBAImageId, IUPAF_IHANDLENAME|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARKERRGBAIMAGESCALE", NULL, iScintillaSetRGBAImageSetScale, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARKERHIGHLIGHT", NULL, iScintillaSetMarkerEnableHighlightAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERADD", NULL, iScintillaSetMarkerAddAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERDELETE", NULL, iScintillaSetMarkerDeleteAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERGET", iScintillaGetMarkerGetAttribId, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARKERDELETEALL", NULL, iScintillaSetMarkerDeleteAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERNEXT", NULL, iScintillaSetMarkerNextAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERPREVIOUS", NULL, iScintillaSetMarkerPreviousAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARKERLINEFROMHANDLE", iScintillaGetMarkerLineFromHandleAttribId, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "MARKERDELETEHANDLE", NULL, iScintillaSetMarkerDeleteHandleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "LASTMARKERADDHANDLE", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "LASTMARKERFOUND", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 }

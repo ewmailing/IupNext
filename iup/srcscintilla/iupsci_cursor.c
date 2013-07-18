@@ -18,7 +18,6 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 
-#include "iupsci_cursor.h"
 #include "iupsci.h"
 
 /***** CURSOR ****
@@ -26,7 +25,7 @@ SCI_SETCURSOR(int curType)
 SCI_GETCURSOR
 */
 
-char* iupScintillaGetCursorAttrib(Ihandle *ih)
+static char* iScintillaGetCursorAttrib(Ihandle *ih)
 {
   if(iupScintillaSendMessage(ih, SCI_GETCURSOR, 0, 0) == SC_CURSORWAIT)
     return "WAIT";
@@ -34,7 +33,7 @@ char* iupScintillaGetCursorAttrib(Ihandle *ih)
     return "NORMAL";
 }
 
-int iupScintillaSetCursorAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetCursorAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrEqualNoCase(value, "WAIT"))
     iupScintillaSendMessage(ih, SCI_SETCURSOR, (uptr_t)SC_CURSORWAIT, 0);
@@ -51,21 +50,21 @@ SCI_SETZOOM(int zoomInPoints)
 SCI_GETZOOM
 */
 
-int iupScintillaSetZoomInAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetZoomInAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
   iupScintillaSendMessage(ih, SCI_ZOOMIN, 0, 0);
   return 0;
 }
 
-int iupScintillaSetZoomOutAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetZoomOutAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
   iupScintillaSendMessage(ih, SCI_ZOOMOUT, 0, 0);
   return 0;
 }
 
-int iupScintillaSetZoomAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetZoomAttrib(Ihandle *ih, const char *value)
 {
   int points;
   if (!iupStrToInt(value, &points))
@@ -79,8 +78,16 @@ int iupScintillaSetZoomAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
-char* iupScintillaGetZoomAttrib(Ihandle* ih)
+static char* iScintillaGetZoomAttrib(Ihandle* ih)
 {
   int points = iupScintillaSendMessage(ih, SCI_GETZOOM, 0, 0);
   return iupStrReturnInt(points);
+}
+
+void iupScintillaRegisterCursor(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic, "CURSOR",  iScintillaGetCursorAttrib, iScintillaSetCursorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ZOOMIN",  NULL, iScintillaSetZoomInAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ZOOMOUT", NULL, iScintillaSetZoomOutAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ZOOM",    iScintillaGetZoomAttrib, iScintillaSetZoomAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }

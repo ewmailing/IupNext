@@ -42,22 +42,6 @@
 #include "iupwin_drv.h"
 #endif
 
-#include "iupsci_folding.h"
-#include "iupsci_markers.h"
-#include "iupsci_margin.h"
-#include "iupsci_lexer.h"
-#include "iupsci_style.h"
-#include "iupsci_text.h"
-#include "iupsci_selection.h"
-#include "iupsci_clipboard.h"
-#include "iupsci_overtype.h"
-#include "iupsci_scrolling.h"
-#include "iupsci_tab.h"
-#include "iupsci_wordwrap.h"
-#include "iupsci_whitespace.h"
-#include "iupsci_cursor.h"
-#include "iupsci_bracelight.h"
-#include "iupsci_annotation.h"
 #include "iupsci.h"
 
 
@@ -124,43 +108,6 @@ static int iScintillaConvertXYToPos(Ihandle* ih, int x, int y)
 
 /***** GENERAL FUNCTIONS *****/
 
-
-static int iScintillaSetStandardFontAttrib(Ihandle* ih, const char* value)
-{
-  int size = 0;
-  int is_bold = 0,
-    is_italic = 0, 
-    is_underline = 0,
-    is_strikeout = 0;
-  char typeface[1024];
-
-  if (!value)
-    return 0;
-  
-  if (!iupGetFontInfo(value, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-    return 0;
-
-  iupScintillaSetFontStyleAttrib(ih, 0, typeface);
-  iupScintillaSendMessage(ih, SCI_STYLESETSIZE, 0, size);
-  iupScintillaSetBoldStyleAttrib(ih, 0, is_bold? "Yes": "No");
-  iupScintillaSetItalicStyleAttrib(ih, 0, is_italic? "Yes": "No");
-  iupScintillaSetUnderlineStyleAttrib(ih, 0, is_underline? "Yes": "No");
-
-  return iupdrvSetStandardFontAttrib(ih, value);
-}
-
-static int iScintillaSetFgColorAttrib(Ihandle *ih, const char *value)
-{
-  iupScintillaSetFgColorStyleAttrib(ih, 0, value);
-  return 1;
-}
-
-static int iScintillaSetBgColorAttrib(Ihandle *ih, const char *value)
-{
-  iupScintillaSetBgColorStyleAttrib(ih, 0, value);
-  return 1;
-}
-
 static int iScintillaSetUsePopupAttrib(Ihandle* ih, const char* value)
 {
   iupScintillaSendMessage(ih, SCI_USEPOPUP, iupStrBoolean(value), 0);
@@ -178,52 +125,8 @@ static char* iScintillaGetKeysUnicodeAttrib(Ihandle* ih)
   return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_GETKEYSUNICODE, 0, 0)); 
 }
 
-static int iScintillaSetAppendNewlineAttrib(Ihandle* ih, const char* value)
-{
-  if (iupStrBoolean(value))
-    ih->data->append_newline = 1;
-  else
-    ih->data->append_newline = 0;
-  return 0;
-}
-
-static char* iScintillaGetAppendNewlineAttrib(Ihandle* ih)
-{
-  return iupStrReturnBoolean (ih->data->append_newline); 
-}
-
-static char* iScintillaGetScrollbarAttrib(Ihandle* ih)
-{
-  if (ih->data->sb == (IUP_SB_HORIZ | IUP_SB_VERT))
-    return "YES";
-  if (ih->data->sb & IUP_SB_HORIZ)
-    return "HORIZONTAL";
-  if (ih->data->sb & IUP_SB_VERT)
-    return "VERTICAL";
-  
-  return "NO";
-}
-
-static int iScintillaSetScrollbarAttrib(Ihandle* ih, const char* value)
-{
-  if (!value)
-    value = "YES";    /* default is YES */
-
-  if (iupStrEqualNoCase(value, "YES"))
-    ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
-  else if (iupStrEqualNoCase(value, "HORIZONTAL"))
-    ih->data->sb = IUP_SB_HORIZ;
-  else if (iupStrEqualNoCase(value, "VERTICAL"))
-    ih->data->sb = IUP_SB_VERT;
-  else
-    ih->data->sb = IUP_SB_NONE;
-
-  return 0;
-}
-
 
 /***** NOTIFICATIONS *****/
-
 
 static void iScintillaKeySetStatus(int state, char* status, int doubleclick)
 {
@@ -647,163 +550,25 @@ static Iclass* iupScintillaNewClass(void)
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);
 
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iScintillaSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iScintillaSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_DEFAULT);  
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iScintillaSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_NOT_MAPPED);  /* usually black */    
-
   /* Drag&Drop */
   iupdrvRegisterDragDropAttrib(ic);
-
-  /* Text retrieval and modification */
-  iupClassRegisterAttribute(ic, "APPENDNEWLINE", iScintillaGetAppendNewlineAttrib, iScintillaSetAppendNewlineAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "APPEND", NULL, iupScintillaSetAppendTextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "PREPEND", NULL, iupScintillaSetPrependTextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "VALUE", iupScintillaGetValueAttrib, iupScintillaSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "INSERT", NULL, iupScintillaSetInsertTextAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "LINE", iupScintillaGetLineAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "CHAR", iupScintillaGetCharAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "DELETERANGE", NULL, iupScintillaSetDeleteRangeAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "READONLY", iupScintillaGetReadOnlyAttrib, iupScintillaSetReadOnlyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "CLEARALL", NULL, iupScintillaSetClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "CLEARDOCUMENTSTYLE", NULL, iupScintillaSetClearDocumentAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "SAVEDSTATE", iupScintillaGetModifyAttrib, iupScintillaSetSavePointAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-
-  /* Selection and information */
-  iupClassRegisterAttribute(ic, "CARET", iupScintillaGetCaretAttrib, iupScintillaSetCaretAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARETPOS", iupScintillaGetCaretPosAttrib, iupScintillaSetCaretPosAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CARETTOVIEW", NULL, iupScintillaSetCaretToViewAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "COUNT", iupScintillaGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LINECOUNT", iupScintillaGetLineCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LINEVALUE", iupScintillaGetCurrentLineAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTEDTEXT", iupScintillaGetSelectedTextAttrib, iupScintillaSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTION", iupScintillaGetSelectionAttrib, iupScintillaSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTIONPOS", iupScintillaGetSelectionPosAttrib, iupScintillaSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLELINESCOUNT", iupScintillaGetVisibleLinesCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-
-  /* Cut, Copy and Paste */
-  iupClassRegisterAttribute(ic, "CLIPBOARD", iupScintillaGetCanPasteAttrib, iupScintillaSetClipboardAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
-
-  /* Undo, Redo */
-  iupClassRegisterAttribute(ic, "UNDO", iupScintillaGetUndoAttrib, iupScintillaSetUndoAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "REDO", iupScintillaGetRedoAttrib, iupScintillaSetRedoAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "UNDOCOLLECT", iupScintillaGetUndoCollectAttrib, iupScintillaSetUndoCollectAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
-
-  /* Overtype */
-  iupClassRegisterAttribute(ic, "OVERWRITE", iupScintillaGetOvertypeAttrib, iupScintillaSetOvertypeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-
-  /* Tabs and Indentation Guides */
-  iupClassRegisterAttribute(ic, "TABSIZE", iupScintillaGetTabSizeAttrib, iupScintillaSetTabSizeAttrib, IUPAF_SAMEASSYSTEM, "8", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "INDENTATIONGUIDES", iupScintillaGetIndentationGuidesAttrib, iupScintillaSetIndentationGuidesAttrib, IUPAF_SAMEASSYSTEM, "NONE", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HIGHLIGHTGUIDE", iupScintillaGetHighlightGuideAttrib, iupScintillaSetHighlightGuideAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "USETABS", iupScintillaGetUseTabsAttrib, iupScintillaSetUseTabsAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
-
-  /* Line wrapping */
-  iupClassRegisterAttribute(ic, "WORDWRAP", iupScintillaGetWordWrapAttrib, iupScintillaSetWordWrapAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "WORDWRAPVISUALFLAGS", iupScintillaGetWordWrapVisualFlagsAttrib, iupScintillaSetWordWrapVisualFlagsAttrib, IUPAF_SAMEASSYSTEM, "NONE", IUPAF_NO_INHERIT);
-
-  /* Style Definition Attributes */
-  iupClassRegisterAttribute(ic,   "STYLERESET", NULL, iupScintillaSetResetDefaultStyleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "STYLECLEARALL", NULL, iupScintillaSetClearAllStyleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEFONT", iupScintillaGetFontStyleAttrib, iupScintillaSetFontStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEFONTSIZE", iupScintillaGetFontSizeStyleAttrib, iupScintillaSetFontSizeStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEFONTSIZEFRAC", iupScintillaGetFontSizeFracStyleAttrib, iupScintillaSetFontSizeFracStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEBOLD", iupScintillaGetBoldStyleAttrib, iupScintillaSetBoldStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEWEIGHT", iupScintillaGetWeightStyleAttrib, iupScintillaSetWeightStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEITALIC", iupScintillaGetItalicStyleAttrib, iupScintillaSetItalicStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEUNDERLINE", iupScintillaGetUnderlineStyleAttrib, iupScintillaSetUnderlineStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEFGCOLOR", iupScintillaGetFgColorStyleAttrib, iupScintillaSetFgColorStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEBGCOLOR", iupScintillaGetBgColorStyleAttrib, iupScintillaSetBgColorStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEEOLFILLED", iupScintillaGetEolFilledStyleAttrib, iupScintillaSetEolFilledStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLECHARSET", iupScintillaGetCharSetStyleAttrib, iupScintillaSetCharSetStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLECASE", iupScintillaGetCaseStyleAttrib, iupScintillaSetCaseStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEVISIBLE", iupScintillaGetVisibleStyleAttrib, iupScintillaSetVisibleStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLEHOTSPOT", iupScintillaGetHotSpotStyleAttrib, iupScintillaSetHotSpotStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "STARTSTYLING", NULL, iupScintillaSetStartStylingAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "STYLING", NULL, iupScintillaSetStylingAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-
-  /* Lexer Attributes */
-  iupClassRegisterAttribute(ic,   "LEXERLANGUAGE", iupScintillaGetLexerLanguageAttrib, iupScintillaSetLexerLanguageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "PROPERTYNAME", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "PROPERTY", iupScintillaGetPropertyAttrib, iupScintillaSetPropertyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "KEYWORDS", NULL, iupScintillaSetKeyWordsAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "PROPERTYNAMES", iupScintillaGetPropertyNamessAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "KEYWORDSETS", iupScintillaGetDescribeKeywordSetsAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-
-  /* Folding Attributes */
-  iupClassRegisterAttribute(ic,   "FOLDFLAGS", NULL, iupScintillaSetFoldFlagsAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "FOLDTOGGLE", NULL, iupScintillaSetFoldToggleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "FOLDLEVEL", iupScintillaGetFoldLevelAttrib, iupScintillaSetFoldLevelAttrib, IUPAF_NO_INHERIT);
-
-  /* Margin Attributes */
-  iupClassRegisterAttributeId(ic, "MARGINTYPE", iupScintillaGetMarginTypeAttribId, iupScintillaSetMarginTypeAttribId, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARGINWIDTH", iupScintillaGetMarginWidthAttribId, iupScintillaSetMarginWidthAttribId, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARGINMASKFOLDERS", iupScintillaGetMarginMaskFoldersAttribId, iupScintillaSetMarginMaskFoldersAttribId, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARGINSENSITIVE", iupScintillaGetMarginSensitiveAttribId, iupScintillaSetMarginSensitiveAttribId, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "MARGINLEFT", iupScintillaGetMarginLeftAttrib, iupScintillaSetMarginLeftAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "MARGINRIGHT", iupScintillaGetMarginRightAttrib, iupScintillaSetMarginRightAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARGINTEXT", iupScintillaGetMarginTextAttribId, iupScintillaSetMarginTextAttribId, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARGINTEXTSTYLE", iupScintillaGetMarginTextStyleAttribId, iupScintillaSetMarginTextStyleAttribId, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "MARGINTEXTCLEARALL", NULL, iupScintillaSetMarginTextClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARGINCURSOR", iupScintillaGetMarginCursorAttribId, iupScintillaSetMarginCursorAttribId, IUPAF_NO_INHERIT);
-
-  /* Marker Attributes */
-  iupClassRegisterAttribute(ic,   "MARKERDEFINE", NULL, iupScintillaSetMarkerDefineAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERSYMBOL", iupScintillaGetMarkerSymbolAttribId, iupScintillaSetMarkerSymbolAttribId, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERFGCOLOR", NULL, iupScintillaSetMarkerFgColorAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERBGCOLOR", NULL, iupScintillaSetMarkerBgColorAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERBGCOLORSEL", NULL, iupScintillaSetMarkerBgColorSelectedAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERALPHA", NULL, iupScintillaSetMarkerAlphaAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERRGBAIMAGE", NULL, iupScintillaSetMarkerDefineRGBAImageId, IUPAF_IHANDLENAME|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "MARKERRGBAIMAGESCALE", NULL, iupScintillaSetRGBAImageSetScale, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "MARKERHIGHLIGHT", NULL, iupScintillaSetMarkerEnableHighlightAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERADD", NULL, iupScintillaSetMarkerAddAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERDELETE", NULL, iupScintillaSetMarkerDeleteAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERGET", iupScintillaGetMarkerGetAttribId, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "MARKERDELETEALL", NULL, iupScintillaSetMarkerDeleteAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERNEXT", NULL, iupScintillaSetMarkerNextAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERPREVIOUS", NULL, iupScintillaSetMarkerPreviousAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MARKERLINEFROMHANDLE", iupScintillaGetMarkerLineFromHandleAttribId, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "MARKERDELETEHANDLE", NULL, iupScintillaSetMarkerDeleteHandleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "LASTMARKERADDHANDLE", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "LASTMARKERFOUND", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-
-  /* White space Attributes */
-  iupClassRegisterAttribute(ic, "EXTRAASCENT",  iupScintillaGetWSExtraDescentAttrib, iupScintillaSetWSExtraDescentAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "EXTRADESCENT", iupScintillaGetWSExtraAscentAttrib, iupScintillaSetWSExtraAscentAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "WHITESPACEVIEW", iupScintillaGetViewWSAttrib, iupScintillaSetViewWSAttrib, IUPAF_SAMEASSYSTEM, "INVISIBLE", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "WHITESPACESIZE", iupScintillaGetWSSizeAttrib, iupScintillaSetWSSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "WHITESPACEFGCOLOR", NULL, iupScintillaSetWSFgColorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "WHITESPACEBGCOLOR", NULL, iupScintillaSetWSBgColorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-
-  /* Brace highlighting Attributes */
-  iupClassRegisterAttribute(ic, "BRACEHIGHLIGHT", NULL, iupScintillaSetBraceHighlightAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BRACEBADLIGHT",  NULL, iupScintillaSetBraceBadlightAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  /* unused until we support Indicators */
-/*  iupClassRegisterAttribute(ic, "BRACEHLINDICATOR", NULL, iupScintillaSetBraceHighlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);  */
-/*  iupClassRegisterAttribute(ic, "BRACEBLINDICATOR", NULL, iupScintillaSetBraceBadlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);   */
-/*  iupClassRegisterAttribute(ic, "USEBRACEHLINDICATOR", iupScintillaGetUseBraceHLIndicatorAttrib, iupScintillaSetUseBraceHLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  */
-/*  iupClassRegisterAttribute(ic, "USEBRACEBLINDICATOR", iupScintillaGetUseBraceBLIndicatorAttrib, iupScintillaSetUseBraceBLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  */
-  iupClassRegisterAttributeId(ic, "BRACEMATCH", iupScintillaGetBraceMatchAttribId, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-
-  /* Cursor and Zooming Attributes */
-  iupClassRegisterAttribute(ic, "CURSOR",  iupScintillaGetCursorAttrib, iupScintillaSetCursorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ZOOMIN",  NULL, iupScintillaSetZoomInAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ZOOMOUT", NULL, iupScintillaSetZoomOutAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ZOOM",    iupScintillaGetZoomAttrib, iupScintillaSetZoomAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-
-  /* Annotation Attributes */
-  iupClassRegisterAttributeId(ic, "ANNOTATIONTEXT", iupScintillaGetAnnotationTextAttribId, iupScintillaSetAnnotationTextAttribId, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "ANNOTATIONSTYLE", iupScintillaGetAnnotationStyleAttribId, iupScintillaSetAnnotationStyleAttribId, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "ANNOTATIONSTYLEOFFSET", iupScintillaGetAnnotationStyleOffsetAttrib, iupScintillaSetAnnotationStyleOffsetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "ANNOTATIONVISIBLE",  iupScintillaGetAnnotationVisibleAttrib, iupScintillaSetAnnotationVisibleAttrib, IUPAF_SAMEASSYSTEM, "HIDDEN", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "ANNOTATIONCLEARALL", NULL, iupScintillaSetAnnotationClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-
-  /* Scrolling and automatic scrolling */
-  iupClassRegisterAttribute(ic, "SCROLLBAR", iScintillaGetScrollbarAttrib, iScintillaSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, iupScintillaSetScrollToAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, iupScintillaSetScrollToPosAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLTOCARET", NULL, iupScintillaSetScrollCaretAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLWIDTH", iupScintillaGetScrollWidthAttrib, iupScintillaSetScrollWidthAttrib, IUPAF_SAMEASSYSTEM, "2000", IUPAF_NO_INHERIT);
+  
+  iupScintillaRegisterText(ic);        /* Text retrieval and modification */
+  iupScintillaRegisterSelection(ic);   /* Selection and information */
+  iupScintillaRegisterClipboard(ic);   /* Clipboard: Cut, Copy, Paste, Undo and Redo */
+  iupScintillaRegisterOvertype(ic);    /* Overtype */
+  iupScintillaRegisterTab(ic);         /* Tabs and Indentation Guides */
+  iupScintillaRegisterWordWrap(ic);    /* Line wrapping */
+  iupScintillaRegisterStyle(ic);       /* Style Definition Attributes */
+  iupScintillaRegisterLexer(ic);       /* Lexer Attributes */
+  iupScintillaRegisterFolding(ic);     /* Folding Attributes */
+  iupScintillaRegisterMargin(ic);      /* Margin Attributes */
+  iupScintillaRegisterMarker(ic);      /* Marker Attributes */
+  iupScintillaRegisterWhiteSpace(ic);  /* White space Attributes */
+  iupScintillaRegisterBraceLight(ic);  /* Brace highlighting Attributes */
+  iupScintillaRegisterCursor(ic);      /* Cursor and Zooming Attributes */
+  iupScintillaRegisterAnnotation(ic);  /* Annotation Attributes */
+  iupScintillaRegisterScrolling(ic);   /* Scrolling and automatic scrolling */
 
   /* General */
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, IUPAF_SAMEASSYSTEM, "30", IUPAF_NO_INHERIT);

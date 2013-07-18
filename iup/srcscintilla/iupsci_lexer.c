@@ -19,7 +19,6 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 
-#include "iupsci_lexer.h"
 #include "iupsci.h"
 
 /***** LEXER *****
@@ -42,7 +41,7 @@ SCI_SETKEYWORDS(int keyWordSet, const char *keyWordList)
 --SCI_GETSTYLEBITSNEEDED
 */
 
-char* iupScintillaGetLexerLanguageAttrib(Ihandle* ih)
+static char* iScintillaGetLexerLanguageAttrib(Ihandle* ih)
 {
   int len = iupScintillaSendMessage(ih, SCI_GETLEXERLANGUAGE, 0, (sptr_t)NULL);
   char *str = iupStrGetMemory(len+1);
@@ -55,7 +54,7 @@ char* iupScintillaGetLexerLanguageAttrib(Ihandle* ih)
   return NULL;
 }
 
-int iupScintillaSetLexerLanguageAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetLexerLanguageAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
     iupScintillaSendMessage(ih, SCI_SETLEXER, SCLEX_NULL, 0);
@@ -64,7 +63,7 @@ int iupScintillaSetLexerLanguageAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetKeyWordsAttrib(Ihandle* ih, int keyWordSet, const char* value)
+static int iScintillaSetKeyWordsAttrib(Ihandle* ih, int keyWordSet, const char* value)
 {
   /* Note: You can set up to 9 lists of keywords for use by the current lexer */
   if(keyWordSet >= 0 && keyWordSet < 9)
@@ -73,7 +72,7 @@ int iupScintillaSetKeyWordsAttrib(Ihandle* ih, int keyWordSet, const char* value
   return 0;
 }
 
-char* iupScintillaGetPropertyAttrib(Ihandle* ih)
+static char* iScintillaGetPropertyAttrib(Ihandle* ih)
 {
   char* strKey = iupAttribGetStr(ih, "PROPERTYNAME");
   if (strKey)
@@ -89,7 +88,7 @@ char* iupScintillaGetPropertyAttrib(Ihandle* ih)
   return NULL;
 }
 
-int iupScintillaSetPropertyAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetPropertyAttrib(Ihandle* ih, const char* value)
 {
   char strKey[50];
   char strVal[50];
@@ -101,7 +100,7 @@ int iupScintillaSetPropertyAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupScintillaGetDescribeKeywordSetsAttrib(Ihandle* ih)
+static char* iScintillaGetDescribeKeywordSetsAttrib(Ihandle* ih)
 {
   int len = (int)iupScintillaSendMessage(ih, SCI_DESCRIBEKEYWORDSETS, 0, 0);
   char *str = iupStrGetMemory(len+1);
@@ -109,7 +108,7 @@ char* iupScintillaGetDescribeKeywordSetsAttrib(Ihandle* ih)
   return str;
 }
 
-char* iupScintillaGetPropertyNamessAttrib(Ihandle* ih)
+static char* iScintillaGetPropertyNamessAttrib(Ihandle* ih)
 {
   int len = (int)iupScintillaSendMessage(ih, SCI_PROPERTYNAMES, 0, 0);
   char *str = iupStrGetMemory(len+1);
@@ -117,3 +116,12 @@ char* iupScintillaGetPropertyNamessAttrib(Ihandle* ih)
   return str;
 }
 
+void iupScintillaRegisterLexer(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic,   "LEXERLANGUAGE", iScintillaGetLexerLanguageAttrib, iScintillaSetLexerLanguageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "PROPERTYNAME", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "PROPERTY", iScintillaGetPropertyAttrib, iScintillaSetPropertyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "KEYWORDS", NULL, iScintillaSetKeyWordsAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "PROPERTYNAMES", iScintillaGetPropertyNamessAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "KEYWORDSETS", iScintillaGetDescribeKeywordSetsAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+}

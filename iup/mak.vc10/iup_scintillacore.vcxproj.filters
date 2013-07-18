@@ -499,53 +499,8 @@
     <ClInclude Include="..\srcscintilla\iupsci.h">
       <Filter>inc</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_bracelight.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_clipboard.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_cursor.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_folding.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_lexer.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_margin.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_markers.h">
-      <Filter>inc</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\iup_scintilla.h">
       <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_wordwrap.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_text.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_tab.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_style.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_selection.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_scrolling.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_overtype.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcscintilla\iupsci_annotation.h">
-      <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

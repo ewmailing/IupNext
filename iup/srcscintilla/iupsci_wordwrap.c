@@ -18,7 +18,6 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 
-#include "iupsci_wordwrap.h"
 #include "iupsci.h"
 
 /***** LINE WRAPPING ****
@@ -41,7 +40,7 @@ SCI_GETWRAPVISUALFLAGSLOCATION
 --SCI_WRAPCOUNT(int docLine)
 */
 
-char* iupScintillaGetWordWrapAttrib(Ihandle *ih)
+static char* iScintillaGetWordWrapAttrib(Ihandle *ih)
 {
   int type = iupScintillaSendMessage(ih, SCI_GETWRAPMODE, 0, 0);
 
@@ -53,7 +52,7 @@ char* iupScintillaGetWordWrapAttrib(Ihandle *ih)
     return "NONE";
 }
 
-int iupScintillaSetWordWrapAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetWordWrapAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrEqualNoCase(value, "WORD"))
     iupScintillaSendMessage(ih, SCI_SETWRAPMODE, SC_WRAP_WORD, 0);
@@ -65,7 +64,7 @@ int iupScintillaSetWordWrapAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
-char* iupScintillaGetWordWrapVisualFlagsAttrib(Ihandle *ih)
+static char* iScintillaGetWordWrapVisualFlagsAttrib(Ihandle *ih)
 {
   int type = iupScintillaSendMessage(ih, SCI_GETWRAPVISUALFLAGS, 0, 0);
 
@@ -79,7 +78,7 @@ char* iupScintillaGetWordWrapVisualFlagsAttrib(Ihandle *ih)
     return "NONE";
 }
 
-int iupScintillaSetWordWrapVisualFlagsAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetWordWrapVisualFlagsAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrEqualNoCase(value, "MARGIN"))
     iupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_MARGIN, 0);
@@ -93,3 +92,8 @@ int iupScintillaSetWordWrapVisualFlagsAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
+void iupScintillaRegisterWordWrap(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic, "WORDWRAP", iScintillaGetWordWrapAttrib, iScintillaSetWordWrapAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WORDWRAPVISUALFLAGS", iScintillaGetWordWrapVisualFlagsAttrib, iScintillaSetWordWrapVisualFlagsAttrib, IUPAF_SAMEASSYSTEM, "NONE", IUPAF_NO_INHERIT);
+}

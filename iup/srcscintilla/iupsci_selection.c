@@ -19,8 +19,8 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 
-#include "iupsci_selection.h"
 #include "iupsci.h"
+
 
 /***** SELECTION AND INFORMATION *****
 Attributes not implement yet:
@@ -66,7 +66,7 @@ SCI_MOVESELECTEDLINESUP
 SCI_MOVESELECTEDLINESDOWN
 */
 
-char* iupScintillaGetCurrentLineAttrib(Ihandle* ih)
+static char* iScintillaGetCurrentLineAttrib(Ihandle* ih)
 {
   int textLen = iupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
   char* str = iupStrGetMemory(textLen+1);
@@ -74,19 +74,19 @@ char* iupScintillaGetCurrentLineAttrib(Ihandle* ih)
   return str;
 }
 
-char* iupScintillaGetCountAttrib(Ihandle* ih)
+static char* iScintillaGetCountAttrib(Ihandle* ih)
 {
   int count = iupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
   return iupStrReturnInt(count);
 }
 
-char* iupScintillaGetLineCountAttrib(Ihandle* ih)
+static char* iScintillaGetLineCountAttrib(Ihandle* ih)
 {
   int count = iupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
   return iupStrReturnInt(count);
 }
 
-char* iupScintillaGetCaretAttrib(Ihandle* ih)
+static char* iScintillaGetCaretAttrib(Ihandle* ih)
 {
   int col, lin, pos;
 
@@ -96,7 +96,7 @@ char* iupScintillaGetCaretAttrib(Ihandle* ih)
   return iupStrReturnIntInt(lin, col, ',');
 }
 
-int iupScintillaSetCaretAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetCaretAttrib(Ihandle* ih, const char* value)
 {
   int pos, lin = 1, col = 1;
   iupStrToIntInt(value, &lin, &col, ',');  /* be permissive in SetCaret, do not abort if invalid */
@@ -110,12 +110,12 @@ int iupScintillaSetCaretAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupScintillaGetCaretPosAttrib(Ihandle* ih)
+static char* iScintillaGetCaretPosAttrib(Ihandle* ih)
 {
   return iupStrReturnInt(iupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0));
 }
 
-int iupScintillaSetCaretPosAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetCaretPosAttrib(Ihandle* ih, const char* value)
 {
   int pos = 0;
 
@@ -130,14 +130,14 @@ int iupScintillaSetCaretPosAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetCaretToViewAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetCaretToViewAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
   iupScintillaSendMessage(ih, SCI_MOVECARETINSIDEVIEW, 0, 0);
   return 0;
 }
 
-char* iupScintillaGetSelectedTextAttrib(Ihandle* ih)
+static char* iScintillaGetSelectedTextAttrib(Ihandle* ih)
 {
   int start = iupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
   int end   = iupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
@@ -151,7 +151,7 @@ char* iupScintillaGetSelectedTextAttrib(Ihandle* ih)
   return str;
 }
 
-int iupScintillaSetSelectedTextAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetSelectedTextAttrib(Ihandle* ih, const char* value)
 {
   int start = iupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
   int end   = iupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
@@ -164,7 +164,7 @@ int iupScintillaSetSelectedTextAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupScintillaGetSelectionAttrib(Ihandle* ih)
+static char* iScintillaGetSelectionAttrib(Ihandle* ih)
 {
   int start = iupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
   int end   = iupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
@@ -182,7 +182,7 @@ char* iupScintillaGetSelectionAttrib(Ihandle* ih)
   return iupStrReturnStrf("%d,%d:%d,%d", start_lin, start_col, end_lin, end_col);
 }
 
-int iupScintillaSetSelectionAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetSelectionAttrib(Ihandle* ih, const char* value)
 {
   int lin_start=1, col_start=1, lin_end=1, col_end=1;
   int anchorPos, currentPos;
@@ -210,7 +210,7 @@ int iupScintillaSetSelectionAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupScintillaGetSelectionPosAttrib(Ihandle* ih)
+static char* iScintillaGetSelectionPosAttrib(Ihandle* ih)
 {
   int start = iupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
   int end   = iupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
@@ -221,7 +221,7 @@ char* iupScintillaGetSelectionPosAttrib(Ihandle* ih)
   return iupStrReturnIntInt(start, end, ':');
 }
 
-int iupScintillaSetSelectionPosAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetSelectionPosAttrib(Ihandle* ih, const char* value)
 {
   int anchorPos = 0, currentPos = 0;
 
@@ -248,8 +248,22 @@ int iupScintillaSetSelectionPosAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupScintillaGetVisibleLinesCountAttrib(Ihandle* ih)
+static char* iScintillaGetVisibleLinesCountAttrib(Ihandle* ih)
 {
   int count = iupScintillaSendMessage(ih, SCI_LINESONSCREEN, 0, 0);
   return iupStrReturnInt(count);
+}
+
+void iupScintillaRegisterSelection(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic, "CARET", iScintillaGetCaretAttrib, iScintillaSetCaretAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETPOS", iScintillaGetCaretPosAttrib, iScintillaSetCaretPosAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETTOVIEW", NULL, iScintillaSetCaretToViewAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COUNT", iScintillaGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINECOUNT", iScintillaGetLineCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINEVALUE", iScintillaGetCurrentLineAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTEDTEXT", iScintillaGetSelectedTextAttrib, iScintillaSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTION", iScintillaGetSelectionAttrib, iScintillaSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTIONPOS", iScintillaGetSelectionPosAttrib, iScintillaSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLELINESCOUNT", iScintillaGetVisibleLinesCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 }

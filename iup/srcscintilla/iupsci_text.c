@@ -18,7 +18,6 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 
-#include "iupsci_text.h"
 #include "iupsci.h"
 
 /***** TEXT RETRIEVAL AND MODIFICATION *****
@@ -48,7 +47,7 @@ SCI_GETCHARAT(int position)
    --SCI_SETLENGTHFORENCODE(int bytes)
 */
 
-char* iupScintillaGetValueAttrib(Ihandle* ih)
+static char* iScintillaGetValueAttrib(Ihandle* ih)
 {
   int len = iupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
   char* str = iupStrGetMemory(len+1);
@@ -56,7 +55,7 @@ char* iupScintillaGetValueAttrib(Ihandle* ih)
   return str;
 }
 
-int iupScintillaSetValueAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetValueAttrib(Ihandle* ih, const char* value)
 {
   ih->data->ignore_change = 1;
   iupScintillaSendMessage(ih, SCI_SETTEXT, 0, (sptr_t)value);
@@ -64,7 +63,7 @@ int iupScintillaSetValueAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupScintillaGetLineAttrib(Ihandle* ih, int line)
+static char* iScintillaGetLineAttrib(Ihandle* ih, int line)
 {
   int len = iupScintillaSendMessage(ih, SCI_LINELENGTH, line, 0);
   char* str = iupStrGetMemory(len+1); 
@@ -72,12 +71,12 @@ char* iupScintillaGetLineAttrib(Ihandle* ih, int line)
   return str;
 }
 
-char* iupScintillaGetReadOnlyAttrib(Ihandle* ih)
+static char* iScintillaGetReadOnlyAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_GETREADONLY, 0, 0));
 }
 
-int iupScintillaSetReadOnlyAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetReadOnlyAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
     iupScintillaSendMessage(ih, SCI_SETREADONLY, 1, 0);
@@ -87,7 +86,7 @@ int iupScintillaSetReadOnlyAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetPrependTextAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetPrependTextAttrib(Ihandle* ih, const char* value)
 {
   int len = strlen(value);
 
@@ -101,7 +100,7 @@ int iupScintillaSetPrependTextAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetAppendTextAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetAppendTextAttrib(Ihandle* ih, const char* value)
 {
   int len = strlen(value);
 
@@ -115,7 +114,7 @@ int iupScintillaSetAppendTextAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetInsertTextAttrib(Ihandle* ih, int pos, const char* value)
+static int iScintillaSetInsertTextAttrib(Ihandle* ih, int pos, const char* value)
 {
   ih->data->ignore_change = 1;
   iupScintillaSendMessage(ih, SCI_INSERTTEXT, pos, (sptr_t)value);
@@ -123,7 +122,7 @@ int iupScintillaSetInsertTextAttrib(Ihandle* ih, int pos, const char* value)
   return 0;
 }
 
-int iupScintillaSetClearAllAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetClearAllAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
 
@@ -133,7 +132,7 @@ int iupScintillaSetClearAllAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetClearDocumentAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetClearDocumentAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
 
@@ -141,7 +140,7 @@ int iupScintillaSetClearDocumentAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetSavePointAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetSavePointAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
 
@@ -149,12 +148,12 @@ int iupScintillaSetSavePointAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupScintillaGetModifyAttrib(Ihandle* ih)
+static char* iScintillaGetModifyAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_GETMODIFY, 0, 0)); 
 }
 
-int iupScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value)
 {
   int pos, len;
   iupStrToIntInt(value, &pos, &len, ',');
@@ -165,7 +164,37 @@ int iupScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupScintillaGetCharAttrib(Ihandle* ih, int pos)
+static char* iScintillaGetCharAttrib(Ihandle* ih, int pos)
 {
   return (char*)iupScintillaSendMessage(ih, SCI_GETCHARAT, pos, 0);
+}
+
+static int iScintillaSetAppendNewlineAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->append_newline = 1;
+  else
+    ih->data->append_newline = 0;
+  return 0;
+}
+
+static char* iScintillaGetAppendNewlineAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean (ih->data->append_newline); 
+}
+
+void iupScintillaRegisterText(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic,   "APPENDNEWLINE", iScintillaGetAppendNewlineAttrib, iScintillaSetAppendNewlineAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "APPEND", NULL, iScintillaSetAppendTextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "PREPEND", NULL, iScintillaSetPrependTextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "VALUE", iScintillaGetValueAttrib, iScintillaSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "INSERT", NULL, iScintillaSetInsertTextAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "LINE", iScintillaGetLineAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "CHAR", iScintillaGetCharAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "DELETERANGE", NULL, iScintillaSetDeleteRangeAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "READONLY", iScintillaGetReadOnlyAttrib, iScintillaSetReadOnlyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "CLEARALL", NULL, iScintillaSetClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "CLEARDOCUMENTSTYLE", NULL, iScintillaSetClearDocumentAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "SAVEDSTATE", iScintillaGetModifyAttrib, iScintillaSetSavePointAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }

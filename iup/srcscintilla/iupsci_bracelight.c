@@ -18,7 +18,6 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 
-#include "iupsci_bracelight.h"
 #include "iupsci.h"
 
 
@@ -30,7 +29,7 @@ SCI_BRACEBADLIGHTINDICATOR(bool useBraceBadLightIndicator, int indicatorNumber)
 SCI_BRACEMATCH(int position, int maxReStyle)
 */
 
-int iupScintillaSetBraceHighlightAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetBraceHighlightAttrib(Ihandle* ih, const char* value)
 {
   int pos1, pos2;
 
@@ -42,7 +41,7 @@ int iupScintillaSetBraceHighlightAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetBraceBadlightAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetBraceBadlightAttrib(Ihandle* ih, const char* value)
 {
   int pos1;
 
@@ -54,7 +53,7 @@ int iupScintillaSetBraceBadlightAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetBraceHighlightIndicatorAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetBraceHighlightIndicatorAttrib(Ihandle* ih, const char* value)
 {
   int indicatorNumber;
 
@@ -66,7 +65,7 @@ int iupScintillaSetBraceHighlightIndicatorAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetBraceBadlightIndicatorAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetBraceBadlightIndicatorAttrib(Ihandle* ih, const char* value)
 {
   int indicatorNumber;
 
@@ -78,7 +77,7 @@ int iupScintillaSetBraceBadlightIndicatorAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-int iupScintillaSetUseBraceHLIndicatorAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetUseBraceHLIndicatorAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
     ih->data->useBraceHLIndicator = 1;
@@ -87,12 +86,12 @@ int iupScintillaSetUseBraceHLIndicatorAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
-char* iupScintillaGetUseBraceHLIndicatorAttrib(Ihandle* ih)
+static char* iScintillaGetUseBraceHLIndicatorAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean (ih->data->useBraceHLIndicator); 
 }
 
-int iupScintillaSetUseBraceBLIndicatorAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetUseBraceBLIndicatorAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
     ih->data->useBraceBLIndicator = 1;
@@ -101,15 +100,27 @@ int iupScintillaSetUseBraceBLIndicatorAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
-char* iupScintillaGetUseBraceBLIndicatorAttrib(Ihandle* ih)
+static char* iScintillaGetUseBraceBLIndicatorAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean (ih->data->useBraceBLIndicator); 
 }
 
-char* iupScintillaGetBraceMatchAttribId(Ihandle* ih, int pos)
+static char* iScintillaGetBraceMatchAttribId(Ihandle* ih, int pos)
 {
   if (pos < 0)
     return "-1";
 
   return iupStrReturnInt(iupScintillaSendMessage(ih, SCI_BRACEMATCH, pos, 0));
+}
+
+void iupScintillaRegisterBraceLight(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic, "BRACEHIGHLIGHT", NULL, iScintillaSetBraceHighlightAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BRACEBADLIGHT",  NULL, iScintillaSetBraceBadlightAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  /* unused until we support Indicators */
+/*  iupClassRegisterAttribute(ic, "BRACEHLINDICATOR", NULL, iScintillaSetBraceHighlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);  */
+/*  iupClassRegisterAttribute(ic, "BRACEBLINDICATOR", NULL, iScintillaSetBraceBadlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);   */
+/*  iupClassRegisterAttribute(ic, "USEBRACEHLINDICATOR", iScintillaGetUseBraceHLIndicatorAttrib, iScintillaSetUseBraceHLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  */
+/*  iupClassRegisterAttribute(ic, "USEBRACEBLINDICATOR", iScintillaGetUseBraceBLIndicatorAttrib, iScintillaSetUseBraceBLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  */
+  iupClassRegisterAttributeId(ic, "BRACEMATCH", iScintillaGetBraceMatchAttribId, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 }

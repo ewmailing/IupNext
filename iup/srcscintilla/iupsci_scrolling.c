@@ -19,7 +19,6 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 
-#include "iupsci_scrolling.h"
 #include "iupsci.h"
 
 /***** SCROLLING AND AUTOMATIC SCROLLING 
@@ -42,7 +41,7 @@ SCI_GETVSCROLLBAR
 --SCI_GETENDATLASTLINE
 */
 
-int iupScintillaSetScrollToAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetScrollToAttrib(Ihandle *ih, const char *value)
 {
   int lin, col;
   iupStrToIntInt(value, &lin, &col, ',');
@@ -52,7 +51,7 @@ int iupScintillaSetScrollToAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
-int iupScintillaSetScrollToPosAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetScrollToPosAttrib(Ihandle *ih, const char *value)
 {
   int pos, lin, col;
   iupStrToInt(value, &pos);
@@ -64,20 +63,20 @@ int iupScintillaSetScrollToPosAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
-int iupScintillaSetScrollCaretAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetScrollCaretAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
   iupScintillaSendMessage(ih, SCI_SCROLLCARET, 0, 0);
   return 0;
 }
 
-char* iupScintillaGetScrollWidthAttrib(Ihandle* ih)
+static char* iScintillaGetScrollWidthAttrib(Ihandle* ih)
 {
   int pixelWidth = iupScintillaSendMessage(ih, SCI_GETSCROLLWIDTH, 0, 0);
   return iupStrReturnInt(pixelWidth);
 }
 
-int iupScintillaSetScrollWidthAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetScrollWidthAttrib(Ihandle* ih, const char* value)
 {
   int pixelWidth;
 
@@ -91,3 +90,41 @@ int iupScintillaSetScrollWidthAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iScintillaGetScrollbarAttrib(Ihandle* ih)
+{
+  if (ih->data->sb == (IUP_SB_HORIZ | IUP_SB_VERT))
+    return "YES";
+  if (ih->data->sb & IUP_SB_HORIZ)
+    return "HORIZONTAL";
+  if (ih->data->sb & IUP_SB_VERT)
+    return "VERTICAL";
+  
+  return "NO";
+}
+
+static int iScintillaSetScrollbarAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+    value = "YES";    /* default is YES */
+
+  if (iupStrEqualNoCase(value, "YES"))
+    ih->data->sb = IUP_SB_HORIZ | IUP_SB_VERT;
+  else if (iupStrEqualNoCase(value, "HORIZONTAL"))
+    ih->data->sb = IUP_SB_HORIZ;
+  else if (iupStrEqualNoCase(value, "VERTICAL"))
+    ih->data->sb = IUP_SB_VERT;
+  else
+    ih->data->sb = IUP_SB_NONE;
+
+  return 0;
+}
+
+void iupScintillaRegisterScrolling(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic, "SCROLLBAR", iScintillaGetScrollbarAttrib, iScintillaSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, iScintillaSetScrollToAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, iScintillaSetScrollToPosAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTOCARET", NULL, iScintillaSetScrollCaretAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLWIDTH", iScintillaGetScrollWidthAttrib, iScintillaSetScrollWidthAttrib, IUPAF_SAMEASSYSTEM, "2000", IUPAF_NO_INHERIT);
+}

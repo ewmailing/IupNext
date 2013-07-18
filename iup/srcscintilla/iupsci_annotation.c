@@ -18,7 +18,6 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 
-#include "iupsci_annotation.h"
 #include "iupsci.h"
 
 
@@ -37,13 +36,13 @@ SCI_ANNOTATIONSETSTYLEOFFSET(int style)
 SCI_ANNOTATIONGETSTYLEOFFSET
 */
 
-int iupScintillaSetAnnotationTextAttribId(Ihandle* ih, int line, const char* value)
+static int iScintillaSetAnnotationTextAttribId(Ihandle* ih, int line, const char* value)
 {
   iupScintillaSendMessage(ih, SCI_ANNOTATIONSETTEXT, line, (sptr_t)value);
   return 0;
 }
 
-char* iupScintillaGetAnnotationTextAttribId(Ihandle* ih, int line)
+static char* iScintillaGetAnnotationTextAttribId(Ihandle* ih, int line)
 {
   int len = iupScintillaSendMessage(ih, SCI_ANNOTATIONGETTEXT, line, 0);
   char* str = iupStrGetMemory(len+1);
@@ -51,7 +50,7 @@ char* iupScintillaGetAnnotationTextAttribId(Ihandle* ih, int line)
   return str;
 }
 
-int iupScintillaSetAnnotationStyleAttribId(Ihandle* ih, int line, const char* value)
+static int iScintillaSetAnnotationStyleAttribId(Ihandle* ih, int line, const char* value)
 {
   int style;
   iupStrToInt(value, &style);
@@ -59,13 +58,13 @@ int iupScintillaSetAnnotationStyleAttribId(Ihandle* ih, int line, const char* va
   return 0;
 }
 
-char* iupScintillaGetAnnotationStyleAttribId(Ihandle* ih, int line)
+static char* iScintillaGetAnnotationStyleAttribId(Ihandle* ih, int line)
 {
   int style = iupScintillaSendMessage(ih, SCI_ANNOTATIONGETSTYLE, line, 0);
   return iupStrReturnInt(style);
 }
 
-int iupScintillaSetAnnotationStyleOffsetAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetAnnotationStyleOffsetAttrib(Ihandle* ih, const char* value)
 {
   int style_offset;
   iupStrToInt(value, &style_offset);
@@ -73,13 +72,13 @@ int iupScintillaSetAnnotationStyleOffsetAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupScintillaGetAnnotationStyleOffsetAttrib(Ihandle* ih)
+static char* iScintillaGetAnnotationStyleOffsetAttrib(Ihandle* ih)
 {
   int style = iupScintillaSendMessage(ih, SCI_ANNOTATIONGETSTYLEOFFSET, 0, 0);
   return iupStrReturnInt(style);
 }
 
-int iupScintillaSetAnnotationVisibleAttrib(Ihandle *ih, const char *value)
+static int iScintillaSetAnnotationVisibleAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrEqualNoCase(value, "STANDARD"))
     iupScintillaSendMessage(ih, SCI_ANNOTATIONSETVISIBLE, ANNOTATION_STANDARD, 0);
@@ -90,7 +89,7 @@ int iupScintillaSetAnnotationVisibleAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
-char* iupScintillaGetAnnotationVisibleAttrib(Ihandle* ih)
+static char* iScintillaGetAnnotationVisibleAttrib(Ihandle* ih)
 {
   if (iupScintillaSendMessage(ih, SCI_ANNOTATIONGETVISIBLE, 0, 0) == ANNOTATION_STANDARD)
     return "STANDARD";
@@ -100,10 +99,18 @@ char* iupScintillaGetAnnotationVisibleAttrib(Ihandle* ih)
     return "HIDDEN";
 }
 
-int iupScintillaSetAnnotationClearAllAttrib(Ihandle* ih, const char* value)
+static int iScintillaSetAnnotationClearAllAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
   iupScintillaSendMessage(ih, SCI_ANNOTATIONCLEARALL, 0, 0);
   return 0;
 }
 
+void iupScintillaRegisterAnnotation(Iclass* ic)
+{
+  iupClassRegisterAttributeId(ic, "ANNOTATIONTEXT", iScintillaGetAnnotationTextAttribId, iScintillaSetAnnotationTextAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ANNOTATIONSTYLE", iScintillaGetAnnotationStyleAttribId, iScintillaSetAnnotationStyleAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "ANNOTATIONSTYLEOFFSET", iScintillaGetAnnotationStyleOffsetAttrib, iScintillaSetAnnotationStyleOffsetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "ANNOTATIONVISIBLE", iScintillaGetAnnotationVisibleAttrib, iScintillaSetAnnotationVisibleAttrib, IUPAF_SAMEASSYSTEM, "HIDDEN", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "ANNOTATIONCLEARALL", NULL, iScintillaSetAnnotationClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+}
