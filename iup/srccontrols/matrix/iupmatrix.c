@@ -870,23 +870,41 @@ static int iMatrixSetNumericUnitShownIndexAttrib(Ihandle* ih, int col, const cha
   return 0;
 }
 
+static IFniii   iMatrixQSort_sort_cb = NULL;
+static Ihandle* iMatrixQSort_ih = NULL;
+static int      iMatrixQSort_col = 0;
+
+static int iMatrixCompareCallbackFunc(const void* elem1, const void* elem2)
+{
+  int lin1 = *((int*)elem1);
+  int lin2 = *((int*)elem2);
+  return iMatrixQSort_sort_cb(iMatrixQSort_ih, iMatrixQSort_col, lin1, lin2);
+}
+
 static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
 {
   int num_lin = ih->data->lines.num;
   int lin, lin1=0, lin2=num_lin-1;   /* ALL */
-  ImatLinCol* dt = ih->data->lines.dt;
+  int* sort_line_index;
+  IFniii sort_cb;
 
   if (!iupMATRIX_CHECK_COL(ih, col))
     return 0;
 
+  if (!ih->data->sort_line_index)
+    ih->data->sort_line_index = (int*)calloc(ih->data->lines.num_alloc, sizeof(int));
+  sort_line_index = ih->data->sort_line_index;
+
   if (iupStrEqualNoCase(value, "RESET"))
   {
     for (lin=0; lin<num_lin; lin++)
-      dt[lin].index = 0;
+      sort_line_index[lin] = 0;
 
-    ih->data->lines.has_index = 0;
+    ih->data->sort_has_index = 0;
     iupAttribSetId(ih, "SORTSIGN", ih->data->last_sort_index, NULL);
     ih->data->last_sort_index = 0;
+
+    iupMatrixDraw(ih, 1);
     return 0;
   }
 
@@ -894,12 +912,12 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
   {
     int l1, l2;
 
-    if (!ih->data->lines.has_index)
+    if (!ih->data->sort_has_index)
       return 0;
 
     for (lin=0; lin<num_lin; lin++)
     {
-      if (dt[lin].index != 0)
+      if (sort_line_index[lin] != 0)
       {
         lin1 = lin;
         break;
@@ -910,7 +928,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
 
     for (lin=num_lin-1; lin>0; lin--)
     {
-      if (dt[lin].index != 0)
+      if (sort_line_index[lin] != 0)
       {
         lin2 = lin;
         break;
@@ -921,9 +939,9 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
 
     for (l1=lin1,l2=lin2; l1<l2; ++l1,--l2)
     {
-      int tmp = dt[l1].index;
-      dt[l1].index = dt[l2].index;
-      dt[l2].index = tmp;
+      int tmp = sort_line_index[l1];
+      sort_line_index[l1] = sort_line_index[l2];
+      sort_line_index[l2] = tmp;
     }
 
     if (iupStrEqualNoCase(iupAttribGetId(ih, "SORTSIGN", ih->data->last_sort_index), "UP"))
@@ -934,11 +952,28 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
 
   iupStrToIntInt(value, &lin1, &lin2, '-');
   
+  sort_cb = (IFniii)IupGetCallback(ih, "SORTCOLUMN_CB");
+  if (sort_cb)
+  {
+    iMatrixQSort_sort_cb = sort_cb;
+    iMatrixQSort_ih = ih;
+    iMatrixQSort_col = col;
+    qsort(sort_line_index+lin1,lin2-lin1+1,sizeof(int),iMatrixCompareCallbackFunc);
+  }
+  else
+  {
+  //  if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
+  //    qsort(svect,siz,sizeof(SortingHolder), iMatrixCompareNumberFunc);
+  //  else
+  //    qsort(svect,siz,sizeof(SortingHolder), iMatrixCompareTextFunc);
+  }
+
 //int ascending, int case_sensitive
 //SORTCOLUMNORDERid  SORTCOLUMNCASEid
 
-  ih->data->lines.has_index = 1;
+  ih->data->sort_has_index = 1;
   ih->data->last_sort_index = col;
+  iupMatrixDraw(ih, 1);
   return 0;
 }
 

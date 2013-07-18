@@ -58,7 +58,6 @@ typedef struct _ImatLinCol
 {
   int size;             /* Width/height of the column/line */
   unsigned char flags;  /* Attribute flags for the column/line */
-  int index;            /* Remap index of the column/line */
 } ImatLinCol;
 
 typedef struct _ImatLinColData
@@ -80,10 +79,7 @@ typedef struct _ImatLinColData
   int visible_size; /* Width/height of the visible window, not including the non scrollable cells */
 
   int focus_cell;   /* index of the current cell */
-
-  int has_index;    /* has a remap index of columns/lines */
 } ImatLinColData;
-
 
 typedef struct _ImatNumericData
 {
@@ -91,7 +87,6 @@ typedef struct _ImatNumericData
   unsigned char unit, unit_shown;
   unsigned char flags;  
 } ImatNumericData;
-
 
 struct _IcontrolData
 {
@@ -155,6 +150,10 @@ struct _IcontrolData
   char numeric_buffer_set[80];
   ImatNumericData* numeric_columns;   /* information for numeric columns (allocated after map) */
   ImatNumericConvertFunc numeric_convert_func;
+
+  /* Column Sort */
+  int* sort_line_index;     /* Remap index of the line */
+  int sort_has_index;       /* has a remap index of columns/lines */
 };
 
 
