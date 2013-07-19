@@ -881,6 +881,22 @@ static int iMatrixCompareCallbackFunc(const void* elem1, const void* elem2)
   return iMatrixQSort_sort_cb(iMatrixQSort_ih, iMatrixQSort_col, lin1, lin2);
 }
 
+typedef struct _ImatSortNumber {
+  int lin;
+  double number;
+} ImatSortNumber;
+
+static int iMatrixCompareNumberFunc(const void* elem1, const void* elem2)
+{
+  ImatSortNumber* num1 = (ImatSortNumber*)elem1;
+  ImatSortNumber* num2 = (ImatSortNumber*)elem2;
+  if (num1->number < num2->number)
+    return -1;
+  if (num1->number > num2->number)
+    return 1;
+  return 0;
+}
+
 static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
 {
   int num_lin = ih->data->lines.num;
@@ -962,8 +978,23 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
   }
   else
   {
-  //  if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
-  //    qsort(svect,siz,sizeof(SortingHolder), iMatrixCompareNumberFunc);
+    if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
+    {
+      ImatSortNumber* sort_line_number = (ImatSortNumber*)malloc((lin2-lin1+1)*sizeof(ImatSortNumber));
+
+      for (lin=lin1; lin<lin2; lin++)
+      {
+        sort_line_number[lin-lin1].lin = sort_line_index[lin]!=0? sort_line_index[lin]: lin;
+        sort_line_number[lin-lin1].number = iupMatrixGetValueNumber(ih, lin, col);
+      }
+
+      qsort(sort_line_number,lin2-lin1+1,sizeof(ImatSortNumber), iMatrixCompareNumberFunc);
+
+      for (lin=lin1; lin<lin2; lin++)
+        sort_line_index[lin] = sort_line_number[lin-lin1].lin;
+
+      free(sort_line_number);
+    }
   //  else
   //    qsort(svect,siz,sizeof(SortingHolder), iMatrixCompareTextFunc);
   }

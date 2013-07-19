@@ -106,6 +106,46 @@ void iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value, int
     ih->data->need_calcsize = 1;
 }
 
+double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col)
+{
+  char* value;
+  double number;
+
+  if (lin==0)
+    return 0;
+
+  if (ih->data->sort_has_index)
+  {
+    int index = ih->data->sort_line_index[lin];
+    if (index != 0) lin = index;
+  }
+
+  if (ih->data->callback_mode)
+  {
+    /* only called in callback mode */
+    sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
+    value = value_cb(ih, lin, col);
+  }
+  else
+    value = ih->data->cells[lin][col].value;
+
+  if (!value)
+  {
+    dIFnii getvalue_cb = (dIFnii)IupGetCallback(ih, "NUMERICGETVALUE_CB");
+    if (getvalue_cb)
+      number = getvalue_cb(ih, lin, col);
+    else
+      return 0;
+  }
+  else
+  {
+    if (sscanf(value, "%lf", &number) != 1)   /* lf=double */
+      return 0;
+  }
+
+  return number;
+}
+
 static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col, const char* value)
 {
   char *format=NULL;

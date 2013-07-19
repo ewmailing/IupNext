@@ -15,6 +15,8 @@ extern "C" {
 void  iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value, int edited);
 char* iupMatrixCellGetValue(Ihandle* ih, int lin, int col);
 
+double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col);
+
 void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int set);
 int iupMatrixGetCellOffset(Ihandle* ih, int lin, int col, int *x, int *y);
 
