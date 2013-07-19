@@ -28,6 +28,7 @@
 #include "iupmat_draw.h"
 
 
+
 static int iMatrixInitNumericColumns(Ihandle* ih, int col)
 {
   if (!iupMATRIX_CHECK_COL(ih, col))
@@ -176,9 +177,8 @@ static int iMatrixCompareNumberFunc(const void* elem1, const void* elem2)
   return 0;
 }
 
-int iupStrCompare(const char* s1, const char* s2, int utf8);
-
 static int iMatrixQSort_utf8 = 0;
+static int iMatrixQSort_casesensitive = 1;
 
 typedef struct _ImatSortText {
   int lin;
@@ -189,7 +189,7 @@ static int iMatrixCompareTextFunc(const void* elem1, const void* elem2)
 {
   ImatSortText* txt1 = (ImatSortText*)elem1;
   ImatSortText* txt2 = (ImatSortText*)elem2;
-  return iupStrCompare(txt1->text, txt2->text, iMatrixQSort_utf8);
+  return iupStrCompare(txt1->text, txt2->text, iMatrixQSort_casesensitive, iMatrixQSort_utf8);
 }
 
 static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
@@ -303,7 +303,6 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
     else
     {
       ImatSortText* sort_line_text = (ImatSortText*)malloc((lin2-lin1+1)*sizeof(ImatSortText));
-      int case_sensitive = iupAttribGetInt(ih, "SORTCOLUMNCASESENSITIVE");
 
       for (lin=lin1; lin<lin2; lin++)
       {
@@ -312,6 +311,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
       }
 
       iMatrixQSort_utf8 = IupGetInt(NULL, "UTF8MODE");
+      iMatrixQSort_casesensitive = iupAttribGetInt(ih, "SORTCOLUMNCASESENSITIVE");
       qsort(sort_line_text,lin2-lin1+1,sizeof(ImatSortText), iMatrixCompareTextFunc);
 
       for (lin=lin1; lin<lin2; lin++)

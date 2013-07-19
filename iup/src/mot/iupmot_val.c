@@ -68,9 +68,9 @@ static void motValRemoveOldTicks(Widget scale)
     {
       if ((name = XtName(children[i])) != (String)0) 
       {
-        if ((strcmp(name, "BigTic") == 0) ||
-            (strcmp(name, "MedTic") == 0) ||
-            (strcmp(name, "SmallTic") == 0)) 
+        if (iupStrEqual(name, "BigTic") ||
+            iupStrEqual(name, "MedTic") ||
+            iupStrEqual(name, "SmallTic")) 
         {
           XtDestroyWidget(children[i]);
         }

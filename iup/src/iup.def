@@ -278,6 +278,7 @@ iupStrReturnStrStr
 iupStrReplace
 iupStrProcessMnemonic
 iupStrFindMnemonic
+iupStrCompare
 iupStrNextLine
 iupStrNextValue
 iupStrMessageShowError

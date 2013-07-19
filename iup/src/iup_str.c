@@ -6,7 +6,6 @@
 
  
 #include <string.h>  
-#include <ctype.h>   
 #include <stdlib.h>  
 #include <stdio.h>  
 #include <limits.h>
@@ -21,81 +20,85 @@
 \r\n - DOS/Windows
 */
 
+#define iStrIsDigit(_c) (_c>='0' && _c<='9')
+
+#define iStrUpper(_c)  ((_c >= 'a' && _c <= 'z')? (_c - 'a') + 'A': _c)
+
+#define iStrLower(_c)  ((_c >= 'A' && _c <= 'Z')? (_c - 'A') + 'a': _c)
+
+#define IUP_STR_EQUAL(str1, str2)      \
+{                                      \
+  if (str1 == str2)                    \
+    return 1;                          \
+                                       \
+  if (!str1 || !str2)                  \
+    return 0;                          \
+                                       \
+  while(*str1 && *str2 &&              \
+        SF(*str1) == SF(*str2))        \
+  {                                    \
+    EXTRAINC(str1);                    \
+    EXTRAINC(str2);                    \
+    str1++;                            \
+    str2++;                            \
+  }                                    \
+                                       \
+  /* check also for terminator */      \
+  if (*str1 == *str2) return 1;        \
+}
 
 int iupStrEqual(const char* str1, const char* str2) 
 {
-  if (str1 == str2) return 1;
-  if (!str1 || !str2 || *str1 != *str2) return 0;
-  return (strcmp(str1, str2)==0)? 1: 0;
-}
-
-static char iStrUpper(char c)
-{
-  if (c >= 'a' && c <= 'z')  /* is lower */
-    return (c - 'a') + 'A';
-  return c;
-}
-
-static char iStrLower(char c)
-{
-  if (c >= 'A' && c <= 'Z')  /* is upper */
-    return (c - 'A') + 'a';
-  return c;
-}
-
-int iupStrEqualNoCaseNoSpace(const char* str1, const char* str2) 
-{
-  int i = 0;
-  if (str1 == str2) return 1;
-  if (!str1 || !str2 || 
-      iStrLower(*str1) != iStrLower(*str2)) 
-    return 0;       
-
-  while (str1[i] && str2[i] && iStrLower(str1[i])==iStrLower(str2[i])) 
-  {
-    if (str1[i] == ' ')  /* also ignore spaces */
-      i++;
-    i++;
-  }
-  if (str1[i] == str2[i]) return 1;  /* check also for terminator */
-
-  return 0;
-}
-
-int iupStrEqualNoCase(const char* str1, const char* str2) 
-{
-  int i = 0;
-  if (str1 == str2) return 1;
-  if (!str1 || !str2) 
-    return 0;
-
-  while (str1[i] && str2[i] && iStrLower(str1[i])==iStrLower(str2[i])) 
-    i++;
-  if (str1[i] == str2[i]) return 1;  /* check also for terminator */
-
-  return 0;
-}
-
-int iupStrEqualNoCasePartial(const char* str1, const char* str2) 
-{
-  int i = 0;
-  if (str1 == str2) return 1;
-  if (!str1 || !str2) 
-    return 0;
-
-  while (str1[i] && str2[i] && iStrLower(str1[i])==iStrLower(str2[i])) 
-    i++;
-  if (str1[i] == str2[i]) return 1;  /* check also for terminator */
-  if (str2[i] == 0) return 1;  /* is second string is at terminator, then it is partially equal */
-
+#define EXTRAINC(_x) (_x)
+#define SF(_x) (_x)
+  IUP_STR_EQUAL(str1, str2);
+#undef SF
+#undef EXTRAINC
   return 0;
 }
 
 int iupStrEqualPartial(const char* str1, const char* str2) 
 {
-  if (str1 == str2) return 1;
-  if (!str1 || !str2 || *str1 != *str2) return 0;
-  return (strncmp(str1, str2, strlen(str2))==0)? 1: 0;
+#define EXTRAINC(_x) (_x)
+#define SF(_x) (_x)
+  IUP_STR_EQUAL(str1, str2);
+#undef SF
+#undef EXTRAINC
+  if (*str2 == 0) 
+    return 1;  /* if second string is at terminator, then it is partially equal */
+  return 0;
+}
+
+int iupStrEqualNoCase(const char* str1, const char* str2) 
+{
+#define EXTRAINC(_x) (_x)
+#define SF(_x) iStrLower(_x)
+  IUP_STR_EQUAL(str1, str2);
+#undef SF
+#undef EXTRAINC
+  return 0;
+}
+
+int iupStrEqualNoCasePartial(const char* str1, const char* str2) 
+{
+#define EXTRAINC(_x) (_x)
+#define SF(_x) iStrLower(_x)
+  IUP_STR_EQUAL(str1, str2);
+#undef SF
+#undef EXTRAINC
+  if (*str2 == 0) 
+    return 1;  /* if second string is at terminator, then it is partially equal */
+  return 0;
+}
+
+int iupStrEqualNoCaseNoSpace(const char* str1, const char* str2) 
+{
+#define EXTRAINC(_x) { if (*_x == ' ') _x++; }  /* also ignore spaces */
+#define SF(_x) iStrLower(_x)
+  IUP_STR_EQUAL(str1, str2);
+#undef SF
+#undef EXTRAINC
+  return 0;
 }
 
 int iupStrFalse(const char* str)
@@ -261,15 +264,15 @@ char* iupStrDupUntil(char **str, char c)
   }
 }
 
-static char *iStrDupUntilNoCase(char **str, char c)
+static char *iStrDupUntilNoCase(char **str, char sep)
 {
   char *p_str,*new_str;
   if (!str || *str==NULL)
     return NULL;
 
-  p_str=strchr(*str,c); /* usually the lower case is enough */
-  if (!p_str && isalpha(c)) 
-    p_str=strchr(*str, iStrUpper(c));  /* but check also for upper case */
+  p_str=strchr(*str,sep); /* usually the lower case is enough */
+  if (!p_str && (iStrUpper(sep)!=sep)) 
+    p_str=strchr(*str, iStrUpper(sep));  /* but check also for upper case */
 
   /* if both fail, then abort */
   if (!p_str) 
@@ -533,8 +536,8 @@ int iupStrToInt(const char *str, int *i)
 int iupStrToIntInt(const char *str, int *i1, int *i2, char sep)
 {
   if (!str) return 0;
-
-  if (*str == sep || (isalpha(sep) && *str == iStrUpper(sep))) /* no first value */
+                         
+  if (iStrLower(*str) == sep) /* no first value */
   {
     str++; /* skip separator */
     if (sscanf(str, "%d", i2) != 1) return 0;
@@ -578,7 +581,7 @@ int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
 {
   if (!str) return 0;
 
-  if (*str == sep || (isalpha(sep) && *str == iStrUpper(sep))) /* no first value */
+  if (iStrLower(*str) == sep) /* no first value */
   {
     str++; /* skip separator */
     if (sscanf(str, "%f", f2) != 1) return 0;
@@ -615,7 +618,7 @@ int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
 {
   if (!str) return 0;
 
-  if (*str == sep || (isalpha(sep) && *str == iStrUpper(sep))) /* no first value */
+  if (iStrLower(*str) == sep) /* no first value */
   {
     str++; /* skip separator */
     strcpy(str2, str);
@@ -659,8 +662,7 @@ char* iupStrFileGetPath(const char *file_name)
     }
 
     len--;
-  }
-
+  }                                                          
   if (len == 0)
     return NULL;
 
@@ -1084,4 +1086,147 @@ char* iupStrInsert(const char* value, const char* insert_value, int start, int e
   }
 
   return new_value;
+}
+
+static unsigned char ANSI_casemap[256] =
+{
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67,
+    0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f, 0x70, 0x71, 0x72, 0x73,
+    0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x4b,
+    0x4c, 0x4d, 0x4e, 0x4f, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57,
+    0x58, 0x59, 0x5a, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+
+/*
+The Alphanum Algorithm is an improved sorting algorithm for strings
+containing numbers.  Instead of sorting numbers in ASCII order like a
+standard sort, this algorithm sorts numbers in numeric order.
+
+The Alphanum Algorithm is discussed at http://www.DaveKoelle.com/alphanum.html
+
+This implementation is Copyright (c) 2008 Dirk Jagdmann <doj@cubic.org>.
+It is a cleanroom implementation of the algorithm and not derived by
+other's works. In contrast to the versions written by Dave Koelle this
+source code is distributed with the libpng/zlib license.
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+    1. The origin of this software must not be misrepresented; you
+       must not claim that you wrote the original software. If you use
+       this software in a product, an acknowledgment in the product
+       documentation would be appreciated but is not required.
+
+    2. Altered source versions must be plainly marked as such, and
+       must not be misrepresented as being the original software.
+
+    3. This notice may not be removed or altered from any source
+       distribution. */
+
+/* compare l and r with strcmp() semantics, but using
+   the "Alphanum Algorithm". This function is designed to read
+   through the l and r strings only one time, for
+   maximum performance. It does not allocate memory for
+   substrings. */
+
+/* The following code is based on the "alphanum.hpp" code 
+   downloaded from Dave Koelle and implemented by Dirk Jagdmann.
+
+   It was altered to be compiled in C and simplified to IUP needs.
+*/
+
+//TODO:
+//    Also natural alphabetic order is used 123...abc...ABC... \n
+//    When in ANSI mode codes, some alpha codes >128 are mapped to equivalent <128.
+//    Casesensitive is processed only for codes <128.
+
+int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
+{
+  enum mode_t { STRING, NUMBER } mode=STRING;
+
+  while(*l && *r)
+  {
+    if (mode == STRING)
+    {
+      while((*l) && (*r))
+      {
+        int diff;
+        char l_char = *l, 
+             r_char = *r;
+
+        /* check if this are digit characters */
+        int l_digit = iStrIsDigit(l_char), 
+            r_digit = iStrIsDigit(r_char);
+
+        /* if both characters are digits, we continue in NUMBER mode */
+        if(l_digit && r_digit)
+        {
+          mode = NUMBER;
+          break;
+        }
+
+        /* if only the left character is a digit, we have a result */
+        if(l_digit) return -1;
+
+        /* if only the right character is a digit, we have a result */
+        if(r_digit) return +1;
+
+        /* compute the difference of both characters */
+        diff = l_char - r_char;
+
+        /* if they differ we have a result */
+        if(diff != 0) return diff;
+
+        /* otherwise process the next characters */
+        ++l;
+        ++r;
+      }
+    }
+    else /* mode==NUMBER */
+    {
+      unsigned long r_int;
+      long diff;
+
+      /* get the left number */
+      unsigned long l_int=0;
+      while(*l && iStrIsDigit(*l))
+      {
+        /* TODO: this can overflow */
+        l_int = l_int*10 + *l-'0';
+        ++l;
+      }
+
+      /* get the right number */
+      r_int=0;
+      while(*r && iStrIsDigit(*r))
+      {
+        /* TODO: this can overflow */
+        r_int = r_int*10 + *r-'0';
+        ++r;
+      }
+
+      /* if the difference is not equal to zero, we have a comparison result */
+      diff = l_int-r_int;
+      if (diff != 0)
+        return (int)diff;
+
+      /* otherwise we process the next substring in STRING mode */
+      mode=STRING;
+    }
+  }
+
+  if (*r) return -1;
+  if (*l) return +1;
+  return 0;
 }

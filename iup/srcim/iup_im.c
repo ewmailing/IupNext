@@ -292,7 +292,7 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
       if (!color)
         break;
 
-      if (strcmp(color, "BGCOLOR") == 0)
+      if (iupStrEqualNoCase(color, "BGCOLOR"))
       {
         unsigned char transp_index = (unsigned char)i;
         imFileSetAttribute(ifile, "TransparencyIndex", IM_BYTE, 1, &transp_index);
