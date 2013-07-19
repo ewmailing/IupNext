@@ -153,6 +153,9 @@
     <ClCompile Include="..\srccontrols\iup_dial.c" />
     <ClCompile Include="..\srccontrols\iup_gauge.c" />
     <ClCompile Include="..\srccontrols\iup_oldmask.c" />
+    <ClCompile Include="..\srccontrols\matrix\iupmat_ex.c">
+      <Filter>matrix</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\srccontrols\iupcontrols.def" />

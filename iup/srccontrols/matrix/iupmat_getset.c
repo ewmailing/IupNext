@@ -146,6 +146,31 @@ double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col)
   return number;
 }
 
+char* iupMatrixGetValueText(Ihandle* ih, int lin, int col)
+{  
+  char* value;
+
+  if (lin==0)
+    return NULL;
+
+  if (ih->data->sort_has_index)
+  {
+    int index = ih->data->sort_line_index[lin];
+    if (index != 0) lin = index;
+  }
+
+  if (ih->data->callback_mode)
+  {
+    /* only called in callback mode */
+    sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
+    value = iupStrDup(value_cb(ih, lin, col));  /* must duplicate here */
+  }
+  else
+    value = ih->data->cells[lin][col].value;
+
+  return value;
+}
+
 static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col, const char* value)
 {
   char *format=NULL;

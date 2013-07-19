@@ -119,6 +119,7 @@
     <ClCompile Include="..\srccontrols\matrix\iupmat_colres.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_draw.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_edit.c" />
+    <ClCompile Include="..\srccontrols\matrix\iupmat_ex.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_getset.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_key.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_mark.c" />

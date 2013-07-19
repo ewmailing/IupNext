@@ -158,6 +158,7 @@ struct _IcontrolData
 
 
 int iupMatrixIsValid(Ihandle* ih, int check_cells);
+void iupMatrixRegisterEx(Iclass* ic);
 
 #define iupMATRIX_INVERTYAXIS(_ih, _y) ((_ih)->data->h-1 - (_y))
 
