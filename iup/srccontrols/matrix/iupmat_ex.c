@@ -268,7 +268,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
 
   ascending = iupStrEqualNoCase(iupAttribGetStr(ih, "SORTCOLUMNORDER"), "ASCENDING");
   
-  sort_cb = (IFniii)IupGetCallback(ih, "SORTCOLUMN_CB");
+  sort_cb = (IFniii)IupGetCallback(ih, "SORTCOLUMNCOMPARE_CB");
   if (sort_cb)
   {
     iMatrixQSort_sort_cb = sort_cb;
@@ -350,6 +350,8 @@ void iupMatrixRegisterEx(Iclass* ic)
   iupClassRegisterAttributeId(ic, "NUMERICUNITINDEX", NULL, iMatrixSetNumericUnitIndexAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWNINDEX", NULL, iMatrixSetNumericUnitShownIndexAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMERICFORMATDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "%.2lf", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterCallback(ic, "SORTCOLUMNCOMPARE_CB", "iii");
 
   /* IupMatrix Attributes - Sort Columns (undocumented, will be exposed in IupMatrixEx) */
   iupClassRegisterAttributeId(ic, "SORTCOLUMN", NULL, iMatrixSetSortColumnAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

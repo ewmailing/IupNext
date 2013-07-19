@@ -284,16 +284,23 @@ an interval in the format &quot;L1-L2&quot;, INVERT (invert the order in the cur
 interval of the current column, id is ignored) or RESET (remove any ordering). 
 The sort will not affect original data, only how it is displayed from the 
 original data and how it is updated to the original data. The SORTSIGN<em>id</em> 
-attribute will be updated to reflect the ordering.</p>
+attribute will be updated to reflect the ordering. </p>
+<p class="info">When the SORTCOLUMNCOMPARE_CB callback is NOT defined, and the column 
+in NOT numeric, then the text is sorted using an <strong>Alphanumeric Algorithm</strong>. This 
+means that numbers and text in the same value are sorted separately (for ex: A1 A2 A11 A30 
+B1). Also 
+natural alphabetic order is used: 123...aA·¡...bBcC... When the global attribute 
+UTF8MODE is Yes, then SORTCOLUMNCASESENSITIVE=NO is processed only for Latin1 
+characters.</p>
 <p>
 <strong>SORTCOLUMNORDER</strong>: defines if the number or text comparison is in 
 ASCENDING or DESCENDING order. Default: ASCENDING. Used during SORTCOLUMN<em>id</em> 
-and when the SORTCOLUMN_CB callback is NOT defined. Used to update the SORTSIGN<em>id</em> 
-attribute when the SORTCOLUMN_CB callback is defined. </p>
+and when the SORTCOLUMNCOMPARE_CB callback is NOT defined. Used to update the SORTSIGN<em>id</em> 
+attribute when the SORTCOLUMNCOMPARE_CB callback is defined. </p>
 <p>
 <strong>SORTCOLUMNCASESENSITIVE</strong>: defines if the text comparison is case 
 sensitive. Can be Yes or No. Default: Yes. Used only during SORTCOLUMN<em>id</em> 
-and when the SORTCOLUMN_CB callback is not defined.</p>
+and when the SORTCOLUMNCOMPARE_CB callback is not defined.</p>
 <p>
 <strong>VISIBLECOL<em>id</em></strong>: returns if the column is visible (&quot;Yes&quot; 
 or &quot;No&quot;). Actually checks for WIDTHid and RASTERWIDTHid if they are defined and 
@@ -418,6 +425,22 @@ aborted. if returns IUP_CONTINUE, the NUMLIN and NUMCOL attributes will be
 automatically changed to the given values. Otherwise and if the callback does 
 not exist nothing is done, and the exceeding data will be discarded. </p>
 
+<p><strong><a name="SORTCOLUMNCOMPARE_CB">SORTCOLUMNCOMPARE_CB</a></strong>: Action generated 
+when sorting data in a column to compare two cell values.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>col</strong>, int <strong>lin1</strong>, int <strong>lin2</strong>); [in C]<br><strong>elem</strong>:sortcolumncompare_cb(<strong>col,lin1,lin</strong>2: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>col</strong>: column being sorted.<br><strong>lin1</strong>,
+<strong>lin2</strong>: 
+the line numbers of the two cells being compared.</p>
+
+<p class="info"><u>Returns</u>: must return 0 if &quot;col:lin1==col:lin2&quot;, -1 if 
+&quot;col:lin1&lt;col:lin2&quot;, and 1 if &quot;col:lin1&gt;col:lin2&quot;.</p>
 
 
 <h3>Auxiliary Functions</h3>

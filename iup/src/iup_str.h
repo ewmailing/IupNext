@@ -282,11 +282,13 @@ char* iupStrProcessMnemonic(const char* str, char *c, int action);
  * \ingroup str */
 int iupStrFindMnemonic(const char* str);
 
+
+
 /** Compare two strings using strcmp semantics, 
-    but using the "Alphanum Algorithm". \n
-    Also natural alphabetic order is used 123...abc...ABC... \n
-    When in ANSI mode codes, some alpha codes >128 are mapped to equivalent <128.
-    Casesensitive is processed only for codes <128.
+    but using the "Alphanum Algorithm" (A1 A2 A11 A30 ...). \n
+    This means that numbers and text are sorted separately. \n
+    Also natural alphabetic order is used: 123...aAáÁ...bBcC... \n
+    When using utf8, casesensitive=0 is processed only for Latin1 characters.
  * \ingroup str */
 int iupStrCompare(const char* s1, const char* s2, int casesensitive, int utf8);
 
