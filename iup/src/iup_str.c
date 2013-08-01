@@ -1138,7 +1138,7 @@ static char iStrUTF8toLatin1(const char* *l)
 {
   char c = **l;
 
-  if (c < 128) 
+  if (c >= 0) 
     return c;   /* ASCII */
 
   if ((c & 0x20) == 0)       /* Use 00100000 to detect 110XXXXX */
@@ -1148,7 +1148,7 @@ static char iStrUTF8toLatin1(const char* *l)
     (*l)++;
     c = **l;
     u |= (c & 0x3F);         /* second part (10XXXXXX) */
-    if (u < 256)
+    if (u >= -128 && u < 128)
       return (char)u;
     else
       return 0;
