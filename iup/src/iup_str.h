@@ -288,7 +288,7 @@ int iupStrFindMnemonic(const char* str);
     but using the "Alphanum Algorithm" (A1 A2 A11 A30 ...). \n
     This means that numbers and text are sorted separately. \n
     Also natural alphabetic order is used: 123...aA·¡...bBcC... \n
-    Sorting will work only for Latin1 characters, even when using utf8=1.
+    Sorting will work only for Latin-1 characters, even when using utf8=1.
  * \ingroup str */
 int iupStrCompare(const char* s1, const char* s2, int casesensitive, int utf8);
 

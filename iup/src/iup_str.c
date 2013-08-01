@@ -1013,9 +1013,6 @@ int iupStrFindMnemonic(const char* str)
 }
 
 #define ISTR_UTF8_BASE(_x)  (_x & 0xC0)  /* 11XX XXXX */
-#define ISTR_UTF8_COUNT(_x) ((_x & 0xE0)? 3: ((_x & 0xF0)? 4: 2 ))
-                            /* 1110 XXXX */  /* 1111 0XXX */  /* 110X XXXX */
-#define ISTR_UTF8_SEQ(_x)   (_x & 0x80)  /* 10XX XXXX */
 
 static void iStrFixPosUTF8(const char* value, int *start, int *end)
 {
@@ -1137,6 +1134,35 @@ static void iStrInitLatin1_map(void)
   m['Ý']=239;  m['ÿ']=241; m['Ÿ']=241; m['z']=243; m['Z']=243; m['ž']=245; m['Ž']=245; m['\\']=247; m[127]=248; m[129]=249; m[141]=250; m[143]=251; m[144]=252; m[157]=253; m[160]=254; m[173]=255; 
 }
 
+static char iStrUTF8toLatin1(const char* *l)
+{
+  char c = **l;
+
+  if (c < 128) 
+    return c;   /* ASCII */
+
+  if ((c & 0x20) == 0)       /* Use 00100000 to detect 110XXXXX */
+  {
+    short u;
+    u  = (c & 0x1F) << 6;    /* first part + make room for second part */
+    (*l)++;
+    c = **l;
+    u |= (c & 0x3F);         /* second part (10XXXXXX) */
+    if (u < 256)
+      return (char)u;
+    else
+      return 0;
+  }
+
+  /* only increment the pointer for the remainig codes */
+  if ((c & 0x10) == 0)       /* Use 00010000 to detect 1110XXXX */
+    *l += 3-1;  
+  else if ((c & 0x08) == 0)  /* Use 00001000 to detect 11110XXX */
+    *l += 4-1;
+
+  return 0;
+}
+
 /*
 The Alphanum Algorithm is an improved sorting algorithm for strings
 containing numbers.  Instead of sorting numbers in ASCII order like a
@@ -1210,17 +1236,11 @@ int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
         /* if only the right character is a digit, we have a result */
         if(r_digit) return +1;
 
-        //TODO
-        //if (utf8)
-        //{
-        //convert to unicode and increment the strings accordingly
-        //  unsigned short l_wchar, r_wchar;
-        //  diff = l_wchar - r_wchar;
-        //
-        //  can we convert Latin1 sequences to Latin1_map?
-        //  if (i<128 or i<256) use Latin1_map
-        //}
-        //else
+        if (utf8)
+        {
+          l_char = iStrUTF8toLatin1(&l);
+          r_char = iStrUTF8toLatin1(&r);
+        }
 
         /* compute the difference of both characters */
         if (casesensitive)
