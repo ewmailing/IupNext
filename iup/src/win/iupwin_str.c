@@ -29,18 +29,6 @@
 static int iupwin_utf8mode = 0;    /* default is NOT using UTF-8 */
 static int iupwin_utf8mode_file = 0;  
 
-/* TODOUTF8:
-- re-testar ACTION callback do IupText
-     Windows ANSI
-     Windows UNICODE sem UTF8
-     Windows UNICODE com UTF8
-     GTK com UTF8
-     GTK sem UTF8
-     Motif
-- rever suporte para Unicode no iupscintilla
-- suporte para UTF8 no driver Win32 do CD
-- melhorar o suporte a teclas no IUP 
-*/
 
 void iupwinStrSetUTF8Mode(int utf8mode)
 {
