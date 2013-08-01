@@ -1166,12 +1166,14 @@ freely, subject to the following restrictions:
        must not be misrepresented as being the original software.
 
     3. This notice may not be removed or altered from any source
-       distribution. */
+       distribution.
 
-/* The following code is based on the "alphanum.hpp" code 
-   downloaded from Dave Koelle and implemented by Dirk Jagdmann.
+***************************************************************************
 
-   It was altered to be compiled in C and simplified to IUP needs.
+The following code is based on the "alphanum.hpp" code 
+downloaded from the Dave Koelle page and implemented by Dirk Jagdmann.
+
+It was modified to the C language and simplified to IUP needs.
 */
 
 int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
