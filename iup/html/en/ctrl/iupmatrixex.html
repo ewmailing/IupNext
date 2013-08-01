@@ -289,9 +289,9 @@ attribute will be updated to reflect the ordering. </p>
 in NOT numeric, then the text is sorted using an <strong>Alphanumeric Algorithm</strong>. This 
 means that numbers and text in the same value are sorted separately (for ex: A1 A2 A11 A30 
 B1). Also 
-natural alphabetic order is used: 123...aA·¡...bBcC... When the global attribute 
-UTF8MODE is Yes, then SORTCOLUMNCASESENSITIVE=NO is processed only for Latin1 
-characters.</p>
+natural alphabetic order is used: 123...aA·¡...bBcC... The internal comparison 
+will work only for Latin1 
+characters, even if UTF8MODE is Yes.</p>
 <p>
 <strong>SORTCOLUMNORDER</strong>: defines if the number or text comparison is in 
 ASCENDING or DESCENDING order. Default: ASCENDING. Used during SORTCOLUMN<em>id</em> 

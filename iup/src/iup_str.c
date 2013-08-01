@@ -1088,16 +1088,16 @@ char* iupStrInsert(const char* value, const char* insert_value, int start, int e
   return new_value;
 }
 
-static unsigned char* ANSI_map = NULL;
-static unsigned char* ANSI_map_nocase = NULL;
+static unsigned char* Latin1_map = NULL;
+static unsigned char* Latin1_map_nocase = NULL;
 
-static void iStrInitANSI_map(void)
+static void iStrInitLatin1_map(void)
 {
   static char m[256];
   static char M[256];
 
-  ANSI_map = (unsigned char*)M;
-  ANSI_map_nocase = (unsigned char*)m;
+  Latin1_map = (unsigned char*)M;
+  Latin1_map_nocase = (unsigned char*)m;
 
   /* these characters are sorted in the same order as Excel would sort them */
 
@@ -1180,8 +1180,8 @@ int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
 {
   enum mode_t { STRING, NUMBER } mode=STRING;
 
-  if (!ANSI_map)
-    iStrInitANSI_map();
+  if (!Latin1_map)
+    iStrInitLatin1_map();
 
   while(*l && *r)
   {
@@ -1217,16 +1217,16 @@ int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
         //  unsigned short l_wchar, r_wchar;
         //  diff = l_wchar - r_wchar;
         //
-        //  can we convert Latin1 sequences to ANSI_map?
-        //  if (i<128 or i<256) use ANSI_map
+        //  can we convert Latin1 sequences to Latin1_map?
+        //  if (i<128 or i<256) use Latin1_map
         //}
         //else
 
         /* compute the difference of both characters */
         if (casesensitive)
-          diff = ANSI_map[l_char] - ANSI_map[r_char];
+          diff = Latin1_map[l_char] - Latin1_map[r_char];
         else
-          diff = ANSI_map_nocase[l_char] - ANSI_map_nocase[r_char];
+          diff = Latin1_map_nocase[l_char] - Latin1_map_nocase[r_char];
 
         /* if they differ we have a result */
         if(diff != 0) return diff;
