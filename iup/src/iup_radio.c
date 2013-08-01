@@ -127,7 +127,7 @@ static int iRadioCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iRadioComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iRadioComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   Ihandle* child = ih->firstchild;
   if (child)
@@ -135,7 +135,7 @@ static void iRadioComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *exp
     /* update child natural size first */
     iupBaseComputeNaturalSize(child);
 
-    *expand = child->expand;
+    *children_expand = child->expand;
     *w = child->naturalwidth;
     *h = child->naturalheight;
   }

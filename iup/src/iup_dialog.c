@@ -236,7 +236,7 @@ static void iDialogDestroyMethod(Ihandle* ih)
 
 static int iDialogSetMenuAttrib(Ihandle* ih, const char* value);
 
-static void iDialogComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iDialogComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int decorwidth, decorheight;
   Ihandle* child = ih->firstchild;
@@ -256,7 +256,7 @@ static void iDialogComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *ex
     /* update child natural size first */
     iupBaseComputeNaturalSize(child);
 
-    *expand = child->expand;
+    *children_expand = child->expand;
     *w += child->naturalwidth;
     *h += child->naturalheight;
   }

@@ -260,7 +260,7 @@ Ihandle* IupSpin(void)
                                       SPINBOX
 **************************************************************************************/
 
-static void iSpinboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iSpinboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   /* update spin natural size */
   iupBaseComputeNaturalSize(ih->firstchild);
@@ -270,7 +270,7 @@ static void iSpinboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *e
     /* update child natural size */
     iupBaseComputeNaturalSize(ih->firstchild->brother);
 
-    *expand = ih->firstchild->brother->expand;
+    *children_expand = ih->firstchild->brother->expand;
 
     *w = ih->firstchild->brother->naturalwidth + ih->firstchild->naturalwidth;
     *h = iupMAX(ih->firstchild->brother->naturalheight, ih->firstchild->naturalheight);

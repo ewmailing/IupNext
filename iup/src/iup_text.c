@@ -417,13 +417,13 @@ static int iMultilineCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iTextComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iTextComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int natural_w = 0, 
       natural_h = 0,
       visiblecolumns = iupAttribGetInt(ih, "VISIBLECOLUMNS"),
       visiblelines = iupAttribGetInt(ih, "VISIBLELINES");
-  (void)expand; /* unset if not a container */
+  (void)children_expand; /* unset if not a container */
 
   /* Since the contents can be changed by the user, the size can not be dependent on it. */
   if (ih->data->is_multiline)

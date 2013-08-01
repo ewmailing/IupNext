@@ -78,10 +78,10 @@ static int iCanvasCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iCanvasComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iCanvasComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int natural_w = 0, natural_h = 0;
-  (void)expand; /* unset if not a container */
+  (void)children_expand; /* unset if not a container */
 
   /* canvas natural size is 1 character */
   iupdrvFontGetCharSize(ih, &natural_w, &natural_h);

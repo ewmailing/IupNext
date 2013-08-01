@@ -106,12 +106,12 @@ static int iLabelCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iLabelComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iLabelComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int natural_w = 0, 
       natural_h = 0, 
       type = iupLabelGetTypeBeforeMap(ih);
-  (void)expand; /* unset if not a container */
+  (void)children_expand; /* unset if not a container */
 
   if (type == IUP_LABEL_SEP_HORIZ)
     natural_h = 2;

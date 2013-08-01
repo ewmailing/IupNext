@@ -499,7 +499,7 @@ static char* iExpanderGetAutoShowAttrib(Ihandle* ih)
 \*****************************************************************************/
 
 
-static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int child_expand = 0,
       natural_w, natural_h;
@@ -551,7 +551,7 @@ static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
     child_expand = child->expand;
   }
 
-  *expand = child_expand;
+  *children_expand = child_expand;
   *w = natural_w;
   *h = natural_h;
 }

@@ -212,14 +212,12 @@ static int iZboxSetVisibleAttrib(Ihandle* ih, const char* value)
   return 1;  /* must be 1 to mark when set at the element */
 }
 
-static void iZboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iZboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   Ihandle* child;
-  int children_expand, 
-      children_naturalwidth, children_naturalheight;
+  int children_naturalwidth, children_naturalheight;
 
   /* calculate total children natural size (even for hidden children) */
-  children_expand = 0;
   children_naturalwidth = 0;
   children_naturalheight = 0;
 
@@ -231,13 +229,12 @@ static void iZboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
 
     if (!(child->flags & IUP_FLOATING))
     {
-      children_expand |= child->expand;
+      *children_expand |= child->expand;
       children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
       children_naturalheight = iupMAX(children_naturalheight, child->naturalheight);
     }
   }
 
-  *expand = children_expand;
   *w = children_naturalwidth;
   *h = children_naturalheight;
 }

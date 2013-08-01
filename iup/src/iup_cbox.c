@@ -34,15 +34,13 @@ static int iCboxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iCboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iCboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   Ihandle* child;
-  int children_expand, 
-      children_naturalwidth, children_naturalheight;
+  int children_naturalwidth, children_naturalheight;
   int cx, cy;
 
   /* calculate total children natural size (even for hidden children) */
-  children_expand = 0;
   children_naturalwidth = 0;
   children_naturalheight = 0;
 
@@ -54,12 +52,11 @@ static void iCboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
     cx = iupAttribGetInt(child, "CX");
     cy = iupAttribGetInt(child, "CY");
 
-    children_expand |= child->expand;
+    *children_expand |= child->expand;
     children_naturalwidth = iupMAX(children_naturalwidth, cx+child->naturalwidth);
     children_naturalheight = iupMAX(children_naturalheight, cy+child->naturalheight);
   }
 
-  *expand = children_expand;
   *w = children_naturalwidth;
   *h = children_naturalheight;
 }

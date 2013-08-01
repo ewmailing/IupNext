@@ -82,20 +82,21 @@ static int iScrollBoxMotion_CB(Ihandle *ih, int x, int y, char* status)
 \*****************************************************************************/
 
 
-static void iScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   if (ih->firstchild)
   {
     /* update child natural size first */
     iupBaseComputeNaturalSize(ih->firstchild);
-
-    *expand = ih->firstchild->expand;
   }
 
   /* ScrollBox size does not depends on the child size,
      its natural size must be 0 to be free of restrictions. */
   (void)w;
   (void)h;
+
+  /* Also set expand to its own expand so it will not depend on children */
+  *children_expand = ih->expand;
 }
 
 static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)

@@ -412,14 +412,13 @@ static int iGridBoxCalcNumDiv(Ihandle* ih)
   return num_div;
 }
 
-static void iGridBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iGridBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   Ihandle* child;
   int num_lin, num_col, num_div, i;
   int children_natural_width = 0, children_natural_height = 0;
 
   /* calculate total children natural size */
-  int children_expand = 0;
   int children_natural_maxwidth = 0;
   int children_natural_maxheight = 0;
   int child_count = 0;
@@ -432,7 +431,7 @@ static void iGridBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *e
 
     if (!(child->flags & IUP_FLOATING))
     {
-      children_expand |= child->expand;
+      *children_expand |= child->expand;
       child_count++;
     }
   }
@@ -509,7 +508,6 @@ static void iGridBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *e
     children_natural_height = children_natural_maxheight*num_lin;
 
   /* compute the GridBox contents natural size */
-  *expand = children_expand;
   *w = children_natural_width  + (num_col-1)*ih->data->gap_col + 2*ih->data->margin_x;
   *h = children_natural_height + (num_lin-1)*ih->data->gap_lin + 2*ih->data->margin_y;
 

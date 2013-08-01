@@ -54,12 +54,12 @@ static int iToggleCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iToggleComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iToggleComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int natural_w = 0, 
       natural_h = 0,
       type = ih->data->type;
-  (void)expand; /* unset if not a container */
+  (void)children_expand; /* unset if not a container */
 
   if (!ih->handle)
   {

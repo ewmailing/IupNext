@@ -1452,10 +1452,10 @@ static int iMatrixGetNaturalHeight(Ihandle* ih, int *full_height)
   return height;
 }
 
-static void iMatrixComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iMatrixComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int sb_w = 0, sb_h = 0, full_width, full_height, border = 0;
-  (void)expand; /* unset if not name container */
+  (void)children_expand; /* unset if not name container */
 
   if (!ih->handle)
     ih->data->canvas.sb = iupBaseGetScrollbar(ih);

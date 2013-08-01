@@ -536,6 +536,28 @@ static int iColorBrowserDlgColorCnvButton_CB(Ihandle* ih, int b, int press, int 
   return IUP_DEFAULT;
 }
 
+static int iColorBrowserDlgColorCnvResize_CB(Ihandle* ih)
+{
+  IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
+
+  if (!colordlg_data->color_cddbuffer)
+  {
+    /* update canvas size */
+    cdCanvasActivate(colordlg_data->color_cdcanvas);
+
+    /* this can fail if canvas size is zero */
+    colordlg_data->color_cddbuffer = cdCreateCanvas(CD_DBUFFERRGB, colordlg_data->color_cdcanvas);
+  }
+
+  if (!colordlg_data->color_cddbuffer)
+    return IUP_DEFAULT;
+
+  /* update size */
+  cdCanvasActivate(colordlg_data->color_cddbuffer);
+
+  return IUP_DEFAULT;
+}
+
 static int iColorBrowserDlgColorCnvMap_CB(Ihandle* ih)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
@@ -899,6 +921,7 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(colordlg_data->color_cnv, "EXPAND", "HORIZONTAL");
   IupSetCallback (colordlg_data->color_cnv, "ACTION", (Icallback)iColorBrowserDlgColorCnvRedraw_CB);
   IupSetCallback (colordlg_data->color_cnv, "MAP_CB", (Icallback)iColorBrowserDlgColorCnvMap_CB);
+  IupSetCallback (colordlg_data->color_cnv, "RESIZE_CB", (Icallback)iColorBrowserDlgColorCnvResize_CB);
   IupSetCallback (colordlg_data->color_cnv, "UNMAP_CB", (Icallback)iColorBrowserDlgColorCnvUnMap_CB);
   IupSetCallback (colordlg_data->color_cnv, "BUTTON_CB", (Icallback)iColorBrowserDlgColorCnvButton_CB);
 

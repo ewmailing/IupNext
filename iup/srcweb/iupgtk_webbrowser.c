@@ -278,11 +278,11 @@ static void gtkWebBrowserInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "ITEMHISTORY",  gtkWebBrowserGetItemHistoryAttrib,  NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 }
 
-static void gtkWebBrowserComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void gtkWebBrowserComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int natural_w = 0, natural_h = 0;
   int sb_size = iupdrvGetScrollbarSize();
-  (void)expand; /* unset if not a container */
+  (void)children_expand; /* unset if not a container */
 
   iupdrvFontGetCharSize(ih, &natural_w, &natural_h);
 

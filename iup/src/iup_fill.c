@@ -179,9 +179,9 @@ static void iFillUpdateSize(Ihandle* ih)
   }
 }
 
-static void iFillComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iFillComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
-  (void)expand;  /* unset if not a container */
+  (void)children_expand;  /* unset if not a container */
 
   /* EXPAND is initialized as none for FILL */
   ih->expand = IUP_EXPAND_NONE;

@@ -68,13 +68,13 @@ static void iClassDestroy(Iclass* ic, Ihandle* ih)
     iClassDestroy(ic->parent, ih);
 }
 
-static void iClassComputeNaturalSize(Iclass* ic, Ihandle* ih, int *w, int *h, int *expand)
+static void iClassComputeNaturalSize(Iclass* ic, Ihandle* ih, int *w, int *h, int *children_expand)
 {
   if (ic->parent)
-    iClassComputeNaturalSize(ic->parent, ih, w, h, expand);
+    iClassComputeNaturalSize(ic->parent, ih, w, h, children_expand);
 
   if (ic->ComputeNaturalSize)
-    ic->ComputeNaturalSize(ih, w, h, expand);
+    ic->ComputeNaturalSize(ih, w, h, children_expand);
 }
 
 static void iClassSetChildrenCurrentSize(Iclass* ic, Ihandle* ih, int shrink)
@@ -184,9 +184,9 @@ void iupClassObjectDestroy(Ihandle* ih)
   iClassDestroy(ih->iclass, ih);
 }
 
-void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *expand)
+void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *children_expand)
 {
-  iClassComputeNaturalSize(ih->iclass, ih, w, h, expand);
+  iClassComputeNaturalSize(ih->iclass, ih, w, h, children_expand);
 }
 
 void iupClassObjectSetChildrenCurrentSize(Ihandle* ih, int shrink)

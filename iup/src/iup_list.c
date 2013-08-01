@@ -720,11 +720,11 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
   }
 }
 
-static void iListComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iListComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int natural_w, natural_h;
   int sb_size = iupdrvGetScrollbarSize();
-  (void)expand; /* unset if not a container */
+  (void)children_expand; /* unset if not a container */
 
   iListGetNaturalItemsSize(ih, &natural_w, &natural_h);
 

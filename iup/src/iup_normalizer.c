@@ -113,11 +113,11 @@ static int iNormalizerSetAddControlAttrib(Ihandle* ih, const char* value)
   return iNormalizerSetAddControlHandleAttrib(ih, (char*)IupGetHandle(value));
 }
 
-static void iNormalizerComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iNormalizerComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   (void)w;
   (void)h;
-  (void)expand;
+  (void)children_expand;
   iNormalizerSetNormalizeAttrib(ih, iupAttribGetStr(ih, "NORMALIZE"));
 }
 

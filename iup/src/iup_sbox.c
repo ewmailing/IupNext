@@ -220,7 +220,7 @@ static int iSboxSetDirectionAttrib(Ihandle* ih, const char* value)
 \*****************************************************************************/
 
 
-static void iSboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iSboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int natural_w = ih->naturalwidth, 
       natural_h = ih->naturalheight;
@@ -242,7 +242,7 @@ static void iSboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
     /* update child natural size first */
     iupBaseComputeNaturalSize(child);
 
-    *expand = child->expand;
+    *children_expand = child->expand;
 
     /* calculate as in iupBaseComputeNaturalSize */
     natural_w = iupMAX(natural_w, child->naturalwidth  + iSboxGetXborder(ih));

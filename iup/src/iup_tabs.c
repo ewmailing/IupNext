@@ -388,15 +388,13 @@ void iupTabsCheckCurrentTab(Ihandle* ih, int pos)
 /* TABS - Methods                                                            */
 /* ------------------------------------------------------------------------- */
 
-static void iTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   Ihandle* child;
-  int children_expand, 
-      children_naturalwidth, children_naturalheight;
+  int children_naturalwidth, children_naturalheight;
   int decorwidth, decorheight;
 
   /* calculate total children natural size (even for hidden children) */
-  children_expand = 0;
   children_naturalwidth = 0;
   children_naturalheight = 0;
 
@@ -405,14 +403,13 @@ static void iTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expa
     /* update child natural size first */
     iupBaseComputeNaturalSize(child);
 
-    children_expand |= child->expand;
+    *children_expand |= child->expand;
     children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
     children_naturalheight = iupMAX(children_naturalheight, child->naturalheight);
   }
 
   iTabsGetDecorSize(ih, &decorwidth, &decorheight);
 
-  *expand = children_expand;
   *w = children_naturalwidth + decorwidth;
   *h = children_naturalheight + decorheight;
 }

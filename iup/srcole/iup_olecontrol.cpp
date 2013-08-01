@@ -96,10 +96,10 @@ static int iOleControlAction_CB(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-static void iOleControlComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iOleControlComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   long natural_w = 0, natural_h = 0;
-  (void)expand; /* unset if not a container */
+  (void)children_expand; /* unset if not a container */
 
   ih->data->olehandler->GetNaturalSize(&natural_w, &natural_h);
 

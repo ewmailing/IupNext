@@ -220,11 +220,12 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
   if (ih->iclass->childtype!=IUP_CHILDNONE || 
       ih->iclass->nativetype == IUP_TYPEDIALOG)  /* pre-defined dialogs can restrict the number of children */
   {
-    int w=0, h=0, children_expand;
+    int w=0, h=0, children_expand=0;  /* if there is no children will not expand, when not a dialog */
 
-    /* if a container then update the "expand" member from the EXPAND attribute */
+    /* If a container then update the "expand" member from the EXPAND attribute.
+       The ih->expand member can not be used for the container attribute because
+       it is used to combine the container value with the children value. */
     iupBaseContainerUpdateExpand(ih);
-    children_expand = ih->expand; /* use it as default value */
 
     iupClassObjectComputeNaturalSize(ih, &w, &h, &children_expand);
 
@@ -240,7 +241,8 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
     }
     else
     {
-      ih->expand &= children_expand; /* combine but only expand where the element can expand */
+      /* combine to only expand if the children can expand */
+      ih->expand &= children_expand; 
       ih->naturalwidth = iupMAX(ih->naturalwidth, w);
       ih->naturalheight = iupMAX(ih->naturalheight, h);
     }
@@ -250,7 +252,8 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
     /* for non-container only compute if user size is not defined */
     if (ih->naturalwidth <= 0 || ih->naturalheight <= 0)
     {
-      int w=0, h=0, children_expand;
+      int w=0, h=0, 
+          children_expand;  /* unused if not a container */
       iupClassObjectComputeNaturalSize(ih, &w, &h, &children_expand);
 
       if (ih->naturalwidth <= 0) ih->naturalwidth = w;

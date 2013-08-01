@@ -562,7 +562,7 @@ static char* iSplitGetAutoHideAttrib(Ihandle* ih)
 \*****************************************************************************/
 
 
-static void iSplitComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *expand)
+static void iSplitComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int natural_w = 0, 
       natural_h = 0;
@@ -593,7 +593,7 @@ static void iSplitComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *exp
       natural_h += child1->naturalheight;
     }
 
-    *expand = child1->expand;
+    *children_expand |= child1->expand;
   }
 
   if (child2)
@@ -612,7 +612,7 @@ static void iSplitComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *exp
       natural_h += child2->naturalheight;
     }
 
-    *expand |= child2->expand;
+    *children_expand |= child2->expand;
   }
 
   if (ih->data->val == -1)  /* first time or reset, recompute value from natural size */
