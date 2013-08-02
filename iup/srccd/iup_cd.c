@@ -55,6 +55,12 @@ static void cdcreatecanvasIUP(cdCanvas* canvas, Ihandle *ih_canvas)
   cdcreatecanvasNATIVE(canvas, data);
 
   IupSetAttribute(ih_canvas, "_CD_CANVAS", (char*)canvas);
+
+  {
+    int utf8mode = IupGetInt(NULL, "UTF8MODE");
+    if (utf8mode)
+      cdCanvasSetAttribute(canvas, "UTF8MODE", "1");
+  }
 }
 
 static cdContext cdIupContext;
