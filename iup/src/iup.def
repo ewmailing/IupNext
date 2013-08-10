@@ -321,10 +321,8 @@ iupMaskCreateFloat
 iupMaskCreate
 iupMaskCheck
 iupMaskGetStr
-iupKeyNameToCode
 iupKeyForEach
 iupKeyCodeToName
-iupKeyCanCaps
 iupKeyCallKeyPressCb
 iupKeyCallKeyCb
 iupKeyProcessNavigation

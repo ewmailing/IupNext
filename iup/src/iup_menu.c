@@ -119,16 +119,12 @@ static void iMenuAdjustPos(int *x, int *y)
 
 char* iupMenuProcessTitle(Ihandle* ih, const char* title)
 {
-  int keychar;
   char* str;
 
-  char* key = iupAttribGet(ih, "KEY");
+  char* key = iupAttribGet(ih, "KEY");  /* NOT the same definition as the global KEY attribute */
   if (!key) return (char*)title;
 
-  keychar = iupKeyNameToCode(key);
-  if (!keychar) return (char*)title;
-
-  str = strchr(title, keychar);
+  str = strchr(title, (int)key);
   if (str)
   {
     int len = strlen(title);

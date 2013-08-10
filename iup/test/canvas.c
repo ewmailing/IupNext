@@ -294,9 +294,9 @@ static int k_any(Ihandle *ih, int c)
   //  IupSetAttribute(ih, "POSX", "100");
 
   if (iup_isprint(c))
-    printf("K_ANY(%d = %s \'%c\')\n", c, iupKeyCodeToName(c), (char)c);
+    printf("K_ANY(0x%X = %s \'%c\')\n", c, iupKeyCodeToName(c), (char)c);
   else
-    printf("K_ANY(%d = %s)\n", c, iupKeyCodeToName(c));
+    printf("K_ANY(0x%X = %s)\n", c, iupKeyCodeToName(c));
 
   printf("  MODKEYSTATE(%s)\n", IupGetGlobal("MODKEYSTATE"));
   return IUP_DEFAULT;
@@ -362,7 +362,7 @@ void CanvasTest(void)
   IupSetCallback(canvas, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   IupSetCallback(canvas, "BUTTON_CB",    (Icallback)button_cb);
-  IupSetCallback(canvas, "MOTION_CB",    (Icallback)motion_cb);
+//  IupSetCallback(canvas, "MOTION_CB",    (Icallback)motion_cb);
   IupSetCallback(canvas, "SCROLL_CB",  (Icallback)scroll_cb);
 //  IupSetCallback(canvas, "WHEEL_CB",    (Icallback)wheel_cb);
 

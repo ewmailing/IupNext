@@ -13,6 +13,7 @@
 
 #include "iup_object.h"
 #include "iup_key.h"
+#include "iup_str.h"
 
 #include "iup_drv.h"
 #include "iup_focus.h"
@@ -22,272 +23,238 @@
                    
 typedef struct _Iwin2iupkey
 {
-  int wincode;
   int iupcode;
-  int s_iupcode;
-  int c_iupcode;
-  int m_iupcode;
-  int y_iupcode;
+  int shift_iupcode;   /* base code when shift or caps are pressed */
 } Iwin2iupkey;
 
-static Iwin2iupkey winkey_map[] = {
-
-{ VK_ESCAPE,    K_ESC,   K_sESC,    K_cESC,   K_mESC,   K_yESC   },
-{ VK_PAUSE,     K_PAUSE, K_sPAUSE,  K_cPAUSE, K_mPAUSE, K_yPAUSE },
-{ VK_SNAPSHOT,  K_Print, K_sPrint,  K_cPrint, K_mPrint, K_yPrint },
-{ VK_APPS,      K_Menu,  K_sMenu,   K_cMenu,  K_mMenu,  K_yMenu  },
-                                              
-{ VK_HOME,      K_HOME,  K_sHOME,   K_cHOME,  K_mHOME,  K_yHOME  },
-{ VK_UP,        K_UP,    K_sUP,     K_cUP,    K_mUP,    K_yUP    },
-{ VK_PRIOR,     K_PGUP,  K_sPGUP,   K_cPGUP,  K_mPGUP,  K_yPGUP  },
-{ VK_LEFT,      K_LEFT,  K_sLEFT,   K_cLEFT,  K_mLEFT,  K_yLEFT  },
-{ VK_CLEAR,     K_MIDDLE,K_sMIDDLE, K_cMIDDLE,K_mMIDDLE,K_yMIDDLE},
-{ VK_RIGHT,     K_RIGHT, K_sRIGHT,  K_cRIGHT, K_mRIGHT, K_yRIGHT },
-{ VK_END,       K_END,   K_sEND,    K_cEND,   K_mEND,   K_yEND   },
-{ VK_DOWN,      K_DOWN,  K_sDOWN,   K_cDOWN,  K_mDOWN,  K_yDOWN  },
-{ VK_NEXT,      K_PGDN,  K_sPGDN,   K_cPGDN,  K_mPGDN,  K_yPGDN  },
-{ VK_INSERT,    K_INS,   K_sINS,    K_cINS,   K_mINS,   K_yINS   },
-{ VK_DELETE,    K_DEL,   K_sDEL,    K_cDEL,   K_mDEL,   K_yDEL   },
-{ VK_SPACE,     K_SP,    K_sSP,     K_cSP,    K_mSP,    K_ySP    },
-{ VK_TAB,       K_TAB,   K_sTAB,    K_cTAB,   K_mTAB,   K_yTAB   },
-{ VK_RETURN,    K_CR,    K_sCR,     K_cCR,    K_mCR,    K_yCR    },
-{ VK_BACK,      K_BS,    K_sBS,     K_cBS,    K_mBS,    K_yBS    },
-
-/* VK_0 - VK_9 are the same as ASCII '0' - '9' (0x30 - 0x39) */
-{ '1',   K_1, K_exclam,      K_c1, K_m1, K_y1 },
-{ '2',   K_2, K_at,          K_c2, K_m2, K_y2 },
-{ '3',   K_3, K_numbersign,  K_c3, K_m3, K_y3 },
-{ '4',   K_4, K_dollar,      K_c4, K_m4, K_y4 },
-{ '5',   K_5, K_percent,     K_c5, K_m5, K_y5 },
-{ '6',   K_6, K_circum,      K_c6, K_m6, K_y6 },
-{ '7',   K_7, K_ampersand,   K_c7, K_m7, K_y7 },
-{ '8',   K_8, K_asterisk,    K_c8, K_m8, K_y8 },
-{ '9',   K_9, K_parentleft,  K_c9, K_m9, K_y9 },
-{ '0',   K_0, K_parentright, K_c0, K_m0, K_y0 },
-
-/* VK_A - VK_Z are the same as ASCII 'A' - 'Z' (0x41 - 0x5A) */
-{ 'A',   K_a, K_A, K_cA, K_mA, K_yA},
-{ 'B',   K_b, K_B, K_cB, K_mB, K_yB},
-{ 'C',   K_c, K_C, K_cC, K_mC, K_yC},
-{ 'D',   K_d, K_D, K_cD, K_mD, K_yD},
-{ 'E',   K_e, K_E, K_cE, K_mE, K_yE},
-{ 'F',   K_f, K_F, K_cF, K_mF, K_yF},
-{ 'G',   K_g, K_G, K_cG, K_mG, K_yG},
-{ 'H',   K_h, K_H, K_cH, K_mH, K_yH},
-{ 'I',   K_i, K_I, K_cI, K_mI, K_yI},
-{ 'J',   K_j, K_J, K_cJ, K_mJ, K_yJ},
-{ 'K',   K_k, K_K, K_cK, K_mK, K_yK},
-{ 'L',   K_l, K_L, K_cL, K_mL, K_yL},
-{ 'M',   K_m, K_M, K_cM, K_mM, K_yM},
-{ 'N',   K_n, K_N, K_cN, K_mN, K_yN},
-{ 'O',   K_o, K_O, K_cO, K_mO, K_yO},
-{ 'P',   K_p, K_P, K_cP, K_mP, K_yP},
-{ 'Q',   K_q, K_Q, K_cQ, K_mQ, K_yQ},
-{ 'R',   K_r, K_R, K_cR, K_mR, K_yR},
-{ 'S',   K_s, K_S, K_cS, K_mS, K_yS},
-{ 'T',   K_t, K_T, K_cT, K_mT, K_yT},
-{ 'U',   K_u, K_U, K_cU, K_mU, K_yU},
-{ 'V',   K_v, K_V, K_cV, K_mV, K_yV},
-{ 'W',   K_w, K_W, K_cW, K_mW, K_yW},
-{ 'X',   K_x, K_X, K_cX, K_mX, K_yX},
-{ 'Y',   K_y, K_Y, K_cY, K_mY, K_yY},
-{ 'Z',   K_z, K_Z, K_cZ, K_mZ, K_yZ},
-
-{ VK_F1,  K_F1,  K_sF1,  K_cF1,  K_mF1,  K_yF1  },
-{ VK_F2,  K_F2,  K_sF2,  K_cF2,  K_mF2,  K_yF2  },
-{ VK_F3,  K_F3,  K_sF3,  K_cF3,  K_mF3,  K_yF3  },
-{ VK_F4,  K_F4,  K_sF4,  K_cF4,  K_mF4,  K_yF4  },
-{ VK_F5,  K_F5,  K_sF5,  K_cF5,  K_mF5,  K_yF5  },
-{ VK_F6,  K_F6,  K_sF6,  K_cF6,  K_mF6,  K_yF6  },
-{ VK_F7,  K_F7,  K_sF7,  K_cF7,  K_mF7,  K_yF7  },
-{ VK_F8,  K_F8,  K_sF8,  K_cF8,  K_mF8,  K_yF8  },
-{ VK_F9,  K_F9,  K_sF9,  K_cF9,  K_mF9,  K_yF9  },
-{ VK_F10, K_F10, K_sF10, K_cF10, K_mF10, K_yF10 },
-{ VK_F11, K_F11, K_sF11, K_cF11, K_mF11, K_yF11 },
-{ VK_F12, K_F12, K_sF12, K_cF12, K_mF12, K_yF12 },
-
-{ VK_OEM_1,      K_semicolon,    K_colon,      K_cSemicolon, K_mSemicolon, K_ySemicolon },
-{ VK_OEM_2,      K_slash,        K_question,   K_cSlash,     K_mSlash,  K_ySlash },
-{ VK_OEM_3,      K_grave,        K_tilde,      0, 0, 0 },
-{ VK_OEM_4,      K_bracketleft,  K_braceleft,  K_cBracketleft, K_mBracketleft, K_yBracketleft },
-{ VK_OEM_5,      K_backslash,    K_bar,        K_cBackslash,   K_mBackslash,   K_yBackslash },
-{ VK_OEM_6,      K_bracketright, K_braceright, K_cBracketright,K_mBracketright,K_yBracketright },
-{ VK_OEM_7,      K_apostrophe,   K_quotedbl,   0, 0, 0 },
-
-{ VK_OEM_102,    K_backslash,    K_bar,        K_cBackslash,   K_mBackslash,   K_yBackslash },
-{ VK_OEM_PLUS,   K_equal,        K_plus,       K_cEqual,     K_mEqual,  K_yEqual },
-{ VK_OEM_COMMA,  K_comma,        K_less,       K_cComma,     K_mComma,  K_yComma },
-{ VK_OEM_MINUS,  K_minus,        K_underscore, K_cMinus,     K_mMinus,  K_yMinus },
-{ VK_OEM_PERIOD, K_period,       K_greater,    K_cPeriod,    K_mPeriod, K_yPeriod },
-
-{ VK_NUMPAD0,   K_0, K_0,  K_c0, K_m0, K_y0 },
-{ VK_NUMPAD1,   K_1, K_1,  K_c1, K_m1, K_y1 },
-{ VK_NUMPAD2,   K_2, K_2,  K_c2, K_m2, K_y2 },
-{ VK_NUMPAD3,   K_3, K_3,  K_c3, K_m3, K_y3 },
-{ VK_NUMPAD4,   K_4, K_4,  K_c4, K_m4, K_y4 },
-{ VK_NUMPAD5,   K_5, K_5,  K_c5, K_m5, K_y5 },
-{ VK_NUMPAD6,   K_6, K_6,  K_c6, K_m6, K_y6 },
-{ VK_NUMPAD7,   K_7, K_7,  K_c7, K_m7, K_y7 },
-{ VK_NUMPAD8,   K_8, K_8,  K_c8, K_m8, K_y8 },
-{ VK_NUMPAD9,   K_9, K_9,  K_c9, K_m9, K_y9 },
-{ VK_MULTIPLY,  K_asterisk, K_sAsterisk, K_cAsterisk, K_mAsterisk, K_yAsterisk },
-{ VK_ADD,       K_plus,     K_sPlus,     K_cPlus,     K_mPlus,     K_yPlus },
-{ VK_SUBTRACT,  K_minus,    K_sMinus,    K_cMinus,    K_mMinus,    K_yMinus },
-{ VK_DECIMAL,   K_period,   K_sPeriod,   K_cPeriod,   K_mPeriod,   K_yPeriod },
-{ VK_DIVIDE,    K_slash,    K_sSlash,    K_cSlash,    K_mSlash,    K_ySlash },
-{ VK_SEPARATOR, K_comma,    K_sComma,    K_cComma,    K_mComma,    K_yComma }
-};
-
-/* the following tables compensate variations in combinations on the 
-   same phisical key */
-
-static Iwin2iupkey keytable_abnt[] = {
-{ '6',   K_6, K_circum,      K_c6, K_m6, K_y6 },  /* diaeresis ¨ */
-
-{ VK_OEM_1,    K_ccedilla,     K_Ccedilla,   K_cCcedilla, K_mCcedilla, K_yCcedilla },
-{ VK_OEM_2,    K_semicolon,    K_colon,      K_cSemicolon, K_mSemicolon, K_ySemicolon  },
-{ VK_OEM_3,    K_apostrophe,   K_quotedbl,   0,   0,   0  },
-{ VK_OEM_4,    K_acute,        K_grave,      0,   0,   0  },
-{ VK_OEM_5,    K_bracketright, K_braceright, K_cBracketleft, K_mBracketleft, K_yBracketleft  },
-{ VK_OEM_6,    K_bracketleft,  K_braceleft,  K_cBracketright, K_mBracketright, K_yBracketright  },
-{ VK_OEM_7,    K_tilde,        K_circum,     0,   0,   0  },
-
-{ 0xC1,        K_slash,        K_question,   K_cSlash, K_mSlash, K_ySlash  },
-{ 0xC2,        K_period,       K_sPeriod,    K_cPeriod, K_mPeriod, K_yPeriod },
-
-{ VK_SEPARATOR,K_period,       K_sPeriod,    K_cPeriod, K_mPeriod, K_yPeriod },
-{ VK_DECIMAL,  K_comma,        K_sComma,     K_cComma, K_mComma, K_yComma }
-};
-
-static Iwin2iupkey keytable_azerty[] = {
-{ '1',   K_ampersand,   K_1, K_c1, K_m1, K_y1 },
-{ '2',   K_e,           K_2, K_c2, K_m2, K_y2 },  /* actually "e´" */
-{ '3',   K_quotedbl,    K_3, K_c3, K_m3, K_y3 },
-{ '4',   K_apostrophe,  K_4, K_c4, K_m4, K_y4 },
-{ '5',   K_parentleft,  K_5, K_c5, K_m5, K_y5 },
-{ '6',   K_minus,       K_6, K_c6, K_m6, K_y6 },
-{ '7',   K_e,           K_7, K_c7, K_m7, K_y7 },  /* actually "`e" */
-{ '8',   K_underscore,  K_8, K_c8, K_m8, K_y8 },
-{ '9',   K_ccedilla,    K_9, K_c9, K_m9, K_y9 },
-{ '0',   K_a,           K_0, K_c0, K_m0, K_y0 },  /* actually "`a" */
-
-{ VK_OEM_1,  K_dollar,  K_dollar,   0, 0, 0 },  /* actually "pound" */
-{ VK_OEM_2,  K_colon,    K_slash,   0, 0, 0 },
-{ VK_OEM_3,  K_u,      K_percent,   0, 0, 0 },  /* actually "`u" */
-{ VK_OEM_4,  K_parentright,  K_o,   0, 0, 0 },
-{ VK_OEM_5,  K_asterisk,     K_m,   0, 0, 0 },  /* actually "micro" */
-{ VK_OEM_6,  K_circum,  K_circum,   0, 0, 0 },  /* diaeresis ¨ */
-{ VK_OEM_7,  K_2,              0,   0, 0, 0 },  /* actually "^2" */
-{ VK_OEM_8,  K_exclam,         0,   0, 0, 0 },
-
-{ VK_OEM_102,    K_less,      K_greater,  0, 0, 0 },
-{ VK_OEM_PLUS,   K_plus,      K_equal,     K_cEqual,     K_mEqual,  K_yEqual },
-{ VK_OEM_COMMA,  K_comma,     K_question,  K_cComma,     K_mComma,  K_yComma },
-{ VK_OEM_PERIOD, K_semicolon, K_period,    K_cSemicolon, K_mSemicolon, K_ySemicolon }
-
-/* These are available with the Alt+Ctrl combination, not used in IUP
-       K_at  @                          K_braceleft }
-       K_numbersign  #                  K_backslash  \
-       K_bar |                          K_bracketright ]
-       K_bracketleft [                  K_braceright }
- */
-};
-
-void iupdrvKeyEncode(int key, unsigned int *keyval, unsigned int *state)
+static void winKeyInitXKey(Iwin2iupkey* map)
 {
-  int i, iupcode = key & 0xFF; /* 0-255 interval */
-  int count = sizeof(winkey_map)/sizeof(winkey_map[0]);
-  for (i = 0; i < count; i++)
-  {
-    Iwin2iupkey* key_map = &(winkey_map[i]);
-    if (key_map->iupcode == iupcode)
-    {
-      *keyval = key_map->wincode;
-      *state = 0;
+  map[VK_ESCAPE].iupcode =    K_ESC;
+  map[VK_PAUSE].iupcode =     K_PAUSE;
+  map[VK_SNAPSHOT].iupcode =  K_Print;
+  map[VK_APPS].iupcode =      K_Menu;
 
-      if (iupcode != key)
-      {
-        if (key_map->c_iupcode == key)
-          *state = VK_CONTROL;
-        else if (key_map->m_iupcode == key)
-          *state = VK_MENU;
-        else if (key_map->y_iupcode == key)
-          *state = VK_LWIN;
-        else if (key_map->s_iupcode == key)
-          *state = VK_SHIFT;
-      }
-      return;
-    }
-    else if (key_map->s_iupcode == key)   /* There are Shift keys below 256 */
-    {
-      *keyval = key_map->wincode;
-      *state = VK_SHIFT;
-      return;
-    }
+  map[VK_CAPITAL].iupcode =   K_CAPS;
+  map[VK_NUMLOCK].iupcode =   K_NUM;
+  map[VK_SCROLL].iupcode =    K_SCROLL;
+
+  map[VK_SHIFT].iupcode =   K_LSHIFT;
+  map[VK_CONTROL].iupcode = K_LCTRL;
+  map[VK_MENU].iupcode =    K_LALT;
+                         
+  map[VK_HOME].iupcode =      K_HOME;
+  map[VK_UP].iupcode =        K_UP;
+  map[VK_PRIOR].iupcode =     K_PGUP;
+  map[VK_LEFT].iupcode =      K_LEFT;
+  map[VK_CLEAR].iupcode =     K_MIDDLE;
+  map[VK_RIGHT].iupcode =     K_RIGHT;
+  map[VK_END].iupcode =       K_END;
+  map[VK_DOWN].iupcode =      K_DOWN;
+  map[VK_NEXT].iupcode =      K_PGDN;
+  map[VK_INSERT].iupcode =    K_INS;
+  map[VK_DELETE].iupcode =    K_DEL;
+  map[VK_SPACE].iupcode =     K_SP;
+  map[VK_TAB].iupcode =       K_TAB;
+  map[VK_RETURN].iupcode =    K_CR;
+  map[VK_BACK].iupcode =      K_BS;
+
+  map[VK_F1].iupcode =  K_F1;
+  map[VK_F2].iupcode =  K_F2;
+  map[VK_F3].iupcode =  K_F3;
+  map[VK_F4].iupcode =  K_F4;
+  map[VK_F5].iupcode =  K_F5;
+  map[VK_F6].iupcode =  K_F6;
+  map[VK_F7].iupcode =  K_F7;
+  map[VK_F8].iupcode =  K_F8;
+  map[VK_F9].iupcode =  K_F9;
+  map[VK_F10].iupcode = K_F10;
+  map[VK_F11].iupcode = K_F11;
+  map[VK_F12].iupcode = K_F12;
+
+  map[VK_OEM_PLUS].iupcode =   K_plus;
+  map[VK_OEM_COMMA].iupcode =  K_comma;
+  map[VK_OEM_MINUS].iupcode =  K_minus;
+  map[VK_OEM_PERIOD].iupcode = K_period;
+
+  map[VK_NUMPAD0].iupcode =   K_0;
+  map[VK_NUMPAD1].iupcode =   K_1;
+  map[VK_NUMPAD2].iupcode =   K_2;
+  map[VK_NUMPAD3].iupcode =   K_3;
+  map[VK_NUMPAD4].iupcode =   K_4;
+  map[VK_NUMPAD5].iupcode =   K_5;
+  map[VK_NUMPAD6].iupcode =   K_6;
+  map[VK_NUMPAD7].iupcode =   K_7;
+  map[VK_NUMPAD8].iupcode =   K_8;
+  map[VK_NUMPAD9].iupcode =   K_9;
+  map[VK_MULTIPLY].iupcode =  K_asterisk;
+  map[VK_ADD].iupcode =       K_plus;
+  map[VK_SUBTRACT].iupcode =  K_minus;
+  map[VK_DIVIDE].iupcode =    K_slash;
+
+  map[VK_DECIMAL].iupcode =   MapVirtualKeyA(VK_DECIMAL, MAPVK_VK_TO_CHAR);
+  map[VK_SEPARATOR].iupcode = MapVirtualKeyA(VK_SEPARATOR, MAPVK_VK_TO_CHAR);
+
+  /* TODO: how to get the shift code? */
+  map[VK_OEM_PLUS].iupcode = MapVirtualKeyA(VK_OEM_PLUS, MAPVK_VK_TO_CHAR);
+  map[VK_OEM_COMMA].iupcode = MapVirtualKeyA(VK_OEM_COMMA, MAPVK_VK_TO_CHAR);
+  map[VK_OEM_MINUS].iupcode = MapVirtualKeyA(VK_OEM_MINUS, MAPVK_VK_TO_CHAR);
+  map[VK_OEM_PERIOD].iupcode = MapVirtualKeyA(VK_OEM_PERIOD, MAPVK_VK_TO_CHAR);
+
+  if (!map[VK_OEM_1].iupcode) map[VK_OEM_1].iupcode = MapVirtualKeyA(VK_OEM_1, MAPVK_VK_TO_CHAR);
+  if (!map[VK_OEM_2].iupcode) map[VK_OEM_2].iupcode = MapVirtualKeyA(VK_OEM_2, MAPVK_VK_TO_CHAR);
+  if (!map[VK_OEM_3].iupcode) map[VK_OEM_3].iupcode = MapVirtualKeyA(VK_OEM_3, MAPVK_VK_TO_CHAR);
+  if (!map[VK_OEM_4].iupcode) map[VK_OEM_4].iupcode = MapVirtualKeyA(VK_OEM_4, MAPVK_VK_TO_CHAR);
+  if (!map[VK_OEM_5].iupcode) map[VK_OEM_5].iupcode = MapVirtualKeyA(VK_OEM_5, MAPVK_VK_TO_CHAR);
+  if (!map[VK_OEM_6].iupcode) map[VK_OEM_6].iupcode = MapVirtualKeyA(VK_OEM_6, MAPVK_VK_TO_CHAR);
+  if (!map[VK_OEM_7].iupcode) map[VK_OEM_7].iupcode = MapVirtualKeyA(VK_OEM_7, MAPVK_VK_TO_CHAR);
+  if (!map[VK_OEM_8].iupcode) map[VK_OEM_8].iupcode = MapVirtualKeyA(VK_OEM_8, MAPVK_VK_TO_CHAR);
+
+  map[VK_OEM_102].iupcode = MapVirtualKeyA(VK_OEM_102, MAPVK_VK_TO_CHAR);
+
+  /* ABNT extra definitions */
+  map[0xC2].iupcode = MapVirtualKeyA(0xC2, MAPVK_VK_TO_CHAR);
+  map[0xC1].iupcode = MapVirtualKeyA(0xC1, MAPVK_VK_TO_CHAR);
+  map[0xC1].shift_iupcode = '?';
+}
+
+static void winKeySetCharMap(Iwin2iupkey* winkey_map, char c)
+{
+  SHORT ret = VkKeyScanA(c);
+  int wincode = LOBYTE(ret);
+  int state = HIBYTE(ret);
+  if (wincode != -1)
+  {
+    if (state & 1) /* Shift */
+      winkey_map[wincode].shift_iupcode = (BYTE)c;
+    else
+      winkey_map[wincode].iupcode = (BYTE)c;
   }
 }
 
-static int winKeyMap2Iup(Iwin2iupkey* table, int i)
-{
-  int code;
-  if (GetKeyState(VK_CONTROL) & 0x8000)        /* Ctrl */
-    code = table[i].c_iupcode;
-  else if (GetKeyState(VK_MENU) & 0x8000)      /* Alt */
-    code = table[i].m_iupcode;
-  else if ((GetKeyState(VK_LWIN) & 0x8000) ||  /* Apple/Win */
-           (GetKeyState(VK_RWIN) & 0x8000))
-    code = table[i].y_iupcode;
-  else if (GetKeyState(VK_CAPITAL) & 0x01)     /* CapsLock */
-  {
-    if ((GetKeyState(VK_SHIFT) & 0x8000) || !iupKeyCanCaps(table[i].iupcode))
-      return table[i].iupcode;
-    else
-      code = table[i].s_iupcode;
-  }
-  else if (GetKeyState(VK_SHIFT) & 0x8000)     /* Shift */
-    code = table[i].s_iupcode;
-  else
-    return table[i].iupcode;
+static Iwin2iupkey winkey_map[256];
 
-  if (!code)
-    code = table[i].iupcode;
+static int winKeyMap(int wincode)
+{
+  static int init = 0;
+  if (init==0)
+  {
+    int i;
+
+    memset(winkey_map, 0, sizeof(Iwin2iupkey)*256);
+
+    for (i=32; i<127; i++)
+      winKeySetCharMap(winkey_map, (char)i);
+
+    winKeySetCharMap(winkey_map, K_ccedilla);
+    winKeySetCharMap(winkey_map, K_Ccedilla);
+    winKeySetCharMap(winkey_map, K_acute);
+    winKeySetCharMap(winkey_map, K_diaeresis);
+
+    winKeyInitXKey(winkey_map);
+
+    init = 1;
+  }
+
+  /* now do the mapping */
+  if (wincode == VK_SHIFT && (GetKeyState(VK_RSHIFT) & 0x8000))
+    return K_RSHIFT;
+  else if (wincode == VK_CONTROL && (GetKeyState(VK_RCONTROL) & 0x8000))
+    return K_RCTRL;
+  else if (wincode == VK_MENU && (GetKeyState(VK_RMENU) & 0x8000))
+    return K_RALT;
+  else
+  {
+    int has_caps = GetKeyState(VK_CAPITAL) & 0x01;
+    int has_shift = GetKeyState(VK_SHIFT) & 0x8000;
+    if (( has_caps && !has_shift) ||  /* CapsLock or Shift, but not both */
+        (!has_caps &&  has_shift))
+    {
+      if (winkey_map[wincode].shift_iupcode)
+        return winkey_map[wincode].shift_iupcode;
+      else
+        return winkey_map[wincode].iupcode;
+    }
+    else
+      return winkey_map[wincode].iupcode;
+  }
+}
+
+void iupdrvKeyEncode(int code, unsigned int *wincode, unsigned int *state)
+{
+  int i, iupcode = iup_XkeyBase(code);
+
+  /* Must un-remap always */
+  for (i = 0; i < 256; i++)
+  {
+    if (winkey_map[i].iupcode == iupcode)
+    {
+      *wincode = i;
+      break;
+    }
+    if (winkey_map[i].shift_iupcode == iupcode)
+    {
+      *wincode = i;
+      *state = VK_SHIFT;
+      break;
+    }
+  }
+
+  *state = 0;
+  if (iup_isShiftXkey(code))
+    *state = VK_SHIFT;
+  else if (iup_isCtrlXkey(code))
+    *state = VK_CONTROL;
+  else if (iup_isAltXkey(code))
+    *state = VK_MENU;
+  else if (iup_isSysXkey(code))
+    *state = VK_LWIN;
+}
+
+static int winKeyMap2Iup(int wincode)
+{
+  int code = wincode;
+  int has_caps = GetKeyState(VK_CAPITAL) & 0x01;
+  int has_shift = GetKeyState(VK_SHIFT) & 0x8000;
+  int has_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
+  int has_alt = GetKeyState(VK_MENU) & 0x8000;
+  int has_sys = (GetKeyState(VK_LWIN) & 0x8000) || (GetKeyState(VK_RWIN) & 0x8000);
+
+  if (( has_caps && !has_shift) ||  /* CapsLock or Shift, but not both */
+      (!has_caps &&  has_shift))
+  {
+    if ((wincode < K_exclam || wincode > K_tilde) ||
+        (has_ctrl || has_alt || has_sys))
+      code |= iup_XkeyShift(code);  /* only add Shift modifiers for non-ASCii codes, except for K_SP and bellow, 
+                                       and except when other modifiers are used */
+  }
+  else if (has_ctrl || has_alt || has_sys)
+  {
+    /* If not shift, but has some of the other modifiers then use upper case version */
+    if (wincode >= K_a && wincode <= K_z)
+      code = iup_toupper(wincode);
+    else if (wincode==K_ccedilla)
+      code = K_Ccedilla;
+  }
+
+  if (has_ctrl)   /* Ctrl */
+    code |= iup_XkeyCtrl(code);
+
+  if (has_alt)    /* Alt */
+    code |= iup_XkeyAlt(code);
+
+  if (has_sys)    /* Apple/Win */
+    code |= iup_XkeySys(code);
 
   return code;
 }
 
 int iupwinKeyDecode(int wincode)
 {
-  HKL k;
-  int i, count;
+  int iupcode = winKeyMap(wincode);
+  if (!iupcode)
+    iupcode=wincode;
 
-  k = GetKeyboardLayout(0);    
-  if ((int)HIWORD(k) == 0x0416) /* ABNT */
-  {
-    count = sizeof(keytable_abnt)/sizeof(keytable_abnt[0]);
-    for (i = 0; i < count; i++)
-    {
-      if (keytable_abnt[i].wincode == wincode)
-        return winKeyMap2Iup(keytable_abnt, i);
-    }
-  }
-  else if (((int)HIWORD(k) & 0x00FF) == 0x000C) /* AZERTY (French) */
-  {
-    count = sizeof(keytable_azerty)/sizeof(keytable_azerty[0]);
-    for (i = 0; i < count; i++)
-    {
-      if (keytable_azerty[i].wincode == wincode)
-        return winKeyMap2Iup(keytable_azerty, i);
-    }
-  }
-
-  count = sizeof(winkey_map)/sizeof(winkey_map[0]);
-  for (i = 0; i < count; i++)
-  {
-    if (winkey_map[i].wincode == wincode)
-      return winKeyMap2Iup(winkey_map, i);
-  }
-
-  return 0;
+  return winKeyMap2Iup(iupcode);
 }
 
 int iupwinKeyEvent(Ihandle* ih, int wincode, int press)

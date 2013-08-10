@@ -1174,7 +1174,7 @@ static void motListEditModifyVerifyCallback(Widget cbedit, Ihandle *ih, XmTextVe
       return;
     }
 
-    motcode = iupmotKeycodeToKeysym(((XKeyEvent*)text->event)->keycode);
+    motcode = iupmotKeycodeToKeysym((XKeyEvent*)text->event);
   }
 
   cb = (IFnis)IupGetCallback(ih, "EDIT_CB");
@@ -1239,7 +1239,7 @@ static void motListEditKeyPressEvent(Widget cbedit, Ihandle *ih, XKeyEvent *evt,
 
   if (evt->state & ControlMask)   /* Ctrl */
   {
-    KeySym motcode = iupmotKeycodeToKeysym(evt->keycode);
+    KeySym motcode = iupmotKeycodeToKeysym(evt);
     if (motcode == XK_c)
     {
       motListSetClipboardAttrib(ih, "COPY");

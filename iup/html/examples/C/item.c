@@ -50,7 +50,7 @@ int main(int argc, char **argv)
   item_autosave = IupItem("&Auto Save", NULL);
   item_exit = IupItem("Exit", "item_exit_act");
 
-  IupSetAttribute(item_exit, "KEY", "K_x");   /* this is NOT related with the Ctrl+X key callback, it will just underline the letter */
+  IupSetAttribute(item_exit, "KEY", "x");   /* this is NOT related with the K_X key callback, it will just underline the letter */
 
   IupSetCallback(item_exit, "ACTION", (Icallback) item_exit_cb);
   IupSetCallback(item_autosave, "ACTION", (Icallback) item_autosave_cb);

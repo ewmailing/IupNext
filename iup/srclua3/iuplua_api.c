@@ -58,10 +58,10 @@ static void cf_isprint(void)
   lua_pushnumber(iup_isprint(cod));
 }
 
-static void codekey(void)
+static void cf_XkeyBase(void)
 {
   int cod = luaL_check_int(1);
-  lua_pushnumber(IUPxCODE(cod));
+  lua_pushnumber(iup_XkeyBase(cod));
 }
 
 static void cf_isxkey(void)
@@ -799,7 +799,7 @@ int iupluaapi_open(void)
   iuplua_register_macro("isbutton4",cf_isbutton4);
   iuplua_register_macro("isbutton5",cf_isbutton5);
   iuplua_register_macro("isprint",cf_isprint);
-  iuplua_register_macro("IUPxCODE", codekey);
+  iuplua_register_macro("XkeyBase", cf_XkeyBase);
   iuplua_register_macro("isxkey", cf_isxkey);
   iuplua_register_macro("isXkey", cf_isxkey);
   iuplua_register_macro("isShiftXkey", cf_isShiftXkey);

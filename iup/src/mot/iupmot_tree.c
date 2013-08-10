@@ -1854,7 +1854,7 @@ static void motTreeEditFocusChangeEvent(Widget w, Ihandle *ih, XEvent *evt, Bool
 
 static void motTreeEditKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean *cont)
 {
-  KeySym motcode = iupmotKeycodeToKeysym(evt->keycode);
+  KeySym motcode = iupmotKeycodeToKeysym(evt);
   if (motcode == XK_Return)
   {
     Widget wItem = (Widget)iupAttribGet(ih, "_IUPTREE_SELECTED");
@@ -2110,7 +2110,7 @@ static void motTreeKeyReleaseEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolea
   if (iupAttribGet(ih, "_IUPTREE_EDITFIELD"))
     return;
 
-  motcode = iupmotKeycodeToKeysym(evt->keycode);
+  motcode = iupmotKeycodeToKeysym(evt);
   if (motcode == XK_Down || motcode == XK_U || motcode == XK_Home || motcode == XK_End)
   {
     if (ih->data->mark_mode==ITREE_MARK_MULTIPLE && (evt->state & ShiftMask))
@@ -2133,7 +2133,7 @@ static void motTreeKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
   if (*cont == False)
     return;
 
-  motcode = iupmotKeycodeToKeysym(evt->keycode);
+  motcode = iupmotKeycodeToKeysym(evt);
   if (motcode == XK_F2)
     motTreeSetRenameAttrib(ih, NULL);
   else if (motcode == XK_F1)

@@ -20,11 +20,6 @@
 \r\n - DOS/Windows
 */
 
-#define iStrIsDigit(_c) (_c>='0' && _c<='9')
-
-#define iStrUpper(_c)  ((_c >= 'a' && _c <= 'z')? (_c - 'a') + 'A': _c)
-
-#define iStrLower(_c)  ((_c >= 'A' && _c <= 'Z')? (_c - 'A') + 'a': _c)
 
 #define IUP_STR_EQUAL(str1, str2)      \
 {                                      \
@@ -72,7 +67,7 @@ int iupStrEqualPartial(const char* str1, const char* str2)
 int iupStrEqualNoCase(const char* str1, const char* str2) 
 {
 #define EXTRAINC(_x) (_x)
-#define SF(_x) iStrLower(_x)
+#define SF(_x) iup_tolower(_x)
   IUP_STR_EQUAL(str1, str2);
 #undef SF
 #undef EXTRAINC
@@ -82,7 +77,7 @@ int iupStrEqualNoCase(const char* str1, const char* str2)
 int iupStrEqualNoCasePartial(const char* str1, const char* str2) 
 {
 #define EXTRAINC(_x) (_x)
-#define SF(_x) iStrLower(_x)
+#define SF(_x) iup_tolower(_x)
   IUP_STR_EQUAL(str1, str2);
 #undef SF
 #undef EXTRAINC
@@ -94,7 +89,7 @@ int iupStrEqualNoCasePartial(const char* str1, const char* str2)
 int iupStrEqualNoCaseNoSpace(const char* str1, const char* str2) 
 {
 #define EXTRAINC(_x) { if (*_x == ' ') _x++; }  /* also ignore spaces */
-#define SF(_x) iStrLower(_x)
+#define SF(_x) iup_tolower(_x)
   IUP_STR_EQUAL(str1, str2);
 #undef SF
 #undef EXTRAINC
@@ -122,14 +117,14 @@ int iupStrBoolean(const char* str)
 void iupStrUpper(char* dstr, const char* sstr)
 {
   for (; *sstr; sstr++, dstr++)
-    *dstr = (char)iStrUpper(*sstr);
+    *dstr = (char)iup_toupper(*sstr);
   *dstr = 0;
 }
 
 void iupStrLower(char* dstr, const char* sstr)
 {
   for (; *sstr; sstr++, dstr++)
-    *dstr = (char)iStrLower(*sstr);
+    *dstr = (char)iup_tolower(*sstr);
   *dstr = 0;
 }
 
@@ -271,8 +266,8 @@ static char *iStrDupUntilNoCase(char **str, char sep)
     return NULL;
 
   p_str=strchr(*str,sep); /* usually the lower case is enough */
-  if (!p_str && (iStrUpper(sep)!=sep)) 
-    p_str=strchr(*str, iStrUpper(sep));  /* but check also for upper case */
+  if (!p_str && (iup_toupper(sep)!=sep)) 
+    p_str=strchr(*str, iup_toupper(sep));  /* but check also for upper case */
 
   /* if both fail, then abort */
   if (!p_str) 
@@ -537,7 +532,7 @@ int iupStrToIntInt(const char *str, int *i1, int *i2, char sep)
 {
   if (!str) return 0;
                          
-  if (iStrLower(*str) == sep) /* no first value */
+  if (iup_tolower(*str) == sep) /* no first value */
   {
     str++; /* skip separator */
     if (sscanf(str, "%d", i2) != 1) return 0;
@@ -581,7 +576,7 @@ int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
 {
   if (!str) return 0;
 
-  if (iStrLower(*str) == sep) /* no first value */
+  if (iup_tolower(*str) == sep) /* no first value */
   {
     str++; /* skip separator */
     if (sscanf(str, "%f", f2) != 1) return 0;
@@ -618,7 +613,7 @@ int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
 {
   if (!str) return 0;
 
-  if (iStrLower(*str) == sep) /* no first value */
+  if (iup_tolower(*str) == sep) /* no first value */
   {
     str++; /* skip separator */
     strcpy(str2, str);
@@ -1220,8 +1215,8 @@ int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
              r_char = *r;
 
         /* check if this are digit characters */
-        int l_digit = iStrIsDigit(l_char), 
-            r_digit = iStrIsDigit(r_char);
+        int l_digit = iup_isdigit(l_char), 
+            r_digit = iup_isdigit(r_char);
 
         /* if both characters are digits, we continue in NUMBER mode */
         if(l_digit && r_digit)
@@ -1263,7 +1258,7 @@ int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
 
       /* get the left number */
       unsigned long l_int=0;
-      while(*l && iStrIsDigit(*l))
+      while(*l && iup_isdigit(*l))
       {
         /* TODO: this can overflow */
         l_int = l_int*10 + *l-'0';
@@ -1272,7 +1267,7 @@ int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
 
       /* get the right number */
       r_int=0;
-      while(*r && iStrIsDigit(*r))
+      while(*r && iup_isdigit(*r))
       {
         /* TODO: this can overflow */
         r_int = r_int*10 + *r-'0';

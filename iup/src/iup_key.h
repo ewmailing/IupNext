@@ -22,16 +22,8 @@ extern "C" {
  * \ingroup key */
 char *iupKeyCodeToName(int code);
 
-/** Returns the key code from its name. 
- * Returns 0 if name not found.
- * \ingroup key */
-int iupKeyNameToCode(const char *name);
-
-/** Returns true if the key code can be changed by CAPSLOCK.
- * \ingroup key */
-int iupKeyCanCaps(int code);
-
-/** Calls a function for each defined key. 
+/** Calls a function for each defined key. \n
+ * Used only by the IupLua binding.
  * \ingroup key */
 void iupKeyForEach(void (*func)(const char *name, int code, void* user_data), void* user_data);
 
@@ -55,11 +47,10 @@ int iupKeyProcessMnemonic(Ihandle* ih, int code);
  * \ingroup key */
 void iupKeySetMnemonic(Ihandle* ih, int code, int pos);
 
-
-/* Called only from IupOpen. */
+/* Used only in IupOpen */
 void iupKeyInit(void);
                         
-                        
+
 #define IUPKEY_STATUS_SIZE 11 /* 10 chars + null */
 #define IUPKEY_STATUS_INIT "          "  /* 10 spaces */
 #define iupKEY_SETSHIFT(_s)    (_s[0]='S')

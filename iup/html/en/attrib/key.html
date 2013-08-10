@@ -9,18 +9,15 @@
 <body>
 
 <h3><strong>Keyboard Codes</strong></h3>
-<p>The table below shows the IUP codification of every key in the keyboard. Each 
+<p>The table below shows the IUP codification of common keys in a keyboard. Each 
 key is represented by an integer value, defined in the &quot;iupkey.h&quot; file header, 
 which should be included in the application to use the key definitions. These 
 keys are used in K_ANY and KEYPRESS_CB callbacks to inform the key that was 
 pressed in the keyboard.</p>
-<p>IUP uses the US default codification this means that if you installed a 
-keyboard specific for your country the key codes will be different from the real 
-keys for a small group of keys. Except for the Brazilian ABNT keyboard which 
-works in Windows and Linux. This does not affect the <strong>IupText</strong> and 
+<p>IUP provides definitions only for common control keys and ASCii characters. This does not affect the <strong>IupText</strong> and 
 <strong>IupMultiline</strong> 
 text input.</p>
-<p>Notice that somes key combinations are not available because they are 
+<p>Notice that some key combinations are not available because they are 
 restricted by the system.</p>
 <p>The <strong>iup_isprint(key)</strong> macro informs if a key can be directly 
 used as a printable character. The
@@ -31,12 +28,14 @@ macro for the Ctrl modifier, the <strong>iup_isAltXkey(key)</strong> macro for
 the Alt modifier, and the <strong>iup_isSysXkey(key)</strong> macro for the Sys 
 modifier. These macros are also available in Lua as a function with the same 
 name (iup.isprint(key), iup.isXkey(key), and so on) and returning a boolean.</p>
-<p>In the table below there are the most common definitions. Change the 
+<p>Change the 
 definition to K_s*, K_c*, K_m* and K_y* when the respective modifier is pressed 
 (Shift, Control, Alt and Sys). Sys in Windows is the Windows key and in Mac is 
 the Apple key. Check the &quot;iupkey.h&quot; file header for all the definitions. To 
-detect the combination of two or more modifiers use global attribute 
-&quot;MODKEYSTATE&quot;.</p>
+detect the combination of two or more modifiers the global attribute 
+&quot;MODKEYSTATE&quot; can be used, but since IUP 3.9 modifiers can be combined 
+in a single key value (although there are definitions only for the old simple 
+combinations).</p>
 <p>Note: GTK in Windows does not generates the Win modifier key, the K_Print and 
 the K_Pause keys (up to GTK version 2.8.18).</p>
   <table align="center">
@@ -506,6 +505,10 @@ the K_Pause keys (up to GTK version 2.8.18).</p>
       <td>K_ccedilla</td>
     </tr>
     <tr>
+      <td align="right">¨</td>
+      <td>K_diaeresis </td>
+    </tr>
+    <tr>
       <td align="right">F1</td>
       <td>K_F1</td>
     </tr>
@@ -552,6 +555,42 @@ the K_Pause keys (up to GTK version 2.8.18).</p>
     <tr>
       <td align="right">F12</td>
       <td>K_F12</td>
+    </tr>
+    <tr>
+      <td align="right">Left Shift</td>
+      <td>K_LSHIFT</td>
+    </tr>
+    <tr>
+      <td align="right">Right Shift</td>
+      <td>K_RSHIFT</td>
+    </tr>
+    <tr>
+      <td align="right">Left Ctrl</td>
+      <td>K_LCTRL</td>
+    </tr>
+    <tr>
+      <td align="right">Right Ctrl</td>
+      <td>K_RCTRL</td>
+    </tr>
+    <tr>
+      <td align="right">Left Alt</td>
+      <td>K_LALT</td>
+    </tr>
+    <tr>
+      <td align="right">Right Alt</td>
+      <td>K_RALT</td>
+    </tr>
+    <tr>
+      <td align="right">Scroll Lock</td>
+      <td>K_SCROLL</td>
+    </tr>
+    <tr>
+      <td align="right">Num Lock</td>
+      <td>K_NUM</td>
+    </tr>
+    <tr>
+      <td align="right">Caps Lock</td>
+      <td>K_CAPS</td>
     </tr>
   </table>
 

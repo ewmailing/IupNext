@@ -582,13 +582,6 @@ static int cf_isprint(lua_State *L)
   return 1;
 }
 
-static int cf_xCODE(lua_State *L)
-{
-  int value = luaL_checkint(L, 1);
-  lua_pushinteger(L, IUPxCODE(value));
-  return 1;
-}
-
 static int cf_isxkey(lua_State *L)
 {
   int value = luaL_checkint(L, 1);
@@ -621,6 +614,41 @@ static int cf_isSysXkey(lua_State *L)
 {
   int value = luaL_checkint(L, 1);
   lua_pushboolean(L, iup_isSysXkey(value));
+  return 1;
+}
+
+static int cf_XkeyShift(lua_State *L)
+{
+  int value = luaL_checkint(L, 1);
+  lua_pushinteger(L, iup_XkeyShift(value));
+  return 1;
+}
+
+static int cf_XkeyCtrl(lua_State *L)
+{
+  int value = luaL_checkint(L, 1);
+  lua_pushinteger(L, iup_XkeyCtrl(value));
+  return 1;
+}
+
+static int cf_XkeyAlt(lua_State *L)
+{
+  int value = luaL_checkint(L, 1);
+  lua_pushinteger(L, iup_XkeyAlt(value));
+  return 1;
+}
+
+static int cf_XkeySys(lua_State *L)
+{
+  int value = luaL_checkint(L, 1);
+  lua_pushinteger(L, iup_XkeySys(value));
+  return 1;
+}
+
+static int cf_XkeyBase(lua_State *L)
+{
+  int value = luaL_checkint(L, 1);
+  lua_pushinteger(L, iup_XkeyBase(value));
   return 1;
 }
 
@@ -1050,13 +1078,17 @@ void iupluaapi_open(lua_State * L)
     {"UnMapFont", UnMapFont},
     {"Scanf", iupluaScanf},
     {"isprint", cf_isprint},
-    {"IUPxCODE", cf_xCODE},
     {"isxkey", cf_isxkey},
     {"isXkey", cf_isxkey},
     {"isShiftXkey", cf_isShiftXkey},
     {"isCtrlXkey", cf_isCtrlXkey},
     {"isAltXkey", cf_isAltXkey},
     {"isSysXkey", cf_isSysXkey},
+    {"XkeyShift", cf_XkeyShift},
+    {"XkeyCtrl", cf_XkeyCtrl},
+    {"XkeyAlt", cf_XkeyAlt},
+    {"XkeySys", cf_XkeySys},
+    {"XkeyBase", cf_XkeyBase},
     {"TextConvertLinColToPos", TextConvertLinColToPos},
     {"TextConvertPosToLinCol", TextConvertPosToLinCol},
     {"ConvertXYToPos", ConvertXYToPos},

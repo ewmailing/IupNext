@@ -6,6 +6,7 @@
 
 #include <memory.h>
 #include <stdio.h> 
+#include <string.h> 
 
 #include "iup.h"
 #include "iupkey.h"
@@ -19,157 +20,312 @@
 #include "iup_attrib.h"
 
 
-static struct
-{
-   char *name;
-   int code;
-} ikey_map_list[]= 
-  {
-    {"K_exclam",         K_exclam},               
-    {"K_grave",          K_grave},             
-    {"K_quotedbl",       K_quotedbl},             
-    {"K_numbersign",     K_numbersign},           
-    {"K_dollar",         K_dollar},               
-    {"K_percent",        K_percent},              
-    {"K_ampersand",      K_ampersand},            
-    {"K_apostrophe",     K_apostrophe},           
-    {"K_parentleft",     K_parentleft},            
-    {"K_parentright",    K_parentright},          
-    {"K_asterisk",       K_asterisk},    {"K_sAsterisk",K_sAsterisk},{"K_cAsterisk",K_cAsterisk},{"K_mAsterisk",K_mAsterisk},{"K_yAsterisk",K_yAsterisk},          
-    {"K_plus",           K_plus},        {"K_sPlus",   K_sPlus},     {"K_cPlus",   K_cPlus},     {"K_mPlus",   K_mPlus},   {"K_yPlus",   K_yPlus},          
-    {"K_comma",          K_comma},       {"K_sComma",  K_sComma},    {"K_cComma",  K_cComma},    {"K_mComma",  K_mComma},  {"K_yComma",  K_yComma},         
-    {"K_minus",          K_minus},       {"K_sMinus",  K_sMinus},    {"K_cMinus",  K_cMinus},    {"K_mMinus",  K_mMinus},  {"K_yMinus",  K_yMinus},         
-    {"K_period",         K_period},      {"K_sPeriod", K_sPeriod},   {"K_cPeriod", K_cPeriod},   {"K_mPeriod", K_mPeriod}, {"K_yPeriod", K_yPeriod},        
-    {"K_slash",          K_slash},       {"K_sSlash",  K_sSlash},    {"K_cSlash",  K_cSlash},    {"K_mSlash",  K_mSlash},  {"K_ySlash",  K_ySlash},         
-    {"K_colon",          K_colon},                
-    {"K_semicolon ",     K_semicolon},    {"K_cSemicolon ",     K_cSemicolon},    {"K_mSemicolon ",     K_mSemicolon},    {"K_ySemicolon ",     K_ySemicolon},       
-    {"K_less",           K_less},                                                                                                 
-    {"K_equal",          K_equal},        {"K_cEqual",          K_cEqual},        {"K_mEqual",          K_mEqual},        {"K_yEqual",          K_yEqual},       
-    {"K_greater",        K_greater},                                                                                              
-    {"K_question",       K_question},                                                                                             
-    {"K_bracketleft",    K_bracketleft},  {"K_cBracketleft",    K_cBracketleft},  {"K_mBracketleft",    K_mBracketleft},  {"K_yBracketleft",    K_yBracketleft},        
-    {"K_backslash",      K_backslash},    {"K_cBackslash",      K_cBackslash},    {"K_mBackslash",      K_mBackslash},    {"K_yBackslash",      K_yBackslash},                                                                                 
-    {"K_bracketright",   K_bracketright}, {"K_cBracketright",   K_cBracketright}, {"K_mBracketright",   K_mBracketright}, {"K_yBracketright",   K_yBracketright},      
-    {"K_circum",         K_circum},               
-    {"K_underscore",     K_underscore},           
-    {"K_at",             K_at},                   
-    {"K_braceleft",      K_braceleft},           
-    {"K_bar",            K_bar},                  
-    {"K_braceright",     K_braceright},           
-    {"K_tilde",          K_tilde}, 
-    {"K_acute",          K_acute}, 
-    {"K_ccedilla"       ,K_ccedilla},  {"K_Ccedilla" ,K_Ccedilla}, {"K_cCcedilla" ,K_cCcedilla}, {"K_mCcedilla" ,K_mCcedilla}, {"K_yCcedilla" ,K_yCcedilla},
-    {"K_ESC"   ,K_ESC},    {"K_sESC"   ,K_sESC},   {"K_cESC"   ,K_cESC},   {"K_mESC"   ,K_mESC},    {"K_yESC"   ,K_yESC},
-    {"K_PAUSE" ,K_PAUSE},  {"K_sPAUSE" ,K_sPAUSE}, {"K_cPAUSE" ,K_cPAUSE}, {"K_mPAUSE" ,K_mPAUSE},  {"K_yPAUSE" ,K_yPAUSE},
-    {"K_HOME"  ,K_HOME},   {"K_sHOME"  ,K_sHOME},  {"K_cHOME"  ,K_cHOME},  {"K_mHOME"  ,K_mHOME},   {"K_yHOME"  ,K_yHOME},  
-    {"K_UP"    ,K_UP},     {"K_sUP"    ,K_sUP},    {"K_cUP"    ,K_cUP},    {"K_mUP"    ,K_mUP},     {"K_yUP"    ,K_yUP},    
-    {"K_PGUP"  ,K_PGUP},   {"K_sPGUP"  ,K_sPGUP},  {"K_cPGUP"  ,K_cPGUP},  {"K_mPGUP"  ,K_mPGUP},   {"K_yPGUP"  ,K_yPGUP},  
-    {"K_LEFT"  ,K_LEFT},   {"K_sLEFT"  ,K_sLEFT},  {"K_cLEFT"  ,K_cLEFT},  {"K_mLEFT"  ,K_mLEFT},   {"K_yLEFT"  ,K_yLEFT},  
-    {"K_MIDDLE",K_MIDDLE}, {"K_sMIDDLE",K_sMIDDLE},{"K_cMIDDLE",K_cMIDDLE},{"K_mMIDDLE",K_mMIDDLE}, {"K_yMIDDLE",K_yMIDDLE},
-    {"K_RIGHT" ,K_RIGHT},  {"K_sRIGHT" ,K_sRIGHT}, {"K_cRIGHT" ,K_cRIGHT}, {"K_mRIGHT" ,K_mRIGHT},  {"K_yRIGHT" ,K_yRIGHT}, 
-    {"K_END"   ,K_END},    {"K_sEND"   ,K_sEND},   {"K_cEND"   ,K_cEND},   {"K_mEND"   ,K_mEND},    {"K_yEND"   ,K_yEND},   
-    {"K_DOWN"  ,K_DOWN},   {"K_sDOWN"  ,K_sDOWN},  {"K_cDOWN"  ,K_cDOWN},  {"K_mDOWN"  ,K_mDOWN},   {"K_yDOWN"  ,K_yDOWN},  
-    {"K_PGDN"  ,K_PGDN},   {"K_sPGDN"  ,K_sPGDN},  {"K_cPGDN"  ,K_cPGDN},  {"K_mPGDN"  ,K_mPGDN},   {"K_yPGDN"  ,K_yPGDN},  
-    {"K_INS"   ,K_INS},    {"K_sINS"   ,K_sINS},   {"K_cINS"   ,K_cINS},   {"K_mINS"   ,K_mINS},    {"K_yINS"   ,K_yINS},   
-    {"K_DEL"   ,K_DEL},    {"K_sDEL"   ,K_sDEL},   {"K_cDEL"   ,K_cDEL},   {"K_mDEL"   ,K_mDEL},    {"K_yDEL"   ,K_yDEL},   
-    {"K_SP"    ,K_SP},     {"K_sSP"    ,K_sSP},    {"K_cSP"    ,K_cSP},    {"K_mSP"    ,K_mSP},     {"K_ySP"    ,K_ySP},
-    {"K_TAB"   ,K_TAB},    {"K_sTAB"   ,K_sTAB},   {"K_cTAB"   ,K_cTAB},   {"K_mTAB"   ,K_mTAB},    {"K_yTAB"   ,K_yTAB},
-    {"K_CR"    ,K_CR},     {"K_sCR"    ,K_sCR},    {"K_cCR"    ,K_cCR},    {"K_mCR"    ,K_mCR},     {"K_yCR"    ,K_yCR},
-    {"K_BS"    ,K_BS},     {"K_sBS"    ,K_sBS},    {"K_cBS"    ,K_cBS},    {"K_mBS"    ,K_mBS},     {"K_yBS"    ,K_yBS},
-    {"K_Print" ,K_Print},  {"K_sPrint" ,K_sPrint}, {"K_cPrint" ,K_cPrint}, {"K_mPrint" ,K_mPrint},  {"K_yPrint" ,K_yPrint},
-    {"K_Menu"  ,K_Menu},   {"K_sMenu"  ,K_sMenu},  {"K_cMenu"  ,K_cMenu},  {"K_mMenu"  ,K_mMenu},   {"K_yMenu"  ,K_yMenu},
-    {"K_0",   K_0},                       {"K_c0",   K_c0},     {"K_m0", K_m0},     {"K_y0", K_y0},                       
-    {"K_1",   K_1},                       {"K_c1",   K_c1},     {"K_m1", K_m1},     {"K_y1", K_y1},                       
-    {"K_2",   K_2},                       {"K_c2",   K_c2},     {"K_m2", K_m2},     {"K_y2", K_y2},                       
-    {"K_3",   K_3},                       {"K_c3",   K_c3},     {"K_m3", K_m3},     {"K_y3", K_y3},                       
-    {"K_4",   K_4},                       {"K_c4",   K_c4},     {"K_m4", K_m4},     {"K_y4", K_y4},                       
-    {"K_5",   K_5},                       {"K_c5",   K_c5},     {"K_m5", K_m5},     {"K_y5", K_y5},                       
-    {"K_6",   K_6},                       {"K_c6",   K_c6},     {"K_m6", K_m6},     {"K_y6", K_y6},                       
-    {"K_7",   K_7},                       {"K_c7",   K_c7},     {"K_m7", K_m7},     {"K_y7", K_y7},                        
-    {"K_8",   K_8},                       {"K_c8",   K_c8},     {"K_m8", K_m8},     {"K_y8", K_y8},
-    {"K_9",   K_9},                       {"K_c9",   K_c9},     {"K_m9", K_m9},     {"K_y9", K_y9},
-    {"K_a",   K_a},   {"K_A",    K_A},    {"K_cA"    ,K_cA},    {"K_mA"   ,K_mA},   {"K_yA"   ,K_yA}, 
-    {"K_b",   K_b},   {"K_B",    K_B},    {"K_cB"    ,K_cB},    {"K_mB"   ,K_mB},   {"K_yB"   ,K_yB}, 
-    {"K_c",   K_c},   {"K_C",    K_C},    {"K_cC"    ,K_cC},    {"K_mC"   ,K_mC},   {"K_yC"   ,K_yC}, 
-    {"K_d",   K_d},   {"K_D",    K_D},    {"K_cD"    ,K_cD},    {"K_mD"   ,K_mD},   {"K_yD"   ,K_yD}, 
-    {"K_e",   K_e},   {"K_E",    K_E},    {"K_cE"    ,K_cE},    {"K_mE"   ,K_mE},   {"K_yE"   ,K_yE}, 
-    {"K_f",   K_f},   {"K_F",    K_F},    {"K_cF"    ,K_cF},    {"K_mF"   ,K_mF},   {"K_yF"   ,K_yF}, 
-    {"K_g",   K_g},   {"K_G",    K_G},    {"K_cG"    ,K_cG},    {"K_mG"   ,K_mG},   {"K_yG"   ,K_yG}, 
-    {"K_h",   K_h},   {"K_H",    K_H},    {"K_cH"    ,K_cH},    {"K_mH"   ,K_mH},   {"K_yH"   ,K_yH}, 
-    {"K_i",   K_i},   {"K_I",    K_I},    {"K_cI"    ,K_cI},    {"K_mI"   ,K_mI},   {"K_yI"   ,K_yI}, 
-    {"K_j",   K_j},   {"K_J",    K_J},    {"K_cJ"    ,K_cJ},    {"K_mJ"   ,K_mJ},   {"K_yJ"   ,K_yJ}, 
-    {"K_k",   K_k},   {"K_K",    K_K},    {"K_cK"    ,K_cK},    {"K_mK"   ,K_mK},   {"K_yK"   ,K_yK}, 
-    {"K_l",   K_l},   {"K_L",    K_L},    {"K_cL"    ,K_cL},    {"K_mL"   ,K_mL},   {"K_yL"   ,K_yL}, 
-    {"K_m",   K_m},   {"K_M",    K_M},    {"K_cM"    ,K_cM},    {"K_mM"   ,K_mM},   {"K_yM"   ,K_yM}, 
-    {"K_n",   K_n},   {"K_N",    K_N},    {"K_cN"    ,K_cN},    {"K_mN"   ,K_mN},   {"K_yN"   ,K_yN}, 
-    {"K_o",   K_o},   {"K_O",    K_O},    {"K_cO"    ,K_cO},    {"K_mO"   ,K_mO},   {"K_yO"   ,K_yO}, 
-    {"K_p",   K_p},   {"K_P",    K_P},    {"K_cP"    ,K_cP},    {"K_mP"   ,K_mP},   {"K_yP"   ,K_yP}, 
-    {"K_q",   K_q},   {"K_Q",    K_Q},    {"K_cQ"    ,K_cQ},    {"K_mQ"   ,K_mQ},   {"K_yQ"   ,K_yQ}, 
-    {"K_r",   K_r},   {"K_R",    K_R},    {"K_cR"    ,K_cR},    {"K_mR"   ,K_mR},   {"K_yR"   ,K_yR}, 
-    {"K_s",   K_s},   {"K_S",    K_S},    {"K_cS"    ,K_cS},    {"K_mS"   ,K_mS},   {"K_yS"   ,K_yS}, 
-    {"K_t",   K_t},   {"K_T",    K_T},    {"K_cT"    ,K_cT},    {"K_mT"   ,K_mT},   {"K_yT"   ,K_yT}, 
-    {"K_u",   K_u},   {"K_U",    K_U},    {"K_cU"    ,K_cU},    {"K_mU"   ,K_mU},   {"K_yU"   ,K_yU}, 
-    {"K_v",   K_v},   {"K_V",    K_V},    {"K_cV"    ,K_cV},    {"K_mV"   ,K_mV},   {"K_yV"   ,K_yV}, 
-    {"K_w",   K_w},   {"K_W",    K_W},    {"K_cW"    ,K_cW},    {"K_mW"   ,K_mW},   {"K_yW"   ,K_yW}, 
-    {"K_x",   K_x},   {"K_X",    K_X},    {"K_cX"    ,K_cX},    {"K_mX"   ,K_mX},   {"K_yX"   ,K_yX}, 
-    {"K_y",   K_y},   {"K_Y",    K_Y},    {"K_cY"    ,K_cY},    {"K_mY"   ,K_mY},   {"K_yY"   ,K_yY}, 
-    {"K_z",   K_z},   {"K_Z",    K_Z},    {"K_cZ"    ,K_cZ},    {"K_mZ"   ,K_mZ},   {"K_yZ"   ,K_yZ}, 
-    {"K_F1"  ,K_F1},  {"K_sF1"  ,K_sF1},  {"K_cF1"   ,K_cF1},   {"K_mF1"  ,K_mF1},  {"K_yF1"  ,K_yF1}, 
-    {"K_F2"  ,K_F2},  {"K_sF2"  ,K_sF2},  {"K_cF2"   ,K_cF2},   {"K_mF2"  ,K_mF2},  {"K_yF2"  ,K_yF2}, 
-    {"K_F3"  ,K_F3},  {"K_sF3"  ,K_sF3},  {"K_cF3"   ,K_cF3},   {"K_mF3"  ,K_mF3},  {"K_yF3"  ,K_yF3}, 
-    {"K_F4"  ,K_F4},  {"K_sF4"  ,K_sF4},  {"K_cF4"   ,K_cF4},   {"K_mF4"  ,K_mF4},  {"K_yF4"  ,K_yF4}, 
-    {"K_F5"  ,K_F5},  {"K_sF5"  ,K_sF5},  {"K_cF5"   ,K_cF5},   {"K_mF5"  ,K_mF5},  {"K_yF5"  ,K_yF5}, 
-    {"K_F6"  ,K_F6},  {"K_sF6"  ,K_sF6},  {"K_cF6"   ,K_cF6},   {"K_mF6"  ,K_mF6},  {"K_yF6"  ,K_yF6}, 
-    {"K_F7"  ,K_F7},  {"K_sF7"  ,K_sF7},  {"K_cF7"   ,K_cF7},   {"K_mF7"  ,K_mF7},  {"K_yF7"  ,K_yF7}, 
-    {"K_F8"  ,K_F8},  {"K_sF8"  ,K_sF8},  {"K_cF8"   ,K_cF8},   {"K_mF8"  ,K_mF8},  {"K_yF8"  ,K_yF8}, 
-    {"K_F9"  ,K_F9},  {"K_sF9"  ,K_sF9},  {"K_cF9"   ,K_cF9},   {"K_mF9"  ,K_mF9},  {"K_yF9"  ,K_yF9}, 
-    {"K_F10" ,K_F10}, {"K_sF10" ,K_sF10}, {"K_cF10"  ,K_cF10},  {"K_mF10" ,K_mF10}, {"K_yF10" ,K_yF10},
-    {"K_F11" ,K_F11}, {"K_sF11" ,K_sF11}, {"K_cF11"  ,K_cF11},  {"K_mF11" ,K_mF11}, {"K_yF11" ,K_yF11},
-    {"K_F12" ,K_F12}, {"K_sF12" ,K_sF12}, {"K_cF12"  ,K_cF12},  {"K_mF12" ,K_mF12}, {"K_yF12" ,K_yF12},
-    {NULL      ,0}
-  };
+typedef struct _IkeyMapASCII {
+  const char* name;
+  unsigned char mod;
+} IkeyMapASCII;
 
-static char* ikey_map[IUP_NUMMAXCODES];
+static IkeyMapASCII ikey_map_ascii[126-32+1] = {
+  {"K_SP",                  0},
+  {"K_exclam",              2}, /* NO shift */
+  {"K_quotedbl",            2}, /* NO shift */
+  {"K_numbersign",          2}, /* NO shift */
+  {"K_dollar",              2}, /* NO shift */
+  {"K_percent",             2}, /* NO shift */
+  {"K_ampersand",           2}, /* NO shift */
+  {"K_apostrophe",          2}, /* NO shift */
+  {"K_parentleft",          2}, /* NO shift */
+  {"K_parentright",         2}, /* NO shift */
+  {"K_asterisk",            0},                                 /* when in the numeric keypad have all the modifiers */
+  {"K_plus",                0},
+  {"K_comma",               0},
+  {"K_minus",               0},
+  {"K_period",              0},
+  {"K_slash",               0},
+  {"K_0",                   2}, /* NO shift */
+  {"K_1",                   2}, /* NO shift */
+  {"K_2",                   2}, /* NO shift */
+  {"K_3",                   2}, /* NO shift */
+  {"K_4",                   2}, /* NO shift */
+  {"K_5",                   2}, /* NO shift */
+  {"K_6",                   2}, /* NO shift */
+  {"K_7",                   2}, /* NO shift */
+  {"K_8",                   2}, /* NO shift */
+  {"K_9",                   2}, /* NO shift */
+  {"K_colon",               2}, /* NO shift */
+  {"K_semicolon",           2}, /* NO shift */
+  {"K_less",                2}, /* NO shift */
+  {"K_equal",               2}, /* NO shift */
+  {"K_greater",             2}, /* NO shift */
+  {"K_question",            2}, /* NO shift */
+  {"K_at",                  2}, /* NO shift */
+  {"K_A",                   2}, /* NO shift */
+  {"K_B",                   2}, /* NO shift */
+  {"K_C",                   2}, /* NO shift */
+  {"K_D",                   2}, /* NO shift */
+  {"K_E",                   2}, /* NO shift */
+  {"K_F",                   2}, /* NO shift */
+  {"K_G",                   2}, /* NO shift */
+  {"K_H",                   2}, /* NO shift */
+  {"K_I",                   2}, /* NO shift */
+  {"K_J",                   2}, /* NO shift */
+  {"K_K",                   2}, /* NO shift */
+  {"K_L",                   2}, /* NO shift */
+  {"K_M",                   2}, /* NO shift */
+  {"K_N",                   2}, /* NO shift */
+  {"K_O",                   2}, /* NO shift */
+  {"K_P",                   2}, /* NO shift */
+  {"K_Q",                   2}, /* NO shift */
+  {"K_R",                   2}, /* NO shift */
+  {"K_S",                   2}, /* NO shift */
+  {"K_T",                   2}, /* NO shift */
+  {"K_U",                   2}, /* NO shift */
+  {"K_V",                   2}, /* NO shift */
+  {"K_W",                   2}, /* NO shift */
+  {"K_X",                   2}, /* NO shift */
+  {"K_Y",                   2}, /* NO shift */
+  {"K_Z",                   2}, /* NO shift */
+  {"K_bracketleft",         2}, /* NO shift */
+  {"K_backslash",           2}, /* NO shift */
+  {"K_bracketright",        2}, /* NO shift */
+  {"K_circum",              2}, /* NO shift */
+  {"K_underscore",          2}, /* NO shift */
+  {"K_grave",               2}, /* NO shift */
+  {"K_a",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_b",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_c",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_d",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_e",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_f",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_g",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_h",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_i",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_j",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_k",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_l",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_m",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_n",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_o",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_p",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_q",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_r",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_s",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_t",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_u",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_v",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_w",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_x",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_y",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_z",                   1}, /* NO shift,ctrl,alt,sys */
+  {"K_braceleft",           2}, /* NO shift */
+  {"K_bar",                 2}, /* NO shift */
+  {"K_braceright",          2}, /* NO shift */
+  {"K_tilde",               2}, /* NO shift */
+};
+
+static const char* ikey_map_ext[256];
 
 void iupKeyInit(void)
 {
-  int i;
-  memset(ikey_map, 0, IUP_NUMMAXCODES*sizeof(char*));
-  for (i = 0; ikey_map_list[i].name; i++)
-    ikey_map[ikey_map_list[i].code] = ikey_map_list[i].name;
+  memset((void*)ikey_map_ext, 0, 256*sizeof(char*));
+
+  ikey_map_ext[0x0B] = "K_MIDDLE";
+  ikey_map_ext[0x13] = "K_PAUSE";
+  ikey_map_ext[0x14] = "K_SCROLL";
+  ikey_map_ext[0x1B] = "K_ESC";
+  ikey_map_ext[0x50] = "K_HOME";
+  ikey_map_ext[0x51] = "K_LEFT";
+  ikey_map_ext[0x52] = "K_UP";
+  ikey_map_ext[0x53] = "K_RIGHT";
+  ikey_map_ext[0x54] = "K_DOWN";
+  ikey_map_ext[0x55] = "K_PGUP";
+  ikey_map_ext[0x56] = "K_PGDN";
+  ikey_map_ext[0x57] = "K_END";
+  ikey_map_ext[0x61] = "K_Print";
+  ikey_map_ext[0x63] = "K_INS";
+  ikey_map_ext[0x67] = "K_Menu";
+  ikey_map_ext[0x7F] = "K_NUM";   
+
+  ikey_map_ext[0xBE] = "K_F1";
+  ikey_map_ext[0xBF] = "K_F2";
+  ikey_map_ext[0xC0] = "K_F3";
+  ikey_map_ext[0xC1] = "K_F4";
+  ikey_map_ext[0xC2] = "K_F5";
+  ikey_map_ext[0xC3] = "K_F6";
+  ikey_map_ext[0xC4] = "K_F7";
+  ikey_map_ext[0xC5] = "K_F8";
+  ikey_map_ext[0xC6] = "K_F9";
+  ikey_map_ext[0xC7] = "K_F10";
+  ikey_map_ext[0xC8] = "K_F11";
+  ikey_map_ext[0xC9] = "K_F12";       
+
+  ikey_map_ext[0xE1] = "K_LSHIFT";
+  ikey_map_ext[0xE2] = "K_RSHIFT"; 
+  ikey_map_ext[0xE3] = "K_LCTRL";  
+  ikey_map_ext[0xE4] = "K_RCTRL"; 
+  ikey_map_ext[0xE5] = "K_CAPS"; 
+  ikey_map_ext[0xE9] = "K_LALT";   
+  ikey_map_ext[0xEA] = "K_RALT";      
+
+  ikey_map_ext[0xFF] = "K_DEL";
 }
 
-int iupKeyCanCaps(int code)
+static const char* iKeyBaseCodeToName(int code, unsigned char *mod)
 {
-  if (code >= K_a && code <= K_z)
-    return 1;
+  *mod = 0;  /* all modifiers */
+  if (code == K_BS)
+    return "K_BS";
+  if (code == K_TAB)
+    return "K_TAB";
+  if (code == K_CR)
+    return "K_CR";
+  if (code < 32 || code==127)
+    return NULL;
+  if (code >= 32 && code <= 126)
+  {
+    *mod = ikey_map_ascii[code-32].mod;
+    return ikey_map_ascii[code-32].name;
+  }
+  if (code <= 0xFFFF && ((0xFF00&code) == 0xFF00))
+  {
+    if (ikey_map_ext[0x00FF&code])
+    {
+      if ((code >= K_LSHIFT && code <= K_RALT) ||
+           code == K_NUM || code == K_SCROLL)
+        *mod = 1;  /* NO shift,ctrl,alt,sys */
+      return ikey_map_ext[0x00FF&code];
+    }
+  }
   if (code == K_ccedilla)
-    return 1;
-  return 0;
+  {
+    *mod = 1; /* NO shift,ctrl,alt,sys */
+    return "K_ccedilla";
+  }
+  if (code == K_Ccedilla)
+  {
+    *mod = 2; /* NO shift */
+    return "K_Ccedilla";
+  }
+  if (code == K_acute)
+  {
+    *mod = 1; /* NO shift,ctrl,alt,sys */
+    return "K_acute";
+  }
+  if (code == K_diaeresis)
+  {
+    *mod = 1; /* NO shift,ctrl,alt,sys */
+    return "K_diaeresis";
+  }
+  return NULL;
+}
+
+#define iStrUpper(_c)  ((_c >= 'a' && _c <= 'z')? (_c - 'a') + 'A': _c)
+
+#define iKeyMakeXName(_name, _prefix, _base_name) \
+{                                                 \
+  strcpy(_name, _prefix);                         \
+  _name[3] = iStrUpper(_base_name[2]);            \
+  strcpy(_name+4, _base_name+3);                  \
+}
+
+#define iKeyReturnXName(_prefix, _base_name) \
+{                                            \
+  static char name[30];                      \
+  iKeyMakeXName(name, _prefix, _base_name);  \
+  return name;                               \
 }
 
 char* iupKeyCodeToName(int code)
 {
-  if (code < 0 || code > IUP_NUMMAXCODES)
+  unsigned char mod = 0;
+  const char* base_name;
+
+  if (code <= 0)
     return NULL;
-  return ikey_map[code];
+  
+  base_name = iKeyBaseCodeToName(iup_XkeyBase(code), &mod);
+  if (!base_name)
+  {
+    static char code_name[30];
+    sprintf(code_name, "K_0x%X", iup_XkeyBase(code));
+    base_name = code_name;
+  }
+
+  if (iup_XkeyBase(code)==code)  /* no modifiers */
+    return (char*)base_name;
+
+  if (iup_isShiftXkey(code) && mod==0)
+    iKeyReturnXName("K_s", base_name);
+
+  if (mod==1)
+    return (char*)base_name;
+
+  if (iup_isCtrlXkey(code)) 
+    iKeyReturnXName("K_c", base_name);
+  if (iup_isAltXkey(code))  
+    iKeyReturnXName("K_m", base_name);
+  if (iup_isSysXkey(code))
+    iKeyReturnXName("K_y", base_name);
+
+  return (char*)base_name;
 }
 
-int iupKeyNameToCode(const char *name)
+static void iKeyCallFunc(void (*func)(const char *name, int code, void* user_data), void* user_data, const char *name, int code, unsigned char mod)
 {
-  int i;
-  for (i = 0; ikey_map_list[i].name; i++)
-    if (iupStrEqual(name, ikey_map_list[i].name))
-      return ikey_map_list[i].code;
-      
-  return 0;
+  char mod_name[30];
+
+  func(name, code, user_data);
+
+  if (mod==0)
+  {
+    iKeyMakeXName(mod_name, "K_s", name);
+    func(mod_name, code, user_data);
+  }
+
+  if (mod!=1) 
+  {
+    iKeyMakeXName(mod_name, "K_c", name);
+    func(mod_name, code, user_data);
+
+    iKeyMakeXName(mod_name, "K_m", name);
+    func(mod_name, code, user_data);
+
+    iKeyMakeXName(mod_name, "K_y", name);
+    func(mod_name, code, user_data);
+  }
 }
 
 void iupKeyForEach(void (*func)(const char *name, int code, void* user_data), void* user_data)
 {
-  int i;
-  for (i = 0; ikey_map_list[i].name; ++i)
-    func(ikey_map_list[i].name, ikey_map_list[i].code, user_data);
+  /* Used only by the IupLua binding. */
+  int code, map;
+
+  iKeyCallFunc(func, user_data, "K_BS", K_BS, 0);
+  iKeyCallFunc(func, user_data, "K_TAB", K_TAB, 0);
+  iKeyCallFunc(func, user_data, "K_CR", K_CR, 0);
+
+  for (code=32; code <= 126; code++)
+    iKeyCallFunc(func, user_data, ikey_map_ascii[code-32].name, code, ikey_map_ascii[code-32].mod);
+
+  for (map=0; map < 256; map++)
+  {
+    if (ikey_map_ext[map])
+    {
+      unsigned char mod = 0;
+
+      if (((0xFF00|map) >= K_LSHIFT && (0xFF00|map) <= K_RALT) ||
+           (0xFF00|map) == K_NUM || (0xFF00|map) == K_SCROLL)
+        mod=1;  /* NO shift,ctrl,alt,sys */
+
+      iKeyCallFunc(func, user_data, ikey_map_ext[map], 0xFF00|map, mod);
+    }
+  }
+
+  iKeyCallFunc(func, user_data, "K_ccedilla", K_ccedilla, 1);  /* NO modifiers */
+  iKeyCallFunc(func, user_data, "K_Ccedilla", K_Ccedilla, 2);  /* NO shift */
+
+  iKeyCallFunc(func, user_data, "K_acute", K_acute, 1);
+  iKeyCallFunc(func, user_data, "K_diaeresis", K_diaeresis, 1);
 }
 
 int iupKeyCallKeyCb(Ihandle *ih, int code)

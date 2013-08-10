@@ -924,7 +924,7 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
 
   if (evt->state & ControlMask)   /* Ctrl */
   {
-    KeySym motcode = iupmotKeycodeToKeysym(evt->keycode);
+    KeySym motcode = iupmotKeycodeToKeysym(evt);
     if (motcode == XK_c || motcode == XK_x || motcode == XK_v || motcode == XK_a)
     {
       ih->data->disable_callbacks = -1; /* let callbacks be processed in motTextSetClipboardAttrib */
@@ -948,7 +948,7 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
   spinbox = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (spinbox && XmIsSpinBox(spinbox))
   {
-    KeySym motcode = iupmotKeycodeToKeysym(evt->keycode);
+    KeySym motcode = iupmotKeycodeToKeysym(evt);
     if (motcode == XK_Left || motcode == XK_Right)
     {
       /* avoid spin increment using Left/Right arrows, 

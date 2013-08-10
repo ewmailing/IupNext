@@ -58,7 +58,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>CVS (09/Jul/2013)</h3>
+<h3>CVS (10/Ago/2013)</h3>
 
 <ul>
 
@@ -93,6 +93,15 @@ version 3.x.</p>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	<strong>IupMglPlot</strong> attribute ZOOM to not use &quot;,&quot; where floating 
 	point values are specified, changed to &quot;:&quot;.</li>
+	<li><strong><span class="hist_changed">Changed:</span></strong> 
+	added support for more keys in iupkey.h. New key definitions: K_LSHIFT, 
+	K_RSHIFT, K_LCTRL, K_RCTRL, K_LALT, K_RALT, K_NUM, K_SCROLL, K_CAPS and 
+	K_diaeresis. Now all GDK and X11 keys are supported, but non defined keys 
+	are supported using its hexadecimal value. Modifiers are now a bit value 
+	separated from the base key code, which can be obtained using the macro
+	<strong>iup_XkeyBase</strong>. See the &quot;iupkey.h&quot; file for more definitions.
+	<span class="style7"><strong>IMPORTANT</strong></span>: any C/C++ source 
+	code that uses the &quot;iupkey.h&quot; definitions MUST be recompiled.</li>
 
 	<li><span class="hist_fixed">Fixed:</span> repaint of the <strong>
 	IupOleControl</strong> that affected the <strong>IupWebBrowser</strong> on 
