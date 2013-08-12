@@ -200,8 +200,7 @@ char* iupGetFontAttrib(Ihandle* ih)
 
 void iupUpdateStandardFontAttrib(Ihandle* ih)
 {
-  int inherit;
-  iupClassObjectSetAttribute(ih, "STANDARDFONT", iupGetFontAttrib(ih), &inherit);
+  iupAttribSetClassObject(ih, "STANDARDFONT", iupGetFontAttrib(ih));
 }
 
 int iupGetFontInfo(const char* standardfont, char *fontface, int *size, int *is_bold, int *is_italic, int *is_underline, int *is_strikeout)

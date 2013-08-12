@@ -401,6 +401,10 @@ iupBaseSetPosition
 iupBaseComputeNaturalSize
 iupBaseSetCurrentSize
 iupBaseCallValueChangedCb
+iupAttribSetClassObject
+iupAttribSetClassObjectId
+iupAttribSetClassObjectId2
+iupAttribGetClassObject
 iupAttribSetStr
 iupAttribSetStrf
 iupAttribSet

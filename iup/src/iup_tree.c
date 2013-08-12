@@ -185,19 +185,17 @@ static void iTreeInitializeImages(void)
 
 void iupTreeUpdateImages(Ihandle *ih)
 {
-  int inherit;
-
   char* value = iupAttribGet(ih, "IMAGELEAF");
   if (!value) value = "IMGLEAF";
-  iupClassObjectSetAttribute(ih, "IMAGELEAF", value, &inherit);
+  iupAttribSetClassObject(ih, "IMAGELEAF", value);
 
   value = iupAttribGet(ih, "IMAGEBRANCHCOLLAPSED");
   if (!value) value = "IMGCOLLAPSED";
-  iupClassObjectSetAttribute(ih, "IMAGEBRANCHCOLLAPSED", value, &inherit);
+  iupAttribSetClassObject(ih, "IMAGEBRANCHCOLLAPSED", value);
 
   value = iupAttribGet(ih, "IMAGEBRANCHEXPANDED");
   if (!value) value = "IMGEXPANDED";
-  iupClassObjectSetAttribute(ih, "IMAGEBRANCHEXPANDED", value, &inherit);
+  iupAttribSetClassObject(ih, "IMAGEBRANCHEXPANDED", value);
 }
 
 void iupTreeSelectLastCollapsedBranch(Ihandle* ih, int *last_id)

@@ -194,6 +194,19 @@ char* iupAttribGetHandleName(Ihandle *ih);
 
 
 
+/** Sets the attribute only at the element. \n
+ * If set method is not defined will not be set,
+ * neither will be stored in the hash table. \n
+ * Only generic pointers and constant strings can be set as value. \n
+ * It ignores children.
+ * \ingroup attrib */
+void iupAttribSetClassObject(Ihandle* ih, const char* name, const char* value);
+void iupAttribSetClassObjectId(Ihandle* ih, const char* name, int id, const char* value);
+void iupAttribSetClassObjectId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
+char* iupAttribGetClassObject(Ihandle* ih, const char* name);
+
+
+
 /* For all attributes in the evironment, call the class SetAttribute only.
  * Called only after the element is mapped, but before the children are mapped. */
 void iupAttribUpdate(Ihandle* ih); 

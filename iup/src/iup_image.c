@@ -494,22 +494,20 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
 
 void iupImageUpdateParent(Ihandle *ih)  /* ih here is the element that contains images */
 {
-  int inherit;
-
   /* Called when BGCOLOR is changed */
   /* it will re-create the image, if the case */
 
   char* value = iupAttribGet(ih, "IMAGE");
   if (value) 
-    iupClassObjectSetAttribute(ih, "IMAGE", value, &inherit);
+    iupAttribSetClassObject(ih, "IMAGE", value);
 
   value = iupAttribGet(ih, "IMINACTIVE");
   if (value) 
-    iupClassObjectSetAttribute(ih, "IMINACTIVE", value, &inherit);
+    iupAttribSetClassObject(ih, "IMINACTIVE", value);
 
   value = iupAttribGet(ih, "IMPRESS");
   if (value) 
-    iupClassObjectSetAttribute(ih, "IMPRESS", value, &inherit);
+    iupAttribSetClassObject(ih, "IMPRESS", value);
 }
 
 static char* iImageGetWidthAttrib(Ihandle *ih)

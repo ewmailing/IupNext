@@ -120,8 +120,7 @@ static void iTextUpdateValueAttrib(Ihandle* ih)
   char* value = iupAttribGet(ih, "VALUE");
   if (value)
   {
-    int inherit;
-    iupClassObjectSetAttribute(ih, "VALUE", value, &inherit);
+    iupAttribSetClassObject(ih, "VALUE", value);
 
     iupAttribSet(ih, "VALUE", NULL); /* clear hash table */
   }

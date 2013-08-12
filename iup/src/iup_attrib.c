@@ -775,6 +775,29 @@ Ihandle* IupSetAtt(const char* handle_name, Ihandle* ih, const char* name, ...)
   return ih;
 }
 
+void iupAttribSetClassObject(Ihandle* ih, const char* name, const char* value)
+{
+  int inherit;
+  iupClassObjectSetAttribute(ih, name, value, &inherit);
+}
+
+void iupAttribSetClassObjectId(Ihandle* ih, const char* name, int id, const char* value)
+{
+  iupClassObjectSetAttributeId(ih, name, id, value);
+}
+
+void iupAttribSetClassObjectId2(Ihandle* ih, const char* name, int lin, int col, const char* value)
+{
+  iupClassObjectSetAttributeId2(ih, name, lin, col, value);
+}
+
+char* iupAttribGetClassObject(Ihandle* ih, const char* name)
+{
+  int inherit;
+  char *def_value;
+  return iupClassObjectGetAttribute(ih, name, &def_value, &inherit);
+}
+
 void iupAttribSet(Ihandle* ih, const char* name, const char* value)
 {
   if (!value)
