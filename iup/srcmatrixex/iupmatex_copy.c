@@ -26,16 +26,12 @@ static void iMatrixExCopyColToSetDataSelected(ImatExData* matex_data, int lin, i
 
   iupMatrixExInitCellAccess(matex_data);
 
-//  iupMatrixExUndoPushCellBegin(matex_data);
-
   iupMatrixExBusyStart(matex_data, selection_count, busyname);
 
   for(lin = 1; lin <= num_lin; ++lin)
   {
     if (lin != skip_lin && selection[lin]=='1' && iupMatrixExIsLineVisible(matex_data->ih, lin))
     {
-      //iupMatrixExUndoPushCell(matex_data, lin, col);
-
       iupMatrixExSetCell(matex_data, lin, col, value);
 
       if (!iupMatrixExBusyInc(matex_data))
@@ -45,8 +41,6 @@ static void iMatrixExCopyColToSetDataSelected(ImatExData* matex_data, int lin, i
       }
     }
   }
-
-//  iupMatrixExUndoPushCellEnd(matex_data);
 
   iupMatrixExBusyEnd(matex_data);
 
@@ -59,8 +53,6 @@ static void iMatrixExCopyColToSetData(ImatExData* matex_data, int lin, int col, 
   char* value = iupStrDup(iupMatrixExGetCell(matex_data, lin, col));
 
   iupMatrixExInitCellAccess(matex_data);
-
-//  iupMatrixExUndoPushBlock(matex_data, lin1, col, lin2-lin1+1, 1);
 
   iupMatrixExBusyStart(matex_data, lin2-lin1+1, busyname);
 
@@ -208,19 +200,19 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
 
   if (iupStrEqualNoCase(value, "ALL"))
   {
-    busyname = "COPYTOALL";
+    busyname = "COPYCOLTO:ALL";
     lin1 = 1;
     lin2 = num_lin;
   }
   else if (iupStrEqualNoCase(value, "TOP"))
   {
-    busyname = "COPYTOTOP";
+    busyname = "COPYCOLTO:TOP";
     lin1 = 1;
     lin2 = lin-1;
   }
   else if (iupStrEqualNoCase(value, "BOTTOM"))
   {
-    busyname = "COPYTOBOTTOM";
+    busyname = "COPYCOLTO:BOTTOM";
     lin1 = lin+1;
     lin2 = num_lin;
   }
@@ -238,7 +230,7 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
       return 0;
     }
 
-    iMatrixExCopyColToSetDataSelected(matex_data, lin, col, num_lin, selection, selection_count, "COPYTOMARKED");
+    iMatrixExCopyColToSetDataSelected(matex_data, lin, col, num_lin, selection, selection_count, "COPYCOLTO:MARKED");
 
     free(selection);
     return 0;
@@ -257,7 +249,7 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
       return 0;
     }
 
-    iMatrixExCopyColToSetDataSelected(matex_data, lin, col, num_lin, selection, selection_count, "COPYTOINTERVAL");
+    iMatrixExCopyColToSetDataSelected(matex_data, lin, col, num_lin, selection, selection_count, "COPYCOLTO:INTERVAL");
 
     free(selection);
     return 0;

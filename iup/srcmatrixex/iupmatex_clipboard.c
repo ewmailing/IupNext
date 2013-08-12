@@ -465,8 +465,6 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
 
   iupMatrixExInitCellAccess(matex_data);
 
-//  iupMatrixExUndoPushBlock(matex_data, lin, col, data_num_lin, data_num_col);
-
   iupMatrixExBusyStart(matex_data, data_num_lin*data_num_col, busyname);
 
   lin = start_lin;

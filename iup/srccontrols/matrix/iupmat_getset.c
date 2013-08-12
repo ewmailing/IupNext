@@ -77,6 +77,8 @@ void iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value, int
     if (index != 0) lin = index;
   }
 
+  if (ih->data->undo_redo) iupAttribSetClassObjectId2(ih, "UNDOPUSHCELL", lin, col, value);
+
   if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
   {
     value = iMatrixSetValueNumeric(ih, lin, col, value);
@@ -307,7 +309,9 @@ void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int
 void iupMatrixCellUpdateValue(Ihandle* ih)
 {
   char *value = iupMatrixEditGetValue(ih);
+  if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHBEGIN", "EDITCELL");
   iupMatrixCellSetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value, 1);
+  if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHEND", NULL);
   iupMatrixPrepareDrawData(ih);
   iupMatrixDrawCells(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 }

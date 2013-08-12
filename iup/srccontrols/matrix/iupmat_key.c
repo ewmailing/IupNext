@@ -133,6 +133,8 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
 
         iupMatrixPrepareDrawData(ih);
 
+        if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHBEGIN", "KEYDEL");
+
         for(lin = 1; lin < ih->data->lines.num; lin++)
         {
           for(col = 1; col < ih->data->columns.num; col++)
@@ -147,6 +149,8 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
             }
           }
         }
+
+        if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHEND", NULL);
         break;
       }
     default:

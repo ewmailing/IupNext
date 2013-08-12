@@ -30,6 +30,9 @@ void iupMatrixExBusyStart(ImatExData* matex_data, int count, const char* busynam
 int iupMatrixExBusyInc(ImatExData* matex_data);
 void iupMatrixExBusyEnd(ImatExData* matex_data);
 
+void iupMatrixExUndoPushBegin(ImatExData* matex_data, const char* busyname);
+void iupMatrixExUndoPushEnd(ImatExData* matex_data);
+
 int iupMatrixExIsColumnVisible(Ihandle* ih, int col);
 int iupMatrixExIsLineVisible(Ihandle* ih, int lin);
 
@@ -45,6 +48,7 @@ void iupMatrixExRegisterVisible(Iclass* ic);
 void iupMatrixExRegisterExport(Iclass* ic);
 void iupMatrixExRegisterCopy(Iclass* ic);
 void iupMatrixExRegisterUnits(Iclass* ic);
+void iupMatrixExRegisterUndo(Iclass* ic);
 
 
 #ifdef __cplusplus

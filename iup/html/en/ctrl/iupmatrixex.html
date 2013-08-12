@@ -155,7 +155,7 @@ consistent structure, in other words the selected column pattern must be
 consistent along lines.<br>LASTERROR can be set to &quot;NOMARKED&quot; (no selected 
 cells) or &quot;MARKEDCONSISTENCY&quot; (when COPYKEEPSTRUCT=NO and inconsistent 
 selection).</p>
-<p><strong>COPYDATA</strong>: Use the same parametres of the COPY attributes but 
+<p><strong>COPYDATA</strong>: Use the same parameters of the COPY attributes but 
 will copy to an internal buffer. To retrieve the buffer get the attribute value 
 after setting it. To clear the internal buffer set it to NULL.</p>
 <p><strong>COPYFILE</strong> (write-only): copies all visible cells to a given 
@@ -177,7 +177,8 @@ used to add the attributes ALIGNMENT?, BGCOLOR?:?, FGCOLOR?:? and FONT?:? to the
 given cell to a specified range of cells in the same column. Value can be &quot;ALL&quot; 
 (for all lines), TOP (for all lines before the given line), BOTTOM (for all 
 lines after the given line), MARKED (for all lines where the cell is marked), or 
-a series of intervals in the format &quot;L1-L2,L3-L4,L5,L6-L7,...&quot;.</p>
+a series of intervals in the format &quot;L1-L2,L3-L4,L5,L6-L7,...&quot;. BUSY 
+will be set to Yes during the operation.</p>
 <p><strong>FREEZE:</strong> freezes the scroll of columns and lines up to the 
 given cell. Can be: &quot;Yes&quot; - uses the value of the FOCUS_CELL attribute, &quot;<em>L</em>:<em>C</em>&quot; 
 where L and C are the line and column, or &quot;No&quot; clear the freeze state. 
@@ -370,7 +371,7 @@ matrix contents as a result of an operation such as paste or copy. </p>
 0=process finished.<br><strong>count</strong>: when status=1 is the total number 
 of iterations. when status=2 is the current iteration. ignored when status=0.<br>
 <strong>name</strong>: valid only when status=1, otherwise is NULL. Can be 
-&quot;PASTE&quot;, &quot;PASTEDATA&quot;, &quot;PASTEFILE&quot;.</p>
+&quot;PASTE&quot;, &quot;PASTEDATA&quot;, &quot;PASTEFILE&quot;, &quot;COPYCOLTO:ALL&quot;, "COPYCOLTO:TOP", "COPYCOLTO:BOTTOM", "COPYCOLTO:MARKED", "COPYCOLTO:INTERVAL".</p>
 
 <p class="info"><u>Returns</u>: When status=2 and IUP_IGNORE is returned the 
 processing is aborted. When process is aborted the callback will be called once 

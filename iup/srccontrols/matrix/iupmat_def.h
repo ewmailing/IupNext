@@ -118,6 +118,7 @@ struct _IcontrolData
   int checkframecolor, hidden_text_marks, editnext;
   int use_title_size;   /* use title contents when calculating cell size */
   int limit_expand; /* limit expand to maximum size */
+  int undo_redo;
 
   /* Mouse and Keyboard AUX */
   int leftpressed;  /* left mouse button is pressed */

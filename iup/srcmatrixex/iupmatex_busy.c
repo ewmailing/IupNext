@@ -81,6 +81,9 @@ void iupMatrixExBusyStart(ImatExData* matex_data, int count, const char* busynam
     matex_data->busy_progress_abort = 0;
     matex_data->busy = 2;
   }
+
+  if (iupStrBoolean(iupAttribGetClassObject(matex_data->ih, "UNDOREDO")))
+    iupMatrixExUndoPushBegin(matex_data, busyname);
 }
 
 int iupMatrixExBusyInc(ImatExData* matex_data)
@@ -136,6 +139,9 @@ void iupMatrixExBusyEnd(ImatExData* matex_data)
 
     IupSetAttribute(matex_data->ih,"REDRAW","ALL");
   }
+
+  if (iupStrBoolean(iupAttribGetClassObject(matex_data->ih, "UNDOREDO")))
+    iupMatrixExUndoPushEnd(matex_data);
 }
 
 static int iMatrixSetBusyAttrib(Ihandle* ih, const char* value)

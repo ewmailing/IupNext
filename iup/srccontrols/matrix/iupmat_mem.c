@@ -130,6 +130,8 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
 {
   int lin, col, end, diff_num, shift_num;
 
+  if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOCLEAR", NULL);
+
   /* base is the first line where the change started */
 
   /* If it doesn't have enough lines allocated, then allocate more space */
@@ -229,6 +231,8 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
 void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
 {
   int lin, col, end, diff_num, shift_num;
+
+  if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOCLEAR", NULL);
 
   /* base is the first column where the change started */
 

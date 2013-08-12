@@ -340,9 +340,25 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
   return 0;
 }
 
+static int iMatrixSetUndoRedoAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->undo_redo = 1;
+  else 
+    ih->data->undo_redo = 0;
+  return 0;
+}
+
+static char* iMatrixGetUndoRedoAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->undo_redo); 
+}
+
 void iupMatrixRegisterEx(Iclass* ic)
 {
-  /* IupMatrix Attributes - Numeric Columns (undocumented, will be exposed in IupMatrixEx) */
+  /* Undocumented features, will be exposed in IupMatrixEx */
+
+  /* IupMatrixEx Attributes - Numeric Columns */
   iupClassRegisterAttributeId(ic, "NUMERICQUANTITYINDEX", NULL, iMatrixSetNumericQuantityIndexAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICFORMAT", NULL, iMatrixSetNumericFormatAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICFORMATPRECISION", iMatrixGetNumericFormatPrecisionAttrib, iMatrixSetNumericFormatPrecisionAttrib, IUPAF_NO_INHERIT);
@@ -353,9 +369,12 @@ void iupMatrixRegisterEx(Iclass* ic)
 
   iupClassRegisterCallback(ic, "SORTCOLUMNCOMPARE_CB", "iii");
 
-  /* IupMatrix Attributes - Sort Columns (undocumented, will be exposed in IupMatrixEx) */
+  /* IupMatrixEx Attributes - Sort Columns */
   iupClassRegisterAttributeId(ic, "SORTCOLUMN", NULL, iMatrixSetSortColumnAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SORTCOLUMNORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "ASCENDING", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SORTCOLUMNCASESENSITIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  /* IupMatrixEx Attributes - Undo/Redo */
+  iupClassRegisterAttribute(ic, "UNDOREDO", iMatrixGetUndoRedoAttrib, iMatrixSetUndoRedoAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
 
