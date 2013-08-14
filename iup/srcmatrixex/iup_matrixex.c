@@ -154,6 +154,11 @@ static void iMatrixExDestroyMethod(Ihandle* ih)
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
   if (matex_data->busy_progress)
     IupDestroy(matex_data->busy_progress);
+  if (matex_data->undo_stack)
+  {
+    iupAttribSetClassObject(ih, "UNDOCLEAR", NULL);
+    iupArrayDestroy(matex_data->undo_stack);
+  }
   free(matex_data);
 }
 

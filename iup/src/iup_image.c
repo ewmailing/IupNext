@@ -26,7 +26,7 @@ typedef struct _IimageStock
   const char* native_name;   /* used to map to GTK stock images */
 } IimageStock;
 
-static Itable *istock_table = NULL;   /* the function hast table indexed by the name string */
+static Itable *istock_table = NULL;   /* the image hash table indexed by the name string */
 
 void iupImageStockInit(void)
 {

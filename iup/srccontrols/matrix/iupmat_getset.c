@@ -71,13 +71,13 @@ void iupMatrixCellSetValue(Ihandle* ih, int lin, int col, const char* value, int
 {  
   /* NOTICE: this function is NOT called before map */
 
+  if (ih->data->undo_redo) iupAttribSetClassObjectId2(ih, "UNDOPUSHCELL", lin, col, iupMatrixGetValueString(ih, lin, col));
+
   if (lin != 0 && ih->data->sort_has_index)
   {
     int index = ih->data->sort_line_index[lin];
     if (index != 0) lin = index;
   }
-
-  if (ih->data->undo_redo) iupAttribSetClassObjectId2(ih, "UNDOPUSHCELL", lin, col, value);
 
   if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
   {
@@ -169,6 +169,42 @@ char* iupMatrixGetValueText(Ihandle* ih, int lin, int col)
   }
   else
     value = ih->data->cells[lin][col].value;
+
+  return value;
+}
+
+char* iupMatrixGetValueString(Ihandle* ih, int lin, int col)
+{  
+  char* value;
+
+  if (lin==0)
+    return NULL;
+
+  if (ih->data->sort_has_index)
+  {
+    int index = ih->data->sort_line_index[lin];
+    if (index != 0) lin = index;
+  }
+
+  if (ih->data->callback_mode)
+  {
+    /* only called in callback mode */
+    sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
+    value = iupStrDup(value_cb(ih, lin, col));  /* must duplicate here */
+  }
+  else
+    value = ih->data->cells[lin][col].value;
+
+  if (!value && ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
+  {
+    dIFnii getvalue_cb = (dIFnii)IupGetCallback(ih, "NUMERICGETVALUE_CB");
+    if (getvalue_cb)
+    {
+      double number = getvalue_cb(ih, lin, col);
+      sprintf(ih->data->numeric_buffer_get, "%.18g", number);
+      return ih->data->numeric_buffer_get;
+    }
+  }
 
   return value;
 }

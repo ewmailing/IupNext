@@ -19,7 +19,7 @@
 #include "iup_table.h"
 
 
-static Itable *istrmessage_table = NULL;   /* the function hast table indexed by the name string */
+static Itable *istrmessage_table = NULL;   /* the message hash table indexed by the name string */
 
 void iupStrMessageInit(void)
 {

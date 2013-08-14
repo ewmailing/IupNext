@@ -17,6 +17,7 @@ char* iupMatrixCellGetValue(Ihandle* ih, int lin, int col);
 
 double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col);
 char* iupMatrixGetValueText(Ihandle* ih, int lin, int col);
+char* iupMatrixGetValueString(Ihandle* ih, int lin, int col);
 
 void iupMatrixCellSetFlag(Ihandle* ih, int lin, int col, unsigned char attr, int set);
 int iupMatrixGetCellOffset(Ihandle* ih, int lin, int col, int *x, int *y);

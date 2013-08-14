@@ -303,6 +303,20 @@ attribute when the SORTCOLUMNCOMPARE_CB callback is defined. </p>
 sensitive. Can be Yes or No. Default: Yes. Used only during SORTCOLUMN<em>id</em> 
 and when the SORTCOLUMNCOMPARE_CB callback is not defined.</p>
 <p>
+<strong>UNDOREDO</strong>: Enable or disable the Undo/Redo support. Can be Yes 
+or No. Default: No. Undo/Redo support is available only for cell values, 
+interactively or programmatically changed. Attributes are not saved/restored.</p>
+<p>
+<strong>UNDO</strong>: Sets the number of undo levels to be performed. If value 
+is NULL will undo 1 level. When retrieved returns Yes or No indicating if it has 
+Undo to be performed. BUSY will be set to Yes during the operation.</p>
+<p>
+<strong>REDO</strong>: Sets the number of redo levels to be performed. If value 
+is NULL will redo 1 level. When retrieved returns Yes or No indicating if it has 
+Redo to be performed. BUSY will be set to Yes during the operation.</p>
+<p>
+<strong>UNDOCLEAR</strong> (write-only): clears all Undo/Redo information.</p>
+<p>
 <strong>VISIBLECOL<em>id</em></strong>: returns if the column is visible (&quot;Yes&quot; 
 or &quot;No&quot;). Actually checks for WIDTHid and RASTERWIDTHid if they are defined and 
 non zero, but more complex logic when id=0. When changed will simply set those 
@@ -371,7 +385,8 @@ matrix contents as a result of an operation such as paste or copy. </p>
 0=process finished.<br><strong>count</strong>: when status=1 is the total number 
 of iterations. when status=2 is the current iteration. ignored when status=0.<br>
 <strong>name</strong>: valid only when status=1, otherwise is NULL. Can be 
-&quot;PASTE&quot;, &quot;PASTEDATA&quot;, &quot;PASTEFILE&quot;, &quot;COPYCOLTO:ALL&quot;, "COPYCOLTO:TOP", "COPYCOLTO:BOTTOM", "COPYCOLTO:MARKED", "COPYCOLTO:INTERVAL".</p>
+&quot;PASTE&quot;, &quot;PASTEDATA&quot;, &quot;PASTEFILE&quot;, &quot;COPYCOLTO:ALL&quot;, "COPYCOLTO:TOP", "COPYCOLTO:BOTTOM", "COPYCOLTO:MARKED", "COPYCOLTO:INTERVAL", 
+&quot;UNDO&quot; or &quot;REDO&quot;.</p>
 
 <p class="info"><u>Returns</u>: When status=2 and IUP_IGNORE is returned the 
 processing is aborted. When process is aborted the callback will be called once 

@@ -15,7 +15,7 @@
 #include "iup_assert.h"
 
 
-static Itable *ifunc_table = NULL;   /* the function hast table indexed by the name string */
+static Itable *ifunc_table = NULL;   /* the function hash table indexed by the name string */
 static const char *ifunc_action_name = NULL;  /* name of the action being retrieved in IupGetFunction */
 
 void iupFuncInit(void)

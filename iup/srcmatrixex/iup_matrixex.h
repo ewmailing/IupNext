@@ -7,6 +7,8 @@
 #ifndef __IUP_MATRIXEX_H 
 #define __IUP_MATRIXEX_H 
 
+#include"iup_array.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -24,6 +26,10 @@ typedef struct _ImatExData
   sIFnii value_cb;
   IFniis value_edit_cb;
   IFniiii edition_cb;
+
+  Iarray* undo_stack;
+  int undo_stack_pos;   /* points to the position where a new undo will be inserted, starts at 0 */
+  int undo_stack_hold;
 } ImatExData;
 
 void iupMatrixExBusyStart(ImatExData* matex_data, int count, const char* busyname);
