@@ -32,34 +32,6 @@ void iupMatrixExCheckLimitsOrder(int *v1, int *v2, int min, int max)
   if (*v1>*v2) {int v=*v1; *v1=*v2; *v2=v;}
 }
 
-void iupMatrixExInitCellAccess(ImatExData* matex_data)
-{
-  matex_data->value_cb = (sIFnii)IupGetCallback(matex_data->ih, "VALUE_CB");
-  matex_data->value_edit_cb = (IFniis) IupGetCallback(matex_data->ih,"VALUE_EDIT_CB");
-  matex_data->edition_cb  = (IFniiii)IupGetCallback(matex_data->ih,"EDITION_CB");
-}
-
-char* iupMatrixExGetCell(ImatExData* matex_data, int lin, int col)
-{
-  char* value;
-  if (matex_data->value_cb)
-    value = matex_data->value_cb(matex_data->ih, lin, col);
-  else
-    value = IupGetAttributeId2(matex_data->ih, "", lin, col);
-  return value;
-}
-
-void iupMatrixExSetCell(ImatExData* matex_data, int lin, int col, const char* value)
-{
-  if (matex_data->edition_cb && matex_data->edition_cb(matex_data->ih,lin,col,1,1)==IUP_IGNORE)
-    return;
-
-  if (matex_data->value_edit_cb)
-    matex_data->value_edit_cb(matex_data->ih,lin,col,(char*)value);
-  else
-    IupSetAttributeId2(matex_data->ih,"",lin,col,value);
-}
-
 #if 0
 int Dmatrix::_ACT_mtx   (Ihandle *h,int c,int lin,int col,int active,char *after)
 {

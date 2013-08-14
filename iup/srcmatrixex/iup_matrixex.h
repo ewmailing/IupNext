@@ -22,11 +22,6 @@ typedef struct _ImatExData
   IFniis busy_cb;
   Ihandle* busy_progress;
 
-  /* Temporary callbacks, valid only after iupMatrixExInitCellAccess */
-  sIFnii value_cb;
-  IFniis value_edit_cb;
-  IFniiii edition_cb;
-
   Iarray* undo_stack;
   int undo_stack_pos;   /* points to the position where a new undo will be inserted, starts at 0 */
   int undo_stack_hold;
@@ -44,10 +39,6 @@ int iupMatrixExIsLineVisible(Ihandle* ih, int lin);
 
 void iupMatrixExCheckLimitsOrder(int *v1, int *v2, int min, int max);
 
-void iupMatrixExInitCellAccess(ImatExData* matex_data);
-char* iupMatrixExGetCell(ImatExData* matex_data, int lin, int col);
-void iupMatrixExSetCell(ImatExData* matex_data, int lin, int col, const char* value);
-
 void iupMatrixExRegisterClipboard(Iclass* ic);
 void iupMatrixExRegisterBusy(Iclass* ic);
 void iupMatrixExRegisterVisible(Iclass* ic);
@@ -55,6 +46,10 @@ void iupMatrixExRegisterExport(Iclass* ic);
 void iupMatrixExRegisterCopy(Iclass* ic);
 void iupMatrixExRegisterUnits(Iclass* ic);
 void iupMatrixExRegisterUndo(Iclass* ic);
+
+/* Implemented in IupMatrix */
+char* iupMatrixExGetCellValue(Ihandle* ih, int lin, int col, int convert);
+void  iupMatrixExSetCellValue(Ihandle* ih, int lin, int col, const char* value);  /* NO numeric conversion */
 
 
 #ifdef __cplusplus

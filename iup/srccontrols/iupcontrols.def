@@ -33,3 +33,7 @@ iupmaskMatGetDouble
 iupmaskMatGetInt   
 iupmaskRemove
 iupmaskMatRemove
+
+iupMatrixExGetCellValue
+iupMatrixExSetCellValue
+

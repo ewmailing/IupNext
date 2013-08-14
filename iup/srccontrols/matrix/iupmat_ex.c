@@ -26,8 +26,24 @@
 #include "iupmat_def.h"
 #include "iupmat_getset.h"
 #include "iupmat_draw.h"
+#include "iupmat_aux.h"
 
 
+/* Exported to IupMatrixEx */
+char* iupMatrixExGetCellValue(Ihandle* ih, int lin, int col, int convert)
+{
+  if (convert)
+    return iupMatrixGetValue(ih, lin, col);
+  else
+    return iupMatrixGetValueString(ih, lin, col);
+}
+
+/* Exported to IupMatrixEx */
+void iupMatrixExSetCellValue(Ihandle* ih, int lin, int col, const char* value)
+{  
+  if (iupMatrixAuxCallEditionCbLinCol(ih, lin, col, 1, 1) != IUP_IGNORE)
+    iupMatrixSetValue(ih, lin, col, value, -1);  /* call value_edit_cb, but NO numeric conversion */
+}
 
 static int iMatrixInitNumericColumns(Ihandle* ih, int col)
 {
@@ -308,6 +324,9 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
       {
         sort_line_text[lin-lin1].lin = sort_line_index[lin]!=0? sort_line_index[lin]: lin;
         sort_line_text[lin-lin1].text = iupMatrixGetValueText(ih, lin, col);
+
+        if (ih->data->callback_mode)
+          sort_line_text[lin-lin1].text = iupStrDup(sort_line_text[lin-lin1].text);
       }
 
       iMatrixQSort_utf8 = IupGetInt(NULL, "UTF8MODE");
@@ -321,7 +340,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
         else
           sort_line_index[lin2-1 - (lin-lin1)] = sort_line_text[lin-lin1].lin;
 
-        if (ih->data->callback_mode)
+        if (ih->data->callback_mode && sort_line_text[lin-lin1].text)
           free(sort_line_text[lin-lin1].text);
       }
 

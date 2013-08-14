@@ -231,7 +231,7 @@ static int iMatrixSetValueAttrib(Ihandle* ih, const char* value)
   if (IupGetInt(ih->data->datah, "VISIBLE"))
     IupStoreAttribute(ih->data->datah, "VALUE", value);
   else 
-    iupMatrixCellSetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value, 0);
+    iupMatrixSetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value, 0);
   return 0;
 }
 
@@ -242,7 +242,7 @@ static char* iMatrixGetValueAttrib(Ihandle* ih)
   if (IupGetInt(ih->data->datah, "VISIBLE"))
     return iupMatrixEditGetValue(ih);
   else 
-    return iupMatrixCellGetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+    return iupMatrixGetValueString(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 }
 
 static int iMatrixSetCaretAttrib(Ihandle* ih, const char* value)
@@ -587,7 +587,7 @@ static void iMatrixFitColText(Ihandle* ih, int col)
 
   for(lin = 0; lin < ih->data->lines.num; lin++)
   {
-    char* title_value = iupMatrixCellGetValue(ih, lin, col);
+    char* title_value = iupMatrixGetValue(ih, lin, col);
     if (title_value && title_value[0])
     {
       int w;
@@ -611,7 +611,7 @@ static void iMatrixFitLineText(Ihandle* ih, int line)
 
   for(col = 0; col < ih->data->columns.num; col++)
   {
-    char* title_value = iupMatrixCellGetValue(ih, line, col);
+    char* title_value = iupMatrixGetValue(ih, line, col);
     if (title_value && title_value[0])
     {
       int h;
@@ -772,14 +772,14 @@ static char* iMatrixGetAlignmentAttrib(Ihandle* ih, int col)
 static int iMatrixSetIdValueAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
   if (iupMatrixCheckCellPos(ih, lin, col))
-    iupMatrixCellSetValue(ih, lin, col, value, 0);
+    iupMatrixSetValue(ih, lin, col, value, 0);
   return 0;
 }
 
 static char* iMatrixGetIdValueAttrib(Ihandle* ih, int lin, int col)
 {
   if (iupMatrixCheckCellPos(ih, lin, col))
-    return iupMatrixCellGetValue(ih, lin, col);
+    return iupMatrixGetValueString(ih, lin, col);
   return NULL;
 }
 
@@ -1046,7 +1046,7 @@ static int iMatrixSetFlagsAttrib(Ihandle* ih, int lin, int col, const char* valu
 {
   if (lin >= 0 || col >= 0)
   {
-    iupMatrixCellSetFlag(ih, lin, col, attr, value!=NULL);
+    iupMatrixSetCellFlag(ih, lin, col, attr, value!=NULL);
     ih->data->need_redraw = 1;
   }
   return 1;

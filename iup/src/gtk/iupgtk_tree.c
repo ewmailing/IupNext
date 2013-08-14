@@ -2082,7 +2082,7 @@ static void gtkTreeDragBegin(GtkWidget *widget, GdkDragContext *context, Ihandle
 
 static gboolean gtkTreeSelectionFunc(GtkTreeSelection *selection, GtkTreeModel *model, GtkTreePath *path, gboolean old_selected, Ihandle* ih)
 {
-  /* every change (programatically or interactivelly) to the selection state will call this function,
+  /* every change (programaticaly or interactively) to the selection state will call this function,
      so we use it to keep our storage updated. 
      But it will not be called when we select hidden nodes. */
   GtkTreeIter iterItem;

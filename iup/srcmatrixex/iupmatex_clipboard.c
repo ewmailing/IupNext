@@ -166,7 +166,7 @@ static void iMatrixExArrayAddStr(Iarray* data, char* str)
 
 static void iMatrixExArrayAddCell(ImatExData* matex_data, Iarray* data, int lin, int col)
 {
-  char* value = iupMatrixExGetCell(matex_data, lin, col);
+  char* value = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);
 
   if (value)
     iMatrixExArrayAddStr(data, value);
@@ -312,8 +312,6 @@ static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* 
 
   num_lin = IupGetInt(matex_data->ih, "NUMLIN");
   num_col = IupGetInt(matex_data->ih, "NUMCOL");
-
-  iupMatrixExInitCellAccess(matex_data);
 
   if (iupStrEqualNoCase(value, "MARKED"))
   {
@@ -463,8 +461,6 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
   char* value = NULL;
   int value_max_size = 0, value_len;
 
-  iupMatrixExInitCellAccess(matex_data);
-
   iupMatrixExBusyStart(matex_data, data_num_lin*data_num_col, busyname);
 
   lin = start_lin;
@@ -484,7 +480,7 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
           const char* next_value = iupStrNextValue(data, len, &value_len, sep);  c++;
 
           value = iMatrixExStrCopyValue(value, &value_max_size, data, value_len);
-          iupMatrixExSetCell(matex_data, lin, col, value);
+          iupMatrixExSetCellValue(matex_data->ih, lin, col, value);
 
           data = next_value;
           len -= value_len+1;

@@ -22,9 +22,7 @@
 static void iMatrixExCopyColToSetDataSelected(ImatExData* matex_data, int lin, int col, int num_lin, const char* selection, int selection_count, const char* busyname)
 {
   int skip_lin = lin;
-  char* value = iupStrDup(iupMatrixExGetCell(matex_data, lin, col));
-
-  iupMatrixExInitCellAccess(matex_data);
+  char* value = iupStrDup(iupMatrixExGetCellValue(matex_data->ih, lin, col, 0));
 
   iupMatrixExBusyStart(matex_data, selection_count, busyname);
 
@@ -32,7 +30,7 @@ static void iMatrixExCopyColToSetDataSelected(ImatExData* matex_data, int lin, i
   {
     if (lin != skip_lin && selection[lin]=='1' && iupMatrixExIsLineVisible(matex_data->ih, lin))
     {
-      iupMatrixExSetCell(matex_data, lin, col, value);
+      iupMatrixExSetCellValue(matex_data->ih, lin, col, value);
 
       if (!iupMatrixExBusyInc(matex_data))
       {
@@ -50,9 +48,7 @@ static void iMatrixExCopyColToSetDataSelected(ImatExData* matex_data, int lin, i
 static void iMatrixExCopyColToSetData(ImatExData* matex_data, int lin, int col, int lin1, int lin2, const char* busyname)
 {
   int skip_lin = lin;
-  char* value = iupStrDup(iupMatrixExGetCell(matex_data, lin, col));
-
-  iupMatrixExInitCellAccess(matex_data);
+  char* value = iupStrDup(iupMatrixExGetCellValue(matex_data->ih, lin, col, 0));
 
   iupMatrixExBusyStart(matex_data, lin2-lin1+1, busyname);
 
@@ -60,7 +56,7 @@ static void iMatrixExCopyColToSetData(ImatExData* matex_data, int lin, int col, 
   {
     if (lin != skip_lin && iupMatrixExIsLineVisible(matex_data->ih, lin))
     {
-      iupMatrixExSetCell(matex_data, lin, col, value);
+      iupMatrixExSetCellValue(matex_data->ih, lin, col, value);
 
       if (!iupMatrixExBusyInc(matex_data))
       {

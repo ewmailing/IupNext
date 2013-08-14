@@ -61,7 +61,7 @@ static int iMatrixExUndoDataSwap(ImatExData* matex_data, IundoData* undo_data)
 
     value = (char*)iupTableGetCurr(undo_data->data_table);
 
-    iupMatrixExSetCell(matex_data, lin, col, value);
+    iupMatrixExSetCellValue(matex_data->ih, lin, col, value);
 
     if (!iupMatrixExBusyInc(matex_data))
       return 0;
@@ -164,8 +164,6 @@ static int iMatrixSetUndoAttrib(Ihandle* ih, const char* value)
     for (i=0; i<count; i++)
       total_cell_count += undo_stack_data[matex_data->undo_stack_pos-1 - i].cell_count;
 
-    iupMatrixExInitCellAccess(matex_data);
-
     iupMatrixExBusyStart(matex_data, total_cell_count, "UNDO");
 
     for (i=0; i<count; i++)
@@ -203,8 +201,6 @@ static int iMatrixSetRedoAttrib(Ihandle* ih, const char* value)
 
     for (i=0; i<count; i++)
       total_cell_count += undo_stack_data[matex_data->undo_stack_pos + i].cell_count;
-
-    iupMatrixExInitCellAccess(matex_data);
 
     iupMatrixExBusyStart(matex_data, total_cell_count, "REDO");
 

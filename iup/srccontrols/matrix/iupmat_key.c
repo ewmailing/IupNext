@@ -143,7 +143,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
             {
               if (iupMatrixAuxCallEditionCbLinCol(ih, lin, col, 1, 1) != IUP_IGNORE)
               {
-                iupMatrixCellSetValue(ih, lin, col, NULL, 1);
+                iupMatrixSetValue(ih, lin, col, NULL, 1);
                 iupMatrixDrawCells(ih, lin, col, lin, col);
               }
             }
@@ -210,7 +210,7 @@ int iupMatrixKeyPress_CB(Ihandle* ih, int c, int press)
     else
     {
       c = cb(ih, c, ih->data->lines.focus_cell, ih->data->columns.focus_cell, 0,
-             iupMatrixCellGetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell));
+             iupMatrixGetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell));
     }
 
     if (c == IUP_IGNORE || c == IUP_CLOSE || c == IUP_CONTINUE)
