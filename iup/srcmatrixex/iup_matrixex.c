@@ -46,14 +46,6 @@ int Dmatrix::_ACT_mtx   (Ihandle *h,int c,int lin,int col,int active,char *after
     case K_cZ: { Dmatrix::_ACT_it_undo(h)   ; return IUP_IGNORE  ;}
     case K_cY: { Dmatrix::_ACT_it_redo(h)   ; return IUP_IGNORE  ;}
     case K_cU: { D->UndoList() ; return IUP_IGNORE  ;}
-    case K_sUP   :{D->selblock.SetEnd(lin-1,col);D->selblock.Select(h);break;}
-    case K_sDOWN :{D->selblock.SetEnd(lin+1,col);D->selblock.Select(h);break;}
-    case K_sRIGHT:{D->selblock.SetEnd(lin,col+1);D->selblock.Select(h);break;}
-    case K_sLEFT :{D->selblock.SetEnd(lin,col-1);D->selblock.Select(h);break;}
-    case K_UP    :{D->selblock.SetAnchor(lin-1,col);break;}
-    case K_DOWN  :{D->selblock.SetAnchor(lin+1,col);break;}
-    case K_RIGHT :{D->selblock.SetAnchor(lin,col+1);break;}
-    case K_LEFT  :{D->selblock.SetAnchor(lin,col-1);break;}
     case K_cF: {D->Find(); return IUP_IGNORE;}
     case K_mF3:{D->Find(); return IUP_IGNORE;}
     case K_F3: {D->FindNext();return IUP_IGNORE;}
