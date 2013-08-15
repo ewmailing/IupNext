@@ -323,19 +323,18 @@ NUMCOL_VISIBLE and NUMLIN_VISIBLE to 0 after showing it for the first time.</p>
     visible page.</li>
   <li><strong>End</strong> <strong>End</strong> <strong>End</strong>: Moves the focus to the lower right corner of the 
     last page in the matrix.</li>
-	<li> <b>F2, Enter</b> or 
-<b>Space</b>: enters editing mode.</li>
-	<li><strong>Del</strong>: remove the selected cells contents.</li>
 </ul>
+<p>When using the keyboard to change the focus cell if the limit of the visible 
+area is reached then the cells are automatically scrolled. Also if a cell 
+partially visible is edited then first it is scrolled to the visible area. Also 
+while pressing together the <strong>Shift</strong> key and marks are enabled 
+with MARKMULTIPLE=Yes then a continuous area will be selected (since 3.9).</p>
 <p>When the matrix is outside the edition mode, pressing any character key makes the current key to enter in the edition 
   mode, the old text is replaced by the new one being typed. If <b>F2, Enter</b> or 
 <b>Space</b> is pressed, the current cell enters the edition mode with the 
 current text of the cell. Double-clicking a cell also 
   enters the edition mode (in Motif the 
   user must click again to the edit control get the focus).</p>
-<p>When using the keyboard to change the focus cell if the limit of the visible 
-area is reached then the cells are automatically scrolled. Also if a cell 
-partially visible is edited then first it is scrolled to the visible area.</p>
 <p>Inside the <b>edition mode</b>, the 
   following keys are used 
   for a text field:</p>
@@ -370,6 +369,8 @@ or column will be marked. Continuous areas are marked holding and dragging the m
 unmarked holding the <b>Ctrl</b> key, the mark state is inverted. Clicking on 
 the cell 0:0 will select all the items depending on MARKMODE, except for 
 LINCOL.</p>
+<p>When there are cells marked, pressing the <strong>Del</strong> key remove the 
+selected cells contents.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <p align="center">

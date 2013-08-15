@@ -185,7 +185,7 @@ static void iMatrixMarkBlock(Ihandle* ih, int lin1, int col1, int lin2, int col2
   }
 }
 
-void iupMatrixMarkMouseBlock(Ihandle* ih, int lin2, int col2)
+void iupMatrixMarkBlockEnd(Ihandle* ih, int lin2, int col2)
 {
   /* called only when "shift" is pressed and MARKMULTIPLE=YES */
   IFniii markedit_cb = NULL;
@@ -222,19 +222,21 @@ void iupMatrixMarkMouseBlock(Ihandle* ih, int lin2, int col2)
     mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
   }
 
-  /* Unmark previous block */
-  if (ih->data->mark_lin1 != -1 && ih->data->mark_lin2 != -1 &&
-      ih->data->mark_col1 != -1 && ih->data->mark_col2 != -1)
-    iMatrixMarkBlock(ih, ih->data->mark_lin1, ih->data->mark_col1, ih->data->mark_lin2, ih->data->mark_col2, 0, markedit_cb, mark_cb);
+  if (ih->data->mark_lin1 != -1 && ih->data->mark_col1 != -1)
+  {
+    /* Unmark previous block */
+    if (ih->data->mark_lin2 != -1 && ih->data->mark_col2 != -1)
+      iMatrixMarkBlock(ih, ih->data->mark_lin1, ih->data->mark_col1, ih->data->mark_lin2, ih->data->mark_col2, 0, markedit_cb, mark_cb);
 
-  ih->data->mark_lin2 = lin2;
-  ih->data->mark_col2 = col2;
+    ih->data->mark_lin2 = lin2;
+    ih->data->mark_col2 = col2;
 
-  /* Unmark new block */
-  iMatrixMarkBlock(ih, ih->data->mark_lin1, ih->data->mark_col1, ih->data->mark_lin2, ih->data->mark_col2, 1, markedit_cb, mark_cb);
+    /* Unmark new block */
+    iMatrixMarkBlock(ih, ih->data->mark_lin1, ih->data->mark_col1, ih->data->mark_lin2, ih->data->mark_col2, 1, markedit_cb, mark_cb);
+  }
 }
 
-void iupMatrixMarkMouseReset(Ihandle* ih)
+void iupMatrixMarkBlockReset(Ihandle* ih)
 {
   ih->data->mark_lin1 = -1;
   ih->data->mark_col1 = -1;
@@ -245,13 +247,13 @@ void iupMatrixMarkMouseReset(Ihandle* ih)
   ih->data->mark_full2 = 0;
 }
 
-void iupMatrixMarkMouseItem(Ihandle* ih, int ctrl, int lin1, int col1)
+void iupMatrixMarkBlockBegin(Ihandle* ih, int ctrl, int lin1, int col1)
 {
   int mark = 1, mark_full_all, lin, col;
   IFniii markedit_cb = NULL;
   IFnii mark_cb = NULL;
 
-  iupMatrixMarkMouseReset(ih);
+  iupMatrixMarkBlockReset(ih);
   iupMatrixPrepareDrawData(ih);
 
   if (!ih->data->mark_multiple || ih->data->mark_continuous || !ctrl)

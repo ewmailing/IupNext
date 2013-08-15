@@ -778,7 +778,7 @@ static int iMatrixGetIndexFromOffset(int pos, ImatLinColData *p)
   return i;
 }
 
-int iupMatrixGetCellFromOffset(Ihandle* ih, int x, int y, int* l, int* c)
+int iupMatrixGetCellFromXY(Ihandle* ih, int x, int y, int* l, int* c)
 {
   int col = iMatrixGetIndexFromOffset(x, &(ih->data->columns));
   int lin = iMatrixGetIndexFromOffset(y, &(ih->data->lines));

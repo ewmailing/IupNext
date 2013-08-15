@@ -104,7 +104,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
 {
   if (dclick)
   {
-    iupMatrixMarkMouseReset(ih);
+    iupMatrixMarkBlockReset(ih);
 
     if (lin==0 || col==0)
       return;
@@ -128,7 +128,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
   {
     if (shift && ih->data->mark_multiple && ih->data->mark_mode != IMAT_MARK_NO)
     {
-      iupMatrixMarkMouseBlock(ih, lin, col);
+      iupMatrixMarkBlockEnd(ih, lin, col);
     }
     else
     {
@@ -144,7 +144,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
 
         /* process mark before EnterCell */
         if (ih->data->mark_mode != IMAT_MARK_NO)
-          iupMatrixMarkMouseItem(ih, ctrl, lin, col);
+          iupMatrixMarkBlockBegin(ih, ctrl, lin, col);
 
         iupMatrixAuxCallEnterCellCb(ih);
 
@@ -155,7 +155,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
       {
         /* only process marks if at titles */
         if (ih->data->mark_mode != IMAT_MARK_NO)
-          iupMatrixMarkMouseItem(ih, ctrl, lin, col);
+          iupMatrixMarkBlockBegin(ih, ctrl, lin, col);
       }
     }
   }
@@ -181,7 +181,7 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r
     ih->data->has_focus = 1;
   }
 
-  iupMatrixGetCellFromOffset(ih, x, y, &lin, &col);
+  iupMatrixGetCellFromXY(ih, x, y, &lin, &col);
 
   if (b == IUP_BUTTON1)
   {
@@ -205,7 +205,7 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r
     }
   }
   else
-    iupMatrixMarkMouseReset(ih);
+    iupMatrixMarkBlockReset(ih);
 
   if (lin!=-1 && col!=-1)
   {
@@ -236,9 +236,9 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y)
     else if ((y > ih->data->h - IMAT_DRAG_SCROLL_DELTA) && (ih->data->lines.last < ih->data->lines.num-1))
       iupMATRIX_ScrollDown(ih);
 
-    if (iupMatrixGetCellFromOffset(ih, x, y, &lin, &col))
+    if (iupMatrixGetCellFromXY(ih, x, y, &lin, &col))
     {
-      iupMatrixMarkMouseBlock(ih, lin, col);
+      iupMatrixMarkBlockEnd(ih, lin, col);
       iupMatrixDrawUpdate(ih);
 
       iMatrixMouseCallMoveCb(ih, lin, col);
@@ -250,7 +250,7 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y)
   else /* Change cursor when it is passed on a join involving column titles */
     iupMatrixColResCheckChangeCursor(ih, x, y);
 
-  if (iupMatrixGetCellFromOffset(ih, x, y, &lin, &col))
+  if (iupMatrixGetCellFromXY(ih, x, y, &lin, &col))
     iMatrixMouseCallMoveCb(ih, lin, col);
 
   return IUP_DEFAULT;

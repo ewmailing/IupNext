@@ -1170,7 +1170,7 @@ static void iMatrixConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
 static int iMatrixConvertXYToPos(Ihandle* ih, int x, int y)
 {
   int lin, col;
-  if (iupMatrixGetCellFromOffset(ih, x, y, &lin, &col))
+  if (iupMatrixGetCellFromXY(ih, x, y, &lin, &col))
     return lin*(ih->data->columns.num-1) + col;
   return -1;
 }
