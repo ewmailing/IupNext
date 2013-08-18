@@ -19,8 +19,13 @@
 #include "iup_focus.h"
 #include "iup_attrib.h"
 #include "iupwin_drv.h"
+
                    
-                   
+/* some older mingw-w64.sf.net headers are missing the following define */
+#ifndef MAPVK_VK_TO_CHAR
+#define MAPVK_VK_TO_CHAR    2
+#endif
+                  
 typedef struct _Iwin2iupkey
 {
   int iupcode;
