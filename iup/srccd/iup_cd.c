@@ -10,9 +10,14 @@
 #include "iup.h"
 
 #include <cd.h>
-#include <cd_private.h>
 #include <cdiup.h>
 #include <cdnative.h>
+
+/* IMPORTANT: this module does NOT depends on the internal cdCanvas structure.
+   It depends ONLY on the internal cdContext structure. 
+   So no need to rebuild IUPCD if cdCanvas was not changed. */
+#include <cd_private.h>
+
 
 static void (*cdcreatecanvasNATIVE)(cdCanvas* canvas, void* data) = NULL;
 
