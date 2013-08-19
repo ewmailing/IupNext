@@ -19,7 +19,7 @@ int iupwinStrGetUTF8ModeFile(void);
 
 char* iupwinStrFromSystem(const TCHAR* str);
 TCHAR* iupwinStrToSystem(const char* str);
-TCHAR* iupwinStrToSystemLen(const char* str, int len);
+TCHAR* iupwinStrToSystemLen(const char* str, int *len);
 TCHAR* iupwinStrToSystemFilename(const char* str);
 char* iupwinStrFromSystemFilename(const TCHAR* str);
 

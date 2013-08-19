@@ -316,9 +316,9 @@ void TextTest(void)
 //  IupSetAttribute(mltline, "FGCOLOR", "0 128 192");
 //  IupSetAttribute(mltline, "PADDING", "15x15");
   if (IupGetInt(NULL, "UTF8MODE"))
-    IupSetAttribute(mltline, "VALUE", "First Line\nSecond Line Big Big Big\nThird Line\nmore\nmore\nΓ§Γ£ΓµΓ΅Γ³Γ©"); // UTF-8
+    IupSetAttribute(mltline, "VALUE", "First Line\nSecond Line Big Big Big\nThird Line\nmore\nmore\n(Γ§Γ£ΓµΓ΅Γ³Γ©)"); // UTF-8
   else
-    IupSetAttribute(mltline, "VALUE", "First Line\nSecond Line Big Big Big\nThird Line\nmore\nmore\nηγυασι"); // Windows-1252
+    IupSetAttribute(mltline, "VALUE", "First Line\nSecond Line Big Big Big\nThird Line\nmore\nmore\n(ηγυασι)"); // Windows-1252
   IupSetAttribute(mltline, "TIP", "First Line\nSecond Line\nThird Line");
 //  IupSetAttribute(mltline, "FONT", "Helvetica, 14");
 //  IupSetAttribute(mltline, "MASK", IUP_MASK_FLOAT);
@@ -358,8 +358,6 @@ void TextTest(void)
   }
 
   /* Creates buttons */
-//  btn_append = IupButton ("APPEND ηγυασι", NULL);   // Windows-1252
-//  btn_append = IupButton ("APPEND Γ§Γ£ΓµΓ΅Γ³Γ©", NULL);  // UTF-8
   btn_append = IupButton ("&APPEND", NULL);
   btn_insert = IupButton ("INSERT", NULL);
   btn_caret = IupButton ("CARET", NULL);

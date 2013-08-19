@@ -600,7 +600,10 @@ void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsig
   SetTextColor(dc->hBitmapDC, RGB(r, g, b));
   hOldFont = SelectObject(dc->hBitmapDC, hFont);
 
-  TextOut(dc->hBitmapDC, x, y, iupwinStrToSystemLen(text, len), len);
+  {
+    TCHAR* wtext = iupwinStrToSystemLen(text, &len);
+    TextOut(dc->hBitmapDC, x, y, wtext, len);
+  }
 
   SelectObject(dc->hBitmapDC, hOldFont);
 }

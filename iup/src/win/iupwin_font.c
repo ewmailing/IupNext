@@ -290,7 +290,8 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
   HFONT oldhfont, hFont;
   SIZE size;
   int len;
-  char* line_end;        
+  char* line_end;  
+  TCHAR* wstr;
   if (!str || str[0]==0)
     return 0;
 
@@ -307,7 +308,8 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
   else
     len = strlen(str);
 
-  GetTextExtentPoint32(hdc, iupwinStrToSystemLen(str, len), len, &size);
+  wstr = iupwinStrToSystemLen(str, &len);
+  GetTextExtentPoint32(hdc, wstr, len, &size);
 
   SelectObject(hdc, oldhfont);
   winFontReleaseDC(ih, hdc);

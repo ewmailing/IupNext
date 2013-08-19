@@ -125,24 +125,36 @@ void iupwinStrRelease(void)
 
 static void winStrWide2Char(const WCHAR* wstr, char* str, int len)
 {
+  /* cchWideChar is the wstr number of characters
+     cbMultiByte is the size in bytes available in the buffer
+     Returns the number of bytes written to the buffer 
+  */
   if (iupwin_utf8mode)
-    len = WideCharToMultiByte(CP_UTF8, 0, wstr, len, str, 2*len, NULL, NULL);  /* str must has a large buffer */
+    len = WideCharToMultiByte(CP_UTF8, 0, wstr, len, str, 3*len, NULL, NULL);  /* str must has a larger buffer */
   else
-    len = WideCharToMultiByte(CP_ACP, 0, wstr, len, str, 2*len, NULL, NULL);
+    len = WideCharToMultiByte(CP_ACP, 0, wstr, len, str, 3*len, NULL, NULL);
 
-  if (len>0)
-    str[len] = 0;
+  if (len<0)
+    len = 0;
+
+  str[len] = 0;
 }
 
-static void winStrChar2Wide(const char* str, WCHAR* wstr, int len)
+static void winStrChar2Wide(const char* str, WCHAR* wstr, int *len)
 {
+  /* cbMultiByte is the str size in bytes of the actual string
+     cchWideChar is the wstr number in characters available in the buffer
+     Returns the number of characters written to the buffer
+  */
   if (iupwin_utf8mode)
-    len = MultiByteToWideChar(CP_UTF8, 0, str, len, wstr, len);
+    *len = MultiByteToWideChar(CP_UTF8, 0, str, *len, wstr, *len);
   else
-    len = MultiByteToWideChar(CP_ACP, 0, str, len, wstr, len);
+    *len = MultiByteToWideChar(CP_ACP, 0, str, *len, wstr, *len);
 
-  if (len>0)
-    wstr[len] = 0;
+  if (*len<0)
+    *len = 0;
+
+  wstr[*len] = 0;
 }
 
 WCHAR* iupwinStrChar2Wide(const char* str)
@@ -151,7 +163,7 @@ WCHAR* iupwinStrChar2Wide(const char* str)
   {
     int len = (int)strlen(str);
     WCHAR* wstr = (WCHAR*)malloc((len+1) * sizeof(WCHAR));
-    winStrChar2Wide(str, wstr, len);
+    winStrChar2Wide(str, wstr, &len);
     return wstr;
   }
 
@@ -163,7 +175,7 @@ char* iupwinStrWide2Char(const WCHAR* wstr)
   if (wstr)
   {
     int len = (int)wcslen(wstr);
-    char* str = (char*)malloc((2*len+1) * sizeof(char));   /* str must has a large buffer */
+    char* str = (char*)malloc((3*len+1) * sizeof(char));   /* str must has a larger buffer */
     winStrWide2Char(wstr, str, len);
     return str;
   }
@@ -209,7 +221,7 @@ TCHAR* iupwinStrToSystem(const char* str)
   {
     int len = (int)strlen(str);
     WCHAR* wstr = (WCHAR*)winStrGetMemory((len+1) * sizeof(WCHAR));
-    winStrChar2Wide(str, wstr, len);
+    winStrChar2Wide(str, wstr, &len);
     return wstr;
   }
   return NULL;
@@ -224,7 +236,7 @@ char* iupwinStrFromSystem(const TCHAR* wstr)
   if (wstr)
   {
     int len = (int)wcslen(wstr);
-    char* str = (char*)winStrGetMemory((2*len+1) * sizeof(char));    /* str must has a large buffer because the UTF-8 string can be larger than the original */
+    char* str = (char*)winStrGetMemory((3*len+1) * sizeof(char));    /* str must has a large buffer because the UTF-8 string can be larger than the original */
     winStrWide2Char(wstr, str, len);
     return str;
   }
@@ -234,12 +246,14 @@ char* iupwinStrFromSystem(const TCHAR* wstr)
 #endif
 }
 
-TCHAR* iupwinStrToSystemLen(const char* str, int len)
+TCHAR* iupwinStrToSystemLen(const char* str, int *len)
 {
+  /* The len here is in bytes always, using UTF-8 or not.
+     So, when converted to Unicode must return the actual size in characters. */
 #ifdef UNICODE
   if (str)
   {
-    WCHAR* wstr = (WCHAR*)winStrGetMemory((len+1) * sizeof(WCHAR));
+    WCHAR* wstr = (WCHAR*)winStrGetMemory(((*len)+1) * sizeof(WCHAR));
     winStrChar2Wide(str, wstr, len);
     return wstr;
   }
