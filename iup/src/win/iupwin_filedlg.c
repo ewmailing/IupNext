@@ -414,10 +414,10 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
   return 0;
 }
 
-static char* winFileDlgStrReplaceSeparator(const char* name)
+static TCHAR* winFileDlgStrReplaceSeparator(const TCHAR* name)
 {
   int i=0;
-  char* buffer = (char*)malloc(strlen(name)+2);
+  TCHAR* buffer = (TCHAR*)malloc(lstrlen(name)+2);
 
   /* replace symbols "|" by terminator "\0" */
 
@@ -425,7 +425,7 @@ static char* winFileDlgStrReplaceSeparator(const char* name)
   {
     buffer[i] = *name;
 
-    if (buffer[i] == '|')
+    if (buffer[i] == L'|')
       buffer[i] = 0;
 
     i++;
@@ -442,7 +442,8 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   InativeHandle* parent = iupDialogGetNativeParent(ih);
   OPENFILENAME openfilename;
   int result, dialogtype;
-  char *value, *extfilter=NULL, *dir=NULL;
+  char *value, *dir=NULL;
+  TCHAR* extfilter = NULL;
 
   iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
@@ -469,12 +470,12 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   openfilename.lStructSize = sizeof(OPENFILENAME);
   openfilename.hwndOwner = parent;
 
-  extfilter = iupAttribGet(ih, "EXTFILTER");
-  if (extfilter)
+  value = iupAttribGet(ih, "EXTFILTER");
+  if (value)
   {
     int index;
-    extfilter = winFileDlgStrReplaceSeparator(extfilter);
-    openfilename.lpstrFilter = iupwinStrToSystemFilename(extfilter);
+    extfilter = winFileDlgStrReplaceSeparator(iupwinStrToSystem(value));
+    openfilename.lpstrFilter = extfilter;
 
     value = iupAttribGet(ih, "FILTERUSED");
     if (iupStrToInt(value, &index))
@@ -487,20 +488,24 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
     value = iupAttribGet(ih, "FILTER");
     if (value)
     {
+      TCHAR *winfo, *wvalue;
       int sz1, sz2;
       char* info = iupAttribGet(ih, "FILTERINFO");
       if (!info)
         info = value;
 
+      winfo = iupwinStrToSystem(info);
+      wvalue = iupwinStrToSystem(value);
+
       /* concat FILTERINFO+FILTER */
-      sz1 = strlen(info)+1; /* each part has a terminator */
-      sz2 = strlen(value)+1;
-      extfilter = (char*)malloc((sz1+sz2+1));
-      memcpy(extfilter, info, sz1); /* copy also the terminator */
-      memcpy(extfilter+sz1, value, sz2);
+      sz1 = lstrlen(winfo)+1; /* each part has a terminator */
+      sz2 = lstrlen(wvalue)+1;
+      extfilter = (TCHAR*)malloc((sz1+sz2+1)*sizeof(TCHAR));
+      memcpy(extfilter, winfo, sz1*sizeof(TCHAR)); /* copy also the terminator */
+      memcpy(extfilter+sz1, wvalue, sz2*sizeof(TCHAR));
       extfilter[sz1+sz2] = 0;  /* additional terminator at the end */
 
-      openfilename.lpstrFilter = iupwinStrToSystemFilename(extfilter);
+      openfilename.lpstrFilter = extfilter;
       openfilename.nFilterIndex = 1;
     }
   }

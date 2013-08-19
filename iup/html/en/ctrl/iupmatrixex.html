@@ -178,7 +178,8 @@ given cell to a specified range of cells in the same column. Value can be &quot;
 (for all lines), TOP (for all lines before the given line), BOTTOM (for all 
 lines after the given line), MARKED (for all lines where the cell is marked), or 
 a series of intervals in the format &quot;L1-L2,L3-L4,L5,L6-L7,...&quot;. BUSY 
-will be set to Yes during the operation.</p>
+will be set to Yes during the operation.&nbsp; Only visible cells will receive 
+data. </p>
 <p><strong>FREEZE:</strong> freezes the scroll of columns and lines up to the 
 given cell. Can be: &quot;Yes&quot; - uses the value of the FOCUS_CELL attribute, &quot;<em>L</em>:<em>C</em>&quot; 
 where L and C are the line and column, or &quot;No&quot; clear the freeze state. 
@@ -264,11 +265,11 @@ semicolon (';') or a custom value defined by the TEXTSEPARATOR attribute. Data
 must contain an exact matrix organization. Use the attribute TEXTSKIPLINES to 
 skip a number of lines in the beginning of the data. If data at the insert 
 position will have more lines or columns than the current matrix, then the
-<a href="#PASTESIZE_CB">PASTESIZE_CB</a> callback is called. Only visible cells 
-will be updated. If defined the <a href="iupmatrix_cb.html#EDITION_CB">
+<a href="#PASTESIZE_CB">PASTESIZE_CB</a> callback is called. If defined the <a href="iupmatrix_cb.html#EDITION_CB">
 EDITION_CB</a> callback will be called before the cell value is set. LASTERROR 
 can be set to &quot;NOTEXT&quot; (data is empty or NULL), &quot;INVALIDMATRIX&quot; (not a matrix 
-data). BUSY will be set to Yes during the operation.</p>
+data). BUSY will be set to Yes during the operation. Only visible cells will 
+receive data. </p>
 <p>
 <strong>PASTEDATA</strong> (write-only): paste data from a memory buffer. Value 
 is the data. Insert position is obtained from the

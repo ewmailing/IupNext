@@ -132,7 +132,7 @@ static void winStrWide2Char(const WCHAR* wstr, char* str, int len)
   if (iupwin_utf8mode)
     len = WideCharToMultiByte(CP_UTF8, 0, wstr, len, str, 3*len, NULL, NULL);  /* str must has a larger buffer */
   else
-    len = WideCharToMultiByte(CP_ACP, 0, wstr, len, str, 3*len, NULL, NULL);
+    len = WideCharToMultiByte(CP_ACP,  0, wstr, len, str, 3*len, NULL, NULL);
 
   if (len<0)
     len = 0;
@@ -149,7 +149,7 @@ static void winStrChar2Wide(const char* str, WCHAR* wstr, int *len)
   if (iupwin_utf8mode)
     *len = MultiByteToWideChar(CP_UTF8, 0, str, *len, wstr, *len);
   else
-    *len = MultiByteToWideChar(CP_ACP, 0, str, *len, wstr, *len);
+    *len = MultiByteToWideChar(CP_ACP,  0, str, *len, wstr, *len);
 
   if (*len<0)
     *len = 0;
