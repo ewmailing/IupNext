@@ -23,6 +23,22 @@
 #include "iupwin_str.h"
 
 
+#ifndef TTTOOLINFO
+#ifdef UNICODE
+#define TTTOOLINFO TTTOOLINFOW
+#else
+#define TTTOOLINFO TTTOOLINFOA
+#endif
+#endif
+
+#ifndef TTM_SETTITLE
+#ifdef UNICODE
+#define TTM_SETTITLE TTM_SETTITLEW
+#else
+#define TTM_SETTITLE TTM_SETTITLEA
+#endif
+#endif
+
 #ifndef TTM_POPUP   /* Not defined for MingW and Cygwin */
 #define TTM_POPUP  (WM_USER + 34)
 #endif

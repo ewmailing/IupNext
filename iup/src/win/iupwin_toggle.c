@@ -29,6 +29,9 @@
 #include "iupwin_str.h"
 
 
+#ifndef ODS_NOACCEL
+#define ODS_NOACCEL   0x0100
+#endif
 #ifndef ODS_NOFOCUSRECT
 #define ODS_NOFOCUSRECT   0x0200
 #endif

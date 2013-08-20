@@ -23,6 +23,12 @@
 #include "iupwin_str.h"
 
 
+/* old cygwin related hack */
+#ifndef LOCALE_INVARIANT
+#define LOCALE_INVARIANT 0x007f
+#endif
+
+
 static int win_monitor_index = 0;
 static HANDLE win_singleintance = NULL;
 static HWND win_findwindow = NULL;
