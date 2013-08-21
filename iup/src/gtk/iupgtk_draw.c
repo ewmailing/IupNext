@@ -190,7 +190,8 @@ void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsig
   GdkColor color;
   iupgdkColorSet(&color, r, g, b);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
-  pango_layout_set_text(fontlayout, iupgtkStrConvertToUTF8(text), len);
+  text = iupgtkStrConvertToUTF8Len(text, &len);
+  pango_layout_set_text(fontlayout, text, len);
   gdk_draw_layout(dc->pixmap, dc->pixmap_gc, x, y, fontlayout);
 }
 

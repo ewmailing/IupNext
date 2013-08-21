@@ -380,7 +380,7 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 {
   IgtkFont* gtkfont;
   int len, w;
-  char* line_end;
+  const char* line_end;
 
   if (!str || str[0]==0)
     return 0;
@@ -389,19 +389,22 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
   if (!gtkfont)
     return 0;
 
+  /* do it only for the first line, if any */
   line_end = strchr(str, '\n');
   if (line_end)
     len = line_end-str;
   else
     len = strlen(str);
 
+  str = iupgtkStrConvertToUTF8Len(str, &len);
+
   if (iupAttribGetBoolean(ih, "MARKUP"))
   {
     pango_layout_set_attributes(gtkfont->layout, NULL);
-    pango_layout_set_markup(gtkfont->layout, iupgtkStrConvertToUTF8(str), len);
+    pango_layout_set_markup(gtkfont->layout, str, len);
   }
   else
-    pango_layout_set_text(gtkfont->layout, iupgtkStrConvertToUTF8(str), len);
+    pango_layout_set_text(gtkfont->layout, str, len);
 
   pango_layout_get_pixel_size(gtkfont->layout, &w, NULL);
   return w;

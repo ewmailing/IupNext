@@ -44,6 +44,7 @@ void iupgtkNativeContainerSetHasWindow(GtkWidget* container, int has_window);
 
 /* str */
 char* iupgtkStrConvertToUTF8(const char* str);
+char* iupgtkStrConvertToUTF8Len(const char* str, int *len);
 char* iupgtkStrConvertFromUTF8(const char* str);
 void  iupgtkStrReleaseConvertUTF8(void);
 char* iupgtkStrConvertFromFilename(const char* str);

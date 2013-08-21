@@ -42,9 +42,9 @@ static int gtkStrIsAscii(const char* str)
   return 1;
 }
 
-static char* gtkStrToUTF8(const char *str, const char* charset)
+static char* gtkStrToUTF8(const char *str, int len, const char* charset)
 {
-  return g_convert(str, -1, "UTF-8", charset, NULL, NULL, NULL);
+  return g_convert(str, len, "UTF-8", charset, NULL, NULL, NULL);
 }
 
 static char* gtkStrFromUTF8(const char *str, const char* charset)
@@ -58,6 +58,46 @@ void iupgtkStrReleaseConvertUTF8(void)
 {
   if (gtkLastConvertUTF8)
     g_free(gtkLastConvertUTF8);
+}
+
+char* iupgtkStrConvertToUTF8Len(const char* str, int *len)
+{
+  if (!str || *str == 0)
+    return (char*)str;
+
+  if (!iupgtk_utf8mode)  
+  {
+    const char *charset = NULL;
+    if (g_get_charset(&charset)==TRUE)  /* current locale is already UTF-8 */
+    {
+      if (g_utf8_validate(str, *len, NULL))
+        return (char*)str;
+      else
+      {
+        if (gtkLastConvertUTF8)
+          g_free(gtkLastConvertUTF8);
+        gtkLastConvertUTF8 = gtkStrToUTF8(str, *len, "ISO8859-1");   /* if string is not UTF-8, assume ISO8859-1 */
+        if (!gtkLastConvertUTF8) return (char*)str;
+        *len = strlen(gtkLastConvertUTF8);
+        return gtkLastConvertUTF8;
+      }
+    }
+    else
+    {
+      if (gtkStrIsAscii(str) || !charset)
+        return (char*)str;
+      else if (charset)
+      {
+        if (gtkLastConvertUTF8)
+          g_free(gtkLastConvertUTF8);
+        gtkLastConvertUTF8 = gtkStrToUTF8(str, *len, charset);
+        if (!gtkLastConvertUTF8) return (char*)str;
+        *len = strlen(gtkLastConvertUTF8);
+        return gtkLastConvertUTF8;
+      }
+    }
+  }
+  return (char*)str;
 }
 
 char* iupgtkStrConvertToUTF8(const char* str)  /* From IUP to GTK */
@@ -76,7 +116,7 @@ char* iupgtkStrConvertToUTF8(const char* str)  /* From IUP to GTK */
       {
         if (gtkLastConvertUTF8)
           g_free(gtkLastConvertUTF8);
-        gtkLastConvertUTF8 = gtkStrToUTF8(str, "ISO8859-1");   /* if string is not UTF-8, assume ISO8859-1 */
+        gtkLastConvertUTF8 = gtkStrToUTF8(str, -1, "ISO8859-1");   /* if string is not UTF-8, assume ISO8859-1 */
         if (!gtkLastConvertUTF8) return (char*)str;
         return gtkLastConvertUTF8;
       }
@@ -89,7 +129,7 @@ char* iupgtkStrConvertToUTF8(const char* str)  /* From IUP to GTK */
       {
         if (gtkLastConvertUTF8)
           g_free(gtkLastConvertUTF8);
-        gtkLastConvertUTF8 = gtkStrToUTF8(str, charset);
+        gtkLastConvertUTF8 = gtkStrToUTF8(str, -1, charset);
         if (!gtkLastConvertUTF8) return (char*)str;
         return gtkLastConvertUTF8;
       }
@@ -209,7 +249,7 @@ char* iupgtkStrConvertFromFilename(const char* str)   /* From Filename to IUP */
       {
         if (gtkLastConvertUTF8)
           g_free(gtkLastConvertUTF8);
-        gtkLastConvertUTF8 = gtkStrToUTF8(str, "ISO8859-1");   /* if string is not UTF-8, assume ISO8859-1 */
+        gtkLastConvertUTF8 = gtkStrToUTF8(str, -1, "ISO8859-1");   /* if string is not UTF-8, assume ISO8859-1 */
         if (!gtkLastConvertUTF8) return (char*)str;
         return gtkLastConvertUTF8;
       }
@@ -222,7 +262,7 @@ char* iupgtkStrConvertFromFilename(const char* str)   /* From Filename to IUP */
       {
         if (gtkLastConvertUTF8)
           g_free(gtkLastConvertUTF8);
-        gtkLastConvertUTF8 = gtkStrToUTF8(str, charset);
+        gtkLastConvertUTF8 = gtkStrToUTF8(str, -1, charset);
         if (!gtkLastConvertUTF8) return (char*)str;
         return gtkLastConvertUTF8;
       }
