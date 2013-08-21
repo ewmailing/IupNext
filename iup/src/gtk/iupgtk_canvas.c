@@ -106,19 +106,20 @@ static gboolean gtkCanvasScrollHorizChangeValue(GtkRange *range, GtkScrollType s
 
 static void gtkCanvasAdjustHorizValueChanged(GtkAdjustment *adjustment, Ihandle *ih)
 {
-  double posx, posy;
+  float posx, posy, xmin, xmax, dx;
   IFniff cb;
 
-  double value = gtk_adjustment_get_value(adjustment);
+  posx = (float)gtk_adjustment_get_value(adjustment);
+  if (ih->data->posx==posx)
+    return;
 
-  double xmin = iupAttribGetFloat(ih, "XMIN");
-  double xmax = iupAttribGetFloat(ih, "XMAX");
-  double dx = iupAttribGetFloat(ih, "DX");
-  if (value < xmin) value = xmin;
-  if (value > xmax-dx) value = xmax-dx;
+  xmin = iupAttribGetFloat(ih, "XMIN");
+  xmax = iupAttribGetFloat(ih, "XMAX");
+  dx = iupAttribGetFloat(ih, "DX");
+  if (posx < xmin) posx = xmin;
+  if (posx > xmax-dx) posx = xmax-dx;
+  ih->data->posx = posx;
 
-  posx = value;
-  ih->data->posx = (float)posx;
   posy = ih->data->posy;
 
   if (iupAttribGet(ih, "_IUPGTK_SETSBPOS"))
@@ -131,13 +132,15 @@ static void gtkCanvasAdjustHorizValueChanged(GtkAdjustment *adjustment, Ihandle 
     if (op == -1)
       return;
 
-    cb(ih, op, (float)posx, (float)posy);
+    cb(ih, op, posx, posy);
+
+    iupAttribSetInt(ih, "_IUPGTK_SBOP", -1);
   }
   else
   {
     IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
     if (cb)
-      cb (ih, (float)posx, (float)posy);
+      cb (ih, posx, posy);
   }
 }
 
@@ -152,19 +155,20 @@ static gboolean gtkCanvasScrollVertChangeValue(GtkRange *range, GtkScrollType sc
 
 static void gtkCanvasAdjustVertValueChanged(GtkAdjustment *adjustment, Ihandle *ih)
 {
-  double posx, posy;
+  float posx, posy, ymin, ymax, dy;
   IFniff cb;
 
-  double value = gtk_adjustment_get_value(adjustment);
+  posy = (float)gtk_adjustment_get_value(adjustment);
+  if (ih->data->posy==posy)
+    return;
 
-  double ymin = iupAttribGetFloat(ih, "YMIN");
-  double ymax = iupAttribGetFloat(ih, "YMAX");
-  double dy = iupAttribGetFloat(ih, "DY");
-  if (value < ymin) value = ymin;
-  if (value > ymax-dy) value = ymax-dy;
+  ymin = iupAttribGetFloat(ih, "YMIN");
+  ymax = iupAttribGetFloat(ih, "YMAX");
+  dy = iupAttribGetFloat(ih, "DY");
+  if (posy < ymin) posy = ymin;
+  if (posy > ymax-dy) posy = ymax-dy;
+  ih->data->posy = posy;
 
-  posy = value;
-  ih->data->posy = (float)posy;
   posx = ih->data->posx;
 
   if (iupAttribGet(ih, "_IUPGTK_SETSBPOS"))
@@ -177,13 +181,15 @@ static void gtkCanvasAdjustVertValueChanged(GtkAdjustment *adjustment, Ihandle *
     if (op == -1)
       return;
 
-    cb(ih, op, (float)posx, (float)posy);
+    cb(ih, op, posx, posy);
+
+    iupAttribSetInt(ih, "_IUPGTK_SBOP", -1);
   }
   else
   {
     IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
     if (cb)
-      cb (ih, (float)posx, (float)posy);
+      cb (ih, posx, posy);
   }
 }
 
@@ -728,6 +734,8 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   }
 
   gtk_widget_realize(sb_win);
+
+  iupAttribSetInt(ih, "_IUPGTK_SBOP", -1);
 
   if (ih->data->sb & IUP_SB_HORIZ)
   {
