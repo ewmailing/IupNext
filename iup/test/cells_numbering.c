@@ -66,6 +66,8 @@ static Ihandle* create(void)
 
   IupSetAttribute(cells, "BOXED", "NO");
 
+  IupSetAttribute(cells, "RASTERSIZE", "500x400");
+
   return cells;
 }
 
@@ -74,12 +76,9 @@ void CellsNumberingTest(void)
   Ihandle* dlg = NULL;
   Ihandle* cells  = NULL;
 
-  IupControlsOpen();
-
   cells  = create();
-  dlg = IupDialog(cells);
 
-  IupSetAttribute(cells, "RASTERSIZE", "500x500");
+  dlg = IupDialog(cells);
   IupSetAttribute(dlg, "TITLE", "IupCells");
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER) ;
@@ -90,6 +89,7 @@ void CellsNumberingTest(void)
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
+  IupControlsOpen();
 
   CellsNumberingTest();
 

@@ -48,6 +48,8 @@ static Ihandle* create(void)
    IupSetCallback(cells, "NLINES_CB", (Icallback)nlines_cb);
    IupSetCallback(cells, "NCOLS_CB",  (Icallback)ncols_cb);
 
+   IupSetAttribute(cells, "RASTERSIZE", "400x400");
+   IupSetAttribute(cells, "BORDER", "NO");
    return cells;
 }
 
@@ -57,13 +59,12 @@ void CellsCheckboardTest(void)
   Ihandle* cells  = NULL;
 
   cells  = create();
-  dlg = IupDialog(cells);
 
-  IupSetAttribute(dlg, "RASTERSIZE", "400x400");
+  dlg = IupDialog(cells);
   IupSetAttribute(dlg, "TITLE", "IupCells");
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER) ;
-  IupSetAttribute(dlg, "RASTERSIZE", NULL);
+  IupSetAttribute(cells, "RASTERSIZE", NULL);
 }
 
 #ifndef BIG_TEST

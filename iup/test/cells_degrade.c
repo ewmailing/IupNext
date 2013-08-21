@@ -109,7 +109,7 @@ static Ihandle* create(void)
   IupSetCallback(cells, "SCROLLING_CB",  (Icallback)scrolling_cb);
 
   IupSetAttribute(cells, "BOXED",      "NO");
-  IupSetAttribute(cells, "RASTERSIZE", "395x255");
+  IupSetAttribute(cells, "RASTERSIZE", "300x200");
 
   return cells;
 }

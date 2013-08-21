@@ -84,6 +84,7 @@ static Ihandle* create_matrix(void)
     IupSetAttribute(mat, "2:2", "(Γ§Γ£ΓµΓ΅Γ³Γ©)");
   else
     IupSetAttribute(mat, "2:2", "(ηγυασι)");
+  
   IupSetAttribute(mat, "3:1", "3.4");
   IupSetAttribute(mat, "3:3", "Font Test");
 //  IupSetAttribute(mat, "HEIGHT2", "30");

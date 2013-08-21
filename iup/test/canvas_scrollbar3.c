@@ -15,79 +15,51 @@
    Remember that:
    XMIN<=POSX<=XMAX-DX
 */
-#define WORLD_W 600
-#define WORLD_H 400
-static int scale = 1;
+#define WORLD_XMAX 599
+#define WORLD_YMAX 399
 
 static void update_scrollbar(Ihandle* ih, int canvas_w, int canvas_h)
 {
   /* update page size, it is always the client size of the canvas,
-     but must convert it to world coordinates.
-     If you change canvas size or scale must call this function. */
-  double ww, wh;
-  if (scale > 0)
-  {
-    ww = (double)canvas_w/scale;
-    wh = (double)canvas_h/scale;
-  }
-  else
-  {
-    ww = canvas_w*abs(scale);
-    wh = canvas_h*abs(scale);
-  }
-  IupSetfAttribute(ih, "DX", "%g", ww);
-  IupSetfAttribute(ih, "DY", "%g", wh);
-}
-
-static void update_viewport(Ihandle* ih, cdCanvas *canvas, float posx, float posy)
-{
-  int view_x, view_y, view_w, view_h;
-
-  /* The CD viewport is the same area represented by the virtual space of the scrollbar,
-     but not using the same coordinates. */
-
-  /* posy is top-bottom, CD is bottom-top.
-     invert posy reference (YMAX-DY - POSY) */
-  posy = IupGetFloat(ih, "YMAX")-IupGetFloat(ih, "DY") - posy;
-  if (posy < 0) posy = 0;
-
-  if (scale > 0)
-  {
-    view_w = WORLD_W*scale;
-    view_h = WORLD_H*scale;
-    view_x = (int)(posx*scale);
-    view_y = (int)(posy*scale);
-  }
-  else
-  {
-    view_w = WORLD_W/abs(scale);
-    view_h = WORLD_H/abs(scale);
-    view_x = (int)(posx/abs(scale));
-    view_y = (int)(posy/abs(scale));
-  }
-
-  wdCanvasViewport(canvas, -view_x, view_w-1 - view_x, -view_y, view_h-1 - view_y);
+     If you change canvas size must call this function. */
+  IupSetFloat(ih, "DX", (float)canvas_w/((float)WORLD_XMAX+1));
+  IupSetFloat(ih, "DY", (float)canvas_h/((float)WORLD_YMAX+1));
 }
 
 /************************************************************************************/
 
-static int action(Ihandle *ih)
+static int action(Ihandle *ih, float fposx, float fposy)
 {
+  int posx, posy;
   cdCanvas *canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
 
-printf("ACTION\n");
   cdCanvasActivate(canvas);
   cdCanvasClear(canvas);
 
-  cdCanvasForeground(canvas, CD_RED);
-  wdCanvasLine(canvas, 0, 0, WORLD_W, WORLD_H);
-  wdCanvasLine(canvas, 0, WORLD_H, WORLD_W, 0);
-  wdCanvasArc(canvas, WORLD_W/2, WORLD_H/2+WORLD_H/10, WORLD_W/10, WORLD_H/10, 0, 360);
+  /* posy is top-bottom, CD is bottom-top.
+     invert posy reference (YMAX-DY - POSY) */
+  fposy = IupGetFloat(ih, "YMAX")-IupGetFloat(ih, "DY") - fposy;
+  if (fposy < 0) fposy = 0;
 
-  wdCanvasLine(canvas, 0, 0, WORLD_W, 0);
-  wdCanvasLine(canvas, 0, WORLD_H, WORLD_W, WORLD_H);
-  wdCanvasLine(canvas, 0, 0, 0, WORLD_H);
-  wdCanvasLine(canvas, WORLD_W, 0, WORLD_W, WORLD_H);
+  posx = (int)(fposx*(WORLD_XMAX+1) + 0.5);
+  posy = (int)(fposy*(WORLD_YMAX+1) + 0.5);
+
+  posx = -posx;
+  posy = -posy;
+
+  cdCanvasOrigin(canvas, posx, posy);
+  posx = 0; posy = 0;
+
+  cdCanvasForeground(canvas, CD_RED);
+  cdCanvasLine(canvas, posx+0, posy+0, posx+WORLD_XMAX, posy+WORLD_YMAX);
+  cdCanvasLine(canvas, posx+0, posy+WORLD_YMAX, posx+WORLD_XMAX, posy+0);
+
+  cdCanvasArc(canvas, posx+WORLD_XMAX/2, posy+WORLD_YMAX/2+WORLD_YMAX/10, WORLD_XMAX/10, WORLD_YMAX/10, 0, 360);
+
+  cdCanvasLine(canvas, posx+0, posy+0, posx+WORLD_XMAX, posy+0);
+  cdCanvasLine(canvas, posx+0, posy+WORLD_YMAX, posx+WORLD_XMAX, posy+WORLD_YMAX);
+  cdCanvasLine(canvas, posx+0, posy+0, posx+0, posy+WORLD_YMAX);
+  cdCanvasLine(canvas, posx+WORLD_XMAX, posy+0, posx+WORLD_XMAX, posy+WORLD_YMAX);
 
   return IUP_DEFAULT;
 }
@@ -106,7 +78,6 @@ printf("                                DRAWSIZE=%s \n", IupGetAttribute(ih, "DR
 
   /* update the application */
   cdCanvasActivate(canvas);
-  update_viewport(ih, canvas, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
 
   return IUP_DEFAULT;
 }
@@ -116,35 +87,8 @@ static int scroll_cb(Ihandle *ih, int op, float posx, float posy)
   cdCanvas *canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
 printf("SCROLL_CB(%g, %g)\n", posx, posy);
   cdCanvasActivate(canvas);
-  update_viewport(ih, canvas, posx, posy);
   IupRedraw(ih, 0);
   (void)op;
-  return IUP_DEFAULT;
-}
-
-static int wheel_cb(Ihandle *ih,float delta,int x,int y,char* status)
-{
-  int canvas_w, canvas_h;
-  cdCanvas *canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
-  (void)x;
-  (void)y;
-  (void)status;
-
-  if (scale+delta==0) /* skip 0 */
-  {
-    if (scale > 0) 
-      scale = -1;
-    else 
-      scale = 1;
-  }
-  else
-    scale += (int)delta;
-
-  cdCanvasActivate(canvas);
-  cdCanvasGetSize(canvas, &canvas_w, &canvas_h, NULL, NULL);
-  update_scrollbar(ih, canvas_w, canvas_h);
-  update_viewport(ih, canvas, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
-  IupRedraw(ih, 0);
   return IUP_DEFAULT;
 }
 
@@ -153,14 +97,7 @@ static int map_cb(Ihandle *ih)
   /* canvas will be automatically saved in "_CD_CANVAS" attribute */
   cdCanvas *canvas = cdCreateCanvas(CD_IUP, ih);
 
-  /* World size is fixed */
-  wdCanvasWindow(canvas, 0, WORLD_W, 0, WORLD_H);
-
-  /* handle scrollbar in world coordinates, so we only have to update DX/DY */
-  IupSetAttribute(ih, "XMIN", "0");
-  IupSetAttribute(ih, "YMIN", "0");
-  IupSetfAttribute(ih, "XMAX", "%d", WORLD_W);
-  IupSetfAttribute(ih, "YMAX", "%d", WORLD_H);
+  /* handle scrollbar in 0.0-1.0 interval */
 
   return IUP_DEFAULT;
 }
@@ -172,7 +109,7 @@ static int unmap_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-void CanvasScrollbarTest(void)
+void CanvasScrollbarTest3(void)
 {
   Ihandle *dlg, *cnv;
 
@@ -185,7 +122,6 @@ void CanvasScrollbarTest(void)
   IupSetCallback(cnv, "ACTION",  (Icallback)action);
   IupSetCallback(cnv, "MAP_CB",  (Icallback)map_cb);
   IupSetCallback(cnv, "UNMAP_CB",  (Icallback)unmap_cb);
-  IupSetCallback(cnv, "WHEEL_CB",  (Icallback)wheel_cb);
   IupSetCallback(cnv, "SCROLL_CB",  (Icallback)scroll_cb);
                    
   dlg = IupDialog(IupVbox(cnv, NULL));
