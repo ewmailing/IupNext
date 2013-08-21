@@ -953,6 +953,7 @@ void iupMatrixDraw(Ihandle* ih, int update)
     iupMatrixAuxCalcSizes(ih);
 
   iMatrixDrawMatrix(ih);
+
   ih->data->need_redraw = 0;
 
   if (update)

@@ -67,5 +67,7 @@
     <ClCompile Include="..\test\gridbox.c" />
     <ClCompile Include="..\test\expander.c" />
     <ClCompile Include="..\test\progressdlg.c" />
+    <ClCompile Include="..\test\canvas_scrollbar2.c" />
+    <ClCompile Include="..\test\canvas_scrollbar3.c" />
   </ItemGroup>
 </Project>

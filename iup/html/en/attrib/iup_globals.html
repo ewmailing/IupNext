@@ -43,7 +43,7 @@ be used if you set the element handle to NULL.</p>
     referring to corrections only. Ex.: &quot;1.7.2&quot;.</p>
 <h3><a name="copyright"><strong>COPYRIGHT</strong></a> (read-only)</h3>
 <p>Returns the IUP's copyright.</p>
-<p>&nbsp;Ex: &quot;Copyright (C) 1994-2004 Tecgraf/PUC-Rio and PETROBRAS S/A&quot;.</p>
+<p>&nbsp;Ex: &quot;Copyright (C) 1994-2013 Tecgraf/PUC-Rio&quot;.</p>
 <h3>LASTERROR [Windows Only]<span class="style2"> (since 3.6)</span></h3>
 <p>If an error is found, returns a string with the system error description.</p>
 <h3>IUPLUA_THREADED<span class="style2"> (since 3.6)</span></h3>
@@ -182,6 +182,9 @@ On MacOSX is system version.</p>
 <h3><strong>SYSTEM</strong>LOCALE 
 (read-only)<span class="style2"> (since 3.4)</span></h3>
 <p>Returns a text with a description of the system locale.</p>
+<h3>SCROLLBARSIZE (read-only)<span class="style2"> (since 3.9)</span></h3>
+<p>Returns the width of the vertical scrollbar (the same as the height of the 
+horizontal scrollbar).</p>
 <h3><strong><a name="GTKVERSION">GTKVERSION</a></strong> (read-only) [GTK Only]</h3>
 <p>Returns the run time version of the GTK toolkit. This is the version being used at the time of the IupOpen function was called by the application.</p>
 <h3><strong><a name="GTKDEVVERSION">GTKDEVVERSION</a></strong> (read-only) [GTK 

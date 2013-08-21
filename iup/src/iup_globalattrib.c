@@ -208,6 +208,8 @@ char* IupGetGlobal(const char *name)
   }
   if (iupStrEqual(name, "SYSTEMLOCALE"))
     return iupdrvLocaleInfo();
+  if (iupStrEqual(name, "SCROLLBARSIZE"))
+    return iupStrReturnInt(iupdrvGetScrollbarSize());
 
   value = iupdrvGetGlobal(name);
 

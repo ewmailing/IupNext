@@ -462,7 +462,7 @@ void iupMatrixScrollPosFunc(Ihandle* ih, int mode, float pos, int m)
     return;
   }
 
-  scroll_pos = (int)(pos * p->total_size + 0.5);
+  scroll_pos = (int)(pos * p->total_size + 0.5);  /* round */
 
   /* position first and first_offset, according to scroll pos */
   iupMatrixAuxAdjustFirstFromScrollPos(p, scroll_pos);

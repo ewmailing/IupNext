@@ -344,19 +344,19 @@ static void iCellsAdjustOrigin(Ihandle* ih, int lin, int col)
 
 /* Function used for the scrollbar's update; usually needed when the
  * object has modified its size or the cells sizes has changed.   */
-static void iCellsAdjustScrolls(Ihandle* ih, int w, int h)
+static void iCellsAdjustScroll(Ihandle* ih, int canvas_w, int canvas_h)
 { 
   int virtual_height, virtual_width;
 
   /* Getting the virtual size */
   iCellsGetVirtualSize(ih, &virtual_width, &virtual_height); 
 
-  IupSetInt(ih, "YMAX", virtual_height-1);
-  IupSetInt(ih, "XMAX", virtual_width-1);
+  IupSetInt(ih, "XMAX", virtual_width);
+  IupSetInt(ih, "YMAX", virtual_height);
 
   /* Setting the object scrollbar position */
-  IupSetInt(ih, "DY", h);
-  IupSetInt(ih, "DX", w);
+  IupSetInt(ih, "DX", canvas_w);
+  IupSetInt(ih, "DY", canvas_h);
 }
 
 /* Function used to call the client; is used when a cell must be repainted. */
@@ -655,7 +655,13 @@ static int iCellsMotion_CB(Ihandle* ih, int x, int y, char* r)
 static int iCellsResize_CB(Ihandle* ih, int w, int h)
 {
   /* recalculate scrollbars limits */
-  iCellsAdjustScrolls(ih, w, h);  
+  iCellsAdjustScroll(ih, w, h);  
+
+  /* This could have changed the scrollbar visibility, 
+     so the canvas client size can change, so updated it twice. */
+  IupGetIntInt(ih, "DRAWSIZE", &w, &h);
+  IupSetInt(ih, "DX", w);
+  IupSetInt(ih, "DY", h);
 
   if (!ih->data->cddbuffer)
   {
@@ -730,7 +736,7 @@ static int iCellsSetBufferizeAttrib(Ihandle* ih, const char* value)
   else
   { 
     ih->data->bufferize = 0;
-    iCellsAdjustScrolls(ih, ih->data->w, ih->data->h);
+    iCellsAdjustScroll(ih, ih->data->w, ih->data->h);
     iCellsRepaint(ih);
   }
 
@@ -746,7 +752,7 @@ static int iCellsSetRepaintAttrib(Ihandle* ih, const char* value)
 {
   (void)value;  /* not used */
   ih->data->bufferize = 0;
-  iCellsAdjustScrolls(ih, ih->data->w, ih->data->h);
+  iCellsAdjustScroll(ih, ih->data->w, ih->data->h);
   iCellsRepaint(ih);
   return 0;  /* do not store value in hash table */
 }

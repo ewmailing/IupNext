@@ -134,6 +134,8 @@
     <ClCompile Include="..\test\canvas_cddbuffer.c" />
     <ClCompile Include="..\test\canvas_cdsimple.c" />
     <ClCompile Include="..\test\canvas_scrollbar.c" />
+    <ClCompile Include="..\test\canvas_scrollbar2.c" />
+    <ClCompile Include="..\test\canvas_scrollbar3.c" />
     <ClCompile Include="..\test\cells_checkboard.c" />
     <ClCompile Include="..\test\cells_degrade.c" />
     <ClCompile Include="..\test\cells_numbering.c" />
