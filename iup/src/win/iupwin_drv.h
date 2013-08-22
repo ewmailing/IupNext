@@ -30,6 +30,7 @@ int iupwinGetKeyBoardCues(void);
 int iupwinKeyEvent(Ihandle* ih, int wincode, int press);
 void iupwinButtonKeySetStatus(WORD keys, char* status, int doubleclick);
 int iupwinKeyDecode(int wincode);
+void iupwinKeyInit(void);
 
 /* tips */
 void iupwinTipsGetDispInfo(LPARAM lp);

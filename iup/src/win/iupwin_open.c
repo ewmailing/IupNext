@@ -122,6 +122,7 @@ int iupdrvOpen(int *argc, char ***argv)
   iupwinHandleInit();
   iupwinBrushInit();
   iupwinDrawInit();
+  iupwinKeyInit();
 
   if (iupwinIsWin7OrNew())
     iupwinTouchInit();

@@ -96,29 +96,29 @@ static void winKeyInitXKey(Iwin2iupkey* map)
   map[VK_SUBTRACT].iupcode =  K_minus;
   map[VK_DIVIDE].iupcode =    K_slash;
 
-  map[VK_DECIMAL].iupcode =   MapVirtualKeyA(VK_DECIMAL, MAPVK_VK_TO_CHAR);
-  map[VK_SEPARATOR].iupcode = MapVirtualKeyA(VK_SEPARATOR, MAPVK_VK_TO_CHAR);
+  map[VK_DECIMAL].iupcode =   LOWORD(MapVirtualKeyA(VK_DECIMAL, MAPVK_VK_TO_CHAR));
+  map[VK_SEPARATOR].iupcode = LOWORD(MapVirtualKeyA(VK_SEPARATOR, MAPVK_VK_TO_CHAR));
 
   /* TODO: how to get the shift code? */
-  map[VK_OEM_PLUS].iupcode = MapVirtualKeyA(VK_OEM_PLUS, MAPVK_VK_TO_CHAR);
-  map[VK_OEM_COMMA].iupcode = MapVirtualKeyA(VK_OEM_COMMA, MAPVK_VK_TO_CHAR);
-  map[VK_OEM_MINUS].iupcode = MapVirtualKeyA(VK_OEM_MINUS, MAPVK_VK_TO_CHAR);
-  map[VK_OEM_PERIOD].iupcode = MapVirtualKeyA(VK_OEM_PERIOD, MAPVK_VK_TO_CHAR);
+  map[VK_OEM_PLUS].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_PLUS, MAPVK_VK_TO_CHAR));
+  map[VK_OEM_COMMA].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_COMMA, MAPVK_VK_TO_CHAR));
+  map[VK_OEM_MINUS].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_MINUS, MAPVK_VK_TO_CHAR));
+  map[VK_OEM_PERIOD].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_PERIOD, MAPVK_VK_TO_CHAR));
 
-  if (!map[VK_OEM_1].iupcode) map[VK_OEM_1].iupcode = MapVirtualKeyA(VK_OEM_1, MAPVK_VK_TO_CHAR);
-  if (!map[VK_OEM_2].iupcode) map[VK_OEM_2].iupcode = MapVirtualKeyA(VK_OEM_2, MAPVK_VK_TO_CHAR);
-  if (!map[VK_OEM_3].iupcode) map[VK_OEM_3].iupcode = MapVirtualKeyA(VK_OEM_3, MAPVK_VK_TO_CHAR);
-  if (!map[VK_OEM_4].iupcode) map[VK_OEM_4].iupcode = MapVirtualKeyA(VK_OEM_4, MAPVK_VK_TO_CHAR);
-  if (!map[VK_OEM_5].iupcode) map[VK_OEM_5].iupcode = MapVirtualKeyA(VK_OEM_5, MAPVK_VK_TO_CHAR);
-  if (!map[VK_OEM_6].iupcode) map[VK_OEM_6].iupcode = MapVirtualKeyA(VK_OEM_6, MAPVK_VK_TO_CHAR);
-  if (!map[VK_OEM_7].iupcode) map[VK_OEM_7].iupcode = MapVirtualKeyA(VK_OEM_7, MAPVK_VK_TO_CHAR);
-  if (!map[VK_OEM_8].iupcode) map[VK_OEM_8].iupcode = MapVirtualKeyA(VK_OEM_8, MAPVK_VK_TO_CHAR);
+  if (!map[VK_OEM_1].iupcode) map[VK_OEM_1].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_1, MAPVK_VK_TO_CHAR));
+  if (!map[VK_OEM_2].iupcode) map[VK_OEM_2].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_2, MAPVK_VK_TO_CHAR));
+  if (!map[VK_OEM_3].iupcode) map[VK_OEM_3].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_3, MAPVK_VK_TO_CHAR));
+  if (!map[VK_OEM_4].iupcode) map[VK_OEM_4].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_4, MAPVK_VK_TO_CHAR));
+  if (!map[VK_OEM_5].iupcode) map[VK_OEM_5].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_5, MAPVK_VK_TO_CHAR));
+  if (!map[VK_OEM_6].iupcode) map[VK_OEM_6].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_6, MAPVK_VK_TO_CHAR));
+  if (!map[VK_OEM_7].iupcode) map[VK_OEM_7].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_7, MAPVK_VK_TO_CHAR));
+  if (!map[VK_OEM_8].iupcode) map[VK_OEM_8].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_8, MAPVK_VK_TO_CHAR));
 
-  map[VK_OEM_102].iupcode = MapVirtualKeyA(VK_OEM_102, MAPVK_VK_TO_CHAR);
+  map[VK_OEM_102].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_102, MAPVK_VK_TO_CHAR));
 
   /* ABNT extra definitions */
-  map[0xC2].iupcode = MapVirtualKeyA(0xC2, MAPVK_VK_TO_CHAR);
-  map[0xC1].iupcode = MapVirtualKeyA(0xC1, MAPVK_VK_TO_CHAR);
+  map[0xC2].iupcode = LOWORD(MapVirtualKeyA(0xC2, MAPVK_VK_TO_CHAR));
+  map[0xC1].iupcode = LOWORD(MapVirtualKeyA(0xC1, MAPVK_VK_TO_CHAR));
   map[0xC1].shift_iupcode = '?';
 }
 
@@ -138,29 +138,25 @@ static void winKeySetCharMap(Iwin2iupkey* winkey_map, char c)
 
 static Iwin2iupkey winkey_map[256];
 
+void iupwinKeyInit(void)
+{
+  int i;
+
+  memset(winkey_map, 0, sizeof(Iwin2iupkey)*256);
+
+  for (i=32; i<127; i++)
+    winKeySetCharMap(winkey_map, (char)i);
+
+  winKeySetCharMap(winkey_map, K_ccedilla);
+  winKeySetCharMap(winkey_map, K_Ccedilla);
+  winKeySetCharMap(winkey_map, K_acute);
+  winKeySetCharMap(winkey_map, K_diaeresis);
+
+  winKeyInitXKey(winkey_map);
+}
+
 static int winKeyMap(int wincode)
 {
-  static int init = 0;
-  if (init==0)
-  {
-    int i;
-
-    memset(winkey_map, 0, sizeof(Iwin2iupkey)*256);
-
-    for (i=32; i<127; i++)
-      winKeySetCharMap(winkey_map, (char)i);
-
-    winKeySetCharMap(winkey_map, K_ccedilla);
-    winKeySetCharMap(winkey_map, K_Ccedilla);
-    winKeySetCharMap(winkey_map, K_acute);
-    winKeySetCharMap(winkey_map, K_diaeresis);
-
-    winKeyInitXKey(winkey_map);
-
-    init = 1;
-  }
-
-  /* now do the mapping */
   if (wincode == VK_SHIFT && (GetKeyState(VK_RSHIFT) & 0x8000))
     return K_RSHIFT;
   else if (wincode == VK_CONTROL && (GetKeyState(VK_RCONTROL) & 0x8000))

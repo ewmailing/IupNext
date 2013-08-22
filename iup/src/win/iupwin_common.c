@@ -203,6 +203,9 @@ int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
 { 
   switch (msg)
   {
+  case WM_INPUTLANGCHANGE:
+    iupwinKeyInit();
+    break;
   case WM_GETDLGCODE:
     {
       *result = DLGC_WANTALLKEYS;
