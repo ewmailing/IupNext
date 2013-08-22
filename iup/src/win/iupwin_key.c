@@ -30,6 +30,7 @@ typedef struct _Iwin2iupkey
 {
   int iupcode;
   int shift_iupcode;   /* base code when shift or caps are pressed */
+  int altgr_iupcode;
 } Iwin2iupkey;
 
 static void winKeyInitXKey(Iwin2iupkey* map)
@@ -105,6 +106,7 @@ static void winKeyInitXKey(Iwin2iupkey* map)
   map[VK_OEM_MINUS].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_MINUS, MAPVK_VK_TO_CHAR));
   map[VK_OEM_PERIOD].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_PERIOD, MAPVK_VK_TO_CHAR));
 
+  /*
   if (!map[VK_OEM_1].iupcode) map[VK_OEM_1].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_1, MAPVK_VK_TO_CHAR));
   if (!map[VK_OEM_2].iupcode) map[VK_OEM_2].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_2, MAPVK_VK_TO_CHAR));
   if (!map[VK_OEM_3].iupcode) map[VK_OEM_3].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_3, MAPVK_VK_TO_CHAR));
@@ -113,25 +115,34 @@ static void winKeyInitXKey(Iwin2iupkey* map)
   if (!map[VK_OEM_6].iupcode) map[VK_OEM_6].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_6, MAPVK_VK_TO_CHAR));
   if (!map[VK_OEM_7].iupcode) map[VK_OEM_7].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_7, MAPVK_VK_TO_CHAR));
   if (!map[VK_OEM_8].iupcode) map[VK_OEM_8].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_8, MAPVK_VK_TO_CHAR));
+  */
 
   map[VK_OEM_102].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_102, MAPVK_VK_TO_CHAR));
 
-  /* ABNT extra definitions */
-  map[0xC2].iupcode = LOWORD(MapVirtualKeyA(0xC2, MAPVK_VK_TO_CHAR));
-  map[0xC1].iupcode = LOWORD(MapVirtualKeyA(0xC1, MAPVK_VK_TO_CHAR));
-  map[0xC1].shift_iupcode = '?';
+  {
+    HKL k = GetKeyboardLayout(0);    
+    if ((int)HIWORD(k) == 0x0416)
+    {
+      /* ABNT extra definitions */
+      map[0xC2].iupcode = LOWORD(MapVirtualKeyA(0xC2, MAPVK_VK_TO_CHAR));
+      map[0xC1].iupcode = LOWORD(MapVirtualKeyA(0xC1, MAPVK_VK_TO_CHAR));
+      map[0xC1].shift_iupcode = '?';
+    }
+  }
 }
 
 static void winKeySetCharMap(Iwin2iupkey* winkey_map, char c)
 {
   SHORT ret = VkKeyScanA(c);
   int wincode = LOBYTE(ret);
-  int state = HIBYTE(ret);
+  int state = HIBYTE(ret) & 0x07;  /* Only Shift, Ctrl and Alt states */
   if (wincode != -1)
   {
     if (state & 1) /* Shift */
       winkey_map[wincode].shift_iupcode = (BYTE)c;
-    else
+    else if ((state & 2) && (state & 4)) /* Ctrl & Alt = Alt Gr */
+      winkey_map[wincode].altgr_iupcode = (BYTE)c;
+    else if (state == 0)
       winkey_map[wincode].iupcode = (BYTE)c;
   }
 }
@@ -153,6 +164,22 @@ void iupwinKeyInit(void)
   winKeySetCharMap(winkey_map, K_diaeresis);
 
   winKeyInitXKey(winkey_map);
+
+  for (i=0; i<256; i++)
+  {
+    if (!(winkey_map[i].iupcode))    
+    {  
+      winkey_map[i].iupcode = LOWORD(MapVirtualKeyA(i, MAPVK_VK_TO_CHAR));
+
+      /* TODO: how to get the shift code? 
+      if (winkey_map[i].iupcode && !(winkey_map[i].shift_iupcode))
+      {
+        winkey_map[i].shift_iupcode = LOWORD((DWORD)CharUpperA((LPSTR)MAKELONG(winkey_map[i].iupcode, 0)));
+        if (winkey_map[i].shift_iupcode == winkey_map[i].iupcode)
+          winkey_map[i].shift_iupcode = 0;
+      }  */
+    }
+  }
 }
 
 static int winKeyMap(int wincode)
@@ -176,7 +203,14 @@ static int winKeyMap(int wincode)
         return winkey_map[wincode].iupcode;
     }
     else
-      return winkey_map[wincode].iupcode;
+    {
+      int has_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
+      int has_alt = GetKeyState(VK_MENU) & 0x8000;
+      if (has_ctrl && has_alt && winkey_map[wincode].altgr_iupcode)
+        return winkey_map[wincode].altgr_iupcode;
+      else
+        return winkey_map[wincode].iupcode;
+    }
   }
 }
 
@@ -195,7 +229,14 @@ void iupdrvKeyEncode(int code, unsigned int *wincode, unsigned int *state)
     if (winkey_map[i].shift_iupcode == iupcode)
     {
       *wincode = i;
-      *state = VK_SHIFT;
+      code = iup_XkeyShift(code);  /* add Shift */
+      break;
+    }
+    if (winkey_map[i].altgr_iupcode == iupcode)
+    {
+      *wincode = i;
+      code = iup_XkeyCtrl(code);  /* add Ctrl */
+      code = iup_XkeyAlt(code);   /* add Alt */
       break;
     }
   }
