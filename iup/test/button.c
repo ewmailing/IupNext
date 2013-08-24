@@ -379,6 +379,7 @@ void ButtonTest(void)
   button = IupButton(NULL, NULL);
   IupSetAttribute(button, "TITLE", "Images");
   IupSetAttributeHandle(button, "IMAGE", load_image_FileSave());
+  //IupSetAttribute(button, "IMAGE", "TECGRAF_BITMAP");
   IupAppend(box2, button);
 
   button = IupButton(NULL, NULL);
