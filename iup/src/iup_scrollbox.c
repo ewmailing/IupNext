@@ -190,6 +190,8 @@ static int iScrollBoxCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "BUTTON_CB",    (Icallback)iScrollBoxButton_CB);
   IupSetCallback(ih, "MOTION_CB",    (Icallback)iScrollBoxMotion_CB);
 
+  IupSetAttribute(ih, "CANFOCUS", "NO");
+
   if (params)
   {
     Ihandle** iparams = (Ihandle**)params;
