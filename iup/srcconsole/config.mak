@@ -57,13 +57,15 @@ ifdef ALL_STATIC
   USE_STATIC = Yes
   
   ifdef DBG_DIR
-    IUPLIB = $(IUP)/lib/$(TEC_UNAME)d
-    CDLIB = $(CD)/lib/$(TEC_UNAME)d
-    IMLIB = $(IM)/lib/$(TEC_UNAME)d
+    IUP_LIB = $(IUP)/lib/$(TEC_UNAME)d
+    CD_LIB = $(CD)/lib/$(TEC_UNAME)d
+    IM_LIB = $(IM)/lib/$(TEC_UNAME)d
+#    LUA_LIB = $(LUA)/lib/$(TEC_UNAME)d
   else
-    IUPLIB = $(IUP)/lib/$(TEC_UNAME)
-    CDLIB = $(CD)/lib/$(TEC_UNAME)
-    IMLIB = $(IM)/lib/$(TEC_UNAME)
+    IUP_LIB = $(IUP)/lib/$(TEC_UNAME)
+    CD_LIB = $(CD)/lib/$(TEC_UNAME)
+    IM_LIB = $(IM)/lib/$(TEC_UNAME)
+#    LUA_LIB = $(LUA)/lib/$(TEC_UNAME)
   endif  
   
   DEFINES += USE_STATIC
