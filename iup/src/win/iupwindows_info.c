@@ -83,7 +83,7 @@ void iupdrvGetKeyState(char* key)
     key[3] = 'Y';
   else
     key[3] = ' ';
-
+  
   key[4] = 0;
 }
 

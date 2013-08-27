@@ -182,38 +182,6 @@ void iupwinKeyInit(void)
   }
 }
 
-static int winKeyMap(int wincode)
-{
-  if (wincode == VK_SHIFT && (GetKeyState(VK_RSHIFT) & 0x8000))
-    return K_RSHIFT;
-  else if (wincode == VK_CONTROL && (GetKeyState(VK_RCONTROL) & 0x8000))
-    return K_RCTRL;
-  else if (wincode == VK_MENU && (GetKeyState(VK_RMENU) & 0x8000))
-    return K_RALT;
-  else
-  {
-    int has_caps = GetKeyState(VK_CAPITAL) & 0x01;
-    int has_shift = GetKeyState(VK_SHIFT) & 0x8000;
-    if (( has_caps && !has_shift) ||  /* CapsLock or Shift, but not both */
-        (!has_caps &&  has_shift))
-    {
-      if (winkey_map[wincode].shift_iupcode)
-        return winkey_map[wincode].shift_iupcode;
-      else
-        return winkey_map[wincode].iupcode;
-    }
-    else
-    {
-      int has_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
-      int has_alt = GetKeyState(VK_MENU) & 0x8000;
-      if (has_ctrl && has_alt && winkey_map[wincode].altgr_iupcode)
-        return winkey_map[wincode].altgr_iupcode;
-      else
-        return winkey_map[wincode].iupcode;
-    }
-  }
-}
-
 void iupdrvKeyEncode(int code, unsigned int *wincode, unsigned int *state)
 {
   int i, iupcode = iup_XkeyBase(code);
@@ -255,27 +223,28 @@ void iupdrvKeyEncode(int code, unsigned int *wincode, unsigned int *state)
 static int winKeyMap2Iup(int wincode)
 {
   int code = wincode;
-  int has_caps = GetKeyState(VK_CAPITAL) & 0x01;
+
   int has_shift = GetKeyState(VK_SHIFT) & 0x8000;
   int has_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
   int has_alt = GetKeyState(VK_MENU) & 0x8000;
   int has_sys = (GetKeyState(VK_LWIN) & 0x8000) || (GetKeyState(VK_RWIN) & 0x8000);
 
-  if (( has_caps && !has_shift) ||  /* CapsLock or Shift, but not both */
-      (!has_caps &&  has_shift))
+  if (has_ctrl || has_alt || has_sys)
   {
-    if ((wincode < K_exclam || wincode > K_tilde) ||
-        (has_ctrl || has_alt || has_sys))
-      code |= iup_XkeyShift(code);  /* only add Shift modifiers for non-ASCii codes, except for K_SP and bellow, 
-                                       and except when other modifiers are used */
-  }
-  else if (has_ctrl || has_alt || has_sys)
-  {
-    /* If not shift, but has some of the other modifiers then use upper case version */
+    /* If it has some of the other modifiers then use upper case version */
     if (wincode >= K_a && wincode <= K_z)
       code = iup_toupper(wincode);
     else if (wincode==K_ccedilla)
       code = K_Ccedilla;
+  }
+
+  if (has_shift)  /* Shift */
+  {
+    /* only add Shift modifiers for non-ASCii codes, except for K_SP and bellow, 
+       and except when other modifiers are used */
+    if ((wincode < K_exclam || wincode > K_tilde) ||
+        (has_ctrl || has_alt || has_sys))
+      code |= iup_XkeyShift(code);  
   }
 
   if (has_ctrl)   /* Ctrl */
@@ -290,9 +259,41 @@ static int winKeyMap2Iup(int wincode)
   return code;
 }
 
+static int winKeyAdjust(int wincode)
+{
+  if (wincode == VK_SHIFT && (GetKeyState(VK_RSHIFT) & 0x8000))
+    return K_RSHIFT;
+  else if (wincode == VK_CONTROL && (GetKeyState(VK_RCONTROL) & 0x8000))
+    return K_RCTRL;
+  else if (wincode == VK_MENU && (GetKeyState(VK_RMENU) & 0x8000))
+    return K_RALT;
+  else
+  {
+    int has_caps = GetKeyState(VK_CAPITAL) & 0x01;
+    int has_shift = GetKeyState(VK_SHIFT) & 0x8000;
+    if (( has_caps && !has_shift) ||  /* CapsLock or Shift, but not both */
+        (!has_caps &&  has_shift))
+    {
+      if (winkey_map[wincode].shift_iupcode)
+        return winkey_map[wincode].shift_iupcode;
+      else
+        return winkey_map[wincode].iupcode;
+    }
+    else
+    {
+      int has_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
+      int has_alt = GetKeyState(VK_MENU) & 0x8000;
+      if (has_ctrl && has_alt && winkey_map[wincode].altgr_iupcode)
+        return winkey_map[wincode].altgr_iupcode;
+      else
+        return winkey_map[wincode].iupcode;
+    }
+  }
+}
+
 int iupwinKeyDecode(int wincode)
 {
-  int iupcode = winKeyMap(wincode);
+  int iupcode = winKeyAdjust(wincode);
   if (!iupcode)
     iupcode=wincode;
 

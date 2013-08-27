@@ -132,21 +132,23 @@ void iupdrvKeyEncode(int code, unsigned int *keycode, unsigned int *state)
 static int motKeyMap2Iup(KeySym motcode, unsigned int state)
 {
   int code = (int)motcode;
-  if (( (state & LockMask) && !(state & ShiftMask)) ||  /* CapsLock or Shift, but not both */
-      (!(state & LockMask) &&  (state & ShiftMask)))
+
+  if (state & (ControlMask|Mod1Mask|Mod5Mask|Mod4Mask))
   {
-    if ((motcode < K_exclam || motcode > K_tilde) ||
-        (state & (ControlMask|Mod1Mask|Mod5Mask|Mod4Mask)))
-      code |= iup_XkeyShift(code);  /* only add Shift modifiers for non-ASCii codes, except for K_SP and bellow,
-                                       and except when other modifiers are used */
-  }
-  else if (state & (ControlMask|Mod1Mask|Mod5Mask|Mod4Mask))
-  {
-    /* If not shift, but has some of the other modifiers then use upper case version */
+    /* If it has some of the other modifiers then use upper case version */
     if (motcode >= K_a && motcode <= K_z)
       code = iup_toupper(motcode);
     else if (motcode==K_ccedilla)
       code = K_Ccedilla;
+  }
+
+  if (state & ShiftMask) /* Shift */
+  {
+    /* only add Shift modifiers for non-ASCii codes, except for K_SP and bellow,
+       and except when other modifiers are used */
+    if ((motcode < K_exclam || motcode > K_tilde) ||
+        (state & (ControlMask|Mod1Mask|Mod5Mask|Mod4Mask)))
+      code |= iup_XkeyShift(code);
   }
 
   if (state & ControlMask)   /* Ctrl */

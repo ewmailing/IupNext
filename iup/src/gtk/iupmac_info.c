@@ -140,22 +140,19 @@ void iupdrvGetKeyState(char* key)
     key[0] = 'S';
   else
     key[0] = ' ';
-
   if (GetCurrentEventKeyModifiers() & controlKey)
     key[1] = 'C';
   else
     key[1] = ' ';
-
   if (GetCurrentEventKeyModifiers() & optionKey)
     key[2] = 'A';
   else
     key[2] = ' ';
-
   if (GetCurrentEventKeyModifiers() & cmdKey)
     key[3] = 'Y';
   else
     key[3] = ' ';
-
+  
   key[4] = 0;
 }
 

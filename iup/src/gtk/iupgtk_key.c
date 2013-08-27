@@ -107,21 +107,23 @@ void iupdrvKeyEncode(int code, unsigned int *keyval, unsigned int *state)
 static int gtkKeyMap2Iup(guint keyval, int state)
 {
   int code = (int)keyval;
-  if (( (state & GDK_LOCK_MASK) && !(state & GDK_SHIFT_MASK)) ||  /* CapsLock or Shift, but not both */
-      (!(state & GDK_LOCK_MASK) &&  (state & GDK_SHIFT_MASK)))
+
+  if (state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_MOD5_MASK|GDK_MOD4_MASK))
   {
-    if ((keyval < K_exclam || keyval > K_tilde) ||
-        (state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_MOD5_MASK|GDK_MOD4_MASK)))
-      code |= iup_XkeyShift(code);  /* only add Shift modifiers for non-ASCii codes, except for K_SP and bellow, 
-                                       and except when other modifiers are used */
-  }
-  else if (state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_MOD5_MASK|GDK_MOD4_MASK))
-  {
-    /* If not shift, but has some of the other modifiers then use upper case version */
+    /* If it has some of the other modifiers then use upper case version */
     if (keyval >= K_a && keyval <= K_z)
       code = iup_toupper(keyval);
     else if (keyval==K_ccedilla)
       code = K_Ccedilla;
+  }
+
+  if (state & GDK_SHIFT_MASK)  /* Shift */
+  {
+    /* only add Shift modifiers for non-ASCii codes, except for K_SP and bellow, 
+       and except when other modifiers are used */
+    if ((keyval < K_exclam || keyval > K_tilde) ||
+        (state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_MOD5_MASK|GDK_MOD4_MASK)))
+      code |= iup_XkeyShift(code);  
   }
 
   if (state & GDK_CONTROL_MASK)   /* Ctrl */
