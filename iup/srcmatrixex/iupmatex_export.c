@@ -102,7 +102,7 @@ static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col, 
           if (add_sep)
             fprintf(file, "%c", sep);
 
-          str = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);
+          str = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);  /* get displayed value */
           if (str)
           {
             iMatrixExStrCopyNoSepTXT(buffer, str, sep);
@@ -260,7 +260,7 @@ static void iMatrixExCopyHTML(Ihandle *ih, FILE* file, int num_lin, int num_col,
           else
             fprintf(file,"<TD%s%s>", td, add_format? iMatrixExGetCellFormat(ih, lin, col, f): "");
 
-          str = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);
+          str = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);  /* get displayed value */
           if (str)
           {
             iMatrixExStrCopyNoSepHTML(buffer, str);
@@ -339,7 +339,7 @@ static void iMatrixExCopyLaTeX(Ihandle *ih, FILE* file, int num_lin, int num_col
           if (is_bold)
             fprintf(file,"\\bf{");
 
-          str = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);
+          str = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);  /* get displayed value */
           if (str)
           {
             iMatrixExStrCopyNoSepLaTeX(buffer, str);

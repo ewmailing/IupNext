@@ -19,28 +19,21 @@
 #include "iup_matrixex.h"
 
 
-static int iMatrixMatch(const char* value, int lin, int col, int matchcase, int mathcell)
+static int iMatrixMatch(Ihandle *ih, const char* findvalue, int lin, int col, int matchcase, int matchcell, int utf8)
 {
-  //if (cell.empty())
-  // return false;
-  //if (!match_case)
-  //{
-  // std::string::iterator i(cell.begin());
-  // for(;i!=cell.end();++i)
-  // {
-  //  if (isalpha(static_cast<unsigned char>(*i)))
-  //   *i = tolower(*i);
-  // }
-  //}
-  //if (whole_word)
-  // return (cell.compare(text)==0);
-  //else
-  // return (cell.find(text)!=std::string::npos);
-  return 0;
+  char* value = iupMatrixExGetCellValue(ih, lin, col, 1);  /* get displayed value */
+  if (!value || value[0] == 0)
+    return 0;
+
+  if (matchcell)
+    return iupStrCompareEqual(value, findvalue, matchcase, utf8, 0);
+  else
+    return iupStrCompareFind(value, findvalue, matchcase, utf8);
 }
 
-static int iMatrixExSetFind(Ihandle *ih, const char* value, int dir, int matchcase, int mathcell, int *lin, int *col)
+static int iMatrixExSetFind(Ihandle *ih, const char* value, int dir, int matchcase, int matchcell, int matchmarked, int *lin, int *col)
 {
+  int utf8 = IupGetInt(NULL, "UTF8MODE");
   int num_lin = IupGetInt(ih, "NUMLIN");
   int num_col = IupGetInt(ih, "NUMCOL");
   int count = (num_lin+1)*(num_col+1);
@@ -49,8 +42,14 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int dir, int matchca
 
   if (dir == 0)
   {
-    if (iMatrixMatch(value, *lin, *col, matchcase, mathcell))
-      return 1;
+    /* the FOCUS_CELL is always visible and not a title */
+
+    /* only need to check if it is marked */
+    if (!matchmarked || iupStrBoolean(iupAttribGetClassObjectId2(ih, "MARK", *lin, *col)))
+    {
+      if (iMatrixMatch(ih, value, *lin, *col, matchcase, matchcell, utf8))
+        return 1;
+    }
 
     dir = 1;
   }
@@ -74,7 +73,10 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int dir, int matchca
     if (!iupMatrixExIsLineVisible(ih, *lin) || !iupMatrixExIsColumnVisible(ih, *col))
       continue;
 
-  } while (!iMatrixMatch(value, *lin, *col, matchcase, mathcell));
+    if (matchmarked && !iupStrBoolean(iupAttribGetClassObjectId2(ih, "MARK", *lin, *col)))
+      continue;
+
+  } while (!iMatrixMatch(ih, value, *lin, *col, matchcase, matchcell, utf8));
 
   return 1;
 }
@@ -82,7 +84,7 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int dir, int matchca
 static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
 {
   int lin=1, col=1;
-  int dir, matchcase, mathcell;
+  int dir, matchcase, matchcell, matchmarked;
 
   if (!value || value[0]==0)
     return 0;
@@ -94,7 +96,8 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
   else
     dir = 1;
   matchcase = iupAttribGetInt(ih, "FINDMATCHCASE");
-  mathcell = iupAttribGetInt(ih, "FINDMATCHWHOLECELL");
+  matchcell = iupAttribGetInt(ih, "FINDMATCHWHOLECELL");
+  matchmarked = iupAttribGetInt(ih, "FINDMATCHSELECTION");
 
   if (dir == 1)
   {
@@ -104,7 +107,7 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
       dir = 0;  /* search in the current cell */
   }
 
-  if (iMatrixExSetFind(ih, value, dir, matchcase, mathcell, &lin, &col))
+  if (iMatrixExSetFind(ih, value, dir, matchcase, matchcell, matchmarked, &lin, &col))
   {
     IupSetfAttribute(ih,"FOCUS_CELL", "%d:%d", lin, col);
 //    IupSetfAttribute(ih,"SHOW", "%d:%d", lin, col);
@@ -121,6 +124,7 @@ void iupMatrixExRegisterFind(Iclass* ic)
   iupClassRegisterAttribute(ic, "FIND", NULL, iMatrixExSetFindAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FINDDIRECTION", NULL, NULL, IUPAF_SAMEASSYSTEM, "NEXT", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FINDMATCHCASE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FINDMATCHWHOLECELL", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FINDMATCHCASE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FINDMATCHWHOLECELL", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FINDMATCHSELECTION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

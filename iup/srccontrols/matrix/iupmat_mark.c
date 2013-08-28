@@ -686,7 +686,7 @@ char* iupMatrixGetMarkAttrib(Ihandle* ih, int lin, int col)
 
     if (ih->data->mark_mode == IMAT_MARK_CELL)
     {
-      if (lin == 0 || col == 0) /* title can NOT have a mark */
+      if (lin == 0 || col == 0)  /* title can NOT have a mark */
         return NULL;
 
       if (ih->data->callback_mode)
@@ -700,7 +700,7 @@ char* iupMatrixGetMarkAttrib(Ihandle* ih, int lin, int col)
             return "0";
         }
         else
-          return NULL;  /* let check the hash table */
+          return NULL;  /* check the hash table */
       }
       else
       {

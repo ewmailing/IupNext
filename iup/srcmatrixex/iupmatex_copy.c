@@ -22,7 +22,8 @@
 static void iMatrixExCopyColToSetDataSelected(ImatExData* matex_data, int lin, int col, int num_lin, const char* selection, int selection_count, const char* busyname)
 {
   int skip_lin = lin;
-  char* value = iupStrDup(iupMatrixExGetCellValue(matex_data->ih, lin, col, 0));
+  /* Must duplicate the memory to ensure it will be valid for all iterations */
+  char* value = iupStrDup(iupMatrixExGetCellValue(matex_data->ih, lin, col, 0));  /* get internal value */
 
   iupMatrixExBusyStart(matex_data, selection_count, busyname);
 
@@ -48,7 +49,8 @@ static void iMatrixExCopyColToSetDataSelected(ImatExData* matex_data, int lin, i
 static void iMatrixExCopyColToSetData(ImatExData* matex_data, int lin, int col, int lin1, int lin2, const char* busyname)
 {
   int skip_lin = lin;
-  char* value = iupStrDup(iupMatrixExGetCellValue(matex_data->ih, lin, col, 0));
+  /* Must duplicate the memory to ensure it will be valid for all iterations */
+  char* value = iupStrDup(iupMatrixExGetCellValue(matex_data->ih, lin, col, 0));  /* get internal value */
 
   iupMatrixExBusyStart(matex_data, lin2-lin1+1, busyname);
 

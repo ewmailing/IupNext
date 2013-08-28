@@ -166,7 +166,7 @@ static void iMatrixExArrayAddStr(Iarray* data, char* str)
 
 static void iMatrixExArrayAddCell(ImatExData* matex_data, Iarray* data, int lin, int col)
 {
-  char* value = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);
+  char* value = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);  /* get displayed value */
 
   if (value)
     iMatrixExArrayAddStr(data, value);
