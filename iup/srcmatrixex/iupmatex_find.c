@@ -31,16 +31,15 @@ static int iMatrixMatch(Ihandle *ih, const char* findvalue, int lin, int col, in
     return iupStrCompareFind(value, findvalue, matchcase, utf8);
 }
 
-static int iMatrixExSetFind(Ihandle *ih, const char* value, int dir, int matchcase, int matchcell, int matchmarked, int *lin, int *col)
+static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, int matchcase, int matchcell, int matchmarked, int *lin, int *col)
 {
   int utf8 = IupGetInt(NULL, "UTF8MODE");
   int num_lin = IupGetInt(ih, "NUMLIN");
   int num_col = IupGetInt(ih, "NUMCOL");
   int count = (num_lin+1)*(num_col+1);
-  int pos = (*lin)*(num_col+1) + *col;
-  int start_pos = pos;
+  int pos, start_pos;
 
-  if (dir == 0)
+  if (inc == 0)
   {
     /* the FOCUS_CELL is always visible and not a title */
 
@@ -51,15 +50,24 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int dir, int matchca
         return 1;
     }
 
-    dir = 1;
+    inc = 1;
   }
 
+  if (flip)
+  {
+    int t = num_lin;
+    num_lin = num_col;
+    num_col = t;
+  }
+
+  pos = (*lin)*(num_col+1) + *col;
+  start_pos = pos;
   do 
   {
-    pos += dir;
+    pos += inc;
 
-    if (pos % (num_col+1) == 0)  /* col=0 */
-      pos += dir;
+    if (pos % (num_col+1) == 0)  /* col=0 or lin=0 */
+      pos += inc;
 
     if (pos < (num_col+1) + 1) pos = count-1;   /* if at first cell, go to last */
     if (pos > count-1) pos = (num_col+1) + 1;   /* if at last cell, go to first */
@@ -84,30 +92,48 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int dir, int matchca
 static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
 {
   int lin=1, col=1;
-  int dir, matchcase, matchcell, matchmarked;
+  int inc, flip, matchcase, matchcell, matchmarked;
+  char* direction;
 
   if (!value || value[0]==0)
     return 0;
 
   IupGetIntInt(ih, "FOCUS_CELL", &lin, &col);
 
-  if (iupStrEqualNoCase(iupAttribGet(ih, "FINDDIRECTION"), "PREVIOUS"))
-    dir = -1;
-  else
-    dir = 1;
+  direction = iupAttribGet(ih, "FINDDIRECTION");
+  if (iupStrEqualNoCase(direction, "RIGHTBOTTOM"))
+  {
+    flip = 0;
+    inc = -1;
+  }
+  else if (iupStrEqualNoCase(direction, "RIGHTTOP"))
+  {
+    flip = 1;
+    inc = -1;
+  }
+  else if (iupStrEqualNoCase(direction, "LEFTTOP"))
+  {
+    flip = 1;
+    inc = +1;
+  }
+  else  /* LEFTBOTTOM */
+  {
+    flip = 0;
+    inc = +1;
+  }
   matchcase = iupAttribGetInt(ih, "FINDMATCHCASE");
   matchcell = iupAttribGetInt(ih, "FINDMATCHWHOLECELL");
   matchmarked = iupAttribGetInt(ih, "FINDMATCHSELECTION");
 
-  if (dir == 1)
+  if (inc == 1)
   {
     int last_lin=0, last_col=0;
     IupGetIntInt(ih, "_IUP_LAST_FOUND", &last_lin, &last_col);
     if (last_lin==lin && last_col==col)
-      dir = 0;  /* search in the current cell */
+      inc = 0;  /* search in the current cell */
   }
 
-  if (iMatrixExSetFind(ih, value, dir, matchcase, matchcell, matchmarked, &lin, &col))
+  if (iMatrixExSetFind(ih, value, inc, flip, matchcase, matchcell, matchmarked, &lin, &col))
   {
     IupSetfAttribute(ih,"FOCUS_CELL", "%d:%d", lin, col);
 //    IupSetfAttribute(ih,"SHOW", "%d:%d", lin, col);

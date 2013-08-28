@@ -1149,7 +1149,7 @@ static char iStrUTF8toLatin1(const char* *l)
       return 0;
   }
 
-  /* only increment the pointer for the remainig codes */
+  /* only increment the pointer for the remaining codes */
   if ((c & 0x10) == 0)       /* Use 00010000 to detect 1110XXXX */
     *l += 3-1;  
   else if ((c & 0x08) == 0)  /* Use 00001000 to detect 11110XXX */
@@ -1233,7 +1233,7 @@ int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
 
         if (utf8)
         {
-          l_char = iStrUTF8toLatin1(&l);
+          l_char = iStrUTF8toLatin1(&l);  /* increment n-1 an utf8 character */
           r_char = iStrUTF8toLatin1(&r);
         }
 
@@ -1300,9 +1300,9 @@ int iupStrCompareEqual(const char *l, const char *r, int casesensitive, int utf8
     char l_char = *l, 
          r_char = *r;
 
-    if (!casesensitive && utf8)
+    if (utf8)
     {
-      l_char = iStrUTF8toLatin1(&l);
+      l_char = iStrUTF8toLatin1(&l);  /* increment n-1 an utf8 character */
       r_char = iStrUTF8toLatin1(&r);
     }
 
@@ -1331,9 +1331,22 @@ int iupStrCompareEqual(const char *l, const char *r, int casesensitive, int utf8
   return 0;
 }
 
+static int iStrIncUTF8(const char* str)
+{
+  if (*str >= 0)      /* ASCII */
+    return 1;  
+  else if ((*str & 0x20) == 0)  /* Use 00100000 to detect 110XXXXX */
+    return 2;  
+  else if ((*str & 0x10) == 0)  /* Use 00010000 to detect 1110XXXX */
+    return 3;  
+  else if ((*str & 0x08) == 0)  /* Use 00001000 to detect 11110XXX */
+    return 4;
+  return 1;
+}
+
 int iupStrCompareFind(const char *l, const char *r, int casesensitive, int utf8)
 {
-  int i;
+  int i, inc;
   int l_len = strlen(l);
   int r_len = strlen(r);
   int count = l_len - r_len;
@@ -1347,7 +1360,14 @@ int iupStrCompareFind(const char *l, const char *r, int casesensitive, int utf8)
     if (iupStrCompareEqual(l, r, casesensitive, utf8, 1))
       return 1;
 
-    l++;
+    if (utf8)
+    {
+      inc = iStrIncUTF8(l);
+      l += inc;
+      i += inc-1;
+    }
+    else
+      l++;
   }
 
   return 0;

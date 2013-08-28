@@ -180,6 +180,21 @@ lines after the given line), MARKED (for all lines where the cell is marked), or
 a series of intervals in the format &quot;L1-L2,L3-L4,L5,L6-L7,...&quot;. BUSY 
 will be set to Yes during the operation.&nbsp; Only visible cells will receive 
 data. </p>
+<p><strong>FIND</strong> (write-only): searches for the given text in the matrix 
+cells. The search will start at the FOCUS_CELL cell, if found the FOCUS_CELL 
+will be changed to the cell where the text were found.</p>
+<p><strong>FINDDIRECTION</strong>: direction of the find. If LEFTBOTTOM will 
+search from left to right, then top to bottom; if LEFTTOP will search from left 
+to right, then bottom to top; if RIGHTBOTTOM will search from right to left, 
+then top to bottom; if RIGHTTOP will search from right to left, then bottom to 
+top. Default LEFTBOTTOM. </p>
+<p>&nbsp;<strong>FINDMATCHCASE</strong>: defines if the text comparison is case 
+sensitive when using FIND. Can be Yes or No. Default: Yes. </p>
+<p>&nbsp;<strong>FINDMATCHWHOLECELL</strong>: defines if the whole cell will be 
+used for comparison or it will search for the first occurrence of the text 
+inside the cell. Can be Yes or No. Default: Yes.</p>
+<p>&nbsp;<strong>FINDMATCHSELECTION</strong>: defines if the whole matrix will 
+be searched or just the selected cells. Can be Yes or No. Default: No.</p>
 <p><strong>FREEZE:</strong> freezes the scroll of columns and lines up to the 
 given cell. Can be: &quot;Yes&quot; - uses the value of the FOCUS_CELL attribute, &quot;<em>L</em>:<em>C</em>&quot; 
 where L and C are the line and column, or &quot;No&quot; clear the freeze state. 
