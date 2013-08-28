@@ -47,11 +47,17 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int dir, int matchca
   int pos = (*lin)*(num_col+1) + *col;
   int start_pos = pos;
 
+  if (dir == 0)
+  {
+    if (iMatrixMatch(value, *lin, *col, matchcase, mathcell))
+      return 1;
+
+    dir = 1;
+  }
+
   do 
   {
     pos += dir;
-    if (dir == 0)
-      dir = 1;
 
     if (pos % (num_col+1) == 0)  /* col=0 */
       pos += dir;
@@ -62,14 +68,8 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int dir, int matchca
     *lin = pos / (num_col+1);
     *col = pos % (num_col+1);
 
-    if (dir==1)
-    {
-      if (pos > start_pos)
-        return 0;
-    }
-    else
-    {
-    }
+    if (pos == start_pos)
+      return 0;
 
     if (!iupMatrixExIsLineVisible(ih, *lin) || !iupMatrixExIsColumnVisible(ih, *col))
       continue;
@@ -107,10 +107,9 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
   if (iMatrixExSetFind(ih, value, dir, matchcase, mathcell, &lin, &col))
   {
     IupSetfAttribute(ih,"FOCUS_CELL", "%d:%d", lin, col);
-    IupSetfAttribute(ih,"SHOW", "%d:%d", lin, col);
-    IupSetAttribute(ih,"MARKED",NULL);
-    IupSetAttributeId2(ih,"MARK",lin,col,"1");
-
+//    IupSetfAttribute(ih,"SHOW", "%d:%d", lin, col);
+//    IupSetAttribute(ih,"MARKED",NULL);
+//    IupSetAttributeId2(ih,"MARK",lin,col,"1");
     IupSetfAttribute(ih,"_IUP_LAST_FOUND", "%d:%d", lin, col);
   }
 
