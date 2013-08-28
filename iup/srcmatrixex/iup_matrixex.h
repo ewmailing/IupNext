@@ -46,6 +46,7 @@ void iupMatrixExRegisterExport(Iclass* ic);
 void iupMatrixExRegisterCopy(Iclass* ic);
 void iupMatrixExRegisterUnits(Iclass* ic);
 void iupMatrixExRegisterUndo(Iclass* ic);
+void iupMatrixExRegisterFind(Iclass* ic);
 
 /* Implemented in IupMatrix */
 char* iupMatrixExGetCellValue(Ihandle* ih, int lin, int col, int convert);
