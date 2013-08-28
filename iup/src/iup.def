@@ -279,6 +279,8 @@ iupStrReplace
 iupStrProcessMnemonic
 iupStrFindMnemonic
 iupStrCompare
+iupStrCompareEqual
+iupStrCompareFind
 iupStrNextLine
 iupStrNextValue
 iupStrMessageShowError
@@ -405,6 +407,8 @@ iupAttribSetClassObject
 iupAttribSetClassObjectId
 iupAttribSetClassObjectId2
 iupAttribGetClassObject
+iupAttribGetClassObjectId
+iupAttribGetClassObjectId2
 iupAttribSetStr
 iupAttribSetStrf
 iupAttribSet

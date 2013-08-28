@@ -299,12 +299,23 @@ int iupStrFindMnemonic(const char* str);
 
 
 /** Compare two strings using strcmp semantics, 
-    but using the "Alphanum Algorithm" (A1 A2 A11 A30 ...). \n
-    This means that numbers and text are sorted separately. \n
-    Also natural alphabetic order is used: 123...aA·¡...bBcC... \n
-    Sorting will work only for Latin-1 characters, even when using utf8=1.
+ *  but using the "Alphanum Algorithm" (A1 A2 A11 A30 ...). \n
+ *  This means that numbers and text are sorted separately. \n
+ *  Also natural alphabetic order is used: 123...aA·¡...bBcC... \n
+ *  Sorting and case insensitive will work only for Latin-1 characters, even when using utf8=1.
  * \ingroup str */
-int iupStrCompare(const char* s1, const char* s2, int casesensitive, int utf8);
+int iupStrCompare(const char* str1, const char* str2, int casesensitive, int utf8);
+
+/** Returns a non zero value if the two strings are equal. \n
+ *  If partial=1 the compare up to a number of characters defined by the strlen of the second string. \n
+ *  Case insensitive will work only for Latin-1 characters, even when using utf8=1.
+ * \ingroup str */
+int iupStrCompareEqual(const char *str1, const char *str2, int casesensitive, int utf8, int partial);
+
+/** Returns a non zero value if the second string is found inside the first string.  \n
+    Uses \ref iupStrCompareEqual.
+ * \ingroup str */
+int iupStrCompareFind(const char *str1, const char *str2, int casesensitive, int utf8);
 
 
 

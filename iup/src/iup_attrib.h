@@ -204,6 +204,8 @@ void iupAttribSetClassObject(Ihandle* ih, const char* name, const char* value);
 void iupAttribSetClassObjectId(Ihandle* ih, const char* name, int id, const char* value);
 void iupAttribSetClassObjectId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
 char* iupAttribGetClassObject(Ihandle* ih, const char* name);
+char* iupAttribGetClassObjectId(Ihandle* ih, const char* name, int id);
+char* iupAttribGetClassObjectId2(Ihandle* ih, const char* name, int lin, int col);
 
 
 

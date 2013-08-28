@@ -1288,3 +1288,67 @@ int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
   if (*l) return +1;
   return 0;
 }
+
+int iupStrCompareEqual(const char *l, const char *r, int casesensitive, int utf8, int partial)
+{
+  if (!Latin1_map)
+    iStrInitLatin1_map();
+
+  while(*l && *r)
+  {
+    int diff;
+    char l_char = *l, 
+         r_char = *r;
+
+    if (!casesensitive && utf8)
+    {
+      l_char = iStrUTF8toLatin1(&l);
+      r_char = iStrUTF8toLatin1(&r);
+    }
+
+    /* compute the difference of both characters */
+    if (casesensitive)
+      diff = l_char - r_char;
+    else
+      diff = Latin1_map_nocase[l_char] - Latin1_map_nocase[r_char];
+
+    /* if they differ we have a result */
+    if(diff != 0) 
+      return 0;
+
+    /* otherwise process the next characters */
+    ++l;
+    ++r;
+  }
+
+  /* check also for terminator */
+  if (*l == *r) 
+    return 1;
+
+  if (partial && *r == 0) 
+    return 1;  /* if second string is at terminator, then it is partially equal */
+
+  return 0;
+}
+
+int iupStrCompareFind(const char *l, const char *r, int casesensitive, int utf8)
+{
+  int i;
+  int l_len = strlen(l);
+  int r_len = strlen(r);
+  int count = l_len - r_len;
+  if (count < 0)
+    return 0;
+
+  count++;
+
+  for (i=0; i<count; i++)
+  {
+    if (iupStrCompareEqual(l, r, casesensitive, utf8, 1))
+      return 1;
+
+    l++;
+  }
+
+  return 0;
+}

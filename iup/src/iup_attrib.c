@@ -798,6 +798,16 @@ char* iupAttribGetClassObject(Ihandle* ih, const char* name)
   return iupClassObjectGetAttribute(ih, name, &def_value, &inherit);
 }
 
+char* iupAttribGetClassObjectId(Ihandle* ih, const char* name, int id)
+{
+  return iupClassObjectGetAttributeId(ih, name, id);
+}
+
+char* iupAttribGetClassObjectId2(Ihandle* ih, const char* name, int lin, int col)
+{
+  return iupClassObjectGetAttributeId2(ih, name, lin, col);
+}
+
 void iupAttribSet(Ihandle* ih, const char* name, const char* value)
 {
   if (!value)
