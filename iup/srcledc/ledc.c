@@ -728,12 +728,14 @@ static void code_elemlist2( Telem* elem )
   for (i=0; i<2; i++)
   {
     if (i < elem->nparams)
-    {
       codeelemparam( elem->params[i] );
-      fprintf( outfile, ",\n" ); 
-    }
     else
-      fprintf( outfile, "NULL,\n" ); 
+      fprintf( outfile, "NULL" ); 
+
+    if (i == 1)
+      fprintf( outfile, "\n" );
+    else
+      fprintf( outfile, ",\n" );
   }
   unindent();
   codeindent();
