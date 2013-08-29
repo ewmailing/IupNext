@@ -299,8 +299,7 @@ details. LASTERROR can also be set to &quot;INVALIDFILENAME&quot; (failed to ope
 the matrix based on the values of the given column (id). Can be ALL (1-NUMLIN), 
 an interval in the format &quot;L1-L2&quot;, INVERT (invert the order in the current 
 interval of the current column, id is ignored) or RESET (remove any ordering). 
-The sort will not affect original data, only how it is displayed from the 
-original data and how it is updated to the original data. The SORTSIGN<em>id</em> 
+The SORTSIGN<em>id</em> 
 attribute will be updated to reflect the ordering. </p>
 <p class="info">When the SORTCOLUMNCOMPARE_CB callback is NOT defined, and the column 
 in NOT numeric, then the text is sorted using an <strong>Alphanumeric Algorithm</strong>. This 
@@ -308,7 +307,13 @@ means that numbers and text in the same value are sorted separately (for ex: A1 
 B1). Also 
 natural alphabetic order is used: 123...aA·¡...bBcC... The internal comparison 
 will work only for Latin-1 
-characters, even if UTF8MODE is Yes.</p>
+characters, even if UTF8MODE is Yes.<br><strong>IMPORTANT</strong>: The sort 
+will not affect the original data, only how it is displayed from the original 
+data and how it is updated to the original data. The line and cell attributes of 
+the sorted will NOT be affected. This means that colors and fonts will NOT 
+follow the sort order, also means that cell address in FOCUS_CELL, MARKED, 
+ORIGIN, SHOW, HEIGHTn, and others, are all relative to the displayed cells and 
+they do NOT follow the sort order. </p>
 <p>
 <strong>SORTCOLUMNORDER</strong>: defines if the number or text comparison is in 
 ASCENDING or DESCENDING order. Default: ASCENDING. Used during SORTCOLUMN<em>id</em> 
