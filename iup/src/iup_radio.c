@@ -107,9 +107,6 @@ static int iRadioSetValueAttrib(Ihandle* ih, const char* value)
 static char* iRadioGetValueAttrib(Ihandle* ih)
 {
   Ihandle *ih_toggle = (Ihandle*)iRadioGetValueHandleAttrib(ih);
-  if (!ih_toggle)
-    return NULL;
-
   return IupGetName(ih_toggle);
 }
 
