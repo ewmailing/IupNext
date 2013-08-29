@@ -181,11 +181,19 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
         memset(ih->data->cells[lin+base], 0, ih->data->columns.num_alloc*sizeof(ImatCell));
     memset(ih->data->lines.dt+base, 0, diff_num*sizeof(ImatLinCol));
     if (ih->data->sort_line_index)
+    {
       memset(ih->data->sort_line_index+base, 0, diff_num*sizeof(int));
+
+      /* update indices */
+      if (ih->data->sort_has_index)
+        for(lin=1; lin<num; lin++)
+          if (ih->data->sort_line_index[lin] >= base)
+            ih->data->sort_line_index[lin] += diff_num;
+    }
   }
   else /* DEL */
   {
-    diff_num = old_num-num;  /* size of the openned space */
+    diff_num = old_num-num;  /* size of the removed space */
     shift_num = num-base;    /* size of the data to be moved */
     end = base+diff_num;
 
@@ -224,7 +232,15 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
         memset(ih->data->cells[lin+num], 0, ih->data->columns.num_alloc*sizeof(ImatCell));
     memset(ih->data->lines.dt+num, 0, diff_num*sizeof(ImatLinCol));
     if (ih->data->sort_line_index)
+    {
       memset(ih->data->sort_line_index+num, 0, diff_num*sizeof(int));
+
+      /* update indices */
+      if (ih->data->sort_has_index)
+        for(lin=1; lin<num; lin++)
+          if (ih->data->sort_line_index[lin] >= base)
+            ih->data->sort_line_index[lin] -= diff_num;
+    }
   }
 }
 
@@ -287,7 +303,7 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
   }
   else /* DEL */
   {
-    diff_num = old_num-num;    /* size of the openned space */
+    diff_num = old_num-num;    /* size of the removed space */
     shift_num = num-base;      /* size of the data to be moved */
     end = base+diff_num;
 
