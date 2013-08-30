@@ -33,7 +33,7 @@
 char* iupMatrixExGetCellValue(Ihandle* ih, int lin, int col, int convert)
 {
   if (convert)
-    return iupMatrixGetValue(ih, lin, col);
+    return iupMatrixGetValue(ih, lin, col);  /* Display value */
   else
     return iupMatrixGetValueString(ih, lin, col);
 }

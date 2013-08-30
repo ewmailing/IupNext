@@ -22,6 +22,7 @@
 #include "iupmat_def.h"
 #include "iupmat_aux.h"
 #include "iupmat_getset.h"
+#include "iupmat_numlc.h"
 
 
 int iupMatrixAuxIsFullVisibleLast(ImatLinColData *p)
@@ -374,4 +375,22 @@ int iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode, int
   if(cb)
     return cb(ih, lin, col, mode, update);
   return IUP_DEFAULT;
+}
+
+void iupMatrixAuxCopyLin(Ihandle* ih, int from_lin, int to_lin)
+{
+  int col, num_col = ih->data->columns.num;
+  for(col = 0; col < num_col; col++)
+    iupMatrixCopyValue(ih, from_lin, col, to_lin, col);
+
+  iupMatrixCopyLinAttrib(ih, from_lin, to_lin);
+}
+
+void iupMatrixAuxCopyCol(Ihandle* ih, int from_col, int to_col)
+{
+  int lin, num_lin = ih->data->lines.num;
+  for(lin = 0; lin < num_lin; lin++)
+    iupMatrixCopyValue(ih, lin, from_col, lin, to_col);
+
+  iupMatrixCopyColAttrib(ih, from_col, to_col);
 }

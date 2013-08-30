@@ -720,6 +720,36 @@ static char* iMatrixGetNumLinNoScrollAttrib(Ihandle* ih)
   return iupStrReturnInt(ih->data->lines.num_noscroll-1);  /* the attribute does not include the title */
 }
 
+static int iMatrixSetCopyLinAttrib(Ihandle* ih, int from_lin, const char* value)
+{
+  int to_lin = 0;
+  if (!iupStrToInt(value, &to_lin))
+    return 0;
+
+  if (!iupMATRIX_CHECK_LIN(ih, from_lin) || !iupMATRIX_CHECK_LIN(ih, to_lin) || from_lin==to_lin)
+    return 0;
+
+  iupMatrixAuxCopyLin(ih, from_lin, to_lin);
+  iupMatrixDraw(ih, 1);
+
+  return 0;
+}
+
+static int iMatrixSetCopyColAttrib(Ihandle* ih, int from_col, const char* value)
+{
+  int to_col = 0;
+  if (!iupStrToInt(value, &to_col))
+    return 0;
+
+  if (!iupMATRIX_CHECK_COL(ih, from_col) || !iupMATRIX_CHECK_COL(ih, to_col) || from_col==to_col)
+    return 0;
+
+  iupMatrixAuxCopyCol(ih, from_col, to_col);
+  iupMatrixDraw(ih, 1);
+
+  return 0;
+}
+
 static int iMatrixSetSizeAttrib(Ihandle* ih, int pos, const char* value)
 {
   (void)pos;
@@ -1612,6 +1642,8 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "FITTOTEXT", NULL, iMatrixSetFitToTextAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FITMAXHEIGHT", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FITMAXWIDTH", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "COPYLIN", NULL, iMatrixSetCopyLinAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "COPYCOL", NULL, iMatrixSetCopyColAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - MARK */
   iupClassRegisterAttribute(ic, "MARKED", iupMatrixGetMarkedAttrib, iupMatrixSetMarkedAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* noticed that MARKED must be mapped */

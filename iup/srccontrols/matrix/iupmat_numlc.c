@@ -52,110 +52,25 @@
    Obs: L:C, MARKED and MARK are not stored in the hash table.
 */
 
-static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int add)
-{
 #define IMAT_NUM_ATTRIB_LINE 12
 #define IMAT_ATTRIB_LINE_ONLY 6
-  char* attrib[IMAT_NUM_ATTRIB_LINE] = {
-    "RASTERHEIGHT",  
-    "HEIGHT",
-    "BGCOLOR",
-    "FGCOLOR",
-    "FONT",
-    "FRAMEHORIZCOLOR",
-    "BGCOLOR",
-    "FGCOLOR",
-    "FONT",
-    "MASK",
-    "FRAMEHORIZCOLOR",
-    "FRAMEVERTCOLOR"};
-  int a, lin, col;
-  char* value;
+static char* imatrix_lin_attrib[IMAT_NUM_ATTRIB_LINE] = {
+  "RASTERHEIGHT",  
+  "HEIGHT",
+  "BGCOLOR",
+  "FGCOLOR",
+  "FONT",
+  "FRAMEHORIZCOLOR",
+  "BGCOLOR",
+  "FGCOLOR",
+  "FONT",
+  "MASK",
+  "FRAMEHORIZCOLOR",
+  "FRAMEVERTCOLOR"};
 
-  if (add)  /* ADD */
-  {
-    /* copy the attributes of the moved cells, from base+count to num */
-    /*   do it in reverse order to avoid overlapping */
-    /* then clear the new space starting from base to base+count */
-
-    for(a = 0; a < IMAT_NUM_ATTRIB_LINE; a++)
-    {
-      for(lin = ih->data->lines.num-1; lin >= base+count; lin--)
-      {
-        if (a < IMAT_ATTRIB_LINE_ONLY)  /* Update the line attributes */
-        {
-          value = iupAttribGetId2(ih, attrib[a], lin-count, IUP_INVALID_ID);
-          iupAttribSetStrId2(ih, attrib[a], lin, IUP_INVALID_ID, value);
-        }
-        else  /* Update the cell attribute */
-        {
-          for(col = 0; col < ih->data->columns.num; col++)
-          {
-            value = iupAttribGetId2(ih, attrib[a], lin-count, col);
-            iupAttribSetStrId2(ih, attrib[a], lin, col, value);
-          }
-        }
-      }
-
-      for(lin = base; lin < base+count; lin++)
-      {
-        if (a < IMAT_ATTRIB_LINE_ONLY)
-        {
-          iupAttribSetId2(ih, attrib[a], lin, IUP_INVALID_ID, NULL);
-        }
-        else 
-        {
-          for(col = 0; col < ih->data->columns.num; col++)
-            iupAttribSetId2(ih, attrib[a], lin, col, NULL);
-        }
-      }
-    }
-  }
-  else  /* DEL */
-  {
-    /* copy the attributes of the moved cells from base+count to base */
-    /* then clear the remaining space starting at num */
-
-    for(a = 0; a < IMAT_NUM_ATTRIB_LINE; a++)
-    {
-      for(lin = base; lin < ih->data->lines.num; lin++)
-      {
-        if (a < IMAT_ATTRIB_LINE_ONLY)  /* Update the line attributes */     
-        {
-          value = iupAttribGetId2(ih, attrib[a], lin+count, IUP_INVALID_ID);
-          iupAttribSetStrId2(ih, attrib[a], lin, IUP_INVALID_ID, value);
-        }
-        else  /* Update each cell attribute */
-        {
-          for(col = 0; col < ih->data->columns.num; col++) 
-          {
-            value = iupAttribGetId2(ih, attrib[a], lin+count, col);
-            iupAttribSetStrId2(ih, attrib[a], lin, col, value);
-          }
-        }
-      }
-
-      for(lin = ih->data->lines.num; lin < ih->data->lines.num+count; lin++)
-      {
-        if (a < IMAT_ATTRIB_LINE_ONLY)
-        {
-          iupAttribSetId2(ih, attrib[a], lin, IUP_INVALID_ID, NULL);
-        }
-        else 
-        {
-          for(col = 0; col < ih->data->columns.num; col++)
-            iupAttribSetId2(ih, attrib[a], lin, col, NULL);
-        }
-      }
-    }
-  }
-}
-
-static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int add)
-{
 #define IMAT_NUM_ATTRIB_COL 16
 #define IMAT_ATTRIB_COL_ONLY 10
-  char* attrib[IMAT_NUM_ATTRIB_COL] = { 
+static char* imatrix_col_attrib[IMAT_NUM_ATTRIB_COL] = { 
     "NUMERICFORMAT",
     "NUMERICFORMATTITLE",
     "SORTSIGN",
@@ -172,8 +87,121 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
     "MASK",
     "FRAMEHORIZCOLOR",
     "FRAMEVERTCOLOR"};
-  int a, col, lin;
+
+void iupMatrixCopyLinAttrib(Ihandle* ih, int lin1, int lin2)
+{
+  int a, col;
   char* value;
+
+  for(a = 0; a < IMAT_NUM_ATTRIB_LINE; a++)
+  {
+    if (a < IMAT_ATTRIB_LINE_ONLY)  /* Update the line attributes */
+    {
+      value = iupAttribGetId2(ih, imatrix_lin_attrib[a], lin1, IUP_INVALID_ID);
+      iupAttribSetStrId2(ih, imatrix_lin_attrib[a], lin2, IUP_INVALID_ID, value);
+    }
+    else  /* Update the cell attribute */
+    {
+      for(col = 0; col < ih->data->columns.num; col++)
+      {
+        value = iupAttribGetId2(ih, imatrix_lin_attrib[a], lin1, col);
+        iupAttribSetStrId2(ih, imatrix_lin_attrib[a], lin2, col, value);
+      }
+    }
+  }
+}
+
+void iupMatrixCopyColAttrib(Ihandle* ih, int col1, int col2)
+{
+  int a, lin;
+  char* value;
+
+  for(a = 0; a < IMAT_NUM_ATTRIB_COL; a++)
+  {
+    if (a < IMAT_ATTRIB_COL_ONLY)  /* Update the column attributes */
+    {
+      value = iupAttribGetId2(ih, imatrix_col_attrib[a], IUP_INVALID_ID, col1);
+      iupAttribSetStrId2(ih, imatrix_col_attrib[a], IUP_INVALID_ID, col2, value);
+    }
+    else  /* Update the cell attributes */
+    {
+      for(lin = 0; lin < ih->data->lines.num; lin++)
+      {
+        value = iupAttribGetId2(ih, imatrix_col_attrib[a], lin, col1);
+        iupAttribSetStrId2(ih, imatrix_col_attrib[a], lin, col2, value);
+      }
+    }
+  }
+}
+
+static void iMatrixClearLinAttrib(Ihandle* ih, int lin)
+{
+  int a, col;
+
+  for(a = 0; a < IMAT_NUM_ATTRIB_LINE; a++)
+  {
+    if (a < IMAT_ATTRIB_LINE_ONLY)
+    {
+      iupAttribSetId2(ih, imatrix_lin_attrib[a], lin, IUP_INVALID_ID, NULL);
+    }
+    else 
+    {
+      for(col = 0; col < ih->data->columns.num; col++)
+        iupAttribSetId2(ih, imatrix_lin_attrib[a], lin, col, NULL);
+    }
+  }
+}
+
+static void iMatrixClearColAttrib(Ihandle* ih, int col)
+{
+  int a, lin;
+
+  for(a = 0; a < IMAT_NUM_ATTRIB_COL; a++)
+  {
+    if (a < IMAT_ATTRIB_COL_ONLY)
+    {
+      iupAttribSetId2(ih, imatrix_col_attrib[a], IUP_INVALID_ID, col, NULL);
+    }
+    else 
+    {
+      for(lin = 0; lin < ih->data->lines.num; lin++)
+        iupAttribSetId2(ih, imatrix_col_attrib[a], lin, col, NULL);
+    }
+  }
+}
+
+static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int add)
+{
+  int lin;
+
+  if (add)  /* ADD */
+  {
+    /* copy the attributes of the moved cells, from base+count to num */
+    /*   do it in reverse order to avoid overlapping */
+    /* then clear the new space starting from base to base+count */
+
+    for(lin = ih->data->lines.num-1; lin >= base+count; lin--)
+      iupMatrixCopyLinAttrib(ih, lin-count, lin);
+
+    for(lin = base; lin < base+count; lin++)
+      iMatrixClearLinAttrib(ih, lin);
+  }
+  else  /* DEL */
+  {
+    /* copy the attributes of the moved cells from base+count to base */
+    /* then clear the remaining space starting at num */
+
+    for(lin = base; lin < ih->data->lines.num; lin++)
+      iupMatrixCopyLinAttrib(ih, lin+count, lin);
+
+    for(lin = ih->data->lines.num; lin < ih->data->lines.num+count; lin++)
+      iMatrixClearLinAttrib(ih, lin);
+  }
+}
+
+static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int add)
+{
+  int col;
 
   if (add)  /* ADD */
   {
@@ -181,76 +209,22 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
     /*   do it in reverse order to avoid overlapping */
     /* then clear the new space starting from base to base+count */
 
-    for(a = 0; a < IMAT_NUM_ATTRIB_COL; a++)
-    {
-      for(col = ih->data->columns.num-1; col >= base+count; col--)
-      {
-        if (a < IMAT_ATTRIB_COL_ONLY)  /* Update the column attributes */
-        {
-          value = iupAttribGetId2(ih, attrib[a], IUP_INVALID_ID, col-count);
-          iupAttribSetStrId2(ih, attrib[a], IUP_INVALID_ID, col, value);
-        }
-        else  /* Update the cell attributes */
-        {
-          for(lin = 0; lin < ih->data->lines.num; lin++)
-          {
-            value = iupAttribGetId2(ih, attrib[a], lin, col-count);
-            iupAttribSetStrId2(ih, attrib[a], lin, col, value);
-          }
-        }
-      }
+    for(col = ih->data->columns.num-1; col >= base+count; col--)
+      iupMatrixCopyColAttrib(ih, col-count, col);
 
-      for(col = base; col < base+count; col++)
-      {
-        if (a < IMAT_ATTRIB_COL_ONLY)
-        {
-          iupAttribSetId2(ih, attrib[a], IUP_INVALID_ID, col, NULL);
-        }
-        else 
-        {
-          for(lin = 0; lin < ih->data->lines.num; lin++)
-            iupAttribSetId2(ih, attrib[a], lin, col, NULL);
-        }
-      }
-    }
+    for(col = base; col < base+count; col++)
+      iMatrixClearColAttrib(ih, col);
   }
   else   /* DEL */
   {
     /* copy the attributes of the moved cells from base+count to base */
     /* then clear the remaining space starting at num */
 
-    for(a = 0; a < IMAT_NUM_ATTRIB_COL; a++)
-    {
-      for(col = base; col < ih->data->columns.num; col++)
-      {
-        if (a < IMAT_ATTRIB_COL_ONLY)  /* Update the column attributes */
-        {
-          value = iupAttribGetId2(ih, attrib[a], IUP_INVALID_ID, col+count);
-          iupAttribSetStrId2(ih, attrib[a], IUP_INVALID_ID, col, value);
-        }
-        else  /* Update the cell attributes */
-        {
-          for(lin = 0; lin < ih->data->lines.num; lin++)
-          {
-            value = iupAttribGetId2(ih, attrib[a], lin, col+count);
-            iupAttribSetStrId2(ih, attrib[a], lin, col, value);
-          }
-        }
-      }
+    for(col = base; col < ih->data->columns.num; col++)
+      iupMatrixCopyColAttrib(ih, col+count, col);
 
-      for(col = ih->data->columns.num; col < ih->data->columns.num+count; col++)
-      {
-        if (a < IMAT_ATTRIB_COL_ONLY)
-        {
-          iupAttribSetId2(ih, attrib[a], IUP_INVALID_ID, col, NULL);
-        }
-        else 
-        {
-          for(lin = 0; lin < ih->data->lines.num; lin++)
-            iupAttribSetId2(ih, attrib[a], lin, col, NULL);
-        }
-      }
-    }
+    for(col = ih->data->columns.num; col < ih->data->columns.num+count; col++)
+      iMatrixClearColAttrib(ih, col);
   }
 }
 

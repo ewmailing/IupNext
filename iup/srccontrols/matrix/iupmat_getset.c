@@ -39,6 +39,12 @@ int iupMatrixCheckCellPos(Ihandle* ih, int lin, int col)
   return 1;
 }
 
+void iupMatrixCopyValue(Ihandle* ih, int lin1, int col1, int lin2, int col2)
+{
+  char* value = iupMatrixGetValueString(ih, lin1, col1);
+  iupMatrixSetValue(ih, lin2, col2, value, -1);  /* call value_edit_cb, but NO numeric conversion */
+}
+
 static char* iMatrixSetValueNumeric(Ihandle* ih, int lin, int col, const char* value, int convert)
 {
   double number;
@@ -100,8 +106,9 @@ void iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int edi
 
   if (edited)
   {
-    /* value_edit_cb called only when value is interactively edited. 
-       It also works in normal mode */
+    /* value_edit_cb called when value is "interactively" edited. 
+       This is NOT called only when L:C or VALUE attributes are set.
+       It works in normal mode and in callback mode. */
     IFniis value_edit_cb = (IFniis)IupGetCallback(ih, "VALUE_EDIT_CB");
     if (value_edit_cb)
       value_edit_cb(ih, lin, col, (char*)value);
@@ -210,7 +217,7 @@ char* iupMatrixGetValueString(Ihandle* ih, int lin, int col)
   return value;
 }
 
-static char* iMatrixGetValueNumeric(Ihandle* ih, int lin, int col, const char* value)
+static char* iMatrixGetValueNumericDisplay(Ihandle* ih, int lin, int col, const char* value)
 {
   char *format=NULL;
   double number;
@@ -296,7 +303,7 @@ char* iupMatrixGetValue (Ihandle* ih, int lin, int col)
       value = ih->data->cells[lin][col].value;
 
     if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
-      return iMatrixGetValueNumeric(ih, lin, col, value);
+      return iMatrixGetValueNumericDisplay(ih, lin, col, value);
     else
       return value;
   }
