@@ -750,6 +750,26 @@ static int iMatrixSetCopyColAttrib(Ihandle* ih, int from_col, const char* value)
   return 0;
 }
 
+static int iMatrixSetMoveColAttrib(Ihandle* ih, int from_col, const char* value)
+{
+  char str[50];
+  iupMatrixSetAddColAttrib(ih, value);
+  iMatrixSetCopyColAttrib(ih, from_col, value);
+  sprintf(str, "%d", from_col);
+  iupMatrixSetDelColAttrib(ih, str);
+  return 0;
+}
+
+static int iMatrixSetMoveLinAttrib(Ihandle* ih, int from_lin, const char* value)
+{
+  char str[50];
+  iupMatrixSetAddLinAttrib(ih, value);
+  iMatrixSetCopyLinAttrib(ih, from_lin, value);
+  sprintf(str, "%d", from_lin);
+  iupMatrixSetDelLinAttrib(ih, str);
+  return 0;
+}
+
 static int iMatrixSetSizeAttrib(Ihandle* ih, int pos, const char* value)
 {
   (void)pos;
@@ -1644,6 +1664,8 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId(ic, "FITMAXWIDTH", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYLIN", NULL, iMatrixSetCopyLinAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYCOL", NULL, iMatrixSetCopyColAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MOVELIN", NULL, iMatrixSetMoveLinAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MOVECOL", NULL, iMatrixSetMoveColAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - MARK */
   iupClassRegisterAttribute(ic, "MARKED", iupMatrixGetMarkedAttrib, iupMatrixSetMarkedAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* noticed that MARKED must be mapped */

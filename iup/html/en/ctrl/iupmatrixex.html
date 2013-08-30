@@ -313,7 +313,8 @@ data and how it is updated to the original data. The line and cell attributes of
 the sorted will NOT be affected. This means that colors and fonts will NOT 
 follow the sort order, also means that cell address in FOCUS_CELL, MARKED, 
 ORIGIN, SHOW, HEIGHTn, and others, are all relative to the displayed cells and 
-they do NOT follow the sort order. </p>
+they do NOT follow the sort order. VALUE_CB, EDITION_CB and VALUE_EDIT_CB will 
+be called with the correct index following the sort order.</p>
 <p>
 <strong>SORTCOLUMNORDER</strong>: defines if the number or text comparison is in 
 ASCENDING or DESCENDING order. Default: ASCENDING. Used during SORTCOLUMN<em>id</em> 
