@@ -41,6 +41,10 @@ function mat:drop_cb(drop, lin, col)
   return iup.IGNORE
 end
 
+function mat:dropselect_cb(lin, col,drop, t, i, v)
+  print("lin="..lin..",col="..col..",i="..i..",state="..v..",value="..t)
+end
+
 dlg = iup.dialog{iup.vbox{mat; margin="10x10"}}
 dlg:showxy(iup.CENTER, iup.CENTER)
 
