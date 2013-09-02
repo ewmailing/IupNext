@@ -309,9 +309,6 @@
     <None Include="..\srclua5\gridbox.lua">
       <Filter>Lua\controls</Filter>
     </None>
-    <None Include="..\srclua5\progressdlg.lua">
-      <Filter>Lua\controls</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srclua5\il.h">
