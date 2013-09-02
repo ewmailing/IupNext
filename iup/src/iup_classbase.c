@@ -477,6 +477,8 @@ void iupBaseRegisterVisualAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "TIPBGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "255 255 225", IUPAF_NOT_MAPPED); /* Light Yellow */
   iupClassRegisterAttribute(ic, "TIPFGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NOT_MAPPED);       /* black */
   iupClassRegisterAttribute(ic, "TIPRECT", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+
+  iupdrvBaseRegisterVisualAttrib(ic);
 }
 
 void iupBaseRegisterCommonCallbacks(Iclass* ic)

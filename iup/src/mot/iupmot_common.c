@@ -529,6 +529,11 @@ void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "XFONTID", iupmotGetFontIdAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 }
 
+void iupdrvBaseRegisterVisualAttrib(Iclass* ic)
+{
+  (void)ic;
+}
+
 int iupdrvGetScrollbarSize(void)
 {
   return 15;

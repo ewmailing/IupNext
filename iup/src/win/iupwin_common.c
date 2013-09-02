@@ -791,15 +791,18 @@ void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "HFONT", iupwinGetHFontAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 
+  if (!WM_DRAGLISTMSG)
+    WM_DRAGLISTMSG = RegisterWindowMessage(DRAGLISTMSGSTRING);
+}
+
+void iupdrvBaseRegisterVisualAttrib(Iclass* ic)
+{
   if (iupwinIsWin7OrNew())
     iupwinTouchRegisterAttrib(ic);
 
   iupClassRegisterAttribute(ic, "TIPBALLOON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TIPBALLOONTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TIPBALLOONTITLEICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
-
-  if (!WM_DRAGLISTMSG)
-    WM_DRAGLISTMSG = RegisterWindowMessage(DRAGLISTMSGSTRING);
 }
 
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
