@@ -43,7 +43,7 @@ struct _IcontrolData
 };
 
 
-static void iExpanderOpenCloseChild(Ihandle* ih, int refresh)
+static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb)
 {
   Ihandle *child = ih->firstchild->brother;
 
@@ -59,6 +59,13 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int refresh)
 
   if (refresh)
     IupRefresh(child); /* this will recompute the layout of the hole dialog */
+
+  if (callcb)
+  {
+    IFn cb = IupGetCallback(ih, "ACTION");
+    if (cb)
+      cb(ih);
+  }
 }
 
 static int iExpanderGetBarSize(Ihandle* ih)
@@ -162,7 +169,7 @@ static void iExpanderDrawArrow(IdrawCanvas *dc, int x, int y, unsigned char r, u
   iExpanderDrawTriangle(dc, x, y, r, g, b, dir);
 }
 
-static void iExpanderHighligh(unsigned char *r, unsigned char *g, unsigned char *b)
+static void iExpanderHighlight(unsigned char *r, unsigned char *g, unsigned char *b)
 {
   int i = (*r+*g+*b)/3;
   if (i < 128)
@@ -200,7 +207,7 @@ static int iExpanderAction_CB(Ihandle* bar)
     iupDrawText(dc, title, len, IEXPAND_HANDLE_SIZE, 0, r, g, b, IupGetAttribute(ih, "FONT"));
 
     if (ih->data->highlight)
-      iExpanderHighligh(&r, &g, &b);
+      iExpanderHighlight(&r, &g, &b);
 
     if (ih->data->state == IEXPANDER_CLOSE)
       iExpanderDrawArrow(dc, 1, 0, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT);
@@ -213,7 +220,7 @@ static int iExpanderAction_CB(Ihandle* bar)
     int x, y;
 
     if (ih->data->highlight)
-      iExpanderHighligh(&r, &g, &b);
+      iExpanderHighlight(&r, &g, &b);
 
     switch(ih->data->position)
     {
@@ -286,7 +293,7 @@ static int iExpanderGlobalMotion_cb(int x, int y)
       y < child_y || y > child_y+child->currentheight)
   {
     ih->data->state = IEXPANDER_CLOSE;
-    iExpanderOpenCloseChild(ih, 0);
+    iExpanderOpenCloseChild(ih, 0, 1);
     IupSetGlobal("_IUP_EXPANDER_GLOBAL", NULL);
     IupSetFunction("GLOBALMOTION_CB", IupGetFunction("_IUP_OLD_GLOBALMOTION_CB"));
     IupSetFunction("_IUP_OLD_GLOBALMOTION_CB", NULL);
@@ -307,7 +314,7 @@ static int iExpanderTimer_cb(Ihandle* timer)
   /* just show child on top,
      that's why child must be a native container when using autoshow. */
   ih->data->state = IEXPANDER_OPEN_FLOAT;
-  iExpanderOpenCloseChild(ih, 0);
+  iExpanderOpenCloseChild(ih, 0, 1);
   IupRefreshChildren(ih);
   IupSetAttribute(child, "ZORDER", "TOP"); 
 
@@ -367,7 +374,7 @@ static int iExpanderButton_CB(Ihandle* bar, int button, int pressed, int x, int 
     /* Update the state: OPEN ==> collapsed, CLOSE ==> expanded */
      ih->data->state = (ih->data->state == IEXPANDER_OPEN? IEXPANDER_CLOSE: IEXPANDER_OPEN);
 
-     iExpanderOpenCloseChild(ih, 1);
+     iExpanderOpenCloseChild(ih, 1, 1);
   }
 
   (void)x;
@@ -454,7 +461,7 @@ static int iExpanderSetStateAttrib(Ihandle* ih, const char* value)
   else
     ih->data->state = IEXPANDER_CLOSE;
 
-  iExpanderOpenCloseChild(ih, 1);
+  iExpanderOpenCloseChild(ih, 1, 0);
 
   return 0; /* do not store value in hash table */
 }
@@ -548,7 +555,8 @@ static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
         natural_h += child->naturalheight;
     }
 
-    child_expand = child->expand;
+    if (ih->data->state == IEXPANDER_OPEN)
+      child_expand = child->expand;
   }
 
   *children_expand = child_expand;
@@ -634,7 +642,7 @@ static void iExpanderSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
 static void iExpanderChildAddedMethod(Ihandle* ih, Ihandle* child)
 {
-  iExpanderOpenCloseChild(ih, 0);
+  iExpanderOpenCloseChild(ih, 0, 0);
   (void)child;
 }
 
@@ -699,6 +707,9 @@ Iclass* iupExpanderNewClass(void)
   ic->ComputeNaturalSize     = iExpanderComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iExpanderSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition    = iExpanderSetChildrenPositionMethod;
+
+  /* Callbacks */
+  iupClassRegisterCallback(ic, "ACTION", "");
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

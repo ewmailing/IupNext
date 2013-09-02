@@ -94,6 +94,22 @@ MINSIZE</a>, <a href="../attrib/iup_maxsize.html">
 MAXSIZE</a>: 
 also accepted.</p>
 
+
+<h3><a name="Callbacks">Callbacks</a></h3>
+
+
+<p><a href="../call/iup_action.html">ACTION</a>:
+  Action generated expander state is interactively changed. (Since 3.9)</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:action() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.&nbsp;</p>
+
 <h3><a name="Notes">Notes</a></h3>
 <p>The <strong>IupCanvas</strong> bar handler is always the first child of the 
 expander. It can be obtained using <strong>IupGetChild</strong> or <strong>

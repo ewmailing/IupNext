@@ -5,7 +5,9 @@ local ctrl = {
   nick = "expander",
   parent = iup.WIDGET,
   creation = "I",
-  callback = {}
+  callback = {
+    action = "", 
+  }
 }
 
 function ctrl.createElement(class, param)

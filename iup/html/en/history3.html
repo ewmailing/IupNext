@@ -58,7 +58,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>CVS (15/Ago/2013)</h3>
+<h3>CVS (02/Sep/2013)</h3>
 
 <ul>
 
@@ -74,6 +74,8 @@ version 3.x.</p>
 	IupGetRGB*</strong>. </li>
 	<li><span class="hist_new">New:</span> support for UTF-8 strings in the 
 	Windows and GTK driver using the UTF8MODE global attribute.</li>
+	<li><span class="hist_new">New:</span> ACTION callback for <strong>
+	IupExpander</strong>.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	preserve of FRAMEVERTCOLOR*, 
 	FRAMEHORIZCOLOR*, SORTSIGN*, MASK*, WIDTH*, RASTERWIDTH*, HEIGHT* and 
@@ -85,7 +87,8 @@ version 3.x.</p>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	removed Windows 2000 compatibility.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
-	UTF8AUTOCONVERT global attribute renamed to UTF8MODE with inverted meaning. </li>
+	UTF8AUTOCONVERT global attribute renamed to UTF8MODE with inverted meaning. 
+	Old name still supported for compatibility.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	renamed <strong>IupStoreAttribute</strong> to <strong>IupSetStrAttribute</strong>, 
 	and <strong>IupSetStrfAttribute</strong> to <strong>IupSetStrf</strong>, old 
@@ -133,6 +136,8 @@ version 3.x.</p>
 	IupSplit</strong> controls.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupGetAttributeHandle</strong> 
 	not checking at control implementation.</li>
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupExpander</strong> 
+	layout when closed but has a child that can be expanded.</li>
 
 </ul>
 
