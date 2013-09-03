@@ -27,6 +27,7 @@ int IupControlsOpen(void)
   iupRegisterClass(iupMatrixNewClass());
   iupRegisterClass(iupGaugeNewClass());
   iupRegisterClass(iupColorBrowserDlgNewClass());
+//  iupRegisterClass(iupMatrixListNewClass());
 
   IupSetGlobal("_IUP_CONTROLS_OPEN", "1");
 

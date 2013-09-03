@@ -763,8 +763,19 @@ static int iMatrixSetMoveColAttrib(Ihandle* ih, int from_col, const char* value)
 static int iMatrixSetMoveLinAttrib(Ihandle* ih, int from_lin, const char* value)
 {
   char str[50];
+  int to_lin = 0;
+  if (!iupStrToInt(value, &to_lin))
+    return 0;
+
+  if (!iupMATRIX_CHECK_LIN(ih, from_lin) || !iupMATRIX_CHECK_LIN(ih, to_lin) || from_lin==to_lin)
+    return 0;
+
   iupMatrixSetAddLinAttrib(ih, value);
+  if (to_lin < from_lin)
+    from_lin++;
+
   iMatrixSetCopyLinAttrib(ih, from_lin, value);
+
   sprintf(str, "%d", from_lin);
   iupMatrixSetDelLinAttrib(ih, str);
   return 0;
@@ -1594,6 +1605,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterCallback(ic, "ENTERITEM_CB", "ii");
   iupClassRegisterCallback(ic, "LEAVEITEM_CB", "ii");
   iupClassRegisterCallback(ic, "SCROLLTOP_CB", "ii");
+  iupClassRegisterCallback(ic, "COLRESIZE_CB", "i");
   /* --- Drawing --- */
   iupClassRegisterCallback(ic, "BGCOLOR_CB", "iiIII");
   iupClassRegisterCallback(ic, "FGCOLOR_CB", "iiIII");

@@ -42,7 +42,6 @@ int iupMatrixCheckCellPos(Ihandle* ih, int lin, int col)
 void iupMatrixCopyValue(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 {
   char* value = iupMatrixGetValueString(ih, lin1, col1);
-  //if (iupMatrixAuxCallEditionCbLinCol(ih, lin2, col2, 1, 1) != IUP_IGNORE)
   iupMatrixSetValue(ih, lin2, col2, value, -1);  /* call value_edit_cb, but NO numeric conversion */
 }
 

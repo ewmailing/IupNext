@@ -57,7 +57,8 @@ column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*
 can not be a non scrollable cell either.</p>
 <p><strong><a name="ORIGINOFFSET">ORIGINOFFSET</a></strong>: complements the 
 ORIGIN attribute by specifying the drag offset of the top left cell. Returns the 
-current value. Has the format &quot;XxY&quot; or &quot;%dx%d&quot; in C. Used only the ORIGIN is set. (since 3.5)</p>
+current value. Has the format &quot;X:Y&quot; or &quot;%d:%d&quot; in C. When 
+changing this attribute must change also ORIGIN right after. (since 3.5)</p>
 <p><strong><a name="READONLY">READONLY</a></strong>: disables the editing of all cells. EDITION_CB and 
 VALUE_EDIT_CB will not be called anymore. The L:C attribute will still be able 
 to change the cell value. (since 3.0)</p>
@@ -386,11 +387,17 @@ cell in the &quot;L:C&quot; format, the default is the last cell. (since 3.6)<br
 <strong>CLEARVALUE<i>L</i>:*</strong> (write-only):
   the values in line L. Its value defines a column inclusive interval in the 
 &quot;C1-C2&quot; format. The default is 0 and the last column. (since 3.6)<br>
-<strong>CLEARVALUE*:<i>C </i></strong><i>(write-only)</i>:
+<strong>CLEARVALUE*:<i>C </i></strong>(write-only):
   the values in column C. Its value defines a line inclusive interval in the 
 &quot;L1-L2&quot; format. The default is 0 and the last line. (since 3.6)</p>
 <p class="info">In all cases, values are set to NULL. Action only works if the 
 matrix is mapped and NOT in callback mode.</p>
+<p><strong>COPYCOL<i>C </i></strong>(write-only):
+  copy the values and attributes from column C to the given column (value is the 
+number of a column). (Since 3.9)</p>
+<p><strong>COPYLIN<i>L </i></strong>(write-only):
+  copy the values and attributes from line L to the given line (value is the 
+number of a line). (Since 3.9)</p>
 <p><a name="FITTOSIZE"><strong>FITTOSIZE</strong></a> (write-only): Force lines 
 and/or columns sizes so the matrix visible size fit in its current size. 
 NUMCOL_VISIBLE and NUMLIN_VISIBLE are considered when fitting and they are not 

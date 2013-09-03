@@ -4,9 +4,9 @@
  * See Copyright Notice in "iup.h"
  */
 
-/**************************************************************************/
-/* Interactive Column Resize Functions and WIDTH/HEIGHT change            */
-/**************************************************************************/
+/*******************************************************************/
+/* Interactive Column Resize Functions and WIDTH change            */
+/*******************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -104,6 +104,12 @@ void iupMatrixColResFinish(Ihandle* ih, int x)
 
   ih->data->need_calcsize = 1;
   iupMatrixDraw(ih, 0);
+
+  {
+    IFni cb = (IFni)IupGetCallback(ih, "COLRESIZE_CB");
+    if (cb)
+      cb(ih, ih->data->colres_drag_col);
+  }
 }
 
 /* Change the column width interactively, just change the line in the screen.

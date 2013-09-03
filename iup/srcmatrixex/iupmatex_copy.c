@@ -31,7 +31,7 @@ static void iMatrixExCopyColToSetDataSelected(ImatExData* matex_data, int lin, i
   {
     if (lin != skip_lin && selection[lin]=='1' && iupMatrixExIsLineVisible(matex_data->ih, lin))
     {
-      iupMatrixExSetCellValue(matex_data->ih, lin, col, value);
+      iupMatrixExSetCellValue(matex_data->ih, lin, col, value, 0);
 
       if (!iupMatrixExBusyInc(matex_data))
       {
@@ -58,7 +58,7 @@ static void iMatrixExCopyColToSetData(ImatExData* matex_data, int lin, int col, 
   {
     if (lin != skip_lin && iupMatrixExIsLineVisible(matex_data->ih, lin))
     {
-      iupMatrixExSetCellValue(matex_data->ih, lin, col, value);
+      iupMatrixExSetCellValue(matex_data->ih, lin, col, value, 0);
 
       if (!iupMatrixExBusyInc(matex_data))
       {

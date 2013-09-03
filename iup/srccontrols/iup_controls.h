@@ -21,6 +21,7 @@ Iclass* iupMatrixNewClass(void);
 Iclass* iupGaugeNewClass(void);
 Iclass* iupTabsNewClass(void);
 Iclass* iupColorBrowserDlgNewClass(void);
+Iclass* iupMatrixListNewClass(void);
 
 char *iupControlBaseGetParentBgColor (Ihandle* ih);
 char *iupControlBaseGetBgColorAttrib(Ihandle* ih);

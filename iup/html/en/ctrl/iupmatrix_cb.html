@@ -58,6 +58,15 @@ cell does not have a value and the key pressed is not a character.</p>
 the moment the event is generated. The same macros used for
 <a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status.</p>
 <p class="info"><span class="style1">Returns:</span> To avoid the display update return IUP_IGNORE.</p>
+<p><strong><a name="COLRESIZE_CB">COLRESIZE_CB</a></strong>:
+  Action generated when a column is interactively resized. (Since 3.9)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>col</strong>); [in C]
+<strong>elem</strong>:colresize_cb(<strong>col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+    Identifier of the matrix interacting with 
+    the user.<br>
+<strong>col</strong>: Column that had its size changed.<br>
+</p>
 <p><strong><a name="RELEASE_CB">RELEASE_CB</a></strong>:
   Action generated when any mouse button is 
   released over a cell. This callback is always called after other callbacks.</p>

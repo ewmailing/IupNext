@@ -24,12 +24,12 @@ extern "C" {
 #define IMAT_FRAME_H   2
 
 /* Cell/Column/Line flags */
-#define IMAT_HAS_FONT    1     /* Has FONTL:C attribute */
-#define IMAT_HAS_FGCOLOR 2     /* Has FGCOLORL:C attribute */
-#define IMAT_HAS_BGCOLOR 4     /* Has BGCOLORL:C attribute */
-#define IMAT_IS_MARKED   8     /* Is marked */
-#define IMAT_HAS_FRAMEHORIZCOLOR 16  /* Has FRAMEHORIZCOLORL:C */
-#define IMAT_HAS_FRAMEVERTCOLOR  32  /* Has FRAMEVERTCOLORL:C */
+#define IMAT_HAS_FONT    0x01     /* Has FONTL:C attribute */
+#define IMAT_HAS_FGCOLOR 0x02     /* Has FGCOLORL:C attribute */
+#define IMAT_HAS_BGCOLOR 0x04     /* Has BGCOLORL:C attribute */
+#define IMAT_IS_MARKED   0x08     /* Is marked */
+#define IMAT_HAS_FRAMEHORIZCOLOR 0x10  /* Has FRAMEHORIZCOLORL:C */
+#define IMAT_HAS_FRAMEVERTCOLOR  0x20  /* Has FRAMEVERTCOLORL:C */
 
 /* Numeric Column flags */
 #define IMAT_IS_NUMERIC  1   /* Is numeric */
