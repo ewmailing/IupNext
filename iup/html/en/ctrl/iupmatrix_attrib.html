@@ -262,25 +262,31 @@ attributes are preserved, except custom application attributes.</p>
   Adds a new column to the matrix after the 
   specified column. To insert a column at the top of the spreadsheet, value 0 
 must be used. To add more than one column, use format &quot;<strong><em>C-C</em></strong>&quot;, where the first number corresponds to the base column and the second number corresponds to 
-  the number of columns to be added. It is valid only in normal operation mode. 
+  the number of columns to be added. It can be used in normal operation mode or 
+in callback mode, but in callback mode will not update cell values this must be 
+done by the application. 
 Can NOT add a title column. Ignored if set before map. </p>
 <p><strong><a name="ADDLIN">ADDLIN</a></strong> (write-only):
   Adds a new line to the matrix after the 
   specified line. To insert a line at the top of the spreadsheet, value 0 must be used. To add more than one line, use format &quot;<strong><em>L-L</em></strong>&quot;, 
 where the first number corresponds to the base line and the second number 
-corresponds to the number of lines to be added. It is valid only in normal 
-operation mode. Can NOT add a title line. Ignored if set before map. </p>
+corresponds to the number of lines to be added. It can be used in normal operation mode 
+or in callback mode, but in callback mode will not update cell values this must 
+be done by the application. Can NOT add a title line. Ignored if set before map. </p>
 <p><strong><a name="DELCOL">DELCOL</a></strong> (write-only):
   Removes the given column from the matrix. To 
   remove more than one column, use format &quot;<strong><em>C-C</em></strong>&quot;, where the 
 first number corresponds to the base column and the second number corresponds to 
-the number of columns to be removed. It is valid only in normal operation mode. 
-Can NOT remove a title column, <strong><em>C</em></strong>&gt;0. Ignored if set 
+the number of columns to be removed. It can be used in normal operation mode or 
+in callback mode, but in callback mode will not update cell values this must be 
+done by the application. Can NOT remove a title column, <strong><em>C</em></strong>&gt;0. Ignored if set 
 before map. </p>
 <p><strong><a name="DELLIN">DELLIN</a></strong> (write-only):
   Removes the given line from the matrix. To 
   remove more than one line, use format &quot;<strong><em>L-L</em></strong>&quot;, where the first number corresponds to the base line and the second number corresponds to the 
-  number of lines to be removed. It is valid only in normal operation mode. Can 
+  number of lines to be removed. It can be used in normal operation mode or in 
+callback mode, but in callback mode will not update cell values this must be 
+done by the application. Can 
 NOT remove a title line, <strong><em>L</em></strong>&gt;0. Ignored if set before 
 map. </p>
 <p><strong><a name="NUMCOL">NUMCOL</a></strong>:
