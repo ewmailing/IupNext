@@ -52,24 +52,16 @@
    Obs: L:C, MARKED and MARK are not stored in the hash table.
 */
 
-#define IMAT_NUM_ATTRIB_LINE 12
-#define IMAT_ATTRIB_LINE_ONLY 6
+#define IMAT_NUM_ATTRIB_LINE 6
 static char* imatrix_lin_attrib[IMAT_NUM_ATTRIB_LINE] = {
   "RASTERHEIGHT",  
   "HEIGHT",
   "BGCOLOR",
   "FGCOLOR",
   "FONT",
-  "FRAMEHORIZCOLOR",
-  "BGCOLOR",
-  "FGCOLOR",
-  "FONT",
-  "MASK",
-  "FRAMEHORIZCOLOR",
-  "FRAMEVERTCOLOR"};
+  "FRAMEHORIZCOLOR"};
 
-#define IMAT_NUM_ATTRIB_COL 16
-#define IMAT_ATTRIB_COL_ONLY 10
+#define IMAT_NUM_ATTRIB_COL 10
 static char* imatrix_col_attrib[IMAT_NUM_ATTRIB_COL] = { 
     "NUMERICFORMAT",
     "NUMERICFORMATTITLE",
@@ -80,7 +72,10 @@ static char* imatrix_col_attrib[IMAT_NUM_ATTRIB_COL] = {
     "BGCOLOR",
     "FGCOLOR",
     "FONT",
-    "FRAMEVERTCOLOR",
+    "FRAMEVERTCOLOR"};
+
+#define IMAT_NUM_ATTRIB_CELL 6
+static char* imatrix_cell_attrib[IMAT_NUM_ATTRIB_CELL] = { 
     "BGCOLOR",
     "FGCOLOR",
     "FONT",
@@ -93,20 +88,20 @@ void iupMatrixCopyLinAttrib(Ihandle* ih, int lin1, int lin2)
   int a, col;
   char* value;
 
+  /* Update the line attributes */
   for(a = 0; a < IMAT_NUM_ATTRIB_LINE; a++)
   {
-    if (a < IMAT_ATTRIB_LINE_ONLY)  /* Update the line attributes */
+    value = iupAttribGetId2(ih, imatrix_lin_attrib[a], lin1, IUP_INVALID_ID);
+    iupAttribSetStrId2(ih, imatrix_lin_attrib[a], lin2, IUP_INVALID_ID, value);
+  }
+
+  /* Update the cell attributes */
+  for(a = 0; a < IMAT_NUM_ATTRIB_CELL; a++)
+  {
+    for(col = 0; col < ih->data->columns.num; col++)
     {
-      value = iupAttribGetId2(ih, imatrix_lin_attrib[a], lin1, IUP_INVALID_ID);
-      iupAttribSetStrId2(ih, imatrix_lin_attrib[a], lin2, IUP_INVALID_ID, value);
-    }
-    else  /* Update the cell attribute */
-    {
-      for(col = 0; col < ih->data->columns.num; col++)
-      {
-        value = iupAttribGetId2(ih, imatrix_lin_attrib[a], lin1, col);
-        iupAttribSetStrId2(ih, imatrix_lin_attrib[a], lin2, col, value);
-      }
+      value = iupAttribGetId2(ih, imatrix_cell_attrib[a], lin1, col);
+      iupAttribSetStrId2(ih, imatrix_cell_attrib[a], lin2, col, value);
     }
   }
 }
@@ -116,20 +111,20 @@ void iupMatrixCopyColAttrib(Ihandle* ih, int col1, int col2)
   int a, lin;
   char* value;
 
+  /* Update the column attributes */
   for(a = 0; a < IMAT_NUM_ATTRIB_COL; a++)
   {
-    if (a < IMAT_ATTRIB_COL_ONLY)  /* Update the column attributes */
+    value = iupAttribGetId2(ih, imatrix_col_attrib[a], IUP_INVALID_ID, col1);
+    iupAttribSetStrId2(ih, imatrix_col_attrib[a], IUP_INVALID_ID, col2, value);
+  }
+
+  /* Update the cell attributes */
+  for(a = 0; a < IMAT_NUM_ATTRIB_CELL; a++)
+  {
+    for(lin = 0; lin < ih->data->lines.num; lin++)
     {
-      value = iupAttribGetId2(ih, imatrix_col_attrib[a], IUP_INVALID_ID, col1);
-      iupAttribSetStrId2(ih, imatrix_col_attrib[a], IUP_INVALID_ID, col2, value);
-    }
-    else  /* Update the cell attributes */
-    {
-      for(lin = 0; lin < ih->data->lines.num; lin++)
-      {
-        value = iupAttribGetId2(ih, imatrix_col_attrib[a], lin, col1);
-        iupAttribSetStrId2(ih, imatrix_col_attrib[a], lin, col2, value);
-      }
+      value = iupAttribGetId2(ih, imatrix_cell_attrib[a], lin, col1);
+      iupAttribSetStrId2(ih, imatrix_cell_attrib[a], lin, col2, value);
     }
   }
 }
@@ -140,15 +135,13 @@ static void iMatrixClearLinAttrib(Ihandle* ih, int lin)
 
   for(a = 0; a < IMAT_NUM_ATTRIB_LINE; a++)
   {
-    if (a < IMAT_ATTRIB_LINE_ONLY)
-    {
-      iupAttribSetId2(ih, imatrix_lin_attrib[a], lin, IUP_INVALID_ID, NULL);
-    }
-    else 
-    {
-      for(col = 0; col < ih->data->columns.num; col++)
-        iupAttribSetId2(ih, imatrix_lin_attrib[a], lin, col, NULL);
-    }
+    iupAttribSetId2(ih, imatrix_lin_attrib[a], lin, IUP_INVALID_ID, NULL);
+  }
+
+  for(a = 0; a < IMAT_NUM_ATTRIB_CELL; a++)
+  {
+    for(col = 0; col < ih->data->columns.num; col++)
+      iupAttribSetId2(ih, imatrix_cell_attrib[a], lin, col, NULL);
   }
 }
 
@@ -158,15 +151,13 @@ static void iMatrixClearColAttrib(Ihandle* ih, int col)
 
   for(a = 0; a < IMAT_NUM_ATTRIB_COL; a++)
   {
-    if (a < IMAT_ATTRIB_COL_ONLY)
-    {
-      iupAttribSetId2(ih, imatrix_col_attrib[a], IUP_INVALID_ID, col, NULL);
-    }
-    else 
-    {
-      for(lin = 0; lin < ih->data->lines.num; lin++)
-        iupAttribSetId2(ih, imatrix_col_attrib[a], lin, col, NULL);
-    }
+    iupAttribSetId2(ih, imatrix_col_attrib[a], IUP_INVALID_ID, col, NULL);
+  }
+
+  for(a = 0; a < IMAT_NUM_ATTRIB_CELL; a++)
+  {
+    for(lin = 0; lin < ih->data->lines.num; lin++)
+      iupAttribSetId2(ih, imatrix_cell_attrib[a], lin, col, NULL);
   }
 }
 
