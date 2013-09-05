@@ -398,7 +398,7 @@ void iupMatrixAuxCopyLin(Ihandle* ih, int from_lin, int to_lin)
 
   ih->data->undo_redo = old_undo;
 
-  iupMatrixCopyLinAttrib(ih, from_lin, to_lin);
+  iupMatrixCopyLinAttributes(ih, from_lin, to_lin);
 }
 
 void iupMatrixAuxCopyCol(Ihandle* ih, int from_col, int to_col)
@@ -414,5 +414,5 @@ void iupMatrixAuxCopyCol(Ihandle* ih, int from_col, int to_col)
 
   ih->data->undo_redo = old_undo;
 
-  iupMatrixCopyColAttrib(ih, from_col, to_col);
+  iupMatrixCopyColAttributes(ih, from_col, to_col);
 }

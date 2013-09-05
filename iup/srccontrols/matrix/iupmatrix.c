@@ -753,8 +753,19 @@ static int iMatrixSetCopyColAttrib(Ihandle* ih, int from_col, const char* value)
 static int iMatrixSetMoveColAttrib(Ihandle* ih, int from_col, const char* value)
 {
   char str[50];
+  int to_col = 0;
+  if (!iupStrToInt(value, &to_col))
+    return 0;
+
+  if (!iupMATRIX_CHECK_COL(ih, from_col) || !iupMATRIX_CHECK_COL(ih, to_col) || from_col==to_col)
+    return 0;
+
   iupMatrixSetAddColAttrib(ih, value);
+  if (to_col < from_col)
+    from_col++;
+
   iMatrixSetCopyColAttrib(ih, from_col, value);
+
   sprintf(str, "%d", from_col);
   iupMatrixSetDelColAttrib(ih, str);
   return 0;

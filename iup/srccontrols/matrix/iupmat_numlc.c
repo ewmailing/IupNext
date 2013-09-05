@@ -83,7 +83,7 @@ static char* imatrix_cell_attrib[IMAT_NUM_ATTRIB_CELL] = {
     "FRAMEHORIZCOLOR",
     "FRAMEVERTCOLOR"};
 
-void iupMatrixCopyLinAttrib(Ihandle* ih, int lin1, int lin2)
+void iupMatrixCopyLinAttributes(Ihandle* ih, int lin1, int lin2)
 {
   int a, col;
   char* value;
@@ -106,7 +106,7 @@ void iupMatrixCopyLinAttrib(Ihandle* ih, int lin1, int lin2)
   }
 }
 
-void iupMatrixCopyColAttrib(Ihandle* ih, int col1, int col2)
+void iupMatrixCopyColAttributes(Ihandle* ih, int col1, int col2)
 {
   int a, lin;
   char* value;
@@ -129,7 +129,7 @@ void iupMatrixCopyColAttrib(Ihandle* ih, int col1, int col2)
   }
 }
 
-static void iMatrixClearLinAttrib(Ihandle* ih, int lin)
+static void iMatrixClearLinAttributes(Ihandle* ih, int lin)
 {
   int a, col;
 
@@ -145,7 +145,7 @@ static void iMatrixClearLinAttrib(Ihandle* ih, int lin)
   }
 }
 
-static void iMatrixClearColAttrib(Ihandle* ih, int col)
+static void iMatrixClearColAttributes(Ihandle* ih, int col)
 {
   int a, lin;
 
@@ -172,10 +172,10 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
     /* then clear the new space starting from base to base+count */
 
     for(lin = ih->data->lines.num-1; lin >= base+count; lin--)
-      iupMatrixCopyLinAttrib(ih, lin-count, lin);
+      iupMatrixCopyLinAttributes(ih, lin-count, lin);
 
     for(lin = base; lin < base+count; lin++)
-      iMatrixClearLinAttrib(ih, lin);
+      iMatrixClearLinAttributes(ih, lin);
   }
   else  /* DEL */
   {
@@ -183,10 +183,10 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
     /* then clear the remaining space starting at num */
 
     for(lin = base; lin < ih->data->lines.num; lin++)
-      iupMatrixCopyLinAttrib(ih, lin+count, lin);
+      iupMatrixCopyLinAttributes(ih, lin+count, lin);
 
     for(lin = ih->data->lines.num; lin < ih->data->lines.num+count; lin++)
-      iMatrixClearLinAttrib(ih, lin);
+      iMatrixClearLinAttributes(ih, lin);
   }
 }
 
@@ -201,10 +201,10 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
     /* then clear the new space starting from base to base+count */
 
     for(col = ih->data->columns.num-1; col >= base+count; col--)
-      iupMatrixCopyColAttrib(ih, col-count, col);
+      iupMatrixCopyColAttributes(ih, col-count, col);
 
     for(col = base; col < base+count; col++)
-      iMatrixClearColAttrib(ih, col);
+      iMatrixClearColAttributes(ih, col);
   }
   else   /* DEL */
   {
@@ -212,10 +212,10 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
     /* then clear the remaining space starting at num */
 
     for(col = base; col < ih->data->columns.num; col++)
-      iupMatrixCopyColAttrib(ih, col+count, col);
+      iupMatrixCopyColAttributes(ih, col+count, col);
 
     for(col = ih->data->columns.num; col < ih->data->columns.num+count; col++)
-      iMatrixClearColAttrib(ih, col);
+      iMatrixClearColAttributes(ih, col);
   }
 }
 

@@ -420,12 +420,18 @@ The number of the column or line must be preceded by a character identifying its
 type, &quot;C&quot; for columns and &quot;L&quot; for lines. For example &quot;C5&quot;=column 5 or &quot;L3&quot;=line 
 3. If FITMAXWIDTHn or FITMAXHEIGHTn are set for the column or line they are used 
 as maximum limit for the size. (since 3.4)</p>
-<p><strong><a name="SHOW">SHOW</a></strong> (write-only): If necessary scroll the visible area to 
-make the 
-given cell visible. To scroll to a line or a 
-column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*:<strong><em>C</em></strong>&quot; (where
-<em><strong>L</strong></em>&gt;0 and <strong><em>C</em></strong>&gt;0). (since 
-3.0)</p>
+<p><strong>MOVECOL<i>C </i></strong>(write-only):
+  move the values and attributes from column C to the given column (value is the 
+number of a column). Internally will use ADDCOL+COPYCOL+DELCOL to perform the 
+move so it is limited to those attributes restrictions. It can be used in normal 
+operation mode or in callback mode, but in callback mode will not update cell 
+values this must be done by the application.&nbsp; (Since 3.9)</p>
+<p><strong>MOVELIN<i>L </i></strong>(write-only):
+  move the values and attributes from line L to the given line (value is the 
+number of a line). Internally will use ADDLIN+COPYLIN+DELLIN to perform the move 
+so it is limited to those attributes restrictions. It can be used in normal 
+operation mode or in callback mode, but in callback mode will not update cell 
+values this must be done by the application. (Since 3.9)</p>
 <p><strong><a name="REDRAW">REDRAW</a></strong> (write-only):
   The user can inform the matrix that the data 
   has changed, and it must be redrawn. Values:</p>
@@ -445,6 +451,12 @@ column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*
 L:C, 
 ALIGNMENTc, BGCOLOR*, FGCOLOR*, FONT*, VALUE, FRAME*COLOR. Global and size attributes always automatically redraw the 
     matrix.</p>
+<p><strong><a name="SHOW">SHOW</a></strong> (write-only): If necessary scroll the visible area to 
+make the 
+given cell visible. To scroll to a line or a 
+column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*:<strong><em>C</em></strong>&quot; (where
+<em><strong>L</strong></em>&gt;0 and <strong><em>C</em></strong>&gt;0). (since 
+3.0)</p>
 <h3>Text Editing Attributes</h3>
 <p><b><a name="CARET">CARET</a></b>:
   Allows specifying and verifying the caret 

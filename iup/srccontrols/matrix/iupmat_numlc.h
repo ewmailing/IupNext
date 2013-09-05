@@ -19,8 +19,8 @@ int  iupMatrixSetDelColAttrib(Ihandle* ih, const char* value);
 int  iupMatrixSetNumLinAttrib(Ihandle* ih, const char* value);
 int  iupMatrixSetNumColAttrib(Ihandle* ih, const char* value);
 
-void iupMatrixCopyLinAttrib(Ihandle* ih, int lin1, int lin2);
-void iupMatrixCopyColAttrib(Ihandle* ih, int col1, int col2);
+void iupMatrixCopyLinAttributes(Ihandle* ih, int lin1, int lin2);
+void iupMatrixCopyColAttributes(Ihandle* ih, int col1, int col2);
 
 #ifdef __cplusplus
 }
