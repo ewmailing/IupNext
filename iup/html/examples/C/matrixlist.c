@@ -36,7 +36,7 @@ int main(int argc, char **argv)
   IupSetAttribute(mlist, "COLOR8", "255 128 128");
   IupSetAttribute(mlist, "COLOR9", "0 255 128");
   IupSetAttribute(mlist, "COLOR10", "128 255 128");
-  IupSetAttribute(mlist, "EDIT_MODE", "YES");
+  IupSetAttribute(mlist, "EDIT_MODE", "NO");
   IupSetAttribute(mlist, "1", "A");
   IupSetAttribute(mlist, "2", "B");
   IupSetAttribute(mlist, "3", "C");
