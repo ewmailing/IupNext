@@ -125,6 +125,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat,"FRAMEHORIZCOLOR1:3","0 255 0");
   IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 0");
   IupSetAttribute(mat,"FRAMEVERTCOLOR*:4","0 255 0");
+  IupSetAttribute(mat,"FRAMEVERTCOLOR*:5","BGCOLOR");
 
 //  IupSetAttribute(mat,"MARKMODE","LINCOL");
 
@@ -174,6 +175,7 @@ void MatrixTest(void)
 
   box = IupVbox(mat = create_matrix(), NULL);
   IupSetAttribute(box, "MARGIN", "10x10");
+//  IupSetAttribute(box, "FONT", "Arial, 7");
 
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupMatrix Simple Test");

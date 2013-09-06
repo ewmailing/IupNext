@@ -181,7 +181,7 @@ static unsigned long iMatrixDrawSetBgColor(Ihandle* ih, int lin, int col, int ma
   return cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor(r, g, b));
 }
 
-static void iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1, int x2, int y, long framecolor)
+static int iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1, int x2, int y, long framecolor)
 {
   if (ih->data->checkframecolor && (ih->data->callback_mode || 
                                     ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEHORIZCOLOR ||
@@ -193,16 +193,17 @@ static void iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1,
     if (!color)
       color = iupAttribGetId2(ih, "FRAMEHORIZCOLOR", lin, IUP_INVALID_ID);
     if (iupStrEqual(color, "BGCOLOR"))
-      return;
+      return 0;
     if (iupStrToRGB(color, &r, &g, &b))
       framecolor = cdEncodeColor(r, g, b);
   }
 
   cdCanvasForeground(ih->data->cddbuffer, framecolor);
   iupMATRIX_LINE(ih, x1, y, x2, y);   /* bottom horizontal line */
+  return 1;
 }
 
-static void iMatrixDrawFrameVertLineCell(Ihandle* ih, int lin, int col, int x, int y1, int y2, long framecolor)
+static int iMatrixDrawFrameVertLineCell(Ihandle* ih, int lin, int col, int x, int y1, int y2, long framecolor)
 {
   if (ih->data->checkframecolor && (ih->data->callback_mode || 
                                     ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEVERTCOLOR ||
@@ -214,26 +215,29 @@ static void iMatrixDrawFrameVertLineCell(Ihandle* ih, int lin, int col, int x, i
     if (!color)
       color = iupAttribGetId2(ih, "FRAMEVERTCOLOR", IUP_INVALID_ID, col);
     if (iupStrEqual(color, "BGCOLOR"))
-      return;
+      return 0;
     if (iupStrToRGB(color, &r, &g, &b))
       framecolor = cdEncodeColor(r, g, b);
   }
 
   cdCanvasForeground(ih->data->cddbuffer, framecolor);
   iupMATRIX_LINE(ih, x, y1, x, y2);    /* right vertical line */
+  return 1;
 }
 
 static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int x2, int y1, int y2, long framecolor)
 {
+  int transp;
+
   /* avoid drawing over the frame of the next cell */
   x2 -= IMAT_FRAME_W/2;
   y2 -= IMAT_FRAME_H/2;
 
-  /* right line */
-  iMatrixDrawFrameVertLineCell(ih, lin, col, x2, y1, y2, framecolor);  
+  /* right vertical line */
+  transp = iMatrixDrawFrameVertLineCell(ih, lin, col, x2, y1, y2, framecolor);  
   if (col==0)
   {
-    /* left line */
+    /* left vertical line (always draw) */
     cdCanvasForeground(ih->data->cddbuffer, framecolor);
     iupMATRIX_LINE(ih, x1, y1, x1, y2);    
     x1++;
@@ -245,15 +249,19 @@ static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int
     x1++;
   }
 
-  /* Titles have a white line near the frame, at left */
-  cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);  
-  iupMATRIX_LINE(ih, x1, y1+1, x1, y2-1);
+  if (!transp)
+  {
+    /* Titles have a white vertical line near the frame, at left */
+    cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);  
+    iupMATRIX_LINE(ih, x1, y1+1, x1, y2-1);
+  }
 
-  /* bottom line */
-  iMatrixDrawFrameHorizLineCell(ih, lin, col, x1, x2, y2, framecolor);  
+
+  /* bottom horizontal line */
+  transp = iMatrixDrawFrameHorizLineCell(ih, lin, col, x1, x2, y2, framecolor);  
   if (lin==0)
   {
-    /* top line */
+    /* top horizontal line (always draw) */
     cdCanvasForeground(ih->data->cddbuffer, framecolor);
     iupMATRIX_LINE(ih, x1, y1, x2, y1);    
     y1++;
@@ -265,9 +273,12 @@ static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int
     y1++;
   }
 
-  /* Titles have a white line near the frame, at top */
-  cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);  
-  iupMATRIX_LINE(ih, x1, y1, x2-1, y1);
+  if (!transp)
+  {
+    /* Titles have a white horizontal line near the frame, at top */
+    cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);  
+    iupMATRIX_LINE(ih, x1, y1, x2-1, y1);
+  }
 }
 
 static void iMatrixDrawFrameRectCell(Ihandle* ih, int lin, int col, int x1, int x2, int y1, int y2, long framecolor)
