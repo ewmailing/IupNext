@@ -35,6 +35,7 @@
 #include "matrix/iupmat_edit.h"
 #include "matrix/iupmat_draw.h"
 #include "matrix/iupmat_mem.h"
+#include "matrix/iupmat_numlc.h"
 
 /*
 * IupMatrixList component
@@ -306,10 +307,16 @@ static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxLis
   int numColumns = 1;  /* item column */
 
   if(mtxList->show_color)
+  {
     numColumns++;
+    mtxList->color = (char**)calloc(ih->data->lines.num_alloc+1, sizeof(char*));
+  }
 
   if(mtxList->show_image)
+  {
     numColumns++;
+    mtxList->image = (void**)calloc(ih->data->lines.num_alloc+1, sizeof(void*));
+  }
 
   IupSetInt(ih, "NUMLIN_VISIBLE", IupGetInt(ih, "NUMLIN"));
   
@@ -350,7 +357,7 @@ static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxLis
     {
       sprintf(buffer, "BUTTONACTIVE%d", i);
       IupSetAttribute(ih, buffer, "ON");
-      mtxList->image[i] = NULL;
+      mtxList->image[i] = iupStrDup("");
     }
 
     if(mtxList->show_color)
@@ -368,9 +375,141 @@ static int iMatrixListSetFlagsAttrib(Ihandle* ih, int lin, int col, const char* 
   return 1;
 }
 
+void iMatrixListMemReAllocColorLines(Ihandle *ih, ImatrixListData* mtxList, int old_num, int num, int base)
+{
+  int lin, col, end, diff_num, shift_num;
+  int local_num_alloc = ih->data->lines.num_alloc;
+
+  if (old_num == num)
+    return;
+
+  if (num > local_num_alloc)
+  {
+    int i, old_alloc = local_num_alloc;
+    local_num_alloc = num;
+
+    mtxList->color = (char**)realloc(mtxList->color, (local_num_alloc+1)*sizeof(char*));
+    for(i = old_alloc; i < num; i++)
+      mtxList->color[i] = iupStrDup("");
+  }
+
+  if (num > old_num)  /* ADD */
+  {
+    diff_num = num-old_num;
+    shift_num = old_num-base;
+    end = base+diff_num;
+
+    if (shift_num)
+      for (lin = shift_num-1; lin >= 0; lin--)
+        memmove(mtxList->color[lin+end], mtxList->color[lin+base], strlen(mtxList->color[lin+base]) + 1);
+
+    memset(mtxList->color[base], 0, diff_num*sizeof(char*));
+  }
+  else  /* DEL */
+  {
+    diff_num = old_num-num;
+    shift_num = num-base;
+    end = base+diff_num;
+
+    if (shift_num)
+      for (lin = -1; lin < shift_num; lin++)
+        memmove(mtxList->color[lin+base], mtxList->color[lin+end], strlen(mtxList->color[lin+end]) + 1);
+
+    memset(mtxList->color[num], 0, diff_num*sizeof(char*));
+  }
+}
+
+void iMatrixListMemReAllocImageLines(Ihandle *ih, ImatrixListData* mtxList, int old_num, int num, int base)
+{
+  int lin, col, end, diff_num, shift_num;
+  int local_num_alloc = ih->data->lines.num_alloc;
+
+  if (old_num == num)
+    return;
+
+  if (num > local_num_alloc)
+  {
+    int i, old_alloc = local_num_alloc;
+    local_num_alloc = num;
+
+    mtxList->image = (void**)realloc(mtxList->image, (local_num_alloc+1)*sizeof(void*));
+    for(i = old_alloc; i < num; i++)
+      mtxList->image[i] = iupStrDup("");
+  }
+
+  if (num > old_num)  /* ADD */
+  {
+    diff_num = num-old_num;
+    shift_num = old_num-base;
+    end = base+diff_num;
+
+    if (shift_num)
+      for (lin = shift_num-1; lin >= 0; lin--)
+        memmove(mtxList->image[lin+end], mtxList->image[lin+base], strlen((char*)mtxList->image[lin+base]) + 1);
+
+    memset(mtxList->image[base], 0, diff_num*sizeof(void*));
+  }
+  else  /* DEL */
+  {
+    diff_num = old_num-num;
+    shift_num = num-base;
+    end = base+diff_num;
+
+    if (shift_num)
+      for (lin = 0; lin < shift_num; lin++)
+        memmove(mtxList->image[lin+base], mtxList->image[lin+end], strlen((char*)mtxList->image[lin+end]) + 1);
+
+    memset(mtxList->image[num], 0, diff_num*sizeof(void*));
+  }
+}
+
 /******************************************************************************
  Attributes
 ******************************************************************************/
+static int iMatrixListSetAddLinAttrib(Ihandle* ih, const char* value)
+{
+  int base, count, lines_num = ih->data->lines.num;
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
+
+  if (!ih->handle)  /* do not do the action before map */
+    return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
+
+  if (!iupMatrixGetStartEnd(value, &base, &count, lines_num, 0))
+    return 0;
+
+  if(mtxList->show_color)
+    iMatrixListMemReAllocColorLines(ih, mtxList, lines_num, lines_num+count, base);
+
+  if(mtxList->show_image)
+    iMatrixListMemReAllocImageLines(ih, mtxList, lines_num, lines_num+count, base);
+
+  iupMatrixSetAddLinAttrib(ih, value);
+
+  return 0;
+}
+
+static int iMatrixListSetDelLinAttrib(Ihandle* ih, const char* value)
+{
+  int base, count, lines_num = ih->data->lines.num;
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
+
+  if (!ih->handle)  /* do not do the action before map */
+    return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
+
+  if (!iupMatrixGetStartEnd(value, &base, &count, lines_num, 0))
+    return 0;
+
+  if(mtxList->show_color)
+    iMatrixListMemReAllocColorLines(ih, mtxList, lines_num, lines_num-count, base);
+
+  if(mtxList->show_image)
+    iMatrixListMemReAllocImageLines(ih, mtxList, lines_num, lines_num-count, base);
+
+  iupMatrixSetDelLinAttrib(ih, value);
+
+  return 0;
+}
+
 static char* iMatrixListGetOrderColorColAttrib(Ihandle *ih)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
@@ -1327,8 +1466,13 @@ static int iMatrixListAction_CB(Ihandle *ih, int c, int lin, int col, int active
 static void iMatrixListUnMapMethod(Ihandle* ih)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
-  free(mtxList->color);
-  free(mtxList->image);
+  
+  if(mtxList->show_color)
+    free(mtxList->color);
+  
+  if(mtxList->show_image)
+    free(mtxList->image);
+
   free(mtxList);
 }
 
@@ -1355,9 +1499,6 @@ static int iMatrixListCreateMethod(Ihandle* ih, void **params)
   mtxList->lastSelLine    = 0;
   mtxList->show_image     = 0;
   mtxList->show_color     = 0;
-
-  mtxList->color = (char**)calloc(ih->data->lines.num_alloc+1, sizeof(char*));
-  mtxList->image = (void**)calloc(ih->data->lines.num_alloc+1, sizeof(void*));
 
   /* starting array of default images */
   iMatrixListInitializeImages();
@@ -1436,6 +1577,9 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttributeId(ic, "BUTTONACTIVE", NULL, iMatrixListSetButtonActiveAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "LINEACTIVE",   NULL, iMatrixListSetLineActiveAttrib,   IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "ADDLIN", NULL, iMatrixListSetAddLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);  /* allowing these methods to be called before map will avoid its storage in the hash table */
+  iupClassRegisterAttribute(ic, "DELLIN", NULL, iMatrixListSetDelLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+
   /* Does nothing... this control defines automatically the number of columns to be used */
   iupClassRegisterAttribute(ic, "ADDCOL", NULL, iMatrixListSetAddColAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DELCOL", NULL, iMatrixListSetDelColAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -1452,6 +1596,8 @@ Ihandle* IupMatrixList(void)
 }
 
 #if 0
+// TODO: verificar se a realocação da matrix de imagens está correta usando void*
+
 // TODO: não está pegando o atributo "EDIT_MODE" definido na aplicação do usuário... usar iupAttribGet dentro do controle?
   Não entendi
   ==> Reformulando a pergunta: é preferível utilizar dentro do controle IupGetAttribute ou iupAttribGet?

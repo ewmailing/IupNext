@@ -13,6 +13,7 @@ static int click(Ihandle *self, int lin, int col, char *status)
   printf("click_cb(%d, %d)\n", lin, col);
   printf("  VALUE%d:%d = %s\n", lin, col, value);
   //IupSetInt(self, "ADDLIN", lin);
+  //IupSetInt(self, "DELLIN", lin);
   return IUP_DEFAULT;
 }
 
@@ -48,7 +49,7 @@ int main(int argc, char **argv)
   IupSetAttribute(mlist, "9", "I");
   IupSetAttribute(mlist, "10", "J");
 
-  //IupSetCallback(mlist,"CLICK_CB",(Icallback)click);
+  IupSetCallback(mlist,"CLICK_CB",(Icallback)click);
 
   dlg = IupDialog(mlist);
   IupSetAttribute(dlg, "TITLE", "IupMatrixList");

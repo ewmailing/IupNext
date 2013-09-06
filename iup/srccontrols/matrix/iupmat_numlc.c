@@ -219,7 +219,11 @@ static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int 
   }
 }
 
-static int iMatrixGetStartEnd(const char* value, int *base, int *count, int max, int del)
+/**************************************************************************/
+/* Exported functions                                                     */
+/**************************************************************************/
+
+int iupMatrixGetStartEnd(const char* value, int *base, int *count, int max, int del)
 {
   int ret;
 
@@ -268,11 +272,6 @@ static int iMatrixGetStartEnd(const char* value, int *base, int *count, int max,
   return 1;
 }
 
-
-/**************************************************************************/
-/* Exported functions                                                     */
-/**************************************************************************/
-
 int iupMatrixSetAddLinAttrib(Ihandle* ih, const char* value)
 {
   int base, count, lines_num = ih->data->lines.num;
@@ -280,7 +279,7 @@ int iupMatrixSetAddLinAttrib(Ihandle* ih, const char* value)
   if (!ih->handle)  /* do not do the action before map */
     return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
-  if (!iMatrixGetStartEnd(value, &base, &count, lines_num, 0))
+  if (!iupMatrixGetStartEnd(value, &base, &count, lines_num, 0))
     return 0;
 
   /* if the focus cell is after the inserted area */
@@ -315,7 +314,7 @@ int iupMatrixSetDelLinAttrib(Ihandle* ih, const char* value)
   if (!ih->handle)  /* do not do the action before map */
     return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
-  if (!iMatrixGetStartEnd(value, &base, &count, lines_num, 1))
+  if (!iupMatrixGetStartEnd(value, &base, &count, lines_num, 1))
     return 0;
 
   /* if the focus cell is after the removed area */
@@ -355,7 +354,7 @@ int iupMatrixSetAddColAttrib(Ihandle* ih, const char* value)
   if (!ih->handle)  /* do not do the action before map */
     return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
-  if (!iMatrixGetStartEnd(value, &base, &count, columns_num, 0))
+  if (!iupMatrixGetStartEnd(value, &base, &count, columns_num, 0))
     return 0;
 
   /* if the focus cell is after the inserted area */
@@ -390,7 +389,7 @@ int iupMatrixSetDelColAttrib(Ihandle* ih, const char* value)
   if (!ih->handle)  /* do not do the action before map */
     return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
-  if (!iMatrixGetStartEnd(value, &base, &count, columns_num, 1))
+  if (!iupMatrixGetStartEnd(value, &base, &count, columns_num, 1))
     return 0;
 
   /* if the focus cell is after the removed area */
