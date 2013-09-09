@@ -371,6 +371,7 @@ Style can be a free combination of some names separated by spaces.
 Font name can be a list of font family names separated by comma.
 */
 
+/* this code is shared between CD and IUP, must be updated on both libraries */
 enum {                          /* style */
  FONT_PLAIN  = 0,
  FONT_BOLD   = 1,
@@ -382,7 +383,7 @@ enum {                          /* style */
 static int iFontFindStyleName(const char *name, int len, int *style)
 {
 #define STYLE_NUM_NAMES 21
-  static struct { const char* name; int style; } cd_style_names[STYLE_NUM_NAMES] = {
+  static struct { const char* name; int style; } style_names[STYLE_NUM_NAMES] = {
     {"Normal",         0},
     {"Oblique",        FONT_ITALIC},
     {"Italic",         FONT_ITALIC},
@@ -409,10 +410,10 @@ static int iFontFindStyleName(const char *name, int len, int *style)
   int i;
   for (i = 0; i < STYLE_NUM_NAMES; i++)
   {
-    /* iupStrEqualPartial(cd_style_names[i].name, name) */
-    if (strncmp(cd_style_names[i].name, name, len)==0)
+    /* iupStrEqualPartial(style_names[i].name, name) */
+    if (strncmp(style_names[i].name, name, len)==0)
     {
-      *style = cd_style_names[i].style;
+      *style = style_names[i].style;
       return 1;
     }
   }
@@ -422,6 +423,7 @@ static int iFontFindStyleName(const char *name, int len, int *style)
 
 #define is_style_sep(_x) (_x == ' ' || _x == ',')
 
+/* this code is partially shared between CD and IUP, must be updated on both libraries */
 static const char * iFontGetStyleWord(const char *str, const char *last, int *wordlen)
 {
   const char *result;
@@ -438,6 +440,7 @@ static const char * iFontGetStyleWord(const char *str, const char *last, int *wo
   return result;
 }
 
+/* this code is shared between CD and IUP, must be updated on both libraries */
 int iupFontParsePango(const char *standardfont, char *typeface, int *size, int *bold, int *italic, int *underline, int *strikeout)
 {
   const char *p, *last;
