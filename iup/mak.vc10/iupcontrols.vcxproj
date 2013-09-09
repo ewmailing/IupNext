@@ -115,6 +115,7 @@
     <ClCompile Include="..\srccontrols\color\iup_colorbrowser.c" />
     <ClCompile Include="..\srccontrols\color\iup_colorbrowserdlg.c" />
     <ClCompile Include="..\srccontrols\color\iup_colorhsi.c" />
+    <ClCompile Include="..\srccontrols\iup_matrixlist.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_aux.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_colres.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_draw.c" />

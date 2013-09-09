@@ -156,6 +156,7 @@
     <ClCompile Include="..\srccontrols\matrix\iupmat_ex.c">
       <Filter>matrix</Filter>
     </ClCompile>
+    <ClCompile Include="..\srccontrols\iup_matrixlist.c" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\srccontrols\iupcontrols.def" />

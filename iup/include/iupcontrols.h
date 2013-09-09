@@ -22,6 +22,7 @@ Ihandle *IupColorBrowser(void);
 Ihandle *IupGauge(void);
 Ihandle *IupDial(const char* type);
 Ihandle* IupMatrix(const char *action);
+Ihandle* IupMatrixList(void);
 
 /* IupMatrix utilities (deprecated, use IupSetAttributeId2 functions) */
 void  IupMatSetAttribute  (Ihandle* ih, const char* name, int lin, int col, const char* value);
