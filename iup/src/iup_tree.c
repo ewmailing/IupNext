@@ -23,13 +23,13 @@
 #include "iup_assert.h"
 
 
-#define ITREE_IMG_WIDTH   16
-#define ITREE_IMG_HEIGHT  16
-
 static void iTreeInitializeImages(void)
 {
   Ihandle *image_leaf, *image_blank, *image_paper;  
   Ihandle *image_collapsed, *image_expanded;  
+
+#define ITREE_IMG_WIDTH   16
+#define ITREE_IMG_HEIGHT  16
 
   unsigned char img_leaf[ITREE_IMG_WIDTH*ITREE_IMG_HEIGHT] = 
   {
@@ -181,6 +181,9 @@ static void iTreeInitializeImages(void)
   IupSetHandle("IMGEXPANDED",  image_expanded);
   IupSetHandle("IMGBLANK",     image_blank);
   IupSetHandle("IMGPAPER",     image_paper);
+
+#undef ITREE_IMG_WIDTH
+#undef ITREE_IMG_HEIGHT
 }
 
 void iupTreeUpdateImages(Ihandle *ih)
