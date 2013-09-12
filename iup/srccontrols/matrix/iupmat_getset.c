@@ -18,8 +18,10 @@
 #include "iup_drvfont.h"
 #include "iup_str.h"
 #include "iup_stdcontrols.h"
-#include "iup_controls.h"
 #include "iup_childtree.h"
+
+#include "iup_controls.h"
+#include "iup_cdutil.h"
 
 #include "iupmat_def.h"
 #include "iupmat_getset.h"
@@ -465,7 +467,7 @@ char* iupMatrixGetFgColor(Ihandle* ih, int lin, int col)
     return iupStrReturnRGB(r, g, b);
 }
 
-void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b)
+void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b, int mark, int active)
 {
   /* called from Draw only */
   if (!ih->data->fgcolor_cb || (iMatrixCallColorCB(ih, ih->data->fgcolor_cb, lin, col, r, g, b) == IUP_IGNORE))
@@ -479,6 +481,20 @@ void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
         fgcolor = IupGetGlobal("TXTFGCOLOR");
     }
     iupStrToRGB(fgcolor, r, g, b);
+  }
+
+  if (mark)
+  {
+    *r = IMAT_ATENUATION(*r);
+    *g = IMAT_ATENUATION(*g);
+    *b = IMAT_ATENUATION(*b);
+  }
+
+  if (!active)
+  {
+    *r = cdIupLIGTHER(*r);
+    *g = cdIupLIGTHER(*g);
+    *b = cdIupLIGTHER(*b);
   }
 }
 
@@ -499,7 +515,7 @@ char* iupMatrixGetBgColor(Ihandle* ih, int lin, int col)
 
 #define IMAT_DARKER(_x)    (((_x)*9)/10)
 
-void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b)
+void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b, int mark, int active)
 {
   /* called from Draw only */
   if (!ih->data->bgcolor_cb || (iMatrixCallColorCB(ih, ih->data->bgcolor_cb, lin, col, r, g, b) == IUP_IGNORE))
@@ -515,6 +531,20 @@ void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
       *g = iupBYTECROP(ig);
       *b = iupBYTECROP(ib);
     }
+  }
+
+  if (mark)
+  {
+    *r = IMAT_ATENUATION(*r);
+    *g = IMAT_ATENUATION(*g);
+    *b = IMAT_ATENUATION(*b);
+  }
+
+  if (!active)
+  {
+    *r = cdIupLIGTHER(*r);
+    *g = cdIupLIGTHER(*g);
+    *b = cdIupLIGTHER(*b);
   }
 }
 

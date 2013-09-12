@@ -30,6 +30,7 @@
 #include "iup_register.h"
 
 #include "iup_controls.h"
+#include "iup_cdutil.h"
 
 /* Use IupMatrix internal definitions to speed up access */
 #include "matrix/iupmat_def.h"
@@ -42,15 +43,11 @@
 
 #define IMTXL_COLOR_WIDTH 16
 
-/* use inactive flag because the default (0) is active */
-#define IMAT_IS_BUTTON_INACTIVE  0x40
-#define IMAT_IS_LINE_INACTIVE    0x80
-
 
 typedef struct _ImatrixListData  /* Used only by the IupMatrixList control */
 {
-//  int editModeToggle;  /* Edit mode toggle flag */
-//  int doubleClickDel;  /* Double click to delete flag */
+  int editable;     /* allow adding new lines by editing the last line */
+  int show_delete;  /* show the delete button */
 //  int selectedLine;    /* Number of the selected line */
 //  int lastSelLine;
 
@@ -294,10 +291,20 @@ static void iMatrixListUpdateLineAttributes(Ihandle* ih, int base, int count, in
   }
 }
 
+static void iMatrixListAddLineAttributes(Ihandle* ih, int base, int count)
+{
+  int lin;
+  for(lin = base; lin < base+count; lin++)
+  {
+    if (lin != ih->data->lines.num-1)
+      IupSetAttributeId2(ih, "FRAMEVERTCOLOR", lin, IUP_INVALID_ID, "BGCOLOR");
+  }
+}
+
 static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxList)
 {
   char str[30];
-  int num_col = 0;
+  int num_col = 0, num_lin, col;
 
   if (mtxList->label_col != 0)
     num_col++;
@@ -308,11 +315,17 @@ static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxLis
   
   sprintf(str, "%d", num_col);
   iupMatrixSetNumColAttrib(ih, str);
+  IupSetStrAttribute(ih, "NUMCOL_VISIBLE", str);
 
-  IupSetInt(ih, "NUMLIN_VISIBLE", IupGetInt(ih, "NUMLIN"));
+  for(col = 0; col < ih->data->columns.num-1; col++)
+  {
+    /* Make internal frame borders transparent */
+    IupSetAttributeId2(ih, "FRAMEHORIZCOLOR", IUP_INVALID_ID, col, "BGCOLOR");
+  }
 
-  IupSetAttribute(ih, "NUMLIN_VISIBLE_LAST", "YES");
-  IupSetAttribute(ih, "NUMCOL_VISIBLE_LAST", "YES");
+  num_lin = ih->data->lines.num-1;  /* remove the title line count, even if not visible */
+  if (num_lin > 1 && mtxList->editable)
+    IupSetInt(ih, "NUMLIN", num_lin+1);  /* reserve space for the empty line */
 
   if (mtxList->color_col != 0)
     IupSetIntId(ih, "WIDTH", mtxList->color_col, IMTXL_COLOR_WIDTH);
@@ -320,33 +333,107 @@ static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxLis
   if (mtxList->image_col != 0)
   {
     int w = IupGetInt(mtxList->def_image_unmark, "WIDTH");
-    IupSetIntId(ih, "WIDTH", mtxList->image_col, w);
+    IupSetIntId(ih, "WIDTH", mtxList->image_col, w < 16? 16: w);  /* minimum image column size */
   }
 
   /* Set the text alignment for the item column */
   IupSetAttributeId(ih, "ALIGNMENT", mtxList->label_col, "ALEFT");
 
-  /* Set toggle editable or not */
+  /* Set toggle mtxList->editable or not */
 //  if (!mtxList->image_col != 0)
 //    mtxList->editModeToggle = 0;
 //  else
 //    mtxList->editModeToggle = 1;
 }
 
-static int iMatrixListSetFlagsAttrib(Ihandle* ih, int lin, int set, unsigned char attr)
+static int iMatrixListPostRedraw(Ihandle* ih)
 {
-  if (lin >= 0)
+  ih->data->need_redraw = 1;
+  IupUpdate(ih);
+  return 1;  /* store value in hash table */
+}
+
+static char* iMatrixApplyInactiveColor(const char* color)
+{
+  static char inactive_color[20];
+  unsigned char r=0, g=0, b=0;
+
+  iupStrToRGB(color, &r, &g, &b);
+
+  r = cdIupLIGTHER(r);
+  g = cdIupLIGTHER(g);
+  b = cdIupLIGTHER(b);
+
+  return inactive_color;
+}
+
+static void iMatrixListUpdateLineActiveColors(Ihandle* ih, ImatrixListData* mtxList, int lin, int active)
+{
+  char *bgcolor, *fgcolor;
+
+  if (active)
   {
-    iupMatrixSetCellFlag(ih, lin, IUP_INVALID_ID, attr, set);
-    ih->data->need_redraw = 1;
+    bgcolor = iupAttribGetId2(ih, "_IUPMTXLIST_OLDBGCOLOR", lin, mtxList->label_col);
+    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->label_col, bgcolor);
+    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->image_col, bgcolor);
+    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->color_col, bgcolor);
+
+    fgcolor = iupAttribGetId2(ih, "_IUPMTXLIST_OLDFGCOLOR", lin, mtxList->label_col);
+    IupSetStrAttributeId2(ih, "FGCOLOR", lin, mtxList->label_col, fgcolor);
   }
-  return 1;
+  else
+  {
+    /* save original color, check only at the hash table */
+    bgcolor = iupAttribGetId2(ih, "BGCOLOR", lin, mtxList->label_col);
+    iupAttribSetStrId2(ih, "_IUPMTXLIST_OLDBGCOLOR", lin, mtxList->label_col, bgcolor);
+
+    /* get the actual color */
+    bgcolor = IupGetAttributeId2(ih, "CELLBGCOLOR", lin, mtxList->label_col);
+    bgcolor = iMatrixApplyInactiveColor(bgcolor);
+    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->label_col, bgcolor);
+    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->image_col, bgcolor);
+    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->color_col, bgcolor);
+
+    fgcolor = iupAttribGetId2(ih, "FGCOLOR", lin, mtxList->label_col);
+    iupAttribSetStrId2(ih, "_IUPMTXLIST_OLDFGCOLOR", lin, mtxList->label_col, fgcolor);
+
+    fgcolor = IupGetAttributeId2(ih, "CELLFGCOLOR", lin, mtxList->label_col);
+    fgcolor = iMatrixApplyInactiveColor(fgcolor);
+    IupSetStrAttributeId2(ih, "FGCOLOR", lin, mtxList->label_col, fgcolor);
+  }
 }
 
 
 /******************************************************************************
  Attributes
 ******************************************************************************/
+
+
+static char* iMatrixListGetShowDeleteAttrib(Ihandle *ih)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
+  return iupStrReturnBoolean(mtxList->show_delete);
+}
+
+static int iMatrixListSetShowDeleteAttrib(Ihandle* ih, const char* value)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
+  mtxList->show_delete = iupStrBoolean(value);
+  return 0;
+}
+
+static char* iMatrixListGetEditableAttrib(Ihandle *ih)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
+  return iupStrReturnBoolean(mtxList->editable);
+}
+
+static int iMatrixListSetEditableAttrib(Ihandle* ih, const char* value)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
+  mtxList->editable = iupStrBoolean(value);
+  return 0;
+}
 
 static int iMatrixListSetAddLinAttrib(Ihandle* ih, const char* value)
 {
@@ -360,6 +447,8 @@ static int iMatrixListSetAddLinAttrib(Ihandle* ih, const char* value)
 
   if (base < lines_num)  /* If before the last line. */
     iMatrixListUpdateLineAttributes(ih, base, count, 1);
+
+  iMatrixListAddLineAttributes(ih, base, count);
 
   return iupMatrixSetAddLinAttrib(ih, value);
 }
@@ -378,6 +467,17 @@ static int iMatrixListSetDelLinAttrib(Ihandle* ih, const char* value)
     iMatrixListUpdateLineAttributes(ih, base, count, 0);
 
   return iupMatrixSetDelLinAttrib(ih, value);
+}
+
+static int iMatrixListSetNumLinAttrib(Ihandle* ih, const char* value)
+{
+  int old_num = ih->data->lines.num;
+  iupMatrixSetNumLinAttrib(ih, value);
+
+  if (old_num < ih->data->lines.num)
+    iMatrixListAddLineAttributes(ih, old_num, ih->data->lines.num-old_num);
+
+  return 0;
 }
 
 static char* iMatrixListGetColumnOrderAttrib(Ihandle *ih)
@@ -578,29 +678,41 @@ static int iMatrixListSetImageAddAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iMatrixListSetButtonActiveAttrib(Ihandle* ih, int lin, const char* value)
+static char* iMatrixListGetImageActiveAttrib(Ihandle* ih, int lin)
 {
-  return iMatrixListSetFlagsAttrib(ih, lin, !iupStrBoolean(value), IMAT_IS_BUTTON_INACTIVE);
+  char* value = iupAttribGetId(ih, "IMAGEACTIVE", lin);
+  if (!value)
+    return "Yes"; /* default is Yes for all lines */
+  else
+    return value;
+}
+
+static int iMatrixListSetImageActiveAttrib(Ihandle* ih, int lin, const char* value)
+{
+  (void)lin;
+  (void)value;
+  return iMatrixListPostRedraw(ih);
+}
+
+static char* iMatrixListGetLineActiveAttrib(Ihandle* ih, int lin)
+{
+  char* value = iupAttribGetId(ih, "LINEACTIVE", lin);
+  if (!value)
+    return "Yes"; /* default is Yes for all lines */
+  else
+    return value;
 }
 
 static int iMatrixListSetLineActiveAttrib(Ihandle* ih, int lin, const char* value)
 {
-//  int editMode = iupAttribGetInt(ih, "EDIT_MODE_NAME");
-//  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
   
-//  if(iupStrEqualNoCase(value, "ON") && editMode && mtxList->doubleClickDel)
-//    IupSetAttribute(ih, "ACTIVE", "YES");
-//  else if(iupStrEqualNoCase(value, "OFF") && editMode && mtxList->doubleClickDel)
-//    IupSetAttribute(ih, "ACTIVE", "NO");
+  if (mtxList->editable && mtxList->show_delete)
+    IupStoreAttribute(ih, "ACTIVE", value);
+  else
+    iMatrixListUpdateLineActiveColors(ih, mtxList, lin, iupStrBoolean(value));
 
-  return iMatrixListSetFlagsAttrib(ih, lin, !iupStrBoolean(value), IMAT_IS_LINE_INACTIVE);
-}
-
-static int iMatrixListPostRedrawSetAttrib(Ihandle* ih, const char* value)
-{
-  (void)value;
-  IupUpdate(ih);
-  return 1;  /* store value in hash table */
+  return iMatrixListPostRedraw(ih);
 }
 
 static int iMatrixListSetIdValueAttrib(Ihandle* ih, int lin, const char* value)
@@ -672,6 +784,11 @@ static int iMatrixListSetDelColAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iMatrixListGetNumLinAttrib(Ihandle* ih)
+{
+  return iupStrReturnInt(ih->data->lines.num-1);  /* the attribute does not include the title */
+}
+
 static char* iMatrixListGetNumColAttrib(Ihandle* ih)
 {
   return iupStrReturnInt(ih->data->columns.num-1);  /* the attribute does not include the title */
@@ -712,7 +829,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //{
 //  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
 //  int numLines = IupGetInt(ih, "NUMLIN");
-//  int editMode = iupAttribGetInt(ih, "EDIT_MODE_NAME");
+//  int mtxList->editable = iupAttribGetInt(ih, "EDIT_MODE_NAME");
 //
 //  /* Just checking */
 //  if(lin <= 0 || col <= 0 || !cnv)
@@ -722,7 +839,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  if(mtxList->color_col && col == mtxList->color_col)
 //  {
 //    /* Don't draw the color column on the empty line. */
-//    if((lin <= numLines && editMode) || (lin <= numLines && !editMode))
+//    if((lin <= numLines && mtxList->editable) || (lin <= numLines && !mtxList->editable))
 //    {
 //      IFniiiiiiC cb = (IFniiiiiiC)IupGetCallback(ih, "DRAWCOLORCOL_CB");
 //      
@@ -762,7 +879,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  //  return IUP_IGNORE;
 //
 //  ///* Don't draw the image to the empty line */
-//  //if((lin < numLines && editMode) || (lin <= numLines && !editMode))
+//  //if((lin < numLines && mtxList->editable) || (lin <= numLines && !mtxList->editable))
 //  //{
 //  //  /* Find the image point */
 //  //  int x = x2 - x1 - IMTXL_IMG_WIDTH;
@@ -772,7 +889,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //
 //  //  /* Get the index image to display */
 //  //  /* Select the correct image icon to display */
-//  //  if(editMode && !(ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE) || !(ih->data->lines.dt[lin].flags & IMAT_IS_BUTTON_INACTIVE))
+//  //  if(mtxList->editable && !(ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE) || !(ih->data->lines.dt[lin].flags & IMAT_IS_BUTTON_INACTIVE))
 //  //  {
 //  //    /* Put the icon */
 //  //    if(IupGetHandle("IMG_BLOCK_MARK") != NULL && IupGetHandle("IMG_BLOCK_UNMARK") != NULL)
@@ -780,14 +897,14 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  //    else
 //  //      iMatrixListPutIconMap(ih, ih->data->cells[lin][mtxList->image_col].image, x, y, lin);
 //  //  }
-//  //  else if(mtxList->doubleClickDel && !(ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE))
+//  //  else if(mtxList->show_delete && !(ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE))
 //  //  {
 //  //    if(IupGetHandle("IMG_BLOCK_DEL") != NULL)
 //  //      iMatrixListPutIconRGBA(ih, ih->data->cells[lin][mtxList->image_col].image, x, y);
 //  //    else
 //  //      iMatrixListPutIconMap(ih, ih->data->cells[lin][mtxList->image_col].image, x, y, lin);
 //  //  }
-//  //  else if(mtxList->doubleClickDel && ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE)
+//  //  else if(mtxList->show_delete && ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE)
 //  //  {
 //  //    if(IupGetHandle("IMG_DEL") != NULL)
 //  //      iMatrixListPutIconRGBA(ih, ih->data->cells[lin][mtxList->image_col].image, x, y);
@@ -803,7 +920,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  //  }
 //  //}
 //
-//  //if(lin == numLines && IupGetHandle("IMG_ADD") != NULL && editMode)
+//  //if(lin == numLines && IupGetHandle("IMG_ADD") != NULL && mtxList->editable)
 //  //{
 //  //  int x = x2 - x1 - IMTXL_IMG_WIDTH;
 //  //  int y = y1 - y2 - 1 - IMTXL_IMG_HEIGHT;
@@ -822,7 +939,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
 //  int status   = IUP_DEFAULT;
 //  int numLines = IupGetInt(ih, "NUMLIN");
-//  int editMode = iupAttribGetInt(ih, "EDIT_MODE_NAME");
+//  int mtxList->editable = iupAttribGetInt(ih, "EDIT_MODE_NAME");
 //  IFniii editCB = (IFniii)IupGetCallback(ih, "EDIT_CB");
 //
 //  if(col != mtxList->label_col)
@@ -831,7 +948,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  if(editCB != NULL && (ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE))
 //    status = editCB(ih, lin, col, mode);
 //
-//  if(!editMode)
+//  if(!mtxList->editable)
 //  {
 //    IFnis dbClickCB = (IFnis)IupGetCallback(ih, "DBLCLICK_CB");
 //
@@ -978,12 +1095,12 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
 //  int ret = IUP_DEFAULT;
 //  int numLines = IupGetInt(ih, "NUMLIN");
-//  int editMode = iupAttribGetInt(ih, "EDIT_MODE_NAME");
+//  int mtxList->editable = iupAttribGetInt(ih, "EDIT_MODE_NAME");
 //  int lastAction = IupGetInt(ih, "ACTION_TYPE");
 //  char buffer[30];
 //
-//  /* Return if not editable */
-//  if(editMode)
+//  /* Return if not mtxList->editable */
+//  if(mtxList->editable)
 //    return IUP_IGNORE;
 //
 //  if(lin == numLines && lastAction)  /* last action = edition */
@@ -1000,7 +1117,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //      IupSetAttribute(ih, buffer, "ON");
 //
 //      /* Show delete button ? */
-//      if(mtxList->doubleClickDel)
+//      if(mtxList->show_delete)
 //      {
 //        sprintf(buffer, "%d:%d", lin, mtxList->label_col);
 //        IupSetAttribute(ih, "FOCUS_CELL", iupStrDup(buffer));
@@ -1036,7 +1153,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  if(!IupGetInt(ih, IUP_ACTIVE))  /* return = NO */
 //    return IUP_IGNORE;
 //
-//  if(((c == K_DOWN) || (c == K_UP)) && mtxList->doubleClickDel)
+//  if(((c == K_DOWN) || (c == K_UP)) && mtxList->show_delete)
 //  {
 //    int linSel = 0;
 //
@@ -1194,10 +1311,10 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //{
 //  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
 //  int ret = IUP_DEFAULT;
-//  int editMode = iupAttribGetInt(ih, "EDIT_MODE_NAME");
+//  int mtxList->editable = iupAttribGetInt(ih, "EDIT_MODE_NAME");
 //
 //  /* The matrix is being edited */
-//  if(editMode)
+//  if(mtxList->editable)
 //    ret = iMatrixListEditLabel(ih, mtxList, c, lin, col, active, after);
 //  else
 //    ret = iMatrixListSelectLine(ih, mtxList, c, lin, col, active, after);
@@ -1229,16 +1346,9 @@ static int iMatrixListCreateMethod(Ihandle* ih, void **params)
 
   /* default matrix list values */
   mtxList->label_col = 1;
-  mtxList->color_col = 0;
-  mtxList->image_col = 0;
-//  mtxList->doubleClickDel = 0;  /* Disable double-click to delete */
-//  mtxList->editModeToggle = 0;  /* Start toggle no editable       */
-//  mtxList->selectedLine   = 0;  /* Start with no selected line    */
-//  mtxList->lastSelLine    = 0;
 
-  /* change the IupCanvas default values */
+  /* change the IupMatrix default values */
   iupAttribSet(ih, "SCROLLBAR", "VERTICAL");
-  iupAttribSet(ih, "BORDER", "NO");
   iupAttribSet(ih, "CURSOR", "ARROW");
 
   /* Change the IupMatrix default values */
@@ -1297,6 +1407,9 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COLOR", NULL, NULL, IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttributeId(ic, "IMAGEACTIVE", iMatrixListGetImageActiveAttrib, iMatrixListSetImageActiveAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "LINEACTIVE",   iMatrixListGetLineActiveAttrib, iMatrixListSetLineActiveAttrib, IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "IMAGEUNMARK", NULL, iMatrixListSetImageUnmarkAttrib, IUPAF_SAMEASSYSTEM, "IMG_UNMARK", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEMARK",   NULL, iMatrixListSetImageMarkAttrib,   IUPAF_SAMEASSYSTEM, "IMG_MARK",   IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEDEL",    NULL, iMatrixListSetImageDelAttrib,    IUPAF_SAMEASSYSTEM, "IMG_DEL",    IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
@@ -1306,11 +1419,12 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttribute(ic, "IMAGEBLOCKDEL",    NULL, iMatrixListSetImageBlockDelAttrib,    IUPAF_SAMEASSYSTEM, "IMG_BLOCK_DEL",    IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEADD",    NULL, iMatrixListSetImageAddAttrib,    IUPAF_SAMEASSYSTEM, "IMG_ADD",    IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttributeId(ic, "BUTTONACTIVE", NULL, iMatrixListSetButtonActiveAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "LINEACTIVE",   NULL, iMatrixListSetLineActiveAttrib,   IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EDITABLE",   iMatrixListGetEditableAttrib, iMatrixListSetEditableAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDELETE", iMatrixListGetShowDeleteAttrib, iMatrixListSetShowDeleteAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "ADDLIN", NULL, iMatrixListSetAddLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);  /* allowing these methods to be called before map will avoid its storage in the hash table */
   iupClassRegisterAttribute(ic, "DELLIN", NULL, iMatrixListSetDelLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMLIN", iMatrixListGetNumLinAttrib, iMatrixListSetNumLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Does nothing... this control defines automatically the number of columns to be used */
   iupClassRegisterAttribute(ic, "ADDCOL", NULL, iMatrixListSetAddColAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -1331,20 +1445,13 @@ Ihandle* IupMatrixList(void)
 }
 
 #if 0
-// TODO: como permitir a edição, considerando os códigos de iMatrixListEdition_CB, iMatrixListLeave_CB e iMatrixListAction_CB? Ou eles são desnecessários?
-// TODO: chamar novas callbacks de ACTION_CB dentro da própria Action? (pelo que entendi, o controle do pessoal do Recon criava novas callbacks...)
-// TODO: Não sei se está certo como defini as flags IMAT_IS_LINE_INACTIVE e IMAT_IS_BUTTON_INACTIVE
-//       pois na callback de action ele não está entrando no if que faz o break e permite navegar pelos itens usando o teclado
-// TODO: ao fechar a aplicação exemplo, está dando um erro de corrompido.
-//       pelo meu controle, liberei todos os ponteiros no unMap... 
 
-
-#define IUP_MTX_SELECT_LINE              "MTX_SELECT_LINE"             /* Attribute applies only to non-editable matrix with two columns. */
-#define IUP_MTX_SHOW_BTN_DEL_DCLICK      "MTX_SHOW_BTN_DEL_DCLICK"     /* Attribute applies only to non-editable matrix. */
+#define IUP_MTX_SELECT_LINE              "MTX_SELECT_LINE"             /* Attribute applies only to non-mtxList->editable matrix with two columns. */
+#define IUP_MTX_SHOW_BTN_DEL_DCLICK      "MTX_SHOW_BTN_DEL_DCLICK"     /* Attribute applies only to non-mtxList->editable matrix. */
 #define IUP_MTX_LAST_SELECT_LINE         "MTX_LAST_SELECT_LINE"        /* Save the last line selected. */
 
 /* Matrix attributes for Callbacks, including LUA */
-#define IUP_MTX_ACT_DOUBLE_CLICK_CB      "MTX_ACT_DOUBLE_CLICK_CB"     /* Attribute applies only to non-editable matrix. */
+#define IUP_MTX_ACT_DOUBLE_CLICK_CB      "MTX_ACT_DOUBLE_CLICK_CB"     /* Attribute applies only to non-mtxList->editable matrix. */
 #define IUP_MTX_DEL_ATTRIB_CB            "MTX_DEL_ATTRIB_CB"           /* Callback de delete. - int function(Ihandle *ih, int lin) */
 #define IUP_MTX_CLICK_CB                 "MTX_CLICK_CB"                /* Callback de click. - int function(Ihandle *ih, int lin, int col) */
 #define IUP_MTX_ACTION_CB                "MTX_ACTION_CB"               /* Callback de action. - int function(Ihandle *ih, int lin, int col) */

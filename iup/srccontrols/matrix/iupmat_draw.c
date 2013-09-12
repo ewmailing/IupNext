@@ -22,9 +22,10 @@
 #include "iup_drv.h"
 #include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
+#include "iup_image.h"
+
 #include "iup_controls.h"
 #include "iup_cdutil.h"
-#include "iup_image.h"
 
 #include "iupmat_def.h"
 #include "iupmat_cd.h"
@@ -38,8 +39,6 @@
 #define IMAT_T_CENTER  1
 #define IMAT_T_LEFT    2
 #define IMAT_T_RIGHT   3
-
-#define IMAT_CD_INACTIVE_FGCOLOR  0x666666L
 
 #define IMAT_DROPBOX_W 16
 
@@ -133,18 +132,10 @@ static int iMatrixDrawCallDrawCB(Ihandle* ih, int lin, int col, int x1, int x2, 
                  title lines and columns.
    -> mark - indicate if a cell is marked. If yes, its color is attenuated.
 */
-static unsigned long iMatrixDrawSetFgColor(Ihandle* ih, int lin, int col, int mark)
+static unsigned long iMatrixDrawSetFgColor(Ihandle* ih, int lin, int col, int mark, int active)
 {
   unsigned char r = 0, g = 0, b = 0;
-  iupMatrixGetFgRGB(ih, lin, col, &r, &g, &b);
-
-  if (mark)
-  {
-    r = IMAT_ATENUATION(r);
-    g = IMAT_ATENUATION(g);
-    b = IMAT_ATENUATION(b);
-  }
-  
+  iupMatrixGetFgRGB(ih, lin, col, &r, &g, &b, mark, active);
   return cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor(r, g, b));
 }
 
@@ -161,23 +152,7 @@ static unsigned long iMatrixDrawSetFgColor(Ihandle* ih, int lin, int col, int ma
 static unsigned long iMatrixDrawSetBgColor(Ihandle* ih, int lin, int col, int mark, int active)
 {
   unsigned char r = 255, g = 255, b = 255;
-
-  iupMatrixGetBgRGB(ih, lin, col, &r, &g, &b);
-  
-  if (mark)
-  {
-    r = IMAT_ATENUATION(r);
-    g = IMAT_ATENUATION(g);
-    b = IMAT_ATENUATION(b);
-  }
-
-  if (!active)
-  {
-    r = cdIupLIGTHER(r);
-    g = cdIupLIGTHER(g);
-    b = cdIupLIGTHER(b);
-  }
-
+  iupMatrixGetBgRGB(ih, lin, col, &r, &g, &b, mark, active);
   return cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor(r, g, b));
 }
 
@@ -306,17 +281,14 @@ static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int
 {
   int yc;
   char* sort = iupAttribGetId(ih, "SORTSIGN", col);
-  if (!iupStrBoolean(sort))
+  if (!sort)
     return 0;
 
   /* Remove the space between text and cell frame */
   x2 -= IMAT_PADDING_W/2 + IMAT_FRAME_W/2;
 
   /* Set the color used to draw the text */
-  if (active)
-    cdCanvasForeground(ih->data->cddbuffer, IMAT_CD_INACTIVE_FGCOLOR);
-  else
-    iMatrixDrawSetFgColor(ih, 0, col, 0);
+  iMatrixDrawSetFgColor(ih, 0, col, 0, active);
 
   yc = (int)( (y1 + y2 ) / 2.0 - .5);
 
@@ -328,7 +300,7 @@ static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int
     iupMATRIX_VERTEX(ih, x2 - 1, yc - 2);
     iupMATRIX_VERTEX(ih, x2 - 9, yc - 2);
   }
-  else
+  else  /* UP */
   {
     iupMATRIX_VERTEX(ih, x2 - 1, yc + 2);
     iupMATRIX_VERTEX(ih, x2 - 9, yc + 2);
@@ -450,10 +422,7 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
     }
 
     /* Set the color used to draw the text */
-    if (!active)
-      cdCanvasForeground(ih->data->cddbuffer, IMAT_CD_INACTIVE_FGCOLOR);
-    else
-      iMatrixDrawSetFgColor(ih, lin, col, marked);
+    iMatrixDrawSetFgColor(ih, lin, col, marked, active);
 
     /* Set the clip area to the cell region informed, the text maybe greatter than the cell */
     if (hidden_text_marks)

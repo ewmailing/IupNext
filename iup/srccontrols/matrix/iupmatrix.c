@@ -438,6 +438,7 @@ static void iMatrixFitLines(Ihandle* ih, int height)
   int line_height, lin, empty, has_line_height,
       *empty_lines, empty_num=0, visible_num, empty_lin_visible = 0;
 
+  /* get only from the hash table or the default value, do NOT get from the actual number of visible lines */
   visible_num = iupAttribGetInt(ih, "NUMLIN_VISIBLE")+1;  /* include the title line */
 
   empty_lines = malloc(ih->data->lines.num*sizeof(int));
@@ -494,6 +495,7 @@ static void iMatrixFitColumns(Ihandle* ih, int width)
   int column_width, col, empty, has_col_width,
       *empty_columns, empty_num=0, visible_num, empty_col_visible = 0;
 
+  /* get only from the hash table or the default value, do NOT get from the actual number of visible columns */
   visible_num = iupAttribGetInt(ih, "NUMCOL_VISIBLE")+1;  /* include the title column */
 
   empty_columns = malloc(ih->data->columns.num*sizeof(int));
@@ -1162,7 +1164,7 @@ static char* iMatrixGetFontAttrib(Ihandle* ih, int lin, int col)
 
 static char* iMatrixGetBgColorAttrib(Ihandle* ih, int lin, int col)
 {
-  if (lin==IUP_INVALID_ID && col==IUP_INVALID_ID) /* empty id */
+  if (lin==IUP_INVALID_ID && col==IUP_INVALID_ID) /* empty id - return the global default value */
   {
     /* check the hash table */
     char *color = iupAttribGet(ih, "BGCOLOR");
@@ -1184,21 +1186,7 @@ static char* iMatrixGetCellBgColorAttrib(Ihandle* ih, int lin, int col)
     int active = iupdrvIsActive(ih);
     char* mark = iupMatrixGetMarkAttrib(ih, lin, col);
 
-    iupMatrixGetBgRGB(ih, lin, col, &r, &g, &b);
-    
-    if (mark && mark[0]=='1')
-    {
-      r = IMAT_ATENUATION(r);
-      g = IMAT_ATENUATION(g);
-      b = IMAT_ATENUATION(b);
-    }
-
-    if (!active)
-    {
-      r = cdIupLIGTHER(r);
-      g = cdIupLIGTHER(g);
-      b = cdIupLIGTHER(b);
-    }
+    iupMatrixGetBgRGB(ih, lin, col, &r, &g, &b, mark && mark[0]=='1', active);
 
     return iupStrReturnRGB(r, g, b);
   }
@@ -1210,17 +1198,11 @@ static char* iMatrixGetCellFgColorAttrib(Ihandle* ih, int lin, int col)
 {
   if (iupMatrixCheckCellPos(ih, lin, col))
   {
-    unsigned char r = 255, g = 255, b = 255;
+    unsigned char r = 0, g = 0, b = 0;
+    int active = iupdrvIsActive(ih);
     char* mark = iupMatrixGetMarkAttrib(ih, lin, col);
 
-    iupMatrixGetFgRGB(ih, lin, col, &r, &g, &b);
-    
-    if (mark && mark[0]=='1')
-    {
-      r = IMAT_ATENUATION(r);
-      g = IMAT_ATENUATION(g);
-      b = IMAT_ATENUATION(b);
-    }
+    iupMatrixGetFgRGB(ih, lin, col, &r, &g, &b, mark && mark[0]=='1', active);
 
     return iupStrReturnRGB(r, g, b);
   }
