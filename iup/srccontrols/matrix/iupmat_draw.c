@@ -168,14 +168,14 @@ static int iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1, 
     if (!color)
       color = iupAttribGetId2(ih, "FRAMEHORIZCOLOR", lin, IUP_INVALID_ID);
     if (iupStrEqual(color, "BGCOLOR"))
-      return 0;
+      return 1;
     if (iupStrToRGB(color, &r, &g, &b))
       framecolor = cdEncodeColor(r, g, b);
   }
 
   cdCanvasForeground(ih->data->cddbuffer, framecolor);
   iupMATRIX_LINE(ih, x1, y, x2, y);   /* bottom horizontal line */
-  return 1;
+  return 0;
 }
 
 static int iMatrixDrawFrameVertLineCell(Ihandle* ih, int lin, int col, int x, int y1, int y2, long framecolor)
@@ -190,14 +190,14 @@ static int iMatrixDrawFrameVertLineCell(Ihandle* ih, int lin, int col, int x, in
     if (!color)
       color = iupAttribGetId2(ih, "FRAMEVERTCOLOR", IUP_INVALID_ID, col);
     if (iupStrEqual(color, "BGCOLOR"))
-      return 0;
+      return 1;
     if (iupStrToRGB(color, &r, &g, &b))
       framecolor = cdEncodeColor(r, g, b);
   }
 
   cdCanvasForeground(ih->data->cddbuffer, framecolor);
   iupMATRIX_LINE(ih, x, y1, x, y2);    /* right vertical line */
-  return 1;
+  return 0;
 }
 
 static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int x2, int y1, int y2, long framecolor)
@@ -258,6 +258,8 @@ static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int
 
 static void iMatrixDrawFrameRectCell(Ihandle* ih, int lin, int col, int x1, int x2, int y1, int y2, long framecolor)
 {
+  int transp;
+
   if (col==1 && ih->data->columns.dt[0].size == 0)
   {
     /* If does not have line titles then draw the >> left line << of the cell frame */
@@ -271,10 +273,10 @@ static void iMatrixDrawFrameRectCell(Ihandle* ih, int lin, int col, int x1, int 
   }
 
   /* bottom line */
-  iMatrixDrawFrameHorizLineCell(ih, lin, col, x1, x2-1, y2-1, framecolor);
+  transp = iMatrixDrawFrameHorizLineCell(ih, lin, col, x1, x2-1, y2-1, framecolor);
   
   /* right line */
-  iMatrixDrawFrameVertLineCell(ih, lin, col, x2-1, y1, y2-2, framecolor);
+  iMatrixDrawFrameVertLineCell(ih, lin, col, x2-1, y1, transp? y2-1: y2-2, framecolor);
 }
 
 static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int active)

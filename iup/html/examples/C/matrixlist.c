@@ -23,8 +23,10 @@ int main(int argc, char **argv)
   Ihandle *dlg, *mlist;
   IupOpen(&argc, &argv);       
   IupControlsOpen();
+
   mlist = IupMatrixList();
   IupSetInt(mlist, "NUMLIN", 10);
+
   IupSetAttribute(mlist, "SHOWCOLOR", "YES");
   IupSetAttribute(mlist, "ORDERCOLORCOL", "LEFT");
   IupSetAttribute(mlist, "COLOR1", "255 0 0");
@@ -37,22 +39,24 @@ int main(int argc, char **argv)
   IupSetAttribute(mlist, "COLOR8", "255 128 128");
   IupSetAttribute(mlist, "COLOR9", "0 255 128");
   IupSetAttribute(mlist, "COLOR10", "128 255 128");
-  IupSetAttribute(mlist, "EDIT_MODE", "NO");
-  IupSetAttribute(mlist, "1", "A");
-  IupSetAttribute(mlist, "2", "B");
-  IupSetAttribute(mlist, "3", "C");
-  IupSetAttribute(mlist, "4", "D");
-  IupSetAttribute(mlist, "5", "E");
-  IupSetAttribute(mlist, "6", "F");
-  IupSetAttribute(mlist, "7", "G");
-  IupSetAttribute(mlist, "8", "H");
-  IupSetAttribute(mlist, "9", "I");
-  IupSetAttribute(mlist, "10", "J");
+//  IupSetAttribute(mlist, "EDIT_MODE", "NO");
 
-  IupSetCallback(mlist,"CLICK_CB",(Icallback)click);
+  IupSetAttribute(mlist, "1", "AAA");
+  IupSetAttribute(mlist, "2", "BBB");
+  IupSetAttribute(mlist, "3", "CCC");
+  IupSetAttribute(mlist, "4", "DDD");
+  IupSetAttribute(mlist, "5", "EEE");
+  IupSetAttribute(mlist, "6", "FFF");
+  IupSetAttribute(mlist, "7", "GGG");
+  IupSetAttribute(mlist, "8", "HHH");
+  IupSetAttribute(mlist, "9", "III");
+  IupSetAttribute(mlist, "10","JJJ");
 
-  dlg = IupDialog(mlist);
+//  IupSetCallback(mlist,"CLICK_CB",(Icallback)click);
+
+  dlg = IupDialog(IupVbox(mlist, NULL));
   IupSetAttribute(dlg, "TITLE", "IupMatrixList");
+  IupSetAttribute(dlg, "MARGIN", "10x10");
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
   IupMainLoop();
   IupClose();  

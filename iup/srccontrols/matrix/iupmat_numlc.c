@@ -275,7 +275,7 @@ int iupMatrixGetStartEnd(const char* value, int *base, int *count, int max, int 
     if (*base > max-1)
       *base = max-1;
 
-    /* when del, count must be inside the existant range */
+    /* when del, count must be inside the existent range */
     if (*base + *count > max)
       *count = max - *base;
   }
@@ -349,7 +349,7 @@ int iupMatrixSetDelLinAttrib(Ihandle* ih, const char* value)
 
     /* if the focus cell is inside the removed area */
     if (ih->data->lines.focus_cell <= base+count-1)
-      ih->data->lines.focus_cell = base;   /* move it to the first existant cell */
+      ih->data->lines.focus_cell = base;   /* move it to the first existent cell */
     else
       ih->data->lines.focus_cell -= count; /* move it to the same cell */
   }
@@ -424,7 +424,7 @@ int iupMatrixSetDelColAttrib(Ihandle* ih, const char* value)
 
     /* if the focus cell is inside the removed area */
     if (ih->data->columns.focus_cell <= base+count-1)
-      ih->data->columns.focus_cell = base;    /* move it to the first existant cell */
+      ih->data->columns.focus_cell = base;    /* move it to the first existent cell */
     else
       ih->data->columns.focus_cell -= count;  /* move it to the same cell */
   }

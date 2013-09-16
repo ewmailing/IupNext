@@ -19,7 +19,7 @@
  *  - iupdrvFunc - Driver API, implemented in driver, used in the core or driver
  *  - xxxFunc - Driver xxx local functions
  * 
- * \subsection glob Globais Variables (lower case format)
+ * \subsection glob Global Variables (lower case format)
  *  - iupxxx_var
  *                    
  * \subsection loc Local Variables (lower case format, using module name)
@@ -34,17 +34,17 @@
  *  - Iyyy
  *   
  * \subsection com File Comments (at start)
- *  - Check an existant file for example.
+ *  - Check an existent file for example.
  *    
  * \subsection def Defines
- *  - __IUPXXX_H   (for include file, same file name, upper case, "__" preffix and replace "." by "_")
+ *  - __IUPXXX_H   (for include file, same file name, upper case, "__" prefix and replace "." by "_")
  *  - IUP_XXX      (for global enumerations)
  *  - IXXX_YYY     (for local enumerations)
  *  - iupXXX       (for macros, complement with Function Names rules)
  *   
  * \subsection doc Documentation
  *  - In the header, using Doxygen commands.
- *  - Check an existant header for example.
+ *  - Check an existent header for example.
  *
  */
 
@@ -60,7 +60,7 @@
 
 #include "iup.h"
 
-/* This appears only here to avoid changing the iup.h header fo bug fixes */
+/* This appears only here to avoid changing the iup.h header for bug fixes */
 #define IUP_VERSION_FIX ""
 #define IUP_VERSION_FIX_NUMBER 0
 /*#define IUP_VERSION_FIX_DATE "" */

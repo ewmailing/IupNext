@@ -124,39 +124,39 @@ static void iMatrixListInitializeImages(void)
 
   unsigned char img_mark[IMTXL_IMG_WIDTH*IMTXL_IMG_HEIGHT] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };
 
   unsigned char img_unmark[IMTXL_IMG_WIDTH*IMTXL_IMG_HEIGHT] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   };
 
@@ -208,28 +208,28 @@ static void iMatrixListInitializeImages(void)
   image_add          = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_add);
 
   IupSetAttribute(image_unmark, "0", "10 10 10");
-  IupSetAttribute(image_unmark, "1", "255 255 255");
+  IupSetAttribute(image_unmark, "1", "BGCOLOR");
 
   IupSetAttribute(image_mark, "0", "10 10 10");
-  IupSetAttribute(image_mark, "1", "255 255 255");
+  IupSetAttribute(image_mark, "1", "BGCOLOR");
 
-  IupSetAttribute(image_del, "0", "255 235 155");
+  IupSetAttribute(image_del, "0", "BGCOLOR");
   IupSetAttribute(image_del, "1", "255 0 0");
 
   IupSetAttribute(image_block_mark, "0", "180 180 180");
-  IupSetAttribute(image_block_mark, "1", "255 255 255");
+  IupSetAttribute(image_block_mark, "1", "BGCOLOR");
 
   IupSetAttribute(image_block_unmark, "0", "180 180 180");
-  IupSetAttribute(image_block_unmark, "1", "255 255 255");
+  IupSetAttribute(image_block_unmark, "1", "BGCOLOR");
 
-  IupSetAttribute(image_del_unsel, "0", "255 255 255");
+  IupSetAttribute(image_del_unsel, "0", "BGCOLOR");
   IupSetAttribute(image_del_unsel, "1", "255 0 0");
 
   IupSetAttribute(image_block_del, "0", "220 220 220");
   IupSetAttribute(image_block_del, "1", "180 180 180");
 
   IupSetAttribute(image_add, "0", "10 10 10");
-  IupSetAttribute(image_add, "1", "255 255 255");
+  IupSetAttribute(image_add, "1", "BGCOLOR");
 
   IupSetHandle("MTXLIST_IMG_UNMARK", image_unmark);
   IupSetHandle("MTXLIST_IMG_MARK", image_mark);
@@ -296,9 +296,17 @@ static void iMatrixListAddLineAttributes(Ihandle* ih, int base, int count)
   int lin;
   for(lin = base; lin < base+count; lin++)
   {
-    if (lin != ih->data->lines.num-1)
-      IupSetAttributeId2(ih, "FRAMEVERTCOLOR", lin, IUP_INVALID_ID, "BGCOLOR");
+    /* all bottom horizontal lines transparent, except title and the last one */
+    if (lin!=0 && lin!=ih->data->lines.num-1)
+      IupSetAttributeId2(ih, "FRAMEHORIZCOLOR", lin, IUP_INVALID_ID, "BGCOLOR");
   }
+}
+
+static void iMatrixListUpdateLastLineAttributes(Ihandle* ih, int lines_num)
+{
+  if (lines_num < ih->data->lines.num && lines_num > 1)
+    IupSetAttributeId2(ih, "FRAMEHORIZCOLOR", lines_num-1, IUP_INVALID_ID, "BGCOLOR");
+  IupSetAttributeId2(ih, "FRAMEHORIZCOLOR", ih->data->lines.num-1, IUP_INVALID_ID, NULL);
 }
 
 static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxList)
@@ -317,10 +325,11 @@ static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxLis
   iupMatrixSetNumColAttrib(ih, str);
   IupSetStrAttribute(ih, "NUMCOL_VISIBLE", str);
 
-  for(col = 0; col < ih->data->columns.num-1; col++)
+  for(col = 1; col < ih->data->columns.num-1; col++)
   {
-    /* Make internal frame borders transparent */
-    IupSetAttributeId2(ih, "FRAMEHORIZCOLOR", IUP_INVALID_ID, col, "BGCOLOR");
+    /* all right vertical lines transparent, except the last one */
+    if (col != ih->data->columns.num-1)
+      IupSetAttributeId2(ih, "FRAMEVERTCOLOR", IUP_INVALID_ID, col, "BGCOLOR");
   }
 
   num_lin = ih->data->lines.num-1;  /* remove the title line count, even if not visible */
@@ -450,7 +459,11 @@ static int iMatrixListSetAddLinAttrib(Ihandle* ih, const char* value)
 
   iMatrixListAddLineAttributes(ih, base, count);
 
-  return iupMatrixSetAddLinAttrib(ih, value);
+  iupMatrixSetAddLinAttrib(ih, value);
+
+  iMatrixListUpdateLastLineAttributes(ih, lines_num);
+
+  return 0;
 }
 
 static int iMatrixListSetDelLinAttrib(Ihandle* ih, const char* value)
@@ -466,16 +479,22 @@ static int iMatrixListSetDelLinAttrib(Ihandle* ih, const char* value)
   if (base < lines_num)  /* If before the last line. (always true when deleting) */
     iMatrixListUpdateLineAttributes(ih, base, count, 0);
 
-  return iupMatrixSetDelLinAttrib(ih, value);
+  iupMatrixSetDelLinAttrib(ih, value);
+
+  iMatrixListUpdateLastLineAttributes(ih, lines_num);
+
+  return 0;
 }
 
 static int iMatrixListSetNumLinAttrib(Ihandle* ih, const char* value)
 {
-  int old_num = ih->data->lines.num;
+  int lines_num = ih->data->lines.num;
   iupMatrixSetNumLinAttrib(ih, value);
 
-  if (old_num < ih->data->lines.num)
-    iMatrixListAddLineAttributes(ih, old_num, ih->data->lines.num-old_num);
+  if (lines_num < ih->data->lines.num)  /* lines were added */
+    iMatrixListAddLineAttributes(ih, lines_num, ih->data->lines.num-lines_num);
+
+  iMatrixListUpdateLastLineAttributes(ih, lines_num);
 
   return 0;
 }
@@ -933,7 +952,6 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  return IUP_IGNORE;
 //}
 //
-//#if 0
 //static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int update)
 //{
 //  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
@@ -1047,7 +1065,6 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  /* Return the action */
 //  return status;
 //}
-//#endif
 //
 //static int iMatrixListClick_CB(Ihandle *ih, int lin, int col, char *status)
 //{
@@ -1089,7 +1106,6 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  return ret;
 //}
 //
-//#if 0
 //static int iMatrixListLeave_CB(Ihandle *ih, int lin, int col)
 //{
 //  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
@@ -1139,7 +1155,6 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //
 //  return ret;
 //}
-//#endif
 //
 //static int iMatrixListEditLabel(Ihandle *ih, ImatrixListData* mtxList, int c, int lin, int col, int active, char* after)
 //{
