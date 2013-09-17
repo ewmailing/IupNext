@@ -140,7 +140,7 @@ static void iDialDrawVertical(Ihandle* ih)
 
   iDialDrawVerticalBackground(ih, amin, amax, &ymin, &ymax);
 
-  cdIupDrawRaisenRect(ih->data->cddbuffer, IDIAL_SPACE, ymin, ih->data->w-1-IDIAL_SPACE, ymax,
+  cdIupDrawRaiseRect(ih->data->cddbuffer, IDIAL_SPACE, ymin, ih->data->w-1-IDIAL_SPACE, ymax,
                       ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
 
   for ( ; a < amax; a += delta)    /* graduation */
@@ -208,7 +208,7 @@ static void iDialDrawHorizontal(Ihandle* ih)
 
   iDialDrawHorizontalBackground(ih, amin, amax, &xmin, &xmax);
 
-  cdIupDrawRaisenRect(ih->data->cddbuffer, xmin, IDIAL_SPACE, xmax, ih->data->h-1-IDIAL_SPACE,
+  cdIupDrawRaiseRect(ih->data->cddbuffer, xmin, IDIAL_SPACE, xmax, ih->data->h-1-IDIAL_SPACE,
                       ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
 
   for ( ; a < amax; a += delta)

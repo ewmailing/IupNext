@@ -23,7 +23,7 @@
 #include "iup_attrib.h"
 #include "iup_object.h"
 #include "iup_str.h"
-//#include "iup_drv.h"
+#include "iup_drv.h"
 //#include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
 //#include "iup_image.h"
@@ -309,10 +309,10 @@ static void iMatrixListUpdateLastLineAttributes(Ihandle* ih, int lines_num)
   IupSetAttributeId2(ih, "FRAMEHORIZCOLOR", ih->data->lines.num-1, IUP_INVALID_ID, NULL);
 }
 
-static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxList)
+static void iMatrixListInitSize(Ihandle* ih, ImatrixListData* mtxList)
 {
   char str[30];
-  int num_col = 0, num_lin, col;
+  int num_col = 0;
 
   if (mtxList->label_col != 0)
     num_col++;
@@ -322,10 +322,30 @@ static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxLis
     num_col++;
   
   sprintf(str, "%d", num_col);
-  iupMatrixSetNumColAttrib(ih, str);
+  iupMatrixSetNumColAttrib(ih, str);  /* "NUMCOL" */
   IupSetStrAttribute(ih, "NUMCOL_VISIBLE", str);
 
-  for(col = 1; col < ih->data->columns.num-1; col++)
+  if (mtxList->color_col != 0)
+  {
+    if (!iupAttribGetId(ih, "WIDTH", mtxList->color_col))
+      IupSetIntId(ih, "WIDTH", mtxList->color_col, IMTXL_COLOR_WIDTH);
+  }
+
+  if (mtxList->image_col != 0)
+  {
+    if (!iupAttribGetId(ih, "WIDTH", mtxList->image_col))
+    {
+      int w = IupGetInt(mtxList->def_image_unmark, "WIDTH");
+      IupSetIntId(ih, "WIDTH", mtxList->image_col, w < 16? 16: w);  /* minimum image column size */
+    }
+  }
+}
+
+static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxList)
+{
+  int num_lin, col;
+
+  for(col = 1; col < ih->data->columns.num; col++)
   {
     /* all right vertical lines transparent, except the last one */
     if (col != ih->data->columns.num-1)
@@ -335,15 +355,6 @@ static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxLis
   num_lin = ih->data->lines.num-1;  /* remove the title line count, even if not visible */
   if (num_lin > 1 && mtxList->editable)
     IupSetInt(ih, "NUMLIN", num_lin+1);  /* reserve space for the empty line */
-
-  if (mtxList->color_col != 0)
-    IupSetIntId(ih, "WIDTH", mtxList->color_col, IMTXL_COLOR_WIDTH);
-
-  if (mtxList->image_col != 0)
-  {
-    int w = IupGetInt(mtxList->def_image_unmark, "WIDTH");
-    IupSetIntId(ih, "WIDTH", mtxList->image_col, w < 16? 16: w);  /* minimum image column size */
-  }
 
   /* Set the text alignment for the item column */
   IupSetAttributeId(ih, "ALIGNMENT", mtxList->label_col, "ALEFT");
@@ -566,7 +577,11 @@ static int iMatrixListSetColumnOrderAttrib(Ihandle *ih, const char* value)
     return 0; /* must have a first column */
 
   if (ret==1)
+  {
+    if (!ih->handle)
+      iMatrixListInitSize(ih, mtxList);
     return 0;
+  }
   
   ret = iupStrToStrStr(value2, value2, value3, ':');
   if (ret == 0)
@@ -589,7 +604,11 @@ static int iMatrixListSetColumnOrderAttrib(Ihandle *ih, const char* value)
   }
 
   if (ret==1)
+  {
+    if (!ih->handle)
+      iMatrixListInitSize(ih, mtxList);
     return 0;
+  }
 
   if (mtxList->image_col != 2 &&
       mtxList->color_col != 2 &&
@@ -612,6 +631,8 @@ static int iMatrixListSetColumnOrderAttrib(Ihandle *ih, const char* value)
       mtxList->label_col = 3;
   }
 
+  if (!ih->handle)
+    iMatrixListInitSize(ih, mtxList);
   return 0;
 }
 
@@ -734,6 +755,25 @@ static int iMatrixListSetLineActiveAttrib(Ihandle* ih, int lin, const char* valu
   return iMatrixListPostRedraw(ih);
 }
 
+static int iMatrixListSetTitleAttrib(Ihandle* ih, const char* value)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
+  if (!ih->handle)
+    iupAttribSetId2(ih, "", 0, mtxList->label_col, value);
+  else
+    iupMatrixSetValue(ih, 0, mtxList->label_col, value, 0);
+  return 0;
+}
+
+static char* iMatrixListGetTitleAttrib(Ihandle* ih)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
+  if (!ih->handle)
+    return iupAttribGetId2(ih, "", 0, mtxList->label_col);
+  else
+    return iupMatrixGetValueString(ih, 0, mtxList->label_col);
+}
+
 static int iMatrixListSetIdValueAttrib(Ihandle* ih, int lin, const char* value)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
@@ -843,63 +883,51 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
          Callbacks
 ******************************************************************************/
 
+static int iMatrixListDrawColor(Ihandle *ih, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas *cnv)
+{
+  IFniiiiiiC cb = (IFniiiiiiC)IupGetCallback(ih, "DRAWCOLORCOL_CB");
+      
+  /* If draw callback is defined, delegate the draw action. */ 
+  if(cb)
+    return cb(ih, lin, col, x1, x2, y1, y2, cnv);
+  else
+  {    
+    unsigned char red, green, blue;
+    char* color = iupAttribGetId(ih, "COLOR", lin);
 
-//static int iMatrixListDraw_CB(Ihandle *ih, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas *cnv)
-//{
-//  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
-//  int numLines = IupGetInt(ih, "NUMLIN");
-//  int mtxList->editable = iupAttribGetInt(ih, "EDIT_MODE_NAME");
-//
-//  /* Just checking */
-//  if(lin <= 0 || col <= 0 || !cnv)
-//    return IUP_DEFAULT;
-//
-//  /* Check if we have the color column */
-//  if(mtxList->color_col && col == mtxList->color_col)
-//  {
-//    /* Don't draw the color column on the empty line. */
-//    if((lin <= numLines && mtxList->editable) || (lin <= numLines && !mtxList->editable))
-//    {
-//      IFniiiiiiC cb = (IFniiiiiiC)IupGetCallback(ih, "DRAWCOLORCOL_CB");
-//      
-//      /* If draw callback is defined, delegate the draw action. */ 
-//      if(cb)
-//        return cb(ih, lin, col, x1, x2, y1, y2, cnv);
-//      else
-//      {    
-//        unsigned char red = 255, green = 255, blue = 255;
-//
-//        /* We have the color attribute ? */
-//        if(iupStrToRGB(mtxList->color[lin], &red, &green, &blue))
-//        {
-//          static const int DX_BORDER = 2;
-//          static const int DY_BORDER = 3;
-//          static const int DX_FILL = 3;
-//          static const int DY_FILL = 4;
-//
-//          /* Fill the box with the color */
-//          cdCanvasForeground(cnv, cdEncodeColor(red, green, blue));
-//          cdCanvasBox(cnv, x1 + DX_FILL, x2 - DX_FILL, y1 - DY_FILL, y2 + DY_FILL);
-//
-//          /* Draw the border */
-//          if(iupStrEqualNoCase(IupGetAttribute(ih, IUP_ACTIVE), IUP_NO))
-//            cdCanvasForeground(cnv, CD_GRAY);
-//          else
-//            cdCanvasForeground(cnv, CD_BLACK);
-//
-//          cdCanvasRect(cnv, x1 + DX_BORDER, x2 - DX_BORDER, y1 - DY_BORDER, y2 + DY_BORDER);
-//        }
-//      }
-//    }
-//  }
-//
-//  ///* Process only the image column */
-//  //if(col != mtxList->image_col)
-//  //  return IUP_IGNORE;
-//
-//  ///* Don't draw the image to the empty line */
-//  //if((lin < numLines && mtxList->editable) || (lin <= numLines && !mtxList->editable))
-//  //{
+    if (iupStrToRGB(color, &red, &green, &blue))
+    {
+      static const int DX_BORDER = 2;
+      static const int DY_BORDER = 3;
+      static const int DX_FILL = 3;
+      static const int DY_FILL = 4;
+      int active = iupdrvIsActive(ih);
+      long framecolor;
+
+      if (!active)
+      {
+        red = cdIupLIGTHER(red);
+        green = cdIupLIGTHER(green);
+        blue = cdIupLIGTHER(blue);
+      }
+
+      /* Fill the box with the color */
+      cdCanvasForeground(cnv, cdEncodeColor(red, green, blue));
+      cdCanvasBox(cnv, x1 + DX_FILL, x2 - DX_FILL, y1 - DY_FILL, y2 + DY_FILL);
+
+      /* Draw the border */
+      framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
+      cdCanvasForeground(cnv, framecolor);
+
+      cdCanvasRect(cnv, x1 + DX_BORDER, x2 - DX_BORDER, y1 - DY_BORDER, y2 + DY_BORDER);
+    }
+  }
+
+  return IUP_IGNORE;  /* draw nothing */
+}
+
+static int iMatrixListDrawImage(Ihandle *ih, ImatrixListData* mtxList, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas *cnv)
+{
 //  //  /* Find the image point */
 //  //  int x = x2 - x1 - IMTXL_IMG_WIDTH;
 //  //  int y = y1 - y2 - 1 - IMTXL_IMG_HEIGHT;
@@ -939,7 +967,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  //  }
 //  //}
 //
-//  //if(lin == numLines && IupGetHandle("IMG_ADD") != NULL && mtxList->editable)
+//  //if(lin == num_lin && IupGetHandle("IMG_ADD") != NULL && mtxList->editable)
 //  //{
 //  //  int x = x2 - x1 - IMTXL_IMG_WIDTH;
 //  //  int y = y1 - y2 - 1 - IMTXL_IMG_HEIGHT;
@@ -948,15 +976,41 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //
 //  //  iMatrixListPutIconRGBA(ih, ih->data->cells[lin][mtxList->image_col].image, x, y);
 //  //}
-//
-//  return IUP_IGNORE;
-//}
-//
+
+  return IUP_IGNORE;  /* draw nothing */
+}
+
+static int iMatrixListDraw_CB(Ihandle *ih, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas *cnv)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
+  int num_lin = ih->data->lines.num-1;
+//  int mtxList->editable = iupAttribGetInt(ih, "EDIT_MODE_NAME");
+
+  /* Just checking */
+  if (lin <= 0 || col <= 0 || !cnv)
+    return IUP_IGNORE;  /* draw regular text */
+
+  /* Don't draw on the empty line. */
+  if ((lin < num_lin && mtxList->editable) || (lin <= num_lin && !mtxList->editable))
+  {
+    if (mtxList->label_col && col == mtxList->label_col)
+      return IUP_IGNORE;  /* draw regular text */
+
+    if (mtxList->color_col && col == mtxList->color_col)
+      return iMatrixListDrawColor(ih, lin, col, x1, x2, y1, y2, cnv);
+
+    if (mtxList->image_col && col == mtxList->image_col)
+      return iMatrixListDrawImage(ih, mtxList, lin, col, x1, x2, y1, y2, cnv);
+  }
+
+  return IUP_IGNORE;  /* draw nothing */
+}
+
 //static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int update)
 //{
 //  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
 //  int status   = IUP_DEFAULT;
-//  int numLines = IupGetInt(ih, "NUMLIN");
+//  int num_lin = ih->data->lines.num-1;
 //  int mtxList->editable = iupAttribGetInt(ih, "EDIT_MODE_NAME");
 //  IFniii editCB = (IFniii)IupGetCallback(ih, "EDIT_CB");
 //
@@ -994,7 +1048,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //        if(update == 0)
 //          return IUP_IGNORE;
 //
-//        if(numLines == lin)
+//        if(num_lin == lin)
 //        {
 //          int i;
 //          if(insertCB != NULL)
@@ -1110,7 +1164,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //{
 //  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
 //  int ret = IUP_DEFAULT;
-//  int numLines = IupGetInt(ih, "NUMLIN");
+//  int num_lin = ih->data->lines.num-1;
 //  int mtxList->editable = iupAttribGetInt(ih, "EDIT_MODE_NAME");
 //  int lastAction = IupGetInt(ih, "ACTION_TYPE");
 //  char buffer[30];
@@ -1119,7 +1173,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  if(mtxList->editable)
 //    return IUP_IGNORE;
 //
-//  if(lin == numLines && lastAction)  /* last action = edition */
+//  if(lin == num_lin && lastAction)  /* last action = edition */
 //  {
 //    /* Get the cell value */
 //    char *data = IupGetAttributeId2(ih, "", lin, col);
@@ -1160,7 +1214,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //{
 //  int line = lin;
 //  char buffer[30];
-//  int numLines = IupGetInt(ih, IUP_NUMLIN);
+//  int num_lin = IupGetInt(ih, IUP_NUMLIN);
 //  IFnii actionCB = (IFnii)IupGetCallback(ih, "ACTION_CB");
 //  int ret = IUP_DEFAULT;
 //  (void)active;
@@ -1173,7 +1227,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //    int linSel = 0;
 //
 //    if(c == K_DOWN)
-//      linSel = (lin == numLines ?  numLines : lin + 1);
+//      linSel = (lin == num_lin ?  num_lin : lin + 1);
 //    else if(c == K_UP)
 //      linSel = (lin == 1 ? 1 : lin - 1);
 //  }
@@ -1205,7 +1259,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //
 //        mtxList->lastSelLine = line;
 //      }
-//      else if((c == K_DOWN && lin != numLines) || 
+//      else if((c == K_DOWN && lin != num_lin) || 
 //               ((c == K_CR &&  (iupStrEqualNoCase(IupGetAttribute(ih, "EDITNEXT"), "NONE"))) && data != NULL && data[0] != '\0'))
 //      {
 //        line = lin + 1;
@@ -1229,7 +1283,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  int i;
 //  int line = lin;
 //  int ret = IUP_DEFAULT;
-//  int numLines = IupGetInt(ih, "NUMLIN");
+//  int num_lin = ih->data->lines.num-1;
 //  IFnii actionCB = (IFnii)IupGetCallback(ih, "ACTION_CB");
 //  char buffer[30];
 //  (void)after;
@@ -1275,7 +1329,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
 //  {
 //    line = mtxList->lastSelLine + 1;
 //
-//    for(i = line; i <= numLines; i++)
+//    for(i = line; i <= num_lin; i++)
 //    {
 //      /* Unset the current selected line */
 //      sprintf(buffer, "MARK%d:0", mtxList->lastSelLine);
@@ -1362,22 +1416,22 @@ static int iMatrixListCreateMethod(Ihandle* ih, void **params)
   /* default matrix list values */
   mtxList->label_col = 1;
 
-  /* change the IupMatrix default values */
-  iupAttribSet(ih, "SCROLLBAR", "VERTICAL");
-  iupAttribSet(ih, "CURSOR", "ARROW");
+  /* change the IupCanvas default values */
+  iupAttribSet(ih, "EXPAND", "NO");      /* Disable the expand option */
 
   /* Change the IupMatrix default values */
   iupAttribSet(ih, "HIDEFOCUS", "YES");  /* Hide the matrix focus feedback */
-  iupAttribSet(ih, "EXPAND", "NO");      /* Disable the expand option */
-  iupAttribSet(ih, "MARKMODE", "LIN");   /* Select the entire line */
+  iupAttribSet(ih, "SCROLLBAR", "VERTICAL");
+  iupAttribSet(ih, "CURSOR", "ARROW");
+  iupAttribSet(ih, "ALIGNMENTLIN0", "ALEFT");
+  iupAttribSet(ih, "FRAMETITLEHIGHLIGHT", "No");
 
   /* iMatrix callbacks */
-//  IupSetCallback(ih, "DRAW_CB",  (Icallback)iMatrixListDraw_CB);
+  IupSetCallback(ih, "DRAW_CB",  (Icallback)iMatrixListDraw_CB);
 //  IupSetCallback(ih, "CLICK_CB", (Icallback)iMatrixListClick_CB);
 //  //IupSetCallback(ih, "EDITION_CB",   (Icallback)iMatrixListEdition_CB);
 //  //IupSetCallback(ih, "LEAVEITEM_CB", (Icallback)iMatrixListLeave_CB);
 //  IupSetCallback(ih, "ACTION_CB",    (Icallback)iMatrixListAction_CB);
-//  IupSetCallback(ih, "VALUE_CB",     NULL);  /* Force the matrix to use the VALUE attribute */
 
   (void)params;
   return IUP_NOERROR;
@@ -1399,20 +1453,21 @@ Iclass* iupMatrixListNewClass(void)
   ic->Create = iMatrixListCreateMethod;
   ic->Map    = iMatrixListMapMethod;
 
-  /* iMatrixList Callbacks */
+  /* IupMatrixList Callbacks */
 //  iupClassRegisterCallback(ic, "DBLCLICK_CB", "is");
 //  iupClassRegisterCallback(ic, "INSERT_CB", "i");
 //  iupClassRegisterCallback(ic, "NOTIFYEDITION_CB", "i");
 //  iupClassRegisterCallback(ic, "EDIT_CB", "iii");
-//  iupClassRegisterCallback(ic, "DRAWCOLORCOL_CB", "iiiiiiv");
+  iupClassRegisterCallback(ic, "DRAWCOLORCOL_CB", "iiiiiiv");
 
   iupClassRegisterReplaceAttribDef(ic, "CURSOR", IUPAF_SAMEASSYSTEM, "ARROW");
 
-  /* iMatrixList Attributes */
+  /* IupMatrixList Attributes */
 
   /* IMPORTANT: this two will hide the IupMatrix VALUE and L:C attributes */
   iupClassRegisterAttributeId(ic, "IDVALUE", iMatrixListGetIdValueAttrib, iMatrixListSetIdValueAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", iMatrixListGetValueAttrib, iMatrixListSetValueAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", iMatrixListGetTitleAttrib, iMatrixListSetTitleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "COLUMNORDER", iMatrixListGetColumnOrderAttrib, iMatrixListSetColumnOrderAttrib, IUPAF_SAMEASSYSTEM, "LABEL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COLORCOL", iMatrixListGetColorColAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -1446,7 +1501,7 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttribute(ic, "DELCOL", NULL, iMatrixListSetDelColAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMCOL", iMatrixListGetNumColAttrib, iMatrixListSetNumColAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMCOL_NOSCROLL", iMatrixListGetNumColNoScrollAttrib, iMatrixListSetNumColNoScrollAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NUMCOL_VISIBLE",  iMatrixListGetNumColVisibleAttrib, NULL, IUPAF_SAMEASSYSTEM, "4", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMCOL_VISIBLE",  iMatrixListGetNumColVisibleAttrib, NULL, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* initialize default images */
   iMatrixListInitializeImages();
@@ -1473,7 +1528,6 @@ Ihandle* IupMatrixList(void)
 #define IUP_MTX_CHECK_CB                 "MTX_CHECK_CB"                /* Callback de check. - int function(Ihandle *ih, int lin, int col) */
 #define IUP_MTX_INSERT_CB                "MTX_INSERT_CB"               /* Callback de enter. Action generated when an item is inserted into the matrix. - int function(Ihandle *ih, int lin, int col) */
 #define IUP_MTX_EDIT_CB                  "MTX_EDIT_CB"                 /* Callback de check. - int function(Ihandle *ih, int lin, int col, int mode) */
-#define IUP_MTX_DRAW_COLOR_COL_CB        "MTX_DRAW_COLOR_COL_CB"       /* Callback de draw. - int function(Ihandle *ih, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas* cnv) */
 #define IUP_MTX_NOTIFY_EDIT_MODE_CB      "MTX_NOTIFY_EDIT_MODE_CB"     /* Callback de notificação chamada quando entra e quando sai do modo de edição . - int function(Ihandle *ih, int mode) */
 
 StatusLine => State checked/unchecked

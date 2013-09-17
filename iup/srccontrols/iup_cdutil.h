@@ -15,7 +15,7 @@ void cdIupCalcShadows(long bgcolor, long *light_shadow, long *mid_shadow, long *
 long cdIupConvertColor(const char *color);
 void cdIupDrawSunkenRect(cdCanvas *canvas, int x1, int y1, int x2, int y2,  
                          long light_shadow, long mid_shadow, long dark_shadow);
-void cdIupDrawRaisenRect(cdCanvas *canvas, int x1, int y1, int x2, int y2,  
+void cdIupDrawRaiseRect(cdCanvas *canvas, int x1, int y1, int x2, int y2,  
                          long light_shadow, long mid_shadow, long dark_shadow);
 void cdIupDrawVertSunkenMark(cdCanvas *canvas, int x, int y1, int y2, long light_shadow, long dark_shadow);
 void cdIupDrawHorizSunkenMark(cdCanvas *canvas, int x1, int x2, int y, long light_shadow, long dark_shadow);

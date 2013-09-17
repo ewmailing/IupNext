@@ -2372,7 +2372,7 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
     Ihandle* dlg = IupGetDialog(canvas);
     iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
     Ihandle* elem = iLayoutFindDialogElementByPos(layoutdlg, x, y);
-    if (elem && elem != layoutdlg->dialog)
+    if (elem)
     {
       if (iup_isdouble(status))
       {

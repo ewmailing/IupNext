@@ -86,7 +86,7 @@ void cdIupDrawSunkenRect(cdCanvas *canvas, int x1, int y1, int x2, int y2, long 
   cdCanvasLine(canvas, x2, y1, x2, y2);
 }
 
-void cdIupDrawRaisenRect(cdCanvas *canvas, int x1, int y1, int x2, int y2, long light_shadow, long mid_shadow, long dark_shadow)
+void cdIupDrawRaiseRect(cdCanvas *canvas, int x1, int y1, int x2, int y2, long light_shadow, long mid_shadow, long dark_shadow)
 {
   cdCanvasForeground(canvas, light_shadow);
   cdCanvasLine(canvas, x1, y1+1,   x1, y2);

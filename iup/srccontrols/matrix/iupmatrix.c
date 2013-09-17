@@ -1638,6 +1638,8 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId2(ic, "FONT", iMatrixGetFontAttrib, iMatrixSetFontAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRAMETITLEHIGHLIGHT", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId2(ic, "CELLOFFSET", iMatrixGetCellOffsetAttrib, NULL, IUPAF_READONLY);
   iupClassRegisterAttributeId2(ic, "CELLSIZE", iMatrixGetCellSizeAttrib, NULL, IUPAF_READONLY);
   iupClassRegisterAttributeId2(ic, "CELLBGCOLOR", iMatrixGetCellBgColorAttrib, NULL, IUPAF_READONLY);
@@ -1645,6 +1647,7 @@ Iclass* iupMatrixNewClass(void)
 
   /* IupMatrix Attributes - COLUMN */
   iupClassRegisterAttributeId(ic, "ALIGNMENT", iMatrixGetAlignmentAttrib, (IattribSetIdFunc)iMatrixSetNeedRedraw, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENTLIN0", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "ACENTER", IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "SORTSIGN", NULL, (IattribSetIdFunc)iMatrixSetNeedRedraw, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - SIZE */
@@ -1707,7 +1710,6 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "LIMITEXPAND", iMatrixGetLimitExpandAttrib, iMatrixSetLimitExpandAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDDENTEXTMARKS", iMatrixGetHiddenTextMarksAttrib, iMatrixSetHiddenTextMarksAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   
-  iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "READONLY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESIZEMATRIX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDEFOCUS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
