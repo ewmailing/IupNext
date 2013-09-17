@@ -116,8 +116,7 @@ typedef struct _ImatrixListData  /* Used only by the IupMatrixList control */
 
 static void iMatrixListInitializeImages(void)
 {
-  Ihandle *image_unmark, *image_mark, *image_del, *image_del_unsel;  
-  Ihandle *image_add;
+  Ihandle *image_unmark, *image_mark, *image_del, *image_add;
 
 #define IMTXL_IMG_WIDTH  16
 #define IMTXL_IMG_HEIGHT 16
@@ -201,7 +200,6 @@ static void iMatrixListInitializeImages(void)
   image_unmark       = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_unmark);
   image_mark         = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_mark);
   image_del          = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_del);
-  image_del_unsel    = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_del);
   image_add          = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_add);
 
   IupSetAttribute(image_unmark, "0", "10 10 10");
@@ -213,16 +211,12 @@ static void iMatrixListInitializeImages(void)
   IupSetAttribute(image_del, "0", "BGCOLOR");
   IupSetAttribute(image_del, "1", "255 0 0");
 
-  IupSetAttribute(image_del_unsel, "0", "BGCOLOR");
-  IupSetAttribute(image_del_unsel, "1", "255 0 0");
-
   IupSetAttribute(image_add, "0", "10 10 10");
   IupSetAttribute(image_add, "1", "BGCOLOR");
 
   IupSetHandle("MTXLIST_IMG_UNMARK", image_unmark);
   IupSetHandle("MTXLIST_IMG_MARK", image_mark);
   IupSetHandle("MTXLIST_IMG_DEL", image_del);
-  IupSetHandle("MTXLIST_IMG_DEL_UNSEL", image_del_unsel);
   IupSetHandle("MTXLIST_IMG_ADD", image_add);
 
 #undef IMTXL_IMG_WIDTH
@@ -903,10 +897,7 @@ static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int li
   }
   else if(mtxList->showing_delete && line_active)
   {
-    if (!unsel)
-      iMatrixListDrawImage(ih, image_del, x, y);
-    else
-      iMatrixListDrawImage(ih, image_del_unsel, x, y, lin);
+    iMatrixListDrawImage(ih, image_del, x, y);
   }
   else
   {
@@ -931,7 +922,6 @@ static int iMatrixListDraw_CB(Ihandle *ih, int lin, int col, int x1, int x2, int
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
   int num_lin = ih->data->lines.num-1;
-//  int mtxList->editable = iupAttribGetInt(ih, "EDIT_MODE_NAME");
 
   /* Just checking */
   if (lin <= 0 || col <= 0 || !cnv)
