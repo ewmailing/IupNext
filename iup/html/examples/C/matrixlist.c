@@ -30,11 +30,11 @@ int main(int argc, char **argv)
   IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR");
 
   /* Bluish style */
-  IupSetAttribute(mlist, "TITLE", "Test");
-//  IupSetAttribute(mlist, "BGCOLOR", "220 230 240");
-//  IupSetAttribute(mlist, "FRAMECOLOR", "120 140 160");
-//  IupSetAttribute(mlist, "BGCOLOR0:*", "120 140 160");
-//  IupSetAttribute(mlist, "FGCOLOR0:1", "255 255 255");
+  //IupSetAttribute(mlist, "TITLE", "Test");
+  //IupSetAttribute(mlist, "BGCOLOR", "220 230 240");
+  //IupSetAttribute(mlist, "FRAMECOLOR", "120 140 160");
+  //IupSetAttribute(mlist, "BGCOLOR0:*", "120 140 160");
+  //IupSetAttribute(mlist, "FGCOLOR0:1", "255 255 255");
 
   IupSetAttribute(mlist, "1", "AAA");
   IupSetAttribute(mlist, "2", "BBB");
@@ -57,7 +57,8 @@ int main(int argc, char **argv)
   IupSetAttribute(mlist, "COLOR8", "255 128 128");
   IupSetAttribute(mlist, "COLOR9", "0 255 128");
   IupSetAttribute(mlist, "COLOR10", "128 255 128");
-//  IupSetAttribute(mlist, "EDIT_MODE", "NO");
+//  IupSetAttribute(mlist, "EDITABLE", "Yes");
+//  IupSetAttribute(mlist, "SHOWDELETE", "Yes");
 
 //  IupSetCallback(mlist,"CLICK_CB",(Icallback)click);
 
