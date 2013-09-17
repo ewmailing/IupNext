@@ -46,16 +46,16 @@
 
 typedef struct _ImatrixListData  /* Used only by the IupMatrixList control */
 {
+  /* attributes */
   int editable;     /* allow adding new lines by editing the last line */
-  int show_delete;  /* show the delete button */
 //  int selectedLine;    /* Number of the selected line */
 //  int lastSelLine;
 
-  /* column order */
-  int label_col, color_col, image_col;  /* 0 means it is hidden */
+  /* internal variables */
+  int label_col, color_col, image_col;  /* column order (0 means it is hidden) */
+  int showing_delete;  /* showing the delete button, after a double click in an editable list */
 
   Ihandle *def_image_unmark, *def_image_mark, *def_image_del, *def_image_del_unsel;
-  Ihandle *def_image_block_unmark, *def_image_block_mark, *def_image_block_del;
   Ihandle *def_image_add;
 } ImatrixListData;
 
@@ -117,7 +117,7 @@ typedef struct _ImatrixListData  /* Used only by the IupMatrixList control */
 static void iMatrixListInitializeImages(void)
 {
   Ihandle *image_unmark, *image_mark, *image_del, *image_del_unsel;  
-  Ihandle *image_block_unmark, *image_block_mark, *image_block_del, *image_add;
+  Ihandle *image_add;
 
 #define IMTXL_IMG_WIDTH  16
 #define IMTXL_IMG_HEIGHT 16
@@ -202,9 +202,6 @@ static void iMatrixListInitializeImages(void)
   image_mark         = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_mark);
   image_del          = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_del);
   image_del_unsel    = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_del);
-  image_block_unmark = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_unmark);
-  image_block_mark   = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_mark);
-  image_block_del    = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_del);
   image_add          = IupImage(IMTXL_IMG_WIDTH, IMTXL_IMG_HEIGHT, img_add);
 
   IupSetAttribute(image_unmark, "0", "10 10 10");
@@ -216,17 +213,8 @@ static void iMatrixListInitializeImages(void)
   IupSetAttribute(image_del, "0", "BGCOLOR");
   IupSetAttribute(image_del, "1", "255 0 0");
 
-  IupSetAttribute(image_block_mark, "0", "180 180 180");
-  IupSetAttribute(image_block_mark, "1", "BGCOLOR");
-
-  IupSetAttribute(image_block_unmark, "0", "180 180 180");
-  IupSetAttribute(image_block_unmark, "1", "BGCOLOR");
-
   IupSetAttribute(image_del_unsel, "0", "BGCOLOR");
   IupSetAttribute(image_del_unsel, "1", "255 0 0");
-
-  IupSetAttribute(image_block_del, "0", "220 220 220");
-  IupSetAttribute(image_block_del, "1", "180 180 180");
 
   IupSetAttribute(image_add, "0", "10 10 10");
   IupSetAttribute(image_add, "1", "BGCOLOR");
@@ -235,9 +223,6 @@ static void iMatrixListInitializeImages(void)
   IupSetHandle("MTXLIST_IMG_MARK", image_mark);
   IupSetHandle("MTXLIST_IMG_DEL", image_del);
   IupSetHandle("MTXLIST_IMG_DEL_UNSEL", image_del_unsel);
-  IupSetHandle("MTXLIST_IMG_BLOCK_UNMARK", image_block_unmark);
-  IupSetHandle("MTXLIST_IMG_BLOCK_MARK", image_block_mark);
-  IupSetHandle("MTXLIST_IMG_BLOCK_DEL", image_block_del);
   IupSetHandle("MTXLIST_IMG_ADD", image_add);
 
 #undef IMTXL_IMG_WIDTH
@@ -428,19 +413,6 @@ static void iMatrixListUpdateLineActiveColors(Ihandle* ih, ImatrixListData* mtxL
  Attributes
 ******************************************************************************/
 
-
-static char* iMatrixListGetShowDeleteAttrib(Ihandle *ih)
-{
-  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
-  return iupStrReturnBoolean(mtxList->show_delete);
-}
-
-static int iMatrixListSetShowDeleteAttrib(Ihandle* ih, const char* value)
-{
-  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
-  mtxList->show_delete = iupStrBoolean(value);
-  return 0;
-}
 
 static char* iMatrixListGetEditableAttrib(Ihandle *ih)
 {
@@ -678,34 +650,10 @@ static int iMatrixListSetImageDelAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iMatrixListSetImageBlockUnmarkAttrib(Ihandle* ih, const char* value)
-{
-  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
-  mtxList->def_image_block_unmark = IupGetHandle(value);
-  IupSetAttribute(ih, "REDRAW", "ALL");
-  return 0;
-}
-
-static int iMatrixListSetImageBlockMarkAttrib(Ihandle* ih, const char* value)
-{
-  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
-  mtxList->def_image_block_mark = IupGetHandle(value);
-  IupSetAttribute(ih, "REDRAW", "ALL");
-  return 0;
-}
-
 static int iMatrixListSetImageDelUnselAttrib(Ihandle* ih, const char* value)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
   mtxList->def_image_del_unsel = IupGetHandle(value);
-  IupSetAttribute(ih, "REDRAW", "ALL");
-  return 0;
-}
-
-static int iMatrixListSetImageBlockDelAttrib(Ihandle* ih, const char* value)
-{
-  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
-  mtxList->def_image_block_del = IupGetHandle(value);
   IupSetAttribute(ih, "REDRAW", "ALL");
   return 0;
 }
@@ -747,7 +695,7 @@ static int iMatrixListSetLineActiveAttrib(Ihandle* ih, int lin, const char* valu
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
   
-  if (mtxList->editable && mtxList->show_delete)
+  if (mtxList->editable && mtxList->showing_delete)
     IupStoreAttribute(ih, "ACTIVE", value);
   else
     iMatrixListUpdateLineActiveColors(ih, mtxList, lin, iupStrBoolean(value));
@@ -883,7 +831,7 @@ static char* iMatrixListGetNumColVisibleAttrib(Ihandle* ih)
          Callbacks
 ******************************************************************************/
 
-static int iMatrixListDrawColor(Ihandle *ih, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas *cnv)
+static int iMatrixListDrawColorCol(Ihandle *ih, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas *cnv)
 {
   IFniiiiiiC cb = (IFniiiiiiC)IupGetCallback(ih, "DRAWCOLORCOL_CB");
       
@@ -926,56 +874,55 @@ static int iMatrixListDrawColor(Ihandle *ih, int lin, int col, int x1, int x2, i
   return IUP_IGNORE;  /* draw nothing */
 }
 
-static int iMatrixListDrawImage(Ihandle *ih, ImatrixListData* mtxList, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas *cnv)
+static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas *cnv)
 {
-//  //  /* Find the image point */
-//  //  int x = x2 - x1 - IMTXL_IMG_WIDTH;
-//  //  int y = y1 - y2 - 1 - IMTXL_IMG_HEIGHT;
-//  //  x /= 2; x += x1;
-//  //  y /= 2; y += y2;
-//
-//  //  /* Get the index image to display */
-//  //  /* Select the correct image icon to display */
-//  //  if(mtxList->editable && !(ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE) || !(ih->data->lines.dt[lin].flags & IMAT_IS_BUTTON_INACTIVE))
-//  //  {
-//  //    /* Put the icon */
-//  //    if(IupGetHandle("IMG_BLOCK_MARK") != NULL && IupGetHandle("IMG_BLOCK_UNMARK") != NULL)
-//  //      iMatrixListPutIconRGBA(ih, ih->data->cells[lin][mtxList->image_col].image, x, y);
-//  //    else
-//  //      iMatrixListPutIconMap(ih, ih->data->cells[lin][mtxList->image_col].image, x, y, lin);
-//  //  }
-//  //  else if(mtxList->show_delete && !(ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE))
-//  //  {
-//  //    if(IupGetHandle("IMG_BLOCK_DEL") != NULL)
-//  //      iMatrixListPutIconRGBA(ih, ih->data->cells[lin][mtxList->image_col].image, x, y);
-//  //    else
-//  //      iMatrixListPutIconMap(ih, ih->data->cells[lin][mtxList->image_col].image, x, y, lin);
-//  //  }
-//  //  else if(mtxList->show_delete && ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE)
-//  //  {
-//  //    if(IupGetHandle("IMG_DEL") != NULL)
-//  //      iMatrixListPutIconRGBA(ih, ih->data->cells[lin][mtxList->image_col].image, x, y);
-//  //    else
-//  //      iMatrixListPutIconMap(ih, ih->data->cells[lin][mtxList->image_col].image, x, y, lin);
-//  //  }
-//  //  else
-//  //  {
-//  //    if(IupGetHandle("IMG_UNMARK") != NULL && IupGetHandle("IMG_MARK") != NULL)
-//  //      iMatrixListPutIconRGBA(ih, ih->data->cells[lin][mtxList->image_col].image, x, y);
-//  //    else
-//  //      iMatrixListPutIconMap(ih, ih->data->cells[lin][mtxList->image_col].image, x, y, lin);
-//  //  }
-//  //}
-//
-//  //if(lin == num_lin && IupGetHandle("IMG_ADD") != NULL && mtxList->editable)
-//  //{
-//  //  int x = x2 - x1 - IMTXL_IMG_WIDTH;
-//  //  int y = y1 - y2 - 1 - IMTXL_IMG_HEIGHT;
-//  //  x /= 2; x += x1;
-//  //  y /= 2; y += y2;
-//
-//  //  iMatrixListPutIconRGBA(ih, ih->data->cells[lin][mtxList->image_col].image, x, y);
-//  //}
+#if 0
+  /* Find the image point */
+  int x = x2 - x1 - image_width;
+  int y = y1 - y2 - 1 - image_height;
+  x /= 2; x += x1;
+  y /= 2; y += y2;
+
+  image = ih->data->cells[lin][mtxList->image_col].image;
+  line_active = !(ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE);
+  button_active = !(ih->data->lines.dt[lin].flags & IMAT_IS_BUTTON_INACTIVE);
+
+  /* Get the index image to display */
+  /* Select the correct image icon to display */
+  if (!mtxList->editable && (!line_active || !button_active))
+  {
+    /* Put the icon */
+    if(checked)
+      iMatrixListDrawImage(ih, image_block_mark, x, y);
+    else
+      iMatrixListDrawImage(ih, image_block_unmark, x, y, lin);
+  }
+  else if(mtxList->showing_delete && !line_active)
+  {
+    iMatrixListDrawImage(ih, image_block_del, x, y);
+  }
+  else if(mtxList->showing_delete && line_active)
+  {
+    if (!unsel)
+      iMatrixListDrawImage(ih, image_del, x, y);
+    else
+      iMatrixListDrawImage(ih, image_del_unsel, x, y, lin);
+  }
+  else
+  {
+    iMatrixListDrawImage(ih, image, x, y, lin);
+  }
+
+  if(lin == num_lin && IupGetHandle("IMG_ADD") != NULL && mtxList->editable)
+  {
+    int x = x2 - x1 - IMTXL_IMG_WIDTH;
+    int y = y1 - y2 - 1 - IMTXL_IMG_HEIGHT;
+    x /= 2; x += x1;
+    y /= 2; y += y2;
+
+    iMatrixListPutIconRGBA(ih, image_add, x, y);
+  }
+#endif
 
   return IUP_IGNORE;  /* draw nothing */
 }
@@ -997,10 +944,10 @@ static int iMatrixListDraw_CB(Ihandle *ih, int lin, int col, int x1, int x2, int
       return IUP_IGNORE;  /* draw regular text */
 
     if (mtxList->color_col && col == mtxList->color_col)
-      return iMatrixListDrawColor(ih, lin, col, x1, x2, y1, y2, cnv);
+      return iMatrixListDrawColorCol(ih, lin, col, x1, x2, y1, y2, cnv);
 
     if (mtxList->image_col && col == mtxList->image_col)
-      return iMatrixListDrawImage(ih, mtxList, lin, col, x1, x2, y1, y2, cnv);
+      return iMatrixListDrawImageCol(ih, mtxList, lin, col, x1, x2, y1, y2, cnv);
   }
 
   return IUP_IGNORE;  /* draw nothing */
@@ -1187,7 +1134,7 @@ static int iMatrixListDraw_CB(Ihandle *ih, int lin, int col, int x1, int x2, int
 //      IupSetAttribute(ih, buffer, "ON");
 //
 //      /* Show delete button ? */
-//      if(mtxList->show_delete)
+//      if(mtxList->showing_delete)
 //      {
 //        sprintf(buffer, "%d:%d", lin, mtxList->label_col);
 //        IupSetAttribute(ih, "FOCUS_CELL", iupStrDup(buffer));
@@ -1222,7 +1169,7 @@ static int iMatrixListDraw_CB(Ihandle *ih, int lin, int col, int x1, int x2, int
 //  if(!IupGetInt(ih, IUP_ACTIVE))  /* return = NO */
 //    return IUP_IGNORE;
 //
-//  if(((c == K_DOWN) || (c == K_UP)) && mtxList->show_delete)
+//  if(((c == K_DOWN) || (c == K_UP)) && mtxList->showing_delete)
 //  {
 //    int linSel = 0;
 //
@@ -1484,13 +1431,9 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttribute(ic, "IMAGEMARK",   NULL, iMatrixListSetImageMarkAttrib,   IUPAF_SAMEASSYSTEM, "IMG_MARK",   IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEDEL",    NULL, iMatrixListSetImageDelAttrib,    IUPAF_SAMEASSYSTEM, "IMG_DEL",    IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEDELUNSEL",  NULL, iMatrixListSetImageDelUnselAttrib,  IUPAF_SAMEASSYSTEM, "IMG_BLOCK_UNSEL",  IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEBLOCKUNMARK", NULL, iMatrixListSetImageBlockUnmarkAttrib, IUPAF_SAMEASSYSTEM, "IMG_BLOCK_UNMARK", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEBLOCKMARK",   NULL, iMatrixListSetImageBlockMarkAttrib,   IUPAF_SAMEASSYSTEM, "IMG_BLOCK_MARK",   IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEBLOCKDEL",    NULL, iMatrixListSetImageBlockDelAttrib,    IUPAF_SAMEASSYSTEM, "IMG_BLOCK_DEL",    IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEADD",    NULL, iMatrixListSetImageAddAttrib,    IUPAF_SAMEASSYSTEM, "IMG_ADD",    IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "EDITABLE",   iMatrixListGetEditableAttrib, iMatrixListSetEditableAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWDELETE", iMatrixListGetShowDeleteAttrib, iMatrixListSetShowDeleteAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "ADDLIN", NULL, iMatrixListSetAddLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);  /* allowing these methods to be called before map will avoid its storage in the hash table */
   iupClassRegisterAttribute(ic, "DELLIN", NULL, iMatrixListSetDelLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

@@ -6,17 +6,14 @@
 #include "iupcontrols.h"
 #include "cd.h"
 
-static int click(Ihandle *self, int lin, int col, char *status)
+static int click_cb(Ihandle *self, int lin, int col, char *status)
 {
   char* value = IupGetAttributeId(self, "", lin);
   if (!value) value = "NULL";
   printf("click_cb(%d, %d)\n", lin, col);
   printf("  VALUE%d:%d = %s\n", lin, col, value);
-  //IupSetInt(self, "ADDLIN", lin);
-  //IupSetInt(self, "DELLIN", lin);
   return IUP_DEFAULT;
 }
-
 
 int main(int argc, char **argv)
 {
@@ -28,6 +25,9 @@ int main(int argc, char **argv)
   IupSetInt(mlist, "NUMLIN", 10);
   IupSetInt(mlist, "NUMLIN_VISIBLE", 5);
   IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR");
+
+//  IupSetAttribute(mlist, "EDITABLE", "Yes");
+//  IupSetCallback(mlist,"CLICK_CB",(Icallback)click_cb);
 
   /* Bluish style */
   //IupSetAttribute(mlist, "TITLE", "Test");
@@ -57,10 +57,6 @@ int main(int argc, char **argv)
   IupSetAttribute(mlist, "COLOR8", "255 128 128");
   IupSetAttribute(mlist, "COLOR9", "0 255 128");
   IupSetAttribute(mlist, "COLOR10", "128 255 128");
-//  IupSetAttribute(mlist, "EDITABLE", "Yes");
-//  IupSetAttribute(mlist, "SHOWDELETE", "Yes");
-
-//  IupSetCallback(mlist,"CLICK_CB",(Icallback)click);
 
   dlg = IupDialog(IupVbox(mlist, NULL));
   IupSetAttribute(dlg, "TITLE", "IupMatrixList");
