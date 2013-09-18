@@ -2,7 +2,7 @@
  * \brief Windows Driver set for attributes
  *
  * See Copyright Notice in iup.h
- * $Id: winset.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
+ * $Id: winset.c,v 1.2 2013-09-18 14:36:24 scuri Exp $
  */
 
 #include <stdio.h>              
@@ -68,6 +68,8 @@ static void setmdiactivate (Ihandle *n, char *v);
 static void setmdicloseall (Ihandle *n, char *v);
 static void setzorder      (Ihandle *n, char *v);
 static void setclipboard   (Ihandle *n, char *v);
+static void setupdatescrollwidth(Ihandle *n, char *v);
+
 
 static struct
 {
@@ -119,6 +121,7 @@ static struct
                    {"MDICLOSEALL",setmdicloseall},
                    {"ZORDER",     setzorder},
                    {"SHOWDROPDOWN",setshowdropdown},
+                   {"UPDATESCROLLWIDTH",setupdatescrollwidth},
                    {"CLIPBOARD",  setclipboard}
 };                                               
 
@@ -2318,6 +2321,35 @@ static void settrayimage(Ihandle *n, char *v)
   {
     HWND hwnd = handle(n);
     TrayMessage(hwnd, NIM_MODIFY, iupwinGetIcon(v, hwnd, IUP_ICON), NULL);
+  }
+}
+
+static int winListGetMaxWidth(Ihandle* ih)
+{
+  int i, item_w, max_w = 0, item_h,
+    count = SendMessage(ih->handle, LB_GETCOUNT, 0, 0);
+  char  op[5], *str;
+
+  for (i=1; i<=count; i++)
+  { 
+    sprintf (op, "%d", i);
+    str = iupGetEnv(ih, op);
+	iupdrvStringSize(ih, str, &item_w, &item_h);
+    if (item_w > max_w)
+      max_w = item_w;
+  }
+
+  return max_w;
+}
+
+static void setupdatescrollwidth(Ihandle *n, char *v)
+{
+  if(n && handle(n) && type(n) == LIST_)
+  {
+    if (iupCheck(n, IUP_DROPDOWN)!=YES)
+    {
+	  SendMessage((HWND)handle(n), LB_SETHORIZONTALEXTENT, winListGetMaxWidth(n), 0);
+	}
   }
 }
 
