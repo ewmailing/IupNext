@@ -197,11 +197,7 @@ static int iMatrixSetLimitExpandAttrib(Ihandle* ih, const char* value)
   if (ih->handle)
     return 0;
 
-  if (iupStrBoolean(value))
-    ih->data->limit_expand = 1;
-  else 
-    ih->data->limit_expand = 0;
-
+  ih->data->limit_expand = iupStrBoolean(value);
   return 0;
 }
 
@@ -1440,16 +1436,18 @@ static int iMatrixGetNaturalWidth(Ihandle* ih, int *full_width)
 
   if (iupAttribGetInt(ih, "NUMCOL_VISIBLE_LAST"))
   {
-    int start = ih->data->columns.num - (num-1); /* title is computed apart */
-    if (start<1) start=1;
-    width += iupMatrixGetColumnWidth(ih, 0, 1); /* compute title */
+    int start = ih->data->columns.num - (num-1); 
+    if (start<1) start=1;  /* title is computed apart */
+
+    width += iupMatrixGetColumnWidth(ih, 0, 1); /* always compute title */
+
     for(col = start; col < ih->data->columns.num; col++)
       width += iupMatrixGetColumnWidth(ih, col, 1);
 
     if (ih->data->limit_expand)
     {
       *full_width = width;
-      for(col = 0; col < start; col++)
+      for(col = 1; col < start; col++)
         (*full_width) += iupMatrixGetColumnWidth(ih, col, 1);
     }
   }
@@ -1477,16 +1475,18 @@ static int iMatrixGetNaturalHeight(Ihandle* ih, int *full_height)
 
   if (iupAttribGetInt(ih, "NUMLIN_VISIBLE_LAST"))
   {
-    int start = ih->data->lines.num - (num-1);   /* title is computed apart */
-    if (start<1) start=1;
-    height += iupMatrixGetLineHeight(ih, 0, 1);  /* compute title */
+    int start = ih->data->lines.num - (num-1);   
+    if (start<1) start=1;  /* title is computed apart */
+
+    height += iupMatrixGetLineHeight(ih, 0, 1);  /* always compute title */
+
     for(lin = start; lin < ih->data->lines.num; lin++)
       height += iupMatrixGetLineHeight(ih, lin, 1);
 
     if (ih->data->limit_expand)
     {
       *full_height = height;
-      for(lin = 0; lin < start; lin++)
+      for(lin = 1; lin < start; lin++)
         (*full_height) += iupMatrixGetLineHeight(ih, lin, 1);
     }
   }
@@ -1527,15 +1527,29 @@ static void iMatrixComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *ch
   if (iupAttribGetBoolean(ih, "BORDER"))
     border = 1;
 
-  *w = sb_w + iMatrixGetNaturalWidth(ih, &full_width) + 2*border;
-  *h = sb_h + iMatrixGetNaturalHeight(ih, &full_height) + 2*border;
+  *w = iMatrixGetNaturalWidth(ih, &full_width);
+  *h = iMatrixGetNaturalHeight(ih, &full_height);
 
   if (ih->data->limit_expand)
   {
-    full_width += sb_w;
-    full_height += sb_h;
+    /* the maximum size does NOT include the scrollbars when AUTOHIDE=Yes */
+    if (!iupAttribGetBoolean(ih, "YAUTOHIDE"))
+      full_width += sb_w;
+    else if (*w == full_width) /* all columns can be visible, */
+      sb_w = 0;                /* so do NOT reserve space for the vertical scrollbar */
+    if (!iupAttribGetBoolean(ih, "XAUTOHIDE"))
+      full_height += sb_h;
+    else if (*h == full_height) /* all lines can be visible, */
+      sb_h = 0;                 /* so do NOT reserve space for the horizontal scrollbar */
+
+    full_width += 2*border;
+    full_height += 2*border;
+
     IupSetfAttribute(ih, "MAXSIZE", "%dx%d", full_width, full_height);
   }
+
+  *w += sb_w + 2*border;
+  *h += sb_h + 2*border;
 }
 
 static void iMatrixCreateCursor(void)

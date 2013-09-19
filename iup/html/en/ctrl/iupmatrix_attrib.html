@@ -49,7 +49,8 @@ normally cropped, but when set to YES a &quot;...&quot; mark will be added at th
 point to indicate that there is more text not visible. Default: NO. (since 3.1)</p>
 <p><strong>LIMITEXPAND</strong>: limit expansion to the maximum size that shows 
 all cells. This will set the MAXSIZE attribute to match the natural size of the 
-matrix. (since 3.5)</p>
+matrix when all cells are visible. When the scrollbars have *AUTOHIDE=Yes, the 
+maximum size will not include the scrollbars (since 3.9). (since 3.5) </p>
 <p><strong><a name="ORIGIN">ORIGIN</a></strong>: Scroll the visible area to the 
 given cell. Returns the cell at the upper left corner. To scroll to a line or a 
 column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*:<strong><em>C</em></strong>&quot; (where

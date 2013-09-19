@@ -18,6 +18,7 @@
 #include "iup_str.h"
 #include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
+#include "iup_drv.h"
 
 #include "iupmat_def.h"
 #include "iupmat_aux.h"
@@ -36,7 +37,7 @@ int iupMatrixAuxIsFullVisibleLast(ImatLinColData *p)
       sum -= p->first_offset;
   }
 
-  if (sum > p->visible_size)
+  if (sum > p->current_visible_size)
     return 0;
   else
     return 1;
@@ -88,13 +89,13 @@ void iupMatrixAuxAdjustFirstFromLast(ImatLinColData* p)
 
   i = p->last;
   sum = p->dt[i].size;
-  while (i>p->num_noscroll && sum < p->visible_size)
+  while (i>p->num_noscroll && sum < p->current_visible_size)
   {
     i--;
     sum += p->dt[i].size;
   }
 
-  if (i==p->num_noscroll && sum < p->visible_size)
+  if (i==p->num_noscroll && sum < p->current_visible_size)
   {
     /* if there are room for everyone then position at start */
     p->first = p->num_noscroll;
@@ -106,7 +107,7 @@ void iupMatrixAuxAdjustFirstFromLast(ImatLinColData* p)
     p->first = i;
 
     /* position at the remaing space */
-    p->first_offset = sum - p->visible_size;
+    p->first_offset = sum - p->current_visible_size;
   }
 }
 
@@ -174,7 +175,7 @@ void iupMatrixAuxUpdateScrollPos(Ihandle* ih, int m)
 
   /* "first" was changed, so update "last" and the scroll pos */
 
-  if (p->total_size <= p->visible_size)
+  if (p->total_visible_size <= p->current_visible_size)
   {
     /* the matrix is fully visible */
     p->first = p->num_noscroll;
@@ -193,16 +194,16 @@ void iupMatrixAuxUpdateScrollPos(Ihandle* ih, int m)
     scroll_pos += p->dt[i].size;
   scroll_pos += p->first_offset;
 
-  if (scroll_pos + p->visible_size > p->total_size)
+  if (scroll_pos + p->current_visible_size > p->total_visible_size)
   {
     /* invalid condition, must recalculate so it is valid */
-    scroll_pos = p->total_size - p->visible_size;
+    scroll_pos = p->total_visible_size - p->current_visible_size;
 
     /* position first and first_offset, according to scroll pos */
     iupMatrixAuxAdjustFirstFromScrollPos(p, scroll_pos);
   }
 
-  pos = (float)scroll_pos/(float)p->total_size;
+  pos = (float)scroll_pos/(float)p->total_visible_size;
 
   /* update last */
   iupMatrixAuxUpdateLast(p);
@@ -218,7 +219,7 @@ void iupMatrixAuxUpdateLast(ImatLinColData *p)
 {
   int i, sum = 0;
 
-  if (p->visible_size > 0)
+  if (p->current_visible_size > 0)
   {
     /* Find which is the last column/line.
        Start in the first visible and continue adding the widths
@@ -229,7 +230,7 @@ void iupMatrixAuxUpdateLast(ImatLinColData *p)
       if (i==p->first)
         sum -= p->first_offset;
 
-      if(sum >= p->visible_size)
+      if(sum >= p->current_visible_size)
         break;
     }
 
@@ -251,7 +252,7 @@ void iupMatrixAuxUpdateLast(ImatLinColData *p)
 }
 
 /* Fill the sizes vector with the width/heigh of all the columns/lines.
-   Calculate the value of total_size */
+   Calculate the value of total_visible_size */
 static void iMatrixAuxFillSizeVec(Ihandle* ih, int m)
 {
   int i;
@@ -263,7 +264,7 @@ static void iMatrixAuxFillSizeVec(Ihandle* ih, int m)
     p = &(ih->data->columns);
 
   /* Calculate total width/height of the matrix and the width/height of each column */
-  p->total_size = 0;
+  p->total_visible_size = 0;
   for(i = 0; i < p->num; i++)
   {
     if (m == IMAT_PROCESS_LIN)
@@ -272,25 +273,27 @@ static void iMatrixAuxFillSizeVec(Ihandle* ih, int m)
       p->dt[i].size = iupMatrixGetColumnWidth(ih, i, 1);
 
     if (i >= p->num_noscroll)
-      p->total_size += p->dt[i].size;
+      p->total_visible_size += p->dt[i].size;
   }
 }
 
 static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
 {
-  char* D;
+  char *D, *AUTOHIDE;
   ImatLinColData *p;
   int canvas_size, fixed_size, i;
 
   if (m == IMAT_PROCESS_LIN)
   {
     D = "DY";
+    AUTOHIDE = "XAUTOHIDE";  /* when configuring the vertical scrollbar check if horizontal scrollbar is hidden */
     p = &(ih->data->lines);
     canvas_size = ih->data->h;
   }
   else
   {
     D = "DX";
+    AUTOHIDE = "YAUTOHIDE";  /* when configuring the horizontal scrollbar check if vertical scrollbar is hidden */
     p = &(ih->data->columns);
     canvas_size = ih->data->w;
   }
@@ -299,15 +302,25 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
   for (i=0; i<p->num_noscroll; i++)
     fixed_size += p->dt[i].size;
 
-  /* Matrix useful area is the current size minus the title area */
-  p->visible_size = canvas_size - fixed_size;
-  if (p->visible_size > p->total_size)
-    p->visible_size = p->total_size;
+  /* Matrix useful area is the current size minus the non scrollable area */
+  p->current_visible_size = canvas_size - fixed_size;
+  if (p->current_visible_size > p->total_visible_size)
+    p->current_visible_size = p->total_visible_size;
 
-  if (p->total_size)
-    IupSetFloat(ih, D, (float)p->visible_size/(float)p->total_size);
-  else
+  if (!p->total_visible_size || p->current_visible_size == p->total_visible_size)
     IupSetAttribute(ih, D, "1");
+  else
+  {
+    if (ih->data->limit_expand && iupAttribGetBoolean(ih, AUTOHIDE))
+    {
+      /* Must perform an extra check or the scrollbar will be always visible */
+      int sb_size = iupdrvGetScrollbarSize();
+      if (p->current_visible_size + sb_size == p->total_visible_size)
+        p->current_visible_size = p->total_visible_size;
+    }
+
+    IupSetFloat(ih, D, (float)p->current_visible_size/(float)p->total_visible_size);
+  }
 }
 
 void iupMatrixAuxCalcSizes(Ihandle* ih)
