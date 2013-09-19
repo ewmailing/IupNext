@@ -42,6 +42,9 @@
 #define IMTXL_COLOR_WIDTH 16
 #define IMTXL_IMAGE_WIDTH 16
 
+/* inactive line effect */
+#define IMAT_LIGHTER(_x)  (_x+192)/2
+
 
 typedef struct _ImatrixListData  /* Used only by the IupMatrixList control */
 {
@@ -283,18 +286,17 @@ static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxLis
   IupSetAttributeId(ih, "ALIGNMENT", mtxList->label_col, "ALEFT");
 }
 
-static char* iMatrixApplyInactiveColor(const char* color)
+static char* iMatrixListApplyInactiveLineColor(const char* color)
 {
-  static char inactive_color[20];
   unsigned char r=0, g=0, b=0;
 
   iupStrToRGB(color, &r, &g, &b);
 
-  r = cdIupLIGTHER(r);
-  g = cdIupLIGTHER(g);
-  b = cdIupLIGTHER(b);
+  r = IMAT_LIGHTER(r);
+  g = IMAT_LIGHTER(g);
+  b = IMAT_LIGHTER(b);
 
-  return inactive_color;
+  return iupStrReturnRGB(r, g, b);
 }
 
 static void iMatrixListUpdateLineActiveColors(Ihandle* ih, ImatrixListData* mtxList, int lin, int active)
@@ -303,6 +305,9 @@ static void iMatrixListUpdateLineActiveColors(Ihandle* ih, ImatrixListData* mtxL
 
   if (active)
   {
+    if (!iupAttribGetId2(ih, "_IUPMTXLIST_LINEINACTIVE", lin, mtxList->label_col))
+      return;
+
     bgcolor = iupAttribGetId2(ih, "_IUPMTXLIST_OLDBGCOLOR", lin, mtxList->label_col);
     IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->label_col, bgcolor);
     IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->image_col, bgcolor);
@@ -310,16 +315,21 @@ static void iMatrixListUpdateLineActiveColors(Ihandle* ih, ImatrixListData* mtxL
 
     fgcolor = iupAttribGetId2(ih, "_IUPMTXLIST_OLDFGCOLOR", lin, mtxList->label_col);
     IupSetStrAttributeId2(ih, "FGCOLOR", lin, mtxList->label_col, fgcolor);
+
+    iupAttribSetStrId2(ih, "_IUPMTXLIST_LINEINACTIVE", lin, mtxList->label_col, NULL);
   }
   else
   {
+    if (iupAttribGetId2(ih, "_IUPMTXLIST_LINEINACTIVE", lin, mtxList->label_col))
+      return;
+
     /* save original color, check only at the hash table */
     bgcolor = iupAttribGetId2(ih, "BGCOLOR", lin, mtxList->label_col);
     iupAttribSetStrId2(ih, "_IUPMTXLIST_OLDBGCOLOR", lin, mtxList->label_col, bgcolor);
 
     /* get the actual color */
     bgcolor = IupGetAttributeId2(ih, "CELLBGCOLOR", lin, mtxList->label_col);
-    bgcolor = iMatrixApplyInactiveColor(bgcolor);
+    bgcolor = iMatrixListApplyInactiveLineColor(bgcolor);
     IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->label_col, bgcolor);
     IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->image_col, bgcolor);
     IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->color_col, bgcolor);
@@ -328,8 +338,10 @@ static void iMatrixListUpdateLineActiveColors(Ihandle* ih, ImatrixListData* mtxL
     iupAttribSetStrId2(ih, "_IUPMTXLIST_OLDFGCOLOR", lin, mtxList->label_col, fgcolor);
 
     fgcolor = IupGetAttributeId2(ih, "CELLFGCOLOR", lin, mtxList->label_col);
-    fgcolor = iMatrixApplyInactiveColor(fgcolor);
+    fgcolor = iMatrixListApplyInactiveLineColor(fgcolor);
     IupSetStrAttributeId2(ih, "FGCOLOR", lin, mtxList->label_col, fgcolor);
+
+    iupAttribSetStrId2(ih, "_IUPMTXLIST_LINEINACTIVE", lin, mtxList->label_col, "1");
   }
 }
 
@@ -572,8 +584,7 @@ static char* iMatrixListGetLineActiveAttrib(Ihandle* ih, int lin)
 static int iMatrixListSetLineActiveAttrib(Ihandle* ih, int lin, const char* value)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUP_MATRIXLIST_DATA");
-  if (iupStrBoolean(iupAttribGetId(ih, "LINEACTIVE", lin)) != iupStrBoolean(value))
-    iMatrixListUpdateLineActiveColors(ih, mtxList, lin, iupStrBoolean(value));
+  iMatrixListUpdateLineActiveColors(ih, mtxList, lin, iupStrBoolean(value));
   return 1;
 }
 
@@ -728,11 +739,18 @@ static int iMatrixListDrawColorCol(Ihandle *ih, int lin, int col, int x1, int x2
       int line_active = IupGetIntId(ih, "LINEACTIVE", lin);
       long framecolor;
 
-      if (!active || !line_active)
+      if (!line_active)
       {
-        red = cdIupLIGTHER(red);
-        green = cdIupLIGTHER(green);
-        blue = cdIupLIGTHER(blue);
+        red = IMAT_LIGHTER(red);
+        green = IMAT_LIGHTER(green);
+        blue = IMAT_LIGHTER(blue);
+      }
+
+      if (!active)
+      {
+        unsigned char bg_r, bg_g, bg_b;
+        iupStrToRGB(ih->data->bgcolor, &bg_r, &bg_g, &bg_b);
+        iupImageColorMakeInactive(&red, &green, &blue, bg_r, bg_g, bg_b);
       }
 
       /* Fill the box with the color */
@@ -750,7 +768,7 @@ static int iMatrixListDrawColorCol(Ihandle *ih, int lin, int col, int x1, int x2
   return IUP_IGNORE;  /* draw nothing more */
 }
 
-static void iInitPalette(Ihandle* image, long* palette, long bgcolor, int make_inactive)
+static void cdIupInitPalette(Ihandle* image, long* palette, long bgcolor, int make_inactive)
 {
   int i;
   unsigned char r, g, b, bg_r, bg_g, bg_b;
@@ -770,7 +788,7 @@ static void iInitPalette(Ihandle* image, long* palette, long bgcolor, int make_i
   }
 }
 
-static unsigned char* iMatrixListBuildImageBuffer(Ihandle *image, int width, int height, int depth, int make_inactive)
+static unsigned char* cdIupBuildImageBuffer(Ihandle *image, int width, int height, int depth, int make_inactive)
 {
   int size, plane_size, i, j;
   unsigned char* image_buffer;
@@ -812,7 +830,7 @@ static unsigned char* iMatrixListBuildImageBuffer(Ihandle *image, int width, int
   return image_buffer;
 }
 
-static void iMatrixListDrawImage(Ihandle *image, int x, int y, cdCanvas *cnv, int make_inactive, long bgcolor)
+static void cdIupDrawImage(Ihandle *image, int x, int y, cdCanvas *cnv, int make_inactive, long bgcolor)
 {
   int size, plane_size, depth;
   int width = IupGetInt(image, "WIDTH");
@@ -832,7 +850,7 @@ static void iMatrixListDrawImage(Ihandle *image, int x, int y, cdCanvas *cnv, in
     image_buffer = (unsigned char*)iupAttribGet(image, "_IUP_CD_BUFFER");
 
   if (!image_buffer)
-    image_buffer = iMatrixListBuildImageBuffer(image, width, height, depth, make_inactive);
+    image_buffer = cdIupBuildImageBuffer(image, width, height, depth, make_inactive);
 
   if (!image_buffer)
     return;
@@ -843,7 +861,7 @@ static void iMatrixListDrawImage(Ihandle *image, int x, int y, cdCanvas *cnv, in
   if (depth==1)
   {
     long palette[256];
-    iInitPalette(image, palette, bgcolor, make_inactive);
+    cdIupInitPalette(image, palette, bgcolor, make_inactive);
 
     cdCanvasPutImageRectMap(cnv, width, height, 
                             image_buffer, palette, 
@@ -929,7 +947,7 @@ static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int li
     x /= 2; x += x1;
     y /= 2; y += y2;
 
-    iMatrixListDrawImage(image, x, y, cnv, make_inactive, bgcolor);
+    cdIupDrawImage(image, x, y, cnv, make_inactive, bgcolor);
   }
 
   return IUP_IGNORE;  /* draw nothing more */
@@ -1437,7 +1455,7 @@ Iclass* iupMatrixListNewClass(void)
   /* NO redraw */
   iupClassRegisterAttributeId(ic, "LINEACTIVE",   iMatrixListGetLineActiveAttrib, iMatrixListSetLineActiveAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "IMAGEACTIVE", iMatrixListGetImageActiveAttrib, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IMAGEACTIVE", iMatrixListGetImageActiveAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "IMAGEVALUE", NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COLOR", NULL, NULL, IUPAF_NO_INHERIT);
 

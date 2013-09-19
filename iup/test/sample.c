@@ -567,7 +567,8 @@ void SampleTest(void)
 //  IupSetAttribute(dlg, "FONT", "Helvetica, 24");
 //  IupSetAttribute(dlg, "FONT", "-*-helvetica-*-r-*-*-18-*-*-*-*-*-*-*");
   
-//  IupSetAttribute(box, "FGCOLOR", "255 0 0");
+//  IupSetAttribute(_vbox_1, "FGCOLOR", "255 0 0");
+//  IupSetAttribute(_vbox_1, "ACTIVE", "NO");
 
 //  IupSetAttribute(dlg,"RASTERSIZE","1000x800");
 //  IupSetAttribute(dlg,"RASTERSIZE","600x500");

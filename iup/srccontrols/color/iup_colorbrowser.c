@@ -25,6 +25,7 @@
 #include "iup_controls.h"
 #include "iup_cdutil.h"
 #include "iup_register.h"
+#include "iup_image.h"
 
 #include "iup_colorhsi.h"
 
@@ -198,11 +199,7 @@ static void iColorBrowserRenderImageHue(Ihandle* ih)
         }
 
         if (!active)
-        {
-          *r = cdIupLIGTHER(*r);
-          *g = cdIupLIGTHER(*g);
-          *b = cdIupLIGTHER(*b);
-        }
+          iupImageColorMakeInactive(r, g, b, bg_red, bg_green, bg_blue);
       }
     }
   }
@@ -299,11 +296,7 @@ static void iColorBrowserRenderImageSI(Ihandle* ih)
         }
 
         if (!active)
-        {
-          *r = cdIupLIGTHER(*r);
-          *g = cdIupLIGTHER(*g);
-          *b = cdIupLIGTHER(*b);
-        }
+          iupImageColorMakeInactive(r, g, b, bg_red, bg_green, bg_blue);
       }
     }
   }

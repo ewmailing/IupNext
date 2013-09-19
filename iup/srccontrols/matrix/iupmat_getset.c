@@ -19,6 +19,7 @@
 #include "iup_str.h"
 #include "iup_stdcontrols.h"
 #include "iup_childtree.h"
+#include "iup_image.h"
 
 #include "iup_controls.h"
 #include "iup_cdutil.h"
@@ -495,9 +496,9 @@ void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
 
   if (!active)
   {
-    *r = cdIupLIGTHER(*r);
-    *g = cdIupLIGTHER(*g);
-    *b = cdIupLIGTHER(*b);
+    unsigned char bg_r, bg_g, bg_b;
+    iupStrToRGB(ih->data->bgcolor, &bg_r, &bg_g, &bg_b);
+    iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
   }
 }
 
@@ -548,9 +549,9 @@ void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
 
   if (!active)
   {
-    *r = cdIupLIGTHER(*r);
-    *g = cdIupLIGTHER(*g);
-    *b = cdIupLIGTHER(*b);
+    unsigned char bg_r, bg_g, bg_b;
+    iupStrToRGB(ih->data->bgcolor, &bg_r, &bg_g, &bg_b);
+    iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
   }
 }
 
