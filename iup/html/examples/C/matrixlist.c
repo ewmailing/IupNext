@@ -25,8 +25,9 @@ int main(int argc, char **argv)
   IupSetInt(mlist, "NUMLIN", 10);
   IupSetInt(mlist, "NUMLIN_VISIBLE", 5);
   IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR:IMAGE");
+//  IupSetAttribute(mlist, "ACTIVE", "NO");
 
-//  IupSetAttribute(mlist, "EDITABLE", "Yes");
+  IupSetAttribute(mlist, "EDITABLE", "Yes");
 //  IupSetCallback(mlist,"CLICK_CB",(Icallback)click_cb);
 
   /* Bluish style */
@@ -57,6 +58,13 @@ int main(int argc, char **argv)
   IupSetAttribute(mlist, "COLOR8", "255 128 128");
   IupSetAttribute(mlist, "COLOR9", "0 255 128");
   IupSetAttribute(mlist, "COLOR10", "128 255 128");
+
+  IupSetAttribute(mlist, "LINEACTIVE3", "NO");
+  IupSetAttribute(mlist, "LINEACTIVE7", "NO");
+
+  IupSetAttribute(mlist, "IMAGEVALUE1", "ON");
+  IupSetAttribute(mlist, "IMAGEVALUE2", "ON");
+  IupSetAttribute(mlist, "IMAGEVALUE3", "ON");
 
   dlg = IupDialog(IupVbox(mlist, NULL));
   IupSetAttribute(dlg, "TITLE", "IupMatrixList");
