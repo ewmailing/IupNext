@@ -281,12 +281,13 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
 {
   char *D, *AUTOHIDE;
   ImatLinColData *p;
-  int canvas_size, fixed_size, i;
+  int canvas_size, fixed_size, i, SB;
 
   if (m == IMAT_PROCESS_LIN)
   {
     D = "DY";
     AUTOHIDE = "XAUTOHIDE";  /* when configuring the vertical scrollbar check if horizontal scrollbar is hidden */
+    SB = IUP_SB_HORIZ;
     p = &(ih->data->lines);
     canvas_size = ih->data->h;
   }
@@ -294,6 +295,7 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
   {
     D = "DX";
     AUTOHIDE = "YAUTOHIDE";  /* when configuring the horizontal scrollbar check if vertical scrollbar is hidden */
+    SB = IUP_SB_VERT;
     p = &(ih->data->columns);
     canvas_size = ih->data->w;
   }
@@ -311,7 +313,7 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
     IupSetAttribute(ih, D, "1");
   else
   {
-    if (ih->data->limit_expand && iupAttribGetBoolean(ih, AUTOHIDE))
+    if (ih->data->limit_expand && (ih->data->canvas.sb & SB) && iupAttribGetBoolean(ih, AUTOHIDE))
     {
       /* Must perform an extra check or the scrollbar will be always visible */
       int sb_size = iupdrvGetScrollbarSize();
