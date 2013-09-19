@@ -64,7 +64,7 @@ struct _IcontrolData
   cdCanvas *cdcanvas;
 };
 
-static void iGaugeDrawText(Ihandle* ih, int xmid, long fgcolor)
+static void iGaugeDrawText(Ihandle* ih, int xmid)
 {
   int x, y, xmin, xmax, ymin, ymax;
   char* text = ih->data->text;
@@ -87,7 +87,7 @@ static void iGaugeDrawText(Ihandle* ih, int xmid, long fgcolor)
 
   if(xmid < xmin)
   {
-    cdCanvasForeground(ih->data->cddbuffer, fgcolor);
+    cdCanvasForeground(ih->data->cddbuffer, ih->data->fgcolor);
     cdCanvasText(ih->data->cddbuffer, x, y, text);
   }
   else if(xmid > xmax)
@@ -103,7 +103,7 @@ static void iGaugeDrawText(Ihandle* ih, int xmid, long fgcolor)
     cdCanvasText(ih->data->cddbuffer, x, y, text);
 
     cdCanvasClipArea(ih->data->cddbuffer, xmid, xmax, ymin, ymax);
-    cdCanvasForeground(ih->data->cddbuffer, fgcolor);
+    cdCanvasForeground(ih->data->cddbuffer, ih->data->fgcolor);
     cdCanvasText(ih->data->cddbuffer, x, y, text);
     cdCanvasClip(ih->data->cddbuffer, CD_CLIPOFF);
   }
@@ -116,16 +116,6 @@ static void iGaugeDrawGauge(Ihandle* ih)
   int ystart = ih->data->vert_padding+border;
   int xend   = ih->data->w-1 - (ih->data->horiz_padding+border);
   int yend   = ih->data->h-1 - (ih->data->vert_padding+border);
-  long fgcolor = ih->data->fgcolor;
-
-  if (!iupdrvIsActive(ih))
-  {
-    unsigned char r, g, b, bg_r, bg_g, bg_b;
-    cdDecodeColor(fgcolor, &r, &g, &b);
-    cdDecodeColor(ih->data->bgcolor, &bg_r, &bg_g, &bg_b);
-    iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-    fgcolor = cdEncodeColor(r, g, b);
-  }
 
   cdCanvasBackground(ih->data->cddbuffer, ih->data->bgcolor);
   cdCanvasClear(ih->data->cddbuffer);
@@ -133,7 +123,7 @@ static void iGaugeDrawGauge(Ihandle* ih)
   cdIupDrawSunkenRect(ih->data->cddbuffer, 0, 0, ih->data->w-1, ih->data->h-1,
                         ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
 
-  cdCanvasForeground(ih->data->cddbuffer, fgcolor);
+  cdCanvasForeground(ih->data->cddbuffer, ih->data->fgcolor);
 
   if (ih->data->dashed)
   {
@@ -161,7 +151,7 @@ static void iGaugeDrawGauge(Ihandle* ih)
       cdCanvasBox(ih->data->cddbuffer, xstart, xmid, ystart, yend );
 
     if(ih->data->show_text)
-      iGaugeDrawText(ih, xmid, fgcolor);
+      iGaugeDrawText(ih, xmid);
   }
 }
 
