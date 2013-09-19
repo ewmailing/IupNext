@@ -281,15 +281,10 @@ static void gtkWebBrowserInitClass(Iclass* ic)
 static void gtkWebBrowserComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int natural_w = 0, natural_h = 0;
-  int sb_size = iupdrvGetScrollbarSize();
   (void)children_expand; /* unset if not a container */
 
+  /* natural size is 1 character */
   iupdrvFontGetCharSize(ih, &natural_w, &natural_h);
-
-  if (ih->data->sb & IUP_SB_HORIZ)
-    natural_h += sb_size;  /* sb horizontal affects vertical size */
-  if (ih->data->sb & IUP_SB_VERT)
-    natural_w += sb_size;  /* sb vertical affects horizontal size */
 
   *w = natural_w;
   *h = natural_h;

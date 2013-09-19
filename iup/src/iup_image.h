@@ -42,7 +42,8 @@ int iupImageNormBpp(int bpp);
 #define iupALPHABLEND(_src,_dst,_alpha) (unsigned char)(((_src) * (_alpha) + (_dst) * (255 - (_alpha))) / 255)
 
 /* In Windows, RAW data is a DIB handle. 
-   imgdata here is bottom-up arranged and has separated planes */
+   imgdata here is bottom-up arranged and has separated planes
+   Used only by IupGetImageNativeHandle and IupGetNativeHandleImage */
 void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata);
 int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count);
 void iupdrvImageGetRawData(void* handle, unsigned char* imgdata);

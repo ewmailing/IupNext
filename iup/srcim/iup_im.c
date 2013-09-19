@@ -35,25 +35,25 @@ static void iSaveErrorMsg(int error)
     case IM_ERR_NONE:
       msg = NULL;
     case IM_ERR_OPEN:
-      msg = "Error Opening Image File.\n";
+      msg = "Error Opening Image File.";
       break;
     case IM_ERR_MEM:
-      msg = "Insuficient memory.\n";
+      msg = "Insuficient memory.";
       break;
     case IM_ERR_ACCESS:
-      msg = "Error Accessing Image File.\n";
+      msg = "Error Accessing Image File.";
       break;
     case IM_ERR_DATA:
-      msg = "Image type not Suported.\n";
+      msg = "Image type not Suported.";
       break;
     case IM_ERR_FORMAT:
-      msg = "Invalid Image File Format.\n";
+      msg = "Invalid Image File Format.";
       break;
     case IM_ERR_COMPRESS:
-      msg = "Invalid or unsupported compression.\n";
+      msg = "Invalid or unsupported compression.";
       break;
     default:
-      msg = "Unknown Error.\n";
+      msg = "Unknown Error.";
     }
   }
   else
@@ -63,25 +63,25 @@ static void iSaveErrorMsg(int error)
     case IM_ERR_NONE:
       msg = NULL;
     case IM_ERR_OPEN:
-      msg = "Erro Abrindo Arquivo de Imagem.\n";
+      msg = "Erro Abrindo Arquivo de Imagem.";
       break;
     case IM_ERR_MEM:
-      msg = "Memória Insuficiente.\n";
+      msg = "Memória Insuficiente.";
       break;
     case IM_ERR_ACCESS:
-      msg = "Erro Acessando Arquivo de Imagem.\n";
+      msg = "Erro Acessando Arquivo de Imagem.";
       break;
     case IM_ERR_DATA:
-      msg = "Tipo de Imagem não Suportado.\n";
+      msg = "Tipo de Imagem não Suportado.";
       break;
     case IM_ERR_FORMAT:
-      msg = "Formato de Arquivo de Imagem Inválido.\n";
+      msg = "Formato de Arquivo de Imagem Inválido.";
       break;
     case IM_ERR_COMPRESS:
-      msg = "Compressão Inválida ou não Suportada.\n";
+      msg = "Compressão Inválida ou não Suportada.";
       break;
     default:
-      msg = "Erro Desconhecido.\n";
+      msg = "Erro Desconhecido.";
     }
   }
 
@@ -275,6 +275,11 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
   }
 
   data = (unsigned char*)IupGetAttribute(ih, "WID");
+  if (!data)
+  {
+    iSaveErrorMsg(IM_ERR_DATA);
+    return 0;
+  }
 
   width = IupGetInt(ih, "WIDTH");
   height = IupGetInt(ih, "HEIGHT");

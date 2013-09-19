@@ -24,7 +24,7 @@ int main(int argc, char **argv)
   mlist = IupMatrixList();
   IupSetInt(mlist, "NUMLIN", 10);
   IupSetInt(mlist, "NUMLIN_VISIBLE", 5);
-  IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR");
+  IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR:IMAGE");
 
 //  IupSetAttribute(mlist, "EDITABLE", "Yes");
 //  IupSetCallback(mlist,"CLICK_CB",(Icallback)click_cb);

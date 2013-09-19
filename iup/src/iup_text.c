@@ -425,19 +425,11 @@ static void iTextComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chil
   (void)children_expand; /* unset if not a container */
 
   /* Since the contents can be changed by the user, the size can not be dependent on it. */
+  iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
+  natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
+  natural_w = (visiblecolumns*natural_w)/10;
   if (ih->data->is_multiline)
-  {
-    iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
-    natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
-    natural_w = (visiblecolumns*natural_w)/10;
     natural_h = visiblelines*natural_h;
-  }
-  else
-  {
-    iupdrvFontGetCharSize(ih, NULL, &natural_h);  /* one line height */
-    natural_w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
-    natural_w = (visiblecolumns*natural_w)/10;
-  }
 
   /* compute the borders space */
   if (iupAttribGetBoolean(ih, "BORDER"))
