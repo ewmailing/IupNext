@@ -1352,9 +1352,51 @@ static gboolean gtkListComboEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing 
   return iupgtkEnterLeaveEvent(widget, evt, ih);
 }
 
-
 /*********************************************************************************/
 
+static int gtkListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
+{
+  int pos = IupConvertXYToPos(ih, x, y);
+  DNDlistData *item = (DNDlistData*)data;
+  (void)len;
+  (void)type;
+  
+  if(!item)
+    return IUP_IGNORE;
+  
+  iupdrvListInsertItem(ih, pos, item->value);
+
+  if(ih->data->show_image && item->image)
+  {
+    GtkTreeModel* model = gtkListGetModel(ih);
+    GtkTreeIter iter;
+    gtk_tree_model_iter_nth_child(model, &iter, NULL, pos);
+    gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_IMAGE, (GdkPixbuf*)item->image, -1);
+  }
+  
+  return IUP_DEFAULT;
+}
+
+static int gtkListDragBegin_CB(Ihandle* ih, int x, int y)
+{
+  int pos = IupConvertXYToPos(ih, x, y);
+  DNDlistData *item = (DNDlistData*)malloc(sizeof(DNDlistData));
+
+  item->value = gtkListGetIdValueAttrib(ih, pos);
+
+  if(!item->value)
+    return IUP_IGNORE;
+
+  if(ih->data->show_image)
+    item->image = iupdrvListGetImageHandle(ih, pos);
+  
+  iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", --pos);  /* IUP starts at 1 */
+  iupAttribSet(ih, "_IUP_LIST_SOURCEITEM", (char*)item);
+
+  return IUP_DEFAULT;
+}
+
+/*********************************************************************************/
 
 static int gtkListMapMethod(Ihandle* ih)
 {
@@ -1622,6 +1664,16 @@ static int gtkListMapMethod(Ihandle* ih)
 
   /* update a mnemonic in a label if necessary */
   iupgtkUpdateMnemonic(ih);
+
+  if(ih->data->show_dndlists)
+  {
+    /* Register callbacks to enable drag and drop between lists */
+    IupSetCallback(ih, "DRAGBEGIN_CB", (Icallback)gtkListDragBegin_CB);
+    IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iupdrvListDragDataSize_CB);
+    IupSetCallback(ih, "DRAGDATA_CB", (Icallback)iupdrvListDragData_CB);
+    IupSetCallback(ih, "DRAGEND_CB", (Icallback)iupdrvListDragEnd_CB);
+    IupSetCallback(ih, "DROPDATA_CB", (Icallback)gtkListDropData_CB);
+  }
 
   return IUP_NOERROR;
 }

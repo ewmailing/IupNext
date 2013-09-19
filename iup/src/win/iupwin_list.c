@@ -21,6 +21,7 @@
 #include "iup_str.h"
 #include "iup_drv.h"
 #include "iup_drvfont.h"
+#include "iup_drvinfo.h"
 #include "iup_mask.h"
 #include "iup_focus.h"
 #include "iup_image.h"
@@ -1112,6 +1113,44 @@ static void winListEnableDragDrop(Ihandle* ih)
 
 /*********************************************************************************/
 
+static int winListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
+{
+  int pos = IupConvertXYToPos(ih, x, y);
+  DNDlistData *item = (DNDlistData*)data;
+  (void)len;
+  (void)type;
+  
+  if(!item)
+    return IUP_IGNORE;
+  
+  iupdrvListInsertItem(ih, pos, item->value);
+
+  if(ih->data->show_image && item->image)
+    winListSetItemData(ih, pos, NULL, (HBITMAP)item->image);
+
+  return IUP_DEFAULT;
+}
+
+static int winListDragBegin_CB(Ihandle* ih, int x, int y)
+{
+  int pos = IupConvertXYToPos(ih, x, y);
+  DNDlistData *item = (DNDlistData*)malloc(sizeof(DNDlistData));
+
+  item->value = winListGetIdValueAttrib(ih, pos);
+
+  if(!item->value)
+    return IUP_IGNORE;
+
+  if(ih->data->show_image)
+    item->image = iupdrvListGetImageHandle(ih, pos);
+  
+  iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", --pos);  /* IUP starts at 1 */
+  iupAttribSet(ih, "_IUP_LIST_SOURCEITEM", (char*)item);
+
+  return IUP_DEFAULT;
+}
+
+/*********************************************************************************/
 
 static int winListCtlColor(Ihandle* ih, HDC hdc, LRESULT *result)
 {
@@ -1825,6 +1864,16 @@ static int winListMapMethod(Ihandle* ih)
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)winListConvertXYToPos);
 
   iupListSetInitialItems(ih);
+
+  if(ih->data->show_dndlists)
+  {
+    /* Register callbacks to enable drag and drop between lists */
+    IupSetCallback(ih, "DRAGBEGIN_CB", (Icallback)winListDragBegin_CB);
+    IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iupdrvListDragDataSize_CB);
+    IupSetCallback(ih, "DRAGDATA_CB", (Icallback)iupdrvListDragData_CB);
+    IupSetCallback(ih, "DRAGEND_CB", (Icallback)iupdrvListDragEnd_CB);
+    IupSetCallback(ih, "DROPDATA_CB", (Icallback)winListDropData_CB);
+  }
 
   return IUP_NOERROR;
 }

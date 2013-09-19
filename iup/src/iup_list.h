@@ -21,6 +21,10 @@ void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value);
 void iupdrvListRemoveItem(Ihandle* ih, int pos);
 void iupdrvListRemoveAllItems(Ihandle* ih);
 
+int iupdrvListDragData_CB(Ihandle *ih, char* type, void *data, int len);
+int iupdrvListDragDataSize_CB(Ihandle* ih, char* type);
+int iupdrvListDragEnd_CB(Ihandle *ih, int del);
+
 /* Used by List and Text, implemented in Text */
 int iupEditCallActionCb(Ihandle* ih, IFnis cb, const char* insert_value, int start, int end, void *mask, int nc, int remove_dir, int utf8);
 
@@ -39,6 +43,12 @@ void iupListSetInitialItems(Ihandle* ih);
 void iupListUpdateOldValue(Ihandle* ih, int pos, int removed);
 void* iupdrvListGetImageHandle(Ihandle* ih, int id);
 
+
+typedef struct _DNDlistData {
+  char* value;
+  void* image;
+} DNDlistData;
+
 struct _IcontrolData 
 {
   int sb,  /* scrollbar configuration, can be changed only before map */
@@ -52,7 +62,8 @@ struct _IcontrolData
       has_editbox,
       maximg_w, maximg_h, /* used only in Windows */
       show_image,
-      show_dragdrop;
+      show_dragdrop,
+      show_dndlists;
   Imask* mask;
 };
 

@@ -590,9 +590,77 @@ static int iListSetShowDragDropAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iListGetDNDListsAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean (ih->data->show_dndlists); 
+}
+
+static int iListSetDNDListsAttrib(Ihandle* ih, const char* value)
+{
+  /* valid only before map */
+  if (ih->handle)
+    return 0;
+
+  if (iupStrBoolean(value))
+    ih->data->show_dndlists = 1;
+  else
+    ih->data->show_dndlists = 0;
+
+  return 0;
+}
 
 /*****************************************************************************************/
 
+int iupdrvListDragData_CB(Ihandle *ih, char* type, void *data, int len)
+{
+  DNDlistData *item = (DNDlistData*)iupAttribGet(ih, "_IUP_LIST_SOURCEITEM");
+  int is_shift = 0, is_ctrl = 0;
+  char key[5];
+  (void)type;
+
+  iupdrvGetKeyState(key);
+  if (key[0] == 'S')
+    is_shift = 1;
+  if (key[1] == 'C')
+    is_ctrl = 1;
+
+  /* Copy dragged item data */
+  memcpy(data, item, len);
+
+  /* A copy operation is enabled with the CTRL key pressed.
+     A move operation is enabled with the SHIFT key pressed.
+     A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
+     When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
+  if(IupGetInt(ih, "DRAGSOURCEMOVE") && !is_ctrl)
+    iupdrvListRemoveItem(ih, iupAttribGetInt(ih, "_IUP_LIST_SOURCEPOS"));
+  
+  return IUP_DEFAULT;
+}
+
+int iupdrvListDragDataSize_CB(Ihandle* ih, char* type)
+{
+  (void)type;
+  if(iupAttribGet(ih, "_IUP_LIST_SOURCEITEM"))
+  {
+    if (!iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Motif"))
+      return sizeof(DNDlistData);
+    else
+      return strlen(iupAttribGet(ih, "_IUP_LIST_SOURCEITEM"))+1;
+  }
+  else
+    return 0;
+}
+
+int iupdrvListDragEnd_CB(Ihandle *ih, int del)
+{
+  iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", 0);
+  free(iupAttribGet(ih, "_IUP_LIST_SOURCEITEM"));
+  iupAttribSet(ih, "_IUP_LIST_SOURCEITEM", NULL);
+  (void)del;
+  return IUP_DEFAULT;
+}
+
+/*****************************************************************************************/
 
 static int iListCreateMethod(Ihandle* ih, void** params)
 {
@@ -844,6 +912,7 @@ Iclass* iupListNewClass(void)
 
   iupClassRegisterAttribute(ic, "SHOWIMAGE", iListGetShowImageAttrib, iListSetShowImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWDRAGDROP", iListGetShowDragDropAttrib, iListSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDNDLISTS", iListGetDNDListsAttrib, iListSetDNDListsAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupdrvListInitClass(ic);
 

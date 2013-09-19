@@ -1375,9 +1375,37 @@ static void motListExtendedSelectionCallback(Widget w, Ihandle* ih, XmListCallba
   (void)w;
 }
 
-
 /*********************************************************************************/
 
+static int motListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
+{
+  int pos = IupConvertXYToPos(ih, x, y);
+  (void)len;
+  (void)type;
+  
+  if(!data)
+    return IUP_IGNORE;
+  
+  iupdrvListInsertItem(ih, pos, (char*)data);
+
+  return IUP_DEFAULT;
+}
+
+static int motListDragBegin_CB(Ihandle* ih, int x, int y)
+{
+  int pos = IupConvertXYToPos(ih, x, y);
+  char *value = motListGetIdValueAttrib(ih, pos);
+
+  if(!value)
+    return IUP_IGNORE;
+
+  iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", --pos);  /* IUP starts at 1 */
+  iupAttribSet(ih, "_IUP_LIST_SOURCEITEM", (char*)value);
+
+  return IUP_DEFAULT;
+}
+
+/*********************************************************************************/
 
 static int motListMapMethod(Ihandle* ih)
 {
@@ -1582,6 +1610,18 @@ static int motListMapMethod(Ihandle* ih)
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)motListConvertXYToPos);
 
   iupListSetInitialItems(ih);
+
+  if(ih->data->show_dndlists)
+  {
+    motListEnableDragDrop(ih->handle);
+
+    /* Register callbacks to enable drag and drop between lists */
+    IupSetCallback(ih, "DRAGBEGIN_CB", (Icallback)motListDragBegin_CB);
+    IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iupdrvListDragDataSize_CB);
+    IupSetCallback(ih, "DRAGDATA_CB", (Icallback)iupdrvListDragData_CB);
+    IupSetCallback(ih, "DRAGEND_CB", (Icallback)iupdrvListDragEnd_CB);
+    IupSetCallback(ih, "DROPDATA_CB", (Icallback)motListDropData_CB);
+  }
 
   return IUP_NOERROR;
 }
