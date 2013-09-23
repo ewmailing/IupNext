@@ -63,6 +63,11 @@ MINGW4=c:/mingw
 GCC4=c:/cygwin
 OWC1=d:/lng/owc1
 BC6=d:/lng/bc6</pre>
+<p>Noticed that the path used can not have spaces because of the GNU make 
+internal processing. So you should install or copy the compiler files to a path 
+with no spaces, or you can use the short path name instead as in the example 
+above. To obtain the short path name you can use the &quot;shortpath.exe&quot; Tecmake 
+utility or use the CMD command “dir /X”.</p>
 <p>If you installed the Visual Studio compiler set, then to use it in the 
 command line run the &quot;Visual Studio Command Prompt&quot; item in the &quot;Microsoft 
 Visual Studio 2010\Visual Studio Tools&quot; start menu.</p>
@@ -88,11 +93,32 @@ TEC_UNAME=bc6       (Embarcadero C++ 6, static library, 32bits) </pre>
 Install MingW:
   Select C and C++ Compiles, MSYS Basic System, and MinGW Developer Toolkit.
 Configure Environment (Minimum):
-  set path=C:\mingw4\msys\1.0\bin;C:\mingw4\bin;C:\Windows\system32;C:\Windows;
+  set PATH=C:\mingw4\msys\1.0\bin;C:\mingw4\bin;%PATH%
   set MINGW4=c:/mingw4
   set TEC_UNAME=mingw4
 Start Building:
   make</pre>
+<p>Here is an example for Visual C++:</p>
+<pre>Download Visual C++ Express edition:
+  <a href="http://www.microsoft.com/visualstudio/eng/products/visual-studio-express-for-windows-desktop">http://www.microsoft.com/visualstudio/eng/products/visual-studio-express-for-windows-desktop</a>
+Install Visual C++ and the Windows SDK (also called Platform SDK)
+Download Cygwin:
+  <a href="http://www.cygwin.com/">http://www.cygwin.com/</a>
+Install Cygwin:
+  Unselect all option, and select only &quot;make&quot;  
+Configure Environment (Minimum):
+  set PATH=C:\cygwin\bin;%PATH%
+  set VC9=C:/PROGRA~1/MICROS~1.0/VC
+  set VC9SDK=C:/PROGRA~1/MICROS~2/Windows/v6.0A 
+Run the &quot;CMD Shell&quot; or &quot;Build Environment&quot; item in the Start Menu. 
+  or manually run the vcvars32.bat or vcvars64.bat script
+  just once, before building any of the targets.</pre>
+<p>If not using the vcvars*.bat configuration scripts, then you must also set 
+PATH:</p>
+<pre>REM The first two are just auxiliary variables.
+set VS9=C:\Program Files (x86)\Microsoft Visual Studio 9.0
+set VS9SDK=C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin
+set PATH=%VS9%\Common7\IDE;%VS9%\VC\BIN;%VS9%\Common7\Tools;%VS9%\Common7\Tools\bin;%VS9%\VC\VCPackages;%VS9SDK%\bin;%PATH%</pre>
 <h3>Source Download</h3>
 <p>Download the &quot;xxx-X.X_Sources.tar.gz&quot; package from the &quot;<strong>Docs and Sources</strong>&quot; 
 directory for the version you want to build. Here are links for the <strong>Files</strong> section 
