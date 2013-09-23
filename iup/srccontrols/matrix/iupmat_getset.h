@@ -26,9 +26,12 @@ int iupMatrixGetCellOffset(Ihandle* ih, int lin, int col, int *x, int *y);
 void  iupMatrixPrepareDrawData(Ihandle* ih);
 char* iupMatrixGetFgColorStr(Ihandle* ih, int lin, int col);
 char* iupMatrixGetBgColorStr(Ihandle* ih, int lin, int col);
-char* iupMatrixGetFont   (Ihandle* ih, int lin, int col);
+char* iupMatrixGetFont(Ihandle* ih, int lin, int col);
+int   iupMatrixGetType(Ihandle* ih, int lin, int col);
+
 void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b, int mark, int active);
 void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b, int mark, int active);
+void iupMatrixGetTypeRGB(Ihandle* ih, const char* color, unsigned char *r, unsigned char *g, unsigned char *b, int mark, int active);
 
 void iupMatrixCellUpdateValue(Ihandle* ih);
 

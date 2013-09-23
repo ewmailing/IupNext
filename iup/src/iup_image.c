@@ -573,6 +573,20 @@ static void iImageUnMapMethod(Ihandle* ih)
 
     name = iupTableNext(ih->attrib);
   }
+
+  handle = iupAttribGet(ih, "_IUPIMAGE_CDIMAGE");
+  if (handle) 
+  {
+    iupAttribSet(ih, "_IUPIMAGE_CDIMAGE", NULL);
+    free(handle);
+  }
+
+  handle = iupAttribGet(ih, "_IUPIMAGE_CDIMAGE_INACTIVE");
+  if (handle) 
+  {
+    iupAttribSet(ih, "_IUPIMAGE_CDIMAGE_INACTIVE", NULL);
+    free(handle);
+  }
 }
 
 static int iImageCreate(Ihandle* ih, void** params, int bpp)

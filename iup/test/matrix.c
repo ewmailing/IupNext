@@ -110,6 +110,10 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "ACTIVE", "NO");
 //  IupSetAttribute(mat, "EXPAND", "NO");
 //  IupSetAttribute(mat, "ALIGNMENT", "ALEFT");
+  IupSetAttribute(mat, "4:1", "255 0 128");
+  IupSetAttribute(mat, "TYPE4:1", "COLOR");
+  IupSetAttribute(mat, "4:2", "60");
+  IupSetAttribute(mat, "TYPE4:2", "FILL");
 
 //  IupSetAttribute(mat,"MARKMODE","CELL");
   IupSetAttribute(mat,"MARKMODE","LIN");

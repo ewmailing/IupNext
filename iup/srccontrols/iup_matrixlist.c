@@ -845,9 +845,9 @@ static void cdIupDrawImage(Ihandle *image, int x, int y, cdCanvas *cnv, int make
     depth = 4;
 
   if (make_inactive)
-    image_buffer = (unsigned char*)iupAttribGet(image, "_IUP_CD_BUFFER_INACTIVE");
+    image_buffer = (unsigned char*)iupAttribGet(image, "_IUPIMAGE_CDIMAGE_INACTIVE");
   else
-    image_buffer = (unsigned char*)iupAttribGet(image, "_IUP_CD_BUFFER");
+    image_buffer = (unsigned char*)iupAttribGet(image, "_IUPIMAGE_CDIMAGE");
 
   if (!image_buffer)
     image_buffer = cdIupBuildImageBuffer(image, width, height, depth, make_inactive);
@@ -936,7 +936,7 @@ static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int li
   image = IupGetHandle(image_name);
   if (image)
   {
-    int width = IupGetInt(image, "WIDTH");
+    int width  = IupGetInt(image, "WIDTH");
     int height = IupGetInt(image, "HEIGHT");
 
     long bgcolor = cdIupConvertColor(IupGetAttributeId2(ih, "CELLBGCOLOR", lin, col));

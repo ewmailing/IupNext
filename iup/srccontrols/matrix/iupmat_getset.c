@@ -377,6 +377,7 @@ void iupMatrixPrepareDrawData(Ihandle* ih)
   ih->data->font = iupAttribGet(ih, "_IUPMAT_FONT");
 
   ih->data->font_cb = (sIFnii)IupGetCallback(ih, "FONT_CB");
+  ih->data->type_cb = (sIFnii)IupGetCallback(ih, "TYPE_CB");
   ih->data->fgcolor_cb = (IFniiIII)IupGetCallback(ih, "FGCOLOR_CB");
   ih->data->bgcolor_cb = (IFniiIII)IupGetCallback(ih, "BGCOLOR_CB");
 }
@@ -402,6 +403,9 @@ static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int 
     attrib = "FGCOLOR";
     attrib_global = ih->data->fgcolor;
   }
+
+  if (!attrib)  /* Internal error */
+    return NULL;
 
   /* 1 -  check for this cell */
   if (ih->data->callback_mode || ih->data->cells[lin][col].flags & attr)
@@ -502,6 +506,26 @@ void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
   }
 }
 
+void iupMatrixGetTypeRGB(Ihandle* ih, const char* color, unsigned char *r, unsigned char *g, unsigned char *b, int mark, int active)
+{
+  /* called from Draw only */
+  iupStrToRGB(color, r, g, b);
+
+  if (mark)
+  {
+    *r = IMAT_ATENUATION(*r);
+    *g = IMAT_ATENUATION(*g);
+    *b = IMAT_ATENUATION(*b);
+  }
+
+  if (!active)
+  {
+    unsigned char bg_r, bg_g, bg_b;
+    iupStrToRGB(ih->data->bgcolor, &bg_r, &bg_g, &bg_b);
+    iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
+  }
+}
+
 char* iupMatrixGetBgColorStr(Ihandle* ih, int lin, int col)
 {
   unsigned char r = 0, g = 0, b = 0;
@@ -564,6 +588,30 @@ char* iupMatrixGetFont(Ihandle* ih, int lin, int col)
   if (!font)
     font = iMatrixGetCellAttrib(ih, IMAT_HAS_FONT, lin, col, NULL);
   return font;
+}
+
+int iupMatrixGetType(Ihandle* ih, int lin, int col)
+{
+  char* type = NULL;
+  /* called from Draw and Edit only */
+  if (ih->data->type_cb)
+    type = ih->data->type_cb(ih, lin, col);
+  if (!type)
+  {
+    if (ih->data->callback_mode || ih->data->cells[lin][col].flags & IMAT_HAS_TYPE)
+      type = iupAttribGetId2(ih, "TYPE", lin, col);
+  }
+  if (!type)
+    return IMAT_TYPE_TEXT;
+
+  if (iupStrEqualNoCase(type, "COLOR"))
+    return IMAT_TYPE_COLOR;
+  if (iupStrEqualNoCase(type, "IMAGE"))
+    return IMAT_TYPE_IMAGE;
+  if (iupStrEqualNoCase(type, "FILL"))
+    return IMAT_TYPE_FILL;
+
+  return IMAT_TYPE_TEXT;
 }
 
 int iupMatrixGetColumnWidth(Ihandle* ih, int col, int use_value)

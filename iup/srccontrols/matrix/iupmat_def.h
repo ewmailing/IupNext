@@ -30,11 +30,17 @@ extern "C" {
 #define IMAT_IS_MARKED   0x08     /* Is marked */
 #define IMAT_HAS_FRAMEHORIZCOLOR 0x10  /* Has FRAMEHORIZCOLORL:C */
 #define IMAT_HAS_FRAMEVERTCOLOR  0x20  /* Has FRAMEVERTCOLORL:C */
+#define IMAT_HAS_TYPE 0x40       /* Has TYPEL:C attribute */
 
 /* Numeric Column flags */
-#define IMAT_IS_NUMERIC  1   /* Is numeric */
-#define IMAT_HAS_FORMAT  2   /* has format for lin!= 0 */
-#define IMAT_HAS_FORMATTITLE 4   /* has format for lin== 0 */
+#define IMAT_IS_NUMERIC  1      /* Is numeric */
+#define IMAT_HAS_FORMAT  2      /* has format for lin!= 0 */
+#define IMAT_HAS_FORMATTITLE 4  /* has format for lin== 0 */
+
+enum{IMAT_TYPE_TEXT,
+     IMAT_TYPE_COLOR,
+     IMAT_TYPE_IMAGE,
+     IMAT_TYPE_FILL};
 
 enum{IMAT_EDITNEXT_LIN, 
      IMAT_EDITNEXT_COL, 
@@ -138,7 +144,7 @@ struct _IcontrolData
       mark_full2;
 
   /* Draw AUX, valid only after iupMatrixPrepareDrawData */
-  sIFnii font_cb;
+  sIFnii font_cb, type_cb;
   IFniiIII fgcolor_cb;
   IFniiIII bgcolor_cb;
   char *bgcolor, *bgcolor_parent, *fgcolor, *font;  /* not need to free */

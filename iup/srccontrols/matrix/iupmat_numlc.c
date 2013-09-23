@@ -76,12 +76,13 @@ static char* imatrix_col_attrib[IMAT_NUM_ATTRIB_COL] = {
     "FONT",
     "FRAMEVERTCOLOR"};
 
-#define IMAT_NUM_ATTRIB_CELL 6
+#define IMAT_NUM_ATTRIB_CELL 7
 static char* imatrix_cell_attrib[IMAT_NUM_ATTRIB_CELL] = { 
     "BGCOLOR",   /* all use L:C */
     "FGCOLOR",
     "FONT",
     "MASK",
+    "TYPE",
     "FRAMEHORIZCOLOR",
     "FRAMEVERTCOLOR"};
 

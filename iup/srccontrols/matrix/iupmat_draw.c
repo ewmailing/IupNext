@@ -169,6 +169,12 @@ static unsigned long iMatrixDrawSetBgColor(Ihandle* ih, int lin, int col, int ma
   return cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor(r, g, b));
 }
 
+static unsigned long iMatrixDrawSetTypeColor(Ihandle* ih, const char* color, int mark, int active)
+{
+  unsigned char r = 0, g = 0, b = 0;
+  iupMatrixGetTypeRGB(ih, color, &r, &g, &b, mark, active);
+  return cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor(r, g, b));
+}
 static int iMatrixDrawGetFrameHorizColor(Ihandle* ih, int lin, int col, long *framecolor)
 {
   if (ih->data->checkframecolor && (ih->data->callback_mode || 
@@ -415,6 +421,152 @@ static void iMatrixDrawBackground(Ihandle* ih, int x1, int x2, int y1, int y2, i
   iupMATRIX_BOX(ih, x1, x2, y1, y2);
 }
 
+static void iMatrixDrawText(Ihandle* ih, int x1, int x2, int y1, int y2, int alignment, int marked, int active, int lin, int col, const char* text)
+{
+  int num_line, line_height, total_height;
+  int charheight, ypos, hidden_text_marks = 0;
+
+  num_line = iupStrLineCount(text);
+  iupdrvFontGetCharSize(ih, NULL, &charheight);
+
+  line_height  = charheight;
+  total_height = (line_height + IMAT_PADDING_H/2) * num_line - IMAT_PADDING_H/2 - IMAT_FRAME_H/2;
+
+  if (lin==0 || ih->data->hidden_text_marks)
+  {
+    int text_w;
+    iupdrvFontGetMultiLineStringSize(ih, text, &text_w, NULL);
+    if (text_w > x2 - x1 + 1 - IMAT_PADDING_W - IMAT_FRAME_W)
+    {
+      if (lin == 0)
+        alignment = IMAT_T_LEFT;
+
+      if (ih->data->hidden_text_marks)
+        hidden_text_marks = 1;
+    }
+  }
+
+  /* Set the color used to draw the text */
+  iMatrixDrawSetFgColor(ih, lin, col, marked, active);
+
+  /* Set the clip area to the cell region informed, the text maybe greatter than the cell */
+  if (hidden_text_marks)
+  {
+    int crop = iupdrvFontGetStringWidth(ih, "...") + 2;
+    iMatrixDrawSetCellClipping(ih, x1, x2-crop, y1, y2);
+  }
+  else
+    iMatrixDrawSetCellClipping(ih, x1, x2, y1, y2);
+
+  cdIupSetFont(ih, ih->data->cddbuffer, iupMatrixGetFont(ih, lin, col));
+
+  /* Create an space between text and cell frame */
+  x1 += IMAT_PADDING_W/2;       x2 -= IMAT_PADDING_W/2;
+  y1 += IMAT_PADDING_H/2;       y2 -= IMAT_PADDING_H/2;
+
+  if (alignment == IMAT_T_CENTER)
+    cdCanvasTextAlignment(ih->data->cddbuffer, CD_CENTER);
+  else if(alignment == IMAT_T_LEFT)
+    cdCanvasTextAlignment(ih->data->cddbuffer, CD_WEST);
+  else
+    cdCanvasTextAlignment(ih->data->cddbuffer, CD_EAST);
+
+  if (num_line == 1)
+  {
+    ypos = (int)((y1 + y2) / 2.0 - 0.5);
+
+    /* Put the text */
+    if (alignment == IMAT_T_CENTER)
+      iupMATRIX_TEXT(ih, (x1 + x2) / 2, ypos, text);
+    else if(alignment == IMAT_T_LEFT)
+      iupMATRIX_TEXT(ih, x1, ypos, text);
+    else
+      iupMATRIX_TEXT(ih, x2, ypos, text);
+  }
+  else
+  {
+    int i;
+    char *p, *q, *newtext;
+
+    newtext = iupStrDup(text);
+    p = newtext;
+
+    /* Get the position of the first text to be put in the screen */
+    ypos = (int)( (y1 + y2) / 2.0 - 0.5) - total_height/2 + line_height/2;
+
+    for(i = 0; i < num_line; i++)
+    {
+      q = strchr(p, '\n');
+      if (q) *q = 0;  /* Cut the string to contain only one line */
+
+      /* Draw the text */
+      if(alignment == IMAT_T_CENTER)
+        iupMATRIX_TEXT(ih, (x1 + x2) / 2, ypos, p);
+      else if(alignment == IMAT_T_LEFT)
+        iupMATRIX_TEXT(ih, x1, ypos, p);
+      else
+        iupMATRIX_TEXT(ih, x2, ypos, p);
+
+      /* Advance the string */
+      if (q) p = q + 1;
+
+      /* Advance a line */
+      ypos += line_height + IMAT_PADDING_H/2;
+    }
+
+    free(newtext);
+  }
+
+  iMatrixDrawResetCellClipping(ih);
+
+  if (hidden_text_marks)
+  {
+    cdCanvasTextAlignment(ih->data->cddbuffer, CD_EAST);
+    ypos = (int)((y1 + y2) / 2.0 - 0.5);
+    iupMATRIX_TEXT(ih, x2+IMAT_PADDING_W/2, ypos, "...");
+  }
+}
+
+static void iMatrixDrawColor(Ihandle* ih, int x1, int x2, int y1, int y2, int marked, int active, const char* color, long framecolor)
+{    
+  x1 += IMAT_PADDING_W/2 + IMAT_FRAME_H/2;
+  x2 -= IMAT_PADDING_W/2 + IMAT_FRAME_W/2;
+  y1 += IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
+  y2 -= IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
+
+  /* Fill the box with the color */
+  iMatrixDrawSetTypeColor(ih, color, marked, active);
+  iupMATRIX_BOX(ih, x1, x2, y1, y2);
+
+  /* Draw the frame */
+  cdCanvasForeground(ih->data->cddbuffer, framecolor);
+  iupMATRIX_RECT(ih, x1, x2, y1, y2);
+}
+
+static void iMatrixDrawFill(Ihandle* ih, int x1, int x2, int y1, int y2, int lin, int col, int marked, int active, const char* value, long framecolor)
+{    
+  int empty, fill=0;
+
+  iupStrToInt(value, &fill);
+  if (fill < 0) fill = 0;
+  if (fill > 100) fill = 100;
+
+  x1 += IMAT_PADDING_W/3 + IMAT_FRAME_H/2;
+  x2 -= IMAT_PADDING_W/3 + IMAT_FRAME_W/2;
+  y1 += IMAT_PADDING_H/3 + IMAT_FRAME_H/2;
+  y2 -= IMAT_PADDING_H/3 + IMAT_FRAME_H/2;
+
+  empty = (x2-x1)*(100-fill)/100;
+
+  /* Fill the box with the color */
+  iMatrixDrawSetFgColor(ih, lin, col, marked, active);
+  iupMATRIX_BOX(ih, x1, x2 - empty, y1, y2);
+
+  /* Draw the frame */
+  cdCanvasForeground(ih->data->cddbuffer, framecolor);
+  iupMATRIX_RECT(ih, x1, x2, y1, y2);
+}
+
 /* Put the cell contents in the screen, using the specified color and alignment.
    -> y1, y2 : vertical limits of the cell
    -> x1, x2 : horizontal limits of the complete cell
@@ -422,9 +574,9 @@ static void iMatrixDrawBackground(Ihandle* ih, int x1, int x2, int y1, int y2, i
                   [IMAT_T_CENTER,IMAT_T_LEFT,IMAT_T_RIGHT]
    -> marked : mark state
    -> lin, col - cell coordinates */
-static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, int alignment, int marked, int active, int lin, int col, IFniiiiiiC draw_cb)
+static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, int alignment, int marked, int active, int lin, int col, IFniiiiiiC draw_cb, long framecolor)
 {
-  char *text;
+  char *value;
 
   /* avoid drawing over the frame of the next cell */
   x2 -= IMAT_FRAME_W/2;
@@ -453,113 +605,19 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
   if (draw_cb && !iMatrixDrawCallDrawCB(ih, lin, col, x1, x2, y1, y2, draw_cb))
     return;
 
-  text = iupMatrixGetValue(ih, lin, col);
+  value = iupMatrixGetValue(ih, lin, col);
 
   /* Put the text */
-  if (text && *text)
+  if (value && *value)
   {
-    int num_line, line_height, total_height;
-    int charheight, ypos, hidden_text_marks = 0;
-
-    num_line = iupStrLineCount(text);
-    iupdrvFontGetCharSize(ih, NULL, &charheight);
-
-    line_height  = charheight;
-    total_height = (line_height + IMAT_PADDING_H/2) * num_line - IMAT_PADDING_H/2 - IMAT_FRAME_H/2;
-
-    if (lin==0 || ih->data->hidden_text_marks)
-    {
-      int text_w;
-      iupdrvFontGetMultiLineStringSize(ih, text, &text_w, NULL);
-      if (text_w > x2 - x1 + 1 - IMAT_PADDING_W - IMAT_FRAME_W)
-      {
-        if (lin == 0)
-          alignment = IMAT_T_LEFT;
-
-        if (ih->data->hidden_text_marks)
-          hidden_text_marks = 1;
-      }
-    }
-
-    /* Set the color used to draw the text */
-    iMatrixDrawSetFgColor(ih, lin, col, marked, active);
-
-    /* Set the clip area to the cell region informed, the text maybe greatter than the cell */
-    if (hidden_text_marks)
-    {
-      int crop = iupdrvFontGetStringWidth(ih, "...") + 2;
-      iMatrixDrawSetCellClipping(ih, x1, x2-crop, y1, y2);
-    }
-    else
-      iMatrixDrawSetCellClipping(ih, x1, x2, y1, y2);
-
-    cdIupSetFont(ih, ih->data->cddbuffer, iupMatrixGetFont(ih, lin, col));
-
-    /* Create an space between text and cell frame */
-    x1 += IMAT_PADDING_W/2;       x2 -= IMAT_PADDING_W/2;
-    y1 += IMAT_PADDING_H/2;       y2 -= IMAT_PADDING_H/2;
-
-    if (alignment == IMAT_T_CENTER)
-      cdCanvasTextAlignment(ih->data->cddbuffer, CD_CENTER);
-    else if(alignment == IMAT_T_LEFT)
-      cdCanvasTextAlignment(ih->data->cddbuffer, CD_WEST);
-    else
-      cdCanvasTextAlignment(ih->data->cddbuffer, CD_EAST);
-
-    if (num_line == 1)
-    {
-      ypos = (int)((y1 + y2) / 2.0 - 0.5);
-
-      /* Put the text */
-      if (alignment == IMAT_T_CENTER)
-        iupMATRIX_TEXT(ih, (x1 + x2) / 2, ypos, text);
-      else if(alignment == IMAT_T_LEFT)
-        iupMATRIX_TEXT(ih, x1, ypos, text);
-      else
-        iupMATRIX_TEXT(ih, x2, ypos, text);
-    }
-    else
-    {
-      int i;
-      char *p, *q, *newtext;
-
-      newtext = iupStrDup(text);
-      p = newtext;
-
-      /* Get the position of the first text to be put in the screen */
-      ypos = (int)( (y1 + y2) / 2.0 - 0.5) - total_height/2 + line_height/2;
-
-      for(i = 0; i < num_line; i++)
-      {
-        q = strchr(p, '\n');
-        if (q) *q = 0;  /* Cut the string to contain only one line */
-
-        /* Draw the text */
-        if(alignment == IMAT_T_CENTER)
-          iupMATRIX_TEXT(ih, (x1 + x2) / 2, ypos, p);
-        else if(alignment == IMAT_T_LEFT)
-          iupMATRIX_TEXT(ih, x1, ypos, p);
-        else
-          iupMATRIX_TEXT(ih, x2, ypos, p);
-
-        /* Advance the string */
-        if (q) p = q + 1;
-
-        /* Advance a line */
-        ypos += line_height + IMAT_PADDING_H/2;
-      }
-
-      free(newtext);
-    }
-
-    iMatrixDrawResetCellClipping(ih);
-
-    if (hidden_text_marks)
-    {
-      cdCanvasTextAlignment(ih->data->cddbuffer, CD_EAST);
-      ypos = (int)((y1 + y2) / 2.0 - 0.5);
-      iupMATRIX_TEXT(ih, x2+IMAT_PADDING_W/2, ypos, "...");
-    }
+    int type = iupMatrixGetType(ih, lin, col);
+    if (type == IMAT_TYPE_TEXT)
+      iMatrixDrawText(ih, x1, x2, y1, y2, alignment, marked, active, lin, col, value);
+    else if (type == IMAT_TYPE_COLOR)
+      iMatrixDrawColor(ih, x1, x2, y1, y2, marked, active, value, framecolor);
+    else if (type == IMAT_TYPE_FILL)
+      iMatrixDrawFill(ih, x1, x2, y1, y2, lin, col, marked, active, value, framecolor);
+//     IMAT_TYPE_IMAGE,
   }
 }
 
@@ -577,7 +635,7 @@ static void iMatrixDrawTitleCorner(Ihandle* ih)
 
     iMatrixDrawFrameRectTitle(ih, 0, 0, 0, ih->data->columns.dt[0].size, 0, ih->data->lines.dt[0].size, framecolor, framehighlight);
 
-    iMatrixDrawCellValue(ih, 0, ih->data->columns.dt[0].size, 0, ih->data->lines.dt[0].size, alignment, 0, active, 0, 0, draw_cb);
+    iMatrixDrawCellValue(ih, 0, ih->data->columns.dt[0].size, 0, ih->data->lines.dt[0].size, alignment, 0, active, 0, 0, draw_cb, framecolor);
   }
 }
 
@@ -726,7 +784,7 @@ void iupMatrixDrawLineTitle(Ihandle* ih, int lin1, int lin2)
 
       iMatrixDrawFrameRectTitle(ih, lin, 0, x1, x2, y1, y2, framecolor, framehighlight);
 
-      iMatrixDrawCellValue(ih, x1, x2, y1, y2, alignment, marked, active, lin, 0, draw_cb);
+      iMatrixDrawCellValue(ih, x1, x2, y1, y2, alignment, marked, active, lin, 0, draw_cb, framecolor);
     }
 
     y1 = y2;
@@ -812,7 +870,7 @@ void iupMatrixDrawColumnTitle(Ihandle* ih, int col1, int col2)
       if (iMatrixDrawSortSign(ih, x2, y1, y2, col, active))
         sort = IMAT_DROPBOX_W; /* same space is used by the sort sign */
 
-      iMatrixDrawCellValue(ih, x1, x2-sort, y1, y2, alignment, marked, active, 0, col, draw_cb);
+      iMatrixDrawCellValue(ih, x1, x2-sort, y1, y2, alignment, marked, active, 0, col, draw_cb, framecolor);
     }
 
     x1 = x2;
@@ -980,7 +1038,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
       }
         
       /* draw the cell contents */
-      iMatrixDrawCellValue(ih, x1, x2-drop, y1, y2, alignment, marked, active, lin, col, draw_cb);
+      iMatrixDrawCellValue(ih, x1, x2-drop, y1, y2, alignment, marked, active, lin, col, draw_cb, framecolor);
 
       y1 = y2;
     }

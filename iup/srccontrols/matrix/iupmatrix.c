@@ -1132,6 +1132,11 @@ static int iMatrixSetFgColorAttrib(Ihandle* ih, int lin, int col, const char* va
   return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FGCOLOR);
 }
 
+static int iMatrixSetTypeAttrib(Ihandle* ih, int lin, int col, const char* value)
+{
+  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_TYPE);
+}
+
 static int iMatrixSetFontAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
   return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FONT);
@@ -1649,6 +1654,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "VALUE", iMatrixGetValueAttrib, iMatrixSetValueAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId2(ic, "BGCOLOR", iMatrixGetBgColorAttrib, iMatrixSetBgColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FGCOLOR", NULL, iMatrixSetFgColorAttrib, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttributeId2(ic, "TYPE", NULL, iMatrixSetTypeAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FONT", iMatrixGetFontAttrib, iMatrixSetFontAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
