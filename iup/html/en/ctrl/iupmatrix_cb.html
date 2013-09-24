@@ -169,7 +169,7 @@ ORIGIN and ORIGINOFFSET attributes to synchronize the movement of two or more ma
   Action generated to verify the font of a 
   cell. Called both for common cells and for line and column titles. (since 3.0)</p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:value_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
+<strong>elem</strong>:font_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
     Identifier of the matrix interacting with 
     the user.<br>
@@ -177,6 +177,18 @@ ORIGIN and ORIGINOFFSET attributes to synchronize the movement of two or more ma
     Coordinates of the cell.</p>
 <p class="info"><span class="style1">Returns:</span> Must return a font or NULL to use the the attribute defined 
 font. </p>
+<p><strong><a name="TYPE_CB">TYPE_CB</a></strong>:
+  Action generated to verify the type of a 
+  cell value. Called both for common cells and for line and column titles. (since 3.9)</p>
+<pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
+<strong>elem</strong>:type_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+    Identifier of the matrix interacting with 
+    the user.<br>
+    <strong>lin</strong>, <strong>col</strong>:
+    Coordinates of the cell.</p>
+<p class="info"><span class="style1">Returns:</span> Must return &quot;TEXT&quot;, 
+&quot;COLOR&quot;, &quot;FILL&quot; or &quot;IMAGE&quot;. </p>
 <p><strong><a name="DRAW_CB">DRAW_CB</a></strong>:
   Action generated before a cell is drawn. 
   Allows to draw a custom cell contents. You must use the 
