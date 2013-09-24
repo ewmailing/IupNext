@@ -23,6 +23,7 @@ local ctrl = {
     fgcolor_cb = "nn",  -- fake definitions to be replaced by matrixfuncs module
     bgcolor_cb = "nn",
     font_cb = {"nn", ret = "s"}, -- ret is return type
+    type_cb = {"nn", ret = "s"}, -- ret is return type
     value_cb = {"nn", ret = "s"}, -- ret is return type
     value_edit_cb = "nns",
     mark_cb = "nn",
