@@ -70,7 +70,7 @@ static void iGaugeDrawText(Ihandle* ih, int xmid)
   char* text = ih->data->text;
   char buffer[30];
 
-  cdIupSetFont(ih, ih->data->cddbuffer, IupGetAttribute(ih, "FONT"));
+  IupCdSetFont(ih, ih->data->cddbuffer, IupGetAttribute(ih, "FONT"));
   cdCanvasTextAlignment(ih->data->cddbuffer, CD_CENTER);
   cdCanvasBackOpacity(ih->data->cddbuffer, CD_TRANSPARENT);
 

@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdarg.h>
+#include <memory.h>
 
 #include <cd.h>
 
@@ -15,6 +16,7 @@
 #include "iup_str.h"
 #include "iup_drv.h"
 #include "iup_cdutil.h"
+#include "iup_image.h"
 
 
 long cdIupConvertColor(const char *color)
@@ -117,7 +119,7 @@ void cdIupDrawHorizSunkenMark(cdCanvas *canvas, int x1, int x2, int y, long ligh
   cdCanvasLine(canvas, x1, y, x2, y);
 }
 
-void cdIupDrawFocusRect(Ihandle* ih, cdCanvas *canvas, int x1, int y1, int x2, int y2)
+void IupCdDrawFocusRect(Ihandle* ih, cdCanvas *canvas, int x1, int y1, int x2, int y2)
 {
   int y, x, w, h;
 #ifdef WIN32
@@ -139,7 +141,7 @@ void cdIupDrawFocusRect(Ihandle* ih, cdCanvas *canvas, int x1, int y1, int x2, i
   iupdrvDrawFocusRect(ih, gc, x, y, w, h);
 }
 
-void cdDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2)
+void cdIupDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2)
 {
   int old_linestyle = cdCanvasLineStyle(canvas, CD_DOTTED);
   int old_foreground = cdCanvasForeground(canvas, CD_WHITE);
@@ -152,7 +154,7 @@ void cdDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2)
   cdCanvasLineStyle(canvas, old_linestyle);
 }
 
-void cdIupSetFont(Ihandle* ih, cdCanvas *canvas, const char* font)
+void IupCdSetFont(Ihandle* ih, cdCanvas *canvas, const char* font)
 {
   char* lastfont = iupAttribGetStr(ih, "_IUPLAST_FONT");
   if (!lastfont || !iupStrEqual(lastfont, font))
@@ -162,3 +164,183 @@ void cdIupSetFont(Ihandle* ih, cdCanvas *canvas, const char* font)
   }
 }
 
+static void cdIupInitPalette(Ihandle* image, long* palette, long bgcolor, int make_inactive)
+{
+  int i;
+  unsigned char r, g, b, bg_r, bg_g, bg_b;
+
+  cdDecodeColor(bgcolor, &bg_r, &bg_g, &bg_b);
+
+  for(i = 0; i < 256; i++)
+  {
+    char* color = IupGetAttributeId(image, "", i);
+    r = bg_r; g = bg_g; b = bg_b;
+    iupStrToRGB(color, &r, &g, &b);  /* no need to test for BGCOLOR, if this failed it will not set the parameters */
+
+    if (make_inactive)
+      iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+
+    palette[i] = cdEncodeColor(r, g, b);
+  }
+}
+
+static unsigned char* cdIupBuildImageBuffer(Ihandle *image, int width, int height, int depth, int make_inactive, long bgcolor)
+{
+  int size, plane_size, i, j;
+  unsigned char bg_r, bg_g, bg_b;
+  unsigned char* image_buffer;
+  /* images from stock or resources are not supported */
+  unsigned char* data = (unsigned char*)IupGetAttribute(image, "WID");
+  if (!data)
+    return NULL;
+
+  plane_size = width*height;
+  size = plane_size*depth;
+
+  image_buffer = malloc(size);
+  if (!image_buffer)
+    return NULL;
+
+  cdDecodeColor(bgcolor, &bg_r, &bg_g, &bg_b);
+
+  /* IUP image is top-down, CD image is bottom up */
+  if (depth==1)
+  {
+    /* inactive will be set at the palette */
+    for (i=0; i<height; i++)
+      memcpy(image_buffer + i*width, data + (height-1 - i)*width, width);
+  }
+  else if (depth==3)
+  {
+    int pos;
+    unsigned char r, g, b;
+    unsigned char *dst_r = image_buffer + 0*plane_size;
+    unsigned char *dst_g = image_buffer + 1*plane_size;
+    unsigned char *dst_b = image_buffer + 2*plane_size;
+
+    for (i=0; i<height; i++)
+    {
+      int line_offset = i*width;
+      unsigned char *line_r = dst_r + line_offset;
+      unsigned char *line_g = dst_g + line_offset;
+      unsigned char *line_b = dst_b + line_offset;
+      unsigned char *src_rgb = data + (height-1 - i)*(3*width);
+
+      for (j=0; j<width; j++)
+      {
+        pos = j*3;
+        r = src_rgb[pos+0];
+        g = src_rgb[pos+1];
+        b = src_rgb[pos+2];
+
+        if (make_inactive)
+          iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+
+        line_r[j] = r;
+        line_g[j] = g;
+        line_b[j] = b;
+      }
+    }
+  }
+  else /* depth==4 */
+  {
+    int pos;
+    unsigned char r, g, b, a;
+    unsigned char *dst_r = image_buffer + 0*plane_size;
+    unsigned char *dst_g = image_buffer + 1*plane_size;
+    unsigned char *dst_b = image_buffer + 2*plane_size;
+    unsigned char *dst_a = image_buffer + 3*plane_size;
+
+    for (i=0; i<height; i++)
+    {
+      int line_offset = i*width;
+      unsigned char *line_r = dst_r + line_offset;
+      unsigned char *line_g = dst_g + line_offset;
+      unsigned char *line_b = dst_b + line_offset;
+      unsigned char *line_a = dst_a + line_offset;
+      unsigned char *src_rgba = data + (height-1 - i)*(4*width);
+
+      for (j=0; j<width; j++)
+      {
+        pos = j*4;
+        r = src_rgba[pos+0];
+        g = src_rgba[pos+1];
+        b = src_rgba[pos+2];
+        a = src_rgba[pos+3];
+
+        if (make_inactive)
+          iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+
+        line_r[j] = r;
+        line_g[j] = g;
+        line_b[j] = b;
+        line_a[j] = a;
+      }
+    }
+  }
+
+  return image_buffer;
+}
+
+void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_inactive, long bgcolor)
+{
+  int size, plane_size, depth;
+  int width = IupGetInt(image, "WIDTH");
+  int height = IupGetInt(image, "HEIGHT");
+  int bpp = IupGetInt(image, "BPP");
+  unsigned char* image_buffer;
+
+  depth = 1;
+  if (bpp==24)
+    depth = 3;
+  else if (bpp==32)
+    depth = 4;
+
+  if (depth!=1 && make_inactive)
+    image_buffer = (unsigned char*)iupAttribGet(image, "_IUPIMAGE_CDIMAGE_INACTIVE");
+  else
+    image_buffer = (unsigned char*)iupAttribGet(image, "_IUPIMAGE_CDIMAGE");
+
+  if (!image_buffer)
+  {
+    image_buffer = cdIupBuildImageBuffer(image, width, height, depth, make_inactive, bgcolor);
+
+    if (depth!=1 && make_inactive)
+      iupAttribSet(image, "_IUPIMAGE_CDIMAGE_INACTIVE", (char*)image_buffer);
+    else
+      iupAttribSet(image, "_IUPIMAGE_CDIMAGE", (char*)image_buffer);
+  }
+
+  if (!image_buffer)
+    return;
+
+  plane_size = width*height;
+  size = plane_size*depth;
+
+  if (depth==1)
+  {
+    long palette[256];
+    cdIupInitPalette(image, palette, bgcolor, make_inactive);
+
+    cdCanvasPutImageRectMap(canvas, width, height, 
+                            image_buffer, palette, 
+                            x, y, width, height, 0, 0, 0, 0);
+  }
+  else if (depth==3)
+  {
+    cdCanvasPutImageRectRGB(canvas, width, height,
+                            image_buffer + 0*plane_size,
+                            image_buffer + 1*plane_size,
+                            image_buffer + 2*plane_size,
+                            x, y, width, height, 0, 0, 0, 0);
+  }
+  else /* depth==4 */
+  {
+    cdCanvasPutImageRectRGBA(canvas, width, height,
+                             image_buffer + 0*plane_size,
+                             image_buffer + 1*plane_size,
+                             image_buffer + 2*plane_size,
+                             image_buffer + 3*plane_size,
+                             x, y, width, height, 0, 0, 0, 0);
+  }
+}

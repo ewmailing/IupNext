@@ -282,7 +282,7 @@ static void iColorbarDrawFocusCell(Ihandle* ih)
   ymin += delta;
   ymax -= delta;
 
-  cdIupDrawFocusRect(ih, ih->data->cdcanvas, xmin, ymin, xmax, ymax);
+  IupCdDrawFocusRect(ih, ih->data->cdcanvas, xmin, ymin, xmax, ymax);
 }
 
 /* This function is used to repaint a cell. */

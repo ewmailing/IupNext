@@ -145,7 +145,7 @@ static void iColorBrowserRenderImageHue(Ihandle* ih)
     active = 0;
 
   if (ih->data->has_focus)
-    cdDrawFocusRect(ih->data->cddbuffer, 0, 0, ih->data->w-1, ih->data->h-1);
+    cdIupDrawFocusRect(ih->data->cddbuffer, 0, 0, ih->data->w-1, ih->data->h-1);
 
   red = cdRedImage(ih->data->cddbuffer);
   green = cdGreenImage(ih->data->cddbuffer);

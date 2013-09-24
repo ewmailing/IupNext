@@ -109,6 +109,18 @@ also accepted.&nbsp;</p>
   Title of the area between the line and 
   column titles.</p>
 <p class="info">These are valid only in normal mode.</p>
+<p>
+<strong>TYPE<i>L</i>:<i>C</i></strong>:
+  Type of the cell value in line 
+  L and column 
+  C. Can be TEXT, COLOR, FILL, or IMAGE. When type is COLOR the cell value is 
+interpreted as a color and a rectangle with the color is drawn inside the cell 
+instead of the text (the FGCOLOR of the cell is ignored). When type is FILL the 
+cell value is interpreted as percentage and a rectangle showing the percentage 
+in the FGCOLOR is drawn like in <strong>IupGauge</strong> and <strong>
+IupProgressBar</strong>. When type is IMAGE the cell value is interpreted as an 
+image name, and if an image exist with that name is drawn (the name can NOT be 
+of a Windows resource or GTK stock image). Default: TEXT. (Since 3.9)</p>
 <p><b><a name="BGCOLOR">BGCOLOR</a></b>:
   Background color of the matrix. (inheritable)<br>
 <strong>BGCOLOR*:<i>C</i></strong>:

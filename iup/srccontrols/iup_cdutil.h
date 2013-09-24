@@ -19,12 +19,15 @@ void cdIupDrawRaiseRect(cdCanvas *canvas, int x1, int y1, int x2, int y2,
                          long light_shadow, long mid_shadow, long dark_shadow);
 void cdIupDrawVertSunkenMark(cdCanvas *canvas, int x, int y1, int y2, long light_shadow, long dark_shadow);
 void cdIupDrawHorizSunkenMark(cdCanvas *canvas, int x1, int x2, int y, long light_shadow, long dark_shadow);
-void cdIupDrawFocusRect(Ihandle* ih, cdCanvas *canvas, int x1, int y1, int x2, int y2);
-void cdIupSetFont(Ihandle* ih, cdCanvas *canvas, const char* font);
 
-void cdDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2);
+void IupCdDrawFocusRect(Ihandle* ih, cdCanvas *canvas, int x1, int y1, int x2, int y2);
+void IupCdSetFont(Ihandle* ih, cdCanvas *canvas, const char* font);
+
+void cdIupDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2);
 
 #define cdIupInvertYAxis(_y, _h) ((_h) - (_y) - 1);
+
+void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_inactive, long bgcolor);
 
 
 #ifdef __cplusplus

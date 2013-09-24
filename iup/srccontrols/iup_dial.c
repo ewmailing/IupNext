@@ -290,7 +290,7 @@ static void iDialRepaint(Ihandle* ih)
   /* update display */
   cdCanvasFlush(ih->data->cddbuffer);
   if (ih->data->has_focus)
-    cdIupDrawFocusRect(ih, ih->data->cdcanvas, 0, 0, ih->data->w-1, ih->data->h-1);
+    IupCdDrawFocusRect(ih, ih->data->cdcanvas, 0, 0, ih->data->w-1, ih->data->h-1);
 }
 
 static void iDialUpdateFgColors(Ihandle* ih, unsigned char r, unsigned char g, unsigned char b)
@@ -527,7 +527,7 @@ static int iDialRedraw_CB(Ihandle* ih)
   /* update display */
   cdCanvasFlush(ih->data->cddbuffer);
   if (ih->data->has_focus)
-    cdIupDrawFocusRect(ih, ih->data->cdcanvas, 0, 0, ih->data->w-1, ih->data->h-1);
+    IupCdDrawFocusRect(ih, ih->data->cdcanvas, 0, 0, ih->data->w-1, ih->data->h-1);
 
   return IUP_DEFAULT;
 }

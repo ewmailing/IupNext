@@ -768,124 +768,6 @@ static int iMatrixListDrawColorCol(Ihandle *ih, int lin, int col, int x1, int x2
   return IUP_IGNORE;  /* draw nothing more */
 }
 
-static void cdIupInitPalette(Ihandle* image, long* palette, long bgcolor, int make_inactive)
-{
-  int i;
-  unsigned char r, g, b, bg_r, bg_g, bg_b;
-
-  cdDecodeColor(bgcolor, &bg_r, &bg_g, &bg_b);
-
-  for(i = 0; i < 256; i++)
-  {
-    char* color = IupGetAttributeId(image, "", i);
-    r = bg_r; g = bg_g; b = bg_b;
-    iupStrToRGB(color, &r, &g, &b);  /* no need to test for BGCOLOR, if this failed it will not set the parameters */
-
-    if (make_inactive)
-      iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-
-    palette[i] = cdEncodeColor(r, g, b);
-  }
-}
-
-static unsigned char* cdIupBuildImageBuffer(Ihandle *image, int width, int height, int depth, int make_inactive)
-{
-  int size, plane_size, i, j;
-  unsigned char* image_buffer;
-  /* images from stock or resources are not supported */
-  unsigned char* data = (unsigned char*)IupGetAttribute(image, "WID");
-  if (!data)
-    return NULL;
-
-  plane_size = width*height;
-  size = plane_size*depth;
-
-  image_buffer = malloc(size);
-  if (!image_buffer)
-    return NULL;
-
-  /* IUP image is top-down, CD image is bottom up */
-  if (depth==1)
-  {
-    /* inactive will be set at the palette */
-    for (i=0; i<height; i++)
-      memcpy(image_buffer + i*width, data + (height-1 - i)*width, width);
-  }
-  else if (depth==3)
-  {
-                            //image_buffer + 0*plane_size,
-                            //image_buffer + 1*plane_size,
-                            //image_buffer + 2*plane_size,
-  }
-  else /* depth==4 */
-  {
- /*                            image_buffer + 0*plane_size,
-                             image_buffer + 1*plane_size,
-                             image_buffer + 2*plane_size,
-                             image_buffer + 3*plane_size,*/
-  }
-
-//  if (make_inactive)
-//            iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
-  return image_buffer;
-}
-
-static void cdIupDrawImage(Ihandle *image, int x, int y, cdCanvas *cnv, int make_inactive, long bgcolor)
-{
-  int size, plane_size, depth;
-  int width = IupGetInt(image, "WIDTH");
-  int height = IupGetInt(image, "HEIGHT");
-  int bpp = IupGetInt(image, "BPP");
-  unsigned char* image_buffer;
-
-  depth = 1;
-  if (bpp==24)
-    depth = 3;
-  else if (bpp==32)
-    depth = 4;
-
-  if (make_inactive)
-    image_buffer = (unsigned char*)iupAttribGet(image, "_IUPIMAGE_CDIMAGE_INACTIVE");
-  else
-    image_buffer = (unsigned char*)iupAttribGet(image, "_IUPIMAGE_CDIMAGE");
-
-  if (!image_buffer)
-    image_buffer = cdIupBuildImageBuffer(image, width, height, depth, make_inactive);
-
-  if (!image_buffer)
-    return;
-
-  plane_size = width*height;
-  size = plane_size*depth;
-
-  if (depth==1)
-  {
-    long palette[256];
-    cdIupInitPalette(image, palette, bgcolor, make_inactive);
-
-    cdCanvasPutImageRectMap(cnv, width, height, 
-                            image_buffer, palette, 
-                            x, y, width, height, 0, 0, 0, 0);
-  }
-  else if (depth==3)
-  {
-    cdCanvasPutImageRectRGB(cnv, width, height,
-                            image_buffer + 0*plane_size,
-                            image_buffer + 1*plane_size,
-                            image_buffer + 2*plane_size,
-                            x, y, width, height, 0, 0, 0, 0);
-  }
-  else /* depth==4 */
-  {
-    cdCanvasPutImageRectRGBA(cnv, width, height,
-                             image_buffer + 0*plane_size,
-                             image_buffer + 1*plane_size,
-                             image_buffer + 2*plane_size,
-                             image_buffer + 3*plane_size,
-                             x, y, width, height, 0, 0, 0, 0);
-  }
-}
-
 static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas *cnv)
 {
   char* image_name;
@@ -947,7 +829,7 @@ static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int li
     x /= 2; x += x1;
     y /= 2; y += y2;
 
-    cdIupDrawImage(image, x, y, cnv, make_inactive, bgcolor);
+    cdIupDrawImage(cnv, image, x, y, make_inactive, bgcolor);
   }
 
   return IUP_IGNORE;  /* draw nothing more */
