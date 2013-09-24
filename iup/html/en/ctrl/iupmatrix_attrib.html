@@ -113,7 +113,14 @@ also accepted.&nbsp;</p>
 <strong>TYPE<i>L</i>:<i>C</i></strong>:
   Type of the cell value in line 
   L and column 
-  C. Can be TEXT, COLOR, FILL, or IMAGE. When type is COLOR the cell value is 
+  C. <br>
+<strong>TYPE*:<i>C</i></strong>:
+  Type of column 
+  C.<br>
+<strong>TYPE<i>L</i>:*</strong>:
+  Type of line 
+  L.</p>
+<p class="info">Can be TEXT, COLOR, FILL, or IMAGE. When type is COLOR the cell value is 
 interpreted as a color and a rectangle with the color is drawn inside the cell 
 instead of the text (the FGCOLOR of the cell is ignored). When type is FILL the 
 cell value is interpreted as percentage and a rectangle showing the percentage 
@@ -187,6 +194,12 @@ but for all the cells of the line L. (since 3.5)</p>
 <p><strong>FRAMETITLEHIGHLIGHT</strong>: by default the title cells will have a 
 bright line at left and top to configure a raise appearance. Can be Yes or No. 
 Default: Yes. (since 3.9)</p>
+<p><strong>RESIZEMATRIXCOLOR</strong>: color used by the column resize feedback. 
+Default: &quot;102 102 102&quot;. (Since 3.9)</p>
+<p><strong>TOGGLEVALUE<i>L</i>:<i>C</i> </strong>: value of the toggle inside 
+the cell. The toggle is shown only if the DROPCHECK_CB returns IUP_CONTINUE for 
+the cell. When the toggle is interactively change the TOGGLEVALUE_CB callback is 
+called. (Since 3.9) </p>
 <p><strong><a name="VALUE">VALUE</a></strong>:
   Allows setting or verifying the value of the 
   current cell. Is the same as obtaining the current cell line and column from 
@@ -225,7 +238,7 @@ callback but they do NOT include the decorations. (since 3.5)</p>
 greater than 0. Before checking the default value it will check the &quot;<strong>ALIGNMENT</strong>&quot; 
 attribute value. If the text do not fit in the cell then the alignment is 
 changed to ALEFT. The default for line 0 is &quot;ACENTER&quot; but this can be controlled 
-with the &quot;ALIGNMENTLIN0&quot; attribute (since 3.9).</p>
+with the &quot;<strong>ALIGNMENTLIN0</strong>&quot; attribute (since 3.9).</p>
 <p><a name="SORTSIGNn"><strong>SORTSIGN</strong></a><a name="ALIGNMENTn0"><em><strong>C</strong></em></a> : Shows a sort sign (up or 
   down arrow) in the
   column 

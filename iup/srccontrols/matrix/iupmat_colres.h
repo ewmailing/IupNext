@@ -14,7 +14,7 @@ extern "C" {
 int   iupMatrixColResStart       (Ihandle* ih, int x, int y);
 void  iupMatrixColResFinish      (Ihandle* ih, int x);
 void  iupMatrixColResMove        (Ihandle* ih, int x);
-void  iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y);
+int   iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y);
 int   iupMatrixColResIsResizing  (Ihandle* ih);
 
 #ifdef __cplusplus

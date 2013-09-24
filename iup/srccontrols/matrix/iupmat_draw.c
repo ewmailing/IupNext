@@ -41,6 +41,7 @@
 #define IMAT_ALIGN_RIGHT   3
 
 #define IMAT_DROPBOX_W 16
+#define IMAT_TOGGLE_SIZE 16
 
 
 
@@ -175,6 +176,7 @@ static unsigned long iMatrixDrawSetTypeColor(Ihandle* ih, const char* color, int
   iupMatrixGetTypeRGB(ih, color, &r, &g, &b, marked, active);
   return cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor(r, g, b));
 }
+
 static int iMatrixDrawGetFrameHorizColor(Ihandle* ih, int lin, int col, long *framecolor)
 {
   if (ih->data->checkframecolor && (ih->data->callback_mode || 
@@ -401,14 +403,61 @@ static void iMatrixDrawDropFeedback(Ihandle* ih, int x2, int y1, int y2, int act
   iupMATRIX_RECT(ih, x1, x2, y1, y2);
 
   /* feedback arrow */
-  xh2 = x2 - IMAT_DROPBOX_W / 2;
-  yh2 = y2 - (y2 - y1) / 2;
+  xh2 = x2 - IMAT_DROPBOX_W/2;
+  yh2 = y2 - (y2 - y1)/2;
 
   cdCanvasBegin(ih->data->cddbuffer, CD_FILL);
   iupMATRIX_VERTEX(ih, xh2, yh2 + 3);
   iupMATRIX_VERTEX(ih, xh2 + 4, yh2 - 1);
   iupMATRIX_VERTEX(ih, xh2 - 4, yh2 - 1);
   cdCanvasEnd(ih->data->cddbuffer);
+}
+
+void iupMatrixDrawSetToggleArea(int *x1, int *y1, int *x2, int *y2)
+{
+  *x2 -= IMAT_PADDING_W + IMAT_FRAME_W/2;
+  *x1  = *x2 - IMAT_TOGGLE_SIZE; 
+  *y1  = (*y2 + *y1 - IMAT_TOGGLE_SIZE)/2;
+  *y2  = *y1 + IMAT_TOGGLE_SIZE; 
+}
+
+static void iMatrixDrawToggle(Ihandle* ih, int x2, int y1, int y2, int lin, int col, int marked, int active)
+{
+  int x1;
+  long bgcolor = ih->data->bgcolor_cd;
+
+  /* toggle area */
+  iupMatrixDrawSetToggleArea(&x1, &y1, &x2, &y2);
+
+  /* toggle background */
+  if (marked)
+  {
+    unsigned char bg_r, bg_g, bg_b;
+    cdDecodeColor(bgcolor, &bg_r, &bg_g, &bg_b);
+    bg_r = IMAT_ATENUATION(bg_r);
+    bg_g = IMAT_ATENUATION(bg_g);
+    bg_b = IMAT_ATENUATION(bg_b);
+    bgcolor = cdEncodeColor(bg_r, bg_g, bg_b);
+  }
+  cdCanvasForeground(ih->data->cddbuffer, bgcolor);
+  iupMATRIX_BOX(ih, x1, x2, y1, y2);
+
+  /* toggle frame */
+  iMatrixDrawSetFgColor(ih, lin, col, marked, active);
+  iupMATRIX_RECT(ih, x1, x2, y1, y2);
+
+  /* toggle check */
+  if (iupAttribGetIntId2(ih, "TOGGLEVALUE", lin, col))
+  {
+    iupMATRIX_LINE(ih,x1+4,y1+7,x1+6,y1+9);
+    iupMATRIX_LINE(ih,x1+6,y1+9,x1+11,y1+4);
+
+    iupMATRIX_LINE(ih,x1+4,y1+8,x1+6,y1+10);
+    iupMATRIX_LINE(ih,x1+6,y1+10,x1+11,y1+5);
+
+    iupMATRIX_LINE(ih,x1+4,y1+9,x1+6,y1+11);
+    iupMATRIX_LINE(ih,x1+6,y1+11,x1+11,y1+6);
+  }
 }
 
 static void iMatrixDrawBackground(Ihandle* ih, int x1, int x2, int y1, int y2, int marked, int active, int lin, int col)
@@ -1067,10 +1116,19 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 
       iMatrixDrawFrameRectCell(ih, lin, col, x1, x2, y1, y2, framecolor);
 
-      if (dropcheck_cb && dropcheck_cb(ih, lin, col) == IUP_DEFAULT)
+      if (dropcheck_cb)
       {
-        drop = IMAT_DROPBOX_W+IMAT_PADDING_W/2;
-        iMatrixDrawDropFeedback(ih, x2, y1, y2, active, framecolor);
+        int ret = dropcheck_cb(ih, lin, col);
+        if (ret == IUP_DEFAULT)
+        {
+          drop = IMAT_DROPBOX_W+IMAT_PADDING_W/2;
+          iMatrixDrawDropFeedback(ih, x2, y1, y2, active, framecolor);
+        }
+        else if (ret == IUP_CONTINUE)
+        {
+          drop = IMAT_TOGGLE_SIZE + IMAT_PADDING_W;
+          iMatrixDrawToggle(ih, x2, y1, y2, lin, col, marked, active);
+        }
       }
         
       /* draw the cell contents */

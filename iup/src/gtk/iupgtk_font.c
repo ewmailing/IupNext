@@ -313,7 +313,7 @@ char* iupgtkGetFontIdAttrib(Ihandle *ih)
 #if GTK_CHECK_VERSION(3, 0, 0)
     return NULL;  /* TODO: check gtkglarea for GTK3 support, not available yet. */
 #else
-    /* both fucntions are marked as deprecated in GDK (since 2.22) */
+    /* both functions are marked as deprecated in GDK (since 2.22) */
     GdkFont* gdk_font = gdk_font_from_description(gtkfont->fontdesc);
     return (char*)gdk_font_id(gdk_font);  /* In UNIX will return an X Font ID, 
                                              in Win32 will return an HFONT */

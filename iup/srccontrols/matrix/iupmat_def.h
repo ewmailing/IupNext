@@ -149,6 +149,7 @@ struct _IcontrolData
   IFniiIII fgcolor_cb;
   IFniiIII bgcolor_cb;
   char *bgcolor, *bgcolor_parent, *fgcolor, *font;  /* not need to free */
+  long bgcolor_cd;
 
   /* Clipping AUX for cell  */
   int clip_x1, clip_x2, clip_y1, clip_y2;

@@ -1618,6 +1618,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterCallback(ic, "LEAVEITEM_CB", "ii");
   iupClassRegisterCallback(ic, "SCROLLTOP_CB", "ii");
   iupClassRegisterCallback(ic, "COLRESIZE_CB", "i");
+  iupClassRegisterCallback(ic, "TOGGLEVALUE_CB", "iii");
   /* --- Drawing --- */
   iupClassRegisterCallback(ic, "BGCOLOR_CB", "iiIII");
   iupClassRegisterCallback(ic, "FGCOLOR_CB", "iiIII");
@@ -1665,6 +1666,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId2(ic, "CELLSIZE", iMatrixGetCellSizeAttrib, NULL, IUPAF_READONLY);
   iupClassRegisterAttributeId2(ic, "CELLBGCOLOR", iMatrixGetCellBgColorAttrib, NULL, IUPAF_READONLY);
   iupClassRegisterAttributeId2(ic, "CELLFGCOLOR", iMatrixGetCellFgColorAttrib, NULL, IUPAF_READONLY);
+  iupClassRegisterAttributeId2(ic, "TOGGLEVALUE", NULL, (IattribSetId2Func)iMatrixSetNeedRedraw, IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - COLUMN */
   iupClassRegisterAttributeId(ic, "ALIGNMENT", iMatrixGetAlignmentAttrib, (IattribSetIdFunc)iMatrixSetNeedRedraw, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

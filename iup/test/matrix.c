@@ -64,7 +64,15 @@ static int dropcheck_cb(Ihandle *self, int lin, int col)
 {
   if (lin == 3 && col == 1)
     return IUP_DEFAULT;
+  if (lin == 4 && col == 4)
+    return IUP_CONTINUE;
   return IUP_IGNORE;
+}
+
+static int togglevalue_cb(Ihandle *self, int lin, int col, int value)
+{
+  printf("togglevalue_cb(%d, %d)=%d\n", lin, col, value);
+  return IUP_DEFAULT;
 }
 
 static int click(Ihandle *self, int lin, int col)
@@ -150,6 +158,8 @@ static Ihandle* create_matrix(void)
     IupSetAttributeHandle(mat, "4:3", image);
   }
 
+  IupSetAttribute(mat, "TOGGLEVALUE4:4", "ON");
+
 //  IupSetAttribute(mat,"MARKMODE","CELL");
   IupSetAttribute(mat,"MARKMODE","LIN");
   IupSetAttribute(mat,"MARKMULTIPLE","NO");
@@ -204,6 +214,7 @@ static Ihandle* create_matrix(void)
 //  IupSetCallback(mat, "MOUSEMOVE_CB", (Icallback)mousemove_cb);
 //  IupSetCallback(mat,"CLICK_CB",(Icallback)click);
 //  IupSetCallback(mat,"ENTERITEM_CB",(Icallback)enteritem_cb);
+  IupSetCallback(mat,"TOGGLEVALUE_CB",(Icallback)togglevalue_cb);
 
   return mat;
 }

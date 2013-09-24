@@ -376,6 +376,12 @@ void iupMatrixPrepareDrawData(Ihandle* ih)
   ih->data->fgcolor = iupAttribGet(ih, "_IUPMAT_FGCOLOR");
   ih->data->font = iupAttribGet(ih, "_IUPMAT_FONT");
 
+  {
+    unsigned char bg_r, bg_g, bg_b;
+    iupStrToRGB(ih->data->bgcolor, &bg_r, &bg_g, &bg_b);
+    ih->data->bgcolor_cd = cdEncodeColor(bg_r, bg_g, bg_b);
+  }
+
   ih->data->font_cb = (sIFnii)IupGetCallback(ih, "FONT_CB");
   ih->data->type_cb = (sIFnii)IupGetCallback(ih, "TYPE_CB");
   ih->data->fgcolor_cb = (IFniiIII)IupGetCallback(ih, "FGCOLOR_CB");
@@ -402,6 +408,11 @@ static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int 
   {
     attrib = "FGCOLOR";
     attrib_global = ih->data->fgcolor;
+  }
+  else if (attr == IMAT_HAS_TYPE)
+  {
+    attrib = "TYPE";
+    attrib_global = NULL;
   }
 
   if (!attrib)  /* Internal error */
@@ -475,7 +486,7 @@ char* iupMatrixGetFgColorStr(Ihandle* ih, int lin, int col)
     return iupStrReturnRGB(r, g, b);
 }
 
-void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b, int mark, int active)
+void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b, int marked, int active)
 {
   /* called from Draw only */
   if (!ih->data->fgcolor_cb || (iMatrixCallColorCB(ih, ih->data->fgcolor_cb, lin, col, r, g, b) == IUP_IGNORE))
@@ -491,7 +502,7 @@ void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
     iupStrToRGB(fgcolor, r, g, b);
   }
 
-  if (mark)
+  if (marked)
   {
     *r = IMAT_ATENUATION(*r);
     *g = IMAT_ATENUATION(*g);
@@ -501,17 +512,17 @@ void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
   if (!active)
   {
     unsigned char bg_r, bg_g, bg_b;
-    iupStrToRGB(ih->data->bgcolor, &bg_r, &bg_g, &bg_b);
+    cdDecodeColor(ih->data->bgcolor_cd, &bg_r, &bg_g, &bg_b);
     iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
   }
 }
 
-void iupMatrixGetTypeRGB(Ihandle* ih, const char* color, unsigned char *r, unsigned char *g, unsigned char *b, int mark, int active)
+void iupMatrixGetTypeRGB(Ihandle* ih, const char* color, unsigned char *r, unsigned char *g, unsigned char *b, int marked, int active)
 {
   /* called from Draw only */
   iupStrToRGB(color, r, g, b);
 
-  if (mark)
+  if (marked)
   {
     *r = IMAT_ATENUATION(*r);
     *g = IMAT_ATENUATION(*g);
@@ -521,7 +532,7 @@ void iupMatrixGetTypeRGB(Ihandle* ih, const char* color, unsigned char *r, unsig
   if (!active)
   {
     unsigned char bg_r, bg_g, bg_b;
-    iupStrToRGB(ih->data->bgcolor, &bg_r, &bg_g, &bg_b);
+    cdDecodeColor(ih->data->bgcolor_cd, &bg_r, &bg_g, &bg_b);
     iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
   }
 }
@@ -543,7 +554,7 @@ char* iupMatrixGetBgColorStr(Ihandle* ih, int lin, int col)
 
 #define IMAT_DARKER(_x)    (((_x)*9)/10)
 
-void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b, int mark, int active)
+void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b, int marked, int active)
 {
   /* called from Draw only */
   if (!ih->data->bgcolor_cb || (iMatrixCallColorCB(ih, ih->data->bgcolor_cb, lin, col, r, g, b) == IUP_IGNORE))
@@ -564,7 +575,7 @@ void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
     }
   }
 
-  if (mark)
+  if (marked)
   {
     *r = IMAT_ATENUATION(*r);
     *g = IMAT_ATENUATION(*g);
@@ -574,7 +585,7 @@ void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
   if (!active)
   {
     unsigned char bg_r, bg_g, bg_b;
-    iupStrToRGB(ih->data->bgcolor, &bg_r, &bg_g, &bg_b);
+    cdDecodeColor(ih->data->bgcolor_cd, &bg_r, &bg_g, &bg_b);
     iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
   }
 }
@@ -593,14 +604,11 @@ char* iupMatrixGetFont(Ihandle* ih, int lin, int col)
 int iupMatrixGetType(Ihandle* ih, int lin, int col)
 {
   char* type = NULL;
-  /* called from Draw and Edit only */
+  /* called from Draw only */
   if (ih->data->type_cb)
     type = ih->data->type_cb(ih, lin, col);
   if (!type)
-  {
-    if (ih->data->callback_mode || ih->data->cells[lin][col].flags & IMAT_HAS_TYPE)
-      type = iupAttribGetId2(ih, "TYPE", lin, col);
-  }
+    type = iMatrixGetCellAttrib(ih, IMAT_HAS_TYPE, lin, col, NULL);
   if (!type)
     return IMAT_TYPE_TEXT;
 

@@ -8,6 +8,9 @@
 .style1 {
 	text-decoration: underline;
 }
+.style2 {
+	background-color: #CEE7FF;
+}
 </style>
 </head>
 <body>
@@ -83,6 +86,17 @@ the moment the event is generated. The same macros used for
 the moment the event is generated. The same macros used for
 <a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status. </p>
 <p class="info"><span class="style1">Returns:</span> To avoid the display update return IUP_IGNORE.</p>
+<p><strong><a name="TOGGLEVALUE_CB">TOGGLEVALUE_CB</a></strong>:
+  Action generated when a toggle button is 
+  pressed. (Since 3.9)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, i<span class="style2">nt</span> <strong>status</strong>); [in C]
+<strong>elem</strong>:togglevalue_cb(<strong>lin, col, status</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+    Identifier of the matrix interacting with 
+    the user.<br>
+<strong>lin</strong>, <strong>col</strong>: Coordinates of the cell where the 
+mouse button was pressed.<br>
+<strong>status</strong>: Value of the toggle. Can be 1 or 0.</p>
 <p><strong><a name="MOUSEMOVE_CB">MOUSEMOVE_CB</a></strong>:
   Action generated to notify the application 
   that the mouse has moved over the matrix.&nbsp;</p>
@@ -212,10 +226,10 @@ text drawing will take place.</p>
 <p><strong><a name="DROPCHECK_CB">DROPCHECK_CB</a></strong>:
   Action generated before 
   the current cell is redrawn to determine if a dropdown/popup menu 
-  feedback should be shown. If this action is not registered, no feedback will be shown. 
-Also if the callback is defined and return IUP_DEFAULT for a cell, to show the 
+  feedback or a toggle should be shown. If this action is not registered, no feedback will be shown. 
+If the callback is defined and return IUP_DEFAULT for a cell, to show the 
 dropdown/popup menu the user can simply do a single click in the drop feedback 
-area of that cell.</p>
+area of that cell. (Toggle support since 3.9)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:dropcheck_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -224,7 +238,8 @@ area of that cell.</p>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.</p>
 <p class="info"><span class="style1">Returns:</span> IUP_DEFAULT will show a drop feedback, 
-    or IUP_IGNORE to NOT draw the feedback.</p>
+    IUP_CONTINUE will show and enable the toggle button, or IUP_IGNORE to draw 
+nothing.</p>
 <h3>Editing</h3>
 <p><strong><a name="DROP_CB">DROP_CB</a></strong>:
   Action generated before the current cell 

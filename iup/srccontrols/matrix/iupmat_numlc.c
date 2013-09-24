@@ -48,11 +48,12 @@
    HEIGHT
    NUMERICFORMAT
    NUMERICFORMATTITLE
+   TYPE
 
    Obs: L:C, MARKED and MARK are not stored in the hash table.
 */
 
-#define IMAT_NUM_ATTRIB_LINE 6
+#define IMAT_NUM_ATTRIB_LINE 7
 #define IMAT_NUM_ATTRIB_LINE_ONLY 2
 static char* imatrix_lin_attrib[IMAT_NUM_ATTRIB_LINE] = {
   "RASTERHEIGHT",  /* only the line */
@@ -60,31 +61,34 @@ static char* imatrix_lin_attrib[IMAT_NUM_ATTRIB_LINE] = {
   "BGCOLOR",  /* use "*" in place of column */
   "FGCOLOR",
   "FONT",
+  "TYPE",
   "FRAMEHORIZCOLOR"};
 
-#define IMAT_NUM_ATTRIB_COL 10
+#define IMAT_NUM_ATTRIB_COL 11
 #define IMAT_NUM_ATTRIB_COL_ONLY 6
 static char* imatrix_col_attrib[IMAT_NUM_ATTRIB_COL] = { 
-    "NUMERICFORMAT",   /* only the column */
-    "NUMERICFORMATTITLE",
-    "SORTSIGN",
-    "ALIGNMENT",
-    "RASTERWIDTH",
-    "WIDTH",
-    "BGCOLOR",  /* use "*" in place of line */
-    "FGCOLOR",
-    "FONT",
-    "FRAMEVERTCOLOR"};
+  "NUMERICFORMAT",   /* only the column */
+  "NUMERICFORMATTITLE",
+  "SORTSIGN",
+  "ALIGNMENT",
+  "RASTERWIDTH",
+  "WIDTH",
+  "BGCOLOR",  /* use "*" in place of line */
+  "FGCOLOR",
+  "FONT",
+  "TYPE",
+  "FRAMEVERTCOLOR"};
 
-#define IMAT_NUM_ATTRIB_CELL 7
+#define IMAT_NUM_ATTRIB_CELL 8
 static char* imatrix_cell_attrib[IMAT_NUM_ATTRIB_CELL] = { 
-    "BGCOLOR",   /* all use L:C */
-    "FGCOLOR",
-    "FONT",
-    "MASK",
-    "TYPE",
-    "FRAMEHORIZCOLOR",
-    "FRAMEVERTCOLOR"};
+  "BGCOLOR",   /* all use L:C */
+  "FGCOLOR",
+  "FONT",
+  "TYPE",
+  "MASK",
+  "TOGGLEVALUE",
+  "FRAMEHORIZCOLOR",
+  "FRAMEVERTCOLOR"};
 
 void iupMatrixCopyLinAttributes(Ihandle* ih, int lin1, int lin2)
 {

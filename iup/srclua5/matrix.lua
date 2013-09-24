@@ -18,6 +18,7 @@ local ctrl = {
     enteritem_cb = "nn",
     leaveitem_cb = "nn",
     mousemove_cb = "nn",
+    togglevalue_cb = "nnn",
     colresize_cb = "n",
     scrolltop_cb = "nn",
     fgcolor_cb = "nn",  -- fake definitions to be replaced by matrixfuncs module

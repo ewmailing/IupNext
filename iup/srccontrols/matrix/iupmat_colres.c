@@ -146,29 +146,14 @@ void iupMatrixColResMove(Ihandle* ih, int x)
   cdCanvasWriteMode(ih->data->cdcanvas, CD_REPLACE);
 }
 
-
-static void iMatrixColResResetMatrixCursor(Ihandle* ih)
-{
-  char *cursor = iupAttribGet(ih, "_IUPMAT_CURSOR");
-  if (cursor)
-  {
-    IupStoreAttribute(ih, "CURSOR", cursor);
-    iupAttribSet(ih, "_IUPMAT_CURSOR", NULL);
-  }
-}
-
 /* Change the cursor when it passes over a group of the column titles. */
-void iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y)
+int iupMatrixColResCheckChangeCursor(Ihandle* ih, int x, int y)
 {
   int col = iMatrixGetColResCheck(ih, x, y);
   if (col != -1)
-  {
-    if (!iupAttribGet(ih, "_IUPMAT_CURSOR"))
-      iupAttribSetStr(ih, "_IUPMAT_CURSOR", IupGetAttribute(ih, "CURSOR"));
-    IupSetAttribute(ih, "CURSOR", "RESIZE_W");
-  }
+    return 1;
   else /* It is in the empty area after the last column, or inside a cell */
-    iMatrixColResResetMatrixCursor(ih);
+    return 0;
 }
 
 int iupMatrixColResIsResizing(Ihandle* ih)
