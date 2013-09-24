@@ -21,13 +21,14 @@
 #include "iup_str.h"
 #include "iup_stdcontrols.h"
 
+#include "iup_cdutil.h"
+
 #include "iupmat_def.h"
 #include "iupmat_colres.h"
 #include "iupmat_draw.h"
 
 
 #define IMAT_COLRES_TOL       3
-#define IMAT_RESIZE_COLOR  0x666666L
 
 static int iMatrixGetColResCheck(Ihandle* ih, int x, int y)
 {
@@ -71,6 +72,7 @@ int iupMatrixColResStart(Ihandle* ih, int x, int y)
     ih->data->colres_dragging =  1;
     ih->data->colres_drag_col_last_x = -1;
     ih->data->colres_drag_col = col;
+    ih->data->colres_color = cdIupConvertColor(iupAttribGetStr(ih, "RESIZEMATRIXCOLOR"));
     return 1;
   }
   else
@@ -91,7 +93,7 @@ void iupMatrixColResFinish(Ihandle* ih, int x)
     int y2 = ih->data->h-1;             /* to the bottom of the matrix */
 
     cdCanvasWriteMode(ih->data->cdcanvas, CD_XOR);
-    cdCanvasForeground(ih->data->cdcanvas, IMAT_RESIZE_COLOR);               
+    cdCanvasForeground(ih->data->cdcanvas, ih->data->colres_color);               
     cdCanvasLine(ih->data->cdcanvas, ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y1), 
                                      ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y2));
     cdCanvasWriteMode(ih->data->cdcanvas, CD_REPLACE);
@@ -128,7 +130,7 @@ void iupMatrixColResMove(Ihandle* ih, int x)
   y2 = ih->data->h-1;             /* to the bottom of the matrix */
 
   cdCanvasWriteMode(ih->data->cdcanvas, CD_XOR);
-  cdCanvasForeground(ih->data->cdcanvas, IMAT_RESIZE_COLOR);
+  cdCanvasForeground(ih->data->cdcanvas, ih->data->colres_color);
 
   /* If it is not the first time, move old line */
   if (ih->data->colres_drag_col_last_x != -1)

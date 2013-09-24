@@ -136,6 +136,7 @@ struct _IcontrolData
       colres_drag_col,   /* column being resized, handler is at right of the column */
       colres_drag_col_start_x, /* handler start position */
       colres_drag_col_last_x;  /* previous position */
+  long colres_color;
 
   /* Mark AUX */
   int mark_lin1, mark_col1,  /* used to store the start cell when a block is being marked */

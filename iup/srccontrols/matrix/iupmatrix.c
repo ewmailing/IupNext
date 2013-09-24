@@ -1732,6 +1732,7 @@ Iclass* iupMatrixNewClass(void)
   
   iupClassRegisterAttribute(ic, "READONLY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESIZEMATRIX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RESIZEMATRIXCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "102 102 102", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDEFOCUS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Overwrite IupCanvas Attributes */
