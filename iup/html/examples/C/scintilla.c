@@ -26,8 +26,15 @@ const char* sampleCode = {
   "  printf(\"Printing an integer: %d\\n\", 37);\n\n"
   "  IupMainLoop();\n"
   "  IupClose();\n"
-  "  return EXIT_SUCCESS;\n}\n"
+  "  return EXIT_SUCCESS;\n}\nFIM"
 };
+
+static int k_any(Ihandle *ih, int c)
+{
+  if (c==K_cS) 
+    return IUP_IGNORE;
+  return IUP_CONTINUE;
+}
 
 static int marginclick_cb(Ihandle *self, int margin, int line, char* status)
 {
@@ -113,10 +120,10 @@ static void set_attribs (Ihandle *sci)
   
   IupSetAttribute(sci, "INSERT0", sampleCode);
 
-  if (IupGetInt(NULL, "UTF8MODE"))
-    IupSetAttribute(sci, "PREPEND", "//  UTF8MODE Enabled: (Γ§Γ£ΓµΓ΅Γ³Γ©)");
-  else
-    IupSetAttribute(sci, "PREPEND", "//  UTF8MODE Disabled: (ηγυασι)");
+  //if (IupGetInt(NULL, "UTF8MODE"))
+  //  IupSetAttribute(sci, "PREPEND", "//  UTF8MODE Enabled: (Γ§Γ£ΓµΓ΅Γ³Γ©)");
+  //else
+  //  IupSetAttribute(sci, "PREPEND", "//  UTF8MODE Disabled: (ηγυασι)");
 
   IupSetAttribute(sci, "MARGINWIDTH0", "50");
 
@@ -144,9 +151,11 @@ static void set_attribs (Ihandle *sci)
     IupSetAttribute(sci, "MARGINSENSITIVE1", "YES");
   }
 
-  printf("Number of chars in this text: %s\n", IupGetAttribute(sci, "COUNT"));
-  printf("Number of lines in this text: %s\n", IupGetAttribute(sci, "LINECOUNT"));
-  printf("%s\n", IupGetAttribute(sci, "LINEVALUE"));
+  printf("strlen=%d\n", strlen(sampleCode));
+  printf("COUNT=%s\n", IupGetAttribute(sci, "COUNT"));
+  printf("VALUE=\"%s\"\n", IupGetAttribute(sci, "VALUE"));
+  printf("LINECOUNT=%s\n", IupGetAttribute(sci, "LINECOUNT"));
+  printf("LINEVALUE=\"%s\"\n", IupGetAttribute(sci, "LINEVALUE"));
 }
 
 void ScintillaTest(void)
@@ -168,6 +177,7 @@ void ScintillaTest(void)
   IupSetCallback(sci, "HOTSPOTCLICK_CB", (Icallback)hotspotclick_cb);
 //  IupSetCallback(sci, "BUTTON_CB", (Icallback)button_cb);
 //  IupSetCallback(sci, "MOTION_CB", (Icallback)motion_cb);
+  IupSetCallback(sci, "K_ANY", (Icallback)k_any);
   IupSetCallback(sci, "CARET_CB", (Icallback)caret_cb);
   IupSetCallback(sci, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
   IupSetCallback(sci, "ACTION", (Icallback)action_cb);

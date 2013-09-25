@@ -91,8 +91,12 @@
     <CustomBuildStep Include="..\include\iup_scintilla.h" />
     <ClInclude Include="..\include\iup_scintilla.h" />
     <ClInclude Include="..\srcscintilla\iupsci.h" />
+    <ClInclude Include="..\srcscintilla\lexlib\CharacterCategory.h" />
+    <ClInclude Include="..\srcscintilla\lexlib\SubStyles.h" />
     <ClInclude Include="..\srcscintilla\src\AutoComplete.h" />
     <ClInclude Include="..\srcscintilla\src\CallTip.h" />
+    <ClInclude Include="..\srcscintilla\src\CaseConvert.h" />
+    <ClInclude Include="..\srcscintilla\src\CaseFolder.h" />
     <ClInclude Include="..\srcscintilla\src\Catalogue.h" />
     <ClInclude Include="..\srcscintilla\src\CellBuffer.h" />
     <ClInclude Include="..\srcscintilla\src\CharClassify.h" />
@@ -115,6 +119,7 @@
     <ClInclude Include="..\srcscintilla\src\SplitVector.h" />
     <ClInclude Include="..\srcscintilla\src\Style.h" />
     <ClInclude Include="..\srcscintilla\src\SVector.h" />
+    <ClInclude Include="..\srcscintilla\src\UnicodeFromUTF8.h" />
     <ClInclude Include="..\srcscintilla\src\UniConversion.h" />
     <ClInclude Include="..\srcscintilla\src\ViewStyle.h" />
     <ClInclude Include="..\srcscintilla\src\XPM.h" />
@@ -148,8 +153,14 @@
     <ClCompile Include="..\srcscintilla\iupsci_text.c" />
     <ClCompile Include="..\srcscintilla\iupsci_whitespace.c" />
     <ClCompile Include="..\srcscintilla\iupsci_wordwrap.c" />
+    <ClCompile Include="..\srcscintilla\lexers\LexKVIrc.cxx" />
+    <ClCompile Include="..\srcscintilla\lexers\LexLaTeX.cxx" />
+    <ClCompile Include="..\srcscintilla\lexers\LexSTTXT.cxx" />
+    <ClCompile Include="..\srcscintilla\lexlib\CharacterCategory.cxx" />
     <ClCompile Include="..\srcscintilla\src\AutoComplete.cxx" />
     <ClCompile Include="..\srcscintilla\src\CallTip.cxx" />
+    <ClCompile Include="..\srcscintilla\src\CaseConvert.cxx" />
+    <ClCompile Include="..\srcscintilla\src\CaseFolder.cxx" />
     <ClCompile Include="..\srcscintilla\src\Catalogue.cxx" />
     <ClCompile Include="..\srcscintilla\src\CellBuffer.cxx" />
     <ClCompile Include="..\srcscintilla\src\CharClassify.cxx" />

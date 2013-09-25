@@ -51,7 +51,7 @@ static char* iScintillaGetValueAttrib(Ihandle* ih)
 {
   int len = iupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
   char* str = iupStrGetMemory(len+1);
-  iupScintillaSendMessage(ih, SCI_GETTEXT, len+1, (sptr_t)str);
+  iupScintillaSendMessage(ih, SCI_GETTEXT, len+1, (sptr_t)str); /* include also the terminator */
   return str;
 }
 

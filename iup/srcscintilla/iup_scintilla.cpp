@@ -297,11 +297,9 @@ static int winScintillaWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 
 static int winScintillaMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
-  int ret = 0;
-
   if (msg==WM_KEYDOWN) /* process K_ANY before text callbacks */
   {
-    ret = iupwinBaseMsgProc(ih, msg, wp, lp, result);
+    int ret = iupwinBaseMsgProc(ih, msg, wp, lp, result);
     if (ret) 
     {
       iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", "1");
