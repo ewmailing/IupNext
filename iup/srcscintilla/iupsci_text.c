@@ -51,7 +51,7 @@ static char* iScintillaGetValueAttrib(Ihandle* ih)
 {
   int len = iupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
   char* str = iupStrGetMemory(len+1);
-  iupScintillaSendMessage(ih, SCI_GETTEXT, len, (sptr_t)str);
+  iupScintillaSendMessage(ih, SCI_GETTEXT, len+1, (sptr_t)str);
   return str;
 }
 
@@ -166,7 +166,10 @@ static int iScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetCharAttrib(Ihandle* ih, int pos)
 {
-  return (char*)iupScintillaSendMessage(ih, SCI_GETCHARAT, pos, 0);
+  char str[2];
+  str[0] = (char)iupScintillaSendMessage(ih, SCI_GETCHARAT, pos, 0);
+  str[1] = 0;
+  return iupStrReturnStr(str);
 }
 
 static int iScintillaSetAppendNewlineAttrib(Ihandle* ih, const char* value)

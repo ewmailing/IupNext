@@ -153,8 +153,6 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
   int lin = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pMsg->position, 0);
   int col = iupScintillaSendMessage(ih, SCI_GETCOLUMN, pMsg->position, 0);
 
-printf("code=%d\n", pMsg->nmhdr.code);
-
   switch(pMsg->nmhdr.code)
   {
   case SCN_SAVEPOINTREACHED:
@@ -297,19 +295,36 @@ static int winScintillaWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   return 0; /* result not used */
 }
 
-static int winScintillaProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+static int winScintillaMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
+  int ret = 0;
+
+  if (msg==WM_KEYDOWN) /* process K_ANY before text callbacks */
+  {
+    ret = iupwinBaseMsgProc(ih, msg, wp, lp, result);
+    if (ret) 
+    {
+      iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", "1");
+      *result = 0;
+      return 1;
+    }
+    else
+      iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", NULL);
+  }
+
   switch (msg)
   {
   case WM_CHAR:
     {
-      /* TODO: workaround for Scintilla behavior, 
-         check again if still present in newer versions. */
-      if (wp==VK_ESCAPE)
+      /* even aborting WM_KEYDOWN, a WM_CHAR will be sent, so ignore it also */
+      /* if a dialog was shown, the loop will be processed, so ignore out of focus WM_CHAR messages */
+      if (GetFocus() != ih->handle || iupAttribGet(ih, "_IUPWIN_IGNORE_CHAR"))
       {
+        iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", NULL);
         *result = 0;
         return 1;
       }
+
       break;
     }
   case WM_KEYDOWN:
@@ -417,7 +432,7 @@ static int iScintillaMapMethod(Ihandle* ih)
   IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winScintillaWmNotify);
 
   /* Process BUTTON_CB, MOTION_CB and CARET_CB */
-  IupSetCallback(ih, "_IUPWIN_CTRLPROC_CB", (Icallback)winScintillaProc);
+  IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winScintillaMsgProc);
 #endif
 
   /* configure for DROP of files */
