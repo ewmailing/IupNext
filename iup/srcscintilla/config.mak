@@ -59,7 +59,7 @@ SRCSCINTILLA = src/AutoComplete.cxx src/CallTip.cxx src/Catalogue.cxx src/CellBu
                src/ContractionState.cxx src/Decoration.cxx src/Document.cxx src/Editor.cxx src/ExternalLexer.cxx \
                src/Indicator.cxx src/KeyMap.cxx src/LineMarker.cxx src/PerLine.cxx src/PositionCache.cxx \
                src/RESearch.cxx src/RunStyles.cxx src/ScintillaBase.cxx src/Selection.cxx src/Style.cxx \
-               src/UniConversion.cxx src/ViewStyle.cxx src/XPM.cxx
+               src/UniConversion.cxx src/ViewStyle.cxx src/XPM.cxx src/CaseConvert.cxx src/CaseFolder.cxx
 
 SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers/LexAPDL.cxx lexers/LexAsm.cxx \
 				lexers/LexAsn1.cxx lexers/LexASY.cxx lexers/LexAU3.cxx lexers/LexAVE.cxx lexers/LexAVS.cxx \
@@ -80,11 +80,12 @@ SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers
 				lexers/LexSmalltalk.cxx lexers/LexSML.cxx lexers/LexSorcus.cxx lexers/LexSpecman.cxx \
 				lexers/LexSpice.cxx lexers/LexSQL.cxx lexers/LexTACL.cxx lexers/LexTADS3.cxx lexers/LexTAL.cxx \
 				lexers/LexTCL.cxx lexers/LexTCMD.cxx lexers/LexTeX.cxx lexers/LexTxt2tags.cxx lexers/LexVB.cxx \
-				lexers/LexVerilog.cxx lexers/LexVHDL.cxx lexers/LexVisualProlog.cxx lexers/LexYAML.cxx
+				lexers/LexVerilog.cxx lexers/LexVHDL.cxx lexers/LexVisualProlog.cxx lexers/LexYAML.cxx \
+        lexers/LexKVIrc.cxx lexers/LexLaTeX.cxx lexers/LexSTTXT.cxx
 				
 SRCSCINTILLA += lexlib/Accessor.cxx lexlib/CharacterSet.cxx lexlib/LexerBase.cxx lexlib/LexerModule.cxx \
                 lexlib/LexerNoExceptions.cxx lexlib/LexerSimple.cxx lexlib/PropSetSimple.cxx \
-                lexlib/StyleContext.cxx lexlib/WordList.cxx
+                lexlib/StyleContext.cxx lexlib/WordList.cxx lexlib/CharacterCategory.cxx
 
 ifdef USE_GTK
   SRCSCINTILLA += gtk/PlatGTK.cxx gtk/ScintillaGTK.cxx gtk/scintilla-marshal.c
