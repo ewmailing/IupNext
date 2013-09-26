@@ -10,8 +10,8 @@
 #ifndef __IUP_H 
 #define __IUP_H
 
-#include <iupkey.h>
-#include <iupdef.h>
+#include "iupkey.h"
+#include "iupdef.h"
 
 #ifdef __cplusplus
 extern "C" {
