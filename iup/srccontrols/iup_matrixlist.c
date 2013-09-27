@@ -878,18 +878,18 @@ static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int up
   if (!IupGetIntId2(ih, "LINEACTIVE", lin, col))
     return IUP_IGNORE;
 
-  /* call application callback first when start editing */
-  if (mode==1 && linedition_cb)
+  /* call application callback before anything */
+  if (linedition_cb)
   {
     ret = linedition_cb(ih, lin, col, mode, update);
     if (ret == IUP_IGNORE)
       return IUP_IGNORE;
   }
 
-  if (mode==1)
+  if (mode==1 && mtxList->image_col)
   {
     mtxList->showing_delete = 1;
-    IupSetAttribute(ih, "REDRAW", "ALL");
+    IupSetfAttribute(ih, "REDRAW", "C%d", mtxList->image_col);
   }
 
   /* adding a new line */
@@ -899,7 +899,7 @@ static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int up
     if (update==0)
     {
       IupSetAttribute(ih, "VALUE", "");
-      IupSetfAttribute(ih, "REDRAW", "%d:%d", lin, col);
+      IupSetfAttribute(ih, "REDRAW", "L%d", lin);
     }
     else
     {
@@ -918,7 +918,7 @@ static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int up
         if (ret == IUP_IGNORE)
         {
           IupSetAttribute(ih, "VALUE", "");
-          IupSetfAttribute(ih, "REDRAW", "%d:%d", lin, col);
+          IupSetfAttribute(ih, "REDRAW", "L%d", lin);
         }
         else
         {
@@ -929,14 +929,6 @@ static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int up
         }
       }
     }
-  }
-
-  /* call application callback last when end editing */
-  if (mode==0 && linedition_cb)
-  {
-    ret = linedition_cb(ih, lin, col, mode, update);
-    if (ret == IUP_IGNORE)
-      return IUP_IGNORE;
   }
 
   return IUP_DEFAULT;
