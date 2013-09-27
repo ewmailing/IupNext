@@ -107,8 +107,9 @@ ARBCONTEXT=Yes. (since 3.6)</p>
 <p><strong>DEPTH_SIZE</strong>:
   Indicates the number of bits for 
   representing the <i>z</i> coordinate in the z-buffer. Value 0 means the z-buffer is not necessary.&nbsp;</p>
-<p><b>ERROR</b> (read-only): If an error is found, returns a string containing a description of 
-  the error in English.</p>
+<p><b>ERROR</b> (read-only): If an error is found during <strong>IupMap</strong> 
+and <b>IupGLMakeCurrent</b>, returns a string containing a description of 
+  the error in English. See notes bellow.</p>
 <p><b>LASTERROR</b> (read-only) [Windows Only]: If an error is found, returns a 
 string with the system error description. (Since 3.6)</p>
 <p><strong>RED_SIZE</strong>,<strong> GREEN_SIZE</strong> and<strong> 
@@ -117,7 +118,7 @@ string with the system error description. (Since 3.6)</p>
   each color component (valid only for RGBA). The system default is usually 8 for each component (True Color support).</p>
 <p><strong>REFRESHCONTEXT</strong> (write-only) [Windows Only]: action attribute 
 to refresh the internal device context when it is not owned by the window class. 
-The IupCanvas of the Win32 driver will always create a window with an owned DC, 
+The <strong>IupCanvas</strong> of the Win32 driver will always create a window with an owned DC, 
 but GTK in Windows will not. (since 3.0)</p>
 <p><strong>STENCIL_SIZE</strong>:
   Indicates the number of bits in the stencil 
@@ -125,8 +126,10 @@ but GTK in Windows will not. (since 3.0)</p>
   Default is 0.</p>
 <p><b>STEREO</b>: Creates a stereo GL canvas (special glasses are required to 
   visualize it correctly). Possible values: &quot;YES&quot; or &quot;NO&quot;. 
-  Default: &quot;NO&quot;.</p>
-<p><strong>SHAREDCONTEXT</strong>: name of another IupGLCanvas that will share its 
+  Default: &quot;NO&quot;. When this flag is set to Yes but the OpenGL driver 
+does not support it, the map will be successful and STEREO will be set to NO and 
+ERROR will not be set (since 3.9).</p>
+<p><strong>SHAREDCONTEXT</strong>: name of another <strong>IupGLCanvas</strong> that will share its 
   display lists and textures. That canvas must be mapped before this canvas.</p>
 <p><strong>VISUAL</strong> (read-only)<strong>:</strong> Returns &quot;XVisualInfo*&quot; in UNIX 
 and &quot;HDC&quot; in Win32.</p>
@@ -135,13 +138,15 @@ and &quot;HDC&quot; in Win32.</p>
 <p>The 
   <strong>IupGLCanvas</strong> element understands all callbacks defined for a conventional canvas, 
   see <a href="../elem/iupcanvas.html">IupCanvas</a>.</p>
-<p>Addicionally:</p>
+<p>Additionally:</p>
 <p><a href="../call/iup_resize_cb.html">RESIZE_CB</a>: 
   By default the resize callback sets:</p>
 <pre>glViewport(0,0,width,height);</pre>
 <h3>Auxiliary Functions</h3>
 <p>These are auxiliary functions based on the WGL and XGL extensions. Check the 
-respective documentations for more information.</p>
+respective documentations for more information. ERROR attribute will be set to 
+&quot;Failed to set new current context.&quot; if the call failed. It will reset 
+ERROR to NULL if successful.</p>
 <pre>void <b>IupGLMakeCurrent</b>(Ihandle* <b>ih</b>); [in C]
 <b>iup.GLMakeCurrent</b>(<b>ih</b>: ihandle) [in Lua]</pre>
 <p>Activates the given canvas as the current OpenGL context. All subsequent OpenGL commands are directed to 
@@ -171,6 +176,13 @@ acceleration will be disabled.</p>
 (X-Windows).</p>
 <p>Not available in SunOS510x86 just because we were not able to compile OpenGL 
 code in our installation.</p>
+<p>Possible ERROR strings during <strong>IupMap</strong>:</p>
+<pre>
+"X server has no OpenGL GLX extension." - OpenGL not supported (UNIX Only)
+"No appropriate visual." - Failed to choose a Visual (UNIX Only) 
+"No appropriate pixel format." - Failed to choose a Pixel Format (Windows Only)
+"Could not create a rendering context." - Failed to create the OpenGL context. (Windows and UNIX)
+</pre>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <p class="style1"><img src="images/iupglcanvas.png" width="300" height="300"></p>

@@ -93,12 +93,6 @@ static void xGLCanvasGetVisual(Ihandle* ih, IGlControlData* gldata)
     alist[n++] = GLX_DOUBLEBUFFER;
   }
 
-  /* stereo */
-  if (iupAttribGetBoolean(ih,"STEREO"))
-  {
-    alist[n++] = GLX_STEREO;
-  }
-
   /* rgba or index */ 
   if (iupStrEqualNoCase(iupAttribGetStr(ih,"COLOR"), "INDEX"))
   {
@@ -187,12 +181,20 @@ static void xGLCanvasGetVisual(Ihandle* ih, IGlControlData* gldata)
     alist[n++] = GLX_ACCUM_ALPHA_SIZE;
     alist[n++] = number;
   }
+
+  /* stereo */
+  if (iupAttribGetBoolean(ih,"STEREO"))
+  {
+    alist[n++] = GLX_STEREO;
+  }
+
+  /* TERMINATOR */
   alist[n++] = None;
 
   /* check out X extension */
   if (!glXQueryExtension(gldata->display, &erb, &evb))
   {
-    iupAttribSet(ih, "ERROR", "X server has no OpenGL GLX extension");
+    iupAttribSet(ih, "ERROR", "X server has no OpenGL GLX extension.");
     return;
   }
 
@@ -200,7 +202,20 @@ static void xGLCanvasGetVisual(Ihandle* ih, IGlControlData* gldata)
   gldata->vinfo = glXChooseVisual(gldata->display, DefaultScreen(gldata->display), alist);
   if (!gldata->vinfo)
   {
-    iupAttribSet(ih, "ERROR", "No appropriate visual");
+    if (iupAttribGetBoolean(ih,"STEREO"))
+    {
+      /* remove the stereo flag and try again */
+      n--;
+      alist[n] = None;
+      iupAttribSet(ih, "STEREO", "NO");
+
+      gldata->vinfo = glXChooseVisual(gldata->display, DefaultScreen(gldata->display), alist);
+    }
+  }
+
+  if (!gldata->vinfo)
+  {
+    iupAttribSet(ih, "ERROR", "No appropriate visual.");
     return;
   }
 
@@ -333,7 +348,7 @@ static int xGLCanvasMapMethod(Ihandle* ih)
 
   if (!gldata->context)
   {
-    iupAttribSet(ih, "ERROR", "Could not create a rendering context");
+    iupAttribSet(ih, "ERROR", "Could not create a rendering context.");
     return IUP_NOERROR;
   }
 
@@ -400,7 +415,7 @@ static Iclass* xGlCanvasNewClass(void)
 
   iupClassRegisterAttribute(ic, "BUFFER", NULL, NULL, IUPAF_SAMEASSYSTEM, "SINGLE", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "COLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "RGBA", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "ERROR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ERROR", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CONTEXT", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "VISUAL", xGLCanvasGetVisualAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING|IUPAF_NOT_MAPPED);
@@ -477,7 +492,7 @@ void IupGLMakeCurrent(Ihandle* ih)
     return;
 
   if (glXMakeCurrent(gldata->display, gldata->window, gldata->context)==False)
-    iupAttribSet(ih, "ERROR", "Failed to set new current context");
+    iupAttribSet(ih, "ERROR", "Failed to set new current context.");
   else
   {
     iupAttribSet(ih, "ERROR", NULL);

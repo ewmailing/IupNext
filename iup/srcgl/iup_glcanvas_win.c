@@ -296,13 +296,6 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
   if (shared_context)
     wglShareLists(shared_context, gldata->context);
 
-  DescribePixelFormat(gldata->device, pixelFormat, sizeof(PIXELFORMATDESCRIPTOR), &test_pfd);
-  if ((pfd.dwFlags & PFD_STEREO) && !(test_pfd.dwFlags & PFD_STEREO))
-  {
-    iupAttribSet(ih, "ERROR", "Stereo not available.");
-    return IUP_NOERROR;
-  }
-
   /* create colormap for index mode */
   if (isIndex)
   {
@@ -316,6 +309,13 @@ static int wGLCreateContext(Ihandle* ih, IGlControlData* gldata)
 
     SelectPalette(gldata->device,gldata->palette,FALSE);
     RealizePalette(gldata->device);
+  }
+
+  DescribePixelFormat(gldata->device, pixelFormat, sizeof(PIXELFORMATDESCRIPTOR), &test_pfd);
+  if ((pfd.dwFlags & PFD_STEREO) && !(test_pfd.dwFlags & PFD_STEREO))
+  {
+    iupAttribSet(ih, "STEREO", "NO");
+    return IUP_NOERROR;
   }
 
   iupAttribSet(ih, "ERROR", NULL);
@@ -411,7 +411,7 @@ static Iclass* wGlCanvasNewClass(void)
 
   iupClassRegisterAttribute(ic, "BUFFER", NULL, NULL, IUPAF_SAMEASSYSTEM, "SINGLE", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "COLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "RGBA", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "ERROR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ERROR", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CONTEXT", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "VISUAL", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_STRING);
@@ -490,7 +490,7 @@ void IupGLMakeCurrent(Ihandle* ih)
 
   if (wglMakeCurrent(gldata->device, gldata->context)==FALSE)
   {
-    iupAttribSet(ih, "ERROR", "Failed to set new current context");
+    iupAttribSet(ih, "ERROR", "Failed to set new current context.");
     iupAttribSetStr(ih, "LASTERROR", IupGetGlobal("LASTERROR"));
   }
   else

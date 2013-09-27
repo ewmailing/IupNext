@@ -51,6 +51,7 @@ static int action(Ihandle *ih)
 
 void GLCanvasTest(void)
 {
+  char* error;
   Ihandle *dlg, *canvas, *box;
 
   IupGLCanvasOpen();
@@ -62,6 +63,7 @@ void GLCanvasTest(void)
   IupSetCallback(canvas, "ACTION", action);
   IupSetAttribute(canvas, "BUFFER", "DOUBLE");
   IupSetAttribute(canvas, "BORDER", "NO");
+//  IupSetAttribute(canvas, "STEREO", "Yes");
   IupSetAttribute(canvas, "RASTERSIZE", "300x200");
   IupSetCallback(canvas, "BUTTON_CB",    (Icallback)button_cb);
   IupSetCallback(canvas, "RESIZE_CB",    (Icallback)resize_cb);
@@ -73,11 +75,21 @@ void GLCanvasTest(void)
 
 printf("IupMap\n");
   IupMap(dlg);
+
+//printf("STEREO=%s\n", IupGetAttribute(canvas, "STEREO"));
+
+  error = IupGetAttribute(canvas, "ERROR");
+  if (error)
+    printf("ERROR=%s\n", error);
+
   IupGLMakeCurrent(canvas);
   printf("Vendor: %s\n", glGetString(GL_VENDOR));
   printf("Renderer: %s\n", glGetString(GL_RENDERER));
   printf("Version: %s\n", glGetString(GL_VERSION));
-  IupMap(dlg);
+
+  error = IupGetAttribute(canvas, "ERROR");
+  if (error)
+    printf("ERROR=%s\n", error);
 
 printf("IupShow\n");
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
