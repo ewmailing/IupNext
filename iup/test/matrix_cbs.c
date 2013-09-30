@@ -64,6 +64,15 @@ static int click(Ihandle *self, int lin, int col)
   return IUP_DEFAULT;
 }
 
+static int release(Ihandle *self, int lin, int col)
+{
+  char* value = IupGetAttributeId2(self, "", lin, col);
+  if (!value) value = "NULL";
+  printf("release_cb(%d, %d)\n", lin, col);
+  printf("  VALUE%d:%d = %s\n", lin, col, value);
+  return IUP_DEFAULT;
+}
+
 static int drop(Ihandle *self, Ihandle *drop, int lin, int col)
 {
   printf("drop_cb(%d, %d)\n", lin, col);
@@ -203,6 +212,7 @@ static Ihandle *create_mat(int mati)
   IupSetCallback(mat,"DROPCHECK_CB",(Icallback)dropcheck);
   IupSetCallback(mat,"EDITION_CB",(Icallback)edition);
   IupSetCallback(mat,"CLICK_CB",(Icallback)click);
+  IupSetCallback(mat,"RELEASE_CB",(Icallback)release);
   IupSetCallback(mat,"DRAW_CB",(Icallback)drawcb);
   IupSetCallback(mat,"ACTION_CB",(Icallback)actioncb);
 

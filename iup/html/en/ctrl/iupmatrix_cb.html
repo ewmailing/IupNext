@@ -110,7 +110,9 @@ mouse button was pressed.<br>
     cursor is currently on.</p>
 <p><strong><a name="ENTERITEM_CB">ENTERITEM_CB</a></strong>:
   Action generated when a matrix cell is 
-  selected, becoming the current cell. Also called when matrix is getting focus.</p>
+  selected, becoming the current cell. Also called when matrix is getting focus. 
+Also called when focus is changed because lines or columns were added or removed 
+(since 3.9).</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:enteritem_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
