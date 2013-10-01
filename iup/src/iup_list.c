@@ -611,7 +611,27 @@ static int iListSetDNDListsAttrib(Ihandle* ih, const char* value)
 
 /*****************************************************************************************/
 
-int iupdrvListDragData_CB(Ihandle *ih, char* type, void *data, int len)
+int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
+{
+  int pos = IupConvertXYToPos(ih, x, y);
+  DNDlistData *item = (DNDlistData*)data;
+  (void)len;
+  (void)type;
+  
+  if(!item)
+    return IUP_IGNORE;
+  
+  pos--;  /* IUP starts at 1 */
+
+  iupdrvListInsertItem(ih, pos, item->value);
+
+  if(item->image)
+    iupdrvListSetImageHandle(ih, ++pos, item->image);
+
+  return IUP_DEFAULT;
+}
+
+int iupListDragData_CB(Ihandle *ih, char* type, void *data, int len)
 {
   DNDlistData *item = (DNDlistData*)iupAttribGet(ih, "_IUP_LIST_SOURCEITEM");
   int is_shift = 0, is_ctrl = 0;
@@ -632,31 +652,44 @@ int iupdrvListDragData_CB(Ihandle *ih, char* type, void *data, int len)
      A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
      When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
   if(IupGetInt(ih, "DRAGSOURCEMOVE") && !is_ctrl)
-    iupdrvListRemoveItem(ih, iupAttribGetInt(ih, "_IUP_LIST_SOURCEPOS"));
+    iupdrvListRemoveItem(ih, iupAttribGetInt(ih, "_IUP_LIST_SOURCEPOS")-1);  /* IUP starts at 1 */
   
   return IUP_DEFAULT;
 }
 
-int iupdrvListDragDataSize_CB(Ihandle* ih, char* type)
+int iupListDragDataSize_CB(Ihandle* ih, char* type)
 {
   (void)type;
   if(iupAttribGet(ih, "_IUP_LIST_SOURCEITEM"))
-  {
-    if (!iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Motif"))
-      return sizeof(DNDlistData);
-    else
-      return strlen(iupAttribGet(ih, "_IUP_LIST_SOURCEITEM"))+1;
-  }
+    return sizeof(DNDlistData);
   else
     return 0;
 }
 
-int iupdrvListDragEnd_CB(Ihandle *ih, int del)
+int iupListDragEnd_CB(Ihandle *ih, int del)
 {
   iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", 0);
   free(iupAttribGet(ih, "_IUP_LIST_SOURCEITEM"));
   iupAttribSet(ih, "_IUP_LIST_SOURCEITEM", NULL);
   (void)del;
+  return IUP_DEFAULT;
+}
+
+int iupListDragBegin_CB(Ihandle* ih, int x, int y)
+{
+  int pos = IupConvertXYToPos(ih, x, y);
+  DNDlistData *item = (DNDlistData*)malloc(sizeof(DNDlistData));
+
+  item->value = IupGetAttribute(ih, iupStrReturnInt(pos));
+
+  if(!item->value)
+    return IUP_IGNORE;
+
+  item->image = iupdrvListGetImageHandle(ih, pos);
+  
+  iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", pos);
+  iupAttribSet(ih, "_IUP_LIST_SOURCEITEM", (char*)item);
+
   return IUP_DEFAULT;
 }
 

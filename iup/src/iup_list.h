@@ -21,10 +21,6 @@ void iupdrvListInsertItem(Ihandle* ih, int pos, const char* value);
 void iupdrvListRemoveItem(Ihandle* ih, int pos);
 void iupdrvListRemoveAllItems(Ihandle* ih);
 
-int iupdrvListDragData_CB(Ihandle *ih, char* type, void *data, int len);
-int iupdrvListDragDataSize_CB(Ihandle* ih, char* type);
-int iupdrvListDragEnd_CB(Ihandle *ih, int del);
-
 /* Used by List and Text, implemented in Text */
 int iupEditCallActionCb(Ihandle* ih, IFnis cb, const char* insert_value, int start, int end, void *mask, int nc, int remove_dir, int utf8);
 
@@ -42,7 +38,13 @@ int iupListCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int *is_ctrl);
 void iupListSetInitialItems(Ihandle* ih);
 void iupListUpdateOldValue(Ihandle* ih, int pos, int removed);
 void* iupdrvListGetImageHandle(Ihandle* ih, int id);
+int iupdrvListSetImageHandle(Ihandle* ih, int id, void* hImage);
 
+int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y);
+int iupListDragData_CB(Ihandle *ih, char* type, void *data, int len);
+int iupListDragDataSize_CB(Ihandle* ih, char* type);
+int iupListDragEnd_CB(Ihandle *ih, int del);
+int iupListDragBegin_CB(Ihandle* ih, int x, int y);
 
 typedef struct _DNDlistData {
   char* value;
