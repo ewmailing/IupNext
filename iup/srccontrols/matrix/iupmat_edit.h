@@ -12,12 +12,11 @@
 extern "C" {
 #endif
 
-int   iupMatrixEditIsVisible  (Ihandle *ih);
-int   iupMatrixEditShow       (Ihandle* ih);
-int   iupMatrixEditHide      (Ihandle* ih);
-void  iupMatrixEditForceHidden(Ihandle* ih);
-char* iupMatrixEditGetValue   (Ihandle* ih);
-void  iupMatrixEditCreate     (Ihandle* ih);
+int   iupMatrixEditIsVisible(Ihandle *ih);
+int   iupMatrixEditShow     (Ihandle* ih);
+void  iupMatrixEditHide     (Ihandle* ih);
+char* iupMatrixEditGetValue (Ihandle* ih);
+void  iupMatrixEditCreate   (Ihandle* ih);
 
 #ifdef __cplusplus
 }

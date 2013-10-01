@@ -1254,7 +1254,7 @@ static int iMatrixSetVisibleAttrib(Ihandle* ih, const char* value)
   if (!iupStrBoolean(value))
   {
     if (iupMatrixEditIsVisible(ih))
-      iupMatrixEditForceHidden(ih);
+      iupMatrixEditHide(ih);
   }
 
   return iupBaseSetVisibleAttrib(ih, value);
@@ -1313,7 +1313,7 @@ static int iMatrixResize_CB(Ihandle* ih)
     cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
 
     if (old_w != ih->data->w || old_h != ih->data->h)
-      iupMatrixEditForceHidden(ih);
+      iupMatrixEditHide(ih);
   }
 
   ih->data->need_calcsize = 1;

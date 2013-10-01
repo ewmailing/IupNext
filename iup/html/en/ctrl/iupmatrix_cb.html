@@ -320,28 +320,31 @@ the popup menu.</p>
 <strong>mode</strong>:
     1 if the cell has entered the edition mode, or 0 if the cell has left the edition mode.<br>
 <strong>update</strong>: used when mode=0 to identify if the value will be 
-updated whe the callback returns with IUP_DEFAULT. (since 3.0)</p>
+updated when the callback returns with IUP_DEFAULT. (since 3.0)</p>
 <p class="info"><span class="style1">Returns:</span> can be IUP_DEFAULT, 
 IUP_IGNORE or IUP_CONTINUE.</p>
-<p class="info">When <strong>mode</strong>=1 editing is allowed if the callback returns 
+<p class="info">If the callback does not exists the cell can always be edited 
+and the new value is always accepted.</p>
+<p class="info">When editing is started, <strong>mode</strong>=1 and <strong>
+update</strong>=0. Editing is allowed if the callback returns 
 IUP_DEFAULT, so to make the cell read-only return IUP_IGNORE.</p>
-<p class="info">When <strong>mode</strong>=0 the new value is accepted only if the callback returns
-    IUP_DEFAULT. The VALUE attribute returns the new value that will be updated 
-in the cell. If 
+<p class="info">When editing ends, <strong>mode</strong>=0 and <strong>update</strong> 
+can be 0 or 1. The new value is accepted only if the callback returns
+    IUP_DEFAULT. The VALUE attribute when consulted inside the callback returns the new value that will be updated 
+in the cell. <strong>update</strong>=0 only when the user cancel the editing by 
+pressing the <b>Esc</b> 
+key. If 
 the callback returns IUP_CONTINUE the edit mode is ended and the 
 new value will not be updated, so the application can set a different value 
-during the callback (usefull 
+during the callback (useful 
 to format the new value). If the callback returns IUP_IGNORE the 
-editing is not ended. </p>
-<p class="info">If the callback does not exists the value can always be edited 
-and it is always accepted.</p>
-<p class="info">If the control loses its focus the edition mode will be 
-    ended always even if the callback return
-    IUP_IGNORE. In this case <strong>update</strong> is 0.</p>
-<p class="info">This callback is also called if the user cancel the editing with <b>Esc</b> 
-(in this case <strong>update</strong> is 0)<b>,</b> and when the user press 
+editing is not ended, with several exceptions: the <strong>Esc</strong> key was 
+used; the matrix size, scroll or visibility was changed during edition mode; a 
+click in another cell; or the edit control loses its focus.</p>
+<p class="info">This callback is also called when the user press 
 <b>Del</b> to 
-    validate the operation for each cell been cleared (in this case is called only with mode=1).</p>
+    clear the cell contents. The callback will simply validate the operation for each cell been cleared. 
+In this case is called with <strong>mode</strong>=1 and <strong>update</strong>=1.</p>
 <h3>Callback Mode</h3>
 <p><strong><a name="VALUE_CB">VALUE_CB</a></strong>:
   Action generated to verify the value of a 

@@ -39,6 +39,60 @@ static int iMatrixEditCallEditionCb(Ihandle* ih, int mode, int update)
   return ret;
 }
 
+static int iMatrixEditFinish(Ihandle* ih, int setfocus, int update, int accept_ignore)
+{
+  if (IupGetInt(ih->data->datah, "VISIBLE"))
+  {
+    int ret;
+
+    /* Avoid calling EDITION_CB twice. Usually because a killfocus. */
+    if (iupAttribGet(ih, "_IUPMAT_CALL_EDITION"))
+      return IUP_DEFAULT;
+
+    iupAttribSet(ih, "_IUPMAT_CALL_EDITION", "1");
+    ret = iMatrixEditCallEditionCb(ih, 0, update);
+    iupAttribSet(ih, "_IUPMAT_CALL_EDITION", NULL);
+
+    if (ret == IUP_IGNORE && accept_ignore)
+      return IUP_IGNORE;
+
+    iupAttribSet(ih, "_IUPMAT_IGNOREFOCUS", "1");
+
+    IupSetAttribute(ih->data->datah, "VISIBLE", "NO");
+    IupSetAttribute(ih->data->datah, "ACTIVE",  "NO");
+
+    if (setfocus)
+    {
+      IupSetFocus(ih);
+      ih->data->has_focus = 1; /* set this so even if getfocus_cb is not called the focus is drawn */
+    }
+
+    iupAttribSet(ih, "_IUPMAT_IGNOREFOCUS", NULL);
+
+#ifdef SunOS
+    /* Usually when the edit control is hidden the matrix is automatically repainted by the system, except in SunOS. */
+    iupMatrixDrawUpdate(ih);
+#endif
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iupMatrixEditConfirm(Ihandle* ih)
+{
+  return iMatrixEditFinish(ih, 1, 1, 1); /* setfocus + update + accept_ignore */
+}
+
+void iupMatrixEditHide(Ihandle* ih)
+{
+  iMatrixEditFinish(ih, 0, 1, 0); /* NO setfocus + update + NO accept_ignore */
+}
+
+static void iupMatrixEditAbort(Ihandle* ih)
+{
+  iMatrixEditFinish(ih, 1, 0, 0); /* setfocus + NO update + NO accept_ignore */
+}
+
 static int iMatrixMenuItemAction(Ihandle* ih)
 {
   Ihandle* ih_menu = ih->parent;
@@ -168,8 +222,8 @@ static int iMatrixEditDropDownAction_CB(Ihandle* ih, char* t, int i, int v)
     the value is accepted and the matrix leaves edition mode. */
     if (ret == IUP_CONTINUE)
     {
-      iupMatrixEditHide(ih_matrix);
-      iupMatrixDrawUpdate(ih_matrix);
+      if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
+        iupMatrixDrawUpdate(ih_matrix);
     }
   }
 
@@ -194,45 +248,6 @@ static void iMatrixEditChooseElement(Ihandle* ih)
     IupStoreAttribute(ih->data->texth, "VALUE", value);
     IupStoreAttribute(ih->data->texth, "PREVIOUSVALUE", value);
   }
-}
-
-static int iMatrixEditCancel(Ihandle* ih, int focus, int update, int ignore)
-{
-  if (IupGetInt(ih->data->datah, "VISIBLE"))
-  {
-    int ret;
-
-    /* Avoid calling EDITION_CB twice. Usually because a killfocus. */
-    if (iupAttribGet(ih, "_IUPMAT_CALL_EDITION"))
-      return IUP_DEFAULT;
-
-    iupAttribSet(ih, "_IUPMAT_CALL_EDITION", "1");
-    ret = iMatrixEditCallEditionCb(ih, 0, update);
-    iupAttribSet(ih, "_IUPMAT_CALL_EDITION", NULL);
-
-    if (ret == IUP_IGNORE && ignore)
-      return IUP_IGNORE;
-
-    iupAttribSet(ih, "_IUPMAT_IGNOREFOCUS", "1");
-
-    IupSetAttribute(ih->data->datah, "VISIBLE", "NO");
-    IupSetAttribute(ih->data->datah, "ACTIVE",  "NO");
-
-    if (focus)
-    {
-      IupSetFocus(ih);
-      ih->data->has_focus = 1; /* set this so even if getfocus_cb is not called the focus is drawn */
-    }
-
-    iupAttribSet(ih, "_IUPMAT_IGNOREFOCUS", NULL);
-
-#ifdef SunOS
-    /* Usually when the edit control is hidden the matrix is automatically repainted by the system, except in SunOS. */
-    iupMatrixDrawUpdate(ih);
-#endif
-  }
-
-  return IUP_DEFAULT;
 }
 
 static int iMatrixEditDropDown_CB(Ihandle* ih, int state)
@@ -266,18 +281,8 @@ static int iMatrixEditKillFocus_CB(Ihandle* ih)
   if (iupAttribGet(ih_matrix, "_IUPMAT_IGNOREFOCUS"))
     return IUP_DEFAULT;
 
-  iupMatrixEditForceHidden(ih_matrix);
+  iupMatrixEditHide(ih_matrix);
   return IUP_DEFAULT;
-}
-
-int iupMatrixEditHide(Ihandle* ih)
-{
-  return iMatrixEditCancel(ih, 1, 1, 1); /* set focus + update + use ignore */
-}
-
-void iupMatrixEditForceHidden(Ihandle* ih)
-{
-  iMatrixEditCancel(ih, 0, 1, 0); /* no focus + update + no ignore */
 }
 
 int iupMatrixEditIsVisible(Ihandle* ih)
@@ -316,7 +321,7 @@ int iupMatrixEditShow(Ihandle* ih)
     return 0;
 
   /* notify application */
-  if (iMatrixEditCallEditionCb(ih, 1, 0) == IUP_IGNORE)
+  if (iMatrixEditCallEditionCb(ih, 1, 0) == IUP_IGNORE)  /* only place where mode=1 */
     return 0;
 
   if (iMatrixEditCallMenuDropCb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
@@ -413,7 +418,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
     case K_cDOWN:
     case K_cLEFT:
     case K_cRIGHT:     
-      if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
+      if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
       {
         iupMatrixProcessKeyPress(ih_matrix, c);  
         return IUP_IGNORE;
@@ -423,7 +428,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
       if (IupGetInt(ih, "CARET") == 1)
       {
         /* if at the first line of the text */
-        if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
+        if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
         {
           iupMatrixProcessKeyPress(ih_matrix, c);  
           return IUP_IGNORE;
@@ -438,7 +443,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
           /* if at the last line of the text */
           if (iupStrLineCount(value) == IupGetInt(ih, "CARET"))
           {
-            if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
+            if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
             {
               iupMatrixProcessKeyPress(ih_matrix, c);  
               return IUP_IGNORE;
@@ -451,7 +456,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
       if (IupGetInt(ih, "CARETPOS") == 0)
       {
         /* if at the first character */
-        if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
+        if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
         {
           iupMatrixProcessKeyPress(ih_matrix, c);  
           return IUP_IGNORE;
@@ -466,7 +471,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
           /* if at the last character */
           if ((int)strlen(value) == IupGetInt(ih, "CARETPOS"))
           {
-            if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
+            if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
             {
               iupMatrixProcessKeyPress(ih_matrix, c);  
               return IUP_IGNORE;
@@ -476,10 +481,10 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
       }
       break;
     case K_ESC:
-      iMatrixEditCancel(ih_matrix, 1, 0, 0); /* set focus + NO update + NO ignore */
+      iupMatrixEditAbort(ih_matrix);
       return IUP_IGNORE;  /* always ignore to avoid the defaultesc behavior from here */
     case K_CR:
-      if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
+      if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
       {
         if (iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Win32") && IupGetInt(ih, "MULTILINE"))
         {
@@ -517,7 +522,7 @@ static int iMatrixEditDropDownKeyAny_CB(Ihandle* ih, int c)
   switch (c)
   {
     case K_CR:
-      if (iupMatrixEditHide(ih_matrix) == IUP_DEFAULT)
+      if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
       {
         if (iupMatrixAuxCallLeaveCellCb(ih_matrix) != IUP_IGNORE)
         {
@@ -529,7 +534,7 @@ static int iMatrixEditDropDownKeyAny_CB(Ihandle* ih, int c)
       }
       break;
     case K_ESC:
-      iMatrixEditCancel(ih_matrix, 1, 0, 0); /* set focus + NO update + NO ignore */
+      iupMatrixEditAbort(ih_matrix);
       return IUP_IGNORE;
   }
 

@@ -402,13 +402,13 @@ int iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode, int
 
 void iupMatrixAuxCopyLin(Ihandle* ih, int from_lin, int to_lin)
 {
-  int col, num_col = ih->data->columns.num;
+  int col, columns_num = ih->data->columns.num;
 
   /* since we can not undo the attribute copy, disable data undo */
   int old_undo = ih->data->undo_redo;
   ih->data->undo_redo = 0;
 
-  for(col = 0; col < num_col; col++)
+  for(col = 0; col < columns_num; col++)
     iupMatrixCopyValue(ih, from_lin, col, to_lin, col);
 
   ih->data->undo_redo = old_undo;
@@ -418,13 +418,13 @@ void iupMatrixAuxCopyLin(Ihandle* ih, int from_lin, int to_lin)
 
 void iupMatrixAuxCopyCol(Ihandle* ih, int from_col, int to_col)
 {
-  int lin, num_lin = ih->data->lines.num;
+  int lin, lines_num = ih->data->lines.num;
 
   /* since we can not undo the attribute copy, disable data undo */
   int old_undo = ih->data->undo_redo;
   ih->data->undo_redo = 0;
 
-  for(lin = 0; lin < num_lin; lin++)
+  for(lin = 0; lin < lines_num; lin++)
     iupMatrixCopyValue(ih, lin, from_col, lin, to_col);
 
   ih->data->undo_redo = old_undo;

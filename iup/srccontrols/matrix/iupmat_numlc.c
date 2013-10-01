@@ -195,6 +195,8 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
 {
   int lin;
 
+  /* Here the size of the matrix is already updated */
+
   if (add)  /* ADD */
   {
     /* copy the attributes of the moved cells, from base+count to num */
@@ -202,7 +204,7 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
     /* then clear the new space starting from base to base+count */
 
     for(lin = ih->data->lines.num-1; lin >= base+count; lin--)
-      iupMatrixCopyLinAttributes(ih, lin-count, lin);
+      iupMatrixCopyLinAttributes(ih, lin-count, lin);  /* from lin1 to lin2 */
 
     for(lin = base; lin < base+count; lin++)
       iMatrixClearLinAttributes(ih, lin);
@@ -223,6 +225,8 @@ static void iMatrixUpdateLineAttributes(Ihandle* ih, int base, int count, int ad
 static void iMatrixUpdateColumnAttributes(Ihandle* ih, int base, int count, int add)
 {
   int col;
+
+  /* Here the size of the matrix is already updated */
 
   if (add)  /* ADD */
   {
@@ -318,7 +322,7 @@ int iupMatrixSetAddLinAttrib(Ihandle* ih, const char* value)
   if (ih->data->lines.focus_cell >= base)
   {
     /* leave of the edition mode */
-    iupMatrixEditForceHidden(ih);
+    iupMatrixEditHide(ih);
 
     /* move it to the same cell */
     ih->data->lines.focus_cell += count;
@@ -358,7 +362,7 @@ int iupMatrixSetDelLinAttrib(Ihandle* ih, const char* value)
   if (ih->data->lines.focus_cell >= base)
   {
     /* leave of the edition mode */
-    iupMatrixEditForceHidden(ih);
+    iupMatrixEditHide(ih);
 
     /* if the focus cell is inside the removed area */
     if (ih->data->lines.focus_cell <= base+count-1)
@@ -403,7 +407,7 @@ int iupMatrixSetAddColAttrib(Ihandle* ih, const char* value)
   if (ih->data->columns.focus_cell >= base)
   {
     /* leave the edition mode */
-    iupMatrixEditForceHidden(ih);
+    iupMatrixEditHide(ih);
 
     /* move it to the same cell */
     ih->data->columns.focus_cell += count;
@@ -443,7 +447,7 @@ int iupMatrixSetDelColAttrib(Ihandle* ih, const char* value)
   if (ih->data->columns.focus_cell >= base)
   {
     /* leave the edition mode */
-    iupMatrixEditForceHidden(ih);
+    iupMatrixEditHide(ih);
 
     /* if the focus cell is inside the removed area */
     if (ih->data->columns.focus_cell <= base+count-1)

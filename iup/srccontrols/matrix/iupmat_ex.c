@@ -210,8 +210,8 @@ static int iMatrixCompareTextFunc(const void* elem1, const void* elem2)
 
 static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
 {
-  int num_lin = ih->data->lines.num;
-  int lin, lin1=1, lin2=num_lin-1;   /* ALL */
+  int lines_num = ih->data->lines.num;
+  int lin, lin1=1, lin2=lines_num-1;   /* ALL */
   int ascending;
   int* sort_line_index;
   IFniii sort_cb;
@@ -225,7 +225,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
 
   if (iupStrEqualNoCase(value, "RESET"))
   {
-    for (lin=1; lin<num_lin; lin++)
+    for (lin=1; lin<lines_num; lin++)
       sort_line_index[lin] = 0;
 
     ih->data->sort_has_index = 0;
@@ -244,7 +244,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
       return 0;
 
     /* find lin1 */
-    for (lin=1; lin<num_lin; lin++)
+    for (lin=1; lin<lines_num; lin++)
     {
       if (sort_line_index[lin] != 0)
       {
@@ -256,7 +256,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
       return 0;
 
     /* find lin2 */
-    for (lin=num_lin-1; lin>=1; lin--)
+    for (lin=lines_num-1; lin>=1; lin--)
     {
       if (sort_line_index[lin] != 0)
       {

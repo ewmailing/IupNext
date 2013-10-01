@@ -170,7 +170,7 @@ void iupMatrixScrollMove(iupMatrixScrollMoveFunc func, Ihandle* ih, int mode, fl
   int old_lines_first_offset = ih->data->lines.first_offset;
   int old_columns_first_offset = ih->data->columns.first_offset;
 
-  iupMatrixEditForceHidden(ih);
+  iupMatrixEditHide(ih);
 
   func(ih, mode, pos, m);
 
