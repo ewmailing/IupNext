@@ -200,7 +200,9 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r
 
     /* Sometimes the edit Focus callback is not called when the user clicks in the parent canvas, 
        so we have to compensate that. */
+    iupAttribSet(ih, "EDITIONHIDEFOCUS", "1");
     iupMatrixEditHide(ih);
+    iupAttribSet(ih, "EDITIONHIDEFOCUS", NULL);
     ih->data->has_focus = 1;
   }
 
