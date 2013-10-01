@@ -47,8 +47,6 @@ typedef struct _ImatrixListData  /* Used only by the IupMatrixList control */
 {
   /* attributes */
   int editable;     /* allow adding new lines by editing the last line */
-//  int selectedLine;    /* Number of the selected line */
-//  int lastSelLine;
 
   /* internal variables */
   int label_col, color_col, image_col;  /* column order (0 means it is hidden) */
@@ -933,9 +931,9 @@ static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int up
       char* value = IupGetAttribute(ih, "VALUE");
       if (value && value[0]!=0)
       {
-        IFni lineinsert_cb = (IFni)IupGetCallback(ih, "LISTINSERT_CB");
+        IFni listinsert_cb = (IFni)IupGetCallback(ih, "LISTINSERT_CB");
         /* notify the application that a line will be inserted */
-        if (lineinsert_cb && lineinsert_cb(ih, lin) == IUP_IGNORE)
+        if (listinsert_cb && listinsert_cb(ih, lin) == IUP_IGNORE)
         {
           IupSetAttribute(ih, "VALUE", "");
           IupSetfAttribute(ih, "REDRAW", "L%d", lin);
@@ -1028,7 +1026,13 @@ static int iMatrixListRelease_CB(Ihandle *ih, int lin, int col, char *status)
   else if (iMatrixListCheckDelete(ih))
   {
     /* click on IMAGEDEL */
-    IupSetInt(ih, "DELLIN", lin);
+    IFni listremove_cb = (IFni)IupGetCallback(ih, "LISTREMOVE_CB");
+    /* notify the application that a line will be removed */
+    if (!listremove_cb || listremove_cb(ih, lin) != IUP_IGNORE)
+    {
+      /* Remove the line */
+      IupSetInt(ih, "DELLIN", lin);
+    }
   }
   else
   {
@@ -1046,7 +1050,6 @@ static int iMatrixListRelease_CB(Ihandle *ih, int lin, int col, char *status)
 }
 
 //static char *BACK_SEL_COLOR = "255 235 155";
-
 //static int iMatrixListLeave_CB(Ihandle *ih, int lin, int col)
 //{
 //  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
@@ -1056,227 +1059,6 @@ static int iMatrixListRelease_CB(Ihandle *ih, int lin, int col, char *status)
 //  int lastAction = IupGetInt(ih, "ACTION_TYPE");
 //  char buffer[30];
 //
-//  /* Return if not mtxList->editable */
-//  if (!mtxList->editable)
-//    return IUP_IGNORE;
-//
-//  if(lin == num_lin && lastAction)  /* last action = edition */
-//  {
-//    /* Get the cell value */
-//    char *data = IupGetAttributeId2(ih, "", lin, col);
-//    if(data != NULL && data[0] != '\0')
-//    {
-//      /* Add new line */
-//      IupSetInt(ih, "ADDLIN", lin);
-//
-//      /* Activate the new line */
-//      sprintf(buffer, "LINEACTIVE%d", lin+1);
-//      IupSetAttribute(ih, buffer, "ON");
-//
-//      /* Show delete button ? */
-//      if(mtxList->showing_delete)
-//      {
-//        sprintf(buffer, "%d:%d", lin, mtxList->label_col);
-//        IupSetAttribute(ih, "FOCUS_CELL", iupStrDup(buffer));
-//      }
-//
-//      /* Reset values the line created */
-//      IupStoreAttributeId2(ih, "", lin+1, mtxList->label_col, "");
-//
-//      /* Update the last select line */
-//      mtxList->lastSelLine = lin;
-//
-//      /* Force a matrix redisplay */
-//      IupSetAttribute(ih, "REDRAW", "ALL");
-//    }
-//  }
-//
-//  /* Update last matrix state */
-//  IupSetInt(ih, "ACTION_TYPE", 0);  /* Action none */
-//
-//  return ret;
-//}
-//
-//static int iMatrixListEditLabel(Ihandle *ih, ImatrixListData* mtxList, int c, int lin, int col, int active, char* after)
-//{
-//  int line = lin;
-//  char buffer[30];
-//  int num_lin = IupGetInt(ih, IUP_NUMLIN);
-//  IFnii actionCB = (IFnii)IupGetCallback(ih, "ACTION_CB");
-//  int ret = IUP_DEFAULT;
-//  (void)active;
-//
-//  if(!IupGetInt(ih, IUP_ACTIVE))  /* return = NO */
-//    return IUP_IGNORE;
-//
-//  if(((c == K_DOWN) || (c == K_UP)) && mtxList->showing_delete)
-//  {
-//    int linSel = 0;
-//
-//    if(c == K_DOWN)
-//      linSel = (lin == num_lin ?  num_lin : lin + 1);
-//    else if(c == K_UP)
-//      linSel = (lin == 1 ? 1 : lin - 1);
-//  }
-//
-//  if(col == mtxList->label_col || col == mtxList->image_col)
-//  {
-//    char *data = after;
-//
-//    /* Is the item column ? */
-//    if(col != mtxList->label_col)
-//    {
-//      /* Set the cell focus */
-//      sprintf(buffer, "%d:%d", lin, mtxList->label_col);
-//      IupSetAttribute(ih, "FOCUS_CELL", iupStrDup(buffer));
-//
-//      /* Get the cell value */
-//      data = IupGetAttributeId2(ih, "", lin, mtxList->label_col);
-//    }
-//
-//    if(((c == K_CR) &&  (iupStrEqualNoCase(IupGetAttribute(ih, "EDITNEXT"), "NONE"))) || c == K_UP || c == K_DOWN)
-//    {
-//      if(c == K_UP && lin != 1)
-//      {
-//        line = lin - 1;
-//
-//        /* Check if we need to call a function */
-//        if(actionCB != NULL)
-//          ret = actionCB(ih, line, mtxList->label_col);
-//
-//        mtxList->lastSelLine = line;
-//      }
-//      else if((c == K_DOWN && lin != num_lin) || 
-//               ((c == K_CR &&  (iupStrEqualNoCase(IupGetAttribute(ih, "EDITNEXT"), "NONE"))) && data != NULL && data[0] != '\0'))
-//      {
-//        line = lin + 1;
-//
-//        /* Check if we need to call a function */
-//        if(actionCB != NULL)
-//          ret = actionCB(ih, line, mtxList->label_col);
-//
-//        /* Save the selected line */
-//        mtxList->lastSelLine = line;
-//      }
-//    }
-//  }
-//
-//  /* Return the status */
-//  return ret;
-//}
-//
-//static int iMatrixListSelectLine(Ihandle *ih, ImatrixListData* mtxList, int c, int lin, int col, int active, char* after)
-//{
-//  int i;
-//  int line = lin;
-//  int ret = IUP_DEFAULT;
-//  int num_lin = ih->data->lines.num-1;
-//  IFnii actionCB = (IFnii)IupGetCallback(ih, "ACTION_CB");
-//  char buffer[30];
-//  (void)after;
-//  (void)active;
-//
-//  if(mtxList->label_col != col)
-//    return IUP_DEFAULT;
-//
-//  /* Process the key */
-//  if(c == K_UP)
-//  {
-//    line = mtxList->lastSelLine - 1;
-//
-//    for(i = line; i >= 1; i--)
-//    {
-//      /* Unset the current selected line */
-//      sprintf(buffer, "CHECK%d:0", mtxList->lastSelLine);
-//      IupSetAttribute(ih, buffer, "NO");
-//
-//      /* Set the new selected line */
-//      sprintf(buffer, "CHECK%d:0", i);
-//      IupSetAttribute(ih, buffer, "YES");
-//
-//      /* Set the new focus */
-//      sprintf(buffer, "%d:%d", i, mtxList->label_col);
-//      IupSetAttribute(ih, "FOCUS_CELL", iupStrDup(buffer));
-//
-//      /* Save the last selected line */
-//      mtxList->lastSelLine = i;
-//
-//      if(ih->data->lines.dt[i].flags & IMAT_IS_LINE_INACTIVE)
-//      {
-//        /* Check if we need to call a function */
-//        if(actionCB != NULL)
-//          ret = actionCB(ih, i, mtxList->label_col);
-//
-//        /* Stop the loop */
-//        break;
-//      }
-//    }
-//  }
-//  else if(c == K_DOWN)
-//  {
-//    line = mtxList->lastSelLine + 1;
-//
-//    for(i = line; i <= num_lin; i++)
-//    {
-//      /* Unset the current selected line */
-//      sprintf(buffer, "CHECK%d:0", mtxList->lastSelLine);
-//      IupSetAttribute(ih, buffer, "NO");
-//
-//      /* Set the new selected line */
-//      sprintf(buffer, "CHECK%d:0", i);
-//      IupSetAttribute(ih, buffer, "YES");
-//
-//      /* Set the new focus */
-//      sprintf(buffer, "%d:%d", i, mtxList->label_col);
-//      IupSetAttribute(ih, "FOCUS_CELL", iupStrDup(buffer));
-//
-//      /* Save the last selected line */
-//      mtxList->lastSelLine = i;
-//
-//      if(ih->data->lines.dt[i].flags & IMAT_IS_LINE_INACTIVE)
-//      {
-//        /* Check if we need to call a function */
-//        if(actionCB != NULL)
-//          ret = actionCB(ih, i, mtxList->label_col);
-//
-//        /* Stop the loop */
-//        break;
-//      }
-//    }
-//  }
-//  else if(c == K_CR)
-//  {
-//    IFnis dbClickCB = (IFnis)IupGetCallback(ih, "DBLCLICK_CB");
-//
-//    /* The line is active ? */
-//    if(ih->data->lines.dt[lin].flags & IMAT_IS_LINE_INACTIVE)
-//    {
-//      /* Check if we need to call a function */
-//      if(dbClickCB != NULL)
-//        ret = dbClickCB(ih, lin, IupGetAttributeId(ih, "", lin));
-//      else
-//        ret = IUP_IGNORE;
-//    }
-//  }
-//
-//  /* Return the status */
-//  return ret;
-//}
-//
-//static int iMatrixListAction_CB(Ihandle *ih, int c, int lin, int col, int active, char* after)
-//{
-//  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
-//  int ret = IUP_DEFAULT;
-//  int mtxList->editable = iupAttribGetInt(ih, "EDIT_MODE_NAME");
-//
-//  /* The matrix is being edited */
-//  if(mtxList->editable)
-//    ret = iMatrixListEditLabel(ih, mtxList, c, lin, col, active, after);
-//  else
-//    ret = iMatrixListSelectLine(ih, mtxList, c, lin, col, active, after);
-//
-//  /* Force a matrix redisplay */
-//  IupSetAttribute(ih, "REDRAW", "ALL");
 //
 //  return ret;
 //}
@@ -1324,7 +1106,6 @@ static int iMatrixListCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "RELEASE_CB", (Icallback)iMatrixListRelease_CB);
   IupSetCallback(ih, "EDITION_CB",   (Icallback)iMatrixListEdition_CB);
 //  IupSetCallback(ih, "LEAVEITEM_CB", (Icallback)iMatrixListLeave_CB);
-//  IupSetCallback(ih, "ACTION_CB",    (Icallback)iMatrixListAction_CB);
 
   (void)params;
   return IUP_NOERROR;
@@ -1348,11 +1129,11 @@ Iclass* iupMatrixListNewClass(void)
   ic->UnMap  = iMatrixListUnMapMethod;
 
   /* IupMatrixList Callbacks */
-//  iupClassRegisterCallback(ic, "DBLCLICK_CB", "is");
   iupClassRegisterCallback(ic, "IMAGEVALUECHANGED_CB", "ii");
   iupClassRegisterCallback(ic, "LISTCLICK_CB", "iis");
   iupClassRegisterCallback(ic, "LISTRELASE_CB", "iis");
   iupClassRegisterCallback(ic, "LISTINSERT_CB", "i");
+  iupClassRegisterCallback(ic, "LISTREMOVE_CB", "i");
   iupClassRegisterCallback(ic, "LISTEDITION_CB", "iiii");
   iupClassRegisterCallback(ic, "LISTDRAW_CB", "iiiiiiv");
 
@@ -1412,10 +1193,6 @@ Ihandle* IupMatrixList(void)
 }
 
 #if 0
-#define IUP_MTX_SELECT_LINE              "MTX_SELECT_LINE"             /* Attribute applies only to non-mtxList->editable matrix with two columns. */
-#define IUP_MTX_LAST_SELECT_LINE         "MTX_LAST_SELECT_LINE"        /* Save the last line selected. */
-
-#define IUP_MTX_ACT_DOUBLE_CLICK_CB      "MTX_ACT_DOUBLE_CLICK_CB"     /* Attribute applies only to non-mtxList->editable matrix. */
-#define IUP_MTX_DEL_ATTRIB_CB            "MTX_DEL_ATTRIB_CB"           /* Callback de delete. - int function(Ihandle *ih, int lin) */
-#define IUP_MTX_ACTION_CB                "MTX_ACTION_CB"               /* Callback de action. - int function(Ihandle *ih, int lin, int col) */
+FOCUSLINE
+FOCUSCOLOR
 #endif
