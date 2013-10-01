@@ -63,6 +63,8 @@ int main(int argc, char **argv)
   IupSetAttribute(mlist, "LINEACTIVE7", "NO");
   IupSetAttribute(mlist, "LINEACTIVE8", "NO");
 
+  IupSetAttribute(mlist, "IMAGEACTIVE9", "No");
+
   IupSetAttribute(mlist, "IMAGEVALUE1", "ON");
   IupSetAttribute(mlist, "IMAGEVALUE2", "ON");
   IupSetAttribute(mlist, "IMAGEVALUE3", "ON");
