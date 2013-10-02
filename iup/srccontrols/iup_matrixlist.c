@@ -179,7 +179,9 @@ static void iMatrixListCopyLinAttributes(Ihandle* ih, int lin1, int lin2)
 {
   iMatrixListCopyLinAttrib(ih, "IMAGE", lin1, lin2);
   iMatrixListCopyLinAttrib(ih, "COLOR", lin1, lin2);
-  iMatrixListCopyLinAttrib(ih, "LINEACTIVE", lin1, lin2);
+  iMatrixListCopyLinAttrib(ih, "ITEMACTIVE", lin1, lin2);
+  iMatrixListCopyLinAttrib(ih, "ITEMFGCOLOR", lin1, lin2);
+  iMatrixListCopyLinAttrib(ih, "ITEMBGCOLOR", lin1, lin2);
   iMatrixListCopyLinAttrib(ih, "IMAGEACTIVE", lin1, lin2);
   iMatrixListCopyLinAttrib(ih, "IMAGEVALUE", lin1, lin2);
 }
@@ -188,7 +190,9 @@ static void iMatrixListClearLinAttributes(Ihandle* ih, int lin)
 {
   iupAttribSetId(ih, "IMAGE", lin, NULL);
   iupAttribSetId(ih, "COLOR", lin, NULL);
-  iupAttribSetId(ih, "LINEACTIVE", lin, NULL);
+  iupAttribSetId(ih, "ITEMACTIVE", lin, NULL);
+  iupAttribSetId(ih, "ITEMFGCOLOR", lin, NULL);
+  iupAttribSetId(ih, "ITEMBGCOLOR", lin, NULL);
   iupAttribSetId(ih, "IMAGEACTIVE", lin, NULL);
   iupAttribSetId(ih, "IMAGEVALUE", lin, NULL);
 }
@@ -290,7 +294,7 @@ static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxLis
   IupSetAttributeId(ih, "ALIGNMENT", mtxList->label_col, "ALEFT");
 }
 
-static char* iMatrixListApplyInactiveLineColor(const char* color)
+static const char* iMatrixListApplyInactiveLineColor(const char* color)
 {
   unsigned char r=0, g=0, b=0;
 
@@ -303,50 +307,31 @@ static char* iMatrixListApplyInactiveLineColor(const char* color)
   return iupStrReturnRGB(r, g, b);
 }
 
-static void iMatrixListUpdateLineActiveColors(Ihandle* ih, ImatrixListData* mtxList, int lin, int active)
+static void iMatrixListUpdateItemBgColor(Ihandle* ih, ImatrixListData* mtxList, int lin, const char* bgcolor, int itemactive)
 {
-  char *bgcolor, *fgcolor;
+  if (lin==ih->data->lines.focus_cell)
+    bgcolor = IupGetAttribute(ih, "FOCUSCOLOR");
 
-  if (active)
-  {
-    if (!iupAttribGetId2(ih, "_IUPMTXLIST_LINEINACTIVE", lin, mtxList->label_col))
-      return;
+  if (!bgcolor)
+    bgcolor = IupGetAttribute(ih, "BGCOLOR");
 
-    bgcolor = iupAttribGetId2(ih, "_IUPMTXLIST_OLDBGCOLOR", lin, mtxList->label_col);
-    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->label_col, bgcolor);
-    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->image_col, bgcolor);
-    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->color_col, bgcolor);
-
-    fgcolor = iupAttribGetId2(ih, "_IUPMTXLIST_OLDFGCOLOR", lin, mtxList->label_col);
-    IupSetStrAttributeId2(ih, "FGCOLOR", lin, mtxList->label_col, fgcolor);
-
-    iupAttribSetStrId2(ih, "_IUPMTXLIST_LINEINACTIVE", lin, mtxList->label_col, NULL);
-  }
-  else
-  {
-    if (iupAttribGetId2(ih, "_IUPMTXLIST_LINEINACTIVE", lin, mtxList->label_col))
-      return;
-
-    /* save original color, check only at the hash table */
-    bgcolor = iupAttribGetId2(ih, "BGCOLOR", lin, mtxList->label_col);
-    iupAttribSetStrId2(ih, "_IUPMTXLIST_OLDBGCOLOR", lin, mtxList->label_col, bgcolor);
-
-    /* get the actual color */
-    bgcolor = IupGetAttributeId2(ih, "CELLBGCOLOR", lin, mtxList->label_col);
+  if (!itemactive)
     bgcolor = iMatrixListApplyInactiveLineColor(bgcolor);
-    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->label_col, bgcolor);
-    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->image_col, bgcolor);
-    IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->color_col, bgcolor);
 
-    fgcolor = iupAttribGetId2(ih, "FGCOLOR", lin, mtxList->label_col);
-    iupAttribSetStrId2(ih, "_IUPMTXLIST_OLDFGCOLOR", lin, mtxList->label_col, fgcolor);
+  IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->label_col, bgcolor);
+  IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->image_col, bgcolor);
+  IupSetStrAttributeId2(ih, "BGCOLOR", lin, mtxList->color_col, bgcolor);
+}
 
-    fgcolor = IupGetAttributeId2(ih, "CELLFGCOLOR", lin, mtxList->label_col);
+static void iMatrixListUpdateItemFgColor(Ihandle* ih, ImatrixListData* mtxList, int lin, const char* fgcolor, int itemactive)
+{
+  if (!fgcolor)
+    fgcolor = IupGetAttribute(ih, "FGCOLOR");
+
+  if (!itemactive)
     fgcolor = iMatrixListApplyInactiveLineColor(fgcolor);
-    IupSetStrAttributeId2(ih, "FGCOLOR", lin, mtxList->label_col, fgcolor);
 
-    iupAttribSetStrId2(ih, "_IUPMTXLIST_LINEINACTIVE", lin, mtxList->label_col, "1");
-  }
+  IupSetStrAttributeId2(ih, "FGCOLOR", lin, mtxList->label_col, fgcolor);
 }
 
 
@@ -363,8 +348,12 @@ static char* iMatrixListGetEditableAttrib(Ihandle *ih)
 
 static int iMatrixListSetEditableAttrib(Ihandle* ih, const char* value)
 {
-  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
-  mtxList->editable = iupStrBoolean(value);
+  /* Creation attribute, Can set only before map */
+  if (!ih->handle)
+  {
+    ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+    mtxList->editable = iupStrBoolean(value);
+  }
   return 0;
 }
 
@@ -583,19 +572,47 @@ static char* iMatrixListGetImageActiveAttrib(Ihandle* ih, int lin)
     return value;
 }
 
-static char* iMatrixListGetLineActiveAttrib(Ihandle* ih, int lin)
+static char* iMatrixListGetItemActiveAttrib(Ihandle* ih, int lin)
 {
-  char* value = iupAttribGetId(ih, "LINEACTIVE", lin);
+  char* value = iupAttribGetId(ih, "ITEMACTIVE", lin);
   if (!value)
     return "Yes"; /* default is Yes for all lines */
   else
     return value;
 }
 
-static int iMatrixListSetLineActiveAttrib(Ihandle* ih, int lin, const char* value)
+static int iMatrixListSetItemActiveAttrib(Ihandle* ih, int lin, const char* value)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
-  iMatrixListUpdateLineActiveColors(ih, mtxList, lin, iupStrBoolean(value));
+  int itemactive = iupStrBoolean(value);
+  iMatrixListUpdateItemBgColor(ih, mtxList, lin, iupAttribGetId(ih, "ITEMBGCOLOR", lin), itemactive);
+  iMatrixListUpdateItemFgColor(ih, mtxList, lin, iupAttribGetId(ih, "ITEMFGCOLOR", lin), itemactive);
+  return 1;
+}
+
+static int iMatrixListSetItemBgColorAttrib(Ihandle* ih, int lin, const char* value)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+  iMatrixListUpdateItemBgColor(ih, mtxList, lin, value, itemactive);
+  return 1;
+}
+
+static int iMatrixListSetItemFgColorAttrib(Ihandle* ih, int lin, const char* value)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+  iMatrixListUpdateItemFgColor(ih, mtxList, lin, value, itemactive);
+  return 1;
+}
+
+static int iMatrixListSetFocusColorAttrib(Ihandle* ih, const char* value)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  int lin = ih->data->lines.focus_cell;
+  int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+  iupAttribSetStr(ih, "FOCUSCOLOR", value);
+  iMatrixListUpdateItemBgColor(ih, mtxList, lin, iupAttribGetId(ih, "ITEMBGCOLOR", lin), itemactive);
   return 1;
 }
 
@@ -693,6 +710,29 @@ static int iMatrixListSetInsertItemAttrib(Ihandle* ih, int lin, const char* valu
   return 0;
 }
 
+static int iMatrixListSetTopItemAttrib(Ihandle* ih, const char* value)
+{
+  IupSetfAttribute(ih, "SHOW", "%s:*", value);
+  return 0;
+}
+
+static int iMatrixListSetFocusItemAttrib(Ihandle* ih, const char* value)
+{
+  IupSetfAttribute(ih, "FOCUS_CELL", "%s:1", value);
+  return 0;
+}
+
+static char* iMatrixListGetFocusItemAttrib(Ihandle* ih)
+{
+  return iupStrReturnInt(ih->data->lines.focus_cell);
+}
+
+static int iMatrixListSetVisibleLinesAttrib(Ihandle* ih, const char* value)
+{
+  iupAttribSetStr(ih, "NUMLIN_VISIBLE", value);
+  return 1;
+}
+
 static int iMatrixListSetAddColAttrib(Ihandle* ih, const char* value)
 {
   (void)ih;
@@ -762,10 +802,10 @@ static int iMatrixListDrawColorCol(Ihandle *ih, int lin, int x1, int x2, int y1,
     static const int DX_FILL = 3;
     static const int DY_FILL = 4;
     int active = iupdrvIsActive(ih);
-    int line_active = IupGetIntId(ih, "LINEACTIVE", lin);
+    int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
     long framecolor;
 
-    if (!line_active)
+    if (!itemactive)
     {
       red = IMAT_LIGHTER(red);
       green = IMAT_LIGHTER(green);
@@ -796,17 +836,17 @@ static int iMatrixListDrawColorCol(Ihandle *ih, int lin, int x1, int x2, int y1,
 static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int lin, int col, int x1, int x2, int y1, int y2, cdCanvas *cnv)
 {
   char* image_name;
-  int make_inactive = 0, line_active, image_active, checked, showdelete,
+  int make_inactive = 0, itemactive, imageactive, imagevalue, showdelete,
       active = iupdrvIsActive(ih);
   int lines_num = ih->data->lines.num;
   Ihandle* image;
 
-  line_active = IupGetIntId(ih, "LINEACTIVE", lin);
-  image_active = IupGetIntId(ih, "IMAGEACTIVE", lin);
-  checked = IupGetIntId(ih, "IMAGEVALUE", lin);
+  itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+  imageactive = IupGetIntId(ih, "IMAGEACTIVE", lin);
+  imagevalue = IupGetIntId(ih, "IMAGEVALUE", lin);
   showdelete = IupGetIntId(ih, "SHOWDELETE", lin);
 
-  if (!active || !line_active || !image_active)
+  if (!active || !itemactive || !imageactive)
     make_inactive = 1;
 
   image_name = iupAttribGetId(ih, "IMAGE", lin);
@@ -823,7 +863,7 @@ static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int li
           attrib_name = "IMAGEDEL";
         else
         {
-          if (checked)
+          if (imagevalue)
             attrib_name = "IMAGECHECK";
           else
             attrib_name = "IMAGEUNCHECK";
@@ -832,7 +872,7 @@ static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int li
     }
     else
     {
-      if (checked)
+      if (imagevalue)
         attrib_name = "IMAGECHECK";
       else
         attrib_name = "IMAGEUNCHECK";
@@ -867,7 +907,7 @@ static int iMatrixListDraw_CB(Ihandle *ih, int lin, int col, int x1, int x2, int
   int lines_num = ih->data->lines.num;
 
   /* Just checking */
-  if (lin <= 0 || col <= 0 || !cnv)
+  if (lin < 0 || col <= 0 || !cnv)
     return IUP_IGNORE;  /* draw regular text */
 
   /* Don't draw on the empty line. */
@@ -903,7 +943,7 @@ static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int up
     return IUP_IGNORE;
 
   /* allow editing only if active */
-  if (!IupGetIntId2(ih, "LINEACTIVE", lin, col))
+  if (!IupGetIntId2(ih, "ITEMACTIVE", lin, col))
     return IUP_IGNORE;
 
   /* call application callback before anything */
@@ -997,7 +1037,7 @@ static int iMatrixListRelease_CB(Ihandle *ih, int lin, int col, char *status)
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
   IFniis listrelease_cb = (IFniis)IupGetCallback(ih, "LISTRELEASE_CB");
   int lines_num = ih->data->lines.num;
-  int line_active, image_active;
+  int itemactive, imageactive;
 
   /* call application callback before anything */
   if (listrelease_cb && listrelease_cb(ih, lin, col, status)==IUP_IGNORE)
@@ -1011,10 +1051,10 @@ static int iMatrixListRelease_CB(Ihandle *ih, int lin, int col, char *status)
   if (col != mtxList->image_col)
     return IUP_DEFAULT;
 
-  line_active = IupGetIntId(ih, "LINEACTIVE", lin);
-  image_active = IupGetIntId(ih, "IMAGEACTIVE", lin);
+  itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+  imageactive = IupGetIntId(ih, "IMAGEACTIVE", lin);
 
-  if (!line_active || !image_active)
+  if (!itemactive || !imageactive)
     return IUP_DEFAULT;
 
   if (mtxList->editable && lin == lines_num-1)
@@ -1037,31 +1077,86 @@ static int iMatrixListRelease_CB(Ihandle *ih, int lin, int col, char *status)
   else
   {
     /* click on IMAGECHECK/IMAGEUNCHECK */
-    IFnii imagevaluechanged_cb;
-    int checked = IupGetIntId(ih, "IMAGEVALUE", lin);
-    IupSetIntId(ih, "IMAGEVALUE", lin, !checked);
-    IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+    IFnii imagevaluechanged_cb = (IFnii)IupGetCallback(ih, "IMAGEVALUECHANGED_CB");
+    int imagevalue = !IupGetIntId(ih, "IMAGEVALUE", lin);
+    if (!imagevaluechanged_cb || imagevaluechanged_cb(ih, lin, imagevalue) != IUP_IGNORE)
+    {
+      IupSetIntId(ih, "IMAGEVALUE", lin, imagevalue);
+      IupSetfAttribute(ih, "REDRAW", "L%d", lin);
 
-    imagevaluechanged_cb = (IFnii)IupGetCallback(ih, "IMAGEVALUECHANGED_CB");
-    if (imagevaluechanged_cb) imagevaluechanged_cb(ih, lin, checked);
+      if (lin==0)
+      {
+        if (mtxList->editable) lines_num--;
+
+        for (lin=1; lin<lines_num; lin++)
+        {
+          itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+          imageactive = IupGetIntId(ih, "IMAGEACTIVE", lin);
+
+          if (!itemactive || !imageactive)
+            continue;
+
+          if (!imagevaluechanged_cb || imagevaluechanged_cb(ih, lin, imagevalue) != IUP_IGNORE)
+          {
+            IupSetIntId(ih, "IMAGEVALUE", lin, imagevalue);
+            IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+          }
+        }
+      }
+    }
   }
 
   return IUP_DEFAULT;
 }
 
-//static char *BACK_SEL_COLOR = "255 235 155";
-//static int iMatrixListLeave_CB(Ihandle *ih, int lin, int col)
-//{
-//  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
-//  int ret = IUP_DEFAULT;
-//  int num_lin = ih->data->lines.num-1;
-//  int mtxList->editable = iupAttribGetInt(ih, "EDIT_MODE_NAME");
-//  int lastAction = IupGetInt(ih, "ACTION_TYPE");
-//  char buffer[30];
-//
-//
-//  return ret;
-//}
+static int iMatrixListEnterItem_CB(Ihandle *ih, int lin, int col)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+  iMatrixListUpdateItemBgColor(ih, mtxList, lin, iupAttribGetId(ih, "ITEMBGCOLOR", lin), itemactive);
+  IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+  (void)col;
+  return IUP_DEFAULT;
+}
+
+static int iMatrixListLeaveItem_CB(Ihandle *ih, int lin, int col)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+  ih->data->lines.focus_cell = -1;
+  iMatrixListUpdateItemBgColor(ih, mtxList, lin, iupAttribGetId(ih, "ITEMBGCOLOR", lin), itemactive);
+  ih->data->lines.focus_cell = lin;
+  IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+  (void)col;
+  return IUP_DEFAULT;
+}
+
+static int iMatrixListKeySpace_CB(Ihandle *ih)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  int lin = ih->data->lines.focus_cell;
+  int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+  int imageactive = IupGetIntId(ih, "IMAGEACTIVE", lin);
+  int lines_num = ih->data->lines.num;
+
+  if (!itemactive || !imageactive)
+    return IUP_IGNORE;
+
+  if (!mtxList->editable || lin < lines_num)
+  {
+    IFnii imagevaluechanged_cb = (IFnii)IupGetCallback(ih, "IMAGEVALUECHANGED_CB");
+    int imagevalue = !IupGetIntId(ih, "IMAGEVALUE", lin);
+    if (!imagevaluechanged_cb || imagevaluechanged_cb(ih, lin, imagevalue) != IUP_IGNORE)
+    {
+      IupSetIntId(ih, "IMAGEVALUE", lin, imagevalue);
+      IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+      return IUP_IGNORE;
+    }
+  }
+
+  return IUP_IGNORE;
+}
+
 
 
 /******************************************************************************
@@ -1105,7 +1200,10 @@ static int iMatrixListCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "CLICK_CB", (Icallback)iMatrixListClick_CB);
   IupSetCallback(ih, "RELEASE_CB", (Icallback)iMatrixListRelease_CB);
   IupSetCallback(ih, "EDITION_CB",   (Icallback)iMatrixListEdition_CB);
-//  IupSetCallback(ih, "LEAVEITEM_CB", (Icallback)iMatrixListLeave_CB);
+  IupSetCallback(ih, "LEAVEITEM_CB", (Icallback)iMatrixListLeaveItem_CB);
+  IupSetCallback(ih, "ENTERITEM_CB", (Icallback)iMatrixListEnterItem_CB);
+
+  IupSetCallback(ih, "K_SP", (Icallback)iMatrixListKeySpace_CB);
 
   (void)params;
   return IUP_NOERROR;
@@ -1152,7 +1250,9 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttribute(ic, "LABELCOL", iMatrixListGetLabelColAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* NO redraw */
-  iupClassRegisterAttributeId(ic, "LINEACTIVE",   iMatrixListGetLineActiveAttrib, iMatrixListSetLineActiveAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ITEMACTIVE", iMatrixListGetItemActiveAttrib, iMatrixListSetItemActiveAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ITEMFGCOLOR", NULL, iMatrixListSetItemFgColorAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ITEMBGCOLOR", NULL, iMatrixListSetItemBgColorAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "IMAGEACTIVE", iMatrixListGetImageActiveAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "IMAGEVALUE", NULL, NULL, IUPAF_NO_INHERIT);
@@ -1163,6 +1263,7 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttribute(ic, "IMAGECHECK",   NULL, NULL, IUPAF_SAMEASSYSTEM, "MTXLIST_IMG_CHECK",   IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEDEL",     NULL, NULL, IUPAF_SAMEASSYSTEM, "MTXLIST_IMG_DEL",     IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEADD",     NULL, NULL, IUPAF_SAMEASSYSTEM, "MTXLIST_IMG_ADD",     IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOCUSCOLOR",   NULL, iMatrixListSetFocusColorAttrib, IUPAF_SAMEASSYSTEM, "255 235 155", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "EDITABLE",   iMatrixListGetEditableAttrib, iMatrixListSetEditableAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
@@ -1173,6 +1274,10 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttribute(ic, "REMOVEITEM", NULL, iMatrixListSetDelLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMLIN", iMatrixListGetNumLinAttrib, iMatrixListSetNumLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COUNT", iMatrixListGetNumLinAttrib, iMatrixListSetNumLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "TOPITEM", NULL, iMatrixListSetTopItemAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOCUSITEM", iMatrixListGetFocusItemAttrib, iMatrixListSetFocusItemAttrib, IUPAF_SAMEASSYSTEM, "1:1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT); /* can be NOT mapped */
+  iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, iMatrixListSetVisibleLinesAttrib, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Does nothing... this control defines automatically the number of columns to be used */
   iupClassRegisterAttribute(ic, "ADDCOL", NULL, iMatrixListSetAddColAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -1191,8 +1296,3 @@ Ihandle* IupMatrixList(void)
 {
   return IupCreate("matrixlist");
 }
-
-#if 0
-FOCUSLINE
-FOCUSCOLOR
-#endif

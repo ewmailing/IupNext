@@ -22,8 +22,8 @@ int main(int argc, char **argv)
   IupControlsOpen();
 
   mlist = IupMatrixList();
-  IupSetInt(mlist, "NUMLIN", 10);
-  IupSetInt(mlist, "NUMLIN_VISIBLE", 5);
+  IupSetInt(mlist, "COUNT", 10);
+  IupSetInt(mlist, "VISIBLELINES", 5);
   IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR:IMAGE");
 //  IupSetAttribute(mlist, "ACTIVE", "NO");
 
@@ -31,11 +31,14 @@ int main(int argc, char **argv)
 //  IupSetCallback(mlist,"CLICK_CB",(Icallback)click_cb);
 
   /* Bluish style */
-  //IupSetAttribute(mlist, "TITLE", "Test");
-  //IupSetAttribute(mlist, "BGCOLOR", "220 230 240");
-  //IupSetAttribute(mlist, "FRAMECOLOR", "120 140 160");
-  //IupSetAttribute(mlist, "BGCOLOR0:*", "120 140 160");
-  //IupSetAttribute(mlist, "FGCOLOR0:1", "255 255 255");
+  if (1)
+  {
+    IupSetAttribute(mlist, "TITLE", "Test");
+    IupSetAttribute(mlist, "BGCOLOR", "220 230 240");
+    IupSetAttribute(mlist, "FRAMECOLOR", "120 140 160");
+    IupSetAttribute(mlist, "ITEMBGCOLOR0", "120 140 160");
+    IupSetAttribute(mlist, "ITEMFGCOLOR0", "255 255 255");
+  }
 
   IupSetAttribute(mlist, "1", "AAA");
   IupSetAttribute(mlist, "2", "BBB");
@@ -59,9 +62,9 @@ int main(int argc, char **argv)
   IupSetAttribute(mlist, "COLOR9", "0 255 128");
   IupSetAttribute(mlist, "COLOR10", "128 255 128");
 
-  IupSetAttribute(mlist, "LINEACTIVE3", "NO");
-  IupSetAttribute(mlist, "LINEACTIVE7", "NO");
-  IupSetAttribute(mlist, "LINEACTIVE8", "NO");
+  IupSetAttribute(mlist, "ITEMACTIVE3", "NO");
+  IupSetAttribute(mlist, "ITEMACTIVE7", "NO");
+  IupSetAttribute(mlist, "ITEMACTIVE8", "NO");
 
   IupSetAttribute(mlist, "IMAGEACTIVE9", "No");
 
