@@ -740,13 +740,13 @@ static void iMatrixDrawMatrix(Ihandle* ih)
 
   /* If there are columns, then draw their titles */
   if (ih->data->columns.num_noscroll>1)
-    iupMatrixDrawColumnTitle(ih, 1, ih->data->columns.num_noscroll-1);
-  iupMatrixDrawColumnTitle(ih, ih->data->columns.first, ih->data->columns.last);
+    iupMatrixDrawTitleColumns(ih, 1, ih->data->columns.num_noscroll-1);
+  iupMatrixDrawTitleColumns(ih, ih->data->columns.first, ih->data->columns.last);
 
   /* If there are lines, then draw their titles */
   if (ih->data->lines.num_noscroll>1)
-    iupMatrixDrawLineTitle(ih, 1, ih->data->lines.num_noscroll-1);
-  iupMatrixDrawLineTitle(ih, ih->data->lines.first, ih->data->lines.last);
+    iupMatrixDrawTitleLines(ih, 1, ih->data->lines.num_noscroll-1);
+  iupMatrixDrawTitleLines(ih, ih->data->lines.first, ih->data->lines.last);
 
   /* If there are ordinary cells, then draw them */
   if (ih->data->columns.num_noscroll>1 && ih->data->lines.num_noscroll>1)
@@ -799,7 +799,7 @@ static void iMatrixDrawFocus(Ihandle* ih)
    Line titles marked will be draw with the appropriate feedback.
    -> lin1 - First line to have its title drawn
    -> lin2 - Last line to have its title drawn */
-void iupMatrixDrawLineTitle(Ihandle* ih, int lin1, int lin2)
+void iupMatrixDrawTitleLines(Ihandle* ih, int lin1, int lin2)
 {
   int x1, y1, x2, y2, first_lin;
   int lin, alignment, active, framehighlight;
@@ -882,7 +882,7 @@ void iupMatrixDrawLineTitle(Ihandle* ih, int lin1, int lin2)
    Column titles marked will be draw with the appropriate feedback.
    -> col1 - First column to have its title drawn
    -> col2 - Last column to have its title drawn */
-void iupMatrixDrawColumnTitle(Ihandle* ih, int col1, int col2)
+void iupMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
 {
   int x1, y1, x2, y2, first_col;
   int col, active, alignment, framehighlight;
@@ -1209,14 +1209,28 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
 
     if (type == IMAT_PROCESS_LIN)
     {
-      iupMatrixDrawLineTitle(ih, min, max);
+      if (min==0)
+      {
+        if (ih->data->columns.num_noscroll>1)
+          iupMatrixDrawTitleColumns(ih, 1, ih->data->columns.num_noscroll-1);
+        iupMatrixDrawTitleColumns(ih, ih->data->columns.first, ih->data->columns.last);
+      }
+
+      iupMatrixDrawTitleLines(ih, min, max);
       if (ih->data->columns.num_noscroll>1)
         iupMatrixDrawCells(ih, min, 1, max, ih->data->columns.num_noscroll-1);
       iupMatrixDrawCells(ih, min, ih->data->columns.first, max, ih->data->columns.last);
     }
     else
     {
-      iupMatrixDrawColumnTitle(ih, min, max);
+      if (min==0)
+      {
+        if (ih->data->lines.num_noscroll>1)
+          iupMatrixDrawTitleLines(ih, 1, ih->data->lines.num_noscroll-1);
+        iupMatrixDrawTitleLines(ih, ih->data->lines.first, ih->data->lines.last);
+      }
+
+      iupMatrixDrawTitleColumns(ih, min, max);
       if (ih->data->lines.num_noscroll>1)
         iupMatrixDrawCells(ih, 1, min, ih->data->lines.num_noscroll-1, max);
       iupMatrixDrawCells(ih, ih->data->lines.first, min, ih->data->lines.last, max);

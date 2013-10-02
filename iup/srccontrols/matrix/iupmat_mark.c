@@ -127,7 +127,7 @@ static void iMatrixMarkItem(Ihandle* ih, int lin1, int col1, int mark, IFniii ma
     else
     {
       iMatrixMarkLinSet(ih, lin1, mark);
-      iupMatrixDrawLineTitle(ih, lin1, lin1);
+      iupMatrixDrawTitleLines(ih, lin1, lin1);
       if (ih->data->columns.num_noscroll>1)
         iupMatrixDrawCells(ih, lin1, 1, lin1, ih->data->columns.num_noscroll-1);
     }
@@ -144,7 +144,7 @@ static void iMatrixMarkItem(Ihandle* ih, int lin1, int col1, int mark, IFniii ma
     else
     {
       iMatrixMarkColSet(ih, col1, mark);
-      iupMatrixDrawColumnTitle(ih, col1, col1);
+      iupMatrixDrawTitleColumns(ih, col1, col1);
       if (ih->data->lines.num_noscroll>1)
         iupMatrixDrawCells(ih, 1, col1, ih->data->lines.num_noscroll-1, col1);
     }
@@ -310,14 +310,14 @@ void iupMatrixMarkBlockBegin(Ihandle* ih, int ctrl, int lin1, int col1)
       for(lin = 1; lin < ih->data->lines.num; lin++)
         iMatrixMarkLinSet(ih, lin, mark);
 
-      iupMatrixDrawLineTitle(ih, 1, ih->data->lines.num-1);
+      iupMatrixDrawTitleLines(ih, 1, ih->data->lines.num-1);
     }
     else if (ih->data->mark_mode == IMAT_MARK_COL)
     {
       for (col = 1; col < ih->data->columns.num; col++)
         iMatrixMarkColSet(ih, col, mark);
 
-      iupMatrixDrawColumnTitle(ih, 1, ih->data->columns.num-1);
+      iupMatrixDrawTitleColumns(ih, 1, ih->data->columns.num-1);
     }
 
     iupMatrixDrawCells(ih, 1, 1, ih->data->lines.num-1, ih->data->columns.num-1);
