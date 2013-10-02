@@ -25,9 +25,11 @@ int main(int argc, char **argv)
   IupSetInt(mlist, "COUNT", 10);
   IupSetInt(mlist, "VISIBLELINES", 5);
   IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR:IMAGE");
+//  IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR");
 //  IupSetAttribute(mlist, "ACTIVE", "NO");
+//  IupSetAttribute(mlist, "FOCUSCOLOR", "BGCOLOR");
 
-  IupSetAttribute(mlist, "EDITABLE", "Yes");
+//  IupSetAttribute(mlist, "EDITABLE", "Yes");
 //  IupSetCallback(mlist,"CLICK_CB",(Icallback)click_cb);
 
   /* Bluish style */

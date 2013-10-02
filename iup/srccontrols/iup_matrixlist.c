@@ -310,7 +310,11 @@ static const char* iMatrixListApplyInactiveLineColor(const char* color)
 static void iMatrixListUpdateItemBgColor(Ihandle* ih, ImatrixListData* mtxList, int lin, const char* bgcolor, int itemactive)
 {
   if (lin==ih->data->lines.focus_cell)
-    bgcolor = IupGetAttribute(ih, "FOCUSCOLOR");
+  {
+    char* focuscolor = IupGetAttribute(ih, "FOCUSCOLOR");
+    if (!iupStrEqualNoCase(focuscolor, "BGCOLOR"))
+      bgcolor = focuscolor;
+  }
 
   if (!bgcolor)
     bgcolor = IupGetAttribute(ih, "BGCOLOR");
@@ -911,7 +915,7 @@ static int iMatrixListDraw_CB(Ihandle *ih, int lin, int col, int x1, int x2, int
     return IUP_IGNORE;  /* draw regular text */
 
   /* Don't draw on the empty line. */
-  if ((lin < lines_num-1 && mtxList->editable) || (lin < lines_num && !mtxList->editable))
+  if (!mtxList->editable || (lin < lines_num) || (mtxList->image_col && col == mtxList->image_col))
   {
     IFniiiiiiC listdraw_cb = (IFniiiiiiC)IupGetCallback(ih, "LISTDRAW_CB");
       
