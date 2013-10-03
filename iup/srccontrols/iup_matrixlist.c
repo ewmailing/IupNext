@@ -338,6 +338,24 @@ static void iMatrixListUpdateItemFgColor(Ihandle* ih, ImatrixListData* mtxList, 
   IupSetStrAttributeId2(ih, "FGCOLOR", lin, mtxList->label_col, fgcolor);
 }
 
+static void iMatrixListSetFocusItem(Ihandle* ih, ImatrixListData* mtxList, int lin)
+{
+  if (lin != ih->data->lines.focus_cell)
+  {
+    int old_lin = ih->data->lines.focus_cell;
+    int itemactive = IupGetIntId(ih, "ITEMACTIVE", old_lin);
+    ih->data->lines.focus_cell = -1;
+    iMatrixListUpdateItemBgColor(ih, mtxList, old_lin, iupAttribGetId(ih, "ITEMBGCOLOR", old_lin), itemactive);
+    IupSetfAttribute(ih, "REDRAW", "L%d", old_lin);
+
+    itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+    ih->data->lines.focus_cell = lin;
+    iMatrixListUpdateItemBgColor(ih, mtxList, lin, iupAttribGetId(ih, "ITEMBGCOLOR", lin), itemactive);
+    IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+
+    IupSetfAttribute(ih, "FOCUS_CELL", "%d:%d", lin, mtxList->label_col);
+  }
+}
 
 /******************************************************************************
  Attributes
@@ -722,7 +740,10 @@ static int iMatrixListSetTopItemAttrib(Ihandle* ih, const char* value)
 
 static int iMatrixListSetFocusItemAttrib(Ihandle* ih, const char* value)
 {
-  IupSetfAttribute(ih, "FOCUS_CELL", "%s:1", value);
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  int lin;
+  if (iupStrToInt(value, &lin))
+    iMatrixListSetFocusItem(ih, mtxList, lin);
   return 0;
 }
 
@@ -1064,7 +1085,7 @@ static int iMatrixListRelease_CB(Ihandle *ih, int lin, int col, char *status)
   if (mtxList->editable && lin == lines_num-1)
   {
     /* click on IMAGEADD - start editing */
-    IupSetfAttribute(ih, "FOCUS_CELL", "%d:%d", lin, mtxList->label_col);
+    iMatrixListSetFocusItem(ih, mtxList, lin);
     IupSetAttribute(ih, "EDIT_MODE", "Yes");
   }
   else if (iMatrixListCheckDelete(ih))
@@ -1119,7 +1140,7 @@ static int iMatrixListEnterItem_CB(Ihandle *ih, int lin, int col)
   int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
   iMatrixListUpdateItemBgColor(ih, mtxList, lin, iupAttribGetId(ih, "ITEMBGCOLOR", lin), itemactive);
   IupSetfAttribute(ih, "REDRAW", "L%d", lin);
-  ih->data->columns.focus_cell = 1;
+  ih->data->columns.focus_cell = mtxList->label_col;
   (void)col;
   return IUP_DEFAULT;
 }
@@ -1136,36 +1157,51 @@ static int iMatrixListLeaveItem_CB(Ihandle *ih, int lin, int col)
   return IUP_DEFAULT;
 }
 
-static int iMatrixListKeySpace_CB(Ihandle *ih)
+static int iMatrixListKeyAny_CB(Ihandle *ih, int key)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
 
-  if (mtxList->image_col != 0)
+  if (key == K_SP || key == K_sSP)
   {
-    int lin = ih->data->lines.focus_cell;
-    int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
-    int imageactive = IupGetIntId(ih, "IMAGEACTIVE", lin);
-    int lines_num = ih->data->lines.num;
-
-    if (!itemactive || !imageactive)
-      return IUP_IGNORE;
-
-    if (!mtxList->editable || lin < lines_num)
+    if (mtxList->image_col != 0)
     {
-      IFnii imagevaluechanged_cb = (IFnii)IupGetCallback(ih, "IMAGEVALUECHANGED_CB");
-      int imagevalue = !IupGetIntId(ih, "IMAGEVALUE", lin);
-      if (!imagevaluechanged_cb || imagevaluechanged_cb(ih, lin, imagevalue) != IUP_IGNORE)
-      {
-        IupSetIntId(ih, "IMAGEVALUE", lin, imagevalue);
-        IupSetfAttribute(ih, "REDRAW", "L%d", lin);
-        return IUP_IGNORE;
-      }
-    }
+      int lin = ih->data->lines.focus_cell;
+      int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+      int imageactive = IupGetIntId(ih, "IMAGEACTIVE", lin);
+      int lines_num = ih->data->lines.num;
 
+      if (!itemactive || !imageactive)
+        return IUP_IGNORE;
+
+      if (!mtxList->editable || lin < lines_num)
+      {
+        IFnii imagevaluechanged_cb = (IFnii)IupGetCallback(ih, "IMAGEVALUECHANGED_CB");
+        int imagevalue = !IupGetIntId(ih, "IMAGEVALUE", lin);
+        if (!imagevaluechanged_cb || imagevaluechanged_cb(ih, lin, imagevalue) != IUP_IGNORE)
+        {
+          IupSetIntId(ih, "IMAGEVALUE", lin, imagevalue);
+          IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+          return IUP_IGNORE;
+        }
+      }
+
+      return IUP_IGNORE;
+    }
+  }
+  else if (key == K_HOME || key == K_sHOME)
+  {
+    iMatrixListSetFocusItem(ih, mtxList, 1);
+    IupSetAttribute(ih, "SHOW", "1:*");
+    return IUP_IGNORE;
+  }
+  else if (key == K_END || key == K_sEND)
+  {
+    iMatrixListSetFocusItem(ih, mtxList, ih->data->lines.num-1);
+    IupSetfAttribute(ih, "SHOW", "%d:*", ih->data->lines.num-1);
     return IUP_IGNORE;
   }
 
-  return IUP_DEFAULT;
+  return IUP_CONTINUE;
 }
 
 
@@ -1214,7 +1250,7 @@ static int iMatrixListCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "LEAVEITEM_CB", (Icallback)iMatrixListLeaveItem_CB);
   IupSetCallback(ih, "ENTERITEM_CB", (Icallback)iMatrixListEnterItem_CB);
 
-  IupSetCallback(ih, "K_SP", (Icallback)iMatrixListKeySpace_CB);
+  IupSetCallback(ih, "K_ANY", (Icallback)iMatrixListKeyAny_CB);
 
   (void)params;
   return IUP_NOERROR;

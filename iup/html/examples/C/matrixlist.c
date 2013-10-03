@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 //  IupSetAttribute(mlist, "ACTIVE", "NO");
 //  IupSetAttribute(mlist, "FOCUSCOLOR", "BGCOLOR");
 
-//  IupSetAttribute(mlist, "EDITABLE", "Yes");
+  IupSetAttribute(mlist, "EDITABLE", "Yes");
 //  IupSetCallback(mlist,"CLICK_CB",(Icallback)click_cb);
 
   /* Bluish style */
