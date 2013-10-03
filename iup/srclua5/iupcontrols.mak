@@ -35,7 +35,7 @@ else
   LOHDIR = loh$(LUASFX)
 endif
 
-SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua cells.lua
+SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua matrixlist.lua cells.lua
 
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
 GC := $(addprefix il_, $(GC))

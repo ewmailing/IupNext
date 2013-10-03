@@ -6,7 +6,7 @@
 #include "iupcontrols.h"
 #include "cd.h"
 
-static int click_cb(Ihandle *self, int lin, int col, char *status)
+static int listclick_cb(Ihandle *self, int lin, int col, char *status)
 {
   char* value = IupGetAttributeId(self, "", lin);
   if (!value) value = "NULL";
@@ -30,10 +30,10 @@ int main(int argc, char **argv)
 //  IupSetAttribute(mlist, "FOCUSCOLOR", "BGCOLOR");
 
   IupSetAttribute(mlist, "EDITABLE", "Yes");
-//  IupSetCallback(mlist,"CLICK_CB",(Icallback)click_cb);
+//  IupSetCallback(mlist,"LISTCLICK_CB",(Icallback)listclick_cb);
 
   /* Bluish style */
-  if (1)
+  if (0)
   {
     IupSetAttribute(mlist, "TITLE", "Test");
     IupSetAttribute(mlist, "BGCOLOR", "220 230 240");

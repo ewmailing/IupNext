@@ -141,4 +141,5 @@ void iuplua_matrixfuncs_open (lua_State *L)
   iuplua_register_cb(L, "BGCOLOR_CB", (lua_CFunction)matrix_bgcolor_cb, NULL);
   iuplua_register_cb(L, "FGCOLOR_CB", (lua_CFunction)matrix_fgcolor_cb, NULL);
   iuplua_register_cb(L, "DRAW_CB", (lua_CFunction)matrix_draw_cb, NULL);
+  iuplua_register_cb(L, "LISTDRAW_CB", (lua_CFunction)matrix_draw_cb, NULL);
 }
