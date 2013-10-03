@@ -1119,6 +1119,7 @@ static int iMatrixListEnterItem_CB(Ihandle *ih, int lin, int col)
   int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
   iMatrixListUpdateItemBgColor(ih, mtxList, lin, iupAttribGetId(ih, "ITEMBGCOLOR", lin), itemactive);
   IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+  ih->data->columns.focus_cell = 1;
   (void)col;
   return IUP_DEFAULT;
 }
