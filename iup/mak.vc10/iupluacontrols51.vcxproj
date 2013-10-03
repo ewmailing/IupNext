@@ -95,6 +95,7 @@
     <ClCompile Include="..\srclua5\il_colorbrowser.c" />
     <ClCompile Include="..\srclua5\il_dial.c" />
     <ClCompile Include="..\srclua5\il_gauge.c" />
+    <ClCompile Include="..\srclua5\il_matrixlist.c" />
     <ClCompile Include="..\srclua5\iuplua_mask.c" />
     <ClCompile Include="..\srclua5\il_matrix.c" />
     <ClCompile Include="..\srclua5\iuplua_matrix_aux.c" />
@@ -108,6 +109,7 @@
     <None Include="..\srclua5\dial.lua" />
     <None Include="..\srclua5\gauge.lua" />
     <None Include="..\srclua5\matrix.lua" />
+    <None Include="..\srclua5\matrixlist.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srclua5\il_controls.h" />
