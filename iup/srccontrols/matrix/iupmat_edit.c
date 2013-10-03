@@ -427,7 +427,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
       }
       break;
     case K_UP:
-      if (IupGetInt(ih, "CARET") == 1)
+      if (!IupGetInt(ih, "MULTILINE") || IupGetInt(ih, "CARET") == 1)  /* if Multiline CARET will be "L,C" */
       {
         /* if at the first line of the text */
         if (iMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
@@ -443,7 +443,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
         if (value)
         {
           /* if at the last line of the text */
-          if (iupStrLineCount(value) == IupGetInt(ih, "CARET"))
+          if (!IupGetInt(ih, "MULTILINE") || iupStrLineCount(value) == IupGetInt(ih, "CARET"))  /* if Multiline CARET will be "L,C" */
           {
             if (iMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
             {
@@ -471,7 +471,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
         if (value)
         {
           /* if at the last character */
-          if ((int)strlen(value) == IupGetInt(ih, "CARETPOS"))
+          if (IupGetInt(ih, "COUNT") == IupGetInt(ih, "CARETPOS"))
           {
             if (iMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
             {
