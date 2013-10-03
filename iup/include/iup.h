@@ -52,8 +52,6 @@ void      IupRedraw        (Ihandle* ih, int children);
 void      IupRefresh       (Ihandle* ih);
 void      IupRefreshChildren(Ihandle* ih);
 
-char*     IupMapFont       (const char *iupfont);
-char*     IupUnMapFont     (const char *driverfont);
 int       IupHelp          (const char* url);
 char*     IupLoad          (const char *filename);
 char*     IupLoadBuffer    (const char *buffer);
@@ -142,9 +140,8 @@ Icallback IupGetCallback (Ihandle* ih, const char *name);
 Icallback IupSetCallback (Ihandle* ih, const char *name, Icallback func);
 Ihandle*  IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...);
 
-Icallback   IupGetFunction  (const char *name);
-Icallback   IupSetFunction  (const char *name, Icallback func);
-const char* IupGetActionName(void);
+Icallback IupGetFunction(const char *name);
+Icallback IupSetFunction(const char *name, Icallback func);
 
 Ihandle*  IupGetHandle    (const char *name);
 Ihandle*  IupSetHandle    (const char *name, Ihandle* ih);
@@ -224,7 +221,7 @@ Ihandle*  IupTabsv      (Ihandle* *children);
 Ihandle*  IupTree       (void);
 Ihandle*  IupLink       (const char* url, const char* title);
 
-/* Deprecated controls, use SPIN attribute of IupText */
+/* Old controls, use SPIN attribute of IupText */
 Ihandle*  IupSpin       (void);
 Ihandle*  IupSpinbox    (Ihandle* child);
 
@@ -243,6 +240,15 @@ void  IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
 /* IupText, IupList, IupTree, IupMatrix and IupScintilla utility */
 int   IupConvertXYToPos(Ihandle* ih, int x, int y);
 
+/* OLD names, kept for backward compatibility */
+void IupStoreGlobal(const char* name, const char* value);
+void IupStoreAttribute(Ihandle* ih, const char* name, const char* value);
+void IupSetfAttribute(Ihandle* ih, const char* name, const char* format, ...);
+void IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char *value);
+void IupSetfAttributeId(Ihandle *ih, const char* name, int id, const char* f, ...);
+void IupStoreAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
+void IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
+
 /* IupTree utilities */
 int   IupTreeSetUserId(Ihandle* ih, int id, void* userid);
 void* IupTreeGetUserId(Ihandle* ih, int id);
@@ -257,14 +263,12 @@ int   IupTreeGetInt        (Ihandle* ih, const char* name, int id);
 float IupTreeGetFloat      (Ihandle* ih, const char* name, int id);
 void  IupTreeSetfAttribute (Ihandle* ih, const char* name, int id, const char* format, ...);
 
-/* OLD names, kept for backward compatibility */
-void IupStoreGlobal(const char* name, const char* value);
-void IupStoreAttribute(Ihandle* ih, const char* name, const char* value);
-void IupSetfAttribute(Ihandle* ih, const char* name, const char* format, ...);
-void IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char *value);
-void IupSetfAttributeId(Ihandle *ih, const char* name, int id, const char* f, ...);
-void IupStoreAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
-void IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
+/* Deprecated callback management */
+const char* IupGetActionName(void);
+
+/* Deprecated font names */
+char*     IupMapFont       (const char *iupfont);
+char*     IupUnMapFont     (const char *driverfont);
 
 
 /************************************************************************/

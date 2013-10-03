@@ -1337,6 +1337,10 @@ wb_usr.tree =
                 }
               }
             },
+            {
+              name= {nl= "IupMatrixList"},
+              link= "ctrl/iupmatrixlist.html",
+            },
             { link= "", name= {en= "" } },
             {
               name= {nl= "IupGauge (OLD)"},

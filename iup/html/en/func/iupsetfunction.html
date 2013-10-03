@@ -9,14 +9,21 @@
 .style1 {
 	text-decoration: underline;
 }
+.style2 {
+	color: #FF0000;
+}
+.style3 {
+	color: #000000;
+}
 </style>
 </head>
 <body>
 
 <h2>IupSetFunction</h2>
-<p>Associates a function to an action.</p>
-<p>This function is now deprecated. The applications should use <b>IupSetCallback</b> instead.</p>
-<p>It is deprecated because it uses a global name and the application may set 
+<p>Associates a function to an action as a global callback.</p>
+<p><span class="style2">This function is now deprecated for regular elements, 
+use it only global callbacks.</span> For regular elements use <b>IupSetCallback</b> instead.</p>
+<p>Notice that the application or libraries may set 
 the same name for two different functions by mistake. <strong>IupSetCallback</strong> 
 does not depends on global names.</p>
 <h3>

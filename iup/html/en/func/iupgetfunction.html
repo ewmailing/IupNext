@@ -9,6 +9,9 @@
 .style1 {
 	text-decoration: underline;
 }
+.style2 {
+	color: #FF0000;
+}
 </style>
 </head>
 <body>
@@ -16,7 +19,8 @@
 <h2>IupGetFunction</h2>
 <p>Returns the function associated to an action when set using
 <a href="iupsetfunction.html">IupSetFunction</a>.</p>
-<p>This function is now deprecated. The applications should use <b>IupGetCallback</b> instead.</p>
+<p><span class="style2">This function is now deprecated for regular elements, 
+use it only global callbacks</span>. For regular elements use <b>IupGetCallback</b> instead.</p>
 <h3>
 Parameters/Return</h3>
 <pre>Icallback IupGetFunction(const char *<strong>name</strong>); [in C]

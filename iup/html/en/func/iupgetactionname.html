@@ -9,14 +9,18 @@
 .style1 {
 	text-decoration: underline;
 }
+.style3 {
+	color: #FF0000;
+	font-size: large;
+}
 </style>
 </head>
 <body>
 
-<h2>IupGetActionName</h2>
+<h2>IupGetActionName <span class="style3">(Deprecated since 3.0)</span></h2>
 <p>Should return the name of the action being executed by the application. It 
-works only if the application used <a href="iupsetfunction.html">IupSetFunction</a>, 
-which is now deprecated.</p>
+works <strong>only</strong> if the application used <a href="iupsetfunction.html">IupSetFunction</a>, 
+which is now <strong>deprecated</strong>.</p>
 <h3>
 Parameters/Return</h3>
 <pre>const char* IupGetActionName(void); [in C]

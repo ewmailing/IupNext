@@ -9,6 +9,9 @@
 .style1 {
 	text-decoration: underline;
 }
+.style2 {
+	color: #FF0000;
+}
 </style>
 </head>
 <body>
@@ -24,7 +27,7 @@ Parameters/Return</h3>
 </strong><b>name</b>: attribute name of the callback.</p>
 <p><span class="style1">Returns:</span> the callback or NULL if there is none.</p>
 <h3>Notes</h3>
-<p>This function replaces the combination:</p>
+<p>This function replaces the <span class="style2">deprecated </span>combination:</p>
 <pre>IupGetFunction(IupGetAttribute(ih, name))</pre>
 <p>If an event is associated using <b>IupSetFunction</b> and <b>IupSetAttribute</b>, the 
 <b>IupGetCallback</b> also returns the correct callback. So old applications work normally.</p>
