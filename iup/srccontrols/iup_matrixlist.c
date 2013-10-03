@@ -1139,27 +1139,33 @@ static int iMatrixListLeaveItem_CB(Ihandle *ih, int lin, int col)
 static int iMatrixListKeySpace_CB(Ihandle *ih)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
-  int lin = ih->data->lines.focus_cell;
-  int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
-  int imageactive = IupGetIntId(ih, "IMAGEACTIVE", lin);
-  int lines_num = ih->data->lines.num;
 
-  if (!itemactive || !imageactive)
-    return IUP_IGNORE;
-
-  if (!mtxList->editable || lin < lines_num)
+  if (mtxList->image_col != 0)
   {
-    IFnii imagevaluechanged_cb = (IFnii)IupGetCallback(ih, "IMAGEVALUECHANGED_CB");
-    int imagevalue = !IupGetIntId(ih, "IMAGEVALUE", lin);
-    if (!imagevaluechanged_cb || imagevaluechanged_cb(ih, lin, imagevalue) != IUP_IGNORE)
-    {
-      IupSetIntId(ih, "IMAGEVALUE", lin, imagevalue);
-      IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+    int lin = ih->data->lines.focus_cell;
+    int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+    int imageactive = IupGetIntId(ih, "IMAGEACTIVE", lin);
+    int lines_num = ih->data->lines.num;
+
+    if (!itemactive || !imageactive)
       return IUP_IGNORE;
+
+    if (!mtxList->editable || lin < lines_num)
+    {
+      IFnii imagevaluechanged_cb = (IFnii)IupGetCallback(ih, "IMAGEVALUECHANGED_CB");
+      int imagevalue = !IupGetIntId(ih, "IMAGEVALUE", lin);
+      if (!imagevaluechanged_cb || imagevaluechanged_cb(ih, lin, imagevalue) != IUP_IGNORE)
+      {
+        IupSetIntId(ih, "IMAGEVALUE", lin, imagevalue);
+        IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+        return IUP_IGNORE;
+      }
     }
+
+    return IUP_IGNORE;
   }
 
-  return IUP_IGNORE;
+  return IUP_DEFAULT;
 }
 
 
