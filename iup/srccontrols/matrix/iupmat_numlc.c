@@ -276,8 +276,11 @@ int iupMatrixGetStartEnd(const char* value, int *base, int *count, int max, int 
   if (*count <= 0)
     return 0;
 
-  if (del && max>0)
+  if (del)
   {
+    if (max==0)
+      return 0;
+
     if (*base <= 0)  /* the first valid element is always 1 */
       *base = 1;
 
@@ -308,15 +311,13 @@ int iupMatrixGetStartEnd(const char* value, int *base, int *count, int max, int 
 
 int iupMatrixSetAddLinAttrib(Ihandle* ih, const char* value)
 {
-  int base, old_focus_cell, count, lines_num = ih->data->lines.num;
+  int base, focus_cell_changed=0, count, lines_num = ih->data->lines.num;
 
   if (!ih->handle)  /* do not do the action before map */
     return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
   if (!iupMatrixGetStartEnd(value, &base, &count, lines_num, 0))
     return 0;
-
-  old_focus_cell = ih->data->lines.focus_cell;
 
   /* if the focus cell is after the inserted area */
   if (ih->data->lines.focus_cell >= base)
@@ -329,6 +330,8 @@ int iupMatrixSetAddLinAttrib(Ihandle* ih, const char* value)
 
     if (ih->data->lines.focus_cell >= lines_num+count)
       ih->data->lines.focus_cell = lines_num+count-1;
+
+    focus_cell_changed = 1;
   }
 
   iupMatrixMemReAllocLines(ih, lines_num, lines_num+count, base);
@@ -339,7 +342,7 @@ int iupMatrixSetAddLinAttrib(Ihandle* ih, const char* value)
   if (base < lines_num)  /* If before the last line. */
     iMatrixUpdateLineAttributes(ih, base, count, 1);
 
-  if (old_focus_cell != ih->data->lines.focus_cell)
+  if (focus_cell_changed)
     iupMatrixAuxCallEnterCellCb(ih);
 
   iupMatrixDraw(ih, 1);
@@ -348,15 +351,13 @@ int iupMatrixSetAddLinAttrib(Ihandle* ih, const char* value)
 
 int iupMatrixSetDelLinAttrib(Ihandle* ih, const char* value)
 {
-  int base, old_focus_cell, count, lines_num = ih->data->lines.num;
+  int base, focus_cell_changed=0, count, lines_num = ih->data->lines.num;
 
   if (!ih->handle)  /* do not do the action before map */
     return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
   if (!iupMatrixGetStartEnd(value, &base, &count, lines_num, 1))
     return 0;
-
-  old_focus_cell = ih->data->lines.focus_cell;
 
   /* if the focus cell is after the removed area */
   if (ih->data->lines.focus_cell >= base)
@@ -369,6 +370,13 @@ int iupMatrixSetDelLinAttrib(Ihandle* ih, const char* value)
       ih->data->lines.focus_cell = base;   /* move it to the first existent cell */
     else
       ih->data->lines.focus_cell -= count; /* move it to the same cell */
+
+    if (ih->data->lines.focus_cell >= lines_num-count)
+      ih->data->lines.focus_cell = lines_num-count-1;
+    if (ih->data->lines.focus_cell <= 0)
+      ih->data->lines.focus_cell = 1;
+
+    focus_cell_changed = 1;
   }
 
   iupMatrixMemReAllocLines(ih, lines_num, lines_num-count, base);
@@ -376,15 +384,10 @@ int iupMatrixSetDelLinAttrib(Ihandle* ih, const char* value)
   ih->data->lines.num -= count;
   ih->data->need_calcsize = 1;
 
-  if (ih->data->lines.focus_cell >= ih->data->lines.num)
-    ih->data->lines.focus_cell = ih->data->lines.num-1;
-  if (ih->data->lines.focus_cell <= 0)
-    ih->data->lines.focus_cell = 1;
-
   if (base < lines_num)  /* If before the last line. (always true when deleting) */
     iMatrixUpdateLineAttributes(ih, base, count, 0);
 
-  if (old_focus_cell != ih->data->lines.focus_cell)
+  if (focus_cell_changed)
     iupMatrixAuxCallEnterCellCb(ih);
 
   iupMatrixDraw(ih, 1);
@@ -393,15 +396,13 @@ int iupMatrixSetDelLinAttrib(Ihandle* ih, const char* value)
 
 int iupMatrixSetAddColAttrib(Ihandle* ih, const char* value)
 {
-  int base, old_focus_cell, count, columns_num = ih->data->columns.num;
+  int base, focus_cell_changed=0, count, columns_num = ih->data->columns.num;
 
   if (!ih->handle)  /* do not do the action before map */
     return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
   if (!iupMatrixGetStartEnd(value, &base, &count, columns_num, 0))
     return 0;
-
-  old_focus_cell = ih->data->columns.focus_cell;
 
   /* if the focus cell is after the inserted area */
   if (ih->data->columns.focus_cell >= base)
@@ -414,6 +415,8 @@ int iupMatrixSetAddColAttrib(Ihandle* ih, const char* value)
 
     if (ih->data->columns.focus_cell >= columns_num+count)
       ih->data->columns.focus_cell = columns_num+count-1;
+
+    focus_cell_changed = 1;
   }
 
   iupMatrixMemReAllocColumns(ih, columns_num, columns_num+count, base);
@@ -424,7 +427,7 @@ int iupMatrixSetAddColAttrib(Ihandle* ih, const char* value)
   if (base < columns_num)  /* If before the last column. */
     iMatrixUpdateColumnAttributes(ih, base, count, 1);
 
-  if (old_focus_cell != ih->data->columns.focus_cell)
+  if (focus_cell_changed)
     iupMatrixAuxCallEnterCellCb(ih);
 
   iupMatrixDraw(ih, 1);
@@ -433,15 +436,13 @@ int iupMatrixSetAddColAttrib(Ihandle* ih, const char* value)
 
 int iupMatrixSetDelColAttrib(Ihandle* ih, const char* value)
 {
-  int old_focus_cell, base, count, columns_num = ih->data->columns.num;
+  int focus_cell_changed=0, base, count, columns_num = ih->data->columns.num;
 
   if (!ih->handle)  /* do not do the action before map */
     return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
 
   if (!iupMatrixGetStartEnd(value, &base, &count, columns_num, 1))
     return 0;
-
-  old_focus_cell = ih->data->columns.focus_cell;
 
   /* if the focus cell is after the removed area */
   if (ih->data->columns.focus_cell >= base)
@@ -454,6 +455,13 @@ int iupMatrixSetDelColAttrib(Ihandle* ih, const char* value)
       ih->data->columns.focus_cell = base;    /* move it to the first existent cell */
     else
       ih->data->columns.focus_cell -= count;  /* move it to the same cell */
+
+    if (ih->data->columns.focus_cell >= columns_num-count)
+      ih->data->columns.focus_cell = columns_num-count-1;
+    if (ih->data->columns.focus_cell <= 0)
+      ih->data->columns.focus_cell = 1;
+
+    focus_cell_changed = 1;
   }
 
   iupMatrixMemReAllocColumns(ih, columns_num, columns_num-count, base);
@@ -461,15 +469,10 @@ int iupMatrixSetDelColAttrib(Ihandle* ih, const char* value)
   ih->data->columns.num -= count;
   ih->data->need_calcsize = 1;
 
-  if (ih->data->columns.focus_cell >= ih->data->columns.num)
-    ih->data->columns.focus_cell = ih->data->columns.num-1;
-  if (ih->data->columns.focus_cell <= 0)
-    ih->data->columns.focus_cell = 1;
-
   if (base < columns_num)  /* If before the last column. (always true when deleting) */
     iMatrixUpdateColumnAttributes(ih, base, count, 0);
 
-  if (old_focus_cell != ih->data->columns.focus_cell)
+  if (focus_cell_changed)
     iupMatrixAuxCallEnterCellCb(ih);
 
   iupMatrixDraw(ih, 1);
