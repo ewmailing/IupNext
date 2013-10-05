@@ -243,7 +243,7 @@ iupdrvImageGetRawInfo
 iupdrvImageGetRawData
 iupdrvImageDestroy
 
-iupVersionDlg
+iupShowVersion
 iupTableSetFunc
 iupTableSet
 iupTableRemoveCurr
@@ -283,7 +283,7 @@ iupStrCompareEqual
 iupStrCompareFind
 iupStrNextLine
 iupStrNextValue
-iupStrMessageShowError
+iupShowError
 iupStrMessageGet
 iupStrLower
 iupStrUpper

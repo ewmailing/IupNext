@@ -45,38 +45,6 @@ static void iStrMessageSet(const char* message, const char* str)
 
 /**********************************************************************************/
 
-
-void iupStrMessageShowError(Ihandle* parent, const char* message)
-{
-  Ihandle* dlg = IupMessageDlg();
-  char* title = NULL, *str_message;
-
-  if (parent)
-  {
-    IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
-    title = IupGetAttribute(parent, "TITLE");
-  }
-
-  if (!title)
-    title = iupStrMessageGet("IUP_ERROR");
-
-  IupSetAttribute(dlg, "TITLE", title);
-  IupSetAttribute(dlg, "DIALOGTYPE", "ERROR");
-  IupSetAttribute(dlg, "BUTTONS", "OK");
-
-  str_message = iupStrMessageGet(message);
-  if (!str_message)
-    str_message = (char*)message;
-  IupStoreAttribute(dlg, "VALUE", str_message);
-
-  IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
-
-  IupDestroy(dlg);
-}
-
-
-/**********************************************************************************/
-
 #define ISRTMSG_NUM_LNG 3    /* 2+1 for expansion */
 
 typedef struct _IstdMessage

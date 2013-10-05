@@ -79,7 +79,7 @@ int IupOpen(int *argc, char ***argv)
 
     value = getenv("IUP_VERSION");
     if (iupStrBoolean(value))
-      iupVersionDlg();
+      iupShowVersion();
 
     return IUP_NOERROR;
   }

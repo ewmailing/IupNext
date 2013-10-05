@@ -16,7 +16,7 @@
 #include "iup_assert.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
-#include "iup_strmessage.h"
+#include "iup_predialogs.h"
 
 /* from iup_open, but it is not exported, used only here */
 int iupIsOpened(void);
@@ -33,7 +33,7 @@ void iupError(const char* format, ...)
   fprintf(stderr, "%s", msg);
 #else
   if (iupIsOpened())
-    iupStrMessageShowError(NULL, msg);
+    iupShowError(NULL, msg);
   else
     fprintf(stderr, "%s", msg);
 #endif

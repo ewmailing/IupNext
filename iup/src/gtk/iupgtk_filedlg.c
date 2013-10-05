@@ -20,7 +20,7 @@
 #include "iup_str.h"
 #include "iup_drvinfo.h"
 #include "iup_dialog.h"
-#include "iup_strmessage.h"
+#include "iup_predialogs.h"
 #include "iup_array.h"
 #include "iup_drvinfo.h"
 
@@ -432,7 +432,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       {
         if (!dir_exist)
         {
-          iupStrMessageShowError(ih, "IUP_INVALIDDIR");
+          iupShowError(ih, "IUP_INVALIDDIR");
           response = GTK_RESPONSE_HELP; /* to leave the dialog open */
           continue;
         }
@@ -441,7 +441,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       {
         if (dir_exist)
         {
-          iupStrMessageShowError(ih, "IUP_FILEISDIR");
+          iupShowError(ih, "IUP_FILEISDIR");
           response = GTK_RESPONSE_HELP; /* to leave the dialog open */
           continue;
         }
@@ -459,7 +459,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
           if (!iupStrBoolean(value))
           {
-            iupStrMessageShowError(ih, "IUP_FILENOTEXIST");
+            iupShowError(ih, "IUP_FILENOTEXIST");
             response = GTK_RESPONSE_HELP; /* to leave the dialog open */
             continue;
           }

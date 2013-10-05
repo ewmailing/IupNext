@@ -20,11 +20,6 @@ extern "C" {
  * See \ref iup_strmessage.h
  * \ingroup util */
 
-/** Pre-defined dialog to show an error message. Based in IupMessageDlg.
- * Message can be a registered coded message or a commom string.
- * \ingroup strmessage */
-void iupStrMessageShowError(Ihandle* parent, const char* message);
-
 /** Returns a common string from a registered coded message.
  * The returned string depends on the global LANGUAGE attribute.
  * \ingroup strmessage */

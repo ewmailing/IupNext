@@ -454,13 +454,13 @@ int IupGetColor(int x, int y, unsigned char *r, unsigned char *g, unsigned char 
   return ret;
 }
 
-void iupVersionDlg(void)
+void iupShowVersion(void)
 {
   Ihandle* dlg;
 
   dlg = IupDialog(IupVbox(IupFrame(IupVbox(
                       IupLabel(IupVersion()),
-                      IupLabel(IUP_VERSION_DATE),
+                      IupLabel(IupVersionDate()),
                       IupLabel(IUP_COPYRIGHT),
                       NULL)), 
                     IupButton(iupStrMessageGet("IUP_OK"), NULL),
@@ -475,3 +475,32 @@ void iupVersionDlg(void)
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   IupDestroy(dlg);
 }
+
+void iupShowError(Ihandle* parent, const char* message)
+{
+  Ihandle* dlg = IupMessageDlg();
+  char* title = NULL, *str_message;
+
+  if (parent)
+  {
+    IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
+    title = IupGetAttribute(parent, "TITLE");
+  }
+
+  if (!title)
+    title = iupStrMessageGet("IUP_ERROR");
+
+  IupSetAttribute(dlg, "TITLE", title);
+  IupSetAttribute(dlg, "DIALOGTYPE", "ERROR");
+  IupSetAttribute(dlg, "BUTTONS", "OK");
+
+  str_message = iupStrMessageGet(message);
+  if (!str_message)
+    str_message = (char*)message;
+  IupStoreAttribute(dlg, "VALUE", str_message);
+
+  IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
+
+  IupDestroy(dlg);
+}
+
