@@ -1177,20 +1177,15 @@ static int gtkTreeSetStateAttrib(Ihandle* ih, int id, const char* value)
   return 0;
 }
 
-static char* gtkTreeGetTitle(GtkTreeModel* model, GtkTreeIter iterItem)
-{
-  char* title;
-  gtk_tree_model_get(model, &iterItem, IUPGTK_NODE_TITLE, &title, -1);
-  return iupgtkStrConvertFromUTF8(title);
-}
-
 static char* gtkTreeGetTitleAttrib(Ihandle* ih, int id)
 {
+  char* title;
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
   GtkTreeIter iterItem;
   if (!gtkTreeFindNode(ih, id, &iterItem))
     return NULL;
-  return gtkTreeGetTitle(model, iterItem);
+  gtk_tree_model_get(model, &iterItem, IUPGTK_NODE_TITLE, &title, -1);
+  return iupStrReturnStr(iupgtkStrConvertFromUTF8(title));
 }
 
 static int gtkTreeSetTitleAttrib(Ihandle* ih, int id, const char* value)
