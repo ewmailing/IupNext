@@ -502,22 +502,9 @@ static int motDialogSetTitleAttrib(Ihandle* ih, const char* value)
   if (!value)
     value = "";
 
-  XtVaSetValues(ih->handle, XmNtitle, value, 
-                                    XmNiconName, value, 
-                                    NULL);
-  return 0;
+  iupmotSetTitle(ih->handle, value);
+  return 1;
 }
-
-static char* motDialogGetTitleAttrib(Ihandle* ih)
-{
-  char* title;
-  XtVaGetValues(ih->handle, XmNtitle, &title, NULL);
-
-  if (!title || title[0] == 0)
-    return NULL;
-  else
-    return iupStrReturnStr(title);
-}    
 
 static char* motDialogGetClientSizeAttrib(Ihandle *ih)
 {
@@ -1078,7 +1065,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", motDialogGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "TITLE", motDialogGetTitleAttrib, motDialogSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, motDialogSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupDialog only */
   iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motDialogSetBackgroundAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);

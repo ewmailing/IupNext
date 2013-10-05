@@ -122,7 +122,7 @@ int iupdrvListGetCount(Ihandle* ih)
 
 static void motListAddItem(Ihandle* ih, int pos, const char* value)
 {
-  XmString str = XmStringCreateLocalized((String)value);
+  XmString str = iupmotStringCreate(value);
   /* The utility functions use 0=last 1=first */
   if (ih->data->is_dropdown || ih->data->has_editbox)
     XmComboBoxAddItem(ih->handle, str, pos+1, False);
@@ -227,7 +227,7 @@ static char* motListGetIdValueAttrib(Ihandle* ih, int id)
   {
     XmString* items;
     XtVaGetValues(ih->handle, XmNitems, &items, NULL);  /* returns the actual list, not a copy */
-    return iupmotConvertString(items[pos]);
+    return iupmotGetXmString(items[pos]);
   }
   return NULL;
 }
@@ -376,7 +376,7 @@ static int motListSetValueAttrib(Ihandle* ih, const char* value)
 
     iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", "1"); /* disable callbacks */
 
-    XmTextFieldSetString(cbedit, (char*)value);
+    iupmotTextSetString(cbedit, value);
 
     iupAttribSet(ih, "_IUPMOT_DISABLE_TEXT_CB", NULL);
   }

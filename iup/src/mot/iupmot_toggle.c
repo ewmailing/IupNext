@@ -268,8 +268,10 @@ static int motToggleSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* motToggleGetValueAttrib(Ihandle* ih)
 {
-  unsigned char check = 0;
-  XtVaGetValues (ih->handle, XmNset, &check, NULL);
+  int check;
+  unsigned char set = 0;
+  XtVaGetValues (ih->handle, XmNset, &set, NULL);
+  check = set;
   if (check == XmINDETERMINATE) check = -1;
   return iupStrReturnChecked(check);
 }
@@ -516,7 +518,7 @@ static int motToggleMapMethod(Ihandle* ih)
   XtRealizeWidget(ih->handle);
 
   if (ih->data->type == IUP_TOGGLE_TEXT)
-    iupmotSetString(ih->handle, XmNlabelString, "");
+    iupmotSetXmString(ih->handle, XmNlabelString, "");
 
   return IUP_NOERROR;
 }

@@ -234,7 +234,7 @@ static int motLabelMapMethod(Ihandle* ih)
   XtRealizeWidget(ih->handle);
 
   if (ih->data->type == IUP_LABEL_TEXT)
-    iupmotSetString(ih->handle, XmNlabelString, "");
+    iupmotSetXmString(ih->handle, XmNlabelString, "");
 
   return IUP_NOERROR;
 }

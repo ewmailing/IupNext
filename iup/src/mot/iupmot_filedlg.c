@@ -9,7 +9,6 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#include <unistd.h>
 #include <errno.h>
 
 #include <Xm/Xm.h>
@@ -34,71 +33,13 @@
 #include "iup_strmessage.h"
 #include "iup_drvinfo.h"
 #include "iup_array.h"
+#include "iup_predialogs.h"
 
 #include "iupmot_drv.h"
 
 
 enum {IUP_DIALOGOPEN, IUP_DIALOGSAVE, IUP_DIALOGDIR};
 
-
-static int motIsFile(const char* name)
-{
-  struct stat status;
-  if (stat(name, &status) != 0)
-    return 0;
-  if (S_ISDIR(status.st_mode))
-    return 0;
-  return 1;
-}
-
-static int motIsDirectory(const char* name)
-{
-  struct stat status;
-  if (stat(name, &status) != 0)
-    return 0;
-  if (S_ISDIR(status.st_mode))
-    return 1;
-  return 0;
-}            
-
-static int motSetCurrentDirectory(const char* dir)
-{
-  return chdir(dir) == 0? 1: 0;
-}
-
-static char* motGetCurrentDirectory(void)
-{
-  size_t size = 256;
-  char *buffer = (char *)malloc(size);
-
-  for (;;)
-  {
-    if (getcwd(buffer, size) != NULL)
-      return buffer;
-
-    if (errno != ERANGE)
-    {
-      free(buffer);
-      return NULL;
-    }
-
-    size += size;
-    buffer = (char *)realloc(buffer, size);
-  }
-
-  return NULL;
-}
-
-static int motMakeDirectory(const char* name) 
-{
-  mode_t oldmask = umask((mode_t)0);
-  int fail =  mkdir(name, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
-                          S_IWGRP | S_IXGRP | S_IROTH | S_IXOTH);
-  umask (oldmask);
-  if (fail)
-    return 0;
-  return 1;
-}
 
 static void motFileDlgAskUserCBclose(Widget w, XtPointer client_data, XtPointer call_data)
 {
@@ -129,7 +70,7 @@ static int motFileDlgAskUser(Widget parent, const char* message)
   XtSetArg(args[1], XmNdialogStyle, XmDIALOG_FULL_APPLICATION_MODAL);
   XtSetArg(args[2], XmNnoResize, True);
   questionbox = XmCreateQuestionDialog(parent, "filedlg_question", args, 3);
-  iupmotSetString(questionbox, XmNmessageString, message);
+  iupmotSetXmString(questionbox, XmNmessageString, message);
   XtVaGetValues(parent, XmNdialogTitle, &title, NULL);
   XtVaSetValues(questionbox, XmNdialogTitle, title, NULL);
 
@@ -158,20 +99,20 @@ static int motFileDlgCheckValue(Ihandle* ih, Widget filebox)
 
   if (dialogtype == IUP_DIALOGDIR)
   {
-    if (!motIsDirectory(value))               /* if does not exist or not a directory */
+    if (!iupUnixIsDirectory(value))               /* if does not exist or not a directory */
     {
-      iupStrMessageShowError(ih, "IUP_INVALIDDIR");
+      iupShowError(ih, "IUP_INVALIDDIR");
       return 0;
     }
   }
   else if (!iupAttribGetBoolean(ih, "MULTIPLEFILES"))
   {
-    if (motIsDirectory(value))  /* selected a directory */
+    if (iupUnixIsDirectory(value))  /* selected a directory */
     {
-      iupStrMessageShowError(ih, "IUP_INVALIDDIR");
+      iupShowError(ih, "IUP_INVALIDDIR");
       return 0;
     }
-    else if (!motIsFile(value))      /* not a file == new file */
+    else if (!iupUnixIsFile(value))      /* not a file == new file */
     {
       value = iupAttribGet(ih, "ALLOWNEW");
       if (!value)
@@ -184,7 +125,7 @@ static int motFileDlgCheckValue(Ihandle* ih, Widget filebox)
 
       if (!iupStrBoolean(value))
       {
-        iupStrMessageShowError(ih, "IUP_FILENOTEXIST");
+        iupShowError(ih, "IUP_FILENOTEXIST");
         return 0;
       }
     }
@@ -233,7 +174,7 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
 
   for (i = 0; i<sel_count; i++)
   {
-    filename = iupmotConvertString(items[pos[i]-1]);  /* XmListGetSelectedPos starts at 1 */
+    filename = iupmotGetXmString(items[pos[i]-1]);  /* XmListGetSelectedPos starts at 1 */
     len = strlen(filename)-dir_len;
 
     cur_len = iupArrayCount(names_array);
@@ -284,7 +225,7 @@ static void motFileDlgCallback(Widget filebox, Ihandle* ih, XmFileSelectionBoxCa
 
       if (!motFileDlgGetMultipleFiles(ih, iupAttribGet(ih, "DIRECTORY"), wList))
       {
-        iupStrMessageShowError(ih, "IUP_FILENOTEXIST");
+        iupShowError(ih, "IUP_FILENOTEXIST");
         return; /* do not update STATUS */
       }
 
@@ -305,8 +246,8 @@ static void motFileDlgCallback(Widget filebox, Ihandle* ih, XmFileSelectionBoxCa
             char* file = iupAttribGet(ih, "FILE");
             if (file)
             {
-              iupmotSetString(filebox, XmNdirSpec, "");
-              iupmotSetString(filebox, XmNdirSpec, file);
+              iupmotSetXmString(filebox, XmNdirSpec, "");
+              iupmotSetXmString(filebox, XmNdirSpec, file);
             }
           }
 
@@ -321,7 +262,7 @@ static void motFileDlgCallback(Widget filebox, Ihandle* ih, XmFileSelectionBoxCa
         free(dir);
       }
 
-      if (motIsFile(filename))  /* check if file exists */
+      if (iupUnixIsFile(filename))  /* check if file exists */
       {
         iupAttribSet(ih, "FILEEXIST", "YES");
         iupAttribSet(ih, "STATUS", "0");
@@ -340,7 +281,7 @@ static void motFileDlgCallback(Widget filebox, Ihandle* ih, XmFileSelectionBoxCa
       char* dir;
       XtVaGetValues(filebox, XmNdirectory, &xm_dir, NULL);
       XmStringGetLtoR(xm_dir, XmSTRING_DEFAULT_CHARSET, &dir);
-      motSetCurrentDirectory(dir);
+      iupUnixSetCurrentDirectory(dir);
       XtFree(dir);
     }
   }
@@ -398,7 +339,7 @@ static XmString motFileDlgPrompt(Widget parent, const char* message)
   XtSetArg(args[0], XmNautoUnmanage, False);
   XtSetArg(args[1], XmNdialogStyle, XmDIALOG_FULL_APPLICATION_MODAL);
   promptbox = XmCreatePromptDialog(parent, "filedlg_prompt", args, 2);
-  iupmotSetString(promptbox, XmNselectionLabelString, message);
+  iupmotSetXmString(promptbox, XmNselectionLabelString, message);
   XtVaGetValues(parent, XmNdialogTitle, &title, NULL);
   XtVaSetValues(promptbox, XmNdialogTitle, title, NULL);
 
@@ -432,7 +373,7 @@ static void motFileDlgNewFolderCallback(Widget w, Widget filebox, XtPointer call
     {
       char* dir;
       XmStringGetLtoR(xm_dir, XmSTRING_DEFAULT_CHARSET, &dir);
-      motMakeDirectory(dir);
+      iupUnixMakeDirectory(dir);
       XtFree(dir);
     }
 
@@ -500,7 +441,7 @@ static void motFileDlgPreviewCanvasExposeCallback(Widget w, Ihandle *ih, XtPoint
 
   /* callback here always exists */
   cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-  if (motIsFile(filename))
+  if (iupUnixIsFile(filename))
     cb(ih, filename, "PAINT");
   else
     cb(ih, NULL, "PAINT");
@@ -519,7 +460,7 @@ static void motFileDlgBrowseSelectionCallback(Widget w, Ihandle* ih, XmListCallb
 
   /* callback here always exists */
   cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-  if (motIsFile(filename))
+  if (iupUnixIsFile(filename))
     cb(ih, filename, "SELECT");
   else
     cb(ih, filename, "OTHER");
@@ -580,9 +521,10 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
       value = "IUP_OPEN";
     else
       value = "IUP_SELECTDIR";
-    iupAttribSet(ih, "TITLE", iupStrMessageGet(value));
+    value = iupStrMessageGet(value);
+    iupAttribSet(ih, "TITLE", value);
   }
-  iupmotSetString(filebox, XmNdialogTitle, value);
+  iupmotSetXmString(filebox, XmNdialogTitle, value);
 
   XtVaSetValues(filebox,
                 XmNdialogStyle, style,
@@ -606,7 +548,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
 
   value = iupAttribGet(ih, "DIRECTORY");
   if (value)
-    iupmotSetString(filebox, XmNdirectory, value);
+    iupmotSetXmString(filebox, XmNdirectory, value);
 
   value = iupAttribGet(ih, "FILTER");
   if (value)
@@ -622,7 +564,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
       filter[size] = 0;
     }
 
-    iupmotSetString(filebox, XmNpattern, filter);
+    iupmotSetXmString(filebox, XmNpattern, filter);
 
     if (filter != value) 
       free(filter);
@@ -639,7 +581,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
       char* dir = iupAttribGet(ih, "DIRECTORY");
       if (!dir)
       {
-        cur_dir = motGetCurrentDirectory();
+        cur_dir = iupUnixGetCurrentDirectory();
         dir = cur_dir;
       }
 
@@ -651,8 +593,8 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
 
     /* clear value before setting. Do not know why we have to do this, 
        but if not cleared it will fail to set the XmNdirSpec value. */
-    iupmotSetString(filebox, XmNdirSpec, "");
-    iupmotSetString(filebox, XmNdirSpec, file);
+    iupmotSetXmString(filebox, XmNdirSpec, "");
+    iupmotSetXmString(filebox, XmNdirSpec, file);
 
     if (file != value)
       free(file);
@@ -670,7 +612,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
     Widget new_folder = XtVaCreateManagedWidget("new_folder", xmPushButtonWidgetClass, filebox, 
                                                 XmNlabelType, XmSTRING, 
                                                 NULL);
-    iupmotSetString(new_folder, XmNlabelString, iupStrMessageGet("IUP_CREATEFOLDER"));
+    iupmotSetXmString(new_folder, XmNlabelString, iupStrMessageGet("IUP_CREATEFOLDER"));
     XtAddCallback(new_folder, XmNactivateCallback, (XtCallbackProc)motFileDlgNewFolderCallback, (XtPointer)filebox);
   }
   else

@@ -243,3 +243,67 @@ char *iupdrvGetUserName(void)
 {
   return (char*)getlogin();
 }
+
+
+/**************************************************************************/
+
+
+int iupUnixIsFile(const char* name)
+{
+  struct stat status;
+  if (stat(name, &status) != 0)
+    return 0;
+  if (S_ISDIR(status.st_mode))
+    return 0;
+  return 1;
+}
+
+int iupUnixIsDirectory(const char* name)
+{
+  struct stat status;
+  if (stat(name, &status) != 0)
+    return 0;
+  if (S_ISDIR(status.st_mode))
+    return 1;
+  return 0;
+}            
+
+int iupUnixSetCurrentDirectory(const char* dir)
+{
+  return chdir(dir) == 0? 1: 0;
+}
+
+char* iupUnixGetCurrentDirectory(void)
+{
+  size_t size = 256;
+  char *buffer = (char *)malloc(size);
+
+  for (;;)
+  {
+    if (getcwd(buffer, size) != NULL)
+      return buffer;
+
+    if (errno != ERANGE)
+    {
+      free(buffer);
+      return NULL;
+    }
+
+    size += size;
+    buffer = (char *)realloc(buffer, size);
+  }
+
+  return NULL;
+}
+
+int iupUnixMakeDirectory(const char* name) 
+{
+  mode_t oldmask = umask((mode_t)0);
+  int fail =  mkdir(name, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
+                          S_IWGRP | S_IXGRP | S_IROTH | S_IXOTH);
+  umask (oldmask);
+  if (fail)
+    return 0;
+  return 1;
+}
+

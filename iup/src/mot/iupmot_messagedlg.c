@@ -107,7 +107,7 @@ static int motMessageDlgPopup(Ihandle* ih, int x, int y)
 
   value = iupAttribGet(ih, "TITLE");
   if (value)
-    iupmotSetString(msgbox, XmNdialogTitle, value);
+    iupmotSetXmString(msgbox, XmNdialogTitle, value);
   else
   {
     if (parent)
@@ -120,7 +120,7 @@ static int motMessageDlgPopup(Ihandle* ih, int x, int y)
 
   value = iupAttribGet(ih, "VALUE");
   if (value)
-    iupmotSetString(msgbox, XmNmessageString, value);
+    iupmotSetXmString(msgbox, XmNmessageString, value);
 
   XtVaSetValues(msgbox,
                 XmNdialogType, type,
@@ -137,8 +137,8 @@ static int motMessageDlgPopup(Ihandle* ih, int x, int y)
   }
   else if (iupStrEqualNoCase(value, "YESNO"))
   {
-    iupmotSetString(msgbox, XmNokLabelString, iupStrMessageGet("IUP_YES"));
-    iupmotSetString(msgbox, XmNcancelLabelString, iupStrMessageGet("IUP_NO"));
+    iupmotSetXmString(msgbox, XmNokLabelString, iupStrMessageGet("IUP_YES"));
+    iupmotSetXmString(msgbox, XmNcancelLabelString, iupStrMessageGet("IUP_NO"));
   }
 
   if (!IupGetCallback(ih, "HELP_CB"))

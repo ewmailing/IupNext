@@ -650,7 +650,7 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
   itemData->image_expanded_mask = XmUNSPECIFIED_PIXMAP;
   itemData->kind = (unsigned char)kind;
 
-  itemTitle = XmStringCreateLocalized((String)title);
+  itemTitle = iupmotStringCreate(title);
 
   /* Get default colors */
   XtVaGetValues(ih->handle, XmNforeground, &fgcolor, NULL);
@@ -1315,7 +1315,7 @@ static char* motTreeGetTitle(Widget wItem)
   char *title;
   XmString itemTitle;
   XtVaGetValues(wItem, XmNlabelString, &itemTitle, NULL);
-  title = iupmotConvertString(itemTitle);
+  title = iupmotGetXmString(itemTitle);
   XmStringFree(itemTitle);
   return title;
 }
@@ -1337,7 +1337,7 @@ static int motTreeSetTitleAttrib(Ihandle* ih, int id, const char* value)
   if (!value)
     value = "";
 
-  iupmotSetString(wItem, XmNlabelString, value);
+  iupmotSetXmString(wItem, XmNlabelString, value);
 
   return 0;
 }
@@ -1812,7 +1812,7 @@ static void motTreeCallRenameCb(Ihandle* ih)
   }
 
   if (!ignore)
-    iupmotSetString(wItem, XmNlabelString, title);
+    iupmotSetXmString(wItem, XmNlabelString, title);
 
   XtDestroyWidget(wEdit);
 
@@ -1938,7 +1938,7 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
   iupMOT_SETARG(args, num_args, XmNmarginWidth, 0);
   iupMOT_SETARG(args, num_args, XmNforeground, color);
   iupMOT_SETARG(args, num_args, XmNrenderTable, fontlist);
-  iupMOT_SETARG(args, num_args, XmNvalue, iupmotConvertString(title));
+  iupMOT_SETARG(args, num_args, XmNvalue, iupmotGetXmString(title));
   iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
 
   cbEdit = XtCreateManagedWidget(

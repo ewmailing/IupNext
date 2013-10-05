@@ -85,6 +85,7 @@ static void motDropTransferProc(Widget dropTransfer, Ihandle* ih, Atom *selType,
 
 static void motDragProc(Widget dropTarget, XtPointer clientData, XmDragProcCallbackStruct* cbs)
 {
+  (void)clientData;
   if(cbs->reason == XmCR_DROP_SITE_MOTION_MESSAGE)
   {
     Ihandle* ih = NULL;

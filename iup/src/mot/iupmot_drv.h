@@ -49,15 +49,20 @@ void iupmotTipEnterNotify(Ihandle* ih);
 void iupmotTipLeaveNotify(void);
 void iupmotTipsFinish(void);
 
+/* str */
+void iupmotSetXmString(Widget w, const char *resource, const char* value);
+char* iupmotGetXmString(XmString str);
+void iupmotSetMnemonicTitle(Ihandle *ih, Widget w, int pos, const char* value);
+void iupmotTextSetString(Widget w, const char *value);
+XmString iupmotStringCreate(const char *value);
+void iupmotSetTitle(Widget w, const char *value);
+
 /* common */
 void iupmotPointerMotionEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont);
 void iupmotDummyPointerMotionEvent(Widget w, XtPointer *data, XEvent *evt, Boolean *cont);
 void iupmotButtonPressReleaseEvent(Widget w, Ihandle* ih, XEvent* evt, Boolean* cont);
 void iupmotEnterLeaveWindowEvent(Widget w, Ihandle *ih, XEvent *evt, Boolean *cont);
 void iupmotHelpCallback(Widget w, Ihandle *ih, XtPointer call_data);
-void iupmotSetString(Widget w, const char *resource, const char* value);
-char* iupmotConvertString(XmString str);
-void iupmotSetMnemonicTitle(Ihandle *ih, Widget w, int pos, const char* value);
 void iupmotDisableDragSource(Widget w);
 void iupmotSetPixmap(Ihandle* ih, const char* name, const char* prop, int make_inactive);
 void iupmotSetGlobalColorAttrib(Widget w, const char* xmname, const char* name);
@@ -70,6 +75,13 @@ void iupmotGetWindowSize(Ihandle *ih, int *width, int *height);
 char* iupmotGetXWindowAttrib(Ihandle *ih);
 
 #define iupMOT_SETARG(_a, _i, _n, _d) ((_a)[(_i)].name = (_n), (_a)[(_i)].value = (XtArgVal)(_d), (_i)++)
+
+/* Unix Info */
+int iupUnixIsFile(const char* name);
+int iupUnixIsDirectory(const char* name);
+int iupUnixSetCurrentDirectory(const char* dir);
+char* iupUnixGetCurrentDirectory(void);
+int iupUnixMakeDirectory(const char* name);
 
 
 #ifdef __cplusplus

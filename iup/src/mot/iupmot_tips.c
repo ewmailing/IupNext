@@ -95,7 +95,7 @@ static void motTipsShow(void)
  
   /* set label contents */
   value = iupAttribGet(mot_tips.ih, "TIP");
-  iupmotSetString(mot_tips.Label, XmNlabelString, value);
+  iupmotSetXmString(mot_tips.Label, XmNlabelString, value);
 
   /* set label size */
   {

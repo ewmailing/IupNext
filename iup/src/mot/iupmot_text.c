@@ -693,7 +693,7 @@ static int motTextSetSpinValueAttrib(Ihandle* ih, const char* value)
 
       if (value)
       {
-        XmTextSetString(ih->handle, (char*)value);
+        iupmotTextSetString(ih->handle, value);
         XtFree(value);
       }
       ih->data->disable_callbacks = 0;
@@ -721,7 +721,7 @@ static int motTextSetValueAttrib(Ihandle* ih, const char* value)
   motTextSetSpinValueAttrib(ih, value);
   /* disable callbacks */
   ih->data->disable_callbacks = 1;
-  XmTextSetString(ih->handle, (char*)value);
+  iupmotTextSetString(ih->handle, value);
   ih->data->disable_callbacks = 0;
   return 0;
 }
@@ -804,7 +804,7 @@ static void motTextModifyVerifyCallback(Widget w, Ihandle *ih, XmTextVerifyPtr t
       return;
     }
 
-    motcode = iupmotKeycodeToKeysym(((XKeyEvent*)text->event)->keycode);
+    motcode = iupmotKeycodeToKeysym((XKeyEvent*)(text->event));
   }
 
   cb = (IFnis)IupGetCallback(ih, "ACTION");

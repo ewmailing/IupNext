@@ -276,7 +276,7 @@ static int motButtonMapMethod(Ihandle* ih)
   XtRealizeWidget(ih->handle);
 
   if (ih->data->type == IUP_BUTTON_TEXT)
-    iupmotSetString(ih->handle, XmNlabelString, "");
+    iupmotSetXmString(ih->handle, XmNlabelString, "");
 
   return IUP_NOERROR;
 }

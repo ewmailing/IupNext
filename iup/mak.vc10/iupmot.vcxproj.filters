@@ -114,6 +114,9 @@
     <ClCompile Include="..\src\mot\iupmot_val.c">
       <Filter>src_controls</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\mot\iupmot_str.c">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\mot\iupmot_color.h">

@@ -96,7 +96,7 @@ ifdef USE_MOTIF
          mot/iupmot_colordlg.c mot/iupmot_fontdlg.c mot/iupmot_filedlg.c mot/iupmot_frame.c \
          mot/iupmot_button.c mot/iupmot_toggle.c mot/iupmot_progressbar.c mot/iupmot_clipboard.c \
          mot/iupmot_text.c mot/iupmot_val.c mot/iupmot_tabs.c mot/iupmot_menu.c \
-         mot/iupmot_list.c mot/iupmot_tree.c mot/iupmot_dragdrop.c
+         mot/iupmot_list.c mot/iupmot_tree.c mot/iupmot_dragdrop.c mot/iupmot_str.c
          
   SRC += mot/iupunix_help.c mot/iupunix_info.c
   USE_X11 = Yes

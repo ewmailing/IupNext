@@ -156,7 +156,7 @@ static int motFrameSetTitleAttrib(Ihandle* ih, const char* value)
   if (title_label)
   {
     if (!value) value = "";
-    iupmotSetString(title_label, XmNlabelString, value);
+    iupmotSetXmString(title_label, XmNlabelString, value);
     return 1;
   }
   return 0;
@@ -228,7 +228,7 @@ static int motFrameMapMethod(Ihandle* ih)
     /* Frame Constraint */
     iupMOT_SETARG(args, num_args, XmNchildType, XmFRAME_TITLE_CHILD);
     title_label = XtCreateManagedWidget("title_label", xmLabelWidgetClass, ih->handle, args, num_args);
-    iupmotSetString(title_label, XmNlabelString, title);
+    iupmotSetXmString(title_label, XmNlabelString, title);
     iupAttribSet(ih, "_IUPMOT_FRAMELABEL", (char*)title_label);
   }
 
