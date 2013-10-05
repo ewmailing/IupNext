@@ -148,7 +148,7 @@ static void winButtonDrawImageText(Ihandle* ih, HDC hDC, int rect_width, int rec
   HBITMAP hBitmap, hMask;
   COLORREF fgcolor;
 
-  char* title = iupdrvBaseGetTitleAttrib(ih);
+  char* title = iupAttribGet(ih, "TITLE");
   char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
   iupdrvFontGetMultiLineStringSize(ih, str, &txt_width, &txt_height);
   if (str && str!=title) free(str);
@@ -285,7 +285,7 @@ static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
   int x, y, width, height, shift = 0;
   COLORREF fgcolor;
 
-  char* title = iupdrvBaseGetTitleAttrib(ih);
+  char* title = iupAttribGet(ih, "TITLE");
   if (title)
   {
     int style = 0;
@@ -485,7 +485,7 @@ static int winButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 static int winButtonSetTitleAttrib(Ihandle* ih, const char* value)
 {
   iupwinSetMnemonicTitle(ih, 0, value);
-  return iupdrvBaseSetTitleAttrib(ih, value);
+  return iupwinSetTitleAttrib(ih, value);
 }
 
 static int winButtonSetBgColorAttrib(Ihandle* ih, const char* value)
@@ -793,7 +793,7 @@ void iupdrvButtonInitClass(Iclass* ic)
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winButtonSetFgColorAttrib, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */  
-  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, winButtonSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, winButtonSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupButton only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", winButtonGetAlignmentAttrib, winButtonSetAlignmentAttrib, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);

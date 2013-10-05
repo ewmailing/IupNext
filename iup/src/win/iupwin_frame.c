@@ -104,7 +104,7 @@ static void winFrameDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
     COLORREF fgcolor;
     SIZE size;
 
-    char* title = iupdrvBaseGetTitleAttrib(ih);
+    char* title = iupAttribGet(ih, "TITLE");
     if (!title) title = "";
 
     x = drawitem->rcItem.left+7;
@@ -245,5 +245,5 @@ void iupdrvFrameInitClass(Iclass* ic)
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, iupdrvBaseSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, iupwinSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 }

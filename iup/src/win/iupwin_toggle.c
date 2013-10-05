@@ -441,7 +441,7 @@ static int winToggleSetTitleAttrib(Ihandle* ih, const char* value)
   if (ih->data->type == IUP_TOGGLE_TEXT)
   {
     iupwinSetMnemonicTitle(ih, 0, value);
-    return iupdrvBaseSetTitleAttrib(ih, value);
+    return iupwinSetTitleAttrib(ih, value);
   }
   return 0;
 }
@@ -803,7 +803,7 @@ void iupdrvToggleInitClass(Iclass* ic)
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winTogglePostRedrawSetAttrib, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */  
-  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, winToggleSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, winToggleSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupToggle only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, winTogglePostRedrawSetAttrib, IUPAF_SAMEASSYSTEM, "ACENTER:ACENTER", IUPAF_NO_INHERIT);

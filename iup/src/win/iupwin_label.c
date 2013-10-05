@@ -101,7 +101,7 @@ static void winLabelDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_heig
   HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
   COLORREF fgcolor;
 
-  char* title = iupdrvBaseGetTitleAttrib(ih);
+  char* title = iupAttribGet(ih, "TITLE");
   char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
   iupdrvFontGetMultiLineStringSize(ih, str, &width, &height);
   if (str && str!=title) free(str);
@@ -168,7 +168,7 @@ static void winLabelDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 static int winLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
   iupwinSetMnemonicTitle(ih, 0, value);
-  return iupdrvBaseSetTitleAttrib(ih, value);
+  return iupwinSetTitleAttrib(ih, value);
 }
 
 static int winLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
@@ -383,7 +383,7 @@ void iupdrvLabelInitClass(Iclass* ic)
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winLabelSetFgColorAttrib, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);    /* force new default value */
-  iupClassRegisterAttribute(ic, "TITLE", iupdrvBaseGetTitleAttrib, winLabelSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, winLabelSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupLabel only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", winLabelGetAlignmentAttrib, winLabelSetAlignmentAttrib, IUPAF_SAMEASSYSTEM, "ALEFT:ACENTER", IUPAF_NO_INHERIT);

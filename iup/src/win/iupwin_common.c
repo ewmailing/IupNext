@@ -637,11 +637,11 @@ void iupdrvSetActive(Ihandle* ih, int enable)
   EnableWindow(ih->handle, enable);
 }
 
-int iupdrvBaseSetTitleAttrib(Ihandle* ih, const char* value)
+int iupwinSetTitleAttrib(Ihandle* ih, const char* value)
 {
   if (!value) value = "";
   SetWindowText(ih->handle, iupwinStrToSystem(value));
-  return 0;
+  return 1;
 }
 
 void iupwinSetMnemonicTitle(Ihandle *ih, int pos, const char* value)
@@ -670,11 +670,6 @@ TCHAR* iupwinGetWindowText(HWND hWnd)
   }
   else
     return NULL;
-}
-
-char* iupdrvBaseGetTitleAttrib(Ihandle* ih)
-{
-  return iupStrReturnStr(iupwinStrFromSystem(iupwinGetWindowText(ih->handle)));
 }
 
 #ifndef IDC_HAND

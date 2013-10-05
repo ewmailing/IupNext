@@ -695,22 +695,12 @@ static int gtkDialogSetTitleAttrib(Ihandle* ih, const char* value)
   if (!value)
     value = "";
   gtk_window_set_title((GtkWindow*)ih->handle, iupgtkStrConvertToUTF8(value));
-  return 0;
+  return 1;
 }
 
 static char* gtkDialogGetActiveWindowAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean (gtk_window_is_active((GtkWindow*)ih->handle)); 
-}    
-
-static char* gtkDialogGetTitleAttrib(Ihandle* ih)
-{
-  const char* title = gtk_window_get_title((GtkWindow*)ih->handle);
-
-  if (!title || title[0] == 0)
-    return NULL;
-  else
-    return iupStrReturnStr(iupgtkStrConvertFromUTF8(title));
 }    
 
 static char* gtkDialogGetClientSizeAttrib(Ihandle *ih)
@@ -1031,7 +1021,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", gtkDialogGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "TITLE", gtkDialogGetTitleAttrib, gtkDialogSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, gtkDialogSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupDialog only */
   iupClassRegisterAttribute(ic, "BACKGROUND", NULL, gtkDialogSetBackgroundAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);

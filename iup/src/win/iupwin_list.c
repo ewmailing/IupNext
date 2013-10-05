@@ -432,7 +432,7 @@ static char* winListGetValueAttrib(Ihandle* ih)
 static int winListSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->has_editbox)
-    iupdrvBaseSetTitleAttrib(ih, value);
+    iupwinSetTitleAttrib(ih, value);
   else 
   {
     if (ih->data->is_dropdown || !ih->data->is_multiple)
