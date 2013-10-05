@@ -60,11 +60,18 @@ void iupmotSetXmString(Widget w, const char *resource, const char* value)
 
 char* iupmotGetXmString(XmString str)
 {
-  char* text = (char*)XmStringUnparse(str, NULL, XmCHARSET_TEXT, XmCHARSET_TEXT, NULL, 0, XmOUTPUT_ALL);
-  char* buf = iupStrReturnStr(text);
-  XtFree(text);
-  return buf;
+  return (char*)XmStringUnparse(str, NULL, XmCHARSET_TEXT, XmCHARSET_TEXT, NULL, 0, XmOUTPUT_ALL);
 }
+
+char* iupmotReturnXmString(XmString str)
+{
+  char* text = iupmotGetXmString(str);
+  char* ret = iupStrReturnStr(text);
+  XtFree(text);
+  return ret;
+}
+
+/* TODO: UTF-8 support would start here... */
 
 XmString iupmotStringCreate(const char *value)
 {

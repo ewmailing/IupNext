@@ -175,12 +175,16 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
   for (i = 0; i<sel_count; i++)
   {
     filename = iupmotGetXmString(items[pos[i]-1]);  /* XmListGetSelectedPos starts at 1 */
-    len = strlen(filename)-dir_len;
+    if (filename)
+    {
+      len = strlen(filename)-dir_len;
 
-    cur_len = iupArrayCount(names_array);
-    all_names = iupArrayAdd(names_array, len+1);
-    memcpy(all_names+cur_len, filename+dir_len, len);
-    all_names[cur_len+len] = '|';
+      cur_len = iupArrayCount(names_array);
+      all_names = iupArrayAdd(names_array, len+1);
+      memcpy(all_names+cur_len, filename+dir_len, len);
+      all_names[cur_len+len] = '|';
+      XtFree(filename);
+    }
   }
 
   XtFree((char*)pos);

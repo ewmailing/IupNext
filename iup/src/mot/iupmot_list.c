@@ -227,7 +227,7 @@ static char* motListGetIdValueAttrib(Ihandle* ih, int id)
   {
     XmString* items;
     XtVaGetValues(ih->handle, XmNitems, &items, NULL);  /* returns the actual list, not a copy */
-    return iupmotGetXmString(items[pos]);
+    return iupmotReturnXmString(items[pos]);
   }
   return NULL;
 }

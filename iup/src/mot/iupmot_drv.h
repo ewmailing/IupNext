@@ -52,6 +52,7 @@ void iupmotTipsFinish(void);
 /* str */
 void iupmotSetXmString(Widget w, const char *resource, const char* value);
 char* iupmotGetXmString(XmString str);
+char* iupmotReturnXmString(XmString str);
 void iupmotSetMnemonicTitle(Ihandle *ih, Widget w, int pos, const char* value);
 void iupmotTextSetString(Widget w, const char *value);
 XmString iupmotStringCreate(const char *value);

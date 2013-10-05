@@ -1310,22 +1310,17 @@ static int motTreeSetMarkedAttrib(Ihandle* ih, int id, const char* value)
   return 0;
 }
 
-static char* motTreeGetTitle(Widget wItem)
+static char* motTreeGetTitleAttrib(Ihandle* ih, int id)
 {
   char *title;
   XmString itemTitle;
-  XtVaGetValues(wItem, XmNlabelString, &itemTitle, NULL);
-  title = iupmotGetXmString(itemTitle);
-  XmStringFree(itemTitle);
-  return title;
-}
-
-static char* motTreeGetTitleAttrib(Ihandle* ih, int id)
-{
   Widget wItem = iupTreeGetNode(ih, id);
   if (!wItem)  
     return NULL;
-  return motTreeGetTitle(wItem);
+  XtVaGetValues(wItem, XmNlabelString, &itemTitle, NULL);
+  title = iupmotReturnXmString(itemTitle);
+  XmStringFree(itemTitle);
+  return title;
 }
 
 static int motTreeSetTitleAttrib(Ihandle* ih, int id, const char* value)
@@ -1930,6 +1925,8 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
   iupdrvImageGetInfo((void*)image, &w_img, NULL, NULL);
   w_img += 3; /* add some room for borders */
 
+  value = iupmotGetXmString(title);
+
   iupMOT_SETARG(args, num_args, XmNx, x+w_img);      /* x-position */
   iupMOT_SETARG(args, num_args, XmNy, y);         /* y-position */
   iupMOT_SETARG(args, num_args, XmNwidth, w-w_img);  /* default width to avoid 0 */
@@ -1938,7 +1935,7 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
   iupMOT_SETARG(args, num_args, XmNmarginWidth, 0);
   iupMOT_SETARG(args, num_args, XmNforeground, color);
   iupMOT_SETARG(args, num_args, XmNrenderTable, fontlist);
-  iupMOT_SETARG(args, num_args, XmNvalue, iupmotGetXmString(title));
+  iupMOT_SETARG(args, num_args, XmNvalue, value);
   iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
 
   cbEdit = XtCreateManagedWidget(
@@ -1946,6 +1943,9 @@ static void motTreeShowEditField(Ihandle* ih, Widget wItem)
     xmTextWidgetClass,   /* widget class */
     sb_win,
     args, num_args);
+
+  if (value)
+    XtFree(value);
 
   XtAddEventHandler(cbEdit, EnterWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
   XtAddEventHandler(cbEdit, LeaveWindowMask, False, (XtEventHandler)iupmotEnterLeaveWindowEvent, (XtPointer)ih);
