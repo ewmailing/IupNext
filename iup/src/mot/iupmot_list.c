@@ -1204,7 +1204,7 @@ static void motListEditModifyVerifyCallback(Widget cbedit, Ihandle *ih, XmTextVe
     remove_dir = -1;
   }
 
-  ret = iupEditCallActionCb(ih, cb, insert_value, start, end, ih->data->mask, ih->data->nc, remove_dir, 0);
+  ret = iupEditCallActionCb(ih, cb, insert_value, start, end, ih->data->mask, ih->data->nc, remove_dir, 0);  /* TODO: UTF8 support */
   if (ret == 0)
   {
     text->doit = False;     /* abort processing */

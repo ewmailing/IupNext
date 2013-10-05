@@ -71,7 +71,7 @@ char* iupmotReturnXmString(XmString str)
   return ret;
 }
 
-/* TODO: UTF-8 support would start here... */
+/* TODO: UTF8 support would start here... */
 
 XmString iupmotStringCreate(const char *value)
 {
