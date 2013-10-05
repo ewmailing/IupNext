@@ -497,7 +497,7 @@ void* iupdrvImageLoad(const char* name, int type)
     if (!pixbuf)
     {
       GError *error = NULL;
-      pixbuf = gdk_pixbuf_new_from_file(iupgtkStrConvertToUTF8(name), &error);  /* filename here is in UTF8, do NOT use iupgtkStrConvertToFilename */ 
+      pixbuf = gdk_pixbuf_new_from_file(iupgtkStrConvertToSystem(name), &error);  /* filename here is in UTF-8, do NOT use iupgtkStrConvertToFilename */ 
       if (error)
         g_error_free(error);
     }

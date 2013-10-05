@@ -30,9 +30,9 @@ static int gtkFontDlgPopup(Ihandle* ih, int x, int y)
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
 #if GTK_CHECK_VERSION(3, 2, 0)
-  dialog = gtk_font_chooser_dialog_new(iupgtkStrConvertToUTF8(iupAttribGet(ih, "TITLE")), GTK_WINDOW(parent));
+  dialog = gtk_font_chooser_dialog_new(iupgtkStrConvertToSystem(iupAttribGet(ih, "TITLE")), GTK_WINDOW(parent));
 #else
-  dialog = gtk_font_selection_dialog_new(iupgtkStrConvertToUTF8(iupAttribGet(ih, "TITLE")));
+  dialog = gtk_font_selection_dialog_new(iupgtkStrConvertToSystem(iupAttribGet(ih, "TITLE")));
 #endif
   if (!dialog)
     return IUP_ERROR;
@@ -54,7 +54,7 @@ static int gtkFontDlgPopup(Ihandle* ih, int x, int y)
   preview_text = iupAttribGet(ih, "PREVIEWTEXT");
   if (preview_text)
   {
-    preview_text = iupgtkStrConvertToUTF8(preview_text);
+    preview_text = iupgtkStrConvertToSystem(preview_text);
 #if GTK_CHECK_VERSION(3, 2, 0)
     if (iupStrEqualNoCase(preview_text, "NONE"))
       gtk_font_chooser_set_show_preview_entry(GTK_FONT_CHOOSER(dialog), FALSE);

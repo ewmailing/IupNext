@@ -51,13 +51,13 @@ static int gtkMessageDlgPopup(Ihandle* ih, int x, int y)
                                   type,
                                   GTK_BUTTONS_NONE,
                                   "%s",
-                                  iupgtkStrConvertToUTF8(iupAttribGet(ih, "VALUE")));
+                                  iupgtkStrConvertToSystem(iupAttribGet(ih, "VALUE")));
   if (!dialog)
     return IUP_ERROR;
 
   title = iupAttribGet(ih, "TITLE");
   if (title)
-    gtk_window_set_title(GTK_WINDOW(dialog), iupgtkStrConvertToUTF8(title));
+    gtk_window_set_title(GTK_WINDOW(dialog), iupgtkStrConvertToSystem(title));
 
   buttons = iupAttribGetStr(ih, "BUTTONS");
   if (iupStrEqualNoCase(buttons, "OKCANCEL"))

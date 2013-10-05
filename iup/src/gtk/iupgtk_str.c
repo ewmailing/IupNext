@@ -54,13 +54,13 @@ static char* gtkStrFromUTF8(const char *str, const char* charset)
 
 static char* gtkLastConvertUTF8 = NULL;
 
-void iupgtkStrReleaseConvertUTF8(void)
+void iupgtkStrRelease(void)
 {
   if (gtkLastConvertUTF8)
     g_free(gtkLastConvertUTF8);
 }
 
-char* iupgtkStrConvertToUTF8Len(const char* str, int *len)
+char* iupgtkStrConvertToSystemLen(const char* str, int *len)
 {
   if (!str || *str == 0)
     return (char*)str;
@@ -100,7 +100,7 @@ char* iupgtkStrConvertToUTF8Len(const char* str, int *len)
   return (char*)str;
 }
 
-char* iupgtkStrConvertToUTF8(const char* str)  /* From IUP to GTK */
+char* iupgtkStrConvertToSystem(const char* str)  /* From IUP to GTK */
 {
   if (!str || *str == 0)
     return (char*)str;
@@ -138,7 +138,7 @@ char* iupgtkStrConvertToUTF8(const char* str)  /* From IUP to GTK */
   return (char*)str;
 }
 
-char* iupgtkStrConvertFromUTF8(const char* str)  /* From GTK to IUP */
+char* iupgtkStrConvertFromSystem(const char* str)  /* From GTK to IUP */
 {
   if (!str || *str == 0)
     return (char*)str;

@@ -241,12 +241,12 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     gtk_stock_lookup(value, &item);
     value = item.label;
 
-    iupAttribSetStr(ih, "TITLE", iupgtkStrConvertFromUTF8(value));
+    iupAttribSetStr(ih, "TITLE", iupgtkStrConvertFromSystem(value));
     value = iupAttribGet(ih, "TITLE");
     iupStrRemoveChar(value, '_');
   }
 
-  dialog = gtk_file_chooser_dialog_new(iupgtkStrConvertToUTF8(value), (GtkWindow*)parent, action, 
+  dialog = gtk_file_chooser_dialog_new(iupgtkStrConvertToSystem(value), (GtkWindow*)parent, action, 
                                        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
                                        NULL);
   if (!dialog)
@@ -324,7 +324,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
       pattern_count = iupStrReplace(pattern, ';', 0)+1;
 
-      gtk_file_filter_set_name(filter, iupgtkStrConvertToUTF8(name));
+      gtk_file_filter_set_name(filter, iupgtkStrConvertToSystem(name));
 
       for (j=0; j<pattern_count && pattern[0]; j++)
       {
@@ -360,7 +360,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
       pattern_count = iupStrReplace(filters, ';', 0)+1;
 
-      gtk_file_filter_set_name(filter, iupgtkStrConvertToUTF8(info));
+      gtk_file_filter_set_name(filter, iupgtkStrConvertToSystem(info));
 
       fstr = filters;
       for (i=0; i<pattern_count && fstr[0]; i++)

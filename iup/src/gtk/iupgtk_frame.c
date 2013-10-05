@@ -43,7 +43,7 @@ static int gtkFrameSetTitleAttrib(Ihandle* ih, const char* value)
   if (iupAttribGetStr(ih, "_IUPFRAME_HAS_TITLE"))
   {
     GtkFrame* frame = (GtkFrame*)ih->handle;
-    gtk_frame_set_label(frame, iupgtkStrConvertToUTF8(value));
+    gtk_frame_set_label(frame, iupgtkStrConvertToSystem(value));
     return 1;
   }
   return 0;

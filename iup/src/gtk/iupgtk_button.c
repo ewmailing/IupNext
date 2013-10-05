@@ -419,7 +419,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
         GtkSettings* settings = gtk_widget_get_settings(ih->handle);
         g_object_set(settings, "gtk-button-images", (int)TRUE, NULL);
 
-        gtk_button_set_label((GtkButton*)ih->handle, iupgtkStrConvertToUTF8(iupAttribGet(ih, "TITLE")));
+        gtk_button_set_label((GtkButton*)ih->handle, iupgtkStrConvertToSystem(iupAttribGet(ih, "TITLE")));
       
 #if GTK_CHECK_VERSION(2, 10, 0)
         gtk_button_set_image_position((GtkButton*)ih->handle, ih->data->img_position);  /* IUP and GTK have the same Ids */
@@ -455,7 +455,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
         gtk_button_set_label((GtkButton*)ih->handle, "");
     }
     else
-      gtk_button_set_label((GtkButton*)ih->handle, iupgtkStrConvertToUTF8(title));
+      gtk_button_set_label((GtkButton*)ih->handle, iupgtkStrConvertToSystem(title));
   }
 
   /* add to the parent, all GTK controls must call this. */

@@ -694,7 +694,7 @@ static int gtkDialogSetTitleAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
     value = "";
-  gtk_window_set_title((GtkWindow*)ih->handle, iupgtkStrConvertToUTF8(value));
+  gtk_window_set_title((GtkWindow*)ih->handle, iupgtkStrConvertToSystem(value));
   return 1;
 }
 

@@ -153,7 +153,7 @@ static char* gtkClipboardGetTextAttrib(Ihandle *ih)
 {
   GtkClipboard *clipboard = gtk_clipboard_get(gdk_atom_intern("CLIPBOARD", FALSE));
   (void)ih;
-  return iupgtkStrConvertFromUTF8(gtk_clipboard_wait_for_text(clipboard));
+  return iupgtkStrConvertFromSystem(gtk_clipboard_wait_for_text(clipboard));
 }
 
 static int gtkClipboardSetImageAttrib(Ihandle *ih, const char *value)

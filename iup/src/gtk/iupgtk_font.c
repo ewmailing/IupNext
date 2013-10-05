@@ -364,10 +364,10 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
     if (iupAttribGetBoolean(ih, "MARKUP"))
     {
       pango_layout_set_attributes(gtkfont->layout, NULL);
-      pango_layout_set_markup(gtkfont->layout, iupgtkStrConvertToUTF8(str), -1);
+      pango_layout_set_markup(gtkfont->layout, iupgtkStrConvertToSystem(str), -1);
     }
     else
-      pango_layout_set_text(gtkfont->layout, iupgtkStrConvertToUTF8(str), -1);
+      pango_layout_set_text(gtkfont->layout, iupgtkStrConvertToSystem(str), -1);
 
     pango_layout_get_pixel_size(gtkfont->layout, &max_w, &dummy_h);
   }
@@ -396,7 +396,7 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
   else
     len = strlen(str);
 
-  str = iupgtkStrConvertToUTF8Len(str, &len);
+  str = iupgtkStrConvertToSystemLen(str, &len);
 
   if (iupAttribGetBoolean(ih, "MARKUP"))
   {

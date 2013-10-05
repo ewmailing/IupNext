@@ -638,7 +638,7 @@ static int gtkTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
     {
       ih->data->disable_callbacks = 1;
       gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
-      gtk_text_buffer_insert(buffer, &start_iter, iupgtkStrConvertToUTF8(value), -1);
+      gtk_text_buffer_insert(buffer, &start_iter, iupgtkStrConvertToSystem(value), -1);
       ih->data->disable_callbacks = 0;
     }
   }
@@ -649,7 +649,7 @@ static int gtkTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
     {
       ih->data->disable_callbacks = 1;
       gtk_editable_delete_selection(GTK_EDITABLE(ih->handle));
-      gtk_editable_insert_text(GTK_EDITABLE(ih->handle), iupgtkStrConvertToUTF8(value), -1, &start);
+      gtk_editable_insert_text(GTK_EDITABLE(ih->handle), iupgtkStrConvertToSystem(value), -1, &start);
       ih->data->disable_callbacks = 0;
     }
   }
@@ -683,7 +683,7 @@ static char* gtkTextGetSelectedTextAttrib(Ihandle* ih)
     GtkTextIter start_iter, end_iter;
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
     if (gtk_text_buffer_get_selection_bounds(buffer, &start_iter, &end_iter))
-      return iupStrReturnStr(iupgtkStrConvertFromUTF8(gtk_text_buffer_get_text(buffer, &start_iter, &end_iter, TRUE)));
+      return iupStrReturnStr(iupgtkStrConvertFromSystem(gtk_text_buffer_get_text(buffer, &start_iter, &end_iter, TRUE)));
   }
   else
   {
@@ -691,7 +691,7 @@ static char* gtkTextGetSelectedTextAttrib(Ihandle* ih)
     if (gtk_editable_get_selection_bounds(GTK_EDITABLE(ih->handle), &start, &end))
     {
       char* selectedtext = gtk_editable_get_chars(GTK_EDITABLE(ih->handle), start, end);
-      char* str = iupStrReturnStr(iupgtkStrConvertFromUTF8(selectedtext));
+      char* str = iupStrReturnStr(iupgtkStrConvertFromSystem(selectedtext));
       g_free(selectedtext);
       return str;
     }
@@ -855,10 +855,10 @@ static int gtkTextSetValueAttrib(Ihandle* ih, const char* value)
   if (ih->data->is_multiline)
   {
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
-    gtk_text_buffer_set_text(buffer, iupgtkStrConvertToUTF8(value), -1);
+    gtk_text_buffer_set_text(buffer, iupgtkStrConvertToSystem(value), -1);
   }
   else
-    gtk_entry_set_text(GTK_ENTRY(ih->handle), iupgtkStrConvertToUTF8(value));
+    gtk_entry_set_text(GTK_ENTRY(ih->handle), iupgtkStrConvertToSystem(value));
   ih->data->disable_callbacks = 0;
   return 0;
 }
@@ -874,10 +874,10 @@ static char* gtkTextGetValueAttrib(Ihandle* ih)
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
     gtk_text_buffer_get_start_iter(buffer, &start_iter);
     gtk_text_buffer_get_end_iter(buffer, &end_iter);
-    value = iupStrReturnStr(iupgtkStrConvertFromUTF8(gtk_text_buffer_get_text(buffer, &start_iter, &end_iter, TRUE)));
+    value = iupStrReturnStr(iupgtkStrConvertFromSystem(gtk_text_buffer_get_text(buffer, &start_iter, &end_iter, TRUE)));
   }
   else
-    value = iupStrReturnStr(iupgtkStrConvertFromUTF8(gtk_entry_get_text(GTK_ENTRY(ih->handle))));
+    value = iupStrReturnStr(iupgtkStrConvertFromSystem(gtk_entry_get_text(GTK_ENTRY(ih->handle))));
 
   if (!value) value = "";
 
@@ -896,7 +896,7 @@ static char* gtkTextGetLineValueAttrib(Ihandle* ih)
     gtk_text_buffer_get_iter_at_line(buffer, &start_iter, lin);
     gtk_text_buffer_get_iter_at_line(buffer, &end_iter, lin);
     gtk_text_iter_forward_to_line_end(&end_iter);
-    return iupStrReturnStr(iupgtkStrConvertFromUTF8(gtk_text_buffer_get_text(buffer, &start_iter, &end_iter, TRUE)));
+    return iupStrReturnStr(iupgtkStrConvertFromSystem(gtk_text_buffer_get_text(buffer, &start_iter, &end_iter, TRUE)));
   }
   else
     return gtkTextGetValueAttrib(ih);
@@ -913,12 +913,12 @@ static int gtkTextSetInsertAttrib(Ihandle* ih, const char* value)
   if (ih->data->is_multiline)
   {
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
-    gtk_text_buffer_insert_at_cursor(buffer, iupgtkStrConvertToUTF8(value), -1);
+    gtk_text_buffer_insert_at_cursor(buffer, iupgtkStrConvertToSystem(value), -1);
   }
   else
   {
     gint pos = gtk_editable_get_position(GTK_EDITABLE(ih->handle));
-    gtk_editable_insert_text(GTK_EDITABLE(ih->handle), iupgtkStrConvertToUTF8(value), -1, &pos);
+    gtk_editable_insert_text(GTK_EDITABLE(ih->handle), iupgtkStrConvertToSystem(value), -1, &pos);
   }
   ih->data->disable_callbacks = 0;
 
@@ -939,7 +939,7 @@ static int gtkTextSetAppendAttrib(Ihandle* ih, const char* value)
     pos = gtk_text_buffer_get_char_count(buffer);
     if (ih->data->append_newline && pos!=0)
       gtk_text_buffer_insert(buffer, &iter, "\n", 1);
-    gtk_text_buffer_insert(buffer, &iter, iupgtkStrConvertToUTF8(value), -1);
+    gtk_text_buffer_insert(buffer, &iter, iupgtkStrConvertToSystem(value), -1);
   }
   else
   {
@@ -948,7 +948,7 @@ static int gtkTextSetAppendAttrib(Ihandle* ih, const char* value)
 #else
     pos = strlen(gtk_entry_get_text(GTK_ENTRY(ih->handle)))+1;
 #endif
-    gtk_editable_insert_text(GTK_EDITABLE(ih->handle), iupgtkStrConvertToUTF8(value), -1, &pos);
+    gtk_editable_insert_text(GTK_EDITABLE(ih->handle), iupgtkStrConvertToSystem(value), -1, &pos);
   }
   ih->data->disable_callbacks = 0;
   return 0;
@@ -1451,7 +1451,7 @@ static void gtkTextEntryInsertText(GtkEditable *editable, char *insert_value, in
   if (ih->data->disable_callbacks)
     return;
 
-  ret = iupEditCallActionCb(ih, cb, iupgtkStrConvertFromUTF8(insert_value), *pos, *pos, ih->data->mask, ih->data->nc, 0, iupgtkStrGetUTF8Mode());
+  ret = iupEditCallActionCb(ih, cb, iupgtkStrConvertFromSystem(insert_value), *pos, *pos, ih->data->mask, ih->data->nc, 0, iupgtkStrGetUTF8Mode());
   if (ret == 0)
     g_signal_stop_emission_by_name(editable, "insert_text");
   else if (ret != -1)
@@ -1492,7 +1492,7 @@ static void gtkTextBufferInsertText(GtkTextBuffer *textbuffer, GtkTextIter *pos_
 
   pos = gtk_text_iter_get_offset(pos_iter);
 
-  ret = iupEditCallActionCb(ih, cb, iupgtkStrConvertFromUTF8(insert_value), pos, pos, ih->data->mask, ih->data->nc, 0, iupgtkStrGetUTF8Mode());
+  ret = iupEditCallActionCb(ih, cb, iupgtkStrConvertFromSystem(insert_value), pos, pos, ih->data->mask, ih->data->nc, 0, iupgtkStrGetUTF8Mode());
   if (ret == 0)
     g_signal_stop_emission_by_name(textbuffer, "insert_text");
   else if (ret != -1)

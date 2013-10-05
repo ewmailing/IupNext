@@ -667,7 +667,7 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
   /* set the attributes of the new node */
   gtk_tree_store_set(store, &iterNewItem, IUPGTK_NODE_HAS_IMAGE, FALSE,
                                           IUPGTK_NODE_HAS_IMAGE_EXPANDED, FALSE,
-                                          IUPGTK_NODE_TITLE, iupgtkStrConvertToUTF8(title),
+                                          IUPGTK_NODE_TITLE, iupgtkStrConvertToSystem(title),
                                           IUPGTK_NODE_KIND, kind,
                                           IUPGTK_NODE_COLOR, &color, 
                                           IUPGTK_NODE_SELECTED, 0,
@@ -1185,7 +1185,7 @@ static char* gtkTreeGetTitleAttrib(Ihandle* ih, int id)
   if (!gtkTreeFindNode(ih, id, &iterItem))
     return NULL;
   gtk_tree_model_get(model, &iterItem, IUPGTK_NODE_TITLE, &title, -1);
-  return iupStrReturnStr(iupgtkStrConvertFromUTF8(title));
+  return iupStrReturnStr(iupgtkStrConvertFromSystem(title));
 }
 
 static int gtkTreeSetTitleAttrib(Ihandle* ih, int id, const char* value)
@@ -1196,7 +1196,7 @@ static int gtkTreeSetTitleAttrib(Ihandle* ih, int id, const char* value)
     return 0;
   if (!value)
     value = "";
-  gtk_tree_store_set(store, &iterItem, IUPGTK_NODE_TITLE, iupgtkStrConvertToUTF8(value), -1);
+  gtk_tree_store_set(store, &iterItem, IUPGTK_NODE_TITLE, iupgtkStrConvertToSystem(value), -1);
   return 0;
 }
 
@@ -1932,7 +1932,7 @@ static void gtkTreeCellTextEdited(GtkCellRendererText *cell, gchar *path_string,
   cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
   if (cbRename)
   {
-    if (cbRename(ih, gtkTreeFindNodeId(ih, &iterItem), iupgtkStrConvertFromUTF8(new_text)) == IUP_IGNORE)
+    if (cbRename(ih, gtkTreeFindNodeId(ih, &iterItem), iupgtkStrConvertFromSystem(new_text)) == IUP_IGNORE)
       return;
   }
 

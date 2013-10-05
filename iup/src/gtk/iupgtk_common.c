@@ -267,16 +267,16 @@ int iupgtkSetMnemonicTitle(Ihandle* ih, GtkLabel* label, const char* value)
   str = iupStrProcessMnemonic(value, &c, 1);  /* replace & by c, the returned value of c is ignored in GTK */
   if (str != value)
   {
-    gtk_label_set_text_with_mnemonic(label, iupgtkStrConvertToUTF8(str));
+    gtk_label_set_text_with_mnemonic(label, iupgtkStrConvertToSystem(str));
     free(str);
     return 1;
   }
   else
   {
     if (iupAttribGetBoolean(ih, "MARKUP"))
-      gtk_label_set_markup(label, iupgtkStrConvertToUTF8(str));
+      gtk_label_set_markup(label, iupgtkStrConvertToSystem(str));
     else
-      gtk_label_set_text(label, iupgtkStrConvertToUTF8(str));
+      gtk_label_set_text(label, iupgtkStrConvertToSystem(str));
   }
   return 0;
 }

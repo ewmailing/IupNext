@@ -346,5 +346,5 @@ int iupdrvOpen(int *argc, char ***argv)
 
 void iupdrvClose(void)
 {
-  iupgtkStrReleaseConvertUTF8();
+  iupgtkStrRelease();
 }
