@@ -103,23 +103,23 @@ int main(int argc, char **argv)
 
   list1 = IupList (NULL);
   IupSetAttributes(list1, "1=Gold, 2=Silver, 3=Bronze, 4=Latão, 5=None,"
-                          "SHOWIMAGE=YES, SHOWDNDLISTS=YES, XXX_SPACING=4, VALUE=4");
+                          "SHOWIMAGE=YES, DRAGDROPLIST=YES, XXX_SPACING=4, VALUE=4");
   load_medal_images();
   IupSetAttribute(list1, "IMAGE1", "IMGGOLD");
   IupSetAttribute(list1, "IMAGE2", "IMGSILVER");
   IupSetAttribute(list1, "IMAGE3", "IMGBRONZE");
   IupSetAttribute(list1, "DRAGSOURCE", "YES");
   IupSetAttribute(list1, "DRAGSOURCEMOVE", "YES");
-  IupSetAttribute(list1, "DRAGTYPES", "TEXT,STRING");
+  IupSetAttribute(list1, "DRAGTYPES", "ITEMLIST");
   
   frm_medal1 = IupFrame (list1);
   IupSetAttribute (frm_medal1, "TITLE", "List 1");
   
   list2 = IupList (NULL);
   IupSetAttributes(list2, "1=Açaí, 2=Cajá, 3=Pêssego, 4=Limão, 5=Morango, 6=Coco,"
-                          "SHOWIMAGE=YES, SHOWDNDLISTS=YES, XXX_SPACING=4, VALUE=4");
+                          "SHOWIMAGE=YES, DRAGDROPLIST=YES, XXX_SPACING=4, VALUE=4");
   IupSetAttribute(list2, "DROPTARGET", "YES");
-  IupSetAttribute(list2, "DROPTYPES", "TEXT,STRING");
+  IupSetAttribute(list2, "DROPTYPES", "ITEMLIST");
   frm_medal2 = IupFrame (list2);
   IupSetAttribute (frm_medal2, "TITLE", "List 2");
   

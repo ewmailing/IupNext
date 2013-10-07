@@ -40,17 +40,6 @@ void iupListUpdateOldValue(Ihandle* ih, int pos, int removed);
 void* iupdrvListGetImageHandle(Ihandle* ih, int id);
 int iupdrvListSetImageHandle(Ihandle* ih, int id, void* hImage);
 
-int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y);
-int iupListDragData_CB(Ihandle *ih, char* type, void *data, int len);
-int iupListDragDataSize_CB(Ihandle* ih, char* type);
-int iupListDragEnd_CB(Ihandle *ih, int del);
-int iupListDragBegin_CB(Ihandle* ih, int x, int y);
-
-typedef struct _DNDlistData {
-  char* value;
-  void* image;
-} DNDlistData;
-
 struct _IcontrolData 
 {
   int sb,  /* scrollbar configuration, can be changed only before map */
@@ -64,8 +53,7 @@ struct _IcontrolData
       has_editbox,
       maximg_w, maximg_h, /* used only in Windows */
       show_image,
-      show_dragdrop,
-      show_dndlists;
+      show_dragdrop;
   Imask* mask;
 };
 

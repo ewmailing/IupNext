@@ -590,28 +590,14 @@ static int iListSetShowDragDropAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static char* iListGetDNDListsAttrib(Ihandle* ih)
-{
-  return iupStrReturnBoolean (ih->data->show_dndlists); 
-}
-
-static int iListSetDNDListsAttrib(Ihandle* ih, const char* value)
-{
-  /* valid only before map */
-  if (ih->handle)
-    return 0;
-
-  if (iupStrBoolean(value))
-    ih->data->show_dndlists = 1;
-  else
-    ih->data->show_dndlists = 0;
-
-  return 0;
-}
-
 /*****************************************************************************************/
 
-int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
+typedef struct _DNDlistData {
+  char* value;
+  void* image;
+} DNDlistData;
+
+static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
 {
   int pos = IupConvertXYToPos(ih, x, y);
   DNDlistData *item = (DNDlistData*)data;
@@ -631,7 +617,7 @@ int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int 
   return IUP_DEFAULT;
 }
 
-int iupListDragData_CB(Ihandle *ih, char* type, void *data, int len)
+static int iupListDragData_CB(Ihandle *ih, char* type, void *data, int len)
 {
   DNDlistData *item = (DNDlistData*)iupAttribGet(ih, "_IUP_LIST_SOURCEITEM");
   int is_shift = 0, is_ctrl = 0;
@@ -666,7 +652,7 @@ int iupListDragDataSize_CB(Ihandle* ih, char* type)
     return 0;
 }
 
-int iupListDragEnd_CB(Ihandle *ih, int del)
+static int iupListDragEnd_CB(Ihandle *ih, int del)
 {
   iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", 0);
   free(iupAttribGet(ih, "_IUP_LIST_SOURCEITEM"));
@@ -675,7 +661,7 @@ int iupListDragEnd_CB(Ihandle *ih, int del)
   return IUP_DEFAULT;
 }
 
-int iupListDragBegin_CB(Ihandle* ih, int x, int y)
+static int iupListDragBegin_CB(Ihandle* ih, int x, int y)
 {
   int pos = IupConvertXYToPos(ih, x, y);
   DNDlistData *item = (DNDlistData*)malloc(sizeof(DNDlistData));
@@ -691,6 +677,30 @@ int iupListDragBegin_CB(Ihandle* ih, int x, int y)
   iupAttribSet(ih, "_IUP_LIST_SOURCEITEM", (char*)item);
 
   return IUP_DEFAULT;
+}
+
+static int iListSetDragDropListAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+  {
+    /* Register callbacks to enable drag and drop between lists */
+    IupSetCallback(ih, "DRAGBEGIN_CB",    (Icallback)iupListDragBegin_CB);
+    IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iupListDragDataSize_CB);
+    IupSetCallback(ih, "DRAGDATA_CB",     (Icallback)iupListDragData_CB);
+    IupSetCallback(ih, "DRAGEND_CB",      (Icallback)iupListDragEnd_CB);
+    IupSetCallback(ih, "DROPDATA_CB",     (Icallback)iupListDropData_CB);
+  }
+  else
+  {
+    /* Unregister callbacks */
+    IupSetCallback(ih, "DRAGBEGIN_CB",    NULL);
+    IupSetCallback(ih, "DRAGDATASIZE_CB", NULL);
+    IupSetCallback(ih, "DRAGDATA_CB",     NULL);
+    IupSetCallback(ih, "DRAGEND_CB",      NULL);
+    IupSetCallback(ih, "DROPDATA_CB",     NULL);
+  }
+
+  return 0;
 }
 
 /*****************************************************************************************/
@@ -945,7 +955,7 @@ Iclass* iupListNewClass(void)
 
   iupClassRegisterAttribute(ic, "SHOWIMAGE", iListGetShowImageAttrib, iListSetShowImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWDRAGDROP", iListGetShowDragDropAttrib, iListSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWDNDLISTS", iListGetDNDListsAttrib, iListSetDNDListsAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROPLIST", NULL, iListSetDragDropListAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   iupdrvListInitClass(ic);
 

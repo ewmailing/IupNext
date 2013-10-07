@@ -1572,7 +1572,8 @@ static int motListMapMethod(Ihandle* ih)
     XtRealizeWidget(parent);
 
   /* Enable internal drag and drop support */
-  if(ih->data->show_dragdrop && !ih->data->is_dropdown && !ih->data->is_multiple)
+  if((ih->data->show_dragdrop && !ih->data->is_dropdown && !ih->data->is_multiple) ||
+     (IupGetCallback(ih, "DRAGDATA_CB") || IupGetCallback(ih, "DROPDATA_CB")))  /* Enable drag and drop support between lists */
   {   
     motListEnableDragDrop(ih->handle);
     XtVaSetValues(ih->handle, XmNuserData, ih, NULL);  /* to be used in motListDragStart and motListDragTransferProc */
@@ -1590,18 +1591,6 @@ static int motListMapMethod(Ihandle* ih)
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)motListConvertXYToPos);
 
   iupListSetInitialItems(ih);
-
-  if(ih->data->show_dndlists)
-  {
-    motListEnableDragDrop(ih->handle);
-
-    /* Register callbacks to enable drag and drop between lists */
-    IupSetCallback(ih, "DRAGBEGIN_CB", (Icallback)iupListDragBegin_CB);
-    IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iupListDragDataSize_CB);
-    IupSetCallback(ih, "DRAGDATA_CB", (Icallback)iupListDragData_CB);
-    IupSetCallback(ih, "DRAGEND_CB", (Icallback)iupListDragEnd_CB);
-    IupSetCallback(ih, "DROPDATA_CB", (Icallback)iupListDropData_CB);
-  }
 
   return IUP_NOERROR;
 }

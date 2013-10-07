@@ -1834,16 +1834,6 @@ static int winListMapMethod(Ihandle* ih)
 
   iupListSetInitialItems(ih);
 
-  if(ih->data->show_dndlists)
-  {
-    /* Register callbacks to enable drag and drop between lists */
-    IupSetCallback(ih, "DRAGBEGIN_CB", (Icallback)iupListDragBegin_CB);
-    IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iupListDragDataSize_CB);
-    IupSetCallback(ih, "DRAGDATA_CB", (Icallback)iupListDragData_CB);
-    IupSetCallback(ih, "DRAGEND_CB", (Icallback)iupListDragEnd_CB);
-    IupSetCallback(ih, "DROPDATA_CB", (Icallback)iupListDropData_CB);
-  }
-
   return IUP_NOERROR;
 }
 
