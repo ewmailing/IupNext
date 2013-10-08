@@ -44,7 +44,7 @@ typedef struct _ImatExUnit {
 static const ImatExUnit IMATEX_LENGTH_UNITS [IMATEX_LENGTH_COUNT] = {
   {"metre"        ,"m" , 1,       NULL},
   {"centimetre"   ,"cm", 0.01,    NULL},
-  {"milimetre"    ,"mm", 0.001,   NULL},
+  {"millimetre"   ,"mm", 0.001,   NULL},
   {"kilometre"    ,"km", 1000,    NULL},
   {"nanometre"    ,"nm", 1.0e-9,  NULL},
   {"Angstrom"     ,"Å" , 1.0e-10, "\xC3\x85" },
@@ -151,7 +151,7 @@ static const ImatExUnit IMATEX_PRESSURE_UNITS [IMATEX_PRESSURE_COUNT] = {
   {"Pascal"               ,"Pa"  , 1, NULL},      /* Pa = N/m² = kg/(m·s²) */
   {"kilopascal"           ,"kPa" , 1000    , NULL},
   {"atmosphere"           ,"atm" , 101325  , NULL},   /* (standard) */
-  {"milimiter of mercury" ,"mmHg", 133.322387415, NULL},    /* 13595.1 kg/m³ × mm × g = 13595.1 * 0.001 * GRAVITY */
+  {"millimetre of mercury","mmHg", 133.322387415, NULL},    /* 13595.1 kg/m³ × mm × g = 13595.1 * 0.001 * GRAVITY */
   {"bar"                  ,"bar" , 1.0e5   , NULL},                                                       
   {"torr"                 ,"torr", 101325.0/760.0, NULL},   /* aprox 133.3224 */
   {"pound per square inch","psi" , 4.4482216152605/6.4516e-4, NULL},  /* psi = lbf/in² = GRAVITY*0.45359237/0,0254² */
@@ -358,6 +358,7 @@ static char* iMatrixExReturnSymbol(const ImatExUnit* units)
 
 static int iMatrixGetUnity(const char* name, char* am_name)
 {
+  /* Convert to American spelling */
   const char* s = strstr(name, "metre");
   if (s)
   {
@@ -373,7 +374,7 @@ static int iMatrixGetUnity(const char* name, char* am_name)
     {
       int off = s - name;
       strcpy(am_name, name);
-      strncpy(am_name+off, "liter", 5);
+      strncpy(am_name+off, "liter", 5);   /* don't confuse with litter */
       return 1;
     }
   }

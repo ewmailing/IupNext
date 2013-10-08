@@ -131,7 +131,7 @@ static int motFileDlgCheckValue(Ihandle* ih, Widget filebox)
     }
     else if (dialogtype == IUP_DIALOGSAVE && !iupAttribGetInt(ih, "NOOVERWRITEPROMPT"))
     {
-      if (!motFileDlgAskUser(filebox, iupStrMessageGet("IUP_FILEOVERWRITE")))
+      if (!motFileDlgAskUser(filebox, IupGetLanguageString("IUP_FILEOVERWRITE")))
         return 0;
     }
   }
@@ -367,7 +367,7 @@ static XmString motFileDlgPrompt(Widget parent, const char* message)
 
 static void motFileDlgNewFolderCallback(Widget w, Widget filebox, XtPointer call_data)
 {
-  XmString xm_new_dir = motFileDlgPrompt(filebox, iupStrMessageGet("IUP_NAMENEWFOLDER"));
+  XmString xm_new_dir = motFileDlgPrompt(filebox, IupGetLanguageString("IUP_NAMENEWFOLDER"));
   if (xm_new_dir)
   {
     XmString xm_dir;
@@ -525,7 +525,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
       value = "IUP_OPEN";
     else
       value = "IUP_SELECTDIR";
-    value = iupStrMessageGet(value);
+    value = IupGetLanguageString(value);
     iupAttribSet(ih, "TITLE", value);
   }
   iupmotSetXmString(filebox, XmNdialogTitle, value);
@@ -616,7 +616,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
     Widget new_folder = XtVaCreateManagedWidget("new_folder", xmPushButtonWidgetClass, filebox, 
                                                 XmNlabelType, XmSTRING, 
                                                 NULL);
-    iupmotSetXmString(new_folder, XmNlabelString, iupStrMessageGet("IUP_CREATEFOLDER"));
+    iupmotSetXmString(new_folder, XmNlabelString, IupGetLanguageString("IUP_CREATEFOLDER"));
     XtAddCallback(new_folder, XmNactivateCallback, (XtCallbackProc)motFileDlgNewFolderCallback, (XtPointer)filebox);
   }
   else

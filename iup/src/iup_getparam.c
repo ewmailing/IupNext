@@ -816,11 +816,11 @@ static Ihandle* IupParamDlgP(Ihandle** params)
           *dlg_box, *button_box, *param_box;
   int i, lbl_width, p, expand;
 
-  button_ok = IupButton(iupStrMessageGet("IUP_OK"), NULL);
+  button_ok = IupButton(IupGetLanguageString("IUP_OK"), NULL);
   IupSetAttribute(button_ok, "PADDING", "20x0");
   IupSetCallback(button_ok, "ACTION", (Icallback)iParamButtonOK_CB);
 
-  button_cancel = IupButton(iupStrMessageGet("IUP_CANCEL"), NULL);
+  button_cancel = IupButton(IupGetLanguageString("IUP_CANCEL"), NULL);
   IupSetAttribute(button_cancel, "PADDING", "20x0");
   IupSetCallback(button_cancel, "ACTION", (Icallback)iParamButtonCancel_CB);
   
@@ -1001,8 +1001,8 @@ static void iParamSetBoolNames(char* extra, Ihandle* param)
   }
   else
   {
-/*    iupAttribSetStr(param, "_IUPGP_TRUE", iupStrMessageGet("IUP_TRUE"));     */
-/*    iupAttribSetStr(param, "_IUPGP_FALSE", iupStrMessageGet("IUP_FALSE"));   */
+/*    iupAttribSetStr(param, "_IUPGP_TRUE", IupGetLanguageString("IUP_TRUE"));     */
+/*    iupAttribSetStr(param, "_IUPGP_FALSE", IupGetLanguageString("IUP_FALSE"));   */
     iupAttribSetStr(param, "_IUPGP_TRUE", "");
     iupAttribSetStr(param, "_IUPGP_FALSE", "");
   }

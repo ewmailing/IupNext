@@ -395,6 +395,15 @@ void *iupTableGetCurr(Itable *it)
   return it->entries[it->context.entryIndex].items[it->context.itemIndex].value;
 }
 
+int iupTableGetCurrType(Itable *it)
+{
+  iupASSERT(it!=NULL);
+  if (!it || it->context.entryIndex == (unsigned int)-1
+         || it->context.itemIndex == (unsigned int)-1)
+    return -1;
+
+  return it->entries[it->context.entryIndex].items[it->context.itemIndex].itemType;
+}
 
 char *iupTableFirst(Itable *it)
 {

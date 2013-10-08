@@ -344,6 +344,18 @@ wb_usr.tree =
             {
               name= {nl= "IupGetLanguage"},
               link= "func/iupgetlanguage.html"
+            },
+            {
+              name= {nl= "IupSetLanguageString"},
+              link= "func/iupsetlanguagestring.html"
+            },
+            {
+              name= {nl= "IupGetLanguageString"},
+              link= "func/iupgetlanguagestring.html"
+            },
+            {
+              name= {nl= "IupSetLanguagePack"},
+              link= "func/iupsetlanguagepack.html"
             }
           }
         },

@@ -20,11 +20,6 @@ extern "C" {
  * See \ref iup_strmessage.h
  * \ingroup util */
 
-/** Returns a common string from a registered coded message.
- * The returned string depends on the global LANGUAGE attribute.
- * \ingroup strmessage */
-char* iupStrMessageGet(const char* message);
-
 /* Called from iup_global */
 void iupStrMessageUpdateLanguage(const char* language);
 

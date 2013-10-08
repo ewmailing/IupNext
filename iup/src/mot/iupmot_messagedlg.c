@@ -137,8 +137,8 @@ static int motMessageDlgPopup(Ihandle* ih, int x, int y)
   }
   else if (iupStrEqualNoCase(value, "YESNO"))
   {
-    iupmotSetXmString(msgbox, XmNokLabelString, iupStrMessageGet("IUP_YES"));
-    iupmotSetXmString(msgbox, XmNcancelLabelString, iupStrMessageGet("IUP_NO"));
+    iupmotSetXmString(msgbox, XmNokLabelString, IupGetLanguageString("IUP_YES"));
+    iupmotSetXmString(msgbox, XmNcancelLabelString, IupGetLanguageString("IUP_NO"));
   }
 
   if (!IupGetCallback(ih, "HELP_CB"))

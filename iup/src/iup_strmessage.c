@@ -13,17 +13,22 @@
 
 #include "iup.h"
 
+#include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_strmessage.h"
 #include "iup_table.h"
 
 
+static void iStrMessageRegisterInternal(int lng, int utf8mode);
+
 static Itable *istrmessage_table = NULL;   /* the message hash table indexed by the name string */
 
 void iupStrMessageInit(void)
 {
   istrmessage_table = iupTableCreate(IUPTABLE_STRINGINDEXED);
+
+  iStrMessageRegisterInternal(0, 0);
 }
 
 void iupStrMessageFinish(void)
@@ -32,84 +37,47 @@ void iupStrMessageFinish(void)
   istrmessage_table = NULL;
 }
 
-char* iupStrMessageGet(const char* message)
+char* IupGetLanguageString(const char* name)
 {
-  return (char*)iupTableGet(istrmessage_table, message);
+  char* value;
+  if (!name) return NULL;
+  value = (char*)iupTableGet(istrmessage_table, name);
+  if (!value)
+    return (char*)name;
+  return value;
 }
 
-static void iStrMessageSet(const char* message, const char* str)
+void IupSetLanguageString(const char* name, const char* str)
 {
-  iupTableSet(istrmessage_table, message, (char*)str, IUPTABLE_POINTER);
+  iupTableSet(istrmessage_table, name, (char*)str, IUPTABLE_POINTER);
 }
 
-
-/**********************************************************************************/
-
-#define ISRTMSG_NUM_LNG 3    /* 2+1 for expansion */
-
-typedef struct _IstdMessage
+void IupStoreLanguageString(const char* name, const char* str)
 {
-  const char* code;
-  const char* lng_msg[ISRTMSG_NUM_LNG];
-} IstdMessage;
-
-/* Edit this table to add support for more languages */
-
-static IstdMessage iStdMessages[] =
-{
-  {"IUP_ERROR", {"Error", "Erro", NULL}},
-  {"IUP_YES", {"Yes", "Sim", NULL}},
-  {"IUP_NO", {"No", "Não", NULL}},
-  {"IUP_INVALIDDIR", {"Invalid directory.", "Diretório inválido.", NULL}},
-  {"IUP_FILEISDIR", {"The selected name is a directory.", "O nome selecionado é um diretório.", NULL}},
-  {"IUP_FILENOTEXIST", {"File does not exist.", "Arquivo inexistente.", NULL}},
-  {"IUP_FILEOVERWRITE", {"Overwrite existing file?", "Sobrescrever arquivo?", NULL}},
-  {"IUP_CREATEFOLDER", {"Create Folder", "Criar Diretório", NULL}},
-  {"IUP_NAMENEWFOLDER", {"Name of the new folder:", "Nome do novo diretório:", NULL}},
-  {"IUP_SAVEAS", {"Save As", "Salvar Como", NULL}},
-  {"IUP_OPEN", {"Open", "Abrir", NULL}},
-  {"IUP_SELECTDIR", {"Select Directory", "Selecionar Diretório", NULL}},
-  {"IUP_OK", {"OK", "OK", NULL}},
-  {"IUP_CANCEL", {"Cancel", "Cancelar", NULL}},
-  {"IUP_GETCOLOR", {"Color Selection", "Seleção de Cor", NULL}},
-  {"IUP_HELP", {"Help", "Ajuda", NULL}},
-  {"IUP_RED", {"&Red:", "&Vermelho:", NULL}},
-  {"IUP_GREEN", {"&Green:", "V&erde:", NULL}},
-  {"IUP_BLUE", {"&Blue:", "&Azul:", NULL}},
-  {"IUP_HUE", {"&Hue:", "&Matiz:", NULL}},
-  {"IUP_SATURATION", {"&Saturation:", "&Saturação:", NULL}},
-  {"IUP_INTENSITY", {"&Intensity:", "&Intensidade:", NULL}},
-  {"IUP_OPACITY", {"&Opacity:", "&Opacidade:", NULL}},
-  {"IUP_PALETTE", {"&Palette:", "&Paleta:", NULL}},
-  {"IUP_TRUE", {"True", "Verdadeiro", NULL}},
-  {"IUP_FALSE", {"False", "Falso", NULL}},
-  {"IUP_FAMILY", {"Family:", "Família:", NULL}},
-  {"IUP_STYLE", {"Style:", "Estilo:", NULL}},
-  {"IUP_SIZE", {"Size:", "Tamanho:", NULL}},
-  {"IUP_SAMPLE", {"Sample:", "Exemplo:", NULL}},
-  {NULL, {NULL, NULL, NULL}}
-};
-
-static void iStrRegisterInternalMessages(int lng)
-{
-  IstdMessage* messages = iStdMessages;
-  while (messages->code)
-  {
-    iStrMessageSet(messages->code, messages->lng_msg[lng]);
-    messages++;
-  }
+  iupTableSet(istrmessage_table, name, (char*)str, IUPTABLE_STRING);
 }
 
-void iupStrMessageUpdateLanguage(const char* language)
+void IupSetLanguagePack(Ihandle* ih)
 {
-  int lng;
-  if (iupStrEqualNoCase(language, "ENGLISH"))
-    lng = 0;
-  else if (iupStrEqualNoCase(language, "PORTUGUESE"))
-    lng = 1;
+  if (!ih)
+    iupTableClear(istrmessage_table);
   else
-    lng = 0;  /* back to default */
-  iStrRegisterInternalMessages(lng);
+  {
+    char *name, *value;
+
+    name = iupTableFirst(ih->attrib);
+    while (name)
+    {
+      value = (char*)iupTableGetCurr(ih->attrib);
+
+      if (iupTableGetCurrType(ih->attrib)==IUPTABLE_STRING)
+        iupTableSet(istrmessage_table, name, value, IUPTABLE_STRING);
+      else
+        iupTableSet(istrmessage_table, name, value, IUPTABLE_POINTER);
+
+      name = iupTableNext(ih->attrib);
+    }
+  }
 }
 
 void IupSetLanguage(const char *language)
@@ -120,4 +88,86 @@ void IupSetLanguage(const char *language)
 char *IupGetLanguage(void)
 {
   return IupGetGlobal("LANGUAGE");
+}
+
+
+/**********************************************************************************/
+
+
+#define ISRTMSG_NUM_LNG 4    /* 3+1 for expansion */
+                             /* ENGLISH, PORTUGUESE, PORTUGUESE(UTF-8), NULL */
+
+typedef struct _IstdMessage
+{
+  const char* name;
+  const char* lng_str[ISRTMSG_NUM_LNG];
+} IstdMessage;
+
+static int istrmessage_lng = 0;
+
+/* When seeing this file assuming ISO8859-1 encoding, lng=1 will appear correct.
+   When seeing this file assuming UTF-8 encoding, lng=2 will appear correct. */
+
+static IstdMessage iStdMessages[] =
+{
+  {"IUP_ERROR", {"Error", "Erro", NULL, NULL}},
+  {"IUP_YES", {"Yes", "Sim", NULL, NULL}},
+  {"IUP_NO", {"No", "Não", "NÃ£o", NULL}},
+  {"IUP_INVALIDDIR", {"Invalid directory.", "Diretório inválido.", "DiretÃ³rio invÃ¡lido.", NULL}},
+  {"IUP_FILEISDIR", {"The selected name is a directory.", "O nome selecionado é um diretório.", "O nome selecionado Ã© um diretÃ³rio.", NULL}},
+  {"IUP_FILENOTEXIST", {"File does not exist.", "Arquivo inexistente.", NULL, NULL}},
+  {"IUP_FILEOVERWRITE", {"Overwrite existing file?", "Sobrescrever arquivo?", NULL, NULL}},
+  {"IUP_CREATEFOLDER", {"Create Folder", "Criar Diretório", "Criar DiretÃ³rio", NULL}},
+  {"IUP_NAMENEWFOLDER", {"Name of the new folder:", "Nome do novo diretório:", "Nome do novo diretÃ³rio:", NULL}},
+  {"IUP_SAVEAS", {"Save As", "Salvar Como", NULL, NULL}},
+  {"IUP_OPEN", {"Open", "Abrir", NULL, NULL}},
+  {"IUP_SELECTDIR", {"Select Directory", "Selecionar Diretório", "Selecionar DiretÃ³rio", NULL}},
+  {"IUP_OK", {"OK", "OK", NULL, NULL}},
+  {"IUP_CANCEL", {"Cancel", "Cancelar", NULL, NULL}},
+  {"IUP_GETCOLOR", {"Color Selection", "Seleção de Cor", "SeleÃ§Ã£o de Cor", NULL}},
+  {"IUP_HELP", {"Help", "Ajuda", NULL, NULL}},
+  {"IUP_RED", {"&Red:", "&Vermelho:", NULL, NULL}},
+  {"IUP_GREEN", {"&Green:", "V&erde:", NULL, NULL}},
+  {"IUP_BLUE", {"&Blue:", "&Azul:", NULL, NULL}},
+  {"IUP_HUE", {"&Hue:", "&Matiz:", NULL, NULL}},
+  {"IUP_SATURATION", {"&Saturation:", "&Saturação:", "&SaturaÃ§Ã£o:", NULL}},
+  {"IUP_INTENSITY", {"&Intensity:", NULL, "&Intensidade:", NULL}},
+  {"IUP_OPACITY", {"&Opacity:", "&Opacidade:", NULL, NULL}},
+  {"IUP_PALETTE", {"&Palette:", "&Paleta:", NULL, NULL}},
+  {"IUP_TRUE", {"True", "Verdadeiro", NULL, NULL}},
+  {"IUP_FALSE", {"False", "Falso", NULL, NULL}},
+  {"IUP_FAMILY", {"Family:", "Família:", "FamÃ­lia:", NULL}},
+  {"IUP_STYLE", {"Style:", "Estilo:", NULL, NULL}},
+  {"IUP_SIZE", {"Size:", "Tamanho:", NULL, NULL}},
+  {"IUP_SAMPLE", {"Sample:", "Exemplo:", NULL, NULL}},
+  {NULL, {NULL, NULL, NULL}}
+};
+
+static void iStrMessageRegisterInternal(int lng, int utf8mode)
+{
+  IstdMessage* messages = iStdMessages;
+  while (messages->name)
+  {
+    if (utf8mode && !(messages->lng_str[lng]))
+      IupSetLanguageString(messages->name, messages->lng_str[lng-1]);
+    else
+      IupSetLanguageString(messages->name, messages->lng_str[lng]);
+    messages++;
+  }
+  istrmessage_lng = lng;
+}
+
+void iupStrMessageUpdateLanguage(const char* language)
+{
+  int lng = 0;  /* ENGLISH */
+  int utf8mode = IupGetInt(NULL, "UTF8MODE");
+  if (iupStrEqualNoCase(language, "PORTUGUESE"))
+  {
+    if (utf8mode)
+      lng = 2;
+    else
+      lng = 1;
+  }
+  if (lng != istrmessage_lng)
+    iStrMessageRegisterInternal(lng, utf8mode);
 }

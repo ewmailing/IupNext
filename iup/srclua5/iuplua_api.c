@@ -143,6 +143,32 @@ static int GetAttributeId(lua_State *L)
   return 1;
 }
 
+static int GetAttributeId2(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  const char *name = luaL_checkstring(L,2);
+  int lin = luaL_checkint(L,3);
+  int col = luaL_checkint(L,4);
+  const char *value = IupGetAttributeId2(ih, name, lin, col);
+  if (!value || iupATTRIB_ISINTERNAL(name))
+    lua_pushnil(L);
+  else
+  {
+    if (iupAttribIsPointer(ih, name))
+    {
+      if (ih->handle == (InativeHandle*)value) /* work around for WID, sometimes WID in Windows is not a valid pointer. Why? */
+        iuplua_pushihandle(L, ih);
+      else if (iupObjectCheck((Ihandle*)value))
+        iuplua_pushihandle(L, (Ihandle*)value);
+      else
+        lua_pushlightuserdata(L, (void*)value);
+    }
+    else
+      lua_pushstring(L,value);
+  }
+  return 1;
+}
+
 static int GetAttributes(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -855,6 +881,27 @@ static int SetLanguage(lua_State *L)
   return 0;
 }
 
+static int SetLanguageString(lua_State *L)
+{
+  IupStoreLanguageString(luaL_checkstring(L,1), luaL_checkstring(L,2));
+  return 0;
+}
+
+static int GetLanguageString(lua_State *L)
+{
+  lua_pushstring(L, IupGetLanguageString(luaL_checkstring(L,1)));
+  return 1;
+}
+
+static int SetLanguagePack(lua_State *L)
+{
+  if (lua_isnil(L, 1))
+    IupSetLanguagePack(NULL);
+  else
+    IupSetLanguagePack(iuplua_checkihandle(L,1));
+  return 0;
+}
+
 static int GetChildCount (lua_State *L)
 {
   lua_pushinteger(L, IupGetChildCount(iuplua_checkihandle(L,1)));
@@ -963,6 +1010,32 @@ static int StoreAttributeId(lua_State *L)
   return 0;
 }
 
+static int StoreAttributeId2(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  const char *a = luaL_checkstring(L,2);
+  int lin = luaL_checkint(L,3);
+  int col = luaL_checkint(L,4);
+
+  if (lua_isnil(L,5)) 
+    IupSetAttributeId2(ih,a,lin,col,NULL);
+  else 
+  {
+    const char *v;
+    if(lua_isuserdata(L,5)) 
+    {
+      v = lua_touserdata(L,5);
+      IupSetAttributeId2(ih,a,lin,col,v);
+    }
+    else 
+    {
+      v = luaL_checkstring(L,5);
+      IupStoreAttributeId2(ih,a,lin,col,v);
+    }
+  }
+  return 0;
+}
+
 static int StoreGlobal(lua_State *L)
 {
   const char *a = luaL_checkstring(L,1);
@@ -1064,6 +1137,9 @@ void iupluaapi_open(lua_State * L)
     {"SetGlobal", SetGlobal},
     {"SetHandle", SetHandle},
     {"SetLanguage", SetLanguage},
+    {"SetLanguageString", SetLanguageString},
+    {"GetLanguageString", GetLanguageString},
+    {"SetLanguagePack", SetLanguagePack},
     {"Show", Show},
     {"GetChildCount", GetChildCount},
     {"Refresh", Refresh},
@@ -1095,6 +1171,9 @@ void iupluaapi_open(lua_State * L)
     {"StoreAttributeId", StoreAttributeId},
     {"GetAttributeId", GetAttributeId},
     {"SetAttributeId", StoreAttributeId},
+    {"StoreAttributeId2", StoreAttributeId2},
+    {"GetAttributeId2", GetAttributeId2},
+    {"SetAttributeId2", StoreAttributeId2},
     {NULL, NULL},
   };
 

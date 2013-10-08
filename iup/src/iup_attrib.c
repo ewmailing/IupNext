@@ -21,6 +21,20 @@
 #include "iup_assert.h"
 
 
+#define iupATTRIB_LANGUAGE_STRING(_v)  (_v[0] == '_' && _v[1] == '@') 
+#define iupATTRIB_LANGUAGE_SHIFT 2
+
+#define iupATTRIB_GET_LANGUAGE_STRING(_v, _s)                              \
+  {                                                                        \
+    char* new_value = IupGetLanguageString(_v+iupATTRIB_LANGUAGE_SHIFT);   \
+    if (new_value != _v+iupATTRIB_LANGUAGE_SHIFT)                          \
+    {                                                                      \
+      _v = new_value;                                                      \
+      _s = 0;  /* no need to store it again, already stored internally */  \
+    }                                                                      \
+  }
+
+
 int IupGetAllAttributes(Ihandle* ih, char** names, int n)
 {
   char *name;
@@ -231,6 +245,8 @@ void IupSetStrAttributeId(Ihandle *ih, const char* name, int id, const char *val
 
 void IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char *value)
 {
+  int store = 1;
+
   iupASSERT(name!=NULL);
   if (!name)
     return;
@@ -239,8 +255,16 @@ void IupStoreAttributeId(Ihandle *ih, const char* name, int id, const char *valu
   if (!iupObjectCheck(ih))
     return;
 
+  if (iupATTRIB_LANGUAGE_STRING(value))
+    iupATTRIB_GET_LANGUAGE_STRING(value, store);
+
   if (iupClassObjectSetAttributeId(ih, name, id, value)==1) /* store only strings */
-    iupAttribSetStrId(ih, name, id, value);
+  {
+    if (store)
+      iupAttribSetStrId(ih, name, id, value);
+    else
+      iupAttribSetId(ih, name, id, value);
+  }
 }
 
 char* IupGetAttributeId(Ihandle *ih, const char* name, int id)
@@ -283,6 +307,8 @@ void IupSetStrAttributeId2(Ihandle* ih, const char* name, int lin, int col, cons
 
 void IupStoreAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value)
 {
+  int store = 1;
+
   iupASSERT(name!=NULL);
   if (!name)
     return;
@@ -291,8 +317,16 @@ void IupStoreAttributeId2(Ihandle* ih, const char* name, int lin, int col, const
   if (!iupObjectCheck(ih))
     return;
 
+  if (iupATTRIB_LANGUAGE_STRING(value))
+    iupATTRIB_GET_LANGUAGE_STRING(value, store);
+
   if (iupClassObjectSetAttributeId2(ih, name, lin, col, value)==1) /* store only strings */
-    iupAttribSetStrId2(ih, name, lin, col, value);
+  {
+    if (store)
+      iupAttribSetStrId2(ih, name, lin, col, value);
+    else
+      iupAttribSetId2(ih, name, lin, col, value);
+  }
 }
 
 char* IupGetAttributeId2(Ihandle* ih, const char* name, int lin, int col)
@@ -510,8 +544,18 @@ void IupStoreAttribute(Ihandle *ih, const char* name, const char *value)
     iupAttribSetStr(ih, name, value);
   else
   {
+    int store = 1;
+
+    if (iupATTRIB_LANGUAGE_STRING(value))
+      iupATTRIB_GET_LANGUAGE_STRING(value, store);
+
     if (iupClassObjectSetAttribute(ih, name, value, &inherit)==1) /* store only strings */
-      iupAttribSetStr(ih, name, value);
+    {
+      if (store)
+        iupAttribSetStr(ih, name, value);
+      else
+        iupAttribSet(ih, name, value);
+    }
 
     if (inherit)
       iAttribNotifyChildren(ih, name, value);
@@ -818,7 +862,17 @@ void iupAttribSetStr(Ihandle* ih, const char* name, const char* value)
   if (!value)
     iupTableRemove(ih->attrib, name);
   else
-    iupTableSet(ih->attrib, name, (void*)value, IUPTABLE_STRING);
+  {
+    int store = 1;
+
+    if (iupATTRIB_LANGUAGE_STRING(value))
+      iupATTRIB_GET_LANGUAGE_STRING(value, store);
+
+    if (store)
+      iupTableSet(ih->attrib, name, (void*)value, IUPTABLE_STRING);
+    else
+      iupTableSet(ih->attrib, name, (void*)value, IUPTABLE_POINTER);
+  }
 }
 
 void iupAttribSetStrf(Ihandle *ih, const char* name, const char* f, ...)

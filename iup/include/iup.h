@@ -59,8 +59,13 @@ char*     IupLoadBuffer    (const char *buffer);
 char*     IupVersion       (void);
 char*     IupVersionDate   (void);
 int       IupVersionNumber (void);
+
 void      IupSetLanguage   (const char *lng);
 char*     IupGetLanguage   (void);
+void      IupSetLanguageString(const char* name, const char* str);
+void      IupStoreLanguageString(const char* name, const char* str);
+char*     IupGetLanguageString(const char* name);
+void      IupSetLanguagePack(Ihandle* ih);
 
 void      IupDestroy      (Ihandle* ih);
 void      IupDetach       (Ihandle* child);

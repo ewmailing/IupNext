@@ -76,6 +76,10 @@ IupSetFunction
 IupSetGlobal
 IupSetHandle
 IupSetLanguage
+IupSetLanguageString
+IupStoreLanguageString
+IupGetLanguageString
+IupSetLanguagePack
 IupShow
 IupShowXY
 IupStoreAttribute
@@ -252,6 +256,7 @@ iupTableNext
 iupTableGetTyped
 iupTableGetFunc
 iupTableGetCurr
+iupTableGetCurrType
 iupTableGet
 iupTableFirst
 iupTableDestroy
@@ -284,7 +289,7 @@ iupStrCompareFind
 iupStrNextLine
 iupStrNextValue
 iupShowError
-iupStrMessageGet
+IupGetLanguageString
 iupStrLower
 iupStrUpper
 iupStrHasSpace
