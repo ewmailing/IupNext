@@ -263,8 +263,8 @@ void TickInfo::MakeFormatString (float inValue, string &outFormatString) {
     if (inValue<1) {
       float theSpan = inValue;
       while (theSpan<1) {
-  thePrecision++;
-  theSpan *=10;
+        thePrecision++;
+        theSpan *=10;
       }
     }
 

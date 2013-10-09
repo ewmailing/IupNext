@@ -299,17 +299,6 @@ wb_usr.tree =
         {
           name= {en= "Guide"},
           link= "sys_guide.html",
-          folder=
-          {
-            {
-              name= {en= "Initialization"},
-              link= "sys_guide.html#init"
-            },
-            {
-              name= {nl= "LED"},
-              link= "sys_guide.html#led"
-            },
-          }
         },
         {
           name= {en= "Reference"},
@@ -331,32 +320,6 @@ wb_usr.tree =
               name= {nl= "IupVersion"},
               link= "func/iupversion.html"
             },
-            { link= "", name= {en= "" } },
-            {
-              name= {nl= "IupLoad"},
-              link= "func/iupload.html"
-            },
-            { link= "", name= {en= "" } },
-            {
-              name= {nl= "IupSetLanguage"},
-              link= "func/iupsetlanguage.html"
-            },
-            {
-              name= {nl= "IupGetLanguage"},
-              link= "func/iupgetlanguage.html"
-            },
-            {
-              name= {nl= "IupSetLanguageString"},
-              link= "func/iupsetlanguagestring.html"
-            },
-            {
-              name= {nl= "IupGetLanguageString"},
-              link= "func/iupgetlanguagestring.html"
-            },
-            {
-              name= {nl= "IupSetLanguagePack"},
-              link= "func/iupsetlanguagepack.html"
-            }
           }
         },
         {
@@ -1400,6 +1363,17 @@ wb_usr.tree =
       folder=
       {
         {
+          name= {en= "LED"},
+          link= "led.html",
+          folder=
+          {
+            {
+              name= {nl= "IupLoad"},
+              link= "func/iupload.html"
+            },
+          }
+        },
+        {
           name= {en= "Fonts"},
 
           folder=
@@ -1536,7 +1510,7 @@ wb_usr.tree =
           }
         },
         {
-          name= {en= "Names"},
+          name= {en= "Handle Names"},
 
           folder=
           {
@@ -1559,6 +1533,33 @@ wb_usr.tree =
             {
               name= {nl= "IupGetAllDialogs"},
               link= "func/iupgetalldialogs.html"
+            }
+          }
+        },
+        {
+          name= {en= "String Names"},
+
+          folder=
+          {
+            {
+              name= {nl= "IupSetLanguage"},
+              link= "func/iupsetlanguage.html"
+            },
+            {
+              name= {nl= "IupGetLanguage"},
+              link= "func/iupgetlanguage.html"
+            },
+            {
+              name= {nl= "IupSetLanguageString"},
+              link= "func/iupsetlanguagestring.html"
+            },
+            {
+              name= {nl= "IupGetLanguageString"},
+              link= "func/iupgetlanguagestring.html"
+            },
+            {
+              name= {nl= "IupSetLanguagePack"},
+              link= "func/iupsetlanguagepack.html"
             }
           }
         },
