@@ -23,6 +23,52 @@
 #include "iup_matrixex.h"
 
 
+static void iMatrixExSelectAll(Ihandle *ih)
+{
+  char* markmode = IupGetAttribute(ih, "MARKMODE");
+
+  if (iupStrEqualNoCasePartial(markmode, "LIN")) /* matches also "LINCOL" */
+  {
+    int lin, num_lin = IupGetInt(ih, "NUMLIN");
+    char* marked = malloc(num_lin+1);
+
+    marked[0] = 'L';
+    for(lin = 1; lin <= num_lin; ++lin)
+      marked[lin] = '1';
+
+    IupSetAttribute(ih, "MARKED", marked);
+
+    free(marked);
+  }
+  else if (iupStrEqualNoCase(markmode, "COL"))
+  {
+    int col, num_col = IupGetInt(ih, "NUMCOL");
+    char* marked = malloc(num_col+1);
+
+    marked[0] = 'C';
+    for(col = 1; col <= num_col; ++col)
+      marked[col] = '1';
+
+    IupSetAttribute(ih, "MARKED", marked);
+
+    free(marked);
+  }
+  else if (iupStrEqualNoCase(markmode, "CELL"))
+  {
+    int num_col = IupGetInt(ih, "NUMCOL");
+    int num_lin = IupGetInt(ih, "NUMLIN");
+    int pos, count = num_lin*num_col;
+    char* marked = malloc(count);
+
+    for(pos = 0; pos < count; pos++)
+      marked[pos] = '1';
+
+    IupSetAttribute(ih, "MARKED", marked);
+
+    free(marked);
+  }
+}
+
 void iupMatrixExCheckLimitsOrder(int *v1, int *v2, int min, int max)
 {
   if (*v1<min) *v1 = min;
@@ -31,33 +77,6 @@ void iupMatrixExCheckLimitsOrder(int *v1, int *v2, int min, int max)
   if (*v2>max) *v2 = max;
   if (*v1>*v2) {int v=*v1; *v1=*v2; *v2=v;}
 }
-
-#if 0
-int Dmatrix::_ACT_mtx   (Ihandle *h,int c,int lin,int col,int active,char *after)
-{
-  Dmatrix *D = Dmatrix::GetSelf(h);
-  if (!active)
-  {
-    switch (c)
-    {
-    case K_cA: { D->SelectAll(); return IUP_CONTINUE;}
-    case K_cC: { D->Copy()     ; return IUP_IGNORE  ;}
-    case K_cV: { D->Paste()    ; return IUP_IGNORE  ;}
-    case K_cZ: { Dmatrix::_ACT_it_undo(h)   ; return IUP_IGNORE  ;}
-    case K_cY: { Dmatrix::_ACT_it_redo(h)   ; return IUP_IGNORE  ;}
-    case K_cU: { D->UndoList() ; return IUP_IGNORE  ;}
-    case K_cF: {D->Find(); return IUP_IGNORE;}
-    case K_mF3:{D->Find(); return IUP_IGNORE;}
-    case K_F3: {D->FindNext();return IUP_IGNORE;}
-    case K_sF3:{D->FindPrev();return IUP_IGNORE;}
-    case K_ESC:{D->finder.CloseDlg(); return IUP_CONTINUE;}
-    }
-  }
-  if (D->_act_mtx_client!=NULL)
-    return ((ActFcnType)D->_act_mtx_client)(h,c,lin,col,active,after);
-  return IUP_DEFAULT;
-}
-#endif
 
 static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
 {
@@ -101,6 +120,76 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
   return 1;  /* store freeze state */
 }
 
+static IFnii iMatrixOriginalKeyPress_CB = NULL;
+
+static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
+{
+  if (press)
+  {
+    switch (c)
+    {
+    case K_cA: 
+      iMatrixExSelectAll(ih); 
+      return IUP_CONTINUE;
+    case K_cV: 
+      if (IupGetAttribute(ih,"MARKED"))
+        IupSetAttribute(ih, "PASTE", "MARKED");
+      else
+        IupSetAttribute(ih, "PASTE", "FOCUS");
+      return IUP_IGNORE;
+    case K_cC: 
+      IupSetAttribute(ih, "COPY", "MARKED");
+      return IUP_IGNORE;
+    case K_cZ: 
+      IupSetAttribute(ih, "UNDO", NULL);  /* 1 level */
+      return IUP_IGNORE;
+    case K_cY: 
+      IupSetAttribute(ih, "REDO", NULL);  /* 1 level */
+      return IUP_IGNORE;
+    case K_F3: 
+      {
+        char* find = IupGetAttribute(ih, "FIND");
+        if (find)
+        {
+          /* invert the direction if not a "forward" one */
+          char* direction = iupAttribGet(ih, "FINDDIRECTION");
+          if (iupStrEqualNoCase(direction, "LEFTTOP"))
+            iupAttribSet(ih, "FINDDIRECTION", "RIGHTBOTTOM");
+          else if (iupStrEqualNoCase(direction, "TOPLEFT"))
+            iupAttribSet(ih, "FINDDIRECTION", "BOTTOMRIGHT");
+
+          IupSetAttribute(ih, "FIND", find);
+        }
+        return IUP_IGNORE;
+      }
+    case K_sF3: 
+      {
+        char* find = IupGetAttribute(ih, "FIND");
+        if (find)
+        {
+          /* invert the direction if not a "reverse" one */
+          char* direction = iupAttribGet(ih, "FINDDIRECTION");
+          if (iupStrEqualNoCase(direction, "RIGHTBOTTOM"))
+            iupAttribSet(ih, "FINDDIRECTION", "LEFTTOP");
+          else if (iupStrEqualNoCase(direction, "BOTTOMRIGHT"))
+            iupAttribSet(ih, "FINDDIRECTION", "TOPLEFT");
+
+          IupSetAttribute(ih, "FIND", find);
+        }
+        return IUP_IGNORE;
+      }
+#if 0
+    case K_cU: { D->UndoList() ; return IUP_IGNORE  ;}
+    case K_cF: {D->Find(); return IUP_IGNORE;}
+    case K_mF3:{D->Find(); return IUP_IGNORE;}
+    case K_ESC:{D->finder.CloseDlg(); return IUP_CONTINUE;}
+#endif
+    }
+  }
+
+  return iMatrixOriginalKeyPress_CB(ih, c, press);
+}
+
 static int iMatrixExCreateMethod(Ihandle* ih, void **params)
 {
   ImatExData* matex_data = (ImatExData*)malloc(sizeof(ImatExData));
@@ -108,6 +197,9 @@ static int iMatrixExCreateMethod(Ihandle* ih, void **params)
 
   iupAttribSet(ih, "_IUP_MATEX_DATA", (char*)matex_data);
   matex_data->ih = ih;
+
+  if (!iMatrixOriginalKeyPress_CB) iMatrixOriginalKeyPress_CB = (IFnii)IupGetCallback(ih, "KEYPRESS_CB");
+  IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iMatrixExKeyPress_CB);
 
   (void)params;
   return IUP_NOERROR;

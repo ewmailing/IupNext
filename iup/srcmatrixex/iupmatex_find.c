@@ -66,7 +66,7 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
   {
     pos += inc;
 
-    if (pos % (num_col+1) == 0)  /* col=0 or lin=0 */
+    if (pos % (num_col+1) == 0)  /* col=0 or lin=0 (dont't search on titles) */
       pos += inc;
 
     if (pos < (num_col+1) + 1) pos = count-1;   /* if at first cell, go to last */
@@ -101,22 +101,22 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
   IupGetIntInt(ih, "FOCUS_CELL", &lin, &col);
 
   direction = iupAttribGet(ih, "FINDDIRECTION");
-  if (iupStrEqualNoCase(direction, "RIGHTBOTTOM"))
+  if (iupStrEqualNoCase(direction, "LEFTTOP"))
   {
     flip = 0;
     inc = -1;
   }
-  else if (iupStrEqualNoCase(direction, "RIGHTTOP"))
+  else if (iupStrEqualNoCase(direction, "TOPLEFT"))
   {
     flip = 1;
     inc = -1;
   }
-  else if (iupStrEqualNoCase(direction, "LEFTTOP"))
+  else if (iupStrEqualNoCase(direction, "BOTTOMRIGHT"))
   {
     flip = 1;
     inc = +1;
   }
-  else  /* LEFTBOTTOM */
+  else  /* RIGHTBOTTOM */
   {
     flip = 0;
     inc = +1;
@@ -137,19 +137,22 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
   {
     IupSetfAttribute(ih,"FOCUS_CELL", "%d:%d", lin, col);
 //    IupSetfAttribute(ih,"SHOW", "%d:%d", lin, col);
-//    IupSetAttribute(ih,"MARKED",NULL);
-//    IupSetAttributeId2(ih,"MARK",lin,col,"1");
+    //if (!matchmarked)
+    //{
+    //  IupSetAttribute(ih,"MARKED",NULL);
+    //  IupSetAttributeId2(ih,"MARK",lin,col,"1");
+    //}
     IupSetfAttribute(ih,"_IUP_LAST_FOUND", "%d:%d", lin, col);
   }
 
-  return 0;
+  return 1;
 }
 
 void iupMatrixExRegisterFind(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic, "FIND", NULL, iMatrixExSetFindAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FIND", NULL, iMatrixExSetFindAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "FINDDIRECTION", NULL, NULL, IUPAF_SAMEASSYSTEM, "NEXT", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FINDDIRECTION", NULL, NULL, IUPAF_SAMEASSYSTEM, "RIGHTBOTTOM", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FINDMATCHCASE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FINDMATCHWHOLECELL", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FINDMATCHSELECTION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

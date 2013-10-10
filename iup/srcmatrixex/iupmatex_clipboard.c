@@ -607,7 +607,7 @@ static int iMatrixExSetPasteAttrib(Ihandle *ih, const char* value)
 
   if (iupStrEqualNoCase(value, "FOCUS"))
     IupGetIntInt(ih, "FOCUS_CELL", &lin, &col);
-  else if (iupStrEqualNoCase(value, "SELECTION"))
+  else if (iupStrEqualNoCase(value, "MARKED"))
   {
     char *marked = IupGetAttribute(ih,"MARKED");
     if (marked)
