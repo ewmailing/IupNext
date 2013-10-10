@@ -280,11 +280,11 @@ int  iupDataEntry(int    maxlin,
   IupInsert(vb, NULL, IupNormalizerv(lbl));
 
   ok = IupButton(IupGetLanguageString("IUP_OK"), NULL);
-  IupSetAttribute(ok, "PADDING", "20x0");
+  IupSetAttribute(ok, "PADDING", "20x5");
   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
   cancel = IupButton(IupGetLanguageString("IUP_CANCEL"), NULL);
-  IupSetAttribute(cancel, "PADDING", "20x0");
+  IupSetAttribute(cancel, "PADDING", "20x5");
   IupSetCallback(cancel, "ACTION", (Icallback)CB_button_CANCEL);
 
   button_box = IupHbox(

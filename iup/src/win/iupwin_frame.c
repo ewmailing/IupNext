@@ -70,6 +70,13 @@ static int winFrameSetBgColorAttrib(Ihandle* ih, const char* value)
     return 0;
 }
 
+static int winFrameSetTitleAttrib(Ihandle* ih, const char* value)
+{
+  iupwinSetTitleAttrib(ih, value);
+  iupdrvPostRedraw(ih);
+  return 1;
+}
+
 static void winFrameDrawText(HDC hDC, const char* text, int x, int y, COLORREF fgcolor)
 {
   COLORREF oldcolor;
@@ -245,5 +252,5 @@ void iupdrvFrameInitClass(Iclass* ic)
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TITLE", NULL, iupwinSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, winFrameSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 }

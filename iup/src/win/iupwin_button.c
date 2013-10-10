@@ -485,7 +485,9 @@ static int winButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 static int winButtonSetTitleAttrib(Ihandle* ih, const char* value)
 {
   iupwinSetMnemonicTitle(ih, 0, value);
-  return iupwinSetTitleAttrib(ih, value);
+  iupwinSetTitleAttrib(ih, value);
+  iupdrvPostRedraw(ih);
+  return 1;
 }
 
 static int winButtonSetBgColorAttrib(Ihandle* ih, const char* value)

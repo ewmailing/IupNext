@@ -168,7 +168,9 @@ static void winLabelDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 static int winLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
   iupwinSetMnemonicTitle(ih, 0, value);
-  return iupwinSetTitleAttrib(ih, value);
+  iupwinSetTitleAttrib(ih, value);
+  iupdrvPostRedraw(ih);
+  return 1;
 }
 
 static int winLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
