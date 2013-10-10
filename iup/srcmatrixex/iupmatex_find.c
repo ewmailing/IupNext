@@ -54,26 +54,31 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
   }
 
   if (flip)
-  {
-    int t = num_lin;
-    num_lin = num_col;
-    num_col = t;
-  }
+    pos = (*col)*(num_lin+1) + *lin;
+  else
+    pos = (*lin)*(num_col+1) + *col;
 
-  pos = (*lin)*(num_col+1) + *col;
   start_pos = pos;
   do 
   {
     pos += inc;
 
-    if (pos % (num_col+1) == 0)  /* col=0 or lin=0 (dont't search on titles) */
-      pos += inc;
+    if (pos < 0) pos = count-1;   /* if less than first cell, go to last */
+    if (pos > count-1) pos = 0;   /* if more than last cell, go to first */
 
-    if (pos < (num_col+1) + 1) pos = count-1;   /* if at first cell, go to last */
-    if (pos > count-1) pos = (num_col+1) + 1;   /* if at last cell, go to first */
+    if (flip)
+    {
+      *lin = pos % (num_lin+1);
+      *col = pos / (num_lin+1);
+    }
+    else
+    {
+      *lin = pos / (num_col+1);
+      *col = pos % (num_col+1);
+    }
 
-    *lin = pos / (num_col+1);
-    *col = pos % (num_col+1);
+    if (*lin == 0 || *col == 0)  /* dont't search on titles */
+      continue;
 
     if (pos == start_pos)
       return 0;
