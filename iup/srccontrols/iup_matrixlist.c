@@ -1315,7 +1315,7 @@ Iclass* iupMatrixListNewClass(void)
   /* IupMatrixList Callbacks */
   iupClassRegisterCallback(ic, "IMAGEVALUECHANGED_CB", "ii");
   iupClassRegisterCallback(ic, "LISTCLICK_CB", "iis");
-  iupClassRegisterCallback(ic, "LISTRELASE_CB", "iis");
+  iupClassRegisterCallback(ic, "LISTRELEASE_CB", "iis");
   iupClassRegisterCallback(ic, "LISTINSERT_CB", "i");
   iupClassRegisterCallback(ic, "LISTREMOVE_CB", "i");
   iupClassRegisterCallback(ic, "LISTEDITION_CB", "iiii");
