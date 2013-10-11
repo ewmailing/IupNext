@@ -172,7 +172,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
                      iupAttribGetBoolean(ih, "MAXBOX")  ||
                      iupAttribGetBoolean(ih, "MINBOX")  ||
                      iupAttribGetBoolean(ih, "MENUBOX") || 
-                     IupGetAttribute(ih, "TITLE");  /* must use IupGetAttribute to check from the native implementation */
+                     iupAttribGet(ih, "TITLE");
 
   int has_border = has_titlebar ||
                    iupAttribGetBoolean(ih, "RESIZE") ||
@@ -273,7 +273,7 @@ static void motDialogSetWindowManagerStyle(Ihandle* ih)
   hints.input_mode = 0;
   hints.status = 0;
 
-  if (IupGetAttribute(ih, "TITLE")) {  /* must use IupGetAttribute to check from the native implementation */
+  if (iupAttribGet(ih, "TITLE")) {
     hints.functions   |= MWM_FUNC_MOVE;
     hints.decorations |= MWM_DECOR_TITLE;
   }
@@ -575,13 +575,13 @@ static int motDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
       iupAttribSetStr(ih, "_IUPMOT_FS_MENUBOX",iupAttribGet(ih, "MENUBOX"));
       iupAttribSetStr(ih, "_IUPMOT_FS_RESIZE", iupAttribGet(ih, "RESIZE"));
       iupAttribSetStr(ih, "_IUPMOT_FS_BORDER", iupAttribGet(ih, "BORDER"));
-      iupAttribSetStr(ih, "_IUPMOT_FS_TITLE",  IupGetAttribute(ih, "TITLE"));  /* must use IupGetAttribute to check from the native implementation */
+      iupAttribSetStr(ih, "_IUPMOT_FS_TITLE",  iupAttribGet(ih, "TITLE"));
 
       /* remove the decorations attributes */
       iupAttribSet(ih, "MAXBOX", "NO");
       iupAttribSet(ih, "MINBOX", "NO");
       iupAttribSet(ih, "MENUBOX", "NO");
-      IupSetAttribute(ih, "TITLE", NULL); iupAttribSet(ih, "TITLE", NULL); /* remove from the hash table if we are during IupMap */
+      IupSetAttribute(ih, "TITLE", NULL);  /* must use IupSetAttribute to update the native implementation */
       iupAttribSet(ih, "RESIZE", "NO");
       iupAttribSet(ih, "BORDER", "NO");
 
@@ -643,7 +643,7 @@ static int motDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
         iupAttribSetStr(ih, "MAXBOX", iupAttribGet(ih, "_IUPMOT_FS_MAXBOX"));
         iupAttribSetStr(ih, "MINBOX", iupAttribGet(ih, "_IUPMOT_FS_MINBOX"));
         iupAttribSetStr(ih, "MENUBOX",iupAttribGet(ih, "_IUPMOT_FS_MENUBOX"));
-        IupSetAttribute(ih, "TITLE",  iupAttribGet(ih, "_IUPMOT_FS_TITLE"));   /* TITLE is not stored in the HashTable */
+        IupSetAttribute(ih, "TITLE",  iupAttribGet(ih, "_IUPMOT_FS_TITLE"));   /* must use IupSetAttribute to update the native implementation */
         iupAttribSetStr(ih, "RESIZE", iupAttribGet(ih, "_IUPMOT_FS_RESIZE"));
         iupAttribSetStr(ih, "BORDER", iupAttribGet(ih, "_IUPMOT_FS_BORDER"));
 

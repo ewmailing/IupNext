@@ -138,7 +138,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
                      iupAttribGetBoolean(ih, "MAXBOX")  ||
                      iupAttribGetBoolean(ih, "MINBOX")  ||
                      iupAttribGetBoolean(ih, "MENUBOX") || 
-                     IupGetAttribute(ih, "TITLE"); /* must use IupGetAttribute to check from the native implementation */
+                     iupAttribGet(ih, "TITLE");
 
   int has_border = has_titlebar ||
                    iupAttribGetBoolean(ih, "RESIZE") ||
@@ -733,13 +733,13 @@ static int gtkDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
       iupAttribSetStr(ih, "_IUPGTK_FS_MENUBOX",iupAttribGet(ih, "MENUBOX"));
       iupAttribSetStr(ih, "_IUPGTK_FS_RESIZE", iupAttribGet(ih, "RESIZE"));
       iupAttribSetStr(ih, "_IUPGTK_FS_BORDER", iupAttribGet(ih, "BORDER"));
-      iupAttribSetStr(ih, "_IUPGTK_FS_TITLE",  IupGetAttribute(ih, "TITLE"));  /* must use IupGetAttribute to check from the native implementation */
+      iupAttribSetStr(ih, "_IUPGTK_FS_TITLE",  iupAttribGet(ih, "TITLE"));
 
       /* remove the decorations attributes */
       iupAttribSet(ih, "MAXBOX", "NO");
       iupAttribSet(ih, "MINBOX", "NO");
       iupAttribSet(ih, "MENUBOX", "NO");
-      IupSetAttribute(ih, "TITLE", NULL); iupAttribSet(ih, "TITLE", NULL); /* remove from the hash table if we are during IupMap */
+      IupSetAttribute(ih, "TITLE", NULL);  /* must use IupSetAttribute to update the native implementation */
       iupAttribSet(ih, "RESIZE", "NO");
       iupAttribSet(ih, "BORDER", "NO");
 

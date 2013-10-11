@@ -127,7 +127,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
     int has_titlebar = iupAttribGetBoolean(ih, "MAXBOX")  ||
                        iupAttribGetBoolean(ih, "MINBOX")  ||
                        iupAttribGetBoolean(ih, "MENUBOX") || 
-                       IupGetAttribute(ih, "TITLE");  /* must use IupGetAttribute to check from the native implementation */
+                       iupAttribGet(ih, "TITLE");
 
     *caption = 0;
     if (has_titlebar)
@@ -881,10 +881,6 @@ static int winDialogMapMethod(Ihandle* ih)
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSet(ih, "DROPFILESTARGET", "YES");
 
-  /* Reset attributes handled during creation that */
-  /* also can be changed later, and can be consulted from the native system. */
-  iupAttribSet(ih, "TITLE", NULL); 
-
   /* Ignore VISIBLE before mapping */
   iupAttribSet(ih, "VISIBLE", NULL);
 
@@ -1341,7 +1337,7 @@ static int winDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
       iupAttribSetStr(ih, "_IUPWIN_FS_MENUBOX",iupAttribGet(ih, "MENUBOX"));
       iupAttribSetStr(ih, "_IUPWIN_FS_RESIZE", iupAttribGet(ih, "RESIZE"));
       iupAttribSetStr(ih, "_IUPWIN_FS_BORDER", iupAttribGet(ih, "BORDER"));
-      iupAttribSetStr(ih, "_IUPWIN_FS_TITLE",  IupGetAttribute(ih, "TITLE"));  /* must use IupGetAttribute to check from the native implementation */
+      iupAttribSetStr(ih, "_IUPWIN_FS_TITLE",  iupAttribGet(ih, "TITLE"));
 
       /* save the previous position and size */
       iupAttribSetStr(ih, "_IUPWIN_FS_X", IupGetAttribute(ih, "X"));  /* must use IupGetAttribute to check from the native implementation */
@@ -1352,7 +1348,7 @@ static int winDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
       iupAttribSet(ih, "MAXBOX", "NO");
       iupAttribSet(ih, "MINBOX", "NO");
       iupAttribSet(ih, "MENUBOX", "NO");
-      IupSetAttribute(ih, "TITLE", NULL);
+      IupSetAttribute(ih, "TITLE", NULL);  /* must use IupSetAttribute to update the native implementation */
       iupAttribSet(ih, "RESIZE", "NO");
       iupAttribSet(ih, "BORDER", "NO");
 
@@ -1377,7 +1373,7 @@ static int winDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
       iupAttribSetStr(ih, "MAXBOX", iupAttribGet(ih, "_IUPWIN_FS_MAXBOX"));
       iupAttribSetStr(ih, "MINBOX", iupAttribGet(ih, "_IUPWIN_FS_MINBOX"));
       iupAttribSetStr(ih, "MENUBOX",iupAttribGet(ih, "_IUPWIN_FS_MENUBOX"));
-      IupSetAttribute(ih, "TITLE",  iupAttribGet(ih, "_IUPWIN_FS_TITLE"));  /* TITLE is not stored in the HashTable */
+      IupSetAttribute(ih, "TITLE",  iupAttribGet(ih, "_IUPWIN_FS_TITLE"));  /* must use IupSetAttribute to update the native implementation */
       iupAttribSetStr(ih, "RESIZE", iupAttribGet(ih, "_IUPWIN_FS_RESIZE"));
       iupAttribSetStr(ih, "BORDER", iupAttribGet(ih, "_IUPWIN_FS_BORDER"));
 
