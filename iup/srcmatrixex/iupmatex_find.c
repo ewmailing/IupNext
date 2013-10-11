@@ -19,6 +19,90 @@
 #include "iup_matrixex.h"
 
 
+static int CB_button_OK (Ihandle* ih)
+{
+  iupAttribSet(IupGetDialog(ih), "STATUS", "1");
+  return IUP_CLOSE;
+}
+
+static int CB_button_CANCEL (Ihandle* ih)
+{
+  iupAttribSet(IupGetDialog(ih), "STATUS", "-1");
+  return IUP_CLOSE;
+}
+
+Ihandle* iupMatrixFindCreateDialog(Ihandle *ih)
+{
+  Ihandle *text_box, *options_box, *find_next, *find_prev, 
+          *dlg, *close, *dlg_box, *button_box, *parent;
+
+  text_box = IupSetAttributes(IupHbox(
+    IupLabel("_@IUP_FIND_WHAT"), 
+    IupSetAttributes(IupText(NULL), "EXPAND=HORIZONTAL"),
+    NULL), "ALIGNMENT=ACENTER");
+  IupSetAttribute(text_box,"MARGIN","0x0");
+
+  options_box = IupHbox(
+    IupVbox(
+      IupSetAttributes(IupToggle("_@IUP_MATCH_CASE", NULL), "NAME=MATCHCASE"),
+      IupSetAttributes(IupToggle("_@IUP_MATCH_WHOLE_CELL", NULL), "NAME=MATCHWHOLECELL"),
+      NULL),
+    IupSetAttributes(IupFrame(IupRadio(IupHbox(
+      IupSetAttributes(IupToggle("_@IUP_BY_ROW", NULL), "NAME=SEARCHBYROW"),
+      IupSetAttributes(IupToggle("_@IUP_BY_COL", NULL), "NAME=SEARCHBYCOL"),
+      NULL))), "TITLE=_@IUP_SEARCH"),
+    NULL);
+  IupSetAttribute(options_box,"MARGIN","5x5");
+
+  find_prev = IupButton("_@IUP_FIND_PREVIOUS", NULL);
+  IupSetAttribute(find_prev,"PADDING" ,"12x2");
+  IupSetCallback(find_prev, "ACTION", (Icallback)CB_button_OK);
+
+  find_next = IupButton("_@IUP_FIND_NEXT", NULL);
+  IupSetAttribute(find_next,"PADDING" ,"12x2");
+  IupSetCallback(find_next, "ACTION", (Icallback)CB_button_OK);
+
+  close = IupButton("_@IUP_CLOSE", NULL);
+  IupSetAttribute(close,"PADDING" ,"12x2");
+  IupSetCallback(close, "ACTION", (Icallback)CB_button_CANCEL);
+
+  button_box = IupHbox(
+    IupFill(), 
+    find_prev,
+    find_next,
+    close,
+    NULL);
+  IupSetAttribute(button_box,"MARGIN","0x0");
+  IupSetAttribute(button_box, "NORMALIZESIZE", "HORIZONTAL");
+
+  dlg_box = IupVbox(
+    text_box,
+    options_box,
+    button_box,
+    NULL);
+  IupSetAttribute(dlg_box,"MARGIN","10x10");
+  IupSetAttribute(dlg_box,"GAP","5");
+
+  dlg = IupDialog(dlg_box);
+
+  parent = IupGetDialog(ih);
+
+  IupSetStrAttribute(dlg,"TITLE","_@IUP_FIND");
+  IupSetAttribute(dlg,"MINBOX","NO");
+  IupSetAttribute(dlg,"MAXBOX","NO");
+  IupSetAttribute(dlg, "TOOLBOX","YES");
+  IupSetAttributeHandle(dlg,"DEFAULTENTER", find_next);
+  IupSetAttributeHandle(dlg,"DEFAULTESC", close);
+  IupSetAttributeHandle(dlg,"PARENTDIALOG", parent);
+
+  if (IupGetAttribute(parent, "ICON"))
+    IupSetAttribute(dlg,"ICON", IupGetAttribute(parent, "ICON"));
+  else
+    IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
+
+  return dlg;
+}
+
 static int iMatrixMatch(Ihandle *ih, const char* findvalue, int lin, int col, int matchcase, int matchcell, int utf8)
 {
   char* value = iupMatrixExGetCellValue(ih, lin, col, 1);  /* get displayed value */
@@ -31,7 +115,7 @@ static int iMatrixMatch(Ihandle *ih, const char* findvalue, int lin, int col, in
     return iupStrCompareFind(value, findvalue, matchcase, utf8);
 }
 
-static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, int matchcase, int matchcell, int matchmarked, int *lin, int *col)
+static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, int matchcase, int matchcell, int *lin, int *col)
 {
   int utf8 = IupGetInt(NULL, "UTF8MODE");
   int num_lin = IupGetInt(ih, "NUMLIN");
@@ -42,13 +126,8 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
   if (inc == 0)
   {
     /* the FOCUS_CELL is always visible and not a title */
-
-    /* only need to check if it is marked */
-    if (!matchmarked || iupStrBoolean(iupAttribGetClassObjectId2(ih, "MARK", *lin, *col)))
-    {
-      if (iMatrixMatch(ih, value, *lin, *col, matchcase, matchcell, utf8))
-        return 1;
-    }
+    if (iMatrixMatch(ih, value, *lin, *col, matchcase, matchcell, utf8))
+      return 1;
 
     inc = 1;
   }
@@ -86,9 +165,6 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
     if (!iupMatrixExIsLineVisible(ih, *lin) || !iupMatrixExIsColumnVisible(ih, *col))
       continue;
 
-    if (matchmarked && !iupStrBoolean(iupAttribGetClassObjectId2(ih, "MARK", *lin, *col)))
-      continue;
-
   } while (!iMatrixMatch(ih, value, *lin, *col, matchcase, matchcell, utf8));
 
   return 1;
@@ -97,7 +173,7 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
 static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
 {
   int lin=1, col=1;
-  int inc, flip, matchcase, matchcell, matchmarked;
+  int inc, flip, matchcase, matchcell;
   char* direction;
 
   if (!value || value[0]==0)
@@ -128,7 +204,6 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
   }
   matchcase = iupAttribGetInt(ih, "FINDMATCHCASE");
   matchcell = iupAttribGetInt(ih, "FINDMATCHWHOLECELL");
-  matchmarked = iupAttribGetInt(ih, "FINDMATCHSELECTION");
 
   if (inc == 1)
   {
@@ -138,17 +213,16 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
       inc = 0;  /* search in the current cell */
   }
 
-  if (iMatrixExSetFind(ih, value, inc, flip, matchcase, matchcell, matchmarked, &lin, &col))
+  if (iMatrixExSetFind(ih, value, inc, flip, matchcase, matchcell, &lin, &col))
   {
     IupSetfAttribute(ih,"FOCUS_CELL", "%d:%d", lin, col);
 //    IupSetfAttribute(ih,"SHOW", "%d:%d", lin, col);
-    //if (!matchmarked)
-    //{
     //  IupSetAttribute(ih,"MARKED",NULL);
     //  IupSetAttributeId2(ih,"MARK",lin,col,"1");
-    //}
     IupSetfAttribute(ih,"_IUP_LAST_FOUND", "%d:%d", lin, col);
   }
+  else
+    IupSetAttribute(ih,"_IUP_LAST_FOUND", NULL);
 
   return 1;
 }
@@ -160,5 +234,45 @@ void iupMatrixExRegisterFind(Iclass* ic)
   iupClassRegisterAttribute(ic, "FINDDIRECTION", NULL, NULL, IUPAF_SAMEASSYSTEM, "RIGHTBOTTOM", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FINDMATCHCASE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FINDMATCHWHOLECELL", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FINDMATCHSELECTION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
+  if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
+  {
+    IupSetLanguageString("IUP_FIND", "Find");
+    IupSetLanguageString("IUP_FIND_WHAT", "Find what:");
+    IupSetLanguageString("IUP_FIND_NEXT", "&Find Next");
+    IupSetLanguageString("IUP_FIND_PREVIOUS", "Find &Previous");
+
+    IupSetLanguageString("IUP_CLOSE", "Close");
+    IupSetLanguageString("IUP_SEARCH", "Search");
+
+    IupSetLanguageString("IUP_MATCH_CASE", "Match Case");
+    IupSetLanguageString("IUP_MATCH_WHOLE_CELL", "Match Whole Cell");
+    IupSetLanguageString("IUP_BY_ROW", "by Rows");
+    IupSetLanguageString("IUP_BY_COL", "by Columns");
+  }
+  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+  {
+    IupSetLanguageString("IUP_FIND", "Localizar");
+    IupSetLanguageString("IUP_FIND_WHAT", "Localizar o que:");
+    IupSetLanguageString("IUP_FIND_NEXT", "Localizar &Próximo");
+    IupSetLanguageString("IUP_FIND_PREVIOUS", "Localizar &Anterior");
+
+    IupSetLanguageString("IUP_CLOSE", "Fechar");
+    IupSetLanguageString("IUP_SEARCH", "Pesquisar");
+
+    IupSetLanguageString("IUP_MATCH_CASE", "Diferenciar maiúsculas e minúsculas");
+    IupSetLanguageString("IUP_MATCH_WHOLE_CELL", "Coindidir célula inteira");
+    IupSetLanguageString("IUP_BY_ROW", "por Linhas");
+    IupSetLanguageString("IUP_BY_COL", "por Colunas");
+
+    if (IupGetInt(NULL, "UTF8MODE"))
+    {
+      /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
+         When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+
+      IupSetLanguageString("IUP_FIND_NEXT", "Localizar &PrÃ³ximo");
+      IupSetLanguageString("IUP_MATCH_CASE", "Diferenciar maiÃºsculas e minÃºsculas");
+      IupSetLanguageString("IUP_MATCH_WHOLE_CELL", "Coindidir cÃ©lula inteira");
+    }
+  }
 }

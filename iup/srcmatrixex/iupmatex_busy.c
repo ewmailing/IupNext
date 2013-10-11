@@ -34,27 +34,27 @@ static void iMatrixExBusyShowProgress(ImatExData* matex_data, int count, const c
 {
   int x, y;
 
-  if (!matex_data->busy_progress)
+  if (!matex_data->busy_progress_dlg)
   {
-    matex_data->busy_progress = IupProgressDlg();
-    IupSetCallback(matex_data->busy_progress, "CANCEL_CB", iMatrixExBusyProgressCancel_CB);
-    IupSetAttributeHandle(matex_data->busy_progress, "PARENTDIALOG", IupGetDialog(matex_data->ih));
-    IupSetAttribute(matex_data->busy_progress, "_IUP_MATEX_DATA", (char*)matex_data);
+    matex_data->busy_progress_dlg = IupProgressDlg();
+    IupSetCallback(matex_data->busy_progress_dlg, "CANCEL_CB", iMatrixExBusyProgressCancel_CB);
+    IupSetAttributeHandle(matex_data->busy_progress_dlg, "PARENTDIALOG", IupGetDialog(matex_data->ih));
+    IupSetAttribute(matex_data->busy_progress_dlg, "_IUP_MATEX_DATA", (char*)matex_data);
 
-    IupMap(matex_data->busy_progress); /* to compute dialog size */
+    IupMap(matex_data->busy_progress_dlg); /* to compute dialog size */
   }
   
-  IupStoreAttribute(matex_data->busy_progress, "DESCRIPTION", busyname);
-  IupSetInt(matex_data->busy_progress, "TOTALCOUNT", count);
-  IupSetAttribute(matex_data->busy_progress, "COUNT", "0");
+  IupStoreAttribute(matex_data->busy_progress_dlg, "DESCRIPTION", busyname);
+  IupSetInt(matex_data->busy_progress_dlg, "TOTALCOUNT", count);
+  IupSetAttribute(matex_data->busy_progress_dlg, "COUNT", "0");
 
   IupSetAttribute(IupGetDialog(matex_data->ih),"ACTIVE","NO");
 
-  IupRefresh(matex_data->busy_progress);
+  IupRefresh(matex_data->busy_progress_dlg);
 
-  x = IupGetInt(matex_data->ih, "X") + (matex_data->ih->currentwidth-matex_data->busy_progress->currentwidth)/2;
-  y = IupGetInt(matex_data->ih, "Y") + (matex_data->ih->currentheight-matex_data->busy_progress->currentheight)/2;
-  IupShowXY(matex_data->busy_progress, x, y);
+  x = IupGetInt(matex_data->ih, "X") + (matex_data->ih->currentwidth-matex_data->busy_progress_dlg->currentwidth)/2;
+  y = IupGetInt(matex_data->ih, "Y") + (matex_data->ih->currentheight-matex_data->busy_progress_dlg->currentheight)/2;
+  IupShowXY(matex_data->busy_progress_dlg, x, y);
 }
 
 void iupMatrixExBusyStart(ImatExData* matex_data, int count, const char* busyname)
@@ -104,7 +104,7 @@ int iupMatrixExBusyInc(ImatExData* matex_data)
 
     if (matex_data->busy == 2)
     {
-      IupSetAttribute(matex_data->busy_progress, "INC", NULL);
+      IupSetAttribute(matex_data->busy_progress_dlg, "INC", NULL);
 
       if (matex_data->busy_progress_abort)
       {
@@ -128,7 +128,7 @@ void iupMatrixExBusyEnd(ImatExData* matex_data)
 
     if (matex_data->busy == 2)
     {
-      IupHide(matex_data->busy_progress);
+      IupHide(matex_data->busy_progress_dlg);
       IupSetAttribute(IupGetDialog(matex_data->ih),"ACTIVE","Yes");
       IupSetFocus(matex_data->ih);
     }

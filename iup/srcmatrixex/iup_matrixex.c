@@ -178,11 +178,25 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
         }
         return IUP_IGNORE;
       }
+    case K_cF: 
+    case K_mF3: 
+      {
+        ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+        if (!(matex_data->find_dlg))
+          matex_data->find_dlg = iupMatrixFindCreateDialog(ih);
+//        IupShowXY(matex_data->find_dlg, x, y);
+        IupShow(matex_data->find_dlg);
+        return IUP_IGNORE;
+      }
+    case K_ESC: 
+      {
+        ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+        if (matex_data->find_dlg)
+          IupHide(matex_data->find_dlg);
+        return IUP_CONTINUE;
+      }
 #if 0
     case K_cU: { D->UndoList() ; return IUP_IGNORE  ;}
-    case K_cF: {D->Find(); return IUP_IGNORE;}
-    case K_mF3:{D->Find(); return IUP_IGNORE;}
-    case K_ESC:{D->finder.CloseDlg(); return IUP_CONTINUE;}
 #endif
     }
   }
@@ -208,13 +222,19 @@ static int iMatrixExCreateMethod(Ihandle* ih, void **params)
 static void iMatrixExDestroyMethod(Ihandle* ih)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  if (matex_data->busy_progress)
-    IupDestroy(matex_data->busy_progress);
+
+  if (matex_data->busy_progress_dlg)
+    IupDestroy(matex_data->busy_progress_dlg);
+
+  if (matex_data->find_dlg)
+    IupDestroy(matex_data->find_dlg);
+
   if (matex_data->undo_stack)
   {
     iupAttribSetClassObject(ih, "UNDOCLEAR", NULL);
     iupArrayDestroy(matex_data->undo_stack);
   }
+
   free(matex_data);
 }
 
@@ -230,6 +250,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   iupMatrixExRegisterCopy(ic);
   iupMatrixExRegisterUnits(ic);
   iupMatrixExRegisterUndo(ic);
+  iupMatrixExRegisterFind(ic);
 }
 
 static Iclass* iMatrixExNewClass(void)
@@ -258,6 +279,9 @@ void IupMatrixExInit(Ihandle* ih)
   if (ih->iclass->nativetype != IUP_TYPECANVAS || 
       !IupClassMatch(ih, "matrix"))
     return;
+
+  iMatrixExCreateMethod(ih, NULL);
+  IupSetCallback(ih, "DESTROY_CB", (Icallback)iMatrixExDestroyMethod);
     
   iMatrixExInitAttribCb(ih->iclass);
 }

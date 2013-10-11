@@ -20,7 +20,9 @@ typedef struct _ImatExData
 
   int busy, busy_count, busy_progress_abort;
   IFniis busy_cb;
-  Ihandle* busy_progress;
+  Ihandle* busy_progress_dlg;
+
+  Ihandle* find_dlg;
 
   Iarray* undo_stack;
   int undo_stack_pos;   /* points to the position where a new undo will be inserted, starts at 0 */
@@ -33,6 +35,8 @@ void iupMatrixExBusyEnd(ImatExData* matex_data);
 
 void iupMatrixExUndoPushBegin(ImatExData* matex_data, const char* busyname);
 void iupMatrixExUndoPushEnd(ImatExData* matex_data);
+
+Ihandle* iupMatrixFindCreateDialog(Ihandle *ih);
 
 int iupMatrixExIsColumnVisible(Ihandle* ih, int col);
 int iupMatrixExIsLineVisible(Ihandle* ih, int lin);

@@ -19,6 +19,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupmot", "iupmot.vcxproj", "{2C7E83B9-1234-432A-97BA-FCF4D0728408}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuptest", "iuptest.vcxproj", "{2F92EC58-D94C-40BF-8C82-77607C72E1E3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5EABE977-C56D-13FA-45DD-12A8972EA8CC} = {5EABE977-C56D-13FA-45DD-12A8972EA8CC}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuptestgtk", "iuptestgtk.vcxproj", "{2F92EC58-1234-40BF-5678-77607C72E1E3}"
 EndProject

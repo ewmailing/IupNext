@@ -4,7 +4,9 @@
 
 #include "iup.h"
 #include "iupcontrols.h"
+#include "iupmatrixex.h"
 #include <cd.h>
+
 
 static int leave(Ihandle *self, int lin, int col)
 {
@@ -150,13 +152,15 @@ static int actioncb(Ihandle *h, int c, int lin, int col, int active, char* after
   return IUP_DEFAULT;
 }
 
-
 static Ihandle *create_mat(int mati)
 {
   Ihandle *mat = IupMatrix(NULL); 
   char name[30];
 
   sprintf(name, "mat%d", mati);
+
+  if (mati==1)
+    IupMatrixExInit(mat);
 
   IupSetHandle(name, mat);
   
@@ -312,6 +316,8 @@ static void createmenu(void)
 void MatrixCbsTest(void)
 {
   Ihandle *dlg, *bt;
+
+  IupMatrixExOpen();
  
   IupSetFunction("removeline", (Icallback)removeline);
   IupSetFunction("addline", (Icallback)addline);
