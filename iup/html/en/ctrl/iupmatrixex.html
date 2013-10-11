@@ -98,6 +98,9 @@
   exclusive set of attributes and/or callbacks. </p>
 <p>
   The matrix can be used in callback mode or in standard more.</p>
+<p>
+  Based on the DMatrix library created by Bruno Kassar and Luiz Cristóvão Gomez 
+  Coelho.</p>
   <h3>Initialization and Usage</h3>
 <p>
 The<span class="Apple-converted-space">&nbsp;</span><b>IupMatrixExOpen</b><span class="Apple-converted-space">&nbsp;</span>function 
@@ -185,12 +188,12 @@ cells. The search will start at the FOCUS_CELL cell, if found the FOCUS_CELL
 will be changed to the cell where the text were found. Returns the last text 
 searched.</p>
 <p><strong>FINDDIRECTION</strong>: direction of the find. Default RIGHTBOTTOM.</p>
-<p class="info">&nbsp;If RIGHTBOTTOM will 
+<p class="info">if RIGHTBOTTOM will 
 search from left to <strong>right</strong>, then top to <strong>bottom</strong>; 
-(search for all columns then change line)<br>if LEFTTOP will search from right to
+(search for columns then change line)<br>if LEFTTOP will search from right to
 <strong>left</strong>, then bottom to 
 <strong>top</strong>; <br>if BOTTOMRIGHT will search from top to <strong>bottom</strong>, then 
-left to <strong>right</strong>; (search for all lines then change column) <br>if 
+left to <strong>right</strong>; (search for lines then change column) <br>if 
 TOPLEFT will search from bottom to <strong>top</strong>, then right to <strong>left</strong>; </p>
 <p><strong>FINDMATCHCASE</strong>: defines if the text comparison is case 
 sensitive when using FIND. Can be Yes or No. Default: Yes. </p>

@@ -183,7 +183,7 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
       {
         ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
         if (!(matex_data->find_dlg))
-          matex_data->find_dlg = iupMatrixFindCreateDialog(ih);
+          matex_data->find_dlg = iupMatrixExFindCreateDialog(ih);
 //        IupShowXY(matex_data->find_dlg, x, y);
         IupShow(matex_data->find_dlg);
         return IUP_IGNORE;

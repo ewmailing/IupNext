@@ -19,26 +19,62 @@
 #include "iup_matrixex.h"
 
 
-static int CB_button_OK (Ihandle* ih)
+void iupMatrixExFindInitDialog(Ihandle *ih)
 {
-  iupAttribSet(IupGetDialog(ih), "STATUS", "1");
-  return IUP_CLOSE;
 }
 
-static int CB_button_CANCEL (Ihandle* ih)
+static int iMatrixExFindDialogFindNext_CB(Ihandle* ih)
 {
-  iupAttribSet(IupGetDialog(ih), "STATUS", "-1");
-  return IUP_CLOSE;
+  Ihandle* text = IupGetDialogChild(ih, "FINDTEXT");
+  char* find = IupGetAttribute(text, "VALUE");
+  if (find && find[0]!=0)
+  {
+    int matchcase = IupGetInt(IupGetDialogChild(ih, "MATCHCASE"), "VALUE");
+    int matchwholecell = IupGetInt(IupGetDialogChild(ih, "MATCHWHOLECELL"), "VALUE");
+    int searchbyrow = IupGetInt(IupGetDialogChild(ih, "SEARCHBYROW"), "VALUE");
+
+    iupAttribSet(ih, "FINDMATCHCASE", matchcase? "Yes": "No");
+    iupAttribSet(ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
+    iupAttribSet(ih, "FINDDIRECTION", searchbyrow? "RIGHTBOTTOM": "BOTTOMRIGHT");
+
+    IupSetAttribute(ih, "FIND", find);
+  }
+  return IUP_DEFAULT;
 }
 
-Ihandle* iupMatrixFindCreateDialog(Ihandle *ih)
+static int iMatrixExFindDialogFindPrevious_CB(Ihandle* ih)
+{
+  Ihandle* text = IupGetDialogChild(ih, "FINDTEXT");
+  char* find = IupGetAttribute(text, "VALUE");
+  if (find && find[0]!=0)
+  {
+    int matchcase = IupGetInt(IupGetDialogChild(ih, "MATCHCASE"), "VALUE");
+    int matchwholecell = IupGetInt(IupGetDialogChild(ih, "MATCHWHOLECELL"), "VALUE");
+    int searchbyrow = IupGetInt(IupGetDialogChild(ih, "SEARCHBYROW"), "VALUE");
+
+    iupAttribSet(ih, "FINDMATCHCASE", matchcase? "Yes": "No");
+    iupAttribSet(ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
+    iupAttribSet(ih, "FINDDIRECTION", searchbyrow? "LEFTTOP": "TOPLEFT");
+
+    IupSetAttribute(ih, "FIND", find);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExFindDialogClose_CB(Ihandle* ih)
+{
+  IupHide(IupGetDialog(ih));
+  return IUP_DEFAULT;
+}
+
+Ihandle* iupMatrixExFindCreateDialog(Ihandle *ih)
 {
   Ihandle *text_box, *options_box, *find_next, *find_prev, 
           *dlg, *close, *dlg_box, *button_box, *parent;
 
   text_box = IupSetAttributes(IupHbox(
     IupLabel("_@IUP_FIND_WHAT"), 
-    IupSetAttributes(IupText(NULL), "EXPAND=HORIZONTAL"),
+    IupSetAttributes(IupText(NULL), "EXPAND=HORIZONTAL, NAME=FINDTEXT"),
     NULL), "ALIGNMENT=ACENTER");
   IupSetAttribute(text_box,"MARGIN","0x0");
 
@@ -49,22 +85,22 @@ Ihandle* iupMatrixFindCreateDialog(Ihandle *ih)
       NULL),
     IupSetAttributes(IupFrame(IupRadio(IupHbox(
       IupSetAttributes(IupToggle("_@IUP_BY_ROW", NULL), "NAME=SEARCHBYROW"),
-      IupSetAttributes(IupToggle("_@IUP_BY_COL", NULL), "NAME=SEARCHBYCOL"),
+      IupToggle("_@IUP_BY_COL", NULL), 
       NULL))), "TITLE=_@IUP_SEARCH"),
     NULL);
   IupSetAttribute(options_box,"MARGIN","5x5");
 
   find_prev = IupButton("_@IUP_FIND_PREVIOUS", NULL);
   IupSetAttribute(find_prev,"PADDING" ,"12x2");
-  IupSetCallback(find_prev, "ACTION", (Icallback)CB_button_OK);
+  IupSetCallback(find_prev, "ACTION", (Icallback)iMatrixExFindDialogFindNext_CB);
 
   find_next = IupButton("_@IUP_FIND_NEXT", NULL);
   IupSetAttribute(find_next,"PADDING" ,"12x2");
-  IupSetCallback(find_next, "ACTION", (Icallback)CB_button_OK);
+  IupSetCallback(find_next, "ACTION", (Icallback)iMatrixExFindDialogFindPrevious_CB);
 
   close = IupButton("_@IUP_CLOSE", NULL);
   IupSetAttribute(close,"PADDING" ,"12x2");
-  IupSetCallback(close, "ACTION", (Icallback)CB_button_CANCEL);
+  IupSetCallback(close, "ACTION", (Icallback)iMatrixExFindDialogClose_CB);
 
   button_box = IupHbox(
     IupFill(), 
@@ -103,19 +139,19 @@ Ihandle* iupMatrixFindCreateDialog(Ihandle *ih)
   return dlg;
 }
 
-static int iMatrixMatch(Ihandle *ih, const char* findvalue, int lin, int col, int matchcase, int matchcell, int utf8)
+static int iMatrixMatch(Ihandle *ih, const char* findvalue, int lin, int col, int matchcase, int matchwholecell, int utf8)
 {
   char* value = iupMatrixExGetCellValue(ih, lin, col, 1);  /* get displayed value */
   if (!value || value[0] == 0)
     return 0;
 
-  if (matchcell)
+  if (matchwholecell)
     return iupStrCompareEqual(value, findvalue, matchcase, utf8, 0);
   else
     return iupStrCompareFind(value, findvalue, matchcase, utf8);
 }
 
-static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, int matchcase, int matchcell, int *lin, int *col)
+static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, int matchcase, int matchwholecell, int *lin, int *col)
 {
   int utf8 = IupGetInt(NULL, "UTF8MODE");
   int num_lin = IupGetInt(ih, "NUMLIN");
@@ -126,7 +162,7 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
   if (inc == 0)
   {
     /* the FOCUS_CELL is always visible and not a title */
-    if (iMatrixMatch(ih, value, *lin, *col, matchcase, matchcell, utf8))
+    if (iMatrixMatch(ih, value, *lin, *col, matchcase, matchwholecell, utf8))
       return 1;
 
     inc = 1;
@@ -165,7 +201,7 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
     if (!iupMatrixExIsLineVisible(ih, *lin) || !iupMatrixExIsColumnVisible(ih, *col))
       continue;
 
-  } while (!iMatrixMatch(ih, value, *lin, *col, matchcase, matchcell, utf8));
+  } while (!iMatrixMatch(ih, value, *lin, *col, matchcase, matchwholecell, utf8));
 
   return 1;
 }
@@ -173,7 +209,7 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
 static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
 {
   int lin=1, col=1;
-  int inc, flip, matchcase, matchcell;
+  int inc, flip, matchcase, matchwholecell;
   char* direction;
 
   if (!value || value[0]==0)
@@ -203,7 +239,7 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
     inc = +1;
   }
   matchcase = iupAttribGetInt(ih, "FINDMATCHCASE");
-  matchcell = iupAttribGetInt(ih, "FINDMATCHWHOLECELL");
+  matchwholecell = iupAttribGetInt(ih, "FINDMATCHWHOLECELL");
 
   if (inc == 1)
   {
@@ -213,7 +249,7 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
       inc = 0;  /* search in the current cell */
   }
 
-  if (iMatrixExSetFind(ih, value, inc, flip, matchcase, matchcell, &lin, &col))
+  if (iMatrixExSetFind(ih, value, inc, flip, matchcase, matchwholecell, &lin, &col))
   {
     IupSetfAttribute(ih,"FOCUS_CELL", "%d:%d", lin, col);
 //    IupSetfAttribute(ih,"SHOW", "%d:%d", lin, col);

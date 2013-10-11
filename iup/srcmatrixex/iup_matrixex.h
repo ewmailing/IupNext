@@ -36,7 +36,7 @@ void iupMatrixExBusyEnd(ImatExData* matex_data);
 void iupMatrixExUndoPushBegin(ImatExData* matex_data, const char* busyname);
 void iupMatrixExUndoPushEnd(ImatExData* matex_data);
 
-Ihandle* iupMatrixFindCreateDialog(Ihandle *ih);
+Ihandle* iupMatrixExFindCreateDialog(Ihandle *ih);
 
 int iupMatrixExIsColumnVisible(Ihandle* ih, int col);
 int iupMatrixExIsLineVisible(Ihandle* ih, int lin);
