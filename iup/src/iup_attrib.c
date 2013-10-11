@@ -21,7 +21,7 @@
 #include "iup_assert.h"
 
 
-#define iupATTRIB_LANGUAGE_STRING(_v)  (_v[0] == '_' && _v[1] == '@') 
+#define iupATTRIB_LANGUAGE_STRING(_v)  (_v && _v[0] == '_' && _v[1] == '@') 
 #define iupATTRIB_LANGUAGE_SHIFT 2
 
 #define iupATTRIB_GET_LANGUAGE_STRING(_v, _s)                              \
