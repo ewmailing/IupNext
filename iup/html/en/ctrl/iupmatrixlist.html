@@ -1,0 +1,355 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupMatrixList</title>
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style3 {
+	margin-left: 40px;
+}
+.style2 {
+	font-size: large;
+}
+.style1 {
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+<div id="navigation">
+  <ul>
+    <li><a href="#Creation">Creation</a></li>
+    <li><a href="#Attributes">Attributes</a></li>
+    <li><a href="#Callbacks">Callbacks</a></li>
+    <li><a href="#Notes">Notes</a></li>
+    <li><a href="#Examples">Examples</a></li>
+    <li><a href="#SeeAlso">See Also</a></li>
+  </ul>
+</div>
+
+<h2>IupMatrixList (since 3.9)</h2>
+<p>This control uses an array as a list of items. It inherits from 
+<a href="iupmatrix.html">IupMatrix</a>. Based on MTXLIB, developed at 
+Tecgraf/PUC-Rio by Renata Trautmann and Andre Derraik.</p>
+<p>Necessarily, one of the columns contains the labels, while the other two 
+columns can be used to display colors or images related to the items. </p>
+<p>This is an additional control that depends on the CD library. It is included 
+in the 
+<a href="../iupcontrols.html">Controls Library</a>.</p>
+<h3><a name="Creation">Creation</a></h3>
+<div>
+  <pre>Ihandle* IupMatrixList(void); [in C]
+iup.matrixlist{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+matrixlist() [in LED]</pre>
+</div>
+<p>Returns the identifier of the created 
+  matrix, or NULL if an error occurs.</p>
+<h3><a name="Attributes">Attributes</a></h3>
+
+
+<p><strong>"1"</strong>:
+  First item in the list.<br>
+
+  <strong>"2"</strong>:
+  Second item in the list.<br>
+
+  <strong>"3"</strong>:
+  Third item in the list.<br>
+
+  <b>...</b><br>
+
+  <strong>"id"</strong>:
+  id<sup>th</sup> item in the list.</p>
+
+  
+    
+<p class="info">(<font size="3">non inheritable</font>) Item value. It can be 
+any text. This attribute will hide the IupMatrix L:C attributes.</p>
+<p>
+<strong>ADDLIN</strong> (write-only): adds a new line to the list after the 
+  specified line. To insert a line at the top, value 0 must be used. To add more than one line, use format &quot;<strong><em>L-L</em></strong>&quot;, 
+where the first number corresponds to the base line and the second number 
+corresponds to the number of lines to be added. Ignored if set before map.</p>
+<p>
+<strong>APPENDITEM</strong> (write-only): inserts an item after the last item. 
+Ignored if set before map.</p>
+<p><strong>COLORCOL </strong>(read-only): returns the number of color column. If 
+not exists, returns 0.</p>
+<p><b>COLUMNORDER</b>:
+  defines or retrieves the display order of the columns. Possible values: 
+&quot;LABEL&quot;, &quot;COLOR&quot;, &quot;IMAGE&quot;. These values also can be combined (no repeat) in 
+these formats: VALUE1:VALUE2 (two columns) or VALUE1:VALUE2:VALUE3 (three 
+columns). <span id="result_box" class="short_text" lang="en"><span class="hps">
+For a single column</span><span class="">, you can only</span> <span class="hps">
+set the value</span> <span class="hps">&quot;LABEL&quot;. </span></span>Default: &quot;LABEL&quot;.</p>
+<p><strong>COUNT</strong> (read-only): returns the number of items. Before 
+mapping it counts the number of non NULL items before the first NULL item.</p>
+<p><strong>DELLIN</strong> (write-only):
+  removes the given line from the list. To 
+  remove more than one line, use format &quot;<strong><em>L-L</em></strong>&quot;, 
+where the first number corresponds to the base line and the second number 
+corresponds to the number of lines to be removed. Ignored if set before 
+map.</p>
+<p><strong>EDITABLE</strong>:
+  set or get the IupMatrixList edit mode. It can be Yes or No. Default: &quot;NO&quot;.</p>
+<p><strong>FOCUSCOLOR</strong>: set a default background color when 
+an item get the focus. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>. Default: &quot;255 235 155&quot;.</p>
+<p><strong>FOCUSITEM</strong>:
+  defines the current item cell. Two numbers in the &quot;<strong><em>L</em></strong>:<strong><em>C</em></strong>&quot; 
+format (line:column) where L &gt; 0 and C according to the number of columns 
+available (0 &lt; C &lt; 4). Default: &quot;1:1&quot;.</p>
+
+<p><strong>IMAGE<i>id</i> </strong>(write-only): image name to be used in 
+the specified item (id). Use <a href="../func/iupsethandle.html">IupSetHandle</a> 
+or <a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+associate an image to a name. See also <a href="../elem/iupimage.html">IupImage</a>. 
+Image column must be available.</p>
+<p><strong>IMAGEACTIVE<i>id</i></strong>: checks if an image is 
+active or not. Image column must be available.</p>
+<p><strong>IMAGEADD </strong>(write-only): the image name that will be shown 
+when the IupMatrixList is editable. Default: &quot;MTXLIST_IMG_ADD&quot;. Use
+<a href="../func/iupsethandle.html">IupSetHandle</a> or
+<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+associate an image to a name. See also <a href="../elem/iupimage.html">IupImage</a>. 
+Image column must be available.</p>
+<p><strong>IMAGECHECK </strong>(write-only): the image name that will be shown 
+when the IMAGEVALUE attribute is &quot;IMAGECHECK&quot;. Default: &quot;MTXLIST_IMG_CHECK&quot;. Use
+<a href="../func/iupsethandle.html">IupSetHandle</a> or
+<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+associate an image to a name. See also <a href="../elem/iupimage.html">IupImage</a>. 
+Image column must be available.</p>
+<p><strong>IMAGECOL </strong>(read-only): returns the number of image column. If 
+not exists, returns 0.</p>
+<p><strong>IMAGEDEL </strong>(write-only): the image name that will be shown 
+when the IupMatrixList is editable and the SHOWDELETE attribute is &quot;YES&quot;. 
+Default: &quot;MTXLIST_IMG_DEL&quot;. Use <a href="../func/iupsethandle.html">IupSetHandle</a> 
+or <a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+associate an image to a name. See also <a href="../elem/iupimage.html">IupImage</a>. 
+Image column must be available.</p>
+<p><strong>IMAGEUNCHECK </strong>(write-only): the image name that will be 
+shown when the IMAGEVALUE attribute is &quot;IMAGEUNCHECK&quot;. Default: 
+&quot;MTXLIST_IMG_UNCHECK&quot;. Use <a href="../func/iupsethandle.html">IupSetHandle</a> 
+or <a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+associate an image to a name. See also <a href="../elem/iupimage.html">IupImage</a>. 
+Image column must be available.</p>
+<p><strong>IMAGEVALUE<i>id</i></strong>: mark or unmark an item (id) image. It 
+can be &quot;IMAGECHECK&quot; or &quot;IMAGEUNCHECK&quot;. Image column must be available.</p>
+
+  
+<p><strong>INSERTITEM<em>id</em></strong> (write-only): inserts an item before the 
+	given id position (id starts at 1). If id=COUNT+1 then it will append after 
+the last item. Ignored if out of bounds. Ignored if set before map.</p>
+<p><strong>ITEMACTIVE<i>id</i></strong>:
+  active or inactive an item (id). It can be Yes or No. Default: &quot;YES&quot; for all 
+columns.</p>
+<p>
+<strong>ITEMFGCOLOR<i>id</i></strong>:
+  text color of an item (id).<p>
+<strong>ITEMBGCOLOR<i>id</i></strong>: background color of an item 
+(id).<p><strong>LABELCOL </strong>(read-only): returns the number of label column. If 
+not exists, returns 0.</p>
+<p>
+<strong>NUMLIN</strong>: defines the number of lines in the list. Must be an 
+integer number. Default: &quot;0&quot;. If changed after map will add empty cells or 
+discard cells at the end.</p>
+<p><strong>REMOVEITEM </strong>(write-only): same as DELLIN attribute.</p>
+
+  
+<p>
+<strong>TITLE</strong>:
+  title of the label column.</p>
+
+<p><strong>TOPITEM</strong> (write-only): position the given item at the top of 
+the list or near to make it visible.</p>
+<p>
+<strong>VALUE</strong>: defines or retrieves the value 
+of the current cell. This attribute will hide the IupMatrix VALUE attribute.</p>
+<p><strong>VISIBLELINES</strong>: defines the number of visible 
+lines for the <strong>Natural</strong> <strong>Size</strong>, this means that 
+will act also as minimum number of visible lines. Default: &quot;3&quot;.</p>
+<h3>Canvas Attributes<span class="style2"> (inheritable)</span></h3>
+<p><b>EXPAND</b>: changed to &quot;NO&quot;.</p>
+<h3>Matrix Attributes<span class="style2"> (inheritable)</span></h3>
+<p><strong>ALIGNMENTLIN0</strong>: changed to &quot;ALEFT&quot;.</p>
+<p><strong>CURSOR</strong>: changed to &quot;ARROW&quot;.</p>
+<p><strong>FRAMETITLEHIGHLIGHT</strong>: changed to &quot;NO&quot;.</p>
+<p><strong>HIDEFOCUS</strong>: changed to &quot;YES&quot;. Hide the matrix focus feedback, 
+but cell focus will still be processed internally.</p>
+<p><b>SCROLLBAR</b>:
+  changed to &quot;VERTICAL&quot;.</p>
+
+<p><span id="result_box0" class="" lang="en"><span class="hps">These</span>
+<span class="hps">inherited attributes</span> <span class="hps">of  
+<a href="iupmatrix.html">IupMatrix</a></span></span> do nothing, because this 
+control defines automatically the number of columns to be used:<strong> ADDCOL, 
+DELCOL, NUMCOL, NUMCOL_NOSCROLL </strong>and<strong> NUMCOL_VISIBLE</strong>.</p>
+<p>Attributes not redefined by this control are available for use.</p>
+
+  
+  
+<blockquote>
+  <hr>
+</blockquote>
+<p>
+<a href="../attrib/iup_active.html">ACTIVE</a>,
+<a href="../attrib/iup_expand.html">EXPAND</a>, 
+<a href="../attrib/iup_font.html">FONT</a>, <a href="../attrib/iup_screenposition.html">SCREENPOSITION</a>, 
+<a href="../attrib/iup_position.html">
+POSITION</a>, <a href="../attrib/iup_minsize.html">
+MINSIZE</a>, <a href="../attrib/iup_maxsize.html">
+MAXSIZE</a>,
+    <a href="../attrib/iup_wid.html">WID</a>, <a href="../attrib/iup_tip.html">TIP</a>, 
+<a href="../attrib/iup_size.html">SIZE</a>,
+<a href="../attrib/iup_rastersize.html">RASTERSIZE</a>,
+    <a href="../attrib/iup_zorder.html">ZORDER</a>, <a href="../attrib/iup_visible.html">VISIBLE</a>: 
+also accepted.&nbsp;</p>
+
+<h3><a name="Callbacks">Callbacks</a></h3>
+
+<p><b>IMAGEVALUECHANGED_CB</b>: called after the image value was interactively 
+changed by the user (mark/unmark).</p>
+
+  
+    
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>imagevalue</strong>); [in C]<br><b>elem</b>:imagevaluechanged_cb(<b>lin, imagevalue</b>: number) -&gt; (ret: number) [in Lua]</pre>
+
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+	<strong>lin</strong>: item line.<br>
+<strong>imagevalue</strong>: equal to 1 if the option was IMAGECHECK or to 0 if the option was 
+IMAGEUNCHECK.</p>
+
+<p><b>LISTCLICK_CB</b>: Action generated when any mouse button is pressed over a 
+item.</p>
+
+  
+    
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, char *<strong>status</strong>); [in C]<br><b>elem</b>:listclick_cb(<strong>lin</strong>: number, <b>status</b>: string) -&gt; (ret: number) [in Lua]</pre>
+
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+	<strong>lin</strong>: item line.<br>
+
+<strong>status</strong>: Status of the mouse buttons and some keyboard keys at 
+the moment the event is generated. The same macros used for
+<a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status.</p>
+<p class="info"><span class="style1">Returns:</span> To avoid the display update return IUP_IGNORE.</p>
+
+  
+  
+<p><b>LISTDRAW_CB</b>: Action&nbsp; generated when the state of an item 
+  in the list is changed. Also provides information on the changed item:</p>
+
+  
+    
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>x1</strong>, int <strong>x2</strong>, int <strong>y1</strong>, int <strong>y2</strong>, cdCanvas* <strong>cnv</strong>); [in C]<br><b>elem</b>:listdraw_cb(<b>text</b>: string, <strong>item</strong><b>, </b><strong>state</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+	<strong>lin</strong>: item line.<br>
+<strong>col</strong>: item column (label, image or color).<br>
+<strong>x1</strong>, <strong>x2</strong>, <strong>y1</strong>, <strong>y2</strong>: 
+bounding rectangle of the current cell in 
+    pixels, excluding the decorations.<br>
+
+<strong>cnv</strong>: internal canvas CD used to draw the matrixlist.</p>
+<p class="info"><span class="style1">Returns:</span> If IUP_IGNORE the normal 
+text drawing will take place.</p>
+
+  
+  
+<p><b>LISTEDITION_CB</b>: Action&nbsp;generated when the current cell of an item 
+enters or leaves the edition mode.</p>
+
+  
+    
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>mode</strong>, int <strong>update</strong>); [in C]<br><b>elem</b>:listedition_cb(<strong>lin, col, mode, update</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+	<strong>lin</strong>: item line.<br>
+<strong>col</strong>: item column (label, image or color).<br>
+
+<strong>mode</strong>: equal to 1 if the cell has entered the edition mode, or 0 
+if the cell has left the edition mode.<br>
+
+<strong>update</strong>: equal to 1 to redraw, or 0 to no update returning 
+IUP_IGNORE.</p>
+
+  
+  
+<p><b>LISTINSERT_CB</b>: Action&nbsp;generated when a new line is inserted into 
+the list.</p>
+
+  
+    
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>); [in C]<br><b>elem</b>:listinsert_cb(<strong>lin</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+	<strong>lin</strong>: <span id="result_box1" class="short_text" lang="en">
+<span class="hps">position of</span> <span class="hps">the new</span>
+<span class="hps">line</span>.</span></p>
+
+  
+  
+<p><b>LISTRELEASE_CB</b>: Action generated when any mouse button is released 
+over a item.</p>
+
+  
+    
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, char *<strong>status</strong>); [in C]<br><b>elem</b>:listrelease_cb(<strong>lin</strong>: number, <b>status</b>: string) -&gt; (ret: number) [in Lua]</pre>
+
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+	<strong>lin</strong>: item line.<br>
+
+<strong>status</strong>: Status of the mouse buttons and some keyboard keys at 
+the moment the event is generated. The same macros used for
+<a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status.</p>
+<p class="info"><span class="style1">Returns:</span> To avoid the display update return IUP_IGNORE.</p>
+
+  
+  
+<p><b>LISTREMOVE_CB</b>: Action generated when a line is removed of the list.</p>
+
+  
+    
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>); [in C]<br><b>elem</b>:listremove_cb(<strong>lin</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+	<strong>lin</strong>: <span id="result_box2" class="short_text" lang="en">
+<span class="hps">position of</span> <span class="hps">the removed</span>
+<span class="hps">line</span>.</span></p>
+
+<h3><a name="Examples">Examples</a></h3>
+<p><a href="../../examples/">Browse for Example Files</a></p>
+<p align="center">
+<img src="images/iupmatrixlist1.png"></p>
+<p align="center">
+<img src="images/iupmatrixlist2.png"></p>
+<h3><a name="SeeAlso">See Also</a></h3>
+
+<p><a href="../elem/iupcanvas.html">IupCanvas</a>, 
+<a href="iupmatrix.html">IupMatrix</a></p>
+
+</body>
+
+</html>
