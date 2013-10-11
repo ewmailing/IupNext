@@ -65,11 +65,11 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
   IupSetAttribute(lst,"EXPAND","YES");
 
   ok = IupButton(IupGetLanguageString("IUP_OK"), NULL);
-  IupSetAttribute(ok,"PADDING" ,"20x5");
+  IupSetAttribute(ok,"PADDING" ,"20x0");
   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
   cancel = IupButton(IupGetLanguageString("IUP_CANCEL"), NULL);
-  IupSetAttribute(cancel,"PADDING" ,"20x5");
+  IupSetAttribute(cancel,"PADDING" ,"20x0");
   IupSetCallback(cancel, "ACTION", (Icallback)CB_button_CANCEL);
 
   button_box = IupHbox(
@@ -182,7 +182,7 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
   if (len > 7)
     padding = "12x2";
   else
-    padding = "18x5";
+    padding = "20x0";
 
   button_box = IupHbox(NULL);
   IupSetAttribute(button_box, "NORMALIZESIZE", "HORIZONTAL");
@@ -280,11 +280,11 @@ int  iupDataEntry(int    maxlin,
   IupInsert(vb, NULL, IupNormalizerv(lbl));
 
   ok = IupButton(IupGetLanguageString("IUP_OK"), NULL);
-  IupSetAttribute(ok, "PADDING", "20x5");
+  IupSetAttribute(ok, "PADDING", "20x0");
   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
   cancel = IupButton(IupGetLanguageString("IUP_CANCEL"), NULL);
-  IupSetAttribute(cancel, "PADDING", "20x5");
+  IupSetAttribute(cancel, "PADDING", "20x0");
   IupSetCallback(cancel, "ACTION", (Icallback)CB_button_CANCEL);
 
   button_box = IupHbox(
@@ -383,11 +383,11 @@ int IupGetText(const char* title, char* text)
   IupSetAttribute(multi_text, "VISIBLECOLUMNS", "50");
 
   ok = IupButton(IupGetLanguageString("IUP_OK"), NULL);
-  IupSetAttribute(ok, "PADDING", "20x5");
+  IupSetAttribute(ok, "PADDING", "20x0");
   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
   cancel  = IupButton(IupGetLanguageString("IUP_CANCEL"), NULL);
-  IupSetAttribute(cancel, "PADDING", "20x5");
+  IupSetAttribute(cancel, "PADDING", "20x0");
   IupSetCallback(cancel, "ACTION", (Icallback)CB_button_CANCEL);
 
   button_box = IupHbox(
