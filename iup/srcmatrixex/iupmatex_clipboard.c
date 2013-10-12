@@ -24,10 +24,10 @@ static void iMatrixExMarkedCellLimits(const char* marked, int num_lin, int num_c
   /* use only for MARKMODE=CELL */
   int lin, col;
 
-  *lin1 = 0;
-  *lin2 = num_lin;
-  *col1 = 0;
-  *col2 = num_col;
+  *lin1 = num_lin;
+  *lin2 = 1;
+  *col1 = num_col;
+  *col2 = 1;
 
   for(lin = 1; lin <= num_lin; ++lin)
   {
@@ -232,7 +232,7 @@ static void iMatrixExCopyGetDataMarkedLin(ImatExData* matex_data, Iarray* data, 
   }
 }
 
-static void iMatrixExCopyGetDataMarkedCell(ImatExData* matex_data, Iarray* data, const char* marked, int lin1, int col1, int lin2, int col2, int keep_struct)
+static void iMatrixExCopyGetDataMarkedCell(ImatExData* matex_data, Iarray* data, const char* marked, int lin1, int col1, int lin2, int col2, int num_col, int keep_struct)
 {
   int lin, col;
   int add_sep;
@@ -247,7 +247,8 @@ static void iMatrixExCopyGetDataMarkedCell(ImatExData* matex_data, Iarray* data,
       {
         if (iupMatrixExIsColumnVisible(matex_data->ih, col))
         {
-          if (marked[lin-1] == '1')
+          int pos = (lin-1) * num_col + (col-1);  /* marked array does not include titles */
+          if (marked[pos] == '1')
           {
             if (add_sep)
               iMatrixExArrayAddChar(data, '\t');
@@ -336,8 +337,7 @@ static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* 
     }
     else
     {
-      int lin1=1, lin2=num_lin, 
-          col1=1, col2=num_col;
+      int lin1, lin2, col1, col2;
       int keep_struct = IupGetInt(matex_data->ih, "COPYKEEPSTRUCT");
 
       iMatrixExMarkedCellLimits(marked, num_lin, num_col, &lin1, &lin2, &col1, &col2);
@@ -349,7 +349,7 @@ static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* 
         return;
       }
 
-      iMatrixExCopyGetDataMarkedCell(matex_data, data, marked, lin1, col1, lin2, col2, keep_struct);
+      iMatrixExCopyGetDataMarkedCell(matex_data, data, marked, lin1, col1, lin2, col2, num_col, keep_struct);
     }
   }
   else 
