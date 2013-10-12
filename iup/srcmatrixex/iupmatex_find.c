@@ -35,7 +35,7 @@ static int iMatrixExFindDialogFindNext_CB(Ihandle* ih)
 
     iupAttribSet(ih, "FINDMATCHCASE", matchcase? "Yes": "No");
     iupAttribSet(ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
-    iupAttribSet(ih, "FINDDIRECTION", searchbyrow? "RIGHTBOTTOM": "BOTTOMRIGHT");
+    iupAttribSet(ih, "FINDDIRECTION", searchbyrow? "RIGHTBOTTOM": "BOTTOMRIGHT");  /* Forward */
 
     IupSetAttribute(ih, "FIND", find);
   }
@@ -54,7 +54,7 @@ static int iMatrixExFindDialogFindPrevious_CB(Ihandle* ih)
 
     iupAttribSet(ih, "FINDMATCHCASE", matchcase? "Yes": "No");
     iupAttribSet(ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
-    iupAttribSet(ih, "FINDDIRECTION", searchbyrow? "LEFTTOP": "TOPLEFT");
+    iupAttribSet(ih, "FINDDIRECTION", searchbyrow? "LEFTTOP": "TOPLEFT");  /* Backward */
 
     IupSetAttribute(ih, "FIND", find);
   }

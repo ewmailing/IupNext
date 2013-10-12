@@ -30,11 +30,12 @@ static void iMatrixExSelectAll(Ihandle *ih)
   if (iupStrEqualNoCasePartial(markmode, "LIN")) /* matches also "LINCOL" */
   {
     int lin, num_lin = IupGetInt(ih, "NUMLIN");
-    char* marked = malloc(num_lin+1);
+    char* marked = malloc(num_lin+2);
 
     marked[0] = 'L';
     for(lin = 1; lin <= num_lin; ++lin)
       marked[lin] = '1';
+    marked[lin] = 0;
 
     IupSetAttribute(ih, "MARKED", marked);
 
@@ -43,11 +44,12 @@ static void iMatrixExSelectAll(Ihandle *ih)
   else if (iupStrEqualNoCase(markmode, "COL"))
   {
     int col, num_col = IupGetInt(ih, "NUMCOL");
-    char* marked = malloc(num_col+1);
+    char* marked = malloc(num_col+2);
 
     marked[0] = 'C';
     for(col = 1; col <= num_col; ++col)
       marked[col] = '1';
+    marked[col] = 0;
 
     IupSetAttribute(ih, "MARKED", marked);
 
@@ -58,10 +60,11 @@ static void iMatrixExSelectAll(Ihandle *ih)
     int num_col = IupGetInt(ih, "NUMCOL");
     int num_lin = IupGetInt(ih, "NUMLIN");
     int pos, count = num_lin*num_col;
-    char* marked = malloc(count);
+    char* marked = malloc(count+1);
 
     for(pos = 0; pos < count; pos++)
       marked[pos] = '1';
+    marked[pos] = 0;
 
     IupSetAttribute(ih, "MARKED", marked);
 
@@ -132,6 +135,7 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
       iMatrixExSelectAll(ih); 
       return IUP_CONTINUE;
     case K_cV: 
+      //TODO: READ-ONLY???
       if (IupGetAttribute(ih,"MARKED"))
         IupSetAttribute(ih, "PASTE", "MARKED");
       else
