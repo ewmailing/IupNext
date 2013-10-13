@@ -371,7 +371,7 @@ less than the total number of lines. (since 3.5)</p>
   lines, columns, (lines <span class="style2">or</span> columns), and cells. Possible values: &quot;NO&quot;, &quot;LIN&quot;, &quot;COL&quot;, 
     &quot;LINCOL&quot; or &quot;CELL&quot;. Default: &quot;NO&quot; 
     (no mark).</p>
-<p><strong><a name="MARK">MARK</a><em>L:C</em></strong>: marks a cell, a line or 
+<p><strong><a name="MARK">MARK</a><em>L:C</em></strong> (no redraw): marks a cell, a line or 
 a column depending on 
 MARKMODE, and returns cell, line or column mark state also according to MARKMODE. Can be &quot;1&quot; or 
 &quot;0&quot;. If MARKMODE=LIN,COL,LINCOL use 0 to mark only the other element 
@@ -480,7 +480,7 @@ values this must be done by the application. (Since 3.9)</p>
     (e.g: &quot;C2-4&quot; redraws columns 2, 3 and 4)</p>
 <p class="info">No redraw is done when the application sets the attributes: 
 L:C, 
-ALIGNMENTc, BGCOLOR*, FGCOLOR*, FONT*, VALUE, FRAME*COLOR. Global and size attributes always automatically redraw the 
+ALIGNMENTc, BGCOLOR*, FGCOLOR*, FONT*, VALUE, FRAME*COLOR, MARKL:C. Global and size attributes always automatically redraw the 
     matrix.</p>
 <p><strong><a name="SHOW">SHOW</a></strong> (write-only): If necessary scroll the visible area to 
 make the 

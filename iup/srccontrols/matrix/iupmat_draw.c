@@ -1178,7 +1178,7 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
   else
     type = 0;
 
-  if (type)  /* lines or columns, inluding their titles */
+  if (type)  /* lines or columns, including their titles */
   {
     int min = 0, max = 0;
     value++;
