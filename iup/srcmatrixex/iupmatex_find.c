@@ -171,7 +171,7 @@ static int iMatrixMatch(Ihandle *ih, const char* findvalue, int lin, int col, in
   if (matchwholecell)
     return iupStrCompareEqual(value, findvalue, matchcase, utf8, 0);
   else
-    return iupStrCompareFind(value, findvalue, matchcase, utf8);
+    return iupStrCompareFind(value, findvalue, matchcase, utf8);  /* search only for the first occourence */
 }
 
 static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, int matchcase, int matchwholecell, int *lin, int *col)
@@ -182,7 +182,7 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
   int count = (num_lin+1)*(num_col+1);
   int pos, start_pos;
 
-  if (inc == 0)
+  if (inc == 0)  /* search the current cell */
   {
     /* the FOCUS_CELL is always visible and not a title */
     if (iMatrixMatch(ih, value, *lin, *col, matchcase, matchwholecell, utf8))
@@ -268,7 +268,7 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
   {
     int last_lin=0, last_col=0;
     IupGetIntInt(ih, "_IUP_LAST_FOUND", &last_lin, &last_col);
-    if (last_lin==lin && last_col==col)
+    if (last_lin!=lin || last_col!=col)
       inc = 0;  /* search in the current cell */
   }
 
@@ -276,8 +276,9 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
   {
     IupSetfAttribute(ih,"FOCUS_CELL", "%d:%d", lin, col);
     IupSetfAttribute(ih,"SHOW", "%d:%d", lin, col);
-    //  IupSetAttribute(ih,"MARKED",NULL);
-    //  IupSetAttributeId2(ih,"MARK",lin,col,"1");
+    IupSetAttribute(ih,"MARKED",NULL);
+    IupSetAttributeId2(ih,"MARK",lin,col,"1");
+    IupSetfAttribute(ih,"REDRAW","L%d", lin);
     IupSetfAttribute(ih,"_IUP_LAST_FOUND", "%d:%d", lin, col);
     IupSetFocus(ih);
   }

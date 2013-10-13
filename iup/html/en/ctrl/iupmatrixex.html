@@ -185,7 +185,8 @@ will be set to Yes during the operation.&nbsp; Only visible cells will receive
 data. </p>
 <p><strong>FIND</strong>: searches for the given text in the matrix 
 cells. The search will start at the FOCUS_CELL cell, if found the FOCUS_CELL 
-will be changed to the cell where the text were found. Returns the last text 
+will be changed to the cell where the text were found and the cell will also be 
+marked. If not visible the cell will the scrolled to the visible area. Returns the last text 
 searched.</p>
 <p><strong>FINDDIRECTION</strong>: direction of the find. Default RIGHTBOTTOM.</p>
 <p class="info">if RIGHTBOTTOM will 
