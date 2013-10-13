@@ -157,9 +157,25 @@ void iupMatrixExFindInitDialog(ImatExData* matex_data)
 
 void iupMatrixExFindShowDialog(ImatExData* matex_data)
 {
-//  IupGetIntInt(ih, "FOCUS_CELL", &lin, &col);
-//  IupShowXY(matex_data->find_dlg, x, y);
-  IupShow(matex_data->find_dlg);
+  /* Only position the dialog at the first time, 
+     then let the user choose the dialog position on screen */
+  if (!(matex_data->find_dlg->handle))
+  {
+    int x, y, cx, cy, cw, ch, lin, col;
+    char attrib[50];
+    IupGetIntInt(matex_data->ih, "SCREENPOSITION", &x, &y);
+    IupGetIntInt(matex_data->ih, "FOCUS_CELL", &lin, &col);
+    IupSetfAttribute(matex_data->ih,"SHOW", "%d:%d", lin, col);
+    sprintf(attrib, "CELLOFFSET%d:%d", lin, col);
+    IupGetIntInt(matex_data->ih, attrib, &cx, &cy);
+    sprintf(attrib, "CELLSIZE%d:%d", lin, col);
+    IupGetIntInt(matex_data->ih, attrib, &cw, &ch);
+    x += cx + cw;
+    y += cy + ch;
+    IupShowXY(matex_data->find_dlg, x, y);
+  }
+  else
+    IupShow(matex_data->find_dlg);
 }
 
 static int iMatrixMatch(Ihandle *ih, const char* findvalue, int lin, int col, int matchcase, int matchwholecell, int utf8)
@@ -171,7 +187,7 @@ static int iMatrixMatch(Ihandle *ih, const char* findvalue, int lin, int col, in
   if (matchwholecell)
     return iupStrCompareEqual(value, findvalue, matchcase, utf8, 0);
   else
-    return iupStrCompareFind(value, findvalue, matchcase, utf8);  /* search only for the first occourence */
+    return iupStrCompareFind(value, findvalue, matchcase, utf8);  /* search only for the first occurrence */
 }
 
 static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, int matchcase, int matchwholecell, int *lin, int *col)
@@ -215,7 +231,7 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
       *col = pos % (num_col+1);
     }
 
-    if (*lin == 0 || *col == 0)  /* dont't search on titles */
+    if (*lin == 0 || *col == 0)  /* don't search on titles */
       continue;
 
     if (pos == start_pos)
