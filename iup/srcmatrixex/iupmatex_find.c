@@ -19,55 +19,53 @@
 #include "iup_matrixex.h"
 
 
-void iupMatrixExFindInitDialog(Ihandle *ih)
+static int iMatrixExFindDialogFindNext_CB(Ihandle* ih_button)
 {
-}
-
-static int iMatrixExFindDialogFindNext_CB(Ihandle* ih)
-{
-  Ihandle* text = IupGetDialogChild(ih, "FINDTEXT");
+  Ihandle* text = IupGetDialogChild(ih_button, "FINDTEXT");
   char* find = IupGetAttribute(text, "VALUE");
   if (find && find[0]!=0)
   {
-    int matchcase = IupGetInt(IupGetDialogChild(ih, "MATCHCASE"), "VALUE");
-    int matchwholecell = IupGetInt(IupGetDialogChild(ih, "MATCHWHOLECELL"), "VALUE");
-    int searchbyrow = IupGetInt(IupGetDialogChild(ih, "SEARCHBYROW"), "VALUE");
+    ImatExData* matex_data = (ImatExData*)IupGetAttribute(IupGetDialog(ih_button), "_IUP_MATRIX_EX");
+    int matchcase = IupGetInt(IupGetDialogChild(ih_button, "MATCHCASE"), "VALUE");
+    int matchwholecell = IupGetInt(IupGetDialogChild(ih_button, "MATCHWHOLECELL"), "VALUE");
+    int searchbyrow = IupGetInt(IupGetDialogChild(ih_button, "SEARCHBYROW"), "VALUE");
 
-    iupAttribSet(ih, "FINDMATCHCASE", matchcase? "Yes": "No");
-    iupAttribSet(ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
-    iupAttribSet(ih, "FINDDIRECTION", searchbyrow? "RIGHTBOTTOM": "BOTTOMRIGHT");  /* Forward */
+    iupAttribSet(matex_data->ih, "FINDMATCHCASE", matchcase? "Yes": "No");
+    iupAttribSet(matex_data->ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
+    iupAttribSet(matex_data->ih, "FINDDIRECTION", searchbyrow? "RIGHTBOTTOM": "BOTTOMRIGHT");  /* Forward */
 
-    IupSetAttribute(ih, "FIND", find);
+    IupSetAttribute(matex_data->ih, "FIND", find);
   }
   return IUP_DEFAULT;
 }
 
-static int iMatrixExFindDialogFindPrevious_CB(Ihandle* ih)
+static int iMatrixExFindDialogFindPrevious_CB(Ihandle* ih_button)
 {
-  Ihandle* text = IupGetDialogChild(ih, "FINDTEXT");
+  Ihandle* text = IupGetDialogChild(ih_button, "FINDTEXT");
   char* find = IupGetAttribute(text, "VALUE");
   if (find && find[0]!=0)
   {
-    int matchcase = IupGetInt(IupGetDialogChild(ih, "MATCHCASE"), "VALUE");
-    int matchwholecell = IupGetInt(IupGetDialogChild(ih, "MATCHWHOLECELL"), "VALUE");
-    int searchbyrow = IupGetInt(IupGetDialogChild(ih, "SEARCHBYROW"), "VALUE");
+    ImatExData* matex_data = (ImatExData*)IupGetAttribute(IupGetDialog(ih_button), "_IUP_MATRIX_EX");
+    int matchcase = IupGetInt(IupGetDialogChild(ih_button, "MATCHCASE"), "VALUE");
+    int matchwholecell = IupGetInt(IupGetDialogChild(ih_button, "MATCHWHOLECELL"), "VALUE");
+    int searchbyrow = IupGetInt(IupGetDialogChild(ih_button, "SEARCHBYROW"), "VALUE");
 
-    iupAttribSet(ih, "FINDMATCHCASE", matchcase? "Yes": "No");
-    iupAttribSet(ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
-    iupAttribSet(ih, "FINDDIRECTION", searchbyrow? "LEFTTOP": "TOPLEFT");  /* Backward */
+    iupAttribSet(matex_data->ih, "FINDMATCHCASE", matchcase? "Yes": "No");
+    iupAttribSet(matex_data->ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
+    iupAttribSet(matex_data->ih, "FINDDIRECTION", searchbyrow? "LEFTTOP": "TOPLEFT");  /* Backward */
 
-    IupSetAttribute(ih, "FIND", find);
+    IupSetAttribute(matex_data->ih, "FIND", find);
   }
   return IUP_DEFAULT;
 }
 
-static int iMatrixExFindDialogClose_CB(Ihandle* ih)
+static int iMatrixExFindDialogClose_CB(Ihandle* ih_button)
 {
-  IupHide(IupGetDialog(ih));
+  IupHide(IupGetDialog(ih_button));
   return IUP_DEFAULT;
 }
 
-Ihandle* iupMatrixExFindCreateDialog(Ihandle *ih)
+static void iMatrixExFindCreateDialog(ImatExData* matex_data)
 {
   Ihandle *text_box, *options_box, *find_next, *find_prev, 
           *dlg, *close, *dlg_box, *button_box, *parent;
@@ -85,18 +83,18 @@ Ihandle* iupMatrixExFindCreateDialog(Ihandle *ih)
       NULL),
     IupSetAttributes(IupFrame(IupRadio(IupHbox(
       IupSetAttributes(IupToggle("_@IUP_BY_ROW", NULL), "NAME=SEARCHBYROW"),
-      IupToggle("_@IUP_BY_COL", NULL), 
+      IupSetAttributes(IupToggle("_@IUP_BY_COL", NULL), "NAME=SEARCHBYCOL"),
       NULL))), "TITLE=_@IUP_SEARCH"),
     NULL);
   IupSetAttribute(options_box,"MARGIN","5x5");
 
   find_prev = IupButton("_@IUP_FIND_PREVIOUS", NULL);
   IupSetAttribute(find_prev,"PADDING" ,"12x2");
-  IupSetCallback(find_prev, "ACTION", (Icallback)iMatrixExFindDialogFindNext_CB);
+  IupSetCallback(find_prev, "ACTION", (Icallback)iMatrixExFindDialogFindPrevious_CB);
 
   find_next = IupButton("_@IUP_FIND_NEXT", NULL);
   IupSetAttribute(find_next,"PADDING" ,"12x2");
-  IupSetCallback(find_next, "ACTION", (Icallback)iMatrixExFindDialogFindPrevious_CB);
+  IupSetCallback(find_next, "ACTION", (Icallback)iMatrixExFindDialogFindNext_CB);
 
   close = IupButton("_@IUP_CLOSE", NULL);
   IupSetAttribute(close,"PADDING" ,"12x2");
@@ -121,7 +119,7 @@ Ihandle* iupMatrixExFindCreateDialog(Ihandle *ih)
 
   dlg = IupDialog(dlg_box);
 
-  parent = IupGetDialog(ih);
+  parent = IupGetDialog(matex_data->ih);
 
   IupSetStrAttribute(dlg,"TITLE","_@IUP_FIND");
   IupSetAttribute(dlg,"MINBOX","NO");
@@ -130,13 +128,38 @@ Ihandle* iupMatrixExFindCreateDialog(Ihandle *ih)
   IupSetAttributeHandle(dlg,"DEFAULTENTER", find_next);
   IupSetAttributeHandle(dlg,"DEFAULTESC", close);
   IupSetAttributeHandle(dlg,"PARENTDIALOG", parent);
+  IupSetAttribute(dlg, "_IUP_MATRIX_EX", (char*)matex_data);
 
   if (IupGetAttribute(parent, "ICON"))
     IupSetAttribute(dlg,"ICON", IupGetAttribute(parent, "ICON"));
   else
     IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
 
-  return dlg;
+  matex_data->find_dlg = dlg;
+}
+
+void iupMatrixExFindInitDialog(ImatExData* matex_data)
+{
+  char* direction;
+
+  if (!(matex_data->find_dlg))
+    iMatrixExFindCreateDialog(matex_data);
+
+  IupSetAttribute(IupGetDialogChild(matex_data->find_dlg, "MATCHCASE"), "VALUE", iupAttribGetStr(matex_data->ih, "FINDMATCHCASE"));
+  IupSetAttribute(IupGetDialogChild(matex_data->find_dlg, "MATCHWHOLECELL"), "VALUE", iupAttribGetStr(matex_data->ih, "FINDMATCHWHOLECELL"));
+
+  direction = iupAttribGetStr(matex_data->ih, "FINDDIRECTION");
+  if (iupStrEqualNoCase(direction, "LEFTTOP") || iupStrEqualNoCase(direction, "RIGHTBOTTOM"))
+    IupSetAttribute(IupGetDialogChild(matex_data->find_dlg, "SEARCHBYROW"), "VALUE", "Yes");
+  else
+    IupSetAttribute(IupGetDialogChild(matex_data->find_dlg, "SEARCHBYCOL"), "VALUE", "Yes");
+}
+
+void iupMatrixExFindShowDialog(ImatExData* matex_data)
+{
+//  IupGetIntInt(ih, "FOCUS_CELL", &lin, &col);
+//  IupShowXY(matex_data->find_dlg, x, y);
+  IupShow(matex_data->find_dlg);
 }
 
 static int iMatrixMatch(Ihandle *ih, const char* findvalue, int lin, int col, int matchcase, int matchwholecell, int utf8)
@@ -217,7 +240,7 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
 
   IupGetIntInt(ih, "FOCUS_CELL", &lin, &col);
 
-  direction = iupAttribGet(ih, "FINDDIRECTION");
+  direction = iupAttribGetStr(ih, "FINDDIRECTION");
   if (iupStrEqualNoCase(direction, "LEFTTOP"))
   {
     flip = 0;
@@ -252,10 +275,11 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
   if (iMatrixExSetFind(ih, value, inc, flip, matchcase, matchwholecell, &lin, &col))
   {
     IupSetfAttribute(ih,"FOCUS_CELL", "%d:%d", lin, col);
-//    IupSetfAttribute(ih,"SHOW", "%d:%d", lin, col);
+    IupSetfAttribute(ih,"SHOW", "%d:%d", lin, col);
     //  IupSetAttribute(ih,"MARKED",NULL);
     //  IupSetAttributeId2(ih,"MARK",lin,col,"1");
     IupSetfAttribute(ih,"_IUP_LAST_FOUND", "%d:%d", lin, col);
+    IupSetFocus(ih);
   }
   else
     IupSetAttribute(ih,"_IUP_LAST_FOUND", NULL);

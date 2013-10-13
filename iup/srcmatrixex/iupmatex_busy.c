@@ -60,7 +60,7 @@ static void iMatrixExBusyShowProgress(ImatExData* matex_data, int count, const c
 void iupMatrixExBusyStart(ImatExData* matex_data, int count, const char* busyname)
 {
   /* can not start a new one if already busy */
-  iupASSERT(matex_data->busy);
+  iupASSERT(!matex_data->busy);
   if (matex_data->busy)
     return;
 

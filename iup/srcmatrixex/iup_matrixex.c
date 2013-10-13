@@ -135,11 +135,13 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
       iMatrixExSelectAll(ih); 
       return IUP_CONTINUE;
     case K_cV: 
-      //TODO: READ-ONLY???
-      if (IupGetAttribute(ih,"MARKED"))
-        IupSetAttribute(ih, "PASTE", "MARKED");
-      else
-        IupSetAttribute(ih, "PASTE", "FOCUS");
+      if (!IupGetInt(ih, "READONLY"))
+      {
+        if (IupGetAttribute(ih,"MARKED"))
+          IupSetAttribute(ih, "PASTE", "MARKED");
+        else
+          IupSetAttribute(ih, "PASTE", "FOCUS");
+      }
       return IUP_IGNORE;
     case K_cC: 
       IupSetAttribute(ih, "COPY", "MARKED");
@@ -186,10 +188,8 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
     case K_mF3: 
       {
         ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-        if (!(matex_data->find_dlg))
-          matex_data->find_dlg = iupMatrixExFindCreateDialog(ih);
-//        IupShowXY(matex_data->find_dlg, x, y);
-        IupShow(matex_data->find_dlg);
+        iupMatrixExFindInitDialog(matex_data);
+        iupMatrixExFindShowDialog(matex_data);
         return IUP_IGNORE;
       }
     case K_ESC: 

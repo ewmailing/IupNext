@@ -416,7 +416,10 @@ static int iMatrixExSetCopyDataAttrib(Ihandle *ih, const char* value)
 
 static int iMatrixExStrGetDataSize(const char* data, int *num_lin, int *num_col, char *sep)
 {
+  int len = strlen(data);
   *num_lin = iupStrLineCount(data);
+  if (data[len-1] == '\n')
+    (*num_lin)--;  /* avoid an empty last line */
 
   if (*sep != 0)
     *num_col = iupStrCountChar(data, *sep);
@@ -435,10 +438,15 @@ static int iMatrixExStrGetDataSize(const char* data, int *num_lin, int *num_col,
       *num_col == 0)
     return 0;
 
+  /* If here is no column separator for the last column, so add it */
+  if (!((data[len-1] == '\n' && data[len-2] == *sep) ||
+        (data[len-1] == *sep)))
+    *num_col += *num_lin;
+
   if ((*num_col)%(*num_lin)!=0)
     return 0;
 
-  *num_col = (*num_col)/(*num_lin) + 1;
+  *num_col = (*num_col)/(*num_lin);
   return 1;
 }
 
