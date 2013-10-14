@@ -416,8 +416,8 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
 
 static TCHAR* winFileDlgStrReplaceSeparator(const TCHAR* name)
 {
-  int i=0;
-  TCHAR* buffer = (TCHAR*)malloc(lstrlen(name)+2);
+  int i=0, len = lstrlen(name);
+  TCHAR* buffer = (TCHAR*)malloc((len+2)*sizeof(TCHAR));
 
   /* replace symbols "|" by terminator "\0" */
 
