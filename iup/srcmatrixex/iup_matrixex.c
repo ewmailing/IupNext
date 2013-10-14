@@ -123,6 +123,52 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
   return 1;  /* store freeze state */
 }
 
+static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
+{
+  Ihandle* menu = IupMenu(
+    IupSubmenu("Export",
+      IupMenu(
+        IupItem( "Text..." , NULL),
+        IupItem( "LaTeX...", NULL),
+        IupItem( "Html..." , NULL),
+        NULL)),
+    IupSubmenu("Import",
+      IupMenu(
+        IupItem( "Text...",  NULL),
+        NULL)),
+    IupSubmenu("Copy To (Same Column)",
+      IupMenu(
+        IupItem( "All lines"      , NULL),     
+        IupItem( "Here to top"    , NULL),     
+        IupItem( "Here to bottom" , NULL),     
+        IupItem( "Interval..."    , NULL),     
+        IupItem( "Selected lines" , NULL),
+        NULL)),
+    IupSeparator(),
+    IupItem( "Copy\tCtrl+C",  NULL),
+    IupItem( "Paste\tCtrl+V", NULL),
+    IupSeparator(),
+    IupItem("Undo\tCtrl+Z"        , NULL),
+    IupItem("Redo\tCtrl+Y"        , NULL),
+    IupItem("Undo List...\tCtrl+U", NULL),
+    IupSeparator(),
+    IupItem("Sort..."             , NULL),
+    IupItem("Find...\tCtrl+F"     , NULL),
+    IupSeparator(),
+    IupItem("Freeze"              , NULL),
+    IupItem("Hide Column"         , NULL),
+    IupItem("Show Hidden Columns" , NULL),
+    NULL);
+
+  //IsReadOnly
+
+  //Is Numeric Column and Has Units
+  //Unit...
+  //Decimals...
+
+  return menu;
+}
+
 static IFniiiis iMatrixOriginalButton_CB = NULL;
 
 static int iMatrixExButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r)
@@ -130,14 +176,29 @@ static int iMatrixExButton_CB(Ihandle* ih, int b, int press, int x, int y, char*
   if (iMatrixOriginalButton_CB(ih, b, press, x, y, r)==IUP_IGNORE)
     return IUP_IGNORE;
 
-  if (b == IUP_BUTTON2 && press && IupGetInt(ih, "MENUCONTEXT"))
+  if (b == IUP_BUTTON3 && press && IupGetInt(ih, "MENUCONTEXT"))
   {
-    Ihandle* menu;
-    int lin, col;
     int pos = IupConvertXYToPos(ih, x, y);
-    IupTextConvertPosToLinCol(ih, pos, &lin, &col);
+    if (pos >= 0)
+    {
+      ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+      int lin, col;
+      IFnnii menucontext_cb;
+      Ihandle* menu;
+      int sx, sy;
 
-    menu = iMatrixExCreateMenuContext(ih, lin, col);
+      IupTextConvertPosToLinCol(ih, pos, &lin, &col);
+
+      menu = iMatrixExCreateMenuContext(ih, lin, col);
+      IupSetAttribute(menu, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
+
+      menucontext_cb = (IFnnii)IupGetCallback(ih, "MENUCONTEXT_CB");
+      if (menucontext_cb) menucontext_cb(ih, menu, lin, col);
+
+      IupGetIntInt(ih, "SCREENPOSITION", &sx, &sy);
+      IupPopup(menu, sx+x, sy+y);
+      IupDestroy(menu);
+    }
   }
 
   return IUP_DEFAULT;
@@ -239,7 +300,7 @@ static int iMatrixExCreateMethod(Ihandle* ih, void **params)
   if (!iMatrixOriginalKeyPress_CB) iMatrixOriginalKeyPress_CB = (IFnii)IupGetCallback(ih, "KEYPRESS_CB");
   IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iMatrixExKeyPress_CB);
 
-  if (!iMatrixOriginalButton_CB) iMatrixOriginalButton_CB = (IFniiiis)IupGetCallback(ih, "KEYPRESS_CB");
+  if (!iMatrixOriginalButton_CB) iMatrixOriginalButton_CB = (IFniiiis)IupGetCallback(ih, "BUTTON_CB");
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iMatrixExButton_CB);
 
   (void)params;
@@ -269,6 +330,9 @@ static void iMatrixExInitAttribCb(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "FREEZE", NULL, iMatrixExSetFreezeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
+  iupClassRegisterAttribute(ic, "MENUCONTEXT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 
   iupMatrixExRegisterClipboard(ic);
   iupMatrixExRegisterBusy(ic);

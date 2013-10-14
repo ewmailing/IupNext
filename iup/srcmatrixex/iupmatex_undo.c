@@ -246,6 +246,7 @@ static int iMatrixExSetUndoRedoAttrib(Ihandle* ih, const char* value)
 
 void iupMatrixExRegisterUndo(Iclass* ic)
 {
+  /* Already defined in IupMatrix */
   iupClassRegisterGetAttribute(ic, "UNDOREDO", NULL, &iMatrixSetUndoRedoAttrib, NULL, NULL, NULL);
   iupClassRegisterReplaceAttribFunc(ic, "UNDOREDO", NULL, iMatrixExSetUndoRedoAttrib);
 

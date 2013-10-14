@@ -25,7 +25,7 @@ static int iMatrixExFindDialogFindNext_CB(Ihandle* ih_button)
   char* find = IupGetAttribute(text, "VALUE");
   if (find && find[0]!=0)
   {
-    ImatExData* matex_data = (ImatExData*)IupGetAttribute(IupGetDialog(ih_button), "_IUP_MATRIX_EX");
+    ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_button, "MATRIX_EX_DATA");
     int matchcase = IupGetInt(IupGetDialogChild(ih_button, "MATCHCASE"), "VALUE");
     int matchwholecell = IupGetInt(IupGetDialogChild(ih_button, "MATCHWHOLECELL"), "VALUE");
     int searchbyrow = IupGetInt(IupGetDialogChild(ih_button, "SEARCHBYROW"), "VALUE");
@@ -45,7 +45,7 @@ static int iMatrixExFindDialogFindPrevious_CB(Ihandle* ih_button)
   char* find = IupGetAttribute(text, "VALUE");
   if (find && find[0]!=0)
   {
-    ImatExData* matex_data = (ImatExData*)IupGetAttribute(IupGetDialog(ih_button), "_IUP_MATRIX_EX");
+    ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_button, "MATRIX_EX_DATA");
     int matchcase = IupGetInt(IupGetDialogChild(ih_button, "MATCHCASE"), "VALUE");
     int matchwholecell = IupGetInt(IupGetDialogChild(ih_button, "MATCHWHOLECELL"), "VALUE");
     int searchbyrow = IupGetInt(IupGetDialogChild(ih_button, "SEARCHBYROW"), "VALUE");
@@ -128,7 +128,8 @@ static void iMatrixExFindCreateDialog(ImatExData* matex_data)
   IupSetAttributeHandle(dlg,"DEFAULTENTER", find_next);
   IupSetAttributeHandle(dlg,"DEFAULTESC", close);
   IupSetAttributeHandle(dlg,"PARENTDIALOG", parent);
-  IupSetAttribute(dlg, "_IUP_MATRIX_EX", (char*)matex_data);
+
+  IupSetAttribute(dlg, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
 
   if (IupGetAttribute(parent, "ICON"))
     IupSetAttribute(dlg,"ICON", IupGetAttribute(parent, "ICON"));

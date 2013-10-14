@@ -406,6 +406,7 @@ void iupMatrixExRegisterExport(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "COPYFILE", NULL, iMatrixExSetCopyFileAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "TEXTFORMAT", NULL, NULL, IUPAF_SAMEASSYSTEM, "TEXT", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COPYCAPTION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LATEXLABEL", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HTML<TABLE>", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
