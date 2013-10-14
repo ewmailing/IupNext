@@ -421,9 +421,9 @@ not defined when the matrix is mapped it will be read-only.</p>
 inside your own callback, or the matrix will not correctly work. This can 
   not be done in Lua. Use 
 <a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> to convert 
-	(x,y) coordinates in the cell position (pos=lin*numcol + col), and you can 
-also use <a href="../elem/iuptext.html#AUX">IupTextConvertPosToLinCol</a> to 
-convert pos into lin,col.</p>
+	(x,y) coordinates in the cell position, then use
+<a href="../elem/iuptext.html#AUX">IupTextConvertPosToLinCol</a> to 
+convert pos into lin,col (pos=lin*(NUMCOL+1) + col).</p>
 <p>See <a href="../elem/iupcanvas.html">IupCanvas</a>.</p>
 
 </body>
