@@ -84,6 +84,7 @@ void iupMatrixExCheckLimitsOrder(int *v1, int *v2, int min, int max)
 static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
 {
   int freeze, lin, col;
+  int flin, fcol;
 
   if (iupStrBoolean(value))
   {
@@ -98,15 +99,17 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
       freeze = 0;
   }
 
+  /* clear the previous freeze first */
+  flin = IupGetInt(ih,"NUMLIN_NOSCROLL");
+  fcol = IupGetInt(ih,"NUMCOL_NOSCROLL");
+  if (flin) IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", flin, IUP_INVALID_ID, NULL);
+  if (fcol) IupSetAttributeId2(ih,"FRAMEVERTCOLOR", IUP_INVALID_ID, fcol, NULL);
+
   if (!freeze)
   {
-    lin = IupGetInt(ih,"NUMLIN_NOSCROLL");
-    col = IupGetInt(ih,"NUMCOL_NOSCROLL");
-    IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", lin, IUP_INVALID_ID, NULL);
-    IupSetAttributeId2(ih,"FRAMEVERTCOLOR", IUP_INVALID_ID, col, NULL);
-
     IupSetAttribute(ih,"NUMLIN_NOSCROLL","0");
     IupSetAttribute(ih,"NUMCOL_NOSCROLL","0");
+    IupSetAttribute(ih,"SHOW","1:1");
   }
   else
   {
@@ -123,44 +126,78 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
   return 1;  /* store freeze state */
 }
 
+static int iMatrixExFreezeItem_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  int lin, col, flin, fcol;
+
+  IupGetIntInt(ih_item, "MENUCONTEXT_CELL", &lin, &col);
+
+  IupGetIntInt(matex_data->ih, "FREEZE", &flin, &fcol);
+  if (lin!=flin || col!=fcol)
+    IupSetfAttribute(matex_data->ih, "FREEZE", "%d:%d", lin, col);
+  else
+    IupSetAttribute(matex_data->ih, "FREEZE", NULL);
+  return IUP_DEFAULT;
+}
+
 static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
 {
+  int readonly = IupGetInt(ih, "READONLY");
+
   Ihandle* menu = IupMenu(
     IupSubmenu("Export",
       IupMenu(
-        IupItem( "Text..." , NULL),
-        IupItem( "LaTeX...", NULL),
-        IupItem( "Html..." , NULL),
+        IupItem("Text..." , NULL),
+        IupItem("LaTeX...", NULL),
+        IupItem("Html..." , NULL),
         NULL)),
-    IupSubmenu("Import",
-      IupMenu(
-        IupItem( "Text...",  NULL),
-        NULL)),
-    IupSubmenu("Copy To (Same Column)",
-      IupMenu(
-        IupItem( "All lines"      , NULL),     
-        IupItem( "Here to top"    , NULL),     
-        IupItem( "Here to bottom" , NULL),     
-        IupItem( "Interval..."    , NULL),     
-        IupItem( "Selected lines" , NULL),
-        NULL)),
-    IupSeparator(),
-    IupItem( "Copy\tCtrl+C",  NULL),
-    IupItem( "Paste\tCtrl+V", NULL),
-    IupSeparator(),
-    IupItem("Undo\tCtrl+Z"        , NULL),
-    IupItem("Redo\tCtrl+Y"        , NULL),
-    IupItem("Undo List...\tCtrl+U", NULL),
-    IupSeparator(),
-    IupItem("Sort..."             , NULL),
-    IupItem("Find...\tCtrl+F"     , NULL),
-    IupSeparator(),
-    IupItem("Freeze"              , NULL),
-    IupItem("Hide Column"         , NULL),
-    IupItem("Show Hidden Columns" , NULL),
     NULL);
 
-  //IsReadOnly
+  if (!readonly)
+  {
+    IupAppend(menu, IupSubmenu("Import",
+        IupMenu(
+          IupItem("Text...",  NULL),
+          NULL)));
+    IupAppend(menu, IupSubmenu("Copy To (Same Column)",
+        IupMenu(
+          IupItem("All lines"      , NULL),     
+          IupItem("Here to top"    , NULL),     
+          IupItem("Here to bottom" , NULL),     
+          IupItem("Interval..."    , NULL),     
+          IupItem("Selected lines" , NULL),
+          NULL)));
+    IupAppend(menu, IupSeparator());
+  }
+
+  IupAppend(menu, IupItem("Copy\tCtrl+C",  NULL));
+
+  if (!readonly)
+  {
+    IupAppend(menu, IupItem("Paste\tCtrl+V", NULL));
+    IupAppend(menu, IupSeparator());
+    IupAppend(menu, IupItem("Undo\tCtrl+Z"        , NULL));
+    IupAppend(menu, IupItem("Redo\tCtrl+Y"        , NULL));
+    IupAppend(menu, IupItem("Undo List...\tCtrl+U", NULL));
+    IupAppend(menu, IupSeparator());
+    IupAppend(menu, IupItem("Sort..."             , NULL));
+  }
+
+  IupAppend(menu, IupItem("Find...\tCtrl+F"     , NULL));
+  IupAppend(menu, IupSeparator());
+
+  {
+    int flin, fcol;
+    IupGetIntInt(ih, "FREEZE", &flin, &fcol);
+    if (lin!=flin || col!=fcol)
+      IupAppend(menu, IupSetCallbacks(IupItem("Freeze", NULL), "ACTION", iMatrixExFreezeItem_CB, NULL));
+    else
+      IupAppend(menu, IupSetCallbacks(IupItem("Unfreeze", NULL), "ACTION", iMatrixExFreezeItem_CB, NULL));
+  }
+
+  IupAppend(menu, IupItem("Hide Column"         , NULL));
+  IupAppend(menu, IupItem("Show Hidden Columns" , NULL));
 
   //Is Numeric Column and Has Units
   //Unit...
@@ -191,6 +228,7 @@ static int iMatrixExButton_CB(Ihandle* ih, int b, int press, int x, int y, char*
 
       menu = iMatrixExCreateMenuContext(ih, lin, col);
       IupSetAttribute(menu, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
+      IupSetfAttribute(menu, "MENUCONTEXT_CELL", "%d:%d", lin, col);
 
       menucontext_cb = (IFnnii)IupGetCallback(ih, "MENUCONTEXT_CB");
       if (menucontext_cb) menucontext_cb(ih, menu, lin, col);

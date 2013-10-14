@@ -1226,7 +1226,11 @@ static int iMatrixConvertXYToPos(Ihandle* ih, int x, int y)
 {
   int lin, col;
   if (iupMatrixGetCellFromXY(ih, x, y, &lin, &col))
-    return lin*(ih->data->columns.num-1) + col;
+  {
+    int pos;
+    iMatrixConvertLinColToPos(ih, lin, col, &pos);
+    return pos;
+  }
   return -1;
 }
 
