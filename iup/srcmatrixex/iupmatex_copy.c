@@ -223,7 +223,7 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
 
     if (!iMatrixExGetMarkedLines(ih, num_lin, num_col, col, selection, &selection_count))
     {
-      iupAttribSet(ih, "LASTERROR", "NOMARKED");
+      iupAttribSet(ih, "LASTERROR", "IUP_ERRORNOSELECTION");
       free(selection);
       return 0;
     }
@@ -242,7 +242,7 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
 
     if (!iMatrixExStrGetInterval(value, num_lin, selection, &selection_count))
     {
-      iupAttribSet(ih, "LASTERROR", "INVALIDINTERVAL");
+      iupAttribSet(ih, "LASTERROR", "IUP_ERRORINVALIDINTERVAL");
       free(selection);
       return 0;
     }

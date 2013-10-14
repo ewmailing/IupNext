@@ -20,8 +20,16 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_assert.h"
+#include "iup_predialogs.h"
 #include "iup_matrixex.h"
 
+
+static void iMatrixListShowLastError(Ihandle* ih)
+{
+  char* lasterror = iupAttribGet(ih, "LASTERROR");
+  if (lasterror)
+    iupShowError(IupGetDialog(ih), lasterror);
+}
 
 static void iMatrixExSelectAll(Ihandle *ih)
 {
@@ -126,7 +134,126 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
   return 1;  /* store freeze state */
 }
 
-static int iMatrixExFreezeItem_CB(Ihandle* ih_item)
+static char* iMatrixExFileDlg(ImatExData* matex_data, int save, const char* filter, const char* info, const char* extfilter)
+{
+  Ihandle* dlg = IupFileDlg();
+
+  IupSetAttribute(dlg,"DIALOGTYPE", save? "SAVE": "OPEN");
+  IupSetAttribute(dlg,"TITLE","Export Table");
+  IupSetAttribute(dlg,"FILTER", filter);
+  IupSetAttribute(dlg,"FILTERINFO", info);
+  IupSetAttribute(dlg,"EXTFILTER", extfilter);  /* Windows and GTK only, but more flexible */
+  IupSetAttributeHandle(dlg,"PARENTDIALOG", IupGetDialog(matex_data->ih));
+
+  IupPopup(dlg,IUP_CENTER,IUP_CENTER);
+  if (IupGetInt(dlg,"STATUS")!=-1)
+  {
+    char* value = IupGetAttribute(dlg, "VALUE");
+    value = iupStrReturnStr(value);
+    IupDestroy(dlg);
+    return value;
+  }
+
+  IupDestroy(dlg);
+  return NULL;
+}
+
+static int iMatrixExItemExport_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  char *filter, *info, *extfilter, *filename;
+
+  if (iupStrEqual(IupGetAttribute(ih_item, "TEXTFORMAT"), "LaTeX"))
+  {
+    filter = "*.tex";
+    info = "LaTeX file (table format)";
+    extfilter = "LaTeX file (table format)|*.tex|All Files|*.*|";
+  }
+  else if (iupStrEqual(IupGetAttribute(ih_item, "TEXTFORMAT"), "HTML"))
+  {
+    filter = "*.html;*.htm";
+    info = "HTML file (table format)";
+    extfilter = "HTML file (table format)|*.html;*.htm|All Files|*.*|";
+  }
+  else
+  {
+    filter = "*.txt";
+    info = "Text file";
+    extfilter = "Text file|*.txt|All Files|*.*|";
+  }
+
+  filename = iMatrixExFileDlg(matex_data, 1, filter, info, extfilter);
+
+  IupSetAttribute(matex_data->ih, "TEXTFORMAT", IupGetAttribute(ih_item, "TEXTFORMAT"));
+  IupSetAttribute(matex_data->ih, "COPYFILE", filename);
+
+  iMatrixListShowLastError(matex_data->ih);
+
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemImport_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  char *filter, *info, *extfilter, *filename;
+
+  filter = "*.txt";
+  info = "Text file";
+  extfilter = "Text file|*.txt|All Files|*.*|";
+
+  filename = iMatrixExFileDlg(matex_data, 0, filter, info, extfilter);
+
+  IupSetAttribute(matex_data->ih, "PASTEFILE", filename);
+
+  iMatrixListShowLastError(matex_data->ih);
+
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemCopy_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  IupSetAttribute(matex_data->ih, "COPY", "MARKED");
+  iMatrixListShowLastError(matex_data->ih);
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemPaste_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  if (IupGetAttribute(matex_data->ih, "MARKED"))
+    IupSetAttribute(matex_data->ih, "PASTE", "MARKED");
+  else
+    IupSetAttribute(matex_data->ih, "PASTE", "FOCUS");
+  iMatrixListShowLastError(matex_data->ih);
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemUndo_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  IupSetAttribute(matex_data->ih, "UNDO", NULL);  /* 1 level */
+  iMatrixListShowLastError(matex_data->ih);
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemRedo_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  IupSetAttribute(matex_data->ih, "REDO", NULL);  /* 1 level */
+  iMatrixListShowLastError(matex_data->ih);
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemFind_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  iupMatrixExFindInitDialog(matex_data);
+  iupMatrixExFindShowDialog(matex_data);
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemFreeze_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
   int lin, col, flin, fcol;
@@ -148,9 +275,9 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
   Ihandle* menu = IupMenu(
     IupSubmenu("Export",
       IupMenu(
-        IupItem("Text..." , NULL),
-        IupItem("LaTeX...", NULL),
-        IupItem("Html..." , NULL),
+        IupSetCallbacks(IupSetAttributes(IupItem("Text..." , NULL), "TEXTFORMAT=TXT"), "ACTION", iMatrixExItemExport_CB, NULL),
+        IupSetCallbacks(IupSetAttributes(IupItem("LaTeX...", NULL), "TEXTFORMAT=LaTeX"), "ACTION", iMatrixExItemExport_CB, NULL),
+        IupSetCallbacks(IupSetAttributes(IupItem("Html..." , NULL), "TEXTFORMAT=HTML"), "ACTION", iMatrixExItemExport_CB, NULL),
         NULL)),
     NULL);
 
@@ -158,7 +285,7 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
   {
     IupAppend(menu, IupSubmenu("Import",
         IupMenu(
-          IupItem("Text...",  NULL),
+          IupSetCallbacks(IupItem("Text...",  NULL), "ACTION", iMatrixExItemImport_CB, NULL),
           NULL)));
     IupAppend(menu, IupSubmenu("Copy To (Same Column)",
         IupMenu(
@@ -171,29 +298,29 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
     IupAppend(menu, IupSeparator());
   }
 
-  IupAppend(menu, IupItem("Copy\tCtrl+C",  NULL));
+  IupAppend(menu, IupSetCallbacks(IupItem("Copy\tCtrl+C",  NULL), "ACTION", iMatrixExItemCopy_CB, NULL));
 
   if (!readonly)
   {
-    IupAppend(menu, IupItem("Paste\tCtrl+V", NULL));
+    IupAppend(menu, IupSetCallbacks(IupItem("Paste\tCtrl+V", NULL), "ACTION", iMatrixExItemPaste_CB, NULL));
     IupAppend(menu, IupSeparator());
-    IupAppend(menu, IupItem("Undo\tCtrl+Z"        , NULL));
-    IupAppend(menu, IupItem("Redo\tCtrl+Y"        , NULL));
+    IupAppend(menu, IupSetCallbacks(IupItem("Undo\tCtrl+Z", NULL), "ACTION", iMatrixExItemUndo_CB, NULL));
+    IupAppend(menu, IupSetCallbacks(IupItem("Redo\tCtrl+Y", NULL), "ACTION", iMatrixExItemRedo_CB, NULL));
     IupAppend(menu, IupItem("Undo List...\tCtrl+U", NULL));
     IupAppend(menu, IupSeparator());
     IupAppend(menu, IupItem("Sort..."             , NULL));
   }
 
-  IupAppend(menu, IupItem("Find...\tCtrl+F"     , NULL));
+  IupAppend(menu, IupSetCallbacks(IupItem("Find...\tCtrl+F", NULL), "ACTION", iMatrixExItemFind_CB, NULL));
   IupAppend(menu, IupSeparator());
 
   {
     int flin, fcol;
     IupGetIntInt(ih, "FREEZE", &flin, &fcol);
     if (lin!=flin || col!=fcol)
-      IupAppend(menu, IupSetCallbacks(IupItem("Freeze", NULL), "ACTION", iMatrixExFreezeItem_CB, NULL));
+      IupAppend(menu, IupSetCallbacks(IupItem("Freeze", NULL), "ACTION", iMatrixExItemFreeze_CB, NULL));
     else
-      IupAppend(menu, IupSetCallbacks(IupItem("Unfreeze", NULL), "ACTION", iMatrixExFreezeItem_CB, NULL));
+      IupAppend(menu, IupSetCallbacks(IupItem("Unfreeze", NULL), "ACTION", iMatrixExItemFreeze_CB, NULL));
   }
 
   IupAppend(menu, IupItem("Hide Column"         , NULL));
@@ -260,10 +387,13 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
           IupSetAttribute(ih, "PASTE", "MARKED");
         else
           IupSetAttribute(ih, "PASTE", "FOCUS");
+
+        iMatrixListShowLastError(ih);
       }
       return IUP_IGNORE;
     case K_cC: 
       IupSetAttribute(ih, "COPY", "MARKED");
+      iMatrixListShowLastError(ih);
       return IUP_IGNORE;
     case K_cZ: 
       IupSetAttribute(ih, "UNDO", NULL);  /* 1 level */

@@ -164,16 +164,16 @@ after setting it. To clear the internal buffer set it to NULL.</p>
 <p><strong>COPYFILE</strong> (write-only): copies all visible cells to a given 
 file. Value is the file name to be saved. LASTERROR can also be set to 
 &quot;INVALIDFILENAME&quot; (failed to open). Data will be in plain text format, but the 
-file format will be defined by the TEXTFORMAT attribute, can be &quot;TXT&quot; (default), 
-&quot;HTML&quot; or &quot;LaTeX&quot;. The COPYCAPTION attribute can be used to define a caption 
+file format will be defined by the <strong>TEXTFORMAT</strong> attribute, can be &quot;TXT&quot; (default), 
+&quot;HTML&quot; or &quot;LaTeX&quot;. The <strong>COPYCAPTION</strong> attribute can be used to define a caption 
 that will be added to the file before the data, depending on the file format.</p>
-<p class="info">When using TXT format, the TEXTSEPARATOR attribute can used to 
+<p class="info">When using TXT format, the <strong>TEXTSEPARATOR</strong> attribute can used to 
 define a column separator (default is tab '\t') and line separator will be line 
-feeds ('\n').<br>When using LaTeX format, the LATEXLABEL attribute can used to 
+feeds ('\n').<br>When using LaTeX format, the <strong>LATEXLABEL</strong> attribute can used to 
 define a label for the table.<br>When using HTML format, the attributes 
 &quot;HTML&lt;TABLE&gt;&quot;, &quot;HTML&lt;TR&gt;&quot;, &quot;HTML&lt;TH&gt;&quot;, &quot;HTML&lt;TD&gt;&quot;, &quot;HTML&lt;CAPTION&gt;&quot; can use used 
 to define a complement to be inserted in the respective tag definition, so a &quot; 
-style=..&quot; or a &quot; class=..&quot; complements can be added. The HTMLADDFORMAT can be 
+style=..&quot; or a &quot; class=..&quot; complements can be added. The <strong>HTMLADDFORMAT</strong> can be 
 used to add the attributes ALIGNMENT?, BGCOLOR?:?, FGCOLOR?:? and FONT?:? to the 
 &quot;style&quot; complement of the &quot;TD&quot; tag.</p>
 <p><strong>COPYCOLTO<em>L:C</em></strong> (write-only): copies the value of the 

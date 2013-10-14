@@ -319,7 +319,7 @@ static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* 
     char *marked = IupGetAttribute(matex_data->ih,"MARKED");
     if (!marked)  /* no marked cells */
     {
-      iupAttribSet(matex_data->ih, "LASTERROR", "NOMARKED");
+      iupAttribSet(matex_data->ih, "LASTERROR", "IUP_ERRORNOSELECTION");
       return;
     }
 
@@ -345,7 +345,7 @@ static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* 
       /* check consistency only when not keeping structure */
       if (!keep_struct && !iMatrixExMarkedCellConsistent(marked, num_lin, num_col))
       {
-        iupAttribSet(matex_data->ih, "LASTERROR", "MARKEDCONSISTENCY");
+        iupAttribSet(matex_data->ih, "LASTERROR", "IUP_ERRORINVALIDSELECTION");
         return;
       }
 
@@ -421,6 +421,9 @@ static int iMatrixExStrGetDataSize(const char* data, int *num_lin, int *num_col,
   if (data[len-1] == '\n')
     (*num_lin)--;  /* avoid an empty last line */
 
+  if (*num_lin == 0)
+    return 0;
+
   if (*sep != 0)
     *num_col = iupStrCountChar(data, *sep);
   else
@@ -434,14 +437,13 @@ static int iMatrixExStrGetDataSize(const char* data, int *num_lin, int *num_col,
     }
   }
 
-  if (*num_lin == 0 ||
-      *num_col == 0)
-    return 0;
-
   /* If here is no column separator for the last column, so add it */
   if (!((data[len-1] == '\n' && data[len-2] == *sep) ||
         (data[len-1] == *sep)))
     *num_col += *num_lin;
+
+  if (*num_col == 0)
+    return 0;
 
   if ((*num_col)%(*num_lin)!=0)
     return 0;
@@ -550,7 +552,7 @@ static void iMatrixExPasteData(Ihandle *ih, const char* data, int lin, int col, 
 
   if (!data || data[0]==0)
   {
-    iupAttribSet(ih, "LASTERROR", "NOTEXT");
+    iupAttribSet(ih, "LASTERROR", "IUP_ERRORNOTEXT");
     return;
   }
 
@@ -564,7 +566,7 @@ static void iMatrixExPasteData(Ihandle *ih, const char* data, int lin, int col, 
       next_line = iupStrNextLine(data, &len);
       if (next_line==data) /* no next line */ 
       {
-        iupAttribSet(ih, "LASTERROR", "NOTEXT");
+        iupAttribSet(ih, "LASTERROR", "IUP_ERRORNOTEXT");
         return;
       }
       data = (char*)next_line;
@@ -576,7 +578,7 @@ static void iMatrixExPasteData(Ihandle *ih, const char* data, int lin, int col, 
 
   if (!iMatrixExStrGetDataSize(data, &data_num_lin, &data_num_col, &sep))
   {
-    iupAttribSet(ih, "LASTERROR", "INVALIDMATRIX");
+    iupAttribSet(ih, "LASTERROR", "IUP_ERRORINVALIDDATA");
     return;
   }
 
@@ -651,7 +653,7 @@ static int iMatrixExSetPasteFileAttrib(Ihandle *ih, const char* value)
   FILE *file = fopen(value, "rb");
   if (!file)
   {
-    iupAttribSet(ih, "LASTERROR", "INVALIDFILENAME");
+    iupAttribSet(ih, "LASTERROR", "IUP_ERRORFILEOPEN");
     return 0;
   }
 
