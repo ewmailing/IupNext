@@ -189,7 +189,7 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r
   int lin=-1, col=-1;
 
   if (!iupMatrixIsValid(ih, 0))
-    return IUP_DEFAULT;
+    return IUP_IGNORE;
 
   /* reset press state */
   ih->data->leftpressed = 0;

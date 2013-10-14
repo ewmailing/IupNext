@@ -123,6 +123,26 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
   return 1;  /* store freeze state */
 }
 
+static IFniiiis iMatrixOriginalButton_CB = NULL;
+
+static int iMatrixExButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r)
+{
+  if (iMatrixOriginalButton_CB(ih, b, press, x, y, r)==IUP_IGNORE)
+    return IUP_IGNORE;
+
+  if (b == IUP_BUTTON2 && press && IupGetInt(ih, "MENUCONTEXT"))
+  {
+    Ihandle* menu;
+    int lin, col;
+    int pos = IupConvertXYToPos(ih, x, y);
+    IupTextConvertPosToLinCol(ih, pos, &lin, &col);
+
+    menu = iMatrixExCreateMenuContext(ih, lin, col);
+  }
+
+  return IUP_DEFAULT;
+}
+
 static IFnii iMatrixOriginalKeyPress_CB = NULL;
 
 static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
@@ -218,6 +238,9 @@ static int iMatrixExCreateMethod(Ihandle* ih, void **params)
 
   if (!iMatrixOriginalKeyPress_CB) iMatrixOriginalKeyPress_CB = (IFnii)IupGetCallback(ih, "KEYPRESS_CB");
   IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iMatrixExKeyPress_CB);
+
+  if (!iMatrixOriginalButton_CB) iMatrixOriginalButton_CB = (IFniiiis)IupGetCallback(ih, "KEYPRESS_CB");
+  IupSetCallback(ih, "BUTTON_CB", (Icallback)iMatrixExButton_CB);
 
   (void)params;
   return IUP_NOERROR;
