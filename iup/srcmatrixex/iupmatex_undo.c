@@ -111,7 +111,7 @@ void iupMatrixExUndoPushEnd(ImatExData* matex_data)
 static int iMatrixSetUndoPushCellAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  IundoData* undo_stack_data = (IundoData*)iupArrayGetData(matex_data->undo_stack);
+  IundoData* undo_stack_data = (IundoData*)iupArrayInc(matex_data->undo_stack);
 
   if (matex_data->undo_stack_hold)
     iMatrixExUndoDataAddCell(&(undo_stack_data[matex_data->undo_stack_pos]), lin, col, value);
@@ -246,7 +246,7 @@ static int iMatrixExSetUndoRedoAttrib(Ihandle* ih, const char* value)
 
 void iupMatrixExRegisterUndo(Iclass* ic)
 {
-  /* Already defined in IupMatrix */
+  /* Already defined in IupMatrix, redefined here */
   iupClassRegisterGetAttribute(ic, "UNDOREDO", NULL, &iMatrixSetUndoRedoAttrib, NULL, NULL, NULL);
   iupClassRegisterReplaceAttribFunc(ic, "UNDOREDO", NULL, iMatrixExSetUndoRedoAttrib);
 

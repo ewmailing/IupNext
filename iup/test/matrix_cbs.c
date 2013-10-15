@@ -160,7 +160,10 @@ static Ihandle *create_mat(int mati)
   sprintf(name, "mat%d", mati);
 
   if (mati==1)
+  {
     IupMatrixExInit(mat);
+    IupSetAttribute(mat,"UNDOREDO","Yes"); 
+  }
 
   IupSetHandle(name, mat);
   

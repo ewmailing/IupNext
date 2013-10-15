@@ -229,6 +229,32 @@ static int iMatrixExItemPaste_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  char* value = IupGetAttribute(ih_item, "COPYCOLTO");
+  int lin, col;
+
+  IupGetIntInt(ih_item, "MENUCONTEXT_CELL", &lin, &col);
+
+  if (iupStrEqual(value, "INTERVAL"))
+  {
+    char interval[200] = "";
+    value = iupAttribGet(matex_data->ih, "_IUP_LAST_COPYCOL_INTERVAL");
+    if (value) iupStrCopyN(interval, 200, value);
+
+    if (IupGetParam("Copy To Interval", NULL, NULL, "Intervals: %s\n", interval, NULL))
+    {
+      IupSetAttributeId2(matex_data->ih, "COPYCOLTO", lin, col, interval);
+      iupAttribSetStr(matex_data->ih, "_IUP_LAST_COPYCOL_INTERVAL", interval);
+    }
+  }
+  else
+    IupSetAttributeId2(matex_data->ih, "COPYCOLTO", lin, col, value);
+
+  return IUP_DEFAULT;
+}
+
 static int iMatrixExItemUndo_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
@@ -289,11 +315,11 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
           NULL)));
     IupAppend(menu, IupSubmenu("Copy To (Same Column)",
         IupMenu(
-          IupItem("All lines"      , NULL),     
-          IupItem("Here to top"    , NULL),     
-          IupItem("Here to bottom" , NULL),     
-          IupItem("Interval..."    , NULL),     
-          IupItem("Selected lines" , NULL),
+          IupSetCallbacks(IupSetAttributes(IupItem("All lines"      , NULL), "COPYCOLTO=ALL"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
+          IupSetCallbacks(IupSetAttributes(IupItem("Here to top"    , NULL), "COPYCOLTO=TOP"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
+          IupSetCallbacks(IupSetAttributes(IupItem("Here to bottom" , NULL), "COPYCOLTO=BOTTOM"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
+          IupSetCallbacks(IupSetAttributes(IupItem("Interval..."    , NULL), "COPYCOLTO=INTERVAL"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
+          IupSetCallbacks(IupSetAttributes(IupItem("Selected lines" , NULL), "COPYCOLTO=MARKED"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),
           NULL)));
     IupAppend(menu, IupSeparator());
   }
@@ -302,13 +328,19 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
 
   if (!readonly)
   {
+    Ihandle *undo, *redo;
     IupAppend(menu, IupSetCallbacks(IupItem("Paste\tCtrl+V", NULL), "ACTION", iMatrixExItemPaste_CB, NULL));
     IupAppend(menu, IupSeparator());
-    IupAppend(menu, IupSetCallbacks(IupItem("Undo\tCtrl+Z", NULL), "ACTION", iMatrixExItemUndo_CB, NULL));
-    IupAppend(menu, IupSetCallbacks(IupItem("Redo\tCtrl+Y", NULL), "ACTION", iMatrixExItemRedo_CB, NULL));
+    IupAppend(menu, undo = IupSetCallbacks(IupItem("Undo\tCtrl+Z", NULL), "ACTION", iMatrixExItemUndo_CB, NULL));
+    IupAppend(menu, redo = IupSetCallbacks(IupItem("Redo\tCtrl+Y", NULL), "ACTION", iMatrixExItemRedo_CB, NULL));
     IupAppend(menu, IupItem("Undo List...\tCtrl+U", NULL));
     IupAppend(menu, IupSeparator());
     IupAppend(menu, IupItem("Sort..."             , NULL));
+
+    if (!IupGetInt(ih, "UNDO"))
+      IupSetAttribute(undo, "ACTIVE", "No");
+    if (!IupGetInt(ih, "REDO"))
+      IupSetAttribute(redo, "ACTIVE", "No");
   }
 
   IupAppend(menu, IupSetCallbacks(IupItem("Find...\tCtrl+F", NULL), "ACTION", iMatrixExItemFind_CB, NULL));

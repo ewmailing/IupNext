@@ -193,7 +193,7 @@ static int iMatrixExSetCopyColToAttribId2(Ihandle *ih, int lin, int col, const c
 
   if (col <= 0 ||
       col > num_col ||
-      iupMatrixExIsColumnVisible(ih, col))
+      !iupMatrixExIsColumnVisible(ih, col))
     return 0;
 
   if (iupStrEqualNoCase(value, "ALL"))
