@@ -135,6 +135,10 @@ void *iupTableGetCurr(Itable *it);
  * \ingroup table */
 int iupTableGetCurrType(Itable *it);
 
+/** Replaces the data at the current position.
+ * \ingroup table */
+void iupTableSetCurr(Itable *it, void* value, Itable_Types itemType);
+
 /** Removes the current element and returns the next key.
  * Use this function to remove an element during an iteration.
  * \ingroup table */

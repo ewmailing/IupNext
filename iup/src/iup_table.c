@@ -385,7 +385,39 @@ void *iupTableGetTyped(Itable *it, const char *key, Itable_Types *itemType)
   return value;
 }
 
-void *iupTableGetCurr(Itable *it)
+void iupTableSetCurr(Itable *it, void* value, Itable_Types itemType)
+{
+  void* v;
+  ItableItem *item;
+
+  iupASSERT(it!=NULL);
+  if (!it || it->context.entryIndex == (unsigned int)-1
+         || it->context.itemIndex == (unsigned int)-1)
+    return;
+
+  item = &(it->entries[it->context.entryIndex].items[it->context.itemIndex]);
+
+  if (itemType == IUPTABLE_STRING && item->itemType == IUPTABLE_STRING)
+  {
+    /* this will avoid to free + alloc of a new pointer */
+    if (iupStrEqual((char*)item->value, (char*)value))
+      return;
+  }
+
+  if (itemType == IUPTABLE_STRING)
+    v = iupStrDup(value);
+  else
+    v = value;
+
+  if (item->itemType == IUPTABLE_STRING)
+    free(item->value);
+
+  item->value    = v;
+  item->itemType = itemType;
+
+}
+
+void* iupTableGetCurr(Itable *it)
 {
   iupASSERT(it!=NULL);
   if (!it || it->context.entryIndex == (unsigned int)-1
