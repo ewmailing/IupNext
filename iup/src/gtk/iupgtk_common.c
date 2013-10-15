@@ -898,7 +898,7 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
 
     gdk_event_put((GdkEvent*)&evt);
   }
-#if 0 /* kept until code stabilizes */
+#if 0 /* kept for future reference */
   else
   {
     GtkWidget* grab_widget;

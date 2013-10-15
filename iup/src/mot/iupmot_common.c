@@ -640,7 +640,7 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
       XSendEvent(iupmot_display, (Window)PointerWindow, False, ButtonReleaseMask, (XEvent*)&evt);
     }
   }
-#if 0 /* kept until code stabilizes */
+#if 0 /* kept for future reference */
   else
   {
     XMotionEvent evt;
