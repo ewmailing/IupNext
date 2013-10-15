@@ -42,7 +42,6 @@ static void iMatrixExCopyColToSetDataSelected(ImatExData* matex_data, int lin, i
   }
 
   iupMatrixExBusyEnd(matex_data);
-
   free(value);
 }
 
@@ -69,7 +68,6 @@ static void iMatrixExCopyColToSetData(ImatExData* matex_data, int lin, int col, 
   }
 
   iupMatrixExBusyEnd(matex_data);
-
   free(value);
 }
 

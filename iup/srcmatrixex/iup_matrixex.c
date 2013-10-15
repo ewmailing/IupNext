@@ -333,9 +333,9 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
     IupAppend(menu, IupSeparator());
     IupAppend(menu, undo = IupSetCallbacks(IupItem("Undo\tCtrl+Z", NULL), "ACTION", iMatrixExItemUndo_CB, NULL));
     IupAppend(menu, redo = IupSetCallbacks(IupItem("Redo\tCtrl+Y", NULL), "ACTION", iMatrixExItemRedo_CB, NULL));
-    IupAppend(menu, IupItem("Undo List...\tCtrl+U", NULL));
+    //IupAppend(menu, IupItem("Undo List...\tCtrl+U", NULL));
     IupAppend(menu, IupSeparator());
-    IupAppend(menu, IupItem("Sort..."             , NULL));
+    //IupAppend(menu, IupItem("Sort..."             , NULL));
 
     if (!IupGetInt(ih, "UNDO"))
       IupSetAttribute(undo, "ACTIVE", "No");
@@ -355,8 +355,8 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
       IupAppend(menu, IupSetCallbacks(IupItem("Unfreeze", NULL), "ACTION", iMatrixExItemFreeze_CB, NULL));
   }
 
-  IupAppend(menu, IupItem("Hide Column"         , NULL));
-  IupAppend(menu, IupItem("Show Hidden Columns" , NULL));
+  //IupAppend(menu, IupItem("Hide Column"         , NULL));
+  //IupAppend(menu, IupItem("Show Hidden Columns" , NULL));
 
   //Is Numeric Column and Has Units
   //Unit...
@@ -480,9 +480,7 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
           IupHide(matex_data->find_dlg);
         return IUP_CONTINUE;
       }
-#if 0
-    case K_cU: { D->UndoList() ; return IUP_IGNORE  ;}
-#endif
+//    case K_cU: { D->UndoList() ; return IUP_IGNORE  ;}
     }
   }
 

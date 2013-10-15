@@ -18,7 +18,8 @@ typedef struct _ImatExData
 {
   Ihandle* ih;  /* self reference */
 
-  int busy, busy_count, busy_progress_abort;
+  int busy, busy_count, busy_undo_block,
+      busy_progress_abort;
   IFniis busy_cb;
   Ihandle* busy_progress_dlg;
 

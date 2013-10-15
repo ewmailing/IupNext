@@ -23,6 +23,8 @@
 #include "iup_matrixex.h"
 
 
+static IattribSetFunc iMatrixSetUndoRedoAttrib = NULL;
+
 typedef struct _IundoData {
   int cell_count;
   const char* name;
@@ -46,7 +48,10 @@ static void iMatrixExUndoDataAddCell(IundoData* undo_data, int lin, int col, con
 {
   char id[40];
   sprintf(id, "%d:%d", lin, col);
-  iupTableSet(undo_data->data_table, id, (void*)value, IUPTABLE_STRING);
+  if (!value)
+    iupTableSet(undo_data->data_table, id, (void*)"", IUPTABLE_POINTER);  /* store NULL pointers so they can be restored later */
+  else
+    iupTableSet(undo_data->data_table, id, (void*)value, IUPTABLE_STRING);
   undo_data->cell_count++;
 }
 
@@ -55,13 +60,23 @@ static int iMatrixExUndoDataSwap(ImatExData* matex_data, IundoData* undo_data)
   char* id = iupTableFirst(undo_data->data_table);
   while (id)
   {
-    char* value;
+    char *value, *old_value;
     int lin=1, col=1;
     iupStrToIntInt(id, &lin, &col, ':');
 
     value = (char*)iupTableGetCurr(undo_data->data_table);
 
+    old_value = iupStrDup(iupMatrixExGetCellValue(matex_data->ih, lin, col, 0));
+
     iupMatrixExSetCellValue(matex_data->ih, lin, col, value, 0);
+
+    if (!old_value)
+      iupTableSetCurr(undo_data->data_table, (void*)"", IUPTABLE_POINTER);
+    else
+    {
+      iupTableSetCurr(undo_data->data_table, (void*)old_value, IUPTABLE_STRING);
+      free(old_value);
+    }
 
     if (!iupMatrixExBusyInc(matex_data))
       return 0;
@@ -128,7 +143,8 @@ static int iMatrixSetUndoPushCellAttrib(Ihandle* ih, int lin, int col, const cha
 static int iMatrixSetUndoClearAttrib(Ihandle* ih, const char* value)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  if (matex_data->undo_stack && iupArrayCount(matex_data->undo_stack))
+  int undo_stack_count = matex_data->undo_stack? iupArrayCount(matex_data->undo_stack): 0;
+  if (undo_stack_count)
   {
     int i, undo_stack_count = iupArrayCount(matex_data->undo_stack);
     IundoData* undo_stack_data = (IundoData*)iupArrayGetData(matex_data->undo_stack);
@@ -144,7 +160,8 @@ static int iMatrixSetUndoClearAttrib(Ihandle* ih, const char* value)
 static char* iMatrixGetUndoAttrib(Ihandle* ih)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  if (matex_data->undo_stack && iupArrayCount(matex_data->undo_stack))
+  int undo_stack_count = iupArrayCount(matex_data->undo_stack);
+  if (matex_data->undo_stack && undo_stack_count)
     return iupStrReturnBoolean(matex_data->undo_stack_pos>0);
   return NULL; 
 }
@@ -152,28 +169,34 @@ static char* iMatrixGetUndoAttrib(Ihandle* ih)
 static int iMatrixSetUndoAttrib(Ihandle* ih, const char* value)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  if (matex_data->undo_stack && iupArrayCount(matex_data->undo_stack) && matex_data->undo_stack_pos>0)
+  int undo_stack_count = matex_data->undo_stack? iupArrayCount(matex_data->undo_stack): 0;
+  if (undo_stack_count && matex_data->undo_stack_pos>0)
   {
     int i, count = 1, total_cell_count = 0;
     IundoData* undo_stack_data = (IundoData*)iupArrayGetData(matex_data->undo_stack);
 
     iupStrToInt(value, &count);
-    if (count >= matex_data->undo_stack_pos)
-      count = matex_data->undo_stack_pos-1;
+    if (count > matex_data->undo_stack_pos)
+      count = matex_data->undo_stack_pos;
 
     for (i=0; i<count; i++)
       total_cell_count += undo_stack_data[matex_data->undo_stack_pos-1 - i].cell_count;
 
+    iMatrixSetUndoRedoAttrib(ih, "NO");  /* Disable Undo/Redo systrem during restore */
     iupMatrixExBusyStart(matex_data, total_cell_count, "UNDO");
 
     for (i=0; i<count; i++)
     {
       if (!iMatrixExUndoDataSwap(matex_data, &(undo_stack_data[matex_data->undo_stack_pos-1 - i])))
-        break;
+      {
+        matex_data->undo_stack_pos -= i;
+        iMatrixSetUndoRedoAttrib(ih, "Yes");
+        return 0;
+      }
     }
 
     iupMatrixExBusyEnd(matex_data);
-
+    iMatrixSetUndoRedoAttrib(ih, "Yes");
     matex_data->undo_stack_pos -= i;
   }
   return 0;
@@ -182,15 +205,17 @@ static int iMatrixSetUndoAttrib(Ihandle* ih, const char* value)
 static char* iMatrixGetRedoAttrib(Ihandle* ih)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  if (matex_data->undo_stack && iupArrayCount(matex_data->undo_stack))
-    return iupStrReturnBoolean(matex_data->undo_stack_pos<iupArrayCount(matex_data->undo_stack));
+  int undo_stack_count = matex_data->undo_stack? iupArrayCount(matex_data->undo_stack): 0;
+  if (undo_stack_count)
+    return iupStrReturnBoolean(matex_data->undo_stack_pos<undo_stack_count);
   return NULL; 
 }
 
 static int iMatrixSetRedoAttrib(Ihandle* ih, const char* value)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  if (matex_data->undo_stack && iupArrayCount(matex_data->undo_stack) && matex_data->undo_stack_pos<iupArrayCount(matex_data->undo_stack))
+  int undo_stack_count = matex_data->undo_stack? iupArrayCount(matex_data->undo_stack): 0;
+  if (undo_stack_count && matex_data->undo_stack_pos<undo_stack_count)
   {
     int i, count = 1, total_cell_count = 0, undo_stack_count = iupArrayCount(matex_data->undo_stack);
     IundoData* undo_stack_data = (IundoData*)iupArrayGetData(matex_data->undo_stack);
@@ -202,16 +227,21 @@ static int iMatrixSetRedoAttrib(Ihandle* ih, const char* value)
     for (i=0; i<count; i++)
       total_cell_count += undo_stack_data[matex_data->undo_stack_pos + i].cell_count;
 
+    iMatrixSetUndoRedoAttrib(ih, "NO");  /* Disable Undo/Redo systrem during restore */
     iupMatrixExBusyStart(matex_data, total_cell_count, "REDO");
 
     for (i=0; i<count; i++)
     {
       if (!iMatrixExUndoDataSwap(matex_data, &(undo_stack_data[matex_data->undo_stack_pos + i])))
-        break;
+      {
+        matex_data->undo_stack_pos += i;
+        iMatrixSetUndoRedoAttrib(ih, "Yes");
+        return 0;
+      }
     }
 
     iupMatrixExBusyEnd(matex_data);
-
+    iMatrixSetUndoRedoAttrib(ih, "Yes");
     matex_data->undo_stack_pos += i;
   }
   return 0;
@@ -231,8 +261,6 @@ static int iMatrixSetUndoPushEndAttrib(Ihandle* ih, const char* value)
   (void)value;
   return 0;
 }
-
-static IattribSetFunc iMatrixSetUndoRedoAttrib = NULL;
 
 static int iMatrixExSetUndoRedoAttrib(Ihandle* ih, const char* value)
 {
