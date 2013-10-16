@@ -10,6 +10,7 @@
     <ClCompile Include="..\srcmatrixex\iupmatex_units.c" />
     <ClCompile Include="..\srcmatrixex\iupmatex_undo.c" />
     <ClCompile Include="..\srcmatrixex\iupmatex_find.c" />
+    <ClCompile Include="..\srcmatrixex\iupmatex_sort.c" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\srcmatrixex\iupmatrixex.def" />

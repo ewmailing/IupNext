@@ -626,15 +626,15 @@ static char* iMatrixExGetNumericUnitShownSymbolAttrib(Ihandle* ih, int col)
 void iupMatrixExRegisterUnits(Iclass* ic)
 {
   /* Defined in IupMatrix - Internal
-  NUMERICQUANTITYINDEX
-  NUMERICUNITINDEX
-  NUMERICUNITSHOWNINDEX */
+    NUMERICQUANTITYINDEX
+    NUMERICUNITINDEX
+    NUMERICUNITSHOWNINDEX */
 
   /* Defined in IupMatrix - Exported
-  NUMERICFORMAT
-  NUMERICFORMATPRECISION
-  NUMERICFORMATTITLE
-  NUMERICFORMATDEF   */
+    NUMERICFORMAT
+    NUMERICFORMATPRECISION
+    NUMERICFORMATTITLE
+    NUMERICFORMATDEF   */
 
   iupClassRegisterAttributeId(ic, "NUMERICQUANTITY", iMatrixExGetNumericQuantityAttrib, iMatrixExSetNumericQuantityAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNIT", iMatrixExGetNumericUnitAttrib, iMatrixExSetNumericUnitAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

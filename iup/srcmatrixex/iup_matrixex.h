@@ -37,7 +37,8 @@ void iupMatrixExBusyEnd(ImatExData* matex_data);
 void iupMatrixExUndoPushBegin(ImatExData* matex_data, const char* busyname);
 void iupMatrixExUndoPushEnd(ImatExData* matex_data);
 
-void iupMatrixExFindInitDialog(ImatExData* matex_data);
+void iupMatrixExSortShowDialog(ImatExData* matex_data);
+
 void iupMatrixExFindShowDialog(ImatExData* matex_data);
 
 int iupMatrixExIsColumnVisible(Ihandle* ih, int col);
@@ -53,6 +54,7 @@ void iupMatrixExRegisterCopy(Iclass* ic);
 void iupMatrixExRegisterUnits(Iclass* ic);
 void iupMatrixExRegisterUndo(Iclass* ic);
 void iupMatrixExRegisterFind(Iclass* ic);
+void iupMatrixExRegisterSort(Iclass* ic);
 
 /* Implemented in IupMatrix */
 char* iupMatrixExGetCellValue(Ihandle* ih, int lin, int col, int convert);

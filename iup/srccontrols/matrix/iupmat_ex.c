@@ -278,9 +278,13 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
       iupAttribSetId(ih, "SORTSIGN", ih->data->last_sort_index, "DOWN");
     else
       iupAttribSetId(ih, "SORTSIGN", ih->data->last_sort_index, "UP");
+
+    iupMatrixDraw(ih, 1);
+    return 0;
   }
 
-  iupStrToIntInt(value, &lin1, &lin2, '-');
+  if (!iupStrEqualNoCase(value, "ALL"))
+    iupStrToIntInt(value, &lin1, &lin2, '-');
 
   ascending = iupStrEqualNoCase(iupAttribGetStr(ih, "SORTCOLUMNORDER"), "ASCENDING");
   

@@ -274,14 +274,16 @@ static int iMatrixExItemRedo_CB(Ihandle* ih_item)
 static int iMatrixExItemFind_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
-  iupMatrixExFindInitDialog(matex_data);
   iupMatrixExFindShowDialog(matex_data);
   return IUP_DEFAULT;
 }
 
-//  iupClassRegisterAttributeId(ic, "SORTCOLUMN", NULL, iMatrixSetSortColumnAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-//  iupClassRegisterAttribute(ic, "SORTCOLUMNORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "ASCENDING", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-//  iupClassRegisterAttribute(ic, "SORTCOLUMNCASESENSITIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+static int iMatrixExItemSort_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  iupMatrixExSortShowDialog(matex_data);
+  return IUP_DEFAULT;
+}
 
 static int iMatrixExItemFreeze_CB(Ihandle* ih_item)
 {
@@ -339,7 +341,7 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
     IupAppend(menu, redo = IupSetCallbacks(IupItem("Redo\tCtrl+Y", NULL), "ACTION", iMatrixExItemRedo_CB, NULL));
     //IupAppend(menu, IupItem("Undo List...\tCtrl+U", NULL));
     IupAppend(menu, IupSeparator());
-    //IupAppend(menu, IupItem("Sort..."             , NULL));
+    IupAppend(menu, IupSetCallbacks(IupItem("Sort...", NULL), "ACTION", iMatrixExItemSort_CB, NULL));
 
     if (!IupGetInt(ih, "UNDO"))
       IupSetAttribute(undo, "ACTIVE", "No");
@@ -473,7 +475,6 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
     case K_mF3: 
       {
         ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-        iupMatrixExFindInitDialog(matex_data);
         iupMatrixExFindShowDialog(matex_data);
         return IUP_IGNORE;
       }
@@ -544,6 +545,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   iupMatrixExRegisterUnits(ic);
   iupMatrixExRegisterUndo(ic);
   iupMatrixExRegisterFind(ic);
+  iupMatrixExRegisterSort(ic);
 }
 
 static Iclass* iMatrixExNewClass(void)

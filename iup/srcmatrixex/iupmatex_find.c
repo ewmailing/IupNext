@@ -84,9 +84,9 @@ static void iMatrixExFindCreateDialog(ImatExData* matex_data)
     IupSetAttributes(IupFrame(IupRadio(IupHbox(
       IupSetAttributes(IupToggle("_@IUP_BY_ROW", NULL), "NAME=SEARCHBYROW"),
       IupSetAttributes(IupToggle("_@IUP_BY_COL", NULL), "NAME=SEARCHBYCOL"),
-      NULL))), "TITLE=_@IUP_SEARCH"),
+      NULL))), "TITLE=_@IUP_SEARCH, MARGIN=5x5"),
     NULL);
-  IupSetAttribute(options_box,"MARGIN","5x5");
+  IupSetAttribute(options_box,"MARGIN","0x5");
 
   find_prev = IupButton("_@IUP_FIND_PREVIOUS", NULL);
   IupSetAttribute(find_prev,"PADDING" ,"12x2");
@@ -139,7 +139,7 @@ static void iMatrixExFindCreateDialog(ImatExData* matex_data)
   matex_data->find_dlg = dlg;
 }
 
-void iupMatrixExFindInitDialog(ImatExData* matex_data)
+static void iMatrixExFindInitDialog(ImatExData* matex_data)
 {
   char* direction;
 
@@ -158,6 +158,8 @@ void iupMatrixExFindInitDialog(ImatExData* matex_data)
 
 void iupMatrixExFindShowDialog(ImatExData* matex_data)
 {
+  iMatrixExFindInitDialog(matex_data);
+
   /* Only position the dialog at the first time, 
      then let the user choose the dialog position on screen */
   if (!(matex_data->find_dlg->handle))
@@ -317,7 +319,7 @@ void iupMatrixExRegisterFind(Iclass* ic)
   {
     IupSetLanguageString("IUP_FIND", "Find");
     IupSetLanguageString("IUP_FIND_WHAT", "Find what:");
-    IupSetLanguageString("IUP_FIND_NEXT", "&Find Next");
+    IupSetLanguageString("IUP_FIND_NEXT", "Find &Next");
     IupSetLanguageString("IUP_FIND_PREVIOUS", "Find &Previous");
 
     IupSetLanguageString("IUP_CLOSE", "Close");
