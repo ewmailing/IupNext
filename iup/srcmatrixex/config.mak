@@ -4,9 +4,9 @@ OPT = YES
 
 INCLUDES = ../include ../src .
 
-SRC = iupmatrixex.c iupmatex_clipboard.c iupmatex_busy.c \
+SRC = iup_matrixex.c iupmatex_clipboard.c iupmatex_busy.c \
       iupmatex_export.c iupmatex_visible.c iupmatex_copy.c \
-      iupmatex_units.c
+      iupmatex_units.c iupmatex_find.c iupmatex_undo.c
 
 LIBS = iupcontrols
 LDIR = ../lib/$(TEC_UNAME)

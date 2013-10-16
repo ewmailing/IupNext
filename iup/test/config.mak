@@ -110,6 +110,11 @@ SRC += gauge.c
 SRC += matrix.c
 SRC += matrix_cbs.c
 SRC += matrix_cbmode.c
+ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  LIBS += iupmatrixex
+else
+  SLIB += $(IUPLIB)/libiupmatrixex.a
+endif
 
 LINKER = g++
 DEFINES += PPLOT_TEST
