@@ -188,19 +188,19 @@ static Ihandle* iMatrixExSortCreateDialog(ImatExData* matex_data)
 
 void iupMatrixExSortShowDialog(ImatExData* matex_data)
 {
-  Ihandle* dlg_sort;
-  //char* direction;
+  Ihandle* dlg_sort = iMatrixExSortCreateDialog(matex_data);
 
-  dlg_sort = iMatrixExSortCreateDialog(matex_data);
+  IupSetAttribute(IupGetDialogChild(dlg_sort, "CASESENSITIVE"), "VALUE", iupAttribGetStr(matex_data->ih, "SORTCOLUMNCASESENSITIVE"));
 
-  //IupSetAttribute(IupGetDialogChild(dlg_sort, "MATCHCASE"), "VALUE", iupAttribGetStr(matex_data->ih, "FINDMATCHCASE"));
-  //IupSetAttribute(IupGetDialogChild(dlg_sort, "MATCHWHOLECELL"), "VALUE", iupAttribGetStr(matex_data->ih, "FINDMATCHWHOLECELL"));
+  if (iupStrEqualNoCase(iupAttribGetStr(matex_data->ih, "SORTCOLUMNORDER"), "DESCENDING"))
+    IupSetAttribute(IupGetDialogChild(dlg_sort, "DESCENDING"), "VALUE", "Yes");
+  else
+    IupSetAttribute(IupGetDialogChild(dlg_sort, "ASCENDING"), "VALUE", "Yes");
 
-  //direction = iupAttribGetStr(matex_data->ih, "FINDDIRECTION");
-  //if (iupStrEqualNoCase(direction, "LEFTTOP") || iupStrEqualNoCase(direction, "RIGHTBOTTOM"))
-  //  IupSetAttribute(IupGetDialogChild(dlg_sort, "SEARCHBYROW"), "VALUE", "Yes");
-  //else
-  //  IupSetAttribute(IupGetDialogChild(dlg_sort, "SEARCHBYCOL"), "VALUE", "Yes");
+  //IupSetIntId2(matrix, "", 1, 1, col);
+  //IupSetStrAttributeId2(matrix, "", 2, 1, "_@IUP_YES");
+  //IupSetIntId2(matrix, "", 3, 1, lin1);
+  //IupSetIntId2(matrix, "", 4, 1, lin2);
   
   IupPopup(dlg_sort, IUP_MOUSEPOS, IUP_MOUSEPOS);
   IupDestroy(dlg_sort);
