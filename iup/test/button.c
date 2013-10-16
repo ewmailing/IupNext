@@ -438,6 +438,7 @@ void ButtonTest(void)
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 
   IupShow(dlg);
+//  IupShowXY(dlg,IUP_LEFT,IUP_TOP);
 }
 
 #ifndef BIG_TEST

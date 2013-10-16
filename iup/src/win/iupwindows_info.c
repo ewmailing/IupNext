@@ -31,6 +31,14 @@ void iupdrvGetScreenSize(int *width, int *height)
   *height =  (int)(area.bottom - area.top);
 }
 
+void iupdrvAddScreenOffset(int *x, int *y)
+{
+  RECT area;
+  SystemParametersInfoA(SPI_GETWORKAREA, 0, &area, 0);
+  if (x) *x += area.left;
+  if (y) *y += area.top;
+}
+
 void iupdrvGetFullSize(int *width, int *height)
 {
   RECT rect;

@@ -87,6 +87,11 @@ int iupdrvGetWindowDecor(void* wnd, int *border, int *caption)
   return 0;
 }
 
+void iupdrvAddScreenOffset(int *x, int *y)
+{
+  /* ?????? */
+}
+
 void iupdrvGetScreenSize(int *width, int *height)
 {
   int w_size = CGDisplayPixelsWide(kCGDirectMainDisplay);

@@ -60,6 +60,12 @@ static int xGetWorkAreaSize(Display* display, int screen, int *width, int *heigh
   return 1;
 }
 
+void iupdrvAddScreenOffset(int *x, int *y)
+{
+  (void)x;
+  (void)y;
+}
+
 void iupdrvGetScreenSize(int *width, int *height)
 {
   if (!iupdrvCheckMainScreen(width, height))

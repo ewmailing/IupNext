@@ -204,6 +204,7 @@ void LabelTest(void)
   IupSetCallback(dlg, "ENTERWINDOW_CB", enter_cb);
 
   IupShow(dlg);
+//  IupShowXY(dlg,IUP_LEFT,IUP_BOTTOM);
 }
 
 #ifndef BIG_TEST

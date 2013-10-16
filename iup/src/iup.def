@@ -218,6 +218,7 @@ iupdrvGetSystemName
 iupdrvGetSystemFont
 iupdrvGetScrollbarSize
 iupdrvGetScreenSize
+iupdrvAddScreenOffset
 iupdrvGetScreenDepth
 iupdrvGetScreenDpi
 iupdrvGetKeyState

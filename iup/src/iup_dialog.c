@@ -163,6 +163,8 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
     *y = current_y;
     break;
   }
+
+  iupdrvAddScreenOffset(x, y);
 }
 
 static void iDialogSetModal(Ihandle* ih_popup)
