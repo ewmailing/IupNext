@@ -1297,6 +1297,10 @@ wb_usr.tree =
               link= "ctrl/iupdial.html"
             },
             {
+              name= {nl= "IupGauge"},
+              link= "ctrl/iupgauge.html"
+            },
+            {
               name= {nl= "IupMatrix"},
               link= "ctrl/iupmatrix.html",
 
@@ -1312,14 +1316,14 @@ wb_usr.tree =
                 }
               }
             },
+            { link= "", name= {en= "" } },
             {
               name= {nl= "IupMatrixList"},
               link= "ctrl/iupmatrixlist.html",
             },
-            { link= "", name= {en= "" } },
             {
-              name= {nl= "IupGauge (OLD)"},
-              link= "ctrl/iupgauge.html"
+              name= {nl= "IupMatrixEx"},
+              link= "ctrl/iupmatrixex.html",
             },
             { link= "", name= {en= "" } },
             {
