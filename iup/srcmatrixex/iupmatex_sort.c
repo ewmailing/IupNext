@@ -19,37 +19,58 @@
 #include "iup_str.h"
 #include "iup_matrixex.h"
 
-#if 0
-void Dmatrix::UpdateSortSelection()
+
+static void iMatrixExSortUpdateSelection(ImatExData* matex_data, int sort_col, int lin1, int lin2)
 {
-  int l(1),c(1);
-  IupSetAttribute(mtx,"MARKED",NULL);
-  std::string mark;
-  std::string yes,no;
+  char* markmode = IupGetAttribute(matex_data->ih, "MARKMODE");
 
-  const int nl(IupGetInt(mtx,"NUMLIN")), nc(IupGetInt(mtx,"NUMCOL"));
-  for (c=1;c<=nc;++c)
+  if (iupStrEqualNoCase(markmode, "COL") || iupStrEqualNoCase(markmode, "LINCOL"))
   {
-    yes.push_back((c==sorting.col)?'1':'0');
-    no .push_back('0');
-  }
+    int col, num_col = IupGetInt(matex_data->ih, "NUMCOL");
+    char* marked = malloc(num_col+2);
 
-  for (l=1;l<sorting.fline;++l)
-    mark.append(no);
-  for (l=sorting.fline;l<=sorting.lline;++l)
-    mark.append(yes);
-  for (l=sorting.lline+1;l<=nl;++l)
-    mark.append(no);
-  IupStoreAttribute(mtx,"MARKED",(char*)mark.c_str());
-  IupUpdate(mtx);
+    marked[0] = 'C';
+    for(col = 1; col <= num_col; ++col)
+      marked[col] = '0';
+    marked[col] = 0;
+
+    marked[sort_col] = '1';
+
+    IupSetAttribute(matex_data->ih, "MARKED", marked);
+    IupSetAttribute(matex_data->ih, "REDRAW", "ALL");
+
+    free(marked);
+  }
+  else if (iupStrEqualNoCase(markmode, "CELL"))
+  {
+    int num_col = IupGetInt(matex_data->ih, "NUMCOL");
+    int num_lin = IupGetInt(matex_data->ih, "NUMLIN");
+    int pos, lin, col, count = num_lin*num_col;   /* marked does not include titles */
+    char* marked = malloc(count+1);
+
+    for(pos = 0; pos < count; pos++)
+    {
+      lin = (pos / num_col) + 1;
+      col = (pos % num_col) + 1;
+      if (col == sort_col && lin >= lin1 && lin <= lin2)
+        marked[pos] = '1';
+      else
+        marked[pos] = '0';
+    }
+    marked[pos] = 0;
+
+    IupSetAttribute(matex_data->ih, "MARKED", marked);
+    IupSetAttribute(matex_data->ih, "REDRAW", "ALL");
+
+    free(marked);
+  }
 }
-#endif
 
 static int iMatrixExSortDialogSort_CB(Ihandle* ih_button)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_button, "MATRIX_EX_DATA");
-  Ihandle* matrix = IupGetDialogChild(ih_button, "INTERVAL");
-  int col = IupGetIntId2(matrix, "", 1, 1);
+  Ihandle* ih_matrix = IupGetDialogChild(ih_button, "INTERVAL");
+  int col = IupGetIntId2(ih_matrix, "", 1, 1);
 
   int casesensitive = IupGetInt(IupGetDialogChild(ih_button, "CASESENSITIVE"), "VALUE");
   int ascending = IupGetInt(IupGetDialogChild(ih_button, "ASCENDING"), "VALUE");
@@ -57,12 +78,12 @@ static int iMatrixExSortDialogSort_CB(Ihandle* ih_button)
   iupAttribSet(matex_data->ih, "SORTCOLUMNCASESENSITIVE", casesensitive? "Yes": "No");
   iupAttribSet(matex_data->ih, "SORTCOLUMNORDER", ascending? "ASCENDING": "DESCENDING");
 
-  if (IupGetIntId2(matrix, "TOGGLEVALUE", 2, 1))
+  if (IupGetIntId2(ih_matrix, "TOGGLEVALUE", 2, 1))
     IupSetAttributeId(matex_data->ih, "SORTCOLUMN", col, "ALL");
   else
   {
-    int lin1 = IupGetIntId2(matrix, "", 3, 1);
-    int lin2 = IupGetIntId2(matrix, "", 4, 1);
+    int lin1 = IupGetIntId2(ih_matrix, "", 3, 1);
+    int lin2 = IupGetIntId2(ih_matrix, "", 4, 1);
     IupSetfAttributeId(matex_data->ih, "SORTCOLUMN", col, "%d-%d", lin1, lin2);
   }
 
@@ -96,11 +117,13 @@ static int iMatrixExSortToggleValue_CB(Ihandle *ih_matrix, int lin, int col, int
 
   if (status) /* All Lines? disable lin1 && lin2 */
   {
-    int num_lin = IupGetInt(ih_matrix, "NUMLIN");
+    ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_matrix, "MATRIX_EX_DATA");
+    int num_lin = IupGetInt(matex_data->ih, "NUMLIN");
     IupSetStrAttributeId2(ih_matrix, "BGCOLOR", 3, 1, "220 220 220");
     IupSetStrAttributeId2(ih_matrix, "BGCOLOR", 4, 1, "220 220 220");
     IupSetIntId2(ih_matrix, "", 3, 1, 1);
     IupSetIntId2(ih_matrix, "", 4, 1, num_lin);
+    iMatrixExSortUpdateSelection(matex_data, col, 1, num_lin);
   }
   else
   {
@@ -140,19 +163,39 @@ static int iMatrixExSortEdition_CB(Ihandle *ih_matrix, int lin, int col, int mod
   {
     if (lin==1 && col==1)
     {
-      int num_col = IupGetInt(ih_matrix, "NUMCOL");
-      col = IupGetIntId2(ih_matrix, "", 1, 1);
+      ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_matrix, "MATRIX_EX_DATA");
+      int num_col = IupGetInt(matex_data->ih, "NUMCOL");
+      col = IupGetInt(ih_matrix, "VALUE");
       if (col < 1 || col > num_col)
         return IUP_IGNORE;
+      else
+      {
+        int lin1 = IupGetIntId2(ih_matrix, "", 3, 1);
+        int lin2 = IupGetIntId2(ih_matrix, "", 4, 1);
+        iMatrixExSortUpdateSelection(matex_data, col, lin1, lin2);
+      }
     }
     else if ((lin==3 && col==1) ||
              (lin==4 && col==1))
     {
-      int lin1 = IupGetIntId2(ih_matrix, "", 3, 1);
-      int lin2 = IupGetIntId2(ih_matrix, "", 4, 1);
-      int num_lin = IupGetInt(ih_matrix, "NUMLIN");
+      int lin1, lin2;
+      ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_matrix, "MATRIX_EX_DATA");
+      int num_lin = IupGetInt(matex_data->ih, "NUMLIN");
+      if (lin==3)
+        lin1 = IupGetInt(ih_matrix, "VALUE");
+      else
+        lin1 = IupGetIntId2(ih_matrix, "", 3, 1);
+      if (lin==4)
+        lin2 = IupGetInt(ih_matrix, "VALUE");
+      else
+        lin2 = IupGetIntId2(ih_matrix, "", 4, 1);
       if (lin1 < 1 || lin1 > lin2 || lin2 > num_lin)
         return IUP_IGNORE;
+      else
+      {
+        col = IupGetIntId2(ih_matrix, "", 1, 1);
+        iMatrixExSortUpdateSelection(matex_data, col, lin1, lin2);
+      }
     }
   }
 
@@ -162,10 +205,10 @@ static int iMatrixExSortEdition_CB(Ihandle *ih_matrix, int lin, int col, int mod
 
 static Ihandle* iMatrixExSortCreateDialog(ImatExData* matex_data)
 {
-  Ihandle *matrix, *matrix_box, *options_box, *reset, *sort, *invert,
+  Ihandle *ih_matrix, *matrix_box, *options_box, *reset, *sort, *invert,
           *dlg, *close, *dlg_box, *button_box, *parent;
 
-  matrix = IupSetAttributes(IupMatrix(NULL),
+  ih_matrix = IupSetAttributes(IupMatrix(NULL),
     "NUMLIN=4, "
     "NUMCOL=1, "
     "NUMLIN_VISIBLE=4, "
@@ -180,16 +223,16 @@ static Ihandle* iMatrixExSortCreateDialog(ImatExData* matex_data)
     "MASK4:1=/d+, "
     "HEIGHT0=0, "
     "WIDTH1=40");
-  IupSetStrAttributeId2(matrix, "", 1, 0, "_@IUP_COLUMN");
-  IupSetStrAttributeId2(matrix, "", 2, 0, "_@IUP_ALLLINES");
-  IupSetStrAttributeId2(matrix, "", 3, 0, "_@IUP_FIRSTLINE");
-  IupSetStrAttributeId2(matrix, "", 4, 0, "_@IUP_LASTLINE");
-  IupSetCallback(matrix, "TOGGLEVALUE_CB", (Icallback)iMatrixExSortToggleValue_CB);
-  IupSetCallback(matrix, "DROPCHECK_CB", (Icallback)iMatrixExSortDropCheck_CB);
-  IupSetCallback(matrix, "EDITION_CB", (Icallback)iMatrixExSortEdition_CB);
+  IupSetStrAttributeId2(ih_matrix, "", 1, 0, "_@IUP_COLUMN");
+  IupSetStrAttributeId2(ih_matrix, "", 2, 0, "_@IUP_ALLLINES");
+  IupSetStrAttributeId2(ih_matrix, "", 3, 0, "_@IUP_FIRSTLINE");
+  IupSetStrAttributeId2(ih_matrix, "", 4, 0, "_@IUP_LASTLINE");
+  IupSetCallback(ih_matrix, "TOGGLEVALUE_CB", (Icallback)iMatrixExSortToggleValue_CB);
+  IupSetCallback(ih_matrix, "DROPCHECK_CB", (Icallback)iMatrixExSortDropCheck_CB);
+  IupSetCallback(ih_matrix, "EDITION_CB", (Icallback)iMatrixExSortEdition_CB);
 
   matrix_box = IupVbox(
-      matrix,
+      ih_matrix,
     NULL);
 
   options_box = IupVbox(
@@ -266,7 +309,7 @@ static Ihandle* iMatrixExSortCreateDialog(ImatExData* matex_data)
 void iupMatrixExSortShowDialog(ImatExData* matex_data)
 {
   int x, y, col, lin1, lin2, num_lin;
-  Ihandle* matrix;
+  Ihandle* ih_matrix;
   Ihandle* dlg_sort = iMatrixExSortCreateDialog(matex_data);
            
   IupSetAttribute(IupGetDialogChild(dlg_sort, "CASESENSITIVE"), "VALUE", iupAttribGetStr(matex_data->ih, "SORTCOLUMNCASESENSITIVE"));
@@ -276,10 +319,10 @@ void iupMatrixExSortShowDialog(ImatExData* matex_data)
   else
     IupSetAttribute(IupGetDialogChild(dlg_sort, "ASCENDING"), "VALUE", "Yes");
 
-  matrix = IupGetDialogChild(dlg_sort, "INTERVAL");
+  ih_matrix = IupGetDialogChild(dlg_sort, "INTERVAL");
 
   col = IupGetInt2(matex_data->ih, "FOCUS_CELL");
-  IupSetIntId2(matrix, "", 1, 1, col);
+  IupSetIntId2(ih_matrix, "", 1, 1, col);
   num_lin = IupGetInt(matex_data->ih, "NUMLIN");
   lin1 = 1;
   lin2 = num_lin;
@@ -289,14 +332,15 @@ void iupMatrixExSortShowDialog(ImatExData* matex_data)
   if (lin1 > lin2) lin1 = lin2;
   if (lin1==1 && lin2==num_lin)
   {
-    IupSetStrAttributeId2(matrix, "TOGGLEVALUE", 2, 1, "Yes");
-    IupSetStrAttributeId2(matrix, "BGCOLOR", 3, 1, "220 220 220");
-    IupSetStrAttributeId2(matrix, "BGCOLOR", 4, 1, "220 220 220");
+    IupSetStrAttributeId2(ih_matrix, "TOGGLEVALUE", 2, 1, "Yes");
+    IupSetStrAttributeId2(ih_matrix, "BGCOLOR", 3, 1, "220 220 220");
+    IupSetStrAttributeId2(ih_matrix, "BGCOLOR", 4, 1, "220 220 220");
   }
   else
-    IupSetStrAttributeId2(matrix, "TOGGLEVALUE", 2, 1, "No");
-  IupSetIntId2(matrix, "", 3, 1, lin1);
-  IupSetIntId2(matrix, "", 4, 1, lin2);
+    IupSetStrAttributeId2(ih_matrix, "TOGGLEVALUE", 2, 1, "No");
+  IupSetIntId2(ih_matrix, "", 3, 1, lin1);
+  IupSetIntId2(ih_matrix, "", 4, 1, lin2);
+  iMatrixExSortUpdateSelection(matex_data, col, lin1, lin2);
   
   iupMatrixExGetDialogPosition(matex_data, &x, &y);
   IupPopup(dlg_sort, x, y);
