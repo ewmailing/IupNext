@@ -134,10 +134,6 @@ static int iMatrixSetShowAttrib(Ihandle* ih, const char* value)
   if (!iupMatrixCheckCellPos(ih, lin, col))
     return 0;
 
-  /* Can not be a title cell */
-  if ((lin < 0) || (col < 0))
-    return 0;
-
   if (!iupMatrixAuxIsCellStartVisible(ih, lin, col))
     iupMatrixScrollToVisible(ih, lin, col);
 
@@ -912,7 +908,7 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
   if (ih->data->callback_mode)
     return 0;
 
-  if (lin < 0 && col < 0)
+  if (lin==IUP_INVALID_ID && col==IUP_INVALID_ID)
   {
     if (iupStrEqualNoCase(value, "ALL"))
     {
@@ -937,6 +933,19 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
       {
         for (col=1; col<ih->data->columns.num; col++)
           iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+      }
+    }
+    else if (iupStrEqualNoCase(value, "MARKED"))
+    {
+      IFnii mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
+
+      for (lin=1; lin<ih->data->lines.num; lin++)
+      {
+        for (col=1; col<ih->data->columns.num; col++)
+        {
+          if (iupMatrixMarkCellGet(ih, lin, col, mark_cb))
+            iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+        }
       }
     }
   }
@@ -1019,7 +1028,7 @@ static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char*
   if (ih->data->callback_mode)
     return 0;
 
-  if (lin < 0 && col < 0)
+  if (lin==IUP_INVALID_ID && col==IUP_INVALID_ID)
   {
     if (iupStrEqualNoCase(value, "ALL"))
     {
@@ -1042,6 +1051,23 @@ static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char*
           if (ih->data->cells[lin][col].value)
             free(ih->data->cells[lin][col].value);
           ih->data->cells[lin][col].value = NULL;
+        }
+      }
+    }
+    else if (iupStrEqualNoCase(value, "MARKED"))
+    {
+      IFnii mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
+
+      for (lin=1; lin<ih->data->lines.num; lin++)
+      {
+        for (col=1; col<ih->data->columns.num; col++)
+        {
+          if (iupMatrixMarkCellGet(ih, lin, col, mark_cb))
+          {
+            if (ih->data->cells[lin][col].value)
+              free(ih->data->cells[lin][col].value);
+            ih->data->cells[lin][col].value = NULL;
+          }
         }
       }
     }
@@ -1769,6 +1795,8 @@ Ihandle* IupMatrix(const char* action)
 }
 
 /***********************************************************************/
+
+/* DEPRECATED backward compatibility */
 
 void IupMatSetAttribute(Ihandle* ih, const char* name, int lin, int col, const char* value)
 {
