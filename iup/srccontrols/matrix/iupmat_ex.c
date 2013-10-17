@@ -233,6 +233,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
     ih->data->last_sort_index = 0;
 
     iupMatrixDraw(ih, 1);
+    iupAttribSet(ih, "SORTCOLUMNINTERVAL", NULL);
     return 0;
   }
 
@@ -243,29 +244,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
     if (!ih->data->sort_has_index)
       return 0;
 
-    /* find lin1 */
-    for (lin=1; lin<lines_num; lin++)
-    {
-      if (sort_line_index[lin] != 0)
-      {
-        lin1 = lin;
-        break;
-      }
-    }
-    if (lin1==0)
-      return 0;
-
-    /* find lin2 */
-    for (lin=lines_num-1; lin>=1; lin--)
-    {
-      if (sort_line_index[lin] != 0)
-      {
-        lin2 = lin;
-        break;
-      }
-    }
-    if (lin1==lin2)
-      return 0;
+    IupGetIntInt(ih, "SORTCOLUMNINTERVAL", &lin1, &lin2);
 
     for (l1=lin1,l2=lin2; l1<l2; ++l1,--l2)
     {
@@ -286,6 +265,8 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
   if (!iupStrEqualNoCase(value, "ALL"))
     iupStrToIntInt(value, &lin1, &lin2, '-');
 
+  iupAttribSetStrf(ih, "SORTCOLUMNINTERVAL", "%d-%d", lin1, lin2);
+
   ascending = iupStrEqualNoCase(iupAttribGetStr(ih, "SORTCOLUMNORDER"), "ASCENDING");
   
   sort_cb = (IFniii)IupGetCallback(ih, "SORTCOLUMNCOMPARE_CB");
@@ -302,7 +283,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
     {
       ImatSortNumber* sort_line_number = (ImatSortNumber*)malloc((lin2-lin1+1)*sizeof(ImatSortNumber));
 
-      for (lin=lin1; lin<lin2; lin++)
+      for (lin=lin1; lin<=lin2; lin++)
       {
         sort_line_number[lin-lin1].lin = sort_line_index[lin]!=0? sort_line_index[lin]: lin;
         sort_line_number[lin-lin1].number = iupMatrixGetValueNumber(ih, lin, col);
@@ -310,7 +291,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
 
       qsort(sort_line_number,lin2-lin1+1,sizeof(ImatSortNumber), iMatrixCompareNumberFunc);
 
-      for (lin=lin1; lin<lin2; lin++)
+      for (lin=lin1; lin<=lin2; lin++)
       {
         if (ascending)
           sort_line_index[lin] = sort_line_number[lin-lin1].lin;
@@ -324,7 +305,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
     {
       ImatSortText* sort_line_text = (ImatSortText*)malloc((lin2-lin1+1)*sizeof(ImatSortText));
 
-      for (lin=lin1; lin<lin2; lin++)
+      for (lin=lin1; lin<=lin2; lin++)
       {
         sort_line_text[lin-lin1].lin = sort_line_index[lin]!=0? sort_line_index[lin]: lin;
         sort_line_text[lin-lin1].text = iupMatrixGetValueText(ih, lin, col);
@@ -337,7 +318,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
       iMatrixQSort_casesensitive = iupAttribGetInt(ih, "SORTCOLUMNCASESENSITIVE");
       qsort(sort_line_text,lin2-lin1+1,sizeof(ImatSortText), iMatrixCompareTextFunc);
 
-      for (lin=lin1; lin<lin2; lin++)
+      for (lin=lin1; lin<=lin2; lin++)
       {
         if (ascending)
           sort_line_index[lin] = sort_line_text[lin-lin1].lin;
@@ -396,6 +377,7 @@ void iupMatrixRegisterEx(Iclass* ic)
   iupClassRegisterAttributeId(ic, "SORTCOLUMN", NULL, iMatrixSetSortColumnAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SORTCOLUMNORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "ASCENDING", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SORTCOLUMNCASESENSITIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SORTCOLUMNINTERVAL", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupMatrixEx Attributes - Undo/Redo */
   iupClassRegisterAttribute(ic, "UNDOREDO", iMatrixGetUndoRedoAttrib, iMatrixSetUndoRedoAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

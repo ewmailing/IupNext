@@ -105,6 +105,7 @@ static Ihandle* iMatrixExSortCreateDialog(ImatExData* matex_data)
     "ALIGNMENT1=ARIGHT, "
     "SCROLLBAR=NO, "
     "USETITLESIZE=Yes, "
+    "NAME=INTERVAL, "
     "HEIGHT0=0, "
     "WIDTH1=40");
   IupSetStrAttributeId2(matrix, "", 1, 0, "_@IUP_COLUMN");
@@ -188,8 +189,10 @@ static Ihandle* iMatrixExSortCreateDialog(ImatExData* matex_data)
 
 void iupMatrixExSortShowDialog(ImatExData* matex_data)
 {
+  int x, y, col, lin1, lin2, num_lin;
+  Ihandle* matrix;
   Ihandle* dlg_sort = iMatrixExSortCreateDialog(matex_data);
-
+           
   IupSetAttribute(IupGetDialogChild(dlg_sort, "CASESENSITIVE"), "VALUE", iupAttribGetStr(matex_data->ih, "SORTCOLUMNCASESENSITIVE"));
 
   if (iupStrEqualNoCase(iupAttribGetStr(matex_data->ih, "SORTCOLUMNORDER"), "DESCENDING"))
@@ -197,12 +200,32 @@ void iupMatrixExSortShowDialog(ImatExData* matex_data)
   else
     IupSetAttribute(IupGetDialogChild(dlg_sort, "ASCENDING"), "VALUE", "Yes");
 
-  //IupSetIntId2(matrix, "", 1, 1, col);
-  //IupSetStrAttributeId2(matrix, "", 2, 1, "_@IUP_YES");
-  //IupSetIntId2(matrix, "", 3, 1, lin1);
-  //IupSetIntId2(matrix, "", 4, 1, lin2);
+  matrix = IupGetDialogChild(dlg_sort, "INTERVAL");
+
+  col = IupGetInt2(matex_data->ih, "FOCUS_CELL");
+  IupSetIntId2(matrix, "", 1, 1, col);
+  num_lin = IupGetInt(matex_data->ih, "NUMLIN");
+  lin1 = 1;
+  lin2 = num_lin;
+  IupGetIntInt(matex_data->ih, "SORTCOLUMNINTERVAL", &lin1, &lin2);
+  if (lin1 < 1) lin1 = 1;
+  if (lin2 > num_lin) lin2 = num_lin;
+  if (lin1 > lin2) lin1 = lin2;
+  if (lin1==1 && lin2==num_lin)
+  {
+    IupSetStrAttributeId2(matrix, "", 2, 1, "_@IUP_YES");
+    IupSetStrAttributeId2(matrix, "TOGGLEVALUE", 2, 1, "Yes");
+  }
+  else
+  {
+    IupSetStrAttributeId2(matrix, "", 2, 1, "_@IUP_NO");
+    IupSetStrAttributeId2(matrix, "TOGGLEVALUE", 2, 1, "No");
+  }
+  IupSetIntId2(matrix, "", 3, 1, lin1);
+  IupSetIntId2(matrix, "", 4, 1, lin2);
   
-  IupPopup(dlg_sort, IUP_MOUSEPOS, IUP_MOUSEPOS);
+  iupMatrixExGetDialogPosition(matex_data, &x, &y);
+  IupPopup(dlg_sort, x, y);
   IupDestroy(dlg_sort);
 }
 

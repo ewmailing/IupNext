@@ -21,8 +21,26 @@
 #include "iup_str.h"
 #include "iup_assert.h"
 #include "iup_predialogs.h"
+
 #include "iup_matrixex.h"
 
+
+void iupMatrixExGetDialogPosition(ImatExData* matex_data, int *x, int *y)
+{
+  /* return a dialog position aligned with the bottom-right corner of the focus cell,
+     and it will make sure that the focus cell is visible */
+  int cx, cy, cw, ch, lin, col;
+  char attrib[50];
+  IupGetIntInt(matex_data->ih, "SCREENPOSITION", x, y);
+  IupGetIntInt(matex_data->ih, "FOCUS_CELL", &lin, &col);
+  IupSetfAttribute(matex_data->ih,"SHOW", "%d:%d", lin, col);
+  sprintf(attrib, "CELLOFFSET%d:%d", lin, col);
+  IupGetIntInt(matex_data->ih, attrib, &cx, &cy);
+  sprintf(attrib, "CELLSIZE%d:%d", lin, col);
+  IupGetIntInt(matex_data->ih, attrib, &cw, &ch);
+  *x += cx + cw;
+  *y += cy + ch;
+}
 
 static void iMatrixListShowLastError(Ihandle* ih)
 {
@@ -274,6 +292,7 @@ static int iMatrixExItemRedo_CB(Ihandle* ih_item)
 static int iMatrixExItemFind_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  IupSetAttribute(matex_data->ih, "FOCUS_CELL", IupGetAttribute(ih_item, "MENUCONTEXT_CELL"));
   iupMatrixExFindShowDialog(matex_data);
   return IUP_DEFAULT;
 }
@@ -281,6 +300,7 @@ static int iMatrixExItemFind_CB(Ihandle* ih_item)
 static int iMatrixExItemSort_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  IupSetAttribute(matex_data->ih, "FOCUS_CELL", IupGetAttribute(ih_item, "MENUCONTEXT_CELL"));
   iupMatrixExSortShowDialog(matex_data);
   return IUP_DEFAULT;
 }
@@ -546,6 +566,36 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   iupMatrixExRegisterUndo(ic);
   iupMatrixExRegisterFind(ic);
   iupMatrixExRegisterSort(ic);
+
+  if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
+  {
+    IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Invalid Selection.");
+    IupSetLanguageString("IUP_ERRORNOTEXT", "Empty Text.");
+    IupSetLanguageString("IUP_ERRORINVALIDDATA", "Invalid Data.");
+    IupSetLanguageString("IUP_ERRORNOSELECTION", "Empty Selection.");
+    IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Invalid Interval.");
+    IupSetLanguageString("IUP_ERRORFILEOPEN", "Failed to open file.");
+  }
+  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+  {
+    IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "SeleÁ„o inv·lida.");
+    IupSetLanguageString("IUP_ERRORNOTEXT", "Texto vazio.");
+    IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dado inv·lido.");
+    IupSetLanguageString("IUP_ERRORNOSELECTION", "SeleÁ„o vazia.");
+    IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inv·lido.");
+    IupSetLanguageString("IUP_ERRORFILEOPEN", "Falha ao abrir o arquivo..");
+
+    if (IupGetInt(NULL, "UTF8MODE"))
+    {
+      /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
+         When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+
+      IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Sele√ß√£o inv√°lida.");
+      IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dado inv√°lido.");
+      IupSetLanguageString("IUP_ERRORNOSELECTION", "Sele√ß√£o vazia.");
+      IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inv√°lido.");
+    }
+  }
 }
 
 static Iclass* iMatrixExNewClass(void)

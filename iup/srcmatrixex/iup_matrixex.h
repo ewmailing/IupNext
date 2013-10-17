@@ -30,21 +30,28 @@ typedef struct _ImatExData
   int undo_stack_hold;
 } ImatExData;
 
+/* Busy */
 void iupMatrixExBusyStart(ImatExData* matex_data, int count, const char* busyname);
 int iupMatrixExBusyInc(ImatExData* matex_data);
 void iupMatrixExBusyEnd(ImatExData* matex_data);
 
+/* Undo */
 void iupMatrixExUndoPushBegin(ImatExData* matex_data, const char* busyname);
 void iupMatrixExUndoPushEnd(ImatExData* matex_data);
 
+/* Sort */
 void iupMatrixExSortShowDialog(ImatExData* matex_data);
 
+/* Find */
 void iupMatrixExFindShowDialog(ImatExData* matex_data);
 
+/* Visible */
 int iupMatrixExIsColumnVisible(Ihandle* ih, int col);
 int iupMatrixExIsLineVisible(Ihandle* ih, int lin);
 
+/* Common */
 void iupMatrixExCheckLimitsOrder(int *v1, int *v2, int min, int max);
+void iupMatrixExGetDialogPosition(ImatExData* matex_data, int *x, int *y);
 
 void iupMatrixExRegisterClipboard(Iclass* ic);
 void iupMatrixExRegisterBusy(Iclass* ic);

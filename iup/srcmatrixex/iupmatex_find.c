@@ -164,17 +164,8 @@ void iupMatrixExFindShowDialog(ImatExData* matex_data)
      then let the user choose the dialog position on screen */
   if (!(matex_data->find_dlg->handle))
   {
-    int x, y, cx, cy, cw, ch, lin, col;
-    char attrib[50];
-    IupGetIntInt(matex_data->ih, "SCREENPOSITION", &x, &y);
-    IupGetIntInt(matex_data->ih, "FOCUS_CELL", &lin, &col);
-    IupSetfAttribute(matex_data->ih,"SHOW", "%d:%d", lin, col);
-    sprintf(attrib, "CELLOFFSET%d:%d", lin, col);
-    IupGetIntInt(matex_data->ih, attrib, &cx, &cy);
-    sprintf(attrib, "CELLSIZE%d:%d", lin, col);
-    IupGetIntInt(matex_data->ih, attrib, &cw, &ch);
-    x += cx + cw;
-    y += cy + ch;
+    int x, y;
+    iupMatrixExGetDialogPosition(matex_data, &x, &y);
     IupShowXY(matex_data->find_dlg, x, y);
   }
   else
