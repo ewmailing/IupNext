@@ -299,7 +299,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
         if (ascending)
           sort_line_index[lin] = sort_line_number[lin-lin1].lin;
         else
-          sort_line_index[lin2-1 - (lin-lin1)] = sort_line_number[lin-lin1].lin;
+          sort_line_index[lin2 - (lin-lin1)] = sort_line_number[lin-lin1].lin;
       }
 
       free(sort_line_number);
@@ -326,7 +326,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
         if (ascending)
           sort_line_index[lin] = sort_line_text[lin-lin1].lin;
         else
-          sort_line_index[lin2-1 - (lin-lin1)] = sort_line_text[lin-lin1].lin;
+          sort_line_index[lin2 - (lin-lin1)] = sort_line_text[lin-lin1].lin;
 
         if (ih->data->callback_mode && sort_line_text[lin-lin1].text)
           free(sort_line_text[lin-lin1].text);
