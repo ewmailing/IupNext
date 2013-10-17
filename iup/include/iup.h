@@ -245,7 +245,7 @@ void  IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
 /* IupText, IupList, IupTree, IupMatrix and IupScintilla utility */
 int   IupConvertXYToPos(Ihandle* ih, int x, int y);
 
-/* OLD names, kept for backward compatibility */
+/* OLD names, kept for backward compatibility, will never be removed. */
 void IupStoreGlobal(const char* name, const char* value);
 void IupStoreAttribute(Ihandle* ih, const char* name, const char* value);
 void IupSetfAttribute(Ihandle* ih, const char* name, const char* format, ...);
@@ -260,7 +260,7 @@ void* IupTreeGetUserId(Ihandle* ih, int id);
 int   IupTreeGetId(Ihandle* ih, void *userid);
 void  IupTreeSetAttributeHandle(Ihandle* ih, const char* name, int id, Ihandle* ih_named);
 
-/* Deprecated IupTree utilities, use Iup*AttributeId functions */
+/* DEPRECATED IupTree utilities, use Iup*AttributeId functions. It will be removed in a future version.  */
 void  IupTreeSetAttribute  (Ihandle* ih, const char* name, int id, const char* value);
 void  IupTreeStoreAttribute(Ihandle* ih, const char* name, int id, const char* value);
 char* IupTreeGetAttribute  (Ihandle* ih, const char* name, int id);
@@ -268,10 +268,10 @@ int   IupTreeGetInt        (Ihandle* ih, const char* name, int id);
 float IupTreeGetFloat      (Ihandle* ih, const char* name, int id);
 void  IupTreeSetfAttribute (Ihandle* ih, const char* name, int id, const char* format, ...);
 
-/* Deprecated callback management */
+/* DEPRECATED callback management. It will be removed in a future version. */
 const char* IupGetActionName(void);
 
-/* Deprecated font names */
+/* DEPRECATED font names. It will be removed in a future version.  */
 char*     IupMapFont       (const char *iupfont);
 char*     IupUnMapFont     (const char *driverfont);
 
