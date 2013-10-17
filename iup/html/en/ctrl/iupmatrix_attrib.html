@@ -399,8 +399,9 @@ MULTIPLE and AREA are NOT considered when setting MARKED or MARKL:C.</p>
 <h3>Action Attributes</h3>
 <p>
 <strong>CLEARATTRIB</strong> (write-only):
-  Clear all cell attributes if ALL, and all attributes except titles if CONTENTS. 
-When ALL is specified, all lines and column attributes are also cleared. (since 3.6)<br><strong><a name="CLEARVALUE">CLEARVALUE</a></strong><strong><i>L</i>:<i>C</i></strong> (write-only): Clear all 
+  Clear all cell attributes if ALL, all attributes except titles if CONTENTS, 
+and all selected cell attributes if MARKED. 
+When ALL is specified, all lines and column attributes are also cleared. (since 3.6)<br><strong><a name="CLEARATTRIB">CLEARATTRIB</a></strong><strong><i>L</i>:<i>C</i></strong> (write-only): Clear all 
 cell attributes in an interval starting at the specified cell. Its value defines the end 
 cell in the &quot;L:C&quot; format, the default is the last cell. (since 3.6)<br>
 <strong>CLEARATTRIB<i>L</i>:*</strong> (write-only):
@@ -418,7 +419,8 @@ and SORTSIGN* are affected. Action only works if the matrix is mapped and NOT in
 callback mode.</p>
 <p>
 <strong>CLEARVALUE</strong> (write-only):
-  Clear all values if ALL, and all values except titles if CONTENTS. (since 3.6)<br><strong><a name="CLEARVALUE">CLEARVALUE</a></strong><strong><i>L</i>:<i>C</i></strong> (write-only): Clear all 
+  Clear all values if ALL, all values except titles if CONTENTS, and all 
+selected cell values if MARKED. (since 3.6)<br><strong><a name="CLEARVALUE">CLEARVALUE</a></strong><strong><i>L</i>:<i>C</i></strong> (write-only): Clear all 
 values in an interval starting at the specified cell. Its value defines the end 
 cell in the &quot;L:C&quot; format, the default is the last cell. (since 3.6)<br>
 <strong>CLEARVALUE<i>L</i>:*</strong> (write-only):

@@ -216,9 +216,6 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
   int* sort_line_index;
   IFniii sort_cb;
 
-  if (!iupMATRIX_CHECK_COL(ih, col))
-    return 0;
-
   if (!ih->data->sort_line_index)
     ih->data->sort_line_index = (int*)calloc(ih->data->lines.num_alloc, sizeof(int));
   sort_line_index = ih->data->sort_line_index;
@@ -261,6 +258,9 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
     iupMatrixDraw(ih, 1);
     return 0;
   }
+
+  if (!iupMATRIX_CHECK_COL(ih, col))
+    return 0;
 
   if (!iupStrEqualNoCase(value, "ALL"))
     iupStrToIntInt(value, &lin1, &lin2, '-');

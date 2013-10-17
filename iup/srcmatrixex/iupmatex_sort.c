@@ -43,52 +43,121 @@ void Dmatrix::UpdateSortSelection()
   IupStoreAttribute(mtx,"MARKED",(char*)mark.c_str());
   IupUpdate(mtx);
 }
-
-static int iMatrixExSortDialogFindNext_CB(Ihandle* ih_button)
-{
-  Ihandle* text = IupGetDialogChild(ih_button, "FINDTEXT");
-  char* find = IupGetAttribute(text, "VALUE");
-  if (find && find[0]!=0)
-  {
-    ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_button, "MATRIX_EX_DATA");
-    int matchcase = IupGetInt(IupGetDialogChild(ih_button, "MATCHCASE"), "VALUE");
-    int matchwholecell = IupGetInt(IupGetDialogChild(ih_button, "MATCHWHOLECELL"), "VALUE");
-    int searchbyrow = IupGetInt(IupGetDialogChild(ih_button, "SEARCHBYROW"), "VALUE");
-
-    iupAttribSet(matex_data->ih, "FINDMATCHCASE", matchcase? "Yes": "No");
-    iupAttribSet(matex_data->ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
-    iupAttribSet(matex_data->ih, "FINDDIRECTION", searchbyrow? "RIGHTBOTTOM": "BOTTOMRIGHT");  /* Forward */
-
-    IupSetAttribute(matex_data->ih, "FIND", find);
-  }
-  return IUP_DEFAULT;
-}
-
-static int iMatrixExSortDialogFindPrevious_CB(Ihandle* ih_button)
-{
-  Ihandle* text = IupGetDialogChild(ih_button, "FINDTEXT");
-  char* find = IupGetAttribute(text, "VALUE");
-  if (find && find[0]!=0)
-  {
-    ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_button, "MATRIX_EX_DATA");
-    int matchcase = IupGetInt(IupGetDialogChild(ih_button, "MATCHCASE"), "VALUE");
-    int matchwholecell = IupGetInt(IupGetDialogChild(ih_button, "MATCHWHOLECELL"), "VALUE");
-    int searchbyrow = IupGetInt(IupGetDialogChild(ih_button, "SEARCHBYROW"), "VALUE");
-
-    iupAttribSet(matex_data->ih, "FINDMATCHCASE", matchcase? "Yes": "No");
-    iupAttribSet(matex_data->ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
-    iupAttribSet(matex_data->ih, "FINDDIRECTION", searchbyrow? "LEFTTOP": "TOPLEFT");  /* Backward */
-
-    IupSetAttribute(matex_data->ih, "FIND", find);
-  }
-  return IUP_DEFAULT;
-}
 #endif
+
+static int iMatrixExSortDialogSort_CB(Ihandle* ih_button)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_button, "MATRIX_EX_DATA");
+  Ihandle* matrix = IupGetDialogChild(ih_button, "INTERVAL");
+  int col = IupGetIntId2(matrix, "", 1, 1);
+
+  int casesensitive = IupGetInt(IupGetDialogChild(ih_button, "CASESENSITIVE"), "VALUE");
+  int ascending = IupGetInt(IupGetDialogChild(ih_button, "ASCENDING"), "VALUE");
+
+  iupAttribSet(matex_data->ih, "SORTCOLUMNCASESENSITIVE", casesensitive? "Yes": "No");
+  iupAttribSet(matex_data->ih, "SORTCOLUMNORDER", ascending? "ASCENDING": "DESCENDING");
+
+  if (IupGetIntId2(matrix, "TOGGLEVALUE", 2, 1))
+    IupSetAttributeId(matex_data->ih, "SORTCOLUMN", col, "ALL");
+  else
+  {
+    int lin1 = IupGetIntId2(matrix, "", 3, 1);
+    int lin2 = IupGetIntId2(matrix, "", 4, 1);
+    IupSetfAttributeId(matex_data->ih, "SORTCOLUMN", col, "%d-%d", lin1, lin2);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExSortDialogReset_CB(Ihandle* ih_button)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_button, "MATRIX_EX_DATA");
+  IupSetAttribute(matex_data->ih, "SORTCOLUMN", "RESET");
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExSortDialogInvert_CB(Ihandle* ih_button)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_button, "MATRIX_EX_DATA");
+  IupSetAttribute(matex_data->ih, "SORTCOLUMN", "INVERT");
+  return IUP_DEFAULT;
+}
 
 static int iMatrixExSortDialogClose_CB(Ihandle* ih_button)
 {
   (void)ih_button;
   return IUP_CLOSE;
+}
+
+static int iMatrixExSortToggleValue_CB(Ihandle *ih_matrix, int lin, int col, int status)
+{
+  if (lin!=2 || col!=1)
+    return IUP_DEFAULT;
+
+  if (status) /* All Lines? disable lin1 && lin2 */
+  {
+    int num_lin = IupGetInt(ih_matrix, "NUMLIN");
+    IupSetStrAttributeId2(ih_matrix, "BGCOLOR", 3, 1, "220 220 220");
+    IupSetStrAttributeId2(ih_matrix, "BGCOLOR", 4, 1, "220 220 220");
+    IupSetIntId2(ih_matrix, "", 3, 1, 1);
+    IupSetIntId2(ih_matrix, "", 4, 1, num_lin);
+  }
+  else
+  {
+    IupSetStrAttributeId2(ih_matrix, "BGCOLOR", 3, 1, NULL);
+    IupSetStrAttributeId2(ih_matrix, "BGCOLOR", 4, 1, NULL);
+  }
+
+  IupSetAttribute(ih_matrix, "REDRAW", "ALL");
+
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExSortDropCheck_CB(Ihandle *ih_matrix, int lin, int col)
+{
+  (void)ih_matrix;
+
+  if (lin==2 && col==1)
+    return IUP_CONTINUE;
+
+  return IUP_IGNORE;
+}
+
+static int iMatrixExSortEdition_CB(Ihandle *ih_matrix, int lin, int col, int mode, int update)
+{
+  if (mode==1)
+  {
+    if (lin==2 && col==1)
+      return IUP_IGNORE;
+    else if ((lin==3 && col==1) ||
+             (lin==4 && col==1))
+    {
+      if (IupGetIntId2(ih_matrix, "TOGGLEVALUE", 2, 1))
+        return IUP_IGNORE;
+    }
+  }
+  else /* mode==0 */
+  {
+    if (lin==1 && col==1)
+    {
+      int num_col = IupGetInt(ih_matrix, "NUMCOL");
+      col = IupGetIntId2(ih_matrix, "", 1, 1);
+      if (col < 1 || col > num_col)
+        return IUP_IGNORE;
+    }
+    else if ((lin==3 && col==1) ||
+             (lin==4 && col==1))
+    {
+      int lin1 = IupGetIntId2(ih_matrix, "", 3, 1);
+      int lin2 = IupGetIntId2(ih_matrix, "", 4, 1);
+      int num_lin = IupGetInt(ih_matrix, "NUMLIN");
+      if (lin1 < 1 || lin1 > lin2 || lin2 > num_lin)
+        return IUP_IGNORE;
+    }
+  }
+
+  (void)update;
+  return IUP_DEFAULT;
 }
 
 static Ihandle* iMatrixExSortCreateDialog(ImatExData* matex_data)
@@ -106,12 +175,18 @@ static Ihandle* iMatrixExSortCreateDialog(ImatExData* matex_data)
     "SCROLLBAR=NO, "
     "USETITLESIZE=Yes, "
     "NAME=INTERVAL, "
+    "MASK1:1=/d+, "
+    "MASK3:1=/d+, "
+    "MASK4:1=/d+, "
     "HEIGHT0=0, "
     "WIDTH1=40");
   IupSetStrAttributeId2(matrix, "", 1, 0, "_@IUP_COLUMN");
   IupSetStrAttributeId2(matrix, "", 2, 0, "_@IUP_ALLLINES");
   IupSetStrAttributeId2(matrix, "", 3, 0, "_@IUP_FIRSTLINE");
   IupSetStrAttributeId2(matrix, "", 4, 0, "_@IUP_LASTLINE");
+  IupSetCallback(matrix, "TOGGLEVALUE_CB", (Icallback)iMatrixExSortToggleValue_CB);
+  IupSetCallback(matrix, "DROPCHECK_CB", (Icallback)iMatrixExSortDropCheck_CB);
+  IupSetCallback(matrix, "EDITION_CB", (Icallback)iMatrixExSortEdition_CB);
 
   matrix_box = IupVbox(
       matrix,
@@ -128,15 +203,16 @@ static Ihandle* iMatrixExSortCreateDialog(ImatExData* matex_data)
 
   sort = IupButton("_@IUP_SORT", NULL);
   IupSetAttribute(sort,"PADDING" ,"12x2");
-//  IupSetCallback(sort, "ACTION", (Icallback)iMatrixExSortDialogSort_CB);
-
-  reset = IupButton("_@IUP_RESET", NULL);
-  IupSetAttribute(reset,"PADDING" ,"12x2");
-//  IupSetCallback(reset, "ACTION", (Icallback)iMatrixExSortDialogReset_CB);
+  IupSetCallback(sort, "ACTION", (Icallback)iMatrixExSortDialogSort_CB);
 
   invert = IupButton("_@IUP_INVERT", NULL);
   IupSetAttribute(invert,"PADDING" ,"12x2");
-//  IupSetCallback(invert, "ACTION", (Icallback)iMatrixExSortDialogInvert_CB);
+  IupSetCallback(invert, "ACTION", (Icallback)iMatrixExSortDialogInvert_CB);
+  IupSetStrAttribute(invert,"TIP" ,"_@IUP_INVERT_TIP");
+
+  reset = IupButton("_@IUP_RESET", NULL);
+  IupSetAttribute(reset,"PADDING" ,"12x2");
+  IupSetCallback(reset, "ACTION", (Icallback)iMatrixExSortDialogReset_CB);
 
   close = IupButton("_@IUP_CLOSE", NULL);
   IupSetAttribute(close,"PADDING" ,"12x2");
@@ -213,14 +289,12 @@ void iupMatrixExSortShowDialog(ImatExData* matex_data)
   if (lin1 > lin2) lin1 = lin2;
   if (lin1==1 && lin2==num_lin)
   {
-    IupSetStrAttributeId2(matrix, "", 2, 1, "_@IUP_YES");
     IupSetStrAttributeId2(matrix, "TOGGLEVALUE", 2, 1, "Yes");
+    IupSetStrAttributeId2(matrix, "BGCOLOR", 3, 1, "220 220 220");
+    IupSetStrAttributeId2(matrix, "BGCOLOR", 4, 1, "220 220 220");
   }
   else
-  {
-    IupSetStrAttributeId2(matrix, "", 2, 1, "_@IUP_NO");
     IupSetStrAttributeId2(matrix, "TOGGLEVALUE", 2, 1, "No");
-  }
   IupSetIntId2(matrix, "", 3, 1, lin1);
   IupSetIntId2(matrix, "", 4, 1, lin2);
   
@@ -242,6 +316,8 @@ void iupMatrixExRegisterSort(Iclass* ic)
     IupSetLanguageString("IUP_INVERT", "Invert");
     IupSetLanguageString("IUP_RESET", "Reset");
     IupSetLanguageString("IUP_SORT", "Sort");
+    
+    IupSetLanguageString("IUP_INVERT_TIP", "Just invert the current sort. New parameters are ignored.");
 
     IupSetLanguageString("IUP_ORDER", "Order");
     IupSetLanguageString("IUP_ASCENDING", "Ascending");
@@ -259,6 +335,8 @@ void iupMatrixExRegisterSort(Iclass* ic)
     IupSetLanguageString("IUP_INVERT", "Inverter");
     IupSetLanguageString("IUP_RESET", "Reiniciar");
     IupSetLanguageString("IUP_SORT", "Ordenar");
+    
+    IupSetLanguageString("IUP_INVERT_TIP", "Apenas inverte a ordenaÁ„o corrente. Novos par‚metros s„o ignorados.");
 
     IupSetLanguageString("IUP_ORDER", "Ordem");
     IupSetLanguageString("IUP_ASCENDING", "Ascendente");
@@ -275,6 +353,7 @@ void iupMatrixExRegisterSort(Iclass* ic)
       /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
          When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
 
+      IupSetLanguageString("IUP_INVERT_TIP", "Apenas inverte a ordena√ß√£o corrente. Novos par√¢metros s√£o ignorados.");
       IupSetLanguageString("IUP_CASESENSITIVE", "Diferenciar mai√∫sculas e min√∫sculas");
       IupSetLanguageString("IUP_LASTLINE", "√öltima Linha");
     }

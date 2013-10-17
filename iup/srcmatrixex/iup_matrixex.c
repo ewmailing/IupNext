@@ -228,6 +228,15 @@ static int iMatrixExItemImport_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int iMatrixExItemCut_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  IupSetAttribute(matex_data->ih, "COPY", "MARKED");
+  IupSetAttribute(matex_data->ih, "CLEARVALUE", "MARKED");
+  iMatrixListShowLastError(matex_data->ih);
+  return IUP_DEFAULT;
+}
+
 static int iMatrixExItemCopy_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
@@ -247,6 +256,14 @@ static int iMatrixExItemPaste_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int iMatrixExItemDel_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  IupSetAttribute(matex_data->ih, "CLEARVALUE", "MARKED");
+  iMatrixListShowLastError(matex_data->ih);
+  return IUP_DEFAULT;
+}
+
 static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
@@ -261,7 +278,7 @@ static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
     value = iupAttribGet(matex_data->ih, "_IUP_LAST_COPYCOL_INTERVAL");
     if (value) iupStrCopyN(interval, 200, value);
 
-    if (IupGetParam("Copy To Interval", NULL, NULL, "Intervals: %s\n", interval, NULL))
+    if (IupGetParam("_@IUP_COPYTOINTERVALS", NULL, NULL, "(L1-L2,L3,L4-L5,...): %s\n", interval, NULL))
     {
       IupSetAttributeId2(matex_data->ih, "COPYCOLTO", lin, col, interval);
       iupAttribSetStr(matex_data->ih, "_IUP_LAST_COPYCOL_INTERVAL", interval);
@@ -297,6 +314,28 @@ static int iMatrixExItemFind_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int iMatrixExItemGoTo_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  char cell[100] = "";
+  char* value;
+
+  if (!matex_data)  /* will be called also by the shortcut key */
+   matex_data = (ImatExData*)iupAttribGet(ih_item, "_IUP_MATEX_DATA");
+
+  value = iupAttribGet(matex_data->ih, "_IUP_LAST_GOTO_CELL");
+  if (value) iupStrCopyN(cell, 100, value);
+
+  if (IupGetParam("_@IUP_GOTO", NULL, NULL, "(LIN:COL): %s\n", cell, NULL))
+  {
+    IupSetAttribute(matex_data->ih, "SHOW", cell);
+    IupSetAttribute(matex_data->ih, "FOCUS_CELL", cell);
+    iupAttribSetStr(matex_data->ih, "_IUP_LAST_GOTO_CELL", cell);
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int iMatrixExItemSort_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
@@ -324,61 +363,74 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
 {
   int readonly = IupGetInt(ih, "READONLY");
 
+  /************************** File ****************************/
+
   Ihandle* menu = IupMenu(
-    IupSubmenu("Export",
+    IupSetAttributes(IupSubmenu("_@IUP_EXPORT",
       IupMenu(
-        IupSetCallbacks(IupSetAttributes(IupItem("Text..." , NULL), "TEXTFORMAT=TXT"), "ACTION", iMatrixExItemExport_CB, NULL),
+        IupSetCallbacks(IupSetAttributes(IupItem("Txt..." , NULL), "TEXTFORMAT=TXT"), "ACTION", iMatrixExItemExport_CB, NULL),
         IupSetCallbacks(IupSetAttributes(IupItem("LaTeX...", NULL), "TEXTFORMAT=LaTeX"), "ACTION", iMatrixExItemExport_CB, NULL),
         IupSetCallbacks(IupSetAttributes(IupItem("Html..." , NULL), "TEXTFORMAT=HTML"), "ACTION", iMatrixExItemExport_CB, NULL),
-        NULL)),
+        NULL)), "IMAGE=IUP_FileOpen"),
     NULL);
 
   if (!readonly)
   {
-    IupAppend(menu, IupSubmenu("Import",
+    IupAppend(menu, IupSetAttributes(IupSubmenu("_@IUP_IMPORT",
         IupMenu(
-          IupSetCallbacks(IupItem("Text...",  NULL), "ACTION", iMatrixExItemImport_CB, NULL),
-          NULL)));
-    IupAppend(menu, IupSubmenu("Copy To (Same Column)",
-        IupMenu(
-          IupSetCallbacks(IupSetAttributes(IupItem("All lines"      , NULL), "COPYCOLTO=ALL"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
-          IupSetCallbacks(IupSetAttributes(IupItem("Here to top"    , NULL), "COPYCOLTO=TOP"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
-          IupSetCallbacks(IupSetAttributes(IupItem("Here to bottom" , NULL), "COPYCOLTO=BOTTOM"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
-          IupSetCallbacks(IupSetAttributes(IupItem("Interval..."    , NULL), "COPYCOLTO=INTERVAL"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
-          IupSetCallbacks(IupSetAttributes(IupItem("Selected lines" , NULL), "COPYCOLTO=MARKED"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),
-          NULL)));
-    IupAppend(menu, IupSeparator());
+          IupSetCallbacks(IupItem("Txt...",  NULL), "ACTION", iMatrixExItemImport_CB, NULL),
+          NULL)), "IMAGE=IUP_FileSave"));
   }
 
-  IupAppend(menu, IupSetCallbacks(IupItem("Copy\tCtrl+C",  NULL), "ACTION", iMatrixExItemCopy_CB, NULL));
+  IupAppend(menu, IupSeparator());
+
+  /************************** Edit - Undo ****************************/
 
   if (!readonly)
   {
     Ihandle *undo, *redo;
-    IupAppend(menu, IupSetCallbacks(IupItem("Paste\tCtrl+V", NULL), "ACTION", iMatrixExItemPaste_CB, NULL));
-    IupAppend(menu, IupSeparator());
-    IupAppend(menu, undo = IupSetCallbacks(IupItem("Undo\tCtrl+Z", NULL), "ACTION", iMatrixExItemUndo_CB, NULL));
-    IupAppend(menu, redo = IupSetCallbacks(IupItem("Redo\tCtrl+Y", NULL), "ACTION", iMatrixExItemRedo_CB, NULL));
+    IupAppend(menu, undo = IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_UNDO", NULL), "IMAGE=IUP_EditUndo"), "ACTION", iMatrixExItemUndo_CB, NULL));
+    IupAppend(menu, redo = IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_REDO", NULL), "IMAGE=IUP_EditRedo"), "ACTION", iMatrixExItemRedo_CB, NULL));
     //IupAppend(menu, IupItem("Undo List...\tCtrl+U", NULL));
-    IupAppend(menu, IupSeparator());
-    IupAppend(menu, IupSetCallbacks(IupItem("Sort...", NULL), "ACTION", iMatrixExItemSort_CB, NULL));
 
     if (!IupGetInt(ih, "UNDO"))
       IupSetAttribute(undo, "ACTIVE", "No");
     if (!IupGetInt(ih, "REDO"))
       IupSetAttribute(redo, "ACTIVE", "No");
+
+    IupAppend(menu, IupSeparator());
   }
 
-  IupAppend(menu, IupSetCallbacks(IupItem("Find...\tCtrl+F", NULL), "ACTION", iMatrixExItemFind_CB, NULL));
+  /************************** Edit - Clipboard ****************************/
+
+  if (!readonly)
+    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_CUT", NULL), "IMAGE=IUP_EditCut"), "ACTION", iMatrixExItemCut_CB, NULL));
+  IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_COPY",  NULL), "IMAGE=IUP_EditCopy"), "ACTION", iMatrixExItemCopy_CB, NULL));
+  if (!readonly)
+  {
+    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_PASTE", NULL), "IMAGE=IUP_EditPaste"), "ACTION", iMatrixExItemPaste_CB, NULL));
+    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_ERASE", NULL), "IMAGE=IUP_EditErase"), "ACTION", iMatrixExItemDel_CB, NULL));
+  }
   IupAppend(menu, IupSeparator());
+
+  /************************** Edit - Find ****************************/
+
+  IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_FINDDLG", NULL), "IMAGE=IUP_EditFind"), "ACTION", iMatrixExItemFind_CB, NULL));
+  IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_GOTODLG", NULL), "ACTION", iMatrixExItemGoTo_CB, NULL));
+  IupAppend(menu, IupSeparator());
+
+  /************************** View ****************************/
+
+  if (!readonly)
+    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SORTDLG", NULL), "IMAGE=IUP_ToolsSortAscend"), "ACTION", iMatrixExItemSort_CB, NULL));
 
   {
     int flin, fcol;
     IupGetIntInt(ih, "FREEZE", &flin, &fcol);
     if (lin!=flin || col!=fcol)
-      IupAppend(menu, IupSetCallbacks(IupItem("Freeze", NULL), "ACTION", iMatrixExItemFreeze_CB, NULL));
+      IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_FREEZE", NULL), "ACTION", iMatrixExItemFreeze_CB, NULL));
     else
-      IupAppend(menu, IupSetCallbacks(IupItem("Unfreeze", NULL), "ACTION", iMatrixExItemFreeze_CB, NULL));
+      IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_UNFREEZE", NULL), "ACTION", iMatrixExItemFreeze_CB, NULL));
   }
 
   //IupAppend(menu, IupItem("Hide Column"         , NULL));
@@ -387,6 +439,22 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
   //Is Numeric Column and Has Units
   //Unit...
   //Decimals...
+
+  /************************** Data ****************************/
+
+  if (!readonly)
+  {
+    IupAppend(menu, IupSeparator());
+
+    IupAppend(menu, IupSubmenu("_@IUP_COPYTOSAMECOLUMN",
+        IupMenu(
+          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_ALLLINES"      , NULL), "COPYCOLTO=ALL"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
+          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_HERETOTOP"    , NULL), "COPYCOLTO=TOP"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
+          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_HERETOBOTTOM" , NULL), "COPYCOLTO=BOTTOM"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
+          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_INTERVALDLG"    , NULL), "COPYCOLTO=INTERVAL"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
+          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SELECTEDLINES" , NULL), "COPYCOLTO=MARKED"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),
+          NULL)));
+  }
 
   return menu;
 }
@@ -435,8 +503,13 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
   {
     switch (c)
     {
+    case K_cT: 
+      if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+        iMatrixExSelectAll(ih); 
+      return IUP_CONTINUE;
     case K_cA: 
-      iMatrixExSelectAll(ih); 
+      if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
+        iMatrixExSelectAll(ih); 
       return IUP_CONTINUE;
     case K_cV: 
       if (!IupGetInt(ih, "READONLY"))
@@ -449,6 +522,11 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
         iMatrixListShowLastError(ih);
       }
       return IUP_IGNORE;
+    case K_cX: 
+      IupSetAttribute(ih, "COPY", "MARKED");
+      IupSetAttribute(ih, "CLEARVALUE", "MARKED");
+      iMatrixListShowLastError(ih);
+      return IUP_IGNORE;
     case K_cC: 
       IupSetAttribute(ih, "COPY", "MARKED");
       iMatrixListShowLastError(ih);
@@ -456,8 +534,13 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
     case K_cZ: 
       IupSetAttribute(ih, "UNDO", NULL);  /* 1 level */
       return IUP_IGNORE;
+    case K_cR: 
+      if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+        IupSetAttribute(ih, "REDO", NULL);  /* 1 level */
+      return IUP_IGNORE;
     case K_cY: 
-      IupSetAttribute(ih, "REDO", NULL);  /* 1 level */
+      if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
+        IupSetAttribute(ih, "REDO", NULL);  /* 1 level */
       return IUP_IGNORE;
     case K_F3: 
       {
@@ -491,11 +574,31 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
         }
         return IUP_IGNORE;
       }
+    case K_cL: 
+      if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+      {
+        ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+        iupMatrixExFindShowDialog(matex_data);
+        return IUP_IGNORE;
+      }
+      return IUP_CONTINUE;
     case K_cF: 
+      if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
+      {
+        ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+        iupMatrixExFindShowDialog(matex_data);
+        return IUP_IGNORE;
+      }
+      return IUP_CONTINUE;
     case K_mF3: 
       {
         ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
         iupMatrixExFindShowDialog(matex_data);
+        return IUP_IGNORE;
+      }
+    case K_cG: 
+      {
+        iMatrixExItemGoTo_CB(ih);
         return IUP_IGNORE;
       }
     case K_ESC: 
@@ -569,6 +672,29 @@ static void iMatrixExInitAttribCb(Iclass* ic)
 
   if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
   {
+    IupSetLanguageString("IUP_EXPORT", "Export");
+    IupSetLanguageString("IUP_IMPORT", "Import");
+    IupSetLanguageString("IUP_UNDO", "Undo\tCtrl+Z");
+    IupSetLanguageString("IUP_REDO", "Redo\tCtrl+Y");
+    IupSetLanguageString("IUP_CUT", "Cut\tCtrl+X");
+    IupSetLanguageString("IUP_COPY", "Copy\tCtrl+C");
+    IupSetLanguageString("IUP_PASTE", "Paste\tCtrl+V");
+    IupSetLanguageString("IUP_ERASE", "Erase\tDel");
+    IupSetLanguageString("IUP_FINDDLG", "Find...\tCtrl+F");
+    IupSetLanguageString("IUP_GOTODLG", "Go To...\tCtrl+G");
+    IupSetLanguageString("IUP_SORTDLG", "Sort...");
+    IupSetLanguageString("IUP_FREEZE", "Freeze");
+    IupSetLanguageString("IUP_UNFREEZE", "Unfreeze");
+    IupSetLanguageString("IUP_COPYTOSAMECOLUMN", "Copy To (Same Column)");
+    IupSetLanguageString("IUP_ALLLINES", "All lines");
+    IupSetLanguageString("IUP_HERETOTOP", "Here to top");
+    IupSetLanguageString("IUP_HERETOBOTTOM", "Here to bottom");
+    IupSetLanguageString("IUP_INTERVALDLG", "Interval...");
+    IupSetLanguageString("IUP_SELECTEDLINES", "Selected lines");
+
+    IupSetLanguageString("IUP_COPYTOINTERVALS", "Copy To - Intervals");
+    IupSetLanguageString("IUP_GOTO", "Go To");
+
     IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Invalid Selection.");
     IupSetLanguageString("IUP_ERRORNOTEXT", "Empty Text.");
     IupSetLanguageString("IUP_ERRORINVALIDDATA", "Invalid Data.");
@@ -578,6 +704,29 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
   {
+    IupSetLanguageString("IUP_EXPORT", "Exportar");
+    IupSetLanguageString("IUP_IMPORT", "Importar");
+    IupSetLanguageString("IUP_UNDO", "Desfazer\tCtrl+Z");
+    IupSetLanguageString("IUP_REDO", "Refazer\tCtrl+R");
+    IupSetLanguageString("IUP_CUT", "Recortar\tCtrl+X");
+    IupSetLanguageString("IUP_COPY", "Copiar\tCtrl+C");
+    IupSetLanguageString("IUP_PASTE", "Colar\tCtrl+V");
+    IupSetLanguageString("IUP_ERASE", "Apagar\tDel");
+    IupSetLanguageString("IUP_FINDDLG", "Localizar...\tCtrl+L");
+    IupSetLanguageString("IUP_GOTODLG", "Ir Para...\tCtrl+G");
+    IupSetLanguageString("IUP_SORTDLG", "Classificar...");
+    IupSetLanguageString("IUP_FREEZE", "Congelar");
+    IupSetLanguageString("IUP_UNFREEZE", "Descongelar");
+    IupSetLanguageString("IUP_COPYTOSAMECOLUMN", "Copiar Para (Mesma Coluna)");
+    IupSetLanguageString("IUP_ALLLINES", "Todas as linhas");
+    IupSetLanguageString("IUP_HERETOTOP", "Daqui para o topo");
+    IupSetLanguageString("IUP_HERETOBOTTOM", "Daqui para o fim");
+    IupSetLanguageString("IUP_INTERVALDLG", "Intervalo...");
+    IupSetLanguageString("IUP_SELECTEDLINES", "Linhas Selecionadas");
+
+    IupSetLanguageString("IUP_COPYTOINTERVALS", "Copiar Para - Intervalos");
+    IupSetLanguageString("IUP_GOTO", "Ir Para");
+
     IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Seleção inválida.");
     IupSetLanguageString("IUP_ERRORNOTEXT", "Texto vazio.");
     IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dado inválido.");
