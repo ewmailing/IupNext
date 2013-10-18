@@ -87,7 +87,7 @@ char* IupGetAttributes(Ihandle *ih)
         { strcat(buffer,","); size--; }
 
       value = iupTableGetCurr(ih->attrib);
-      if (iupAttribIsPointer(ih, name))
+      if (iupAttribIsNotString(ih, name))
       {
         sprintf(sb, "%p", (void*) value);
         value = sb;
@@ -1274,7 +1274,7 @@ Ihandle* IupSetAttributes(Ihandle *ih, const char* str)
   return ih;
 }
 
-int iupAttribIsPointer(Ihandle* ih, const char* name)
+int iupAttribIsNotString(Ihandle* ih, const char* name)
 {
   return iupClassObjectAttribIsNotString(ih, name);
 }

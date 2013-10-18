@@ -32,7 +32,7 @@ extern "C" {
 
 /** Returns true if the attribute name is a known pointer. \n
  * \ingroup attrib */
-int iupAttribIsPointer(Ihandle* ih, const char *name);
+int iupAttribIsNotString(Ihandle* ih, const char *name);
 
 
 

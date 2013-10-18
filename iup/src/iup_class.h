@@ -452,7 +452,7 @@ char* iupClassObjectGetAttributeId2(Ihandle* ih, const char* name, int id1, int 
 /* Used only in iupAttribGetStr */
 void  iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_value, int *inherit);
 
-/* Used only in iupAttribIsPointer */
+/* Used only in iupAttribIsNotString */
 int   iupClassObjectAttribIsNotString(Ihandle* ih, const char* name);
 
 /* Used only in iupAttribUpdateFromParent */

@@ -429,7 +429,7 @@ iupAttribSetIntId
 iupAttribSetIntId2
 iupAttribSetFloatId
 iupAttribSetFloatId2
-iupAttribIsPointer
+iupAttribIsNotString
 iupAttribGet
 iupAttribGetInherit
 iupAttribGetInheritNativeParent

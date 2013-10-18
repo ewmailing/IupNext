@@ -192,7 +192,7 @@ static void GetAttribute(void)
     lua_pushnil();
   else
   {
-    if (iupAttribIsPointer(ih, name))
+    if (iupAttribIsNotString(ih, name))
       lua_pushuserdata((void*)value);
     else
       lua_pushstring(value);
