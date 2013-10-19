@@ -271,6 +271,7 @@ static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
   int lin, col;
 
   IupGetIntInt(ih_item, "MENUCONTEXT_CELL", &lin, &col);
+  IupSetfAttribute(matex_data->ih, "FOCUS_CELL", "%d:%d", lin, col);
 
   if (iupStrEqual(value, "INTERVAL"))
   {
