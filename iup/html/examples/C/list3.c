@@ -106,7 +106,7 @@ int main(int argc, char **argv)
   IupSetAttribute(list1, "IMAGE1", "IMGGOLD");
   IupSetAttribute(list1, "IMAGE2", "IMGSILVER");
   IupSetAttribute(list1, "IMAGE3", "IMGBRONZE");
-  IupSetAttribute(list1, "MULTIPLE", "YES");
+  //IupSetAttribute(list1, "MULTIPLE", "YES");
   IupSetAttribute(list1, "DRAGSOURCE", "YES");
   //IupSetAttribute(list1, "DRAGSOURCEMOVE", "YES");
   IupSetAttribute(list1, "DRAGTYPES", "ITEMLIST");
