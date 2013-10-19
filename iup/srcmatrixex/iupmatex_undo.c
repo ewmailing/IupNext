@@ -232,6 +232,8 @@ static int iMatrixSetUndoAttrib(Ihandle* ih, const char* value)
     iupMatrixExBusyEnd(matex_data);
     iMatrixSetUndoRedoAttrib(ih, "Yes");
     matex_data->undo_stack_pos -= i;
+
+    iupBaseCallValueChangedCb(ih);
   }
   return 0;
 }
@@ -277,6 +279,8 @@ static int iMatrixSetRedoAttrib(Ihandle* ih, const char* value)
     iupMatrixExBusyEnd(matex_data);
     iMatrixSetUndoRedoAttrib(ih, "Yes");
     matex_data->undo_stack_pos += i;
+
+    iupBaseCallValueChangedCb(ih);
   }
   return 0;
 }

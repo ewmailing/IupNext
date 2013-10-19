@@ -43,6 +43,8 @@ static void iMatrixExCopyColToSetDataSelected(ImatExData* matex_data, int lin, i
 
   iupMatrixExBusyEnd(matex_data);
   free(value);
+
+  iupBaseCallValueChangedCb(matex_data->ih);
 }
 
 static void iMatrixExCopyColToSetData(ImatExData* matex_data, int lin, int col, int lin1, int lin2, const char* busyname)
@@ -69,6 +71,8 @@ static void iMatrixExCopyColToSetData(ImatExData* matex_data, int lin, int col, 
 
   iupMatrixExBusyEnd(matex_data);
   free(value);
+
+  iupBaseCallValueChangedCb(matex_data->ih);
 }
 
 static int iMatrixExGetMarkedLines(Ihandle *ih, int num_lin, int num_col, int col, char* selection, int *selection_count)

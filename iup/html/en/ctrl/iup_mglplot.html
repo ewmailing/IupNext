@@ -587,6 +587,9 @@ functions. For display output OpenGL primitives can also be used.</p>
     <pre>int function(Ihandle *<strong>ih</strong>); [in C]
 <strong>elem</strong>:predraw_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
 <strong>elem</strong>:postdraw_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
   <blockquote>
   <hr>
 </blockquote>
@@ -598,7 +601,9 @@ Called only when DS_EDIT=Yes.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, float <strong>x</strong>, float <strong>y</strong>); [in C]
 <strong>elem</strong>:delete_cb(<b>index, sample_index, x, y</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-    <p class="info"><strong>index</strong>: index of the dataset<br>
+    <p class="info"><strong>ih:</strong>
+  identifier of the element that activated the 
+  event.<strong><br>index</strong>: index of the dataset<br>
     <b>sample_index</b>: index of the sample in the dataset<strong><br>
     x</strong>: X coordinate value of the sample<br>
     <strong>y</strong>: Y coordinate value of the sample</p>
@@ -613,6 +618,9 @@ only when DS_EDIT=Yes.</p>
     <pre>int function(Ihandle *<strong>ih</strong>); [in C]
 <strong>elem</strong>:deletebegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
 <strong>elem</strong>:deleteend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
     <p class="info">
     <span class="style2">Returns:</span>
     If DELETEBEGIN_CB returns IUP_IGNORE the delete operation for 
@@ -626,7 +634,9 @@ Called only when DS_EDIT=Yes.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, float <strong>x</strong>, float <strong>y, </strong>int <strong>select</strong>); [in C]
 <strong>elem</strong>:select_cb(<b>index, sample_index, x, y, select</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-    <p class="info"><strong>index</strong>: index of the dataset<br>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<strong><br>index</strong>: index of the dataset<br>
     <b>sample_index</b>: index of the sample in the dataset<strong><br>
     x</strong>: X coordinate value of the sample<br>
     <strong>y</strong>: Y coordinate value of the sample<br>
@@ -643,6 +653,9 @@ defined. Called only when DS_EDIT=Yes.</p>
     <pre>int function(Ihandle *<strong>ih</strong>); [in C]
 <strong>elem</strong>:selectbegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
 <strong>elem</strong>:selectend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
     <p class="info">
     <span class="style2">Returns:</span>
     If SELECTBEGIN_CB returns IUP_IGNORE the selection operation is 
@@ -656,7 +669,9 @@ Called only when DS_EDIT=Yes.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, float <strong>x</strong>, float <strong>y, </strong>float <strong>*new_x</strong>, float <strong>*new_y</strong>); [in C]
 <strong>elem</strong>:edit_cb(<b>index, sample_index, x, y, </b><strong>new_x, new_y</strong>: number) -&gt; (<strong>new_x, new_y, ret</strong>: number) [in Lua]</pre>
-    <p class="info"><strong>index</strong>: index of the dataset<br>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>index</strong>: index of the dataset<br>
     <b>sample_index</b>: index of the sample in the dataset<strong><br>
     x</strong>: X coordinate value of the sample<br>
     <strong>y</strong>: Y coordinate value of the sample<br>
@@ -674,6 +689,9 @@ defined. Called only when DS_EDIT=Yes.</p>
     <pre>int function(Ihandle *<strong>ih</strong>); [in C]
 <strong>elem</strong>:editbegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
 <strong>elem</strong>:editend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
     <p class="info">
     <span class="style2">Returns:</span>
     If EDITBEGIN_CB returns IUP_IGNORE the editing operation is 

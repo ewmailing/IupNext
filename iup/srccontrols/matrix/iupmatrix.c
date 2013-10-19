@@ -1124,6 +1124,8 @@ static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char*
 
   if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHEND", NULL);
 
+  iupBaseCallValueChangedCb(ih);
+
   if (ih->handle)
     iupMatrixDraw(ih, 1);
 
@@ -1653,6 +1655,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterCallback(ic, "DROP_CB", "nii");
   iupClassRegisterCallback(ic, "DROPSELECT_CB", "iinsii");
   iupClassRegisterCallback(ic, "EDITION_CB", "iii");
+  iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
   /* --- Callback Mode --- */
   iupClassRegisterCallback(ic, "VALUE_CB", "ii=s");
   iupClassRegisterCallback(ic, "VALUE_EDIT_CB", "iis");

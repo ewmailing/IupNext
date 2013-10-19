@@ -22,9 +22,8 @@
   occurs.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>key</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>edition</strong>, char* <strong>value</strong>); [in C]
 <strong>elem</strong>:action_cb(<strong>key, lin, col</strong>, <strong>edition</strong>: number<strong>, value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix where the user 
-    typed something.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>key</strong>:
     Identifier of the typed key. Please refer to 
     the <a href="../attrib/key.html">Keyboard Codes</a>
@@ -50,9 +49,8 @@ cell does not have a value and the key pressed is not a character.</p>
   pressed over a cell. This callback is always called after other callbacks.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]
 <strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell where the mouse 
     button was pressed. They can be -1 if the user click outside the matrix but inside the canvas that contains 
@@ -65,9 +63,8 @@ the moment the event is generated. The same macros used for
   Action generated when a column is interactively resized. (Since 3.9)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:colresize_cb(<strong>col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>col</strong>: Column that had its size changed.<br>
 </p>
 <p><strong><a name="RELEASE_CB">RELEASE_CB</a></strong>:
@@ -75,9 +72,8 @@ the moment the event is generated. The same macros used for
   released over a cell. This callback is always called after other callbacks.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]
 <strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell where the mouse 
     button was pressed. They can be -1 if the user click outside the matrix but inside the canvas that contains 
@@ -91,20 +87,29 @@ the moment the event is generated. The same macros used for
   pressed. (Since 3.9)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, i<span class="style2">nt</span> <strong>status</strong>); [in C]
 <strong>elem</strong>:togglevalue_cb(<strong>lin, col, status</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>: Coordinates of the cell where the 
 mouse button was pressed.<br>
 <strong>status</strong>: Value of the toggle. Can be 1 or 0.</p>
+<p><strong>VALUECHANGED_CB</strong>:
+  Called after the value was interactively changed by the user or after a group 
+of values where programmatically changed in a single operation. (since 3.9)</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
 <p><strong><a name="MOUSEMOVE_CB">MOUSEMOVE_CB</a></strong>:
   Action generated to notify the application 
   that the mouse has moved over the matrix.&nbsp;</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:mousemove_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell that the mouse 
     cursor is currently on.</p>
@@ -115,9 +120,8 @@ Also called when focus is changed because lines or columns were added or removed
 (since 3.9).</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:enteritem_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the selected cell.</p>
 <p><strong><a name="LEAVEITEM_CB">LEAVEITEM_CB</a></strong>:
@@ -125,9 +129,8 @@ Also called when focus is changed because lines or columns were added or removed
   the current cell. Also called when the matrix is losing focus.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:leaveitem_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell which is no longer 
     the current cell.</p>
@@ -141,9 +144,8 @@ Also called when focus is changed because lines or columns were added or removed
 ORIGIN and ORIGINOFFSET attributes to synchronize the movement of two or more matrices.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:scrolltop_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell currently in the 
     upper left corner of the matrix.</p>
@@ -153,9 +155,8 @@ ORIGIN and ORIGINOFFSET attributes to synchronize the movement of two or more ma
   color of a cell when it needs to be redrawn. </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, unsigned int <strong>*red</strong>, unsigned int <strong>*green</strong>, unsigned int <strong>*blue</strong>); [in C]
 <strong>elem</strong>:bgcolor_cb(<strong>lin, col</strong>: number) -&gt; (<strong>red, green, blue, ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix where the user 
-    typed something.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.<br>
     <strong>red</strong>, <strong>green</strong>, <strong>blue</strong>:
@@ -168,9 +169,8 @@ ORIGIN and ORIGINOFFSET attributes to synchronize the movement of two or more ma
   color of a cell when it needs to be redrawn. </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, unsigned int <strong>*red</strong>, unsigned int <strong>*green</strong>, unsigned int <strong>*blue</strong>); [in C]
 <strong>elem</strong>:fgcolor_cb(<strong>lin, col</strong>: number) -&gt; (<strong>red, green, blue, ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix where the user 
-    typed something.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.<br>
     red, green,
@@ -186,9 +186,8 @@ ORIGIN and ORIGINOFFSET attributes to synchronize the movement of two or more ma
   cell. Called both for common cells and for line and column titles. (since 3.0)</p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:font_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.</p>
 <p class="info"><span class="style1">Returns:</span> Must return a font or NULL to use the the attribute defined 
@@ -198,9 +197,8 @@ font. </p>
   cell value. Called both for common cells and for line and column titles. (since 3.9)</p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:type_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.</p>
 <p class="info"><span class="style1">Returns:</span> Must return &quot;TEXT&quot;, 
@@ -214,9 +212,8 @@ callback is called after the cell background has been filled with the background
 color. The focus feedback area is not included in the decoration size.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>x1</strong>, int <strong>x2</strong>, int <strong>y1</strong>, int <strong>y2</strong>, cdCanvas* <strong>cnv</strong>); [in C]
 <strong>elem</strong>:draw_cb(<strong>lin, col, x1, x2, y1, y2</strong>: number, <strong>cnv</strong>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the current cell.<br>
 <strong>x1</strong>, <strong>x2</strong>, <strong>y1</strong>, <strong>y2</strong>:
@@ -234,9 +231,8 @@ dropdown/popup menu the user can simply do a single click in the drop feedback
 area of that cell. (Toggle support since 3.9)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:dropcheck_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.</p>
 <p class="info"><span class="style1">Returns:</span> IUP_DEFAULT will show a drop feedback, 
@@ -254,9 +250,8 @@ nothing.</p>
   drop Ihandle via the &quot;PREVIOUSVALUE&quot; attribute.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, Ihandle *<strong>drop</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:drop_cb(<strong>drop: </strong>ihandle, <strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>drop</strong>:
     Identifier of the dropdown list which will 
     be shown to the user.<br>
@@ -277,9 +272,8 @@ is set then an IMAGE attribute will be set at the correspondent menu item. The p
   drop Ihandle via the &quot;PREVIOUSVALUE&quot; attribute. (since 3.6)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, Ihandle *<strong>drop</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:drop_cb(<strong>drop: </strong>ihandle, <strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>drop</strong>:
     Identifier of the popup menu which will 
     be shown to the user.<br>
@@ -293,9 +287,8 @@ else the item is selected and editing remains. For the popup menu the returned
 value is ignored.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, Ihandle *<strong>drop</strong>, char *<strong>t</strong>, int <strong>i, </strong>int <strong>v</strong>); [in C]
 <strong>elem</strong>:dropselect_cb(<strong>lin, col</strong>: number, <strong>drop: </strong>ihandle,<strong> t</strong>: string, <strong>i, v</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua] </pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the current cell.<br>
 <strong>drop</strong>:
@@ -312,9 +305,8 @@ the popup menu.</p>
   enters or leaves the edition mode. Not called if READONLY=YES.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>mode, </strong>int <strong>update</strong>);  [in C]
 <strong>elem</strong>:edition_cb(<strong>lin, col</strong>, <strong>mode, update</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the current cell.<br>
 <strong>mode</strong>:
@@ -346,17 +338,17 @@ click in another cell; or the edit control loses its focus.</p>
     clear the cell contents or other multiple cell editing. The callback will simply validate the operation for each cell been cleared 
 by checking if the matrix is read-only or if the cell is read-only. 
 In this situation it is called with <strong>mode</strong>=1 and <strong>update</strong>=1. 
-When in normal mode (not callback mode) the new value can not be refused, you 
-must use the VALUE_EDIT_CB to reset a new value.</p>
+When in normal mode (not callback mode) the new value can not be refused, but you 
+can use the VALUE_EDIT_CB to reset a new value or use the VALUECHANGED_CB to 
+check all the new values after they where changed.</p>
 <h3>Callback Mode</h3>
 <p><strong><a name="VALUE_CB">VALUE_CB</a></strong>:
   Action generated to retrieve the value of a 
   cell. Called both for common cells and for line and column titles.</p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:value_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.</p>
 <p class="info"><span class="style1">Returns:</span> the string to be drawn. </p>
@@ -370,9 +362,8 @@ internally stored, so to refuse the new value simply reset the cell to the
 desired value. </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>newval</strong>); [in C]
 <strong>elem</strong>:value_edit_cb(<strong>lin, col</strong>: number<strong>, newval</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.<br>
 <strong>newval</strong>:
@@ -384,9 +375,8 @@ not defined when the matrix is mapped it will be read-only.</p>
   state of a cell. Called only for common cells, only when MARKMODE=CELL and only in callback mode.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:mark_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.</p>
 <p class="info"><span class="style1">Returns:</span> the selection state (marked=1, not marked 0). If not defined the 
@@ -398,9 +388,8 @@ not defined when the matrix is mapped it will be read-only.</p>
   Called only for common cells, only when MARKMODE=CELL and only in callback mode.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <b>marked</b>); [in C]
 <strong>elem</strong>:markedit_cb(<strong>lin, col, </strong><b>marked</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.<br>
 <strong>marked</strong>: selection state 

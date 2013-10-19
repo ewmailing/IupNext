@@ -516,6 +516,8 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
 
   if (value)
     free(value);
+
+  iupBaseCallValueChangedCb(matex_data->ih);
 }
 
 static int iMatrixExGetVisibleNumLin(Ihandle *ih, int start_lin, int data_num_lin)

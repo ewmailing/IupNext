@@ -39,6 +39,8 @@ static void iMatrixEditUpdateValue(Ihandle* ih)
 
   if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHEND", NULL);
 
+  iupBaseCallValueChangedCb(ih);
+
   iupMatrixPrepareDrawData(ih);
   iupMatrixDrawCells(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 }
