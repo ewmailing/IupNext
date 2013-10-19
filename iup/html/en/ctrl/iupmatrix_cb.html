@@ -182,7 +182,7 @@ ORIGIN and ORIGINOFFSET attributes to synchronize the movement of two or more ma
     IUP_DEFAULT the returned values will be used as the
     foreground color.</p>
 <p><strong><a name="FONT_CB">FONT_CB</a></strong>:
-  Action generated to verify the font of a 
+  Action generated to retrieve the font of a 
   cell. Called both for common cells and for line and column titles. (since 3.0)</p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:font_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
@@ -194,7 +194,7 @@ ORIGIN and ORIGINOFFSET attributes to synchronize the movement of two or more ma
 <p class="info"><span class="style1">Returns:</span> Must return a font or NULL to use the the attribute defined 
 font. </p>
 <p><strong><a name="TYPE_CB">TYPE_CB</a></strong>:
-  Action generated to verify the type of a 
+  Action generated to retrieve the type of a 
   cell value. Called both for common cells and for line and column titles. (since 3.9)</p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:type_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
@@ -331,7 +331,7 @@ IUP_DEFAULT, so to make the cell read-only return IUP_IGNORE.</p>
 <p class="info">When editing ends, <strong>mode</strong>=0 and <strong>update</strong> 
 can be 0 or 1. The new value is accepted only if the callback returns
     IUP_DEFAULT. The VALUE attribute when consulted inside the callback returns the new value that will be updated 
-in the cell. <strong>update</strong>=0 only when the user cancel the editing by 
+to the cell. <strong>update</strong>=0 only when the user cancel the editing by 
 pressing the <b>Esc</b> 
 key. If 
 the callback returns IUP_CONTINUE the edit mode is ended and the 
@@ -343,11 +343,13 @@ used; the matrix size, scroll or visibility was changed during edition mode; a
 click in another cell; or the edit control loses its focus.</p>
 <p class="info">This callback is also called when the user press 
 <b>Del</b> to 
-    clear the cell contents or other multiple cell editing. The callback will simply validate the operation for each cell been cleared. 
-In this case is called with <strong>mode</strong>=1 and <strong>update</strong>=1.</p>
+    clear the cell contents or other multiple cell editing. The callback will simply validate the operation for each cell been cleared 
+by checking if the matrix is read-only or if the cell is read-only. 
+In this situation it is called with <strong>mode</strong>=1 and <strong>update</strong>=1. 
+When not in callback mode the new value can not be refused.</p>
 <h3>Callback Mode</h3>
 <p><strong><a name="VALUE_CB">VALUE_CB</a></strong>:
-  Action generated to verify the value of a 
+  Action generated to retrieve the value of a 
   cell. Called both for common cells and for line and column titles.</p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:value_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
@@ -362,8 +364,9 @@ In this case is called with <strong>mode</strong>=1 and <strong>update</strong>=
 when it is mapped.</p>
 <p><strong><a name="VALUE_EDIT_CB">VALUE_EDIT_CB</a></strong>:
   Action generated to notify the application 
-  that the value of a cell was edited. Since it is a notification, it cannot refuse the value modification (which can be 
-  done by the &quot;EDITION_CB&quot; callback). Not called if READONLY=YES. This callback is usually set in callback mode, but also works in 
+  that the value of a cell was changed. When not in callback mode, it is simply 
+a notification, it cannot refuse the new value (which can be done by the 
+&quot;EDITION_CB&quot; callback). Never called when READONLY=YES. This callback is usually set in callback mode, but also works in 
   normal mode.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>newval</strong>); [in C]
 <strong>elem</strong>:value_edit_cb(<strong>lin, col</strong>: number<strong>, newval</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -377,7 +380,7 @@ when it is mapped.</p>
 <p class="info"><b>IMPORTANT</b>: if VALUE_CB is defined and VALUE_EDIT_CB is 
 not defined when the matrix is mapped it will be read-only.</p>
 <p><strong><a name="MARK_CB">MARK_CB</a></strong>:
-  Action generated to verify the selection 
+  Action generated to retrieve the selection 
   state of a cell. Called only for common cells, only when MARKMODE=CELL and only in callback mode.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:mark_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -423,7 +426,7 @@ inside your own callback, or the matrix will not correctly work. This can
 <a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> to convert 
 	(x,y) coordinates in the cell position, then use
 <a href="../elem/iuptext.html#AUX">IupTextConvertPosToLinCol</a> to 
-convert pos into lin,col (pos=lin*(NUMCOL+1) + col).</p>
+convert pos into (lin,col), or use the formula &quot;pos=lin*(NUMCOL+1) + col&quot;.</p>
 <p>See <a href="../elem/iupcanvas.html">IupCanvas</a>.</p>
 
 </body>
