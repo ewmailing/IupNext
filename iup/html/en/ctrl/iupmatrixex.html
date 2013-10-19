@@ -338,6 +338,16 @@ and when the SORTCOLUMNCOMPARE_CB callback is not defined.</p>
 or No. Default: No. Undo/Redo support is available only for cell values, 
 interactively or programmatically changed. Attributes are not saved/restored.</p>
 <p>
+<strong>UNDOCOUNT</strong> (read-only): Returns the total number of stored undo 
+levels.</p>
+<p>
+<strong>UNDONAME<em>id</em></strong> (read-only): Returns a name for the given 
+undo level. It represents the operation that was performed. Uses descriptive 
+strings based on the names &quot;PASTECLIP&quot;, &quot;PASTEDATA&quot;, &quot;PASTEFILE&quot;, 
+&quot;COPYCOLTO:ALL&quot;, &quot;COPYCOLTO:TOP&quot;, &quot;COPYCOLTO:BOTTOM&quot;, &quot;COPYCOLTO:MARKED&quot;, 
+&quot;COPYCOLTO:INTERVAL&quot;, &quot;CLEARVALUE&quot;, &quot;SETCELL&quot; and &quot;EDITCELL&quot;, that are 
+language dependent.</p>
+<p>
 <strong>UNDO</strong>: Sets the number of undo levels to be performed. If value 
 is NULL will undo 1 level. When retrieved returns Yes or No indicating if it has 
 Undo to be performed. BUSY will be set to Yes during the operation.</p>
@@ -416,7 +426,7 @@ matrix contents as a result of an operation such as paste or copy. </p>
 0=process finished.<br><strong>count</strong>: when status=1 is the total number 
 of iterations. when status=2 is the current iteration. ignored when status=0.<br>
 <strong>name</strong>: valid only when status=1, otherwise is NULL. Can be 
-&quot;PASTE&quot;, &quot;PASTEDATA&quot;, &quot;PASTEFILE&quot;, &quot;COPYCOLTO:ALL&quot;, "COPYCOLTO:TOP", "COPYCOLTO:BOTTOM", "COPYCOLTO:MARKED", "COPYCOLTO:INTERVAL", 
+&quot;PASTECLIP&quot;, &quot;PASTEDATA&quot;, &quot;PASTEFILE&quot;, &quot;COPYCOLTO:ALL&quot;, "COPYCOLTO:TOP", "COPYCOLTO:BOTTOM", "COPYCOLTO:MARKED", "COPYCOLTO:INTERVAL", 
 &quot;UNDO&quot; or &quot;REDO&quot;.</p>
 
 <p class="info"><u>Returns</u>: When status=2 and IUP_IGNORE is returned the 

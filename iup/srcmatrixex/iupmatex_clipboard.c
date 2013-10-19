@@ -490,7 +490,7 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
           const char* next_value = iupStrNextValue(data, len, &value_len, sep);  c++;
 
           value = iMatrixExStrCopyValue(value, &value_max_size, data, value_len);
-          iupMatrixExSetCellValue(matex_data->ih, lin, col, value, 0);
+          iupMatrixExSetCellValue(matex_data->ih, lin, col, value);
 
           data = next_value;
           len -= value_len+1;
@@ -633,7 +633,7 @@ static int iMatrixExSetPasteAttrib(Ihandle *ih, const char* value)
       return 0;
   }
 
-  iMatrixExPasteData(ih, data, lin, col, "PASTE");
+  iMatrixExPasteData(ih, data, lin, col, "PASTECLIP");
   return 0;
 }
 

@@ -36,6 +36,15 @@ static void iMatrixExUndoDataInit(IundoData* undo_data, const char* name)
   undo_data->cell_count = 0;
   undo_data->name = name;
   undo_data->data_table = iupTableCreate(IUPTABLE_STRINGINDEXED);
+
+  if (name)
+  {
+    char str[50] = "IUP_";
+    strcat(str, name);
+    name = IupGetLanguageString(str);
+    if (name)
+      undo_data->name = name;
+  }
 }
 
 static void iMatrixExUndoDataClear(IundoData* undo_data)
@@ -68,7 +77,7 @@ static int iMatrixExUndoDataSwap(ImatExData* matex_data, IundoData* undo_data)
 
     old_value = iupStrDup(iupMatrixExGetCellValue(matex_data->ih, lin, col, 0));
 
-    iupMatrixExSetCellValue(matex_data->ih, lin, col, value, 0);
+    iupMatrixExSetCellValue(matex_data->ih, lin, col, value);
 
     if (!old_value)
       iupTableSetCurr(undo_data->data_table, (void*)"", IUPTABLE_POINTER);
@@ -163,6 +172,31 @@ static char* iMatrixGetUndoAttrib(Ihandle* ih)
   int undo_stack_count = iupArrayCount(matex_data->undo_stack);
   if (matex_data->undo_stack && undo_stack_count)
     return iupStrReturnBoolean(matex_data->undo_stack_pos>0);
+  return NULL; 
+}
+
+static char* iMatrixGetUndoCountAttrib(Ihandle* ih)
+{
+  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+  int undo_stack_count = iupArrayCount(matex_data->undo_stack);
+  if (matex_data->undo_stack && undo_stack_count)
+    return iupStrReturnInt(undo_stack_count);
+  return NULL; 
+}
+
+static char* iMatrixGetUndoNameAttrib(Ihandle* ih, int id)
+{
+  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+  int undo_stack_count = iupArrayCount(matex_data->undo_stack);
+  if (matex_data->undo_stack && undo_stack_count)
+  {
+    IundoData* undo_stack_data = (IundoData*)iupArrayGetData(matex_data->undo_stack);
+
+    if (id < 0 || id >= undo_stack_count)
+      return NULL;
+
+    return iupStrReturnStr(undo_stack_data[id].name);
+  }
   return NULL; 
 }
 
@@ -281,10 +315,49 @@ void iupMatrixExRegisterUndo(Iclass* ic)
   iupClassRegisterAttribute(ic, "UNDO", iMatrixGetUndoAttrib, iMatrixSetUndoAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDO", iMatrixGetRedoAttrib, iMatrixSetRedoAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "UNDOCLEAR", NULL, iMatrixSetUndoClearAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "UNDONAME", iMatrixGetUndoNameAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "UNDOCOUNT", iMatrixGetUndoCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Internal attributes */
   iupClassRegisterAttributeId2(ic, "UNDOPUSHCELL", NULL, iMatrixSetUndoPushCellAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "UNDOPUSHBEGIN", NULL, iMatrixSetUndoPushBeginAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "UNDOPUSHEND", NULL, iMatrixSetUndoPushEndAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+
+  if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
+  {
+    IupSetLanguageString("IUP_PASTECLIP", "Paste from Clipboard");
+    IupSetLanguageString("IUP_PASTEDATA", "Paste from Buffer");
+    IupSetLanguageString("IUP_PASTEFILE", "Paste from File (Import)");
+    IupSetLanguageString("IUP_COPYCOLTO:ALL", "Copy To All Lines");
+    IupSetLanguageString("IUP_COPYCOLTO:TOP", "Copy To Top");
+    IupSetLanguageString("IUP_COPYCOLTO:BOTTOM", "Copy To Bottom");
+    IupSetLanguageString("IUP_COPYCOLTO:MARKED", "Copy To Marked");
+    IupSetLanguageString("IUP_COPYCOLTO:INTERVAL", "Copy To Interval");
+    IupSetLanguageString("IUP_UNDONAME", "Undo");  /* To avoid conflict with the menu item string */
+    IupSetLanguageString("IUP_REDONAME", "Redo");
+    IupSetLanguageString("IUP_SETCELL", "Set Cell");
+    IupSetLanguageString("IUP_EDITCELL", "Edit Cell");
+  }
+  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+  {
+    IupSetLanguageString("IUP_PASTECLIP", "Colar do Clipboard");
+    IupSetLanguageString("IUP_PASTEDATA", "Colar de um Buffer");
+    IupSetLanguageString("IUP_PASTEFILE", "Colar de Arquivo (Importar)");
+    IupSetLanguageString("IUP_COPYCOLTO:ALL", "Copiar para Todas as Linhas");
+    IupSetLanguageString("IUP_COPYCOLTO:TOP", "Copiar para Topo");
+    IupSetLanguageString("IUP_COPYCOLTO:BOTTOM", "Copiar para fim");
+    IupSetLanguageString("IUP_COPYCOLTO:MARKED", "Copiar para Selecionadas");
+    IupSetLanguageString("IUP_COPYCOLTO:INTERVAL", "Copiar para Intervalo");
+    IupSetLanguageString("IUP_UNDONAME", "Desfazer");
+    IupSetLanguageString("IUP_REDONAME", "Refazer");
+    IupSetLanguageString("IUP_SETCELL", "Modificar Célula");
+    IupSetLanguageString("IUP_EDITCELL", "Editar Célula");
+
+    if (IupGetInt(NULL, "UTF8MODE"))
+    {
+      IupSetLanguageString("IUP_SETCELL", "Modificar CÃ©lula");
+      IupSetLanguageString("IUP_EDITCELL", "Editar CÃ©lula");
+    }
+  }
 }
 

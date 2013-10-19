@@ -415,8 +415,8 @@ is specified, all column attributes are also cleared, including ALIGNMENT and
 SORTSIGN. (since 3.6)</p>
 <p class="info">In all cases, attributes are set to NULL. Only the attributes 
 FONT*, BGCOLOR*, FGCOLOR*, FRAMEHORIZCOLOR*, FRAMEHORIZCOLOR*,&nbsp; ALIGNMENT* 
-and SORTSIGN* are affected. Action only works if the matrix is mapped and NOT in 
-callback mode.</p>
+and SORTSIGN* are affected. In 
+callback mode will not call the user callbacks.</p>
 <p>
 <strong>CLEARVALUE</strong> (write-only):
   Clear all values if ALL, all values except titles if CONTENTS, and all 
@@ -429,8 +429,8 @@ cell in the &quot;L:C&quot; format, the default is the last cell. (since 3.6)<br
 <strong>CLEARVALUE*:<i>C </i></strong>(write-only):
   the values in column C. Its value defines a line inclusive interval in the 
 &quot;L1-L2&quot; format. The default is 0 and the last line. (since 3.6)</p>
-<p class="info">In all cases, values are set to NULL. Action only works if the 
-matrix is mapped and NOT in callback mode.</p>
+<p class="info">In all cases, values are set to NULL. Works also in callback 
+mode.</p>
 <p><strong>COPYCOL<i>C </i></strong>(write-only):
   copy the values and attributes from column C to the given column (value is the 
 number of a column). (Since 3.9)</p>
@@ -458,13 +458,13 @@ as maximum limit for the size. (since 3.4)</p>
 number of a column). Internally will use ADDCOL+COPYCOL+DELCOL to perform the 
 move so it is limited to those attributes restrictions. It can be used in normal 
 operation mode or in callback mode, but in callback mode will not update cell 
-values this must be done by the application.&nbsp; (Since 3.9)</p>
+values, this must be done by the application.&nbsp; (Since 3.9)</p>
 <p><strong>MOVELIN<i>L </i></strong>(write-only):
   move the values and attributes from line L to the given line (value is the 
 number of a line). Internally will use ADDLIN+COPYLIN+DELLIN to perform the move 
 so it is limited to those attributes restrictions. It can be used in normal 
 operation mode or in callback mode, but in callback mode will not update cell 
-values this must be done by the application. (Since 3.9)</p>
+values, this must be done by the application. (Since 3.9)</p>
 <p><strong><a name="REDRAW">REDRAW</a></strong> (write-only):
   The user can inform the matrix that the data 
   has changed, and it must be redrawn. Values:</p>

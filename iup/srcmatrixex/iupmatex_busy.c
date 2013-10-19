@@ -44,7 +44,18 @@ static void iMatrixExBusyShowProgress(ImatExData* matex_data, int count, const c
     IupMap(matex_data->busy_progress_dlg); /* to compute dialog size */
   }
   
-  IupStoreAttribute(matex_data->busy_progress_dlg, "DESCRIPTION", busyname);
+  if (busyname)
+  {
+    char str[50] = "IUP_";
+    strcat(str, busyname);
+    if (iupStrEqual(busyname, "UNDO") || iupStrEqual(busyname, "REDO"))
+      strcat(str, "NAME");  /* To avoid conflict with the menu item string */
+    busyname = IupGetLanguageString(str);
+    if (!busyname)
+      busyname = str+4;
+    IupStoreAttribute(matex_data->busy_progress_dlg, "DESCRIPTION", busyname);
+  }
+
   IupSetInt(matex_data->busy_progress_dlg, "TOTALCOUNT", count);
   IupSetAttribute(matex_data->busy_progress_dlg, "COUNT", "0");
 

@@ -391,7 +391,7 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
     Ihandle *undo, *redo;
     IupAppend(menu, undo = IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_UNDO", NULL), "IMAGE=IUP_EditUndo"), "ACTION", iMatrixExItemUndo_CB, NULL));
     IupAppend(menu, redo = IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_REDO", NULL), "IMAGE=IUP_EditRedo"), "ACTION", iMatrixExItemRedo_CB, NULL));
-    //IupAppend(menu, IupItem("Undo List...\tCtrl+U", NULL));
+    //IupAppend(menu, IupSetCallbacks(IupItem("Undo List...\tCtrl+U", NULL), "ACTION", iMatrixExItemUndoList_CB, NULL));
 
     if (!IupGetInt(ih, "UNDO"))
       IupSetAttribute(undo, "ACTIVE", "No");
@@ -512,20 +512,16 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
         iMatrixExSelectAll(ih); 
       return IUP_CONTINUE;
     case K_cV: 
-      if (!IupGetInt(ih, "READONLY"))
-      {
-        if (IupGetAttribute(ih,"MARKED"))
-          IupSetAttribute(ih, "PASTE", "MARKED");
-        else
-          IupSetAttribute(ih, "PASTE", "FOCUS");
-
-        iMatrixListShowLastError(ih);
-      }
+      if (IupGetAttribute(ih,"MARKED"))
+        IupSetAttribute(ih, "PASTE", "MARKED");
+      else
+        IupSetAttribute(ih, "PASTE", "FOCUS");
+      iMatrixListShowLastError(ih);
       return IUP_IGNORE;
     case K_cX: 
       IupSetAttribute(ih, "COPY", "MARKED");
-      IupSetAttribute(ih, "CLEARVALUE", "MARKED");
       iMatrixListShowLastError(ih);
+      IupSetAttribute(ih, "CLEARVALUE", "MARKED");
       return IUP_IGNORE;
     case K_cC: 
       IupSetAttribute(ih, "COPY", "MARKED");
