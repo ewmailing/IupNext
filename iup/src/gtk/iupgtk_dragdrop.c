@@ -97,17 +97,13 @@ static void gtkDragDataGet(GtkWidget *widget, GdkDragContext *drag_context, GtkS
     if (size <= 0)
       return;
 
-    sourceData = malloc(size+1);
+    sourceData = malloc(size);
 
     /* fill data */
     cbDragData(ih, type, sourceData, size);
 
-    /* Zero-terminates the stored data. */
-    ((guchar*)sourceData)[size] = 0;
+    gtk_selection_data_set(seldata, gdk_atom_intern(type, FALSE), 8, (guchar*)sourceData, size);
 
-    gtk_selection_data_set(seldata, gdk_atom_intern(type, FALSE), 8, (guchar*)sourceData, size+1);
-
-    /* gtk_selection_data_set will copy the data */
     free(sourceData);
   }
 

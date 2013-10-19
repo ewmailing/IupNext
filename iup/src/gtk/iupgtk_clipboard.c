@@ -37,7 +37,7 @@ typedef struct {
 static void gtkClipboardDataGetFunc(GtkClipboard *clipboard, GtkSelectionData *selection_data, 
                                     guint info, gtkClipInfo* clip_info)
 {
-  gtk_selection_data_set(selection_data, clip_info->target, 8, (guchar*)(clip_info->data), clip_info->size+1);
+  gtk_selection_data_set(selection_data, clip_info->target, 8, (guchar*)(clip_info->data), clip_info->size);
   (void)info;
   (void)clipboard;
 }
@@ -73,13 +73,10 @@ static int gtkClipboardSetFormatDataAttrib(Ihandle *ih, const char *value)
   if (!size)
     return 0;
 
-  data = malloc(size+1);
+  data = malloc(size);
   if (!data)
     return 0;
   memcpy(data, value, size);
-
-  /* Zero-terminates the stored data. */
-  ((guchar*)data)[size] = 0;
 
   list = gtk_target_list_new (NULL, 0);
   gtk_target_list_add (list, target, 0, 0);  
