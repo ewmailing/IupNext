@@ -612,7 +612,9 @@ static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int 
   if (key[1] == 'C')
     is_ctrl = 1;
 
-  pos--;  /* IUP starts at 1 */
+  pos--;  /* IUP starts at 1, so convert to start at 0 */
+
+  pos++;  /* InsertItem inserts an item before the given position, we want to insert after */
 
   if (ih_source->data->is_multiple)
   {
