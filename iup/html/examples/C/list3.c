@@ -99,24 +99,23 @@ int main(int argc, char **argv)
 
   IupOpen(&argc, &argv);
 
-  IupSetGlobal("UTF8MODE", "Yes");
-
   list1 = IupList (NULL);
-  IupSetAttributes(list1, "1=Gold, 2=Silver, 3=Bronze, 4=Lat√£o, 5=None,"
+  IupSetAttributes(list1, "1=Gold, 2=Silver, 3=Bronze, 4=Lat„o, 5=None,"
                           "SHOWIMAGE=YES, DRAGDROPLIST=YES, XXX_SPACING=4, VALUE=4");
   load_medal_images();
   IupSetAttribute(list1, "IMAGE1", "IMGGOLD");
   IupSetAttribute(list1, "IMAGE2", "IMGSILVER");
   IupSetAttribute(list1, "IMAGE3", "IMGBRONZE");
+  IupSetAttribute(list1, "MULTIPLE", "YES");
   IupSetAttribute(list1, "DRAGSOURCE", "YES");
-  IupSetAttribute(list1, "DRAGSOURCEMOVE", "YES");
+  //IupSetAttribute(list1, "DRAGSOURCEMOVE", "YES");
   IupSetAttribute(list1, "DRAGTYPES", "ITEMLIST");
   
   frm_medal1 = IupFrame (list1);
   IupSetAttribute (frm_medal1, "TITLE", "List 1");
   
   list2 = IupList (NULL);
-  IupSetAttributes(list2, "1=A√ßa√≠, 2=Caj√°, 3=P√™ssego, 4=Lim√£o, 5=Morango, 6=Coco,"
+  IupSetAttributes(list2, "1=AÁaÌ, 2=Caj·, 3=PÍssego, 4=Lim„o, 5=Morango, 6=Coco,"
                           "SHOWIMAGE=YES, DRAGDROPLIST=YES, XXX_SPACING=4, VALUE=4");
   IupSetAttribute(list2, "DROPTARGET", "YES");
   IupSetAttribute(list2, "DROPTYPES", "ITEMLIST");
@@ -130,5 +129,4 @@ int main(int argc, char **argv)
   IupMainLoop ();
   IupClose ();
   return EXIT_SUCCESS;
-
 }

@@ -592,71 +592,117 @@ static int iListSetShowDragDropAttrib(Ihandle* ih, const char* value)
 
 /*****************************************************************************************/
 
-typedef struct _DNDlistData {
-  char* value;
-  void* image;
-} DNDlistData;
-
 static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
 {
   int pos = IupConvertXYToPos(ih, x, y);
-  DNDlistData *item = (DNDlistData*)data;
-  (void)len;
-  (void)type;
-  
-  if(!item)
-    return IUP_IGNORE;
-  
-  pos--;  /* IUP starts at 1 */
-
-  iupdrvListInsertItem(ih, pos, item->value);
-
-  if(item->image)
-    iupdrvListSetImageHandle(ih, ++pos, item->image);
-
-  return IUP_DEFAULT;
-}
-
-static int iupListDragData_CB(Ihandle *ih, char* type, void *data, int len)
-{
-  DNDlistData *item = (DNDlistData*)iupAttribGet(ih, "_IUP_LIST_SOURCEITEM");
   int is_shift = 0, is_ctrl = 0;
   char key[5];
-  (void)type;
 
+  /* Data is nto the pointer, it contains the pointer */
+  Ihandle* ih_source;
+  memcpy((void*)&ih_source, data, len);
+
+  /* A copy operation is enabled with the CTRL key pressed.
+     A move operation is enabled with the SHIFT key pressed.
+     A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
+     When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
   iupdrvGetKeyState(key);
   if (key[0] == 'S')
     is_shift = 1;
   if (key[1] == 'C')
     is_ctrl = 1;
 
-  /* Copy dragged item data */
-  memcpy(data, item, len);
+  pos--;  /* IUP starts at 1 */
 
-  /* A copy operation is enabled with the CTRL key pressed.
-     A move operation is enabled with the SHIFT key pressed.
-     A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
-     When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
-  if(IupGetInt(ih, "DRAGSOURCEMOVE") && !is_ctrl)
-    iupdrvListRemoveItem(ih, iupAttribGetInt(ih, "_IUP_LIST_SOURCEPOS")-1);  /* IUP starts at 1 */
-  
+  if (ih_source->data->is_multiple)
+  {
+    char *buffer = IupGetAttribute(ih_source, "VALUE");
+
+    /* Copy all selected items */
+    int i = 1;  /* IUP starts at 1 */
+    while(buffer[i-1] != '\0')
+    {
+      if(buffer[i-1] == '+')
+      {
+        iupdrvListInsertItem(ih, pos, IupGetAttribute(ih_source, iupStrReturnInt(i)));
+        iupdrvListSetImageHandle(ih, ++pos, iupdrvListGetImageHandle(ih_source, i));
+      }
+
+      i++;
+    }
+
+    if (IupGetInt(ih_source, "DRAGSOURCEMOVE") && !is_ctrl)
+    {
+      /* Remove all item from source if MOVE */
+      i = 1;  /* IUP starts at 1 */
+      while(*buffer != '\0')
+      {
+        if (*buffer == '+')
+          iupdrvListRemoveItem(ih_source, --i);  /* update index in the source */
+
+        i++;
+        *buffer++;
+      }
+    }
+  }
+  else
+  {
+    iupdrvListInsertItem(ih, pos, IupGetAttribute(ih_source, IupGetAttribute(ih_source, "VALUE")));
+    iupdrvListSetImageHandle(ih, ++pos, iupdrvListGetImageHandle(ih_source, IupGetInt(ih_source, "VALUE")));
+
+    if(IupGetInt(ih_source, "DRAGSOURCEMOVE") && !is_ctrl)
+      iupdrvListRemoveItem(ih_source, iupAttribGetInt(ih_source, "_IUP_LIST_SOURCEPOS")-1);  /* IUP starts at 1 */
+  }
+
+  (void)type;
+  return IUP_DEFAULT;
+}
+
+static int iupListDragData_CB(Ihandle *ih, char* type, void *data, int len)
+{
+  int pos = iupAttribGetInt(ih, "_IUP_LIST_SOURCEPOS");
+  if (pos < 1)
+    return IUP_DEFAULT;
+
+  if (ih->data->is_multiple)
+  {
+    char *buffer = IupGetAttribute(ih, "VALUE");
+
+    /* It will not drag all selected items only
+       when the user begins to drag an item not selected.
+       In this case, unmark all and mark only this item.  */
+    if(buffer[pos-1] == '-')
+    {
+      int len = strlen(buffer);
+      IupSetAttribute(ih, "SELECTION", "NONE");
+      memset(buffer, '-', len);
+      buffer[pos-1] = '+';
+      IupSetAttribute(ih, "VALUE", buffer);
+    }
+  }
+  else
+  {
+    /* Single selection */
+    IupSetInt(ih, "VALUE", pos);
+  }
+
+  /* Copy source handle */
+  memcpy(data, (void*)&ih, len);
+ 
+  (void)type;
   return IUP_DEFAULT;
 }
 
 int iupListDragDataSize_CB(Ihandle* ih, char* type)
 {
+  (void)ih;
   (void)type;
-  if(iupAttribGet(ih, "_IUP_LIST_SOURCEITEM"))
-    return sizeof(DNDlistData);
-  else
-    return 0;
+  return sizeof(Ihandle*);
 }
 
 static int iupListDragEnd_CB(Ihandle *ih, int del)
 {
   iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", 0);
-  free(iupAttribGet(ih, "_IUP_LIST_SOURCEITEM"));
-  iupAttribSet(ih, "_IUP_LIST_SOURCEITEM", NULL);
   (void)del;
   return IUP_DEFAULT;
 }
@@ -664,18 +710,7 @@ static int iupListDragEnd_CB(Ihandle *ih, int del)
 static int iupListDragBegin_CB(Ihandle* ih, int x, int y)
 {
   int pos = IupConvertXYToPos(ih, x, y);
-  DNDlistData *item = (DNDlistData*)malloc(sizeof(DNDlistData));
-
-  item->value = IupGetAttribute(ih, iupStrReturnInt(pos));
-
-  if(!item->value)
-    return IUP_IGNORE;
-
-  item->image = iupdrvListGetImageHandle(ih, pos);
-  
   iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", pos);
-  iupAttribSet(ih, "_IUP_LIST_SOURCEITEM", (char*)item);
-
   return IUP_DEFAULT;
 }
 
@@ -683,7 +718,7 @@ static int iListSetDragDropListAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
   {
-    /* Set callbacks to enable drag and drop between lists */
+    /* Register callbacks to enable drag and drop between lists */
     IupSetCallback(ih, "DRAGBEGIN_CB",    (Icallback)iupListDragBegin_CB);
     IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iupListDragDataSize_CB);
     IupSetCallback(ih, "DRAGDATA_CB",     (Icallback)iupListDragData_CB);
@@ -692,7 +727,7 @@ static int iListSetDragDropListAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    /* Unset callbacks */
+    /* Unregister callbacks */
     IupSetCallback(ih, "DRAGBEGIN_CB",    NULL);
     IupSetCallback(ih, "DRAGDATASIZE_CB", NULL);
     IupSetCallback(ih, "DRAGDATA_CB",     NULL);
