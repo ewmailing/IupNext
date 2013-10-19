@@ -683,7 +683,7 @@ static int iListSetDragDropListAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
   {
-    /* Register callbacks to enable drag and drop between lists */
+    /* Set callbacks to enable drag and drop between lists */
     IupSetCallback(ih, "DRAGBEGIN_CB",    (Icallback)iupListDragBegin_CB);
     IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iupListDragDataSize_CB);
     IupSetCallback(ih, "DRAGDATA_CB",     (Icallback)iupListDragData_CB);
@@ -692,7 +692,7 @@ static int iListSetDragDropListAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    /* Unregister callbacks */
+    /* Unset callbacks */
     IupSetCallback(ih, "DRAGBEGIN_CB",    NULL);
     IupSetCallback(ih, "DRAGDATASIZE_CB", NULL);
     IupSetCallback(ih, "DRAGDATA_CB",     NULL);
@@ -700,7 +700,7 @@ static int iListSetDragDropListAttrib(Ihandle* ih, const char* value)
     IupSetCallback(ih, "DROPDATA_CB",     NULL);
   }
 
-  return 0;
+  return 1;
 }
 
 /*****************************************************************************************/
@@ -955,7 +955,7 @@ Iclass* iupListNewClass(void)
 
   iupClassRegisterAttribute(ic, "SHOWIMAGE", iListGetShowImageAttrib, iListSetShowImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWDRAGDROP", iListGetShowDragDropAttrib, iListSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAGDROPLIST", NULL, iListSetDragDropListAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROPLIST", NULL, iListSetDragDropListAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupdrvListInitClass(ic);
 

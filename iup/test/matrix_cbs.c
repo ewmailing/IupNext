@@ -184,7 +184,7 @@ static Ihandle *create_mat(int mati)
  IupSetAttribute(mat, "MARKAREA", "CONTINUOUS");
 
   IupSetAttribute(mat,"0:0","Inflation");
-  IupSetAttribute(mat,"1:0","Medicine ");
+  IupSetAttribute(mat,"1:0","Medicine");
   IupSetAttribute(mat,"2:0","Food"); 
   IupSetAttribute(mat,"3:0","Energy"); 
   IupSetAttribute(mat,"0:1","January 2000"); 
