@@ -92,7 +92,7 @@ static int MatGetAttribute(lua_State *L)
     lua_pushnil(L);
   else
   {
-    if (iupAttribIsPointer(ih, name))
+    if (iupAttribIsNotString(ih, name))
     {
       if (iupObjectCheck((Ihandle*)value))
         iuplua_pushihandle(L, (Ihandle*)value);
