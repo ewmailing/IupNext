@@ -242,18 +242,19 @@ Other cell attributes remains on the hash table. Cell values with indices
 greater than (NUMLIN,NUMCOL) are ignored. When in callback mode cell 
 values stored in the hash table are ignored.</p>
 <h4>Callback Mode</h4>
-<p>Very large matrices must use the callback 
-  mode to set the values, and not the regular 
-  value attributes of the cells. The idea is the following:</p>
+<p>Very large matrices can use the callback 
+  mode to store the cell values at the application, and not at the internal 
+matrix storage. The idea is the following:</p>
 <p>1 -
     Register the VALUE_CB callback<br>
     2 -
-    No longer set the value of the cells. They 
-    will be set one by one by the callback. Note that the values of the cells must now be stored by the user.<br>
+    No longer set the value of the cells. Store the cell value at the 
+application. They 
+    will be retreived one by one by the callback.<br>
     3 -
-    If the matrix is editable, set the VALUE_EDIT_CB callback.<br>
+    If the matrix can be edited, set the VALUE_EDIT_CB callback.<br>
     4 -
-    When the matrix must be invalidated, use the REDRAW attribute to force a matrix redraw.</p>
+    When the matrix display must be updated, use the REDRAW attribute to force a matrix redraw.</p>
 <p>A negative aspect is that, when VALUE_CB is defined, after it is mapped the matrix never verifies attributes of type 
 L:C again.</p>
 <p>If VALUE_CB is defined and VALUE_EDIT_CB is not defined when the matrix is 
@@ -356,7 +357,7 @@ current text of the cell. Double-clicking a cell also
   to confirm the value the focus goes to the cell below the current cell, if at the last line then the focus goes to 
   the cell on the left. The value confirmation depends on the
   EDITION_CB callback return code.</p>
-<h4>Marks</h4>
+<h4>Marks (Selected Cells)</h4>
 <p>When a mark mode is set the cells can be marked using mouse.</p>
 <p>A marked cell will have its background attenuated to indicate that it is marked. 
 A title cell appears marked only when MARKMODE=LIN, COL or LINCOL.</p>

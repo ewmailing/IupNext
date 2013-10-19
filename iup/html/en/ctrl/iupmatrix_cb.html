@@ -346,7 +346,8 @@ click in another cell; or the edit control loses its focus.</p>
     clear the cell contents or other multiple cell editing. The callback will simply validate the operation for each cell been cleared 
 by checking if the matrix is read-only or if the cell is read-only. 
 In this situation it is called with <strong>mode</strong>=1 and <strong>update</strong>=1. 
-When not in callback mode the new value can not be refused.</p>
+When in normal mode (not callback mode) the new value can not be refused, you 
+must use the VALUE_EDIT_CB to reset a new value.</p>
 <h3>Callback Mode</h3>
 <p><strong><a name="VALUE_CB">VALUE_CB</a></strong>:
   Action generated to retrieve the value of a 
@@ -362,12 +363,11 @@ When not in callback mode the new value can not be refused.</p>
 <p class="info"><b>IMPORTANT</b>:
     The existence of this callback defines the callback operation mode of the matrix 
 when it is mapped.</p>
-<p><strong><a name="VALUE_EDIT_CB">VALUE_EDIT_CB</a></strong>:
-  Action generated to notify the application 
-  that the value of a cell was changed. When not in callback mode, it is simply 
-a notification, it cannot refuse the new value (which can be done by the 
-&quot;EDITION_CB&quot; callback). Never called when READONLY=YES. This callback is usually set in callback mode, but also works in 
-  normal mode.</p>
+<p><strong><a name="VALUE_EDIT_CB">VALUE_EDIT_CB</a></strong>: Action generated 
+to notify the application that the value of a cell was changed. Never called when READONLY=YES. This callback is usually set in callback mode, but also works in 
+  normal mode. When in normal mode, it is called after the new value has been 
+internally stored, so to refuse the new value simply reset the cell to the 
+desired value. </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>newval</strong>); [in C]
 <strong>elem</strong>:value_edit_cb(<strong>lin, col</strong>: number<strong>, newval</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
