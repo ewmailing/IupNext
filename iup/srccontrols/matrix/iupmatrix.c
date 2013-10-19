@@ -905,18 +905,18 @@ static void iMatrixClearAttrib(Ihandle* ih, unsigned char *flags, int lin, int c
 
 static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
-  if (ih->data->callback_mode)
-    return 0;
-
   if (lin==IUP_INVALID_ID && col==IUP_INVALID_ID)
   {
     if (iupStrEqualNoCase(value, "ALL"))
     {
       /* all cells attributes */
-      for (lin=0; lin<ih->data->lines.num; lin++)
+      if (!ih->data->callback_mode)
       {
-        for (col=0; col<ih->data->columns.num; col++)
-          iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+        for (lin=0; lin<ih->data->lines.num; lin++)
+        {
+          for (col=0; col<ih->data->columns.num; col++)
+            iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+        }
       }
 
       /* all line attributes */
@@ -929,22 +929,28 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
     }
     else if (iupStrEqualNoCase(value, "CONTENTS"))
     {
-      for (lin=1; lin<ih->data->lines.num; lin++)
+      if (!ih->data->callback_mode)
       {
-        for (col=1; col<ih->data->columns.num; col++)
-          iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+        for (lin=1; lin<ih->data->lines.num; lin++)
+        {
+          for (col=1; col<ih->data->columns.num; col++)
+            iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+        }
       }
     }
     else if (iupStrEqualNoCase(value, "MARKED"))
     {
       IFnii mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
 
-      for (lin=1; lin<ih->data->lines.num; lin++)
+      if (!ih->data->callback_mode)
       {
-        for (col=1; col<ih->data->columns.num; col++)
+        for (lin=1; lin<ih->data->lines.num; lin++)
         {
-          if (iupMatrixMarkCellGet(ih, lin, col, mark_cb))
-            iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+          for (col=1; col<ih->data->columns.num; col++)
+          {
+            if (iupMatrixMarkCellGet(ih, lin, col, mark_cb))
+              iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+          }
         }
       }
     }
@@ -965,8 +971,11 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
       if (lin1==0 && lin2==ih->data->lines.num-1)
         iMatrixClearAttrib(ih, &(ih->data->columns.dt[col].flags), IUP_INVALID_ID, col);
 
-      for (lin=lin1; lin<=lin2; lin++)
-        iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+      if (!ih->data->callback_mode)
+      {
+        for (lin=lin1; lin<=lin2; lin++)
+          iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+      }
     }
     else if (col==IUP_INVALID_ID)
     {
@@ -982,8 +991,11 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
       if (col1==0 && col2==ih->data->columns.num-1)
         iMatrixClearAttrib(ih, &(ih->data->lines.dt[lin].flags), lin, IUP_INVALID_ID);
 
-      for (col=col1; col<=col2; col++)
-        iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+      if (!ih->data->callback_mode)
+      {
+        for (col=col1; col<=col2; col++)
+          iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+      }
     }
     else
     {
@@ -1009,10 +1021,13 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
           iMatrixClearAttrib(ih, &(ih->data->lines.dt[lin].flags), lin, IUP_INVALID_ID);
       }
 
-      for (lin=lin1; lin<=lin2; lin++)
+      if (!ih->data->callback_mode)
       {
-        for (col=col1; col<=col2; col++)
-          iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+        for (lin=lin1; lin<=lin2; lin++)
+        {
+          for (col=col1; col<=col2; col++)
+            iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+        }
       }
     }
   }
@@ -1025,8 +1040,7 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
 
 static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
-  if (ih->data->callback_mode)
-    return 0;
+  if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHBEGIN", "CLEARVALUE");
 
   if (lin==IUP_INVALID_ID && col==IUP_INVALID_ID)
   {
@@ -1035,11 +1049,7 @@ static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char*
       for (lin=0; lin<ih->data->lines.num; lin++)
       {
         for (col=0; col<ih->data->columns.num; col++)
-        {
-          if (ih->data->cells[lin][col].value)
-            free(ih->data->cells[lin][col].value);
-          ih->data->cells[lin][col].value = NULL;
-        }
+          iupMatrixModifyValue(ih, lin, col, NULL);
       }
     }
     else if (iupStrEqualNoCase(value, "CONTENTS"))
@@ -1047,11 +1057,7 @@ static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char*
       for (lin=1; lin<ih->data->lines.num; lin++)
       {
         for (col=1; col<ih->data->columns.num; col++)
-        {
-          if (ih->data->cells[lin][col].value)
-            free(ih->data->cells[lin][col].value);
-          ih->data->cells[lin][col].value = NULL;
-        }
+          iupMatrixModifyValue(ih, lin, col, NULL);
       }
     }
     else if (iupStrEqualNoCase(value, "MARKED"))
@@ -1063,11 +1069,7 @@ static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char*
         for (col=1; col<ih->data->columns.num; col++)
         {
           if (iupMatrixMarkCellGet(ih, lin, col, mark_cb))
-          {
-            if (ih->data->cells[lin][col].value)
-              free(ih->data->cells[lin][col].value);
-            ih->data->cells[lin][col].value = NULL;
-          }
+            iupMatrixModifyValue(ih, lin, col, NULL);
         }
       }
     }
@@ -1085,11 +1087,7 @@ static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char*
         return 0;
 
       for (lin=lin1; lin<=lin2; lin++)
-      {
-        if (ih->data->cells[lin][col].value)
-          free(ih->data->cells[lin][col].value);
-        ih->data->cells[lin][col].value = NULL;
-      }
+        iupMatrixModifyValue(ih, lin, col, NULL);
     }
     else if (col==IUP_INVALID_ID)
     {
@@ -1102,11 +1100,7 @@ static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char*
         return 0;
 
       for (col=col1; col<=col2; col++)
-      {
-        if (ih->data->cells[lin][col].value)
-          free(ih->data->cells[lin][col].value);
-        ih->data->cells[lin][col].value = NULL;
-      }
+        iupMatrixModifyValue(ih, lin, col, NULL);
     }
     else
     {
@@ -1123,14 +1117,12 @@ static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char*
       for (lin=lin1; lin<=lin2; lin++)
       {
         for (col=col1; col<=col2; col++)
-        {
-          if (ih->data->cells[lin][col].value)
-            free(ih->data->cells[lin][col].value);
-          ih->data->cells[lin][col].value = NULL;
-        }
+          iupMatrixModifyValue(ih, lin, col, NULL);
       }
     }
   }
+
+  if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHEND", NULL);
 
   if (ih->handle)
     iupMatrixDraw(ih, 1);

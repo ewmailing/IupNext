@@ -400,6 +400,12 @@ int iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode, int
   return IUP_DEFAULT;
 }
 
+static void iMatrixAuxCopyValue(Ihandle* ih, int lin1, int col1, int lin2, int col2)
+{
+  char* value = iupMatrixGetValueString(ih, lin1, col1);
+  iupMatrixModifyValue(ih, lin2, col2, value);
+}
+
 void iupMatrixAuxCopyLin(Ihandle* ih, int from_lin, int to_lin)
 {
   int col, columns_num = ih->data->columns.num;
@@ -409,7 +415,7 @@ void iupMatrixAuxCopyLin(Ihandle* ih, int from_lin, int to_lin)
   ih->data->undo_redo = 0;
 
   for(col = 0; col < columns_num; col++)
-    iupMatrixCopyValue(ih, from_lin, col, to_lin, col);
+    iMatrixAuxCopyValue(ih, from_lin, col, to_lin, col);
 
   ih->data->undo_redo = old_undo;
 
@@ -425,7 +431,7 @@ void iupMatrixAuxCopyCol(Ihandle* ih, int from_col, int to_col)
   ih->data->undo_redo = 0;
 
   for(lin = 0; lin < lines_num; lin++)
-    iupMatrixCopyValue(ih, lin, from_col, lin, to_col);
+    iMatrixAuxCopyValue(ih, lin, from_col, lin, to_col);
 
   ih->data->undo_redo = old_undo;
 

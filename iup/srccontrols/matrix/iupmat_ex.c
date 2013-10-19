@@ -39,10 +39,9 @@ char* iupMatrixExGetCellValue(Ihandle* ih, int lin, int col, int convert)
 }
 
 /* Exported to IupMatrixEx */
-void iupMatrixExSetCellValue(Ihandle* ih, int lin, int col, const char* value, int edition)
+void iupMatrixExSetCellValue(Ihandle* ih, int lin, int col, const char* value)
 {  
-  if (!edition || iupMatrixAuxCallEditionCbLinCol(ih, lin, col, 1, 1) != IUP_IGNORE)
-    iupMatrixSetValue(ih, lin, col, value, -1);  /* call value_edit_cb, but NO numeric conversion */
+  iupMatrixModifyValue(ih, lin, col, value);
 }
 
 static int iMatrixInitNumericColumns(Ihandle* ih, int col)

@@ -167,29 +167,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     case K_sDEL:
     case K_DEL:
       {
-        int lin, col;
-        IFnii mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
-
-        iupMatrixPrepareDrawData(ih);
-
-        if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHBEGIN", "KEYDEL");
-
-        for(lin = 1; lin < ih->data->lines.num; lin++)
-        {
-          for(col = 1; col < ih->data->columns.num; col++)
-          {
-            if (iupMatrixMarkCellGet(ih, lin, col, mark_cb))
-            {
-              if (iupMatrixAuxCallEditionCbLinCol(ih, lin, col, 1, 1) != IUP_IGNORE)
-              {
-                iupMatrixSetValue(ih, lin, col, NULL, 1);
-                iupMatrixDrawCells(ih, lin, col, lin, col);
-              }
-            }
-          }
-        }
-
-        if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHEND", NULL);
+        IupSetAttribute(ih, "CLEARVALUE", "MARKED");
         break;
       }
     default:

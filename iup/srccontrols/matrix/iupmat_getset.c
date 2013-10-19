@@ -42,16 +42,18 @@ int iupMatrixCheckCellPos(Ihandle* ih, int lin, int col)
   return 1;
 }
 
-void iupMatrixCopyValue(Ihandle* ih, int lin1, int col1, int lin2, int col2)
+void iupMatrixModifyValue(Ihandle* ih, int lin, int col, const char* value)
 {
-  char* value = iupMatrixGetValueString(ih, lin1, col1);
-  iupMatrixSetValue(ih, lin2, col2, value, -1);  /* call value_edit_cb, but NO numeric conversion */
+  /* This is a one call only. It is usefull to support READONLY 
+     and cell read-only by returning IUP_IGNORE */
+  if (iupMatrixAuxCallEditionCbLinCol(ih, lin, col, 1, 1) != IUP_IGNORE)
+    iupMatrixSetValue(ih, lin, col, value, -1);    /* call value_edit_cb, but NO numeric conversion */
 }
 
 static char* iMatrixSetValueNumeric(Ihandle* ih, int lin, int col, const char* value, int convert)
 {
   double number;
-  if (sscanf(value, "%lf", &number) != 1)   /* lf=double */
+  if (sscanf(value, "%lf", &number) == 1)   /* lf=double */
   {
     IFniid setvalue_cb;
 
@@ -77,7 +79,7 @@ static char* iMatrixSetValueNumeric(Ihandle* ih, int lin, int col, const char* v
   return (char*)value;
 }
 
-void iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int edited)
+void iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int user_edited)
 {  
   /* NOTICE: this function is NOT called before map */
   char* old_value = NULL;
@@ -92,9 +94,9 @@ void iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int edi
 
   if (ih->data->undo_redo) iupAttribSetClassObjectId2(ih, "UNDOPUSHCELL", lin, col, old_value);
 
-  if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
+  if (value && ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
   {
-    value = iMatrixSetValueNumeric(ih, lin, col, value, edited==1);  /* convert only if interactively edited */
+    value = iMatrixSetValueNumeric(ih, lin, col, value, user_edited==1);  /* convert only if interactively edited */
     if (!value)
       return;
   }
@@ -107,7 +109,7 @@ void iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int edi
     ih->data->cells[lin][col].value = iupStrDup(value);
   }
 
-  if (edited)
+  if (user_edited)
   {
     /* value_edit_cb called when value is "interactively" edited. 
        This is NOT called only when L:C or VALUE attributes are set.

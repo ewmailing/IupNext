@@ -32,9 +32,13 @@
 static void iMatrixEditUpdateValue(Ihandle* ih)
 {
   char *value = iupMatrixEditGetValue(ih);
+
   if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHBEGIN", "EDITCELL");
+
   iupMatrixSetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value, 1);
+
   if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHEND", NULL);
+
   iupMatrixPrepareDrawData(ih);
   iupMatrixDrawCells(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 }

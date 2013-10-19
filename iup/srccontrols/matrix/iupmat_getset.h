@@ -12,9 +12,11 @@
 extern "C" {
 #endif
 
-void  iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int edited);
+void  iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int user_edited);
 char* iupMatrixGetValue(Ihandle* ih, int lin, int col);
+
 void  iupMatrixCopyValue(Ihandle* ih, int lin1, int col1, int lin2, int col2);
+void iupMatrixModifyValue(Ihandle* ih, int lin, int col, const char* value);
 
 double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col);
 char* iupMatrixGetValueText(Ihandle* ih, int lin, int col);
