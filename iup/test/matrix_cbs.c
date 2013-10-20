@@ -196,8 +196,12 @@ static Ihandle *create_mat(int mati)
   IupSetAttribute(mat,"2:2","8.1");
   IupSetAttribute(mat,"3:2","3.4 (RO)");
 
+  
+  IupSetAttribute(mat, "NUMERICFORMATTITLE3", "%s (%s)");
   IupSetAttribute(mat, "NUMERICQUANTITY3", "Time");
   IupSetAttribute(mat, "NUMERICUNIT3", "day");
+  IupSetAttribute(mat, "NUMERICUNITSHOWN3", "day");
+  IupSetAttribute(mat,"0:3","Time");
   IupSetAttribute(mat,"1:3","1");
   IupSetAttribute(mat,"2:3","1.5");
   IupSetAttribute(mat,"3:3","2");

@@ -249,8 +249,11 @@ using the <a href="#NUMERICGETVALUE_CB">NUMERICGETVALUE_CB</a> and
 <a href="#NUMERICSETVALUE_CB">NUMERICSETVALUE_CB</a> callbacks. The returned 
 value is always the name of the quantity in the table, regardless the value that 
 was set. To use the numeric attributes and callbacks without using units, simply 
-set quantity to &quot;None&quot;. To disable all numeric support set quantity to NULL.&nbsp;(no 
+set quantity to &quot;None&quot;. To disable all numeric suppor.t set quantity to NULL.&nbsp;(no 
 redraw)</p>
+<p>
+<strong>NUMERICUNITCOUNT<em>id</em></strong> (read-only): Returns the number of 
+units for the current quantity at the given column (id).</p>
 <p>
 <strong>NUMERICUNIT<em>id</em></strong>: Unit of the numbers set into the matrix 
 at the given column (id). Must be in the same category of the NUMERICFORMAT 
@@ -531,6 +534,12 @@ Find...             =&gt; Show the Find Dialog
 Go To...            =&gt; Show the Go To Cell Dialog
 Sort...             =&gt; Show the Sort Dialog
 Freeze/UnFreeze     =&gt; Makes the current cell a non scrollable point / Reset to default
+Visibility
+	Hide Column
+	Show Hidden Columns
+	Hide Line
+	Show Hidden Lines
+Numeric Units... / Numeric Decimals...   =&gt; Show Numeric Units Dialog or Numeric Decimals Dialog
 Copy To (Same Column)    Copy cell value to other lines in the same column
 	All Lines       =&gt; Copy To All Lines
 	Here to Top     =&gt; Copy From the Current Cell to L=0

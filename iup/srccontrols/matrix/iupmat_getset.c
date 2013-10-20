@@ -237,7 +237,7 @@ static char* iMatrixGetValueNumericDisplay(Ihandle* ih, int lin, int col, const 
 
     if (format)
     {
-      char* unit_symbol = iupAttribGetId(ih, "NUMERICUNITSHOWNSYMBOL", col);
+      char* unit_symbol = IupGetAttributeId(ih, "NUMERICUNITSHOWNSYMBOL", col);
       if (unit_symbol)
       {
         if (value)
