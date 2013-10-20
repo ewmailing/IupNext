@@ -326,7 +326,7 @@ void iupMatrixExSortShowDialog(ImatExData* matex_data)
   num_lin = IupGetInt(matex_data->ih, "NUMLIN");
   lin1 = 1;
   lin2 = num_lin;
-  iupStrToIntInt(IupGetAttribute(matex_data->ih, "SORTCOLUMNINTERVAL"), &lin1, &lin2, '-');
+  IupGetIntInt(matex_data->ih, "SORTCOLUMNINTERVAL", &lin1, &lin2);
   if (lin1 < 1) lin1 = 1;
   if (lin2 > num_lin) lin2 = num_lin;
   if (lin1 > lin2) lin1 = lin2;

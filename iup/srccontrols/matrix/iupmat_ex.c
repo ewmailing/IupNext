@@ -267,7 +267,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
   if (!iupStrEqualNoCase(value, "ALL"))
     iupStrToIntInt(value, &lin1, &lin2, '-');
 
-  iupAttribSetStrf(ih, "SORTCOLUMNINTERVAL", "%d-%d", lin1, lin2);
+  iupAttribSetStrf(ih, "SORTCOLUMNINTERVAL", "%d,%d", lin1, lin2);
 
   ascending = iupStrEqualNoCase(iupAttribGetStr(ih, "SORTCOLUMNORDER"), "ASCENDING");
   
