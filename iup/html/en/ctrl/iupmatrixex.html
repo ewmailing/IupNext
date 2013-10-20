@@ -51,6 +51,9 @@
 .style12 {
 	background-color: #C0C0C0;
 }
+  .style13 {
+	  background-color: #CEE7FF;
+  }
   </style>
 </head>
 
@@ -93,9 +96,6 @@
   The expansion can be used in two different ways: using a new control called
   <strong>IupMatrixEx</strong>, or by calling <strong>IupMatrixExInit</strong> 
   for an existing <strong>IupMatrix</strong> control.</p>
-<p>
-  Each feature can be enabled or disabled individually, and it will have an 
-  exclusive set of attributes and/or callbacks. </p>
 <p>
   The matrix can be used in callback mode or in standard more.</p>
 <p>
@@ -510,6 +510,66 @@ the line numbers of the two cells being compared.</p>
 control.</p>
 
 <h3><a name="Notes">Notes</a></h3>
+<h4>Context Menu</h4>
+<p>The library adds a context menu where the user can execute some of the new 
+features:</p>
+<pre>Export
+	Txt...       =&gt; Shows a file selection dialog and saves the cells to a file.
+	LaTeX...     =&gt; ( &quot; )
+	Html...      =&gt; (  &quot; )
+Import
+	Txt...       =&gt; Shows a file selection dialog and loads the cells from a file.
+Undo                =&gt; Undo 1 level
+Redo                =&gt; R<span class="style13">e</span>do 1 level
+Undo List...        =&gt; Show the Undo Dialog
+Cut                 =&gt; Copy + Clear Cell Values
+Copy                =&gt; Copy to Clipboard
+Paste               =&gt; Paste from Clipboard
+Erase               =&gt; Clear Cell Values
+Find...             =&gt; Show the Find Dialog
+Go To...            =&gt; Show the Go To Cell Dialog
+Sort...             =&gt; Show the Sort Dialog
+Freeze/UnFreeze     =&gt; Makes the current cell a non scrollable point / Reset to default
+Copy To (Same Column)    Copy cell value to other lines in the same column
+	All Lines       =&gt; Copy To All Lines
+	Here to Top     =&gt; Copy From the Current Cell to L=0
+	Here to Bottom  =&gt; Copy From the Current Cell to L=NUMLIN
+	Interval...     =&gt; Show &quot;Copy To - Interval&quot; Dialog
+	Selected Lines  =&gt; Copy to the Selected Cells</pre>
+<h4>Dialogs</h4>
+<div align="center">
+  <center>
+  <table border="0" cellpadding="6" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
+    <tr>
+      <td><img border="0" src="images/iupmatrixex_find.png"></td>
+      <td><img border="0" src="images/iupmatrixex_goto.png"></td>
+    </tr>
+    <tr>
+      <td><img border="0" src="images/iupmatrixex_sort.png"></td>
+      <td><img border="0" src="images/iupmatrixex_copyto.png"></td>
+    </tr>
+  </table>
+  </center>
+</div>
+
+<h4>Shortcut Keys</h4>
+<p>The library adds some shortcut keys to the already implemented in <strong>
+IupMatrix</strong>:</p>
+<pre>Ctrl+A (English)    =&gt; Select All
+Ctrl+T (Portuguese) =&gt; Select All
+Ctrl+X              =&gt; Cut (Copy + Clear Cell Values)
+Ctrl+C              =&gt; Copy to Clipboard
+Ctrl+V              =&gt; Paste from Clipboard
+Ctrl+Z              =&gt; Undo 1 level
+Ctrl+Y (English)    =&gt; Redo 1 level
+Ctrl+R (Portuguese) =&gt; Redo 1 level
+Ctrl+F (English)    =&gt; Show the Find Dialog
+Ctrl+L (Portuguese) =&gt; Show the Find Dialog
+Alt+F3              =&gt; Show the Find Dialog
+Esc                 =&gt; Hide the Find Dialog
+F3                  =&gt; Find Next
+Shift+F3            =&gt; Find Previous
+Ctrl+G              =&gt; Show the Go To Cell Dialog</pre>
 <h4><a name="UNITS">Available Quantity and Units</a></h4>
 <p>Unit names, symbols and conversion factors were almost all based on:</p>
 <p class="info"><a href="http://en.wikipedia.org/wiki/Conversion_of_units">

@@ -279,7 +279,7 @@ static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
     value = iupAttribGet(matex_data->ih, "_IUP_LAST_COPYCOL_INTERVAL");
     if (value) iupStrCopyN(interval, 200, value);
 
-    if (IupGetParam("_@IUP_COPYTOINTERVALS", NULL, NULL, "(L1-L2,L3,L4-L5,...): %s\n", interval, NULL))
+    if (IupGetParam(IupGetLanguageString("IUP_COPYTOINTERVALS"), NULL, NULL, "L1-L2,L3,L4-L5,... %s\n", interval, NULL))
     {
       IupSetAttributeId2(matex_data->ih, "COPYCOLTO", lin, col, interval);
       iupAttribSetStr(matex_data->ih, "_IUP_LAST_COPYCOL_INTERVAL", interval);
@@ -327,7 +327,7 @@ static int iMatrixExItemGoTo_CB(Ihandle* ih_item)
   value = iupAttribGet(matex_data->ih, "_IUP_LAST_GOTO_CELL");
   if (value) iupStrCopyN(cell, 100, value);
 
-  if (IupGetParam("_@IUP_GOTO", NULL, NULL, "(LIN:COL): %s\n", cell, NULL))
+  if (IupGetParam(IupGetLanguageString("IUP_GOTO"), NULL, NULL, "L:C %s\n", cell, NULL))
   {
     IupSetAttribute(matex_data->ih, "SHOW", cell);
     IupSetAttribute(matex_data->ih, "FOCUS_CELL", cell);
@@ -360,6 +360,58 @@ static int iMatrixExItemFreeze_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int iMatrixExItemHideCol_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  int lin, col;
+
+  IupGetIntInt(ih_item, "MENUCONTEXT_CELL", &lin, &col);
+
+  IupSetAttributeId(matex_data->ih, "VISIBLECOL", col, "No");
+
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemShowCol_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  int col, num_col = IupGetInt(matex_data->ih, "NUMCOL");
+
+  for(col = 1; col <= num_col; ++col)
+  {
+    if (!IupGetIntId(matex_data->ih, "VISIBLECOL", col))
+      IupSetAttributeId(matex_data->ih, "VISIBLECOL", col, "Yes");
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemHideLin_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  int lin, col;
+
+  IupGetIntInt(ih_item, "MENUCONTEXT_CELL", &lin, &col);
+
+  IupSetAttributeId(matex_data->ih, "VISIBLELIN", lin, "No");
+
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemShowLin_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  int lin, num_lin = IupGetInt(matex_data->ih, "NUMLIN");
+
+  for(lin = 1; lin <= num_lin; ++lin)
+  {
+    if (!IupGetIntId(matex_data->ih, "VISIBLELIN", lin))
+      IupSetAttributeId(matex_data->ih, "VISIBLELIN", lin, "Yes");
+  }
+
+  return IUP_DEFAULT;
+}
+
 static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
 {
   int readonly = IupGetInt(ih, "READONLY");
@@ -369,9 +421,9 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
   Ihandle* menu = IupMenu(
     IupSetAttributes(IupSubmenu("_@IUP_EXPORT",
       IupMenu(
-        IupSetCallbacks(IupSetAttributes(IupItem("Txt..." , NULL), "TEXTFORMAT=TXT"), "ACTION", iMatrixExItemExport_CB, NULL),
+        IupSetCallbacks(IupSetAttributes(IupItem("Txt..." , NULL), "TEXTFORMAT=TXT"),    "ACTION", iMatrixExItemExport_CB, NULL),
         IupSetCallbacks(IupSetAttributes(IupItem("LaTeX...", NULL), "TEXTFORMAT=LaTeX"), "ACTION", iMatrixExItemExport_CB, NULL),
-        IupSetCallbacks(IupSetAttributes(IupItem("Html..." , NULL), "TEXTFORMAT=HTML"), "ACTION", iMatrixExItemExport_CB, NULL),
+        IupSetCallbacks(IupSetAttributes(IupItem("Html..." , NULL), "TEXTFORMAT=HTML"),  "ACTION", iMatrixExItemExport_CB, NULL),
         NULL)), "IMAGE=IUP_FileOpen"),
     NULL);
 
@@ -405,7 +457,7 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
   /************************** Edit - Clipboard ****************************/
 
   if (!readonly)
-    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_CUT", NULL), "IMAGE=IUP_EditCut"), "ACTION", iMatrixExItemCut_CB, NULL));
+    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_CUT", NULL), "IMAGE=IUP_EditCut"),  "ACTION", iMatrixExItemCut_CB, NULL));
   IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_COPY",  NULL), "IMAGE=IUP_EditCopy"), "ACTION", iMatrixExItemCopy_CB, NULL));
   if (!readonly)
   {
@@ -434,8 +486,13 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
       IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_UNFREEZE", NULL), "ACTION", iMatrixExItemFreeze_CB, NULL));
   }
 
-  //IupAppend(menu, IupItem("Hide Column"         , NULL));
-  //IupAppend(menu, IupItem("Show Hidden Columns" , NULL));
+  IupAppend(menu, IupSubmenu("_@IUP_VISIBILITY",
+    IupMenu(
+      IupSetCallbacks(IupItem("_@IUP_HIDECOLUMN", NULL),        "ACTION", iMatrixExItemHideCol_CB, NULL),
+      IupSetCallbacks(IupItem("_@IUP_SHOWHIDDENCOLUMNS", NULL), "ACTION", iMatrixExItemShowCol_CB, NULL),
+      IupSetCallbacks(IupItem("_@IUP_HIDELINE", NULL),          "ACTION", iMatrixExItemHideLin_CB, NULL),
+      IupSetCallbacks(IupItem("_@IUP_SHOWHIDDENLINES", NULL),   "ACTION", iMatrixExItemShowLin_CB, NULL),
+    NULL)));
 
   //Is Numeric Column and Has Units
   //Unit...
@@ -449,11 +506,11 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
 
     IupAppend(menu, IupSubmenu("_@IUP_COPYTOSAMECOLUMN",
         IupMenu(
-          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_ALLLINES"      , NULL), "COPYCOLTO=ALL"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
-          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_HERETOTOP"    , NULL), "COPYCOLTO=TOP"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
-          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_HERETOBOTTOM" , NULL), "COPYCOLTO=BOTTOM"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
+          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_ALLLINES"      , NULL),  "COPYCOLTO=ALL"),      "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
+          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_HERETOTOP"    , NULL),   "COPYCOLTO=TOP"),      "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
+          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_HERETOBOTTOM" , NULL),   "COPYCOLTO=BOTTOM"),   "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
           IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_INTERVALDLG"    , NULL), "COPYCOLTO=INTERVAL"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),     
-          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SELECTEDLINES" , NULL), "COPYCOLTO=MARKED"), "ACTION", iMatrixExItemCopyColTo_CB, NULL),
+          IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SELECTEDLINES" , NULL),  "COPYCOLTO=MARKED"),   "ACTION", iMatrixExItemCopyColTo_CB, NULL),
           NULL)));
   }
 
@@ -689,6 +746,12 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_INTERVALDLG", "Interval...");
     IupSetLanguageString("IUP_SELECTEDLINES", "Selected lines");
 
+    IupSetLanguageString("IUP_VISIBILITY", "Visibility");
+    IupSetLanguageString("IUP_HIDECOLUMN", "Hide Column");  
+    IupSetLanguageString("IUP_SHOWHIDDENCOLUMNS", "Show Hidden Columns");
+    IupSetLanguageString("IUP_HIDELINE", "Hide Line");    
+    IupSetLanguageString("IUP_SHOWHIDDENLINES", "Show Hidden Lines");
+
     IupSetLanguageString("IUP_COPYTOINTERVALS", "Copy To - Intervals");
     IupSetLanguageString("IUP_GOTO", "Go To");
 
@@ -720,6 +783,12 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_HERETOBOTTOM", "Daqui para o fim");
     IupSetLanguageString("IUP_INTERVALDLG", "Intervalo...");
     IupSetLanguageString("IUP_SELECTEDLINES", "Linhas Selecionadas");
+
+    IupSetLanguageString("IUP_VISIBILITY", "Visibilidade");
+    IupSetLanguageString("IUP_HIDECOLUMN", "Esconder Coluna");  
+    IupSetLanguageString("IUP_SHOWHIDDENCOLUMNS", "Mostrar Coluna Escondidas");
+    IupSetLanguageString("IUP_HIDELINE", "Esconder Linha");    
+    IupSetLanguageString("IUP_SHOWHIDDENLINES", "Mostrar Linhas Escondidas");
 
     IupSetLanguageString("IUP_COPYTOINTERVALS", "Copiar Para - Intervalos");
     IupSetLanguageString("IUP_GOTO", "Ir Para");

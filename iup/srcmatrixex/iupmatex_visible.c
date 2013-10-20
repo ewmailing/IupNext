@@ -88,24 +88,54 @@ static char* iMatrixGetVisibleLinAttribId(Ihandle *ih, int lin)
 
 static int iMatrixSetVisibleColAttribId(Ihandle *ih, int col, const char* value)
 {
-  if (iupStrBoolean(value))
-    iupAttribSetId(ih, "WIDTH", col, "0");    /* this is enough */
+  char* old_width;
+
+  if (!iupStrBoolean(value))
+  {
+    old_width = iupAttribGetId(ih, "WIDTH", col);
+    if (old_width) iupAttribSetStrId(ih, "_IUP_SHOWCOL_WIDTH", col, old_width);
+    else { old_width = iupAttribGetId(ih, "RASTERWIDTH", col);
+         if (old_width) iupAttribSetStrId(ih, "_IUP_SHOWCOL_RASTERWIDTH", col, old_width); }
+
+    IupSetAttributeId(ih, "WIDTH", col, "0");    /* this is enough */
+  }
   else
   {
     iupAttribSetId(ih, "WIDTH", col, NULL);  /* this may be insufficient */
     iupAttribSetId(ih, "RASTERWIDTH", col, NULL);
+
+    old_width = iupAttribGetId(ih, "_IUP_SHOWCOL_WIDTH", col);
+    if (old_width) IupSetAttributeId(ih, "WIDTH", col, old_width);
+    else { old_width = iupAttribGetId(ih, "_IUP_SHOWCOL_RASTERWIDTH", col);
+         if (old_width) IupSetAttributeId(ih, "RASTERWIDTH", col, old_width); 
+         else IupSetAttributeId(ih, "RASTERWIDTH", col, NULL); }
   }
   return 0;
 }
 
 static int iMatrixSetVisibleLinAttribId(Ihandle *ih, int lin, const char* value)
 {
-  if (iupStrBoolean(value))
-    iupAttribSetId(ih, "HEIGHT", lin, "0");    /* this is enough */
+  char* old_height;
+
+  if (!iupStrBoolean(value))
+  {
+    old_height = iupAttribGetId(ih, "HEIGHT", lin);
+    if (old_height) iupAttribSetStrId(ih, "_IUP_SHOWCOL_HEIGHT", lin, old_height);
+    else { old_height = iupAttribGetId(ih, "RASTERHEIGHT", lin);
+         if (old_height) iupAttribSetStrId(ih, "_IUP_SHOWCOL_RASTERHEIGHT", lin, old_height); }
+
+    IupSetAttributeId(ih, "HEIGHT", lin, "0");    /* this is enough */
+  }
   else
   {
     iupAttribSetId(ih, "HEIGHT", lin, NULL);  /* this may be insufficient */
     iupAttribSetId(ih, "RASTERHEIGHT", lin, NULL);
+
+    old_height = iupAttribGetId(ih, "_IUP_SHOWCOL_HEIGHT", lin);
+    if (old_height) IupSetAttributeId(ih, "HEIGHT", lin, old_height);
+    else { old_height = iupAttribGetId(ih, "_IUP_SHOWCOL_RASTERHEIGHT", lin);
+         if (old_height) IupSetAttributeId(ih, "RASTERHEIGHT", lin, old_height); 
+         else IupSetAttributeId(ih, "RASTERHEIGHT", lin, NULL); }
   }
   return 0;
 }
