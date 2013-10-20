@@ -286,7 +286,7 @@ static int iParamFileButton_CB(Ihandle *self)
   Ihandle* fdlg = IupFileDlg();
 
   IupSetAttributeHandle(fdlg, "PARENTDIALOG", IupGetDialog(self));
-  IupSetAttribute(fdlg, "TITLE", iupAttribGet(param, "TITLE"));
+  IupSetStrAttribute(fdlg, "TITLE", iupAttribGet(param, "TITLE"));
   IupSetAttribute(fdlg, "VALUE", iupAttribGet(param, "VALUE"));
 
   IupSetAttribute(fdlg, "DIALOGTYPE", iupAttribGet(param, "_IUPGP_DIALOGTYPE"));
@@ -320,7 +320,7 @@ static int iParamColorButton_CB(Ihandle *self)
 
   Ihandle* color_dlg = IupColorDlg();
   IupSetAttributeHandle(color_dlg, "PARENTDIALOG", IupGetDialog(self));
-  IupSetAttribute(color_dlg, "TITLE", iupAttribGet(param, "TITLE"));
+  IupSetStrAttribute(color_dlg, "TITLE", iupAttribGet(param, "TITLE"));
   IupSetAttribute(color_dlg, "VALUE", iupAttribGet(param, "VALUE"));
 
   IupPopup(color_dlg, IUP_CENTER, IUP_CENTER);
@@ -350,7 +350,7 @@ static int iParamFontButton_CB(Ihandle *self)
 
   Ihandle* font_dlg = IupFontDlg();
   IupSetAttributeHandle(font_dlg, "PARENTDIALOG", IupGetDialog(self));
-  IupSetAttribute(font_dlg, "TITLE", iupAttribGet(param, "TITLE"));
+  IupSetStrAttribute(font_dlg, "TITLE", iupAttribGet(param, "TITLE"));
   IupSetAttribute(font_dlg, "VALUE", iupAttribGet(param, "VALUE"));
 
   IupPopup(font_dlg, IUP_CENTER, IUP_CENTER);
@@ -835,9 +835,9 @@ static Ihandle* IupParamDlgP(Ihandle** params)
     else /* buttonnames */
     {
       char* value = iupAttribGet(params[i], "_IUPGP_OK");
-      if (value && *value) IupSetAttribute(button_ok, "TITLE", value);
+      if (value && *value) IupSetStrAttribute(button_ok, "TITLE", value);
       value = iupAttribGet(params[i], "_IUPGP_CANCEL");
-      if (value && *value) IupSetAttribute(button_cancel, "TITLE", value);
+      if (value && *value) IupSetStrAttribute(button_cancel, "TITLE", value);
       value = iupAttribGet(params[i], "_IUPGP_HELP");
       if (value && *value) 
       {
@@ -883,7 +883,7 @@ static Ihandle* IupParamDlgP(Ihandle** params)
   }
   IupSetAttributeHandle(dlg, "DEFAULTENTER", button_ok);
   IupSetAttributeHandle(dlg, "DEFAULTESC", button_cancel);
-  IupSetAttribute(dlg, "TITLE", "ParamDlg");
+  IupSetStrAttribute(dlg, "TITLE", "ParamDlg");
   IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
 
@@ -1180,6 +1180,8 @@ static char* iParamGetTitle(char* line_ptr, int count)
     if (i != n)  /* copy only if there is a second % */
       title[n] = title[i];
   }
+  if (i-1 != n)
+    title[n+1] = 0;
   return title;
 }
 
@@ -1393,7 +1395,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   params[i] = NULL;
 
   dlg = IupParamDlgP(params);
-  IupSetAttribute(dlg, "TITLE", (char*)title);
+  IupSetStrAttribute(dlg, "TITLE", (char*)title);
   IupSetCallback(dlg, "PARAM_CB", (Icallback)action);
   iupAttribSet(dlg, "USER_DATA", (char*)user_data);
 
