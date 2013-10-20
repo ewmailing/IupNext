@@ -254,13 +254,14 @@ redraw)</p>
 <p>
 <strong>NUMERICUNIT<em>id</em></strong>: Unit of the numbers set into the matrix 
 at the given column (id). Must be in the same category of the NUMERICFORMAT 
-attribute. For the available option see <a href="#UNITS">
+attribute. For the available options see <a href="#UNITS">
 Available Quantity and Units</a> table bellow. The application must process numbers for the column only in this 
 unit, when getting or setting attributes. But the values passed to the 
 <a href="iupmatrix_cb.html#DROP_CB">DROP_CB</a> 
 and <a href="iupmatrix_cb.html#MENUDROP_CB">MENUDROP_CB</a> callbacks will not be processed because they can contain 
 strings. The returned value is always the name of the unit in the table, 
-regardless the value that was set. Default value is the first unit on the table. 
+regardless the value that was set. Default value is the first unit on the table 
+bellow. 
 (no redraw)</p>
 <p>
 <strong>NUMERICUNITSHOWN<em>id</em></strong>: Unit to be displayed at the given 
@@ -575,13 +576,13 @@ Ctrl+G              =&gt; Show the Go To Cell Dialog</pre>
 <p class="info"><a href="http://en.wikipedia.org/wiki/Conversion_of_units">
 http://en.wikipedia.org/wiki/Conversion_of_units</a></p>
 <p>By definition, unit names and symbols follow the case displayed in the table. 
-When setting the NUMERICQUANTITY and NUMERICUNIT attributes, the case is 
+When setting the NUMERICQUANTITY and NUMERICUNIT attributes use English names, the case is 
 insensitive and spaces are ignored. When consulted they will return the table 
-value regardless how the value was set. Some Quantities have alternative names, 
+value in the current language, regardless how the value was set. Some Quantities have alternative names, 
 once used the returned values in the attribute will be the same alternative 
 name. For example, you can set &quot;Specific Weight&quot; or &quot;SPECIFICWEIGHT&quot;, and you 
 can set &quot;Speed&quot; or &quot;Velocity&quot;.</p>
-<p>All numeric attributes all can be set without the element being mapped to 
+<p>All numeric attributes can be set without the element being mapped to 
 the native system, so the <strong>IupMatrixEx</strong> element can also be used 
 as a Quantity Units database.</p>
 <p>The unit used as a reference for conversion is always the first unit listed, 
@@ -591,7 +592,8 @@ International System of Units</a>&nbsp;(SI).</p>
 <p>NOTICE: These are only a small set of commonly used units. If you need other units, 
 please let us know so we can include them.</p>
 <p>Obs: &quot;g&quot; in Comments is the standard gravity. All Quantity and Unit 
-names are in English only. The symbols that have extended characters will work 
+names are described in English, but Quantities are returned in the current 
+language. The symbols that have extended characters will work 
 in ISO8859-1 and in UTF-8, according to the UTF8MODE global attribute. The cell 
 background colors are just for clarity and do not imply in any standard 
 classification.</p>

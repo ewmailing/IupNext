@@ -32,7 +32,7 @@
 */
 
 typedef struct _ImatExUnit {
-  const char* name;
+  const char* uname;
   const char* symbol;
   double factor;
   const char* symbol_utf8;
@@ -257,6 +257,9 @@ static const ImatExUnit IMATEX_ELECTRIC_CHARGE_UNITS [IMATEX_ELECTRIC_CHARGE_COU
 
 
 typedef struct _ImatExQuantity {
+  const char* name_en;
+  const char* name_pt;
+  const char* name_pt_utf8;
   const char* name;
   const ImatExUnit* units;
   int units_count;
@@ -267,37 +270,37 @@ typedef struct _ImatExQuantity {
 #define IMATEX_QUANTITY_CUSTOM 25
 static int imatex_quantity_count = IMATEX_QUANTITY_COUNT;
 static ImatExQuantity imatex_quantities [IMATEX_QUANTITY_COUNT+IMATEX_QUANTITY_CUSTOM] = {
-  { "None"             , NULL                         , 0                             },
-  { "Temperature"      , IMATEX_TEMPERATURE_UNITS     , IMATEX_TEMPERATURE_COUNT      },  /* must not be change from here */
-  { "Length"           , IMATEX_LENGTH_UNITS          , IMATEX_LENGTH_COUNT           },
-  { "Time"             , IMATEX_TIME_UNITS            , IMATEX_TIME_COUNT             },
-  { "Mass"             , IMATEX_MASS_UNITS            , IMATEX_MASS_COUNT             },
-  { "Area"             , IMATEX_AREA_UNITS            , IMATEX_AREA_COUNT             },
-  { "Volume"           , IMATEX_VOLUME_UNITS          , IMATEX_VOLUME_COUNT           },
-  { "Speed"            , IMATEX_SPEED_UNITS           , IMATEX_SPEED_COUNT            },
-  { "Velocity"         , IMATEX_SPEED_UNITS           , IMATEX_SPEED_COUNT            },
-  { "Angular Speed"    , IMATEX_ANGULAR_SPEED_UNITS   , IMATEX_ANGULAR_SPEED_COUNT    },
-  { "Acceleration"     , IMATEX_ACCELERATION_UNITS    , IMATEX_ACCELERATION_COUNT     },
-  { "Pressure"         , IMATEX_PRESSURE_UNITS        , IMATEX_PRESSURE_COUNT         },
-  { "Mechanical Stress", IMATEX_PRESSURE_UNITS        , IMATEX_PRESSURE_COUNT         },
-  { "Force"            , IMATEX_FORCE_UNITS           , IMATEX_FORCE_COUNT            },
-  { "Force per length" , IMATEX_FORCE_PER_LENGTH_UNITS, IMATEX_FORCE_PER_LENGTH_COUNT },
-  { "Linear Weight"    , IMATEX_FORCE_PER_LENGTH_UNITS, IMATEX_FORCE_PER_LENGTH_COUNT },
-  { "Torque"           , IMATEX_MOMENT_UNITS          , IMATEX_MOMENT_COUNT           },
-  { "Moment of Force"  , IMATEX_MOMENT_UNITS          , IMATEX_MOMENT_COUNT           },
-  { "Angle"            , IMATEX_ANGLE_UNITS           , IMATEX_ANGLE_COUNT            },
-  { "Specific Mass"    , IMATEX_SPECIFIC_MASS_UNITS   , IMATEX_SPECIFIC_MASS_COUNT    },
-  { "Density"          , IMATEX_SPECIFIC_MASS_UNITS   , IMATEX_SPECIFIC_MASS_COUNT    },
-  { "Specific Weight"  , IMATEX_SPECIFIC_WEIGHT_UNITS , IMATEX_SPECIFIC_WEIGHT_COUNT  },
-  { "Energy"           , IMATEX_ENERGY_UNITS          , IMATEX_ENERGY_COUNT           },
-  { "Power"            , IMATEX_POWER_UNITS           , IMATEX_POWER_COUNT            },
-  { "Heat Flow Rate"   , IMATEX_POWER_UNITS           , IMATEX_POWER_COUNT            },
-  { "Fraction"         , IMATEX_FRACTION_UNITS        , IMATEX_FRACTION_COUNT         },
-  { "Flow"             , IMATEX_FLOW_UNITS            , IMATEX_FLOW_COUNT             },
-  { "Illuminance"      , IMATEX_ILLUMINANCE_UNITS     , IMATEX_ILLUMINANCE_COUNT      },
-  { "Kinematic Viscosity", IMATEX_KINEMATIC_VISCOSITY_UNITS, IMATEX_KINEMATIC_VISCOSITY_COUNT},
-  { "Dynamic Viscosity"  , IMATEX_DYNAMIC_VISCOSITY_UNITS  , IMATEX_DYNAMIC_VISCOSITY_COUNT  },
-  { "Electric Charge"    , IMATEX_ELECTRIC_CHARGE_UNITS    , IMATEX_ELECTRIC_CHARGE_COUNT    },
+  { "None"             , "Nenhum", NULL                         , 0                             },
+  { "Temperature"      , "Temperatura", NULL, NULL, IMATEX_TEMPERATURE_UNITS     , IMATEX_TEMPERATURE_COUNT      },  /* must not be change from here */
+  { "Length"           , "Comprimento", NULL, NULL, IMATEX_LENGTH_UNITS          , IMATEX_LENGTH_COUNT           },
+  { "Time"             , "Tempo", NULL, NULL, IMATEX_TIME_UNITS            , IMATEX_TIME_COUNT             },
+  { "Mass"             , "Massa", NULL, NULL, IMATEX_MASS_UNITS            , IMATEX_MASS_COUNT             },
+  { "Area"             , "¡rea", "√Årea", NULL, IMATEX_AREA_UNITS            , IMATEX_AREA_COUNT             },
+  { "Volume"           , "Volume", NULL, NULL, IMATEX_VOLUME_UNITS          , IMATEX_VOLUME_COUNT           },
+  { "Speed"            , "Velocidade", NULL, NULL, IMATEX_SPEED_UNITS           , IMATEX_SPEED_COUNT            },
+  { "Velocity"         , "Velocidade", NULL, NULL, IMATEX_SPEED_UNITS           , IMATEX_SPEED_COUNT            },
+  { "Angular Speed"    , "Velocidade Angular", NULL, NULL, IMATEX_ANGULAR_SPEED_UNITS   , IMATEX_ANGULAR_SPEED_COUNT    },
+  { "Acceleration"     , "AceleraÁ„o", "Acelera√ß√£o", NULL, IMATEX_ACCELERATION_UNITS    , IMATEX_ACCELERATION_COUNT     },
+  { "Pressure"         , "Press„o", "Press√£o", NULL, IMATEX_PRESSURE_UNITS        , IMATEX_PRESSURE_COUNT         },
+  { "Mechanical Stress", "Estresse Mec‚nico", "Estresse Mec√¢nico", NULL, IMATEX_PRESSURE_UNITS        , IMATEX_PRESSURE_COUNT         },
+  { "Force"            , "ForÁa", "For√ßa", NULL, IMATEX_FORCE_UNITS           , IMATEX_FORCE_COUNT            },
+  { "Force per length" , "ForÁa por Comprimento", "For√ßa por Comprimento", NULL, IMATEX_FORCE_PER_LENGTH_UNITS, IMATEX_FORCE_PER_LENGTH_COUNT },
+  { "Linear Weight"    , "Peso Linear", NULL, NULL, IMATEX_FORCE_PER_LENGTH_UNITS, IMATEX_FORCE_PER_LENGTH_COUNT },
+  { "Torque"           , "Torque", NULL, NULL, IMATEX_MOMENT_UNITS          , IMATEX_MOMENT_COUNT           },
+  { "Moment of Force"  , "Momento de ForÁa", "Momento de For√ßa", NULL, IMATEX_MOMENT_UNITS          , IMATEX_MOMENT_COUNT           },
+  { "Angle"            , "¬ngulo", "√Çngulo", NULL, IMATEX_ANGLE_UNITS           , IMATEX_ANGLE_COUNT            },
+  { "Specific Mass"    , "Massa EspecÌfica", "Massa Espec√≠fica", NULL, IMATEX_SPECIFIC_MASS_UNITS   , IMATEX_SPECIFIC_MASS_COUNT    },
+  { "Density"          , "Densidade", NULL, NULL, IMATEX_SPECIFIC_MASS_UNITS   , IMATEX_SPECIFIC_MASS_COUNT    },
+  { "Specific Weight"  , "Peso EspecÌfico", "Peso Espec√≠fico", NULL, IMATEX_SPECIFIC_WEIGHT_UNITS , IMATEX_SPECIFIC_WEIGHT_COUNT  },
+  { "Energy"           , "Energia", NULL, NULL, IMATEX_ENERGY_UNITS          , IMATEX_ENERGY_COUNT           },
+  { "Power"            , "PotÍncia", "Pot√™ncia", NULL, IMATEX_POWER_UNITS           , IMATEX_POWER_COUNT            },
+  { "Heat Flow Rate"   , "Taxa de Fluxo de Calor", NULL, NULL, IMATEX_POWER_UNITS           , IMATEX_POWER_COUNT            },
+  { "Fraction"         , "FraÁ„o", "Fra√ß√£o", NULL, IMATEX_FRACTION_UNITS        , IMATEX_FRACTION_COUNT         },
+  { "Flow"             , "Fluxo", NULL, NULL, IMATEX_FLOW_UNITS            , IMATEX_FLOW_COUNT             },
+  { "Illuminance"      , "Ilumin‚ncia", "Ilumin√¢ncia", NULL, IMATEX_ILLUMINANCE_UNITS     , IMATEX_ILLUMINANCE_COUNT      },
+  { "Kinematic Viscosity", "Viscosidade Cinem·tica", "Viscosidade Cinem√°tica", NULL, IMATEX_KINEMATIC_VISCOSITY_UNITS, IMATEX_KINEMATIC_VISCOSITY_COUNT},
+  { "Dynamic Viscosity"  , "Viscosidade Din‚mica", "Viscosidade Din√¢mica", NULL, IMATEX_DYNAMIC_VISCOSITY_UNITS  , IMATEX_DYNAMIC_VISCOSITY_COUNT  },
+  { "Electric Charge"    , "Carga ElÈtrica", "Carga El√©trica", NULL, IMATEX_ELECTRIC_CHARGE_UNITS    , IMATEX_ELECTRIC_CHARGE_COUNT    },
 };
 
 #define IMATEX_UNIT_CUSTOM 20
@@ -411,7 +414,7 @@ static int iMatrixFindQuantity(const char* value)
   int i;
   for (i=0; i<imatex_quantity_count; i++)
   {
-    if (iupStrEqualNoCaseNoSpace(imatex_quantities[i].name, value))
+    if (iupStrEqualNoCaseNoSpace(imatex_quantities[i].name_en, value))
       return i;
   }
 
@@ -423,7 +426,7 @@ static int iMatrixFindUnit(const ImatExUnit* units, int units_count, const char*
   int i;
   for (i=0; i<units_count; i++)
   {
-    if (iMatrixCompareUnity(units[i].name, value))  /* field 0 is name */
+    if (iMatrixCompareUnity(units[i].uname, value))  /* field 0 is name */
       return i;
   }
 
@@ -449,7 +452,13 @@ static int iMatrixExSetNumericAddQuantityAttrib(Ihandle* ih, const char* value)
 {
   if (imatex_quantity_count < IMATEX_QUANTITY_CUSTOM)
   {
-    imatex_quantities[imatex_quantity_count].name = value;
+    if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
+      imatex_quantities[imatex_quantity_count].name_en = value;
+    else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+      imatex_quantities[imatex_quantity_count].name_pt = value;
+    else
+      imatex_quantities[imatex_quantity_count].name = value;
+
     imatex_quantities[imatex_quantity_count].units_count = 0;
     imatex_quantities[imatex_quantity_count].units = IMATEX_CUSTOM_UNITS[imatex_quantity_count];
     imatex_quantity_count++;
@@ -470,7 +479,7 @@ static int iMatrixExSetNumericAddUnitAttrib(Ihandle* ih, const char* value)
       ImatExUnit* units = (ImatExUnit*)(imatex_quantities[quantity].units);
       int unit = imatex_quantities[quantity].units_count;
 
-      units[unit].name = value;
+      units[unit].uname = value;
 
       imatex_quantities[quantity].units_count++;
     }
@@ -536,13 +545,39 @@ static int iMatrixExSetNumericQuantityAttrib(Ihandle* ih, int col, const char* v
   return 0;
 }
 
+static char* iMatrixExGetNumericQuantityName(int quantity)
+{
+  if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
+    return (char*)imatex_quantities[quantity].name_en;
+  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+  {
+    if (imatex_quantities[quantity].name_pt_utf8 && IupGetInt(NULL, "UTF8MODE"))
+      return (char*)imatex_quantities[quantity].name_pt_utf8;
+    else
+      return (char*)imatex_quantities[quantity].name_pt;
+  }
+  else if (imatex_quantities[quantity].name)
+    return (char*)imatex_quantities[quantity].name;
+  else
+    return (char*)imatex_quantities[quantity].name_en;
+}
+
+static char* iMatrixExGetNumericQuantityNameAttrib(Ihandle* ih, int quantity)
+{
+  if (quantity >= 0 && quantity <IMATEX_QUANTITY_COUNT)
+    return iMatrixExGetNumericQuantityName(quantity);
+
+  (void)ih;
+  return NULL;
+}
+
 static char* iMatrixExGetNumericQuantityAttrib(Ihandle* ih, int col)
 {
   int quantity = IupGetIntId(ih, "NUMERICQUANTITYINDEX", col);
   if (!quantity)
     return NULL;
   else
-    return (char*)imatex_quantities[quantity].name;
+    return iMatrixExGetNumericQuantityName(quantity);
 }
 
 static int iMatrixExSetNumericUnitAttrib(Ihandle* ih, int col, const char* value)
@@ -568,7 +603,7 @@ static char* iMatrixExGetNumericUnitAttrib(Ihandle* ih, int col)
   else
   {
     int unit = IupGetIntId(ih, "NUMERICUNITINDEX", col);
-    return iMatrixExReturnUnit(imatex_quantities[quantity].units[unit].name);
+    return iMatrixExReturnUnit(imatex_quantities[quantity].units[unit].uname);
   }
 }
 
@@ -595,7 +630,7 @@ static char* iMatrixExGetNumericUnitShownAttrib(Ihandle* ih, int col)
   else
   {
     int unit = IupGetIntId(ih, "NUMERICUNITSHOWNINDEX", col);
-    return iMatrixExReturnUnit(imatex_quantities[quantity].units[unit].name);
+    return iMatrixExReturnUnit(imatex_quantities[quantity].units[unit].uname);
   }
 }
 
@@ -641,6 +676,8 @@ void iupMatrixExRegisterUnits(Iclass* ic)
   iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWN", iMatrixExGetNumericUnitShownAttrib, iMatrixExSetNumericUnitShownAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITSYMBOL", iMatrixExGetNumericUnitSymbolAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWNSYMBOL", iMatrixExGetNumericUnitShownSymbolAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttributeId(ic, "NUMERICQUANTITYNAME", iMatrixExGetNumericQuantityNameAttrib, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "NUMERICUNITSPELL", NULL, iMatrixExSetNumericUnitSpellAttrib, IUPAF_SAMEASSYSTEM, "INTERNATIONAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMERICADDQUANTITY", NULL, iMatrixExSetNumericAddQuantityAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

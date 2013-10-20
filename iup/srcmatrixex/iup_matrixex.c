@@ -419,6 +419,18 @@ static int iMatrixExItemShowLin_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int iMatrixExItemNumericUnits_CB(Ihandle* ih_item)
+{
+  //Unit...      NUMERICUNITSHOWNid
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemNumericDecimals_CB(Ihandle* ih_item)
+{
+  //Decimals...  NUMERICFORMATPRECISIONid
+  return IUP_DEFAULT;
+}
+
 static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
 {
   int readonly = IupGetInt(ih, "READONLY");
@@ -503,9 +515,12 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
       IupSetCallbacks(IupItem("_@IUP_SHOWHIDDENLINES", NULL),   "ACTION", iMatrixExItemShowLin_CB, NULL),
     NULL)));
 
-  //Is Numeric Column and Has Units
-  //Unit...
-  //Decimals...
+  if (IupGetAttributeId(ih, "NUMERICQUANTITY", col))
+  {
+    if (IupGetIntId(ih, "NUMERICQUANTITYINDEX", col))  /* not None */
+      IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_NUMERICUNITSDLG", NULL),   "ACTION", iMatrixExItemNumericUnits_CB, NULL));
+    IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_NUMERICDECIMALSDLG", NULL),   "ACTION", iMatrixExItemNumericDecimals_CB, NULL));
+  }
 
   /************************** Data ****************************/
 
