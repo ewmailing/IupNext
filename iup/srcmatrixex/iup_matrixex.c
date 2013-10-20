@@ -307,6 +307,13 @@ static int iMatrixExItemRedo_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int iMatrixExItemUndoList_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  iupMatrixExUndoShowDialog(matex_data);
+  return IUP_DEFAULT;
+}
+
 static int iMatrixExItemFind_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
@@ -441,15 +448,17 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
 
   if (!readonly)
   {
-    Ihandle *undo, *redo;
+    Ihandle *undo, *redo, *undolist;
     IupAppend(menu, undo = IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_UNDO", NULL), "IMAGE=IUP_EditUndo"), "ACTION", iMatrixExItemUndo_CB, NULL));
     IupAppend(menu, redo = IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_REDO", NULL), "IMAGE=IUP_EditRedo"), "ACTION", iMatrixExItemRedo_CB, NULL));
-    //IupAppend(menu, IupSetCallbacks(IupItem("Undo List...\tCtrl+U", NULL), "ACTION", iMatrixExItemUndoList_CB, NULL));
+    IupAppend(menu, undolist = IupSetCallbacks(IupItem("_@IUP_UNDOLISTDLG", NULL), "ACTION", iMatrixExItemUndoList_CB, NULL));
 
     if (!IupGetInt(ih, "UNDO"))
       IupSetAttribute(undo, "ACTIVE", "No");
     if (!IupGetInt(ih, "REDO"))
       IupSetAttribute(redo, "ACTIVE", "No");
+    if (!IupGetInt(ih, "UNDO") && !IupGetInt(ih, "REDO"))
+      IupSetAttribute(undolist, "ACTIVE", "No");
 
     IupAppend(menu, IupSeparator());
   }
@@ -596,6 +605,11 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
       if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
         IupSetAttribute(ih, "REDO", NULL);  /* 1 level */
       return IUP_IGNORE;
+    case K_cU: 
+      {
+        iMatrixExItemUndoList_CB(ih);
+        return IUP_IGNORE;
+      }
     case K_F3: 
       {
         char* find = IupGetAttribute(ih, "FIND");
@@ -662,7 +676,6 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
           IupHide(matex_data->find_dlg);
         return IUP_CONTINUE;
       }
-//    case K_cU: { D->UndoList() ; return IUP_IGNORE  ;}
     }
   }
 
@@ -730,6 +743,9 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_IMPORT", "Import");
     IupSetLanguageString("IUP_UNDO", "Undo\tCtrl+Z");
     IupSetLanguageString("IUP_REDO", "Redo\tCtrl+Y");
+    IupSetLanguageString("IUP_UNDOLISTDLG", "Undo List...\tCtrl+U");
+    IupSetLanguageString("IUP_UNDOLIST", "Undo List");
+    IupSetLanguageString("IUP_CURRENTSTATE", "Current State");
     IupSetLanguageString("IUP_CUT", "Cut\tCtrl+X");
     IupSetLanguageString("IUP_COPY", "Copy\tCtrl+C");
     IupSetLanguageString("IUP_PASTE", "Paste\tCtrl+V");
@@ -768,6 +784,9 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_IMPORT", "Importar");
     IupSetLanguageString("IUP_UNDO", "Desfazer\tCtrl+Z");
     IupSetLanguageString("IUP_REDO", "Refazer\tCtrl+R");
+    IupSetLanguageString("IUP_UNDOLISTDLG", "Lista de Desfazer...\tCtrl+U");
+    IupSetLanguageString("IUP_UNDOLIST", "Lista de Desfazer");
+    IupSetLanguageString("IUP_CURRENTSTATE", "Estado Corrente");
     IupSetLanguageString("IUP_CUT", "Recortar\tCtrl+X");
     IupSetLanguageString("IUP_COPY", "Copiar\tCtrl+C");
     IupSetLanguageString("IUP_PASTE", "Colar\tCtrl+V");

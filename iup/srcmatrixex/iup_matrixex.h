@@ -26,7 +26,7 @@ typedef struct _ImatExData
   Ihandle* find_dlg;
 
   Iarray* undo_stack;
-  int undo_stack_pos;   /* points to the position where a new undo will be inserted, starts at 0 */
+  int undo_stack_pos;
   int undo_stack_hold;
 } ImatExData;
 
@@ -38,6 +38,7 @@ void iupMatrixExBusyEnd(ImatExData* matex_data);
 /* Undo */
 void iupMatrixExUndoPushBegin(ImatExData* matex_data, const char* busyname);
 void iupMatrixExUndoPushEnd(ImatExData* matex_data);
+void iupMatrixExUndoShowDialog(ImatExData* matex_data);
 
 /* Sort */
 void iupMatrixExSortShowDialog(ImatExData* matex_data);

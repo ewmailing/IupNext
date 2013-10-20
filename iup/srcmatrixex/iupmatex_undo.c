@@ -166,15 +166,6 @@ static int iMatrixSetUndoClearAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static char* iMatrixGetUndoAttrib(Ihandle* ih)
-{
-  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  int undo_stack_count = iupArrayCount(matex_data->undo_stack);
-  if (matex_data->undo_stack && undo_stack_count)
-    return iupStrReturnBoolean(matex_data->undo_stack_pos>0);
-  return NULL; 
-}
-
 static char* iMatrixGetUndoCountAttrib(Ihandle* ih)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
@@ -236,6 +227,15 @@ static int iMatrixSetUndoAttrib(Ihandle* ih, const char* value)
     iupBaseCallValueChangedCb(ih);
   }
   return 0;
+}
+
+static char* iMatrixGetUndoAttrib(Ihandle* ih)
+{
+  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+  int undo_stack_count = iupArrayCount(matex_data->undo_stack);
+  if (matex_data->undo_stack && undo_stack_count)
+    return iupStrReturnBoolean(matex_data->undo_stack_pos>0);
+  return NULL; 
 }
 
 static char* iMatrixGetRedoAttrib(Ihandle* ih)
@@ -308,6 +308,99 @@ static int iMatrixExSetUndoRedoAttrib(Ihandle* ih, const char* value)
   else
     iMatrixSetUndoClearAttrib(ih, NULL);
   return iMatrixSetUndoRedoAttrib(ih, value);
+}
+
+static void iMatrixUndoListUpdate(ImatExData* matex_data, Ihandle* ih_list)
+{
+  int pos, item;
+  char* undostr = IupGetLanguageString("IUP_UNDONAME");
+  char* redostr = IupGetLanguageString("IUP_REDONAME");
+  int undo_stack_count = iupArrayCount(matex_data->undo_stack);
+  IundoData* undo_stack_data = (IundoData*)iupArrayGetData(matex_data->undo_stack);
+
+  item = 1;
+
+  for (pos=0; pos<matex_data->undo_stack_pos; pos++)
+  {
+    IupSetfAttributeId(ih_list, "", item, "%s: %s", undostr, undo_stack_data[pos].name);
+    item++;
+  }
+
+  IupSetStrAttributeId(ih_list, "", item, "_@IUP_CURRENTSTATE");
+  item++;
+
+  for (pos=matex_data->undo_stack_pos; pos<undo_stack_count; pos++)
+  {
+    IupSetfAttributeId(ih_list, "", item, "%s: %s", redostr, undo_stack_data[pos].name);
+    item++;
+  }
+
+  IupSetAttributeId(ih_list, "", item, NULL);  /* stack+current+null */
+}
+
+static int iMatrixExUndoListAction_CB(Ihandle* ih_list, char *text, int item, int state)
+{
+  if (state==1)
+  {
+    ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_list, "MATRIX_EX_DATA");
+    int pos = item-1;
+
+    if (pos != matex_data->undo_stack_pos)
+    {
+      if (pos < matex_data->undo_stack_pos)
+        IupSetInt(matex_data->ih, "UNDO", matex_data->undo_stack_pos-pos);
+      else if (pos > matex_data->undo_stack_pos)
+        IupSetInt(matex_data->ih, "REDO", pos-matex_data->undo_stack_pos);
+
+      iMatrixUndoListUpdate(matex_data, ih_list);
+    }
+  }
+
+  (void)text;
+  return IUP_DEFAULT;
+}
+
+static Ihandle* iMatrixExUndoCreateDialog(ImatExData* matex_data)
+{
+  Ihandle* dlg, *parent, *list;
+
+  list = IupList(NULL);
+  IupSetAttribute(list, "EXPAND","YES");
+  IupSetAttribute(list, "DROPDOWN","NO");
+  IupSetAttribute(list, "SIZE"    ,"200x100");
+  IupSetCallback (list, "ACTION"  ,(Icallback)iMatrixExUndoListAction_CB);
+
+  iMatrixUndoListUpdate(matex_data, list);
+
+  parent = IupGetDialog(matex_data->ih);
+
+  dlg = IupDialog(list);
+  IupSetAttribute(dlg, "BORDER" ,"NO" );
+  IupSetAttribute(dlg, "MENUBOX","YES");
+  IupSetAttribute(dlg, "MAXBOX" ,"NO" );
+  IupSetAttribute(dlg, "MINBOX" ,"NO" );
+  IupSetAttribute(dlg, "RESIZE" ,"NO" );
+  IupSetStrAttribute(dlg, "TITLE"  ,"_@IUP_UNDOLIST");
+  IupSetAttribute(dlg, "TOOLBOX","YES");
+  IupSetAttributeHandle(dlg,"PARENTDIALOG", parent);
+
+  IupSetAttribute(dlg, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
+
+  if (IupGetAttribute(parent, "ICON"))
+    IupSetAttribute(dlg,"ICON", IupGetAttribute(parent, "ICON"));
+  else
+    IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
+
+  return dlg;
+}
+
+void iupMatrixExUndoShowDialog(ImatExData* matex_data)
+{
+  int x, y;
+  Ihandle* dlg_undo = iMatrixExUndoCreateDialog(matex_data);
+  iupMatrixExGetDialogPosition(matex_data, &x, &y);
+  IupPopup(dlg_undo, x, y);
+  IupDestroy(dlg_undo);
 }
 
 void iupMatrixExRegisterUndo(Iclass* ic)
