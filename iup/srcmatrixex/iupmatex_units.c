@@ -562,15 +562,6 @@ static char* iMatrixExGetNumericQuantityName(int quantity)
     return (char*)imatex_quantities[quantity].name_en;
 }
 
-static char* iMatrixExGetNumericQuantityNameAttrib(Ihandle* ih, int quantity)
-{
-  if (quantity >= 0 && quantity <IMATEX_QUANTITY_COUNT)
-    return iMatrixExGetNumericQuantityName(quantity);
-
-  (void)ih;
-  return NULL;
-}
-
 static char* iMatrixExGetNumericQuantityAttrib(Ihandle* ih, int col)
 {
   int quantity = IupGetIntId(ih, "NUMERICQUANTITYINDEX", col);
@@ -658,6 +649,15 @@ static char* iMatrixExGetNumericUnitShownSymbolAttrib(Ihandle* ih, int col)
   }
 }
 
+static char* iMatrixExGetNumericUnitCountAttrib(Ihandle* ih, int col)
+{
+  int quantity = IupGetIntId(ih, "NUMERICQUANTITYINDEX", col);
+  if (!quantity)
+    return NULL;
+  else
+    return iupStrReturnInt(imatex_quantities[quantity].units_count);
+}
+
 void iupMatrixExRegisterUnits(Iclass* ic)
 {
   /* Defined in IupMatrix - Internal
@@ -676,8 +676,7 @@ void iupMatrixExRegisterUnits(Iclass* ic)
   iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWN", iMatrixExGetNumericUnitShownAttrib, iMatrixExSetNumericUnitShownAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITSYMBOL", iMatrixExGetNumericUnitSymbolAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWNSYMBOL", iMatrixExGetNumericUnitShownSymbolAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
-
-  iupClassRegisterAttributeId(ic, "NUMERICQUANTITYNAME", iMatrixExGetNumericQuantityNameAttrib, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICUNITCOUNT", iMatrixExGetNumericUnitCountAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "NUMERICUNITSPELL", NULL, iMatrixExSetNumericUnitSpellAttrib, IUPAF_SAMEASSYSTEM, "INTERNATIONAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMERICADDQUANTITY", NULL, iMatrixExSetNumericAddQuantityAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

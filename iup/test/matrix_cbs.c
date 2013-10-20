@@ -183,7 +183,7 @@ static Ihandle *create_mat(int mati)
 //  IupSetAttribute(mat,"MARKAREA", "NOT_CONTINUOUS");
  IupSetAttribute(mat, "MARKAREA", "CONTINUOUS");
 
-  IupSetAttribute(mat,"0:0","Inflation");
+  IupSetAttribute(mat,"0:0","Test");
   IupSetAttribute(mat,"1:0","Medicine");
   IupSetAttribute(mat,"2:0","Food"); 
   IupSetAttribute(mat,"3:0","Energy"); 
@@ -196,7 +196,11 @@ static Ihandle *create_mat(int mati)
   IupSetAttribute(mat,"2:2","8.1");
   IupSetAttribute(mat,"3:2","3.4 (RO)");
 
-  IupSetAttribute(mat, "NUMERICQUANTITY1", "Time");
+  IupSetAttribute(mat, "NUMERICQUANTITY3", "Time");
+  IupSetAttribute(mat, "NUMERICUNIT3", "day");
+  IupSetAttribute(mat,"1:3","1");
+  IupSetAttribute(mat,"2:3","1.5");
+  IupSetAttribute(mat,"3:3","2");
 
 //  IupSetAttribute(mat,"BGCOLOR1:*","255 128 0");
   IupSetAttribute(mat,"BGCOLOR2:1","255 128 0");

@@ -421,9 +421,45 @@ static int iMatrixExItemShowLin_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static void iMatrixExInitUnitList(ImatExData* matex_data, int col, char* list_str, int old_unit)
+{
+  int i, count, len = 0;
+  char* unit_name;
+
+  count = IupGetIntId(matex_data->ih, "NUMERICUNITCOUNT", col);
+  for (i=0; i<count; i++)
+  {
+    IupSetIntId(matex_data->ih, "NUMERICUNITSHOWNINDEX", col, i);
+    unit_name = IupGetAttributeId(matex_data->ih, "NUMERICUNITSHOWN", col);
+    len += sprintf(list_str+len, "%s|", unit_name);
+  }
+
+  IupSetIntId(matex_data->ih, "NUMERICUNITSHOWNINDEX", col, old_unit);
+}
+
 static int iMatrixExItemNumericUnits_CB(Ihandle* ih_item)
 {
-  //Unit...      NUMERICUNITSHOWNid
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  int unit, decimals;
+  int lin, col;
+  char format[200], list_str[200] = "|";
+
+  IupGetIntInt(ih_item, "MENUCONTEXT_CELL", &lin, &col);
+
+  decimals = IupGetIntId(matex_data->ih, "NUMERICFORMATPRECISION", col);
+  unit = IupGetIntId(matex_data->ih, "NUMERICUNITSHOWNINDEX", col);
+
+  iMatrixExInitUnitList(matex_data, col, list_str+1, unit);
+
+  sprintf(format, "_@IUP_UNITS%%l%s\n_@IUP_DECIMALS%%i[0]\n", list_str);
+
+  if (IupGetParam("_@IUP_NUMERICUNITS", NULL, NULL, format, &unit, &decimals, NULL))
+  {
+    IupSetIntId(matex_data->ih, "NUMERICUNITSHOWNINDEX", col, unit);
+    IupSetIntId(matex_data->ih, "NUMERICFORMATPRECISION", col, decimals);
+    IupSetfAttribute(matex_data->ih, "REDRAW", "C%d", col);
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -534,7 +570,8 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
   {
     if (IupGetIntId(ih, "NUMERICQUANTITYINDEX", col))  /* not None */
       IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_NUMERICUNITSDLG", NULL),   "ACTION", iMatrixExItemNumericUnits_CB, NULL));
-    IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_NUMERICDECIMALSDLG", NULL),   "ACTION", iMatrixExItemNumericDecimals_CB, NULL));
+    else
+      IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_NUMERICDECIMALSDLG", NULL),   "ACTION", iMatrixExItemNumericDecimals_CB, NULL));
   }
 
   /************************** Data ****************************/
@@ -804,7 +841,9 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_DECIMALS", "Decimals");
     IupSetLanguageString("IUP_NUMERICDECIMALS", "Numeric Decimals");
     IupSetLanguageString("IUP_NUMERICDECIMALSDLG", "Numeric Decimals...");
+    IupSetLanguageString("IUP_NUMERICUNITS", "Numeric Units");
     IupSetLanguageString("IUP_NUMERICUNITSDLG", "Numeric Units...");
+    IupSetLanguageString("IUP_UNITS", "Units");
 
     IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Invalid Selection.");
     IupSetLanguageString("IUP_ERRORNOTEXT", "Empty Text.");
