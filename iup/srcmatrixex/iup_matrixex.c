@@ -310,6 +310,8 @@ static int iMatrixExItemRedo_CB(Ihandle* ih_item)
 static int iMatrixExItemUndoList_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  if (!matex_data)  /* will be called also by the shortcut key */
+   matex_data = (ImatExData*)iupAttribGet(ih_item, "_IUP_MATEX_DATA");
   iupMatrixExUndoShowDialog(matex_data);
   return IUP_DEFAULT;
 }
@@ -427,7 +429,20 @@ static int iMatrixExItemNumericUnits_CB(Ihandle* ih_item)
 
 static int iMatrixExItemNumericDecimals_CB(Ihandle* ih_item)
 {
-  //Decimals...  NUMERICFORMATPRECISIONid
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  int decimals;
+  int lin, col;
+
+  IupGetIntInt(ih_item, "MENUCONTEXT_CELL", &lin, &col);
+
+  decimals = IupGetIntId(matex_data->ih, "NUMERICFORMATPRECISION", col);
+
+  if (IupGetParam("_@IUP_NUMERICDECIMALS", NULL, NULL, "_@IUP_DECIMALS%i[0]\n", &decimals, NULL))
+  {
+    IupSetIntId(matex_data->ih, "NUMERICFORMATPRECISION", col, decimals);
+    IupSetfAttribute(matex_data->ih, "REDRAW", "C%d", col);
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -786,6 +801,11 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_COPYTOINTERVALS", "Copy To - Intervals");
     IupSetLanguageString("IUP_GOTO", "Go To");
 
+    IupSetLanguageString("IUP_DECIMALS", "Decimals");
+    IupSetLanguageString("IUP_NUMERICDECIMALS", "Numeric Decimals");
+    IupSetLanguageString("IUP_NUMERICDECIMALSDLG", "Numeric Decimals...");
+    IupSetLanguageString("IUP_NUMERICUNITSDLG", "Numeric Units...");
+
     IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Invalid Selection.");
     IupSetLanguageString("IUP_ERRORNOTEXT", "Empty Text.");
     IupSetLanguageString("IUP_ERRORINVALIDDATA", "Invalid Data.");
@@ -823,6 +843,13 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_SHOWHIDDENCOLUMNS", "Mostrar Coluna Escondidas");
     IupSetLanguageString("IUP_HIDELINE", "Esconder Linha");    
     IupSetLanguageString("IUP_SHOWHIDDENLINES", "Mostrar Linhas Escondidas");
+
+    IupSetLanguageString("IUP_DECIMALS", "Decimais");
+    IupSetLanguageString("IUP_NUMERICDECIMALS", "Número da Decimais");
+    IupSetLanguageString("IUP_NUMERICDECIMALSDLG", "Número da Decimais...");
+    IupSetLanguageString("IUP_UNITS", "Unidades");
+    IupSetLanguageString("IUP_NUMERICUNITS", "Unidades Numéricas");
+    IupSetLanguageString("IUP_NUMERICUNITSDLG", "Unidades Numéricas...");
 
     IupSetLanguageString("IUP_COPYTOINTERVALS", "Copiar Para - Intervalos");
     IupSetLanguageString("IUP_GOTO", "Ir Para");

@@ -56,23 +56,23 @@ void GetParamTest(void)
   char file_name[500] = "test.jpg";
   
   if (!IupGetParam("Title", param_action, 0,
-                   "Bt %u[, MyCancel, Help!]\n"
-                   "&Boolean 100%%: %b[No,Yes]\n"
-                   "&Integer: %i\n"
-                   "Real 1: %r\n"
+                   "Bt%u[, MyCancel, Help!]\n"
+                   "&Boolean 100%%:%b[No,Yes]\n"
+                   "&Integer:%i\n"
+                   "Real 1:%r\n"
                    "Sep1 %t\n"
-                   "Integer: %i[0,255]\n"
-                   "Real 2: %r[-1.5,1.5,0.05]\n"
+                   "Integer:%i[0,255]\n"
+                   "Real 2:%r[-1.5,1.5,0.05]\n"
                    "Sep2 %t\n"
-                   "Angle: %a[0,360]\n"
-                   "String: %s\n"
-                   "Options: %o|item0|item1|item2|\n" 
-                   "List: %l|item0|item1|item2|item3|item4|item5|item6|\n" 
-                   "File: %f[OPEN|*.bmp;*.jpg|CURRENT|NO|NO]\n"
-                   "Color: %c{Color Tip}\n"
-                   "Font: %n\n"
+                   "Angle:%a[0,360]\n"
+                   "String:%s\n"
+                   "Options:%o|item0|item1|item2|\n" 
+                   "List:%l|item0|item1|item2|item3|item4|item5|item6|\n" 
+                   "File:%f[OPEN|*.bmp;*.jpg|CURRENT|NO|NO]\n"
+                   "Color:%c{Color Tip}\n"
+                   "Font:%n\n"
                    "Sep3 %t\n"
-                   "Multiline: %m\n",
+                   "Multiline:%m\n",
                    &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &poptions, &plist, file_name, pcolor, pfont, pstring2, NULL))
     return;
   

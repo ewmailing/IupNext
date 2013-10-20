@@ -196,6 +196,8 @@ static Ihandle *create_mat(int mati)
   IupSetAttribute(mat,"2:2","8.1");
   IupSetAttribute(mat,"3:2","3.4 (RO)");
 
+  IupSetAttribute(mat, "NUMERICQUANTITY1", "Time");
+
 //  IupSetAttribute(mat,"BGCOLOR1:*","255 128 0");
   IupSetAttribute(mat,"BGCOLOR2:1","255 128 0");
   IupSetAttribute(mat,"FGCOLOR2:0","255 0 128");
