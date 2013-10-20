@@ -958,7 +958,7 @@ static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int up
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
   int lines_num = ih->data->lines.num;
-  IFniiii linedition_cb = (IFniiii)IupGetCallback(ih, "LISTEDITION_CB");
+  IFniiii listedition_cb = (IFniiii)IupGetCallback(ih, "LISTEDITION_CB");
 
   /* allow editing only at the label column */
   if (col != mtxList->label_col)
@@ -969,7 +969,7 @@ static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int up
     return IUP_IGNORE;
 
   /* call application callback before anything */
-  if (linedition_cb && linedition_cb(ih, lin, col, mode, update)==IUP_IGNORE)
+  if (listedition_cb && listedition_cb(ih, lin, col, mode, update)==IUP_IGNORE)
     return IUP_IGNORE;
 
   if (mode==1 && mtxList->image_col)
@@ -1362,7 +1362,7 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttribute(ic, "COUNT", iMatrixListGetNumLinAttrib, iMatrixListSetNumLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TOPITEM", NULL, iMatrixListSetTopItemAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FOCUSITEM", iMatrixListGetFocusItemAttrib, iMatrixListSetFocusItemAttrib, IUPAF_SAMEASSYSTEM, "1:1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT); /* can be NOT mapped */
+  iupClassRegisterAttribute(ic, "FOCUSITEM", iMatrixListGetFocusItemAttrib, iMatrixListSetFocusItemAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT); /* can be NOT mapped */
   iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, iMatrixListSetVisibleLinesAttrib, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Does nothing... this control defines automatically the number of columns to be used */
