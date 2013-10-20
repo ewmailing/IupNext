@@ -884,8 +884,8 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_SHOWHIDDENLINES", "Mostrar Linhas Escondidas");
 
     IupSetLanguageString("IUP_DECIMALS", "Decimais");
-    IupSetLanguageString("IUP_NUMERICDECIMALS", "Número da Decimais");
-    IupSetLanguageString("IUP_NUMERICDECIMALSDLG", "Número da Decimais...");
+    IupSetLanguageString("IUP_NUMERICDECIMALS", "Número de Decimais");
+    IupSetLanguageString("IUP_NUMERICDECIMALSDLG", "Número de Decimais...");
     IupSetLanguageString("IUP_UNITS", "Unidades");
     IupSetLanguageString("IUP_NUMERICUNITS", "Unidades Numéricas");
     IupSetLanguageString("IUP_NUMERICUNITSDLG", "Unidades Numéricas...");

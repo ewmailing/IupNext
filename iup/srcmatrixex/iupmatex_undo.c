@@ -110,7 +110,9 @@ static void iMatrixUndoStackAdd(ImatExData* matex_data, const char* name)
   /* Remove all Redo data */
   for (i=matex_data->undo_stack_pos; i<undo_stack_count; i++)
     iMatrixExUndoDataClear(&(undo_stack_data[i]));
+  iupArrayRemove(matex_data->undo_stack, matex_data->undo_stack_pos, undo_stack_count);
 
+  undo_stack_data = (IundoData*)iupArrayInc(matex_data->undo_stack);
   iMatrixExUndoDataInit(&(undo_stack_data[matex_data->undo_stack_pos]), name);
 }
 
@@ -135,13 +137,17 @@ void iupMatrixExUndoPushEnd(ImatExData* matex_data)
 static int iMatrixSetUndoPushCellAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  IundoData* undo_stack_data = (IundoData*)iupArrayInc(matex_data->undo_stack);
+  IundoData* undo_stack_data;
 
   if (matex_data->undo_stack_hold)
+  {
+    undo_stack_data = (IundoData*)iupArrayGetData(matex_data->undo_stack);
     iMatrixExUndoDataAddCell(&(undo_stack_data[matex_data->undo_stack_pos]), lin, col, value);
+  }
   else
   {
     iMatrixUndoStackAdd(matex_data, "SETCELL");
+    undo_stack_data = (IundoData*)iupArrayGetData(matex_data->undo_stack);
     iMatrixExUndoDataAddCell(&(undo_stack_data[matex_data->undo_stack_pos]), lin, col, value);
     matex_data->undo_stack_pos++;
   }
@@ -367,7 +373,8 @@ static Ihandle* iMatrixExUndoCreateDialog(ImatExData* matex_data)
   list = IupList(NULL);
   IupSetAttribute(list, "EXPAND","YES");
   IupSetAttribute(list, "DROPDOWN","NO");
-  IupSetAttribute(list, "SIZE"    ,"200x100");
+  IupSetAttribute(list, "VISIBLECOLUMNS" ,"25");
+  IupSetAttribute(list, "VISIBLELINES" ,"10");
   IupSetCallback (list, "ACTION"  ,(Icallback)iMatrixExUndoListAction_CB);
 
   iMatrixUndoListUpdate(matex_data, list);
@@ -375,13 +382,10 @@ static Ihandle* iMatrixExUndoCreateDialog(ImatExData* matex_data)
   parent = IupGetDialog(matex_data->ih);
 
   dlg = IupDialog(list);
-  IupSetAttribute(dlg, "BORDER" ,"NO" );
-  IupSetAttribute(dlg, "MENUBOX","YES");
   IupSetAttribute(dlg, "MAXBOX" ,"NO" );
   IupSetAttribute(dlg, "MINBOX" ,"NO" );
-  IupSetAttribute(dlg, "RESIZE" ,"NO" );
-  IupSetStrAttribute(dlg, "TITLE"  ,"_@IUP_UNDOLIST");
   IupSetAttribute(dlg, "TOOLBOX","YES");
+  IupSetStrAttribute(dlg, "TITLE"  ,"_@IUP_UNDOLIST");
   IupSetAttributeHandle(dlg,"PARENTDIALOG", parent);
 
   IupSetAttribute(dlg, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
