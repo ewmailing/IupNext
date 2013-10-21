@@ -5,6 +5,7 @@ IupDial
 IupGauge
 IupCells 
 IupMatrix
+IupMatrixList
 IupMatSetAttribute  
 IupMatStoreAttribute
 IupMatGetAttribute  
