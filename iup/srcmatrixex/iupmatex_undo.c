@@ -410,7 +410,8 @@ void iupMatrixExUndoShowDialog(ImatExData* matex_data)
 void iupMatrixExRegisterUndo(Iclass* ic)
 {
   /* Already defined in IupMatrix, redefined here */
-  iupClassRegisterGetAttribute(ic, "UNDOREDO", NULL, &iMatrixSetUndoRedoAttrib, NULL, NULL, NULL);
+  if (!iMatrixSetUndoRedoAttrib)
+    iupClassRegisterGetAttribute(ic, "UNDOREDO", NULL, &iMatrixSetUndoRedoAttrib, NULL, NULL, NULL);
   iupClassRegisterReplaceAttribFunc(ic, "UNDOREDO", NULL, iMatrixExSetUndoRedoAttrib);
 
   iupClassRegisterAttribute(ic, "UNDO", iMatrixGetUndoAttrib, iMatrixSetUndoAttrib, NULL, NULL, IUPAF_NO_INHERIT);

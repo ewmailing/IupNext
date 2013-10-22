@@ -146,6 +146,9 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "EXPAND", "NO");
 //  IupSetAttribute(mat, "ALIGNMENT", "ALEFT");
 
+//  IupSetAttribute(mat, "MASK1:3", IUP_MASK_FLOAT);
+//  IupSetAttribute(mat, "MASKFLOAT1:3", "0.0:10.0");
+
   IupSetAttribute(mat, "TYPE4:1", "COLOR");
   IupSetAttribute(mat, "4:1", "255 0 128");
 
