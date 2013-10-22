@@ -601,8 +601,8 @@ int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
     else
     {
       int ret = 0;
-      if (sscanf(p_str, "%f", f1) != 1) ret++;
-      if (sscanf(str, "%f", f2) != 1) ret++;
+      if (sscanf(p_str, "%f", f1) == 1) ret++;
+      if (sscanf(str, "%f", f2) == 1) ret++;
       free(p_str);
       return ret;
     }
