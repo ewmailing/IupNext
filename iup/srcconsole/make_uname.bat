@@ -1,8 +1,6 @@
 @echo off  
 
 if "%1"==""       goto iupexe32
-if "%1"=="vc8"    goto iupexe32
-if "%1"=="vc8_64" goto iupexe64
 if "%1"=="vc10"   goto iupexe32
 if "%1"=="vc10_64" goto iupexe64
 if "%1"=="cygw17"  goto iupexecygw
