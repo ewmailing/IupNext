@@ -43,10 +43,10 @@ Copy_DLLs()
   mv -f ../bin/$SYS/iuplua$LUA_SFX.exe ../bin/$SYS/Lua$LUA_SFX/iuplua$LUA_SFX.exe
 }
 
-Copy_DLLs dll8 Win32 5.1
-Copy_DLLs dll8 Win64 5.1
+Copy_DLLs dll10 Win32 5.1
+Copy_DLLs dll10 Win64 5.1
 Copy_DLLs dll10 Win32 52
 Copy_DLLs dll10 Win64 52
 
-Copy_DLLs cygw17 cygw17 5.1
-Copy_DLLs cygw17 cygw17 52
+#Copy_DLLs cygw17 cygw17 5.1
+#Copy_DLLs cygw17 cygw17 52
