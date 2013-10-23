@@ -39,10 +39,12 @@ static Tlist* all_late;
 
 static int nerrors = 0;
 
+#define nheaders 9
+
 static struct {
   char* name;
   int used;
-} headerfile[] = {
+} headerfile[9] = {
   { "iup",        1 },
   { "iupcontrols",0 },
   { "iupgl",      0 },
@@ -50,9 +52,9 @@ static struct {
   { "iupweb",     0 },
   { "iup_pplot",  0 },
   { "iup_mglplot",  0 },
-  { "iup_scintilla",  0 }
+  { "iup_scintilla",  0 },
+  { "iupmatrixex",  0 }
 };
-#define nheaders (sizeof(headerfile)/sizeof(headerfile[0]))
 
 enum headers { 
   IUP_H, 
@@ -62,7 +64,8 @@ enum headers {
   IUPWEB_H,
   IUPPPLOT_H,
   IUPMGLPLOT_H,
-  IUPSCINTILLA_H
+  IUPSCINTILLA_H,
+  IUPMATRIXEX_H 
 };
 
 static void check_empty( Telem* elem );
@@ -128,6 +131,8 @@ elems[] =
   { "Label",        code_string,       check_string,      0  },
   { "List",         code_string,       check_cb,          0  },
   { "Matrix",       code_string,       check_cb,          IUPCONTROLS_H  },
+  { "MatrixList",   code_empty,        code_empty,        IUPCONTROLS_H  },
+  { "MatrixEx",     code_empty,        code_empty,        IUPMATRIXEX_H  },
   { "Sbox",         code_elem,         check_elem,        0  },
   { "ScrollBox",    code_elem,         check_elem,        0  },
   { "Expander",     code_elem,         check_elem,        0  },
