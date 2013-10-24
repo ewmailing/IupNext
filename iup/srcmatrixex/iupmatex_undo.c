@@ -42,7 +42,7 @@ static void iMatrixExUndoDataInit(IundoData* undo_data, const char* name)
     char str[50] = "IUP_";
     strcat(str, name);
     name = IupGetLanguageString(str);
-    if (name)
+    if (name != str)
       undo_data->name = name;
   }
 }
@@ -110,7 +110,7 @@ static void iMatrixUndoStackAdd(ImatExData* matex_data, const char* name)
   /* Remove all Redo data */
   for (i=matex_data->undo_stack_pos; i<undo_stack_count; i++)
     iMatrixExUndoDataClear(&(undo_stack_data[i]));
-  iupArrayRemove(matex_data->undo_stack, matex_data->undo_stack_pos, undo_stack_count);
+  iupArrayRemove(matex_data->undo_stack, matex_data->undo_stack_pos, undo_stack_count-matex_data->undo_stack_pos);
 
   undo_stack_data = (IundoData*)iupArrayInc(matex_data->undo_stack);
   iMatrixExUndoDataInit(&(undo_stack_data[matex_data->undo_stack_pos]), name);
@@ -439,6 +439,7 @@ void iupMatrixExRegisterUndo(Iclass* ic)
     IupSetLanguageString("IUP_REDONAME", "Redo");
     IupSetLanguageString("IUP_SETCELL", "Set Cell");
     IupSetLanguageString("IUP_EDITCELL", "Edit Cell");
+    IupSetLanguageString("IUP_CLEARVALUE", "Clear Value");
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
   {
@@ -454,6 +455,7 @@ void iupMatrixExRegisterUndo(Iclass* ic)
     IupSetLanguageString("IUP_REDONAME", "Refazer");
     IupSetLanguageString("IUP_SETCELL", "Modificar Célula");
     IupSetLanguageString("IUP_EDITCELL", "Editar Célula");
+    IupSetLanguageString("IUP_CLEARVALUE", "Limpar Valores");
 
     if (IupGetInt(NULL, "UTF8MODE"))
     {

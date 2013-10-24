@@ -205,9 +205,9 @@ static int iMatrixCompareTextFunc(const void* elem1, const void* elem2)
 {
   ImatSortText* txt1 = (ImatSortText*)elem1;
   ImatSortText* txt2 = (ImatSortText*)elem2;
-  if (!txt1->text && !txt2->text) return 0;
-  if (!txt1->text) return 1;
-  if (!txt2->text) return -1;
+  if ((!txt1->text || txt1->text[0]==0) && (!txt2->text || txt2->text[0]==0)) return 0;
+  if (!txt1->text || txt1->text[0]==0) return -1;    /* txt1 < txt2 => -1 */
+  if (!txt2->text || txt2->text[0]==0) return 1;
   return iupStrCompare(txt1->text, txt2->text, iMatrixQSort_casesensitive, iMatrixQSort_utf8);
 }
 
