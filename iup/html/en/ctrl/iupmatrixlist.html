@@ -218,6 +218,23 @@ changed by the user (mark/unmark).</p>
 image used 
 IMAGEUNCHECK.</p>
 
+
+<p><strong>LISTACTION_CB</strong>:
+  Action generated when the state of an item 
+  in the list is changed. Also provides information on the changed item:</p>
+
+  
+    
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>item</strong>, int <strong>state</strong>); [in C]<br><b>elem</b>:listaction_cb(<strong>item</strong><b>, </b><strong>state</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+	<strong>item</strong>: Number of the changed item starting at 1.<br>
+
+<strong>state</strong>: Equal to 1 if the option was selected or to 0 if the option was deselected.</p>
+
 <p><b>LISTCLICK_CB</b>: Action generated when any mouse button is pressed over a 
 item.</p>
 

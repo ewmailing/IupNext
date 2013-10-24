@@ -1144,20 +1144,24 @@ static int iMatrixListRelease_CB(Ihandle *ih, int lin, int col, char *status)
 
 static int iMatrixListEnterItem_CB(Ihandle *ih, int lin, int col)
 {
+  IFnii cb = (IFnii)IupGetCallback(ih, "LISTACTION_CB");
   int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
   iMatrixListUpdateItemBgColor(ih, lin, iupAttribGetId(ih, "ITEMBGCOLOR", lin), itemactive);
   IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+  if (cb) cb(ih, lin, 1);
   (void)col;
   return IUP_DEFAULT;
 }
 
 static int iMatrixListLeaveItem_CB(Ihandle *ih, int lin, int col)
 {
+  IFnii cb = (IFnii)IupGetCallback(ih, "LISTACTION_CB");
   int itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
   ih->data->lines.focus_cell = -1;
   iMatrixListUpdateItemBgColor(ih, lin, iupAttribGetId(ih, "ITEMBGCOLOR", lin), itemactive);
   ih->data->lines.focus_cell = lin;
   IupSetfAttribute(ih, "REDRAW", "L%d", lin);
+  if (cb) cb(ih, lin, 1);
   (void)col;
   return IUP_DEFAULT;
 }
@@ -1332,6 +1336,7 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterCallback(ic, "LISTREMOVE_CB", "i");
   iupClassRegisterCallback(ic, "LISTEDITION_CB", "iiii");
   iupClassRegisterCallback(ic, "LISTDRAW_CB", "iiiiiiv");
+  iupClassRegisterCallback(ic, "LISTACTION_CB", "ii");
 
   iupClassRegisterReplaceAttribDef(ic, "CURSOR", IUPAF_SAMEASSYSTEM, "ARROW");
 

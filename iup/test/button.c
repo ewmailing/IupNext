@@ -392,10 +392,11 @@ void ButtonTest(void)
 //  IupSetAttribute(button, "IMAGE", "IUP_Tecgraf");
   IupSetAttributeHandle(button, "IMAGE", image1);
 //  IupSetAttributeHandle(button, "IMINACTIVE", image1i);
-  IupSetAttributeHandle(button, "IMPRESS", image1p);
+//  IupSetAttributeHandle(button, "IMPRESS", image1p);
   IupSetAttribute(button, "TIP", "Image Label");
   IupSetAttribute(button, "NAME", "button4");
   IupSetAttribute(button, "PADDING", "5x5");
+  IupSetAttribute(button, "FLAT", "Yes");
   set_callbacks(button);
   IupAppend(box2, button);
 

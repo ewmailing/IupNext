@@ -11,8 +11,9 @@ local ctrl = {
     listrelease_cb = "nns",
     listinsert_cb = "n",
     listremove_cb = "n",
---    listdraw_cb = "nnnnnnn",  implemented by matrix
+--    listdraw_cb = "nnnnnnn",  implemented in matrix for matrixlist
     listedition_cb = "nnnn",
+    listaction_cb = "nn",
   },
   funcname = "MatrixList",
   include = "iupcontrols.h",
