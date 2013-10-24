@@ -123,7 +123,7 @@ Image column must be available.</p>
 <p><strong>IMAGECOL </strong>(read-only): returns the number of image column. If 
 not exists, returns 0.</p>
 <p><strong>IMAGEDEL </strong>(write-only): name of the image that will be shown 
-when the IupMatrixList is editable and the SHOWDELETE attribute is &quot;YES&quot;. 
+when the IupMatrixList is editable or when SHOWDELETE=Yes. 
 Default: &quot;MTXLIST_IMG_DEL&quot;. Use <a href="../func/iupsethandle.html">IupSetHandle</a> 
 or <a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 associate an image to a name. See also <a href="../elem/iupimage.html">IupImage</a>. 
@@ -151,6 +151,8 @@ the last item. Ignored if out of bounds. Ignored if set before map.</p>
 not exists, returns 0.</p>
 <p><strong>REMOVEITEM </strong>(write-only): removes the given item from the 
 list. </p>
+<p><strong>SHOWDELETE</strong>: Shows only the <strong>IMAGEDEL</strong> image 
+and ignores <strong>IMAGECHECK</strong> and <strong>IMAGEUNCHECK.</strong></p>
 
   
 <p>

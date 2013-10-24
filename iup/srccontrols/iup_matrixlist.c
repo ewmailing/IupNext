@@ -859,14 +859,15 @@ static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int li
 {
   char* image_name;
   int make_inactive = 0, itemactive, imageactive, imagevalue, showdelete,
-      active = iupdrvIsActive(ih);
+      active = iupdrvIsActive(ih), linedelete;
   int lines_num = ih->data->lines.num;
   Ihandle* image;
 
   itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
   imageactive = IupGetIntId(ih, "IMAGEACTIVE", lin);
   imagevalue = IupGetIntId(ih, "IMAGEVALUE", lin);
-  showdelete = IupGetIntId(ih, "SHOWDELETE", lin);
+  showdelete = IupGetInt(ih, "SHOWDELETE");
+  linedelete = IupGetIntId(ih, "LINEDELETE", lin);
 
   if (!active || !itemactive || !imageactive)
     make_inactive = 1;
@@ -881,7 +882,7 @@ static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int li
         attrib_name = "IMAGEADD";
       else
       {
-        if (showdelete)
+        if (showdelete || linedelete)
           attrib_name = "IMAGEDEL";
         else
         {
@@ -974,7 +975,8 @@ static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int up
 
   if (mode==1 && mtxList->image_col)
   {
-    IupSetAttributeId(ih, "SHOWDELETE", lin, "1");
+    if (!IupGetInt(ih, "SHOWDELETE"))
+      IupSetAttributeId(ih, "LINEDELETE", lin, "Yes");
     IupSetfAttribute(ih, "REDRAW", "C%d", mtxList->image_col);
   }
 
@@ -1011,11 +1013,15 @@ static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int up
 
   if (mode==0) 
   {
-    /* turn off drawing, but prepare for delete */
-    if (update && iupAttribGet(ih, "EDITIONHIDEFOCUS"))
-      iupAttribSetInt(ih, "_IUPMTXLIST_DELETE", (int)clock());
+    if (!IupGetInt(ih, "SHOWDELETE"))
+    {
+      /* turn off drawing, but prepare for delete */
+      if (update && iupAttribGet(ih, "EDITIONHIDEFOCUS"))
+        iupAttribSetInt(ih, "_IUPMTXLIST_DELETE", (int)clock());
 
-    IupSetAttributeId(ih, "SHOWDELETE", lin, NULL);
+      IupSetAttributeId(ih, "LINEDELETE", lin, NULL);
+    }
+
     IupSetfAttribute(ih, "REDRAW", "C%d", mtxList->image_col);
   }
 
@@ -1039,19 +1045,24 @@ static int iMatrixListClick_CB(Ihandle *ih, int lin, int col, char *status)
 
 static int iMatrixListCheckDelete(Ihandle *ih)
 {
-  char* value = iupAttribGet(ih, "_IUPMTXLIST_DELETE");
-  if (value)
+  if (IupGetInt(ih, "SHOWDELETE"))
+    return 1;
+  else
   {
-    int t, diff;
-    iupStrToInt(value, &t);
-    diff = (int)clock() - t;
+    char* value = iupAttribGet(ih, "_IUPMTXLIST_DELETE");
+    if (value)
+    {
+      int t, diff;
+      iupStrToInt(value, &t);
+      diff = (int)clock() - t;
 
-    iupAttribSet(ih, "_IUPMTXLIST_DELETE", NULL);
+      iupAttribSet(ih, "_IUPMTXLIST_DELETE", NULL);
 
-    if (diff < 100)
-      return 1;
+      if (diff < 200)
+        return 1;
+    }
+    return 0;
   }
-  return 0;
 }
 
 static int iMatrixListRelease_CB(Ihandle *ih, int lin, int col, char *status)
@@ -1344,6 +1355,7 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttributeId(ic, "IMAGEACTIVE", iMatrixListGetImageActiveAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "IMAGEVALUE", NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COLOR", NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "LINEDELETE", NULL, NULL, IUPAF_NO_INHERIT);
 
   /* NO redraw */
   iupClassRegisterAttribute(ic, "IMAGEUNCHECK", NULL, NULL, IUPAF_SAMEASSYSTEM, "MTXLIST_IMG_UNCHECK", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
@@ -1353,6 +1365,7 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttribute(ic, "FOCUSCOLOR",   NULL, iMatrixListSetFocusColorAttrib, IUPAF_SAMEASSYSTEM, "255 235 155", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "EDITABLE",   iMatrixListGetEditableAttrib, iMatrixListSetEditableAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDELETE",   NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "APPENDITEM", NULL, iMatrixListSetAppendItemAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);  /* allowing these methods to be called before map will avoid its storage in the hash table */
   iupClassRegisterAttributeId(ic, "INSERTITEM", NULL, iMatrixListSetInsertItemAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);  /* allowing these methods to be called before map will avoid its storage in the hash table */
