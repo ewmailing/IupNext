@@ -1271,6 +1271,7 @@ static int iMatrixListCreateMethod(Ihandle* ih, void **params)
 
   /* default matrix list values */
   mtxList->label_col = 1;
+  iMatrixListInitSize(ih, mtxList);
 
   /* change the IupCanvas default values */
   iupAttribSet(ih, "EXPAND", "NO");      /* Disable the expand option */

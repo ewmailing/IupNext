@@ -251,6 +251,7 @@ iupdrvImageDestroy
 iupShowVersion
 iupTableSetFunc
 iupTableSet
+iupTableSetCurr
 iupTableRemoveCurr
 iupTableRemove
 iupTableNext
@@ -366,6 +367,7 @@ iupClassRegisterAttribute
 iupClassRegisterGetAttribute
 iupClassRegisterReplaceAttribDef
 iupClassRegisterReplaceAttribFlags
+iupClassRegisterReplaceAttribFunc
 iupClassObjectUnMap
 iupClassObjectSetChildrenPosition
 iupClassObjectSetChildrenCurrentSize

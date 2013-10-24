@@ -9,7 +9,7 @@ SRC = iup_matrixex.c iupmatex_clipboard.c iupmatex_busy.c \
       iupmatex_units.c iupmatex_find.c iupmatex_undo.c \
       iupmatex_sort.c
 
-LIBS = iupcontrols
+LIBS = iup iupcontrols
 LDIR = ../lib/$(TEC_UNAME)
 USE_CD = Yes
 
