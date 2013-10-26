@@ -429,6 +429,8 @@ void ExpanderTest(void)
         NULL))), "TITLE=IupRadio"),
       NULL));
   IupSetAttribute(_frm_3,"TITLE","IupToggle");
+  IupSetAttribute(_frm_3,"FORECOLOR","255 255 255");
+  IupSetAttribute(_frm_3,"BACKCOLOR","50 100 150");
 
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");
