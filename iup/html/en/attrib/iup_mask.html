@@ -60,7 +60,7 @@ validated by the current MASK use VALUEMASKED.</p>
 	</tr>
 	</table>
     
-<h3>Auxiliar Attributes</h3>
+<h3>Auxiliary Attributes</h3>
 <h4>MASKCASEI (non inheritable) </h4>
 <font SIZE="3">
 <p>If YES, will turn the filter case insensitive. Default: NO<font SIZE="3">. 
@@ -77,7 +77,29 @@ replace MASK.</p>
 (&quot;min:max&quot;)</font>.<font SIZE="3">
 It will replace MASK.</font></p>
 </font>
-<h3>Pattern Specification</h3>
+
+
+
+<h3>Auxiliary <a name="Callbacks">Callbacks</a></h3>
+
+
+<p><strong>MASKFAIL_CB</strong>:
+  Action generated when the new text fails at the mask check. (since 3.9)</p>
+
+  
+    
+<pre>int function(Ihandle *<strong>ih</strong>, char *<strong>new_value</strong>); [in C]<br><strong>elem</strong>:maskfail(<strong>new_value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+    <strong>new_value</strong>:
+    Represents the new text value.</p>
+
+    
+ <h3>Pattern Specification</h3>
 <p>The pattern to be searched in the text can be defined by the rules given 
 below.
   </p>
