@@ -638,10 +638,10 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     }
     break;
   case WM_SETFOCUS:
+    if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     {
       HWND previous = (HWND)wp;
-      if (previous && previous!=ih->handle &&
-          !iupAttribGetBoolean(ih, "CANFOCUS"))
+      if (previous && previous != ih->handle)
       {
         SetFocus(previous);
         *result = 0;

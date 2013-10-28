@@ -202,6 +202,20 @@ static int winValMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
 
   switch (msg)
   {
+  case WM_SETFOCUS:
+    {
+      if (!iupAttribGetBoolean(ih, "CANFOCUS"))
+      {
+        HWND previous = (HWND)wp;
+        if (previous && previous != ih->handle)
+        {
+          SetFocus(previous);
+          *result = 0;
+          return 1;
+        }
+      }
+      break;
+    }
   case WM_ERASEBKGND:
     {
       RECT rect;
