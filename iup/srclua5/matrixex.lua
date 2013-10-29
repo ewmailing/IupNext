@@ -12,6 +12,7 @@ local ctrl = {
   },
   include = "iupmatrixex.h",
   extrafuncs = 1,
+  openfuncname = "_matrixex",
 }
 
 function ctrl.createElement(class, param)

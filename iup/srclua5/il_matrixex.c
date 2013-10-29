@@ -40,7 +40,7 @@ static int MatrixEx(lua_State *L)
 
 void iuplua_matrixexfuncs_open(lua_State *L);
 
-int iupmatrixexlua_open(lua_State * L)
+int iup_matrixexlua_open(lua_State * L)
 {
   iuplua_register(L, MatrixEx, "MatrixEx");
 

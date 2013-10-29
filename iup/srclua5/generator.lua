@@ -162,9 +162,9 @@ function write_initialization(o,t)
       io.write('void iuplua_', o,'funcs_open(lua_State *L);\n\n')
    end
    if t.openfuncname then
-      io.write("void ", t.openfuncname, "(lua_State * L)\n")
+      io.write("int iup", t.openfuncname, "lua_open(lua_State * L)\n")
    else
-      io.write("int iup", o,"lua_open(lua_State * L)\n")
+      io.write("int iup",              o, "lua_open(lua_State * L)\n")
    end
    io.write("{\n")
    io.write("  iuplua_register(L, ")

@@ -76,6 +76,10 @@ IupSetFunction
 IupSetGlobal
 IupSetHandle
 IupSetLanguage
+IupSetLanguageString
+IupStoreLanguageString
+IupGetLanguageString
+IupSetLanguagePack
 IupShow
 IupShowXY
 IupStoreAttribute
@@ -214,6 +218,7 @@ iupdrvGetSystemName
 iupdrvGetSystemFont
 iupdrvGetScrollbarSize
 iupdrvGetScreenSize
+iupdrvAddScreenOffset
 iupdrvGetScreenDepth
 iupdrvGetScreenDpi
 iupdrvGetKeyState
@@ -243,15 +248,17 @@ iupdrvImageGetRawInfo
 iupdrvImageGetRawData
 iupdrvImageDestroy
 
-iupVersionDlg
+iupShowVersion
 iupTableSetFunc
 iupTableSet
+iupTableSetCurr
 iupTableRemoveCurr
 iupTableRemove
 iupTableNext
 iupTableGetTyped
 iupTableGetFunc
 iupTableGetCurr
+iupTableGetCurrType
 iupTableGet
 iupTableFirst
 iupTableDestroy
@@ -279,10 +286,12 @@ iupStrReplace
 iupStrProcessMnemonic
 iupStrFindMnemonic
 iupStrCompare
+iupStrCompareEqual
+iupStrCompareFind
 iupStrNextLine
 iupStrNextValue
-iupStrMessageShowError
-iupStrMessageGet
+iupShowError
+IupGetLanguageString
 iupStrLower
 iupStrUpper
 iupStrHasSpace
@@ -321,10 +330,8 @@ iupMaskCreateFloat
 iupMaskCreate
 iupMaskCheck
 iupMaskGetStr
-iupKeyNameToCode
 iupKeyForEach
 iupKeyCodeToName
-iupKeyCanCaps
 iupKeyCallKeyPressCb
 iupKeyCallKeyCb
 iupKeyProcessNavigation
@@ -360,6 +367,7 @@ iupClassRegisterAttribute
 iupClassRegisterGetAttribute
 iupClassRegisterReplaceAttribDef
 iupClassRegisterReplaceAttribFlags
+iupClassRegisterReplaceAttribFunc
 iupClassObjectUnMap
 iupClassObjectSetChildrenPosition
 iupClassObjectSetChildrenCurrentSize
@@ -403,6 +411,12 @@ iupBaseSetPosition
 iupBaseComputeNaturalSize
 iupBaseSetCurrentSize
 iupBaseCallValueChangedCb
+iupAttribSetClassObject
+iupAttribSetClassObjectId
+iupAttribSetClassObjectId2
+iupAttribGetClassObject
+iupAttribGetClassObjectId
+iupAttribGetClassObjectId2
 iupAttribSetStr
 iupAttribSetStrf
 iupAttribSet
@@ -417,7 +431,7 @@ iupAttribSetIntId
 iupAttribSetIntId2
 iupAttribSetFloatId
 iupAttribSetFloatId2
-iupAttribIsPointer
+iupAttribIsNotString
 iupAttribGet
 iupAttribGetInherit
 iupAttribGetInheritNativeParent

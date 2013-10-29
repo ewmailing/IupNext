@@ -28,3 +28,22 @@ void iuplua_matrixexfuncs_open (lua_State *L)
 {
   iuplua_register(L, MatrixExInit, "MatrixExInit");
 }
+
+int iup_matrixexlua_open(lua_State * L);
+
+int iupmatrixexlua_open(lua_State* L)
+{
+  if (iuplua_opencall_internal(L))
+    IupMatrixExOpen();
+    
+  iuplua_get_env(L);
+  iup_matrixexlua_open(L);
+  return 0;
+}
+
+/* obligatory to use require"iupluamatrixex" */
+int luaopen_iupluamatrixex(lua_State* L)
+{
+  return iupmatrixexlua_open(L);
+}
+

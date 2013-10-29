@@ -19,6 +19,7 @@ if "%1"=="dllw4" goto stub_dllw4
 if "%1"=="dllw4_64" goto stub_dllw4_64
 if "%1"=="all" goto all_dll
 if "%1"=="all-dll" goto all_dll
+if "%1"=="all-beta" goto all_beta
 goto fim
 
 :stub_dll6
@@ -99,6 +100,13 @@ call make_uname dll11 %2 %3 %4 %5 %6
 call make_uname dll11_64 %2 %3 %4 %5 %6
 call make_uname dllw4 %2 %3 %4 %5 %6
 call make_uname dllg4 %2 %3 %4 %5 %6
+goto fim
+
+:all_beta
+call make_uname dll9 %2 %3 %4 %5 %6
+call make_uname dll9_64 %2 %3 %4 %5 %6
+call make_uname dll10 %2 %3 %4 %5 %6
+call make_uname dll10_64 %2 %3 %4 %5 %6
 goto fim
 
 :fim
