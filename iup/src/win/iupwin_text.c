@@ -1600,7 +1600,12 @@ static void winTextCallCaretCb(Ihandle* ih)
 static int winTextCallActionCb(Ihandle* ih, char* insert_value, int remove_dir)
 {
   int ret, start, end;
-  IFnis cb = (IFnis)IupGetCallback(ih, "ACTION");
+  IFnis cb;
+
+  if (ih->data->disable_callbacks)
+    return 1;
+
+  cb = (IFnis)IupGetCallback(ih, "ACTION");
   winTextGetSelection(ih, &start, &end);
   ret = iupEditCallActionCb(ih, cb, insert_value, start, end, (char*)ih->data->mask, ih->data->nc, remove_dir, iupwinStrGetUTF8Mode());
   if (ret == 0)

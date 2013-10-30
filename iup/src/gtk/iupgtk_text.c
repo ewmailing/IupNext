@@ -1472,6 +1472,7 @@ static void gtkTextBufferDeleteRange(GtkTextBuffer *textbuffer, GtkTextIter *sta
 {
   IFnis cb = (IFnis)IupGetCallback(ih, "ACTION");
   int start, end;
+
   if (ih->data->disable_callbacks)
     return;
 
