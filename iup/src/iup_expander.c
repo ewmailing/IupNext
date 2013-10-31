@@ -739,7 +739,6 @@ static int iExpanderCreateMethod(Ihandle* ih, void** params)
   /* Setting callbacks */
   IupSetCallback(bar, "BUTTON_CB", (Icallback) iExpanderButton_CB);
   IupSetCallback(bar, "ACTION",    (Icallback) iExpanderAction_CB);
-  IupSetCallback(bar, "ACTION",    (Icallback) iExpanderAction_CB);
   IupSetCallback(bar, "ENTERWINDOW_CB", (Icallback)iExpanderEnterWindow_cb);
   IupSetCallback(bar, "LEAVEWINDOW_CB", (Icallback)iExpanderLeaveWindow_cb);
 

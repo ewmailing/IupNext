@@ -183,7 +183,7 @@ static int iMatrixExItemExport_CB(Ihandle* ih_item)
 
   if (iupStrEqual(IupGetAttribute(ih_item, "TEXTFORMAT"), "LaTeX"))
   {
-    filter = "*.tex";
+    filter = "*.tex";  /* Motif does not support EXTFILTER, so define both */
     info = "LaTeX file (table format)";
     extfilter = "LaTeX file (table format)|*.tex|All Files|*.*|";
   }

@@ -112,7 +112,7 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
   IupSetInt(lst, "VISIBLELINES", max_lin);
   IupSetInt(lst, "VISIBLECOLUMNS", max_col);
 
-  IupSetAttribute(dlg,"TITLE", title);
+  IupSetStrAttribute(dlg,"TITLE", title);
   IupSetAttribute(dlg,"MINBOX","NO");
   IupSetAttribute(dlg,"MAXBOX","NO");
   IupSetAttributeHandle(dlg,"DEFAULTENTER", ok);
@@ -230,7 +230,7 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
 
   dlg = IupDialog(dlg_box);
 
-  IupSetAttribute(dlg,"TITLE", title);
+  IupSetStrAttribute(dlg,"TITLE", title);
   IupSetAttribute(dlg,"DIALOGFRAME","YES");
   IupSetAttribute(dlg,"DIALOGHINT","YES");
   IupSetAttributeHandle(dlg,"DEFAULTENTER", default_enter);
@@ -304,7 +304,7 @@ int  iupDataEntry(int    maxlin,
 
   dlg = IupDialog(dlg_box);
 
-  IupSetAttribute(dlg,"TITLE",title);
+  IupSetStrAttribute(dlg,"TITLE",title);
   IupSetAttribute(dlg,"MINBOX","NO");
   IupSetAttribute(dlg,"MAXBOX","NO");
   IupSetAttributeHandle(dlg,"DEFAULTENTER", ok);
@@ -408,7 +408,7 @@ int IupGetText(const char* title, char* text)
 
   dlg = IupDialog (dlg_box);
 
-  IupSetAttribute(dlg,"TITLE", title);
+  IupSetStrAttribute(dlg,"TITLE", title);
   IupSetAttribute(dlg,"MINBOX","NO");
   IupSetAttribute(dlg,"MAXBOX","NO");
   IupSetAttributeHandle(dlg,"DEFAULTENTER", ok);
