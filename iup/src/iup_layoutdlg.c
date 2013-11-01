@@ -289,7 +289,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
   char **attr_names = (char **) malloc(total_count * sizeof(char *));
 
   if (IupClassMatch(ih, "tree") || /* tree can only set id attributes after map, so they can not be saved */
-      IupClassMatch(ih, "cells")) /* cells does not have any saveable id attributes */
+      IupClassMatch(ih, "cells"))  /* cells does not have any savable id attributes */
     has_attrib_id = 0;  
 
   if (IupClassMatch(ih, "list"))

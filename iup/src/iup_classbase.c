@@ -274,7 +274,7 @@ static int iBaseSetNormalizerGroupAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static Ihandle* iBaseFindChild(Ihandle* ih, const char* name)
+static Ihandle* iBaseFindNamedChild(Ihandle* ih, const char* name)
 {
   Ihandle* child = ih->firstchild;
   while (child)
@@ -285,7 +285,7 @@ static Ihandle* iBaseFindChild(Ihandle* ih, const char* name)
 
     if (child->firstchild)
     {
-      Ihandle* c = iBaseFindChild(child, name);
+      Ihandle* c = iBaseFindNamedChild(child, name);
       if (c) return c;
     }
 
@@ -315,7 +315,14 @@ Ihandle* IupGetDialogChild(Ihandle* ih, const char* name)
 
   if (ih->firstchild)
   {
-    child = iBaseFindChild(ih, name);
+    child = iBaseFindNamedChild(ih, name);
+    if (child) return child;
+  }
+
+  ih = IupGetAttributeHandle(ih, "MENU");
+  if (ih)
+  {
+    child = iBaseFindNamedChild(ih, name);
     if (child) return child;
   }
   return NULL;

@@ -1,5 +1,5 @@
 /** \file
- * \brief attributes enviroment management
+ * \brief attributes environment management
  *
  * See Copyright Notice in "iup.h"
  */
