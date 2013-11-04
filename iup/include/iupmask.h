@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#pragma message("Warning: Using DEPRECATED iupMask definitions, use the MASK attribute in IupText or IupMatrix. It will be removed in a future version.") 
+#pragma message("Warning: Using DEPRECATED iupMask definitions from \"iupmask.h\", use the MASK attribute in IupText or IupMatrix. It will be removed in a future version.") 
 
 /* DEPRECATED definitions, use the MASK attribute in IupText or IupMatrix. It will be removed in a future version. */
 int  iupmaskSet     (Ihandle *h, const char *mask, int autofill, int casei);
