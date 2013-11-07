@@ -1659,8 +1659,6 @@ Iclass* iupMatrixNewClass(void)
   /* --- Callback Mode --- */
   iupClassRegisterCallback(ic, "VALUE_CB", "ii=s");
   iupClassRegisterCallback(ic, "VALUE_EDIT_CB", "iis");
-  iupClassRegisterCallback(ic, "NUMERICGETVALUE_CB", "ii=d");
-  iupClassRegisterCallback(ic, "NUMERICSETVALUE_CB", "iid");
   iupClassRegisterCallback(ic, "MARK_CB", "ii");
   iupClassRegisterCallback(ic, "MARKEDIT_CB", "iii");
 

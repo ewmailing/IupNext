@@ -448,10 +448,9 @@ is NULL in callback mode, and the column has <strong>NUMERICQUANTITY<em>id </em>
 <pre>double function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:numericgetvalue_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+    identifier of the element that activated the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
-    Coordinates of the cell.</p>
+    coordinates of the cell.</p>
 <p class="info"><span><span class="style5">Returns</span>:</span> the number to be drawn. </p>
 <p><a name="NUMERICSETVALUE_CB"><strong>NUMERICSETVALUE_CB</strong></a>: Action 
 generated when a cell value is being modified at a numeric column. It is only 
@@ -461,11 +460,27 @@ as string in normal mode and&nbsp; <a href="iupmatrix_cb.html#VALUE_EDIT_CB">
 VALUE_EDIT_CB</a> will not be called in callback mode.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, double <strong>value</strong>); [in C]
 <strong>elem</strong>:numericsetvalue_cb(<strong>lin, col</strong>, <strong>value</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-    Identifier of the matrix interacting with 
-    the user.<br>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
-    Coordinates of the cell.<br><strong>value</strong>: new value of the cell.</p>
+    coordinates of the cell.<br><strong>value</strong>: new value of the cell.</p>
+<p><strong><a name="MENUCONTEXT_CB">MENUCONTEXT_CB</a></strong>: Action generated 
+after the context menu is created but before it is displayed, so the application 
+can add or removed items from the menu.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle*<strong> menu</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]<br><strong>elem</strong>:menucontext_cb(<strong>menu: </strong>ihandle, <strong>lin</strong>,<strong> col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>menu</strong>:
+    identifier of the menu that will 
+    be shown to the user.<br>
+    <strong>lin</strong>, <strong>col</strong>:
+    coordinates of the cell.<br></p>
+
 <p><strong><a name="PASTESIZE_CB">PASTESIZE_CB</a></strong>: Action generated 
 when pasting and data at the insert position will have more lines or columns 
 than the current matrix. The application can change the NUMLIN and NUMCOL 
@@ -473,7 +488,7 @@ attributes to receive the new data.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, int <strong>num_lin</strong>, int <strong>num_col</strong>); [in C]<br><strong>elem</strong>:busy_cb(<strong>num_lin</strong>,<strong>num_col</strong>: number, <strong>name</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>num_lin</strong>, int <strong>num_col</strong>); [in C]<br><strong>elem</strong>:pastesize_cb(<strong>num_lin</strong>,<strong> num_col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
