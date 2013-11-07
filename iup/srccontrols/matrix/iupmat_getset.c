@@ -256,10 +256,6 @@ static char* iMatrixGetValueNumericDisplay(Ihandle* ih, int lin, int col, const 
   if (ih->data->numeric_columns[col].flags & IMAT_HAS_FORMAT)
     format = iupAttribGetId(ih, "NUMERICFORMAT", col);
 
-  if ((ih->data->numeric_columns[col].unit_shown==ih->data->numeric_columns[col].unit) &&
-      (format==NULL))
-    return (char*)value;
-
   if (format==NULL)
     format = iupAttribGetStr(ih, "NUMERICFORMATDEF");
 
