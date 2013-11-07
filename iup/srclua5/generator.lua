@@ -116,6 +116,9 @@ function write_callbacks(o, c)
          if v.ret == "s" then
             io.write("char * ")
          end
+         if v.ret == "d" then
+            io.write("double ")
+         end
       else
          io.write("int ")
       end
@@ -146,7 +149,9 @@ function write_callbacks(o, c)
          aux.n = aux.n + 1
       end)
       if v.ret and v.ret == "s" then
-        io.write("\n  return iuplua_call_rs(L, " .. max .. ");")
+        io.write("\n  return iuplua_call_ret_s(L, " .. max .. ");")
+      elseif v.ret and v.ret == "d" then
+        io.write("\n  return iuplua_call_ret_d(L, " .. max .. ");")
       else   
         io.write("\n  return iuplua_call(L, " .. max .. ");")
       end

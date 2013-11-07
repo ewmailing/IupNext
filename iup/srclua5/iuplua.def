@@ -5,7 +5,8 @@ EXPORTS
   iuplua_getstate
   iuplua_checkihandle
   iuplua_call
-  iuplua_call_rs
+  iuplua_call_ret_s
+  iuplua_call_ret_d
   iuplua_call_raw
   iuplua_get_env
   iuplua_pushihandle

@@ -33,7 +33,7 @@ static char * colorbar_cell_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "cell_cb");
   lua_pushinteger(L, p0);
-  return iuplua_call_rs(L, 1);
+  return iuplua_call_ret_s(L, 1);
 }
 
 static int colorbar_extended_cb(Ihandle *self, int p0)

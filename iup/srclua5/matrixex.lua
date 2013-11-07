@@ -9,6 +9,10 @@ local ctrl = {
   callback = {
     pastesize_cb = "nn",
     busy_cb = "nns",
+    numericgetvalue_cb = {"nn", ret = "d"},
+    numericsetvalue_cb = "nnd",
+    sortcolumncompare_cb = "nnn",
+    menucontext_cb = "inn",
   },
   include = "iupmatrixex.h",
   extrafuncs = 1,

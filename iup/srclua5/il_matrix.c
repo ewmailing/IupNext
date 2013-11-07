@@ -18,7 +18,7 @@ static char * matrix_font_cb(Ihandle *self, int p0, int p1)
   lua_State *L = iuplua_call_start(self, "font_cb");
   lua_pushinteger(L, p0);
   lua_pushinteger(L, p1);
-  return iuplua_call_rs(L, 2);
+  return iuplua_call_ret_s(L, 2);
 }
 
 static int matrix_draw_cb(Ihandle *self, int p0, int p1, int p2, int p3, int p4, int p5, int p6)
@@ -74,7 +74,7 @@ static char * matrix_value_cb(Ihandle *self, int p0, int p1)
   lua_State *L = iuplua_call_start(self, "value_cb");
   lua_pushinteger(L, p0);
   lua_pushinteger(L, p1);
-  return iuplua_call_rs(L, 2);
+  return iuplua_call_ret_s(L, 2);
 }
 
 static int matrix_release_cb(Ihandle *self, int p0, int p1, char * p2)
@@ -131,7 +131,7 @@ static char * matrix_type_cb(Ihandle *self, int p0, int p1)
   lua_State *L = iuplua_call_start(self, "type_cb");
   lua_pushinteger(L, p0);
   lua_pushinteger(L, p1);
-  return iuplua_call_rs(L, 2);
+  return iuplua_call_ret_s(L, 2);
 }
 
 static int matrix_menudrop_cb(Ihandle *self, Ihandle * p0, int p1, int p2)

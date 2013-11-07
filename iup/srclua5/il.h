@@ -109,7 +109,11 @@ int iuplua_call(lua_State *L, int nargs);
 
 /** Same as /ref iuplua_call, but returns a string.
  */
-char* iuplua_call_rs(lua_State *L, int nargs);
+char* iuplua_call_ret_s(lua_State *L, int nargs);
+
+/** Same as /ref iuplua_call, but returns a double.
+ */
+double iuplua_call_ret_d(lua_State *L, int nargs);
 
 /** Same as lua_pcall, but if an error occour then
  * _ERRORMESSAGE is called. 

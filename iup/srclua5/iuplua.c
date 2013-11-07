@@ -469,7 +469,7 @@ int iuplua_call_global(lua_State* L, int nargs)
   return iuplua_call(L, nargs-1); /* remove the handle from the parameter count */
 }
 
-char* iuplua_call_rs(lua_State *L, int nargs)
+char* iuplua_call_ret_s(lua_State *L, int nargs)
 {
   int status = docall(L, nargs+2, 1);
   report(L, status, 0);
@@ -479,6 +479,21 @@ char* iuplua_call_rs(lua_State *L, int nargs)
   else
   {
     char* tmp = lua_isnil(L, -1) ? NULL: (char*)lua_tostring(L,-1);
+    lua_pop(L, 1);
+    return tmp;    
+  }
+}
+
+double iuplua_call_ret_d(lua_State *L, int nargs)
+{
+  int status = docall(L, nargs+2, 1);
+  report(L, status, 0);
+
+  if (status != LUA_OK)
+    return 0;
+  else
+  {
+    double tmp = lua_isnil(L, -1) ? 0: (double)lua_tonumber(L,-1);
     lua_pop(L, 1);
     return tmp;    
   }
