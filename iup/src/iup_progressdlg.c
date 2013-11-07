@@ -53,12 +53,13 @@ static void iProgressDlgSetPercent(IprogressDlgData* progress_data, int percent)
     /* avoid duplicate updates */
     if (percent != progress_data->percent)
     {
-      progress_data->percent = percent;
       IupSetInt(progress_data->progress, "VALUE", percent);
       IupFlush();
       progress_data->last_clock = (int)clock();
     }
   }
+
+  progress_data->percent = percent;
 
   IupLoopStep();
 }
@@ -176,7 +177,7 @@ static int iProgressDlgSetPercentAttrib(Ihandle* ih, const char* value)
 static char* iProgressDlgGetPercentAttrib(Ihandle* ih)
 {
   IprogressDlgData* progress_data = (IprogressDlgData*)iupAttribGet(ih, "_IUP_PDLG_DATA");
-  return IupGetAttribute(progress_data->progress, "VALUE");
+  return iupStrReturnInt(progress_data->percent);
 }
 
 static int iProgressDlgSetDescriptionAttrib(Ihandle* ih, const char* value)
