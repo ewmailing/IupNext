@@ -38,6 +38,11 @@ extern "C" char*  iupwinStrWide2Char(const WCHAR* wstr);
 
 using namespace ATL;
 
+// Should have only one instance of a class
+// derived from CAtlModule in a project.
+static CComModule* iweb_module = NULL;
+
+
 interface CSink:public IDispEventImpl<0, CSink, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 0>
 {
 public:
@@ -324,23 +329,15 @@ static int winWebBrowserCreateMethod(Ihandle* ih, void **params)
   punk->QueryInterface(IID_IWebBrowser2, (void **)&pweb);
   iupAttribSet(ih, "_IUPWEB_BROWSER", (char*)pweb);
 
-  /* CComModule implements a COM server module, 
-     allowing a client to access the module's components  */
-  CComModule* module = new CComModule();
-
   /* CSink object to capture events */
   CSink* sink = new CSink();
 
   /* Set handle to use in CSink Interface */
   sink->ih = ih;
 
-  /* Initializing ATL Support */
-  module->Init(NULL, GetModuleHandle(NULL));
-
   /* Connecting to the server's outgoing interface */
   sink->DispEventAdvise(punk);
 
-  iupAttribSet(ih, "_IUPWEB_MODULE", (char*)module);
   iupAttribSet(ih, "_IUPWEB_SINK", (char*)sink);
   punk->Release();
 
@@ -352,7 +349,6 @@ static void winWebBrowserDestroyMethod(Ihandle* ih)
   IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
   pweb->Release();
 
-  CComModule* module = (CComModule*)iupAttribGet(ih, "_IUPWEB_MODULE");
   CSink* sink = (CSink*)iupAttribGet(ih, "_IUPWEB_SINK");
 
   /* Get the current IUnknown* */
@@ -362,11 +358,17 @@ static void winWebBrowserDestroyMethod(Ihandle* ih)
   sink->DispEventUnadvise(punk);
   delete sink;
 
-  /* Terminating ATL support */
-  module->Term();
-  delete module;
-
   punk->Release();
+}
+
+static void winWebBrowserRelease(Iclass* ic)
+{
+  /* Terminating ATL support */
+  iweb_module->Term();
+  delete iweb_module;
+  iweb_module = NULL;
+
+  (void)ic;
 }
 
 Iclass* iupWebBrowserNewClass(void)
@@ -383,6 +385,7 @@ Iclass* iupWebBrowserNewClass(void)
   ic->New = iupWebBrowserNewClass;
   ic->Create = winWebBrowserCreateMethod;
   ic->Destroy = winWebBrowserDestroyMethod;
+  ic->Release = winWebBrowserRelease;
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "NEWWINDOW_CB", "s");
@@ -396,6 +399,13 @@ Iclass* iupWebBrowserNewClass(void)
   iupClassRegisterAttribute(ic, "RELOAD", NULL, winWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HTML", NULL, winWebBrowserSetHTMLAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATUS", winWebBrowserGetStatusAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+
+  /* CComModule implements a COM server module, 
+     allowing a client to access the module's components  */
+  iweb_module = new CComModule();
+
+  /* Initializing ATL Support */
+  iweb_module->Init(NULL, GetModuleHandle(NULL));
 
   return ic;
 }
