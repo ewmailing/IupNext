@@ -728,7 +728,8 @@ Iclass* iupTreeNewClass(void)
   iupClassRegisterAttributeId(ic, "USERDATA", iTreeGetUserDataAttrib, iTreeSetUserDataAttrib, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
   
   /* Default node images */
-  iTreeInitializeImages();
+  if (!IupGetHandle("IMGLEAF") || !IupGetHandle("IMGBLANK") || !IupGetHandle("IMGPAPER"))
+    iTreeInitializeImages();
 
   iupdrvTreeInitClass(ic);
 

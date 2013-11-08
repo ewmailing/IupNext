@@ -238,8 +238,8 @@ static int iMatrixSetUndoAttrib(Ihandle* ih, const char* value)
 static char* iMatrixGetUndoAttrib(Ihandle* ih)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  int undo_stack_count = iupArrayCount(matex_data->undo_stack);
-  if (matex_data->undo_stack && undo_stack_count)
+  int undo_stack_count = matex_data->undo_stack? iupArrayCount(matex_data->undo_stack): 0;
+  if (undo_stack_count)
     return iupStrReturnBoolean(matex_data->undo_stack_pos>0);
   return NULL; 
 }

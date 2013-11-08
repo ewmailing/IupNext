@@ -1392,7 +1392,8 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttribute(ic, "NUMCOL_VISIBLE",  iMatrixListGetNumColVisibleAttrib, NULL, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* initialize default images */
-  iMatrixListInitializeImages();
+  if (!IupGetHandle("MTXLIST_IMG_CHECK") || !IupGetHandle("MTXLIST_IMG_DEL") || !IupGetHandle("MTXLIST_IMG_ADD"))
+    iMatrixListInitializeImages();
 
   return ic;
 }
