@@ -82,6 +82,10 @@ static int GetParam(lua_State *L)
       f += line_size;
       i--; /* compensate next increment */
       continue; /* notice this will go to the next i */
+    case 'h':
+      param_data[i] = malloc(sizeof(Ihandle*));
+      *(Ihandle**)(param_data[i]) = iuplua_checkihandle(L, lua_param_start); lua_param_start++;
+      break;
     case 'b':
 /*  TO DO: add this code some day:
       if (lua_isboolean(L, lua_param_start))

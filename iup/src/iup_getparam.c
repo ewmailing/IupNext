@@ -20,7 +20,7 @@
 
 #define RAD2DEG  57.296f   /* radians to degrees */
 
-enum {IPARAM_TYPE_STR, IPARAM_TYPE_INT, IPARAM_TYPE_FLOAT, IPARAM_TYPE_NONE=-1};
+enum {IPARAM_TYPE_STR, IPARAM_TYPE_INT, IPARAM_TYPE_FLOAT, IPARAM_TYPE_HANDLE, IPARAM_TYPE_NONE=-1};
 
 
 /*******************************************************************************************
@@ -446,13 +446,9 @@ static int iParamSpinInt_CB(Ihandle *self, int pos)
                     Creates One Parameter Box
 *******************************************************************************************/
 
-static Ihandle* iParamCreateBox(Ihandle* param)
+static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
 {
   Ihandle *box, *ctrl = NULL, *label;
-  char *type = iupAttribGet(param, "TYPE");
-
-  if (iupStrEqual(type, "BUTTONNAMES"))
-    return NULL;
 
   label = IupLabel(iupAttribGet(param, "TITLE"));
 
@@ -829,10 +825,9 @@ static Ihandle* IupParamDlgP(Ihandle** params)
   i = 0; expand = 0;
   while (params[i] != NULL)
   {
-    Ihandle* box = iParamCreateBox(params[i]);
-    if (box)
-      IupAppend(param_box, box);
-    else /* buttonnames */
+    char *type = iupAttribGet(params[i], "TYPE");
+
+    if (iupStrEqual(type, "BUTTONNAMES"))
     {
       char* value = iupAttribGet(params[i], "_IUPGP_OK");
       if (value && *value) IupSetStrAttribute(button_ok, "TITLE", value);
@@ -846,6 +841,10 @@ static Ihandle* IupParamDlgP(Ihandle** params)
         IupSetCallback(button_help, "ACTION", (Icallback)iParamButtonHelp_CB);
       }
     }
+    else if (iupStrEqual(type, "HANDLE"))
+      IupAppend(param_box, (Ihandle*)iupAttribGet(params[i], "VALUE"));
+    else
+      IupAppend(param_box, iParamCreateBox(params[i], type));
 
     if (IupGetInt(params[i], "EXPAND"))
       expand = 1;
@@ -1288,6 +1287,10 @@ static Ihandle *IupParamf(const char* format, int *line_size)
     extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamSetButtonNames(extra, param);
     break;
+  case 'h':
+    iupAttribSet(param, "TYPE", "HANDLE");
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_HANDLE);
+    break;
   default:
     IupDestroy(param);
     return NULL;
@@ -1319,7 +1322,7 @@ int iupGetParamCount(const char *format, int *param_extra)
       (*param_extra)++;
     }
 
-    if (*s == '%' && *(s+1) == 'u')  /* do not count button names lines */
+    if (*s == '%' && *(s+1) == 'u')  /* do not count BUTTONNAMES lines */
     {
       extra = 1;
       (*param_extra)++;
@@ -1387,6 +1390,13 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
       char *data_str = (char*)(param_data[p]);
       if (!data_str) return 0;
       iupAttribSetStr(params[i], "VALUE", data_str);
+      p++;
+    }
+    else if (data_type == IPARAM_TYPE_HANDLE)  /* Input Only */
+    {
+      Ihandle* data_ih = (Ihandle*)(param_data[p]);
+      if (!data_ih) return 0;
+      iupAttribSet(params[i], "VALUE", (char*)data_ih);
       p++;
     }
 
