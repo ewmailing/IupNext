@@ -1143,6 +1143,16 @@ static int iPPlotSetCurrentAttrib(Ihandle* ih, const char* value)
     ih->data->plt->_currentDataSetIndex = ( (ii>=0) && (ii<imax) ? ii : -1);
     ih->data->plt->_redraw = 1;
   }
+  else
+  {
+    ii = ih->data->plt->_plot.mPlotDataContainer.GetPlotIndexByName(value);
+    if (ii != -1)
+    {
+      int imax = ih->data->plt->_plot.mPlotDataContainer.GetPlotCount();
+      ih->data->plt->_currentDataSetIndex = ( (ii>=0) && (ii<imax) ? ii : -1);
+      ih->data->plt->_redraw = 1;
+    }
+  }
   return 0;
 }
 
@@ -1159,6 +1169,15 @@ static int iPPlotSetRemoveAttrib(Ihandle* ih, const char* value)
   {
     ih->data->plt->_plot.mPlotDataContainer.RemoveElement(ii);
     ih->data->plt->_redraw = 1;
+  }
+  else
+  {
+    ii = ih->data->plt->_plot.mPlotDataContainer.GetPlotIndexByName(value);
+    if (ii != -1)
+    {
+      ih->data->plt->_plot.mPlotDataContainer.RemoveElement(ii);
+      ih->data->plt->_redraw = 1;
+    }
   }
   return 0;
 }

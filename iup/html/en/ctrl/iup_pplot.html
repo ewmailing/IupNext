@@ -220,12 +220,14 @@ specific axis. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>
 &quot;DASHED&quot;, &quot;DOTTED&quot;, &quot;DASH_DOT&quot;, &quot;DASH_DOT_DOT&quot;. Default is &quot;CONTINUOUS&quot;.</p>
 <p><b>GRIDCOLOR</b>: grid color. Default: &quot;200 200 200&quot;.</p>
 <h4>Dataset List Management (non inheritable)</h4>
-<p><b>REMOVE</b> (write-only): removes a dataset given its index.</p>
+<p><b>REMOVE</b> (write-only): removes a dataset given its index or its <b>DS_LEGEND</b> 
+name (DS_LEGEND since 3.9).</p>
 <p><b>CLEAR</b> (write-only): removes all datasets. Value is ignored.</p>
 <p><b>COUNT</b> [read-only]: <font SIZE="3">total number of datasets.</font></p>
 <p><b>CURRENT</b>: <font SIZE="3">current  dataset index. Default is 
 -1. When a dataset is added it becomes the current dataset. The index starts at 
-0. All &quot;DS_*&quot; attributes are dependent on this value.</font></p>
+0. All &quot;DS_*&quot; attributes are dependent on this value. When set can use 
+also the <b>DS_LEGEND</b> name as value (since 3.9).</font></p>
 <h4>Dataset Configuration (non inheritable)</h4>
 <p><b>DS_LEGEND</b>: legend text of the current dataset. Default is dynamically 
 generated: &quot;plot 0&quot;, &quot;plot 1&quot;, &quot;plot 2&quot;, ...</p>
