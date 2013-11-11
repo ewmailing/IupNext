@@ -221,7 +221,8 @@ specific axis. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>
 <p><b>GRIDCOLOR</b>: grid color. Default: &quot;200 200 200&quot;.</p>
 <h4>Dataset List Management (non inheritable)</h4>
 <p><b>REMOVE</b> (write-only): removes a dataset given its index or its <b>DS_LEGEND</b> 
-name (DS_LEGEND since 3.9).</p>
+name (DS_LEGEND since 3.9). Notice that after removing a dataset the other 
+datasets indices that are greater than the given index will be updated.</p>
 <p><b>CLEAR</b> (write-only): removes all datasets. Value is ignored.</p>
 <p><b>COUNT</b> [read-only]: <font SIZE="3">total number of datasets.</font></p>
 <p><b>CURRENT</b>: <font SIZE="3">current  dataset index. Default is 
