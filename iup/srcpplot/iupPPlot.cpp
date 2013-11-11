@@ -113,12 +113,7 @@ void StringPlotData::InsertItem (int inIndex, const char *inString) {
 }
 
 
-void LegendData::SetDefaultColor (int inPlotIndex) {
-  mColor = GetDefaultColor (inPlotIndex);
-}
-
 void LegendData::SetDefaultValues (int inPlotIndex) {
-    SetDefaultColor (inPlotIndex);
   char theBuf[32];
   sprintf (theBuf, "plot %d", inPlotIndex);
   mName = theBuf;
@@ -149,48 +144,6 @@ int PPlot::Round (float inFloat) {
   return (int)floor (inFloat+0.5f);
 #endif
 }
-
-PColor LegendData::GetDefaultColor (int inPlotIndex) {
-
-  PColor theC;
-  switch (inPlotIndex%7) {
-  case 0:
-    theC.mR = 255;
-    theC.mG = 0;
-    theC.mB = 0;
-    break;
-  case 1:
-    theC.mR = 0;
-    theC.mG = 0;
-    theC.mB = 255;
-    break;
-  case 2:
-    theC.mR = 0;
-    theC.mG = 255;
-    theC.mB = 0;
-    break;
-  case 3:
-    theC.mR = 0;
-    theC.mG = 255;
-    theC.mB = 255;
-    break;
-  case 4:
-    theC.mR = 255;
-    theC.mG = 0;
-    theC.mB = 255;
-    break;
-  case 5:
-    theC.mR = 255;
-    theC.mG = 255;
-    theC.mB = 0;
-    break;
-  default:
-    // black
-    break;
-  }
-  return theC;
-}
-
 
 
 float TickInfo::RoundSpan (float inSpan) {
@@ -422,6 +375,52 @@ void PlotDataContainer::ClearData () {
   mPlotDataSelectionList.clear ();
 }
 
+static PColor GetDefaultColor(int index)
+{
+  switch (index) 
+  {
+  case 0: return PColor(255,0,0);
+  case 1: return PColor(0,255,0);
+  case 2: return PColor(0,0,255);
+  case 3: return PColor(0,255,255);
+  case 4: return PColor(255,0,255);
+  case 5: return PColor(255,255,0);
+  case 6: return PColor(128,0,0);
+  case 7: return PColor(0,128,0);
+  case 8: return PColor(0,0,128);
+  case 9: return PColor(0,128,128);
+  case 10: return PColor(128,0,128);
+  case 11: return PColor(128,128,0);
+  default: return PColor(0,0,0);
+  }
+}
+
+void PlotDataContainer::SetNewLegendColor(LegendData *theLegendData)
+{
+  int def_color = 0, i = 0;
+  PColor theC;
+
+  do
+  {
+    theC = GetDefaultColor(def_color);
+
+    for (i=0; i<mLegendDataList.size(); i++)
+    {
+      if (mLegendDataList[i]->mColor.mR == theC.mR && 
+          mLegendDataList[i]->mColor.mG == theC.mG && 
+          mLegendDataList[i]->mColor.mB == theC.mB)
+        break;
+    }
+
+    if (i == mLegendDataList.size())
+      break;
+
+    def_color++;
+  } while (def_color<12);
+
+  theLegendData->mColor = theC;
+}
+
 /* M.T. - changed to return the index of the added plot; returns -1 on error */
 int PlotDataContainer::AddXYPlot (PlotDataBase *inXData, PlotDataBase *inYData, LegendData *inLegendData, DataDrawerBase *inDataDrawer, PlotDataSelection *inPlotDataSelection) {
   if (!inYData || (!inYData->GetRealPlotData () && !inYData->GetCalculatedData ())) {
@@ -438,6 +437,7 @@ int PlotDataContainer::AddXYPlot (PlotDataBase *inXData, PlotDataBase *inYData, 
   if (!theLegendData) {
     theLegendData = new LegendData ();
     theLegendData->SetDefaultValues (mLegendDataList.size ());
+    SetNewLegendColor(theLegendData);
   }
   mLegendDataList.push_back (theLegendData);
 
@@ -482,6 +482,7 @@ void PlotDataContainer::SetXYPlot (int inIndex, PlotDataBase *inXData, PlotDataB
             *theLegendData = *mLegendDataList[inIndex];   // copy old values...
         } else {
             theLegendData->SetDefaultValues (mLegendDataList.size ());
+            SetNewLegendColor(theLegendData);
         }
     }
     if (!theDataDrawer) {

@@ -231,10 +231,13 @@ also the <b>DS_LEGEND</b> name as value (since 3.9).</font></p>
 <h4>Dataset Configuration (non inheritable)</h4>
 <p><b>DS_LEGEND</b>: legend text of the current dataset. Default is dynamically 
 generated: &quot;plot 0&quot;, &quot;plot 1&quot;, &quot;plot 2&quot;, ...</p>
-<p><b>DS_COLOR</b>: color of the current dataset and it legend text. Default&nbsp; 
-is dynamically generated for the 6 first datasets, others are default to black 
-&quot;0 0 0&quot;. The first 6 are: 0=&quot;255 0 0&quot;, 1=&quot;0 0 255&quot;, 2=&quot;0 255 0&quot;, 3=&quot;0 255 255&quot;, 
-4=&quot;255 0 255&quot;, 5=&quot;255 255 0&quot;.</p>
+<p><b>DS_COLOR</b>: color of the current dataset and it legend text. Default&nbsp;is dynamically 
+set from the list &quot;255 0 0&quot;, &quot;0 255 0&quot;, &quot;0 0 255&quot;, &quot;0 255 255&quot;, 
+&quot;255 0 255&quot;, &quot;255 255 0&quot;, &quot;128 0 0&quot;, &quot;0 128 
+0&quot;, &quot;0 0 128&quot;, &quot;0 128 128&quot;, &quot;128 0 128&quot;, &quot;128 128 0&quot;. 
+If the color is not already being used in an existent dataset then it is used as 
+the new default. If all defaults are used then black is used &quot;0 0 0&quot;. (added 
+more colors and existing check since 3.9)</p>
 <p><strong>DS_COUNT</strong>: returns the number of samples of the current 
 dataset. (since 3.6)</p>
 <p><b>DS_MODE</b>: drawing mode of the current dataset. Can be: &quot;LINE&quot;, &quot;BAR&quot;, 

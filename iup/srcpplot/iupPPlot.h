@@ -189,9 +189,7 @@ class LegendData {
    PColor mColor;
    bool mShow;
 
-   void SetDefaultColor (int inPlotIndex);
    void SetDefaultValues (int inPlotIndex);
-   static PColor GetDefaultColor (int inPlotIndex);
 
    PStyle mStyle;
 };
@@ -348,6 +346,7 @@ class PlotDataContainer {
   bool CalculateYRangePlot (float inXMin, float inXMax, const PlotDataBase &inXData, const PlotDataBase &inYData, float &outYMin, float &outYMax) const;
 
  protected:
+  void SetNewLegendColor(LegendData *theLegendData);
   bool CheckState () const;
   PlotDataList mXDataList;
   PlotDataList mYDataList;
