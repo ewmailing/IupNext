@@ -99,11 +99,12 @@ public:
   void Resize(int x, int y, int w, int h); // called when resizing
   void MouseButton(int btn, int stat, int x, int y, char *r); // mouse event
   void MouseMove(int x, int y); // mouse event
+  void MouseWheel(float delta, char *r); // mouse event
   void KeyPress(int c, int press); // keyboard event
   void DrawTo(cdCanvas *usrCnv);   // send plot to some user defined device
 
 protected:
-  InteractionContainer *_InteractionContainer;
+  InteractionContainerIup *_InteractionContainer;
   Ihandle *_ih;   // IUP handle
   short int _mouseDown;
   short int _mouse_ALT;
@@ -112,6 +113,7 @@ protected:
 
   PPainterIup() { };
 
+  void Pan(float delta, bool vertical);
   void FillArrow(int inX1, int inY1, int inX2, int inY2, int inX3, int inY3);
   void DrawLine(float inX1, float inY1, float inX2, float inY2);
   void FillRect(int inX, int inY, int inW, int inH);

@@ -88,7 +88,9 @@ to a free rectangle.</p>
 the previous zoom selection.</p>
 <p>Zoom operates on <b>AXS_XMAX, AXS_XMIN, AXS_YMAX, AXS_YMIN</b> even if <b>
 AUTOMIN/MAX</b> is enabled. The axis may be hidden depending on the selected 
-rectangle.</p>
+rectangle. The <b>
+AUTOMIN/MAX</b> attributes will be disabled during zoom in, and restored when 
+zoom out completely.</p>
 <h4>CrossHair Cursor</h4>
 <p>If you press the <b>Ctrl+Shift</b> key combination, while holding the left 
 mouse button down, a cross hair cursor will be displayed for each dataset in the 
@@ -260,9 +262,10 @@ YES or NO. Default: NO.</p>
 <p><b>AXS_XCOLOR, AXS_YCOLOR</b>: axis, ticks and label color. Default: &quot;0 0 0&quot;.</p>
 <p><b>AXS_XMAX, AXS_XMIN, AXS_YMAX, AXS_YMIN</b>: minimum and maximum displayed 
 values of the respective axis. Automatically calculated values when AUTOMIN or 
-AUTOMAX are enabled.</p>
+AUTOMAX are enabled. Interactive zoom will change this values during run time.</p>
 <p><b>AXS_XAUTOMIN, AXS_XAUTOMAX, AXS_YAUTOMIN, AXS_YAUTOMAX</b>:  configures the automatic scaling of the minimum and maximum display values. 
-Can be YES or NO. Default: YES.</p>
+Can be YES or NO. Default: YES. They will be disabled during zoom in and 
+restored when zoom out completely.</p>
 <p><b>AXS_XLABEL, AXS_YLABEL</b>: text label of the&nbsp; respective axis.</p>
 <p><b>AXS_XLABELCENTERED</b>, <b>AXS_YLABELCENTERED</b>: text label position at 
 center (YES) or at top/right (NO). Default: YES.</p>

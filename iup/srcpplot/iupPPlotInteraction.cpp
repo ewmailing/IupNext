@@ -53,7 +53,8 @@ PPlotInteraction::PPlotInteraction (PPlot &inPPlot):
 PZoomInteraction::PZoomInteraction (PPlot &inPPlot):
   PPlotInteraction (inPPlot),
   mDragging (false),
-  mZoomMode (kZoom_Region)
+  mZoomMode (kZoom_Region),
+  mLastZoomIn(false)
 {
   inPPlot.mPostDrawerList.push_back (this);
 }
@@ -98,6 +99,20 @@ bool PZoomInteraction::HandleMouseEvent (const PMouseEvent &inEvent) {
   return false;
 }
 
+void PZoomInteraction::RepeatZoom(const PZoomInteraction& inZoomInteraction, int off_x, int off_y)
+{
+  if (inZoomInteraction.mLastZoomIn)
+  {
+    mX1 = inZoomInteraction.mX1-off_x;
+    mX2 = inZoomInteraction.mX2-off_x;
+    mY1 = inZoomInteraction.mY1-off_y;
+    mY2 = inZoomInteraction.mY2-off_y;
+    DoZoomIn();
+  }
+  else
+    DoZoomOut();
+}
+
 bool PZoomInteraction::HandleKeyEvent (const PKeyEvent &inEvent) {
 
   if (inEvent.IsOnlyControlKeyDown () && inEvent.IsChar ()) {
@@ -128,7 +143,7 @@ bool PZoomInteraction::Draw (Painter &inPainter) {
     float theY1 = mY1;
     float theY2 = mY2;
 
-    bool theDrawInverse = true;
+    bool theDrawInverse = false;
 
     switch (mZoomMode) {
     case kZoom_Region:
@@ -197,6 +212,9 @@ void PZoomInteraction::DoZoomIn (float inX1, float inX2, float inY1, float inY2)
 
     StoreCurrentAxisSetup ();
 
+    if (mZoomHistory.size()==1)
+      mOriginalAxis = mZoomHistory.top();
+
     if (IsZoomRegion () || IsZoomX ()) {
       mPPlot.mXAxisSetup.SetAutoScale (false);
       mPPlot.mXAxisSetup.mMin = pmin (inX1, inX2);
@@ -208,6 +226,7 @@ void PZoomInteraction::DoZoomIn (float inX1, float inX2, float inY1, float inY2)
       mPPlot.mYAxisSetup.mMax = pmax (inY1, inY2);
     }
 
+    mLastZoomIn = true;
     return;
 }
 
@@ -244,6 +263,7 @@ void PZoomInteraction::DoZoomOut (float inY1, float inY2) {
   } else {
     mPPlot.mYAxisSetup = theInfo.mYAxisSetup;
   }
+  mLastZoomIn = false;
 }
 
 PSelectionInteraction::PSelectionInteraction (PPlot &inPPlot):

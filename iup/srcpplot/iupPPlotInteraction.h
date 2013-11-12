@@ -135,9 +135,11 @@ public:
   void DoZoomOut (float inY1 = -1, float inY2 = -1);
   bool CanZoomOut () { return !mZoomHistory.empty (); };
   int  GetZoomStackSize () { return mZoomHistory.size (); };
+  void RepeatZoom(const PZoomInteraction& inZoomInteraction, int off_x, int off_y);
 
   stack<PAxisInfo> mZoomHistory;
   EZoomMode mZoomMode;
+  PAxisInfo mOriginalAxis;
 
   bool IsZoomRegion () const {return mZoomMode == kZoom_Region;};
   bool IsZoomX () const {return mZoomMode == kZoom_X;};
@@ -147,8 +149,9 @@ protected:
   virtual bool Draw (Painter &inPainter);
   bool CheckRange (float inFloat1, float inFloat2);
 
-  void DoZoomIn ();
+  void DoZoomIn();
 
+  bool mLastZoomIn;
   bool mDragging;
   int mX1;
   int mY1;
