@@ -1505,8 +1505,10 @@ bool PPlot::DrawLegend (const PRect &inRect, Painter &inPainter) const {
 
     int theHeight = inPainter.GetFontHeight();
     int margin = theHeight/2;
+    if (mLegendPos == PPLOT_BOTTOMCENTER)
+      margin = 0;
     int plotCount = mPlotDataContainer.GetPlotCount();
-    int totalHeight = plotCount*(1.2*theHeight) - 0.2*theHeight + 2*margin;
+    int totalHeight = plotCount*theHeight + 2*margin;
 
     int maxWidth = 0;
     for (theI=0; theI<plotCount; theI++) 
@@ -1551,17 +1553,27 @@ bool PPlot::DrawLegend (const PRect &inRect, Painter &inPainter) const {
       theX += inRect.mW - maxWidth - 2;
       theY += inRect.mH - totalHeight - 2;
       break;
+    case PPLOT_BOTTOMCENTER:
+      theX += (inRect.mW - maxWidth) / 2;
+      theY = inPainter.GetHeight() - totalHeight - theHeight/4;
+      break;
     default: // PPLOT_TOPRIGHT
       theX += inRect.mW - maxWidth - 2;
       theY += 2;
       break;
     }
 
+    if (mLegendPos == PPLOT_BOTTOMCENTER)
+      inPainter.SetClipRect (0, 0, inPainter.GetWidth (), inPainter.GetHeight());
+
     theC = mPlotBackground.mPlotRegionBackColor;
     inPainter.SetFillColor (theC.mR, theC.mG, theC.mB);
     inPainter.FillRect(theX, theY, maxWidth, totalHeight);
-    inPainter.SetLineColor (theC.mR/1.5, theC.mG/1.5, theC.mB/1.5);
-    DrawRect(inPainter, theX, theY, maxWidth, totalHeight);
+    if (mLegendPos != PPLOT_BOTTOMCENTER)
+    {
+      inPainter.SetLineColor (theC.mR/1.5, theC.mG/1.5, theC.mB/1.5);
+      DrawRect(inPainter, theX, theY, maxWidth, totalHeight);
+    }
 
     for (theI=0; theI<plotCount; theI++) {
         const LegendData *theLegendData = mPlotDataContainer.GetConstLegendData(theI);
@@ -1570,7 +1582,7 @@ bool PPlot::DrawLegend (const PRect &inRect, Painter &inPainter) const {
             inPainter.SetLineColor (theC.mR, theC.mG, theC.mB);
 
             int X = theX + margin;
-            int Y = theY + theI*(theHeight*1.2) + margin;
+            int Y = theY + theI*theHeight + margin;
 
             int mark_size = 0;
             const DataDrawerBase* drawer = mPlotDataContainer.GetConstDataDrawer(theI);

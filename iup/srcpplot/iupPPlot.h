@@ -43,7 +43,7 @@ enum {                          /* text alignment */
 };
 
 // Legend Position
-enum PLegendPos {PPLOT_TOPLEFT, PPLOT_TOPRIGHT, PPLOT_BOTTOMLEFT, PPLOT_BOTTOMRIGHT};
+enum PLegendPos {PPLOT_TOPLEFT, PPLOT_TOPRIGHT, PPLOT_BOTTOMLEFT, PPLOT_BOTTOMRIGHT, PPLOT_BOTTOMCENTER};
 #endif
 
 typedef vector<float> RealData;
