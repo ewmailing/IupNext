@@ -522,17 +522,21 @@ static int iMatrixExSetNumericAddUnitFactorAttrib(Ihandle* ih, const char* value
 
 static int iMatrixExSetNumericQuantityAttrib(Ihandle* ih, int col, const char* value)
 {
-  int quantity = iMatrixFindQuantity(value);
-  if (quantity < 0)
+  if (!value)
   {
     IupSetCallback(ih, "NUMERICCONVERT_FUNC", NULL);
     IupSetAttributeId(ih, "NUMERICQUANTITYINDEX", col, NULL);
-    return 0;
   }
+  else
+  {
+    int quantity = iMatrixFindQuantity(value);
+    if (quantity < 0)
+      quantity = 0;  /* Set to None, this will enable the numeric column, but no unit convertion */
 
-  /* set the callback before setting the attribute */
-  IupSetCallback(ih, "NUMERICCONVERT_FUNC", (Icallback)iMatrixConvertFunc);
-  IupSetIntId(ih, "NUMERICQUANTITYINDEX", col, quantity);
+    /* set the callback before setting the attribute */
+    IupSetCallback(ih, "NUMERICCONVERT_FUNC", (Icallback)iMatrixConvertFunc);
+    IupSetIntId(ih, "NUMERICQUANTITYINDEX", col, quantity);
+  }
 
   return 0;
 }
