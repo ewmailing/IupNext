@@ -18,6 +18,8 @@ local ctrl = {
     delete_cb = "nnff",
     deletebegin_cb = "",
     deleteend_cb = "",
+    plotmotion_cb = "ff",
+    plotbutton_cb = "nnffs",
   },
   include = "iup_pplot.h",
   extrafuncs = 1,

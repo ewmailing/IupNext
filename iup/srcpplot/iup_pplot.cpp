@@ -92,10 +92,6 @@ struct _IcontrolData
 
 static int iPPlotGetCDFontStyle(const char* value);
 
-typedef int (*IFnC)(Ihandle*, cdCanvas*); /* postdraw_cb, predraw_cb */
-typedef int (*IFniiff)(Ihandle*, int, int, float, float); /* delete_cb */
-typedef int (*IFniiffi)(Ihandle*, int, int, float, float, int); /* select_cb */
-typedef int (*IFniiffff)(Ihandle*, int, int, float, float, float*, float*); /* edit_cb */
 
 static void iPPlotSetPlotCurrent(Ihandle* ih, int p)
 {
@@ -203,6 +199,15 @@ static int iPPlotMouseButton_CB(Ihandle* ih, int btn, int stat, int x, int y, ch
     return IUP_DEFAULT;
   iPPlotSetPlotCurrent(ih, index);
   ih->data->plt->MouseButton(btn, stat, x-ih->data->plt->_x, y-ih->data->plt->_y, r);
+
+  IFniiffs cb = (IFniiffs)IupGetCallback(ih, "PLOTBUTTON_CB");
+  if (cb) 
+  {
+    float rx = ih->data->plt->_plot.mXTrafo->TransformBack((float)x);
+    float ry = ih->data->plt->_plot.mYTrafo->TransformBack((float)y);
+    cb(ih, btn, stat, rx, ry, r);
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -213,6 +218,15 @@ static int iPPlotMouseMove_CB(Ihandle* ih, int x, int y)
     return IUP_DEFAULT;
   iPPlotSetPlotCurrent(ih, index);
   ih->data->plt->MouseMove(x-ih->data->plt->_x, y-ih->data->plt->_y);
+
+  IFnff cb = (IFnff)IupGetCallback(ih, "PLOTMOTION_CB");
+  if (cb) 
+  {
+    float rx = ih->data->plt->_plot.mXTrafo->TransformBack((float)x);
+    float ry = ih->data->plt->_plot.mYTrafo->TransformBack((float)y);
+    cb(ih, rx, ry);
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -490,6 +504,20 @@ void IupPPlotTransform(Ihandle* ih, float x, float y, int *ix, int *iy)
 
   if (ix) *ix = ih->data->plt->_plot.Round(ih->data->plt->_plot.mXTrafo->Transform(x));
   if (iy) *iy = ih->data->plt->_plot.Round(ih->data->plt->_plot.mYTrafo->Transform(y));
+}
+
+void IupPPlotTransformTo(Ihandle* ih, int x, int y, float *rx, float *ry)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "pplot"))
+    return;
+
+  if (rx) *rx = ih->data->plt->_plot.mXTrafo->TransformBack((float)x);
+  if (ry) *ry = ih->data->plt->_plot.mYTrafo->TransformBack((float)y);
 }
 
 void IupPPlotPaintTo(Ihandle* ih, void* _cnv)
@@ -3271,6 +3299,7 @@ static Iclass* iPPlotNewClass(void)
   iupClassRegisterCallback(ic, "EDIT_CB", "iiffff");
   iupClassRegisterCallback(ic, "EDITBEGIN_CB", "");
   iupClassRegisterCallback(ic, "EDITEND_CB", "");
+  iupClassRegisterCallback(ic, "PLOTMOTION_CB", "ff");
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", iPPlotGetBGColorAttrib, iPPlotSetBGColorAttrib, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_NOT_MAPPED);   /* overwrite canvas implementation, set a system default to force a new default */

@@ -162,6 +162,16 @@ static int PlotTransform(lua_State *L)
   return 2;
 }
 
+static int PlotTransformTo(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  float rx, ry;
+  IupPPlotTransformTo(ih, luaL_checkinteger(L,2), luaL_checkinteger(L,3), &rx, &ry);
+  lua_pushnumber(L, rx);
+  lua_pushnumber(L, ry);
+  return 2;
+}
+
 static int PlotPaintTo(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);

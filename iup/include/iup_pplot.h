@@ -30,6 +30,7 @@ void IupPPlotInsertPoints(Ihandle* ih, int index, int sample_index, float *x, fl
 void IupPPlotAddPoints(Ihandle* ih, int index, float *x, float *y, int count);
 void IupPPlotAddStrPoints(Ihandle* ih, int index, const char** x, float* y, int count);
 void IupPPlotTransform(Ihandle* ih, float x, float y, int *ix, int *iy);
+void IupPPlotTransformTo(Ihandle* ih, int x, int y, float *rx, float *ry);
 void IupPPlotPaintTo(Ihandle *ih, void *cnv);
 /***********************************************/
 

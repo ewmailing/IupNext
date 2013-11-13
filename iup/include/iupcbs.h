@@ -22,7 +22,7 @@ typedef int (*IFniiii)(Ihandle*, int, int, int, int); /* dragdrop_cb */
 typedef int (*IFniiiiiiC)(Ihandle*, int, int, int, int, int, int, void*);  /* draw_cb */
 typedef int (*IFniiiiii)(Ihandle*, int, int, int, int, int, int);  /* OLD draw_cb */
 
-typedef int (*IFnff)(Ihandle*, float, float);    /* canvas_action */
+typedef int (*IFnff)(Ihandle*, float, float);    /* canvas_action, plotmotion_cb */
 typedef int (*IFniff)(Ihandle*,int,float,float);  /* scroll_cb */
 typedef int (*IFnfiis)(Ihandle*,float,int,int,char*);  /* wheel_cb */
 
@@ -48,6 +48,12 @@ typedef int (*IFniiIII)(Ihandle*, int, int, int*, int*, int*); /* fgcolor_cb, bg
 typedef int (*IFniinsii)(Ihandle*, int, int, Ihandle*, char*, int, int); /* dropselect_cb */
 typedef int (*IFnccc)(Ihandle*, unsigned char, unsigned char, unsigned char); /* drag_cb, change_cb */
 typedef int (*IFniIIII)(Ihandle*, int, int*, int*, int*, int*); /* multitouch_cb */
+
+typedef int (*IFnC)(Ihandle*, void*); /* postdraw_cb, predraw_cb */
+typedef int (*IFniiff)(Ihandle*, int, int, float, float); /* delete_cb */
+typedef int (*IFniiffi)(Ihandle*, int, int, float, float, int); /* select_cb */
+typedef int (*IFniiffff)(Ihandle*, int, int, float, float, float*, float*); /* edit_cb */
+typedef int (*IFniiffs)(Ihandle*, int, int, float, float, char*);  /* plotbutton_cb */
 
 typedef char* (*sIFnii)(Ihandle*, int, int);  /* value_cb, font_cb */
 typedef char* (*sIFni)(Ihandle*, int);  /* cell_cb */
