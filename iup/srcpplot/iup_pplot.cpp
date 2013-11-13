@@ -530,7 +530,27 @@ void IupPPlotPaintTo(Ihandle* ih, void* _cnv)
       !IupClassMatch(ih, "pplot"))
     return;
 
-  ih->data->plt->DrawTo((cdCanvas *)_cnv);
+  if (!_cnv)
+    return;
+
+  cdCanvas *old_cddbuffer  = ih->data->cddbuffer;
+  ih->data->cddbuffer = (cdCanvas*)_cnv;
+
+#ifndef USE_OPENGL
+  cdCanvas *old_cdcanvas = ih->data->cdcanvas;
+  ih->data->cdcanvas = (cdCanvas*)_cnv;
+#endif
+
+  for(int p=0; p<ih->data->plots_count; p++)
+  {
+    ih->data->plots[p]->Draw(1, 0); /* no flush here */
+  }
+
+  ih->data->cddbuffer = old_cddbuffer;
+#ifndef USE_OPENGL
+  ih->data->cdcanvas  = old_cdcanvas;
+#endif
+
 }
 
 /* --------------------------------------------------------------------
@@ -3005,25 +3025,6 @@ void PPainterIup::Resize(int x, int y, int w, int h)
   _redraw = 1;
 
   return;
-}
-
-void PPainterIup::DrawTo(cdCanvas *usrCnv)
-{
-  cdCanvas *old_cddbuffer  = _ih->data->cddbuffer;
-  _ih->data->cddbuffer = usrCnv;
-
-#ifndef USE_OPENGL
-  cdCanvas *old_cdcanvas   = _ih->data->cdcanvas;
-  _ih->data->cdcanvas = usrCnv;
-#endif
-
-  if (_ih->data->cddbuffer)
-    Draw(1, 0); /* no flush here */
-
-  _ih->data->cddbuffer = old_cddbuffer;
-#ifndef USE_OPENGL
-  _ih->data->cdcanvas  = old_cdcanvas;
-#endif
 }
 
 void PPainterIup::FillArrow(int inX1, int inY1, int inX2, int inY2, int inX3, int inY3)

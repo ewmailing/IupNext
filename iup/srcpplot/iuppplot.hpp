@@ -101,7 +101,6 @@ public:
   void MouseMove(int x, int y); // mouse event
   void MouseWheel(float delta, char *r); // mouse event
   void KeyPress(int c, int press); // keyboard event
-  void DrawTo(cdCanvas *usrCnv);   // send plot to some user defined device
 
 protected:
   InteractionContainerIup *_InteractionContainer;
