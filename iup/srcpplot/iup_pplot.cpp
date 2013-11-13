@@ -541,6 +541,8 @@ void IupPPlotPaintTo(Ihandle* ih, void* _cnv)
   ih->data->cdcanvas = (cdCanvas*)_cnv;
 #endif
 
+  iPPlotUpdateSizes(ih);
+
   for(int p=0; p<ih->data->plots_count; p++)
   {
     ih->data->plots[p]->Draw(1, 0); /* no flush here */
@@ -551,6 +553,7 @@ void IupPPlotPaintTo(Ihandle* ih, void* _cnv)
   ih->data->cdcanvas  = old_cdcanvas;
 #endif
 
+  iPPlotUpdateSizes(ih);
 }
 
 /* --------------------------------------------------------------------
@@ -3374,8 +3377,6 @@ static Iclass* iPPlotNewClass(void)
   iupClassRegisterAttribute(ic, "AXS_YTICKFONTSTYLE", iPPlotGetAxisYTickFontStyleAttrib, iPPlotSetAxisYTickFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XAUTOTICK", iPPlotGetAxisXAutoTickAttrib, iPPlotSetAxisXAutoTickAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YAUTOTICK", iPPlotGetAxisYAutoTickAttrib, iPPlotSetAxisYAutoTickAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XAUTOTICKSIZE", iPPlotGetAxisXAutoTickSizeAttrib, iPPlotSetAxisXAutoTickSizeAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YAUTOTICKSIZE", iPPlotGetAxisYAutoTickSizeAttrib, iPPlotSetAxisYAutoTickSizeAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKMAJORSPAN", iPPlotGetAxisXTickMajorSpanAttrib, iPPlotSetAxisXTickMajorSpanAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKMAJORSPAN", iPPlotGetAxisYTickMajorSpanAttrib, iPPlotSetAxisYTickMajorSpanAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKDIVISION", iPPlotGetAxisXTickDivisionAttrib, iPPlotSetAxisXTickDivisionAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

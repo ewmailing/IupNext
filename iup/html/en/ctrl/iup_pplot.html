@@ -200,7 +200,8 @@ anti-aliasing which can improve the line drawing. (renamed from USE_GDI+ in 3.8)
 <p><b><a href="../attrib/iup_bgcolor.html">BGCOLOR</a></b>:  the background color. The default value is white &quot;255 255 
 255&quot;.</p>
 <p><b>MARGINLEFT, MARGINRIGHT, MARGINTOP, MARGINBOTTOM </b>(non inheritable): margin of the 
-dataset area. PPlot implementation demands that margins must be set so the plot 
+dataset area in pixels. PPlot implementation demands that margins <strong>must be set
+</strong>so the plot 
 is not cropped. Default: &quot;15&quot;, &quot;15&quot;, &quot;30&quot;, &quot;15&quot;.</p>
 <h4>Title Configuration (non inheritable)</h4>
 <p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b>:  the title color. The default value is black &quot;0 0 0&quot;.</p>
@@ -208,7 +209,8 @@ is not cropped. Default: &quot;15&quot;, &quot;15&quot;, &quot;30&quot;, &quot;1
 <p><b>TITLEFONTSIZE, TITLEFONTSTYLE </b>(non inheritable): the title font size and style. The default 
 values depends on the FONT attribute and the returned value is NULL. Set to 
 NULL, to use the FONT attribute values. Style can be &quot;PLAIN&quot;, &quot;BOLD&quot;, &quot;ITALIC&quot; 
-or &quot;BOLDITALIC&quot;.</p>
+or &quot;BOLDITALIC&quot;. The size is provided in points (1/72 inch) or in 
+pixels (using negative values). </p>
 <h4>Legend Configuration (non inheritable)</h4>
 <p><b>LEGENDSHOW</b>: shows or hides the legend box. Can be YES or NO. Default: 
 NO.</p>
@@ -252,7 +254,7 @@ be set before other &quot;DS_*&quot; attributes.</p>
 <p><b>DS_MARKSTYLE</b>: mark style of the current dataset. Can be: &quot;PLUS&quot;, 
 &quot;STAR&quot;, &quot;CIRCLE&quot;, &quot;X&quot;, &quot;BOX&quot;, &quot;DIAMOND&quot;, &quot;HOLLOW_CIRCLE&quot;, &quot;HOLLOW_BOX&quot;, 
 &quot;HOLLOW_DIAMOND&quot;. Default is &quot;X&quot;.</p>
-<p><b>DS_MARKSIZE</b>: mark size of the current dataset. Default: 7.</p>
+<p><b>DS_MARKSIZE</b>: mark size of the current dataset in pixels. Default: 7.</p>
 <p><b>DS_SHOWVALUES</b>: enable or disable the display of the values near each 
 sample. Can be YES or NO. Default: NO.</p>
 <p><b>DS_REMOVE</b> (write-only): removes a sample from the current dataset given its index.</p>

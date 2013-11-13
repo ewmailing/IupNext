@@ -1516,18 +1516,18 @@ bool PPlot::DrawLegend (const PRect &inRect, Painter &inPainter) const {
         const LegendData *theLegendData = mPlotDataContainer.GetConstLegendData(theI);
         if (theLegendData && theLegendData->mShow) {
             inPainter.SetStyle (theLegendData->mStyle);
-            int size = inPainter.CalculateTextDrawSize(theLegendData->mName.c_str());
+            int width = inPainter.CalculateTextDrawSize(theLegendData->mName.c_str());
 
             const DataDrawerBase* drawer = mPlotDataContainer.GetConstDataDrawer(theI);
             if (drawer->mHasMarks)
             {
               LineDataDrawer* linedrawer = (LineDataDrawer*)drawer;
               if (linedrawer->mDrawPoint)
-                size += linedrawer->mStyle.mMarkSize+8;
+                width += linedrawer->mStyle.mMarkSize+8;
             }
 
-            if (size > maxWidth)
-              maxWidth = size;
+            if (width > maxWidth)
+              maxWidth = width;
         }
     }
 
@@ -1584,21 +1584,21 @@ bool PPlot::DrawLegend (const PRect &inRect, Painter &inPainter) const {
             int X = theX + margin;
             int Y = theY + theI*theHeight + margin;
 
-            int mark_size = 0;
+            int mark_offset = 0;
             const DataDrawerBase* drawer = mPlotDataContainer.GetConstDataDrawer(theI);
             if (drawer->mHasMarks)
             {
               LineDataDrawer* linedrawer = (LineDataDrawer*)drawer;
               if (linedrawer->mDrawPoint)
               {
-                mark_size = linedrawer->mStyle.mMarkSize+8;
+                mark_offset = linedrawer->mStyle.mMarkSize+8;
                 inPainter.SetStyle (linedrawer->mStyle);
-                linedrawer->DrawPoint(X+mark_size/2, Y+3*inPainter.GetFontHeight()/4, inRect, inPainter);
+                linedrawer->DrawPoint(X+mark_offset/2, Y+3*inPainter.GetFontHeight()/4, inRect, inPainter);
               }
             }
            
             inPainter.SetStyle (theLegendData->mStyle);
-            inPainter.DrawText (X+mark_size, Y, PPLOT_NORTH_WEST, theLegendData->mName.c_str ());
+            inPainter.DrawText (X+mark_offset, Y, PPLOT_NORTH_WEST, theLegendData->mName.c_str ());
         }
     }
     return true;
