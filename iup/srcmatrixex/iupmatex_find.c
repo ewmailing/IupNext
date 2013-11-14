@@ -57,7 +57,9 @@ static int iMatrixExFindDialogFindNext_CB(Ihandle* ih_button)
     iupAttribSet(matex_data->ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
     iupAttribSet(matex_data->ih, "FINDDIRECTION", searchbyrow? "RIGHTBOTTOM": "BOTTOMRIGHT");  /* Forward */
 
-    IupSetAttribute(matex_data->ih, "FIND", find);
+    IupSetAttribute(IupGetDialogChild(ih_button, "RESULT"), "TITLE", "");
+
+    IupSetStrAttribute(matex_data->ih, "FIND", find);
 
     iMatrixExFindDialogUpdateResult(matex_data, ih_button);
   }
@@ -79,7 +81,9 @@ static int iMatrixExFindDialogFindPrevious_CB(Ihandle* ih_button)
     iupAttribSet(matex_data->ih, "FINDMATCHWHOLECELL", matchwholecell? "Yes": "No");
     iupAttribSet(matex_data->ih, "FINDDIRECTION", searchbyrow? "LEFTTOP": "TOPLEFT");  /* Backward */
 
-    IupSetAttribute(matex_data->ih, "FIND", find);
+    IupSetAttribute(IupGetDialogChild(ih_button, "RESULT"), "TITLE", "");
+
+    IupSetStrAttribute(matex_data->ih, "FIND", find);
 
     iMatrixExFindDialogUpdateResult(matex_data, ih_button);
   }
@@ -165,9 +169,9 @@ static void iMatrixExFindCreateDialog(ImatExData* matex_data)
   IupSetAttribute(dlg, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
 
   if (IupGetAttribute(parent, "ICON"))
-    IupSetAttribute(dlg,"ICON", IupGetAttribute(parent, "ICON"));
+    IupSetStrAttribute(dlg,"ICON", IupGetAttribute(parent, "ICON"));
   else
-    IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
+    IupSetStrAttribute(dlg,"ICON", IupGetGlobal("ICON"));
 
   matex_data->find_dlg = dlg;
 }
@@ -179,8 +183,8 @@ static void iMatrixExFindInitDialog(ImatExData* matex_data)
   if (!(matex_data->find_dlg))
     iMatrixExFindCreateDialog(matex_data);
 
-  IupSetAttribute(IupGetDialogChild(matex_data->find_dlg, "MATCHCASE"), "VALUE", iupAttribGetStr(matex_data->ih, "FINDMATCHCASE"));
-  IupSetAttribute(IupGetDialogChild(matex_data->find_dlg, "MATCHWHOLECELL"), "VALUE", iupAttribGetStr(matex_data->ih, "FINDMATCHWHOLECELL"));
+  IupSetStrAttribute(IupGetDialogChild(matex_data->find_dlg, "MATCHCASE"), "VALUE", iupAttribGetStr(matex_data->ih, "FINDMATCHCASE"));
+  IupSetStrAttribute(IupGetDialogChild(matex_data->find_dlg, "MATCHWHOLECELL"), "VALUE", iupAttribGetStr(matex_data->ih, "FINDMATCHWHOLECELL"));
   IupSetAttribute(IupGetDialogChild(matex_data->find_dlg, "RESULT"), "TITLE", "");
 
   direction = iupAttribGetStr(matex_data->ih, "FINDDIRECTION");
@@ -225,12 +229,18 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
   int num_col = IupGetInt(ih, "NUMCOL");
   int count = (num_lin+1)*(num_col+1);
   int pos, start_pos;
+  char* find_value;
+
+  find_value = iupStrDup(value);
 
   if (search_cur_cell)  /* search the current cell */
   {
     /* the FOCUS_CELL is always visible and not a title */
-    if (iMatrixMatch(ih, value, *lin, *col, matchcase, matchwholecell, utf8))
+    if (iMatrixMatch(ih, find_value, *lin, *col, matchcase, matchwholecell, utf8))
+    {
+      free(find_value);
       return 1;
+    }
   }
 
   if (flip)
@@ -264,18 +274,23 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
     {
       if (!search_cur_cell)
       {
-        if (iMatrixMatch(ih, value, *lin, *col, matchcase, matchwholecell, utf8))
+        if (iMatrixMatch(ih, find_value, *lin, *col, matchcase, matchwholecell, utf8))
+        {
+          free(find_value);
           return 1;
+        }
       }
 
+      free(find_value);
       return 0;
     }
 
     if (!iupMatrixExIsLineVisible(ih, *lin) || !iupMatrixExIsColumnVisible(ih, *col))
       continue;
 
-  } while (!iMatrixMatch(ih, value, *lin, *col, matchcase, matchwholecell, utf8));
+  } while (!iMatrixMatch(ih, find_value, *lin, *col, matchcase, matchwholecell, utf8));
 
+  free(find_value);
   return 1;
 }
 

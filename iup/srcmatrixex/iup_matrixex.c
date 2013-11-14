@@ -63,7 +63,7 @@ static void iMatrixExSelectAll(Ihandle *ih)
       marked[lin] = '1';
     marked[lin] = 0;
 
-    IupSetAttribute(ih, "MARKED", marked);
+    IupSetStrAttribute(ih, "MARKED", marked);
 
     free(marked);
   }
@@ -77,7 +77,7 @@ static void iMatrixExSelectAll(Ihandle *ih)
       marked[col] = '1';
     marked[col] = 0;
 
-    IupSetAttribute(ih, "MARKED", marked);
+    IupSetStrAttribute(ih, "MARKED", marked);
 
     free(marked);
   }
@@ -92,7 +92,7 @@ static void iMatrixExSelectAll(Ihandle *ih)
       marked[pos] = '1';
     marked[pos] = 0;
 
-    IupSetAttribute(ih, "MARKED", marked);
+    IupSetStrAttribute(ih, "MARKED", marked);
 
     free(marked);
   }
@@ -144,8 +144,8 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
     IupSetInt(ih,"NUMLIN_NOSCROLL",lin);
     IupSetInt(ih,"NUMCOL_NOSCROLL",col);  
 
-    IupSetAttributeId2(ih,"FRAMEHORIZCOLOR", lin, IUP_INVALID_ID, fzcolor);
-    IupSetAttributeId2(ih,"FRAMEVERTCOLOR",IUP_INVALID_ID, col, fzcolor);
+    IupSetStrAttributeId2(ih,"FRAMEHORIZCOLOR", lin, IUP_INVALID_ID, fzcolor);
+    IupSetStrAttributeId2(ih,"FRAMEVERTCOLOR",IUP_INVALID_ID, col, fzcolor);
   }
 
   IupSetAttribute(ih,"REDRAW","ALL");
@@ -158,9 +158,9 @@ static char* iMatrixExFileDlg(ImatExData* matex_data, int save, const char* filt
 
   IupSetAttribute(dlg,"DIALOGTYPE", save? "SAVE": "OPEN");
   IupSetAttribute(dlg,"TITLE","Export Table");
-  IupSetAttribute(dlg,"FILTER", filter);
-  IupSetAttribute(dlg,"FILTERINFO", info);
-  IupSetAttribute(dlg,"EXTFILTER", extfilter);  /* Windows and GTK only, but more flexible */
+  IupSetStrAttribute(dlg,"FILTER", filter);
+  IupSetStrAttribute(dlg,"FILTERINFO", info);
+  IupSetStrAttribute(dlg,"EXTFILTER", extfilter);  /* Windows and GTK only, but more flexible */
   IupSetAttributeHandle(dlg,"PARENTDIALOG", IupGetDialog(matex_data->ih));
 
   IupPopup(dlg,IUP_CENTER,IUP_CENTER);
@@ -202,8 +202,8 @@ static int iMatrixExItemExport_CB(Ihandle* ih_item)
 
   filename = iMatrixExFileDlg(matex_data, 1, filter, info, extfilter);
 
-  IupSetAttribute(matex_data->ih, "TEXTFORMAT", IupGetAttribute(ih_item, "TEXTFORMAT"));
-  IupSetAttribute(matex_data->ih, "COPYFILE", filename);
+  IupSetStrAttribute(matex_data->ih, "TEXTFORMAT", IupGetAttribute(ih_item, "TEXTFORMAT"));
+  IupSetStrAttribute(matex_data->ih, "COPYFILE", filename);
 
   iMatrixListShowLastError(matex_data->ih);
 
@@ -221,7 +221,7 @@ static int iMatrixExItemImport_CB(Ihandle* ih_item)
 
   filename = iMatrixExFileDlg(matex_data, 0, filter, info, extfilter);
 
-  IupSetAttribute(matex_data->ih, "PASTEFILE", filename);
+  IupSetStrAttribute(matex_data->ih, "PASTEFILE", filename);
 
   iMatrixListShowLastError(matex_data->ih);
 
@@ -281,12 +281,12 @@ static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
 
     if (IupGetParam(IupGetLanguageString("IUP_COPYTOINTERVALS"), NULL, NULL, "L1-L2,L3,L4-L5,... %s\n", interval, NULL))
     {
-      IupSetAttributeId2(matex_data->ih, "COPYCOLTO", lin, col, interval);
+      IupSetStrAttributeId2(matex_data->ih, "COPYCOLTO", lin, col, interval);
       iupAttribSetStr(matex_data->ih, "_IUP_LAST_COPYCOL_INTERVAL", interval);
     }
   }
   else
-    IupSetAttributeId2(matex_data->ih, "COPYCOLTO", lin, col, value);
+    IupSetStrAttributeId2(matex_data->ih, "COPYCOLTO", lin, col, value);
 
   return IUP_DEFAULT;
 }
@@ -319,7 +319,7 @@ static int iMatrixExItemUndoList_CB(Ihandle* ih_item)
 static int iMatrixExItemFind_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
-  IupSetAttribute(matex_data->ih, "FOCUS_CELL", IupGetAttribute(ih_item, "MENUCONTEXT_CELL"));
+  IupSetStrAttribute(matex_data->ih, "FOCUS_CELL", IupGetAttribute(ih_item, "MENUCONTEXT_CELL"));
   iupMatrixExFindShowDialog(matex_data);
   return IUP_DEFAULT;
 }
@@ -338,8 +338,8 @@ static int iMatrixExItemGoTo_CB(Ihandle* ih_item)
 
   if (IupGetParam(IupGetLanguageString("IUP_GOTO"), NULL, NULL, "L:C %s\n", cell, NULL))
   {
-    IupSetAttribute(matex_data->ih, "SHOW", cell);
-    IupSetAttribute(matex_data->ih, "FOCUS_CELL", cell);
+    IupSetStrAttribute(matex_data->ih, "SHOW", cell);
+    IupSetStrAttribute(matex_data->ih, "FOCUS_CELL", cell);
     iupAttribSetStr(matex_data->ih, "_IUP_LAST_GOTO_CELL", cell);
   }
 
@@ -349,7 +349,7 @@ static int iMatrixExItemGoTo_CB(Ihandle* ih_item)
 static int iMatrixExItemSort_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
-  IupSetAttribute(matex_data->ih, "FOCUS_CELL", IupGetAttribute(ih_item, "MENUCONTEXT_CELL"));
+  IupSetStrAttribute(matex_data->ih, "FOCUS_CELL", IupGetAttribute(ih_item, "MENUCONTEXT_CELL"));
   iupMatrixExSortShowDialog(matex_data);
   return IUP_DEFAULT;
 }

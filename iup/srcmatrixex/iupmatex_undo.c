@@ -391,9 +391,9 @@ static Ihandle* iMatrixExUndoCreateDialog(ImatExData* matex_data)
   IupSetAttribute(dlg, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
 
   if (IupGetAttribute(parent, "ICON"))
-    IupSetAttribute(dlg,"ICON", IupGetAttribute(parent, "ICON"));
+    IupSetStrAttribute(dlg,"ICON", IupGetAttribute(parent, "ICON"));
   else
-    IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
+    IupSetStrAttribute(dlg,"ICON", IupGetGlobal("ICON"));
 
   return dlg;
 }

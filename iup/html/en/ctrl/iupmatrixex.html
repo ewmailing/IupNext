@@ -249,14 +249,14 @@ using the <a href="#NUMERICGETVALUE_CB">NUMERICGETVALUE_CB</a> and
 <a href="#NUMERICSETVALUE_CB">NUMERICSETVALUE_CB</a> callbacks. The returned 
 value is always the name of the quantity in the table, regardless the value that 
 was set. To use the numeric attributes and callbacks without using units, simply 
-set quantity to &quot;None&quot;. To disable all numeric suppor.t set quantity to NULL.&nbsp;(no 
+set quantity to &quot;None&quot;. To disable all numeric support set quantity to NULL.&nbsp;(no 
 redraw)</p>
 <p>
 <strong>NUMERICUNITCOUNT<em>id</em></strong> (read-only): Returns the number of 
 units for the current quantity at the given column (id).</p>
 <p>
 <strong>NUMERICUNIT<em>id</em></strong>: Unit of the numbers set into the matrix 
-at the given column (id). Must be in the same category of the NUMERICFORMAT 
+at the given column (id) using the unit name as value. Must be in the same category of the NUMERICFORMAT 
 attribute. For the available options see <a href="#UNITS">
 Available Quantity and Units</a> table bellow. The application must process numbers for the column only in this 
 unit, when getting or setting attributes. But the values passed to the 
@@ -268,18 +268,15 @@ bellow.
 (no redraw)</p>
 <p>
 <strong>NUMERICUNITSHOWN<em>id</em></strong>: Unit to be displayed at the given 
-column (id). Must be in the same category of the NUMERICFORMAT attribute. 
-For the available option see <a href="#UNITS">
-Available Quantity and Units</a> table bellow. The library will 
+column (id). Must be in the same category of the NUMERICFORMAT attribute. The library will 
 automatically convert the numeric data to and from the shown and data units when 
 the data is displayed or modified. The returned value is always the name of the 
 unit in the table, regardless the value that was set.&nbsp; Default value is the 
 first unit on the table. (no redraw)</p>
 <p>
-<strong>NUMERICUNITSYMBOL<em>id</em></strong> and <strong>NUMERICUNITSHOWNSYMBOL<em>id</em></strong> 
-(read-only): returns the unit symbol of the given column (id) for the respective 
-configuration. For the available option see <a href="#UNITS">
-Available Quantity and Units</a> table bellow. (no redraw)</p>
+<strong>NUMERICUNITSYMBOL<em>id</em></strong> and <strong>NUMERICUNITSYMBOLSHOWN<em>id</em></strong>: 
+same as
+<strong>NUMERICUNIT*</strong> but using the units symbol as value. (no redraw)</p>
 <p>
 <strong>PASTE</strong> (write-only): paste data from the clipboard. Data is 
 obtained from the clipboard in TEXT format. Value is the insert position, it can 

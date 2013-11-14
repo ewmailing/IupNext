@@ -32,7 +32,7 @@
 */
 
 typedef struct _ImatExUnit {
-  const char* uname;
+  const char* u_name;
   const char* symbol;
   double factor;
   const char* symbol_utf8;
@@ -258,7 +258,7 @@ static const ImatExUnit IMATEX_ELECTRIC_CHARGE_UNITS [IMATEX_ELECTRIC_CHARGE_COU
 
 
 typedef struct _ImatExQuantity {
-  const char* name;
+  const char* q_name;
   const ImatExUnit* units;
   int units_count;
 } ImatExQuantity;
@@ -412,7 +412,7 @@ static int iMatrixFindQuantity(const char* value)
   int i;
   for (i=0; i<imatex_quantity_count; i++)
   {
-    if (iupStrEqualNoCaseNoSpace(imatex_quantities[i].name, value))
+    if (iupStrEqualNoCaseNoSpace(imatex_quantities[i].q_name, value))
       return i;
   }
 
@@ -424,7 +424,25 @@ static int iMatrixFindUnit(const ImatExUnit* units, int units_count, const char*
   int i;
   for (i=0; i<units_count; i++)
   {
-    if (iMatrixCompareUnity(units[i].uname, value))  /* field 0 is name */
+    if (iMatrixCompareUnity(units[i].u_name, value))  /* field 0 is name */
+      return i;
+  }
+
+  return -1;
+}
+
+static int iMatrixFindUnitSymbol(const ImatExUnit* units, int units_count, const char* value, int utf8)
+{
+  int i;
+  for (i=0; i<units_count; i++)
+  {
+    const char* symbol;
+    if (utf8 && units[i].symbol_utf8)
+      symbol = units[i].symbol_utf8;
+    else
+      symbol = units[i].symbol;
+
+    if (iMatrixCompareUnity(symbol, value))  /* field 0 is name */
       return i;
   }
 
@@ -450,7 +468,7 @@ static int iMatrixExSetNumericAddQuantityAttrib(Ihandle* ih, const char* value)
 {
   if (imatex_quantity_count < IMATEX_QUANTITY_COUNT+IMATEX_QUANTITY_CUSTOM)
   {
-    imatex_quantities[imatex_quantity_count].name = value;
+    imatex_quantities[imatex_quantity_count].q_name = value;
     imatex_quantities[imatex_quantity_count].units_count = 0;
     imatex_quantities[imatex_quantity_count].units = IMATEX_CUSTOM_UNITS[imatex_quantity_count];
     imatex_quantity_count++;
@@ -471,7 +489,7 @@ static int iMatrixExSetNumericAddUnitAttrib(Ihandle* ih, const char* value)
       ImatExUnit* units = (ImatExUnit*)(imatex_quantities[quantity].units);
       int unit = imatex_quantities[quantity].units_count;
 
-      units[unit].uname = value;
+      units[unit].u_name = value;
 
       imatex_quantities[quantity].units_count++;
     }
@@ -531,7 +549,7 @@ static int iMatrixExSetNumericQuantityAttrib(Ihandle* ih, int col, const char* v
   {
     int quantity = iMatrixFindQuantity(value);
     if (quantity < 0)
-      quantity = 0;  /* Set to None, this will enable the numeric column, but no unit convertion */
+      quantity = 0;  /* Set to None, this will enable the numeric column, but no unit conversion */
 
     /* set the callback before setting the attribute */
     IupSetCallback(ih, "NUMERICCONVERT_FUNC", (Icallback)iMatrixConvertFunc);
@@ -541,18 +559,15 @@ static int iMatrixExSetNumericQuantityAttrib(Ihandle* ih, int col, const char* v
   return 0;
 }
 
-static char* iMatrixExGetNumericQuantityName(int quantity)
-{
-  return (char*)imatex_quantities[quantity].name;
-}
-
 static char* iMatrixExGetNumericQuantityAttrib(Ihandle* ih, int col)
 {
-  int quantity = IupGetIntId(ih, "NUMERICQUANTITYINDEX", col);
-  if (!quantity)
+  if (!IupGetAttributeId(ih, "NUMERICQUANTITYINDEX", col))
     return NULL;
   else
-    return iMatrixExGetNumericQuantityName(quantity);
+  {
+    int quantity = IupGetIntId(ih, "NUMERICQUANTITYINDEX", col);
+    return (char*)imatex_quantities[quantity].q_name;
+  }
 }
 
 static int iMatrixExSetNumericUnitAttrib(Ihandle* ih, int col, const char* value)
@@ -578,7 +593,7 @@ static char* iMatrixExGetNumericUnitAttrib(Ihandle* ih, int col)
   else
   {
     int unit = IupGetIntId(ih, "NUMERICUNITINDEX", col);
-    return iMatrixExReturnUnit(imatex_quantities[quantity].units[unit].uname);
+    return iMatrixExReturnUnit(imatex_quantities[quantity].units[unit].u_name);
   }
 }
 
@@ -605,8 +620,25 @@ static char* iMatrixExGetNumericUnitShownAttrib(Ihandle* ih, int col)
   else
   {
     int unit = IupGetIntId(ih, "NUMERICUNITSHOWNINDEX", col);
-    return iMatrixExReturnUnit(imatex_quantities[quantity].units[unit].uname);
+    return iMatrixExReturnUnit(imatex_quantities[quantity].units[unit].u_name);
   }
+}
+
+static int iMatrixExSetNumericUnitSymbolShownAttrib(Ihandle* ih, int col, const char* value)
+{
+  int unit, utf8;
+  int quantity = IupGetIntId(ih, "NUMERICQUANTITYINDEX", col);
+  if (!quantity)
+    return 0;
+  
+  utf8 = IupGetInt(NULL, "UTF8MODE");
+
+  unit = iMatrixFindUnitSymbol(imatex_quantities[quantity].units, imatex_quantities[quantity].units_count, value, utf8);
+  if (unit < 0)
+    return 0;
+
+  IupSetIntId(ih, "NUMERICUNITSHOWNINDEX", col, unit);
+  return 0;
 }
 
 static char* iMatrixExGetNumericUnitSymbolAttrib(Ihandle* ih, int col)
@@ -621,7 +653,24 @@ static char* iMatrixExGetNumericUnitSymbolAttrib(Ihandle* ih, int col)
   }
 }
 
-static char* iMatrixExGetNumericUnitShownSymbolAttrib(Ihandle* ih, int col)
+static int iMatrixExSetNumericUnitSymbolAttrib(Ihandle* ih, int col, const char* value)
+{
+  int unit, utf8;
+  int quantity = IupGetIntId(ih, "NUMERICQUANTITYINDEX", col);
+  if (!quantity)
+    return 0;
+  
+  utf8 = IupGetInt(NULL, "UTF8MODE");
+
+  unit = iMatrixFindUnitSymbol(imatex_quantities[quantity].units, imatex_quantities[quantity].units_count, value, utf8);
+  if (unit < 0)
+    return 0;
+
+  IupSetIntId(ih, "NUMERICUNITINDEX", col, unit);
+  return 0;
+}
+
+static char* iMatrixExGetNumericUnitSymbolShownAttrib(Ihandle* ih, int col)
 {
   int quantity = IupGetIntId(ih, "NUMERICQUANTITYINDEX", col);
   if (!quantity)
@@ -658,8 +707,8 @@ void iupMatrixExRegisterUnits(Iclass* ic)
   iupClassRegisterAttributeId(ic, "NUMERICQUANTITY", iMatrixExGetNumericQuantityAttrib, iMatrixExSetNumericQuantityAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNIT", iMatrixExGetNumericUnitAttrib, iMatrixExSetNumericUnitAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWN", iMatrixExGetNumericUnitShownAttrib, iMatrixExSetNumericUnitShownAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "NUMERICUNITSYMBOL", iMatrixExGetNumericUnitSymbolAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWNSYMBOL", iMatrixExGetNumericUnitShownSymbolAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICUNITSYMBOL", iMatrixExGetNumericUnitSymbolAttrib, iMatrixExSetNumericUnitSymbolAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NUMERICUNITSYMBOLSHOWN", iMatrixExGetNumericUnitSymbolShownAttrib, iMatrixExSetNumericUnitSymbolShownAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITCOUNT", iMatrixExGetNumericUnitCountAttrib, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "NUMERICUNITSPELL", NULL, iMatrixExSetNumericUnitSpellAttrib, IUPAF_SAMEASSYSTEM, "INTERNATIONAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

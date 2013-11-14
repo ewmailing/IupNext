@@ -36,7 +36,7 @@ static void iMatrixExSortUpdateSelection(ImatExData* matex_data, int sort_col, i
 
     marked[sort_col] = '1';
 
-    IupSetAttribute(matex_data->ih, "MARKED", marked);
+    IupSetStrAttribute(matex_data->ih, "MARKED", marked);
     IupSetAttribute(matex_data->ih, "REDRAW", "ALL");
 
     free(marked);
@@ -59,7 +59,7 @@ static void iMatrixExSortUpdateSelection(ImatExData* matex_data, int sort_col, i
     }
     marked[pos] = 0;
 
-    IupSetAttribute(matex_data->ih, "MARKED", marked);
+    IupSetStrAttribute(matex_data->ih, "MARKED", marked);
     IupSetAttribute(matex_data->ih, "REDRAW", "ALL");
 
     free(marked);
@@ -299,9 +299,9 @@ static Ihandle* iMatrixExSortCreateDialog(ImatExData* matex_data)
   IupSetAttribute(dlg, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
 
   if (IupGetAttribute(parent, "ICON"))
-    IupSetAttribute(dlg,"ICON", IupGetAttribute(parent, "ICON"));
+    IupSetStrAttribute(dlg,"ICON", IupGetAttribute(parent, "ICON"));
   else
-    IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
+    IupSetStrAttribute(dlg,"ICON", IupGetGlobal("ICON"));
 
   return dlg;
 }
@@ -312,7 +312,7 @@ void iupMatrixExSortShowDialog(ImatExData* matex_data)
   Ihandle* ih_matrix;
   Ihandle* dlg_sort = iMatrixExSortCreateDialog(matex_data);
            
-  IupSetAttribute(IupGetDialogChild(dlg_sort, "CASESENSITIVE"), "VALUE", iupAttribGetStr(matex_data->ih, "SORTCOLUMNCASESENSITIVE"));
+  IupSetStrAttribute(IupGetDialogChild(dlg_sort, "CASESENSITIVE"), "VALUE", iupAttribGetStr(matex_data->ih, "SORTCOLUMNCASESENSITIVE"));
 
   if (iupStrEqualNoCase(iupAttribGetStr(matex_data->ih, "SORTCOLUMNORDER"), "DESCENDING"))
     IupSetAttribute(IupGetDialogChild(dlg_sort, "DESCENDING"), "VALUE", "Yes");
