@@ -598,7 +598,7 @@ static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int 
   int is_shift = 0, is_ctrl = 0;
   char key[5];
 
-  /* Data is nto the pointer, it contains the pointer */
+  /* Data is not the pointer, it contains the pointer */
   Ihandle* ih_source;
   memcpy((void*)&ih_source, data, len);
 
@@ -611,10 +611,6 @@ static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int 
     is_shift = 1;
   if (key[1] == 'C')
     is_ctrl = 1;
-
-  pos--;  /* IUP starts at 1, so convert to start at 0 */
-
-  pos++;  /* InsertItem inserts an item before the given position, we want to insert after */
 
   if (ih_source->data->is_multiple)
   {
@@ -653,7 +649,10 @@ static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int 
     iupdrvListSetImageHandle(ih, ++pos, iupdrvListGetImageHandle(ih_source, IupGetInt(ih_source, "VALUE")));
 
     if(IupGetInt(ih_source, "DRAGSOURCEMOVE") && !is_ctrl)
-      iupdrvListRemoveItem(ih_source, iupAttribGetInt(ih_source, "_IUP_LIST_SOURCEPOS")-1);  /* IUP starts at 1 */
+    {
+      int srcPos = iupAttribGetInt(ih_source, "_IUP_LIST_SOURCEPOS");
+      iupdrvListRemoveItem(ih_source, --srcPos);  /* IUP starts at 1 */
+    }
   }
 
   (void)type;
@@ -695,7 +694,7 @@ static int iupListDragData_CB(Ihandle *ih, char* type, void *data, int len)
   return IUP_DEFAULT;
 }
 
-int iupListDragDataSize_CB(Ihandle* ih, char* type)
+static int iupListDragDataSize_CB(Ihandle* ih, char* type)
 {
   (void)ih;
   (void)type;

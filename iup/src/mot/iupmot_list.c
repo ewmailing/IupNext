@@ -1573,8 +1573,8 @@ static int motListMapMethod(Ihandle* ih)
 
   /* Enable internal drag and drop support */
   if((ih->data->show_dragdrop && !ih->data->is_dropdown && !ih->data->is_multiple) ||
-     (IupGetCallback(ih, "DRAGDATA_CB") || IupGetCallback(ih, "DROPDATA_CB")))  /* Enable drag and drop support between lists */
-  {   
+    (IupGetInt(ih, "DRAGDROPLIST")))  /* Enable drag and drop support between lists */
+  {
     motListEnableDragDrop(ih->handle);
     XtVaSetValues(ih->handle, XmNuserData, ih, NULL);  /* to be used in motListDragStart and motListDragTransferProc */
   }
