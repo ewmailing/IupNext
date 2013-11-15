@@ -112,8 +112,8 @@ static const ImatExUnit IMATEX_VOLUME_UNITS [IMATEX_VOLUME_COUNT] = {
 #define IMATEX_SPEED_COUNT 7
 static const ImatExUnit IMATEX_SPEED_UNITS [IMATEX_SPEED_COUNT] = {
   {"metre per second"     ,"m/s" , 1, NULL},
-  {"inch per second"      ,"ips" , 0.0254    , NULL},
-  {"foot per second"      ,"fps" , 0.3048    , NULL},
+  {"inch per second"      ,"in/s" , 0.0254    , NULL},
+  {"foot per second"      ,"ft/s" , 0.3048    , NULL},
   {"kilometre per hour"   ,"km/h", 1.0/3.6   , NULL},
   {"centimetre per second","cm/s", 0.01      , NULL},
   {"mile per hour"        ,"mph" , 0.44704   , NULL},    /* 1609.344 / 3600 */
@@ -130,8 +130,8 @@ static const ImatExUnit IMATEX_ANGULAR_SPEED_UNITS [IMATEX_ANGULAR_SPEED_COUNT] 
 
 #define IMATEX_ACCELERATION_COUNT 5
 static const ImatExUnit IMATEX_ACCELERATION_UNITS [IMATEX_ACCELERATION_COUNT] = {
-  {"metre per second squared","m/s²", 1,        "m/s\xC2\xB2"},
-  {"inch per second squared" ,"ips²", 0.0254,   "ips\xC2\xB2"},
+  {"metre per second squared","m/s²", 1,         "m/s\xC2\xB2"},
+  {"inch per second squared" ,"in/s²", 0.0254,  "in/s\xC2\xB2"},
   {"knot per second"         ,"kn/s", 1.852/3.6 , NULL},
   {"mile per second squared" ,"mps²", 1609.344, "mps\xC2\xB2"},
   {"standard gravity"        ,"g"   , GRAVITY  , NULL}};
@@ -424,7 +424,7 @@ static int iMatrixFindUnit(const ImatExUnit* units, int units_count, const char*
   int i;
   for (i=0; i<units_count; i++)
   {
-    if (iMatrixCompareUnity(units[i].u_name, value))  /* field 0 is name */
+    if (iMatrixCompareUnity(units[i].u_name, value))
       return i;
   }
 
@@ -442,7 +442,7 @@ static int iMatrixFindUnitSymbol(const ImatExUnit* units, int units_count, const
     else
       symbol = units[i].symbol;
 
-    if (iMatrixCompareUnity(symbol, value))  /* field 0 is name */
+    if (iupStrEqual(symbol, value))
       return i;
   }
 
@@ -531,6 +531,70 @@ static int iMatrixExSetNumericAddUnitFactorAttrib(Ihandle* ih, const char* value
       double factor = 0;
       sscanf(value, "%lf", &factor);  /* lf=double */
       units[unit].factor = factor;
+    }
+  }
+
+  (void)ih;
+  return 0;
+}
+
+static int iMatrixExSetNumericUnitSearchAttrib(Ihandle* ih, const char* value)
+{
+  int q, u;
+
+  iupAttribSet(ih, "NUMERICFOUNDQUANTITY", NULL);
+  iupAttribSet(ih, "NUMERICFOUNDUNIT", NULL);
+  iupAttribSet(ih, "NUMERICFOUNDUNITSYMBOL", NULL);
+
+  for (q=0; q<imatex_quantity_count; q++)
+  {
+    ImatExUnit* units = (ImatExUnit*)(imatex_quantities[q].units);
+    int units_count = imatex_quantities[q].units_count;
+    for (u=0; u<units_count; u++)
+    {
+      if (iMatrixCompareUnity(units[u].u_name, value))
+      {
+        iupAttribSet(ih, "NUMERICFOUNDQUANTITY", imatex_quantities[q].q_name);
+        iupAttribSet(ih, "NUMERICFOUNDUNIT", units[u].u_name);
+        iupAttribSetStr(ih, "NUMERICFOUNDUNITSYMBOL", iMatrixExReturnSymbol(units + u));
+        return 0;
+      }
+    }
+  }
+
+  (void)ih;
+  return 0;
+}
+
+static int iMatrixExSetNumericUnitSymbolSearchAttrib(Ihandle* ih, const char* value)
+{
+  int q, u;
+
+  int utf8 = IupGetInt(NULL, "UTF8MODE");
+
+  iupAttribSet(ih, "NUMERICFOUNDQUANTITY", NULL);
+  iupAttribSet(ih, "NUMERICFOUNDUNIT", NULL);
+  iupAttribSet(ih, "NUMERICFOUNDUNITSYMBOL", NULL);
+
+  for (q=0; q<imatex_quantity_count; q++)
+  {
+    ImatExUnit* units = (ImatExUnit*)(imatex_quantities[q].units);
+    int units_count = imatex_quantities[q].units_count;
+    for (u=0; u<units_count; u++)
+    {
+      const char* symbol;
+      if (utf8 && units[u].symbol_utf8)
+        symbol = units[u].symbol_utf8;
+      else
+        symbol = units[u].symbol;
+
+      if (iupStrEqual(symbol, value))
+      {
+        iupAttribSet(ih, "NUMERICFOUNDQUANTITY", imatex_quantities[q].q_name);
+        iupAttribSet(ih, "NUMERICFOUNDUNIT", units[u].u_name);
+        iupAttribSetStr(ih, "NUMERICFOUNDUNITSYMBOL", symbol);
+        return 0;
+      }
     }
   }
 
@@ -716,4 +780,10 @@ void iupMatrixExRegisterUnits(Iclass* ic)
   iupClassRegisterAttribute(ic, "NUMERICADDUNIT", NULL, iMatrixExSetNumericAddUnitAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMERICADDUNITSYMBOL", NULL, iMatrixExSetNumericAddUnitSymbolAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMERICADDUNITFACTOR", NULL, iMatrixExSetNumericAddUnitFactorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "NUMERICUNITSEARCH", NULL, iMatrixExSetNumericUnitSearchAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICUNITSYMBOLSEARCH", NULL, iMatrixExSetNumericUnitSymbolSearchAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICFOUNDQUANTITY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICFOUNDUNIT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICFOUNDUNITSYMBOL", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
 }
