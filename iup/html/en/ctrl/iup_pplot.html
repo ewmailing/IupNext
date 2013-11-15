@@ -180,7 +180,7 @@ done.</p>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p><b>REDRAW</b> (write-only) (non inheritable): redraw the plot and update the display. Value is 
+<p><b>REDRAW</b> (write-only) (non inheritable): redraw all plots and update the display. Value is 
 ignored. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
 attributes without visual output.</p>
 <font SIZE="3">
@@ -195,9 +195,13 @@ ContextPlus</font>
 drivers has 
 anti-aliasing which can improve the line drawing. (renamed from USE_GDI+ in 3.8)</p>
 </font>
+<h4>Multiple Plots Management (non inheritable)</h4>
+<p>&nbsp;</p>
+<h4>Plot Configuration (non inheritable)</h4>
 <p><strong><a href="../attrib/iup_font.html">FONT</a></strong>:
   the default font used in all text elements of the plot: title, legend and labels.</p>
-<p><b><a href="../attrib/iup_bgcolor.html">BGCOLOR</a></b>:  the background color. The default value is white &quot;255 255 
+<p><b><a href="../attrib/iup_bgcolor.html">BGCOLOR</a></b>:  the background color 
+of the plot. The default value is white &quot;255 255 
 255&quot;.</p>
 <p><b>MARGINLEFT, MARGINRIGHT, MARGINTOP, MARGINBOTTOM </b>(non inheritable): margin of the 
 dataset area in pixels. PPlot implementation demands that margins <strong>must be set

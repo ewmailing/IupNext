@@ -430,7 +430,7 @@ static void iMatrixExInitUnitList(ImatExData* matex_data, int col, char* list_st
   for (i=0; i<count; i++)
   {
     IupSetIntId(matex_data->ih, "NUMERICUNITSHOWNINDEX", col, i);
-    unit_name = IupGetAttributeId(matex_data->ih, "NUMERICUNITSHOWN", col);
+    unit_name = IupGetAttributeId(matex_data->ih, "NUMERICUNITSYMBOLSHOWN", col);
     len += sprintf(list_str+len, "%s|", unit_name);
   }
 
