@@ -1033,18 +1033,31 @@ static void iStrFixPosUTF8(const char* value, int *start, int *end)
 
 void iupStrRemove(char* value, int start, int end, int dir, int utf8)
 {
+  int len;
+
+  if (end < start)
+    return;
+
   if (start == end) 
   {
-    if (dir==1)
+    if (dir==1)  /* (forward) */
       end++;
-    else if (start == 0) /* there is nothing to remove before */
-      return;
-    else
-      start--;
+    else  /* dir==-1 (backward) */
+    {
+      if (start == 0) /* there is nothing to remove before */
+        return;
+      else
+        start--;
+    }
   }
 
   if (utf8)
     iStrFixPosUTF8(value, &start, &end);
+
+  /* from "start" remove up to "end", but not including "end" */
+  len = strlen(value);
+  if (start >= len) { start = len-1; end = len; }
+  if (end > len) end = len;
 
   value += start;
   end -= start;
