@@ -35,6 +35,10 @@
 #include "iupwin_str.h"
 
 
+#ifndef SM_CXPADDEDBORDER
+#define SM_CXPADDEDBORDER     92
+#endif
+
 #define IUPWIN_TRAY_NOTIFICATION 102
 
 static int WM_HELPMSG;
@@ -124,6 +128,7 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
   }
   else
   {
+    int padded_border = 0;
     int has_titlebar = iupAttribGetBoolean(ih, "MAXBOX")  ||
                        iupAttribGetBoolean(ih, "MINBOX")  ||
                        iupAttribGetBoolean(ih, "MENUBOX") || 
@@ -136,6 +141,8 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
         *caption = GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
       else
         *caption = GetSystemMetrics(SM_CYCAPTION);   /* normal window */
+
+      padded_border = GetSystemMetrics(SM_CXPADDEDBORDER);
     }
 
     *border = 0;
@@ -154,6 +161,9 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
       /* has_border */
       *border = GetSystemMetrics(SM_CXBORDER);
     }
+
+    if (*border)
+      *border += padded_border;
   }
 }
 
