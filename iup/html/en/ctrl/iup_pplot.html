@@ -84,6 +84,9 @@ axis will be left unchanged. If the <b>Ctrl+Y</b> key combination is pressed the
 zoom selection is restricted to the Y axis, the X axis will be left unchanged. 
 If the <b>Ctrl+R</b> key combination is pressed the zoom selection is restored 
 to a free rectangle.</p>
+<p>The mouse <strong>Wheel</strong> will pan in the vertical direction, and when
+<strong>Shift</strong> is pressed will pan in the horizontal direction. (Since 
+3.9)</p>
 <p>Each zoom in operation is stacked, so each zoom out operation goes back the 
 the previous zoom selection.</p>
 <p>Zoom operates on <b>AXS_XMAX, AXS_XMIN, AXS_YMAX, AXS_YMIN</b> even if <b>
@@ -183,6 +186,9 @@ done.</p>
 <p><b>REDRAW</b> (write-only) (non inheritable): redraw all plots and update the display. Value is 
 ignored. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
 attributes without visual output.</p>
+<p><strong>SYNCVIEW</strong> (non inheritable): when a plot view is changed by 
+interactive zoom or pan, the other plots are zoomed or panned accordingly. 
+(since 3.9)</p>
 <font SIZE="3">
 <p><b>USE_IMAGERGB </b>(non inheritable): defines if the double buffer will use standard driver 
 image (NO - faster) or an RGB image (YES - slower). Default: NO. The IMAGERGB 
@@ -195,8 +201,25 @@ ContextPlus</font>
 drivers has 
 anti-aliasing which can improve the line drawing. (renamed from USE_GDI+ in 3.8)</p>
 </font>
-<h4>Multiple Plots Management (non inheritable)</h4>
-<p>&nbsp;</p>
+<h4>Multiple Plots Management (non inheritable) (since 3.9)</h4>
+<p><strong>PLOT_COUNT</strong>: defines the number of multiple plots in the same 
+control. Default: 1. The minimum value is 1. If set to a smaller value will 
+automatically remove the remaining plots. If set to a larger value will 
+automatically add new plots at the end. The maximum number of plots is 20.</p>
+<p><strong>PLOT_NUMCOL</strong>: defines the number of columns for multiple 
+plot. Default: 1. The plots will fill the space starting at the first line at 
+the top from left to right. If there is not enough plots to fill all columns an 
+empty space will be displayed.</p>
+<p><strong>PLOT_CURRENT</strong>: current plot index. Default: 0. <font SIZE="3">
+All plot attributes are dependent on this value. When set can use also the <b>TITLE </b>
+name as value.</font></p>
+<p><strong>PLOT_INSERT</strong> (write-only): inserts a new plot at the given 
+index. If value is NULL will append after the last plot. Value can also be the 
+TITLE of an existing plot. <font SIZE="3">When a new plot is inserted it becomes 
+the current plot. </font></p>
+<p><strong>PLOT_REMOVE</strong> (write-only): removes a plot given its index. If 
+value is NULL the current plot is removed. Value can also be the TITLE of an 
+existing plot. </p>
 <h4>Plot Configuration (non inheritable)</h4>
 <p><strong><a href="../attrib/iup_font.html">FONT</a></strong>:
   the default font used in all text elements of the plot: title, legend and labels.</p>
@@ -219,7 +242,10 @@ pixels (using negative values). </p>
 <p><b>LEGENDSHOW</b>: shows or hides the legend box. Can be YES or NO. Default: 
 NO.</p>
 <p><b>LEGENDPOS</b>: legend box position. Can be: &quot;TOPLEFT&quot;, &quot;TOPRIGHT&quot;, 
-&quot;BOTTOMLEFT&quot;, or &quot;BOTTOMRIGHT. Default: &quot;TOPRIGHT&quot;.</p>
+&quot;BOTTOMLEFT&quot;, &quot;BOTTOMRIGHT, or &quot;BOTTOMCENTER&quot;. Default: &quot;TOPRIGHT&quot;. 
+The legend box is displayed inside the plot area, except for BOTTOMCENTER that 
+is displayed bellow the plot area, along with the axis. (&quot;BOTTOMCENTER&quot; since 
+3.9)</p>
 <p><b>LEGENDFONTSIZE, LEGENDFONTSTYLE</b>: the legend box text font size and style.</p>
 <h4>Grid Configuration (non inheritable)</h4>
 <p><b>GRID</b>: shows or hides the grid in both or a 
@@ -424,6 +450,19 @@ defined.</p>
     <span class="style2">Returns:</span>
     If EDITBEGIN_CB returns IUP_IGNORE the editing operation is 
     aborted.</p>
+  
+  
+  
+<p><strong>PLOTBUTTON_CB</strong>: similar to
+<a href="../call/iup_button_cb.html">BUTTON_CB</a> but coordinates are float in 
+plot scale. (since 3.9)</p>
+
+  
+
+  
+<p><strong>PLOTMOTION_CB</strong>: similar to <a href="../call/iup_motion_cb.html">MOTION_CB</a> 
+but coordinates are float in plot scale. (since 3.9)</p>
+
   
 <p><b>PREDRAW_CB, POSTDRAW_CB</b>: Actions generated before and after the redraw 
 operation. Predraw can be used to draw a different background and Postdraw can 

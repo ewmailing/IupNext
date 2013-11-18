@@ -1436,17 +1436,6 @@ static int iPPlotSetPlotInsertAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iPPlotSetSyncViewAttrib(Ihandle* ih, const char* value)
-{
-  ih->data->sync_view = iupStrBoolean(value);
-  return 0;
-}
-
-static char* iPPlotGetSyncViewAttrib(Ihandle* ih)
-{
-  return iupStrReturnBoolean(ih->data->sync_view);
-}
-
 static char* iPPlotGetPlotNumColAttrib(Ihandle* ih)
 {
   return iupStrReturnInt(ih->data->plots_numcol);
@@ -1516,6 +1505,17 @@ static int iPPlotSetPlotRemoveAttrib(Ihandle* ih, const char* value)
     }
   }
   return 0;
+}
+
+static int iPPlotSetSyncViewAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->sync_view = iupStrBoolean(value);
+  return 0;
+}
+
+static char* iPPlotGetSyncViewAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->sync_view);
 }
 
 static void iPPlotCheckCurrentDataSet(Ihandle* ih)
@@ -3304,6 +3304,7 @@ static Iclass* iPPlotNewClass(void)
   iupClassRegisterCallback(ic, "EDITBEGIN_CB", "");
   iupClassRegisterCallback(ic, "EDITEND_CB", "");
   iupClassRegisterCallback(ic, "PLOTMOTION_CB", "ff");
+  iupClassRegisterCallback(ic, "PLOTBUTTON_CB", "iiffs");
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", iPPlotGetBGColorAttrib, iPPlotSetBGColorAttrib, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_NOT_MAPPED);   /* overwrite canvas implementation, set a system default to force a new default */
