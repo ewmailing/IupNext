@@ -276,7 +276,24 @@ first unit on the table. (no redraw)</p>
 <p>
 <strong>NUMERICUNITSYMBOL<em>id</em></strong> and <strong>NUMERICUNITSYMBOLSHOWN<em>id</em></strong>: 
 same as
-<strong>NUMERICUNIT*</strong> but using the units symbol as value. (no redraw)</p>
+NUMERICUNIT<strong>*</strong> but using the units symbol as value. (no redraw)</p>
+<p>
+<strong>NUMERICUNITSEARCH</strong> (write-only): Searches for a unit name. Set 
+the result in the NUMERICFOUNDQUANTITY, NUMERICFOUNDUNIT and 
+NUMERICFOUNDUNITSYMBOL attributes. For the available options see <a href="#UNITS">
+Available Quantity and Units</a> table bellow. </p>
+<p>
+<strong>NUMERICUNITSYMBOLSEARCH</strong> (write-only): same as NUMERICUNITSEARCH<strong>,
+</strong>but<strong> </strong>searches for a unit symbol. </p>
+<p>
+<strong>NUMERICFOUNDQUANTITY</strong> (read-only): Returns the quantity found 
+after a NUMERICUNITSEARCH* set. Returns NULL if not found.</p>
+<p>
+<strong>NUMERICFOUNDUNIT</strong> (read-only): Returns the unit name found after 
+a NUMERICUNITSEARCH* set. Returns NULL if not found.</p>
+<p>
+<strong>NUMERICFOUNDUNITSYMBOL</strong> (read-only): Returns the unit symbol 
+found after a NUMERICUNITSEARCH* set. Returns NULL if not found.</p>
 <p>
 <strong>PASTE</strong> (write-only): paste data from the clipboard. Data is 
 obtained from the clipboard in TEXT format. Value is the insert position, it can 
