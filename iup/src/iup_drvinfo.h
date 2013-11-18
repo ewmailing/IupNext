@@ -34,10 +34,10 @@ void iupdrvGetFullSize(int *width, int *height);
 void iupdrvGetScreenSize(int *width, int *height);
 
 /** Adds the main desktop offset because of a taskbar/menubar positioning.
- * Only usefull in Windows. In X-Windows the position of the origin 0,0 is adjusted
+ * Only usefull in Windows. In X-Windows the position of the origin 0,0 is already adjusted
  * to be after the taskbar/menubar.
  * \ingroup drvinfo */
-void iupdrvAddScreenOffset(int *x, int *y);
+void iupdrvAddScreenOffset(int *x, int *y, int add);
 
 /** Retrieve the main desktop size when there are multiple monitors.
  * Useful only when in GTK.

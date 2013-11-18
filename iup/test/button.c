@@ -173,7 +173,8 @@ static void show_menu(Ihandle* ih)
     NULL);
 
   x = IupGetInt(ih, "X");
-  y = IupGetInt(ih, "Y") + IupGetInt2(ih, "RASTERSIZE");
+  y = IupGetInt(ih, "Y");
+  y += IupGetInt2(ih, "RASTERSIZE");
 
   IupPopup(menu, x, y);
   IupDestroy(menu);
@@ -183,7 +184,7 @@ static int action_cb(Ihandle *ih)
 {
   static int count = 1;
   printf("ACTION(%s) - %d\n", get_name(ih), count); count++;
-//  show_menu(ih);
+  show_menu(ih);
   return IUP_DEFAULT;
 }
 
@@ -438,8 +439,9 @@ void ButtonTest(void)
 
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 
-  IupShow(dlg);
+//  IupShow(dlg);
 //  IupShowXY(dlg,IUP_LEFT,IUP_TOP);
+  IupShowXY(dlg,0,0);
 }
 
 #ifndef BIG_TEST

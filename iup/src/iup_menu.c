@@ -116,7 +116,7 @@ static void iMenuAdjustPos(int *x, int *y)
     break;
   }
 
-  iupdrvAddScreenOffset(x, y);
+  iupdrvAddScreenOffset(x, y, 1);
 }
 
 char* iupMenuProcessTitle(Ihandle* ih, const char* title)

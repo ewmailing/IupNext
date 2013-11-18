@@ -14,6 +14,7 @@
 
 #include "iup_object.h"
 #include "iup_drv.h"
+#include "iup_drvinfo.h"
 #include "iup_drvfont.h"
 #include "iup_str.h"
 #include "iup_attrib.h"
@@ -172,6 +173,7 @@ static char* iBaseGetXAttrib(Ihandle *ih)
 {
   int x = 0, y = 0;
   iupdrvClientToScreen(ih, &x, &y);
+  iupdrvAddScreenOffset(&x, &y, -1);
   return iupStrReturnInt(x);
 }
 
@@ -179,6 +181,7 @@ static char* iBaseGetYAttrib(Ihandle *ih)
 {
   int x = 0, y = 0;
   iupdrvClientToScreen(ih, &x, &y);
+  iupdrvAddScreenOffset(&x, &y, -1);
   return iupStrReturnInt(y);
 }
 
@@ -186,6 +189,7 @@ static char* iBaseGetScreenPositionAttrib(Ihandle *ih)
 {
   int x = 0, y = 0;
   iupdrvClientToScreen(ih, &x, &y);
+  iupdrvAddScreenOffset(&x, &y, -1);
   return iupStrReturnIntInt(x, y, ',');
 }
 

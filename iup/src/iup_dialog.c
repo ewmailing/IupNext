@@ -164,7 +164,7 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
     break;
   }
 
-  iupdrvAddScreenOffset(x, y);
+  iupdrvAddScreenOffset(x, y, 1);
 }
 
 static void iDialogSetModal(Ihandle* ih_popup)
@@ -706,6 +706,7 @@ static char* iDialogGetXAttrib(Ihandle *ih)
 {
   int x = 0;
   iupdrvDialogGetPosition(ih, NULL, &x, NULL);
+  iupdrvAddScreenOffset(&x, NULL, -1);
   return iupStrReturnInt(x);
 }
 
@@ -713,6 +714,7 @@ static char* iDialogGetYAttrib(Ihandle *ih)
 {
   int y = 0;
   iupdrvDialogGetPosition(ih, NULL, NULL, &y);
+  iupdrvAddScreenOffset(NULL, &y, -1);
   return iupStrReturnInt(y);
 }
 
@@ -720,6 +722,7 @@ static char* iDialogGetScreenPositionAttrib(Ihandle *ih)
 {
   int x = 0, y = 0;
   iupdrvDialogGetPosition(ih, NULL, &x, &y);
+  iupdrvAddScreenOffset(&x, &y, -1);
   return iupStrReturnIntInt(x, y, ',');
 }
 
