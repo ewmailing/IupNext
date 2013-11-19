@@ -69,6 +69,8 @@ to change the cell value. (since 3.0)</p>
   interactively changed. When this is possible, the user can change the size of a column by dragging the column title 
   right border. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
     &quot;NO&quot; (does not allow interactive width change).</p>
+<p><strong>SHOWFILLVALUE</strong>: enable the display of the numeric percentage 
+in the cell when TYPE* is FILL. Default: NO. (since 3.9)</p>
 <p><strong><a name="USETITLESIZE">USETITLESIZE</a>:</strong> Use the title size 
 to define the cell size if necessary. See WIDTHn and HEIGHTn. Default: NO. 
 (since 3.0)</p>
@@ -113,13 +115,13 @@ also accepted.&nbsp;</p>
 <strong>TYPE<i>L</i>:<i>C</i></strong>:
   Type of the cell value in line 
   L and column 
-  C. <br>
+  C.&nbsp; (Since 3.9)<br>
 <strong>TYPE*:<i>C</i></strong>:
   Type of column 
-  C.<br>
+  C.&nbsp; (Since 3.9)<br>
 <strong>TYPE<i>L</i>:*</strong>:
   Type of line 
-  L.</p>
+  L.&nbsp; (Since 3.9)</p>
 <p class="info">Can be TEXT, COLOR, FILL, or IMAGE. When type is COLOR the cell value is 
 interpreted as a color and a rectangle with the color is drawn inside the cell 
 instead of the text (the FGCOLOR of the cell is ignored). When type is FILL the 

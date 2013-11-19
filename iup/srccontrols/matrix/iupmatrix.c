@@ -1132,6 +1132,20 @@ static int iMatrixSetClearValueAttrib(Ihandle* ih, int lin, int col, const char*
   return 0;
 }
 
+static int iMatrixSetShowFillValueAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->show_fill_value = 1;
+  else 
+    ih->data->show_fill_value = 0;
+  return 0;
+}
+
+static char* iMatrixGetShowFillValueAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->show_fill_value); 
+}
+
 static int iMatrixSetFlagsAttrib(Ihandle* ih, int lin, int col, const char* value, unsigned char attr)
 {
   if (lin >= 0 || col >= 0)
@@ -1760,6 +1774,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "RESIZEMATRIX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESIZEMATRIXCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "102 102 102", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDEFOCUS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWFILLVALUE", iMatrixGetShowFillValueAttrib, iMatrixSetShowFillValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Overwrite IupCanvas Attributes */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iMatrixSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);

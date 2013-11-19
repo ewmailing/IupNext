@@ -604,11 +604,31 @@ static void iMatrixDrawFill(Ihandle* ih, int x1, int x2, int y1, int y2, int mar
   x1 += IMAT_PADDING_W/2;       x2 -= IMAT_PADDING_W/2;
   y1 += IMAT_PADDING_H/2;       y2 -= IMAT_PADDING_H/2;
 
-  empty = (x2-x1)*(100-fill)/100;
+  empty = ((x2-x1)*(100-fill))/100;
 
   /* Fill the box with the color */
   iMatrixDrawSetFgColor(ih, lin, col, marked, active);
   iupMATRIX_BOX(ih, x1, x2 - empty, y1, y2);
+
+  if (ih->data->show_fill_value)
+  {
+    int y = (int)((y1 + y2) / 2.0 - 0.5);
+    int empty1 = ((x2-x1)*fill)/100;
+    char text[50];
+    sprintf(text, "%d%%", fill);
+    IupCdSetFont(ih, ih->data->cddbuffer, iupMatrixGetFont(ih, lin, col));
+    cdCanvasTextAlignment(ih->data->cddbuffer, CD_CENTER);
+
+    iMatrixDrawSetCellClipping(ih, x1 + empty1, x2, y1, y2);
+    iupMATRIX_TEXT(ih, (x1 + x2) / 2, y, text);
+    iMatrixDrawResetCellClipping(ih);
+
+    iMatrixDrawSetBgColor(ih, lin, col, marked, active);
+    iMatrixDrawSetCellClipping(ih, x1, x2 - empty, y1, y2);
+    iupMATRIX_TEXT(ih, (x1 + x2) / 2, y, text);
+    iMatrixDrawResetCellClipping(ih);
+  }
+
 
   /* Draw the frame */
   cdCanvasForeground(ih->data->cddbuffer, framecolor);
