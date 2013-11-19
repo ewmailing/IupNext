@@ -79,6 +79,7 @@ int main(int argc, char **argv)
   dlg = IupDialog(IupVbox(mlist, NULL));
   IupSetAttribute(dlg, "TITLE", "IupMatrixList");
   IupSetAttribute(dlg, "MARGIN", "10x10");
+//  IupSetAttribute(dlg, "FONT", "Helvetica, 24");
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 
   IupMainLoop();

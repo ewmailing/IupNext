@@ -148,8 +148,8 @@ static void iExpanderDrawTriangle(IdrawCanvas *dc, int x, int y, unsigned char r
 static void iExpanderDrawSmallTriangle(IdrawCanvas *dc, int x, int y, unsigned char r, unsigned char g, unsigned char b, int dir)
 {
   int points[6];
-  int size = IEXPAND_HANDLE_SIZE;
-  int space = IEXPAND_HANDLE_SPC;
+  int size = IEXPAND_HANDLE_SIZE-2;
+  int space = IEXPAND_HANDLE_SPC+1;
 
   /* fix for smooth triangle */
   int delta = (size - 2*space)/2;
@@ -157,7 +157,8 @@ static void iExpanderDrawSmallTriangle(IdrawCanvas *dc, int x, int y, unsigned c
   switch(dir)
   {
   case IEXPANDER_RIGHT:  /* arrow points right */
-    x += space;  /* fix center */
+    x += space-1;  /* fix center */
+    y += 1;
     points[0] = x + space;
     points[1] = y + space;
     points[2] = x + space;
@@ -278,7 +279,7 @@ static int iExpanderAction_CB(Ihandle* bar)
     int len, charheight;
     iupStrNextLine(title, &len);  /* get the length of the first line */
     iupdrvFontGetCharSize(ih, NULL, &charheight);
-    iupDrawText(dc, title, len, IEXPAND_HANDLE_SIZE+IEXPAND_HANDLE_SPC+IEXPAND_BACK_MARGIN, (bar->currentheight-charheight)/2, r, g, b, IupGetAttribute(ih, "FONT"));
+    iupDrawText(dc, title, len, IEXPAND_HANDLE_SIZE+IEXPAND_HANDLE_SPC, (bar->currentheight-charheight)/2, r, g, b, IupGetAttribute(ih, "FONT"));
 
     if (ih->data->highlight)
       iExpanderHighlight(&r, &g, &b);
@@ -795,8 +796,8 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "BARPOSITION", NULL, iExpanderSetPositionAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BARSIZE", iExpanderGetBarSizeAttrib, iExpanderSetBarSizeAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATE", iExpanderGetStateAttrib, iExpanderSetStateAttrib, IUPAF_SAMEASSYSTEM, "OPEN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, iExpanderPostRedrawSetAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLE", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AUTOSHOW", iExpanderGetAutoShowAttrib, iExpanderSetAutoShowAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
