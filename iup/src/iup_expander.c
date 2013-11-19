@@ -275,9 +275,10 @@ static int iExpanderAction_CB(Ihandle* bar)
   if (ih->data->position == IEXPANDER_TOP && title)
   {
     /* left align everything */
-    int len;
+    int len, charheight;
     iupStrNextLine(title, &len);  /* get the length of the first line */
-    iupDrawText(dc, title, len, IEXPAND_HANDLE_SIZE+IEXPAND_HANDLE_SPC+IEXPAND_BACK_MARGIN, 0, r, g, b, IupGetAttribute(ih, "FONT"));
+    iupdrvFontGetCharSize(ih, NULL, &charheight);
+    iupDrawText(dc, title, len, IEXPAND_HANDLE_SIZE+IEXPAND_HANDLE_SPC+IEXPAND_BACK_MARGIN, (bar->currentheight-charheight)/2, r, g, b, IupGetAttribute(ih, "FONT"));
 
     if (ih->data->highlight)
       iExpanderHighlight(&r, &g, &b);

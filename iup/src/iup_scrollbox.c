@@ -35,6 +35,11 @@ static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
 {
   if (ih->firstchild)
   {
+    if (IupGetInt(ih, "DX") > IupGetInt(ih, "XMAX")-iupdrvGetScrollbarSize())
+      posx = 0;
+    if (IupGetInt(ih, "DY") > IupGetInt(ih, "YMAX")-iupdrvGetScrollbarSize())
+      posy = 0;
+
     iScrollBoxUpdatePosition(ih, posx, posy);
     iupLayoutUpdate(ih->firstchild);
   }
