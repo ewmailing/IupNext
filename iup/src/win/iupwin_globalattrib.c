@@ -28,6 +28,10 @@
 #define LOCALE_INVARIANT 0x007f
 #endif
 
+#ifndef SPI_SETCLIENTAREAANIMATION
+#define SPI_SETCLIENTAREAANIMATION 0x1043
+#endif
+
 
 static int win_monitor_index = 0;
 static HANDLE win_singleintance = NULL;
@@ -358,6 +362,19 @@ int iupdrvSetGlobal(const char* name, const char* value)
     else
       return 1; /* save the attribute, this is the first instance */
   }
+  if (iupStrEqual(name, "CLIENTAREAANIMATION"))
+  {
+    BOOL flag = iupStrBoolean(value);
+    SystemParametersInfoA(SPI_SETCLIENTAREAANIMATION, 0, (void*)flag, 0);
+    return 1;
+  }
+  if (iupStrEqual(name, "HOTTRACKING"))
+  {
+    BOOL flag = iupStrBoolean(value);
+    SystemParametersInfoA(SPI_SETHOTTRACKING, 0, (void*)flag, 0);
+    return 1;
+  }
+  
   return 1;
 }
 

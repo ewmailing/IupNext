@@ -439,6 +439,9 @@ void ButtonTest(void)
 
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 
+//  IupSetGlobal("CLIENTAREAANIMATION", "No");
+//  IupSetGlobal("HOTTRACKING", "No");
+
 //  IupShow(dlg);
 //  IupShowXY(dlg,IUP_LEFT,IUP_TOP);
   IupShowXY(dlg,0,0);
