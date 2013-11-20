@@ -15,6 +15,8 @@ USE_MACOS_OPENGL = Yes
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   SRC = iup_glcanvas_win.c
+else ifneq ($(findstring Haiku, $(TEC_SYSNAME)), )
+  SRC = iup_glcanvas_haiku.c
 else
   SRC = iup_glcanvas_x.c
   USE_X11 = Yes

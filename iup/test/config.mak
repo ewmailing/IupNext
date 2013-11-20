@@ -20,6 +20,11 @@ USE_IUP3 = Yes
 USE_STATIC = Yes
 IUP = ..
 
+ifeq "$(TEC_SYSNAME)" "Haiku"
+  USE_HAIKU = Yes
+  USE_STATIC =
+endif
+
 ifdef DBG_DIR
   IUPLIB = $(IUP)/lib/$(TEC_UNAME)d
   CDLIB = $(CD)/lib/$(TEC_UNAME)d

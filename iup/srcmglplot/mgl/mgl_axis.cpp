@@ -1021,7 +1021,9 @@ void mglGraph::Legend(int n, wchar_t **text,char **style, int where,
 //-----------------------------------------------------------------------------
 void mglGraph::Ternary(int t)
 {
-	static mglPoint x1(-1,-1,-1),x2(1,1,1),o(NAN,NAN,NAN);
+	static mglPoint x1(-1,-1,-1);
+	static mglPoint x2(1,1,1);
+	static mglPoint o(NAN,NAN,NAN);
 	static bool c = true;
 	TernAxis = t;
 	if(t)

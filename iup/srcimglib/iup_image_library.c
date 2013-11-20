@@ -28,7 +28,7 @@ void IupImageLibOpen(void)
   driver = IupGetGlobal("DRIVER");
   if (iupStrEqualNoCase(driver, "GTK"))
     gtk = 1;
-  else if (iupStrEqualNoCase(driver, "Motif"))
+  else if (iupStrEqualNoCase(driver, "Motif") || iupStrEqualNoCase(driver, "Haiku"))
     motif = 1;
   else if (iupStrEqualNoCase(driver, "Win32"))
     win32 = 1;

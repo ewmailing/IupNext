@@ -32,10 +32,12 @@
 class mglGraphAB : public mglGraph
 {
 public:
-using mglGraph::Mark;
-using mglGraph::Ball;
-//using mglGraph::Colorbar;
-using mglGraph::Legend;
+#if (!defined(__GNUC__) || (__GNUC__ > 2))
+	using mglGraph::Mark;
+	using mglGraph::Ball;
+	//using mglGraph::Colorbar;
+	using mglGraph::Legend;
+#endif
 	int *OI;	///< ObjId arrays
 	int ObjId;	///< object id for mglPrim
 

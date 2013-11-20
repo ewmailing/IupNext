@@ -11,6 +11,10 @@ LINKER = $(CPPC)
 USE_IUPCONTROLS = Yes
 USE_IUP3 = Yes
 
+ifeq "$(TEC_SYSNAME)" "Haiku"
+  USE_HAIKU = Yes
+else
+  USE_STATIC = Yes
 ifdef GTK_DEFAULT
   ifdef USE_MOTIF
     # Build Motif version in Linux and BSD
@@ -22,8 +26,8 @@ else
     APPNAME := $(APPNAME)gtk
   endif
 endif
+endif
 
-USE_STATIC = Yes
 
 ifeq "$(TEC_UNAME)" "SunOS510x86"
   DEFINES += USE_NO_OPENGL

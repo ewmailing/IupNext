@@ -28,7 +28,7 @@ static void cdcreatecanvasIUP(cdCanvas* canvas, Ihandle *ih_canvas)
 #endif
   char* data;
 
-  if (cdBaseDriver()==CD_BASE_GDK)
+  if (cdBaseDriver()==CD_BASE_GDK || cdBaseDriver()==CD_BASE_HAIKU)
   {
     data = IupGetAttribute(ih_canvas, "DRAWABLE");  /* new IUP 3 attribute, works for GTK only */
     if (!data)
