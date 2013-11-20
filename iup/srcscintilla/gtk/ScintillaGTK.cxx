@@ -89,15 +89,6 @@ static GdkWindow *WindowFromWidget(GtkWidget *w) {
 #endif
 }
 
-static GdkWindow *PWindow(const Scintilla::Window &w) {
-	GtkWidget *widget = reinterpret_cast<GtkWidget *>(w.GetID());
-#if GTK_CHECK_VERSION(3,0,0)
-	return gtk_widget_get_window(widget);
-#else
-	return widget->window;
-#endif
-}
-
 #ifdef _MSC_VER
 // Constant conditional expressions are because of GTK+ headers
 #pragma warning(disable: 4127)
@@ -110,6 +101,15 @@ static GdkWindow *PWindow(const Scintilla::Window &w) {
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
 #endif
+
+static GdkWindow *PWindow(const Scintilla::Window &w) {
+	GtkWidget *widget = reinterpret_cast<GtkWidget *>(w.GetID());
+#if GTK_CHECK_VERSION(3,0,0)
+	return gtk_widget_get_window(widget);
+#else
+	return widget->window;
+#endif
+}
 
 extern std::string UTF8FromLatin1(const char *s, int len);
 
@@ -833,7 +833,7 @@ void ScintillaGTK::DisplayCursor(Window::Cursor c) {
 
 bool ScintillaGTK::DragThreshold(Point ptStart, Point ptNow) {
 	return gtk_drag_check_threshold(GTK_WIDGET(PWidget(wMain)),
-		ptStart.x, ptStart.y, ptNow.x, ptNow.y)? true: false;
+		ptStart.x, ptStart.y, ptNow.x, ptNow.y);
 }
 
 void ScintillaGTK::StartDrag() {
@@ -1208,6 +1208,7 @@ void ScintillaGTK::NotifyFocus(bool focus) {
 	g_signal_emit(G_OBJECT(sci), scintilla_signals[COMMAND_SIGNAL], 0,
 	                Platform::LongFromTwoShorts
 					(GetCtrlID(), focus ? SCEN_SETFOCUS : SCEN_KILLFOCUS), PWidget(wMain));
+	Editor::NotifyFocus(focus);
 }
 
 void ScintillaGTK::NotifyParent(SCNotification scn) {
@@ -1218,7 +1219,7 @@ void ScintillaGTK::NotifyParent(SCNotification scn) {
 }
 
 void ScintillaGTK::NotifyKey(int key, int modifiers) {
-	SCNotification scn = {0};
+	SCNotification scn = {};
 	scn.nmhdr.code = SCN_KEY;
 	scn.ch = key;
 	scn.modifiers = modifiers;
@@ -1227,7 +1228,7 @@ void ScintillaGTK::NotifyKey(int key, int modifiers) {
 }
 
 void ScintillaGTK::NotifyURIDropped(const char *list) {
-	SCNotification scn = {0};
+	SCNotification scn = {};
 	scn.nmhdr.code = SCN_URIDROPPED;
 	scn.text = list;
 

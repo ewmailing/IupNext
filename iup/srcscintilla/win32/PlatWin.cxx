@@ -111,14 +111,6 @@ bool IsNT() {
 	return onNT;
 }
 
-#ifdef SCI_NAMESPACE
-} //namespace Scintilla
-#endif
-
-#ifdef SCI_NAMESPACE
-using namespace Scintilla;
-#endif
-
 Point Point::FromLong(long lpoint) {
 	return Point(static_cast<short>(LOWORD(lpoint)), static_cast<short>(HIWORD(lpoint)));
 }
@@ -128,10 +120,6 @@ static RECT RectFromPRectangle(PRectangle prc) {
 		static_cast<LONG>(prc.right), static_cast<LONG>(prc.bottom)};
 	return rc;
 }
-
-#ifdef SCI_NAMESPACE
-namespace Scintilla {
-#endif
 
 #if defined(USE_D2D)
 IDWriteFactory *pIDWriteFactory = 0;
@@ -169,10 +157,6 @@ bool LoadD2D() {
 	triedLoadingD2D = true;
 	return pIDWriteFactory && pD2DFactory;
 }
-#endif
-
-#ifdef SCI_NAMESPACE
-} //namespace Scintilla
 #endif
 
 struct FormatAndMetrics {
@@ -228,8 +212,7 @@ struct FormatAndMetrics {
 };
 
 HFONT FormatAndMetrics::HFont() {
-	LOGFONTW lf;
-	memset(&lf, 0, sizeof(lf));
+	LOGFONTW lf = {};
 #if defined(USE_D2D)
 	if (technology == SCWIN_TECH_GDI) {
 		if (0 == ::GetObjectW(hfont, sizeof(lf), &lf)) {
@@ -514,10 +497,6 @@ public:
 };
 typedef VarBuffer<XYPOSITION, stackBufferLength> TextPositions;
 
-#ifdef SCI_NAMESPACE
-namespace Scintilla {
-#endif
-
 class SurfaceGDI : public Surface {
 	bool unicodeMode;
 	HDC hdc;
@@ -589,10 +568,6 @@ public:
 	void SetUnicodeMode(bool unicodeMode_);
 	void SetDBCSMode(int codePage_);
 };
-
-#ifdef SCI_NAMESPACE
-} //namespace Scintilla
-#endif
 
 SurfaceGDI::SurfaceGDI() :
 	unicodeMode(false),
@@ -806,7 +781,7 @@ void SurfaceGDI::AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fil
 		int height = rc.Height();
 		// Ensure not distorted too much by corners when small
 		cornerSize = Platform::Minimum(cornerSize, (Platform::Minimum(width, height) / 2) - 2);
-		BITMAPINFO bpih = {sizeof(BITMAPINFOHEADER), width, height, 1, 32, BI_RGB, 0, 0, 0, 0, 0};
+		BITMAPINFO bpih = {{sizeof(BITMAPINFOHEADER), width, height, 1, 32, BI_RGB, 0, 0, 0, 0, 0}};
 		void *image = 0;
 		HBITMAP hbmMem = CreateDIBSection(reinterpret_cast<HDC>(hMemDC), &bpih,
 			DIB_RGB_COLORS, &image, NULL, 0);
@@ -869,7 +844,7 @@ void SurfaceGDI::DrawRGBAImage(PRectangle rc, int width, int height, const unsig
 			rc.top += static_cast<int>((rc.Height() - height) / 2);
 		rc.bottom = rc.top + height;
 
-		BITMAPINFO bpih = {sizeof(BITMAPINFOHEADER), width, height, 1, 32, BI_RGB, 0, 0, 0, 0, 0};
+		BITMAPINFO bpih = {{sizeof(BITMAPINFOHEADER), width, height, 1, 32, BI_RGB, 0, 0, 0, 0, 0}};
 		unsigned char *image = 0;
 		HBITMAP hbmMem = CreateDIBSection(reinterpret_cast<HDC>(hMemDC), &bpih,
 			DIB_RGB_COLORS, reinterpret_cast<void **>(&image), NULL, 0);
@@ -1163,10 +1138,6 @@ void SurfaceGDI::SetDBCSMode(int codePage_) {
 
 #if defined(USE_D2D)
 
-#ifdef SCI_NAMESPACE
-namespace Scintilla {
-#endif
-
 class SurfaceD2D : public Surface {
 	bool unicodeMode;
 	int x, y;
@@ -1245,10 +1216,6 @@ public:
 	void SetUnicodeMode(bool unicodeMode_);
 	void SetDBCSMode(int codePage_);
 };
-
-#ifdef SCI_NAMESPACE
-} //namespace Scintilla
-#endif
 
 SurfaceD2D::SurfaceD2D() :
 	unicodeMode(false),
@@ -3242,10 +3209,6 @@ int Platform::Clamp(int val, int minVal, int maxVal) {
 #pragma warning(disable: 4996)
 #endif
 
-#ifdef SCI_NAMESPACE
-namespace Scintilla {
-#endif
-
 void Platform_Initialise(void *hInstance) {
 	OSVERSIONINFO osv = {sizeof(OSVERSIONINFO),0,0,0,0,TEXT("")};
 	::GetVersionEx(&osv);
@@ -3284,5 +3247,5 @@ void Platform_Finalise() {
 }
 
 #ifdef SCI_NAMESPACE
-} //namespace Scintilla
+}
 #endif

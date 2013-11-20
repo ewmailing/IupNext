@@ -689,9 +689,9 @@ void SurfaceImpl::RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired
 void SurfaceImpl::FillRectangle(PRectangle rc, ColourDesired back) {
 	PenColour(back);
 	if (context && (rc.left < maxCoordinate)) {	// Protect against out of range
-#ifdef WIN32  // IUP
-    rc.left = (int)floor(rc.left);
-    rc.right = (int)floor(rc.right);
+#ifdef WIN32
+		rc.left = floor(rc.left);
+		rc.right = floor(rc.right);
 #else
 		rc.left = lround(rc.left);
 		rc.right = lround(rc.right);
@@ -704,7 +704,7 @@ void SurfaceImpl::FillRectangle(PRectangle rc, ColourDesired back) {
 
 void SurfaceImpl::FillRectangle(PRectangle rc, Surface &surfacePattern) {
 	SurfaceImpl &surfi = static_cast<SurfaceImpl &>(surfacePattern);
-  bool canDraw = surfi.psurf ? true : false;
+	bool canDraw = surfi.psurf;
 	if (canDraw) {
 		// Tile pattern over rectangle
 		// Currently assumes 8x8 pattern
@@ -835,7 +835,7 @@ void SurfaceImpl::Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back)
 
 void SurfaceImpl::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
 	SurfaceImpl &surfi = static_cast<SurfaceImpl &>(surfaceSource);
-	bool canDraw = surfi.psurf? true: false;
+	bool canDraw = surfi.psurf;
 	if (canDraw) {
 		cairo_set_source_surface(context, surfi.psurf,
 			rc.left - from.x, rc.top - from.y);
@@ -894,18 +894,6 @@ static size_t MultiByteLenFromIconv(const Converter &conv, const char *s, size_t
 	}
 	return 1;
 }
-
-//static size_t UTF8CharLength(const char *s) {
-//	const unsigned char *us = reinterpret_cast<const unsigned char *>(s);
-//	unsigned char ch = *us;
-//	if (ch < 0x80) {
-//		return 1;
-//	} else if (ch < 0x80 + 0x40 + 0x20) {
-//		return 2;
-//	} else {
-//		return 3;
-//	}
-//}
 
 void SurfaceImpl::DrawTextBase(PRectangle rc, Font &font_, XYPOSITION ybase, const char *s, int len,
                                  ColourDesired fore) {
@@ -1050,7 +1038,7 @@ void SurfaceImpl::MeasureWidths(Font &font_, const char *s, int len, XYPOSITION 
 									positions[i++] = iti.position - (places - place) * iti.distance / places;
 									positionsCalculated++;
 								}
-								clusterStart += UTF8CharLength(*(utfForm.c_str()+clusterStart));
+								clusterStart += UTF8CharLength(static_cast<unsigned char>(utfForm.c_str()[clusterStart]));
 								place++;
 							}
 						}
@@ -1230,7 +1218,7 @@ void Window::Destroy() {
 }
 
 bool Window::HasFocus() {
-	return IS_WIDGET_FOCUSSED(wid)? true: false;
+	return IS_WIDGET_FOCUSSED(wid);
 }
 
 PRectangle Window::GetPosition() {
