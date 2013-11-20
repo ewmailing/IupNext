@@ -61,7 +61,7 @@ ifdef USE_HAIKU
          haiku/iuphaiku_messagedlg.c haiku/iuphaiku_open.cpp haiku/iuphaiku_progressbar.cpp \
          haiku/iuphaiku_tabs.cpp haiku/iuphaiku_text.cpp haiku/iuphaiku_timer.cpp \
          haiku/iuphaiku_tips.c haiku/iuphaiku_toggle.cpp haiku/iuphaiku_tree.cpp \
-         haiku/iuphaiku_val.cpp
+         haiku/iuphaiku_val.cpp gtk/iupgtk_draw_cairo.c gtk/iupgtk_key.c
   INCLUDES += haiku
 #  DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=$(WIN32VER) WINVER=$(WIN32VER) NOTREEVIEW
 else
