@@ -1465,6 +1465,15 @@ static int winTextSetVisibleAttrib(Ihandle* ih, const char* value)
   return iupBaseSetVisibleAttrib(ih, value);
 }
 
+static int winTextSetActiveAttrib(Ihandle* ih, const char* value)
+{
+  HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
+  if (hSpin)
+    EnableWindow(hSpin, iupStrBoolean(value));
+
+  return iupBaseSetActiveAttrib(ih, value);
+}
+
 static void winTextCropSpinValue(Ihandle* ih, HWND hSpin, int min, int max)
 {
   /* refresh if internally cropped, but text still shows an invalid value */
@@ -2098,6 +2107,7 @@ void iupdrvTextInitClass(Iclass* ic)
   /* Overwrite Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winTextSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_DEFAULT);  
   iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, winTextSetVisibleAttrib, "YES", "NO", IUPAF_NO_SAVE|IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, winTextSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winTextSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_NOT_MAPPED);  /* usually black */    
