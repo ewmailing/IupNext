@@ -114,6 +114,9 @@
     <ClCompile Include="..\src\gtk\iupgtk_str.c">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\gtk\iupgtk_draw_cairo.c">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\gtk\iupgtk_drv.h">

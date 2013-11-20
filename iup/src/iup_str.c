@@ -44,7 +44,7 @@
 
 int iupStrEqual(const char* str1, const char* str2) 
 {
-#define EXTRAINC(_x) (_x)
+#define EXTRAINC(_x) (void)(_x)
 #define SF(_x) (_x)
   IUP_STR_EQUAL(str1, str2);
 #undef SF
@@ -54,7 +54,7 @@ int iupStrEqual(const char* str1, const char* str2)
 
 int iupStrEqualPartial(const char* str1, const char* str2) 
 {
-#define EXTRAINC(_x) (_x)
+#define EXTRAINC(_x) (void)(_x)
 #define SF(_x) (_x)
   IUP_STR_EQUAL(str1, str2);
 #undef SF
@@ -66,7 +66,7 @@ int iupStrEqualPartial(const char* str1, const char* str2)
 
 int iupStrEqualNoCase(const char* str1, const char* str2) 
 {
-#define EXTRAINC(_x) (_x)
+#define EXTRAINC(_x) (void)(_x)
 #define SF(_x) iup_tolower(_x)
   IUP_STR_EQUAL(str1, str2);
 #undef SF
@@ -76,7 +76,7 @@ int iupStrEqualNoCase(const char* str1, const char* str2)
 
 int iupStrEqualNoCasePartial(const char* str1, const char* str2) 
 {
-#define EXTRAINC(_x) (_x)
+#define EXTRAINC(_x) (void)(_x)
 #define SF(_x) iup_tolower(_x)
   IUP_STR_EQUAL(str1, str2);
 #undef SF

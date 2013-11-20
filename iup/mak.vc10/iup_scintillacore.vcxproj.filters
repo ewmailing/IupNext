@@ -395,6 +395,9 @@
     <ClCompile Include="..\srcscintilla\src\CaseFolder.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
+    <ClCompile Include="..\srcscintilla\lexers\LexRust.cxx">
+      <Filter>Scintilla</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\src\Indicator.h">

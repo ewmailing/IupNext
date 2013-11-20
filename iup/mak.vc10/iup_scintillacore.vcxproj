@@ -155,6 +155,7 @@
     <ClCompile Include="..\srcscintilla\iupsci_wordwrap.c" />
     <ClCompile Include="..\srcscintilla\lexers\LexKVIrc.cxx" />
     <ClCompile Include="..\srcscintilla\lexers\LexLaTeX.cxx" />
+    <ClCompile Include="..\srcscintilla\lexers\LexRust.cxx" />
     <ClCompile Include="..\srcscintilla\lexers\LexSTTXT.cxx" />
     <ClCompile Include="..\srcscintilla\lexlib\CharacterCategory.cxx" />
     <ClCompile Include="..\srcscintilla\src\AutoComplete.cxx" />

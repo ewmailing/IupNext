@@ -595,7 +595,7 @@ static int iListSetShowDragDropAttrib(Ihandle* ih, const char* value)
 static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
 {
   int pos = IupConvertXYToPos(ih, x, y);
-  int is_shift = 0, is_ctrl = 0;
+  int is_ctrl = 0;
   char key[5];
 
   /* Data is not the pointer, it contains the pointer */
@@ -607,8 +607,6 @@ static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int 
      A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
      When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
   iupdrvGetKeyState(key);
-  if (key[0] == 'S')
-    is_shift = 1;
   if (key[1] == 'C')
     is_ctrl = 1;
 
@@ -639,7 +637,7 @@ static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int 
           iupdrvListRemoveItem(ih_source, --i);  /* update index in the source */
 
         i++;
-        *buffer++;
+        buffer++;
       }
     }
   }

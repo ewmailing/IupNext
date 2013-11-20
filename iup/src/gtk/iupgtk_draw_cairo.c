@@ -267,7 +267,7 @@ void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsig
 {
   PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
 
-  text = iupgtkStrConvertToUTF8Len(text, &len);
+  text = iupgtkStrConvertToSystemLen(text, &len);
   pango_layout_set_text(fontlayout, text, len);
 
   cairo_set_source_rgba(dc->image_cr, iupCOLOR8ToDouble(r),
