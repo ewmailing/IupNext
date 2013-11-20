@@ -26,7 +26,7 @@ const char* sampleCode = {
   "  printf(\"Printing an integer: %d\\n\", 37);\n\n"
   "  IupMainLoop();\n"
   "  IupClose();\n"
-  "  return EXIT_SUCCESS;\n}\nFIM"
+  "  return EXIT_SUCCESS;\n}\n"
 };
 
 static int k_any(Ihandle *ih, int c)

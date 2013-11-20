@@ -540,6 +540,7 @@ static Iclass* iupScintillaNewClass(void)
   ic->Release = iScintillaReleaseMethod;
   ic->Create  = iScintillaCreateMethod;
   ic->Map     = iScintillaMapMethod;
+  ic->UnMap = iupdrvBaseUnMapMethod;
   ic->ComputeNaturalSize = iScintillaComputeNaturalSizeMethod;
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
 
