@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.7
+VERSION = 4.8
 
 
 #---------------------------------#
@@ -26,6 +26,9 @@ ifndef TEC_UNAME
   TEC_SYSARCH:=$(shell uname -m)
 
   # Fixes
+  ifeq ($(TEC_SYSNAME), Haiku)
+    TEC_SYSARCH:=$(shell uname -p)
+  endif
   ifeq ($(TEC_SYSNAME), SunOS)
     TEC_SYSARCH:=$(shell uname -p)
   endif
@@ -325,6 +328,7 @@ ifneq ($(PROJNAME), $(TARGETNAME))
 endif
 
 ifdef DBG
+  OPT:=
   STDFLAGS += $(DEBUGFLAGS)
   STDDEFS += -DDEBUG
 else
@@ -503,6 +507,11 @@ else
   else
     GTK = /usr
   endif
+endif
+
+ifeq "$(TEC_SYSNAME)" "Haiku"
+  STDFLAGS += -Wno-multichar
+  LIBS += be textencoding tracker
 endif
 
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
@@ -852,20 +861,22 @@ endif
 ifdef USE_IUP
   IUP_SUFFIX ?=
   ifdef USE_IUP3
-    ifdef GTK_DEFAULT
-      ifdef USE_MOTIF
-        IUP_SUFFIX := mot
-      else
-        ifndef NO_OVERRIDE
-          override USE_GTK = Yes
+    ifndef USE_HAIKU
+      ifdef GTK_DEFAULT
+        ifdef USE_MOTIF
+          IUP_SUFFIX := mot
+        else
+          ifndef NO_OVERRIDE
+            override USE_GTK = Yes
+          endif
         endif
-      endif
-    else
-      ifdef USE_GTK
-        IUP_SUFFIX := gtk
       else
-        ifndef NO_OVERRIDE
-          override USE_MOTIF = Yes
+        ifdef USE_GTK
+          IUP_SUFFIX := gtk
+        else
+          ifndef NO_OVERRIDE
+            override USE_MOTIF = Yes
+          endif
         endif
       endif
     endif
@@ -957,6 +968,11 @@ ifdef USE_CD
       LIBS += pangocairo-1.0 cairo
     endif
     
+    ifdef USE_HAIKU
+	    LINK_FREETYPE = Yes
+	    LIBS += fontconfig xml2
+	  endif
+
     LIBS += cd$(CD_SUFFIX)
     LDIR += $(CD_LIB)
     
@@ -1180,7 +1196,9 @@ ifdef USE_X11
   STDINCS += $(X11_INC)
 endif
 
-LIBS += m
+ifneq "$(TEC_SYSNAME)" "Haiku"
+  LIBS += m
+endif
 
 ifneq ($(findstring cygw, $(TEC_UNAME)), )
   WIN_OTHER := Yes

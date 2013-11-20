@@ -257,6 +257,7 @@ else
 endif
 
 ifdef DBG
+  OPT:=
   ifdef DBG_DIR
     TEC_UNAME_DIR := $(TEC_UNAME_DIR)d
   endif
@@ -607,7 +608,9 @@ ifeq "$(TEC_CC)" "vc"
         STDFLAGS += -GD
       else
         OPTFLAGS += -GL
-        STDLFLAGS += -LTCG
+        ifdef OPT
+          STDLFLAGS += -LTCG
+        endif
       endif
       STDLFLAGS += -dll -subsystem:$(APPTYPE) -out:$(TARGETDLL) -implib:$(TARGETLIB) -def:$(DEF_FILE)
     else

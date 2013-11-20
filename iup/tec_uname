@@ -148,6 +148,11 @@ ComputeSystemPaths()
 
   TEC_SYSTEM_INC=/usr/include
   
+  if [ $TEC_SYSNAME == Haiku ]; then
+  	TEC_SYSTEM_LIB=`finddir B_SYSTEM_LIB_DIRECTORY`
+  	TEC_SYSTEM_INC=`finddir B_SYSTEM_HEADERS_DIRECTORY`
+  fi
+
   TEC_LUA_LIB=$TEC_SYSTEM_LIB/lua/$LUA_VER
 }
 
