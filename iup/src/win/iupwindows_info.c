@@ -103,6 +103,9 @@ void iupdrvGetKeyState(char* key)
   key[4] = 0;
 }
 
+/* TODO: Since Windows 8.1/Visual Studio 2013 GetVersionEx is deprecated. 
+         We can replace it using GetProductInfo. But for now leave it. */
+
 char *iupdrvGetSystemName(void)
 {
   OSVERSIONINFOA osvi;
