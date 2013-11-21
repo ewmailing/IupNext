@@ -105,7 +105,6 @@ static int iPPlotRedraw_CB(Ihandle* ih)
     return IUP_DEFAULT;
 
   cdCanvasActivate(ih->data->cddbuffer);
-  cdCanvasClear(ih->data->cddbuffer);
 
   int old_index = ih->data->plt_index;
   for(int p=0; p<ih->data->plots_count; p++)
