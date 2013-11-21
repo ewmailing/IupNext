@@ -442,9 +442,9 @@ void ButtonTest(void)
 //  IupSetGlobal("CLIENTAREAANIMATION", "No");
 //  IupSetGlobal("HOTTRACKING", "No");
 
-//  IupShow(dlg);
+  IupShow(dlg);
 //  IupShowXY(dlg,IUP_LEFT,IUP_TOP);
-  IupShowXY(dlg,0,0);
+//  IupShowXY(dlg,0,0);
 }
 
 #ifndef BIG_TEST
