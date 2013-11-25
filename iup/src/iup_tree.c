@@ -17,6 +17,7 @@
 #include "iup_str.h"
 #include "iup_drv.h"
 #include "iup_drvfont.h"
+#include "iup_drvinfo.h"
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_tree.h"
@@ -430,7 +431,6 @@ void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is
   iupAttribSet(ih, "LASTADDNODE", NULL);
 }
 
-
 /*************************************************************************/
 
 
@@ -627,7 +627,151 @@ static int iTreeSetUserDataAttrib(Ihandle* ih, int id, const char* value)
 }
 
 
+/*****************************************************************************************/
+
+
+void iupTreeDragDropCopyCache(Ihandle* ih, int id_src, int id_dst, int count)
+{
+  int remain_count;
+
+  iupASSERT(id_src >= 0 && id_src < ih->data->node_count);
+  if (id_src < 0 || id_src >= ih->data->node_count)
+    return;
+
+  iupASSERT(id_dst >= 0 && id_dst < ih->data->node_count);
+  if (id_dst < 0 || id_dst >= ih->data->node_count)
+    return;
+
+  /* id_dst here points to the final position for a copy operation */
+
+  /* node_count here contains the final count for a copy operation */
+  iTreeIncCacheMem(ih);
+
+  /* add space for new nodes */
+  remain_count = ih->data->node_count - (id_dst + count);
+  memmove(ih->data->node_cache+id_dst+count, ih->data->node_cache+id_dst, remain_count*sizeof(InodeData));
+
+  /* compensate because we add space for new nodes */
+  if (id_src > id_dst)
+    id_src += count;
+
+  /* during a copy, the userdata is not reused, so clear it */
+  memset(ih->data->node_cache+id_dst, 0, count*sizeof(InodeData));
+
+  iupAttribSet(ih, "LASTADDNODE", NULL);
+}
+
+static int iTreeDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
+{
+  int pos = IupConvertXYToPos(ih, x, y);
+  int is_ctrl = 0;
+  char key[5];
+
+  /* Data is not the pointer, it contains the pointer */
+  Ihandle* ih_source;
+  memcpy((void*)&ih_source, data, len);
+
+  /* A copy operation is enabled with the CTRL key pressed, or else a move operation will occour.
+     A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
+     When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
+  iupdrvGetKeyState(key);
+  if (key[1] == 'C')
+    is_ctrl = 1;
+
+  /* Here copy/move of multiple selection is not allowed,
+     only a single node and its children. */
+
+  if(ih_source->data->mark_mode == ITREE_MARK_SINGLE)
+  {
+    int srcPos = iupAttribGetInt(ih_source, "_IUP_TREE_SOURCEPOS");
+    InodeHandle *itemDst, *itemSrc;
+
+    itemSrc = iupTreeGetNode(ih_source, srcPos);
+    if (!itemSrc)
+      return IUP_DEFAULT;
+
+    itemDst = iupTreeGetNode(ih, pos);
+    if (!itemDst)
+      return IUP_DEFAULT;
+
+    /* Copy the node and its children to the new position */
+    iupdrvTreeDragDropCopyNode(ih_source, ih, itemSrc, itemDst);
+
+    if(IupGetInt(ih_source, "DRAGSOURCEMOVE") && !is_ctrl)
+      IupSetAttribute(ih_source, "DELNODE0", "MARKED");
+  }
+
+  (void)type;
+  return IUP_DEFAULT;
+}
+
+static int iTreeDragData_CB(Ihandle *ih, char* type, void *data, int len)
+{
+  int pos = iupAttribGetInt(ih, "_IUP_TREE_SOURCEPOS");
+  if (pos < 1)
+    return IUP_DEFAULT;
+
+  if(ih->data->mark_mode == ITREE_MARK_SINGLE)
+  {
+    /* Single selection */
+    IupSetAttributeId(ih, "MARKED", pos, "YES");
+  }
+
+  /* Copy source handle */
+  memcpy(data, (void*)&ih, len);
+ 
+  (void)type;
+  return IUP_DEFAULT;
+}
+
+static int iTreeDragDataSize_CB(Ihandle* ih, char* type)
+{
+  (void)ih;
+  (void)type;
+  return sizeof(Ihandle*);
+}
+
+static int iTreeDragEnd_CB(Ihandle *ih, int del)
+{
+  iupAttribSetInt(ih, "_IUP_TREE_SOURCEPOS", 0);
+  (void)del;
+  return IUP_DEFAULT;
+}
+
+static int iTreeDragBegin_CB(Ihandle* ih, int x, int y)
+{
+  int pos = IupConvertXYToPos(ih, x, y);
+  iupAttribSetInt(ih, "_IUP_TREE_SOURCEPOS", pos);
+  return IUP_DEFAULT;
+}
+
+static int iTreeSetDragDropTreeAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+  {
+    /* Register callbacks to enable drag and drop between trees */
+    IupSetCallback(ih, "DRAGBEGIN_CB",    (Icallback)iTreeDragBegin_CB);
+    IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iTreeDragDataSize_CB);
+    IupSetCallback(ih, "DRAGDATA_CB",     (Icallback)iTreeDragData_CB);
+    IupSetCallback(ih, "DRAGEND_CB",      (Icallback)iTreeDragEnd_CB);
+    IupSetCallback(ih, "DROPDATA_CB",     (Icallback)iTreeDropData_CB);
+  }
+  else
+  {
+    /* Unregister callbacks */
+    IupSetCallback(ih, "DRAGBEGIN_CB",    NULL);
+    IupSetCallback(ih, "DRAGDATASIZE_CB", NULL);
+    IupSetCallback(ih, "DRAGDATA_CB",     NULL);
+    IupSetCallback(ih, "DRAGEND_CB",      NULL);
+    IupSetCallback(ih, "DROPDATA_CB",     NULL);
+  }
+
+  return 1;
+}
+
+
 /*************************************************************************/
+
 
 static int iTreeCreateMethod(Ihandle* ih, void **params)
 {
@@ -703,6 +847,7 @@ Iclass* iupTreeNewClass(void)
   iupdrvRegisterDragDropAttrib(ic);
 
   /* IupTree Attributes - GENERAL */
+  iupClassRegisterAttribute(ic, "DRAGDROPTREE", NULL, iTreeSetDragDropTreeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWDRAGDROP", iTreeGetShowDragDropAttrib, iTreeSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWRENAME",   iTreeGetShowRenameAttrib,   iTreeSetShowRenameAttrib,   NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWTOGGLE",   iTreeGetShowToggleAttrib,   iTreeSetShowToggleAttrib,   NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

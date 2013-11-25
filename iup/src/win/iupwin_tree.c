@@ -2743,9 +2743,100 @@ static int winTreeConvertXYToPos(Ihandle* ih, int x, int y)
   return -1;
 }
 
-
 /*******************************************************************************************/
 
+static HTREEITEM winTreeDragDropCopyItem(Ihandle* src, Ihandle* dst, HTREEITEM hItem, HTREEITEM hParent, HTREEITEM hPosition)
+{
+  TVITEM item; 
+  TVINSERTSTRUCT tvins;
+  TCHAR title[255];
+  winTreeItemData* itemDataNew;
+
+  item.hItem = hItem;
+  item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT | TVIF_STATE | TVIF_PARAM;
+  item.pszText = title;
+  item.cchTextMax = 255;
+  SendMessage(src->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+
+  /* create a new one */
+  itemDataNew = (winTreeItemData*)malloc(sizeof(winTreeItemData));
+  memcpy(itemDataNew, (void*)item.lParam, sizeof(winTreeItemData));
+  item.lParam = (LPARAM)itemDataNew;
+
+  /* Copy everything including itemdata reference */
+  tvins.item = item; 
+  tvins.hInsertAfter = hPosition;
+  tvins.hParent = hParent;
+
+  /* Add the new node */
+  dst->data->node_count++;
+  return (HTREEITEM)SendMessage(dst->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+}
+
+static void winTreeDragDropCopyChildren(Ihandle* src, Ihandle* dst, HTREEITEM hItemSrc, HTREEITEM hItemDst)
+{
+  HTREEITEM hChildSrc = (HTREEITEM)SendMessage(src->handle, TVM_GETNEXTITEM, TVGN_CHILD, (LPARAM)hItemSrc);
+  HTREEITEM hItemNew = TVI_FIRST;
+  while (hChildSrc != NULL)
+  {
+    hItemNew = winTreeDragDropCopyItem(src, dst, hChildSrc, hItemDst, hItemNew); /* Use the same order they where enumerated */
+
+    /* Recursively transfer all the items */
+    winTreeDragDropCopyChildren(src, dst, hChildSrc, hItemNew);  
+
+    /* Go to next sibling item */
+    hChildSrc = (HTREEITEM)SendMessage(src->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hChildSrc);
+  }
+}
+
+void iupdrvTreeDragDropCopyNode(Ihandle* src, Ihandle* dst, InodeHandle *itemSrc, InodeHandle *itemDst)
+{
+  HTREEITEM hItemNew, hParent;
+  TVITEM item;
+  winTreeItemData* itemDataDst;
+  int id_new, count, id_dst;
+  HTREEITEM hItemSrc = itemSrc;
+  HTREEITEM hItemDst = itemDst;
+
+  int old_count = dst->data->node_count;
+
+  id_dst = iupTreeFindNodeId(dst, hItemDst);
+  id_new = id_dst+1;  /* contains the position for a copy operation */
+
+  /* Get DST node attributes */
+  item.hItem = hItemDst;
+  item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_STATE;
+  SendMessage(src->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+  itemDataDst = (winTreeItemData*)item.lParam;
+
+  if (itemDataDst->kind == ITREE_BRANCH && (item.state & TVIS_EXPANDED))
+  {
+    /* copy as first child of expanded branch */
+    hParent = hItemDst;
+    hItemDst = TVI_FIRST;
+  }
+  else
+  {                                    
+    if (itemDataDst->kind == ITREE_BRANCH)
+    {
+      int child_count = iupdrvTreeTotalChildCount(dst, hItemDst);
+      id_new += child_count;
+    }
+
+    /* copy as next brother of item or collapsed branch */
+    hParent = (HTREEITEM)SendMessage(dst->handle, TVM_GETNEXTITEM, TVGN_PARENT, (LPARAM)hItemDst);
+  }
+
+  hItemNew = winTreeDragDropCopyItem(src, dst, hItemSrc, hParent, hItemDst);
+
+  winTreeDragDropCopyChildren(src, dst, hItemSrc, hItemNew);
+
+  count = dst->data->node_count - old_count;
+  iupTreeDragDropCopyCache(dst, id_dst, id_new, count);
+  winTreeRebuildNodeCache(dst, id_new, hItemNew);
+}
+
+/*******************************************************************************************/
 
 static int winTreeMapMethod(Ihandle* ih)
 {

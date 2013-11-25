@@ -2585,6 +2585,110 @@ static gboolean gtkTreeToggle3StateKeyEvent(GtkWidget *widget, GdkEventKey *evt,
 
 /*****************************************************************************/
 
+static void gtkTreeDragDropCopyItem(Ihandle* src, Ihandle* dst, GtkTreeIter* iterItem, GtkTreeIter* iterParent, int position, GtkTreeIter *iterNewItem)
+{
+  GtkTreeStore* storeSrc = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(src->handle)));
+  GtkTreeStore* storeDst = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(dst->handle)));
+  int kind;
+  char* title;
+  gboolean has_image, has_image_expanded;
+  PangoFontDescription* font;
+  GdkColor *color;
+  GdkPixbuf* image, *image_expanded;
+
+  gtk_tree_model_get(GTK_TREE_MODEL(storeSrc), iterItem, IUPGTK_NODE_IMAGE, &image,
+                                                         IUPGTK_NODE_HAS_IMAGE, &has_image,
+                                                         IUPGTK_NODE_IMAGE_EXPANDED, &image_expanded,
+                                                         IUPGTK_NODE_HAS_IMAGE_EXPANDED, &has_image_expanded,
+                                                         IUPGTK_NODE_TITLE, &title,
+                                                         IUPGTK_NODE_KIND, &kind,
+                                                         IUPGTK_NODE_COLOR, &color, 
+                                                         IUPGTK_NODE_FONT, &font, 
+                                                         -1);
+
+  /* Add the new node */
+  dst->data->node_count++;
+  if (position == 2)
+    gtk_tree_store_append(storeDst, iterNewItem, iterParent);
+  else if (position == 1)                                      /* copy as first child of expanded branch */
+    gtk_tree_store_insert(storeDst, iterNewItem, iterParent, 0);  /* iterParent is parent of the new item (firstchild of it) */
+  else                                                                  /* copy as next brother of item or collapsed branch */
+    gtk_tree_store_insert_after(storeDst, iterNewItem, NULL, iterParent);  /* iterParent is sibling of the new item */
+
+  gtk_tree_store_set(storeDst, iterNewItem,  IUPGTK_NODE_IMAGE, image,
+                                             IUPGTK_NODE_HAS_IMAGE, has_image,
+                                             IUPGTK_NODE_IMAGE_EXPANDED, image_expanded,
+                                             IUPGTK_NODE_HAS_IMAGE_EXPANDED, has_image_expanded,
+                                             IUPGTK_NODE_TITLE, title,
+                                             IUPGTK_NODE_KIND, kind,
+                                             IUPGTK_NODE_COLOR, color, 
+                                             IUPGTK_NODE_FONT, font,
+                                             IUPGTK_NODE_SELECTED, 0,
+                                             IUPGTK_NODE_CHECK, 0,
+                                             IUPGTK_NODE_3STATE, 0,
+                                             IUPGTK_NODE_TOGGLEVISIBLE, 1,
+                                             -1);
+}
+
+static void gtkTreeDragDropCopyChildren(Ihandle* src, Ihandle* dst, GtkTreeIter *iterItemSrc, GtkTreeIter *iterItemDst)
+{
+  GtkTreeIter iterChildSrc;
+  GtkTreeModel* modelSrc = gtk_tree_view_get_model(GTK_TREE_VIEW(src->handle));
+  int hasItem = gtk_tree_model_iter_children(modelSrc, &iterChildSrc, iterItemSrc);  /* get the firstchild */
+  while(hasItem)
+  {
+    GtkTreeIter iterNewItem;
+    gtkTreeDragDropCopyItem(src, dst, &iterChildSrc, iterItemDst, 2, &iterNewItem);  /* append always */
+
+    /* Recursively transfer all the items */
+    gtkTreeDragDropCopyChildren(src, dst, &iterChildSrc, &iterNewItem);  
+
+    /* Go to next sibling item */
+    hasItem = gtk_tree_model_iter_next(modelSrc, &iterChildSrc);
+  }
+}
+
+void iupdrvTreeDragDropCopyNode(Ihandle* src, Ihandle* dst, InodeHandle *itemSrc, InodeHandle *itemDst)
+{
+  int kind, position = 0;  /* insert after iterItemDst */
+  int id_new, count, id_dst;
+  GtkTreeIter iterNewItem, iterItemSrc, iterItemDst;
+  GtkTreeModel* modelDst = gtk_tree_view_get_model(GTK_TREE_VIEW(dst->handle));
+
+  int old_count = dst->data->node_count;
+
+  gtkTreeIterInit(src, &iterItemSrc, itemSrc);
+  gtkTreeIterInit(dst, &iterItemDst, itemDst);
+
+  id_dst = gtkTreeFindNodeId(dst, &iterItemDst);
+  id_new = id_dst+1;  /* contains the position for a copy operation */
+
+  gtk_tree_model_get(modelDst, &iterItemDst, IUPGTK_NODE_KIND, &kind, -1);
+
+  if (kind == ITREE_BRANCH)
+  {
+    GtkTreePath* path = gtk_tree_model_get_path(modelDst, &iterItemDst);
+    if (gtk_tree_view_row_expanded(GTK_TREE_VIEW(dst->handle), path))
+      position = 1;  /* insert as first child of iterItemDst */
+    else
+    {
+      int child_count = gtkTreeTotalChildCount(dst, &iterItemDst);
+      id_new += child_count;
+    }
+    gtk_tree_path_free(path);
+  }
+
+  gtkTreeDragDropCopyItem(src, dst, &iterItemSrc, &iterItemDst, position, &iterNewItem);  
+
+  gtkTreeDragDropCopyChildren(src, dst, &iterItemSrc, &iterNewItem);
+
+  count = dst->data->node_count - old_count;
+  iupTreeDragDropCopyCache(dst, id_dst, id_new, count);
+  gtkTreeRebuildNodeCache(dst, id_new, iterNewItem);
+}
+
+/*****************************************************************************/
+
 static int gtkTreeMapMethod(Ihandle* ih)
 {
   GtkScrolledWindow* scrolled_window = NULL;

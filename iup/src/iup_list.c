@@ -590,9 +590,11 @@ static int iListSetShowDragDropAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+
 /*****************************************************************************************/
 
-static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
+
+static int iListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
 {
   int pos = IupConvertXYToPos(ih, x, y);
   int is_ctrl = 0;
@@ -602,8 +604,7 @@ static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int 
   Ihandle* ih_source;
   memcpy((void*)&ih_source, data, len);
 
-  /* A copy operation is enabled with the CTRL key pressed.
-     A move operation is enabled with the SHIFT key pressed.
+  /* A copy operation is enabled with the CTRL key pressed, or else a move operation will occour.
      A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
      When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
   iupdrvGetKeyState(key);
@@ -657,7 +658,7 @@ static int iupListDropData_CB(Ihandle *ih, char* type, void* data, int len, int 
   return IUP_DEFAULT;
 }
 
-static int iupListDragData_CB(Ihandle *ih, char* type, void *data, int len)
+static int iListDragData_CB(Ihandle *ih, char* type, void *data, int len)
 {
   int pos = iupAttribGetInt(ih, "_IUP_LIST_SOURCEPOS");
   if (pos < 1)
@@ -692,21 +693,21 @@ static int iupListDragData_CB(Ihandle *ih, char* type, void *data, int len)
   return IUP_DEFAULT;
 }
 
-static int iupListDragDataSize_CB(Ihandle* ih, char* type)
+static int iListDragDataSize_CB(Ihandle* ih, char* type)
 {
   (void)ih;
   (void)type;
   return sizeof(Ihandle*);
 }
 
-static int iupListDragEnd_CB(Ihandle *ih, int del)
+static int iListDragEnd_CB(Ihandle *ih, int del)
 {
   iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", 0);
   (void)del;
   return IUP_DEFAULT;
 }
 
-static int iupListDragBegin_CB(Ihandle* ih, int x, int y)
+static int iListDragBegin_CB(Ihandle* ih, int x, int y)
 {
   int pos = IupConvertXYToPos(ih, x, y);
   iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", pos);
@@ -718,11 +719,11 @@ static int iListSetDragDropListAttrib(Ihandle* ih, const char* value)
   if (iupStrBoolean(value))
   {
     /* Register callbacks to enable drag and drop between lists */
-    IupSetCallback(ih, "DRAGBEGIN_CB",    (Icallback)iupListDragBegin_CB);
-    IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iupListDragDataSize_CB);
-    IupSetCallback(ih, "DRAGDATA_CB",     (Icallback)iupListDragData_CB);
-    IupSetCallback(ih, "DRAGEND_CB",      (Icallback)iupListDragEnd_CB);
-    IupSetCallback(ih, "DROPDATA_CB",     (Icallback)iupListDropData_CB);
+    IupSetCallback(ih, "DRAGBEGIN_CB",    (Icallback)iListDragBegin_CB);
+    IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iListDragDataSize_CB);
+    IupSetCallback(ih, "DRAGDATA_CB",     (Icallback)iListDragData_CB);
+    IupSetCallback(ih, "DRAGEND_CB",      (Icallback)iListDragEnd_CB);
+    IupSetCallback(ih, "DROPDATA_CB",     (Icallback)iListDropData_CB);
   }
   else
   {

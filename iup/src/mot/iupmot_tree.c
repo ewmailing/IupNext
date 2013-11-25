@@ -2489,6 +2489,135 @@ static void motTreeDragDropEnable(Widget w)
   XmDropSiteUpdate(w, args, num_args);
 }
 
+/*******************************************************************************************/
+
+static Widget motTreeDragDropCopyItem(Ihandle* src, Ihandle* dst, Widget wItem, Widget wParent, int pos)
+{
+  Widget wItemNew;
+  XmString title;
+  motTreeItemData *itemData;
+  Pixel fgcolor, bgcolor;
+  int num_args = 0;
+  Arg args[30];
+  Pixmap image = XmUNSPECIFIED_PIXMAP, mask = XmUNSPECIFIED_PIXMAP;
+  unsigned char state;
+  motTreeItemData* itemDataNew;
+  (void)src;
+
+  iupMOT_SETARG(args, num_args, XmNentryParent, wParent);
+  iupMOT_SETARG(args, num_args, XmNmarginHeight, dst->data->spacing);
+  iupMOT_SETARG(args, num_args, XmNmarginWidth, 0);
+  iupMOT_SETARG(args, num_args, XmNnavigationType, XmTAB_GROUP);
+  iupMOT_SETARG(args, num_args, XmNtraversalOn, True);
+  iupMOT_SETARG(args, num_args, XmNshadowThickness, 0);
+
+  XtVaGetValues(wItem, XmNlabelString, &title,
+                          XmNuserData, &itemData,
+                        XmNforeground, &fgcolor,
+                      XmNoutlineState, &state,
+                                       NULL);
+
+  /* Get values to copy */
+  XtVaGetValues(wItem, XmNsmallIconPixmap, &image, 
+                         XmNsmallIconMask, &mask,
+                                           NULL);
+
+  /* create a new one */
+  itemDataNew = malloc(sizeof(motTreeItemData));
+  memcpy(itemDataNew, itemData, sizeof(motTreeItemData));
+  itemData = itemDataNew;
+
+  iupMOT_SETARG(args, num_args, XmNlabelString, title);
+  iupMOT_SETARG(args, num_args, XmNuserData, itemData);
+  iupMOT_SETARG(args, num_args, XmNforeground, fgcolor);
+  iupMOT_SETARG(args, num_args, XmNoutlineState, state);
+
+  iupMOT_SETARG(args, num_args, XmNviewType, XmSMALL_ICON);
+  iupMOT_SETARG(args, num_args, XmNsmallIconPixmap, image);
+  iupMOT_SETARG(args, num_args, XmNsmallIconMask, mask);
+
+  iupMOT_SETARG(args, num_args, XmNentryParent, wParent);
+  iupMOT_SETARG(args, num_args, XmNpositionIndex, pos);
+
+  XtVaGetValues(dst->handle, XmNbackground, &bgcolor, NULL);
+  iupMOT_SETARG(args, num_args, XmNbackground, bgcolor);
+
+  /* Add the new node */
+  wItemNew = XtCreateManagedWidget("icon", xmIconGadgetClass, dst->handle, args, num_args);
+
+  dst->data->node_count++;
+
+  XtRealizeWidget(wItemNew);
+
+  return wItemNew;
+}
+
+static void motTreeDragDropCopyChildren(Ihandle* src, Ihandle* dst, Widget wItemSrc, Widget wItemDst)
+{
+  WidgetList wItemChildList = NULL;
+  int i = 0;
+  int numChild = XmContainerGetItemChildren(src->handle, wItemSrc, &wItemChildList);
+  while(i != numChild)
+  {
+    Widget wItemNew = motTreeDragDropCopyItem(src, dst, wItemChildList[i], wItemDst, i);  /* Use the same order they were enumerated */
+
+    /* Recursively transfer all the items */
+    motTreeDragDropCopyChildren(src, dst, wItemChildList[i], wItemNew);  
+
+    /* Go to next sibling item */
+    i++;
+  }
+
+  if (wItemChildList) XtFree((char*)wItemChildList);
+}
+
+void iupdrvTreeDragDropCopyNode(Ihandle* src, Ihandle* dst, InodeHandle *itemSrc, InodeHandle *itemDst)
+{
+  Widget wItemNew, wParent, wItemSrc = itemSrc, wItemDst = itemDst;
+  motTreeItemData *itemDataDst;
+  unsigned char stateDst;
+  int pos, id_new, count, id_dst;
+
+  int old_count = dst->data->node_count;
+
+  id_dst = iupTreeFindNodeId(dst, wItemDst);
+  id_new = id_dst+1;  /* contains the position for a copy operation */
+
+  XtVaGetValues(wItemDst, XmNoutlineState, &stateDst, 
+                          XmNuserData, &itemDataDst, 
+                          NULL);
+
+  if (itemDataDst->kind == ITREE_BRANCH && stateDst == XmEXPANDED)
+  {
+    /* copy as first child of expanded branch */
+    wParent = wItemDst;
+    pos = 0;
+  }
+  else
+  {
+    if (itemDataDst->kind == ITREE_BRANCH)
+    {
+      int child_count = iupdrvTreeTotalChildCount(dst, wItemDst);
+      id_new += child_count;
+    }
+
+    /* copy as next brother of item or collapsed branch */
+    XtVaGetValues(wItemDst, XmNentryParent, &wParent, NULL);
+    XtVaGetValues(wItemDst, XmNpositionIndex, &pos, NULL);
+    pos++;
+  }
+
+  wItemNew = motTreeDragDropCopyItem(src, dst, wItemSrc, wParent, pos);
+
+  motTreeDragDropCopyChildren(src, dst, wItemSrc, wItemNew);
+
+  count = dst->data->node_count - old_count;
+  iupTreeDragDropCopyCache(dst, id_dst, id_new, count);
+  motTreeRebuildNodeCache(dst, id_new, wItemNew);
+}
+
+/*******************************************************************************************/
+
 static int motTreeMapMethod(Ihandle* ih)
 {
   int num_args = 0;
@@ -2585,7 +2714,7 @@ static int motTreeMapMethod(Ihandle* ih)
 
   XtRealizeWidget(parent);
 
-  if (ih->data->show_dragdrop)
+  if (ih->data->show_dragdrop || (IupGetInt(ih, "DRAGDROPTREE")))  /* Enable drag and drop support between trees */
   {
     motTreeDragDropEnable(ih->handle);
     XtVaSetValues(ih->handle, XmNuserData, ih, NULL);  /* to be used in motTreeDragTransferProc */
