@@ -322,9 +322,8 @@ static Ihandle* CreateTabs(int tab)
 //  IupSetAttribute(tabs, "TABTYPE", "BOTTOM");
 //  IupSetAttribute(tabs, "TABORIENTATION", "VERTICAL");
 
-  IupSetAttribute(tabs, "MARGIN", "0x0");  /* for children */
-//  IupSetAttribute(tabs, "EXPAND", "YES");
-  IupSetAttribute(tabs, "RASTERSIZE", "300x200");  /* initial size */
+  IupSetAttribute(tabs, "SHOWCLOSE", "YES");
+  
 //  IupSetAttribute(tabs, "ALIGNMENT", "NW");
 //  IupSetAttribute(tabs, "ALIGNMENT", "NORTH");
 //  IupSetAttribute(tabs, "ALIGNMENT", "WEST");
@@ -342,6 +341,10 @@ static Ihandle* CreateTabs(int tab)
 //  IupSetAttribute(tabs, "TIPBGCOLOR", "255 128 128");
 //  IupSetAttribute(tabs, "TIPFGCOLOR", "0 92 255");
 
+//  IupSetAttribute(tabs, "EXPAND", "YES");
+  IupSetAttribute(tabs, "MARGIN", "0x0");  /* for children */
+  IupSetAttribute(tabs, "RASTERSIZE", "300x200");  /* initial size */
+  
   // Windows Only  
   //IupSetAttribute(tabs, "TIPBALLOON", "YES");
   //IupSetAttribute(tabs, "TIPBALLOONTITLE", "Tip Title");

@@ -39,6 +39,7 @@ struct _IcontrolData
   ItabsType type;
   ItabsOrientation orientation;
   int horiz_padding, vert_padding;  /* tab title margin */
+  int show_close;
   int is_multiline;   /* used only in Windows */
   int has_invisible;  /* used only in Windows */
 };

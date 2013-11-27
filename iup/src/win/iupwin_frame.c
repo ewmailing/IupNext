@@ -86,8 +86,8 @@ static void winFrameDrawText(HDC hDC, const char* text, int x, int y, COLORREF f
   oldcolor = SetTextColor(hDC, fgcolor);
 
   {
-    TCHAR* str = iupwinStrToSystem(text);
-    int len = lstrlen(str);
+    int len = strlen(text);
+    TCHAR* str = iupwinStrToSystemLen(text, &len);
     TextOut(hDC, x, y, str, len);
   }
 

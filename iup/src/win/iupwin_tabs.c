@@ -21,11 +21,14 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_drv.h"
+#include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
 #include "iup_tabs.h"
 #include "iup_image.h"
 #include "iup_array.h"
 #include "iup_assert.h"
+#include "iup_draw.h"
+#include "iup_childtree.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
@@ -38,6 +41,36 @@
 #define WS_EX_COMPOSITED        0x02000000L
 #endif
 
+#define ITABS_CLOSE_SIZE 14
+
+static void winTabsInitializeCloseImage(void)
+{
+  Ihandle *image_close;
+  unsigned char img_close[ITABS_CLOSE_SIZE * ITABS_CLOSE_SIZE] =
+  {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,
+    0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0,
+    0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0,
+    0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+    0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0,
+    0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0,
+    0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  };
+  
+  image_close = IupImage(ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, img_close);
+
+  IupSetAttribute(image_close, "0", "BGCOLOR");
+  IupSetAttribute(image_close, "1", "0 0 0");
+  
+  IupSetHandle("IMGCLOSE", image_close);
+}
 
 static Iarray* winTabsGetVisibleArray(Ihandle* ih)
 {
@@ -131,7 +164,7 @@ static int winTabsPosFixToWin(Ihandle* ih, int pos)
 {
   if (ih->data->has_invisible)
   {
-    Iarray* visible_array = (Iarray*)iupAttribGet(ih, "_IUPWIN_VISIBLEARRAY");
+    Iarray* visible_array = winTabsGetVisibleArray(ih);
     int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
     return visible_array_array_data[pos];
   }
@@ -143,7 +176,7 @@ static int winTabsPosFixFromWin(Ihandle* ih, int p)
 {
   if (ih->data->has_invisible)
   {
-    Iarray* visible_array = (Iarray*)iupAttribGet(ih, "_IUPWIN_VISIBLEARRAY");
+    Iarray* visible_array = winTabsGetVisibleArray(ih);
     int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
     int pos, count = iupArrayCount(visible_array);
     for (pos=0; pos<count; pos++)
@@ -210,13 +243,14 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
 {
   HIMAGELIST image_list;
   int count, i, bpp, ret;
+  int width, height;
   Iarray* bmp_array;
   HBITMAP *bmp_array_data, hMask=NULL;
   HBITMAP bmp = iupImageGetImage(name, ih, 0);
   if (!bmp)
     return -1;
 
-  /* the array is used to avoi adding the same bitmap twice */
+  /* the array is used to avoid adding the same bitmap twice */
   bmp_array = (Iarray*)iupAttribGet(ih, "_IUPWIN_BMPARRAY");
   if (!bmp_array)
   {
@@ -230,7 +264,6 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
   image_list = (HIMAGELIST)SendMessage(ih->handle, TCM_GETIMAGELIST, 0, 0);
   if (!image_list)
   {
-    int width, height;
     UINT flags = ILC_COLOR32|ILC_MASK;
 
     /* must use this info, since image can be a driver image loaded from resources */
@@ -241,7 +274,7 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
     SendMessage(ih->handle, TCM_SETIMAGELIST, 0, (LPARAM)image_list);
   }
   else
-    iupdrvImageGetInfo(bmp, NULL, NULL, &bpp);
+    iupdrvImageGetInfo(bmp, &width, &height, &bpp);
 
   /* check if that bitmap is already added to the list,
      but we can not compare with the actual bitmap at the list since it is a copy */
@@ -300,7 +333,7 @@ static void winTabsPlacePageWindows(Ihandle* ih, int w, int h)
 
 static int winTabsUsingXPStyles(Ihandle* ih)
 {
-  return iupwin_comctl32ver6 && ih->data->type == ITABS_TOP;
+  return iupwin_comctl32ver6 && ih->data->type == ITABS_TOP && !(ih->data->show_close);
 }
 
 static void winTabsDrawPageBackground(Ihandle* ih, HDC hDC, RECT* rect)
@@ -586,10 +619,57 @@ static int winTabsSetBgColorAttrib(Ihandle *ih, const char *value)
   return 1;
 }
 
+static int winTabsIsInsideCloseButton(Ihandle* ih, int p)
+{
+  RECT rect;
+  POINT pt;
+  int border = 4, start, end;
 
-/* ------------------------------------------------------------------------- */
-/* winTabs - Calls the user callback to change of tab                        */
-/* ------------------------------------------------------------------------- */
+  GetCursorPos(&pt);
+  ScreenToClient(ih->handle, &pt);
+  
+  /* Get tab rectangle and define start/end positions of the image */
+  SendMessage(ih->handle, TCM_GETITEMRECT, (WPARAM)p, (LPARAM)&rect);
+
+  if(ih->data->type == ITABS_BOTTOM || ih->data->type == ITABS_TOP)
+  {
+    end = rect.right - border;
+    start = end - ITABS_CLOSE_SIZE;
+    if (pt.x >= start && pt.x <= end)
+    {
+      start = ((rect.bottom-rect.top) - ITABS_CLOSE_SIZE)/2;
+      end = start + ITABS_CLOSE_SIZE;
+      if (pt.y >= start && pt.y <= end)
+        return 1;
+    }
+  }
+  else if(ih->data->type == ITABS_LEFT)
+  {
+    start = rect.top + border;
+    end = start + ITABS_CLOSE_SIZE;
+    if (pt.y >= start && pt.y <= end)
+    {
+      start = ((rect.right-rect.left) - ITABS_CLOSE_SIZE) / 2;
+      end = start + ITABS_CLOSE_SIZE;
+      if (pt.x >= start && pt.x <= end)
+        return 1;
+    }
+  }
+  else  /* ITABS_RIGHT */
+  {
+    end = rect.bottom - border;
+    start = end - ITABS_CLOSE_SIZE;
+    if (pt.y >= start && pt.y <= end)
+    {
+      start = ((rect.right-rect.left) - ITABS_CLOSE_SIZE) / 2;
+      end = start + ITABS_CLOSE_SIZE;
+      if (pt.x >= start && pt.x <= end)
+        return 1;
+    }
+  }
+
+  return 0;
+}
 
 static int winTabsCtlColor(Ihandle* ih, HDC hdc, LRESULT *result)
 {
@@ -653,6 +733,39 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     }
   }
 
+  if (msg_info->code == NM_CLICK && ih->data->show_close)
+  {
+    int pos = iupdrvTabsGetCurrentTab(ih);
+    int p = winTabsPosFixToWin(ih, pos);
+    
+    if (winTabsIsInsideCloseButton(ih, p))
+    {
+      Ihandle *child = IupGetChild(ih, pos);
+      HWND tab_page = winTabsGetPageWindow(ih, pos);
+      if (tab_page)
+      {
+        int ret = IUP_DEFAULT;
+        IFni cb = (IFni)IupGetCallback(ih, "TABCLOSE_CB");
+        if (cb)
+          ret = cb(ih, pos);
+
+        if (ret == IUP_CONTINUE) /* destroy tab and children */
+        {
+          IupDestroy(child);
+          IupRefreshChildren(ih);
+        }
+        else if (ret == IUP_DEFAULT) /* hide tab and children */
+        {
+          iupTabsCheckCurrentTab(ih, pos);
+          winTabSetVisibleArrayItem(ih, pos, 0);  /* to invisible */
+          winTabDeleteItem(ih, p);
+        }
+      }
+    }
+  }
+
+  //TODO: NM_RCLICK 
+
   return 0; /* result not used */
 }
 
@@ -670,9 +783,236 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       *result = 0;
       return 1;
     }
+  case WM_MOUSELEAVE:
+    if (ih->data->show_close)
+    {
+      int last_p = iupAttribGetInt(ih, "_IUPTABS_LASTHITTEST");
+      if (last_p != -1)
+      {
+        iupAttribSetInt(ih, "_IUPTABS_LASTHITTEST", -1);
+        iupdrvRedrawNow(ih);
+      }
+    }
+    break;
+  case WM_MOUSEMOVE:
+    if (ih->data->show_close)
+    {
+      TCHITTESTINFO ht;
+      int p, last_p;
+
+      ht.pt.x = (int)(short)LOWORD(lp);
+      ht.pt.y = (int)(short)HIWORD(lp);
+
+      p = SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
+      last_p = iupAttribGetInt(ih, "_IUPTABS_LASTHITTEST");
+      if (p != last_p)
+      {
+        iupAttribSetInt(ih, "_IUPTABS_LASTHITTEST", p);
+        iupdrvRedrawNow(ih);
+      }
+    }
+    break;
   }
 
   return iupwinBaseContainerMsgProc(ih, msg, wp, lp, result);
+}
+
+static void winTabsDrawRotateText(HDC hDC, char* text, int x, int y, HFONT hFont, COLORREF fgcolor, int align)
+{
+  COLORREF oldcolor;
+  HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
+
+  SetTextAlign(hDC, align ? TA_TOP | TA_LEFT : TA_BOTTOM | TA_RIGHT);
+  SetBkMode(hDC, TRANSPARENT);
+  oldcolor = SetTextColor(hDC, fgcolor);
+
+  {
+    int len = strlen(text);
+    TCHAR* str = iupwinStrToSystemLen(text, &len);
+    TextOut(hDC, x, y, str, len);
+  }
+
+  SelectObject(hDC, hOldFont);
+  SetTextColor(hDC, oldcolor);
+  SetBkMode(hDC, OPAQUE);
+}
+
+static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height)
+{
+  HBITMAP hBitmapClose, hCloseMask = NULL;
+  HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
+  COLORREF fgcolor;
+	TCHAR title[256];
+	TCITEM tci;
+  HIMAGELIST image_list = (HIMAGELIST)SendMessage(ih->handle, TCM_GETIMAGELIST, 0, 0);
+  int imgW = 0, imgH = 0, txtW = 0, txtH = 0, 
+    bpp, style = 0, x = 0, y = 0, border = 4;
+  char *str;
+  int make_inactive;
+
+  tci.mask = TCIF_TEXT | TCIF_IMAGE;
+	tci.pszText = title;     
+	tci.cchTextMax = 255;
+  SendMessage(ih->handle, TCM_GETITEM, (WPARAM)p, (LPARAM)(&tci));
+  
+  if (title[0])
+  {
+    str = iupStrProcessMnemonic(iupwinStrFromSystem(title), NULL, 0);   /* remove & */
+    iupdrvFontGetMultiLineStringSize(ih, str, &txtW, &txtH);
+  }
+
+  if (tci.iImage != -1)
+  {
+    IMAGEINFO pImgInfo;
+    ImageList_GetImageInfo(image_list, tci.iImage, &pImgInfo);
+    imgW = pImgInfo.rcImage.right - pImgInfo.rcImage.left;
+    imgH = pImgInfo.rcImage.bottom - pImgInfo.rcImage.top;
+  }
+
+  if (iupdrvIsActive(ih))
+    fgcolor = GetSysColor(COLOR_WINDOWTEXT);
+  else
+    fgcolor = GetSysColor(COLOR_GRAYTEXT);
+  
+  /* Create the close button image */
+  // _IUPTABS_LASTHITTEST
+  //sprintf(strActiveName, "_IUPTAB_IMGCLOSE_ACTIVE%d", pos);
+  //make_inactive = iupStrEqualNoCase(iupAttribGet(ih, strActiveName), "YES") ? 0 : 1;
+  hBitmapClose = iupImageGetImage("IMGCLOSE", ih, 0);
+  if (!hBitmapClose)
+    return;
+
+  iupdrvImageGetInfo(hBitmapClose, NULL, NULL, &bpp);
+  if (bpp == 8)
+    hCloseMask = iupdrvImageCreateMask(IupGetHandle("IMGCLOSE"));
+
+  /* Draw image tab, title tab and close image */
+  if (ih->data->type == ITABS_BOTTOM || ih->data->type == ITABS_TOP)
+  {
+    x = border;
+
+    if (tci.iImage != -1)
+    {
+      y = (height - imgH) / 2;
+      ImageList_Draw(image_list, tci.iImage, hDC, x, y, ILD_NORMAL);
+      x += imgW + border;
+    }
+
+    if (title)
+    {
+      y = (height - txtH) / 2;
+      iupwinDrawText(hDC, iupwinStrFromSystem(title), x, y, txtW, txtH, hFont, fgcolor, style);
+    }
+
+    x = width - border - ITABS_CLOSE_SIZE;
+    y = (height - ITABS_CLOSE_SIZE) / 2;
+  }
+  else if(ih->data->type == ITABS_LEFT)
+  {
+    LOGFONT lf;
+    GetObject(hFont, sizeof(LOGFONT), &lf);  /* get current font */
+    lf.lfEscapement = 900;  /* rotate 90 degrees */
+    lf.lfOrientation = 900;
+    hFont = CreateFontIndirect(&lf);  /* set font in order to rotate text */
+
+    y += height;
+
+    x += 1;
+    y -= border;
+
+    if(tci.iImage != -1)
+    {
+      y -= (imgH + border);
+      ImageList_Draw(image_list, tci.iImage, hDC, x, y, ILD_NORMAL);  /* Tab image is already rotated into the list! */
+      if(title)
+      {
+        winTabsDrawRotateText(hDC, str, x, y, hFont, fgcolor, 1);
+        y -= (txtH + border);
+      }
+    }
+    else
+    {
+      winTabsDrawRotateText(hDC, str, x, y, hFont, fgcolor, 1);
+      y -= (txtH + border);
+    }
+
+    y -= txtW;  /* Sub to draw close image */
+
+    DeleteObject(hFont);
+  }
+  else  /* ITABS_RIGHT */
+  {
+    LOGFONT lf;
+    GetObject(hFont, sizeof(LOGFONT), &lf);  /* get current font */
+    lf.lfEscapement = -900;  /* rotate 270 degrees */
+    lf.lfOrientation = -900;
+    hFont = CreateFontIndirect(&lf);  /* set font in order to rotate text */
+
+    x += 1;
+    y += border;
+
+    if (tci.iImage != -1)
+    {
+      ImageList_Draw(image_list, tci.iImage, hDC, x, y, ILD_NORMAL);  /* Tab image is already rotated into the list! */
+      y += (imgW + border);
+      if(title)
+      {
+        y += (txtW + border);
+        winTabsDrawRotateText(hDC, str, x, y, hFont, fgcolor, 0);
+      }
+    }
+    else
+    {
+      y += (txtW + border);
+      winTabsDrawRotateText(hDC, str, x, y, hFont, fgcolor, 0);
+    }
+
+    y += txtH;  /* Add to draw close image */
+
+    DeleteObject(hFont);
+  }
+
+  iupwinDrawBitmap(hDC, hBitmapClose, hCloseMask, x, y, ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, bpp);
+
+  if (hCloseMask)
+    DeleteObject(hCloseMask);
+}
+
+static void winTabsDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
+{ 
+  HDC hDC;
+  iupwinBitmapDC bmpDC;
+  RECT rect;
+  int x, y, width, height, p;
+  unsigned char r, g, b;
+
+  /* If there are no tab items, skip this message */
+  if (drawitem->itemID == -1)
+    return;
+
+  p = drawitem->itemID;
+
+  x = drawitem->rcItem.left;
+  y = drawitem->rcItem.top;
+  width = drawitem->rcItem.right - drawitem->rcItem.left;
+  height = drawitem->rcItem.bottom - drawitem->rcItem.top;
+
+  hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, x, y, width, height);
+
+  if (iupStrToRGB(iupBaseNativeParentGetBgColorAttrib(ih), &r, &g, &b))
+  {
+    SetDCBrushColor(hDC, RGB(r, g, b));
+    SetRect(&rect, 0, 0, width, height);
+    FillRect(hDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+  }
+
+  winTabsDrawTab(ih, hDC, p, width, height);
+
+  /* If the item has the focus, draw the focus rectangle */
+  if (drawitem->itemState & ODS_FOCUS)
+    iupdrvDrawFocusRect(ih, hDC, 0, 0, width, height);
+
+  iupwinDrawDestroyBitmapDC(&bmpDC);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -774,6 +1114,9 @@ static int winTabsMapMethod(Ihandle* ih)
   if (ih->data->is_multiline)
     dwStyle |= TCS_MULTILINE;
 
+  if (ih->data->show_close)
+    dwStyle |= TCS_OWNERDRAWFIXED;
+
   iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 
   if (dwExStyle & WS_EX_COMPOSITED && !ih->data->is_multiline && iupwinIsVistaOrNew())
@@ -795,9 +1138,19 @@ static int winTabsMapMethod(Ihandle* ih)
   /* Process background color */
   IupSetCallback(ih, "_IUPWIN_CTLCOLOR_CB", (Icallback)winTabsCtlColor);
 
-  if (iupwin_comctl32ver6 && ih->data->type != ITABS_TOP)
+  if (ih->data->show_close)
   {
-    /* XP Styles support only TABTYPE=TOP */ 
+    /* change tab width to draw an close image */
+    SendMessage(ih->handle, TCM_SETPADDING, 0, MAKELPARAM(ITABS_CLOSE_SIZE, 0));
+
+    /* owner draw tab image + tab title + close image */
+    IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winTabsDrawItem);
+  }
+
+  if (iupwin_comctl32ver6 && (ih->data->type != ITABS_TOP || ih->data->show_close))
+  {
+    /* XP Styles support only TABTYPE=TOP,
+       show_close ownerdraw will work only with classic style */ 
     iupwinDrawRemoveTheme(ih->handle);
   }
 
@@ -897,4 +1250,8 @@ void iupdrvTabsInitClass(Iclass* ic)
   /* necessary because transparent background does not work when not using visual styles */
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  /* Default node images */
+  if (!IupGetHandle("IMGCLOSE"))
+    winTabsInitializeCloseImage();
 }

@@ -384,6 +384,20 @@ void iupTabsCheckCurrentTab(Ihandle* ih, int pos)
   }
 }
 
+static char* iTabsGetShowCloseAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean (ih->data->show_close); 
+}
+
+static int iTabsSetShowCloseAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->show_close = 1;
+  else
+    ih->data->show_close = 0;
+
+  return 0;
+}
 /* ------------------------------------------------------------------------- */
 /* TABS - Methods                                                            */
 /* ------------------------------------------------------------------------- */
@@ -515,6 +529,7 @@ Iclass* iupTabsNewClass(void)
   iupClassRegisterAttribute(ic, "VALUEPOS", iTabsGetValuePosAttrib, iTabsSetValuePosAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE_HANDLE", iTabsGetValueHandleAttrib, iTabsSetValueHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "COUNT", iTabsGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWCLOSE", iTabsGetShowCloseAttrib, iTabsSetShowCloseAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iTabsGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
