@@ -26,7 +26,7 @@ void iupImglibBitmapsGtkOpen(void)
   iupImageStockSet("IUP_ArrowUp", 0, "gtk-go-up");       
   iupImageStockSet("IUP_EditCopy", 0, "gtk-copy");
   iupImageStockSet("IUP_EditCut", 0, "gtk-cut");
-  iupImageStockSet("IUP_EditErase", 0, "gtk-close");
+  iupImageStockSet("IUP_EditErase", 0, "gtk-delete");
   iupImageStockSet("IUP_EditFind", 0, "gtk-find");
   iupImageStockSet("IUP_EditPaste", 0, "gtk-paste");
   iupImageStockSet("IUP_EditRedo", 0, "gtk-redo-ltr");
