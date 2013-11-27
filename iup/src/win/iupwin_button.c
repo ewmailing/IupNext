@@ -657,38 +657,7 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
 static int winButtonWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 {
   if (msg_info->code == NM_CUSTOMDRAW)
-  {
-    NMCUSTOMDRAW *customdraw = (NMCUSTOMDRAW*)msg_info;
-
-    if (customdraw->dwDrawStage==CDDS_PREERASE)
-    {
-      DRAWITEMSTRUCT drawitem;
-      drawitem.itemState = 0;
-
-      if (customdraw->uItemState & CDIS_DISABLED)
-        drawitem.itemState |= ODS_DISABLED;
-      else if (customdraw->uItemState & CDIS_SELECTED)
-        drawitem.itemState |= ODS_SELECTED;
-      else if (customdraw->uItemState & CDIS_HOT)
-        drawitem.itemState |= ODS_HOTLIGHT;
-      else if (customdraw->uItemState & CDIS_DEFAULT)
-        drawitem.itemState |= ODS_DEFAULT;
-
-      if (customdraw->uItemState & CDIS_FOCUS)
-        drawitem.itemState |= ODS_FOCUS;
-
-      if (!(customdraw->uItemState & CDIS_SHOWKEYBOARDCUES))
-        drawitem.itemState |= ODS_NOFOCUSRECT | ODS_NOACCEL;
-
-      drawitem.hDC = customdraw->hdc;
-      drawitem.rcItem = customdraw->rc;
-
-      winButtonDrawItem(ih, (void*)&drawitem);  /* Simulate a WM_DRAWITEM */
-
-      *result = CDRF_SKIPDEFAULT;
-      return 1;
-    }
-  }
+    return iupwinCustomDrawToDrawItem(ih, msg_info, result, winButtonDrawItem);
 
   return 0; /* result not used */
 }
