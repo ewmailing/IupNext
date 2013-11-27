@@ -54,12 +54,13 @@ the size of the bar handler. Default: the height of a text line plus 5 pixels.</
 
 
 <p>
-<a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: ignored, transparent in all 
-systems. Will use the background color of the native parent.</p>
+<strong>BACKCOLOR</strong> (<font SIZE="3">non inheritable</font>): background 
+color of the title area. If not defined it will use the background color of the native parent. 
+(since 3.9)</p>
 
 
-  <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: the 
-	global attribute DLGFGCOLOR.</p>
+  <p><strong>FORECOLOR</strong> (<font SIZE="3">non inheritable</font>): title color. Default: the 
+	global attribute DLGFGCOLOR. (since 3.9)</p>
 
 
 <p><strong>BARPOSITION</strong> (creation only): Indicates the bar handler 
@@ -72,7 +73,7 @@ The default value is &quot;YES&quot;.</p>
 the container elements. Possible values: &quot;OPEN&quot; (expanded) or &quot;CLOSE&quot; (collapsed). Default: 
 OPEN. Setting this attribute will automatically change the layout of the entire 
 dialog so the child can be recomposed.</p>
-<p><strong>TITLE</strong> (<font SIZE="3">non inheritable</font>): the title, 
+<p><strong>TITLE</strong> (<font SIZE="3">non inheritable</font>): title text, 
 shown in the title bar near the expand or collapse symbol. Shown only when 
 BARPOSITION=TOP.</p>
 
