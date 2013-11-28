@@ -26,13 +26,13 @@ ifeq "$(TEC_SYSNAME)" "Haiku"
 endif
 
 ifdef DBG_DIR
-  IUPLIB = $(IUP)/lib/$(TEC_UNAME)d
-  CDLIB = $(CD)/lib/$(TEC_UNAME)d
-  IMLIB = $(IM)/lib/$(TEC_UNAME)d
+  IUP_LIB = $(IUP)/lib/$(TEC_UNAME)d
+  CD_LIB = $(CD)/lib/$(TEC_UNAME)d
+  IM_LIB = $(IM)/lib/$(TEC_UNAME)d
 else
-  IUPLIB = $(IUP)/lib/$(TEC_UNAME)
-  CDLIB = $(CD)/lib/$(TEC_UNAME)
-  IMLIB = $(IM)/lib/$(TEC_UNAME)
+  IUP_LIB = $(IUP)/lib/$(TEC_UNAME)
+  CD_LIB = $(CD)/lib/$(TEC_UNAME)
+  IM_LIB = $(IM)/lib/$(TEC_UNAME)
 endif  
 
 # Must uncomment all SRC lines
@@ -81,7 +81,7 @@ SRC += expander.c
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib
 #else
-#  SLIB += $(IUPLIB)/libiupimglib.a
+#  SLIB += $(IUP_LIB)/libiupimglib.a
 #endif
 
 USE_CD = Yes
@@ -98,7 +98,7 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += cdgl ftgl
   LDIR += $(CD)/lib/$(TEC_UNAME)
 else
-  SLIB += $(CDLIB)/libcdgl.a $(CDLIB)/libftgl.a 
+  SLIB += $(CD_LIB)/libcdgl.a $(CD_LIB)/libftgl.a 
   ifdef USE_MOTIF
     LIBS += fontconfig
   endif  
@@ -118,7 +118,7 @@ SRC += matrix_cbmode.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iupmatrixex
 else
-  SLIB += $(IUPLIB)/libiupmatrixex.a
+  SLIB += $(IUP_LIB)/libiupmatrixex.a
 endif
 
 LINKER = g++
@@ -129,8 +129,8 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += cdpdflib
 #  LDIR += $(IUP)/lib/$(TEC_UNAME)
 else
-  SLIB += $(IUPLIB)/libiup_pplot.a
-#  SLIB += $(CDLIB)/libcdpdflib.a
+  SLIB += $(IUP_LIB)/libiup_pplot.a
+#  SLIB += $(CD_LIB)/libcdpdflib.a
 endif
 
 DEFINES += MGLPLOT_TEST
@@ -138,7 +138,7 @@ SRC += mglplot.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iup_mglplot
 else
-  SLIB += $(IUPLIB)/libiup_mglplot.a
+  SLIB += $(IUP_LIB)/libiup_mglplot.a
 endif
 
 USE_IM = Yes
@@ -146,7 +146,7 @@ ifdef USE_IM
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iupim im_process
 else
-  SLIB += $(IUPLIB)/libiupim.a $(IMLIB)/libim_process.a
+  SLIB += $(IUP_LIB)/libiupim.a $(IM_LIB)/libim_process.a
 endif
 endif
 

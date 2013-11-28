@@ -541,6 +541,8 @@ void iupdrvTabsInitClass(Iclass* ic)
 
   /* Driver Dependent Attribute functions */
 
+  iupClassRegisterCallback(ic, "TABCLOSE_CB", "i");
+
   /* Common */
   iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkTabsSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
 

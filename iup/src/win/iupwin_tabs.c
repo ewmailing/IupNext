@@ -473,7 +473,8 @@ static int winTabsSetPaddingAttrib(Ihandle* ih, const char* value)
 
   if (ih->handle)
   {
-    SendMessage(ih->handle, TCM_SETPADDING, 0, MAKELPARAM(ih->data->horiz_padding, ih->data->vert_padding));
+    int extra_h = (ih->data->show_close)? ITABS_CLOSE_SIZE: 0;
+    SendMessage(ih->handle, TCM_SETPADDING, 0, MAKELPARAM(ih->data->horiz_padding + extra_h, ih->data->vert_padding));
     return 0;
   }
   else
@@ -637,7 +638,7 @@ static int winTabsIsInsideCloseButton(Ihandle* ih, int p)
     start = end - ITABS_CLOSE_SIZE;
     if (pt.x >= start && pt.x <= end)
     {
-      start = ((rect.bottom-rect.top) - ITABS_CLOSE_SIZE)/2;
+      start = ((rect.bottom - rect.top) - ITABS_CLOSE_SIZE) / 2 + rect.top;
       end = start + ITABS_CLOSE_SIZE;
       if (pt.y >= start && pt.y <= end)
         return 1;
@@ -649,7 +650,7 @@ static int winTabsIsInsideCloseButton(Ihandle* ih, int p)
     end = start + ITABS_CLOSE_SIZE;
     if (pt.y >= start && pt.y <= end)
     {
-      start = ((rect.right-rect.left) - ITABS_CLOSE_SIZE) / 2;
+      start = ((rect.right - rect.left) - ITABS_CLOSE_SIZE) / 2 + rect.left;
       end = start + ITABS_CLOSE_SIZE;
       if (pt.x >= start && pt.x <= end)
         return 1;
@@ -661,7 +662,7 @@ static int winTabsIsInsideCloseButton(Ihandle* ih, int p)
     start = end - ITABS_CLOSE_SIZE;
     if (pt.y >= start && pt.y <= end)
     {
-      start = ((rect.right-rect.left) - ITABS_CLOSE_SIZE) / 2;
+      start = ((rect.right - rect.left) - ITABS_CLOSE_SIZE) / 2 + rect.left;
       end = start + ITABS_CLOSE_SIZE;
       if (pt.x >= start && pt.x <= end)
         return 1;
@@ -820,9 +821,25 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
 static void winTabsDrawRotateText(HDC hDC, char* text, int x, int y, HFONT hFont, COLORREF fgcolor, int align)
 {
   COLORREF oldcolor;
-  HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
+  HFONT hOldFont;
 
-  SetTextAlign(hDC, align ? TA_TOP | TA_LEFT : TA_BOTTOM | TA_RIGHT);
+  LOGFONT lf;
+  GetObject(hFont, sizeof(LOGFONT), &lf);  /* get current font */
+  if (align)   /* bottom to top */
+  {
+    lf.lfEscapement = 900;  /* rotate 90 degrees CCW */
+    lf.lfOrientation = 900;
+  }
+  else         /* top to bottom */
+  {
+    lf.lfEscapement = -900;  /* rotate 90 degrees CW */
+    lf.lfOrientation = -900;
+  }
+  hFont = CreateFontIndirect(&lf);  /* set font in order to rotate text */
+
+  hOldFont = (HFONT)SelectObject(hDC, hFont);
+
+  SetTextAlign(hDC, align ? TA_TOP | TA_LEFT : TA_BOTTOM | TA_LEFT);
   SetBkMode(hDC, TRANSPARENT);
   oldcolor = SetTextColor(hDC, fgcolor);
 
@@ -835,6 +852,8 @@ static void winTabsDrawRotateText(HDC hDC, char* text, int x, int y, HFONT hFont
   SelectObject(hDC, hOldFont);
   SetTextColor(hDC, oldcolor);
   SetBkMode(hDC, OPAQUE);
+
+  DeleteObject(hFont);
 }
 
 static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height)
@@ -909,67 +928,44 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height)
   }
   else if(ih->data->type == ITABS_LEFT)
   {
-    LOGFONT lf;
-    GetObject(hFont, sizeof(LOGFONT), &lf);  /* get current font */
-    lf.lfEscapement = 900;  /* rotate 90 degrees */
-    lf.lfOrientation = 900;
-    hFont = CreateFontIndirect(&lf);  /* set font in order to rotate text */
-
-    y += height;
-
-    x += 1;
-    y -= border;
-
-    if(tci.iImage != -1)
-    {
-      y -= (imgH + border);
-      ImageList_Draw(image_list, tci.iImage, hDC, x, y, ILD_NORMAL);  /* Tab image is already rotated into the list! */
-      if(title)
-      {
-        winTabsDrawRotateText(hDC, str, x, y, hFont, fgcolor, 1);
-        y -= (txtH + border);
-      }
-    }
-    else
-    {
-      winTabsDrawRotateText(hDC, str, x, y, hFont, fgcolor, 1);
-      y -= (txtH + border);
-    }
-
-    y -= txtW;  /* Sub to draw close image */
-
-    DeleteObject(hFont);
-  }
-  else  /* ITABS_RIGHT */
-  {
-    LOGFONT lf;
-    GetObject(hFont, sizeof(LOGFONT), &lf);  /* get current font */
-    lf.lfEscapement = -900;  /* rotate 270 degrees */
-    lf.lfOrientation = -900;
-    hFont = CreateFontIndirect(&lf);  /* set font in order to rotate text */
-
-    x += 1;
-    y += border;
+    y = height;
 
     if (tci.iImage != -1)
     {
+      x = (width - imgW) / 2;
+      y -= border + imgH;
       ImageList_Draw(image_list, tci.iImage, hDC, x, y, ILD_NORMAL);  /* Tab image is already rotated into the list! */
-      y += (imgW + border);
-      if(title)
-      {
-        y += (txtW + border);
-        winTabsDrawRotateText(hDC, str, x, y, hFont, fgcolor, 0);
-      }
     }
-    else
+
+    if (title)
     {
-      y += (txtW + border);
+      x = (width - txtH) / 2;  /* text is rotated switch W/H */
+      y -= border;
+      winTabsDrawRotateText(hDC, str, x, y, hFont, fgcolor, 1);
+    }
+
+    x = (width - ITABS_CLOSE_SIZE) / 2;
+    y = border;
+  }
+  else  /* ITABS_RIGHT */
+  {
+    y = border;
+
+    if (tci.iImage != -1)
+    {
+      x = (width - imgW) / 2;
+      ImageList_Draw(image_list, tci.iImage, hDC, x, y, ILD_NORMAL);  /* Tab image is already rotated into the list! */
+      y += imgH + border;
+    }
+
+    if (title)
+    {
+      x = (width - txtH) / 2;  /* text is rotated switch W/H */
       winTabsDrawRotateText(hDC, str, x, y, hFont, fgcolor, 0);
     }
 
-    y += txtH;  /* Add to draw close image */
-
-    DeleteObject(hFont);
+    x = (width - ITABS_CLOSE_SIZE) / 2;
+    y = height - border - ITABS_CLOSE_SIZE;
   }
 
   iupwinDrawBitmap(hDC, hBitmapClose, hCloseMask, x, y, ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, bpp);
@@ -1231,6 +1227,8 @@ void iupdrvTabsInitClass(Iclass* ic)
   ic->ChildRemoved   = winTabsChildRemovedMethod;
 
   /* Driver Dependent Attribute functions */
+
+  iupClassRegisterCallback(ic, "TABCLOSE_CB", "i");
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", winTabsGetBgColorAttrib, winTabsSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE|IUPAF_DEFAULT);

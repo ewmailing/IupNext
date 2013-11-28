@@ -8,6 +8,7 @@ local ctrl = {
   callback = {
     tabchange_cb = "ii",
     tabchangepos_cb = "nn",
+    tabclose_cb = "n",
   },
 }
 

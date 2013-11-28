@@ -318,7 +318,7 @@ static Ihandle* CreateTabs(int tab)
   // In Windows, must be set before map
 //  IupSetAttribute(tabs, "MULTILINE", "YES");
 //  IupSetAttribute(tabs, "TABTYPE", "LEFT");
-//  IupSetAttribute(tabs, "TABTYPE", "RIGHT");
+  IupSetAttribute(tabs, "TABTYPE", "RIGHT");
 //  IupSetAttribute(tabs, "TABTYPE", "BOTTOM");
 //  IupSetAttribute(tabs, "TABORIENTATION", "VERTICAL");
 
