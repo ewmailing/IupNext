@@ -1059,13 +1059,7 @@ void iupStrRemove(char* value, int start, int end, int dir, int utf8)
   if (start >= len) { start = len-1; end = len; }
   if (end > len) end = len;
 
-  value += start;
-  end -= start;
-  while (*value)
-  {
-    *value = *(value+end);
-    value++;
-  }
+  memmove(value+start, value+end, len-end+1);
 }
 
 char* iupStrInsert(const char* value, const char* insert_value, int start, int end, int utf8)
