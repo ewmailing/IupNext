@@ -29,6 +29,7 @@ int iupcontrolslua_open(lua_State * L)
   iupcolorbrowserlua_open(L);
   iupcellslua_open(L);
   iupcolorbarlua_open(L);
+  iupmatrixlistlua_open(L);
 
   return 0;
 }
