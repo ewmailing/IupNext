@@ -74,6 +74,19 @@ inheritable</font>): internal margin of the tab title. Works just like the
 	name to avoid inheritance problems. Default value: &quot;0x0&quot;. (since 3.0)</p>
 
 
+  <p><b>POPUP</b> [GTK Only]<strong> </strong>(<font SIZE="3">non 
+inheritable</font>): enable or disable the popup menu with all the pages. 
+  <span id="result_box" class="" lang="en"><span class="hps">When this menu</span>
+  <span class="hps">is enabled</span><span>, the</span> TABRBUTTON_CB
+  <span class="hps">callback</span> <span class="hps">can</span>
+  <span class="hps">not be</span> called<span class="">. </span></span>Default value: &quot;NO&quot;. (since 3.10)</p>
+<p><b>SHOWCLOSE</b> [Windows and GTK Only]<strong> </strong>(<font SIZE="3">non 
+inheritable</font>): <span id="result_box1" class="short_text" lang="en">
+<span class="hps">enables</span> <span class="hps">the close button on each</span>
+<span class="hps">tab.</span></span><span id="result_box0" class="" lang="en"><span class="">
+</span></span>Default value: &quot;NO&quot;. (since 3.10)</p>
+
+
   <p><a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>): 
 	The default size is the smallest size that fits its largest child. All child 
 	elements are considered even invisible ones.</p>
@@ -172,6 +185,17 @@ the event.<br>
     <strong>new_pos</strong>: the new tab position selected by the user 
   <br>
 <strong>old_pos</strong>: the previously selected tab position</p>
+<p><strong>TABRBUTTON_CB</strong>: Callback called when the user clicks on some 
+tab using the right mouse button (since 3.10).</p>
+<div align="left">
+  <pre>int function(Ihandle* <strong>ih</strong>, int <strong>pos</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
+<strong>elem</strong>:tabrbutton_cb(<strong>pos, x, y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+</div>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
+    <strong>pos</strong>: the current tab position, selected by the user 
+  <br>
+<strong>x, y</strong>: coordinate values</p>
   <blockquote>
   <hr>
 </blockquote>
