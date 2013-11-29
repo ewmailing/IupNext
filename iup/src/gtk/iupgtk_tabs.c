@@ -109,7 +109,29 @@ static void gtkTabsUpdatePagePadding(Ihandle* ih)
 /* ------------------------------------------------------------------------- */
 /* gtkTabs - Sets and Gets accessors                                         */
 /* ------------------------------------------------------------------------- */
+static int gtkTabsSetPopUpAttrib(Ihandle* ih, const char* value)
+{
+  if(iupStrBoolean(value))
+  {
+    iupAttribSetInt(ih, "_IUPGTK_TABPOPUP", 1);
+    gtk_notebook_popup_enable((GtkNotebook*)ih->handle);
+  }
+  else
+  {
+    iupAttribSetInt(ih, "_IUPGTK_TABPOPUP", 0);
+    gtk_notebook_popup_disable((GtkNotebook*)ih->handle);
+  }
 
+  return 0;
+}
+
+static char* gtkTabsGetPopUpAttrib(Ihandle* ih)
+{
+  if(iupAttribGetInt(ih, "_IUPGTK_TABPOPUP"))
+    return "YES";
+  else
+    return "NO";
+}
   
 static int gtkTabsSetPaddingAttrib(Ihandle* ih, const char* value)
 {
@@ -275,10 +297,28 @@ static void gtkTabSwitchPage(GtkNotebook* notebook, void* page, int pos, Ihandle
   (void)page;
 }
 
-/* ------------------------------------------------------------------------- */
-/* gtkTabs - Methods and Init Class                                          */
-/* ------------------------------------------------------------------------- */
-static void gtkTabsButtonClicked(GtkButton *widget, Ihandle* child)
+static gboolean gtkTabButtonPressEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *child)
+{
+  Ihandle* ih = IupGetParent(child);
+  IFniii cb = (IFniii)IupGetCallback(ih, "TABRBUTTON_CB");
+  
+  if (evt->type == GDK_BUTTON_PRESS && evt->button == 3 && 
+      cb && !iupAttribGetInt(ih, "_IUPGTK_TABPOPUP"))  /* right button clicked on tab */
+  {
+    GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_PAGE");
+    int pos = gtk_notebook_page_num((GtkNotebook*)ih->handle, tab_page);
+
+    iupdrvTabsSetCurrentTab(ih, pos);
+
+    cb(ih, pos, (int)evt->x_root, (int)evt->y_root);
+  }
+
+  (void)widget;
+
+  return iupgtkButtonEvent(widget, evt, ih);
+}
+
+static void gtkTabsCloseButtonClicked(GtkButton *widget, Ihandle* child)
 {
   /* Close tab child */
   GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_PAGE");
@@ -303,6 +343,9 @@ static void gtkTabsButtonClicked(GtkButton *widget, Ihandle* child)
   (void)widget;
 }
 
+/* ------------------------------------------------------------------------- */
+/* gtkTabs - Methods and Init Class                                          */
+/* ------------------------------------------------------------------------- */
 static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 {
   if (IupGetName(child) == NULL)
@@ -310,7 +353,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
   if (ih->handle)
   {
-    GtkWidget *tab_page, *tab_container, *box = NULL;
+    GtkWidget *evtBox, *tab_page, *tab_container, *box = NULL;
     GtkWidget *tab_label = NULL, *tab_image = NULL, *tab_close = NULL;
     char *tabtitle, *tabimage;
     int pos;
@@ -378,7 +421,8 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
       gtk_button_set_focus_on_click((GtkButton*)tab_close, FALSE);
       iupgtkSetCanFocus(tab_close, FALSE);
 
-      g_signal_connect(G_OBJECT(tab_close), "clicked", G_CALLBACK(gtkTabsButtonClicked), child);
+      g_signal_connect(G_OBJECT(tab_close), "clicked", G_CALLBACK(gtkTabsCloseButtonClicked), child);
+      g_signal_connect(G_OBJECT(tab_close), "button-press-event", G_CALLBACK(gtkTabButtonPressEvent), child);
     }
 
     iupAttribSet(ih, "_IUPGTK_IGNORE_CHANGE", "1");
@@ -399,6 +443,12 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
       gtk_widget_show(box);
     }
 
+    /* TABRBUTTON_CB will not work without the eventbox */
+    evtBox = gtk_event_box_new();
+    gtk_widget_add_events(evtBox, GDK_BUTTON_PRESS_MASK);
+    g_signal_connect(G_OBJECT(evtBox), "button-press-event", G_CALLBACK(gtkTabButtonPressEvent), child);
+    gtk_event_box_set_visible_window((GtkEventBox*)evtBox, FALSE);
+
     if (tabimage && tabtitle)
     {
       gtk_container_add((GtkContainer*)box, tab_image);
@@ -407,26 +457,35 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
       if(ih->data->show_close)
         gtk_container_add((GtkContainer*)box, tab_close);
 
-      gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, box, pos);
+      gtk_container_add((GtkContainer*)evtBox, box);
+      gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, evtBox, pos);
       gtk_notebook_set_menu_label_text((GtkNotebook*)ih->handle, tab_page, gtk_label_get_text((GtkLabel*)tab_label));
     }
     else if(tabimage && ih->data->show_close)
     {
       gtk_container_add((GtkContainer*)box, tab_image);
       gtk_container_add((GtkContainer*)box, tab_close);
-      gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, box, pos);
+      gtk_container_add((GtkContainer*)evtBox, box);
+      gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, evtBox, pos);
     }
     else if(tabtitle && ih->data->show_close)
     {
       gtk_container_add((GtkContainer*)box, tab_label);
       gtk_container_add((GtkContainer*)box, tab_close);
-      gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, box, pos);
+      gtk_container_add((GtkContainer*)evtBox, box);
+      gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, evtBox, pos);
       gtk_notebook_set_menu_label_text((GtkNotebook*)ih->handle, tab_page, gtk_label_get_text((GtkLabel*)tab_label));
     }
     else if (tabimage)
+    {
+      gtk_container_add((GtkContainer*)evtBox, tab_image);
       gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, tab_image, pos);
+    }
     else
+    {
+      gtk_container_add((GtkContainer*)evtBox, tab_label);
       gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, tab_label, pos);
+    }
 
     gtk_widget_realize(tab_page);
 
@@ -501,7 +560,6 @@ static int gtkTabsMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   gtk_notebook_set_scrollable((GtkNotebook*)ih->handle, TRUE);
-  gtk_notebook_popup_enable((GtkNotebook*)ih->handle);
 
   gtkTabsUpdateTabType(ih);
 
@@ -557,6 +615,9 @@ void iupdrvTabsInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, gtkTabsSetTabImageAttrib, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABVISIBLE", gtkTabsGetTabVisibleAttrib, gtkTabsSetTabVisibleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, gtkTabsSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  /* IupTabs only GTK */
+  iupClassRegisterAttribute(ic, "POPUP", gtkTabsGetPopUpAttrib, gtkTabsSetPopUpAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NO_INHERIT);
 
   /* NOT supported */
   iupClassRegisterAttribute(ic, "MULTILINE", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_DEFAULT);

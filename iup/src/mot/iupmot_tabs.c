@@ -378,6 +378,23 @@ void motTabsPageChangedCallback(Widget w, Ihandle* ih, XmNotebookCallbackStruct 
   (void)w; 
 }
 
+static void motTabButtonPressEvent(Widget w, Ihandle* child, XButtonEvent* evt, Boolean* cont)
+{
+  Ihandle* ih = IupGetParent(child);
+  IFniii cb = (IFniii)IupGetCallback(ih, "TABRBUTTON_CB");
+  (void)w;
+  (void)cont;
+
+  if (evt->type==ButtonPress && evt->button==Button3 && cb)  /* right button clicked on tab */
+  {
+    int pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");
+	
+    XtVaSetValues(ih->handle, XmNcurrentPageNumber, pos, NULL);
+
+    cb(ih, pos, evt->x_root, evt->y_root);
+  }
+}
+
 static void motTabsConfigureNotify(Widget w, XEvent *evt, String* s, Cardinal *card)
 {
   /* Motif does not process the changed of position and/or size of children outside the parent's client area. 
@@ -478,6 +495,8 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     XtAddEventHandler(tab_button, FocusChangeMask, False, (XtEventHandler)iupmotFocusChangeEvent, (XtPointer)ih);
     XtAddEventHandler(tab_button, KeyPressMask,    False, (XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
 
+    XtAddEventHandler(tab_button, ButtonPressMask, False, (XtEventHandler)motTabButtonPressEvent, (XtPointer)child);
+
     if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
     {
       XtAddEventHandler(tab_button, PointerMotionMask, False, (XtEventHandler)iupmotDummyPointerMotionEvent, NULL);
@@ -515,7 +534,7 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     XtVaSetValues(tab_button, XmNforeground, color, NULL);
 
     XtRealizeWidget(child_manager);
-    XtRealizeWidget(tab_button);
+    XtRealizeWidget(tab_button);   
 
     iupAttribSet(child, "_IUPTAB_CONTAINER", (char*)child_manager);
     iupAttribSet(child, "_IUPMOT_TABBUTTON", (char*)tab_button);

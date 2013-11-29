@@ -65,6 +65,27 @@ static Ihandle* load_image_TestImage(void)
   return image;
 }
 
+static int cbRemoveAllButThisTab(Ihandle* ih)
+{
+  Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
+  Ihandle* vbox = IupGetHandle(IupGetAttribute(tabs, "VALUE"));
+  Ihandle* child = IupGetChild(tabs, 0);
+  Ihandle* brother;
+
+  for (child = IupGetChild(tabs, 0); child; child = brother)
+  {
+    brother = IupGetBrother(child);
+
+    if(child != vbox)
+    {
+      IupDestroy(child);
+      IupRefresh(tabs);  /* update children layout */
+    }
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int cbChildButton(Ihandle* ih)
 {
   printf("button(%s)\n", IupGetAttribute(ih, "TITLE"));
@@ -209,6 +230,23 @@ static int cbTabChangePos(Ihandle* ih, int new_tab, int old_tab)
   return IUP_DEFAULT;
 }
 
+static int cbTabRightButton(Ihandle* ih, int pos, int x, int y)
+{
+  Ihandle* menu = IupMenu(IupItem("Add Tab", "cbAddTab"),
+                          IupItem("Insert Tab", "cbInsertTab"),
+                          IupItem("Remove Tab", "cbRemoveTab"),
+                          IupItem("Remove All But This Tab", "cbRemoveAllButThisTab"), NULL);
+  
+  printf("Click in Tab: %d, x: %d, y: %d\n", pos, x, y);
+  
+  IupSetAttribute(menu, "APP_TABS", IupGetAttribute(ih, "APP_TABS"));
+
+  IupPopup(menu, x, y);
+  IupDestroy(menu);
+
+  return IUP_DEFAULT;
+}
+
 static int cbInactive(Ihandle *ih, int state)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
@@ -309,6 +347,7 @@ static Ihandle* CreateTabs(int tab)
 
   //IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)cbTabChange);
   IupSetCallback(tabs, "TABCHANGEPOS_CB", (Icallback)cbTabChangePos);
+  IupSetCallback(tabs, "TABRBUTTON_CB", (Icallback)cbTabRightButton);
 
   //IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_LogoTecgraf());
   IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_TestImage());
@@ -323,6 +362,7 @@ static Ihandle* CreateTabs(int tab)
 //  IupSetAttribute(tabs, "TABORIENTATION", "VERTICAL");
 
   IupSetAttribute(tabs, "SHOWCLOSE", "YES");
+  //IupSetAttribute(tabs, "POPUP", "YES");  // GTK Only 
   
 //  IupSetAttribute(tabs, "ALIGNMENT", "NW");
 //  IupSetAttribute(tabs, "ALIGNMENT", "NORTH");
@@ -418,6 +458,7 @@ void TabsTest(void)
   IupSetFunction("cbInactive", (Icallback)cbInactive);
   IupSetFunction("cbChildButton", (Icallback)cbChildButton);
   IupSetFunction("cbTest", (Icallback)cbTest);
+  IupSetFunction("cbRemoveAllButThisTab", (Icallback)cbRemoveAllButThisTab);
 }
 
 #ifndef BIG_TEST

@@ -78,11 +78,11 @@ SRC += gridbox.c
 SRC += expander.c
 
 
-#ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-#  LIBS += iupimglib
-#else
-#  SLIB += $(IUP_LIB)/libiupimglib.a
-#endif
+ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  LIBS += iupimglib
+else
+  SLIB += $(IUP_LIB)/libiupimglib.a
+endif
 
 USE_CD = Yes
 SRC += canvas_scrollbar.c

@@ -765,7 +765,31 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     }
   }
 
-  //TODO: NM_RCLICK 
+  if (msg_info->code == NM_RCLICK)
+  {
+    IFniii cb = (IFniii)IupGetCallback(ih, "TABRBUTTON_CB");
+
+    if (cb)
+    {
+      TCHITTESTINFO ht;
+      int p, pos;
+      int xOrig, yOrig;
+      GetCursorPos(&ht.pt);
+      xOrig = ht.pt.x;
+      yOrig = ht.pt.y;
+      ScreenToClient(ih->handle, &ht.pt);
+      
+      p = SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
+      
+      /* Select this tab as the current */
+      SendMessage(ih->handle, TCM_SETCURFOCUS, p, 0);
+      SendMessage(ih->handle, TCM_SETCURSEL, p, 0);
+      
+      pos = iupdrvTabsGetCurrentTab(ih);
+      
+      cb(ih, pos, xOrig, yOrig);
+    }
+  }
 
   return 0; /* result not used */
 }
@@ -867,7 +891,7 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height)
   int imgW = 0, imgH = 0, txtW = 0, txtH = 0, 
     bpp, style = 0, x = 0, y = 0, border = 4;
   char *str;
-  int make_inactive;
+  //int make_inactive;
 
   tci.mask = TCIF_TEXT | TCIF_IMAGE;
 	tci.pszText = title;     
