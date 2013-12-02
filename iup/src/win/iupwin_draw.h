@@ -37,9 +37,25 @@ typedef struct _iupwinBitmapDC
 HDC iupwinDrawCreateBitmapDC(iupwinBitmapDC *bmpDC, HDC hDC, int x, int y, int w, int h);
 void iupwinDrawDestroyBitmapDC(iupwinBitmapDC *bmpDC);
 
-#ifndef ODS_HOTLIGHT     /* Not defined for MingW and Cygwin */
+int iupwinCustomDrawToDrawItem(Ihandle* ih, NMHDR* msg_info, int *result, IFdrawItem drawitem_cb);
+
+/* Not defined for MingW and Cygwin */
+#ifndef ODS_HOTLIGHT     
 #define ODS_HOTLIGHT        0x0040
 #endif
+#ifndef ODS_NOACCEL
+#define ODS_NOACCEL   0x0100
+#endif
+#ifndef DT_HIDEPREFIX
+#define DT_HIDEPREFIX   0x00100000
+#endif
+#ifndef ODS_NOFOCUSRECT
+#define ODS_NOFOCUSRECT   0x0200
+#endif
+#ifndef CDIS_SHOWKEYBOARDCUES
+#define CDIS_SHOWKEYBOARDCUES   0x0200
+#endif
+
 
 #ifdef __cplusplus
 }

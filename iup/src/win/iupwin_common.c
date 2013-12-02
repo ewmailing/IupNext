@@ -801,42 +801,6 @@ void iupdrvBaseRegisterVisualAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "TIPBALLOONTITLEICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
 }
 
-int iupwinCustomDrawToDrawItem(Ihandle* ih, NMHDR* msg_info, int *result, IFdrawItem drawitem_cb)
-{
-  NMCUSTOMDRAW *customdraw = (NMCUSTOMDRAW*)msg_info;
-
-  if (customdraw->dwDrawStage == CDDS_PREERASE)
-  {
-    DRAWITEMSTRUCT drawitem;
-    drawitem.itemState = 0;
-
-    if (customdraw->uItemState & CDIS_DISABLED)
-      drawitem.itemState |= ODS_DISABLED;
-    else if (customdraw->uItemState & CDIS_SELECTED)
-      drawitem.itemState |= ODS_SELECTED;
-    else if (customdraw->uItemState & CDIS_HOT)
-      drawitem.itemState |= ODS_HOTLIGHT;
-    else if (customdraw->uItemState & CDIS_DEFAULT)
-      drawitem.itemState |= ODS_DEFAULT;
-
-    if (customdraw->uItemState & CDIS_FOCUS)
-      drawitem.itemState |= ODS_FOCUS;
-
-    if (!(customdraw->uItemState & CDIS_SHOWKEYBOARDCUES))
-      drawitem.itemState |= ODS_NOFOCUSRECT | ODS_NOACCEL;
-
-    drawitem.hDC = customdraw->hdc;
-    drawitem.rcItem = customdraw->rc;
-
-    drawitem_cb(ih, (void*)&drawitem);
-
-    *result = CDRF_SKIPDEFAULT;
-    return 1;
-  }
-  else
-    return 0;
-}
-
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
 {
   char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;

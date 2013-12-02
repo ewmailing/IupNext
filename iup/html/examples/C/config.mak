@@ -90,7 +90,7 @@ ifdef IUPWEB_SAMPLE
   endif
 endif
 
-#USE_IUPCONTROLS = Yes
+USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
 #SRC = cbox.c
 #SRC = cells_checkboard.c
@@ -101,7 +101,7 @@ endif
 #SRC = gauge.c
 #SRC = getcolor.c
 #SRC = getparam.c
-#SRC = matrix.c
+SRC = matrix.c
 #SRC = mdi.c
 
 #IUPPPLOT_SAMPLE=Yes
@@ -138,7 +138,7 @@ ifdef IUPMGLPLOT_SAMPLE
   endif
 endif
 
-IUPSCINTILLA_SAMPLE=Yes
+#IUPSCINTILLA_SAMPLE=Yes
 ifdef IUPSCINTILLA_SAMPLE
   USE_IUPCONTROLS = Yes
   LINKER = g++  
@@ -153,3 +153,6 @@ endif
 #USE_LUA51=Yes
 #USE_IUPLUA=Yes
 #SRC = lua_init.c
+
+INCLUDES += ../../../etc/
+SRC += ../../../etc/iup.rc

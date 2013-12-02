@@ -29,16 +29,6 @@
 #include "iupwin_str.h"
 
 
-#ifndef ODS_NOACCEL
-#define ODS_NOACCEL   0x0100
-#endif
-#ifndef ODS_NOFOCUSRECT
-#define ODS_NOFOCUSRECT   0x0200
-#endif
-#ifndef CDIS_SHOWKEYBOARDCUES
-#define CDIS_SHOWKEYBOARDCUES   0x0200
-#endif
-
 
 void iupdrvToggleAddCheckBox(int *x, int *y)
 {
@@ -521,7 +511,7 @@ static int winToggleImageWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   /* called only when (ih->data->type==IUP_TOGGLE_IMAGE && iupwin_comctl32ver6) */
 
   if (msg_info->code == NM_CUSTOMDRAW)
-    return iupwinCustomDrawToDrawItem(ih, msg_info, result, winToggleDrawItem);
+    return iupwinCustomDrawToDrawItem(ih, msg_info, result, (IFdrawItem)winToggleDrawItem);
 
   return 0; /* result not used */
 }

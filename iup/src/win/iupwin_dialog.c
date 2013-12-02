@@ -1424,8 +1424,8 @@ void iupdrvDialogInitClass(Iclass* ic)
   if (!iupwinClassExist(TEXT("IupDialog")))
   {
     winDialogRegisterClass(0);
-    winDialogRegisterClass(1);
-    winDialogRegisterClass(2);
+    winDialogRegisterClass(1);  /* MDIFrame */
+    winDialogRegisterClass(2);  /* MDIChild */
     winDialogRegisterClass(-1);
 
     WM_HELPMSG = RegisterWindowMessage(HELPMSGSTRING);
