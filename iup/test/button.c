@@ -436,6 +436,7 @@ void ButtonTest(void)
 //  IupSetAttribute(dlg, "BACKGROUND", "255 128 128");
 //  IupSetAttributeHandle(dlg, "BACKGROUND", image2);
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
+//  IupSetAttribute(dlg, "SAVEUNDER", "NO");
 
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 

@@ -449,5 +449,25 @@ char* iupdrvGetGlobal(const char* name)
         return "Unknown Error";
     }
   }
+  if (iupStrEqual(name, "DWM_COMPOSITION"))
+  {
+    typedef HRESULT(STDAPICALLTYPE *PtrDwmIsCompositionEnabled)(BOOL*);
+    static PtrDwmIsCompositionEnabled dwmIsCompositionEnabled = NULL;
+    if (dwmIsCompositionEnabled == NULL) 
+    {
+      HMODULE dwmLibrary = LoadLibrary(TEXT("dwmapi.dll"));
+      if (dwmLibrary)
+        dwmIsCompositionEnabled = (PtrDwmIsCompositionEnabled)GetProcAddress(dwmLibrary, "DwmIsCompositionEnabled");
+    }
+    if (dwmIsCompositionEnabled != NULL) 
+    {
+      /* windows vista or higher (has aero): see if disabled */
+      BOOL enabled;
+      dwmIsCompositionEnabled(&enabled);
+      return iupStrReturnBoolean(enabled);
+    }
+    else
+      return NULL;
+  }
   return NULL;
 }
