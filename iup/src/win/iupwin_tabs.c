@@ -313,11 +313,8 @@ static void winTabSetPageWindowPos(HWND tab_page, RECT *rect)
 
 static void winTabsPlacePageWindows(Ihandle* ih, int w, int h)
 {
-  TCITEM tie;
   RECT rect; 
   Ihandle* child;
-
-  tie.mask = TCIF_PARAM;
 
   /* Calculate the display rectangle, assuming the 
      tab control is the size of the client area. */
@@ -890,7 +887,7 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height)
   HIMAGELIST image_list = (HIMAGELIST)SendMessage(ih->handle, TCM_GETIMAGELIST, 0, 0);
   int imgW = 0, imgH = 0, txtW = 0, txtH = 0, 
     bpp, style = 0, x = 0, y = 0, border = 4;
-  char *str;
+  char *str = NULL;
   //int make_inactive;
 
   tci.mask = TCIF_TEXT | TCIF_IMAGE;
@@ -941,10 +938,10 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height)
       x += imgW + border;
     }
 
-    if (title)
+    if (title[0])
     {
       y = (height - txtH) / 2;
-      iupwinDrawText(hDC, iupwinStrFromSystem(title), x, y, txtW, txtH, hFont, fgcolor, style);
+      iupwinDrawText(hDC, str, x, y, txtW, txtH, hFont, fgcolor, style);
     }
 
     x = width - border - ITABS_CLOSE_SIZE;
@@ -961,7 +958,7 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height)
       ImageList_Draw(image_list, tci.iImage, hDC, x, y, ILD_NORMAL);  /* Tab image is already rotated into the list! */
     }
 
-    if (title)
+    if (title[0])
     {
       x = (width - txtH) / 2;  /* text is rotated switch W/H */
       y -= border;
@@ -982,7 +979,7 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height)
       y += imgH + border;
     }
 
-    if (title)
+    if (title[0])
     {
       x = (width - txtH) / 2;  /* text is rotated switch W/H */
       winTabsDrawRotateText(hDC, str, x, y, hFont, fgcolor, 0);
