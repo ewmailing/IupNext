@@ -70,6 +70,17 @@ static void winTabsInitializeCloseImage(void)
   IupSetAttribute(image_close, "1", "0 0 0");
   
   IupSetHandle("IMGCLOSE", image_close);
+
+  image_close = IupImage(ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, img_close);
+
+  IupSetAttribute(image_close, "0", "BGCOLOR");
+
+  {
+    COLORREF bgcolor = GetSysColor(COLOR_HIGHLIGHT);
+    IupSetRGB(image_close, "1", GetRValue(bgcolor), GetGValue(bgcolor), GetBValue(bgcolor));
+  }
+
+  IupSetHandle("IMGCLOSEHIGH", image_close);
 }
 
 static Iarray* winTabsGetVisibleArray(Ihandle* ih)
@@ -672,11 +683,10 @@ static int winTabsIsInsideCloseButton(Ihandle* ih, int p)
 static int winTabsCtlColor(Ihandle* ih, HDC hdc, LRESULT *result)
 {
   /* works only when NOT winTabsUsingXPStyles */
-  unsigned char r, g, b;
-  char* color = iupBaseNativeParentGetBgColorAttrib(ih);
-  if (iupStrToRGB(color, &r, &g, &b))
+  COLORREF bgcolor;
+  if (iupwinGetParentBgColor(ih, &bgcolor))
   {
-    SetDCBrushColor(hdc, RGB(r,g,b));
+    SetDCBrushColor(hdc, bgcolor);
     *result = (LRESULT)GetStockObject(DC_BRUSH);
     return 1;
   }
@@ -768,15 +778,17 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     if (cb)
     {
       TCHITTESTINFO ht;
-      int p, pos;
+      int p;
+
       GetCursorPos(&ht.pt);
       ScreenToClient(ih->handle, &ht.pt);
       
       p = SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
-     
-      pos = winTabsPosFixFromWin(ih, p);
-      
-      cb(ih, pos);
+      if (p != -1)
+      {
+        int pos = winTabsPosFixFromWin(ih, p);
+        cb(ih, pos);
+      }
     }
   }
 
@@ -785,25 +797,25 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 
 static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
-  switch(msg)
+  switch (msg)
   {
   case WM_SIZE:
-    {
-      WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
-      CallWindowProc(oldProc, ih->handle, msg, wp, lp);
+  {
+                WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
+                CallWindowProc(oldProc, ih->handle, msg, wp, lp);
 
-      winTabsPlacePageWindows(ih, LOWORD(lp), HIWORD(lp));
+                winTabsPlacePageWindows(ih, LOWORD(lp), HIWORD(lp));
 
-      *result = 0;
-      return 1;
-    }
+                *result = 0;
+                return 1;
+  }
   case WM_MOUSELEAVE:
     if (ih->data->show_close)
     {
-      int last_p = iupAttribGetInt(ih, "_IUPTABS_LASTHITTEST");
-      if (last_p != -1)
+      int high_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEHIGH");
+      if (high_p != -1)
       {
-        iupAttribSetInt(ih, "_IUPTABS_LASTHITTEST", -1);
+        iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", -1);
         iupdrvRedrawNow(ih);
       }
     }
@@ -812,16 +824,53 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     if (ih->data->show_close)
     {
       TCHITTESTINFO ht;
-      int p, last_p;
+      int p, high_p, press_p;
 
       ht.pt.x = (int)(short)LOWORD(lp);
       ht.pt.y = (int)(short)HIWORD(lp);
-
       p = SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
-      last_p = iupAttribGetInt(ih, "_IUPTABS_LASTHITTEST");
-      if (p != last_p)
+
+      high_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEHIGH");
+      if (p != high_p)
       {
-        iupAttribSetInt(ih, "_IUPTABS_LASTHITTEST", p);
+        iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", p);
+        iupdrvRedrawNow(ih);
+      }
+
+      press_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEPRESS");
+      if (press_p != -1 && !winTabsIsInsideCloseButton(ih, press_p))
+      {
+        iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", -1);
+        iupdrvRedrawNow(ih);
+      }
+    }
+    break;
+  case WM_LBUTTONDOWN:
+    if (ih->data->show_close)
+    {
+      TCHITTESTINFO ht;
+      int p;
+
+      ht.pt.x = (int)(short)LOWORD(lp);
+      ht.pt.y = (int)(short)HIWORD(lp);
+      p = SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
+
+      if (p != -1 && winTabsIsInsideCloseButton(ih, p))
+      {
+        iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", p);
+        iupdrvRedrawNow(ih);
+      }
+      else
+        iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", -1);
+    }
+    break;
+  case WM_LBUTTONUP:
+    if (ih->data->show_close)
+    {
+      int press_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEPRESS");
+      if (press_p != -1)
+      {
+        iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", -1);
         iupdrvRedrawNow(ih);
       }
     }
@@ -869,18 +918,17 @@ static void winTabsDrawRotateText(HDC hDC, char* text, int x, int y, HFONT hFont
   DeleteObject(hFont);
 }
 
-static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height)
+static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height, COLORREF fgcolor)
 {
   HBITMAP hBitmapClose, hCloseMask = NULL;
   HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
-  COLORREF fgcolor;
 	TCHAR title[256];
 	TCITEM tci;
   HIMAGELIST image_list = (HIMAGELIST)SendMessage(ih->handle, TCM_GETIMAGELIST, 0, 0);
   int imgW = 0, imgH = 0, txtW = 0, txtH = 0, 
     bpp, style = 0, x = 0, y = 0, border = 4;
   char *str = NULL;
-  //int make_inactive;
+  int high_p, press_p;
 
   tci.mask = TCIF_TEXT | TCIF_IMAGE;
 	tci.pszText = title;     
@@ -901,16 +949,12 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height)
     imgH = pImgInfo.rcImage.bottom - pImgInfo.rcImage.top;
   }
 
-  if (iupdrvIsActive(ih))
-    fgcolor = GetSysColor(COLOR_WINDOWTEXT);
-  else
-    fgcolor = GetSysColor(COLOR_GRAYTEXT);
-  
   /* Create the close button image */
-  // _IUPTABS_LASTHITTEST
-  //sprintf(strActiveName, "_IUPTAB_IMGCLOSE_ACTIVE%d", pos);
-  //make_inactive = iupStrEqualNoCase(iupAttribGet(ih, strActiveName), "YES") ? 0 : 1;
-  hBitmapClose = iupImageGetImage("IMGCLOSE", ih, 0);
+  high_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEHIGH");
+  if (high_p == p)
+    hBitmapClose = iupImageGetImage("IMGCLOSEHIGH", ih, 0);
+  else
+    hBitmapClose = iupImageGetImage("IMGCLOSE", ih, 0);
   if (!hBitmapClose)
     return;
 
@@ -981,6 +1025,13 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height)
     y = height - border - ITABS_CLOSE_SIZE;
   }
 
+  press_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEPRESS");
+  if (press_p == p)
+  {
+    x++;
+    y++;
+  }
+
   iupwinDrawBitmap(hDC, hBitmapClose, hCloseMask, x, y, ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, bpp);
 
   if (hCloseMask)
@@ -993,7 +1044,8 @@ static void winTabsDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   iupwinBitmapDC bmpDC;
   RECT rect;
   int x, y, width, height, p;
-  unsigned char r, g, b;
+  COLORREF fgcolor;
+  COLORREF bgcolor;
 
   /* If there are no tab items, skip this message */
   if (drawitem->itemID == -1)
@@ -1008,14 +1060,22 @@ static void winTabsDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
   hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, x, y, width, height);
 
-  if (iupStrToRGB(iupBaseNativeParentGetBgColorAttrib(ih), &r, &g, &b))
+  if (iupwinGetParentBgColor(ih, &bgcolor))
   {
-    SetDCBrushColor(hDC, RGB(r, g, b));
+    SetDCBrushColor(hDC, bgcolor);
     SetRect(&rect, 0, 0, width, height);
     FillRect(hDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
   }
 
-  winTabsDrawTab(ih, hDC, p, width, height);
+  if (drawitem->itemState & ODS_DISABLED)
+    fgcolor = GetSysColor(COLOR_GRAYTEXT);
+  else
+  {
+    if (!iupwinGetColorRef(ih, "FGCOLOR", &fgcolor))
+      fgcolor = GetSysColor(COLOR_WINDOWTEXT);
+  }
+
+  winTabsDrawTab(ih, hDC, p, width, height, fgcolor);
 
   /* If the item has the focus, draw the focus rectangle */
   if (drawitem->itemState & ODS_FOCUS)
@@ -1151,6 +1211,9 @@ static int winTabsMapMethod(Ihandle* ih)
   {
     /* change tab width to draw an close image */
     SendMessage(ih->handle, TCM_SETPADDING, 0, MAKELPARAM(ITABS_CLOSE_SIZE, 0));
+
+    iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", -1);
+    iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", -1);
 
     /* owner draw tab image + tab title + close image */
     IupSetCallback(ih, "_IUPWIN_DRAWITEM_CB", (Icallback)winTabsDrawItem);
