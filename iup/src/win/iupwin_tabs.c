@@ -769,10 +769,7 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     {
       TCHITTESTINFO ht;
       int p, pos;
-      int xOrig, yOrig;
       GetCursorPos(&ht.pt);
-      xOrig = ht.pt.x;
-      yOrig = ht.pt.y;
       ScreenToClient(ih->handle, &ht.pt);
       
       p = SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
