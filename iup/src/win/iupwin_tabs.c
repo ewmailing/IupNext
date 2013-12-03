@@ -764,8 +764,7 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 
   if (msg_info->code == NM_RCLICK)
   {
-    IFniii cb = (IFniii)IupGetCallback(ih, "TABRBUTTON_CB");
-
+    IFni cb = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
     if (cb)
     {
       TCHITTESTINFO ht;
@@ -777,14 +776,10 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       ScreenToClient(ih->handle, &ht.pt);
       
       p = SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
+     
+      pos = winTabsPosFixFromWin(ih, p);
       
-      /* Select this tab as the current */
-      SendMessage(ih->handle, TCM_SETCURFOCUS, p, 0);
-      SendMessage(ih->handle, TCM_SETCURSEL, p, 0);
-      
-      pos = iupdrvTabsGetCurrentTab(ih);
-      
-      cb(ih, pos, xOrig, yOrig);
+      cb(ih, pos);
     }
   }
 

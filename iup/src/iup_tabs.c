@@ -514,6 +514,7 @@ Iclass* iupTabsNewClass(void)
   /* IupTabs Callbacks */
   iupClassRegisterCallback(ic, "TABCHANGE_CB", "nn");
   iupClassRegisterCallback(ic, "TABCHANGEPOS_CB", "ii");
+  iupClassRegisterCallback(ic, "RIGHTCLICK_CB", "i");
 
   /* Common Callbacks */
   iupBaseRegisterCommonCallbacks(ic);

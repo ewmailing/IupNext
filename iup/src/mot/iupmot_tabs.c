@@ -381,17 +381,14 @@ void motTabsPageChangedCallback(Widget w, Ihandle* ih, XmNotebookCallbackStruct 
 static void motTabButtonPressEvent(Widget w, Ihandle* child, XButtonEvent* evt, Boolean* cont)
 {
   Ihandle* ih = IupGetParent(child);
-  IFniii cb = (IFniii)IupGetCallback(ih, "TABRBUTTON_CB");
+  IFni cb = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
   (void)w;
   (void)cont;
 
   if (evt->type==ButtonPress && evt->button==Button3 && cb)  /* right button clicked on tab */
   {
     int pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");
-	
-    XtVaSetValues(ih->handle, XmNcurrentPageNumber, pos, NULL);
-
-    cb(ih, pos, evt->x_root, evt->y_root);
+    cb(ih, pos);
   }
 }
 
