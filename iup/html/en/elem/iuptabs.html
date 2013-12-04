@@ -78,7 +78,9 @@ inheritable</font>): internal margin of the tab title. Works just like the
 inheritable</font>): <span id="result_box1" class="short_text" lang="en">
 <span class="hps">enables</span> <span class="hps">the close button on each</span>
 <span class="hps">tab.</span></span><span id="result_box0" class="" lang="en"><span class="">
-</span></span>Default value: &quot;NO&quot;. (since 3.10)</p>
+</span></span>Default value: &quot;NO&quot;. In Windows the close button imply 
+the classic visual for the control. By default when closed the tab is hidden. 
+The change that behavior use the TABCLOSE_CB callback. (since 3.10)</p>
 
 
   <p><a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>): 
@@ -179,8 +181,8 @@ the event.<br>
     <strong>new_pos</strong>: the new tab position selected by the user 
   <br>
 <strong>old_pos</strong>: the previously selected tab position</p>
-<p><strong>TABCLOSE_CB</strong>: Callback called when the user clicks on the 
-close button (since 3.10).</p>
+<p><strong>TABCLOSE_CB</strong> [Windows and GTK Only]: Callback called when the user clicks on the 
+close button (since 3.10). Called only when SHOWCLOSE=Yes.</p>
 <div align="left">
   <pre>int function(Ihandle* <strong>ih</strong>, int <strong>pos</strong>); [in C]
 <strong>elem</strong>:tabclose_cb(<strong>pos</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -188,6 +190,9 @@ close button (since 3.10).</p>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
     <strong>pos</strong>: the tab position</p>
+<p class="info"><u>Returns</u>: the tab will be hidden if the callback returns 
+IUP_DEFAULT or if it does not exists. If IUP_CONTINUE is returned the tab is 
+removed and its children are destroyed. If IUP_IGNORE is returned does nothing.</p>
 <p><strong>RIGHTCLICK_CB</strong>: Callback called when the user clicks on some 
 tab using the right mouse button (since 3.10).</p>
 <div align="left">
