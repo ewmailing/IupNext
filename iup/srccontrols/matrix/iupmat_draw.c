@@ -236,7 +236,7 @@ static int iMatrixDrawFrameHorizLineHighlight(Ihandle* ih, int lin, int col, int
 {
   if (lin > 0)
   {
-    int transp = iMatrixDrawGetFrameVertColor(ih, lin-1, col, &framecolor);
+    int transp = iMatrixDrawGetFrameHorizColor(ih, lin-1, col, &framecolor);
     if (transp)
       return 1;
   }
