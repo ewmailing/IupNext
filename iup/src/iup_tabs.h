@@ -16,6 +16,8 @@ char* iupTabsGetTabOrientationAttrib(Ihandle* ih);
 char* iupTabsGetTabTypeAttrib(Ihandle* ih);
 char* iupTabsGetPaddingAttrib(Ihandle* ih);
 void iupTabsCheckCurrentTab(Ihandle* ih, int pos);
+int iupdrvTabsIsTabVisible(Ihandle* child);
+char* iupTabsGetTabVisibleAttrib(Ihandle* ih, int pos);
 
 int iupdrvTabsExtraDecor(Ihandle* ih);
 int iupdrvTabsGetLineCountAttrib(Ihandle* ih);

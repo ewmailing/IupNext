@@ -73,7 +73,12 @@ static int cbUnHideAllTabs(Ihandle* ih)
   for (i = 0; i < count; i++)
   {
     if (!IupGetIntId(tabs, "TABVISIBLE", i))
+    {
       IupSetAttributeId(tabs, "TABVISIBLE", i, "Yes");
+      printf("tab %d = hidden\n", i);
+    }
+    else
+      printf("tab %d = visible\n", i);
   }
 
   return IUP_DEFAULT;
@@ -91,6 +96,14 @@ static int cbRemoveThisTab(Ihandle* ih)
     IupRefreshChildren(tabs);  /* update children layout */
   }
 
+  return IUP_DEFAULT;
+}
+
+static int cbHideThisTab(Ihandle* ih)
+{
+  Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
+  int pos = IupGetInt(ih, "APP_THISTAB");
+  IupSetAttributeId(tabs, "TABVISIBLE", pos, "No");
   return IUP_DEFAULT;
 }
 
@@ -245,7 +258,9 @@ static int cbTabRightButton(Ihandle* ih, int pos)
   Ihandle* menu = IupMenu(IupItem("Add Tab", "cbAddTab"),
                           IupItem("Insert Tab", "cbInsertTab"),
                           IupItem("Remove Current Tab", "cbRemoveTab"),
-                          IupItem("Remove This", "cbRemoveThisTab"), NULL);
+                          IupItem("Remove This", "cbRemoveThisTab"), 
+                          IupItem("Hide This", "cbHideThisTab"),
+                          NULL);
   
   IupSetAttribute(menu, "APP_TABS", IupGetAttribute(ih, "APP_TABS"));
   IupSetInt(menu, "APP_THISTAB", pos);
@@ -469,6 +484,7 @@ void TabsTest(void)
   IupSetFunction("cbTest", (Icallback)cbTest);
   IupSetFunction("cbRemoveThisTab", (Icallback)cbRemoveThisTab);
   IupSetFunction("cbUnHideAllTabs", (Icallback)cbUnHideAllTabs);
+  IupSetFunction("cbHideThisTab", (Icallback)cbHideThisTab);
 }
 
 #ifndef BIG_TEST

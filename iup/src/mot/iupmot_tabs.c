@@ -337,13 +337,12 @@ static int motTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
   return 0;
 }
 
-static char* motTabsGetTabVisibleAttrib(Ihandle* ih, int pos)
+int iupdrvTabsIsTabVisible(Ihandle* child)
 {
-  Ihandle* child = IupGetChild(ih, pos);
   Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
   XWindowAttributes wa;
   XGetWindowAttributes(iupmot_display, XtWindow(tab_button), &wa);
-  return iupStrReturnBoolean (wa.map_state == IsViewable); 
+  return (wa.map_state == IsViewable);
 }
 
 
@@ -549,10 +548,8 @@ static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
     Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (child_manager)
     {
-      int pos;
       Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
-
-      pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaGetValues(child_manager, XmNpageNumber) */
+      int pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaGetValues(child_manager, XmNpageNumber) */
 
       iupTabsCheckCurrentTab(ih, pos);
 
@@ -666,7 +663,7 @@ void iupdrvTabsInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  /* can not be set, always HORIZONTAL in Motif */
   iupClassRegisterAttributeId(ic, "TABTITLE", NULL, motTabsSetTabTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, motTabsSetTabImageAttrib, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABVISIBLE", motTabsGetTabVisibleAttrib, motTabsSetTabVisibleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABVISIBLE", iupTabsGetTabVisibleAttrib, motTabsSetTabVisibleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, motTabsSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* NOT supported */

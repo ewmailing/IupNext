@@ -136,12 +136,14 @@ struct Iclass_
   void* (*GetInnerNativeContainerHandle)(Ihandle* ih, Ihandle* child);
 
   /** Notifies the element that a child was appended using IupAppend. \n
-   * Called only from IupAppend or IupReparent. The child is not mapped, but the parent can be mapped.
+   * Called only from IupAppend or IupReparent. 
+   * The child is not mapped yet, but the parent can be mapped.
    */
   void (*ChildAdded)(Ihandle* ih, Ihandle* child);
 
   /** Notifies the element that a child was removed using IupDetach. \n
-   * Called only from IupDetach or IupReparent. The child is already detached, but mapped state was not changed.
+   * Called only from IupDetach or IupReparent. 
+   * The child is already detached.
    */
   void (*ChildRemoved)(Ihandle* ih, Ihandle* child);
 

@@ -216,12 +216,30 @@ static void iTabsGetDecorOffset(Ihandle* ih, int *dx, int *dy)
   *dy += ih->data->vert_padding;
 }
 
+void iupTabsCheckCurrentTab(Ihandle* ih, int pos)
+{
+  int cur_pos = iupdrvTabsGetCurrentTab(ih);
+  if (cur_pos == pos)
+  {
+    Ihandle* child;
+
+    for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
+    {
+      if (pos != cur_pos && iupdrvTabsIsTabVisible(child))
+      {
+        iupdrvTabsSetCurrentTab(ih, pos);
+        return;
+      }
+    }
+  }
+}
+
 static void iTabsSetTab(Ihandle* ih, Ihandle* child, int pos)
 {
   if (ih->handle)
   {
     int cur_pos = iupdrvTabsGetCurrentTab(ih);
-    if (cur_pos != pos)
+    if (cur_pos != pos && iupdrvTabsIsTabVisible(child))
       iupdrvTabsSetCurrentTab(ih, pos);
   }
   else
@@ -364,24 +382,13 @@ static char* iTabsGetClientOffsetAttrib(Ihandle* ih)
   return iupStrReturnIntInt(dx, dy, 'x');
 }
 
-void iupTabsCheckCurrentTab(Ihandle* ih, int pos)
+char* iupTabsGetTabVisibleAttrib(Ihandle* ih, int pos)
 {
-  int cur_pos = iupdrvTabsGetCurrentTab(ih);
-  if (cur_pos == pos)
-  {
-    if (cur_pos == 0)
-    {
-      Ihandle* child = IupGetChild(ih, 1);
-      if (!child) /* not found child, means only one child, do nothing */
-        return;
-
-      cur_pos = 1;
-    }
-    else
-      cur_pos--;
-
-    iupdrvTabsSetCurrentTab(ih, cur_pos);
-  }
+  Ihandle* child = IupGetChild(ih, pos);
+  if (child)
+    return iupStrReturnBoolean(iupdrvTabsIsTabVisible(child));
+  else
+    return NULL;
 }
 
 static char* iTabsGetShowCloseAttrib(Ihandle* ih)

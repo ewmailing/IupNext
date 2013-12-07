@@ -204,11 +204,10 @@ static int gtkTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
   return 0;
 }
 
-static char* gtkTabsGetTabVisibleAttrib(Ihandle* ih, int pos)
+int iupdrvTabsIsTabVisible(Ihandle* child)
 {
-  Ihandle* child = IupGetChild(ih, pos);
   GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_PAGE");
-  return iupStrReturnBoolean (iupgtkIsVisible(tab_page)); 
+  return iupgtkIsVisible(tab_page);
 }
 
 static int gtkTabsSetStandardFontAttrib(Ihandle* ih, const char* value)
@@ -586,7 +585,7 @@ void iupdrvTabsInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, gtkTabsSetTabOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABTITLE", NULL, gtkTabsSetTabTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, gtkTabsSetTabImageAttrib, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABVISIBLE", gtkTabsGetTabVisibleAttrib, gtkTabsSetTabVisibleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABVISIBLE", iupTabsGetTabVisibleAttrib, gtkTabsSetTabVisibleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, gtkTabsSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* NOT supported */

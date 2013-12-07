@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 //  IupSetCallback(mlist,"LISTCLICK_CB",(Icallback)listclick_cb);
 
   /* Bluish style */
-  if (0)
+  if (1)
   {
     IupSetAttribute(mlist, "TITLE", "Test");
     IupSetAttribute(mlist, "BGCOLOR", "220 230 240");
