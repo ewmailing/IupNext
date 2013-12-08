@@ -445,19 +445,19 @@ static void winTabInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_cont
   char *tabtitle, *tabimage;
   int old_rowcount, p;
 
-  tabtitle = iupAttribGetId(ih, "TABTITLE", pos);
+  tabtitle = iupAttribGet(child, "TABTITLE");
   if (!tabtitle) 
   {
-    tabtitle = iupAttribGet(child, "TABTITLE");
+    tabtitle = iupAttribGetId(ih, "TABTITLE", pos);
     if (tabtitle)
-      iupAttribSetStrId(ih, "TABTITLE", pos, tabtitle);
+      iupAttribSetStr(child, "TABTITLE", tabtitle);
   }
-  tabimage = iupAttribGetId(ih, "TABIMAGE", pos);
+  tabimage = iupAttribGet(child, "TABIMAGE");
   if (!tabimage) 
   {
-    tabimage = iupAttribGet(child, "TABIMAGE");
+    tabimage = iupAttribGetId(ih, "TABIMAGE", pos);
     if (tabimage)
-      iupAttribSetStrId(ih, "TABIMAGE", pos, tabimage);
+      iupAttribSetStr(child, "TABIMAGE", tabimage);
   }
   if (!tabtitle && !tabimage)
     tabtitle = "     ";
@@ -583,6 +583,10 @@ static int winTabsSetTabTypeAttrib(Ihandle* ih, const char* value)
 
 static int winTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
 {
+  Ihandle* child = IupGetChild(ih, pos);
+  if (child)
+    iupAttribSetStr(child, "TABTITLE", value);
+
   if (value)
   {
     int p = winTabsPosFixToWin(ih, pos);
@@ -604,6 +608,10 @@ static int winTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
 
 static int winTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
 {
+  Ihandle* child = IupGetChild(ih, pos);
+  if (child)
+    iupAttribSetStr(child, "TABIMAGE", value);
+
   if (value)
   {
     int p = winTabsPosFixToWin(ih, pos);
@@ -643,9 +651,7 @@ static int winTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
       if (p >= 0)  /* is visible */
       {
         iupTabsCheckCurrentTab(ih, pos);
-
         winTabSetVisibleArrayItem(ih, pos, 0);  /* to invisible */
-
         winTabDeleteItem(ih, p);
       }
     }
@@ -1191,14 +1197,11 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
       int pos = winTabsPosFixFromWin(ih, p);
 
       iupTabsCheckCurrentTab(ih, pos);
-
       winTabDeleteVisibleArrayItem(ih, pos);
-
       winTabDeleteItem(ih, p);
 
       iupwinHandleRemove(tab_container);
       DestroyWindow(tab_container);
-
       iupAttribSet(child, "_IUPTAB_CONTAINER", NULL);
     }
   }

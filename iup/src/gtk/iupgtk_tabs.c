@@ -163,6 +163,10 @@ static int gtkTabsSetTabOrientationAttrib(Ihandle* ih, const char* value)
 
 static int gtkTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
 {
+  Ihandle* child = IupGetChild(ih, pos);
+  if (child)
+    iupAttribSetStr(child, "TABTITLE", value);
+
   if (value)
   {
     Ihandle* child = IupGetChild(ih, pos);
@@ -179,6 +183,10 @@ static int gtkTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
 
 static int gtkTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
 {
+  Ihandle* child = IupGetChild(ih, pos);
+  if (child)
+    iupAttribSetStr(child, "TABIMAGE", value);
+
   if (value)
   {
     Ihandle* child = IupGetChild(ih, pos);
@@ -349,19 +357,19 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     gtk_widget_show(tab_container);
     gtk_container_add((GtkContainer*)tab_page, tab_container);
 
-    tabtitle = iupAttribGetId(ih, "TABTITLE", pos);
-    if (!tabtitle) 
+    tabtitle = iupAttribGet(child, "TABTITLE");
+    if (!tabtitle)
     {
-      tabtitle = iupAttribGet(child, "TABTITLE");
+      tabtitle = iupAttribGetId(ih, "TABTITLE", pos);
       if (tabtitle)
-        iupAttribSetStrId(ih, "TABTITLE", pos, tabtitle);
+        iupAttribSetStr(child, "TABTITLE", tabtitle);
     }
-    tabimage = iupAttribGetId(ih, "TABIMAGE", pos);
-    if (!tabimage) 
+    tabimage = iupAttribGet(child, "TABIMAGE");
+    if (!tabimage)
     {
-      tabimage = iupAttribGet(child, "TABIMAGE");
+      tabimage = iupAttribGetId(ih, "TABIMAGE", pos);
       if (tabimage)
-        iupAttribSetStrId(ih, "TABIMAGE", pos, tabimage);
+        iupAttribSetStr(child, "TABIMAGE", tabimage);
     }
     if (!tabtitle && !tabimage)
       tabtitle = "     ";

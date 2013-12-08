@@ -93,7 +93,9 @@ The change that behavior use the TABCLOSE_CB callback. (since 3.10)</p>
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. n starts at 0. See also <a href="iupimage.html">IupImage</a>. 
 	In Motif, the image is shown only if <strong>TABTITLEn</strong> is NULL. In 
-	Windows and Motif set the BGCOLOR attribute before setting the image. (since 
+	Windows and Motif set the BGCOLOR attribute before setting the image. When 
+  set after map will update the TABIMAGE attribute on the respective child 
+  (since 3.10). (since 
 	3.0)</p>
 
 <p><strong>TABORIENTATION </strong>(<font SIZE="3">non inheritable</font>): 
@@ -111,7 +113,9 @@ the text to be shown in the respective tab title. n starts at 0. If this value i
 remain empty. The &quot;&amp;&quot; character can be used to define a mnemonic, the next 
 character will be used as key. Use &quot;&amp;&amp;&quot; to show the &quot;&amp;&quot; character instead on 
 defining a mnemonic. The button can be activated from any control in the dialog 
-using the &quot;Alt+key" combination. (mnemonic support since 3.3) (since 3.0)</p>
+using the &quot;Alt+key" combination. (mnemonic support since 3.3). When set 
+after map will update the TABTITLE attribute on the respective child (since 
+3.10). (since 3.0)</p>
 <p><strong>TABTYPE </strong>(<font SIZE="3">non inheritable</font>) (creation 
 only in Windows): Indicates the type of tab, which can be &quot;TOP&quot;, &quot;BOTTOM&quot;, 
 &quot;LEFT&quot; or &quot;RIGHT&quot;. Default is &quot;TOP&quot;. In Windows, if LEFT or RIGHT then 
@@ -155,7 +159,10 @@ VISIBLE</a>: also accepted.</p>
 <h3>Attributes (at Children)</h3>
 <p><strong>TABTITLE </strong>(<font SIZE="3">non inheritable</font>) <strong>(at 
 children only)</strong>: Same as <strong>TABTITLEn</strong> but set in each 
-child. Works only before the child is added to the tabs.</p>
+child. Works only if set before the child is added to the tabs.</p>
+<p><strong>TABIMAGE </strong>(<font SIZE="3">non inheritable</font>) <strong>(at 
+children only)</strong>: Same as <strong>TABIMAGEn</strong> but set in each 
+child. Works only if set before the child is added to the tabs.</p>
 
 <h3><a name="Callbacks">Callbacks</a></h3>
 
