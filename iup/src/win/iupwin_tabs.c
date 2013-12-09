@@ -41,7 +41,7 @@
 #define WS_EX_COMPOSITED        0x02000000L
 #endif
 
-#define ITABS_CLOSE_SIZE 14
+#define ITABS_CLOSE_SIZE 12
 
 static void winTabsInitializeCloseImage(void)
 {
@@ -50,20 +50,18 @@ static void winTabsInitializeCloseImage(void)
 
   unsigned char img_close[ITABS_CLOSE_SIZE * ITABS_CLOSE_SIZE] =
   {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,
-    0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0,
-    0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0,
-    0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
-    0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0,
-    0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0,
-    0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 
+    0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 
+    0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 
+    0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 
+    0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 
+    0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 
+    0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
   };
   
   image_close = IupImage(ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, img_close);
@@ -865,10 +863,21 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       p = SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
 
       high_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEHIGH");
-      if (p != high_p)
+      if (winTabsIsInsideCloseButton(ih, p))
       {
-        iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", p);
-        iupdrvRedrawNow(ih);
+        if (p != high_p)
+        {
+          iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", p);
+          iupdrvRedrawNow(ih);
+        }
+      }
+      else
+      {
+        if (-1 != high_p)
+        {
+          iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", -1);
+          iupdrvRedrawNow(ih);
+        }
       }
 
       press_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEPRESS");
