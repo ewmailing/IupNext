@@ -71,8 +71,8 @@ static void iLexUngetc(int c)
     ungetc(c, ilex.file);
   else
   {
-    if (*ilex.f != 0)
-      *(char*)ilex.f = (char)c;  /* write back to the string ???? */
+    if (c != EOF && ilex.filename < ilex.f)
+      ilex.f--;
   }
 }
 
@@ -82,11 +82,10 @@ static int iLexGetc(void)
     return getc(ilex.file);
   else
   {
-    if (*ilex.f != 0)
-      ilex.f++;
-    if (*ilex.f == 0)
+    if (*(ilex.f) == 0)
       return EOF;
-    return *ilex.f;
+    ilex.f++;
+    return *(ilex.f - 1);
   }
 }
 

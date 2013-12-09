@@ -444,6 +444,7 @@ void ButtonTest(void)
 //  IupSetGlobal("HOTTRACKING", "No");
 
   IupShow(dlg);
+
 //  IupShowXY(dlg,IUP_LEFT,IUP_TOP);
 //  IupShowXY(dlg,0,0);
 }
