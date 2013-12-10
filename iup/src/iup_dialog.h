@@ -61,7 +61,8 @@ struct _IcontrolData
       ignore_resize,  /* flag to ignore the next resize */
       popup_level,    /* popup level of the dialog if IupPopup used */
       child_id,       /* serial number used by child controls */
-      cmd_show;       /* parameters for ShowWindow in Windows driver */
+      cmd_show,       /* parameters for ShowWindow in Windows driver */
+      show_taskbar;   /* flag to show the button taskbar animations (Windows 7 or ealier) */
   Ihandle* menu;
 };
 

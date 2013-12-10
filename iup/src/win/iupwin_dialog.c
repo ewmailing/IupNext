@@ -56,9 +56,9 @@ static int winDialogSetTaskBarProgressValueAttrib(Ihandle *ih, const char *value
   ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR");
   if(tbl)
   {
-    int inc, max;
-    iupStrToIntInt(value, &inc, &max, ':');
-    tbl->lpVtbl->SetProgressValue(tbl, ih->handle, inc, max);
+    int perc;
+    iupStrToInt(value, &perc);
+    tbl->lpVtbl->SetProgressValue(tbl, ih->handle, perc, 100);
   }
 
   return 0;
@@ -84,26 +84,17 @@ static int winDialogSetTaskBarProgressStateAttrib(Ihandle *ih, const char *value
   return 0;
 }
 
-static int winDialogSetTaskBarProgressShowAttrib(Ihandle *ih, const char *value)
+static char* winDialogGetTaskBarShowAttrib(Ihandle* ih)
 {
-  ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR");
+  return iupStrReturnBoolean (ih->data->show_taskbar); 
+}
 
-  if (iupStrBoolean(value) && !tbl)
-  {
-    CoInitialize(NULL);
-    CoCreateInstance(&CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, &IID_ITaskbarList3, &tbl);
-
-    if (tbl)
-      iupAttribSet(ih, "_IUPWIN_TASKBAR", (char*)((ITaskbarList3*)tbl));
-    else
-      CoUninitialize();
-  }
-  else if (!iupStrBoolean(value) && tbl)
-  {
-    tbl->lpVtbl->Release(tbl);
-    CoUninitialize();
-    iupAttribSet(ih, "_IUPWIN_TASKBAR", NULL);
-  }
+static int winDialogSetTaskBarShowAttrib(Ihandle *ih, const char *value)
+{
+  if (iupStrBoolean(value))
+    ih->data->show_taskbar = 1;
+  else
+    ih->data->show_taskbar = 0;
 
   return 0;
 }
@@ -915,6 +906,14 @@ static int winDialogMapMethod(Ihandle* ih)
   if (iupAttribGet(ih, "MINSIZE") || iupAttribGet(ih, "MAXSIZE"))
     winMinMaxHandle = ih;
 
+  /* Windows 7 Taskbar */
+  if (ih->data->show_taskbar)
+  {
+    ITaskbarList3* tbl;
+    CoCreateInstance(&CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, &IID_ITaskbarList3, &tbl);
+    iupAttribSet(ih, "_IUPWIN_TASKBAR", (char*)((ITaskbarList3*)tbl));
+  }
+
   /* size will be updated in IupRefresh -> winDialogLayoutUpdate */
   /* position will be updated in iupDialogShowXY              */
 
@@ -983,7 +982,6 @@ static void winDialogUnMapMethod(Ihandle* ih)
   {
     ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR");
     tbl->lpVtbl->Release(tbl);
-    CoUninitialize();
     iupAttribSet(ih, "_IUPWIN_TASKBAR", NULL);
   }
 
@@ -1572,7 +1570,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLEICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TASKBARPROGRESSSHOW", NULL, winDialogSetTaskBarProgressShowAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TASKBARSHOW", winDialogGetTaskBarShowAttrib, winDialogSetTaskBarShowAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TASKBARPROGRESSSTATE", NULL, winDialogSetTaskBarProgressStateAttrib, IUPAF_SAMEASSYSTEM, "NORMAL", IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TASKBARPROGRESSVALUE", NULL, winDialogSetTaskBarProgressValueAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 

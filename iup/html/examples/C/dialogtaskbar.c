@@ -19,8 +19,7 @@ int time_cb(void)
   if (value > 1) value = 0; /* start over */
   IupSetfAttribute(progressbar1, "VALUE", "%g", (double)value);
 
-  sprintf(str, "%d:%d", (int)(value * 100), 100);
-  IupSetAttribute(dlg, "TASKBARPROGRESSVALUE", str);
+  IupSetInt(dlg, "TASKBARPROGRESSVALUE", (int)(value * 100));
 
   return IUP_DEFAULT;
 }
@@ -164,7 +163,7 @@ int main(int argc, char* argv[])
   IupSetCallback(btn_error, "ACTION", (Icallback) btn_error_cb);
   
   IupSetAttribute(dlg, "RASTERSIZE", "420x");
-  IupSetAttribute(dlg, "TASKBARPROGRESSSHOW", "YES");
+  IupSetAttribute(dlg, "TASKBARSHOW", "YES");
   IupSetAttribute(dlg, "TASKBARPROGRESSSTATE", "NORMAL");
   IupSetHandle("mydialog", dlg);
 

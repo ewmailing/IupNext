@@ -282,7 +282,7 @@ without the minimize and maximize buttons, and with the menu box. For the next
 interaction of the user with a control in the dialog, the callback&nbsp; 
 	<a href="../call/iup_help_cb.html">HELP_CB</a> will be called instead of the 
 control defined ACTION callback. Possible values: YES, NO. Default: NO.</p>
-<p><strong>TASKBARPROGRESSSHOW</strong> [Windows Only] (write-only): this 
+<p><strong>TASKBARSHOW</strong> [Windows Only] (write-only): this 
 functionality enables the use of progress bar on a taskbar button (Windows 7 or 
 earlier version). Default: NO (since 3.10).</p>
       
@@ -293,8 +293,7 @@ INDETERMINATE (a green marquee) and NOPROGRESS (no bar). Default: NORMAL (since
 3.10).</p>
 <p><strong>TASKBARPROGRESSVALUE</strong> [Windows Only] (write-only): updates a 
 progress bar hosted in a taskbar button to show the specific percentage 
-completed of the full operation. Value format: &quot;x:y&quot;, where x is a increment 
-value, and y is a maximum value (since 3.10).</p>
+completed of the full operation. The value must be between 0 and 100 (since 3.10).</p>
 <p><strong>TOOLBOX</strong> [Windows Only] (creation only): makes the dialog 
 look like a toolbox with a smaller title bar. It is only valid if the PARENTDIALOG or NATIVEPARENT 
 attribute is also defined. Default: NO.</p>
