@@ -532,6 +532,7 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
           }
         }
       }
+
       break;
     }
   default:

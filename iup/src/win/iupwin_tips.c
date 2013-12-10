@@ -57,7 +57,10 @@ static void winTipsSendMessage(Ihandle* ih, HWND tips_hwnd, UINT msg)
   TTTOOLINFO ti;
 
   ZeroMemory(&ti, sizeof(TTTOOLINFO));
-  ti.cbSize = sizeof(TTTOOLINFO); 
+  if (iupwin_comctl32ver6)
+    ti.cbSize = sizeof(TTTOOLINFO);
+  else
+    ti.cbSize = sizeof(TTTOOLINFO)-sizeof(void*);  /* fix for no visual styles and Unicode */
   ti.uFlags = TTF_SUBCLASS;
   ti.hinst = iupwin_hinstance; 
   ti.uId = 0; 
@@ -195,8 +198,11 @@ void iupwinTipsUpdateInfo(Ihandle* ih, HWND tips_hwnd)
     TTTOOLINFO ti;
 
     ZeroMemory(&ti, sizeof(TTTOOLINFO));
-    ti.cbSize = sizeof(TTTOOLINFO); 
-    ti.uId = 0; 
+    if (iupwin_comctl32ver6)
+      ti.cbSize = sizeof(TTTOOLINFO);
+    else
+      ti.cbSize = sizeof(TTTOOLINFO)-sizeof(void*);  /* fix for no visual styles and Unicode */
+    ti.uId = 0;
     ti.hwnd = ih->handle;
 
     value = iupAttribGet(ih, "TIPRECT");
