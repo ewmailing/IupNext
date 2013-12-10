@@ -47,9 +47,70 @@ static int winDialogSetBgColorAttrib(Ihandle* ih, const char* value);
 static int winDialogSetTrayAttrib(Ihandle *ih, const char *value);
 
 /****************************************************************
+                     ITaskbarList3 resources
+****************************************************************/
+#include "Shobjidl.h"
+
+static int winDialogSetTaskBarProgressValueAttrib(Ihandle *ih, const char *value)
+{
+  ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR");
+  if(tbl)
+  {
+    int inc, max;
+    iupStrToIntInt(value, &inc, &max, ':');
+    tbl->lpVtbl->SetProgressValue(tbl, ih->handle, inc, max);
+  }
+
+  return 0;
+}
+
+static int winDialogSetTaskBarProgressStateAttrib(Ihandle *ih, const char *value)
+{
+  ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR");
+  if(tbl)
+  {
+    if(iupStrEqualNoCase(value, "NOPROGRESS"))
+      tbl->lpVtbl->SetProgressState(tbl, ih->handle, TBPF_NOPROGRESS);
+    else if(iupStrEqualNoCase(value, "INDETERMINATE"))
+      tbl->lpVtbl->SetProgressState(tbl, ih->handle, TBPF_INDETERMINATE);
+    else if(iupStrEqualNoCase(value, "ERROR"))
+      tbl->lpVtbl->SetProgressState(tbl, ih->handle, TBPF_ERROR);
+    else if(iupStrEqualNoCase(value, "PAUSED"))
+      tbl->lpVtbl->SetProgressState(tbl, ih->handle, TBPF_PAUSED);
+    else  /* NORMAL */
+      tbl->lpVtbl->SetProgressState(tbl, ih->handle, TBPF_NORMAL);
+  }
+
+  return 0;
+}
+
+static int winDialogSetTaskBarProgressShowAttrib(Ihandle *ih, const char *value)
+{
+  ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR");
+
+  if (iupStrBoolean(value) && !tbl)
+  {
+    CoInitialize(NULL);
+    CoCreateInstance(&CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, &IID_ITaskbarList3, &tbl);
+
+    if (tbl)
+      iupAttribSet(ih, "_IUPWIN_TASKBAR", (char*)((ITaskbarList3*)tbl));
+    else
+      CoUninitialize();
+  }
+  else if (!iupStrBoolean(value) && tbl)
+  {
+    tbl->lpVtbl->Release(tbl);
+    CoUninitialize();
+    iupAttribSet(ih, "_IUPWIN_TASKBAR", NULL);
+  }
+
+  return 0;
+}
+
+/****************************************************************
                      Utilities
 ****************************************************************/
-
 int iupdrvDialogIsVisible(Ihandle* ih)
 {
   return iupdrvIsVisible(ih);
@@ -918,6 +979,14 @@ static void winDialogUnMapMethod(Ihandle* ih)
     IupDestroy(ih->data->menu);  
   }
 
+  if ((ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR"))
+  {
+    ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR");
+    tbl->lpVtbl->Release(tbl);
+    CoUninitialize();
+    iupAttribSet(ih, "_IUPWIN_TASKBAR", NULL);
+  }
+
   if (iupAttribGet(ih, "_IUPDLG_HASTRAY"))
     winDialogSetTrayAttrib(ih, NULL);
 
@@ -1503,6 +1572,9 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLEICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TASKBARPROGRESSSHOW", NULL, winDialogSetTaskBarProgressShowAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TASKBARPROGRESSSTATE", NULL, winDialogSetTaskBarProgressStateAttrib, IUPAF_SAMEASSYSTEM, "NORMAL", IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TASKBARPROGRESSVALUE", NULL, winDialogSetTaskBarProgressValueAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "DIALOGHINT", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
