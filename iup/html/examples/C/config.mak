@@ -47,7 +47,7 @@ IUP = ../../..
 #SRC = multiline2.c
 #SRC = progressbar.c
 #SRC = radio.c
-#SRC = sample.c
+SRC = sample.c
 #SRC = sbox1.c
 #SRC = sbox2.c
 #SRC = scanf.c
@@ -90,7 +90,7 @@ ifdef IUPWEB_SAMPLE
   endif
 endif
 
-USE_IUPCONTROLS = Yes
+#USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
 #SRC = cbox.c
 #SRC = cells_checkboard.c
@@ -101,7 +101,7 @@ USE_IUPCONTROLS = Yes
 #SRC = gauge.c
 #SRC = getcolor.c
 #SRC = getparam.c
-SRC = matrix.c
+#SRC = matrix.c
 #SRC = mdi.c
 
 #IUPPPLOT_SAMPLE=Yes
@@ -154,5 +154,7 @@ endif
 #USE_IUPLUA=Yes
 #SRC = lua_init.c
 
-INCLUDES += ../../../etc/
-SRC += ../../../etc/iup.rc
+ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  INCLUDES += ../../../etc/
+  SRC += ../../../etc/iup.rc
+endif
