@@ -51,14 +51,19 @@ static int winDialogSetTrayAttrib(Ihandle *ih, const char *value);
 ****************************************************************/
 #include "Shobjidl.h"
 
+#ifdef __ITaskbarList3_FWD_DEFINED__  /* Only available since VC10 */
+
 static int winDialogSetTaskBarProgressValueAttrib(Ihandle *ih, const char *value)
 {
-  ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR");
+  ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBARLIST");
   if(tbl)
   {
     int perc;
     iupStrToInt(value, &perc);
     tbl->lpVtbl->SetProgressValue(tbl, ih->handle, perc, 100);
+
+    if (perc == 100)
+      tbl->lpVtbl->SetProgressState(tbl, ih->handle, TBPF_NOPROGRESS);
   }
 
   return 0;
@@ -66,7 +71,7 @@ static int winDialogSetTaskBarProgressValueAttrib(Ihandle *ih, const char *value
 
 static int winDialogSetTaskBarProgressStateAttrib(Ihandle *ih, const char *value)
 {
-  ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR");
+  ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBARLIST");
   if(tbl)
   {
     if(iupStrEqualNoCase(value, "NOPROGRESS"))
@@ -84,20 +89,7 @@ static int winDialogSetTaskBarProgressStateAttrib(Ihandle *ih, const char *value
   return 0;
 }
 
-static char* winDialogGetTaskBarShowAttrib(Ihandle* ih)
-{
-  return iupStrReturnBoolean (ih->data->show_taskbar); 
-}
-
-static int winDialogSetTaskBarShowAttrib(Ihandle *ih, const char *value)
-{
-  if (iupStrBoolean(value))
-    ih->data->show_taskbar = 1;
-  else
-    ih->data->show_taskbar = 0;
-
-  return 0;
-}
+#endif  /* __ITaskbarList3_FWD_DEFINED__ */
 
 /****************************************************************
                      Utilities
@@ -907,12 +899,14 @@ static int winDialogMapMethod(Ihandle* ih)
     winMinMaxHandle = ih;
 
   /* Windows 7 Taskbar */
-  if (ih->data->show_taskbar)
+#ifdef __ITaskbarList3_FWD_DEFINED__
+  if (iupAttribGetInt(ih, "TASKBARPROGRESS"))
   {
     ITaskbarList3* tbl;
     CoCreateInstance(&CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, &IID_ITaskbarList3, &tbl);
-    iupAttribSet(ih, "_IUPWIN_TASKBAR", (char*)((ITaskbarList3*)tbl));
+    iupAttribSet(ih, "_IUPWIN_TASKBARLIST", (char*)((ITaskbarList3*)tbl));
   }
+#endif
 
   /* size will be updated in IupRefresh -> winDialogLayoutUpdate */
   /* position will be updated in iupDialogShowXY              */
@@ -978,11 +972,11 @@ static void winDialogUnMapMethod(Ihandle* ih)
     IupDestroy(ih->data->menu);  
   }
 
-  if ((ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR"))
+  if ((ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBARLIST"))
   {
-    ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBAR");
+    ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBARLIST");
     tbl->lpVtbl->Release(tbl);
-    iupAttribSet(ih, "_IUPWIN_TASKBAR", NULL);
+    iupAttribSet(ih, "_IUPWIN_TASKBARLIST", NULL);
   }
 
   if (iupAttribGet(ih, "_IUPDLG_HASTRAY"))
@@ -1570,9 +1564,12 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLEICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TASKBARSHOW", winDialogGetTaskBarShowAttrib, winDialogSetTaskBarShowAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+#ifdef __ITaskbarList3_FWD_DEFINED__
+  iupClassRegisterAttribute(ic, "TASKBARPROGRESS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TASKBARPROGRESSSTATE", NULL, winDialogSetTaskBarProgressStateAttrib, IUPAF_SAMEASSYSTEM, "NORMAL", IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TASKBARPROGRESSVALUE", NULL, winDialogSetTaskBarProgressValueAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+#endif
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "DIALOGHINT", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);

@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
   IupSetCallback(btn_error, "ACTION", (Icallback) btn_error_cb);
   
   IupSetAttribute(dlg, "RASTERSIZE", "420x");
-  IupSetAttribute(dlg, "TASKBARSHOW", "YES");
+  IupSetAttribute(dlg, "TASKBARPROGRESS", "YES");
   IupSetAttribute(dlg, "TASKBARPROGRESSSTATE", "NORMAL");
   IupSetHandle("mydialog", dlg);
 
