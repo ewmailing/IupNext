@@ -972,12 +972,14 @@ static void winDialogUnMapMethod(Ihandle* ih)
     IupDestroy(ih->data->menu);  
   }
 
+#ifdef __ITaskbarList3_FWD_DEFINED__
   if ((ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBARLIST"))
   {
     ITaskbarList3* tbl = (ITaskbarList3*)iupAttribGet(ih, "_IUPWIN_TASKBARLIST");
     tbl->lpVtbl->Release(tbl);
     iupAttribSet(ih, "_IUPWIN_TASKBARLIST", NULL);
   }
+#endif
 
   if (iupAttribGet(ih, "_IUPDLG_HASTRAY"))
     winDialogSetTrayAttrib(ih, NULL);
