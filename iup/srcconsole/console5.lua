@@ -231,3 +231,5 @@ end
 
 iup_console.dlgMain:destroy()
 iup_console.dlgAbout:destroy()
+
+iup.Close()
