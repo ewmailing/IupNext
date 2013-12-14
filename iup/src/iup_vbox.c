@@ -96,6 +96,9 @@ static void iVboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chil
 
   for (child = ih->firstchild; child; child = child->brother)
   {
+    if (ih->data->expand_children)
+      child->expand = ih->data->expand_children;
+
     /* update child natural size first */
     if (!(child->flags & IUP_FLOATING_IGNORE))
       iupBaseComputeNaturalSize(child);
@@ -181,9 +184,6 @@ static void iVboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   Ihandle* child;
   int empty_h0 = 0, empty_h1 = 0, client_width;
 
-  if (ih->data->expand_children)
-    ih->expand |= ih->data->expand_children;
-
   if (ih->data->is_homogeneous)
     ih->data->homogeneous_size = iHboxCalcHomogeneousHeight(ih);
   else
@@ -206,10 +206,6 @@ static void iVboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   {
     if (!(child->flags & IUP_FLOATING))
     {
-      int old_expand = child->expand;
-      if (ih->data->expand_children)
-        child->expand |= ih->data->expand_children;
-
       if (ih->data->homogeneous_size)
         iupBaseSetCurrentSize(child, client_width, ih->data->homogeneous_size, shrink);
       else
@@ -224,9 +220,6 @@ static void iVboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
         }
         iupBaseSetCurrentSize(child, client_width, child->naturalheight+empty, shrink);
       }
-
-      if (ih->data->expand_children)
-        child->expand = old_expand;
     }
     else if (!(child->flags & IUP_FLOATING_IGNORE))
     {
