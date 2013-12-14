@@ -17,6 +17,7 @@ Copy_DLLs()
   cp -f ../../cd/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f ../../im/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f ../../lua$LUA_SFX/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -f ../../lua$LUA_SFX/bin/$SYS/*ua52.exe ../bin/$SYS/Lua$LUA_SFX
   cp -f ../../luagl/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f ../../lfs/lib$LUA_SFX/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   
