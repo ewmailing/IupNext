@@ -27,7 +27,10 @@ Copy_SOs()
   mv -f ../bin/$PLAT/iuplua$LUA_SFX ../bin/$PLAT/Lua$LUA_SFX/iuplua$LUA_SFX
 }
 
-for plat in Linux26 Linux26_64 Linux26g4 Linux26g4_64 Linux32 Linux32_64 SunOS510 SunOS510x86 SunOS511x86 MacOS107
+#ALL_PLAT=Linux26 Linux26_64 Linux26g4 Linux26g4_64 Linux32 Linux32_64 Linux35_64 SunOS510 SunOS510x86 SunOS511x86 MacOS107
+ALL_PLAT=Linux26g4 Linux26g4_64 Linux32 Linux32_64 Linux35_64
+
+for plat in $ALL_PLAT
 do
   Copy_SOs $plat 5.1 so
   Copy_SOs $plat 52 so
