@@ -135,9 +135,9 @@ static void winKeySetCharMap(Iwin2iupkey* winkey_map, char c)
 {
   SHORT ret = VkKeyScanA(c);
   int wincode = LOBYTE(ret);
-  int state = HIBYTE(ret) & 0x07;  /* Only Shift, Ctrl and Alt states */
   if (wincode != -1)
   {
+    int state = HIBYTE(ret) & 0x07;  /* Only Shift, Ctrl and Alt states */
     if (state & 1) /* Shift */
       winkey_map[wincode].shift_iupcode = (BYTE)c;
     else if ((state & 2) && (state & 4)) /* Ctrl & Alt = Alt Gr */
@@ -259,6 +259,8 @@ static int winKeyMap2Iup(int wincode)
   return code;
 }
 
+#define win_ischar(_c)  (_c >= 0x41 && _c <= 0x5A)
+
 static int winKeyAdjust(int wincode)
 {
   if (wincode == VK_SHIFT && (GetKeyState(VK_RSHIFT) & 0x8000))
@@ -271,23 +273,26 @@ static int winKeyAdjust(int wincode)
   {
     int has_caps = GetKeyState(VK_CAPITAL) & 0x01;
     int has_shift = GetKeyState(VK_SHIFT) & 0x8000;
-    if (( has_caps && !has_shift) ||  /* CapsLock or Shift, but not both */
-        (!has_caps &&  has_shift))
+    int has_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
+    int has_alt = GetKeyState(VK_MENU) & 0x8000;
+    int is_char = win_ischar(wincode);
+
+    /* Caps Locks changes Shift modifier if is a character */
+    if (has_caps && is_char)
     {
-      if (winkey_map[wincode].shift_iupcode)
-        return winkey_map[wincode].shift_iupcode;
+      if (has_shift)
+        has_shift = 0;
       else
-        return winkey_map[wincode].iupcode;
+        has_shift = 1;
     }
-    else
-    {
-      int has_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
-      int has_alt = GetKeyState(VK_MENU) & 0x8000;
-      if (has_ctrl && has_alt && winkey_map[wincode].altgr_iupcode)
-        return winkey_map[wincode].altgr_iupcode;
-      else
-        return winkey_map[wincode].iupcode;
-    }
+
+    if (has_shift && winkey_map[wincode].shift_iupcode)
+      return winkey_map[wincode].shift_iupcode;
+
+    if (has_ctrl && has_alt && winkey_map[wincode].altgr_iupcode)
+      return winkey_map[wincode].altgr_iupcode;
+
+    return winkey_map[wincode].iupcode;
   }
 }
 
