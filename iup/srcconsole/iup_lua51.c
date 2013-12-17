@@ -55,6 +55,12 @@
 #ifdef IUPLUA_TUIO
 #include "iupluatuio.h"
 #endif
+#ifdef IUPLUA_WEB
+#include "iupluaweb.h"
+#endif
+#ifdef IUPLUA_SCINTILLA
+#include "iuplua_scintilla.h"
+#endif
 
 #endif
 /******************* IUP *********************/
@@ -396,6 +402,12 @@ static void iuplua_openlibs (lua_State *L) {
 #endif
 #ifdef IUPLUA_TUIO
   iuptuiolua_open(L);
+#endif
+#ifdef IUPLUA_WEB
+  iupweblua_open(L);
+#endif
+#ifdef IUPLUA_SCINTILLA
+  iup_scintillalua_open(L);
 #endif
 
 /* luaopen_lfs(L); */
