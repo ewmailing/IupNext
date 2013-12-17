@@ -60,6 +60,9 @@ public:
   void STDMETHODCALLTYPE BeforeNavigate2(IDispatch *pDisp, VARIANT *url, VARIANT *Flags, VARIANT *TargetFrameName,
                                          VARIANT *PostData, VARIANT *Headers, VARIANT_BOOL *Cancel)
   {
+    if (iupAttribGet(ih, "_IUPWEB_IGNORE_NAVIGATE"))
+      return;
+
     IFns cb = (IFns)IupGetCallback(ih, "NAVIGATE_CB");
     if (cb)
     {
@@ -194,9 +197,10 @@ static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
   if (!lpDispatch)
   {
     iupAttribSet(ih, "_IUPWEB_FAILED", NULL);
-
+    iupAttribSet(ih, "_IUPWEB_IGNORE_NAVIGATE", "1");
     pweb->Navigate(L"about:blank", NULL, NULL, NULL, NULL);
     IupFlush();
+    iupAttribSet(ih, "_IUPWEB_IGNORE_NAVIGATE", NULL);
 
     pweb->get_Document(&lpDispatch);
   }

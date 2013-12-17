@@ -147,7 +147,7 @@ void WebBrowserTest(void)
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupSetAttribute(dlg, "GAP", "10");
 
-//   IupSetAttribute(web, "HTML", "<html><body><b>Hello</b>World!</body></html>");
+   //IupSetAttribute(web, "HTML", "<html><body><b>Hello</b>World!</body></html>");
 //   IupSetAttribute(txt, "VALUE", "My HTML");
   IupSetAttribute(txt, "VALUE", "http://www.tecgraf.puc-rio.br/iup");
 //  IupSetAttribute(txt, "VALUE", "file:///D:/tecgraf/iup/html/index.html");
