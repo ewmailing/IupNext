@@ -65,23 +65,31 @@ webbrowser() [in LED]
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p><strong>VALUE</strong>: sets a specified URL to load into the webbrowser, or 
-retrieve the current URL.</p>
+<p><strong>BACKCOUNT</strong> [GTK Only] (read only): gets the number of items that precede 
+the current page.</p>
 <p><strong>BACKFORWARD </strong>(write only): sets the number of steps away from the current 
 page and loads the history item. Negative values represent steps backward while 
 positive values represent steps forward.</p>
-<p><strong>STATUS</strong> (read only): returns the load status. Can be 
-&quot;LOADING&quot;, &quot;COMPLETED&quot; or &quot;FAILED&quot;.</p>
-<p><strong>STOP </strong>(write only): stops any ongoing load in the webbrowser.</p>
-<p><strong>RELOAD</strong> (write only): reloads the page in the webbrowser.</p>
-<p><strong>HTML</strong> (write only): loads a given HTML content.</p>
-<p><strong>BACKCOUNT</strong> [GTK Only] (read only): gets the number of items that precede 
-the current page.</p>
+<p><strong>COPY</strong> (write only): copy the selection to the clipboard. 
+(since 3.10)</p>
 <p><strong>FORWARDCOUNT</strong> [GTK Only] (read only): gets the number of items that 
 succeed the current page.</p>
+<p><strong>HTML</strong> (write only): loads a given HTML content.</p>
 <p><strong>ITEMHISTORYid</strong> [GTK Only] (read only): Returns the URL 
 associated with a specific history item. Negative &quot;id&quot; value represents a backward item while positive &quot;id&quot; 
 value represents a forward item (&quot;0&quot; represents the current item).</p>
+<p><strong>PRINT </strong>(write only): shows the print dialog. (since 3.10)</p>
+<p><strong>RELOAD</strong> (write only): reloads the page in the webbrowser.</p>
+<p><strong>SELECTALL</strong> (write only): selects all contents. (since 3.10)</p>
+<p><strong>STATUS</strong> (read only): returns the load status. Can be 
+&quot;LOADING&quot;, &quot;COMPLETED&quot; or &quot;FAILED&quot;.</p>
+<p><strong>STOP </strong>(write only): stops any ongoing load in the webbrowser.</p>
+
+
+<p><strong>VALUE</strong>: sets a specified URL to load into the webbrowser, or 
+retrieve the current URL.</p>
+<p><strong>ZOOM</strong>: the zoom factor of the browser in percent. No zoom is 
+100%. (since 3.10)</p>
   <blockquote>
   <hr>
 </blockquote>

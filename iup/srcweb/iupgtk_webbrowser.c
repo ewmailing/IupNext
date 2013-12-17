@@ -69,6 +69,42 @@ static int gtkWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
+static int gtkWebBrowserSetCopyAttrib(Ihandle* ih, const char* value)
+{
+  webkit_web_view_copy_clipboard((WebKitWebView*)ih->handle);
+  (void)value;
+  return 0;
+}
+
+static int gtkWebBrowserSetSelectAllAttrib(Ihandle* ih, const char* value)
+{
+  webkit_web_view_select_all((WebKitWebView*)ih->handle);
+  (void)value;
+  return 0;
+}
+
+static int gtkWebBrowserSetPrintAttrib(Ihandle* ih, const char* value)
+{
+  WebKitWebFrame* frame = webkit_web_view_get_main_frame((WebKitWebView*)ih->handle);
+  webkit_web_frame_print(frame);
+  (void)value;
+  return 0;
+}
+
+static int gtkWebBrowserSetZoomAttrib(Ihandle* ih, const char* value)
+{
+  int zoom;
+  if (iupStrToInt(value, &zoom))
+    webkit_web_view_set_zoom_level((WebKitWebView*)ih->handle, (float)zoom/100.0f);
+  return 0;
+}
+
+static char* gtkWebBrowserGetZoomAttrib(Ihandle* ih)
+{
+  int zoom = (int)(webkit_web_view_get_zoom_level((WebKitWebView*)ih->handle) * 100);
+  return iupStrReturnInt(zoom);
+}
+
 static char* gtkWebBrowserGetStatusAttrib(Ihandle* ih)
 {
   WebKitLoadStatus status = webkit_web_view_get_load_status((WebKitWebView*)ih->handle);
@@ -322,6 +358,10 @@ Iclass* iupWebBrowserNewClass(void)
   iupClassRegisterAttribute(ic, "RELOAD", NULL, gtkWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HTML", NULL, gtkWebBrowserSetHTMLAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATUS", gtkWebBrowserGetStatusAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COPY", NULL, gtkWebBrowserSetCopyAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTALL", NULL, gtkWebBrowserSetSelectAllAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ZOOM", gtkWebBrowserGetZoomAttrib, gtkWebBrowserSetZoomAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRINT", NULL, gtkWebBrowserSetPrintAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BACKCOUNT", gtkWebBrowserGetBackCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORWARDCOUNT", gtkWebBrowserGetForwardCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
@@ -329,15 +369,3 @@ Iclass* iupWebBrowserNewClass(void)
 
   return ic;
 }
-
-/*
-WebKitWebFrame *    webkit_web_view_get_main_frame      (WebKitWebView *web_view);
-webkit_web_frame_print ()
-gfloat              webkit_web_view_get_zoom_level      (WebKitWebView *web_view);
-void                webkit_web_view_zoom_in             (WebKitWebView *web_view);
-void                webkit_web_view_zoom_out            (WebKitWebView *web_view);
-void                webkit_web_view_set_zoom_level      (WebKitWebView *web_view,
-                                                         gfloat zoom_level);
-void                webkit_web_view_select_all          (WebKitWebView *web_view);
-void                webkit_web_view_copy_clipboard      (WebKitWebView *web_view);
-*/

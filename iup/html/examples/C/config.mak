@@ -47,7 +47,7 @@ IUP = ../../..
 #SRC = multiline2.c
 #SRC = progressbar.c
 #SRC = radio.c
-SRC = sample.c
+#SRC = sample.c
 #SRC = sbox1.c
 #SRC = sbox2.c
 #SRC = scanf.c
@@ -79,14 +79,14 @@ SRC = sample.c
 #USE_OPENGL = Yes
 #SRC = glcanvas.c
 
-#IUPWEB_SAMPLE=Yes
+IUPWEB_SAMPLE=Yes
 ifdef IUPWEB_SAMPLE
   SRC = webbrowser.c
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     LIBS += iupweb iupole
   else
     LIBS += webkit-1.0
-    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupweb.a
+    SLIB += $(IUP)/lib/$(TEC_UNAME)d/libiupweb.a
   endif
 endif
 
