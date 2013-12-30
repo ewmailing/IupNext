@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 //  IupSetCallback(mlist,"LISTCLICK_CB",(Icallback)listclick_cb);
 
   /* Bluish style */
-  if (1)
+  if (0)
   {
     IupSetAttribute(mlist, "TITLE", "Test");
     IupSetAttribute(mlist, "BGCOLOR", "220 230 240");
@@ -81,6 +81,8 @@ int main(int argc, char **argv)
   IupSetAttribute(dlg, "MARGIN", "10x10");
 //  IupSetAttribute(dlg, "FONT", "Helvetica, 24");
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+
+  IupSetAttribute(mlist, "APPENDITEM","KKK");
 
   IupMainLoop();
   IupClose();  

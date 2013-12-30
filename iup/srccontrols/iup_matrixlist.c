@@ -288,7 +288,7 @@ static void iMatrixListInitializeAttributes(Ihandle* ih, ImatrixListData* mtxLis
   }
 
   num_lin = ih->data->lines.num-1;  /* remove the title line count, even if not visible */
-  if (num_lin > 1 && mtxList->editable)
+  if (mtxList->editable)
     IupSetInt(ih, "NUMLIN", num_lin+1);  /* reserve space for the empty line */
 
   /* Set the text alignment for the item column */
@@ -409,6 +409,7 @@ static int iMatrixListSetAddLinAttrib(Ihandle* ih, const char* value)
 static int iMatrixListSetDelLinAttrib(Ihandle* ih, const char* value)
 {
   int base, count, lines_num = ih->data->lines.num;
+  ImatrixListData* mtxList;
 
   if (!ih->handle)  /* do not do the action before map */
     return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
@@ -422,6 +423,11 @@ static int iMatrixListSetDelLinAttrib(Ihandle* ih, const char* value)
     iMatrixListUpdateLineAttributes(ih, base, count, 0);
 
   iMatrixListUpdateLastLineAttributes(ih, lines_num);
+
+  lines_num = ih->data->lines.num;
+  mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  if (mtxList->editable && lines_num==1)
+    IupSetInt(ih, "NUMLIN", 1);  /* reserve space for the empty line */
 
   IupSetAttribute(ih, "REDRAW", "ALL");
 
@@ -444,6 +450,23 @@ static int iMatrixListSetNumLinAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iMatrixListSetCountAttrib(Ihandle* ih, const char* value)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  if (mtxList->editable)
+  {
+    int count;
+    if (iupStrToInt(value, &count))
+    {
+      char str[50];
+      sprintf(str, "%d%", count+1);
+      iMatrixListSetNumLinAttrib(ih, str);
+    }
+  }
+  else
+    iMatrixListSetNumLinAttrib(ih, value);
+  return 0;
+}
 static char* iMatrixListGetColumnOrderAttrib(Ihandle *ih)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
@@ -710,18 +733,34 @@ static char* iMatrixListGetValueAttrib(Ihandle* ih)
 static int iMatrixListSetAppendItemAttrib(Ihandle* ih, const char* value)
 {
   char str[50];
-  int lin = ih->data->lines.num-1;  /* add after the last line */
+  ImatrixListData* mtxList;
+  int num_lin = ih->data->lines.num-1;  /* add after the last line */
 
-  sprintf(str, "%d", lin);
+  if (!ih->handle)  /* do not do the action before map */
+    return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
+
+  mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  if (mtxList->editable)
+    num_lin--;
+
+  sprintf(str, "%d", num_lin);
   iMatrixListSetAddLinAttrib(ih, str);  /* after this id */
-  iMatrixListSetIdValueAttrib(ih, lin+1, value);
+  iMatrixListSetIdValueAttrib(ih, num_lin+1, value);
   return 0;
 }
 
 static int iMatrixListSetInsertItemAttrib(Ihandle* ih, int lin, const char* value)
 {
   char str[50];
-  lin--; /* insert before given lin, starting at 1 */
+  ImatrixListData* mtxList;
+  lin--; /* insert before given line, starting at 1 */
+
+  if (!ih->handle)  /* do not do the action before map */
+    return 0;       /* allowing this method to be called before map will avoid its storage in the hash table */
+
+  mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  if (mtxList->editable && lin == ih->data->lines.num-1)
+    lin--;
 
   sprintf(str, "%d", lin);
   iMatrixListSetAddLinAttrib(ih, str);  /* after this id */
@@ -769,6 +808,15 @@ static int iMatrixListSetDelColAttrib(Ihandle* ih, const char* value)
   (void)value;
   /* does nothing */
   return 0;
+}
+
+static char* iMatrixListGetCountAttrib(Ihandle* ih)
+{
+  ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
+  if (mtxList->editable)
+    return iupStrReturnInt(ih->data->lines.num-2);
+  else
+    return iupStrReturnInt(ih->data->lines.num-1);  /* the attribute does not include the title */
 }
 
 static char* iMatrixListGetNumLinAttrib(Ihandle* ih)
@@ -934,7 +982,7 @@ static int iMatrixListDraw_CB(Ihandle *ih, int lin, int col, int x1, int x2, int
     return IUP_IGNORE;  /* draw regular text */
 
   /* Don't draw on the empty line. */
-  if (!mtxList->editable || (lin < lines_num) || (mtxList->image_col && col == mtxList->image_col))
+  if (!mtxList->editable || (lin != lines_num-1) || (mtxList->image_col && col == mtxList->image_col))
   {
     IFniiiiiiC listdraw_cb = (IFniiiiiiC)IupGetCallback(ih, "LISTDRAW_CB");
       
@@ -1119,7 +1167,8 @@ static int iMatrixListRelease_CB(Ihandle *ih, int lin, int col, char *status)
 
       if (lin==0)
       {
-        if (mtxList->editable) lines_num--;
+        if (mtxList->editable) 
+          lines_num--;
 
         for (lin=1; lin<lines_num; lin++)
         {
@@ -1185,7 +1234,7 @@ static int iMatrixListKeyAny_CB(Ihandle *ih, int key)
       if (!itemactive || !imageactive)
         return IUP_IGNORE;
 
-      if (!mtxList->editable || lin < lines_num)
+      if (!mtxList->editable || lin != lines_num-1)
       {
         IFnii imagevaluechanged_cb = (IFnii)IupGetCallback(ih, "IMAGEVALUECHANGED_CB");
         int imagevalue = !IupGetIntId(ih, "IMAGEVALUE", lin);
@@ -1378,7 +1427,7 @@ Iclass* iupMatrixListNewClass(void)
   iupClassRegisterAttribute(ic, "DELLIN", NULL, iMatrixListSetDelLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REMOVEITEM", NULL, iMatrixListSetDelLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMLIN", iMatrixListGetNumLinAttrib, iMatrixListSetNumLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "COUNT", iMatrixListGetNumLinAttrib, iMatrixListSetNumLinAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COUNT", iMatrixListGetCountAttrib, iMatrixListSetCountAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TOPITEM", NULL, iMatrixListSetTopItemAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FOCUSITEM", iMatrixListGetFocusItemAttrib, iMatrixListSetFocusItemAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT); /* can be NOT mapped */
