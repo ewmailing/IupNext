@@ -93,7 +93,6 @@ Ihandle* IupLoadImage(const char* file_name)
   int i, error, width, height, color_mode, flags,
       data_type, has_alpha = 0;
   Ihandle* iup_image = NULL;
-  const unsigned char* transp_index;
   void* image_data = NULL;
   imCounterCallback old_callback;
   imFile* ifile;
@@ -140,6 +139,7 @@ Ihandle* IupLoadImage(const char* file_name)
   }
   else
   {
+    const unsigned char* transp_index;
     int palette_count;
     long palette[256];
 
@@ -152,11 +152,11 @@ Ihandle* IupLoadImage(const char* file_name)
       imColorDecode(&r, &g, &b, palette[i]);
       IupSetRGBId(iup_image, "", i, r, g, b); 
     }
-  }
 
-  transp_index = imFileGetAttribute(ifile, "TransparencyIndex", NULL, NULL);
-  if (transp_index)
-    IupSetAttributeId(iup_image, "", (int)(*transp_index), "BGCOLOR"); 
+    transp_index = imFileGetAttribute(ifile, "TransparencyIndex", NULL, NULL);
+    if (transp_index)
+      IupSetAttributeId(iup_image, "", (int)(*transp_index), "BGCOLOR");
+  }
 
 load_finish:
   imCounterSetCallback(NULL, old_callback);
@@ -347,7 +347,7 @@ static void iInitPalette(long* palette, int count, iupColor* colors)
   }
 }
 
-void* IupGetImageNativeHandle(imImage* image)
+void* IupGetImageNativeHandle(const imImage* image)
 {
   int bpp = image->depth*8;
   iupColor colors[256];
@@ -385,4 +385,86 @@ imImage* IupGetNativeHandleImage(void* handle)
     iupdrvImageDestroy(handle, IUPIMAGE_IMAGE);
   }
   return NULL;
+}
+
+static void iFlipData(unsigned char* data, int width, int height, int depth)
+{
+  int line_size = depth*width;
+  unsigned char* temp_line = (unsigned char*)malloc(line_size);
+  int half_height = height / 2;
+
+  for (int y = 0; y < half_height; y++)
+  {
+    int yd = height - 1 - y;
+    memcpy(temp_line, data + yd*width, line_size);
+    memcpy(data + yd*width, data + y*width, line_size);
+    memcpy(data + y*width, temp_line, line_size);
+  }
+
+  free(temp_line);
+}
+
+Ihandle* IupImageFromImImage(const imImage* image)
+{
+  Ihandle* iup_image = NULL;
+  void* image_data;
+
+  if (!imImageIsBitmap(image))
+    return NULL;
+
+  if (image->color_space == IM_RGB)
+  {
+    int color_mode = image->color_space;
+    int depth = image->depth;
+
+    if (image->has_alpha)
+    {
+      color_mode |= IM_ALPHA;
+      depth++;
+    }
+
+    image_data = malloc(imImageDataSize(image->width, image->height, color_mode, IM_BYTE));
+    if (!image_data)
+      return NULL;
+
+    /* imImage is always unpacked, IUP is always packed */
+    imConvertPacking(image->data[0], image_data, image->width, image->height, depth, depth, IM_BYTE, 0);
+
+    /* imImage is always bottom top, IUP is always top bottom */
+    iFlipData(image_data, image->width, image->height, depth);
+
+    if (image->has_alpha)
+      iup_image = IupImageRGBA(image->width, image->height, (unsigned char*)image_data);
+    else
+      iup_image = IupImageRGB(image->width, image->height, (unsigned char*)image_data);
+
+    free(image_data);
+  }
+  else
+  {
+    int i;
+    const unsigned char* transp_index;
+
+    image_data = image->data[0];
+
+    iup_image = IupImage(image->width, image->height, (unsigned char*)image_data);
+
+    image_data = (unsigned char*)IupGetAttribute(iup_image, "WID");
+
+    /* imImage is always bottom top, IUP is always top bottom */
+    iFlipData(image_data, image->width, image->height, 1);
+
+    for (i = 0; i < image->palette_count; i++)
+    {
+      unsigned char r, g, b;
+      imColorDecode(&r, &g, &b, image->palette[i]);
+      IupSetRGBId(iup_image, "", i, r, g, b);
+    }
+
+    transp_index = imImageGetAttribute(image, "TransparencyIndex", NULL, NULL);
+    if (transp_index)
+      IupSetAttributeId(iup_image, "", (int)(*transp_index), "BGCOLOR");
+  }
+
+  return iup_image;
 }

@@ -79,6 +79,16 @@ a <strong>Pixmap</strong>. Usefull when copying data to a <strong>IupClipboard</
 In Lua is a light user data.</p>
 <p>You must include the &quot;im_image.h&quot; header before the &quot;iupim.h&quot; to enable these 
 functions.</p>
+<h3>imImage to IupImage (since 3.10)</h3>
+<div>
+  <pre>Ihandle* IupImageFromImImage(imImage* <strong>image</strong>); [in C]
+iup.ImageFromImImage(<strong>image</strong>: imImage) -&gt; (<strong>elem</strong>: ihandle) [in Lua]</pre>
+</div>
+<p><strong>image:</strong> the <strong>imImage</strong>* handle. Must be a 
+bitmap image.</p>
+<p><span class="style1">Returns:</span> the IupImage handle. </p>
+<p>You must include the &quot;im_image.h&quot; header before the &quot;iupim.h&quot; to enable these 
+functions.</p>
 <h3><a name="SeeAlso">See Also</a></h3>
 
 <p><a href="elem/iupimage.html">IupImage</a>,
