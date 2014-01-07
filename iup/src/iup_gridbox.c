@@ -37,6 +37,25 @@ struct _IcontrolData
       homogeneous_width, homogeneous_height;       /* calculated in SetChildrenCurrentSize, used in SetChildrenPosition */
 };
 
+
+static void iGridBoxCalcLinCol(Ihandle* ih, int i, int *lin, int *col)
+{
+  if (ih->data->orientation == IGBOX_HORIZONTAL)
+  {
+    *lin = i / ih->data->num_col;
+    *col = i % ih->data->num_col;
+  }
+  else
+  {
+    *col = i / ih->data->num_lin;
+    *lin = i % ih->data->num_lin;
+  }
+}
+
+
+/**********************************************************************************************/
+
+
 static char* iGridBoxGetClientSizeAttrib(Ihandle* ih)
 {
   int width, height;
@@ -201,6 +220,99 @@ static char* iGridBoxGetNormalizeSizeAttrib(Ihandle* ih)
   return iupNormalizeGetNormalizeSizeStr(ih->data->normalize_size);
 }
 
+static void iGridBoxFitColChildren(Ihandle* ih, int fit_col)
+{
+  /* find the largest cel in the col */
+  int max_width = 0, max, i;
+  Ihandle* child, *ref_child = NULL;
+
+  i = 0;
+  for (child = ih->firstchild; child; child = child->brother)
+  {
+    if (!(child->flags & IUP_FLOATING))
+    {
+      int lin, col;
+      iGridBoxCalcLinCol(ih, i, &lin, &col);
+
+      if (col == fit_col)
+      {
+        if (child->naturalwidth > max_width)
+          max_width = child->naturalwidth;
+
+        if (lin == ih->data->size_lin)
+          ref_child = child;
+      }
+    }
+  }
+
+  max = iupAttribGetIntId(ih, "FITMAXWIDTH", fit_col);
+  if (max && max > max_width)
+    max_width = max;
+
+  if (ref_child)
+    ref_child->userwidth = max_width;
+}
+
+static void iGridBoxFitLineChildren(Ihandle* ih, int fit_lin)
+{
+  /* find the highest cel in the line */
+  int max_height = 0, max, i;
+  Ihandle* child, *ref_child = NULL;
+
+  i = 0;
+  for (child = ih->firstchild; child; child = child->brother)
+  {
+    if (!(child->flags & IUP_FLOATING))
+    {
+      int lin, col;
+      iGridBoxCalcLinCol(ih, i, &lin, &col);
+
+      if (lin == fit_lin)
+      {
+        if (child->naturalheight > max_height)
+          max_height = child->naturalheight;
+
+        if (col == ih->data->size_col)
+          ref_child = child;
+      }
+    }
+  }
+
+  max = iupAttribGetIntId(ih, "FITMAXHEIGHT", fit_lin);
+  if (max && max > max_height)
+    max_height = max;
+
+  if (ref_child)
+    ref_child->userheight = max_height;
+}
+
+static int iGridBoxSetFitToChildrenAttrib(Ihandle* ih, const char* value)
+{
+  if (!value || value[0] == 0)
+    return 0;
+
+  if (value[0] == 'C')
+  {
+    int col;
+    if (iupStrToInt(value + 1, &col))
+    {
+      iGridBoxFitColChildren(ih, col);
+      IupRefreshChildren(ih);
+    }
+  }
+  else if (value[0] == 'L')
+  {
+    int line;
+    if (iupStrToInt(value + 1, &line))
+    {
+      iGridBoxFitLineChildren(ih, line);
+      IupRefreshChildren(ih);
+    }
+  }
+
+  return 0;
+}
+
 static int iGridBoxSetCMarginAttrib(Ihandle* ih, const char* value)
 {
   int cmargin_x=-1, cmargin_y=-1;
@@ -354,20 +466,6 @@ static char* iGridBoxGetAlignmentColAttrib(Ihandle* ih)
 
 /**********************************************************************************/
 
-
-static void iGridBoxCalcLinCol(Ihandle* ih, int i, int *lin, int *col)
-{
-  if (ih->data->orientation==IGBOX_HORIZONTAL)
-  {
-    *lin = i / ih->data->num_col;
-    *col = i % ih->data->num_col;
-  }
-  else
-  {
-    *col = i / ih->data->num_lin;
-    *lin = i % ih->data->num_lin;
-  }
-}
 
 static int iGridBoxCalcNumDiv(Ihandle* ih)
 {
@@ -928,6 +1026,7 @@ Iclass* iupGridBoxNewClass(void)
   iupClassRegisterAttribute(ic, "NUMLIN", iGridBoxGetNumLinAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SIZELIN", iGridBoxGetSizeLinAttrib, iGridBoxSetSizeLinAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "SIZECOL", iGridBoxGetSizeColAttrib, iGridBoxSetSizeColAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FITTOCHILDREN", NULL, iGridBoxSetFitToChildrenAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   return ic;
 }

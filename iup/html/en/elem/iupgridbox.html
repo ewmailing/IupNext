@@ -90,6 +90,12 @@ forces all children to expand in the given direction and to fully occupy its
 space available inside the box. Can be YES (both directions),
   HORIZONTAL, VERTICAL or NO. Default: &quot;NO&quot;. This has the same 
 effect as setting EXPAND on each child.</p>
+<p><strong>FITTOCHILDREN</strong>: Set the RASTERSIZE attribute of the reference 
+element in the given column or line, so that it will fit the largest element in 
+the column or the highest element in the line. The number of the column or line 
+must be preceded by a character identifying its type, &quot;C&quot; for columns and &quot;L&quot; 
+for lines. For example &quot;C5&quot;=column 5 or &quot;L3&quot;=line 3. To update the layout size 
+call <strong>IupRefresh</strong>. (Since 3.10)</p>
 
   <p><b>GAPLIN, CGAPLIN</b>: Defines a vertical space in pixels between lines,
 	<strong>CGAPLIN</strong> is in the same units of the <strong>SIZE</strong> 
