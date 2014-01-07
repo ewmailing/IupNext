@@ -1007,86 +1007,6 @@ int iupStrFindMnemonic(const char* str)
     return c;
 }
 
-#define ISTR_UTF8_BASE(_x)  (_x & 0xC0)  /* 11XX XXXX */
-
-static void iStrFixPosUTF8(const char* value, int *start, int *end)
-{
-  int p = 0, i = 0, find = 0;
-  while(value[i])
-  {
-    if (find==0 && p == *start)
-    {
-      *start = i;
-      find = 1;
-    }
-    if (find==1 && p == *end)
-    {
-      *end = i;
-      return;
-    }
-
-    if (ISTR_UTF8_BASE(value[i+1]) != 0x80)  /* is 1o byte of a sequence or is 1 byte only */
-      p++;
-    i++;
-  }
-}
-
-void iupStrRemove(char* value, int start, int end, int dir, int utf8)
-{
-  int len;
-
-  if (end < start)
-    return;
-
-  if (start == end) 
-  {
-    if (dir==1)  /* (forward) */
-      end++;
-    else  /* dir==-1 (backward) */
-    {
-      if (start == 0) /* there is nothing to remove before */
-        return;
-      else
-        start--;
-    }
-  }
-
-  if (utf8)
-    iStrFixPosUTF8(value, &start, &end);
-
-  /* from "start" remove up to "end", but not including "end" */
-  len = strlen(value);
-  if (start >= len) { start = len-1; end = len; }
-  if (end > len) end = len;
-
-  memmove(value+start, value+end, len-end+1);
-}
-
-char* iupStrInsert(const char* value, const char* insert_value, int start, int end, int utf8)
-{
-  char* new_value = (char*)value;
-  int insert_len = strlen(insert_value);
-  int len = strlen(value);
-
-  if (utf8)
-    iStrFixPosUTF8(value, &start, &end);
-
-  if (end==start || insert_len > end-start)
-  {
-    new_value = malloc(len - (end-start) + insert_len + 1);
-    memcpy(new_value, value, start);
-    memcpy(new_value+start, insert_value, insert_len);
-    memcpy(new_value+start+insert_len, value+end, len-end+1);
-  }
-  else
-  {
-    memcpy(new_value+start, insert_value, insert_len);
-    memcpy(new_value+start+insert_len, value+end, len-end+1);
-  }
-
-  return new_value;
-}
-
 static unsigned char* Latin1_map = NULL;
 static unsigned char* Latin1_map_nocase = NULL;
 
@@ -1386,4 +1306,83 @@ int iupStrCompareFind(const char *l, const char *r, int casesensitive, int utf8)
   }
 
   return 0;
+}
+
+static void iStrFixPosUTF8(const char* value, int *start, int *end)
+{
+  int p = 0, i = 0, find = 0, inc;
+  while (*value)
+  {
+    if (find == 0 && p == *start)
+    {
+      *start = i;
+      find = 1;
+    }
+    if (find == 1 && p == *end)
+    {
+      *end = i;
+      return;
+    }
+
+    inc = iStrIncUTF8(value);
+    value += inc;
+    i += inc-1;
+    p++;
+  }
+}
+
+void iupStrRemove(char* value, int start, int end, int dir, int utf8)
+{
+  int len;
+
+  if (end < start)
+    return;
+
+  if (start == end)
+  {
+    if (dir == 1)  /* (forward) */
+      end++;
+    else  /* dir==-1 (backward) */
+    {
+      if (start == 0) /* there is nothing to remove before */
+        return;
+      else
+        start--;
+    }
+  }
+
+  if (utf8)
+    iStrFixPosUTF8(value, &start, &end);
+
+  /* from "start" remove up to "end", but not including "end" */
+  len = strlen(value);
+  if (start >= len) { start = len - 1; end = len; }
+  if (end > len) end = len;
+
+  memmove(value + start, value + end, len - end + 1);
+}
+
+char* iupStrInsert(const char* value, const char* insert_value, int start, int end, int utf8)
+{
+  char* new_value = (char*)value;
+  int insert_len = strlen(insert_value);
+  int len = strlen(value);
+
+  if (utf8)
+    iStrFixPosUTF8(value, &start, &end);
+
+  if (end == start || insert_len > end - start)
+  {
+    new_value = malloc(len - (end - start) + insert_len + 1);
+    memcpy(new_value, value, start);
+    memcpy(new_value + start, insert_value, insert_len);
+    memcpy(new_value + start + insert_len, value + end, len - end + 1);
+  }
+  else
+  {
+    memcpy(new_value + start, insert_value, insert_len);
+    memcpy(new_value + start + insert_len, value + end, len - end + 1);
+  }
+
+  return new_value;
 }
