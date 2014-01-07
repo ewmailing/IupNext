@@ -391,9 +391,9 @@ static void iFlipData(unsigned char* data, int width, int height, int depth)
 {
   int line_size = depth*width;
   unsigned char* temp_line = (unsigned char*)malloc(line_size);
-  int half_height = height / 2;
+  int y, half_height = height / 2;
 
-  for (int y = 0; y < half_height; y++)
+  for (y = 0; y < half_height; y++)
   {
     int yd = height - 1 - y;
     memcpy(temp_line, data + yd*width, line_size);
