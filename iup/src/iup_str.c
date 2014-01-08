@@ -1311,7 +1311,7 @@ int iupStrCompareFind(const char *l, const char *r, int casesensitive, int utf8)
 static void iStrFixPosUTF8(const char* value, int *start, int *end)
 {
   int p = 0, i = 0, find = 0, inc;
-  while (*value)
+  while (*(value + i))
   {
     if (find == 0 && p == *start)
     {
@@ -1324,11 +1324,19 @@ static void iStrFixPosUTF8(const char* value, int *start, int *end)
       return;
     }
 
-    inc = iStrIncUTF8(value);
-    value += inc;
-    i += inc-1;
+    inc = iStrIncUTF8(value + i);
+    i += inc;
     p++;
   }
+
+  if (find == 0 && p == *start)
+  {
+    *start = i;
+    find = 1;
+  }
+
+  if (find == 1 && p == *end)
+    *end = i;
 }
 
 void iupStrRemove(char* value, int start, int end, int dir, int utf8)
