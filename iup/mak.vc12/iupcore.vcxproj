@@ -94,6 +94,7 @@
     <ClCompile Include="..\src\iup_class.c" />
     <ClCompile Include="..\src\iup_classattrib.c" />
     <ClCompile Include="..\src\iup_classbase.c" />
+    <ClCompile Include="..\src\iup_dbox.c" />
     <ClCompile Include="..\src\iup_dlglist.c" />
     <ClCompile Include="..\src\iup_expander.c" />
     <ClCompile Include="..\src\iup_focus.c" />
