@@ -613,6 +613,8 @@ static void gtkDialogLayoutUpdateMethod(Ihandle *ih)
   /* set size excluding the border */
   width = ih->currentwidth - 2*border;
   height = ih->currentheight - 2*border - caption;   /* menu is inside the client area. */
+  if(width <= 0) width = 1;
+  if(height <= 0) height = 1;
   gtk_window_resize((GtkWindow*)ih->handle, width, height);
 
   if (!iupAttribGetBoolean(ih, "RESIZE"))

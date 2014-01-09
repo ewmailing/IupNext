@@ -52,7 +52,7 @@ Iclass* iupSplitNewClass(void);
 Iclass* iupScrollBoxNewClass(void);
 Iclass* iupGridBoxNewClass(void);
 Iclass* iupExpanderNewClass(void);
-Iclass* iupDboxNewClass(void);
+Iclass* iupDetachBoxNewClass(void);
 
 Iclass* iupTimerNewClass(void);
 Iclass* iupImageNewClass(void);
