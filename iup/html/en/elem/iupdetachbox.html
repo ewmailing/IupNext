@@ -63,9 +63,17 @@ The default value is &quot;YES&quot;.</p>
 <p><strong>ORIENTATION</strong> (creation only): Indicates the orientation of the bar handler. 
 The direction of the resize is perpendicular to the orientation. Possible values are &quot;VERTICAL&quot; or &quot;HORIZONTAL&quot;. Default: &quot;VERTICAL&quot;.</p>
 <p><strong>OLDPARENT_HANDLE</strong> (r<font SIZE="3">ead only</font>): returns 
-the previous parent of the detached element.</p>
+the previous parent of the detached element. Only valid after the element was 
+detached.</p>
 <p><strong>OLDBROTHER_HANDLE</strong> (r<font SIZE="3">ead only</font>): returns 
-the previous brother of the detached element.</p>
+the previous reference child of the detached element. Only valid after the 
+element was detached. See <a href="../func/iupreparent.html">IupReparent</a> for 
+a reference child definition.</p>
+<p><strong>DETACH</strong> (write-only): detach the box by creating a new dialog 
+and placing the box as the child of the new dialog. The callback is called but 
+its return value is ignored.</p>
+<p><strong>RESTORE</strong> (write-only): restore the box to its previous place 
+and destroys the new dialog. Value is ignored.</p>
 
   <p><strong>SHOWGRIP</strong> (<font SIZE="3">non inheritable</font>): Shows the 
 bar grip affordance. Default: YES. When set to NO, the BARSIZE is set to 5.</p>
@@ -91,12 +99,13 @@ also accepted.</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 
 <p><strong>DETACHED_CB</strong>: Callback called when the box is detached.</p>
-<div align="left">
-  <pre>int function(Ihandle* <strong>ih</strong>); [in C]
-<strong>elem</strong>:detached_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-</div>
+<pre>int function(Ihandle *<strong>ih</strong>, Ihandle *<strong>new_parent</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
+<strong>elem</strong>:detached_cb(<strong>new_parent: </strong>ihandle, <strong>x, y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
-the event.</p>
+the event.<br><strong>new_parent</strong>: identifier of the future parent of 
+the box. It is a new <a href="../dlg/iupdialog.html">IupDialog</a> without any 
+attributes, except that PARENTDIALOG is set to be the current parent.<br>
+<strong>x, y</strong>: dropped position.</p>
 <p class="info"><u>Returns</u>: IUP_IGNORE will be processed, in order to cancel 
 the detach action.</p>
 

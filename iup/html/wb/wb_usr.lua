@@ -832,6 +832,10 @@ wb_usr.tree =
               link= "elem/iupcbox.html"
             },
             {
+              name= {nl= "IupDetachBox"},
+              link= "elem/iupdetachbox.html"
+            },
+            {
               name= {nl= "IupExpander"},
               link= "elem/iupexpander.html"
             },

@@ -74,6 +74,66 @@ static char* iDetachBoxGetBarSizeAttrib(Ihandle* ih)
   return iupStrReturnInt(ih->data->barsize);
 }
 
+static int iDetachBoxSetRestoreAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle *dlg = IupGetDialog(ih);
+
+  /* Restores and shows the bar handler when the element returns to its previous parent */
+  ih->data->barsize = 10;  /* default size */
+  IupShow(ih->firstchild);
+
+  IupReparent(ih, ih->data->old_parent, ih->data->old_brother);
+  IupRefresh(ih->data->old_parent);
+
+  /* Reset previous parent and brother */
+  ih->data->old_parent = NULL;
+  ih->data->old_brother = NULL;
+
+  IupDestroy(dlg);
+  (void)value;
+  return 0;
+}
+
+static int iDetachBoxSetDetachAttrib(Ihandle* ih, const char* value)
+{
+  IFnnii detachedCB = (IFnnii)IupGetCallback(ih, "DETACHED_CB");
+
+  /* Create new dialog */
+  Ihandle *new_parent = IupDialog(NULL);
+  Ihandle *old_dialog = IupGetDialog(ih);
+
+  /* Set new dialog as child of the current application */
+  IupSetAttributeHandle(new_parent, "PARENTDIALOG", old_dialog);
+
+  if (detachedCB)
+    detachedCB(ih, new_parent, 0, 0);
+
+  /* Save current parent and reference child */
+  ih->data->old_parent = ih->parent;
+  ih->data->old_brother = ih->brother;
+
+  /* Hide canvas bar */
+  ih->data->barsize = 0;
+  IupHide(ih->firstchild);
+
+  IupMap(new_parent);
+
+  /* Sets the new parent */
+  IupReparent(ih, new_parent, NULL);
+
+  /* Updates/redraws the layout of the dialog application */
+  IupRefresh(old_dialog);
+
+  IupSetAttribute(new_parent, "RASTERSIZE", NULL);
+  IupRefresh(new_parent);
+
+  /* Maps and shows the new dialog */
+  IupShow(new_parent);
+
+  (void)value;
+  return 0;
+}
+
 static int iDetachBoxSetShowGripAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
@@ -216,51 +276,54 @@ static int iDetachBoxButton_CB(Ihandle* bar, int button, int pressed, int x, int
   }
   else if (ih->data->is_holding && !pressed)  /* DRAG END */
   {
-    Ihandle *dlg;
-    IFn detachedCB = (IFn)IupGetCallback(ih, "DETACHED_CB");
+    Ihandle *new_parent;
+    IFnnii detachedCB = (IFnnii)IupGetCallback(ih, "DETACHED_CB");
     int cur_x, cur_y;
 
     ih->data->is_holding = 0;
+
+    /* Restores the cursor */
+    IupSetAttribute(bar, "CURSOR", "MOVE");
+
     iupStrToIntInt(IupGetGlobal("CURSORPOS"), &cur_x, &cur_y, 'x');
 
     /* Create new dialog */
-    dlg = IupDialog(NULL);
+    new_parent = IupDialog(NULL);
 
     /* Set new dialog as child of the current application */
-    IupSetAttributeHandle(dlg, "PARENTDIALOG", mainDlg);
+    IupSetAttributeHandle(new_parent, "PARENTDIALOG", mainDlg);
 
-    /* Save current parent and current brother */
-    ih->data->old_parent  = IupGetParent(ih);
-    ih->data->old_brother = IupGetBrother(ih);
+    if (detachedCB)
+    {
+      int ret = detachedCB(ih, new_parent, cur_x, cur_y);
+      if (ret == IUP_IGNORE)
+      {
+        IupDestroy(new_parent);
+        return IUP_DEFAULT;
+      }
+    }
+
+    /* Save current parent and reference child */
+    ih->data->old_parent = ih->parent;
+    ih->data->old_brother = ih->brother;
 
     /* Hide canvas bar */
     ih->data->barsize = 0;
     IupHide(ih->firstchild);
 
-    /* Maps and shows the new dialog */
-    IupShowXY(dlg, cur_x, cur_y);
+    IupMap(new_parent);
 
     /* Sets the new parent */
-    IupReparent(ih, dlg, NULL);
+    IupReparent(ih, new_parent, NULL);
 
     /* Updates/redraws the layout of the dialog application */
     IupRefresh(mainDlg);
 
-    /* Restores the cursor */
-    IupSetAttribute(bar, "CURSOR", "MOVE");
+    IupSetAttribute(new_parent, "RASTERSIZE", NULL);
+    IupRefresh(new_parent);
 
-    if(detachedCB)
-    {
-      int ret = detachedCB(ih);
-      if(ret == IUP_IGNORE)
-      {
-        IupReparent(ih, ih->data->old_parent, ih->data->old_brother);
-        IupRefresh(ih->data->old_parent);
-        IupSetAttribute(bar, "CURSOR", "MOVE");
-        IupDestroy(dlg);
-        return IUP_IGNORE;
-      }
-    }
+    /* Maps and shows the new dialog */
+    IupShowXY(new_parent, cur_x, cur_y);
   }
 
   (void)x;
@@ -292,16 +355,6 @@ static void iDetachBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int 
   int natural_w = 0, 
       natural_h = 0;
 
-  if(ih->data->barsize == 0 && ih->data->old_parent == IupGetParent(ih))
-  {
-    /* Restores and shows the bar handler when the element returns to its previous parent */
-    ih->data->barsize = 10;  /* default size */
-    IupShow(ih->firstchild);
-    /* Reset previous parent and brother */
-    ih->data->old_parent = NULL;
-    ih->data->old_brother = NULL;
-  }
-
   /* bar */
   if (ih->data->orientation == IDBOX_VERT)
     natural_w += ih->data->barsize;
@@ -320,7 +373,7 @@ static void iDetachBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int 
       natural_w += child->naturalwidth;
       natural_h = iupMAX(natural_h, child->naturalheight);
     }
-    else  /* ISPLIT_HORIZ */
+    else  /* IDBOX_HORIZ */
     {
       natural_w = iupMAX(natural_w, child->naturalwidth);
       natural_h += child->naturalheight;
@@ -341,7 +394,7 @@ static void iDetachBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     ih->firstchild->currentwidth  = ih->data->barsize;
     ih->firstchild->currentheight = ih->currentheight;
   }
-  else  /* ISPLIT_HORIZ */
+  else  /* IDBOX_HORIZ */
   {
     ih->firstchild->currentwidth  = ih->currentwidth;
     ih->firstchild->currentheight = ih->data->barsize;
@@ -363,7 +416,7 @@ static void iDetachBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
     x += ih->data->barsize;
     iupBaseSetPosition(ih->firstchild->brother, x, y);
   }
-  else  /* ISPLIT_HORIZ */
+  else  /* IDBOX_HORIZ */
   {
     y += ih->data->barsize;
     iupBaseSetPosition(ih->firstchild->brother, x, y);
@@ -388,7 +441,6 @@ static int iDetachBoxCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(bar, "BORDER", "NO");
   IupSetAttribute(bar, "EXPAND", "NO");
   IupSetAttribute(bar, "CURSOR", "MOVE");
-  IupSetAttribute(bar, "BGCOLOR", "192 192 192");
 
   /* Setting canvas bar callbacks */
   IupSetCallback(bar, "BUTTON_CB", (Icallback) iDetachBoxButton_CB);
@@ -475,7 +527,9 @@ Iclass* iupDetachBoxNewClass(void)
   iupClassRegisterAttribute(ic, "SHOWGRIP", iDetachBoxGetShowGripAttrib, iDetachBoxSetShowGripAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OLDPARENT_HANDLE", iDetachBoxGetOldParentHandleAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "OLDBROTHER_HANDLE", iDetachBoxGetOldBrotherHandleAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
-
+  iupClassRegisterAttribute(ic, "RESTORE", NULL, iDetachBoxSetRestoreAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DETACH", NULL, iDetachBoxSetDetachAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  
   if (!IupGetHandle("IupDetachBoxCursor"))
     iDetachBoxCreateCursor();
 

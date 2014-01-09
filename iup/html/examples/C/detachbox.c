@@ -3,60 +3,77 @@
 #include "iup.h"
 
 
-static int detached_cb(Ihandle *ih)
+static int detached_cb(Ihandle *ih, Ihandle* new_parent, int x, int y)
 {
-  Ihandle *newdlg = IupGetParent(ih);
+  IupSetAttribute(new_parent, "TITLE", "New Dialog");
+  IupSetAttribute(new_parent, "MARGIN", "10x10");
 
-  IupSetAttribute(newdlg, "TITLE", "New Dialog");
-  IupSetAttribute(newdlg, "MARGIN", "10x10");
-  IupSetAttribute(newdlg, "RASTERSIZE", NULL);
-  IupRefresh(newdlg);
-
-  IupSetHandle("dbox", ih);
   IupSetAttribute(IupGetHandle("restore"), "ACTIVE", "YES");
+  IupSetAttribute(IupGetHandle("detach"), "ACTIVE", "NO");
   printf("Detached!\n");
 
+  (void)ih;
+  (void)x;
+  (void)y;
   return IUP_DEFAULT;
 }
 
 static int btn_restore_cb(Ihandle *bt)
 {
-  Ihandle *child = IupGetHandle("dbox");
-  Ihandle *parent  = (Ihandle*)IupGetAttribute(child, "OLDPARENT_HANDLE");
-  Ihandle *brother = (Ihandle*)IupGetAttribute(child, "OLDBROTHER_HANDLE");
-  Ihandle *newdlg = IupGetParent(child);
+  Ihandle *dbox = IupGetHandle("dbox");
 
-  IupDetach(child);
+#if 0
+  Ihandle *dlg = IupGetDialog(dbox);
+  Ihandle *old_parent = (Ihandle*)IupGetAttribute(dbox, "OLDPARENT_HANDLE");
+  Ihandle *ref_child = (Ihandle*)IupGetAttribute(dbox, "OLDBROTHER_HANDLE");
 
-  IupInsert(parent, brother, child);
-  IupMap(child);
-  IupRefresh(parent);
-
-  IupDestroy(newdlg);
+  IupReparent(dbox, old_parent, ref_child);
+  IupRefresh(old_parent);
+  IupDestroy(dlg);
+#else
+  IupSetAttribute(dbox, "RESTORE", NULL);
+#endif
   
   IupSetAttribute(bt, "ACTIVE", "NO");
+  IupSetAttribute(IupGetHandle("detach"), "ACTIVE", "Yes");
+
+  return IUP_DEFAULT;
+}
+
+static int btn_detach_cb(Ihandle *bt)
+{
+  Ihandle *dbox = IupGetHandle("dbox");
+
+  IupSetAttribute(dbox, "DETACH", NULL);
+
+  IupSetAttribute(bt, "ACTIVE", "NO");
+  IupSetAttribute(IupGetHandle("restore"), "ACTIVE", "Yes");
 
   return IUP_DEFAULT;
 }
 
 int main(int argc, char **argv)
 {
-  Ihandle *dlg, *bt, *box, *lbl, *ml, *hbox, *bt2;
+  Ihandle *dlg, *bt, *dbox, *lbl, *ml, *hbox, *bt2, *txt;
   IupOpen(&argc, &argv);
 
-  bt = IupButton("Detach me!", NULL);
-  IupSetAttribute(bt, "EXPAND", "YES");
+  bt = IupButton("Detache Me!", NULL);
+  IupSetCallback(bt, "ACTION", (Icallback)btn_detach_cb);
+  IupSetHandle("detach", bt);
 
   ml = IupMultiLine(NULL);
   IupSetAttribute(ml, "EXPAND", "YES");
   IupSetAttribute(ml, "VISIBLELINES", "5");
-  hbox = IupHbox(bt, ml, NULL);
 
-  box = IupDetachBox(hbox);
-  IupSetAttribute(box, "ORIENTATION", "VERTICAL");
-  //IupSetAttribute(box, "SHOWGRIP", "NO");
-  //IupSetAttribute(box, "COLOR", "255 0 0");
-  IupSetCallback(box, "DETACHED_CB", (Icallback)detached_cb);
+  hbox = IupHbox(bt, ml, NULL);
+  IupSetAttribute(hbox, "MARGIN", "10x0");
+
+  dbox = IupDetachBox(hbox);
+  IupSetAttribute(dbox, "ORIENTATION", "VERTICAL");
+  //IupSetAttribute(dbox, "SHOWGRIP", "NO");
+  //IupSetAttribute(dbox, "COLOR", "255 0 0");
+  IupSetCallback(dbox, "DETACHED_CB", (Icallback)detached_cb);
+  IupSetHandle("dbox", dbox);
 
   lbl = IupLabel("Label");
   IupSetAttribute(lbl, "EXPAND", "VERTICAL");
@@ -67,7 +84,10 @@ int main(int argc, char **argv)
   IupSetCallback(bt2, "ACTION", (Icallback)btn_restore_cb);
   IupSetHandle("restore", bt2);
 
-  dlg = IupDialog(IupVbox(box, lbl, bt2, NULL));
+  txt = IupText(NULL);
+  IupSetAttribute(txt, "EXPAND", "HORIZONTAL");
+
+  dlg = IupDialog(IupVbox(dbox, lbl, bt2, txt, NULL));
   IupSetAttribute(dlg, "TITLE", "IupDetachBox Example");
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupSetAttribute(dlg, "GAP", "10");
