@@ -241,7 +241,7 @@
     <ClCompile Include="..\src\iup_progressdlg.c">
       <Filter>src_controls</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\iup_dbox.c">
+    <ClCompile Include="..\src\iup_detachbox.c">
       <Filter>src_controls</Filter>
     </ClCompile>
   </ItemGroup>

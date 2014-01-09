@@ -1,9 +1,9 @@
-﻿#include <stdlib.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
-#include "iupcontrols.h"
 
-int notify(Ihandle *ih)
+
+static int detached_cb(Ihandle *ih)
 {
   Ihandle *newdlg = IupGetParent(ih);
 
@@ -19,7 +19,7 @@ int notify(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int btn_restore_cb(Ihandle *bt)
+static int btn_restore_cb(Ihandle *bt)
 {
   Ihandle *child = IupGetHandle("dbox");
   Ihandle *parent  = (Ihandle*)IupGetAttribute(child, "OLDPARENT_HANDLE");
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
   IupSetAttribute(box, "ORIENTATION", "VERTICAL");
   //IupSetAttribute(box, "SHOWGRIP", "NO");
   //IupSetAttribute(box, "COLOR", "255 0 0");
-  IupSetCallback(box, "DETACHED_CB", (Icallback)notify);
+  IupSetCallback(box, "DETACHED_CB", (Icallback)detached_cb);
 
   lbl = IupLabel("Label");
   IupSetAttribute(lbl, "EXPAND", "VERTICAL");

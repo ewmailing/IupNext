@@ -222,7 +222,7 @@
     <ClCompile Include="..\html\examples\C\dialogtaskbar.c">
       <Filter>C</Filter>
     </ClCompile>
-    <ClCompile Include="..\html\examples\C\dbox.c">
+    <ClCompile Include="..\html\examples\C\detachbox.c">
       <Filter>C</Filter>
     </ClCompile>
   </ItemGroup>
