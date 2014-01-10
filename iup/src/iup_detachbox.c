@@ -112,14 +112,14 @@ static int iDetachBoxSetDetachAttrib(Ihandle* ih, const char* value)
   ih->data->old_parent = ih->parent;
   ih->data->old_brother = ih->brother;
 
-  /* Hide canvas bar */
-  ih->data->barsize = 0;
-  IupHide(ih->firstchild);
-
   IupMap(new_parent);
 
   /* Sets the new parent */
   IupReparent(ih, new_parent, NULL);
+
+  /* Hide canvas bar */
+  ih->data->barsize = 0;
+  IupHide(ih->firstchild);
 
   /* Updates/redraws the layout of the dialog application */
   IupRefresh(old_dialog);
@@ -307,14 +307,14 @@ static int iDetachBoxButton_CB(Ihandle* bar, int button, int pressed, int x, int
     ih->data->old_parent = ih->parent;
     ih->data->old_brother = ih->brother;
 
-    /* Hide canvas bar */
-    ih->data->barsize = 0;
-    IupHide(ih->firstchild);
-
     IupMap(new_parent);
 
     /* Sets the new parent */
     IupReparent(ih, new_parent, NULL);
+
+    /* Hide canvas bar */
+    ih->data->barsize = 0;
+    IupHide(ih->firstchild);
 
     /* Updates/redraws the layout of the dialog application */
     IupRefresh(mainDlg);
