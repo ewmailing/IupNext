@@ -322,7 +322,8 @@ static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
   if (!iupdrvIsVisible(ih))
   {
     GdkWindow* window = iupgtkGetWindow(ih->handle);
-    gdk_window_resize(window, ih->currentwidth, ih->currentheight);
+    if (window)
+      gdk_window_resize(window, ih->currentwidth, ih->currentheight);
   }
 
   gtkCanvasUpdateChildLayout(ih);
