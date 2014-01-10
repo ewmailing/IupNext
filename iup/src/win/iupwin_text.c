@@ -717,15 +717,22 @@ static TCHAR* winTextStrConvertToSystem(Ihandle* ih, const char* str)
   {
     if (ih->data->has_formatting)
     {
-      if (strchr(str, '\n')!=NULL)
+      if (strchr(str, '\n') != NULL)
       {
         str = iupStrReturnStr(str);
-        iupStrToMac((char*)str);
+        iupStrToMac((char*)str);  /* replace inline */
       }
     }
     else
-      str = iupStrToDos(str);
+    {
+      TCHAR* wstr;
+      char* dos_str = iupStrToDos(str);
+      wstr = iupwinStrToSystem(dos_str);
+      if (dos_str != str) free(dos_str);
+      return wstr;
+    }
   }
+
   return iupwinStrToSystem(str);
 }
 

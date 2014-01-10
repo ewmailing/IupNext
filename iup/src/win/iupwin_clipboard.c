@@ -160,6 +160,8 @@ static int winClipboardSetSaveWMFAttrib(Ihandle *ih, const char *value)
 static int winClipboardSetTextAttrib(Ihandle *ih, const char *value)
 {
   HANDLE hHandle;
+  TCHAR* wstr;
+  char* dos_str;
   void* clip_str;
   int size;
   (void)ih;
@@ -174,16 +176,26 @@ static int winClipboardSetTextAttrib(Ihandle *ih, const char *value)
     return 0;
   }
 
-  size = strlen(value)+1;
+  /* CF_TEXT/CF_UNICODETEXT: Each line ends with a carriage return/linefeed (CR-LF) combination. */
+  dos_str = iupStrToDos(value);
+  wstr = iupwinStrToSystem(dos_str);
+  if (dos_str != value) free(dos_str);
+
+  size = (lstrlen(wstr)+1) * sizeof(TCHAR);
   hHandle = GlobalAlloc(GMEM_MOVEABLE, size); 
   if (!hHandle)
     return 0;
 
   clip_str = GlobalLock(hHandle);
-  CopyMemory(clip_str, value, size);
+  CopyMemory(clip_str, wstr, size);
   GlobalUnlock(hHandle);
 
+#ifdef UNICODE
+  SetClipboardData(CF_UNICODETEXT, hHandle);
+#else
   SetClipboardData(CF_TEXT, hHandle);
+#endif
+
   CloseClipboard();
 
   return 0;
@@ -198,15 +210,30 @@ static char* winClipboardGetTextAttrib(Ihandle *ih)
   if (!OpenClipboard(GetForegroundWindow()))
     return NULL;
 
-  hHandle = GetClipboardData(CF_TEXT);
-  if (!hHandle)
+#ifdef UNICODE
+  hHandle = GetClipboardData(CF_UNICODETEXT);
+  if (hHandle)
   {
-    CloseClipboard();
-    return NULL;
+    WCHAR* wstr = (WCHAR*)GlobalLock(hHandle);
+    str = iupwinStrFromSystem(wstr);
   }
-  
-  str = iupStrReturnStr((char*)GlobalLock(hHandle));
- 
+  else
+#endif
+  {
+    hHandle = GetClipboardData(CF_TEXT);
+    if (!hHandle)
+    {
+      CloseClipboard();
+      return NULL;
+    }
+
+    str = (char*)GlobalLock(hHandle);
+  }
+
+  str = iupStrReturnStr(str);
+  if (str)
+    iupStrToUnix(str);
+
   GlobalUnlock(hHandle);
   CloseClipboard();
   return str;
