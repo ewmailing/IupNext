@@ -78,11 +78,15 @@ static int iDetachBoxSetRestoreAttrib(Ihandle* ih, const char* value)
 {
   Ihandle *dlg = IupGetDialog(ih);
 
+  IupReparent(ih, ih->data->old_parent, ih->data->old_brother);
+
   /* Restores and shows the bar handler when the element returns to its previous parent */
   ih->data->barsize = 10;  /* default size */
   IupShow(ih->firstchild);
 
-  IupReparent(ih, ih->data->old_parent, ih->data->old_brother);
+  /* Restores the cursor */
+  IupSetAttribute(ih->firstchild, "CURSOR", "MOVE");
+
   IupRefresh(ih->data->old_parent);
 
   /* Reset previous parent and brother */
@@ -120,6 +124,9 @@ static int iDetachBoxSetDetachAttrib(Ihandle* ih, const char* value)
   /* Hide canvas bar */
   ih->data->barsize = 0;
   IupHide(ih->firstchild);
+
+  /* Restores the cursor */
+  IupSetAttribute(ih->firstchild, "CURSOR", "MOVE");
 
   /* Updates/redraws the layout of the dialog application */
   IupRefresh(old_dialog);
@@ -282,9 +289,6 @@ static int iDetachBoxButton_CB(Ihandle* bar, int button, int pressed, int x, int
 
     ih->data->is_holding = 0;
 
-    /* Restores the cursor */
-    IupSetAttribute(bar, "CURSOR", "MOVE");
-
     iupStrToIntInt(IupGetGlobal("CURSORPOS"), &cur_x, &cur_y, 'x');
 
     /* Create new dialog */
@@ -312,9 +316,12 @@ static int iDetachBoxButton_CB(Ihandle* bar, int button, int pressed, int x, int
     /* Sets the new parent */
     IupReparent(ih, new_parent, NULL);
 
+    /* Restores the cursor */
+    IupSetAttribute(bar, "CURSOR", "MOVE");
+
     /* Hide canvas bar */
     ih->data->barsize = 0;
-    IupHide(ih->firstchild);
+    IupHide(bar);
 
     /* Updates/redraws the layout of the dialog application */
     IupRefresh(mainDlg);

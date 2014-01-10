@@ -61,6 +61,7 @@ IUP = ../../..
 #SRC = val.c
 #SRC = vbox.c
 #SRC = zbox.c
+SRC = detachbox.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib
@@ -79,7 +80,7 @@ IUP = ../../..
 #USE_OPENGL = Yes
 #SRC = glcanvas.c
 
-IUPWEB_SAMPLE=Yes
+#IUPWEB_SAMPLE=Yes
 ifdef IUPWEB_SAMPLE
   SRC = webbrowser.c
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )

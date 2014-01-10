@@ -141,7 +141,10 @@ void iupdrvReparent(Ihandle* ih)
   if (!widget) widget = ih->handle;
   old_parent = gtk_widget_get_parent(widget);
   if (old_parent != new_parent)
+  {
     gtk_widget_reparent(widget, new_parent);
+    gtk_widget_realize(widget);
+  }
 }
 
 void iupgtkAddToParent(Ihandle* ih)
