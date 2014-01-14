@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
+#include <locale.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -428,6 +429,7 @@ static int iMatrixExStrGetDataSize(const char* data, int *num_lin, int *num_col,
     *num_col = iupStrCountChar(data, *sep);
   else
   {
+    /* try to guess the separator */
     *sep = '\t';
     *num_col = iupStrCountChar(data, *sep);
     if (*num_col == 0)
@@ -468,10 +470,14 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
   int lin, col, len, l, c;
-  char* value = NULL;
+  char* value = NULL, *locale, *old_locale = NULL;
   int value_max_size = 0, value_len;
 
   iupMatrixExBusyStart(matex_data, data_num_lin*data_num_col, busyname);
+
+  locale = IupGetAttribute(ih, "TEXTNUMERICLOCALE");
+  if (locale)
+    old_locale = setlocale(LC_NUMERIC, locale);
 
   lin = start_lin;
   l = 0;
@@ -499,6 +505,10 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
           {
             if (value) 
               free(value);
+
+            if (old_locale)
+              setlocale(LC_NUMERIC, old_locale);
+
             return;
           }
         }
@@ -511,6 +521,9 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
 
     lin++;
   }
+
+  if (old_locale)
+    setlocale(LC_NUMERIC, old_locale);
 
   iupMatrixExBusyEnd(matex_data);
 
@@ -690,4 +703,5 @@ void iupMatrixExRegisterClipboard(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "TEXTSEPARATOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTSKIPLINES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXTNUMERICLOCALE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

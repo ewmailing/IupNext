@@ -302,15 +302,17 @@ attribute, can be &quot;MARKED&quot; to use the start of the selected groups of 
 (top-left selected cell), or can be a cell address &quot;L:C&quot;.</p>
 <p class="info">Data must be in plain text format. Lines can be separated in 
 DOS, UNIX or MAC format. Columns can be separated with tabs ('\t'), with 
-semicolon (';') or a custom value defined by the TEXTSEPARATOR attribute. Data 
-must contain an exact matrix organization. Use the attribute TEXTSKIPLINES to 
+semicolon (';') or a custom value defined by the <strong>TEXTSEPARATOR</strong> attribute. Data 
+must contain an exact matrix organization. Use the attribute <strong>TEXTSKIPLINES</strong> to 
 skip a number of lines in the beginning of the data. If data at the insert 
 position will have more lines or columns than the current matrix, then the
 <a href="#PASTESIZE_CB">PASTESIZE_CB</a> callback is called. If defined the <a href="iupmatrix_cb.html#EDITION_CB">
-EDITION_CB</a> callback will be called before the cell value is set. LASTERROR 
+EDITION_CB</a> callback will be called before the cell value is set. <strong>LASTERROR</strong> 
 can be set to &quot;NOTEXT&quot; (data is empty or NULL), &quot;INVALIDMATRIX&quot; (not a matrix 
-data). BUSY will be set to Yes during the operation. Only visible cells will 
-receive data. </p>
+data). <strong>BUSY</strong> will be set to Yes during the operation. Only visible cells will 
+receive data. The <strong>TEXTNUMERICLOCALE</strong> attribute can be used to 
+set a different numeric locale during paste in case numeric conversions are 
+being processed when the cell value is set (since 3.10).</p>
 <p>
 <strong>PASTEDATA</strong> (write-only): paste data from a memory buffer. Value 
 is the data. Insert position is obtained from the
