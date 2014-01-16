@@ -87,6 +87,8 @@ IupStoreGlobal
 IupSubmenu
 IupSplit
 IupScrollBox
+IupDetachBox
+IupBackgroundBox
 IupLink
 IupText
 IupToggle

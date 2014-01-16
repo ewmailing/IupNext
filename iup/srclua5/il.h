@@ -56,6 +56,7 @@ int iupclipboardlua_open(lua_State * L);
 int iupexpanderlua_open(lua_State * L);
 int iupprogressdlglua_open(lua_State * L);
 int iupdetachboxlua_open(lua_State * L);
+int iupbackgroundboxlua_open(lua_State * L);
 
 void iupgetparamlua_open (lua_State * L);
 

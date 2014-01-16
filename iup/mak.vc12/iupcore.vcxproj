@@ -89,6 +89,7 @@
     <ClCompile Include="..\src\iup_array.c" />
     <ClCompile Include="..\src\iup_assert.c" />
     <ClCompile Include="..\src\iup_attrib.c" />
+    <ClCompile Include="..\src\iup_backgroundbox.c" />
     <ClCompile Include="..\src\iup_callback.c" />
     <ClCompile Include="..\src\iup_childtree.c" />
     <ClCompile Include="..\src\iup_class.c" />

@@ -196,6 +196,7 @@ Ihandle*  IupGridBox    (Ihandle* child, ...);
 Ihandle*  IupGridBoxv   (Ihandle **children);
 Ihandle*  IupExpander   (Ihandle *child);
 Ihandle*  IupDetachBox  (Ihandle *child);
+Ihandle*  IupBackgroundBox(Ihandle *child);
 
 Ihandle*  IupFrame      (Ihandle* child);
 
