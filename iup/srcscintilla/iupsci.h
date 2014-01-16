@@ -32,6 +32,8 @@ void iupScintillaRegisterBraceLight(Iclass* ic);
 void iupScintillaRegisterCursor(Iclass* ic);
 void iupScintillaRegisterAnnotation(Iclass* ic);
 void iupScintillaRegisterScrolling(Iclass* ic);
+void iupScintillaRegisterAutocompletion(Iclass* ic);
+void iupScintillaRegisterSearching(Iclass* ic);
 
 sptr_t iupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 

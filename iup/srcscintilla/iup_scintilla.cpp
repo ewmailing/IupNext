@@ -567,22 +567,24 @@ static Iclass* iupScintillaNewClass(void)
   /* Drag&Drop */
   iupdrvRegisterDragDropAttrib(ic);
   
-  iupScintillaRegisterText(ic);        /* Text retrieval and modification */
-  iupScintillaRegisterSelection(ic);   /* Selection and information */
-  iupScintillaRegisterClipboard(ic);   /* Clipboard: Cut, Copy, Paste, Undo and Redo */
-  iupScintillaRegisterOvertype(ic);    /* Overtype */
-  iupScintillaRegisterTab(ic);         /* Tabs and Indentation Guides */
-  iupScintillaRegisterWordWrap(ic);    /* Line wrapping */
-  iupScintillaRegisterStyle(ic);       /* Style Definition Attributes */
-  iupScintillaRegisterLexer(ic);       /* Lexer Attributes */
-  iupScintillaRegisterFolding(ic);     /* Folding Attributes */
-  iupScintillaRegisterMargin(ic);      /* Margin Attributes */
-  iupScintillaRegisterMarker(ic);      /* Marker Attributes */
-  iupScintillaRegisterWhiteSpace(ic);  /* White space Attributes */
-  iupScintillaRegisterBraceLight(ic);  /* Brace highlighting Attributes */
-  iupScintillaRegisterCursor(ic);      /* Cursor and Zooming Attributes */
-  iupScintillaRegisterAnnotation(ic);  /* Annotation Attributes */
-  iupScintillaRegisterScrolling(ic);   /* Scrolling and automatic scrolling */
+  iupScintillaRegisterText(ic);            /* Text retrieval and modification */
+  iupScintillaRegisterSelection(ic);       /* Selection and information */
+  iupScintillaRegisterClipboard(ic);       /* Clipboard: Cut, Copy, Paste, Undo and Redo */
+  iupScintillaRegisterOvertype(ic);        /* Overtype */
+  iupScintillaRegisterTab(ic);             /* Tabs and Indentation Guides */
+  iupScintillaRegisterWordWrap(ic);        /* Line wrapping */
+  iupScintillaRegisterStyle(ic);           /* Style Definition Attributes */
+  iupScintillaRegisterLexer(ic);           /* Lexer Attributes */
+  iupScintillaRegisterFolding(ic);         /* Folding Attributes */
+  iupScintillaRegisterMargin(ic);          /* Margin Attributes */
+  iupScintillaRegisterMarker(ic);          /* Marker Attributes */
+  iupScintillaRegisterWhiteSpace(ic);      /* White space Attributes */
+  iupScintillaRegisterBraceLight(ic);      /* Brace highlighting Attributes */
+  iupScintillaRegisterCursor(ic);          /* Cursor and Zooming Attributes */
+  iupScintillaRegisterAnnotation(ic);      /* Annotation Attributes */
+  iupScintillaRegisterScrolling(ic);       /* Scrolling and automatic scrolling */
+  iupScintillaRegisterAutocompletion(ic);  /* Autocompletion */
+  iupScintillaRegisterSearching(ic);       /* Search & Replace */
 
   /* General */
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, IUPAF_SAMEASSYSTEM, "30", IUPAF_NO_INHERIT);
@@ -617,7 +619,6 @@ Ihandle *IupScintilla(void)
 
 
 /*****  TODO  (by-demand)
-- Search & Replace
 - Multiple Selection and Virtual Space
 - Macro recording
 - Printing
@@ -630,5 +631,4 @@ BRACEHLINDICATOR (non inheritable, write only): defines a specified indicator to
 BRACEBLINDICATOR (non inheritable, write only): defines a specified indicator to highlight non matching brace instead of changing its style (See Indicator Styles).
 USEBRACEHLINDICATOR (non inheritable): enable or disable the indicator to highlight matching braces. Can be YES or NO. Default: YES.
 USEBRACEBLINDICATOR (non inheritable): enable or disable the indicator to highlight non matching brace. Can be YES or NO. Default: YES.
-- Autocompletion
 */
