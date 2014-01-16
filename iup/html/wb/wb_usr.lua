@@ -828,6 +828,10 @@ wb_usr.tree =
             },
             { link= "", name= {en= "" } },
             {
+              name= {nl= "IupBackgroundBox"},
+              link= "elem/iupbackgroundbox.html"
+            },
+            {
               name= {nl= "IupCbox"},
               link= "elem/iupcbox.html"
             },

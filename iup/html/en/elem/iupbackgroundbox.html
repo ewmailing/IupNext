@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
-<title>IupScrollBox</title>
+<title>IupBackgroundBox</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
 <style type="text/css">
@@ -23,15 +23,16 @@
   </ul>
 </div>
 
-<h2>IupScrollBox<span class="style1"> (since 3.7)</span></h2>
-<p>Creates a native container that allows its child to be scrolled. It inherits from
+<h2>IupBackgroundBox<span class="style1"> (since 3.10)</span></h2>
+<p>Creates a simple native container with no decorations. Useful for controlling 
+children visibility for <strong>IupZbox</strong> or <strong>IupExpander</strong>. It inherits from
   <a href="../elem/iupcanvas.html">IupCanvas</a>. </p>
 
 <h3><a name="Creation">Creation</a></h3>
 
-<pre>Ihandle* IupScrollBox(Ihandle*<strong> child</strong>); [in C]
-iup.scrollbox{<strong>child</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
-scrollbox(<strong>child</strong>) [in LED]</pre>
+<pre>Ihandle* IupBackgroundBox(Ihandle*<strong> child</strong>); [in C]
+iup.backgroundbox{<strong>child</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+backgroundbox(<strong>child</strong>) [in LED]</pre>
   <p><strong>child</strong>: Identifier of an interface element which will receive the 
 	box. It can be NULL.</p>
   <p>
@@ -50,10 +51,8 @@ color of the native parent by default.</p>
   
   the default value is "NO".</p>
 
-<p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable</font>): 
+<p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable</font>):&nbsp; 
 behaves as a container.</p>
-<p><a href="../attrib/iup_scrollbar.html">SCROLLBAR</a> (creation only): the 
-default value is "YES".</p>
 <p>
 <strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
 CANFOCUS</strong><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">: 
@@ -71,13 +70,6 @@ is set to NO.</p>
 also accepted.</p>
 
 <h3>Notes</h3>
-<p>The box allows the application to create a virtual space for the dialog that 
-is actually larger than the visible area. The current size of the box defines 
-the visible area. The natural size of the child (and its children) defines 
-the virtual space size. So the <strong>IupScrollBox</strong> does not depend on 
-its child size or expansion, and its natural size is always 0x0.</p>
-<p>The user can move the box contents by dragging the background. Also the mouse 
-wheel scrolls the contents vertically.</p>
 
 <p>The box can be created with no elements and be dynamic filled using
   <a href="../func/iupappend.html">IupAppend</a> or
@@ -89,8 +81,7 @@ wheel scrolls the contents vertically.</p>
 
 <div align="center">
   <center>
-  <img border="0" src="images/iupscrollbox.png">
-  </center>
+  &nbsp;</center>
 </div>
 
 </body>
