@@ -51,22 +51,20 @@ static char* iScintillaGetSearchFlagsAttrib(Ihandle* ih)
   int flags = iupScintillaSendMessage(ih, SCI_GETSEARCHFLAGS, 0, 0);
   char* str = iupStrGetMemory(50);
 
-  sprintf(str, "");
-  if (flags & SCFIND_MATCHCASE) sprintf(str, "MATCHCASE");
+  *str = 0;
+  if (flags & SCFIND_MATCHCASE) strcpy(str, "MATCHCASE");
 
-  if(strlen(str) > 0) sprintf(str, "%s|", str);
-  if (flags & SCFIND_WHOLEWORD) sprintf(str, "%sWHOLEWORD", str);
+  if (*str) strcat(str, "|");
+  if (flags & SCFIND_WHOLEWORD) strcat(str, "WHOLEWORD");
 
-  if(strlen(str) > 0) sprintf(str, "%s|", str);
-  if (flags & SCFIND_WORDSTART) sprintf(str, "%sWORDSTART", str);
+  if (*str) strcat(str, "|");
+  if (flags & SCFIND_WORDSTART) strcat(str, "WORDSTART");
 
-  if(strlen(str) > 0) sprintf(str, "%s|", str);
-  if (flags & SCFIND_REGEXP) sprintf(str, "%sREGEXP", str);
+  if (*str) strcat(str, "|");
+  if (flags & SCFIND_REGEXP) strcat(str, "REGEXP");
 
-  if(strlen(str) > 0) sprintf(str, "%s|", str);
-  if (flags & SCFIND_POSIX) sprintf(str, "%sPOSIX", str);
-
-  sprintf(str, "%s\0", str);
+  if (*str) strcat(str, "|");
+  if (flags & SCFIND_POSIX) strcat(str, "POSIX");
 
   return str;
 }
