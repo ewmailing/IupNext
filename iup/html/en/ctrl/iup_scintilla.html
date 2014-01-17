@@ -244,6 +244,44 @@ or &quot;BOXED&quot; (displayed and surrounded by a box). Default HIDDEN.</p>
 write-only): deletes all annotations.</p>
 
   
+<h4>Autocompletion (since 3.10)</h4>
+
+<p><strong>AUTOCSHOW<b><em>id</em></b></strong> (<font size="3">non inheritable, write only</font>): 
+causes a list of words to be displayed. The words are separated by a space. &quot;id&quot; 
+defines the number of characters of the word already entered by user.</p>
+<p><strong>AUTOCCANCEL</strong> (<font size="3">non inheritable, write only</font>): 
+cancels any displayed autocompletion list. When in autocompletion mode, the list 
+should disappear when the user types a character that can not be part of the 
+autocompletion.</p>
+<p><strong>AUTOCACTIVE</strong> (<font size="3">non inheritable, read only</font>): 
+returns YES if there is an active autocompletion list and NO if there is not.</p>
+<p><strong>AUTOCPOSSTART</strong> (<font size="3">non inheritable, read only</font>): 
+returns the current position when the list of words started to be shown.</p>
+<p><strong>AUTOCCOMPLETE</strong> (<font size="3">non inheritable, write only</font>): 
+triggers autocompletion. This has the same effect as the tab key.</p>
+<p><strong>AUTOCSELECT</strong> (<font size="3">non inheritable, write only</font>): 
+selects an item in the autocompletion list. It searches in the list of words for 
+the first that matches of value (comparisons are case sensitive). If the item is 
+not found, <span id="result_box" class="short_text" lang="en"><span class="hps">
+no item is</span> <span class="hps">selected.</span></span></p>
+<p><span class="hps"><strong>AUTOCSELECTEDINDEX</strong> (<font size="3">non inheritable, 
+read only</font>): retrieves the current selection index, set by AUTOCSELECT 
+attribute.</span></p>
+<p><span class="hps"><strong>AUTOCDROPRESTOFWORD</strong> (<font size="3">non 
+inheritable):</font> when an item is selected, any word 
+characters following the caret are first erased if this attribute is set YES. 
+The default is NO.</span></p>
+<p><span class="hps"><strong>AUTOCMAXHEIGHT</strong> (<font size="3">non 
+inheritable): </font>sets and gets the maximum number of rows that will be 
+visible in an autocompletion list. If there are more rows in the list, then a 
+vertical scrollbar is shown. The default is 5. </span></p>
+<p><span class="hps"><strong>AUTOCMAXWIDTH</strong> (<font size="3">non 
+inheritable): </font>the maximum width of an autocompletion list expressed as 
+the number of characters in the longest item that will be totally visible. The 
+default is 0 (in this case, the list width is calculated to fit the item with 
+the most characters). </span></p>
+
+  
 <h4>Brace Highlighting</h4>
 
 <p><strong>BRACEHIGHLIGHT</strong> (<font size="3">non inheritable, write only</font>): 
@@ -491,6 +529,34 @@ Scroll the text to make the given position visible. It uses the same format and
 reference of the <a href="#CARETPOS">CARETPOS</a> attribute (&quot;pos&quot; starting at 0).</p>
 <p><strong>SCROLLWIDTH</strong> (<font size="3">non inheritable): controls the 
 document width in pixels. Default: 2000.</font></p>
+
+  
+<h4>Search and Replace (since 3.10)</h4>
+
+<p><strong>SEARCHINTARGET</strong> (<font size="3">non inheritable, write only</font>): 
+This searches for the first occurrence of a text string in the target defined by 
+TARGETSTART and TARGETEND. If the search succeeds, the target is set to the 
+found text.</p>
+<p><strong>SEARCHFLAGS</strong> (<font size="3">non inheritable</font>): 
+sets and gets the search flags used in SEARCHINTARGET attribute. Possible 
+values: MATCHCASE, WHOLEWORD, WORDSTART, REGEXP and POSIX. The flag options are 
+combined. In order to reset flags, set NULL.</p>
+<p><strong>TARGETSTART</strong> (<font size="3">non inheritable</font>): 
+sets and gets the start of target. When searching in non-regular expression 
+mode, you can set TARGETSTART greater than TARGETEND to find the last matching 
+text in the target rather than the first matching text. If set 0, target start
+<span id="result_box0" class="short_text" lang="en"><span class="hps">will be</span>
+<span class="hps">1 (first position of text).</span></span></p>
+<p><strong>TARGETEND</strong> (<font size="3">non inheritable</font>): 
+sets and gets the end of target. If set 0, target end
+<span id="result_box1" class="short_text" lang="en"><span class="hps">will be</span>
+<span class="hps">the last position of text.</span></span></p>
+<p><strong>TARGETFROMSELECTION</strong> (<font size="3">non inheritable, write 
+only</font>): 
+set the target start and end from current position of the selection.</p>
+<p><strong>REPLACETARGET</strong> (<font size="3">non inheritable, write only</font>): 
+replaces the target text. After replacement, the target range refers to the 
+replacement text.</p>
 <h4>Style Definition (See <a href="#StyleDefinition">Style Definition</a>)</h4>
 
   

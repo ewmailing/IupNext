@@ -61,9 +61,8 @@ SCI_AUTOCGETMAXWIDTH
 
 static int iScintillaSetAutoCShowAttrib(Ihandle* ih, int number, const char* value)
 {
-  ih->data->ignore_change = 1;
+  if(number < 0) number = 0;
   iupScintillaSendMessage(ih, SCI_AUTOCSHOW, number, (sptr_t)value);
-  ih->data->ignore_change = 0;
   return 0;
 }
 
@@ -98,9 +97,7 @@ static char* iScintillaGetAutoCSelectedIndexAttrib(Ihandle* ih)
 
 static int iScintillaSetAutoCSelectAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->ignore_change = 1;
   iupScintillaSendMessage(ih, SCI_AUTOCSELECT, 0, (sptr_t)value);
-  ih->data->ignore_change = 0;
   return 0;
 }
 
@@ -168,7 +165,7 @@ void iupScintillaRegisterAutocompletion(Iclass* ic)
   iupClassRegisterAttribute(ic,   "AUTOCCOMPLETE", NULL, iScintillaSetAutoCCompleteAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "AUTOCSELECT", NULL, iScintillaSetAutoCSelectAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "AUTOCSELECTEDINDEX", iScintillaGetAutoCSelectedIndexAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "AUTOCDROPRESTOFWORD", iScintillaGetAutoCDropRestOfWordAttrib, iScintillaSetAutoCDropRestOfWordAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "AUTOCDROPRESTOFWORD", iScintillaGetAutoCDropRestOfWordAttrib, iScintillaSetAutoCDropRestOfWordAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "AUTOCMAXHEIGHT", iScintillaGetAutoCMaxHeightAttrib, iScintillaSetAutoCMaxHeightAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "AUTOCMAXWIDTH", iScintillaGetAutoCMaxWidthAttrib, iScintillaSetAutoCMaxWidthAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
 }
