@@ -77,9 +77,9 @@ static int iScintillaSetSearchFlagsAttrib(Ihandle* ih, const char* value)
     iupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, 0, 0);
   else
   {
+    int flags = 0;
     char* VALUE = iupStrDup(value);
     iupStrUpper(VALUE, VALUE);
-    int flags = 0;
 
     if (strstr(VALUE, "MATCHCASE"))
       flags |= SCFIND_MATCHCASE;
