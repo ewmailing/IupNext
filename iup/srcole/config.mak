@@ -18,5 +18,9 @@ SRC = iup_olecontrol.cpp \
 
 
 ifneq ($(findstring cygw, $(TEC_UNAME)), )
-  LIBS += uuid ole32 gdi32 oleaut32
+  LIBS += uuid gdi32 oleaut32 ole32 
 endif
+
+#IMPORTANT: there is a libuuid in cygwin/lib that is not related to Win32 uuid
+#           this will affect linking the DLL or the application
+#           one solution was to move it to a safe place 
