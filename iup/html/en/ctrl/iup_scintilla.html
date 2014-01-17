@@ -540,7 +540,7 @@ found text.</p>
 <p><strong>SEARCHFLAGS</strong> (<font size="3">non inheritable</font>): 
 sets and gets the search flags used in SEARCHINTARGET attribute. Possible 
 values: MATCHCASE, WHOLEWORD, WORDSTART, REGEXP and POSIX. The flag options are 
-combined. In order to reset flags, set NULL.</p>
+combined using &quot;|&quot; as separators. Use NULL to reset all flags.</p>
 <p><strong>TARGETSTART</strong> (<font size="3">non inheritable</font>): 
 sets and gets the start of target. When searching in non-regular expression 
 mode, you can set TARGETSTART greater than TARGETEND to find the last matching 

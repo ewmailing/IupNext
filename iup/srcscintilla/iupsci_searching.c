@@ -73,18 +73,28 @@ static char* iScintillaGetSearchFlagsAttrib(Ihandle* ih)
 
 static int iScintillaSetSearchFlagsAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "MATCHCASE"))
-    iupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, SCFIND_MATCHCASE, 0);
-  else if (iupStrEqualNoCase(value, "WHOLEWORD"))
-    iupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, SCFIND_WHOLEWORD, 0);
-  else if (iupStrEqualNoCase(value, "WORDSTART"))
-    iupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, SCFIND_WORDSTART, 0);
-  else if (iupStrEqualNoCase(value, "REGEXP"))
-    iupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, SCFIND_REGEXP, 0);
-  else if (iupStrEqualNoCase(value, "POSIX"))
-    iupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, SCFIND_POSIX, 0);
-  else
+  if (!value)
     iupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, 0, 0);
+  else
+  {
+    char* VALUE = iupStrDup(value);
+    iupStrUpper(VALUE, VALUE);
+    int flags = 0;
+
+    if (strstr(VALUE, "MATCHCASE"))
+      flags |= SCFIND_MATCHCASE;
+    if (strstr(VALUE, "WHOLEWORD"))
+      flags |= SCFIND_WHOLEWORD;
+    if (strstr(VALUE, "WORDSTART"))
+      flags |= SCFIND_WORDSTART;
+    if (strstr(VALUE, "REGEXP"))
+      flags |= SCFIND_REGEXP;
+    if (strstr(VALUE, "POSIX"))
+      flags |= SCFIND_POSIX;
+
+    iupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, flags, 0);
+    free(VALUE);
+  }
 
   return 0;
 }
