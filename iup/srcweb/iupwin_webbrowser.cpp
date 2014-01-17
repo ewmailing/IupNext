@@ -42,6 +42,9 @@ using namespace ATL;
 // derived from CAtlModule in a project.
 static CComModule* iweb_module = NULL;
 
+#if _MSC_VER < 1500  // VC9: VC8 does not defines this
+#define OLECMDID_OPTICAL_ZOOM (OLECMDID)63
+#endif
 
 interface CSink:public IDispEventImpl<0, CSink, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 0>
 {
