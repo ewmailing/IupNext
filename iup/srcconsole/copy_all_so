@@ -9,10 +9,14 @@ Copy_SOs()
   echo $PLAT/Lua$LUA_SFX
   mkdir ../bin/$PLAT/Lua$LUA_SFX
   cp -f ../lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f ../../cd/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f ../../im/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f ../../luagl/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f ../../lfs/lib$LUA_SFX/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+#  cp -f ../../cd/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+  cp -f ../../../cd/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+#  cp -f ../../im/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+  cp -f ../../../im/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+#  cp -f ../../luagl/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+  cp -f ~scuri/tecgraf/luagl/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+#  cp -f ../../lfs/lib$LUA_SFX/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+  cp -f ~scuri/tecgraf/lfs/lib$LUA_SFX/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   
   #Remove Lua3 files if any
   rm -f ../bin/$PLAT/Lua$LUA_SFX/*3.$EXT 
@@ -28,7 +32,7 @@ Copy_SOs()
 }
 
 #ALL_PLAT=Linux26 Linux26_64 Linux26g4 Linux26g4_64 Linux32 Linux32_64 Linux35_64 SunOS510 SunOS510x86 SunOS511x86 MacOS107
-ALL_PLAT=Linux26g4 Linux26g4_64 Linux32 Linux32_64 Linux35_64
+ALL_PLAT=Linux26g4 Linux26g4_64 Linux26g4_64co Linux32 Linux32_64 Linux35_64
 
 for plat in $ALL_PLAT
 do
