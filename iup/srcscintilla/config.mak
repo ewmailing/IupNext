@@ -4,8 +4,10 @@ OPT = YES
 
 ifdef DBG
   DEFINES += IUP_ASSERT
-  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-    LIBNAME := $(LIBNAME)_debug
+  ifndef DBG_DIR
+    ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+      LIBNAME := $(LIBNAME)_debug
+    endif
   endif
 endif  
 

@@ -6,9 +6,11 @@ USE_CD = Yes
 
 ifdef DBG
   DEFINES += IUP_ASSERT
-  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-    LIBNAME := $(LIBNAME)_debug
-  endif
+  ifndef DBG_DIR
+    ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+      LIBNAME := $(LIBNAME)_debug
+    endif
+  endif  
 endif  
 
 INCLUDES = ../include ../src
