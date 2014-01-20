@@ -279,19 +279,19 @@ static void iKeyCallFunc(void (*func)(const char *name, int code, void* user_dat
   if (mod==0)
   {
     iKeyMakeXName(mod_name, "K_s", name);
-    func(mod_name, code, user_data);
+    func(mod_name, iup_XkeyShift(code), user_data);
   }
 
   if (mod!=1) 
   {
     iKeyMakeXName(mod_name, "K_c", name);
-    func(mod_name, code, user_data);
+    func(mod_name, iup_XkeyCtrl(code), user_data);
 
     iKeyMakeXName(mod_name, "K_m", name);
-    func(mod_name, code, user_data);
+    func(mod_name, iup_XkeyAlt(code), user_data);
 
     iKeyMakeXName(mod_name, "K_y", name);
-    func(mod_name, code, user_data);
+    func(mod_name, iup_XkeySys(code), user_data);
   }
 }
 
