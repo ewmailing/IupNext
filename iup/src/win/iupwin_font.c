@@ -253,7 +253,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
   if (str[0])
   {
     SIZE size;
-    int len;
+    int len, wlen;
     const char *nextstr;
     const char *curstr = str;
 
@@ -266,11 +266,17 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
       nextstr = iupStrNextLine(curstr, &len);
       if (len)
       {
+#ifdef UNICODE
+        wlen = MultiByteToWideChar(iupwinStrGetUTF8Mode()? CP_UTF8: CP_ACP, 0, curstr, len, 0, 0);
+#else
+        wlen = len;
+#endif
+
         size.cx = 0;
-        GetTextExtentPoint32(hdc, wstr, len, &size);
+        GetTextExtentPoint32(hdc, wstr, wlen, &size);
         max_w = iupMAX(max_w, size.cx);
 
-        wstr += len+1;
+        wstr += wlen+1;
       }
 
       curstr = nextstr;
