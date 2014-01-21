@@ -2881,7 +2881,7 @@ static int winTreeMapMethod(Ihandle* ih)
   IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winTreeMsgProc);
   IupSetCallback(ih, "_IUPWIN_NOTIFY_CB",   (Icallback)winTreeWmNotify);
 
-  /* Force background update before setting the images */
+  /* Force background color update before setting the images */
   {
     char* value = iupAttribGet(ih, "BGCOLOR");
     if (value)
@@ -2914,6 +2914,8 @@ static int winTreeMapMethod(Ihandle* ih)
       {
         /* "3State" toggle state image */
         hOldBitmap = SelectObject(hBitmapDC, hBitmap);
+        SetDCBrushColor(hBitmapDC, (COLORREF)SendMessage(ih->handle, TVM_GETBKCOLOR, 0, 0));
+        FillRect(hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
         iupwinDraw3StateButton(ih->handle, hBitmapDC, &rect);
         SelectObject(hBitmapDC, hOldBitmap);
         ImageList_Add(image_list, hBitmap, NULL);

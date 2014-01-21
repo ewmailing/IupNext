@@ -316,7 +316,14 @@ void iupwinDrawButtonBorder(HWND hWnd, HDC hDC, RECT *rect, UINT itemState)
 void iupwinDraw3StateButton(HWND hWnd, HDC hDC, RECT *rect)
 {
   if (!winDrawTheme3StateButton(hWnd, hDC, rect))
-    DrawFrameControl(hDC, rect, DFC_BUTTON, DFCS_BUTTON3STATE|DFCS_CHECKED|DFCS_FLAT);
+  {
+    /* only used from TreeView where the 3state images are 3px smaller than icon size */
+    rect->left += 2;
+    rect->top += 2;
+    rect->right -= 1;
+    rect->bottom -= 1;
+    DrawFrameControl(hDC, rect, DFC_BUTTON, DFCS_BUTTON3STATE | DFCS_CHECKED | DFCS_FLAT);
+  }
 }
 
 void iupdrvDrawFocusRect(Ihandle* ih, void* gc, int x, int y, int w, int h)
