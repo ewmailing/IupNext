@@ -1356,6 +1356,12 @@ static int iMatrixResize_CB(Ihandle* ih)
 
   ih->data->need_calcsize = 1;
 
+  if (ih->data->columns.num > 0 && ih->data->lines.num > 0)
+  {
+    IFnii cb = (IFnii)IupGetCallback(ih, "RESIZEMATRIX_CB");
+    if (cb) cb(ih, ih->data->w, ih->data->h);
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -1657,6 +1663,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterCallback(ic, "SCROLLTOP_CB", "ii");
   iupClassRegisterCallback(ic, "COLRESIZE_CB", "i");
   iupClassRegisterCallback(ic, "TOGGLEVALUE_CB", "iii");
+  iupClassRegisterCallback(ic, "RESIZEMATRIX_CB", "ii");
   /* --- Drawing --- */
   iupClassRegisterCallback(ic, "BGCOLOR_CB", "iiIII");
   iupClassRegisterCallback(ic, "FGCOLOR_CB", "iiIII");

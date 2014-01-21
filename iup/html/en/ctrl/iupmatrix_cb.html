@@ -82,6 +82,19 @@ the event.<br>
 the moment the event is generated. The same macros used for
 <a href="../call/iup_button_cb.html">BUTTON_CB</a> can be used for this status. </p>
 <p class="info"><span class="style1">Returns:</span> To avoid the display update return IUP_IGNORE.</p>
+<p><strong><a name="RESIZEMATRIX_CB">RESIZEMATRIX_CB</a></strong>:
+  Action generated after the element size has been updated but before the cells 
+have been actually refreshed. (Since 3.11)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>width</strong>, int <strong>height</strong>); [in C]
+<strong>elem</strong>:resize_cb(<strong>width</strong>, <strong>height</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+<strong>width</strong>:
+  the width of the internal element size in pixels not considering the 
+decorations (client size)<br>
+<strong>height</strong>: the height of the internal element size in pixels not 
+considering the decorations (client size)</p>
 <p><strong><a name="TOGGLEVALUE_CB">TOGGLEVALUE_CB</a></strong>:
   Action generated when a toggle button is 
   pressed. (Since 3.9)</p>

@@ -29,6 +29,7 @@ local ctrl = {
     value_edit_cb = "nns",
     mark_cb = "nn",
     markedit_cb = "nnn",
+    resizematrix_cb = "nn",
   },
   include = "iupcontrols.h",
   extrafuncs = 1,
