@@ -939,6 +939,11 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
               winTabSetVisibleArrayItem(ih, pos, 0);  /* to invisible */
               winTabDeleteItem(ih, press_p);
             }
+            else if (ret == IUP_IGNORE)
+            {
+              *result = 0;
+              return 1;
+            }
           }
         }
 
