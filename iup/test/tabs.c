@@ -116,13 +116,29 @@ static int cbChildButton(Ihandle* ih)
 static int cbTest(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
+
+  char att[50];
+  int m_handle_id = 1;
+  char* title;
+  sprintf(att, "TABTITLE%d", m_handle_id);
+
+  {
+    Ihandle* child = IupGetChild(tabs, 1);
+    title = iupAttribGet(child, "TABTITLE");
+    title = IupGetAttribute(child, "TABTITLE");
+    printf("%s=%s\n", att, title);
+  }
+
+  title = IupGetAttribute(tabs, att);
+  printf("%s=%s\n", att, title);
+
 //  IupSetAttribute(tabs, "VALUEPOS", "0");
 //  IupSetAttribute(tabs, "TABTITLE0", "1asdasd");
 //  printf("VALUE=%s\n", IupGetAttribute(tabs, "VALUE"));
-  if (IupGetInt(tabs, "TABVISIBLE2"))
-    IupSetAttribute(tabs, "TABVISIBLE2", "No");
-  else
-    IupSetAttribute(tabs, "TABVISIBLE2", "Yes");
+//  if (IupGetInt(tabs, "TABVISIBLE2"))
+//    IupSetAttribute(tabs, "TABVISIBLE2", "No");
+//  else
+//    IupSetAttribute(tabs, "TABVISIBLE2", "Yes");
   return IUP_DEFAULT;
 }
 
@@ -351,8 +367,8 @@ static Ihandle* CreateTabs(int tab)
 
   IupSetAttribute(vboxA, "TABTITLE", "A");
   IupSetAttributeHandle(vboxA, "TABIMAGE", load_image_LogoTecgraf());
-  IupSetAttribute(vboxB, "TABTITLE", "&BB");
-//  IupSetAttribute(vboxC, "TABTITLE", "CCC");
+//  IupSetAttribute(vboxB, "TABTITLE", "&BB");
+  //  IupSetAttribute(vboxC, "TABTITLE", "CCC");
   IupStoreAttribute(vboxC, "TABIMAGE", IupGetAttribute(vboxA, "TABIMAGE"));
   IupSetAttribute(vboxD, "TABTITLE", "DDDD");
   IupSetAttribute(vboxE, "TABTITLE", "&EEEEE");
@@ -368,6 +384,8 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(vboxI, "BGCOLOR", "32 192 32");
 
   tabs = IupTabs(vboxA, vboxB, vboxC, vboxD, vboxE, vboxF, vboxG, vboxH, vboxI, NULL);
+
+  IupSetAttribute(tabs, "TABTITLE1", "&BB");
 
   //IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)cbTabChange);
   IupSetCallback(tabs, "TABCHANGEPOS_CB", (Icallback)cbTabChangePos);

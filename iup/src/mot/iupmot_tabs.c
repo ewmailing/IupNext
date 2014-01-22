@@ -296,7 +296,8 @@ static int motTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
     if (tab_button)
       iupmotSetMnemonicTitle(ih, tab_button, pos, value);
   }
-  return 1;
+
+  return 0;
 }
 
 static int motTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
@@ -669,7 +670,7 @@ void iupdrvTabsInitClass(Iclass* ic)
   /* IupTabs only */
   iupClassRegisterAttribute(ic, "TABTYPE", iupTabsGetTabTypeAttrib, motTabsSetTabTypeAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  
   iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  /* can not be set, always HORIZONTAL in Motif */
-  iupClassRegisterAttributeId(ic, "TABTITLE", NULL, motTabsSetTabTitleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABTITLE", iupTabsGetTitleAttrib, motTabsSetTabTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, motTabsSetTabImageAttrib, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABVISIBLE", iupTabsGetTabVisibleAttrib, motTabsSetTabVisibleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, motTabsSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

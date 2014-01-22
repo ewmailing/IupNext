@@ -601,7 +601,8 @@ static int winTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
       SendMessage(ih->handle, TCM_SETITEM, p, (LPARAM)&tie);
     }
   }
-  return 1;
+
+  return 0;
 }
 
 static int winTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
@@ -921,6 +922,9 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
           int pos = winTabsPosFixFromWin(ih, press_p);
           Ihandle *child = IupGetChild(ih, pos);
           HWND tab_container = (HWND)iupAttribGet(child, "_IUPTAB_CONTAINER");
+
+          iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", -1);
+
           if (tab_container)
           {
             int ret = IUP_DEFAULT;
@@ -947,7 +951,6 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
           }
         }
 
-        iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", -1);
         iupdrvRedrawNow(ih);
       }
     }
@@ -1372,7 +1375,7 @@ void iupdrvTabsInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TABTYPE", iupTabsGetTabTypeAttrib, winTabsSetTabTypeAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABORIENTATION", iupTabsGetTabOrientationAttrib, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  /* can not be set, depends on TABTYPE in Windows */
   iupClassRegisterAttribute(ic, "MULTILINE", winTabsGetMultilineAttrib, winTabsSetMultilineAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABTITLE", NULL, winTabsSetTabTitleAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABTITLE", iupTabsGetTitleAttrib, winTabsSetTabTitleAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABIMAGE", NULL, winTabsSetTabImageAttrib, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABVISIBLE", iupTabsGetTabVisibleAttrib, winTabsSetTabVisibleAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iupTabsGetPaddingAttrib, winTabsSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

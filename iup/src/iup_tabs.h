@@ -15,10 +15,12 @@ extern "C" {
 char* iupTabsGetTabOrientationAttrib(Ihandle* ih);
 char* iupTabsGetTabTypeAttrib(Ihandle* ih);
 char* iupTabsGetPaddingAttrib(Ihandle* ih);
-void iupTabsCheckCurrentTab(Ihandle* ih, int pos);
-int iupdrvTabsIsTabVisible(Ihandle* child);
 char* iupTabsGetTabVisibleAttrib(Ihandle* ih, int pos);
+char* iupTabsGetTitleAttrib(Ihandle* ih, int pos);
 
+void iupTabsCheckCurrentTab(Ihandle* ih, int pos);
+
+int iupdrvTabsIsTabVisible(Ihandle* child);
 int iupdrvTabsExtraDecor(Ihandle* ih);
 int iupdrvTabsGetLineCountAttrib(Ihandle* ih);
 void iupdrvTabsSetCurrentTab(Ihandle* ih, int pos);

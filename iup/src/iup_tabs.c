@@ -391,6 +391,15 @@ char* iupTabsGetTabVisibleAttrib(Ihandle* ih, int pos)
     return NULL;
 }
 
+char* iupTabsGetTitleAttrib(Ihandle* ih, int pos)
+{
+  Ihandle* child = IupGetChild(ih, pos);
+  if (child)
+    return iupAttribGet(child, "TABTITLE");
+  else
+    return NULL;
+}
+
 static char* iTabsGetShowCloseAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean (ih->data->show_close); 
