@@ -90,6 +90,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\srclua5\il_backgroundbox.c" />
+    <ClCompile Include="..\srclua5\il_detachbox.c" />
     <ClCompile Include="..\srclua5\il_expander.c" />
     <ClCompile Include="..\srclua5\il_gridbox.c" />
     <ClCompile Include="..\srclua5\il_link.c" />
@@ -144,6 +146,8 @@
     <ClCompile Include="..\srclua5\iuplua_tree_aux.c" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\srclua5\backgroundbox.lua" />
+    <None Include="..\srclua5\detachbox.lua" />
     <None Include="..\srclua5\expander.lua" />
     <None Include="..\srclua5\gridbox.lua" />
     <None Include="..\srclua5\iuplua.def" />
