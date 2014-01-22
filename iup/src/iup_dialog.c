@@ -120,6 +120,9 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
     }
   }
 
+  if (*x == IUP_MOUSEPOS || *y == IUP_MOUSEPOS)
+    iupdrvAddScreenOffset(&cursor_x, &cursor_y, -1);  /* de-compensate for add offset bellow */
+
   switch (*x)
   {
   case IUP_CENTERPARENT:
