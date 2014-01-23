@@ -244,23 +244,23 @@ or &quot;BOXED&quot; (displayed and surrounded by a box). Default HIDDEN.</p>
 write-only): deletes all annotations.</p>
 
   
-<h4>Autocompletion (since 3.10)</h4>
+<h4>Auto-Completion (since 3.10)</h4>
 
 <p><strong>AUTOCSHOW<b><em>id</em></b></strong> (<font size="3">non inheritable, write only</font>): 
 causes a list of words to be displayed. The words are separated by a space. &quot;id&quot; 
 defines the number of characters of the word already entered by user.</p>
 <p><strong>AUTOCCANCEL</strong> (<font size="3">non inheritable, write only</font>): 
-cancels any displayed autocompletion list. When in autocompletion mode, the list 
+cancels any displayed auto-completion list. When in auto-completion mode, the list 
 should disappear when the user types a character that can not be part of the 
-autocompletion.</p>
+auto-completion.</p>
 <p><strong>AUTOCACTIVE</strong> (<font size="3">non inheritable, read only</font>): 
-returns YES if there is an active autocompletion list and NO if there is not.</p>
+returns YES if there is an active auto-completion list and NO if there is not.</p>
 <p><strong>AUTOCPOSSTART</strong> (<font size="3">non inheritable, read only</font>): 
 returns the current position when the list of words started to be shown.</p>
 <p><strong>AUTOCCOMPLETE</strong> (<font size="3">non inheritable, write only</font>): 
-triggers autocompletion. This has the same effect as the tab key.</p>
+triggers auto-completion. This has the same effect as the tab key.</p>
 <p><strong>AUTOCSELECT</strong> (<font size="3">non inheritable, write only</font>): 
-selects an item in the autocompletion list. It searches in the list of words for 
+selects an item in the auto-completion list. It searches in the list of words for 
 the first that matches of value (comparisons are case sensitive). If the item is 
 not found, <span id="result_box" class="short_text" lang="en"><span class="hps">
 no item is</span> <span class="hps">selected.</span></span></p>
@@ -273,10 +273,10 @@ characters following the caret are first erased if this attribute is set YES.
 The default is NO.</span></p>
 <p><span class="hps"><strong>AUTOCMAXHEIGHT</strong> (<font size="3">non 
 inheritable): </font>sets and gets the maximum number of rows that will be 
-visible in an autocompletion list. If there are more rows in the list, then a 
+visible in an auto-completion list. If there are more rows in the list, then a 
 vertical scrollbar is shown. The default is 5. </span></p>
 <p><span class="hps"><strong>AUTOCMAXWIDTH</strong> (<font size="3">non 
-inheritable): </font>the maximum width of an autocompletion list expressed as 
+inheritable): </font>the maximum width of an auto-completion list expressed as 
 the number of characters in the longest item that will be totally visible. The 
 default is 0 (in this case, the list width is calculated to fit the item with 
 the most characters). </span></p>
@@ -758,6 +758,51 @@ the clipboard.</p>
     the inserted text value. It is NULL when insert=0.</p>
 
     
+  
+<p><strong>AUTOCSELECTION_CB</strong>: Action generated when the user has 
+selected an item in an&nbsp;auto-completion list. It is sent before the selection is 
+inserted. Automatic insertion can be cancelled by setting the <strong>
+AUTOCCANCEL</strong>&nbsp;attribute&nbsp;before returning from the callback. (since 
+3.10.1) </p>
+
+  
+    
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>, char* <strong>text</strong> ); [in C]<br><strong>elem</strong>:autocselection_cb(<strong>pos</strong>: number, <strong>text</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+	<strong>pos</strong>: 0 based character start position of the word being 
+completed.<br>
+<strong>text</strong>: the text of the selection.</p>
+
+    
+  
+<p><strong>AUTOCCANCELLED_CB</strong>: Called after the user has cancelled 
+an&nbsp;auto-completion list. (since 3.10.1)</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:autoccancelled_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
+  
+  
+<p><strong>AUTOCCHARDELETED_CB</strong>: Called after the user deleted a 
+character while auto-completion list was active. (since 3.10.1)</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:autocchardeleted_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
+  
   
 <p><a href="../call/iup_button_cb.html">BUTTON_CB</a>:
   Action generated when any mouse button is 

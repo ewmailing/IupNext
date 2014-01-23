@@ -14,6 +14,9 @@ local ctrl = {
 --  button_cb = "nnnns",
 --  motion_cb = "nns",
   action = "nnns",
+  autocselection_cb = "ns",
+  autoccancelled_cb = "",
+  autocchardeleted_cb = "",
   },
   include = "iup_scintilla.h",
   extracode = [[ 
