@@ -80,7 +80,7 @@ the moment the event is generated. The same macros used for
 <p class="info"><span class="style1">Returns:</span> To avoid the display update return IUP_IGNORE.</p>
 <p><strong><a name="RESIZEMATRIX_CB">RESIZEMATRIX_CB</a></strong>:
   Action generated after the element size has been updated but before the cells 
-have been actually refreshed. (Since 3.11)</p>
+have been actually refreshed. (Since 3.10.1)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>width</strong>, int <strong>height</strong>); [in C]
 <strong>elem</strong>:resize_cb(<strong>width</strong>, <strong>height</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
@@ -420,7 +420,10 @@ the event.<br>
   and <a href="../call/iup_button_cb.html">BUTTON_CB</a> 
   can be changed but you should save and call the original definition from 
 inside your own callback, or the matrix will not correctly work. This can 
-  not be done in Lua. Use 
+  not be done in Lua, except for BUTTON_CB, MOTION_CB and KEYPRESS_CB that are 
+exported to Lua as &quot;<strong>MatButtonCb</strong>&quot;, &quot;<strong>MatMotionCb</strong>&quot; 
+and &quot;<strong>MatKeyPressCb</strong>&quot;. </p>
+<p>Use 
 <a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> to convert 
 	(x,y) coordinates in the cell position, then use
 <a href="../elem/iuptext.html#AUX">IupTextConvertPosToLinCol</a> to 

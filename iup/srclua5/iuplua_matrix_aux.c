@@ -9,6 +9,7 @@
 
 #include "iup.h"
 #include "iupcontrols.h"
+#include "iupcbs.h"
 #include <cd.h>
 #include <cdlua.h>
 
@@ -131,12 +132,63 @@ static int MatStoreAttribute(lua_State *L)
   return 0;
 }
 
-void iuplua_matrixfuncs_open (lua_State *L)
+static IFnii iMatrixOriginalKeyPress_CB = NULL;
+static IFniiiis iMatrixOriginalButton_CB = NULL;
+static IFniis iMatrixOriginalMotion_CB = NULL;
+
+static int MatButtonCB(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  int p0 = luaL_checkint(L, 2);
+  int p1 = luaL_checkint(L, 3);
+  int p2 = luaL_checkint(L, 4);
+  int p3 = luaL_checkint(L, 5);
+  const char* p4 = luaL_checkstring(L, 6);
+  int ret = iMatrixOriginalButton_CB(ih, p0, p1, p2, p3, (char*)p4);
+  lua_pushinteger(L, ret);
+  return 1;
+}
+
+static int MatMotionCB(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  int p0 = luaL_checkint(L, 2);
+  int p1 = luaL_checkint(L, 3);
+  const char* p2 = luaL_checkstring(L, 4);
+  int ret = iMatrixOriginalMotion_CB(ih, p0, p1, (char*)p2);
+  lua_pushinteger(L, ret);
+  return 1;
+}
+
+static int MatKeyPressCB(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  int p0 = luaL_checkint(L, 2);
+  int p1 = luaL_checkint(L, 3);
+  int ret = iMatrixOriginalKeyPress_CB(ih, p0, p1);
+  lua_pushinteger(L, ret);
+  return 1;
+}
+
+void iuplua_matrixfuncs_open(lua_State *L)
 {
   /* DEPRECATED backward compatibility */
   iuplua_register(L, MatGetAttribute, "MatGetAttribute");
   iuplua_register(L, MatStoreAttribute, "MatStoreAttribute");
   iuplua_register(L, MatStoreAttribute, "MatSetAttribute");
+
+  /* Original Callback Export */
+  iuplua_register(L, MatButtonCB, "MatButtonCb");
+  iuplua_register(L, MatMotionCB, "MatMotionCb");
+  iuplua_register(L, MatKeyPressCB, "MatKeyPressCb");
+
+  {
+    Ihandle* mat = IupMatrix(NULL);
+    iMatrixOriginalKeyPress_CB = (IFnii)IupGetCallback(mat, "KEYPRESS_CB");
+    iMatrixOriginalButton_CB = (IFniiiis)IupGetCallback(mat, "BUTTON_CB");
+    iMatrixOriginalMotion_CB = (IFniis)IupGetCallback(mat, "MOTION_CB");
+    IupDestroy(mat);
+  }
 
   iuplua_register_cb(L, "BGCOLOR_CB", (lua_CFunction)matrix_bgcolor_cb, NULL);
   iuplua_register_cb(L, "FGCOLOR_CB", (lua_CFunction)matrix_fgcolor_cb, NULL);

@@ -58,12 +58,15 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>CVS (22/Jan/2014)</h3>
+<h3>CVS (23/Jan/2014)</h3>
 
 <ul>
 
 	<li><span class="hist_new">New:</span> RESIZEMATRIX_CB callback in <strong>
 	IupMatrix</strong>.&nbsp;</li>
+	<li><span class="hist_new">New:</span> internal <strong>IupMatrix</strong> 
+	callbacks BUTTON_CB, MOTION_CB and KEYPRESS_CB are now exported to Lua as &quot;MatButtonCb&quot;, 
+	&quot;MatMotionCb&quot; and &quot;MatKeyPressCb&quot;. </li>
 	<li><span class="hist_fixed">Fixed:</span> key names in IupLua when 
 	modifiers are used. Thanks to kmx.</li>
 	<li><span class="hist_fixed">Fixed:</span> text with computation in UTF-8 in 
