@@ -10,7 +10,7 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, param)
-   return iup.Background(param[1])
+   return iup.BackgroundBox(param[1])
 end
 
 iup.RegisterWidget(ctrl)
