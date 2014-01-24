@@ -443,7 +443,7 @@ static Ihandle* CreateTabs(int tab)
   return tabs;
 }
 
-void TabsTest(void)
+void TabsTest1(void)
 {
   Ihandle *box, *frm1, *frm2, *dlg, *tabs;
 
