@@ -460,12 +460,12 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     else if (tabimage)
     {
       gtk_container_add((GtkContainer*)evtBox, tab_image);
-      gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, tab_image, pos);
+      gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, evtBox, pos);
     }
     else
     {
       gtk_container_add((GtkContainer*)evtBox, tab_label);
-      gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, tab_label, pos);
+      gtk_notebook_insert_page((GtkNotebook*)ih->handle, tab_page, evtBox, pos);
     }
 
     gtk_widget_realize(tab_page);
