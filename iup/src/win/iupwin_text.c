@@ -728,6 +728,9 @@ static TCHAR* winTextStrConvertToSystem(Ihandle* ih, const char* str)
       TCHAR* wstr;
       char* dos_str = iupStrToDos(str);
       wstr = iupwinStrToSystem(dos_str);
+#ifndef UNICODE
+      if (dos_str != str) wstr = iupStrReturnStr(dos_str);
+#endif
       if (dos_str != str) free(dos_str);
       return wstr;
     }

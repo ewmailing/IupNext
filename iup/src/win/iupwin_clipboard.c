@@ -179,6 +179,9 @@ static int winClipboardSetTextAttrib(Ihandle *ih, const char *value)
   /* CF_TEXT/CF_UNICODETEXT: Each line ends with a carriage return/linefeed (CR-LF) combination. */
   dos_str = iupStrToDos(value);
   wstr = iupwinStrToSystem(dos_str);
+#ifndef UNICODE
+  if (dos_str != value) wstr = iupStrReturnStr(dos_str);
+#endif
   if (dos_str != value) free(dos_str);
 
   size = (lstrlen(wstr)+1) * sizeof(TCHAR);
