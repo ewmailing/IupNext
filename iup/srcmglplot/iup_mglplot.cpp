@@ -1191,7 +1191,7 @@ static void iMglPlotConfigAxisTicksVal(Ihandle* ih, mglGraph *gr, bool set)
       for(int i=0; i< count; i++)
         val[i] = (mreal)i;
       gr->SetTicksVal('x', count, val, (const char**)dsNames);
-      delete val;
+      delete [] val;
     }
     else
       gr->SetTicksVal('x', 0, (mreal*)NULL, (const char **)NULL);
