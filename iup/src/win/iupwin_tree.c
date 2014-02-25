@@ -159,6 +159,7 @@ static void winTreeRebuildNodeCache(Ihandle* ih, int id, HTREEITEM hItem)
 /*****************************************************************************/
 
 static void winTreeExpandItem(Ihandle* ih, HTREEITEM hItem, int expand);
+static void winTreeSelectNode(Ihandle* ih, HTREEITEM hItem, int select);
 
 void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add)
 {
@@ -252,6 +253,10 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
 
       /* Set the default VALUE (focus) */
       winTreeSetFocusNode(ih, hItemNew);
+
+      /* when single selection when focus is set, node is also selected */
+      if (ih->data->mark_mode == ITREE_MARK_SINGLE)
+        winTreeSelectNode(ih, hItemNew, 1);
     }
   }
 }

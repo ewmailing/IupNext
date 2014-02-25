@@ -709,13 +709,19 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
       /* MarkStart node */
       iupAttribSet(ih, "_IUPTREE_MARKSTART_NODE", (char*)iterNewItem.user_data);
 
+      iupAttribSet(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
+
       /* Set the default VALUE (focus) */
       path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iterNewItem);
       gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE);
       gtk_tree_path_free(path);
 
-      /* set_cursor will also select the node, so unselect it here */
-      gtkTreeSelectNode(GTK_TREE_MODEL(store), gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle)), &iterNewItem, 0);
+      /* when single selection when focus is set, node is also selected */
+      /* set_cursor will also select the node, so unselect it here if not single */
+      if (ih->data->mark_mode != ITREE_MARK_SINGLE)
+        gtkTreeSelectNode(GTK_TREE_MODEL(store), gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle)), &iterNewItem, 0);
+
+      iupAttribSet(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
     }
   }
 }
@@ -2019,7 +2025,9 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
         gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), pathNew, NULL, FALSE, 0, 0);
 
         /* unselect all, select new node and focus */
+        iupAttribSet(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
         gtk_tree_view_set_cursor(GTK_TREE_VIEW(ih->handle), pathNew, NULL, FALSE);
+        iupAttribSet(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
 
         gtk_tree_path_free(pathNew);
       }
