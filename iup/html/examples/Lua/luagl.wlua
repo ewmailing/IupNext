@@ -1,6 +1,7 @@
 require( "iuplua" )
 require( "iupluagl" )
 require( "luagl" )
+require( "luaglu" )
 
 canvas = iup.glcanvas{buffer="DOUBLE", rastersize = "640x480"}
 
@@ -173,6 +174,13 @@ end
 
 dialog = iup.dialog{canvas; title="Lua GL Test Application"}
 dialog:show()
+
+print("glu.VERSION ",glu.GetString(glu.VERSION))
+print("glu.EXTENSIONS ",glu.GetString(glu.EXTENSIONS))
+print("gl.VENDOR ",gl.GetString(gl.VENDOR))
+print("gl.RENDERER ",gl.GetString(gl.RENDERER))
+print("gl.VERSION ",gl.GetString(gl.VERSION))
+--print("gl.EXTENSIONS ",gl.GetString(gl.EXTENSIONS))
 
 if (iup.MainLoopLevel()==0) then
   iup.MainLoop()

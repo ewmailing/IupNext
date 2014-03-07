@@ -70,6 +70,11 @@ void GLCanvasTest(void)
   IupSetCallback(canvas, "MAP_CB",       (Icallback)map_cb);
   IupAppend(box, canvas);
 
+//  IupSetAttribute(canvas, "ARBCONTEXT", "Yes");
+//  IupSetAttribute(canvas, "CONTEXTVERSION", "3.3");
+//  IupSetAttribute(canvas, "CONTEXTFLAGS", "DEBUG");
+//  IupSetAttribute(canvas, "CONTEXTPROFILE", "COMPATIBILITY");
+
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupGLCanvas Test");
 
