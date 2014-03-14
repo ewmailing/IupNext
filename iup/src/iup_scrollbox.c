@@ -172,11 +172,14 @@ static void iScrollBoxLayoutUpdate(Ihandle* ih)
   /* if child is greater than scrollbox, has scrollbars
      but this affects the oposite direction */
 
-  if (ih->firstchild->currentwidth > ih->currentwidth)
-    dy -= iupdrvGetScrollbarSize();
+  if (ih->firstchild)
+  {
+    if (ih->firstchild->currentwidth > ih->currentwidth)
+      dy -= iupdrvGetScrollbarSize();
 
-  if (ih->firstchild->currentheight > ih->currentheight)
-    dx -= iupdrvGetScrollbarSize();
+    if (ih->firstchild->currentheight > ih->currentheight)
+      dx -= iupdrvGetScrollbarSize();
+  }
 
   IupSetInt(ih, "DX", dx);
   IupSetInt(ih, "DY", dy);
