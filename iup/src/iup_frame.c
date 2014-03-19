@@ -130,6 +130,7 @@ static void iFrameSetChildrenPositionMethod(Ihandle* ih, int x, int y)
   if (iupdrvFrameHasClientOffset())
   {
     iupdrvFrameGetDecorOffset(&dx, &dy);
+
     if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGet(ih, "TITLE"))
       dy += iupFrameGetTitleHeight(ih);
   }

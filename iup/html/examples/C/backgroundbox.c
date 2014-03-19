@@ -1,4 +1,4 @@
-﻿/* IupBackgroundBox Example in C */
+/* IupBackgroundBox Example in C */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -12,7 +12,11 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);
 
   /* Creates a backgroundbox */
-  btn = IupBackgroundBox(IupVbox(IupButton("This button does nothing", ""), IupText(""), NULL));
+  btn = IupBackgroundBox(IupFrame(IupSetAttributes (IupVbox(
+    IupButton("This button does nothing", ""), 
+    IupText(""), 
+    NULL), "MARGIN=0x0")));
+//  IupSetAttribute(btn, "BORDER", "Yes");
 
   /* Creates dialog */
   dlg = IupDialog

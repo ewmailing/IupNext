@@ -26,15 +26,25 @@
 |* Methods                                                                   *|
 \*****************************************************************************/
 
+static int iBackgroundBoxGetBorder(Ihandle* ih)
+{
+  if (iupAttribGetBoolean(ih, "BORDER"))
+    return 1;
+  else
+    return 0;
+}
+
 static void iBackgroundBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   if (ih->firstchild)
   {
+    int border = iBackgroundBoxGetBorder(ih);
+
     iupBaseComputeNaturalSize(ih->firstchild);
 
     *children_expand = ih->firstchild->expand;
-    *w = ih->firstchild->naturalwidth;
-    *h = ih->firstchild->naturalheight;
+    *w = ih->firstchild->naturalwidth + 2*border;
+    *h = ih->firstchild->naturalheight + 2*border;
   }
 }
 
@@ -42,8 +52,9 @@ static void iBackgroundBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
   if (ih->firstchild)
   {
-    int width = (ih->currentwidth  > 0 ? ih->currentwidth : 0);
-    int height = (ih->currentheight > 0 ? ih->currentheight : 0);
+    int border = iBackgroundBoxGetBorder(ih);
+    int width = (ih->currentwidth  > border ? ih->currentwidth-border : 0);
+    int height = (ih->currentheight > border ? ih->currentheight-border : 0);
     iupBaseSetCurrentSize(ih->firstchild, width, height, shrink);
   }
 }
@@ -90,9 +101,13 @@ Iclass* iupBackgroundBoxNewClass(void)
   ic->SetChildrenPosition = iBackgroundBoxSetChildrenPositionMethod;
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  {
+    IattribGetFunc drawsize_get = NULL;
+    iupClassRegisterGetAttribute(ic, "DRAWSIZE", &drawsize_get, NULL, NULL, NULL, NULL);
+    iupClassRegisterAttribute(ic, "CLIENTSIZE", drawsize_get, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  }
 
   /* replace IupCanvas behavior */
   iupClassRegisterReplaceAttribFunc (ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL);

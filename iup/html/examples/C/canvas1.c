@@ -66,7 +66,6 @@ int redraw_cb( Ihandle *self, float x, float y )
 }
 
 #ifdef USE_TUIO
-
 int touch_cb(Ihandle *self, int id, int x, int y, char* state)
 {
   printf("touch_cb(id=%d x=%d y=%d state=%s)\n", id, x, y, state);
@@ -107,6 +106,16 @@ int touch_cb(Ihandle *self, int id, int x, int y, char* state)
   }
   return IUP_DEFAULT;
 }
+#else
+#ifdef WIN32
+int touch_cb(Ihandle *self, int id, int x, int y, char* state)
+{
+  printf("touch_cb(id=%d x=%d y=%d state=%s)\n", id, x, y, state);
+  cdCanvasPixel(cdcanvas, x, cdCanvasInvertYAxis(cdcanvas, y), CD_RED);
+  return IUP_DEFAULT;
+}
+#endif
+#endif
 
 int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *pstate)
 {
@@ -114,21 +123,12 @@ int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *psta
   printf("multitouch_cb(count=%d)\n", count);
   for (i = 0; i < count; i++)
   {
-    printf("    id=%d x=%d y=%d state=%c\n", id[i], px[i], py[i], pstate[i]);
+    printf("i=%d    id=%d x=%d y=%d state=%c\n", i, id[i], px[i], py[i], pstate[i]);
 
     cdCanvasPixel(cdcanvas, px[i], cdCanvasInvertYAxis(cdcanvas, py[i]), CD_RED);
   }
   return IUP_DEFAULT;
 }
-#else
-#ifdef WIN32
-int touch_cb(Ihandle *self, int id, int x, int y, char* state)
-{
-  printf("touch_cb(id=%d x=%d y=%d state=%s)\n", id, x, y, state);
-  return IUP_DEFAULT;
-}
-#endif
-#endif
 
 int main(int argc, char **argv)
 {
@@ -138,8 +138,8 @@ int main(int argc, char **argv)
   cnvs = IupCanvas( NULL );
   IupSetCallback(cnvs, "ACTION",( Icallback )redraw_cb );
   IupSetAttribute(cnvs, "SIZE", "300x100");
-  IupSetCallback(cnvs, "BUTTON_CB",(Icallback)button_cb);
-  IupSetCallback(cnvs, "MOTION_CB",(Icallback)motion_cb);
+//  IupSetCallback(cnvs, "BUTTON_CB",(Icallback)button_cb);
+//  IupSetCallback(cnvs, "MOTION_CB",(Icallback)motion_cb);
 
 #ifdef USE_TUIO
   {
@@ -157,8 +157,8 @@ int main(int argc, char **argv)
 #else
 #ifdef WIN32
   IupSetAttribute(cnvs, "TOUCH", "YES");
-  IupSetCallback(cnvs, "TOUCH_CB",(Icallback)touch_cb);
-//  IupSetCallback(cnvs, "MULTITOUCH_CB",(Icallback)multitouch_cb);
+  //IupSetCallback(cnvs, "TOUCH_CB",(Icallback)touch_cb);
+  IupSetCallback(cnvs, "MULTITOUCH_CB",(Icallback)multitouch_cb);
 #endif
 #endif
 
@@ -167,6 +167,8 @@ int main(int argc, char **argv)
   IupSetAttribute(dlg, "TITLE", "IupCanvas + Canvas Draw" );
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupMap( dlg );
+
+  printf("TOUCH=%s\n", IupGetAttribute(cnvs, "TOUCH"));
   
   cdInitContextPlus();
   cdUseContextPlus(1);

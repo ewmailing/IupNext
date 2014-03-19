@@ -286,16 +286,22 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
   if (m == IMAT_PROCESS_LIN)
   {
     D = "DY";
-    AUTOHIDE = "XAUTOHIDE";  /* when configuring the vertical scrollbar check if horizontal scrollbar is hidden */
+
+    /* when configuring the vertical scrollbar check if horizontal scrollbar can be hidden */
+    AUTOHIDE = "XAUTOHIDE";  
     SB = IUP_SB_HORIZ;
+
     p = &(ih->data->lines);
     canvas_size = ih->data->h;
   }
   else
   {
     D = "DX";
-    AUTOHIDE = "YAUTOHIDE";  /* when configuring the horizontal scrollbar check if vertical scrollbar is hidden */
+
+    /* when configuring the horizontal scrollbar check if vertical scrollbar can be hidden */
+    AUTOHIDE = "YAUTOHIDE";  
     SB = IUP_SB_VERT;
+
     p = &(ih->data->columns);
     canvas_size = ih->data->w;
   }
