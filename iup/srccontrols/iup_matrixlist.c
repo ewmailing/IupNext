@@ -1210,7 +1210,7 @@ static int iMatrixListLeaveItem_CB(Ihandle *ih, int lin, int col)
   iMatrixListUpdateItemBgColor(ih, lin, iupAttribGetId(ih, "ITEMBGCOLOR", lin), itemactive);
   ih->data->lines.focus_cell = lin;
   IupSetfAttribute(ih, "REDRAW", "L%d", lin);
-  if (cb) cb(ih, lin, 1);
+  if (cb) cb(ih, lin, 0);
   (void)col;
   return IUP_DEFAULT;
 }
