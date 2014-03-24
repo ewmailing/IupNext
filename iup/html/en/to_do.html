@@ -34,9 +34,27 @@
 
 <h3>Roadmap for the Next Versions</h3>
 
+	<h4>3.11 (Expected to July 2014)</h4>
 <ul>
-	<li>OpenGL sub-canvas controls</li>
-	<li>Consolidate a plot control</li>
+	<li><strong>OpenGL sub-canvas controls</strong><ul>
+		<li>embedded in an <strong>IupGLCanvas</strong></li>
+		<li>label, button, list, progressbar, frame, val, and others</li>
+	</ul>
+	</li>
+	<li><strong>Consolidate a plot control</strong><ul>
+		<li>double coordinates, OpenGL support, better zoom and pan, clipboard, 
+		configuration dialog</li>
+	</ul>
+	</li>
+	<li><strong>IupExpand</strong> enhancements using images</li>
+	<li>Improve <strong>IupMatrix</strong> keyboard editing</li>
+	<li>Update <strong>IupMglPlot</strong></li>
+	<li>Dynamic column value fill using Lua (<strong>IupMatrixEx</strong>)</li>
+	<li>Paste Special Dialog (<strong>IupMatrixEx</strong>)</li>
+	<li>C++ API &amp; Utilities </li>
+</ul>
+	<h4>Next Version</h4>
+<ul>
 	<li>Interactive Dialog Editor / <span>Tools to improve productivity</span></li>
 	<li>Tutorial section and code snippets collection</li>
 </ul>
@@ -71,7 +89,6 @@
 
 	<li>Possibility to change the system menu in Windows. Support for cascading <strong>
 	IupPopup</strong> for menus.</li>
-	<li>Support for Portuguese in the <strong>IupView</strong> application.</li>
 	<li>Vertical text in labels and buttons.</li>
 	</ul>
 
@@ -100,7 +117,8 @@
 	only the Tab key navigation is not done, when clicked the control will still 
 	get the focus. The only exceptions are button and canvas.</li>
 	<li><span class="style1">Known Issue (Compiler):</span> the <strong>IupImgLib</strong> 
-	takes an very long time to compile under Visual C++. (since 3.0)</li>
+	takes an very long time to compile under Visual C++ up to version VC9 
+	(starting in VC10 the problem does no occour). (since 3.0)</li>
 
 	<li><span class="style1">Known Issue (Compiler):</span> when building with Open Watcom 
 	the additional controls crash. When you add debug information to the main 
