@@ -256,7 +256,7 @@ static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int stat
                                          getClassParameters(ic->format),
                                          getNativeType(ic->nativetype),
                                          getChildType(ic->childtype),
-                                         ic->is_interactive? "Is Interactive": "NOT Interactive",
+                                         ic->is_interactive? "Is Keyboard Interactive": "NOT Keyboard Interactive",
                                          ic->has_attrib_id? "Has Id Attributes": "");
 
     free(attr_names);

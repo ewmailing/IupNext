@@ -88,6 +88,12 @@ static int enter_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
+static int enter1_cb(Ihandle *ih)
+{
+  printf("EnterWindow_cb\n");
+  return IUP_DEFAULT;
+}
+
 void LabelTest(void)
 {
   Ihandle *dlg, *label, *image1, *image2, *image3, 
@@ -138,6 +144,7 @@ void LabelTest(void)
   IupSetAttribute(label, "RASTERSIZE", "150x70");
   IupSetAttribute(label, "ALIGNMENT", "ARIGHT:ABOTTOM");
   IupSetAttribute(label, "MARKUP", "YES");
+  IupSetCallback(label, "ENTERWINDOW_CB", enter1_cb);
   IupAppend(box1, label);
 
   box2 = IupVbox(NULL);
@@ -201,7 +208,7 @@ void LabelTest(void)
   IupSetAttribute(dlg, "TITLE", "IupLabel Test");
 //  IupSetAttribute(dlg, "BACKGROUND", "0 0 128");
 //  IupSetAttributeHandle(dlg, "BACKGROUND", image2);
-  IupSetCallback(dlg, "ENTERWINDOW_CB", enter_cb);
+//  IupSetCallback(dlg, "ENTERWINDOW_CB", enter_cb);
 
   IupShow(dlg);
 //  IupShowXY(dlg,IUP_LEFT,IUP_BOTTOM);

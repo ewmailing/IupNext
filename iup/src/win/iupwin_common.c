@@ -156,9 +156,10 @@ static void winTrackMouse(HWND hwnd, int enter)
 
 static void winCallEnterLeaveWindow(Ihandle *ih, int enter)
 {
-  Icallback cb = NULL;
+  Icallback enter_cb = IupGetCallback(ih, "ENTERWINDOW_CB");
+  Icallback leave_cb = IupGetCallback(ih, "LEAVEWINDOW_CB");
 
-  if (!ih->iclass->is_interactive)
+  if (!enter_cb && !leave_cb)
     return;
 
   if (enter)
@@ -167,18 +168,19 @@ static void winCallEnterLeaveWindow(Ihandle *ih, int enter)
 
     if (!iupAttribGetInt(ih, "_IUPWIN_ENTERWIN"))
     {
-      cb = IupGetCallback(ih,"ENTERWINDOW_CB");
       iupAttribSet(ih, "_IUPWIN_ENTERWIN", "1");
+
+      if (enter_cb)
+        enter_cb(ih);
     }
   }
   else 
   {
-    cb = IupGetCallback(ih,"LEAVEWINDOW_CB");
     iupAttribSet(ih, "_IUPWIN_ENTERWIN", NULL);
-  }
 
-  if (cb)
-    cb(ih);
+    if (leave_cb)
+      leave_cb(ih);
+  }
 }
 
 void iupwinMergeStyle(Ihandle* ih, DWORD old_mask, DWORD value)
