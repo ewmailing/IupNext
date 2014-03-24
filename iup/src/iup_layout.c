@@ -35,7 +35,8 @@ void IupRefreshChildren(Ihandle* ih)
   if (!ih->firstchild)
     return;
 
-  /* NOT a dialog, but inside one */
+  /* must be inside a dialog */
+  /* it can not be a dialog */
   dialog = IupGetDialog(ih);
   if (!dialog || dialog==ih)
     return;
