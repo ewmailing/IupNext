@@ -26,6 +26,21 @@
 |* Methods                                                                   *|
 \*****************************************************************************/
 
+static char* iBackgroundBoxGetBgColorAttrib(Ihandle* ih)
+{
+  if (iupAttribGet(ih, "BGCOLOR"))
+    return NULL;  /* get from the hash table */
+  else
+    return iupBaseNativeParentGetBgColorAttrib(ih);
+}
+
+static int iBackgroundBoxSetBgColorAttrib(Ihandle* ih, const char* value)
+{
+  (void)value;
+  IupUpdate(ih); /* post a redraw */
+  return 1;  /* save on the hash table */
+}
+
 static int iBackgroundBoxGetBorder(Ihandle* ih)
 {
   if (iupAttribGetBoolean(ih, "BORDER"))
@@ -110,8 +125,7 @@ Iclass* iupBackgroundBoxNewClass(void)
   }
 
   /* replace IupCanvas behavior */
-  iupClassRegisterReplaceAttribFunc (ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL);
-  iupClassRegisterReplaceAttribDef  (ic, "BGCOLOR", "DLGBGCOLOR", NULL);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iBackgroundBoxGetBgColorAttrib, iBackgroundBoxSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE | IUPAF_DEFAULT);
   iupClassRegisterReplaceAttribDef  (ic, "BORDER", "NO", NULL);
   iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_NO_INHERIT);
   iupClassRegisterReplaceAttribDef  (ic, "SCROLLBAR", "NO", NULL);

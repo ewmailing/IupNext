@@ -16,6 +16,7 @@ int main(int argc, char **argv)
     IupButton("This button does nothing", ""), 
     IupText(""), 
     NULL), "MARGIN=0x0")));
+//  IupSetAttribute(btn, "BGCOLOR", "0 128 0");
 //  IupSetAttribute(btn, "BORDER", "Yes");
 
   /* Creates dialog */
