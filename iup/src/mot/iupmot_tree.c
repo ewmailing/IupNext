@@ -734,7 +734,7 @@ void iupdrvTreeAddNode(Ihandle* ih, int id, int kind, const char* title, int add
 
       /* when single selection when focus is set, node is also selected */
       if (ih->data->mark_mode == ITREE_MARK_SINGLE)
-        motTreeSelectNode(ih, wItemNew, 1);
+        motTreeSelectNode(wItemNew, 1);
     }
   }
 
