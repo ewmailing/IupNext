@@ -261,7 +261,7 @@ static int winClipboardSetImageAttrib(Ihandle *ih, const char *value)
   }
 
   hBitmap = (HBITMAP)iupImageGetImage(value, ih, 0);
-  iupImageClearCache(ih, hBitmap);
+  iupImageClearCache(ih, hBitmap);  /* to avoid being destroyed later */
 
   SetClipboardData(CF_BITMAP, (HANDLE)hBitmap);
   CloseClipboard();

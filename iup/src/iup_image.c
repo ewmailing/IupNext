@@ -547,6 +547,13 @@ static void iImageUnMapMethod(Ihandle* ih)
   char *name;
   void* handle;
 
+  handle = iupAttribGet(ih, "_IUPIMAGE_MASK");
+  if (handle)
+  {
+    iupdrvImageDestroy(handle, IUPIMAGE_IMAGE);
+    iupAttribSet(ih, "_IUPIMAGE_MASK", NULL);
+  }
+
   handle = iupAttribGet(ih, "_IUPIMAGE_ICON");
   if (handle) 
   {
@@ -561,28 +568,33 @@ static void iImageUnMapMethod(Ihandle* ih)
     iupAttribSet(ih, "_IUPIMAGE_CURSOR", NULL);
   }
 
-  /* the remaining images are all IUPIMAGE_IMAGE */
+  /* the remaining images are all IUPIMAGE_IMAGE(*)  */
   name = iupTableFirst(ih->attrib);
   while (name)
   {
-    if (iupStrEqualPartial(name, "_IUPIMAGE_"))
+    if (iupStrEqualPartial(name, "_IUPIMAGE_IMAGE"))
     {
       handle = iupTableGetCurr(ih->attrib);
-      if (handle) iupdrvImageDestroy(handle, IUPIMAGE_IMAGE);
+      if (handle)
+      {
+        iupdrvImageDestroy(handle, IUPIMAGE_IMAGE);
+        iupTableSetCurr(ih->attrib, NULL, IUPTABLE_POINTER);
+      }
     }
 
     name = iupTableNext(ih->attrib);
   }
 
+  /* additional image buffer when an IupImage is converted to a CD image */
   handle = iupAttribGet(ih, "_IUPIMAGE_CDIMAGE");
-  if (handle) 
+  if (handle)
   {
     iupAttribSet(ih, "_IUPIMAGE_CDIMAGE", NULL);
     free(handle);
   }
 
   handle = iupAttribGet(ih, "_IUPIMAGE_CDIMAGE_INACTIVE");
-  if (handle) 
+  if (handle)
   {
     iupAttribSet(ih, "_IUPIMAGE_CDIMAGE_INACTIVE", NULL);
     free(handle);

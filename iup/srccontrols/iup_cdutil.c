@@ -156,10 +156,10 @@ void cdIupDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2)
 
 void IupCdSetFont(Ihandle* ih, cdCanvas *canvas, const char* font)
 {
-  char* lastfont = iupAttribGetStr(ih, "_IUPLAST_FONT");
+  char* lastfont = iupAttribGetStr(ih, "_IUPCD_LASTFONT");
   if (!lastfont || !iupStrEqual(lastfont, font))
   {
-    iupAttribSetStr(ih, "_IUPLAST_FONT", font);
+    iupAttribSetStr(ih, "_IUPCD_LASTFONT", font);
     cdCanvasNativeFont(canvas, font);
   }
 }
@@ -296,6 +296,7 @@ void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_ina
   else if (bpp==32)
     depth = 4;
 
+  /* The buffer will be destroyed in IupImage unmap */
   if (depth!=1 && make_inactive)
     image_buffer = (unsigned char*)iupAttribGet(image, "_IUPIMAGE_CDIMAGE_INACTIVE");
   else
