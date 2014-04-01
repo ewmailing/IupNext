@@ -20,6 +20,10 @@ that gets the focus.</p>
 <h3>Affects</h3>
 <p>All elements with user interaction, except 
   menus.</p>
+<p>In Windows, there are restrictions when using this callback. From MSDN on 
+WM_KILLFOCUS: &quot;“While processing this message, do not make any function calls 
+that display or activate a window. This causes the thread to yield control and 
+can cause the application to stop responding to messages.” </p>
 <h3>See Also</h3>
 <p><a href="iup_getfocus_cb.html">GETFOCUS_CB</a>,
 <a href="../func/iupgetfocus.html">IupGetFocus</a>,
