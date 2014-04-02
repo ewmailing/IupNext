@@ -22,6 +22,7 @@
 #include "iup_layout.h"
 #include "iup_childtree.h"
 #include "iup_draw.h"
+#include "iup_image.h"
 
 
 #define IEXPAND_HANDLE_SIZE 20
@@ -79,8 +80,19 @@ static int iExpanderGetBarSize(Ihandle* ih)
     if (bar_size < IEXPAND_HANDLE_SIZE)
       bar_size = IEXPAND_HANDLE_SIZE;
 
-    if (ih->data->position == IEXPANDER_TOP && iupAttribGetStr(ih, "TITLE"))
-      bar_size += 2*IEXPAND_BACK_MARGIN;
+    if (ih->data->position == IEXPANDER_TOP)
+    {
+      char* image = iupAttribGetStr(ih, "IMAGE");
+      if (image)
+      {
+        int image_h = 0;
+        iupImageGetInfo(image, NULL, &image_h, NULL);
+        bar_size = iupMAX(bar_size, image_h);
+      }
+
+      if (iupAttribGetStr(ih, "TITLE") || image)
+        bar_size += 2 * IEXPAND_BACK_MARGIN;
+    }
   }
   else
     bar_size = ih->data->barSize;
@@ -211,7 +223,7 @@ static void iExpanderDrawArrow(IdrawCanvas *dc, int x, int y, unsigned char r, u
   iExpanderDrawTriangle(dc, x, y, r, g, b, dir);
 }
 
-static void iExpanderDrawSmallArrow(IdrawCanvas *dc, unsigned char r, unsigned char g, unsigned char b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b, int dir)
+static void iExpanderDrawSmallArrow(IdrawCanvas *dc, unsigned char r, unsigned char g, unsigned char b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b, int dir, int y_offset)
 {
   unsigned char sr, sg, sb;
 
@@ -223,17 +235,17 @@ static void iExpanderDrawSmallArrow(IdrawCanvas *dc, unsigned char r, unsigned c
   switch(dir)
   {
   case IEXPANDER_RIGHT:  /* arrow points right */
-    iExpanderDrawSmallTriangle(dc, 2+IEXPAND_BACK_MARGIN, 0+IEXPAND_BACK_MARGIN, sr, sg, sb, dir);
-    iExpanderDrawSmallTriangle(dc, 1+IEXPAND_BACK_MARGIN, 0+IEXPAND_BACK_MARGIN, r, g, b, dir);
+    iExpanderDrawSmallTriangle(dc, 2 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, sr, sg, sb, dir);
+    iExpanderDrawSmallTriangle(dc, 1 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, r, g, b, dir);
     break;
   case IEXPANDER_BOTTOM:  /* arrow points bottom */
-    iExpanderDrawSmallTriangle(dc, 0+IEXPAND_BACK_MARGIN, 1+IEXPAND_BACK_MARGIN, sr, sg, sb, dir);
-    iExpanderDrawSmallTriangle(dc, 0+IEXPAND_BACK_MARGIN, 0+IEXPAND_BACK_MARGIN, r, g, b, dir);
+    iExpanderDrawSmallTriangle(dc, 0 + IEXPAND_BACK_MARGIN, 1 + IEXPAND_BACK_MARGIN + y_offset, sr, sg, sb, dir);
+    iExpanderDrawSmallTriangle(dc, 0 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, r, g, b, dir);
     break;
   }
 }
 
-static void iExpanderHighlight(unsigned char *r, unsigned char *g, unsigned char *b)
+static void iExpanderAddHighlight(unsigned char *r, unsigned char *g, unsigned char *b)
 {
   int i = (*r+*g+*b)/3;
   if (i < 128)
@@ -258,6 +270,7 @@ static int iExpanderAction_CB(Ihandle* bar)
   unsigned char bg_r=0, bg_g=0, bg_b=0;
   int draw_bgcolor = 1;
   char* title = iupAttribGetStr(ih, "TITLE");
+  char* image = iupAttribGetStr(ih, "IMAGE");
   char* bgcolor = iupAttribGetStr(ih, "BACKCOLOR");
   if (!bgcolor)
   {
@@ -273,21 +286,77 @@ static int iExpanderAction_CB(Ihandle* bar)
   if (draw_bgcolor)
     iupDrawRectangle(dc, IEXPAND_BACK_MARGIN, IEXPAND_BACK_MARGIN, bar->currentwidth - IEXPAND_BACK_MARGIN, bar->currentheight - IEXPAND_BACK_MARGIN, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
 
-  if (ih->data->position == IEXPANDER_TOP && title)
+  if (ih->data->position == IEXPANDER_TOP && (title || image))
   {
-    /* left align everything */
-    int len, charheight;
-    iupStrNextLine(title, &len);  /* get the length of the first line */
-    iupdrvFontGetCharSize(ih, NULL, &charheight);
-    iupDrawText(dc, title, len, IEXPAND_HANDLE_SIZE+IEXPAND_HANDLE_SPC, (bar->currentheight-charheight)/2, r, g, b, IupGetAttribute(ih, "FONT"));
+    int txt_offset = IEXPAND_HANDLE_SIZE;
 
-    if (ih->data->highlight)
-      iExpanderHighlight(&r, &g, &b);
+    if (image)
+    {
+      int active = IupGetInt(ih, "ACTIVE");
+      int img_width = 0, img_height = 0;
+      int y_offset = 0;
 
-    if (ih->data->state == IEXPANDER_CLOSE)
-      iExpanderDrawSmallArrow(dc, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT);
-    else
-      iExpanderDrawSmallArrow(dc, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM);
+      if (ih->data->state != IEXPANDER_CLOSE)
+      {
+        char* imopen = iupAttribGetStr(ih, "IMOPEN");
+        if (imopen) image = imopen;
+
+        if (ih->data->highlight)
+        {
+          char* imhighlight = iupAttribGetStr(ih, "IMOPENHIGHLIGHT");
+          if (imhighlight) image = imhighlight;
+        }
+      }
+      else if (ih->data->highlight)
+      {
+        char* imhighlight = iupAttribGetStr(ih, "IMHIGHLIGHT");
+        if (imhighlight) image = imhighlight;
+      }
+
+      if (!active)
+      {
+        /* not recommended, let the system do the inactive image */
+        char* iminactive = iupAttribGetStr(ih, "IMINACTIVE");
+        if (iminactive)
+        {
+          image = iminactive;
+          active = 0;
+        }
+      }
+
+      iupImageGetInfo(image, NULL, &img_height, NULL);
+      if (bar->currentheight > img_height)
+        y_offset = (bar->currentheight - img_height) / 2;
+
+      /* IMAGE is always drawn in (0,0) */
+      iupDrawImage(dc, image, active, IEXPAND_BACK_MARGIN, y_offset, &img_width, &img_height);
+
+      txt_offset = iupMAX(txt_offset, img_width);
+    }
+
+    if (title)
+    {
+      /* left align everything */
+      int len, charheight;
+      iupStrNextLine(title, &len);  /* get the length of the first line */
+      iupdrvFontGetCharSize(ih, NULL, &charheight);
+      iupDrawText(dc, title, len, txt_offset + IEXPAND_HANDLE_SPC, (bar->currentheight - charheight) / 2, r, g, b, IupGetAttribute(ih, "FONT"));
+
+      if (!image)
+      {
+        int y_offset = 0;
+        if (bar->currentheight > IEXPAND_HANDLE_SIZE + 2*IEXPAND_BACK_MARGIN)
+          y_offset = (bar->currentheight - IEXPAND_HANDLE_SIZE - 2 * IEXPAND_BACK_MARGIN) / 2;
+
+        if (ih->data->highlight)
+          iExpanderAddHighlight(&r, &g, &b);
+
+        if (ih->data->state == IEXPANDER_CLOSE)
+          iExpanderDrawSmallArrow(dc, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT, y_offset);
+        else
+          iExpanderDrawSmallArrow(dc, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM, y_offset);
+      }
+    }
   }
   else
   {
@@ -295,7 +364,7 @@ static int iExpanderAction_CB(Ihandle* bar)
     int x, y;
 
     if (ih->data->highlight)
-      iExpanderHighlight(&r, &g, &b);
+      iExpanderAddHighlight(&r, &g, &b);
 
     switch(ih->data->position)
     {
@@ -601,11 +670,23 @@ static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
 
     if (ih->data->position == IEXPANDER_TOP)
     {
-      char* title = iupAttribGetStr(ih, "TITLE");
-      if (title)
+      /* if IMAGE is defined assume that will cover all the canvas area */
+      char* value = iupAttribGetStr(ih, "IMAGE");
+      if (value)
+      {
+        int image_w = 0;
+        iupImageGetInfo(value, &image_w, NULL, NULL);
+        natural_w = iupMAX(natural_w, image_w);
+      }
+
+      /* if TITLE and IMAGE are both defined then 
+         IMAGE is only the handle */
+
+      value = iupAttribGetStr(ih, "TITLE");
+      if (value)
       {
         int title_size = 0;
-        iupdrvFontGetMultiLineStringSize(ih, title, &title_size, NULL);
+        iupdrvFontGetMultiLineStringSize(ih, value, &title_size, NULL);
         natural_w += title_size + 2*IEXPAND_BACK_MARGIN + IEXPAND_HANDLE_SPC;
       }
     }
@@ -631,6 +712,13 @@ static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
 
     if (ih->data->state == IEXPANDER_OPEN)
       child_expand = child->expand;
+    else
+    {
+      if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
+        child_expand = child->expand & IUP_EXPAND_HEIGHT;  /* only vertical allowed */
+      else
+        child_expand = child->expand & IUP_EXPAND_WIDTH;  /* only horizontal allowed */
+    }
   }
 
   *children_expand = child_expand;
@@ -800,6 +888,12 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLE", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AUTOSHOW", iExpanderGetAutoShowAttrib, iExpanderSetAutoShowAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMHIGHLIGHT", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMOPEN", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMOPENHIGHLIGHT", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

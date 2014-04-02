@@ -139,6 +139,46 @@ static unsigned char img_bits2[] =
 ,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 };
 
+unsigned char img_close[16 * 16] =
+{
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+  0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+unsigned char img_open[16*16] =
+{
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+  0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
 static int copydata_cb(Ihandle* ih, char* value, int size)
 {
   printf("COPYDATA(%s, %d)\n", value, size);
@@ -370,7 +410,7 @@ static Ihandle* create_matrix(void)
 
 void ExpanderTest(void)
 {
-  Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, 
+  Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, *image_open, *image_close,
     *_frm_1, *_frm_2, *_frm_3, *_frm_4, *_frm_5, *pbar, *val, *tabs,
     *_list_1, *_list_2, *_list_3, *_text_1, *_ml_1, *tree, *_hbox_2;
 
@@ -389,6 +429,14 @@ void ExpanderTest(void)
   IupSetAttribute (img, "1", "0 255 0");
   IupSetAttribute (img, "2", "BGCOLOR");
   IupSetAttribute (img, "3", "255 0 0");
+
+  image_open = IupImage(16, 16, img_open);
+  image_close = IupImage(16, 16, img_close);
+  IupSetAttribute(image_open, "0", "BGCOLOR");
+  IupSetAttribute(image_open, "1", "192 192 192");
+  IupSetAttribute(image_close, "0", "BGCOLOR");
+  IupSetAttribute(image_close, "1", "192 192 192");
+
 
   mnu = IupMenu(
     IupSubmenu("IupSubmenu 1", IupMenu(
@@ -434,9 +482,13 @@ void ExpanderTest(void)
         set_callbacks(IupToggle("Toggle Text", NULL)), 
         NULL))), "TITLE=IupRadio"),
       NULL));
-  IupSetAttribute(_frm_3,"TITLE","IupToggle");
+//  IupSetAttribute(_frm_3,"TITLE","IupToggle");
   IupSetAttribute(_frm_3,"FORECOLOR","255 255 255");
   IupSetAttribute(_frm_3,"BACKCOLOR","50 100 150");
+//  IupSetAttribute(_frm_3, "BARSIZE", "50");
+//  IupSetAttributeHandle(_frm_3, "IMAGE", image_close);
+//  IupSetAttributeHandle(_frm_3, "IMOPEN", image_open);
+  IupSetAttribute(_frm_3, "IMAGE", "img1");
   IupSetCallback(_frm_3, "ACTION", expand_cb);
 
   _text_1 = IupText( NULL);
