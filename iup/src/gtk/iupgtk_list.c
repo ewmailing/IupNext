@@ -47,7 +47,13 @@ static void gtkListComboBoxChanged(GtkComboBox* widget, Ihandle* ih);
 void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 {
   (void)ih;
-  *h += 3;
+  /* FROM:
+    gtk_tree_view_column_cell_get_size
+      height = text_height + 2*focus_line_width;
+    gtk_widget_style_get(ih->handle, "focus-line-width", &focus_line_width, NULL);
+      returns always 1
+  */
+  *h += 2;
 }
 
 void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
@@ -1606,7 +1612,7 @@ static int gtkListMapMethod(Ihandle* ih)
     g_signal_connect(G_OBJECT(ih->handle), "row-activated", G_CALLBACK(gtkListRowActivated), ih);
     g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event",G_CALLBACK(iupgtkMotionNotifyEvent), ih);
     g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(iupgtkButtonEvent), ih);
-    g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(iupgtkButtonEvent), ih);
+    g_signal_connect(G_OBJECT(ih->handle), "button-release-event", G_CALLBACK(iupgtkButtonEvent), ih);
   }
 
   /* Enable internal drag and drop support */
