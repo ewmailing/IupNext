@@ -7,6 +7,7 @@ local ctrl = {
   creation = "I",
   callback = {
     action = "", 
+    extrabutton_cb = "nn", 
   }
 }
 

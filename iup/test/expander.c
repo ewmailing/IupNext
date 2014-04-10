@@ -197,6 +197,12 @@ static int expand_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
+static int extrabutton_cb(Ihandle *ih, int button, int pressed)
+{
+  printf("EXTRABUTTON_CB(%s, but=%d, press=%d)\n", IupGetClassName(ih), button, pressed);
+  return IUP_DEFAULT;
+}
+
 static int getfocus_cb(Ihandle *ih)
 {
   printf("GETFOCUS_CB(%s)\n", IupGetClassName(ih));
@@ -432,9 +438,9 @@ void ExpanderTest(void)
 
   image_open = IupImage(16, 16, img_open);
   image_close = IupImage(16, 16, img_close);
-  IupSetAttribute(image_open, "0", "BGCOLOR");
+//  IupSetAttribute(image_open, "0", "BGCOLOR");
   IupSetAttribute(image_open, "1", "192 192 192");
-  IupSetAttribute(image_close, "0", "BGCOLOR");
+//  IupSetAttribute(image_close, "0", "BGCOLOR");
   IupSetAttribute(image_close, "1", "192 192 192");
 
 
@@ -482,14 +488,22 @@ void ExpanderTest(void)
         set_callbacks(IupToggle("Toggle Text", NULL)), 
         NULL))), "TITLE=IupRadio"),
       NULL));
-//  IupSetAttribute(_frm_3,"TITLE","IupToggle");
+  IupSetAttribute(_frm_3,"TITLE","IupToggle");
   IupSetAttribute(_frm_3,"FORECOLOR","255 255 255");
   IupSetAttribute(_frm_3,"BACKCOLOR","50 100 150");
 //  IupSetAttribute(_frm_3, "BARSIZE", "50");
 //  IupSetAttributeHandle(_frm_3, "IMAGE", image_close);
 //  IupSetAttributeHandle(_frm_3, "IMOPEN", image_open);
-  IupSetAttribute(_frm_3, "IMAGE", "img1");
-  IupSetCallback(_frm_3, "ACTION", expand_cb);
+//  IupSetAttribute(_frm_3, "IMAGE", "img1");
+  IupSetCallback(_frm_3, "ACTION", (Icallback)expand_cb);
+  IupSetAttribute(_frm_3, "EXTRABUTTONS", "3");
+  IupSetCallback(_frm_3, "EXTRABUTTON_CB", (Icallback)extrabutton_cb);
+  IupSetAttributeHandle(_frm_3, "IMAGEEXTRA1", image_close);
+  IupSetAttributeHandle(_frm_3, "IMAGEEXTRAPRESS1", image_open);
+  IupSetAttributeHandle(_frm_3, "IMAGEEXTRA2", image_close);
+  IupSetAttributeHandle(_frm_3, "IMAGEEXTRAPRESS2", image_open);
+  IupSetAttributeHandle(_frm_3, "IMAGEEXTRA3", image_close);
+  IupSetAttributeHandle(_frm_3, "IMAGEEXTRAPRESS3", image_open);
 
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");

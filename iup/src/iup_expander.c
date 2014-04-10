@@ -25,8 +25,9 @@
 #include "iup_image.h"
 
 
+#define IEXPAND_BUTTON_SIZE 16
 #define IEXPAND_HANDLE_SIZE 20
-#define IEXPAND_HANDLE_SPC   3
+#define IEXPAND_SPACING   3
 #define IEXPAND_BACK_MARGIN  2
 
 enum { IEXPANDER_LEFT, IEXPANDER_RIGHT, IEXPANDER_TOP, IEXPANDER_BOTTOM };
@@ -40,6 +41,8 @@ struct _IcontrolData
   int barSize;
 
   int highlight,
+      extra_buttons,
+      extra_buttons_state[4],
       auto_show;
   Ihandle* timer;
 };
@@ -51,16 +54,16 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb)
 
   IupUpdate(ih->firstchild);
 
-  if (!child)
-    return;
+  if (child)
+  {
+    if (ih->data->state == IEXPANDER_CLOSE)
+      IupSetAttribute(child, "VISIBLE", "NO");
+    else
+      IupSetAttribute(child, "VISIBLE", "YES");
 
-  if (ih->data->state == IEXPANDER_CLOSE)
-    IupSetAttribute(child, "VISIBLE", "NO");
-  else 
-    IupSetAttribute(child, "VISIBLE", "YES");
-
-  if (refresh)
-    IupRefresh(child); /* this will recompute the layout of the hole dialog */
+    if (refresh)
+      IupRefresh(child); /* this will recompute the layout of the hole dialog */
+  }
 
   if (callcb)
   {
@@ -109,48 +112,48 @@ static void iExpanderDrawTriangle(IdrawCanvas *dc, int x, int y, unsigned char r
   int points[6];
 
   /* fix for smooth triangle */
-  int delta = (IEXPAND_HANDLE_SIZE - 2*IEXPAND_HANDLE_SPC)/2;
+  int delta = (IEXPAND_HANDLE_SIZE - 2*IEXPAND_SPACING)/2;
 
   switch(dir)
   {
   case IEXPANDER_LEFT:  /* arrow points left */
-    x += IEXPAND_HANDLE_SPC;  /* fix center */
-    points[0] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - delta;
-    points[1] = y + IEXPAND_HANDLE_SPC;
-    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - delta;
-    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
-    points[4] = x + IEXPAND_HANDLE_SPC;
+    x += IEXPAND_SPACING;  /* fix center */
+    points[0] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - delta;
+    points[1] = y + IEXPAND_SPACING;
+    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - delta;
+    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
+    points[4] = x + IEXPAND_SPACING;
     points[5] = y + IEXPAND_HANDLE_SIZE/2;
     break;
   case IEXPANDER_TOP:    /* arrow points top */
-    y += IEXPAND_HANDLE_SPC;  /* fix center */
-    points[0] = x + IEXPAND_HANDLE_SPC;
-    points[1] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - (delta-1);
-    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
-    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - (delta-1);
+    y += IEXPAND_SPACING;  /* fix center */
+    points[0] = x + IEXPAND_SPACING;
+    points[1] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - (delta-1);
+    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
+    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - (delta-1);
     points[4] = x + IEXPAND_HANDLE_SIZE/2;
-    points[5] = y + IEXPAND_HANDLE_SPC;
+    points[5] = y + IEXPAND_SPACING;
     break;
   case IEXPANDER_RIGHT:  /* arrow points right */
-    x += IEXPAND_HANDLE_SPC;  /* fix center */
-    points[0] = x + IEXPAND_HANDLE_SPC;
-    points[1] = y + IEXPAND_HANDLE_SPC;
-    points[2] = x + IEXPAND_HANDLE_SPC;
-    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
-    points[4] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - delta;
+    x += IEXPAND_SPACING;  /* fix center */
+    points[0] = x + IEXPAND_SPACING;
+    points[1] = y + IEXPAND_SPACING;
+    points[2] = x + IEXPAND_SPACING;
+    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
+    points[4] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - delta;
     points[5] = y + IEXPAND_HANDLE_SIZE/2;
     break;
   case IEXPANDER_BOTTOM:  /* arrow points bottom */
-    y += IEXPAND_HANDLE_SPC;  /* fix center */
-    points[0] = x + IEXPAND_HANDLE_SPC;
-    points[1] = y + IEXPAND_HANDLE_SPC;
-    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC;
-    points[3] = y + IEXPAND_HANDLE_SPC;
+    y += IEXPAND_SPACING;  /* fix center */
+    points[0] = x + IEXPAND_SPACING;
+    points[1] = y + IEXPAND_SPACING;
+    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
+    points[3] = y + IEXPAND_SPACING;
     points[4] = x + IEXPAND_HANDLE_SIZE/2;
-    points[5] = y + IEXPAND_HANDLE_SIZE - IEXPAND_HANDLE_SPC - (delta-1);
+    points[5] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - (delta-1);
 
     /* fix for simmetry */
-    iupDrawLine(dc, x+IEXPAND_HANDLE_SPC, y+IEXPAND_HANDLE_SPC, x+IEXPAND_HANDLE_SIZE-IEXPAND_HANDLE_SPC, y+IEXPAND_HANDLE_SPC, r, g, b, IUP_DRAW_STROKE);
+    iupDrawLine(dc, x+IEXPAND_SPACING, y+IEXPAND_SPACING, x+IEXPAND_HANDLE_SIZE-IEXPAND_SPACING, y+IEXPAND_SPACING, r, g, b, IUP_DRAW_STROKE);
     break;
   }
 
@@ -161,7 +164,7 @@ static void iExpanderDrawSmallTriangle(IdrawCanvas *dc, int x, int y, unsigned c
 {
   int points[6];
   int size = IEXPAND_HANDLE_SIZE-2;
-  int space = IEXPAND_HANDLE_SPC+1;
+  int space = IEXPAND_SPACING+1;
 
   /* fix for smooth triangle */
   int delta = (size - 2*space)/2;
@@ -262,6 +265,33 @@ static void iExpanderAddHighlight(unsigned char *r, unsigned char *g, unsigned c
   }
 }
 
+static void iExpanderDrawExtraButton(Ihandle* ih, IdrawCanvas *dc, int button, int x, int y, int height)
+{
+  char* image = iupAttribGetId(ih, "IMAGEEXTRA", button);
+  int active = IupGetInt(ih, "ACTIVE");
+  int img_width = 0, img_height = 0;
+
+  if (!image)
+    return;
+
+  if (ih->data->extra_buttons_state[button] == 1)
+  {
+    char* impress = iupAttribGetId(ih, "IMAGEEXTRAPRESS", button);
+    if (impress) image = impress;
+  }
+  else if (ih->data->extra_buttons_state[button] == -1)
+  {
+    char* imhighlight = iupAttribGetId(ih, "IMAGEEXTRAHIGHLIGHT", button);
+    if (imhighlight) image = imhighlight;
+  }
+
+  iupImageGetInfo(image, NULL, &img_height, NULL);
+  if (height > img_height)
+    y += (height - img_height) / 2;
+
+  iupDrawImage(dc, image, active, x, y, &img_width, &img_height);
+}
+
 static int iExpanderAction_CB(Ihandle* bar)
 {
   Ihandle *ih = bar->parent;
@@ -286,7 +316,7 @@ static int iExpanderAction_CB(Ihandle* bar)
   if (draw_bgcolor)
     iupDrawRectangle(dc, IEXPAND_BACK_MARGIN, IEXPAND_BACK_MARGIN, bar->currentwidth - IEXPAND_BACK_MARGIN, bar->currentheight - IEXPAND_BACK_MARGIN, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
 
-  if (ih->data->position == IEXPANDER_TOP && (title || image))
+  if (ih->data->position == IEXPANDER_TOP && (title || image || ih->data->extra_buttons!=0))
   {
     int txt_offset = IEXPAND_HANDLE_SIZE;
 
@@ -298,37 +328,25 @@ static int iExpanderAction_CB(Ihandle* bar)
 
       if (ih->data->state != IEXPANDER_CLOSE)
       {
-        char* imopen = iupAttribGetStr(ih, "IMOPEN");
+        char* imopen = iupAttribGetStr(ih, "IMAGEOPEN");
         if (imopen) image = imopen;
 
         if (ih->data->highlight)
         {
-          char* imhighlight = iupAttribGetStr(ih, "IMOPENHIGHLIGHT");
+          char* imhighlight = iupAttribGetStr(ih, "IMAGEOPENHIGHLIGHT");
           if (imhighlight) image = imhighlight;
         }
       }
       else if (ih->data->highlight)
       {
-        char* imhighlight = iupAttribGetStr(ih, "IMHIGHLIGHT");
+        char* imhighlight = iupAttribGetStr(ih, "IMAGEHIGHLIGHT");
         if (imhighlight) image = imhighlight;
-      }
-
-      if (!active)
-      {
-        /* not recommended, let the system do the inactive image */
-        char* iminactive = iupAttribGetStr(ih, "IMINACTIVE");
-        if (iminactive)
-        {
-          image = iminactive;
-          active = 0;
-        }
       }
 
       iupImageGetInfo(image, NULL, &img_height, NULL);
       if (bar->currentheight > img_height)
         y_offset = (bar->currentheight - img_height) / 2;
 
-      /* IMAGE is always drawn in (0,0) */
       iupDrawImage(dc, image, active, IEXPAND_BACK_MARGIN, y_offset, &img_width, &img_height);
 
       txt_offset = iupMAX(txt_offset, img_width);
@@ -340,7 +358,7 @@ static int iExpanderAction_CB(Ihandle* bar)
       int len, charheight;
       iupStrNextLine(title, &len);  /* get the length of the first line */
       iupdrvFontGetCharSize(ih, NULL, &charheight);
-      iupDrawText(dc, title, len, txt_offset + IEXPAND_HANDLE_SPC, (bar->currentheight - charheight) / 2, r, g, b, IupGetAttribute(ih, "FONT"));
+      iupDrawText(dc, title, len, txt_offset + IEXPAND_SPACING, (bar->currentheight - charheight) / 2, r, g, b, IupGetAttribute(ih, "FONT"));
 
       if (!image)
       {
@@ -356,6 +374,20 @@ static int iExpanderAction_CB(Ihandle* bar)
         else
           iExpanderDrawSmallArrow(dc, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM, y_offset);
       }
+    }
+
+    if (ih->data->extra_buttons != 0)
+    {
+      int y = IEXPAND_SPACING + IEXPAND_BACK_MARGIN,
+        height = bar->currentheight - 2 * (IEXPAND_SPACING + IEXPAND_BACK_MARGIN);
+
+      iExpanderDrawExtraButton(ih, dc, 1, bar->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height);
+
+      if (ih->data->extra_buttons > 1)
+        iExpanderDrawExtraButton(ih, dc, 2, bar->currentwidth - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height);
+
+      if (ih->data->extra_buttons == 3)
+        iExpanderDrawExtraButton(ih, dc, 3, bar->currentwidth - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height);
     }
   }
   else
@@ -476,12 +508,16 @@ static int iExpanderLeaveWindow_cb(Ihandle* bar)
   if (ih->data->highlight)
   {
     ih->data->highlight = 0;
-    IupUpdate(ih->firstchild);
 
-    if (ih->data->auto_show)
+    if (ih->firstchild)
     {
-      if (IupGetInt(ih->data->timer, "RUN"))
-        IupSetAttribute(ih->data->timer, "RUN", "No");
+      IupUpdate(ih->firstchild);
+
+      if (ih->data->auto_show)
+      {
+        if (IupGetInt(ih->data->timer, "RUN"))
+          IupSetAttribute(ih->data->timer, "RUN", "No");
+      }
     }
   }
   return IUP_DEFAULT;
@@ -493,13 +529,25 @@ static int iExpanderEnterWindow_cb(Ihandle* bar)
   if (!ih->data->highlight)
   {
     ih->data->highlight = 1;
-    IupUpdate(ih->firstchild);
 
-    if (ih->data->auto_show && 
-        ih->firstchild->brother &&
-        ih->data->state==IEXPANDER_CLOSE)
-      IupSetAttribute(ih->data->timer, "RUN", "Yes");
+    if (ih->firstchild)
+    {
+      IupUpdate(ih->firstchild);
+
+      if (ih->data->auto_show &&
+          ih->firstchild->brother &&
+          ih->data->state == IEXPANDER_CLOSE)
+        IupSetAttribute(ih->data->timer, "RUN", "Yes");
+    }
   }
+  return IUP_DEFAULT;
+}
+
+static int iExpanderCallExtraButtonCb(Ihandle* ih, int button, int pressed)
+{
+  IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
+  if (cb)
+    cb(ih, button, pressed);
   return IUP_DEFAULT;
 }
 
@@ -507,17 +555,55 @@ static int iExpanderButton_CB(Ihandle* bar, int button, int pressed, int x, int 
 {
   Ihandle* ih = bar->parent;
 
-  if (ih->data->auto_show)
+  if (button != IUP_BUTTON1)
+    return IUP_DEFAULT;
+
+  if (ih->data->auto_show && ih->firstchild)
   {
     if (IupGetInt(ih->data->timer, "RUN"))
       IupSetAttribute(ih->data->timer, "RUN", "No");
   }
 
-  if (button==IUP_BUTTON1 && pressed)
+  if (ih->data->position == IEXPANDER_TOP && ih->data->extra_buttons != 0)
+  {
+    if (y >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && y <= bar->currentheight - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
+    {
+      if ((x >= bar->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
+        (x < bar->currentwidth - IEXPAND_SPACING - IEXPAND_BACK_MARGIN))
+      {
+        ih->data->extra_buttons_state[1] = pressed;
+        IupUpdate(bar);
+        return iExpanderCallExtraButtonCb(ih, 1, pressed);
+      }
+
+      if (ih->data->extra_buttons > 1)
+      {
+        if ((x >= bar->currentwidth - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
+          (x < bar->currentwidth - (IEXPAND_BUTTON_SIZE + 2 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
+        {
+          ih->data->extra_buttons_state[2] = pressed;
+          IupUpdate(bar);
+          return iExpanderCallExtraButtonCb(ih, 2, pressed);
+        }
+      }
+
+      if (ih->data->extra_buttons == 3)
+      {
+        if ((x >= bar->currentwidth - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
+          (x < bar->currentwidth - (2 * IEXPAND_BUTTON_SIZE + 3 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
+        {
+          ih->data->extra_buttons_state[3] = pressed;
+          IupUpdate(bar);
+          return iExpanderCallExtraButtonCb(ih, 3, pressed);
+        }
+      }
+    }
+  }
+
+  if (pressed)
   {
     /* Update the state: OPEN ==> collapsed, CLOSE ==> expanded */
      ih->data->state = (ih->data->state == IEXPANDER_OPEN? IEXPANDER_CLOSE: IEXPANDER_OPEN);
-
      iExpanderOpenCloseChild(ih, 1, 1);
   }
 
@@ -641,7 +727,27 @@ static int iExpanderSetAutoShowAttrib(Ihandle* ih, const char* value)
 
 static char* iExpanderGetAutoShowAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean (ih->data->auto_show); 
+  return iupStrReturnBoolean(ih->data->auto_show);
+}
+
+static int iExpanderSetExtraButtonsAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+    ih->data->extra_buttons = 0;
+  else
+  {
+    iupStrToInt(value, &(ih->data->extra_buttons));
+    if (ih->data->extra_buttons < 0)
+      ih->data->extra_buttons = 0;
+    else if (ih->data->extra_buttons > 3)
+      ih->data->extra_buttons = 3;
+  }
+  return 0; /* do not store value in hash table */
+}
+
+static char* iExpanderGetExtraButtonsAttrib(Ihandle* ih)
+{
+  return iupStrReturnInt(ih->data->extra_buttons);
 }
 
 
@@ -687,8 +793,13 @@ static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
       {
         int title_size = 0;
         iupdrvFontGetMultiLineStringSize(ih, value, &title_size, NULL);
-        natural_w += title_size + 2*IEXPAND_BACK_MARGIN + IEXPAND_HANDLE_SPC;
+        natural_w += title_size + IEXPAND_SPACING;
       }
+
+      if (ih->data->extra_buttons != 0)
+        natural_w += ih->data->extra_buttons * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING);
+
+      natural_w += 2 * IEXPAND_BACK_MARGIN;
     }
   }
 
@@ -871,6 +982,7 @@ Iclass* iupExpanderNewClass(void)
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "ACTION", "");
+  iupClassRegisterCallback(ic, "EXTRABUTTON_CB", "ii");
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
@@ -888,12 +1000,22 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLE", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AUTOSHOW", iExpanderGetAutoShowAttrib, iExpanderSetAutoShowAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXTRABUTTONS", iExpanderGetExtraButtonsAttrib, iExpanderSetExtraButtonsAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMHIGHLIGHT", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMOPEN", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMOPENHIGHLIGHT", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEOPEN", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEOPENHIGHLIGHT", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "IMAGEEXTRA1", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS1", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT1", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRA2", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS2", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT2", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRA3", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS3", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT3", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }
