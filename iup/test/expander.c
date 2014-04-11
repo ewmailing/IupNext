@@ -417,7 +417,7 @@ static Ihandle* create_matrix(void)
 void ExpanderTest(void)
 {
   Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, *image_open, *image_close,
-    *_frm_1, *_frm_2, *_frm_3, *_frm_4, *_frm_5, *pbar, *val, *tabs,
+    *_frm_1, *_frm_2, *_frm_3, *_frm_4, *_frm_5, *pbar, *val, *tabs, *image_high,
     *_list_1, *_list_2, *_list_3, *_text_1, *_ml_1, *tree, *_hbox_2;
 
   //img = IupImage(32,32, img_bits1);
@@ -438,11 +438,12 @@ void ExpanderTest(void)
 
   image_open = IupImage(16, 16, img_open);
   image_close = IupImage(16, 16, img_close);
-//  IupSetAttribute(image_open, "0", "BGCOLOR");
+  image_high = IupImage(16, 16, img_close);
+  IupSetAttribute(image_open, "0", "BGCOLOR");
   IupSetAttribute(image_open, "1", "192 192 192");
-//  IupSetAttribute(image_close, "0", "BGCOLOR");
+  IupSetAttribute(image_close, "0", "BGCOLOR");
   IupSetAttribute(image_close, "1", "192 192 192");
-
+  IupSetAttribute(image_high, "1", "192 192 192");
 
   mnu = IupMenu(
     IupSubmenu("IupSubmenu 1", IupMenu(
@@ -500,10 +501,13 @@ void ExpanderTest(void)
   IupSetCallback(_frm_3, "EXTRABUTTON_CB", (Icallback)extrabutton_cb);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRA1", image_close);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRAPRESS1", image_open);
+  IupSetAttributeHandle(_frm_3, "IMAGEEXTRAHIGHLIGHT1", image_high);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRA2", image_close);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRAPRESS2", image_open);
+  IupSetAttributeHandle(_frm_3, "IMAGEEXTRAHIGHLIGHT2", image_high);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRA3", image_close);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRAPRESS3", image_open);
+  IupSetAttributeHandle(_frm_3, "IMAGEEXTRAHIGHLIGHT3", image_high);
 
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");

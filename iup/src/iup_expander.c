@@ -509,15 +509,17 @@ static int iExpanderLeaveWindow_cb(Ihandle* bar)
   {
     ih->data->highlight = 0;
 
-    if (ih->firstchild)
-    {
-      IupUpdate(ih->firstchild);
+    if (ih->data->extra_buttons_state[1] != 0) ih->data->extra_buttons_state[1] = 0;
+    if (ih->data->extra_buttons_state[2] != 0) ih->data->extra_buttons_state[2] = 0;
+    if (ih->data->extra_buttons_state[3] != 0) ih->data->extra_buttons_state[3] = 0;
 
-      if (ih->data->auto_show)
-      {
-        if (IupGetInt(ih->data->timer, "RUN"))
-          IupSetAttribute(ih->data->timer, "RUN", "No");
-      }
+    /* redraw bar */
+    IupUpdate(ih->firstchild);
+
+    if (ih->data->auto_show)
+    {
+      if (IupGetInt(ih->data->timer, "RUN"))
+        IupSetAttribute(ih->data->timer, "RUN", "No");
     }
   }
   return IUP_DEFAULT;
@@ -530,24 +532,102 @@ static int iExpanderEnterWindow_cb(Ihandle* bar)
   {
     ih->data->highlight = 1;
 
-    if (ih->firstchild)
-    {
-      IupUpdate(ih->firstchild);
+    /* redraw bar */
+    IupUpdate(ih->firstchild);
 
-      if (ih->data->auto_show &&
-          ih->firstchild->brother &&
-          ih->data->state == IEXPANDER_CLOSE)
-        IupSetAttribute(ih->data->timer, "RUN", "Yes");
-    }
+    if (ih->data->auto_show &&
+        ih->firstchild->brother &&
+        ih->data->state == IEXPANDER_CLOSE)
+      IupSetAttribute(ih->data->timer, "RUN", "Yes");
   }
+  return IUP_DEFAULT;
+}
+
+static int iExpanderMotion_CB(Ihandle* bar, int x, int y, char* status)
+{
+  Ihandle* ih = bar->parent;
+
+  /* called only when EXTRABUTTONS is used */
+  if (ih->data->position != IEXPANDER_TOP)
+    return IUP_DEFAULT;
+
+  if (y >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && y <= bar->currentheight - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
+  {
+    int old_state[4];
+    old_state[1] = ih->data->extra_buttons_state[1];
+    old_state[2] = ih->data->extra_buttons_state[2];
+    old_state[3] = ih->data->extra_buttons_state[3];
+
+    if ((x >= bar->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
+      (x < bar->currentwidth - IEXPAND_SPACING - IEXPAND_BACK_MARGIN))
+    {
+      if (ih->data->extra_buttons_state[1] == 0)
+        ih->data->extra_buttons_state[1] = -1;  /* highlight if not pressed */
+    }
+    else
+    {
+      if (ih->data->extra_buttons_state[1] == -1)
+        ih->data->extra_buttons_state[1] = 0;
+    }
+
+    if (ih->data->extra_buttons > 1)
+    {
+      if ((x >= bar->currentwidth - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
+        (x < bar->currentwidth - (IEXPAND_BUTTON_SIZE + 2 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
+      {
+        if (ih->data->extra_buttons_state[2] == 0)
+          ih->data->extra_buttons_state[2] = -1;  /* highlight if not pressed */
+      }
+      else
+      {
+        if (ih->data->extra_buttons_state[2] == -1)
+          ih->data->extra_buttons_state[2] = 0;
+      }
+    }
+
+    if (ih->data->extra_buttons == 3)
+    {
+      if ((x >= bar->currentwidth - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
+          (x < bar->currentwidth - (2 * IEXPAND_BUTTON_SIZE + 3 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
+      {
+        if (ih->data->extra_buttons_state[3] == 0)
+          ih->data->extra_buttons_state[3] = -1;  /* highlight if not pressed */
+      }
+      else
+      {
+        if (ih->data->extra_buttons_state[3] == -1)
+          ih->data->extra_buttons_state[3] = 0;
+      }
+    }
+
+    if (old_state[1] != ih->data->extra_buttons_state[1] ||
+        old_state[2] != ih->data->extra_buttons_state[2] ||
+        old_state[3] != ih->data->extra_buttons_state[3])
+      IupUpdate(bar);
+  }
+
+  (void)status;
   return IUP_DEFAULT;
 }
 
 static int iExpanderCallExtraButtonCb(Ihandle* ih, int button, int pressed)
 {
-  IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
-  if (cb)
-    cb(ih, button, pressed);
+  int old_state = ih->data->extra_buttons_state[button];
+  ih->data->extra_buttons_state[button] = pressed;
+
+  /* redraw only if state changed */
+  if (old_state != ih->data->extra_buttons_state[button])
+    IupUpdate(ih->firstchild);
+
+  /* if pressed always call,
+     if not pressed, call only if was pressed */
+  if (pressed || old_state)
+  {
+    IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
+    if (cb)
+      cb(ih, button, pressed);
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -569,33 +649,21 @@ static int iExpanderButton_CB(Ihandle* bar, int button, int pressed, int x, int 
     if (y >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && y <= bar->currentheight - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
     {
       if ((x >= bar->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-        (x < bar->currentwidth - IEXPAND_SPACING - IEXPAND_BACK_MARGIN))
-      {
-        ih->data->extra_buttons_state[1] = pressed;
-        IupUpdate(bar);
+          (x < bar->currentwidth - IEXPAND_SPACING - IEXPAND_BACK_MARGIN))
         return iExpanderCallExtraButtonCb(ih, 1, pressed);
-      }
 
       if (ih->data->extra_buttons > 1)
       {
         if ((x >= bar->currentwidth - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-          (x < bar->currentwidth - (IEXPAND_BUTTON_SIZE + 2 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
-        {
-          ih->data->extra_buttons_state[2] = pressed;
-          IupUpdate(bar);
+            (x < bar->currentwidth - (IEXPAND_BUTTON_SIZE + 2 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
           return iExpanderCallExtraButtonCb(ih, 2, pressed);
-        }
       }
 
       if (ih->data->extra_buttons == 3)
       {
         if ((x >= bar->currentwidth - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-          (x < bar->currentwidth - (2 * IEXPAND_BUTTON_SIZE + 3 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
-        {
-          ih->data->extra_buttons_state[3] = pressed;
-          IupUpdate(bar);
+            (x < bar->currentwidth - (2 * IEXPAND_BUTTON_SIZE + 3 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
           return iExpanderCallExtraButtonCb(ih, 3, pressed);
-        }
       }
     }
   }
@@ -741,6 +809,9 @@ static int iExpanderSetExtraButtonsAttrib(Ihandle* ih, const char* value)
       ih->data->extra_buttons = 0;
     else if (ih->data->extra_buttons > 3)
       ih->data->extra_buttons = 3;
+
+    if (ih->data->extra_buttons != 0)
+      IupSetCallback(ih->firstchild, "MOTION_CB", (Icallback)iExpanderMotion_CB);
   }
   return 0; /* do not store value in hash table */
 }
