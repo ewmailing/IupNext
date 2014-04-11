@@ -548,6 +548,7 @@ static int iExpanderMotion_CB(Ihandle* bar, int x, int y, char* status)
   Ihandle* ih = bar->parent;
 
   /* called only when EXTRABUTTONS is used */
+
   if (ih->data->position != IEXPANDER_TOP)
     return IUP_DEFAULT;
 
@@ -566,7 +567,7 @@ static int iExpanderMotion_CB(Ihandle* bar, int x, int y, char* status)
     }
     else
     {
-      if (ih->data->extra_buttons_state[1] == -1)
+      if (ih->data->extra_buttons_state[1] != 0)
         ih->data->extra_buttons_state[1] = 0;
     }
 
@@ -580,7 +581,7 @@ static int iExpanderMotion_CB(Ihandle* bar, int x, int y, char* status)
       }
       else
       {
-        if (ih->data->extra_buttons_state[2] == -1)
+        if (ih->data->extra_buttons_state[2] != 0)
           ih->data->extra_buttons_state[2] = 0;
       }
     }
@@ -595,7 +596,7 @@ static int iExpanderMotion_CB(Ihandle* bar, int x, int y, char* status)
       }
       else
       {
-        if (ih->data->extra_buttons_state[3] == -1)
+        if (ih->data->extra_buttons_state[3] != 0)
           ih->data->extra_buttons_state[3] = 0;
       }
     }
@@ -619,9 +620,12 @@ static int iExpanderCallExtraButtonCb(Ihandle* ih, int button, int pressed)
   if (old_state != ih->data->extra_buttons_state[button])
     IupUpdate(ih->firstchild);
 
+  if (!pressed)
+    pressed = pressed;
+
   /* if pressed always call,
      if not pressed, call only if was pressed */
-  if (pressed || old_state)
+  if (pressed || old_state==1)
   {
     IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
     if (cb)
