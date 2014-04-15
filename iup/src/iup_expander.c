@@ -289,7 +289,7 @@ static void iExpanderDrawExtraButton(Ihandle* ih, IdrawCanvas *dc, int button, i
   if (height > img_height)
     y += (height - img_height) / 2;
 
-  iupDrawImage(dc, image, active, x, y, &img_width, &img_height);
+  iupDrawImage(dc, image, !active, x, y, &img_width, &img_height);
 }
 
 static int iExpanderAction_CB(Ihandle* bar)
@@ -347,7 +347,7 @@ static int iExpanderAction_CB(Ihandle* bar)
       if (bar->currentheight > img_height)
         y_offset = (bar->currentheight - img_height) / 2;
 
-      iupDrawImage(dc, image, active, IEXPAND_BACK_MARGIN, y_offset, &img_width, &img_height);
+      iupDrawImage(dc, image, !active, IEXPAND_BACK_MARGIN, y_offset, &img_width, &img_height);
 
       txt_offset = iupMAX(txt_offset, img_width);
     }
