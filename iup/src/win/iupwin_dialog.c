@@ -1373,15 +1373,45 @@ static int winDialogSetTopMostAttrib(Ihandle *ih, const char *value)
   return 1;
 }
 
+static HICON winDialogLoadIcon(const char* name, int size)
+{
+  int w = (size == ICON_SMALL) ? GetSystemMetrics(SM_CXSMICON) : GetSystemMetrics(SM_CXICON);
+  int h = (size == ICON_SMALL) ? GetSystemMetrics(SM_CYSMICON) : GetSystemMetrics(SM_CYICON);
+  HICON hIcon = LoadImage(iupwin_hinstance, iupwinStrToSystem(name), IMAGE_ICON, w, h, 0);
+  if (!hIcon && iupwin_dll_hinstance)
+    hIcon = LoadImage(iupwin_dll_hinstance, iupwinStrToSystem(name), IMAGE_ICON, w, h, 0);
+  if (!hIcon)
+    hIcon = LoadImage(NULL, iupwinStrToSystemFilename(name), IMAGE_ICON, w, h, LR_LOADFROMFILE);
+  return hIcon;
+}
+
+
 static int winDialogSetIconAttrib(Ihandle* ih, const char *value)
 {
   if (!value)
+  {
+    SendMessage(ih->handle, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)NULL);
     SendMessage(ih->handle, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)NULL);
+  }
   else
   {
-    HICON icon = iupImageGetIcon(value);
-    if (icon)
-      SendMessage(ih->handle, WM_SETICON, (WPARAM) ICON_BIG, (LPARAM)icon);    
+    HICON icon;
+    if (!IupGetHandle(value))
+    {
+      icon = winDialogLoadIcon(value, ICON_SMALL);
+      if (icon)
+        SendMessage(ih->handle, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)icon);
+
+      icon = winDialogLoadIcon(value, ICON_BIG);
+      if (icon)
+        SendMessage(ih->handle, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)icon);
+    }
+    else
+    {
+      icon = iupImageGetIcon(value);
+      if (icon)
+        SendMessage(ih->handle, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)icon);
+    }
   }
 
   if (IsIconic(ih->handle))

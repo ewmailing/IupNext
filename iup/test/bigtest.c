@@ -193,7 +193,8 @@ int main(int argc, char* argv[])
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupSetAttribute(dlg, "TITLE", "IupTests");
   IupSetCallback(dlg, "CLOSE_CB", close_cb);
-
+//  IupSetAttribute(dlg, "ICON", "SIZE_ICON");
+  
   IupSetAttribute(list, "VISIBLELINES", "15");
   IupSetAttribute(list, "EXPAND", "YES");
   IupSetCallback(list, "DBLCLICK_CB", (Icallback)dblclick_cb);

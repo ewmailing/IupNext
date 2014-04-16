@@ -1,3 +1,4 @@
+/* SIZE_ICON ICON "../test/test_sizes.ico" */
 TECGRAF_ICON ICON "../etc/tecgraf.ico"
 TECGRAF_BITMAP BITMAP "tecgraf.bmp"
 CURSOR_PEN CURSOR "../etc/pen.cur"
