@@ -1148,11 +1148,31 @@ static int iMatrixListRelease_CB(Ihandle *ih, int lin, int col, char *status)
   {
     /* click on IMAGEDEL */
     IFni listremove_cb = (IFni)IupGetCallback(ih, "LISTREMOVE_CB");
-    /* notify the application that a line will be removed */
-    if (!listremove_cb || listremove_cb(ih, lin) != IUP_IGNORE)
+    if (lin == 0)
     {
-      /* Remove the line */
-      IupSetInt(ih, "DELLIN", lin);
+      if (mtxList->editable)
+        lines_num--;
+
+      for (lin = lines_num-1; lin>0; lin--)
+      {
+        itemactive = IupGetIntId(ih, "ITEMACTIVE", lin);
+        imageactive = IupGetIntId(ih, "IMAGEACTIVE", lin);
+
+        if (!itemactive || !imageactive)
+          continue;
+
+        if (!listremove_cb || listremove_cb(ih, lin) != IUP_IGNORE)
+          IupSetInt(ih, "DELLIN", lin);
+      }
+    }
+    else
+    {
+      /* notify the application that a line will be removed */
+      if (!listremove_cb || listremove_cb(ih, lin) != IUP_IGNORE)
+      {
+        /* Remove the line */
+        IupSetInt(ih, "DELLIN", lin);
+      }
     }
   }
   else

@@ -29,13 +29,13 @@ int main(int argc, char **argv)
 //  IupSetAttribute(mlist, "COLUMNORDER", "LABEL");
 //  IupSetAttribute(mlist, "ACTIVE", "NO");
 //  IupSetAttribute(mlist, "FOCUSCOLOR", "BGCOLOR");
-//  IupSetAttribute(mlist, "SHOWDELETE", "Yes");
+  IupSetAttribute(mlist, "SHOWDELETE", "Yes");
 
   IupSetAttribute(mlist, "EDITABLE", "Yes");
 //  IupSetCallback(mlist,"LISTCLICK_CB",(Icallback)listclick_cb);
 
   /* Bluish style */
-  if (0)
+  if (1)
   {
     IupSetAttribute(mlist, "TITLE", "Test");
     IupSetAttribute(mlist, "BGCOLOR", "220 230 240");
