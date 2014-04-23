@@ -56,8 +56,7 @@ Lua control
 <p>Each plot can contain 2 or 3 <b>axes</b> (X and Y and/or Z), a <b>title</b>, a <b>
 legend</b> <b>box</b>, a <strong>colorbar</strong>, a <b>grid</b>, a <b>dataset</b> <b>area</b> and as many
 <b>datasets</b> you want. </p>
-<p>Each dataset is added using the <b>IupMglPlotAdd*</b>, <b>IupMglPlotInsert*</b> 
-and<b> IupMglPlotSet* </b>functions. All other plot 
+<p>Each dataset is added using the <a href="#aux"><b>Auxiliary </b><strong>Functions</strong></a>. All other plot 
 parameters are configured by attributes.</p>
 <p>If no attribute is set, the default values were selected to best display 
 the plot.</p>
@@ -148,7 +147,7 @@ mglplot() [in LED]</pre>
 </div>
 <p>This function returns the identifier of the 
   created plot, or NULL if an error occurs.</p>
-<h3>Auxiliary Functions</h3>
+<h3><a name="aux">Auxiliary Functions</a></h3>
 <pre>void <b>IupMglPlotBegin</b>(Ihandle* <b>ih</b>, int <b>dim</b>); [in C]
 <b>iup.MglPlotBegin</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]</pre>
 <p>Prepares a dataset to receive samples. The dimension of the data can be 1, 2 or 3. 

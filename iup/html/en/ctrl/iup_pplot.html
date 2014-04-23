@@ -52,7 +52,7 @@ Lua control
 <p>Each plot can contain 2 <b>axis</b> (X and Y), a <b>title</b>, a <b>
 legend</b> <b>box</b>, a <b>grid</b>, a <b>dataset</b> <b>area</b> and as many
 <b>datasets</b> you want. </p>
-<p>Each data set is added using the <b>IupPPlotAdd </b>function. All other plot 
+<p>Each data set is added using the <a href="#aux"><b>Auxiliary </b><strong>Functions</strong></a>. All other plot 
 parameters are configured by attributes.</p>
 <p>If no attribute is set, the default values were selected to best display 
 the plot.</p>
@@ -120,7 +120,7 @@ pplot() [in LED]</pre>
 </div>
 <p>This function returns the identifier of the 
   created plot, or NULL if an error occurs.</p>
-<h3>Auxiliary Functions</h3>
+<h3><a name="aux">Auxiliary Functions</a></h3>
 <pre>void <b>IupPPlotBegin</b>(Ihandle* <b>ih</b>, int <b>strXdata</b>); [in C]
 <b>iup.PPlotBegin</b>(<b>ih</b>: ihandle, <b>strXdata</b>: number) [in Lua]</pre>
 <p>Prepares a dataset to receive samples. If strXdata is 1 then the X axis value 
