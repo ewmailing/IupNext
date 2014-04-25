@@ -196,16 +196,19 @@ static int iPPlotMouseButton_CB(Ihandle* ih, int btn, int stat, int x, int y, ch
   int index = iPPlotFindPlot(ih, x, y);
   if (index==-1)
     return IUP_DEFAULT;
+
   iPPlotSetPlotCurrent(ih, index);
-  ih->data->plt->MouseButton(btn, stat, x-ih->data->plt->_x, y-ih->data->plt->_y, r);
 
   IFniiffs cb = (IFniiffs)IupGetCallback(ih, "PLOTBUTTON_CB");
   if (cb) 
   {
     float rx = ih->data->plt->_plot.mXTrafo->TransformBack((float)x);
     float ry = ih->data->plt->_plot.mYTrafo->TransformBack((float)y);
-    cb(ih, btn, stat, rx, ry, r);
+    if (cb(ih, btn, stat, rx, ry, r) == IUP_IGNORE)
+      return IUP_DEFAULT;
   }
+
+  ih->data->plt->MouseButton(btn, stat, x - ih->data->plt->_x, y - ih->data->plt->_y, r);
 
   return IUP_DEFAULT;
 }
@@ -215,16 +218,19 @@ static int iPPlotMouseMove_CB(Ihandle* ih, int x, int y)
   int index = iPPlotFindPlot(ih, x, y);
   if (index==-1)
     return IUP_DEFAULT;
+
   iPPlotSetPlotCurrent(ih, index);
-  ih->data->plt->MouseMove(x-ih->data->plt->_x, y-ih->data->plt->_y);
 
   IFnff cb = (IFnff)IupGetCallback(ih, "PLOTMOTION_CB");
   if (cb) 
   {
     float rx = ih->data->plt->_plot.mXTrafo->TransformBack((float)x);
     float ry = ih->data->plt->_plot.mYTrafo->TransformBack((float)y);
-    cb(ih, rx, ry);
+    if (cb(ih, rx, ry) == IUP_IGNORE)
+      return IUP_DEFAULT;
   }
+
+  ih->data->plt->MouseMove(x - ih->data->plt->_x, y - ih->data->plt->_y);
 
   return IUP_DEFAULT;
 }
@@ -234,6 +240,7 @@ static int iPPlotWheel_CB(Ihandle *ih, float delta, int x, int y, char *status)
   int index = iPPlotFindPlot(ih, x, y);
   if (index==-1)
     return IUP_DEFAULT;
+
   iPPlotSetPlotCurrent(ih, index);
   ih->data->plt->MouseWheel(delta, status);
   return IUP_DEFAULT;

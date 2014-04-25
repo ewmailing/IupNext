@@ -455,13 +455,15 @@ defined.</p>
   
 <p><strong>PLOTBUTTON_CB</strong>: similar to
 <a href="../call/iup_button_cb.html">BUTTON_CB</a> but coordinates are float in 
-plot scale. (since 3.9)</p>
+plot scale. It is called before the internal processing, if returns IUP_IGNORE 
+internal processing will not be done. (since 3.9)</p>
 
   
 
   
 <p><strong>PLOTMOTION_CB</strong>: similar to <a href="../call/iup_motion_cb.html">MOTION_CB</a> 
-but coordinates are float in plot scale. (since 3.9)</p>
+but coordinates are float in plot scale. It is called before the internal 
+processing, if returns IUP_IGNORE internal processing will not be done. (since 3.9)</p>
 
   
 <p><b>PREDRAW_CB, POSTDRAW_CB</b>: Actions generated before and after the redraw 
