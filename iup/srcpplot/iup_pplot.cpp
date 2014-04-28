@@ -1523,6 +1523,11 @@ static char* iPPlotGetSyncViewAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean(ih->data->sync_view);
 }
+                                    
+static char* iPPlotGetCanvasAttrib(Ihandle* ih)
+{
+  return (char*)(ih->data->cddbuffer);
+}
 
 static void iPPlotCheckCurrentDataSet(Ihandle* ih)
 {
@@ -3320,6 +3325,7 @@ static Iclass* iPPlotNewClass(void)
 
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iPPlotSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SYNCVIEW", iPPlotGetSyncViewAttrib, iPPlotSetSyncViewAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANVAS", iPPlotGetCanvasAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TITLE", iPPlotGetTitleAttrib, iPPlotSetTitleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEFONTSIZE", iPPlotGetTitleFontSizeAttrib, iPPlotSetTitleFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
