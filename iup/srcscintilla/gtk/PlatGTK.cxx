@@ -23,8 +23,9 @@
 
 #include "Scintilla.h"
 #include "ScintillaWidget.h"
-#include "UniConversion.h"
+#include "StringCopy.h"
 #include "XPM.h"
+#include "UniConversion.h"
 
 #if defined(__clang__)
 // Clang 3.0 incorrectly displays  sentinel warnings. Fixed by clang 3.1.
@@ -48,7 +49,7 @@
 
 static const double kPi = 3.14159265358979323846;
 
-// The Pango version guard for pango_units_from_double and pango_units_to_double 
+// The Pango version guard for pango_units_from_double and pango_units_to_double
 // is more complex than simply implementing these here.
 
 static int pangoUnitsFromDouble(double d) {
@@ -226,12 +227,12 @@ Point Point::FromLong(long lpoint) {
 }
 
 static void SetLogFont(LOGFONT &lf, const char *faceName, int characterSet, float size, int weight, bool italic) {
-	memset(&lf, 0, sizeof(lf));
+	lf = LOGFONT();
 	lf.size = size;
 	lf.weight = weight;
 	lf.italic = italic;
 	lf.characterSet = characterSet;
-	strncpy(lf.faceName, faceName, sizeof(lf.faceName) - 1);
+	StringCopy(lf.faceName, faceName);
 }
 
 /**
@@ -253,7 +254,7 @@ class FontCached : Font {
 	int usage;
 	LOGFONT lf;
 	int hash;
-	FontCached(const FontParameters &fp);
+	explicit FontCached(const FontParameters &fp);
 	~FontCached() {}
 	bool SameAs(const FontParameters &fp);
 	virtual void Release();
@@ -339,7 +340,7 @@ void FontCached::ReleaseAll() {
 FontID FontCached::CreateNewFont(const FontParameters &fp) {
 	PangoFontDescription *pfd = pango_font_description_new();
 	if (pfd) {
-		pango_font_description_set_family(pfd, 
+		pango_font_description_set_family(pfd,
 			(fp.faceName[0] == '!') ? fp.faceName+1 : fp.faceName);
 		pango_font_description_set_size(pfd, pangoUnitsFromDouble(fp.size));
 		pango_font_description_set_weight(pfd, static_cast<PangoWeight>(fp.weight));
@@ -666,7 +667,7 @@ void SurfaceImpl::Polygon(Point *pts, int npts, ColourDesired fore,
                           ColourDesired back) {
 	PenColour(back);
 	cairo_move_to(context, pts[0].x + 0.5, pts[0].y + 0.5);
-	for (int i = 1;i < npts;i++) {
+	for (int i = 1; i < npts; i++) {
 		cairo_line_to(context, pts[i].x + 0.5, pts[i].y + 0.5);
 	}
 	cairo_close_path(context);
@@ -704,7 +705,7 @@ void SurfaceImpl::FillRectangle(PRectangle rc, ColourDesired back) {
 
 void SurfaceImpl::FillRectangle(PRectangle rc, Surface &surfacePattern) {
 	SurfaceImpl &surfi = static_cast<SurfaceImpl &>(surfacePattern);
-	bool canDraw = surfi.psurf;
+	bool canDraw = surfi.psurf!=NULL;
 	if (canDraw) {
 		// Tile pattern over rectangle
 		// Currently assumes 8x8 pattern
@@ -739,7 +740,7 @@ void SurfaceImpl::RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesi
 		                  Point(rc.left, rc.bottom - 2),
 		                  Point(rc.left, rc.top + 2),
 		              };
-		Polygon(pts, sizeof(pts) / sizeof(pts[0]), fore, back);
+		Polygon(pts, ELEMENTS(pts), fore, back);
 	} else {
 		RectangleDraw(rc, fore, back);
 	}
@@ -826,7 +827,7 @@ void SurfaceImpl::DrawRGBAImage(PRectangle rc, int width, int height, const unsi
 
 void SurfaceImpl::Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back) {
 	PenColour(back);
-	cairo_arc(context, (rc.left + rc.right) / 2 + 0.5, (rc.top + rc.bottom) / 2 + 0.5,
+	cairo_arc(context, (rc.left + rc.right) / 2, (rc.top + rc.bottom) / 2,
 		Platform::Minimum(rc.Width(), rc.Height()) / 2, 0, 2*kPi);
 	cairo_fill_preserve(context);
 	PenColour(fore);
@@ -835,7 +836,7 @@ void SurfaceImpl::Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back)
 
 void SurfaceImpl::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
 	SurfaceImpl &surfi = static_cast<SurfaceImpl &>(surfaceSource);
-	bool canDraw = surfi.psurf;
+	bool canDraw = surfi.psurf!=NULL;
 	if (canDraw) {
 		cairo_set_source_surface(context, surfi.psurf,
 			rc.left - from.x, rc.top - from.y);
@@ -847,7 +848,7 @@ void SurfaceImpl::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
 std::string UTF8FromLatin1(const char *s, int len) {
 	std::string utfForm(len*2 + 1, '\0');
 	size_t lenU = 0;
-	for (int i=0;i<len;i++) {
+	for (int i=0; i<len; i++) {
 		unsigned int uch = static_cast<unsigned char>(s[i]);
 		if (uch < 0x80) {
 			utfForm[lenU++] = uch;
@@ -941,7 +942,7 @@ void SurfaceImpl::DrawTextClipped(PRectangle rc, Font &font_, XYPOSITION ybase, 
 void SurfaceImpl::DrawTextTransparent(PRectangle rc, Font &font_, XYPOSITION ybase, const char *s, int len,
                                   ColourDesired fore) {
 	// Avoid drawing spaces in transparent mode
-	for (int i=0;i<len;i++) {
+	for (int i=0; i<len; i++) {
 		if (s[i] != ' ') {
 			DrawTextBase(rc, font_, ybase, s, len, fore);
 			return;
@@ -1069,7 +1070,7 @@ void SurfaceImpl::MeasureWidths(Font &font_, const char *s, int len, XYPOSITION 
 							int widthLayout = 0;
 							pango_layout_get_size(layout, &widthLayout, NULL);
 							XYPOSITION widthTotal = doubleFromPangoUnits(widthLayout);
-							for (int bytePos=0;bytePos<lenPositions; bytePos++) {
+							for (int bytePos=0; bytePos<lenPositions; bytePos++) {
 								positions[bytePos] = widthTotal / lenPositions * (bytePos + 1);
 							}
 							return;
@@ -1218,7 +1219,7 @@ void Window::Destroy() {
 }
 
 bool Window::HasFocus() {
-	return IS_WIDGET_FOCUSSED(wid);
+	return IS_WIDGET_FOCUSSED(wid)? true: false;
 }
 
 PRectangle Window::GetPosition() {
@@ -1603,7 +1604,7 @@ PRectangle ListBoxX::GetDesiredRect() {
 		GtkRequisition req;
 #if GTK_CHECK_VERSION(3,0,0)
 		// This, apparently unnecessary call, ensures gtk_tree_view_column_cell_get_size
-		// returns reasonable values. 
+		// returns reasonable values.
 		gtk_widget_get_preferred_size(GTK_WIDGET(scroller), NULL, &req);
 #endif
 		int height;
@@ -1835,8 +1836,7 @@ void ListBoxX::GetValue(int n, char *value, int len) {
 		gtk_tree_model_get(model, &iter, TEXT_COLUMN, &text, -1);
 	}
 	if (text && len > 0) {
-		strncpy(value, text, len);
-		value[len - 1] = '\0';
+		g_strlcpy(value, text, len);
 	} else {
 		value[0] = '\0';
 	}
@@ -1968,7 +1968,7 @@ class DynamicLibraryImpl : public DynamicLibrary {
 protected:
 	GModule* m;
 public:
-	DynamicLibraryImpl(const char *modulePath) {
+	explicit DynamicLibraryImpl(const char *modulePath) {
 		m = g_module_open(modulePath, G_MODULE_BIND_LAZY);
 	}
 
@@ -1986,8 +1986,9 @@ public:
 				return static_cast<Function>(fn_address);
 			else
 				return NULL;
-		} else
+		} else {
 			return NULL;
+		}
 	}
 
 	virtual bool IsValid() {
@@ -2146,8 +2147,7 @@ bool Platform::ShowAssertionPopUps(bool assertionPopUps_) {
 
 void Platform::Assert(const char *c, const char *file, int line) {
 	char buffer[2000];
-	sprintf(buffer, "Assertion [%s] failed at %s %d", c, file, line);
-	strcat(buffer, "\r\n");
+	g_snprintf(buffer, sizeof(buffer), "Assertion [%s] failed at %s %d\r\n", c, file, line);
 	Platform::DebugDisplay(buffer);
 	abort();
 }
