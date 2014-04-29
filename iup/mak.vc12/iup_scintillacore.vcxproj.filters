@@ -400,6 +400,9 @@
     </ClCompile>
     <ClCompile Include="..\srcscintilla\iupsci_autocompletion.c" />
     <ClCompile Include="..\srcscintilla\iupsci_searching.c" />
+    <ClCompile Include="..\srcscintilla\lexers\LexDMAP.cxx">
+      <Filter>Scintilla</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\src\Indicator.h">

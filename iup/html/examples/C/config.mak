@@ -47,7 +47,7 @@ IUP = ../../..
 #SRC = multiline2.c
 #SRC = progressbar.c
 #SRC = radio.c
-#SRC = sample.c
+SRC = sample.c
 #SRC = sbox1.c
 #SRC = sbox2.c
 #SRC = scanf.c
@@ -61,7 +61,6 @@ IUP = ../../..
 #SRC = val.c
 #SRC = vbox.c
 #SRC = zbox.c
-SRC = detachbox.c
 
 #ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 #  LIBS += iupimglib
@@ -91,7 +90,7 @@ ifdef IUPWEB_SAMPLE
   endif
 endif
 
-#USE_IUPCONTROLS = Yes
+USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
 #SRC = cbox.c
 #SRC = cells_checkboard.c

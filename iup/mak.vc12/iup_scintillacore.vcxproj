@@ -157,6 +157,7 @@
     <ClCompile Include="..\srcscintilla\iupsci_text.c" />
     <ClCompile Include="..\srcscintilla\iupsci_whitespace.c" />
     <ClCompile Include="..\srcscintilla\iupsci_wordwrap.c" />
+    <ClCompile Include="..\srcscintilla\lexers\LexDMAP.cxx" />
     <ClCompile Include="..\srcscintilla\lexers\LexKVIrc.cxx" />
     <ClCompile Include="..\srcscintilla\lexers\LexLaTeX.cxx" />
     <ClCompile Include="..\srcscintilla\lexers\LexRust.cxx" />
