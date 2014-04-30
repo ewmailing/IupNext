@@ -13,3 +13,5 @@ EXPORTS
   IupPPlotInsertPoints
   IupPPlotAddPoints
   IupPPlotAddStrPoints
+  IupPPlotGetSample
+  IupPPlotGetSampleStr

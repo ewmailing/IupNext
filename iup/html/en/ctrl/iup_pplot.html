@@ -170,6 +170,14 @@ void <b>IupPPlotAddStrPoints</b>(Ihandle *<b>ih</b>, int <b>index</b>, const cha
 <p>Adds an array of samples in a dataset at the end. Can be used only after the dataset is added to the 
 plot. (Since 3.4)</p>
 <hr>
+<pre>void <b>IupPPlotGetSample</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, float *<b>x</b>, float *<b>y</b>); [in C]
+void <b>IupPPlotGetSampleStr</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, const char* *<b>x</b>, float *<b>y</b>);
+<b>iup.PPlotGetSample</b>(<b>ih</b>: ihandle, <b>index, sample_index</b>: number) -&gt; (<b>x, y</b>: number) [in Lua]
+<b>iup.PPlotGetSampleStr</b>(<b>ih</b>: ihandle, <b>index, sample_index</b>: number) -&gt; (<b>x</b>: string<b>, y</b>: number)</pre>
+<p>Returns the sample value in a dataset at the given <strong>sample_index</strong>. Can 
+be used only after the dataset is added to the 
+plot. (since 3.11)</p>
+<hr>
 <pre>void <b>IupPPlotTransform</b>(Ihandle* <b>ih</b>, float <b>x</b>, float <b>y</b>, int *<b>ix</b>, int *<b>iy</b>); [in C]
 <b>iup.PPlotTransform</b>(<b>ih</b>: ihandle, <b>x, y</b>: number) -&gt; (<b>ix</b>, <b>iy</b>: number) [in Lua]</pre>
 <p>Converts coordinates in plot units to pixels. It should be used in PREDRAW_CB 
@@ -183,9 +191,13 @@ done.</p>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p><b>REDRAW</b> (write-only) (non inheritable): redraw all plots and update the display. Value is 
-ignored. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
-attributes without visual output.</p>
+<p><b>CANVAS</b> (read-only) (non inheritable): returns the internal CD canvas 
+where the draw operation occurs. (since 3.11)</p>
+<p><b>REDRAW</b> (write-only) (non inheritable): redraw all plots and update the display. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
+attributes without visual output. Value can be NULL. If value is &quot;NOFLUSH&quot; 
+rendering is performed internally but display is not updated. If value is 
+&quot;CURRENT&quot; only the current plot defined by &quot;PLOT_CURRENT&quot; will be updated and it 
+will behave as &quot;NOFLUSH&quot; (since 3.11).</p>
 <p><strong>SYNCVIEW</strong> (non inheritable): when a plot view is changed by 
 interactive zoom or pan, the other plots are zoomed or panned accordingly. 
 (since 3.9)</p>
@@ -477,7 +489,7 @@ use the <b>IupPPlotTransform</b> function.</p>
 <strong>elem</strong>:postdraw_cb(<b>cnv</b>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<strong><br>cnv</strong>: the CD canvas where the draw operation 
+  event.<strong><br>cnv</strong>: the internal CD canvas where the draw operation 
     occurs.</p>
   <blockquote>
   <hr>

@@ -152,6 +152,27 @@ static int PlotAddStrPoints(lua_State *L)
   return 0;
 }
 
+static int PPlotGetSample(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  float x, y;
+  IupPPlotGetSample(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), &x, &y);
+  lua_pushnumber(L, x);
+  lua_pushnumber(L, y);
+  return 2;
+}
+
+static int PPlotGetSampleStr(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  float y;
+  const char* x;
+  IupPPlotGetSampleStr(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), &x, &y);
+  lua_pushstring(L, x);
+  lua_pushnumber(L, y);
+  return 2;
+}
+
 static int PlotTransform(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -195,7 +216,9 @@ void iuplua_pplotfuncs_open (lua_State *L)
   iuplua_register(L, PlotInsertStrPoints ,"PPlotInsertStrPoints");
   iuplua_register(L, PlotAddPoints       ,"PPlotAddPoints");
   iuplua_register(L, PlotAddStrPoints    ,"PPlotAddStrPoints");
-  iuplua_register(L, PlotTransform   ,"PPlotTransform");
+  iuplua_register(L, PPlotGetSample, "PPlotGetSample");
+  iuplua_register(L, PPlotGetSampleStr, "PPlotGetSampleStr");
+  iuplua_register(L, PlotTransform, "PPlotTransform");
   iuplua_register(L, PlotPaintTo     ,"PPlotPaintTo");
 }
 
