@@ -229,29 +229,6 @@ class Painter {
    virtual void SetStyle (const PStyle &inStyle){};
 };
 
-class DummyPainter: public Painter {
- public:
-   virtual void DrawLine (float inX1, float inY1, float inX2, float inY2){};
-   virtual void FillRect (int inX, int inY, int inW, int inH){};
-   virtual void InvertRect (int inX, int inY, int inW, int inH){};
-   virtual void SetClipRect (int inX, int inY, int inW, int inH){};
-   virtual long GetWidth () const {return 100;};
-   virtual long GetHeight () const {return 100;};
-   virtual void SetLineColor (int inR, int inG, int inB){};
-   virtual void SetFillColor (int inR, int inG, int inB){};
-   virtual long CalculateTextDrawSize (const char *inString){return 0;};
-   virtual long GetFontHeight () const {return 10;};
-#ifdef _IUP_PPLOT_
-   virtual void FillArrow (int inX1, int inY1, int inX2, int inY2, int inX3, int inY3){};
-   virtual void DrawText (int inX, int inY, short align, const char *inString){};
-   virtual void DrawRotatedText (int inX, int inY, float inDegrees,
-                                 short align, const char *inString){};
-#else
-   virtual void DrawText (int inX, int inY, const char *inString){};
-   virtual void DrawRotatedText (int inX, int inY, float inDegrees, const char *inString){};
-#endif
-};
-
 class Trafo;
 class AxisSetup;
 
@@ -537,12 +514,6 @@ class PCalculator {// base class to do additional calculations on a PPlot
    virtual bool Calculate (Painter &inPainter, PPlot& inPPlot) {return true;};
 };
 
-
-class PainterTester: public PDrawer {
- public:
-   virtual bool Draw (Painter &inPainter);
-};
-
 class PPlot: public PDrawer {
  public:
    PPlot ();
@@ -558,9 +529,6 @@ class PPlot: public PDrawer {
    PlotBackground mPlotBackground;
    bool mShowLegend; // M.T. - hide|show legend
    PLegendPos mLegendPos;
-
-   void SetPPlotDrawer (PDrawer *inPDrawer);// taker ownership. Used to bypass normal Draw function, i.e., set Draw function by composition.
-   void SetPPlotDrawer (PDrawer &inPDrawer);// same as above: does not take ownership
 
    bool mHasAnyModifyingCalculatorBeenActive;
    PCalculator::tList mModifyingCalculatorList;
@@ -618,9 +586,6 @@ class PPlot: public PDrawer {
    LogTickIterator mXLogTickIterator;
    LogTickIterator mYLogTickIterator;
    NamedTickIterator mXNamedTickIterator;
-
-   PDrawer * mPPlotDrawer;
-   bool mOwnsPPlotDrawer;
 };
 
 #ifndef _IUP_PPLOT_

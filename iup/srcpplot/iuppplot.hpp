@@ -95,8 +95,9 @@ public:
   int _x, _y, _width, _height;
 
   // Called from C functions
-  void Draw(int force, int flush);   // paint the stuff
-  void Resize(int x, int y, int w, int h); // called when resizing
+  void Paint(int force, int flush);   // paint the stuff
+  void SetSize(int x, int y, int w, int h); // called when resizing
+  void UpdateViewport();
   void MouseButton(int btn, int stat, int x, int y, char *r); // mouse event
   void MouseMove(int x, int y); // mouse event
   void MouseWheel(float delta, char *r); // mouse event
