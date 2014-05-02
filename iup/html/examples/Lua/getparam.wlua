@@ -13,6 +13,8 @@ function param_action(dialog, param_index)
     print("Cancel")
   elseif (param_index == iup.GETPARAM_HELP) then
     print("Help")
+  elseif (param_index == 1) then
+    return 0
   else
     local param = iup.GetParamParam(dialog, param_index)
     print("PARAM"..param_index.." = "..param.value)
