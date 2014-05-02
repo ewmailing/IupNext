@@ -26,7 +26,7 @@ SCI_SETLEXER(int lexer)
 SCI_GETLEXER
 SCI_SETLEXERLANGUAGE(<unused>, const char *name)
 SCI_GETLEXERLANGUAGE(<unused>, char *name)
---SCI_LOADLEXERLIBRARY(<unused>, const char *path)
+SCI_LOADLEXERLIBRARY(<unused>, const char *path)
 --SCI_COLOURISE(int start, int end)
 --SCI_CHANGELEXERSTATE(int start, int end)
 SCI_PROPERTYNAMES(<unused>, char *names)
@@ -40,6 +40,14 @@ SCI_DESCRIBEKEYWORDSETS(<unused>, char *descriptions)
 SCI_SETKEYWORDS(int keyWordSet, const char *keyWordList)
 --SCI_GETSTYLEBITSNEEDED
 */
+
+
+static int iScintillaLoadLexerLibraryAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+    iupScintillaSendMessage(ih, SCI_LOADLEXERLIBRARY, 0, (sptr_t)value);
+  return 0;
+}
 
 static char* iScintillaGetLexerLanguageAttrib(Ihandle* ih)
 {
@@ -118,6 +126,7 @@ static char* iScintillaGetPropertyNamessAttrib(Ihandle* ih)
 
 void iupScintillaRegisterLexer(Iclass* ic)
 {
+  iupClassRegisterAttribute(ic,   "LOADLEXERLIBRARY", NULL, iScintillaLoadLexerLibraryAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "LEXERLANGUAGE", iScintillaGetLexerLanguageAttrib, iScintillaSetLexerLanguageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "PROPERTYNAME", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "PROPERTY", iScintillaGetPropertyAttrib, iScintillaSetPropertyAttrib, NULL, NULL, IUPAF_NO_INHERIT);

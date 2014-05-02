@@ -55,6 +55,12 @@ else
   ifneq ($(findstring dllg, $(TEC_UNAME)), )
     DEFINES += _WIN32 DISABLE_D2D
   endif
+  ifneq ($(findstring mingw, $(TEC_UNAME)), )
+    DEFINES += _WIN32 DISABLE_D2D
+  endif
+  ifneq ($(findstring dllw, $(TEC_UNAME)), )
+    DEFINES += _WIN32 DISABLE_D2D
+  endif
 endif
 
 SRCSCINTILLA = src/AutoComplete.cxx src/CallTip.cxx src/Catalogue.cxx src/CellBuffer.cxx src/CharClassify.cxx \
@@ -93,13 +99,6 @@ ifdef USE_GTK
   SRCSCINTILLA += gtk/PlatGTK.cxx gtk/ScintillaGTK.cxx gtk/scintilla-marshal.c
 else
   SRCSCINTILLA += win32/PlatWin.cxx win32/ScintillaWin.cxx
-  
-  ifneq ($(findstring mingw, $(TEC_UNAME)), )
-    DEFINES += DISABLE_D2D
-  endif
-  ifneq ($(findstring dllw, $(TEC_UNAME)), )
-    DEFINES += DISABLE_D2D
-  endif
 endif
 
 SRC = $(SRCSCINTILLA) iupsci_clipboard.c iupsci_folding.c iupsci_lexer.c iupsci_margin.c \

@@ -1,3 +1,6 @@
 EXPORTS
   IupScintillaOpen
   IupScintilla
+  Scintilla_DirectFunction
+  iupScintillaSendMessage
+  

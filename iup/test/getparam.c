@@ -28,8 +28,8 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
   case IUP_GETPARAM_HELP:
     printf("IupGetParam - Help\n");
     break;
-//  case 1:
-//    return 0;
+  case 1:
+    return 0;
   default:
     {
       Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", param_index);

@@ -358,8 +358,8 @@ determines how folding lines are drawn. Can be: &quot;LEVELNUMBERS&quot;,
 &quot;LINEAFTER_CONTRACTED &quot; (default).</p>
 <p><strong>FOLDLEVEL<em>id</em></strong> (<font size="3">non inheritable</font>): sets 
 and gets the fold level of a &quot;id&quot; line. Can be: &quot;WHITEFLAG&quot;, &quot;HEADERFLAG&quot;, 
-&quot;NUMBERMASK&quot; or &quot;BASE&quot; (default). If you use a lexer, it is not recommend to set 
-the fold level (this is far better handled by the lexer). By contrast, get fold 
+&quot;NUMBERMASK&quot; or &quot;BASE&quot; (default). If you use a Lexer, it is not recommend to set 
+the fold level (this is far better handled by the Lexer). By contrast, get fold 
 level is useful to decide how to handle user folding requests.</p>
 
 <p><b>FOLDTOGGLE</b> (<font size="3">non inheritable, write-only</font>): 
@@ -369,18 +369,21 @@ all its child lines, or contracted, hiding all the child lines. </p>
 <h4>Lexer</h4>
 
 <p><strong>KEYWORD<em>id</em></strong> (<font size="3">non inheritable, write-only</font>): 
-keyword list used by the current lexer. Until 9 lists of keywords can set up 
+keyword list used by the current Lexer. Until 9 lists of keywords can set up 
 using id from 0 to 8. The value is a list of keywords separated by spaces, tabs, 
 &quot;\n&quot; or &quot;\r&quot; or any combination of these.</p>
 <p><strong>KEYWORDSETS</strong> (<font size="3">non inheritable, read only</font>): 
 returns a description of all of the keyword sets separated by &quot;\n&quot;.</p>
 <p><strong>LEXERLANGUAGE</strong> (<font size="3">non inheritable</font>): 
-associate the lexer language name. It is case sensitive. Default: not defined. 
+associate the Lexer language name. It is case sensitive. Default: not defined. 
 Set to NULL to clear the association. Can be: any name supported by Scintilla. 
 For instance: asm, bash, freebasic, cmake, COBOL, cpp (C++), css, d, diff, 
 eiffel, fortran, hypertext (HTML), xml, lisp, lua (Lua), makefile, matlab, mysql, 
 nsis, pascal, perl, python, ruby, smalltalk, sql, tcl, tex, vb (Visual Basic), 
 and many others. </p>
+<p><strong>LOADLEXERLIBRARY</strong> (<font size="3">non inheritable, write-only</font>): 
+Load a Lexer implemented in a dynamic library given the library file name. This 
+is a .so file on GTK+/Linux or a .DLL file on Windows. (since 3.11) </p>
 <p><strong>PROPERTY</strong> (<font size="3">non inheritable</font>): 
 sets and gets Lexer properties using &quot;name=value&quot; string pairs, where 
 name is case sensitive 
@@ -388,7 +391,7 @@ and value is the associated string. There is no limit to the number of keyword p
 than available memory. To retrieve a property first set the PROPERTYNAME 
 attribute, the PROPERTY attribute will return its value.</p>
 <p><strong>PROPERTYNAMES</strong> (<font size="3">non inheritable, read only</font>): 
-returns a list of property names separated by &quot;\n&quot;. If the lexer does not 
+returns a list of property names separated by &quot;\n&quot;. If the Lexer does not 
 support this information then an empty string is returned.&nbsp;</p>
 
 <h4>Margins</h4>
