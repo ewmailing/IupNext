@@ -405,7 +405,13 @@ static char* winListGetIdValueAttrib(Ihandle* ih, int id)
 static char* winListGetValueAttrib(Ihandle* ih)
 {
   if (ih->data->has_editbox)
-    return iupStrReturnStr(iupwinStrFromSystem(iupwinGetWindowText(ih->handle)));
+  {
+    char* value = iupwinGetWindowText(ih->handle);
+    if (value)
+      return iupStrReturnStr(iupwinStrFromSystem(value));
+    else
+      return "";
+  }
   else 
   {
     if (ih->data->is_dropdown || !ih->data->is_multiple)
