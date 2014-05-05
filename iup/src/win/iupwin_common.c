@@ -698,7 +698,7 @@ static HCURSOR winLoadComCtlCursor(LPCTSTR lpCursorName)
   return cur;
 }
 
-static HCURSOR winGetCursor(Ihandle* ih, const char* name)
+HCURSOR iupwinGetCursor(Ihandle* ih, const char* name)
 {
   static struct {
     const char* iupname;
@@ -779,7 +779,7 @@ static HCURSOR winGetCursor(Ihandle* ih, const char* name)
 int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
 {
   /* Cursor can be NULL in Windows. */
-  HCURSOR hCur = winGetCursor(ih, value);
+  HCURSOR hCur = iupwinGetCursor(ih, value);
   iupAttribSet(ih, "_IUPWIN_HCURSOR", (char*)hCur);  /* To be used in WM_SETCURSOR */
   /* refresh the cursor */
   SendMessage(ih->handle, WM_SETCURSOR, (WPARAM)ih->handle, MAKELPARAM(1,WM_MOUSEMOVE));

@@ -200,6 +200,7 @@ typedef struct _IwinDropSource
 {
   IDropSource ids;
   LONG lRefCount;
+  Ihandle* ih;
 } IwinDropSource;
 
 typedef struct _IwinDropSourceVtbl
@@ -260,12 +261,31 @@ static HRESULT STDMETHODCALLTYPE IwinDropSource_QueryContinueDrag(IwinDropSource
 
 static HRESULT STDMETHODCALLTYPE IwinDropSource_GiveFeedback(IwinDropSource* pThis, DWORD dwEffect)
 {
-  (void)pThis;
-  (void)dwEffect;
+  char* value = iupAttribGet(pThis->ih, "DRAGCURSOR");
+  if (value)
+  {
+    HCURSOR hCur = NULL;
+
+    if (dwEffect & DROPEFFECT_COPY)
+    {
+      char* copy = iupAttribGet(pThis->ih, "DRAGCURSORCOPY");
+      if (copy) 
+        hCur = iupwinGetCursor(pThis->ih, copy);
+    }
+
+    if (!hCur)
+      hCur = iupwinGetCursor(pThis->ih, value);
+
+    if (hCur)
+    {
+      SetCursor(hCur);
+      return S_OK;
+    }
+  }
   return DRAGDROP_S_USEDEFAULTCURSORS;
 }
 
-static IwinDropSource* winCreateDropSource(void)
+static IwinDropSource* winCreateDropSource(Ihandle* ih)
 {
   static IwinDropSourceVtbl ids_vtbl = {
     IwinDropSource_QueryInterface,
@@ -278,6 +298,7 @@ static IwinDropSource* winCreateDropSource(void)
 
   pDropSource->ids.lpVtbl = (IDropSourceVtbl*)&ids_vtbl;
   pDropSource->lRefCount = 1;
+  pDropSource->ih = ih;
 
   return pDropSource;
 }
@@ -846,7 +867,7 @@ static int winRegisterProcessDrag(Ihandle *ih)
     }
   }
 
-  pSrc = (IDropSource*)winCreateDropSource();
+  pSrc = (IDropSource*)winCreateDropSource(ih);
   pObj = (IDataObject*)winCreateDataObject(cfList, (ULONG)j, ih);
 
   /* Process drag, this will stop util drag is done or canceled. */
@@ -1101,6 +1122,8 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "DRAGSOURCE", NULL, winSetDragSourceAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPTARGET", NULL, winSetDropTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGSOURCEMOVE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGCURSOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGCURSORCOPY", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, winSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPFILESTARGET", NULL, winSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);

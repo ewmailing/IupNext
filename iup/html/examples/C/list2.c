@@ -274,6 +274,7 @@ int main(int argc, char **argv)
   IupSetCallback (list4, "DRAGDATASIZE_CB",  (Icallback)testDragDataSize_cb);
   IupSetCallback (list4, "DRAGDATA_CB",  (Icallback)testDragData_cb);
   IupSetCallback (list4, "DRAGEND_CB",   (Icallback)testDragEnd_cb);
+  IupSetAttribute(list4, "DRAGCURSOR", "Tecgraf");
   IupSetAttribute(list4, "NAME", "list4");
 
   txt1 = IupText(NULL);

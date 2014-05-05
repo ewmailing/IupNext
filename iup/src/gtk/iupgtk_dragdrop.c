@@ -20,6 +20,7 @@
 #include "iup_attrib.h"
 #include "iup_drv.h"
 #include "iup_key.h"
+#include "iup_image.h"
 
 #include "iupgtk_drv.h"
 
@@ -178,6 +179,8 @@ static void gtkDragEnd(GtkWidget *widget, GdkDragContext *drag_context, Ihandle 
 
 static void gtkDragBegin(GtkWidget *widget, GdkDragContext *drag_context, Ihandle *ih)
 {
+  char* value;
+
   IFnii cbDragBegin = (IFnii)IupGetCallback(ih, "DRAGBEGIN_CB");
   if(cbDragBegin)
   {
@@ -187,7 +190,14 @@ static void gtkDragBegin(GtkWidget *widget, GdkDragContext *drag_context, Ihandl
     if (cbDragBegin(ih, x, y) == IUP_IGNORE)
       gdk_drag_abort(drag_context, 0);
   }
-  (void)widget;
+
+  value = iupAttribGet(ih, "DRAGCURSOR");
+  if (value)
+  {
+    GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0);
+    if (pixbuf)
+      gtk_drag_source_set_icon_pixbuf(widget, pixbuf);
+  }
 }
 
 static GtkTargetList* gtkCreateTargetList(const char* value)

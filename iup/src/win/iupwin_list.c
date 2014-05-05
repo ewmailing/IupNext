@@ -406,7 +406,7 @@ static char* winListGetValueAttrib(Ihandle* ih)
 {
   if (ih->data->has_editbox)
   {
-    char* value = iupwinGetWindowText(ih->handle);
+    TCHAR* value = iupwinGetWindowText(ih->handle);
     if (value)
       return iupStrReturnStr(iupwinStrFromSystem(value));
     else

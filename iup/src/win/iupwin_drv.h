@@ -127,6 +127,8 @@ int iupwinClassExist(const TCHAR* name);
 int iupwinSetTitleAttrib(Ihandle* ih, const char* value);
 TCHAR* iupwinGetWindowText(HWND hWnd);
 
+HCURSOR iupwinGetCursor(Ihandle* ih, const char* name);
+
 int iupwinGetColorRef(Ihandle *ih, char *name, COLORREF *color);
 int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr);
 
