@@ -175,8 +175,8 @@ static Ihandle *create_mat(int mati)
   IupSetAttribute(mat,"MARKMODE", "CELL");
 //  IupSetAttribute(mat,"MARKMODE", "LINCOL");
   IupSetAttribute(mat,"MARKMULTIPLE", "YES");
-//  IupSetAttribute(mat,"MARKAREA", "NOT_CONTINUOUS");
- IupSetAttribute(mat, "MARKAREA", "CONTINUOUS");
+  IupSetAttribute(mat,"MARKAREA", "NOT_CONTINUOUS");
+// IupSetAttribute(mat, "MARKAREA", "CONTINUOUS");
 
   IupSetAttribute(mat,"0:0","Test");
   IupSetAttribute(mat,"1:0","Medicine");

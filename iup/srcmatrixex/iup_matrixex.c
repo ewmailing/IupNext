@@ -646,10 +646,7 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
         iMatrixExSelectAll(ih); 
       return IUP_CONTINUE;
     case K_cV: 
-      if (IupGetAttribute(ih,"MARKED"))
-        IupSetAttribute(ih, "PASTE", "MARKED");
-      else
-        IupSetAttribute(ih, "PASTE", "FOCUS");
+      IupSetAttribute(ih, "PASTE", "FOCUS");
       iMatrixListShowLastError(ih);
       return IUP_IGNORE;
     case K_cX: 
