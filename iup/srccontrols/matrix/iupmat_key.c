@@ -56,8 +56,6 @@ static void iMatrixKeyCheckMarkEnd(Ihandle* ih, int c, int mark_key)
 
 int iupMatrixProcessKeyPress(Ihandle* ih, int c)
 {
-  int ret = IUP_IGNORE; /* default for processed keys */
-
   /* If the focus is not visible, a scroll is done for that the focus to be visible */
   if (!iupMatrixAuxIsCellStartVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
     iupMatrixScrollToVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
@@ -90,7 +88,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
 
     case K_sTAB:
     case K_TAB:
-      return IUP_CONTINUE;  /* do not redraw */
+      return IUP_CONTINUE;  /* do not redraw, but forwards tab processing */
 
     case K_sLEFT:
     case K_cLEFT:
@@ -166,11 +164,11 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
 
     case K_sDEL:
     case K_DEL:
-      {
-        IupSetAttribute(ih, "CLEARVALUE", "MARKED");
-        break;
-      }
+      IupSetAttribute(ih, "CLEARVALUE", "MARKED");
+      break;
+
     default:
+    {
       /* if a valid character is pressed enter edition mode */
       if (iup_isprint(c))
       {
@@ -178,7 +176,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
         {
           if (ih->data->datah == ih->data->texth)
           {
-            char value[2] = {0,0};
+            char value[2] = { 0, 0 };
             value[0] = (char)c;
             IupStoreAttribute(ih->data->datah, "VALUEMASKED", value);
             IupSetAttribute(ih->data->datah, "CARET", "2");
@@ -186,12 +184,14 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
           return IUP_IGNORE; /* do not redraw */
         }
       }
-      ret = IUP_DEFAULT; /* unprocessed keys */
-      break;
+
+      iupMatrixDrawUpdate(ih);
+      return IUP_DEFAULT;
+    }
   }
 
-  iupMatrixDrawUpdate(ih);  
-  return ret;
+  iupMatrixDrawUpdate(ih);
+  return IUP_IGNORE;  /* ignore processed keys */
 }
 
 void iupMatrixKeyResetHomeEndCount(Ihandle* ih)

@@ -147,6 +147,7 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "ALIGNMENT", "ALEFT");
 
 //  IupSetAttribute(mat, "MASK1:3", IUP_MASK_FLOAT);
+  IupSetAttribute(mat, "MASK1:3", "[a-zA-Z][0-9a-zA-Z_]*");
 //  IupSetAttribute(mat, "MASKFLOAT1:3", "0.0:10.0");
 
   IupSetAttribute(mat, "TYPE4:1", "COLOR");
@@ -213,8 +214,8 @@ static Ihandle* create_matrix(void)
   //}
 
   IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
-//  IupSetCallback(mat,"DROP_CB",(Icallback)drop);
-  IupSetCallback(mat,"MENUDROP_CB",(Icallback)drop);
+  IupSetCallback(mat,"DROP_CB",(Icallback)drop);
+//  IupSetCallback(mat,"MENUDROP_CB",(Icallback)drop);
 //  IupSetCallback(mat, "MOUSEMOVE_CB", (Icallback)mousemove_cb);
 //  IupSetCallback(mat,"CLICK_CB",(Icallback)click);
 //  IupSetCallback(mat,"ENTERITEM_CB",(Icallback)enteritem_cb);
