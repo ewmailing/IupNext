@@ -1311,14 +1311,14 @@ static int iMatrixListKeyAny_CB(Ihandle *ih, int key)
     {
       int lin = ih->data->lines.focus_cell;
       iMatrixListSetFocusItem(ih, mtxList, lin);  /* this will position focus at the right cell */
-      IupSetAttribute(ih, "EDIT_MODE", "Yes");
 
+      IupSetAttribute(ih, "EDIT_MODE", "Yes");
       if (IupGetInt(ih, "EDIT_MODE"))
       {
         char value[2] = {0,0};
         value[0] = (char)key;
-        IupStoreAttribute(ih, "VALUE", value);
-        IupSetAttribute(ih, "CARET", "2");
+        IupStoreAttribute(ih->data->datah, "VALUEMASKED", value);
+        IupSetAttribute(ih->data->datah, "CARET", "2");
         return IUP_IGNORE;
       }
     }
