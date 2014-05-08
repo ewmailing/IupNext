@@ -1,2 +1,4 @@
 EXPORTS
   cdContextIup
+  cdContextIupDBuffer
+  cdContextIupDBufferRGB
