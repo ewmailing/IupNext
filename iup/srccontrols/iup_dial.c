@@ -72,7 +72,6 @@ struct _IcontrolData
 
   /* drawing canvas */
   cdCanvas *cddbuffer;
-  cdCanvas *cdcanvas;
 };
 
 
@@ -290,7 +289,10 @@ static void iDialRepaint(Ihandle* ih)
   /* update display */
   cdCanvasFlush(ih->data->cddbuffer);
   if (ih->data->has_focus)
-    IupCdDrawFocusRect(ih, ih->data->cdcanvas, 0, 0, ih->data->w-1, ih->data->h-1);
+  {
+    cdCanvas* cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
+    IupCdDrawFocusRect(ih, cdcanvas, 0, 0, ih->data->w - 1, ih->data->h - 1);
+  }
 }
 
 static void iDialUpdateFgColors(Ihandle* ih, unsigned char r, unsigned char g, unsigned char b)
@@ -477,18 +479,6 @@ static int iDialButton_CB(Ihandle* ih, int button, int pressed, int x, int y)
 
 static int iDialResize_CB(Ihandle* ih)
 {
-  if (!ih->data->cddbuffer)
-  {
-    /* update canvas size */
-    cdCanvasActivate(ih->data->cdcanvas);
-
-    /* this can fail if canvas size is zero */
-    ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
-  }
-
-  if (!ih->data->cddbuffer)
-    return IUP_DEFAULT;
-
   /* update size */
   cdCanvasActivate(ih->data->cddbuffer);
   cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
@@ -527,7 +517,10 @@ static int iDialRedraw_CB(Ihandle* ih)
   /* update display */
   cdCanvasFlush(ih->data->cddbuffer);
   if (ih->data->has_focus)
-    IupCdDrawFocusRect(ih, ih->data->cdcanvas, 0, 0, ih->data->w-1, ih->data->h-1);
+  {
+    cdCanvas* cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
+    IupCdDrawFocusRect(ih, cdcanvas, 0, 0, ih->data->w - 1, ih->data->h - 1);
+  }
 
   return IUP_DEFAULT;
 }
@@ -766,12 +759,9 @@ static char* iDialGetOrientationAttrib(Ihandle* ih)
 
 static int iDialMapMethod(Ihandle* ih)
 {
-  ih->data->cdcanvas = cdCreateCanvas(CD_IUP, ih);
-  if (!ih->data->cdcanvas)
+  ih->data->cddbuffer = cdCreateCanvas(CD_IUPDBUFFER, ih);
+  if (!ih->data->cddbuffer)
     return IUP_ERROR;
-
-  /* this can fail if canvas size is zero */
-  ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
 
   return IUP_NOERROR;
 }
@@ -782,12 +772,6 @@ static void iDialUnMapMethod(Ihandle* ih)
   {
     cdKillCanvas(ih->data->cddbuffer);
     ih->data->cddbuffer = NULL;
-  }
-
-  if (ih->data->cdcanvas)
-  {
-    cdKillCanvas(ih->data->cdcanvas);
-    ih->data->cdcanvas = NULL;
   }
 }
 

@@ -34,7 +34,6 @@ struct _IcontrolData
 {
   iupCanvas canvas;  /* from IupCanvas (must reserve it) */
 
-  cdCanvas* cdcanvas;        /* cd canvas for drawing                 */
   cdCanvas* cddbuffer;       /* image canvas for double buffering     */
   int w;                     /* control width (pixels)                */
   int h;                     /* control height (pixels)               */
@@ -513,7 +512,7 @@ static void iCellsRepaint(Ihandle* ih)
 
 static int iCellsRedraw_CB(Ihandle* ih)
 {
-  if (ih->data->cddbuffer == NULL)
+  if (!ih->data->cddbuffer)
     return IUP_DEFAULT;
 
   /* update display */
@@ -663,18 +662,6 @@ static int iCellsResize_CB(Ihandle* ih, int w, int h)
   IupSetInt(ih, "DX", w);
   IupSetInt(ih, "DY", h);
 
-  if (!ih->data->cddbuffer)
-  {
-    /* update canvas size */
-    cdCanvasActivate(ih->data->cdcanvas);
-
-    /* this can fail if canvas size is zero */
-    ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
-  }
-
-  if (!ih->data->cddbuffer)
-    return IUP_DEFAULT;
-
   /* update canvas size */
   cdCanvasActivate(ih->data->cddbuffer);
   cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
@@ -709,7 +696,8 @@ static char* iCellsGetImageCanvasAttrib(Ihandle* ih)
 
 static char* iCellsGetCanvasAttrib(Ihandle* ih)
 {
-  return (char*)ih->data->cdcanvas;
+  cdCanvas* cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
+  return (char*)cdcanvas;
 }
 
 static char* iCellsGetFirstLineAttrib(Ihandle* ih)
@@ -843,12 +831,9 @@ static int iCellsSetFullVisibleAttrib(Ihandle* ih, const char* value)
 
 static int iCellsMapMethod(Ihandle* ih)
 {
-  ih->data->cdcanvas = cdCreateCanvas(CD_IUP, ih);
-  if (!ih->data->cdcanvas)
+  ih->data->cddbuffer = cdCreateCanvas(CD_IUPDBUFFER, ih);
+  if (!ih->data->cddbuffer)
     return IUP_ERROR;
-
-  /* this can fail if canvas size is zero */
-  ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
 
   return IUP_NOERROR;
 }
@@ -859,12 +844,6 @@ static void iCellsUnMapMethod(Ihandle* ih)
   {
     cdKillCanvas(ih->data->cddbuffer);
     ih->data->cddbuffer = NULL;
-  }
-
-  if (ih->data->cdcanvas)
-  {
-    cdKillCanvas(ih->data->cdcanvas);
-    ih->data->cdcanvas = NULL;
   }
 }
 

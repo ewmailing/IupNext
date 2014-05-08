@@ -82,10 +82,6 @@ struct _IcontrolData
 
   int sync_view;
 
-  // This will be referenced from all plots
-#ifndef USE_OPENGL
-  cdCanvas* cdcanvas;       /* iup drawing surface */
-#endif
   cdCanvas* cddbuffer;      /* double buffer drawing surface */
 };
 
@@ -154,22 +150,7 @@ static void iPPlotUpdateSizes(Ihandle* ih)
 
 static int iPPlotResize_CB(Ihandle* ih)
 {
-#ifndef USE_OPENGL
-  if (!ih->data->cddbuffer)
-  {
-    /* update canvas size */
-    cdCanvasActivate(ih->data->cdcanvas);
-
-    /* this can fail if canvas size is zero */
-    if (IupGetInt(ih, "USE_IMAGERGB"))
-      ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFERRGB, ih->data->cdcanvas);
-    else
-      ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
-  }
-#endif
-
   iPPlotUpdateSizes(ih);
-
   return IUP_DEFAULT;
 }
 
@@ -595,11 +576,6 @@ void IupPPlotPaintTo(Ihandle* ih, void* _cnv)
   cdCanvas *old_cddbuffer  = ih->data->cddbuffer;
   ih->data->cddbuffer = (cdCanvas*)_cnv;
 
-#ifndef USE_OPENGL
-  cdCanvas *old_cdcanvas = ih->data->cdcanvas;
-  ih->data->cdcanvas = (cdCanvas*)_cnv;
-#endif
-
   iPPlotUpdateSizes(ih);
 
   int old_current = ih->data->plt_index;
@@ -611,9 +587,6 @@ void IupPPlotPaintTo(Ihandle* ih, void* _cnv)
   iPPlotSetPlotCurrent(ih, old_current);
 
   ih->data->cddbuffer = old_cddbuffer;
-#ifndef USE_OPENGL
-  ih->data->cdcanvas  = old_cdcanvas;
-#endif
 
   iPPlotUpdateSizes(ih);
 }
@@ -3168,7 +3141,7 @@ void PPainterIup::InvertRect(int inX, int inY, int inW, int inH)
 
   cdCanvas* cdcanvas = _ih->data->cddbuffer;
 #ifndef USE_OPENGL
-  cdcanvas = _ih->data->cdcanvas;
+  cdcanvas = (cdCanvas*)IupGetAttribute(_ih, "_CD_CANVAS");
 #endif
 
   cdCanvasWriteMode(cdcanvas, CD_NOT_XOR);
@@ -3293,20 +3266,15 @@ static int iPPlotMapMethod(Ihandle* ih)
   if (IupGetInt(ih, "USE_GDI+") || IupGetInt(ih, "USE_CONTEXTPLUS"))
     old_gdi = cdUseContextPlus(1);
 
-  ih->data->cdcanvas = cdCreateCanvas(CD_IUP, ih);
-  if (ih->data->cdcanvas)
-  {
-    /* this can fail if canvas size is zero */
-    if (IupGetInt(ih, "USE_IMAGERGB"))
-      ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFERRGB, ih->data->cdcanvas);
-    else
-      ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
+  if (IupGetInt(ih, "USE_IMAGERGB"))
+    ih->data->cddbuffer = cdCreateCanvas(CD_IUPDBUFFERRGB, ih);
+  else
+    ih->data->cddbuffer = cdCreateCanvas(CD_IUPDBUFFER, ih);
 
-    if (IupGetInt(ih, "USE_GDI+") || IupGetInt(ih, "USE_CONTEXTPLUS"))
-      cdUseContextPlus(old_gdi);
-  }
+  if (IupGetInt(ih, "USE_GDI+") || IupGetInt(ih, "USE_CONTEXTPLUS"))
+    cdUseContextPlus(old_gdi);
 
-  if (!ih->data->cdcanvas)
+  if (!ih->data->cddbuffer)
     return IUP_ERROR;
 #endif
 
@@ -3323,14 +3291,6 @@ static void iPPlotUnMapMethod(Ihandle* ih)
     cdKillCanvas(ih->data->cddbuffer);
     ih->data->cddbuffer = NULL;
   }
-
-#ifndef USE_OPENGL
-  if (ih->data->cdcanvas != NULL)
-  {
-    cdKillCanvas(ih->data->cdcanvas);
-    ih->data->cdcanvas = NULL;
-  }
-#endif
 }
 
 static void iPPlotDestroyMethod(Ihandle* ih)

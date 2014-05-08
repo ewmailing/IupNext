@@ -806,7 +806,10 @@ static void iMatrixDrawFocus(Ihandle* ih)
   if (ih->data->lines.focus_cell == 1 && ih->data->lines.dt[0].size == 0)
     y1++;
 
-  IupCdDrawFocusRect(ih, ih->data->cdcanvas, x1, iupMATRIX_INVERTYAXIS(ih, y1), x2, iupMATRIX_INVERTYAXIS(ih, y2));
+  {
+    cdCanvas* cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
+    IupCdDrawFocusRect(ih, cdcanvas, x1, iupMATRIX_INVERTYAXIS(ih, y1), x2, iupMATRIX_INVERTYAXIS(ih, y2));
+  }
 }
 
 

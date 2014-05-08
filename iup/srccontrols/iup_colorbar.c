@@ -41,7 +41,6 @@ struct _IcontrolData
 
   int w;                  /* size of the canvas - width                             */
   int h;                  /* size of the canvas - height                            */
-  cdCanvas* cdcanvas;     /* cd canvas for drawing                                  */
   cdCanvas* cddbuffer;    /* image canvas for double buffering                      */
   long int colors[256];   /* CD color vector                                        */
   int num_cells;          /* number of cells at the widgets                         */
@@ -282,7 +281,10 @@ static void iColorbarDrawFocusCell(Ihandle* ih)
   ymin += delta;
   ymax -= delta;
 
-  IupCdDrawFocusRect(ih, ih->data->cdcanvas, xmin, ymin, xmax, ymax);
+  {
+    cdCanvas* cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
+    IupCdDrawFocusRect(ih, cdcanvas, xmin, ymin, xmax, ymax);
+  }
 }
 
 /* This function is used to repaint a cell. */
@@ -621,18 +623,6 @@ static int iColorbarRedraw_CB(Ihandle* ih)
 
 static int iColorbarResize_CB(Ihandle* ih)
 {
-  if (!ih->data->cddbuffer)
-  {
-    /* update canvas size */
-    cdCanvasActivate(ih->data->cdcanvas);
-
-    /* this can fail if canvas size is zero */
-    ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
-  }
-
-  if (!ih->data->cddbuffer)
-    return IUP_DEFAULT;
-
   /* update size */
   cdCanvasActivate(ih->data->cddbuffer);
   cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
@@ -920,12 +910,9 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
 
 static int iColorbarMapMethod(Ihandle* ih)
 {
-  ih->data->cdcanvas = cdCreateCanvas(CD_IUP, ih);
-  if (!ih->data->cdcanvas)
+  ih->data->cddbuffer = cdCreateCanvas(CD_IUPDBUFFER, ih);
+  if (!ih->data->cddbuffer)
     return IUP_ERROR;
-
-  /* this can fail if canvas size is zero */
-  ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
 
   return IUP_NOERROR;
 }
@@ -936,12 +923,6 @@ static void iColorbarUnMapMethod(Ihandle* ih)
   {
     cdKillCanvas(ih->data->cddbuffer);
     ih->data->cddbuffer = NULL;
-  }
-
-  if (ih->data->cdcanvas)
-  {
-    cdKillCanvas(ih->data->cdcanvas);
-    ih->data->cdcanvas = NULL;
   }
 }
 

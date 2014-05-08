@@ -21,7 +21,7 @@ static void appUpdateRender(cdCanvas *cddbuffer)
 
 static int redraw_cb(Ihandle *ih)
 {
-  cdCanvas *cddbuffer = (cdCanvas*)IupGetAttribute(ih, "_APP_CDDBUFFER");
+  cdCanvas *cddbuffer = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS_DBUFFER");
   if (!cddbuffer)
     return IUP_DEFAULT;
 
@@ -32,20 +32,7 @@ static int redraw_cb(Ihandle *ih)
 
 static int resize_cb(Ihandle *ih)
 {
-  cdCanvas *cddbuffer = (cdCanvas*)IupGetAttribute(ih, "_APP_CDDBUFFER");
-  if (!cddbuffer)
-  {
-    cdCanvas *cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_APP_CDCANVAS");
-
-    /* update canvas size */
-    cdCanvasActivate(cdcanvas);
-
-    /* this can fail if canvas size is zero */
-    cddbuffer = cdCreateCanvas(CD_DBUFFER, cdcanvas);
-  }
-
-  if (!cddbuffer)
-    return IUP_DEFAULT;
+  cdCanvas *cddbuffer = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS_DBUFFER");
 
   /* update size */
   cdCanvasActivate(cddbuffer);
@@ -58,31 +45,18 @@ static int resize_cb(Ihandle *ih)
 
 static int map_cb(Ihandle *ih)
 {
-  cdCanvas *cddbuffer, *cdcanvas;
-
-  cdcanvas = cdCreateCanvas(CD_IUP, ih);
-  if (!cdcanvas)
+  cdCanvas* cddbuffer = cdCreateCanvas(CD_IUPDBUFFER, ih);
+  if (!cddbuffer)
     return IUP_DEFAULT;
-
-  /* this can fail if canvas size is zero */
-  cddbuffer = cdCreateCanvas(CD_DBUFFER, cdcanvas);
-
-  IupSetAttribute(ih, "_APP_CDCANVAS", (char*)cdcanvas);
-  IupSetAttribute(ih, "_APP_CDDBUFFER", (char*)cddbuffer);
 
   return IUP_DEFAULT;
 }
 
 static int unmap_cb(Ihandle *ih)
 {
-  cdCanvas *cddbuffer = (cdCanvas*)IupGetAttribute(ih, "_APP_CDDBUFFER");
-  cdCanvas *cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_APP_CDCANVAS");
-
+  cdCanvas *cddbuffer = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS_DBUFFER");
   if (cddbuffer)
     cdKillCanvas(cddbuffer);
-
-  if (cdcanvas)
-    cdKillCanvas(cdcanvas);
 
   return IUP_DEFAULT;
 }

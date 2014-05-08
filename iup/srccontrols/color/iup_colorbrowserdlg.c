@@ -15,7 +15,6 @@
 
 #include <cd.h>
 #include <cdiup.h>
-#include <cddbuf.h>
 #include <cdirgb.h>
 
 #include "iup_object.h"
@@ -54,7 +53,7 @@ typedef struct _IcolorDlgData
   Ihandle *colortable_cbar, *alpha_val;
   Ihandle *help_bt;
 
-  cdCanvas* color_cdcanvas, *color_cddbuffer;
+  cdCanvas* color_cddbuffer;
 } IcolorDlgData;
 
 
@@ -540,20 +539,9 @@ static int iColorBrowserDlgColorCnvResize_CB(Ihandle* ih)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
-  if (!colordlg_data->color_cddbuffer)
-  {
-    /* update canvas size */
-    cdCanvasActivate(colordlg_data->color_cdcanvas);
-
-    /* this can fail if canvas size is zero */
-    colordlg_data->color_cddbuffer = cdCreateCanvas(CD_DBUFFERRGB, colordlg_data->color_cdcanvas);
-  }
-
-  if (!colordlg_data->color_cddbuffer)
-    return IUP_DEFAULT;
-
   /* update size */
-  cdCanvasActivate(colordlg_data->color_cddbuffer);
+  if (colordlg_data->color_cddbuffer)
+    cdCanvasActivate(colordlg_data->color_cddbuffer);
 
   return IUP_DEFAULT;
 }
@@ -561,15 +549,7 @@ static int iColorBrowserDlgColorCnvResize_CB(Ihandle* ih)
 static int iColorBrowserDlgColorCnvMap_CB(Ihandle* ih)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
-
-  /* Create Canvas */
-  colordlg_data->color_cdcanvas = cdCreateCanvas(CD_IUP, colordlg_data->color_cnv);
-
-  if (!colordlg_data->color_cdcanvas)
-    return IUP_DEFAULT;
-
-  /* this can fail if canvas size is zero */
-  colordlg_data->color_cddbuffer = cdCreateCanvas(CD_DBUFFERRGB, colordlg_data->color_cdcanvas);
+  colordlg_data->color_cddbuffer = cdCreateCanvas(CD_IUPDBUFFERRGB, ih);
   return IUP_DEFAULT;
 }
 
@@ -581,12 +561,6 @@ static int iColorBrowserDlgColorCnvUnMap_CB(Ihandle* ih)
   {
     cdKillCanvas(colordlg_data->color_cddbuffer);
     colordlg_data->color_cddbuffer = NULL;
-  }
-
-  if (colordlg_data->color_cdcanvas)
-  {
-    cdKillCanvas(colordlg_data->color_cdcanvas);
-    colordlg_data->color_cdcanvas = NULL;
   }
 
   return IUP_DEFAULT;

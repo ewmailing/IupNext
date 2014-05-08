@@ -105,7 +105,6 @@ struct _IcontrolData
   Ihandle* datah;   /* Current active edition element, may be equal to texth or droph */
 
   cdCanvas* cddbuffer;
-  cdCanvas* cdcanvas;
 
   ImatLinColData lines;
   ImatLinColData columns;

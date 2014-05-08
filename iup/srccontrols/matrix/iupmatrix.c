@@ -1330,29 +1330,14 @@ static int iMatrixFocus_CB(Ihandle* ih, int focus)
 
 static int iMatrixResize_CB(Ihandle* ih)
 {
-  if (!ih->data->cddbuffer)
-  {
-    /* update canvas size */
-    cdCanvasActivate(ih->data->cdcanvas);
+  int old_w = ih->data->w, 
+      old_h = ih->data->h;
 
-    /* this can fail if canvas size is zero */
-    ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
-  }
+  cdCanvasActivate(ih->data->cddbuffer);
+  cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
 
-  if (!ih->data->cddbuffer)
-    return IUP_DEFAULT;
-
-  /* update size */
-  {
-    int old_w = ih->data->w, 
-        old_h = ih->data->h;
-
-    cdCanvasActivate(ih->data->cddbuffer);
-    cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
-
-    if (old_w != ih->data->w || old_h != ih->data->h)
-      iupMatrixEditHide(ih);
-  }
+  if (old_w != ih->data->w || old_h != ih->data->h)
+    iupMatrixEditHide(ih);
 
   ih->data->need_calcsize = 1;
 
@@ -1436,12 +1421,9 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
 
 static int iMatrixMapMethod(Ihandle* ih)
 {
-  ih->data->cdcanvas = cdCreateCanvas(CD_IUP, ih);
-  if (!ih->data->cdcanvas)
+  ih->data->cddbuffer = cdCreateCanvas(CD_IUPDBUFFER, ih);
+  if (!ih->data->cddbuffer)
     return IUP_ERROR;
-
-  /* this can fail if canvas size is zero */
-  ih->data->cddbuffer = cdCreateCanvas(CD_DBUFFER, ih->data->cdcanvas);
 
   if (IupGetCallback(ih, "VALUE_CB"))
   {
@@ -1466,12 +1448,6 @@ static void iMatrixUnMapMethod(Ihandle* ih)
   {
     cdKillCanvas(ih->data->cddbuffer);
     ih->data->cddbuffer = NULL;
-  }
-
-  if(ih->data->cdcanvas)
-  {
-    cdKillCanvas(ih->data->cdcanvas);
-    ih->data->cdcanvas = NULL;
   }
 
   iupMatrixMemRelease(ih);
