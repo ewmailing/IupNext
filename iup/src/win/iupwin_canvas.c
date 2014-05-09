@@ -538,17 +538,17 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     ReleaseCapture();
     break;
   case WM_VSCROLL:
-    if (!iupAttribGetBoolean(ih, "MDICLIENT"))
+    /* only update the scrollbar if not a MDI client AND a standard scrollbar */
+    if (!iupAttribGetBoolean(ih, "MDICLIENT") && lp == 0)
     {
-      /* only update the scrollbar is not a MDI client */
       winCanvasUpdateVerScroll(ih, LOWORD(wp));
       *result = 0;
       return 1;
     }
   case WM_HSCROLL:
-    if (!iupAttribGetBoolean(ih, "MDICLIENT"))
+    /* only update the scrollbar if not a MDI client AND a standard scrollbar */
+    if (!iupAttribGetBoolean(ih, "MDICLIENT") && lp == 0)
     {
-      /* only update the scrollbar is not a MDI client */
       winCanvasUpdateHorScroll(ih, LOWORD(wp));
       *result = 0;
       return 1;
