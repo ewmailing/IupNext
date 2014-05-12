@@ -209,7 +209,6 @@ class Painter {
  public:
    virtual void DrawLine (float inX1, float inY1, float inX2, float inY2)=0;
    virtual void FillRect (int inX, int inY, int inW, int inH)=0;
-   virtual void InvertRect (int inX, int inY, int inW, int inH)=0;
    virtual void SetClipRect (int inX, int inY, int inW, int inH)=0;
    virtual long GetWidth () const=0;
    virtual long GetHeight () const=0;

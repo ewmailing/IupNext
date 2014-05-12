@@ -117,7 +117,6 @@ protected:
   void FillArrow(int inX1, int inY1, int inX2, int inY2, int inX3, int inY3);
   void DrawLine(float inX1, float inY1, float inX2, float inY2);
   void FillRect(int inX, int inY, int inW, int inH);
-  void InvertRect(int inX, int inY, int inW, int inH);
   void SetClipRect(int inX, int inY, int inW, int inH);
   long GetWidth() const { return _width; }
   long GetHeight() const { return _height; }

@@ -143,11 +143,8 @@ bool PZoomInteraction::Draw (Painter &inPainter) {
     float theY1 = mY1;
     float theY2 = mY2;
 
-    bool theDrawInverse = false;
-
     switch (mZoomMode) {
     case kZoom_Region:
-      //      theDrawInverse = false;
       break;
     case kZoom_X:
       theY1 = mPPlot.mMargins.mTop;
@@ -164,14 +161,6 @@ bool PZoomInteraction::Draw (Painter &inPainter) {
     inPainter.DrawLine (theX2, theY1, theX2, theY2);
     inPainter.DrawLine (theX2, theY2, theX1, theY2);
     inPainter.DrawLine (theX1, theY2, theX1, theY1);
-
-    if (theDrawInverse) {
-      float theX = pmin (theX1, theX2); 
-      float theY = pmin (theY1, theY2); 
-      float theW = fabs (theX1-theX2);
-      float theH = fabs (theY1-theY2);
-      inPainter.InvertRect (theX, theY, theW, theH);
-    }
   }
   return true;
   

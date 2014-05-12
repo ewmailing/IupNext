@@ -18,12 +18,11 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
-#ifdef __APPLE__
+
+#if defined (__APPLE__) || defined (OSX)
 #include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
 #else
 #include <GL/gl.h>
-#include <GL/glu.h>
 #endif
 #endif
 
@@ -3058,7 +3057,7 @@ void PPainterIup::UpdateViewport()
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluOrtho2D(_x, _x + _width, y, _y + _height);
+  glOrtho(_x, _x + _width, y, _y + _height, -1, 1);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -3132,27 +3131,6 @@ void PPainterIup::FillRect(int inX, int inY, int inW, int inH)
   cdCanvasBox(_ih->data->cddbuffer, inX, inX+inW, 
               cdCanvasInvertYAxis(_ih->data->cddbuffer, inY),
               cdCanvasInvertYAxis(_ih->data->cddbuffer, inY + inH - 1));
-}
-
-void PPainterIup::InvertRect(int inX, int inY, int inW, int inH)
-{
-  if (!_ih->data->cddbuffer)
-    return;
-
-  cdCanvas* cdcanvas = _ih->data->cddbuffer;
-#ifndef USE_OPENGL
-  cdcanvas = (cdCanvas*)IupGetAttribute(_ih, "_CD_CANVAS");
-#endif
-
-  cdCanvasWriteMode(cdcanvas, CD_NOT_XOR);
-  int old_lw = cdCanvasLineWidth(cdcanvas, 1);
-  long old_fg = cdCanvasForeground(cdcanvas, CD_WHITE);
-  cdCanvasRect(cdcanvas, inX, inX + inW - 1,
-               cdCanvasInvertYAxis(cdcanvas, inY),
-               cdCanvasInvertYAxis(cdcanvas, inY + inH - 1));
-  cdCanvasWriteMode(cdcanvas, CD_REPLACE);
-  cdCanvasForeground(cdcanvas, old_fg);
-  cdCanvasLineWidth(cdcanvas, old_lw);
 }
 
 void PPainterIup::SetClipRect(int inX, int inY, int inW, int inH)
