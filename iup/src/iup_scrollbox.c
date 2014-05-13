@@ -26,7 +26,7 @@
 |* Canvas Callbacks                                                          *|
 \*****************************************************************************/
 
-static void iScrollBoxUpdatePosition(Ihandle* ih, float posx, float posy)
+static void iScrollBoxUpdateChildPosition(Ihandle* ih, float posx, float posy)
 {
   iupBaseSetPosition(ih->firstchild, -(int)posx, -(int)posy);
 }
@@ -40,7 +40,7 @@ static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
     if (IupGetInt(ih, "DY") > IupGetInt(ih, "YMAX")-iupdrvGetScrollbarSize())
       posy = 0;
 
-    iScrollBoxUpdatePosition(ih, posx, posy);
+    iScrollBoxUpdateChildPosition(ih, posx, posy);
     iupLayoutUpdate(ih->firstchild);
   }
   (void)op;
@@ -152,7 +152,7 @@ static void iScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   if (ih->firstchild)
   {
-    iScrollBoxUpdatePosition(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+    iScrollBoxUpdateChildPosition(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
 
     /* because ScrollBox is a native container, 
        child position is restarted at (0,0) */
@@ -186,7 +186,7 @@ static void iScrollBoxLayoutUpdate(Ihandle* ih)
 
   if (ih->firstchild)
   {
-    iScrollBoxUpdatePosition(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+    iScrollBoxUpdateChildPosition(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
     iupLayoutUpdate(ih->firstchild);
   }
 }
