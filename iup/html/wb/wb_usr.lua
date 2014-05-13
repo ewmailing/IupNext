@@ -798,6 +798,10 @@ wb_usr.tree =
           folder=
           {
             {
+              name= {nl= "IupCbox"},
+              link= "elem/iupcbox.html"
+            },
+            {
               name= {nl= "IupFill"},
               link= "elem/iupfill.html"
             },
@@ -830,10 +834,6 @@ wb_usr.tree =
             {
               name= {nl= "IupBackgroundBox"},
               link= "elem/iupbackgroundbox.html"
-            },
-            {
-              name= {nl= "IupCbox"},
-              link= "elem/iupcbox.html"
             },
             {
               name= {nl= "IupDetachBox"},
