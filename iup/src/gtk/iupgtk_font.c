@@ -83,7 +83,7 @@ static IgtkFont* gtkFindFont(const char *standardfont)
     char typeface[1024];
     const char* mapped_name;
 
-    /* parse the old Windows format first */
+    /* same as iupGetFontInfo, but mark if pango  */
     if (!iupFontParseWin(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     {
       if (!iupFontParseX(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
@@ -152,23 +152,21 @@ static IgtkFont* gtkFindFont(const char *standardfont)
   return &fonts[i];
 }
 
-static IgtkFont* gtkFontSet(Ihandle* ih, const char* value)
+static IgtkFont* gtkFontCreateNativeFont(Ihandle* ih, const char* value)
 {
   IgtkFont *gtkfont = gtkFindFont(value);
-  if (gtkfont)
-  {
-    iupAttribSet(ih, "_IUP_GTKFONT", (char*)gtkfont);
-    return gtkfont;
-  }
-  else
+  if (!gtkfont)
     return NULL;
+
+  iupAttribSet(ih, "_IUP_GTKFONT", (char*)gtkfont);
+  return gtkfont;
 }
 
 static IgtkFont* gtkFontGet(Ihandle *ih)
 {
   IgtkFont* gtkfont = (IgtkFont*)iupAttribGet(ih, "_IUP_GTKFONT");
   if (!gtkfont)
-    gtkfont = gtkFontSet(ih, iupGetFontAttrib(ih));
+    gtkfont = gtkFontCreateNativeFont(ih, iupGetFontAttrib(ih));
   return gtkfont;
 }
 
@@ -323,7 +321,7 @@ char* iupgtkGetFontIdAttrib(Ihandle *ih)
 
 int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
-  IgtkFont* gtkfont = gtkFontSet(ih, value);
+  IgtkFont* gtkfont = gtkFontCreateNativeFont(ih, value);
   if (!gtkfont)
     return 1;
 

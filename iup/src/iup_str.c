@@ -1394,3 +1394,15 @@ char* iupStrInsert(const char* value, const char* insert_value, int start, int e
 
   return new_value;
 }
+
+int iupStrIsAscii(const char* str)
+{
+  while (*str)
+  {
+    int c = *str;
+    if (c < 0)
+      return 0;
+    str++;
+  }
+  return 1;
+}

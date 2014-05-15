@@ -30,18 +30,6 @@ int iupgtkStrGetUTF8Mode(void)
   return iupgtk_utf8mode;
 }
 
-static int gtkStrIsAscii(const char* str)
-{
-  while(*str)
-  {
-    int c = *str;
-    if (c < 0)
-      return 0;
-    str++;
-  }
-  return 1;
-}
-
 static char* gtkStrToUTF8(const char *str, int len, const char* charset)
 {
   return g_convert(str, len, "UTF-8", charset, NULL, NULL, NULL);
@@ -84,7 +72,7 @@ char* iupgtkStrConvertToSystemLen(const char* str, int *len)
     }
     else
     {
-      if (gtkStrIsAscii(str) || !charset)
+      if (iupStrIsAscii(str) || !charset)
         return (char*)str;
       else if (charset)
       {
@@ -123,7 +111,7 @@ char* iupgtkStrConvertToSystem(const char* str)  /* From IUP to GTK */
     }
     else
     {
-      if (gtkStrIsAscii(str) || !charset)
+      if (iupStrIsAscii(str) || !charset)
         return (char*)str;
       else if (charset)
       {
@@ -161,7 +149,7 @@ char* iupgtkStrConvertFromSystem(const char* str)  /* From GTK to IUP */
     }
     else
     {
-      if (gtkStrIsAscii(str) || !charset)
+      if (iupStrIsAscii(str) || !charset)
         return (char*)str;
       else if (charset)
       {
@@ -216,7 +204,7 @@ char* iupgtkStrConvertToFilename(const char* str)   /* From IUP to Filename */
     }
     else
     {
-      if (gtkStrIsAscii(str) || !charset)
+      if (iupStrIsAscii(str) || !charset)
         return (char*)str;
       else if (charset)
       {
@@ -256,7 +244,7 @@ char* iupgtkStrConvertFromFilename(const char* str)   /* From Filename to IUP */
     }
     else
     {
-      if (gtkStrIsAscii(str) || !charset)
+      if (iupStrIsAscii(str) || !charset)
         return (char*)str;
       else if (charset)
       {

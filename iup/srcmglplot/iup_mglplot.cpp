@@ -559,9 +559,7 @@ static int iupGetFontFileName(const char* path, const char* typeface, const char
   sprintf(filename, "%s.%s", typeface, ext);
   file = fopen(filename, "r");
 
-  if (file)
-    fclose(file);
-  else
+  if (!file)
   {
     /* path from the environment */
     if (path)
@@ -570,18 +568,14 @@ static int iupGetFontFileName(const char* path, const char* typeface, const char
       file = fopen(filename, "r");
     }
 
-    if (file)
-      fclose(file);
-    else
+    if (!file)
     {
 #ifdef WIN32
       /* Windows Font folder */
       sprintf(filename, "%s\\%s.%s", winGetFontDir(), typeface, ext);
       file = fopen(filename, "r");
 
-      if (file)
-        fclose(file);
-      else
+      if (!file)
         return 0;
 #else
       return 0;
@@ -589,6 +583,7 @@ static int iupGetFontFileName(const char* path, const char* typeface, const char
     }
   }
 
+  fclose(file);
   return 1;
 }
 

@@ -55,6 +55,7 @@ int iupwinClassExist(const TCHAR* name)
 
 int iupwinGetScreenRes(void)
 {
+  /* same as iupdrvGetScreenDpi, but returns an integer value */
   int res;
   HDC ScreenDC = GetDC(NULL);
   res = GetDeviceCaps(ScreenDC, LOGPIXELSY);

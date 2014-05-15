@@ -37,9 +37,9 @@ static Iarray* win_fonts = NULL;
 static IwinFont* winFindFont(const char *standardfont)
 {
   HFONT hFont;
-  int height_pixels;
+  int height_pixels;  /* negative value */
   char typeface[50] = "";
-  int height = 8;
+  int size = 8;
   int is_bold = 0,
     is_italic = 0, 
     is_underline = 0,
@@ -56,7 +56,7 @@ static IwinFont* winFindFont(const char *standardfont)
       return &fonts[i];
   }
 
-  if (!iupGetFontInfo(standardfont, typeface, &height, &is_bold, &is_italic, &is_underline, &is_strikeout))
+  if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return NULL;
 
   /* Map standard names to native names */
@@ -65,10 +65,10 @@ static IwinFont* winFindFont(const char *standardfont)
     strcpy(typeface, mapped_name);
 
   /* get in pixels */
-  if (height < 0)  
-    height_pixels = height;    /* already in pixels */
+  if (size < 0)  
+    height_pixels = size;    /* already in pixels */
   else
-    height_pixels = -iupWIN_PT2PIXEL(height, res);
+    height_pixels = -iupWIN_PT2PIXEL(size, res);
 
   if (height_pixels == 0)
     return NULL;
@@ -116,14 +116,14 @@ static void winFontFromLogFontA(LOGFONTA* logfont, char* font)
   int is_strikeout = logfont->lfStrikeOut;
   int height_pixels = logfont->lfHeight;  /* negative value */
   int res = iupwinGetScreenRes();
-  int height = iupWIN_PIXEL2PT(-height_pixels, res);  /* return in points */
+  int size = iupWIN_PIXEL2PT(-height_pixels, res);  /* return in points */
 
   sprintf(font, "%s, %s%s%s%s %d", logfont->lfFaceName, 
                                    is_bold?"Bold ":"", 
                                    is_italic?"Italic ":"", 
                                    is_underline?"Underline ":"", 
                                    is_strikeout?"Strikeout ":"", 
-                                   height);
+                                   size);
 }
 
 char* iupdrvGetSystemFont(void)

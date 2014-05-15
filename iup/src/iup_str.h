@@ -144,6 +144,10 @@ int iupStrHasSpace(const char* str);
  * \ingroup str */
 #define iup_tolower(_c)  ((_c >= 'A' && _c <= 'Z')? (_c - 'A') + 'a': _c)
 
+/** Checks if the string has only ASCII codes.
+* \ingroup str */
+int iupStrIsAscii(const char* str);
+
 
 
 /** Returns combined values in a formated string using \ref iupStrGetMemory.
