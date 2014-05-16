@@ -190,9 +190,13 @@ char* iupStrReturnIntInt(int i1, int i2, char sep);
 
 
 
-/** Extract a RGB triple from the string. Returns 0 or 1.
+/** Extract RGB components from the string. Returns 0 or 1.
  * \ingroup str */
 int iupStrToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned char *b);
+
+/** Extract RGBA components from the string. Returns 0 or 1.
+* \ingroup str */
+int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a);
 
 /** Converts the string to an int. The string must contains only the integer value.
  * Returns a a non zero value if sucessfull.

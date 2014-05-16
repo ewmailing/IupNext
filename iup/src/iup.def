@@ -271,6 +271,7 @@ iupTableClear
 iupStrToUnix
 iupStrToStrStr
 iupStrToRGB
+iupStrToRGBA
 iupStrToMac
 iupStrToIntInt
 iupStrToInt

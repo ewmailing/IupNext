@@ -521,6 +521,27 @@ int iupStrToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned ch
   return 1;
 }
 
+int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)
+{
+  unsigned int ri = 0, gi = 0, bi = 0, ai = 255;
+  if (!str) return 0;
+  if (str[0] == '#')
+  {
+    str++;
+    if (sscanf(str, "%2X%2X%2X%2X", &ri, &gi, &bi, &ai) < 3) return 0;
+  }
+  else
+  {
+    if (sscanf(str, "%u %u %u %u", &ri, &gi, &bi, &ai) < 3) return 0;
+  }
+  if (ri > 255 || gi > 255 || bi > 255 || ai > 255) return 0;
+  *r = (unsigned char)ri;
+  *g = (unsigned char)gi;
+  *b = (unsigned char)bi;
+  *a = (unsigned char)ai;
+  return 1;
+}
+
 int iupStrToInt(const char *str, int *i)
 {
   if (!str) return 0;
