@@ -82,11 +82,13 @@ static void init(void)
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluPerspective(45, 1, 1, 10);
+
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   gluLookAt (0.5, 0.5, 3.0,  /* posicao do observador */
             0.5, 0.5, 0.0,  /* ponto de referencia   */
             0.0, 1.0, 0.0); /* vup                   */
+
   glEnable(GL_DEPTH_TEST);
   glClearDepth (1.0);
 }
@@ -206,7 +208,7 @@ void GLCanvasCubeTest(void)
   IupSetCallback(canvas, "ACTION", action);
   IupSetCallback(canvas, "BUTTON_CB", (Icallback)button_cb);
   IupSetCallback(canvas, "MOTION_CB", (Icallback)motion_cb);
-//  IupSetAttribute(canvas, "BUFFER", "DOUBLE");
+  IupSetAttribute(canvas, "BUFFER", "DOUBLE");
   IupSetAttribute(canvas, "RASTERSIZE", "300x300");
   IupAppend(box, canvas);
 
