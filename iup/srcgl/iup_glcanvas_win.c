@@ -409,6 +409,8 @@ static Iclass* wGlCanvasNewClass(void)
   ic->Map = wGLCanvasMapMethod;
   ic->UnMap = wGLCanvasUnMapMethod;
 
+  iupClassRegisterCallback(ic, "SWAPBUFFERS_CB", "");
+
   iupClassRegisterAttribute(ic, "BUFFER", NULL, NULL, IUPAF_SAMEASSYSTEM, "SINGLE", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "COLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "RGBA", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "ERROR", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
@@ -503,6 +505,7 @@ void IupGLMakeCurrent(Ihandle* ih)
 void IupGLSwapBuffers(Ihandle* ih)
 {
   IGlControlData* gldata;
+  Icallback cb;
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -517,6 +520,10 @@ void IupGLSwapBuffers(Ihandle* ih)
   gldata = (IGlControlData*)iupAttribGet(ih, "_IUP_GLCONTROLDATA");
   if (!gldata->window)
     return;
+
+  cb = IupGetCallback(ih, "SWAPBUFFERS_CB");
+  if (cb)
+    cb(ih);
 
   SwapBuffers(gldata->device);
 }
