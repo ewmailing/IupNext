@@ -156,6 +156,12 @@ static void iColorBrowserDlgColor_Update(IcolorDlgData* colordlg_data)
   colordlg_data->color = cdEncodeColor(colordlg_data->red, colordlg_data->green, colordlg_data->blue);
   colordlg_data->color = cdEncodeAlpha(colordlg_data->color, colordlg_data->alpha);
   iColorBrowserDlgColorCnvRepaint(colordlg_data);
+
+  {
+    Ihandle* ih = IupGetDialog(colordlg_data->color_browser);
+    Icallback cb = IupGetCallback(ih, "COLORUPDATE_CB");
+    if (cb) cb(ih);
+  }
 }
 
 static void iColorBrowserDlgHSIChanged(IcolorDlgData* colordlg_data) 
@@ -1102,6 +1108,8 @@ Iclass* iupColorBrowserDlgNewClass(void)
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
   ic->childtype = IUP_CHILDNONE;
+
+  iupClassRegisterCallback(ic, "COLORUPDATE_CB", "");
 
   iupClassRegisterAttribute(ic, "COLORTABLE", iColorBrowserDlgGetColorTableAttrib, iColorBrowserDlgSetColorTableAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATUS", iColorBrowserDlgGetStatusAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

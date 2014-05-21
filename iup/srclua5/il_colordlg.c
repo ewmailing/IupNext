@@ -12,6 +12,12 @@
 #include "il.h"
 
 
+static int colordlg_colorupdate_cb(Ihandle *self)
+{
+  lua_State *L = iuplua_call_start(self, "colorupdate_cb");
+  return iuplua_call(L, 0);
+}
+
 static int ColorDlg(lua_State *L)
 {
   Ihandle *ih = IupColorDlg();
@@ -24,6 +30,7 @@ int iupcolordlglua_open(lua_State * L)
 {
   iuplua_register(L, ColorDlg, "ColorDlg");
 
+  iuplua_register_cb(L, "COLORUPDATE_CB", (lua_CFunction)colordlg_colorupdate_cb, NULL);
 
 #ifdef IUPLUA_USELOH
 #include "colordlg.loh"

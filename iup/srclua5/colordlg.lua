@@ -6,7 +6,9 @@ local ctrl = {
   parent = iup.WIDGET,
   creation = "",
   funcname = "ColorDlg",
-  callback = {}
+  callback = {
+    colorupdate_cb = "",
+  }
 } 
 
 function ctrl.popup(handle, x, y)
