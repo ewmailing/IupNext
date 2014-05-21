@@ -34,6 +34,10 @@ extern "C" {
  * \ingroup attrib */
 int iupAttribIsNotString(Ihandle* ih, const char *name);
 
+/** Returns true if the attribute name is a known Ihandle*. \n
+* \ingroup attrib */
+int iupAttribIsIhandle(Ihandle* ih, const char *name);
+
 
 
 /** Sets the attribute only in the hash table as a pointer. \n

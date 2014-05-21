@@ -105,9 +105,7 @@ static int GetAttribute (lua_State *L)
   {
     if (iupAttribIsNotString(ih, name))
     {
-      if (ih->handle == (InativeHandle*)value) /* work around for WID, sometimes WID in Windows is not a valid pointer. Why? */
-        iuplua_pushihandle(L, ih);
-      else if (iupObjectCheck((Ihandle*)value))
+      if (iupAttribIsIhandle(ih, name))
         iuplua_pushihandle(L, (Ihandle*)value);
       else
         lua_pushlightuserdata(L, (void*)value);
@@ -130,9 +128,7 @@ static int GetAttributeId(lua_State *L)
   {
     if (iupAttribIsNotString(ih, name))
     {
-      if (ih->handle == (InativeHandle*)value) /* work around for WID, sometimes WID in Windows is not a valid pointer. Why? */
-        iuplua_pushihandle(L, ih);
-      else if (iupObjectCheck((Ihandle*)value))
+      if (iupAttribIsIhandle(ih, name))
         iuplua_pushihandle(L, (Ihandle*)value);
       else
         lua_pushlightuserdata(L, (void*)value);
@@ -156,9 +152,7 @@ static int GetAttributeId2(lua_State *L)
   {
     if (iupAttribIsNotString(ih, name))
     {
-      if (ih->handle == (InativeHandle*)value) /* work around for WID, sometimes WID in Windows is not a valid pointer. Why? */
-        iuplua_pushihandle(L, ih);
-      else if (iupObjectCheck((Ihandle*)value))
+      if (iupAttribIsIhandle(ih, name))
         iuplua_pushihandle(L, (Ihandle*)value);
       else
         lua_pushlightuserdata(L, (void*)value);

@@ -532,8 +532,8 @@ Iclass* iupDetachBoxNewClass(void)
   iupClassRegisterAttribute(ic, "ORIENTATION", NULL, iDetachBoxSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "VERTICAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BARSIZE", iDetachBoxGetBarSizeAttrib, iDetachBoxSetBarSizeAttrib, IUPAF_SAMEASSYSTEM, "10", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWGRIP", iDetachBoxGetShowGripAttrib, iDetachBoxSetShowGripAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OLDPARENT_HANDLE", iDetachBoxGetOldParentHandleAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
-  iupClassRegisterAttribute(ic, "OLDBROTHER_HANDLE", iDetachBoxGetOldBrotherHandleAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "OLDPARENT_HANDLE", iDetachBoxGetOldParentHandleAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_IHANDLE|IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "OLDBROTHER_HANDLE", iDetachBoxGetOldBrotherHandleAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_IHANDLE | IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "RESTORE", NULL, iDetachBoxSetRestoreAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DETACH", NULL, iDetachBoxSetDetachAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   

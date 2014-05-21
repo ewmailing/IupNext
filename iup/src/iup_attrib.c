@@ -1279,6 +1279,11 @@ int iupAttribIsNotString(Ihandle* ih, const char* name)
   return iupClassObjectAttribIsNotString(ih, name);
 }
 
+int iupAttribIsIhandle(Ihandle* ih, const char* name)
+{
+  return iupClassObjectAttribIsIhandle(ih, name);
+}
+
 typedef int (*Iconvertxytopos)(Ihandle* ih, int x, int y);
 
 int IupConvertXYToPos(Ihandle* ih, int x, int y)

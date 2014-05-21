@@ -475,7 +475,15 @@ int iupClassObjectCurAttribIsInherit(Iclass* ic)
 int iupClassObjectAttribIsNotString(Ihandle* ih, const char* name)
 {
   IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
-  if (afunc && (afunc->flags & IUPAF_NO_STRING || afunc->flags & IUPAF_CALLBACK))
+  if (afunc && (afunc->flags & IUPAF_NO_STRING || afunc->flags & IUPAF_CALLBACK || afunc->flags & IUPAF_IHANDLE))
+    return 1;
+  return 0;
+}
+
+int iupClassObjectAttribIsIhandle(Ihandle* ih, const char* name)
+{
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+  if (afunc && (afunc->flags & IUPAF_IHANDLE))
     return 1;
   return 0;
 }

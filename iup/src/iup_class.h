@@ -278,7 +278,8 @@ typedef enum _IattribFlags{
   IUPAF_CALLBACK=256,  /**< is a callback, not an attribute */
   IUPAF_NO_SAVE=512,   /**< can NOT be directly saved, should have at least manual processing */
   IUPAF_NOT_SUPPORTED=1024,  /**< not supported in that driver */
-  IUPAF_IHANDLENAME=2048     /**< is an Ihandle* name, associated with IupSetHandle */
+  IUPAF_IHANDLENAME=2048,    /**< is an Ihandle* name, associated with IupSetHandle */
+  IUPAF_IHANDLE=4096         /**< is an Ihandle* */
 } IattribFlags;
 
 #define IUPAF_SAMEASSYSTEM ((char*)-1)  /**< means that the default value is the same as the system default value, used only in \ref iupClassRegisterAttribute */
@@ -456,6 +457,9 @@ void  iupClassObjectGetAttributeInfo(Ihandle* ih, const char* name, char* *def_v
 
 /* Used only in iupAttribIsNotString */
 int   iupClassObjectAttribIsNotString(Ihandle* ih, const char* name);
+
+/* Used only in iupAttribIsIhandle */
+int   iupClassObjectAttribIsIhandle(Ihandle* ih, const char* name);
 
 /* Used only in iupAttribUpdateFromParent */
 int   iupClassObjectCurAttribIsInherit(Iclass* ic);

@@ -370,7 +370,7 @@ Iclass* iupZboxNewClass(void)
   iupClassRegisterAttribute(ic, "ALIGNMENT", iZboxGetAlignmentAttrib, iZboxSetAlignmentAttrib, IUPAF_SAMEASSYSTEM, "NW", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", iZboxGetValueAttrib, iZboxSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUEPOS", iZboxGetValuePosAttrib, iZboxSetValuePosAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE_HANDLE", iZboxGetValueHandleAttrib, iZboxSetValueHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "VALUE_HANDLE", iZboxGetValueHandleAttrib, iZboxSetValueHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_IHANDLE | IUPAF_NO_STRING);
 
   /* Intercept VISIBLE since ZBOX works by showing and hidding its children */
   iupClassRegisterAttribute(ic, "VISIBLE", NULL, iZboxSetVisibleAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);

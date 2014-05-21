@@ -436,6 +436,7 @@ iupAttribSetIntId2
 iupAttribSetFloatId
 iupAttribSetFloatId2
 iupAttribIsNotString
+iupAttribIsIhandle
 iupAttribGet
 iupAttribGetInherit
 iupAttribGetInheritNativeParent
