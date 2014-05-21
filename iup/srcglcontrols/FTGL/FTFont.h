@@ -222,6 +222,13 @@ class FTGL_EXPORT FTFont
         virtual float LineHeight() const;
 
         /**
+        * Gets the maximum character width for the font.
+        *
+        * @return  Maximum width
+        */
+        virtual float MaxWidth() const;
+
+        /**
          * Get the bounding box for a string.
          *
          * @param string  A char buffer.
@@ -538,6 +545,14 @@ FTGL_EXPORT float ftglGetFontDescender(FTGLfont* font);
  * @return  Line height
  */
 FTGL_EXPORT float ftglGetFontLineHeight(FTGLfont* font);
+
+/**
+* Gets the maximum character width for the font.
+*
+* @param font  An FTGLfont* object.
+* @return  Maximum width
+*/
+FTGL_EXPORT float ftglGetFontMaxWidth(FTGLfont* font);
 
 /**
  * Get the bounding box for a string.

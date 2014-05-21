@@ -14,7 +14,7 @@ ifdef DBG
   endif  
 endif  
 
-INCLUDES = ../include ../src . ../srcmglplot/ftgl ../srcmglplot/freetype
+INCLUDES = ../include ../src . ../srcmglplot/ftgl ../srcmglplot/freetype $(CD)/src/ftgl
 LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
 LIBS = freetype
 DEFINES += FTGL_LIBRARY_STATIC

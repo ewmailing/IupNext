@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lua51", "Lua51", "{1CBEAA34-BA34-497D-A775-B9AF6F905696}"
 EndProject
@@ -22,6 +22,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupmot", "iupmot.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuptest", "iuptest.vcxproj", "{2F92EC58-D94C-40BF-8C82-77607C72E1E3}"
 	ProjectSection(ProjectDependencies) = postProject
+		{972D1765-90E0-4ABD-93D7-88CB0ADCE9DB} = {972D1765-90E0-4ABD-93D7-88CB0ADCE9DB}
 		{5EABE977-C56D-13FA-45DD-12A8972EA8CC} = {5EABE977-C56D-13FA-45DD-12A8972EA8CC}
 	EndProjectSection
 EndProject
@@ -179,6 +180,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluaweb51", "iupluaweb51.vcxproj", "{42A210A8-4E51-4D6A-9FAC-5C0E6B19FD4D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluaweb52", "iupluaweb52.vcxproj", "{873D2551-872C-44AE-8FB4-97B8DEB75EEB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupglcontrols", "iupglcontrols.vcxproj", "{972D1765-90E0-4ABD-93D7-88CB0ADCE9DB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E251B4F4-0B0A-482B-BA18-2509ADC4B6AA} = {E251B4F4-0B0A-482B-BA18-2509ADC4B6AA}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -448,6 +454,10 @@ Global
 		{873D2551-872C-44AE-8FB4-97B8DEB75EEB}.Debug|Win32.Build.0 = Debug|Win32
 		{873D2551-872C-44AE-8FB4-97B8DEB75EEB}.Debug|x64.ActiveCfg = Debug|x64
 		{873D2551-872C-44AE-8FB4-97B8DEB75EEB}.Debug|x64.Build.0 = Debug|x64
+		{972D1765-90E0-4ABD-93D7-88CB0ADCE9DB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{972D1765-90E0-4ABD-93D7-88CB0ADCE9DB}.Debug|Win32.Build.0 = Debug|Win32
+		{972D1765-90E0-4ABD-93D7-88CB0ADCE9DB}.Debug|x64.ActiveCfg = Debug|x64
+		{972D1765-90E0-4ABD-93D7-88CB0ADCE9DB}.Debug|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
