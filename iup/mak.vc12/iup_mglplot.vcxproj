@@ -47,7 +47,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;..\src;..\srcmglplot;..\srcmglplot\ftgl;..\srcmglplot\freetype;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\src;..\srcmglplot;..\srcmglplot\ftgl;..\srcmglplot\freetype;..\..\cd\src\ftgl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;_DEBUG;IUP_ASSERT;NO_PNG;NO_GSL;FTGL_LIBRARY_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -131,16 +131,6 @@
     <ClCompile Include="..\srcmglplot\mgl\mgl_vect.cpp" />
     <ClCompile Include="..\srcmglplot\mgl\mgl_zb.cpp" />
     <ClCompile Include="..\srcmglplot\mgl\mgl_zb2.cpp" />
-    <ClCompile Include="..\srcmglplot\ftgl\FTCharmap.cpp" />
-    <ClCompile Include="..\srcmglplot\ftgl\FTContour.cpp" />
-    <ClCompile Include="..\srcmglplot\ftgl\FTFace.cpp" />
-    <ClCompile Include="..\srcmglplot\ftgl\FTFont\FTFont.cpp" />
-    <ClCompile Include="..\srcmglplot\ftgl\FTGlyph\FTGlyph.cpp" />
-    <ClCompile Include="..\srcmglplot\ftgl\FTGlyphContainer.cpp" />
-    <ClCompile Include="..\srcmglplot\ftgl\FTLibrary.cpp" />
-    <ClCompile Include="..\srcmglplot\ftgl\FTPoint.cpp" />
-    <ClCompile Include="..\srcmglplot\ftgl\FTSize.cpp" />
-    <ClCompile Include="..\srcmglplot\ftgl\FTVectoriser.cpp" />
     <ClCompile Include="..\srcmglplot\iup_mglplot.cpp" />
     <ClCompile Include="..\srcmglplot\mgl_makefont.cpp" />
   </ItemGroup>

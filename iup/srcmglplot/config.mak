@@ -14,25 +14,24 @@ ifdef DBG
   endif  
 endif  
 
-INCLUDES = ../include ../src . ../srcmglplot/ftgl ../srcmglplot/freetype $(CD)/src/ftgl
+INCLUDES = ../include ../src . $(CD)/src/freetype2 $(CD)/src/ftgl
 LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
-LIBS = freetype
-DEFINES += FTGL_LIBRARY_STATIC
+LIBS = ftgl freetype
+ifneq ($(findstring dll, $(TEC_UNAME)), )
+  DEFINES = FTGL_LIBRARY
+else
+  DEFINES = FTGL_LIBRARY_STATIC
+endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS = freetype6
+  LIBS = ftgl freetype6
 endif
 
 ifneq ($(findstring cygw, $(TEC_UNAME)), )
-  LIBS = freetype-6 fontconfig
+  LIBS = ftgl freetype-6 fontconfig
 endif
 
 LIBS := iup iupgl $(LIBS)
-
-SRCFTGL = ftgl/FTGlyph/FTGlyph.cpp ftgl/FTFont/FTFont.cpp \
-    ftgl/FTCharmap.cpp ftgl/FTContour.cpp ftgl/FTFace.cpp \
-    ftgl/FTGlyphContainer.cpp ftgl/FTLibrary.cpp \
-    ftgl/FTPoint.cpp ftgl/FTSize.cpp ftgl/FTVectoriser.cpp
 
 DEFINES += NO_PNG NO_GSL
 
@@ -46,7 +45,7 @@ SRCMGLPLOT = mgl_1d.cpp mgl_crust.cpp mgl_evalc.cpp \
   mgl_cont.cpp mgl_eval.cpp mgl_gl.cpp mgl_zb2.cpp
 SRCMGLPLOT := $(addprefix mgl/, $(SRCMGLPLOT))
 
-SRC = iup_mglplot.cpp mgl_makefont.cpp $(SRCMGLPLOT) $(SRCFTGL)
+SRC = iup_mglplot.cpp mgl_makefont.cpp $(SRCMGLPLOT)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   INCLUDES += $(X11_INC)

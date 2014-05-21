@@ -10,9 +10,6 @@
     <Filter Include="mgl\inc">
       <UniqueIdentifier>{d0203a50-aa87-4bd5-9bf6-665e09ad28f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ftgl">
-      <UniqueIdentifier>{68fea4ca-e766-4947-b818-23329f27945c}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iup_mglplot.h">
@@ -164,36 +161,6 @@
     </ClCompile>
     <ClCompile Include="..\srcmglplot\mgl\mgl_zb2.cpp">
       <Filter>mgl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srcmglplot\ftgl\FTCharmap.cpp">
-      <Filter>ftgl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srcmglplot\ftgl\FTContour.cpp">
-      <Filter>ftgl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srcmglplot\ftgl\FTFace.cpp">
-      <Filter>ftgl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srcmglplot\ftgl\FTFont\FTFont.cpp">
-      <Filter>ftgl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srcmglplot\ftgl\FTGlyph\FTGlyph.cpp">
-      <Filter>ftgl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srcmglplot\ftgl\FTGlyphContainer.cpp">
-      <Filter>ftgl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srcmglplot\ftgl\FTLibrary.cpp">
-      <Filter>ftgl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srcmglplot\ftgl\FTPoint.cpp">
-      <Filter>ftgl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srcmglplot\ftgl\FTSize.cpp">
-      <Filter>ftgl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srcmglplot\ftgl\FTVectoriser.cpp">
-      <Filter>ftgl</Filter>
     </ClCompile>
     <ClCompile Include="..\srcmglplot\iup_mglplot.cpp" />
     <ClCompile Include="..\srcmglplot\mgl_makefont.cpp" />
