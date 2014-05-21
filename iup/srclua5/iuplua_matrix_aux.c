@@ -95,7 +95,7 @@ static int MatGetAttribute(lua_State *L)
   {
     if (iupAttribIsNotString(ih, name))
     {
-      if (iupObjectCheck((Ihandle*)value))
+      if (iupAttribIsIhandle(ih, name))
         iuplua_pushihandle(L, (Ihandle*)value);
       else
         lua_pushlightuserdata(L, (void*)value);
