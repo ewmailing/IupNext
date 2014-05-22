@@ -89,6 +89,7 @@
     <ClInclude Include="..\srcglcontrols\iup_glcontrols.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\srcglcontrols\iup_glbutton.c" />
     <ClCompile Include="..\srcglcontrols\iup_glcontrols.c" />
     <ClCompile Include="..\srcglcontrols\iup_glcanvasbox.c" />
     <ClCompile Include="..\srcglcontrols\iup_gldraw.c" />

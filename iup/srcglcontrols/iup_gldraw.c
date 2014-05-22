@@ -33,6 +33,10 @@
 void iupGLDrawLine(Ihandle* ih, double x1, double y1, double x2, double y2, float width, const char* color, int active)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
+
+  if (width == 0)
+    return;
+
   iupStrToRGBA(color, &r, &g, &b, &a);
 
   /* y is oriented top to bottom in IUP */
@@ -54,6 +58,10 @@ void iupGLDrawLine(Ihandle* ih, double x1, double y1, double x2, double y2, floa
 void iupGLDrawRect(Ihandle* ih, double xmin, double xmax, double ymin, double ymax, float width, const char* color, int active)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
+
+  if (width == 0 || xmin == xmax || ymin == ymax)
+    return;
+
   iupStrToRGBA(color, &r, &g, &b, &a);
 
   /* y is oriented top to bottom in IUP */
@@ -74,17 +82,41 @@ void iupGLDrawRect(Ihandle* ih, double xmin, double xmax, double ymin, double ym
   glEnd();
 }
 
+void iupGLDrawBox(Ihandle* ih, double xmin, double xmax, double ymin, double ymax, const char* color)
+{
+  unsigned char r = 0, g = 0, b = 0, a = 255;
+
+  if (!color || xmin == xmax || ymin == ymax)
+    return;
+
+  iupStrToRGBA(color, &r, &g, &b, &a);
+
+  /* y is oriented top to bottom in IUP */
+  ymin = ih->currentheight - 1 - ymin;
+  ymax = ih->currentheight - 1 - ymax;
+
+  glColor4ub(r, g, b, a);
+
+  glBegin(GL_QUADS);
+  glVertex2d(xmin, ymin);
+  glVertex2d(xmax, ymin);
+  glVertex2d(xmax, ymax);
+  glVertex2d(xmin, ymax);
+  glEnd();
+}
+
 void iupGLDrawText(Ihandle* ih, double x, double y, const char* str, const char* color, int active)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
+
+  if (!str)
+    return;
+
   iupStrToRGBA(color, &r, &g, &b, &a);
 
   if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
   glColor4ub(r, g, b, a);
-
-  if (!str)
-    return;
 
   if (str[0])
   {
@@ -146,6 +178,4 @@ void iupGLDrawImage(Ihandle* ih, double x, double y, const char* name, int activ
     glRasterPos2d(x, y);
     glDrawPixels(image->currentwidth, image->currentheight, format, GL_UNSIGNED_BYTE, gldata);
   }
-
-  (void)ih;
 }

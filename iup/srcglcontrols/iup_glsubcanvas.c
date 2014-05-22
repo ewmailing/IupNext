@@ -282,12 +282,14 @@ Iclass* iupGLSubCanvasNewClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* redefine native visual attributes */
-  iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_SAVE | IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "ACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_SAVE | IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "ACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "ZORDER", NULL, iGLSubCanvasSetZorderAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 200 200", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "BORDERWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_DEFAULT);
+  /* Common visual */
+  iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 200 200", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "BORDERWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
 
   iupClassRegisterAttribute(ic, "REDRAWFRONT", NULL, iGLSubCanvasSetRedrawFrontAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 

@@ -17,6 +17,7 @@ Iclass* iupGLCanvasBoxNewClass(void);
 Iclass* iupGLSubCanvasNewClass(void);
 Iclass* iupGLLabelNewClass(void);
 Iclass* iupGLSeparatorNewClass(void);
+Iclass* iupGLButtonNewClass(void);
 
 void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
 void iupGLSubCanvasSaveState(void);
@@ -42,6 +43,7 @@ void iupGLDrawText(Ihandle* ih, double x, double y, const char* str, const char*
 void iupGLDrawImage(Ihandle* ih, double x, double y, const char* name, int active);
 void iupGLDrawLine(Ihandle* ih, double x1, double y1, double x2, double y2, float width, const char* color, int active);
 void iupGLDrawRect(Ihandle* ih, double xmin, double xmax, double ymin, double ymax, float width, const char* color, int active);
+void iupGLDrawBox(Ihandle* ih, double xmin, double xmax, double ymin, double ymax, const char* color);
 
 void iupGLIconRegisterAttrib(Iclass* ic);
 void iupGLIconDraw(Ihandle* ih, int icon_width, int icon_height, const char *image, const char* title, const char* fgcolor, int active);

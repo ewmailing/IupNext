@@ -64,16 +64,17 @@ static void iGLSeparatorComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, in
 {
   int natural_w = 0,
       natural_h = 0;
+  float width = iupAttribGetFloat(ih, "BORDERWIDTH");
 
   if (iGLSeparatorIsVertical(ih))
   {
-    natural_w = 2;
+    natural_w = (int)width;
     if (ih->userheight <= 0)
       ih->expand = IUP_EXPAND_HFREE;
   }
   else
   {
-    natural_h = 2;
+    natural_h = (int)width;
     if (ih->userwidth <= 0)
       ih->expand = IUP_EXPAND_WFREE;
   }
