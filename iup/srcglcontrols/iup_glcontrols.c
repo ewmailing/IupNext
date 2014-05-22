@@ -26,7 +26,8 @@ int IupGLControlsOpen(void)
   iupRegisterClass(iupGLCanvasBoxNewClass());
   iupRegisterClass(iupGLSubCanvasNewClass());
   iupRegisterClass(iupGLLabelNewClass());
-
+  iupRegisterClass(iupGLSeparatorNewClass());
+  
   IupSetGlobal("_IUP_GLCONTROLS_OPEN", "1");
 
   return IUP_NOERROR;

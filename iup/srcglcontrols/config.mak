@@ -5,7 +5,7 @@ OPT = YES
 INCLUDES = ../include ../src .
 
 SRC = iup_glcontrols.c iup_glcanvasbox.c iup_glsubcanvas.c iup_gllabel.c \
-      iup_glimage.c iup_glfont.c iup_gldraw.c iup_glicon.c
+      iup_glimage.c iup_glfont.c iup_gldraw.c iup_glicon.c iup_glseparator.c
 
 LIBS = iupgl iup 
 LDIR = ../lib/$(TEC_UNAME)

@@ -96,6 +96,7 @@
     <ClCompile Include="..\srcglcontrols\iup_glicon.c" />
     <ClCompile Include="..\srcglcontrols\iup_glimage.c" />
     <ClCompile Include="..\srcglcontrols\iup_gllabel.c" />
+    <ClCompile Include="..\srcglcontrols\iup_glseparator.c" />
     <ClCompile Include="..\srcglcontrols\iup_glsubcanvas.c" />
   </ItemGroup>
   <ItemGroup>

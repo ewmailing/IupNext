@@ -4,3 +4,4 @@ EXPORTS
   IupGLCanvasBox
   IupGLSubCanvas
   IupGLLabel
+  IupGLSeparator

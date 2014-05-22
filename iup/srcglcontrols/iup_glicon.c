@@ -113,7 +113,7 @@ static void iGLIconGetPosition(Ihandle* ih, int icon_width, int icon_height, int
   int horiz_alignment, vert_alignment;
 
   IupGetIntInt(ih, "PADDING", &horiz_padding, &vert_padding);
-  iGLIconGetAlignment(iupAttribGet(ih, "ALIGNMENT"), &horiz_alignment, &vert_alignment);
+  iGLIconGetAlignment(iupAttribGetStr(ih, "ALIGNMENT"), &horiz_alignment, &vert_alignment);
 
   if (horiz_alignment == IUP_ALIGN_ARIGHT)
     *x = icon_width - (width + 2 * horiz_padding);
@@ -208,7 +208,7 @@ void iupGLIconDraw(Ihandle* ih, int icon_width, int icon_height,
     if (title)
     {
       int spacing = iupAttribGetInt(ih, "SPACING");
-      int img_position = iGLIconGetImagePosition(iupAttribGet(ih, "IMAGEPOSITION"));
+      int img_position = iGLIconGetImagePosition(iupAttribGetStr(ih, "IMAGEPOSITION"));
       int img_x, img_y, txt_x, txt_y;
       int txt_width, txt_height;
       int img_width, img_height;
@@ -269,7 +269,7 @@ void iupGLIconGetNaturalSize(Ihandle* ih, const char* image, const char* title, 
     if (title)
     {
       int spacing = iupAttribGetInt(ih, "SPACING");
-      int img_position = iGLIconGetImagePosition(iupAttribGet(ih, "IMAGEPOSITION"));
+      int img_position = iGLIconGetImagePosition(iupAttribGetStr(ih, "IMAGEPOSITION"));
       int text_w, text_h;
       iupGLFontGetMultiLineStringSize(ih, title, &text_w, &text_h);
 

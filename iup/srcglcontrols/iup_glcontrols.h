@@ -16,6 +16,7 @@ extern "C" {
 Iclass* iupGLCanvasBoxNewClass(void);
 Iclass* iupGLSubCanvasNewClass(void);
 Iclass* iupGLLabelNewClass(void);
+Iclass* iupGLSeparatorNewClass(void);
 
 void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
 void iupGLSubCanvasSaveState(void);

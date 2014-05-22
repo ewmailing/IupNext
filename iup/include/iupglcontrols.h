@@ -20,6 +20,7 @@ Ihandle* IupGLCanvasBox(Ihandle* child, ...);
 Ihandle* IupGLSubCanvas(void);
 
 Ihandle* IupGLLabel(const char* title);
+Ihandle* IupGLSeparator(void);
 
 
 #ifdef __cplusplus
