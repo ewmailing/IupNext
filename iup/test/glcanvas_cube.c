@@ -266,7 +266,7 @@ void GLCanvasCubeTest(void)
 
   gbutton1 = IupGLButton("Button");
   IupSetAttribute(gbutton1, "PADDING", "5x5");
-  IupSetAttribute(gbutton1, "BGCOLOR", "245 245 245 128");
+  IupSetAttribute(gbutton1, "BGCOLOR", "245 245 245 92");
 
   gbutton2 = IupGLButton(NULL);
   IupSetAttribute(gbutton2, "PADDING", "5x5");

@@ -43,7 +43,7 @@ static int iGLSeparatorAction(Ihandle* ih)
   else
   {
     x1 = 0;
-    x2 = ih->currentwidth;
+    x2 = ih->currentwidth-1;
     y1 = y2 = ih->currentheight / 2;
   }
 
