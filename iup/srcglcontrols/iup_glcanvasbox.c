@@ -37,7 +37,7 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y)
   return NULL;
 }
 
-static void iGLCanvasBoxCallChildAction(Ihandle* ih)
+static void iGLCanvasBoxCallChildAction(Ihandle* ih, Ihandle* gl_parent)
 {
   Ihandle* child = ih->firstchild;
   while (child)
@@ -45,11 +45,11 @@ static void iGLCanvasBoxCallChildAction(Ihandle* ih)
     IFn cb = (IFn)IupGetCallback(child, "GL_ACTION");
     if (cb && iupAttribGetInt(child, "VISIBLE"))
     {
-      iupGLSubCanvasSetTransform(child, ih);
+      iupGLSubCanvasSetTransform(child, gl_parent);
       cb(child);
     }
 
-    iGLCanvasBoxCallChildAction(child);
+    iGLCanvasBoxCallChildAction(child, gl_parent);
     child = child->brother;
   }
 }
@@ -59,7 +59,7 @@ static int iGLCanvasBoxSwapBuffers_CB(Ihandle* ih)
   iupGLSubCanvasSaveState();
 
   /* redraw all children */
-  iGLCanvasBoxCallChildAction(ih);
+  iGLCanvasBoxCallChildAction(ih, ih);
 
   iupGLSubCanvasRestoreState(ih);
 
@@ -279,7 +279,7 @@ static void iGLCanvasBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
 static int iGLCanvasBoxGetVerticalAlign(Ihandle* child)
 {
-  char* value = iupAttribGetStr(child, "VERTICALALIGN");
+  char* value = iupAttribGet(child, "VERTICALALIGN");
   if (!value)
     return -1;  /* FLOAT */
   if (iupStrEqualNoCase(value, "ABOTTOM"))
@@ -293,7 +293,7 @@ static int iGLCanvasBoxGetVerticalAlign(Ihandle* child)
 
 static int iGLCanvasBoxGetHorizontalAlign(Ihandle* child)
 {
-  char* value = iupAttribGetStr(child, "HORIZONTALALIGN");
+  char* value = iupAttribGet(child, "HORIZONTALALIGN");
   if (!value)
     return -1; /* FLOAT */
   if (iupStrEqualNoCase(value, "ARIGHT"))

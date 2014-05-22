@@ -29,10 +29,25 @@ static int iGLSeparatorIsVertical(Ihandle* ih)
 
 static int iGLSeparatorAction(Ihandle* ih)
 {
-  //if (iGLSeparatorIsVertical(ih))
-  //  iupGLDrawLeftBorder(ih);
-  //else
-  //  iupGLDrawTopBorder(ih);
+  double x1, y1, x2, y2;
+  int active = iupAttribGetInt(ih, "ACTIVE");
+  char* color = iupAttribGetStr(ih, "BORDERCOLOR");
+  float width = iupAttribGetFloat(ih, "BORDERWIDTH");
+
+  if (iGLSeparatorIsVertical(ih))
+  {
+    y1 = 0;
+    y2 = ih->currentheight-1;
+    x1 = x2 = ih->currentwidth / 2;
+  }
+  else
+  {
+    x1 = 0;
+    x2 = ih->currentwidth;
+    y1 = y2 = ih->currentheight / 2;
+  }
+
+  iupGLDrawLine(ih, x1, y1, x2, y2, width, color, active);
 
   return IUP_DEFAULT;
 }

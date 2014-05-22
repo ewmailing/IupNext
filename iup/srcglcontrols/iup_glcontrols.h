@@ -38,9 +38,10 @@ void iupGLFontFinish(void);
 void iupGLFontRelease(Ihandle* gl_parent);
 void iupGLFontGetDim(Ihandle* ih, int *maxwidth, int *height, int *ascent, int *descent);
 
-void iupGLDrawRect(double xmin, double xmax, double ymin, double ymax);
 void iupGLDrawText(Ihandle* ih, double x, double y, const char* str, const char* color, int active);
 void iupGLDrawImage(Ihandle* ih, double x, double y, const char* name, int active);
+void iupGLDrawLine(Ihandle* ih, double x1, double y1, double x2, double y2, float width, const char* color, int active);
+void iupGLDrawRect(Ihandle* ih, double xmin, double xmax, double ymin, double ymax, float width, const char* color, int active);
 
 void iupGLIconRegisterAttrib(Iclass* ic);
 void iupGLIconDraw(Ihandle* ih, int icon_width, int icon_height, const char *image, const char* title, const char* fgcolor, int active);

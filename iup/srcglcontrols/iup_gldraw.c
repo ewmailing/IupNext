@@ -30,8 +30,42 @@
 #include "iup_glcontrols.h"
 
 
-void iupGLDrawRect(double xmin, double xmax, double ymin, double ymax)
+void iupGLDrawLine(Ihandle* ih, double x1, double y1, double x2, double y2, float width, const char* color, int active)
 {
+  unsigned char r = 0, g = 0, b = 0, a = 255;
+  iupStrToRGBA(color, &r, &g, &b, &a);
+
+  /* y is oriented top to bottom in IUP */
+  y1 = ih->currentheight - 1 - y1;
+  y2 = ih->currentheight - 1 - y2;
+
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+  glColor4ub(r, g, b, a);
+
+  glLineWidth(width);
+
+  glBegin(GL_LINES);
+  glVertex2d(x1, y1);
+  glVertex2d(x2, y2);
+  glEnd();
+}
+
+void iupGLDrawRect(Ihandle* ih, double xmin, double xmax, double ymin, double ymax, float width, const char* color, int active)
+{
+  unsigned char r = 0, g = 0, b = 0, a = 255;
+  iupStrToRGBA(color, &r, &g, &b, &a);
+
+  /* y is oriented top to bottom in IUP */
+  ymin = ih->currentheight - 1 - ymin;
+  ymax = ih->currentheight - 1 - ymax;
+
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+  glColor4ub(r, g, b, a);
+
+  glLineWidth(width);
+
   glBegin(GL_LINE_LOOP);
   glVertex2d(xmin, ymin);
   glVertex2d(xmax, ymin);
