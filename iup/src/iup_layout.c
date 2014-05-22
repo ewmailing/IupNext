@@ -279,37 +279,22 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink)
   }
   else
   {
-    if (ih->iclass->childtype!=IUP_CHILDNONE)
-    {
-      if (shrink)
-      {
-        /* if expand then use the given size, else use the natural size */
-        /* this expand is a combination of the expand defined for the element and its children */
-        ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)?  w: ih->naturalwidth;
-        ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? h: ih->naturalheight;
-      }
-      else
-      {
-        /* if expand then use the given size (if greater than natural size), else use the natural size */
-        /* this expand is a combination of the expand defined for the element and its children */
-        ih->currentwidth  = (ih->expand & IUP_EXPAND_WIDTH)?  iupMAX(ih->naturalwidth, w):  ih->naturalwidth;
-        ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? iupMAX(ih->naturalheight, h): ih->naturalheight;
-      }
-    }
-    else
+    if (ih->iclass->childtype != IUP_CHILDNONE && !shrink)
     {
       /* shrink is only used by containers, usually is 0 */
       /* for non containers is always 1, so they always can be smaller than the natural size */
-
-      /* if expand use the given size, else use the natural size */
-      /* this expand is the defined for the element */
-      ih->currentwidth = (ih->expand & IUP_EXPAND_WIDTH)? w: ih->naturalwidth;
-      ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT)? h: ih->naturalheight;
+      w = iupMAX(ih->naturalwidth, w);
+      h = iupMAX(ih->naturalheight, h);
     }
+
+    /* if expand use the given size, else use the natural size */
+    ih->currentwidth = (ih->expand & IUP_EXPAND_WIDTH || ih->expand & IUP_EXPAND_WFREE) ? w : ih->naturalwidth;
+    ih->currentheight = (ih->expand & IUP_EXPAND_HEIGHT || ih->expand & IUP_EXPAND_HFREE) ? h : ih->naturalheight;
   }
 
-  /* crop also the current size if expanded */
-  if (ih->expand & IUP_EXPAND_WIDTH || ih->expand & IUP_EXPAND_HEIGHT)
+  /* crop also the current size if some expanded */
+  if (ih->expand & IUP_EXPAND_WIDTH || ih->expand & IUP_EXPAND_HEIGHT ||
+      ih->expand & IUP_EXPAND_WFREE || ih->expand & IUP_EXPAND_HFREE)
     iupLayoutApplyMinMaxSize(ih, &(ih->currentwidth), &(ih->currentheight));
 
   if (ih->firstchild)

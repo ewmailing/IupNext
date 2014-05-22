@@ -389,6 +389,10 @@ static int iBaseSetExpandAttrib(Ihandle* ih, const char* value)
     ih->expand = IUP_EXPAND_WIDTH;
   else if (iupStrEqualNoCase(value, "VERTICAL"))
     ih->expand = IUP_EXPAND_HEIGHT;
+  else if (iupStrEqualNoCase(value, "HORIZONTALFREE"))
+    ih->expand = IUP_EXPAND_WFREE;
+  else if (iupStrEqualNoCase(value, "VERTICALFREE"))
+    ih->expand = IUP_EXPAND_HFREE;
   else
     ih->expand = IUP_EXPAND_NONE;
   return 0;
@@ -402,6 +406,10 @@ static char* iBaseGetExpandAttrib(Ihandle* ih)
     return "HORIZONTAL";
   else if (ih->expand & IUP_EXPAND_HEIGHT)
     return "VERTICAL";
+  else if (ih->expand & IUP_EXPAND_WFREE)
+    return "HORIZONTALFREE";
+  else if (ih->expand & IUP_EXPAND_HFREE)
+    return "VERTICALFREE";
   else
     return "NO";
 }
@@ -419,6 +427,10 @@ void iupBaseContainerUpdateExpand(Ihandle* ih)
       ih->expand = IUP_EXPAND_WIDTH;
     else if (iupStrEqualNoCase(expand, "VERTICAL"))
       ih->expand = IUP_EXPAND_HEIGHT;
+    else if (iupStrEqualNoCase(expand, "HORIZONTALFREE"))
+      ih->expand = IUP_EXPAND_WFREE;
+    else if (iupStrEqualNoCase(expand, "VERTICALFREE"))
+      ih->expand = IUP_EXPAND_HFREE;
     else
       ih->expand = IUP_EXPAND_BOTH;  /* default for containers is YES */
   }

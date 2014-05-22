@@ -40,11 +40,11 @@ void HboxTest(void)
   (
     h2=IupHbox
     (
-      IupFill(),
+//      IupFill(),
       b21=IupButton("1", NULL),
       b22=IupButton("2", NULL),
       b23=IupButton("3", NULL),
-      IupFill(),
+//      IupFill(),
       NULL
     )
   );
@@ -69,6 +69,8 @@ void HboxTest(void)
   );
   IupSetAttribute(fr3, "TITLE", "ALIGNMENT=ABOTTOM, MARGIN=10x10");
   IupSetAttribute(b31, "SIZE", "30x30");
+  //IupSetAttribute(b31, "EXPAND", "HORIZONTAL");
+  //IupSetAttribute(b31, "EXPAND", "YES");
   IupSetAttribute(b32, "SIZE", "30x40");
   IupSetAttribute(b33, "SIZE", "30x50");
   IupSetAttributes(h3, "ALIGNMENT=ABOTTOM, MARGIN=10x10"); /* Sets hbox's alignment and size */

@@ -386,7 +386,7 @@ void ScrollBoxTest(void)
   _frm_2 = IupFrame(
     IupVbox(
       IupSetAttributes(IupLabel("Label Text"), "TIP=\"Label TIP\""),
-      IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL, MAXSIZE=150, NAME=SAMP_SEP"),
+      IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL, NAME=SAMP_SEP"),
       IupSetAttributes(IupLabel(NULL), "IMAGE=img1"),
       NULL));
   IupSetAttribute(_frm_2,"TITLE","IupLabel");
