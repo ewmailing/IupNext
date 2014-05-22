@@ -54,13 +54,13 @@ static void iGLSeparatorComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, in
   {
     natural_w = 2;
     if (ih->userheight <= 0)
-      ih->expand = IUP_EXPAND_HEIGHT;
+      ih->expand = IUP_EXPAND_HFREE;
   }
   else
   {
     natural_h = 2;
     if (ih->userwidth <= 0)
-      ih->expand = IUP_EXPAND_WIDTH;
+      ih->expand = IUP_EXPAND_WFREE;
   }
 
   *w = natural_w;

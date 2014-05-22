@@ -238,8 +238,8 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(box, "MARGIN", "5x5");
 
   glabel = IupGLLabel("Test");
-  IupSetAttribute(glabel, "HPOSITION", "ACENTER");
-  IupSetAttribute(glabel, "VPOSITION", "ATOP");
+  IupSetAttribute(glabel, "HORIZONTALALIGN", "ACENTER");
+  IupSetAttribute(glabel, "VERTICALALIGN", "ATOP");
   IupSetAttribute(glabel, "FGCOLOR", "255 255 255");
   IupSetAttribute(glabel, "FONT", "Arial, 18");
   IupSetAttributeHandle(glabel, "IMAGE", load_image_Tecgraf());

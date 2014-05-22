@@ -277,9 +277,9 @@ static void iGLCanvasBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   }
 }
 
-static int iGLCanvasBoxGetVerticalPosition(Ihandle* child)
+static int iGLCanvasBoxGetVerticalAlign(Ihandle* child)
 {
-  char* value = iupAttribGetStr(child, "VPOSITION");
+  char* value = iupAttribGetStr(child, "VERTICALALIGN");
   if (!value)
     return -1;  /* FLOAT */
   if (iupStrEqualNoCase(value, "ABOTTOM"))
@@ -291,9 +291,9 @@ static int iGLCanvasBoxGetVerticalPosition(Ihandle* child)
   return -1;  /* FLOAT */
 }
 
-static int iGLCanvasBoxGetHorizontalPosition(Ihandle* child)
+static int iGLCanvasBoxGetHorizontalAlign(Ihandle* child)
 {
-  char* value = iupAttribGetStr(child, "HPOSITION");
+  char* value = iupAttribGetStr(child, "HORIZONTALALIGN");
   if (!value)
     return -1; /* FLOAT */
   if (iupStrEqualNoCase(value, "ARIGHT"))
@@ -316,8 +316,8 @@ static void iGLCanvasBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    int vert_pos = iGLCanvasBoxGetVerticalPosition(child);
-    int horiz_pos = iGLCanvasBoxGetHorizontalPosition(child);
+    int vert_pos = iGLCanvasBoxGetVerticalAlign(child);
+    int horiz_pos = iGLCanvasBoxGetHorizontalAlign(child);
 
     if (vert_pos == IUP_ALIGN_ACENTER)
       y = (ih->currentheight - child->currentheight) / 2;
@@ -436,6 +436,11 @@ Iclass* iupGLCanvasBoxNewClass(void)
 
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iGLCanvasBoxSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARGIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
+  /* At Children:
+       VERTICALALIGN
+       HORIZONTALALIGN
+  */
 
   return ic;
 }
