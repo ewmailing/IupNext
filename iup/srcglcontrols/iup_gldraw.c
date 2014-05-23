@@ -30,11 +30,11 @@
 #include "iup_glcontrols.h"
 
 
-void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float width, const char* color, int active)
+void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float linewidth, const char* color, int active)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
-  if (width == 0)
+  if (linewidth == 0)
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
@@ -47,7 +47,7 @@ void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float width, con
     iupGLColorMakeInactive(&r, &g, &b);
   glColor4ub(r, g, b, a);
 
-  glLineWidth(width);
+  glLineWidth(linewidth);
 
   glBegin(GL_LINES);
   glVertex2i(x1, y1);
@@ -55,11 +55,11 @@ void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float width, con
   glEnd();
 }
 
-void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float width, const char* color, int active)
+void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float linewidth, const char* color, int active)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
-  if (width == 0 || xmin == xmax || ymin == ymax)
+  if (linewidth == 0 || xmin == xmax || ymin == ymax)
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
@@ -72,7 +72,7 @@ void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float wi
     iupGLColorMakeInactive(&r, &g, &b);
   glColor4ub(r, g, b, a);
 
-  glLineWidth(width);
+  glLineWidth(linewidth);
 
   glBegin(GL_LINE_LOOP);
   glVertex2i(xmin, ymin);
@@ -115,18 +115,12 @@ void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color
 
   if (str[0])
   {
-    int len, lineheight, ascent, stipple = 0, baseline;
+    int len, lineheight, ascent, baseline;
     const char *nextstr;
     const char *curstr = str;
 
     iupGLFontGetDim(ih, NULL, &lineheight, &ascent, NULL);
     baseline = lineheight - ascent;
-
-    if (glIsEnabled(GL_POLYGON_STIPPLE))
-    {
-      stipple = 1;
-      glDisable(GL_POLYGON_STIPPLE);
-    }
 
     /* y is at top and oriented top to bottom in IUP */
     /* y is at baseline and oriented bottom to top in OpenGL */
@@ -148,9 +142,6 @@ void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color
     } while (*nextstr);
 
     glPopMatrix();
-
-    if (stipple)
-      glEnable(GL_POLYGON_STIPPLE);
   }
 }
 

@@ -24,16 +24,32 @@ static int iGLButtonACTION(Ihandle* ih)
   char *image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
   int active = iupAttribGetInt(ih, "ACTIVE");
+  int pressed = iupAttribGetInt(ih, "PRESSED");
+  int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
-  char* color = iupAttribGetStr(ih, "BORDERCOLOR");
-  float width = iupAttribGetFloat(ih, "BORDERWIDTH");
+  char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
+  char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
+  char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
+  float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+  int border = 0;
 
-  //PRESSED
-  //HIGHLIGHT
+  if (pressed)
+  {
+    bgcolor = presscolor;
+    border = 1;
+  }
+  else if (highlight)
+  {
+    bgcolor = hlcolor;
+    border = 1;
+  }
 
-  iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, width, color, active);
+  /* draw border */
+  if (border)
+    iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active);
 
+  /* draw background */
   iupGLDrawBox(ih, 1, ih->currentwidth - 2, 1, ih->currentheight - 2, bgcolor);
 
   iupGLIconDraw(ih, ih->currentwidth, ih->currentheight, image, title, fgcolor, active);
@@ -45,7 +61,7 @@ static int iGLButtonBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y
 {
   if (button == IUP_BUTTON1)
   {
-    iupGLSubCanvasRedraw(ih);
+    iupGLSubCanvasRestoreRedraw(ih);
 
     if (!pressed)
     {
@@ -58,6 +74,11 @@ static int iGLButtonBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y
       }
     }
   }
+  else
+  {
+    Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+    iupGLSubCanvasRestoreState(gl_parent);
+  }
 
   (void)x;
   (void)y;
@@ -68,9 +89,9 @@ static int iGLButtonBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y
 static int iGLButtonCreateMethod(Ihandle* ih, void** params)
 {
   IupSetCallback(ih, "GL_ACTION", iGLButtonACTION);
-  IupSetCallback(ih, "GL_BUTTON_CB", iupGLSubCanvasRedraw);
-  IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRedraw);
-  IupSetCallback(ih, "GL_ENTERWINDOW_CB", iupGLSubCanvasRedraw);
+  IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLButtonBUTTON_CB);
+  IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRestoreRedraw);
+  IupSetCallback(ih, "GL_ENTERWINDOW_CB", iupGLSubCanvasRestoreRedraw);
 
   (void)params; /* label create already parsed title */
   return IUP_NOERROR;
