@@ -89,6 +89,13 @@ void iupGLSubCanvasRedrawFront(Ihandle* ih)
   }
 }
 
+int iupGLSubCanvasRedraw(Ihandle* ih)
+{
+  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  IupSetAttribute(gl_parent, "REDRAW", NULL);
+  return IUP_DEFAULT;
+}
+
 static char* iGLSubCanvasGetCharSizeAttrib(Ihandle* ih)
 {
   int charwidth, charheight;

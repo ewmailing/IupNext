@@ -22,9 +22,9 @@ Iclass* iupGLButtonNewClass(void);
 void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
 void iupGLSubCanvasSaveState(void);
 void iupGLSubCanvasRestoreState(Ihandle* gl_parent);
-
 void iupGLSubCanvasRedrawFront(Ihandle* ih);
 void iupGLSubCanvasUpdateSizeFromFont(Ihandle* ih);
+int iupGLSubCanvasRedraw(Ihandle* ih);
 
 void iupGLImageGetInfo(const char* name, int *w, int *h, int *bpp);
 unsigned char* iupGLImageGetData(Ihandle* ih, int active);

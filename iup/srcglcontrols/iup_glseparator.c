@@ -27,7 +27,7 @@ static int iGLSeparatorIsVertical(Ihandle* ih)
   return 1;
 }
 
-static int iGLSeparatorAction(Ihandle* ih)
+static int iGLSeparatorACTION(Ihandle* ih)
 {
   int x1, y1, x2, y2;
   int active = iupAttribGetInt(ih, "ACTIVE");
@@ -54,7 +54,7 @@ static int iGLSeparatorAction(Ihandle* ih)
 
 static int iGLSeparatorCreateMethod(Ihandle* ih, void** params)
 {
-  IupSetCallback(ih, "GL_ACTION", iGLSeparatorAction);
+  IupSetCallback(ih, "GL_ACTION", iGLSeparatorACTION);
   
   (void)params;
   return IUP_NOERROR;

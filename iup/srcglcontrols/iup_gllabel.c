@@ -19,7 +19,7 @@
 #include "iup_glcontrols.h"
 
 
-static int iGLLabelAction(Ihandle* ih)
+static int iGLLabelACTION(Ihandle* ih)
 {
   char *image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
@@ -36,7 +36,7 @@ static int iGLLabelCreateMethod(Ihandle* ih, void** params)
   if (params && params[0])
     iupAttribSetStr(ih, "TITLE", (char*)(params[0]));
 
-  IupSetCallback(ih, "GL_ACTION", iGLLabelAction);
+  IupSetCallback(ih, "GL_ACTION", iGLLabelACTION);
   
   return IUP_NOERROR;
 }
