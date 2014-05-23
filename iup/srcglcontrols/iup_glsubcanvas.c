@@ -41,6 +41,7 @@ void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent)
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+  glTranslatef(0.375, 0.375, 0.0);  /* render all primitives at integer positions */
 }
 
 void iupGLSubCanvasSaveState(void)

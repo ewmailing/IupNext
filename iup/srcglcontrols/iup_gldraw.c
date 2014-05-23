@@ -30,7 +30,7 @@
 #include "iup_glcontrols.h"
 
 
-void iupGLDrawLine(Ihandle* ih, double x1, double y1, double x2, double y2, float width, const char* color, int active)
+void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float width, const char* color, int active)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
@@ -50,12 +50,12 @@ void iupGLDrawLine(Ihandle* ih, double x1, double y1, double x2, double y2, floa
   glLineWidth(width);
 
   glBegin(GL_LINES);
-  glVertex2d(x1, y1);
-  glVertex2d(x2, y2);
+  glVertex2i(x1, y1);
+  glVertex2i(x2, y2);
   glEnd();
 }
 
-void iupGLDrawRect(Ihandle* ih, double xmin, double xmax, double ymin, double ymax, float width, const char* color, int active)
+void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float width, const char* color, int active)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
@@ -75,14 +75,14 @@ void iupGLDrawRect(Ihandle* ih, double xmin, double xmax, double ymin, double ym
   glLineWidth(width);
 
   glBegin(GL_LINE_LOOP);
-  glVertex2d(xmin, ymin);
-  glVertex2d(xmax, ymin);
-  glVertex2d(xmax, ymax);
-  glVertex2d(xmin, ymax);
+  glVertex2i(xmin, ymin);
+  glVertex2i(xmax, ymin);
+  glVertex2i(xmax, ymax);
+  glVertex2i(xmin, ymax);
   glEnd();
 }
 
-void iupGLDrawBox(Ihandle* ih, double xmin, double xmax, double ymin, double ymax, const char* color)
+void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const char* color)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
@@ -97,15 +97,10 @@ void iupGLDrawBox(Ihandle* ih, double xmin, double xmax, double ymin, double yma
 
   glColor4ub(r, g, b, a);
 
-  glBegin(GL_QUADS);
-  glVertex2d(xmin, ymin);
-  glVertex2d(xmax, ymin);
-  glVertex2d(xmax, ymax);
-  glVertex2d(xmin, ymax);
-  glEnd();
+  glRecti(xmin, ymax, xmax + 1, ymin + 1);
 }
 
-void iupGLDrawText(Ihandle* ih, double x, double y, const char* str, const char* color, int active)
+void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color, int active)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
@@ -139,7 +134,7 @@ void iupGLDrawText(Ihandle* ih, double x, double y, const char* str, const char*
     y = ih->currentheight - 1 - y; /* orient bottom to top */
 
     glPushMatrix();
-    glTranslated(x, y, 0.0);
+    glTranslated((double)x, (double)y, 0.0);
 
     do
     {
@@ -159,7 +154,7 @@ void iupGLDrawText(Ihandle* ih, double x, double y, const char* str, const char*
   }
 }
 
-void iupGLDrawImage(Ihandle* ih, double x, double y, const char* name, int active)
+void iupGLDrawImage(Ihandle* ih, int x, int y, const char* name, int active)
 {
   Ihandle* image = iupGLIconGetImageHandle(ih, name, active);
   if (image)
@@ -175,7 +170,7 @@ void iupGLDrawImage(Ihandle* ih, double x, double y, const char* name, int activ
     y = y + image->currentheight - 1;  /* move to bottom */
     y = ih->currentheight - 1 - y; /* orient bottom to top */
 
-    glRasterPos2d(x, y);
+    glRasterPos2i(x, y);
     glDrawPixels(image->currentwidth, image->currentheight, format, GL_UNSIGNED_BYTE, gldata);
   }
 }

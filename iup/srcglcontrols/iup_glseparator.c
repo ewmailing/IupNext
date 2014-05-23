@@ -29,7 +29,7 @@ static int iGLSeparatorIsVertical(Ihandle* ih)
 
 static int iGLSeparatorAction(Ihandle* ih)
 {
-  double x1, y1, x2, y2;
+  int x1, y1, x2, y2;
   int active = iupAttribGetInt(ih, "ACTIVE");
   char* color = iupAttribGetStr(ih, "BORDERCOLOR");
   float width = iupAttribGetFloat(ih, "BORDERWIDTH");
