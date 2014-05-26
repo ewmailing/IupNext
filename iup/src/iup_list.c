@@ -91,12 +91,15 @@ void iupListSingleCallActionCb(Ihandle* ih, IFnsii cb, int pos)
     if (oldpos != pos)
     {
       iListCallActionCallback(ih, cb, oldpos, 0);
+      iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", pos);
       iListCallActionCallback(ih, cb, pos, 1);
     }
   }
   else
+  {
+    iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", pos);
     iListCallActionCallback(ih, cb, pos, 1);
-  iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", pos);
+  }
 }
 
 void iupListMultipleCallActionCb(Ihandle* ih, IFnsii cb, IFns multi_cb, int* pos, int sel_count)
