@@ -284,7 +284,7 @@ static unsigned char* cdIupBuildImageBuffer(Ihandle *image, int width, int heigh
 
 void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_inactive, long bgcolor)
 {
-  int size, plane_size, depth;
+  int plane_size, depth;
   int width = IupGetInt(image, "WIDTH");
   int height = IupGetInt(image, "HEIGHT");
   int bpp = IupGetInt(image, "BPP");
@@ -316,7 +316,6 @@ void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_ina
     return;
 
   plane_size = width*height;
-  size = plane_size*depth;
 
   if (depth==1)
   {
