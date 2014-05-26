@@ -46,7 +46,7 @@ void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float li
 void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const char* color);
 
 void iupGLIconRegisterAttrib(Iclass* ic);
-void iupGLIconDraw(Ihandle* ih, int icon_width, int icon_height, const char *image, const char* title, const char* fgcolor, int active);
+void iupGLIconDraw(Ihandle* ih, int icon_x, int icon_y, int icon_width, int icon_height, const char *image, const char* title, const char* fgcolor, int active);
 void iupGLIconGetNaturalSize(Ihandle* ih, const char* image, const char* title, int *w, int *h);
 Ihandle* iupGLIconGetImageHandle(Ihandle* ih, const char* name, int active);
 

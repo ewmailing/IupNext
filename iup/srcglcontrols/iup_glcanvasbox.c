@@ -94,6 +94,12 @@ static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, in
   int ret;
 
   Ihandle* child = iGLCanvasBoxPickChild(ih, x, y);
+
+  if (child || !pressed)
+    iupAttribSet(ih, "_IUP_GLBOX_SELFBUTTON", NULL);
+  else
+    iupAttribSet(ih, "_IUP_GLBOX_SELFBUTTON", "1");
+
   if (child && iupAttribGetInt(child, "ACTIVE"))
   {
     if (button == IUP_BUTTON1)
@@ -176,21 +182,25 @@ static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
   IFniis cb;
   int ret;
 
-  Ihandle* child = iGLCanvasBoxPickChild(ih, x, y);
-
-  iGLCanvasBoxEnterChild(ih, child);
-
-  if (child && iupAttribGetInt(child, "ACTIVE"))
+  /* only handle child if not pressed at self */
+  if (!iupAttribGet(ih, "_IUP_GLBOX_SELFBUTTON"))
   {
-    cb = (IFniis)IupGetCallback(child, "GL_MOTION_CB");
-    if (cb)
+    Ihandle* child = iGLCanvasBoxPickChild(ih, x, y);
+
+    iGLCanvasBoxEnterChild(ih, child);
+
+    if (child && iupAttribGetInt(child, "ACTIVE"))
     {
-      IupGLMakeCurrent(ih);
-      iupGLSubCanvasSaveState();
-      iupGLSubCanvasSetTransform(child, ih);
-      ret = cb(child, x - child->x, y - child->y, status);
-      if (ret != IUP_CONTINUE)
-        return IUP_DEFAULT;
+      cb = (IFniis)IupGetCallback(child, "GL_MOTION_CB");
+      if (cb)
+      {
+        IupGLMakeCurrent(ih);
+        iupGLSubCanvasSaveState();
+        iupGLSubCanvasSetTransform(child, ih);
+        ret = cb(child, x - child->x, y - child->y, status);
+        if (ret != IUP_CONTINUE)
+          return IUP_DEFAULT;
+      }
     }
   }
 

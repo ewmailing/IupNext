@@ -198,7 +198,7 @@ static void iGLIconGetImageTextPosition(int x, int y, int img_position, int spac
   }
 }
 
-void iupGLIconDraw(Ihandle* ih, int icon_width, int icon_height, 
+void iupGLIconDraw(Ihandle* ih, int icon_x, int icon_y, int icon_width, int icon_height,
                    const char *image, const char* title, const char* fgcolor, int active)
 {
   int x, y, width, height;
@@ -234,8 +234,8 @@ void iupGLIconDraw(Ihandle* ih, int icon_width, int icon_height,
                                   img_width, img_height, txt_width, txt_height,
                                   &img_x, &img_y, &txt_x, &txt_y);
 
-      iupGLDrawImage(ih, img_x, img_y, image, active);
-      iupGLDrawText(ih, txt_x, txt_y, title, fgcolor, active);
+      iupGLDrawImage(ih, img_x + icon_x, img_y + icon_y, image, active);
+      iupGLDrawText(ih, txt_x + icon_x, txt_y + icon_y, title, fgcolor, active);
     }
     else
     {
@@ -243,7 +243,7 @@ void iupGLIconDraw(Ihandle* ih, int icon_width, int icon_height,
 
       iGLIconGetPosition(ih, icon_width, icon_height, &x, &y, width, height);
 
-      iupGLDrawImage(ih, x, y, image, active);
+      iupGLDrawImage(ih, x + icon_x, y + icon_y, image, active);
     }
 
   }
@@ -253,7 +253,7 @@ void iupGLIconDraw(Ihandle* ih, int icon_width, int icon_height,
 
     iGLIconGetPosition(ih, icon_width, icon_height, &x, &y, width, height);
 
-    iupGLDrawText(ih, x, y, title, fgcolor, active);
+    iupGLDrawText(ih, x + icon_x, y + icon_y, title, fgcolor, active);
   }
 }
 

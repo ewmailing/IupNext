@@ -32,27 +32,28 @@ static int iGLButtonACTION(Ihandle* ih)
   char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
   char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
-  int border = 0;
+  int bwidthi = (int)(bwidth + 0.5f);
+  int draw_border = 0;
 
   if (pressed)
   {
     bgcolor = presscolor;
-    border = 1;
+    draw_border = 1;
   }
   else if (highlight)
   {
     bgcolor = hlcolor;
-    border = 1;
+    draw_border = 1;
   }
 
   /* draw border */
-  if (border)
+  if (draw_border)
     iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active);
 
   /* draw background */
   iupGLDrawBox(ih, 1, ih->currentwidth - 2, 1, ih->currentheight - 2, bgcolor);
 
-  iupGLIconDraw(ih, ih->currentwidth, ih->currentheight, image, title, fgcolor, active);
+  iupGLIconDraw(ih, bwidthi, bwidthi, ih->currentwidth - 2 * bwidthi, ih->currentheight - 2 * bwidthi, image, title, fgcolor, active);
 
   return IUP_DEFAULT;
 }
