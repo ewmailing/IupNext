@@ -22,6 +22,7 @@ Ihandle* IupGLSubCanvas(void);
 Ihandle* IupGLLabel(const char* title);
 Ihandle* IupGLSeparator(void);
 Ihandle* IupGLButton(const char* title);
+Ihandle* IupGLToggle(const char* title);
 
 
 #ifdef __cplusplus

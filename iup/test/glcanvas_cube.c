@@ -143,6 +143,11 @@ static void draw_cube(void)
 
 static void init(void)
 {
+  static int first = 1;
+  if (!first)
+    return;
+  first = 0;
+
   glClearColor(1,1,1,0.0);
 
   glMatrixMode(GL_PROJECTION);
@@ -258,9 +263,15 @@ static int button_action_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
+static int toggle_action_cb(Ihandle *ih, int state)
+{
+  printf("ACTION_CB(%s, state=%d)\n", IupGetClassName(ih), state);
+  return IUP_DEFAULT;
+}
+
 void GLCanvasCubeTest(void)
 {
-  Ihandle *dlg, *canvas, *box, 
+  Ihandle *dlg, *canvas, *box, *gtoggle,
     *gbox, *glabel, *gsep, *gbutton1, *gbutton2;
 
   IupGLCanvasOpen();
@@ -273,7 +284,7 @@ void GLCanvasCubeTest(void)
 
   gbutton1 = IupGLButton("Button");
   IupSetAttribute(gbutton1, "PADDING", "5x5");
-  IupSetAttribute(gbutton1, "BGCOLOR", "245 245 245 92");
+  //IupSetAttribute(gbutton1, "BGCOLOR", "245 245 245 92");
   IupSetCallback(gbutton1, "ACTION", button_action_cb);
 
   gbutton2 = IupGLButton(NULL);
@@ -281,9 +292,13 @@ void GLCanvasCubeTest(void)
   IupSetAttributeHandle(gbutton2, "IMAGE", load_image_FileSave());
   IupSetCallback(gbutton2, "ACTION", button_action_cb);
 
+  gtoggle = IupGLToggle("Toggle");
+  IupSetAttribute(gtoggle, "PADDING", "5x5");
+  IupSetCallback(gtoggle, "ACTION", (Icallback)toggle_action_cb);
+
   gsep = IupGLSeparator();
 
-  gbox = IupHbox(glabel, gsep, gbutton1, gbutton2, NULL);
+  gbox = IupHbox(glabel, gsep, gbutton1, gbutton2, gtoggle, NULL);
   IupSetAttribute(gbox, "HORIZONTALALIGN", "ACENTER");  /* used by IupGLCanvasBox */
   IupSetAttribute(gbox, "VERTICALALIGN", "ATOP");  /* used by IupGLCanvasBox */
   IupSetAttribute(gbox, "ALIGNMENT", "ACENTER");

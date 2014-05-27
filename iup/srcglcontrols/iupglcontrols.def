@@ -6,3 +6,4 @@ EXPORTS
   IupGLLabel
   IupGLSeparator
   IupGLButton
+  IupGLToggle

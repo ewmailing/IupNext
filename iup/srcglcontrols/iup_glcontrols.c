@@ -28,6 +28,7 @@ int IupGLControlsOpen(void)
   iupRegisterClass(iupGLLabelNewClass());
   iupRegisterClass(iupGLSeparatorNewClass());
   iupRegisterClass(iupGLButtonNewClass());
+  iupRegisterClass(iupGLToggleNewClass());
 
   IupSetGlobal("_IUP_GLCONTROLS_OPEN", "1");
 

@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -26,34 +27,39 @@ static int iGLButtonACTION(Ihandle* ih)
   int active = iupAttribGetInt(ih, "ACTIVE");
   int pressed = iupAttribGetInt(ih, "PRESSED");
   int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
+  int selected = iupAttribGetInt(ih, "VALUE");
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
-  char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
-  char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
-  char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
-  int bwidthi = (int)(bwidth + 0.5f);
+  int border_off = (int)ceil(bwidth);
   int draw_border = 0;
 
-  if (pressed)
+  if (pressed || selected)
   {
-    bgcolor = presscolor;
+    char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
+    if (presscolor)
+      bgcolor = presscolor;
     draw_border = 1;
   }
   else if (highlight)
   {
-    bgcolor = hlcolor;
+    char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
+    if (hlcolor)
+      bgcolor = hlcolor;
     draw_border = 1;
   }
 
-  /* draw border */
+  /* draw border - can still be disabled setting bwidth=0 */
   if (draw_border)
+  {
+    char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
     iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active);
+  }
 
   /* draw background */
   iupGLDrawBox(ih, 1, ih->currentwidth - 2, 1, ih->currentheight - 2, bgcolor);
 
-  iupGLIconDraw(ih, bwidthi, bwidthi, ih->currentwidth - 2 * bwidthi, ih->currentheight - 2 * bwidthi, image, title, fgcolor, active);
+  iupGLIconDraw(ih, border_off, border_off, ih->currentwidth - 2 * border_off, ih->currentheight - 2 * border_off, image, title, fgcolor, active);
 
   return IUP_DEFAULT;
 }
@@ -129,6 +135,11 @@ Iclass* iupGLButtonNewClass(void)
   ic->New = iupGLButtonNewClass;
   ic->Create = iGLButtonCreateMethod;
   ic->ComputeNaturalSize = iGLButtonComputeNaturalSizeMethod;
+
+  iupClassRegisterCallback(ic, "ACTION", "");
+
+  /* disable VALUE inheritance */
+  iupClassRegisterAttribute(ic, "VALUE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

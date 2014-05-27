@@ -99,6 +99,7 @@
     <ClCompile Include="..\srcglcontrols\iup_gllabel.c" />
     <ClCompile Include="..\srcglcontrols\iup_glseparator.c" />
     <ClCompile Include="..\srcglcontrols\iup_glsubcanvas.c" />
+    <ClCompile Include="..\srcglcontrols\iup_gltoggle.c" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\srcglcontrols\iupglcontrols.def" />
