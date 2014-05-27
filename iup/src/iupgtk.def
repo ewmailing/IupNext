@@ -475,3 +475,4 @@ iupDrawImage
 iupDrawSelectRect
 iupDrawFocusRect
 iupGetFontInfo
+iupRadioFindToggleParent

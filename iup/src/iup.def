@@ -480,6 +480,7 @@ iupDrawImage
 iupDrawSelectRect
 iupDrawFocusRect
 iupGetFontInfo
+iupRadioFindToggleParent
 
 iupwinMouseMove
 iupwinCreateWindow

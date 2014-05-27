@@ -52,7 +52,8 @@ static Ihandle* iRadioGetToggleChildOn(Ihandle* ih)
 {
   Ihandle* child;
 
-  if (IupClassMatch(ih, "toggle") &&   /* found child that is a toggle and it is ON */
+  /* found child that is a toggle and it is ON */
+  if ((IupClassMatch(ih, "toggle") || IupClassMatch(ih, "gltoggle")) &&   
       IupGetInt(ih, "VALUE"))
     return ih;
 
@@ -75,7 +76,7 @@ static int iRadioSetValueHandleAttrib(Ihandle* ih, const char* value)
   if (!iupObjectCheck(ih_toggle))
     return 0;
 
-  if (!IupClassMatch(ih_toggle, "toggle"))
+  if (!IupClassMatch(ih_toggle, "toggle") && !IupClassMatch(ih_toggle, "gltoggle"))
     return 0;
 
   if (iRadioFindToggleChild(ih->firstchild, ih_toggle))
