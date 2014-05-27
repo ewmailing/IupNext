@@ -31,7 +31,7 @@ static int iGLButtonACTION(Ihandle* ih)
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
-  int border_off = (int)ceil(bwidth);
+  int border_width = (int)ceil(bwidth);
   int draw_border = 0;
 
   if (pressed || selected)
@@ -59,7 +59,7 @@ static int iGLButtonACTION(Ihandle* ih)
   /* draw background */
   iupGLDrawBox(ih, 1, ih->currentwidth - 2, 1, ih->currentheight - 2, bgcolor);
 
-  iupGLIconDraw(ih, border_off, border_off, ih->currentwidth - 2 * border_off, ih->currentheight - 2 * border_off, image, title, fgcolor, active);
+  iupGLIconDraw(ih, border_width, border_width, ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width, image, title, fgcolor, active);
 
   return IUP_DEFAULT;
 }
@@ -106,13 +106,14 @@ static int iGLButtonCreateMethod(Ihandle* ih, void** params)
 
 static void iGLButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
-  float width = iupAttribGetFloat(ih, "BORDERWIDTH");
-  if (width == 0)
+  float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+  int border_width = (int)ceil(bwidth);
+  if (border_width == 0)
     return;
 
   /* add to the label natural size */
-  *w += (int)(2*width);
-  *h += (int)(2*width);
+  *w += 2 * border_width;
+  *h += 2 * border_width;
 
   (void)children_expand; /* unset if not a container */
 }

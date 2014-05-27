@@ -32,7 +32,7 @@ static int iGLSeparatorACTION(Ihandle* ih)
   int x1, y1, x2, y2;
   int active = iupAttribGetInt(ih, "ACTIVE");
   char* color = iupAttribGetStr(ih, "BORDERCOLOR");
-  float width = iupAttribGetFloat(ih, "BORDERWIDTH");
+  float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
 
   if (iGLSeparatorIsVertical(ih))
   {
@@ -47,7 +47,7 @@ static int iGLSeparatorACTION(Ihandle* ih)
     y1 = y2 = ih->currentheight / 2;
   }
 
-  iupGLDrawLine(ih, x1, y1, x2, y2, width, color, active);
+  iupGLDrawLine(ih, x1, y1, x2, y2, bwidth, color, active);
 
   return IUP_DEFAULT;
 }
@@ -64,18 +64,19 @@ static void iGLSeparatorComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, in
 {
   int natural_w = 0,
       natural_h = 0;
-  float width = iupAttribGetFloat(ih, "BORDERWIDTH");
+  float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+  int border_width = (int)ceil(bwidth);
 
   if (iGLSeparatorIsVertical(ih))
   {
-    natural_w = (int)width;
-    if (ih->userheight <= 0)
+    natural_w = border_width;
+    if (ih->userheight <= 0 && !(ih->expand & IUP_EXPAND_HEIGHT))
       ih->expand = IUP_EXPAND_HFREE;
   }
   else
   {
-    natural_h = (int)width;
-    if (ih->userwidth <= 0)
+    natural_h = border_width;
+    if (ih->userwidth <= 0 && !(ih->expand & IUP_EXPAND_WIDTH))
       ih->expand = IUP_EXPAND_WFREE;
   }
 
