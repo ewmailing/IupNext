@@ -266,10 +266,13 @@ similar of the dialog.</p>
 <h3><strong><a name="DLGFGCOLOR">DLGFGCOLOR</a></strong> <span class="style2">(since 3.0)</span></h3>
 <p>The default foreground color for all elements that have text over the 
 background of the dialog or similar. Usually is &quot;0 0 0&quot;.</p>
-<h3><strong><a name="MENUBGCOLOR">MENUBGCOLOR</a></strong> <span class="style2">(since 3.0)</span></h3>
+<h3><strong><a name="MENUBGCOLOR">MENUBGCOLOR</a></strong> <span class="style2">
+[Windows Only] (since 3.0)</span></h3>
 <p>The default menu background color. Usually is &quot;255 255 255&quot;.</p>
-<h3><strong><a name="MENUFGCOLOR">MENUFGCOLOR</a></strong> (<span class="style2">since 3.0)</span></h3>
-<p>The default menu foreground color. Usually is &quot;0 0 0&quot;.</p>
+<h3><strong><a name="MENUFGCOLOR">MENUFGCOLOR</a></strong> <span class="style2">
+[Windows Only] </span>(<span class="style2">since 3.0)</span></h3>
+<p>The system default menu foreground color. Usually is &quot;0 0 0&quot;. 
+Unused in IUP.</p>
 <h3><strong><a name="TXTBGCOLOR">TXTBGCOLOR</a></strong> <span class="style2">(since 3.0)</span></h3>
 <p>The default background color for editable text, also used by lists and tree. 
 Usually is &quot;255 255 255&quot;.</p>
@@ -284,6 +287,12 @@ Usually is &quot;0 0 0&quot;.</p>
 <span class="style2">(since 3.0)</span></h3>
 <p>Auxiliary attribute to retrieve and set the default font size used by all elements. 
 It retrieves the size from DEFAULTFONT. When changed will actually change the 
+DEFAULTFONT.</p>
+
+<h3><strong><a name="DEFAULTFONTSTYLE">DEFAULTFONTSTYLE</a></strong> 
+<span class="style2">(since 3.11)</span></h3>
+<p>Auxiliary attribute to retrieve and set the default font style used by all elements. 
+It retrieves the style from DEFAULTFONT. When changed will actually change the 
 DEFAULTFONT.</p>
 
 </body>

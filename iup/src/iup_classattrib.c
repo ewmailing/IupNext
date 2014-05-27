@@ -32,7 +32,7 @@ typedef struct _IattribFunc
 } IattribFunc;
 
 
-static int iClassIsGlobalDefault(const char* name)
+int iupClassIsGlobalDefault(const char* name)
 {
   if (iupStrEqual(name, "DEFAULTFONT"))
     return 1;
@@ -43,6 +43,8 @@ static int iClassIsGlobalDefault(const char* name)
   if (iupStrEqual(name, "TXTBGCOLOR"))
     return 1;
   if (iupStrEqual(name, "TXTFGCOLOR"))
+    return 1;
+  if (iupStrEqual(name, "LINKFGCOLOR"))
     return 1;
   if (iupStrEqual(name, "MENUBGCOLOR"))
     return 1;
@@ -532,7 +534,7 @@ void iupClassRegisterAttribute(Iclass* ic, const char* name,
   afunc->system_default = _system_default;
   afunc->flags = _flags;
 
-  if (iClassIsGlobalDefault(afunc->default_value))
+  if (iupClassIsGlobalDefault(afunc->default_value))
     afunc->call_global_default = 1;
   else
     afunc->call_global_default = 0;
