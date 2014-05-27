@@ -27,7 +27,7 @@ static int iGLButtonACTION(Ihandle* ih)
   int active = iupAttribGetInt(ih, "ACTIVE");
   int pressed = iupAttribGetInt(ih, "PRESSED");
   int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
-  int selected = iupAttribGetInt(ih, "VALUE");
+  int selected = IupGetInt(ih, "VALUE");
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");

@@ -284,13 +284,13 @@ static int action(Ihandle *ih)
 
 static int button_action_cb(Ihandle *ih)
 {
-  printf("ACTION_CB(%s)\n", IupGetClassName(ih));
+  printf("ACTION_CB(%s) NAME=%s\n", IupGetClassName(ih), IupGetAttribute(ih, "NAME"));
   return IUP_DEFAULT;
 }
 
 static int toggle_action_cb(Ihandle *ih, int state)
 {
-  printf("ACTION_CB(%s, state=%d)\n", IupGetClassName(ih), state);
+  printf("ACTION_CB(%s, state=%d) NAME=%s\n", IupGetClassName(ih), state, IupGetAttribute(ih, "NAME"));
   return IUP_DEFAULT;
 }
 
@@ -311,25 +311,30 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(gbutton1, "PADDING", "5x5");
   //IupSetAttribute(gbutton1, "BGCOLOR", "245 245 245 92");
   IupSetCallback(gbutton1, "ACTION", button_action_cb);
+  IupSetAttribute(gbutton1, "NAME", "button1");
 
   gbutton2 = IupGLButton(NULL);
   IupSetAttribute(gbutton2, "PADDING", "5x5");
   IupSetAttributeHandle(gbutton2, "IMAGE", load_image_FileSave());
   IupSetCallback(gbutton2, "ACTION", button_action_cb);
+  IupSetAttribute(gbutton2, "NAME", "button2");
 
   gtoggle = IupGLToggle("Toggle");
   IupSetAttribute(gtoggle, "PADDING", "5x5");
   IupSetCallback(gtoggle, "ACTION", (Icallback)toggle_action_cb);
+  IupSetAttribute(gtoggle, "NAME", "toggle");
 
   gtoggle1 = IupGLToggle(NULL);
   IupSetAttribute(gtoggle1, "PADDING", "5x5");
   IupSetAttributeHandle(gtoggle1, "IMAGE", load_image_Test());
   IupSetCallback(gtoggle1, "ACTION", (Icallback)toggle_action_cb);
+  IupSetAttribute(gtoggle1, "NAME", "toggle1");
 
   gtoggle2 = IupGLToggle(NULL);
   IupSetAttribute(gtoggle2, "PADDING", "5x5");
   IupSetAttributeHandle(gtoggle2, "IMAGE", load_image_Test());
   IupSetCallback(gtoggle2, "ACTION", (Icallback)toggle_action_cb);
+  IupSetAttribute(gtoggle2, "NAME", "toggle2");
 
   gsep = IupGLSeparator();
 

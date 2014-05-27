@@ -99,16 +99,37 @@ static int iGLToggleBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y
 static int iGLToggleSetValueAttrib(Ihandle* ih, const char* value)
 {
   Ihandle* radio = iupRadioFindToggleParent(ih);
-  if (radio && iupStrBoolean(value))
+  if (radio)
   {
-    Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPGL_LASTTOGGLE");
-    if (iupObjectCheck(last_tg) && last_tg != ih)
-      iupAttribSet(last_tg, "VALUE", "OFF");
+    if (iupStrBoolean(value))
+    {
+      Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPGL_LASTTOGGLE");
+      if (iupObjectCheck(last_tg) && last_tg != ih)
+        iupAttribSet(last_tg, "VALUE", "OFF");
 
-    iupAttribSet(radio, "_IUPGL_LASTTOGGLE", (char*)ih);
+      iupAttribSet(radio, "_IUPGL_LASTTOGGLE", (char*)ih);
+    }
+    else
+      return 0;  /* does nothing */
   }
 
   return 1;
+}
+
+static char* iGLToggleGetValueAttrib(Ihandle* ih)
+{
+  Ihandle* radio = iupRadioFindToggleParent(ih);
+  if (radio)
+  {
+    Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUPGL_LASTTOGGLE");
+    if (!last_tg)
+    {
+      iupAttribSet(ih, "VALUE", "ON");
+      iupAttribSet(radio, "_IUPGL_LASTTOGGLE", (char*)ih);
+    }
+  }
+
+  return NULL;
 }
 
 static char* iGLToggleGetRadioAttrib(Ihandle* ih)
@@ -147,7 +168,7 @@ Iclass* iupGLToggleNewClass(void)
   iupClassRegisterCallback(ic, "ACTION", "i");
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
 
-  iupClassRegisterAttribute(ic, "VALUE", NULL, iGLToggleSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", iGLToggleGetValueAttrib, iGLToggleSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RADIO", iGLToggleGetRadioAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   return ic;
