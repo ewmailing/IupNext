@@ -97,9 +97,11 @@ char* iupGetFontSizeAttrib(Ihandle* ih);
  * \ingroup attribfunc */
 char* iupGetFontFaceAttrib(Ihandle* ih);
 
-/* Used in GLobal Attributes */
-void iupSetDefaultFontSizeGlobalAttrib(const char* value);
+/* Used in Global Attributes */
+void  iupSetDefaultFontSizeGlobalAttrib(const char* value);
 char* iupGetDefaultFontSizeGlobalAttrib(void);
+int   iupSetDefaultFontStyleGlobalAttrib(const char* value);
+char* iupGetDefaultFontStyleGlobalAttrib(void);
 
 
 /* Updates the STANDARDFONT attrib.

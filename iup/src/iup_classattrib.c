@@ -741,7 +741,7 @@ void IupSetClassDefaultAttribute(const char* classname, const char *name, const 
     else
       afunc->default_value = default_value;
 
-    if (iClassIsGlobalDefault(afunc->default_value))
+    if (iupClassIsGlobalDefault(afunc->default_value))
       afunc->call_global_default = 1;
     else
       afunc->call_global_default = 0;

@@ -12,6 +12,8 @@
 
 #include "iup_table.h"
 #include "iup_globalattrib.h"
+#include "iup_table.h"
+#include "iup_class.h"
 #include "iup_drv.h"
 #include "iup_drvfont.h"
 #include "iup_drvinfo.h"
@@ -35,12 +37,7 @@ void iupGlobalAttribFinish(void)
 
 static int iGlobalChangingDefaultColor(const char *name)
 {
-  if (iupStrEqual(name, "DLGBGCOLOR") ||
-      iupStrEqual(name, "DLGFGCOLOR") ||
-      iupStrEqual(name, "MENUBGCOLOR") ||
-      iupStrEqual(name, "MENUFGCOLOR") ||
-      iupStrEqual(name, "TXTBGCOLOR") ||
-      iupStrEqual(name, "TXTFGCOLOR"))
+  if (iupClassIsGlobalDefault(name))
   {
     char str[50] = "_IUP_USER_DEFAULT_";
     strcat(str, name);
@@ -85,6 +82,11 @@ static void iGlobalSet(const char *name, const char *value, int store)
   if (iupStrEqual(name, "DEFAULTFONTSIZE"))
   {
     iupSetDefaultFontSizeGlobalAttrib(value);
+    return;
+  }
+  if (iupStrEqual(name, "DEFAULTFONTSTYLE"))
+  {
+    iupSetDefaultFontStyleGlobalAttrib(value);
     return;
   }
   if (iupStrEqual(name, "KEYPRESS"))
@@ -160,6 +162,8 @@ char* IupGetGlobal(const char *name)
 
   if (iupStrEqual(name, "DEFAULTFONTSIZE"))
     return iupGetDefaultFontSizeGlobalAttrib();
+  if (iupStrEqual(name, "DEFAULTFONTSTYLE"))
+    return iupGetDefaultFontStyleGlobalAttrib();
   if (iupStrEqual(name, "CURSORPOS"))
   {
     int x, y;
