@@ -15,7 +15,7 @@ void LinkTest(void)
 {
   Ihandle *dlg, *linkEmpty, *linkButtonLabel, *linkButton;
 
-  linkEmpty = IupLink(NULL, "NADA");
+  linkEmpty = IupLink(NULL, "Nothing");
   linkButton = IupLink("http://www.tecgraf.puc-rio.br/iup", "IUP Toolkit");
   linkButtonLabel = IupLink("http://www.upf.br/", "Universidade de Passo Fundo");
   
