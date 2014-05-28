@@ -62,7 +62,7 @@ static void iGLCanvasBoxCallChildAction(Ihandle* ih, Ihandle* gl_parent)
 
 static int iGLCanvasBoxSwapBuffers_CB(Ihandle* ih)
 {
-  iupGLSubCanvasSaveState();
+  iupGLSubCanvasSaveState(ih);
 
   /* redraw all children */
   iGLCanvasBoxCallChildAction(ih, ih);
@@ -114,7 +114,7 @@ static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, in
     if (cb)
     {
       IupGLMakeCurrent(ih);
-      iupGLSubCanvasSaveState();
+      iupGLSubCanvasSaveState(ih);
       iupGLSubCanvasSetTransform(child, ih);
       ret = cb(child, button, pressed, x - child->x, y - child->y, status);
       if (ret != IUP_CONTINUE)
@@ -148,7 +148,7 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child)
       if (cb)
       {
         IupGLMakeCurrent(ih);
-        iupGLSubCanvasSaveState();
+        iupGLSubCanvasSaveState(ih);
         iupGLSubCanvasSetTransform(last_child, ih);
         cb(last_child);
       }
@@ -167,7 +167,7 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child)
       if (cb)
       {
         IupGLMakeCurrent(ih);
-        iupGLSubCanvasSaveState();
+        iupGLSubCanvasSaveState(ih);
         iupGLSubCanvasSetTransform(child, ih);
         cb(child);
       }
@@ -195,7 +195,7 @@ static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
       if (cb)
       {
         IupGLMakeCurrent(ih);
-        iupGLSubCanvasSaveState();
+        iupGLSubCanvasSaveState(ih);
         iupGLSubCanvasSetTransform(child, ih);
         ret = cb(child, x - child->x, y - child->y, status);
         if (ret != IUP_CONTINUE)
@@ -226,7 +226,7 @@ static int iGLCanvasBoxWHEEL_CB(Ihandle* ih, float delta, int x, int y, char *st
     if (cb && iupAttribGetInt(child, "ACTIVE"))
     {
       IupGLMakeCurrent(ih);
-      iupGLSubCanvasSaveState();
+      iupGLSubCanvasSaveState(ih);
       iupGLSubCanvasSetTransform(child, ih);
       ret = cb(child, delta, x - child->x, y - child->y, status);
       if (ret != IUP_CONTINUE)

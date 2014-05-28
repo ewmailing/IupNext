@@ -22,7 +22,7 @@ Iclass* iupGLToggleNewClass(void);
 Iclass* iupGLLinkNewClass(void);
 
 void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
-void iupGLSubCanvasSaveState(void);
+void iupGLSubCanvasSaveState(Ihandle* gl_parent);
 void iupGLSubCanvasRestoreState(Ihandle* gl_parent);
 void iupGLSubCanvasRedrawFront(Ihandle* ih);
 void iupGLSubCanvasUpdateSizeFromFont(Ihandle* ih);
@@ -32,6 +32,7 @@ void iupGLImageGetInfo(const char* name, int *w, int *h, int *bpp);
 unsigned char* iupGLImageGetData(Ihandle* ih, int active);
 void iupGLColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char *b);
 
+int iupGLFontGetStringWidth(Ihandle* ih, const char* str, int len);
 void iupGLFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h);
 int iupGLSetStandardFontAttrib(Ihandle* ih, const char* value);
 void iupGLFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight);

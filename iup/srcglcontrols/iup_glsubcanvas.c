@@ -21,6 +21,7 @@
 #include "iupcbs.h"
 #include "iupgl.h"
 
+#include "iup_assert.h"
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
@@ -44,8 +45,13 @@ void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent)
   glTranslatef(0.375, 0.375, 0.0);  /* render all primitives at integer positions */
 }
 
-void iupGLSubCanvasSaveState(void)
+void iupGLSubCanvasSaveState(Ihandle* gl_parent)
 {
+  char* savestate = iupAttribGet(gl_parent, "_IUPGLBOX_SAVESTATE");
+  iupASSERT(savestate == NULL);
+  if (savestate)
+    return;
+
   glPushAttrib(GL_ALL_ATTRIB_BITS);
 
   glMatrixMode(GL_PROJECTION);
@@ -59,10 +65,17 @@ void iupGLSubCanvasSaveState(void)
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_POLYGON_STIPPLE);
+
+  iupAttribSet(gl_parent, "_IUPGLBOX_SAVESTATE", "1");
 }
 
 void iupGLSubCanvasRestoreState(Ihandle* gl_parent)
 {
+  char* savestate = iupAttribGet(gl_parent, "_IUPGLBOX_SAVESTATE");
+  iupASSERT(savestate != NULL);
+  if (!savestate)
+    return;
+
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 
@@ -72,6 +85,8 @@ void iupGLSubCanvasRestoreState(Ihandle* gl_parent)
   glViewport(0, 0, gl_parent->currentwidth, gl_parent->currentheight);
 
   glPopAttrib();
+
+  iupAttribSet(gl_parent, "_IUPGLBOX_SAVESTATE", NULL);
 }
 
 void iupGLSubCanvasRedrawFront(Ihandle* ih)
@@ -82,7 +97,7 @@ void iupGLSubCanvasRedrawFront(Ihandle* ih)
     Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
     IupGLMakeCurrent(gl_parent);
     glDrawBuffer(GL_FRONT);
-    iupGLSubCanvasSaveState();
+    iupGLSubCanvasSaveState(gl_parent);
     iupGLSubCanvasSetTransform(ih, gl_parent);
     cb(ih);
     iupGLSubCanvasRestoreState(gl_parent);
@@ -303,6 +318,7 @@ Iclass* iupGLSubCanvasNewClass(void)
   iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "150 200 235", IUPAF_DEFAULT);  /* inheritable */
 
+  iupClassRegisterAttribute(ic, "UNDERLINE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDRAWFRONT", NULL, iGLSubCanvasSetRedrawFrontAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   iupGLFontInit();

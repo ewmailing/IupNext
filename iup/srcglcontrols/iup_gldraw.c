@@ -118,6 +118,7 @@ void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color
     int len, lineheight, ascent, baseline;
     const char *nextstr;
     const char *curstr = str;
+    int underline = iupAttribGetInt(ih, "UNDERLINE");
 
     iupGLFontGetDim(ih, NULL, &lineheight, &ascent, NULL);
     baseline = lineheight - ascent;
@@ -127,6 +128,9 @@ void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color
     y = y + lineheight - baseline;  /* move to baseline */
     y = ih->currentheight - 1 - y; /* orient bottom to top */
 
+    if (underline)
+      glLineWidth(1.0f);
+
     glPushMatrix();
     glTranslated((double)x, (double)y, 0.0);
 
@@ -134,7 +138,18 @@ void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color
     {
       nextstr = iupStrNextLine(curstr, &len);
       if (len)
+      {
         iupGLFontRenderString(ih, curstr, len);
+
+        if (underline)
+        {
+          int width = iupGLFontGetStringWidth(ih, curstr, len);
+          glBegin(GL_LINES);
+          glVertex2i(0, -2);
+          glVertex2i(width-1, -2);
+          glEnd();
+        }
+      }
 
       glTranslated(0.0, (double)-lineheight, 0.0);
 

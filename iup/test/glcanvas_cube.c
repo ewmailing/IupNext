@@ -166,12 +166,12 @@ static void draw_cube(void)
   glEnd();
 }
 
-static void init(void)
+static void init(Ihandle *ih)
 {
-  static int first = 1;
-  if (!first)
+  char* app_init = IupGetAttribute(ih, "_APP_INIT");
+  if (app_init)
     return;
-  first = 0;
+  IupSetAttribute(ih, "_APP_INIT", "1");
 
   glClearColor(1,1,1,0.0);
 
@@ -273,7 +273,7 @@ static int action(Ihandle *ih)
 {
   IupGLMakeCurrent(ih);
 
-  init();
+  init(ih);
 
   draw_cube();
 
@@ -296,7 +296,7 @@ static int toggle_action_cb(Ihandle *ih, int state)
 
 static int link_action_cb(Ihandle *ih, const char* url)
 {
-  printf("ACTION_CB(%s, url=%s)", IupGetClassName(ih), url);
+  printf("ACTION_CB(%s, url=%s)\n", IupGetClassName(ih), url);
   return IUP_DEFAULT;
 }
 

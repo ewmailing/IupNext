@@ -404,7 +404,7 @@ static void iGLGetFontFilename(char* filename, const char *typeface, int is_bold
   strcpy(filename, typeface);
 }
 
-static IglFont* iGLFindFont(Ihandle* gl_parent, const char *standardfont)
+static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *standardfont)
 {
   char filename[10240];
   char typeface[50] = "";
@@ -426,6 +426,11 @@ static IglFont* iGLFindFont(Ihandle* gl_parent, const char *standardfont)
 
   if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return NULL;
+
+  if (is_underline)
+    iupAttribSet(ih, "UNDERLINE", "1");
+  else
+    iupAttribSet(ih, "UNDERLINE", NULL);
 
   iGLGetFontFilename(filename, typeface, is_bold, is_italic);
 
@@ -466,7 +471,7 @@ static IglFont* iGLFontCreateNativeFont(Ihandle *ih, const char* value)
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
   IupGLMakeCurrent(gl_parent);
 
-  glfont = iGLFindFont(gl_parent, value);
+  glfont = iGLFindFont(ih, gl_parent, value);
   if (!glfont)
   {
     iupERROR1("Failed to create Font: %s", value);
@@ -559,6 +564,21 @@ static void iGLFontConvertToUTF8(const char* str, int len)
     iconv(cdgl_iconv, (char**)&str, &ulen, &utf8, &utf8len);
   }
 #endif
+}
+
+int iupGLFontGetStringWidth(Ihandle* ih, const char* str, int len)
+{
+  IglFont* glfont;
+
+  if (!ih->handle)
+    return 0;
+
+  glfont = iGLFontGet(ih);
+  if (!glfont)
+    return 0;
+
+  iGLFontConvertToUTF8(str, len);
+  return iupRound(ftglGetFontAdvance(glfont->font, utf8_buffer));
 }
 
 void iupGLFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)

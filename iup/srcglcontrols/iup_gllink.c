@@ -21,12 +21,23 @@
 #include "iup_glcontrols.h"
 
 
+static int iGLLinkACTION(Ihandle* ih)
+{
+  char* title = iupAttribGet(ih, "TITLE");
+  int active = iupAttribGetInt(ih, "ACTIVE");
+  char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
+
+  iupGLIconDraw(ih, 0, 0, ih->currentwidth, ih->currentheight, NULL, title, fgcolor, active);
+
+  return IUP_DEFAULT;
+}
+
 static int iGLLinkButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
   iupGLSubCanvasRestoreState(gl_parent);
 
-  if (button == IUP_BUTTON1 && pressed)
+  if (button == IUP_BUTTON1 && !pressed)
   {
     IFns cb = (IFns)IupGetCallback(ih, "ACTION");
     char* url = iupAttribGetStr(ih, "URL");
@@ -51,6 +62,7 @@ static int iGLLinkButton_CB(Ihandle* ih, int button, int pressed, int x, int y, 
 static int iGLLinkEnterWindow_CB(Ihandle* ih)
 {
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  iupGLSubCanvasRestoreState(gl_parent);
   IupSetAttribute(gl_parent, "CURSOR", "HAND");
   return IUP_DEFAULT;
 }
@@ -58,8 +70,15 @@ static int iGLLinkEnterWindow_CB(Ihandle* ih)
 static int iGLLinkLeaveWindow_CB(Ihandle* ih)
 {
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  iupGLSubCanvasRestoreState(gl_parent);
   IupSetAttribute(gl_parent, "CURSOR", "ARROW");
   return IUP_DEFAULT;
+}
+
+static int iGLLinkMapMethod(Ihandle* ih)
+{
+  IupSetAttribute(ih, "FONTSTYLE", "Underline");
+  return IUP_NOERROR;
 }
 
 static int iGLLinkCreateMethod(Ihandle* ih, void **params)
@@ -70,11 +89,10 @@ static int iGLLinkCreateMethod(Ihandle* ih, void **params)
     if (params[1]) iupAttribSetStr(ih, "TITLE", (char*)(params[1]));
   }
 
+  IupSetCallback(ih, "GL_ACTION", iGLLinkACTION);
   IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLLinkButton_CB);
   IupSetCallback(ih, "GL_ENTERWINDOW_CB", iGLLinkEnterWindow_CB);
   IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iGLLinkLeaveWindow_CB);
-
-  IupSetAttribute(ih, "FONTSTYLE", "Underline");
 
   return IUP_NOERROR; 
 }
@@ -92,6 +110,7 @@ Iclass* iupGLLinkNewClass(void)
   /* Class functions */
   ic->New = iupGLLinkNewClass;
   ic->Create = iGLLinkCreateMethod;
+  ic->Map = iGLLinkMapMethod;
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "ACTION", "s");
