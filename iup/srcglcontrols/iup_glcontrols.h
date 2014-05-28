@@ -19,6 +19,7 @@ Iclass* iupGLLabelNewClass(void);
 Iclass* iupGLSeparatorNewClass(void);
 Iclass* iupGLButtonNewClass(void);
 Iclass* iupGLToggleNewClass(void);
+Iclass* iupGLLinkNewClass(void);
 
 void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
 void iupGLSubCanvasSaveState(void);

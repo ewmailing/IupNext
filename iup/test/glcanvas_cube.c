@@ -294,10 +294,17 @@ static int toggle_action_cb(Ihandle *ih, int state)
   return IUP_DEFAULT;
 }
 
+static int link_action_cb(Ihandle *ih, const char* url)
+{
+  printf("ACTION_CB(%s, url=%s)", IupGetClassName(ih), url);
+  return IUP_DEFAULT;
+}
+
 void GLCanvasCubeTest(void)
 {
   Ihandle *dlg, *canvas, *box, *gtoggle, *gtoggle1, *gtoggle2,
-    *gbox, *glabel, *gsep, *gbutton1, *gbutton2;
+    *ghbox, *gvbox, *glabel, *gsep1, *gsep2, *gbutton1, *gbutton2,
+    *glink;
 
   IupGLCanvasOpen();
   IupGLControlsOpen();
@@ -336,19 +343,31 @@ void GLCanvasCubeTest(void)
   IupSetCallback(gtoggle2, "ACTION", (Icallback)toggle_action_cb);
   IupSetAttribute(gtoggle2, "NAME", "toggle2");
 
-  gsep = IupGLSeparator();
+  gsep1 = IupGLSeparator();
 
-  gbox = IupHbox(glabel, gsep, gbutton1, gbutton2, gtoggle, 
-    IupRadio(
-    IupSetAttributes(IupHbox(gtoggle1, gtoggle2, NULL), "MARGIN=0x0")),
+  glink = IupGLLink("http://www.tecgraf.puc-rio.br/iup", "IUP Toolkit");
+  IupSetCallback(glink, "ACTION", (Icallback)link_action_cb);
+
+  ghbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, NULL);
+  IupSetAttribute(ghbox, "HORIZONTALALIGN", "ACENTER");  /* used by IupGLCanvasBox */
+  IupSetAttribute(ghbox, "VERTICALALIGN", "ATOP");  /* used by IupGLCanvasBox */
+  IupSetAttribute(ghbox, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(ghbox, "MARGIN", "5x5");
+  IupSetAttribute(ghbox, "GAP", "5");
+
+  gsep2 = IupGLSeparator();
+  IupSetAttribute(gsep2, "ORIENTATION", "VERTICAL");
+
+  gvbox = IupVbox(gbutton2, gsep2, 
+    IupRadio(IupSetAttributes(IupVbox(gtoggle1, gtoggle2, NULL), "MARGIN=0x0")),
     NULL);
-  IupSetAttribute(gbox, "HORIZONTALALIGN", "ACENTER");  /* used by IupGLCanvasBox */
-  IupSetAttribute(gbox, "VERTICALALIGN", "ATOP");  /* used by IupGLCanvasBox */
-  IupSetAttribute(gbox, "ALIGNMENT", "ACENTER");
-  IupSetAttribute(gbox, "MARGIN", "5x5");
-  IupSetAttribute(gbox, "GAP", "5");
+  IupSetAttribute(gvbox, "HORIZONTALALIGN", "ALEFT");  /* used by IupGLCanvasBox */
+  IupSetAttribute(gvbox, "VERTICALALIGN", "ACENTER");  /* used by IupGLCanvasBox */
+  IupSetAttribute(gvbox, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(gvbox, "MARGIN", "5x5");
+  IupSetAttribute(gvbox, "GAP", "5");
 
-  canvas = IupGLCanvasBox(gbox, NULL);
+  canvas = IupGLCanvasBox(ghbox, gvbox, NULL);
   IupSetCallback(canvas, "ACTION", action);
   IupSetCallback(canvas, "BUTTON_CB", (Icallback)button_cb);
   IupSetCallback(canvas, "MOTION_CB", (Icallback)motion_cb);
