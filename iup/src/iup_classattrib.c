@@ -615,6 +615,11 @@ void iupClassRegisterReplaceAttribDef(Iclass* ic, const char* name, const char* 
     else
       afunc->default_value = _default_value;
     afunc->system_default = _system_default;
+
+    if (iupClassIsGlobalDefault(afunc->default_value))
+      afunc->call_global_default = 1;
+    else
+      afunc->call_global_default = 0;
   }
 }
 
