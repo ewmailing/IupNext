@@ -166,14 +166,12 @@ static void draw_cube(void)
   glEnd();
 }
 
+static double model_view_matrix[16];
+static int use_model_matrix = 0;
+
 static void init(Ihandle *ih)
 {
-  char* app_init = IupGetAttribute(ih, "_APP_INIT");
-  if (app_init)
-    return;
-  IupSetAttribute(ih, "_APP_INIT", "1");
-
-  glClearColor(1,1,1,0.0);
+  glClearColor(1, 1, 1, 0.0);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -181,26 +179,15 @@ static void init(Ihandle *ih)
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  gluLookAt (0.5, 0.5, 3.0,  /* posicao do observador */
-            0.5, 0.5, 0.0,  /* ponto de referencia   */
-            0.0, 1.0, 0.0); /* vup                   */
+  gluLookAt(0.5, 0.5, 3.0,  /* posicao do observador */
+    0.5, 0.5, 0.0,  /* ponto de referencia   */
+    0.0, 1.0, 0.0); /* vup                   */
 
   glEnable(GL_DEPTH_TEST);
-  glClearDepth (1.0);
-}
+  glClearDepth(1.0);
 
-static void unproject (double x2, double y2, double *x3, double *y3, double *z3)
-{
-  double mv[16];
-  double pm[16];
-  int    vp[4];
-
-  glGetDoublev (GL_MODELVIEW_MATRIX,  mv);
-  glGetDoublev (GL_PROJECTION_MATRIX, pm);
-  glGetIntegerv (GL_VIEWPORT, vp);
-  gluUnProject (x2, y2, 0.0,
-                mv, pm, vp,
-                x3, y3, z3);
+  if (use_model_matrix)
+    glLoadMatrixd(model_view_matrix);
 }
 
 static int pos_x, pos_y;
@@ -241,26 +228,43 @@ static int motion_cb(Ihandle *ih,int x,int y,char* status)
     double x2, y2, z2;
     double angle, norma;
     int height = IupGetInt2(ih, "RASTERSIZE");
+    double mv[16];
+    double pm[16];
+    int    vp[4];
 
     IupGLMakeCurrent(ih);
 
+    glGetDoublev(GL_MODELVIEW_MATRIX, mv);
+    glGetDoublev(GL_PROJECTION_MATRIX, pm);
+    glGetIntegerv(GL_VIEWPORT, vp);
+
     dif_x = x - pos_x;
     dif_y = y - pos_y;
+
+    if (dif_x == 0 && dif_y == 0)
+      return IUP_DEFAULT;
 
     pos_x = x;
     pos_y = y;
 
     angle = sqrt(dif_x*dif_x + dif_y*dif_y);
 
-    unproject (pos_x, INVERT_Y(pos_y), &x1, &y1, &z1);
-    unproject ((double)(dif_y+pos_x), (double)(dif_x+INVERT_Y(pos_y)), &x2, &y2, &z2);
+    gluUnProject(pos_x, INVERT_Y(pos_y), 0.0,
+      mv, pm, vp,
+      &x1, &y1, &z1);
+    gluUnProject((double)(dif_y + pos_x), (double)(dif_x + INVERT_Y(pos_y)), 0.0,
+      mv, pm, vp,
+      &x2, &y2, &z2);
     dx = x2-x1; dy = y2-y1; dz = z2-z1;
     norma = sqrt(dx*dx + dy*dy + dz*dz);
     dx /= norma; dy /= norma; dz /= norma;
 
+    glMatrixMode(GL_MODELVIEW);
     glTranslated(0.5, 0.5, 0.5);
     glRotated (angle, dx, dy, dz);
     glTranslated(-0.5, -0.5, -0.5);
+    glGetDoublev(GL_MODELVIEW_MATRIX, model_view_matrix);
+    use_model_matrix = 1;
 
     draw_cube();
   
