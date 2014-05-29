@@ -635,7 +635,7 @@ static int iDialWheel_CB(Ihandle* ih, float delta)
 
 static char* iDialGetValueAttrib(Ihandle* ih)
 {
-  return iupStrReturnFloat((float)ih->data->angle);
+  return iupStrReturnDouble(ih->data->angle);
 }
 
 static int iDialSetValueAttrib(Ihandle* ih, const char* value)
@@ -643,7 +643,7 @@ static int iDialSetValueAttrib(Ihandle* ih, const char* value)
   if (!value) /* reset to default */
     ih->data->angle = 0;
   else
-    ih->data->angle = atof(value);
+    iupStrToDouble(value, &(ih->data->angle));
 
   iDialRepaint(ih);
   return 0; /* do not store value in hash table */
@@ -651,14 +651,14 @@ static int iDialSetValueAttrib(Ihandle* ih, const char* value)
 
 static int iDialSetDensityAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->density = atof(value);
-  iDialRepaint(ih);
+  if (iupStrToDouble(value, &(ih->data->density)))
+    iDialRepaint(ih);
   return 0;   /* do not store value in hash table */
 }
 
 static char* iDialGetDensityAttrib(Ihandle* ih)
 {
-  return iupStrReturnFloat((float)ih->data->density);
+  return iupStrReturnDouble(ih->data->density);
 }
 
 static int iDialSetBgColorAttrib(Ihandle* ih, const char* value)

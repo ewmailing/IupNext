@@ -47,24 +47,26 @@ void iupdrvValGetMinSize(Ihandle* ih, int *w, int *h)
 
 static int gtkValSetStepAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->step = atof(value);
-  gtk_range_set_increments(GTK_RANGE(ih->handle), ih->data->step, ih->data->pagestep);
+  if (iupStrToDouble(value, &(ih->data->step)))
+    gtk_range_set_increments(GTK_RANGE(ih->handle), ih->data->step, ih->data->pagestep);
   return 0; /* do not store value in hash table */
 }
 
 static int gtkValSetPageStepAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->pagestep = atof(value);
+  if (iupStrToDouble(value, &(ih->data->pagestep)))
   gtk_range_set_increments(GTK_RANGE(ih->handle), ih->data->step, ih->data->pagestep);
   return 0; /* do not store value in hash table */
 }
 
 static int gtkValSetValueAttrib(Ihandle* ih, const char* value)
 {
-  double fval;
-  ih->data->val = atof(value);
-  fval = (ih->data->val-ih->data->vmin)/(ih->data->vmax - ih->data->vmin);
-  gtk_range_set_value(GTK_RANGE(ih->handle), fval);
+  if (iupStrToDouble(value, &(ih->data->val)))
+  {
+    double fval;
+    fval = (ih->data->val - ih->data->vmin) / (ih->data->vmax - ih->data->vmin);
+    gtk_range_set_value(GTK_RANGE(ih->handle), fval);
+  }
   return 0; /* do not store value in hash table */
 }
 

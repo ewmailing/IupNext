@@ -63,19 +63,21 @@ static int winValSetBgColorAttrib(Ihandle *ih, const char *value)
 
 static int winValSetStepAttrib(Ihandle* ih, const char* value)
 {
-  int linesize;
-  ih->data->step = atof(value);
-  linesize = (int)(ih->data->step*SHRT_MAX);
-  SendMessage(ih->handle, TBM_SETLINESIZE, 0, linesize);
+  if (iupStrToDouble(value, &(ih->data->step)))
+  {
+    int linesize = (int)(ih->data->step*SHRT_MAX);
+    SendMessage(ih->handle, TBM_SETLINESIZE, 0, linesize);
+  }
   return 0; /* do not store value in hash table */
 }
 
 static int winValSetPageStepAttrib(Ihandle* ih, const char* value)
 {
-  int pagesize;
-  ih->data->pagestep = atof(value);
-  pagesize = (int)(ih->data->pagestep*SHRT_MAX);
-  SendMessage(ih->handle, TBM_SETPAGESIZE, 0, pagesize);
+  if (iupStrToDouble(value, &(ih->data->pagestep)))
+  {
+    int pagesize = (int)(ih->data->pagestep*SHRT_MAX);
+    SendMessage(ih->handle, TBM_SETPAGESIZE, 0, pagesize);
+  }
   return 0; /* do not store value in hash table */
 }
 
@@ -98,16 +100,18 @@ static int winValSetShowTicksAttrib(Ihandle* ih, const char* value)
 
 static int winValSetValueAttrib(Ihandle* ih, const char* value)
 {
-  int ival;
+  if (iupStrToDouble(value, &(ih->data->val)))
+  {
+    int ival;
 
-  ih->data->val = atof(value);
-  iupValCropValue(ih);
+    iupValCropValue(ih);
 
-  ival = (int)(((ih->data->val-ih->data->vmin)/(ih->data->vmax - ih->data->vmin))*SHRT_MAX);
-  if (ih->data->inverted)
-    ival = SHRT_MAX-ival;
+    ival = (int)(((ih->data->val - ih->data->vmin) / (ih->data->vmax - ih->data->vmin))*SHRT_MAX);
+    if (ih->data->inverted)
+      ival = SHRT_MAX - ival;
 
-  SendMessage(ih->handle, TBM_SETPOS, TRUE, ival);
+    SendMessage(ih->handle, TBM_SETPOS, TRUE, ival);
+  }
   return 0; /* do not store value in hash table */
 }
 

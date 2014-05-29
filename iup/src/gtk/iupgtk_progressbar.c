@@ -56,7 +56,8 @@ static int gtkProgressBarSetValueAttrib(Ihandle* ih, const char* value)
   if (!value)
     ih->data->value = 0;
   else
-    ih->data->value = atof(value);
+    iupStrToDouble(value, &(ih->data->value));
+
   iProgressBarCropValue(ih);
 
   gtk_progress_bar_set_fraction(pbar, (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));

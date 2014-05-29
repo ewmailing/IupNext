@@ -274,6 +274,7 @@ iupStrToIntInt
 iupStrToInt
 iupStrToFloatFloat
 iupStrToFloat
+iupStrToDouble
 iupStrToDos
 iupStrReturnRGB
 iupStrReturnBoolean
@@ -281,6 +282,7 @@ iupStrReturnChecked
 iupStrReturnInt
 iupStrReturnIntInt
 iupStrReturnFloat
+iupStrReturnDouble
 iupStrReturnStrStr
 iupStrReplace
 iupStrProcessMnemonic

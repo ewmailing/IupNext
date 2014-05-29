@@ -100,28 +100,29 @@ static int motValSetShowTicksAttrib(Ihandle* ih, const char* value)
 
 static int motValSetPageStepAttrib(Ihandle* ih, const char* value)
 {
-  int pagesize;
-  ih->data->pagestep = atof(value);
-  pagesize = (int)(ih->data->pagestep*SHRT_MAX);
-  XtVaSetValues(ih->handle, XmNscaleMultiple, pagesize, NULL);
+  if (iupStrToDouble(value, &(ih->data->pagestep)))
+  {
+    int pagesize = (int)(ih->data->pagestep*SHRT_MAX);
+    XtVaSetValues(ih->handle, XmNscaleMultiple, pagesize, NULL);
+  }
   return 0; /* do not store value in hash table */
 }
 
 static int motValSetStepAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->step = atof(value);
+  iupStrToDouble(value, &(ih->data->step));
   return 0; /* do not store value in hash table */
 }
 
 static int motValSetValueAttrib(Ihandle* ih, const char* value)
 {
-  int ival;
-
-  ih->data->val = atof(value);
-  iupValCropValue(ih);
-
-  ival = (int)(((ih->data->val-ih->data->vmin)/(ih->data->vmax - ih->data->vmin))*SHRT_MAX);
-  XtVaSetValues(ih->handle, XmNvalue, ival, NULL);
+  if (iupStrToDouble(value, &(ih->data->val)))
+  {
+    int ival;
+    iupValCropValue(ih);
+    ival = (int)(((ih->data->val - ih->data->vmin) / (ih->data->vmax - ih->data->vmin))*SHRT_MAX);
+    XtVaSetValues(ih->handle, XmNvalue, ival, NULL);
+  }
 
   return 0; /* do not store value in hash table */
 }

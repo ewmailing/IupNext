@@ -220,8 +220,10 @@ static int iGaugeSetValueAttrib(Ihandle* ih, const char* value)
   if(value == NULL)
     ih->data->value = 0;
   else
-    ih->data->value = atof(value);
-  iGaugeCropValue(ih);
+  {
+    if (iupStrToDouble(value, &(ih->data->value)))
+      iGaugeCropValue(ih);
+  }
 
   iGaugeRepaint(ih);
   return 0; /* do not store value in hash table */
@@ -229,13 +231,13 @@ static int iGaugeSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* iGaugeGetValueAttrib(Ihandle* ih)
 {
-  return iupStrReturnFloat((float)ih->data->value);
+  return iupStrReturnDouble(ih->data->value);
 }
 
 static int iGaugeSetMinAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->vmin = atof(value);
-  iGaugeCropValue(ih);
+  if (iupStrToDouble(value, &(ih->data->vmin)))
+    iGaugeCropValue(ih);
 
   iGaugeRepaint(ih);
   return 0; /* do not store value in hash table */
@@ -243,20 +245,21 @@ static int iGaugeSetMinAttrib(Ihandle* ih, const char* value)
 
 static char* iGaugeGetMinAttrib(Ihandle* ih)
 {
-  return iupStrReturnFloat((float)ih->data->vmin);
+  return iupStrReturnDouble(ih->data->vmin);
 }
 
 static int iGaugeSetMaxAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->vmax = atof(value);
-  iGaugeCropValue(ih);
+  if (iupStrToDouble(value, &(ih->data->vmax)))
+    iGaugeCropValue(ih);
+
   iGaugeRepaint(ih);
   return 0; /* do not store value in hash table */
 }
 
 static char* iGaugeGetMaxAttrib(Ihandle* ih)
 {
-  return iupStrReturnFloat((float)ih->data->vmax);
+  return iupStrReturnDouble(ih->data->vmax);
 }
 
 static int iGaugeSetShowTextAttrib(Ihandle* ih, const char* value)

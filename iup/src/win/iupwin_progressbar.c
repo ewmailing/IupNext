@@ -55,7 +55,7 @@ static int winProgressBarSetValueAttrib(Ihandle* ih, const char* value)
   if (!value)
     ih->data->value = 0;
   else
-    ih->data->value = atof(value);
+    iupStrToDouble(value, &(ih->data->value));
 
   iProgressBarCropValue(ih);
 

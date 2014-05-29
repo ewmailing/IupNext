@@ -468,6 +468,13 @@ char* iupStrReturnFloat(float f)
   return str;
 }
 
+char* iupStrReturnDouble(double d)
+{
+  char* str = iupStrGetSmallMem();  /* 80 */
+  sprintf(str, "%.18g", d);  /* maximum double precision */
+  return str;
+}
+
 char* iupStrReturnRGB(unsigned char r, unsigned char g, unsigned char b)
 {
   char* str = iupStrGetSmallMem();  /* 3*20 */
@@ -590,6 +597,13 @@ int iupStrToFloat(const char *str, float *f)
 {
   if (!str) return 0;
   if (sscanf(str, "%f", f) != 1) return 0;
+  return 1;
+}
+
+int iupStrToDouble(const char *str, double *d)
+{
+  if (!str) return 0;
+  if (sscanf(str, "%lf", d) != 1) return 0;
   return 1;
 }
 

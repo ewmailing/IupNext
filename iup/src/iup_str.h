@@ -176,6 +176,10 @@ char* iupStrReturnInt(int i);
  * \ingroup str */
 char* iupStrReturnFloat(float f);
 
+/** Returns a double value in a string using \ref iupStrGetMemory.
+* \ingroup str */
+char* iupStrReturnDouble(double d);
+
 /** Returns a RGB value in a string using \ref iupStrGetMemory.
  * \ingroup str */
 char* iupStrReturnRGB(unsigned char r, unsigned char g, unsigned char b);
@@ -210,12 +214,17 @@ int iupStrToInt(const char *str, int *i);
  * \ingroup str */
 int iupStrToIntInt(const char *str, int *i1, int *i2, char sep);
 
-/** Converts the string to an float. The string must contains only the real value.
+/** Converts the string to a float. The string must contains only the real value.
  * Returns a a non zero value if sucessfull.
  * \ingroup str */
 int iupStrToFloat(const char *str, float *f);
 
-/** Converts the string to two float. The string must contains two real values in sequence, 
+/** Converts the string to a double. The string must contains only the real value.
+* Returns a a non zero value if sucessfull.
+* \ingroup str */
+int iupStrToDouble(const char *str, double *d);
+
+/** Converts the string to two float. The string must contains two real values in sequence,
  * separated by the given character (usually 'x' or ':').
  * Returns the number of converted values.
  * Values not extracted are not changed.

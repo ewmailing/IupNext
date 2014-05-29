@@ -177,7 +177,7 @@ static char* iScintillaGetFontSizeFracStyleAttrib(Ihandle* ih, int style)
 
   size = iupScintillaSendMessage(ih, SCI_STYLESETSIZEFRACTIONAL, style, 0);
 
-  return iupStrReturnFloat((float)size / SC_FONT_SIZE_MULTIPLIER);
+  return iupStrReturnFloat((float)size/(float)SC_FONT_SIZE_MULTIPLIER);
 }
 
 static int iScintillaSetFontSizeFracStyleAttrib(Ihandle* ih, int style, const char* value)
