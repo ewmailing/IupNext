@@ -107,7 +107,7 @@ Iclass* iupGLSeparatorNewClass(void)
   ic->ComputeNaturalSize = iGLSeparatorComputeNaturalSizeMethod;
 
   /* IupSeparator only */
-  iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "VERTICAL", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "VERTICAL", IUPAF_NO_INHERIT);
 
   return ic;
 }

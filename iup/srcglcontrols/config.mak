@@ -2,11 +2,11 @@ PROJNAME = iup
 LIBNAME = iupglcontrols
 OPT = YES
 
-INCLUDES = ../include ../src .
+INCLUDES = ../include ../src . ./freetype
 
 SRC = iup_glcontrols.c iup_glcanvasbox.c iup_glsubcanvas.c iup_gllabel.c \
       iup_glimage.c iup_glfont.c iup_gldraw.c iup_glicon.c iup_glseparator.c \
-      iup_glbutton.c iup_gltoggle.c iup_gllink.c
+      iup_glbutton.c iup_gltoggle.c iup_gllink.c iup_glprogressbar.c
 
 LIBS = iupgl iup 
 LDIR = ../lib/$(TEC_UNAME)
