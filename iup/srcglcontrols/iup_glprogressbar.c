@@ -82,30 +82,11 @@ static void iGLProgressBarDrawText(Ihandle* ih, int xmid)
   }
 }
 
-static int iGLProgressBarACTION_CB(Ihandle* ih)
-{
-  int border = 3;  /* includes the pixel used to draw the 3D border */
-  int xstart = pb->horiz_padding+border;
-  int ystart = pb->vert_padding+border;
-  int xend   = pb->w-1 - (pb->horiz_padding+border);
-  int yend   = pb->h-1 - (pb->vert_padding+border);
-
-  cdCanvasForeground(pb->cddbuffer, pb->fgcolor);
-
-  {
-    int xmid = xstart + iupRound((xend-xstart + 1) * (pb->value - pb->vmin) / (pb->vmax - pb->vmin));
-
-    if(pb->value != pb->vmin)
-      cdCanvasBox(pb->cddbuffer, xstart, xmid, ystart, yend );
-
-    if(pb->show_text)
-      iGLProgressBarDrawText(ih, xmid);
-  }
-}
 #endif
 
 static int iGLProgressBarACTION_CB(Ihandle* ih)
 {
+  iGLProgressBar* pb = (iGLProgressBar*)iupAttribGet(ih, "_IUP_GLPROGRESSBAR");
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
   char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
   int active = iupAttribGetInt(ih, "ACTIVE");
@@ -116,6 +97,23 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
 
   /* draw background */
   iupGLDrawBox(ih, 1, ih->currentwidth - 2, 1, ih->currentheight - 2, bgcolor);
+
+  if (pb->show_text || pb->value != pb->vmin)
+  {
+    char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
+    int border_width = (int)ceil(bwidth);
+    int xstart = pb->horiz_padding + border_width;
+    int ystart = pb->vert_padding + border_width;
+    int xend = ih->currentwidth - 1 - (pb->horiz_padding + border_width);
+    int yend = ih->currentheight - 1 - (pb->vert_padding + border_width);
+    int xmid = xstart + iupRound((xend - xstart + 1) * (pb->value - pb->vmin) / (pb->vmax - pb->vmin));
+
+    if (pb->value != pb->vmin)
+      iupGLDrawBox(ih, xstart, xmid, ystart, yend, fgcolor);
+
+//    if (pb->show_text)
+//      iGLProgressBarDrawText(ih, xmid);
+  }
 
   return IUP_DEFAULT;
 }
@@ -213,14 +211,15 @@ static int iGLProgressBarMapMethod(Ihandle* ih)
 static int iGLProgressBarCreateMethod(Ihandle* ih, void **params)
 {
   iGLProgressBar* pb = (iGLProgressBar*)malloc(sizeof(iGLProgressBar));
+  memset(pb, 0, sizeof(iGLProgressBar));
   iupAttribSet(ih, "_IUP_GLPROGRESSBAR", (char*)pb);
 
   /* default values */
   pb->vmax      = 1;
   pb->show_text = 1;
 
-  /* progress bar default size is 200x30 */
-  IupSetAttribute(ih, "RASTERSIZE", "200x30");
+  /* progress bar default size */
+  IupSetAttribute(ih, "RASTERSIZE", "100x20");
 
   IupSetCallback(ih, "GL_ACTION", (Icallback)iGLProgressBarACTION_CB);
 
@@ -263,7 +262,7 @@ Iclass* iupGLProgressBarNewClass(void)
   return ic;
 }
 
-Ihandle *IupGLProgressBar(void)
+Ihandle* IupGLProgressBar(void)
 {
   return IupCreate("glprogressbar");
 }

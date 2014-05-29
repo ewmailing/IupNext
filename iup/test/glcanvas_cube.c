@@ -306,7 +306,7 @@ static int link_action_cb(Ihandle *ih, const char* url)
 
 void GLCanvasCubeTest(void)
 {
-  Ihandle *dlg, *canvas, *box, *gtoggle, *gtoggle1, *gtoggle2,
+  Ihandle *dlg, *canvas, *box, *gtoggle, *gtoggle1, *gtoggle2, *pbar,
     *ghbox, *gvbox, *glabel, *gsep1, *gsep2, *gbutton1, *gbutton2,
     *glink;
 
@@ -352,7 +352,10 @@ void GLCanvasCubeTest(void)
   glink = IupGLLink("http://www.tecgraf.puc-rio.br/iup", "IUP Toolkit");
   IupSetCallback(glink, "ACTION", (Icallback)link_action_cb);
 
-  ghbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, NULL);
+  pbar = IupGLProgressBar();
+  IupSetAttribute(pbar, "VALUE", "0.3");
+
+  ghbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar, NULL);
   IupSetAttribute(ghbox, "HORIZONTALALIGN", "ACENTER");  /* used by IupGLCanvasBox */
   IupSetAttribute(ghbox, "VERTICALALIGN", "ATOP");  /* used by IupGLCanvasBox */
   IupSetAttribute(ghbox, "ALIGNMENT", "ACENTER");
@@ -384,7 +387,7 @@ void GLCanvasCubeTest(void)
 //  dlg = IupDialog(IupSetAttributes(IupFrame(box), "TITLE=Test"));
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupGLCanvas Test");
-  IupSetAttribute(dlg, "RASTERSIZE", "400x400");
+  IupSetAttribute(dlg, "RASTERSIZE", "500x500");
 
   IupMap(dlg);
 

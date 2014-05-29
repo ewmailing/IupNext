@@ -8,3 +8,4 @@ EXPORTS
   IupGLButton
   IupGLToggle
   IupGLLink
+  IupGLProgressBar
