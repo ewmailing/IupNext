@@ -407,6 +407,7 @@ iupBaseRegisterCommonCallbacks
 iupBaseGetWidAttrib
 iupBaseGetVisibleAttrib
 iupBaseGetSizeAttrib
+iupRound
 iupBaseGetScrollbar
 iupBaseGetRasterSizeAttrib
 iupBaseGetActiveAttrib

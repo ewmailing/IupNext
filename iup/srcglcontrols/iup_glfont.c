@@ -28,11 +28,6 @@
 #include "iup_glcontrols.h"
 
 
-static int iupRound(double x)
-{
-  return iupROUND(x);
-}
-
 typedef struct _IglFont
 {
   char filename[10240];

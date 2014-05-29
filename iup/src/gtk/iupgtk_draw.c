@@ -147,7 +147,7 @@ void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, doub
     gdk_gc_set_values(dc->pixmap_gc, &gcval, GDK_GC_LINE_STYLE);
   }
 
-  gdk_draw_arc(dc->pixmap, dc->pixmap_gc, style==IUP_DRAW_FILL, x1, y1, x2-x1+1, y2-y1+1, iupROUND(a1*64), iupROUND((a2 - a1)*64));
+  gdk_draw_arc(dc->pixmap, dc->pixmap_gc, style == IUP_DRAW_FILL, x1, y1, x2 - x1 + 1, y2 - y1 + 1, iupRound(a1 * 64), iupRound((a2 - a1) * 64));
 }
 
 void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style)

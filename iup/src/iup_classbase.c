@@ -249,6 +249,11 @@ char* iupBaseNativeParentGetBgColor(Ihandle* ih)
   return color;
 }
 
+int iupRound(double x)
+{
+  return iupROUND(x);
+}
+
 int iupBaseGetScrollbar(Ihandle* ih)
 {
   int sb = IUP_SB_NONE;  /* NO scrollbar by default */

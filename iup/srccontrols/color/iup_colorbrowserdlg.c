@@ -124,8 +124,8 @@ static void iColorBrowserDlgHex_TXT_Update(IcolorDlgData* colordlg_data)
 static void iColorBrowserDlgHSI_TXT_Update(IcolorDlgData* colordlg_data)
 {
   IupSetInt(colordlg_data->hue_txt, "VALUE", iupROUND(colordlg_data->hue));
-  IupSetInt(colordlg_data->saturation_txt, "VALUE", iupROUND(colordlg_data->saturation * 100));
-  IupSetInt(colordlg_data->intensity_txt, "VALUE", iupROUND(colordlg_data->intensity * 100));
+  IupSetInt(colordlg_data->saturation_txt, "VALUE", iupRound(colordlg_data->saturation * 100));
+  IupSetInt(colordlg_data->intensity_txt, "VALUE", iupRound(colordlg_data->intensity * 100));
 }
 
 /*************************************************\

@@ -90,33 +90,8 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
   int xend   = pb->w-1 - (pb->horiz_padding+border);
   int yend   = pb->h-1 - (pb->vert_padding+border);
 
-  cdCanvasBackground(pb->cddbuffer, pb->bgcolor);
-  cdCanvasClear(pb->cddbuffer);
-
-  cdIupDrawSunkenRect(pb->cddbuffer, 0, 0, pb->w-1, pb->h-1,
-                        pb->light_shadow, pb->mid_shadow, pb->dark_shadow);
-
   cdCanvasForeground(pb->cddbuffer, pb->fgcolor);
 
-  if (pb->dashed)
-  {
-    float step = (xend - xstart + 1) / (float)IGAUGE_BLOCKS;
-    float boxw = step - IGAUGE_GAP;
-    float vx   = (float)((xend-xstart + 1) * (pb->value - pb->vmin) / (pb->vmax - pb->vmin));
-    int intvx  = (int)(100 * vx);
-    float i = 0;
-
-    if(pb->value == pb->vmin)
-      return;
-
-    while(iupRound(100*(i + boxw)) <= intvx)
-    {
-      cdCanvasBox(pb->cddbuffer, xstart + iupRound(i),
-             xstart + iupRound(i + boxw) - 1, ystart, yend);
-      i += step;
-    }
-  }
-  else
   {
     int xmid = xstart + iupRound((xend-xstart + 1) * (pb->value - pb->vmin) / (pb->vmax - pb->vmin));
 
@@ -134,8 +109,13 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
   char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
   int active = iupAttribGetInt(ih, "ACTIVE");
+  char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
 
+  /* draw border - can be disabled setting bwidth=0 */
   iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active);
+
+  /* draw background */
+  iupGLDrawBox(ih, 1, ih->currentwidth - 2, 1, ih->currentheight - 2, bgcolor);
 
   return IUP_DEFAULT;
 }

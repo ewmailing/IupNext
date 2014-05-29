@@ -154,6 +154,7 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic);
 
 #define iupMAX(_a,_b) ((_a)>(_b)?(_a):(_b))
 #define iupROUND(_x) ((int)((_x)>0? (_x)+0.5: (_x)-0.5))
+int     iupRound(double x);
 
 #define iupCOLOR8TO16(_x) ((unsigned short)(_x*257))  
 #define iupCOLOR16TO8(_x) ((unsigned char)(_x/257))   /* 65535/257 = 255 */
