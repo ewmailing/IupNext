@@ -94,12 +94,10 @@ static IwinFont* winFindFont(const char *standardfont)
     HDC hdc = GetDC(NULL);
     HFONT oldfont = (HFONT)SelectObject(hdc, hFont);
 
-    {
-      TEXTMETRIC tm;
-      GetTextMetrics(hdc, &tm);
-      fonts[i].charwidth = tm.tmAveCharWidth; 
-      fonts[i].charheight = tm.tmHeight;
-    }
+    TEXTMETRIC tm;
+    GetTextMetrics(hdc, &tm);
+    fonts[i].charwidth = tm.tmAveCharWidth; 
+    fonts[i].charheight = tm.tmHeight;
 
     SelectObject(hdc, oldfont);
     ReleaseDC(NULL, hdc);

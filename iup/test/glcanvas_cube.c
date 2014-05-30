@@ -306,9 +306,9 @@ static int link_action_cb(Ihandle *ih, const char* url)
 
 void GLCanvasCubeTest(void)
 {
-  Ihandle *dlg, *canvas, *box, *gtoggle, *gtoggle1, *gtoggle2, *pbar,
+  Ihandle *dlg, *canvas, *box, *gtoggle, *gtoggle1, *gtoggle2, 
     *ghbox, *gvbox, *glabel, *gsep1, *gsep2, *gbutton1, *gbutton2,
-    *glink;
+    *pbar1, *pbar2, *glink;
 
   IupGLCanvasOpen();
   IupGLControlsOpen();
@@ -352,21 +352,27 @@ void GLCanvasCubeTest(void)
   glink = IupGLLink("http://www.tecgraf.puc-rio.br/iup", "IUP Toolkit");
   IupSetCallback(glink, "ACTION", (Icallback)link_action_cb);
 
-  pbar = IupGLProgressBar();
-  IupSetAttribute(pbar, "VALUE", "0.3");
+  pbar1 = IupGLProgressBar();
+  IupSetAttribute(pbar1, "VALUE", "0.3");
+  IupSetAttribute(pbar1, "SHOW_TEXT", "Yes");
 
-  ghbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar, NULL);
+  ghbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar1, NULL);
   IupSetAttribute(ghbox, "HORIZONTALALIGN", "ACENTER");  /* used by IupGLCanvasBox */
   IupSetAttribute(ghbox, "VERTICALALIGN", "ATOP");  /* used by IupGLCanvasBox */
   IupSetAttribute(ghbox, "ALIGNMENT", "ACENTER");
   IupSetAttribute(ghbox, "MARGIN", "5x5");
   IupSetAttribute(ghbox, "GAP", "5");
 
+  pbar2 = IupGLProgressBar();
+  IupSetAttribute(pbar2, "VALUE", "0.5");
+  IupSetAttribute(pbar2, "ORIENTATION", "VERTICAL");
+
   gsep2 = IupGLSeparator();
-  IupSetAttribute(gsep2, "ORIENTATION", "VERTICAL");
+  IupSetAttribute(gsep2, "ORIENTATION", "HORIZONTAL");
 
   gvbox = IupVbox(gbutton2, gsep2, 
     IupRadio(IupSetAttributes(IupVbox(gtoggle1, gtoggle2, NULL), "MARGIN=0x0")),
+    pbar2,
     NULL);
   IupSetAttribute(gvbox, "HORIZONTALALIGN", "ALEFT");  /* used by IupGLCanvasBox */
   IupSetAttribute(gvbox, "VERTICALALIGN", "ACENTER");  /* used by IupGLCanvasBox */

@@ -19,12 +19,6 @@
 
 #include "iup_glcontrols.h"
 
-#define IGAUGE_DEFAULTCOLOR "64 96 192"
-#define IGAUGE_DEFAULTSIZE  "120x14"
-
-#define IGAUGE_GAP     3
-#define IGAUGE_BLOCKS 20
-
 
 typedef struct _iGLProgressBar
 {
@@ -36,53 +30,29 @@ typedef struct _iGLProgressBar
   double vmax;
 } iGLProgressBar;
 
-#if 0
-static void iGLProgressBarDrawText(Ihandle* ih, int xmid)
+static void iGLProgressBarDrawText(Ihandle* ih, double percent, 
+                                   int x, int y, int width, int height,
+                                   int active)
 {
-  int x, y, xmin, xmax, ymin, ymax;
-  char* text = pb->text;
-  char buffer[30];
-
-  IupCdSetFont(ih, pb->cddbuffer, IupGetAttribute(ih, "FONT"));
-  cdCanvasTextAlignment(pb->cddbuffer, CD_CENTER);
-  cdCanvasBackOpacity(pb->cddbuffer, CD_TRANSPARENT);
-
-  x = (int)(0.5 * pb->w);
-  y = (int)(0.5 * pb->h);
+  int txt_x, txt_y, txt_width, txt_height;
+  char* text = iupAttribGetStr(ih, "TEXT");
+  char* txtcolor = iupAttribGetStr(ih, "TXTCOLOR");
+  char buffer[50];
 
   if (text == NULL)
   {
-    sprintf(buffer, "%.1f%%", 100 * (pb->value - pb->vmin) / (pb->vmax - pb->vmin));
+    sprintf(buffer, "%.1f%%", 100 * percent);
     text = buffer;
   }
 
-  cdCanvasGetTextBox(pb->cddbuffer, x, y, text, &xmin, &xmax, &ymin, &ymax);
+  iupGLFontGetMultiLineStringSize(ih, text, &txt_width, &txt_height);
 
-  if(xmid < xmin)
-  {
-    cdCanvasForeground(pb->cddbuffer, pb->fgcolor);
-    cdCanvasText(pb->cddbuffer, x, y, text);
-  }
-  else if(xmid > xmax)
-  {
-    cdCanvasForeground(pb->cddbuffer, pb->bgcolor);
-    cdCanvasText(pb->cddbuffer, x, y, text);
-  }
-  else
-  {
-    cdCanvasClip(pb->cddbuffer, CD_CLIPAREA);
-    cdCanvasClipArea(pb->cddbuffer, xmin, xmid, ymin, ymax);
-    cdCanvasForeground(pb->cddbuffer, pb->bgcolor);
-    cdCanvasText(pb->cddbuffer, x, y, text);
+  /* centered */
+  txt_x = (width - (txt_width)) / 2;
+  txt_y = (height - (txt_height)) / 2;
 
-    cdCanvasClipArea(pb->cddbuffer, xmid, xmax, ymin, ymax);
-    cdCanvasForeground(pb->cddbuffer, pb->fgcolor);
-    cdCanvasText(pb->cddbuffer, x, y, text);
-    cdCanvasClip(pb->cddbuffer, CD_CLIPOFF);
-  }
+  iupGLDrawText(ih, x + txt_x, y + txt_y, text, txtcolor, active);
 }
-
-#endif
 
 static int iGLProgressBarACTION_CB(Ihandle* ih)
 {
@@ -91,28 +61,41 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
   char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
   int active = iupAttribGetInt(ih, "ACTIVE");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
+  int border_width = (int)ceil(bwidth);
 
   /* draw border - can be disabled setting bwidth=0 */
   iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active);
 
   /* draw background */
-  iupGLDrawBox(ih, 1, ih->currentwidth - 2, 1, ih->currentheight - 2, bgcolor);
+  iupGLDrawBox(ih, border_width, ih->currentwidth - 2*border_width,
+                   border_width, ih->currentheight - 2*border_width, bgcolor);
 
   if (pb->show_text || pb->value != pb->vmin)
   {
-    char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
-    int border_width = (int)ceil(bwidth);
-    int xstart = pb->horiz_padding + border_width;
-    int ystart = pb->vert_padding + border_width;
-    int xend = ih->currentwidth - 1 - (pb->horiz_padding + border_width);
-    int yend = ih->currentheight - 1 - (pb->vert_padding + border_width);
-    int xmid = xstart + iupRound((xend - xstart + 1) * (pb->value - pb->vmin) / (pb->vmax - pb->vmin));
+    int xmin = pb->horiz_padding + border_width;
+    int ymin = pb->vert_padding + border_width;
+    int xmax = ih->currentwidth - 1 - (pb->horiz_padding + border_width);
+    int ymax = ih->currentheight - 1 - (pb->vert_padding + border_width);
+    double percent = (pb->value - pb->vmin) / (pb->vmax - pb->vmin);
+    int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
 
     if (pb->value != pb->vmin)
-      iupGLDrawBox(ih, xstart, xmid, ystart, yend, fgcolor);
+    {
+      char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
+      if (is_horizontal)
+      {
+        int xmid = xmin + iupRound((xmax - xmin + 1) * percent);
+        iupGLDrawBox(ih, xmin, xmid, ymin, ymax, fgcolor);
+      }
+      else
+      {
+        int ymid = ymin + iupRound((ymax - ymin + 1) * percent);
+        iupGLDrawBox(ih, xmin, xmax, ymid, ymax, fgcolor);
+      }
+    }
 
-//    if (pb->show_text)
-//      iGLProgressBarDrawText(ih, xmid);
+    if (pb->show_text && is_horizontal)
+      iGLProgressBarDrawText(ih, percent, xmin, ymin, xmax - xmin + 1, ymax - ymin + 1, active);
   }
 
   return IUP_DEFAULT;
@@ -194,32 +177,52 @@ static char* iGLProgressBarGetPaddingAttrib(Ihandle* ih)
   return iupStrReturnIntInt(pb->horiz_padding, pb->vert_padding, 'x');
 }
 
-static int iGLProgressBarMapMethod(Ihandle* ih)
+static void iGLProgressBarComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
-  if (iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "VERTICAL"))
+  iGLProgressBar* pb = (iGLProgressBar*)iupAttribGet(ih, "_IUP_GLPROGRESSBAR");
+  int natural_w = 0,
+      natural_h = 0;
+  int charwidth, charheight;
+  float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+  int border_width = (int)ceil(bwidth);
+  int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
+
+  iupGLFontGetCharSize(ih, &charwidth, &charheight);
+
+  if (is_horizontal)
   {
-    if (ih->currentheight < ih->currentwidth)
-    {
-      int tmp = ih->currentheight;
-      ih->currentheight = ih->currentwidth;
-      ih->currentwidth = tmp;
-    }
+    natural_h = charheight;
+    if (ih->userwidth <= 0)
+      natural_w = 15 * charwidth;
   }
-  return IUP_NOERROR;
+  else
+  {
+    natural_w = charheight;
+    if (ih->userheight <= 0)
+      natural_h = 15 * charwidth;
+  }
+
+  natural_w += 2 * (pb->horiz_padding + border_width);
+  natural_h += 2 * (pb->vert_padding + border_width);
+
+  *w = natural_w;
+  *h = natural_h;
+
+  (void)children_expand; /* unset if not a container */
 }
 
 static int iGLProgressBarCreateMethod(Ihandle* ih, void **params)
 {
   iGLProgressBar* pb = (iGLProgressBar*)malloc(sizeof(iGLProgressBar));
-  memset(pb, 0, sizeof(iGLProgressBar));
   iupAttribSet(ih, "_IUP_GLPROGRESSBAR", (char*)pb);
 
-  /* default values */
-  pb->vmax      = 1;
-  pb->show_text = 1;
+  memset(pb, 0, sizeof(iGLProgressBar));
 
-  /* progress bar default size */
-  IupSetAttribute(ih, "RASTERSIZE", "100x20");
+  /* default values */
+  pb->vmax = 1;
+  pb->show_text = 1;
+  pb->horiz_padding = 2;
+  pb->vert_padding = 2;
 
   IupSetCallback(ih, "GL_ACTION", (Icallback)iGLProgressBarACTION_CB);
 
@@ -247,17 +250,18 @@ Iclass* iupGLProgressBarNewClass(void)
   ic->New = iupGLProgressBarNewClass;
   ic->Create  = iGLProgressBarCreateMethod;
   ic->Destroy = iGLProgressBarDestroyMethod;
-  ic->Map = iGLProgressBarMapMethod;
+  ic->ComputeNaturalSize = iGLProgressBarComputeNaturalSizeMethod;
 
   /* IupGLProgressBar only */
   iupClassRegisterAttribute(ic, "MIN", iGLProgressBarGetMinAttrib, iGLProgressBarSetMinAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MAX", iGLProgressBarGetMaxAttrib, iGLProgressBarSetMaxAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", iGLProgressBarGetValueAttrib, iGLProgressBarSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PADDING", iGLProgressBarGetPaddingAttrib, iGLProgressBarSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "PADDING", iGLProgressBarGetPaddingAttrib, iGLProgressBarSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "2x2", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOW_TEXT", iGLProgressBarGetShowTextAttrib, iGLProgressBarSetShowTextAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SHOW_TEXT", iGLProgressBarGetShowTextAttrib, iGLProgressBarSetShowTextAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "TXTCOLOR", NULL, NULL, "0 0 0", NULL, IUPAF_DEFAULT);  /* inheritable */
 
   return ic;
 }

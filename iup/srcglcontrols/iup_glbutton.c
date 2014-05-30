@@ -57,9 +57,12 @@ static int iGLButtonACTION(Ihandle* ih)
   }
 
   /* draw background */
-  iupGLDrawBox(ih, 1, ih->currentwidth - 2, 1, ih->currentheight - 2, bgcolor);
+  iupGLDrawBox(ih, border_width, ih->currentwidth - 2*border_width, 
+                   border_width, ih->currentheight - 2*border_width, bgcolor);
 
-  iupGLIconDraw(ih, border_width, border_width, ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width, image, title, fgcolor, active);
+  iupGLIconDraw(ih, border_width, border_width, 
+                    ih->currentwidth - 2*border_width, ih->currentheight - 2*border_width, 
+                    image, title, fgcolor, active);
 
   return IUP_DEFAULT;
 }

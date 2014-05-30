@@ -650,7 +650,7 @@ void iupGLFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
 
   if (!ih->handle)
   {
-    iupGLFontGetCharSize(ih, charwidth, charheight);
+    iupdrvFontGetCharSize(ih, charwidth, charheight);
     return;
   }
 
