@@ -102,14 +102,14 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TEC_64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0416</Culture>
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:X64 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>setargv.obj;comctl32.lib;ole32.lib;iup.lib;iupcontrols.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iupgl.lib;opengl32.lib;glu32.lib;iupimglib.lib;im.lib;iupim.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\im\lib;..\..\cd\lib;..\lib;D:\LNG\vld\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\im\lib\x64;..\..\cd\lib\x64;..\lib\x64;D:\LNG\vld\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>..\bin\iupview.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>

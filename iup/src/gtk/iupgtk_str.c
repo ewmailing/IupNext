@@ -14,6 +14,7 @@
 #include "iup.h"
 
 #include "iup_object.h"
+#include "iup_str.h"
 
 #include "iupgtk_drv.h"
 
