@@ -96,6 +96,9 @@ static IwinFont* winFindFont(const char *standardfont)
 
     TEXTMETRIC tm;
     GetTextMetrics(hdc, &tm);
+    /* NOTICE that this is different from CD, 
+       here we need average width,
+       there is maximum width. */
     fonts[i].charwidth = tm.tmAveCharWidth; 
     fonts[i].charheight = tm.tmHeight;
 

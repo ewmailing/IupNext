@@ -121,9 +121,9 @@ glu32.lib
 cd.lib
 ;freetype6.lib
 ;iupcd.lib
-;zlib1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+;zlib1.lib;iupgl.lib;iupimglib.lib;iup_pplot.lib;iuptuio.lib;iupim.lib;im.lib;im_process.lib;cdcontextplus.lib;gdiplus.lib;iupole.lib;iupweb.lib;iup_scintilla.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\lib\x64;..\..\cd\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib\x64;..\..\cd\lib\x64;..\..\im\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>

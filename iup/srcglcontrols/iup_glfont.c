@@ -399,6 +399,8 @@ static void iGLGetFontFilename(char* filename, const char *typeface, int is_bold
   strcpy(filename, typeface);
 }
 
+static int iGLFontGetFontAveWidth(FTGLfont* font);
+
 static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *standardfont)
 {
   char filename[10240];
@@ -454,8 +456,11 @@ static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *standar
   fonts[i].font = font;
   fonts[i].size = size;
 
+  /* NOTICE that this is different from CD,
+  here we need average width,
+  there is maximum width. */
+  fonts[i].charwidth = iGLFontGetFontAveWidth(font);
   fonts[i].charheight = iupRound(ftglGetFontLineHeight(font));
-  fonts[i].charwidth = iupRound(ftglGetFontMaxWidth(font));
 
   return &fonts[i];
 }
@@ -559,6 +564,24 @@ static void iGLFontConvertToUTF8(const char* str, int len)
     iconv(cdgl_iconv, (char**)&str, &ulen, &utf8, &utf8len);
   }
 #endif
+}
+
+static int iGLFontGetFontAveWidth(FTGLfont* font)
+{
+  static int first = 1;
+  static char sample[512] = "";
+  if (first)
+  {
+    /* average all Latin-1 characters */
+    int i;
+    for (i = 32; i < 256; i++)
+      sample[i - 32] = (char)i;
+
+    iGLFontConvertToUTF8(sample, 256 - 32);
+    memcpy(sample, utf8_buffer, strlen(utf8_buffer) + 1);
+  }
+
+  return iupRound(ftglGetFontAdvance(font, sample) / (256.0f - 32.0f));
 }
 
 int iupGLFontGetStringWidth(Ihandle* ih, const char* str, int len)
