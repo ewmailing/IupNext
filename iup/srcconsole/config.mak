@@ -1,6 +1,6 @@
 PROJNAME = iup
 APPNAME := iuplua
-APPTYPE = CONSOLE
+APPTYPE = console
 
 STRIP = 
 OPT = YES      

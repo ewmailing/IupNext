@@ -1,6 +1,6 @@
 PROJNAME = iup
 APPNAME = iupsimple
-APPTYPE = CONSOLE
+APPTYPE = console
 
 ifdef GTK_DEFAULT
   ifdef USE_MOTIF
