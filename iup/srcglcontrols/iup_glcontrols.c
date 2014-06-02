@@ -31,6 +31,7 @@ int IupGLControlsOpen(void)
   iupRegisterClass(iupGLToggleNewClass());
   iupRegisterClass(iupGLLinkNewClass());
   iupRegisterClass(iupGLProgressBarNewClass());
+  iupRegisterClass(iupGLValNewClass());
 
   IupSetGlobal("_IUP_GLCONTROLS_OPEN", "1");
 

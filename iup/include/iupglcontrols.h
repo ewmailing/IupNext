@@ -25,6 +25,7 @@ Ihandle* IupGLButton(const char* title);
 Ihandle* IupGLToggle(const char* title);
 Ihandle* IupGLLink(const char *url, const char * title);
 Ihandle* IupGLProgressBar(void);
+Ihandle* IupGLVal(void);
 
 
 #ifdef __cplusplus

@@ -21,6 +21,7 @@ Iclass* iupGLButtonNewClass(void);
 Iclass* iupGLToggleNewClass(void);
 Iclass* iupGLLinkNewClass(void);
 Iclass* iupGLProgressBarNewClass(void);
+Iclass* iupGLValNewClass(void);
 
 void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
 void iupGLSubCanvasSaveState(Ihandle* gl_parent);
