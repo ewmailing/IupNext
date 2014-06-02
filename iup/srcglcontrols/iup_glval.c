@@ -111,13 +111,21 @@ static int iGLValACTION_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static void iGLValCropValue(iGLVal* val)
+{
+  if (val->value>val->vmax)
+    val->value = val->vmax;
+  else if (val->value<val->vmin)
+    val->value = val->vmin;
+}
+
 static int iGLValMoveHandler(Ihandle* ih, int dx, int dy)
 {
   iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
   int handler_size = iupAttribGetInt(ih, "HANDLERSIZE");
   int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
   double delta, percent;
-  int dp, p1, p2;
+  int dp, p1, p2, pmid;
 
   if (is_horizontal)
   {
@@ -140,12 +148,12 @@ static int iGLValMoveHandler(Ihandle* ih, int dx, int dy)
     return 0;
 
   percent = (val->value - val->vmin) / (val->vmax - val->vmin);
+  pmid = p1 + iupRound((p2 - p1 + 1) * percent);
+  pmid += dp;
 
-  delta = (double)dp / (double)(p2 - p1 + 1);
-
-  percent += delta;
-
+  percent = (double)(pmid - p1) / (double)(p2 - p1 + 1);
   val->value = percent * (val->vmax - val->vmin) + val->vmin;
+  iGLValCropValue(val);
 
   return 1;
 }
@@ -244,6 +252,9 @@ static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
           if (ret == IUP_CLOSE)
             IupExitLoop();
         }
+
+        iupAttribSetInt(ih, "_IUP_START_X", x);
+        iupAttribSetInt(ih, "_IUP_START_Y", y);
       }
     }
 
@@ -271,14 +282,6 @@ static int iGLValENTERWINDOW_CB(Ihandle* ih, int x, int y)
     iupAttribSet(ih, "HIGHLIGHT", NULL);
 
   return iupGLSubCanvasRestoreRedraw(ih);
-}
-
-static void iGLValCropValue(iGLVal* val)
-{
-  if(val->value>val->vmax)
-    val->value = val->vmax;
-  else if(val->value<val->vmin)
-    val->value = val->vmin;
 }
 
 static int iGLValSetValueAttrib(Ihandle* ih, const char* value)
