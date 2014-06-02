@@ -74,13 +74,13 @@ static int iGLValACTION_CB(Ihandle* ih)
   {
     char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
     if (presscolor)
-      bgcolor = presscolor;
+      fgcolor = presscolor;
   }
   else if (highlight)
   {
     char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
     if (hlcolor)
-      bgcolor = hlcolor;
+      fgcolor = hlcolor;
   }
 
   if (is_horizontal)
@@ -240,6 +240,7 @@ static int iGLValCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLValBUTTON_CB);
   IupSetCallback(ih, "GL_MOTION_CB", (Icallback)iGLValMOTION_CB);
   IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRestoreRedraw);
+  IupSetCallback(ih, "GL_ENTERWINDOW_CB", iupGLSubCanvasRestoreRedraw);
 
   (void)params;
   return IUP_NOERROR;
@@ -276,6 +277,7 @@ Iclass* iupGLValNewClass(void)
   iupClassRegisterAttribute(ic, "VALUE", iGLValGetValueAttrib, iGLValSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "190 210 230", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "HANDLERSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SLIDERSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
 
