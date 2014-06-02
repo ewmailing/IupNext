@@ -190,7 +190,10 @@ static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
   {
     Ihandle* child = iGLCanvasBoxPickChild(ih, x, y);
 
-    iGLCanvasBoxEnterChild(ih, child, x - child->x, y - child->y);
+    if (child)
+      iGLCanvasBoxEnterChild(ih, child, x - child->x, y - child->y);
+    else
+      iGLCanvasBoxEnterChild(ih, NULL, 0, 0);
 
     if (child && iupAttribGetInt(child, "ACTIVE"))
     {

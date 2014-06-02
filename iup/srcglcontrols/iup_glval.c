@@ -113,7 +113,41 @@ static int iGLValACTION_CB(Ihandle* ih)
 
 static int iGLValMoveHandler(Ihandle* ih, int dx, int dy)
 {
-  return 0;
+  iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
+  int handler_size = iupAttribGetInt(ih, "HANDLERSIZE");
+  int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
+  double delta, percent;
+  int dp, p1, p2;
+
+  if (is_horizontal)
+  {
+    if (handler_size == 0)
+      handler_size = ih->currentheight / 2;
+    p1 = handler_size / 2;
+    p2 = ih->currentwidth - 1 - handler_size / 2;
+    dp = dx;
+  }
+  else
+  {
+    if (handler_size == 0)
+      handler_size = ih->currentwidth / 2;
+    p1 = handler_size / 2;
+    p2 = ih->currentheight - 1 - handler_size / 2;
+    dp = dy;
+  }
+
+  if (dp == 0)
+    return 0;
+
+  percent = (val->value - val->vmin) / (val->vmax - val->vmin);
+
+  delta = (double)dp / (double)(p2 - p1 + 1);
+
+  percent += delta;
+
+  val->value = percent * (val->vmax - val->vmin) + val->vmin;
+
+  return 1;
 }
 
 static int iGLValIsInsideHandler(Ihandle* ih, int x, int y)
@@ -185,23 +219,43 @@ static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
   iupGLSubCanvasRestoreState(gl_parent);
 
-  if (pressed && iGLValIsInsideHandler(ih, x, y))
+  if (iGLValIsInsideHandler(ih, x, y))
   {
-    int start_x = iupAttribGetInt(ih, "_IUP_START_X");
-    int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
+    int redraw = 0;
+    if (!iupAttribGet(ih, "HIGHLIGHT"))
+      redraw = 1;
+    iupAttribSet(ih, "HIGHLIGHT", "1");
 
-    if (iGLValMoveHandler(ih, x - start_x, y - start_y))
+    if (pressed)
     {
-      Icallback cb = IupGetCallback(ih, "VALUECHANGED_CB");
+      int start_x = iupAttribGetInt(ih, "_IUP_START_X");
+      int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
 
-      IupSetAttribute(gl_parent, "REDRAW", NULL);
-
-      if (cb)
+      if (iGLValMoveHandler(ih, x - start_x, y - start_y))
       {
-        int ret = cb(ih);
-        if (ret == IUP_CLOSE)
-          IupExitLoop();
+        Icallback cb = IupGetCallback(ih, "VALUECHANGED_CB");
+
+        IupSetAttribute(gl_parent, "REDRAW", NULL);
+        redraw = 0;
+
+        if (cb)
+        {
+          int ret = cb(ih);
+          if (ret == IUP_CLOSE)
+            IupExitLoop();
+        }
       }
+    }
+
+    if (redraw)
+      IupSetAttribute(gl_parent, "REDRAW", NULL);
+  }
+  else
+  {
+    if (iupAttribGet(ih, "HIGHLIGHT"))
+    {
+      iupAttribSet(ih, "HIGHLIGHT", NULL);
+      IupSetAttribute(gl_parent, "REDRAW", NULL);
     }
   }
 
@@ -211,7 +265,9 @@ static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
 static int iGLValENTERWINDOW_CB(Ihandle* ih, int x, int y)
 {
-  if (!iGLValIsInsideHandler(ih, x, y))
+  if (iGLValIsInsideHandler(ih, x, y))
+    iupAttribSet(ih, "HIGHLIGHT", "1");
+  else
     iupAttribSet(ih, "HIGHLIGHT", NULL);
 
   return iupGLSubCanvasRestoreRedraw(ih);

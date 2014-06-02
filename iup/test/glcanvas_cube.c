@@ -366,6 +366,7 @@ void GLCanvasCubeTest(void)
   gval1 = IupGLVal();
   IupSetAttribute(gval1, "VALUE", "0.3");
   IupSetCallback(gval1, "VALUECHANGED_CB", val_action_cb);
+  IupSetAttribute(gval1, "PROGRESSBAR", (char*)pbar1);
 
   ghbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar1, gval1, NULL);
   IupSetAttribute(ghbox, "HORIZONTALALIGN", "ACENTER");  /* used by IupGLCanvasBox */
@@ -382,9 +383,7 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(gval2, "VALUE", "0.5");
   IupSetAttribute(gval2, "ORIENTATION", "VERTICAL");
   IupSetCallback(gval2, "VALUECHANGED_CB", val_action_cb);
-
-  IupSetAttribute(gval1, "PROGRESSBAR", (char*)pbar2);
-  IupSetAttribute(gval2, "PROGRESSBAR", (char*)pbar1);
+  IupSetAttribute(gval2, "PROGRESSBAR", (char*)pbar2);
 
   gsep2 = IupGLSeparator();
   IupSetAttribute(gsep2, "ORIENTATION", "HORIZONTAL");
@@ -413,7 +412,7 @@ void GLCanvasCubeTest(void)
 //  dlg = IupDialog(IupSetAttributes(IupFrame(box), "TITLE=Test"));
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupGLCanvas Test");
-  IupSetAttribute(dlg, "RASTERSIZE", "500x500");
+  IupSetAttribute(dlg, "RASTERSIZE", "600x600");
 
   IupMap(dlg);
 
