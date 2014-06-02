@@ -169,7 +169,7 @@ static void draw_cube(void)
 static double model_view_matrix[16];
 static int use_model_matrix = 0;
 
-static void init(Ihandle *ih)
+static void init(void)
 {
   glClearColor(1, 1, 1, 0.0);
 
@@ -277,7 +277,7 @@ static int action(Ihandle *ih)
 {
   IupGLMakeCurrent(ih);
 
-  init(ih);
+  init();
 
   draw_cube();
 
@@ -304,11 +304,18 @@ static int link_action_cb(Ihandle *ih, const char* url)
   return IUP_DEFAULT;
 }
 
+static int val_action_cb(Ihandle *ih)
+{
+  Ihandle* pbar = (Ihandle*)IupGetAttribute(ih, "PROGRESSBAR");
+  IupSetAttribute(pbar, "VALUE", IupGetAttribute(ih, "VALUE"));
+  return IUP_DEFAULT;
+}
+
 void GLCanvasCubeTest(void)
 {
   Ihandle *dlg, *canvas, *box, *gtoggle, *gtoggle1, *gtoggle2, 
     *ghbox, *gvbox, *glabel, *gsep1, *gsep2, *gbutton1, *gbutton2,
-    *pbar1, *pbar2, *glink;
+    *pbar1, *pbar2, *glink, *gval1, *gval2;
 
   IupGLCanvasOpen();
   IupGLControlsOpen();
@@ -356,7 +363,11 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(pbar1, "VALUE", "0.3");
   IupSetAttribute(pbar1, "SHOW_TEXT", "Yes");
 
-  ghbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar1, NULL);
+  gval1 = IupGLVal();
+  IupSetAttribute(gval1, "VALUE", "0.3");
+  IupSetCallback(gval1, "VALUECHANGED_CB", val_action_cb);
+
+  ghbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar1, gval1, NULL);
   IupSetAttribute(ghbox, "HORIZONTALALIGN", "ACENTER");  /* used by IupGLCanvasBox */
   IupSetAttribute(ghbox, "VERTICALALIGN", "ATOP");  /* used by IupGLCanvasBox */
   IupSetAttribute(ghbox, "ALIGNMENT", "ACENTER");
@@ -367,12 +378,21 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(pbar2, "VALUE", "0.5");
   IupSetAttribute(pbar2, "ORIENTATION", "VERTICAL");
 
+  gval2 = IupGLVal();
+  IupSetAttribute(gval2, "VALUE", "0.5");
+  IupSetAttribute(gval2, "ORIENTATION", "VERTICAL");
+  IupSetCallback(gval2, "VALUECHANGED_CB", val_action_cb);
+
+  IupSetAttribute(gval1, "PROGRESSBAR", (char*)pbar2);
+  IupSetAttribute(gval2, "PROGRESSBAR", (char*)pbar1);
+
   gsep2 = IupGLSeparator();
   IupSetAttribute(gsep2, "ORIENTATION", "HORIZONTAL");
 
   gvbox = IupVbox(gbutton2, gsep2, 
     IupRadio(IupSetAttributes(IupVbox(gtoggle1, gtoggle2, NULL), "MARGIN=0x0")),
     pbar2,
+    gval2,
     NULL);
   IupSetAttribute(gvbox, "HORIZONTALALIGN", "ALEFT");  /* used by IupGLCanvasBox */
   IupSetAttribute(gvbox, "VERTICALALIGN", "ACENTER");  /* used by IupGLCanvasBox */

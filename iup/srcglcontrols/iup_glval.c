@@ -34,48 +34,116 @@ static int iGLValACTION_CB(Ihandle* ih)
   char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
   int active = iupAttribGetInt(ih, "ACTIVE");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
+  char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
+  int handler_size = iupAttribGetInt(ih, "HANDLERSIZE");
+  int slider_size = iupAttribGetInt(ih, "SLIDERSIZE");
   int border_width = (int)ceil(bwidth);
   int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
+  int pressed = iupAttribGetInt(ih, "PRESSED");
+  int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
+  double percent = (val->value - val->vmin) / (val->vmax - val->vmin);
   int x1, y1, x2, y2;
 
   if (is_horizontal)
   {
-    x1 = 0;
-    x2 = ih->currentwidth - 1;
-    y1 = y2 = ih->currentheight / 2;
+    if (handler_size == 0)
+      handler_size = ih->currentheight / 2;
+    x1 = handler_size / 2;
+    x2 = ih->currentwidth - 1 - handler_size / 2;
+    y1 = ih->currentheight / 2 - slider_size;
+    y2 = ih->currentheight / 2 + slider_size;
   }
   else
   {
-    y1 = 0;
-    y2 = ih->currentheight - 1;
-    x1 = x2 = ih->currentwidth / 2;
+    if (handler_size == 0)
+      handler_size = ih->currentwidth / 2;
+    y1 = handler_size / 2;
+    y2 = ih->currentheight - 1 - handler_size / 2;
+    x1 = ih->currentwidth / 2 - slider_size;
+    x2 = ih->currentwidth / 2 + slider_size;
   }
 
-  /* draw center line */
-  iupGLDrawLine(ih, x1, y1, x2, y2, bwidth, bcolor, active);
+  /* draw slider border - can be disabled setting bwidth=0 */
+  iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bcolor, active);
 
-  /* draw handler */
+  /* draw slider background */
+  iupGLDrawBox(ih, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width, bgcolor);
+
+
+  if (pressed)
   {
-    int xmin = 0;
-    int ymin = 0;
-    int xmax = ih->currentwidth - 1;
-    int ymax = ih->currentheight - 1;
-    double percent = (val->value - val->vmin) / (val->vmax - val->vmin);
+    char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
+    if (presscolor)
+      bgcolor = presscolor;
+  }
+  else if (highlight)
+  {
+    char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
+    if (hlcolor)
+      bgcolor = hlcolor;
+  }
 
+  if (is_horizontal)
+  {
+    int xmid = x1 + iupRound((x2 - x1 + 1) * percent);
+
+    x1 = xmid - handler_size / 2;
+    x2 = xmid + handler_size / 2;
+    y1 = 0;
+    y2 = ih->currentheight-1;
+  }
+  else
+  {
+    int ymid = y1 + iupRound((y2 - y1 + 1) * percent);
+
+    y1 = ymid - handler_size / 2;
+    y2 = ymid + handler_size / 2;
+    x1 = 0;
+    x2 = ih->currentwidth - 1;
+  }
+
+  /* draw handler border - can still be disabled setting bwidth=0 */
+  iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bcolor, active);
+
+  /* draw handler foreground */
+  iupGLDrawBox(ih, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width, fgcolor);
+
+  return IUP_DEFAULT;
+}
+
+static int iGLValBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
+{
+  if (button == IUP_BUTTON1)
+  {
+    iupGLSubCanvasRestoreRedraw(ih);
+
+    if (!pressed)
     {
-      char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
-      if (is_horizontal)
+      Icallback cb = IupGetCallback(ih, "ACTION");
+      if (cb)
       {
-        int xmid = xmin + iupRound((xmax - xmin + 1) * percent);
-        iupGLDrawBox(ih, xmin, xmid, ymin, ymax, fgcolor);
-      }
-      else
-      {
-        int ymid = ymin + iupRound((ymax - ymin + 1) * percent);
-        iupGLDrawBox(ih, xmin, xmax, ymid, ymax, fgcolor);
+        int ret = cb(ih);
+        if (ret == IUP_CLOSE)
+          IupExitLoop();
       }
     }
   }
+  else
+  {
+    Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+    iupGLSubCanvasRestoreState(gl_parent);
+  }
+
+  (void)x;
+  (void)y;
+  (void)status;
+  return IUP_DEFAULT;
+}
+
+static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
+{
+  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  iupGLSubCanvasRestoreState(gl_parent);
 
   return IUP_DEFAULT;
 }
@@ -169,6 +237,9 @@ static int iGLValCreateMethod(Ihandle* ih, void **params)
   val->vmax = 1;
 
   IupSetCallback(ih, "GL_ACTION", (Icallback)iGLValACTION_CB);
+  IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLValBUTTON_CB);
+  IupSetCallback(ih, "GL_MOTION_CB", (Icallback)iGLValMOTION_CB);
+  IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRestoreRedraw);
 
   (void)params;
   return IUP_NOERROR;
@@ -205,6 +276,8 @@ Iclass* iupGLValNewClass(void)
   iupClassRegisterAttribute(ic, "VALUE", iGLValGetValueAttrib, iGLValSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "HANDLERSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SLIDERSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
 
   return ic;
 }
