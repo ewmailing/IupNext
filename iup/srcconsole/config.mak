@@ -164,6 +164,7 @@ endif
 
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  #Comment the following line to build under MingW
   SLIB += setargv.obj
   SRC += iuplua5.rc
 endif
