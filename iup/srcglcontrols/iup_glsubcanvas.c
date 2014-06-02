@@ -290,7 +290,7 @@ Iclass* iupGLSubCanvasNewClass(void)
   /* Callbacks */
   iupClassRegisterCallback(ic, "GL_ACTION", "");
   iupClassRegisterCallback(ic, "GL_BUTTON_CB", "iiiis");
-  iupClassRegisterCallback(ic, "GL_ENTERWINDOW_CB", "");
+  iupClassRegisterCallback(ic, "GL_ENTERWINDOW_CB", "ii");
   iupClassRegisterCallback(ic, "GL_LEAVEWINDOW_CB", "");
   iupClassRegisterCallback(ic, "GL_MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "GL_WHEEL_CB", "fiis");

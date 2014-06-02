@@ -132,15 +132,16 @@ static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, in
   return IUP_DEFAULT;
 }
 
-static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child)
+static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child, int x, int y)
 {
-  IFn cb;
   Ihandle* last_child = (Ihandle*)iupAttribGet(ih, "_IUP_GLBOX_LAST_ENTER");
 
   if (last_child && last_child != child)
   {
     if (iupAttribGetInt(last_child, "ACTIVE"))
     {
+      IFn cb;
+
       iupAttribSet(last_child, "HIGHLIGHT", NULL);
       iupAttribSet(last_child, "PRESSED", NULL);
 
@@ -161,15 +162,17 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child)
   {
     if (iupAttribGetInt(child, "ACTIVE"))
     {
+      IFnii cb;
+
       iupAttribSet(child, "HIGHLIGHT", "1");
 
-      cb = (IFn)IupGetCallback(child, "GL_ENTERWINDOW_CB");
+      cb = (IFnii)IupGetCallback(child, "GL_ENTERWINDOW_CB");
       if (cb)
       {
         IupGLMakeCurrent(ih);
         iupGLSubCanvasSaveState(ih);
         iupGLSubCanvasSetTransform(child, ih);
-        cb(child);
+        cb(child, x, y);
       }
     }
 
@@ -187,7 +190,7 @@ static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
   {
     Ihandle* child = iGLCanvasBoxPickChild(ih, x, y);
 
-    iGLCanvasBoxEnterChild(ih, child);
+    iGLCanvasBoxEnterChild(ih, child, x - child->x, y - child->y);
 
     if (child && iupAttribGetInt(child, "ACTIVE"))
     {
@@ -248,7 +251,7 @@ static int iGLCanvasBoxLEAVEWINDOW_CB(Ihandle* ih)
 {
   IFn app_cb;
 
-  iGLCanvasBoxEnterChild(ih, NULL);
+  iGLCanvasBoxEnterChild(ih, NULL, 0, 0);
 
   app_cb = (IFn)IupGetCallback(ih, "APP_LEAVEWINDOW_CB");
   if (app_cb)

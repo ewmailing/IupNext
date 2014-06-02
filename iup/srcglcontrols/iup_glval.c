@@ -111,15 +111,91 @@ static int iGLValACTION_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int iGLValMoveHandler(Ihandle* ih, int dx, int dy)
+{
+  return 0;
+}
+
+static int iGLValIsInsideHandler(Ihandle* ih, int x, int y)
+{
+  iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
+  int handler_size = iupAttribGetInt(ih, "HANDLERSIZE");
+  int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
+  double percent = (val->value - val->vmin) / (val->vmax - val->vmin);
+  int p, p1, p2, pmid;
+
+  if (is_horizontal)
+  {
+    if (handler_size == 0)
+      handler_size = ih->currentheight / 2;
+    p1 = handler_size / 2;
+    p2 = ih->currentwidth - 1 - handler_size / 2;
+    p = x;
+  }
+  else
+  {
+    if (handler_size == 0)
+      handler_size = ih->currentwidth / 2;
+    p1 = handler_size / 2;
+    p2 = ih->currentheight - 1 - handler_size / 2;
+    p = y;
+  }
+
+  pmid = p1 + iupRound((p2 - p1 + 1) * percent);
+  p1 = pmid - handler_size / 2;
+  p2 = pmid + handler_size / 2;
+
+  if (p < p1 || p > p2)
+    return 0;
+  else
+    return 1;
+}
+
 static int iGLValBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
   if (button == IUP_BUTTON1)
   {
-    iupGLSubCanvasRestoreRedraw(ih);
-
-    if (!pressed)
+    if (pressed)
     {
-      Icallback cb = IupGetCallback(ih, "ACTION");
+      if (!iGLValIsInsideHandler(ih, x, y))
+        iupAttribSet(ih, "PRESSED", NULL);
+      else
+      {
+        iupAttribSetInt(ih, "_IUP_START_X", x);
+        iupAttribSetInt(ih, "_IUP_START_Y", y);
+      }
+    }
+
+    iupGLSubCanvasRestoreRedraw(ih);
+  }
+  else
+  {
+    Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+    iupGLSubCanvasRestoreState(gl_parent);
+  }
+
+  (void)status;
+  return IUP_DEFAULT;
+}
+
+static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
+{
+  int pressed = iupAttribGetInt(ih, "PRESSED");
+
+  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  iupGLSubCanvasRestoreState(gl_parent);
+
+  if (pressed && iGLValIsInsideHandler(ih, x, y))
+  {
+    int start_x = iupAttribGetInt(ih, "_IUP_START_X");
+    int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
+
+    if (iGLValMoveHandler(ih, x - start_x, y - start_y))
+    {
+      Icallback cb = IupGetCallback(ih, "VALUECHANGED_CB");
+
+      IupSetAttribute(gl_parent, "REDRAW", NULL);
+
       if (cb)
       {
         int ret = cb(ih);
@@ -128,24 +204,17 @@ static int iGLValBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, c
       }
     }
   }
-  else
-  {
-    Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-    iupGLSubCanvasRestoreState(gl_parent);
-  }
 
-  (void)x;
-  (void)y;
   (void)status;
   return IUP_DEFAULT;
 }
 
-static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
+static int iGLValENTERWINDOW_CB(Ihandle* ih, int x, int y)
 {
-  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  iupGLSubCanvasRestoreState(gl_parent);
+  if (!iGLValIsInsideHandler(ih, x, y))
+    iupAttribSet(ih, "HIGHLIGHT", NULL);
 
-  return IUP_DEFAULT;
+  return iupGLSubCanvasRestoreRedraw(ih);
 }
 
 static void iGLValCropValue(iGLVal* val)
@@ -240,7 +309,7 @@ static int iGLValCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLValBUTTON_CB);
   IupSetCallback(ih, "GL_MOTION_CB", (Icallback)iGLValMOTION_CB);
   IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRestoreRedraw);
-  IupSetCallback(ih, "GL_ENTERWINDOW_CB", iupGLSubCanvasRestoreRedraw);
+  IupSetCallback(ih, "GL_ENTERWINDOW_CB", (Icallback)iGLValENTERWINDOW_CB);
 
   (void)params;
   return IUP_NOERROR;
