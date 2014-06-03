@@ -53,7 +53,7 @@ static int iGLButtonACTION(Ihandle* ih)
   if (draw_border)
   {
     char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
-    iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active);
+    iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, 0);
   }
 
   /* draw background */

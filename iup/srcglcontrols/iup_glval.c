@@ -53,13 +53,11 @@ static int iGLValACTION_CB(Ihandle* ih)
   char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
   int active = iupAttribGetInt(ih, "ACTIVE");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
-  char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
   int slider_size = iupAttribGetInt(ih, "SLIDERSIZE");
   int border_width = (int)ceil(bwidth);
   int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
   int handler_size = iGLValGetHandlerSize(ih, is_horizontal);
-  int pressed = iupAttribGetInt(ih, "PRESSED");
-  int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
+  char *image = iupAttribGet(ih, "IMAGE");
   double percent = (val->value - val->vmin) / (val->vmax - val->vmin);
   int x1, y1, x2, y2;
 
@@ -67,40 +65,27 @@ static int iGLValACTION_CB(Ihandle* ih)
   {
     x1 = handler_size / 2;
     x2 = ih->currentwidth - 1 - handler_size / 2;
-    y1 = ih->currentheight / 2 - slider_size;
-    y2 = ih->currentheight / 2 + slider_size;
+    y1 = (ih->currentheight - slider_size) / 2;
+    y2 = (ih->currentheight + slider_size) / 2;
   }
   else
   {
     y1 = handler_size / 2;
     y2 = ih->currentheight - 1 - handler_size / 2;
-    x1 = ih->currentwidth / 2 - slider_size;
-    x2 = ih->currentwidth / 2 + slider_size;
+    x1 = (ih->currentwidth - slider_size) / 2;
+    x2 = (ih->currentwidth + slider_size) / 2;
   }
-
-  /* draw slider border - can be disabled setting bwidth=0 */
-  iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bcolor, active);
 
   /* draw slider background */
   iupGLDrawBox(ih, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width, bgcolor);
 
+  /* draw slider border - can be disabled setting bwidth=0 */
+  iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bcolor, active, 0);
 
-  if (pressed)
-  {
-    char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
-    if (presscolor)
-      fgcolor = presscolor;
-  }
-  else if (highlight)
-  {
-    char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
-    if (hlcolor)
-      fgcolor = hlcolor;
-  }
 
   if (is_horizontal)
   {
-    int xmid = x1 + iupRound((x2 - x1 + 1) * percent);
+    int xmid = x1 + iupRound((x2 - x1) * percent);
 
     x1 = xmid - handler_size / 2;  if (x1 < 0) x1 = 0;
     x2 = xmid + handler_size / 2;  if (x2 > ih->currentwidth - 1) x2 = ih->currentwidth - 1;
@@ -109,7 +94,7 @@ static int iGLValACTION_CB(Ihandle* ih)
   }
   else
   {
-    int ymid = y1 + iupRound((y2 - y1 + 1) * percent);
+    int ymid = y1 + iupRound((y2 - y1) * (1.0 - percent));
 
     y1 = ymid - handler_size / 2;  if (y1 < 0) y1 = 0;
     y2 = ymid + handler_size / 2;  if (y2 > ih->currentheight - 1) y2 = ih->currentheight - 1;
@@ -117,11 +102,34 @@ static int iGLValACTION_CB(Ihandle* ih)
     x2 = ih->currentwidth - 1;
   }
 
-  /* draw handler border - can still be disabled setting bwidth=0 */
-  iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bcolor, active);
+  if (image)
+    iupGLIconDraw(ih, x1, y1, x2 - x1 + 1, y2 - y1 + 1, image, NULL, NULL, active);
+  else
+  {
+    int pressed = iupAttribGetInt(ih, "PRESSED");
+    int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
+    char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
 
-  /* draw handler foreground */
-  iupGLDrawBox(ih, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width, fgcolor);
+    if (pressed)
+    {
+      char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
+      if (presscolor)
+        fgcolor = presscolor;
+    }
+    else if (highlight)
+    {
+      char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
+      if (hlcolor)
+        fgcolor = hlcolor;
+    }
+
+    /* draw handler foreground */
+    iupGLDrawBox(ih, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width, fgcolor);
+
+    /* draw handler border - can still be disabled setting bwidth=0
+       after the background because of the round rect */
+    iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bcolor, active, 1);
+  }
 
   return IUP_DEFAULT;
 }
@@ -134,9 +142,8 @@ static void iGLValCropValue(iGLVal* val)
     val->value = val->vmin;
 }
 
-static int iGLValGetHandlerInfo(Ihandle* ih, int x, int y, int *p, int *p1, int *p2)
+static int iGLValGetHandlerInfo(Ihandle* ih, int x, int y, int is_horizontal, int *p, int *p1, int *p2)
 {
-  int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
   int handler_size = iGLValGetHandlerSize(ih, is_horizontal);
 
   if (is_horizontal)
@@ -158,36 +165,44 @@ static int iGLValGetHandlerInfo(Ihandle* ih, int x, int y, int *p, int *p1, int 
 static int iGLValMoveHandler(Ihandle* ih, int dx, int dy)
 {
   iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
-  double percent;
+  int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
+  double percent, old_percent, delta;
   int dp, p1, p2, pmid;
 
-  iGLValGetHandlerInfo(ih, dx, dy, &dp, &p1, &p2);
+  iGLValGetHandlerInfo(ih, dx, dy, is_horizontal, &dp, &p1, &p2);
 
   if (dp == 0)
     return 0;
 
-  percent = (val->value - val->vmin) / (val->vmax - val->vmin);
-  pmid = p1 + iupRound((p2 - p1 + 1) * percent);
+  old_percent = percent = (val->value - val->vmin) / (val->vmax - val->vmin);
 
-  pmid += dp;
+  delta = (double)dp / (double)(p2 - p1);
+  if (!is_horizontal) delta *= -1.0;
 
-  percent = (double)(pmid - p1) / (double)(p2 - p1 + 1);
+  percent += delta;
+  if (percent < 0.0) percent = 0;
+  if (percent > 1.0) percent = 1.0;
+
+  if (old_percent == percent)
+    return 0;
+
   val->value = percent * (val->vmax - val->vmin) + val->vmin;
-  iGLValCropValue(val);
-
   return 1;
 }
 
 static int iGLValIsInsideHandler(Ihandle* ih, int x, int y)
 {
   iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
+  int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
   double percent;
   int p, p1, p2, pmid;
 
-  int handler_size = iGLValGetHandlerInfo(ih, x, y, &p, &p1, &p2);
+  int handler_size = iGLValGetHandlerInfo(ih, x, y, is_horizontal, &p, &p1, &p2);
 
   percent = (val->value - val->vmin) / (val->vmax - val->vmin);
-  pmid = p1 + iupRound((p2 - p1 + 1) * percent);
+  if (!is_horizontal)
+    percent = 1.0 - percent;
+  pmid = p1 + iupRound((p2 - p1) * percent);
 
   p1 = pmid - handler_size / 2;
   p2 = pmid + handler_size / 2;
@@ -413,10 +428,16 @@ Iclass* iupGLValNewClass(void)
   iupClassRegisterAttribute(ic, "MAX", iGLValGetMaxAttrib, iGLValSetMaxAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", iGLValGetValueAttrib, iGLValSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SLIDERSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "190 210 230", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "HANDLERSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SLIDERSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   return ic;
 }

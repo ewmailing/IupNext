@@ -55,7 +55,7 @@ void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float linewidth,
   glEnd();
 }
 
-void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float linewidth, const char* color, int active)
+void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float linewidth, const char* color, int active, int round)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
@@ -75,10 +75,31 @@ void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float li
   glLineWidth(linewidth);
 
   glBegin(GL_LINE_LOOP);
-  glVertex2i(xmin, ymin);
-  glVertex2i(xmax, ymin);
-  glVertex2i(xmax, ymax);
-  glVertex2i(xmin, ymax);
+
+  if (round)
+  {
+    int r = 2;
+
+    glVertex2i(xmin, ymin-r);
+    glVertex2i(xmin+r, ymin);
+
+    glVertex2i(xmax-r, ymin);
+    glVertex2i(xmax, ymin-r);
+
+    glVertex2i(xmax, ymax+r);
+    glVertex2i(xmax-r, ymax);
+
+    glVertex2i(xmin+r, ymax);
+    glVertex2i(xmin, ymax+r);
+  }
+  else
+  {
+    glVertex2i(xmin, ymin);
+    glVertex2i(xmax, ymin);
+    glVertex2i(xmax, ymax);
+    glVertex2i(xmin, ymax);
+  }
+
   glEnd();
 }
 

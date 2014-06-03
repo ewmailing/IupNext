@@ -52,7 +52,7 @@ void iupGLSubCanvasSaveState(Ihandle* gl_parent)
   if (saved)
     return;
 
-  glPushAttrib(GL_ALL_ATTRIB_BITS);
+  glPushAttrib(GL_ENABLE_BIT | GL_HINT_BIT);
 
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
@@ -60,11 +60,20 @@ void iupGLSubCanvasSaveState(Ihandle* gl_parent)
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
 
-  glEnable(GL_BLEND);
+  /* alpha enabled */
+  glEnable(GL_BLEND);     /* GL_COLOR_BUFFER_BIT or GL_ENABLE_BIT */
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  glDisable(GL_DEPTH_TEST);
-  glDisable(GL_POLYGON_STIPPLE);
+  /* image data aligment */
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  /* not saved */
+  /* disable Z axis */
+  glDisable(GL_DEPTH_TEST);  /* GL_DEPTH_BUFFER_BIT or GL_ENABLE_BIT */
+  /* anti-alias */
+  glEnable(GL_POINT_SMOOTH);     /* GL_LINE_BIT or GL_ENABLE_BIT */
+  glEnable(GL_LINE_SMOOTH);      /* GL_POINT_BIT or GL_ENABLE_BIT */
+  glEnable(GL_POLYGON_SMOOTH);    /* GL_POLYGON_BIT or GL_ENABLE_BIT */
+  glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);   /* GL_HINT_BIT */
+  glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
   iupAttribSet(gl_parent, "_IUP_GLSUBCANVAS_SAVED", "1");
 }
@@ -310,6 +319,8 @@ Iclass* iupGLSubCanvasNewClass(void)
   iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_SAVE | IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "ACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "ZORDER", NULL, iGLSubCanvasSetZorderAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TIP", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TIPVISIBLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Common visual */
   iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_DEFAULT);  /* inheritable */

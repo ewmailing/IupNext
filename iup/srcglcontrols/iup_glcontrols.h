@@ -47,7 +47,7 @@ void iupGLFontGetDim(Ihandle* ih, int *maxwidth, int *height, int *ascent, int *
 void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color, int active);
 void iupGLDrawImage(Ihandle* ih, int x, int y, const char* name, int active);
 void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float linewidth, const char* color, int active);
-void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float linewidth, const char* color, int active);
+void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float linewidth, const char* color, int active, int round);
 void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const char* color);
 
 void iupGLIconRegisterAttrib(Iclass* ic);

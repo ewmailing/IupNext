@@ -63,12 +63,13 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   int border_width = (int)ceil(bwidth);
 
-  /* draw border - can be disabled setting bwidth=0 */
-  iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active);
-
   /* draw background */
   iupGLDrawBox(ih, border_width, ih->currentwidth - 2*border_width,
                    border_width, ih->currentheight - 2*border_width, bgcolor);
+
+  /* draw border - can be disabled setting bwidth=0 
+     after the background because of the round rect */
+  iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, 1);
 
   if (pb->show_text || pb->value != pb->vmin)
   {
@@ -89,7 +90,7 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
       }
       else
       {
-        int ymid = ymin + iupRound((ymax - ymin + 1) * percent);
+        int ymid = ymin + iupRound((ymax - ymin + 1) * (1.0 - percent));
         iupGLDrawBox(ih, xmin, xmax, ymid, ymax, fgcolor);
       }
     }

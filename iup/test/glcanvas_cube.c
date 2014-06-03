@@ -307,7 +307,8 @@ static int link_action_cb(Ihandle *ih, const char* url)
 static int val_action_cb(Ihandle *ih)
 {
   Ihandle* pbar = (Ihandle*)IupGetAttribute(ih, "PROGRESSBAR");
-  IupSetAttribute(pbar, "VALUE", IupGetAttribute(ih, "VALUE"));
+  IupSetStrAttribute(pbar, "VALUE", IupGetAttribute(ih, "VALUE"));
+  printf("ACTION_CB(%s, value=%0.1f) NAME=%s\n", IupGetClassName(ih), IupGetFloat(ih, "VALUE"), IupGetAttribute(ih, "NAME"));
   return IUP_DEFAULT;
 }
 
@@ -330,6 +331,7 @@ void GLCanvasCubeTest(void)
   //IupSetAttribute(gbutton1, "BGCOLOR", "245 245 245 92");
   IupSetCallback(gbutton1, "ACTION", button_action_cb);
   IupSetAttribute(gbutton1, "NAME", "button1");
+  IupSetAttribute(gbutton1, "TIP", "Button Tip");
 
   gbutton2 = IupGLButton(NULL);
   IupSetAttribute(gbutton2, "PADDING", "5x5");
@@ -367,6 +369,8 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(gval1, "VALUE", "0.3");
   IupSetCallback(gval1, "VALUECHANGED_CB", val_action_cb);
   IupSetAttribute(gval1, "PROGRESSBAR", (char*)pbar1);
+  IupSetAttribute(gval1, "NAME", "val1");
+  IupSetAttribute(gval1, "TIP", "Val Tip");
 
   ghbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar1, gval1, NULL);
   IupSetAttribute(ghbox, "HORIZONTALALIGN", "ACENTER");  /* used by IupGLCanvasBox */
@@ -376,14 +380,15 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(ghbox, "GAP", "5");
 
   pbar2 = IupGLProgressBar();
-  IupSetAttribute(pbar2, "VALUE", "0.5");
+  IupSetAttribute(pbar2, "VALUE", "0.3");
   IupSetAttribute(pbar2, "ORIENTATION", "VERTICAL");
 
   gval2 = IupGLVal();
-  IupSetAttribute(gval2, "VALUE", "0.5");
+  IupSetAttribute(gval2, "VALUE", "0.3");
   IupSetAttribute(gval2, "ORIENTATION", "VERTICAL");
   IupSetCallback(gval2, "VALUECHANGED_CB", val_action_cb);
   IupSetAttribute(gval2, "PROGRESSBAR", (char*)pbar2);
+  IupSetAttribute(gval2, "NAME", "val2");
 
   gsep2 = IupGLSeparator();
   IupSetAttribute(gsep2, "ORIENTATION", "HORIZONTAL");

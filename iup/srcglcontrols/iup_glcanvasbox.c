@@ -102,7 +102,10 @@ static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, in
 
   if (child && iupAttribGetInt(child, "ACTIVE"))
   {
-    iupAttribSet(ih, "_IUP_GLBOX_LASTBUTTON", (char*)child);
+    if (pressed)
+      iupAttribSet(ih, "_IUP_GLBOX_LASTBUTTON", (char*)child);
+    else
+      iupAttribSet(ih, "_IUP_GLBOX_LASTBUTTON", NULL);
 
     if (button == IUP_BUTTON1)
     {
@@ -146,6 +149,13 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child, int x, int y)
     {
       IFn cb;
 
+      char* tip = iupAttribGet(last_child, "TIP");
+      if (tip)
+      {
+        IupSetAttribute(ih, "TIP", NULL);
+        printf("Set TIP = NULL\n");
+      }
+
       iupAttribSet(last_child, "HIGHLIGHT", NULL);
       iupAttribSet(last_child, "PRESSED", NULL);
 
@@ -167,6 +177,14 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child, int x, int y)
     if (iupAttribGetInt(child, "ACTIVE"))
     {
       IFnii cb;
+
+      char* tip = iupAttribGet(child, "TIP");
+      if (tip)
+      {
+        IupSetStrAttribute(ih, "TIP", tip);
+        IupSetAttribute(ih, "TIPVISIBLE", "Yes");
+        printf("Set TIP = %s\n", tip);
+      }
 
       iupAttribSet(child, "HIGHLIGHT", "1");
 

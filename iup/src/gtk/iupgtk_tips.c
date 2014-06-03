@@ -49,9 +49,6 @@ static gboolean gtkQueryTooltip(GtkWidget *widget, gint x, gint y, gboolean keyb
     iupdrvGetCursorPos(&x, &y);
     iupdrvScreenToClient(ih, &x, &y);
     cb(ih, x, y);
-
-    /* set again because it could has been changed inside the callback */
-    gtkTooltipSetTitle(ih, widget, IupGetAttribute(ih, "TIP"));
   }
 
   value = iupAttribGet(ih, "TIPRECT");
@@ -79,9 +76,13 @@ static gboolean gtkQueryTooltip(GtkWidget *widget, gint x, gint y, gboolean keyb
       gtk_tooltip_set_icon(tooltip, icon);
   }
 
+  /* set again because it could has been changed inside the callback */
+  gtkTooltipSetTitle(ih, widget, iupAttribGet(ih, "TIP"));
+
   /* NOTE:
    gtk_widget_get_tooltip_window could be used to set 
-   TIPBGCOLOR, TIPFGCOLOR and TIPFONT, but it returns NULL inside the signal. */
+   TIPBGCOLOR, TIPFGCOLOR and TIPFONT, but it does not work
+   because it returns NULL inside the signal. */
 
   (void)y;
   (void)x;
