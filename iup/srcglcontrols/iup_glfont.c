@@ -572,13 +572,14 @@ static int iGLFontGetFontAveWidth(FTGLfont* font)
   static char sample[512] = "";
   if (first)
   {
-    /* average all Latin-1 characters */
+    /* use all Latin-1 characters */
     int i;
     for (i = 32; i < 256; i++)
       sample[i - 32] = (char)i;
 
     iGLFontConvertToUTF8(sample, 256 - 32);
     memcpy(sample, utf8_buffer, strlen(utf8_buffer) + 1);
+    first = 0;
   }
 
   return iupRound(ftglGetFontAdvance(font, sample) / (256.0f - 32.0f));

@@ -47,9 +47,9 @@ void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent)
 
 void iupGLSubCanvasSaveState(Ihandle* gl_parent)
 {
-  char* savestate = iupAttribGet(gl_parent, "_IUPGLBOX_SAVESTATE");
-  iupASSERT(savestate == NULL);
-  if (savestate)
+  char* saved = iupAttribGet(gl_parent, "_IUP_GLSUBCANVAS_SAVED");
+  iupASSERT(saved == NULL);
+  if (saved)
     return;
 
   glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -66,14 +66,14 @@ void iupGLSubCanvasSaveState(Ihandle* gl_parent)
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_POLYGON_STIPPLE);
 
-  iupAttribSet(gl_parent, "_IUPGLBOX_SAVESTATE", "1");
+  iupAttribSet(gl_parent, "_IUP_GLSUBCANVAS_SAVED", "1");
 }
 
 void iupGLSubCanvasRestoreState(Ihandle* gl_parent)
 {
-  char* savestate = iupAttribGet(gl_parent, "_IUPGLBOX_SAVESTATE");
-  iupASSERT(savestate != NULL);
-  if (!savestate)
+  char* saved = iupAttribGet(gl_parent, "_IUP_GLSUBCANVAS_SAVED");
+  iupASSERT(saved != NULL);
+  if (!saved)
     return;
 
   glMatrixMode(GL_MODELVIEW);
@@ -86,7 +86,7 @@ void iupGLSubCanvasRestoreState(Ihandle* gl_parent)
 
   glPopAttrib();
 
-  iupAttribSet(gl_parent, "_IUPGLBOX_SAVESTATE", NULL);
+  iupAttribSet(gl_parent, "_IUP_GLSUBCANVAS_SAVED", NULL);
 }
 
 void iupGLSubCanvasRedrawFront(Ihandle* ih)

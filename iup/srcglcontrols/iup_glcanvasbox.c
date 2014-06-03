@@ -102,6 +102,8 @@ static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, in
 
   if (child && iupAttribGetInt(child, "ACTIVE"))
   {
+    iupAttribSet(ih, "_IUP_GLBOX_LASTBUTTON", (char*)child);
+
     if (button == IUP_BUTTON1)
     {
       if (pressed)
@@ -121,6 +123,8 @@ static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, in
         return IUP_DEFAULT;
     }
   }
+  else
+    iupAttribSet(ih, "_IUP_GLBOX_LASTBUTTON", NULL);
 
   cb = (IFniiiis)IupGetCallback(ih, "APP_BUTTON_CB");
   if (cb)
@@ -188,7 +192,9 @@ static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
   /* only handle child if not pressed at self */
   if (!iupAttribGet(ih, "_IUP_GLBOX_SELFBUTTON"))
   {
-    Ihandle* child = iGLCanvasBoxPickChild(ih, x, y);
+    Ihandle* child = (Ihandle*)iupAttribGet(ih, "_IUP_GLBOX_LASTBUTTON");
+    if (!child)
+      child = iGLCanvasBoxPickChild(ih, x, y);
 
     if (child)
       iGLCanvasBoxEnterChild(ih, child, x - child->x, y - child->y);

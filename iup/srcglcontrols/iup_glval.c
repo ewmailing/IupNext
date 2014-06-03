@@ -27,6 +27,25 @@ typedef struct _iGLVal
   double vmax;
 } iGLVal;
 
+
+static int iGLValGetHandlerSize(Ihandle* ih, int is_horizontal)
+{
+  int handler_size = iupAttribGetInt(ih, "HANDLERSIZE");
+
+  if (is_horizontal)
+  {
+    if (handler_size == 0)
+      handler_size = ih->currentheight / 2;
+  }
+  else
+  {
+    if (handler_size == 0)
+      handler_size = ih->currentwidth / 2;
+  }
+
+  return handler_size;
+}
+
 static int iGLValACTION_CB(Ihandle* ih)
 {
   iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
@@ -35,10 +54,10 @@ static int iGLValACTION_CB(Ihandle* ih)
   int active = iupAttribGetInt(ih, "ACTIVE");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
-  int handler_size = iupAttribGetInt(ih, "HANDLERSIZE");
   int slider_size = iupAttribGetInt(ih, "SLIDERSIZE");
   int border_width = (int)ceil(bwidth);
   int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
+  int handler_size = iGLValGetHandlerSize(ih, is_horizontal);
   int pressed = iupAttribGetInt(ih, "PRESSED");
   int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
   double percent = (val->value - val->vmin) / (val->vmax - val->vmin);
@@ -46,8 +65,6 @@ static int iGLValACTION_CB(Ihandle* ih)
 
   if (is_horizontal)
   {
-    if (handler_size == 0)
-      handler_size = ih->currentheight / 2;
     x1 = handler_size / 2;
     x2 = ih->currentwidth - 1 - handler_size / 2;
     y1 = ih->currentheight / 2 - slider_size;
@@ -55,8 +72,6 @@ static int iGLValACTION_CB(Ihandle* ih)
   }
   else
   {
-    if (handler_size == 0)
-      handler_size = ih->currentwidth / 2;
     y1 = handler_size / 2;
     y2 = ih->currentheight - 1 - handler_size / 2;
     x1 = ih->currentwidth / 2 - slider_size;
@@ -87,17 +102,17 @@ static int iGLValACTION_CB(Ihandle* ih)
   {
     int xmid = x1 + iupRound((x2 - x1 + 1) * percent);
 
-    x1 = xmid - handler_size / 2;
-    x2 = xmid + handler_size / 2;
+    x1 = xmid - handler_size / 2;  if (x1 < 0) x1 = 0;
+    x2 = xmid + handler_size / 2;  if (x2 > ih->currentwidth - 1) x2 = ih->currentwidth - 1;
     y1 = 0;
-    y2 = ih->currentheight-1;
+    y2 = ih->currentheight - 1;
   }
   else
   {
     int ymid = y1 + iupRound((y2 - y1 + 1) * percent);
 
-    y1 = ymid - handler_size / 2;
-    y2 = ymid + handler_size / 2;
+    y1 = ymid - handler_size / 2;  if (y1 < 0) y1 = 0;
+    y2 = ymid + handler_size / 2;  if (y2 > ih->currentheight - 1) y2 = ih->currentheight - 1;
     x1 = 0;
     x2 = ih->currentwidth - 1;
   }
@@ -119,36 +134,41 @@ static void iGLValCropValue(iGLVal* val)
     val->value = val->vmin;
 }
 
-static int iGLValMoveHandler(Ihandle* ih, int dx, int dy)
+static int iGLValGetHandlerInfo(Ihandle* ih, int x, int y, int *p, int *p1, int *p2)
 {
-  iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
-  int handler_size = iupAttribGetInt(ih, "HANDLERSIZE");
   int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
-  double delta, percent;
-  int dp, p1, p2, pmid;
+  int handler_size = iGLValGetHandlerSize(ih, is_horizontal);
 
   if (is_horizontal)
   {
-    if (handler_size == 0)
-      handler_size = ih->currentheight / 2;
-    p1 = handler_size / 2;
-    p2 = ih->currentwidth - 1 - handler_size / 2;
-    dp = dx;
+    *p1 = handler_size / 2;
+    *p2 = ih->currentwidth - 1 - handler_size / 2;
+    *p = x;
   }
   else
   {
-    if (handler_size == 0)
-      handler_size = ih->currentwidth / 2;
-    p1 = handler_size / 2;
-    p2 = ih->currentheight - 1 - handler_size / 2;
-    dp = dy;
+    *p1 = handler_size / 2;
+    *p2 = ih->currentheight - 1 - handler_size / 2;
+    *p = y;
   }
+
+  return handler_size;
+}
+
+static int iGLValMoveHandler(Ihandle* ih, int dx, int dy)
+{
+  iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
+  double percent;
+  int dp, p1, p2, pmid;
+
+  iGLValGetHandlerInfo(ih, dx, dy, &dp, &p1, &p2);
 
   if (dp == 0)
     return 0;
 
   percent = (val->value - val->vmin) / (val->vmax - val->vmin);
   pmid = p1 + iupRound((p2 - p1 + 1) * percent);
+
   pmid += dp;
 
   percent = (double)(pmid - p1) / (double)(p2 - p1 + 1);
@@ -161,29 +181,14 @@ static int iGLValMoveHandler(Ihandle* ih, int dx, int dy)
 static int iGLValIsInsideHandler(Ihandle* ih, int x, int y)
 {
   iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
-  int handler_size = iupAttribGetInt(ih, "HANDLERSIZE");
-  int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
-  double percent = (val->value - val->vmin) / (val->vmax - val->vmin);
+  double percent;
   int p, p1, p2, pmid;
 
-  if (is_horizontal)
-  {
-    if (handler_size == 0)
-      handler_size = ih->currentheight / 2;
-    p1 = handler_size / 2;
-    p2 = ih->currentwidth - 1 - handler_size / 2;
-    p = x;
-  }
-  else
-  {
-    if (handler_size == 0)
-      handler_size = ih->currentwidth / 2;
-    p1 = handler_size / 2;
-    p2 = ih->currentheight - 1 - handler_size / 2;
-    p = y;
-  }
+  int handler_size = iGLValGetHandlerInfo(ih, x, y, &p, &p1, &p2);
 
+  percent = (val->value - val->vmin) / (val->vmax - val->vmin);
   pmid = p1 + iupRound((p2 - p1 + 1) * percent);
+
   p1 = pmid - handler_size / 2;
   p2 = pmid + handler_size / 2;
 
@@ -222,53 +227,56 @@ static int iGLValBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, c
 
 static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
 {
+  int redraw = 0;
   int pressed = iupAttribGetInt(ih, "PRESSED");
 
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
   iupGLSubCanvasRestoreState(gl_parent);
 
+  /* special higlight processing for handler area */
   if (iGLValIsInsideHandler(ih, x, y))
   {
-    int redraw = 0;
     if (!iupAttribGet(ih, "HIGHLIGHT"))
-      redraw = 1;
-    iupAttribSet(ih, "HIGHLIGHT", "1");
-
-    if (pressed)
     {
-      int start_x = iupAttribGetInt(ih, "_IUP_START_X");
-      int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
-
-      if (iGLValMoveHandler(ih, x - start_x, y - start_y))
-      {
-        Icallback cb = IupGetCallback(ih, "VALUECHANGED_CB");
-
-        IupSetAttribute(gl_parent, "REDRAW", NULL);
-        redraw = 0;
-
-        if (cb)
-        {
-          int ret = cb(ih);
-          if (ret == IUP_CLOSE)
-            IupExitLoop();
-        }
-
-        iupAttribSetInt(ih, "_IUP_START_X", x);
-        iupAttribSetInt(ih, "_IUP_START_Y", y);
-      }
+      redraw = 1;
+      iupAttribSet(ih, "HIGHLIGHT", "1");
     }
-
-    if (redraw)
-      IupSetAttribute(gl_parent, "REDRAW", NULL);
   }
   else
   {
     if (iupAttribGet(ih, "HIGHLIGHT"))
     {
+      redraw = 1;
       iupAttribSet(ih, "HIGHLIGHT", NULL);
-      IupSetAttribute(gl_parent, "REDRAW", NULL);
     }
   }
+
+  if (pressed)
+  {
+    int start_x = iupAttribGetInt(ih, "_IUP_START_X");
+    int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
+
+    if (iGLValMoveHandler(ih, x - start_x, y - start_y))
+    {
+      Icallback cb = IupGetCallback(ih, "VALUECHANGED_CB");
+
+      IupSetAttribute(gl_parent, "REDRAW", NULL);
+      redraw = 0;
+
+      if (cb)
+      {
+        int ret = cb(ih);
+        if (ret == IUP_CLOSE)
+          IupExitLoop();
+      }
+    }
+
+    iupAttribSetInt(ih, "_IUP_START_X", x);
+    iupAttribSetInt(ih, "_IUP_START_Y", y);
+  }
+
+  if (redraw)
+    IupSetAttribute(gl_parent, "REDRAW", NULL);
 
   (void)status;
   return IUP_DEFAULT;
@@ -276,6 +284,7 @@ static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
 static int iGLValENTERWINDOW_CB(Ihandle* ih, int x, int y)
 {
+  /* special higlight processing for handler area */
   if (iGLValIsInsideHandler(ih, x, y))
     iupAttribSet(ih, "HIGHLIGHT", "1");
   else
