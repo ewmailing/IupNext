@@ -402,7 +402,7 @@ void GLCanvasCubeTest(void)
 
   canvas = IupGLCanvasBox(
     IupSetAttributes(IupGLFrame(ghbox), "TITLE=Frame, HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP"),
-    IupSetAttributes(IupGLFrame(gvbox), "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER"),
+    IupSetAttributes(IupGLFrame(gvbox), "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER, BACKGROUND=\"250 250 160\", FRAMECOLOR=\"250 250 160\""),
     NULL);
   IupSetCallback(canvas, "ACTION", action);
   IupSetCallback(canvas, "BUTTON_CB", (Icallback)button_cb);

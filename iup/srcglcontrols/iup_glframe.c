@@ -25,14 +25,14 @@ static int iGLFrameACTION(Ihandle* ih)
   char *image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
   int active = iupAttribGetInt(ih, "ACTIVE");
-  char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
-  float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+  char* bcolor = iupAttribGetStr(ih, "FRAMECOLOR");
+  float bwidth = iupAttribGetFloat(ih, "FRAMEWIDTH");
   int border_width = (int)ceil(bwidth);
 
 
   if (image || title)
   {
-    char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
+    char* fgcolor = iupAttribGetStr(ih, "TITLECOLOR");
     int off = iupAttribGetInt(ih, "TITLEOFFSET");
     int natural_w = 0,
       natural_h = 0;
@@ -49,14 +49,14 @@ static int iGLFrameACTION(Ihandle* ih)
   }
   else
   {
-    char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
-
-    /* draw border - can still be disabled setting bwidth=0 */
-    iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, 0);
+    char* bgcolor = iupAttribGetStr(ih, "BACKGROUND");
 
     /* draw background */
     iupGLDrawBox(ih, border_width, ih->currentwidth - 2 * border_width,
                      border_width, ih->currentheight - 2 * border_width, bgcolor);
+
+    /* draw border - after background because of the round rect */
+    iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, 1);
   }
 
   return IUP_DEFAULT;
@@ -66,7 +66,7 @@ static void iGLFrameGetDecorOffset(Ihandle* ih, int *dx, int *dy)
 {
   char* image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
-  float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+  float bwidth = iupAttribGetFloat(ih, "FRAMEWIDTH");
   int border_width = (int)ceil(bwidth);
   *dx = border_width;
   *dy = 2 * border_width;
@@ -85,7 +85,7 @@ static void iGLFrameGetDecorSize(Ihandle* ih, int *width, int *height, int* titl
 {
   char* image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
-  float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+  float bwidth = iupAttribGetFloat(ih, "FRAMEWIDTH");
   int border_width = (int)ceil(bwidth);
   *width = 2 * border_width;
   *height = 2 * border_width;
@@ -214,16 +214,23 @@ Iclass* iupGLFrameNewClass(void)
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Visual */
+  /* NOTICE: avoid defining inheritable attributes for containers */
   iupClassRegisterAttribute(ic, "IMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_DEFAULT);  /* inheritable */
-  iupClassRegisterAttribute(ic, "TITLEOFFSET", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "TITLEOFFSET", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRAMEWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* replace default value */
-  iupClassRegisterAttribute(ic, "PADDING", NULL, NULL, IUPAF_SAMEASSYSTEM, "2x0", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "PADDING", NULL, NULL, IUPAF_SAMEASSYSTEM, "2x0", IUPAF_NO_INHERIT);
 
   return ic;
 }
