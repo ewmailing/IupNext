@@ -373,8 +373,6 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(gval1, "TIP", "Val Tip");
 
   ghbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar1, gval1, NULL);
-  IupSetAttribute(ghbox, "HORIZONTALALIGN", "ACENTER");  /* used by IupGLCanvasBox */
-  IupSetAttribute(ghbox, "VERTICALALIGN", "ATOP");  /* used by IupGLCanvasBox */
   IupSetAttribute(ghbox, "ALIGNMENT", "ACENTER");
   IupSetAttribute(ghbox, "MARGIN", "5x5");
   IupSetAttribute(ghbox, "GAP", "5");
@@ -398,13 +396,14 @@ void GLCanvasCubeTest(void)
     pbar2,
     gval2,
     NULL);
-  IupSetAttribute(gvbox, "HORIZONTALALIGN", "ALEFT");  /* used by IupGLCanvasBox */
-  IupSetAttribute(gvbox, "VERTICALALIGN", "ACENTER");  /* used by IupGLCanvasBox */
   IupSetAttribute(gvbox, "ALIGNMENT", "ACENTER");
   IupSetAttribute(gvbox, "MARGIN", "5x5");
   IupSetAttribute(gvbox, "GAP", "5");
 
-  canvas = IupGLCanvasBox(ghbox, gvbox, NULL);
+  canvas = IupGLCanvasBox(
+    IupSetAttributes(IupGLFrame(ghbox), "TITLE=Frame, HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP"),
+    IupSetAttributes(IupGLFrame(gvbox), "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER"),
+    NULL);
   IupSetCallback(canvas, "ACTION", action);
   IupSetCallback(canvas, "BUTTON_CB", (Icallback)button_cb);
   IupSetCallback(canvas, "MOTION_CB", (Icallback)motion_cb);
@@ -417,7 +416,7 @@ void GLCanvasCubeTest(void)
 //  dlg = IupDialog(IupSetAttributes(IupFrame(box), "TITLE=Test"));
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupGLCanvas Test");
-  IupSetAttribute(dlg, "RASTERSIZE", "600x600");
+  IupSetAttribute(dlg, "RASTERSIZE", "800x600");
 
   IupMap(dlg);
 

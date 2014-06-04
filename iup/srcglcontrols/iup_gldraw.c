@@ -55,6 +55,49 @@ void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float linewidth,
   glEnd();
 }
 
+void iupGLDrawFrameRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float linewidth, const char* color, int active, int title_x, int title_width, int title_height)
+{
+  unsigned char r = 0, g = 0, b = 0, a = 255;
+  int d = 2;
+
+  if (linewidth == 0 || xmin == xmax || ymin == ymax)
+    return;
+
+  iupStrToRGBA(color, &r, &g, &b, &a);
+
+  /* y is oriented top to bottom in IUP */
+  ymin = ih->currentheight - 1 - ymin;
+  ymax = ih->currentheight - 1 - ymax;
+
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+  glColor4ub(r, g, b, a);
+
+  glLineWidth(linewidth);
+
+  glBegin(GL_LINE_STRIP);
+
+  ymin -= title_height/2;
+
+  glVertex2i(xmin + title_x + title_width, ymin);
+
+  glVertex2i(xmax - d, ymin);
+  glVertex2i(xmax, ymin - d);
+
+  glVertex2i(xmax, ymax + d);
+  glVertex2i(xmax - d, ymax);
+
+  glVertex2i(xmin + d, ymax);
+  glVertex2i(xmin, ymax + d);
+
+  glVertex2i(xmin, ymin - d);
+  glVertex2i(xmin + d, ymin);
+
+  glVertex2i(xmin + title_x, ymin);
+
+  glEnd();
+}
+
 void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float linewidth, const char* color, int active, int round)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;

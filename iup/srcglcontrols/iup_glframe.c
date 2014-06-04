@@ -20,113 +20,44 @@
 #include "iup_glcontrols.h"
 
 
-#if 0
-static void winFrameDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
-{
-  iupwinBitmapDC bmpDC;
-  HDC hDC = iupwinDrawCreateBitmapDC(&bmpDC, drawitem->hDC, 0, 0, drawitem->rcItem.right - drawitem->rcItem.left,
-    drawitem->rcItem.bottom - drawitem->rcItem.top);
-
-  iupwinDrawParentBackground(ih, hDC, &drawitem->rcItem);
-
-  if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE"))
-  {
-    int x, y;
-    HFONT hOldFont, hFont = (HFONT)iupwinGetHFontAttrib(ih);
-    int txt_height = iGLFrameGetTitleHeight(ih);
-    COLORREF fgcolor;
-    SIZE size;
-
-    char* title = iupAttribGet(ih, "TITLE");
-    if (!title) title = "";
-
-    x = drawitem->rcItem.left + 7;
-    y = drawitem->rcItem.top;
-
-    hOldFont = SelectObject(hDC, hFont);
-    {
-      TCHAR* str = iupwinStrToSystem(title);
-      int len = lstrlen(str);
-      GetTextExtentPoint32(hDC, str, len, &size);
-    }
-    ExcludeClipRect(hDC, x - 2, y, x + size.cx + 2, y + size.cy);
-
-    drawitem->rcItem.top += txt_height / 2;
-    if (iupwin_comctl32ver6)
-      iupwinDrawThemeFrameBorder(ih->handle, hDC, &drawitem->rcItem, drawitem->itemState);
-    else
-      DrawEdge(hDC, &drawitem->rcItem, EDGE_ETCHED, BF_RECT);
-
-    SelectClipRgn(hDC, NULL);
-
-    if (drawitem->itemState & ODS_DISABLED)
-      fgcolor = GetSysColor(COLOR_GRAYTEXT);
-    else
-    {
-      unsigned char r, g, b;
-      char* color = iupAttribGetInherit(ih, "FGCOLOR");
-      if (!color)
-      {
-        if (!iupwinDrawGetThemeFrameFgColor(ih->handle, &fgcolor))
-          fgcolor = 0;  /* black */
-      }
-      else
-      {
-        if (iupStrToRGB(color, &r, &g, &b))
-          fgcolor = RGB(r, g, b);
-        else
-          fgcolor = 0;  /* black */
-      }
-    }
-
-    winFrameDrawText(hDC, title, x, y, fgcolor);
-
-    SelectObject(hDC, hOldFont);
-  }
-  else
-  {
-    char* value = iupAttribGetStr(ih, "SUNKEN");
-    if (iupStrBoolean(value))
-      DrawEdge(hDC, &drawitem->rcItem, EDGE_SUNKEN, BF_RECT);
-    else
-      DrawEdge(hDC, &drawitem->rcItem, EDGE_ETCHED, BF_RECT);
-
-    if (iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
-    {
-      unsigned char r = 0, g = 0, b = 0;
-      char* color = iupAttribGetStr(ih, "BGCOLOR");
-      iupStrToRGB(color, &r, &g, &b);
-      SetDCBrushColor(hDC, RGB(r, g, b));
-      InflateRect(&drawitem->rcItem, -2, -2);
-      FillRect(hDC, &drawitem->rcItem, (HBRUSH)GetStockObject(DC_BRUSH));
-    }
-  }
-
-  iupwinDrawDestroyBitmapDC(&bmpDC);
-}
-#endif
-
 static int iGLFrameACTION(Ihandle* ih)
 {
   char *image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
   int active = iupAttribGetInt(ih, "ACTIVE");
-  char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
-  char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
+  char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
   int border_width = (int)ceil(bwidth);
 
-  /* draw border - can still be disabled setting bwidth=0 */
-  char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
-  iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, 0);
 
-  /* draw background */
-  iupGLDrawBox(ih, border_width, ih->currentwidth - 2 * border_width,
-                   border_width, ih->currentheight - 2 * border_width, bgcolor);
+  if (image || title)
+  {
+    char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
+    int off = iupAttribGetInt(ih, "TITLEOFFSET");
+    int natural_w = 0,
+      natural_h = 0;
+    iupGLIconGetNaturalSize(ih, image, title, &natural_w, &natural_h);
+    if (natural_w > ih->currentwidth - 2 * border_width)
+      natural_w = ih->currentwidth - 2 * border_width;
 
-  iupGLIconDraw(ih, border_width, border_width,
-    ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
-    image, title, fgcolor, active);
+    /* draw frame border */
+    iupGLDrawFrameRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, off, natural_w, natural_h);
+
+    iupGLIconDraw(ih, off, 0,
+                      natural_w, natural_h,
+                      image, title, fgcolor, active);
+  }
+  else
+  {
+    char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
+
+    /* draw border - can still be disabled setting bwidth=0 */
+    iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, 0);
+
+    /* draw background */
+    iupGLDrawBox(ih, border_width, ih->currentwidth - 2 * border_width,
+                     border_width, ih->currentheight - 2 * border_width, bgcolor);
+  }
 
   return IUP_DEFAULT;
 }
@@ -150,7 +81,7 @@ static void iGLFrameGetDecorOffset(Ihandle* ih, int *dx, int *dy)
   }
 }
 
-static void iGLFrameGetDecorSize(Ihandle* ih, int *width, int *height, int* full_width)
+static void iGLFrameGetDecorSize(Ihandle* ih, int *width, int *height, int* title_width)
 {
   char* image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
@@ -166,8 +97,8 @@ static void iGLFrameGetDecorSize(Ihandle* ih, int *width, int *height, int* full
     iupGLIconGetNaturalSize(ih, image, title, &natural_w, &natural_h);
 
     (*height) += natural_h;
-    if (full_width)
-      *full_width = *width + natural_w;
+    if (title_width)
+      *title_width = natural_w;
   }
 }
 
@@ -193,11 +124,11 @@ static char* iGLFrameGetClientOffsetAttrib(Ihandle* ih)
 
 static void iGLFrameComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
-  int decorwidth, decorheight, full_width;
+  int decorwidth, decorheight, title_width;
   Ihandle* child = ih->firstchild;
 
-  iGLFrameGetDecorSize(ih, &decorwidth, &decorheight, &full_width);
-  *w = full_width;  /* make room for title always */
+  iGLFrameGetDecorSize(ih, &decorwidth, &decorheight, &title_width);
+  *w = decorwidth;  
   *h = decorheight;
 
   if (child)
@@ -206,9 +137,11 @@ static void iGLFrameComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *c
     iupBaseComputeNaturalSize(child);
 
     *children_expand = child->expand;
-    *w += child->naturalwidth;
+    *w += iupMAX(child->naturalwidth, title_width);  /* make room for title always */
     *h += child->naturalheight;
   }
+  else
+    *w += title_width;
 }
 
 static void iGLFrameSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
@@ -286,8 +219,11 @@ Iclass* iupGLFrameNewClass(void)
   iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "200 225 245", NULL, IUPAF_DEFAULT);  /* inheritable */
-  iupClassRegisterAttribute(ic, "TXTCOLOR", NULL, NULL, "0 0 0", NULL, IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "TITLEOFFSET", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_DEFAULT);  /* inheritable */
+
+  /* replace default value */
+  iupClassRegisterAttribute(ic, "PADDING", NULL, NULL, IUPAF_SAMEASSYSTEM, "2x0", IUPAF_DEFAULT);  /* inheritable */
 
   return ic;
 }

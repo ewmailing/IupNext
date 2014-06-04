@@ -167,7 +167,7 @@ static int iGLValMoveHandler(Ihandle* ih, int dx, int dy)
   iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
   int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
   double percent, old_percent, delta;
-  int dp, p1, p2, pmid;
+  int dp, p1, p2;
 
   iGLValGetHandlerInfo(ih, dx, dy, is_horizontal, &dp, &p1, &p2);
 
