@@ -10,3 +10,4 @@ EXPORTS
   IupGLLink
   IupGLProgressBar
   IupGLVal
+  IupGLFrame

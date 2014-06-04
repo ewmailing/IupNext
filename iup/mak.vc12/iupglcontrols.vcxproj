@@ -94,6 +94,7 @@
     <ClCompile Include="..\srcglcontrols\iup_glcanvasbox.c" />
     <ClCompile Include="..\srcglcontrols\iup_gldraw.c" />
     <ClCompile Include="..\srcglcontrols\iup_glfont.c" />
+    <ClCompile Include="..\srcglcontrols\iup_glframe.c" />
     <ClCompile Include="..\srcglcontrols\iup_glicon.c" />
     <ClCompile Include="..\srcglcontrols\iup_glimage.c" />
     <ClCompile Include="..\srcglcontrols\iup_gllabel.c" />

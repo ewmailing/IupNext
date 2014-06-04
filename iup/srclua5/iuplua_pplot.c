@@ -219,7 +219,8 @@ void iuplua_pplotfuncs_open (lua_State *L)
   iuplua_register(L, PPlotGetSample, "PPlotGetSample");
   iuplua_register(L, PPlotGetSampleStr, "PPlotGetSampleStr");
   iuplua_register(L, PlotTransform, "PPlotTransform");
-  iuplua_register(L, PlotPaintTo     ,"PPlotPaintTo");
+  iuplua_register(L, PlotTransformTo, "PPlotTransformTo");
+  iuplua_register(L, PlotPaintTo, "PPlotPaintTo");
 }
 
 int iuppplotlua_open(lua_State * L);
