@@ -112,7 +112,7 @@ static int iGLFrameMOTION_CB(Ihandle* ih, int x, int y, char* status)
     x += ih->x;
     y += ih->y;
 
-    if ((x != start_x) || y != start_y)
+    if ((x != start_x) || (y != start_y))
     {
       IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
 

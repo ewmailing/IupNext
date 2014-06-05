@@ -273,17 +273,10 @@ static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
     if (iGLValMoveHandler(ih, x - start_x, y - start_y))
     {
-      Icallback cb = IupGetCallback(ih, "VALUECHANGED_CB");
-
       IupSetAttribute(gl_parent, "REDRAW", NULL);
       redraw = 0;
 
-      if (cb)
-      {
-        int ret = cb(ih);
-        if (ret == IUP_CLOSE)
-          IupExitLoop();
-      }
+      iupBaseCallValueChangedCb(ih);
     }
 
     iupAttribSetInt(ih, "_IUP_START_X", x);
