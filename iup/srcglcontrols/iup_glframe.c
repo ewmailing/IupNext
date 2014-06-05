@@ -108,23 +108,24 @@ static int iGLFrameMOTION_CB(Ihandle* ih, int x, int y, char* status)
   {
     int start_x = iupAttribGetInt(ih, "_IUP_START_X");
     int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
-    IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
 
     x += ih->x;
     y += ih->y;
 
-    iupAttribSet(ih, "VERTICALALIGN", NULL);
-    iupAttribSet(ih, "HORIZONTALALIGN", NULL);
-
-    iupBaseSetPosition(ih, ih->x + (x - start_x), ih->y + (y - start_y));
-
-    IupSetAttribute(gl_parent, "REDRAW", NULL);
-
-    if (cb)
+    if ((x != start_x) || y != start_y)
     {
-      int ret = cb(ih, ih->x, ih->y);
-      if (ret == IUP_CLOSE)
-        IupExitLoop();
+      IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
+
+      /* clear canvas box aligment */
+      iupAttribSet(ih, "VERTICALALIGN", NULL);
+      iupAttribSet(ih, "HORIZONTALALIGN", NULL);
+
+      iupBaseSetPosition(ih, ih->x + (x - start_x), ih->y + (y - start_y));
+
+      IupSetAttribute(gl_parent, "REDRAW", NULL);
+
+      if (cb)
+        cb(ih, ih->x, ih->y);
     }
 
     iupAttribSetInt(ih, "_IUP_START_X", x);
@@ -298,6 +299,8 @@ Iclass* iupGLFrameNewClass(void)
   ic->ComputeNaturalSize = iGLFrameComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iGLFrameSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iGLFrameSetChildrenPositionMethod;
+
+  iupClassRegisterCallback(ic, "MOVE_CB", "ii");
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iGLFrameGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
