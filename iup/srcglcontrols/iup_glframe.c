@@ -34,31 +34,104 @@ static int iGLFrameACTION(Ihandle* ih)
   {
     char* fgcolor = iupAttribGetStr(ih, "TITLECOLOR");
     int off = iupAttribGetInt(ih, "TITLEOFFSET");
+    int title_box = iupAttribGetInt(ih, "TITLEBOX");
     int natural_w = 0,
       natural_h = 0;
     iupGLIconGetNaturalSize(ih, image, title, &natural_w, &natural_h);
     if (natural_w > ih->currentwidth - 2 * border_width)
       natural_w = ih->currentwidth - 2 * border_width;
 
-    /* draw frame border */
-    iupGLDrawFrameRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, off, natural_w, natural_h);
+    if (title_box)
+    {
+      /* draw border */
+      iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, 0);
+
+      /* draw box */
+      iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
+                       border_width, border_width + natural_h, bcolor);
+    }
+    else
+    {
+      /* draw frame border */
+      iupGLDrawFrameRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, off, natural_w, natural_h);
+    }
 
     iupGLIconDraw(ih, off, 0,
-                      natural_w, natural_h,
-                      image, title, fgcolor, active);
+      natural_w, natural_h,
+      image, title, fgcolor, active);
   }
   else
   {
     char* bgcolor = iupAttribGetStr(ih, "BACKGROUND");
 
     /* draw background */
-    iupGLDrawBox(ih, border_width, ih->currentwidth - 2 * border_width,
-                     border_width, ih->currentheight - 2 * border_width, bgcolor);
+    iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
+                     border_width, ih->currentheight-1 - border_width, bgcolor);
 
     /* draw border - after background because of the round rect */
     iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, 1);
   }
 
+  return IUP_DEFAULT;
+}
+
+static int iGLFrameBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
+{
+  if (button == IUP_BUTTON1)
+  {
+    if (pressed)
+    {
+      iupAttribSetInt(ih, "_IUP_START_X", ih->x + x);
+      iupAttribSetInt(ih, "_IUP_START_Y", ih->y + y);
+    }
+
+    iupGLSubCanvasRestoreRedraw(ih);
+  }
+  else
+  {
+    Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+    iupGLSubCanvasRestoreState(gl_parent);
+  }
+
+  (void)status;
+  return IUP_DEFAULT;
+}
+
+static int iGLFrameMOTION_CB(Ihandle* ih, int x, int y, char* status)
+{
+  int pressed = iupAttribGetInt(ih, "PRESSED");
+
+  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  iupGLSubCanvasRestoreState(gl_parent);
+
+  if (pressed)
+  {
+    int start_x = iupAttribGetInt(ih, "_IUP_START_X");
+    int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
+    IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
+
+    x += ih->x;
+    y += ih->y;
+
+    iupAttribSet(ih, "VERTICALALIGN", NULL);
+    iupAttribSet(ih, "HORIZONTALALIGN", NULL);
+
+    iupBaseSetPosition(ih, ih->x + (x - start_x), ih->y + (y - start_y));
+
+    IupSetAttribute(gl_parent, "REDRAW", NULL);
+
+    if (cb)
+    {
+      int ret = cb(ih, ih->x, ih->y);
+      if (ret == IUP_CLOSE)
+        IupExitLoop();
+    }
+
+    iupAttribSetInt(ih, "_IUP_START_X", x);
+    iupAttribSetInt(ih, "_IUP_START_Y", y);
+  }
+
+  (void)status;
   return IUP_DEFAULT;
 }
 
@@ -120,6 +193,24 @@ static char* iGLFrameGetClientOffsetAttrib(Ihandle* ih)
   int dx, dy;
   iGLFrameGetDecorOffset(ih, &dx, &dy);
   return iupStrReturnIntInt(dx, dy, 'x');
+}
+
+static int iGLFrameSetMoveableAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  /* only a direct child of the canvabox can be moved */
+  if (iupStrBoolean(value) && ih->parent == gl_parent)
+  {
+    IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLFrameBUTTON_CB);
+    IupSetCallback(ih, "GL_MOTION_CB", (Icallback)iGLFrameMOTION_CB);
+  }
+  else
+  {
+    IupSetCallback(ih, "GL_BUTTON_CB", NULL);
+    IupSetCallback(ih, "GL_MOTION_CB", NULL);
+  }
+
+  return 1;
 }
 
 static void iGLFrameComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
@@ -223,11 +314,13 @@ Iclass* iupGLFrameNewClass(void)
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEOFFSET", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEBOX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMEWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BACKGROUND", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MOVEABLE", NULL, iGLFrameSetMoveableAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* replace default value */
   iupClassRegisterAttribute(ic, "PADDING", NULL, NULL, IUPAF_SAMEASSYSTEM, "2x0", IUPAF_NO_INHERIT);

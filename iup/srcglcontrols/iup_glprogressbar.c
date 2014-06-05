@@ -64,8 +64,8 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
   int border_width = (int)ceil(bwidth);
 
   /* draw background */
-  iupGLDrawBox(ih, border_width, ih->currentwidth - 2*border_width,
-                   border_width, ih->currentheight - 2*border_width, bgcolor);
+  iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
+                   border_width, ih->currentheight-1 - border_width, bgcolor);
 
   /* draw border - can be disabled setting bwidth=0 
      after the background because of the round rect */

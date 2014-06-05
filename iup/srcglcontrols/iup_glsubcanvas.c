@@ -332,6 +332,9 @@ Iclass* iupGLSubCanvasNewClass(void)
   iupClassRegisterAttribute(ic, "UNDERLINE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDRAWFRONT", NULL, iGLSubCanvasSetRedrawFrontAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "HIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRESSED", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
   iupGLFontInit();
 
   return ic;
