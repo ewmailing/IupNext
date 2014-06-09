@@ -8,6 +8,7 @@ EXPORTS
   IupPPlotInsertStr
   IupPPlotInsert
   IupPPlotTransform
+  IupPPlotTransformTo
   IupPPlotPaintTo
   IupPPlotInsertStrPoints
   IupPPlotInsertPoints

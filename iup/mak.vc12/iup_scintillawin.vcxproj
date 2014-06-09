@@ -107,6 +107,9 @@
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\win32\PlatWin.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\srcscintilla\iup_scintilla.def" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

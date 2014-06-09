@@ -22,4 +22,7 @@
       <Filter>Scintilla\inc</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\srcscintilla\iup_scintilla.def" />
+  </ItemGroup>
 </Project>

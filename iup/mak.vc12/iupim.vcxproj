@@ -101,6 +101,9 @@
   <ItemGroup>
     <ClInclude Include="..\include\iupim.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\srcim\iupim.def" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
