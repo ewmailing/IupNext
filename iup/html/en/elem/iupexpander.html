@@ -12,6 +12,9 @@
 .style2 {
 	color: #FF0000;
 }
+.style3 {
+	background-color: #CEE7FF;
+}
 </style>
 </head>
 <body>
@@ -123,7 +126,7 @@ also accepted.</p>
 
 
 <p><a href="../call/iup_action.html">ACTION</a>:
-  Action generated expander state is interactively changed. (Since 3.9)</p>
+  Action generated after the expander state is interactively changed. (Since 3.9)</p>
 
   
     
@@ -133,6 +136,21 @@ also accepted.</p>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.&nbsp;</p>
+
+  
+<p><strong>OPENCLOSE_CB</strong>:
+  Action generated before the expander state is interactively changed. (Since 3.11)</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>state</strong>); [in C]<br><strong>elem</strong>:openclose<span class="style3">_</span>cb(<strong>state</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.&nbsp;<br><strong>state</strong>: new state to be applied. </p>
+<p class="info"><strong>Returns</strong>: if return IUP_IGNORE the new state is 
+ignored.</p>
 
   
 <p><strong>EXTRABUTTON_CB</strong>:

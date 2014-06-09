@@ -48,9 +48,22 @@ struct _IcontrolData
 };
 
 
-static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb)
+static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int state)
 {
   Ihandle *child = ih->firstchild->brother;
+
+  if (callcb)
+  {
+    IFni cb = (IFni)IupGetCallback(ih, "OPENCLOSE_CB");
+    if (cb)
+    {
+      int ret = cb(ih, state);
+      if (ret == IUP_IGNORE)
+        return;
+    }
+  }
+
+  ih->data->state = state;
 
   IupUpdate(ih->firstchild);
 
@@ -468,8 +481,7 @@ static int iExpanderGlobalMotion_cb(int x, int y)
   if (x < child_x || x > child_x+child->currentwidth ||
       y < child_y || y > child_y+child->currentheight)
   {
-    ih->data->state = IEXPANDER_CLOSE;
-    iExpanderOpenCloseChild(ih, 0, 1);
+    iExpanderOpenCloseChild(ih, 0, 1, IEXPANDER_CLOSE);
     IupSetGlobal("_IUP_EXPANDER_GLOBAL", NULL);
     IupSetFunction("GLOBALMOTION_CB", IupGetFunction("_IUP_OLD_GLOBALMOTION_CB"));
     IupSetFunction("_IUP_OLD_GLOBALMOTION_CB", NULL);
@@ -489,8 +501,7 @@ static int iExpanderTimer_cb(Ihandle* timer)
 
   /* just show child on top,
      that's why child must be a native container when using autoshow. */
-  ih->data->state = IEXPANDER_OPEN_FLOAT;
-  iExpanderOpenCloseChild(ih, 0, 1);
+  iExpanderOpenCloseChild(ih, 0, 1, IEXPANDER_OPEN_FLOAT);
   IupRefreshChildren(ih);
   IupSetAttribute(child, "ZORDER", "TOP"); 
 
@@ -675,8 +686,7 @@ static int iExpanderButton_CB(Ihandle* bar, int button, int pressed, int x, int 
   if (pressed)
   {
     /* Update the state: OPEN ==> collapsed, CLOSE ==> expanded */
-     ih->data->state = (ih->data->state == IEXPANDER_OPEN? IEXPANDER_CLOSE: IEXPANDER_OPEN);
-     iExpanderOpenCloseChild(ih, 1, 1);
+     iExpanderOpenCloseChild(ih, 1, 1, ih->data->state==IEXPANDER_OPEN? IEXPANDER_CLOSE: IEXPANDER_OPEN);
   }
 
   (void)x;
@@ -758,12 +768,13 @@ static int iExpanderPostRedrawSetAttrib(Ihandle* ih, const char* value)
 
 static int iExpanderSetStateAttrib(Ihandle* ih, const char* value)
 {
+  int state;
   if (iupStrEqualNoCase(value, "OPEN"))
-    ih->data->state = IEXPANDER_OPEN;
+    state = IEXPANDER_OPEN;
   else
-    ih->data->state = IEXPANDER_CLOSE;
+    state = IEXPANDER_CLOSE;
 
-  iExpanderOpenCloseChild(ih, 1, 0);
+  iExpanderOpenCloseChild(ih, 1, 0, state);
 
   return 0; /* do not store value in hash table */
 }
@@ -990,7 +1001,7 @@ static void iExpanderSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
 static void iExpanderChildAddedMethod(Ihandle* ih, Ihandle* child)
 {
-  iExpanderOpenCloseChild(ih, 0, 0);
+  iExpanderOpenCloseChild(ih, 0, 0, ih->data->state);
   (void)child;
 }
 
@@ -1057,6 +1068,7 @@ Iclass* iupExpanderNewClass(void)
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "ACTION", "");
+  iupClassRegisterCallback(ic, "OPENCLOSE_CB", "i");
   iupClassRegisterCallback(ic, "EXTRABUTTON_CB", "ii");
 
   /* Common */
