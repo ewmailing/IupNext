@@ -226,6 +226,9 @@ static void iGridBoxFitColChildren(Ihandle* ih, int fit_col)
   int max_width = 0, max, i;
   Ihandle* child, *ref_child = NULL;
 
+  if (ih->data->num_col == 0 || ih->data->num_lin == 0)
+    return;
+
   i = 0;
   for (child = ih->firstchild; child; child = child->brother)
   {
@@ -242,6 +245,8 @@ static void iGridBoxFitColChildren(Ihandle* ih, int fit_col)
         if (lin == ih->data->size_lin)
           ref_child = child;
       }
+
+      i++;
     }
   }
 
@@ -259,6 +264,9 @@ static void iGridBoxFitLineChildren(Ihandle* ih, int fit_lin)
   int max_height = 0, max, i;
   Ihandle* child, *ref_child = NULL;
 
+  if (ih->data->num_col == 0 || ih->data->num_lin == 0)
+    return;
+
   i = 0;
   for (child = ih->firstchild; child; child = child->brother)
   {
@@ -275,6 +283,8 @@ static void iGridBoxFitLineChildren(Ihandle* ih, int fit_lin)
         if (col == ih->data->size_col)
           ref_child = child;
       }
+
+      i++;
     }
   }
 
