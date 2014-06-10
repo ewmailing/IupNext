@@ -15,7 +15,6 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_register.h"
-#include "iup_layout.h"
 
 #include "iup_glcontrols.h"
 
@@ -204,14 +203,15 @@ static int iGLFrameSetMoveableAttrib(Ihandle* ih, const char* value)
   {
     IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLFrameBUTTON_CB);
     IupSetCallback(ih, "GL_MOTION_CB", (Icallback)iGLFrameMOTION_CB);
+    return 1;
   }
   else
   {
     IupSetCallback(ih, "GL_BUTTON_CB", NULL);
     IupSetCallback(ih, "GL_MOTION_CB", NULL);
+    iupAttribSet(ih, "MOVEABLE", "NO");
+    return 0;
   }
-
-  return 1;
 }
 
 static void iGLFrameComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
