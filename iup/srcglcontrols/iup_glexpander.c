@@ -619,7 +619,7 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
     y2 = bar_size;
   }
 
-  /* draw box */
+  /* draw bar box */
   iupGLDrawBox(ih, x1, x2, y1, y2, bgcolor);
 
 

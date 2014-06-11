@@ -316,7 +316,7 @@ void GLCanvasCubeTest(void)
 {
   Ihandle *dlg, *canvas, *box, *gtoggle, *gtoggle1, *gtoggle2, 
     *ghbox, *gvbox, *glabel, *gsep1, *gsep2, *gbutton1, *gbutton2,
-    *pbar1, *pbar2, *glink, *gval1, *gval2;
+    *pbar1, *pbar2, *glink, *gval1, *gval2, *gframe1, *gframe2;
 
   IupGLCanvasOpen();
   IupGLControlsOpen();
@@ -400,10 +400,14 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(gvbox, "MARGIN", "5x5");
   IupSetAttribute(gvbox, "GAP", "5");
 
+  gframe1 = IupSetAttributes(IupGLFrame(ghbox), "TITLE=Frame, XXX_TITLEBOX=Yes, XXX_MOVEABLE=Yes");
+  gframe2 = IupSetAttributes(IupGLFrame(gvbox), "BACKGROUND=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
+
   canvas = IupGLCanvasBox(
-    IupSetAttributes(IupGLFrame(ghbox), "TITLE=Frame, HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, XXX_TITLEBOX=Yes, MOVEABLE=Yes"),
-    IupSetAttributes(IupGLFrame(gvbox), "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER, BACKGROUND=\"250 250 160\", FRAMECOLOR=\"250 250 160\""),
+    IupSetAttributes(IupGLExpander(gframe1), "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, FORECOLOR=\"255 255 255\", BACKCOLOR=\"50 100 150\""),
+    IupSetAttributes(IupGLExpander(gframe2), "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER, BARPOSITION=LEFT, FORECOLOR=\"255 255 255\", BACKCOLOR=\"50 100 150\""),
     NULL);
+
   IupSetCallback(canvas, "ACTION", action);
   IupSetCallback(canvas, "BUTTON_CB", (Icallback)button_cb);
   IupSetCallback(canvas, "MOTION_CB", (Icallback)motion_cb);
