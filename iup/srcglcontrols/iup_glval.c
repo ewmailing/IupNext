@@ -11,6 +11,7 @@
 
 #include "iup.h"
 #include "iupcbs.h"
+#include "iupglcontrols.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -103,7 +104,17 @@ static int iGLValACTION_CB(Ihandle* ih)
   }
 
   if (image)
-    iupGLIconDraw(ih, x1, y1, x2 - x1 + 1, y2 - y1 + 1, image, NULL, NULL, active);
+  {
+    int x, y, width, height;
+    iupGLImageGetInfo(image, &width, &height, NULL);
+
+    /* always center the image */
+    x = (x2 - x1 + 1 - width) / 2;
+    y = (y2 - y1 + 1 - height) / 2;
+
+    iupGLDrawImage(ih, x1 + x, y1 + y, image, active);
+  }
+
   else
   {
     int pressed = iupAttribGetInt(ih, "PRESSED");

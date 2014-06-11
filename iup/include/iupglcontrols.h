@@ -27,6 +27,7 @@ Ihandle* IupGLLink(const char *url, const char * title);
 Ihandle* IupGLProgressBar(void);
 Ihandle* IupGLVal(void);
 Ihandle* IupGLFrame(Ihandle* child);
+Ihandle* IupGLExpander(Ihandle* child);
 
 
 #ifdef __cplusplus

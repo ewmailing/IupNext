@@ -10,6 +10,7 @@
 
 #include "iup.h"
 #include "iupcbs.h"
+#include "iupglcontrols.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -48,7 +49,7 @@ static void iGLLabelComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *c
   char* image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
 
-  iupGLIconGetNaturalSize(ih, image, title, &natural_w, &natural_h);
+  iupGLIconGetSize(ih, image, title, &natural_w, &natural_h);
 
   *w = natural_w;
   *h = natural_h;

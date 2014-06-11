@@ -10,12 +10,11 @@
 
 #include "iup.h"
 #include "iupcbs.h"
-#include "iupkey.h"
+#include "iupglcontrols.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
-#include "iup_drv.h"
 #include "iup_register.h"
 
 #include "iup_glcontrols.h"

@@ -10,6 +10,7 @@
 
 #include "iup.h"
 #include "iupcbs.h"
+#include "iupglcontrols.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -34,11 +35,11 @@ static int iGLFrameACTION(Ihandle* ih)
     char* fgcolor = iupAttribGetStr(ih, "TITLECOLOR");
     int off = iupAttribGetInt(ih, "TITLEOFFSET");
     int title_box = iupAttribGetInt(ih, "TITLEBOX");
-    int natural_w = 0,
-      natural_h = 0;
-    iupGLIconGetNaturalSize(ih, image, title, &natural_w, &natural_h);
-    if (natural_w > ih->currentwidth - 2 * border_width)
-      natural_w = ih->currentwidth - 2 * border_width;
+    int w = 0,
+      h = 0;
+    iupGLIconGetSize(ih, image, title, &w, &h);
+    if (w > ih->currentwidth - 2 * border_width)
+      w = ih->currentwidth - 2 * border_width;
 
     if (title_box)
     {
@@ -47,16 +48,16 @@ static int iGLFrameACTION(Ihandle* ih)
 
       /* draw box */
       iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
-                       border_width, border_width + natural_h, bcolor);
+                       border_width, border_width + h, bcolor);
     }
     else
     {
       /* draw frame border */
-      iupGLDrawFrameRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, off, natural_w, natural_h);
+      iupGLDrawFrameRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, off, w, h);
     }
 
     iupGLIconDraw(ih, off, 0,
-      natural_w, natural_h,
+      w, h,
       image, title, fgcolor, active);
   }
   else
@@ -146,11 +147,11 @@ static void iGLFrameGetDecorOffset(Ihandle* ih, int *dx, int *dy)
 
   if (image || title)
   {
-    int natural_w = 0,
-        natural_h = 0;
-    iupGLIconGetNaturalSize(ih, image, title, &natural_w, &natural_h);
+    int w = 0,
+        h = 0;
+    iupGLIconGetSize(ih, image, title, &w, &h);
 
-    (*dy) += natural_h;
+    (*dy) += h;
   }
 }
 
@@ -165,13 +166,13 @@ static void iGLFrameGetDecorSize(Ihandle* ih, int *width, int *height, int* titl
 
   if (image || title)
   {
-    int natural_w = 0,
-        natural_h = 0;
-    iupGLIconGetNaturalSize(ih, image, title, &natural_w, &natural_h);
+    int w = 0,
+        h = 0;
+    iupGLIconGetSize(ih, image, title, &w, &h);
 
-    (*height) += natural_h;
+    (*height) += h;
     if (title_width)
-      *title_width = natural_w;
+      *title_width = w;
   }
 }
 
@@ -309,6 +310,9 @@ Iclass* iupGLFrameNewClass(void)
 
   /* Visual */
   /* NOTICE: avoid defining inheritable attributes for containers */
+
+  iupGLIconRegisterAttrib(ic);
+
   iupClassRegisterAttribute(ic, "IMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

@@ -6,7 +6,6 @@
 
 
 #include "iup.h"
-#include "iupgl.h"
 #include "iupglcontrols.h"
 
 #include "iup_object.h"
@@ -33,6 +32,7 @@ int IupGLControlsOpen(void)
   iupRegisterClass(iupGLProgressBarNewClass());
   iupRegisterClass(iupGLValNewClass());
   iupRegisterClass(iupGLFrameNewClass());
+  iupRegisterClass(iupGLExpanderNewClass());
 
   IupSetGlobal("_IUP_GLCONTROLS_OPEN", "1");
 

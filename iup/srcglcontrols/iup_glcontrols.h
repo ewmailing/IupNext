@@ -23,6 +23,7 @@ Iclass* iupGLLinkNewClass(void);
 Iclass* iupGLProgressBarNewClass(void);
 Iclass* iupGLValNewClass(void);
 Iclass* iupGLFrameNewClass(void);
+Iclass* iupGLExpanderNewClass(void);
 
 void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
 void iupGLSubCanvasSaveState(Ihandle* gl_parent);
@@ -54,7 +55,7 @@ void iupGLDrawFrameRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, flo
 
 void iupGLIconRegisterAttrib(Iclass* ic);
 void iupGLIconDraw(Ihandle* ih, int icon_x, int icon_y, int icon_width, int icon_height, const char *image, const char* title, const char* fgcolor, int active);
-void iupGLIconGetNaturalSize(Ihandle* ih, const char* image, const char* title, int *w, int *h);
+void iupGLIconGetSize(Ihandle* ih, const char* image, const char* title, int *w, int *h);
 Ihandle* iupGLIconGetImageHandle(Ihandle* ih, const char* name, int active);
 
 

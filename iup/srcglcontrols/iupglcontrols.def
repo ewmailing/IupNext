@@ -11,3 +11,4 @@ EXPORTS
   IupGLProgressBar
   IupGLVal
   IupGLFrame
+  IupGLExpander

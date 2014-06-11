@@ -245,7 +245,6 @@ void iupGLIconDraw(Ihandle* ih, int icon_x, int icon_y, int icon_width, int icon
 
       iupGLDrawImage(ih, x + icon_x, y + icon_y, image, active);
     }
-
   }
   else if (title)
   {
@@ -257,14 +256,14 @@ void iupGLIconDraw(Ihandle* ih, int icon_x, int icon_y, int icon_width, int icon
   }
 }
 
-void iupGLIconGetNaturalSize(Ihandle* ih, const char* image, const char* title, int *w, int *h)
+void iupGLIconGetSize(Ihandle* ih, const char* image, const char* title, int *w, int *h)
 {
-  int natural_w = 0, 
-      natural_h = 0;
+  *w = 0, 
+  *h = 0;
 
   if (image)
   {
-    iupGLImageGetInfo(image, &natural_w, &natural_h, NULL);
+    iupGLImageGetInfo(image, w, h, NULL);
 
     if (title)
     {
@@ -276,28 +275,25 @@ void iupGLIconGetNaturalSize(Ihandle* ih, const char* image, const char* title, 
       if (img_position == IUP_GLPOS_RIGHT ||
           img_position == IUP_GLPOS_LEFT)
       {
-        natural_w += text_w + spacing;
-        natural_h = iupMAX(natural_h, text_h);
+        *w += text_w + spacing;
+        *h = iupMAX(*h, text_h);
       }
       else
       {
-        natural_w = iupMAX(natural_w, text_w);
-        natural_h += text_h + spacing;
+        *w = iupMAX(*w, text_w);
+        *h += text_h + spacing;
       }
     }
   }
   else if (title)
-    iupGLFontGetMultiLineStringSize(ih, title, &natural_w, &natural_h);
+    iupGLFontGetMultiLineStringSize(ih, title, w, h);
 
   {
     int horiz_padding = 0, vert_padding = 0;
     IupGetIntInt(ih, "PADDING", &horiz_padding, &vert_padding);
-    natural_w += 2 * horiz_padding;
-    natural_h += 2 * vert_padding;
+    *w += 2 * horiz_padding;
+    *h += 2 * vert_padding;
   }
-
-  *w = natural_w;
-  *h = natural_h;
 }
 
 void iupGLIconRegisterAttrib(Iclass* ic)

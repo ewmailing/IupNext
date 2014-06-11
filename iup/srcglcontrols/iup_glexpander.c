@@ -11,6 +11,7 @@
 
 #include "iup.h"
 #include "iupcbs.h"
+#include "iupglcontrols.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -26,7 +27,7 @@
 #define IEXPAND_BACK_MARGIN  2
 
 enum { IEXPANDER_LEFT, IEXPANDER_RIGHT, IEXPANDER_TOP, IEXPANDER_BOTTOM };
-enum { IEXPANDER_CLOSE, IEXPANDER_OPEN, IEXPANDER_OPEN_FLOAT };
+enum { IEXPANDER_CLOSE, IEXPANDER_OPEN };
 
 struct _IcontrolData
 {
@@ -42,7 +43,8 @@ struct _IcontrolData
 
 static void iGLExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int state)
 {
-  Ihandle *child = ih->firstchild->brother;
+  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  Ihandle *child = ih->firstchild;
 
   if (callcb)
   {
@@ -57,8 +59,6 @@ static void iGLExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int 
 
   ih->data->state = state;
 
-//  IupUpdate(ih->firstchild);
-
   if (child)
   {
     if (ih->data->state == IEXPANDER_CLOSE)
@@ -67,8 +67,10 @@ static void iGLExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int 
       IupSetAttribute(child, "VISIBLE", "YES");
 
     if (refresh)
-      IupRefresh(child); /* this will recompute the layout of the hole dialog */
+      IupRefreshChildren(gl_parent); /* this will recompute the layout of the glcanvasbox only */
   }
+
+  IupSetAttribute(gl_parent, "REDRAW", NULL);
 
   if (callcb)
   {
@@ -448,8 +450,6 @@ static int iGLExpanderMOTION_CB(Ihandle* bar, int x, int y, char* status)
 {
   Ihandle* ih = bar->parent;
 
-  /* called only when EXTRABUTTONS is used */
-
   if (ih->data->position != IEXPANDER_TOP)
     return IUP_DEFAULT;
 
@@ -543,31 +543,25 @@ static int iGLExpanderBUTTON_CB(Ihandle* bar, int button, int pressed, int x, in
   if (button != IUP_BUTTON1)
     return IUP_DEFAULT;
 
-  if (ih->data->auto_show && ih->firstchild)
-  {
-    if (IupGetInt(ih->data->timer, "RUN"))
-      IupSetAttribute(ih->data->timer, "RUN", "No");
-  }
-
   if (ih->data->position == IEXPANDER_TOP && ih->data->extra_buttons != 0)
   {
-    if (y >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && y <= bar->currentheight - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
+    if (y >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && y <= height - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
     {
-      if ((x >= bar->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-          (x < bar->currentwidth - IEXPAND_SPACING - IEXPAND_BACK_MARGIN))
+      if ((x >= width - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
+          (x < width - IEXPAND_SPACING - IEXPAND_BACK_MARGIN))
         return iGLExpanderCallExtraButtonCb(ih, 1, pressed);
 
       if (ih->data->extra_buttons > 1)
       {
-        if ((x >= bar->currentwidth - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-            (x < bar->currentwidth - (IEXPAND_BUTTON_SIZE + 2 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
+        if ((x >= width - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
+            (x < width - (IEXPAND_BUTTON_SIZE + 2 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
           return iGLExpanderCallExtraButtonCb(ih, 2, pressed);
       }
 
       if (ih->data->extra_buttons == 3)
       {
-        if ((x >= bar->currentwidth - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-            (x < bar->currentwidth - (2 * IEXPAND_BUTTON_SIZE + 3 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
+        if ((x >= width - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
+            (x < width - (2 * IEXPAND_BUTTON_SIZE + 3 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
           return iGLExpanderCallExtraButtonCb(ih, 3, pressed);
       }
     }
@@ -585,6 +579,52 @@ static int iGLExpanderBUTTON_CB(Ihandle* bar, int button, int pressed, int x, in
   return IUP_DEFAULT;
 }
 #endif
+
+static int iGLExpanderACTION_CB(Ihandle* ih)
+{
+  char *image = iupAttribGet(ih, "IMAGE");
+  char* title = iupAttribGet(ih, "TITLE");
+  int active = iupAttribGetInt(ih, "ACTIVE");
+  int x1, y1, x2, y2;
+  int bar_size = iGLExpanderGetBarSize(ih);
+  char* bgcolor = iupAttribGetStr(ih, "BACKCOLOR");
+
+  /* calc bar position */
+  if (ih->data->position == IEXPANDER_LEFT)
+  {
+    x1 = 0;
+    x2 = bar_size;
+    y1 = 0;
+    y2 = ih->currentheight - 1;
+  }
+  else if (ih->data->position == IEXPANDER_RIGHT)
+  {
+    x1 = ih->currentwidth-1 - bar_size;
+    x2 = ih->currentwidth-1;
+    y1 = 0;
+    y2 = ih->currentheight - 1;
+  }
+  else if (ih->data->position == IEXPANDER_BOTTOM)
+  {
+    x1 = 0;
+    x2 = ih->currentwidth - 1;
+    y1 = ih->currentheight-1 - bar_size;
+    y2 = ih->currentheight-1;
+  }
+  else /* IEXPANDER_TOP */
+  {
+    x1 = 0;
+    x2 = ih->currentwidth - 1;
+    y1 = 0;
+    y2 = bar_size;
+  }
+
+  /* draw box */
+  iupGLDrawBox(ih, x1, x2, y1, y2, bgcolor);
+
+
+  return IUP_DEFAULT;
+}
 
 /*****************************************************************************\
 |* Attributes                                                                *|
@@ -816,8 +856,6 @@ static void iGLExpanderSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   {
     if (ih->data->state == IEXPANDER_OPEN)
       iupBaseSetCurrentSize(child, width, height, shrink);
-    else if (ih->data->state == IEXPANDER_OPEN_FLOAT)  /* simply set to the natural size */
-      iupBaseSetCurrentSize(child, child->currentwidth, child->currentheight, shrink);
   }
 }
 
@@ -835,15 +873,6 @@ static void iGLExpanderSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
     if (ih->data->state == IEXPANDER_OPEN)
       iupBaseSetPosition(child, x, y);
-    else if (ih->data->state == IEXPANDER_OPEN_FLOAT)
-    {
-      if (ih->data->position == IEXPANDER_RIGHT)
-        x -= child->currentwidth;
-      else if (ih->data->position == IEXPANDER_BOTTOM)
-        y -= child->currentheight;
-
-      iupBaseSetPosition(child, x, y);
-    }
   }
 }
 
@@ -855,8 +884,6 @@ static void iGLExpanderChildAddedMethod(Ihandle* ih, Ihandle* child)
 
 static int iGLExpanderCreateMethod(Ihandle* ih, void** params)
 {
-  Ihandle* bar;
-
   ih->data = iupALLOCCTRLDATA();
 
   ih->data->position = IEXPANDER_TOP;
@@ -865,10 +892,10 @@ static int iGLExpanderCreateMethod(Ihandle* ih, void** params)
 
   /* Setting callbacks */
   IupSetCallback(ih, "GL_ACTION", (Icallback)iGLExpanderACTION_CB);
+//  IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLExpanderBUTTON_CB);
+//  IupSetCallback(ih, "GL_MOTION_CB", (Icallback)iGLExpanderMOTION_CB);
   IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRestoreRedraw);
   IupSetCallback(ih, "GL_ENTERWINDOW_CB", iupGLSubCanvasRestoreRedraw);
-  IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLExpanderBUTTON_CB);
-  IupSetCallback(ih, "GL_MOTION_CB", (Icallback)iGLExpanderMOTION_CB);
 
   if (params)
   {
@@ -911,8 +938,10 @@ Iclass* iupGLExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iGLExpanderGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", iGLExpanderGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
-  /* IupExpander only */
-  iupClassRegisterAttribute(ic, "BARPOSITION", NULL, iGLExpanderSetPositionAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  /* Visual */
+  /* NOTICE: avoid defining inheritable attributes for containers */
+
+  iupClassRegisterAttribute(ic, "BARPOSITION", NULL, iGLExpanderSetPositionAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BARSIZE", iGLExpanderGetBarSizeAttrib, iGLExpanderSetBarSizeAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATE", iGLExpanderGetStateAttrib, iGLExpanderSetStateAttrib, IUPAF_SAMEASSYSTEM, "OPEN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRABUTTONS", iGLExpanderGetExtraButtonsAttrib, iGLExpanderSetExtraButtonsAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
