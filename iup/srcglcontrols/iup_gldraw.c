@@ -146,7 +146,7 @@ void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float li
   glEnd();
 }
 
-void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const char* color)
+void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const char* color, int active)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
@@ -159,9 +159,73 @@ void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const cha
   ymin = ih->currentheight - 1 - ymin;
   ymax = ih->currentheight - 1 - ymax;
 
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
   glColor4ub(r, g, b, a);
 
   glRecti(xmin, ymax, xmax + 1, ymin + 1);
+}
+
+void iupGLDrawPolygon(Ihandle* ih, const int* points, int count, const char* color, int active)
+{
+  unsigned char r = 0, g = 0, b = 0, a = 255;
+  int i, x, y;
+
+  if (!color || count < 3)
+    return;
+
+  iupStrToRGBA(color, &r, &g, &b, &a);
+
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+  glColor4ub(r, g, b, a);
+
+  glBegin(GL_POLYGON);
+
+  for (i = 0; i < count; i++)
+  {
+    x = points[2 * i + 0];
+    y = points[2 * i + 1];
+
+    /* y is oriented top to bottom in IUP */
+    y = ih->currentheight - 1 - y;
+
+    glVertex2i(x, y);
+  }
+
+  glEnd();
+}
+
+void iupGLDrawPolyline(Ihandle* ih, const int* points, int count, float linewidth, const char* color, int active)
+{
+  unsigned char r = 0, g = 0, b = 0, a = 255;
+  int i, x, y;
+
+  if (!color || count < 3)
+    return;
+
+  iupStrToRGBA(color, &r, &g, &b, &a);
+
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+  glColor4ub(r, g, b, a);
+
+  glLineWidth(linewidth);
+
+  glBegin(GL_LINE_LOOP);
+
+  for (i = 0; i < count; i++)
+  {
+    x = points[2 * i + 0];
+    y = points[2 * i + 1];
+
+    /* y is oriented top to bottom in IUP */
+    y = ih->currentheight - 1 - y;
+
+    glVertex2i(x, y);
+  }
+
+  glEnd();
 }
 
 void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color, int active)

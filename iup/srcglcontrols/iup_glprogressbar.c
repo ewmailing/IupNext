@@ -66,7 +66,7 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
 
   /* draw background */
   iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
-                   border_width, ih->currentheight-1 - border_width, bgcolor);
+                   border_width, ih->currentheight-1 - border_width, bgcolor, 1);
 
   /* draw border - can be disabled setting bwidth=0 
      after the background because of the round rect */
@@ -87,12 +87,12 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
       if (is_horizontal)
       {
         int xmid = xmin + iupRound((xmax - xmin + 1) * percent);
-        iupGLDrawBox(ih, xmin, xmid, ymin, ymax, fgcolor);
+        iupGLDrawBox(ih, xmin, xmid, ymin, ymax, fgcolor, 1);
       }
       else
       {
         int ymid = ymin + iupRound((ymax - ymin + 1) * (1.0 - percent));
-        iupGLDrawBox(ih, xmin, xmax, ymid, ymax, fgcolor);
+        iupGLDrawBox(ih, xmin, xmax, ymid, ymax, fgcolor, 1);
       }
     }
 

@@ -78,7 +78,7 @@ static int iGLValACTION_CB(Ihandle* ih)
   }
 
   /* draw slider background */
-  iupGLDrawBox(ih, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width, bgcolor);
+  iupGLDrawBox(ih, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width, bgcolor, 1);
 
   /* draw slider border - can be disabled setting bwidth=0 */
   iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bcolor, active, 0);
@@ -135,7 +135,7 @@ static int iGLValACTION_CB(Ihandle* ih)
     }
 
     /* draw handler foreground */
-    iupGLDrawBox(ih, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width, fgcolor);
+    iupGLDrawBox(ih, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width, fgcolor, active);
 
     /* draw handler border - can still be disabled setting bwidth=0
        after the background because of the round rect */

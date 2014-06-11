@@ -6,6 +6,7 @@
 
 
 #include "iup.h"
+#include "iupgl.h"
 #include "iupglcontrols.h"
 
 #include "iup_object.h"

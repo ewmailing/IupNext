@@ -59,7 +59,7 @@ static int iGLButtonACTION(Ihandle* ih)
 
   /* draw background */
   iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width, 
-                   border_width, ih->currentheight-1 - border_width, bgcolor);
+                   border_width, ih->currentheight-1 - border_width, bgcolor, 1);
 
   iupGLIconDraw(ih, border_width, border_width, 
                     ih->currentwidth - 2*border_width, ih->currentheight - 2*border_width, 

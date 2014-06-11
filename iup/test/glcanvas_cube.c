@@ -400,12 +400,12 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(gvbox, "MARGIN", "5x5");
   IupSetAttribute(gvbox, "GAP", "5");
 
-  gframe1 = IupSetAttributes(IupGLFrame(ghbox), "TITLE=Frame, XXX_TITLEBOX=Yes, XXX_MOVEABLE=Yes");
+  gframe1 = IupSetAttributes(IupGLFrame(ghbox), "TITLE=Frame, TITLEBOX=Yes, XXX_MOVEABLE=Yes");
   gframe2 = IupSetAttributes(IupGLFrame(gvbox), "BACKGROUND=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
 
   canvas = IupGLCanvasBox(
-    IupSetAttributes(IupGLExpander(gframe1), "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, FORECOLOR=\"255 255 255\", BACKCOLOR=\"50 100 150\""),
-    IupSetAttributes(IupGLExpander(gframe2), "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER, BARPOSITION=LEFT, FORECOLOR=\"255 255 255\", BACKCOLOR=\"50 100 150\""),
+    IupSetAttributes(IupGLExpander(gframe1), "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP"),
+    IupSetAttributes(IupGLExpander(gframe2), "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER, BARPOSITION=LEFT"),
     NULL);
 
   IupSetCallback(canvas, "ACTION", action);
