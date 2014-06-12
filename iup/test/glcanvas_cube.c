@@ -14,6 +14,45 @@
 #include "iupglcontrols.h"
 
 
+static unsigned char img_close[16 * 16] =
+{
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+  0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+static unsigned char img_open[16 * 16] =
+{
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+  0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
 
 static Ihandle* load_image_Tecgraf(void)
 {
@@ -312,11 +351,24 @@ static int val_action_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
+static int expand_cb(Ihandle *ih)
+{
+  printf("ACTION(%s)\n", IupGetClassName(ih));
+  return IUP_DEFAULT;
+}
+
+static int extrabutton_cb(Ihandle *ih, int button, int pressed)
+{
+  printf("EXTRABUTTON_CB(%s, but=%d, press=%d)\n", IupGetClassName(ih), button, pressed);
+  return IUP_DEFAULT;
+}
+
 void GLCanvasCubeTest(void)
 {
-  Ihandle *dlg, *canvas, *box, *gtoggle, *gtoggle1, *gtoggle2, 
+  Ihandle *dlg, *canvas, *box, *gtoggle, *gtoggle1, *gtoggle2,
     *ghbox, *gvbox, *glabel, *gsep1, *gsep2, *gbutton1, *gbutton2,
-    *pbar1, *pbar2, *glink, *gval1, *gval2, *gframe1, *gframe2;
+    *pbar1, *pbar2, *glink, *gval1, *gval2, *gframe1, *gframe2,
+    *gexp1, *gexp2, *image_open, *image_close, *image_high;
 
   IupGLCanvasOpen();
   IupGLControlsOpen();
@@ -403,10 +455,40 @@ void GLCanvasCubeTest(void)
   gframe1 = IupSetAttributes(IupGLFrame(ghbox), "TITLE=Frame, TITLEBOX=Yes");
   gframe2 = IupSetAttributes(IupGLFrame(gvbox), "BACKGROUND=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
 
+  gexp1 = IupSetAttributes(IupGLExpander(gframe1), "TITLE=Expander");
+  gexp2 = IupSetAttributes(IupGLExpander(gframe2), "BARPOSITION=LEFT"),
+
   canvas = IupGLCanvasBox(
-    IupSetAttributes(IupGLExpander(gframe1), "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes, TITLE=Expander"),
-    IupSetAttributes(IupGLExpander(gframe2), "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER, BARPOSITION=LEFT"),
+    IupSetAttributes(gexp1, "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes"),
+    IupSetAttributes(gexp2, "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER"),
     NULL);
+
+  image_open = IupImage(16, 16, img_open);
+  image_close = IupImage(16, 16, img_close);
+  image_high = IupImage(16, 16, img_close);
+  IupSetAttribute(image_open, "0", "BGCOLOR");
+  IupSetAttribute(image_open, "1", "192 192 192");
+  IupSetAttribute(image_close, "0", "BGCOLOR");
+  IupSetAttribute(image_close, "1", "192 192 192");
+  IupSetAttribute(image_high, "1", "192 192 192");
+
+  //  IupSetAttribute(gexp1, "BARSIZE", "50");
+  //  IupSetAttributeHandle(gexp1, "IMAGE", image_close);
+  //  IupSetAttributeHandle(gexp1, "IMOPEN", image_open);
+  //  IupSetAttribute(gexp1, "IMAGE", "img1");
+  IupSetCallback(gexp1, "ACTION", (Icallback)expand_cb);
+  IupSetAttribute(gexp1, "EXTRABUTTONS", "3");
+  IupSetCallback(gexp1, "EXTRABUTTON_CB", (Icallback)extrabutton_cb);
+  IupSetAttributeHandle(gexp1, "IMAGEEXTRA1", image_close);
+  IupSetAttributeHandle(gexp1, "IMAGEEXTRAPRESS1", image_open);
+  IupSetAttributeHandle(gexp1, "IMAGEEXTRAHIGHLIGHT1", image_high);
+  IupSetAttributeHandle(gexp1, "IMAGEEXTRA2", image_close);
+  IupSetAttributeHandle(gexp1, "IMAGEEXTRAPRESS2", image_open);
+  IupSetAttributeHandle(gexp1, "IMAGEEXTRAHIGHLIGHT2", image_high);
+  IupSetAttributeHandle(gexp1, "IMAGEEXTRA3", image_close);
+  IupSetAttributeHandle(gexp1, "IMAGEEXTRAPRESS3", image_open);
+  IupSetAttributeHandle(gexp1, "IMAGEEXTRAHIGHLIGHT3", image_high);
+
 
   IupSetCallback(canvas, "ACTION", action);
   IupSetCallback(canvas, "BUTTON_CB", (Icallback)button_cb);
