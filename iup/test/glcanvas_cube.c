@@ -404,7 +404,7 @@ void GLCanvasCubeTest(void)
   gframe2 = IupSetAttributes(IupGLFrame(gvbox), "BACKGROUND=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
 
   canvas = IupGLCanvasBox(
-    IupSetAttributes(IupGLExpander(gframe1), "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP"),
+    IupSetAttributes(IupGLExpander(gframe1), "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes, TITLE=Expander"),
     IupSetAttributes(IupGLExpander(gframe2), "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER, BARPOSITION=LEFT"),
     NULL);
 

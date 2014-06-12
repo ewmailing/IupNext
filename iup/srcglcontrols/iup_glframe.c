@@ -35,8 +35,7 @@ static int iGLFrameACTION(Ihandle* ih)
     int off = iupAttribGetInt(ih, "TITLEOFFSET");
     int title_box = iupAttribGetInt(ih, "TITLEBOX");
     int active = iupAttribGetInt(ih, "ACTIVE");
-    int w = 0,
-      h = 0;
+    int w = 0, h = 0;
     iupGLIconGetSize(ih, image, title, &w, &h);
     if (w > ih->currentwidth - 2 * border_width)
       w = ih->currentwidth - 2 * border_width;
@@ -75,20 +74,15 @@ static int iGLFrameACTION(Ihandle* ih)
 
 static int iGLFrameBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
-  if (button == IUP_BUTTON1)
-  {
-    if (pressed)
-    {
-      iupAttribSetInt(ih, "_IUP_START_X", ih->x + x);
-      iupAttribSetInt(ih, "_IUP_START_Y", ih->y + y);
-    }
+  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  iupGLSubCanvasRestoreState(gl_parent);
 
-    iupGLSubCanvasRestoreRedraw(ih);
-  }
-  else
+  /* Only called when MOVEABLE=Yes */
+
+  if (button == IUP_BUTTON1 && pressed)
   {
-    Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-    iupGLSubCanvasRestoreState(gl_parent);
+    iupAttribSetInt(ih, "_IUP_START_X", ih->x + x);
+    iupAttribSetInt(ih, "_IUP_START_Y", ih->y + y);
   }
 
   (void)status;
@@ -98,6 +92,8 @@ static int iGLFrameBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y,
 static int iGLFrameMOTION_CB(Ihandle* ih, int x, int y, char* status)
 {
   int pressed = iupAttribGetInt(ih, "PRESSED");
+
+  /* Only called when MOVEABLE=Yes */
 
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
   iupGLSubCanvasRestoreState(gl_parent);
