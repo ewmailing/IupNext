@@ -113,10 +113,94 @@ static int iGLExpanderGetBarSize(Ihandle* ih)
   return bar_size;
 }
 
+static int iGLExpanderIsInsideHandler(Ihandle* ih, int x, int y, int bar_size)
+{
+  char *image = iupAttribGet(ih, "IMAGE");
+  char* title = iupAttribGet(ih, "TITLE");
+
+  if (ih->data->position == IEXPANDER_TOP && (title || image || ih->data->extra_buttons != 0))
+  {
+    /* left aligned */
+    if (y >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && y <= bar_size - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
+    {
+      if (x >= IEXPAND_BACK_MARGIN && x < IEXPAND_BACK_MARGIN + IEXPAND_HANDLE_SIZE)
+        return 1;
+    }
+  }
+  else
+  {
+    /* centered */
+    int half;
+
+    if (ih->data->position == IEXPANDER_TOP)
+    {
+      if (y >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && y <= bar_size - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
+      {
+        half = ih->currentwidth / 2;
+        if (x >= half + IEXPAND_HANDLE_SIZE / 2 && x < half - IEXPAND_HANDLE_SIZE/2)
+            return 1;
+      }
+    }
+
+      //IEXPANDER_LEFT
+    //  x1 = 0;
+    //  x2 = bar_size;
+    //  y1 = 0;
+    //  y2 = ih->currentheight - 1;
+    //}
+    //else if (ih->data->position == IEXPANDER_RIGHT)
+    //{
+    //  x1 = ih->currentwidth - 1 - bar_size;
+    //  x2 = ih->currentwidth - 1;
+    //  y1 = 0;
+    //  y2 = ih->currentheight - 1;
+    //}
+    //else if (ih->data->position == IEXPANDER_BOTTOM)
+    //{
+    //  x1 = 0;
+    //  x2 = ih->currentwidth - 1;
+    //  y1 = ih->currentheight - 1 - bar_size;
+    //  y2 = ih->currentheight - 1;
+    //}
+    //else /* IEXPANDER_TOP */
+    //{
+    //  x1 = 0;
+    //  x2 = ih->currentwidth - 1;
+    //  y1 = 0;
+    //  y2 = bar_size;
+    //}
+    //int x = x1,
+    //  y = y1,
+    //  width = x2 - x1 + 1,
+    //  height = y2 - y1 + 1;
+
+    //switch (ih->data->position)
+    //{
+    //case IEXPANDER_LEFT:
+    //  x += 0;
+    //  y += (height - IEXPAND_HANDLE_SIZE) / 2;
+    //  break;
+    //case IEXPANDER_TOP:
+    //  x += (width - IEXPAND_HANDLE_SIZE) / 2;
+    //  y += 0;
+    //  break;
+    //case IEXPANDER_RIGHT:
+    //  x += 0;
+    //  y += (height - IEXPAND_HANDLE_SIZE) / 2;
+    //  break;
+    //case IEXPANDER_BOTTOM:
+    //  x += (width - IEXPAND_HANDLE_SIZE) / 2;
+    //  y += 0;
+    //  break;
+    //}
+  }
+
+  return 0;
+}
+
 static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
 {
-//  int moveable = iupAttribGetInt(ih, "MOVEABLE");
-//  int pressed = iupAttribGetInt(ih, "PRESSED");
+  int redraw = 0;
   int bar_size = iGLExpanderGetBarSize(ih);
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
   iupGLSubCanvasRestoreState(gl_parent);
@@ -126,6 +210,24 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
     x += ih->currentwidth - 1 - bar_size;
   else if (ih->data->position == IEXPANDER_BOTTOM)
     y += ih->currentheight - 1 - bar_size;
+
+  /* special higlight processing for handler area */
+  if (iGLExpanderIsInsideHandler(ih, x, y, bar_size))
+  {
+    if (!iupAttribGet(ih, "HIGHLIGHT"))
+    {
+      redraw = 1;
+      iupAttribSet(ih, "HIGHLIGHT", "1");
+    }
+  }
+  else
+  {
+    if (iupAttribGet(ih, "HIGHLIGHT"))
+    {
+      redraw = 1;
+      iupAttribSet(ih, "HIGHLIGHT", NULL);
+    }
+  }
 
   if (ih->data->position == IEXPANDER_TOP && !ih->data->moving)
   {
@@ -137,7 +239,7 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
       old_state[3] = ih->data->extra_buttons_state[3];
 
       if ((x >= ih->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-          (x < ih->currentwidth - IEXPAND_SPACING - IEXPAND_BACK_MARGIN))
+        (x < ih->currentwidth - IEXPAND_SPACING - IEXPAND_BACK_MARGIN))
       {
         if (ih->data->extra_buttons_state[1] == 0)
           ih->data->extra_buttons_state[1] = -1;  /* highlight if not pressed */
@@ -151,7 +253,7 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
       if (ih->data->extra_buttons > 1)
       {
         if ((x >= ih->currentwidth - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-            (x < ih->currentwidth - (IEXPAND_BUTTON_SIZE + 2 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
+          (x < ih->currentwidth - (IEXPAND_BUTTON_SIZE + 2 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
         {
           if (ih->data->extra_buttons_state[2] == 0)
             ih->data->extra_buttons_state[2] = -1;  /* highlight if not pressed */
@@ -166,7 +268,7 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
       if (ih->data->extra_buttons == 3)
       {
         if ((x >= ih->currentwidth - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-            (x < ih->currentwidth - (2 * IEXPAND_BUTTON_SIZE + 3 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
+          (x < ih->currentwidth - (2 * IEXPAND_BUTTON_SIZE + 3 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
         {
           if (ih->data->extra_buttons_state[3] == 0)
             ih->data->extra_buttons_state[3] = -1;  /* highlight if not pressed */
@@ -179,9 +281,12 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
       }
 
       if (old_state[1] != ih->data->extra_buttons_state[1] ||
-          old_state[2] != ih->data->extra_buttons_state[2] ||
-          old_state[3] != ih->data->extra_buttons_state[3])
+        old_state[2] != ih->data->extra_buttons_state[2] ||
+        old_state[3] != ih->data->extra_buttons_state[3])
+      {
         IupSetAttribute(gl_parent, "REDRAW", NULL);
+        redraw = 0;
+      }
     }
   }
 
@@ -201,6 +306,7 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
       iupBaseSetPosition(ih, ih->x + (x - ih->data->start_x), ih->y + (y - ih->data->start_y));
 
       IupSetAttribute(gl_parent, "REDRAW", NULL);
+      redraw = 0;
 
       if (cb)
         cb(ih, ih->x, ih->y);
@@ -209,6 +315,9 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
     ih->data->start_x = x;
     ih->data->start_y = y;
   }
+
+  if (redraw)
+    IupSetAttribute(gl_parent, "REDRAW", NULL);
 
   (void)status;
   return IUP_DEFAULT;
@@ -227,7 +336,7 @@ static int iGLExpanderCallExtraButtonCb(Ihandle* ih, int button, int pressed, Ih
     pressed = pressed;
 
   /* if pressed always call,
-  if not pressed, call only if was pressed */
+     if not pressed, call only if was pressed */
   if (pressed || old_state == 1)
   {
     IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
@@ -281,20 +390,25 @@ static int iGLExpanderBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int
 
   if (pressed)
   {
-    int moveable = iupAttribGetInt(ih, "MOVEABLE");
-    if (moveable)
+    if (!iGLExpanderIsInsideHandler(ih, x, y, bar_size))
     {
-      ih->data->moving = 1;
-      ih->data->start_x = ih->x + x;
-      ih->data->start_y = ih->y + y;
-    }
+      iupAttribSet(ih, "PRESSED", NULL);
 
-    /* Update the state: OPEN ==> collapsed, CLOSE ==> expanded */
-    iGLExpanderOpenCloseChild(ih, 1, 1, ih->data->state == IEXPANDER_OPEN ? IEXPANDER_CLOSE : IEXPANDER_OPEN);
+      int moveable = iupAttribGetInt(ih, "MOVEABLE");
+      if (moveable)
+      {
+        ih->data->moving = 1;
+        ih->data->start_x = ih->x + x;
+        ih->data->start_y = ih->y + y;
+      }
+    }
+    else
+    {
+      /* Update the state: OPEN ==> collapsed, CLOSE ==> expanded */
+      iGLExpanderOpenCloseChild(ih, 1, 1, ih->data->state == IEXPANDER_OPEN ? IEXPANDER_CLOSE : IEXPANDER_OPEN);
+    }
   }
 
-  (void)x;
-  (void)y;
   (void)status;
   return IUP_DEFAULT;
 }
@@ -607,6 +721,25 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int iGLExpanderENTERWINDOW_CB(Ihandle* ih, int x, int y)
+{
+  int bar_size = iGLExpanderGetBarSize(ih);
+
+  /* shift to bar position */
+  if (ih->data->position == IEXPANDER_RIGHT)
+    x += ih->currentwidth - 1 - bar_size;
+  else if (ih->data->position == IEXPANDER_BOTTOM)
+    y += ih->currentheight - 1 - bar_size;
+
+  /* special higlight processing for handler area */
+  if (iGLExpanderIsInsideHandler(ih, x, y, bar_size))
+    iupAttribSet(ih, "HIGHLIGHT", "1");
+  else
+    iupAttribSet(ih, "HIGHLIGHT", NULL);
+
+  return iupGLSubCanvasRestoreRedraw(ih);
+}
+
 /*****************************************************************************\
 |* Attributes                                                                *|
 \*****************************************************************************/
@@ -876,7 +1009,7 @@ static int iGLExpanderCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLExpanderBUTTON_CB);
   IupSetCallback(ih, "GL_MOTION_CB", (Icallback)iGLExpanderMOTION_CB);
   IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRestoreRedraw);
-  IupSetCallback(ih, "GL_ENTERWINDOW_CB", iupGLSubCanvasRestoreRedraw);
+  IupSetCallback(ih, "GL_ENTERWINDOW_CB", (Icallback)iGLExpanderENTERWINDOW_CB);
 
   if (params)
   {
