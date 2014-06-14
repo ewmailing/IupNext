@@ -98,6 +98,7 @@ static int iExpanderGetBarSize(Ihandle* ih)
 
     if (ih->data->position == IEXPANDER_TOP)
     {
+      char* title = iupAttribGetStr(ih, "TITLE");
       char* image = iupAttribGetStr(ih, "IMAGE");
       if (image)
       {
@@ -106,7 +107,7 @@ static int iExpanderGetBarSize(Ihandle* ih)
         bar_size = iupMAX(bar_size, image_h);
       }
 
-      if (iupAttribGetStr(ih, "TITLE") || image)
+      if (title || image || ih->data->extra_buttons != 0)
         bar_size += 2 * IEXPAND_BACK_MARGIN;
     }
   }
@@ -331,6 +332,7 @@ static int iExpanderAction_CB(Ihandle* bar)
 
   if (ih->data->position == IEXPANDER_TOP && (title || image || ih->data->extra_buttons!=0))
   {
+    /* left align image/handler+title */
     int txt_offset = IEXPAND_HANDLE_SIZE;
 
     if (image)
@@ -364,6 +366,20 @@ static int iExpanderAction_CB(Ihandle* bar)
 
       txt_offset = iupMAX(txt_offset, img_width);
     }
+    else
+    {
+      int y_offset = 0;
+      if (bar->currentheight > IEXPAND_HANDLE_SIZE + 2 * IEXPAND_BACK_MARGIN)
+        y_offset = (bar->currentheight - IEXPAND_HANDLE_SIZE - 2 * IEXPAND_BACK_MARGIN) / 2;
+
+      if (ih->data->highlight)
+        iExpanderAddHighlight(&r, &g, &b);
+
+      if (ih->data->state == IEXPANDER_CLOSE)
+        iExpanderDrawSmallArrow(dc, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT, y_offset);
+      else
+        iExpanderDrawSmallArrow(dc, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM, y_offset);
+    }
 
     if (title)
     {
@@ -372,25 +388,11 @@ static int iExpanderAction_CB(Ihandle* bar)
       iupStrNextLine(title, &len);  /* get the length of the first line */
       iupdrvFontGetCharSize(ih, NULL, &charheight);
       iupDrawText(dc, title, len, txt_offset + IEXPAND_SPACING, (bar->currentheight - charheight) / 2, r, g, b, IupGetAttribute(ih, "FONT"));
-
-      if (!image)
-      {
-        int y_offset = 0;
-        if (bar->currentheight > IEXPAND_HANDLE_SIZE + 2*IEXPAND_BACK_MARGIN)
-          y_offset = (bar->currentheight - IEXPAND_HANDLE_SIZE - 2 * IEXPAND_BACK_MARGIN) / 2;
-
-        if (ih->data->highlight)
-          iExpanderAddHighlight(&r, &g, &b);
-
-        if (ih->data->state == IEXPANDER_CLOSE)
-          iExpanderDrawSmallArrow(dc, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT, y_offset);
-        else
-          iExpanderDrawSmallArrow(dc, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM, y_offset);
-      }
     }
 
     if (ih->data->extra_buttons != 0)
     {
+      /* right align extra buttons */
       int y = IEXPAND_SPACING + IEXPAND_BACK_MARGIN,
         height = bar->currentheight - 2 * (IEXPAND_SPACING + IEXPAND_BACK_MARGIN);
 
@@ -405,7 +407,7 @@ static int iExpanderAction_CB(Ihandle* bar)
   }
   else
   {
-    /* center align the arrow */
+    /* center align the handler */
     int x, y;
 
     if (ih->data->highlight)

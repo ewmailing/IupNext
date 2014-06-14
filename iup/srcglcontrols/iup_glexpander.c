@@ -95,6 +95,7 @@ static int iGLExpanderGetBarSize(Ihandle* ih)
 
     if (ih->data->position == IEXPANDER_TOP)
     {
+      char* title = iupAttribGetStr(ih, "TITLE");
       char* image = iupAttribGetStr(ih, "IMAGE");
       if (image)
       {
@@ -103,7 +104,7 @@ static int iGLExpanderGetBarSize(Ihandle* ih)
         bar_size = iupMAX(bar_size, image_h);
       }
 
-      if (iupAttribGetStr(ih, "TITLE") || image)
+      if (title || image || ih->data->extra_buttons != 0)
         bar_size += 2 * IEXPAND_BACK_MARGIN;
     }
   }
@@ -591,6 +592,7 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
 
   if (ih->data->position == IEXPANDER_TOP && (title || image || ih->data->extra_buttons != 0))
   {
+    /* left align image/handler+title */
     int txt_offset = IEXPAND_HANDLE_SIZE;
 
     if (image)
@@ -624,36 +626,35 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
 
       txt_offset = iupMAX(txt_offset, img_width);
     }
+    else
+    {
+      int y_offset = 0;
+      if (bar_size > IEXPAND_HANDLE_SIZE + 2 * IEXPAND_BACK_MARGIN)
+        y_offset = (bar_size - IEXPAND_HANDLE_SIZE - 2 * IEXPAND_BACK_MARGIN) / 2;
+
+      if (highlight)
+      {
+        char* hlcolor = iupAttribGetStr(ih, "HIGHCOLOR");
+        if (hlcolor)
+          fgcolor = hlcolor;
+      }
+
+      if (ih->data->state == IEXPANDER_CLOSE)
+        iGLExpanderDrawSmallArrow(ih, fgcolor, active, IEXPANDER_RIGHT, y_offset);
+      else
+        iGLExpanderDrawSmallArrow(ih, fgcolor, active, IEXPANDER_BOTTOM, y_offset);
+    }
 
     if (title)
     {
-      /* left align everything */
       int height;
       iupGLFontGetMultiLineStringSize(ih, title, NULL, &height);
       iupGLDrawText(ih, txt_offset + IEXPAND_SPACING, (bar_size - height) / 2, title, fgcolor, active);
-
-      if (!image)
-      {
-        int y_offset = 0;
-        if (bar_size > IEXPAND_HANDLE_SIZE + 2 * IEXPAND_BACK_MARGIN)
-          y_offset = (bar_size - IEXPAND_HANDLE_SIZE - 2 * IEXPAND_BACK_MARGIN) / 2;
-
-        if (highlight)
-        {
-          char* hlcolor = iupAttribGetStr(ih, "HIGHCOLOR");
-          if (hlcolor)
-            fgcolor = hlcolor;
-        }
-
-        if (ih->data->state == IEXPANDER_CLOSE)
-          iGLExpanderDrawSmallArrow(ih, fgcolor, active, IEXPANDER_RIGHT, y_offset);
-        else
-          iGLExpanderDrawSmallArrow(ih, fgcolor, active, IEXPANDER_BOTTOM, y_offset);
-      }
     }
 
     if (ih->data->extra_buttons != 0)
     {
+      /* right align extra buttons */
       int y = IEXPAND_SPACING + IEXPAND_BACK_MARGIN,
         height = bar_size - 2 * (IEXPAND_SPACING + IEXPAND_BACK_MARGIN);
 
@@ -668,7 +669,7 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
   }
   else
   {
-    /* center align the arrow */
+    /* center align the handler */
     int x = x1, 
         y = y1, 
         width = x2 - x1 + 1,
