@@ -56,6 +56,16 @@ static void iMatrixKeyCheckMarkEnd(Ihandle* ih, int c, int mark_key)
 
 int iupMatrixProcessKeyPress(Ihandle* ih, int c)
 {
+  switch (iup_XkeyBase(c))
+  {
+  case K_LSHIFT:
+  case K_RSHIFT:
+  case K_LCTRL:
+  case K_RCTRL:
+    /* won't scroll for shift+ctrl keys */
+    return IUP_DEFAULT;
+  }
+
   /* If the focus is not visible, a scroll is done for that the focus to be visible */
   if (!iupMatrixAuxIsCellStartVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
     iupMatrixScrollToVisible(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
