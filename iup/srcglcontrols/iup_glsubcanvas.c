@@ -117,7 +117,10 @@ void iupGLSubCanvasRedrawFront(Ihandle* ih)
 int iupGLSubCanvasRedraw(Ihandle* ih)
 {
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  IupSetAttribute(gl_parent, "REDRAW", NULL);
+  if (iupAttribGetInt(ih, "REDRAWALL"))
+    IupSetAttribute(gl_parent, "REDRAW", NULL);
+  else
+    iupGLSubCanvasRedrawFront(ih);
   return IUP_DEFAULT;  /* return IUP_DEFAULT so it can be used as a callback */
 }
 
@@ -330,6 +333,7 @@ Iclass* iupGLSubCanvasNewClass(void)
 
   iupClassRegisterAttribute(ic, "UNDERLINE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDRAWFRONT", NULL, iGLSubCanvasSetRedrawFrontAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REDRAWALL", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "HIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRESSED", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

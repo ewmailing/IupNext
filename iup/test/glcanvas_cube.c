@@ -488,7 +488,7 @@ void GLCanvasCubeTest(void)
   IupSetAttributeHandle(gexp1, "IMAGEEXTRA3", image_close);
   IupSetAttributeHandle(gexp1, "IMAGEEXTRAPRESS3", image_open);
   IupSetAttributeHandle(gexp1, "IMAGEEXTRAHIGHLIGHT3", image_high);
-
+  //IupSetAttribute(gexp1, "REDRAWALL", "No");
 
   IupSetCallback(canvas, "ACTION", action);
   IupSetCallback(canvas, "BUTTON_CB", (Icallback)button_cb);
