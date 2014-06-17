@@ -30,7 +30,7 @@ void iupGLSubCanvasSaveState(Ihandle* gl_parent);
 void iupGLSubCanvasRestoreState(Ihandle* gl_parent);
 void iupGLSubCanvasRedrawFront(Ihandle* ih);
 void iupGLSubCanvasUpdateSizeFromFont(Ihandle* ih);
-int iupGLSubCanvasRestoreRedraw(Ihandle* ih);
+int  iupGLSubCanvasRedraw(Ihandle* ih);
 
 void iupGLImageGetInfo(const char* name, int *w, int *h, int *bpp);
 unsigned char* iupGLImageGetData(Ihandle* ih, int active);

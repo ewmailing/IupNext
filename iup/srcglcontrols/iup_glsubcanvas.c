@@ -114,12 +114,11 @@ void iupGLSubCanvasRedrawFront(Ihandle* ih)
   }
 }
 
-int iupGLSubCanvasRestoreRedraw(Ihandle* ih)
+int iupGLSubCanvasRedraw(Ihandle* ih)
 {
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  iupGLSubCanvasRestoreState(gl_parent);
   IupSetAttribute(gl_parent, "REDRAW", NULL);
-  return IUP_DEFAULT;
+  return IUP_DEFAULT;  /* return IUP_DEFAULT so it can be used as a callback */
 }
 
 static char* iGLSubCanvasGetCharSizeAttrib(Ihandle* ih)

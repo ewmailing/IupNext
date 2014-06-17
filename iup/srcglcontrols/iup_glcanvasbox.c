@@ -27,7 +27,8 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y)
   Ihandle* child = ih->firstchild;
   while (child)
   {
-    if (x > child->x && x < child->x + child->currentwidth &&
+    if (iupAttribGetInt(child, "VISIBLE") &&
+        x > child->x && x < child->x + child->currentwidth &&
         y > child->y && y < child->y + child->currentheight)
     {
       ih = iGLCanvasBoxPickChild(child, x, y);
@@ -118,9 +119,6 @@ static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, in
     cb = (IFniiiis)IupGetCallback(child, "GL_BUTTON_CB");
     if (cb)
     {
-      IupGLMakeCurrent(ih);
-      iupGLSubCanvasSaveState(ih);
-      iupGLSubCanvasSetTransform(child, ih);
       ret = cb(child, button, pressed, x - child->x, y - child->y, status);
       if (ret != IUP_CONTINUE)
         return IUP_DEFAULT;
@@ -131,10 +129,7 @@ static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, in
 
   cb = (IFniiiis)IupGetCallback(ih, "APP_BUTTON_CB");
   if (cb)
-  {
-    IupGLMakeCurrent(ih);
     return cb(ih, button, pressed, x, y, status);
-  }
 
   return IUP_DEFAULT;
 }
@@ -161,12 +156,7 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child, int x, int y)
 
       cb = (IFn)IupGetCallback(last_child, "GL_LEAVEWINDOW_CB");
       if (cb)
-      {
-        IupGLMakeCurrent(ih);
-        iupGLSubCanvasSaveState(ih);
-        iupGLSubCanvasSetTransform(last_child, ih);
         cb(last_child);
-      }
     }
 
     iupAttribSet(ih, "_IUP_GLBOX_LAST_ENTER", NULL);
@@ -190,12 +180,7 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child, int x, int y)
 
       cb = (IFnii)IupGetCallback(child, "GL_ENTERWINDOW_CB");
       if (cb)
-      {
-        IupGLMakeCurrent(ih);
-        iupGLSubCanvasSaveState(ih);
-        iupGLSubCanvasSetTransform(child, ih);
         cb(child, x, y);
-      }
     }
 
     iupAttribSet(ih, "_IUP_GLBOX_LAST_ENTER", (char*)child);
@@ -224,9 +209,6 @@ static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
       cb = (IFniis)IupGetCallback(child, "GL_MOTION_CB");
       if (cb)
       {
-        IupGLMakeCurrent(ih);
-        iupGLSubCanvasSaveState(ih);
-        iupGLSubCanvasSetTransform(child, ih);
         ret = cb(child, x - child->x, y - child->y, status);
         if (ret != IUP_CONTINUE)
           return IUP_DEFAULT;
@@ -236,10 +218,7 @@ static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
 
   cb = (IFniis)IupGetCallback(ih, "APP_MOTION_CB");
   if (cb)
-  {
-    IupGLMakeCurrent(ih);
     return cb(ih, x, y, status);
-  }
 
   return IUP_DEFAULT;
 }
@@ -255,9 +234,6 @@ static int iGLCanvasBoxWHEEL_CB(Ihandle* ih, float delta, int x, int y, char *st
     cb = (IFnfiis)IupGetCallback(child, "GL_WHEEL_CB");
     if (cb && iupAttribGetInt(child, "ACTIVE"))
     {
-      IupGLMakeCurrent(ih);
-      iupGLSubCanvasSaveState(ih);
-      iupGLSubCanvasSetTransform(child, ih);
       ret = cb(child, delta, x - child->x, y - child->y, status);
       if (ret != IUP_CONTINUE)
         return IUP_DEFAULT;
@@ -266,10 +242,7 @@ static int iGLCanvasBoxWHEEL_CB(Ihandle* ih, float delta, int x, int y, char *st
 
   cb = (IFnfiis)IupGetCallback(ih, "APP_WHEEL_CB");
   if (cb)
-  {
-    IupGLMakeCurrent(ih);
     return cb(ih, delta, x, y, status);
-  }
 
   return IUP_DEFAULT;
 }

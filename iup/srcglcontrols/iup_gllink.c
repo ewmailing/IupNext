@@ -33,9 +33,6 @@ static int iGLLinkACTION(Ihandle* ih)
 
 static int iGLLinkButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
-  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  iupGLSubCanvasRestoreState(gl_parent);
-
   if (button == IUP_BUTTON1 && !pressed)
   {
     IFns cb = (IFns)IupGetCallback(ih, "ACTION");
@@ -61,7 +58,6 @@ static int iGLLinkButton_CB(Ihandle* ih, int button, int pressed, int x, int y, 
 static int iGLLinkEnterWindow_CB(Ihandle* ih)
 {
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  iupGLSubCanvasRestoreState(gl_parent);
   IupSetAttribute(gl_parent, "CURSOR", "HAND");
   return IUP_DEFAULT;
 }
@@ -69,7 +65,6 @@ static int iGLLinkEnterWindow_CB(Ihandle* ih)
 static int iGLLinkLeaveWindow_CB(Ihandle* ih)
 {
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  iupGLSubCanvasRestoreState(gl_parent);
   IupSetAttribute(gl_parent, "CURSOR", "ARROW");
   return IUP_DEFAULT;
 }

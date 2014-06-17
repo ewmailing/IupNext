@@ -74,9 +74,6 @@ static int iGLFrameACTION(Ihandle* ih)
 
 static int iGLFrameBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
-  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  iupGLSubCanvasRestoreState(gl_parent);
-
   /* Only called when MOVEABLE=Yes */
 
   if (button == IUP_BUTTON1 && pressed)
@@ -95,9 +92,6 @@ static int iGLFrameMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
   /* Only called when MOVEABLE=Yes */
 
-  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  iupGLSubCanvasRestoreState(gl_parent);
-
   if (pressed)
   {
     int start_x = iupAttribGetInt(ih, "_IUP_START_X");
@@ -108,6 +102,7 @@ static int iGLFrameMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
     if ((x != start_x) || (y != start_y))
     {
+      Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
       IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
 
       /* clear canvas box aligment */
@@ -116,7 +111,7 @@ static int iGLFrameMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
       iupBaseSetPosition(ih, ih->x + (x - start_x), ih->y + (y - start_y));
 
-      IupSetAttribute(gl_parent, "REDRAW", NULL);
+      IupSetAttribute(gl_parent, "REDRAW", NULL);  /* must redraw everything */
 
       if (cb)
         cb(ih, ih->x, ih->y);

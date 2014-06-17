@@ -239,12 +239,7 @@ static int iGLValBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, c
       }
     }
 
-    iupGLSubCanvasRestoreRedraw(ih);
-  }
-  else
-  {
-    Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-    iupGLSubCanvasRestoreState(gl_parent);
+    iupGLSubCanvasRedraw(ih);
   }
 
   (void)status;
@@ -255,9 +250,6 @@ static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
 {
   int redraw = 0;
   int pressed = iupAttribGetInt(ih, "PRESSED");
-
-  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  iupGLSubCanvasRestoreState(gl_parent);
 
   /* special higlight processing for handler area */
   if (iGLValIsInsideHandler(ih, x, y))
@@ -284,7 +276,7 @@ static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
     if (iGLValMoveHandler(ih, x - start_x, y - start_y))
     {
-      IupSetAttribute(gl_parent, "REDRAW", NULL);
+      iupGLSubCanvasRedraw(ih);
       redraw = 0;
 
       iupBaseCallValueChangedCb(ih);
@@ -295,7 +287,7 @@ static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
   }
 
   if (redraw)
-    IupSetAttribute(gl_parent, "REDRAW", NULL);
+    iupGLSubCanvasRedraw(ih);
 
   (void)status;
   return IUP_DEFAULT;
@@ -309,7 +301,7 @@ static int iGLValENTERWINDOW_CB(Ihandle* ih, int x, int y)
   else
     iupAttribSet(ih, "HIGHLIGHT", NULL);
 
-  return iupGLSubCanvasRestoreRedraw(ih);
+  return iupGLSubCanvasRedraw(ih);
 }
 
 static int iGLValSetValueAttrib(Ihandle* ih, const char* value)
@@ -395,7 +387,7 @@ static int iGLValCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "GL_ACTION", (Icallback)iGLValACTION_CB);
   IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLValBUTTON_CB);
   IupSetCallback(ih, "GL_MOTION_CB", (Icallback)iGLValMOTION_CB);
-  IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRestoreRedraw);
+  IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRedraw);
   IupSetCallback(ih, "GL_ENTERWINDOW_CB", (Icallback)iGLValENTERWINDOW_CB);
 
   (void)params;

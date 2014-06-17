@@ -72,7 +72,7 @@ static int iGLButtonBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y
 {
   if (button == IUP_BUTTON1)
   {
-    iupGLSubCanvasRestoreRedraw(ih);
+    iupGLSubCanvasRedraw(ih);
 
     if (!pressed)
     {
@@ -85,11 +85,6 @@ static int iGLButtonBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y
       }
     }
   }
-  else
-  {
-    Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-    iupGLSubCanvasRestoreState(gl_parent);
-  }
 
   (void)x;
   (void)y;
@@ -101,8 +96,8 @@ static int iGLButtonCreateMethod(Ihandle* ih, void** params)
 {
   IupSetCallback(ih, "GL_ACTION", iGLButtonACTION);
   IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLButtonBUTTON_CB);
-  IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRestoreRedraw);
-  IupSetCallback(ih, "GL_ENTERWINDOW_CB", iupGLSubCanvasRestoreRedraw);
+  IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRedraw);
+  IupSetCallback(ih, "GL_ENTERWINDOW_CB", iupGLSubCanvasRedraw);
 
   (void)params; /* label create already parsed title */
   return IUP_NOERROR;

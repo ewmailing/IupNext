@@ -74,7 +74,7 @@ static int iGLToggleBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y
       }
     }
 
-    iupGLSubCanvasRestoreRedraw(ih);
+    iupGLSubCanvasRedraw(ih);
 
     if (!pressed)
     {
@@ -84,11 +84,6 @@ static int iGLToggleBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y
       if (!radio || ih != last_tg)
         iGLToggleNotify(ih, selected);
     }
-  }
-  else
-  {
-    Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-    iupGLSubCanvasRestoreState(gl_parent);
   }
 
   (void)x;
