@@ -262,7 +262,7 @@ Ihandle* createDialog (void)
     NULL);
 
   _cnv_1 = IupCanvas( NULL);
-  IupSetAttribute(_cnv_1,"BGCOLOR","128 255 0");
+  //IupSetAttribute(_cnv_1,"BGCOLOR","128 255 0");
 
   _vbox_1 = IupVbox(
 //    IupTabs(_hbox_1, NULL),

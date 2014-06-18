@@ -1284,59 +1284,76 @@ wb_usr.tree =
         },
         {
           name= {en= "Additional"},
-          link= "iupcontrols.html",
 
           folder=
           {
             {
-              name= {nl= "IupCells"},
-              link= "ctrl/iupcells.html"
-            },
-            {
-              name= {nl= "IupColorbar"},
-              link= "ctrl/iupcolorbar.html"
-            },
-            {
-              name= {nl= "IupColorBrowser"},
-              link= "ctrl/iupcolorbrowser.html"
-            },
-            {
-              name= {nl= "IupDial"},
-              link= "ctrl/iupdial.html"
-            },
-            {
-              name= {nl= "IupGauge"},
-              link= "ctrl/iupgauge.html"
-            },
-            {
-              name= {nl= "IupMatrix"},
-              link= "ctrl/iupmatrix.html",
-
+              name= {en= "IupControls"},
+              link= "iupcontrols.html",
+              
               folder=
               {
                 {
-                  name= {nl= "Attributes"},
-                  link= "ctrl/iupmatrix_attrib.html"
+                  name= {nl= "IupCells"},
+                  link= "ctrl/iupcells.html"
                 },
                 {
-                  name= {nl= "Callbacks"},
-                  link= "ctrl/iupmatrix_cb.html"
-                }
-              }
-            },
-            { link= "", name= {en= "" } },
-            {
-              name= {nl= "IupMatrixList"},
-              link= "ctrl/iupmatrixlist.html",
+                  name= {nl= "IupColorbar"},
+                  link= "ctrl/iupcolorbar.html"
+                },
+                {
+                  name= {nl= "IupColorBrowser"},
+                  link= "ctrl/iupcolorbrowser.html"
+                },
+                {
+                  name= {nl= "IupDial"},
+                  link= "ctrl/iupdial.html"
+                },
+                {
+                  name= {nl= "IupGauge"},
+                  link= "ctrl/iupgauge.html"
+                },
+                {
+                  name= {nl= "IupMatrix"},
+                  link= "ctrl/iupmatrix.html",
+
+                  folder=
+                  {
+                    {
+                      name= {nl= "Attributes"},
+                      link= "ctrl/iupmatrix_attrib.html"
+                    },
+                    {
+                      name= {nl= "Callbacks"},
+                      link= "ctrl/iupmatrix_cb.html"
+                    }
+                  }
+                },
+                {
+                  name= {nl= "IupMatrixList"},
+                  link= "ctrl/iupmatrixlist.html",
+                },
+              },
             },
             {
               name= {nl= "IupMatrixEx"},
               link= "ctrl/iupmatrixex.html",
             },
-            { link= "", name= {en= "" } },
             {
               name= {nl= "IupGLCanvas"},
               link= "ctrl/iupglcanvas.html"
+            },
+            {
+              name= {en= "IupGLControls"},
+              link= "iupglcontrols.html",
+              
+              folder=
+              {
+                {
+                  name= {nl= "IupGLLabel"},
+                  link= "gl/iupgllabel.html"
+                },
+              },
             },
             {
               name= {nl= "IupPPlot"},
