@@ -35,15 +35,12 @@ static int btn_clip_cb (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int iupKeyNameToCode(const char *name);
-
 static int btn_key_cb (Ihandle* ih)
 {
   Ihandle *mltline = IupGetDialogChild(ih, "mltline");
   Ihandle *text = IupGetDialogChild(ih, "text");
   IupSetFocus(mltline);
   IupFlush();
-  IupSetfAttribute(NULL, "KEY", "%d", iupKeyNameToCode(IupGetAttribute(text, "VALUE")));
   return IUP_DEFAULT;
 }
 

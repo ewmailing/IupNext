@@ -111,7 +111,7 @@ static int unmap_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-void CanvasScrollbarTest2(void)
+void CanvasScrollbarTest(void)
 {
   Ihandle *dlg, *cnv;
 
