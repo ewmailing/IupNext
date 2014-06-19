@@ -82,8 +82,8 @@ static unsigned char* iGLImageCreateImage(Ihandle* ih, int make_inactive)
         if (make_inactive)
         {
           iupGLColorMakeInactive(&line_gldata[offset + 0],
-                            &line_gldata[offset + 1],
-                            &line_gldata[offset + 2]);
+                                 &line_gldata[offset + 1],
+                                 &line_gldata[offset + 2]);
         }
       }
     }
@@ -108,8 +108,8 @@ static unsigned char* iGLImageCreateImage(Ihandle* ih, int make_inactive)
           int offset = x*depth;
 
           iupGLColorMakeInactive(&line_gldata[offset + 0],
-                            &line_gldata[offset + 1],
-                            &line_gldata[offset + 2]);
+                                 &line_gldata[offset + 1],
+                                 &line_gldata[offset + 2]);
         }
       }
     }
