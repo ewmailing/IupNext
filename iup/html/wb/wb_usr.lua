@@ -1350,6 +1350,15 @@ wb_usr.tree =
               folder=
               {
                 {
+                  name= {nl= "IupGLCanvasBox"},
+                  link= "gl/iupglcanvasbox.html"
+                },
+                {
+                  name= {nl= "IupGLSubCanvas"},
+                  link= "gl/iupglsubcanvas.html"
+                },
+                { link= "", name= {en= "" } },
+                {
                   name= {nl= "IupGLLabel"},
                   link= "gl/iupgllabel.html"
                 },
