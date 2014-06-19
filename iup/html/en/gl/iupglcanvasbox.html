@@ -122,6 +122,8 @@ callbacks. The application callbacks will still be called and they can be
 retrieved by using the prefix &quot;APP_&quot; on the callback name. If for some reason 
 the application set one of these callbacks after being mapped, the box internal 
 callback can be retrieved by using the prefix &quot;GLBOX_&quot; on the callback name. </p>
+<p>Keyboard focus is NOT processed for 
+  <strong>IupGLCanvasBox</strong> children.</p>
 <p>The <strong>IupGLCanvas</strong> SWAPBUFFERS_CB callback is used internally 
 to enable a correct display for the box children. This means that when the 
 application calls <strong>IupGLSwapBuffers</strong>, then children will be drawn 
