@@ -13,12 +13,13 @@
 </head>
 <body>
 
-<h2>POSITION<span class="style1"> (read-only) (non inheritable)</span></h2>
+<h2>POSITION<span class="style1"> (non inheritable)</span></h2>
 <p>The position of the element relative to the origin of the <strong>Client</strong> area 
 of the native parent. If you add the CLIENTOFFSET attribute of the native 
 parent, you can obtain the coordinates relative to the <strong>Window</strong> 
 area of the native parent. See the <a href="../layout_guide.html">Layout Guide</a>.</p>
-<p>It is normally read-only, but if FLOATING=YES then it can be set.</p>
+<p>It will be changed during the layout computation, except when FLOATING=YES or 
+when used inside a concrete layout container.</p>
 <h3>Value</h3>
 <p>&quot;x,y&quot;,
   where <i>x</i> and <i>y</i> are integer values corresponding to the horizontal and vertical 

@@ -142,6 +142,15 @@ and &quot;HDC&quot; in Win32.</p>
 <p><a href="../call/iup_resize_cb.html">RESIZE_CB</a>: 
   By default the resize callback sets:</p>
 <pre>glViewport(0,0,width,height);</pre>
+
+<p><strong>SWAPBUFFERS_CB</strong><tt>:</tt> action generated when <strong>
+IupGLSwapBuffers</strong> <span>is called. (since 3.11)</span></p>
+<pre>int function(Ihandle* <b>ih</b>);  [in C]<strong>
+elem</strong>:swapbuffers_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
 <h3>Auxiliary Functions</h3>
 <p>These are auxiliary functions based on the WGL and XGL extensions. Check the 
 respective documentations for more information. ERROR attribute will be set to 
@@ -169,15 +178,6 @@ documentation of the wglUseFontBitmaps and glXUseXFont functions. (since 3.0)</p
 iup.<strong>GLWait</strong>(<strong>gl</strong>: number) [in Lua]</pre>
 <p>If gl is non zero it will call glFinish or glXWaitGL, else will call GdiFlush 
 or glXWaitX. (since 3.0)</p>
-<h3><a name="Callbacks0">Callbacks</a></h3>
-
-<p><strong>SWAPBUFFERS_CB</strong><tt>:</tt> action generated when <strong>
-IupGLSwapBuffers</strong> <span>is called. (since 3.11)</span></p>
-<pre>int function(Ihandle* <b>ih</b>);  [in C]<strong>
-elem</strong>:swapbuffers_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>:
-  identifier of the element that activated the 
-  event.</p>
 
 <h3><a name="Notes">Notes</a></h3>
 <p>In Windows XP, if the COMPOSITE attribute is enabled then the hardware 
