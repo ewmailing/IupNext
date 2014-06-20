@@ -97,7 +97,7 @@ static int iGLToggleSetValueAttrib(Ihandle* ih, const char* value)
   Ihandle* radio = iupRadioFindToggleParent(ih);
   if (radio)
   {
-    if (iupStrBoolean(value))
+    if (iupStrEqualNoCase(value, "TOGGLE") || iupStrBoolean(value))
     {
       Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUP_GLTOGGLE_LASTRADIO");
       if (iupObjectCheck(last_tg) && last_tg != ih)
@@ -106,7 +106,20 @@ static int iGLToggleSetValueAttrib(Ihandle* ih, const char* value)
       iupAttribSet(radio, "_IUP_GLTOGGLE_LASTRADIO", (char*)ih);
     }
     else
-      return 0;  /* does nothing */
+      return 0;
+  }
+  else
+  {
+    if (iupStrEqualNoCase(value, "TOGGLE"))
+    {
+      int oldcheck = iupAttribGetBoolean(ih, "VALUE");
+      if (oldcheck)
+        iupAttribSet(ih, "VALUE", "OFF");
+      else
+        iupAttribSet(ih, "VALUE", "ON");
+
+      return 0;
+    }
   }
 
   return 1;
