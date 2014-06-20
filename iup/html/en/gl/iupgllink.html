@@ -2,16 +2,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
-<title>IupLink</title>
+<title>IupGLLink</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
 <style type="text/css">
 .style1 {
 	font-size: large;
-}
-.style2 {
-	border-style: solid;
-	border-width: 1px;
 }
 </style>
 </head>
@@ -27,15 +23,16 @@
   </ul>
 </div>
 
-<h2>IupLink<span class="style1"> (since 3.8)</span></h2>
-<p>Creates a label that displays an underlined clickable text. It inherits from
-<a href="iuplabel.html">IupLabel</a>. </p>
+<h2>IupGLLink<span class="style1"> (since 3.11)</span></h2>
+<p>Creates an embedded OpenGL label that displays an underlined clickable text. It inherits from <a href="iupgllabel.html">IupGLLabel</a>. 
+  It exists only inside an
+<a href="iupglcanvasbox.html">IupGLCanvasBox</a>.</p>
 
 <h3><a name="Creation">Creation</a></h3>
 
-<pre>Ihandle* IupLink(const char *<strong>url</strong>, const <strong>char</strong> * title); [in C]
-iup.link{[url = <strong>url</strong>: string], [title = <strong>title</strong>: string]} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
-link(<strong>url</strong>, <strong>title</strong>) [in LED]</pre>
+<pre>Ihandle* IupGLLink(const char *<strong>url</strong>, const <strong>char</strong> * title); [in C]
+iup.gllink{[url = <strong>url</strong>: string], [title = <strong>title</strong>: string]} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+gllink(<strong>url</strong>, <strong>title</strong>) [in LED]</pre>
 <p><strong>url</strong>: the destination address of the link. Can be any text. 
 If <strong>IupHelp</strong> is used should be a valid URL. It can be NULL. It 
 will set the URL attribute.<br><b>
@@ -48,9 +45,17 @@ will set the URL attribute.<br><b>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p>Inherits all attributes and callbacks of the 
-<a href="iuplabel.html">IupLabel</a>, 
-but redefines a few attributes.</p>
+
+<p>The 
+  <strong>IupGLButton</strong> element handle all attributes defined for the
+<a href="iupgllabel.html">IupGLLabel</a> control, and consequently for the
+<a href="iupglsubcanvas.html">IupGLSubCanvas</a> control too.</p>
+
+
+<blockquote>
+  <hr>
+</blockquote>
+
   <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: the 
 	global attribute LINKFGCOLOR.</p>
 
@@ -60,6 +65,14 @@ default value is "YES".</p>
 
 
 <h3><a name="Callbacks">Callbacks</a></h3>
+
+
+<p>The 
+  <strong>IupGLLink</strong> element handle all callbacks defined for the
+<strong>IupGLSubCanvas</strong> control.</p>
+<blockquote>
+  <hr>
+</blockquote>
 
 
 <p><a href="../call/iup_action.html">ACTION</a>:
@@ -84,22 +97,10 @@ IUP_DEFAULT or it is not defined, the <strong>IupHelp</strong> function will be 
 <p>When the cursor is over the text, it is changed to the HAND cursor.</p>
 <p>If the callback is not defined the <strong>IupHelp</strong> function is 
 called with the given URL.</p>
-<p>The <strong>IupLabel</strong> callbacks BUTTON_CB, ENTERWINDOW_CB and 
-LEAVEWINDOW_CB are used internally.</p>
-
-
-<h3><a name="Examples">Examples</a></h3>
-<p><a href="../../examples/">Browse for Example Files</a></p>
-
-<div align="center">
-  <center>
-  <img src="images/iuplink.png" class="style2">
-  </center>
-</div>
 
 <h3><a name="SeeAlso">See Also</a></h3>
 
-<p><a href="iuplabel.html">IupLabel</a>, <a href="../func/iuphelp.html">IupHelp</a>.</p>
+<p><a href="iupgllabel.html">IupGLLabel</a>, <a href="../func/iuphelp.html">IupHelp</a>.</p>
 
 </body>
 

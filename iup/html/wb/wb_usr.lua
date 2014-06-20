@@ -1359,16 +1359,32 @@ wb_usr.tree =
                 },
                 { link= "", name= {en= "" } },
                 {
-                  name= {nl= "IupGLLabel"},
-                  link= "gl/iupgllabel.html"
-                },
-                {
                   name= {nl= "IupGLButton"},
                   link= "gl/iupglbutton.html"
                 },
                 {
+                  name= {nl= "IupGLLabel"},
+                  link= "gl/iupgllabel.html"
+                },
+                {
+                  name= {nl= "IupGLLink"},
+                  link= "gl/iupgllink.html"
+                },
+                {
+                  name= {nl= "IupGLProgressBar"},
+                  link= "gl/iupglprogressbar.html"
+                },
+                {
+                  name= {nl= "IupGLSeparator"},
+                  link= "gl/iupglseparator.html"
+                },
+                {
                   name= {nl= "IupGLToggle"},
                   link= "gl/iupgltoggle.html"
+                },
+                {
+                  name= {nl= "IupGLVal"},
+                  link= "gl/iupglval.html"
                 },
               },
             },
