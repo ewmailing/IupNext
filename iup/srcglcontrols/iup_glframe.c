@@ -28,7 +28,6 @@ static int iGLFrameACTION(Ihandle* ih)
   float bwidth = iupAttribGetFloat(ih, "FRAMEWIDTH");
   int border_width = (int)ceil(bwidth);
 
-
   if (image || title)
   {
     char* fgcolor = iupAttribGetStr(ih, "TITLECOLOR");
