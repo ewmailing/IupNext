@@ -4,6 +4,11 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>IupGLLabel</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	font-size: large;
+}
+</style>
 </head>
 <body>
 <div id="navigation">
@@ -17,7 +22,7 @@
   </ul>
 </div>
 
-<h2>IupGLLabel (since 3.11)</h2>
+<h2>IupGLLabel <span class="style1">(since 3.11)</span></h2>
 
   <p>
   Creates a label interface element, which displays a text and/or an image. It 
@@ -61,7 +66,8 @@ combined to &quot;ATOP&quot;, &quot;ACENTER&quot; and &quot;ABOTTOM&quot;. Defau
 values are also accepted, like &quot;ARIGHT&quot; or &quot;:ATOP&quot;, the other value will be used 
 from the current alignment. </p>
 
-  <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: &quot;0 0 
+  <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Can have an 
+  alpha component. Default: &quot;0 0 
   0&quot;.</p>
 
 
@@ -105,8 +111,9 @@ image and the title. Default: &quot;2&quot;.</p>
 
 
 <p>The <strong>IupGLLabel</strong> can contain text and image simultaneously. 
-The natural size will be a combination of the size of the image and the title, 
-if any. </p>
+</p>
+<p>The natural size will be a combination of the size of the image and the 
+title, if any, plus PADDING and SPACING (if both image and title are present).</p>
 
 
 <h3><a name="SeeAlso">See Also</a></h3>
