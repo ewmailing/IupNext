@@ -54,14 +54,16 @@ values are also accepted, like &quot;ARIGHT&quot; or &quot;:ATOP&quot;, the othe
 from the current alignment. </p>
 
   <p>
-  <strong>BACKGROUND</strong> (<font SIZE="3">non inheritable</font>): ignored, transparent in all 
-systems. Will use the background color of the native parent. Except if TITLE is 
-not defined and BGCOLOR is defined before map (can be changed later), then the frame will have a color 
-background.</p>
+  <strong>BACKGROUND</strong> (<font SIZE="3">non inheritable</font>): color 
+  used as background when TITLE and IMAGE are 
+not defined. Can have an alpha component. Default: NULL.</p>
 <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable</font>):
   The default value is &quot;YES&quot;.</p>
-<p><strong>FRAMECOLOR</strong> (<font SIZE="3">non inheritable</font>):&nbsp; </p>
-<p><strong>FRAMEWIDTH</strong> (<font SIZE="3">non inheritable</font>):&nbsp; </p>
+<p><strong>FRAMECOLOR</strong> (<font SIZE="3">non inheritable</font>): color 
+used to draw the frame border. Can have an alpha component. Default: &quot;50 150 
+255&quot;.</p>
+<p><strong>FRAMEWIDTH</strong> (<font SIZE="3">non inheritable</font>): line 
+width of the frame border. Default: 1.</p>
 
 
   <p><strong>IMAGE</strong> (<font SIZE="3">non inheritable</font>):
@@ -84,7 +86,9 @@ name of the element in pressed state. </p>
 <p><strong>IMAGEPOSITION </strong>(<font size="3">non inheritable</font>): 
 Position of the image relative to the text when both are defined. Can be: LEFT, 
 RIGHT, TOP, BOTTOM. Default: LEFT.</p>
-<p><strong>MOVEABLE</strong> (<font SIZE="3">non inheritable</font>): </p>
+<p><strong>MOVEABLE</strong> (<font SIZE="3">non inheritable</font>): enable the 
+frame to be interactevely moved when it is a direct child of the <strong>
+IupGLCanvasBox</strong>. Default: NO.</p>
 
   
 <p><b>PADDING</b> (<font SIZE="3">non inheritable</font>): internal margin for 
@@ -97,10 +101,14 @@ image and the title. Default: &quot;2&quot;.</p>
   
   <p><a href="../attrib/iup_title.html">TITLE</a> (<font SIZE="3">non inheritable</font>): 
   Text the user will see at the top of the frame.&nbsp; </p>
-<p><strong>TITLEBOX</strong> (<font SIZE="3">non inheritable</font>)</p>
+<p><strong>TITLEBOX</strong> (<font SIZE="3">non inheritable</font>): enable a 
+different visual style for the frame. Instead of the traditional round frame 
+that starts and ends at the title area, it will draw a filled box for the title 
+area and a regular rectangle around the child. Default: NO.</p>
 <p><strong>TITLECOLOR</strong> (<font SIZE="3">non inheritable</font>): Text 
-title color. </p>
-<p><strong>TITLEOFFSET</strong> (<font SIZE="3">non inheritable</font>):&nbsp; </p>
+title color. Can have an alpha component. Default: &quot;0 0 0&quot;.</p>
+<p><strong>TITLEOFFSET</strong> (<font SIZE="3">non inheritable</font>): 
+horizontal offset from the left border to start the title area. Default: 5.</p>
   <blockquote>
   <hr>
 </blockquote>
