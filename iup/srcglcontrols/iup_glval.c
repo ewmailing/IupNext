@@ -114,7 +114,6 @@ static int iGLValACTION_CB(Ihandle* ih)
 
     iupGLDrawImage(ih, x1 + x, y1 + y, image, active);
   }
-
   else
   {
     int pressed = iupAttribGetInt(ih, "PRESSED");
