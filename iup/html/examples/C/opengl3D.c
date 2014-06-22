@@ -1,10 +1,9 @@
-#define _CRT_SECURE_NO_WARNINGS
 /**
  *     @file IUP3DGL.c Simple exemple of use of 3D OpenGL and IUP.
  * 
  *  Creates a dialog with one canvas and draws a rotating cube in it.
  *  
- *  Autheor:  Marcelo Gattass, Nov09,2009. 
+ *  Author:  Marcelo Gattass, Nov09,2009. 
  *
  */
 /*- Include lib interfaces: ANSI C, IUP and OpenGL ------*/
@@ -19,7 +18,7 @@
 
 #include <gl/gl.h>     /* OpenGL functions */
 #include <gl/glu.h>    /* OpenGL utilitarian functions */
-#include "glut.h"
+#include <glut.h>
 
 /*- Program context: -------------------------------------------------*/
 Ihandle *canvas;                    /* canvas handle */

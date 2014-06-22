@@ -4,7 +4,7 @@ Draws a frame around a button. Note that "FGCOLOR" is added to the frame but it 
 /* IupFrame example */
 #include <stdlib.h>
 #include <stdio.h>
-#include "iup.h"
+#include <iup.h>
 
 int main(int argc, char **argv)
 {

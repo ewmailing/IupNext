@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "iup.h"
-#include "cd.h"
-#include "cdiup.h"
-#include "wd.h"
+#include <iup.h>
+#include <cd.h>
+#include <cdiup.h>
+#include <wd.h>
 
 
 /* World:

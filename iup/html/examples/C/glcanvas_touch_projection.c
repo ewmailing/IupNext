@@ -12,19 +12,19 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "iup.h"          
-#include "iupgl.h"
-#include "iupim.h"
+#include <iup.h>          
+#include <iupgl.h>
+#include <iupim.h>
 
 #ifdef WIN32
 #include <windows.h>
 #endif
-#include "GL/gl.h" 
-#include "GL/glu.h"
+#include <GL/gl.h> 
+#include <GL/glu.h>
 
 #define USE_TUIO
 #ifdef USE_TUIO
-#include "iuptuio.h"
+#include <iuptuio.h>
 #endif
 
 double window = 50.0;

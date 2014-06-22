@@ -4,7 +4,7 @@ Creates a IupText that shows asterisks instead of characters (password-like).*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "iup.h"
+#include <iup.h>
 
 Ihandle *text, *dlg, *pwd;
 static char password[100];

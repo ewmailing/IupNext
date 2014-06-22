@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "iup.h"
-#include "iupcontrols.h"
+#include <iup.h>
+#include <iupcontrols.h>
 
 float increment = 0.01f;
 Ihandle *progressbar1;

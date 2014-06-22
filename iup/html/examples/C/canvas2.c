@@ -6,9 +6,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "iup.h"
-#include "cd.h"
-#include "cdiup.h"
+#include <iup.h>
+#include <cd.h>
+#include <cdiup.h>
 
 unsigned char image[640][400];
 

@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "iup.h"
-#include "cd.h"
-#include "iupcontrols.h"
+#include <iup.h>
+#include <cd.h>
+#include <iupcontrols.h>
 
 static int nlines_cb(Ihandle* h) 
 {

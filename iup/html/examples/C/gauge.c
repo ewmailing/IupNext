@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "iup.h"
-#include "iupcontrols.h"
+#include <iup.h>
+#include <iupcontrols.h>
 
 double speed = 0.00001;
 Ihandle *gauge = NULL;

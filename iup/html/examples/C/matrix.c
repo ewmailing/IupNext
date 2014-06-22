@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "iup.h"
-#include "iupcontrols.h"
-#include "cd.h"
+#include <iup.h>
+#include <iupcontrols.h>
+#include <cd.h>
 
 Ihandle *create_mat(void)
 {

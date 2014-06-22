@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "iup.h"
-#include "iupcontrols.h"
+#include <iup.h>
+#include <iupcontrols.h>
 
 
 int resize_cb(Ihandle *ih, int w, int h)

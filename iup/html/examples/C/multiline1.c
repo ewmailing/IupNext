@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "iup.h"
+#include <iup.h>
 
 int mlaction(Ihandle *self, int c, char* after)
 {

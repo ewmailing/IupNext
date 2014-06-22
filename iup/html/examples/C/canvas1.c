@@ -10,13 +10,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "iup.h"
-#include "cd.h"
-#include "cdiup.h"
+#include <iup.h>
+#include <cd.h>
+#include <cdiup.h>
 
 //#define USE_TUIO
 #ifdef USE_TUIO
-#include "iuptuio.h"
+#include <iuptuio.h>
 #endif
 
 static cdCanvas *cdcanvas = NULL;

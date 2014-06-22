@@ -6,7 +6,7 @@ is presented, and according to the selected option the dialog below the list is 
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "iup.h"
+#include <iup.h>
 
 int list_cb (Ihandle *h, char *t, int o, int selected)
 {

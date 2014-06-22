@@ -7,13 +7,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "iup.h"          
-#include "iupgl.h"
+#include <iup.h>          
+#include <iupgl.h>
 
 #ifdef WIN32
   #include <windows.h>
 #endif
-#include "GL/gl.h" 
+#include <GL/gl.h> 
 
 int k_any(Ihandle *self, int c)
 {

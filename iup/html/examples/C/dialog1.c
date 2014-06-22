@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "iup.h"
+#include <iup.h>
 
 /* defines icon's image */
 static unsigned char img[] =

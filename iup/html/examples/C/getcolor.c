@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "iup.h"
-#include "iupcontrols.h"
+#include <iup.h>
+#include <iupcontrols.h>
 
 int main(int argc, char **argv)
 {

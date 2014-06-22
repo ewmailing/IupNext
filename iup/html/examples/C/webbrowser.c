@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "iup.h"
-#include "iupweb.h"
+#include <iup.h>
+#include <iupweb.h>
 
 
 #ifndef WIN32

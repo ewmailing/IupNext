@@ -8,11 +8,11 @@
 #include <windows.h>
 #include <exdisp.h>
 
-#include "iup.h"
-#include "iupole.h"
+#include <iup.h>
+#include <iupole.h>
 
 
-// Needed to use the WebBrowser OLE control if not using the "expdisp.h" header
+// Needed to use the WebBrowser OLE control if not using the <expdisp.h> header
 //#import "progid:Shell.Explorer.2" no_namespace named_guids
 
 static WCHAR* Char2Wide(char* str)

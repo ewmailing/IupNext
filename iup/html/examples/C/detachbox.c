@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "iup.h"
+#include <iup.h>
 
 
 static int detached_cb(Ihandle *ih, Ihandle* new_parent, int x, int y)

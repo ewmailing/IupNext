@@ -9,18 +9,18 @@ Based on: MathGL documentation (v. 1.10), Cap. 9
 
 #define USE_IM 1
 #ifdef USE_IM
-#include "im.h"
-#include "im_image.h"
-#include "im_convert.h"
-#include "im_process.h"
+#include <im.h>
+#include <im_image.h>
+#include <im_convert.h>
+#include <im_process.h>
 #endif
 
-#include "iup.h"
+#include <iup.h>
 #ifdef USE_IM
-#include "iupim.h"
+#include <iupim.h>
 #endif
-#include "iupcontrols.h"
-#include "iup_mglplot.h"
+#include <iupcontrols.h>
+#include <iup_mglplot.h>
 
 static Ihandle *plot,           /* plot */
                *minmaxY_dial, *minmaxX_dial,  /* dials for zooming */

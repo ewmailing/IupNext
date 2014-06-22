@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "iup.h"
-#include "cd.h"
-#include "cdiup.h"
-#include "iupcontrols.h"
+#include <iup.h>
+#include <cd.h>
+#include <cdiup.h>
+#include <iupcontrols.h>
 
 /* IUP handles */
 static Ihandle *cnvs = NULL;

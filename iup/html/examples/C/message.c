@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 /* IUP libraries include */
-#include "iup.h"
+#include <iup.h>
 
 /* Main program */
 int main(int argc, char **argv)

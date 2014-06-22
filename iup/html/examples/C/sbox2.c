@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include "iup.h"
-#include "iupcontrols.h"
+#include <iup.h>
+#include <iupcontrols.h>
 
 Ihandle *createtree()
 {

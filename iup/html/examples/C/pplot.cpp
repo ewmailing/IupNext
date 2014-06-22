@@ -15,15 +15,15 @@
 
 
 extern "C" {
-#include "iup.h"
-#include "iupcontrols.h"
-#include "cd.h"
-#include "cdiup.h"
-#include "cdpdf.h"
-#include "cdgdiplus.h"
+#include <iup.h>
+#include <iupcontrols.h>
+#include <cd.h>
+#include <cdiup.h>
+#include <cdpdf.h>
+#include <cdgdiplus.h>
 };
 
-#include "iup_pplot.h"
+#include <iup_pplot.h>
 
 #define MAXPLOT 6  // room for examples
 

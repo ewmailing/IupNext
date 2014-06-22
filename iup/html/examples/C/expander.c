@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "iup.h"
+#include <iup.h>
 
 void ExpanderTest(void)
 {

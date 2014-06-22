@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "iup.h"
-#include "cd.h"
-#include "cdiup.h"
+#include <iup.h>
+#include <cd.h>
+#include <cdiup.h>
 
 cdCanvas *cdcanvas = NULL;
 

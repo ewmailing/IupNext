@@ -4,7 +4,7 @@ In this case, the radio element is essential to prevent the user from selecting 
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "iup.h"
+#include <iup.h>
 
 int main(int argc, char **argv)
 {

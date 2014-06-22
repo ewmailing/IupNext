@@ -8,8 +8,8 @@
 #include <stdio.h>
 
 /* IUP libraries include */
-#include "iup.h"
-#include "iupcontrols.h"
+#include <iup.h>
+#include <iupcontrols.h>
 
 /* Global IUP handles */
 Ihandle *text_red, *text_green, *text_blue;

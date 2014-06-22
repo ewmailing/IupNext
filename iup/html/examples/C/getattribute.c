@@ -11,7 +11,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "iup.h"
+#include <iup.h>
 
 int k_any(Ihandle *self, int c)
 {
