@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iup.h>
-#include <iupkey.h>
 #include <iupcontrols.h>
 
 /* Callback called when a leaf is added by the menu. */

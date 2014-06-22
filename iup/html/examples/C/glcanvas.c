@@ -9,7 +9,6 @@
 
 #include "iup.h"          
 #include "iupgl.h"
-#include "iupkey.h"
 
 #ifdef WIN32
   #include <windows.h>

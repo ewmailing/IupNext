@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iup.h>
-#include <iupkey.h>
 
 static void text2multiline (Ihandle* ih, char* attribute)
 {

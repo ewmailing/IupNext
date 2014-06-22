@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "iup.h"
-#include "iupkey.h"
 
 int mlaction(Ihandle *self, int c, char* after)
 {

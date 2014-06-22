@@ -12,7 +12,6 @@
 #include <ctype.h>
 
 #include "iup.h"
-#include "iupkey.h"
 
 int k_any(Ihandle *self, int c)
 {

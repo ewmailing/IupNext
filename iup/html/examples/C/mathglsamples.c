@@ -21,7 +21,6 @@ Based on: MathGL documentation (v. 1.10), Cap. 9
 #endif
 #include "iupcontrols.h"
 #include "iup_mglplot.h"
-#include "iupkey.h"
 
 static Ihandle *plot,           /* plot */
                *minmaxY_dial, *minmaxX_dial,  /* dials for zooming */

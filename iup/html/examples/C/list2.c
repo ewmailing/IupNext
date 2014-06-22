@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iup.h>
-#include <iupkey.h>
 #include <iupole.h>
 
 static Ihandle* load_image_Tecgraf(void)
