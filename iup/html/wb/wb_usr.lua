@@ -1363,6 +1363,14 @@ wb_usr.tree =
                   link= "gl/iupglbutton.html"
                 },
                 {
+                  name= {nl= "IupGLExpander"},
+                  link= "gl/iupglexpander.html"
+                },
+                {
+                  name= {nl= "IupGLFrame"},
+                  link= "gl/iupglframe.html"
+                },
+                {
                   name= {nl= "IupGLLabel"},
                   link= "gl/iupgllabel.html"
                 },
