@@ -211,7 +211,11 @@ end
 dofile(arg[1])
 element.callback = adjustcallbacktable(element.callback)
 
-io.output("il_"..element.nick..".c")
+filename = "il_"..element.nick..".c"
+if (element.subdir) then
+  filename = element.subdir.."/"..filename
+end
+io.output(filename)
 header(element.nick, element.include)
 write_callbacks(element.nick, element.callback)
 if element.createfunc == nil then 

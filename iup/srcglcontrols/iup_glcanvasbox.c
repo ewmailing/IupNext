@@ -73,15 +73,15 @@ static int iGLCanvasBoxSwapBuffers_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iGLCanvasBoxACTION(Ihandle* ih)
+static int iGLCanvasBoxACTION(Ihandle* ih, float posx, float posy)
 {
-  IFn cb;
+  IFnff cb;
 
   IupGLMakeCurrent(ih);
 
-  cb = (IFn)IupGetCallback(ih, "APP_ACTION");
+  cb = (IFnff)IupGetCallback(ih, "APP_ACTION");
   if (cb)
-    cb(ih);
+    cb(ih, posx, posy);
 
   if (!iupStrEqualNoCase(iupAttribGetStr(ih, "BUFFER"), "DOUBLE"))
     iGLCanvasBoxSwapBuffers_CB(ih);
@@ -261,7 +261,7 @@ static int iGLCanvasBoxLEAVEWINDOW_CB(Ihandle* ih)
 
 static int iGLCanvasBoxSetRedrawAttrib(Ihandle* ih, const char* value)
 {
-  iGLCanvasBoxACTION(ih);
+  iGLCanvasBoxACTION(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
   (void)value;
   return 0;
 }

@@ -237,6 +237,16 @@ static int iGLValBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, c
         iupAttribSetInt(ih, "_IUP_START_Y", y);
       }
     }
+    else
+    {
+      if (iupAttribGet(ih, "_IUP_DRAG"))
+      {
+        IFni cb = (IFni)IupGetCallback(ih, "VALUECHANGING_CB");
+        if (cb) cb(ih, 0);
+
+        iupAttribSet(ih, "_IUP_DRAG", NULL);
+      }
+    }
 
     iupGLSubCanvasRedraw(ih);
   }
@@ -278,7 +288,15 @@ static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
       iupGLSubCanvasRedraw(ih);
       redraw = 0;
 
+      if (!iupAttribGet(ih, "_IUP_DRAG"))
+      {
+        IFni cb = (IFni)IupGetCallback(ih, "VALUECHANGING_CB");
+        if (cb) cb(ih, 1);
+      }
+
       iupBaseCallValueChangedCb(ih);
+
+      iupAttribSet(ih, "_IUP_DRAG", "1");
     }
 
     iupAttribSetInt(ih, "_IUP_START_X", x);
@@ -417,6 +435,7 @@ Iclass* iupGLValNewClass(void)
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
+  iupClassRegisterCallback(ic, "VALUECHANGING_CB", "i");
 
   /* IupGLVal only */
   iupClassRegisterAttribute(ic, "MIN", iGLValGetMinAttrib, iGLValSetMinAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

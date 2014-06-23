@@ -8,7 +8,8 @@ local ctrl = {
   funcname = "GLCanvas",
   include = "iupgl.h",
   callback = {
-    action = "nn",
+    action = "ff",
+    swapbuffers_cb = "",
   },
   extrafuncs = 1,
   extracode = [[ 

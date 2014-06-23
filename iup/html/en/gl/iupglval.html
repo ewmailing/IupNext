@@ -6,7 +6,7 @@
 
 
 
-  <title>IupVal</title>
+  <title>IupGLVal</title>
   <link rel="stylesheet" type="text/css" href="../../style.css">
 
   <style orientation="text/css">
@@ -148,6 +148,18 @@ Default: "0.0".</p>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.</p>
+
+
+<p><strong>VALUECHANGING_CB</strong>:
+  Called when the value starts or ends to be interactively changed by the user.</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>start</strong>); [in C]<br><strong>elem</strong>:valuechanging_cb(<strong>start</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>start</strong>: flag that indicates if the value started to 
+be changed (1) or the change just ended (0).</p>
 
 <h3><a name="Notes">Notes</a></h3>
 
