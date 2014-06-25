@@ -308,3 +308,55 @@ void iupGLDrawImage(Ihandle* ih, int x, int y, const char* name, int active)
     glDrawPixels(image->currentwidth, image->currentheight, format, GL_UNSIGNED_BYTE, gldata);
   }
 }
+
+void iupGLDrawArrow(Ihandle *ih, int x, int y, const char* color, int active, int dir, int size, int space)
+{
+  int points[6];
+
+  /* fix for smooth triangle */
+  int delta = (size - 2 * space) / 2;
+
+  switch (dir)
+  {
+  case IUPGL_ARROW_LEFT:  /* arrow points left */
+    x += space;  /* fix center */
+    points[0] = x + size - space - delta;
+    points[1] = y + space;
+    points[2] = x + size - space - delta;
+    points[3] = y + size - space;
+    points[4] = x + space;
+    points[5] = y + size / 2;
+    break;
+  case IUPGL_ARROW_TOP:    /* arrow points top */
+    y += space;  /* fix center */
+    points[0] = x + space;
+    points[1] = y + size - space - (delta - 1);
+    points[2] = x + size - space;
+    points[3] = y + size - space - (delta - 1);
+    points[4] = x + size / 2;
+    points[5] = y + space;
+    break;
+  case IUPGL_ARROW_RIGHT:  /* arrow points right */
+    x += space - 1;  /* fix center */
+    y += 1;
+    points[0] = x + space;
+    points[1] = y + space;
+    points[2] = x + space;
+    points[3] = y + size - space;
+    points[4] = x + size - space - delta;
+    points[5] = y + size / 2;
+    break;
+  case IUPGL_ARROW_BOTTOM:  /* arrow points bottom */
+    y += space;  /* fix center */
+    points[0] = x + space;
+    points[1] = y + space;
+    points[2] = x + size - space;
+    points[3] = y + space;
+    points[4] = x + size / 2;
+    points[5] = y + size - space - (delta - 1);
+    break;
+  }
+
+  iupGLDrawPolygon(ih, points, 3, color, active);
+  iupGLDrawPolyline(ih, points, 3, 1, color, active);
+}

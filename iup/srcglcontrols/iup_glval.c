@@ -122,7 +122,7 @@ static int iGLValACTION_CB(Ihandle* ih)
 
     if (pressed)
     {
-      char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
+      char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
       if (presscolor)
         fgcolor = presscolor;
     }
@@ -260,7 +260,7 @@ static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
   int redraw = 0;
   int pressed = iupAttribGetInt(ih, "PRESSED");
 
-  /* special higlight processing for handler area */
+  /* special highlight processing for handler area */
   if (iGLValIsInsideHandler(ih, x, y))
   {
     if (!iupAttribGet(ih, "HIGHLIGHT"))
@@ -312,7 +312,7 @@ static int iGLValMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
 static int iGLValENTERWINDOW_CB(Ihandle* ih, int x, int y)
 {
-  /* special higlight processing for handler area */
+  /* special highlight processing for handler area */
   if (iGLValIsInsideHandler(ih, x, y))
     iupAttribSet(ih, "HIGHLIGHT", "1");
   else

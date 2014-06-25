@@ -1,5 +1,5 @@
 /** \file
- * \brief Separator Control.
+ * \brief GLSeparator Control.
  *
  * See Copyright Notice in "iup.h"
  */

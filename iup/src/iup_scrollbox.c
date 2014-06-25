@@ -112,8 +112,8 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
     /* If child is greater than scrollbox area, use child natural size,
        else use current scrollbox size;
-       So this will let the child be gratter than the scrollbox,
-       or let the child expand to the scrollbox. */
+       So this will let the child be greater than the scrollbox,
+       or let the child expand to the scrollbox.  */
 
     if (ih->firstchild->naturalwidth > ih->currentwidth)
     {
@@ -169,17 +169,20 @@ static void iScrollBoxLayoutUpdate(Ihandle* ih)
   /* already updated the canvas layout, 
      so just have to update the scrollbars and child. */
 
-  /* if child is greater than scrollbox, has scrollbars
-     but this affects the oposite direction */
-
   if (ih->firstchild)
   {
+    /* if child is greater than scrollbox, has scrollbars
+       but this affects the opposite direction */
+
     if (ih->firstchild->currentwidth > ih->currentwidth)
       dy -= iupdrvGetScrollbarSize();
 
     if (ih->firstchild->currentheight > ih->currentheight)
       dx -= iupdrvGetScrollbarSize();
   }
+
+  if (dx < 0) dx = 0;
+  if (dy < 0) dy = 0;
 
   IupSetInt(ih, "DX", dx);
   IupSetInt(ih, "DY", dy);

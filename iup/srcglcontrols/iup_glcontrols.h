@@ -54,6 +54,8 @@ void iupGLDrawPolyline(Ihandle* ih, const int* points, int count, float linewidt
 void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float linewidth, const char* color, int active, int round);
 void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const char* color, int active);
 void iupGLDrawFrameRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float linewidth, const char* color, int active, int title_x, int title_width, int title_height);
+enum { IUPGL_ARROW_LEFT, IUPGL_ARROW_RIGHT, IUPGL_ARROW_TOP, IUPGL_ARROW_BOTTOM };
+void iupGLDrawArrow(Ihandle *ih, int x, int y, const char* color, int active, int dir, int size, int space);
 
 void iupGLIconRegisterAttrib(Iclass* ic);
 void iupGLIconDraw(Ihandle* ih, int icon_x, int icon_y, int icon_width, int icon_height, const char *image, const char* title, const char* fgcolor, int active);

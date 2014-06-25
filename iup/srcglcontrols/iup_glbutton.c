@@ -37,7 +37,7 @@ static int iGLButtonACTION(Ihandle* ih)
 
   if (pressed || selected)
   {
-    char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
+    char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
     if (presscolor)
       bgcolor = presscolor;
     draw_border = 1;

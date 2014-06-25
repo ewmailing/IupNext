@@ -349,7 +349,7 @@ Iclass* iupGLSubCanvasNewClass(void)
   iupClassRegisterAttribute(ic, "BORDERWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_DEFAULT);  /* inheritable */
-  iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "150 200 235", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "PSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "150 200 235", IUPAF_DEFAULT);  /* inheritable */
 
   iupClassRegisterAttribute(ic, "UNDERLINE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDRAWFRONT", NULL, iGLSubCanvasSetRedrawFrontAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);

@@ -1,5 +1,5 @@
 /** \file
- * \brief iupexpander control
+ * \brief GLExpander control
  *
  * See Copyright Notice in "iup.h"
  */
@@ -25,6 +25,7 @@
 #define IEXPAND_HANDLE_SIZE 20
 #define IEXPAND_SPACING   3
 #define IEXPAND_BACK_MARGIN  2
+
 
 enum { IEXPANDER_LEFT, IEXPANDER_RIGHT, IEXPANDER_TOP, IEXPANDER_BOTTOM };
 enum { IEXPANDER_CLOSE, IEXPANDER_OPEN };
@@ -182,7 +183,7 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
   else if (ih->data->position == IEXPANDER_BOTTOM)
     y += ih->currentheight - 1 - bar_size;
 
-  /* special higlight processing for handler area */
+  /* special highlight processing for handler area */
   if (iGLExpanderIsInsideHandler(ih, x, y, bar_size))
   {
     if (!iupAttribGet(ih, "HIGHLIGHT"))
@@ -382,96 +383,9 @@ static int iGLExpanderBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int
   return IUP_DEFAULT;
 }
 
-static void iGLExpanderDrawTriangle(Ihandle *ih, int x, int y, const char* color, int active, int dir)
-{
-  int points[6];
-
-  /* fix for smooth triangle */
-  int delta = (IEXPAND_HANDLE_SIZE - 2*IEXPAND_SPACING)/2;
-
-  switch(dir)
-  {
-  case IEXPANDER_LEFT:  /* arrow points left */
-    x += IEXPAND_SPACING;  /* fix center */
-    points[0] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - delta;
-    points[1] = y + IEXPAND_SPACING;
-    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - delta;
-    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
-    points[4] = x + IEXPAND_SPACING;
-    points[5] = y + IEXPAND_HANDLE_SIZE/2;
-    break;
-  case IEXPANDER_TOP:    /* arrow points top */
-    y += IEXPAND_SPACING;  /* fix center */
-    points[0] = x + IEXPAND_SPACING;
-    points[1] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - (delta-1);
-    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
-    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - (delta-1);
-    points[4] = x + IEXPAND_HANDLE_SIZE/2;
-    points[5] = y + IEXPAND_SPACING;
-    break;
-  case IEXPANDER_RIGHT:  /* arrow points right */
-    x += IEXPAND_SPACING;  /* fix center */
-    points[0] = x + IEXPAND_SPACING;
-    points[1] = y + IEXPAND_SPACING;
-    points[2] = x + IEXPAND_SPACING;
-    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
-    points[4] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - delta;
-    points[5] = y + IEXPAND_HANDLE_SIZE/2;
-    break;
-  case IEXPANDER_BOTTOM:  /* arrow points bottom */
-    y += IEXPAND_SPACING;  /* fix center */
-    points[0] = x + IEXPAND_SPACING;
-    points[1] = y + IEXPAND_SPACING;
-    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
-    points[3] = y + IEXPAND_SPACING;
-    points[4] = x + IEXPAND_HANDLE_SIZE/2;
-    points[5] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - (delta-1);
-    break;
-  }
-
-  iupGLDrawPolygon(ih, points, 3, color, active);
-  iupGLDrawPolyline(ih, points, 3, 1, color, active);
-}
-
-static void iGLExpanderDrawSmallTriangle(Ihandle *ih, int x, int y, const char* color, int active, int dir)
-{
-  int points[6];
-  int size = IEXPAND_HANDLE_SIZE-2;
-  int space = IEXPAND_SPACING+1;
-
-  /* fix for smooth triangle */
-  int delta = (size - 2*space)/2;
-
-  switch(dir)
-  {
-  case IEXPANDER_RIGHT:  /* arrow points right */
-    x += space-1;  /* fix center */
-    y += 1;
-    points[0] = x + space;
-    points[1] = y + space;
-    points[2] = x + space;
-    points[3] = y + size - space;
-    points[4] = x + size - space - delta;
-    points[5] = y + size/2;
-    break;
-  case IEXPANDER_BOTTOM:  /* arrow points bottom */
-    y += space;  /* fix center */
-    points[0] = x + space;
-    points[1] = y + space;
-    points[2] = x + size - space;
-    points[3] = y + space;
-    points[4] = x + size/2;
-    points[5] = y + size - space - (delta-1);
-    break;
-  }
-
-  iupGLDrawPolygon(ih, points, 3, color, active);
-  iupGLDrawPolyline(ih, points, 3, 1, color, active);
-}
-
 static void iGLExpanderDrawArrow(Ihandle *ih, int x, int y, const char* color, int active, int dir)
 {
-  iGLExpanderDrawTriangle(ih, x, y, color, active, dir);
+  iupGLDrawArrow(ih, x, y, color, active, dir, IEXPAND_HANDLE_SIZE, IEXPAND_SPACING);
 }
 
 static void iGLExpanderDrawSmallArrow(Ihandle *ih, const char* color, int active, int dir, int y_offset)
@@ -479,10 +393,10 @@ static void iGLExpanderDrawSmallArrow(Ihandle *ih, const char* color, int active
   switch(dir)
   {
   case IEXPANDER_RIGHT:  /* arrow points right */
-    iGLExpanderDrawSmallTriangle(ih, 1 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, color, active, dir);
+    iupGLDrawArrow(ih, 1 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, color, active, dir, IEXPAND_HANDLE_SIZE - 2, IEXPAND_SPACING + 1);
     break;
   case IEXPANDER_BOTTOM:  /* arrow points bottom */
-    iGLExpanderDrawSmallTriangle(ih, 0 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, color, active, dir);
+    iupGLDrawArrow(ih, 0 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, color, active, dir, IEXPAND_HANDLE_SIZE - 2, IEXPAND_SPACING + 1);
     break;
   }
 }
@@ -523,6 +437,7 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
   char* fgcolor = iupAttribGetStr(ih, "FORECOLOR");
   char* bgcolor = iupAttribGetStr(ih, "BACKCOLOR");
   int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
+  int pressed = iupAttribGetInt(ih, "PRESSED");
   int bar_size = iGLExpanderGetBarSize(ih);
 
   /* calc bar position */
@@ -600,7 +515,13 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
       if (bar_size > IEXPAND_HANDLE_SIZE + 2 * IEXPAND_BACK_MARGIN)
         y_offset = (bar_size - IEXPAND_HANDLE_SIZE - 2 * IEXPAND_BACK_MARGIN) / 2;
 
-      if (highlight)
+      if (pressed)
+      {
+        char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
+        if (presscolor)
+          fgcolor = presscolor;
+      }
+      else if (highlight)
       {
         char* hlcolor = iupAttribGetStr(ih, "HIGHCOLOR");
         if (hlcolor)
@@ -643,7 +564,13 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
         width = x2 - x1 + 1,
         height = y2 - y1 + 1;
 
-    if (highlight)
+    if (pressed)
+    {
+      char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
+      if (presscolor)
+        fgcolor = presscolor;
+    }
+    else if (highlight)
     {
       char* hlcolor = iupAttribGetStr(ih, "HIGHCOLOR");
       if (hlcolor)
@@ -700,7 +627,7 @@ static int iGLExpanderENTERWINDOW_CB(Ihandle* ih, int x, int y)
   else if (ih->data->position == IEXPANDER_BOTTOM)
     y += ih->currentheight - 1 - bar_size;
 
-  /* special higlight processing for handler area */
+  /* special highlight processing for handler area */
   if (iGLExpanderIsInsideHandler(ih, x, y, bar_size))
     iupAttribSet(ih, "HIGHLIGHT", "1");
   else
@@ -1030,9 +957,10 @@ Iclass* iupGLExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "EXTRABUTTONS", iGLExpanderGetExtraButtonsAttrib, iGLExpanderSetExtraButtonsAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MOVEABLE", NULL, iGLExpanderSetMoveableAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 100 150", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR",  NULL, NULL, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKCOLOR",  NULL, NULL, IUPAF_SAMEASSYSTEM, "50 100 150",  IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIGHCOLOR",  NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "150 200 235", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
