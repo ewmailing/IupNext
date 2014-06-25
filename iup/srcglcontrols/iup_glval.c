@@ -51,7 +51,7 @@ static int iGLValACTION_CB(Ihandle* ih)
 {
   iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
-  char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
+  char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
   int active = iupAttribGetInt(ih, "ACTIVE");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   int slider_size = iupAttribGetInt(ih, "SLIDERSIZE");
@@ -81,7 +81,7 @@ static int iGLValACTION_CB(Ihandle* ih)
   iupGLDrawBox(ih, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width, bgcolor, 1);
 
   /* draw slider border - can be disabled setting bwidth=0 */
-  iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bcolor, active, 0);
+  iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bordercolor, active, 0);
 
 
   if (is_horizontal)
@@ -138,7 +138,7 @@ static int iGLValACTION_CB(Ihandle* ih)
 
     /* draw handler border - can still be disabled setting bwidth=0
        after the background because of the round rect */
-    iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bcolor, active, 1);
+    iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bordercolor, active, 1);
   }
 
   return IUP_DEFAULT;

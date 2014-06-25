@@ -59,7 +59,7 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
 {
   iGLProgressBar* pb = (iGLProgressBar*)iupAttribGet(ih, "_IUP_GLPROGRESSBAR");
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
-  char* bcolor = iupAttribGetStr(ih, "BORDERCOLOR");
+  char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
   int active = iupAttribGetInt(ih, "ACTIVE");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   int border_width = (int)ceil(bwidth);
@@ -70,7 +70,7 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
 
   /* draw border - can be disabled setting bwidth=0 
      after the background because of the round rect */
-  iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, active, 1);
+  iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bordercolor, active, 1);
 
   if (pb->show_text || pb->value != pb->vmin)
   {

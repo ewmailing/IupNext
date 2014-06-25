@@ -24,7 +24,7 @@ static int iGLFrameACTION(Ihandle* ih)
 {
   char *image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
-  char* bcolor = iupAttribGetStr(ih, "FRAMECOLOR");
+  char* bordercolor = iupAttribGetStr(ih, "FRAMECOLOR");
   float bwidth = iupAttribGetFloat(ih, "FRAMEWIDTH");
   int border_width = (int)ceil(bwidth);
 
@@ -42,16 +42,16 @@ static int iGLFrameACTION(Ihandle* ih)
     if (title_box)
     {
       /* draw border */
-      iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, 1, 0);
+      iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bordercolor, 1, 0);
 
       /* draw box */
       iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
-                       border_width, border_width + h, bcolor, 1);
+                       border_width, border_width + h, bordercolor, 1);
     }
     else
     {
       /* draw frame border */
-      iupGLDrawFrameRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, 1, off, w, h);
+      iupGLDrawFrameRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bordercolor, 1, off, w, h);
     }
 
     iupGLIconDraw(ih, off, 0, w, h, image, title, fgcolor, active);
@@ -65,7 +65,7 @@ static int iGLFrameACTION(Ihandle* ih)
                      border_width, ih->currentheight-1 - border_width, bgcolor, 1);
 
     /* draw border - after background because of the round rect */
-    iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bcolor, 1, 1);
+    iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bordercolor, 1, 1);
   }
 
   return IUP_DEFAULT;
