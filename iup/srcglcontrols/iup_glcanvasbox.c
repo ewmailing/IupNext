@@ -52,8 +52,8 @@ static void iGLCanvasBoxCallChildAction(Ihandle* ih, Ihandle* gl_parent)
     IFn cb = (IFn)IupGetCallback(child, "GL_ACTION");
     if (cb && iupAttribGetInt(child, "VISIBLE"))
     {
-      iupGLSubCanvasSetTransform(child, gl_parent);
-      cb(child);
+      if (iupGLSubCanvasSetTransform(child, gl_parent))
+        cb(child);
     }
 
     iGLCanvasBoxCallChildAction(child, gl_parent);

@@ -25,7 +25,7 @@ Iclass* iupGLValNewClass(void);
 Iclass* iupGLFrameNewClass(void);
 Iclass* iupGLExpanderNewClass(void);
 
-void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
+int  iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
 void iupGLSubCanvasSaveState(Ihandle* gl_parent);
 void iupGLSubCanvasRestoreState(Ihandle* gl_parent);
 void iupGLSubCanvasRedrawFront(Ihandle* ih);

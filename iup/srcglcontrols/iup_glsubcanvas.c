@@ -29,20 +29,40 @@
 #include "iup_glcontrols.h"
 
 
-void iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent)
+int iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent)
 {
+  int x = ih->x;
+  int y = ih->y;
+  int height = ih->currentheight;
+  int width = ih->currentwidth;
+
+  /* crop to parent's rectangle */
+  if (x < ih->parent->x)
+    x = ih->parent->x;
+  if (y < ih->parent->y)
+    y = ih->parent->y;
+  if (x + width > ih->parent->x + ih->parent->currentwidth)
+    width = ih->parent->x + ih->parent->currentwidth - x;
+  if (y + height > ih->parent->y + ih->parent->currentheight)
+    width = ih->parent->y + ih->parent->currentheight - y;
+
+  if (width <= 0 || height <= 0)
+    return 0;
+
   /* y is at bottom and oriented bottom to top in OpenGL */
-  int y = ih->y + ih->currentheight - 1;  /* move to bottom */
+  y = y + ih->currentheight - 1;  /* move to bottom */
   y = gl_parent->currentheight - 1 - y; /* orient bottom to top */
-  glViewport(ih->x, y, ih->currentwidth, ih->currentheight);
+  glViewport(x, y, width, height);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0, ih->currentwidth, 0, ih->currentheight, -1, 1);
+  glOrtho(0, width, 0, height, -1, 1);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslatef(0.375, 0.375, 0.0);  /* render all primitives at integer positions */
+
+  return 1;
 }
 
 void iupGLSubCanvasSaveState(Ihandle* gl_parent)
@@ -107,8 +127,8 @@ void iupGLSubCanvasRedrawFront(Ihandle* ih)
     IupGLMakeCurrent(gl_parent);
     glDrawBuffer(GL_FRONT);
     iupGLSubCanvasSaveState(gl_parent);
-    iupGLSubCanvasSetTransform(ih, gl_parent);
-    cb(ih);
+    if (iupGLSubCanvasSetTransform(ih, gl_parent))
+      cb(ih);
     iupGLSubCanvasRestoreState(gl_parent);
     glDrawBuffer(GL_BACK);
   }
