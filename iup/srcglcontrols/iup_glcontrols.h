@@ -24,6 +24,7 @@ Iclass* iupGLProgressBarNewClass(void);
 Iclass* iupGLValNewClass(void);
 Iclass* iupGLFrameNewClass(void);
 Iclass* iupGLExpanderNewClass(void);
+Iclass* iupGLScrollBoxNewClass(void);
 
 int  iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
 void iupGLSubCanvasSaveState(Ihandle* gl_parent);

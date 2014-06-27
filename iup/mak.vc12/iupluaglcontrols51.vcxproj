@@ -98,6 +98,7 @@
     <ClCompile Include="..\srclua5\gl\il_gllabel.c" />
     <ClCompile Include="..\srclua5\gl\il_gllink.c" />
     <ClCompile Include="..\srclua5\gl\il_glprogressbar.c" />
+    <ClCompile Include="..\srclua5\gl\il_glscrollbox.c" />
     <ClCompile Include="..\srclua5\gl\il_glseparator.c" />
     <ClCompile Include="..\srclua5\gl\il_glsubcanvas.c" />
     <ClCompile Include="..\srclua5\gl\il_gltoggle.c" />
@@ -112,6 +113,7 @@
     <None Include="..\srclua5\gl\gllabel.lua" />
     <None Include="..\srclua5\gl\gllink.lua" />
     <None Include="..\srclua5\gl\glprogressbar.lua" />
+    <None Include="..\srclua5\gl\glscrollbox.lua" />
     <None Include="..\srclua5\gl\glseparator.lua" />
     <None Include="..\srclua5\gl\glsubcanvas.lua" />
     <None Include="..\srclua5\gl\gltoggle.lua" />

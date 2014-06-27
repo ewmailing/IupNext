@@ -28,6 +28,7 @@ Ihandle* IupGLProgressBar(void);
 Ihandle* IupGLVal(void);
 Ihandle* IupGLFrame(Ihandle* child);
 Ihandle* IupGLExpander(Ihandle* child);
+Ihandle* IupGLScrollBox(Ihandle* child);
 
 
 #ifdef __cplusplus

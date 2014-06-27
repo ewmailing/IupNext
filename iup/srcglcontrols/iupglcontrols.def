@@ -12,3 +12,4 @@ EXPORTS
   IupGLVal
   IupGLFrame
   IupGLExpander
+  IupGLScrollBox

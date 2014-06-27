@@ -33,6 +33,7 @@ int iupglcontrolslua_open(lua_State * L)
   iupglseparatorlua_open(L);
   iupgltogglelua_open(L);
   iupglvallua_open(L); 
+  iupglscrollboxlua_open(L); 
 
   return 0;
 }

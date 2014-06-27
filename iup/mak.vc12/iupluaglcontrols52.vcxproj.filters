@@ -37,6 +37,9 @@
     <None Include="..\srclua5\gl\iupluaglcontrols.def">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="..\srclua5\gl\glscrollbox.lua">
+      <Filter>Lua</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Lua">
@@ -92,6 +95,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\srclua5\gl\il_glframe.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\gl\il_glscrollbox.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
