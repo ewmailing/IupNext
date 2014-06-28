@@ -29,6 +29,8 @@
 #include "iup_glcontrols.h"
 
 
+// TODO CLIENTOFFSET e CLIENTSIZE
+
 static int iGLSetClipping(Ihandle* ih, int x, int y, int w, int h)
 {
   int clip_x = iupAttribGetInt(ih->parent, "CLIP_X");
