@@ -29,41 +29,63 @@
 #include "iup_glcontrols.h"
 
 
+static int iGLSetClipping(Ihandle* ih, int x, int y, int w, int h)
+{
+  int clip_x = iupAttribGetInt(ih->parent, "CLIP_X");
+  int clip_y = iupAttribGetInt(ih->parent, "CLIP_Y");
+  int clip_w = iupAttribGetInt(ih->parent, "CLIP_W");
+  int clip_h = iupAttribGetInt(ih->parent, "CLIP_H");
+
+  if (x > clip_x + clip_w)
+    return 0;
+  if (y > clip_y + clip_h)
+    return 0;
+  if (x < clip_x)
+    x = clip_x;
+  if (y < clip_y)
+    y = clip_y;
+
+  if (x + w < clip_x)
+    return 0;
+  if (y + h < clip_y)
+    return 0;
+  if (x + w > clip_x + clip_w)
+    w = clip_x + clip_w - x;
+  if (y + h > clip_y + clip_h)
+    h = clip_y + clip_h - y;
+
+  if (w < 0) w = 0;
+  if (h < 0) h = 0;
+
+  iupAttribSetInt(ih, "CLIP_X", x);
+  iupAttribSetInt(ih, "CLIP_Y", y);
+  iupAttribSetInt(ih, "CLIP_W", w);
+  iupAttribSetInt(ih, "CLIP_H", h);
+
+  if (w == 0 || h == 0)
+    return 0;
+
+  glScissor(x, y, w, h);
+  return 1;
+}
+
 int iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent)
 {
   int x = ih->x;
   int y = ih->y;
   int width = ih->currentwidth;
   int height = ih->currentheight;
-  int parent_x = iupAttribGetInt(ih->parent, "VIEWPORT_X");
-  int parent_y = iupAttribGetInt(ih->parent, "VIEWPORT_Y");
-  int parent_width = iupAttribGetInt(ih->parent, "VIEWPORT_WIDTH");
-  int parent_height = iupAttribGetInt(ih->parent, "VIEWPORT_HEIGHT");
 
-  /* crop to parent's rectangle */
-  if (x < parent_x)
-    x = parent_x;
-  if (y < parent_y)
-    y = parent_y;
-  if (x + width > parent_x + parent_width)
-    width = parent_x + parent_width - x;
-  if (y + height > parent_y + parent_height)
-    height = parent_y + parent_height - y;
-
-  if (width < 0) width = 0;
-  if (height < 0) height = 0;
-
-  iupAttribSetInt(ih, "VIEWPORT_X", x);
-  iupAttribSetInt(ih, "VIEWPORT_Y", y);
-  iupAttribSetInt(ih, "VIEWPORT_WIDTH", width);
-  iupAttribSetInt(ih, "VIEWPORT_HEIGHT", height);
-
-  if (width == 0 || height == 0)
+  if (width <= 0 || height <= 0)
     return 0;
 
   /* y is at bottom and oriented bottom to top in OpenGL */
-  y = y + ih->currentheight - 1;  /* move to bottom */
+  y = y + height - 1;  /* move to bottom */
   y = gl_parent->currentheight - 1 - y; /* orient bottom to top */
+
+  /* crop to parent's rectangle */
+  if (!iGLSetClipping(ih, x, y, width, height))
+    return 0;
 
   glViewport(x, y, width, height);
 
@@ -96,6 +118,8 @@ void iupGLSubCanvasSaveState(Ihandle* gl_parent)
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
 
+  /* clipping */
+  glEnable(GL_SCISSOR_TEST);
   /* alpha enabled */
   glEnable(GL_BLEND);     /* GL_COLOR_BUFFER_BIT or GL_ENABLE_BIT */
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -103,6 +127,8 @@ void iupGLSubCanvasSaveState(Ihandle* gl_parent)
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  /* not saved */
   /* disable Z axis */
   glDisable(GL_DEPTH_TEST);  /* GL_DEPTH_BUFFER_BIT or GL_ENABLE_BIT */
+  /* disable lighting */
+  glDisable(GL_LIGHTING);
   /* anti-alias */
   glEnable(GL_POINT_SMOOTH);     /* GL_LINE_BIT or GL_ENABLE_BIT */
   glEnable(GL_LINE_SMOOTH);      /* GL_POINT_BIT or GL_ENABLE_BIT */
@@ -113,10 +139,10 @@ void iupGLSubCanvasSaveState(Ihandle* gl_parent)
 
   iupAttribSet(gl_parent, "_IUP_GLSUBCANVAS_SAVED", "1");
 
-  iupAttribSetInt(gl_parent, "VIEWPORT_X", 0);
-  iupAttribSetInt(gl_parent, "VIEWPORT_Y", 0);
-  iupAttribSetInt(gl_parent, "VIEWPORT_WIDTH", gl_parent->currentwidth);
-  iupAttribSetInt(gl_parent, "VIEWPORT_HEIGHT", gl_parent->currentheight);
+  iupAttribSetInt(gl_parent, "CLIP_X", 0);
+  iupAttribSetInt(gl_parent, "CLIP_Y", 0);
+  iupAttribSetInt(gl_parent, "CLIP_W", gl_parent->currentwidth);
+  iupAttribSetInt(gl_parent, "CLIP_H", gl_parent->currentheight);
 }
 
 void iupGLSubCanvasRestoreState(Ihandle* gl_parent)
