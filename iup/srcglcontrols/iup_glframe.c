@@ -104,7 +104,7 @@ static int iGLFrameMOTION_CB(Ihandle* ih, int x, int y, char* status)
       Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
       IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
 
-      /* clear canvas box aligment */
+      /* clear canvas box alignment */
       iupAttribSet(ih, "VERTICALALIGN", NULL);
       iupAttribSet(ih, "HORIZONTALALIGN", NULL);
 

@@ -33,25 +33,38 @@ int iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent)
 {
   int x = ih->x;
   int y = ih->y;
-  int height = ih->currentheight;
   int width = ih->currentwidth;
+  int height = ih->currentheight;
+  int parent_x = iupAttribGetInt(ih->parent, "VIEWPORT_X");
+  int parent_y = iupAttribGetInt(ih->parent, "VIEWPORT_Y");
+  int parent_width = iupAttribGetInt(ih->parent, "VIEWPORT_WIDTH");
+  int parent_height = iupAttribGetInt(ih->parent, "VIEWPORT_HEIGHT");
 
   /* crop to parent's rectangle */
-  if (x < ih->parent->x)
-    x = ih->parent->x;
-  if (y < ih->parent->y)
-    y = ih->parent->y;
-  if (x + width > ih->parent->x + ih->parent->currentwidth)
-    width = ih->parent->x + ih->parent->currentwidth - x;
-  if (y + height > ih->parent->y + ih->parent->currentheight)
-    width = ih->parent->y + ih->parent->currentheight - y;
+  if (x < parent_x)
+    x = parent_x;
+  if (y < parent_y)
+    y = parent_y;
+  if (x + width > parent_x + parent_width)
+    width = parent_x + parent_width - x;
+  if (y + height > parent_y + parent_height)
+    height = parent_y + parent_height - y;
 
-  if (width <= 0 || height <= 0)
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+
+  iupAttribSetInt(ih, "VIEWPORT_X", x);
+  iupAttribSetInt(ih, "VIEWPORT_Y", y);
+  iupAttribSetInt(ih, "VIEWPORT_WIDTH", width);
+  iupAttribSetInt(ih, "VIEWPORT_HEIGHT", height);
+
+  if (width == 0 || height == 0)
     return 0;
 
   /* y is at bottom and oriented bottom to top in OpenGL */
   y = y + ih->currentheight - 1;  /* move to bottom */
   y = gl_parent->currentheight - 1 - y; /* orient bottom to top */
+
   glViewport(x, y, width, height);
 
   glMatrixMode(GL_PROJECTION);
@@ -72,18 +85,21 @@ void iupGLSubCanvasSaveState(Ihandle* gl_parent)
   if (saved)
     return;
 
-  glPushAttrib(GL_ENABLE_BIT | GL_HINT_BIT);
+  /* save all changes, except transformation matrix */
+  glPushAttrib(GL_ENABLE_BIT | GL_HINT_BIT | GL_VIEWPORT_BIT);
 
+  /* save transformation matrix */
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
 
+  /* save transformation matrix */
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
 
   /* alpha enabled */
   glEnable(GL_BLEND);     /* GL_COLOR_BUFFER_BIT or GL_ENABLE_BIT */
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  /* image data aligment */
+  /* image data alignment */
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  /* not saved */
   /* disable Z axis */
   glDisable(GL_DEPTH_TEST);  /* GL_DEPTH_BUFFER_BIT or GL_ENABLE_BIT */
@@ -96,6 +112,11 @@ void iupGLSubCanvasSaveState(Ihandle* gl_parent)
   glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
   iupAttribSet(gl_parent, "_IUP_GLSUBCANVAS_SAVED", "1");
+
+  iupAttribSetInt(gl_parent, "VIEWPORT_X", 0);
+  iupAttribSetInt(gl_parent, "VIEWPORT_Y", 0);
+  iupAttribSetInt(gl_parent, "VIEWPORT_WIDTH", gl_parent->currentwidth);
+  iupAttribSetInt(gl_parent, "VIEWPORT_HEIGHT", gl_parent->currentheight);
 }
 
 void iupGLSubCanvasRestoreState(Ihandle* gl_parent)
@@ -105,14 +126,15 @@ void iupGLSubCanvasRestoreState(Ihandle* gl_parent)
   if (!saved)
     return;
 
+  /* restore transformation matrix */
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 
+  /* restore transformation matrix */
   glMatrixMode(GL_PROJECTION);
   glPopMatrix();
 
-  glViewport(0, 0, gl_parent->currentwidth, gl_parent->currentheight);
-
+  /* restore everything else */
   glPopAttrib();
 
   iupAttribSet(gl_parent, "_IUP_GLSUBCANVAS_SAVED", NULL);

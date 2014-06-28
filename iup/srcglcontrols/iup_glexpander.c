@@ -271,7 +271,7 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
     {
       IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
 
-      /* clear canvas box aligment */
+      /* clear canvas box alignment */
       iupAttribSet(ih, "VERTICALALIGN", NULL);
       iupAttribSet(ih, "HORIZONTALALIGN", NULL);
 
