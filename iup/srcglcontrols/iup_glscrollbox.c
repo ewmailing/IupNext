@@ -221,11 +221,6 @@ void iupGLScrollbarsDraw(Ihandle* ih, int active, const char* fgcolor, const cha
 /*********************************************************************/
 
 
-static void iGLScrollBoxUpdateChildPosition(Ihandle* ih, int posx, int posy)
-{
-  iupBaseSetPosition(ih->firstchild, -posx, -posy);
-}
-
 static int iGLScrollBoxScroll_CB(Ihandle *ih, int posx, int posy)
 {
   if (ih->firstchild)
@@ -235,7 +230,7 @@ static int iGLScrollBoxScroll_CB(Ihandle *ih, int posx, int posy)
     if (iupAttribGetInt(ih, "DY") > iupAttribGetInt(ih, "YMAX") - iupGLScrollbarsGetSize(ih))
       posy = 0;
 
-    iGLScrollBoxUpdateChildPosition(ih, ih->x + posx, ih->y + posy);
+    iupBaseSetPosition(ih->firstchild, ih->x - posx, ih->y - posy);
     iupLayoutUpdate(ih->firstchild);
   }
 
@@ -403,7 +398,8 @@ static void iGLScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   if (ih->firstchild)
   {
-    iGLScrollBoxUpdateChildPosition(ih, x + iupAttribGetInt(ih, "POSX"), y + iupAttribGetInt(ih, "POSY"));
+    iupBaseSetPosition(ih->firstchild, x - iupAttribGetInt(ih, "POSX"),
+                                       y - iupAttribGetInt(ih, "POSY"));
   }
 }
 
@@ -412,7 +408,7 @@ static void iGLScrollBoxLayoutUpdate(Ihandle* ih)
   int width = ih->currentwidth,
      height = ih->currentheight;
 
-  /* already updated the canvas layout, 
+  /* already updated the subcanvas layout, 
      so just have to update the scrollbars and child. */
 
   if (ih->firstchild)
@@ -435,7 +431,8 @@ static void iGLScrollBoxLayoutUpdate(Ihandle* ih)
 
   if (ih->firstchild)
   {
-    iGLScrollBoxUpdateChildPosition(ih, ih->x + iupAttribGetInt(ih, "POSX"), ih->y + iupAttribGetInt(ih, "POSY"));
+    iupBaseSetPosition(ih->firstchild, ih->x - iupAttribGetInt(ih, "POSX"),
+                                       ih->y - iupAttribGetInt(ih, "POSY"));
     iupLayoutUpdate(ih->firstchild);
   }
 }
@@ -463,7 +460,7 @@ Iclass* iupGLScrollBoxNewClass(void)
 
   ic->name   = "glscrollbox";
   ic->format = "h";   /* one ihandle */
-  ic->nativetype = IUP_TYPECANVAS;
+  ic->nativetype = IUP_TYPEVOID;
   ic->childtype  = IUP_CHILDMANY+1;  /* 1 child */
   ic->is_interactive = 1;
 

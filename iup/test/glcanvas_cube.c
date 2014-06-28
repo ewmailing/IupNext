@@ -455,10 +455,12 @@ void GLCanvasCubeTest(void)
   gframe1 = IupSetAttributes(IupGLFrame(ghbox), "TITLE=Frame, TITLEBOX=Yes");
   gframe2 = IupSetAttributes(IupGLFrame(gvbox), "BACKGROUND=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
 
-  //gexp1 = IupSetAttributes(IupGLExpander(gframe1), "TITLE=Expander");
-  //gexp2 = IupSetAttributes(IupGLExpander(gframe2), "BARPOSITION=LEFT");
   gexp1 = gframe1;
   gexp2 = gframe2;
+  //gexp1 = IupSetAttributes(IupGLExpander(gframe1), "TITLE=Expander");
+  //gexp2 = IupSetAttributes(IupGLExpander(gframe2), "BARPOSITION=LEFT");
+  gexp1 = IupSetAttributes(IupGLScrollBox(gframe1), "RASTERSIZE=250x90");
+  gexp2 = IupSetAttributes(IupGLScrollBox(gframe2), "RASTERSIZE=50x200");
 
   canvas = IupGLCanvasBox(
     IupSetAttributes(gexp1, "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes"),
