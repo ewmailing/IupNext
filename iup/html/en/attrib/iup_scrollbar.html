@@ -25,6 +25,35 @@
 <p>&quot;VERTICAL&quot;, &quot;HORIZONTAL&quot;, &quot;YES&quot; (both) or
   &quot;NO&quot; (none).</p>
 <p>Default: &quot;NO&quot;</p>
+<h3>Configuration Attributes (<font size="3">non inheritable</font>)</h3>
+<p><a href="../attrib/iup_dx.html">DX</a>:
+  Size of the thumb in the horizontal 
+  scrollbar. Also the horizontal page size. Default: "0.1".</p>
+<p><a href="../attrib/iup_dy.html">DY</a>:
+  Size of the thumb in the vertical scrollbar. Also the vertical page size. Default: "0.1".</p>
+<p><a href="../attrib/iup_posx.html">POSX</a>:
+  Position of the thumb in the horizontal 
+  scrollbar. Default: "0.0".</p>
+<p><a href="../attrib/iup_posy.html">POSY</a>:
+  Position of the thumb in the vertical 
+  scrollbar. Default: "0.0".</p>
+<p><a href="../attrib/iup_xmin.html">XMIN</a>:
+  Minimum value of the horizontal scrollbar. Default: "0.0".</p>
+<p><a href="../attrib/iup_xmax.html">XMAX</a>:
+  Maximum value of the horizontal scrollbar. Default: "1.0".</p>
+<p><a href="../attrib/iup_ymin.html">YMIN</a>:
+  Minimum value of the vertical scrollbar. Default: "0.0".</p>
+<p><a href="../attrib/iup_ymax.html">YMAX</a>:
+  Maximum value of the vertical scrollbar. Default: "1.0".</p>
+<p><b>LINEX</b>: The amount the thumb moves when an horizontal step is performed. 
+  Default: 1/10th of DX. (since 3.0)</p>
+<p><b>LINEY</b>: The amount the thumb moves when a vertical step is performed. 
+  Default: 1/10th of DY. (since 3.0)</p>
+<p><b><a name="XAUTOHIDE">XAUTOHIDE</a></b>: When enabled, if DX &gt;= XMAX-XMIN then 
+  the horizontal scrollbar is hidden. Default: "YES". (since 3.0)</p>
+<p><b><a name="YAUTOHIDE">YAUTOHIDE</a></b>: When enabled, if DY &gt;= YMAX-YMIN then 
+  the vertical scrollbar is hidden. Default: "YES". (since 3.0)</p>
+
 <h3>Notes</h3>
 <p>The 
   scrollbar allows you to create a virtual space associated to the element. In 
@@ -70,14 +99,16 @@ then scale to the new limits:</p>
 posx = (xmax - xmin)*old_posx_relative + xmin</pre>
 <p>
 <strong>IupList,</strong> <strong>IupTree</strong>, and <strong>IupText/IupMultiline</strong> scrollbars are 
-automatically managed and do NOT have the POS, MIN, MAX and D attributes.</p>
+automatically managed and do NOT have the POS*, *MIN, *MAX and D* attributes.</p>
 <h3>Affects</h3>
 <p><a href="../elem/iuplist.html">IupList</a>,
-<a href="../elem/iupmultiline.html">IupMultiline</a>, <a href="../elem/iupcanvas.html">IupCanvas</a>, <a href="iup_posx.html">POSX</a>,
+<a href="../elem/iupmultiline.html">IupMultiline</a>, <a href="../elem/iupcanvas.html">IupCanvas</a></p>
+<h3>See Also</h3>
+<p><a href="iup_posx.html">POSX</a>,
 <a href="iup_xmin.html">XMIN</a>, <a href="iup_xmax.html">XMAX</a>,
-<a href="iup_dx.html">DX</a>, <a href="../elem/iupcanvas.html#XAUTOHIDE">XAUTOHIDE</a>, <a href="iup_posy.html">POSY</a>,
+<a href="iup_dx.html">DX</a>, <a href="iup_posy.html">POSY</a>,
 <a href="iup_ymin.html">YMIN</a>, <a href="iup_ymax.html">YMAX</a>,
-<a href="iup_dy.html">DY</a>, <a href="../elem/iupcanvas.html#YAUTOHIDE">YAUTOHIDE</a>.</p>
+<a href="iup_dy.html">DY</a></p>
 
 </body>
 
