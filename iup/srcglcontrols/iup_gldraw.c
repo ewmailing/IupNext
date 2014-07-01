@@ -309,51 +309,47 @@ void iupGLDrawImage(Ihandle* ih, int x, int y, const char* name, int active)
   }
 }
 
-void iupGLDrawArrow(Ihandle *ih, int x, int y, const char* color, int active, int dir, int size, int space)
+void iupGLDrawArrow(Ihandle *ih, int x, int y, int size, const char* color, int active, int dir)
 {
   int points[6];
 
-  /* fix for smooth triangle */
-  int delta = (size - 2 * space) / 2;
+  int off1 = iupRound((double)size * 0.13);
+  int off2   = iupRound((double)size * 0.87);
+  int half = size / 2;
 
   switch (dir)
   {
   case IUPGL_ARROW_LEFT:  /* arrow points left */
-    x += space;  /* fix center */
-    points[0] = x + size - space - delta;
-    points[1] = y + space;
-    points[2] = x + size - space - delta;
-    points[3] = y + size - space;
-    points[4] = x + space;
-    points[5] = y + size / 2;
+    points[0] = x + off2;
+    points[1] = y;
+    points[2] = x + off2;
+    points[3] = y + size;
+    points[4] = x + off1;
+    points[5] = y + half;
     break;
   case IUPGL_ARROW_TOP:    /* arrow points top */
-    y += space;  /* fix center */
-    points[0] = x + space;
-    points[1] = y + size - space - (delta - 1);
-    points[2] = x + size - space;
-    points[3] = y + size - space - (delta - 1);
-    points[4] = x + size / 2;
-    points[5] = y + space;
+    points[0] = x;
+    points[1] = y + off2;
+    points[2] = x + size;
+    points[3] = y + off2;
+    points[4] = x + half;
+    points[5] = y + off1;
     break;
   case IUPGL_ARROW_RIGHT:  /* arrow points right */
-    x += space - 1;  /* fix center */
-    y += 1;
-    points[0] = x + space;
-    points[1] = y + space;
-    points[2] = x + space;
-    points[3] = y + size - space;
-    points[4] = x + size - space - delta;
-    points[5] = y + size / 2;
+    points[0] = x + off1;
+    points[1] = y;
+    points[2] = x + off1;
+    points[3] = y + size;
+    points[4] = x + size - off1;
+    points[5] = y + half;
     break;
   case IUPGL_ARROW_BOTTOM:  /* arrow points bottom */
-    y += space;  /* fix center */
-    points[0] = x + space;
-    points[1] = y + space;
-    points[2] = x + size - space;
-    points[3] = y + space;
-    points[4] = x + size / 2;
-    points[5] = y + size - space - (delta - 1);
+    points[0] = x;
+    points[1] = y + off1;
+    points[2] = x + size;
+    points[3] = y + off1;
+    points[4] = x + half;
+    points[5] = y + size - off1;
     break;
   }
 

@@ -460,7 +460,7 @@ void GLCanvasCubeTest(void)
   //gexp1 = IupSetAttributes(IupGLExpander(gframe1), "TITLE=Expander");
   //gexp2 = IupSetAttributes(IupGLExpander(gframe2), "BARPOSITION=LEFT");
   gexp1 = IupSetAttributes(IupGLScrollBox(gframe1), "RASTERSIZE=250x90");
-  gexp2 = IupSetAttributes(IupGLScrollBox(gframe2), "RASTERSIZE=50x200");
+  gexp2 = IupSetAttributes(IupGLScrollBox(gframe2), "RASTERSIZE=60x200");
 
   canvas = IupGLCanvasBox(
     IupSetAttributes(gexp1, "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes"),

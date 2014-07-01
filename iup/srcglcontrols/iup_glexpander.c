@@ -24,7 +24,7 @@
 #define IEXPAND_BUTTON_SIZE 16
 #define IEXPAND_HANDLE_SIZE 20
 #define IEXPAND_SPACING   3
-#define IEXPAND_BACK_MARGIN  2
+#define IEXPAND_BACK_MARGIN  2  /* used only when TOP && (title||image||extra_buttons) */
 
 
 enum { IEXPANDER_LEFT, IEXPANDER_RIGHT, IEXPANDER_TOP, IEXPANDER_BOTTOM };
@@ -91,6 +91,7 @@ static int iGLExpanderGetBarSize(Ihandle* ih)
   {
     iupGLFontGetCharSize(ih, NULL, &bar_size); 
 
+    /* define a minimum size only when estimating one from charsize */
     if (bar_size < IEXPAND_HANDLE_SIZE)
       bar_size = IEXPAND_HANDLE_SIZE;
 
@@ -122,35 +123,36 @@ static int iGLExpanderIsInsideHandler(Ihandle* ih, int x, int y, int bar_size)
 
   if (ih->data->position == IEXPANDER_TOP && (title || image || ih->data->extra_buttons != 0))
   {
-    /* left aligned */
+    /* always left aligned */
 
     if (y >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && y <= bar_size - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
     {
-      int icon_width = 0;
+      int icon_width = IEXPAND_HANDLE_SIZE;
+      if (image)
+      {
+        int width;
+        iupGLImageGetInfo(image, &width, NULL, NULL);
+        icon_width = iupMAX(icon_width, width);
+      }
       if (title)
       {
         int width;
         iupGLFontGetMultiLineStringSize(ih, title, &width, NULL);
         icon_width += width;
       }
-      if (image)
-      {
-        int width;
-        iupGLImageGetInfo(image, &width, NULL, NULL);
-        icon_width += width;
-      }
 
-      if (x >= IEXPAND_BACK_MARGIN && x < IEXPAND_BACK_MARGIN + IEXPAND_HANDLE_SIZE + icon_width)
+      if (x >= IEXPAND_BACK_MARGIN && 
+          x < IEXPAND_BACK_MARGIN + icon_width)
         return 1;
     }
   }
   else
   {
-    /* centered */
+    /* always centered */
 
     if (ih->data->position == IEXPANDER_TOP || ih->data->position == IEXPANDER_BOTTOM)
     {
-      if (y >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && y <= bar_size - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
+      if (y >= IEXPAND_SPACING && y <= bar_size - IEXPAND_SPACING)
       {
         int half = ih->currentwidth / 2;
         if (x >= half - IEXPAND_HANDLE_SIZE / 2 && x <= half + IEXPAND_HANDLE_SIZE/2)
@@ -159,7 +161,7 @@ static int iGLExpanderIsInsideHandler(Ihandle* ih, int x, int y, int bar_size)
     }
     else /* IEXPANDER_LEFT or IEXPANDER_RIGHT */
     {
-      if (x >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && x <= bar_size - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
+      if (x >= IEXPAND_SPACING && x <= bar_size - IEXPAND_SPACING)
       {
         int half = ih->currentheight / 2;
         if (y >= half - IEXPAND_HANDLE_SIZE / 2 && y <= half + IEXPAND_HANDLE_SIZE / 2)
@@ -385,20 +387,21 @@ static int iGLExpanderBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int
 
 static void iGLExpanderDrawArrow(Ihandle *ih, int x, int y, const char* color, int active, int dir)
 {
-  iupGLDrawArrow(ih, x, y, color, active, dir, IEXPAND_HANDLE_SIZE, IEXPAND_SPACING);
+  int size = IEXPAND_HANDLE_SIZE - 3 * IEXPAND_SPACING;
+  x += (3 * IEXPAND_SPACING) / 2;
+  y += (3 * IEXPAND_SPACING) / 2;
+
+  iupGLDrawArrow(ih, x, y, size, color, active, dir);
 }
 
 static void iGLExpanderDrawSmallArrow(Ihandle *ih, const char* color, int active, int dir, int y_offset)
 {
-  switch(dir)
-  {
-  case IEXPANDER_RIGHT:  /* arrow points right */
-    iupGLDrawArrow(ih, 1 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, color, active, dir, IEXPAND_HANDLE_SIZE - 2, IEXPAND_SPACING + 1);
-    break;
-  case IEXPANDER_BOTTOM:  /* arrow points bottom */
-    iupGLDrawArrow(ih, 0 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, color, active, dir, IEXPAND_HANDLE_SIZE - 2, IEXPAND_SPACING + 1);
-    break;
-  }
+  /* always left align */
+  int size = IEXPAND_HANDLE_SIZE - 3 * IEXPAND_SPACING - 2 * IEXPAND_BACK_MARGIN + 1;
+  int x = IEXPAND_BACK_MARGIN + (3 * IEXPAND_SPACING) / 2;
+  int y = IEXPAND_BACK_MARGIN + (3 * IEXPAND_SPACING) / 2 + y_offset + 1;
+
+  iupGLDrawArrow(ih, x, y, size, color, active, dir);
 }
 
 static void iGLExpanderDrawExtraButton(Ihandle* ih, int button, int x, int y, int height)
@@ -538,14 +541,14 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
     {
       int height;
       iupGLFontGetMultiLineStringSize(ih, title, NULL, &height);
-      iupGLDrawText(ih, txt_offset + IEXPAND_SPACING, (bar_size - height) / 2, title, fgcolor, active);
+      iupGLDrawText(ih, txt_offset, (bar_size - height) / 2 - 1, title, fgcolor, active);
     }
 
     if (ih->data->extra_buttons != 0)
     {
       /* right align extra buttons */
-      int y = IEXPAND_SPACING + IEXPAND_BACK_MARGIN,
-        height = bar_size - 2 * (IEXPAND_SPACING + IEXPAND_BACK_MARGIN);
+      int y = IEXPAND_SPACING + IEXPAND_BACK_MARGIN;
+      int height = bar_size - 2 * (IEXPAND_SPACING + IEXPAND_BACK_MARGIN);
 
       iGLExpanderDrawExtraButton(ih, 1, ih->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height);
 
@@ -587,14 +590,6 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
       else
         iGLExpanderDrawArrow(ih, x, y, fgcolor, active, IEXPANDER_LEFT);
       break;
-    case IEXPANDER_TOP:
-      x += (width - IEXPAND_HANDLE_SIZE) / 2;
-      y += 0;
-      if (ih->data->state == IEXPANDER_CLOSE)
-        iGLExpanderDrawArrow(ih, x, y, fgcolor, active, IEXPANDER_BOTTOM);
-      else
-        iGLExpanderDrawArrow(ih, x, y, fgcolor, active, IEXPANDER_TOP);
-      break;
     case IEXPANDER_RIGHT:
       x += 0;
       y += (height - IEXPAND_HANDLE_SIZE) / 2;
@@ -602,6 +597,14 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
         iGLExpanderDrawArrow(ih, x, y, fgcolor, active, IEXPANDER_LEFT);
       else
         iGLExpanderDrawArrow(ih, x, y, fgcolor, active, IEXPANDER_RIGHT);
+      break;
+    case IEXPANDER_TOP:
+      x += (width - IEXPAND_HANDLE_SIZE) / 2;
+      y += 0;
+      if (ih->data->state == IEXPANDER_CLOSE)
+        iGLExpanderDrawArrow(ih, x, y, fgcolor, active, IEXPANDER_BOTTOM);
+      else
+        iGLExpanderDrawArrow(ih, x, y, fgcolor, active, IEXPANDER_TOP);
       break;
     case IEXPANDER_BOTTOM:
       x += (width - IEXPAND_HANDLE_SIZE) / 2;
@@ -770,39 +773,42 @@ static void iGLExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
   if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
   {
     natural_w = bar_size;
-    natural_h = IEXPAND_HANDLE_SIZE;
+    natural_h = IEXPAND_HANDLE_SIZE;  /* just a minimum size */
   }
   else
   {
-    natural_w = IEXPAND_HANDLE_SIZE;
+    natural_w = IEXPAND_HANDLE_SIZE;  /* just a minimum size */
     natural_h = bar_size;
 
     if (ih->data->position == IEXPANDER_TOP)
     {
+      char* title, *image;
+
       /* if IMAGE is defined assume that will cover all the canvas area */
-      char* value = iupAttribGetStr(ih, "IMAGE");
-      if (value)
+      image = iupAttribGetStr(ih, "IMAGE");
+      if (image)
       {
         int image_w = 0;
-        iupGLImageGetInfo(value, &image_w, NULL, NULL);
+        iupGLImageGetInfo(image, &image_w, NULL, NULL);
         natural_w = iupMAX(natural_w, image_w);
       }
 
       /* if TITLE and IMAGE are both defined then 
          IMAGE is only the handle */
 
-      value = iupAttribGetStr(ih, "TITLE");
-      if (value)
+      title = iupAttribGetStr(ih, "TITLE");
+      if (title)
       {
         int title_size = 0;
-        iupGLFontGetMultiLineStringSize(ih, value, &title_size, NULL);
-        natural_w += title_size + IEXPAND_SPACING;
+        iupGLFontGetMultiLineStringSize(ih, title, &title_size, NULL);
+        natural_w += title_size;
       }
 
       if (ih->data->extra_buttons != 0)
         natural_w += ih->data->extra_buttons * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING);
 
-      natural_w += 2 * IEXPAND_BACK_MARGIN;
+      if (image || title || ih->data->extra_buttons != 0)
+        natural_w += 2 * IEXPAND_BACK_MARGIN;
     }
   }
 

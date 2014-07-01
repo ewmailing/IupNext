@@ -152,7 +152,7 @@ static void iGLValCropValue(iGLVal* val)
     val->value = val->vmin;
 }
 
-static int iGLValGetHandlerInfo(Ihandle* ih, int x, int y, int is_horizontal, int *p, int *p1, int *p2)
+static int iGLValGetHandlerInfo(Ihandle* ih, int dx, int dy, int is_horizontal, int *p, int *p1, int *p2)
 {
   int handler_size = iGLValGetHandlerSize(ih, is_horizontal);
 
@@ -160,13 +160,13 @@ static int iGLValGetHandlerInfo(Ihandle* ih, int x, int y, int is_horizontal, in
   {
     *p1 = handler_size / 2;
     *p2 = ih->currentwidth - 1 - handler_size / 2;
-    *p = x;
+    *p = dx;
   }
   else
   {
     *p1 = handler_size / 2;
     *p2 = ih->currentheight - 1 - handler_size / 2;
-    *p = y;
+    *p = dy;
   }
 
   return handler_size;
