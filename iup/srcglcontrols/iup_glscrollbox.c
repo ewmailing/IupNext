@@ -137,8 +137,8 @@ static void iGLScrollbarsDrawVertical(Ihandle* ih, int active, const char* fgcol
                    ymin, ymax, bgcolor, 1);
 
   /* draw arrows */
-  iupGLDrawArrow(ih, xmin + 2, ymin,           sb_size - 5, fgcolor, active, IUPGL_ARROW_TOP);
-  iupGLDrawArrow(ih, xmin + 2, ymax - sb_size, sb_size - 5, fgcolor, active, IUPGL_ARROW_BOTTOM);
+  iupGLDrawArrow(ih, xmin + 2, ymin + 2,           sb_size - 5, fgcolor, active, IUPGL_ARROW_TOP);
+  iupGLDrawArrow(ih, xmin + 2, ymax - sb_size + 3, sb_size - 5, fgcolor, active, IUPGL_ARROW_BOTTOM);
 
   /* draw handler */
   iupGLDrawBox(ih, xmin + 2, xmax - 2,
@@ -169,8 +169,8 @@ static void iGLScrollbarsDrawHorizontal(Ihandle* ih, int active, const char* fgc
                    ymin, ymax, bgcolor, 1);
 
   /* draw arrows */
-  iupGLDrawArrow(ih, xmin,           ymin + 2, sb_size - 5, fgcolor, active, IUPGL_ARROW_LEFT);
-  iupGLDrawArrow(ih, xmax - sb_size, ymin + 2, sb_size - 5, fgcolor, active, IUPGL_ARROW_RIGHT);
+  iupGLDrawArrow(ih, xmin + 2,           ymin + 2, sb_size - 5, fgcolor, active, IUPGL_ARROW_LEFT);
+  iupGLDrawArrow(ih, xmax - sb_size + 3, ymin + 2, sb_size - 5, fgcolor, active, IUPGL_ARROW_RIGHT);
 
   /* draw handler */
   iupGLDrawBox(ih, posx, posx + dx,
