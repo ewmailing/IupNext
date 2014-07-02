@@ -14,7 +14,7 @@ USE_OPENGL = Yes
 USE_MACOS_OPENGL = Yes
 
 INCLUDES = ../src gl ../srclua5
-LIBS = iupgl
+LIBS = iupglcontrols iuplua$(LUASFX)
 DEF_FILE = gl/iupluaglcontrols.def
 
 ifdef USE_LUA52
@@ -49,7 +49,7 @@ $(GC) : gl/il_%.c : gl/%.lua generator.lua
 SRC := gl/iuplua_glcontrols.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
-  LIBS:=iupgl
+  LIBS:=iupglcontrols
   ifdef USE_MACOS_OPENGL
     LFLAGS = -framework OpenGL
     USE_OPENGL :=

@@ -12,7 +12,7 @@ USE_IUP3 = Yes
 USE_IUPLUA = Yes
 
 DEF_FILE = ctrl/iupluatuio.def
-INCLUDES = ../src
+INCLUDES = ../src ../srclua5
 LIBS = iuptuio
 
 ifdef USE_LUA52

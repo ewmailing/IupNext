@@ -10,6 +10,7 @@ NO_LUAOBJECT = Yes
 
 USE_IUPLUA = Yes
 
+INCLUDES = ../srclua5
 LIBS = iupole
 DEF_FILE = ctrl/iupluaole.def
 
