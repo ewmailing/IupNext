@@ -1650,12 +1650,15 @@ static int winTextSpinWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 {
   if (msg_info->code == UDN_DELTAPOS)
   {
+    int min, max;
     NMUPDOWN *updown = (NMUPDOWN*)msg_info;
     HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
-    int pos = updown->iPos+updown->iDelta;
-    int min, max;
+    int old_pos = SendMessage(hSpin, UDM_GETPOS32, 0, 0);
+    int pos = updown->iPos + updown->iDelta;
     SendMessage(hSpin, UDM_GETRANGE32, (WPARAM)&min, (LPARAM)&max);
-    if (pos>=min && pos<=max)
+    if (pos < min) pos = min;
+    if (pos > max) pos = max;
+    if (pos != old_pos)
     {
       IFni cb = (IFni) IupGetCallback(ih, "SPIN_CB");
       if (cb) 
