@@ -63,6 +63,13 @@ void iupGLIconDraw(Ihandle* ih, int icon_x, int icon_y, int icon_width, int icon
 void iupGLIconGetSize(Ihandle* ih, const char* image, const char* title, int *w, int *h);
 Ihandle* iupGLIconGetImageHandle(Ihandle* ih, const char* name, int active);
 
+void iupGLScrollbarsRegisterAttrib(Iclass* ic);
+void iupGLScrollbarsButton(Ihandle *ih, int pressed, int x, int y);
+int  iupGLScrollbarsMotion(Ihandle *ih, int x, int y);
+void iupGLScrollbarsEnterWindow(Ihandle* ih, int x, int y);
+void iupGLScrollbarsDraw(Ihandle* ih, int active, const char* fgcolor, const char* bgcolor);
+int iupGLScrollbarsGetSize(Ihandle* ih);
+void iupGLScrollbarsLayoutUpdate(Ihandle *ih);
 
 
 #ifdef __cplusplus
