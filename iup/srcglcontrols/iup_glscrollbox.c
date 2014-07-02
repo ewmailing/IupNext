@@ -55,25 +55,9 @@ static int iGLScrollBoxENTERWINDOW_CB(Ihandle* ih, int x, int y)
 static int iGLScrollBoxACTION_CB(Ihandle* ih)
 {
   int active = iupAttribGetInt(ih, "ACTIVE");
-  char* fgcolor = iupAttribGetStr(ih, "FORECOLOR");
-  char* bgcolor = iupAttribGetStr(ih, "BACKCOLOR");
-  int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
   int pressed = iupAttribGetInt(ih, "PRESSED");
 
-  if (pressed)
-  {
-    char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
-    if (presscolor)
-      fgcolor = presscolor;
-  }
-  else if (highlight)
-  {
-    char* hlcolor = iupAttribGetStr(ih, "HIGHCOLOR");
-    if (hlcolor)
-      fgcolor = hlcolor;
-  }
-
-  iupGLScrollbarsDraw(ih, active, fgcolor, bgcolor);
+  iupGLScrollbarsDraw(ih, active, pressed);
 
   return IUP_DEFAULT;
 }
@@ -230,12 +214,6 @@ Iclass* iupGLScrollBoxNewClass(void)
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iGLScrollBoxGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
-
-  /* ScrollBox */
-  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "90 190 255", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "110 210 230", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_NO_INHERIT);
 
   iupGLScrollbarsRegisterAttrib(ic);
 

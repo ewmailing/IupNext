@@ -20,11 +20,13 @@
 
 #include "iup_glcontrols.h"
 
+
 enum {
   SB_NONE, 
   SB_INC_X, SB_PAGEINC_X, SB_DRAG_X, SB_PAGEDEC_X, SB_DEC_X,
   SB_INC_Y, SB_PAGEINC_Y, SB_DRAG_Y, SB_PAGEDEC_Y, SB_DEC_Y
 };
+
 
 int iupGLScrollbarsGetSize(Ihandle* ih)
 {
@@ -184,7 +186,7 @@ static void iGLScrollbarsDrawHorizontal(Ihandle* ih, int active, const char* fgc
                    ymin + 2, ymax - 2, fgcolor, active);
 }
 
-void iupGLScrollbarsDraw(Ihandle* ih, int active, const char* fgcolor, const char* bgcolor)
+void iupGLScrollbarsDraw(Ihandle* ih, int active, int pressed)
 {
   int has_vert_scroll = 0;
   int has_horiz_scroll = 0;
@@ -194,6 +196,22 @@ void iupGLScrollbarsDraw(Ihandle* ih, int active, const char* fgcolor, const cha
   int sb_ymax = iupAttribGetInt(ih, "YMAX");
   int sb_dx = iupAttribGetInt(ih, "DX");
   int sb_dy = iupAttribGetInt(ih, "DY");
+  char* fgcolor = iupAttribGetStr(ih, "FORECOLOR");
+  char* bgcolor = iupAttribGetStr(ih, "BACKCOLOR");
+  int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
+
+  if (pressed)
+  {
+    char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
+    if (presscolor)
+      fgcolor = presscolor;
+  }
+  else if (highlight)
+  {
+    char* hlcolor = iupAttribGetStr(ih, "HIGHCOLOR");
+    if (hlcolor)
+      fgcolor = hlcolor;
+  }
 
   if (sb_xmax - sb_xmin > sb_dx)  /* has horizontal scrollbar */
     has_horiz_scroll = 1;
@@ -421,21 +439,6 @@ static int iGLScrollbarsSetPosYAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
-void iupGLScrollbarsRegisterAttrib(Iclass* ic)
-{
-  iupClassRegisterAttribute(ic, "POSX", NULL, iGLScrollbarsSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "POSY", NULL, iGLScrollbarsSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "XMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "XMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "YMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "YMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LINEX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LINEY", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DX", NULL, NULL, "0.1", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DY", NULL, NULL, "0.1", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "11", IUPAF_NO_INHERIT);
-}
-
 void iupGLScrollbarsButton(Ihandle *ih, int pressed, int x, int y)
 {
   if (pressed)
@@ -528,4 +531,23 @@ void iupGLScrollbarsEnterWindow(Ihandle* ih, int x, int y)
     iupAttribSet(ih, "HIGHLIGHT", NULL);
 }
 
+void iupGLScrollbarsRegisterAttrib(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic, "POSX", NULL, iGLScrollbarsSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "POSY", NULL, iGLScrollbarsSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "XMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "XMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "YMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "YMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINEX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINEY", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DX", NULL, NULL, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DY", NULL, NULL, "0.1", NULL, IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "11", IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "90 190 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "110 210 230", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_NO_INHERIT);
+}
