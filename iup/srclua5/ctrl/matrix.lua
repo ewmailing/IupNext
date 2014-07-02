@@ -5,6 +5,7 @@ local ctrl = {
   nick = "matrix",
   parent = iup.WIDGET,
   creation = "-",
+  subdir = "ctrl",
   callback = {
     action_cb = "nnnns",
     click_cb = "nns",

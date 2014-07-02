@@ -6,6 +6,7 @@ local ctrl = {
   parent = iup.WIDGET,
   creation = "",
   funcname = "MatrixEx",
+  subdir = "ctrl",
   callback = {
     pastesize_cb = "nn",
     busy_cb = "nns",

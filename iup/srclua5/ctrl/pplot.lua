@@ -6,6 +6,7 @@ local ctrl = {
   parent = iup.WIDGET,
   creation = "",
   funcname = "PPlot",
+  subdir = "ctrl",
   callback = {
     select_cb = "nnffn",
     selectbegin_cb = "",

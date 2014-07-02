@@ -5,6 +5,7 @@ local ctrl = {
   nick = "matrixlist",
   parent = iup.WIDGET,
   creation = "",
+  subdir = "ctrl",
   callback = {
     imagevaluechanged_cb = "nn",
     listclick_cb = "nns",

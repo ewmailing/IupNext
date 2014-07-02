@@ -6,6 +6,7 @@ local ctrl = {
   parent = iup.WIDGET,
   creation = "s",
   funcname = "OleControl",
+  subdir = "ctrl",
   callback = {},
   include = "iupole.h",
   extracode = [[ 

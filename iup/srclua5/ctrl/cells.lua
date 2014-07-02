@@ -5,6 +5,7 @@ local ctrl = {
   nick = "cells",
   parent = iup.WIDGET,
   creation = "",
+  subdir = "ctrl",
   callback = {
     mouseclick_cb = "nnnnnns",
     mousemotion_cb = "nnnns",

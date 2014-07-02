@@ -13,7 +13,7 @@ USE_IUPLUA = Yes
 USE_CDLUA = Yes
 
 LIBS = iup_pplot
-DEF_FILE = iuplua_pplot.def
+DEF_FILE = ctrl/iuplua_pplot.def
 
 ifdef USE_LUA52
   LUASFX = 52
@@ -37,12 +37,12 @@ endif
 SRCLUA = pplot.lua
 
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
-GC := $(addprefix il_, $(GC))
+GC := $(addprefix ctrl/il_, $(GC))
 
-$(GC) : il_%.c : %.lua generator.lua
+$(GC) : ctrl/il_%.c : ctrl/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC := iuplua_pplot.c $(GC)
+SRC := ctrl/iuplua_pplot.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   USE_IUPLUA:=

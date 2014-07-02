@@ -1,16 +1,21 @@
 ------------------------------------------------------------------------------
--- Gauge class 
+-- ColorBrowser class 
 ------------------------------------------------------------------------------
 local ctrl = {
-  nick = "gauge",
+  nick = "colorbrowser",
   parent = iup.WIDGET,
   creation = "",
-  callback = {},
+  subdir = "ctrl",
+  callback = {
+    drag_cb = "ccc",
+    change_cb = "ccc",
+  },
+  funcname = "ColorBrowser",
   include = "iupcontrols.h",
 }
 
 function ctrl.createElement(class, param)
-   return iup.Gauge(param.action)
+   return iup.ColorBrowser(param.action)
 end
 
 iup.RegisterWidget(ctrl)

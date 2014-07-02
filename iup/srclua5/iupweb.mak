@@ -12,7 +12,7 @@ USE_IUP3 = Yes
 USE_IUPLUA = Yes
 
 LIBS = iupweb
-DEF_FILE = iupluaweb.def
+DEF_FILE = ctrl/iupluaweb.def
 
 ifdef USE_LUA52
   LUASFX = 52
@@ -36,9 +36,9 @@ endif
 SRCLUA = webbrowser.lua
 
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
-GC := $(addprefix il_, $(GC))
+GC := $(addprefix ctrl/il_, $(GC))
 
-$(GC) : il_%.c : %.lua generator.lua
+$(GC) : ctrl/il_%.c : ctrl/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
 SRC	= $(GC)

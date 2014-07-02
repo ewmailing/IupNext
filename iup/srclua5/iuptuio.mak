@@ -11,7 +11,7 @@ NO_LUAOBJECT = Yes
 USE_IUP3 = Yes
 USE_IUPLUA = Yes
 
-DEF_FILE = iupluatuio.def
+DEF_FILE = ctrl/iupluatuio.def
 INCLUDES = ../src
 LIBS = iuptuio
 
@@ -37,9 +37,9 @@ endif
 SRCLUA = tuioclient.lua
 
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
-GC := $(addprefix il_, $(GC))
+GC := $(addprefix ctrl/il_, $(GC))
 
-$(GC) : il_%.c : %.lua generator.lua
+$(GC) : ctrl/il_%.c : ctrl/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
 SRC	= $(GC)

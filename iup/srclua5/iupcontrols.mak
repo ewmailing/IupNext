@@ -12,9 +12,9 @@ USE_IUP3 = Yes
 USE_IUPLUA = Yes
 USE_CDLUA = Yes
 
-INCLUDES = ../src
+INCLUDES = ../src ctrl ../srclua5
 LIBS = iupcontrols
-DEF_FILE = iupluacontrols.def
+DEF_FILE = ctrl/iupluacontrols.def
 
 ifdef USE_LUA52
   LUASFX = 52
@@ -38,12 +38,12 @@ endif
 SRCLUA = dial.lua gauge.lua colorbrowser.lua colorbar.lua matrix.lua matrixlist.lua cells.lua
 
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
-GC := $(addprefix il_, $(GC))
+GC := $(addprefix ctrl/il_, $(GC))
 
-$(GC) : il_%.c : %.lua generator.lua
+$(GC) : ctrl/il_%.c : ctrl/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC := iuplua_controls.c iuplua_mask.c iuplua_matrix_aux.c $(GC)
+SRC := ctrl/iuplua_controls.c ctrl/iuplua_mask.c ctrl/iuplua_matrix_aux.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   USE_IUPLUA:=

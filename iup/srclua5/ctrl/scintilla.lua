@@ -5,6 +5,7 @@ local ctrl = {
   nick = "scintilla",
   parent = iup.WIDGET,
   creation = "",
+  subdir = "ctrl",
   callback = {
   savepoint_cb = "n",
 --  valuechanged_cb = "",

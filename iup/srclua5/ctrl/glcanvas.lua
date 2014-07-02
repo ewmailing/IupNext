@@ -1,38 +1,40 @@
 ------------------------------------------------------------------------------
--- TuioClient class 
+-- GLCanvas class 
 ------------------------------------------------------------------------------
 local ctrl = {
-  nick = "tuioclient",
+  nick = "glcanvas",
   parent = iup.WIDGET,
-  creation = "N",  -- optional integer
-  funcname = "TuioClient",
+  creation = "-",
+  funcname = "GLCanvas",
+  include = "iupgl.h",
+  subdir = "ctrl",
   callback = {
+    action = "ff",
+    swapbuffers_cb = "",
   },
-  include = "iuptuio.h",
+  extrafuncs = 1,
   extracode = [[ 
-
-int iuptuiolua_open(lua_State* L)
+int iupgllua_open(lua_State * L)
 {
   if (iuplua_opencall_internal(L))
-    IupTuioOpen();
-    
+    IupGLCanvasOpen();
+
   iuplua_get_env(L);
-  iuptuioclientlua_open(L);
-  
+  iupglcanvaslua_open(L);
   return 0;
 }
 
-/* obligatory to use require"iupluatuio" */
-int luaopen_iupluatuio(lua_State* L)
+/* obligatory to use require"iupluagl" */
+int luaopen_iupluagl(lua_State* L)
 {
-  return iuptuiolua_open(L);
+  return iupgllua_open(L);
 }
 
 ]]
 }
 
 function ctrl.createElement(class, param)
-  return iup.TuioClient(param[1])
+   return iup.GLCanvas()
 end
 
 iup.RegisterWidget(ctrl)

@@ -11,7 +11,7 @@ USE_BIN2C_LUA = Yes
 USE_IUP3 = Yes
 USE_IUPLUA = Yes
 
-DEF_FILE = iuplua_scintilla.def
+DEF_FILE = ctrl/iuplua_scintilla.def
 LIBS = iup_scintilla
 
 ifdef USE_LUA52
@@ -36,9 +36,9 @@ endif
 SRCLUA = scintilla.lua
 
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
-GC := $(addprefix il_, $(GC))
+GC := $(addprefix ctrl/il_, $(GC))
 
-$(GC) : il_%.c : %.lua generator.lua
+$(GC) : ctrl/il_%.c : ctrl/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
 SRC := $(GC)

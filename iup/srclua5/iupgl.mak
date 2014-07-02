@@ -13,7 +13,7 @@ USE_IUP3 = Yes
 USE_OPENGL = Yes
 USE_MACOS_OPENGL = Yes
 
-DEF_FILE = iupluagl.def
+DEF_FILE = ctrl/iupluagl.def
 
 ifdef USE_LUA52
   LUASFX = 52
@@ -38,12 +38,12 @@ SRCLUA = glcanvas.lua
 LIBS = iuplua$(LUASFX)
 
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
-GC := $(addprefix il_, $(GC))
+GC := $(addprefix ctrl/il_, $(GC))
 
-$(GC) : il_%.c : %.lua generator.lua
+$(GC) : ctrl/il_%.c : ctrl/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC	= iuplua_glcanvas.c $(GC)
+SRC	= ctrl/iuplua_glcanvas.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   LIBS:=iupgl

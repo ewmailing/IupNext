@@ -12,9 +12,9 @@ USE_IUP3 = Yes
 USE_IUPLUA = Yes
 USE_CDLUA = Yes
 
-INCLUDES = ../src
+INCLUDES = ../src ctrl ../srclua5
 LIBS = iupmatrixex
-DEF_FILE = iupluamatrixex.def
+DEF_FILE = ctrl/iupluamatrixex.def
 
 ifdef USE_LUA52
   LUASFX = 52
@@ -38,9 +38,9 @@ endif
 SRCLUA = matrixex.lua
 
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
-GC := $(addprefix il_, $(GC))
+GC := $(addprefix ctrl/il_, $(GC))
 
-$(GC) : il_%.c : %.lua generator.lua
+$(GC) : ctrl/il_%.c : ctrl/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
 SRC := iuplua_matrixex_aux.c $(GC)

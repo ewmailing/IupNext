@@ -11,7 +11,7 @@ NO_LUAOBJECT = Yes
 USE_IUPLUA = Yes
 
 LIBS = iupole
-DEF_FILE = iupluaole.def
+DEF_FILE = ctrl/iupluaole.def
 
 ifdef USE_LUA52
   LUASFX = 52
@@ -35,9 +35,9 @@ endif
 SRCLUA = olecontrol.lua
 
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
-GC := $(addprefix il_, $(GC))
+GC := $(addprefix ctrl/il_, $(GC))
 
-$(GC) : il_%.c : %.lua generator.lua
+$(GC) : ctrl/il_%.c : ctrl/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
 SRC	= $(GC)

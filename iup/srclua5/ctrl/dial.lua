@@ -5,6 +5,7 @@ local ctrl = {
   nick = "dial",
   parent = iup.WIDGET,
   creation = "S",
+  subdir = "ctrl",
   callback = {
      mousemove_cb = "d",       -- already registered by the val, but has conflict with matrix, so we must set it here again
 --     button_press_cb = "d",    -- already registered by the val

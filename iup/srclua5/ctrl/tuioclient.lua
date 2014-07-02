@@ -1,40 +1,39 @@
 ------------------------------------------------------------------------------
--- WebBrowser class 
+-- TuioClient class 
 ------------------------------------------------------------------------------
 local ctrl = {
-  nick = "webbrowser",
+  nick = "tuioclient",
   parent = iup.WIDGET,
-  creation = "",
-  funcname = "WebBrowser",
+  creation = "N",  -- optional integer
+  funcname = "TuioClient",
+  subdir = "ctrl",
   callback = {
-    navigate_cb = "s",
-    newwindow_cb = "s",
-    error_cb = "s",
-    completed_cb = "s",
   },
-  include = "iupweb.h",
+  include = "iuptuio.h",
   extracode = [[ 
-int iupweblua_open(lua_State* L)
+
+int iuptuiolua_open(lua_State* L)
 {
   if (iuplua_opencall_internal(L))
-    IupWebBrowserOpen();
+    IupTuioOpen();
     
   iuplua_get_env(L);
-  iupwebbrowserlua_open(L);
+  iuptuioclientlua_open(L);
+  
   return 0;
 }
 
-/* obligatory to use require"iupluaweb" */
-int luaopen_iupluaweb(lua_State* L)
+/* obligatory to use require"iupluatuio" */
+int luaopen_iupluatuio(lua_State* L)
 {
-  return iupweblua_open(L);
+  return iuptuiolua_open(L);
 }
 
 ]]
 }
 
 function ctrl.createElement(class, param)
-  return iup.WebBrowser()
+  return iup.TuioClient(param[1])
 end
 
 iup.RegisterWidget(ctrl)

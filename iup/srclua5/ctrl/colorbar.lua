@@ -5,6 +5,7 @@ local ctrl = {
   nick = "colorbar",
   parent = iup.WIDGET,
   creation = "",
+  subdir = "ctrl",
   callback = {
     select_cb = "nn",
     cell_cb = {"n", ret = "s"},
