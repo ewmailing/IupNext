@@ -32,6 +32,38 @@ int iupGLScrollbarsGetSize(Ihandle* ih)
   return iupAttribGetInt(ih, "SCROLLBARSIZE");
 }
 
+void iupGLScrollbarsCalcScrollIntPos(double min, double max, double page, double pos,
+  int imin, int imax, int *ipage, int *ipos)
+{
+  double range = max - min;
+  int irange = imax - imin;
+  double ratio = ((double)irange) / range;
+
+  *ipage = (int)(page*ratio);
+  if (*ipage > irange) *ipage = irange;
+  if (*ipage < 1) *ipage = 1;
+
+  if (ipos)
+  {
+    *ipos = (int)((pos - min)*ratio) + imin;
+    if (*ipos < imin) *ipos = imin;
+    if (*ipos >(imax - *ipage)) *ipos = imax - *ipage;
+  }
+}
+
+void iupGLScrollbarsCalcScrollRealPos(double min, double max, double *pos,
+  int imin, int imax, int ipage, int *ipos)
+{
+  double range = max - min;
+  int irange = imax - imin;
+  double ratio = ((double)irange) / range;
+
+  if (*ipos < imin) *ipos = imin;
+  if (*ipos >(imax - ipage)) *ipos = imax - ipage;
+
+  *pos = min + ((double)(*ipos - imin)) / ratio;
+}
+
 int iupGLScrollbarsIsInsideHandlers(Ihandle* ih, int x, int y)
 {
   int has_vert_scroll = 0;
@@ -281,7 +313,7 @@ void iupGLScrollbarsPressY(Ihandle* ih, int handler)
   iupAttribSetInt(ih, "POSY", sb_posy);
 }
 
-int iupGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int handler)
+int iupGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int start_pos, int handler)
 {
   int has_vert_scroll = 0;
   int has_horiz_scroll = 0;
@@ -302,7 +334,6 @@ int iupGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int handler)
   if (handler == SB_DRAG_Y)
   {
     int ymin, ymax, posy, sb_posy;
-    int old_sb_posy = iupAttribGetInt(ih, "POSY");
     int height = ih->currentheight;
     if (has_horiz_scroll)
       height -= sb_size;
@@ -313,7 +344,7 @@ int iupGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int handler)
     ymin = 0;
     ymax = height - 1;
 
-    posy = ((old_sb_posy - sb_ymin) * (ymax - ymin - 2 * sb_size)) / (sb_ymax - sb_ymin);
+    posy = ((start_pos - sb_ymin) * (ymax - ymin - 2 * sb_size)) / (sb_ymax - sb_ymin);
     posy += ymin + sb_size;
 
     posy += diff_y;
@@ -326,7 +357,7 @@ int iupGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int handler)
     if (sb_posy > sb_ymax - sb_dy)
       sb_posy = sb_ymax - sb_dy;
 
-    if (sb_posy != old_sb_posy)
+    if (sb_posy != start_pos)
     {
       iupAttribSetInt(ih, "POSY", sb_posy);
       return 1;
@@ -335,7 +366,6 @@ int iupGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int handler)
   else if (handler == SB_DRAG_X)
   {
     int xmin, xmax, posx, sb_posx;
-    int old_sb_posx = iupAttribGetInt(ih, "POSX");
     int width = ih->currentwidth;
     if (has_vert_scroll)
       width -= sb_size;
@@ -346,7 +376,7 @@ int iupGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int handler)
     xmin = 0;
     xmax = width - 1;
 
-    posx = ((old_sb_posx - sb_xmin) * (xmax - xmin - 2 * sb_size)) / (sb_xmax - sb_xmin);
+    posx = ((start_pos - sb_xmin) * (xmax - xmin - 2 * sb_size)) / (sb_xmax - sb_xmin);
     posx += xmin + sb_size;
 
     posx += diff_x;
@@ -359,7 +389,7 @@ int iupGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int handler)
     if (sb_posx > sb_xmax - sb_dx)
       sb_posx = sb_xmax - sb_dx;
 
-    if (sb_posx != old_sb_posx)
+    if (sb_posx != start_pos)
     {
       iupAttribSetInt(ih, "POSX", sb_posx);
       return 1;
@@ -368,6 +398,64 @@ int iupGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int handler)
 
   return 0;
 }
+
+static int iGLScrollbarsSetPosXAttrib(Ihandle *ih, const char *value)
+{
+  int xmin, xmax, dx;
+  int posx;
+
+  if (!iupStrToInt(value, &posx))
+    return 0;
+
+  xmin = iupAttribGetInt(ih, "XMIN");
+  xmax = iupAttribGetInt(ih, "XMAX");
+  dx = iupAttribGetInt(ih, "DX");
+
+  if (posx < xmin) posx = xmin;
+  if (posx > xmax - dx) posx = xmax - dx;
+
+  iupAttribSetInt(ih, "POSX", posx);
+
+  iupGLScrollbarsLayoutUpdate(ih);
+  return 0;
+}
+
+static int iGLScrollbarsSetPosYAttrib(Ihandle *ih, const char *value)
+{
+  int ymin, ymax, dy;
+  int posy;
+
+  if (!iupStrToInt(value, &posy))
+    return 0;
+
+  ymin = iupAttribGetInt(ih, "YMIN");
+  ymax = iupAttribGetInt(ih, "YMAY");
+  dy = iupAttribGetInt(ih, "DY");
+
+  if (posy < ymin) posy = ymin;
+  if (posy > ymax - dy) posy = ymax - dy;
+
+  iupAttribSetInt(ih, "POSY", posy);
+
+  iupGLScrollbarsLayoutUpdate(ih);
+  return 0;
+}
+
+void iupGLScrollbarsRegisterAttrib(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic, "POSX", NULL, iGLScrollbarsSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "POSY", NULL, iGLScrollbarsSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "XMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "XMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "YMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "YMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINEX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINEY", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DX", NULL, NULL, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DY", NULL, NULL, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "11", IUPAF_NO_INHERIT);
+}
+
 
 /*********************************************************************/
 
@@ -388,6 +476,10 @@ static int iGLScrollBoxBUTTON_CB(Ihandle *ih, int button, int pressed, int x, in
     }
     else
     {
+      if (handler == SB_DRAG_X)
+        iupAttribSetStr(ih, "_IUP_START_POS", iupAttribGet(ih, "POSX"));
+      else
+        iupAttribSetStr(ih, "_IUP_START_POS", iupAttribGet(ih, "POSY"));
       iupAttribSetInt(ih, "_IUP_DRAG_HANDLER", handler);
       iupAttribSetInt(ih, "_IUP_START_X", x);
       iupAttribSetInt(ih, "_IUP_START_Y", y);
@@ -445,17 +537,15 @@ static int iGLScrollBoxMOTION_CB(Ihandle *ih, int x, int y, char* status)
     int handler = iupAttribGetInt(ih, "_IUP_DRAG_HANDLER");
     int start_x = iupAttribGetInt(ih, "_IUP_START_X");
     int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
+    int start_pos = iupAttribGetInt(ih, "_IUP_START_POS");
 
-    if (iupGLScrollbarsMove(ih, x - start_x, y - start_y, handler))
+    if (iupGLScrollbarsMove(ih, x - start_x, y - start_y, start_pos, handler))
     {
       iupGLScrollbarsLayoutUpdate(ih);
 
       iupGLSubCanvasRedraw(ih);
       redraw = 0;
     }
-
-    iupAttribSetInt(ih, "_IUP_START_X", x);
-    iupAttribSetInt(ih, "_IUP_START_Y", y);
   }
 
   if (redraw)
@@ -661,9 +751,7 @@ Iclass* iupGLScrollBoxNewClass(void)
   iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_NO_INHERIT);
 
-  //  iupClassRegisterAttribute(ic, "POSX", NULL, iGLScrollBoxSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);
-//  iupClassRegisterAttribute(ic, "POSY", NULL, iGLScrollBoxSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "11", IUPAF_NO_INHERIT);
+  iupGLScrollbarsRegisterAttrib(ic);
 
   return ic;
 }
