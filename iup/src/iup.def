@@ -343,6 +343,7 @@ iupKeyCallKeyCb
 iupKeyProcessNavigation
 iupKeyProcessMnemonic
 iupKeySetMnemonic
+iupImageInitColorTable
 iupImageStockSet
 iupImageStockLoadAll
 iupImageColorMakeInactive
@@ -392,11 +393,13 @@ iupClassObjectChildRemoved
 iupClassObjectChildAdded
 iupClassNew
 iupClassCallbackGetFormat
+iupClassMatch
 iupChildTreeGetNativeParentHandle
 iupChildTreeGetNativeParent
 iupChildTreeAppend
 iupCallKillFocusCb
 iupCallGetFocusCb
+iupLayoutUpdate
 iupBaseSetVisibleAttrib
 iupBaseSetSizeAttrib
 iupBaseSetRasterSizeAttrib
@@ -418,6 +421,8 @@ iupBaseSetPosition
 iupBaseComputeNaturalSize
 iupBaseSetCurrentSize
 iupBaseCallValueChangedCb
+iupBaseGetClientOffsetAttrib
+
 iupAttribSetClassObject
 iupAttribSetClassObjectId
 iupAttribSetClassObjectId2

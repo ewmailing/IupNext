@@ -1,5 +1,5 @@
 EXPORTS
-  IupControlsOpen
+  IupGLControlsOpen
   IupGLCanvasBoxv
   IupGLCanvasBox
   IupGLSubCanvas

@@ -10,7 +10,7 @@ SRC = iup_glcontrols.c iup_glcanvasbox.c iup_glsubcanvas.c iup_gllabel.c \
       iup_glval.c iup_glframe.c iup_glexpander.c iup_glscrollbars.c iup_glscrollbox.c
 
 LIBS = iupgl iup ftgl
-LDIR = ../lib/$(TEC_UNAME)
+LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
 USE_OPENGL = Yes
 USE_MACOS_OPENGL = Yes
 

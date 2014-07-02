@@ -364,8 +364,6 @@ static int iGLExpanderBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int
   {
     if (!iGLExpanderIsInsideHandler(ih, x, y, bar_size))
     {
-      iupAttribSet(ih, "PRESSED", NULL);
-
       int moveable = iupAttribGetInt(ih, "MOVEABLE");
       if (moveable)
       {
@@ -373,6 +371,8 @@ static int iGLExpanderBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int
         ih->data->start_x = ih->x + x;
         ih->data->start_y = ih->y + y;
       }
+
+      iupAttribSet(ih, "PRESSED", NULL);
     }
     else
     {
