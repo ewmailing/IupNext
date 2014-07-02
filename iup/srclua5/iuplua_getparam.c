@@ -14,7 +14,6 @@
 
 #include "iuplua.h"
 #include "il.h"
-#include "il_controls.h"
 
 
 /* Used only by the Lua binding */

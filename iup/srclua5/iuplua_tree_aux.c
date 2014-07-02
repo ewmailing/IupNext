@@ -12,7 +12,6 @@
 
 #include "iuplua.h"
 #include "il.h"
-#include "il_controls.h"
 
 /* 
    The REGISTRY is used to store references to the associated Lua objects.

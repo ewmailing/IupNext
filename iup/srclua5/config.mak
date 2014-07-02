@@ -7,7 +7,7 @@ NO_LUALINK = Yes
 USE_BIN2C_LUA = Yes
 
 DEF_FILE = iuplua.def
-INCLUDES = ../include ../src
+INCLUDES = ../include ../src  ../srclua5
 LDIR = ../lib/$(TEC_UNAME)  
 LIBS = iup
 
@@ -40,11 +40,12 @@ CTRLUA = button.lua canvas.lua dialog.lua colordlg.lua clipboard.lua \
        messagedlg.lua progressdlg.lua backgroundbox.lua
 
 GC := $(addsuffix .c, $(basename $(CTRLUA)))
-GC := $(addprefix il_, $(GC))
+GC := $(addprefix elem/il_, $(GC))
 
 SRCLUA = iuplua.lua constants.lua $(CTRLUA)
 
-$(GC) : il_%.c : %.lua generator.lua
+$(GC) : elem/il_%.c : elem/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC = iuplua.c iuplua_api.c iuplua_tree_aux.c iuplua_scanf.c iuplua_getparam.c iuplua_getcolor.c $(GC)
+SRC = iuplua.c iuplua_api.c iuplua_tree_aux.c iuplua_scanf.c \
+      iuplua_getparam.c iuplua_getcolor.c $(GC)

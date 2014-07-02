@@ -13,7 +13,6 @@
 
 #include "iuplua.h"
 #include "il.h"
-#include "il_controls.h"
 
  
 static int GetColor(lua_State *L)
