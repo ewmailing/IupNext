@@ -11,6 +11,7 @@ USE_BIN2C_LUA = Yes
 USE_IUP3 = Yes
 USE_IUPLUA = Yes
 
+INCLUDES = ../srclua5
 DEF_FILE = ctrl/iuplua_mglplot.def
 LIBS = iup_mglplot
 

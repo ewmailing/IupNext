@@ -15,7 +15,7 @@ USE_MACOS_OPENGL = Yes
 
 INCLUDES = ../src gl ../srclua5
 LIBS = iupgl
-DEF_FILE = gl/iupluacontrols.def
+DEF_FILE = gl/iupluaglcontrols.def
 
 ifdef USE_LUA52
   LUASFX = 52

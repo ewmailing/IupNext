@@ -13,6 +13,7 @@ USE_IUP3 = Yes
 USE_OPENGL = Yes
 USE_MACOS_OPENGL = Yes
 
+INCLUDES = ../srclua5
 DEF_FILE = ctrl/iupluagl.def
 
 ifdef USE_LUA52
