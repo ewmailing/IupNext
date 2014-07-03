@@ -59,12 +59,15 @@ values are also accepted, like &quot;ARIGHT&quot; or &quot;:ATOP&quot;, the othe
 from the current alignment. </p>
 
   <p>
-  <strong>BACKGROUND</strong> (<font SIZE="3">non inheritable</font>): color 
+  <strong>BACKCOLOR</strong> (<font SIZE="3">non inheritable</font>): color 
   used as background when TITLE and IMAGE are 
 not defined. Can have an alpha component. Default: NULL. Used instead of BGCOLOR 
   to avoid inheritance problems.</p>
 <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable</font>):
   The default value is &quot;YES&quot;.</p>
+<p><strong>FORECOLOR</strong> (<font SIZE="3">non inheritable</font>): Text 
+color. Can have an alpha component. Default: &quot;0 0 0&quot;. Used instead of 
+FGCOLOR to avoid inheritance problems. </p>
 <p><strong>FRAMECOLOR</strong> (<font SIZE="3">non inheritable</font>): color 
 used to draw the frame border. Can have an alpha component. Default: &quot;50 150 
 255&quot;.&nbsp; Used instead of BORDERCOLOR to avoid inheritance problems.</p>
@@ -112,8 +115,6 @@ image and the title. Default: &quot;2&quot;.</p>
 different visual style for the frame. Instead of the traditional round frame 
 that starts and ends at the title area, it will draw a filled box for the title 
 area and a regular rectangle around the child. Default: NO.</p>
-<p><strong>TITLECOLOR</strong> (<font SIZE="3">non inheritable</font>): Text 
-title color. Can have an alpha component. Default: &quot;0 0 0&quot;.</p>
 <p><strong>TITLEOFFSET</strong> (<font SIZE="3">non inheritable</font>): 
 horizontal offset from the left border to start the title area. Default: 5.</p>
   <blockquote>

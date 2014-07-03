@@ -52,12 +52,18 @@ static int iGLScrollBoxENTERWINDOW_CB(Ihandle* ih, int x, int y)
   return iupGLSubCanvasRedraw(ih);
 }
 
+static int iGLScrollBoxLEAVEWINDOW_CB(Ihandle* ih)
+{
+  iupGLScrollbarsLeaveWindow(ih);
+
+  return iupGLSubCanvasRedraw(ih);
+}
+
 static int iGLScrollBoxACTION_CB(Ihandle* ih)
 {
   int active = iupAttribGetInt(ih, "ACTIVE");
-  int pressed = iupAttribGetInt(ih, "PRESSED");
 
-  iupGLScrollbarsDraw(ih, active, pressed);
+  iupGLScrollbarsDraw(ih, active);
 
   return IUP_DEFAULT;
 }
@@ -179,7 +185,7 @@ static int iGLScrollBoxCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "GL_ACTION", (Icallback)iGLScrollBoxACTION_CB);
   IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLScrollBoxBUTTON_CB);
   IupSetCallback(ih, "GL_MOTION_CB", (Icallback)iGLScrollBoxMOTION_CB);
-  IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iupGLSubCanvasRedraw);
+  IupSetCallback(ih, "GL_LEAVEWINDOW_CB", (Icallback)iGLScrollBoxLEAVEWINDOW_CB);
   IupSetCallback(ih, "GL_ENTERWINDOW_CB", (Icallback)iGLScrollBoxENTERWINDOW_CB);
 
   if (params)

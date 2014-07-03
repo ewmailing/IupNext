@@ -67,7 +67,8 @@ void iupGLScrollbarsRegisterAttrib(Iclass* ic);
 void iupGLScrollbarsButton(Ihandle *ih, int pressed, int x, int y);
 int  iupGLScrollbarsMotion(Ihandle *ih, int x, int y);
 void iupGLScrollbarsEnterWindow(Ihandle* ih, int x, int y);
-void iupGLScrollbarsDraw(Ihandle* ih, int active, int pressed);
+void iupGLScrollbarsLeaveWindow(Ihandle* ih);
+void iupGLScrollbarsDraw(Ihandle* ih, int active);
 int iupGLScrollbarsGetSize(Ihandle* ih);
 void iupGLScrollbarsLayoutUpdate(Ihandle *ih);
 

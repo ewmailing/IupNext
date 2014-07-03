@@ -30,7 +30,7 @@ static int iGLFrameACTION(Ihandle* ih)
 
   if (image || title)
   {
-    char* fgcolor = iupAttribGetStr(ih, "TITLECOLOR");
+    char* fgcolor = iupAttribGetStr(ih, "FORECOLOR");
     int off = iupAttribGetInt(ih, "TITLEOFFSET");
     int title_box = iupAttribGetInt(ih, "TITLEBOX");
     int active = iupAttribGetInt(ih, "ACTIVE");
@@ -58,7 +58,7 @@ static int iGLFrameACTION(Ihandle* ih)
   }
   else
   {
-    char* bgcolor = iupAttribGetStr(ih, "BACKGROUND");
+    char* bgcolor = iupAttribGetStr(ih, "BACKCOLOR");
 
     /* draw background */
     iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
@@ -308,13 +308,13 @@ Iclass* iupGLFrameNewClass(void)
 
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEOFFSET", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEBOX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMEWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "BACKGROUND", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MOVEABLE", NULL, iGLFrameSetMoveableAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* replace default value */
