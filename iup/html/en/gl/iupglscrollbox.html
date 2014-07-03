@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
-<title>IupScrollBox</title>
+<title>IupGLScrollBox</title>
 
 <link rel="stylesheet" type="text/css" href="../../style.css">
 <style type="text/css">
@@ -23,15 +23,17 @@
   </ul>
 </div>
 
-<h2>IupScrollBox<span class="style1"> (since 3.7)</span></h2>
-<p>Creates a native container that allows its child to be scrolled. It inherits from
-  <a href="../elem/iupcanvas.html">IupCanvas</a>. </p>
+<h2>IupGLScrollBox<span class="style1"> (since 3.11)</span></h2>
+<p>Creates an embedded OpenGL container that allows its child to be scrolled. It 
+inherits from <a href="iupglsubcanvas.html">IupGLSubCanvas</a>. It exists only 
+  inside an
+<a href="iupglcanvasbox.html">IupGLCanvasBox</a>. </p>
 
 <h3><a name="Creation">Creation</a></h3>
 
-<pre>Ihandle* IupScrollBox(Ihandle*<strong> child</strong>); [in C]
-iup.scrollbox{<strong>child</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
-scrollbox(<strong>child</strong>) [in LED]</pre>
+<pre>Ihandle* IupGLScrollBox(Ihandle*<strong> child</strong>); [in C]
+iup.glscrollbox{<strong>child</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+glscrollbox(<strong>child</strong>) [in LED]</pre>
   <p><strong>child</strong>: Identifier of an interface element which will receive the 
 	box. It can be NULL.</p>
   <p>
@@ -41,25 +43,31 @@ scrollbox(<strong>child</strong>) [in LED]</pre>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p>Inherits all attributes and callbacks of the <a href="../elem/iupcanvas.html">IupCanvas</a>, 
-but redefines a few attributes.</p>
-<p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: will always use the background 
-color of the native parent.</p>
+<p>The 
+  <strong>IupGLScrollBox</strong> element handle all attributes defined for a
+<a href="iupglsubcanvas.html">IupGLSubCanvas</a> control.</p>
+<p>It contains automatic scrollbars that are shown or hidden accordingly if the 
+child natural size fits the client size. See the <a href="iupgl_scrollbars.html">Scrollbars Attributes for <strong>IupGLControls</strong></a> for more details.</p>
+<blockquote>
+  <hr>
+</blockquote>
 
-<p><b>BORDER </b>(creation only):
-  
-  it is always "NO".</p>
+
 
 <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable</font>):
   The default value is &quot;YES&quot;.</p>
-<p><a href="../attrib/iup_scrollbar.html">SCROLLBAR</a> (creation only): the 
-default value is "YES".</p>
 <p>
-<strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
-CANFOCUS</strong><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">: 
-is set to NO.</p>
 
-  </span>
+	<a href="../attrib/iup_posx.html">POSX</a>:
+  Position of the thumb in the horizontal 
+  scrollbar. Default: "0.0". DX is the visible horizontal area and XMAX is set 
+to the child natural width.</p>
+<p>
+
+	<a href="../attrib/iup_posy.html">POSY</a>:
+  Position of the thumb in the vertical 
+  scrollbar. Default: "0.0". DY is the visible vertical area and YMAX is set to 
+the child natural height.</p>
 
   <blockquote>
     <hr>
@@ -74,7 +82,7 @@ also accepted.</p>
 <p>The box allows the application to create a virtual space for the dialog that 
 is actually larger than the visible area. The current size of the box defines 
 the visible area. The natural size of the child (and its children) defines 
-the virtual space size. So the <strong>IupScrollBox</strong> does not depend on 
+the virtual space size. So the <strong>IupGLScrollBox</strong> does not depend on 
 its child size or expansion, and its natural size is always 0x0.</p>
 <p>The user can move the box contents by dragging the background. Also the mouse 
 wheel scrolls the contents vertically.</p>

@@ -1383,6 +1383,17 @@ wb_usr.tree =
                   link= "gl/iupglprogressbar.html"
                 },
                 {
+                  name= {nl= "IupGLScrollBox"},
+                  link= "gl/iupglscrollbox.html",
+                  folder=
+                  {
+                    {
+                      name= {nl= "Scrollbars"},
+                      link= "gl/iupgl_scrollbars.html"
+                    },
+                  },
+                },
+                {
                   name= {nl= "IupGLSeparator"},
                   link= "gl/iupglseparator.html"
                 },

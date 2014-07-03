@@ -576,13 +576,13 @@ void iupGLScrollbarsRegisterAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "POSX", NULL, iGLScrollbarsSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "POSY", NULL, iGLScrollbarsSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "XMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "XMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "XMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "100", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "YMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "YMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "YMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "100", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LINEX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LINEY", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DX", NULL, NULL, "0.1", NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DY", NULL, NULL, "0.1", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DX", NULL, NULL, "10", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DY", NULL, NULL, "10", NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "11", IUPAF_NO_INHERIT);
 
