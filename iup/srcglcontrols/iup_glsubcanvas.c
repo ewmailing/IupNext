@@ -29,14 +29,66 @@
 #include "iup_glcontrols.h"
 
 
-// TODO CLIENTOFFSET e CLIENTSIZE
+static void iGLFixRectY(Ihandle* gl_parent, int *y, int h)
+{
+  /* y is at bottom and oriented bottom to top in OpenGL */
+  *y = *y + h - 1;  /* move to bottom */
+  *y = gl_parent->currentheight - 1 - *y; /* orient bottom to top */
+}
 
-static int iGLSetClipping(Ihandle* ih, int x, int y, int w, int h)
+static void iGLSaveClientClipping(Ihandle* ih, int clip_x, int clip_y, int clip_w, int clip_h)
+{
+  int x = 0, y = 0, w = 0, h = 0;
+
+  IupGetIntInt(ih, "CLIENTSIZE", &w, &h);
+  IupGetIntInt(ih, "CLIENTOFFSET", &x, &y);
+  x += ih->x;
+  y += ih->y;
+
+  if (w <= 0 || h <= 0)
+    return;
+
+  if (x > clip_x + clip_w)
+    return;
+  if (y > clip_y + clip_h)
+    return;
+  if (x < clip_x)
+    x = clip_x;
+  if (y < clip_y)
+    y = clip_y;
+
+  if (x + w < clip_x)
+    return;
+  if (y + h < clip_y)
+    return;
+  if (x + w > clip_x + clip_w)
+    w = clip_x + clip_w - x;
+  if (y + h > clip_y + clip_h)
+    h = clip_y + clip_h - y;
+
+  if (w < 0) w = 0;
+  if (h < 0) h = 0;
+
+  iupAttribSetInt(ih, "CLIP_X", x);
+  iupAttribSetInt(ih, "CLIP_Y", y);
+  iupAttribSetInt(ih, "CLIP_W", w);
+  iupAttribSetInt(ih, "CLIP_H", h);
+}
+
+static int iGLSetClipping(Ihandle* ih, int x, int y, int w, int h, Ihandle* gl_parent)
 {
   int clip_x = iupAttribGetInt(ih->parent, "CLIP_X");
   int clip_y = iupAttribGetInt(ih->parent, "CLIP_Y");
   int clip_w = iupAttribGetInt(ih->parent, "CLIP_W");
   int clip_h = iupAttribGetInt(ih->parent, "CLIP_H");
+
+  iupAttribSet(ih, "CLIP_W", "0");
+  iupAttribSet(ih, "CLIP_H", "0");
+
+  if (clip_w <= 0 || clip_h <= 0)
+    return 0;
+  if (w <= 0 || h <= 0)
+    return 0;
 
   if (x > clip_x + clip_w)
     return 0;
@@ -59,14 +111,13 @@ static int iGLSetClipping(Ihandle* ih, int x, int y, int w, int h)
   if (w < 0) w = 0;
   if (h < 0) h = 0;
 
-  iupAttribSetInt(ih, "CLIP_X", x);
-  iupAttribSetInt(ih, "CLIP_Y", y);
-  iupAttribSetInt(ih, "CLIP_W", w);
-  iupAttribSetInt(ih, "CLIP_H", h);
-
   if (w == 0 || h == 0)
     return 0;
 
+  if (ih->firstchild)
+    iGLSaveClientClipping(ih, clip_x, clip_y, clip_w, clip_h);
+
+  iGLFixRectY(gl_parent, &y, h);
   glScissor(x, y, w, h);
   return 1;
 }
@@ -75,25 +126,19 @@ int iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent)
 {
   int x = ih->x;
   int y = ih->y;
-  int width = ih->currentwidth;
-  int height = ih->currentheight;
-
-  if (width <= 0 || height <= 0)
-    return 0;
-
-  /* y is at bottom and oriented bottom to top in OpenGL */
-  y = y + height - 1;  /* move to bottom */
-  y = gl_parent->currentheight - 1 - y; /* orient bottom to top */
+  int w = ih->currentwidth;
+  int h = ih->currentheight;
 
   /* crop to parent's rectangle */
-  if (!iGLSetClipping(ih, x, y, width, height))
+  if (!iGLSetClipping(ih, x, y, w, h, gl_parent))
     return 0;
 
-  glViewport(x, y, width, height);
+  iGLFixRectY(gl_parent, &y, h);
+  glViewport(x, y, w, h);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0, width, 0, height, -1, 1);
+  glOrtho(0, w, 0, h, -1, 1);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();

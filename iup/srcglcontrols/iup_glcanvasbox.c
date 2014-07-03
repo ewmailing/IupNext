@@ -25,20 +25,35 @@
 static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y)
 {
   Ihandle* child = ih->firstchild;
-  while (child)
-  {
-    if (iupAttribGetInt(child, "VISIBLE") &&
-        x > child->x && x < child->x + child->currentwidth &&
-        y > child->y && y < child->y + child->currentheight)
-    {
-      ih = iGLCanvasBoxPickChild(child, x, y);
-      if (ih)
-        return ih;
-      else
-        return child;
-    }
 
-    child = child->brother;
+  if (child)
+  {
+    /* ih is a container then must check first for the client area */
+    int client_x = 0, client_y = 0, client_w = 0, client_h = 0;
+    IupGetIntInt(ih, "CLIENTSIZE", &client_w, &client_h);
+    IupGetIntInt(ih, "CLIENTOFFSET", &client_x, &client_y);
+    client_x += ih->x;
+    client_y += ih->y;
+
+    if (x > client_x && x < client_x + client_w &&
+        y > client_y && y < client_y + client_h)
+    {
+      while (child)
+      {
+        if (iupAttribGetInt(child, "VISIBLE") &&
+          x > child->x && x < child->x + child->currentwidth &&
+          y > child->y && y < child->y + child->currentheight)
+        {
+          ih = iGLCanvasBoxPickChild(child, x, y);
+          if (ih)
+            return ih;
+          else
+            return child;
+        }
+
+        child = child->brother;
+      }
+    }
   }
 
   return NULL;

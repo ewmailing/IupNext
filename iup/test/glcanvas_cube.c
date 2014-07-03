@@ -384,6 +384,7 @@ void GLCanvasCubeTest(void)
   IupSetCallback(gbutton1, "ACTION", button_action_cb);
   IupSetAttribute(gbutton1, "NAME", "button1");
   IupSetAttribute(gbutton1, "TIP", "Button Tip");
+//  IupSetAttribute(gbutton1, "RASTERSIZE", "x100");
 
   gbutton2 = IupGLButton(NULL);
   IupSetAttribute(gbutton2, "PADDING", "5x5");
@@ -461,6 +462,8 @@ void GLCanvasCubeTest(void)
   //gexp2 = IupSetAttributes(IupGLExpander(gframe2), "BARPOSITION=LEFT");
   gexp1 = IupSetAttributes(IupGLScrollBox(gframe1), "RASTERSIZE=250x90");
   gexp2 = IupSetAttributes(IupGLScrollBox(gframe2), "RASTERSIZE=60x200");
+  //gexp1 = IupSetAttributes(IupGLScrollBox(gframe1), "RASTERSIZE=250x40");
+  //gexp2 = IupSetAttributes(IupGLScrollBox(gframe2), "RASTERSIZE=30x200");
 
   canvas = IupGLCanvasBox(
     IupSetAttributes(gexp1, "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes"),
