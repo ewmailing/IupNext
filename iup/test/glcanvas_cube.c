@@ -366,9 +366,10 @@ static int extrabutton_cb(Ihandle *ih, int button, int pressed)
 void GLCanvasCubeTest(void)
 {
   Ihandle *dlg, *canvas, *box, *gtoggle, *gtoggle1, *gtoggle2,
-    *ghbox, *gvbox, *glabel, *gsep1, *gsep2, *gbutton1, *gbutton2,
+    *hbox, *vbox, *glabel, *gsep1, *gsep2, *gbutton1, *gbutton2,
     *pbar1, *pbar2, *glink, *gval1, *gval2, *gframe1, *gframe2,
-    *gexp1, *gexp2, *image_open, *image_close, *image_high;
+    *gexp1, *gexp2, *image_open, *image_close, *image_high,
+    *gframe3, *vbox2, *gtoggle3, *gtoggle4, *gtoggle5, *gsbox;
 
   IupGLCanvasOpen();
   IupGLControlsOpen();
@@ -425,10 +426,10 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(gval1, "NAME", "val1");
   IupSetAttribute(gval1, "TIP", "Val Tip");
 
-  ghbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar1, gval1, NULL);
-  IupSetAttribute(ghbox, "ALIGNMENT", "ACENTER");
-  IupSetAttribute(ghbox, "MARGIN", "5x5");
-  IupSetAttribute(ghbox, "GAP", "5");
+  hbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar1, gval1, NULL);
+  IupSetAttribute(hbox, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(hbox, "MARGIN", "5x5");
+  IupSetAttribute(hbox, "GAP", "5");
 
   pbar2 = IupGLProgressBar();
   IupSetAttribute(pbar2, "VALUE", "0.3");
@@ -444,30 +445,52 @@ void GLCanvasCubeTest(void)
   gsep2 = IupGLSeparator();
   IupSetAttribute(gsep2, "ORIENTATION", "HORIZONTAL");
 
-  gvbox = IupVbox(gbutton2, gsep2, 
+  vbox = IupVbox(gbutton2, gsep2, 
     IupRadio(IupSetAttributes(IupVbox(gtoggle1, gtoggle2, NULL), "MARGIN=0x0")),
     pbar2,
     gval2,
     NULL);
-  IupSetAttribute(gvbox, "ALIGNMENT", "ACENTER");
-  IupSetAttribute(gvbox, "MARGIN", "5x5");
-  IupSetAttribute(gvbox, "GAP", "5");
+  IupSetAttribute(vbox, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(vbox, "MARGIN", "5x5");
+  IupSetAttribute(vbox, "GAP", "5");
 
-  gframe1 = IupSetAttributes(IupGLFrame(ghbox), "TITLE=Frame, TITLEBOX=Yes");
-  gframe2 = IupSetAttributes(IupGLFrame(gvbox), "BACKGROUND=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
+  gtoggle5 = IupGLToggle("Radio Toggle");
+  IupSetAttribute(gtoggle5, "PADDING", "5x5");
+  IupSetCallback(gtoggle5, "ACTION", (Icallback)toggle_action_cb);
+  IupSetAttribute(gtoggle5, "NAME", "toggle5");
+  IupSetAttribute(gtoggle5, "CHECKMARK", "Yes");
 
-  gexp1 = gframe1;
-  gexp2 = gframe2;
-  //gexp1 = IupSetAttributes(IupGLExpander(gframe1), "TITLE=Expander");
-  //gexp2 = IupSetAttributes(IupGLExpander(gframe2), "BARPOSITION=LEFT");
-  gexp1 = IupSetAttributes(IupGLScrollBox(gframe1), "RASTERSIZE=250x90");
-  gexp2 = IupSetAttributes(IupGLScrollBox(gframe2), "RASTERSIZE=60x200");
-  //gexp1 = IupSetAttributes(IupGLScrollBox(gframe1), "RASTERSIZE=250x40");
-  //gexp2 = IupSetAttributes(IupGLScrollBox(gframe2), "RASTERSIZE=30x200");
+  gtoggle3 = IupGLToggle("Radio Toggle");
+  IupSetAttribute(gtoggle3, "PADDING", "5x5");
+  IupSetCallback(gtoggle3, "ACTION", (Icallback)toggle_action_cb);
+  IupSetAttribute(gtoggle3, "NAME", "toggle3");
+  IupSetAttribute(gtoggle3, "CHECKMARK", "Yes");
+
+  gtoggle4 = IupGLToggle("Radio Toggle");
+  IupSetAttribute(gtoggle4, "PADDING", "5x5");
+  IupSetAttributeHandle(gtoggle4, "IMAGE", load_image_Test());
+  IupSetCallback(gtoggle4, "ACTION", (Icallback)toggle_action_cb);
+  IupSetAttribute(gtoggle4, "NAME", "toggle4");
+  IupSetAttribute(gtoggle4, "CHECKMARK", "Yes");
+
+  vbox2 = IupVbox(
+    IupRadio(IupSetAttributes(IupVbox(gtoggle3, gtoggle4, NULL), "MARGIN=0x0")),
+    gtoggle5,
+    NULL);
+
+  gsbox = IupSetAttributes(IupGLScrollBox(vbox2), "RASTERSIZE=90x90");
+
+  gframe1 = IupSetAttributes(IupGLFrame(hbox), "TITLE=Frame");
+  gframe2 = IupSetAttributes(IupGLFrame(vbox), "BACKGROUND=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
+  gframe3 = IupSetAttributes(IupGLFrame(gsbox), "TITLE=Frame, TITLEBOX=Yes");
+
+  gexp1 = IupSetAttributes(IupGLExpander(gframe1), "TITLE=Expander");
+  gexp2 = IupSetAttributes(IupGLExpander(gframe2), "BARPOSITION=LEFT");
 
   canvas = IupGLCanvasBox(
     IupSetAttributes(gexp1, "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes"),
     IupSetAttributes(gexp2, "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER"),
+    IupSetAttributes(gframe3, "MOVEABLE=Yes, POSITION=\"550,200\""),
     NULL);
 
   image_open = IupImage(16, 16, img_open);
