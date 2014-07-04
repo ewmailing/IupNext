@@ -119,7 +119,6 @@ static int iGLCanvasBoxACTION(Ihandle* ih, float posx, float posy)
 static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
   IFniiiis cb;
-  int ret;
 
   Ihandle* child = iGLCanvasBoxPickChild(ih, x, y);
 
@@ -130,6 +129,8 @@ static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, in
 
   if (child && iupAttribGetInt(child, "ACTIVE"))
   {
+    int ret = IUP_DEFAULT;
+
     if (pressed)
       iupAttribSet(ih, "_IUP_GLBOX_LASTBUTTON", (char*)child);
     else
@@ -145,11 +146,10 @@ static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, in
 
     cb = (IFniiiis)IupGetCallback(child, "GL_BUTTON_CB");
     if (cb)
-    {
       ret = cb(child, button, pressed, x - child->x, y - child->y, status);
-      if (ret != IUP_CONTINUE)
-        return IUP_DEFAULT;
-    }
+
+    if (ret != IUP_CONTINUE)
+      return IUP_DEFAULT;
   }
   else
     iupAttribSet(ih, "_IUP_GLBOX_LASTBUTTON", NULL);
@@ -217,7 +217,6 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child, int x, int y)
 static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
 {
   IFniis cb;
-  int ret;
 
   /* only handle child if not pressed at self */
   if (!iupAttribGet(ih, "_IUP_GLBOX_SELFBUTTON"))
@@ -233,13 +232,14 @@ static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
 
     if (child && iupAttribGetInt(child, "ACTIVE"))
     {
+      int ret = IUP_DEFAULT;
+
       cb = (IFniis)IupGetCallback(child, "GL_MOTION_CB");
       if (cb)
-      {
         ret = cb(child, x - child->x, y - child->y, status);
-        if (ret != IUP_CONTINUE)
-          return IUP_DEFAULT;
-      }
+
+      if (ret != IUP_CONTINUE)
+        return IUP_DEFAULT;
     }
   }
 
@@ -253,18 +253,18 @@ static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
 static int iGLCanvasBoxWHEEL_CB(Ihandle* ih, float delta, int x, int y, char *status)
 {
   IFnfiis cb;
-  int ret;
 
   Ihandle* child = iGLCanvasBoxPickChild(ih, x, y);
   if (child)
   {
+    int ret = IUP_DEFAULT;
+
     cb = (IFnfiis)IupGetCallback(child, "GL_WHEEL_CB");
     if (cb && iupAttribGetInt(child, "ACTIVE"))
-    {
       ret = cb(child, delta, x - child->x, y - child->y, status);
-      if (ret != IUP_CONTINUE)
-        return IUP_DEFAULT;
-    }
+
+    if (ret != IUP_CONTINUE)
+      return IUP_DEFAULT;
   }
 
   cb = (IFnfiis)IupGetCallback(ih, "APP_WHEEL_CB");

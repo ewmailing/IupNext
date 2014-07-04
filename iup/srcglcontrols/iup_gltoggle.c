@@ -39,8 +39,11 @@ static void iGLToggleCheckDraw(Ihandle* ih)
   int spacing = iupAttribGetInt(ih, "SPACING");
   Ihandle* radio = iupRadioFindToggleParent(ih);
   int check = iupAttribGetBoolean(ih, "VALUE");
+  int rightbutton = iupAttribGetBoolean(ih, "RIGHTBUTTON");
   char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
   int y = (ih->currentheight - check_width) / 2;
+  int x1 = 0;
+  int x2 = check_width + spacing;
 
   if (pressed)
   {
@@ -57,38 +60,44 @@ static void iGLToggleCheckDraw(Ihandle* ih)
   if (!bgcolor)
     bgcolor = "255 255 255";
 
+  if (rightbutton)
+  {
+    x1 = ih->currentwidth - check_width - border_width;
+    x2 = 0;
+  }
+
   if (radio)
   {
-    iupGLDrawSmallDisc(ih, check_width / 2, y + check_width / 2, check_width / 2, bgcolor, 1);
-    iupGLDrawSmallCircle(ih, check_width / 2, y + check_width / 2, check_width / 2, bwidth, bordercolor, active);
+    iupGLDrawSmallDisc(ih, x1 + check_width / 2, y + check_width / 2, check_width / 2, bgcolor, 1);
+    iupGLDrawSmallCircle(ih, x1 + check_width / 2, y + check_width / 2, check_width / 2, bwidth, bordercolor, active);
 
     if (check)
     {
-      iupGLDrawSmallDisc(ih, check_width / 2, y + check_width / 2, check_width / 4, bordercolor, active);
-      iupGLDrawSmallCircle(ih, check_width / 2, y + check_width / 2, check_width / 4, bwidth, bordercolor, active);
+      iupGLDrawSmallDisc(ih, x1 + check_width / 2, y + check_width / 2, check_width / 4, bordercolor, active);
+      iupGLDrawSmallCircle(ih, x1 + check_width / 2, y + check_width / 2, check_width / 4, bwidth, bordercolor, active);
     }
   }
   else
   {
-    iupGLDrawBox(ih, border_width, check_width - border_width, y + border_width, y + check_width - border_width, bgcolor, 1);
-    iupGLDrawRect(ih, 0, check_width, y, y + check_width, bwidth, bordercolor, active, 0);
+    iupGLDrawBox(ih, x1 + border_width, x1 + check_width - border_width, y + border_width, y + check_width - border_width, bgcolor, 1);
+    iupGLDrawRect(ih, x1, x1 + check_width, y, y + check_width, bwidth, bordercolor, active, 0);
 
     if (check)
     {
       int points[6];
 
-      points[0] = 3;
+      points[0] = x1 + 3;
       points[1] = y + check_width / 2;
-      points[2] = check_width / 2;
+      points[2] = x1 + check_width / 2;
       points[3] = y + check_width - 3;
-      points[4] = check_width - 3;
+      points[4] = x1 + check_width - 3;
       points[5] = y + 3;
 
       iupGLDrawPolyline(ih, points, 3, 3, bordercolor, active, 0);
     }
   }
 
-  iupGLIconDraw(ih, check_width+spacing, 0,
+  iupGLIconDraw(ih, x2, 0,
                     ih->currentwidth - check_width - spacing, ih->currentheight,
                     image, title, fgcolor, active);
 }
@@ -288,6 +297,7 @@ Iclass* iupGLToggleNewClass(void)
   iupClassRegisterAttribute(ic, "RADIO", iGLToggleGetRadioAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHECKMARK", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHECKMARKWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "14", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RIGHTBUTTON", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

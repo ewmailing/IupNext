@@ -135,7 +135,9 @@ canvas needs to be redrawn.</p>
   
 <p><strong>GL_BUTTON_CB</strong>:
   Action generated when any mouse button is 
-  pressed or released. Same parameters as <a href="../call/iup_button_cb.html">BUTTON_CB</a>.</p>
+  pressed or released. Same parameters as <a href="../call/iup_button_cb.html">BUTTON_CB</a>. 
+If IUP_CONTINUE is returned the application callback is called even the user 
+clicked on the sub-canvas.</p>
 <p><strong>GL_ENTERWINDOW_CB</strong>: Action generated when the mouse enters 
 the element. Same parameters as 
 <a href="../call/iup_enterwindow_cb.html">ENTERWINDOW_CB</a>.</p>
@@ -147,11 +149,15 @@ the element. Same parameters as
 
   
 <p><strong>GL_MOTION_CB</strong>:
-  Action generated when the mouse is moved. Same parameters as <a href="../call/iup_motion_cb.html">MOTION_CB</a>.</p>
+  Action generated when the mouse is moved. Same parameters as <a href="../call/iup_motion_cb.html">MOTION_CB</a>.&nbsp; 
+If IUP_CONTINUE is returned the application callback is called even the user 
+moved the cursor on the sub-canvas.</p>
 
   
 <p><strong>GL_WHEEL_CB</strong>: Action generated when the mouse wheel is 
-  rotated. Same parameters as <a href="../call/iup_wheel_cb.html">WHEEL_CB</a>.</p>
+  rotated. Same parameters as <a href="../call/iup_wheel_cb.html">WHEEL_CB</a>.&nbsp; 
+If IUP_CONTINUE is returned the application callback is called even the user 
+clicked on the sub-canvas.</p>
 
   
 

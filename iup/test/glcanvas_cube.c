@@ -459,6 +459,7 @@ void GLCanvasCubeTest(void)
   IupSetCallback(gtoggle5, "ACTION", (Icallback)toggle_action_cb);
   IupSetAttribute(gtoggle5, "NAME", "toggle5");
   IupSetAttribute(gtoggle5, "CHECKMARK", "Yes");
+//  IupSetAttribute(gtoggle5, "RIGHTBUTTON", "Yes");
 
   gtoggle3 = IupGLToggle("Radio Toggle");
   IupSetAttribute(gtoggle3, "PADDING", "5x5");
@@ -472,6 +473,7 @@ void GLCanvasCubeTest(void)
   IupSetCallback(gtoggle4, "ACTION", (Icallback)toggle_action_cb);
   IupSetAttribute(gtoggle4, "NAME", "toggle4");
   IupSetAttribute(gtoggle4, "CHECKMARK", "Yes");
+//  IupSetAttribute(gtoggle4, "RIGHTBUTTON", "Yes");
 
   vbox2 = IupVbox(
     IupRadio(IupSetAttributes(IupVbox(gtoggle3, gtoggle4, NULL), "MARGIN=0x0")),
