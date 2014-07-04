@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -21,6 +22,87 @@
 
 /* from IupRadio implementation */
 Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle);
+
+
+static void iGLToggleCheckDraw(Ihandle* ih)
+{
+  char *image = iupAttribGet(ih, "IMAGE");
+  char* title = iupAttribGet(ih, "TITLE");
+  int active = iupAttribGetInt(ih, "ACTIVE");
+  int pressed = iupAttribGetInt(ih, "PRESSED");
+  int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
+  char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
+  char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
+  float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+  int border_width = (int)ceil(bwidth);
+  int check_width = iupAttribGetInt(ih, "CHECKMARKWIDTH");
+  int spacing = iupAttribGetInt(ih, "SPACING");
+  Ihandle* radio = iupRadioFindToggleParent(ih);
+  int check = iupAttribGetBoolean(ih, "VALUE");
+  char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
+  int y = (ih->currentheight - check_width) / 2;
+
+  if (pressed)
+  {
+    char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
+    if (presscolor)
+      bgcolor = presscolor;
+  }
+  else if (highlight)
+  {
+    char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
+    if (hlcolor)
+      bgcolor = hlcolor;
+  }
+  if (!bgcolor)
+    bgcolor = "255 255 255";
+
+  if (radio)
+  {
+    iupGLDrawSmallDisc(ih, check_width / 2, y + check_width / 2, check_width / 2, bgcolor, 1);
+    iupGLDrawSmallCircle(ih, check_width / 2, y + check_width / 2, check_width / 2, bwidth, bordercolor, active);
+
+    if (check)
+    {
+      iupGLDrawSmallDisc(ih, check_width / 2, y + check_width / 2, check_width / 4, bordercolor, active);
+      iupGLDrawSmallCircle(ih, check_width / 2, y + check_width / 2, check_width / 4, bwidth, bordercolor, active);
+    }
+  }
+  else
+  {
+    iupGLDrawBox(ih, border_width, check_width - border_width, y + border_width, y + check_width - border_width, bgcolor, 1);
+    iupGLDrawRect(ih, 0, check_width, y, y + check_width, bwidth, bordercolor, active, 0);
+
+    if (check)
+    {
+      int points[6];
+
+      points[0] = 3;
+      points[1] = y + check_width / 2;
+      points[2] = check_width / 2;
+      points[3] = y + check_width - 3;
+      points[4] = check_width - 3;
+      points[5] = y + 3;
+
+      iupGLDrawPolyline(ih, points, 3, 3, bordercolor, active, 0);
+    }
+  }
+
+  iupGLIconDraw(ih, check_width+spacing, 0,
+                    ih->currentwidth - check_width - spacing, ih->currentheight,
+                    image, title, fgcolor, active);
+}
+
+static int iGLToggleACTION(Ihandle* ih)
+{
+  int check = iupAttribGetInt(ih, "CHECKMARK");
+  if (check)
+    iGLToggleCheckDraw(ih);
+  else
+    iupGLButtonDraw(ih);
+
+  return IUP_DEFAULT;
+}
 
 static void iGLToggleNotify(Ihandle* ih, int selected)
 {
@@ -97,6 +179,7 @@ static int iGLToggleSetValueAttrib(Ihandle* ih, const char* value)
   Ihandle* radio = iupRadioFindToggleParent(ih);
   if (radio)
   {
+    /* can only set Radio to ON */
     if (iupStrEqualNoCase(value, "TOGGLE") || iupStrBoolean(value))
     {
       Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUP_GLTOGGLE_LASTRADIO");
@@ -125,36 +208,58 @@ static int iGLToggleSetValueAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static char* iGLToggleGetValueAttrib(Ihandle* ih)
-{
-  Ihandle* radio = iupRadioFindToggleParent(ih);
-  if (radio)
-  {
-    Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUP_GLTOGGLE_LASTRADIO");
-    if (!last_tg)
-    {
-      iupAttribSet(ih, "VALUE", "ON");
-      iupAttribSet(radio, "_IUP_GLTOGGLE_LASTRADIO", (char*)ih);
-    }
-  }
-
-  return NULL;
-}
-
 static char* iGLToggleGetRadioAttrib(Ihandle* ih)
 {
   Ihandle* radio = iupRadioFindToggleParent(ih);
   return iupStrReturnBoolean(radio!=NULL);
 }
 
+static void iGLToggleComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
+{
+  int check = iupAttribGetInt(ih, "CHECKMARK");
+  if (check)
+  {
+    int check_width = iupAttribGetInt(ih, "CHECKMARKWIDTH");
+    int spacing = iupAttribGetInt(ih, "SPACING");
+    float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+    int border_width = (int)ceil(bwidth);
+    if (border_width == 0)
+      return;
+
+    /* undo add to the label natural size */
+    *w -= 2 * border_width;
+    *h -= 2 * border_width;
+
+    /* add to the label natural size */
+    *w += check_width + spacing;
+    *h = iupMAX(*h, check_width);
+  }
+
+  (void)children_expand; /* unset if not a container */
+}
+
+static int iGLToggleMapMethod(Ihandle* ih)
+{
+  Ihandle* radio = iupRadioFindToggleParent(ih);
+  if (radio)
+  {
+    if (!iupAttribGet(radio, "_IUP_GLTOGGLE_LASTRADIO"))
+    {
+      /* this is the first toggle in the radio, and then set it with VALUE=ON */
+      iupAttribSet(ih, "VALUE", "ON");
+    }
+  }
+  return IUP_NOERROR;
+}
+
 static int iGLToggleCreateMethod(Ihandle* ih, void** params)
 {
+  IupSetCallback(ih, "GL_ACTION", iGLToggleACTION);
   IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLToggleBUTTON_CB);
 
   (void)params; /* button create already parsed title */
   return IUP_NOERROR;
 }
-
 
 
 /******************************************************************************/
@@ -173,12 +278,16 @@ Iclass* iupGLToggleNewClass(void)
   /* Class functions */
   ic->New = iupGLToggleNewClass;
   ic->Create = iGLToggleCreateMethod;
+  ic->ComputeNaturalSize = iGLToggleComputeNaturalSizeMethod;
+  ic->Map = iGLToggleMapMethod;
 
   iupClassRegisterCallback(ic, "ACTION", "i");
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
 
-  iupClassRegisterAttribute(ic, "VALUE", iGLToggleGetValueAttrib, iGLToggleSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", NULL, iGLToggleSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RADIO", iGLToggleGetRadioAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKMARK", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKMARKWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "14", IUPAF_NO_INHERIT);
 
   return ic;
 }

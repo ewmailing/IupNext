@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "iup.h"
 
@@ -146,6 +147,78 @@ void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float li
   glEnd();
 }
 
+static void iGLDrawBuildSmallCircle(int cx, int cy, int rd)
+{
+  /* Reference: http://slabode.exofire.net/circle_draw.shtml
+  Copyright SiegeLord's Abode */
+  int i, num_segments = 16;
+  double theta = 2 * 3.1415926 / (double)num_segments;
+  double c = cos(theta);  /* precalculate the sine and cosine */
+  double s = sin(theta);
+  double t, x, y;
+
+  x = rd;  /* we start at angle = 0 */
+  y = 0;
+
+  for (i = 0; i < num_segments; i++)
+  {
+    glVertex2d(x + cx, y + cy);
+
+    /* apply the rotation matrix */
+    t = x;
+    x = c * x - s * y;
+    y = s * t + c * y;
+  }
+}
+
+void iupGLDrawSmallCircle(Ihandle* ih, int cx, int cy, int rd, float linewidth, const char* color, int active)
+{
+  unsigned char r = 0, g = 0, b = 0, a = 255;
+
+  if (linewidth == 0 || rd == 0)
+    return;
+
+  iupStrToRGBA(color, &r, &g, &b, &a);
+
+  /* y is oriented top to bottom in IUP */
+  cy = ih->currentheight - 1 - cy;
+
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+  glColor4ub(r, g, b, a);
+
+  glLineWidth(linewidth);
+
+  glBegin(GL_LINE_LOOP);
+
+  iGLDrawBuildSmallCircle(cx, cy, rd);
+
+  glEnd();
+}
+
+void iupGLDrawSmallDisc(Ihandle* ih, int cx, int cy, int rd, const char* color, int active)
+{
+  unsigned char r = 0, g = 0, b = 0, a = 255;
+
+  if (rd == 0)
+    return;
+
+  iupStrToRGBA(color, &r, &g, &b, &a);
+
+  /* y is oriented top to bottom in IUP */
+  cy = ih->currentheight - 1 - cy;
+
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+  glColor4ub(r, g, b, a);
+
+  glBegin(GL_POLYGON);
+
+  iGLDrawBuildSmallCircle(cx, cy, rd);
+
+  glEnd();
+}
+
 void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const char* color, int active)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
@@ -196,7 +269,7 @@ void iupGLDrawPolygon(Ihandle* ih, const int* points, int count, const char* col
   glEnd();
 }
 
-void iupGLDrawPolyline(Ihandle* ih, const int* points, int count, float linewidth, const char* color, int active)
+void iupGLDrawPolyline(Ihandle* ih, const int* points, int count, float linewidth, const char* color, int active, int loop)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
   int i, x, y;
@@ -212,7 +285,10 @@ void iupGLDrawPolyline(Ihandle* ih, const int* points, int count, float linewidt
 
   glLineWidth(linewidth);
 
-  glBegin(GL_LINE_LOOP);
+  if (loop)
+    glBegin(GL_LINE_LOOP);
+  else
+    glBegin(GL_LINE_STRIP);
 
   for (i = 0; i < count; i++)
   {
@@ -354,5 +430,5 @@ void iupGLDrawArrow(Ihandle *ih, int x, int y, int size, const char* color, int 
   }
 
   iupGLDrawPolygon(ih, points, 3, color, active);
-  iupGLDrawPolyline(ih, points, 3, 1, color, active);
+  iupGLDrawPolyline(ih, points, 3, 1, color, active, 1);
 }

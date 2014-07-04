@@ -38,8 +38,20 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y)
     if (x > client_x && x < client_x + client_w &&
         y > client_y && y < client_y + client_h)
     {
+      Ihandle* child_array[100];
+      int i=0;
       while (child)
       {
+        child_array[i] = child;
+        child = child->brother;
+        i++;
+      }
+      i--;
+
+      while (i >= 0)
+      {
+        child = child_array[i];
+
         if (iupAttribGetInt(child, "VISIBLE") &&
           x > child->x && x < child->x + child->currentwidth &&
           y > child->y && y < child->y + child->currentheight)
@@ -51,7 +63,7 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y)
             return child;
         }
 
-        child = child->brother;
+        i--;
       }
     }
   }

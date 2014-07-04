@@ -21,7 +21,7 @@
 #include "iup_glcontrols.h"
 
 
-static int iGLButtonACTION(Ihandle* ih)
+void iupGLButtonDraw(Ihandle* ih)
 {
   char *image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
@@ -58,13 +58,17 @@ static int iGLButtonACTION(Ihandle* ih)
   }
 
   /* draw background */
-  iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width, 
-                   border_width, ih->currentheight-1 - border_width, bgcolor, 1);
+  iupGLDrawBox(ih, border_width, ih->currentwidth - 1 - border_width,
+                   border_width, ih->currentheight - 1 - border_width, bgcolor, 1);
 
-  iupGLIconDraw(ih, border_width, border_width, 
-                    ih->currentwidth - 2*border_width, ih->currentheight - 2*border_width, 
+  iupGLIconDraw(ih, border_width, border_width,
+                    ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
                     image, title, fgcolor, active);
+}
 
+static int iGLButtonACTION(Ihandle* ih)
+{
+  iupGLButtonDraw(ih);
   return IUP_DEFAULT;
 }
 
