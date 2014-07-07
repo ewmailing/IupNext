@@ -32,8 +32,8 @@
 <pre>Ihandle* IupScrollBox(Ihandle*<strong> child</strong>); [in C]
 iup.scrollbox{<strong>child</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 scrollbox(<strong>child</strong>) [in LED]</pre>
-  <p><strong>child</strong>: Identifier of an interface element which will receive the 
-	box. It can be NULL.</p>
+  <p><strong>child</strong>: Identifier of an interface element which will 
+  receive the box. It can be NULL (nil in Lua), not optional in LED.</p>
   <p>
   <u>Returns:</u> the identifier of the 
   created element, or NULL if an error occurs.</p>

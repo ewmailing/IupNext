@@ -41,7 +41,8 @@
 <pre>Ihandle* IupExpander(Ihandle*<strong> child</strong>); [in C]
 iup.expander{<strong>child</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 expander(<strong>child</strong>) [in LED]</pre>
-  <p><strong>child</strong>: Identifier of an interface element. It can be NULL.</p>
+  <p><strong>child</strong>: Identifier of an interface element. It can be NULL 
+  (nil in Lua), not optional in LED.</p>
   <p>
   <u>Returns:</u> the identifier of the 
   created element, or NULL if an error occurs.</p>

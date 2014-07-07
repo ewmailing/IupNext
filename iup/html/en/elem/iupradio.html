@@ -30,8 +30,9 @@
 <pre>Ihandle* IupRadio(Ihandle *<strong>child</strong>); [in C]
 iup.radio{<strong>child</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 radio(<strong>child</strong>) [in LED]</pre>
-  <p><strong>child</strong>: Identifier of an interface element. Usually it is a vbox or an hbox containing the toggles associated to the
-  radio.&nbsp; It can be NULL.</p>
+  <p><strong>child</strong>: Identifier of an interface element. Usually it is a vbox or an hbox 
+  containing the toggles associated to the radio. It can be NULL (nil in Lua), 
+  not optional in LED.</p>
   <p>
   <u>Returns:</u> the identifier of the 
   created element, or NULL if an error occurs.</p>
