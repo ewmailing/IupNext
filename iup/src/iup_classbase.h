@@ -115,6 +115,7 @@ int iupBaseSetNameAttrib(Ihandle* ih, const char* value);
 int iupBaseSetRasterSizeAttrib(Ihandle* ih, const char* value);
 int iupBaseSetSizeAttrib(Ihandle* ih, const char* value);
 char* iupBaseGetSizeAttrib(Ihandle* ih);
+char* iupBaseGetCurrentSizeAttrib(Ihandle* ih);
 char* iupBaseGetRasterSizeAttrib(Ihandle* ih);
 char* iupBaseGetClientOffsetAttrib(Ihandle* ih);
 int iupBaseSetMaxSizeAttrib(Ihandle* ih, const char* value);
@@ -136,10 +137,13 @@ char* iupBaseNativeParentGetBgColorAttrib(Ihandle* ih);
 /* other */
 char* iupBaseContainerGetExpandAttrib(Ihandle* ih);
 int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value);
-int iupBaseNoSaveCheck(Ihandle* ih, const char* name);
 
 /* drag&drop */
 void iupdrvRegisterDragDropAttrib(Iclass* ic);
+
+/* util */
+int iupBaseNoSaveCheck(Ihandle* ih, const char* name);
+
 
 /** @} */
 

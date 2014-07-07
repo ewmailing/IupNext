@@ -392,6 +392,21 @@ static int iSplitFocus_CB(Ihandle* bar, int focus)
 \*****************************************************************************/
 
 
+static char* iSplitGetClientSizeAttrib(Ihandle* ih)
+{
+  int width = ih->currentwidth;
+  int height = ih->currentheight;
+
+  if (ih->data->orientation == ISPLIT_VERT)
+    width -= ih->data->barsize;
+  else
+    height -= ih->data->barsize;
+
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+  return iupStrReturnIntInt(width, height, 'x');
+}
+
 static int iSplitSetColorAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
@@ -826,7 +841,7 @@ Iclass* iupSplitNewClass(void)
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iSplitGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* IupSplit only */

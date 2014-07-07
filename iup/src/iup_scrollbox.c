@@ -151,14 +151,10 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 static void iScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   if (ih->firstchild)
-  {
     iScrollBoxUpdateChildPosition(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
 
-    /* because ScrollBox is a native container, 
-       child position is restarted at (0,0) */
-    (void)x;
-    (void)y;
-  }
+  (void)x;  /* Native container, position is reset */
+  (void)y;
 }
 
 static void iScrollBoxLayoutUpdate(Ihandle* ih)
@@ -237,14 +233,14 @@ Iclass* iupScrollBoxNewClass(void)
   {
     IattribGetFunc drawsize_get = NULL;
     iupClassRegisterGetAttribute(ic, "DRAWSIZE", &drawsize_get, NULL, NULL, NULL, NULL);
-    iupClassRegisterAttribute(ic, "CLIENTSIZE", drawsize_get, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+    iupClassRegisterAttribute(ic, "CLIENTSIZE", drawsize_get, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   }
 
   /* replace IupCanvas behavior */
   iupClassRegisterReplaceAttribFunc(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL);
   iupClassRegisterReplaceAttribDef(ic, "BGCOLOR", "DLGBGCOLOR", NULL);
   iupClassRegisterReplaceAttribDef(ic, "BORDER", "NO", NULL);
-  iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterReplaceAttribDef(ic, "SCROLLBAR", "YES", NULL);
 
   return ic;

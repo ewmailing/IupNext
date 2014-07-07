@@ -833,11 +833,12 @@ static void motDialogDestroyCallback(Widget w, Ihandle *ih, XtPointer call_data)
 static void motDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   int menu_h = motDialogGetMenuSize(ih);
-  (void)x;
-  (void)y;
 
   /* Child coordinates are relative to client left-top corner. */
   iupBaseSetPosition(ih->firstchild, 0, menu_h);
+
+  (void)x;  /* Native container, position is reset */
+  (void)y;
 }
 
 static void* motDialogGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)

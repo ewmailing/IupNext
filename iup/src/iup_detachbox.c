@@ -41,6 +41,21 @@ struct _IcontrolData
 |* Attributes                                                                *|
 \*****************************************************************************/
 
+static char* iDetachBoxGetClientSizeAttrib(Ihandle* ih)
+{
+  int width = ih->currentwidth;
+  int height = ih->currentheight;
+
+  if (ih->data->orientation == IDBOX_VERT)
+    width -= ih->data->barsize;
+  else
+    height -= ih->data->barsize;
+
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+  return iupStrReturnIntInt(width, height, 'x');
+}
+
 static int iDetachBoxSetColorAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
@@ -409,7 +424,20 @@ static void iDetachBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
   /* child */
   if (ih->firstchild->brother)
-    iupBaseSetCurrentSize(ih->firstchild->brother, ih->currentwidth, ih->currentheight, shrink);
+  {
+    int width = ih->currentwidth;
+    int height = ih->currentheight;
+
+    if (ih->data->orientation == IDBOX_VERT)
+      width -= ih->data->barsize;
+    else
+      height -= ih->data->barsize;
+
+    if (width < 0) width = 0;
+    if (height < 0) height = 0;
+
+    iupBaseSetCurrentSize(ih->firstchild->brother, width, height, shrink);
+  }
 }
 
 static void iDetachBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
@@ -523,7 +551,7 @@ Iclass* iupDetachBoxNewClass(void)
   iupBaseRegisterCommonAttrib(ic);
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iDetachBoxGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 

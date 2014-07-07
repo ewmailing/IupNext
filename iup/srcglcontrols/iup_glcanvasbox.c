@@ -286,6 +286,17 @@ static int iGLCanvasBoxLEAVEWINDOW_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static char* iGLCanvasBoxGetClientOffsetAttrib(Ihandle* ih)
+{
+  int dx = 0, dy = 0;
+  if (iupAttribGetBoolean(ih, "BORDER"))
+  {
+    dx = 1;
+    dy = 1;
+  }
+  return iupStrReturnIntInt(dx, dy, 'x');
+}
+
 static int iGLCanvasBoxSetRedrawAttrib(Ihandle* ih, const char* value)
 {
   iGLCanvasBoxACTION(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
@@ -354,7 +365,7 @@ static void iGLCanvasBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   IupGetIntInt(ih, "MARGIN", &horiz_margin, &vert_margin);
 
-  /* since GLCanvas is a native container ignore x and y */
+  /* since GLCanvas is a native container ignore parameters x and y */
 
   for (child = ih->firstchild; child; child = child->brother)
   {
@@ -469,11 +480,11 @@ Iclass* iupGLCanvasBoxNewClass(void)
   /* Base Container */
   /* DO not set the default container behavior for EXPAND */
   /* iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT); */
-  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iGLCanvasBoxGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   {
     IattribGetFunc drawsize_get = NULL;
     iupClassRegisterGetAttribute(ic, "DRAWSIZE", &drawsize_get, NULL, NULL, NULL, NULL);
-    iupClassRegisterAttribute(ic, "CLIENTSIZE", drawsize_get, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+    iupClassRegisterAttribute(ic, "CLIENTSIZE", drawsize_get, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   }
 
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iGLCanvasBoxSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);

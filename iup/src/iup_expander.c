@@ -719,19 +719,6 @@ static char* iExpanderGetClientSizeAttrib(Ihandle* ih)
   return iupStrReturnIntInt(width, height, 'x');
 }
 
-static char* iExpanderGetClientOffsetAttrib(Ihandle* ih)
-{
-  int dx = 0, dy = 0;
-  int bar_size = iExpanderGetBarSize(ih);
-
-  if (ih->data->position == IEXPANDER_LEFT)
-    dx += bar_size;
-  else if (ih->data->position == IEXPANDER_TOP)
-    dy += bar_size;
-
-  return iupStrReturnIntInt(dx, dy, 'x');
-}
-
 static int iExpanderSetPositionAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "LEFT"))
@@ -1079,7 +1066,7 @@ Iclass* iupExpanderNewClass(void)
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iExpanderGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iExpanderGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* IupExpander only */
   iupClassRegisterAttribute(ic, "BARPOSITION", NULL, iExpanderSetPositionAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

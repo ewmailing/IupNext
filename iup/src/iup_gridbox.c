@@ -58,25 +58,12 @@ static void iGridBoxCalcLinCol(Ihandle* ih, int i, int *lin, int *col)
 
 static char* iGridBoxGetClientSizeAttrib(Ihandle* ih)
 {
-  int width, height;
-
-  if (ih->handle)
-  {
-    width = ih->currentwidth;
-    height = ih->currentheight;
-  }
-  else
-  {
-    width = ih->userwidth;
-    height = ih->userheight;
-  }
-
-  if (!width && !height)
-    return NULL;
-
-  width -= 2*ih->data->margin_x;
+  int width = ih->currentwidth;
+  int height = ih->currentheight;
+  width -= 2 * ih->data->margin_x;
   height -= 2*ih->data->margin_y;
-
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
   return iupStrReturnIntInt(width, height, 'x');
 }
 

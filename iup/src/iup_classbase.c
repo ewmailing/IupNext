@@ -121,6 +121,17 @@ char* iupBaseGetClientOffsetAttrib(Ihandle* ih)
   return "0x0";
 }
 
+char* iupBaseGetCurrentSizeAttrib(Ihandle* ih)
+{
+  int width = ih->currentwidth;
+  int height = ih->currentheight;
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+  if (width == 0 && height == 0)
+    return NULL;
+  return iupStrReturnIntInt(width, height, 'x');
+}
+
 char* iupBaseGetRasterSizeAttrib(Ihandle* ih)
 {
   int width, height;
@@ -136,7 +147,10 @@ char* iupBaseGetRasterSizeAttrib(Ihandle* ih)
     height = ih->userheight;
   }
 
-  if (!width && !height)
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+
+  if (width == 0 && height == 0)
     return NULL;
 
   return iupStrReturnIntInt(width, height, 'x');

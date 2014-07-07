@@ -48,15 +48,6 @@ int iupdrvFrameHasClientOffset(void)
   return 1;
 }
 
-static char* winFrameGetClientOffsetAttrib(Ihandle* ih)
-{
-  /* In Windows the position of the child is still 
-     relative to the top-left corner of the frame.
-     So we the decorations were already added. */
-  (void)ih;
-  return "0x0";
-}
-
 static int winFrameSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
@@ -243,9 +234,6 @@ void iupdrvFrameInitClass(Iclass* ic)
   ic->Map = winFrameMapMethod;
 
   /* Driver Dependent Attribute functions */
-
-  /* Frame */
-  iupClassRegisterAttribute(ic, "CLIENTOFFSET", winFrameGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", iupFrameGetBgColorAttrib, winFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE|IUPAF_DEFAULT);  

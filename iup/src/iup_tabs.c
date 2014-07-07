@@ -464,17 +464,14 @@ static void iTabsSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
 static void iTabsSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  /* IupTabs is the native parent of its children,
-     so the position is restarted at (0,0).
-     In all systems, each tab is a native window covering the client area.
+  /* In all systems, each tab is a native window covering the client area.
      Child coordinates are relative to client left-top corner of the tab page. */
   Ihandle* child;
-  (void)x;
-  (void)y;
   for (child = ih->firstchild; child; child = child->brother)
-  {
     iupBaseSetPosition(child, 0, 0);
-  }
+
+  (void)x;  /* Native container, position is reset */
+  (void)y;
 }
 
 static void* iTabsGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)

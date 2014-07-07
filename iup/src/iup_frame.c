@@ -59,10 +59,19 @@ static char* iFrameGetClientSizeAttrib(Ihandle* ih)
 
 static char* iFrameGetClientOffsetAttrib(Ihandle* ih)
 {
-  int dx, dy;
-  iupdrvFrameGetDecorOffset(&dx, &dy);
-  if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGet(ih, "TITLE"))
-    dy += iupFrameGetTitleHeight(ih);
+  int dx = 0, dy = 0;
+
+  /* In Windows the position of the child is still
+  relative to the top-left corner of the frame.
+  So we must manually add the decorations. */
+  if (!iupdrvFrameHasClientOffset())
+  {
+    iupdrvFrameGetDecorOffset(&dx, &dy);
+
+    if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGet(ih, "TITLE"))
+      dy += iupFrameGetTitleHeight(ih);
+  }
+
   return iupStrReturnIntInt(dx, dy, 'x');
 }
 
@@ -116,8 +125,6 @@ static void iFrameSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 static void iFrameSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   int dx=0, dy=0;
-  (void)x;
-  (void)y;
 
   /* IupFrame is the native parent of its children,
      so the position is restarted at (0,0).
@@ -137,6 +144,9 @@ static void iFrameSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   if (ih->firstchild)
     iupBaseSetPosition(ih->firstchild, dx, dy);
+
+  (void)x;  /* Native container, position is reset */
+  (void)y;
 }
 
 
@@ -183,8 +193,8 @@ Iclass* iupFrameNewClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iFrameGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iFrameGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iFrameGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iFrameGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* IupFrame only */
