@@ -41,7 +41,7 @@ static void iGLSaveClientClipping(Ihandle* ih, int clip_x, int clip_y, int clip_
   int x = 0, y = 0, w = 0, h = 0;
 
   IupGetIntInt(ih, "CLIENTSIZE", &w, &h);
-  IupGetIntInt(ih, "CLIENTOFFSET", &x, &y);
+  IupGetIntInt(ih, "CLIPOFFSET", &x, &y);
   x += ih->x;
   y += ih->y;
 

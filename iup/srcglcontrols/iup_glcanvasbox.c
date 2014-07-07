@@ -31,7 +31,7 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y)
     /* ih is a container then must check first for the client area */
     int client_x = 0, client_y = 0, client_w = 0, client_h = 0;
     IupGetIntInt(ih, "CLIENTSIZE", &client_w, &client_h);
-    IupGetIntInt(ih, "CLIENTOFFSET", &client_x, &client_y);
+    IupGetIntInt(ih, "CLIPOFFSET", &client_x, &client_y);
     client_x += ih->x;
     client_y += ih->y;
 
