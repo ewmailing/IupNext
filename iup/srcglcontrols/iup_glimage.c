@@ -17,6 +17,7 @@
 #include "iup_image.h"
 
 #include "iup_glcontrols.h"
+#include "iup_glimage.h"
 
 
 void iupGLColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char *b)

@@ -27,6 +27,8 @@
 #include "iup_str.h"
 
 #include "iup_glcontrols.h"
+#include "iup_glfont.h"
+#include "iup_glsubcanvas.h"
 
 
 static void iGLFixRectY(Ihandle* gl_parent, int *y, int h)
@@ -41,7 +43,7 @@ static void iGLSaveClientClipping(Ihandle* ih, int clip_x, int clip_y, int clip_
   int x = 0, y = 0, w = 0, h = 0;
 
   IupGetIntInt(ih, "CLIENTSIZE", &w, &h);
-  IupGetIntInt(ih, "CLIPOFFSET", &x, &y);
+  IupGetIntInt(ih, "CLIP_MIN", &x, &y);
   x += ih->x;
   y += ih->y;
 
@@ -233,9 +235,9 @@ int iupGLSubCanvasRedraw(Ihandle* ih)
 {
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
   if (iupAttribGetInt(ih, "REDRAWALL"))
-    IupSetAttribute(gl_parent, "REDRAW", NULL);
+    IupSetAttribute(gl_parent, "REDRAW", NULL);  /* redraw the whole box */
   else
-    iupGLSubCanvasRedrawFront(ih);
+    iupGLSubCanvasRedrawFront(ih);  /* redraw only the sub-canvas in the front buffer */
   return IUP_DEFAULT;  /* return IUP_DEFAULT so it can be used as a callback */
 }
 
@@ -293,15 +295,6 @@ static char* iGLSubCanvasGetSizeAttrib(Ihandle* ih)
     return NULL;  /* if font failed get from the hash table */
 
   return iupStrReturnIntInt(iupRASTER2WIDTH(width, charwidth), iupRASTER2HEIGHT(height, charheight), 'x');
-}
-
-void iupGLSubCanvasUpdateSizeFromFont(Ihandle* ih)
-{
-  char* value = iupAttribGet(ih, "SIZE");
-  if (!value)
-    return;
-
-  iGLSubCanvasSetSizeAttrib(ih, value);
 }
 
 static int iGLSubCanvasSetRedrawFrontAttrib(Ihandle* ih, const char* value)
@@ -371,6 +364,16 @@ static int iGLSubCanvasSetZorderAttrib(Ihandle* ih, const char* value)
 return 0;
 }
 
+static char* iGLSubCanvasGetClipMinAttrib(Ihandle* ih)
+{
+  (void)ih;
+  return "0x0";
+}
+
+static char* iGLSubCanvasGetClipMaxAttrib(Ihandle* ih)
+{
+  return iupStrReturnIntInt(ih->currentwidth-1, ih->currentheight-1, 'x');
+}
 
 static int iGLSubCanvasMapMethod(Ihandle* ih)
 {
@@ -438,6 +441,7 @@ Iclass* iupGLSubCanvasNewClass(void)
   iupClassRegisterAttribute(ic, "ZORDER", NULL, iGLSubCanvasSetZorderAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TIP", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TIPVISIBLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CURSOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "ARROW", IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
 
   /* Common visual */
   iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_DEFAULT);  /* inheritable */

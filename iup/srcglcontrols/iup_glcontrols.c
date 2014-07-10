@@ -35,6 +35,7 @@ int IupGLControlsOpen(void)
   iupRegisterClass(iupGLFrameNewClass());
   iupRegisterClass(iupGLExpanderNewClass());
   iupRegisterClass(iupGLScrollBoxNewClass());
+  iupRegisterClass(iupGLSizeBoxNewClass());
 
   IupSetGlobal("_IUP_GLCONTROLS_OPEN", "1");
 

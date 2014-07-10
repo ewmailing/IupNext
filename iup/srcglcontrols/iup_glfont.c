@@ -26,6 +26,7 @@
 #include "iup_drvfont.h"
 
 #include "iup_glcontrols.h"
+#include "iup_glfont.h"
 
 
 typedef struct _IglFont
@@ -659,11 +660,15 @@ int iupGLSetStandardFontAttrib(Ihandle* ih, const char* value)
     return iupdrvSetStandardFontAttrib(ih, value);
 
   glfont = iGLFontCreateNativeFont(ih, value);
-  if (!glfont)
-    return 1;
+  if (glfont)
+  {
+    /* If FONT is changed, must update the SIZE attribute */
+    char* value = iupAttribGet(ih, "SIZE");
+    if (!value)
+      return 1;
 
-  /* If FONT is changed, must update the SIZE attribute */
-  iupGLSubCanvasUpdateSizeFromFont(ih);
+    IupSetStrAttribute(ih, "SIZE", value);
+  }
 
   return 1;
 }

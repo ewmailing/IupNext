@@ -19,6 +19,7 @@
 #include "iup_register.h"
 
 #include "iup_glcontrols.h"
+#include "iup_gldraw.h"
 
 
 static int iGLSeparatorIsVertical(Ihandle* ih)

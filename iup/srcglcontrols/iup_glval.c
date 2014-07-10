@@ -19,6 +19,10 @@
 #include "iup_register.h"
 
 #include "iup_glcontrols.h"
+#include "iup_glfont.h"
+#include "iup_gldraw.h"
+#include "iup_glimage.h"
+#include "iup_glsubcanvas.h"
 
 
 typedef struct _iGLVal
@@ -425,7 +429,7 @@ Iclass* iupGLValNewClass(void)
   ic->format = NULL; /* no parameters */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype   = IUP_CHILDNONE;
-  ic->is_interactive = 1;
+  ic->is_interactive = 0;
 
   /* Class functions */
   ic->New = iupGLValNewClass;

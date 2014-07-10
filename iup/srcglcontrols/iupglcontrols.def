@@ -13,3 +13,4 @@ EXPORTS
   IupGLFrame
   IupGLExpander
   IupGLScrollBox
+  IupGLSizeBox

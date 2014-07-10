@@ -19,6 +19,10 @@
 #include "iup_register.h"
 
 #include "iup_glcontrols.h"
+#include "iup_gldraw.h"
+#include "iup_glicon.h"
+#include "iup_glsubcanvas.h"
+#include "iup_glsubcanvas.h"
 
 
 void iupGLButtonDraw(Ihandle* ih)
@@ -133,7 +137,7 @@ Iclass* iupGLButtonNewClass(void)
   ic->format = "s"; /* one string */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;
-  ic->is_interactive = 1;
+  ic->is_interactive = 0;
 
   /* Class functions */
   ic->New = iupGLButtonNewClass;

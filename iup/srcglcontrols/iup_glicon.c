@@ -17,6 +17,10 @@
 #include "iup_register.h"
 
 #include "iup_glcontrols.h"
+#include "iup_glfont.h"
+#include "iup_gldraw.h"
+#include "iup_glicon.h"
+#include "iup_glimage.h"
 
 
 enum{ IUP_GLPOS_LEFT, IUP_GLPOS_RIGHT, IUP_GLPOS_TOP, IUP_GLPOS_BOTTOM };

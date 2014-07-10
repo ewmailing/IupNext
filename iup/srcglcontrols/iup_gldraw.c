@@ -29,6 +29,10 @@
 #include "iup_image.h"
 
 #include "iup_glcontrols.h"
+#include "iup_glfont.h"
+#include "iup_gldraw.h"
+#include "iup_glicon.h"
+#include "iup_glimage.h"
 
 
 void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float linewidth, const char* color, int active)

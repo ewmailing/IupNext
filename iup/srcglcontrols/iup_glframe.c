@@ -18,6 +18,8 @@
 #include "iup_register.h"
 
 #include "iup_glcontrols.h"
+#include "iup_gldraw.h"
+#include "iup_glicon.h"
 
 
 static int iGLFrameACTION(Ihandle* ih)
@@ -46,7 +48,7 @@ static int iGLFrameACTION(Ihandle* ih)
 
       /* draw box */
       iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
-                       border_width, border_width + h, bordercolor, 1);
+                       border_width, border_width + h - 1, bordercolor, 1);
     }
     else
     {
@@ -110,7 +112,7 @@ static int iGLFrameMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
       iupBaseSetPosition(ih, ih->x + (x - start_x), ih->y + (y - start_y));
 
-      IupSetAttribute(gl_parent, "REDRAW", NULL);  /* must redraw everything */
+      IupSetAttribute(gl_parent, "REDRAW", NULL);  /* redraw the whole box */
 
       if (cb)
         cb(ih, ih->x, ih->y);
@@ -131,12 +133,11 @@ static void iGLFrameGetDecorOffset(Ihandle* ih, int *dx, int *dy)
   float bwidth = iupAttribGetFloat(ih, "FRAMEWIDTH");
   int border_width = (int)ceil(bwidth);
   *dx = border_width;
-  *dy = 2 * border_width;
+  *dy = border_width;
 
   if (image || title)
   {
-    int w = 0,
-        h = 0;
+    int w = 0, h = 0;
     iupGLIconGetSize(ih, image, title, &w, &h);
 
     (*dy) += h;
@@ -177,11 +178,11 @@ static char* iGLFrameGetClientSizeAttrib(Ihandle* ih)
   return iupStrReturnIntInt(width, height, 'x');
 }
 
-static char* iGLFrameGetClipOffsetAttrib(Ihandle* ih)
+static char* iGLFrameGetClipMinAttrib(Ihandle* ih)
 {
-  int dx, dy;
-  iGLFrameGetDecorOffset(ih, &dx, &dy);
-  return iupStrReturnIntInt(dx, dy, 'x');
+  int x, y;
+  iGLFrameGetDecorOffset(ih, &x, &y);
+  return iupStrReturnIntInt(x, y, 'x');
 }
 
 static int iGLFrameSetMoveableAttrib(Ihandle* ih, const char* value)
@@ -301,7 +302,7 @@ Iclass* iupGLFrameNewClass(void)
 
   iupGLIconRegisterAttrib(ic);
 
-  iupClassRegisterAttribute(ic, "CLIPOFFSET", iGLFrameGetClipOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIP_MIN", iGLFrameGetClipMinAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

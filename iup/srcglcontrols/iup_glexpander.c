@@ -19,6 +19,10 @@
 #include "iup_register.h"
 
 #include "iup_glcontrols.h"
+#include "iup_glfont.h"
+#include "iup_gldraw.h"
+#include "iup_glimage.h"
+#include "iup_glsubcanvas.h"
 
 
 #define IEXPAND_BUTTON_SIZE 16
@@ -74,7 +78,7 @@ static void iGLExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int 
       IupRefreshChildren(gl_parent); /* this will recompute the layout of the glcanvasbox only */
   }
 
-  IupSetAttribute(gl_parent, "REDRAW", NULL);  /* must redraw everything */
+  IupSetAttribute(gl_parent, "REDRAW", NULL);  /* redraw the whole box */
 
   if (callcb)
   {
@@ -279,7 +283,7 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
       iupBaseSetPosition(ih, ih->x + (x - ih->data->start_x), ih->y + (y - ih->data->start_y));
 
-      IupSetAttribute(gl_parent, "REDRAW", NULL);  /* must redraw everything */
+      IupSetAttribute(gl_parent, "REDRAW", NULL);  /* redraw the whole box */
       redraw = 0;
 
       if (cb)
@@ -660,7 +664,7 @@ static char* iGLExpanderGetClientSizeAttrib(Ihandle* ih)
   return iupStrReturnIntInt(width, height, 'x');
 }
 
-static char* iGLExpanderGetClipOffsetAttrib(Ihandle* ih)
+static char* iGLExpanderGetClipMinAttrib(Ihandle* ih)
 {
   int dx = 0, dy = 0;
   int bar_size = iGLExpanderGetBarSize(ih);
@@ -931,7 +935,7 @@ Iclass* iupGLExpanderNewClass(void)
   ic->format = "h";   /* one ihandle */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype  = IUP_CHILDMANY+1;  /* one child */
-  ic->is_interactive = 1;
+  ic->is_interactive = 0;
 
   /* Class functions */
   ic->New     = iupGLExpanderNewClass;
@@ -957,7 +961,7 @@ Iclass* iupGLExpanderNewClass(void)
   /* Visual */
   /* NOTICE: avoid defining inheritable attributes for containers */
 
-  iupClassRegisterAttribute(ic, "CLIPOFFSET", iGLExpanderGetClipOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIP_MIN", iGLExpanderGetClipMinAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BARPOSITION", NULL, iGLExpanderSetPositionAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BARSIZE", iGLExpanderGetBarSizeAttrib, iGLExpanderSetBarSizeAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

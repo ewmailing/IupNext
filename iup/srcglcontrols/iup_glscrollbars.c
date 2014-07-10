@@ -19,6 +19,9 @@
 #include "iup_layout.h"
 
 #include "iup_glcontrols.h"
+#include "iup_glscrollbars.h"
+#include "iup_gldraw.h"
+#include "iup_glsubcanvas.h"
 
 
 enum {
@@ -235,8 +238,7 @@ static void iGLScrollbarsDrawHorizontal(Ihandle* ih, int active, const char* fgc
   posx += xmin + sb_size;
 
   /* draw background */
-  iupGLDrawBox(ih, xmin, xmax,
-                   ymin, ymax, bgcolor, 1);
+  iupGLDrawBox(ih, xmin, xmax, ymin, ymax, bgcolor, 1);
 
   /* draw arrows */
   iupGLDrawArrow(ih, xmin + 2,           ymin + 2, sb_size - 5, fgcolor_dec, active, IUPGL_ARROW_LEFT);
@@ -487,7 +489,7 @@ static int iGLScrollbarsSetPosYAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
-void iupGLScrollbarsButton(Ihandle *ih, int pressed, int x, int y)
+int iupGLScrollbarsButton(Ihandle *ih, int pressed, int x, int y)
 {
   if (pressed)
   {
@@ -504,6 +506,9 @@ void iupGLScrollbarsButton(Ihandle *ih, int pressed, int x, int y)
       else
         iupAttribSetStr(ih, "_IUP_START_POS", iupAttribGet(ih, "POSY"));
     }
+
+    if (handler != SB_NONE)
+      return 1;
   }
   else 
   {
@@ -523,7 +528,12 @@ void iupGLScrollbarsButton(Ihandle *ih, int pressed, int x, int y)
       iupGLScrollbarsLayoutUpdate(ih);
     }
     iupAttribSet(ih, "_IUP_PRESSED_HANDLER", NULL);
+
+    if (handler != SB_NONE)
+      return 1;
   }
+
+  return 0;
 }
 
 int iupGLScrollbarsMotion(Ihandle *ih, int x, int y)

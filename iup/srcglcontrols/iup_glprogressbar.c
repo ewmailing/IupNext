@@ -19,6 +19,8 @@
 #include "iup_register.h"
 
 #include "iup_glcontrols.h"
+#include "iup_glfont.h"
+#include "iup_gldraw.h"
 
 
 typedef struct _iGLProgressBar
@@ -258,10 +260,13 @@ Iclass* iupGLProgressBarNewClass(void)
   iupClassRegisterAttribute(ic, "MIN", iGLProgressBarGetMinAttrib, iGLProgressBarSetMinAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MAX", iGLProgressBarGetMaxAttrib, iGLProgressBarSetMaxAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE", iGLProgressBarGetValueAttrib, iGLProgressBarSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "PADDING", iGLProgressBarGetPaddingAttrib, iGLProgressBarSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "1x1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOW_TEXT", iGLProgressBarGetShowTextAttrib, iGLProgressBarSetShowTextAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "TXTCOLOR", NULL, NULL, "0 0 0", NULL, IUPAF_DEFAULT);  /* inheritable */
 

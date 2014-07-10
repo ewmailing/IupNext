@@ -19,6 +19,8 @@
 #include "iup_register.h"
 
 #include "iup_glcontrols.h"
+#include "iup_glfont.h"
+#include "iup_glsubcanvas.h"
 
 
 
@@ -31,12 +33,12 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y)
     /* ih is a container then must check first for the client area */
     int client_x = 0, client_y = 0, client_w = 0, client_h = 0;
     IupGetIntInt(ih, "CLIENTSIZE", &client_w, &client_h);
-    IupGetIntInt(ih, "CLIPOFFSET", &client_x, &client_y);
+    IupGetIntInt(ih, "CLIP_MIN", &client_x, &client_y);
     client_x += ih->x;
     client_y += ih->y;
 
-    if (x > client_x && x < client_x + client_w &&
-        y > client_y && y < client_y + client_h)
+    if (x >= client_x && x < client_x + client_w &&
+        y >= client_y && y < client_y + client_h)
     {
       Ihandle* child_array[100];
       int i=0;
@@ -53,8 +55,8 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y)
         child = child_array[i];
 
         if (iupAttribGetInt(child, "VISIBLE") &&
-          x > child->x && x < child->x + child->currentwidth &&
-          y > child->y && y < child->y + child->currentheight)
+            x >= child->x && x < child->x + child->currentwidth &&
+            y >= child->y && y < child->y + child->currentheight)
         {
           ih = iGLCanvasBoxPickChild(child, x, y);
           if (ih)
@@ -170,12 +172,15 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child, int x, int y)
     if (iupAttribGetInt(last_child, "ACTIVE"))
     {
       IFn cb;
+      char* value;
 
-      char* tip = iupAttribGet(last_child, "TIP");
-      if (tip)
+      value = iupAttribGet(ih, "_IUPGLBOX_TIP_SET");
+      if (value)
       {
-        IupSetAttribute(ih, "TIP", NULL);
-        printf("Set TIP = NULL\n");
+        value = iupAttribGet(ih, "_IUPGLBOX_TIP");
+        IupSetStrAttribute(ih, "TIP", value);  /* reset attribute if it was set */
+        iupAttribSet(ih, "_IUPGLBOX_TIP", NULL);
+        iupAttribSet(ih, "_IUPGLBOX_TIP_SET", NULL);
       }
 
       iupAttribSet(last_child, "HIGHLIGHT", NULL);
@@ -184,6 +189,13 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child, int x, int y)
       cb = (IFn)IupGetCallback(last_child, "GL_LEAVEWINDOW_CB");
       if (cb)
         cb(last_child);
+
+      value = iupAttribGet(ih, "_IUPGLBOX_CURSOR");
+      if (value)
+      {
+        IupSetStrAttribute(ih, "CURSOR", value);  /* reset attribute if it was set */
+        iupAttribSet(ih, "_IUPGLBOX_CURSOR", NULL);
+      }
     }
 
     iupAttribSet(ih, "_IUP_GLBOX_LAST_ENTER", NULL);
@@ -194,13 +206,15 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child, int x, int y)
     if (iupAttribGetInt(child, "ACTIVE"))
     {
       IFnii cb;
+      char* value;
 
-      char* tip = iupAttribGet(child, "TIP");
-      if (tip)
+      value = iupAttribGet(child, "TIP");
+      if (value)
       {
-        IupSetStrAttribute(ih, "TIP", tip);
+        iupAttribSet(ih, "_IUPGLBOX_TIP_SET", "1");  /* TIP can be NULL */
+        iupAttribSetStr(ih, "_IUPGLBOX_TIP", IupGetAttribute(ih, "TIP"));
+        IupSetStrAttribute(ih, "TIP", value);
         IupSetAttribute(ih, "TIPVISIBLE", "Yes");
-        printf("Set TIP = %s\n", tip);
       }
 
       iupAttribSet(child, "HIGHLIGHT", "1");
@@ -208,6 +222,13 @@ static void iGLCanvasBoxEnterChild(Ihandle* ih, Ihandle* child, int x, int y)
       cb = (IFnii)IupGetCallback(child, "GL_ENTERWINDOW_CB");
       if (cb)
         cb(child, x, y);
+
+      value = iupAttribGet(child, "CURSOR");
+      if (value)
+      {
+        iupAttribSetStr(ih, "_IUPGLBOX_CURSOR", IupGetAttribute(ih, "CURSOR"));
+        IupSetStrAttribute(ih, "CURSOR", value);
+      }
     }
 
     iupAttribSet(ih, "_IUP_GLBOX_LAST_ENTER", (char*)child);

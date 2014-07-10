@@ -20,7 +20,8 @@
 #include "iup_layout.h"
 
 #include "iup_glcontrols.h"
-
+#include "iup_glscrollbars.h"
+#include "iup_glsubcanvas.h"
 
 
 static int iGLScrollBoxBUTTON_CB(Ihandle *ih, int button, int pressed, int x, int y, char* status)
@@ -28,9 +29,8 @@ static int iGLScrollBoxBUTTON_CB(Ihandle *ih, int button, int pressed, int x, in
   if (button != IUP_BUTTON1)
     return IUP_DEFAULT;
 
-  iupGLScrollbarsButton(ih, pressed, x, y);
-
-  iupGLSubCanvasRedraw(ih);
+  if (iupGLScrollbarsButton(ih, pressed, x, y))
+    iupGLSubCanvasRedraw(ih);
 
   (void)status;
   return IUP_DEFAULT;
@@ -205,7 +205,7 @@ Iclass* iupGLScrollBoxNewClass(void)
   ic->format = "h";   /* one ihandle */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype  = IUP_CHILDMANY+1;  /* 1 child */
-  ic->is_interactive = 1;
+  ic->is_interactive = 0;
 
   /* Class functions */
   ic->New = iupGLScrollBoxNewClass;

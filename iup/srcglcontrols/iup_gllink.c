@@ -18,6 +18,7 @@
 #include "iup_register.h"
 
 #include "iup_glcontrols.h"
+#include "iup_glicon.h"
 
 
 static int iGLLinkACTION(Ihandle* ih)
@@ -55,20 +56,6 @@ static int iGLLinkButton_CB(Ihandle* ih, int button, int pressed, int x, int y, 
   return IUP_DEFAULT;
 }
 
-static int iGLLinkEnterWindow_CB(Ihandle* ih)
-{
-  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  IupSetAttribute(gl_parent, "CURSOR", "HAND");
-  return IUP_DEFAULT;
-}
-
-static int iGLLinkLeaveWindow_CB(Ihandle* ih)
-{
-  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  IupSetAttribute(gl_parent, "CURSOR", "ARROW");
-  return IUP_DEFAULT;
-}
-
 static int iGLLinkMapMethod(Ihandle* ih)
 {
   IupSetAttribute(ih, "FONTSTYLE", "Underline");
@@ -83,10 +70,10 @@ static int iGLLinkCreateMethod(Ihandle* ih, void **params)
     if (params[1]) iupAttribSetStr(ih, "TITLE", (char*)(params[1]));
   }
 
+  iupAttribSet(ih, "CURSOR", "HAND");
+
   IupSetCallback(ih, "GL_ACTION", iGLLinkACTION);
   IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLLinkButton_CB);
-  IupSetCallback(ih, "GL_ENTERWINDOW_CB", iGLLinkEnterWindow_CB);
-  IupSetCallback(ih, "GL_LEAVEWINDOW_CB", iGLLinkLeaveWindow_CB);
 
   return IUP_NOERROR; 
 }
@@ -99,7 +86,7 @@ Iclass* iupGLLinkNewClass(void)
   ic->format = "ss"; /* two strings */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;
-  ic->is_interactive = 1;
+  ic->is_interactive = 0;
 
   /* Class functions */
   ic->New = iupGLLinkNewClass;
@@ -111,7 +98,6 @@ Iclass* iupGLLinkNewClass(void)
 
   /* attributes */
   iupClassRegisterAttribute(ic, "URL", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CURSOR", NULL, iupdrvBaseSetCursorAttrib, IUPAF_SAMEASSYSTEM, "ARROW", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
 
   iupClassRegisterReplaceAttribDef(ic, "FGCOLOR", "LINKFGCOLOR", NULL);
 
