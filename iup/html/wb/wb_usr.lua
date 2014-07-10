@@ -1398,6 +1398,10 @@ wb_usr.tree =
                   link= "gl/iupglseparator.html"
                 },
                 {
+                  name= {nl= "IupGLSizeBox"},
+                  link= "gl/iupglsizebox.html"
+                },
+                {
                   name= {nl= "IupGLToggle"},
                   link= "gl/iupgltoggle.html"
                 },

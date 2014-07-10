@@ -79,7 +79,8 @@ The control inside the sbox will not be resized with a size lesser than its
 <p>The <strong>IupCanvas</strong> bar handler is always the first child of the 
 sbox. It can be obtained using <strong>IupGetChild</strong> or <strong>
 IupGetNextChild</strong>.</p>
-<p><strong>IupSbox</strong> can be resized above the maximum size so some controls go to outside the dialog area 
+<p><strong>IupSbox</strong> can make the layout to be resized larger than the 
+dialog size so some controls will be positioned outside the dialog area 
   at right or bottom. In fact this is part of the dynamic layout default reposition of controls inside the dialog. See 
   the <strong>IupRefresh</strong> function. The IUP layout does not have a maximum limit only a minimum, 
 except if you use the MAXSIZE common attribute.</p>

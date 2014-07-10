@@ -454,7 +454,7 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(vbox, "MARGIN", "5x5");
   IupSetAttribute(vbox, "GAP", "5");
 
-  gtoggle5 = IupGLToggle("Radio Toggle");
+  gtoggle5 = IupGLToggle("Toggle");
   IupSetAttribute(gtoggle5, "PADDING", "5x5");
   IupSetCallback(gtoggle5, "ACTION", (Icallback)toggle_action_cb);
   IupSetAttribute(gtoggle5, "NAME", "toggle5");
