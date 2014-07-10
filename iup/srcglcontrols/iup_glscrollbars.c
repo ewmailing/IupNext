@@ -276,7 +276,7 @@ void iupGLScrollbarsDraw(Ihandle* ih, int active)
     iGLScrollbarsDrawHorizontal(ih, active, fgcolor, bgcolor, pressed, highlight, sb_xmin, sb_xmax, sb_dx, has_vert_scroll);
 }
 
-void iupGLScrollbarsLayoutUpdate(Ihandle *ih)
+void iupGLScrollbarsChildLayoutUpdate(Ihandle *ih)
 {
   if (ih->firstchild)
   {
@@ -447,6 +447,36 @@ static int iGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int start_pos,
   return 0;
 }
 
+void iupGLScrollbarsCheckPosX(Ihandle *ih)
+{
+  int xmin = iupAttribGetInt(ih, "XMIN");
+  int xmax = iupAttribGetInt(ih, "XMAX");
+  int dx = iupAttribGetInt(ih, "DX");
+  int posx = iupAttribGetInt(ih, "POSX");
+
+  if (xmax == xmin || dx >= xmax-xmin)
+    iupAttribSet(ih, "POSX", "0");
+  else if (posx < xmin)
+    iupAttribSetInt(ih, "POSX", xmin);
+  else if (posx > xmax - dx)
+    iupAttribSetInt(ih, "POSX", xmax - dx);
+}
+
+void iupGLScrollbarsCheckPosY(Ihandle *ih)
+{
+  int ymin = iupAttribGetInt(ih, "YMIN");
+  int ymax = iupAttribGetInt(ih, "YMAX");
+  int dy = iupAttribGetInt(ih, "DY");
+  int posy = iupAttribGetInt(ih, "POSY");
+
+  if (ymax == ymin || dy >= ymax - ymin)
+    iupAttribSet(ih, "POSX", "0");
+  else if (posy < ymin)
+    iupAttribSetInt(ih, "POSY", ymin);
+  else if (posy > ymax - dy) 
+    iupAttribSetInt(ih, "POSY", ymax - dy);
+}
+
 static int iGLScrollbarsSetPosXAttrib(Ihandle *ih, const char *value)
 {
   int xmin, xmax, dx;
@@ -464,7 +494,7 @@ static int iGLScrollbarsSetPosXAttrib(Ihandle *ih, const char *value)
 
   iupAttribSetInt(ih, "POSX", posx);
 
-  iupGLScrollbarsLayoutUpdate(ih);
+  iupGLScrollbarsChildLayoutUpdate(ih);
   return 0;
 }
 
@@ -485,7 +515,7 @@ static int iGLScrollbarsSetPosYAttrib(Ihandle *ih, const char *value)
 
   iupAttribSetInt(ih, "POSY", posy);
 
-  iupGLScrollbarsLayoutUpdate(ih);
+  iupGLScrollbarsChildLayoutUpdate(ih);
   return 0;
 }
 
@@ -525,7 +555,7 @@ int iupGLScrollbarsButton(Ihandle *ih, int pressed, int x, int y)
           handler == SB_DEC_Y || handler == SB_PAGEDEC_Y)
         iGLScrollbarsPressY(ih, handler);
 
-      iupGLScrollbarsLayoutUpdate(ih);
+      iupGLScrollbarsChildLayoutUpdate(ih);
     }
     iupAttribSet(ih, "_IUP_PRESSED_HANDLER", NULL);
 
@@ -558,10 +588,8 @@ int iupGLScrollbarsMotion(Ihandle *ih, int x, int y)
 
     if (iGLScrollbarsMove(ih, x - start_x, y - start_y, start_pos, handler))
     {
-      iupGLScrollbarsLayoutUpdate(ih);
-
-      iupGLSubCanvasRedraw(ih);
-      redraw = 0;
+      iupGLScrollbarsChildLayoutUpdate(ih);
+      redraw = 1;
     }
   }
 

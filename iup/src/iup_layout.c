@@ -82,6 +82,7 @@ void IupRefresh(Ihandle* ih)
   if (dialog)
   {
     iupLayoutCompute(dialog);
+
     if (dialog->handle)
       iupLayoutUpdate(dialog);
   }

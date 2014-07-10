@@ -48,6 +48,6 @@ EXPORTS
   iupGLScrollbarsLeaveWindow
   iupGLScrollbarsDraw
   iupGLScrollbarsGetSize
-  iupGLScrollbarsLayoutUpdate
+  iupGLScrollbarsChildLayoutUpdate
 
   iupGLSubCanvasRedraw

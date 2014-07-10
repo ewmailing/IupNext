@@ -20,7 +20,9 @@ void iupGLScrollbarsEnterWindow(Ihandle* ih, int x, int y);
 void iupGLScrollbarsLeaveWindow(Ihandle* ih);
 void iupGLScrollbarsDraw(Ihandle* ih, int active);
 int iupGLScrollbarsGetSize(Ihandle* ih);
-void iupGLScrollbarsLayoutUpdate(Ihandle *ih);
+void iupGLScrollbarsChildLayoutUpdate(Ihandle *ih);
+void iupGLScrollbarsCheckPosX(Ihandle *ih);
+void iupGLScrollbarsCheckPosY(Ihandle *ih);
 
 
 #ifdef __cplusplus

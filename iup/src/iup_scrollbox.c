@@ -26,11 +26,6 @@
 |* Canvas Callbacks                                                          *|
 \*****************************************************************************/
 
-static void iScrollBoxUpdateChildPosition(Ihandle* ih, float posx, float posy)
-{
-  iupBaseSetPosition(ih->firstchild, -(int)posx, -(int)posy);
-}
-
 static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
 {
   if (ih->firstchild)
@@ -40,7 +35,7 @@ static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
     if (IupGetInt(ih, "DY") > IupGetInt(ih, "YMAX")-iupdrvGetScrollbarSize())
       posy = 0;
 
-    iScrollBoxUpdateChildPosition(ih, posx, posy);
+    iupBaseSetPosition(ih->firstchild, -(int)posx, -(int)posy);
     iupLayoutUpdate(ih->firstchild);
   }
   (void)op;
@@ -53,8 +48,8 @@ static int iScrollBoxButton_CB(Ihandle *ih, int but, int pressed, int x, int y, 
   {
     iupAttribSetInt(ih, "_IUP_START_X", x);
     iupAttribSetInt(ih, "_IUP_START_Y", y);
-    iupAttribSetInt(ih, "_IUP_START_POSX", (int)IupGetFloat(ih, "POSX"));
-    iupAttribSetInt(ih, "_IUP_START_POSY", (int)IupGetFloat(ih, "POSY"));
+    iupAttribSetInt(ih, "_IUP_START_POSX", IupGetInt(ih, "POSX"));
+    iupAttribSetInt(ih, "_IUP_START_POSY", IupGetInt(ih, "POSY"));
     iupAttribSet(ih, "_IUP_DRAG_SB", "1");
   }
   if (but==IUP_BUTTON1 && !pressed)
@@ -104,9 +99,39 @@ static void iScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int 
   *children_expand = ih->expand;
 }
 
+static void iScrollBoxUpdateVisibleArea(Ihandle* ih, int xmax, int ymax)
+{
+  int width = ih->currentwidth,
+    height = ih->currentheight;
+
+  /* if child is greater than scrollbox in one direction,
+  then it has scrollbars
+  but this affects the opposite direction */
+
+  if (xmax > ih->currentwidth)
+    height -= iupdrvGetScrollbarSize();
+
+  if (ymax > ih->currentheight)
+    width -= iupdrvGetScrollbarSize();
+
+  if (xmax <= ih->currentwidth && xmax > width)
+    height -= iupdrvGetScrollbarSize();
+
+  if (ymax <= ih->currentheight && ymax > height)
+    width -= iupdrvGetScrollbarSize();
+
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+
+  IupSetInt(ih, "DX", width);
+  IupSetInt(ih, "DY", height);
+}
+
 static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  if (ih->firstchild)
+  Ihandle* child = ih->firstchild;
+
+  if (child)
   {
     int w, h, has_sb_horiz=0, has_sb_vert=0;
 
@@ -115,17 +140,17 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
        So this will let the child be greater than the scrollbox,
        or let the child expand to the scrollbox.  */
 
-    if (ih->firstchild->naturalwidth > ih->currentwidth)
+    if (child->naturalwidth > ih->currentwidth)
     {
-      w = ih->firstchild->naturalwidth;
+      w = child->naturalwidth;
       has_sb_horiz = 1;
     }
     else
       w = ih->currentwidth;  /* expand space */
 
-    if (ih->firstchild->naturalheight > ih->currentheight)
+    if (child->naturalheight > ih->currentheight)
     {
-      h = ih->firstchild->naturalheight;
+      h = child->naturalheight;
       has_sb_vert = 1;
     }
     else
@@ -133,61 +158,36 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
     if (!has_sb_horiz && has_sb_vert)
       w -= iupdrvGetScrollbarSize();  /* reduce expand space */
+
     if (has_sb_horiz && !has_sb_vert)
       h -= iupdrvGetScrollbarSize();  /* reduce expand space */
 
-    iupBaseSetCurrentSize(ih->firstchild, w, h, shrink);
+    /* Now w and h is a possible child size */
+    iupBaseSetCurrentSize(child, w, h, shrink);
 
-    IupSetInt(ih, "XMAX", ih->firstchild->currentwidth);
-    IupSetInt(ih, "YMAX", ih->firstchild->currentheight);
+    /* Now we use the actual child size as the virtual area */
+    IupSetInt(ih, "XMAX", child->currentwidth);
+    IupSetInt(ih, "YMAX", child->currentheight);
+
+    /* Finally update the visible area */
+    iScrollBoxUpdateVisibleArea(ih, child->currentwidth, child->currentheight);
   }
   else
   {
     IupSetAttribute(ih, "XMAX", "0");
     IupSetAttribute(ih, "YMAX", "0");
+    IupSetAttribute(ih, "DX", "0");
+    IupSetAttribute(ih, "DY", "0");
   }
 }
 
 static void iScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   if (ih->firstchild)
-    iScrollBoxUpdateChildPosition(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+    iupBaseSetPosition(ih->firstchild, -IupGetInt(ih, "POSX"), -IupGetInt(ih, "POSY"));
 
   (void)x;  /* Native container, position is reset */
   (void)y;
-}
-
-static void iScrollBoxLayoutUpdate(Ihandle* ih)
-{
-  int dx = ih->currentwidth, 
-      dy = ih->currentheight;
-
-  /* already updated the canvas layout, 
-     so just have to update the scrollbars and child. */
-
-  if (ih->firstchild)
-  {
-    /* if child is greater than scrollbox, has scrollbars
-       but this affects the opposite direction */
-
-    if (ih->firstchild->currentwidth > ih->currentwidth)
-      dy -= iupdrvGetScrollbarSize();
-
-    if (ih->firstchild->currentheight > ih->currentheight)
-      dx -= iupdrvGetScrollbarSize();
-  }
-
-  if (dx < 0) dx = 0;
-  if (dy < 0) dy = 0;
-
-  IupSetInt(ih, "DX", dx);
-  IupSetInt(ih, "DY", dy);
-
-  if (ih->firstchild)
-  {
-    iScrollBoxUpdateChildPosition(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
-    iupLayoutUpdate(ih->firstchild);
-  }
 }
 
 static int iScrollBoxCreateMethod(Ihandle* ih, void** params)
@@ -225,7 +225,6 @@ Iclass* iupScrollBoxNewClass(void)
   ic->ComputeNaturalSize = iScrollBoxComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iScrollBoxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iScrollBoxSetChildrenPositionMethod;
-  ic->LayoutUpdate = iScrollBoxLayoutUpdate;
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
