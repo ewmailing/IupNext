@@ -41,7 +41,7 @@
       <Filter>ctrl</Filter>
     </ClCompile>
     <ClCompile Include="..\srcglcontrols\iup_glscrollbars.c" />
-    <ClCompile Include="..\srcglcontrols\iup_glsbox.c">
+    <ClCompile Include="..\srcglcontrols\iup_glsizebox.c">
       <Filter>ctrl</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,6 +50,24 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\srcglcontrols\iup_glcontrols.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcglcontrols\iup_glscrollbars.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcglcontrols\iup_glfont.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcglcontrols\iup_gldraw.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcglcontrols\iup_glicon.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcglcontrols\iup_glimage.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcglcontrols\iup_glsubcanvas.h">
       <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>

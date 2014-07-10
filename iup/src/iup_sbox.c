@@ -101,24 +101,18 @@ static void iSboxShakeControls(Ihandle* ih)
   {
     if (new_w != ih->data->w)
     {
-      if (new_w > ih->naturalwidth)
-        iSboxSaveDimension(ih, new_w, ih->data->h);
-      else 
-        iSboxSaveDimension(ih, new_w, ih->naturalwidth);
+      iSboxSaveDimension(ih, new_w, ih->data->h);
+      IupRefresh(ih);  /* may affect all the elements in the dialog */
     }
   }
   else if (ih->data->direction == ISBOX_SOUTH || ih->data->direction == ISBOX_NORTH)
   {
-    if(new_h != ih->data->h)
+    if (new_h != ih->data->h)
     {
-      if (new_h > ih->naturalheight)
-        iSboxSaveDimension(ih, ih->data->w, new_h);
-      else 
-        iSboxSaveDimension(ih, ih->naturalheight, new_h);
+      iSboxSaveDimension(ih, ih->data->w, new_h);
+      IupRefresh(ih);  /* may affect all the elements in the dialog */
     }
   }
-
-  IupRefresh(ih);  /* may affect all the elements in the dialog */
 }
 
 

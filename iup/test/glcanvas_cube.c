@@ -481,6 +481,7 @@ void GLCanvasCubeTest(void)
     NULL);
 
   gsbox = IupSetAttributes(IupGLScrollBox(vbox2), "RASTERSIZE=90x90");
+  gsbox = IupGLSizeBox(gsbox);
 
   gframe1 = IupSetAttributes(IupGLFrame(hbox), "TITLE=Frame");
   gframe2 = IupSetAttributes(IupGLFrame(vbox), "BACKGROUND=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");

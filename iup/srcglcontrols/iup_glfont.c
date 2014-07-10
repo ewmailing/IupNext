@@ -652,7 +652,7 @@ void iupGLFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *
   if (h) *h = glfont->charheight * iupStrLineCount(str);
 }
 
-int iupGLSetStandardFontAttrib(Ihandle* ih, const char* value)
+int iupGLFontSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
   IglFont* glfont;
 

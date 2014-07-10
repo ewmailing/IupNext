@@ -215,7 +215,7 @@ void iupGLSubCanvasRestoreState(Ihandle* gl_parent)
   iupAttribSet(gl_parent, "_IUP_GLSUBCANVAS_SAVED", NULL);
 }
 
-void iupGLSubCanvasRedrawFront(Ihandle* ih)
+static void iGLSubCanvasRedrawFront(Ihandle* ih)
 {
   IFn cb = (IFn)IupGetCallback(ih, "GL_ACTION");
   if (cb && iupAttribGetInt(ih, "VISIBLE"))
@@ -237,7 +237,7 @@ int iupGLSubCanvasRedraw(Ihandle* ih)
   if (iupAttribGetInt(ih, "REDRAWALL"))
     IupSetAttribute(gl_parent, "REDRAW", NULL);  /* redraw the whole box */
   else
-    iupGLSubCanvasRedrawFront(ih);  /* redraw only the sub-canvas in the front buffer */
+    iGLSubCanvasRedrawFront(ih);  /* redraw only the sub-canvas in the front buffer */
   return IUP_DEFAULT;  /* return IUP_DEFAULT so it can be used as a callback */
 }
 
@@ -299,7 +299,7 @@ static char* iGLSubCanvasGetSizeAttrib(Ihandle* ih)
 
 static int iGLSubCanvasSetRedrawFrontAttrib(Ihandle* ih, const char* value)
 {
-  iupGLSubCanvasRedrawFront(ih);
+  iGLSubCanvasRedrawFront(ih);
   (void)value;
   return 0;
 }
@@ -430,7 +430,7 @@ Iclass* iupGLSubCanvasNewClass(void)
   /* redefine common attributes */
   iupClassRegisterAttribute(ic, "SIZE", iGLSubCanvasGetSizeAttrib, iGLSubCanvasSetSizeAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_DEFAULTVALUE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHARSIZE", iGLSubCanvasGetCharSizeAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupGLSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);  /* use inheritance to retrieve standard fonts */
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iupGLFontSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);  /* use inheritance to retrieve standard fonts */
 
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);

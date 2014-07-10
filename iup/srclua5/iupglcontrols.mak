@@ -38,7 +38,8 @@ endif
 
 SRCLUA = glcanvasbox.lua glsubcanvas.lua gllabel.lua glbutton.lua \
          glexpander.lua glframe.lua gllink.lua glprogressbar.lua \
-         glseparator.lua gltoggle.lua glval.lua glscrollbox.lua
+         glseparator.lua gltoggle.lua glval.lua glscrollbox.lua \
+         glsizebox.lua
 
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
 GC := $(addprefix gl/il_, $(GC))

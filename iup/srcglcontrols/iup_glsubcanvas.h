@@ -13,11 +13,11 @@ extern "C" {
 #endif
 
 
+int  iupGLSubCanvasRedraw(Ihandle* ih);
+
 int  iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
 void iupGLSubCanvasSaveState(Ihandle* gl_parent);
 void iupGLSubCanvasRestoreState(Ihandle* gl_parent);
-void iupGLSubCanvasRedrawFront(Ihandle* ih);
-int  iupGLSubCanvasRedraw(Ihandle* ih);
 
 
 #ifdef __cplusplus
