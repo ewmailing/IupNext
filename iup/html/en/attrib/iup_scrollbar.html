@@ -65,6 +65,11 @@
 <img src="images/scrollbar.gif" alt="images/scrollbar.gif (2113 bytes)" border="2" hspace="2" vspace="2"></p>
 <p>Hence you can clearly deduce that POSX is limited to XMIN and
   XMAX-DX, or&nbsp; <strong>XMIN&lt;=POSX&lt;=XMAX-DX</strong>. </p>
+<p>Usually applications configure XMIN and XMAX to a region in World 
+coordinates, and set DX to the canvas visible area in World coordinates. Since 
+the canvas can have scrollbars and borders, its visible area in pixel 
+coordinates can be easily obtained using the <strong>DRAWSIZE</strong> 
+attribute.</p>
 <p>
 <span class="style2"><strong>IMPORTANT:</strong></span> the LINEX, XMAX and XMIN 
 attributes are only updated in the scrollbar when the 
