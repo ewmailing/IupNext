@@ -489,6 +489,7 @@ iupDrawSelectRect
 iupDrawFocusRect
 iupGetFontInfo
 iupRadioFindToggleParent
+iupLayoutApplyMinMaxSize
 
 iupwinMouseMove
 iupwinCreateWindow

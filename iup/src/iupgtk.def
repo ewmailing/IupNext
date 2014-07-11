@@ -479,3 +479,4 @@ iupDrawSelectRect
 iupDrawFocusRect
 iupGetFontInfo
 iupRadioFindToggleParent
+iupLayoutApplyMinMaxSize

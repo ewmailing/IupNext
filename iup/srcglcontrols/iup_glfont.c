@@ -550,7 +550,7 @@ static void iGLFontConvertToUTF8(const char* str, int len)
   }
 #else
   {
-    if (cdgl_iconv == (iconv_t)-1)
+    if (gl_iconv == (iconv_t)-1)
     {
       iGLFontCheckUtf8Buffer(1);
       utf8_buffer[0] = 0;
@@ -562,7 +562,7 @@ static void iGLFontConvertToUTF8(const char* str, int len)
     iGLFontCheckUtf8Buffer(utf8len);
     char* utf8 = utf8_buffer;
 
-    iconv(cdgl_iconv, (char**)&str, &ulen, &utf8, &utf8len);
+    iconv(gl_iconv, (char**)&str, &ulen, &utf8, &utf8len);
   }
 #endif
 }
