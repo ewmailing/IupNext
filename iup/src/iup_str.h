@@ -232,6 +232,14 @@ int iupStrToDouble(const char *str, double *d);
  * \ingroup str */
 int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep);
 
+/** Converts the string to two double. The string must contains two real values in sequence,
+* separated by the given character (usually 'x' or ':').
+* Returns the number of converted values.
+* Values not extracted are not changed.
+* ATENTION: AVOID DEFINING THIS TYPE OF ATTRIBUTE VALUE.
+* \ingroup str */
+int iupStrToDoubleDouble(const char *str, double *f1, double *f2, char sep);
+
 /** Extract two strings from the string.
  * separated by the given character (usually 'x' or ':').
  * Returns the number of converted values.

@@ -132,6 +132,10 @@ int iupAttribGetBoolean(Ihandle* ih, const char* name);
  * \ingroup attrib */
 float iupAttribGetFloat(Ihandle* ih, const char* name);
 
+/** Same as \ref iupAttribGetStr but returns an floating point number.
+* \ingroup attrib */
+double iupAttribGetDouble(Ihandle* ih, const char* name);
+
 /** Same as \ref iupAttribGet but with an id.
  * \ingroup attrib */
 char* iupAttribGetId(Ihandle* ih, const char* name, int id);

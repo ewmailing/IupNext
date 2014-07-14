@@ -1056,6 +1056,15 @@ float iupAttribGetFloat(Ihandle* ih, const char* name)
   return f;
 }
 
+double iupAttribGetDouble(Ihandle* ih, const char* name)
+{
+  double f = 0;
+  char *value = iupAttribGetStr(ih, name);
+  if (value)
+    iupStrToDouble(value, &f);
+  return f;
+}
+
 char* iupAttribGet(Ihandle* ih, const char* name)
 {
   if (!ih || !name)

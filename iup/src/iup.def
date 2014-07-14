@@ -276,6 +276,7 @@ iupStrToMac
 iupStrToIntInt
 iupStrToInt
 iupStrToFloatFloat
+iupStrToDoubleDouble
 iupStrToFloat
 iupStrToDouble
 iupStrToDos
@@ -453,6 +454,7 @@ iupAttribGetLocal
 iupAttribGetInt
 iupAttribGetBoolean
 iupAttribGetFloat
+iupAttribGetDouble
 iupAttribGetId
 iupAttribGetIntId
 iupAttribGetBooleanId

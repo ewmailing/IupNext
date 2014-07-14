@@ -41,19 +41,19 @@ static Ihandle *dial1, *dial2,          /* dials for zooming */
         *tgg6,                   /* box show|hide toggle */
         *tabs;                   /* tabbed control */
 
-static int delete_cb(Ihandle* ih, int index, int sample_index, float x, float y)
+static int delete_cb(Ihandle* ih, int index, int sample_index, double x, double y)
 {
   printf("DELETE_CB(%d, %d, %g, %g)\n", index, sample_index, x, y);
   return IUP_DEFAULT;
 }
 
-static int select_cb(Ihandle* ih, int index, int sample_index, float x, float y, int select)
+static int select_cb(Ihandle* ih, int index, int sample_index, double x, double y, int select)
 {
   printf("SELECT_CB(%d, %d, %g, %g, %d)\n", index, sample_index, x, y, select);
   return IUP_DEFAULT;
 }
 
-static int edit_cb(Ihandle* ih, int index, int sample_index, float x, float y, float *new_x, float *new_y)
+static int edit_cb(Ihandle* ih, int index, int sample_index, double x, double y, double *new_x, double *new_y)
 {
   printf("EDIT_CB(%d, %d, %g, %g, %g, %g)\n", index, sample_index, x, y, *new_x, *new_y);
   return IUP_DEFAULT;
@@ -75,8 +75,8 @@ static int predraw_cb(Ihandle* ih)
 static void InitPlots(void)
 {
   int theI, ds_index, count;
-  float x, y, theFac;
-  float px[210], py[210];
+  double x, y, theFac;
+  double px[210], py[210];
 
   /* PLOT 0 - MakeExamplePlot1 */
   IupSetAttribute(plot[0], "TITLE", "AutoScale");
@@ -105,11 +105,11 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "AXS_XCROSSORIGIN", "Yes");
   IupSetAttribute(plot[0], "AXS_YCROSSORIGIN", "Yes");
 
-  theFac = (float)1.0/(100*100*100);
+  theFac = 1.0/(100*100*100);
   IupMglPlotBegin(plot[0], 2);
   for (theI=-100; theI<=100; theI++) 
   {
-    x = (float)(theI+50);
+    x = (theI+50);
     y = theFac*theI*theI*theI;
     IupMglPlotAdd2D(plot[0], x, y);
   }
@@ -118,12 +118,12 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "DS_LEGEND", "Line");
   IupSetAttribute(plot[0], "FGCOLOR", "0 128 255");
 
-  theFac = (float)2.0/100;
+  theFac = 2.0/100;
   ds_index = IupMglPlotNewDataSet(plot[0], 2);
   count = 0;
   for (theI=-100; theI<=100; theI++) 
   {
-    x = (float)theI;
+    x = theI;
     y = -theFac*theI;
     px[theI+100] = x;
     py[theI+100] = y;
@@ -135,8 +135,8 @@ static void InitPlots(void)
   IupMglPlotBegin(plot[0], 2);
   for (theI=-100; theI<=100; theI++) 
   {
-    x = (float)(0.01*theI*theI-30);
-    y = (float)0.01*theI;
+    x = (0.01*theI*theI-30);
+    y = 0.01*theI;
     IupMglPlotAdd2D(plot[0], x, y);
   }
   IupMglPlotEnd(plot[0]);
@@ -166,21 +166,21 @@ static void InitPlots(void)
   IupSetAttribute(plot[1], "LEGEND", "YES");
   IupSetAttribute(plot[1], "AXS_YTICKVALUESROTATION", "NO");
 
-  theFac = (float)1.0/(100*100*100);
+  theFac = 1.0/(100*100*100);
   IupMglPlotBegin(plot[1], 2);
   for (theI=0; theI<=100; theI++) 
   {
-    x = (float)(theI);
+    x = (double)(theI);
     y = theFac*theI*theI*theI;
     IupMglPlotAdd2D(plot[1], x, y);
   }
   IupMglPlotEnd(plot[1]);
 
-  theFac = (float)2.0/100;
+  theFac = 2.0/100;
   IupMglPlotBegin(plot[1], 2);
   for (theI=0; theI<=100; theI++) 
   {
-    x = (float)(theI);
+    x = (double)(theI);
     y = -theFac*theI;
     IupMglPlotAdd2D(plot[1], x, y);
   }
@@ -202,12 +202,12 @@ static void InitPlots(void)
   IupSetAttribute(plot[2], "AXS_YLABELCENTERED", "NO");
 //  IupSetAttribute(plot[2], "AXS_YLABELROTATION", "NO");
 
-  theFac = (float)100.0/(100*100*100);
+  theFac = 100.0/(100*100*100);
   IupMglPlotBegin(plot[2], 2);
   for (theI=0; theI<=100; theI++) 
   {
-    x = (float)(0.0001+theI*0.001);
-    y = (float)(0.01+theFac*theI*theI*theI);
+    x = (0.0001+theI*0.001);
+    y = (0.01+theFac*theI*theI*theI);
     IupMglPlotAdd2D(plot[2], x, y);
   }
   IupMglPlotEnd(plot[2]);
@@ -219,7 +219,7 @@ static void InitPlots(void)
 
   {
     const char * kLables[12] = {"jan","feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
-    const float kData[12] = {10,20,30,40,50,60,70,80,90,0,10,20};
+    const double kData[12] = {10,20,30,40,50,60,70,80,90,0,10,20};
     IupMglPlotBegin(plot[3], 1);
     for (theI=0;  theI<12; theI++) 
       IupMglPlotAdd1D(plot[3], kLables[theI], kData[theI]);
@@ -247,12 +247,12 @@ static void InitPlots(void)
   IupSetAttribute(plot[4], "AXS_YTICKVALUESROTATION", "NO");
   
 
-  theFac = (float)100.0/(100*100*100);
+  theFac = 100.0/(100*100*100);
   IupMglPlotBegin(plot[4], 2);
   for (theI=0; theI<=10; theI++) 
   {
-    x = (float)(0.0001+theI*0.001);
-    y = (float)(0.01+theFac*theI*theI);
+    x = (0.0001+theI*0.001);
+    y = (0.01+theFac*theI*theI);
     IupMglPlotAdd2D(plot[4], x, y);
   }
   IupMglPlotEnd(plot[4]);
@@ -262,8 +262,8 @@ static void InitPlots(void)
   IupMglPlotBegin(plot[4], 2);
   for (theI=0; theI<=10; theI++) 
   {
-    x = (float)(0.0001+theI*0.001);
-    y = (float)(0.2-theFac*theI*theI);
+    x = (0.0001+theI*0.001);
+    y = (0.2-theFac*theI*theI);
     IupMglPlotAdd2D(plot[4], x, y);
   }
   IupMglPlotEnd(plot[4]);
@@ -275,12 +275,12 @@ static void InitPlots(void)
   IupSetAttribute(plot[5], "AXS_XCROSSORIGIN", "Yes");
   IupSetAttribute(plot[5], "AXS_YCROSSORIGIN", "Yes");
 
-  theFac = (float)100.0/(100*100*100);
+  theFac = 100.0/(100*100*100);
   IupMglPlotBegin(plot[5], 2);
   for (theI=-10; theI<=10; theI++) 
   {
-    x = (float)(0.001*theI);
-    y = (float)(0.01+theFac*theI*theI*theI);
+    x = (0.001*theI);
+    y = (0.01+theFac*theI*theI*theI);
     IupMglPlotAdd2D(plot[5], x, y);
   }
   IupMglPlotEnd(plot[5]);

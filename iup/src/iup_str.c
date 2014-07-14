@@ -654,6 +654,43 @@ int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
   }
 }
 
+int iupStrToDoubleDouble(const char *str, double *f1, double *f2, char sep)
+{
+  if (!str) return 0;
+
+  if (iup_tolower(*str) == sep) /* no first value */
+  {
+    str++; /* skip separator */
+    if (sscanf(str, "%lf", f2) != 1) return 0;
+    return 1;
+  }
+  else
+  {
+    char* p_str = iStrDupUntilNoCase((char**)&str, sep);
+
+    if (!p_str)   /* no separator means no second value */
+    {
+      if (sscanf(str, "%lf", f1) != 1) return 0;
+      return 1;
+    }
+    else if (*str == 0)    /* separator exists, but second value empty, also means no second value */
+    {
+      int ret = sscanf(p_str, "%lf", f1);
+      free(p_str);
+      if (ret != 1) return 0;
+      return 1;
+    }
+    else
+    {
+      int ret = 0;
+      if (sscanf(p_str, "%lf", f1) == 1) ret++;
+      if (sscanf(str, "%lf", f2) == 1) ret++;
+      free(p_str);
+      return ret;
+    }
+  }
+}
+
 int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
 {
   if (!str) return 0;
