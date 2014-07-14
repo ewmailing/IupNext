@@ -60,7 +60,6 @@
     <ClInclude Include="..\srcmglplot\mgl\mgl_zb.h">
       <Filter>mgl\inc</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcmglplot\mgl_makefont.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\srcmglplot\mgl\mgl_1d.cpp">
@@ -163,7 +162,6 @@
       <Filter>mgl</Filter>
     </ClCompile>
     <ClCompile Include="..\srcmglplot\iup_mglplot.cpp" />
-    <ClCompile Include="..\srcmglplot\mgl_makefont.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\srcmglplot\iup_mglplot.def" />

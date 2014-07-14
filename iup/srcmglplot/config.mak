@@ -14,23 +14,8 @@ ifdef DBG
   endif  
 endif  
 
-INCLUDES = ../include ../src . $(CD)/src/freetype2 $(CD)/src/ftgl
+INCLUDES = ../include ../src . 
 LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
-LIBS = ftgl freetype
-ifneq ($(findstring dll, $(TEC_UNAME)), )
-  DEFINES = FTGL_LIBRARY
-else
-  DEFINES = FTGL_LIBRARY_STATIC
-endif
-
-ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS = ftgl freetype6
-endif
-
-ifneq ($(findstring cygw, $(TEC_UNAME)), )
-  LIBS = ftgl freetype-6 fontconfig
-endif
-
 LIBS := iup iupgl $(LIBS)
 
 DEFINES += NO_PNG NO_GSL
@@ -45,7 +30,7 @@ SRCMGLPLOT = mgl_1d.cpp mgl_crust.cpp mgl_evalc.cpp \
   mgl_cont.cpp mgl_eval.cpp mgl_gl.cpp mgl_zb2.cpp
 SRCMGLPLOT := $(addprefix mgl/, $(SRCMGLPLOT))
 
-SRC = iup_mglplot.cpp mgl_makefont.cpp $(SRCMGLPLOT)
+SRC = iup_mglplot.cpp $(SRCMGLPLOT)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   INCLUDES += $(X11_INC)

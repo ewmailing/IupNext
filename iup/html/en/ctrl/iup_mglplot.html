@@ -38,9 +38,10 @@
 <p>MathGL is a library for creating plots that is system independent. It is 
 maintained by Alexey Balakin (balakin@appl.sci-nnov.ru) and available at SourceForge
 <a href="http://mathgl.sourceforge.net/">http://mathgl.sourceforge.net/</a> with a 
-LGPL license. IupMglPlot library includes the MathGL source code so no external 
-references are needed. Also the standard MathGL distribution source code was 
-changed to improve features and visual appearance.</p>
+LGPL license.</p>
+<p>IupMglPlot library includes the MathGL 1.11.2 source code, so no external 
+references are needed. Also the standard MathGL distribution source code had a 
+few changes to improve features and visual appearance.</p>
 <h3>Initialization and Usage</h3>
 <p>The <b>IupMglPlotOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The &quot;iup_mglplot.h&quot; file must also be included in the source code. The program must be linked to the controls 
@@ -351,15 +352,16 @@ Default: &quot;255 255
 255&quot;.</p>
 <p><strong>ERRORMESSAGE</strong> (read-only)(non inheritable): If not NULL 
 returns the last error message reported by MathGL.</p>
-<p><strong><a href="../attrib/iup_font.html">FONT</a></strong>:
-  the default font used in all text elements of the plot: title, legend and labels. 
-Font support is done using the libraries Freetype and FTGL, so TrueType (*.ttf) 
-and OpenType (*.otf) font files can be loaded. If the font is not located in the 
-system, then it will try to find the font file in the current directory, or in 
-the path from the &quot;IUP_MGLFONTS&quot; environment variable, or in the path from the 
-&quot;MGLFONTS&quot; global attribute, or in a system folder. The font name will be 
-combined with the path to compose a file name. A full path can also be used. If 
-the font load fail, an internal MathGL font is used.</p>
+<p><strong><a href="../attrib/iup_font.html">FONT</a></strong>: the default font 
+used in all text elements of the plot: title, legend and labels. Font support is 
+done using custom font files in MathGL font format (*.vfm). The font file must 
+be located in 
+the path pointed by the &quot;IUP_MGLFONTS&quot; environment variable, or in the path 
+pointed by the 
+&quot;MGLFONTS&quot; global attribute. The font name will be 
+automatically combined with the path to compose a file name. If 
+the font load fail, an internal MathGL font is used. <strong>TrueType (*.ttf) 
+and OpenType (*.otf) font files support removed in version 3.11.</strong></p>
 <p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b>:  the default color 
 used in all text elements of the plot: title, legend and labels. Default: &quot;0 0 0&quot;.</p>
 <p><strong>OPENGL</strong> (non inheritable): Enable or disable the rendering in 

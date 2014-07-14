@@ -95,7 +95,6 @@
     <ClInclude Include="..\srcmglplot\mgl\mgl_gl.h" />
     <ClInclude Include="..\srcmglplot\mgl\mgl_parse.h" />
     <ClInclude Include="..\srcmglplot\mgl\mgl_zb.h" />
-    <ClInclude Include="..\srcmglplot\mgl_makefont.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\srcmglplot\mgl\mgl_1d.cpp" />
@@ -132,7 +131,6 @@
     <ClCompile Include="..\srcmglplot\mgl\mgl_zb.cpp" />
     <ClCompile Include="..\srcmglplot\mgl\mgl_zb2.cpp" />
     <ClCompile Include="..\srcmglplot\iup_mglplot.cpp" />
-    <ClCompile Include="..\srcmglplot\mgl_makefont.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\srcmglplot\iup_mglplot.def" />
