@@ -270,7 +270,7 @@ void mglGraph::Plot(const mglData &x, const mglData &y, const mglData &z, const 
 			if(mk && tt[jj])	Mark(pp[k],pp[k+1],pp[k+2],mk);
 			if(jj>0 && ((tt[jj] && !tt[jj-1] && !onan) || (tt[jj-1] && !tt[jj] && !inan)))	// do smoothing
 			{
-				float i1=0, i2=1, ii;
+        mreal i1 = 0, i2 = 1, ii;
 				pp[k+3] = pp[k+0];	pp[k+4] = pp[k+1];	// copy current
 				pp[k+5] = pp[k+2];	tt[jj+1] = tt[jj];
 				do {
@@ -342,7 +342,7 @@ void mglGraph::Tens(const mglData &x, const mglData &y, const mglData &z, const 
 			}
 			if(jj>0 && ((tt[jj] && !tt[jj-1]) || (tt[jj-1] && !tt[jj])))	// do smoothing
 			{
-				float i1=0, i2=1, ii;
+        mreal i1 = 0, i2 = 1, ii;
 				pp[k+3] = pp[k+0];	pp[k+4] = pp[k+1];	// copy current
 				pp[k+5] = pp[k+2];	tt[jj+1] = tt[jj];
 				do {

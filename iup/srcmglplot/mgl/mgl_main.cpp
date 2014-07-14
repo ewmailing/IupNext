@@ -533,8 +533,8 @@ void mglGraph::SubPlot(int nx,int ny,int m, const char *style)
 {
 	mreal x1,x2,y1,y2;
 	int mx = m%nx, my = m/nx;
-	x1 = float(mx)/nx;		x2 = float(mx+1)/nx;
-	y2 = 1.f-float(my)/ny;	y1 = 1.f-float(my+1)/ny;
+  x1 = mreal(mx) / nx;		x2 = mreal(mx + 1) / nx;
+  y2 = 1.f - mreal(my) / ny;	y1 = 1.f - mreal(my + 1) / ny;
 	InPlot(x1,x2,y1,y2,style);
 }
 //-----------------------------------------------------------------------------
@@ -1163,7 +1163,7 @@ void mglGraph::Colorbar(const mglData &v, const char *sch,int where)
 //-----------------------------------------------------------------------------
 void mglGraph::Colorbar(int where, mreal x, mreal y, mreal w, mreal h)
 {
-	float d = fabs(Cmax-Cmin);
+  mreal d = fabs(Cmax - Cmin);
 	d = floor(d*pow(10,-floor(log10(d))));
 	long n = 50*(d<4?int(2*d+0.5):int(d+0.5))+1;
 	if(d==1.f)	n = 101;

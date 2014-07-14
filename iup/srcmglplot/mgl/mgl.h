@@ -209,7 +209,7 @@ public:
 	/// Set the transparency on/off.
 	virtual bool Alpha(bool enable)=0;
 	/// Set default value of alpha-channel
-	inline void SetAlphaDef(float val)	{	AlphaDef=val;	};
+	inline void SetAlphaDef(mreal val)	{	AlphaDef=val;	};
 	/// Temporary switches transparency on/off 
 	inline void SetTransparent(bool val)	{	Transparent=val;	};
 	/// Set the transparency type
@@ -240,12 +240,12 @@ public:
 	/// Set cutting for points outside of bounding box
 	inline void SetCut(bool val)	{	Cut=val;	};
 	/// Set additional cutting box
-	inline void SetCutBox (float x1, float y1, float z1, float x2, float y2, float z2)
+  inline void SetCutBox(mreal x1, mreal y1, mreal z1, mreal x2, mreal y2, mreal z2)
 	{	CutMin=mglPoint(x1,y1,z1);	CutMax=mglPoint(x2,y2,z2);	};
 	/// Set base width for all lines
 	inline void SetBaseLineWidth(mreal val)	{	BaseLineWidth=val;	};
 	/// Sets color for individual palette entry
-	inline void SetPalColor (int n, float r, float g, float b)
+  inline void SetPalColor(int n, mreal r, mreal g, mreal b)
 	{	if(n<100)	Pal[n] = mglColor(r,g,b);	};
 	/// Set number of colors in palette
 	inline void SetPalNum(int num)	{	if(num<100 && num>0)	NumPal = num;	};

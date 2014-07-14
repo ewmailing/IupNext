@@ -172,7 +172,7 @@ void mglGraph::Grid(const char *dir, const char *pen)
 		x0 = GetOrgX('x');	y0 = GetOrgY('x');	z0 = GetOrgZ('x');
 		x0 = isnan(OrgT.x) ? x0 : OrgT.x;
 		x0 = x0 - ddx*floor((x0-(Max.x>Min.x?Min.x:Max.x))/ddx);
-		float tmp=(Min.x<Max.x?Max.x:Min.x);
+    mreal tmp = (Min.x<Max.x ? Max.x : Min.x);
 		if(xnum)	for(int i=0;i<xnum;i++)
 			DrawXGridLine(xval[i],y0,z0);
 		else if(dx)
@@ -193,7 +193,7 @@ void mglGraph::Grid(const char *dir, const char *pen)
 		x0 = GetOrgX('y');	y0 = GetOrgY('y');	z0 = GetOrgZ('y');
 		y0 = isnan(OrgT.y) ? y0 : OrgT.y;
 		y0 = y0 - ddy*floor((y0-(Max.y>Min.y?Min.y:Max.y))/ddy);
-		float tmp=(Max.y>Min.y?Max.y:Min.y);
+    mreal tmp = (Max.y>Min.y ? Max.y : Min.y);
 		if(ynum)	for(int i=0;i<ynum;i++)
 			DrawYGridLine(yval[i],x0,z0);
 		else if(dy)
@@ -214,7 +214,7 @@ void mglGraph::Grid(const char *dir, const char *pen)
 		x0 = GetOrgX('z');	y0 = GetOrgY('z');	z0 = GetOrgZ('z');
 		z0 = isnan(OrgT.z) ? z0 : OrgT.z;
 		z0 = z0 - ddz*floor((z0-(Max.z>Min.z?Min.z:Max.z))/ddz);
-		float tmp=(Max.z>Min.z?Max.z:Min.z);
+    mreal tmp = (Max.z>Min.z ? Max.z : Min.z);
 		if(znum)	for(int i=0;i<znum;i++)
 			DrawZGridLine(zval[i],x0,y0);
 		else if(dz)
@@ -777,7 +777,7 @@ void mglGraph::TickBox()
 	{
 		x0 = isnan(OrgT.x) ? x0 : OrgT.x;
 		x0 = x0 - ddx*floor((x0-(Max.x>Min.x?Min.x:Max.x))/ddx);
-		float tmp=(Max.x>Min.x?Max.x:Min.x);
+    mreal tmp = (Max.x>Min.x ? Max.x : Min.x);
 		if(x0+ddx!=x0 && tmp+ddx!=tmp)	for(x=x0;x<tmp;x+=ddx)
 		{
 			DrawXTick(x,Min.y,Min.z,ddy,ddz);
@@ -823,7 +823,7 @@ void mglGraph::TickBox()
 	{
 		y0 = isnan(OrgT.y) ? y0 : OrgT.y;
 		y0 = y0 - ddy*floor((y0-(Max.y>Min.y?Min.y:Max.y))/ddy);
-		float tmp=(Max.y>Min.y?Max.y:Min.y);
+    mreal tmp = (Max.y>Min.y ? Max.y : Min.y);
 		if(y0+ddy!=y0 && tmp+ddy!=tmp)	for(y=y0;y<tmp;y+=ddy)
 		{
 			DrawYTick(y,Min.x,Min.z,ddx,ddz);
@@ -869,7 +869,7 @@ void mglGraph::TickBox()
 	{
 		z0 = isnan(OrgT.z) ? z0 : OrgT.z;
 		z0 = z0 - ddz*floor((z0-(Max.z>Min.z?Min.z:Max.z))/ddz);
-		float tmp=(Max.z>Min.z?Max.z:Min.z);
+    mreal tmp = (Max.z>Min.z ? Max.z : Min.z);
 		if(z0+ddz!=z0 && tmp+ddz!=tmp)	for(z=z0;z<tmp;z+=ddz)
 		{
 			DrawZTick(z,Min.x,Min.y,ddx,ddy);
@@ -1092,7 +1092,7 @@ void mglGraph::AxisT(bool text, const char *stl)
 	else	curv_plot(31,pp,0);
 
 	NSy = NSy<0 ? 0 : NSy;
-	float tmp=Max.y+(Max.y-Min.y)*1e-6;
+  mreal tmp = Max.y + (Max.y - Min.y)*1e-6;
 	if(Min.y+ddy!=Min.y && tmp+ddy!=tmp)	for(y=Min.y;y<=tmp;y+=ddy)
 	{
 		if(y>Min.y && y<Max.y)	DrawTTick(y,Max.x,z0,ddx,ddz);
