@@ -10,8 +10,8 @@
 /* No GSL support */
 /* #define NO_GSL      - defined in Makefile */
 
-/* Do NOT ese double precision */
-#undef MGL_USE_DOUBLE
+/* Use double precision */
+#define MGL_USE_DOUBLE 1
 
 /* No IDTF support */
 #undef HAVE_U3D

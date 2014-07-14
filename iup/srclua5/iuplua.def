@@ -21,6 +21,7 @@ EXPORTS
   iuplua_checkstring_array
   iuplua_checkint_array
   iuplua_checkfloat_array
+  iuplua_checkdouble_array
   iuplua_checkuchar_array
   iuplua_checkihandle_array
   iuplua_checkihandleornil

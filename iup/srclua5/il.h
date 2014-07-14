@@ -147,6 +147,10 @@ int* iuplua_checkint_array(lua_State *L, int pos, int count);
  If count is 0, table size is used. Else table size must match count. */
 float* iuplua_checkfloat_array(lua_State *L, int pos, int count);
 
+/** Returns an array of double stored in a Lua table.
+If count is 0, table size is used. Else table size must match count. */
+double* iuplua_checkdouble_array(lua_State *L, int pos, int count);
+
 /** Returns an array of unsigned char stored in a Lua table.
  If count is 0, table size is used. Else table size must match count. */
 unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int count);

@@ -352,6 +352,29 @@ float* iuplua_checkfloat_array(lua_State *L, int pos, int n)
   return v;
 }
 
+double* iuplua_checkdouble_array(lua_State *L, int pos, int n)
+{
+  int i;
+  double* v;
+
+  luaL_checktype(L, pos, LUA_TTABLE);
+  if (n == 0)
+    n = iuplua_getn(L, pos);
+  else if (n != iuplua_getn(L, pos))
+    luaL_argerror(L, pos, "Invalid number of elements (n!=count).");
+  if (n <= 0) luaL_argerror(L, pos, "Invalid number of elements (n<=0).");
+
+  v = (double *)malloc(n*sizeof(double));
+  for (i = 1; i <= n; i++)
+  {
+    lua_pushinteger(L, i);
+    lua_gettable(L, pos);
+    v[i - 1] = lua_tonumber(L, -1);
+    lua_pop(L, 1);
+  }
+  return v;
+}
+
 unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int n)
 {
   int i;
