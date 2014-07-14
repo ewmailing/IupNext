@@ -202,7 +202,7 @@ static void gtkDragBegin(GtkWidget *widget, GdkDragContext *drag_context, Ihandl
 
 static GtkTargetList* gtkCreateTargetList(const char* value)
 {
-  GtkTargetList* targetlist = gtk_target_list_new((GtkTargetEntry*)NULL, 0);
+  GtkTargetList* targetlist = gtk_target_list_new(NULL, 0);
   char valueCopy[256];
   char valueTemp[256];
   int info = 0;
