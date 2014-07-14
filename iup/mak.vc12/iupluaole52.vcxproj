@@ -92,11 +92,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_olecontrol.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_olecontrol.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iupluaole.def" />
-    <None Include="..\srclua5\olecontrol.lua" />
+    <None Include="..\srclua5\ctrl\iupluaole.def" />
+    <None Include="..\srclua5\ctrl\olecontrol.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iupluaole.h" />

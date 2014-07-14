@@ -10,15 +10,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_olecontrol.c">
+    <ClCompile Include="..\srclua5\ctrl\il_olecontrol.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iupluaole.def">
+    <None Include="..\srclua5\ctrl\iupluaole.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="..\srclua5\olecontrol.lua">
+    <None Include="..\srclua5\ctrl\olecontrol.lua">
       <Filter>Lua</Filter>
     </None>
   </ItemGroup>

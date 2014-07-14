@@ -92,11 +92,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_webbrowser.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_webbrowser.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iupluaweb.def" />
-    <None Include="..\srclua5\webbrowser.lua" />
+    <None Include="..\srclua5\ctrl\iupluaweb.def" />
+    <None Include="..\srclua5\ctrl\webbrowser.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iupluaweb.h" />

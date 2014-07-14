@@ -10,18 +10,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_glcanvas.c">
+    <ClCompile Include="..\srclua5\ctrl\il_glcanvas.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\srclua5\iuplua_glcanvas.c">
+    <ClCompile Include="..\srclua5\ctrl\iuplua_glcanvas.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iupluagl.def">
+    <None Include="..\srclua5\ctrl\iupluagl.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="..\srclua5\glcanvas.lua">
+    <None Include="..\srclua5\ctrl\glcanvas.lua">
       <Filter>Lua</Filter>
     </None>
   </ItemGroup>

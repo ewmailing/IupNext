@@ -10,15 +10,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_tuioclient.c">
+    <ClCompile Include="..\srclua5\ctrl\il_tuioclient.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iupluatuio.def">
+    <None Include="..\srclua5\ctrl\iupluatuio.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="..\srclua5\tuioclient.lua">
+    <None Include="..\srclua5\ctrl\tuioclient.lua">
       <Filter>Lua</Filter>
     </None>
   </ItemGroup>

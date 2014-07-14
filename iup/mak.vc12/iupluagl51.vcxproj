@@ -92,12 +92,12 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_glcanvas.c" />
-    <ClCompile Include="..\srclua5\iuplua_glcanvas.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_glcanvas.c" />
+    <ClCompile Include="..\srclua5\ctrl\iuplua_glcanvas.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iupluagl.def" />
-    <None Include="..\srclua5\glcanvas.lua" />
+    <None Include="..\srclua5\ctrl\iupluagl.def" />
+    <None Include="..\srclua5\ctrl\glcanvas.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iupluagl.h" />

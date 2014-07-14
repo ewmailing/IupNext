@@ -13,18 +13,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_mglplot.c">
+    <ClCompile Include="..\srclua5\ctrl\il_mglplot.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\srclua5\iuplua_mglplot.c">
+    <ClCompile Include="..\srclua5\ctrl\iuplua_mglplot.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iuplua_mglplot.def">
+    <None Include="..\srclua5\ctrl\iuplua_mglplot.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="..\srclua5\mglplot.lua">
+    <None Include="..\srclua5\ctrl\mglplot.lua">
       <Filter>Lua</Filter>
     </None>
   </ItemGroup>
