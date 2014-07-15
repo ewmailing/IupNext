@@ -54,6 +54,7 @@ int IupGetAllAttributes(Ihandle* ih, char** names, int n)
     {
       names[i] = name;
       i++;
+
       if (i == n)
         break;
     }
@@ -196,29 +197,32 @@ void iupAttribUpdate(Ihandle* ih)
   name = iupTableFirst(ih->attrib);
   while (name)
   {
-    name_array[i] = name;
+    if (!iupATTRIB_ISINTERNAL(name))
+    {
+      name_array[i] = name;
+      i++;
+    }
+
     name = iupTableNext(ih->attrib);
-    i++;
   }
+  count = i;
 
   /* for all defined attributes updates the native system */
   for (i = 0; i < count; i++)
   {
     name = name_array[i];
-    if (!iupATTRIB_ISINTERNAL(name))
-    {
-      /* retrieve from the table */
-      value = iupTableGet(ih->attrib, name);
 
-      /* set on the class */
-      store = iupClassObjectSetAttribute(ih, name, value, &inherit);
+    /* retrieve from the table */
+    value = iupTableGet(ih->attrib, name);
 
-      if (inherit)
-        iAttribNotifyChildren(ih, name, value);
+    /* set on the class */
+    store = iupClassObjectSetAttribute(ih, name, value, &inherit);
 
-      if (store == 0)
-        iupTableRemove(ih->attrib, name); /* remove from the table acording to the class SetAttribute */
-    }
+    if (inherit)
+      iAttribNotifyChildren(ih, name, value);
+
+    if (store == 0)
+      iupTableRemove(ih->attrib, name); /* remove from the table acording to the class SetAttribute */
   }
 
   free(name_array);

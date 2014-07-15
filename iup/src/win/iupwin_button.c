@@ -659,7 +659,8 @@ static int winButtonWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
       Icallback cb = IupGetCallback(ih, "ACTION");
       if (cb)
       {
-        if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION"))  /* to avoid double calls when pressing enter and a dialog is displayed */
+        /* to avoid double calls when pressing enter and a dialog is displayed */
+        if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION"))  
         {
           int ret;
           iupAttribSet(ih, "_IUPBUT_INSIDE_ACTION", "1");
