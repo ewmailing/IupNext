@@ -122,8 +122,7 @@ scheme or from COLORSCHEME if defined.</p>
 </table>
 <h4>CRUST</h4>
 <p>This will reconstruct and draw the surface for arbitrary placed points. 
-Parameter CRUSTRADIUS set relative radius (increase it for removing holes), 
-default=0. If DATAGRID=Yes then wire plot is produced, default=No. Colors will 
+If DATAGRID=Yes then wire plot is produced, default=No. Colors will 
 be used from the previous color scheme or from COLORSCHEME if defined.</p>
 <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" >
 	<tr>
@@ -217,8 +216,7 @@ of STEP. </p>
 	</tr>
 </table>
 <h4>PLANAR_DENSITY</h4>
-<p>Draws density plot for the surface at a specified z coordinate. PLANARVALUE 
-specifies the z coordinate, if not defined AXS_ZMIN is used.</p>
+<p>Draws density plot for the surface at minimum z coordinate. </p>
 <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" >
 	<tr>
 		<td class="style1"><img height="248" src="images/iupmglplot_planar_density.png" width="348"></td>
@@ -263,9 +261,8 @@ interval, default=3.</p>
 	</tr>
 </table>
 <h4>PLANAR_GRADIENTLINES</h4>
-<p>Draws gradient lines for scalar field defined by the surface at a specified z 
-coordinate. PLANARVALUE specifies the z coordinate, if not defined AXS_ZMIN is 
-used. Number of lines is proportional to GRADLINESCOUNT, default=5 . If 
+<p>Draws gradient lines for scalar field defined by the surface at minimum z 
+coordinate. Number of lines is proportional to GRADLINESCOUNT, default=5 . If 
 GRADLINESCOUNT&lt;0 then lines start from borders only. Lines are plotted for each 
 z slice of the data. </p>
 <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" >
