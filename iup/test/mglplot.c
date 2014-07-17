@@ -624,7 +624,7 @@ void MglPlotTest(void)
   for (ii=0; ii<MAXPLOT; ii++)
   {
     plot[ii] = IupMglPlot();
-    IupSetAttribute(plot[ii], "OPENGL", "Yes");
+    //IupSetAttribute(plot[ii], "OPENGL", "Yes");
   }
 
   /* left panel: plot control

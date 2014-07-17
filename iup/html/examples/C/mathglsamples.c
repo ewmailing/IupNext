@@ -1,6 +1,6 @@
 /*
 MathGL samples w/ IupMglPlot
-Based on: MathGL documentation (v. 1.10), Cap. 9
+Based on MathGL documentation
 */
 #include <stdio.h>
 #include <stdlib.h>
