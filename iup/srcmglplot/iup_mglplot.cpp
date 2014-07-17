@@ -5085,20 +5085,23 @@ void IupMglPlotOpen(void)
   }
 }
 
-/* TODO
+/************************  TODO   ***********************************
 
+1.11:
+- Text style and text color positions are swapped. I.e. text style ‘r:C’ give red centered text, but not roman dark cyan text as for v.1.*.
+
+UTF-8
 SubPlots
-DS_EDIT+Selection+Callbacks
 
-Maybe:
-  curvilinear coordinates
-  plots that need two datasets: BoxPlot, Region, Tens, Mark, Error, Flow, Pipe, Ring
-     chart and bars can be combined in one plot (bars then can include above and fall)
-  reference datasets
-     dataset can be a pointer to the previous data, 
-     so the same data can be displayed using different modes using the same memory
-  Ternary
-  IupMglPlotDrawCurve and IupMglPlotDrawFace
+New PPlot:
+  IupPPlotGetSample IupPPlotGetSampleStr
+  iupClassRegisterAttribute(ic, "SYNCVIEW", iPPlotGetSyncViewAttrib, iPPlotSetSyncViewAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  IupPPlotTransformTo missing from DLLs and from Lua.
+  New: attributes REMOVE and CURRENT in IupPPlot now also accepts the DS_NAME as value when setting.
+  New: PLOT_COUNT, PLOT_NUMCOL, PLOT_CURRENT, PLOT_INSERT and PLOT_REMOVE attributes for IupPPlot to support multiple plots in the same display area.
+  New: PLOTBUTTON_CB and PLOTMOTION_CB calbacks for IupPPlot.
+
+DS_EDIT+Selection+Callbacks
 
 MathGL:
   evaluate interval, [-1,1] x [0,1] x [0,n-1]
@@ -5121,17 +5124,14 @@ MathGL:
      BOLD and ITALIC inside TeX formatting does not work for TTF or OTF fonts.
   Light and Fog
 
-PPlot:
-  IupPPlotGetSample IupPPlotGetSampleStr
-  iupClassRegisterAttribute(ic, "SYNCVIEW", iPPlotGetSyncViewAttrib, iPPlotSetSyncViewAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  IupPPlotTransformTo missing from DLLs and from Lua.
-  New: attributes REMOVE and CURRENT in IupPPlot now also accepts the DS_NAME as value when setting.
-  New: PLOT_COUNT, PLOT_NUMCOL, PLOT_CURRENT, PLOT_INSERT and PLOT_REMOVE attributes for IupPPlot to support multiple plots in the same display area.
-  New: PLOTBUTTON_CB and PLOTMOTION_CB calbacks for IupPPlot.
+Maybe:
+  curvilinear coordinates
+  plots that need two datasets: BoxPlot, Region, Tens, Mark, Error, Flow, Pipe, Ring
+     chart and bars can be combined in one plot (bars then can include above and fall)
+  reference datasets
+     dataset can be a pointer to the previous data, 
+     so the same data can be displayed using different modes using the same memory
+  Ternary
+  IupMglPlotDrawCurve and IupMglPlotDrawFace
 
-1.11:
-- Text style and text color positions are swapped. I.e. text style ‘r:C’ give red centered text, but not roman dark cyan text as for v.1.*.
-- Move most of arguments of plotting functions into the string parameter and/or options.
-
-UTF-8
-*/
+**************************************************************************************/
