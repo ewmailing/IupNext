@@ -225,9 +225,8 @@ of STEP. </p>
 	</tr>
 </table>
 <h4>PLANAR_CONTOUR</h4>
-<p>Draws contour lines for the surface at a z coordinate. CONTOURCOUNT defines 
-the number of contour lines, default=7. PLANARVALUE specifies a z coordinate, if 
-not defined contours are distributed in the COLORBARRANGE interval. If CONTOURFILLED=Yes 
+<p>Draws contour lines for the surface at the minimum z coordinate. CONTOURCOUNT defines 
+the number of contour lines, default=7. If CONTOURFILLED=Yes 
 draws solid (or filled) contour lines for the surface, default=No. If CONTOURLABELS 
 is defined then contour labels will be drawn BELLOW or ABOVE the contours.</p>
 <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" >
@@ -348,8 +347,8 @@ contour lines, default=7. Where lines are used, DS_LINESTYLE and DS_LINEWIDTH ar
 <h4>VOLUME_CLOUD</h4>
 <p>Draws cloud plot for the volume. This plot is a set of cubes with color and 
 transparency proportional to value of ALPHA. The resulting plot is like cloud – 
-low value is transparent but higher ones are not. If CLOUDCUBES=No the 
-semi-transparent points are used instead of cubes, default=Yes. </p>
+low value is transparent but higher ones are not. If CLOUDLOW=Yes then lower 
+quality plot will be produced with much low memory usage.</p>
 <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" >
 	<tr>
 		<td class="style1"><img height="248" src="images/iupmglplot_volume_cloud.png" width="348"></td>

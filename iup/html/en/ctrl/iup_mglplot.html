@@ -89,12 +89,13 @@ digital image. Each value is f(x,y), where x belongs to [-1, 1] and y to
 represents a 3D volume. Each value is f(x,y,z), where x belongs to [-1, 1], y to [-1, 
 1] and z to [-1, 1].</p>
 <p>Planar and volumetric data can be very memory consuming, so be careful when 
-using them. Linear data is the same representation accepted by IupPPlot, with 
-the exception that IupMglPlot has support for 3D coordinates. Also planar and 
-volumetric data in IupMglPlot have x, y and z coordinates equidistantly 
+using them. Linear data is the same representation accepted by <strong>IupPPlot</strong>, with 
+the exception that <strong>IupMglPlot</strong> has support for 3D coordinates. Also planar and 
+volumetric data in <strong>IupMglPlot</strong> have x, y and z coordinates equidistantly 
 distributed from 0 to count-1. Planar and volumetric data are stored in a 1D 
-dataset created by IupMglPlotNewDataSet, and filled with IupMglPlotSetData, IupMglPlotLoadData 
-or IupMglPlotSetFromFormula functions only.</p>
+dataset created by <strong>IupMglPlotNewDataSet</strong>, and filled with 
+<strong>IupMglPlotSetData</strong>, <strong>IupMglPlotLoadData</strong> 
+or <strong>IupMglPlotSetFromFormula</strong> functions only.</p>
 <h3>Interaction</h3>
 <h4>Zoom and Pan</h4>
 <p>Zoom and Pan operations can be done using keyboard or mouse actions in 2D and 
@@ -518,7 +519,7 @@ rotating the graph. When NO text will be horizontal, always facing the camera,
 independently from graph rotation. For 2D graphs is useful to the Y axis only.</p>
 <p><b>AXS_?MAX, AXS_?MIN</b>: minimum and maximum displayed 
 values of the respective axis in plot coordinates. Automatically calculated values when AUTOMIN or 
-AUTOMAX are enabled. Default: 1.0 and 0.0.</p>
+AUTOMAX are enabled. Default: 1.0 and -1.0.</p>
 <p><strong>AXS_?ORIGIN</strong>: position the origin of the axis in plot 
 coordinates (%g). But if set to NULL will automatically position 
 the origin at the bottom left corner of the dataset area. Default: not defined.</p>

@@ -18,17 +18,14 @@ INCLUDES = ../include ../src .
 LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
 LIBS := iup iupgl $(LIBS)
 
-DEFINES += NO_PNG NO_GSL
-
-SRCMGLPLOT = mgl_1d.cpp mgl_crust.cpp mgl_evalc.cpp \
-  mgl_2d.cpp mgl_data.cpp mgl_evalp.cpp mgl_main.cpp \
-  mgl_3d.cpp mgl_data_cf.cpp mgl_exec.cpp mgl_parse.cpp \
-  mgl_ab.cpp mgl_data_io.cpp mgl_export.cpp mgl_pde.cpp \
-  mgl_addon.cpp mgl_data_png.cpp mgl_fit.cpp mgl_tex_table.cpp \
-  mgl_axis.cpp mgl_def_font.cpp mgl_flow.cpp mgl_vect.cpp \
-  mgl_combi.cpp mgl_eps.cpp mgl_font.cpp mgl_zb.cpp \
-  mgl_cont.cpp mgl_eval.cpp mgl_gl.cpp mgl_zb2.cpp
-SRCMGLPLOT := $(addprefix mgl/, $(SRCMGLPLOT))
+SRCMGLPLOT = addon.cpp complex.cpp data_gr.cpp evalp.cpp fit.cpp pde.cpp vect.cpp \
+             axis.cpp complex_io.cpp data_io.cpp exec.cpp font.cpp pixel.cpp volume.cpp \
+             base.cpp cont.cpp data_png.cpp export.cpp obj.cpp plot.cpp window.cpp \
+             base_cf.cpp crust.cpp def_font.cpp export_2d.cpp opengl.cpp prim.cpp \
+             canvas.cpp data.cpp eval.cpp export_3d.cpp other.cpp surf.cpp \
+             canvas_cf.cpp data_ex.cpp evalc.cpp fft.cpp parser.cpp tex_table.cpp \
+             s_hull/s_hull_pro.cpp
+SRCMGLPLOT := $(addprefix src/, $(SRCMGLPLOT))
 
 SRC = iup_mglplot.cpp $(SRCMGLPLOT)
 
