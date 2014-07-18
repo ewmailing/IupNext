@@ -62,63 +62,63 @@ SCI_AUTOCGETMAXWIDTH
 static int iScintillaSetAutoCShowAttrib(Ihandle* ih, int number, const char* value)
 {
   if(number < 0) number = 0;
-  iupScintillaSendMessage(ih, SCI_AUTOCSHOW, number, (sptr_t)value);
+  IupScintillaSendMessage(ih, SCI_AUTOCSHOW, number, (sptr_t)value);
   return 0;
 }
 
 static int iScintillaSetAutoCCancelAttrib(Ihandle* ih, const char* value)
 {
-  iupScintillaSendMessage(ih, SCI_AUTOCCANCEL, 0, 0);
+  IupScintillaSendMessage(ih, SCI_AUTOCCANCEL, 0, 0);
   (void)value;
   return 0;
 }
 
 static char* iScintillaGetAutoCActiveAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_AUTOCACTIVE, 0, 0));
+  return iupStrReturnBoolean(IupScintillaSendMessage(ih, SCI_AUTOCACTIVE, 0, 0));
 }
 
 static char* iScintillaGetAutoCPosStartAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(iupScintillaSendMessage(ih, SCI_AUTOCPOSSTART, 0, 0));
+  return iupStrReturnInt(IupScintillaSendMessage(ih, SCI_AUTOCPOSSTART, 0, 0));
 }
 
 static int iScintillaSetAutoCCompleteAttrib(Ihandle* ih, const char* value)
 {
-  iupScintillaSendMessage(ih, SCI_AUTOCCOMPLETE, 0, 0);
+  IupScintillaSendMessage(ih, SCI_AUTOCCOMPLETE, 0, 0);
   (void)value;
   return 0;
 }
 
 static char* iScintillaGetAutoCSelectedIndexAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(iupScintillaSendMessage(ih, SCI_AUTOCGETCURRENT, 0, 0));
+  return iupStrReturnInt(IupScintillaSendMessage(ih, SCI_AUTOCGETCURRENT, 0, 0));
 }
 
 static int iScintillaSetAutoCSelectAttrib(Ihandle* ih, const char* value)
 {
-  iupScintillaSendMessage(ih, SCI_AUTOCSELECT, 0, (sptr_t)value);
+  IupScintillaSendMessage(ih, SCI_AUTOCSELECT, 0, (sptr_t)value);
   return 0;
 }
 
 static char* iScintillaGetAutoCDropRestOfWordAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_AUTOCGETDROPRESTOFWORD, 0, 0));
+  return iupStrReturnBoolean(IupScintillaSendMessage(ih, SCI_AUTOCGETDROPRESTOFWORD, 0, 0));
 }
 
 static int iScintillaSetAutoCDropRestOfWordAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
-    iupScintillaSendMessage(ih, SCI_AUTOCSETDROPRESTOFWORD, 1, 0);
+    IupScintillaSendMessage(ih, SCI_AUTOCSETDROPRESTOFWORD, 1, 0);
   else
-    iupScintillaSendMessage(ih, SCI_AUTOCSETDROPRESTOFWORD, 0, 0);
+    IupScintillaSendMessage(ih, SCI_AUTOCSETDROPRESTOFWORD, 0, 0);
 
   return 0;
 }
 
 static char* iScintillaGetAutoCMaxHeightAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(iupScintillaSendMessage(ih, SCI_AUTOCGETMAXHEIGHT, 0, 0));
+  return iupStrReturnInt(IupScintillaSendMessage(ih, SCI_AUTOCGETMAXHEIGHT, 0, 0));
 }
 
 static int iScintillaSetAutoCMaxHeightAttrib(Ihandle* ih, const char* value)
@@ -131,14 +131,14 @@ static int iScintillaSetAutoCMaxHeightAttrib(Ihandle* ih, const char* value)
   iupStrToInt(value, &rowCount);
   if (rowCount < 1) rowCount = 1;
 
-  iupScintillaSendMessage(ih, SCI_AUTOCSETMAXHEIGHT, rowCount, 0);
+  IupScintillaSendMessage(ih, SCI_AUTOCSETMAXHEIGHT, rowCount, 0);
 
   return 0;
 }
 
 static char* iScintillaGetAutoCMaxWidthAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(iupScintillaSendMessage(ih, SCI_AUTOCGETMAXWIDTH, 0, 0));
+  return iupStrReturnInt(IupScintillaSendMessage(ih, SCI_AUTOCGETMAXWIDTH, 0, 0));
 }
 
 static int iScintillaSetAutoCMaxWidthAttrib(Ihandle* ih, const char* value)
@@ -151,7 +151,7 @@ static int iScintillaSetAutoCMaxWidthAttrib(Ihandle* ih, const char* value)
   iupStrToInt(value, &charCount);
   if (charCount < 0) charCount = 0;
 
-  iupScintillaSendMessage(ih, SCI_AUTOCSETMAXWIDTH, charCount, 0);
+  IupScintillaSendMessage(ih, SCI_AUTOCSETMAXWIDTH, charCount, 0);
 
   return 0;
 }

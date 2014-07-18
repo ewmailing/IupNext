@@ -27,7 +27,7 @@ SCI_GETCURSOR
 
 static char* iScintillaGetCursorAttrib(Ihandle *ih)
 {
-  if(iupScintillaSendMessage(ih, SCI_GETCURSOR, 0, 0) == SC_CURSORWAIT)
+  if(IupScintillaSendMessage(ih, SCI_GETCURSOR, 0, 0) == SC_CURSORWAIT)
     return "WAIT";
   else
     return "NORMAL";
@@ -36,9 +36,9 @@ static char* iScintillaGetCursorAttrib(Ihandle *ih)
 static int iScintillaSetCursorAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrEqualNoCase(value, "WAIT"))
-    iupScintillaSendMessage(ih, SCI_SETCURSOR, (uptr_t)SC_CURSORWAIT, 0);
+    IupScintillaSendMessage(ih, SCI_SETCURSOR, (uptr_t)SC_CURSORWAIT, 0);
   else  /* NORMAL */
-    iupScintillaSendMessage(ih, SCI_SETCURSOR, (uptr_t)SC_CURSORNORMAL, 0);
+    IupScintillaSendMessage(ih, SCI_SETCURSOR, (uptr_t)SC_CURSORNORMAL, 0);
 
   return 0;
 }
@@ -53,14 +53,14 @@ SCI_GETZOOM
 static int iScintillaSetZoomInAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
-  iupScintillaSendMessage(ih, SCI_ZOOMIN, 0, 0);
+  IupScintillaSendMessage(ih, SCI_ZOOMIN, 0, 0);
   return 0;
 }
 
 static int iScintillaSetZoomOutAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
-  iupScintillaSendMessage(ih, SCI_ZOOMOUT, 0, 0);
+  IupScintillaSendMessage(ih, SCI_ZOOMOUT, 0, 0);
   return 0;
 }
 
@@ -73,14 +73,14 @@ static int iScintillaSetZoomAttrib(Ihandle *ih, const char *value)
   if(points >  20) points =  20;
   if(points < -10) points = -10;
 
-  iupScintillaSendMessage(ih, SCI_SETZOOM, points, 0);
+  IupScintillaSendMessage(ih, SCI_SETZOOM, points, 0);
 
   return 0;
 }
 
 static char* iScintillaGetZoomAttrib(Ihandle* ih)
 {
-  int points = iupScintillaSendMessage(ih, SCI_GETZOOM, 0, 0);
+  int points = IupScintillaSendMessage(ih, SCI_GETZOOM, 0, 0);
   return iupStrReturnInt(points);
 }
 

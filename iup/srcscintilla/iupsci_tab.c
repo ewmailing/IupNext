@@ -43,7 +43,7 @@ SCI_GETHIGHLIGHTGUIDE
 static char* iScintillaGetTabSizeAttrib(Ihandle *ih)
 {
   int widthInChars;
-  widthInChars = iupScintillaSendMessage(ih, SCI_GETTABWIDTH, 0, 0);
+  widthInChars = IupScintillaSendMessage(ih, SCI_GETTABWIDTH, 0, 0);
   return iupStrReturnInt(widthInChars);
 }
 
@@ -55,14 +55,14 @@ static int iScintillaSetTabSizeAttrib(Ihandle *ih, const char *value)
   if(widthInChars < 2)
     widthInChars = 2;
 
-  iupScintillaSendMessage(ih, SCI_SETTABWIDTH, widthInChars, 0);
+  IupScintillaSendMessage(ih, SCI_SETTABWIDTH, widthInChars, 0);
 
   return 0;
 }
 
 static char* iScintillaGetHighlightGuideAttrib(Ihandle *ih)
 {
-  int col = iupScintillaSendMessage(ih, SCI_GETHIGHLIGHTGUIDE, 0, 0);
+  int col = IupScintillaSendMessage(ih, SCI_GETHIGHLIGHTGUIDE, 0, 0);
   return iupStrReturnInt(col);
 }
 
@@ -72,14 +72,14 @@ static int iScintillaSetHighlightGuideAttrib(Ihandle *ih, const char *value)
   if (!iupStrToInt(value, &col))
     return 0;
 
-  iupScintillaSendMessage(ih, SCI_SETHIGHLIGHTGUIDE, col, 0);
+  IupScintillaSendMessage(ih, SCI_SETHIGHLIGHTGUIDE, col, 0);
 
   return 0;
 }
 
 static char* iScintillaGetIndentationGuidesAttrib(Ihandle *ih)
 {
-  int indentView = iupScintillaSendMessage(ih, SCI_GETINDENTATIONGUIDES, 0, 0);
+  int indentView = IupScintillaSendMessage(ih, SCI_GETINDENTATIONGUIDES, 0, 0);
   char* str[] = {"NONE", "REAL", "LOOKFORWARD", "LOOKBOTH"};
   return str[indentView];
 }
@@ -97,20 +97,20 @@ static int iScintillaSetIndentationGuidesAttrib(Ihandle *ih, const char *value)
   else /* NONE */
     indentView = SC_IV_NONE;
 
-  iupScintillaSendMessage(ih, SCI_SETINDENTATIONGUIDES, indentView, 0);
+  IupScintillaSendMessage(ih, SCI_SETINDENTATIONGUIDES, indentView, 0);
 
   return 0;
 }
 
 static int iScintillaSetUseTabsAttrib(Ihandle* ih, const char* value)
 {
-  iupScintillaSendMessage(ih, SCI_SETUSETABS, iupStrBoolean(value), 0);
+  IupScintillaSendMessage(ih, SCI_SETUSETABS, iupStrBoolean(value), 0);
   return 0;
 }
 
 static char* iScintillaGetUseTabsAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_GETUSETABS, 0, 0)); 
+  return iupStrReturnBoolean (IupScintillaSendMessage(ih, SCI_GETUSETABS, 0, 0)); 
 }
 
 void iupScintillaRegisterTab(Iclass* ic)

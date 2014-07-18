@@ -42,7 +42,7 @@ SCI_GETWRAPVISUALFLAGSLOCATION
 
 static char* iScintillaGetWordWrapAttrib(Ihandle *ih)
 {
-  int type = iupScintillaSendMessage(ih, SCI_GETWRAPMODE, 0, 0);
+  int type = IupScintillaSendMessage(ih, SCI_GETWRAPMODE, 0, 0);
 
   if(type == SC_WRAP_WORD)
     return "WORD";
@@ -55,18 +55,18 @@ static char* iScintillaGetWordWrapAttrib(Ihandle *ih)
 static int iScintillaSetWordWrapAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrEqualNoCase(value, "WORD"))
-    iupScintillaSendMessage(ih, SCI_SETWRAPMODE, SC_WRAP_WORD, 0);
+    IupScintillaSendMessage(ih, SCI_SETWRAPMODE, SC_WRAP_WORD, 0);
   else if (iupStrEqualNoCase(value, "CHAR"))
-    iupScintillaSendMessage(ih, SCI_SETWRAPMODE, SC_WRAP_CHAR, 0);
+    IupScintillaSendMessage(ih, SCI_SETWRAPMODE, SC_WRAP_CHAR, 0);
   else
-    iupScintillaSendMessage(ih, SCI_SETWRAPMODE, SC_WRAP_NONE, 0);
+    IupScintillaSendMessage(ih, SCI_SETWRAPMODE, SC_WRAP_NONE, 0);
 
   return 0;
 }
 
 static char* iScintillaGetWordWrapVisualFlagsAttrib(Ihandle *ih)
 {
-  int type = iupScintillaSendMessage(ih, SCI_GETWRAPVISUALFLAGS, 0, 0);
+  int type = IupScintillaSendMessage(ih, SCI_GETWRAPVISUALFLAGS, 0, 0);
 
   if(type == SC_WRAPVISUALFLAG_MARGIN)
     return "MARGIN";
@@ -81,13 +81,13 @@ static char* iScintillaGetWordWrapVisualFlagsAttrib(Ihandle *ih)
 static int iScintillaSetWordWrapVisualFlagsAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrEqualNoCase(value, "MARGIN"))
-    iupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_MARGIN, 0);
+    IupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_MARGIN, 0);
   else if (iupStrEqualNoCase(value, "START"))
-    iupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_START, 0);
+    IupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_START, 0);
   else if (iupStrEqualNoCase(value, "END"))
-    iupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_END, 0);
+    IupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_END, 0);
   else
-    iupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_NONE, 0);
+    IupScintillaSendMessage(ih, SCI_SETWRAPVISUALFLAGS, SC_WRAPVISUALFLAG_NONE, 0);
 
   return 0;
 }

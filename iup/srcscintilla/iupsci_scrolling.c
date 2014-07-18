@@ -46,7 +46,7 @@ static int iScintillaSetScrollToAttrib(Ihandle *ih, const char *value)
   int lin, col;
   iupStrToIntInt(value, &lin, &col, ',');
 
-  iupScintillaSendMessage(ih, SCI_LINESCROLL, col, lin);
+  IupScintillaSendMessage(ih, SCI_LINESCROLL, col, lin);
 
   return 0;
 }
@@ -58,7 +58,7 @@ static int iScintillaSetScrollToPosAttrib(Ihandle *ih, const char *value)
 
   iupScintillaConvertPosToLinCol(ih, pos, &lin, &col);
 
-  iupScintillaSendMessage(ih, SCI_LINESCROLL, col, lin);
+  IupScintillaSendMessage(ih, SCI_LINESCROLL, col, lin);
 
   return 0;
 }
@@ -66,13 +66,13 @@ static int iScintillaSetScrollToPosAttrib(Ihandle *ih, const char *value)
 static int iScintillaSetScrollCaretAttrib(Ihandle *ih, const char *value)
 {
   (void)value;
-  iupScintillaSendMessage(ih, SCI_SCROLLCARET, 0, 0);
+  IupScintillaSendMessage(ih, SCI_SCROLLCARET, 0, 0);
   return 0;
 }
 
 static char* iScintillaGetScrollWidthAttrib(Ihandle* ih)
 {
-  int pixelWidth = iupScintillaSendMessage(ih, SCI_GETSCROLLWIDTH, 0, 0);
+  int pixelWidth = IupScintillaSendMessage(ih, SCI_GETSCROLLWIDTH, 0, 0);
   return iupStrReturnInt(pixelWidth);
 }
 
@@ -85,7 +85,7 @@ static int iScintillaSetScrollWidthAttrib(Ihandle* ih, const char* value)
   if(pixelWidth < 1)
     pixelWidth = 2000;
 
-  iupScintillaSendMessage(ih, SCI_SETSCROLLWIDTH, pixelWidth, 0);
+  IupScintillaSendMessage(ih, SCI_SETSCROLLWIDTH, pixelWidth, 0);
 
   return 0;
 }

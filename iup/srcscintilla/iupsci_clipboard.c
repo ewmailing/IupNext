@@ -37,20 +37,20 @@ SCI_CANPASTE
 static int iScintillaSetClipboardAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrEqualNoCase(value, "COPY"))
-    iupScintillaSendMessage(ih, SCI_COPY, 0, 0);
+    IupScintillaSendMessage(ih, SCI_COPY, 0, 0);
   else if (iupStrEqualNoCase(value, "CUT"))
-    iupScintillaSendMessage(ih, SCI_CUT, 0, 0);
+    IupScintillaSendMessage(ih, SCI_CUT, 0, 0);
   else if (iupStrEqualNoCase(value, "PASTE"))
-    iupScintillaSendMessage(ih, SCI_PASTE, 0, 0);
+    IupScintillaSendMessage(ih, SCI_PASTE, 0, 0);
   else if (iupStrEqualNoCase(value, "CLEAR"))
-    iupScintillaSendMessage(ih, SCI_CLEAR, 0, 0);
+    IupScintillaSendMessage(ih, SCI_CLEAR, 0, 0);
 
   return 0;
 }
 
 static char* iScintillaGetCanPasteAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_CANPASTE, 0, 0)); 
+  return iupStrReturnBoolean (IupScintillaSendMessage(ih, SCI_CANPASTE, 0, 0)); 
 }
 
 /***** Undo and Redo *****
@@ -69,43 +69,43 @@ SCI_GETUNDOCOLLECTION
 static int iScintillaSetUndoAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
-    iupScintillaSendMessage(ih, SCI_UNDO, 0, 0);
+    IupScintillaSendMessage(ih, SCI_UNDO, 0, 0);
   else
-    iupScintillaSendMessage(ih, SCI_EMPTYUNDOBUFFER, 0, 0);
+    IupScintillaSendMessage(ih, SCI_EMPTYUNDOBUFFER, 0, 0);
   return 0;
 }
 
 static char* iScintillaGetUndoAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_CANUNDO, 0, 0)); 
+  return iupStrReturnBoolean (IupScintillaSendMessage(ih, SCI_CANUNDO, 0, 0)); 
 }
 
 static int iScintillaSetRedoAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
-    iupScintillaSendMessage(ih, SCI_REDO, 0, 0);
+    IupScintillaSendMessage(ih, SCI_REDO, 0, 0);
   else
-    iupScintillaSendMessage(ih, SCI_EMPTYUNDOBUFFER, 0, 0);
+    IupScintillaSendMessage(ih, SCI_EMPTYUNDOBUFFER, 0, 0);
   return 0;
 }
 
 static char* iScintillaGetRedoAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_CANREDO, 0, 0)); 
+  return iupStrReturnBoolean (IupScintillaSendMessage(ih, SCI_CANREDO, 0, 0)); 
 }
 
 static int iScintillaSetUndoCollectAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
-    iupScintillaSendMessage(ih, SCI_SETUNDOCOLLECTION, 1, 0);
+    IupScintillaSendMessage(ih, SCI_SETUNDOCOLLECTION, 1, 0);
   else
-    iupScintillaSendMessage(ih, SCI_SETUNDOCOLLECTION, 0, 0);
+    IupScintillaSendMessage(ih, SCI_SETUNDOCOLLECTION, 0, 0);
   return 0;
 }
 
 static char* iScintillaGetUndoCollectAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_GETUNDOCOLLECTION, 0, 0)); 
+  return iupStrReturnBoolean (IupScintillaSendMessage(ih, SCI_GETUNDOCOLLECTION, 0, 0)); 
 }
 
 void iupScintillaRegisterClipboard(Iclass* ic)

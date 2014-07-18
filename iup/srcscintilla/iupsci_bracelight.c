@@ -36,7 +36,7 @@ static int iScintillaSetBraceHighlightAttrib(Ihandle* ih, const char* value)
   if (iupStrToIntInt(value, &pos1, &pos2, ':') != 2) 
     return 0;
 
-  iupScintillaSendMessage(ih, SCI_BRACEHIGHLIGHT, pos1, pos2);
+  IupScintillaSendMessage(ih, SCI_BRACEHIGHLIGHT, pos1, pos2);
 
   return 0;
 }
@@ -48,7 +48,7 @@ static int iScintillaSetBraceBadlightAttrib(Ihandle* ih, const char* value)
   if (!iupStrToInt(value, &pos1))
     return 0;
 
-  iupScintillaSendMessage(ih, SCI_BRACEBADLIGHT, pos1, 0);
+  IupScintillaSendMessage(ih, SCI_BRACEBADLIGHT, pos1, 0);
 
   return 0;
 }
@@ -60,7 +60,7 @@ static int iScintillaSetBraceHighlightIndicatorAttrib(Ihandle* ih, const char* v
   if (!iupStrToInt(value, &indicatorNumber))
     return 0;
 
-  iupScintillaSendMessage(ih, SCI_BRACEHIGHLIGHTINDICATOR, ih->data->useBraceHLIndicator, indicatorNumber);
+  IupScintillaSendMessage(ih, SCI_BRACEHIGHLIGHTINDICATOR, ih->data->useBraceHLIndicator, indicatorNumber);
 
   return 0;
 }
@@ -72,7 +72,7 @@ static int iScintillaSetBraceBadlightIndicatorAttrib(Ihandle* ih, const char* va
   if (!iupStrToInt(value, &indicatorNumber))
     return 0;
 
-  iupScintillaSendMessage(ih, SCI_BRACEBADLIGHTINDICATOR, ih->data->useBraceBLIndicator, indicatorNumber);
+  IupScintillaSendMessage(ih, SCI_BRACEBADLIGHTINDICATOR, ih->data->useBraceBLIndicator, indicatorNumber);
 
   return 0;
 }
@@ -110,7 +110,7 @@ static char* iScintillaGetBraceMatchAttribId(Ihandle* ih, int pos)
   if (pos < 0)
     return "-1";
 
-  return iupStrReturnInt(iupScintillaSendMessage(ih, SCI_BRACEMATCH, pos, 0));
+  return iupStrReturnInt(IupScintillaSendMessage(ih, SCI_BRACEMATCH, pos, 0));
 }
 
 void iupScintillaRegisterBraceLight(Iclass* ic)

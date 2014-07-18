@@ -45,15 +45,15 @@ SCI_SETKEYWORDS(int keyWordSet, const char *keyWordList)
 static int iScintillaLoadLexerLibraryAttrib(Ihandle* ih, const char* value)
 {
   if (value)
-    iupScintillaSendMessage(ih, SCI_LOADLEXERLIBRARY, 0, (sptr_t)value);
+    IupScintillaSendMessage(ih, SCI_LOADLEXERLIBRARY, 0, (sptr_t)value);
   return 0;
 }
 
 static char* iScintillaGetLexerLanguageAttrib(Ihandle* ih)
 {
-  int len = iupScintillaSendMessage(ih, SCI_GETLEXERLANGUAGE, 0, (sptr_t)NULL);
+  int len = IupScintillaSendMessage(ih, SCI_GETLEXERLANGUAGE, 0, (sptr_t)NULL);
   char *str = iupStrGetMemory(len+1);
-  len = iupScintillaSendMessage(ih, SCI_GETLEXERLANGUAGE, 0, (sptr_t)str);
+  len = IupScintillaSendMessage(ih, SCI_GETLEXERLANGUAGE, 0, (sptr_t)str);
   if (len)
   {
     if (!iupStrEqual(str, "null"))
@@ -65,9 +65,9 @@ static char* iScintillaGetLexerLanguageAttrib(Ihandle* ih)
 static int iScintillaSetLexerLanguageAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
-    iupScintillaSendMessage(ih, SCI_SETLEXER, SCLEX_NULL, 0);
+    IupScintillaSendMessage(ih, SCI_SETLEXER, SCLEX_NULL, 0);
   else
-    iupScintillaSendMessage(ih, SCI_SETLEXERLANGUAGE, 0, (sptr_t)value);
+    IupScintillaSendMessage(ih, SCI_SETLEXERLANGUAGE, 0, (sptr_t)value);
   return 0;
 }
 
@@ -75,7 +75,7 @@ static int iScintillaSetKeyWordsAttrib(Ihandle* ih, int keyWordSet, const char* 
 {
   /* Note: You can set up to 9 lists of keywords for use by the current lexer */
   if(keyWordSet >= 0 && keyWordSet < 9)
-    iupScintillaSendMessage(ih, SCI_SETKEYWORDS, keyWordSet, (sptr_t)value);
+    IupScintillaSendMessage(ih, SCI_SETKEYWORDS, keyWordSet, (sptr_t)value);
 
   return 0;
 }
@@ -85,10 +85,10 @@ static char* iScintillaGetPropertyAttrib(Ihandle* ih)
   char* strKey = iupAttribGetStr(ih, "PROPERTYNAME");
   if (strKey)
   {
-    int len = (int)iupScintillaSendMessage(ih, SCI_GETPROPERTY, (uptr_t)strKey, (sptr_t)NULL);
+    int len = (int)IupScintillaSendMessage(ih, SCI_GETPROPERTY, (uptr_t)strKey, (sptr_t)NULL);
     char *str = iupStrGetMemory(len+1);
 
-    len = iupScintillaSendMessage(ih, SCI_GETPROPERTY, (uptr_t)strKey, (sptr_t)str);
+    len = IupScintillaSendMessage(ih, SCI_GETPROPERTY, (uptr_t)strKey, (sptr_t)str);
     if (len)
       return str;
   }
@@ -103,24 +103,24 @@ static int iScintillaSetPropertyAttrib(Ihandle* ih, const char* value)
 
   iupStrToStrStr(value, strKey, strVal, '=');
 
-  iupScintillaSendMessage(ih, SCI_SETPROPERTY, (uptr_t)strKey, (sptr_t)strVal);
+  IupScintillaSendMessage(ih, SCI_SETPROPERTY, (uptr_t)strKey, (sptr_t)strVal);
 
   return 0;
 }
 
 static char* iScintillaGetDescribeKeywordSetsAttrib(Ihandle* ih)
 {
-  int len = (int)iupScintillaSendMessage(ih, SCI_DESCRIBEKEYWORDSETS, 0, 0);
+  int len = (int)IupScintillaSendMessage(ih, SCI_DESCRIBEKEYWORDSETS, 0, 0);
   char *str = iupStrGetMemory(len+1);
-  iupScintillaSendMessage(ih, SCI_DESCRIBEKEYWORDSETS, 0, (sptr_t)str);
+  IupScintillaSendMessage(ih, SCI_DESCRIBEKEYWORDSETS, 0, (sptr_t)str);
   return str;
 }
 
 static char* iScintillaGetPropertyNamessAttrib(Ihandle* ih)
 {
-  int len = (int)iupScintillaSendMessage(ih, SCI_PROPERTYNAMES, 0, 0);
+  int len = (int)IupScintillaSendMessage(ih, SCI_PROPERTYNAMES, 0, 0);
   char *str = iupStrGetMemory(len+1);
-  iupScintillaSendMessage(ih, SCI_PROPERTYNAMES, 0, (sptr_t)str);
+  IupScintillaSendMessage(ih, SCI_PROPERTYNAMES, 0, (sptr_t)str);
   return str;
 }
 

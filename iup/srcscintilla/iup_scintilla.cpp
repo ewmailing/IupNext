@@ -49,7 +49,7 @@
 #define WM_IUPCARET WM_APP+1   /* Custom IUP message */
 #endif
 
-sptr_t iupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam, sptr_t lParam)
+sptr_t IupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam, sptr_t lParam)
 {
 #ifdef GTK
   return scintilla_send_message(SCINTILLA(ih->handle), iMessage, wParam, lParam);
@@ -77,11 +77,11 @@ void iupScintillaDecodeColor(long color, unsigned char *r, unsigned char *g, uns
 
 void iupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
-  *pos = iupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
+  *pos = IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
     
   if(*pos != -1)
   {
-    int line_length = iupScintillaSendMessage(ih, SCI_GETLINEENDPOSITION, lin, 0) - iupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
+    int line_length = IupScintillaSendMessage(ih, SCI_GETLINEENDPOSITION, lin, 0) - IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
     if(col <= line_length)
       *pos += col;
     else
@@ -90,19 +90,19 @@ void iupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
   else
   {
     /* "lin" is greater than the lines in the document */
-    *pos = iupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
+    *pos = IupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
   }
 }
 
 void iupScintillaConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
 {
-  *lin = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pos, 0);
-  *col = iupScintillaSendMessage(ih, SCI_GETCOLUMN, pos, 0);
+  *lin = IupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pos, 0);
+  *col = IupScintillaSendMessage(ih, SCI_GETCOLUMN, pos, 0);
 }
 
 static int iScintillaConvertXYToPos(Ihandle* ih, int x, int y)
 {
-  return iupScintillaSendMessage(ih, SCI_POSITIONFROMPOINT, x, y);
+  return IupScintillaSendMessage(ih, SCI_POSITIONFROMPOINT, x, y);
 }
 
 
@@ -110,19 +110,19 @@ static int iScintillaConvertXYToPos(Ihandle* ih, int x, int y)
 
 static int iScintillaSetUsePopupAttrib(Ihandle* ih, const char* value)
 {
-  iupScintillaSendMessage(ih, SCI_USEPOPUP, iupStrBoolean(value), 0);
+  IupScintillaSendMessage(ih, SCI_USEPOPUP, iupStrBoolean(value), 0);
   return 1;  /* there is no get */
 }
 
 static int iScintillaSetKeysUnicodeAttrib(Ihandle* ih, const char* value)
 {
-  iupScintillaSendMessage(ih, SCI_SETKEYSUNICODE, iupStrBoolean(value), 0);
+  IupScintillaSendMessage(ih, SCI_SETKEYSUNICODE, iupStrBoolean(value), 0);
   return 0;
 }
 
 static char* iScintillaGetKeysUnicodeAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean (iupScintillaSendMessage(ih, SCI_GETKEYSUNICODE, 0, 0)); 
+  return iupStrReturnBoolean (IupScintillaSendMessage(ih, SCI_GETKEYSUNICODE, 0, 0)); 
 }
 
 
@@ -150,8 +150,8 @@ static void iScintillaKeySetStatus(int state, char* status, int doubleclick)
 
 static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
 {
-  int lin = iupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pMsg->position, 0);
-  int col = iupScintillaSendMessage(ih, SCI_GETCOLUMN, pMsg->position, 0);
+  int lin = IupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pMsg->position, 0);
+  int col = IupScintillaSendMessage(ih, SCI_GETCOLUMN, pMsg->position, 0);
 
   switch(pMsg->nmhdr.code)
   {
@@ -194,7 +194,7 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
       IFni cb = (IFni)IupGetCallback(ih, "ZOOM_CB");
       if (cb)
       {
-        int points = iupScintillaSendMessage(ih, SCI_GETZOOM, 0, 0);
+        int points = IupScintillaSendMessage(ih, SCI_GETZOOM, 0, 0);
         cb(ih, points);
       }
 
@@ -272,7 +272,7 @@ static void iScintillaCallCaretCb(Ihandle* ih)
   if (!cb)
     return;
 
-  pos = iupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0);
+  pos = IupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0);
 
   if (pos != ih->data->last_caret_pos)
   {
@@ -466,26 +466,26 @@ static int iScintillaMapMethod(Ihandle* ih)
 
   /* add scrollbar */
   if (ih->data->sb & IUP_SB_HORIZ)
-    iupScintillaSendMessage(ih, SCI_SETHSCROLLBAR, 1, 0);
+    IupScintillaSendMessage(ih, SCI_SETHSCROLLBAR, 1, 0);
   else
-    iupScintillaSendMessage(ih, SCI_SETHSCROLLBAR, 0, 0);
+    IupScintillaSendMessage(ih, SCI_SETHSCROLLBAR, 0, 0);
 
   if (ih->data->sb & IUP_SB_VERT)
-    iupScintillaSendMessage(ih, SCI_SETVSCROLLBAR, 1, 0);
+    IupScintillaSendMessage(ih, SCI_SETVSCROLLBAR, 1, 0);
   else
-    iupScintillaSendMessage(ih, SCI_SETVSCROLLBAR, 0, 0);
+    IupScintillaSendMessage(ih, SCI_SETVSCROLLBAR, 0, 0);
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)iScintillaConvertXYToPos);
   IupSetCallback(ih, "_IUP_POS2LINCOL_CB", (Icallback)iupScintillaConvertPosToLinCol);
   IupSetCallback(ih, "_IUP_LINCOL2POS_CB", (Icallback)iupScintillaConvertLinColToPos);
 
-  iupScintillaSendMessage(ih, SCI_SETPASTECONVERTENDINGS, 1, 0);
-  iupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_LF, 0);
+  IupScintillaSendMessage(ih, SCI_SETPASTECONVERTENDINGS, 1, 0);
+  IupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_LF, 0);
 
   if(IupGetInt(NULL, "UTF8MODE"))
-    iupScintillaSendMessage(ih, SCI_SETCODEPAGE, SC_CP_UTF8, 0);
+    IupScintillaSendMessage(ih, SCI_SETCODEPAGE, SC_CP_UTF8, 0);
   else
-    iupScintillaSendMessage(ih, SCI_SETCODEPAGE, 0, 0);
+    IupScintillaSendMessage(ih, SCI_SETCODEPAGE, 0, 0);
 
   return IUP_NOERROR;
 }

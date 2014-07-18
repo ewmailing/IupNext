@@ -25,15 +25,15 @@
 
 static char* iScintillaGetOvertypeAttrib(Ihandle *ih)
 {
-  return iupStrReturnBoolean(iupScintillaSendMessage(ih, SCI_GETOVERTYPE, 0, 0));
+  return iupStrReturnBoolean(IupScintillaSendMessage(ih, SCI_GETOVERTYPE, 0, 0));
 }
 
 static int iScintillaSetOvertypeAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
-    iupScintillaSendMessage(ih, SCI_SETOVERTYPE, 1, 0);
+    IupScintillaSendMessage(ih, SCI_SETOVERTYPE, 1, 0);
   else
-    iupScintillaSendMessage(ih, SCI_SETOVERTYPE, 0, 0);
+    IupScintillaSendMessage(ih, SCI_SETOVERTYPE, 0, 0);
 
   return 0;
 }

@@ -41,14 +41,14 @@ SCI_REPLACETARGET(int length, const char *text)
 
 static int iScintillaSetTargetFromSelectionAttrib(Ihandle* ih, const char* value)
 {
-  iupScintillaSendMessage(ih, SCI_TARGETFROMSELECTION, 0, 0);
+  IupScintillaSendMessage(ih, SCI_TARGETFROMSELECTION, 0, 0);
   (void)value;
   return 0;
 }
 
 static char* iScintillaGetSearchFlagsAttrib(Ihandle* ih)
 {
-  int flags = iupScintillaSendMessage(ih, SCI_GETSEARCHFLAGS, 0, 0);
+  int flags = IupScintillaSendMessage(ih, SCI_GETSEARCHFLAGS, 0, 0);
   char* str = iupStrGetMemory(50);
 
   *str = 0;
@@ -72,7 +72,7 @@ static char* iScintillaGetSearchFlagsAttrib(Ihandle* ih)
 static int iScintillaSetSearchFlagsAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
-    iupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, 0, 0);
+    IupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, 0, 0);
   else
   {
     int flags = 0;
@@ -90,7 +90,7 @@ static int iScintillaSetSearchFlagsAttrib(Ihandle* ih, const char* value)
     if (strstr(VALUE, "POSIX"))
       flags |= SCFIND_POSIX;
 
-    iupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, flags, 0);
+    IupScintillaSendMessage(ih, SCI_SETSEARCHFLAGS, flags, 0);
     free(VALUE);
   }
 
@@ -99,7 +99,7 @@ static int iScintillaSetSearchFlagsAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetTargetEndAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(iupScintillaSendMessage(ih, SCI_GETTARGETEND, 0, 0));
+  return iupStrReturnInt(IupScintillaSendMessage(ih, SCI_GETTARGETEND, 0, 0));
 }
 
 static int iScintillaSetTargetEndAttrib(Ihandle* ih, const char* value)
@@ -110,16 +110,16 @@ static int iScintillaSetTargetEndAttrib(Ihandle* ih, const char* value)
     return 0;
 
   iupStrToInt(value, &end);
-  if (end < 1) end = iupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
+  if (end < 1) end = IupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
 
-  iupScintillaSendMessage(ih, SCI_SETTARGETEND, end, 0);
+  IupScintillaSendMessage(ih, SCI_SETTARGETEND, end, 0);
 
   return 0;
 }
 
 static char* iScintillaGetTargetStartAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(iupScintillaSendMessage(ih, SCI_GETTARGETSTART, 0, 0));
+  return iupStrReturnInt(IupScintillaSendMessage(ih, SCI_GETTARGETSTART, 0, 0));
 }
 
 static int iScintillaSetTargetStartAttrib(Ihandle* ih, const char* value)
@@ -132,7 +132,7 @@ static int iScintillaSetTargetStartAttrib(Ihandle* ih, const char* value)
   iupStrToInt(value, &start);
   if (start < 1) start = 1;
 
-  iupScintillaSendMessage(ih, SCI_SETTARGETSTART, start, 0);
+  IupScintillaSendMessage(ih, SCI_SETTARGETSTART, start, 0);
 
   return 0;
 }
@@ -144,7 +144,7 @@ static int iScintillaSetSearchInTargetAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  iupScintillaSendMessage(ih, SCI_SEARCHINTARGET, len, (sptr_t)value);
+  IupScintillaSendMessage(ih, SCI_SEARCHINTARGET, len, (sptr_t)value);
 
   return 0;
 }
@@ -154,7 +154,7 @@ static int iScintillaSetReplaceTargetAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  iupScintillaSendMessage(ih, SCI_REPLACETARGET, (uptr_t)-1, (sptr_t)value);
+  IupScintillaSendMessage(ih, SCI_REPLACETARGET, (uptr_t)-1, (sptr_t)value);
   return 0;
 }
 

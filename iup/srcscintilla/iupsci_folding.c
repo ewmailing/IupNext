@@ -43,22 +43,22 @@ SCI_TOGGLEFOLD(int line)
 static int iScintillaSetFoldFlagsAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "LEVELNUMBERS"))
-    iupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LEVELNUMBERS, 0);
+    IupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LEVELNUMBERS, 0);
   else if (iupStrEqualNoCase(value, "LINEBEFORE_EXPANDED"))
-    iupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LINEBEFORE_EXPANDED, 0);
+    IupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LINEBEFORE_EXPANDED, 0);
   else if (iupStrEqualNoCase(value, "LINEBEFORE_CONTRACTED"))
-    iupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LINEBEFORE_CONTRACTED, 0);
+    IupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LINEBEFORE_CONTRACTED, 0);
   else if (iupStrEqualNoCase(value, "LINEAFTER_EXPANDED"))
-    iupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LINEAFTER_EXPANDED, 0);
+    IupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LINEAFTER_EXPANDED, 0);
   else  /* LINEAFTER_CONTRACTED */
-    iupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LINEAFTER_CONTRACTED, 0);
+    IupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LINEAFTER_CONTRACTED, 0);
 
   return 0;
 }
 
 static char* iScintillaGetFoldLevelAttrib(Ihandle* ih, int line)
 {
-  int level = iupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
+  int level = IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
 
   if (level & SC_FOLDLEVELWHITEFLAG)
     return "WHITEFLAG";
@@ -73,13 +73,13 @@ static char* iScintillaGetFoldLevelAttrib(Ihandle* ih, int line)
 static int iScintillaSetFoldLevelAttrib(Ihandle* ih, int line, const char* value)
 {
   if (iupStrEqualNoCase(value, "WHITEFLAG"))
-    iupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELWHITEFLAG);
+    IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELWHITEFLAG);
   else if (iupStrEqualNoCase(value, "HEADERFLAG"))
-    iupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELHEADERFLAG);
+    IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELHEADERFLAG);
   else if (iupStrEqualNoCase(value, "NUMBERMASK"))
-    iupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELNUMBERMASK);
+    IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELNUMBERMASK);
   else  /* BASE */
-    iupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELBASE);
+    IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELBASE);
 
   return 0;
 }
@@ -89,11 +89,11 @@ static int iScintillaSetFoldToggleAttrib(Ihandle* ih, const char* value)
   int line, level;
   
   iupStrToInt(value, &line);
-  level = iupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
+  level = IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
 
   if (level & SC_FOLDLEVELHEADERFLAG)
   {
-    iupScintillaSendMessage(ih, SCI_TOGGLEFOLD, line, 0);
+    IupScintillaSendMessage(ih, SCI_TOGGLEFOLD, line, 0);
     return 0;
   }
 
