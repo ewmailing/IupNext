@@ -88,7 +88,7 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[0], "FONT", "Courier, 11");
 //  IupSetAttribute(plot[0], "FONT", "Times, 8");
 //  IupSetAttribute(plot[0], "FONT", "courbd, 8");
-  IupSetAttribute(plot[0], "FONT", "texgyrecursor-bold, 8");
+//  IupSetAttribute(plot[0], "FONT", "texgyrecursor-bold, 8");
 //  IupSetAttribute(plot[0], "FONT", "cursor, Bold 8");
 
   IupSetAttribute(plot[0], "AXS_XLABEL", "gnu (Foo)");
@@ -116,7 +116,7 @@ static void InitPlots(void)
   IupMglPlotEnd(plot[0]);
   IupSetAttribute(plot[0], "DS_LINEWIDTH", "3");
   IupSetAttribute(plot[0], "DS_LEGEND", "Line");
-  IupSetAttribute(plot[0], "FGCOLOR", "0 128 255");
+  IupSetAttribute(plot[0], "DS_COLOR", "0 128 255");
 
   theFac = 2.0/100;
   ds_index = IupMglPlotNewDataSet(plot[0], 2);

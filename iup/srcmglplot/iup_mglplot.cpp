@@ -167,11 +167,11 @@ inline unsigned char iQuant(const double& value)
 }                               
 
 // Reconstruct 0-255 values into 0-1.
-inline double iRecon(const unsigned char& value)
+inline float iRecon(const unsigned char& value)
 {
-  if (value <= 0) return 0.0;
-  if (value >= 255) return 1.0;
-  return ((double)value + 0.5f)/256.0;
+  if (value <= 0) return 0.0f;
+  if (value >= 255) return 1.0f;
+  return ((float)value + 0.5f) / 256.0f;
 }
 
 inline void iSwap(double& a, double& b)
@@ -209,7 +209,7 @@ static void iMglPlotResetDataSet(IdataSet* ds, int ds_index)
   ds->dsLineStyle  = '-';  // SOLID/CONTINUOUS
   ds->dsLineWidth  = 1;
   ds->dsMarkStyle  = 'x';  // "X"
-  ds->dsMarkSize   = 0.02f;
+  ds->dsMarkSize   = 0.02;
   ds->dsShowMarks = false;
   ds->dsShowValues = false;
   ds->dsMode = iupStrDup("LINE");
@@ -234,7 +234,7 @@ static void iMglPlotResetAxis(Iaxis& axis)
   memset(&axis, 0, sizeof(Iaxis));
 
   axis.axLabelFontSizeFactor = 1;
-  axis.axTickFontSizeFactor = 0.8f;
+  axis.axTickFontSizeFactor = 0.8;
 
   axis.axColor.Set(NAN, NAN, NAN);
 
@@ -252,8 +252,8 @@ static void iMglPlotResetAxis(Iaxis& axis)
   axis.axTickValuesRotation = true;
   axis.axTickAutoSpace = true;
   axis.axTickAutoSize = true;
-  axis.axTickMinorSizeFactor = 0.6f;
-  axis.axTickMajorSize = 0.1f;
+  axis.axTickMinorSizeFactor = 0.6;
+  axis.axTickMajorSize = 0.1;
   axis.axTickMinorDivision = 5;
   axis.axTickMajorSpan = -5;
 }
@@ -270,17 +270,17 @@ static void iMglPlotReset(Ihandle* ih)
   ih->data->gridLineStyle = '-';
   ih->data->gridShow = NULL;
 
-  ih->data->alpha = 0.5f;
+  ih->data->alpha = 0.5;
   ih->data->transparent = false;
 
   ih->data->titleFontStyle[0] = 0;
   ih->data->legendFontStyle[0] = 0;
-  ih->data->legendFontSizeFactor = 0.8f;
-  ih->data->titleFontSizeFactor = 1.4f;
+  ih->data->legendFontSizeFactor = 0.8;
+  ih->data->titleFontSizeFactor = 1.4;
 
   ih->data->bgColor.Set(1, 1, 1);
   ih->data->fgColor.Set(0, 0, 0);
-  ih->data->gridColor.Set((float)iRecon(200), (float)iRecon(200), (float)iRecon(200));
+  ih->data->gridColor.Set(iRecon(200), iRecon(200), iRecon(200));
   ih->data->titleColor.Set(NAN, NAN, NAN);
   ih->data->legendColor.Set(NAN, NAN, NAN);
   ih->data->boxColor.Set(NAN, NAN, NAN);
@@ -409,19 +409,17 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   }
 }
 
-static void iMglPlotConfigFontSize(Ihandle* ih, mglGraph *gr, double fontsizefactor)
-{
-  gr->SetFontSize(fontsizefactor*ih->data->FontSizeDef);
-}
-
 static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, const char* fontstyle, double fontsizefactor)
 {
+  /* Configuring fonts in this way we avoid mixing font styles with other styles,
+     so the ":" separator is not necessary. */
+
   if (fontstyle[0] != 0)
     gr->SetFontDef(fontstyle);
   else
     gr->SetFontDef(ih->data->FontStyleDef);
 
-  iMglPlotConfigFontSize(ih, gr, fontsizefactor);
+  gr->SetFontSize(fontsizefactor * ih->data->FontSizeDef);
 }
 
 static double iMglPlotGetAttribDoubleNAN(Ihandle* ih, const char* name)
@@ -436,13 +434,13 @@ static bool iMglPlotHasx10(double min, double max)
   if (fabs(max - min)<0.01*fabs(min))
   {
     double v = fabs(max - min);
-    if (v>10000.f || v<1e-4f)
+    if (v>10000.0 || v<1.0e-4)
       return true;
   }
   else
   {
     double v = fabs(max)>fabs(min) ? fabs(max) : fabs(min);
-    if (v>10000.f || v<1e-4f)
+    if (v>10000.0 || v<1.0e-4)
       return true;
   }
   return false;
@@ -459,10 +457,6 @@ static void iMglPlotAddStyleLine(char* style, char line_style, int line_width)
   *style++ = (char)('0' + line_width);
 
   *style = 0;
-}
-
-static void iMglPlotConfigColor(Ihandle* ih, mglGraph *gr, mglColor color)
-{
 }
 
 static char iMglPlotFindColor(const mglColor& c1)
@@ -497,9 +491,9 @@ static void iMglPlotAddStyleColor(Ihandle* ih, char* style, mglColor color)
   else
   {
     if (color.a == 1)
-      sprintf(style, "{x%2X%2X%2X}", (int)iQuant(color.r), (int)iQuant(color.g), (int)iQuant(color.b));
+      sprintf(style, "{x%02X%02X%02X}", (int)iQuant(color.r), (int)iQuant(color.g), (int)iQuant(color.b));
     else
-      sprintf(style, "{x%2X%2X%2X%2X}", (int)iQuant(color.r), (int)iQuant(color.g), (int)iQuant(color.b), (int)iQuant(color.a));
+      sprintf(style, "{x%02X%02X%02X%02X}", (int)iQuant(color.r), (int)iQuant(color.g), (int)iQuant(color.b), (int)iQuant(color.a));
   }
 }
 
@@ -640,7 +634,7 @@ static void iMglPlotConfigAxisTicks(Ihandle* ih, mglGraph *gr, char dir, const I
       step = pow(10,n);
       if (d<4)
       {
-        step *= 0.5f;
+        step *= 0.5;
         numsub = 4;
       }
       else if(d<7)
@@ -949,42 +943,45 @@ static void iMglPlotConfigAxisTicksLen(mglGraph *gr, Iaxis& axis)
   }
   else
   {
-    mreal stt = 1.0/(0.6f*0.6f) - 1.0;
-    gr->SetTickLen(0.1f, stt);
+    mreal stt = 1.0/(0.6*0.6) - 1.0;
+    gr->SetTickLen(0.1, stt);
   }
 }
 
 static void iMglPlotDrawAxis(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
 {
-  iMglPlotConfigColor(ih, gr, axis.axColor);
-  iMglPlotConfigFont(ih, gr, axis.axTickFontStyle, axis.axTickFontSizeFactor);
-
   // Must be set here, because there is only one for all the axis.
   iMglPlotConfigAxisTicksLen(gr, axis);
 
-  // Must be after configuring the ticks
+  // Must be reset after configuring the ticks
   if (dir == 'x')
     iMglPlotConfigAxisTicksVal(ih, gr, true);
-
   // Configure ticks values rotation along axis
   gr->SetRotatedText(axis.axTickValuesRotation);
 
+  char style[64] = "";
+
+  iMglPlotAddStyleColor(ih, style, axis.axColor);
+  iMglPlotConfigFont(ih, gr, axis.axTickFontStyle, axis.axTickFontSizeFactor);
+
   // Draw the axis, ticks and ticks values
   int i = 0;
-  char style[10];
-  style[i++]=dir;
+  char sdir[10];
+
+  sdir[i++] = dir;
   if (!axis.axTickShowValues)
-    style[i++]='_';
+    sdir[i++] = '_';
   if (axis.axShowArrow)
-    style[i++]='T';
-  gr->Axis(style);  
+    sdir[i++] = 'T';
+  sdir[i] = 0;
+
+  gr->Axis(sdir, style);  
 
   iMglPlotDrawAxisLabel(ih, gr, dir, axis);
 
   // Reset to default
   if (dir == 'x')
     iMglPlotConfigAxisTicksVal(ih, gr, false);
-
   gr->SetRotatedText(false);
 }
 
@@ -1003,26 +1000,27 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
 
   if (iupAttribGetBoolean(ih, "COLORBAR"))
   {
-    char sch[10] = "";
-    sch[0] = '>';  // RIGHT
-    char* value = iupAttribGetStr(ih, "COLORBARPOS");
-    if (iupStrEqualNoCase(value, "LEFT"))	sch[0] = '<';
-    else if (iupStrEqualNoCase(value, "TOP"))	sch[0] = '^';
-    else if (iupStrEqualNoCase(value, "BOTTOM"))	sch[0] = '_';
-    sch[1] = 0;
+    char style[64] = "";
 
-    if (sch[0] == '>' || sch[0] == '<')
+    char* value = iupAttribGetStr(ih, "COLORBARPOS");
+    if (iupStrEqualNoCase(value, "LEFT"))	style[0] = '<';
+    else if (iupStrEqualNoCase(value, "TOP"))	style[0] = '^';
+    else if (iupStrEqualNoCase(value, "BOTTOM"))	style[0] = '_';
+    else style[0] = '>';  // RIGHT
+    style[1] = 0;
+
+    if (style[0] == '>' || style[0] == '<')
     {
-      iMglPlotConfigColor(ih, gr, ih->data->axisX.axColor);
+      iMglPlotAddStyleColor(ih, style, ih->data->axisX.axColor);
       iMglPlotConfigFont(ih, gr, ih->data->axisX.axTickFontStyle, ih->data->axisX.axTickFontSizeFactor);
     }
     else
     {
-      iMglPlotConfigColor(ih, gr, ih->data->axisY.axColor);
+      iMglPlotAddStyleColor(ih, style, ih->data->axisY.axColor);
       iMglPlotConfigFont(ih, gr, ih->data->axisY.axTickFontStyle, ih->data->axisY.axTickFontSizeFactor);
     }
 
-    gr->Colorbar(sch);
+    gr->Colorbar(style);
   }
 }
 
@@ -1050,7 +1048,7 @@ static char* iMglPlotMakeFormatString(double inValue, double range)
   if (inValue<0)
     inValue = range/(-inValue);
 
-  if (inValue > (double)1.0e4 || inValue < (double)1.0e-3)
+  if (inValue > 1.0e4 || inValue < 1.0e-3)
     return "%.1e";
   else 
   {
@@ -1069,15 +1067,15 @@ static char* iMglPlotMakeFormatString(double inValue, double range)
 
     switch (thePrecision)
     {
-    case 1: return "%.1f";
-    case 2: return "%.2f";
-    case 3: return "%.3f";
-    case 4: return "%.4f";
-    case 5: return "%.5f";
-    case 6: return "%.6f";
-    case 7: return "%.7f";
-    case 8: return "%.8f";
-    case 9: return "%.9f";
+    case 1: return "%.1g";
+    case 2: return "%.2g";
+    case 3: return "%.3g";
+    case 4: return "%.4g";
+    case 5: return "%.5g";
+    case 6: return "%.6g";
+    case 7: return "%.7g";
+    case 8: return "%.8g";
+    case 9: return "%.9g";
     default: return "%.0";
     }
   }
@@ -1086,6 +1084,7 @@ static char* iMglPlotMakeFormatString(double inValue, double range)
 static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
 {
   int i;
+  char style[64] = "";
   char text[256];
   char format[256];
   mglPoint p;
@@ -1096,7 +1095,7 @@ static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
   if (!yformat) yformat = iMglPlotMakeFormatString(ih->data->axisY.axTickMajorSpan, ih->data->axisY.axMax - ih->data->axisY.axMin);
   if (!zformat) zformat = iMglPlotMakeFormatString(ih->data->axisZ.axTickMajorSpan, ih->data->axisZ.axMax - ih->data->axisZ.axMin);
 
-  iMglPlotConfigColor(ih, gr, ds->dsColor);
+  iMglPlotAddStyleColor(ih, style, ds->dsColor);
   iMglPlotConfigFont(ih, gr, ih->data->legendFontStyle, ih->data->legendFontSizeFactor);
 
   double* dsXPoints = ds->dsX->a;
@@ -1113,7 +1112,7 @@ static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
       sprintf(text, format, dsXPoints[i], dsYPoints[i], dsZPoints[i]);
       p = mglPoint(dsXPoints[i], dsYPoints[i], dsZPoints[i]);
       
-      gr->Puts(p, d, text, 0, -1);
+      gr->Puts(p, d, text, style);
     }
   }
   else if (ds->dsDim == 2)
@@ -1128,7 +1127,7 @@ static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
       sprintf(text, format, dsXPoints[i], dsYPoints[i]);
       p = mglPoint(dsXPoints[i], dsYPoints[i]);
       
-      gr->Puts(p, d, text, 0, -1);
+      gr->Puts(p, d, text, style);
     }
   }
   else
@@ -1141,14 +1140,14 @@ static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
       sprintf(text, format, i, dsXPoints[i]);
       p = mglPoint((double)i, dsXPoints[i]);
       
-      gr->Puts(p, d, text, 0, -1);
+      gr->Puts(p, d, text, style);
     }
   }
 }
 
 static void iMglPlotConfigDataGrid(mglGraph *gr, IdataSet* ds, char* style)
 { 
-  // Plot affected by SelectPen
+  // Affected by SetLineMark
   iMglPlotConfigDataSetLineMark(ds, gr, style);
 
   strcat(style, "#"); // grid
@@ -1169,7 +1168,7 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   char style[64] = "";
   char* value;
 
-  // All plots here are affected by SetScheme
+  // All plots here are affected by ColorScheme
   iMglPlotConfigColorScheme(ih, style);
 
   int nx = (int)ds->dsX->nx;
@@ -1270,7 +1269,7 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       }
       else
       {
-        // Plot affected by SelectPen
+        // Affected by SetLineMark
         iMglPlotConfigDataSetLineMark(ds, gr, style);
 
         if (tolower(*slicedir) == 'x') { strcat(style, "x");  gr->Cont3(xx, yy, zz, *ds->dsX, style, slicex, opt); slicedir++; }
@@ -1293,7 +1292,7 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 {               
   char style[64] = "";
 
-  // All plots here are affected by SetScheme
+  // All plots here are affected by ColorScheme
   iMglPlotConfigColorScheme(ih, style);
 
   int nx = (int)ds->dsX->nx;
@@ -1304,14 +1303,14 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 
   if (iupStrEqualNoCase(ds->dsMode, "PLANAR_MESH"))
   {
-    // Plot affected by SelectPen
+    // Affected by SetLineMark
     iMglPlotConfigDataSetLineMark(ds, gr, style);
 
     gr->Mesh(xx, yy, *ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_FALL"))
   {
-    // Plot affected by SelectPen
+    // Affected by SetLineMark
     iMglPlotConfigDataSetLineMark(ds, gr, style);
 
     char* falldir = iupAttribGetStr(ih, "DIR"); //Default "Y"
@@ -1362,7 +1361,7 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       gr->ContF(xx, yy, *ds->dsX, style, opt);
     else
     {
-      // Plot affected by SelectPen
+      // Affected by SetLineMark
       iMglPlotConfigDataSetLineMark(ds, gr, style);
 
       char* countourlabels = iupAttribGetStr(ih, "CONTOURLABELS");  //Default NULL
@@ -1394,19 +1393,11 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 {               
   char style[64] = "";
 
-  iMglPlotConfigColor(ih, gr, ds->dsColor);
-
   int nx = (int)ds->dsX->nx;
   mglData xx(nx);
   xx.Fill(0,(double)nx-1);
 
-  // All plots here are affected by SelectPen
-  // All plots here are affected by SetPalette
-
-  // TODO Workaround, we changed SetPal for this to work
-  //gr->SetPalNum(1);
-  //gr->SetPalColor(0, ds->dsColor.r, ds->dsColor.g, ds->dsColor.b); // No problem using it here because 
-                                                                   // dsColor should never has NAN values
+  iMglPlotAddStyleColor(ih, style, ds->dsColor);
 
   if (iupStrEqualNoCase(ds->dsMode, "LINE") ||
       iupStrEqualNoCase(ds->dsMode, "MARKLINE") ||
@@ -1417,7 +1408,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (iupStrEqualNoCase(ds->dsMode, "MARK"))   // Same as setting linestyle=none
       ds->dsLineStyle = ' '; // No line
 
-    // Plot affected by SelectPen
+    // Affected by SetLineMark
     iMglPlotConfigDataSetLineMark(ds, gr, style);
 
     if (ds->dsDim == 3)
@@ -1429,7 +1420,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "RADAR"))
   {
-    // Plot affected by SelectPen
+    // Affected by SetLineMark
     iMglPlotConfigDataSetLineMark(ds, gr, style);
 
     double radarshift = iupAttribGetDouble(ih, "RADARSHIFT");   // Default -1
@@ -1442,7 +1433,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "AREA"))
   {
-    // NOT affected by SelectPen
+    // NOT affected by SetLineMark
 
     if (ds->dsDim == 3)
       gr->Area(*ds->dsX, *ds->dsY, *ds->dsZ, style);
@@ -1453,16 +1444,17 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "BAR"))
   {
-    // NOT affected by SelectPen
-    double barwidth = iupAttribGetDouble(ih, "BARWIDTH");   // Default 0.7
-    gr->SetBarWidth(barwidth);
+    // NOT affected by SetLineMark
+
+    style[0] = 0;
+    // Affected by ColorScheme
+    iMglPlotConfigColorScheme(ih, style);
 
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
 
-    // Each bar could has a different color using a scheme
-    // But we can NOT use scheme here because we changed SetPal
-    //iMglPlotConfigColorScheme(ih, style);
+    double barwidth = iupAttribGetDouble(ih, "BARWIDTH");   // Default 0.7
+    gr->SetBarWidth(barwidth);
 
     // To avoid hole bars clipped when touching the bounding box
     gr->SetCut(false); 
@@ -1478,16 +1470,17 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "BARHORIZONTAL"))
   {
-    // NOT affected by SelectPen
-    double barwidth = iupAttribGetDouble(ih, "BARWIDTH");   // Default 0.7
-    gr->SetBarWidth(barwidth);
+    // NOT affected by SetLineMark
 
-    // Each bar could has a different color using a scheme
-    // But we can NOT use scheme here because we changed SetPal
-    //iMglPlotConfigColorScheme(ih, style);
+    style[0] = 0;
+    // Affected by ColorScheme
+    iMglPlotConfigColorScheme(ih, style);
 
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
+
+    double barwidth = iupAttribGetDouble(ih, "BARWIDTH");   // Default 0.7
+    gr->SetBarWidth(barwidth);
 
     // To avoid hole bars clipped when touching the bounding box
     gr->SetCut(false); 
@@ -1501,7 +1494,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "STEP"))
   {
-    // Plot affected by SelectPen
+    // Affected by SetLineMark
     iMglPlotConfigDataSetLineMark(ds, gr, style);
 
     if (ds->dsDim == 3)
@@ -1513,7 +1506,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "STEM"))
   {
-    // Plot affected by SelectPen
+    // Affected by SetLineMark
     iMglPlotConfigDataSetLineMark(ds, gr, style);
 
     if (ds->dsDim == 3)
@@ -1525,10 +1518,10 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   }
   else if (iupStrEqualNoCase(ds->dsMode, "CHART"))
   {
-    // NOT affected by SelectPen
+    // NOT affected by SetLineMark
 
-    // Chart does not use SetPalette,
-    // so we use the scheme attribute as a list of colors.
+    style[0] = 0;
+    // Affected by ColorScheme
     iMglPlotConfigColorScheme(ih, style);
 
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
@@ -1554,10 +1547,11 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   {
     if (ds->dsDim == 3)
     {
-      // NOT affected by SelectPen
-      // NOT affected by SetPalette
+      // NOT affected by SetLineMark
+      // NOT affected by StyleColor
 
-      // Affected by SetScheme
+      style[0] = 0;
+      // Affected by ColorScheme
       iMglPlotConfigColorScheme(ih, style);
 
       if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
@@ -1570,10 +1564,11 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   {
     if (ds->dsDim == 3)
     {
-      // NOT affected by SelectPen
-      // NOT affected by SetPalette
+      // NOT affected by SetLineMark
+      // NOT affected by StyleColor
 
-      // Affected by SetScheme
+      style[0] = 0;
+      // Affected by ColorScheme
       iMglPlotConfigColorScheme(ih, style);
 
       gr->Dots(*ds->dsX, *ds->dsY, *ds->dsZ, style);
@@ -1625,17 +1620,20 @@ static void iMglPlotDrawLegend(Ihandle* ih, mglGraph *gr)
   }
 
   // Draw legend of accumulated strings
-  iMglPlotConfigColor(ih, gr, ih->data->legendColor);
+  iMglPlotAddStyleColor(ih, style, ih->data->legendColor);
   iMglPlotConfigFont(ih, gr, ih->data->legendFontStyle, ih->data->legendFontSizeFactor);
+
   gr->Legend(ih->data->legendPosition, style, "");
 }
 
 static void iMglPlotDrawTitle(Ihandle* ih, mglGraph *gr, const char* title)
 {
-  iMglPlotConfigColor(ih, gr, ih->data->titleColor);
+  char style[64] = "";
+
+  iMglPlotAddStyleColor(ih, style, ih->data->titleColor);
   iMglPlotConfigFont(ih, gr, ih->data->titleFontStyle, ih->data->titleFontSizeFactor);
 
-  gr->Title(title, NULL, -1);
+  gr->Title(title, style, -1);
 }
 
 static void iMglPlotConfigPlotArea(Ihandle* ih, mglGraph *gr)
@@ -1647,58 +1645,58 @@ static void iMglPlotConfigPlotArea(Ihandle* ih, mglGraph *gr)
 
   // Left
   if (!mgl_isnan(ih->data->axisY.axOrigin))
-    x1 = -0.16f;  // Axis is crossed
+    x1 = -0.16;  // Axis is crossed
   else if (!iupAttribGetStr(ih, "AXS_YLABEL"))  // no label
   {
     if (!ih->data->axisY.axTickShowValues)
-      x1 = -0.20f;  // not crossed, no label, no ticks values
+      x1 = -0.20;  // not crossed, no label, no ticks values
     else if (ih->data->axisY.axTickValuesRotation)
-      x1 = -0.15f;  // not crossed, no label, with vertical ticks values
+      x1 = -0.15;  // not crossed, no label, with vertical ticks values
     else
-      x1 = -0.10f;  // not crossed, no label, with horizontal ticks values
+      x1 = -0.10;  // not crossed, no label, with horizontal ticks values
   }
   else if (ih->data->axisY.axLabelRotation)
-    x1 = -0.10f; // not crossed and with vertical label
+    x1 = -0.10; // not crossed and with vertical label
   else
-    x1 = -0.01f; // not crossed and with horizontal label
+    x1 = -0.01; // not crossed and with horizontal label
 
   // Right
   if (iMglPlotHasx10(ih->data->axisX.axMin, ih->data->axisX.axMax))  // X Axis Min-Max
-    x2 = 1.05f;  // with x10 notation
+    x2 = 1.05;  // with x10 notation
   else
-    x2 = 1.15f;  // no notation
+    x2 = 1.15;  // no notation
 
   // Bottom
   if (!mgl_isnan(ih->data->axisX.axOrigin))
-    y1 = -0.20f;  // Axis is crossed
+    y1 = -0.20;  // Axis is crossed
   else if (!iupAttribGetStr(ih, "AXS_XLABEL"))
   {
     if (!ih->data->axisX.axTickShowValues)
-      y1 = -0.20f;  // not crossed, no label, no ticks values
+      y1 = -0.20;  // not crossed, no label, no ticks values
     else
-      y1 = -0.15f;  // not crossed, no label, with ticks values
+      y1 = -0.15;  // not crossed, no label, with ticks values
   }
   else
-    y1 = -0.10f;  // not crossed and with label
+    y1 = -0.10;  // not crossed and with label
 
   // Top
   if (!iupAttribGetStr(ih, "TITLE"))
-    y2 = 1.15f;  // no title
+    y2 = 1.15;  // no title
   else
-    y2 = 1.05f;  // with title
+    y2 = 1.05;  // with title
 
   // Colorbar
   if (iupAttribGetBoolean(ih, "COLORBAR"))
   {
     char* value = iupAttribGetStr(ih, "COLORBARPOS");
     if (iupStrEqualNoCase(value, "LEFT"))
-      x1 = 0.05f;  // includes also space for axis
+      x1 = 0.05;  // includes also space for axis
     else if (iupStrEqualNoCase(value, "TOP"))
-      y2 = 0.9f;   // includes also space for title
+      y2 = 0.9;   // includes also space for title
     else if (iupStrEqualNoCase(value, "BOTTOM"))
-      y1 = 0.05f;  // includes also space for axis
+      y1 = 0.05;  // includes also space for axis
     else // RIGHT
-      x2 = 0.9f;   // includes also space for notation
+      x2 = 0.9;   // includes also space for notation
   }
 
   // Only one plot using all viewport
@@ -1836,7 +1834,7 @@ static int iMglPlotSetColor(Ihandle* ih, const char* value, mglColor& color)
   }
   else if (iupStrToRGBA(value, &rr, &gg, &bb, &aa))
   {
-    color.Set((float)iRecon(rr), (float)iRecon(gg), (float)iRecon(bb), (float)iRecon(aa));
+    color.Set(iRecon(rr), iRecon(gg), iRecon(bb), iRecon(aa));
     ih->data->redraw = true;
   }
 
@@ -3830,7 +3828,7 @@ static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    sscanf(value, "%f:%f:%f:%f", &(ih->data->x1), &(ih->data->y1), &(ih->data->x2), &(ih->data->y2));
+    sscanf(value, "%lf:%lf:%lf:%lf", &(ih->data->x1), &(ih->data->y1), &(ih->data->x2), &(ih->data->y2));
 
     if (ih->data->x1 < 0) ih->data->x1 = 0;
     if (ih->data->y1 < 0) ih->data->y1 = 0;
@@ -3845,7 +3843,7 @@ static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetZoomAttrib(Ihandle* ih)
 {
-  return iupStrReturnStrf("%.9f,%.9f:%.9f,%.9f", ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
+  return iupStrReturnStrf("%.18g:%.18g:%.18g:%.18g", ih->data->x1, ih->data->y1, ih->data->x2, ih->data->y2);
 }
 
 static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
@@ -3857,7 +3855,7 @@ static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
     ih->data->rotZ = 0;
   }
   else
-    sscanf(value, "%f:%f:%f", &(ih->data->rotX), &(ih->data->rotY), &(ih->data->rotZ));
+    sscanf(value, "%lf:%lf:%lf", &(ih->data->rotX), &(ih->data->rotY), &(ih->data->rotZ));
 
   ih->data->redraw = true;
 
@@ -3866,7 +3864,7 @@ static int iMglPlotSetRotateAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetRotateAttrib(Ihandle* ih)
 {
-  return iupStrReturnStrf("%.9f:%.9f:%.9f", ih->data->rotX, ih->data->rotY, ih->data->rotZ);
+  return iupStrReturnStrf("%.18g:%.18g:%.18g", ih->data->rotX, ih->data->rotY, ih->data->rotZ);
 }
 
 
@@ -4552,9 +4550,7 @@ void IupMglPlotDrawMark(Ihandle* ih, double x, double y, double z)
   iMglPlotSetMarkStyle(ih, value, markstyle);
   iMglPlotAddStyleMark(style, markstyle);
 
-  value = iupAttribGetStr(ih, "DRAWMARKSIZE");
-  double marksize = 0.02f;
-  iMglPlotSetDouble(ih, value, marksize);
+  double marksize = iupAttribGetDouble(ih, "DRAWMARKSIZE");
   gr->SetMarkSize(marksize);
 
   gr->Mark(mglPoint(x, y, z), style);
@@ -4586,10 +4582,7 @@ void IupMglPlotDrawLine(Ihandle* ih, double x1, double y1, double z1, double x2,
   char linestyle = '-';
   iMglPlotSetLineStyle(ih, value, linestyle);
 
-  value = iupAttribGetStr(ih, "DRAWLINEWIDTH");
-  int linewidth = 0;
-  iupStrToInt(value, &linewidth);
-  if (linewidth<=0) linewidth = 1;
+  int linewidth = iupAttribGetInt(ih, "DRAWLINEWIDTH");
 
   iMglPlotAddStyleLine(style, linestyle, linewidth);
 
@@ -4618,18 +4611,17 @@ void IupMglPlotDrawText(Ihandle* ih, const char* text, double x, double y, doubl
   else iMglPlotSetColor(ih, value, textColor);
   iMglPlotAddStyleColor(ih, style, textColor);
 
-  // Add delimiter
-  strcat(style, ":");
-
+  char fontstyle[32] = "";
   value = iupAttribGetStr(ih, "DRAWFONTSTYLE");
-  iMglPlotAddStyleFont(style, value);
+  iMglPlotAddStyleFont(fontstyle, value);
 
   value = iupAttribGetStr(ih, "DRAWFONTSIZE");
   double fontsizefactor = 1.0;
-  if (iupStrToDouble(value, &fontsizefactor))
-    iMglPlotConfigFontSize(ih, gr, fontsizefactor);
+  iupStrToDouble(value, &fontsizefactor);
 
-  gr->Puts(mglPoint(x, y, z), text, style, -1);
+  iMglPlotConfigFont(ih, gr, fontstyle, fontsizefactor);
+
+  gr->Puts(mglPoint(x, y, z), text, style);
 }
 
 
@@ -5122,11 +5114,12 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "AXS_ZTICKMINORSIZE", iMglPlotGetAxisZTickMinorSizeAttrib, iMglPlotSetAxisZTickMinorSizeAttrib, IUPAF_SAMEASSYSTEM, "0.6", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DRAWCOLOR", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAWMARKSTYLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAWLINESTYLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAWLINEWIDTH", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWMARKSTYLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "X", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWMARKSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "0.02", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWLINESTYLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWLINEWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWFONTSTYLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAWFONTSIZE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWFONTSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "ZOOM", iMglPlotGetZoomAttrib, iMglPlotSetZoomAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ROTATE", iMglPlotGetRotateAttrib, iMglPlotSetRotateAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
