@@ -18,7 +18,6 @@ void IupControlsClose(void);   /* for backward compatibility only, does nothing 
 Ihandle* IupColorbar(void);
 Ihandle* IupCells(void);
 Ihandle *IupColorBrowser(void);
-Ihandle *IupColorBrowser(void);
 Ihandle *IupGauge(void);
 Ihandle *IupDial(const char* type);
 Ihandle* IupMatrix(const char *action);

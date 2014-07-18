@@ -355,7 +355,7 @@ static int winScintillaMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
   case WM_KEYDOWN:
     {
       PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
-      break;
+      return 0;  /* already processed at the begining of this function */
     }
   case WM_KEYUP:
     {

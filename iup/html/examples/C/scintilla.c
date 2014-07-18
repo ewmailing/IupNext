@@ -31,7 +31,8 @@ const char* sampleCode = {
 
 static int k_any(Ihandle *ih, int c)
 {
-  if (c==K_cS) 
+//  printf("K_ANY(key: %d)\n", c);
+  if (c == K_cS)
     return IUP_IGNORE;
   return IUP_CONTINUE;
 }
@@ -86,7 +87,7 @@ static int valuechanged_cb(Ihandle *self)
 
 static int action_cb(Ihandle *self, int insert, int pos, int length, char* text)
 {
-  printf("ACTION = insert: %d, pos: %d, lenght:%d, text: %s\n", insert, pos, length, text);
+  //printf("ACTION = insert: %d, pos: %d, lenght:%d, text: %s\n", insert, pos, length, text);
   (void)self;
   return IUP_IGNORE;
 }
@@ -119,6 +120,7 @@ static void set_attribs (Ihandle *sci)
   IupSetAttribute(sci, "STYLEHOTSPOT6", "YES");
   
   IupSetAttribute(sci, "INSERT0", sampleCode);
+  //IupSetAttribute(sci, "INSERT-1", "           ");
 
   //if (IupGetInt(NULL, "UTF8MODE"))
   //  IupSetAttribute(sci, "PREPEND", "//  UTF8MODE Enabled: (çãõáóé)");
@@ -178,9 +180,9 @@ void ScintillaTest(void)
 //  IupSetCallback(sci, "BUTTON_CB", (Icallback)button_cb);
 //  IupSetCallback(sci, "MOTION_CB", (Icallback)motion_cb);
   IupSetCallback(sci, "K_ANY", (Icallback)k_any);
-  IupSetCallback(sci, "CARET_CB", (Icallback)caret_cb);
-  IupSetCallback(sci, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
-  IupSetCallback(sci, "ACTION", (Icallback)action_cb);
+//  IupSetCallback(sci, "CARET_CB", (Icallback)caret_cb);
+//  IupSetCallback(sci, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
+//  IupSetCallback(sci, "ACTION", (Icallback)action_cb);
 
   // Creates a dialog containing the control
   dlg = IupDialog(IupVbox(sci, NULL));
