@@ -87,6 +87,8 @@ IupStoreGlobal
 IupSubmenu
 IupSplit
 IupScrollBox
+IupDetachBox
+IupBackgroundBox
 IupLink
 IupText
 IupToggle
@@ -247,6 +249,7 @@ iupdrvImageCreateImageRaw
 iupdrvImageGetRawInfo
 iupdrvImageGetRawData
 iupdrvImageDestroy
+iupdrvRegisterDragDropAttrib
 
 iupShowVersion
 iupTableSetFunc
@@ -269,6 +272,7 @@ iupTableClear
 iupStrToUnix
 iupStrToStrStr
 iupStrToRGB
+iupStrToRGBA
 iupStrToMac
 iupStrToIntInt
 iupStrToInt
@@ -278,6 +282,7 @@ iupStrToFloat
 iupStrToDouble
 iupStrToDos
 iupStrReturnRGB
+iupStrReturnRGBA
 iupStrReturnBoolean
 iupStrReturnChecked
 iupStrReturnInt
@@ -298,6 +303,7 @@ IupGetLanguageString
 iupStrLower
 iupStrUpper
 iupStrHasSpace
+iupStrIsAscii
 iupStrLineCount
 iupStrReturnStr
 iupStrReturnStrf
@@ -340,6 +346,7 @@ iupKeyCallKeyCb
 iupKeyProcessNavigation
 iupKeyProcessMnemonic
 iupKeySetMnemonic
+iupImageInitColorTable
 iupImageStockSet
 iupImageStockLoadAll
 iupImageColorMakeInactive
@@ -389,11 +396,13 @@ iupClassObjectChildRemoved
 iupClassObjectChildAdded
 iupClassNew
 iupClassCallbackGetFormat
+iupClassMatch
 iupChildTreeGetNativeParentHandle
 iupChildTreeGetNativeParent
 iupChildTreeAppend
 iupCallKillFocusCb
 iupCallGetFocusCb
+iupLayoutUpdate
 iupBaseSetVisibleAttrib
 iupBaseSetSizeAttrib
 iupBaseSetRasterSizeAttrib
@@ -415,6 +424,8 @@ iupBaseSetPosition
 iupBaseComputeNaturalSize
 iupBaseSetCurrentSize
 iupBaseCallValueChangedCb
+iupBaseGetClientOffsetAttrib
+
 iupAttribSetClassObject
 iupAttribSetClassObjectId
 iupAttribSetClassObjectId2
@@ -436,6 +447,7 @@ iupAttribSetIntId2
 iupAttribSetFloatId
 iupAttribSetFloatId2
 iupAttribIsNotString
+iupAttribIsIhandle
 iupAttribGet
 iupAttribGetInherit
 iupAttribGetInheritNativeParent

@@ -249,6 +249,7 @@ iupdrvImageCreateImageRaw
 iupdrvImageGetRawInfo
 iupdrvImageGetRawData
 iupdrvImageDestroy
+iupdrvRegisterDragDropAttrib
 
 iupShowVersion
 iupTableSetFunc
@@ -281,6 +282,7 @@ iupStrToFloat
 iupStrToDouble
 iupStrToDos
 iupStrReturnRGB
+iupStrReturnRGBA
 iupStrReturnBoolean
 iupStrReturnChecked
 iupStrReturnInt
@@ -496,7 +498,6 @@ iupLayoutApplyMinMaxSize
 iupwinMouseMove
 iupwinCreateWindow
 iupwinBaseMsgProc
-iupdrvRegisterDragDropAttrib
 iupwinButtonUp
 iupwinButtonDown
 iupwinStrFromSystem

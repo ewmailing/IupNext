@@ -320,8 +320,11 @@ and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWLINESTYLE and DRAWLINEW
 <pre>void <b>IupMglPlotDrawText</b>(Ihandle* <b>ih</b>, const char* <b>text</b>, double <b>x</b>, double <b>y</b>, double <b>z</b>); [in C]
 <b>iup.MglDrawText</b>(<b>ih</b>: ihandle, <b>text</b>: string, <b>x, y, z</b>: number) [in Lua]</pre>
 <p>Draws a text at given position in plot coordinates. It can be used only inside PREDRAW_CB 
-and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWTEXTALIGN,&nbsp; DRAWFONTSTYLE and DRAWFONTSIZE can be used to control 
-text appearance. DRAWTEXTALIGN can be LEFT, CENTER or RIGHT.</p>
+and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWFONTSTYLE and DRAWFONTSIZE 
+(a factor) can be used to control 
+text appearance. DRAWFONTSTYLE can 
+be a combination of Plain (Regular), Bold, Italic (Oblique), Wired, Underline, 
+Strikeout, Left, Center and Right.</p>
 <hr>
 <pre>void <b>IupMglPlotPaintTo</b>(Ihandle* <b>ih</b>, const char* <b>format</b>, int <strong>w</strong>, int <strong>h</strong>, double <strong>dpi</strong>, void* <strong>data</strong>); [in C]
 <b>iup.MglPlotPaintTo</b>(<b>ih</b>: ihandle, <b>format</b>: string, <strong>w</strong>, <strong>h</strong>, <strong>dpi</strong>:number, <strong>data</strong>: string or lightuserdata) [in Lua]</pre>
@@ -360,15 +363,23 @@ pointed by the
 automatically combined with the path to compose a file name. If 
 the font load fail, an internal MathGL font is used. <strong>TrueType (*.ttf) 
 and OpenType (*.otf) font files support removed in version 3.11.</strong></p>
+<p class="info">All <strong>*FONTSTYLE</strong> attributes can have a 
+combination of the following styles: Plain (Regular), Bold, Italic (Oblique), 
+Wired, Underline, Strikeout, Left, Center and Right.<br>All <strong>*FONTSIZE</strong> 
+attributes are actually a factor that multiplies the size defined by the FONT 
+attribute.</p>
 <p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b>:  the default color 
-used in all text elements of the plot: title, legend and labels. Default: &quot;0 0 0&quot;.</p>
+used in all text elements of the plot: title, legend and labels. Default: &quot;0 0 0 
+255&quot;. </p>
+<p class="info">All color values can have an optional alpha value. Hexadecimal format is also 
+accepted.</p>
 <p><strong>OPENGL</strong> (non inheritable): Enable or disable the rendering in 
 OpenGL. Default: No. When NO the rendering is slower, but when Yes some features 
 does not behave as expected. See <a href="#KnownIssues">Known Issues</a>.</p>
 <p><b>REDRAW</b> (write-only)(non inheritable): redraw the plot and update the display. Value is 
 ignored. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
 attributes without visual output. If the element is redraw by the system because 
-of a redraw event or by a call to IupUpdate, it will have the 
+of a redraw event or by a call to <strong>IupUpdate</strong>, it will have the 
 same effect as if REDRAW was set.</p>
 <p><strong>RESET</strong> (write-only) (non inheritable): restores all 
 attributes to their default values. Value is ignored. </p>
@@ -393,22 +404,15 @@ coordinates, the zoom is restricted to the Y axis. Default: 0:0:1:1</p>
 <h4>Title Configuration (non inheritable)</h4>
 <p><b>TITLE </b>(non inheritable): the  title. Located always at the top center area.</p>
 <p><b>TITLECOLOR</b>: title color. Default: FGCOLOR.</p>
-<p><b>TITLEFONTSIZE</b>: title font size factor. It is a multiple of the FONT 
-size. Default: 1.6</p>
-<p><b>TITLEFONTSTYLE</b>: title font style. 
-If not defined the FONT attribute will be used instead. Set to 
-NULL, to use the FONT attribute values. Style can be &quot;PLAIN&quot;, &quot;BOLD&quot;, &quot;ITALIC&quot; 
-or &quot;BOLDITALIC&quot;.</p>
+<p><b>TITLEFONTSIZE</b>: title font size factor. Default: 1.6</p>
+<p><b>TITLEFONTSTYLE</b>: title font style. </p>
 <h4>Legend Configuration (non inheritable)</h4>
 <p><b>LEGEND</b>: shows or hides the legend box. Can be YES or NO. Default: 
 NO. LEGENDSHOW is also accepted.</p>
 <p><b>LEGENDBOX</b>: draws a box around the legend area. Default: YES.</p>
 <p><b>LEGENDCOLOR</b>: title color. Default: FGCOLOR.</p>
-<p><b>LEGENDFONTSIZE</b>: legend font size factor. It is a multiple of the FONT 
-size. Default: 0.8</p>
-<p><b>LEGENDFONTSTYLE</b>: legend font style. 
-If not defined the FONT attribute will be used instead. Set to NULL, to use the 
-FONT attribute values. Style can be &quot;PLAIN&quot;, &quot;BOLD&quot;, &quot;ITALIC&quot; or &quot;BOLDITALIC&quot;.</p>
+<p><b>LEGENDFONTSIZE</b>: legend font size factor. Default: 0.8</p>
+<p><b>LEGENDFONTSTYLE</b>: legend font style. </p>
 <p><b>LEGENDPOS</b>: legend box position. Can be: &quot;TOPLEFT&quot;, &quot;TOPRIGHT&quot;, 
 &quot;BOTTOMLEFT&quot;, or &quot;BOTTOMRIGHT. Default: &quot;TOPRIGHT&quot;.</p>
 <h4>Colorbar Configuration (non inheritable)</h4>
@@ -501,11 +505,8 @@ YES or NO. Default: YES.</p>
 <p><b>AXS_?CROSSORIGIN</b>: same as setting AXS_?ORIGIN to 0 or NULL. Can be YES 
 or NO. Default: NO. Returns YES if AXS_?ORIGIN is 0 and returns NO if AXS_?ORIGIN 
 in NULL. Available for compatibility with IupPPlot, but the default is different.</p>
-<p><b>AXS_?FONTSIZE</b>: axis label font size factor. It is a multiple of the 
-FONT size. Default: 1.0</p>
-<p><b>AXS_?FONTSTYLE</b>: axis label font style. If 
-not defined the FONT attribute will be used instead. Set to NULL, to use the 
-FONT attribute values. Can be &quot;PLAIN&quot;, &quot;BOLD&quot;, &quot;ITALIC&quot; or &quot;BOLDITALIC&quot;.</p>
+<p><b>AXS_?FONTSIZE</b>: axis label font size factor. Default: 1.0</p>
+<p><b>AXS_?FONTSTYLE</b>: axis label font style.</p>
 <p><b>AXS_?LABEL</b>: text label of the&nbsp;respective axis.</p>
 <p><b>AXS_?LABELCENTERED</b>: text label position at 
 center (YES) or at top/right (NO). Default: YES. Will set/get AXS_?LABELPOSITION 
@@ -537,11 +538,8 @@ NO. Default: YES. AXS_?AUTOTICK is also accepted.</p>
 <p><b>AXS_?TICKAUTOSIZE</b>: configures <font SIZE="3">the 
 automatic tick size.</font> Can be YES or NO. Default: YES. AXS_?AUTOTICKSIZE is 
 also accepted.</p>
-<p><b>AXS_?TICKFONTSIZE</b>: axis tick number font size factor. It is a multiple 
-of the FONT size. Default: 0.8</p>
-<p><b>AXS_?TICKFONTSTYLE</b>: axis tick number font style. If not defined the 
-FONT attribute will be used instead. Set to NULL, to use the FONT attribute 
-values. Can be &quot;PLAIN&quot;, &quot;BOLD&quot;, &quot;ITALIC&quot; or &quot;BOLDITALIC&quot;.</p>
+<p><b>AXS_?TICKFONTSIZE</b>: axis tick number font size factor. Default: 0.8</p>
+<p><b>AXS_?TICKFONTSTYLE</b>: axis tick number font style.</p>
 <p><b>AXS_?TICKFORMAT</b>: axis tick number C format string. 
 Default: is internally computed according to the Min-Max range.</p>
 <p><b>AXS_?TICKMAJORSIZE</b>: <font SIZE="3">axis major 

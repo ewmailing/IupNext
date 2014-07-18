@@ -492,6 +492,13 @@ char* iupStrReturnRGB(unsigned char r, unsigned char g, unsigned char b)
   return str;
 }
 
+char* iupStrReturnRGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+  char* str = iupStrGetSmallMem();  /* 4*20 */
+  sprintf(str, "%d %d %d %d", (int)r, (int)g, (int)b, (int)a);
+  return str;
+}
+
 char* iupStrReturnStrStr(const char *str1, const char *str2, char sep)
 {
   if (str1 || str2)

@@ -184,6 +184,10 @@ char* iupStrReturnDouble(double d);
  * \ingroup str */
 char* iupStrReturnRGB(unsigned char r, unsigned char g, unsigned char b);
 
+/** Returns a RGBA value in a string using \ref iupStrGetMemory.
+* \ingroup str */
+char* iupStrReturnRGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+
 /** Returns two string values in a string using \ref iupStrGetMemory.
  * \ingroup str */
 char* iupStrReturnStrStr(const char *str1, const char *str2, char sep);

@@ -42,7 +42,8 @@
 
 
 enum {IUP_MGLPLOT_BOTTOMLEFT, IUP_MGLPLOT_BOTTOMRIGHT, IUP_MGLPLOT_TOPLEFT, IUP_MGLPLOT_TOPRIGHT};
-enum {IUP_MGLPLOT_INHERIT, IUP_MGLPLOT_PLAIN, IUP_MGLPLOT_BOLD, IUP_MGLPLOT_ITALIC, IUP_MGLPLOT_BOLD_ITALIC};
+
+#define MAX_FONTSTYLE 32 // Same as MathGL
 
 
 typedef struct _IdataSet
@@ -55,7 +56,7 @@ typedef struct _IdataSet
   bool dsShowValues;
   char* dsMode;
   char* dsLegend;
-  mglColor dsColor;  // should never has NAN values
+  mglColor dsColor;
 
   int dsDim;        /* Dimension of the data: 1D, 2D or 3D */
   Iarray* dsNames;  /* optional names used in ticks when in 1D */
@@ -73,11 +74,11 @@ typedef struct _Iaxis
   bool axShow, axShowArrow;
 
   int axLabelPos;
-  int axLabelFontStyle;
+  char axLabelFontStyle[MAX_FONTSTYLE];
   double axLabelFontSizeFactor;
   bool axLabelRotation;
 
-  int axTickFontStyle;
+  char axTickFontStyle[MAX_FONTSTYLE];
   double axTickFontSizeFactor;
   bool axTickShowValues, axTickShow, 
        axTickAutoSpace, axTickAutoSize;
@@ -104,9 +105,8 @@ struct _IcontrolData
   bool opengl;
 
   /* Obtained from FONT */
-  char FontDef[32];     
   double FontSizeDef;
-  int FontStyleDef;
+  char FontStyleDef[MAX_FONTSTYLE];
   
   /* Global */
   bool transparent;
@@ -115,7 +115,7 @@ struct _IcontrolData
 
   /* Title */
   mglColor titleColor;
-  int titleFontStyle;
+  char titleFontStyle[MAX_FONTSTYLE];
   double titleFontSizeFactor;
 
   /* Axes */
@@ -134,7 +134,7 @@ struct _IcontrolData
   bool legendShow, legendBox;
   mglColor legendColor;
   int legendPosition;
-  int legendFontStyle;
+  char legendFontStyle[MAX_FONTSTYLE];
   double legendFontSizeFactor;
 
   /* Grid */
@@ -273,8 +273,8 @@ static void iMglPlotReset(Ihandle* ih)
   ih->data->alpha = 0.5f;
   ih->data->transparent = false;
 
-  ih->data->titleFontStyle = IUP_MGLPLOT_INHERIT;
-  ih->data->legendFontStyle = IUP_MGLPLOT_INHERIT;
+  ih->data->titleFontStyle[0] = 0;
+  ih->data->legendFontStyle[0] = 0;
   ih->data->legendFontSizeFactor = 0.8f;
   ih->data->titleFontSizeFactor = 1.4f;
 
@@ -358,33 +358,29 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
 
   if (is_bold && is_italic)
   {
-    ih->data->FontStyleDef = IUP_MGLPLOT_BOLD_ITALIC;
-    ih->data->FontDef[i++] = 'b';
-    ih->data->FontDef[i++] = 'i';
+    ih->data->FontStyleDef[i++] = 'b';
+    ih->data->FontStyleDef[i++] = 'i';
   }
   else if (is_bold)
   {
-    ih->data->FontStyleDef = IUP_MGLPLOT_BOLD;
-    ih->data->FontDef[i++] = 'b';
+    ih->data->FontStyleDef[i++] = 'b';
   }
   else if (is_italic)
   {
-    ih->data->FontStyleDef = IUP_MGLPLOT_ITALIC;
-    ih->data->FontDef[i++] = 'i';
+    ih->data->FontStyleDef[i++] = 'i';
   }
   else
   {
-    ih->data->FontStyleDef = IUP_MGLPLOT_PLAIN;
-    ih->data->FontDef[i++] = 'r';
+    ih->data->FontStyleDef[i++] = 'r';
   }
 
   if (is_underline)
-    ih->data->FontDef[i++] = 'u';
+    ih->data->FontStyleDef[i++] = 'u';
 
   if (is_strikeout)
-    ih->data->FontDef[i++] = 'o';
+    ih->data->FontStyleDef[i++] = 'o';
 
-  ih->data->FontDef[i] = 0;
+  ih->data->FontStyleDef[i] = 0;
 
   if (size < 0) 
     size = -size;
@@ -413,41 +409,19 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   }
 }
 
-static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, int fontstyle, double fontsizefactor)
+static void iMglPlotConfigFontSize(Ihandle* ih, mglGraph *gr, double fontsizefactor)
 {
-  int i=0;
-  char fnt[32];
-
-  if (fontstyle==IUP_MGLPLOT_INHERIT)
-    fontstyle = ih->data->FontStyleDef;
-
-  if (fontstyle==IUP_MGLPLOT_PLAIN)
-    fnt[i++] = 'r';
-  else if (fontstyle==IUP_MGLPLOT_BOLD)
-    fnt[i++] = 'b';
-  else if (fontstyle==IUP_MGLPLOT_ITALIC)
-    fnt[i++] = 'i';
-  else if (fontstyle==IUP_MGLPLOT_BOLD_ITALIC)
-  {
-    fnt[i++] = 'b';
-    fnt[i++] = 'i';
-  }
-
-  fnt[i] = 0;
-
-  if (i!=0)
-    gr->SetFontDef(fnt);
-  else
-    gr->SetFontDef(ih->data->FontDef);
-
   gr->SetFontSize(fontsizefactor*ih->data->FontSizeDef);
 }
 
-static mglColor iMglPlotGetColorDefault(Ihandle* ih, mglColor color)
+static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, const char* fontstyle, double fontsizefactor)
 {
-  if (mgl_isnan(color.r) || mgl_isnan(color.g) || mgl_isnan(color.b))
-    color = ih->data->fgColor;
-  return color;
+  if (fontstyle[0] != 0)
+    gr->SetFontDef(fontstyle);
+  else
+    gr->SetFontDef(ih->data->FontStyleDef);
+
+  iMglPlotConfigFontSize(ih, gr, fontsizefactor);
 }
 
 static double iMglPlotGetAttribDoubleNAN(Ihandle* ih, const char* name)
@@ -474,84 +448,159 @@ static bool iMglPlotHasx10(double min, double max)
   return false;
 }
 
-static void iMglPlotConfigColor(Ihandle* ih, mglGraph *gr, mglColor color)
+static void iMglPlotAddStyleLine(char* style, char line_style, int line_width)
 {
-//  Finally, you can specify RGB or RGBA values of a color using format ‘{ xRRGGBB }’ or
-//    ‘{ xRRGGBBAA }’ correspondingly.For example, ‘{ xFF9966 }’ give you melone color.
-  //color = iMglPlotGetColorDefault(ih, color);
-}
+  style += strlen(style); // Skip previous configuration
 
-static char* iMglPlotConfigPen(char* pen, char line_style, int line_width)
-{
-  *pen++ = line_style;
+  *style++ = line_style;
 
   if (line_width < 1) line_width = 1;
   if (line_width > 9) line_width = 9;
-  *pen++ = (char)('0' + line_width);
+  *style++ = (char)('0' + line_width);
 
-  *pen = 0;
-  return pen;
+  *style = 0;
+}
+
+static void iMglPlotConfigColor(Ihandle* ih, mglGraph *gr, mglColor color)
+{
 }
 
 static char iMglPlotFindColor(const mglColor& c1)
 {
   int i;
-  char id = 0;
-  mreal old_diff = -1, diff, rr, bb, gg;
 
-  /* Not the best solution, 
-     but the only one possible witht he current MglPlot limitations */
-
+  /* Search in the pre-defined MathGL Color Ids */
 	for(i=0; mglColorIds[i].id; i++)
   {
-    const mglColor& c2 = mglColorIds[i].col;
-    rr = c1.r-c2.r;
-    gg = c1.g-c2.g;
-    bb = c1.b-c2.b;
-    diff = rr*rr + gg*gg + bb*bb;
-    if (old_diff==-1 ||
-        diff < old_diff)
-    {
-      id = mglColorIds[i].id;
-      old_diff = diff;
-    }
+    if (c1 == mglColorIds[i].col)
+      return mglColorIds[i].id;
   }
 
-  return id;
+  return 0;
 }
 
-static void iMglPlotConfigDataSetColor(IdataSet* ds, char* style)
+static void iMglPlotAddStyleColor(Ihandle* ih, char* style, mglColor color)
 {
   style += strlen(style); // Skip previous configuration
 
-  char id = iMglPlotFindColor(ds->dsColor);
+  // Check for NAN values and replace by default
+  if (mgl_isnan(color.r) || mgl_isnan(color.g) || mgl_isnan(color.b))
+    color = ih->data->fgColor;
+
+  // Check for a more compact representation
+  char id = iMglPlotFindColor(color);
   if (id)
+  {
     *style++ = id;
+    *style = 0;
+  }
+  else
+  {
+    if (color.a == 1)
+      sprintf(style, "{x%2X%2X%2X}", (int)iQuant(color.r), (int)iQuant(color.g), (int)iQuant(color.b));
+    else
+      sprintf(style, "{x%2X%2X%2X%2X}", (int)iQuant(color.r), (int)iQuant(color.g), (int)iQuant(color.b), (int)iQuant(color.a));
+  }
+}
+
+static int iMglPlotAddStyleFont(char* style, const char* value)
+{
+  if (!value)
+    return 0;
+
+  style += strlen(style); // Skip previous configuration
+  char* old_style = style;
+
+  if (iupStrCompareFind(value, "PLAIN", 0, 0) ||
+      iupStrCompareFind(value, "REGULAR", 0, 0))
+  {
+    *style++ = 'r';
+    *style = 0;
+  }
+  else
+  {
+    if (iupStrCompareFind(value, "BOLD", 0, 0))
+    {
+      *style++ = 'b';
+      *style = 0;
+    }
+
+    if (iupStrCompareFind(value, "ITALIC", 0, 0) ||
+      iupStrCompareFind(value, "OBLIQUE", 0, 0))
+    {
+      *style++ = 'i';
+      *style = 0;
+    }
+  }
+
+  if (iupStrCompareFind(value, "WIRED", 0, 0))
+  {
+    *style++ = 'w';
+    *style = 0;
+  }
+
+  if (iupStrCompareFind(value, "UNDERLINE", 0, 0))
+  {
+    *style++ = 'u';
+    *style = 0;
+  }
+
+  if (iupStrCompareFind(value, "STRIKEOUT", 0, 0) ||
+      iupStrCompareFind(value, "OVERLINE", 0, 0))
+  {
+    *style++ = 'o';
+    *style = 0;
+  }
+
+  if (iupStrCompareFind(value, "LEFT", 0, 0))
+  {
+    *style++ = 'L';
+    *style = 0;
+  }
+  else if (iupStrCompareFind(value, "CENTER", 0, 0))
+  {
+    *style++ = 'C';
+    *style = 0;
+  }
+  else if (iupStrCompareFind(value, "RIGHT", 0, 0))
+  {
+    *style++ = 'R';
+    *style = 0;
+  }
+
+  if (old_style != style)
+    return 1;
+  else
+    return 0;
+}
+
+static void iMglPlotAddStyleMark(char* style, char markstyle)
+{
+  style += strlen(style); // Skip previous configuration
+
+  // Fix mark codes
+  if (markstyle == 'O' || markstyle == 'S' || markstyle == 'D' ||
+      markstyle == '^' || markstyle == 'V' || markstyle == '<' || markstyle == '>')
+  {
+    *style++ = '#';   // Conflict with datagrid, can not use these marks
+    *style++ = (char)tolower(markstyle);
+  }
+  else
+    *style++ = markstyle;
 
   *style = 0;
 }
 
 static void iMglPlotConfigDataSetLineMark(IdataSet* ds, mglGraph *gr, char* style)
 {
-  style += strlen(style); // Skip previous configuration
-  style = iMglPlotConfigPen(style, ds->dsLineStyle, ds->dsLineWidth);
+  iMglPlotAddStyleLine(style, ds->dsLineStyle, ds->dsLineWidth);
 
   if (ds->dsShowMarks)
   {
-    // Fix mark codes
-    if (ds->dsMarkStyle == 'O' || ds->dsMarkStyle == 'S' || ds->dsMarkStyle == 'D' ||
-        ds->dsMarkStyle == '^' || ds->dsMarkStyle == 'V' || ds->dsMarkStyle == '<' || ds->dsMarkStyle == '>')
-    {
-      *style++ = '#';   // Conflict with datagrid, can not use these marks
-      *style++ = (char)tolower(ds->dsMarkStyle);
-    }
-    else
-      *style++ = ds->dsMarkStyle;
+    iMglPlotAddStyleMark(style, ds->dsMarkStyle);
 
     gr->SetMarkSize(ds->dsMarkSize);
   }
-
-  *style = 0;
 }
 
 static void iMglPlotConfigAxisTicks(Ihandle* ih, mglGraph *gr, char dir, const Iaxis& axis, double min, double max)
@@ -979,17 +1028,20 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
 
 static void iMglPlotDrawGrid(Ihandle* ih, mglGraph *gr)
 {
-  char pen[10], grid[10];
-  iMglPlotConfigColor(ih, gr, ih->data->gridColor);
-  iMglPlotConfigPen(pen, ih->data->gridLineStyle, 1);
+  char style[64] = "";
+  iMglPlotAddStyleColor(ih, style, ih->data->gridColor);
+  iMglPlotAddStyleLine(style, ih->data->gridLineStyle, 1);
+
+  char grid[10];
   iupStrLower(grid, ih->data->gridShow);
-  gr->Grid(grid, pen);
+
+  gr->Grid(grid, style);
 }
 
 static void iMglPlotDrawBox(Ihandle* ih, mglGraph *gr)
 {
-  char style[50] = "";
-  iMglPlotConfigColor(ih, gr, ih->data->boxColor);
+  char style[64] = "";
+  iMglPlotAddStyleColor(ih, style, ih->data->boxColor);
   gr->Box(style, ih->data->boxTicks);
 }
 
@@ -1561,7 +1613,7 @@ static void iMglPlotDrawLegend(Ihandle* ih, mglGraph *gr)
 
     style[0] = 0;
     iMglPlotConfigDataSetLineMark(ds, gr, style);
-    iMglPlotConfigDataSetColor(ds, style);
+    iMglPlotAddStyleColor(ih, style, ds->dsColor);
     gr->AddLegend(ds->dsLegend, style);
   }
 
@@ -1775,16 +1827,16 @@ static void iMglPlotRepaint(Ihandle* ih, int force, int flush)
 
 static int iMglPlotSetColor(Ihandle* ih, const char* value, mglColor& color)
 {
-  unsigned char rr, gg, bb;
+  unsigned char rr, gg, bb, aa = 255;
 
   if (!value)
   {
     color.Set(NAN, NAN, NAN);
     ih->data->redraw = true;
   }
-  else if (iupStrToRGB(value, &rr, &gg, &bb))
+  else if (iupStrToRGBA(value, &rr, &gg, &bb, &aa))
   {
-    color.Set((float)iRecon(rr), (float)iRecon(gg), (float)iRecon(bb));
+    color.Set((float)iRecon(rr), (float)iRecon(gg), (float)iRecon(bb), (float)iRecon(aa));
     ih->data->redraw = true;
   }
 
@@ -1793,7 +1845,10 @@ static int iMglPlotSetColor(Ihandle* ih, const char* value, mglColor& color)
 
 static char* iMglPlotReturnColor(const mglColor& color)
 {
-  return iupStrReturnRGB(iQuant(color.r), iQuant(color.g), iQuant(color.b));
+  if (color.a < 1)
+    return iupStrReturnRGBA(iQuant(color.r), iQuant(color.g), iQuant(color.b), iQuant(color.a));
+  else
+    return iupStrReturnRGB(iQuant(color.r), iQuant(color.g), iQuant(color.b));
 }
 
 static int iMglPlotSetBoolean(Ihandle* ih, const char* value, bool& num)
@@ -1921,31 +1976,46 @@ static char* iMglPlotGetTitleFontSizeAttrib(Ihandle* ih)
   return iupStrReturnDouble(ih->data->titleFontSizeFactor);
 }
 
-static int iMglPlotSetFontStyle(Ihandle* ih, const char* value, int& fontstyle)
+static int iMglPlotSetFontStyle(Ihandle* ih, const char* value, char* fontstyle)
 {
-  int old_fontstyle = fontstyle;
-
-  if (!value)
-    fontstyle = IUP_MGLPLOT_INHERIT;
-  else if (iupStrEqualNoCase(value, "PLAIN"))
-    fontstyle = IUP_MGLPLOT_PLAIN;
-  else if (iupStrEqualNoCase(value, "BOLD"))
-    fontstyle = IUP_MGLPLOT_BOLD;
-  else if (iupStrEqualNoCase(value, "ITALIC"))
-    fontstyle = IUP_MGLPLOT_ITALIC;
-  else if (iupStrEqualNoCase(value, "BOLDITALIC"))
-    fontstyle = IUP_MGLPLOT_BOLD_ITALIC;
-
-  if (old_fontstyle != fontstyle)
+  fontstyle[0] = 0;
+  if (iMglPlotAddStyleFont(fontstyle, value))
     ih->data->redraw = true;
-
   return 0;
 }
 
-static char* iMglPlotGetFontStyle(int fontstyle)
+static char* iMglPlotGetFontStyle(const char* fontstyle)
 {
-  if (fontstyle != IUP_MGLPLOT_INHERIT)
-    return iupStrReturnInt(fontstyle);
+  char* str = iupStrGetMemory(100);
+  if (strchr(fontstyle, 'r'))
+    strcpy(str, "Plain ");
+  else
+  {
+    if (strchr(fontstyle, 'b'))
+      strcpy(str, "Bold ");
+
+    if (strchr(fontstyle, 'i'))
+      strcpy(str, "Italic ");
+  }
+
+  if (strchr(fontstyle, 'w'))
+    strcpy(str, "Wired ");
+
+  if (strchr(fontstyle, 'o'))
+    strcpy(str, "Strikeout ");
+
+  if (strchr(fontstyle, 'u'))
+    strcpy(str, "Underline ");
+
+  if (strchr(fontstyle, 'L'))
+    strcpy(str, "Left ");
+  else if (strchr(fontstyle, 'R'))
+    strcpy(str, "Right ");
+  else if (strchr(fontstyle, 'C'))
+    strcpy(str, "Center ");
+
+  if (str[0] != 0)
+    return str;
   else
     return NULL;
 }
@@ -2418,7 +2488,7 @@ static int iMglPlotSetMarkStyle(Ihandle* ih, const char* value, char& markstyle)
   else if (iupStrEqualNoCase(value, "STAR"))
     markstyle = '*';
   else if (iupStrEqualNoCase(value, "CIRCLE"))
-    markstyle = 'O';  // In fact "#o", we will fix it later in iMglPlotConfigDataSetLineMark
+    markstyle = 'O';  // In fact "#o", we will fix it later in iMglPlotAddStyleMark
   else if (iupStrEqualNoCase(value, "PLUS"))
     markstyle = '+';
   else if (iupStrEqualNoCase(value, "BOX"))
@@ -4469,22 +4539,25 @@ void IupMglPlotDrawMark(Ihandle* ih, double x, double y, double z)
   if (!gr)
     return;
 
+  char style[64] = "";
+
   char* value = iupAttribGetStr(ih, "DRAWCOLOR");
   mglColor markColor;
   if (!value) markColor = ih->data->fgColor;
   else iMglPlotSetColor(ih, value, markColor);
-  iMglPlotConfigColor(ih, gr, markColor);
+  iMglPlotAddStyleColor(ih, style, markColor);
 
   value = iupAttribGetStr(ih, "DRAWMARKSTYLE");
   char markstyle = 'x';
   iMglPlotSetMarkStyle(ih, value, markstyle);
+  iMglPlotAddStyleMark(style, markstyle);
 
   value = iupAttribGetStr(ih, "DRAWMARKSIZE");
   double marksize = 0.02f;
   iMglPlotSetDouble(ih, value, marksize);
   gr->SetMarkSize(marksize);
 
-  gr->Mark(mglPoint(x, y, z), &markstyle);
+  gr->Mark(mglPoint(x, y, z), style);
 }
 
 void IupMglPlotDrawLine(Ihandle* ih, double x1, double y1, double z1, double x2, double y2, double z2)
@@ -4501,10 +4574,13 @@ void IupMglPlotDrawLine(Ihandle* ih, double x1, double y1, double z1, double x2,
   if (!gr)
     return;
 
+  char style[64] = "";
+
   char* value = iupAttribGetStr(ih, "DRAWCOLOR");
   mglColor lineColor;
   if (!value) lineColor = ih->data->fgColor;
   else iMglPlotSetColor(ih, value, lineColor);
+  iMglPlotAddStyleColor(ih, style, lineColor);
 
   value = iupAttribGetStr(ih, "DRAWLINESTYLE");
   char linestyle = '-';
@@ -4515,10 +4591,9 @@ void IupMglPlotDrawLine(Ihandle* ih, double x1, double y1, double z1, double x2,
   iupStrToInt(value, &linewidth);
   if (linewidth<=0) linewidth = 1;
 
-  char pen[10];
-  iMglPlotConfigColor(ih, gr, lineColor);
-  iMglPlotConfigPen(pen, linestyle, linewidth);
-  gr->Line(mglPoint(x1, y1, z1), mglPoint(x2, y2, z2), pen);
+  iMglPlotAddStyleLine(style, linestyle, linewidth);
+
+  gr->Line(mglPoint(x1, y1, z1), mglPoint(x2, y2, z2), style);
 }
 
 void IupMglPlotDrawText(Ihandle* ih, const char* text, double x, double y, double z)
@@ -4535,35 +4610,25 @@ void IupMglPlotDrawText(Ihandle* ih, const char* text, double x, double y, doubl
   if (!gr)
     return;
 
+  char style[64] = "";
+
   char* value = iupAttribGetStr(ih, "DRAWCOLOR");
   mglColor textColor;
   if (!value) textColor = ih->data->fgColor;
   else iMglPlotSetColor(ih, value, textColor);
+  iMglPlotAddStyleColor(ih, style, textColor);
+
+  // Add delimiter
+  strcat(style, ":");
 
   value = iupAttribGetStr(ih, "DRAWFONTSTYLE");
-  int fontstyle = IUP_MGLPLOT_INHERIT;
-  iMglPlotSetFontStyle(ih, value, fontstyle);
+  iMglPlotAddStyleFont(style, value);
 
   value = iupAttribGetStr(ih, "DRAWFONTSIZE");
-  double fontsize = 1.0;
-  iMglPlotSetDouble(ih, value, fontsize);
+  double fontsizefactor = 1.0;
+  if (iupStrToDouble(value, &fontsizefactor))
+    iMglPlotConfigFontSize(ih, gr, fontsizefactor);
 
-  char* style = iupAttribGetStr(ih, "DRAWTEXTALIGN");
-  if (style)
-  {
-    if (iupStrEqualNoCase(style, "LEFT"))
-      style = "L";
-    else if (iupStrEqualNoCase(style, "CENTER"))
-      style = "C";
-    else if (iupStrEqualNoCase(style, "RIGHT"))
-      style = "R";
-    else
-      style = NULL;
-  }
-
-  iMglPlotConfigColor(ih, gr, textColor);
-  iMglPlotConfigFont(ih, gr, fontstyle, fontsize);
-  
   gr->Puts(mglPoint(x, y, z), text, style, -1);
 }
 
@@ -5089,6 +5154,7 @@ void IupMglPlotOpen(void)
 
 1.11:
 - Text style and text color positions are swapped. I.e. text style ‘r:C’ give red centered text, but not roman dark cyan text as for v.1.*.
+- rever interação widget Qt
 
 UTF-8
 SubPlots
