@@ -206,7 +206,7 @@ static void iMglPlotResetDataSet(IdataSet* ds, int ds_index)
 {
   // Can NOT use memset here
 
-  ds->dsLineStyle  = '-';  // SOLID/CONTINUOUS
+  ds->dsLineStyle  = '-';  // "CONTINUOUS"
   ds->dsLineWidth  = 1;
   ds->dsMarkStyle  = 'x';  // "X"
   ds->dsMarkSize   = 0.02;
@@ -1633,74 +1633,43 @@ static void iMglPlotDrawTitle(Ihandle* ih, mglGraph *gr, const char* title)
   iMglPlotAddStyleColor(ih, style, ih->data->titleColor);
   iMglPlotConfigFont(ih, gr, ih->data->titleFontStyle, ih->data->titleFontSizeFactor);
 
-  gr->Title(title, style, -1);
+  gr->Title(title, style);
 }
 
 static void iMglPlotConfigPlotArea(Ihandle* ih, mglGraph *gr)
 {
-  // The default adds spaces at left, top, right and bottom
-  double x1 = 0, x2 = 1.0, y1 = 0, y2 = 1.0;
+  char style[64] = "";
+  int i = 0;
 
-  // So we remove the spaces if not used
-
-  // Left
-  if (!mgl_isnan(ih->data->axisY.axOrigin))
-    x1 = -0.16;  // Axis is crossed
-  else if (!iupAttribGetStr(ih, "AXS_YLABEL"))  // no label
-  {
-    if (!ih->data->axisY.axTickShowValues)
-      x1 = -0.20;  // not crossed, no label, no ticks values
-    else if (ih->data->axisY.axTickValuesRotation)
-      x1 = -0.15;  // not crossed, no label, with vertical ticks values
-    else
-      x1 = -0.10;  // not crossed, no label, with horizontal ticks values
-  }
-  else if (ih->data->axisY.axLabelRotation)
-    x1 = -0.10; // not crossed and with vertical label
-  else
-    x1 = -0.01; // not crossed and with horizontal label
-
-  // Right
-  if (iMglPlotHasx10(ih->data->axisX.axMin, ih->data->axisX.axMax))  // X Axis Min-Max
-    x2 = 1.05;  // with x10 notation
-  else
-    x2 = 1.15;  // no notation
-
-  // Bottom
-  if (!mgl_isnan(ih->data->axisX.axOrigin))
-    y1 = -0.20;  // Axis is crossed
-  else if (!iupAttribGetStr(ih, "AXS_XLABEL"))
-  {
-    if (!ih->data->axisX.axTickShowValues)
-      y1 = -0.20;  // not crossed, no label, no ticks values
-    else
-      y1 = -0.15;  // not crossed, no label, with ticks values
-  }
-  else
-    y1 = -0.10;  // not crossed and with label
-
-  // Top
-  if (!iupAttribGetStr(ih, "TITLE"))
-    y2 = 1.15;  // no title
-  else
-    y2 = 1.05;  // with title
-
-  // Colorbar
+  char* colorbar_pos = NULL;
   if (iupAttribGetBoolean(ih, "COLORBAR"))
-  {
-    char* value = iupAttribGetStr(ih, "COLORBARPOS");
-    if (iupStrEqualNoCase(value, "LEFT"))
-      x1 = 0.05;  // includes also space for axis
-    else if (iupStrEqualNoCase(value, "TOP"))
-      y2 = 0.9;   // includes also space for title
-    else if (iupStrEqualNoCase(value, "BOTTOM"))
-      y1 = 0.05;  // includes also space for axis
-    else // RIGHT
-      x2 = 0.9;   // includes also space for notation
-  }
+    colorbar_pos = iupAttribGetStr(ih, "COLORBARPOS");
 
-  // Only one plot using all viewport
-  gr->InPlot(x1, x2, y1, y2, false);
+  if (iupAttribGetStr(ih, "TITLE"))
+  {
+    style[i++] = '^';
+    style[i++] = 'T';
+  }
+  else if (iupStrEqualNoCase(colorbar_pos, "TOP"))
+    style[i++] = '^';
+
+  if ((mgl_isnan(ih->data->axisX.axOrigin) &&  // NOT Crossed
+       (iupAttribGetStr(ih, "AXS_XLABEL") || ih->data->axisX.axTickShowValues)) ||
+      iupStrEqualNoCase(colorbar_pos, "BOTTOM"))
+    style[i++] = '_';
+
+  if ((mgl_isnan(ih->data->axisY.axOrigin) &&  // NOT Crossed
+       (iupAttribGetStr(ih, "AXS_YLABEL") || ih->data->axisY.axTickShowValues)) ||
+      iupStrEqualNoCase(colorbar_pos, "LEFT"))
+    style[i++] = '<';
+
+  if (iupStrEqualNoCase(colorbar_pos, "RIGHT"))
+    style[i++] = '>';
+
+  style[i] = 0;
+
+  gr->SubPlot(1, 1, 0, style);
+
 }
 
 static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
@@ -1726,14 +1695,6 @@ static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
 
     // Notice that rotZ is the second parameter
     gr->Rotate(ih->data->rotX, ih->data->rotZ, ih->data->rotY);  
-
-    if (ih->data->rotX != 0 || ih->data->rotY != 0 || ih->data->rotZ)
-    {
-      // Add more space when rotating a 3D graph
-      //TODO
-      //((mglCanvas*)gr)->GetPlotFactor()
-      //gr->SetPlotFactor(pf+0.3);  
-    }
   }
 }
 

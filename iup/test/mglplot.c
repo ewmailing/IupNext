@@ -99,7 +99,7 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[0], "AXS_YFONTSIZE", "10");
   IupSetAttribute(plot[0], "AXS_XLABELCENTERED", "NO");
   IupSetAttribute(plot[0], "AXS_YLABELCENTERED", "NO");
-  IupSetAttribute(plot[0], "AXS_YLABELROTATION", "NO");
+//  IupSetAttribute(plot[0], "AXS_YLABELROTATION", "NO");
   IupSetAttribute(plot[0], "AXS_YTICKVALUESROTATION", "NO");
 //  IupSetAttribute(plot[0], "AXS_XTICKVALUESROTATION", "NO");
   IupSetAttribute(plot[0], "AXS_XCROSSORIGIN", "Yes");
@@ -742,7 +742,7 @@ void MglPlotTest(void)
   IupSetAttribute(dlg, "SIZE", NULL);
 }
 
-#ifndef BIG_TEST
+//#ifndef BIG_TEST
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
@@ -755,6 +755,6 @@ int main(int argc, char* argv[])
 
   return EXIT_SUCCESS;
 }
-#endif
+//#endif
 
 #endif
