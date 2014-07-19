@@ -105,7 +105,6 @@ struct _IcontrolData
   bool opengl;
 
   /* Obtained from FONT */
-  double FontSizeDef;
   char FontStyleDef[MAX_FONTSTYLE];
   
   /* Global */
@@ -390,7 +389,8 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   //IMPORTANT: 
   //  Magic factor for acceptable size. 
   //  Don't know why it works, but we obtain good results.
-  ih->data->FontSizeDef = ((double)size/(double)ih->data->h)*ih->data->dpi;
+  double FontSizeDef = ((double)size / (double)ih->data->h)*ih->data->dpi;
+  gr->SetFontSize(FontSizeDef);
 
   char *path = getenv("IUP_MGLFONTS");
   if (!path) 
@@ -419,7 +419,7 @@ static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, const char* fontstyle,
   else
     gr->SetFontDef(ih->data->FontStyleDef);
 
-  gr->SetFontSize(fontsizefactor * ih->data->FontSizeDef);
+  gr->SetFontSize(-fontsizefactor);
 }
 
 static double iMglPlotGetAttribDoubleNAN(Ihandle* ih, const char* name)
@@ -5106,10 +5106,23 @@ void IupMglPlotOpen(void)
 
 /************************  TODO   ***********************************
 
+NOT Working
+  Plot 4 MarkSize muito pequeno, 
+  Plot 4 pode inclinar valores?
+  Plot 1 eixo não invertido
+  inicio e fim eixo X no bar mode
+  atribuição da dsColor
+  tamanho e lugar dos ticks
+  cor dos labels?
+  fontsize legenda muito pequeno
+  nenhum planar desenha
+  tamanho OpenGL
+  testar exportação
+
 1.11:
-- Text style and text color positions are swapped. I.e. text style ‘r:C’ give red centered text, but not roman dark cyan text as for v.1.*.
 - rever interação widget Qt
 
+OpenMP
 UTF-8
 SubPlots
 
