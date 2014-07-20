@@ -18,7 +18,7 @@ IupMglPlotSetData
 IupMglPlotLoadData
 IupMglPlotSetFromFormula
 IupMglPlotTransform
-IupMglPlotTransformXYZ
+IupMglPlotTransformTo
 IupMglPlotDrawMark
 IupMglPlotDrawLine
 IupMglPlotDrawText

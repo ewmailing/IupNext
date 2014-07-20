@@ -196,11 +196,11 @@ static int PlotTransform(lua_State *L)
   return 2;
 }
 
-static int PlotTransformXYZ(lua_State *L)
+static int PlotTransformTo(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   double x, y, z;
-  IupMglPlotTransformXYZ(ih, luaL_checkint(L,2), luaL_checkint(L,3), &x, &y, &z);
+  IupMglPlotTransformTo(ih, luaL_checkint(L,2), luaL_checkint(L,3), &x, &y, &z);
   lua_pushnumber(L, x);
   lua_pushnumber(L, y);
   lua_pushnumber(L, z);
@@ -279,7 +279,7 @@ void iuplua_mglplotfuncs_open (lua_State *L)
   iuplua_register(L, PlotSetFromFormula  ,"MglPlotSetFromFormula");
   iuplua_register(L, PlotSetData      ,"MglPlotSetData");
   iuplua_register(L, PlotTransform    ,"MglPlotTransform");
-  iuplua_register(L, PlotTransformXYZ ,"MglPlotTransformXYZ");
+  iuplua_register(L, PlotTransformTo ,"MglPlotTransformTo");
   iuplua_register(L, PlotPaintTo      ,"MglPlotPaintTo");
   iuplua_register(L, PlotDrawText     ,"MglPlotDrawText");
   iuplua_register(L, PlotDrawLine     ,"MglPlotDrawLine");

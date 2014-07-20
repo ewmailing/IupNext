@@ -302,8 +302,8 @@ attributes.</em></p>
 <p>Converts coordinates from plot coordinates to pixels. It can be used only inside PREDRAW_CB 
 and POSTDRAW_CB callbacks. Output variables can be NULL if not used.</p>
 <hr>
-<pre>void <b>IupMglPlotTransformXYZ</b>(Ihandle* <b>ih</b>, int <b>ix</b>, int <b>iy</b>, double *<b>x</b>, double *<b>y</b>, double *<b>z</b>); [in C]
-<b>iup.MglPlotTransform</b>(<b>ih</b>: ihandle, <b>ix, iy</b>: number) -&gt; (<b>x</b>, <b>y</b>, <b>z</b>: number) [in Lua]</pre>
+<pre>void <b>IupMglPlotTransformTo</b>(Ihandle* <b>ih</b>, int <b>ix</b>, int <b>iy</b>, double *<b>x</b>, double *<b>y</b>, double *<b>z</b>); [in C]
+<b>iup.MglPlotTransformTo</b>(<b>ih</b>: ihandle, <b>ix, iy</b>: number) -&gt; (<b>x</b>, <b>y</b>, <b>z</b>: number) [in Lua]</pre>
 <p>Converts coordinates from pixels to plot coordinates. It can be used only inside PREDRAW_CB 
 and POSTDRAW_CB callbacks. Output variables can be NULL if not used.</p>
 <hr>
@@ -629,6 +629,8 @@ supported.</p>
 
 <p>Uses OpenGL for screen output and internal drivers for metafile output. 
 <strong>IupPPlot</strong> uses CD for screen and metafile output.</p>
+<p>Selection and editing of a dataset using the DS_EDIT attribute are not 
+	implemented.</p>
 <p>All functions use double floating point. (since 3.11)</p>
 <p>New support for 3D data and 3D plots. New support for planar and volumetric 
 data. New ALPHA, ANTIALIAS, DS_DIMENSION, LEGENDBOX, BOX, 
@@ -678,8 +680,6 @@ IupPPlotPaintTo         -&gt; IupMglPlotPaintTo    (parameters are different)</p
 
 <h3><a name="KnownIssues">Known Issues</a></h3>
 <ul>
-	<li>Selection and editing of a dataset using the DS_EDIT attribute are not 
-	implemented.</li>
 	<li>Automatic ticks computation needs to be improved.</li>
 	<li>BOLD and ITALIC styles are not working inside TeX formatting.</li>
 	<li>There is still lots of MathGL features not available in IupMglPlot.</li>

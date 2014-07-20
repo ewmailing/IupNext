@@ -41,7 +41,7 @@ void IupMglPlotLoadData(Ihandle* ih, int ds_index, const char* filename, int cou
 void IupMglPlotSetFromFormula(Ihandle* ih, int ds_index, const char* formula, int count_x, int count_y, int count_z);
 
 void IupMglPlotTransform(Ihandle* ih, double x, double y, double z, int *ix, int *iy);
-void IupMglPlotTransformXYZ(Ihandle* ih, int ix, int iy, double *x, double *y, double *z);
+void IupMglPlotTransformTo(Ihandle* ih, int ix, int iy, double *x, double *y, double *z);
 
 void IupMglPlotDrawMark(Ihandle* ih, double x, double y, double z);
 void IupMglPlotDrawLine(Ihandle* ih, double x1, double y1, double z1, double x2, double y2, double z2);

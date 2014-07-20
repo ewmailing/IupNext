@@ -147,11 +147,6 @@ struct _IcontrolData
   IdataSet* dataSet;
 };
 
-/* Callbacks function pointer typedefs. */
-// TODO
-// typedef int (*IFniidd)(Ihandle*, int, int, double, double); /* delete_cb */
-// typedef int (*IFniiddi)(Ihandle*, int, int, double, double, int); /* select_cb */
-// typedef int (*IFniidddd)(Ihandle*, int, int, double, double, double*, double*); /* edit_cb */
 
 /******************************************************************************
  Useful Functions
@@ -4399,7 +4394,7 @@ void IupMglPlotTransform(Ihandle* ih, double x, double y, double z, int *ix, int
   if (iy) *iy = (int)p.y;
 }
 
-void IupMglPlotTransformXYZ(Ihandle* ih, int ix, int iy, double *x, double *y, double *z)
+void IupMglPlotTransformTo(Ihandle* ih, int ix, int iy, double *x, double *y, double *z)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -4881,16 +4876,6 @@ static Iclass* iMglPlotNewClass(void)
    /* IupPPlot Callbacks */
    iupClassRegisterCallback(ic, "POSTDRAW_CB", "");
    iupClassRegisterCallback(ic, "PREDRAW_CB", "");
-  // TODO
-//   iupClassRegisterCallback(ic, "DELETE_CB", "iiff");
-//   iupClassRegisterCallback(ic, "DELETEBEGIN_CB", "");
-//   iupClassRegisterCallback(ic, "DELETEEND_CB", "");
-//   iupClassRegisterCallback(ic, "SELECT_CB", "iiffi");
-//   iupClassRegisterCallback(ic, "SELECTBEGIN_CB", "");
-//   iupClassRegisterCallback(ic, "SELECTEND_CB", "");
-//   iupClassRegisterCallback(ic, "EDIT_CB", "iiffff");
-//   iupClassRegisterCallback(ic, "EDITBEGIN_CB", "");
-//   iupClassRegisterCallback(ic, "EDITEND_CB", "");
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", iMglPlotGetBGColorAttrib, iMglPlotSetBGColorAttrib, "255 255 255", NULL, IUPAF_NOT_MAPPED);   /* overwrite canvas implementation, set a system default to force a new default */
@@ -4936,7 +4921,6 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "DS_COLOR", iMglPlotGetDSColorAttrib, iMglPlotSetDSColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_SHOWVALUES", iMglPlotGetDSShowValuesAttrib, iMglPlotSetDSShowValuesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_MODE", iMglPlotGetDSModeAttrib, iMglPlotSetDSModeAttrib, IUPAF_SAMEASSYSTEM, "LINE", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "DS_EDIT", iMglPlotGetDSEditAttrib, iMglPlotSetDSEditAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_REMOVE", NULL, iMglPlotSetDSRemoveAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_COUNT", iMglPlotGetDSCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_DIMENSION", iMglPlotGetDSDimAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -5128,15 +5112,12 @@ SubPlots
 
 New PPlot:
   IupPPlotGetSample IupPPlotGetSampleStr
-  iupClassRegisterAttribute(ic, "SYNCVIEW", iPPlotGetSyncViewAttrib, iPPlotSetSyncViewAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  IupPPlotTransformTo missing from DLLs and from Lua.
   New: attributes REMOVE and CURRENT in IupPPlot now also accepts the DS_NAME as value when setting.
+  iupClassRegisterAttribute(ic, "SYNCVIEW", iPPlotGetSyncViewAttrib, iPPlotSetSyncViewAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   New: PLOT_COUNT, PLOT_NUMCOL, PLOT_CURRENT, PLOT_INSERT and PLOT_REMOVE attributes for IupPPlot to support multiple plots in the same display area.
   New: PLOTBUTTON_CB and PLOTMOTION_CB calbacks for IupPPlot.
 
-DS_EDIT+Selection+Callbacks
-
-MathGL:
+Known Issues:
   evaluate interval, [-1,1] x [0,1] x [0,n-1]
   ***improve autoticks computation
   ***Legend does not work in OpenGL
@@ -5157,7 +5138,7 @@ MathGL:
      BOLD and ITALIC inside TeX formatting does not work for TTF or OTF fonts.
   Light and Fog
 
-Maybe:
+Other:
   curvilinear coordinates
   plots that need two datasets: BoxPlot, Region, Tens, Mark, Error, Flow, Pipe, Ring
      chart and bars can be combined in one plot (bars then can include above and fall)
