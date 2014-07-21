@@ -5122,14 +5122,12 @@ NOT Working
   nenhum planar desenha
   tamanho OpenGL
 
-1.11:
 - testar exportação
 - testar fontes
 - rever interação widget Qt
 
 OpenMP
 UTF-8
-SubPlots
 
 New PPlot:
   IupPPlotGetSample IupPPlotGetSampleStr
@@ -5152,9 +5150,7 @@ Known Issues:
   ***bars at 0 and n-1
   ***Axis color is fixed in black
   Sometimes the label gets too close to the ticks
-  Ticks
-     SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
-     ***TicksVal should follow ticks spacing configuration 
+  ***TicksVal should follow ticks spacing configuration 
   Fonts
      ***font aspect ratio not being mantained in OpenGL
      option or function to draw an opaque background for text
