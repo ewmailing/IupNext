@@ -367,7 +367,8 @@ and OpenType (*.otf) font files support removed in version 3.11.</strong></p>
 combination of the following styles: Plain (Regular), Bold, Italic (Oblique), 
 Wired, Underline, Strikeout, Left, Center and Right.<br>All <strong>*FONTSIZE</strong> 
 attributes are actually a factor that multiplies the size defined by the FONT 
-attribute.</p>
+attribute and an internal MathGL factor. So the actual size will be 
+fontsize_factor * internal_factor * font_size.</p>
 <p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b>:  the default color 
 used in all text elements of the plot: title, legend and labels. Default: &quot;0 0 0 
 255&quot;. </p>
@@ -404,14 +405,16 @@ coordinates, the zoom is restricted to the Y axis. Default: 0:0:1:1</p>
 <h4>Title Configuration (non inheritable)</h4>
 <p><b>TITLE </b>(non inheritable): the  title. Located always at the top center area.</p>
 <p><b>TITLECOLOR</b>: title color. Default: FGCOLOR.</p>
-<p><b>TITLEFONTSIZE</b>: title font size factor. Default: 1.6</p>
+<p><b>TITLEFONTSIZE</b>: title font size factor. Default: 1.0. The internal 
+MathGL factor is 2.0.</p>
 <p><b>TITLEFONTSTYLE</b>: title font style. </p>
 <h4>Legend Configuration (non inheritable)</h4>
 <p><b>LEGEND</b>: shows or hides the legend box. Can be YES or NO. Default: 
 NO. LEGENDSHOW is also accepted.</p>
 <p><b>LEGENDBOX</b>: draws a box around the legend area. Default: YES.</p>
 <p><b>LEGENDCOLOR</b>: title color. Default: FGCOLOR.</p>
-<p><b>LEGENDFONTSIZE</b>: legend font size factor. Default: 0.8</p>
+<p><b>LEGENDFONTSIZE</b>: legend font size factor. Default: 1.0.&nbsp; The 
+internal MathGL factor is 0.8.</p>
 <p><b>LEGENDFONTSTYLE</b>: legend font style. </p>
 <p><b>LEGENDPOS</b>: legend box position. Can be: &quot;TOPLEFT&quot;, &quot;TOPRIGHT&quot;, 
 &quot;BOTTOMLEFT&quot;, or &quot;BOTTOMRIGHT. Default: &quot;TOPRIGHT&quot;.</p>
@@ -505,7 +508,7 @@ YES or NO. Default: YES.</p>
 <p><b>AXS_?CROSSORIGIN</b>: same as setting AXS_?ORIGIN to 0 or NULL. Can be YES 
 or NO. Default: NO. Returns YES if AXS_?ORIGIN is 0 and returns NO if AXS_?ORIGIN 
 in NULL. Available for compatibility with IupPPlot, but the default is different.</p>
-<p><b>AXS_?FONTSIZE</b>: axis label font size factor. Default: 1.0</p>
+<p><b>AXS_?FONTSIZE</b>: axis label font size factor. Default: 0.8. The internal MathGL factor is 1.4.</p>
 <p><b>AXS_?FONTSTYLE</b>: axis label font style.</p>
 <p><b>AXS_?LABEL</b>: text label of the&nbsp;respective axis.</p>
 <p><b>AXS_?LABELCENTERED</b>: text label position at 
@@ -538,7 +541,8 @@ NO. Default: YES. AXS_?AUTOTICK is also accepted.</p>
 <p><b>AXS_?TICKAUTOSIZE</b>: configures <font SIZE="3">the 
 automatic tick size.</font> Can be YES or NO. Default: YES. AXS_?AUTOTICKSIZE is 
 also accepted.</p>
-<p><b>AXS_?TICKFONTSIZE</b>: axis tick number font size factor. Default: 0.8</p>
+<p><b>AXS_?TICKFONTSIZE</b>: axis tick number font size factor. Default: 0.8. 
+The internal MathGL factor is 1.0.</p>
 <p><b>AXS_?TICKFONTSTYLE</b>: axis tick number font style.</p>
 <p><b>AXS_?TICKFORMAT</b>: axis tick number C format string. 
 Default: is internally computed according to the Min-Max range.</p>
@@ -642,16 +646,16 @@ options.</p>
 are NOT supported. AXS_?SCALE attribute does NOT support the LOG2 and LOGN 
 values. The Crosshair cursor is not supported.</p>
 <p>The PREDRAW_CB, POSTDRAW_CB callbacks does not includes the CD canvas 
-parameter. *FONTSIZE attributes are now a multiple factor of the FONT size. 
+parameter. *FONTSIZE attributes are a multiple factor of the FONT size. 
 DASH_DOT_DOT line style is not supported, but has new line styles: LONGDASHED, 
 SMALLDASHED and SMALLDASH_DOT. AXS_?TICKMAJORSIZE, MARKSIZE are in normalized 
 coordinates. New options for GRID: 
-Z, XYZ, XZ, YZ. AXS_?TICKSIZE renamed to AXS_?TICKMINORSIZE, and now is a factor 
-of the AXS_?TICKMAJORSIZE. AXS_?TICKMAJORSPAN default value is now -5. 
-AXS_?TICKFORMAT default is now internally computed according to the Min-Max 
+Z, XYZ, XZ, YZ. AXS_?TICKSIZE renamed to AXS_?TICKMINORSIZE, and is a factor 
+of the AXS_?TICKMAJORSIZE. AXS_?TICKMAJORSPAN default value is&nbsp; -5. 
+AXS_?TICKFORMAT default is internally computed according to the Min-Max 
 range.</p>
 <p>Function Mapping:</p>
-<pre>IupPPlotBegin  -&gt; IupMglPlotBegin    (IMPORTANT: parameter is now the dimension 1, 2 or 3)
+<pre>IupPPlotBegin  -&gt; IupMglPlotBegin    (IMPORTANT: parameter is the dimension 1, 2 or 3)
 IupPPlotAddStr -&gt; IupMglPlotAdd1D
 IupPPlotAdd    -&gt; IupMglPlotAdd2D
    (none)         IupMglPlotAdd3D
@@ -671,7 +675,7 @@ IupPPlotAddPoints       -&gt; IupMglPlotInsert2D   (insert at DS_COUNT)
    (none)                  IupMglPlotSetData
    (none)                  IupMglPlotLoadData
    (none)                  IupMglPlotSetFromFormula
-IupPPlotTransform       -&gt; IupMglPlotTransform  (now includes z coordinate)
+IupPPlotTransform       -&gt; IupMglPlotTransform  (includes z coordinate)
    (none)                  IupMglPlotTransformXYZ
    (cdCanvasMark)       -&gt; IupMglPlotDrawMark
    (cdCanvasLine)       -&gt; IupMglPlotDrawLine

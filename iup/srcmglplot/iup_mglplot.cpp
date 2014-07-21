@@ -105,6 +105,7 @@ struct _IcontrolData
   bool opengl;
 
   /* Obtained from FONT */
+  double FontSizeDef;
   char FontStyleDef[MAX_FONTSTYLE];
   
   /* Global */
@@ -182,21 +183,27 @@ static char* iMglPlotDefaultLegend(int ds)
   return iupStrDup(legend);
 }
 
-static void iMglPlotSetDsColorDefault(mglColor &color, int ds_index)
+static void iMglPlotSetDsColorDefault(mglColor &color, int index)
 {
-  switch(ds_index)
+  switch(index)
   {
     case 0: color.Set(1, 0, 0); break;
-    case 1: color.Set(0, 0, 1); break;
-    case 2: color.Set(0, 1, 0); break;
+    case 1: color.Set(0, 1, 0); break;
+    case 2: color.Set(0, 0, 1); break;
     case 3: color.Set(0, 1, 1); break;
     case 4: color.Set(1, 0, 1); break;
     case 5: color.Set(1, 1, 0); break;
+    case 6: color.Set(0.5f, 0, 0); break;
+    case 7: color.Set(0, 0.5f, 0); break;
+    case 8: color.Set(0, 0, 0.5f); break;
+    case 9: color.Set(0, 0.5f, 0.5f); break;
+    case 10: color.Set(0.5f, 0, 0.5f); break;
+    case 11: color.Set(0.5f, 0.5f, 0); break;
     default: color.Set(0, 0, 0); break;
   }
 }
 
-static void iMglPlotResetDataSet(IdataSet* ds, int ds_index)
+static void iMglPlotDataSetDefaults(Ihandle* ih, IdataSet* ds, int ds_index)
 {
   // Can NOT use memset here
 
@@ -209,7 +216,25 @@ static void iMglPlotResetDataSet(IdataSet* ds, int ds_index)
   ds->dsMode = iupStrDup("LINE");
   ds->dsLegend = iMglPlotDefaultLegend(ds_index);
 
-  iMglPlotSetDsColorDefault(ds->dsColor, ds_index);
+  int c = 0, i;
+  mglColor color;
+  do
+  {
+    iMglPlotSetDsColorDefault(color, c);
+
+    for (i = 0; i < ih->data->dataSetCount; i++)
+    {
+      if (ih->data->dataSet[i].dsColor == color)
+        break;
+    }
+
+    if (i == ih->data->dataSetCount)
+      break;
+
+    c++;
+  } while (c < 12);
+
+  ds->dsColor = color;
 }
 
 static void iMglPlotResetInteraction(Ihandle *ih)
@@ -227,7 +252,7 @@ static void iMglPlotResetAxis(Iaxis& axis)
 {
   memset(&axis, 0, sizeof(Iaxis));
 
-  axis.axLabelFontSizeFactor = 1;
+  axis.axLabelFontSizeFactor = 0.8;
   axis.axTickFontSizeFactor = 0.8;
 
   axis.axColor.Set(NAN, NAN, NAN);
@@ -269,8 +294,8 @@ static void iMglPlotReset(Ihandle* ih)
 
   ih->data->titleFontStyle[0] = 0;
   ih->data->legendFontStyle[0] = 0;
-  ih->data->legendFontSizeFactor = 0.8;
-  ih->data->titleFontSizeFactor = 1.4;
+  ih->data->legendFontSizeFactor = 1.0;
+  ih->data->titleFontSizeFactor = 1.0;
 
   ih->data->bgColor.Set(1, 1, 1);
   ih->data->fgColor.Set(0, 0, 0);
@@ -384,8 +409,8 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   //IMPORTANT: 
   //  Magic factor for acceptable size. 
   //  Don't know why it works, but we obtain good results.
-  double FontSizeDef = ((double)size / (double)ih->data->h)*ih->data->dpi;
-  gr->SetFontSize(FontSizeDef);
+  ih->data->FontSizeDef = ((double)size / (double)ih->data->h)*ih->data->dpi;
+  gr->SetFontSize(ih->data->FontSizeDef);
 
   char *path = getenv("IUP_MGLFONTS");
   if (!path) 
@@ -414,7 +439,7 @@ static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, const char* fontstyle,
   else
     gr->SetFontDef(ih->data->FontStyleDef);
 
-  gr->SetFontSize(-fontsizefactor);
+  gr->SetFontSize(fontsizefactor*ih->data->FontSizeDef);
 }
 
 static double iMglPlotGetAttribDoubleNAN(Ihandle* ih, const char* name)
@@ -422,23 +447,6 @@ static double iMglPlotGetAttribDoubleNAN(Ihandle* ih, const char* name)
   double val = NAN;
   iupStrToDouble(iupAttribGet(ih, name), &val);
   return val;
-}
-
-static bool iMglPlotHasx10(double min, double max)
-{
-  if (fabs(max - min)<0.01*fabs(min))
-  {
-    double v = fabs(max - min);
-    if (v>10000.0 || v<1.0e-4)
-      return true;
-  }
-  else
-  {
-    double v = fabs(max)>fabs(min) ? fabs(max) : fabs(min);
-    if (v>10000.0 || v<1.0e-4)
-      return true;
-  }
-  return false;
 }
 
 static void iMglPlotAddStyleLine(char* style, char line_style, int line_width)
@@ -888,7 +896,6 @@ static void iMglPlotDrawAxisLabel(Ihandle* ih, mglGraph *gr, char dir, Iaxis& ax
 
     iMglPlotConfigFont(ih, gr, axis.axLabelFontStyle, axis.axLabelFontSizeFactor);
     
-    // TODO sometimes the label gets too close to the ticks
     gr->Label(dir, label, (mreal)axis.axLabelPos, "");  
 
     gr->SetRotatedText(false);
@@ -1618,7 +1625,7 @@ static void iMglPlotDrawLegend(Ihandle* ih, mglGraph *gr)
   iMglPlotAddStyleColor(ih, style, ih->data->legendColor);
   iMglPlotConfigFont(ih, gr, ih->data->legendFontStyle, ih->data->legendFontSizeFactor);
 
-  gr->Legend(ih->data->legendPosition, style, "");
+  gr->Legend(ih->data->legendPosition, style, "value 0.05;");
 }
 
 static void iMglPlotDrawTitle(Ihandle* ih, mglGraph *gr, const char* title)
@@ -3115,10 +3122,10 @@ static int iMglPlotSetAxisScale(Ihandle* ih, const char* value, const char** sca
     *scale = NULL;
   else if(iupStrEqualNoCase(value, "LOG10"))
     *scale = (dir=='x')? "lg(x)": (dir=='y'? "lg(y)": "lg(z)");
-/* TODO else if(iupStrEqualNoCase(value, "LOG2"))   // NOT supported yet
+  else if(iupStrEqualNoCase(value, "LOG2"))
     *scale = (dir=='x')? "log(x, 2)": (dir=='y'? "log(y, 2)": "log(z, 2)");
   else if(iupStrEqualNoCase(value, "LOGN"))
-    *scale = (dir=='x')? "ln(x)": (dir=='y'? "ln(y)": "ln(z)"); */
+    *scale = (dir=='x')? "ln(x)": (dir=='y'? "ln(y)": "ln(z)");
 
   ih->data->redraw = true;
   return 0;
@@ -3145,10 +3152,10 @@ static char* iMglPlotGetAxisScale(const char* scale)
     return "LIN";
   else if (strstr(scale, "lg"))
     return "LOG10";
-/* TODO else if (strstr(scale, "log"))  // NOT supported yet
+  else if (strstr(scale, "log"))
     return "LOG2";
   else if (strstr(scale, "ln"))
-    return "LOGN"; */
+    return "LOGN";
   return NULL;
 }
 
@@ -3865,7 +3872,7 @@ int IupMglPlotNewDataSet(Ihandle *ih, int dim)
   ds->dsCount = 0;
 
   /* Initialize the default values */
-  iMglPlotResetDataSet(ds, ds_index);
+  iMglPlotDataSetDefaults(ih, ds, ds_index);
 
   ih->data->redraw = true;
 
@@ -4892,14 +4899,14 @@ static Iclass* iMglPlotNewClass(void)
 
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLECOLOR", iMglPlotGetTitleColorAttrib, iMglPlotSetTitleColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TITLEFONTSIZE", iMglPlotGetTitleFontSizeAttrib, iMglPlotSetTitleFontSizeAttrib, IUPAF_SAMEASSYSTEM, "1.6", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEFONTSIZE", iMglPlotGetTitleFontSizeAttrib, iMglPlotSetTitleFontSizeAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEFONTSTYLE", iMglPlotGetTitleFontStyleAttrib, iMglPlotSetTitleFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "LEGEND", iMglPlotGetLegendShowAttrib, iMglPlotSetLegendShowAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDSHOW", iMglPlotGetLegendShowAttrib, iMglPlotSetLegendShowAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT); // for IupPPlot compatibility
   iupClassRegisterAttribute(ic, "LEGENDBOX", iMglPlotGetLegendBoxAttrib, iMglPlotSetLegendBoxAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDPOS", iMglPlotGetLegendPosAttrib, iMglPlotSetLegendPosAttrib, IUPAF_SAMEASSYSTEM, "TOPRIGHT", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LEGENDFONTSIZE", iMglPlotGetLegendFontSizeAttrib, iMglPlotSetLegendFontSizeAttrib, IUPAF_SAMEASSYSTEM, "0.8", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LEGENDFONTSIZE", iMglPlotGetLegendFontSizeAttrib, iMglPlotSetLegendFontSizeAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDFONTSTYLE", iMglPlotGetLegendFontStyleAttrib, iMglPlotSetLegendFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDCOLOR", iMglPlotGetLegendColorAttrib, iMglPlotSetLegendColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
@@ -5005,9 +5012,9 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "AXS_XSCALE", iMglPlotGetAxisXScaleAttrib, iMglPlotSetAxisXScaleAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YSCALE", iMglPlotGetAxisYScaleAttrib, iMglPlotSetAxisYScaleAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_ZSCALE", iMglPlotGetAxisZScaleAttrib, iMglPlotSetAxisZScaleAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XFONTSIZE", iMglPlotGetAxisXFontSizeAttrib, iMglPlotSetAxisXFontSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YFONTSIZE", iMglPlotGetAxisYFontSizeAttrib, iMglPlotSetAxisYFontSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YFONTSIZE", iMglPlotGetAxisZFontSizeAttrib, iMglPlotSetAxisZFontSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XFONTSIZE", iMglPlotGetAxisXFontSizeAttrib, iMglPlotSetAxisXFontSizeAttrib, IUPAF_SAMEASSYSTEM, "0.8", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YFONTSIZE", iMglPlotGetAxisYFontSizeAttrib, iMglPlotSetAxisYFontSizeAttrib, IUPAF_SAMEASSYSTEM, "0.8", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YFONTSIZE", iMglPlotGetAxisZFontSizeAttrib, iMglPlotSetAxisZFontSizeAttrib, IUPAF_SAMEASSYSTEM, "0.8", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XFONTSTYLE", iMglPlotGetAxisXFontStyleAttrib, iMglPlotSetAxisXFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YFONTSTYLE", iMglPlotGetAxisYFontStyleAttrib, iMglPlotSetAxisYFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_ZFONTSTYLE", iMglPlotGetAxisZFontStyleAttrib, iMglPlotSetAxisZFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -5095,15 +5102,14 @@ NOT Working
   Plot 4 pode inclinar valores?
   Plot 1 eixo não invertido
   inicio e fim eixo X no bar mode
-  atribuição da dsColor
   tamanho e lugar dos ticks
   cor dos labels?
-  fontsize legenda muito pequeno
   nenhum planar desenha
   tamanho OpenGL
-  testar exportação
 
 1.11:
+- testar exportação
+- testar fontes
 - rever interação widget Qt
 
 OpenMP
@@ -5129,6 +5135,7 @@ Known Issues:
   ***graph disapear during zoom in, only in OpenGL, depth clipping?
   ***bars at 0 and n-1
   ***Axis color is fixed in black
+  Sometimes the label gets too close to the ticks
   Ticks
      SetTickLen - documentation says negative len puts ticks outside the bounding box, but it is NOT working
      ***TicksVal should follow ticks spacing configuration 
@@ -5136,10 +5143,10 @@ Known Issues:
      ***font aspect ratio not being mantained in OpenGL
      option or function to draw an opaque background for text
      BOLD and ITALIC inside TeX formatting does not work for TTF or OTF fonts.
-  Light and Fog
 
 Other:
-  curvilinear coordinates
+  Light and Fog
+  Curvilinear coordinates
   plots that need two datasets: BoxPlot, Region, Tens, Mark, Error, Flow, Pipe, Ring
      chart and bars can be combined in one plot (bars then can include above and fall)
   reference datasets
