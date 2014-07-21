@@ -241,7 +241,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[4], "AXS_XMAX", "0.011");
   IupSetAttribute(plot[4], "AXS_YMIN", "0");
   IupSetAttribute(plot[4], "AXS_YMAX", "0.22");
-  IupSetAttribute(plot[4], "AXS_XTICKFORMAT", "%1.3f");
+  IupSetAttribute(plot[4], "AXS_XTICKFORMAT", "%1.3g");
   IupSetAttribute(plot[4], "LEGEND", "YES");
   IupSetAttribute(plot[4], "LEGENDPOS", "BOTTOMRIGHT");
   IupSetAttribute(plot[4], "AXS_YTICKVALUESROTATION", "NO");

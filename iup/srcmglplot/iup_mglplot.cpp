@@ -210,7 +210,7 @@ static void iMglPlotDataSetDefaults(Ihandle* ih, IdataSet* ds, int ds_index)
   ds->dsLineStyle  = '-';  // "CONTINUOUS"
   ds->dsLineWidth  = 1;
   ds->dsMarkStyle  = 'x';  // "X"
-  ds->dsMarkSize   = 0.02;
+  ds->dsMarkSize   = 1.0;
   ds->dsShowMarks = false;
   ds->dsShowValues = false;
   ds->dsMode = iupStrDup("LINE");
@@ -375,6 +375,8 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return;
 
+  ih->data->FontStyleDef[i++] = ':';  // color separator
+
   if (is_bold && is_italic)
   {
     ih->data->FontStyleDef[i++] = 'b';
@@ -427,19 +429,6 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
     iupAttribSetStr(ih, "_IUP_MGL_FONTNAME", typeface);
     iupAttribSetStr(ih, "_IUP_MGL_FONTPATH", path);
   }
-}
-
-static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, const char* fontstyle, double fontsizefactor)
-{
-  /* Configuring fonts in this way we avoid mixing font styles with other styles,
-     so the ":" separator is not necessary. */
-
-  if (fontstyle[0] != 0)
-    gr->SetFontDef(fontstyle);
-  else
-    gr->SetFontDef(ih->data->FontStyleDef);
-
-  gr->SetFontSize(fontsizefactor*ih->data->FontSizeDef);
 }
 
 static double iMglPlotGetAttribDoubleNAN(Ihandle* ih, const char* name)
@@ -588,6 +577,25 @@ static void iMglPlotAddStyleMark(char* style, char markstyle)
   *style = 0;
 }
 
+static void iMglPlotConfigFont(Ihandle* ih, mglGraph *gr, const mglColor* color, const char* fontstyle, double fontsizefactor)
+{
+  char font[64] = "";
+
+  if (color)
+    iMglPlotAddStyleColor(ih, font, *color);
+
+  strcat(font, ":");
+
+  if (fontstyle[0] != 0)
+    strcat(font, fontstyle);
+  else
+    strcat(font, ih->data->FontStyleDef);
+
+  gr->SetFontDef(font);
+
+  gr->SetFontSize(fontsizefactor*ih->data->FontSizeDef);
+}
+
 static void iMglPlotConfigDataSetLineMark(IdataSet* ds, mglGraph *gr, char* style)
 {
   iMglPlotAddStyleLine(style, ds->dsLineStyle, ds->dsLineWidth);
@@ -675,29 +683,25 @@ static void iMglPlotConfigScale(Iaxis& axis, double& min, double& max)
 {
   if (!axis.axAutoScaleMax)
     max = axis.axMax;
-  else
-    axis.axMax = max;  // Update the attribute value
   if (!axis.axAutoScaleMin)
     min = axis.axMin;
-  else
-    axis.axMin = min;  // Update the attribute value
 
   if (axis.axScale)  // Logarithm Scale
   {
-    if (axis.axMin < 0)
-    {
-      axis.axMin = 0;
+    if (min < 0)
       min = 0;
-    }
-    if (axis.axMax < 0)
-    {
-      axis.axMax = 0;
+
+    if (max < 0)
       max = 0;
-    }
   }
 
   if (axis.axReverse)
     iSwap(min, max);
+
+  if (axis.axAutoScaleMax)
+    axis.axMax = max;  // Update the attribute value
+  if (axis.axAutoScaleMin)
+    axis.axMin = min;  // Update the attribute value
 }
 
 static void iMglPlotFindMinMaxValues(mglData& ds_data, bool add, double& min, double& max)
@@ -838,13 +842,13 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
   iMglPlotConfigScale(ih->data->axisY, Min.y, Max.y);
   iMglPlotConfigScale(ih->data->axisZ, Min.z, Max.z);
 
-  gr->SetRange('x', ih->data->axisX.axMin, ih->data->axisX.axMax);
-  gr->SetRange('y', ih->data->axisY.axMin, ih->data->axisY.axMax);
-  gr->SetRange('z', ih->data->axisZ.axMin, ih->data->axisZ.axMax);
+  gr->SetRange('x', Min.x, Max.x);
+  gr->SetRange('y', Min.y, Max.y);
+  gr->SetRange('z', Min.z, Max.z);
 
-  iMglPlotConfigAxisTicks(ih, gr, 'x', ih->data->axisX, ih->data->axisX.axMin, ih->data->axisX.axMax);
-  iMglPlotConfigAxisTicks(ih, gr, 'y', ih->data->axisY, ih->data->axisY.axMin, ih->data->axisY.axMax);
-  iMglPlotConfigAxisTicks(ih, gr, 'z', ih->data->axisZ, ih->data->axisZ.axMin, ih->data->axisZ.axMax);
+  iMglPlotConfigAxisTicks(ih, gr, 'x', ih->data->axisX, Min.x, Max.x);
+  iMglPlotConfigAxisTicks(ih, gr, 'y', ih->data->axisY, Min.y, Max.y);
+  iMglPlotConfigAxisTicks(ih, gr, 'z', ih->data->axisZ, Min.z, Max.z);
 
 
   // Color Range
@@ -855,19 +859,19 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
   {
     if (coloraxisticks && tolower(*coloraxisticks) == 'x') 
     {
-      Cmin = ih->data->axisX.axMin;
-      Cmax = ih->data->axisX.axMax;
+      Cmin = Min.x;
+      Cmax = Max.x;
     }
     else if (coloraxisticks && tolower(*coloraxisticks) == 'y') 
     {
-      Cmin = ih->data->axisY.axMin;
-      Cmax = ih->data->axisY.axMax;
+      Cmin = Min.y;
+      Cmax = Max.y;
     }
     else 
     {
       // By default set CMin-Max to Z Min-Max
-      Cmin = ih->data->axisZ.axMin;
-      Cmax = ih->data->axisZ.axMax;
+      Cmin = Min.z;
+      Cmax = Max.z;
     }
   }
   gr->SetRange('c', Cmin, Cmax);
@@ -894,7 +898,7 @@ static void iMglPlotDrawAxisLabel(Ihandle* ih, mglGraph *gr, char dir, Iaxis& ax
   {
     gr->SetRotatedText(axis.axLabelRotation);
 
-    iMglPlotConfigFont(ih, gr, axis.axLabelFontStyle, axis.axLabelFontSizeFactor);
+    iMglPlotConfigFont(ih, gr, &axis.axColor, axis.axLabelFontStyle, axis.axLabelFontSizeFactor);
     
     gr->Label(dir, label, (mreal)axis.axLabelPos, "");  
 
@@ -964,7 +968,7 @@ static void iMglPlotDrawAxis(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
   char style[64] = "";
 
   iMglPlotAddStyleColor(ih, style, axis.axColor);
-  iMglPlotConfigFont(ih, gr, axis.axTickFontStyle, axis.axTickFontSizeFactor);
+  iMglPlotConfigFont(ih, gr, &axis.axColor, axis.axTickFontStyle, axis.axTickFontSizeFactor);
 
   // Draw the axis, ticks and ticks values
   int i = 0;
@@ -1014,12 +1018,12 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
     if (style[0] == '>' || style[0] == '<')
     {
       iMglPlotAddStyleColor(ih, style, ih->data->axisX.axColor);
-      iMglPlotConfigFont(ih, gr, ih->data->axisX.axTickFontStyle, ih->data->axisX.axTickFontSizeFactor);
+      iMglPlotConfigFont(ih, gr, &ih->data->axisX.axColor, ih->data->axisX.axTickFontStyle, ih->data->axisX.axTickFontSizeFactor);
     }
     else
     {
       iMglPlotAddStyleColor(ih, style, ih->data->axisY.axColor);
-      iMglPlotConfigFont(ih, gr, ih->data->axisY.axTickFontStyle, ih->data->axisY.axTickFontSizeFactor);
+      iMglPlotConfigFont(ih, gr, &ih->data->axisY.axColor, ih->data->axisY.axTickFontStyle, ih->data->axisY.axTickFontSizeFactor);
     }
 
     gr->Colorbar(style);
@@ -1098,14 +1102,19 @@ static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
   if (!zformat) zformat = iMglPlotMakeFormatString(ih->data->axisZ.axTickMajorSpan, ih->data->axisZ.axMax - ih->data->axisZ.axMin);
 
   iMglPlotAddStyleColor(ih, style, ds->dsColor);
-  iMglPlotConfigFont(ih, gr, ih->data->legendFontStyle, ih->data->legendFontSizeFactor);
+  strcat(style, ":L");
+  iMglPlotConfigFont(ih, gr, NULL, ih->data->legendFontStyle, ih->data->legendFontSizeFactor);
+
+  gr->SetRotatedText(true);
 
   double* dsXPoints = ds->dsX->a;
   if (ds->dsDim == 3)
   {
     double* dsYPoints = ds->dsY->a;
     double* dsZPoints = ds->dsZ->a;
-    mglPoint d = mglPoint(ih->data->axisX.axMax-ih->data->axisX.axMin, ih->data->axisY.axMax-ih->data->axisY.axMin, ih->data->axisZ.axMax-ih->data->axisZ.axMin);
+    mglPoint d = mglPoint(ih->data->axisX.axMax-ih->data->axisX.axMin, 
+                          ih->data->axisY.axMax-ih->data->axisY.axMin, 
+                          ih->data->axisZ.axMax-ih->data->axisZ.axMin);
 
     sprintf(format, "(%s, %s, %s)", xformat, yformat, zformat);
 
@@ -1114,13 +1123,14 @@ static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
       sprintf(text, format, dsXPoints[i], dsYPoints[i], dsZPoints[i]);
       p = mglPoint(dsXPoints[i], dsYPoints[i], dsZPoints[i]);
       
-      gr->Puts(p, d, text, style);
+      gr->Puts(p, p + d, text, style);
     }
   }
   else if (ds->dsDim == 2)
   {
     double* dsYPoints = ds->dsY->a;
-    mglPoint d = mglPoint(ih->data->axisX.axMax-ih->data->axisX.axMin, ih->data->axisY.axMax-ih->data->axisY.axMin);
+    mglPoint d = mglPoint(ih->data->axisX.axMax - ih->data->axisX.axMin,
+                          ih->data->axisY.axMax - ih->data->axisY.axMin);
 
     sprintf(format, "(%s, %s)", xformat, yformat);
 
@@ -1129,22 +1139,25 @@ static void iMglPlotDrawValues(Ihandle* ih, IdataSet* ds, mglGraph *gr)
       sprintf(text, format, dsXPoints[i], dsYPoints[i]);
       p = mglPoint(dsXPoints[i], dsYPoints[i]);
       
-      gr->Puts(p, d, text, style);
+      gr->Puts(p, p + d, text, style);
     }
   }
   else
   {
     sprintf(format, "(%%d, %s)", xformat);
-    mglPoint d = mglPoint(ih->data->axisX.axMax-ih->data->axisX.axMin, ih->data->axisY.axMax-ih->data->axisY.axMin);
+    mglPoint d = mglPoint(ih->data->axisX.axMax-ih->data->axisX.axMin, 
+                          ih->data->axisY.axMax-ih->data->axisY.axMin);
 
     for(i = 0; i < ds->dsCount; i++)
     {
       sprintf(text, format, i, dsXPoints[i]);
       p = mglPoint((double)i, dsXPoints[i]);
       
-      gr->Puts(p, d, text, style);
+      gr->Puts(p, p + d, text, style);
     }
   }
+
+  gr->SetRotatedText(false);
 }
 
 static void iMglPlotConfigDataGrid(mglGraph *gr, IdataSet* ds, char* style)
@@ -1623,7 +1636,7 @@ static void iMglPlotDrawLegend(Ihandle* ih, mglGraph *gr)
 
   // Draw legend of accumulated strings
   iMglPlotAddStyleColor(ih, style, ih->data->legendColor);
-  iMglPlotConfigFont(ih, gr, ih->data->legendFontStyle, ih->data->legendFontSizeFactor);
+  iMglPlotConfigFont(ih, gr, NULL, ih->data->legendFontStyle, ih->data->legendFontSizeFactor);
 
   gr->Legend(ih->data->legendPosition, style, "value 0.05;");
 }
@@ -1633,7 +1646,7 @@ static void iMglPlotDrawTitle(Ihandle* ih, mglGraph *gr, const char* title)
   char style[64] = "";
 
   iMglPlotAddStyleColor(ih, style, ih->data->titleColor);
-  iMglPlotConfigFont(ih, gr, ih->data->titleFontStyle, ih->data->titleFontSizeFactor);
+  iMglPlotConfigFont(ih, gr, &ih->data->titleColor, ih->data->titleFontStyle, ih->data->titleFontSizeFactor);
 
   gr->Title(title, style);
 }
@@ -4582,7 +4595,7 @@ void IupMglPlotDrawText(Ihandle* ih, const char* text, double x, double y, doubl
   double fontsizefactor = 1.0;
   iupStrToDouble(value, &fontsizefactor);
 
-  iMglPlotConfigFont(ih, gr, fontstyle, fontsizefactor);
+  iMglPlotConfigFont(ih, gr, NULL, fontstyle, fontsizefactor);
 
   gr->Puts(mglPoint(x, y, z), text, style);
 }
@@ -4922,7 +4935,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "DS_LINESTYLE", iMglPlotGetDSLineStyleAttrib, iMglPlotSetDSLineStyleAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_LINEWIDTH", iMglPlotGetDSLineWidthAttrib, iMglPlotSetDSLineWidthAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_MARKSTYLE", iMglPlotGetDSMarkStyleAttrib, iMglPlotSetDSMarkStyleAttrib, IUPAF_SAMEASSYSTEM, "X", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_MARKSIZE", iMglPlotGetDSMarkSizeAttrib, iMglPlotSetDSMarkSizeAttrib, IUPAF_SAMEASSYSTEM, "0.02", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_MARKSIZE", iMglPlotGetDSMarkSizeAttrib, iMglPlotSetDSMarkSizeAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_SHOWMARKS", iMglPlotGetDSShowMarksAttrib, iMglPlotSetDSShowMarksAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_LEGEND", iMglPlotGetDSLegendAttrib, iMglPlotSetDSLegendAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_COLOR", iMglPlotGetDSColorAttrib, iMglPlotSetDSColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -5098,12 +5111,7 @@ void IupMglPlotOpen(void)
 /************************  TODO   ***********************************
 
 NOT Working
-  Plot 4 MarkSize muito pequeno, 
-  Plot 4 pode inclinar valores?
-  Plot 1 eixo não invertido
-  inicio e fim eixo X no bar mode
   tamanho e lugar dos ticks
-  cor dos labels?
   nenhum planar desenha
   tamanho OpenGL
 
@@ -5124,6 +5132,7 @@ New PPlot:
   New: PLOTBUTTON_CB and PLOTMOTION_CB calbacks for IupPPlot.
 
 Known Issues:
+  - DrawValues text rotation not correctly computed
   evaluate interval, [-1,1] x [0,1] x [0,n-1]
   ***improve autoticks computation
   ***Legend does not work in OpenGL
