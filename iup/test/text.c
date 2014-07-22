@@ -296,7 +296,7 @@ void TextTest(void)
   IupSetHandle ("text2multi", opt);
 
   mltline = IupMultiLine(NULL);  
-//  mltline = IupText(NULL);  
+  //  mltline = IupText(NULL);  
 //  IupSetAttribute(mltline, "MULTILINE", "YES");
   IupSetAttribute(mltline, "NAME", "mltline");
 
@@ -343,7 +343,6 @@ void TextTest(void)
 //  IupSetAttribute(mltline, "FONT", "Arial, 12");
 //    IupSetAttribute(mltline, "FORMATTING", "YES");
 
-//  formatting = 0;
   formatting = 1;
   if (formatting)          /* just to make easier to comment this section */
   {
@@ -433,7 +432,7 @@ void TextTest(void)
     IupSetAttribute(formattag, "SELECTION", "2,1:2,12");
     IupSetAttribute(mltline, "ADDFORMATTAG_HANDLE", (char*)formattag);
 
-    if (0)
+    if (1)
     {
       int count = IupGetInt(mltline, "COUNT");
       IupSetAttribute(mltline, "APPEND", "Append Test");
