@@ -45,7 +45,7 @@ static void ResetClear(void)
   IupSetAttribute(plot, "AXS_Y", "NO");
   IupSetAttribute(plot, "AXS_Z", "NO");
 
-  IupSetAttribute(plot, "FONT", "Helvetica, 8");
+//  IupSetAttribute(plot, "FONT", "Helvetica, 8");
 //  IupSetAttribute(plot, "FONT", "Courier, 10");
 //  IupSetAttribute(plot, "FONT", "Heros, 10");
 //  IupSetAttribute(plot, "FONT", "Termes, 12");

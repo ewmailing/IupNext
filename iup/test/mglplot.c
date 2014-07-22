@@ -90,6 +90,10 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[0], "FONT", "courbd, 8");
 //  IupSetAttribute(plot[0], "FONT", "texgyrecursor-bold, 8");
 //  IupSetAttribute(plot[0], "FONT", "cursor, Bold 8");
+  IupSetAttribute(plot[0], "MARGINTOP", "No");
+  IupSetAttribute(plot[0], "MARGINLEFT", "No");
+  IupSetAttribute(plot[0], "MARGINRIGHT", "No");
+  IupSetAttribute(plot[0], "MARGINBOTTOM", "No");
 
   IupSetAttribute(plot[0], "AXS_XLABEL", "gnu (Foo)");
   IupSetAttribute(plot[0], "AXS_YLABEL", "Space (m^3)");
@@ -116,7 +120,7 @@ static void InitPlots(void)
   IupMglPlotEnd(plot[0]);
   IupSetAttribute(plot[0], "DS_LINEWIDTH", "3");
   IupSetAttribute(plot[0], "DS_LEGEND", "Line");
-  IupSetAttribute(plot[0], "DS_COLOR", "0 128 255");
+  //IupSetAttribute(plot[0], "DS_COLOR", "0 128 255");
 
   theFac = 2.0/100;
   ds_index = IupMglPlotNewDataSet(plot[0], 2);
@@ -144,7 +148,7 @@ static void InitPlots(void)
 
 
   /* PLOT 1 - MakeExamplePlot2 */
-//  IupSetAttribute(plot[1], "TITLE", "No Autoscale+No CrossOrigin");
+  IupSetAttribute(plot[1], "TITLE", "No Autoscale+No CrossOrigin");
   IupSetAttribute(plot[1], "BGCOLOR", "0 192 192");
   IupSetAttribute(plot[1], "AXS_XLABEL", "Tg (X)");
   IupSetAttribute(plot[1], "AXS_YLABEL", "Tg (Y)");
@@ -159,12 +163,15 @@ static void InitPlots(void)
   IupSetAttribute(plot[1], "AXS_XFONTSTYLE", "ITALIC");
   IupSetAttribute(plot[1], "AXS_YFONTSTYLE", "BOLD");
   IupSetAttribute(plot[1], "AXS_XREVERSE", "YES");
+  IupSetAttribute(plot[1], "AXS_XORIGIN", "60");
   IupSetAttribute(plot[1], "GRIDCOLOR", "128 255 128");
   IupSetAttribute(plot[1], "GRIDLINESTYLE", "DOTTED");
   IupSetAttribute(plot[1], "GRID", "YES");
   IupSetAttribute(plot[1], "BOX", "YES");
   IupSetAttribute(plot[1], "LEGEND", "YES");
-  IupSetAttribute(plot[1], "AXS_YTICKVALUESROTATION", "NO");
+  //IupSetAttribute(plot[1], "AXS_XCROSSORIGIN", "Yes");
+  //IupSetAttribute(plot[1], "AXS_YCROSSORIGIN", "Yes");
+  //IupSetAttribute(plot[1], "AXS_YTICKVALUESROTATION", "NO");
 
   theFac = 1.0/(100*100*100);
   IupMglPlotBegin(plot[1], 2);
@@ -191,16 +198,20 @@ static void InitPlots(void)
   IupSetAttribute(plot[2], "GRID", "YES");
   IupSetAttribute(plot[2], "BOX", "YES");
   IupSetAttribute(plot[2], "BOXTICKS", "NO");
-  IupSetAttribute(plot[2], "AXS_XSCALE", "LOG10");
-  IupSetAttribute(plot[2], "AXS_YSCALE", "LOG10");
-//  IupSetAttribute(plot[2], "AXS_YSCALE", "LOG2");  // NOT supported yet
+//  IupSetAttribute(plot[2], "AXS_XSCALE", "LOG10");
+//  IupSetAttribute(plot[2], "AXS_YSCALE", "LOG10");
+  //  IupSetAttribute(plot[2], "AXS_YSCALE", "LOG2");
   IupSetAttribute(plot[2], "AXS_XLABEL", "Tg (X)");
   IupSetAttribute(plot[2], "AXS_YLABEL", "Tg (Y)");
   IupSetAttribute(plot[2], "AXS_XFONTSTYLE", "BOLD");
-//  IupSetAttribute(plot[2], "AXS_YFONTSTYLE", "BOLD");
-  IupSetAttribute(plot[2], "AXS_XLABELCENTERED", "NO");
-  IupSetAttribute(plot[2], "AXS_YLABELCENTERED", "NO");
+  IupSetAttribute(plot[2], "AXS_YFONTSTYLE", "BOLD");
+//  IupSetAttribute(plot[2], "AXS_XLABELCENTERED", "NO");
+//  IupSetAttribute(plot[2], "AXS_YLABELCENTERED", "NO");
 //  IupSetAttribute(plot[2], "AXS_YLABELROTATION", "NO");
+  IupSetAttribute(plot[2], "AXS_XCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[2], "AXS_YCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[2], "MARGINTOP", "No");
+  IupSetAttribute(plot[2], "MARGINRIGHT", "No");
 
   theFac = 100.0/(100*100*100);
   IupMglPlotBegin(plot[2], 2);
@@ -216,6 +227,12 @@ static void InitPlots(void)
 
   /* PLOT 3 - MakeExamplePlot5 */
   IupSetAttribute(plot[3], "TITLE", "Bar Mode");
+  IupSetAttribute(plot[3], "AXS_XCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[3], "AXS_YCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[3], "MARGINTOP", "No");
+  IupSetAttribute(plot[3], "MARGINLEFT", "No");
+  IupSetAttribute(plot[3], "MARGINRIGHT", "No");
+  IupSetAttribute(plot[3], "MARGINBOTTOM", "No");
 
   {
     const char * kLables[12] = {"jan","feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
@@ -244,8 +261,12 @@ static void InitPlots(void)
   IupSetAttribute(plot[4], "AXS_XTICKFORMAT", "%1.3g");
   IupSetAttribute(plot[4], "LEGEND", "YES");
   IupSetAttribute(plot[4], "LEGENDPOS", "BOTTOMRIGHT");
-  IupSetAttribute(plot[4], "AXS_YTICKVALUESROTATION", "NO");
-  
+//  IupSetAttribute(plot[4], "AXS_YTICKVALUESROTATION", "NO");
+  IupSetAttribute(plot[4], "MARGINTOP", "No");
+  IupSetAttribute(plot[4], "MARGINLEFT", "No");
+  IupSetAttribute(plot[4], "MARGINRIGHT", "No");
+  IupSetAttribute(plot[4], "MARGINBOTTOM", "No");
+
 
   theFac = 100.0/(100*100*100);
   IupMglPlotBegin(plot[4], 2);
@@ -274,6 +295,10 @@ static void InitPlots(void)
   IupSetAttribute(plot[5], "TITLE", "Data Selection and Editing");
   IupSetAttribute(plot[5], "AXS_XCROSSORIGIN", "Yes");
   IupSetAttribute(plot[5], "AXS_YCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[5], "MARGINTOP", "No");
+  IupSetAttribute(plot[5], "MARGINLEFT", "No");
+  IupSetAttribute(plot[5], "MARGINRIGHT", "No");
+  IupSetAttribute(plot[5], "MARGINBOTTOM", "No");
 
   theFac = 100.0/(100*100*100);
   IupMglPlotBegin(plot[5], 2);
@@ -285,12 +310,12 @@ static void InitPlots(void)
   }
   IupMglPlotEnd(plot[5]);
   IupSetAttribute(plot[5], "DS_COLOR", "100 100 200");
-  IupSetAttribute(plot[5], "DS_EDIT", "YES");
-  IupSetCallback(plot[5], "DELETE_CB", (Icallback)delete_cb);
-  IupSetCallback(plot[5], "SELECT_CB", (Icallback)select_cb);
+//  IupSetAttribute(plot[5], "DS_EDIT", "YES");
+//  IupSetCallback(plot[5], "DELETE_CB", (Icallback)delete_cb);
+//  IupSetCallback(plot[5], "SELECT_CB", (Icallback)select_cb);
   IupSetCallback(plot[5], "POSTDRAW_CB", (Icallback)postdraw_cb);
   IupSetCallback(plot[5], "PREDRAW_CB", (Icallback)predraw_cb);
-  IupSetCallback(plot[5], "EDIT_CB", (Icallback)edit_cb);
+//  IupSetCallback(plot[5], "EDIT_CB", (Icallback)edit_cb);
 }
 
 static int tabs_get_index(void)
@@ -419,6 +444,7 @@ static int tgg6_cb(Ihandle *self, int v)
     IupSetAttribute(plot[ii], "BOX", "YES");
   else
     IupSetAttribute(plot[ii], "BOX", "NO");
+  IupSetAttribute(plot[ii], "BOXTICKS", "NO");
 
   IupSetAttribute(plot[ii], "REDRAW", NULL);
 

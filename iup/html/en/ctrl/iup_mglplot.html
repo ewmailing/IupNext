@@ -344,7 +344,7 @@ equivalent is used.</p>
 <p><b>ALPHA </b>(non inheritable): Alpha value for overall transparency. 
 Used only when TRANSPARENT=Yes. Default: 0.5</p>
 <p><strong>ANTIALIAS</strong> (non inheritable): Enable or disable the 
-anti-aliasing support. For screen display only, ignored when OPENGL=NO. Default: 
+anti-aliasing support when in OpenGL. Ignored when OPENGL=NO. Default: 
 Yes. <font SIZE="3">When enabled text has a much better rendering, but 3D graphs 
 will not process depth properly.</p>
 </font>
@@ -374,6 +374,9 @@ used in all text elements of the plot: title, legend and labels. Default: &quot;
 255&quot;. </p>
 <p class="info">All color values can have an optional alpha value. Hexadecimal format is also 
 accepted.</p>
+<p><b>MARGINLEFT, MARGINRIGHT, MARGINTOP, MARGINBOTTOM </b>(non inheritable): 
+internal MathGL margin configuration of the 
+dataset area. Can be Yes or No. Default: &quot;Yes&quot;. (since 3.11)</p>
 <p><strong>OPENGL</strong> (non inheritable): Enable or disable the rendering in 
 OpenGL. Default: No. When NO the rendering is slower, but when Yes some features 
 does not behave as expected. See <a href="#KnownIssues">Known Issues</a>.</p>
@@ -562,7 +565,8 @@ AXS_?TICKSIZE is also accepted.</p>
 <p><b>AXS_?TICKVALUES</b>: enable or disable the axis tick values display. Can be 
 YES or NO. Default: YES.</p>
 <p><strong>AXS_?TICKVALUESROTATION</strong>: enable or disable the axis tick 
-values rotation along the 3D axis. Can be YES or NO. Default: YES. This means 
+values rotation along the 3D axis. Can be YES or NO. Default: YES (NO for Y 
+axis). This means 
 that text will be aligned with the axis even when rotating the graph. When NO 
 text will be horizontal, always facing the camera, independently from graph 
 rotation. For 2D graphs is useful to the Y axis only.</p>

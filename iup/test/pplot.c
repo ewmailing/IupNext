@@ -165,7 +165,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[1], "AXS_YMAX", "0.5");
   IupSetAttribute(plot[1], "AXS_XCROSSORIGIN", "NO");
   IupSetAttribute(plot[1], "AXS_YCROSSORIGIN", "NO");
-  IupSetAttribute(plot[1], "AXS_XFONTSTYLE", "BOLD");
+  IupSetAttribute(plot[1], "AXS_XFONTSTYLE", "ITALIC");
   IupSetAttribute(plot[1], "AXS_YFONTSTYLE", "BOLD");
   IupSetAttribute(plot[1], "AXS_XREVERSE", "YES");
   IupSetAttribute(plot[1], "GRIDCOLOR", "128 255 128");
@@ -228,7 +228,7 @@ static void InitPlots(void)
 
   {
     const char * kLables[12] = {"jan","feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
-    const float kData[12] = {1,2,3,4,5,6,7,8,9,0,1,2};
+    const float kData[12] = {10,20,30,40,50,60,70,80,90,0,10,20};
     IupPPlotBegin(plot[3], 1);
     for (theI=0;  theI<12; theI++) 
       IupPPlotAddStr(plot[3], kLables[theI], kData[theI]);
@@ -695,13 +695,13 @@ void PPlotTest(void)
   IupSetAttribute(hbox, "GAP", "10");
   
   dlg = IupDialog(hbox);
-  IupSetAttribute(dlg, "SIZE", "170x");
   IupSetAttribute(dlg, "TITLE", "IupPPlot Example");
 
   InitPlots(); /* It must be able to be done independent of dlg Mapping */
 
   tabs_tabchange_cb(tabs, vboxr[0]);
 
+  IupSetAttribute(dlg, "SIZE", "300x");
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
   IupSetAttribute(dlg, "SIZE", NULL);
 }
@@ -710,6 +710,7 @@ void PPlotTest(void)
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
+  IupControlsOpen();
 
   PPlotTest();
 

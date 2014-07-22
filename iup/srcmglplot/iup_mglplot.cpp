@@ -308,6 +308,8 @@ static void iMglPlotReset(Ihandle* ih)
   iMglPlotResetAxis(ih->data->axisY);
   iMglPlotResetAxis(ih->data->axisZ);
 
+  ih->data->axisY.axTickValuesRotation = false;
+
   /* Interaction default values */
   iMglPlotResetInteraction(ih);
 }
@@ -408,10 +410,8 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
   else 
     size = (int)((size*ih->data->dpi)/72.0);   //from points to pixels
 
-  //IMPORTANT: 
-  //  Magic factor for acceptable size. 
-  //  Don't know why it works, but we obtain good results.
-  ih->data->FontSizeDef = ((double)size / (double)ih->data->h)*ih->data->dpi;
+  // Smaller than the MathGL default (4)
+  ih->data->FontSizeDef = 3.5;
   gr->SetFontSize(ih->data->FontSizeDef);
 
   char *path = getenv("IUP_MGLFONTS");
@@ -491,7 +491,7 @@ static void iMglPlotAddStyleColor(Ihandle* ih, char* style, mglColor color)
 
 static int iMglPlotAddStyleFont(char* style, const char* value)
 {
-  if (!value)
+  if (!value || value[0]==0)
     return 0;
 
   style += strlen(style); // Skip previous configuration
@@ -874,6 +874,7 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
       Cmax = Max.z;
     }
   }
+
   gr->SetRange('c', Cmin, Cmax);
 
   if (coloraxisticks && tolower(*coloraxisticks) == 'x') 
@@ -906,7 +907,7 @@ static void iMglPlotDrawAxisLabel(Ihandle* ih, mglGraph *gr, char dir, Iaxis& ax
   }
 }
 
-static void iMglPlotConfigAxisTicksVal(Ihandle* ih, mglGraph *gr, bool set)
+static void iMglPlotConfigAxisTicksNames(Ihandle* ih, mglGraph *gr, bool set)
 {
   IdataSet* ds = &ih->data->dataSet[0];  // Allow names only for the first dataset
   if (ds->dsNames)
@@ -941,13 +942,9 @@ static void iMglPlotConfigAxisTicksVal(Ihandle* ih, mglGraph *gr, bool set)
 static void iMglPlotConfigAxisTicksLen(mglGraph *gr, Iaxis& axis)
 {
   if (!axis.axTickAutoSize)
-  {
-    //TODO: documentation says negative len puts tic outside the bounding box, 
-    //      but it is NOT working
     gr->SetTickLen(-axis.axTickMajorSize, axis.axTickMinorSizeFactor);
-  }
   else
-    gr->SetTickLen(-0.02);
+    gr->SetTickLen(-0.02, 1.0);
 }
 
 static void iMglPlotDrawAxis(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
@@ -957,7 +954,7 @@ static void iMglPlotDrawAxis(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
 
   // Must be reset after configuring the ticks
   if (dir == 'x')
-    iMglPlotConfigAxisTicksVal(ih, gr, true);
+    iMglPlotConfigAxisTicksNames(ih, gr, true);
   // Configure ticks values rotation along axis
   gr->SetRotatedText(axis.axTickValuesRotation);
 
@@ -975,38 +972,51 @@ static void iMglPlotDrawAxis(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
     sdir[i++] = '_';
   if (axis.axShowArrow)
     sdir[i++] = 'T';
+  if (axis.axReverse)
+    sdir[i++] = '^';
   sdir[i] = 0;
 
   /* TODO
    ‘XYZ’ for drawing axis in corresponding direction but with inverted positions of labels;
    ‘U’ for disabling rotation of tick labels;
-   ‘^’ for inverting default axis origin;
    ‘a’ for forced adjusting of axis ticks.
 
-  SetOriginTick
-  SetTickRotate
-  SetTickShift
+    gr->SetOriginTick(axis.axTickShowOrigin);
+    gr->SetTickRotate(false);
   */
+
+  // Spacing between ticks and ticks labels
+  gr->SetTickShift(mglPoint(0.1, 0.1, 0.1));
 
   gr->Axis(sdir, style);  
 
-  iMglPlotDrawAxisLabel(ih, gr, dir, axis);
-
   // Reset to default
   if (dir == 'x')
-    iMglPlotConfigAxisTicksVal(ih, gr, false);
+    iMglPlotConfigAxisTicksNames(ih, gr, false);
   gr->SetRotatedText(false);
 }
 
 static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
 {
   // Draw axes lines, ticks and ticks labels
-  if(ih->data->axisX.axShow)  
+  if (ih->data->axisX.axShow)
+  {
     iMglPlotDrawAxis(ih, gr, 'x', ih->data->axisX);
+
+    iMglPlotDrawAxisLabel(ih, gr, 'x', ih->data->axisX);
+  }
   if(ih->data->axisY.axShow)  
+  {
     iMglPlotDrawAxis(ih, gr, 'y', ih->data->axisY);
-  if(ih->data->axisZ.axShow && iMglPlotIsView3D(ih))
+
+    iMglPlotDrawAxisLabel(ih, gr, 'y', ih->data->axisY);
+  }
+  if (ih->data->axisZ.axShow && iMglPlotIsView3D(ih))
+  {
     iMglPlotDrawAxis(ih, gr, 'z', ih->data->axisZ);
+
+    iMglPlotDrawAxisLabel(ih, gr, 'z', ih->data->axisZ);
+  }
 
   // Reset to default
   gr->SetFunc(NULL, NULL, NULL);
@@ -1468,9 +1478,9 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   {
     // NOT affected by SetLineMark
 
-    style[0] = 0;
+    //style[0] = 0;
     // Affected by ColorScheme
-    iMglPlotConfigColorScheme(ih, style);
+    //iMglPlotConfigColorScheme(ih, style);
 
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
@@ -1494,9 +1504,9 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   {
     // NOT affected by SetLineMark
 
-    style[0] = 0;
+    //style[0] = 0;
     // Affected by ColorScheme
-    iMglPlotConfigColorScheme(ih, style);
+    //iMglPlotConfigColorScheme(ih, style);
 
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
@@ -1668,24 +1678,22 @@ static void iMglPlotConfigPlotArea(Ihandle* ih, mglGraph *gr)
     colorbar_pos = iupAttribGetStr(ih, "COLORBARPOS");
 
   if (iupAttribGetStr(ih, "TITLE"))
-  {
-    style[i++] = '^';
     style[i++] = 'T';
-  }
-  else if (iupStrEqualNoCase(colorbar_pos, "TOP"))
+
+  if (iupAttribGetBoolean(ih, "MARGINTOP") || 
+      iupStrEqualNoCase(colorbar_pos, "TOP"))
     style[i++] = '^';
 
-  if ((mgl_isnan(ih->data->axisX.axOrigin) &&  // NOT Crossed
-       (iupAttribGetStr(ih, "AXS_XLABEL") || ih->data->axisX.axTickShowValues)) ||
+  if (iupAttribGetBoolean(ih, "MARGINBOTTOM") || 
       iupStrEqualNoCase(colorbar_pos, "BOTTOM"))
     style[i++] = '_';
 
-  if ((mgl_isnan(ih->data->axisY.axOrigin) &&  // NOT Crossed
-       (iupAttribGetStr(ih, "AXS_YLABEL") || ih->data->axisY.axTickShowValues)) ||
+  if (iupAttribGetBoolean(ih, "MARGINLEFT") ||
       iupStrEqualNoCase(colorbar_pos, "LEFT"))
     style[i++] = '<';
 
-  if (iupStrEqualNoCase(colorbar_pos, "RIGHT"))
+  if (iupAttribGetBoolean(ih, "MARGINRIGHT") ||
+      iupStrEqualNoCase(colorbar_pos, "RIGHT"))
     style[i++] = '>';
 
   style[i] = 0;
@@ -1696,8 +1704,6 @@ static void iMglPlotConfigPlotArea(Ihandle* ih, mglGraph *gr)
 
 static void iMglPlotConfigView(Ihandle* ih, mglGraph *gr)
 {
-  iMglPlotConfigPlotArea(ih, gr);
-
   // Transparency
   gr->Alpha(true);  // Necessary so Anti-alias can work.
   if (ih->data->transparent)
@@ -1732,6 +1738,8 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
 
   /* Clear */
   gr->Clf(ih->data->bgColor.r, ih->data->bgColor.g, ih->data->bgColor.b);
+
+  iMglPlotConfigPlotArea(ih, gr);
 
   iMglPlotConfigView(ih, gr);
 
@@ -4746,7 +4754,7 @@ static int iMglPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
   return IUP_DEFAULT;
 }
 
-static int iMglPlotWheel_CB(Ihandle* ih, double delta)
+static int iMglPlotWheel_CB(Ihandle* ih, float delta)
 {
   if(delta > 0)  /* Zoom In */
   {
@@ -4913,9 +4921,14 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "ALPHA", iMglPlotGetAlphaAttrib, iMglPlotSetAlphaAttrib, IUPAF_SAMEASSYSTEM, "0.5", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRANSPARENT", iMglPlotGetTransparentAttrib, iMglPlotSetTransparentAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPENGL", iMglPlotGetOpenGLAttrib, iMglPlotSetOpenGLAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ANTIALIAS", iMglPlotGetAntialiasAttrib, iMglPlotSetAntialiasAttrib, "Yes", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ANTIALIAS", iMglPlotGetAntialiasAttrib, iMglPlotSetAntialiasAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESET", NULL, iMglPlotSetResetAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ERRORMESSAGE", iMglPlotGetErrorMessageAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "MARGINLEFT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINRIGHT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINTOP", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINBOTTOM", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLECOLOR", iMglPlotGetTitleColorAttrib, iMglPlotSetTitleColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
@@ -5046,7 +5059,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "AXS_YTICKVALUES", iMglPlotGetAxisYTickShowValuesAttrib, iMglPlotSetAxisYTickShowValuesAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_ZTICKVALUES", iMglPlotGetAxisZTickShowValuesAttrib, iMglPlotSetAxisZTickShowValuesAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKVALUESROTATION", iMglPlotGetAxisXTickValuesRotationAttrib, iMglPlotSetAxisXTickValuesRotationAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICKVALUESROTATION", iMglPlotGetAxisYTickValuesRotationAttrib, iMglPlotSetAxisYTickValuesRotationAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKVALUESROTATION", iMglPlotGetAxisYTickValuesRotationAttrib, iMglPlotSetAxisYTickValuesRotationAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_ZTICKVALUESROTATION", iMglPlotGetAxisZTickValuesRotationAttrib, iMglPlotSetAxisZTickValuesRotationAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKFORMAT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKFORMAT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -5118,13 +5131,10 @@ void IupMglPlotOpen(void)
 /************************  TODO   ***********************************
 
 NOT Working
-  lugar dos ticks
+  SetFunc
   nenhum planar desenha
-  tamanho OpenGL
-
-- testar exportação
-- testar fontes
-- rever interação widget Qt
+  testar exportação
+  testar fontes
 
 OpenMP
 UTF-8
@@ -5137,24 +5147,16 @@ New PPlot:
   New: PLOTBUTTON_CB and PLOTMOTION_CB calbacks for IupPPlot.
 
 Known Issues:
+  - text render quality is poor
+  - font size scale if canvas size is changed
   - DrawValues text rotation not correctly computed
-  evaluate interval, [-1,1] x [0,1] x [0,n-1]
-  ***improve autoticks computation
-  ***Legend does not work in OpenGL
-  ***Legend background is always white regardless of plot background
-  ***gr->Box AND gr->ContFA have different results in OpenGL. 
-     It seems to have an invalid depth. Without OpenGL works fine.
-     SOLVED BY CALLING glEnable(GL_DEPTH_TEST), but this affected anti-aliasing.
-  gr->Axial is changing something that affects other graphs in OpenGL. Without OpenGL works fine.
-  ***graph disapear during zoom in, only in OpenGL, depth clipping?
-  ***bars at 0 and n-1
-  ***Axis color is fixed in black
-  Sometimes the label gets too close to the ticks
-  ***TicksVal should follow ticks spacing configuration 
-  Fonts
-     ***font aspect ratio not being mantained in OpenGL
-     option or function to draw an opaque background for text
-     BOLD and ITALIC inside TeX formatting does not work for TTF or OTF fonts.
+  - Legend background is always white regardless of plot background
+  - OpenGL mode is not working for some Plots
+  - OpenGL inicial size is smaller
+  - bars at 0 and n-1
+  - TicksVal should follow ticks spacing configuration
+  - evaluate interval limited to [-1,1] x [0,1] x [0,n-1]
+  - improve autoticks computation
 
 Other:
   Light and Fog
