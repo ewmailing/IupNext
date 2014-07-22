@@ -58,10 +58,14 @@ static int btn_caret_cb (Ihandle* ih)
 static int btn_readonly_cb (Ihandle* ih)
 {
   Ihandle *opt = IupGetHandle("text2multi");
-  if (IupGetInt(opt, "VALUE")) 
-    text2multiline(ih, "READONLY"); 
-  else 
-    multiline2text(ih, "READONLY");
+  //if (IupGetInt(opt, "VALUE")) 
+  //  text2multiline(ih, "READONLY"); 
+  //else 
+  //  multiline2text(ih, "READONLY");
+  if (IupGetInt(opt, "VALUE"))
+    text2multiline(ih, "COUNT");
+  else
+    multiline2text(ih, "COUNT");
   return IUP_DEFAULT;
 }
 
@@ -69,9 +73,9 @@ static int btn_selection_cb (Ihandle* ih)
 {
   Ihandle *opt = IupGetHandle ("text2multi");
   if (IupGetInt (opt, "VALUE")) 
-    text2multiline (ih, "SELECTION"); 
+    text2multiline (ih, "SELECTIONPOS"); 
   else 
-    multiline2text (ih, "SELECTION");
+    multiline2text (ih, "SELECTIONPOS");
   return IUP_DEFAULT;
 }
 
@@ -318,7 +322,11 @@ void TextTest(void)
   if (IupGetInt(NULL, "UTF8MODE"))
     IupSetAttribute(mltline, "VALUE", "First Line\nSecond Line Big Big Big\nThird Line\nmore\nmore\n(Γ§Γ£ΓµΓ΅Γ³Γ©)"); // UTF-8
   else
-    IupSetAttribute(mltline, "VALUE", "First Line\nSecond Line Big Big Big\nThird Line\nmore\nmore\n(ηγυασι)"); // Windows-1252
+  {
+    char* txt = "First Line\nSecond Line Big Big Big\nThird Line\nmore\nmore\n(ηγυασι)";
+    //int len = strlen(txt);
+    IupSetAttribute(mltline, "VALUE", txt); // Windows-1252
+  }
   IupSetAttribute(mltline, "TIP", "First Line\nSecond Line\nThird Line");
 //  IupSetAttribute(mltline, "FONT", "Helvetica, 14");
 //  IupSetAttribute(mltline, "MASK", IUP_MASK_FLOAT);
@@ -424,6 +432,17 @@ void TextTest(void)
     IupSetAttribute(formattag, "STRIKEOUT", "YES");
     IupSetAttribute(formattag, "SELECTION", "2,1:2,12");
     IupSetAttribute(mltline, "ADDFORMATTAG_HANDLE", (char*)formattag);
+
+    if (0)
+    {
+      int count = IupGetInt(mltline, "COUNT");
+      IupSetAttribute(mltline, "APPEND", "Append Test");
+
+      formattag = IupUser();
+      IupSetAttribute(formattag, "FGCOLOR", "0 128 64");
+      IupSetfAttribute(formattag, "SELECTIONPOS", "%d:%d", count+1, IupGetInt(mltline, "COUNT"));
+      IupSetAttribute(mltline, "ADDFORMATTAG_HANDLE", (char*)formattag);
+    }
   }
 
   /* Shows dlg in the center of the screen */

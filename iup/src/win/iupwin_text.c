@@ -510,6 +510,17 @@ static int winTextSetLinColToPosition(Ihandle *ih, int lin, int col)
   return wpos;
 }
 
+static int winTextGetLastPosition(Ihandle *ih)
+{
+  int linmax = SendMessage(ih->handle, EM_GETLINECOUNT, 0, 0L) - 1;
+  int lineindex = SendMessage(ih->handle, EM_LINEINDEX, (WPARAM)linmax, 0L);
+  int colmax = SendMessage(ih->handle, EM_LINELENGTH, (WPARAM)lineindex, 0L);
+
+  /* pos here includes the line breaks in 1 or 2 configuration */
+  int wpos = lineindex + colmax;
+  return wpos;
+}
+
 static void winTextGetLinColFromPosition(Ihandle* ih, int wpos, int* lin, int* col)
 {
   /* here "pos" must contains the extra chars if the case */
@@ -863,12 +874,7 @@ static int winTextSetNCAttrib(Ihandle* ih, const char* value)
 
 static char* winTextGetCountAttrib(Ihandle* ih)
 {
-  int count = GetWindowTextLength(ih->handle);
-  if (ih->data->is_multiline && !ih->data->has_formatting)  /* when formatting or single line text uses only one char per line end */
-  {
-    int linecount = SendMessage(ih->handle, EM_GETLINECOUNT, 0, 0L);
-    count -= linecount-1;  /* ignore 1 '\r' character at each line */
-  }
+  int count = winTextGetLastPosition(ih);
   return iupStrReturnInt(count);
 }
 
