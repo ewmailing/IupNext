@@ -255,7 +255,7 @@ static void iMglPlotResetAxis(Iaxis& axis)
   axis.axLabelFontSizeFactor = 0.8;
   axis.axTickFontSizeFactor = 0.8;
 
-  axis.axColor.Set(NAN, NAN, NAN);
+  axis.axColor.Set(NANf, NANf, NANf);
 
   axis.axAutoScaleMin = true;
   axis.axAutoScaleMax = true;
@@ -264,7 +264,7 @@ static void iMglPlotResetAxis(Iaxis& axis)
   axis.axShow = true;
   axis.axShowArrow = true;
   axis.axLabelRotation = true;
-  axis.axOrigin = NAN;
+  axis.axOrigin = NANd;
 
   axis.axTickShow = true;
   axis.axTickShowValues = true;
@@ -300,9 +300,9 @@ static void iMglPlotReset(Ihandle* ih)
   ih->data->bgColor.Set(1, 1, 1);
   ih->data->fgColor.Set(0, 0, 0);
   ih->data->gridColor.Set(iRecon(200), iRecon(200), iRecon(200));
-  ih->data->titleColor.Set(NAN, NAN, NAN);
-  ih->data->legendColor.Set(NAN, NAN, NAN);
-  ih->data->boxColor.Set(NAN, NAN, NAN);
+  ih->data->titleColor.Set(NANf, NANf, NANf);
+  ih->data->legendColor.Set(NANf, NANf, NANf);
+  ih->data->boxColor.Set(NANf, NANf, NANf);
 
   iMglPlotResetAxis(ih->data->axisX);
   iMglPlotResetAxis(ih->data->axisY);
@@ -432,7 +432,7 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr, const char* font)
 
 static double iMglPlotGetAttribDoubleNAN(Ihandle* ih, const char* name)
 {
-  double val = NAN;
+  double val = NANd;
   iupStrToDouble(iupAttribGet(ih, name), &val);
   return val;
 }
@@ -776,6 +776,15 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
           {
             iSwap(Min.x, Min.y);
             iSwap(Max.x, Max.y);
+          }
+          else if (iupStrEqualNoCase(ds->dsMode, "BAR"))
+          {
+            Min.x = -1;
+            double ds_max = (mreal)(ds->dsCount);
+            Max.x = i == 0 ? ds_max : (ds_max>Max.x ? ds_max : Max.x);
+
+            if (mgl_isnan(ih->data->axisX.axOrigin) || ih->data->axisX.axOrigin == 0)
+              ih->data->axisX.axOrigin = -1;
           }
           else if (iupStrEqualNoCase(ds->dsMode, "RADAR"))
           {
@@ -1804,7 +1813,7 @@ static int iMglPlotSetColor(Ihandle* ih, const char* value, mglColor& color)
 
   if (!value)
   {
-    color.Set(NAN, NAN, NAN);
+    color.Set(NANf, NANf, NANf);
     ih->data->redraw = true;
   }
   else if (iupStrToRGBA(value, &rr, &gg, &bb, &aa))
@@ -3585,7 +3594,7 @@ static int iMglPlotSetAxisCrossOrigin(Ihandle* ih, const char* value, double& or
   if (iupStrBoolean(value))
     origin = 0;
   else
-    origin = NAN;
+    origin = NANd;
 
   if (old_origin != origin)
     ih->data->redraw = true;
@@ -3638,7 +3647,7 @@ static int iMglPlotSetAxisOrigin(Ihandle* ih, const char* value, double& num)
   double old_num = num;
 
   if (!value)
-    num = NAN;
+    num = NANd;
   else
     iupStrToDouble(value, &num);
 
@@ -5125,7 +5134,6 @@ void IupMglPlotOpen(void)
 NOT Working
   Outros Modos
   OpenGL/SetFunc
-  testar exportação
 
 Render Feedback?
 OpenMP
@@ -5142,9 +5150,10 @@ Known Issues:
   - text render quality is poor
   - font size scale if canvas size is changed
   - DrawValues text rotation not correctly computed
+  - Logarithm scale crashes
   - OpenGL mode is not working for some Plots
   - OpenGL inicial size is smaller
-  - bars at 0 and n-1
+  ------------------------------------
   - TicksVal should follow ticks spacing configuration
   - evaluate interval limited to [-1,1] x [0,1] x [0,n-1]
   - improve autoticks computation

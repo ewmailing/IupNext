@@ -998,6 +998,7 @@ static int bt3_cb(Ihandle* self)
   IupMglPlotPaintTo(plot, "RGB", w, h, 0, gldata);
   imConvertPacking(gldata, image->data[0], w, h, 3, 3, IM_BYTE, 1);
   imProcessFlip(image, image);
+  IupSetAttribute(clipboard, "TEXT", NULL); /* clear clipboard */
   IupSetAttribute(clipboard, "NATIVEIMAGE", IupGetImageNativeHandle(image));
   IupDestroy(clipboard);
   free(gldata);
@@ -1119,10 +1120,10 @@ Ihandle* controlPanel(void)
   IupSetCallback(bt2, "ACTION", (Icallback)bt2_cb);
 
 #ifdef USE_IM
-  bt3 = IupButton("Copy RGB", NULL);
+  bt3 = IupButton("Copy To Clipboard", NULL);
   IupSetCallback(bt3, "ACTION", (Icallback)bt3_cb);
 
-  bt4 = IupButton("Save RGB", NULL);
+  bt4 = IupButton("Save To PNG", NULL);
   IupSetCallback(bt4, "ACTION", (Icallback)bt4_cb);
 #endif
 
