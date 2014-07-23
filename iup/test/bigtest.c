@@ -177,7 +177,7 @@ static int close_cb(Ihandle *ih)
   return IUP_CLOSE;
 }
 
-int main1(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
   int i, count = sizeof(test_list)/sizeof(TestItems);
   char str[50];

@@ -45,12 +45,6 @@ static void ResetClear(void)
   IupSetAttribute(plot, "AXS_Y", "NO");
   IupSetAttribute(plot, "AXS_Z", "NO");
 
-//  IupSetAttribute(plot, "FONT", "Helvetica, 8");
-//  IupSetAttribute(plot, "FONT", "Courier, 10");
-//  IupSetAttribute(plot, "FONT", "Heros, 10");
-//  IupSetAttribute(plot, "FONT", "Termes, 12");
-//  IupSetAttribute(plot, "FONT", "XXXX, 10");
-
   IupSetCallback(plot, "POSTDRAW_CB", NULL);
 }
 
@@ -218,10 +212,53 @@ static void SampleIsoSurfaceVolume(void)
   SampleVolume("VOLUME_ISOSURFACE");
 }
 
+#if 0
+void mgls_prepare2d(mglData *a, mglData *b = 0, mglData *v = 0)
+{
+  register long i, j, n = 50, m = 40, i0;
+  if (a) a->Create(n, m); if (b) b->Create(n, m);
+  if (v) { v->Create(9); v->Fill(-1, 1); }
+  mreal x, y;
+  for (i = 0; i<n; i++) for (j = 0; j<m; j++)
+  {
+    x = i / (n - 1.); y = j / (m - 1.); i0 = i + n*j;
+    if (a) a->a[i0] = 0.6*sin(2 * M_PI*x)*sin(3 * M_PI*y) + 0.4*cos(3 * M_PI*x*y);
+    if (b) b->a[i0] = 0.6*cos(2 * M_PI*x)*cos(3 * M_PI*y) + 0.4*cos(3 * M_PI*x*y);
+  }
+}
+#endif
+
+#ifndef M_PI
+#define M_PI       3.14159265358979323846
+#endif
+
+static void SamplePlanarCreateData(int ds)
+{
+  register long i, j, n = 50, m = 40, i0;
+  double x, y;
+  double* data = malloc(sizeof(double) * n * m);
+
+  for (i = 0; i < n; i++)
+  {
+    for (j = 0; j < m; j++)
+    {
+      x = i / (n - 1.);
+      y = j / (m - 1.);
+      i0 = i + n*j;
+      data[i0] = 0.6*sin(2 * M_PI*x)*sin(3 * M_PI*y) + 0.4*cos(3 * M_PI*x*y);
+    }
+  }
+
+  IupMglPlotSetData(plot, ds, data, n, m, 1);
+  free(data);
+}
+
 static void SamplePlanar(const char* ds_mode)
 {
   int ds = IupMglPlotNewDataSet(plot, 1);
-  IupMglPlotSetFromFormula(plot, ds, "0.6*sin(2*pi*x)*sin(3*pi*y) + 0.4*cos(3*pi*(x*y))", 50, 40, 1);
+  SamplePlanarCreateData(ds);
+//  IupMglPlotSetFromFormula(plot, ds, "0.6*sin(2*pi*x)*sin(3*pi*y) + 0.4*cos(3*pi*(x*y))", 50, 40, 1);
+
   IupSetAttribute(plot, "DS_MODE", ds_mode);
 
   IupSetAttribute(plot, "ROTATE", "40:0:60");
@@ -492,22 +529,38 @@ static void SamplePlotLinear1D(void)
   IupSetAttribute(plot, "BOX", "YES");
 }
 
-static int postdraw_cb(Ihandle* ih)
+static int text_postdraw_cb(Ihandle* ih)
 {
-  IupMglPlotDrawText(ih, "It can be \\wire{wire}, \\big{big} or #r{colored}", 0, 1.0f, 0);
-  IupMglPlotDrawText(ih, "One can change style in string: " "\\b{bold}, \\i{italic, \\b{both}}", 0, 0.6f, 0);
-  IupMglPlotDrawText(ih, "Easy to \\a{overline} or \\u{underline}", 0, 0.2f, 0);
-  IupMglPlotDrawText(ih, "Easy to change indexes ^{up} _{down} @{center}", 0, -0.2f, 0);
-  IupMglPlotDrawText(ih, "It parse TeX: \\int \\alpha \\sqrt{sin(\\pi x)^2 + \\gamma_{i_k}} dx", 0, -0.6f, 0);
-//  IupMglPlotDrawText(ih, "It parse TeX: \\int \\alpha \\cdot \\sqrt3{sin(\\pi x)^2 + \\gamma_{i_k}} dx", 0, -0.6f, 0);
-  IupMglPlotDrawText(ih, "And more TeX: \\sqrt{\\frac{\\alpha^{\\gamma^2}+" "\\overset 1{\\big\\infty}}{\\sqrt{2+b}}}", 0, -1.0f, 0);
-//  IupMglPlotDrawText(ih, "And more TeX: \\sqrt{\\frac{\\alpha^{\\gamma^2}+" "\\overset 1{\\big\\infty}}{\\sqrt3{2+b}}}", 0, -1.0f, 0);
+  IupMglPlotDrawText(ih, "It can be \\wire{wire}, \\big{big} or #r{colored}", 0, 1.0, 0);
+  IupMglPlotDrawText(ih, "One can change style in string: " "\\b{bold}, \\i{italic, \\b{both}}", 0, 0.6, 0);
+  IupMglPlotDrawText(ih, "Easy to \\a{overline} or \\u{underline}", 0, 0.2, 0);
+  IupMglPlotDrawText(ih, "Easy to change indexes ^{up} _{down} @{center}", 0, -0.2, 0);
+  IupMglPlotDrawText(ih, "It parse TeX: \\int \\alpha \\sqrt{sin(\\pi x)^2 + \\gamma_{i_k}} dx", 0, -0.6, 0);
+//  IupMglPlotDrawText(ih, "It parse TeX: \\int \\alpha \\cdot \\sqrt3{sin(\\pi x)^2 + \\gamma_{i_k}} dx", 0, -0.6, 0);
+  IupMglPlotDrawText(ih, "And more TeX: \\sqrt{\\frac{\\alpha^{\\gamma^2}+" "\\overset 1{\\big\\infty}}{\\sqrt{2+b}}}", 0, -1.0, 0);
+//  IupMglPlotDrawText(ih, "And more TeX: \\sqrt{\\frac{\\alpha^{\\gamma^2}+" "\\overset 1{\\big\\infty}}{\\sqrt3{2+b}}}", 0, -1.0, 0);
   return IUP_DEFAULT;
 }
 
 static void SampleText(void)
 {
-  IupSetCallback(plot, "POSTDRAW_CB", (Icallback)postdraw_cb);
+  IupSetCallback(plot, "POSTDRAW_CB", (Icallback)text_postdraw_cb);
+}
+
+static int fonts_postdraw_cb(Ihandle* ih)
+{
+  IupSetAttribute(plot, "DRAWFONT", "Cursor, 12");
+  IupMglPlotDrawText(ih, "Cursor - ABCDEFGabcdefg", -0.5, 0.5, 0);
+  IupSetAttribute(plot, "DRAWFONT", "Heros, 12");
+  IupMglPlotDrawText(ih, "Heros - ABCDEFGabcdefg", -0.5, 0.0, 0);
+  IupSetAttribute(plot, "DRAWFONT", "Termes, 12");
+  IupMglPlotDrawText(ih, "Termes - ABCDEFGabcdefg", -0.5, -0.5, 0);
+  return IUP_DEFAULT;
+}
+
+static void SampleFonts(void)
+{
+  IupSetCallback(plot, "POSTDRAW_CB", (Icallback)fonts_postdraw_cb);
 }
 
 static void SampleLegend(void)
@@ -624,7 +677,8 @@ static TestItems test_list[] = {
   {"DensityProject (Volume)", SampleDensityProjectVolume},
   {"----------", Dummy},
   {"Text Styles", SampleText},
-  {"Legend", SampleLegend},
+  {"Fonts", SampleFonts },
+  { "Legend", SampleLegend },
   {"Semi-log", SampleSemiLog},
   {"Log-log", SampleLogLog},
 };

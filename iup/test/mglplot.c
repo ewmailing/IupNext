@@ -198,9 +198,8 @@ static void InitPlots(void)
   IupSetAttribute(plot[2], "GRID", "YES");
   IupSetAttribute(plot[2], "BOX", "YES");
   IupSetAttribute(plot[2], "BOXTICKS", "NO");
-//  IupSetAttribute(plot[2], "AXS_XSCALE", "LOG10");
-//  IupSetAttribute(plot[2], "AXS_YSCALE", "LOG10");
-  //  IupSetAttribute(plot[2], "AXS_YSCALE", "LOG2");
+  IupSetAttribute(plot[2], "AXS_XSCALE", "LOG10");
+  IupSetAttribute(plot[2], "AXS_YSCALE", "LOG2");
   IupSetAttribute(plot[2], "AXS_XLABEL", "Tg (X)");
   IupSetAttribute(plot[2], "AXS_YLABEL", "Tg (Y)");
   IupSetAttribute(plot[2], "AXS_XFONTSTYLE", "BOLD");
@@ -768,7 +767,7 @@ void MglPlotTest(void)
   IupSetAttribute(dlg, "SIZE", NULL);
 }
 
-//#ifndef BIG_TEST
+#ifndef BIG_TEST
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
@@ -781,6 +780,6 @@ int main(int argc, char* argv[])
 
   return EXIT_SUCCESS;
 }
-//#endif
+#endif
 
 #endif

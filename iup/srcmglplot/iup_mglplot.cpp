@@ -364,7 +364,7 @@ static char* iMglPlotGetTexFontName(const char* typeface)
   return NULL;
 }
 
-static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
+static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr, const char* font)
 {
   int size = 0, i = 0;
   int is_bold = 0,
@@ -373,7 +373,6 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr)
     is_strikeout = 0;
   char typeface[1024];
   
-  const char* font = iupGetFontAttrib(ih);
   if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return;
 
@@ -619,19 +618,12 @@ static void iMglPlotConfigAxisTicks(Ihandle* ih, mglGraph *gr, char dir, const I
   //Set Scale only if ticks are enabled
   if (axis.axScale)  // Logarithm Scale
   {
-    if (dir == 'x')
-      gr->SetFunc(axis.axScale, 0, 0, 0);
-    if (dir == 'y')
-      gr->SetFunc(0, axis.axScale, 0, 0);
-    if (dir == 'z')
-      gr->SetFunc(0, 0, axis.axScale, 0);
-
     gr->SetTicks(dir, 0, 0);  // Disable normal ticks, logarithm ticks will be done
   }
   else  
   {
     // step for axis ticks (if positive) or 
-    // it’s number on the axis range (if negative).
+    // it's number on the axis range (if negative).
     double step = -5;
     int numsub = 0;  // Number of axis submarks
 
@@ -887,6 +879,12 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
 
   // Origin
   gr->SetOrigin(ih->data->axisX.axOrigin, ih->data->axisY.axOrigin, ih->data->axisZ.axOrigin);
+
+
+  if (ih->data->axisX.axScale || ih->data->axisY.axScale || ih->data->axisZ.axScale)
+    gr->SetFunc(ih->data->axisZ.axScale, ih->data->axisY.axScale, ih->data->axisZ.axScale, NULL);
+  else
+    gr->SetFunc(NULL, NULL, NULL, NULL);
 }
 
 static void iMglPlotDrawAxisLabel(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
@@ -977,9 +975,9 @@ static void iMglPlotDrawAxis(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
   sdir[i] = 0;
 
   /* TODO
-   ‘XYZ’ for drawing axis in corresponding direction but with inverted positions of labels;
-   ‘U’ for disabling rotation of tick labels;
-   ‘a’ for forced adjusting of axis ticks.
+   ‘XYZ' for drawing axis in corresponding direction but with inverted positions of labels;
+   ‘U' for disabling rotation of tick labels;
+   ‘a' for forced adjusting of axis ticks.
 
     gr->SetOriginTick(axis.axTickShowOrigin);
     gr->SetTickRotate(false);
@@ -1017,9 +1015,6 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
 
     iMglPlotDrawAxisLabel(ih, gr, 'z', ih->data->axisZ);
   }
-
-  // Reset to default
-  gr->SetFunc(NULL, NULL, NULL);
 
   if (iupAttribGetBoolean(ih, "COLORBAR"))
   {
@@ -1203,14 +1198,6 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   // All plots here are affected by ColorScheme
   iMglPlotConfigColorScheme(ih, style);
 
-  int nx = (int)ds->dsX->nx;
-  int ny = (int)ds->dsX->ny;
-  int nz = (int)ds->dsX->nz;
-  mglData xx(nx), yy(ny), zz(nz);
-  xx.Fill(-1.0, +1.0);
-  yy.Fill(-1.0, +1.0);
-  zz.Fill(-1.0, +1.0);
-
   if (iupStrEqualNoCase(ds->dsMode, "VOLUME_ISOSURFACE"))
   {
     if (iupAttribGetBoolean(ih, "DATAGRID"))   // Default false
@@ -1221,14 +1208,14 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     {
       double isovalue;
       if (iupStrToDouble(value, &isovalue))
-        gr->Surf3(isovalue, xx, yy, zz, *ds->dsX, style);   // only 1 isosurface
+        gr->Surf3(isovalue, *ds->dsX, style);   // only 1 isosurface
     }
     else
     {
       int isocount = iupAttribGetInt(ih, "ISOCOUNT");  //Default 3
       char opt[100];
       sprintf(opt, "value %d;", isocount);
-      gr->Surf3(xx, yy, zz, *ds->dsX, style, opt); // plots N isosurfaces, from Cmin to Cmax
+      gr->Surf3(*ds->dsX, style, opt); // plots N isosurfaces, from Cmin to Cmax
     }
   }
   else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_DENSITY"))
@@ -1252,9 +1239,9 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       double slicex = iupAttribGetDouble(ih, "SLICEX");  //Default -1 (central)
       double slicey = iupAttribGetDouble(ih, "SLICEY");  //Default -1 (central)
       double slicez = iupAttribGetDouble(ih, "SLICEZ");  //Default -1 (central)
-      if (tolower(*slicedir) == 'x') { strcat(style, "x");  gr->Dens3(xx, yy, zz, *ds->dsX, style, slicex); slicedir++; }
-      if (tolower(*slicedir) == 'y') { strcat(style, "y");  gr->Dens3(xx, yy, zz, *ds->dsX, style, slicey); slicedir++; }
-      if (tolower(*slicedir) == 'z') { strcat(style, "z");  gr->Dens3(xx, yy, zz, *ds->dsX, style, slicez); slicedir++; }
+      if (tolower(*slicedir) == 'x') { strcat(style, "x");  gr->Dens3(*ds->dsX, style, slicex); slicedir++; }
+      if (tolower(*slicedir) == 'y') { strcat(style, "y");  gr->Dens3(*ds->dsX, style, slicey); slicedir++; }
+      if (tolower(*slicedir) == 'z') { strcat(style, "z");  gr->Dens3(*ds->dsX, style, slicez); slicedir++; }
     }
   }
   else if (iupStrEqualNoCase(ds->dsMode, "VOLUME_CONTOUR"))
@@ -1295,18 +1282,18 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 
       if (countourfilled)
       {
-        if (tolower(*slicedir) == 'x') { strcat(style, "x");  gr->ContF3(xx, yy, zz, *ds->dsX, style, slicex, opt); slicedir++; }
-        if (tolower(*slicedir) == 'y') { strcat(style, "y");  gr->ContF3(xx, yy, zz, *ds->dsX, style, slicey, opt); slicedir++; }
-        if (tolower(*slicedir) == 'z') { strcat(style, "z");  gr->ContF3(xx, yy, zz, *ds->dsX, style, slicez, opt); slicedir++; }
+        if (tolower(*slicedir) == 'x') { strcat(style, "x");  gr->ContF3(*ds->dsX, style, slicex, opt); slicedir++; }
+        if (tolower(*slicedir) == 'y') { strcat(style, "y");  gr->ContF3(*ds->dsX, style, slicey, opt); slicedir++; }
+        if (tolower(*slicedir) == 'z') { strcat(style, "z");  gr->ContF3(*ds->dsX, style, slicez, opt); slicedir++; }
       }
       else
       {
         // Affected by SetLineMark
         iMglPlotConfigDataSetLineMark(ds, gr, style);
 
-        if (tolower(*slicedir) == 'x') { strcat(style, "x");  gr->Cont3(xx, yy, zz, *ds->dsX, style, slicex, opt); slicedir++; }
-        if (tolower(*slicedir) == 'y') { strcat(style, "y");  gr->Cont3(xx, yy, zz, *ds->dsX, style, slicey, opt); slicedir++; }
-        if (tolower(*slicedir) == 'z') { strcat(style, "z");  gr->Cont3(xx, yy, zz, *ds->dsX, style, slicez, opt); slicedir++; }
+        if (tolower(*slicedir) == 'x') { strcat(style, "x");  gr->Cont3(*ds->dsX, style, slicex, opt); slicedir++; }
+        if (tolower(*slicedir) == 'y') { strcat(style, "y");  gr->Cont3(*ds->dsX, style, slicey, opt); slicedir++; }
+        if (tolower(*slicedir) == 'z') { strcat(style, "z");  gr->Cont3(*ds->dsX, style, slicez, opt); slicedir++; }
       }
     }
   }
@@ -1316,7 +1303,7 @@ static void iMglPlotDrawVolumetricData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (low)
       strcat(style, ".");
 
-    gr->Cloud(xx, yy, zz, *ds->dsX, style, "-1");   // Use AlphaDef
+    gr->Cloud(*ds->dsX, style, "-1");   // Use AlphaDef
   }
 }
 
@@ -1327,18 +1314,12 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   // All plots here are affected by ColorScheme
   iMglPlotConfigColorScheme(ih, style);
 
-  int nx = (int)ds->dsX->nx;
-  int ny = (int)ds->dsX->ny;
-  mglData xx(nx), yy(ny);
-  xx.Fill(-1.0, +1.0);
-  yy.Fill(-1.0, +1.0);
-
   if (iupStrEqualNoCase(ds->dsMode, "PLANAR_MESH"))
   {
     // Affected by SetLineMark
     iMglPlotConfigDataSetLineMark(ds, gr, style);
 
-    gr->Mesh(xx, yy, *ds->dsX, style);
+    gr->Mesh(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_FALL"))
   {
@@ -1349,7 +1330,7 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (tolower(*falldir) == 'x')
       { style[0] = 'x'; style[1] = 0; }
 
-    gr->Fall(xx, yy, *ds->dsX, style);
+    gr->Fall(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_BELT"))
   {
@@ -1357,29 +1338,29 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (tolower(*beltdir) == 'x')
       { style[0] = 'x'; style[1] = 0; }
 
-    gr->Belt(xx, yy, *ds->dsX, style);
+    gr->Belt(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_SURFACE"))
   {
     if (iupAttribGetBoolean(ih, "DATAGRID"))   // Default false
       iMglPlotConfigDataGrid(gr, ds, style);
 
-    gr->Surf(xx, yy, *ds->dsX, style);
+    gr->Surf(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_BOXES"))
   {
     if (iupAttribGetBoolean(ih, "DATAGRID"))   // Default false
       iMglPlotConfigDataGrid(gr, ds, style);  // Here means box lines
 
-    gr->Boxs(xx, yy, *ds->dsX, style);
+    gr->Boxs(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_TILE"))
   {
-    gr->Tile(xx, yy, *ds->dsX, style);
+    gr->Tile(*ds->dsX, style);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_DENSITY"))
   {
-    gr->Dens(xx, yy, *ds->dsX, style, "");
+    gr->Dens(*ds->dsX, style, "");
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_CONTOUR"))
   {
@@ -1390,7 +1371,7 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     sprintf(opt, "value %d;", contourcount);
 
     if (countourfilled)
-      gr->ContF(xx, yy, *ds->dsX, style, opt);
+      gr->ContF(*ds->dsX, style, opt);
     else
     {
       // Affected by SetLineMark
@@ -1402,7 +1383,7 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       else if (iupStrEqualNoCase(countourlabels, "ABOVE"))
         strcat(style, "T");
 
-      gr->Cont(xx, yy, *ds->dsX, style, opt);
+      gr->Cont(*ds->dsX, style, opt);
     }
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_AXIALCONTOUR"))
@@ -1410,14 +1391,14 @@ static void iMglPlotDrawPlanarData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     int axialcount = iupAttribGetInt(ih, "AXIALCOUNT");  //Default 3, plots N countours, from Cmin to Cmax
     char opt[100];
     sprintf(opt, "value %d;", axialcount);
-    gr->Axial(xx, yy, *ds->dsX, style, opt);
+    gr->Axial(*ds->dsX, style, opt);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "PLANAR_GRADIENTLINES"))
   {
     int gradlinescount = iupAttribGetInt(ih, "GRADLINESCOUNT");  //Default 5
     char opt[100];
     sprintf(opt, "value %d;", gradlinescount);
-    gr->Grad(xx, yy, *ds->dsX, style, opt);
+    gr->Grad(*ds->dsX, style, opt);
   }
 }
 
@@ -1478,6 +1459,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   {
     // NOT affected by SetLineMark
 
+    //TODO
     //style[0] = 0;
     // Affected by ColorScheme
     //iMglPlotConfigColorScheme(ih, style);
@@ -1504,6 +1486,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   {
     // NOT affected by SetLineMark
 
+    //TODO
     //style[0] = 0;
     // Affected by ColorScheme
     //iMglPlotConfigColorScheme(ih, style);
@@ -1652,7 +1635,8 @@ static void iMglPlotDrawLegend(Ihandle* ih, mglGraph *gr)
   }
 
   // Draw legend of accumulated strings
-  iMglPlotAddStyleColor(ih, style, ih->data->legendColor);
+  iMglPlotAddStyleColor(ih, style, ih->data->bgColor);      // background
+  iMglPlotAddStyleColor(ih, style, ih->data->legendColor);  // text
   iMglPlotConfigFont(ih, gr, NULL, ih->data->legendFontStyle, ih->data->legendFontSizeFactor);
 
   gr->Legend(ih->data->legendPosition, style, "value 0.05;");
@@ -1732,9 +1716,9 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
   // on metafile and bitmaps, all mglGraph control must be done here
   // and can NOT be done inside the attribute methods
 
-  gr->SetWarn(0, "");
-
   gr->DefaultPlotParam();
+
+  gr->SetWarn(0, "");
 
   /* Clear */
   gr->Clf(ih->data->bgColor.r, ih->data->bgColor.g, ih->data->bgColor.b);
@@ -1743,7 +1727,7 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
 
   iMglPlotConfigView(ih, gr);
 
-  iMglPlotConfigFontDef(ih, gr);
+  iMglPlotConfigFontDef(ih, gr, iupGetFontAttrib(ih));
 
   iMglPlotConfigAxesRange(ih, gr);
 
@@ -3146,7 +3130,7 @@ static char* iMglPlotGetAxisZTickMajorSpanAttrib(Ihandle* ih)
 
 static int iMglPlotSetAxisScale(Ihandle* ih, const char* value, const char** scale, char dir)
 {
-  if(iupStrEqualNoCase(value, "LIN"))
+  if (!value || iupStrEqualNoCase(value, "LIN"))
     *scale = NULL;
   else if(iupStrEqualNoCase(value, "LOG10"))
     *scale = (dir=='x')? "lg(x)": (dir=='y'? "lg(y)": "lg(z)");
@@ -3154,6 +3138,8 @@ static int iMglPlotSetAxisScale(Ihandle* ih, const char* value, const char** sca
     *scale = (dir=='x')? "log(x, 2)": (dir=='y'? "log(y, 2)": "log(z, 2)");
   else if(iupStrEqualNoCase(value, "LOGN"))
     *scale = (dir=='x')? "ln(x)": (dir=='y'? "ln(y)": "ln(z)");
+  else
+    *scale = NULL;
 
   ih->data->redraw = true;
   return 0;
@@ -3720,15 +3706,22 @@ static char* iMglPlotGetTransparentAttrib(Ihandle* ih)
   return iupStrReturnBoolean(ih->data->transparent);
 }
 
-static void iMglPlotInitOpenGL2D(void)
+static void iMglPlotInitOpenGL2D(Ihandle* ih)
 {
+  IupGLMakeCurrent(ih);
+  glViewport(0, 0, ih->data->w, ih->data->h);
+
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  glTranslatef(-1.0, 0, 0);
 
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  /* data alignment is 1 */
-  glPixelZoom(1.0, -1.0);  // vertical flip image
-  glRasterPos2f(0, 1.0);
+  if (!ih->data->opengl)
+  {
+    glTranslatef(-1.0, 0, 0);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  /* data alignment is 1 */
+    glPixelZoom(1.0, -1.0);  // vertical flip image
+    glRasterPos2f(0, 1.0);
+  }
 }
 
 static int iMglPlotSetOpenGLAttrib(Ihandle* ih, const char* value)
@@ -3742,17 +3735,10 @@ static int iMglPlotSetOpenGLAttrib(Ihandle* ih, const char* value)
     delete ih->data->mgl;
     ih->data->redraw = 1;
 
-    if (ih->data->opengl)
-      ih->data->mgl = new mglGraph(1, ih->data->w, ih->data->h);
-    else
-    {
-      if (ih->handle)
-      {
-        IupGLMakeCurrent(ih);
-        iMglPlotInitOpenGL2D();
-      }
-      ih->data->mgl = new mglGraph(0, ih->data->w, ih->data->h);
-    }
+    if (ih->handle)
+      iMglPlotInitOpenGL2D(ih);
+
+    ih->data->mgl = new mglGraph(ih->data->opengl, ih->data->w, ih->data->h);
   }
 
   return 0;
@@ -3806,6 +3792,11 @@ static char* iMglPlotGetErrorMessageAttrib(Ihandle* ih)
     return err;
   else
     return NULL;
+}
+
+static char* iMglPlotGetMglGraphAttrib(Ihandle* ih)
+{
+  return (char*)ih->data->mgl;
 }
 
 static int iMglPlotSetZoomAttrib(Ihandle* ih, const char* value)
@@ -4602,6 +4593,10 @@ void IupMglPlotDrawText(Ihandle* ih, const char* text, double x, double y, doubl
   else iMglPlotSetColor(ih, value, textColor);
   iMglPlotAddStyleColor(ih, style, textColor);
 
+  value = iupAttribGetStr(ih, "DRAWFONT");
+  if (value)
+    iMglPlotConfigFontDef(ih, gr, value);
+
   char fontstyle[32] = "";
   value = iupAttribGetStr(ih, "DRAWFONTSTYLE");
   iMglPlotAddStyleFont(fontstyle, value);
@@ -4669,16 +4664,12 @@ static void iMglPlotRotate(double &angle, double delta)
 
 static int iMglPlotResize_CB(Ihandle* ih, int width, int height)
 {
-  IupGLMakeCurrent(ih);
-  glViewport(0, 0, width, height);
-
-  if (!ih->data->opengl)
-    iMglPlotInitOpenGL2D();
-
   ih->data->redraw = true;
   ih->data->w = width;
   ih->data->h = height;
   ih->data->dpi = IupGetFloat(NULL, "SCREENDPI");
+
+  iMglPlotInitOpenGL2D(ih);
 
   ih->data->mgl->SetSize(width, height);
 
@@ -4924,6 +4915,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "ANTIALIAS", iMglPlotGetAntialiasAttrib, iMglPlotSetAntialiasAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESET", NULL, iMglPlotSetResetAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ERRORMESSAGE", iMglPlotGetErrorMessageAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MGLGRAPH", iMglPlotGetMglGraphAttrib, NULL, NULL, NULL, IUPAF_NO_STRING | IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "MARGINLEFT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARGINRIGHT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -5131,11 +5123,11 @@ void IupMglPlotOpen(void)
 /************************  TODO   ***********************************
 
 NOT Working
-  SetFunc
-  nenhum planar desenha
+  Outros Modos
+  OpenGL/SetFunc
   testar exportação
-  testar fontes
 
+Render Feedback?
 OpenMP
 UTF-8
 
@@ -5150,7 +5142,6 @@ Known Issues:
   - text render quality is poor
   - font size scale if canvas size is changed
   - DrawValues text rotation not correctly computed
-  - Legend background is always white regardless of plot background
   - OpenGL mode is not working for some Plots
   - OpenGL inicial size is smaller
   - bars at 0 and n-1
