@@ -125,8 +125,8 @@ static void UpdateFlags(void)
 
 static void SampleVolume(const char* ds_mode)
 {
-  IupMglPlotNewDataSet(plot, 1);
-  IupMglPlotSetFromFormula(plot, 0, "-2*((2*x-1)^2 + (2*y-1)^2 + (2*z-1)^4 - (2*z-1)^2 - 0.1)", 60, 50, 40);
+  int ds = IupMglPlotNewDataSet(plot, 1);
+  IupMglPlotSetFromFormula(plot, ds, "-2*((2*x-1)^2 + (2*y-1)^2 + (2*z-1)^4 - (2*z-1)^2 - 0.1)", 60, 50, 40);
   IupSetAttribute(plot, "DS_MODE", ds_mode);
 
   IupSetAttribute(plot, "ROTATE", "40:0:60");
@@ -250,9 +250,9 @@ static void SamplePlanarCreateData(int ds)
 
 static void SamplePlanar(const char* ds_mode)
 {
-  IupMglPlotNewDataSet(plot, 1);
-  //IupMglPlotSetFromFormula(plot, 0, "0.6*sin(2*pi*x)*sin(3*pi*y) + 0.4*cos(3*pi*(x*y))", 50, 40, 1);
-  SamplePlanarCreateData(0);
+  int ds = IupMglPlotNewDataSet(plot, 1);
+  //IupMglPlotSetFromFormula(plot, ds, "0.6*sin(2*pi*x)*sin(3*pi*y) + 0.4*cos(3*pi*(x*y))", 50, 40, 1);
+  SamplePlanarCreateData(ds);
 
   IupSetAttribute(plot, "DS_MODE", ds_mode);
 
@@ -580,18 +580,23 @@ static void SampleLegend(void)
 
 static void SampleSemiLog(void)
 {
-//  IupMglPlotNewDataSet(plot, 2);
-//  IupMglPlotSetFormula(plot, 0, "0.01/(x+10^(-5))", "sin(1/x)", NULL, 2000);
-  IupMglPlotNewDataSet(plot, 1);
-  IupMglPlotSetFromFormula(plot, 0, "sin(1/x)", 2000, 1, 1);
+  IupSetAttribute(plot, "FORMULA_XMIN", "0.01");
+  IupSetAttribute(plot, "FORMULA_XMAX", "100");
+  IupSetAttribute(plot, "FORMULA_YMIN", "-1");
+  IupSetAttribute(plot, "FORMULA_YMAX", "1");
+
+  IupMglPlotNewDataSet(plot, 2);
+  IupMglPlotSetFormula(plot, 0, "0.01/(x+10^(-5))", "sin(1/x)", NULL, 2000);
+//  IupMglPlotNewDataSet(plot, 1);
+//  IupMglPlotSetFromFormula(plot, 0, "sin(1/x)", 2000, 1, 1);
   IupSetAttribute(plot, "DS_COLOR", "0 0 255");
   //IupSetAttribute(plot, "DS_LINEWIDTH", "2");
 
   IupSetAttribute(plot, "AXS_XSCALE", "LOG10");
-  IupSetAttribute(plot, "AXS_XMIN", "0.01");
-  IupSetAttribute(plot, "AXS_XMAX", "100");
-  IupSetAttribute(plot, "AXS_YMIN", "-1.0");
-  IupSetAttribute(plot, "AXS_YMAX", "1.0");
+  //IupSetAttribute(plot, "AXS_XMIN", "0.01");
+  //IupSetAttribute(plot, "AXS_XMAX", "100");
+  //IupSetAttribute(plot, "AXS_YMIN", "-1.0");
+  //IupSetAttribute(plot, "AXS_YMAX", "1.0");
   IupSetAttribute(plot, "AXS_X", "Yes");
   IupSetAttribute(plot, "AXS_Y", "Yes");
 //  IupSetAttribute(plot, "AXS_XLABEL", "x");
@@ -603,23 +608,16 @@ static void SampleSemiLog(void)
 
 static void SampleLogLog(void)
 {
-//  IupMglPlotNewDataSet(plot, 2);
-//  IupMglPlotSetFormula(plot, 0, "pow(10,6*x-3)", "sqrt(1+x^2)", NULL, 100);
-  IupMglPlotNewDataSet(plot, 1);
-  IupMglPlotSetFromFormula(plot, 0, "sqrt(1+x^2)", 100, 1, 1);
+  IupMglPlotNewDataSet(plot, 2);
+  IupMglPlotSetFormula(plot, 0, "pow(10,6*x-3)", "sqrt(1+x^2)", NULL, 100);
   IupSetAttribute(plot, "DS_COLOR", "0 0 255");
-  //IupSetAttribute(plot, "DS_LINEWIDTH", "2");
 
   IupSetAttribute(plot, "AXS_XSCALE", "LOG10");
   IupSetAttribute(plot, "AXS_YSCALE", "LOG10");
-  IupSetAttribute(plot, "AXS_XMIN", "0.01");
-  IupSetAttribute(plot, "AXS_XMAX", "100");
-  IupSetAttribute(plot, "AXS_YMIN", "0.1");
-  IupSetAttribute(plot, "AXS_YMAX", "100");
   IupSetAttribute(plot, "AXS_X", "Yes");
   IupSetAttribute(plot, "AXS_Y", "Yes");
-//  IupSetAttribute(plot, "AXS_XLABEL", "x");
-//  IupSetAttribute(plot, "AXS_YLABEL", "y=\\sqrt{1+x^2}");
+  IupSetAttribute(plot, "AXS_XLABEL", "x");
+  IupSetAttribute(plot, "AXS_YLABEL", "y=\\sqrt{1+x^2}");
   IupSetAttribute(plot, "BOX", "YES");
   IupSetAttribute(plot, "GRID", "YES");
   IupSetAttribute(plot, "GRIDCOLOR", "0 255 0");
