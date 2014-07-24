@@ -152,10 +152,6 @@ static void InitPlots(void)
   IupSetAttribute(plot[1], "BGCOLOR", "0 192 192");
   IupSetAttribute(plot[1], "AXS_XLABEL", "Tg (X)");
   IupSetAttribute(plot[1], "AXS_YLABEL", "Tg (Y)");
-  IupSetAttribute(plot[1], "AXS_XAUTOMIN", "NO");
-  IupSetAttribute(plot[1], "AXS_XAUTOMAX", "NO");
-  IupSetAttribute(plot[1], "AXS_YAUTOMIN", "NO");
-  IupSetAttribute(plot[1], "AXS_YAUTOMAX", "NO");
   IupSetAttribute(plot[1], "AXS_XMIN", "10");
   IupSetAttribute(plot[1], "AXS_XMAX", "60");
   IupSetAttribute(plot[1], "AXS_YMIN", "-0.5");
@@ -249,15 +245,11 @@ static void InitPlots(void)
 
   /* PLOT 4 - MakeExamplePlot6 */
   IupSetAttribute(plot[4], "TITLE", "Marks Mode");
-  IupSetAttribute(plot[4], "AXS_XAUTOMIN", "NO");
-  IupSetAttribute(plot[4], "AXS_XAUTOMAX", "NO");
-  IupSetAttribute(plot[4], "AXS_YAUTOMIN", "NO");
-  IupSetAttribute(plot[4], "AXS_YAUTOMAX", "NO");
   IupSetAttribute(plot[4], "AXS_XMIN", "0");
   IupSetAttribute(plot[4], "AXS_XMAX", "0.011");
   IupSetAttribute(plot[4], "AXS_YMIN", "0");
   IupSetAttribute(plot[4], "AXS_YMAX", "0.22");
-  IupSetAttribute(plot[4], "AXS_XTICKFORMAT", "%1.3g");
+  IupSetAttribute(plot[4], "AXS_XTICKFORMAT", "%1.3f");
   IupSetAttribute(plot[4], "LEGEND", "YES");
   IupSetAttribute(plot[4], "LEGENDPOS", "BOTTOMRIGHT");
 //  IupSetAttribute(plot[4], "AXS_YTICKVALUESROTATION", "NO");

@@ -32,12 +32,10 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
-
 #include <GL/gl.h>
 
 #pragma warning(push, 0)
 #include "mgl2/mgl.h"
-#include "mgl2/eval.h"
 #pragma warning(pop)
 
 
@@ -890,8 +888,9 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
   gr->SetOrigin(ih->data->axisX.axOrigin, ih->data->axisY.axOrigin, ih->data->axisZ.axOrigin);
 
 
+  // Scale
   if (ih->data->axisX.axScale || ih->data->axisY.axScale || ih->data->axisZ.axScale)
-    gr->SetFunc(ih->data->axisZ.axScale, ih->data->axisY.axScale, ih->data->axisZ.axScale, NULL);
+    gr->SetFunc(ih->data->axisX.axScale, ih->data->axisY.axScale, ih->data->axisZ.axScale, NULL);
   else
     gr->SetFunc(NULL, NULL, NULL, NULL);
 }
@@ -1094,16 +1093,16 @@ static char* iMglPlotMakeFormatString(double inValue, double range)
 
     switch (thePrecision)
     {
-    case 1: return "%.1g";
-    case 2: return "%.2g";
-    case 3: return "%.3g";
-    case 4: return "%.4g";
-    case 5: return "%.5g";
-    case 6: return "%.6g";
-    case 7: return "%.7g";
-    case 8: return "%.8g";
-    case 9: return "%.9g";
-    default: return "%.0";
+    case 1: return "%.1f";
+    case 2: return "%.2f";
+    case 3: return "%.3f";
+    case 4: return "%.4f";
+    case 5: return "%.5f";
+    case 6: return "%.6f";
+    case 7: return "%.7f";
+    case 8: return "%.8f";
+    case 9: return "%.9f";
+    default: return "%.0f";
     }
   }
 }
@@ -1445,8 +1444,12 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     // Affected by SetLineMark
     iMglPlotConfigDataSetLineMark(ds, gr, style);
 
-    double radarshift = iupAttribGetDouble(ih, "RADARSHIFT");   // Default -1
-    char* opt = iupStrReturnDouble(radarshift);
+    char opt[100] = "";
+    if (iupAttribGet(ih, "RADARSHIFT"))
+    {
+      double radarshift = iupAttribGetDouble(ih, "RADARSHIFT");   // Default -1
+      sprintf(opt, "value %g;", radarshift);
+    }
 
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
@@ -3529,16 +3532,19 @@ static char* iMglPlotGetAxisZAutoMaxAttrib(Ihandle* ih)
 
 static int iMglPlotSetAxisXMinAttrib(Ihandle* ih, const char* value)
 {
+  ih->data->axisX.axAutoScaleMin = false;
   return iMglPlotSetDouble(ih, value, ih->data->axisX.axMin);
 }
 
 static int iMglPlotSetAxisYMinAttrib(Ihandle* ih, const char* value)
 {
+  ih->data->axisY.axAutoScaleMin = false;
   return iMglPlotSetDouble(ih, value, ih->data->axisY.axMin);
 }
 
 static int iMglPlotSetAxisZMinAttrib(Ihandle* ih, const char* value)
 {
+  ih->data->axisZ.axAutoScaleMin = false;
   return iMglPlotSetDouble(ih, value, ih->data->axisZ.axMin);
 }
 
@@ -3559,16 +3565,19 @@ static char* iMglPlotGetAxisZMinAttrib(Ihandle* ih)
 
 static int iMglPlotSetAxisXMaxAttrib(Ihandle* ih, const char* value)
 {
+  ih->data->axisX.axAutoScaleMax = false;
   return iMglPlotSetDouble(ih, value, ih->data->axisX.axMax);
 }
 
 static int iMglPlotSetAxisYMaxAttrib(Ihandle* ih, const char* value)
 {
+  ih->data->axisY.axAutoScaleMax = false;
   return iMglPlotSetDouble(ih, value, ih->data->axisY.axMax);
 }
 
 static int iMglPlotSetAxisZMaxAttrib(Ihandle* ih, const char* value)
 {
+  ih->data->axisZ.axAutoScaleMax = false;
   return iMglPlotSetDouble(ih, value, ih->data->axisZ.axMax);
 }
 
@@ -5131,9 +5140,11 @@ void IupMglPlotOpen(void)
 
 /************************  TODO   ***********************************
 
-NOT Working
-  Outros Modos
-  OpenGL/SetFunc
+OpenGL
+SetFunc
+bar, barh - colorscheme
+piechart
+ColorBar
 
 Render Feedback?
 OpenMP
@@ -5149,6 +5160,7 @@ New PPlot:
 Known Issues:
   - text render quality is poor
   - font size scale if canvas size is changed
+  ------------------------------------
   - DrawValues text rotation not correctly computed
   - Logarithm scale crashes
   - OpenGL mode is not working for some Plots
@@ -5159,14 +5171,17 @@ Known Issues:
   - improve autoticks computation
 
 Other:
-  Light and Fog
+  AddLight and Fog
+  Cutting
   Curvilinear coordinates
-  plots that need two datasets: BoxPlot, Region, Tens, Mark, Error, Flow, Pipe, Ring
+  Plots that need two datasets: BoxPlot, Region, Tens, Mark, Error, Flow, Pipe, Ring, Candle, 
+                                OHLC, Tube, Tape, Torus, SurfC, TileS, Dew, Traj, Vect
      chart and bars can be combined in one plot (bars then can include above and fall)
-  reference datasets
+  Reference datasets
      dataset can be a pointer to the previous data, 
      so the same data can be displayed using different modes using the same memory
-  Ternary
+  Other Plots: Cones, ContV, TriPlot, QuadPlot
+  Ternary Axis
   IupMglPlotDrawCurve and IupMglPlotDrawFace
 
 **************************************************************************************/

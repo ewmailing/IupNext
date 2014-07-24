@@ -45,6 +45,9 @@ static void ResetClear(void)
   IupSetAttribute(plot, "AXS_Y", "NO");
   IupSetAttribute(plot, "AXS_Z", "NO");
 
+//  IupSetAttribute(plot, "FONT", "Heros, 12");
+//  IupSetAttribute(plot, "FONT", "Termes, 12");
+
   IupSetCallback(plot, "POSTDRAW_CB", NULL);
 }
 
@@ -502,14 +505,14 @@ static void SampleRadarLinear1D(void)
 
   IupSetAttribute(plot, "RADARSHIFT", "0.4");  // So all datasets will use the same radarshift
   IupSetAttribute(plot, "DATAGRID", "Yes");
-  IupSetAttribute(plot, "BOX", "YES");
 }
 
 static void SamplePlotLinear3D(void)
 {
   IupMglPlotNewDataSet(plot, 3);
   IupMglPlotSetFormula(plot, 0, "cos(pi*2*x-pi)", "sin(pi*(2*x-1))", "2*x-1", 50);
-  IupSetAttribute(plot, "DS_MODE", "LINE");
+  IupSetAttribute(plot, "DS_MODE", "MARKLINE");
+  IupSetAttribute(plot, "DS_MARKSTYLE", "BOX");
 
   IupSetAttribute(plot, "ROTATE", "40:0:60");
   IupSetAttribute(plot, "BOX", "YES");
@@ -588,7 +591,7 @@ static void SampleSemiLog(void)
   IupMglPlotNewDataSet(plot, 2);
   IupMglPlotSetFormula(plot, 0, "0.01/(x+10^(-5))", "sin(1/x)", NULL, 2000);
   IupSetAttribute(plot, "DS_COLOR", "0 0 255");
-  IupSetAttribute(plot, "DS_LINEWIDTH", "2");
+  //IupSetAttribute(plot, "DS_LINEWIDTH", "2");
 
   IupSetAttribute(plot, "AXS_XSCALE", "LOG10");
   IupSetAttribute(plot, "AXS_X", "Yes");
@@ -602,13 +605,19 @@ static void SampleSemiLog(void)
 
 static void SampleLogLog(void)
 {
+//  IupMglPlotNewDataSet(plot, 2);
+//  IupMglPlotSetFormula(plot, 0, "pow(10,6*x-3)", "sqrt(1+x^2)", NULL, 100);
   IupMglPlotNewDataSet(plot, 2);
-  IupMglPlotSetFormula(plot, 0, "pow(10,6*x-3)", "sqrt(1+x^2)", NULL, 100);
+  IupMglPlotSetFormula(plot, 0, "x", "sqrt(1+x^2)", NULL, 100);
   IupSetAttribute(plot, "DS_COLOR", "0 0 255");
-  IupSetAttribute(plot, "DS_LINEWIDTH", "2");
+  //IupSetAttribute(plot, "DS_LINEWIDTH", "2");
 
   IupSetAttribute(plot, "AXS_XSCALE", "LOG10");
   IupSetAttribute(plot, "AXS_YSCALE", "LOG10");
+  IupSetAttribute(plot, "AXS_XMIN", "0.01");
+  IupSetAttribute(plot, "AXS_XMAX", "100");
+  IupSetAttribute(plot, "AXS_YMIN", "0.1");
+  IupSetAttribute(plot, "AXS_YMAX", "100");
   IupSetAttribute(plot, "AXS_X", "Yes");
   IupSetAttribute(plot, "AXS_Y", "Yes");
   IupSetAttribute(plot, "AXS_XLABEL", "x");
@@ -618,15 +627,6 @@ static void SampleLogLog(void)
   IupSetAttribute(plot, "GRIDCOLOR", "0 255 0");
   IupSetAttribute(plot, "GRIDLINESTYLE", "DASHED");
 }
-#if 0
-Semi-Log
-gr->Axis(mglPoint(0.01,-1),mglPoint(1000,1),mglPoint(0.01,-1));
-Modify Y is relative to V and uses X
-
-Log-Log
-gr->Axis(mglPoint(0.001,0.1),mglPoint(1000,1000),mglPoint(0.001,0.1));
-Modify Y is relative to V and uses X
-#endif
 
 static void Dummy(void)
 {
