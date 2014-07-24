@@ -55,12 +55,12 @@ typedef struct _IdataSet
   char* dsMode;
   char* dsLegend;
   mglColor dsColor;
-
-  int dsDim;        /* Dimension of the data: 1D, 2D or 3D */
   Iarray* dsNames;  /* optional names used in ticks when in 1D */
-  mglData* dsX;
-  mglData* dsY;
-  mglData* dsZ;
+
+  int dsDim;     /* Dimension of the data: 1D, 2D or 3D */
+  mglData* dsX;  /* Linear (dsDim=1,2,3), Planar (dsDim=1) or Volumetric (dsDim=1) */
+  mglData* dsY;  /* Linear Only (dsDim=2,3) */
+  mglData* dsZ;  /* Linear Only (dsDim=3) */
   int dsCount;
 } IdataSet;
 
@@ -68,7 +68,7 @@ typedef struct _Iaxis
 {
   mglColor axColor;
   double axOrigin;
-  const char* axScale;
+  char* axScale;
   bool axShow, axShowArrow;
 
   int axLabelPos;
@@ -137,7 +137,7 @@ struct _IcontrolData
 
   /* Grid */
   mglColor gridColor;
-  const char* gridShow;
+  char* gridShow;
   char gridLineStyle;
 
   /* Dataset */
@@ -775,15 +775,6 @@ static void iMglPlotConfigAxesRange(Ihandle* ih, mglGraph *gr)
             iSwap(Min.x, Min.y);
             iSwap(Max.x, Max.y);
           }
-          else if (iupStrEqualNoCase(ds->dsMode, "BAR"))
-          {
-            Min.x = -1;
-            double ds_max = (mreal)(ds->dsCount);
-            Max.x = i == 0 ? ds_max : (ds_max>Max.x ? ds_max : Max.x);
-
-            if (mgl_isnan(ih->data->axisX.axOrigin) || ih->data->axisX.axOrigin == 0)
-              ih->data->axisX.axOrigin = -1;
-          }
           else if (iupStrEqualNoCase(ds->dsMode, "RADAR"))
           {
             double r = iupAttribGetDouble(ih, "RADARSHIFT");   // Default -1
@@ -923,13 +914,9 @@ static void iMglPlotConfigAxisTicksNames(Ihandle* ih, mglGraph *gr, bool set)
     {
       char** dsNames = (char**)iupArrayGetData(ds->dsNames);
       int count = iupArrayCount(ds->dsNames);
-      mglData val(count);
       int i, total_size = 0;
       for (i = 0; i < count; i++)
-      {
         total_size += (int)strlen(dsNames[i]) + 1;
-        val.a[i] = (mreal)i;
-      }
       char* labels = new char[total_size + 1];
       labels[0] = 0;
       for (i = 0; i < count; i++)
@@ -937,11 +924,11 @@ static void iMglPlotConfigAxisTicksNames(Ihandle* ih, mglGraph *gr, bool set)
         strcat(labels, dsNames[i]);
         strcat(labels, "\n");
       }
-      gr->SetTicksVal('x', val, labels);
+      gr->SetTicksVal('x', labels);
       delete[] labels;
     }
     else
-      gr->SetTicksVal('x', (wchar_t*)NULL, false);
+      gr->SetTicksVal('x', (wchar_t*)NULL);
   }
 }
 
@@ -982,7 +969,7 @@ static void iMglPlotDrawAxis(Ihandle* ih, mglGraph *gr, char dir, Iaxis& axis)
     sdir[i++] = '^';
   sdir[i] = 0;
 
-  /* TODO
+  /* TODO - more ticks options
    ‘XYZ' for drawing axis in corresponding direction but with inverted positions of labels;
    ‘U' for disabling rotation of tick labels;
    ‘a' for forced adjusting of axis ticks.
@@ -1414,10 +1401,6 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
 {               
   char style[64] = "";
 
-  int nx = (int)ds->dsX->nx;
-  mglData xx(nx);
-  xx.Fill(0,(double)nx-1);
-
   iMglPlotAddStyleColor(ih, style, ds->dsColor);
 
   if (iupStrEqualNoCase(ds->dsMode, "LINE") ||
@@ -1437,7 +1420,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     else if (ds->dsDim == 2)
       gr->Plot(*ds->dsX, *ds->dsY, style, 0);
     else
-      gr->Plot(xx, *ds->dsX, style, 0);  // At Z=0
+      gr->Plot(*ds->dsX, style, 0);  // At Z=0
   }
   else if (iupStrEqualNoCase(ds->dsMode, "RADAR"))
   {
@@ -1465,7 +1448,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     else if (ds->dsDim == 2)
       gr->Area(*ds->dsX, *ds->dsY, style, 0);
     else
-      gr->Area(xx, *ds->dsX, style, 0);
+      gr->Area(*ds->dsX, style, 0);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "BAR"))
   {
@@ -1475,6 +1458,8 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     //style[0] = 0;
     // Affected by ColorScheme
     //iMglPlotConfigColorScheme(ih, style);
+
+    strcat(style, "^"); // center align the bar
 
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
@@ -1490,7 +1475,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     else if (ds->dsDim == 2)
       gr->Bars(*ds->dsX, *ds->dsY, style, 0);
     else
-      gr->Bars(xx, *ds->dsX, style, 0);
+      gr->Bars(*ds->dsX, style, 0);
 
     gr->SetCut(true); 
   }
@@ -1515,7 +1500,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     if (ds->dsDim == 2)
       gr->Barh(*ds->dsY, *ds->dsX, style, 0);
     else
-      gr->Barh(xx, *ds->dsX, style, 0);
+      gr->Barh(*ds->dsX, style, 0);
 
     gr->SetCut(true); 
   }
@@ -1529,7 +1514,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     else if (ds->dsDim == 2)
       gr->Step(*ds->dsX, *ds->dsY, style, 0);
     else
-      gr->Step(xx, *ds->dsX, style, 0);
+      gr->Step(*ds->dsX, style, 0);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "STEM"))
   {
@@ -1541,7 +1526,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
     else if (ds->dsDim == 2)
       gr->Stem(*ds->dsX, *ds->dsY, style, 0);
     else
-      gr->Stem(xx, *ds->dsX, style, 0);
+      gr->Stem(*ds->dsX, style, 0);
   }
   else if (iupStrEqualNoCase(ds->dsMode, "CHART"))
   {
@@ -2197,7 +2182,7 @@ static int iMglPlotSetGridAttrib(Ihandle* ih, const char* value)
 static char* iMglPlotGetGridAttrib(Ihandle* ih)
 {
   if (ih->data->gridShow)
-    return (char*)ih->data->gridShow;
+    return ih->data->gridShow;
   else
     return "NO";
 }
@@ -3140,36 +3125,40 @@ static char* iMglPlotGetAxisZTickMajorSpanAttrib(Ihandle* ih)
   return iupStrReturnDouble(ih->data->axisZ.axTickMajorSpan);
 }
 
-static int iMglPlotSetAxisScale(Ihandle* ih, const char* value, const char** scale, char dir)
+static char* iMglPlotSetAxisScale(Ihandle* ih, const char* value, char dir)
 {
+  char* scale;
   if (!value || iupStrEqualNoCase(value, "LIN"))
-    *scale = NULL;
+    scale = NULL;
   else if(iupStrEqualNoCase(value, "LOG10"))
-    *scale = (dir=='x')? "lg(x)": (dir=='y'? "lg(y)": "lg(z)");
+    scale = (dir=='x')? "lg(x)": (dir=='y'? "lg(y)": "lg(z)");
   else if(iupStrEqualNoCase(value, "LOG2"))
-    *scale = (dir=='x')? "log(x, 2)": (dir=='y'? "log(y, 2)": "log(z, 2)");
+    scale = (dir=='x')? "log(x, 2)": (dir=='y'? "log(y, 2)": "log(z, 2)");
   else if(iupStrEqualNoCase(value, "LOGN"))
-    *scale = (dir=='x')? "ln(x)": (dir=='y'? "ln(y)": "ln(z)");
+    scale = (dir=='x')? "ln(x)": (dir=='y'? "ln(y)": "ln(z)");
   else
-    *scale = NULL;
+    scale = NULL;
 
   ih->data->redraw = true;
-  return 0;
+  return scale;
 }
 
 static int iMglPlotSetAxisXScaleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisScale(ih, value, &(ih->data->axisX.axScale), 'x');
+  ih->data->axisX.axScale = iMglPlotSetAxisScale(ih, value, 'x');
+  return 0;
 }
 
 static int iMglPlotSetAxisYScaleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisScale(ih, value, &(ih->data->axisY.axScale), 'y');
+  ih->data->axisY.axScale = iMglPlotSetAxisScale(ih, value, 'y');
+  return 0;
 }
 
 static int iMglPlotSetAxisZScaleAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetAxisScale(ih, value, &(ih->data->axisZ.axScale), 'z');
+  ih->data->axisZ.axScale = iMglPlotSetAxisScale(ih, value, 'z');
+  return 0;
 }
 
 static char* iMglPlotGetAxisScale(const char* scale)
@@ -4387,9 +4376,24 @@ void IupMglPlotSetFormula(Ihandle* ih, int inIndex, const char* formulaX, const 
     if (ds->dsZ) ds->dsZ->Create(count);
   }
 
-  ds->dsX->Modify(formulaX);
-  if (ds->dsY) ds->dsY->Modify(formulaY);
-  if (ds->dsZ) ds->dsZ->Modify(formulaZ);
+  mglGraph* gr = new mglGraph(0, 10, 10);
+
+  mglPoint Min(iupAttribGetDouble(ih, "FORMULA_XMIN"),
+               iupAttribGetDouble(ih, "FORMULA_YMIN"),
+               iupAttribGetDouble(ih, "FORMULA_YMIN"));
+  mglPoint Max(iupAttribGetDouble(ih, "FORMULA_XMAX"),
+               iupAttribGetDouble(ih, "FORMULA_YMAX"),
+               iupAttribGetDouble(ih, "FORMULA_YMAX"));
+
+  gr->SetRange('x', Min.x, Max.x);
+  gr->SetRange('y', Min.y, Max.y);
+  gr->SetRange('z', Min.z, Max.z);
+
+  ds->dsX->Fill(gr->Self(), formulaX, "");
+  if (ds->dsY) ds->dsY->Fill(gr->Self(), formulaY, "");
+  if (ds->dsZ) ds->dsZ->Fill(gr->Self(), formulaZ, "");
+
+  delete gr;
 
   ih->data->redraw = true;
 }
@@ -4416,8 +4420,23 @@ void IupMglPlotSetFromFormula(Ihandle* ih, int inIndex, const char* formula, int
   if (nx != ds->dsX->nx || ny != ds->dsX->ny || nz != ds->dsX->nz)
     ds->dsX->Create(nx, ny, nz);
 
-  ds->dsX->Modify(formula);
+  mglGraph* gr = new mglGraph(0, 10, 10);
+
+  mglPoint Min(iupAttribGetDouble(ih, "FORMULA_XMIN"), 
+               iupAttribGetDouble(ih, "FORMULA_YMIN"), 
+               iupAttribGetDouble(ih, "FORMULA_YMIN"));
+  mglPoint Max(iupAttribGetDouble(ih, "FORMULA_XMAX"),
+               iupAttribGetDouble(ih, "FORMULA_YMAX"),
+               iupAttribGetDouble(ih, "FORMULA_YMAX"));
+
+  gr->SetRange('x', Min.x, Max.x);
+  gr->SetRange('y', Min.y, Max.y);
+  gr->SetRange('z', Min.z, Max.z);
+
+  ds->dsX->Fill(gr->Self(), formula, "");
   ds->dsCount = ds->dsX->nx*ds->dsX->ny*ds->dsX->nz;
+
+  delete gr;
 
   ih->data->redraw = true;
 }
@@ -5116,6 +5135,13 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "DRAWFONTSTYLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWFONTSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "FORMULA_XMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMULA_YMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMULA_ZMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMULA_XMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMULA_YMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMULA_ZMAX", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "ZOOM", iMglPlotGetZoomAttrib, iMglPlotSetZoomAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ROTATE", iMglPlotGetRotateAttrib, iMglPlotSetRotateAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
@@ -5140,17 +5166,14 @@ void IupMglPlotOpen(void)
 
 /************************  TODO   ***********************************
 
-OpenGL
-SetFunc
 bar, barh - colorscheme
-piechart
 ColorBar
 
 Render Feedback?
 OpenMP
 UTF-8
 
-New PPlot:
+New from PPlot:
   IupPPlotGetSample IupPPlotGetSampleStr
   New: attributes REMOVE and CURRENT in IupPPlot now also accepts the DS_NAME as value when setting.
   iupClassRegisterAttribute(ic, "SYNCVIEW", iPPlotGetSyncViewAttrib, iPPlotSetSyncViewAttrib, NULL, NULL, IUPAF_NO_INHERIT);
@@ -5161,14 +5184,16 @@ Known Issues:
   - text render quality is poor
   - font size scale if canvas size is changed
   ------------------------------------
+  - Piechart depends on SetFunc
   - DrawValues text rotation not correctly computed
-  - Logarithm scale crashes
+  - Logarithm scale crashes in DrawLabel
   - OpenGL mode is not working for some Plots
   - OpenGL inicial size is smaller
   ------------------------------------
-  - TicksVal should follow ticks spacing configuration
-  - evaluate interval limited to [-1,1] x [0,1] x [0,n-1]
-  - improve autoticks computation
+  - (IUP) More tick options
+  - (IUP) Improve Bar origin
+  - (IUP) TicksVal should follow ticks spacing configuration
+  - (IUP) improve autoticks computation
 
 Other:
   AddLight and Fog

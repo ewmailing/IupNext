@@ -199,14 +199,6 @@ static void SampleCloudVolume(void)
 {
   SampleVolume("VOLUME_CLOUD");
   IupSetAttribute(plot, "COLORSCHEME", "wyrRk");
-  IupSetAttribute(plot, "CLOUDCUBES", "NO");
-  IupSetAttribute(plot, "LIGHT", "NO");
-}
-
-static void SampleCloudCubesVolume(void)
-{
-  SampleVolume("VOLUME_CLOUD");
-  IupSetAttribute(plot, "COLORSCHEME", "wyrRk");
   IupSetAttribute(plot, "LIGHT", "NO");
 }
 
@@ -258,9 +250,9 @@ static void SamplePlanarCreateData(int ds)
 
 static void SamplePlanar(const char* ds_mode)
 {
-  int ds = IupMglPlotNewDataSet(plot, 1);
-  SamplePlanarCreateData(ds);
-//  IupMglPlotSetFromFormula(plot, ds, "0.6*sin(2*pi*x)*sin(3*pi*y) + 0.4*cos(3*pi*(x*y))", 50, 40, 1);
+  IupMglPlotNewDataSet(plot, 1);
+  //IupMglPlotSetFromFormula(plot, 0, "0.6*sin(2*pi*x)*sin(3*pi*y) + 0.4*cos(3*pi*(x*y))", 50, 40, 1);
+  SamplePlanarCreateData(0);
 
   IupSetAttribute(plot, "DS_MODE", ds_mode);
 
@@ -588,16 +580,22 @@ static void SampleLegend(void)
 
 static void SampleSemiLog(void)
 {
-  IupMglPlotNewDataSet(plot, 2);
-  IupMglPlotSetFormula(plot, 0, "0.01/(x+10^(-5))", "sin(1/x)", NULL, 2000);
+//  IupMglPlotNewDataSet(plot, 2);
+//  IupMglPlotSetFormula(plot, 0, "0.01/(x+10^(-5))", "sin(1/x)", NULL, 2000);
+  IupMglPlotNewDataSet(plot, 1);
+  IupMglPlotSetFromFormula(plot, 0, "sin(1/x)", 2000, 1, 1);
   IupSetAttribute(plot, "DS_COLOR", "0 0 255");
   //IupSetAttribute(plot, "DS_LINEWIDTH", "2");
 
   IupSetAttribute(plot, "AXS_XSCALE", "LOG10");
+  IupSetAttribute(plot, "AXS_XMIN", "0.01");
+  IupSetAttribute(plot, "AXS_XMAX", "100");
+  IupSetAttribute(plot, "AXS_YMIN", "-1.0");
+  IupSetAttribute(plot, "AXS_YMAX", "1.0");
   IupSetAttribute(plot, "AXS_X", "Yes");
   IupSetAttribute(plot, "AXS_Y", "Yes");
-  IupSetAttribute(plot, "AXS_XLABEL", "x");
-  IupSetAttribute(plot, "AXS_YLABEL", "y = sin 1/x");
+//  IupSetAttribute(plot, "AXS_XLABEL", "x");
+//  IupSetAttribute(plot, "AXS_YLABEL", "y = sin 1/x");
   IupSetAttribute(plot, "BOX", "YES");
   IupSetAttribute(plot, "GRID", "YES");
   IupSetAttribute(plot, "GRIDCOLOR", "0 255 0");
@@ -607,8 +605,8 @@ static void SampleLogLog(void)
 {
 //  IupMglPlotNewDataSet(plot, 2);
 //  IupMglPlotSetFormula(plot, 0, "pow(10,6*x-3)", "sqrt(1+x^2)", NULL, 100);
-  IupMglPlotNewDataSet(plot, 2);
-  IupMglPlotSetFormula(plot, 0, "x", "sqrt(1+x^2)", NULL, 100);
+  IupMglPlotNewDataSet(plot, 1);
+  IupMglPlotSetFromFormula(plot, 0, "sqrt(1+x^2)", 100, 1, 1);
   IupSetAttribute(plot, "DS_COLOR", "0 0 255");
   //IupSetAttribute(plot, "DS_LINEWIDTH", "2");
 
@@ -620,8 +618,8 @@ static void SampleLogLog(void)
   IupSetAttribute(plot, "AXS_YMAX", "100");
   IupSetAttribute(plot, "AXS_X", "Yes");
   IupSetAttribute(plot, "AXS_Y", "Yes");
-  IupSetAttribute(plot, "AXS_XLABEL", "x");
-  IupSetAttribute(plot, "AXS_YLABEL", "y=\\sqrt{1+x^2}");
+//  IupSetAttribute(plot, "AXS_XLABEL", "x");
+//  IupSetAttribute(plot, "AXS_YLABEL", "y=\\sqrt{1+x^2}");
   IupSetAttribute(plot, "BOX", "YES");
   IupSetAttribute(plot, "GRID", "YES");
   IupSetAttribute(plot, "GRIDCOLOR", "0 255 0");
@@ -667,7 +665,6 @@ static TestItems test_list[] = {
   {"GradientLines (Planar)", SampleGradientLinesPlanar},
   {"----------", Dummy},
   {"Iso Surface (Volume)", SampleIsoSurfaceVolume},
-  {"CloudCubes (Volume)", SampleCloudCubesVolume},
   {"Cloud (Volume)", SampleCloudVolume},
   {"Density (Volume)", SampleDensityVolume},
   {"Contour (Volume)", SampleContourVolume},

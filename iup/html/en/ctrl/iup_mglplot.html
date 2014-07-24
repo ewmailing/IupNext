@@ -15,6 +15,9 @@
 .style7 {
 	text-align: center;
 }
+.style8 {
+	background-color: #CEE7FF;
+}
 </style>
 </head>
 <body>
@@ -81,18 +84,21 @@ inside the plot. The ticks in the axis are also automatically distributed.&nbsp;
 <p>MathGL supports several kinds of data. IupMglPlot restricts this to a few 
 combinations. First there are 3 major classes:</p>
 <p><strong>Linear</strong> sequential data are simply a sequence of points 
-whether in 1D, 2D or 3D coordinates.</p>
+whether in 1D ([y1],[y2],...), 2D ([x1,y1],[x2,y2],...) or 3D 
+([x1,y1,z1],[x2,y2,z2],...) coordinates.</p>
 <p><strong>Planar</strong> data is a bi-dimensional array of values, just like a 
-digital image. Each value is f(x,y), where x belongs to [-1, 1] and y to 
-[-1, 1].</p>
+digital image. Each value is f(x,y), where x belongs to [AXS_XMIN, AXS_XMAX] and y to 
+[AXS_YMIN, AXS_YMAX].</p>
 <p><strong>Volumetric</strong> data is a tri-dimensional array of values, that 
-represents a 3D volume. Each value is f(x,y,z), where x belongs to [-1, 1], y to [-1, 
-1] and z to [-1, 1].</p>
+represents a 3D volume. Each value is f(x,y,z), where x belongs to [AXS_XMIN, AXS_XMAX] and y to 
+[AXS_YMIN, AXS_YMAX] and z to [AXS_ZMIN, AXS_ZMAX].</p>
+<p>Linear data is the same representation accepted by <strong>IupPPlot</strong>, with 
+the addition that <strong>IupMglPlot</strong> has support for 3D coordinates. 
+When plotting linear 1D data XMIN=0 and XMAX=count-1.</p>
 <p>Planar and volumetric data can be very memory consuming, so be careful when 
-using them. Linear data is the same representation accepted by <strong>IupPPlot</strong>, with 
-the exception that <strong>IupMglPlot</strong> has support for 3D coordinates. Also planar and 
+using them. Planar and 
 volumetric data in <strong>IupMglPlot</strong> have x, y and z coordinates equidistantly 
-distributed from 0 to count-1. Planar and volumetric data are stored in a 1D 
+distributed. Planar and volumetric data are stored in a 1D 
 dataset created by <strong>IupMglPlotNewDataSet</strong>, and filled with 
 <strong>IupMglPlotSetData</strong>, <strong>IupMglPlotLoadData</strong> 
 or <strong>IupMglPlotSetFromFormula</strong> functions only.</p>
@@ -150,7 +156,7 @@ mglplot() [in LED]</pre>
 <pre>void <b>IupMglPlotBegin</b>(Ihandle* <b>ih</b>, int <b>dim</b>); [in C]
 <b>iup.MglPlotBegin</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]</pre>
 <p>Prepares a dataset to receive samples. The dimension of the data can be 1, 2 or 3. 
-<em>Linear data only.</em></p>
+<em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>void <b>IupMglPlotAdd1D</b>(Ihandle* <b>ih</b>, const char* <b>name</b>, double <b>y</b>); [in C]
 <b>iup.MglPlotAdd1D</b>(<b>ih</b>: ihandle, <b>name</b>: string, <b>y</b>: number) [in Lua]</pre>
@@ -159,17 +165,17 @@ called with dim=1. <strong>name</strong> is an optional string used for tick
 labels in the X axis, and it can be NULL (nil in Lua). Names are allowed only 
 for the first dataset and when set ticks configuration for the X axis is 
 ignored, all the names are shown. The X axis data is automatically generated (0,1,2,3,...). 
-<em>Linear data only.</em></p>
+<em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>void <b>IupMglPlotAdd2D</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>); [in C]
 <b>iup.MglPlotAdd2D</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>: number) [in Lua]</pre>
 <p>Adds a sample to the dataset. Can only be called if <b>IupMglPlotBegin</b> was 
-called with dim=2. <em>Linear data only.</em></p>
+called with dim=2. <em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>void <b>IupMglPlotAdd3D</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>, double <b>z</b>); [in C]
 <b>iup.MglPlotAdd3D</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>, <b>z</b>: number) [in Lua]</pre>
 <p>Adds a sample to the dataset. Can only be called if <b>IupMglPlotBegin</b> was 
-called with dim=3. <em>Linear data only.</em></p>
+called with dim=3. <em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>int <b>IupMglPlotEnd</b>(Ihandle* <b>ih</b>); [in C]
 <b>iup.MglPlotEnd</b>(<b>ih</b>: ihandle) -&gt; (<b>index</b>: number) [in Lua]</pre>
@@ -180,7 +186,7 @@ index (CURRENT) to the return value. You can only set attributes of a dataset AF
 added the dataset.&nbsp;Can only be called if <b>IupMglPlotBegin</b> was called. 
 Whenever you create a dataset all its &quot;DS_*&quot; attributes will be set to the 
 default values. Notice that DS_MODE must be set before other &quot;DS_*&quot; attributes. 
-<em>Linear data only.</em></p>
+<em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>void <b>IupMglPlotNewDataSet</b>(Ihandle* <b>ih</b>, int <b>dim</b>); [in C]
 <b>iup.MglPlotNewDataSet</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]</pre>
@@ -188,7 +194,7 @@ default values. Notice that DS_MODE must be set before other &quot;DS_*&quot; at
 Linear data can have 1, 2 or 3 dimensions. Planar data has 2 dimensions, but use 
 dim=1. Volumetric data has 3 dimensions, but use dim=1.</p>
 <p>Planar and volumetric data distribute their data in 2D and 3D continuous 
-arrays, so the number of dimensions is given only when the array is set in <b>IupMglPlotSetData</b>, <b>IupMglPlotLoadData</b> 
+arrays, so the number of dimensions is given <strong>only</strong> when the array is set in <b>IupMglPlotSetData</b>, <b>IupMglPlotLoadData</b> 
 or <b>IupMglPlotSetFromFormula</b>. You can convert planar data into linear data 
 using the DS_REARRANGE and DS_SPLIT attributes.</p>
 <hr>
@@ -206,7 +212,7 @@ shifted if necessary. <strong>names</strong>
 are optional strings used for tick labels in the X axis, and it can be NULL (nil 
 in Lua). Names are allowed only for the first dataset and when set ticks 
 configuration for the X axis is ignored, all the names are shown. Also for the 1D version, the X axis data is automatically generated (0,1,2,3,...). 
-<em>Linear data only.</em></p>
+<em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>void <b>IupMglPlotSet1D</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, const char** <b>names</b>, double* <b>y</b>, int <strong>count</strong>); [in C]
 void <b>IupMglPlotSet2D</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, double* <b>x</b>, double* <b>y</b>, int <strong>count</strong>);
@@ -220,7 +226,7 @@ Existing data is removed. Can be used only after the dataset is added to the plo
 is an optional array of strings used for tick labels in the X axis, and it can be NULL (nil 
 in Lua). Names are allowed only for the first dataset and when set ticks 
 configuration for the X axis is ignored, all the names are shown. Also for the 1D version, the X axis data is automatically generated (0,1,2,3,...). 
-<em>Linear data only.</em></p>
+<em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>
 void <strong>IupMglPlotSetFormula</strong>(Ihandle* <strong>ih</strong>, int <strong>ds_index</strong>, const char* <strong>formulaX</strong>, const char* <strong>formulaY</strong>, const char* <strong>formulaZ</strong>, int <strong>count</strong>);
@@ -230,8 +236,8 @@ void <strong>IupMglPlotSetFormula</strong>(Ihandle* <strong>ih</strong>, int <st
 is 0 the current size is used.&nbsp;If 2D data then <strong>
 formulaY</strong> must be non NULL. If 3D data then <strong>formulaZ</strong> 
 must be non NULL. The variables of the formulas must be x, y and/or z. Coordinates are evaluated 
-in the [0,1] interval. There is no difference between lower or upper case in 
-formulas.<em> Linear data only.</em> </p>
+in the [AXS_?MIN, AXS_?MAX] interval. There is no difference between lower or upper case in 
+formulas.<em> <strong>Linear data only.</strong></em> </p>
 <p>The operators and functions can be:</p>
 <pre>+ - * / ^      (^=integer power)
 &lt; &gt; = &amp; |      (logical operators, &amp;=true if a and b both nonzero, |=true if x or y nonzero)
@@ -283,11 +289,12 @@ data using the DS_REARRANGE and DS_SPLIT attributes.</em></p>
 <p>Same as <strong>IupMglPlotSetData</strong> but data is generated from a 
 formula. If all <strong>count_*</strong> are 0 the current size remains, and the 
 existing data is preserved but overwritten if the formula results that. If any <strong>count_*</strong> 
-is NOT zero then the existing data size is removed. The variables of the formulas must be x, y and/or z. Coordinates are evaluated 
-in the [0,1] interval. There is no difference between lower or upper case in 
+is NOT zero then the existing data size is removed. The variables of the formulas must be 
+'x', 'y' and/or 'z'. Coordinates are evaluated 
+in the [AXS_?MIN, AXS_?MAX] interval. There is no difference between lower or upper case in 
 formulas. The operators and functions can be:</p>
-<pre>+ - * / ^      (^=integer power)
-&lt; &gt; = &amp; |      (logical operators, &amp;=true if a and b both nonzero, |=true if x or y nonzero)
+<pre>+ - * / ^      ('^' i<span class="style8">s '</span>integer power')
+&lt; &gt; = &amp; |      (logical operators, '&amp;' is 'and', '|' i<span class="style8">s '</span>or')
 sqrt(a)  pow(a,b)  log(a,b)  ln(a)    lg(a)            (ln(a)=log(e,a)  lg(a)=log(10,a)
 abs(a)   sign(a)   mod(a,b)  step(a)  int(a)   rnd      pi
 sin(a)   cos(a)    tan(a)    asin(a)  acos(a)  atan(a)

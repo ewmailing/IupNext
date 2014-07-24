@@ -196,8 +196,8 @@ static void InitPlots(void)
   IupSetAttribute(plot[2], "BOXTICKS", "NO");
   IupSetAttribute(plot[2], "AXS_XSCALE", "LOG10");
   IupSetAttribute(plot[2], "AXS_YSCALE", "LOG2");
-  IupSetAttribute(plot[2], "AXS_XLABEL", "Tg (X)");
-  IupSetAttribute(plot[2], "AXS_YLABEL", "Tg (Y)");
+//  IupSetAttribute(plot[2], "AXS_XLABEL", "Tg (X)");
+//  IupSetAttribute(plot[2], "AXS_YLABEL", "Tg (Y)");
   IupSetAttribute(plot[2], "AXS_XFONTSTYLE", "BOLD");
   IupSetAttribute(plot[2], "AXS_YFONTSTYLE", "BOLD");
 //  IupSetAttribute(plot[2], "AXS_XLABELCENTERED", "NO");
