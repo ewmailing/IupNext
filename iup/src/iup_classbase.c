@@ -353,12 +353,30 @@ Ihandle* IupGetDialogChild(Ihandle* ih, const char* name)
 
 int iupBaseSetNameAttrib(Ihandle* ih, const char* value)
 {
-  Ihandle* dialog = IupGetDialog(ih);
-  if (dialog)
+  if (!value)
   {
-    char attrib[1024] = "_IUP_DIALOG_CHILD_";
-    strcat(attrib, value);
-    iupAttribSet(dialog, attrib, (char*)ih);
+    /* remove old name cache */
+    value = iupAttribGet(ih, "NAME");
+    if (value)
+    {
+      Ihandle* dialog;
+      char attrib[1024] = "_IUP_DIALOG_CHILD_";
+      strcat(attrib, value);
+      dialog = (Ihandle*)iupAttribGet(ih, attrib);
+      if (dialog)
+        iupAttribSet(dialog, attrib, NULL);
+    }
+  }
+  else
+  {
+    Ihandle* dialog = IupGetDialog(ih);
+    if (dialog)
+    {
+      char attrib[1024] = "_IUP_DIALOG_CHILD_";
+      strcat(attrib, value);
+      iupAttribSet(dialog, attrib, (char*)ih);
+      iupAttribSet(ih, attrib, (char*)dialog);
+    }
   }
   return 1;
 }

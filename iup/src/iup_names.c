@@ -103,6 +103,8 @@ void iupRemoveNames(Ihandle* ih)
   if (name)
     iupTableRemove(inames_strtable, name);
 
+  iupBaseSetNameAttrib(ih, NULL);
+
   /* Do NOT search for other names */
 }
 
