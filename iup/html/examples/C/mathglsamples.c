@@ -599,7 +599,7 @@ static void SampleSemiLog(void)
   //IupSetAttribute(plot, "AXS_YMAX", "1.0");
   IupSetAttribute(plot, "AXS_X", "Yes");
   IupSetAttribute(plot, "AXS_Y", "Yes");
-//  IupSetAttribute(plot, "AXS_XLABEL", "x");
+//  IupSetAttribute(plot, "AXS_XLABEL", "x");         // TODO crashing the application
 //  IupSetAttribute(plot, "AXS_YLABEL", "y = sin 1/x");
   IupSetAttribute(plot, "BOX", "YES");
   IupSetAttribute(plot, "GRID", "YES");
@@ -616,8 +616,8 @@ static void SampleLogLog(void)
   IupSetAttribute(plot, "AXS_YSCALE", "LOG10");
   IupSetAttribute(plot, "AXS_X", "Yes");
   IupSetAttribute(plot, "AXS_Y", "Yes");
-  IupSetAttribute(plot, "AXS_XLABEL", "x");
-  IupSetAttribute(plot, "AXS_YLABEL", "y=\\sqrt{1+x^2}");
+//  IupSetAttribute(plot, "AXS_XLABEL", "x");         // TODO crashing the application
+//  IupSetAttribute(plot, "AXS_YLABEL", "y=\\sqrt{1+x^2}");
   IupSetAttribute(plot, "BOX", "YES");
   IupSetAttribute(plot, "GRID", "YES");
   IupSetAttribute(plot, "GRIDCOLOR", "0 255 0");

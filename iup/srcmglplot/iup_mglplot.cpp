@@ -1022,16 +1022,11 @@ static void iMglPlotDrawAxes(Ihandle* ih, mglGraph *gr)
     else style[0] = '>';  // RIGHT
     style[1] = 0;
 
+    // Can NOT configure Axis color or it will affect the colors of the colorbar
     if (style[0] == '>' || style[0] == '<')
-    {
-      iMglPlotAddStyleColor(ih, style, ih->data->axisX.axColor);
       iMglPlotConfigFont(ih, gr, &ih->data->axisX.axColor, ih->data->axisX.axTickFontStyle, ih->data->axisX.axTickFontSizeFactor);
-    }
     else
-    {
-      iMglPlotAddStyleColor(ih, style, ih->data->axisY.axColor);
       iMglPlotConfigFont(ih, gr, &ih->data->axisY.axColor, ih->data->axisY.axTickFontStyle, ih->data->axisY.axTickFontSizeFactor);
-    }
 
     gr->Colorbar(style);
   }
@@ -1454,11 +1449,6 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   {
     // NOT affected by SetLineMark
 
-    //TODO
-    //style[0] = 0;
-    // Affected by ColorScheme
-    //iMglPlotConfigColorScheme(ih, style);
-
     strcat(style, "^"); // center align the bar
 
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
@@ -1482,11 +1472,6 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
   else if (iupStrEqualNoCase(ds->dsMode, "BARHORIZONTAL"))
   {
     // NOT affected by SetLineMark
-
-    //TODO
-    //style[0] = 0;
-    // Affected by ColorScheme
-    //iMglPlotConfigColorScheme(ih, style);
 
     if (iupAttribGetBoolean(ih, "DATAGRID"))  //Default false
       iMglPlotConfigDataGrid(gr, ds, style);
@@ -4784,12 +4769,12 @@ static int iMglPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
 
 static int iMglPlotWheel_CB(Ihandle* ih, float delta)
 {
-  if(delta > 0)  /* Zoom In */
+  if(delta < 0)  /* Zoom In */
   {
     iMglPlotZoom(ih, 50.0);
     iMglPlotRepaint(ih, 1, 1);
   }
-  else if(delta < 0)  /* Zoom Out */
+  else if(delta > 0)  /* Zoom Out */
   {
     iMglPlotZoom(ih, -50.0);
     iMglPlotRepaint(ih, 1, 1);
@@ -5166,9 +5151,6 @@ void IupMglPlotOpen(void)
 
 /************************  TODO   ***********************************
 
-bar, barh - colorscheme
-ColorBar
-
 Render Feedback?
 OpenMP
 UTF-8
@@ -5181,17 +5163,17 @@ New from PPlot:
   New: PLOTBUTTON_CB and PLOTMOTION_CB calbacks for IupPPlot.
 
 Known Issues:
-  - text render quality is poor
+  - *** text render quality is poor
   - font size scale if canvas size is changed
   ------------------------------------
   - Piechart depends on SetFunc
-  - DrawValues text rotation not correctly computed
-  - Logarithm scale crashes in DrawLabel
-  - OpenGL mode is not working for some Plots
-  - OpenGL inicial size is smaller
+  - *** DrawValues text rotation not correctly computed
+  - *** Logarithm scale crashes in DrawLabel
+  - OpenGL mode makes some 3D modes affect 2D modes (Bars, Barh, Radar, ...)
+  - *** OpenGL inicial size is smaller
   ------------------------------------
   - (IUP) More tick options
-  - (IUP) Improve Bar origin
+  - (IUP) Improve Bar at origin
   - (IUP) TicksVal should follow ticks spacing configuration
   - (IUP) improve autoticks computation
 
