@@ -15,9 +15,6 @@
 .style7 {
 	text-align: center;
 }
-.style8 {
-	background-color: #CEE7FF;
-}
 </style>
 </head>
 <body>
@@ -36,12 +33,12 @@
 <p>Creates a plot of one or more data sets. It inherits from 
 <a href="../elem/iupcanvas.html">IupCanvas</a>. Uses the MathGL library.</p>
 <p>MathGL is a library for creating plots that is system independent. It is 
-maintained by Alexey Balakin (balakin@appl.sci-nnov.ru) and available at SourceForge
-<a href="http://mathgl.sourceforge.net/">http://mathgl.sourceforge.net/</a> with a 
-LGPL license.</p>
+maintained by Alexey Balakin and available at SourceForge
+<a href="http://mathgl.sourceforge.net/">http://mathgl.sourceforge.net/</a> with 
+GPL and 
+LGPL licenses.</p>
 <p>IupMglPlot library includes the MathGL 2.2 source code, so no external 
-references are needed. Also the standard MathGL distribution source code had a 
-few changes to improve features and visual appearance.</p>
+references are needed, but contains only the LGPL part of the library.</p>
 <h3>Initialization and Usage</h3>
 <p>The <b>IupMglPlotOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The &quot;iup_mglplot.h&quot; file must also be included in the source code. The program must be linked to the controls 
@@ -94,7 +91,7 @@ represents a 3D volume. Each value is f(x,y,z), where x belongs to [AXS_XMIN, AX
 [AXS_YMIN, AXS_YMAX] and z to [AXS_ZMIN, AXS_ZMAX].</p>
 <p>Linear data is the same representation accepted by <strong>IupPPlot</strong>, with 
 the addition that <strong>IupMglPlot</strong> has support for 3D coordinates. 
-When plotting linear 1D data XMIN=0 and XMAX=count-1.</p>
+When plotting linear 1D data the automatic range will be XMIN=0 and XMAX=count-1.</p>
 <p>Planar and volumetric data can be very memory consuming, so be careful when 
 using them. Planar and 
 volumetric data in <strong>IupMglPlot</strong> have x, y and z coordinates equidistantly 
@@ -106,8 +103,8 @@ or <strong>IupMglPlotSetFromFormula</strong> functions only.</p>
 <h4>Zoom and Pan</h4>
 <p>Zoom and Pan operations can be done using keyboard or mouse actions in 2D and 
 3D plots.</p>
-<p>Zoom can be done using the mouse wheel (Zoom in: scroll up; Zoom out: scroll 
-down), the Ctrl+Left mouse button pressed and vertical mouse movements (Zoom in: 
+<p>Zoom can be done using the mouse wheel (Zoom in: scroll down; Zoom out: scroll 
+up), the Ctrl+Left mouse button pressed and vertical mouse movements (Zoom in: 
 bottom-up; Zoom out: top-down) or the plus '+' (Zoom in) and minus '&minus;' 
 (Zoom out) keys. </p>
 <p>Pan is done using horizontal and vertical mouse movements with the left mouse 
@@ -191,8 +188,8 @@ default values. Notice that DS_MODE must be set before other &quot;DS_*&quot; at
 <pre>void <b>IupMglPlotNewDataSet</b>(Ihandle* <b>ih</b>, int <b>dim</b>); [in C]
 <b>iup.MglPlotNewDataSet</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]</pre>
 <p>Creates an empty dataset to receive samples. The dimension of the data can be 1, 2 or 3. 
-Linear data can have 1, 2 or 3 dimensions. Planar data has 2 dimensions, but use 
-dim=1. Volumetric data has 3 dimensions, but use dim=1.</p>
+<strong>Linear data</strong> can have 1, 2 or 3 dimensions. <strong>Planar data</strong> has 2 dimensions, but use 
+dim=1. <strong>Volumetric data</strong> has 3 dimensions, but use dim=1.</p>
 <p>Planar and volumetric data distribute their data in 2D and 3D continuous 
 arrays, so the number of dimensions is given <strong>only</strong> when the array is set in <b>IupMglPlotSetData</b>, <b>IupMglPlotLoadData</b> 
 or <b>IupMglPlotSetFromFormula</b>. You can convert planar data into linear data 
@@ -239,8 +236,8 @@ must be non NULL. The variables of the formulas must be x, y and/or z. Coordinat
 in the [AXS_?MIN, AXS_?MAX] interval. There is no difference between lower or upper case in 
 formulas.<em> <strong>Linear data only.</strong></em> </p>
 <p>The operators and functions can be:</p>
-<pre>+ - * / ^      (^=integer power)
-&lt; &gt; = &amp; |      (logical operators, &amp;=true if a and b both nonzero, |=true if x or y nonzero)
+<pre>+ - * / ^      ('^' is 'integer power')
+&lt; &gt; = &amp; |      (logical operators, '&amp;' is 'and', '|' is 'or')
 sqrt(a)  pow(a,b)  log(a,b)  ln(a)    lg(a)            (ln(a)=log(e,a)  lg(a)=log(10,a)
 abs(a)   sign(a)   mod(a,b)  step(a)  int(a)   rnd      pi
 sin(a)   cos(a)    tan(a)    asin(a)  acos(a)  atan(a)
@@ -252,9 +249,9 @@ sinh(a)   cosh(a)  tanh(a)   asinh(a) acosh(a) atanh(a)</pre>
 <p>Sets an array of samples in the dataset <strong>ds_index</strong>. 
 All previous values are removed. Can be used only after a 1D dataset is added to the plot, 
 the actual dimension will be defined by the <strong>count_</strong>* parameters. 
-If <strong>count_y</strong> is greater than 1 the data will be planar (like a 
+If <strong>count_y</strong> is greater than 1 the data will be <strong>Planar</strong> (like a 
 raster 2D image), if <strong>count_z</strong> is also greater than 1 the data 
-will be volumetric (a 3D volume).</p>
+will be <strong>Volumetric</strong> (a 3D volume).</p>
 <p>Notice that when <strong>count_y</strong> 
 and/or <strong>count_z</strong> are greater than 0 a large amount of memory is 
 used. All previous functions create linear data (a sequence of points) even 
@@ -293,8 +290,8 @@ is NOT zero then the existing data size is removed. The variables of the formula
 'x', 'y' and/or 'z'. Coordinates are evaluated 
 in the [AXS_?MIN, AXS_?MAX] interval. There is no difference between lower or upper case in 
 formulas. The operators and functions can be:</p>
-<pre>+ - * / ^      ('^' i<span class="style8">s '</span>integer power')
-&lt; &gt; = &amp; |      (logical operators, '&amp;' is 'and', '|' i<span class="style8">s '</span>or')
+<pre>+ - * / ^      ('^' is 'integer power')
+&lt; &gt; = &amp; |      (logical operators, '&amp;' is 'and', '|' is 'or')
 sqrt(a)  pow(a,b)  log(a,b)  ln(a)    lg(a)            (ln(a)=log(e,a)  lg(a)=log(10,a)
 abs(a)   sign(a)   mod(a,b)  step(a)  int(a)   rnd      pi
 sin(a)   cos(a)    tan(a)    asin(a)  acos(a)  atan(a)
@@ -697,26 +694,16 @@ IupPPlotTransform       -&gt; IupMglPlotTransform  (includes z coordinate)
    (cdCanvasText)       -&gt; IupMglPlotDrawText
 IupPPlotPaintTo         -&gt; IupMglPlotPaintTo    (parameters are different)</pre>
 
-<h3><a name="KnownIssues">Known Issues</a></h3>
+<h3><a name="KnownIssues">Known Issues</a>/To Do</h3>
 <ul>
+	<li>Add UTF-8 mode using MathGL unicode support.</li>
+	<li>Compile MathGL using OpenMP support.</li>
+	<li class="style1"><strong>Text render quality is lower than in IupPPlot.</strong></li>
+	<li>Logarithm scale is not working properly.</li>
 	<li>Automatic ticks computation needs to be improved.</li>
-	<li>BOLD and ITALIC styles are not working inside TeX formatting.</li>
-	<li>There is still lots of MathGL features not available in IupMglPlot.</li>
-	<li><font SIZE="3">When OPENGL=Yes and ANTIALIAS=Yes, 3D graphs will not 
-	process depth properly. (OpenGL configuration?)</font></li>
-	<li><font SIZE="3">When OPENGL=Yes</font>, Graph is disappearing during zoom in, after a zoom factor. Maybe a depth clipping 
-	problem.<font SIZE="3"> (OpenGL 
-	configuration?)</font></li>
-	<li><font SIZE="3">When OPENGL=Yes</font>, Legend box is not being 
-	displayed. (MathGL)</li>
-	<li><font SIZE="3">When OPENGL=Yes aspect ratio of text and marks are not 
-	respected.(MathGL)</font></li>
-	<li>The control of ticks being oriented inside or outside the graph is not 
-	working. (MathGL)</li>
-	<li>Bar graph is clipped at 0 and at n-1. (MathGL)</li>
-	<li>When tick labels are specified all ticks are displayed regardless of 
-	tick spacing configuration. (MathGL)</li>
-	<li>Axis color is always drawn in black. (MathGL)</li>
+	<li>Text rotation when DS_SHOWVALUES=Yes is not ok. (MathGL)</li>
+	<li><font SIZE="3">When OPENGL=Yes initial size is smaller. (MathGL)</font></li>
+	<li><strong>There is still lots of MathGL features not available in IupMglPlot.</strong></li>
 </ul>
 
 <h3><a name="SeeAlso">See Also</a></h3>

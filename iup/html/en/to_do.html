@@ -34,12 +34,7 @@
 
 <h3>Roadmap for the Next Versions</h3>
 
-	<h4>3.11 (Expected to July 2014)</h4>
-<ul>
-	<li>Update <strong>IupMglPlot</strong></li>
-	<li>GTK defaults to GTK version 3 starting at Linux 3. (???)</li>
-</ul>
-	<h4>Next Version</h4>
+	<h4>3.12 (Expected to November 2014)</h4>
 <ul>
 	<li><strong>Consolidate a plot control</strong><ul>
 		<li>double coordinates, OpenGL support, better zoom and pan, clipboard, 
@@ -49,6 +44,11 @@
 	<li>Paste Special Dialog (<strong>IupMatrixEx</strong>)</li>
 	<li>Dynamic column value fill using Lua (<strong>IupMatrixEx</strong>)</li>
 	<li>C++ API &amp; Utilities </li>
+	<li>GTK defaults to GTK version 3 starting at Linux 3. (No XOR support)</li>
+</ul>
+
+	<h4>Next Version</h4>
+<ul>
 	<li>Interactive Dialog Editor / <span>Tools to improve productivity</span></li>
 	<li>Tutorial section and code snippets collection</li>
 </ul>
@@ -212,7 +212,12 @@
 
 <h3>IupMglPlot</h3>
 <ul>
-	<li>Upgrade to the MathGL version 2.</li>
+	<li class="style3"><strong><span class="style1">Important:</span> </strong>
+	<span class="style5">Text render quality is lower than in IupPPlot.</span></li>
+	<li>Add UTF-8 mode using MathGL unicode support.</li>
+	<li>Compile MathGL using OpenMP support.</li>
+	<li>Logarithm scale is not working properly.</li>
+	<li>Automatic ticks computation needs to be improved.</li>
 </ul>
 
 <h3>Possible New Controls</h3>
