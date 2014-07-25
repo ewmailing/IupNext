@@ -25,7 +25,7 @@ typedef struct _IkeyMapASCII {
   unsigned char mod;
 } IkeyMapASCII;
 
-static IkeyMapASCII ikey_map_ascii[126-32+1] = {
+static IkeyMapASCII ikey_map_ascii[126-32+1] = {  /* from 32 to 126 (inclusive) */
   {"K_SP",                  0},
   {"K_exclam",              2}, /* NO shift */
   {"K_quotedbl",            2}, /* NO shift */

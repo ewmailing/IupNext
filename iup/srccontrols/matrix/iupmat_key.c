@@ -236,8 +236,8 @@ int iupMatrixKeyPress_CB(Ihandle* ih, int c, int press)
     }
     else
     {
-      c = cb(ih, c, ih->data->lines.focus_cell, ih->data->columns.focus_cell, 0,
-             iupMatrixGetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell));
+      char* value = iupMatrixGetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+      c = cb(ih, c, ih->data->lines.focus_cell, ih->data->columns.focus_cell, 0, value);
     }
 
     if (c == IUP_IGNORE || c == IUP_CLOSE || c == IUP_CONTINUE)
