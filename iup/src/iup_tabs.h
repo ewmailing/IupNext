@@ -18,7 +18,7 @@ char* iupTabsGetPaddingAttrib(Ihandle* ih);
 char* iupTabsGetTabVisibleAttrib(Ihandle* ih, int pos);
 char* iupTabsGetTitleAttrib(Ihandle* ih, int pos);
 
-void iupTabsCheckCurrentTab(Ihandle* ih, int pos);
+void iupTabsCheckCurrentTab(Ihandle* ih, int pos, int removed);
 
 int iupdrvTabsIsTabVisible(Ihandle* child);
 int iupdrvTabsExtraDecor(Ihandle* ih);

@@ -216,20 +216,32 @@ static void iTabsGetDecorOffset(Ihandle* ih, int *dx, int *dy)
   *dy += ih->data->vert_padding;
 }
 
-void iupTabsCheckCurrentTab(Ihandle* ih, int pos)
+void iupTabsCheckCurrentTab(Ihandle* ih, int pos, int removed)
 {
   int cur_pos = iupdrvTabsGetCurrentTab(ih);
   if (cur_pos == pos)
   {
+    int p;
+
+    /* if given tab is the current tab, 
+       then the current tab must be changed to a visible tab */
     Ihandle* child;
 
-    for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
+    p = 0;
+    if (removed && p == pos)
+      p++;
+
+    for (child = ih->firstchild; child; child = child->brother)
     {
-      if (pos != cur_pos && iupdrvTabsIsTabVisible(child))
+      if (p != pos && iupdrvTabsIsTabVisible(child))
       {
-        iupdrvTabsSetCurrentTab(ih, pos);
+        iupdrvTabsSetCurrentTab(ih, p);
         return;
       }
+
+      p++;
+      if (removed && p == pos)
+        p++;  /* increment twice to compensate for child already removed */
     }
   }
 }

@@ -335,7 +335,7 @@ static int motTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
   }
   else
   {
-    iupTabsCheckCurrentTab(ih, pos);
+    iupTabsCheckCurrentTab(ih, pos, 0);
 
     XtVaSetValues(child_manager, XmNpageNumber, XmUNSPECIFIED_PAGE_NUMBER, NULL);
     XtVaSetValues(tab_button, XmNpageNumber, XmUNSPECIFIED_PAGE_NUMBER, NULL);
@@ -560,7 +560,7 @@ static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
       Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
       int pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaGetValues(child_manager, XmNpageNumber) */
 
-      iupTabsCheckCurrentTab(ih, pos);
+      iupTabsCheckCurrentTab(ih, pos, 1);
 
       XtDestroyWidget(tab_button);
       XtDestroyWidget(child_manager);

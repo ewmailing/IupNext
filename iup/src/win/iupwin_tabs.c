@@ -649,7 +649,7 @@ static int winTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
     {
       if (p >= 0)  /* is visible */
       {
-        iupTabsCheckCurrentTab(ih, pos);
+        iupTabsCheckCurrentTab(ih, pos, 0);
         winTabSetVisibleArrayItem(ih, pos, 0);  /* to invisible */
         winTabDeleteItem(ih, p);
       }
@@ -939,7 +939,7 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
             }
             else if (ret == IUP_DEFAULT) /* hide tab and children */
             {
-              iupTabsCheckCurrentTab(ih, pos);
+              iupTabsCheckCurrentTab(ih, pos, 0);
               winTabSetVisibleArrayItem(ih, pos, 0);  /* to invisible */
               winTabDeleteItem(ih, press_p);
             }
@@ -1215,7 +1215,7 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
       int p = winTabsGetPageWindowPos(ih, tab_container);
       int pos = winTabsPosFixFromWin(ih, p);
 
-      iupTabsCheckCurrentTab(ih, pos);
+      iupTabsCheckCurrentTab(ih, pos, 1);
       winTabDeleteVisibleArrayItem(ih, pos);
       winTabDeleteItem(ih, p);
 
