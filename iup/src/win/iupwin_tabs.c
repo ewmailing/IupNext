@@ -1179,26 +1179,28 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     int pos, num_tabs;
     RECT rect; 
 
+    /* get count before inserting tab */
+    num_tabs = (int)SendMessage(ih->handle, TCM_GETITEMCOUNT, 0, 0);
+
     pos = IupGetChildPos(ih, child);
 
     tab_container = winTabCreatePageWindow(ih);
-
-    num_tabs = (int)SendMessage(ih->handle, TCM_GETITEMCOUNT, 0, 0);
-    if (num_tabs == 0)  /* the first page of an empty tabs is always shown */
-      ShowWindow(tab_container, SW_SHOW);
-
-    /* Calculate the display rectangle, assuming the 
-       tab control is the size of the client area. */
-    GetClientRect(ih->handle, &rect);
-    SendMessage(ih->handle, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
-
-    winTabSetPageWindowPos(tab_container, &rect);
 
     iupAttribSet(child, "_IUPTAB_CONTAINER", (char*)tab_container);
 
     winTabInsertItem(ih, child, pos, tab_container);
 
     winTabInsertVisibleArrayItem(ih, pos);
+
+    /* Calculate the display rectangle, assuming the
+    tab control is the size of the client area. */
+    GetClientRect(ih->handle, &rect);
+    SendMessage(ih->handle, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
+
+    winTabSetPageWindowPos(tab_container, &rect);
+
+    if (num_tabs == 0)  /* the first page of an empty tabs is always shown */
+      ShowWindow(tab_container, SW_SHOW);
   }
 }
 
