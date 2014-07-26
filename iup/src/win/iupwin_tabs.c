@@ -101,7 +101,8 @@ static Iarray* winTabsGetVisibleArray(Ihandle* ih)
   return visible_array;
 }
 
-#if 0
+/* #define PRINT_VISIBLE_ARRAY 1 */
+#if PRINT_VISIBLE_ARRAY
 /* For debugging  */
 static void winTabsPrintVisibleArray(Ihandle* ih)
 {
@@ -376,20 +377,14 @@ static void winTabSetPageWindowPos(HWND tab_container, RECT *rect)
                 SWP_NOACTIVATE|SWP_NOZORDER);
 }
 
-static void winTabsPlacePageWindows(Ihandle* ih, int w, int h)
+static void winTabsPlacePageWindows(Ihandle* ih, RECT* rect)
 {
-  RECT rect; 
   Ihandle* child;
-
-  /* Calculate the display rectangle, assuming the 
-     tab control is the size of the client area. */
-  SetRect(&rect, 0, 0, w, h); 
-  SendMessage(ih->handle, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
 
   for (child = ih->firstchild; child; child = child->brother)
   {
     HWND tab_container = (HWND)iupAttribGet(child, "_IUPTAB_CONTAINER");
-    winTabSetPageWindowPos(tab_container, &rect);
+    winTabSetPageWindowPos(tab_container, rect);
   }
 }
 
@@ -520,9 +515,7 @@ static void winTabsInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_con
     {
       int rowcount = (int)SendMessage(ih->handle, TCM_GETROWCOUNT, 0, 0);
       if (rowcount != old_rowcount)
-      {
-        winTabsPlacePageWindows(ih, rect.right - rect.left, rect.bottom - rect.top);
-      }
+        winTabsPlacePageWindows(ih, &rect);
     }
 
     iupdrvRedrawNow(ih);
@@ -534,6 +527,10 @@ static void winTabsInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_con
     ShowWindow(tab_container, SW_SHOW);
     SendMessage(ih->handle, TCM_SETCURSEL, 0, 0);
   }
+
+#if PRINT_VISIBLE_ARRAY
+  winTabsPrintVisibleArray(ih);
+#endif
 }
 
 static void winTabsDeleteItem(Ihandle* ih, int p, HWND tab_container)
@@ -542,6 +539,10 @@ static void winTabsDeleteItem(Ihandle* ih, int p, HWND tab_container)
   ShowWindow(tab_container, SW_HIDE);
 
   SendMessage(ih->handle, TCM_DELETEITEM, p, 0);
+
+#if PRINT_VISIBLE_ARRAY
+  winTabsPrintVisibleArray(ih);
+#endif
 }
 
 /* ------------------------------------------------------------------------- */
@@ -872,10 +873,14 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
   {
   case WM_SIZE:
   {
+    RECT rect;
     WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
     CallWindowProc(oldProc, ih->handle, msg, wp, lp);
 
-    winTabsPlacePageWindows(ih, LOWORD(lp), HIWORD(lp));
+    SetRect(&rect, 0, 0, LOWORD(lp), HIWORD(lp));
+    SendMessage(ih->handle, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
+
+    winTabsPlacePageWindows(ih, &rect);
 
     *result = 0;
     return 1;
