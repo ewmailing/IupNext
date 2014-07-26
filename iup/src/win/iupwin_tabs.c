@@ -684,10 +684,9 @@ static int winTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
   return 0;
 }
 
-int iupdrvTabsIsTabVisible(Ihandle* child)
+int iupdrvTabsIsTabVisible(Ihandle* child, int pos)
 {
-  Ihandle* ih = IupGetParent(child);
-  int pos = IupGetChildPos(ih, child);
+  Ihandle* ih = child->parent;
   return winTabsIsTabVisible(ih, pos);
 }
 
@@ -1229,6 +1228,8 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     if (num_tabs == 0)  /* the first page of an empty tabs is always shown */
       ShowWindow(tab_container, SW_SHOW);
+
+    winTabsPrintVisibleArray(ih);
   }
 }
 

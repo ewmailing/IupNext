@@ -213,9 +213,10 @@ static int gtkTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
   return 0;
 }
 
-int iupdrvTabsIsTabVisible(Ihandle* child)
+int iupdrvTabsIsTabVisible(Ihandle* child, int pos)
 {
   GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_PAGE");
+  (void)pos;
   return iupgtkIsVisible(tab_page);
 }
 

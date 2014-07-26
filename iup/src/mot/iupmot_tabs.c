@@ -346,11 +346,12 @@ static int motTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
   return 0;
 }
 
-int iupdrvTabsIsTabVisible(Ihandle* child)
+int iupdrvTabsIsTabVisible(Ihandle* child, int pos)
 {
   Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
   XWindowAttributes wa;
   XGetWindowAttributes(iupmot_display, XtWindow(tab_button), &wa);
+  (void)pos;
   return (wa.map_state == IsViewable);
 }
 

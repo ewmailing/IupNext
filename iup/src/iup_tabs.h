@@ -20,7 +20,7 @@ char* iupTabsGetTitleAttrib(Ihandle* ih, int pos);
 
 void iupTabsCheckCurrentTab(Ihandle* ih, int pos, int removed);
 
-int iupdrvTabsIsTabVisible(Ihandle* child);
+int iupdrvTabsIsTabVisible(Ihandle* child, int pos);
 int iupdrvTabsExtraDecor(Ihandle* ih);
 int iupdrvTabsGetLineCountAttrib(Ihandle* ih);
 void iupdrvTabsSetCurrentTab(Ihandle* ih, int pos);

@@ -227,13 +227,16 @@ void iupTabsCheckCurrentTab(Ihandle* ih, int pos, int removed)
        then the current tab must be changed to a visible tab */
     Ihandle* child;
 
+    /* this function is called after the child has being removed from the hierarchy,
+       but before the system tab being removed. */
+
     p = 0;
     if (removed && p == pos)
       p++;
 
     for (child = ih->firstchild; child; child = child->brother)
     {
-      if (p != pos && iupdrvTabsIsTabVisible(child))
+      if (p != pos && iupdrvTabsIsTabVisible(child, p))
       {
         iupdrvTabsSetCurrentTab(ih, p);
         return;
@@ -251,7 +254,7 @@ static void iTabsSetTab(Ihandle* ih, Ihandle* child, int pos)
   if (ih->handle)
   {
     int cur_pos = iupdrvTabsGetCurrentTab(ih);
-    if (cur_pos != pos && iupdrvTabsIsTabVisible(child))
+    if (cur_pos != pos && iupdrvTabsIsTabVisible(child, pos))
       iupdrvTabsSetCurrentTab(ih, pos);
   }
   else
@@ -260,7 +263,7 @@ static void iTabsSetTab(Ihandle* ih, Ihandle* child, int pos)
 
 
 /* ------------------------------------------------------------------------- */
-/* TABS - Sets and Gets - Accessors                                          */
+/* TABS - Sets and Gets - Attribs                                           */
 /* ------------------------------------------------------------------------- */
 
 static int iTabsSetValueHandleAttrib(Ihandle* ih, const char* value)
@@ -398,7 +401,7 @@ char* iupTabsGetTabVisibleAttrib(Ihandle* ih, int pos)
 {
   Ihandle* child = IupGetChild(ih, pos);
   if (child)
-    return iupStrReturnBoolean(iupdrvTabsIsTabVisible(child));
+    return iupStrReturnBoolean(iupdrvTabsIsTabVisible(child, pos));
   else
     return NULL;
 }
