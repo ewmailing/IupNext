@@ -101,7 +101,8 @@ static Iarray* winTabsGetVisibleArray(Ihandle* ih)
   return visible_array;
 }
 
-#if 1
+#if 0
+/* For debugging  */
 static void winTabsPrintVisibleArray(Ihandle* ih)
 {
   Iarray* visible_array = winTabsGetVisibleArray(ih);
@@ -460,7 +461,8 @@ static void winTabsInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_con
 {
   TCITEM tie;
   char *tabtitle, *tabimage;
-  int old_rowcount, p;
+  int old_rowcount, old_num_tabs, p;
+  RECT rect;
 
   tabtitle = iupAttribGet(child, "TABTITLE");
   if (!tabtitle) 
@@ -479,6 +481,7 @@ static void winTabsInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_con
   if (!tabtitle && !tabimage)
     tabtitle = "     ";
 
+  old_num_tabs = (int)SendMessage(ih->handle, TCM_GETITEMCOUNT, 0, 0);
   old_rowcount = (int)SendMessage(ih->handle, TCM_GETROWCOUNT, 0, 0);
 
   tie.mask = TCIF_PARAM;
@@ -504,6 +507,13 @@ static void winTabsInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_con
   tie.lParam = (LPARAM)tab_container;
   SendMessage(ih->handle, TCM_INSERTITEM, p, (LPARAM)&tie);
 
+  /* Calculate the display rectangle, assuming the
+  tab control is the size of the client area. */
+  GetClientRect(ih->handle, &rect);
+  SendMessage(ih->handle, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
+
+  winTabSetPageWindowPos(tab_container, &rect);
+
   if (ih->data->is_multiline)
   {
     if (ih->data->type == ITABS_LEFT || ih->data->type == ITABS_RIGHT)
@@ -511,13 +521,18 @@ static void winTabsInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_con
       int rowcount = (int)SendMessage(ih->handle, TCM_GETROWCOUNT, 0, 0);
       if (rowcount != old_rowcount)
       {
-        RECT rect;
-        GetClientRect(ih->handle, &rect);
         winTabsPlacePageWindows(ih, rect.right - rect.left, rect.bottom - rect.top);
       }
     }
 
     iupdrvRedrawNow(ih);
+  }
+
+  /* the first page of an empty tabs must be shown (set as current) */
+  if (old_num_tabs == 0)
+  {
+    ShowWindow(tab_container, SW_SHOW);
+    SendMessage(ih->handle, TCM_SETCURSEL, 0, 0);
   }
 }
 
@@ -678,8 +693,6 @@ static int winTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
         winTabsDeleteItem(ih, p, tab_container);
       }
     }
-
-    winTabsPrintVisibleArray(ih);
   }
   return 0;
 }
@@ -859,13 +872,13 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
   {
   case WM_SIZE:
   {
-                WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
-                CallWindowProc(oldProc, ih->handle, msg, wp, lp);
+    WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
+    CallWindowProc(oldProc, ih->handle, msg, wp, lp);
 
-                winTabsPlacePageWindows(ih, LOWORD(lp), HIWORD(lp));
+    winTabsPlacePageWindows(ih, LOWORD(lp), HIWORD(lp));
 
-                *result = 0;
-                return 1;
+    *result = 0;
+    return 1;
   }
   case WM_MOUSELEAVE:
     if (ih->data->show_close)
@@ -967,8 +980,6 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
               iupTabsCheckCurrentTab(ih, pos, 0);
               winTabsSetVisibleArrayItem(ih, pos, 0);  /* to invisible */
               winTabsDeleteItem(ih, press_p, tab_container);
-
-              winTabsPrintVisibleArray(ih);
             }
             else if (ret == IUP_IGNORE)
             {
@@ -1202,34 +1213,15 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
   if (ih->handle)
   {
-    HWND tab_container;
-    int pos, num_tabs;
-    RECT rect; 
+    int pos = IupGetChildPos(ih, child);
 
-    /* get count before inserting tab */
-    num_tabs = (int)SendMessage(ih->handle, TCM_GETITEMCOUNT, 0, 0);
-
-    pos = IupGetChildPos(ih, child);
-
-    tab_container = winTabsCreatePageWindow(ih);
+    HWND tab_container = winTabsCreatePageWindow(ih);
 
     iupAttribSet(child, "_IUPTAB_CONTAINER", (char*)tab_container);
 
+    winTabsInsertVisibleArrayItem(ih, pos);  /* add to the array and set to visible */
+
     winTabsInsertItem(ih, child, pos, tab_container);
-
-    winTabsInsertVisibleArrayItem(ih, pos);
-
-    /* Calculate the display rectangle, assuming the
-    tab control is the size of the client area. */
-    GetClientRect(ih->handle, &rect);
-    SendMessage(ih->handle, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
-
-    winTabSetPageWindowPos(tab_container, &rect);
-
-    if (num_tabs == 0)  /* the first page of an empty tabs is always shown */
-      ShowWindow(tab_container, SW_SHOW);
-
-    winTabsPrintVisibleArray(ih);
   }
 }
 
@@ -1251,8 +1243,6 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
       iupwinHandleRemove(tab_container);
       DestroyWindow(tab_container);
       iupAttribSet(child, "_IUPTAB_CONTAINER", NULL);
-
-      winTabsPrintVisibleArray(ih);
     }
   }
 }
