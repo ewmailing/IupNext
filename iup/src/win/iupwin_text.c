@@ -515,13 +515,14 @@ static int winTextGetLastPosition(Ihandle *ih)
   int lincount = SendMessage(ih->handle, EM_GETLINECOUNT, 0, 0L);
   int lineindex = SendMessage(ih->handle, EM_LINEINDEX, (WPARAM)(lincount-1), 0L);
   int colmax = SendMessage(ih->handle, EM_LINELENGTH, (WPARAM)lineindex, 0L);
+  int wpos;
 
   /* when formatting or single line text uses only one char per line end */
   if (ih->data->is_multiline && !ih->data->has_formatting)
     lineindex -= lincount - 1;  /* remove \r characters from count */
 
   /* pos here includes the line breaks in 1 or 2 configuration */
-  int wpos = lineindex + colmax;
+  wpos = lineindex + colmax;
   return wpos;
 }
 
