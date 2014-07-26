@@ -386,7 +386,7 @@ void motTabsPageChangedCallback(Widget w, Ihandle* ih, XmNotebookCallbackStruct 
   (void)w; 
 }
 
-static void motTabButtonPressEvent(Widget w, Ihandle* child, XButtonEvent* evt, Boolean* cont)
+static void motTabsButtonPressEvent(Widget w, Ihandle* child, XButtonEvent* evt, Boolean* cont)
 {
   Ihandle* ih = IupGetParent(child);
   IFni cb = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
@@ -500,7 +500,7 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     XtAddEventHandler(tab_button, FocusChangeMask, False, (XtEventHandler)iupmotFocusChangeEvent, (XtPointer)ih);
     XtAddEventHandler(tab_button, KeyPressMask,    False, (XtEventHandler)iupmotKeyPressEvent, (XtPointer)ih);
 
-    XtAddEventHandler(tab_button, ButtonPressMask, False, (XtEventHandler)motTabButtonPressEvent, (XtPointer)child);
+    XtAddEventHandler(tab_button, ButtonPressMask, False, (XtEventHandler)motTabsButtonPressEvent, (XtPointer)child);
 
     if (iupStrBoolean(IupGetGlobal("INPUTCALLBACKS")))
     {

@@ -101,7 +101,36 @@ static Iarray* winTabsGetVisibleArray(Ihandle* ih)
   return visible_array;
 }
 
-static void winTabSetVisibleArrayItem(Ihandle* ih, int pos, int visible)
+#if 1
+static void winTabsPrintVisibleArray(Ihandle* ih)
+{
+  Iarray* visible_array = winTabsGetVisibleArray(ih);
+  int i, count = iupArrayCount(visible_array);
+  int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
+
+  for (i = 0; i < count; i++)
+    printf("%d=%d ", i, visible_array_array_data[i]);
+
+  printf("\n");
+}
+#endif
+
+static int winTabsHasInVisible(Iarray* visible_array)
+{
+  int i;
+  int count = iupArrayCount(visible_array);
+  int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
+
+  for (i = 0; i < count; i++)
+  {
+    if (visible_array_array_data[i] == 0)
+      return 1;
+  }
+
+  return 0;
+}
+
+static void winTabsSetVisibleArrayItem(Ihandle* ih, int pos, int visible)
 {
   Iarray* visible_array = winTabsGetVisibleArray(ih);
   int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
@@ -111,36 +140,26 @@ static void winTabSetVisibleArrayItem(Ihandle* ih, int pos, int visible)
   if (!visible)
     ih->data->has_invisible = 1;
   else
-  {
-    int i;
-    int count = iupArrayCount(visible_array);
-
-    for (i = 0; i < count; i++)
-    {
-      if (visible_array_array_data[i] == 0)
-        return;
-    }
-
-    ih->data->has_invisible = 0;
-  }
+    ih->data->has_invisible = winTabsHasInVisible(visible_array);
 }
 
-static void winTabInsertVisibleArrayItem(Ihandle* ih, int pos)
+static void winTabsInsertVisibleArrayItem(Ihandle* ih, int pos)
 {
   if (ih->data->has_invisible)
   {
     Iarray* visible_array = winTabsGetVisibleArray(ih);
     iupArrayInsert(visible_array, pos, 1);
-    winTabSetVisibleArrayItem(ih, pos, 1);
+    winTabsSetVisibleArrayItem(ih, pos, 1);
   }
 }
 
-static void winTabDeleteVisibleArrayItem(Ihandle* ih, int pos)
+static void winTabsDeleteVisibleArrayItem(Ihandle* ih, int pos)
 {
   if (ih->data->has_invisible)
   {
     Iarray* visible_array = winTabsGetVisibleArray(ih);
     iupArrayRemove(visible_array, pos, 1);
+    ih->data->has_invisible = winTabsHasInVisible(visible_array);
   }
 }
 
@@ -422,7 +441,7 @@ static LRESULT CALLBACK winTabsPageWndProc(HWND hWnd, UINT msg, WPARAM wp, LPARA
   return DefWindowProc(hWnd, msg, wp, lp);
 }
 
-static HWND winTabCreatePageWindow(Ihandle* ih) 
+static HWND winTabsCreatePageWindow(Ihandle* ih) 
 { 
   HWND hWnd;
   DWORD dwStyle = WS_CHILD|WS_CLIPSIBLINGS, 
@@ -437,7 +456,7 @@ static HWND winTabCreatePageWindow(Ihandle* ih)
   return hWnd;
 } 
 
-static void winTabInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_container)
+static void winTabsInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_container)
 {
   TCITEM tie;
   char *tabtitle, *tabimage;
@@ -502,13 +521,16 @@ static void winTabInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_cont
   }
 }
 
-static void winTabDeleteItem(Ihandle* ih, int p)
+static void winTabsDeleteItem(Ihandle* ih, int p, HWND tab_container)
 {
+  /* Make sure tab container is hidden */
+  ShowWindow(tab_container, SW_HIDE);
+
   SendMessage(ih->handle, TCM_DELETEITEM, p, 0);
 }
 
 /* ------------------------------------------------------------------------- */
-/* winTabs - Sets and Gets accessors                                         */
+/* winTabs - Sets and Gets Attrib                                           */
 /* ------------------------------------------------------------------------- */
 
 static int winTabsSetPaddingAttrib(Ihandle* ih, const char* value)
@@ -637,23 +659,27 @@ static int winTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
     {
       if (p < 0)  /* is invisible */
       {
-        HWND tab_container;
+        HWND tab_container = (HWND)iupAttribGet(child, "_IUPTAB_CONTAINER");
 
-        winTabSetVisibleArrayItem(ih, pos, 1);  /* to visible */
+        winTabsSetVisibleArrayItem(ih, pos, 1);  /* to visible */
 
-        tab_container = (HWND)iupAttribGet(child, "_IUPTAB_CONTAINER");
-        winTabInsertItem(ih, child, pos, tab_container);
+        winTabsInsertItem(ih, child, pos, tab_container);
       }
     }
     else
     {
       if (p >= 0)  /* is visible */
       {
+        HWND tab_container = (HWND)iupAttribGet(child, "_IUPTAB_CONTAINER");
+
         iupTabsCheckCurrentTab(ih, pos, 0);
-        winTabSetVisibleArrayItem(ih, pos, 0);  /* to invisible */
-        winTabDeleteItem(ih, p);
+        winTabsSetVisibleArrayItem(ih, pos, 0);  /* to invisible */
+
+        winTabsDeleteItem(ih, p, tab_container);
       }
     }
+
+    winTabsPrintVisibleArray(ih);
   }
   return 0;
 }
@@ -940,8 +966,10 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
             else if (ret == IUP_DEFAULT) /* hide tab and children */
             {
               iupTabsCheckCurrentTab(ih, pos, 0);
-              winTabSetVisibleArrayItem(ih, pos, 0);  /* to invisible */
-              winTabDeleteItem(ih, press_p);
+              winTabsSetVisibleArrayItem(ih, pos, 0);  /* to invisible */
+              winTabsDeleteItem(ih, press_p, tab_container);
+
+              winTabsPrintVisibleArray(ih);
             }
             else if (ret == IUP_IGNORE)
             {
@@ -1184,13 +1212,13 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     pos = IupGetChildPos(ih, child);
 
-    tab_container = winTabCreatePageWindow(ih);
+    tab_container = winTabsCreatePageWindow(ih);
 
     iupAttribSet(child, "_IUPTAB_CONTAINER", (char*)tab_container);
 
-    winTabInsertItem(ih, child, pos, tab_container);
+    winTabsInsertItem(ih, child, pos, tab_container);
 
-    winTabInsertVisibleArrayItem(ih, pos);
+    winTabsInsertVisibleArrayItem(ih, pos);
 
     /* Calculate the display rectangle, assuming the
     tab control is the size of the client area. */
@@ -1216,12 +1244,14 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
       int pos = winTabsPosFixFromWin(ih, p);
 
       iupTabsCheckCurrentTab(ih, pos, 1);
-      winTabDeleteVisibleArrayItem(ih, pos);
-      winTabDeleteItem(ih, p);
+      winTabsDeleteVisibleArrayItem(ih, pos);
+      winTabsDeleteItem(ih, p, tab_container);
 
       iupwinHandleRemove(tab_container);
       DestroyWindow(tab_container);
       iupAttribSet(child, "_IUPTAB_CONTAINER", NULL);
+
+      winTabsPrintVisibleArray(ih);
     }
   }
 }

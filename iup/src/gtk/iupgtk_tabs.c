@@ -256,7 +256,7 @@ static int gtkTabsSetBgColorAttrib(Ihandle* ih, const char* value)
 /* gtkTabs - Callbacks                                                       */
 /* ------------------------------------------------------------------------- */
 
-static void gtkTabSwitchPage(GtkNotebook* notebook, void* page, int pos, Ihandle* ih)
+static void gtkTabsSwitchPage(GtkNotebook* notebook, void* page, int pos, Ihandle* ih)
 {
   IFnnn cb;
   Ihandle* child = IupGetChild(ih, pos);
@@ -284,7 +284,7 @@ static void gtkTabSwitchPage(GtkNotebook* notebook, void* page, int pos, Ihandle
   (void)page;
 }
 
-static gboolean gtkTabButtonPressEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *child)
+static gboolean gtkTabsButtonPressEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *child)
 {
   Ihandle* ih = IupGetParent(child);
   IFni cb = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
@@ -428,7 +428,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
     /* RIGHTCLICK_CB will not work without the eventbox */
     evtBox = gtk_event_box_new();
     gtk_widget_add_events(evtBox, GDK_BUTTON_PRESS_MASK);
-    g_signal_connect(G_OBJECT(evtBox), "button-press-event", G_CALLBACK(gtkTabButtonPressEvent), child);
+    g_signal_connect(G_OBJECT(evtBox), "button-press-event", G_CALLBACK(gtkTabsButtonPressEvent), child);
 
     if (tabimage && tabtitle)
     {
@@ -556,7 +556,7 @@ static int gtkTabsMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "key-press-event",     G_CALLBACK(iupgtkKeyPressEvent),   ih);
   g_signal_connect(G_OBJECT(ih->handle), "show-help",           G_CALLBACK(iupgtkShowHelp),        ih);
 
-  g_signal_connect(G_OBJECT(ih->handle), "switch-page",         G_CALLBACK(gtkTabSwitchPage), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "switch-page",         G_CALLBACK(gtkTabsSwitchPage), ih);
 
   gtk_widget_realize(ih->handle);
 
