@@ -309,8 +309,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	ContractionState cs;
 
 	// Hotspot support
-	int hsStart;
-	int hsEnd;
+	Range hotspot;
 
 	// Wrapping support
 	int wrapWidth;
@@ -356,12 +355,12 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	int LineFromLocation(Point pt) const;
 	void SetTopLine(int topLineNew);
 
-	bool AbandonPaint();
+	virtual bool AbandonPaint();
 	virtual void RedrawRect(PRectangle rc);
 	virtual void DiscardOverdraw();
 	virtual void Redraw();
 	void RedrawSelMargin(int line=-1, bool allAfter=false);
-	PRectangle RectangleFromRange(int start, int end);
+	PRectangle RectangleFromRange(Range r);
 	void InvalidateRange(int start, int end);
 
 	bool UserVirtualSpace() const {
@@ -420,6 +419,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void ScrollRange(SelectionRange range);
 	void ShowCaretAtCurrentPosition();
 	void DropCaret();
+	void CaretSetPeriod(int period);
 	void InvalidateCaret();
 	virtual void UpdateSystemCaret();
 
@@ -434,27 +434,26 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	int SubstituteMarkerIfEmpty(int markerCheck, int markerDefault) const;
 	void PaintSelMargin(Surface *surface, PRectangle &rc);
 	LineLayout *RetrieveLineLayout(int lineNumber);
-	void LayoutLine(int line, Surface *surface, ViewStyle &vstyle, LineLayout *ll,
+	void LayoutLine(int line, Surface *surface, const ViewStyle &vstyle, LineLayout *ll,
 		int width=LineLayout::wrapWidthInfinite);
-	ColourDesired SelectionBackground(ViewStyle &vsDraw, bool main) const;
-	ColourDesired TextBackground(ViewStyle &vsDraw, bool overrideBackground, ColourDesired background, int inSelection, bool inHotspot, int styleMain, int i, LineLayout *ll) const;
+	ColourDesired SelectionBackground(const ViewStyle &vsDraw, bool main) const;
+	ColourDesired TextBackground(const ViewStyle &vsDraw, ColourOptional background, int inSelection, bool inHotspot, int styleMain, int i, LineLayout *ll) const;
 	void DrawIndentGuide(Surface *surface, int lineVisible, int lineHeight, int start, PRectangle rcSegment, bool highlight);
 	static void DrawWrapMarker(Surface *surface, PRectangle rcPlace, bool isEndMarker, ColourDesired wrapColour);
-	void DrawEOL(Surface *surface, ViewStyle &vsDraw, PRectangle rcLine, LineLayout *ll,
+	void DrawEOL(Surface *surface, const ViewStyle &vsDraw, PRectangle rcLine, LineLayout *ll,
 		int line, int lineEnd, int xStart, int subLine, XYACCUMULATOR subLineStart,
-		bool overrideBackground, ColourDesired background,
-		bool drawWrapMark, ColourDesired wrapColour);
-	static void DrawIndicator(int indicNum, int startPos, int endPos, Surface *surface, ViewStyle &vsDraw,
+		ColourOptional background);
+	static void DrawIndicator(int indicNum, int startPos, int endPos, Surface *surface, const ViewStyle &vsDraw,
 		int xStart, PRectangle rcLine, LineLayout *ll, int subLine);
-	void DrawIndicators(Surface *surface, ViewStyle &vsDraw, int line, int xStart,
+	void DrawIndicators(Surface *surface, const ViewStyle &vsDraw, int line, int xStart,
 		PRectangle rcLine, LineLayout *ll, int subLine, int lineEnd, bool under);
-	void DrawAnnotation(Surface *surface, ViewStyle &vsDraw, int line, int xStart,
+	void DrawAnnotation(Surface *surface, const ViewStyle &vsDraw, int line, int xStart,
         PRectangle rcLine, LineLayout *ll, int subLine);
-	void DrawLine(Surface *surface, ViewStyle &vsDraw, int line, int lineVisible, int xStart,
+	void DrawLine(Surface *surface, const ViewStyle &vsDraw, int line, int lineVisible, int xStart,
 		PRectangle rcLine, LineLayout *ll, int subLine);
-	void DrawBlockCaret(Surface *surface, ViewStyle &vsDraw, LineLayout *ll, int subLine,
-		int xStart, int offset, int posCaret, PRectangle rcCaret, ColourDesired caretColour);
-	void DrawCarets(Surface *surface, ViewStyle &vsDraw, int line, int xStart,
+	void DrawBlockCaret(Surface *surface, const ViewStyle &vsDraw, LineLayout *ll, int subLine,
+		int xStart, int offset, int posCaret, PRectangle rcCaret, ColourDesired caretColour) const;
+	void DrawCarets(Surface *surface, const ViewStyle &vsDraw, int line, int xStart,
 		PRectangle rcLine, LineLayout *ll, int subLine);
 	void RefreshPixMaps(Surface *surfaceWindow);
 	void Paint(Surface *surfaceWindow, PRectangle rcArea);
@@ -472,8 +471,10 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	int InsertSpace(int position, unsigned int spaces);
 	void AddChar(char ch);
 	virtual void AddCharUTF(char *s, unsigned int len, bool treatAsDBCS=false);
-	void InsertPaste(SelectionPosition selStart, const char *text, int len);
-	void ClearSelection(bool retainMultipleSelections=false);
+	void InsertPaste(const char *text, int len);
+	enum PasteShape { pasteStream=0, pasteRectangular = 1, pasteLine = 2 };
+	void InsertPasteShape(const char *text, int len, PasteShape shape);
+	void ClearSelection(bool retainMultipleSelections = false);
 	void ClearAll();
 	void ClearDocumentStyle();
 	void Cut();
@@ -620,7 +621,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	bool PositionIsHotspot(int position) const;
 	bool PointIsHotspot(Point pt);
 	void SetHotSpotRange(Point *pt);
-	void GetHotSpotRange(int &hsStart, int &hsEnd) const;
+	Range GetHotSpotRange() const;
 
 	int CodePage() const;
 	virtual bool ValidCodePage(int /* codePage */) const { return true; }

@@ -226,8 +226,24 @@ SelectionRange &Selection::Range(size_t r) {
 	return ranges[r];
 }
 
+const SelectionRange &Selection::Range(size_t r) const {
+	return ranges[r];
+}
+
 SelectionRange &Selection::RangeMain() {
 	return ranges[mainRange];
+}
+
+const SelectionRange &Selection::RangeMain() const {
+	return ranges[mainRange];
+}
+
+SelectionPosition Selection::Start() const {
+	if (IsRectangular()) {
+		return rangeRectangular.Start();
+	} else {
+		return ranges[mainRange].Start();
+	}
 }
 
 bool Selection::MoveExtends() const {

@@ -63,7 +63,7 @@ public:
 	bool isSet;
 	ColourOptional(ColourDesired colour_=ColourDesired(0,0,0), bool isSet_=false) : ColourDesired(colour_), isSet(isSet_) {
 	}
-	ColourOptional(uptr_t wParam, sptr_t lParam) : ColourDesired(lParam), isSet(wParam != 0) {
+	ColourOptional(uptr_t wParam, sptr_t lParam) : ColourDesired(static_cast<long>(lParam)), isSet(wParam != 0) {
 	}
 };
 
@@ -157,7 +157,7 @@ public:
 	ViewStyle();
 	ViewStyle(const ViewStyle &source);
 	~ViewStyle();
-	void Init(size_t stylesSize_=64);
+	void Init(size_t stylesSize_=256);
 	void Refresh(Surface &surface, int tabInChars);
 	void ReleaseAllExtendedStyles();
 	int AllocateExtendedStyles(int numberStyles);
@@ -169,6 +169,7 @@ public:
 	int ExternalMarginWidth() const;
 	bool ValidStyle(size_t styleIndex) const;
 	void CalcLargestMarkerHeight();
+	ColourOptional Background(int marksOfLine, bool caretActive, bool lineContainsCaret) const;
 	ColourDesired WrapColour() const;
 	bool SetWrapState(int wrapState_);
 	bool SetWrapVisualFlags(int wrapVisualFlags_);
