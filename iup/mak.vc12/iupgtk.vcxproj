@@ -92,6 +92,7 @@
     <ClCompile Include="..\src\gtk\iupgtk_draw.c" />
     <ClCompile Include="..\src\gtk\iupgtk_draw_cairo.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\gtk\iupgtk_focus.c" />
     <ClCompile Include="..\src\gtk\iupgtk_font.c" />
