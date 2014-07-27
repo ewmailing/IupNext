@@ -253,7 +253,7 @@ static void iMglPlotResetAxis(Iaxis& axis)
   axis.axLabelFontSizeFactor = 0.8;
   axis.axTickFontSizeFactor = 0.8;
 
-  axis.axColor.Set(NANf, NANf, NANf);
+  axis.axColor.Set(NAN, NAN, NAN);
 
   axis.axAutoScaleMin = true;
   axis.axAutoScaleMax = true;
@@ -262,7 +262,7 @@ static void iMglPlotResetAxis(Iaxis& axis)
   axis.axShow = true;
   axis.axShowArrow = true;
   axis.axLabelRotation = true;
-  axis.axOrigin = NANd;
+  axis.axOrigin = NAN;
 
   axis.axTickShow = true;
   axis.axTickShowValues = true;
@@ -298,9 +298,9 @@ static void iMglPlotReset(Ihandle* ih)
   ih->data->bgColor.Set(1, 1, 1);
   ih->data->fgColor.Set(0, 0, 0);
   ih->data->gridColor.Set(iRecon(200), iRecon(200), iRecon(200));
-  ih->data->titleColor.Set(NANf, NANf, NANf);
-  ih->data->legendColor.Set(NANf, NANf, NANf);
-  ih->data->boxColor.Set(NANf, NANf, NANf);
+  ih->data->titleColor.Set(NAN, NAN, NAN);
+  ih->data->legendColor.Set(NAN, NAN, NAN);
+  ih->data->boxColor.Set(NAN, NAN, NAN);
 
   iMglPlotResetAxis(ih->data->axisX);
   iMglPlotResetAxis(ih->data->axisY);
@@ -430,7 +430,7 @@ static void iMglPlotConfigFontDef(Ihandle* ih, mglGraph *gr, const char* font)
 
 static double iMglPlotGetAttribDoubleNAN(Ihandle* ih, const char* name)
 {
-  double val = NANd;
+  double val = NAN;
   iupStrToDouble(iupAttribGet(ih, name), &val);
   return val;
 }
@@ -1786,7 +1786,7 @@ static int iMglPlotSetColor(Ihandle* ih, const char* value, mglColor& color)
 
   if (!value)
   {
-    color.Set(NANf, NANf, NANf);
+    color.Set(NAN, NAN, NAN);
     ih->data->redraw = true;
   }
   else if (iupStrToRGBA(value, &rr, &gg, &bb, &aa))
@@ -3112,7 +3112,7 @@ static char* iMglPlotGetAxisZTickMajorSpanAttrib(Ihandle* ih)
 
 static char* iMglPlotSetAxisScale(Ihandle* ih, const char* value, char dir)
 {
-  char* scale;
+  const char* scale;
   if (!value || iupStrEqualNoCase(value, "LIN"))
     scale = NULL;
   else if(iupStrEqualNoCase(value, "LOG10"))
@@ -3125,7 +3125,7 @@ static char* iMglPlotSetAxisScale(Ihandle* ih, const char* value, char dir)
     scale = NULL;
 
   ih->data->redraw = true;
-  return scale;
+  return (char*)scale;
 }
 
 static int iMglPlotSetAxisXScaleAttrib(Ihandle* ih, const char* value)
@@ -3577,7 +3577,7 @@ static int iMglPlotSetAxisCrossOrigin(Ihandle* ih, const char* value, double& or
   if (iupStrBoolean(value))
     origin = 0;
   else
-    origin = NANd;
+    origin = NAN;
 
   if (old_origin != origin)
     ih->data->redraw = true;
@@ -3630,7 +3630,7 @@ static int iMglPlotSetAxisOrigin(Ihandle* ih, const char* value, double& num)
   double old_num = num;
 
   if (!value)
-    num = NANd;
+    num = NAN;
   else
     iupStrToDouble(value, &num);
 
