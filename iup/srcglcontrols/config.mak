@@ -20,6 +20,10 @@ ifneq ($(findstring dll, $(TEC_UNAME)), )
   DEFINES = FTGL_LIBRARY
 endif
 
+ifneq ($(findstring cygw, $(TEC_UNAME)), )
+  LIBS += fontconfig iconv
+endif
+
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
 #  INCLUDES += $(X11_INC)
   ifdef USE_MACOS_OPENGL
