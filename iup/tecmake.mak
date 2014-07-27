@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.8
+VERSION = 4.9
 
 
 #---------------------------------#
@@ -506,6 +506,10 @@ else
   #   GTK := /gtk/inst
   else
     GTK = /usr
+    ifneq ($(findstring Linux3, $(TEC_UNAME)), )
+      # Not Yet, wait for IUP 4.0?
+      #USE_GTK3 = Yes
+    endif
   endif
 endif
 
@@ -946,14 +950,14 @@ ifdef USE_CD
     
     SLIB += $(CD_LIB)/libcd$(CD_SUFFIX).a
     
-    # Freetype is already included in GTK
-    ifndef USE_GTK
-      LINK_FREETYPE = Yes
-    else
-      ifneq ($(findstring cygw, $(TEC_UNAME)), )
-        LINK_FREETYPE = Yes
-      endif
+    ifneq ($(findstring Linux26g4, $(TEC_UNAME)), )
+      LIBS += fontconfig
     endif
+    ifneq ($(findstring Linux3, $(TEC_UNAME)), )
+      LIBS += fontconfig
+    endif
+    
+    LINK_FREETYPE = Yes
   else
     ifdef USE_XRENDER
       CHECK_XRENDER = Yes
@@ -972,13 +976,20 @@ ifdef USE_CD
 	    LINK_FREETYPE = Yes
 	    LIBS += fontconfig xml2
 	  endif
-
+    
     LIBS += cd$(CD_SUFFIX)
     LDIR += $(CD_LIB)
     
     ifndef NO_OVERRIDE
-      # Freetype is already included in GTK
+      # Freetype and Fontconfig is already included in GTK
       ifndef USE_GTK
+        ifneq ($(findstring Linux26g4, $(TEC_UNAME)), )
+          LIBS += fontconfig
+        endif
+        ifneq ($(findstring Linux3, $(TEC_UNAME)), )
+          LIBS += fontconfig
+        endif
+        
         LINK_FREETYPE = Yes
       endif
     endif
@@ -1278,6 +1289,7 @@ OBJ := $(OBJ:.cc=.o)
 OBJ := $(OBJ:.f=.o)
 OBJ := $(OBJ:.for=.o)
 OBJ := $(OBJ:.rc=.ro)
+OBJ := $(OBJ:.cu=.o)
 OBJS = $(addprefix $(OBJDIR)/, $(OBJ))
 
 ifdef LOHPACK
