@@ -95,10 +95,11 @@ SRC += glcanvas.c
 SRC += glcanvas_cube.c
 SRC += charac.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += cdgl ftgl
+  LIBS += cdgl ftgl iupglcontrols
   LDIR += $(CD)/lib/$(TEC_UNAME)
 else
-  SLIB += $(CD_LIB)/libcdgl.a $(CD_LIB)/libftgl.a 
+  SLIB += $(CD_LIB)/libcdgl.a $(CD_LIB)/libftgl.a \
+          $(IUP_LIB)/libiupglcontrols.a 
   ifdef USE_MOTIF
     LIBS += fontconfig
   endif  

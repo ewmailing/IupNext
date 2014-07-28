@@ -124,7 +124,6 @@ static int cbTest(Ihandle* ih)
 
   {
     Ihandle* child = IupGetChild(tabs, 1);
-    title = iupAttribGet(child, "TABTITLE");
     title = IupGetAttribute(child, "TABTITLE");
     printf("%s=%s\n", att, title);
   }
