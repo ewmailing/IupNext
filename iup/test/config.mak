@@ -100,6 +100,9 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 else
   SLIB += $(CD_LIB)/libcdgl.a $(CD_LIB)/libftgl.a \
           $(IUP_LIB)/libiupglcontrols.a 
+  ifneq ($(findstring CYGW, $(TEC_SYSNAME)), )
+    LIBS += iconv fontconfig
+  endif  
   ifdef USE_MOTIF
     LIBS += fontconfig
   endif  
