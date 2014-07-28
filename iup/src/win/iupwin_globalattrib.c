@@ -421,6 +421,10 @@ char* iupdrvGetGlobal(const char* name)
   {
     return (char*)iupwin_dll_hinstance;
   }
+  if (iupStrEqual(name, "COMCTL32VER6"))
+  {
+    return iupStrReturnBoolean(iupwin_comctl32ver6);
+  }
   if (iupStrEqual(name, "SYSTEMCODEPAGE"))
   {
     CPINFOEX info;
