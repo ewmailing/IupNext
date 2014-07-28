@@ -39,15 +39,16 @@ static Tlist* all_late;
 
 static int nerrors = 0;
 
-#define nheaders 9
+#define nheaders 10
 
 static struct {
   char* name;
   int used;
-} headerfile[9] = {
+} headerfile[nheaders] = {
   { "iup",        1 },
   { "iupcontrols",0 },
   { "iupgl",      0 },
+  { "iupglcontrols",0 },
   { "iupole",     0 },
   { "iupweb",     0 },
   { "iup_pplot",  0 },
@@ -60,6 +61,7 @@ enum headers {
   IUP_H, 
   IUPCONTROLS_H, 
   IUPGL_H, 
+  IUPGLCONTROLS_H, 
   IUPOLE_H,
   IUPWEB_H,
   IUPPPLOT_H,
@@ -113,9 +115,6 @@ elems[] =
   { "User",         code_empty,        check_empty,       0  },
   { "Button",       code_string2,      check_string_cb,   0  },
   { "Canvas",       code_string,       check_cb,          0  },
-  { "Colorbar",     code_empty,        check_empty,       IUPCONTROLS_H  },
-  { "ColorBrowser", code_empty,        check_empty,       IUPCONTROLS_H  },
-  { "Dial",         code_string,       check_string,      IUPCONTROLS_H  },
   { "Dialog",       code_elem,         check_elem,        0  },
   { "Fill",         code_empty,        check_empty,       0  },
   { "FileDlg",      code_empty,        check_empty,       0  },
@@ -124,15 +123,10 @@ elems[] =
   { "FontDlg",      code_empty,        check_empty,       0  },
   { "ProgressBar",  code_empty,        check_empty,       0  },
   { "Frame",        code_elem,         check_elem,        0  },
-  { "Gauge",        code_empty,        check_empty,       IUPCONTROLS_H  },
-  { "GLCanvas",     code_string,       check_cb,          IUPGL_H  },
   { "Hbox",         code_elemlist,     check_elemlist,    0  },
   { "Item",         code_string2,      check_string_cb,   0  },
   { "Label",        code_string,       check_string,      0  },
   { "List",         code_string,       check_cb,          0  },
-  { "Matrix",       code_string,       check_cb,          IUPCONTROLS_H  },
-  { "MatrixList",   code_empty,        check_empty,       IUPCONTROLS_H  },
-  { "MatrixEx",     code_empty,        check_empty,       IUPMATRIXEX_H  },
   { "Sbox",         code_elem,         check_elem,        0  },
   { "ScrollBox",    code_elem,         check_elem,        0  },
   { "DetachBox",    code_elem,         check_elem,        0  },
@@ -153,16 +147,37 @@ elems[] =
   { "GridBox",      code_elemlist,     check_elemlist,    0  },
   { "Normalizer",   code_elemlist,     check_elemlist_rep,0  },
   { "Link",         code_string2,      check_string2,     0  },
-  { "OleControl",   code_string,       check_cb,          IUPOLE_H  },
   { "Cbox",         code_elemlist,     check_elemlist,    0  },
-  { "Cells",        code_empty,        check_empty,       IUPCONTROLS_H  },
   { "Spin",         code_empty,        check_empty,       0  },
   { "Spinbox",      code_elem,         check_elem,        0  },
   { "Split",        code_elemlist2,    check_elemlist2,   0  },
-  { "PPlot",        code_empty,        check_empty,       IUPPPLOT_H  },
-  { "MglPlot",      code_empty,        check_empty,       IUPMGLPLOT_H  },
-  { "WebBrowser",   code_empty,        check_empty,       IUPWEB_H  },
-  { "Scintilla",    code_empty,        check_empty,       IUPSCINTILLA_H  },
+  { "Cells",        code_empty,        check_empty,       IUPCONTROLS_H },
+  { "Gauge",        code_empty,        check_empty,       IUPCONTROLS_H },
+  { "Colorbar",     code_empty,        check_empty,       IUPCONTROLS_H },
+  { "ColorBrowser", code_empty,        check_empty,       IUPCONTROLS_H },
+  { "Dial",         code_string,       check_string,      IUPCONTROLS_H },
+  { "Matrix",       code_string,       check_cb,          IUPCONTROLS_H },
+  { "MatrixList",   code_empty,        check_empty,       IUPCONTROLS_H },
+  { "GLCanvas",     code_string,       check_cb,          IUPGL_H },
+  { "MatrixEx",     code_empty,        check_empty,       IUPMATRIXEX_H },
+  { "OleControl",   code_string,       check_cb,          IUPOLE_H },
+  { "PPlot",        code_empty,        check_empty,       IUPPPLOT_H },
+  { "MglPlot",      code_empty,        check_empty,       IUPMGLPLOT_H },
+  { "Scintilla",    code_empty,        check_empty,       IUPSCINTILLA_H },
+  { "WebBrowser",   code_empty,        check_empty,       IUPWEB_H },
+  { "GLCanvasBox",  code_elemlist,     check_elemlist,    IUPGLCONTROLS_H },
+  { "GLSubCanvas",  code_empty,        check_empty,       IUPGLCONTROLS_H },
+  { "GLLabel",      code_string,       check_string,      IUPGLCONTROLS_H },
+  { "GLSeparator",  code_empty,        check_empty,       IUPGLCONTROLS_H },
+  { "GLButton",     code_string,       check_string,      IUPGLCONTROLS_H },
+  { "GLToggle",     code_string,       check_string,      IUPGLCONTROLS_H },
+  { "GLProgressBar",code_empty,        check_empty,       IUPGLCONTROLS_H },
+  { "GLVal",        code_empty,        check_empty,       IUPGLCONTROLS_H },
+  { "GLLink",       code_string2,      check_string2,     IUPGLCONTROLS_H },
+  { "GLFrame",      code_elem,         check_elem,        IUPGLCONTROLS_H },
+  { "GLExpander",   code_elem,         check_elem,        IUPGLCONTROLS_H },
+  { "GLScrollBox",  code_elem,         check_elem,        IUPGLCONTROLS_H },
+  { "GLSizeBox",    code_elem,         check_elem,        IUPGLCONTROLS_H },
   { "@@@",          code_iupCpi,       check_iupCpi,      0  }
 };
 #define nelems (sizeof(elems)/sizeof(elems[0]))
