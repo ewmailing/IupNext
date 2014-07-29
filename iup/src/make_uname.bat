@@ -2,7 +2,7 @@
 REM This builds all the libraries of the folder for 1 uname
 
 call tecmake %1 %2 %3 %4 %5 %6
-call tecmake %1 "USE_GTK=Yes" %2 %3 %4 %5 %6
+REM call tecmake %1 "USE_GTK=Yes" %2 %3 %4 %5 %6
 
 if "%1"=="dll" goto stub_dll6
 if "%1"=="dll7" goto stub_dll7
@@ -111,7 +111,7 @@ call make_uname dll10_64 %2 %3 %4 %5 %6
 call make_uname dll11 %2 %3 %4 %5 %6
 call make_uname dll11_64 %2 %3 %4 %5 %6
 call make_uname dll12 %2 %3 %4 %5 %6
-REM call make_uname dll12_64 %2 %3 %4 %5 %6
+call make_uname dll12_64 %2 %3 %4 %5 %6
 call make_uname dllg4 %2 %3 %4 %5 %6
 call make_uname dllw4 %2 %3 %4 %5 %6
 call make_uname dllw4_64 %2 %3 %4 %5 %6
@@ -134,7 +134,7 @@ call make_uname dll10_64 %2 %3 %4 %5 %6
 call make_uname dll11 %2 %3 %4 %5 %6
 call make_uname dll11_64 %2 %3 %4 %5 %6
 call make_uname dll12 %2 %3 %4 %5 %6
-REM call make_uname dll12_64 %2 %3 %4 %5 %6
+call make_uname dll12_64 %2 %3 %4 %5 %6
 goto fim
 
 :all_gcc_dll
