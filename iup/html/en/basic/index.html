@@ -376,7 +376,7 @@ little program shows that even when the computer is almost completely
 preoccupied doing work, it is still keeping the user informed and in fact the 
 window remains useable, although a little slow to respond.</p>
 
-<pre><code>-- idle1.wlua
+<pre><code>-- idle1.lua
 require &quot;iuplua&quot;
 require &quot;iupluacontrols&quot;
 
@@ -412,7 +412,7 @@ iup.MainLoop()
 <p>It is easy to display a list of values in IupLua. The values can be directly 
 specified in the <code>iup.list</code> constructor, like so:</p>
 
-<pre><code>-- list1.wlua
+<pre><code>-- list1.lua
 require &quot;iuplua&quot;
 
 list = iup.list {&quot;Horses&quot;,&quot;Dogs&quot;,&quot;Pigs&quot;,&quot;Humans&quot;; expand=&quot;YES&quot;}
@@ -767,7 +767,7 @@ later whether we have actually generated the contents of that directory!</p>
 selected node of the tree. (Although we are passed the correct id of the node, 
 it seems to be necessary to perform this step to make things work correctly.)</p>
 
-<p>See <code>directory.wlua</code> in the examples folder.</p>
+<p>See <code>directory.lua</code> in the examples folder.</p>
 
 <p class="style1"><img src="directory.png" alt="directory"/></p>
 
@@ -780,7 +780,7 @@ these items, and set the <code>menu</code>  attribute of the dialog. The items
 have an associated <code>action</code> callback, which actually performs the 
 operation.</p>
 
-<pre><code>-- simple-menu.wlua
+<pre><code>-- simple-menu.lua
 
 require( &quot;iuplua&quot; )
 
@@ -819,7 +819,7 @@ iup.MainLoop()
 <p>A menu may contain items and <em>submenus</em>. This example shows a small 
 function which makes creating arbitrarily complicated menus easier:</p>
 
-<pre><code>-- menu.wlua
+<pre><code>-- menu.lua
 
 require( &quot;iuplua&quot; )
 
@@ -905,7 +905,7 @@ on the plot.</p>
 
 <p>A simple plot is straightforward:</p>
 
-<pre><code>-- pplot1.wlua
+<pre><code>-- pplot1.lua
 require( &quot;iuplua&quot; )
 require( &quot;iupluacontrols&quot; )
 require( &quot;iuplua_pplot51&quot;  )
@@ -1056,7 +1056,7 @@ then less things to worry about.</p>
 <p>Given this function, we can write a little program which plots some points 
 and draws the linear least-squares fit between them:</p>
 
-<pre><code>-- simple-pplot.wlua
+<pre><code>-- simple-pplot.lua
 
 local xx = {0,2,5,10}
 local yy = {1,1.5,6,8}
@@ -1104,7 +1104,7 @@ introduced, <code>AXS_BOUNDS</code>, which is a table of four values <code>
 {xmin,ymin,xmax,ymax}</code>. This example shows that very different ranges can 
 happily exist on the same plot:</p>
 
-<pre><code>-- pplot5.wlua
+<pre><code>-- pplot5.lua
 
 require &quot;iupx&quot;
 
