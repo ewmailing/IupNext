@@ -70,8 +70,8 @@ wb_usr.tree =
           }
         },
         {
-          name= {nl= "CVS"},
-          link= "cvs.html"
+          name= {nl= "SVN"},
+          link= "svn.html"
         },
         {
           name= {en= "History"},
