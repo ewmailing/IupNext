@@ -10,8 +10,14 @@ static int listclick_cb(Ihandle *self, int lin, int col, char *status)
 {
   char* value = IupGetAttributeId(self, "", lin);
   if (!value) value = "NULL";
-  printf("click_cb(%d, %d)\n", lin, col);
+  printf("listclick_cb(%d, %d)\n", lin, col);
   printf("  VALUE%d:%d = %s\n", lin, col, value);
+  return IUP_DEFAULT;
+}
+
+static int listaction_cb(Ihandle *self, int item, int state)
+{
+  printf("listaction_cb(item=%d, state=%d)\n", item, state);
   return IUP_DEFAULT;
 }
 
@@ -32,7 +38,8 @@ int main(int argc, char **argv)
   IupSetAttribute(mlist, "SHOWDELETE", "Yes");
 
   IupSetAttribute(mlist, "EDITABLE", "Yes");
-//  IupSetCallback(mlist,"LISTCLICK_CB",(Icallback)listclick_cb);
+  IupSetCallback(mlist,"LISTCLICK_CB",(Icallback)listclick_cb);
+  IupSetCallback(mlist,"LISTACTION_CB",(Icallback)listaction_cb);
 
   /* Bluish style */
   if (1)
