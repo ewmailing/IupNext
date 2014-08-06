@@ -9,6 +9,13 @@ function cv:motion_cb(x, y, r)
   print(x, y, r)
 end
 
+function cv:k_any(c)
+  print("c              = ", c)
+  print("  XkeyBase(c)  = ", iup.XkeyBase(c))
+  print("  isCtrlXkey(c)= ", iup.isCtrlXkey(c))
+  print("  isAltXkey(c) = ", iup.isAltXkey(c))
+end
+
 dg:showxy(iup.CENTER, iup.CENTER)
 
 if (iup.MainLoopLevel()==0) then

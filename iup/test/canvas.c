@@ -299,6 +299,10 @@ static int k_any(Ihandle *ih, int c)
     printf("K_ANY(0x%X = %s)\n", c, iupKeyCodeToName(c));
 
   printf("  MODKEYSTATE(%s)\n", IupGetGlobal("MODKEYSTATE"));
+
+  printf("  isShiftXkey(%d)\n", iup_isShiftXkey(c));
+  printf("  isCtrlXkey(%d)\n", iup_isCtrlXkey(c));
+  printf("  isAltXkey(%d)\n", iup_isAltXkey(c));
   return IUP_DEFAULT;
 }
 

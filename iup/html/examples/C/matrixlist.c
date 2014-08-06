@@ -6,6 +6,13 @@
 #include <iupcontrols.h>
 #include <cd.h>
 
+
+static int imagevaluechanged_cb(Ihandle *self, int item, int state)
+{
+	printf("imagevaluechanged_cb(item=%d, state=%d)\n", item, state);
+	return IUP_DEFAULT;
+}
+
 static int listclick_cb(Ihandle *self, int lin, int col, char *status)
 {
   char* value = IupGetAttributeId(self, "", lin);
@@ -30,16 +37,18 @@ int main(int argc, char **argv)
   mlist = IupMatrixList();
   IupSetInt(mlist, "COUNT", 10);
   IupSetInt(mlist, "VISIBLELINES", 5);
-  IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR:IMAGE");
+    IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR:IMAGE");
 //  IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR");
 //  IupSetAttribute(mlist, "COLUMNORDER", "LABEL");
 //  IupSetAttribute(mlist, "ACTIVE", "NO");
 //  IupSetAttribute(mlist, "FOCUSCOLOR", "BGCOLOR");
-  IupSetAttribute(mlist, "SHOWDELETE", "Yes");
+//  IupSetAttribute(mlist, "SHOWDELETE", "Yes");
 
   IupSetAttribute(mlist, "EDITABLE", "Yes");
   IupSetCallback(mlist,"LISTCLICK_CB",(Icallback)listclick_cb);
   IupSetCallback(mlist,"LISTACTION_CB",(Icallback)listaction_cb);
+  IupSetCallback(mlist, "IMAGEVALUECHANGED_CB", (Icallback)imagevaluechanged_cb);
+  
 
   /* Bluish style */
   if (1)
