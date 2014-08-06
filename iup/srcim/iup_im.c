@@ -396,9 +396,9 @@ static void iFlipData(unsigned char* data, int width, int height, int depth)
   for (y = 0; y < half_height; y++)
   {
     int yd = height - 1 - y;
-    memcpy(temp_line, data + yd*width, line_size);
-    memcpy(data + yd*width, data + y*width, line_size);
-    memcpy(data + y*width, temp_line, line_size);
+    memcpy(temp_line, data + yd*line_size, line_size);
+    memcpy(data + yd*line_size, data + y*line_size, line_size);
+    memcpy(data + y*line_size, temp_line, line_size);
   }
 
   free(temp_line);
