@@ -22,19 +22,27 @@
 static int GetNativeHandleImage(lua_State *L)
 {
   void* handle;
-  imImage* image;
+  imImage* im_image;
   luaL_checktype (L, 1, LUA_TLIGHTUSERDATA);
   handle = lua_touserdata(L, 1);
-  image = IupGetNativeHandleImage(handle);
-  imlua_pushimage(L, image);
+  im_image = IupGetNativeHandleImage(handle);
+  imlua_pushimage(L, im_image);
   return 1;
 }
 
 static int GetImageNativeHandle(lua_State *L)
 {
-  imImage* image = imlua_checkimage(L, 1);
-  void* handle = IupGetImageNativeHandle(image);
+  imImage* im_image = imlua_checkimage(L, 1);
+  void* handle = IupGetImageNativeHandle(im_image);
   lua_pushlightuserdata(L, handle);
+  return 1;
+}
+
+static int ImageFromImImage(lua_State *L)
+{
+  imImage* im_image = imlua_checkimage(L, 1);
+  Ihandle* image = IupImageFromImImage(im_image);
+  iuplua_pushihandle(L, image);
   return 1;
 }
 
@@ -63,6 +71,7 @@ int iupimlua_open(lua_State *L)
   iuplua_register(L, SaveImage, "SaveImage");
   iuplua_register(L, GetNativeHandleImage, "GetNativeHandleImage");
   iuplua_register(L, GetImageNativeHandle, "GetImageNativeHandle");
+  iuplua_register(L, ImageFromImImage, "ImageFromImImage");
   return 0; /* nothing in stack */
 }
 
