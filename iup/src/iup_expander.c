@@ -763,6 +763,9 @@ static int iExpanderSetStateAttrib(Ihandle* ih, const char* value)
   else
     state = IEXPANDER_CLOSE;
 
+  if (ih->data->state == state)
+    return 0;
+
   iExpanderOpenCloseChild(ih, 1, 0, state);
 
   return 0; /* do not store value in hash table */
