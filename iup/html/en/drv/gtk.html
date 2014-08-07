@@ -59,7 +59,7 @@ to the &quot;MS-Windows&quot; theme. Edit the &quot;gtk\etc\gtk-2.0\gtkrc&quot; 
 contents to:</p>
 <pre>gtk-theme-name = &quot;MS-Windows&quot;</pre>
 <h4>Ubuntu Unity</h4>
-<p>Since Ubuntu version 11 there is a new desktop called&nbsp; Unity. This 
+<p>Since Ubuntu version 11 there is a new desktop called&nbsp;Unity. This 
 desktop introduces some changes that affect all applications. Two of these 
 changes directly affect IUP applications.</p>
 <p>First the global menu forces all dialog menus to be displayed in the top of 
@@ -67,6 +67,9 @@ the desktop, like in MacOSX. This affected the size of the IUP dialog. It is
 fixed since IUP version 3.6. If you don&#39;t like the global menu you can remove it 
 using:</p>
 <pre style="border-color: inherit; vertical-align: baseline; outline: none; font-variant: normal; orphans: 2; text-align: start; text-indent: 0px; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">sudo apt-get remove appmenu-gtk3 appmenu-gtk appmenu-qt</pre>
+<p>You can also control that using &quot;export UBUNTU_MENUPROXY=0&quot;. The are other 
+forms to control this feature see &quot;<a href="http://www.webupd8.org/2011/03/disable-appmenu-global-menu-in-ubuntu.html" target="_blank">How 
+to Disable the AppMenu</a>&quot;.</p>
 <p>Second, the scrollbars are reduced to a very tiny line and handlers are 
 displayed only when the mouse moves over the right or bottom side of the 
 element. All the controls, except the <strong>IupCanvas</strong>, will work with 

@@ -338,7 +338,7 @@ int iupdrvOpen(int *argc, char ***argv)
   IupSetGlobal("SHOWMENUIMAGES", "YES");
 
   value = getenv("UBUNTU_MENUPROXY");  /* for now only in Ubuntu */
-  if (value && iupStrEqualNoCase(value, "libappmenu.so"))
+  if (value && (iupStrEqualNoCase(value, "libappmenu.so") || iupStrEqualNoCase(value, "1")))
     IupSetGlobal("GLOBALMENU", "Yes");
   
   return IUP_NOERROR;
