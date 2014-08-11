@@ -23,6 +23,12 @@
   .style6 {
 	color: #008000;
 }
+  .style7 {
+	color: #0000FF;
+}
+.style8 {
+	color: #FF0000;
+}
   </style>
 </head>
 
@@ -36,21 +42,51 @@
 
 	<h4>3.12 (Expected to November 2014)</h4>
 <ul>
-	<li><strong>Consolidate a plot control</strong><ul>
-		<li>double coordinates, OpenGL support, better zoom and pan, clipboard, 
+	<li><span class="style7"><strong>New:</strong></span><ul>
+		<li>plot control with double coordinates, OpenGL support, better zoom and pan, clipboard, 
 		configuration dialog</li>
+		<li>C++ API &amp; Utilities </li>
 	</ul>
 	</li>
-	<li>Paste Special Dialog (<strong>IupMatrixEx</strong>)</li>
-	<li>Dynamic column value fill using Lua (<strong>IupMatrixEx</strong>)</li>
-	<li>C++ API &amp; Utilities </li>
-	<li>&nbsp;GTK defaults to GTK version 3 starting at Linux 3. (No XOR support)</li>
+	<li><span class="style6"><strong>Changes:</strong></span><ul>
+		<li>Paste Special Dialog (<strong>IupMatrixEx</strong>)</li>
+		<li>Dynamic column value fill using Lua (<strong>IupMatrixEx</strong>)</li>
+		<li>Support for bring-to-front when click in <strong>IupGLFrame</strong> 
+		and <strong>IupGLExpander</strong></li>
+		<li>Decimal places for real numbers in <strong>IupGetParam</strong>. Add 
+		&quot;double&quot; support.</li>
+		<li><strong>IupExpander</strong> and <strong>IupGLExpander</strong> 
+		support for animation</li>
+		<li>image as background for <strong>IupGLControls</strong></li>
+		<li>Improve double support (<strong>IupSetDouble</strong>/<strong>IupGetDouble</strong>)</li>
+		<li>GTK defaults to GTK version 3 starting at Linux 3. (Notice no XOR support 
+		in CD)</li>
+	</ul>
+	</li>
+	<li><span class="style8"><strong>Bugs (07/Ago/2014):</strong></span><ul>
+		<li>CARET in <strong>IupScintilla</strong></li>
+		<li><strong>IupReparent</strong> with <strong>IupTabs</strong></li>
+		<li><strong>IupGLExpander</strong> missing some size initialization, see 
+		IupTest application in release build</li>
+		<li><strong>IupGlControls</strong> filled rectangle showing a diagonal 
+		line in release build</li>
+		<li>Check <strong>IupLayoutDialog</strong> and CLIENTOFFSET</li>
+		<li>Shift key + scroll in <strong>IupMatrix</strong> reset selection 
+		origin</li>
+		<li>Add compatibility code for GTK 3.10</li>
+		<li>Other native controls inside <strong>IupGLCanvasBox</strong> (like
+		<strong>IupText</strong> and <strong>IupMatrix</strong>)</li>
+		<li>Maximize in GTK on latest Ubuntu</li>
+		<li>Check focus control after edition in <strong>IupMatrixList</strong></li>
+	</ul>
+	</li>
 </ul>
 
-	<h4>Next Version</h4>
+	<h4>Future Versions (?)</h4>
 <ul>
 	<li>Interactive Dialog Editor / <span>Tools to improve productivity</span></li>
 	<li>Tutorial section and code snippets collection</li>
+	<li>MacOS X native driver</li>
 </ul>
 
 <h3>General</h3>
