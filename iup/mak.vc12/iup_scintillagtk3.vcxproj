@@ -76,7 +76,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\src;..\src\gtk;..\include;..\srcscintilla;..\srcscintilla\include;..\srcscintilla\lexlib;..\srcscintilla\src;..\srcscintilla\gtk;d:\lng\gtk3\include\atk-1.0;d:\lng\gtk3\include\cairo;d:\lng\gtk3\include\glib-2.0;d:\lng\gtk3\include\gtk-3.0;d:\lng\gtk3\include\pango-1.0;d:\lng\gtk3\include\gdk-pixbuf-2.0;d:\lng\gtk3\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src;..\src\gtk;..\include;..\srcscintilla;..\srcscintilla\include;..\srcscintilla\lexlib;..\srcscintilla\src;..\srcscintilla\gtk;d:\lng\gtk3_x64\include\atk-1.0;d:\lng\gtk3_x64\include\cairo;d:\lng\gtk3_x64\include\glib-2.0;d:\lng\gtk3_x64\include\gtk-3.0;d:\lng\gtk3_x64\include\pango-1.0;d:\lng\gtk3_x64\include\gdk-pixbuf-2.0;d:\lng\gtk3_x64\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;GTK;_USE_MATH_DEFINES;STATIC_BUILD;SCI_LEXER;GTK_DISABLE_DEPRECATED;GDK_DISABLE_DEPRECATED;GSEAL_ENABLE;G_HAVE_ISO_VARARGS;SCI_NAMESPACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
