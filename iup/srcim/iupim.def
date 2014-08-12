@@ -3,3 +3,4 @@ IupLoadImage
 IupSaveImage
 IupGetNativeHandleImage
 IupGetImageNativeHandle
+IupImageFromImImage
