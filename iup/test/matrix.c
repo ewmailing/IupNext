@@ -119,7 +119,7 @@ static Ihandle* create_matrix(void)
     IupSetAttribute(mat, "2:2", "(Γ§Γ£ΓµΓ΅Γ³Γ©)");
   else
     IupSetAttribute(mat, "2:2", "(ηγυασι)");
-  
+
   IupSetAttribute(mat, "3:1", "3.4");
   IupSetAttribute(mat, "3:3", "Font Test");
 //  IupSetAttribute(mat, "HEIGHT2", "30");
@@ -165,14 +165,14 @@ static Ihandle* create_matrix(void)
 
   IupSetAttribute(mat, "TOGGLEVALUE4:4", "ON");
 
-//  IupSetAttribute(mat,"MARKMODE","CELL");
-  IupSetAttribute(mat,"MARKMODE","LIN");
-  IupSetAttribute(mat,"MARKMULTIPLE","NO");
-//  IupSetAttribute(mat,"MARKMULTIPLE","YES");
-//  IupSetAttribute(mat,"MARKAREA","NOT_CONTINUOUS");
-  IupSetAttribute(mat,"MARK2:2","YES");
-  IupSetAttribute(mat,"MARK2:3","YES");
-  IupSetAttribute(mat,"MARK3:3","YES");
+  IupSetAttribute(mat,"MARKMODE","CELL");
+//  IupSetAttribute(mat,"MARKMODE","LIN");
+//  IupSetAttribute(mat,"MARKMULTIPLE","NO");
+  IupSetAttribute(mat,"MARKMULTIPLE","YES");
+  IupSetAttribute(mat,"MARKAREA","NOT_CONTINUOUS");
+//  IupSetAttribute(mat,"MARK2:2","YES");
+//  IupSetAttribute(mat,"MARK2:3","YES");
+//  IupSetAttribute(mat,"MARK3:3","YES");
 
   IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","BGCOLOR");
   IupSetAttribute(mat,"FRAMEHORIZCOLOR1:2","0 0 255");
@@ -195,7 +195,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "NUMCOL_VISIBLE", "3");
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "5");
 //  IupSetAttribute(mat,"EDITNEXT","COLCR");
-  IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
+//  IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
 
 //  IupSetAttribute(mat, "LIMITEXPAND", "Yes");
 //  IupSetAttribute(mat, "XAUTOHIDE", "NO");
