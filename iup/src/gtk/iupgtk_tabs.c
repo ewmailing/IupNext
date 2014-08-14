@@ -399,8 +399,14 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     if(ih->data->show_close)
     {
+#if GTK_CHECK_VERSION(3, 10, 0)
+      GtkWidget* image = gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_MENU);
+#else
+      GtkWidget* image = gtk_image_new_from_stock(GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
+#endif
+
       tab_close = gtk_button_new();
-      gtk_button_set_image((GtkButton*)tab_close, gtk_image_new_from_stock(GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU));
+      gtk_button_set_image((GtkButton*)tab_close, image);
       gtk_button_set_relief((GtkButton*)tab_close, GTK_RELIEF_NONE);
       gtk_button_set_focus_on_click((GtkButton*)tab_close, FALSE);
       iupgtkSetCanFocus(tab_close, FALSE);
@@ -601,3 +607,4 @@ void iupdrvTabsInitClass(Iclass* ic)
   /* NOT supported */
   iupClassRegisterAttribute(ic, "MULTILINE", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_DEFAULT);
 }
+

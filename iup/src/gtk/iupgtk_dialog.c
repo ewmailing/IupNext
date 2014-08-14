@@ -798,7 +798,11 @@ static int gtkDialogSetOpacityAttrib(Ihandle *ih, const char *value)
   if (!iupStrToInt(value, &opacity))
     return 0;
 
+#if GTK_CHECK_VERSION(3, 8, 0)
+  gtk_widget_set_opacity(ih->handle, (double)opacity/255.0);
+#else
   gtk_window_set_opacity((GtkWindow*)ih->handle, (double)opacity/255.0);
+#endif
   return 1;
 }
 #endif

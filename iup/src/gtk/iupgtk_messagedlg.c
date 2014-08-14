@@ -31,6 +31,7 @@ static int gtkMessageDlgPopup(Ihandle* ih, int x, int y)
   GtkMessageType type = GTK_MESSAGE_OTHER;
   GtkWidget* dialog;
   char *icon, *buttons, *title;
+  const char *ok, *cancel, *yes, *no, *help;
   int response, num_but = 2;
 
   iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
@@ -59,35 +60,49 @@ static int gtkMessageDlgPopup(Ihandle* ih, int x, int y)
   if (title)
     gtk_window_set_title(GTK_WINDOW(dialog), iupgtkStrConvertToSystem(title));
 
+#if GTK_CHECK_VERSION(3, 10, 0)
+  ok = "_OK";
+  cancel = "_Cancel";
+  yes = "_Yes";
+  no = "_No";
+  help = "_Help";
+#else
+  ok = GTK_STOCK_OK;
+  cancel = GTK_STOCK_CANCEL;
+  yes = GTK_STOCK_YES;
+  no = GTK_STOCK_NO;
+  help = GTK_STOCK_HELP;
+#endif
+
   buttons = iupAttribGetStr(ih, "BUTTONS");
   if (iupStrEqualNoCase(buttons, "OKCANCEL"))
   {
     gtk_dialog_add_button(GTK_DIALOG(dialog),
-                          GTK_STOCK_OK,
+                          ok,
                           IUP_RESPONSE_1);
     gtk_dialog_add_button(GTK_DIALOG(dialog),
-                          GTK_STOCK_CANCEL,
+                          cancel,
                           IUP_RESPONSE_2);
   }
   else if (iupStrEqualNoCase(buttons, "YESNO"))
   {
     gtk_dialog_add_button(GTK_DIALOG(dialog),
-                          GTK_STOCK_YES,
+                          yes,
                           IUP_RESPONSE_1);
     gtk_dialog_add_button(GTK_DIALOG(dialog),
-                          GTK_STOCK_NO,
+                          no,
                           IUP_RESPONSE_2);
   }
   else /* OK */
   {
     gtk_dialog_add_button(GTK_DIALOG(dialog),
-                          GTK_STOCK_OK,
+                          ok,
                           IUP_RESPONSE_1);
     num_but = 1;
   }
 
   if (IupGetCallback(ih, "HELP_CB"))
-    gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_HELP, IUP_RESPONSE_HELP);
+    gtk_dialog_add_button(GTK_DIALOG(dialog), help, IUP_RESPONSE_HELP);
 
   if (num_but == 2 && iupAttribGetInt(ih, "BUTTONDEFAULT") == 2)
     gtk_dialog_set_default_response(GTK_DIALOG(dialog), IUP_RESPONSE_2);

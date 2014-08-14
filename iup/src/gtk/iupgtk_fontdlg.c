@@ -66,7 +66,15 @@ static int gtkFontDlgPopup(Ihandle* ih, int x, int y)
   }
 
   if (IupGetCallback(ih, "HELP_CB"))
-    gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_HELP, GTK_RESPONSE_HELP);
+  {
+#if GTK_CHECK_VERSION(3, 10, 0)
+    const char* help = "_Help";
+#else
+    const char* help = GTK_STOCK_HELP;
+#endif
+
+    gtk_dialog_add_button(GTK_DIALOG(dialog), help, GTK_RESPONSE_HELP);
+  }
   
   /* initialize the widget */
   gtk_widget_realize(GTK_WIDGET(dialog));

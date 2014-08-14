@@ -80,9 +80,9 @@ ifdef USE_GTK
          gtk/iupgtk_colordlg.c gtk/iupgtk_fontdlg.c gtk/iupgtk_filedlg.c \
          gtk/iupgtk_button.c gtk/iupgtk_toggle.c gtk/iupgtk_dragdrop.c \
          gtk/iupgtk_text.c gtk/iupgtk_frame.c gtk/iupgtk_progressbar.c \
-         gtk/iupgtk_tabs.c gtk/iupgtk_menu.c gtk/iupgtk_list.c gtk/iupgtk_tree.c \
+         gtk/iupgtk_tabs.c gtk/iupgtk_list.c gtk/iupgtk_tree.c \
          gtk/iupgtk_canvas.c gtk/iupgtk_image.c gtk/iupgtk_dialog.c \
-         gtk/iupgtk_common.c gtk/iupgtk_str.c
+         gtk/iupgtk_common.c gtk/iupgtk_str.c gtk/iupgtk_menu.c 
            
   ifdef USE_GTK3
     SRC += gtk/iupgtk_draw_cairo.c

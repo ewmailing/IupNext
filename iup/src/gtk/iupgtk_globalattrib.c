@@ -135,8 +135,10 @@ int iupdrvSetGlobal(const char *name, const char *value)
   }
   if (iupStrEqual(name, "SHOWMENUIMAGES"))
   {
+#if !GTK_CHECK_VERSION(3, 10, 0)  /* deprecated since 3.10 */
     /* make sure the type is realized */
     g_type_class_unref (g_type_class_ref (GTK_TYPE_IMAGE_MENU_ITEM));
+#endif
 
     if (iupStrBoolean(value))
       g_object_set (gtk_settings_get_default (), "gtk-menu-images", TRUE, NULL);

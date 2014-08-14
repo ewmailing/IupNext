@@ -129,7 +129,7 @@ char* iupMenuProcessTitle(Ihandle* ih, const char* title)
   char* key = iupAttribGet(ih, "KEY");  /* NOT the same definition as the global KEY attribute */
   if (!key) return (char*)title;
 
-  str = strchr(title, (int)key);
+  str = strchr(title, (int)(*key));
   if (str)
   {
     int len = strlen(title);

@@ -213,6 +213,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   GtkWidget* dialog;
   GtkWidget* preview_canvas = NULL;
   GtkFileChooserAction action;
+  const char *ok, *cancel, *open, *save, *help;
   IFnss file_cb;
   char* value;
   int response, filter_count = 0;
@@ -231,36 +232,58 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   value = iupAttribGet(ih, "TITLE");
   if (!value)
   {
-    GtkStockItem item;
-
+#if GTK_CHECK_VERSION(3, 10, 0)
+    if (action == GTK_FILE_CHOOSER_ACTION_SAVE)
+      value = "Save _As";
+    else
+      value = "_Open";
+#else
     if (action == GTK_FILE_CHOOSER_ACTION_SAVE)
       value = GTK_STOCK_SAVE_AS;
     else
       value = GTK_STOCK_OPEN;
 
-    gtk_stock_lookup(value, &item);
-    value = item.label;
+    {
+      GtkStockItem item;
+      gtk_stock_lookup(value, &item);
+      value = item.label;
+    }
+#endif
 
     iupAttribSetStr(ih, "TITLE", iupgtkStrConvertFromSystem(value));
     value = iupAttribGet(ih, "TITLE");
     iupStrRemoveChar(value, '_');
   }
 
+#if GTK_CHECK_VERSION(3, 10, 0)
+  ok = "_OK";
+  cancel = "_Cancel";
+  save = "_Save";
+  open = "_Open";
+  help = "_Help";
+#else
+  ok = GTK_STOCK_OK;
+  cancel = GTK_STOCK_CANCEL;
+  save = GTK_STOCK_SAVE;
+  open = GTK_STOCK_OPEN;
+  help = GTK_STOCK_HELP;
+#endif
+
   dialog = gtk_file_chooser_dialog_new(iupgtkStrConvertToSystem(value), (GtkWindow*)parent, action, 
-                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, 
+                                       cancel, GTK_RESPONSE_CANCEL, 
                                        NULL);
   if (!dialog)
     return IUP_ERROR;
 
   if (action == GTK_FILE_CHOOSER_ACTION_SAVE)
-    gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_SAVE, GTK_RESPONSE_OK);
+    gtk_dialog_add_button(GTK_DIALOG(dialog), save, GTK_RESPONSE_OK);
   else if (action == GTK_FILE_CHOOSER_ACTION_OPEN)
-    gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_OPEN, GTK_RESPONSE_OK);
+    gtk_dialog_add_button(GTK_DIALOG(dialog), open, GTK_RESPONSE_OK);
   else
-    gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
+    gtk_dialog_add_button(GTK_DIALOG(dialog), ok, GTK_RESPONSE_OK);
 
   if (IupGetCallback(ih, "HELP_CB"))
-    gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_HELP, GTK_RESPONSE_HELP);
+    gtk_dialog_add_button(GTK_DIALOG(dialog), help, GTK_RESPONSE_HELP);
 
 #if GTK_CHECK_VERSION(2, 6, 0)
   if (iupAttribGetBoolean(ih, "SHOWHIDDEN"))

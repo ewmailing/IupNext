@@ -242,7 +242,13 @@ char* iupdrvGetSystemFont(void)
   {
     GtkStyleContext* context = gtk_widget_get_style_context(widget);
     if (context)
+    {
+#if GTK_CHECK_VERSION(3, 8, 0)
+      gtk_style_context_get(context, GTK_STATE_FLAG_NORMAL, "font", &font_desc, NULL);
+#else
       font_desc = gtk_style_context_get_font(context, GTK_STATE_FLAG_NORMAL);
+#endif
+    }
   }
 #else
   {

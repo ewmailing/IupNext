@@ -4,6 +4,7 @@
  * See Copyright Notice in "iup.h"
  */
 
+#undef GTK_DISABLE_DEPRECATED  /* Since GTK 3.10 gtk_image_menu is deprecated. */
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #if GTK_CHECK_VERSION(3, 0, 0)
