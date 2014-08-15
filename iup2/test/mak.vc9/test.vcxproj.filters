@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="iupfiledlg">
+      <UniqueIdentifier>{5667017a-f2dc-4ec8-9d0e-7ff9f04db10f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupmenu">
+      <UniqueIdentifier>{11dfeb2a-e0bc-434c-a5dc-bab0f85c1fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupval">
+      <UniqueIdentifier>{29fcc38a-991f-41f4-9f3d-abf4ecb620a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iuptabs">
+      <UniqueIdentifier>{70c7c5f3-8ce4-4e0d-ba8d-a2510867d9d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="led">
+      <UniqueIdentifier>{03b133e0-29b4-41ba-a6ac-147bd9ea81f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupmatrix">
+      <UniqueIdentifier>{694b4193-98b4-41f1-a823-93d5460d289c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupgauge">
+      <UniqueIdentifier>{464eac9a-afea-488f-ae02-836d48cfa127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupglcanvas">
+      <UniqueIdentifier>{4080fc9c-4d6a-4d5a-9029-fa2f6235c710}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupdialog">
+      <UniqueIdentifier>{f60abee9-085f-4e90-bde2-5eba226f6de8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupimage">
+      <UniqueIdentifier>{eebd1b70-b3a2-40d0-ba78-ec7ecc8d8a42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupradio">
+      <UniqueIdentifier>{f3105e7d-18d1-4bc0-aff2-d2181a1f68f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupmultiline">
+      <UniqueIdentifier>{6dbdc318-9bb1-4801-afca-831ff9952c3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupsbox">
+      <UniqueIdentifier>{211b392c-1f26-4166-9fa6-af5b77acc1a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iuptree">
+      <UniqueIdentifier>{47b79c5e-3bc9-40bc-a969-f379d7bd04b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupalarm">
+      <UniqueIdentifier>{dfd324c0-9404-486a-8e44-96db40bce840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupcells">
+      <UniqueIdentifier>{066da023-18d6-42a3-810c-c2bed9b3bf09}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\iupfiledlg\iupfiledlg.c">
+      <Filter>iupfiledlg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupfiledlg\manual.c">
+      <Filter>iupfiledlg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupfiledlg\test1.c">
+      <Filter>iupfiledlg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupmenu\iupmenu.c">
+      <Filter>iupmenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupmenu\open_cb.c">
+      <Filter>iupmenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupval\manual.c">
+      <Filter>iupval</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iuptabs\manual.c">
+      <Filter>iuptabs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\led\dialog.c">
+      <Filter>led</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupmatrix\manual.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupmatrix\manual_adv.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\html\examples\C\matrix.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupmatrix\test_del.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupgauge\manual.c">
+      <Filter>iupgauge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupgl\fullscreen.c">
+      <Filter>iupglcanvas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupgl\glcanvas_cube.c">
+      <Filter>iupglcanvas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupgl\simple.c">
+      <Filter>iupglcanvas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupdialog\closecb.c">
+      <Filter>iupdialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupdialog\dialog.c">
+      <Filter>iupdialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupdialog\nativeparent.c">
+      <Filter>iupdialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dialog\tray.c">
+      <Filter>iupdialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupimage\manual.c">
+      <Filter>iupimage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupimage\test1.c">
+      <Filter>iupimage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupradio\manual.c">
+      <Filter>iupradio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupradio\two_options.c">
+      <Filter>iupradio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupradio\value.c">
+      <Filter>iupradio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupmultiline\append.c">
+      <Filter>iupmultiline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupmultiline\iupmultiline.c">
+      <Filter>iupmultiline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupsbox\test1.c">
+      <Filter>iupsbox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupsbox\test2.c">
+      <Filter>iupsbox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupsbox\test3.c">
+      <Filter>iupsbox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupsbox\test4.c">
+      <Filter>iupsbox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupsbox\test5.c">
+      <Filter>iupsbox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupsbox\test6.c">
+      <Filter>iupsbox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupsbox\test7.c">
+      <Filter>iupsbox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tree.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\iupalarm\manual.c">
+      <Filter>iupalarm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\html\examples\ctrl\iupcells\checkboard.c">
+      <Filter>iupcells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\html\examples\ctrl\iupcells\degrade.c">
+      <Filter>iupcells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\html\examples\ctrl\iupcells\numbering.c">
+      <Filter>iupcells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cbox.c" />
+    <ClCompile Include="..\callbacks\focus.c" />
+    <ClCompile Include="..\iupgetcolor\getcolor.c" />
+    <ClCompile Include="..\iupgetparam\getparam.c" />
+    <ClCompile Include="..\iupcanvas\iupcanvas.c" />
+    <ClCompile Include="..\iupcolorbar\iupcolorbar.c" />
+    <ClCompile Include="..\iupdial\iupdial.c" />
+    <ClCompile Include="..\..\html\en\examples\elem\iupdialog\iupdialog2.c" />
+    <ClCompile Include="..\iupgetfile\iupgetfile.c" />
+    <ClCompile Include="..\iuplist\iuplist2.c" />
+    <ClCompile Include="..\pplot\iupplot2_main.cpp" />
+    <ClCompile Include="..\iuptext\iuptext.c" />
+    <ClCompile Include="..\iuptimer\iuptimer.c" />
+    <ClCompile Include="..\callbacks\keypress.c" />
+    <ClCompile Include="..\iuplabel\label.c" />
+    <ClCompile Include="..\callbacks\leavewindow.c" />
+    <ClCompile Include="..\mdisample.c" />
+    <ClCompile Include="..\mouse\mouse.c" />
+    <ClCompile Include="..\sample.c" />
+    <ClCompile Include="..\version.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\led\dialog.led">
+      <Filter>led</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\iup.rc" />
+  </ItemGroup>
+</Project>
