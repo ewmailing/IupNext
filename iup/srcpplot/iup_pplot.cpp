@@ -936,7 +936,7 @@ static char* iPPlotGetPlotFontStyle(int style)
   if (style >= CD_PLAIN && style <= CD_BOLD_ITALIC)
   {
     const char* style_str[4] = {"PLAIN", "BOLD", "ITALIC", "BOLDITALIC"};
-    return style_str[style];
+    return (char*)style_str[style];
   }
   else
     return NULL;
@@ -946,8 +946,8 @@ static char* iPPlotGetPlotPenStyle(int style)
 {
   if (style >= CD_CONTINUOUS && style <= CD_DASH_DOT_DOT)
   {
-    char* style_str[5] = {"CONTINUOUS", "DASHED", "DOTTED", "DASH_DOT", "DASH_DOT_DOT"};
-    return style_str[style];
+    const char* style_str[5] = {"CONTINUOUS", "DASHED", "DOTTED", "DASH_DOT", "DASH_DOT_DOT"};
+    return (char*)style_str[style];
   }
   else
     return NULL;
@@ -973,8 +973,8 @@ static char* iPPlotGetPlotMarkStyle(int style)
 {
   if (style >= CD_PLUS && style <= CD_HOLLOW_DIAMOND)
   {
-    char* style_str[9] = {"PLUS", "STAR", "CIRCLE", "X", "BOX", "DIAMOND", "HOLLOW_CIRCLE", "HOLLOW_BOX", "HOLLOW_DIAMOND"};
-    return style_str[style];
+    const char* style_str[9] = {"PLUS", "STAR", "CIRCLE", "X", "BOX", "DIAMOND", "HOLLOW_CIRCLE", "HOLLOW_BOX", "HOLLOW_DIAMOND"};
+    return (char*)style_str[style];
   }
   else
     return NULL;
@@ -1091,9 +1091,8 @@ static int iPPlotSetLegendPosAttrib(Ihandle* ih, const char* value)
 
 static char* iPPlotGetLegendPosAttrib(Ihandle* ih)
 {
-  char* legendpos_str[4] = {"TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT"};
-
-  return legendpos_str[ih->data->plt->_plot.mLegendPos];
+  const char* legendpos_str[4] = {"TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT"};
+  return (char*)legendpos_str[ih->data->plt->_plot.mLegendPos];
 }
 
 static int iPPlotSetBGColorAttrib(Ihandle* ih, const char* value)
@@ -3316,7 +3315,7 @@ static Iclass* iPPlotNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 #endif
 
-  ic->name = "pplot";
+  ic->name = (char*)"pplot";
   ic->format = NULL;  /* none */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;

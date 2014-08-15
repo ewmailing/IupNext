@@ -2052,8 +2052,8 @@ static int iMglPlotSetLegendPosAttrib(Ihandle* ih, const char* value)
 
 static char* iMglPlotGetLegendPosAttrib(Ihandle* ih)
 {
-  char* legendpos_str[4] = {"BOTTOMLEFT", "BOTTOMRIGHT", "TOPLEFT", "TOPRIGHT"};
-  return legendpos_str[ih->data->legendPosition];
+  const char* legendpos_str[4] = {"BOTTOMLEFT", "BOTTOMRIGHT", "TOPLEFT", "TOPRIGHT"};
+  return (char*)legendpos_str[ih->data->legendPosition];
 }
 
 static int iMglPlotSetLegendColorAttrib(Ihandle* ih, const char* value)

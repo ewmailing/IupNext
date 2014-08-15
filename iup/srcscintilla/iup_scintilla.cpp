@@ -555,7 +555,7 @@ static Iclass* iupScintillaNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
-  ic->name = "scintilla";
+  ic->name = (char*)"scintilla";
   ic->format = NULL; /* no parameters */
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype  = IUP_CHILDNONE;

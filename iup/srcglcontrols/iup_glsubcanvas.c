@@ -364,17 +364,6 @@ static int iGLSubCanvasSetZorderAttrib(Ihandle* ih, const char* value)
 return 0;
 }
 
-static char* iGLSubCanvasGetClipMinAttrib(Ihandle* ih)
-{
-  (void)ih;
-  return "0x0";
-}
-
-static char* iGLSubCanvasGetClipMaxAttrib(Ihandle* ih)
-{
-  return iupStrReturnIntInt(ih->currentwidth-1, ih->currentheight-1, 'x');
-}
-
 static int iGLSubCanvasMapMethod(Ihandle* ih)
 {
   Ihandle* gl_parent;

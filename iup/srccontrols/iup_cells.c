@@ -361,7 +361,6 @@ static void iCellsAdjustScroll(Ihandle* ih, int canvas_w, int canvas_h)
 /* Function used to call the client; is used when a cell must be repainted. */
 static void iCellsCallDrawCb(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, int i, int j)
 {
-  int cxmin, cxmax, cymin, cymax;
   int oldxmin, oldxmax, oldymin, oldymax, oldclip;
   int w = ih->data->w;
   int h = ih->data->h;
@@ -374,12 +373,13 @@ static void iCellsCallDrawCb(Ihandle* ih, int xmin, int xmax, int ymin, int ymax
 
   if (ih->data->clipped)  /* Clipping the cell area */
   { 
-     cdCanvasClip(ih->data->cddbuffer, CD_CLIPAREA);
-     cxmin = xmin < 0 ? 0 : xmin;
-     cymin = ymin < 0 ? 0 : ymin;
-     cxmax = xmax > w ? w : xmax;
-     cymax = ymax > h ? h : ymax;
-     cdCanvasClipArea(ih->data->cddbuffer, xmin, xmax, ymin, ymax);
+    int cxmin, cxmax, cymin, cymax;
+    cdCanvasClip(ih->data->cddbuffer, CD_CLIPAREA);
+    cxmin = xmin < 0 ? 0 : xmin;
+    cymin = ymin < 0 ? 0 : ymin;
+    cxmax = xmax > w ? w : xmax;
+    cymax = ymax > h ? h : ymax;
+    cdCanvasClipArea(ih->data->cddbuffer, cxmin, cxmax, cymin, cymax);
   }
 
   draw_cb = (IFniiiiiiC)IupGetCallback(ih, "DRAW_CB");

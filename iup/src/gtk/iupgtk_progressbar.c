@@ -4,6 +4,9 @@
 * See Copyright Notice in "iup.h"
 */
 
+/* gtk_progress_bar_set_bar_style and gtk_progress_set_activity_mode are deprecated, 
+   but we still use it in GTK2 */
+#undef GTK_DISABLE_DEPRECATED
 #include <gtk/gtk.h>
 
 #include <stdlib.h>
