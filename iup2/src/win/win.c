@@ -26,6 +26,8 @@
 #include "winhook.h"
 #include "winver.h"
 
+#include "iupextra.h"
+
 
 /************************************************************************
  *                       Message Loop Management
@@ -34,6 +36,10 @@
 static int win_globalmouse = 0;
 static int win_nvisiblewin = 0;  /* number of visible windows */
 static IFidle win_idle_cb = NULL;
+static int (*s_get_external_dlg_count_func) ()                = NULL; // added by fabraham. used on IUP3wrapper mechanism.
+static int (*s_external_idle_func) ()                         = NULL; // added by fabraham. used on IUP3wrapper mechanism.
+static void (*s_ext_modal_dialog_enter_func)(int popup_level) = NULL; // added by fabraham. used on IUP3 wrapper mechanism
+static void (*s_ext_modal_dialog_leave_func)(int popup_level) = NULL; // added by fabraham. used on IUP3 wrapper mechanism
 
 typedef enum
 {
@@ -60,6 +66,18 @@ int iupwinSetMouseHook(int v)
   win_globalmouse = v;
 
   return globalmouse;
+}
+
+static int winHasVisibleDialogs ()
+{
+  if (win_nvisiblewin > 0)
+    return 1;
+  if (s_get_external_dlg_count_func != NULL &&  // added by fabraham. used on IUP3wrapper mechanism.
+      s_get_external_dlg_count_func() > 0)
+  {
+    return 1;
+  }
+  return 0;
 }
 
 static int winIgnoreMessage( MSG msg )
@@ -286,6 +304,7 @@ static int winInterceptMsg(MSG* gm_msg)
 static tMsgResult winLoopStep(tMsgMode mode)
 {                                          
   MSG Message;
+  char *ll;
 
   if (PeekMessage(&Message, 0, 0, 0, PM_REMOVE))
   {
@@ -302,18 +321,22 @@ static tMsgResult winLoopStep(tMsgMode mode)
     else
       return WIN_MSG;
   }
-  else if (win_nvisiblewin==0) /* no visible dialogs ends the message loop */
+  else if (!winHasVisibleDialogs() &&                    /* no visible dialogs ends the message loop */
+           ((ll = IupGetGlobal(IUP_LOCKLOOP)) == NULL || /* except when the application has set IUP_LOCKLOOP == "YES" */
+            !iupStrEqual(ll, "YES")))
   {
-    char *ll = IupGetGlobal(IUP_LOCKLOOP);
-    if(ll && iupStrEqual(ll, "YES"))
-      return WIN_MSG;
-    else
-      return WIN_CLOSE;
+    return WIN_CLOSE;
   }
-  else if (win_idle_cb)
+  else if (win_idle_cb || s_external_idle_func)
   {
-		if (win_idle_cb() == IUP_CLOSE) 
+		if (win_idle_cb && win_idle_cb() == IUP_CLOSE) 
       return WIN_CLOSE;
+
+		if (s_external_idle_func && s_external_idle_func() != 0) { // added by fabraham. used on IUP3wrapper mechanism.
+      // idle returned IUP_CLOSE. do not call again.
+      s_external_idle_func = NULL;
+      return WIN_CLOSE;
+    }
 
     return WIN_IDLE;
   }
@@ -348,6 +371,26 @@ void iupdrvSetIdleFunction(Icallback f)
   win_idle_cb = (IFidle)f;
 }
 
+void IupSetExternalDialogCountFunc (int (*func)()) // added by fabraham. used on IUP3wrapper mechanism.
+{
+  s_get_external_dlg_count_func = func;
+}
+
+void IupSetExternalIdleFunc (int (*func)()) // added by fabraham. used on IUP3wrapper mechanism.
+{
+  s_external_idle_func = func;
+}
+
+void IupSetExternalModalDialogEnterFunc (void (*func)(int popup_level)) // added by fabraham. used on IUP3wrapper mechanism
+{
+  s_ext_modal_dialog_enter_func = func;
+}
+
+void IupSetExternalModalDialogLeaveFunc (void (*func)(int popup_level)) // added by fabraham. used on IUP3wrapper mechanism
+{
+  s_ext_modal_dialog_leave_func = func;
+}
+
 void IupFlush(void)
 {
   while(winLoopStep(WIN_NOWAIT) == WIN_MSG);
@@ -370,6 +413,11 @@ int IupLoopStep(void)
   return IUP_DEFAULT;
 }
 
+int IupLoopStepWait(void) // added by fabraham. used on IUP3wrapper mechanism.
+{
+  return winLoopStep(WIN_WAIT);
+}
+
 int IupMainLoop (void)
 {
   while (winLoopStep(WIN_WAIT) != WIN_CLOSE);
@@ -387,9 +435,39 @@ void IupExitLoop(void)
 
 static int win_popup_level = 1;
 
+static void iupExternalModalDialogEnter (int popup_level) // added by fabraham. used on IUP3wrapper mechanism
+{
+  if (s_ext_modal_dialog_enter_func)
+    s_ext_modal_dialog_enter_func(popup_level);
+}
+
+static void iupExternalModalDialogLeave (int popup_level) // added by fabraham. used on IUP3wrapper mechanism
+{
+  if (s_ext_modal_dialog_leave_func)
+    s_ext_modal_dialog_leave_func(popup_level);
+}
+
 static void winDisableVisible(Ihandle* ih_popup)
 {
+  int popup_level = win_popup_level;
+  IupModalDialogEnter(ih_popup, popup_level);
+  iupExternalModalDialogEnter(popup_level); // added by fabraham. used on IUP3wrapper mechanism
+}
+
+static void winEnableVisible(void)
+{
+  int popup_level = win_popup_level;
+  IupModalDialogLeave(popup_level);
+  iupExternalModalDialogLeave(popup_level); // added by fabraham. used on IUP3wrapper mechanism
+}
+
+// refactored by fabraham. used on IUP3wrapper mechanism. does not influence functioning when IUP3wrapper is not used.
+void IupModalDialogEnter (Ihandle* ih_popup, int popup_level)
+{
   Ihandle *ih;
+
+  assert(popup_level == win_popup_level);
+
   for (ih = iupDlgListFirst(); ih; ih = iupDlgListNext())
   {
     if (ih != ih_popup && 
@@ -406,9 +484,13 @@ static void winDisableVisible(Ihandle* ih_popup)
   win_popup_level++;
 }
 
-static void winEnableVisible(void)
+// refactored by fabraham. used on IUP3wrapper mechanism. does not influence functioning when IUP3wrapper is not used.
+void IupModalDialogLeave (int popup_level)
 {
   Ihandle *ih;
+
+  assert(popup_level == win_popup_level);
+
   for (ih = iupDlgListFirst(); ih; ih = iupDlgListNext())
   {
     if (handle(ih))
