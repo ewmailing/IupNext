@@ -935,7 +935,7 @@ static char* iPPlotGetPlotFontStyle(int style)
 {
   if (style >= CD_PLAIN && style <= CD_BOLD_ITALIC)
   {
-    char* style_str[4] = {"PLAIN", "BOLD", "ITALIC", "BOLDITALIC"};
+    const char* style_str[4] = {"PLAIN", "BOLD", "ITALIC", "BOLDITALIC"};
     return style_str[style];
   }
   else
