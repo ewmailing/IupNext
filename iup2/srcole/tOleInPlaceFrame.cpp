@@ -1,6 +1,5 @@
 // tOleInPlaceFrame.cpp: implementation of the tOleInPlaceFrame class.
 //
-// $Id: tOleInPlaceFrame.cpp,v 1.1 2008-10-17 06:21:31 scuri Exp $
 //////////////////////////////////////////////////////////////////////
 
 #include <windows.h>

@@ -2,8 +2,7 @@
  * \brief Motif Driver Core and Initialization
  *
  * See Copyright Notice in iup.h
- * $Id: motif.c,v 1.5 2008-12-14 03:18:14 scuri Exp $
- */
+ *  */
 
 #if defined(__STDC__) && defined(ULTRIX)
    #define X$GBLS(x)  #x

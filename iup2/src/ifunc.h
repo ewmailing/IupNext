@@ -2,8 +2,7 @@
  * \brief Global Function table.
  *
  * See Copyright Notice in iup.h
- * $Id: ifunc.h,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
  
 #ifndef __IFUNC_H 
 #define __IFUNC_H

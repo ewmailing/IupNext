@@ -3,8 +3,7 @@
  * Calls the user callbacks.
  *
  * See Copyright Notice in iup.h
- * $Id: itcallback.h,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
  
 #ifndef __ITCALLBACK_H 
 #define __ITCALLBACK_H

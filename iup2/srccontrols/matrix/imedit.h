@@ -3,7 +3,6 @@
  * Functions used to edit a cell in place.
  *
  * See Copyright Notice in iup.h
- * $Id: imedit.h,v 1.1 2008-10-17 06:20:15 scuri Exp $
  */
  
 #ifndef __IMEDIT_H 

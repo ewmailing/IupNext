@@ -3,8 +3,7 @@
 * @author André Luiz Clinio.
 *
 * See Copyright Notice in iup.h
-* $Id: iupcolorbar.c,v 1.2 2009-07-18 20:23:16 scuri Exp $
-*/
+* */
 
 #include <stdio.h>
 #include <stdlib.h>

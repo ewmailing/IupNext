@@ -2,7 +2,6 @@
  * \brief iupcb control. Error difusion dither..
  *
  * See Copyright Notice in iup.h
- * $Id: icb_rgb.h,v 1.1 2008-10-17 06:20:15 scuri Exp $
  */
  
 #ifndef __ICB_RGB_H 

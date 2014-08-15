@@ -2,8 +2,7 @@
  * \brief Bindig of iupcbox to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: luacbox.c,v 1.3 2008-12-14 05:57:32 scuri Exp $
- */
+ *  */
 #include <stdlib.h>
  
 #include <lua.h>

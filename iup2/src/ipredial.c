@@ -2,8 +2,7 @@
  * \brief pre-defined dialogs
  *
  * See Copyright Notice in iup.h
- * $Id: ipredial.c,v 1.2 2009-03-16 21:01:28 scuri Exp $
- */
+ *  */
 
 #include <stdlib.h>
 #include <stdio.h>

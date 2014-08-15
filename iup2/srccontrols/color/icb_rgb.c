@@ -3,8 +3,7 @@
  * error difusion dither with a fixed palette of 216 colors.
  *
  * See Copyright Notice in iup.h
- * $Id: icb_rgb.c,v 1.1 2008-10-17 06:20:15 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>
 #include <stdlib.h>

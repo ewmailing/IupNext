@@ -2,8 +2,7 @@
  * \brief iupim utilities
  *
  * See Copyright Notice in iup.h
- * $Id: iupim.c,v 1.2 2008-11-21 05:46:05 scuri Exp $
- */
+ *  */
 
 #include <im.h>
 #include <im_convert.h>

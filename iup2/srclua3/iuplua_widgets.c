@@ -2,8 +2,7 @@
  * \brief IULUA core - Bindig of iup to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_widgets.c,v 1.1 2008-10-17 06:21:03 scuri Exp $
- */
+ *  */
  
 #include <string.h>
 #include <stdio.h>

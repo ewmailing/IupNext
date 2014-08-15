@@ -2,8 +2,7 @@
  * \brief Internal Pattern Matching.
  *
  * See Copyright Notice in iup.h
- * $Id: imask.h,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
  
 #ifndef __IMASK_H 
 #define __IMASK_H

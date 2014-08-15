@@ -2,8 +2,7 @@
  * \brief iupgc pre-defined dialog control
  *
  * See Copyright Notice in iup.h
- * $Id: iupgc.c,v 1.2 2008-11-01 16:43:05 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>
 #include <stdlib.h>

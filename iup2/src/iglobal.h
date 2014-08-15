@@ -2,8 +2,7 @@
  * \brief Global definitions.
  *
  * See Copyright Notice in iup.h
- * $Id: iglobal.h,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
  
 #ifndef __IGLOBAL_H 
 #define __IGLOBAL_H

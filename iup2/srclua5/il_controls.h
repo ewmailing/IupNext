@@ -2,8 +2,7 @@
  * \brief IUPLua5 Controls internal Functions
  *
  * See Copyright Notice in iup.h
- * $Id: il_controls.h,v 1.4 2012-02-22 14:55:34 scuri Exp $
- */
+ *  */
  
 #ifndef __IL_CONTROLS_H 
 #define __IL_CONTROLS_H

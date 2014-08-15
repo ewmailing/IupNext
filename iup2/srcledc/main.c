@@ -2,8 +2,7 @@
  * \brief LED to C converter
  *
  * See Copyright Notice in iup.h
- * $Id: main.c,v 1.1 2008-10-17 06:21:03 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>
 #include <stdlib.h>

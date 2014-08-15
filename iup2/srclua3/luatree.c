@@ -2,8 +2,7 @@
  * \brief Bindig of iuptree to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: luatree.c,v 1.1 2008-10-17 06:21:03 scuri Exp $
- */
+ *  */
 
 #include <stdlib.h>
 

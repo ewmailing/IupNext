@@ -2,8 +2,7 @@
  * \brief iuptree binding for Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: treefuncs.c,v 1.3 2012-02-28 17:16:45 scuri Exp $
- */
+ *  */
 
 #include <lua.h>
 #include <lauxlib.h>

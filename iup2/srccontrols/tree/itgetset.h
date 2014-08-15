@@ -3,8 +3,7 @@
  * Functions to set and get attributes.
  *
  * See Copyright Notice in iup.h
- * $Id: itgetset.h,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
  
 #ifndef __ITGETSET_H 
 #define __ITGETSET_H

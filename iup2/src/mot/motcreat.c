@@ -2,8 +2,7 @@
  * \brief Motif Driver controls creation
  *
  * See Copyright Notice in iup.h
- * $Id: motcreat.c,v 1.2 2008-11-21 00:50:42 scuri Exp $
- */
+ *  */
 
 #if defined(__STDC__) && defined(ULTRIX)
    #define X$GBLS(x)  #x

@@ -3,8 +3,7 @@
  * Functions used to handle the mouse
  *
  * See Copyright Notice in iup.h
- * $Id: itmouse.c,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
 
 #include <stdlib.h>
 #include <string.h>

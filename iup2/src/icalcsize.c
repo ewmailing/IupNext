@@ -2,8 +2,7 @@
  * \brief set size & position of interface elements
  *
  * See Copyright Notice in iup.h
- * $Id: icalcsize.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>		/* NULL */
 #include <string.h>

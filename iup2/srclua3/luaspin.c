@@ -2,8 +2,7 @@
  * \brief Bindig of iupspin to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: luaspin.c,v 1.1 2008-10-17 06:21:03 scuri Exp $
- */
+ *  */
  
 #include <stdlib.h>
 

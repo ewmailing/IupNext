@@ -2,8 +2,7 @@
  * \brief iuptree control internal definitions.
  *
  * See Copyright Notice in iup.h
- * $Id: treedef.h,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
  
 #ifndef __TREEDEF_H 
 #define __TREEDEF_H

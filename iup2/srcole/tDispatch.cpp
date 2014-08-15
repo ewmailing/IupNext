@@ -1,6 +1,5 @@
 // tDispatch.cpp: implementation of the tDispatch class.
 //
-// $Id: tDispatch.cpp,v 1.1 2008-10-17 06:21:31 scuri Exp $
 //////////////////////////////////////////////////////////////////////
 
 #include "tDispatch.h"

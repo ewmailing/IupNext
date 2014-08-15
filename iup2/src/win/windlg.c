@@ -2,8 +2,7 @@
  * \brief Windows Driver IupMessage
  *
  * See Copyright Notice in iup.h
- * $Id: windlg.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
- */
+ *  */
 
 #include <windows.h>
 #include <commdlg.h>

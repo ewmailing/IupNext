@@ -3,8 +3,7 @@
  * attributes set and get
  *
  * See Copyright Notice in iup.h
- * $Id: imgetset.c,v 1.1 2008-10-17 06:20:15 scuri Exp $
- */
+ *  */
 
 #include <stdlib.h> /* malloc, realloc */
 #include <stdio.h>

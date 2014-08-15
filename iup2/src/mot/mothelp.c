@@ -2,8 +2,7 @@
  * \brief Motif Driver IupHelp
  *
  * See Copyright Notice in iup.h
- * $Id: mothelp.c,v 1.1 2008-10-17 06:19:25 scuri Exp $
- */
+ *  */
 
 #include <stdlib.h>
 #include <stdio.h>

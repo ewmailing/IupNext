@@ -2,8 +2,7 @@
  * \brief Tree definitions.
  *
  * See Copyright Notice in iup.h
- * $Id: 
- */
+ *  */
  
 #ifndef __I_TREE_H 
 #define __I_TREE_H

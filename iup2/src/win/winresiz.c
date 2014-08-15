@@ -2,8 +2,7 @@
  * \brief Windows Driver resize windows objects
  *
  * See Copyright Notice in iup.h
- * $Id: winresiz.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
- */
+ *  */
 
 #include <windows.h>
 

@@ -3,8 +3,7 @@
  * auxiliary functions.
  *
  * See Copyright Notice in iup.h
- * $Id: imaux.h,v 1.1 2008-10-17 06:20:15 scuri Exp $
- */
+ *  */
  
 #ifndef __IMAUX_H 
 #define __IMAUX_H

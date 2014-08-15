@@ -2,8 +2,7 @@
  * \brief Windows Driver WinMain for the static library
  *
  * See Copyright Notice in iup.h
- * $Id: winmain.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
- */
+ *  */
 
 #include <windows.h>
 #include <stdlib.h> /* declaration of __argc and __argv */

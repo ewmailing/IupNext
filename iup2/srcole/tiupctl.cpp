@@ -2,10 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-// RCS Info
-static char *rcsid = "$Id: tiupctl.cpp,v 1.1 2008-10-17 06:21:31 scuri Exp $";
-static char *rcsname = "$Name: not supported by cvs2svn $";
-
 
 #include <stdio.h>
 #include <assert.h>

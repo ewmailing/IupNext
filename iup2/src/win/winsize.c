@@ -2,8 +2,7 @@
  * \brief Windows Driver Control Element Size Get
  *
  * See Copyright Notice in iup.h
- * $Id: winsize.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>              /* NULL */
 #include <string.h>             /* strlen */

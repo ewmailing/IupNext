@@ -2,8 +2,7 @@
  * \brief iupcb control
  *
  * See Copyright Notice in iup.h
- * $Id: iupcb.c,v 1.1 2008-10-17 06:20:15 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>
 #include <stdlib.h>

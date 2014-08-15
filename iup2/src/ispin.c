@@ -2,8 +2,7 @@
  * \brief iupspin control
  *
  * See Copyright Notice in iup.h
- * $Id: ispin.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
 #include <math.h>
 #include <stdio.h>

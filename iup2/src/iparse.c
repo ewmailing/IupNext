@@ -2,8 +2,7 @@
  * \brief parser for LED. implements IupLoad.
  *
  * See Copyright Notice in iup.h
- * $Id: iparse.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
 #define __PARSER__
 #include <stdio.h>         /* NULL */

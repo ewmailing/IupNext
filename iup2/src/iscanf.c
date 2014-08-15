@@ -2,8 +2,7 @@
  * \brief IupScanf implementation.
  *
  * See Copyright Notice in iup.h
- * $Id: iscanf.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>
 #include <stdlib.h>

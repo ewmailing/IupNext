@@ -2,8 +2,7 @@
  * \brief iupmatrix. definitions.
  *
  * See Copyright Notice in iup.h
- * $Id: matridef.h,v 1.1 2008-10-17 06:20:15 scuri Exp $
- */
+ *  */
  
 #ifndef __MATRIDEF_H 
 #define __MATRIDEF_H

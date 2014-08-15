@@ -2,8 +2,7 @@
  * \brief iuptree control core
  *
  * See Copyright Notice in iup.h
- * $Id: iuptree.c,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>
 #include <stdlib.h>

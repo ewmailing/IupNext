@@ -2,8 +2,7 @@
  * \brief manage hot keys encoding and decoding.
  *
  * See Copyright Notice in iup.h
- * $Id: ikey.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>      /* sprintf */
 

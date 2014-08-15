@@ -3,7 +3,6 @@
  * Functions used to edit a node name in place.
  *
  * See Copyright Notice in iup.h
- * $Id: itedit.h,v 1.1 2008-10-17 06:20:41 scuri Exp $
  */
  
 #ifndef __ITEDIT_H 

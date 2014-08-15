@@ -2,8 +2,7 @@
 * \brief creates controls. but no map to the native control yet
 *
 * See Copyright Notice in iup.h
-* $Id: icreate.c,v 1.2 2009-07-18 20:23:13 scuri Exp $
-*/
+* */
 
 #include <stdarg.h>
 #include <stdio.h>

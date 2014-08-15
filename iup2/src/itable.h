@@ -3,8 +3,7 @@
  * Does not allow 0 values for items...
  *
  * See Copyright Notice in iup.h
- * $Id: itable.h,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
  
 #ifndef __ITABLE_H 
 #define __ITABLE_H

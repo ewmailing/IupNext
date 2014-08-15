@@ -3,8 +3,7 @@
  * draw functions
  *
  * See Copyright Notice in iup.h
- * $Id: imdraw.c,v 1.2 2008-11-11 18:18:11 scuri Exp $
- */
+ *  */
 
 #include <assert.h>
 #include <stdlib.h>

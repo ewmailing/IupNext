@@ -2,8 +2,7 @@
  * \brief Windows Driver Controls creation.
  *
  * See Copyright Notice in iup.h
- * $Id: wincreat.h,v 1.1 2008-10-17 06:19:26 scuri Exp $
- */
+ *  */
  
 #ifndef __WINCREAT_H 
 #define __WINCREAT_H

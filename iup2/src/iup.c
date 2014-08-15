@@ -2,8 +2,7 @@
  * \brief miscelaneous functions
  *
  * See Copyright Notice in iup.h
- * $Id: iup.c,v 1.3 2008-12-11 19:08:05 scuri Exp $
- */
+ *  */
 
 /*! \mainpage IUP<br>Portable Graphical User Interface Library
  *

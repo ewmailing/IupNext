@@ -2,8 +2,7 @@
  * \brief Windows Driver version functions
  *
  * See Copyright Notice in iup.h
- * $Id: winver.c,v 1.2 2008-12-11 19:02:57 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>
 #include <stdlib.h> 

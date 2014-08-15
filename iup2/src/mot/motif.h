@@ -2,8 +2,7 @@
  * \brief Motif Driver Core and Initialization.
  *
  * See Copyright Notice in iup.h
- * $Id: motif.h,v 1.1 2008-10-17 06:19:25 scuri Exp $
- */
+ *  */
  
 #ifndef __MOTIF_H 
 #define __MOTIF_H

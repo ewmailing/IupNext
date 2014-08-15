@@ -2,8 +2,7 @@
  * \brief Iup API in Lua
  *
  * See Copyright Notice in iup.h
- * $Id: scanf.c,v 1.1 2008-11-21 05:46:06 scuri Exp $
- */
+ *  */
  
 #include <string.h>
 #include <stdio.h>

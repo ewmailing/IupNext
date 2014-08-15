@@ -2,8 +2,7 @@
  * \brief lexical analysis manager for LED
  *
  * See Copyright Notice in iup.h
- * $Id: ilex.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
 #include <stdarg.h>			/* va_start, va_arg, va_end */
 #include <stdio.h>			/* FILE, BUFSIZ, NULL */

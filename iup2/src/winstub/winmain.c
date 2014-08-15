@@ -2,7 +2,6 @@
  * \brief winmain for iupstub
  *
  * See Copyright Notice in iup.h
- * $Id: winmain.c,v 1.1 2008-10-17 06:19:56 scuri Exp $
  */
 
 #include <windows.h>

@@ -2,8 +2,7 @@
  * \brief iupmask binding for Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: imask.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
 #include <string.h>
 #include <stdlib.h>

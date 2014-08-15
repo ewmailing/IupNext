@@ -2,8 +2,7 @@
  * \brief iupgl control for X11
  *
  * See Copyright Notice in iup.h
- * $Id: iupglx.c,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
 
 #include "iup.h"
 #include "iupcpi.h"

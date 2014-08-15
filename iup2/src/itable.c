@@ -3,8 +3,7 @@
  * Implementation by Danny Reinhold and Antonio Scuri. 
  *
  * See Copyright Notice in iup.h
- * $Id: itable.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
 #include <stdlib.h>
 #include <stdio.h>

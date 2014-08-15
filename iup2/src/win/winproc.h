@@ -2,8 +2,7 @@
  * \brief Windows Driver windows procedures.
  *
  * See Copyright Notice in iup.h
- * $Id: winproc.h,v 1.1 2008-10-17 06:19:26 scuri Exp $
- */
+ *  */
  
 #ifndef __WINPROC_H 
 #define __WINPROC_H

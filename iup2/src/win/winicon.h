@@ -2,8 +2,7 @@
  * \brief Windows Driver ICON management.
  *
  * See Copyright Notice in iup.h
- * $Id: winicon.h,v 1.1 2008-10-17 06:19:26 scuri Exp $
- */
+ *  */
  
 #ifndef __WINICON_H 
 #define __WINICON_H

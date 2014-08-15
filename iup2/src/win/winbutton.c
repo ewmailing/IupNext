@@ -2,8 +2,7 @@
  * \brief Windows Driver Button management
  *
  * See Copyright Notice in iup.h
- * $Id: winbutton.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
- */
+ *  */
 
 #include <assert.h>
 #include <windows.h> 

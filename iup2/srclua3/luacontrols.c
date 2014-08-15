@@ -2,8 +2,7 @@
  * \brief Bindig of iupcontrols to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: luacontrols.c,v 1.3 2009-03-23 15:00:01 scuri Exp $
- */
+ *  */
  
 #include <lua.h>
 

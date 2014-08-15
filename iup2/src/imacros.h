@@ -3,8 +3,7 @@
  * We should avoid using this in the future.
  *
  * See Copyright Notice in iup.h
- * $Id: imacros.h,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
  
 #ifndef __IMACROS_H 
 #define __IMACROS_H

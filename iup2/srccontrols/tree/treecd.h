@@ -3,8 +3,7 @@
  * Header file that contains a function to activate the canvas
  *
  * See Copyright Notice in iup.h
- * $Id: treecd.h,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
  
 #ifndef __TREECD_H 
 #define __TREECD_H

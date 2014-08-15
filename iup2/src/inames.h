@@ -2,8 +2,7 @@
  * \brief Ihandle <-> Name table manager.
  *
  * See Copyright Notice in iup.h
- * $Id: inames.h,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
  
 #ifndef __INAMES_H 
 #define __INAMES_H

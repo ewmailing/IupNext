@@ -2,8 +2,7 @@
  * \brief iupgl control for Windows
  *
  * See Copyright Notice in iup.h
- * $Id: iupglw.c,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
 
 #include "iup.h"
 #include "iupcpi.h"

@@ -3,8 +3,7 @@
  * scrolling.
  *
  * See Copyright Notice in iup.h
- * $Id: imscroll.h,v 1.1 2008-10-17 06:20:15 scuri Exp $
- */
+ *  */
  
 #ifndef __IMSCROLL_H 
 #define __IMSCROLL_H

@@ -2,8 +2,7 @@
  * \brief iupmatrix. change number of collumns or lines.
  *
  * See Copyright Notice in iup.h
- * $Id: imnumlc.h,v 1.1 2008-10-17 06:20:15 scuri Exp $
- */
+ *  */
  
 #ifndef __IMNUMLC_H 
 #define __IMNUMLC_H

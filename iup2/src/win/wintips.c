@@ -2,8 +2,7 @@
  * \brief Windows Driver TIPS management
  *
  * See Copyright Notice in iup.h
- * $Id: wintips.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
- */
+ *  */
 
 #include <windows.h>
 #include <commctrl.h>

@@ -6,8 +6,7 @@
  * for the user.
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua3.c,v 1.1 2008-10-17 06:19:56 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>
 #include <string.h>

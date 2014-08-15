@@ -2,8 +2,7 @@
  * \brief matrix binding for Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: matrixfuncs.c,v 1.1 2008-10-17 06:21:23 scuri Exp $
- */
+ *  */
 
 #include <lua.h>
 #include <lauxlib.h>

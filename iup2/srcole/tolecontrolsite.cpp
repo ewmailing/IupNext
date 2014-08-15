@@ -1,6 +1,5 @@
 // tOleControlSite.cpp: implementation of the tOleControlSite class.
 //
-// $Id: tolecontrolsite.cpp,v 1.1 2008-10-17 06:21:31 scuri Exp $
 //////////////////////////////////////////////////////////////////////
 
 #include "tOleControlSite.h"

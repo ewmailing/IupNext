@@ -2,8 +2,7 @@
  * \brief Driver Interface. Each driver must export the symbols defined here.
  *
  * See Copyright Notice in iup.h
- * $Id: idrv.h,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
  
 #ifndef __IDRV_H 
 #define __IDRV_H

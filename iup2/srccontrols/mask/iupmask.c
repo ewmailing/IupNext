@@ -2,8 +2,7 @@
  * \brief iupmask imk_match_functions - pattern matching
  *
  * See Copyright Notice in iup.h
- * $Id: iupmask.c,v 1.1 2008-10-17 06:20:15 scuri Exp $
- */
+ *  */
 
 /*
 Arquivo que implementa as funcoes que permitem o uso das funcoes de pattern

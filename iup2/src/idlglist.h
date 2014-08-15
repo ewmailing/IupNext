@@ -2,8 +2,7 @@
  * \brief list of all created dialogs
  *
  * See Copyright Notice in iup.h
- * $Id: idlglist.h,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
  
 #ifndef __IDLGLIST_H 
 #define __IDLGLIST_H

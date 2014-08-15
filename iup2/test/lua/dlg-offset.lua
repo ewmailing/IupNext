@@ -1,13 +1,6 @@
 -------------------------------------------------------------------------------
 --         Projeto Prea3D  -- TeCGraf / PUC-Rio  --
 --
--- $Source: /home/users/s/sc/scuri/iup-cvsbackup/iup2/test/lua/dlg-offset.lua,v $
--- $Revision: 1.1 $
--- $Date: 2008-10-17 06:21:41 $
---
--- $Author: scuri $
--- $Locker:  $
---
 -------------------------------------------------------------------------------
 
 p3dDlg.offset = {}

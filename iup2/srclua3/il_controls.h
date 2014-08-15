@@ -2,8 +2,7 @@
  * \brief iupLua Controls initialization
  *
  * See Copyright Notice in iup.h
- * $Id: il_controls.h,v 1.3 2009-03-23 15:00:01 scuri Exp $
- */
+ *  */
  
 #ifndef __IL_CONTROLS_H 
 #define __IL_CONTROLS_H

@@ -4,8 +4,7 @@
 *  Used always for buttons, used only for labels with images.
 *
 * See Copyright Notice in iup.h
-* $Id: windraw.c,v 1.2 2013-05-20 20:13:53 scuri Exp $
-*/
+* */
 
 #include <windows.h>
 #include <assert.h> 

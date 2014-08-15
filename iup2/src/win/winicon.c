@@ -2,8 +2,7 @@
  * \brief Windows Driver ICON management
  *
  * See Copyright Notice in iup.h
- * $Id: winicon.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
- */
+ *  */
 
 #include <assert.h>
 #include <stdio.h>

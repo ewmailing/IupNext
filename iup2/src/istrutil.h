@@ -2,8 +2,7 @@
  * \brief String Utilities
  *
  * See Copyright Notice in iup.h
- * $Id: istrutil.h,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
  
 #ifndef __ISTRUTIL_H 

@@ -3,8 +3,7 @@
  * Functions used to find nodes in the tree.
  *
  * See Copyright Notice in iup.h
- * $Id: itfind.h,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
  
 #ifndef __ITFIND_H 
 #define __ITFIND_H

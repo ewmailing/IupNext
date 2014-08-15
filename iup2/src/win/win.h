@@ -2,8 +2,7 @@
  * \brief Windows Core functions.
  *
  * See Copyright Notice in iup.h
- * $Id: win.h,v 1.1 2008-10-17 06:19:26 scuri Exp $
- */
+ *  */
  
 #ifndef __WIN_H 
 #define __WIN_H

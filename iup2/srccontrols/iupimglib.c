@@ -2,8 +2,7 @@
  * \brief IUP Image Library
  *
  * See Copyright Notice in iup.h
- * $Id: iupimglib.c,v 1.1 2008-10-17 06:19:56 scuri Exp $
- */
+ *  */
 
 
 #include <stdlib.h>

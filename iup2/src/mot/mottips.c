@@ -2,8 +2,7 @@
 * \brief Motif Driver TIPS Control
 *
 * See Copyright Notice in iup.h
-* $Id: mottips.c,v 1.2 2008-11-26 23:54:58 scuri Exp $
-*/
+* */
 
 #include <Xm/Xm.h>
 #include <Xm/Label.h>

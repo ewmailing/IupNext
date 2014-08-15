@@ -2,8 +2,7 @@
  * \brief attributes enviroment manager
  *
  * See Copyright Notice in iup.h
- * $Id: ienv.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>   
 #include <string.h>  

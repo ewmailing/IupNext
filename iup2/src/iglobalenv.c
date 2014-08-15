@@ -2,8 +2,7 @@
  * \brief global attributes enviroment
  *
  * See Copyright Notice in iup.h
- * $Id: iglobalenv.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
 #include <stdlib.h>              /* NULL */
 #include <assert.h>

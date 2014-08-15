@@ -2,8 +2,7 @@
  * \brief Bindig of iupgl to Lua 3.
  *
  * See Copyright Notice in iup.h
- * $Id: luaglcanvas.c,v 1.2 2008-11-21 05:46:06 scuri Exp $
- */
+ *  */
  
 #include <stdlib.h>
 

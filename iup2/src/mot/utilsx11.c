@@ -3,8 +3,7 @@
  * Author:      Mattia Barbon, Vaclav Slavik, Robert Roebling
  * Modified by:
  * Created:     25.03.02
- * RCS-ID:      $Id: utilsx11.c,v 1.1 2008-10-17 06:19:26 scuri Exp $
- * Copyright:   (c) wxWindows team
+ * RCS-ID:       * Copyright:   (c) wxWindows team
  * Licence:     wxWindows licence
 */
 

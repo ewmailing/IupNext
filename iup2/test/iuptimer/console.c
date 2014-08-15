@@ -1,5 +1,4 @@
 /*
-** $Id: console.c,v 1.1 2008-10-17 06:21:41 scuri Exp $
 ** Lua stand-alone interpreter
 ** See Copyright Notice in lua.h
 */

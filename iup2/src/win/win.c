@@ -2,8 +2,7 @@
  * \brief Windows Driver Core
  *
  * See Copyright Notice in iup.h
- * $Id: win.c,v 1.3 2009-09-04 13:32:43 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>              /* NULL */
 #include <stdlib.h>

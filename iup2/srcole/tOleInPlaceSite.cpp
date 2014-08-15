@@ -1,6 +1,5 @@
 // tOleInPlaceSite.cpp: implementation of the tOleInPlaceSite class.
 //
-// $Id: tOleInPlaceSite.cpp,v 1.1 2008-10-17 06:21:31 scuri Exp $
 //////////////////////////////////////////////////////////////////////
 
 #include "tOleInPlaceSite.h"

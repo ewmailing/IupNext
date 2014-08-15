@@ -2,8 +2,7 @@
  * \brief iupgl binding for Lua 5.
  *
  * See Copyright Notice in iup.h
- * $Id: glcanvasfuncs.c,v 1.2 2012-02-22 19:09:19 scuri Exp $
- */
+ *  */
 
 #include <lua.h>
 #include <lauxlib.h>

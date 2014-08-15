@@ -2,8 +2,7 @@
  * \brief Motif Driver IupFileDlg
  *
  * See Copyright Notice in iup.h
- * $Id: motfiledlg.c,v 1.2 2008-10-29 19:27:01 scuri Exp $
- */
+ *  */
 
 #if defined(__STDC__) && defined(ULTRIX)
 #define X$GBLS(x)  #x

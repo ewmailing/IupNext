@@ -2,8 +2,7 @@
  * \brief Windows Driver Controls creation
  *
  * See Copyright Notice in iup.h
- * $Id: wincreat.c,v 1.3 2009-07-18 20:23:16 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>    /* sprintf */
 #include <windows.h>

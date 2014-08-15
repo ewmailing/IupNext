@@ -2,8 +2,7 @@
  * \brief imask.
  *
  * See Copyright Notice in iup.h
- * $Id: imask_match.h,v 1.1 2008-10-17 06:20:15 scuri Exp $
- */
+ *  */
  
 #ifndef __IMASK_MATCH_H 
 #define __IMASK_MATCH_H

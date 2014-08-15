@@ -2,8 +2,7 @@
  * \brief iupmatrix control core
  *
  * See Copyright Notice in iup.h
- * $Id: iupmatrix.c,v 1.1 2008-10-17 06:20:15 scuri Exp $
- */
+ *  */
 
 #include <iup.h>
 #include <iupcpi.h>

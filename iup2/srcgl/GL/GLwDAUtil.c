@@ -31,13 +31,11 @@
 ** published by SGI, but has not been independently verified as being
 ** compliant with the OpenGL(R) version 1.2.1 Specification.
 **
-** $Date: 2008-10-17 06:20:41 $ $Revision: 1.1 $
 */
 /* utility routines for GLX.
  * Since these routines are used both in the Motif and X versions of
  * the widget, they cannot peek directly into the structure
  *
- * $Header: /home/users/s/sc/scuri/iup-cvsbackup/iup2/srcgl/GL/GLwDAUtil.c,v 1.1 2008-10-17 06:20:41 scuri Exp $
  */
 
 #include <X11/IntrinsicP.h>

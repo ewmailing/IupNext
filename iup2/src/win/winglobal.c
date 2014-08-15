@@ -2,8 +2,7 @@
  * \brief Windows Driver iupdrvSetGlobal
  *
  * See Copyright Notice in iup.h
- * $Id: winglobal.c,v 1.2 2013-05-20 20:13:53 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>
 #include <string.h>

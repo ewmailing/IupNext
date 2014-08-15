@@ -2,8 +2,7 @@
  * \brief Motif Driver implementation of iupdrvSetGlobal
  *
  * See Copyright Notice in iup.h
- * $Id: motglobal.c,v 1.1 2008-10-17 06:19:25 scuri Exp $
- */
+ *  */
 
 #include <Xm/Xm.h>
 #include <stdio.h>

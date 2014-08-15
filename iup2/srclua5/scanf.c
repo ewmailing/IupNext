@@ -3,8 +3,7 @@
  * IupScanf special implementation. 
  *
  * See Copyright Notice in iup.h
- * $Id: scanf.c,v 1.3 2012-02-22 14:55:35 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>
 #include <stdlib.h>

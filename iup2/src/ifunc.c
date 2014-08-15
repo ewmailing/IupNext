@@ -2,8 +2,7 @@
  * \brief function table manager
  *
  * See Copyright Notice in iup.h
- * $Id: ifunc.c,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
 
 #include <stdlib.h>  /* NULL */
 

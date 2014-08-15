@@ -3,8 +3,7 @@
  * Functions used to draw a tree.
  *
  * See Copyright Notice in iup.h
- * $Id: itdraw.h,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
  
 #ifndef __ITDRAW_H 
 #define __ITDRAW_H

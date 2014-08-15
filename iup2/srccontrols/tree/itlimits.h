@@ -3,8 +3,7 @@
  * Functions used to verify limits between specified canvas regions.
  *
  * See Copyright Notice in iup.h
- * $Id: itlimits.h,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
  
 #ifndef __ITLIMITS_H 
 #define __ITLIMITS_H

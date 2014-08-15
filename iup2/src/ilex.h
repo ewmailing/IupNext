@@ -2,8 +2,7 @@
  * \brief lexical analysis manager for LED.
  *
  * See Copyright Notice in iup.h
- * $Id: ilex.h,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
  
 #ifndef __ILEX_H 
 #define __ILEX_H

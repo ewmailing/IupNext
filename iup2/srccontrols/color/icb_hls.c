@@ -3,8 +3,7 @@
  * HLS color model
  *
  * See Copyright Notice in iup.h
- * $Id: icb_hls.c,v 1.1 2008-10-17 06:20:15 scuri Exp $
- */
+ *  */
                   
 #include <stdlib.h>                  
 #include <stdio.h>

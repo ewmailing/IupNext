@@ -2,8 +2,7 @@
  * \brief Iup API in Lua
  *
  * See Copyright Notice in iup.h
- * $Id: iuplua_api.c,v 1.4 2009-04-27 20:05:09 scuri Exp $
- */
+ *  */
  
 #include <string.h>
 #include <stdio.h>

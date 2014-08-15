@@ -2,8 +2,7 @@
  * \brief Windows Driver set for attributes
  *
  * See Copyright Notice in iup.h
- * $Id: winset.c,v 1.2 2013-09-18 14:36:24 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>              
 #include <assert.h>

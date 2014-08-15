@@ -1,6 +1,5 @@
 /*
-** $Id: iuplua51.c,v 1.2 2012-02-22 19:09:19 scuri Exp $
-** Lua stand-alone interpreter
+** ** Lua stand-alone interpreter
 ** See Copyright Notice in lua.h
 */
 

@@ -2,8 +2,7 @@
  * \brief Windows Driver get for attributes
  *
  * See Copyright Notice in iup.h
- * $Id: winget.c,v 1.2 2009-09-04 13:32:43 scuri Exp $
- */
+ *  */
 
 #include <stdio.h>
 #include <assert.h>

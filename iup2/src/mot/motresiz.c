@@ -3,8 +3,7 @@
  * implements iupdrvResizeObjects
  *
  * See Copyright Notice in iup.h
- * $Id: motresiz.c,v 1.1 2008-10-17 06:19:25 scuri Exp $
- */
+ *  */
 
 #if defined(__STDC__) && defined(ULTRIX)
    #define X$GBLS(x)  #x

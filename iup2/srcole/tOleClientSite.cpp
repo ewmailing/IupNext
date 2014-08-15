@@ -2,7 +2,6 @@
 //
 // tOleClientSite.cpp: implementation of the tOleClientSite class.
 //
-// $Id: tOleClientSite.cpp,v 1.1 2008-10-17 06:21:31 scuri Exp $
 //////////////////////////////////////////////////////////////////////
 
 

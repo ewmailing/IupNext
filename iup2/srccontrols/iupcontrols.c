@@ -2,8 +2,7 @@
  * \brief initializes iupdial, iupgauge, iuptabs, iupcb, iupgc and iupval controls.
  *
  * See Copyright Notice in iup.h
- * $Id: iupcontrols.c,v 1.1 2008-10-17 06:19:56 scuri Exp $
- */
+ *  */
 
 
 #include <iup.h>

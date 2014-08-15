@@ -3,8 +3,7 @@
  * Functions to set and get attributes
  *
  * See Copyright Notice in iup.h
- * $Id: itgetset.c,v 1.1 2008-10-17 06:20:41 scuri Exp $
- */
+ *  */
 
 #include <stdlib.h> /* malloc, realloc */
 #include <stdio.h>

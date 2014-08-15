@@ -2,8 +2,7 @@
  * \brief get/set callback
  *
  * See Copyright Notice in iup.h
- * $Id: icall.h,v 1.1 2008-10-17 06:19:20 scuri Exp $
- */
+ *  */
  
 #ifndef __ICALL_H 
 #define __ICALL_H
