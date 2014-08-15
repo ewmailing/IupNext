@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{868426dc-5824-44ee-8055-74a5303cdc1d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\test3\dial.led">
+      <Filter>Resources</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\test3\iuptest.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\test3\bigtest.c" />
+    <ClCompile Include="..\test3\button.c" />
+    <ClCompile Include="..\test3\canvas.c" />
+    <ClCompile Include="..\test3\canvas_cddbuffer.c" />
+    <ClCompile Include="..\test3\canvas_cdsimple.c" />
+    <ClCompile Include="..\test3\canvas_scrollbar.c" />
+    <ClCompile Include="..\test3\cells_checkboard.c" />
+    <ClCompile Include="..\test3\cells_degrade.c" />
+    <ClCompile Include="..\test3\cells_numbering.c" />
+    <ClCompile Include="..\test3\colorbar.c" />
+    <ClCompile Include="..\test3\colorbrowser.c" />
+    <ClCompile Include="..\test3\dial.c" />
+    <ClCompile Include="..\test3\dialog.c" />
+    <ClCompile Include="..\test3\frame.c" />
+    <ClCompile Include="..\test3\gauge.c" />
+    <ClCompile Include="..\test3\getcolor.c" />
+    <ClCompile Include="..\test3\getparam.c" />
+    <ClCompile Include="..\test3\glcanvas.c" />
+    <ClCompile Include="..\test3\glcanvas_cube.c" />
+    <ClCompile Include="..\test3\hbox.c" />
+    <ClCompile Include="..\test3\idle.c" />
+    <ClCompile Include="..\test3\label.c" />
+    <ClCompile Include="..\test3\list.c" />
+    <ClCompile Include="..\test3\matrix.c" />
+    <ClCompile Include="..\test3\matrix_cbmode.c" />
+    <ClCompile Include="..\test3\matrix_cbs.c" />
+    <ClCompile Include="..\test3\mdi.c" />
+    <ClCompile Include="..\test3\menu.c" />
+    <ClCompile Include="..\test3\ole.cpp" />
+    <ClCompile Include="..\test3\pplot.c" />
+    <ClCompile Include="..\test3\predialogs.c" />
+    <ClCompile Include="..\test3\sample.c" />
+    <ClCompile Include="..\test3\spin.c" />
+    <ClCompile Include="..\test3\sysinfo.c" />
+    <ClCompile Include="..\test3\tabs.c" />
+    <ClCompile Include="..\test3\text.c" />
+    <ClCompile Include="..\test3\text_spin.c" />
+    <ClCompile Include="..\test3\timer.c" />
+    <ClCompile Include="..\test3\toggle.c" />
+    <ClCompile Include="..\test3\tray.c" />
+    <ClCompile Include="..\test3\tree.c" />
+    <ClCompile Include="..\test3\val.c" />
+    <ClCompile Include="..\test3\vbox.c" />
+  </ItemGroup>
+</Project>

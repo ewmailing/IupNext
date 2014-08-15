@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{8d8dd67e-a471-49e7-abd3-f0930cf8ec36}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90</Extensions>
+    </Filter>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{08d07a80-b49a-48a3-ba0b-76225592bfef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{e65132d8-c4a4-40cc-846f-822e9d0d6624}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\srclua3\luacb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luacells.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luacolorbar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luacontrols.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luadial.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luagauge.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luagc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luagetparam.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luamask.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luamatrix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luatabs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luatree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua3\luaval.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\srclua3\luacb.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua3\luacells.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua3\luacolorbar.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua3\luadial.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua3\luagauge.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua3\luamatrix.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua3\luasbox.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua3\luaspin.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua3\luatabs.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua3\luatree.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua3\luaval.lua">
+      <Filter>Lua</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\srclua3\il_controls.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupluacontrols.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

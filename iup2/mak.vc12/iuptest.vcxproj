@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{68F0187C-F694-42D6-B151-9FE53C45A23B}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\bin\</OutDir>
+    <IntDir>..\obj\$(ProjectName)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <TypeLibraryName>..\bin\$(ProjectName).tlb</TypeLibraryName>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\include;..\..\cd\include;D:\LNG\vld\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WIN32_WINNT=0x0500;_WIN32_IE=0x0500;_CRT_SECURE_NO_DEPRECATE;__IUPDEF_H;BIG_TEST;USE_OPENGL;PPLOT_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling />
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0416</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>comctl32.lib;ole32.lib;opengl32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupimglib.lib;cd.lib;freetype6.lib;iupcd.lib;iup_pplot.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\lib;..\..\cd\lib;d:\lng\SpeechSDK\Lib\i386;D:\LNG\vld\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>..\bin\$(ProjectName).pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\test3\dial.led" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\test3\iuptest.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\test3\bigtest.c" />
+    <ClCompile Include="..\test3\button.c" />
+    <ClCompile Include="..\test3\canvas.c" />
+    <ClCompile Include="..\test3\canvas_cddbuffer.c" />
+    <ClCompile Include="..\test3\canvas_cdsimple.c" />
+    <ClCompile Include="..\test3\canvas_scrollbar.c" />
+    <ClCompile Include="..\test3\cells_checkboard.c" />
+    <ClCompile Include="..\test3\cells_degrade.c" />
+    <ClCompile Include="..\test3\cells_numbering.c" />
+    <ClCompile Include="..\test3\colorbar.c" />
+    <ClCompile Include="..\test3\colorbrowser.c" />
+    <ClCompile Include="..\test3\dial.c" />
+    <ClCompile Include="..\test3\dialog.c" />
+    <ClCompile Include="..\test3\frame.c" />
+    <ClCompile Include="..\test3\gauge.c" />
+    <ClCompile Include="..\test3\getcolor.c" />
+    <ClCompile Include="..\test3\getparam.c" />
+    <ClCompile Include="..\test3\glcanvas.c" />
+    <ClCompile Include="..\test3\glcanvas_cube.c" />
+    <ClCompile Include="..\test3\hbox.c" />
+    <ClCompile Include="..\test3\idle.c" />
+    <ClCompile Include="..\test3\label.c" />
+    <ClCompile Include="..\test3\list.c" />
+    <ClCompile Include="..\test3\matrix.c" />
+    <ClCompile Include="..\test3\matrix_cbmode.c" />
+    <ClCompile Include="..\test3\matrix_cbs.c" />
+    <ClCompile Include="..\test3\mdi.c" />
+    <ClCompile Include="..\test3\menu.c" />
+    <ClCompile Include="..\test3\ole.cpp" />
+    <ClCompile Include="..\test3\pplot.c" />
+    <ClCompile Include="..\test3\predialogs.c" />
+    <ClCompile Include="..\test3\sample.c" />
+    <ClCompile Include="..\test3\spin.c" />
+    <ClCompile Include="..\test3\sysinfo.c" />
+    <ClCompile Include="..\test3\tabs.c" />
+    <ClCompile Include="..\test3\text.c" />
+    <ClCompile Include="..\test3\text_spin.c" />
+    <ClCompile Include="..\test3\timer.c" />
+    <ClCompile Include="..\test3\toggle.c" />
+    <ClCompile Include="..\test3\tray.c" />
+    <ClCompile Include="..\test3\tree.c" />
+    <ClCompile Include="..\test3\val.c" />
+    <ClCompile Include="..\test3\vbox.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="iup.vcxproj">
+      <Project>{2c7e83b9-7fe8-432a-97ba-fcf4d0728408}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="iupcd.vcxproj">
+      <Project>{be7472e1-e76e-4969-a35f-054614f5884e}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="iupcontrols.vcxproj">
+      <Project>{5eefe977-c56d-462f-bdee-12a5452eb8cc}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="iupgl.vcxproj">
+      <Project>{e251b4f4-0b0a-482b-ba18-2509adc4b6aa}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="iup_pplot.vcxproj">
+      <Project>{5a42018b-95ac-a789-e4e4-59a692649dca}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

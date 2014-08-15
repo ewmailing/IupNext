@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{740d947e-bcae-494d-997d-16cd10ce9124}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90</Extensions>
+    </Filter>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{920e9b47-ac62-4f53-9076-bb11646db1af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{56cb3469-3b8a-4083-aaa0-592aa4fc4615}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\srclua5\cells.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\colorbar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\colorbrowser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\controls.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\dial.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\gauge.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\gc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\getparam.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\mask.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\matrix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\matrixfuncs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\tabs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\tree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\treefuncs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srclua5\val.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\srclua5\cbox.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\cells.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\colorbar.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\colorbrowser.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\dial.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\gauge.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\matrix.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\sbox.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\spin.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\spinbox.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\tabs.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\tree.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\srclua5\val.lua">
+      <Filter>Lua</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\srclua5\il_controls.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupluacontrols.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srclua5\luagetparam.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srclua5\luamask.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

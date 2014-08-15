@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0C80BBEE-1B00-4567-1234-067292C84EDB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\lib\</OutDir>
+    <IntDir>..\obj\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\src;..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\iupole.h" />
+    <ClInclude Include="..\srcole\legacy.h" />
+    <ClInclude Include="..\srcole\tambientproperties.h" />
+    <ClInclude Include="..\srcole\tDispatch.h" />
+    <ClInclude Include="..\srcole\tIupCtl.h" />
+    <ClInclude Include="..\srcole\tOleClientSite.h" />
+    <ClInclude Include="..\srcole\tOleControl.h" />
+    <ClInclude Include="..\srcole\tOleControlSite.h" />
+    <ClInclude Include="..\srcole\tOleHandler.h" />
+    <ClInclude Include="..\srcole\tOleInPlaceFrame.h" />
+    <ClInclude Include="..\srcole\tOleInPlaceSite.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\srcole\iupolectl.cpp" />
+    <ClCompile Include="..\srcole\legacy.cpp" />
+    <ClCompile Include="..\srcole\tambientproperties.cpp" />
+    <ClCompile Include="..\srcole\tDispatch.cpp" />
+    <ClCompile Include="..\srcole\tiupctl.cpp" />
+    <ClCompile Include="..\srcole\tOleClientSite.cpp" />
+    <ClCompile Include="..\srcole\tOleControl.cpp" />
+    <ClCompile Include="..\srcole\tolecontrolsite.cpp" />
+    <ClCompile Include="..\srcole\tOleHandler.cpp" />
+    <ClCompile Include="..\srcole\tOleInPlaceFrame.cpp" />
+    <ClCompile Include="..\srcole\tOleInPlaceSite.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{eeaf7697-d53c-469c-a482-e79a3f938fca}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="src\win">
+      <UniqueIdentifier>{91de8028-173b-4ffb-a639-6032abc23c9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\win\inc">
+      <UniqueIdentifier>{7fd38703-0c7f-4f2c-814c-aa9ac82cb3c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\common">
+      <UniqueIdentifier>{7bbf100b-b82f-4574-83d0-edbe40baa9a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\common\inc">
+      <UniqueIdentifier>{54dd0c0a-b9be-4af0-a50d-2d805ebbad38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{4fa26b1d-22d4-4f1b-8076-417962d836b2}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\win\win.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winbutton.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wincombo.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wincreat.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\windestroy.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\windlg.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\windraw.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winedit.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winfiledlg.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winframe.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winget.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winglobal.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winhandle.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winhelp.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winhook.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winicon.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winkey.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winmain.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winproc.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winresiz.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winset.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winsize.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wintimer.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wintips.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wintoggle.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winver.c">
+      <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\icalcsize.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\icall.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\icbox.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\icpi.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\icreate.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\idlglist.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ienv.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ifocus.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ifunc.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\iglobalenv.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ikey.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ilex.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\imask.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inames.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\iparse.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ipredial.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\isbox.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\iscanf.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ispin.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\istrutil.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\itable.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\itraverse.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\itree.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\iup.c">
+      <Filter>src\common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\win\win.h">
+      <Filter>src\win\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\winbutton.h">
+      <Filter>src\win\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wincreat.h">
+      <Filter>src\win\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\winframe.h">
+      <Filter>src\win\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\winhandle.h">
+      <Filter>src\win\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\winicon.h">
+      <Filter>src\win\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\winproc.h">
+      <Filter>src\win\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\winresiz.h">
+      <Filter>src\win\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wintips.h">
+      <Filter>src\win\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wintoggle.h">
+      <Filter>src\win\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\winver.h">
+      <Filter>src\win\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\icall.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\icpi.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\idlglist.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\idrv.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ifunc.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\iglobal.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\iglobalenv.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ilex.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\imacros.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\imask.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\inames.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ipredial.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\istrutil.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\itable.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\itree.h">
+      <Filter>src\common\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iup.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupcbs.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupcompat.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupcpi.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupdef.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupkey.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

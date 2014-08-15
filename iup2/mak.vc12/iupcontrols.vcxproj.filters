@@ -1,0 +1,263 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="iuptree">
+      <UniqueIdentifier>{82befaec-0bbb-4576-88ac-278f649211ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iuptree\inc">
+      <UniqueIdentifier>{c159c897-7c1d-451d-8dae-f1ddd7f57b21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupmatrix">
+      <UniqueIdentifier>{d83d20cf-36a6-4e39-aa46-c74f6d42a17c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupmatrix\inc">
+      <UniqueIdentifier>{4a61c4ee-0941-41aa-ad4e-b94cda803077}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupmask">
+      <UniqueIdentifier>{36757009-11cb-4892-85ba-e05b85e3b101}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupmask\inc">
+      <UniqueIdentifier>{7229b744-bc44-43fa-8afe-e0e54f977cc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupcb">
+      <UniqueIdentifier>{bb7c8792-4027-41e0-9c82-2df1a1bffd54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iupgc">
+      <UniqueIdentifier>{cba1971d-55cc-4fe0-87c9-217a60ac030d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{4b994bf5-df94-4e0b-8173-31027584eecf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\srccontrols\tree\itcallback.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\tree\itdraw.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\tree\itedit.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\tree\itfind.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\tree\itgetset.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\tree\itimage.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\tree\itkey.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\tree\itlimits.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\tree\itmouse.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\tree\itscroll.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\tree\iuptree.c">
+      <Filter>iuptree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\imaux.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\imcolres.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\imdraw.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\imedit.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\imfocus.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\imgetset.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\imkey.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\immark.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\immem.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\immouse.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\imnumlc.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\imscroll.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrix\iupmatrix.c">
+      <Filter>iupmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\mask\imask_match.c">
+      <Filter>iupmask</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\mask\imask_parse.c">
+      <Filter>iupmask</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\mask\iupmask.c">
+      <Filter>iupmask</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\color\icb_hls.c">
+      <Filter>iupcb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\color\icb_rgb.c">
+      <Filter>iupcb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\color\iupcb.c">
+      <Filter>iupcb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\color\igc_lng.c">
+      <Filter>iupgc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\color\iupgc.c">
+      <Filter>iupgc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\iupcdutil.c" />
+    <ClCompile Include="..\srccontrols\iupcells.c" />
+    <ClCompile Include="..\srccontrols\iupcolorbar.c" />
+    <ClCompile Include="..\srccontrols\iupcontrols.c" />
+    <ClCompile Include="..\srccontrols\iupdial.c" />
+    <ClCompile Include="..\srccontrols\iupgauge.c" />
+    <ClCompile Include="..\srccontrols\iupgetparam.c" />
+    <ClCompile Include="..\srccontrols\iuptabs.c" />
+    <ClCompile Include="..\srccontrols\iupval.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\srccontrols\tree\itcallback.h">
+      <Filter>iuptree\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\tree\itdraw.h">
+      <Filter>iuptree\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\tree\itfind.h">
+      <Filter>iuptree\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\tree\itgetset.h">
+      <Filter>iuptree\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\tree\itimage.h">
+      <Filter>iuptree\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\tree\itkey.h">
+      <Filter>iuptree\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\tree\itlimits.h">
+      <Filter>iuptree\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\tree\itmouse.h">
+      <Filter>iuptree\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\tree\itscroll.h">
+      <Filter>iuptree\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\tree\treecd.h">
+      <Filter>iuptree\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\tree\treedef.h">
+      <Filter>iuptree\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\imaux.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\imcolres.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\imdraw.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\imfocus.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\imgetset.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\imkey.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\immark.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\immem.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\immouse.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\imnumlc.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\imscroll.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\matridef.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\matrix\matrixcd.h">
+      <Filter>iupmatrix\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\mask\imask.h">
+      <Filter>iupmask\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\mask\imask_match.h">
+      <Filter>iupmask\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupcb.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupcells.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupcolorbar.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupcontrols.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupdial.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupgauge.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupgc.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupgetparam.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupmask.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupmatrix.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupsbox.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iuptabs.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iuptree.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iupval.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srccontrols\icontrols.h" />
+    <ClInclude Include="..\srccontrols\iupcdutil.h" />
+  </ItemGroup>
+</Project>

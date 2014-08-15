@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5EEFE977-C56D-462F-BDEE-12A5452EB8CC}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\lib\</OutDir>
+    <IntDir>..\obj\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\include;..\src;..\srccontrols;..\..\cd\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;CD_NO_OLD_INTERFACE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\srccontrols\color\icb_hls.c" />
+    <ClCompile Include="..\srccontrols\color\icb_rgb.c" />
+    <ClCompile Include="..\srccontrols\color\igc_lng.c" />
+    <ClCompile Include="..\srccontrols\color\iupcb.c" />
+    <ClCompile Include="..\srccontrols\color\iupgc.c" />
+    <ClCompile Include="..\srccontrols\iupcdutil.c" />
+    <ClCompile Include="..\srccontrols\iupcells.c" />
+    <ClCompile Include="..\srccontrols\iupcolorbar.c" />
+    <ClCompile Include="..\srccontrols\iupcontrols.c" />
+    <ClCompile Include="..\srccontrols\iupdial.c" />
+    <ClCompile Include="..\srccontrols\iupgauge.c" />
+    <ClCompile Include="..\srccontrols\iupgetparam.c" />
+    <ClCompile Include="..\srccontrols\iuptabs.c" />
+    <ClCompile Include="..\srccontrols\iupval.c" />
+    <ClCompile Include="..\srccontrols\mask\imask_match.c" />
+    <ClCompile Include="..\srccontrols\mask\imask_parse.c" />
+    <ClCompile Include="..\srccontrols\mask\iupmask.c" />
+    <ClCompile Include="..\srccontrols\matrix\imaux.c" />
+    <ClCompile Include="..\srccontrols\matrix\imcolres.c" />
+    <ClCompile Include="..\srccontrols\matrix\imdraw.c" />
+    <ClCompile Include="..\srccontrols\matrix\imedit.c" />
+    <ClCompile Include="..\srccontrols\matrix\imfocus.c" />
+    <ClCompile Include="..\srccontrols\matrix\imgetset.c" />
+    <ClCompile Include="..\srccontrols\matrix\imkey.c" />
+    <ClCompile Include="..\srccontrols\matrix\immark.c" />
+    <ClCompile Include="..\srccontrols\matrix\immem.c" />
+    <ClCompile Include="..\srccontrols\matrix\immouse.c" />
+    <ClCompile Include="..\srccontrols\matrix\imnumlc.c" />
+    <ClCompile Include="..\srccontrols\matrix\imscroll.c" />
+    <ClCompile Include="..\srccontrols\matrix\iupmatrix.c" />
+    <ClCompile Include="..\srccontrols\tree\itcallback.c" />
+    <ClCompile Include="..\srccontrols\tree\itdraw.c" />
+    <ClCompile Include="..\srccontrols\tree\itedit.c" />
+    <ClCompile Include="..\srccontrols\tree\itfind.c" />
+    <ClCompile Include="..\srccontrols\tree\itgetset.c" />
+    <ClCompile Include="..\srccontrols\tree\itimage.c" />
+    <ClCompile Include="..\srccontrols\tree\itkey.c" />
+    <ClCompile Include="..\srccontrols\tree\itlimits.c" />
+    <ClCompile Include="..\srccontrols\tree\itmouse.c" />
+    <ClCompile Include="..\srccontrols\tree\itscroll.c" />
+    <ClCompile Include="..\srccontrols\tree\iuptree.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\iupcb.h" />
+    <ClInclude Include="..\include\iupcells.h" />
+    <ClInclude Include="..\include\iupcolorbar.h" />
+    <ClInclude Include="..\include\iupcontrols.h" />
+    <ClInclude Include="..\include\iupdial.h" />
+    <ClInclude Include="..\include\iupgauge.h" />
+    <ClInclude Include="..\include\iupgc.h" />
+    <ClInclude Include="..\include\iupgetparam.h" />
+    <ClInclude Include="..\include\iupmask.h" />
+    <ClInclude Include="..\include\iupmatrix.h" />
+    <ClInclude Include="..\include\iupsbox.h" />
+    <ClInclude Include="..\include\iuptabs.h" />
+    <ClInclude Include="..\include\iuptree.h" />
+    <ClInclude Include="..\include\iupval.h" />
+    <ClInclude Include="..\srccontrols\icontrols.h" />
+    <ClInclude Include="..\srccontrols\iupcdutil.h" />
+    <ClInclude Include="..\srccontrols\mask\imask.h" />
+    <ClInclude Include="..\srccontrols\mask\imask_match.h" />
+    <ClInclude Include="..\srccontrols\matrix\imaux.h" />
+    <ClInclude Include="..\srccontrols\matrix\imcolres.h" />
+    <ClInclude Include="..\srccontrols\matrix\imdraw.h" />
+    <ClInclude Include="..\srccontrols\matrix\imfocus.h" />
+    <ClInclude Include="..\srccontrols\matrix\imgetset.h" />
+    <ClInclude Include="..\srccontrols\matrix\imkey.h" />
+    <ClInclude Include="..\srccontrols\matrix\immark.h" />
+    <ClInclude Include="..\srccontrols\matrix\immem.h" />
+    <ClInclude Include="..\srccontrols\matrix\immouse.h" />
+    <ClInclude Include="..\srccontrols\matrix\imnumlc.h" />
+    <ClInclude Include="..\srccontrols\matrix\imscroll.h" />
+    <ClInclude Include="..\srccontrols\matrix\matridef.h" />
+    <ClInclude Include="..\srccontrols\matrix\matrixcd.h" />
+    <ClInclude Include="..\srccontrols\tree\itcallback.h" />
+    <ClInclude Include="..\srccontrols\tree\itdraw.h" />
+    <ClInclude Include="..\srccontrols\tree\itfind.h" />
+    <ClInclude Include="..\srccontrols\tree\itgetset.h" />
+    <ClInclude Include="..\srccontrols\tree\itimage.h" />
+    <ClInclude Include="..\srccontrols\tree\itkey.h" />
+    <ClInclude Include="..\srccontrols\tree\itlimits.h" />
+    <ClInclude Include="..\srccontrols\tree\itmouse.h" />
+    <ClInclude Include="..\srccontrols\tree\itscroll.h" />
+    <ClInclude Include="..\srccontrols\tree\treecd.h" />
+    <ClInclude Include="..\srccontrols\tree\treedef.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2C7E83B9-7FE8-432A-97BA-FCF4D0728408}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\lib\</OutDir>
+    <IntDir>..\obj\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\src;..\src\win;..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WIN32_WINNT=0x0500;_WIN32_IE=0x0500;WINVER=0x0500;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\icalcsize.c" />
+    <ClCompile Include="..\src\icall.c" />
+    <ClCompile Include="..\src\icbox.c" />
+    <ClCompile Include="..\src\icpi.c" />
+    <ClCompile Include="..\src\icreate.c" />
+    <ClCompile Include="..\src\idlglist.c" />
+    <ClCompile Include="..\src\ienv.c" />
+    <ClCompile Include="..\src\ifocus.c" />
+    <ClCompile Include="..\src\ifunc.c" />
+    <ClCompile Include="..\src\iglobalenv.c" />
+    <ClCompile Include="..\src\ikey.c" />
+    <ClCompile Include="..\src\ilex.c" />
+    <ClCompile Include="..\src\imask.c" />
+    <ClCompile Include="..\src\inames.c" />
+    <ClCompile Include="..\src\iparse.c" />
+    <ClCompile Include="..\src\ipredial.c" />
+    <ClCompile Include="..\src\isbox.c" />
+    <ClCompile Include="..\src\iscanf.c" />
+    <ClCompile Include="..\src\ispin.c" />
+    <ClCompile Include="..\src\istrutil.c" />
+    <ClCompile Include="..\src\itable.c" />
+    <ClCompile Include="..\src\itraverse.c" />
+    <ClCompile Include="..\src\itree.c" />
+    <ClCompile Include="..\src\iup.c" />
+    <ClCompile Include="..\src\win\win.c" />
+    <ClCompile Include="..\src\win\winbutton.c" />
+    <ClCompile Include="..\src\win\wincombo.c" />
+    <ClCompile Include="..\src\win\wincreat.c" />
+    <ClCompile Include="..\src\win\windestroy.c" />
+    <ClCompile Include="..\src\win\windlg.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level4</WarningLevel>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\src\win\windraw.c" />
+    <ClCompile Include="..\src\win\winedit.c" />
+    <ClCompile Include="..\src\win\winfiledlg.c" />
+    <ClCompile Include="..\src\win\winframe.c" />
+    <ClCompile Include="..\src\win\winget.c" />
+    <ClCompile Include="..\src\win\winglobal.c" />
+    <ClCompile Include="..\src\win\winhandle.c" />
+    <ClCompile Include="..\src\win\winhelp.c" />
+    <ClCompile Include="..\src\win\winhook.c" />
+    <ClCompile Include="..\src\win\winicon.c" />
+    <ClCompile Include="..\src\win\winkey.c" />
+    <ClCompile Include="..\src\win\winmain.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level4</WarningLevel>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\src\win\winproc.c" />
+    <ClCompile Include="..\src\win\winresiz.c" />
+    <ClCompile Include="..\src\win\winset.c" />
+    <ClCompile Include="..\src\win\winsize.c" />
+    <ClCompile Include="..\src\win\wintimer.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level4</WarningLevel>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wintips.c" />
+    <ClCompile Include="..\src\win\wintoggle.c" />
+    <ClCompile Include="..\src\win\winver.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\iup.h" />
+    <ClInclude Include="..\include\iupcbs.h" />
+    <ClInclude Include="..\include\iupcompat.h" />
+    <ClInclude Include="..\include\iupcpi.h" />
+    <ClInclude Include="..\include\iupdef.h" />
+    <ClInclude Include="..\include\iupkey.h" />
+    <ClInclude Include="..\src\icall.h" />
+    <ClInclude Include="..\src\icpi.h" />
+    <ClInclude Include="..\src\idlglist.h" />
+    <ClInclude Include="..\src\idrv.h" />
+    <ClInclude Include="..\src\ifunc.h" />
+    <ClInclude Include="..\src\iglobal.h" />
+    <ClInclude Include="..\src\iglobalenv.h" />
+    <ClInclude Include="..\src\ilex.h" />
+    <ClInclude Include="..\src\imacros.h" />
+    <ClInclude Include="..\src\imask.h" />
+    <ClInclude Include="..\src\inames.h" />
+    <ClInclude Include="..\src\ipredial.h" />
+    <ClInclude Include="..\src\istrutil.h" />
+    <ClInclude Include="..\src\itable.h" />
+    <ClInclude Include="..\src\itree.h" />
+    <ClInclude Include="..\src\win\win.h" />
+    <ClInclude Include="..\src\win\winbutton.h" />
+    <ClInclude Include="..\src\win\wincreat.h" />
+    <ClInclude Include="..\src\win\winframe.h" />
+    <ClInclude Include="..\src\win\winhandle.h" />
+    <ClInclude Include="..\src\win\winicon.h" />
+    <ClInclude Include="..\src\win\winproc.h" />
+    <ClInclude Include="..\src\win\winresiz.h" />
+    <ClInclude Include="..\src\win\wintips.h" />
+    <ClInclude Include="..\src\win\wintoggle.h" />
+    <ClInclude Include="..\src\win\winver.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

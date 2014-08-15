@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{8c4c9e45-f946-4461-9ed5-e7b08cba5314}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{6854d993-0050-4ca3-8860-8c029c72af42}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\mot\Canvas.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motcolor.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motcreat.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motfiledlg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motget.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motglobal.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\mothelp.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motif.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motkey.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motmsgdlg.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motproc.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motresiz.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motset.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\motsize.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\mottimer.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\mottips.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\utilsx11.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\src\mot\Canvas.h">
+      <Filter>inc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\src\mot\CanvasP.h">
+      <Filter>inc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\src\mot\motif.h">
+      <Filter>inc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\src\mot\mottips.h">
+      <Filter>inc</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
