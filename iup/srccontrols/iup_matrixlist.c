@@ -459,7 +459,7 @@ static int iMatrixListSetCountAttrib(Ihandle* ih, const char* value)
     if (iupStrToInt(value, &count))
     {
       char str[50];
-      sprintf(str, "%d%", count+1);
+      sprintf(str, "%d", count+1);
       iMatrixListSetNumLinAttrib(ih, str);
     }
   }
@@ -467,6 +467,7 @@ static int iMatrixListSetCountAttrib(Ihandle* ih, const char* value)
     iMatrixListSetNumLinAttrib(ih, value);
   return 0;
 }
+
 static char* iMatrixListGetColumnOrderAttrib(Ihandle *ih)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
