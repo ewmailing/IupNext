@@ -9,6 +9,7 @@
 #include <string.h>
 #include <memory.h>
 #include <stdarg.h>
+#include <assert.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -170,18 +171,19 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
   iupdrvAddScreenOffset(x, y, 1);
 }
 
-static void iDialogSetModal(Ihandle* ih_popup)
+void iupDialogEnterModal(Ihandle* ih_popup, int popup_level)
 {
   Ihandle *ih;
-  iupAttribSet(ih_popup, "MODAL", "YES");
+
+  assert(popup_level == dlg_popup_level);
 
   /* disable all visible dialogs, and mark popup level */
   for (ih = iupDlgListFirst(); ih; ih = iupDlgListNext())
   {
-    if (ih != ih_popup && 
-        ih->handle &&
-        iupdrvDialogIsVisible(ih) && 
-        ih->data->popup_level == 0)
+    if (ih != ih_popup &&
+      ih->handle &&
+      iupdrvDialogIsVisible(ih) &&
+      ih->data->popup_level == 0)
     {
       iupdrvSetActive(ih, 0);
       ih->data->popup_level = dlg_popup_level;
@@ -191,20 +193,33 @@ static void iDialogSetModal(Ihandle* ih_popup)
   dlg_popup_level++;
 }
 
-static void iDialogUnSetModal(Ihandle* ih_popup)
+static void iDialogSetModal(Ihandle* ih_popup)
+{
+  iupAttribSet(ih_popup, "MODAL", "YES");
+
+  {
+    IFi cb = (IFi)IupGetFunction("GLOBALENTERMODAL_CB");
+    int popup_level = dlg_popup_level;  /* save before it is changed */
+
+    iupDialogEnterModal(ih_popup, popup_level);
+
+    if (cb)
+      cb(popup_level);
+  }
+}
+
+void iupDialogLeaveModal(int popup_level)
 {
   Ihandle *ih;
-  if (!iupAttribGetBoolean(ih_popup, "MODAL"))
-    return;
 
-  iupAttribSet(ih_popup, "MODAL", NULL);
+  assert(popup_level == dlg_popup_level);
 
   /* must enable all visible dialogs at the marked popup level */
   for (ih = iupDlgListFirst(); ih; ih = iupDlgListNext())
   {
     if (ih->handle)
     {
-      if (ih->data->popup_level == dlg_popup_level-1)
+      if (ih->data->popup_level == dlg_popup_level - 1)
       {
         iupdrvSetActive(ih, 1);
         ih->data->popup_level = 0;
@@ -213,6 +228,24 @@ static void iDialogUnSetModal(Ihandle* ih_popup)
   }
 
   dlg_popup_level--;
+}
+
+static void iDialogUnSetModal(Ihandle* ih_popup)
+{
+  if (!iupAttribGetBoolean(ih_popup, "MODAL"))
+    return;
+
+  iupAttribSet(ih_popup, "MODAL", NULL);
+
+  {
+    IFi cb = (IFi)IupGetFunction("GLOBALLEAVEMODAL_CB");
+    int popup_level = dlg_popup_level;  /* save before it is changed */
+
+    iupDialogLeaveModal(popup_level);
+
+    if (cb)
+      cb(popup_level);
+  }
 }
 
 static int iDialogCreateMethod(Ihandle* ih, void** params)

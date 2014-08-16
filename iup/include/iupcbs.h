@@ -9,7 +9,8 @@
 
 typedef int (*IFidle)(void);  /* idle */
 
-typedef void (*IFii)(int, int); /* globalkeypress_cb */
+typedef void(*IFi)(int); /* globalentermodal_cb, globalleavemodal_cb,  */
+typedef void(*IFii)(int, int); /* globalkeypress_cb */
 typedef void (*IFiis)(int, int, char*);  /* globalmotion_cb */
 typedef void (*IFiiiis)(int, int, int, int, char*);  /* globalbutton_cb */
 typedef void (*IFfiis)(float,int,int,char*);  /* globalwheel_cb */
