@@ -696,7 +696,7 @@ static int ihandle_compare(lua_State *L)
 static int GetWidget(lua_State *L)
 {
   /* Pushes a table that is associanted with an ihandle */
-  /* Used by the "__index" metamethod of the "iup widget" */
+  /* Used by the "__index" metamethod of the iup handle */
   Ihandle * ih = iuplua_checkihandle(L,1);
   char* sref = IupGetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF");
   if (!sref)
@@ -1073,7 +1073,7 @@ int iuplua_open(lua_State * L)
   /* used by Idle in Lua */
   IupSetGlobal("_IUP_LUA_DEFAULT_STATE", (char *) L);  
 
-#ifdef IUPLUA_USELOH
+#ifdef IUPLUA_USELOH        
 #include "iuplua.loh"
 #include "constants.loh"
 #else
