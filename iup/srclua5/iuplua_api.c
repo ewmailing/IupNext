@@ -173,7 +173,7 @@ static int GetAttributes(lua_State *L)
 
 static int GetAllDialogs(lua_State *L)
 {
-  int n, i, max_n = luaL_optinteger(L, 1, 0);
+  int n, i, max_n = (int)luaL_optinteger(L, 1, 0);
   char **names;
   if (!max_n) max_n = IupGetAllDialogs(NULL, 0);
   names = (char **) malloc (max_n * sizeof(char *));
@@ -192,7 +192,7 @@ static int GetAllDialogs(lua_State *L)
 
 static int GetAllNames(lua_State *L)
 {
-  int n, i, max_n = luaL_optinteger(L, 1, 0);
+  int n, i, max_n = (int)luaL_optinteger(L, 1, 0);
   char **names;
   if (!max_n) max_n = IupGetAllNames(NULL, 0);
   names = (char **) malloc (max_n * sizeof(char *));
@@ -211,7 +211,7 @@ static int GetAllNames(lua_State *L)
 
 static int GetAllAttributes(lua_State *L)
 {
-  int n, i, max_n = luaL_optinteger(L, 1, 0);
+  int n, i, max_n = (int)luaL_optinteger(L, 1, 0);
   char **names;
   if (!max_n) max_n = IupGetAllAttributes(iuplua_checkihandle(L,1), NULL, 0);
   names = (char **) malloc (max_n * sizeof(char *));
@@ -230,7 +230,7 @@ static int GetAllAttributes(lua_State *L)
 
 static int GetAllClasses(lua_State *L)
 {
-  int n, i, max_n = luaL_optinteger(L, 1, 0);
+  int n, i, max_n = (int)luaL_optinteger(L, 1, 0);
   char **names;
   if (!max_n) max_n = IupGetAllClasses(NULL, 0);
   names = (char **) malloc (max_n * sizeof(char *));
@@ -256,7 +256,7 @@ static int GetAllClasses(lua_State *L)
 
 static int GetClassAttributes(lua_State *L)
 {
-  int n, i, max_n = luaL_optinteger(L, 1, 0);
+  int n, i, max_n = (int)luaL_optinteger(L, 1, 0);
   char **names;
   if (!max_n) max_n = IupGetClassAttributes(luaL_checkstring(L,1), NULL, 0);
   names = (char **) malloc (max_n * sizeof(char *));
@@ -282,7 +282,7 @@ static int GetClassAttributes(lua_State *L)
 
 static int GetClassCallbacks(lua_State *L)
 {
-  int n, i, max_n = luaL_optinteger(L, 1, 0);
+  int n, i, max_n = (int)luaL_optinteger(L, 1, 0);
   char **names;
   if (!max_n) max_n = IupGetClassCallbacks(luaL_checkstring(L,1), NULL, 0);
   names = (char **) malloc (max_n * sizeof(char *));
@@ -425,7 +425,7 @@ static int PlayInput(lua_State *L)
 
 static int RecordInput(lua_State *L)
 {
-  lua_pushinteger(L, IupRecordInput(luaL_optstring(L,1,NULL), luaL_optinteger(L, 2, 0)));
+  lua_pushinteger(L, IupRecordInput(luaL_optstring(L, 1, NULL), (int)luaL_optinteger(L, 2, 0)));
   return 1;
 }
 

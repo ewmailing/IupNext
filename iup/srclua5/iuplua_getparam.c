@@ -41,7 +41,7 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
     lua_pushinteger(L, param_index);
     if (iuplua_call_raw(L, 2, 1) == 0)    /* 2 args, 1 return */
     {
-      ret = lua_tointeger(L,-1);
+      ret = (int)lua_tointeger(L, -1);
       lua_pop(L, 1);
     }
   }
@@ -116,7 +116,7 @@ static int GetParam(lua_State *L)
       else if (t == 'm')
         max_str = 10240;
       s = luaL_checkstring(L, lua_param_start); lua_param_start++;
-      size = strlen(s);
+      size = (int)strlen(s);
       if (size < max_str)
         param_data[i] = malloc(max_str);
       else

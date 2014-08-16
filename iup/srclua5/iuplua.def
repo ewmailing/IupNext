@@ -27,4 +27,5 @@ EXPORTS
   iuplua_checkihandleornil
   iuplua_call_start
   iuplua_register_cb
+  iuplua_getglobaltable
   

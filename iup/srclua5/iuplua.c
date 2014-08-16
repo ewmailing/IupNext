@@ -18,6 +18,16 @@
 #include "il.h"
 
 
+/* global table */
+static const char* iup_globaltable = "iup";
+static const char* iup_handle = "iup handle";
+static const char* iup_handle_expected = "iup handle expected";
+
+const char* iuplua_getglobaltable(void)
+{
+  return iup_globaltable;
+}
+
 /*****************************************************************************
 * Auxiliary functions                                                       *
 ****************************************************************************/
@@ -30,10 +40,10 @@
 
 static void error_message(lua_State *L, const char *msg, const char* traceback)
 {
-  lua_getglobal(L, "iup");
+  lua_getglobal(L, iup_globaltable);
   lua_pushstring(L, "_ERRORMESSAGE");
   lua_gettable(L, -2);
-  lua_remove(L, -2);  /* remove "iup" from stack */
+  lua_remove(L, -2);  /* remove global table from stack */
 
   if(lua_isnil(L, -1))
   {
@@ -94,12 +104,12 @@ static int traceback (lua_State *L)
   lua_pushinteger(L, 2);  /* skip this function */
   lua_call(L, 2, 1);  /* call debug.traceback */
 
-  lua_getglobal(L, "iup"); /* store traceback in iup._LASTTRACEBACK */
+  lua_getglobal(L, iup_globaltable); /* store traceback in <globaltable>._LASTTRACEBACK */
   lua_pushstring(L, "_LASTTRACEBACK");
   lua_pushvalue(L, -3);
   lua_settable(L, -3);
 
-  lua_pop(L, 2);  /* remove "iup" and "iup._LASTTRACEBACK" from stack */
+  lua_pop(L, 2);  /* remove global table and <globaltable>._LASTTRACEBACK from stack */
   return 1;
 }
 
@@ -117,10 +127,10 @@ static int docall (lua_State *L, int narg, int nret)
     lua_gc(L, LUA_GCCOLLECT, 0);
 
     /* put _LASTTRACEBACK at stack position 2 */
-    lua_getglobal(L, "iup");
+    lua_getglobal(L, iup_globaltable);
     lua_pushliteral(L, "_LASTTRACEBACK");
     lua_gettable(L, -2);
-    lua_remove(L, -2);  /* remove "iup" from stack */
+    lua_remove(L, -2);  /* remove global table from stack */
 
     if (!lua_isstring(L, -1)) 
     {
@@ -128,12 +138,12 @@ static int docall (lua_State *L, int narg, int nret)
       lua_pushliteral(L, "");
 
       /* set _LASTTRACEBACK as nil */
-      lua_getglobal(L, "iup");
+      lua_getglobal(L, iup_globaltable);
       lua_pushliteral(L, "_LASTTRACEBACK");
       lua_pushnil(L);
       lua_settable(L, -3);
 
-      lua_pop(L, 1);  /* remove "iup" from stack */
+      lua_pop(L, 1);  /* remove global table from stack */
     }
   }
   return status;
@@ -187,7 +197,7 @@ Ihandle *iuplua_checkihandleornil(lua_State *L, int pos)
 Ihandle *iuplua_checkihandle(lua_State *L, int pos)
 {
   lua_getmetatable(L, pos);   /* t2 = metatable(stack(pos)) */
-  lua_pushstring(L, "iup handle");
+  lua_pushstring(L, iup_handle);
   lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iup handle"] */
   if (lua_rawequal(L, -2, -1))   /* check (t2==t)? */
   {
@@ -196,7 +206,7 @@ Ihandle *iuplua_checkihandle(lua_State *L, int pos)
   } 
   else 
   {
-    luaL_argerror(L, pos, "iup handle expected");
+    luaL_argerror(L, pos, iup_handle_expected);
     return NULL;
   }
 }
@@ -224,10 +234,10 @@ void iuplua_pushihandle(lua_State *L, Ihandle *ih)
       iuplua_plugstate(L, ih);
 
       /* get the function iup.RegisterHandle */
-      lua_getglobal(L, "iup");
+      lua_getglobal(L, iup_globaltable);
       lua_pushstring(L,"RegisterHandle");
       lua_gettable(L, -2);
-      lua_remove(L, -2);  /* remove "iup" from stack */
+      lua_remove(L, -2);  /* remove global table from stack */
 
       /* call the function iup.RegisterHandle */
       iuplua_pushihandle_raw(L, ih);
@@ -239,7 +249,7 @@ void iuplua_pushihandle(lua_State *L, Ihandle *ih)
       /* already created in Lua */
       iuplua_pushihandle_raw(L, ih);
 
-      lua_pushstring(L, "iup handle");
+      lua_pushstring(L, iup_handle);
       lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iup handle"] */
       lua_setmetatable(L, -2);    /* metatable(ih) = t */
     }
@@ -323,7 +333,7 @@ int* iuplua_checkint_array(lua_State *L, int pos, int n)
   {
     lua_pushinteger(L,i);
     lua_gettable(L,pos);
-    v[i-1] = lua_tointeger(L, -1);
+    v[i - 1] = (int)lua_tointeger(L, -1);
     lua_pop(L,1);
   }
   return v;
@@ -448,10 +458,10 @@ lua_State* iuplua_call_start(Ihandle *ih, const char* name)
   lua_State *L = iuplua_getstate(ih);
 
   /* prepare to call iup.CallMethod(name, handle, ...) */
-  lua_getglobal(L, "iup");
+  lua_getglobal(L, iup_globaltable);
   lua_pushstring(L,"CallMethod");
   lua_gettable(L, -2);
-  lua_remove(L, -2);  /* remove "iup" from stack */
+  lua_remove(L, -2);  /* remove global table from stack */
 
   lua_pushstring(L, name);
   iuplua_pushihandle(L, ih);
@@ -463,10 +473,10 @@ static lua_State* iuplua_call_global_start(const char* name)
   lua_State *L = (lua_State *) IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
 
   /* prepare to call iup.CallGlobalMethod(name, ...) */
-  lua_getglobal(L, "iup");
+  lua_getglobal(L, iup_globaltable);
   lua_pushstring(L,"CallGlobalMethod");
   lua_gettable(L, -2);
-  lua_remove(L, -2);  /* remove "iup" from stack */
+  lua_remove(L, -2);  /* remove global table from stack */
 
   lua_pushstring(L, name);
   return L;
@@ -531,10 +541,10 @@ int iuplua_call_raw(lua_State* L, int nargs, int nresults)
 
 void iuplua_register_cb(lua_State *L, const char* name, lua_CFunction func, const char* type)
 {
-  lua_getglobal(L, "iup");
+  lua_getglobal(L, iup_globaltable);
   lua_pushstring(L,"RegisterCallback");
   lua_gettable(L, -2);
-  lua_remove(L, -2);  /* remove "iup" from stack */
+  lua_remove(L, -2);  /* remove global table from stack */
 
   lua_pushstring(L, name);
   lua_pushcfunction(L, func);
@@ -686,7 +696,7 @@ static int ihandle_compare(lua_State *L)
 static int GetWidget(lua_State *L)
 {
   /* Pushes a table that is associanted with an ihandle */
-  /* Used by the "__index" metamethod of the "iup handle" */
+  /* Used by the "__index" metamethod of the "iup widget" */
   Ihandle * ih = iuplua_checkihandle(L,1);
   char* sref = IupGetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF");
   if (!sref)
@@ -718,20 +728,20 @@ static int SetWidget(lua_State *L)
 
 void iuplua_get_env(lua_State *L)
 {
-  lua_getglobal(L, "iup");
+  lua_getglobal(L, iup_globaltable);
 }
 
 int iuplua_opencall_internal(lua_State * L)
 {
   int ret = 0;
   const char* s;
-  lua_getglobal(L, "iup");
+  lua_getglobal(L, iup_globaltable);
   lua_pushliteral(L,"_IUPOPEN_CALL");
   lua_gettable(L, -2);
   s = lua_tostring(L, -1);
   if (s && strcmp(s, "INTERNAL")==0)
     ret = 1;
-  lua_pop(L,2);  /* remove "iup" and "iup._IUPOPEN_CALL" from stack */
+  lua_pop(L,2);  /* remove global table and <global table>._IUPOPEN_CALL from stack */
   return ret;
 }
 
@@ -870,7 +880,7 @@ static int idle_cb(void)
   lua_State *L = (lua_State *) IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
   lua_getglobal(L, "_IUP_LUA_IDLE_FUNC_"); 
   lua_call(L, 0, 1);  /* _IUP_LUA_IDLE_FUNC_() */
-  ret = lua_tointeger(L, -1);
+  ret = (int)lua_tointeger(L, -1);
   lua_pop(L, 1);
   return ret;
 }
@@ -995,7 +1005,7 @@ int iuplua_close(lua_State * L)
 
 static void setinfo (lua_State *L) 
 {
-  /* table "iup" is at the stack */
+  /* global table is at the stack */
 
   lua_pushliteral (L, IUP_COPYRIGHT);
   lua_setfield(L, -2, "_COPYRIGHT");
@@ -1042,11 +1052,11 @@ int iuplua_open(lua_State * L)
   if (!il_open(L))
     return 0;
 
-  ret = lua_tointeger(L, -1); /* retrieve IupOpen return value */
+  ret = (int)lua_tointeger(L, -1); /* retrieve IupOpen return value */
   lua_pop(L, -1);
 
   /* Registers functions in iup namespace */
-  luaL_register(L, "iup", funcs);  /* leave "iup" table at the top of the stack */
+  luaL_register(L, iup_globaltable, funcs);  /* leave global table at the top of the stack */
   iupluaapi_open(L);
 
   /* set version info */

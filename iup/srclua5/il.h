@@ -84,6 +84,9 @@ void iuplua_register(lua_State *L, lua_CFunction func, const char* name);
  */
 void iuplua_regstring(lua_State *L, const char* str, const char* name);
 
+/** Returns the global table name */
+const char* iuplua_getglobaltable(void);
+
 
           /*              Callbacks             */
 
