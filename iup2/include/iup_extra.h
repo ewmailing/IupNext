@@ -1,5 +1,5 @@
-#ifndef __IUP_EXT_H 
-#define __IUP_EXT_H
+#ifndef __IUP_EXTRA_H 
+#define __IUP_EXTRA_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,4 +19,6 @@ void      IupModalDialogLeave (int popup_level);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
