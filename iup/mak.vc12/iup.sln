@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lua51", "Lua51", "{1CBEAA34-BA34-497D-A775-B9AF6F905696}"
 EndProject
@@ -139,6 +139,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuplua_mglplot52", "iuplua_mglplot52.vcxproj", "{1EBC7A53-4677-12FF-887F-49AF71F17D85}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupgtk3", "iupgtk3.vcxproj", "{2C7E83B9-12E8-ABC5-97BA-A5D8D0728408}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C7E83B9-7FE8-432A-97BA-FCF4D0728408} = {2C7E83B9-7FE8-432A-97BA-FCF4D0728408}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuptestgtk3", "iuptestgtk3.vcxproj", "{2F92EC58-ABBB-40B2-5258-716DB872E1E3}"
 EndProject
