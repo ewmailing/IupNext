@@ -209,6 +209,7 @@ void LabelTest(void)
 //  IupSetAttribute(dlg, "BACKGROUND", "0 0 128");
 //  IupSetAttributeHandle(dlg, "BACKGROUND", image2);
 //  IupSetCallback(dlg, "ENTERWINDOW_CB", enter_cb);
+//  IupSetAttribute(dlg, "FONT", "Helvetica, Bold 12");
 
   IupShow(dlg);
 //  IupShowXY(dlg,IUP_LEFT,IUP_BOTTOM);

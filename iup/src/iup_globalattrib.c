@@ -37,7 +37,7 @@ void iupGlobalAttribFinish(void)
 
 static int iGlobalChangingDefaultColor(const char *name)
 {
-  if (iupClassIsGlobalDefault(name))
+  if (iupClassIsGlobalDefault(name, 1))
   {
     char str[50] = "_IUP_USER_DEFAULT_";
     strcat(str, name);
