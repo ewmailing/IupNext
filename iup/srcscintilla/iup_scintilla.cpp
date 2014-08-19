@@ -81,7 +81,9 @@ void iupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
     
   if(*pos != -1)
   {
-    int line_length = IupScintillaSendMessage(ih, SCI_GETLINEENDPOSITION, lin, 0) - IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
+    /* length of the line not including any end of line characters */
+    int line_length = IupScintillaSendMessage(ih, SCI_GETLINEENDPOSITION, lin, 0) - 
+                      IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
     if(col <= line_length)
       *pos += col;
     else

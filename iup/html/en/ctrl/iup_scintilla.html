@@ -531,7 +531,7 @@ always include its size even if the native system hides the scrollbar.</p>
 
 <p><strong>SCROLLTO</strong> (<font size="3">non inheritable, write only</font>): 
 Scroll the text to make the given position visible. It uses the same format and 
-reference of the <a href="#CARET">CARET</a> attribute ("lin,col&quot; or &quot;col&quot; starting at 0).</p>
+reference of the <a href="#CARET">CARET</a> attribute ("lin,col&quot; starting at 0).</p>
 <p><strong>SCROLLTOCARET</strong> (<font size="3">non inheritable, write only</font>): 
 Scroll the text to make the caret position visible.</p>
 
@@ -971,7 +971,8 @@ are supported. See Notes bellow.</p>
 
 <h3>Auxiliary Functions</h3>
 <p><a href="../elem/iuptext.html#AUX">IupText</a> auxiliary functions <strong>IupTextConvertLinColToPos</strong> 
-and <strong>IupTextConvertPosToLinCol</strong> can also be used.</p>
+and <strong>IupTextConvertPosToLinCol</strong> can also be used. But here lin 
+and col starts at 0, pos starts at 0.</p>
 
 
 

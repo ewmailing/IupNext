@@ -478,12 +478,14 @@ are supported. See Notes bellow.</p>
 
 <pre>void <strong>IupTextConvertLinColToPos</strong>(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int *<strong>pos</strong>); [in C]<br><b>iup.</b><strong>TextConvertLinColToPos</strong>(<b>ih</b>: ihandle, <strong>lin</strong>, <strong>col</strong>: number) -&gt; <strong>pos</strong>: number [in Lua]</pre>
 
-<p>Converts a (lin, col) character positioning into an absolute position. For single line controls
+<p>Converts a (lin, col) character positioning into an absolute position. lin 
+and col starts at 1, pos starts at 0. For single line controls
 <strong>pos</strong> is always "<strong>col</strong>-1". (since 3.0)</p>
 
 <pre>void <strong>IupTextConvertPosToLinCol</strong>(Ihandle* <strong>ih</strong>, int <strong>pos</strong>, int *<strong>lin</strong>, int *<strong>col</strong>); [in C]<br><b>iup.</b><strong>TextConvertPosToLinCol</strong>(<b>ih</b>: ihandle, <strong>pos</strong>: number) -&gt; <strong>lin</strong>, <strong>col</strong>: number [in Lua]</pre>
 
-<p>Converts an absolute position into a (lin, col) character positioning. For single line controls <strong>lin</strong> is always 1, and
+<p>Converts an absolute position into a (lin, col) character positioning. lin 
+and col starts at 1, pos starts at 0. For single line controls <strong>lin</strong> is always 1, and
 <strong>col</strong> is always "<strong>pos</strong>+1". (since 3.0)</p>
 
 

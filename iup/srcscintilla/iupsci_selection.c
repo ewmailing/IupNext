@@ -98,10 +98,10 @@ static char* iScintillaGetCaretAttrib(Ihandle* ih)
 
 static int iScintillaSetCaretAttrib(Ihandle* ih, const char* value)
 {
-  int pos, lin = 1, col = 1;
+  int pos, lin = 0, col = 0;
   iupStrToIntInt(value, &lin, &col, ',');  /* be permissive in SetCaret, do not abort if invalid */
-  if (lin < 1) lin = 1;
-  if (col < 1) col = 1;
+  if (lin < 0) lin = 0;
+  if (col < 0) col = 0;
   
   iupScintillaConvertLinColToPos(ih, lin, col, &pos);
 
