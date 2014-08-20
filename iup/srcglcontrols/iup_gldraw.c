@@ -68,6 +68,9 @@ void iupGLDrawFrameRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, flo
   if (linewidth == 0 || xmin == xmax || ymin == ymax)
     return;
 
+  if (xmin > xmax) { int _t = xmin; xmin = xmax; xmax = _t; }
+  if (ymin > ymax) { int _t = ymin; ymin = ymax; ymax = _t; }
+
   iupStrToRGBA(color, &r, &g, &b, &a);
 
   /* y is oriented top to bottom in IUP */
@@ -109,6 +112,9 @@ void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float li
 
   if (linewidth == 0 || xmin == xmax || ymin == ymax)
     return;
+
+  if (xmin > xmax) { int _t = xmin; xmin = xmax; xmax = _t; }
+  if (ymin > ymax) { int _t = ymin; ymin = ymax; ymax = _t; }
 
   iupStrToRGBA(color, &r, &g, &b, &a);
 
