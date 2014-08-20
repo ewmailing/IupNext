@@ -150,8 +150,11 @@ static void iGLFrameGetDecorSize(Ihandle* ih, int *width, int *height, int* titl
   char* title = iupAttribGet(ih, "TITLE");
   float bwidth = iupAttribGetFloat(ih, "FRAMEWIDTH");
   int border_width = (int)ceil(bwidth);
+
   *width = 2 * border_width;
   *height = 2 * border_width;
+  if (title_width)
+    *title_width = 0;
 
   if (image || title)
   {
