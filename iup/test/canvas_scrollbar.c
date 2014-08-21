@@ -71,11 +71,11 @@ static void update_viewport(Ihandle* ih, cdCanvas *canvas, float posx, float pos
 
 /************************************************************************************/
 
-static int action(Ihandle *ih)
+static int action(Ihandle *ih, float posx, float posy)
 {
   cdCanvas *canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
 
-printf("ACTION\n");
+  printf("ACTION(posx=%.2f, posy=%.2f)\n", posx, posy);
   cdCanvasActivate(canvas);
   cdCanvasClear(canvas);
 
@@ -114,7 +114,7 @@ printf("                                DRAWSIZE=%s \n", IupGetAttribute(ih, "DR
 static int scroll_cb(Ihandle *ih, int op, float posx, float posy)
 {
   cdCanvas *canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
-printf("SCROLL_CB(%g, %g)\n", posx, posy);
+printf("SCROLL_CB(op=%d, posx=%.2f, posy=%.2f)\n", op, posx, posy);
   cdCanvasActivate(canvas);
   update_viewport(ih, canvas, posx, posy);
   IupRedraw(ih, 0);

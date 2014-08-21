@@ -128,13 +128,15 @@ static void gtkCanvasAdjustHorizValueChanged(GtkAdjustment *adjustment, Ihandle 
   cb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
   if (cb)
   {
-    int op = iupAttribGetInt(ih, "_IUPGTK_SBOP");
+    int op = IUP_SBPOSH;
+    char* sbop = iupAttribGet(ih, "_IUPGTK_SBOP");
+    if (sbop) iupStrToInt(sbop, &op);
     if (op == -1)
       return;
 
     cb(ih, op, posx, posy);
 
-    iupAttribSetInt(ih, "_IUPGTK_SBOP", -1);
+    iupAttribSet(ih, "_IUPGTK_SBOP", NULL);
   }
   else
   {
@@ -177,13 +179,15 @@ static void gtkCanvasAdjustVertValueChanged(GtkAdjustment *adjustment, Ihandle *
   cb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
   if (cb)
   {
-    int op = iupAttribGetInt(ih, "_IUPGTK_SBOP");
+    int op = IUP_SBPOSV;
+    char* sbop = iupAttribGet(ih, "_IUPGTK_SBOP");
+    if (sbop) iupStrToInt(sbop, &op);
     if (op == -1)
       return;
 
     cb(ih, op, posx, posy);
 
-    iupAttribSetInt(ih, "_IUPGTK_SBOP", -1);
+    iupAttribSet(ih, "_IUPGTK_SBOP", NULL);
   }
   else
   {
@@ -195,7 +199,7 @@ static void gtkCanvasAdjustVertValueChanged(GtkAdjustment *adjustment, Ihandle *
 
 static gboolean gtkCanvasScrollEvent(GtkWidget *widget, GdkEventScroll *evt, Ihandle *ih)
 {    
-  /* occours only for the mouse wheel. Not related to the scrollbars */
+  /* occurs only for the mouse wheel. Not related to the scrollbars */
   IFnfiis wcb = (IFnfiis)IupGetCallback(ih, "WHEEL_CB");
   if (wcb)
   {
@@ -733,8 +737,6 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   }
 
   gtk_widget_realize(sb_win);
-
-  iupAttribSetInt(ih, "_IUPGTK_SBOP", -1);
 
   if (ih->data->sb & IUP_SB_HORIZ)
   {

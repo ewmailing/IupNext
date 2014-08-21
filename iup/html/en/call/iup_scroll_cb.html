@@ -11,7 +11,10 @@
 <h2>SCROLL_CB</h2>
 <p>Called when some manipulation is made to the scrollbar. The canvas is 
 automatically redrawn only if this callback is NOT defined.</p>
-<p>(GTK 2.8)</p>
+<p>(GTK 2.8) Also the POSX and POSY values will not be correctly updated for 
+older GTK versions.</p>
+<p>In Ubuntu, when liboverlay-scrollbar is enabled (the new tiny auto-hide 
+scrollbar) only the IUP_SBPOSV and IUP_SBPOSH codes are used.</p>
 <h3>Callback</h3>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>op</strong>, float <strong>posx</strong>, float <strong>posy</strong>); [in C]
 <strong>elem</strong>:scroll_cb(<strong>op</strong>, <strong>posx</strong>, <strong>posy</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
