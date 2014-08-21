@@ -7,7 +7,7 @@ require("iupluagl")
 require("iupluaglcontrols")
 require("luagl")
 
-cnv = iup.glcanvasbox{rastersize = "300x300"}
+cnv = iup.glcanvasbox{buffer="DOUBLE", rastersize = "300x300"}
 
 function cnv:action(x, y)
   iup.GLMakeCurrent(self)
@@ -104,6 +104,8 @@ function cnv:k_any(c)
     return iup.DEFAULT
   end
 end
+
+dlg:show()
 
 dlg:show()
 cnv.rastersize = nil -- reset minimum limitation
