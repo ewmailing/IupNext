@@ -13,9 +13,9 @@
 #include "il.h"
 
 
-static int ProgressBar(lua_State *L)
+static int GLProgressBar(lua_State *L)
 {
-  Ihandle *ih = IupProgressBar();
+  Ihandle *ih = IupGLProgressBar();
   iuplua_plugstate(L, ih);
   iuplua_pushihandle_raw(L, ih);
   return 1;
@@ -23,7 +23,7 @@ static int ProgressBar(lua_State *L)
 
 int iupglprogressbarlua_open(lua_State * L)
 {
-  iuplua_register(L, ProgressBar, "ProgressBar");
+  iuplua_register(L, GLProgressBar, "GLProgressBar");
 
 
 #ifdef IUPLUA_USELOH

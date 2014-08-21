@@ -7,7 +7,7 @@ local ctrl = {
   parent = iup.WIDGET,
   creation = "",
   subdir = "gl",
-  funcname = "ProgressBar",
+  funcname = "GLProgressBar",
   callback = {}
 } 
 
