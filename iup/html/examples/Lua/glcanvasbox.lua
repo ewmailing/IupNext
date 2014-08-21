@@ -11,18 +11,28 @@ cnv = iup.glcanvasbox{rastersize = "300x300"}
 
 function cnv:action(x, y)
   iup.GLMakeCurrent(self)
+  
   gl.ClearColor(1.0, 1.0, 1.0, 1.0)
   gl.Clear(gl.COLOR_BUFFER_BIT)
-  gl.Clear(gl.DEPTH_BUFFER_BIT)
-  gl.MatrixMode( gl.PROJECTION )
-  gl.Viewport(0, 0, 300, 300)
-  gl.LoadIdentity()
+  
   gl.Begin( gl.LINES )
   gl.Color(1.0, 0.0, 0.0)
   gl.Vertex(0.0, 0.0)
   gl.Vertex(10.0, 10.0)
   gl.End()
+  
   iup.GLSwapBuffers(self)
+end
+
+function cnv:resize_cb(width, height)
+  iup.GLMakeCurrent(self)
+  
+  gl.Viewport(0, 0, width, height)
+  
+  gl.MatrixMode(gl.PROJECTION)
+  gl.LoadIdentity()
+  gl.MatrixMode(gl.MODELVIEW)
+  gl.LoadIdentity()
 end
 
 img_release = iup.image {
@@ -85,7 +95,7 @@ gframe = iup.glframe{hbox,
 
 iup.Append(cnv, gframe)
 
-dlg = iup.dialog{cnv; title="IupGLCanvas Example"}
+dlg = iup.dialog{cnv; title="IupGLCanvasBox Example"}
 
 function cnv:k_any(c)
   if c == iup.K_q or c == iup.K_Esc then
@@ -95,8 +105,8 @@ function cnv:k_any(c)
   end
 end
 
-
 dlg:show()
+cnv.rastersize = nil -- reset minimum limitation
 
 if (iup.MainLoopLevel()==0) then
   iup.MainLoop()

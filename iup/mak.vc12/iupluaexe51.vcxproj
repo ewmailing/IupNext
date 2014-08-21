@@ -102,10 +102,10 @@
       <Culture>0x0416</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>iup.lib;comctl32.lib;ws2_32.lib;winmm.lib;iupcontrols.lib;iupimglib.lib;iup_pplot.lib;iupgl.lib;cd.lib;iupcd.lib;freetype6.lib;zlib1.lib;cdcontextplus.lib;lua5.1.lib;iuplua51.lib;iupluaim51.lib;iupluaimglib51.lib;iupluagl51.lib;iupluacontrols51.lib;iuplua_pplot51.lib;iupim.lib;opengl32.lib;glu32.lib;gdiplus.lib;im.lib;cdlua51.lib;iupluacd51.lib;imlua51.lib;imlua_process51.lib;cdluaim51.lib;im_process.lib;iuptuio.lib;iupluatuio51.lib;iupole.lib;iupweb.lib;iupluaweb51.lib;iup_scintilla.lib;iuplua_scintilla51.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>iup.lib;comctl32.lib;ws2_32.lib;winmm.lib;iupcontrols.lib;iupglcontrols.lib;iupimglib.lib;iup_pplot.lib;iupgl.lib;cd.lib;iupcd.lib;freetype6.lib;zlib1.lib;cdcontextplus.lib;lua5.1.lib;iuplua51.lib;iupluaim51.lib;iupluaimglib51.lib;iupluagl51.lib;iupluacontrols51.lib;iupluaglcontrols51.lib;iuplua_pplot51.lib;iupim.lib;opengl32.lib;glu32.lib;gdiplus.lib;im.lib;cdlua51.lib;iupluacd51.lib;imlua51.lib;imlua_process51.lib;cdluaim51.lib;im_process.lib;iuptuio.lib;iupluatuio51.lib;iupole.lib;iupweb.lib;iupluaweb51.lib;iup_scintilla.lib;iuplua_scintilla51.lib;imm32.lib;luagl_base51.lib;luagl51.lib;ftgl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)iuplua51.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\im\lib\x64;..\..\cd\lib\x64;..\lib\x64;..\..\lua5.1\lib\vc12_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\im\lib\x64;..\..\cd\lib\x64;..\lib\x64;..\..\lua5.1\lib\vc12_64;..\..\luagl\lib\vc12_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>

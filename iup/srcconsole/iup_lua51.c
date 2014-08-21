@@ -25,8 +25,10 @@
 
 #ifndef IUPLUA_NO_GL
 #include "iupgl.h"
+#include "iupglcontrols.h"
 #include "iupluagl.h"
-/* #include "luagl.h" */
+#include "iupluaglcontrols.h"
+#include "luagl.h"
 #endif
 
 #ifndef IUPLUA_NO_CD
@@ -414,7 +416,8 @@ static void iuplua_openlibs (lua_State *L) {
 
 #ifndef IUPLUA_NO_GL
   iupgllua_open(L);
-/*  luaopen_luagl(L); */
+  iupglcontrolslua_open(L);
+  luaopen_luagl(L);
 #endif
 #ifndef IUPLUA_NO_CD
   iupcontrolslua_open(L);
