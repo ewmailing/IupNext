@@ -44,7 +44,6 @@ struct _IcontrolData
   int extra_buttons,
       extra_buttons_state[4];
 
-  int start_x, start_y;
   int moving;
 };
 
@@ -181,7 +180,6 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
 {
   int redraw = 0;
   int bar_size = iGLExpanderGetBarSize(ih);
-  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
 
   /* shift to bar position */
   if (ih->data->position == IEXPANDER_RIGHT)
@@ -270,28 +268,8 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
   if (ih->data->moving)
   {
-    x += ih->x;
-    y += ih->y;
-
-    if ((x != ih->data->start_x) || (y != ih->data->start_y))
-    {
-      IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
-
-      /* clear canvas box alignment */
-      iupAttribSet(ih, "VERTICALALIGN", NULL);
-      iupAttribSet(ih, "HORIZONTALALIGN", NULL);
-
-      iupBaseSetPosition(ih, ih->x + (x - ih->data->start_x), ih->y + (y - ih->data->start_y));
-
-      IupSetAttribute(gl_parent, "REDRAW", NULL);  /* redraw the whole box */
+    if (iupGLSubCanvasMove(ih, x, y))
       redraw = 0;
-
-      if (cb)
-        cb(ih, ih->x, ih->y);
-    }
-
-    ih->data->start_x = x;
-    ih->data->start_y = y;
   }
 
   if (redraw)
@@ -371,9 +349,8 @@ static int iGLExpanderBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int
       int moveable = iupAttribGetInt(ih, "MOVEABLE");
       if (moveable)
       {
+        iupGLSubCanvasStartMoving(ih, x, y);
         ih->data->moving = 1;
-        ih->data->start_x = ih->x + x;
-        ih->data->start_y = ih->y + y;
       }
 
       iupAttribSet(ih, "PRESSED", NULL);

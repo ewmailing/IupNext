@@ -19,6 +19,9 @@ int  iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent);
 void iupGLSubCanvasSaveState(Ihandle* gl_parent);
 void iupGLSubCanvasRestoreState(Ihandle* gl_parent);
 
+void iupGLSubCanvasStartMoving(Ihandle* ih, int x, int y);
+int iupGLSubCanvasMove(Ihandle* ih, int x, int y);
+
 
 #ifdef __cplusplus
 }

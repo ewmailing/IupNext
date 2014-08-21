@@ -20,6 +20,7 @@
 #include "iup_glcontrols.h"
 #include "iup_gldraw.h"
 #include "iup_glicon.h"
+#include "iup_glsubcanvas.h"
 
 
 static int iGLFrameACTION(Ihandle* ih)
@@ -78,10 +79,7 @@ static int iGLFrameBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y,
   /* Only called when MOVEABLE=Yes */
 
   if (button == IUP_BUTTON1 && pressed)
-  {
-    iupAttribSetInt(ih, "_IUP_START_X", ih->x + x);
-    iupAttribSetInt(ih, "_IUP_START_Y", ih->y + y);
-  }
+    iupGLSubCanvasStartMoving(ih, x, y);
 
   (void)status;
   return IUP_DEFAULT;
@@ -94,33 +92,7 @@ static int iGLFrameMOTION_CB(Ihandle* ih, int x, int y, char* status)
   /* Only called when MOVEABLE=Yes */
 
   if (pressed)
-  {
-    int start_x = iupAttribGetInt(ih, "_IUP_START_X");
-    int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
-
-    x += ih->x;
-    y += ih->y;
-
-    if ((x != start_x) || (y != start_y))
-    {
-      Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-      IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
-
-      /* clear canvas box alignment */
-      iupAttribSet(ih, "VERTICALALIGN", NULL);
-      iupAttribSet(ih, "HORIZONTALALIGN", NULL);
-
-      iupBaseSetPosition(ih, ih->x + (x - start_x), ih->y + (y - start_y));
-
-      IupSetAttribute(gl_parent, "REDRAW", NULL);  /* redraw the whole box */
-
-      if (cb)
-        cb(ih, ih->x, ih->y);
-    }
-
-    iupAttribSetInt(ih, "_IUP_START_X", x);
-    iupAttribSetInt(ih, "_IUP_START_Y", y);
-  }
+    iupGLSubCanvasMove(ih, x, y);
 
   (void)status;
   return IUP_DEFAULT;
@@ -191,7 +163,7 @@ static char* iGLFrameGetClipMinAttrib(Ihandle* ih)
 static int iGLFrameSetMoveableAttrib(Ihandle* ih, const char* value)
 {
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
-  /* only a direct child of the canvabox can be moved */
+  /* only a direct child of the canvasbox can be moved */
   if (iupStrBoolean(value) && ih->parent == gl_parent)
   {
     IupSetCallback(ih, "GL_BUTTON_CB", (Icallback)iGLFrameBUTTON_CB);

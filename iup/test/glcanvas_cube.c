@@ -12,6 +12,7 @@
 #include "iup.h"          
 #include "iupgl.h"
 #include "iupglcontrols.h"
+#include "iupcontrols.h"
 
 
 static unsigned char img_close[16 * 16] =
@@ -369,10 +370,12 @@ void GLCanvasCubeTest(void)
     *hbox, *vbox, *glabel, *gsep1, *gsep2, *gbutton1, *gbutton2,
     *pbar1, *pbar2, *glink, *gval1, *gval2, *gframe1, *gframe2,
     *gexp1, *gexp2, *image_open, *image_close, *image_high,
-    *gframe3, *vbox2, *gtoggle3, *gtoggle4, *gtoggle5, *gsbox;
+    *gframe3, *vbox2, *gtoggle3, *gtoggle4, *gtoggle5, *gsbox,
+    *text, *vbox3, *matrix;
 
   IupGLCanvasOpen();
   IupGLControlsOpen();
+  IupControlsOpen();
 
   glabel = IupGLLabel("Label");
 //  IupSetAttribute(glabel, "FGCOLOR", "255 255 255");
@@ -483,17 +486,48 @@ void GLCanvasCubeTest(void)
   gsbox = IupSetAttributes(IupGLScrollBox(vbox2), "RASTERSIZE=90x90");
   gsbox = IupGLSizeBox(gsbox);
 
-  gframe1 = IupSetAttributes(IupGLFrame(hbox), "TITLE=Frame");
+  gframe1 = IupSetAttributes(IupGLFrame(hbox), "TITLE=Frame1");
   gframe2 = IupSetAttributes(IupGLFrame(vbox), "BACKCOLOR=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
-  gframe3 = IupSetAttributes(IupGLFrame(gsbox), "TITLE=Frame, TITLEBOX=Yes");
+  gframe3 = IupSetAttributes(IupGLFrame(gsbox), "TITLE=Frame3, TITLEBOX=Yes");
 
   gexp1 = IupSetAttributes(IupGLExpander(gframe1), "TITLE=Expander");
   gexp2 = IupSetAttributes(IupGLExpander(gframe2), "BARPOSITION=LEFT");
 
+  text = IupText(NULL);
+  IupSetAttribute(text, "VALUE", "Text");
+
+  matrix = IupMatrix(NULL);
+  IupSetAttribute(matrix, "NUMLIN", "3");
+  IupSetAttribute(matrix, "NUMCOL", "2");
+  IupSetAttribute(matrix, "NUMLIN_VISIBLE", "3");
+  IupSetAttribute(matrix, "NUMCOL_VISIBLE", "2");
+  IupSetAttribute(matrix, "0:0", "Inflation");
+  IupSetAttribute(matrix, "1:0", "Medicine");
+  IupSetAttribute(matrix, "2:0", "Food");
+  IupSetAttribute(matrix, "3:0", "Energy");
+  IupSetAttribute(matrix, "0:1", "January 2000");
+  IupSetAttribute(matrix, "0:2", "February 2000");
+  IupSetAttribute(matrix, "1:1", "5.6");
+  IupSetAttribute(matrix, "2:1", "2.2");
+  IupSetAttribute(matrix, "3:1", "4.1");
+  IupSetAttribute(matrix, "1:2", "10");
+  IupSetAttribute(matrix, "2:2", "1");
+  IupSetAttribute(matrix, "3:2", "0.5");
+//  IupSetAttribute(matrix, "EXPAND", "No");
+  IupSetAttribute(matrix, "SCROLLBAR", "No");
+
+  vbox3 = IupVbox(
+    text,
+    matrix,
+    NULL);
+
+  vbox3 = IupSetAttributes(IupGLFrame(vbox3), "TITLE=Frame4");
+
   canvas = IupGLCanvasBox(
     IupSetAttributes(gexp1, "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes"),
-    // IupSetAttributes(gexp2, "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER"),
-    //IupSetAttributes(gframe3, "MOVEABLE=Yes, POSITION=\"550,200\""),
+    IupSetAttributes(gexp2, "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER"),
+    IupSetAttributes(gframe3, "MOVEABLE=Yes, POSITION=\"550,200\""),
+    IupSetAttributes(vbox3, "MOVEABLE=Yes, POSITION=\"250,350\""),
     NULL);
 
   image_open = IupImage(16, 16, img_open);

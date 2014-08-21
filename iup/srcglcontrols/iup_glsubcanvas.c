@@ -25,6 +25,7 @@
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
+#include "iup_layout.h"
 
 #include "iup_glcontrols.h"
 #include "iup_glfont.h"
@@ -241,6 +242,49 @@ int iupGLSubCanvasRedraw(Ihandle* ih)
   return IUP_DEFAULT;  /* return IUP_DEFAULT so it can be used as a callback */
 }
 
+void iupGLSubCanvasStartMoving(Ihandle* ih, int x, int y)
+{
+  iupAttribSetInt(ih, "_IUP_START_X", ih->x + x);
+  iupAttribSetInt(ih, "_IUP_START_Y", ih->y + y);
+}
+
+int iupGLSubCanvasMove(Ihandle* ih, int x, int y)
+{
+  int moved = 0;
+  int start_x = iupAttribGetInt(ih, "_IUP_START_X");
+  int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
+
+  x += ih->x;
+  y += ih->y;
+
+  if ((x != start_x) || (y != start_y))
+  {
+    Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+    IFnii cb = (IFnii)IupGetCallback(ih, "MOVE_CB");
+
+    /* clear canvas box alignment */
+    iupAttribSet(ih, "VERTICALALIGN", NULL);
+    iupAttribSet(ih, "HORIZONTALALIGN", NULL);
+
+    iupBaseSetPosition(ih, ih->x + (x - start_x), ih->y + (y - start_y));
+    iupLayoutUpdate(ih);
+
+    IupSetAttribute(gl_parent, "REDRAW", NULL);  /* redraw the whole box */
+    moved = 1;
+
+    if (cb)
+      cb(ih, ih->x, ih->y);
+  }
+
+  iupAttribSetInt(ih, "_IUP_START_X", x);
+  iupAttribSetInt(ih, "_IUP_START_Y", y);
+  return moved;
+}
+
+
+/****************************************************************/
+
+
 static char* iGLSubCanvasGetCharSizeAttrib(Ihandle* ih)
 {
   int charwidth, charheight;
@@ -363,6 +407,10 @@ static int iGLSubCanvasSetZorderAttrib(Ihandle* ih, const char* value)
 
 return 0;
 }
+
+
+/****************************************************************/
+
 
 static int iGLSubCanvasMapMethod(Ihandle* ih)
 {
