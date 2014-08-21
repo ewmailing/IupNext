@@ -381,7 +381,7 @@ void GLCanvasCubeTest(void)
 
   gbutton1 = IupGLButton("Button");
   IupSetAttribute(gbutton1, "PADDING", "5x5");
-  //IupSetAttribute(gbutton1, "BGCOLOR", "245 245 245 92");
+  //IupSetAttribute(gbutton1, "BGCOLOR", "245 0 245 92");
   IupSetCallback(gbutton1, "ACTION", button_action_cb);
   IupSetAttribute(gbutton1, "NAME", "button1");
   IupSetAttribute(gbutton1, "TIP", "Button Tip");
@@ -484,7 +484,7 @@ void GLCanvasCubeTest(void)
   gsbox = IupGLSizeBox(gsbox);
 
   gframe1 = IupSetAttributes(IupGLFrame(hbox), "TITLE=Frame");
-  gframe2 = IupSetAttributes(IupGLFrame(vbox), "BACKGROUND=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
+  gframe2 = IupSetAttributes(IupGLFrame(vbox), "BACKCOLOR=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
   gframe3 = IupSetAttributes(IupGLFrame(gsbox), "TITLE=Frame, TITLEBOX=Yes");
 
   gexp1 = IupSetAttributes(IupGLExpander(gframe1), "TITLE=Expander");
@@ -492,8 +492,8 @@ void GLCanvasCubeTest(void)
 
   canvas = IupGLCanvasBox(
     IupSetAttributes(gexp1, "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes"),
-    IupSetAttributes(gexp2, "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER"),
-    IupSetAttributes(gframe3, "MOVEABLE=Yes, POSITION=\"550,200\""),
+    // IupSetAttributes(gexp2, "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER"),
+    //IupSetAttributes(gframe3, "MOVEABLE=Yes, POSITION=\"550,200\""),
     NULL);
 
   image_open = IupImage(16, 16, img_open);
