@@ -407,8 +407,8 @@ static gboolean gtkDialogChildDestroyEvent(GtkWidget *widget, Ihandle *ih)
   if (iupObjectCheck(ih))
     IupDestroy(ih);
 
-  /* this callback is usefull to destroy children dialogs when the parent is destroyed. */
-  /* The application is responsable for destroying the children before this happen. */
+  /* this callback is useful to destroy children dialogs when the parent is destroyed. */
+  /* The application is responsible for destroying the children before this happen. */
 
   return FALSE;
 }

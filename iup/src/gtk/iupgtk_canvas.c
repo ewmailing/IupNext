@@ -30,7 +30,7 @@
 #include "iupgtk_drv.h"
 
 
-static void gtkCanvasUpdateChildLayout(Ihandle *ih)
+static void gtkCanvasUpdateChildLayout(Ihandle *ih, int flush)
 {
   GtkContainer* sb_win = (GtkContainer*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   GtkWidget* sb_horiz = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_SBHORIZ");
@@ -51,7 +51,9 @@ static void gtkCanvasUpdateChildLayout(Ihandle *ih)
     iupgtkSetPosSize(sb_win, sb_horiz, border, height-sb_horiz_height-border, width-sb_vert_width-2*border, sb_horiz_height);
 
   iupgtkSetPosSize(sb_win, ih->handle, border, border, width-sb_vert_width-2*border, height-sb_horiz_height-2*border);
-  IupFlush();
+
+  if (flush)
+    IupFlush();
 }
 
 static int gtkCanvasScroll2Iup(GtkScrollType scroll, int vert)
@@ -330,7 +332,7 @@ static void gtkCanvasLayoutUpdateMethod(Ihandle *ih)
       gdk_window_resize(window, ih->currentwidth, ih->currentheight);
   }
 
-  gtkCanvasUpdateChildLayout(ih);
+  gtkCanvasUpdateChildLayout(ih, 0);
 }
 
 static void gtkCanvasSizeAllocate(GtkWidget* widget, GdkRectangle *allocation, Ihandle *ih)
@@ -404,7 +406,7 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
         if (iupgtkIsVisible(sb_horiz))
         {
           gtk_widget_hide(sb_horiz);
-          gtkCanvasUpdateChildLayout(ih);
+          gtkCanvasUpdateChildLayout(ih, 1);
         }
       }
       else
@@ -419,7 +421,7 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
       if (!iupgtkIsVisible(sb_horiz))
       {
         gtk_widget_show(sb_horiz);
-        gtkCanvasUpdateChildLayout(ih);
+        gtkCanvasUpdateChildLayout(ih, 1);
       }
       gtk_widget_set_sensitive(sb_horiz, TRUE);
     }
@@ -486,7 +488,7 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
         if (iupgtkIsVisible(sb_vert))
         {
           gtk_widget_hide(sb_vert);
-          gtkCanvasUpdateChildLayout(ih);
+          gtkCanvasUpdateChildLayout(ih, 1);
         }
       }
       else
@@ -501,7 +503,7 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
       if (!iupgtkIsVisible(sb_vert))
       {
         gtk_widget_show(sb_vert);
-        gtkCanvasUpdateChildLayout(ih);
+        gtkCanvasUpdateChildLayout(ih, 1);
       }
       gtk_widget_set_sensitive(sb_vert, TRUE);
     }
