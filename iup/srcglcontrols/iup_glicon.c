@@ -28,7 +28,7 @@ enum{ IUP_GLPOS_LEFT, IUP_GLPOS_RIGHT, IUP_GLPOS_TOP, IUP_GLPOS_BOTTOM };
 
 static char* iGLIconGetImageName(Ihandle* ih, const char* name, const char* state)
 {
-  char attrib[50];
+  char attrib[1024];
   strcpy(attrib, name);
   strcat(attrib, state);
   return iupAttribGet(ih, attrib);
