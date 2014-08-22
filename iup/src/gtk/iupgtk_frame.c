@@ -150,6 +150,11 @@ static int gtkFrameMapMethod(Ihandle* ih)
 
   gtk_widget_realize(ih->handle);
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+  if (!iupAttribGet(ih, "_IUPFRAME_HAS_BGCOLOR"))
+    gtkFrameSetBgColorAttrib(ih, NULL);
+#endif
+
   return IUP_NOERROR;
 }
 
