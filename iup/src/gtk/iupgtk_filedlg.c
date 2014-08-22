@@ -139,6 +139,8 @@ static void gtkFileDlgPreviewRealize(GtkWidget *widget, Ihandle *ih)
   iupAttribSet(ih, "PREVIEWDC", iupgtkGetNativeGraphicsContext(widget));
   iupAttribSet(ih, "WID", (char*)widget);
 
+  iupAttribSet(ih, "DRAWABLE", (char*)iupgtkGetWindow(widget));
+
 #ifndef GTK_MAC
   #ifdef WIN32                                 
     iupAttribSet(ih, "HWND", (char*)GDK_WINDOW_HWND(iupgtkGetWindow(widget)));
