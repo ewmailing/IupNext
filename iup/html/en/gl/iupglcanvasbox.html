@@ -32,10 +32,12 @@ in the
 <p>To use the controls available in the <strong>IupGLControls</strong> library 
 inside your OpenGL canvas you must replace the <strong>IupGLCanvas</strong> by 
 the <strong>IupGLCanvasBox</strong> element.</p>
-<p>It can have any number of children, but only controls from the <strong>
+<p>It can have any number of children. Controls from the <strong>
 IupGLControls</strong> library can be used as children along with the void 
 containers such as <strong>IupHbox</strong>, <strong>IupVbox</strong>, and so 
-on, including <strong>IupFill</strong>. </p>
+on, including <strong>IupFill</strong>. Native elements can also be placed on 
+top although they will not be clipped by <strong>IupGLFrame</strong> and other
+<strong>IupGlControls</strong> containers.</p>
 <p>The elements that are a direct child of the box can be positioned using the 
 VERTICALALIGN and/or HORIZONTALALIGN attributes, or using a position in pixels 
 relative to the top left corner of the box by setting the attribute

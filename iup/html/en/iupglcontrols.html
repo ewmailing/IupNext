@@ -34,11 +34,13 @@ control. Actually the <strong>IupGLCanvasBox</strong> inherits from the<strong>
 IupGLCanvas</strong> control so their usage is identical. But <strong>
 IupGLCanvasBox</strong> can have children and it will manage the display and 
 mouse events of all its children.</p>
-<p>All the visible elements that can be an embedded children of a <strong>
+<p>All the <strong>IupGlControls</strong> visible elements that can be an embedded children of a <strong>
 IupGLCanvasBox</strong> are based on the <strong>IupGLSubCanvas</strong> 
-control. Only elements that are void containers can also be used, such as
+control. Other IUP elements can also be used. It will work seemsly elements that are void containers can also be used, such as
 <strong>IupHbox</strong>, <strong>IupVbox</strong>, <strong>IupGridBox</strong>, 
-and so on. <strong>IupFill</strong> can also be used. All functions and 
+and so on. <strong>IupFill</strong> can also be used, but native elements can 
+also be placed on top although they will not be clipped by <strong>IupGLFrame</strong> 
+and other <strong>IupGlControls</strong> containers. All functions and 
 resources, like <strong>IupImage</strong>, are used just like any other IUP 
 control.</p>
 <p>These controls are drawn by IUP using OpenGL 
