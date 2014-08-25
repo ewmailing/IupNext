@@ -188,19 +188,22 @@ static void iDialDrawHorizontalBackground(Ihandle* ih,double amin,double amax, i
 static void iDialDrawHorizontal(Ihandle* ih)
 {
   double delta = 2 * M_PI / ih->data->num_div;
-  int x;
   double a, amin, amax;
   int xmin, xmax;
+
   ih->data->radius = (ih->data->w - 2 * IDIAL_SPACE - 2) / 2.0;
+
   amin = 0.0;
   amax = M_PI;
   if(ih->data->angle < amin)
   {
-    for (a = ih->data->angle; a < amin; a += delta) ;
+    for (a = ih->data->angle; a < amin; a += delta) 
+      ;
   }
   else
   {
-    for (a = ih->data->angle; a > amin; a-= delta) ;
+    for (a = ih->data->angle; a > amin; a-= delta) 
+      ;
     a += delta;
   }
 
@@ -211,6 +214,7 @@ static void iDialDrawHorizontal(Ihandle* ih)
 
   for ( ; a < amax; a += delta)
   {
+    int x;
     if (a < 0.5 * M_PI) x = (int)(ih->data->w / 2.0 - ih->data->radius * cos(a));
     else              x = (int)(ih->data->w / 2.0 + ih->data->radius * fabs(cos(a)));
 
@@ -639,25 +643,15 @@ static char* iDialGetValueAttrib(Ihandle* ih)
 
 static int iDialSetValueAttrib(Ihandle* ih, const char* value)
 {
-  if (!value) /* reset to default */
-    ih->data->angle = 0;
-  else
-    iupStrToDouble(value, &(ih->data->angle));
-
-  iDialRepaint(ih);
+  if (iupStrToDoubleDef(value, &(ih->data->angle), 0.0))
+    iDialRepaint(ih);
   return 0; /* do not store value in hash table */
 }
 
 static int iDialSetDensityAttrib(Ihandle* ih, const char* value)
 {
-  if (!value)
-  {
-    ih->data->density = 0.2;
+  if (iupStrToDoubleDef(value, &(ih->data->density), 0.2))
     iDialRepaint(ih);
-  }
-  else if (iupStrToDouble(value, &(ih->data->density)))
-    iDialRepaint(ih);
-
   return 0;   /* do not store value in hash table */
 }
 

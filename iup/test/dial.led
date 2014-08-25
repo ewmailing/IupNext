@@ -12,7 +12,6 @@ dial_v = DIAL
 
 dial_h = DIAL
 [
-  DENSITY=0.1,
   MOUSEMOVE_CB="dial_mousemove",
   BUTTON_PRESS_CB="dial_buttonpress",
   BUTTON_RELEASE_CB="dial_buttonrelease"
