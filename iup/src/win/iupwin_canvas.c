@@ -60,7 +60,7 @@ static int winCanvasSetDXAttrib(Ihandle* ih, const char *value)
     float dx;
     int iposx, ipagex;
 
-    if (!iupStrToFloat(value, &dx))
+    if (!iupStrToFloatDef(value, &dx, 0.1f))
       return 1;
 
     xmin = iupAttribGetFloat(ih, "XMIN");
@@ -133,7 +133,7 @@ static int winCanvasSetDYAttrib(Ihandle* ih, const char *value)
     float dy;
     int iposy, ipagey;
 
-    if (!iupStrToFloat(value, &dy))
+    if (!iupStrToFloatDef(value, &dy, 0.1f))
       return 1;
 
     ymin = iupAttribGetFloat(ih, "YMIN");
@@ -634,6 +634,9 @@ static int winCanvasMapMethod(Ihandle* ih)
   if (IupGetCallback(ih, "DROPFILES_CB"))
     iupAttribSet(ih, "DROPFILESTARGET", "YES");
 
+  winCanvasSetDXAttrib(ih, NULL);
+  winCanvasSetDYAttrib(ih, NULL);
+
   return IUP_NOERROR;
 }
 
@@ -711,8 +714,8 @@ void iupdrvCanvasInitClass(Iclass* ic)
   /* IupCanvas only */
   iupClassRegisterAttribute(ic, "DRAWSIZE", winCanvasGetDrawSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "DX", NULL, winCanvasSetDXAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "DY", NULL, winCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "DX", NULL, winCanvasSetDXAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "DY", NULL, winCanvasSetDYAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, winCanvasSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, winCanvasSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

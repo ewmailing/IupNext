@@ -34,7 +34,6 @@
 #define IDIAL_SPACE 3
 #define IDIAL_NCOLORS 10
 #define IDIAL_DEFAULT_DENSITY 0.2
-#define IDIAL_DEFAULT_DENSITY_STR "0.2"
 #define IDIAL_DEFAULT_FGCOLOR "64 64 64"
 #define IDIAL_DEFAULT_FGCOLOR_COMP 64
 
@@ -142,7 +141,7 @@ static void iDialDrawVertical(Ihandle* ih)
   cdIupDrawRaiseRect(ih->data->cddbuffer, IDIAL_SPACE, ymin, ih->data->w-1-IDIAL_SPACE, ymax,
                       ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
 
-  for ( ; a < amax; a += delta)    /* graduation */
+  for (; a < amax; a += delta)    /* graduation */
   {
     int y;
     if (a < 0.5 * M_PI) y = (int)(ih->data->h / 2.0 - ih->data->radius * cos(a));
@@ -651,8 +650,14 @@ static int iDialSetValueAttrib(Ihandle* ih, const char* value)
 
 static int iDialSetDensityAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrToDouble(value, &(ih->data->density)))
+  if (!value)
+  {
+    ih->data->density = 0.2;
     iDialRepaint(ih);
+  }
+  else if (iupStrToDouble(value, &(ih->data->density)))
+    iDialRepaint(ih);
+
   return 0;   /* do not store value in hash table */
 }
 
@@ -836,7 +841,7 @@ Iclass* iupDialNewClass(void)
   iupClassRegisterAttribute(ic, "TYPE", iDialGetOrientationAttrib, iDialSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ORIENTATION", iDialGetOrientationAttrib, iDialSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "DENSITY", iDialGetDensityAttrib, iDialSetDensityAttrib, IDIAL_DEFAULT_DENSITY_STR, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "DENSITY", iDialGetDensityAttrib, iDialSetDensityAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iDialSetFgColorAttrib, IDIAL_DEFAULT_FGCOLOR, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "UNIT", NULL, iDialSetUnitAttrib, IUPAF_SAMEASSYSTEM, "RADIANS", IUPAF_NOT_MAPPED);
 

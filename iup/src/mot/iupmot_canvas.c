@@ -252,7 +252,7 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
     Widget sb_horiz = (Widget)iupAttribGet(ih, "_IUPMOT_SBHORIZ");
     if (!sb_horiz) return 1;
 
-    if (!iupStrToFloat(value, &dx))
+    if (!iupStrToFloatDef(value, &dx, 0.1f))
       return 1;
 
     xmin = iupAttribGetFloat(ih, "XMIN");
@@ -353,7 +353,7 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
     Widget sb_vert = (Widget)iupAttribGet(ih, "_IUPMOT_SBVERT");
     if (!sb_vert) return 1;
 
-    if (!iupStrToFloat(value, &dy))
+    if (!iupStrToFloatDef(value, &dy, 0.1f))
       return 1;
 
     ymin = iupAttribGetFloat(ih, "YMIN");
@@ -679,6 +679,9 @@ static int motCanvasMapMethod(Ihandle* ih)
   /* initialize the widget */
   XtRealizeWidget(sb_win);
 
+  motCanvasSetDXAttrib(ih, NULL);
+  motCanvasSetDYAttrib(ih, NULL);
+
   return IUP_NOERROR;
 }
 
@@ -696,8 +699,8 @@ void iupdrvCanvasInitClass(Iclass* ic)
   /* IupCanvas only */
   iupClassRegisterAttribute(ic, "DRAWSIZE", motCanvasGetDrawSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "DX", NULL, motCanvasSetDXAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "DY", NULL, motCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "DX", NULL, motCanvasSetDXAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "DY", NULL, motCanvasSetDYAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, motCanvasSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, motCanvasSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
 

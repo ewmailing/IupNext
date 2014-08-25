@@ -222,11 +222,13 @@ int iupStrToIntInt(const char *str, int *i1, int *i2, char sep);
  * Returns a a non zero value if sucessfull.
  * \ingroup str */
 int iupStrToFloat(const char *str, float *f);
+int iupStrToFloatDef(const char *str, float *f, float def);
 
 /** Converts the string to a double. The string must contains only the real value.
 * Returns a a non zero value if sucessfull.
 * \ingroup str */
 int iupStrToDouble(const char *str, double *d);
+int iupStrToDoubleDef(const char *str, double *d, double def);
 
 /** Converts the string to two float. The string must contains two real values in sequence,
  * separated by the given character (usually 'x' or ':').

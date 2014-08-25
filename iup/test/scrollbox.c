@@ -466,8 +466,8 @@ void ScrollBoxTest(void)
   set_callbacks(val);
   
   pbar = IupProgressBar();
-  IupSetAttribute(pbar, "VALUE", "0.5");
-  IupSetAttribute(pbar,"TIP","ProgressBar TIP");
+  IupSetFloat(pbar, "VALUE", 0.5);
+  IupSetAttribute(pbar, "TIP", "ProgressBar TIP");
   set_callbacks(pbar);
 
   tabs = IupTabs(IupVbox(IupLabel("Tab0"), NULL), IupVbox(IupLabel("Tab1"), NULL), IupVbox(IupLabel("Tab2"), NULL), NULL);

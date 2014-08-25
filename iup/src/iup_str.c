@@ -610,6 +610,13 @@ int iupStrToIntInt(const char *str, int *i1, int *i2, char sep)
   }
 }
 
+int iupStrToFloatDef(const char *str, float *f, float def)
+{
+  if (!str) { *f = def;  return 1; }
+  if (sscanf(str, "%f", f) != 1) return 0;
+  return 1;
+}
+
 int iupStrToFloat(const char *str, float *f)
 {
   if (!str) return 0;
@@ -620,6 +627,13 @@ int iupStrToFloat(const char *str, float *f)
 int iupStrToDouble(const char *str, double *d)
 {
   if (!str) return 0;
+  if (sscanf(str, "%lf", d) != 1) return 0;
+  return 1;
+}
+
+int iupStrToDoubleDef(const char *str, double *d, double def)
+{
+  if (!str) { *d = def;  return 1; }
   if (sscanf(str, "%lf", d) != 1) return 0;
   return 1;
 }

@@ -501,7 +501,7 @@ void SampleTest(void)
   set_callbacks(val);
   
   pbar = IupProgressBar();
-  IupSetAttribute(pbar, "VALUE", "0.5");
+  IupSetFloat(pbar, "VALUE", 0.5);
   IupSetAttribute(pbar,"TIP","ProgressBar TIP");
   set_callbacks(pbar);
 

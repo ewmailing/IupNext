@@ -122,8 +122,11 @@ void cdIupDrawHorizSunkenMark(cdCanvas *canvas, int x1, int x2, int y, long ligh
 void IupCdDrawFocusRect(Ihandle* ih, cdCanvas *canvas, int x1, int y1, int x2, int y2)
 {
   int y, x, w, h;
+
 #ifdef WIN32
   void* gc = cdCanvasGetAttribute(canvas, "HDC");
+  if (!gc)
+    gc = cdCanvasGetAttribute(canvas, "GC");  /* for Cairo running in Windows */
 #else
   void* gc = cdCanvasGetAttribute(canvas, "GC");  /* works for X11, GDK and Cairo */
 #endif

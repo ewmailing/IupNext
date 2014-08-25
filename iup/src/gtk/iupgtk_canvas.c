@@ -382,7 +382,7 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
     GtkWidget* sb_horiz = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_SBHORIZ");
     if (!sb_horiz) return 1;
 
-    if (!iupStrToFloat(value, &dx))
+    if (!iupStrToFloatDef(value, &dx, 0.1f))
       return 1;
 
     xmin = iupAttribGetFloat(ih, "XMIN");
@@ -464,7 +464,7 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
     GtkWidget* sb_vert = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_SBVERT");
     if (!sb_vert) return 1;
 
-    if (!iupStrToFloat(value, &dy))
+    if (!iupStrToFloatDef(value, &dy, 0.1f))
       return 1;
 
     ymin = iupAttribGetFloat(ih, "YMIN");
@@ -784,7 +784,10 @@ static int gtkCanvasMapMethod(Ihandle* ih)
 
   /* force the update of BGCOLOR here, to let derived classes ignore it if ACTION is defined */
   gtkCanvasSetBgColorAttrib(ih, iupAttribGetStr(ih, "BGCOLOR"));
-    
+
+  gtkCanvasSetDXAttrib(ih, NULL);
+  gtkCanvasSetDYAttrib(ih, NULL);
+
   return IUP_NOERROR;
 }
 
@@ -802,8 +805,8 @@ void iupdrvCanvasInitClass(Iclass* ic)
   /* IupCanvas only */
   iupClassRegisterAttribute(ic, "DRAWSIZE", gtkCanvasGetDrawSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "DX", NULL, gtkCanvasSetDXAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "DY", NULL, gtkCanvasSetDYAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "DX", NULL, gtkCanvasSetDXAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "DY", NULL, gtkCanvasSetDYAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, gtkCanvasSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, gtkCanvasSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
 

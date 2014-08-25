@@ -1455,6 +1455,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       iMglPlotConfigDataGrid(gr, ds, style);
 
     double barwidth = iupAttribGetDouble(ih, "BARWIDTH");   // Default 0.7
+    if (barwidth <= 0) barwidth = 0.7;
     gr->SetBarWidth(barwidth);
 
     // To avoid hole bars clipped when touching the bounding box
@@ -1477,6 +1478,7 @@ static void iMglPlotDrawLinearData(Ihandle* ih, mglGraph *gr, IdataSet* ds)
       iMglPlotConfigDataGrid(gr, ds, style);
 
     double barwidth = iupAttribGetDouble(ih, "BARWIDTH");   // Default 0.7
+    if (barwidth <= 0) barwidth = 0.7;
     gr->SetBarWidth(barwidth);
 
     // To avoid hole bars clipped when touching the bounding box
@@ -1833,11 +1835,14 @@ static int iMglPlotSetInt(Ihandle* ih, const char* value, int& num)
   return 0;
 }
 
-static int iMglPlotSetDouble(Ihandle* ih, const char* value, double& num)
+static int iMglPlotSetDouble(Ihandle* ih, const char* value, double& num, double num_def)
 {
   double old_num = num;
 
-  iupStrToDouble(value, &num);
+  if (!value)
+    num = num_def;
+  else
+    iupStrToDouble(value, &num);
 
   if (old_num != num)
     ih->data->redraw = true;
@@ -1923,7 +1928,7 @@ static char* iMglPlotGetFGColorAttrib(Ihandle* ih)
 
 static int iMglPlotSetTitleFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->titleFontSizeFactor);
+  return iMglPlotSetDouble(ih, value, ih->data->titleFontSizeFactor, 1.0);
 }
 
 static char* iMglPlotGetTitleFontSizeAttrib(Ihandle* ih)
@@ -1997,7 +2002,7 @@ static char* iMglPlotGetTitleColorAttrib(Ihandle* ih)
 
 static int iMglPlotSetLegendFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->legendFontSizeFactor);
+  return iMglPlotSetDouble(ih, value, ih->data->legendFontSizeFactor, 1.0);
 }
 
 static char* iMglPlotGetLegendFontStyleAttrib(Ihandle* ih)
@@ -2520,7 +2525,7 @@ static int iMglPlotSetDSMarkSizeAttrib(Ihandle* ih, const char* value)
     return 0;
 
   IdataSet* ds = &ih->data->dataSet[ih->data->dataSetCurrent];
-  return iMglPlotSetDouble(ih, value, ds->dsMarkSize);
+  return iMglPlotSetDouble(ih, value, ds->dsMarkSize, 1.0);
 }
 
 static char* iMglPlotGetDSMarkSizeAttrib(Ihandle* ih)
@@ -2902,17 +2907,24 @@ static char* iMglPlotGetAxisZColorAttrib(Ihandle* ih)
 
 static int iMglPlotSetAxisXFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisX.axLabelFontSizeFactor);
+  if (!value)
+  {
+    ih->data->alpha = 0.5;
+    ih->data->redraw = true;
+    return 0;
+  }
+  else
+   return iMglPlotSetDouble(ih, value, ih->data->axisX.axLabelFontSizeFactor, 0.8);
 }
 
 static int iMglPlotSetAxisYFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisY.axLabelFontSizeFactor);
+  return iMglPlotSetDouble(ih, value, ih->data->axisY.axLabelFontSizeFactor, 0.8);
 }
 
 static int iMglPlotSetAxisZFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axLabelFontSizeFactor);
+  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axLabelFontSizeFactor, 0.8);
 }
 
 static char* iMglPlotGetAxisXFontSizeAttrib(Ihandle* ih)
@@ -2962,17 +2974,17 @@ static char* iMglPlotGetAxisZFontStyleAttrib(Ihandle* ih)
 
 static int iMglPlotSetAxisXTickFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisX.axTickFontSizeFactor);
+  return iMglPlotSetDouble(ih, value, ih->data->axisX.axTickFontSizeFactor, 0.8);
 }
 
 static int iMglPlotSetAxisYTickFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisY.axTickFontSizeFactor);
+  return iMglPlotSetDouble(ih, value, ih->data->axisY.axTickFontSizeFactor, 0.8);
 }
 
 static int iMglPlotSetAxisZTickFontSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axTickFontSizeFactor);
+  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axTickFontSizeFactor, 0.8);
 }
 
 static char* iMglPlotGetAxisXTickFontSizeAttrib(Ihandle* ih)
@@ -3022,17 +3034,17 @@ static char* iMglPlotGetAxisZTickFontStyleAttrib(Ihandle* ih)
 
 static int iMglPlotSetAxisXTickMinorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisX.axTickMinorSizeFactor);
+  return iMglPlotSetDouble(ih, value, ih->data->axisX.axTickMinorSizeFactor, 1.0);
 }
 
 static int iMglPlotSetAxisYTickMinorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisY.axTickMinorSizeFactor);
+  return iMglPlotSetDouble(ih, value, ih->data->axisY.axTickMinorSizeFactor, 1.0);
 }
 
 static int iMglPlotSetAxisZTickMinorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axTickMinorSizeFactor);
+  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axTickMinorSizeFactor, 1.0);
 }
 
 static char* iMglPlotGetAxisXTickMinorSizeAttrib(Ihandle* ih)
@@ -3052,17 +3064,17 @@ static char* iMglPlotGetAxisZTickMinorSizeAttrib(Ihandle* ih)
 
 static int iMglPlotSetAxisXTickMajorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisX.axTickMajorSize);
+  return iMglPlotSetDouble(ih, value, ih->data->axisX.axTickMajorSize, 0.02);
 }
 
 static int iMglPlotSetAxisYTickMajorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisY.axTickMajorSize);
+  return iMglPlotSetDouble(ih, value, ih->data->axisY.axTickMajorSize, 0.02);
 }
 
 static int iMglPlotSetAxisZTickMajorSizeAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axTickMajorSize);
+  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axTickMajorSize, 0.02);
 }
 
 static char* iMglPlotGetAxisXTickMajorSizeAttrib(Ihandle* ih)
@@ -3082,17 +3094,17 @@ static char* iMglPlotGetAxisZTickMajorSizeAttrib(Ihandle* ih)
 
 static int iMglPlotSetAxisXTickMajorSpanAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisX.axTickMajorSpan);
+  return iMglPlotSetDouble(ih, value, ih->data->axisX.axTickMajorSpan, -5.0);
 }
 
 static int iMglPlotSetAxisYTickMajorSpanAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisY.axTickMajorSpan);
+  return iMglPlotSetDouble(ih, value, ih->data->axisY.axTickMajorSpan, -5.0);
 }
 
 static int iMglPlotSetAxisZTickMajorSpanAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axTickMajorSpan);
+  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axTickMajorSpan, -5.0);
 }
 
 static char* iMglPlotGetAxisXTickMajorSpanAttrib(Ihandle* ih)
@@ -3507,19 +3519,19 @@ static char* iMglPlotGetAxisZAutoMaxAttrib(Ihandle* ih)
 static int iMglPlotSetAxisXMinAttrib(Ihandle* ih, const char* value)
 {
   ih->data->axisX.axAutoScaleMin = false;
-  return iMglPlotSetDouble(ih, value, ih->data->axisX.axMin);
+  return iMglPlotSetDouble(ih, value, ih->data->axisX.axMin, -1.0);
 }
 
 static int iMglPlotSetAxisYMinAttrib(Ihandle* ih, const char* value)
 {
   ih->data->axisY.axAutoScaleMin = false;
-  return iMglPlotSetDouble(ih, value, ih->data->axisY.axMin);
+  return iMglPlotSetDouble(ih, value, ih->data->axisY.axMin, -1.0);
 }
 
 static int iMglPlotSetAxisZMinAttrib(Ihandle* ih, const char* value)
 {
   ih->data->axisZ.axAutoScaleMin = false;
-  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axMin);
+  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axMin, -1.0);
 }
 
 static char* iMglPlotGetAxisXMinAttrib(Ihandle* ih)
@@ -3540,19 +3552,19 @@ static char* iMglPlotGetAxisZMinAttrib(Ihandle* ih)
 static int iMglPlotSetAxisXMaxAttrib(Ihandle* ih, const char* value)
 {
   ih->data->axisX.axAutoScaleMax = false;
-  return iMglPlotSetDouble(ih, value, ih->data->axisX.axMax);
+  return iMglPlotSetDouble(ih, value, ih->data->axisX.axMax, 1.0);
 }
 
 static int iMglPlotSetAxisYMaxAttrib(Ihandle* ih, const char* value)
 {
   ih->data->axisY.axAutoScaleMax = false;
-  return iMglPlotSetDouble(ih, value, ih->data->axisY.axMax);
+  return iMglPlotSetDouble(ih, value, ih->data->axisY.axMax, 1.0);
 }
 
 static int iMglPlotSetAxisZMaxAttrib(Ihandle* ih, const char* value)
 {
   ih->data->axisZ.axAutoScaleMax = false;
-  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axMax);
+  return iMglPlotSetDouble(ih, value, ih->data->axisZ.axMax, 1.0);
 }
 
 static char* iMglPlotGetAxisXMaxAttrib(Ihandle* ih)
@@ -3680,7 +3692,7 @@ static char* iMglPlotGetAxisZOriginAttrib(Ihandle* ih)
 
 static int iMglPlotSetAlphaAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetDouble(ih, value, ih->data->alpha);
+  return iMglPlotSetDouble(ih, value, ih->data->alpha, 0.5);
 }
 
 static char* iMglPlotGetAlphaAttrib(Ihandle* ih)
@@ -4555,6 +4567,7 @@ void IupMglPlotDrawMark(Ihandle* ih, double x, double y, double z)
   iMglPlotAddStyleMark(style, markstyle);
 
   double marksize = iupAttribGetDouble(ih, "DRAWMARKSIZE");
+  if (marksize <= 0) marksize = 0.02;
   gr->SetMarkSize(marksize);
 
   gr->Mark(mglPoint(x, y, z), style);
@@ -4931,7 +4944,7 @@ static Iclass* iMglPlotNewClass(void)
 
   /* IupMglPlot only */
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iMglPlotSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ALPHA", iMglPlotGetAlphaAttrib, iMglPlotSetAlphaAttrib, IUPAF_SAMEASSYSTEM, "0.5", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALPHA", iMglPlotGetAlphaAttrib, iMglPlotSetAlphaAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRANSPARENT", iMglPlotGetTransparentAttrib, iMglPlotSetTransparentAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPENGL", iMglPlotGetOpenGLAttrib, iMglPlotSetOpenGLAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANTIALIAS", iMglPlotGetAntialiasAttrib, iMglPlotSetAntialiasAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NO_INHERIT);
@@ -4946,14 +4959,14 @@ static Iclass* iMglPlotNewClass(void)
 
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLECOLOR", iMglPlotGetTitleColorAttrib, iMglPlotSetTitleColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TITLEFONTSIZE", iMglPlotGetTitleFontSizeAttrib, iMglPlotSetTitleFontSizeAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEFONTSIZE", iMglPlotGetTitleFontSizeAttrib, iMglPlotSetTitleFontSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEFONTSTYLE", iMglPlotGetTitleFontStyleAttrib, iMglPlotSetTitleFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "LEGEND", iMglPlotGetLegendShowAttrib, iMglPlotSetLegendShowAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDSHOW", iMglPlotGetLegendShowAttrib, iMglPlotSetLegendShowAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT); // for IupPPlot compatibility
   iupClassRegisterAttribute(ic, "LEGENDBOX", iMglPlotGetLegendBoxAttrib, iMglPlotSetLegendBoxAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDPOS", iMglPlotGetLegendPosAttrib, iMglPlotSetLegendPosAttrib, IUPAF_SAMEASSYSTEM, "TOPRIGHT", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LEGENDFONTSIZE", iMglPlotGetLegendFontSizeAttrib, iMglPlotSetLegendFontSizeAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LEGENDFONTSIZE", iMglPlotGetLegendFontSizeAttrib, iMglPlotSetLegendFontSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDFONTSTYLE", iMglPlotGetLegendFontStyleAttrib, iMglPlotSetLegendFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDCOLOR", iMglPlotGetLegendColorAttrib, iMglPlotSetLegendColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
@@ -4969,7 +4982,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "DS_LINESTYLE", iMglPlotGetDSLineStyleAttrib, iMglPlotSetDSLineStyleAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_LINEWIDTH", iMglPlotGetDSLineWidthAttrib, iMglPlotSetDSLineWidthAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_MARKSTYLE", iMglPlotGetDSMarkStyleAttrib, iMglPlotSetDSMarkStyleAttrib, IUPAF_SAMEASSYSTEM, "X", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_MARKSIZE", iMglPlotGetDSMarkSizeAttrib, iMglPlotSetDSMarkSizeAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_MARKSIZE", iMglPlotGetDSMarkSizeAttrib, iMglPlotSetDSMarkSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_SHOWMARKS", iMglPlotGetDSShowMarksAttrib, iMglPlotSetDSShowMarksAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_LEGEND", iMglPlotGetDSLegendAttrib, iMglPlotSetDSLegendAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_COLOR", iMglPlotGetDSColorAttrib, iMglPlotSetDSColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -4998,7 +5011,7 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "PROJECTVALUEZ", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PROJECT", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ISOCOUNT", NULL, NULL, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BARWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "0.7", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BARWIDTH", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RADARSHIFT", NULL, NULL, IUPAF_SAMEASSYSTEM, "-1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PIECHART", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
@@ -5059,9 +5072,9 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "AXS_XSCALE", iMglPlotGetAxisXScaleAttrib, iMglPlotSetAxisXScaleAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YSCALE", iMglPlotGetAxisYScaleAttrib, iMglPlotSetAxisYScaleAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_ZSCALE", iMglPlotGetAxisZScaleAttrib, iMglPlotSetAxisZScaleAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XFONTSIZE", iMglPlotGetAxisXFontSizeAttrib, iMglPlotSetAxisXFontSizeAttrib, IUPAF_SAMEASSYSTEM, "0.8", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YFONTSIZE", iMglPlotGetAxisYFontSizeAttrib, iMglPlotSetAxisYFontSizeAttrib, IUPAF_SAMEASSYSTEM, "0.8", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YFONTSIZE", iMglPlotGetAxisZFontSizeAttrib, iMglPlotSetAxisZFontSizeAttrib, IUPAF_SAMEASSYSTEM, "0.8", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XFONTSIZE", iMglPlotGetAxisXFontSizeAttrib, iMglPlotSetAxisXFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YFONTSIZE", iMglPlotGetAxisYFontSizeAttrib, iMglPlotSetAxisYFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YFONTSIZE", iMglPlotGetAxisZFontSizeAttrib, iMglPlotSetAxisZFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XFONTSTYLE", iMglPlotGetAxisXFontStyleAttrib, iMglPlotSetAxisXFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YFONTSTYLE", iMglPlotGetAxisYFontStyleAttrib, iMglPlotSetAxisYFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_ZFONTSTYLE", iMglPlotGetAxisZFontStyleAttrib, iMglPlotSetAxisZFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -5078,9 +5091,9 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "AXS_XTICKFORMAT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKFORMAT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_ZTICKFORMAT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XTICKFONTSIZE", iMglPlotGetAxisXTickFontSizeAttrib, iMglPlotSetAxisXTickFontSizeAttrib, IUPAF_SAMEASSYSTEM, "0.8", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICKFONTSIZE", iMglPlotGetAxisYTickFontSizeAttrib, iMglPlotSetAxisYTickFontSizeAttrib, IUPAF_SAMEASSYSTEM, "0.8", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_ZTICKFONTSIZE", iMglPlotGetAxisZTickFontSizeAttrib, iMglPlotSetAxisZTickFontSizeAttrib, IUPAF_SAMEASSYSTEM, "0.8", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICKFONTSIZE", iMglPlotGetAxisXTickFontSizeAttrib, iMglPlotSetAxisXTickFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKFONTSIZE", iMglPlotGetAxisYTickFontSizeAttrib, iMglPlotSetAxisYTickFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_ZTICKFONTSIZE", iMglPlotGetAxisZTickFontSizeAttrib, iMglPlotSetAxisZTickFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKFONTSTYLE", iMglPlotGetAxisXTickFontStyleAttrib, iMglPlotSetAxisXTickFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKFONTSTYLE", iMglPlotGetAxisYTickFontStyleAttrib, iMglPlotSetAxisYTickFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_ZTICKFONTSTYLE", iMglPlotGetAxisZTickFontStyleAttrib, iMglPlotSetAxisZTickFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -5105,20 +5118,20 @@ static Iclass* iMglPlotNewClass(void)
   iupClassRegisterAttribute(ic, "AXS_XTICKAUTOSIZE", iMglPlotGetAxisXTickAutoSizeAttrib, iMglPlotSetAxisXTickAutoSizeAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKAUTOSIZE", iMglPlotGetAxisYTickAutoSizeAttrib, iMglPlotSetAxisYTickAutoSizeAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_ZTICKAUTOSIZE", iMglPlotGetAxisZTickAutoSizeAttrib, iMglPlotSetAxisZTickAutoSizeAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XTICKMAJORSIZE", iMglPlotGetAxisXTickMajorSizeAttrib, iMglPlotSetAxisXTickMajorSizeAttrib, IUPAF_SAMEASSYSTEM, "0.02", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICKMAJORSIZE", iMglPlotGetAxisYTickMajorSizeAttrib, iMglPlotSetAxisYTickMajorSizeAttrib, IUPAF_SAMEASSYSTEM, "0.02", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_ZTICKMAJORSIZE", iMglPlotGetAxisZTickMajorSizeAttrib, iMglPlotSetAxisZTickMajorSizeAttrib, IUPAF_SAMEASSYSTEM, "0.02", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XTICKMINORSIZE", iMglPlotGetAxisXTickMinorSizeAttrib, iMglPlotSetAxisXTickMinorSizeAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YTICKMINORSIZE", iMglPlotGetAxisYTickMinorSizeAttrib, iMglPlotSetAxisYTickMinorSizeAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_ZTICKMINORSIZE", iMglPlotGetAxisZTickMinorSizeAttrib, iMglPlotSetAxisZTickMinorSizeAttrib, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICKMAJORSIZE", iMglPlotGetAxisXTickMajorSizeAttrib, iMglPlotSetAxisXTickMajorSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKMAJORSIZE", iMglPlotGetAxisYTickMajorSizeAttrib, iMglPlotSetAxisYTickMajorSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_ZTICKMAJORSIZE", iMglPlotGetAxisZTickMajorSizeAttrib, iMglPlotSetAxisZTickMajorSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICKMINORSIZE", iMglPlotGetAxisXTickMinorSizeAttrib, iMglPlotSetAxisXTickMinorSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKMINORSIZE", iMglPlotGetAxisYTickMinorSizeAttrib, iMglPlotSetAxisYTickMinorSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_ZTICKMINORSIZE", iMglPlotGetAxisZTickMinorSizeAttrib, iMglPlotSetAxisZTickMinorSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DRAWCOLOR", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWMARKSTYLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "X", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAWMARKSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "0.02", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWMARKSIZE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWLINESTYLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWLINEWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWFONTSTYLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAWFONTSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "1.0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWFONTSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FORMULA_XMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORMULA_YMIN", NULL, NULL, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

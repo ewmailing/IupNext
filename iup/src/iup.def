@@ -279,7 +279,9 @@ iupStrToInt
 iupStrToFloatFloat
 iupStrToDoubleDouble
 iupStrToFloat
+iupStrToFloatDef
 iupStrToDouble
+iupStrToDoubleDef
 iupStrToDos
 iupStrReturnRGB
 iupStrReturnRGBA

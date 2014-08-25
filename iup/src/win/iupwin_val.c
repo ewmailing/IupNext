@@ -63,7 +63,7 @@ static int winValSetBgColorAttrib(Ihandle *ih, const char *value)
 
 static int winValSetStepAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrToDouble(value, &(ih->data->step)))
+  if (iupStrToDoubleDef(value, &(ih->data->step), 0.01))
   {
     int linesize = (int)(ih->data->step*SHRT_MAX);
     SendMessage(ih->handle, TBM_SETLINESIZE, 0, linesize);
@@ -73,7 +73,7 @@ static int winValSetStepAttrib(Ihandle* ih, const char* value)
 
 static int winValSetPageStepAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrToDouble(value, &(ih->data->pagestep)))
+  if (iupStrToDoubleDef(value, &(ih->data->pagestep), 0.1))
   {
     int pagesize = (int)(ih->data->pagestep*SHRT_MAX);
     SendMessage(ih->handle, TBM_SETPAGESIZE, 0, pagesize);
@@ -332,6 +332,9 @@ static int winValMapMethod(Ihandle* ih)
   if (ih->data->inverted)
     SendMessage(ih->handle, TBM_SETPOS, FALSE, SHRT_MAX);  /* default initial position is at MIN */
 
+  winValSetPageStepAttrib(ih, NULL);
+  winValSetStepAttrib(ih, NULL);
+
   return IUP_NOERROR;
 }
 
@@ -345,8 +348,8 @@ void iupdrvValInitClass(Iclass* ic)
   /* IupVal only */
   iupClassRegisterAttribute(ic, "VALUE", iupValGetValueAttrib, winValSetValueAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);  
   iupClassRegisterAttribute(ic, "SHOWTICKS", iupValGetShowTicksAttrib, winValSetShowTicksAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "PAGESTEP", iupValGetPageStepAttrib, winValSetPageStepAttrib, "0.1", NULL, IUPAF_NO_INHERIT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "STEP", iupValGetStepAttrib, winValSetStepAttrib, "0.01", NULL, IUPAF_NO_INHERIT);   /* force new default value */
+  iupClassRegisterAttribute(ic, "PAGESTEP", iupValGetPageStepAttrib, winValSetPageStepAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "STEP", iupValGetStepAttrib, winValSetStepAttrib, NULL, NULL, IUPAF_NO_INHERIT);   /* force new default value */
 
   iupClassRegisterAttribute(ic, "TICKSPOS", NULL, NULL, "NORMAL", NULL, IUPAF_NOT_MAPPED);
 
