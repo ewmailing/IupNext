@@ -549,7 +549,8 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
       Ihandle* hbox;
 
       ctrl = IupMultiLine(NULL);
-      IupSetAttribute(ctrl, "SIZE", "100x50");
+      IupSetAttribute(ctrl, "VISIBLECOLUMNS", "8");
+      IupSetAttribute(ctrl, "VISIBLELINES", "6");
       IupSetAttribute(ctrl, "EXPAND", "YES");
 
       hbox = IupHbox(IupSetAttributes(IupFill(), "SIZE=5"), ctrl, NULL);
@@ -560,7 +561,7 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
     else
     {
       ctrl = IupText(NULL);
-      IupSetAttribute(ctrl, "SIZE", "100x");
+      IupSetAttribute(ctrl, "VISIBLECOLUMNS", "8");
       IupSetAttribute(ctrl, "EXPAND", "HORIZONTAL");
       IupAppend(box, ctrl);
     }
@@ -580,7 +581,7 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
       Ihandle* aux;
 
       ctrl = IupText(NULL);
-      IupSetAttribute(ctrl, "SIZE", "100x");
+      IupSetAttribute(ctrl, "VISIBLECOLUMNS", "15");
       IupSetAttribute(ctrl, "EXPAND", "HORIZONTAL");
       IupAppend(box, ctrl);
 
@@ -607,7 +608,7 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
       Ihandle* aux;
 
       ctrl = IupText(NULL);
-      IupSetAttribute(ctrl, "SIZE", "100x");
+      IupSetAttribute(ctrl, "VISIBLECOLUMNS", "15");
       IupSetAttribute(ctrl, "EXPAND", "HORIZONTAL");
       IupAppend(box, ctrl);
 
@@ -637,7 +638,7 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
       Ihandle* aux;
 
       ctrl = IupText(NULL);
-      IupSetAttribute(ctrl, "SIZE", "100x");
+      IupSetAttribute(ctrl, "VISIBLECOLUMNS", "15");
       IupSetAttribute(ctrl, "EXPAND", "HORIZONTAL");
       IupAppend(box, ctrl);
 
@@ -663,6 +664,7 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
   else /* INTEGER, REAL */
   {
     ctrl = IupText(NULL);
+    IupSetAttribute(ctrl, "VISIBLECOLUMNS", "8");
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
     IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
@@ -705,8 +707,6 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
         IupSetAttribute(ctrl, "MASK", IUP_MASK_FLOAT);
         IupAppend(box, ctrl);
       }
-
-      IupSetAttribute(ctrl, "SIZE", "50x");
     }
     else /* INTEGER*/
     {
@@ -750,8 +750,6 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
         IupSetAttribute(ctrl, "SPINMAX", "2147483647");
         IupSetAttribute(ctrl, "MASK", IUP_MASK_INT);
       }
-
-      IupSetAttribute(ctrl, "SIZE", "50x");
     }
 
     if (iupAttribGetInt(param, "INTERVAL") || iupAttribGetInt(param, "ANGLE"))
