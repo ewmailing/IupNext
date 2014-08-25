@@ -175,6 +175,7 @@ void iupdrvBaseUnMapMethod(Ihandle* ih)
 {
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
+  gtk_widget_hide(widget);
   gtk_widget_unrealize(widget);
   gtk_widget_destroy(widget);   /* To match the call to gtk_*****_new     */
 }
