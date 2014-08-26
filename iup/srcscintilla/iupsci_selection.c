@@ -68,7 +68,7 @@ SCI_MOVESELECTEDLINESDOWN
 
 static char* iScintillaGetCurrentLineAttrib(Ihandle* ih)
 {
-  int textLen = IupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
+  int textLen = IupScintillaSendMessage(ih, SCI_GETCURLINE, 0, 0);
   char* str = iupStrGetMemory(textLen+1);
   IupScintillaSendMessage(ih, SCI_GETCURLINE, textLen, (sptr_t)str);
   return str;

@@ -84,7 +84,8 @@ void iupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
     /* length of the line not including any end of line characters */
     int line_length = IupScintillaSendMessage(ih, SCI_GETLINEENDPOSITION, lin, 0) - 
                       IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
-    if(col <= line_length)
+
+    if (col <= line_length)
       *pos += col;
     else
       *pos += line_length;
@@ -92,7 +93,8 @@ void iupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
   else
   {
     /* "lin" is greater than the lines in the document */
-    *pos = IupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
+    lin = IupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
+    *pos = IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
   }
 }
 
