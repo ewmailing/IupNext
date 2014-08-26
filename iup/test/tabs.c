@@ -75,10 +75,10 @@ static int cbUnHideAllTabs(Ihandle* ih)
     if (!IupGetIntId(tabs, "TABVISIBLE", i))
     {
       IupSetAttributeId(tabs, "TABVISIBLE", i, "Yes");
-      printf("tab %d = hidden\n", i);
+      printf("tab %d = was hidden\n", i);
     }
     else
-      printf("tab %d = visible\n", i);
+      printf("tab %d = is visible\n", i);
   }
 
   return IUP_DEFAULT;
