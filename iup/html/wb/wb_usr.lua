@@ -1423,6 +1423,10 @@ wb_usr.tree =
                 {
                   name= {nl= "DS_MODE"},
                   link= "ctrl/iup_mglplot_modes.html"
+                },
+                {
+                  name= {nl= "IupMglLabel"},
+                  link= "ctrl/iup_mgllabel.html"
                 }
               }
             },

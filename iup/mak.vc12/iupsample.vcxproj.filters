@@ -228,6 +228,9 @@
     <ClCompile Include="..\html\examples\C\backgroundbox.c">
       <Filter>C</Filter>
     </ClCompile>
+    <ClCompile Include="..\html\examples\C\mgllabel.c">
+      <Filter>C</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua">

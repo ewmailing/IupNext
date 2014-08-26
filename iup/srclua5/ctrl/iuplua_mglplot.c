@@ -16,33 +16,6 @@
 #include "iuplua_mglplot.h"
 #include "il.h"
 
-#if 0
-static int mglplot_edit_cb(Ihandle *self, int p0, int p1, double p2, double p3, double *p4, double *p5)
-{
-  int ret;
-  lua_State *L = iuplua_call_start(self, "edit_cb");
-  lua_pushinteger(L, p0);
-  lua_pushinteger(L, p1);
-  lua_pushnumber(L, p2);
-  lua_pushnumber(L, p3);
-  ret = iuplua_call_raw(L, 4+2, LUA_MULTRET);  /* 4 args + 2 args(errormsg, handle), variable number of returns */
-  if (ret || lua_isnil(L, -1))
-    return IUP_DEFAULT;
-  ret = lua_tointeger(L,-1);
-
-  if (ret == IUP_IGNORE) 
-  {
-    lua_pop(L, 1);
-    return IUP_IGNORE;
-  }
-
-  *p4 = lua_tonumber(L, -3); 
-  *p5 = lua_tonumber(L, -2); 
-  lua_pop(L, 3);
-  return IUP_DEFAULT;
-}
-#endif
-
 static int PlotBegin(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -258,9 +231,11 @@ static int PlotDrawText(lua_State *L)
   return 0;
 }
 
-void iuplua_mglplotfuncs_open (lua_State *L)
+int iupmgllabellua_open(lua_State * L);
+
+void iuplua_mglplotfuncs_open(lua_State *L)
 {
-//  iuplua_register_cb(L, "EDIT_CB", (lua_CFunction)mglplot_edit_cb, "mglplot");
+  iupmgllabellua_open(L);
 
   iuplua_register(L, PlotBegin       ,"MglPlotBegin");
   iuplua_register(L, PlotAdd1D       ,"MglPlotAdd1D");

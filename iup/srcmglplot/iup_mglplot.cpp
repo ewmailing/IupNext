@@ -28,6 +28,7 @@
 #include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
 #include "iup_array.h"
+#include "iup_childtree.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -1908,7 +1909,8 @@ static int iMglPlotSetRedrawAttrib(Ihandle* ih, const char* value)
 
 static int iMglPlotSetBGColorAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetColor(ih, value, ih->data->bgColor);
+  iMglPlotSetColor(ih, value, ih->data->bgColor);
+  return 1;
 }
 
 static char* iMglPlotGetBGColorAttrib(Ihandle* ih)
@@ -1918,7 +1920,8 @@ static char* iMglPlotGetBGColorAttrib(Ihandle* ih)
 
 static int iMglPlotSetFGColorAttrib(Ihandle* ih, const char* value)
 {
-  return iMglPlotSetColor(ih, value, ih->data->fgColor);
+  iMglPlotSetColor(ih, value, ih->data->fgColor);
+  return 1;
 }
 
 static char* iMglPlotGetFGColorAttrib(Ihandle* ih)
@@ -5151,6 +5154,77 @@ Ihandle* IupMglPlot(void)
   return IupCreate("mglplot");
 }
 
+static int iMglLabelPostDraw_CB(Ihandle* ih)
+{
+  char* value = iupAttribGet(ih, "LABELTITLE");
+  if (value)
+  {
+    iupAttribSet(ih, "DRAWFONT", iupAttribGetStr(ih, "LABELFONT"));
+    iupAttribSet(ih, "DRAWFONTSTYLE", iupAttribGetStr(ih, "LABELFONTSTYLE"));
+    iupAttribSet(ih, "DRAWFONTSIZE", iupAttribGetStr(ih, "LABELFONTSIZE"));
+
+    IupMglPlotDrawText(ih, value, 0, -0.5, 0);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iMglLabelCreateMethod(Ihandle* ih, void** params)
+{
+  if (params && params[0])
+    iupAttribSetStr(ih, "LABELTITLE", (char*)(params[0]));
+
+  IupSetAttribute(ih, "MARGINLEFT", "No");
+  IupSetAttribute(ih, "MARGINRIGHT", "No");
+  IupSetAttribute(ih, "MARGINTOP", "No");
+  IupSetAttribute(ih, "MARGINBOTTOM", "No");
+  IupSetAttribute(ih, "AXS_X", "No");
+  IupSetAttribute(ih, "AXS_Y", "No");
+  IupSetAttribute(ih, "AXS_Z", "No");
+
+  IupSetAttribute(ih, "EXPAND", "No");
+  IupSetAttribute(ih, "BORDER", "No");
+
+  IupSetCallback(ih, "POSTDRAW_CB", (Icallback)iMglLabelPostDraw_CB);
+
+  return IUP_NOERROR;
+}
+
+static int iMglLabelMapMethod(Ihandle* ih)
+{
+  if (!iupAttribGet(ih, "BGCOLOR"))
+    IupSetStrAttribute(ih, "BGCOLOR", IupGetAttribute(iupChildTreeGetNativeParent(ih), "BGCOLOR"));
+
+  return IUP_NOERROR;
+}
+
+static Iclass* iMglLabelNewClass(void)
+{
+  Iclass* ic = iupClassNew(iupRegisterFindClass("mglplot"));
+
+  ic->name = "mgllabel";
+  ic->format = "s"; /* one string */
+  ic->nativetype = IUP_TYPECANVAS;
+  ic->childtype = IUP_CHILDNONE;
+  ic->is_interactive = 0;
+
+  /* Class functions */
+  ic->New = iMglLabelNewClass;
+  ic->Create = iMglLabelCreateMethod;
+  ic->Map = iMglLabelMapMethod;
+
+  iupClassRegisterAttribute(ic, "LABELTITLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
+  return ic;
+}
+
+Ihandle* IupMglLabel(const char* title)
+{
+  void *params[2];
+  params[0] = (void*)title;
+  params[1] = NULL;
+  return IupCreatev("mgllabel", params);
+}
+
 void IupMglPlotOpen(void)
 {
   IupGLCanvasOpen();
@@ -5158,9 +5232,11 @@ void IupMglPlotOpen(void)
   if (!IupGetGlobal("_IUP_MGLPLOT_OPEN"))
   {
     iupRegisterClass(iMglPlotNewClass());
+    iupRegisterClass(iMglLabelNewClass());
     IupSetGlobal("_IUP_MGLPLOT_OPEN", "1");
   }
 }
+
 
 /************************  TODO   ***********************************
 

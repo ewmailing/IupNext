@@ -1,22 +1,18 @@
 ------------------------------------------------------------------------------
--- MglPlot class 
+-- MglLabel class 
 ------------------------------------------------------------------------------
 local ctrl = {
-  nick = "mglplot",
+  nick = "mgllabel",
   parent = iup.WIDGET,
-  creation = "",
-  funcname = "MglPlot",
+  creation = "S",
+  funcname = "MglLabel",
   subdir = "ctrl",
-  callback = {
-    predraw_cb = "",
-    postdraw_cb = "",
-  },
   include = "iup_mglplot.h",
-  extrafuncs = 1,
+  callback = {}
 }
 
 function ctrl.createElement(class, param)
-   return iup.MglPlot(param.action)
+   return iup.MglLabel(param.action)
 end
 
 iup.RegisterWidget(ctrl)

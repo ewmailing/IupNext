@@ -34,7 +34,7 @@ else
   LOHDIR = loh$(LUASFX)
 endif
 
-SRCLUA = mglplot.lua
+SRCLUA = mglplot.lua mgllabel.lua
 
 GC := $(addsuffix .c, $(basename $(SRCLUA)))
 GC := $(addprefix ctrl/il_, $(GC))

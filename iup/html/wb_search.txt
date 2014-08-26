@@ -101,6 +101,7 @@ en/drv/win32.html
 en/elem/iupradio.html
 en/ctrl/iupmask.html
 en/func/iupexitloop.html
+en/ctrl/iup_mgllabel.html
 en/call/iup_leavewindow_cb.html
 en/ctrl/iupcolorbrowser.html
 en/func/iuprecordinput.html
@@ -251,14 +252,14 @@ en/func/iupmapfont.html
 en/func/iuppopup.html
 en/elem/iupuser.html
 en/func/iupsetcallback.html
-en/attrib/iup_value.html
+en/attrib/iup_fgcolor.html
 en/func/iupgetfunction.html
 en/attrib.html
 en/func/iupsetfunction.html
-en/attrib/iup_fgcolor.html
 en/ctrl/iupweb.html
 en/attrib/iup_cursor.html
 en/ctrl/iupole.html
+en/elem/iupsbox.html
 en/ctrl/iup_mglplot.html
 en/ctrl/iup_pplot.html
 en/attrib/iup_clientsize.html
@@ -314,8 +315,8 @@ en/dlg/iupfontdlg.html
 en/iuplua_adv.html
 en/elem/iupzbox.html
 en/sys_guide.html
-en/elem/iupsbox.html
 en/elem/iupexpander.html
+en/attrib/iup_value.html
 en/ide_guide/cppbx.html
 en/call/iup_scroll_cb.html
 en/executables.html

@@ -59,6 +59,9 @@ void IupMglPlotPaintTo(Ihandle *ih, const char* format, int w, int h, double dpi
 
 /***********************************************/
 
+/* Utility label for showing TeX labels */
+Ihandle* IupMglLabel(const char* title);
+
 
 #ifdef __cplusplus
 }
