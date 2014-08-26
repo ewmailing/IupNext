@@ -76,6 +76,24 @@ static void winTabsInitializeCloseImage(void)
   IupSetHandle("IMGCLOSEHIGH", image_close);
 }
 
+static void winTabsInitVisibleArray(Iarray* visible_array, int count)
+{
+  int old_count = iupArrayCount(visible_array);
+  if (old_count != count)
+  {
+    iupArrayRemove(visible_array, 0, old_count);
+    iupArrayAdd(visible_array, count);
+  }
+
+  /* all visible by default */
+  {
+    int pos;
+    int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
+    for (pos = 0; pos < count; pos++)
+      visible_array_array_data[pos] = 1;  
+  }
+}
+
 static Iarray* winTabsGetVisibleArray(Ihandle* ih)
 {
   Iarray* visible_array = (Iarray*)iupAttribGet(ih, "_IUPWIN_VISIBLEARRAY");
@@ -85,17 +103,10 @@ static Iarray* winTabsGetVisibleArray(Ihandle* ih)
     int count = IupGetChildCount(ih);
 
     /* create the array if does not exist */
-    visible_array = iupArrayCreate(count, sizeof(int));
+    visible_array = iupArrayCreate(50, sizeof(int));
     iupAttribSet(ih, "_IUPWIN_VISIBLEARRAY", (char*)visible_array);
 
-    iupArrayAdd(visible_array, count);
-
-    {
-      int pos;
-      int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
-      for (pos = 0; pos<count; pos++)
-        visible_array_array_data[pos] = 1;  /* all visible by default */
-    }
+    winTabsInitVisibleArray(visible_array, count);
   }
 
   return visible_array;
@@ -136,6 +147,12 @@ static void winTabsSetVisibleArrayItem(Ihandle* ih, int pos, int visible)
 {
   Iarray* visible_array = winTabsGetVisibleArray(ih);
   int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
+
+  if (!visible && !ih->data->has_invisible)
+  {
+    int count = IupGetChildCount(ih);
+    winTabsInitVisibleArray(visible_array, count);
+  }
 
   visible_array_array_data[pos] = visible;
 
@@ -853,7 +870,7 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       GetCursorPos(&ht.pt);
       ScreenToClient(ih->handle, &ht.pt);
       
-      p = SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
+      p = (int)SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
       if (p >= 0)
       {
         int pos = winTabsPosFixFromWin(ih, p);
@@ -904,7 +921,7 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
 
       ht.pt.x = (int)(short)LOWORD(lp);
       ht.pt.y = (int)(short)HIWORD(lp);
-      p = SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
+      p = (int)SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
 
       high_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEHIGH");
       if (winTabsIsInsideCloseButton(ih, p))
@@ -940,7 +957,7 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
 
       ht.pt.x = (int)(short)LOWORD(lp);
       ht.pt.y = (int)(short)HIWORD(lp);
-      p = SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
+      p = (int)SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
 
       if (p >= 0 && winTabsIsInsideCloseButton(ih, p))
       {
@@ -1029,7 +1046,7 @@ static void winTabsDrawRotateText(HDC hDC, char* text, int x, int y, HFONT hFont
   oldcolor = SetTextColor(hDC, fgcolor);
 
   {
-    int len = strlen(text);
+    int len = (int)strlen(text);
     TCHAR* str = iupwinStrToSystemLen(text, &len);
     TextOut(hDC, x, y, str, len);
   }
