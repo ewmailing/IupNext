@@ -117,27 +117,32 @@ static int cbTest(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
 
+
+
+#if 0
   char att[50];
   int m_handle_id = 1;
   char* title;
   sprintf(att, "TABTITLE%d", m_handle_id);
-
   {
     Ihandle* child = IupGetChild(tabs, 1);
     title = IupGetAttribute(child, "TABTITLE");
     printf("%s=%s\n", att, title);
   }
-
   title = IupGetAttribute(tabs, att);
   printf("%s=%s\n", att, title);
+#endif
 
-//  IupSetAttribute(tabs, "VALUEPOS", "0");
-//  IupSetAttribute(tabs, "TABTITLE0", "1asdasd");
-//  printf("VALUE=%s\n", IupGetAttribute(tabs, "VALUE"));
-//  if (IupGetInt(tabs, "TABVISIBLE2"))
-//    IupSetAttribute(tabs, "TABVISIBLE2", "No");
-//  else
-//    IupSetAttribute(tabs, "TABVISIBLE2", "Yes");
+#if 0
+  IupSetAttribute(tabs, "VALUEPOS", "0");
+  IupSetAttribute(tabs, "TABTITLE0", "1asdasd");
+  printf("VALUE=%s\n", IupGetAttribute(tabs, "VALUE"));
+  if (IupGetInt(tabs, "TABVISIBLE2"))
+    IupSetAttribute(tabs, "TABVISIBLE2", "No");
+  else
+    IupSetAttribute(tabs, "TABVISIBLE2", "Yes");
+#endif
+
   return IUP_DEFAULT;
 }
 
