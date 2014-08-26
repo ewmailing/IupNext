@@ -239,7 +239,7 @@ static void iColorBrowserRenderImageSI(Ihandle* ih)
   int x, y, active = 1;
   unsigned char *red, *green, *blue;
   unsigned char bg_red, bg_green, bg_blue;
-  float angle;
+
   if (!ih->data->cddbuffer)
     return;
 
@@ -251,8 +251,6 @@ static void iColorBrowserRenderImageSI(Ihandle* ih)
   blue = cdBlueImage(ih->data->cddbuffer);
 
   cdDecodeColor(ih->data->bgcolor, &bg_red, &bg_green, &bg_blue);
-
-  angle = ih->data->hue * ICB_DEG2RAD;
 
   for (y = 0; y < ih->data->h; y++)
   {
@@ -394,6 +392,7 @@ static void iColorBrowserUpdateDisplay(Ihandle* ih)
   if (!ih->data->cddbuffer)
     return;
 
+  cdCanvasActivate(ih->data->cddbuffer);
   cdCanvasFlush(ih->data->cddbuffer);  /* swap the RGB to the display canvas */
 
   if (iupdrvIsActive(ih))
