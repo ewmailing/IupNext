@@ -25,8 +25,8 @@ iup.RIGHT        = 65533
 iup.MOUSEPOS     = 65532
 iup.CURRENT      = 65531
 iup.CENTERPARENT = 65530
-iup.TOP = LEFT
-iup.BOTTOM = RIGHT
+iup.TOP          = iup.LEFT
+iup.BOTTOM       = iup.RIGHT
 
 ----------------------------------------------------------------------------
 --  Scrollbar
