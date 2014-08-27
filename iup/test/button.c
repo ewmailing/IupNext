@@ -452,7 +452,7 @@ void ButtonTest(void)
 //  IupShowXY(dlg,IUP_LEFT,IUP_TOP);
 //  IupShowXY(dlg, IUP_RIGHT, IUP_BOTTOM);
 //  IupShowXY(dlg, IUP_RIGHT, IUP_CENTER);
-  //  IupShowXY(dlg,0,0);
+//  IupShowXY(dlg,0,0);
 }
 
 #ifndef BIG_TEST
