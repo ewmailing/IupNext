@@ -194,7 +194,8 @@ int main(int argc, char* argv[])
   IupSetAttribute(dlg, "TITLE", "IupTests");
   IupSetCallback(dlg, "CLOSE_CB", close_cb);
 //  IupSetAttribute(dlg, "ICON", "SIZE_ICON");
-  
+  IupSetHandle("BIGTEST", dlg);
+
   IupSetAttribute(list, "VISIBLELINES", "15");
   IupSetAttribute(list, "EXPAND", "YES");
   IupSetCallback(list, "DBLCLICK_CB", (Icallback)dblclick_cb);

@@ -449,7 +449,9 @@ void ButtonTest(void)
 
   IupShow(dlg);
 
-//  IupShowXY(dlg,IUP_LEFT,IUP_TOP);
+//  IupSetAttribute(dlg, "PARENTDIALOG", "BIGTEST");
+//  IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+  //  IupShowXY(dlg,IUP_LEFT,IUP_TOP);
 //  IupShowXY(dlg, IUP_RIGHT, IUP_BOTTOM);
 //  IupShowXY(dlg, IUP_RIGHT, IUP_CENTER);
 //  IupShowXY(dlg,0,0);
