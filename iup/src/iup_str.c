@@ -474,7 +474,7 @@ char* iupStrReturnInt(int i)
 char* iupStrReturnFloat(float f)
 {
   char* str = iupStrGetSmallMem();  /* 80 */
-  sprintf(str, "%.9f", f);  /* maximum float precision */
+  sprintf(str, "%.9g", f);  /* maximum float precision */
   return str;
 }
 

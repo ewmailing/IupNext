@@ -105,6 +105,20 @@ void iupAttribSetFloatId(Ihandle *ih, const char* name, int id, float num);
 void iupAttribSetFloatId2(Ihandle *ih, const char* name, int lin, int col, float num);
 
 
+/** Sets an floating point attribute only in the hash table. \n
+* It will be stored as a string. \n
+* It ignores children.
+* \ingroup attrib */
+void iupAttribSetDouble(Ihandle *ih, const char* name, double num);
+
+/** Same as \ref iupAttribSetDouble with an id.
+* \ingroup attrib */
+void iupAttribSetDoubleId(Ihandle *ih, const char* name, int id, double num);
+
+/** Same as \ref iupAttribSetDouble with lin and col.
+* \ingroup attrib */
+void iupAttribSetDoubleId2(Ihandle *ih, const char* name, int lin, int col, double num);
+
 
 /** Returns the attribute from the hash table only.  \n
  * NO inheritance, NO control implementation, NO defalt value here. \n
