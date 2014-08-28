@@ -20,7 +20,7 @@
 
 #define RAD2DEG  57.296f   /* radians to degrees */
 
-enum {IPARAM_TYPE_STR, IPARAM_TYPE_INT, IPARAM_TYPE_FLOAT, IPARAM_TYPE_HANDLE, IPARAM_TYPE_NONE=-1};
+enum { IPARAM_TYPE_STR, IPARAM_TYPE_INT, IPARAM_TYPE_FLOAT, IPARAM_TYPE_DOUBLE, IPARAM_TYPE_HANDLE, IPARAM_TYPE_NONE = -1 };
 
 
 /*******************************************************************************************
@@ -123,10 +123,10 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
   {
     if (iupAttribGet(self, "_IUPGP_SPINREAL"))
     {
-      float min = iupAttribGetFloat(param, "MIN");
-      float step = iupAttribGetFloat(self, "_IUPGP_INCSTEP");
-      float val;
-      if (iupStrToFloat(after, &val))
+      double min = iupAttribGetDouble(param, "MIN");
+      double step = iupAttribGetDouble(self, "_IUPGP_INCSTEP");
+      double val;
+      if (iupStrToDouble(after, &val))
         IupSetInt(self, "SPINVALUE", (int)((val-min)/step + 0.5));
     }
     else
@@ -146,8 +146,8 @@ static int iParamValAction_CB(Ihandle *self)
   Ihandle* text = (Ihandle*)iupAttribGetInherit(self, "_IUPGP_TEXT");
   Ihandle* dlg = IupGetDialog(self);
   Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
-  float old_value = iupAttribGetFloat(param, "VALUE");
-  float val = IupGetFloat(self, "VALUE");
+  double old_value = iupAttribGetDouble(param, "VALUE");
+  double val = IupGetDouble(self, "VALUE");
 
   char* type = iupAttribGet(param, "TYPE");
   if (iupStrEqual(type, "INTEGER"))
@@ -158,22 +158,22 @@ static int iParamValAction_CB(Ihandle *self)
   {
     if (iupAttribGetInt(param, "ANGLE"))
     {
-      float old_angle;
+      double old_angle;
 
       if (val == 0)
       {
-        old_angle = iupAttribGetFloat(param, "VALUE");
-        iupAttribSetFloat(param, "_IUPGP_OLD_ANGLE", old_angle);
+        old_angle = iupAttribGetDouble(param, "VALUE");
+        iupAttribSetDouble(param, "_IUPGP_OLD_ANGLE", old_angle);
       }
       else
-        old_angle = iupAttribGetFloat(param, "_IUPGP_OLD_ANGLE");
+        old_angle = iupAttribGetDouble(param, "_IUPGP_OLD_ANGLE");
 
       val = old_angle + val*RAD2DEG;
 
       if (iupAttribGetInt(param, "INTERVAL"))
       {
-        float min = iupAttribGetFloat(param, "MIN");
-        float max = iupAttribGetFloat(param, "MAX");
+        double min = iupAttribGetDouble(param, "MIN");
+        double max = iupAttribGetDouble(param, "MAX");
         if (val < min)
           val = min;
         if (val > max)
@@ -181,22 +181,22 @@ static int iParamValAction_CB(Ihandle *self)
       }
       else if (iupAttribGetInt(param, "PARTIAL"))
       {
-        float min = iupAttribGetFloat(param, "MIN");
+        double min = iupAttribGetDouble(param, "MIN");
         if (val < min)
           val = min;
       }
     }
 
-    iupAttribSetFloat(param, "VALUE", val);
+    iupAttribSetDouble(param, "VALUE", val);
   }
 
   if (cb && !cb(dlg, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(dlg, "USER_DATA"))) 
   {
     /* Undo */
-    iupAttribSetFloat(param, "VALUE", old_value);
+    iupAttribSetDouble(param, "VALUE", old_value);
 
     if (!iupAttribGetInt(param, "ANGLE"))
-      IupSetFloat(self, "VALUE", old_value);
+      IupSetDouble(self, "VALUE", old_value);
 
     /* there is no IUP_IGNORE for IupVal */
     return IUP_DEFAULT;
@@ -206,15 +206,15 @@ static int iParamValAction_CB(Ihandle *self)
   if (iupStrEqual(type, "INTEGER"))
     IupSetInt(text, "VALUE", (int)val);
   else
-    IupSetFloat(text, "VALUE", val);
+    IupSetDouble(text, "VALUE", val);
 
   if (IupGetInt(text, "SPIN"))
   {
     if (iupAttribGet(text, "_IUPGP_SPINREAL"))
     {
-      float min = iupAttribGetFloat(param, "MIN");
-      float step = iupAttribGetFloat(text, "_IUPGP_INCSTEP");
-      float val = IupGetFloat(text, "VALUE");
+      double min = iupAttribGetDouble(param, "MIN");
+      double step = iupAttribGetDouble(text, "_IUPGP_INCSTEP");
+      double val = IupGetDouble(text, "VALUE");
       IupSetInt(text, "SPINVALUE", (int)((val-min)/step + 0.5));
     }
     else
@@ -376,18 +376,18 @@ static int iParamSpinReal_CB(Ihandle *self, int pos)
   Ihandle* dlg = IupGetDialog(self);
   Iparamcb cb = (Iparamcb)IupGetCallback(dlg, "PARAM_CB");
   Ihandle* text = (Ihandle*)iupAttribGet(param, "CONTROL");
-  float min = iupAttribGetFloat(param, "MIN");
-  float max = iupAttribGetFloat(param, "MAX");
-  float val, step = iupAttribGetFloat(text, "_IUPGP_INCSTEP");
+  double min = iupAttribGetDouble(param, "MIN");
+  double max = iupAttribGetDouble(param, "MAX");
+  double val, step = iupAttribGetDouble(text, "_IUPGP_INCSTEP");
 
   /* here spin is always [0-spinmax] converted to [min-max] */
-  val = (float)pos*step + min;
+  val = (double)pos*step + min;
   if (val < min)
     val = min;
   if (val > max)
     val = max;
 
-  iupAttribSetFloat(param, "VALUE", val);
+  iupAttribSetDouble(param, "VALUE", val);
 
   if (cb) 
   {
@@ -399,12 +399,12 @@ static int iParamSpinReal_CB(Ihandle *self, int pos)
       return IUP_IGNORE;
   }
 
-  IupSetFloat(text, "VALUE", val);
+  IupSetDouble(text, "VALUE", val);
 
   {
     Ihandle* aux = (Ihandle*)iupAttribGet(param, "AUXCONTROL");
     if (aux)
-      IupSetFloat(aux, "VALUE", val);
+      IupSetDouble(aux, "VALUE", val);
   }
 
   return IUP_DEFAULT;
@@ -673,11 +673,11 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
     {
       if (iupAttribGetInt(param, "INTERVAL"))
       {
-        float min = iupAttribGetFloat(param, "MIN");
-        float max = iupAttribGetFloat(param, "MAX");
-        float step = iupAttribGetFloat(param, "STEP");
-        float val = iupAttribGetFloat(param, "VALUE");
-        if (step == 0) step = (max-min)/20.0f;
+        double min = iupAttribGetDouble(param, "MIN");
+        double max = iupAttribGetDouble(param, "MAX");
+        double step = iupAttribGetDouble(param, "STEP");
+        double val = iupAttribGetDouble(param, "VALUE");
+        if (step == 0) step = (max-min)/20.0;
         IupSetfAttribute(ctrl, "MASKFLOAT", "%.9g:%.9g", min, max);
                              
         /* here spin is always [0-spinmax] converted to [min-max] */
@@ -690,12 +690,12 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
         IupSetInt(ctrl, "SPINMAX", (int)((max-min)/step + 0.5));
         IupSetInt(ctrl, "SPINVALUE", (int)((val-min)/step + 0.5));
 
-        iupAttribSetFloat(ctrl, "_IUPGP_INCSTEP", step);
+        iupAttribSetDouble(ctrl, "_IUPGP_INCSTEP", step);
         iupAttribSet(ctrl, "_IUPGP_SPINREAL", "1");
       }
       else if (iupAttribGetInt(param, "PARTIAL"))
       {
-        float min = iupAttribGetFloat(param, "MIN");
+        double min = iupAttribGetDouble(param, "MIN");
         if (min == 0)
           IupSetAttribute(ctrl, "MASK", IUP_MASK_UFLOAT);
         else
@@ -761,7 +761,7 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
         aux = IupCreate("dial");  /* Use IupCreate to avoid depending on the IupControls library */
         if (aux)  /* If IupControls library is not available it will fail */
         {
-          IupSetFloat(aux, "VALUE", iupAttribGetFloat(param, "VALUE")/RAD2DEG);
+          IupSetDouble(aux, "VALUE", iupAttribGetDouble(param, "VALUE")/RAD2DEG);
           IupSetAttribute(aux, "SIZE", "50x10");
         }
       }
@@ -777,9 +777,9 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
         iupAttribSet(param, "EXPAND", "1");
         step = iupAttribGet(param, "STEP");
         if (step)
-          IupSetFloat(aux, "STEP", iupAttribGetFloat(param, "STEP")/(iupAttribGetFloat(param, "MAX")-iupAttribGetFloat(param, "MIN")));
+          IupSetDouble(aux, "STEP", iupAttribGetDouble(param, "STEP")/(iupAttribGetDouble(param, "MAX")-iupAttribGetDouble(param, "MIN")));
         else if (iupStrEqual(type, "INTEGER"))
-          IupSetFloat(aux, "STEP", 1.0f/(iupAttribGetFloat(param, "MAX")-iupAttribGetFloat(param, "MIN")));
+          IupSetDouble(aux, "STEP", 1.0f/(iupAttribGetDouble(param, "MAX")-iupAttribGetDouble(param, "MIN")));
       }
 
       if (aux)
@@ -1230,6 +1230,13 @@ static Ihandle *IupParamf(const char* format, int *line_size)
     extra = iParamGetStrExtra(line_ptr, '|', '|', &count);  line_ptr += count;
     iParamSetListItems(extra, param);
     break;
+  case 'A':
+    iupAttribSet(param, "TYPE", "REAL");
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_DOUBLE);
+    iupAttribSet(param, "ANGLE", "1");
+    extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
+    iParamSetInterval(extra, param);
+    break;
   case 'a':
     iupAttribSet(param, "TYPE", "REAL");
     iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_FLOAT);
@@ -1252,6 +1259,12 @@ static Ihandle *IupParamf(const char* format, int *line_size)
   case 'i':
     iupAttribSet(param, "TYPE", "INTEGER");
     iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_INT);
+    extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
+    iParamSetInterval(extra, param);
+    break;
+  case 'R':
+    iupAttribSet(param, "TYPE", "REAL");
+    iupAttribSetInt(param, "DATA_TYPE", IPARAM_TYPE_DOUBLE);
     extra = iParamGetStrExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamSetInterval(extra, param);
     break;
@@ -1359,6 +1372,9 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   if (!title || !format)
     return 0;
 
+  if (param_count > 50)
+    return 0;
+
   for (i = 0, p = 0; i < param_count+param_extra; i++)
   {
     int data_type;
@@ -1374,6 +1390,13 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
       float *data_float = (float*)(param_data[p]);
       if (!data_float) return 0;
       iupAttribSetFloat(params[i], "VALUE", *data_float);
+      p++;
+    }
+    else if (data_type == IPARAM_TYPE_DOUBLE)
+    {
+      double *data_double = (double*)(param_data[p]);
+      if (!data_double) return 0;
+      iupAttribSetDouble(params[i], "VALUE", *data_double);
       p++;
     }
     else if (data_type == IPARAM_TYPE_INT)
@@ -1436,6 +1459,12 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
         *data_float = iupAttribGetFloat(param, "VALUE");
         p++;
       }
+      else if (data_type == IPARAM_TYPE_DOUBLE)
+      {
+        double *data_double = (double*)(param_data[p]);
+        *data_double = iupAttribGetDouble(param, "VALUE");
+        p++;
+      }
       else if (data_type == IPARAM_TYPE_STR)
       {
         char *data_str = (char*)(param_data[p]);
@@ -1466,6 +1495,8 @@ int IupGetParam(const char* title, Iparamcb action, void* user_data, const char*
   va_list arg;
 
   param_count = iupGetParamCount(format, &param_extra);
+  if (param_count > 50)
+    return 0;
 
   va_start(arg, format);
   for (i = 0; i < param_count; i++)
