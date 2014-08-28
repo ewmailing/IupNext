@@ -1143,9 +1143,9 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
     {
       if (IupClassMatch(ih, "progressbar"))
       {
-        float min = IupGetFloat(ih, "MIN");
-        float max = IupGetFloat(ih, "MAX");
-        float val = IupGetFloat(ih, "VALUE");
+        double min = IupGetDouble(ih, "MIN");
+        double max = IupGetDouble(ih, "MAX");
+        double val = IupGetDouble(ih, "VALUE");
         r = fr, g = fg, b = fb;
         iupStrToRGB(iupAttribGetLocal(ih, "FGCOLOR"), &r, &g, &b);
         if (iupStrEqualNoCase(iupAttribGetLocal(ih, "ORIENTATION"), "VERTICAL"))
@@ -1161,9 +1161,9 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
       }
       else if (IupClassMatch(ih, "val"))
       {
-        float min = IupGetFloat(ih, "MIN");
-        float max = IupGetFloat(ih, "MAX");
-        float val = IupGetFloat(ih, "VALUE");
+        double min = IupGetDouble(ih, "MIN");
+        double max = IupGetDouble(ih, "MAX");
+        double val = IupGetDouble(ih, "VALUE");
         r = fr, g = fg, b = fb;
         iupStrToRGB(iupAttribGetLocal(ih, "FGCOLOR"), &r, &g, &b);
         if (iupStrEqualNoCase(iupAttribGetLocal(ih, "ORIENTATION"), "VERTICAL"))

@@ -662,7 +662,7 @@ static int iColorBrowserKeypress_CB(Ihandle* ih, int c, int press)
 
 static char* iColorBrowserGetHSIAttrib(Ihandle* ih)
 {
-  return iupStrReturnStrf("%.9f %.9f %.9f", (double)ih->data->hue, (double)ih->data->saturation, (double)ih->data->intensity);
+  return iupStrReturnStrf("%.9g %.9g %.9g", ih->data->hue, ih->data->saturation, ih->data->intensity);
 }
 
 static int iColorBrowserSetHSIAttrib(Ihandle* ih, const char* value)

@@ -4705,7 +4705,7 @@ static int iMglPlotResize_CB(Ihandle* ih, int width, int height)
   ih->data->redraw = true;
   ih->data->w = width;
   ih->data->h = height;
-  ih->data->dpi = IupGetFloat(NULL, "SCREENDPI");
+  ih->data->dpi = IupGetDouble(NULL, "SCREENDPI");
 
   iMglPlotInitOpenGL2D(ih);
 

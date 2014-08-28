@@ -414,7 +414,7 @@ static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *standar
     is_strikeout = 0;
   int i, count;
   IglFont* fonts;
-  float res = IupGetFloat(NULL, "SCREENDPI");
+  double res = IupGetDouble(NULL, "SCREENDPI");
   Iarray* gl_fonts = (Iarray*)iupAttribGet(gl_parent, "GL_FONTLIST");
   if (!gl_fonts)
   {
@@ -446,7 +446,7 @@ static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *standar
     return NULL;
 
   if (size < 0)
-    size = (int)((-size*72.0f) / res + 0.5f);  /* convert to points */
+    size = (int)((-size*72.0) / res + 0.5);  /* convert to points */
 
   ftglSetFontFaceSize(font, size, (int)res);
 

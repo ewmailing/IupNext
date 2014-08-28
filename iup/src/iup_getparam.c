@@ -678,7 +678,7 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
         float step = iupAttribGetFloat(param, "STEP");
         float val = iupAttribGetFloat(param, "VALUE");
         if (step == 0) step = (max-min)/20.0f;
-        IupSetfAttribute(ctrl, "MASKFLOAT", "%.9f:%.9f", (double)min, (double)max);
+        IupSetfAttribute(ctrl, "MASKFLOAT", "%.9g:%.9g", min, max);
                              
         /* here spin is always [0-spinmax] converted to [min-max] */
 
@@ -699,7 +699,7 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
         if (min == 0)
           IupSetAttribute(ctrl, "MASK", IUP_MASK_UFLOAT);
         else
-          IupSetfAttribute(ctrl, "MASKFLOAT", "%.9f:%.9f", (double)min, (double)1.0e10);
+          IupSetfAttribute(ctrl, "MASKFLOAT", "%.9g:%.9g", min, 1.0e10);
         IupAppend(box, ctrl);
       }
       else
