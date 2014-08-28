@@ -489,6 +489,7 @@ void GLCanvasCubeTest(void)
   gframe1 = IupSetAttributes(IupGLFrame(hbox), "TITLE=Frame1");
   gframe2 = IupSetAttributes(IupGLFrame(vbox), "BACKCOLOR=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
   gframe3 = IupSetAttributes(IupGLFrame(gsbox), "TITLE=Frame3, TITLEBOX=Yes");
+//  IupSetAttributeHandle(gframe3, "TITLEBACKIMAGE", load_image_Tecgraf());
 
   gexp1 = IupSetAttributes(IupGLExpander(gframe1), "TITLE=Expander");
   gexp2 = IupSetAttributes(IupGLExpander(gframe2), "BARPOSITION=LEFT");
@@ -524,9 +525,9 @@ void GLCanvasCubeTest(void)
   vbox3 = IupSetAttributes(IupGLFrame(vbox3), "TITLE=Frame4");
 
   canvas = IupGLCanvasBox(
-    IupSetAttributes(gexp1, "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes"),
+    IupSetAttributes(gexp1, "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes, MOVETOTOP=Yes"),
     IupSetAttributes(gexp2, "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER"),
-    IupSetAttributes(gframe3, "MOVEABLE=Yes, POSITION=\"550,200\""),
+    IupSetAttributes(gframe3, "MOVEABLE=Yes, POSITION=\"550,200\", MOVETOTOP=Yes"),
     IupSetAttributes(vbox3, "MOVEABLE=Yes, POSITION=\"250,350\""),
     NULL);
 

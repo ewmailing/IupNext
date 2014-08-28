@@ -385,10 +385,9 @@ static void iGLExpanderDrawSmallArrow(Ihandle *ih, const char* color, int active
   iupGLDrawArrow(ih, x, y, size, color, active, dir);
 }
 
-static void iGLExpanderDrawExtraButton(Ihandle* ih, int button, int x, int y, int height)
+static void iGLExpanderDrawExtraButton(Ihandle* ih, int button, int x, int y, int height, int active)
 {
   char* image = iupAttribGetId(ih, "IMAGEEXTRA", button);
-  int active = IupGetInt(ih, "ACTIVE");
   int img_height;
 
   if (!image)
@@ -423,6 +422,7 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
   int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
   int pressed = iupAttribGetInt(ih, "PRESSED");
   int bar_size = iGLExpanderGetBarSize(ih);
+  char* bgimage = iupAttribGetStr(ih, "TITLEBACKIMAGE");
 
   /* calc bar position */
   if (ih->data->position == IEXPANDER_LEFT)
@@ -455,7 +455,10 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
   }
 
   /* draw bar box */
-  iupGLDrawBox(ih, x1, x2, y1, y2, bgcolor, 1);
+  if (bgimage)
+    iupGLDrawImageTexture(ih, x1, x2, y1, y2, bgimage, bgcolor, active);
+  else
+    iupGLDrawBox(ih, x1, x2, y1, y2, bgcolor, 1);  /* always active */
 
   if (ih->data->position == IEXPANDER_TOP && (title || image || ih->data->extra_buttons != 0))
   {
@@ -464,7 +467,6 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
 
     if (image)
     {
-      int active = IupGetInt(ih, "ACTIVE");
       int img_width = 0, img_height = 0;
       int y_offset = 0;
 
@@ -531,13 +533,13 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
       int y = IEXPAND_SPACING + IEXPAND_BACK_MARGIN;
       int height = bar_size - 2 * (IEXPAND_SPACING + IEXPAND_BACK_MARGIN);
 
-      iGLExpanderDrawExtraButton(ih, 1, ih->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height);
+      iGLExpanderDrawExtraButton(ih, 1, ih->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height, active);
 
       if (ih->data->extra_buttons > 1)
-        iGLExpanderDrawExtraButton(ih, 2, ih->currentwidth - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height);
+        iGLExpanderDrawExtraButton(ih, 2, ih->currentwidth - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height, active);
 
       if (ih->data->extra_buttons == 3)
-        iGLExpanderDrawExtraButton(ih, 3, ih->currentwidth - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height);
+        iGLExpanderDrawExtraButton(ih, 3, ih->currentwidth - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height, active);
     }
   }
   else
@@ -944,13 +946,16 @@ Iclass* iupGLExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "BARSIZE", iGLExpanderGetBarSizeAttrib, iGLExpanderSetBarSizeAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATE", iGLExpanderGetStateAttrib, iGLExpanderSetStateAttrib, IUPAF_SAMEASSYSTEM, "OPEN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRABUTTONS", iGLExpanderGetExtraButtonsAttrib, iGLExpanderSetExtraButtonsAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "MOVEABLE", NULL, iGLExpanderSetMoveableAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MOVETOTOP", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FORECOLOR",  NULL, NULL, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKCOLOR",  NULL, NULL, IUPAF_SAMEASSYSTEM, "50 100 150",  IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIGHCOLOR",  NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "150 200 235", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEBACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

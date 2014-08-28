@@ -246,6 +246,9 @@ void iupGLSubCanvasStartMoving(Ihandle* ih, int x, int y)
 {
   iupAttribSetInt(ih, "_IUP_START_X", ih->x + x);
   iupAttribSetInt(ih, "_IUP_START_Y", ih->y + y);
+
+  if (iupAttribGetInt(ih, "MOVETOTOP"))
+    IupSetAttribute(ih, "ZORDER", "TOP");
 }
 
 int iupGLSubCanvasMove(Ihandle* ih, int x, int y)

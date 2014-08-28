@@ -30,13 +30,13 @@ static int iGLFrameACTION(Ihandle* ih)
   char* bordercolor = iupAttribGetStr(ih, "FRAMECOLOR");
   float bwidth = iupAttribGetFloat(ih, "FRAMEWIDTH");
   int border_width = (int)ceil(bwidth);
+  int active = iupAttribGetInt(ih, "ACTIVE");
 
   if (image || title)
   {
     char* fgcolor = iupAttribGetStr(ih, "FORECOLOR");
     int off = iupAttribGetInt(ih, "TITLEOFFSET");
     int title_box = iupAttribGetInt(ih, "TITLEBOX");
-    int active = iupAttribGetInt(ih, "ACTIVE");
     int w = 0, h = 0;
     iupGLIconGetSize(ih, image, title, &w, &h);
     if (w > ih->currentwidth - 2 * border_width)
@@ -44,12 +44,20 @@ static int iGLFrameACTION(Ihandle* ih)
 
     if (title_box)
     {
+      char* bgimage = iupAttribGetStr(ih, "TITLEBACKIMAGE");
+
       /* draw border */
       iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bordercolor, 1, 0);
 
       /* draw box */
-      iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
-                       border_width, border_width + h - 1, bordercolor, 1);
+      if (bgimage)
+        iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,
+                                  border_width, border_width + h - 1, 
+                                  bgimage, bordercolor, active);
+      else
+        iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
+                         border_width, border_width + h - 1, 
+                         bordercolor, 1);  /* always active */
     }
     else
     {
@@ -61,11 +69,18 @@ static int iGLFrameACTION(Ihandle* ih)
   }
   else
   {
-    char* bgcolor = iupAttribGetStr(ih, "BACKCOLOR");
-
     /* draw background */
-    iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
-                     border_width, ih->currentheight-1 - border_width, bgcolor, 1);
+    char* bgcolor = iupAttribGetStr(ih, "BACKCOLOR");
+    char* bgimage = iupAttribGetStr(ih, "BACKIMAGE");
+
+    if (bgimage)
+      iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,
+                                border_width, ih->currentheight - 1 - border_width, 
+                                bgimage, bgcolor, active);
+    else
+      iupGLDrawBox(ih, border_width, ih->currentwidth - 1 - border_width,
+                       border_width, ih->currentheight - 1 - border_width, 
+                       bgcolor, 1);  /* always active */
 
     /* draw border - after background because of the round rect */
     iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bordercolor, 1, 1);
@@ -284,16 +299,20 @@ Iclass* iupGLFrameNewClass(void)
   iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEOFFSET", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEBOX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEBACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMEWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "MOVEABLE", NULL, iGLFrameSetMoveableAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MOVETOTOP", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* replace default value */
   iupClassRegisterAttribute(ic, "PADDING", NULL, NULL, IUPAF_SAMEASSYSTEM, "2x0", IUPAF_NO_INHERIT);

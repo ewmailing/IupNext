@@ -63,6 +63,13 @@ from the current alignment. </p>
   used as background when TITLE and IMAGE are 
 not defined. Can have an alpha component. Default: NULL. Used instead of BGCOLOR 
   to avoid inheritance problems.</p>
+<p><strong>BACKIMAGE</strong> (<font SIZE="3">non inheritable</font>): image 
+name to be used as a texture background when TITLE and IMAGE are not defined. BACKCOLOR 
+will be combined with the texture colors. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
+(Since 3.12)</p>
+
 <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable</font>):
   The default value is &quot;YES&quot;.</p>
 <p><strong>FORECOLOR</strong> (<font SIZE="3">non inheritable</font>): Text 
@@ -97,8 +104,11 @@ name of the element in pressed state. </p>
 Position of the image relative to the text when both are defined. Can be: LEFT, 
 RIGHT, TOP, BOTTOM. Default: LEFT.</p>
 <p><strong>MOVEABLE</strong> (<font SIZE="3">non inheritable</font>): enable the 
-frame to be interactively moved when it is a direct child of the <strong>
-IupGLCanvasBox</strong>. Default: NO.</p>
+frame to be interactively moved when it is a direct child of the 
+IupGLCanvasBox. Default: NO.</p>
+<p><strong>MOVETOTOP</strong> (<font SIZE="3">non inheritable</font>): when 
+MOVEABLE=Yes and the frame is moved then its ZORDER is also set to TOP. (Since 
+3.12)</p>
 
   
 <p><b>PADDING</b> (<font SIZE="3">non inheritable</font>): internal margin for 
@@ -110,7 +120,14 @@ image and the title. Default: &quot;2&quot;.</p>
 
   
   <p><a href="../attrib/iup_title.html">TITLE</a> (<font SIZE="3">non inheritable</font>): 
-  Text the user will see at the top of the frame.&nbsp; </p>
+  Text the user will see at the top of the frame.&nbsp;</p>
+<p><strong>TITLEBACKIMAGE</strong> (<font SIZE="3">non inheritable</font>): 
+image name to be used as a texture background on the title area. Works only when 
+TITLEBOX=Yes. FRAMECOLOR will be combined with the texture colors. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
+(Since 3.12)</p>
+
 <p><strong>TITLEBOX</strong> (<font SIZE="3">non inheritable</font>): enable a 
 different visual style for the frame. Instead of the traditional round frame 
 that starts and ends at the title area, it will draw a filled box for the title 
