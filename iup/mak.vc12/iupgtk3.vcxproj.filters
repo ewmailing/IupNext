@@ -105,10 +105,16 @@
     <ClCompile Include="..\src\gtk\iupgtk_str.c">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\gtk\iupgtk_draw.c">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\gtk\iupgtk_drv.h">
       <Filter>inc</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\iupgtk.def" />
   </ItemGroup>
 </Project>

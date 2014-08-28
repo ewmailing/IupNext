@@ -89,6 +89,9 @@
   <ItemGroup>
     <ClCompile Include="..\src\gtk\iupgtk_common.c" />
     <ClCompile Include="..\src\gtk\iupgtk_dragdrop.c" />
+    <ClCompile Include="..\src\gtk\iupgtk_draw.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\src\gtk\iupgtk_draw_cairo.c" />
     <ClCompile Include="..\src\gtk\iupgtk_focus.c" />
     <ClCompile Include="..\src\gtk\iupgtk_font.c" />
@@ -121,6 +124,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\gtk\iupgtk_drv.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\iupgtk.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
