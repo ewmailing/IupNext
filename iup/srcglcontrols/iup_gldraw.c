@@ -43,16 +43,16 @@ void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float linewidth,
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+
+  glColor4ub(r, g, b, a);
+
+  glLineWidth(linewidth);
 
   /* y is oriented top to bottom in IUP */
   y1 = ih->currentheight - 1 - y1;
   y2 = ih->currentheight - 1 - y2;
-
-  if (!active)
-    iupGLColorMakeInactive(&r, &g, &b);
-  glColor4ub(r, g, b, a);
-
-  glLineWidth(linewidth);
 
   glBegin(GL_LINES);
   glVertex2i(x1, y1);
@@ -72,20 +72,21 @@ void iupGLDrawFrameRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, flo
   if (ymin > ymax) { int _t = ymin; ymin = ymax; ymax = _t; }
 
   iupStrToRGBA(color, &r, &g, &b, &a);
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+
+  glColor4ub(r, g, b, a);
+
+  glLineWidth(linewidth);
 
   /* y is oriented top to bottom in IUP */
   ymin = ih->currentheight - 1 - ymin;
   ymax = ih->currentheight - 1 - ymax;
 
-  if (!active)
-    iupGLColorMakeInactive(&r, &g, &b);
-  glColor4ub(r, g, b, a);
-
-  glLineWidth(linewidth);
+  /* position frame title at left-center */
+  ymin -= title_height / 2;
 
   glBegin(GL_LINE_STRIP);
-
-  ymin -= title_height/2;
 
   glVertex2i(xmin + title_x + title_width, ymin);
 
@@ -117,16 +118,16 @@ void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float li
   if (ymin > ymax) { int _t = ymin; ymin = ymax; ymax = _t; }
 
   iupStrToRGBA(color, &r, &g, &b, &a);
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+
+  glColor4ub(r, g, b, a);
+
+  glLineWidth(linewidth);
 
   /* y is oriented top to bottom in IUP */
   ymin = ih->currentheight - 1 - ymin;
   ymax = ih->currentheight - 1 - ymax;
-
-  if (!active)
-    iupGLColorMakeInactive(&r, &g, &b);
-  glColor4ub(r, g, b, a);
-
-  glLineWidth(linewidth);
 
   glBegin(GL_LINE_LOOP);
 
@@ -190,14 +191,14 @@ void iupGLDrawSmallCircle(Ihandle* ih, int cx, int cy, int rd, float linewidth, 
 
   iupStrToRGBA(color, &r, &g, &b, &a);
 
-  /* y is oriented top to bottom in IUP */
-  cy = ih->currentheight - 1 - cy;
-
   if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
   glColor4ub(r, g, b, a);
 
   glLineWidth(linewidth);
+
+  /* y is oriented top to bottom in IUP */
+  cy = ih->currentheight - 1 - cy;
 
   glBegin(GL_LINE_LOOP);
 
@@ -214,13 +215,13 @@ void iupGLDrawSmallDisc(Ihandle* ih, int cx, int cy, int rd, const char* color, 
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+
+  glColor4ub(r, g, b, a);
 
   /* y is oriented top to bottom in IUP */
   cy = ih->currentheight - 1 - cy;
-
-  if (!active)
-    iupGLColorMakeInactive(&r, &g, &b);
-  glColor4ub(r, g, b, a);
 
   glBegin(GL_POLYGON);
 
@@ -237,14 +238,14 @@ void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const cha
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+
+  glColor4ub(r, g, b, a);
 
   /* y is oriented top to bottom in IUP */
   ymin = ih->currentheight - 1 - ymin;
   ymax = ih->currentheight - 1 - ymax;
-
-  if (!active)
-    iupGLColorMakeInactive(&r, &g, &b);
-  glColor4ub(r, g, b, a);
 
   glRecti(xmin, ymax, xmax + 1, ymin + 1);
 }
@@ -258,9 +259,9 @@ void iupGLDrawPolygon(Ihandle* ih, const int* points, int count, const char* col
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-
   if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
+
   glColor4ub(r, g, b, a);
 
   glBegin(GL_POLYGON);
@@ -288,9 +289,9 @@ void iupGLDrawPolyline(Ihandle* ih, const int* points, int count, float linewidt
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-
   if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
+
   glColor4ub(r, g, b, a);
 
   glLineWidth(linewidth);
@@ -322,9 +323,9 @@ void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-
   if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
+
   glColor4ub(r, g, b, a);
 
   if (str[0])
@@ -337,10 +338,11 @@ void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color
     iupGLFontGetDim(ih, NULL, &lineheight, &ascent, NULL);
     baseline = lineheight - ascent;
 
-    /* y is at top and oriented top to bottom in IUP */
-    /* y is at baseline and oriented bottom to top in OpenGL */
+    /* y is at text baseline and oriented bottom to top in OpenGL */
     y = y + lineheight - baseline;  /* move to baseline */
-    y = ih->currentheight - 1 - y; /* orient bottom to top */
+
+    /* y is oriented top to bottom in IUP */
+    y = ih->currentheight - 1 - y;
 
     if (underline)
       glLineWidth(1.0f);
@@ -385,10 +387,11 @@ void iupGLDrawImage(Ihandle* ih, int x, int y, const char* name, int active)
     if (depth == 4)
       format = GL_RGBA;
 
-    /* y is at top and oriented top to bottom in IUP */
-    /* y is at bottom and oriented bottom to top in OpenGL */
+    /* y is at image bottom and oriented bottom to top in OpenGL */
     y = y + image->currentheight - 1;  /* move to bottom */
-    y = ih->currentheight - 1 - y; /* orient bottom to top */
+
+    /* y is oriented top to bottom in IUP */
+    y = ih->currentheight - 1 - y;
 
     glRasterPos2i(x, y);
     glDrawPixels(image->currentwidth, image->currentheight, format, GL_UNSIGNED_BYTE, gldata);
@@ -441,4 +444,95 @@ void iupGLDrawArrow(Ihandle *ih, int x, int y, int size, const char* color, int 
 
   iupGLDrawPolygon(ih, points, 3, color, active);
   iupGLDrawPolyline(ih, points, 3, 1, color, active, 1);
+}
+
+/* isPowerOfTwo By Rick Regan
+   http://www.exploringbinary.com/ten-ways-to-check-if-an-integer-is-a-power-of-two-in-c/
+*/
+static int isPowerOfTwo(unsigned int x)
+{
+  while (((x & 1) == 0) && x > 1) /* While x is even and > 1 */
+    x >>= 1;
+  return (x == 1);
+}
+
+static int iGLDestroyTexture_CB(Ihandle* image)
+{
+  GLuint texture = (GLuint)iupAttribGetInt(image, "GL_TEXTURE");
+  glDeleteTextures(1, &texture);
+  return IUP_DEFAULT;
+}
+
+static GLuint iGLDrawGenTexture(const char* name)
+{
+  Ihandle* image = IupGetHandle(name);
+  if (image)
+  {
+    GLuint texture = (GLuint)iupAttribGetInt(image, "GL_TEXTURE");
+    if (texture)
+      return texture;
+
+    if (isPowerOfTwo(image->currentwidth) && isPowerOfTwo(image->currentheight))
+    {
+      unsigned char* gldata = iupGLImageGetData(image, 1);
+      int depth = iupAttribGetInt(image, "GL_DEPTH");
+      int format = GL_RGB;
+      if (depth == 4)
+        format = GL_RGBA;
+
+      glGenTextures(1, &texture);
+
+      glBindTexture(GL_TEXTURE_2D, texture);
+
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+      /* width and height must be 2^n */
+      glTexImage2D(GL_TEXTURE_2D, 0, format, image->currentwidth, image->currentheight, 0, format, GL_UNSIGNED_BYTE, gldata);
+
+      iupAttribSetInt(image, "GL_TEXTURE", (int)texture);
+      IupSetCallback(image, "DESTROY_CB", iGLDestroyTexture_CB);
+
+      return texture;
+    }
+  }
+
+  return 0;
+}
+
+void iupGLDrawImageTexture(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, const char* name, const char* color, int active)
+{
+  GLuint texture;
+  unsigned char r = 0, g = 0, b = 0, a = 255;
+
+  if (!color || xmin == xmax || ymin == ymax)
+    return;
+
+  iupStrToRGBA(color, &r, &g, &b, &a);
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+
+  /* y is oriented top to bottom in IUP */
+  ymin = ih->currentheight - 1 - ymin;
+  ymax = ih->currentheight - 1 - ymax;
+
+  texture = iGLDrawGenTexture(name);
+  if (texture)
+  {
+    glEnable(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    glColor4f(r, g, b, a);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex2i(xmin, ymin);
+    glTexCoord2f(1.0f, 0.0f); glVertex2i(xmax, ymin);
+    glTexCoord2f(1.0f, 1.0f); glVertex2i(xmax, ymax);
+    glTexCoord2f(0.0f, 1.0f); glVertex2i(xmin, ymax);
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+  }
 }

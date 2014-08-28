@@ -25,6 +25,7 @@ enum { IUPGL_ARROW_LEFT, IUPGL_ARROW_RIGHT, IUPGL_ARROW_TOP, IUPGL_ARROW_BOTTOM 
 void iupGLDrawArrow(Ihandle *ih, int x, int y, int size, const char* color, int active, int dir);
 void iupGLDrawSmallCircle(Ihandle* ih, int cx, int cy, int r, float linewidth, const char* color, int active);
 void iupGLDrawSmallDisc(Ihandle* ih, int cx, int cy, int rd, const char* color, int active);
+void iupGLDrawImageTexture(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, const char* name, const char* color, int active);
 
 
 #ifdef __cplusplus
