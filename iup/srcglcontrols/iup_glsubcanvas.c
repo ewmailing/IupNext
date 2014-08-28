@@ -351,64 +351,76 @@ static int iGLSubCanvasSetRedrawFrontAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static void iGLSubCanvasSetZorder(Ihandle* parent, Ihandle* child, int top)
+static int iGLSubCanvasSetZorder(Ihandle* parent, Ihandle* child, int top)
 {
   Ihandle *c,
     *c_prev = NULL;
 
   if (top && child->brother == NULL)  /* already at the top */
-    return;
+    return 0;
 
   if (!top && parent->firstchild == child)  /* already at the bottom */
-    return;
+    return 0;
 
+  /* Removes the child entry inside the parent's child list */
   for (c = parent->firstchild; c; c = c->brother)
   {
-    if (c == child) /* Found the right child */
+    if (c == child)
     {
-      /* remove it from the hierarchy */
       if (c_prev == NULL)
         parent->firstchild = child->brother;
       else
         c_prev->brother = child->brother;
 
       child->brother = NULL;
+      break;
     }
 
     c_prev = c;
+  }
 
-    /* at last element */
-    if (!c->brother)
+  if (top)
+  {
+    /* insert at last element */
+    for (c = parent->firstchild; c; c = c->brother)
     {
-      if (top)
+      if (!c->brother)
       {
-        /* insert at last */
         c->brother = child;
-      }
-      else
-      {
-        /* insert at first */
-        child->brother = parent->firstchild;
-        parent->firstchild = child;
+        break;
       }
     }
   }
+  else
+  {
+    /* insert at first */
+    child->brother = parent->firstchild;
+    parent->firstchild = child;
+  }
+
+  return 1;
 }
 
 static int iGLSubCanvasSetZorderAttrib(Ihandle* ih, const char* value)
 {
   Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  int redraw = 0;
   int top = 1;
   if (iupStrEqualNoCase(value, "BOTTOM"))
     top = 0;
 
+  /* move everyone in the same hierachy */
   while (ih != gl_parent)
   {
-    iGLSubCanvasSetZorder(ih->parent, ih, top);
+    if (iGLSubCanvasSetZorder(ih->parent, ih, top))
+      redraw = 1;
     ih = ih->parent;
   }
 
-return 0;
+  if (redraw)
+    IupSetAttribute(gl_parent, "REDRAW", NULL);  /* redraw the whole box */
+
+  return 0;
 }
 
 

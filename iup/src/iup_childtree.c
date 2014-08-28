@@ -50,7 +50,7 @@ static void iChildDetach(Ihandle* parent, Ihandle* child)
   Ihandle *c, 
           *c_prev = NULL;
 
-  /* Cleans the child entry inside the parent's child list */
+  /* Removes the child entry inside the parent's child list */
   for (c = parent->firstchild; c; c = c->brother)
   {
     if (c == child) /* Found the right child */
