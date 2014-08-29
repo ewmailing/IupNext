@@ -418,14 +418,14 @@ void IupSetIntId(Ihandle* ih, const char* name, int id, int num)
 void IupSetFloatId(Ihandle* ih, const char* name, int id, float num)
 {
   char value[80];
-  sprintf(value, "%.9g", num);  /* maximum float precision */
+  sprintf(value, IUP_FLOAT2STR, num);
   IupStoreAttributeId(ih, name, id, value);
 }
 
 void IupSetDoubleId(Ihandle* ih, const char* name, int id, double num)
 {
   char value[80];
-  sprintf(value, "%.18g", num);  /* maximum double precision */
+  sprintf(value, IUP_DOUBLE2STR, num);
   IupStoreAttributeId(ih, name, id, value);
 }
 
@@ -502,14 +502,14 @@ void IupSetIntId2(Ihandle* ih, const char* name, int lin, int col, int num)
 void IupSetFloatId2(Ihandle* ih, const char* name, int lin, int col, float num)
 {
   char value[80];
-  sprintf(value, "%.9g", num);   /* maximum float precision */
+  sprintf(value, IUP_FLOAT2STR, num);
   IupStoreAttributeId2(ih, name, lin, col, value);
 }
 
 void IupSetDoubleId2(Ihandle* ih, const char* name, int lin, int col, double num)
 {
   char value[80];
-  sprintf(value, "%.18g", num);   /* maximum float precision */
+  sprintf(value, IUP_DOUBLE2STR, num);
   IupStoreAttributeId2(ih, name, lin, col, value);
 }
 
@@ -776,14 +776,14 @@ void IupSetInt(Ihandle* ih, const char* name, int num)
 void IupSetFloat(Ihandle* ih, const char* name, float num)
 {
   char value[80];
-  sprintf(value, "%.9g", num);  /* maximum float precision */
+  sprintf(value, IUP_FLOAT2STR, num);
   IupStoreAttribute(ih, name, value);
 }
 
 void IupSetDouble(Ihandle* ih, const char* name, double num)
 {
   char value[80];
-  sprintf(value, "%.18g", num);  /* maximum double precision */
+  sprintf(value, IUP_DOUBLE2STR, num);
   IupStoreAttribute(ih, name, value);
 }
 
@@ -941,14 +941,14 @@ void iupAttribSetInt(Ihandle *ih, const char* name, int num)
 void iupAttribSetFloat(Ihandle *ih, const char* name, float num)
 {
   char value[80];
-  sprintf(value, "%.9g", num);  /* maximum float precision */
+  sprintf(value, IUP_FLOAT2STR, num);
   iupAttribSetStr(ih, name, value);
 }
 
 void iupAttribSetDouble(Ihandle *ih, const char* name, double num)
 {
   char value[80];
-  sprintf(value, "%.18g", num);  /* maximum double precision */
+  sprintf(value, IUP_DOUBLE2STR, num);
   iupAttribSetStr(ih, name, value);
 }
 

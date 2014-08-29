@@ -42,14 +42,14 @@ int iupmaskMatSetInt(Ihandle *ih, int autofill, int min, int max, int lin, int c
 int iupmaskSetFloat(Ihandle* ih, int autofill, float min, float max)
 {
   (void)autofill;
-  IupSetfAttribute(ih,"MASKFLOAT", "%.9f:%.9f", min, max);
+  IupSetfAttribute(ih, "MASKFLOAT", IUP_FLOAT2STR":"IUP_FLOAT2STR, min, max);
   return 1;
 }
 
 int iupmaskMatSetFloat(Ihandle* ih, int autofill, float min, float max, int lin, int col)
 {
   (void)autofill;
-  IupSetfAttributeId2(ih,"MASKFLOAT", lin, col, "%.9f:%.9f", min, max);
+  IupSetfAttributeId2(ih, "MASKFLOAT", lin, col, IUP_FLOAT2STR":"IUP_FLOAT2STR, min, max);
   return 0;
 }
 
@@ -122,11 +122,10 @@ int iupmaskGetDouble(Ihandle *ih, double *dval)
   char *val = IupGetAttribute(ih,"VALUE");
   Imask* mask = (Imask*)IupGetAttribute(ih,"OLD_MASK_DATA");
 
-  if(iupMaskCheck(mask,val)==1)
+  if (iupMaskCheck(mask,val)==1)
   {
     *dval = 0.0;
-    sscanf(val,"%lf",dval);
-    return 1;
+    return iupStrToDouble(val, dval);
   }
   else
     return 0;
@@ -140,8 +139,7 @@ int iupmaskMatGetDouble(Ihandle *ih, double *dval, int lin, int col)
   if(iupMaskCheck(mask,val)==1)
   {
     *dval = 0.0;
-    sscanf(val,"%lf",dval);
-    return 1;
+    return iupStrToDouble(val, dval);
   }
   else
     return 0;
@@ -154,9 +152,8 @@ int iupmaskGetFloat(Ihandle *ih, float *fval)
 
   if(iupMaskCheck(mask,val)==1)
   {
-    *fval = 0.0F;
-    sscanf(val,"%f",fval);
-    return 1;
+    *fval = 0.0f;
+    return iupStrToFloat(val, fval);
   }
   else
     return 0;
@@ -169,9 +166,8 @@ int iupmaskMatGetFloat(Ihandle *ih, float *fval, int lin, int col)
 
   if (iupMaskCheck(mask,val)==1)
   {
-    *fval = 0.0F;
-    sscanf(val,"%f",fval);
-    return 1;
+    *fval = 0.0f;
+    return iupStrToFloat(val, fval);
   }
   else
     return 0;

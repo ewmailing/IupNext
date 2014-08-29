@@ -543,12 +543,14 @@ static int iMatrixExSetNumericAddUnitFactorAttrib(Ihandle* ih, const char* value
 {
   if (imatex_last_addquantity != -1 && imatex_last_addunit != -1)
   {
-    int quantity = imatex_last_addquantity;
-    int unit = imatex_last_addunit;
-    ImatExUnit* units = (ImatExUnit*)(imatex_quantities[quantity].units);
     double factor = 0;
-    sscanf(value, "%lf", &factor);  /* lf=double */
-    units[unit].factor = factor;
+    if (iupStrToDouble(value, &factor))
+    {
+      int quantity = imatex_last_addquantity;
+      int unit = imatex_last_addunit;
+      ImatExUnit* units = (ImatExUnit*)(imatex_quantities[quantity].units);
+      units[unit].factor = factor;
+    }
   }
 
   (void)ih;

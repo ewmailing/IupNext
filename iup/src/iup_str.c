@@ -474,14 +474,14 @@ char* iupStrReturnInt(int i)
 char* iupStrReturnFloat(float f)
 {
   char* str = iupStrGetSmallMem();  /* 80 */
-  sprintf(str, "%.9g", f);  /* maximum float precision */
+  sprintf(str, IUP_FLOAT2STR, f);
   return str;
 }
 
 char* iupStrReturnDouble(double d)
 {
   char* str = iupStrGetSmallMem();  /* 80 */
-  sprintf(str, "%.18g", d);  /* maximum double precision */
+  sprintf(str, IUP_DOUBLE2STR, d);
   return str;
 }
 

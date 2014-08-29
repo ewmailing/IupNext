@@ -18,10 +18,17 @@
 #include "iup_drvfont.h"
 
 
-#define RAD2DEG  57.296f   /* radians to degrees */
+#define RAD2DEG  57.296   /* radians to degrees */
 
 enum { IPARAM_TYPE_STR, IPARAM_TYPE_INT, IPARAM_TYPE_FLOAT, IPARAM_TYPE_DOUBLE, IPARAM_TYPE_HANDLE, IPARAM_TYPE_NONE = -1 };
 
+static void iParamSetDoublePrec(Ihandle* ih, const char* name, double num, int prec)
+{
+  char value[80];
+  if (prec <= 0) prec = 2;
+  sprintf(value, "%.*f", prec, num);
+  IupStoreAttribute(ih, name, value);
+}
 
 /*******************************************************************************************
                     Internal Callbacks
@@ -206,7 +213,10 @@ static int iParamValAction_CB(Ihandle *self)
   if (iupStrEqual(type, "INTEGER"))
     IupSetInt(text, "VALUE", (int)val);
   else
-    IupSetDouble(text, "VALUE", val);
+  {
+    int prec = IupGetInt(dlg, "PRECISION");
+    iParamSetDoublePrec(text, "VALUE", val, prec);
+  }
 
   if (IupGetInt(text, "SPIN"))
   {
@@ -399,7 +409,10 @@ static int iParamSpinReal_CB(Ihandle *self, int pos)
       return IUP_IGNORE;
   }
 
-  IupSetDouble(text, "VALUE", val);
+  {
+    int prec = IupGetInt(dlg, "PRECISION");
+    iParamSetDoublePrec(text, "VALUE", val, prec);
+  }
 
   {
     Ihandle* aux = (Ihandle*)iupAttribGet(param, "AUXCONTROL");
@@ -666,11 +679,13 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
     ctrl = IupText(NULL);
     IupSetAttribute(ctrl, "VISIBLECOLUMNS", "8");
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
-    IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
     type = iupAttribGet(param, "TYPE");
     if (iupStrEqual(type, "REAL"))
     {
+      double val = iupAttribGetDouble(param, "VALUE");
+      iParamSetDoublePrec(ctrl, "VALUE", val, 0);
+
       if (iupAttribGetInt(param, "INTERVAL"))
       {
         double min = iupAttribGetDouble(param, "MIN");
@@ -678,7 +693,7 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
         double step = iupAttribGetDouble(param, "STEP");
         double val = iupAttribGetDouble(param, "VALUE");
         if (step == 0) step = (max-min)/20.0;
-        IupSetfAttribute(ctrl, "MASKFLOAT", "%.9g:%.9g", min, max);
+        IupSetfAttribute(ctrl, "MASKFLOAT", IUP_DOUBLE2STR":"IUP_DOUBLE2STR, min, max);
                              
         /* here spin is always [0-spinmax] converted to [min-max] */
 
@@ -699,7 +714,7 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
         if (min == 0)
           IupSetAttribute(ctrl, "MASK", IUP_MASK_UFLOAT);
         else
-          IupSetfAttribute(ctrl, "MASKFLOAT", "%.9g:%.9g", min, 1.0e10);
+          IupSetfAttribute(ctrl, "MASKFLOAT", IUP_DOUBLE2STR":"IUP_DOUBLE2STR, min, 1.0e10);
         IupAppend(box, ctrl);
       }
       else
@@ -711,6 +726,8 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
     else /* INTEGER*/
     {
       int val = iupAttribGetInt(param, "VALUE");
+      IupSetInt(ctrl, "VALUE", val);
+
       IupSetAttribute(ctrl, "SPIN", "YES");   /* spin always */
       IupSetAttribute(ctrl, "SPINAUTO", "NO");  /* manually update spin so the callback can also updated it */
       IupAppend(box, ctrl);

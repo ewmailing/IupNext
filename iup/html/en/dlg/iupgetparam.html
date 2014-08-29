@@ -196,8 +196,12 @@ empty values to use the default values. No mask can be set.</p>
 <p>A integer parameter always has a spin attached to the text to increment and 
 decrement the value. A real parameter only has a spin in a full interval is 
 defined (min and max), in this case the default step is (max-min)/20. When the 
-callback is called because a spin was activated then the attribute SPINNING of 
+callback is called because a spin was activated then the attribute "SPINNING" of 
 the dialog will be defined to a non NULL and non zero value.</p>
+<p>The default precision for real value display is 2. But inside the callback 
+the application can set the dialog attribute "PRECISION" to a larger value if 
+necessary. It will work only after the value has been interactively changed. 
+(since 3.12)</p>
 <p>The function does not allocate memory space to store the text entered by the 
 user. Therefore, the string parameter must be large enough to contain the user 
 input. If you want to set a maximum size for the string you can set the MAXSTR 

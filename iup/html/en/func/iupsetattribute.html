@@ -77,7 +77,8 @@ void IupSetRGBId2   (Ihandle *<strong>ih</strong>, const char* <strong>name, </s
 <p><strong>IupSetStrf</strong>* functions (old <strong>IupSetfAttribute</strong>) 
 uses the same format specification as the 
 <b>sprintf</b> function in C. This function is very useful when several values must be combined into one 
-string. When passing float values, use the format &quot;%.9f&quot; to maximize precision.</p>
+string. When passing float values, it uses the format &quot;%.9g&quot; to maximize precision. 
+When passing double values, it uses the format "%.18g&quot; to maximize precision.</p>
 <p>All the utility functions use the <strong>IupSetStrAttribute</strong>* 
 functions internally.<br>
 </p>

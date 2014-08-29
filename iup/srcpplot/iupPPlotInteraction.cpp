@@ -332,8 +332,6 @@ bool PSelectionInteraction::Calculate (Painter &inPainter, PPlot& inPPlot) {
     long theNearestPointIndex;
     float theLocalDist = CalculateDistanceToPlot (theXData, theYData, theNearestPointIndex);
 
-//    fprintf (stderr, "dist %f\n", theLocalDist);
-
     bool theHit = theLocalDist < kHitDistance;
 
     if (!SelectNotify(-1, 0, NULL, NULL, false))

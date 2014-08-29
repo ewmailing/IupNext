@@ -169,7 +169,7 @@ static void iColorBrowserRenderImageHue(Ihandle* ih)
 
       xl = x - ih->data->xc;
       yl = y - ih->data->yc;
-      radius = sqrtf(xl*xl + yl*yl);
+      radius = sqrtf((float)xl*xl + (float)yl*yl);
 
       diff1 = radius - (ih->data->R-ICB_SPACE-ICB_HUEWIDTH);
       diff2 = (ih->data->R-ICB_SPACE) - radius;
@@ -182,7 +182,7 @@ static void iColorBrowserRenderImageHue(Ihandle* ih)
         unsigned char* g = green + offset;
         unsigned char* b = blue + offset;
 
-        h = atan2f(yl, xl);
+        h = atan2f((float)yl, (float)xl);
         h = (float)(h * CD_RAD2DEG);
         s = 1.0f;   /* maximum saturation */
         i = 0.5f;   /* choose I where S is maximum */
@@ -351,7 +351,7 @@ static void iColorBrowserSetCursorHue(Ihandle* ih, int x, int y)
 {
   int xl = x - ih->data->xc;
   int yl = y - ih->data->yc;
-  ih->data->hue = (float)(atan2f(yl, xl) * CD_RAD2DEG);
+  ih->data->hue = (float)(atan2f((float)yl, (float)xl) * CD_RAD2DEG);
   ih->data->hue = fmodf(ih->data->hue, 360.0f);
   if (ih->data->hue < 0.0f)
     ih->data->hue += 360.0f;
@@ -363,7 +363,7 @@ static int iColorBrowserCheckInside(Ihandle* ih, int x, int y)
 {
   int xl = x - ih->data->xc;
   int yl = y - ih->data->yc;
-  float radius = sqrtf(xl*xl + yl*yl);
+  float radius = sqrtf((float)xl*xl + (float)yl*yl);
 
   if (radius < ih->data->R-ICB_SPACE-ICB_HUEWIDTH-ICB_SPACE)
     return ICB_INSIDE_SI;
@@ -662,7 +662,7 @@ static int iColorBrowserKeypress_CB(Ihandle* ih, int c, int press)
 
 static char* iColorBrowserGetHSIAttrib(Ihandle* ih)
 {
-  return iupStrReturnStrf("%.9g %.9g %.9g", ih->data->hue, ih->data->saturation, ih->data->intensity);
+  return iupStrReturnStrf(IUP_FLOAT2STR" "IUP_FLOAT2STR" "IUP_FLOAT2STR, ih->data->hue, ih->data->saturation, ih->data->intensity);
 }
 
 static int iColorBrowserSetHSIAttrib(Ihandle* ih, const char* value)
