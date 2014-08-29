@@ -926,15 +926,18 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       high_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEHIGH");
       if (winTabsIsInsideCloseButton(ih, p))
       {
-        if (p != high_p)
+        if (high_p != p)
         {
+          /* must be called so WM_MOUSELEAVE can also be called */
+          iupwinTrackMouseLeave(ih);
+
           iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", p);
           iupdrvRedrawNow(ih);
         }
       }
       else
       {
-        if (-1 != high_p)
+        if (high_p != -1)
         {
           iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", -1);
           iupdrvRedrawNow(ih);

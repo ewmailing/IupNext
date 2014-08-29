@@ -140,18 +140,13 @@ void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
   *y = p.y;
 }
 
-static void winTrackMouse(HWND hwnd, int enter)
+void iupwinTrackMouseLeave(Ihandle* ih)
 {
   TRACKMOUSEEVENT mouse;
   mouse.cbSize = sizeof(TRACKMOUSEEVENT);
-
-  if (enter)
-    mouse.dwFlags = TME_HOVER;
-  else
-    mouse.dwFlags = TME_LEAVE;
-
-  mouse.hwndTrack = hwnd;
-  mouse.dwHoverTime = 1;
+  mouse.dwFlags = TME_LEAVE;
+  mouse.hwndTrack = ih->handle;
+  mouse.dwHoverTime = HOVER_DEFAULT;  /* unused */
   TrackMouseEvent(&mouse);
 }
 
@@ -165,10 +160,11 @@ static void winCallEnterLeaveWindow(Ihandle *ih, int enter)
 
   if (enter)
   {
-    winTrackMouse(ih->handle, 0);
-
     if (!iupAttribGetInt(ih, "_IUPWIN_ENTERWIN"))
     {
+      /* must be called so WM_MOUSELEAVE can also be called */
+      iupwinTrackMouseLeave(ih);
+
       iupAttribSet(ih, "_IUPWIN_ENTERWIN", "1");
 
       if (enter_cb)

@@ -529,7 +529,11 @@ static int winToggleImageFlatMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp
   case WM_MOUSEMOVE:
     if (!iupAttribGet(ih, "_IUPWINTOG_ENTERWIN"))
     {
+      /* must be called so WM_MOUSELEAVE can also be called */
+      iupwinTrackMouseLeave(ih);
+
       iupAttribSet(ih, "_IUPWINTOG_ENTERWIN", "1");
+
       iupdrvRedrawNow(ih);
     }
     break;

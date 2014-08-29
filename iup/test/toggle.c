@@ -241,18 +241,20 @@ void ToggleTest(void)
   IupSetAttribute(toggle1, "IMAGE",   "image1");            
   IupSetAttribute(toggle1, "IMPRESS", "image1p");
   IupSetAttribute(toggle1, "IMINACTIVE", "image1i");
-//  IupSetAttribute(toggle1, "PADDING",   "10x10");            
+  IupSetAttribute(toggle1, "NAME", "1");
+  //  IupSetAttribute(toggle1, "FLAT", "Yes");
+  //  IupSetAttribute(toggle1, "PADDING",   "10x10");            
 //  IupSetAttribute(toggle1, "RASTERSIZE",   "160x160");
-//  IupSetAttribute(toggle2, "RASTERSIZE",   "60x60");            
-//  IupSetAttribute(toggle1, "ALIGNMENT",   "ARIGHT");
+  //  IupSetAttribute(toggle1, "CANFOCUS", "NO");
+  //  IupSetAttribute(toggle1, "ALIGNMENT",   "ARIGHT");
+
+  //  IupSetAttribute(toggle2, "RASTERSIZE",   "60x60");            
 //  IupSetAttribute(toggle2, "ALIGNMENT",  "ARIGHT");            
   IupSetAttribute(toggle2, "IMAGE",   "image2");
-  IupSetAttribute(toggle1, "NAME", "1");
   IupSetAttribute(toggle2, "NAME", "2");
-//  IupSetAttribute(toggle1, "FLAT", "Yes");
   IupSetAttribute(toggle2, "FLAT", "Yes");
-//  IupSetAttribute(toggle1, "CANFOCUS", "NO");
-  IupSetAttribute(toggle2, "CANFOCUS", "NO");
+//  IupSetAttribute(toggle2, "CANFOCUS", "NO");
+
 //  IupSetAttribute(toggle3, "CANFOCUS", "NO");
   IupSetAttribute(toggle3, "NAME", "3");
   IupSetAttribute(toggle4, "NAME", "4");

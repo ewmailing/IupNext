@@ -618,7 +618,11 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     {
       if (!iupAttribGet(ih, "_IUPWINBUT_ENTERWIN"))
       {
+        /* must be called so WM_MOUSELEAVE can also be called */
+        iupwinTrackMouseLeave(ih);
+
         iupAttribSet(ih, "_IUPWINBUT_ENTERWIN", "1");
+
         iupdrvRedrawNow(ih);
       }
     }
