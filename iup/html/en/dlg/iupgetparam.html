@@ -128,11 +128,11 @@ i</strong> = integer (shows a integer number filtered text
         box, use &quot;int&quot; in C)<strong><br>
 r</strong> 
         = real (shows a real number filtered text box, use &quot;float&quot; in C)<strong><br>
-R</strong> = same as<strong> r</strong> but using "double" in C (since 3.12)<strong><br>
+R</strong> = same as<strong> r</strong> but using "double" in C (since 3.11.1)<strong><br>
 a</strong> = angle in degrees (shows 
         a real number filtered text box and a dial [if <strong>IupControlsOpen</strong> is 
 called], use &quot;float&quot; in C)<br><strong>A</strong> = same as<strong> a</strong> 
-but using "double" in C (since 3.12)<strong><br>
+but using "double" in C (since 3.11.1)<strong><br>
 s</strong> 
         = string (shows a text box, use &quot;char*&quot; in C, it must have 
         room enough for your string)<br>
@@ -201,7 +201,7 @@ the dialog will be defined to a non NULL and non zero value.</p>
 <p>The default precision for real value display is 2. But inside the callback 
 the application can set the dialog attribute "PRECISION" to a larger value if 
 necessary. It will work only after the value has been interactively changed. 
-(since 3.12)</p>
+(since 3.11.1)</p>
 <p>The function does not allocate memory space to store the text entered by the 
 user. Therefore, the string parameter must be large enough to contain the user 
 input. If you want to set a maximum size for the string you can set the MAXSTR 
