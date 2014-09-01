@@ -6,17 +6,17 @@ Copy_SOs()
   LUA_SFX=$2
   EXT=$3
   
-#  BASE_TEC=../..
-#  BASE_EXTRA=../..
-  BASE_TEC=~tecgraf/lib
-  BASE_EXTRA=~scuri/tecgraf
+  BASE_TEC=../..
+  BASE_EXTRA=../..
+#  BASE_TEC=~tecgraf/lib
+#  BASE_EXTRA=~scuri/tecgraf
   
   echo $PLAT/Lua$LUA_SFX
   mkdir -p ../bin/$PLAT/Lua$LUA_SFX
   cp -f ../lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/cd/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/im/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_TEC/lua$LUA_SFX/bin/$PLAT/lua* ../bin/$SYS/Lua$LUA_SFX
+  cp -f $BASE_TEC/lua$LUA_SFX/bin/$PLAT/lua$LUA_SFX ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_EXTRA/luagl/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_EXTRA/lfs/lib$LUA_SFX/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   
@@ -34,9 +34,9 @@ Copy_SOs()
   mv -f ../bin/$PLAT/iuplua$LUA_SFX ../bin/$PLAT/Lua$LUA_SFX/iuplua$LUA_SFX
 }
 
-# SunOS511x86 MacOS107
+# Linux26g4_64co SunOS511x86 MacOS107
 
-for plat in Linux26g4 Linux26g4_64 Linux26g4_64co Linux32 Linux32_64 Linux35_64 Linux313_64
+for plat in Linux26g4 Linux26g4_64 Linux32 Linux32_64 Linux35_64 Linux313_64
 do
   Copy_SOs $plat 5.1 so
   Copy_SOs $plat 52 so
