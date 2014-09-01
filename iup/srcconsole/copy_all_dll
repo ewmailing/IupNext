@@ -13,6 +13,8 @@ Copy_DLLs()
   
   BASE_TEC=../..
   BASE_EXTRA=../..
+#  BASE_TEC=~tecgraf/lib
+#  BASE_EXTRA=~scuri/tecgraf
   
   echo $PLAT/$SYS/Lua$LUA_SFX
   mkdir -p ../bin/$SYS/Lua$LUA_SFX
@@ -52,5 +54,5 @@ Copy_DLLs dll10 Win64 5.1
 Copy_DLLs dll10 Win32 52
 Copy_DLLs dll10 Win64 52
 
-Copy_DLLs cygw17 cygw17 5.1
-Copy_DLLs cygw17 cygw17 52
+#Copy_DLLs cygw17 cygw17 5.1
+#Copy_DLLs cygw17 cygw17 52
