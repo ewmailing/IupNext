@@ -23,3 +23,4 @@ IupMglPlotDrawMark
 IupMglPlotDrawLine
 IupMglPlotDrawText
 IupMglPlotPaintTo
+IupMglLabel
