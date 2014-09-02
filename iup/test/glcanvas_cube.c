@@ -13,6 +13,7 @@
 #include "iupgl.h"
 #include "iupglcontrols.h"
 #include "iupcontrols.h"
+#include "iupim.h"
 
 
 static unsigned char img_close[16 * 16] =
@@ -371,7 +372,7 @@ void GLCanvasCubeTest(void)
     *pbar1, *pbar2, *glink, *gval1, *gval2, *gframe1, *gframe2,
     *gexp1, *gexp2, *image_open, *image_close, *image_high,
     *gframe3, *vbox2, *gtoggle3, *gtoggle4, *gtoggle5, *gsbox,
-    *text, *vbox3, *matrix;
+    *text, *vbox3, *matrix, *image_val;
 
   IupGLCanvasOpen();
   IupGLControlsOpen();
@@ -422,12 +423,15 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(pbar1, "VALUE", "0.3");
   IupSetAttribute(pbar1, "SHOW_TEXT", "Yes");
 
+  image_val = IupLoadImage("../test/slider_handler.png");
+
   gval1 = IupGLVal();
   IupSetAttribute(gval1, "VALUE", "0.3");
   IupSetCallback(gval1, "VALUECHANGED_CB", val_action_cb);
   IupSetAttribute(gval1, "PROGRESSBAR", (char*)pbar1);
   IupSetAttribute(gval1, "NAME", "val1");
   IupSetAttribute(gval1, "TIP", "Val Tip");
+  IupSetAttributeHandle(gval1, "IMAGE", image_val);
 
   hbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar1, gval1, NULL);
   IupSetAttribute(hbox, "ALIGNMENT", "ACENTER");

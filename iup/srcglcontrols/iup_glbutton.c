@@ -36,6 +36,7 @@ void iupGLButtonDraw(Ihandle* ih)
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+  char* bgimage = iupAttribGetStr(ih, "BACKIMAGE");
   int border_width = (int)ceil(bwidth);
   int draw_border = 0;
 
@@ -62,8 +63,14 @@ void iupGLButtonDraw(Ihandle* ih)
   }
 
   /* draw background */
-  iupGLDrawBox(ih, border_width, ih->currentwidth - 1 - border_width,
-                   border_width, ih->currentheight - 1 - border_width, bgcolor, 1);
+  if (bgimage)
+    iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,
+                              border_width, ih->currentheight - 1 - border_width, 
+                              bgimage, bgcolor, active);
+  else
+    iupGLDrawBox(ih, border_width, ih->currentwidth - 1 - border_width,
+                     border_width, ih->currentheight - 1 - border_width, 
+                     bgcolor, 1);  /* always active */
 
   iupGLIconDraw(ih, border_width, border_width,
                     ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
@@ -148,6 +155,11 @@ Iclass* iupGLButtonNewClass(void)
 
   /* disable VALUE inheritance */
   iupClassRegisterAttribute(ic, "VALUE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   return ic;
 }

@@ -122,12 +122,12 @@ static unsigned char* iGLImageCreateImage(Ihandle* ih, int make_inactive)
 
 unsigned char* iupGLImageGetData(Ihandle* ih, int active)
 {
-  char cache_name[100] = "_IUPIMAGE_IMAGE";
   void* data;
-  int make_inactive = !active && iupAttribGetInt(ih, "MAKEINACTIVE");
 
+  const char *cache_name = "_IUPIMAGE_IMAGE";
+  int make_inactive = !active && iupAttribGetInt(ih, "MAKEINACTIVE");
   if (make_inactive)
-    strcat(cache_name, "_INACTIVE");
+    cache_name = "_IUPIMAGE_IMAGE_INACTIVE";
 
   /* Check for an already created native image */
   data = (void*)iupAttribGet(ih, cache_name);
