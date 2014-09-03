@@ -384,7 +384,7 @@ void GLCanvasCubeTest(void)
   IupSetAttributeHandle(glabel, "IMAGE", load_image_Tecgraf());
 
   gbutton1 = IupGLButton("Button");
-  IupSetAttribute(gbutton1, "PADDING", "5x10");
+  IupSetAttribute(gbutton1, "PADDING", "5x5");
   //IupSetAttribute(gbutton1, "BGCOLOR", "245 0 245 92");
   IupSetCallback(gbutton1, "ACTION", button_action_cb);
   IupSetAttribute(gbutton1, "NAME", "button1");
