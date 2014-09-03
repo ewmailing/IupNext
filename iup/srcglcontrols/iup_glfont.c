@@ -584,7 +584,7 @@ static int iGLFontGetFontAveWidth(FTGLfont* font)
     iGLFontConvertToUTF8(sample, 256 - 32);
     if (utf8mode) IupSetGlobal("UTF8MODE", "Yes");
 
-    i = strlen(utf8_buffer);
+    i = (int)strlen(utf8_buffer);
     memcpy(sample, utf8_buffer, i + 1);
     first = 0;
   }

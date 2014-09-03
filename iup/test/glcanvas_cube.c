@@ -384,12 +384,24 @@ void GLCanvasCubeTest(void)
   IupSetAttributeHandle(glabel, "IMAGE", load_image_Tecgraf());
 
   gbutton1 = IupGLButton("Button");
-  IupSetAttribute(gbutton1, "PADDING", "5x5");
+  IupSetAttribute(gbutton1, "PADDING", "5x10");
   //IupSetAttribute(gbutton1, "BGCOLOR", "245 0 245 92");
   IupSetCallback(gbutton1, "ACTION", button_action_cb);
   IupSetAttribute(gbutton1, "NAME", "button1");
   IupSetAttribute(gbutton1, "TIP", "Button Tip");
-//  IupSetAttribute(gbutton1, "RASTERSIZE", "x100");
+  //  IupSetAttribute(gbutton1, "RASTERSIZE", "x100");
+
+  if (0)
+  {
+    Ihandle* pressed_back = IupLoadImage("../test/pressed_back.png");
+    Ihandle* enabled_back = IupLoadImage("../test/enabled_back.png");
+    Ihandle* highlighted_back = IupLoadImage("../test/highlighted_back.png");
+
+    IupSetAttributeHandle(gbutton1, "BACKIMAGE", enabled_back);
+    IupSetAttributeHandle(gbutton1, "BACKIMAGEPRESS", pressed_back);
+    IupSetAttributeHandle(gbutton1, "BACKIMAGEHIGHLIGHT", highlighted_back);
+    IupSetAttribute(gbutton1, "BORDERCOLOR", "0 0 0 0");
+  }
 
   gbutton2 = IupGLButton(NULL);
   IupSetAttribute(gbutton2, "PADDING", "5x5");

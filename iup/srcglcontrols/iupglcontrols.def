@@ -26,6 +26,7 @@ EXPORTS
   iupGLDrawArrow
   iupGLDrawSmallCircle
   iupGLDrawSmallDisc
+  iupGLDrawImageTexture
 
   iupGLFontGetStringWidth
   iupGLFontGetMultiLineStringSize
@@ -51,3 +52,5 @@ EXPORTS
   iupGLScrollbarsChildLayoutUpdate
 
   iupGLSubCanvasRedraw
+  iupGLSubCanvasStartMoving
+  iupGLSubCanvasMove

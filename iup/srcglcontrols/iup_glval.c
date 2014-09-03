@@ -116,7 +116,7 @@ static int iGLValACTION_CB(Ihandle* ih)
     x = (x2 - x1 + 1 - width) / 2;
     y = (y2 - y1 + 1 - height) / 2;
 
-    iupGLDrawImage(ih, x1 + x, y1 + y, image, active);
+    iupGLDrawImage(ih, x1 + x, y1 + y, "IMAGE", image, active);
   }
   else
   {

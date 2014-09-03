@@ -39,11 +39,11 @@ void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float linewidth,
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
-  if (linewidth == 0)
+  if (!color || linewidth == 0)
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-  if (color && !active)
+  if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
 
   glColor4ub(r, g, b, a);
@@ -65,14 +65,14 @@ void iupGLDrawFrameRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, flo
   unsigned char r = 0, g = 0, b = 0, a = 255;
   int d = 2;
 
-  if (linewidth == 0 || xmin == xmax || ymin == ymax)
+  if (!color || linewidth == 0 || xmin == xmax || ymin == ymax)
     return;
 
   if (xmin > xmax) { int _t = xmin; xmin = xmax; xmax = _t; }
   if (ymin > ymax) { int _t = ymin; ymin = ymax; ymax = _t; }
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-  if (color && !active)
+  if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
 
   glColor4ub(r, g, b, a);
@@ -111,14 +111,14 @@ void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float li
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
-  if (linewidth == 0 || xmin == xmax || ymin == ymax)
+  if (!color || linewidth == 0 || xmin == xmax || ymin == ymax)
     return;
 
   if (xmin > xmax) { int _t = xmin; xmin = xmax; xmax = _t; }
   if (ymin > ymax) { int _t = ymin; ymin = ymax; ymax = _t; }
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-  if (color && !active)
+  if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
 
   glColor4ub(r, g, b, a);
@@ -186,11 +186,11 @@ void iupGLDrawSmallCircle(Ihandle* ih, int cx, int cy, int rd, float linewidth, 
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
-  if (linewidth == 0 || rd == 0)
+  if (!color || linewidth == 0 || rd == 0)
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-  if (color && !active)
+  if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
 
   glColor4ub(r, g, b, a);
@@ -211,11 +211,11 @@ void iupGLDrawSmallDisc(Ihandle* ih, int cx, int cy, int rd, const char* color, 
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
-  if (rd == 0)
+  if (!color || rd == 0)
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-  if (color && !active)
+  if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
 
   glColor4ub(r, g, b, a);
@@ -238,7 +238,7 @@ void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const cha
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-  if (color && !active)
+  if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
 
   glColor4ub(r, g, b, a);
@@ -259,7 +259,7 @@ void iupGLDrawPolygon(Ihandle* ih, const int* points, int count, const char* col
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-  if (color && !active)
+  if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
 
   glColor4ub(r, g, b, a);
@@ -289,7 +289,7 @@ void iupGLDrawPolyline(Ihandle* ih, const int* points, int count, float linewidt
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-  if (color && !active)
+  if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
 
   glColor4ub(r, g, b, a);
@@ -319,11 +319,11 @@ void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
-  if (!str)
+  if (!color || !str)
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
-  if (color && !active)
+  if (!active)
     iupGLColorMakeInactive(&r, &g, &b);
 
   glColor4ub(r, g, b, a);
@@ -376,9 +376,9 @@ void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color
   }
 }
 
-void iupGLDrawImage(Ihandle* ih, int x, int y, const char* name, int active)
+void iupGLDrawImage(Ihandle* ih, int x, int y, const char* baseattrib, const char* imagename, int active)
 {
-  Ihandle* image = iupGLIconGetImageHandle(ih, name, active);
+  Ihandle* image = iupGLIconGetImageHandle(ih, baseattrib, imagename, active);
   if (image)
   {
     unsigned char* gldata = iupGLImageGetData(image, active);
@@ -456,6 +456,17 @@ static int isPowerOfTwo(unsigned int x)
   return (x == 1);
 }
 
+static int iGLIsOpenGL2orMore(void)
+{
+  const char* glversion = (const char*)glGetString(GL_VERSION);
+  int major = 1, minor = 0;
+  iupStrToIntInt(glversion, &major, &minor, '.');
+  if (major > 1)
+    return 1;
+  else
+    return 0;
+}
+
 static int iGLDestroyTexture_CB(Ihandle* image)
 {
   GLuint texture = (GLuint)iupAttribGetInt(image, "GL_TEXTURE");
@@ -469,9 +480,9 @@ static int iGLDestroyTexture_CB(Ihandle* image)
   return IUP_DEFAULT;
 }
 
-static GLuint iGLDrawGenTexture(Ihandle* ih, const char* name, int active)
+static GLuint iGLDrawGenTexture(Ihandle* ih, const char* baseattrib, const char* imagename, int active)
 {
-  Ihandle* image = iupGLIconGetImageHandle(ih, name, active);
+  Ihandle* image = iupGLIconGetImageHandle(ih, baseattrib, imagename, active);
   if (image)
   {
     GLuint texture;
@@ -484,7 +495,7 @@ static GLuint iGLDrawGenTexture(Ihandle* ih, const char* name, int active)
     if (texture)
       return texture;
 
-    if (isPowerOfTwo(image->currentwidth) && isPowerOfTwo(image->currentheight))
+    if (iGLIsOpenGL2orMore() || (isPowerOfTwo(image->currentwidth) && isPowerOfTwo(image->currentheight)))
     {
       unsigned char* gldata = iupGLImageGetData(image, 1);
       int depth = iupAttribGetInt(image, "GL_DEPTH");
@@ -496,10 +507,9 @@ static GLuint iGLDrawGenTexture(Ihandle* ih, const char* name, int active)
 
       glBindTexture(GL_TEXTURE_2D, texture);
 
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-      /* width and height must be 2^n */
       glTexImage2D(GL_TEXTURE_2D, 0, format, image->currentwidth, image->currentheight, 0, format, GL_UNSIGNED_BYTE, gldata);
 
       iupAttribSetInt(image, texture_name, (int)texture);
@@ -512,12 +522,12 @@ static GLuint iGLDrawGenTexture(Ihandle* ih, const char* name, int active)
   return 0;
 }
 
-void iupGLDrawImageTexture(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, const char* name, const char* color, int active)
+void iupGLDrawImageTexture(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, const char* baseattrib, const char* imagename, const char* color, int active)
 {
   GLuint texture;
   unsigned char r = 0, g = 0, b = 0, a = 255;
 
-  if (!color || xmin == xmax || ymin == ymax)
+  if (xmin == xmax || ymin == ymax)
     return;
 
   iupStrToRGBA(color, &r, &g, &b, &a);
@@ -528,7 +538,7 @@ void iupGLDrawImageTexture(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, 
   ymin = ih->currentheight - 1 - ymin;
   ymax = ih->currentheight - 1 - ymax;
 
-  texture = iGLDrawGenTexture(ih, name, active);
+  texture = iGLDrawGenTexture(ih, baseattrib, imagename, active);
   if (texture)
   {
     glEnable(GL_TEXTURE_2D);

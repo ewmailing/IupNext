@@ -26,42 +26,45 @@
 enum{ IUP_GLPOS_LEFT, IUP_GLPOS_RIGHT, IUP_GLPOS_TOP, IUP_GLPOS_BOTTOM };
 
 
-static char* iGLIconGetImageName(Ihandle* ih, const char* name, const char* state)
+static char* iGLIconGetImageName(Ihandle* ih, const char* baseattrib, const char* state)
 {
   char attrib[1024];
-  strcpy(attrib, name);
+  strcpy(attrib, baseattrib);
   strcat(attrib, state);
   return iupAttribGet(ih, attrib);
 }
 
-Ihandle* iupGLIconGetImageHandle(Ihandle* ih, const char* name, int active)
+Ihandle* iupGLIconGetImageHandle(Ihandle* ih, const char* baseattrib, const char* imagename, int active)
 {
   Ihandle* image = NULL;
   int make_inactive = 0;
 
   iupAttribSet(ih, "MAKEINACTIVE", NULL);
 
-  if (active)
+  if (baseattrib)
   {
-    int pressed = iupAttribGetInt(ih, "PRESSED");
-    if (pressed)
-      image = IupGetHandle(iGLIconGetImageName(ih, name, "PRESS"));
+    if (active)
+    {
+      int pressed = iupAttribGetInt(ih, "PRESSED");
+      if (pressed)
+        image = IupGetHandle(iGLIconGetImageName(ih, baseattrib, "PRESS"));
+      else
+      {
+        int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
+        if (highlight)
+          image = IupGetHandle(iGLIconGetImageName(ih, baseattrib, "HIGHLIGHT"));
+      }
+    }
     else
     {
-      int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
-      if (highlight)
-        image = IupGetHandle(iGLIconGetImageName(ih, name, "HIGHLIGHT"));
+      image = IupGetHandle(iGLIconGetImageName(ih, baseattrib, "INACTIVE"));
+      if (!image)
+        make_inactive = 1;
     }
-  }
-  else
-  {
-    image = IupGetHandle(iGLIconGetImageName(ih, name, "INACTIVE"));
-    if (!image)
-      make_inactive = 1;
   }
 
   if (!image)
-    image = IupGetHandle(name);
+    image = IupGetHandle(imagename);
 
   if (image && make_inactive)
     iupAttribSet(image, "MAKEINACTIVE", "1");
@@ -203,11 +206,11 @@ static void iGLIconGetImageTextPosition(int x, int y, int img_position, int spac
 }
 
 void iupGLIconDraw(Ihandle* ih, int icon_x, int icon_y, int icon_width, int icon_height,
-                   const char *image, const char* title, const char* fgcolor, int active)
+                   const char *baseattrib, const char* imagename, const char* title, const char* fgcolor, int active)
 {
   int x, y, width, height;
 
-  if (image)
+  if (imagename)
   {
     if (title)
     {
@@ -218,7 +221,7 @@ void iupGLIconDraw(Ihandle* ih, int icon_x, int icon_y, int icon_width, int icon
       int img_width, img_height;
 
       iupGLFontGetMultiLineStringSize(ih, title, &txt_width, &txt_height);
-      iupGLImageGetInfo(image, &img_width, &img_height, NULL);
+      iupGLImageGetInfo(imagename, &img_width, &img_height, NULL);
 
       if (img_position == IUP_GLPOS_RIGHT ||
           img_position == IUP_GLPOS_LEFT)
@@ -238,16 +241,16 @@ void iupGLIconDraw(Ihandle* ih, int icon_x, int icon_y, int icon_width, int icon
                                   img_width, img_height, txt_width, txt_height,
                                   &img_x, &img_y, &txt_x, &txt_y);
 
-      iupGLDrawImage(ih, img_x + icon_x, img_y + icon_y, image, active);
+      iupGLDrawImage(ih, img_x + icon_x, img_y + icon_y, baseattrib, imagename, active);
       iupGLDrawText(ih, txt_x + icon_x, txt_y + icon_y, title, fgcolor, active);
     }
     else
     {
-      iupGLImageGetInfo(image, &width, &height, NULL);
+      iupGLImageGetInfo(imagename, &width, &height, NULL);
 
       iGLIconGetPosition(ih, icon_width, icon_height, &x, &y, width, height);
 
-      iupGLDrawImage(ih, x + icon_x, y + icon_y, image, active);
+      iupGLDrawImage(ih, x + icon_x, y + icon_y, baseattrib, imagename, active);
     }
   }
   else if (title)
@@ -260,14 +263,14 @@ void iupGLIconDraw(Ihandle* ih, int icon_x, int icon_y, int icon_width, int icon
   }
 }
 
-void iupGLIconGetSize(Ihandle* ih, const char* image, const char* title, int *w, int *h)
+void iupGLIconGetSize(Ihandle* ih, const char* imagename, const char* title, int *w, int *h)
 {
   *w = 0, 
   *h = 0;
 
-  if (image)
+  if (imagename)
   {
-    iupGLImageGetInfo(image, w, h, NULL);
+    iupGLImageGetInfo(imagename, w, h, NULL);
 
     if (title)
     {

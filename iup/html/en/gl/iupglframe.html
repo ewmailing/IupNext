@@ -64,15 +64,17 @@ from the current alignment. </p>
 not defined. Can have an alpha component. Default: NULL. Used instead of BGCOLOR 
   to avoid inheritance problems.</p>
 <p><strong>BACKIMAGE</strong> (<font SIZE="3">non inheritable</font>): image 
-name to be used as a texture background when TITLE and IMAGE are not defined. BACKCOLOR 
+name to be used as a texture background when TITLE and IMAGE are not defined. 
+The image width and height MUST be a power of two if OpenGL version is 1.x, 
+modern OpenGL does not have this limitation. BACKCOLOR 
 will be combined with the texture colors. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
 (Since 3.11.1)</p>
   <p><strong>BACKIMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
-  Background image name of the element when inactive. If it is not defined then the 
+  texture background image name of the element when inactive. If it is not defined then the 
   BACKIMAGE 
-  is used and the colors will be replaced by a modified version creating the 
+  is used and its colors will be replaced by a modified version creating the 
   disabled effect. (since 3.12)</p>
 
   
@@ -96,15 +98,17 @@ avoid inheritance problems.</p>
 	associate an image to a name. See also
 	<a href="iupimage.html">IupImage</a>.</p>
 <p><strong>IMAGEHIGHLIGHT</strong> (<font SIZE="3">non inheritable</font>): 
-Image name of the element in highlight state. </p>
+Image name of the element in highlight state. If it is not defined then the 
+IMAGE is used.</p>
   <p><strong>IMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
   Image name of the element when inactive. If it is not defined then the IMAGE 
-  is used and the colors will be replaced by a modified version creating the 
+  is used and its colors will be replaced by a modified version creating the 
   disabled effect. </p>
 
   
 <p><strong>IMAGEPRESS </strong>(<font size="3">non inheritable</font>): Image 
-name of the element in pressed state. </p>
+name of the element in pressed state. If it is not defined then the IMAGE is 
+used.</p>
 
 <p><strong>IMAGEPOSITION </strong>(<font size="3">non inheritable</font>): 
 Position of the image relative to the text when both are defined. Can be: LEFT, 
@@ -128,15 +132,17 @@ image and the title. Default: &quot;2&quot;.</p>
   <p><a href="../attrib/iup_title.html">TITLE</a> (<font SIZE="3">non inheritable</font>): 
   Text the user will see at the top of the frame.&nbsp;</p>
 <p><strong>TITLEBACKIMAGE</strong> (<font SIZE="3">non inheritable</font>): 
-image name to be used as a texture background on the title area. Works only when 
+image name to be used as a texture background on the title area. The image width 
+and height MUST be a power of two if OpenGL version is 1.x, modern OpenGL does 
+not have this limitation.&nbsp; Works only when 
 TITLEBOX=Yes. FRAMECOLOR will be combined with the texture colors. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
 (Since 3.11.1)</p>
   <p><strong>TITLEBACKIMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
-  Background image name of the element when inactive. If it is not defined then the 
+  Texture background image name of the element when inactive. If it is not defined then the 
   TITLEBACKIMAGE 
-  is used and the colors will be replaced by a modified version creating the 
+  is used and its colors will be replaced by a modified version creating the 
   disabled effect.&nbsp; (Since 3.12) </p>
 
   

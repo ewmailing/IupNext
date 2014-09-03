@@ -66,7 +66,7 @@ void iupGLButtonDraw(Ihandle* ih)
   if (bgimage)
     iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,
                               border_width, ih->currentheight - 1 - border_width, 
-                              bgimage, bgcolor, active);
+                              "BACKIMAGE", bgimage, bgcolor, active);
   else
     iupGLDrawBox(ih, border_width, ih->currentwidth - 1 - border_width,
                      border_width, ih->currentheight - 1 - border_width, 
@@ -74,7 +74,7 @@ void iupGLButtonDraw(Ihandle* ih)
 
   iupGLIconDraw(ih, border_width, border_width,
                     ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
-                    image, title, fgcolor, active);
+                    "IMAGE", image, title, fgcolor, active);
 }
 
 static int iGLButtonACTION(Ihandle* ih)

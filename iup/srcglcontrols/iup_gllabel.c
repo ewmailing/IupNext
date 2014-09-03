@@ -28,7 +28,7 @@ static int iGLLabelACTION(Ihandle* ih)
   int active = iupAttribGetInt(ih, "ACTIVE");
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
 
-  iupGLIconDraw(ih, 0, 0, ih->currentwidth, ih->currentheight, image, title, fgcolor, active);
+  iupGLIconDraw(ih, 0, 0, ih->currentwidth, ih->currentheight, "IMAGE", image, title, fgcolor, active);
 
   return IUP_DEFAULT;
 }

@@ -27,7 +27,7 @@ static int iGLLinkACTION(Ihandle* ih)
   int active = iupAttribGetInt(ih, "ACTIVE");
   char* fgcolor = IupGetAttribute(ih, "FGCOLOR");
 
-  iupGLIconDraw(ih, 0, 0, ih->currentwidth, ih->currentheight, NULL, title, fgcolor, active);
+  iupGLIconDraw(ih, 0, 0, ih->currentwidth, ih->currentheight, NULL, NULL, title, fgcolor, active);
 
   return IUP_DEFAULT;
 }

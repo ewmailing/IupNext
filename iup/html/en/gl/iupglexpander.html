@@ -121,15 +121,17 @@ dialog so the child can be recomposed.</p>
 shown in the title bar near the expand or collapse symbol. Shown only when 
 BARPOSITION=TOP.</p>
 <p><strong>TITLEBACKIMAGE</strong> (<font SIZE="3">non inheritable</font>): 
-image name to be used as a texture background on the title area. BACKCOLOR will 
+image name to be used as a texture background on the title area. The image width 
+and height MUST be a power of two if OpenGL version is 1.x, modern OpenGL does 
+not have this limitation.&nbsp; BACKCOLOR will 
 be combined with the texture colors. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
 (Since 3.11.1)</p>
   <p><strong>TITLEBACKIMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
-  Background image name of the element when inactive. If it is not defined then the 
+  texture background image name of the element when inactive. If it is not defined then the 
   TITLEBACKIMAGE 
-  is used and the colors will be replaced by a modified version creating the 
+  is used and its colors will be replaced by a modified version creating the 
   disabled effect.&nbsp; (Since 3.12) </p>
 
   

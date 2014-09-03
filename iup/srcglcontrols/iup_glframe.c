@@ -53,7 +53,7 @@ static int iGLFrameACTION(Ihandle* ih)
       if (bgimage)
         iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,
                                   border_width, border_width + h - 1, 
-                                  bgimage, bordercolor, active);
+                                  "TITLEBACKIMAGE", bgimage, bordercolor, active);
       else
         iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
                          border_width, border_width + h - 1, 
@@ -65,7 +65,7 @@ static int iGLFrameACTION(Ihandle* ih)
       iupGLDrawFrameRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bordercolor, 1, off, w, h);
     }
 
-    iupGLIconDraw(ih, off, 0, w, h, image, title, fgcolor, active);
+    iupGLIconDraw(ih, off, 0, w, h, "IMAGE", image, title, fgcolor, active);
   }
   else
   {
@@ -76,7 +76,7 @@ static int iGLFrameACTION(Ihandle* ih)
     if (bgimage)
       iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,
                                 border_width, ih->currentheight - 1 - border_width, 
-                                bgimage, bgcolor, active);
+                                "BACKIMAGE", bgimage, bgcolor, active);
     else
       iupGLDrawBox(ih, border_width, ih->currentwidth - 1 - border_width,
                        border_width, ih->currentheight - 1 - border_width, 

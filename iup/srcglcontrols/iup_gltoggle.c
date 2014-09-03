@@ -105,7 +105,7 @@ static void iGLToggleCheckDraw(Ihandle* ih)
 
   iupGLIconDraw(ih, x2, 0,
                     ih->currentwidth - check_width - spacing, ih->currentheight,
-                    image, title, fgcolor, active);
+                    "IMAGE", image, title, fgcolor, active);
 }
 
 static int iGLToggleACTION(Ihandle* ih)
