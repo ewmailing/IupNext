@@ -41,7 +41,6 @@ end
 function replace_navigation(body_data)
   local navigation = "(<div id=\"navigation\">.*</div>)"
   body_data, c = string.gsub(body_data, navigation, "")
-print(c)  
   return body_data
 end
 
