@@ -120,7 +120,7 @@ static char* iMatrixGetNumericFormatPrecisionAttrib(Ihandle* ih, int col)
   int precision;
   char* value = iupAttribGetId(ih, "NUMERICFORMAT", col);
   if (!value)
-    value = iupAttribGetStr(ih, "NUMERICFORMATDEF");
+    value = iupMatrixGetNumericFormatDef(ih);
 
   if (!value)
     return NULL;
@@ -373,7 +373,7 @@ void iupMatrixRegisterEx(Iclass* ic)
   iupClassRegisterAttributeId(ic, "NUMERICFORMATTITLE", NULL, iMatrixSetNumericFormatTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITINDEX", NULL, iMatrixSetNumericUnitIndexAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWNINDEX", NULL, iMatrixSetNumericUnitShownIndexAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NUMERICFORMATDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "%.2lf", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICFORMATDEF", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterCallback(ic, "NUMERICGETVALUE_CB", "ii=d");
   iupClassRegisterCallback(ic, "NUMERICSETVALUE_CB", "iid");

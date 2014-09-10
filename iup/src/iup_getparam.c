@@ -25,7 +25,7 @@ enum { IPARAM_TYPE_STR, IPARAM_TYPE_INT, IPARAM_TYPE_FLOAT, IPARAM_TYPE_DOUBLE, 
 static void iParamSetDoublePrec(Ihandle* ih, const char* name, double num, int prec)
 {
   char value[80];
-  if (prec <= 0) prec = 2;
+  if (prec <= 0) prec = IupGetInt(NULL, "DEFAULTPRECISION");
   sprintf(value, "%.*f", prec, num);
   IupStoreAttribute(ih, name, value);
 }

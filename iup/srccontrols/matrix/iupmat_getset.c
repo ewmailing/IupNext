@@ -225,6 +225,24 @@ char* iupMatrixGetValueString(Ihandle* ih, int lin, int col)
   return value;
 }
 
+char* iupMatrixGetNumericFormatDef(Ihandle* ih)
+{
+  char* format = iupAttribGet(ih, "NUMERICFORMATDEF");
+  if (!format)
+  {
+    int prec = IupGetInt(NULL, "DEFAULTPRECISION");
+    if (prec == 2)
+      format = "%.2lf";
+    else
+    {
+      static char f[30];
+      sprintf(f, "%%.%dlf", prec);
+      format = f;
+    }
+  }
+  return format;
+}
+
 static char* iMatrixGetValueNumericDisplay(Ihandle* ih, int lin, int col, const char* value)
 {
   char *format=NULL;
@@ -256,8 +274,8 @@ static char* iMatrixGetValueNumericDisplay(Ihandle* ih, int lin, int col, const 
   if (ih->data->numeric_columns[col].flags & IMAT_HAS_FORMAT)
     format = iupAttribGetId(ih, "NUMERICFORMAT", col);
 
-  if (format==NULL)
-    format = iupAttribGetStr(ih, "NUMERICFORMATDEF");
+  if (format == NULL)
+    format = iupMatrixGetNumericFormatDef(ih);
 
   if (!value)
   {

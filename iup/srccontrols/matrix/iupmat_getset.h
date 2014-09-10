@@ -43,6 +43,9 @@ int   iupMatrixGetCellFromXY(Ihandle* ih, int x, int y, int* l, int* c);
 
 int iupMatrixCheckCellPos(Ihandle* ih, int lin, int col);
 
+char* iupMatrixGetNumericFormatDef(Ihandle* ih);
+
+
 #ifdef __cplusplus
 }
 #endif

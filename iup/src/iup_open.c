@@ -70,6 +70,7 @@ int IupOpen(int *argc, char ***argv)
     IupStoreGlobal("COMPUTERNAME", iupdrvGetComputerName());
     IupStoreGlobal("USERNAME", iupdrvGetUserName());
     IupSetGlobal("DEFAULTFONT", iupdrvGetSystemFont());  /* Use SetGlobal because iupdrvGetSystemFont returns a static string */
+    IupSetGlobal("DEFAULTPRECISION", "2");
 
     iupRegisterInternalClasses();
 
