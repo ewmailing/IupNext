@@ -63,6 +63,7 @@ static void error_message(lua_State *L, const char *msg, const char* traceback)
 
 static int report (lua_State *L, int status, int concat_traceback)
 {
+  /* if there was an erro, and there is an error message on the stack */
   if (status != LUA_OK && !lua_isnil(L, -1)) 
   {
     const char *msg = lua_tostring(L, -2);
@@ -379,7 +380,7 @@ double* iuplua_checkdouble_array(lua_State *L, int pos, int n)
   {
     lua_pushinteger(L, i);
     lua_gettable(L, pos);
-    v[i - 1] = lua_tonumber(L, -1);
+    v[i - 1] = (double)lua_tonumber(L, -1);
     lua_pop(L, 1);
   }
   return v;
@@ -465,6 +466,9 @@ lua_State* iuplua_call_start(Ihandle *ih, const char* name)
 
   lua_pushstring(L, name);
   iuplua_pushihandle(L, ih);
+
+  /* here there was 3 value pushed on the stack, 
+     if this changes must update callback where LUA_MULTRET is used. */
   return L;
 }
 
@@ -484,15 +488,15 @@ static lua_State* iuplua_call_global_start(const char* name)
 
 int iuplua_call(lua_State* L, int nargs)
 {
-  int status = docall(L, nargs+2, 1);
+  int status = docall(L, nargs + 2, 1);  /* always 1 result */
   report(L, status, 0);
 
   if (status != LUA_OK)
     return IUP_DEFAULT;
   else
   {
-    int tmp = (int) lua_isnil(L, -1) ? IUP_DEFAULT : (int)lua_tonumber(L,-1);
-    lua_pop(L, 1);
+    int tmp = (int)lua_isnil(L, -1) ? IUP_DEFAULT : (int)lua_tointeger(L, -1);
+    lua_pop(L, 1);  /* remove the result */
     return tmp;    
   }
 }
@@ -504,7 +508,7 @@ int iuplua_call_global(lua_State* L, int nargs)
 
 char* iuplua_call_ret_s(lua_State *L, int nargs)
 {
-  int status = docall(L, nargs+2, 1);
+  int status = docall(L, nargs + 2, 1);  /* always 1 result */
   report(L, status, 0);
 
   if (status != LUA_OK)
@@ -512,14 +516,14 @@ char* iuplua_call_ret_s(lua_State *L, int nargs)
   else
   {
     char* tmp = lua_isnil(L, -1) ? NULL: (char*)lua_tostring(L,-1);
-    lua_pop(L, 1);
+    lua_pop(L, 1);  /* remove the result */
     return tmp;    
   }
 }
 
 double iuplua_call_ret_d(lua_State *L, int nargs)
 {
-  int status = docall(L, nargs+2, 1);
+  int status = docall(L, nargs + 2, 1);  /* always 1 result */
   report(L, status, 0);
 
   if (status != LUA_OK)
@@ -527,14 +531,14 @@ double iuplua_call_ret_d(lua_State *L, int nargs)
   else
   {
     double tmp = lua_isnil(L, -1) ? 0: (double)lua_tonumber(L,-1);
-    lua_pop(L, 1);
+    lua_pop(L, 1);  /* remove the result */
     return tmp;    
   }
 }
 
 int iuplua_call_raw(lua_State* L, int nargs, int nresults)
 {
-  int status = docall(L, nargs, nresults);
+  int status = docall(L, nargs, nresults);  /* always n results, or LUA_MULTRET */
   report(L, status, 0);
   return status;
 }

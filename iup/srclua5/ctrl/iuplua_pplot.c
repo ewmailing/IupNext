@@ -22,27 +22,42 @@
 
 static int pplot_edit_cb(Ihandle *self, int p0, int p1, float p2, float p3, float *p4, float *p5)
 {
-  int ret;
+  int status;
   lua_State *L = iuplua_call_start(self, "edit_cb");
+  int top = lua_gettop(L) - 3; /* 3 is the number of pushed values in iuplua_call_start */
+  /* don't have control over the number of returned values because of LUA_MULTRET,
+  so must restore stack manually */
+
   lua_pushinteger(L, p0);
   lua_pushinteger(L, p1);
   lua_pushnumber(L, p2);
   lua_pushnumber(L, p3);
-  ret = iuplua_call_raw(L, 4+2, LUA_MULTRET);  /* 4 args + 2 args(errormsg, handle), variable number of returns */
-  if (ret || lua_isnil(L, -1))
+
+  /* similar to iuplua_call */
+  status = iuplua_call_raw(L, 4 + 2, LUA_MULTRET);  /* 4 args + 2 args(errormsg, handle), variable number of returns */
+
+  if (status != LUA_OK)
     return IUP_DEFAULT;
-  ret = lua_tointeger(L,-1);
-
-  if (ret == IUP_IGNORE) 
+  else
   {
-    lua_pop(L, 1);
-    return IUP_IGNORE;
-  }
+    /* can do:
+    return x, y, iup.DEFAULT
+    return x, y, iup.IGNORE
+    return iup.IGNORE
+    return                       -- same as iup.IGNORE
+    */
+    int tmp = (int)lua_isnil(L, -1) ? IUP_IGNORE : (int)lua_tointeger(L, -1);
+    if (tmp == IUP_IGNORE)
+    {
+      lua_settop(L, top);  /* remove the results */
+      return IUP_IGNORE;
+    }
 
-  *p4 = (float)lua_tonumber(L, -3); 
-  *p5 = (float)lua_tonumber(L, -2); 
-  lua_pop(L, 3);
-  return IUP_DEFAULT;
+    *p4 = (float)lua_tonumber(L, -3);
+    *p5 = (float)lua_tonumber(L, -2);
+    lua_settop(L, top);  /* remove the results */
+    return IUP_DEFAULT;
+  }
 }
 
 static int pplot_postdraw_cb(Ihandle *self, cdCanvas* cnv)
@@ -187,7 +202,7 @@ static int PlotTransformTo(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   float rx, ry;
-  IupPPlotTransformTo(ih, luaL_checkinteger(L,2), luaL_checkinteger(L,3), &rx, &ry);
+  IupPPlotTransformTo(ih, (int)luaL_checkinteger(L, 2), (int)luaL_checkinteger(L, 3), &rx, &ry);
   lua_pushnumber(L, rx);
   lua_pushnumber(L, ry);
   return 2;
