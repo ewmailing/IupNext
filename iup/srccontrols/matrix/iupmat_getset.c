@@ -160,7 +160,7 @@ double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col)
   }
   else
   {
-    if (iupStrToDouble(value, &number))
+    if (!iupStrToDouble(value, &number))
       return 0;
   }
 
@@ -287,7 +287,7 @@ static char* iMatrixGetValueNumericDisplay(Ihandle* ih, int lin, int col, const 
   }
   else
   {
-    if (iupStrToDouble(value, &number))
+    if (!iupStrToDouble(value, &number))
       return (char*)value;
   }
 
