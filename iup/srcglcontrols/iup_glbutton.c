@@ -46,6 +46,9 @@ void iupGLButtonDraw(Ihandle* ih)
     if (presscolor)
       bgcolor = presscolor;
     draw_border = 1;
+
+    if (!pressed && (bgimage || image))
+      iupAttribSet(ih, "PRESSED", "1");
   }
   else if (highlight)
   {
