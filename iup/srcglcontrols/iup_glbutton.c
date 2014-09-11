@@ -36,7 +36,7 @@ void iupGLButtonDraw(Ihandle* ih)
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
-  char* bgimage = iupAttribGetStr(ih, "BACKIMAGE");
+  char* bgimage = iupAttribGet(ih, "BACKIMAGE");
   int border_width = (int)ceil(bwidth);
   int draw_border = 0;
 

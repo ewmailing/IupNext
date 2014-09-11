@@ -44,7 +44,7 @@ static int iGLFrameACTION(Ihandle* ih)
 
     if (title_box)
     {
-      char* bgimage = iupAttribGetStr(ih, "TITLEBACKIMAGE");
+      char* bgimage = iupAttribGet(ih, "TITLEBACKIMAGE");
 
       /* draw border */
       iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bordercolor, 1, 0);
@@ -71,7 +71,7 @@ static int iGLFrameACTION(Ihandle* ih)
   {
     /* draw background */
     char* bgcolor = iupAttribGetStr(ih, "BACKCOLOR");
-    char* bgimage = iupAttribGetStr(ih, "BACKIMAGE");
+    char* bgimage = iupAttribGet(ih, "BACKIMAGE");
 
     if (bgimage)
       iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,

@@ -63,6 +63,7 @@ static int iGLValACTION_CB(Ihandle* ih)
   int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
   int handler_size = iGLValGetHandlerSize(ih, is_horizontal);
   char *image = iupAttribGet(ih, "IMAGE");
+  char* bgimage = iupAttribGet(ih, "BACKIMAGE");
   double percent = (val->value - val->vmin) / (val->vmax - val->vmin);
   int x1, y1, x2, y2;
 
@@ -82,7 +83,13 @@ static int iGLValACTION_CB(Ihandle* ih)
   }
 
   /* draw slider background */
-  iupGLDrawBox(ih, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width, bgcolor, 1);
+  if (bgimage)
+    iupGLDrawImageTexture(ih, x1 + border_width, x2 - border_width,
+                              y1 + border_width, y2 - border_width,
+                              "BACKIMAGE", bgimage, bgcolor, active);
+  else
+    iupGLDrawBox(ih, x1 + border_width, x2 - border_width, 
+                     y1 + border_width, y2 - border_width, bgcolor, 1);  /* always active */
 
   /* draw slider border - can be disabled setting bwidth=0 */
   iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bordercolor, active, 0);
@@ -461,6 +468,11 @@ Iclass* iupGLValNewClass(void)
   iupClassRegisterAttribute(ic, "IMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   return ic;
 }

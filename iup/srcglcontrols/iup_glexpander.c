@@ -422,7 +422,7 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
   int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
   int pressed = iupAttribGetInt(ih, "PRESSED");
   int bar_size = iGLExpanderGetBarSize(ih);
-  char* bgimage = iupAttribGetStr(ih, "TITLEBACKIMAGE");
+  char* bgimage = iupAttribGet(ih, "TITLEBACKIMAGE");
 
   /* calc bar position */
   if (ih->data->position == IEXPANDER_LEFT)

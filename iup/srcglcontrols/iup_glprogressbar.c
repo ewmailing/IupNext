@@ -65,10 +65,16 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
   int active = iupAttribGetInt(ih, "ACTIVE");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   int border_width = (int)ceil(bwidth);
+  char* bgimage = iupAttribGet(ih, "BACKIMAGE");
 
   /* draw background */
-  iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
-                   border_width, ih->currentheight-1 - border_width, bgcolor, 1);
+  if (bgimage)
+    iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,
+                              border_width, ih->currentheight - 1 - border_width,
+                              "BACKIMAGE", bgimage, bgcolor, active);
+  else
+    iupGLDrawBox(ih, border_width, ih->currentwidth - 1 - border_width,
+                     border_width, ih->currentheight-1 - border_width, bgcolor, 1);  /* always active */
 
   /* draw border - can be disabled setting bwidth=0 
      after the background because of the round rect */
@@ -269,6 +275,11 @@ Iclass* iupGLProgressBarNewClass(void)
 
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "TXTCOLOR", NULL, NULL, "0 0 0", NULL, IUPAF_DEFAULT);  /* inheritable */
+
+  iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   return ic;
 }
