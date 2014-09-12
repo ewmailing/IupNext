@@ -578,7 +578,8 @@ Iclass* iupTextNewClass(void)
 
   /* IupText only */
   iupClassRegisterAttribute(ic, "SCROLLBAR", iTextGetScrollbarAttrib, iTextSetScrollbarAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MULTILINE", iTextGetMultilineAttrib, iTextSetMultilineAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MULTILINE", iTextGetMultilineAttrib, iTextSetMultilineAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "APPENDNEWLINE", iTextGetAppendNewlineAttrib, iTextSetAppendNewlineAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "VALUEMASKED", NULL, iTextSetValueMaskedAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
