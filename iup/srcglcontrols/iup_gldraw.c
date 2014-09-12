@@ -435,7 +435,7 @@ static GLuint iGLDrawGenTexture(Ihandle* ih, Ihandle* image, int active)
   return 0;
 }
 
-//#define IGL_DRAWIMAGE_TEXTURE
+#define IGL_DRAWIMAGE_TEXTURE 1
 
 #ifdef IGL_DRAWIMAGE_TEXTURE
 static void iGLDrawTexture(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, Ihandle* image, int active)
@@ -451,6 +451,9 @@ static void iGLDrawTexture(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, 
     /* y is oriented top to bottom in IUP */
     ymin = ih->currentheight - 1 - ymin;
     ymax = ih->currentheight - 1 - ymax;
+
+    /* y is at image bottom and oriented bottom to top in OpenGL */
+    { int tmp = ymin; ymin = ymax; ymax = tmp; }
 
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f); glVertex2i(xmin, ymin);
@@ -476,16 +479,19 @@ static void iGLDrawPixels(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, I
     format = GL_RGBA;
 
   /* y is at image bottom and oriented bottom to top in OpenGL */
-  ymin = ymin + image->currentheight - 1;  /* move to bottom */
+  ymin = ymax;
 
   /* y is oriented top to bottom in IUP */
   ymin = ih->currentheight - 1 - ymin;
 
   if (image->currentwidth != rw || image->currentheight != rh)
-    glPixelZoom((GLfloat)image->currentwidth / rw, (GLfloat)image->currentheight / rh);
+    glPixelZoom((GLfloat)rw / (GLfloat)image->currentwidth, (GLfloat)rh / (GLfloat)image->currentheight);
 
   glRasterPos2i(xmin, ymin);
   glDrawPixels(image->currentwidth, image->currentheight, format, GL_UNSIGNED_BYTE, gldata);
+
+  if (image->currentwidth != rw || image->currentheight != rh)
+    glPixelZoom(1.0f, 1.0f);
 }
 #endif
 
