@@ -78,6 +78,9 @@ void iupGLButtonDraw(Ihandle* ih)
   iupGLIconDraw(ih, border_width, border_width,
                     ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
                     "IMAGE", image, title, fgcolor, active);
+
+  if (selected && !pressed && (bgimage || image))
+    iupAttribSet(ih, "PRESSED", NULL);
 }
 
 static int iGLButtonACTION(Ihandle* ih)
