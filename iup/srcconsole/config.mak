@@ -77,6 +77,7 @@ ifdef ALL_STATIC
   #IUPLUA_NO_GL = Yes
   ifndef IUPLUA_NO_GL 
     USE_OPENGL = Yes
+    USE_IUPGLCONTROLS = Yes
   else
     DEFINES += IUPLUA_NO_GL
   endif
