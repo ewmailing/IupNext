@@ -456,7 +456,7 @@ static int iGLExpanderACTION_CB(Ihandle* ih)
 
   /* draw bar box */
   if (bgimage)
-    iupGLDrawImageTexture(ih, x1, x2, y1, y2, "TITLEBACKIMAGE", bgimage, bgcolor, active);
+    iupGLDrawImageZoom(ih, x1, x2, y1, y2, "TITLEBACKIMAGE", bgimage, active);
   else
     iupGLDrawBox(ih, x1, x2, y1, y2, bgcolor, 1);  /* always active */
 

@@ -51,9 +51,9 @@ static int iGLFrameACTION(Ihandle* ih)
 
       /* draw box */
       if (bgimage)
-        iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,
-                                  border_width, border_width + h - 1, 
-                                  "TITLEBACKIMAGE", bgimage, bordercolor, active);
+        iupGLDrawImageZoom(ih, border_width, ih->currentwidth - 1 - border_width,
+                               border_width, border_width + h - 1, 
+                               "TITLEBACKIMAGE", bgimage, active);
       else
         iupGLDrawBox(ih, border_width, ih->currentwidth-1 - border_width,
                          border_width, border_width + h - 1, 
@@ -74,9 +74,9 @@ static int iGLFrameACTION(Ihandle* ih)
     char* bgimage = iupAttribGet(ih, "BACKIMAGE");
 
     if (bgimage)
-      iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,
-                                border_width, ih->currentheight - 1 - border_width, 
-                                "BACKIMAGE", bgimage, bgcolor, active);
+      iupGLDrawImageZoom(ih, border_width, ih->currentwidth - 1 - border_width,
+                             border_width, ih->currentheight - 1 - border_width, 
+                             "BACKIMAGE", bgimage, active);
     else
       iupGLDrawBox(ih, border_width, ih->currentwidth - 1 - border_width,
                        border_width, ih->currentheight - 1 - border_width, 

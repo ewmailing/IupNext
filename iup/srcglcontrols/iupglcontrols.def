@@ -26,7 +26,7 @@ EXPORTS
   iupGLDrawArrow
   iupGLDrawSmallCircle
   iupGLDrawSmallDisc
-  iupGLDrawImageTexture
+  iupGLDrawImageZoom
 
   iupGLFontGetStringWidth
   iupGLFontGetMultiLineStringSize

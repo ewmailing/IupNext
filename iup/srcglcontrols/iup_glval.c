@@ -84,16 +84,18 @@ static int iGLValACTION_CB(Ihandle* ih)
 
   /* draw slider background */
   if (bgimage)
-    iupGLDrawImageTexture(ih, x1 + border_width, x2 - border_width,
-                              y1 + border_width, y2 - border_width,
-                              "BACKIMAGE", bgimage, bgcolor, active);
+    iupGLDrawImageZoom(ih, x1 + border_width, x2 - border_width,
+                           y1 + border_width, y2 - border_width,
+                           "BACKIMAGE", bgimage, active);
   else
-    iupGLDrawBox(ih, x1 + border_width, x2 - border_width, 
-                     y1 + border_width, y2 - border_width, bgcolor, 1);  /* always active */
+  {
+    iupGLDrawBox(ih, x1 + border_width, x2 - border_width,
+                     y1 + border_width, y2 - border_width, 
+                     bgcolor, 1);  /* always active */
 
-  /* draw slider border - can be disabled setting bwidth=0 */
-  iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bordercolor, active, 0);
-
+    /* draw slider border - can be disabled setting bwidth=0 */
+    iupGLDrawRect(ih, x1, x2, y1, y2, bwidth, bordercolor, active, 0);
+  }
 
   if (is_horizontal)
   {

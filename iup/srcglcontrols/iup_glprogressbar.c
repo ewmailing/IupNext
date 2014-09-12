@@ -69,16 +69,19 @@ static int iGLProgressBarACTION_CB(Ihandle* ih)
 
   /* draw background */
   if (bgimage)
-    iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,
-                              border_width, ih->currentheight - 1 - border_width,
-                              "BACKIMAGE", bgimage, bgcolor, active);
+    iupGLDrawImageZoom(ih, border_width, ih->currentwidth - 1 - border_width,
+                           border_width, ih->currentheight - 1 - border_width,
+                           "BACKIMAGE", bgimage, active);
   else
+  {
     iupGLDrawBox(ih, border_width, ih->currentwidth - 1 - border_width,
-                     border_width, ih->currentheight-1 - border_width, bgcolor, 1);  /* always active */
+                     border_width, ih->currentheight - 1 - border_width, 
+                     bgcolor, 1);  /* always active */
 
-  /* draw border - can be disabled setting bwidth=0 
-     after the background because of the round rect */
-  iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bordercolor, active, 1);
+    /* draw border - can be disabled setting bwidth=0
+       after the background because of the round rect */
+    iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bordercolor, active, 1);
+  }
 
   if (pb->show_text || pb->value != pb->vmin)
   {

@@ -67,9 +67,9 @@ void iupGLButtonDraw(Ihandle* ih)
 
   /* draw background */
   if (bgimage)
-    iupGLDrawImageTexture(ih, border_width, ih->currentwidth - 1 - border_width,
-                              border_width, ih->currentheight - 1 - border_width, 
-                              "BACKIMAGE", bgimage, bgcolor, active);
+    iupGLDrawImageZoom(ih, border_width, ih->currentwidth - 1 - border_width,
+                           border_width, ih->currentheight - 1 - border_width, 
+                           "BACKIMAGE", bgimage, active);
   else
     iupGLDrawBox(ih, border_width, ih->currentwidth - 1 - border_width,
                      border_width, ih->currentheight - 1 - border_width, 

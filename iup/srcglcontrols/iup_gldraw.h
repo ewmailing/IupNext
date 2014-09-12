@@ -15,6 +15,7 @@ extern "C" {
 
 void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color, int active);
 void iupGLDrawImage(Ihandle* ih, int x, int y, const char* baseattrib, const char* imagename, int active);
+void iupGLDrawImageZoom(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, const char* baseattrib, const char* imagename, int active);
 void iupGLDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2, float linewidth, const char* color, int active);
 void iupGLDrawPolygon(Ihandle* ih, const int* points, int count, const char* color, int active);
 void iupGLDrawPolyline(Ihandle* ih, const int* points, int count, float linewidth, const char* color, int active, int loop);
@@ -25,7 +26,6 @@ enum { IUPGL_ARROW_LEFT, IUPGL_ARROW_RIGHT, IUPGL_ARROW_TOP, IUPGL_ARROW_BOTTOM 
 void iupGLDrawArrow(Ihandle *ih, int x, int y, int size, const char* color, int active, int dir);
 void iupGLDrawSmallCircle(Ihandle* ih, int cx, int cy, int r, float linewidth, const char* color, int active);
 void iupGLDrawSmallDisc(Ihandle* ih, int cx, int cy, int rd, const char* color, int active);
-void iupGLDrawImageTexture(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, const char* baseattrib, const char* imagename, const char* color, int active);
 
 
 #ifdef __cplusplus

@@ -315,89 +315,6 @@ void iupGLDrawPolyline(Ihandle* ih, const int* points, int count, float linewidt
   glEnd();
 }
 
-void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color, int active)
-{
-  unsigned char r = 0, g = 0, b = 0, a = 255;
-
-  if (!color || !str)
-    return;
-
-  iupStrToRGBA(color, &r, &g, &b, &a);
-  if (!active)
-    iupGLColorMakeInactive(&r, &g, &b);
-
-  glColor4ub(r, g, b, a);
-
-  if (str[0])
-  {
-    int len, lineheight, ascent, baseline;
-    const char *nextstr;
-    const char *curstr = str;
-    int underline = iupAttribGetInt(ih, "UNDERLINE");
-
-    iupGLFontGetDim(ih, NULL, &lineheight, &ascent, NULL);
-    baseline = lineheight - ascent;
-
-    /* y is at text baseline and oriented bottom to top in OpenGL */
-    y = y + lineheight - baseline;  /* move to baseline */
-
-    /* y is oriented top to bottom in IUP */
-    y = ih->currentheight - 1 - y;
-
-    if (underline)
-      glLineWidth(1.0f);
-
-    glPushMatrix();
-    glTranslated((double)x, (double)y, 0.0);
-
-    do
-    {
-      nextstr = iupStrNextLine(curstr, &len);
-      if (len)
-      {
-        iupGLFontRenderString(ih, curstr, len);
-
-        if (underline)
-        {
-          int width = iupGLFontGetStringWidth(ih, curstr, len);
-          glBegin(GL_LINES);
-          glVertex2i(0, -2);
-          glVertex2i(width-1, -2);
-          glEnd();
-        }
-      }
-
-      glTranslated(0.0, (double)-lineheight, 0.0);
-
-      curstr = nextstr;
-    } while (*nextstr);
-
-    glPopMatrix();
-  }
-}
-
-void iupGLDrawImage(Ihandle* ih, int x, int y, const char* baseattrib, const char* imagename, int active)
-{
-  Ihandle* image = iupGLIconGetImageHandle(ih, baseattrib, imagename, active);
-  if (image)
-  {
-    unsigned char* gldata = iupGLImageGetData(image, active);
-    int depth = iupAttribGetInt(image, "GL_DEPTH");
-    int format = GL_RGB;
-    if (depth == 4)
-      format = GL_RGBA;
-
-    /* y is at image bottom and oriented bottom to top in OpenGL */
-    y = y + image->currentheight - 1;  /* move to bottom */
-
-    /* y is oriented top to bottom in IUP */
-    y = ih->currentheight - 1 - y;
-
-    glRasterPos2i(x, y);
-    glDrawPixels(image->currentwidth, image->currentheight, format, GL_UNSIGNED_BYTE, gldata);
-  }
-}
-
 void iupGLDrawArrow(Ihandle *ih, int x, int y, int size, const char* color, int active, int dir)
 {
   int points[6];
@@ -480,73 +397,60 @@ static int iGLDestroyTexture_CB(Ihandle* image)
   return IUP_DEFAULT;
 }
 
-static GLuint iGLDrawGenTexture(Ihandle* ih, const char* baseattrib, const char* imagename, int active)
+static GLuint iGLDrawGenTexture(Ihandle* ih, Ihandle* image, int active)
 {
-  Ihandle* image = iupGLIconGetImageHandle(ih, baseattrib, imagename, active);
-  if (image)
+  GLuint texture;
+  const char *texture_name = "GL_TEXTURE";
+  int make_inactive = !active && iupAttribGetInt(ih, "MAKEINACTIVE");
+  if (make_inactive)
+    texture_name = "GL_TEXTURE_INACTIVE";
+
+  texture = (GLuint)iupAttribGetInt(image, texture_name);
+  if (texture)
+    return texture;
+
+  if (iGLIsOpenGL2orMore() || (isPowerOfTwo(image->currentwidth) && isPowerOfTwo(image->currentheight)))
   {
-    GLuint texture;
-    const char *texture_name = "GL_TEXTURE";
-    int make_inactive = !active && iupAttribGetInt(ih, "MAKEINACTIVE");
-    if (make_inactive)
-      texture_name = "GL_TEXTURE_INACTIVE";
+    unsigned char* gldata = iupGLImageGetData(image, 1);
+    int depth = iupAttribGetInt(image, "GL_DEPTH");
+    int format = GL_RGB;
+    if (depth == 4)
+      format = GL_RGBA;
 
-    texture = (GLuint)iupAttribGetInt(image, texture_name);
-    if (texture)
-      return texture;
+    glGenTextures(1, &texture);
 
-    if (iGLIsOpenGL2orMore() || (isPowerOfTwo(image->currentwidth) && isPowerOfTwo(image->currentheight)))
-    {
-      unsigned char* gldata = iupGLImageGetData(image, 1);
-      int depth = iupAttribGetInt(image, "GL_DEPTH");
-      int format = GL_RGB;
-      if (depth == 4)
-        format = GL_RGBA;
+    glBindTexture(GL_TEXTURE_2D, texture);
 
-      glGenTextures(1, &texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-      glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, image->currentwidth, image->currentheight, 0, format, GL_UNSIGNED_BYTE, gldata);
 
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    iupAttribSetInt(image, texture_name, (int)texture);
+    IupSetCallback(image, "DESTROY_CB", iGLDestroyTexture_CB);
 
-      glTexImage2D(GL_TEXTURE_2D, 0, format, image->currentwidth, image->currentheight, 0, format, GL_UNSIGNED_BYTE, gldata);
-
-      iupAttribSetInt(image, texture_name, (int)texture);
-      IupSetCallback(image, "DESTROY_CB", iGLDestroyTexture_CB);
-
-      return texture;
-    }
+    return texture;
   }
 
   return 0;
 }
 
-void iupGLDrawImageTexture(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, const char* baseattrib, const char* imagename, const char* color, int active)
+//#define IGL_DRAWIMAGE_TEXTURE
+
+#ifdef IGL_DRAWIMAGE_TEXTURE
+static void iGLDrawTexture(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, Ihandle* image, int active)
 {
-  GLuint texture;
-  unsigned char r = 0, g = 0, b = 0, a = 255;
-
-  if (xmin == xmax || ymin == ymax)
-    return;
-
-  iupStrToRGBA(color, &r, &g, &b, &a);
-  if (color && !active)
-    iupGLColorMakeInactive(&r, &g, &b);
-
-  /* y is oriented top to bottom in IUP */
-  ymin = ih->currentheight - 1 - ymin;
-  ymax = ih->currentheight - 1 - ymax;
-
-  texture = iGLDrawGenTexture(ih, baseattrib, imagename, active);
+  GLuint texture = iGLDrawGenTexture(ih, image, active);
   if (texture)
   {
     glEnable(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-    glColor4f(r, g, b, a);
+    /* y is oriented top to bottom in IUP */
+    ymin = ih->currentheight - 1 - ymin;
+    ymax = ih->currentheight - 1 - ymax;
 
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f); glVertex2i(xmin, ymin);
@@ -558,3 +462,122 @@ void iupGLDrawImageTexture(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, 
     glDisable(GL_TEXTURE_2D);
   }
 }
+
+#else
+
+static void iGLDrawPixels(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, Ihandle* image, int active)
+{
+  int rw = xmax - xmin + 1;
+  int rh = ymax - ymin + 1;
+  unsigned char* gldata = iupGLImageGetData(image, active);
+  int depth = iupAttribGetInt(image, "GL_DEPTH");
+  int format = GL_RGB;
+  if (depth == 4)
+    format = GL_RGBA;
+
+  /* y is at image bottom and oriented bottom to top in OpenGL */
+  ymin = ymin + image->currentheight - 1;  /* move to bottom */
+
+  /* y is oriented top to bottom in IUP */
+  ymin = ih->currentheight - 1 - ymin;
+
+  if (image->currentwidth != rw || image->currentheight != rh)
+    glPixelZoom((GLfloat)image->currentwidth / rw, (GLfloat)image->currentheight / rh);
+
+  glRasterPos2i(xmin, ymin);
+  glDrawPixels(image->currentwidth, image->currentheight, format, GL_UNSIGNED_BYTE, gldata);
+}
+#endif
+
+void iupGLDrawImageZoom(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, const char* baseattrib, const char* imagename, int active)
+{
+  Ihandle* image;
+
+  if (xmin == xmax || ymin == ymax)
+    return;
+
+  image = iupGLIconGetImageHandle(ih, baseattrib, imagename, active);
+  if (image)
+  {
+#ifdef IGL_DRAWIMAGE_TEXTURE
+    iGLDrawTexture(ih, xmin, xmax, ymin, ymax, image, active);
+#else
+    iGLDrawPixels(ih, xmin, xmax, ymin, ymax, image, active);
+#endif
+  }
+}
+
+void iupGLDrawImage(Ihandle* ih, int x, int y, const char* baseattrib, const char* imagename, int active)
+{
+  Ihandle* image = iupGLIconGetImageHandle(ih, baseattrib, imagename, active);
+  if (image)
+  {
+#ifdef IGL_DRAWIMAGE_TEXTURE
+    iGLDrawTexture(ih, x, x + image->currentwidth - 1, y, y + image->currentheight - 1, image, active);
+#else
+    iGLDrawPixels(ih, x, x + image->currentwidth - 1, y, y + image->currentheight - 1, image, active);
+#endif
+  }
+}
+
+void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color, int active)
+{
+  unsigned char r = 0, g = 0, b = 0, a = 255;
+
+  if (!color || !str)
+    return;
+
+  iupStrToRGBA(color, &r, &g, &b, &a);
+  if (!active)
+    iupGLColorMakeInactive(&r, &g, &b);
+
+  glColor4ub(r, g, b, a);
+
+  if (str[0])
+  {
+    int len, lineheight, ascent, baseline;
+    const char *nextstr;
+    const char *curstr = str;
+    int underline = iupAttribGetInt(ih, "UNDERLINE");
+
+    iupGLFontGetDim(ih, NULL, &lineheight, &ascent, NULL);
+    baseline = lineheight - ascent;
+
+    /* y is at text baseline and oriented bottom to top in OpenGL */
+    y = y + lineheight - baseline;  /* move to baseline */
+
+    /* y is oriented top to bottom in IUP */
+    y = ih->currentheight - 1 - y;
+
+    if (underline)
+      glLineWidth(1.0f);
+
+    glPushMatrix();
+    glTranslated((double)x, (double)y, 0.0);
+
+    do
+    {
+      nextstr = iupStrNextLine(curstr, &len);
+      if (len)
+      {
+        iupGLFontRenderString(ih, curstr, len);
+
+        if (underline)
+        {
+          int width = iupGLFontGetStringWidth(ih, curstr, len);
+          glBegin(GL_LINES);
+          glVertex2i(0, -2);
+          glVertex2i(width - 1, -2);
+          glEnd();
+        }
+      }
+
+      glTranslated(0.0, (double)-lineheight, 0.0);
+
+      curstr = nextstr;
+    } while (*nextstr);
+
+    glPopMatrix();
+  }
+}
+
