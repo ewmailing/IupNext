@@ -58,7 +58,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (11/Sep/2014)</h3>
+<h3>SVN (12/Sep/2014)</h3>
 
 <ul>
 
@@ -71,6 +71,9 @@ version 3.x.</p>
 	<li><span class="hist_new">New:</span> global attribute DEFAULTPRECISION 
 	that affects how real values are shown by default in <strong>IupGetParam</strong> 
 	and <strong>IupMatrixEx</strong>.</li>
+	<li><strong><span class="hist_changed">Changed:</span></strong> 
+	all images in <strong>IupGLControls</strong> are now drawn using OpenGL 
+	textures instead of glDrawPixels.</li>
 	<li><span class="hist_fixed">Fixed:</span> image complementary attributes 
 	like IMAGEPRESS, IMAGEHIGHLIGHT, IMAGEINACTIVE, and others, in <strong>
 	IupGLControls</strong>.</li>
@@ -81,6 +84,9 @@ version 3.x.</p>
 	<strong>IupMatrixEx</strong> when column has numeric values.</li>
 	<li><span class="hist_fixed">Fixed:</span> pressed feedback in <strong>
 	IupGLToggle</strong> when using IMAGEPRESS.</li>
+	<li><span class="hist_fixed">Fixed:</span> image draw using OpenGL textures 
+	in <strong>IupGLControls</strong> was upside down, and now does not depends 
+	on the background color anymore.</li>
 
 </ul>
 
