@@ -456,10 +456,10 @@ static void iGLDrawTexture(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, 
     { int tmp = ymin; ymin = ymax; ymax = tmp; }
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f); glVertex2i(xmin, ymin);
-    glTexCoord2f(1.0f, 0.0f); glVertex2i(xmax, ymin);
-    glTexCoord2f(1.0f, 1.0f); glVertex2i(xmax, ymax);
-    glTexCoord2f(0.0f, 1.0f); glVertex2i(xmin, ymax);
+    glTexCoord2d(0.0, 0.0); glVertex2d(xmin, ymin);
+    glTexCoord2d(1.0, 0.0); glVertex2d(xmax + 0.375, ymin);
+    glTexCoord2d(1.0, 1.0); glVertex2d(xmax + 0.375, ymax + 0.375);
+    glTexCoord2d(0.0, 1.0); glVertex2d(xmin, ymax + 0.375);
     glEnd();
 
     glDisable(GL_TEXTURE_2D);
