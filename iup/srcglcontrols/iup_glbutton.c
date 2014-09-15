@@ -37,6 +37,7 @@ void iupGLButtonDraw(Ihandle* ih)
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
   char* bgimage = iupAttribGet(ih, "BACKIMAGE");
+  char* fgimage = iupAttribGet(ih, "FRONTIMAGE");
   int border_width = (int)ceil(bwidth);
   int draw_border = 0;
 
@@ -78,6 +79,11 @@ void iupGLButtonDraw(Ihandle* ih)
   iupGLIconDraw(ih, border_width, border_width,
                     ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
                     "IMAGE", image, title, fgcolor, active);
+
+  if (fgimage)
+    iupGLDrawImageZoom(ih, border_width, ih->currentwidth - 1 - border_width,
+                           border_width, ih->currentheight - 1 - border_width,
+                           "FRONTIMAGE", fgimage, active);
 
   if (selected && !pressed && (bgimage || image))
     iupAttribSet(ih, "PRESSED", NULL);
@@ -166,6 +172,11 @@ Iclass* iupGLButtonNewClass(void)
   iupClassRegisterAttribute(ic, "BACKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "FRONTIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRONTIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRONTIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRONTIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   return ic;
 }
