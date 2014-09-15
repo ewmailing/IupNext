@@ -247,7 +247,9 @@ void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const cha
   ymin = ih->currentheight - 1 - ymin;
   ymax = ih->currentheight - 1 - ymax;
 
+  glDisable(GL_POLYGON_SMOOTH);
   glRecti(xmin, ymax, xmax + 1, ymin + 1);
+  glEnable(GL_POLYGON_SMOOTH);
 }
 
 void iupGLDrawPolygon(Ihandle* ih, const int* points, int count, const char* color, int active)
