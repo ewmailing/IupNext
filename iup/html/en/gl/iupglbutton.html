@@ -82,7 +82,8 @@
 
 
   <p><strong>BACKIMAGE</strong> (<font SIZE="3">non inheritable</font>):
-  image name to be used as background. Use
+  image name to be used as background. It will be zoomed to fill the background 
+  (it does not includes the border). Use
 	<a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also
@@ -100,6 +101,30 @@ then the BACKIMAGE is used. (since 3.12)</p>
 <p><strong>BACKIMAGEPRESS </strong>(<font size="3">non inheritable</font>): 
 background image 
 name of the element in pressed state. If it is not defined then the BACKIMAGE is 
+used.(since 3.12)</p>
+
+
+  <p><strong>FRONTIMAGE</strong> (<font SIZE="3">non inheritable</font>):
+  image name to be used as foreground. It will be zoomed to fill the foreground 
+  (it does not includes the border). The foreground has the same are as the 
+  background, but it is drawn at last. Use
+	<a href="../func/iupsethandle.html">IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. See also
+	<a href="iupimage.html">IupImage</a>. (since 3.12)</p>
+<p><strong>FRONTIMAGEHIGHLIGHT</strong> (<font SIZE="3">non inheritable</font>): 
+foreground image name of the element in highlight state. If it is not defined 
+then the FRONTIMAGE is used. (since 3.12)</p>
+  <p><strong>FRONTIMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
+  foreground image name of the element when inactive. If it is not defined then the 
+  FRONTIMAGE 
+  is used and its colors will be replaced by a modified version creating the 
+  disabled effect. (since 3.12)</p>
+
+  
+<p><strong>FRONTIMAGEPRESS </strong> (<font size="3">non inheritable</font>): 
+foreground image 
+name of the element in pressed state. If it is not defined then the FRONTIMAGE is 
 used.(since 3.12)</p>
 
 
