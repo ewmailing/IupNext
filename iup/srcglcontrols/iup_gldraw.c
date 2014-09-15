@@ -443,6 +443,7 @@ static void iGLDrawTexture(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, 
   GLuint texture = iGLDrawGenTexture(ih, image, active);
   if (texture)
   {
+    glDisable(GL_POLYGON_SMOOTH);
     glEnable(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -463,6 +464,7 @@ static void iGLDrawTexture(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, 
     glEnd();
 
     glDisable(GL_TEXTURE_2D);
+    glEnable(GL_POLYGON_SMOOTH);
   }
 }
 
