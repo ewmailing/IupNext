@@ -244,6 +244,10 @@ callback is called.</p>
 <p>Notice that there is no attribute to disable a single tab. This is a design 
 decision of all native toolkits, not a IUP decision. It is so because a disabled 
 tab is a confusing interface situation.</p>
+<p>In Windows,&nbsp;when an&nbsp;<strong>IupVal</strong>&nbsp;is inside an&nbsp;<strong>IupTabs</strong>, 
+the tabs disappear when the mouse moves over it after being used in the 
+valuator. A workaround is to put the valuator inside an&nbsp;<strong>IupFrame</strong>&nbsp;and 
+then inside the&nbsp;<strong>IupTabs</strong>, so the problem does not occur. </p>
 <h3>Utility Functions </h3>
 <p>These functions can be used to set and get attributes from the element:</p>
 <pre>void  IupSetAttributeId(Ihandle *ih, const char* name, int id, const char* value);
