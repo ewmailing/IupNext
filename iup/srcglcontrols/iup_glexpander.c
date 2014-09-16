@@ -183,9 +183,9 @@ static int iGLExpanderMOTION_CB(Ihandle* ih, int x, int y, char* status)
 
   /* shift to bar position */
   if (ih->data->position == IEXPANDER_RIGHT)
-    x += ih->currentwidth - 1 - bar_size;
+    x -= ih->currentwidth - 1 - bar_size;
   else if (ih->data->position == IEXPANDER_BOTTOM)
-    y += ih->currentheight - 1 - bar_size;
+    y -= ih->currentheight - 1 - bar_size;
 
   /* special highlight processing for handler area */
   if (iGLExpanderIsInsideHandler(ih, x, y, bar_size))
@@ -314,9 +314,9 @@ static int iGLExpanderBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int
 
   /* shift to bar position */
   if (ih->data->position == IEXPANDER_RIGHT)
-    x += ih->currentwidth-1 - bar_size;
+    x -= ih->currentwidth-1 - bar_size;
   else if (ih->data->position == IEXPANDER_BOTTOM)
-    y += ih->currentheight-1 - bar_size;
+    y -= ih->currentheight-1 - bar_size;
 
   if (ih->data->position == IEXPANDER_TOP && ih->data->extra_buttons != 0)
   {
@@ -609,9 +609,9 @@ static int iGLExpanderENTERWINDOW_CB(Ihandle* ih, int x, int y)
 
   /* shift to bar position */
   if (ih->data->position == IEXPANDER_RIGHT)
-    x += ih->currentwidth - 1 - bar_size;
+    x -= ih->currentwidth - 1 - bar_size;
   else if (ih->data->position == IEXPANDER_BOTTOM)
-    y += ih->currentheight - 1 - bar_size;
+    y -= ih->currentheight - 1 - bar_size;
 
   /* special highlight processing for handler area */
   if (iGLExpanderIsInsideHandler(ih, x, y, bar_size))
