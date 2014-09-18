@@ -34,9 +34,12 @@
 
 static void iGLFixRectY(Ihandle* gl_parent, int *y, int h)
 {
-  /* y is at bottom and oriented bottom to top in OpenGL */
-  *y = *y + h - 1;  /* move to bottom */
-  *y = gl_parent->currentheight - 1 - *y; /* orient bottom to top */
+  int border = iupAttribGetBoolean(gl_parent, "BORDER");
+
+  /* y is at bottom and oriented bottom to top in OpenGL, both different from IUP */
+
+  *y = *y + h - 1;  /* First, move to bottom */
+  *y = gl_parent->currentheight - 2 * border - 1 - *y; /* Second, orient bottom to top */
 }
 
 static void iGLSaveClientClipping(Ihandle* ih, int clip_x, int clip_y, int clip_w, int clip_h)
@@ -152,6 +155,7 @@ int iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent)
 
 void iupGLSubCanvasSaveState(Ihandle* gl_parent)
 {
+  int border = iupAttribGetBoolean(gl_parent, "BORDER");
   char* saved = iupAttribGet(gl_parent, "_IUP_GLSUBCANVAS_SAVED");
   iupASSERT(saved == NULL);
   if (saved)
@@ -191,8 +195,8 @@ void iupGLSubCanvasSaveState(Ihandle* gl_parent)
 
   iupAttribSetInt(gl_parent, "CLIP_X", 0);
   iupAttribSetInt(gl_parent, "CLIP_Y", 0);
-  iupAttribSetInt(gl_parent, "CLIP_W", gl_parent->currentwidth);
-  iupAttribSetInt(gl_parent, "CLIP_H", gl_parent->currentheight);
+  iupAttribSetInt(gl_parent, "CLIP_W", gl_parent->currentwidth - 2 * border);
+  iupAttribSetInt(gl_parent, "CLIP_H", gl_parent->currentheight - 2 * border);
 }
 
 void iupGLSubCanvasRestoreState(Ihandle* gl_parent)

@@ -58,18 +58,22 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (15/Sep/2014)</h3>
+<h3>SVN (18/Sep/2014)</h3>
 
 <ul>
 
 	<li><span class="hist_new">New:</span> TITLEBACKIMAGEINACTIVE attribute for
 	<strong>IupGLFrame</strong> and <strong>IupGLExpander</strong>. 
-	BACKIMAGEINACTIVE attribute for <strong>IupGLFrame</strong>.</li>
+	</li>
+	<li><span class="hist_new">New:</span> BACKIMAGEINACTIVE attribute for <strong>IupGLFrame</strong>.</li>
 	<li><span class="hist_new">New:</span> BACKIMAGE* 
 	attributes for <strong>IupGLButton, IupGLVal </strong>and<strong> 
 	IupGLProgress</strong>. </li>
 	<li><span class="hist_new">New:</span> FRONTIMAGE* 
 	attributes for <strong>IupGLButton</strong>.</li>
+	<li><strong><span class="hist_new">New:</span> </strong>FITTOBACKIMAGE 
+	attribute for <strong>IupGLButton, IupGLVal </strong>and<strong> 
+	IupGLProgress</strong>. </li>
 	<li><span class="hist_new">New:</span> global attribute DEFAULTPRECISION 
 	that affects how real values are shown by default in <strong>IupGetParam</strong> 
 	and <strong>IupMatrixEx</strong>.</li>
@@ -91,6 +95,10 @@ version 3.x.</p>
 	on the background color anymore.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupGLExpander</strong> 
 	behavior when BARPOSITION is BOTTOM or RIGHT. </li>
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupGLVal</strong> 
+	interaction when IMAGE is defined.</li>
+	<li><span class="hist_fixed">Fixed:</span> elements positioning when 
+	BORDER=Yes in <strong>IupGLControls</strong>.</li>
 
 </ul>
 

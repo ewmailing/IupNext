@@ -21,6 +21,7 @@
 #include "iup_glcontrols.h"
 #include "iup_glfont.h"
 #include "iup_gldraw.h"
+#include "iup_glimage.h"
 
 
 typedef struct _iGLProgressBar
@@ -192,31 +193,42 @@ static char* iGLProgressBarGetPaddingAttrib(Ihandle* ih)
 
 static void iGLProgressBarComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
-  iGLProgressBar* pb = (iGLProgressBar*)iupAttribGet(ih, "_IUP_GLPROGRESSBAR");
   int natural_w = 0,
       natural_h = 0;
-  int charwidth, charheight;
-  float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
-  int border_width = (int)ceil(bwidth);
-  int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
+  int fit2backimage = iupAttribGetBoolean(ih, "FITTOBACKIMAGE");
+  char* bgimage = iupAttribGet(ih, "BACKIMAGE");
 
-  iupGLFontGetCharSize(ih, &charwidth, &charheight);
-
-  if (is_horizontal)
+  if (fit2backimage && bgimage)
   {
-    natural_h = charheight;
-    if (ih->userwidth <= 0)
-      natural_w = 15 * charwidth;
+    iupAttribSet(ih, "BORDERWIDTH", "0");
+    iupGLImageGetInfo(bgimage, &natural_w, &natural_h, NULL);
   }
   else
   {
-    natural_w = charheight;
-    if (ih->userheight <= 0)
-      natural_h = 15 * charwidth;
-  }
+    iGLProgressBar* pb = (iGLProgressBar*)iupAttribGet(ih, "_IUP_GLPROGRESSBAR");
+    int charwidth, charheight;
+    float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+    int border_width = (int)ceil(bwidth);
+    int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
 
-  natural_w += 2 * (pb->horiz_padding + border_width);
-  natural_h += 2 * (pb->vert_padding + border_width);
+    iupGLFontGetCharSize(ih, &charwidth, &charheight);
+
+    if (is_horizontal)
+    {
+      natural_h = charheight;
+      if (ih->userwidth <= 0)
+        natural_w = 15 * charwidth;
+    }
+    else
+    {
+      natural_w = charheight;
+      if (ih->userheight <= 0)
+        natural_h = 15 * charwidth;
+    }
+
+    natural_w += 2 * (pb->horiz_padding + border_width);
+    natural_h += 2 * (pb->vert_padding + border_width);
+  }
 
   *w = natural_w;
   *h = natural_h;
@@ -283,6 +295,7 @@ Iclass* iupGLProgressBarNewClass(void)
   iupClassRegisterAttribute(ic, "BACKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FITTOBACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

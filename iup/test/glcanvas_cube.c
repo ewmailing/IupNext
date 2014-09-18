@@ -435,7 +435,7 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(pbar1, "VALUE", "0.3");
   IupSetAttribute(pbar1, "SHOW_TEXT", "Yes");
 
-  image_val = IupLoadImage("../test/slider_handler.png");
+  //image_val = IupLoadImage("../test/slider_handler.png");
 
   gval1 = IupGLVal();
   IupSetAttribute(gval1, "VALUE", "0.3");
@@ -443,7 +443,7 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(gval1, "PROGRESSBAR", (char*)pbar1);
   IupSetAttribute(gval1, "NAME", "val1");
   IupSetAttribute(gval1, "TIP", "Val Tip");
-  IupSetAttributeHandle(gval1, "IMAGE", image_val);
+  //IupSetAttributeHandle(gval1, "IMAGE", image_val);
 
   hbox = IupHbox(glabel, gsep1, gbutton1, gtoggle, glink, pbar1, gval1, NULL);
   IupSetAttribute(hbox, "ALIGNMENT", "ACENTER");

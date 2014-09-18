@@ -22,7 +22,7 @@
 #include "iup_gldraw.h"
 #include "iup_glicon.h"
 #include "iup_glsubcanvas.h"
-#include "iup_glsubcanvas.h"
+#include "iup_glimage.h"
 
 
 void iupGLButtonDraw(Ihandle* ih)
@@ -132,16 +132,27 @@ static int iGLButtonCreateMethod(Ihandle* ih, void** params)
 
 static void iGLButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
-  float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
-  int border_width = (int)ceil(bwidth);
-  if (border_width == 0)
-    return;
+  int fit2backimage = iupAttribGetBoolean(ih, "FITTOBACKIMAGE");
+  char* bgimage = iupAttribGet(ih, "BACKIMAGE");
 
-  /* add to the label natural size */
-  *w += 2 * border_width;
-  *h += 2 * border_width;
+  if (fit2backimage && bgimage)
+  {
+    iupAttribSet(ih, "BORDERWIDTH", "0");
+    iupGLImageGetInfo(bgimage, w, h, NULL);
+  }
+  else
+  {
+    float bwidth = iupAttribGetFloat(ih, "BORDERWIDTH");
+    int border_width = (int)ceil(bwidth);
+    if (border_width == 0)
+      return;
 
-  (void)children_expand; /* unset if not a container */
+    /* add to the label natural size */
+    *w += 2 * border_width;
+    *h += 2 * border_width;
+
+    (void)children_expand; /* unset if not a container */
+  }
 }
 
 
@@ -172,6 +183,7 @@ Iclass* iupGLButtonNewClass(void)
   iupClassRegisterAttribute(ic, "BACKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FITTOBACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FRONTIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRONTIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

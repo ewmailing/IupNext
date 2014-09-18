@@ -390,26 +390,30 @@ static void iGLCanvasBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   for (child = ih->firstchild; child; child = child->brother)
   {
+    int border = iupAttribGetBoolean(ih, "BORDER");
+
     int vert_pos = iGLCanvasBoxGetVerticalAlign(child);
     int horiz_pos = iGLCanvasBoxGetHorizontalAlign(child);
 
     if (vert_pos == IUP_ALIGN_ACENTER)
-      y = (ih->currentheight - child->currentheight) / 2;
+      y = (ih->currentheight - 2* border - child->currentheight) / 2;
     else if (vert_pos == IUP_ALIGN_ABOTTOM)
-      y = ih->currentheight - child->currentheight - vert_margin;
+      y = ih->currentheight - 2 * border - child->currentheight - vert_margin;
     else if (vert_pos == IUP_ALIGN_ATOP)
       y = vert_margin;
     else  /* FLOAT */
       y = child->y;
 
     if (horiz_pos == IUP_ALIGN_ACENTER)
-      x = (ih->currentwidth - child->currentwidth) / 2;
+      x = (ih->currentwidth - 2 * border - child->currentwidth) / 2;
     else if (horiz_pos == IUP_ALIGN_ARIGHT)
-      x = ih->currentwidth - child->currentwidth - horiz_margin;
+      x = ih->currentwidth - 2 * border - child->currentwidth - horiz_margin;
     else if (horiz_pos == IUP_ALIGN_ALEFT)
       x = horiz_margin;
     else  /* FLOAT */ 
       x = child->x;
+
+    /* do not include border in the positioning. It is already considered in CLIENTOFFSET. */
 
     iupBaseSetPosition(child, x, y);
   }

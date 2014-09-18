@@ -33,22 +33,32 @@ typedef struct _iGLVal
 } iGLVal;
 
 
-static int iGLValGetHandlerSize(Ihandle* ih, int is_horizontal)
+static void iGLValGetHandlerSize(Ihandle* ih, int is_horizontal, int *width, int *height)
 {
-  int handler_size = iupAttribGetInt(ih, "HANDLERSIZE");
-
-  if (is_horizontal)
-  {
-    if (handler_size == 0)
-      handler_size = ih->currentheight / 2;
-  }
+  char *image = iupAttribGet(ih, "IMAGE");
+  if (image)
+    iupGLImageGetInfo(image, width, height, NULL);
   else
   {
-    if (handler_size == 0)
-      handler_size = ih->currentwidth / 2;
-  }
+    int handler_size = iupAttribGetInt(ih, "HANDLERSIZE");
 
-  return handler_size;
+    if (is_horizontal)
+    {
+      if (handler_size == 0)
+        handler_size = ih->currentheight / 2;
+
+      *width = handler_size;
+      *height = ih->currentheight;
+    }
+    else
+    {
+      if (handler_size == 0)
+        handler_size = ih->currentwidth / 2;
+
+      *width = ih->currentwidth;
+      *height = handler_size;
+    }
+  }
 }
 
 static int iGLValACTION_CB(Ihandle* ih)
@@ -61,31 +71,33 @@ static int iGLValACTION_CB(Ihandle* ih)
   int slider_size = iupAttribGetInt(ih, "SLIDERSIZE");
   int border_width = (int)ceil(bwidth);
   int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
-  int handler_size = iGLValGetHandlerSize(ih, is_horizontal);
+  int handler_width, handler_height;
   char *image = iupAttribGet(ih, "IMAGE");
   char* bgimage = iupAttribGet(ih, "BACKIMAGE");
   double percent = (val->value - val->vmin) / (val->vmax - val->vmin);
   int x1, y1, x2, y2;
 
+  iGLValGetHandlerSize(ih, is_horizontal, &handler_width, &handler_height);
+
   if (is_horizontal)
   {
-    x1 = handler_size / 2;
-    x2 = ih->currentwidth - 1 - handler_size / 2;
+    x1 = handler_width / 2;
+    x2 = ih->currentwidth - 1 - handler_width / 2;
     y1 = (ih->currentheight - slider_size) / 2;
-    y2 = (ih->currentheight + slider_size) / 2;
+    y2 = y1 + slider_size;
   }
   else
   {
-    y1 = handler_size / 2;
-    y2 = ih->currentheight - 1 - handler_size / 2;
+    y1 = handler_height / 2;
+    y2 = ih->currentheight - 1 - handler_height / 2;
     x1 = (ih->currentwidth - slider_size) / 2;
-    x2 = (ih->currentwidth + slider_size) / 2;
+    x2 = x1 + slider_size;
   }
 
   /* draw slider background */
   if (bgimage)
-    iupGLDrawImageZoom(ih, x1 + border_width, x2 - border_width,
-                           y1 + border_width, y2 - border_width,
+    iupGLDrawImageZoom(ih, border_width, border_width,
+                           border_width, border_width,
                            "BACKIMAGE", bgimage, active);
   else
   {
@@ -101,8 +113,8 @@ static int iGLValACTION_CB(Ihandle* ih)
   {
     int xmid = x1 + iupRound((x2 - x1) * percent);
 
-    x1 = xmid - handler_size / 2;  if (x1 < 0) x1 = 0;
-    x2 = xmid + handler_size / 2;  if (x2 > ih->currentwidth - 1) x2 = ih->currentwidth - 1;
+    x1 = xmid - handler_width / 2;  if (x1 < 0) x1 = 0;
+    x2 = xmid + handler_width / 2;  if (x2 > ih->currentwidth - 1) x2 = ih->currentwidth - 1;
     y1 = 0;
     y2 = ih->currentheight - 1;
   }
@@ -110,8 +122,8 @@ static int iGLValACTION_CB(Ihandle* ih)
   {
     int ymid = y1 + iupRound((y2 - y1) * (1.0 - percent));
 
-    y1 = ymid - handler_size / 2;  if (y1 < 0) y1 = 0;
-    y2 = ymid + handler_size / 2;  if (y2 > ih->currentheight - 1) y2 = ih->currentheight - 1;
+    y1 = ymid - handler_height / 2;  if (y1 < 0) y1 = 0;
+    y2 = ymid + handler_height / 2;  if (y2 > ih->currentheight - 1) y2 = ih->currentheight - 1;
     x1 = 0;
     x2 = ih->currentwidth - 1;
   }
@@ -170,24 +182,41 @@ static void iGLValCropValue(iGLVal* val)
     val->value = val->vmin;
 }
 
-static int iGLValGetHandlerInfo(Ihandle* ih, int dx, int dy, int is_horizontal, int *p, int *p1, int *p2)
+static int iGLValGetSliderInfo(Ihandle* ih, int dx, int dy, int is_horizontal, int *p, int *p1, int *p2, int *handler_op_size)
 {
-  int handler_size = iGLValGetHandlerSize(ih, is_horizontal);
+  int handler_width, handler_height;
+  iGLValGetHandlerSize(ih, is_horizontal, &handler_width, &handler_height);
 
   if (is_horizontal)
   {
-    *p1 = handler_size / 2;
-    *p2 = ih->currentwidth - 1 - handler_size / 2;
+    *p1 = handler_width / 2;
+    *p2 = ih->currentwidth - 1 - handler_width / 2;
     *p = dx;
+    if (handler_op_size) *handler_op_size = handler_height;
+    return handler_width;
   }
   else
   {
-    *p1 = handler_size / 2;
-    *p2 = ih->currentheight - 1 - handler_size / 2;
+    *p1 = handler_height / 2;
+    *p2 = ih->currentheight - 1 - handler_height / 2;
     *p = dy;
+    if (handler_op_size) *handler_op_size = handler_width;
+    return handler_height;
   }
+}
 
-  return handler_size;
+static void iGLValGetSliderOpositeInfo(Ihandle* ih, int dx, int dy, int is_horizontal, int *q, int *op_size)
+{
+  if (is_horizontal)
+  {
+    *op_size = ih->currentheight;
+    *q = dy;
+  }
+  else
+  {
+    *op_size = ih->currentwidth;
+    *q = dx;
+  }
 }
 
 static int iGLValMoveHandler(Ihandle* ih, int dx, int dy)
@@ -197,7 +226,7 @@ static int iGLValMoveHandler(Ihandle* ih, int dx, int dy)
   double percent, old_percent, delta;
   int dp, p1, p2;
 
-  iGLValGetHandlerInfo(ih, dx, dy, is_horizontal, &dp, &p1, &p2);
+  iGLValGetSliderInfo(ih, dx, dy, is_horizontal, &dp, &p1, &p2, NULL);
 
   if (dp == 0)
     return 0;
@@ -223,9 +252,9 @@ static int iGLValIsInsideHandler(Ihandle* ih, int x, int y)
   iGLVal* val = (iGLVal*)iupAttribGet(ih, "_IUP_GLVAL");
   int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
   double percent;
-  int p, p1, p2, pmid;
+  int p, p1, p2, pmid, handler_op_size;
 
-  int handler_size = iGLValGetHandlerInfo(ih, x, y, is_horizontal, &p, &p1, &p2);
+  int handler_size = iGLValGetSliderInfo(ih, x, y, is_horizontal, &p, &p1, &p2, &handler_op_size);
 
   percent = (val->value - val->vmin) / (val->vmax - val->vmin);
   if (!is_horizontal)
@@ -235,10 +264,23 @@ static int iGLValIsInsideHandler(Ihandle* ih, int x, int y)
   p1 = pmid - handler_size / 2;
   p2 = pmid + handler_size / 2;
 
-  if (p < p1 || p > p2)
-    return 0;
+  if (p >= p1 && p <= p2)
+  {
+    int q, q1, q2, qmid, op_size;
+
+    iGLValGetSliderOpositeInfo(ih, x, y, is_horizontal, &q, &op_size);
+
+    qmid = op_size / 2;
+    q1 = qmid - handler_op_size / 2;
+    q2 = qmid + handler_op_size / 2;
+
+    if (q >= q1 && q <= q2)
+      return 1;
+    else
+      return 0;
+  }
   else
-    return 1;
+    return 0;
 }
 
 static int iGLValBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
@@ -385,22 +427,33 @@ static void iGLValComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chi
 {
   int natural_w = 0,
       natural_h = 0;
-  int charwidth, charheight;
-  int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
+  int fit2backimage = iupAttribGetBoolean(ih, "FITTOBACKIMAGE");
+  char* bgimage = iupAttribGet(ih, "BACKIMAGE");
 
-  iupGLFontGetCharSize(ih, &charwidth, &charheight);
-
-  if (is_horizontal)
+  if (fit2backimage && bgimage)
   {
-    natural_h = charheight;
-    if (ih->userwidth <= 0)
-      natural_w = 15 * charwidth;
+    iupAttribSet(ih, "BORDERWIDTH", "0");
+    iupGLImageGetInfo(bgimage, &natural_w, &natural_h, NULL);
   }
   else
   {
-    natural_w = charheight;
-    if (ih->userheight <= 0)
-      natural_h = 15 * charwidth;
+    int charwidth, charheight;
+    int is_horizontal = iupStrEqualNoCase(iupAttribGetStr(ih, "ORIENTATION"), "HORIZONTAL");
+
+    iupGLFontGetCharSize(ih, &charwidth, &charheight);
+
+    if (is_horizontal)
+    {
+      natural_h = charheight;
+      if (ih->userwidth <= 0)
+        natural_w = 15 * charwidth;
+    }
+    else
+    {
+      natural_w = charheight;
+      if (ih->userheight <= 0)
+        natural_h = 15 * charwidth;
+    }
   }
 
   *w = natural_w;
@@ -475,6 +528,7 @@ Iclass* iupGLValNewClass(void)
   iupClassRegisterAttribute(ic, "BACKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FITTOBACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }
