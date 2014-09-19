@@ -1722,7 +1722,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
 
       if (c == TEXT('\b'))
       {              
-        if (!winTextCallActionCb(ih, NULL, -1))
+        if (!winTextCallActionCb(ih, NULL, -1))  /* backspace */
           ret = 1;
       }
       else if (c == TEXT('\n') || c == TEXT('\r'))
@@ -1734,21 +1734,26 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
           insert_value[0] = '\n';
           insert_value[1] = 0;
 
-          if (!winTextCallActionCb(ih, insert_value, 0))
+          if (!winTextCallActionCb(ih, insert_value, 0))  /* insert new line */
             ret = 1;
         }
       }
-      else if (!(GetKeyState(VK_CONTROL) & 0x8000 ||
-                 GetKeyState(VK_MENU) & 0x8000 ||
-                 GetKeyState(VK_LWIN) & 0x8000 || 
-                 GetKeyState(VK_RWIN) & 0x8000))
+      else 
       {
-        TCHAR insert_value[2];
-        insert_value[0] = c;
-        insert_value[1] = 0;
+        int has_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
+        int has_alt = GetKeyState(VK_MENU) & 0x8000;
+        int has_sys = (GetKeyState(VK_LWIN) & 0x8000) || (GetKeyState(VK_RWIN) & 0x8000);
 
-        if (!winTextCallActionCb(ih, iupwinStrFromSystem(insert_value), 0))
-          ret = 1;
+        if ((!has_ctrl && !has_alt && !has_sys) ||  /* only process when no modifiers are used */
+            (has_ctrl && has_alt && !has_sys))      /* except when Ctrl and Alt are pressed at the same time */
+        {
+          TCHAR insert_value[2];
+          insert_value[0] = c;
+          insert_value[1] = 0;
+
+          if (!winTextCallActionCb(ih, iupwinStrFromSystem(insert_value), 0))  /* insert */
+            ret = 1;
+        }
       }
 
       PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
@@ -1767,7 +1772,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     {
       if (wp == VK_DELETE) /* Del does not generates a WM_CHAR */
       {
-        if (!winTextCallActionCb(ih, NULL, 1))
+        if (!winTextCallActionCb(ih, NULL, 1))  /* delete */
           ret = 1;
       }
       else if (wp == VK_INSERT && ih->data->has_formatting)
@@ -1787,7 +1792,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
         insert_value[0] = '\n';
         insert_value[1] = 0;
 
-        if (!winTextCallActionCb(ih, insert_value, 0))
+        if (!winTextCallActionCb(ih, insert_value, 0))  /* insert new line */
           ret = 1;
       }
 
@@ -1808,7 +1813,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     }
   case WM_CLEAR:
     {
-      if (!winTextCallActionCb(ih, NULL, 1))
+      if (!winTextCallActionCb(ih, NULL, 1))  /* same as delete */
         ret = 1;
 
       PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
@@ -1816,7 +1821,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     }
   case WM_CUT:
     {
-      if (!winTextCallActionCb(ih, NULL, 1))
+      if (!winTextCallActionCb(ih, NULL, 1))  /* same as delete */
         ret = 1;
 
       PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
@@ -1831,7 +1836,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
         IupDestroy(clipboard);
         if (insert_value)
         {
-          if (!winTextCallActionCb(ih, insert_value, 0))
+          if (!winTextCallActionCb(ih, insert_value, 0))  /* insert */
             ret = 1;
         }
       }

@@ -1320,17 +1320,22 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
       {
         ret = 1;
       }
-      else if (!(GetKeyState(VK_CONTROL) & 0x8000 ||
-                 GetKeyState(VK_MENU) & 0x8000 ||
-                 GetKeyState(VK_LWIN) & 0x8000 || 
-                 GetKeyState(VK_RWIN) & 0x8000))
+      else
       {
-        TCHAR insert_value[2];
-        insert_value[0] = c;
-        insert_value[1] = 0;
+        int has_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
+        int has_alt = GetKeyState(VK_MENU) & 0x8000;
+        int has_sys = (GetKeyState(VK_LWIN) & 0x8000) || (GetKeyState(VK_RWIN) & 0x8000);
 
-        if (!winListCallEditCb(ih, cbedit, iupwinStrFromSystem(insert_value), 0))
-          ret = 1;
+        if ((has_ctrl && has_alt && !has_sys) ||
+            (!has_ctrl && !has_alt && !has_sys))
+        {
+          TCHAR insert_value[2];
+          insert_value[0] = c;
+          insert_value[1] = 0;
+
+          if (!winListCallEditCb(ih, cbedit, iupwinStrFromSystem(insert_value), 0))
+            ret = 1;
+        }
       }
 
       PostMessage(cbedit, WM_IUPCARET, 0, 0L);
