@@ -1782,7 +1782,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
         else
           iupAttribSet(ih, "OVERWRITE", "ON");  /* toggle from OFF to ON */
       }
-      else if (wp == 'A' && GetKeyState(VK_CONTROL) & 0x8000)   /* Ctrl+A = Select All */
+      else if (wp == 'A' && GetKeyState(VK_CONTROL) & 0x8000 && !(GetKeyState(VK_MENU) & 0x8000))   /* Ctrl+A = Select All (no Alt key) */
       {
         SendMessage(ih->handle, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
       }
