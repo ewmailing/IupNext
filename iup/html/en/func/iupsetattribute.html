@@ -90,15 +90,18 @@ as a string, only a reference is stored. Therefore, you can store application
 custom attributes, such as a context structure to be used in a callback.</p>
 <p><strong>IupSetStrAttribute</strong> (old <strong>IupStoreAttribute</strong>) 
 can only store strings. The given string value will be duplicated internally.&nbsp;</p>
+<p><strong>Id</strong> based attributes are always non inheritable, so all
+<strong>IupSet*Id</strong> functions will not propagate the attribute to the 
+children. </p>
 
 <h3>Examples</h3>
 
 <p>A very common mistake when using <strong>IupSetAttribute</strong> is to use local string arrays to set attributes. For ex:</p>
 
-<pre> char value[30];<br>sprintf(value, "CODE - %d", i);<br>IupSetAttribute(dlg, "BADEXAMPLE", value)  // <span class="style1"><strong>WRONG</strong></span>  (value pointer will be internally stored, <br>                                           //         but its memory will be released at the end of this scope)
+<pre>char value[30];<br>sprintf(value, "CODE - %d", i);<br>IupSetAttribute(dlg, "BADEXAMPLE", value)  // <span class="style1"><strong>WRONG</strong></span>  (value pointer will be internally stored, <br>                                           //         but its memory will be released at the end of this scope)
                                            // a common bad practice is to declare value as static<br>                                           // Use <strong>IupSetStrAttribute</strong> in this case</pre>
 
-<pre> char *value = malloc(30);<br>sprintf(value, "%d", i);<br>IupSetAttribute(dlg, "EXAMPLE", value)     // correct  (but to avoid memory leaks you should free the pointer<br>                                                        after the dialog has been destroyed)</pre>
+<pre>char *value = malloc(30);<br>sprintf(value, "%d", i);<br>IupSetAttribute(dlg, "EXAMPLE", value)     // correct  (but to avoid memory leaks you should free the pointer<br>                                                        after the dialog has been destroyed)</pre>
 
 <pre>IupSetAttribute(dlg, "VISIBLE", "YES")     // correct (constant values still exists after this scope)
 IupSetAttribute(text, "VALUE", "Hello!");
@@ -106,7 +109,7 @@ IupSetAttribute(indicator, "VALUE", "ON");</pre>
 
 <pre>char attrib[30];<br>sprintf(attrib, "MY ITEM (%d)", i);<br>IupSetAttribute(dlg, attrib, "Test")       // correct (attribute names are always internally duplicated)</pre>
 
-<pre> struct{<br>  int x;<br>  int y;<br>} myData;<br><br>IupSetAttribute(text, "myData", (char*)&amp;myData);  // <span class="style1"><strong>WRONG</strong></span>, will work only i<span class="style2">f</span> myData i<span class="style2">s</span> a global variable.</pre>
+<pre>struct{<br>  int x;<br>  int y;<br>} myData;<br><br>IupSetAttribute(text, "myData", (char*)&amp;myData);  // <span class="style1"><strong>WRONG</strong></span>, will work only i<span class="style2">f</span> myData i<span class="style2">s</span> a global variable.</pre>
 
 <pre>struct myData* mydata = malloc(sizeof(struct myData));<br>IupSetAttribute(dlg, "MYDATA", (char*)mydata);    // correct (unknown attributes will be stored as pointers)</pre>
 

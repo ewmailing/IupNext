@@ -96,7 +96,7 @@ int iupClassObjectSetAttributeId2(Ihandle* ih, const char* name, int id1, int id
   IattribFunc* afunc;
 
   if (ih->iclass->has_attrib_id!=2)
-    return 0;
+    return 1;  /* function not found, default to string */
 
   if (name[0]==0)
     name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
@@ -132,7 +132,7 @@ int iupClassObjectSetAttributeId2(Ihandle* ih, const char* name, int id1, int id
       return -1; /* value is NOT a string, can NOT call iupAttribSetStr */
   }
 
-  return 1;
+  return 1;  /* function not found, default to string */
 }
 
 int iupClassObjectSetAttributeId(Ihandle* ih, const char* name, int id, const char * value)
@@ -140,7 +140,7 @@ int iupClassObjectSetAttributeId(Ihandle* ih, const char* name, int id, const ch
   IattribFunc* afunc;
 
   if (ih->iclass->has_attrib_id==0)
-    return 0;
+    return 1;  /* function not found, default to string */
 
   if (name[0]==0)
     name = "IDVALUE";  /* pure numbers are used as attributes in IupList and IupMatrix, 
@@ -168,7 +168,7 @@ int iupClassObjectSetAttributeId(Ihandle* ih, const char* name, int id, const ch
       return -1; /* value is NOT a string, can NOT call iupAttribSetStr */
   }
 
-  return 1;
+  return 1;  /* function not found, default to string */
 }
 
 int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value, int *inherit)
@@ -274,7 +274,7 @@ int iupClassObjectSetAttribute(Ihandle* ih, const char* name, const char * value
     }
   }
 
-  return 1;
+  return 1;  /* function not found, default to string */
 }
 
 char* iupClassObjectGetAttributeId2(Ihandle* ih, const char* name, int id1, int id2)
