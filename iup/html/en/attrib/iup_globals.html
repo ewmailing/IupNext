@@ -43,7 +43,7 @@ be used if you set the element handle to NULL.</p>
     referring to corrections only. Ex.: &quot;1.7.2&quot;.</p>
 <h3><a name="copyright"><strong>COPYRIGHT</strong></a> (read-only)</h3>
 <p>Returns the IUP's copyright.</p>
-<p>&nbsp;Ex: &quot;Copyright (C) 1994-2013 Tecgraf/PUC-Rio&quot;.</p>
+<p>&nbsp;Ex: &quot;Copyright (C) 1994-2014 Tecgraf/PUC-Rio&quot;.</p>
 <h3>LASTERROR [Windows Only]<span class="style2"> (since 3.6)</span></h3>
 <p>If an error is found, returns a string with the system error description.</p>
 <h3>IUPLUA_THREADED<span class="style2"> (since 3.6)</span></h3>
@@ -167,6 +167,10 @@ names: </p>
   <li>&quot;Win7&quot;</li>
   <li>&quot;Win8&quot;</li>
 </ul>
+	<p>Notice that &quot;Windows 8.1&quot; will normally be detected as &quot;Windows 8&quot;, 
+	unless a special Manifest is used. See
+	<a href="http://msdn.microsoft.com/EN-US/library/windows/desktop/dn481241(v=vs.85).aspx">
+	MSDN</a> for more information.</p>
 </blockquote>
 <h3><strong>SYSTEMVERSION</strong> 
 (read-only)</h3>
