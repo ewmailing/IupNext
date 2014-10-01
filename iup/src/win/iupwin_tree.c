@@ -2930,6 +2930,8 @@ static int winTreeMapMethod(Ihandle* ih)
       hOldBitmap = SelectObject(hBitmapDC, hBitmap);
       SetDCBrushColor(hBitmapDC, (COLORREF)SendMessage(ih->handle, TVM_GETBKCOLOR, 0, 0));
       FillRect(hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+      if (iupAttribGetBoolean(ih, "EMPTYAS3STATE"))
+        iupwinDraw3StateButton(ih->handle, hBitmapDC, &rect);
       SelectObject(hBitmapDC, hOldBitmap);
       ImageList_Add(image_list, hBitmap, NULL);
 
@@ -3016,6 +3018,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "IMAGELEAF",            NULL, winTreeSetImageLeafAttrib, IUPAF_SAMEASSYSTEM, "IMGLEAF", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEBRANCHCOLLAPSED", NULL, winTreeSetImageBranchCollapsedAttrib, IUPAF_SAMEASSYSTEM, "IMGCOLLAPSED", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEBRANCHEXPANDED",  NULL, winTreeSetImageBranchExpandedAttrib, IUPAF_SAMEASSYSTEM, "IMGEXPANDED", IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EMPTYAS3STATE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - NODES */
   iupClassRegisterAttributeId(ic, "STATE",  winTreeGetStateAttrib,  winTreeSetStateAttrib, IUPAF_NO_INHERIT);
