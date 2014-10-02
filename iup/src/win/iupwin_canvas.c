@@ -83,44 +83,18 @@ static int winCanvasSetDXAttrib(Ihandle* ih, const char *value)
     }
     else
     {
-      ShowScrollBar(ih->handle, SB_HORZ, TRUE);
+      ShowScrollBar(ih->handle, SB_HORZ, FALSE);
       EnableScrollBar(ih->handle, SB_HORZ, ESB_ENABLE_BOTH);
+
+      winCanvasSetScrollInfo(ih->handle, IUP_SB_MIN, IUP_SB_MAX, iposx, ipagex, SB_HORZ);
+      ShowScrollBar(ih->handle, SB_HORZ, TRUE);
+
+      /* update position because it could be corrected */
+      iupCanvasCalcScrollRealPos(xmin, xmax, &posx, 
+                                 IUP_SB_MIN, IUP_SB_MAX, ipagex, &iposx);
+
+      ih->data->posx = (float)posx;
     }
-
-    winCanvasSetScrollInfo(ih->handle, IUP_SB_MIN, IUP_SB_MAX, iposx, ipagex, SB_HORZ);
-
-    /* update position because it could be corrected */
-    iupCanvasCalcScrollRealPos(xmin, xmax, &posx, 
-                               IUP_SB_MIN, IUP_SB_MAX, ipagex, &iposx);
-
-    ih->data->posx = (float)posx;
-  }
-  return 1;
-}
-
-static int winCanvasSetPosXAttrib(Ihandle *ih, const char *value)
-{
-  if (ih->data->sb & IUP_SB_HORIZ)
-  {
-    double xmin, xmax, dx;
-    float posx;
-    int iposx, ipagex;
-
-    if (!iupStrToFloat(value, &posx))
-      return 1;
-
-    xmin = iupAttribGetFloat(ih, "XMIN");
-    xmax = iupAttribGetFloat(ih, "XMAX");
-    dx = iupAttribGetFloat(ih, "DX");
-
-    if (posx < xmin) posx = (float)xmin;
-    if (posx > (xmax - dx)) posx = (float)(xmax - dx);
-    ih->data->posx = posx;
-
-    iupCanvasCalcScrollIntPos(xmin, xmax, dx, posx, 
-                              IUP_SB_MIN, IUP_SB_MAX, &ipagex, &iposx);
-
-    SetScrollPos(ih->handle, SB_HORZ, iposx, TRUE);
   }
   return 1;
 }
@@ -156,17 +130,45 @@ static int winCanvasSetDYAttrib(Ihandle* ih, const char *value)
     }
     else
     {
-      ShowScrollBar(ih->handle, SB_VERT, TRUE);
+      ShowScrollBar(ih->handle, SB_VERT, FALSE);
       EnableScrollBar(ih->handle, SB_VERT, ESB_ENABLE_BOTH);
+
+      winCanvasSetScrollInfo(ih->handle, IUP_SB_MIN, IUP_SB_MAX, iposy, ipagey, SB_VERT);
+      ShowScrollBar(ih->handle, SB_VERT, TRUE);
+
+      /* update position because it could be corrected */
+      iupCanvasCalcScrollRealPos(ymin, ymax, &posy, 
+                                 IUP_SB_MIN, IUP_SB_MAX, ipagey, &iposy);
+
+      ih->data->posy = (float)posy;
     }
+  }
+  return 1;
+}
 
-    winCanvasSetScrollInfo(ih->handle, IUP_SB_MIN, IUP_SB_MAX, iposy, ipagey, SB_VERT);
+static int winCanvasSetPosXAttrib(Ihandle *ih, const char *value)
+{
+  if (ih->data->sb & IUP_SB_HORIZ)
+  {
+    double xmin, xmax, dx;
+    float posx;
+    int iposx, ipagex;
 
-    /* update position because it could be corrected */
-    iupCanvasCalcScrollRealPos(ymin, ymax, &posy, 
-                               IUP_SB_MIN, IUP_SB_MAX, ipagey, &iposy);
+    if (!iupStrToFloat(value, &posx))
+      return 1;
 
-    ih->data->posy = (float)posy;
+    xmin = iupAttribGetFloat(ih, "XMIN");
+    xmax = iupAttribGetFloat(ih, "XMAX");
+    dx = iupAttribGetFloat(ih, "DX");
+
+    if (posx < xmin) posx = (float)xmin;
+    if (posx >(xmax - dx)) posx = (float)(xmax - dx);
+    ih->data->posx = posx;
+
+    iupCanvasCalcScrollIntPos(xmin, xmax, dx, posx,
+      IUP_SB_MIN, IUP_SB_MAX, &ipagex, &iposx);
+
+    SetScrollPos(ih->handle, SB_HORZ, iposx, TRUE);
   }
   return 1;
 }

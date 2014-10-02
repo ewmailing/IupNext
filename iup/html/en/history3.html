@@ -78,7 +78,7 @@ version 3.x.</p>
 	that affects how real values are shown by default in <strong>IupGetParam</strong> 
 	and <strong>IupMatrixEx</strong>.</li>
 	<li><span class="hist_new">New:</span> attribute EMPTYAS3STATE for <strong>
-	IupTree</strong> in Windows.</li>
+	IupTree</strong> on Windows.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	all images in <strong>IupGLControls</strong> are now drawn using OpenGL 
 	textures instead of glDrawPixels.</li>
@@ -103,13 +103,15 @@ version 3.x.</p>
 	BORDER=Yes in <strong>IupGLControls</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> characters processing for the 
 	ACTION callback in <strong>IupText</strong> when they are generated using an 
-	AltGr key combination (Ctrl+Alt) in Windows.</li>
+	AltGr key combination (Ctrl+Alt) on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> Ctrl+A key combination in <strong>
-	IupText</strong> when AltGr key is used in Windows.</li>
+	IupText</strong> when AltGr key is used on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> all
 <strong>IupSet*Id</strong> functions when the element actually does not support
 	<strong>Id</strong> based attributes but the application use the function 
 	for custom attributes.</li>
+	<li><span class="hist_fixed">Fixed:</span> scrollbar programmatic update in
+	<strong>IupCanvas</strong> on Windows.</li>
 
 </ul>
 
@@ -161,8 +163,8 @@ version 3.x.</p>
 	liboverlay-scrollbar in Ubuntu, but SCROLL_CB is limited to IUP_SBPOSV and 
 	IUP_SBPOSH codes.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupDialog</strong> layout 
-	update when maximizing the window in GTK. Invalid IupFlush removed from
-	<strong>IupCanvas</strong> layout update in GTK.</li>
+	update when maximizing the window on GTK. Invalid IupFlush removed from
+	<strong>IupCanvas</strong> layout update on GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> DRAWABLE attribute inside FILE_CB 
 	callback in <strong>IupFileDlg</strong> on GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> Added compatibility code for GTK 3.10.</li>
@@ -180,7 +182,7 @@ version 3.x.</p>
 	IupGLControls</strong> elements.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupButton</strong> and
 	<strong>IupToggle</strong> mouse over feedback when not using Visual Styles 
-	and FLAT=Yes in Windows.</li>
+	and FLAT=Yes on Windows.</li>
 
 </ul>
 
@@ -245,7 +247,7 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> LISTACTION_CB callback when 
 	state=0 in <strong>IupMatrixList</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> ENTERWINDOW_CB callback for
-	<strong>IupLabel</strong> in Windows.</li>
+	<strong>IupLabel</strong> on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> BGCOLOR support in <strong>
 	IupBackgroundBox</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupExpander</strong> 
@@ -256,7 +258,7 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> delete all items in <strong>
 	IupMatrixList</strong> when click the del button on title line.</li>
 	<li><span class="hist_fixed">Fixed:</span> VALUE attribute of <strong>
-	IupList</strong> when EDITBOX=YES and the text box is empty in Windows.</li>
+	IupList</strong> when EDITBOX=YES and the text box is empty on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> MASK attribute processing in
 	<strong>IupMatrixList</strong> when starting to edit a label.</li>
 	<li><span class="hist_fixed">Fixed:</span> Ctrl+V key combination to Paste 
@@ -264,7 +266,7 @@ version 3.x.</p>
 	<strong>IupMatrixList</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupVal</strong> behavior 
 	when inside an <strong>IupBackgroundBox</strong> or <strong>IupScrollBox</strong> 
-	in Windows.</li>
+	on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> attribute return value in Lua 
 	when it was not a string.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupFill</strong> so it 
@@ -309,18 +311,18 @@ version 3.x.</p>
 	and AUTOCCHARDELETED_CB callbacks in <strong>IupScintilla</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> key names in IupLua when 
 	modifiers are used. Thanks to kmx.</li>
-	<li><span class="hist_fixed">Fixed:</span> text with computation in UTF-8 in 
+	<li><span class="hist_fixed">Fixed:</span> text with computation in UTF-8 on 
 	Windows. Thanks to kmx.</li>
 	<li><span class="hist_fixed">Fixed:</span> 3 state check box size in <strong>
 	IupTree</strong> on Windows when using Classic Style. Thanks to kmx.</li>
-	<li><span class="hist_fixed">Fixed:</span> IUP_MOUSEPOS in Windows when the 
+	<li><span class="hist_fixed">Fixed:</span> IUP_MOUSEPOS on Windows when the 
 	taskbar is at the top, or left of the screen.</li>
 	<li><span class="hist_fixed">Fixed:</span> TABTITLE return value after tabs 
 	are added or removed.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupBackgroundBox</strong> 
 	creation in Lua.</li>
 	<li><span class="hist_fixed">Fixed:</span> map error in <strong>IupTabs</strong> 
-	in GTK. </li>
+	on GTK. </li>
 
 </ul>
 
@@ -341,7 +343,7 @@ version 3.x.</p>
 	IupTabs</strong>.</li>
 	<li><span class="hist_new">New:</span> TASKBARPROGRESS, TASKBARPROGRESSSTATE 
 	and TASKBARPROGRESSVALUE attributes for <strong>IupDialog</strong> on 
-	Windows to show a progress feedback on the taskbar running in Windows 7+. </li>
+	Windows to show a progress feedback on the taskbar running on Windows 7+. </li>
 	<li><span class="hist_new">New:</span> COPY, SELECTALL, PRINT and ZOOM 
 	attributes in <strong>IupWebBrowser</strong>.</li>
 	<li><span class="hist_new">New:</span> function<strong> IupImageFromImImage</strong> 
@@ -368,7 +370,7 @@ version 3.x.</p>
 	Lua binding.</li>
 	<li><span class="hist_fixed">Fixed:</span> SAVEUNDER attribute in <strong>
 	IupDialog</strong> on Windows.</li>
-	<li><span class="hist_fixed">Fixed:</span> <strong>IupWebBrowser</strong> in 
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupWebBrowser</strong> on 
 	GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> horizontal frame color in <strong>
 	IupMatrix</strong>.</li>
@@ -378,7 +380,7 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> EXPANDCHILDREN in <strong>IupHbox</strong>,
 	<strong>IupVbox</strong> and <strong>IupGridBox</strong> when children 
 	contains an <strong>IupFill</strong>.</li>
-	<li><span class="hist_fixed">Fixed:</span> Caps Lock processing in Windows.</li>
+	<li><span class="hist_fixed">Fixed:</span> Caps Lock processing on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> COUNT, APPENDITEM, INSERTITEMid 
 	and REMOVEITEM in <strong>IupMatrixList</strong> when EDITABLE=Yes. Drawing 
 	of the empty line when there is no other items. Insertion of the empty line 
@@ -506,7 +508,7 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> VALUE and CHARn attributes 
 	returned value in <strong>IupScintilla</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupToggle</strong> focus 
-	feedback behavior in Windows.</li>
+	feedback behavior on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> missing <strong>IupGridBox</strong> 
 	register in Lua.</li>
 	<li><span class="hist_fixed">Fixed:</span> fail to update <strong>IupTabs</strong> 
@@ -514,7 +516,7 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> documentation of internal 
 	callback parameters format list.</li>
 	<li><span class="hist_fixed">Fixed:</span> unmap of <strong>IupTree</strong>,
-	<strong>IupText</strong> and <strong>IupTabs</strong> in Windows.</li>
+	<strong>IupText</strong> and <strong>IupTabs</strong> on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupScrollBox</strong> 
 	expand behavior to not depends on children expansion, just like it is not 
 	dependent on children size.</li>
@@ -532,21 +534,21 @@ version 3.x.</p>
 	function for <strong>IupMatrix</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> position of dialog using <strong>
 	IupShowXY</strong> when using IUP_LEFT and IUP_TOP, and the taskbar is at 
-	left or top in Windows.</li>
+	left or top on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> fixed internal test for known non 
 	string attributes that affected <strong>IupGetAttributes</strong> and iup.<strong>GetAttribute</strong> 
 	in Lua.</li>
 	<li><span class="hist_fixed">Fixed:</span> clipboard and drag&amp;drop data size 
-	in GTK. </li>
+	on GTK. </li>
 	<li><span class="hist_fixed">Fixed:</span> MASKFLOAT attribute parsing.</li>
 	<li><span class="hist_fixed">Fixed:</span> CANFOCUS=NO in <strong>IupVal</strong> 
 	on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupWebBrowser</strong> 
-	when creating and destroying multiple controls in Windows.</li>
+	when creating and destroying multiple controls on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupPPlotPaintTo</strong> 
 	to update plot sizes.</li>
 	<li><span class="hist_fixed">Fixed:</span> returned value by 
-	SCREENPOSITION/X/Y attributes in Windows when the taskbar is at the top, or 
+	SCREENPOSITION/X/Y attributes on Windows when the taskbar is at the top, or 
 	left of the screen.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupScrollBox</strong> 
 	mouse respond when there is no scrollbars.</li>
@@ -587,7 +589,7 @@ version 3.x.</p>
 	child expansion when the container is greater than the child natural size.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupScrollBox</strong> 
 	binding for Lua.</li>
-	<li><span class="hist_fixed">Fixed:</span> <strong>IupClipboard</strong> in 
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupClipboard</strong> on 
 	Windows was clearing the clipboard contents every time data was copied.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupWebBrowser</strong>&nbsp;for 
 	GTK was using an old function call of the internal SDK.</li>
@@ -595,21 +597,21 @@ version 3.x.</p>
 	being updated when a new file filename was selected in <strong>IupFileDlg</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> in a multi-selection <strong>
 	IupTree</strong> the selection callbacks were being called with status=0 
-	when a single item was selected. In GTK the callback were also called when a 
+	when a single item was selected. on GTK the callback were also called when a 
 	branch were simply expanded or contracted. </li>
-	<li><span class="hist_fixed">Fixed:</span> toggle processing in Windows when SHOWTOGGLE=Yes in <strong>
-	IupTree</strong>. Fixed spacing from toggle to image in Windows. Removed 
-	support for SHOWTOGGLE=Yes in Motif.</li>
-	<li><span class="hist_fixed">Fixed:</span> dialog client size computation in 
+	<li><span class="hist_fixed">Fixed:</span> toggle processing on Windows when SHOWTOGGLE=Yes in <strong>
+	IupTree</strong>. Fixed spacing from toggle to image on Windows. Removed 
+	support for SHOWTOGGLE=Yes on Motif.</li>
+	<li><span class="hist_fixed">Fixed:</span> dialog client size computation on 
 	Windows when the Win32 API returns an invalid value.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupScrollBox</strong> 
 	available space computation.</li>
 	<li><span class="hist_fixed">Fixed:</span> FGCOLOR and PADDING for <strong>
-	IupLabel</strong> when used before map in Windows.</li>
+	IupLabel</strong> when used before map on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> BUTTON_CB, ENTERWINDOW_CB and 
 	LEAVEWINDOW_CB callbacks for <strong>IupLabel</strong> on GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> underline and strikeout support 
-	in GTK.</li>
+	on GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupMatrix</strong> redraw 
 	when selecting lines or columns in a matrix with non scrollable lines or 
 	columns.</li>
@@ -617,7 +619,7 @@ version 3.x.</p>
 	IupButton</strong> on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> &quot;Load Image Lib&quot; feature in
 	<strong>IupView</strong> when using GTK.</li>
-	<li><span class="hist_fixed">Fixed:</span> ZORDER attribute in Motif.</li>
+	<li><span class="hist_fixed">Fixed:</span> ZORDER attribute on Motif.</li>
 
 </ul>
 
@@ -643,10 +645,10 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupGetParam</strong> 
 	callback return value parsing in Lua.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupCanvas</strong> size 
-	when scrollbars are hidden in Motif.</li>
+	when scrollbars are hidden on Motif.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupLabel</strong> missing 
 	drag&amp;drop support.</li>
-	<li><span class="hist_fixed">Fixed:</span> <strong>IupMatrix</strong> in GTK 
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupMatrix</strong> on GTK 
 	when editing a cell and Esc was pressed.</li>
 	<li><span class="hist_fixed">Fixed:</span> the return value for POSX and 
 	POSY in <strong>IupCanvas</strong> when the respective scrollbar is hidden 
@@ -662,12 +664,12 @@ version 3.x.</p>
 	IupText</strong> and <strong>IupList</strong> on Motif to avoid Alt, Ctrl 
 	and Sys keys to generate text input.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupLabel</strong> mnemonic parsing 
-	in GTK.</li>
-	<li><span class="hist_fixed">Fixed:</span> Mnemonic processing in Windows.</li>
+	on GTK.</li>
+	<li><span class="hist_fixed">Fixed:</span> Mnemonic processing on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupButton</strong> visual 
-	feedback when the user double click the button in Windows.</li>
+	feedback when the user double click the button on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupToggle</strong> 
-	response when the user double click the button in Windows.</li>
+	response when the user double click the button on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> natural size computation in
 	<strong>IupMatrix</strong> when BORDER=Yes.</li>
 
@@ -760,7 +762,7 @@ version 3.x.</p>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	horizontal 
 	alignment for text with multiple lines in <strong>IupButton</strong> now 
-	will also align each line in Windows.</li>
+	will also align each line on Windows.</li>
 	<li><strong><span class="hist_changed">Undo:</span></strong> 
 	<span class="style4">removed &quot;P&quot; 
 	from <span class="style5"> <strong class="style3">IupPPlot</strong> additional API functions, because they will 
@@ -818,16 +820,16 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupNormalizer</strong> 
 	parameter checking in LEDC.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid ampersand ('&amp;') 
-	processing in TIPS on Windows. Improved ampersand processing in GTK.</li>
+	processing in TIPS on Windows. Improved ampersand processing on GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> VALUE=OFF display update in
 	<strong>IupToggle</strong> on GTK when using an image in the toggle.</li>
 	<li><span class="hist_fixed">Fixed:</span> dialog layout now considers the 
 	global menu usage on the new Ubuntu Unity desktop.</li>
 	<li><span class="hist_fixed">Fixed:</span> SELECTION_CB in <strong>IupTree</strong> 
 	not being called for the last unselected node in a multi-selection tree, 
-	when that node is re-selected. In Windows that node was also not being 
+	when that node is re-selected. on Windows that node was also not being 
 	selected.</li>
-	<li><span class="hist_fixed">Fixed:</span> In GTK changing focus was also 
+	<li><span class="hist_fixed">Fixed:</span> on GTK changing focus was also 
 	changing the selection in a multiple selection <strong>IupTree</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid initialization of <strong>
 	IupList</strong> when GTK version is older than 2.12.</li>
@@ -835,7 +837,7 @@ version 3.x.</p>
 	<strong>IupText</strong> on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> improved memory usage in variable 
 	parameter attribute functions.</li>
-	<li><span class="hist_fixed">Fixed:</span> MDI dialogs and menu behavior in 
+	<li><span class="hist_fixed">Fixed:</span> MDI dialogs and menu behavior on 
 	Windows.</li>
 
 </ul>
@@ -857,7 +859,7 @@ version 3.x.</p>
 	<li><span class="hist_new">New:</span> LIMITEXPAND attribute for <strong>
 	IupMatrix</strong>.</li>
 	<li><span class="hist_new">New:</span> IUP_Webcam image in the IupImageLib.</li>
-	<li><span class="hist_new">New:</span> global attribute SHOWMENUIMAGES in 
+	<li><span class="hist_new">New:</span> global attribute SHOWMENUIMAGES on 
 	GTK, with default value &quot;Yes&quot;.</li>
 	<li><span class="hist_new">New:</span> NUMCOL_NOSCROLL and NUMLIN_NOSCROLL 
 	attributes for the <strong>IupMatrix</strong> that add more non scrollable 
@@ -902,7 +904,7 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> the old BUTTON_RELEASE_CB 
 	callback in <strong>IupVal</strong> on GTK not being called.</li>
 	<li><span class="hist_fixed">Fixed:</span> multiline text size computation 
-	in Windows and Motif when the last line is empty.</li>
+	on Windows and Motif when the last line is empty.</li>
 	<li><span class="hist_fixed">Fixed:</span> VALUE* attributes in <strong>
 	IupTabs</strong> on Motif when the new value is equal to the current value.</li>
 	<li><span class="hist_fixed">Fixed:</span> Ctrl+V, Ctrl+C, Ctrl+X and Ctrl+A 
@@ -915,7 +917,7 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> TIP attribute in <strong>IupTree</strong> 
 	on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> balloon tip attributes names to 
-	TIPBALLOON, TIPBALLOONTITLE and TIPBALLOONTITLEICON in Windows.</li>
+	TIPBALLOON, TIPBALLOONTITLE and TIPBALLOONTITLEICON on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> functions <strong>
 	IupPPlotInsertStrPoints</strong> and <strong>IupPPlotInsertPoints</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid editing when using 
@@ -937,7 +939,7 @@ version 3.x.</p>
 	<li><span class="hist_new">New:</span> common attribute SCREENPOSITION that 
 	returs the X and Y attributes at once.</li>
 	<li><span class="hist_new">New:</span> ACTIVEWINDOW attribute for <strong>
-	IupDialog</strong> in Windows and GTK.</li>
+	IupDialog</strong> on Windows and GTK.</li>
 	<li><span class="hist_new">New:</span> EDITNEXT attribute for <strong>
 	IupMatrix</strong> to control the next cell after editing.</li>
 	<li><span class="hist_new">New:</span> FITTOTEXT action attribute, 
@@ -953,7 +955,7 @@ version 3.x.</p>
 	<strong>IupText</strong>.</li>
 	<li><b><span class="hist_new">New:</span></b> SYSTEMLOCALE global attribute.</li>
 	<li><span class="hist_changed">Changed:</span>
-    removed compatibility with old bc55, gcc3 and mingw3 compilers in Windows. 
+    removed compatibility with old bc55, gcc3 and mingw3 compilers on Windows. 
 	Depending on the Cygwin installation gcc3 may still works.</li>
 	<li><span class="hist_changed">Changed:</span>
     improved internal class inheritance so iupClassNew can use 
@@ -969,12 +971,12 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> removed call to <strong>
 	cdCanvasFlush</strong> when <strong>IupPPlotPaintTo</strong> is used.</li>
 	<li><span class="hist_fixed">Fixed:</span> FILTER and EXTFILTER attributes 
-	of <strong>IupFileDlg</strong> in GTK when more than one pattern is 
+	of <strong>IupFileDlg</strong> on GTK when more than one pattern is 
 	specified for the same filter (&quot;*.jpg;*.bmp&quot;).</li>
 	<li><span class="hist_fixed">Fixed:</span> RESIZE=NO was incorrectly forcing 
-	MINBOX=NO for <strong>IupDialog</strong> in GTK.</li>
+	MINBOX=NO for <strong>IupDialog</strong> on GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> compatibility with GTK 2.22.</li>
-	<li><span class="hist_fixed">Fixed:</span> padding warning in GTK when using
+	<li><span class="hist_fixed">Fixed:</span> padding warning on GTK when using
 	<strong>IupButton</strong> with IMPRESS.</li>
 	<li><span class="hist_fixed">Fixed:</span> X and Y attributes in the GTK 
 	driver for all controls. X and Y attributes in the Windows 
@@ -985,7 +987,7 @@ version 3.x.</p>
 	dialog of the <strong>IupLayoutDialog</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> behavior of BGCOLOR, GETFOCUS_CB, 
 	KILLFOCUS_CB, and K_ANY for <strong>
-	IupList</strong> when DROPDOWN=Yes in GTK.</li>
+	IupList</strong> when DROPDOWN=Yes on GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> parameters &quot;o&quot; and &quot;n&quot; in 
 	iup.<strong>GetParam</strong> when used in Lua.</li>
 	<li><span class="hist_fixed">Fixed:</span> added support for <strong>
@@ -1027,8 +1029,8 @@ it.</p>
     removed reason parameter from NAVIGATE_CB callback in <strong>IupWebBrowser</strong>.<strong> </strong>
 	VALUE attribute will load always on the top frame.</li>
 	<li><span class="hist_fixed">Fixed:</span> VALUE attribute of <strong>IupWebBrowser</strong> 
-	was write only in Windows. Memory allocation that affected NAVIGATE_CB and 
-	NEWWINDOW_CB in Windows. Added missing Lua binding pre-compiled libraries.</li>
+	was write only on Windows. Memory allocation that affected NAVIGATE_CB and 
+	NEWWINDOW_CB on Windows. Added missing Lua binding pre-compiled libraries.</li>
 
 </ul>
 
@@ -1037,7 +1039,7 @@ it.</p>
 <ul>
 
 	<li><span class="hist_new">New:</span> <strong>IupWebBrowser</strong> 
-	control using an embedded Internet Explorer in Windows, and Webkit in Linux.</li>
+	control using an embedded Internet Explorer on Windows, and Webkit in Linux.</li>
 	<li><span class="hist_new">New:</span> Perl binding for IUP by Kmx at
 	<a href="http://github.com/kmx/perl-iup">GitHub</a>.</li>
 	<li><span class="hist_new">New:</span> global attribute MOUSEBUTTON to send 
@@ -1064,7 +1066,7 @@ it.</p>
 	<li><span class="hist_new">New:</span> FLAT attribute for <strong>IupToggle</strong> 
 	when IMAGE is defined.</li>
 	<li><span class="hist_new">New:</span> AUTOREDRAW attribute for <strong>
-	IupTree</strong> and <strong>IupList</strong> so redraw can be disabled in 
+	IupTree</strong> and <strong>IupList</strong> so redraw can be disabled on 
 	Windows.</li>
 	<li><span class="hist_new">New:</span> functions <strong>IupCopyClassAttributes</strong>, <strong>IupGetClassCallbacks</strong> 
 	and <strong>IupGetAllClasses</strong>.</li>
@@ -1081,7 +1083,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	select a font, similar to the &quot;c&quot; parameter that selects a color.</li>
 	<li><span class="hist_new">New:</span> DROPEQUALDRAG attribute for <strong>
 	IupTree</strong>.</li>
-	<li><span class="hist_new">New:</span> <strong>IupFontDlg</strong> in Motif.</li>
+	<li><span class="hist_new">New:</span> <strong>IupFontDlg</strong> on Motif.</li>
 	<li><span class="hist_new">New:</span> FITTOSIZE action attribute in <strong>
 	IupMatrix</strong>.</li>
 	<li><span class="hist_new">New:</span> callbacks BUTTON_CB, DROPFILES_CB, ENTERWINDOW_CB 
@@ -1150,7 +1152,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_fixed">Fixed:</span> the cleaner syntax feature for 
 	separator creation in Lua.</li>
 	<li><span class="hist_fixed">Fixed:</span> returned value in RASTERSIZE for 
-	the <strong>IupDialog</strong> in GTK and Motif.</li>
+	the <strong>IupDialog</strong> on GTK and Motif.</li>
 	<li><span class="hist_fixed">Fixed:</span> missing <strong>IupSetCallbacks</strong> 
 	export for &quot;iup.dll&quot;.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupFileDlg</strong> on 
@@ -1162,7 +1164,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> TABTITLEn attribute return value 
 	of <strong>IupTabs</strong> when TABTITLE was set at a child.</li>
-	<li><span class="hist_fixed">Fixed:</span> SCREENSIZE global attribute in 
+	<li><span class="hist_fixed">Fixed:</span> SCREENSIZE global attribute on 
 	GTK when using multiple monitors.</li>
 	<li><span class="hist_fixed">Fixed:</span> MARKEDid attribute in <strong>
 	IupTree</strong> on Windows when MARKMODE=SINGLE, was not changing the focus 
@@ -1171,23 +1173,23 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	FORMATTING=Yes in <strong>IupText</strong> on Windows. Thanks to Nicolas 
 	Noble.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupMessageDlg</strong> 
-	modality in Windows, when PARENTDLG is not specified then it will be modal 
+	modality on Windows, when PARENTDLG is not specified then it will be modal 
 	relative to all application dialogs.</li>
-	<li><span class="hist_fixed">Fixed:</span> mnemonic support for TABTITLE in 
+	<li><span class="hist_fixed">Fixed:</span> mnemonic support for TABTITLE on 
 	GTK and Motif.</li>
 	<li><span class="hist_fixed">Fixed:</span> drag&amp;drop, move and copy of nodes 
 	in <strong>IupTree</strong> on GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> mapping of standard font names to 
-	Pango names in GTK.</li>
+	Pango names on GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid current cell in <strong>
 	IupMatrix</strong> after adding lines or column to a matrix that had 0 lines 
 	or 0 columns.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupSetFocus</strong> was 
-	not working in GTK if the dialog does not has the focus.</li>
+	not working on GTK if the dialog does not has the focus.</li>
 	<li><span class="hist_fixed">Fixed:</span> RESIZE_CB callback in <strong>
-	IupCanvas</strong> not being called after the canvas is mapped in GTK.</li>
+	IupCanvas</strong> not being called after the canvas is mapped on GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> removed Scrollbar warning when 
-	creating a multiline <strong>IupText</strong> in Motif.</li>
+	creating a multiline <strong>IupText</strong> on Motif.</li>
 	<li><span class="hist_fixed">Fixed:</span> FONT handling in <strong>IupText</strong> 
 	on Windows when FORMATTING=Yes.</li>
 	<li><span class="hist_fixed">Fixed:</span> Enter key processing when editing 
@@ -1212,11 +1214,11 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_new">New:</span> function <strong>IupResetAttribute</strong>.</li>
 	<li><span class="hist_new">New:</span> MINMAX attribute for <strong>IupSplit</strong>.</li>
 	<li><span class="hist_new">New:</span> global attribute SINGLEINSTANCE so 
-	the application can restrict the number of its instances in Windows. 
-	COPYDATA_CB callback for <strong>IupDialog</strong> in Windows to receive 
+	the application can restrict the number of its instances on Windows. 
+	COPYDATA_CB callback for <strong>IupDialog</strong> on Windows to receive 
 	the command line of the secondary instances when SINGLEINSTANCE is used.</li>
 	<li><span class="hist_new">New:</span> attributes WMFAVAILABLE, 
-	EMFAVAILABLE, SAVEWMF and SAVEEMF for <strong>IupClipboard</strong> in 
+	EMFAVAILABLE, SAVEWMF and SAVEEMF for <strong>IupClipboard</strong> on 
 	Windows.</li>
 	<li><span class="hist_changed">Changed:</span>
     some Lua parameters that use &quot;number&quot; to &quot;integer&quot;.</li>
@@ -1227,7 +1229,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
     <strong>IupSaveClassAttributes</strong> to not save values that are equal to 
 	the default values.</li>
 	<li><span class="hist_changed">Changed:</span>
-    <strong>IupFileDlg</strong> behavior in Motif to avoid auto resize when a 
+    <strong>IupFileDlg</strong> behavior on Motif to avoid auto resize when a 
 	directory is changed.</li>
 	<li><span class="hist_changed">Changed:</span>
     C function <strong>iuplua_dofile</strong> will now check for the IUPLUA_DIR 
@@ -1249,8 +1251,8 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupView</strong> 
 	executable in Win64.</li>
 	<li><span class="hist_fixed">Fixed:</span> RIGHTCLICK_CB called twice when
-	<strong>IupTree</strong> is inside two <strong>IupTabs</strong> in Windows.</li>
-	<li><span class="hist_fixed">Fixed:</span> <strong>IupLoopStep</strong> in 
+	<strong>IupTree</strong> is inside two <strong>IupTabs</strong> on Windows.</li>
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupLoopStep</strong> on 
 	Windows to process the IDLE callback.</li>
 	<li><span class="hist_fixed">Fixed:</span> natural size of <strong>IupText</strong> 
 	and <strong>IupMatrix</strong> when SCROLLBAR is VERTICAL or HORIZONTAL 
@@ -1360,7 +1362,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_fixed">Fixed:</span> invalid memory access on multiple 
 	selection callback management in <strong>IupList</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> compatibility code for deprecated 
-	functions in GTK 2.20.</li>
+	functions on GTK 2.20.</li>
 	<li><span class="hist_fixed">Fixed:</span> FILE_CB callback file parameter 
 	in <strong>IupFileDlg</strong> when multiple files are selected on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> RENAME_CB callback being called 
@@ -1389,7 +1391,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
     propagation of attributes will be ignored at a child where the attribute is 
 	marked as non inheritable.</li>
 	<li><span class="hist_changed">Changed:</span>
-    double click sequence of events in GTK to match the sequences in Windows and 
+    double click sequence of events on GTK to match the sequences on Windows and 
 	Motif.</li>
 	<li><span class="hist_changed">Changed:</span>
     when IMAGE is defined for a <strong>IupButton</strong>, TITLE will be also 
@@ -1416,9 +1418,9 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_fixed">Fixed:</span> invalid call to SELECTION_CB 
 	callback in <strong>IupTree</strong> on Windows when MARKMODE=MULTIPLE and 
 	the user pressed the Ctrl key to select an item. Missing call to 
-	SELECTION_CB in GTK and Motif when user unselect multiple nodes at once. Invalid change of the 
+	SELECTION_CB on GTK and Motif when user unselect multiple nodes at once. Invalid change of the 
 	selection when focus is changed in <strong>IupTree</strong> on Windows 
-	Vista/7 when not using visual styles. In GTK and Motif children of not 
+	Vista/7 when not using visual styles. on GTK and Motif children of not 
 	expanded nodes were not being selected when multiple nodes were selected in 
 	one operation.</li>
 	<li><span class="hist_fixed">Fixed:</span> interpretation of comments inside 
@@ -1450,7 +1452,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	Old name also works.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupList</strong> with 
 	DROPDOWN=Yes and the last item is removed.</li>
-	<li><span class="hist_fixed">Fixed:</span> dynamic BGCOLOR change in Windows 
+	<li><span class="hist_fixed">Fixed:</span> dynamic BGCOLOR change on Windows 
 	for <strong>IupText</strong>, <strong>IupList</strong>, <strong>IupVal</strong> 
 	and <strong>IupTabs</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> duplicate call to TABCHANGE_CB in
@@ -1479,7 +1481,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_fixed">Fixed:</span> VALUE attribute in <strong>
 	IupTree</strong> when MARKMODE=SINGLE, on Windows was not unselecting the 
 	previous node, on GTK if set during the SELECTION_CB was aborting the next 
-	call to the callback. In GTK and Motif was also not showing the node if 
+	call to the callback. on GTK and Motif was also not showing the node if 
 	inside a collapsed branch.</li>
 
 </ul>
@@ -1506,18 +1508,18 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	attributes for <strong>IupHbox</strong> and <strong>IupVbox</strong>.</li>
 	<li><span class="hist_new">New:</span> &quot;OTHER&quot; status code for FILE_CB when 
 	selecting an invalid file name or a directory in <strong>IupFileDlg</strong>.</li>
-	<li><span class="hist_new">New:</span> DLL_HINSTANCE global attribute in 
+	<li><span class="hist_new">New:</span> DLL_HINSTANCE global attribute on 
 	Windows.</li>
 	<li><span class="hist_changed">Changed:</span>
     Added a workaround for TITLEFONTid for <strong>IupTree</strong> when 
-	changing only the Bold style in Windows.</li>
+	changing only the Bold style on Windows.</li>
 	<li><span class="hist_changed">Changed:</span>
     the RENAMENODE_CB callback in <strong>IupTree</strong> is not supported 
 	anymore.</li>
 	<li><span class="hist_changed">Changed:</span>
     improved compatibility of <strong>IupFileDlg</strong> when DIALOGTYPE=DIR 
 	and CoInitializeEx was initialized with COINIT_MULTITHREADED prior to <strong>IupOpen</strong> 
-	in Windows.</li>
+	on Windows.</li>
 	<li><span class="hist_changed">Changed:</span>
     <strong>IupFrame</strong> can now has a color background when not using 
 	TITLE, and BGCOLOR is set before map.</li>
@@ -1529,15 +1531,15 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_fixed">Fixed:</span> invalid layout computation when 
 	using the old <strong>IupSpin</strong> element.</li>
 	<li><span class="hist_fixed">Fixed:</span> STATE attribute for <strong>
-	IupTree</strong> in Windows when branch has no child. </li>
+	IupTree</strong> on Windows when branch has no child. </li>
 	<li><span class="hist_fixed">Fixed:</span> invalid redraw of some controls 
-	when dialog is resized in Windows.</li>
+	when dialog is resized on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid memory access for 
 	SYSTEMVERSION global attribute in Linux. Thanks to David Given.</li>
 	<li><span class="hist_fixed">Fixed:</span> missing convertion to UTF-8 in
 	<strong>IupButton</strong> when handling TITLE at map in the GTK driver.</li>
 	<li><span class="hist_fixed">Fixed:</span> image branch update when branch 
-	STATE is changed in <strong>IupTree</strong> in Windows.</li>
+	STATE is changed in <strong>IupTree</strong> on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> SHOWRENAME_CB callback when 
 	renaming is started clicking twice in <strong>IupTree</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid limit check in VALUE 
@@ -1554,7 +1556,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_fixed">Fixed:</span> invalid memory access when 
 	destroying some of the additional controls that use CD.</li>
 	<li><span class="hist_fixed">Fixed:</span> incomplete redraw of the <strong>
-	IupCanvas</strong> in Windows XP when a window moves over the canvas.</li>
+	IupCanvas</strong> on Windows XP when a window moves over the canvas.</li>
 	<li><span class="hist_fixed">Fixed:</span> missing call to ACTION when an 
 	item that was replaced is clicked in <strong>IupList</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> switch of a complete menu in
@@ -1573,7 +1575,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 
 <ul>
 	<li><span class="hist_new">New:</span> MOVE_CB callback for <strong>
-	IupDialog</strong> in Windows and GTK.</li>
+	IupDialog</strong> on Windows and GTK.</li>
 	<li><span class="hist_new">New:</span> SPINNING attribute for <strong>
 	IupGetParam</strong> when the callback is activated by a spin.</li>
 	<li><span class="hist_new">New:</span> KEYPRESS, KEYRELEASE and KEY global 
@@ -1589,7 +1591,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	of <strong>IupMatrix</strong> to indicate if the value will be updated. </li>
 	<li><span class="hist_new">New: </span>auxiliary functions <strong>
 	IupGLUseFont</strong> and <strong>IupGLWait</strong> for the <strong>
-	IupGLCanvas</strong>. attribute REFRESHCONTEXT in Windows.</li>
+	IupGLCanvas</strong>. attribute REFRESHCONTEXT on Windows.</li>
 	<li><strong><span class="style2">New:</span></strong> VALUECHANGED_CB 
 	callback for <strong>IupVal</strong>, <strong>IupDial</strong>,
 	<strong>IupColorBrowser</strong>, <strong>IupToggle</strong>, <strong>
@@ -1612,7 +1614,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
     the function <strong>iup.key_open</strong> is now obsolete and not necessary 
 	anymore. </li>
 	<li><span class="hist_changed">Changed:</span>
-    improved transparency for 8bpp images in Windows.</li>
+    improved transparency for 8bpp images on Windows.</li>
 	<li><span class="hist_changed">Changed:</span>
     in <strong>IupMatrix</strong> since the selection is made only using the 
 	mouse, by pressing a key will NOT clear the selection anymore. You can still 
@@ -1627,7 +1629,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	to allow more flexibility and control of the layout process.</li>
 	<li><span class="hist_changed">Changed:</span>
     LAYERED and LAYERALPHA attributes are now condensed in the OPACITY 
-	attribute. The OPACITY is available in Windows and GTK.</li>
+	attribute. The OPACITY is available on Windows and GTK.</li>
 	<li><span class="hist_fixed">Fixed:</span> the functions <strong>
 	IupPreviousField</strong> and <strong>IupNextField</strong> to respect the 
 	dialog hierarchy order. </li>
@@ -1636,22 +1638,22 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	edit mode at the focus cell. Marks were processed after ENTERCELL_CB when 
 	the user single click a cell. Enter key processed also for the next cell 
 	when MULTIPLE=YES after editing ended.</li>
-	<li><span class="hist_fixed">Fixed:</span> STARTFOCUS in Motif and Win32 for
+	<li><span class="hist_fixed">Fixed:</span> STARTFOCUS on Motif and Win32 for
 	<strong>IupDialog</strong> where not working. Now STARTFOCUS is set only if 
 	SHOW_CB did not changed the current focus.</li>
-	<li><span class="hist_fixed">Fixed:</span> DLGBGCOLOR in Motif where 
+	<li><span class="hist_fixed">Fixed:</span> DLGBGCOLOR on Motif where 
 	incorrectly set.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupToggle</strong> redraw 
 	inside an
-	<strong>IupFrame</strong> in Windows XP where disapearing.</li>
+	<strong>IupFrame</strong> on Windows XP where disapearing.</li>
 	<li><span class="hist_fixed">Fixed:</span> background color of the edit box 
-	of <strong>IupTree</strong> in Windows XP where black.</li>
+	of <strong>IupTree</strong> on Windows XP where black.</li>
 	<li><span class="hist_fixed">Fixed:</span> release of stock images in
 	<strong>IupClose</strong> caused the application to crash.</li>
 	<li><span class="hist_fixed">Fixed:</span> auxiliar function <strong>
 	iup.TreeSetUserId</strong> in Lua when releasing the previous reference.</li>
 	<li><span class="hist_fixed">Fixed:</span> ACTION callback of <strong>
-	IupButton</strong> in Windows when FOCUSONCLICK=NO was not being called.</li>
+	IupButton</strong> on Windows when FOCUSONCLICK=NO was not being called.</li>
 	<li><span class="hist_fixed">Fixed:</span> return value of <strong>
 	IupSaveImage</strong> was inverted.</li>
 	<li><span class="hist_fixed">Fixed:</span> export of image in Lua at the
@@ -1660,13 +1662,13 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 <strong>IupGetParam</strong> when specifying full intervals without the step 
 	parameter.</li>
 	<li><span class="hist_fixed">Fixed:</span>
-	DEFAULTENTER and DEFAULTESC in Windows when focus is inside an <strong>
-	IupTabs</strong>. Also in Windows they were processed before K_ANY, so K_ANY 
+	DEFAULTENTER and DEFAULTESC on Windows when focus is inside an <strong>
+	IupTabs</strong>. Also on Windows they were processed before K_ANY, so K_ANY 
 	could not abort them by returning IUP_IGNORE.</li>
 	<li><span class="hist_fixed">Fixed:</span>
 	K_ANY called twice for K_CR when <strong>IupText</strong> has multiple lines 
-	in Windows.</li>
-	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> in 
+	on Windows.</li>
+	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> on 
 	Windows when a pre-defined system dialog was closed with Enter or Esc, the 
 	key was propagated to the dialog that open it.</li>
 	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
@@ -1675,20 +1677,20 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	and <strong>IupPreviousField</strong> for all drivers. Those functions were 
 	also improved.</li>
 	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
-	in GTK the VISIBLE attribute returned invalid result when child is hidden by 
+	on GTK the VISIBLE attribute returned invalid result when child is hidden by 
 	its parent.</li>
 	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
-	in Windows the text color of a selected item of an <strong>IupTree</strong> 
+	on Windows the text color of a selected item of an <strong>IupTree</strong> 
 	was not inverted.</li>
 	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
-	in Windows the VALUE attribute of a inactive <strong>IupItem</strong> was 
+	on Windows the VALUE attribute of a inactive <strong>IupItem</strong> was 
 	always OFF.</li>
 	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
-	ENTERWINDOW_CB and LEAVEWINDOW_CB for <strong>IupCanvas</strong> in Windows 
+	ENTERWINDOW_CB and LEAVEWINDOW_CB for <strong>IupCanvas</strong> on Windows 
 	were not being called.</li>
 	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
 	HELP_CB was not working for <strong>IupVal</strong>, <strong>IupTabs</strong> 
-	and <strong>IupTree</strong> in Motif.</li>
+	and <strong>IupTree</strong> on Motif.</li>
 	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
 	USETITLESIZE attribute logic in <strong>IupMatrix</strong>.</li>
 	<li><span class="style1"><span class="hist_fixed">Fixed</span>:</span> 
@@ -1702,7 +1704,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 
 <ul>
 	<li><span class="hist_new">New: </span>
-	MONITORSINFO and VIRTUALSCREEN global attributes now also available in GTK.</li>
+	MONITORSINFO and VIRTUALSCREEN global attributes now also available on GTK.</li>
 	<li><span class="hist_new">New: </span>
 	USETITLESIZE attribute for <strong>IupMatrix</strong>.</li>
 	<li><span class="hist_new">New: </span> DEFAULTFONTSIZE global attribute.</li>
@@ -1712,8 +1714,8 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
     the default alignment for <strong>IupButton</strong> (Text and Image) and 
 	IupToggle (Image) to &quot;ACENTER:ACENTER&quot;.</li>
 	<li><span class="hist_changed">Changed:</span>
-    improved decoration size computation for <strong>IupDialog</strong> in GTK.</li>
-	<li><span class="hist_fixed">Fixed:</span> <strong>IupItem</strong> in GTK 
+    improved decoration size computation for <strong>IupDialog</strong> on GTK.</li>
+	<li><span class="hist_fixed">Fixed:</span> <strong>IupItem</strong> on GTK 
 	when compiled in versions older than 2.14, but run in newer versions.</li>
     <li><strong><span class="hist_fixed">Fixed:</span></strong> alignment of 
 	buttons in <strong>IupAlarm</strong>.</li>
@@ -1734,20 +1736,20 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	IupMatrix. </strong>
 	default cell alignment. BGCOLOR and FGCOLOR to use the global default colors 
 	instead of &quot;255 255 255&quot; and &quot;0 0 0&quot;. drawing details. misbehavior of the 
-	scrollbar in GTK. improved IUP 2 compatibility when calling VALUE_CB and 
+	scrollbar on GTK. improved IUP 2 compatibility when calling VALUE_CB and 
 	when consulting titles to compute cell size.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span></strong> VALUE management 
 	in <strong>IupZbox</strong>.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span></strong> removed &quot;cannot 
 	add non scrollable widget&quot; warning message when creating a <strong>
-	IupCanvas</strong> in GTK.</li>
+	IupCanvas</strong> on GTK.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span></strong> ADDEXPANDED in <strong>
 	IupTree</strong>.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span></strong> SIZE 
 	consideration in layout computation for
 	<strong>IupDialog</strong>.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span></strong> 
-	DIALOGTYPE=MESSAGE for <strong>IupMessageDlg</strong> in GTK.</li>
+	DIALOGTYPE=MESSAGE for <strong>IupMessageDlg</strong> on GTK.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span></strong> 
 	<strong>IupButton</strong> with no text and no image, but with BGCOLOR 
 	defined will properly show the color.</li>
@@ -1761,7 +1763,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 <ul>
 
   <li><span class="hist_new">New: </span>checked for memory leaks using <a href="http://dmoulding.googlepages.com/vld">
-	VLD</a> in Windows and
+	VLD</a> on Windows and
 	<a href="http://valgrind.org/">Valgrind</a> in Linux.</li>
 	<li><span class="hist_new">New:</span>
 	PREVIEWGLCANVAS attribute for <strong>IupFileDlg</strong>.</li>
@@ -1811,19 +1813,19 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	IupTextConvertXYToChar</strong> and <strong>IupListConvertXYToItem</strong>
 	where replaced by <strong>IupConvertXYToPos</strong>, that also works for
 	<strong>IupTree</strong>.</li>
-	<li><span class="hist_changed">Changed:</span> added support for WHEEL_CB in 
+	<li><span class="hist_changed">Changed:</span> added support for WHEEL_CB on 
 	GTK for <strong>IupCanvas</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> IupLua initialization when 
 	retrieving the argc/argv arguments for <strong>IupOpen</strong>. (Thanks to 
 	Ross Berteig)</li>
 	<li><span class="hist_fixed">Fixed:</span> Arg initialization for all 
-	controls in Motif driver.</li>
+	controls on Motif driver.</li>
 	<li><span class="hist_fixed">Fixed:</span> update of the POSX and POSY 
 	attributes for the <strong>IupCanvas</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> FONT size round when converting 
-	from pixels to points in Windows. (Thanks to Devin Smith)</li>
+	from pixels to points on Windows. (Thanks to Devin Smith)</li>
 	<li><span class="hist_fixed">Fixed:</span> button disappearing after mouse 
-	over in Windows XP.</li>
+	over on Windows XP.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupMatrix</strong> when 
 	NUMCOL/NUMLIN were less than NUMCOL_VISIBLE/NUMLIN_VISIBLE. Also fixed when 
 	NUMCOL/NUMLIN were 0 and changed to 1, and when removed 1. CURSOR attribute 
@@ -1874,7 +1876,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_fixed">Fixed:</span> HOMOGENEOUS attribute for <strong>
 	IupVbox</strong> and
 	<strong>IupHbox</strong>.</li>
-	<li><span class="hist_fixed">Fixed:</span> CARET attribute in GTK driver was 
+	<li><span class="hist_fixed">Fixed:</span> CARET attribute on GTK driver was 
 	not correctly scrolling the multiline text when not visible.</li>
 	<li><span class="hist_fixed">Fixed:</span> parameter checking and the return 
 	value in Lua for
@@ -1886,7 +1888,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<strong>IupGetAllAttributes</strong>
 	were not implemented in IupLua.</li>
 	<li><span class="hist_fixed">Fixed:</span> The 32 bits version of the IupLua 
-	console in Windows XP64 was not working.</li>
+	console on Windows XP64 was not working.</li>
 	<li><span class="hist_fixed">Fixed:</span> CARET_CB and <strong>
 	IupTextConvertXYToChar</strong> in <strong>IupText</strong> when 
 	MULTILINE=YES and FORMATTING=NO.</li>
@@ -1908,11 +1910,11 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	-</strong> the following headers were deprecated iupgetparam.h, iupspin.h, 
 	iuptabs.h, iupval.h - use iup.h only</li>
 
-  <li><span class="hist_fixed">Fixed: </span>set VALUE attribute for IupText in 
-	Windows when formatting is used.</li>
+  <li><span class="hist_fixed">Fixed: </span>set VALUE attribute for IupText on 
+  Windows when formatting is used.</li>
 
   <li><span class="hist_fixed">Fixed:</span>
-<strong>IupHide</strong> when dialog was maximized in Windows.</li>
+<strong>IupHide</strong> when dialog was maximized on Windows.</li>
 
   <li><span class="hist_fixed">Fixed:</span> get VALUE attribute for <strong>
 	IupText</strong> in all drivers, after the element is mapped it must return 
@@ -1921,8 +1923,8 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
   <li><span class="hist_fixed">Fixed:</span>
 <strong>IupGetParam</strong> when specifying partial intervals.</li>
 
-  <li><span class="hist_fixed">Fixed:</span> K_Esc key callback processing in 
-	Windows.</li>
+  <li><span class="hist_fixed">Fixed:</span> K_Esc key callback processing on 
+  Windows.</li>
 
   <li><span class="hist_fixed">Fixed:</span>
 	PLACEMENT and FULLSCREEN for IupPopup.</li>
@@ -1995,14 +1997,14 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
   <li><span class="hist_new">New:</span>
 	TIP additional attributes (Motif and Windows): TIPFONT, TIPDELAY, 
 	TIPBGCOLOR, TIPFGCOLOR, TIPBALLON (Windows Only), TIPBALLONTITLE (Windows 
-	Only), TIPBALLONTITLEICON (Windows Only), TIPVISIBLE. Not available in GTK.</li>
+	Only), TIPBALLONTITLEICON (Windows Only), TIPVISIBLE. Not available on GTK.</li>
 
   <li><span class="hist_new">New:</span>
 	TIPRECT auxiliary attribute for the TIP common attribute.</li>
 
   <li><span class="hist_changed">Changed:</span>
 	attribute FONT now uses a common a more flexible definition for all drivers, 
-	old format is still supported. The default FONT in Motif is now &quot;Fixed, 10&quot;.</li>
+	old format is still supported. The default FONT on Motif is now &quot;Fixed, 10&quot;.</li>
 
   <li><span class="hist_changed">Changed:</span>
     <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
@@ -2031,10 +2033,10 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 <ul>
 
   <li><span class="hist_new">New:</span>
-	APPSHELL, XDISPLAY, XSCREEN, XSERVERVENDOR, XVENDORRELEASE in Motif.</li>
+	APPSHELL, XDISPLAY, XSCREEN, XSERVERVENDOR, XVENDORRELEASE on Motif.</li>
 
   <li><span class="hist_new">New:</span>
-	VIRTUALSCREEN and MONITORSINFO in Windows.</li>
+	VIRTUALSCREEN and MONITORSINFO on Windows.</li>
 
   <li><span class="hist_changed">Changed:</span>
 	LANGUAGE default from PORTUGUESE to ENGLISH.</li>
@@ -2123,7 +2125,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 <ul>
 
   <li><span class="hist_new">New:</span>
-	MINSIZE and MAXSIZE attributes. In Windows MINSIZE is ignored for systems 
+	MINSIZE and MAXSIZE attributes. on Windows MINSIZE is ignored for systems 
 	with multiple monitors. The Windowing system may impose a minimum default 
 	limit for the dialog that includes the title bar with all it buttons.</li>
 
@@ -2155,7 +2157,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	open the color selection dialog.</li>
 
   <li><span class="hist_changed">Changed:</span>
-	SAVEUNDER dialog attribute now is also available in Motif.</li>
+	SAVEUNDER dialog attribute now is also available on Motif.</li>
 
   <li><span class="hist_changed">Changed:</span>
 	DROPFILES_CB callback is now available for all controls. It is only 
@@ -2164,7 +2166,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	and <b>IupDialog</b>.</li>
 
   <li><span class="hist_changed">Changed: </span>the default value of the 
-	Windows attribute COMPOSITED is now YES, except in Windows Vista.</li>
+	Windows attribute COMPOSITED is now YES, except on Windows Vista.</li>
 
   <li><span class="hist_changed">Changed:</span><b>
 	IupDestroy</b> is now automatically called for child dialogs when the parent 
@@ -2183,16 +2185,16 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	CLIPRECT attribute, a rectangle that has its region invalidated for paiting.</li>
 
   <li><span class="hist_changed">Changed:</span>
-	if ACTION is defined nothing is painted in the canvas, now also in Motif. </li>
+	if ACTION is defined nothing is painted in the canvas, now also on Motif. </li>
 
   <li><span class="hist_changed">Changed:</span>
-	BORDER is now also supported in Motif.</li>
+	BORDER is now also supported on Motif.</li>
 
   <li><span class="hist_changed">Changed:</span>
     <span class="hist_fixed"><strong> ATTENTION</strong></span><strong>
 	-</strong> now scrollbar parameters min, max, page size and line size are 
 	updated when DX/DY are updated. POSX and POSY will only update the position 
-	of the scrollbar. Automatic hide of the scrollbar now works also in Motif.</li>
+	of the scrollbar. Automatic hide of the scrollbar now works also on Motif.</li>
 
 </ul>
 
@@ -2230,8 +2232,8 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 <ul>
 
   <li><span class="hist_new">New:</span>
-	APPENDNEWLINE and PADDING attributes. CUEBANNER and FILTER attributes in 
-	Windows.</li>
+	APPENDNEWLINE and PADDING attributes. CUEBANNER and FILTER attributes on 
+  Windows.</li>
 
   <li><span class="hist_new">New:</span>
 	MASK attribute for <strong>IupText</strong>, <strong>IupMultiline</strong>,
@@ -2240,7 +2242,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	supported anymore.</li>
 
   <li><span class="hist_new">New:</span>
-	text formatting using FORMATTING and ADDFORMATTAG attributes in Windows and 
+	text formatting using FORMATTING and ADDFORMATTAG attributes on Windows and 
 	GTK. New attribute OVERWRITE when using text formatting.</li>
 
   <li><span class="hist_new">New:</span>
@@ -2274,7 +2276,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	updated on screen.</li>
 
   <li><span class="hist_changed">Changed:</span>
-	the SELECTION and CARET attribute in Windows do NOT change the focus 
+	the SELECTION and CARET attribute on Windows do NOT change the focus 
 	anymore. The NC attribute now only restricts keyboard input.</li>
 
   <li><span class="hist_changed">Changed:</span>
@@ -2375,7 +2377,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
   <li><span class="hist_changed">Changed:</span>
 	An <strong>IupGLCanvas</strong> when inside an <strong>IupFrame</strong>
 	in Win32 will now work normally. But the dialog COMPOSITE attribute must be 
-	NO for hardware acceleration in Windows.</li>
+	NO for hardware acceleration on Windows.</li>
 
 </ul>
 
@@ -2397,7 +2399,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	RADIO attribute for <strong> IupMenu</strong>.</li>
 
   <li><span class="hist_changed">Changed:</span>
-	In GTK to have a menu item that can be marked you must set the VALUE 
+	on GTK to have a menu item that can be marked you must set the VALUE 
 	attribute to ON or OFF, or set HIDEMARK=NO, before mapping the control.</li>
 
   <li><span class="hist_changed">Changed:</span>
@@ -2428,7 +2430,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	and <b>IupImageRGBA</b> constructors.</li>
 
   <li><span class="hist_new">New:</span>
-	&quot;UPARROW&quot; cursor in Motif. New cursors &quot;RESIZE_NS&quot;&nbsp; and &quot;RESIZE_WE&quot;. Updated 
+	&quot;UPARROW&quot; cursor on Motif. New cursors &quot;RESIZE_NS&quot;&nbsp; and &quot;RESIZE_WE&quot;. Updated 
 	cursor documentation with pictures of all pre-defined cursors. </li>
 
   <li><span class="hist_changed">Changed:</span>
@@ -2455,7 +2457,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	key definitions: K_acute, K_ccedilla, K_Print, K_Menu.</li>
 
   <li><span class="hist_new">New:</span>
-	key definitions for the system key modifier K_y*. In Windows this is the 
+	key definitions for the system key modifier K_y*. on Windows this is the 
 	Windows key and in Mac this is the Apple key.</li>
 
   <li><span class="hist_new">New:</span>
