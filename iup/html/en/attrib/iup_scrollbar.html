@@ -107,6 +107,38 @@ posx = (xmax - xmin)*old_posx_relative + xmin</pre>
 <p>
 <strong>IupList,</strong> <strong>IupTree</strong>, and <strong>IupText/IupMultiline</strong> scrollbars are 
 automatically managed and do NOT have the POS*, *MIN, *MAX and D* attributes.</p>
+<p>
+When updating the virtual space size, or when the canvas is resized, if <strong>XAUTOHIDE</strong>=Yes 
+then calculating the actual DX size can be very tricky. Here is a a helpful 
+algorithm:</p>
+<pre>// view_width and view_height is the virtual space size
+// here we assume XMIN=0, XMAX=1, YMIN=0, YMAX=1
+
+int scrollbar_size = IupGetInt(NULL, "SCROLLBARSIZE");
+int border = IupGetInt(ih, "BORDER");
+IupGetIntInt(ih, "RASTERSIZE", &elem_width, &elem_height);
+
+/* if view is greater than canvas in one direction,
+   then it has scrollbars,
+   but this affects the opposite direction */
+elem_width -= 2 * border;  /* remove BORDER (always size=1) */
+elem_height -= 2&nbsp;* border;
+canvas_width = elem_width;
+canvas_height = elem_height;
+if (view_width > elem_width)  /* check for horizontal scrollbar */
+  canvas_height -= scrollbar_size;  /* affect vertical size */
+if (view_height > elem_height)
+  canvas_width -= scrollbar_size;
+if (view_width <= elem_width && view_width > canvas_width)  /* check if still has horizontal scrollbar */
+  canvas_height -= scrollbar_size;
+if (view_height <= elem_height && view_height > canvas_height)
+  canvas_width -= scrollbar_size;
+if (canvas_width < 0) canvas_width = 0;
+if (canvas_height < 0) canvas_height = 0;
+
+IupSetFloat(ih, IUP_DX, (float)canvas_width / (float)view_width);
+IupSetFloat(ih, IUP_DY, (float)canvas_height / (float)view_height);
+</pre>
 <h3>Affects</h3>
 <p><a href="../elem/iuplist.html">IupList</a>,
 <a href="../elem/iupmultiline.html">IupMultiline</a>, <a href="../elem/iupcanvas.html">IupCanvas</a></p>
