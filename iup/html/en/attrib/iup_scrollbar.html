@@ -81,7 +81,8 @@ virtual space, NOT to &quot;width-1&quot;, or the last pixel of the virtual spac
 never be visible. If you decide to let XMAX with the default value of 1.0 
 and to control only DX, then use the formula DX=visible_width/width.</p>
 <p>
-When the virtual space has the same size as the canvas, DX equals XMAX-XMIN, the 
+<span class="style2"><strong>IMPORTANT:</strong></span> 
+When the virtual space has the same size as the canvas, i.e. when <strong>DX &gt;= XMAX-XMIN</strong>, the 
 scrollbar is automatically hidden if <strong>XAUTOHIDE</strong>=Yes. The width 
 of the vertical scrollbar (the same as the height of the horizontal scrollbar) 
 can be obtained using the SCROLLBARSIZE global attribute (since 3.9).</p>
@@ -91,6 +92,7 @@ oriented from top to bottom in IUP. So if you want to consider YMIN and YMAX as
 bottom-up oriented, then the actual YPOS must be obtained using <strong>
 YMAX-DY-POSY</strong>.</p>
 <p>
+<span class="style2"><strong>IMPORTANT:</strong></span> 
 Changes in the scrollbar parameters do NOT generate ACTION nor SCROLL_CB 
 callback events. If you need to update the canvas contents call your own action 
 callback or call <b>IupUpdate</b>.</p>
