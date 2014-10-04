@@ -134,7 +134,7 @@ public:
   void DoZoomIn (float inX1, float inX2, float inY1, float inY2);
   void DoZoomOut (float inY1 = -1, float inY2 = -1);
   bool CanZoomOut () { return !mZoomHistory.empty (); };
-  int  GetZoomStackSize () { return mZoomHistory.size (); };
+  int  GetZoomStackSize () { return (int)mZoomHistory.size (); };
   void RepeatZoom(const PZoomInteraction& inZoomInteraction, int off_x, int off_y);
 
   stack<PAxisInfo> mZoomHistory;

@@ -872,9 +872,14 @@ class MarkDataDrawer: public LineDataDrawer
      _ih = inHandle;
    };
    virtual bool DrawPoint (int inScreenX, int inScreenY, const PRect &inRect, Painter &inPainter) const;
+   virtual DataDrawerBase* Clone() const;
 protected:
   Ihandle *_ih;   // IUP handle
 };
+
+DataDrawerBase* MarkDataDrawer::Clone() const {
+  return new MarkDataDrawer(*this);
+}
 
 bool MarkDataDrawer::DrawPoint (int inScreenX, int inScreenY, const PRect &inRect, Painter &inPainter) const
 {
@@ -1823,7 +1828,9 @@ static int iPPlotSetDSModeAttrib(Ihandle* ih, const char* value)
     theDataDrawer = new BarDataDrawer();
     ih->data->plt->_plot.mXAxisSetup.mDiscrete = true;
   }
-  else if(iupStrEqualNoCase(value, "MARK"))
+  else if (iupStrEqualNoCase(value, "AREA"))
+    theDataDrawer = new AreaDataDrawer();
+  else if (iupStrEqualNoCase(value, "MARK"))
     theDataDrawer = new MarkDataDrawer(0, ih);
   else if(iupStrEqualNoCase(value, "MARKLINE"))
     theDataDrawer = new MarkDataDrawer(1, ih);
@@ -3110,6 +3117,30 @@ void PPainterIup::FillArrow(int inX1, int inY1, int inX2, int inY2, int inX3, in
   cdCanvasVertex(_ih->data->cddbuffer, inX1, cdCanvasInvertYAxis(_ih->data->cddbuffer, inY1));
   cdCanvasVertex(_ih->data->cddbuffer, inX2, cdCanvasInvertYAxis(_ih->data->cddbuffer, inY2));
   cdCanvasVertex(_ih->data->cddbuffer, inX3, cdCanvasInvertYAxis(_ih->data->cddbuffer, inY3));
+  cdCanvasEnd(_ih->data->cddbuffer);
+}
+
+void PPainterIup::BeginArea()
+{
+  if (!_ih->data->cddbuffer)
+    return;
+
+  cdCanvasBegin(_ih->data->cddbuffer, CD_FILL);
+}
+
+void PPainterIup::AddVertex(float inX, float inY)
+{
+  if (!_ih->data->cddbuffer)
+    return;
+
+  cdfCanvasVertex(_ih->data->cddbuffer, inX, cdfCanvasInvertYAxis(_ih->data->cddbuffer, inY));
+}
+
+void PPainterIup::EndArea()
+{
+  if (!_ih->data->cddbuffer)
+    return;
+
   cdCanvasEnd(_ih->data->cddbuffer);
 }
 

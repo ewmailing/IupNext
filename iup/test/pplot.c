@@ -107,6 +107,7 @@ static void InitPlots(void)
   IupPPlotEnd(plot[0]);
   IupSetAttribute(plot[0], "DS_LINEWIDTH", "3");
   IupSetAttribute(plot[0], "DS_LEGEND", "Line");
+//  IupSetAttribute(plot[0], "DS_MODE", "AREA");
 
   theFac = (float)2.0/100;
   IupPPlotBegin(plot[0], 0);

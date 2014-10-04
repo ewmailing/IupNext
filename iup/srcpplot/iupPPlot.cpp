@@ -1586,6 +1586,7 @@ bool PPlot::DrawLegend (const PRect &inRect, Painter &inPainter) const {
 }
 #endif
 
+#if 0
 static float GetMaxFromRange (const PlotDataBase &inData, long inStartIndex, long inEndIndex) {
     float max = 0;
     float fabsMax = 0;
@@ -1634,6 +1635,7 @@ static void FindRange (const PlotDataBase &inData, float inMin, float inMax, lon
     }
     assert (outStartIndex>-1);
 }
+#endif
 
 static void DrawValue(int theTraX, int theTraY, float theX, float theY, const PlotDataBase &inXData, const AxisSetup &inXAxisSetup, Painter &inPainter)
 {
@@ -1672,33 +1674,14 @@ bool LineDataDrawer::DrawData (const PlotDataBase &inXData, const PlotDataBase &
   bool theFirst = true;
   float theTraX, theTraY;
 
-  long theStart = 0;
   long theEnd = inXData.GetSize () - 1;
-  int theStride = 1;
-  if (mDrawFast) {
-      FindRange (inXData, inXAxisSetup.mMin, inXAxisSetup.mMax, theStart, theEnd);
 
-      theStride = (theEnd - theStart + 1) / inPainter.GetWidth ();
-      if (theStride == 0) {
-          theStride = 1;
-      }
-  }
-
-  for (int theI = theStart; theI <= theEnd; theI+=theStride) {
-
+  for (long theI = 0; theI <= theEnd; theI++) 
+  {
     float theY;
     float theX = inXData.GetValue (theI);
     theTraX = mXTrafo->Transform (theX);
-    if (theStride > 1) {
-      long theLast = theI + theStride - 1;
-      if (theLast>theEnd) {
-        theLast = theEnd;
-      }
-      theY = GetMaxFromRange (inYData, theI, theLast);
-    }
-    else {
-      theY = inYData.GetValue (theI);
-    }
+    theY = inYData.GetValue (theI);
     theTraY = mYTrafo->Transform (theY);
 
     if (!theFirst && mDrawLine) {
@@ -1821,6 +1804,56 @@ bool BarDataDrawer::DrawOnlyLastPoint (const PlotDataBase &inXData, const PlotDa
 
 DataDrawerBase* BarDataDrawer::Clone () const {
     return new BarDataDrawer (*this);
+}
+
+DataDrawerBase* AreaDataDrawer::Clone() const {
+  return new AreaDataDrawer(*this);
+}
+
+bool AreaDataDrawer::DrawData(const PlotDataBase &inXData, const PlotDataBase &inYData, const PlotDataSelection &inPlotDataSelection, const AxisSetup &inXAxisSetup, const PRect &inRect, Painter &inPainter) const {
+  if (!mXTrafo || !mYTrafo) {
+    return false;
+  }
+  if ((inXData.GetSize() == 0) || (inYData.GetSize() == 0)) {
+    return false;
+  }
+  long theXSize = inXData.GetSize();
+  long theYSize = inYData.GetSize();
+  if (theXSize>theYSize) {
+    return false;
+  }
+  inPainter.SetStyle(mStyle);
+
+  long theEnd = inXData.GetSize() - 1;
+
+  inPainter.BeginArea();
+
+  for (long theI = 0; theI <= theEnd; theI++) 
+  {
+    float theX = inXData.GetValue(theI);
+    float theY = inYData.GetValue(theI);
+
+    float theTraX = mXTrafo->Transform(theX);
+    float theTraY = mYTrafo->Transform(theY);
+
+    if (theI == 0) 
+    {
+      float ZeroTraY = mYTrafo->Transform(0);
+      inPainter.AddVertex(theTraX, ZeroTraY);
+    }
+
+    inPainter.AddVertex(theTraX, theTraY);
+
+    if (theI == theEnd)
+    {
+      float ZeroTraY = mYTrafo->Transform(0);
+      inPainter.AddVertex(theTraX, ZeroTraY);
+    }
+  }
+
+  inPainter.EndArea();
+
+  return true;
 }
 
 bool PPlot::DrawPlot (int inIndex, const PRect &inRect, Painter &inPainter) const {

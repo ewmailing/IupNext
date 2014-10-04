@@ -128,6 +128,9 @@ protected:
   void DrawRotatedText(int inX, int inY, float inDegrees,
                         short align, const char *inString);
   void SetStyle(const PStyle &inStyle);
+  void BeginArea();
+  void AddVertex(float inX, float inY);
+  void EndArea();
 
 }; // PPainterIup
 
