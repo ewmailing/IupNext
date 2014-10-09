@@ -264,6 +264,13 @@ static int iMatrixExItemDel_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int iMatrixExItemSelectAll_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  iMatrixExSelectAll(matex_data->ih);
+  return IUP_DEFAULT;
+}
+
 static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
@@ -536,6 +543,7 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
     IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_PASTE", NULL), "IMAGE=IUP_EditPaste"), "ACTION", iMatrixExItemPaste_CB, NULL));
     IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_ERASE", NULL), "IMAGE=IUP_EditErase"), "ACTION", iMatrixExItemDel_CB, NULL));
   }
+  IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_SELECTALL", NULL), "ACTION", iMatrixExItemSelectAll_CB, NULL));
   IupAppend(menu, IupSeparator());
 
   /************************** Edit - Find ****************************/
@@ -593,6 +601,27 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
   return menu;
 }
 
+static int iMatrixSetShowMenuContextAttribId(Ihandle *ih, int lin, int col, const char* value)
+{
+  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+  Ihandle* menu = iMatrixExCreateMenuContext(ih, lin, col);
+  IFnnii menucontext_cb;
+  int x = 0, y = 0;
+
+  iupStrToIntInt(value, &x, &y, ',');
+
+  IupSetAttribute(menu, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
+  IupSetfAttribute(menu, "MENUCONTEXT_CELL", "%d:%d", lin, col);
+
+  menucontext_cb = (IFnnii)IupGetCallback(ih, "MENUCONTEXT_CB");
+  if (menucontext_cb) menucontext_cb(ih, menu, lin, col);
+
+  IupPopup(menu, x, y);
+  IupDestroy(menu);
+
+  return 0;
+}
+
 static IFniiiis iMatrixOriginalButton_CB = NULL;
 
 static int iMatrixExButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r)
@@ -605,24 +634,16 @@ static int iMatrixExButton_CB(Ihandle* ih, int b, int press, int x, int y, char*
     int pos = IupConvertXYToPos(ih, x, y);
     if (pos >= 0)
     {
-      ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
       int lin, col;
-      IFnnii menucontext_cb;
-      Ihandle* menu;
       int sx, sy;
+      char position[100];
 
       IupTextConvertPosToLinCol(ih, pos, &lin, &col);
 
-      menu = iMatrixExCreateMenuContext(ih, lin, col);
-      IupSetAttribute(menu, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
-      IupSetfAttribute(menu, "MENUCONTEXT_CELL", "%d:%d", lin, col);
-
-      menucontext_cb = (IFnnii)IupGetCallback(ih, "MENUCONTEXT_CB");
-      if (menucontext_cb) menucontext_cb(ih, menu, lin, col);
-
       IupGetIntInt(ih, "SCREENPOSITION", &sx, &sy);
-      IupPopup(menu, sx+x, sy+y);
-      IupDestroy(menu);
+      sprintf(position, "%d,%d", sx + x, sy + y);
+
+      iMatrixSetShowMenuContextAttribId(ih, lin, col, position);
     }
   }
 
@@ -790,6 +811,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
 
   iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
   iupClassRegisterAttribute(ic, "MENUCONTEXT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId2(ic, "SHOWMENUCONTEXT", NULL, iMatrixSetShowMenuContextAttribId, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   iupMatrixExRegisterClipboard(ic);
   iupMatrixExRegisterBusy(ic);
@@ -814,6 +836,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_COPY", "Copy\tCtrl+C");
     IupSetLanguageString("IUP_PASTE", "Paste\tCtrl+V");
     IupSetLanguageString("IUP_ERASE", "Erase\tDel");
+    IupSetLanguageString("IUP_SELECTALL", "Select All\tCtrl+A");
     IupSetLanguageString("IUP_FINDDLG", "Find...\tCtrl+F");
     IupSetLanguageString("IUP_GOTODLG", "Go To...\tCtrl+G");
     IupSetLanguageString("IUP_SORTDLG", "Sort...");
@@ -862,6 +885,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_COPY", "Copiar\tCtrl+C");
     IupSetLanguageString("IUP_PASTE", "Colar\tCtrl+V");
     IupSetLanguageString("IUP_ERASE", "Apagar\tDel");
+    IupSetLanguageString("IUP_SELECTALL", "Selecinar Tudo\tCtrl+T");
     IupSetLanguageString("IUP_FINDDLG", "Localizar...\tCtrl+L");
     IupSetLanguageString("IUP_GOTODLG", "Ir Para...\tCtrl+G");
     IupSetLanguageString("IUP_SORTDLG", "Classificar...");

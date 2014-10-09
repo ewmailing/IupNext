@@ -12,17 +12,6 @@
 .style1 {
 	margin-left: 40px;
 }
-  .auto-style1 {
-	  background-color: #E1E1E1;
-  }
-  .auto-style2 {
-	  text-align: center;
-  }
-  .auto-style3 {
-	  font-size: medium;
-	  letter-spacing: normal;
-	  background-color: #FFFFFF;
-  }
   .style4 {
 	font-size: large;
 }
@@ -208,15 +197,18 @@ given cell. Can be: &quot;Yes&quot; - uses the value of the FOCUS_CELL attribute
 where L and C are the line and column, or &quot;No&quot; clear the freeze state. 
 Internally will set the NUMLIN_NOSCROLL and NUMCOL_NOSCROLL, and change the 
 FRAMEHORIZCOLOR of the line and the FRAMEVERTCOLOR of the column to the color 
-defined by FREEZEBGCOLOR.</p>
+defined by FREEZECOLOR.</p>
 <p>
-<strong>FREEZEBGCOLOR</strong>:
+<strong>FREEZECOLOR</strong>:
   color used for the freeze lines. Default: &quot;0 0 255&quot;. Used only by the FREEZE 
 attribute.</p>
 <p>
 <strong>LASTERROR</strong> (read-only): set when an error occurred during an 
 operation. It is reset to NULL at the start of every operation that sets its 
 value.</p>
+<p>
+<strong>MENUCONTEXT</strong>: enable the context menu. Can be Yes or No. 
+Default: Yes.</p>
 <p>
 <strong>NUMERICFORMAT<em>id</em></strong>: format to convert the numeric data 
 into strings at the given column (id). If not defined the NUMERICFORMATDEF 
@@ -306,7 +298,8 @@ semicolon (';') or a custom value defined by the <strong>TEXTSEPARATOR</strong> 
 must contain an exact matrix organization. Use the attribute <strong>TEXTSKIPLINES</strong> to 
 skip a number of lines in the beginning of the data. If data at the insert 
 position will have more lines or columns than the current matrix, then the
-<a href="#PASTESIZE_CB">PASTESIZE_CB</a> callback is called. If defined the <a href="iupmatrix_cb.html#EDITION_CB">
+<a href="#PASTESIZE_CB">PASTESIZE_CB</a> callback is called, if the callback 
+does not exist the matrix size is not changed, and the exceeding data will be discarded. If defined the <a href="iupmatrix_cb.html#EDITION_CB">
 EDITION_CB</a> callback will be called before the cell value is set. <strong>LASTERROR</strong> 
 can be set to &quot;NOTEXT&quot; (data is empty or NULL), &quot;INVALIDMATRIX&quot; (not a matrix 
 data). <strong>BUSY</strong> will be set to Yes during the operation. Only visible cells will 
@@ -378,6 +371,10 @@ Undo to be performed. BUSY will be set to Yes during the operation.</p>
 <strong>REDO</strong>: Sets the number of redo levels to be performed. If value 
 is NULL will redo 1 level. When retrieved returns Yes or No indicating if it has 
 Redo to be performed. BUSY will be set to Yes during the operation.</p>
+<p>
+<strong>SHOWCONTEXTMENU</strong><em>L:C</em> (write-only): shows the context 
+menu using the L:C cell as reference and its value as screen position in the 
+format &quot;x:y&quot;. (since 3.12)</p>
 <p>
 <strong>UNDOCLEAR</strong> (write-only): clears all Undo/Redo information.</p>
 <p>
@@ -483,7 +480,7 @@ the event.<br>
     coordinates of the cell.<br><strong>value</strong>: new value of the cell.</p>
 <p><strong><a name="MENUCONTEXT_CB">MENUCONTEXT_CB</a></strong>: Action generated 
 after the context menu is created but before it is displayed, so the application 
-can add or removed items from the menu.</p>
+can add or removed items from the menu. Only shown if MENUCONTEXT=Yes.</p>
 
   
     
@@ -519,7 +516,7 @@ of iterations. when status=2 is the current iteration. ignored when status=0.<br
 <p class="info"><u>Returns</u>: if returns IUP_IGNORE the process will be 
 aborted. if returns IUP_CONTINUE, the NUMLIN and NUMCOL attributes will be 
 automatically changed to the given values. Otherwise and if the callback does 
-not exist nothing is done, and the exceeding data will be discarded. </p>
+not exist the matrix size is not changed, and the exceeding data will be discarded. </p>
 
 <p><strong><a name="SORTCOLUMNCOMPARE_CB">SORTCOLUMNCOMPARE_CB</a></strong>: Action generated 
 when sorting data in a column to compare two cell values.</p>
@@ -562,6 +559,7 @@ Cut                 =&gt; Copy + Clear Cell Values
 Copy                =&gt; Copy to Clipboard (marked cells)
 Paste               =&gt; Paste from Clipboard (start at focus cell)
 Erase               =&gt; Clear Cell Values
+Select All          =&gt; Select All Cells
 Find...             =&gt; Show the Find Dialog
 Go To...            =&gt; Show the Go To Cell Dialog
 Sort...             =&gt; Show the Sort Dialog
