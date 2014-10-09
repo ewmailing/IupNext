@@ -278,7 +278,7 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
     iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", evt->area.x, evt->area.y, evt->area.x+evt->area.width-1, evt->area.y+evt->area.height-1);
 #endif
 
-    cb(ih,ih->data->posx,ih->data->posy);
+    cb(ih, ih->data->posx, ih->data->posy);
 
     iupAttribSet(ih, "CLIPRECT", NULL);
     iupAttribSet(ih, "CAIRO_CR", NULL);
@@ -590,25 +590,26 @@ static int gtkCanvasSetPosYAttrib(Ihandle* ih, const char *value)
 static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   GtkWidget* sb_win = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-  unsigned char r, g, b;
 
-  /* ignore given value, must use only from parent for the scrollbars */
-  char* parent_value = iupBaseNativeParentGetBgColor(ih);
-
-  if (iupStrToRGB(parent_value, &r, &g, &b))
+  if (!IupGetCallback(ih, "ACTION"))
   {
-    GtkWidget* sb;
+    unsigned char r, g, b;
 
-    iupgtkSetBgColor(sb_win, r, g, b);
+    /* ignore given value, must use only from parent for the scrollbars */
+    char* parent_value = iupBaseNativeParentGetBgColor(ih);
 
-    sb = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_SBHORIZ");
-    if (sb) iupgtkSetBgColor(sb, r, g, b);
-    sb = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_SBVERT");
-    if (sb) iupgtkSetBgColor(sb, r, g, b);
-  }
+    if (iupStrToRGB(parent_value, &r, &g, &b))
+    {
+      GtkWidget* sb;
 
-  if (!IupGetCallback(ih, "ACTION")) 
-  {
+      iupgtkSetBgColor(sb_win, r, g, b);
+
+      sb = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_SBHORIZ");
+      if (sb) iupgtkSetBgColor(sb, r, g, b);
+      sb = (GtkWidget*)iupAttribGet(ih, "_IUPGTK_SBVERT");
+      if (sb) iupgtkSetBgColor(sb, r, g, b);
+    }
+
     /* enable automatic double buffering */
     gtk_widget_set_double_buffered(ih->handle, TRUE);
     gtk_widget_set_double_buffered(sb_win, TRUE);
