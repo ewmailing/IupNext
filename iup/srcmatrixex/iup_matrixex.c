@@ -163,7 +163,7 @@ static char* iMatrixExFileDlg(ImatExData* matex_data, int save, const char* filt
   IupSetStrAttribute(dlg,"EXTFILTER", extfilter);  /* Windows and GTK only, but more flexible */
   IupSetAttributeHandle(dlg,"PARENTDIALOG", IupGetDialog(matex_data->ih));
 
-  IupPopup(dlg,IUP_CENTER,IUP_CENTER);
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   if (IupGetInt(dlg,"STATUS")!=-1)
   {
     char* value = IupGetAttribute(dlg, "VALUE");
