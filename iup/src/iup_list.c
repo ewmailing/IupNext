@@ -107,7 +107,7 @@ void iupListMultipleCallActionCb(Ihandle* ih, IFnsii cb, IFns multi_cb, int* pos
   int i, count = iupdrvListGetCount(ih);
 
   char* old_str = iupAttribGet(ih, "_IUPLIST_OLDVALUE");
-  int old_count = old_str? strlen(old_str): 0;
+  int old_count = old_str? (int)strlen(old_str): 0;
 
   char* str = malloc(count+1);
   memset(str, '-', count);
@@ -676,7 +676,7 @@ static int iListDragData_CB(Ihandle *ih, char* type, void *data, int len)
        In this case, unmark all and mark only this item.  */
     if(buffer[pos-1] == '-')
     {
-      int len = strlen(buffer);
+      int len = (int)strlen(buffer);
       IupSetAttribute(ih, "SELECTION", "NONE");
       memset(buffer, '-', len);
       buffer[pos-1] = '+';
@@ -741,7 +741,39 @@ static int iListSetDragDropListAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+static char* iListGetValueStringAttrib(Ihandle* ih)
+{
+  if (!ih->data->has_editbox && (ih->data->is_dropdown || !ih->data->is_multiple))
+  {
+    int i = IupGetInt(ih, "VALUE");
+    return IupGetAttributeId(ih, "", i);
+  }
+  return NULL;
+}
+
+static int iListSetValueStringAttrib(Ihandle* ih, const char* value)
+{
+  if (!ih->data->has_editbox && (ih->data->is_dropdown || !ih->data->is_multiple))
+  {
+    int i, count = iListGetCount(ih);
+
+    for (i = 1; i <= count; i++)
+    {
+      char* item = IupGetAttributeId(ih, "", i);
+      if (iupStrEqual(value, item))
+      {
+        IupSetInt(ih, "VALUE", i);
+        return 0;
+      }
+    }
+  }
+
+  return 0;
+}
+
+
 /*****************************************************************************************/
+
 
 static int iListCreateMethod(Ihandle* ih, void** params)
 {
@@ -979,6 +1011,7 @@ Iclass* iupListNewClass(void)
   iupClassRegisterAttribute(ic, "DROPDOWN", iListGetDropdownAttrib, iListSetDropdownAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITBOX", iListGetEditboxAttrib, iListSetEditboxAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COUNT", iListGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUESTRING", iListGetValueStringAttrib, iListSetValueStringAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttributeId(ic, "INSERTITEM", NULL, iListSetInsertItemAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "APPENDITEM", NULL, iListSetAppendItemAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
