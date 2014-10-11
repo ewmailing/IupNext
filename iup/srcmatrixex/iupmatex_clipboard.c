@@ -134,13 +134,13 @@ static int iMatrixExMarkedCellConsistent(const char* marked, int num_lin, int nu
   return 1;
 }
 
-static void iMatrixExStrReplaceSep(char *txt, int count)
+static void iMatrixExStrReplaceSep(char *txt, int count, char sep)
 {
   int i;
   for (i=0; i<count; i++)
   {
-    if (txt[i]=='\n') txt[i]=' ';
-    if (txt[i]=='\t') txt[i]=' ';
+    if (txt[i] == '\n') txt[i] = ' ';
+    if (txt[i] == sep)  txt[i] = ' ';
   }
 }
 
@@ -156,26 +156,26 @@ static void iMatrixExArrayAddEmpty(Iarray* data)
   iMatrixExArrayAddChar(data, ' ');
 }
 
-static void iMatrixExArrayAddStr(Iarray* data, char* str)
+static void iMatrixExArrayAddStr(Iarray* data, char* str, char sep)
 {
-  int add_count = strlen(str);
+  int add_count = (int)strlen(str);
   int last_count = iupArrayCount(data);
   char* str_data = (char*)iupArrayAdd(data, add_count);
   memcpy(str_data+last_count, str, add_count);
-  iMatrixExStrReplaceSep(str_data+last_count, add_count);
+  iMatrixExStrReplaceSep(str_data + last_count, add_count, sep);
 }
 
-static void iMatrixExArrayAddCell(ImatExData* matex_data, Iarray* data, int lin, int col)
+static void iMatrixExArrayAddCell(ImatExData* matex_data, Iarray* data, int lin, int col, char sep)
 {
   char* value = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);  /* get displayed value */
 
   if (value)
-    iMatrixExArrayAddStr(data, value);
+    iMatrixExArrayAddStr(data, value, sep);
   else
     iMatrixExArrayAddEmpty(data);
 }
 
-static void iMatrixExCopyGetDataMarkedCol(ImatExData* matex_data, Iarray* data, const char* marked, int num_lin, int num_col)
+static void iMatrixExCopyGetDataMarkedCol(ImatExData* matex_data, Iarray* data, const char* marked, int num_lin, int num_col, char sep)
 {
   int lin, col;
   int add_sep;
@@ -191,20 +191,20 @@ static void iMatrixExCopyGetDataMarkedCol(ImatExData* matex_data, Iarray* data, 
         if (marked[col-1] == '1' && iupMatrixExIsColumnVisible(matex_data->ih, col))
         {
           if (add_sep)
-            iMatrixExArrayAddChar(data, '\t');
+            iMatrixExArrayAddChar(data, sep);
 
-          iMatrixExArrayAddCell(matex_data, data, lin, col);
+          iMatrixExArrayAddCell(matex_data, data, lin, col, sep);
           add_sep = 1;
         }
       }
     }
 
     if (add_sep)
-      iMatrixExArrayAddChar(data, '\n');
+      iMatrixExArrayAddChar(data, sep);
   }
 }
 
-static void iMatrixExCopyGetDataMarkedLin(ImatExData* matex_data, Iarray* data, const char* marked, int num_lin, int num_col)
+static void iMatrixExCopyGetDataMarkedLin(ImatExData* matex_data, Iarray* data, const char* marked, int num_lin, int num_col, char sep)
 {
   int lin, col;
   int add_sep;
@@ -220,20 +220,20 @@ static void iMatrixExCopyGetDataMarkedLin(ImatExData* matex_data, Iarray* data, 
         if (marked[lin-1] == '1' && iupMatrixExIsColumnVisible(matex_data->ih, col))
         {
           if (add_sep)
-            iMatrixExArrayAddChar(data, '\t');
+            iMatrixExArrayAddChar(data, sep);
 
-          iMatrixExArrayAddCell(matex_data, data, lin, col);
+          iMatrixExArrayAddCell(matex_data, data, lin, col, sep);
           add_sep = 1;
         }
       }
     }
 
     if (add_sep)
-      iMatrixExArrayAddChar(data, '\n');
+      iMatrixExArrayAddChar(data, sep);
   }
 }
 
-static void iMatrixExCopyGetDataMarkedCell(ImatExData* matex_data, Iarray* data, const char* marked, int lin1, int col1, int lin2, int col2, int num_col, int keep_struct)
+static void iMatrixExCopyGetDataMarkedCell(ImatExData* matex_data, Iarray* data, const char* marked, int lin1, int col1, int lin2, int col2, int num_col, int keep_struct, char sep)
 {
   int lin, col;
   int add_sep;
@@ -252,14 +252,14 @@ static void iMatrixExCopyGetDataMarkedCell(ImatExData* matex_data, Iarray* data,
           if (marked[pos] == '1')
           {
             if (add_sep)
-              iMatrixExArrayAddChar(data, '\t');
-            iMatrixExArrayAddCell(matex_data, data, lin, col);
+              iMatrixExArrayAddChar(data, sep);
+            iMatrixExArrayAddCell(matex_data, data, lin, col, sep);
             add_sep = 1;
           }
           else if (keep_struct)
           {
             if (add_sep)
-              iMatrixExArrayAddChar(data, '\t');
+              iMatrixExArrayAddChar(data, sep);
             iMatrixExArrayAddEmpty(data);
             add_sep = 1;
           }
@@ -272,7 +272,7 @@ static void iMatrixExCopyGetDataMarkedCell(ImatExData* matex_data, Iarray* data,
   }
 }
 
-static void iMatrixExCopyGetData(ImatExData* matex_data, Iarray* data, int lin1, int col1, int lin2, int col2)
+static void iMatrixExCopyGetData(ImatExData* matex_data, Iarray* data, int lin1, int col1, int lin2, int col2, char sep)
 {
   int lin, col;
   int add_sep;
@@ -288,9 +288,9 @@ static void iMatrixExCopyGetData(ImatExData* matex_data, Iarray* data, int lin1,
         if (iupMatrixExIsColumnVisible(matex_data->ih, col))
         {
           if (add_sep)
-            iMatrixExArrayAddChar(data, '\t');
+            iMatrixExArrayAddChar(data, sep);
 
-          iMatrixExArrayAddCell(matex_data, data, lin, col);
+          iMatrixExArrayAddCell(matex_data, data, lin, col, sep);
 
           add_sep = 1;
         }
@@ -298,16 +298,24 @@ static void iMatrixExCopyGetData(ImatExData* matex_data, Iarray* data, int lin1,
     }
 
     if (add_sep)
-      iMatrixExArrayAddChar(data, '\n');
+      iMatrixExArrayAddChar(data, sep);
   }
 }
 
 static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* value)
 {
   int num_lin, num_col;
+  char sep;
+  char *locale, *old_locale = NULL;
 
   if (!value)
     return;
+
+  sep = *(iupAttribGetStr(matex_data->ih, "TEXTSEPARATOR"));
+
+  locale = IupGetAttribute(matex_data->ih, "TEXTNUMERICLOCALE");
+  if (locale)
+    old_locale = setlocale(LC_NUMERIC, locale);
 
   /* reset error state */
   iupAttribSet(matex_data->ih, "LASTERROR", NULL);
@@ -321,6 +329,10 @@ static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* 
     if (!marked)  /* no marked cells */
     {
       iupAttribSet(matex_data->ih, "LASTERROR", "IUP_ERRORNOSELECTION");
+
+      if (old_locale)
+        setlocale(LC_NUMERIC, old_locale);
+
       return;
     }
 
@@ -328,13 +340,13 @@ static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* 
     {
       marked++;
 
-      iMatrixExCopyGetDataMarkedCol(matex_data, data, marked, num_lin, num_col);
+      iMatrixExCopyGetDataMarkedCol(matex_data, data, marked, num_lin, num_col, sep);
     }
     else if (*marked == 'L')
     {
       marked++;
 
-      iMatrixExCopyGetDataMarkedLin(matex_data, data, marked, num_lin, num_col);
+      iMatrixExCopyGetDataMarkedLin(matex_data, data, marked, num_lin, num_col, sep);
     }
     else
     {
@@ -347,10 +359,14 @@ static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* 
       if (!keep_struct && !iMatrixExMarkedCellConsistent(marked, num_lin, num_col))
       {
         iupAttribSet(matex_data->ih, "LASTERROR", "IUP_ERRORINVALIDSELECTION");
+
+        if (old_locale)
+          setlocale(LC_NUMERIC, old_locale);
+
         return;
       }
 
-      iMatrixExCopyGetDataMarkedCell(matex_data, data, marked, lin1, col1, lin2, col2, num_col, keep_struct);
+      iMatrixExCopyGetDataMarkedCell(matex_data, data, marked, lin1, col1, lin2, col2, num_col, keep_struct, sep);
     }
   }
   else 
@@ -365,8 +381,11 @@ static void iMatrixExCopyData(ImatExData* matex_data, Iarray* data, const char* 
       iupMatrixExCheckLimitsOrder(&col1, &col2, 1, num_col);
     }
 
-    iMatrixExCopyGetData(matex_data, data, lin1, col1, lin2, col2);
+    iMatrixExCopyGetData(matex_data, data, lin1, col1, lin2, col2, sep);
   }
+
+  if (old_locale)
+    setlocale(LC_NUMERIC, old_locale);
 }
 
 static int iMatrixExSetCopyAttrib(Ihandle *ih, const char* value)
@@ -417,7 +436,7 @@ static int iMatrixExSetCopyDataAttrib(Ihandle *ih, const char* value)
 
 static int iMatrixExStrGetDataSize(const char* data, int *num_lin, int *num_col, char *sep)
 {
-  int len = strlen(data);
+  int len = (int)strlen(data);
   *num_lin = iupStrLineCount(data);
   if (data[len-1] == '\n')
     (*num_lin)--;  /* avoid an empty last line */
@@ -437,9 +456,14 @@ static int iMatrixExStrGetDataSize(const char* data, int *num_lin, int *num_col,
       *sep = ';';
       *num_col = iupStrCountChar(data, *sep);
     }
+    if (*num_col == 0)
+    {
+      *sep = ' ';
+      *num_col = iupStrCountChar(data, *sep);
+    }
   }
 
-  /* If here is no column separator for the last column, so add it */
+  /* If there is no column separator for the last column, so add it */
   if (!((data[len-1] == '\n' && data[len-2] == *sep) ||
         (data[len-1] == *sep)))
     *num_col += *num_lin;
@@ -588,7 +612,7 @@ static void iMatrixExPasteData(Ihandle *ih, const char* data, int lin, int col, 
     }
   }
 
-  str_sep = IupGetAttribute(ih, "TEXTSEPARATOR");
+  str_sep = iupAttribGet(ih, "TEXTSEPARATOR");  /* don't check for the default value */
   if (str_sep) sep = *str_sep;
 
   if (!iMatrixExStrGetDataSize(data, &data_num_lin, &data_num_col, &sep))
@@ -701,7 +725,7 @@ void iupMatrixExRegisterClipboard(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "LASTERROR", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "TEXTSEPARATOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXTSEPARATOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "\t", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTSKIPLINES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTNUMERICLOCALE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

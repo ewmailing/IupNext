@@ -136,8 +136,11 @@ clipboard in TEXT format. If value is ALL then all cells are copied regardless i
 there is a selection. If value is MARKED then the
 <a href="iupmatrix_attrib.html#MARKED">MARKED</a> attribute is used to define 
 the selection. Value can also be a range of cells in the format &quot;L1:C1-L2:C2&quot;. Title cells are not copied, even when a line or column is fully 
-selected. Cells are separated with tabs ('\t') and lines are separated with line 
-feeds ('\n'). If the column or line is invisible (its size=0) it is not copied.</p>
+selected. If the column or line is invisible (its size=0) it is not copied. The <strong>TEXTSEPARATOR</strong> 
+attribute can used to define a column separator (default is tab '\t') and line 
+separator will be line feeds ('\n'). The <strong>TEXTNUMERICLOCALE</strong> 
+attribute can be used to set a different numeric locale during paste in case 
+numeric conversions are being processed when the cell value is set (since 3.12)</p>
 <p class="info">When MARKMODE=CELLS and sparse cells are selected there are two options for copy 
 according to the <strong>COPYKEEPSTRUCT</strong> attribute, if &quot;Yes&quot; the copied 
 data will fit a rectangular region that contains all the selected cells and the 
@@ -158,7 +161,9 @@ file format will be defined by the <strong>TEXTFORMAT</strong> attribute, can be
 that will be added to the file before the data, depending on the file format.</p>
 <p class="info">When using TXT format, the <strong>TEXTSEPARATOR</strong> attribute can used to 
 define a column separator (default is tab '\t') and line separator will be line 
-feeds ('\n').<br>When using LaTeX format, the <strong>LATEXLABEL</strong> attribute can used to 
+feeds ('\n'). The <strong>TEXTNUMERICLOCALE</strong> attribute can be used to 
+set a different numeric locale during paste in case numeric conversions are 
+being processed when the cell value is set (since 3.12)<br>When using LaTeX format, the <strong>LATEXLABEL</strong> attribute can used to 
 define a label for the table.<br>When using HTML format, the attributes 
 &quot;HTML&lt;TABLE&gt;&quot;, &quot;HTML&lt;TR&gt;&quot;, &quot;HTML&lt;TH&gt;&quot;, &quot;HTML&lt;TD&gt;&quot;, &quot;HTML&lt;CAPTION&gt;&quot; can use used 
 to define a complement to be inserted in the respective tag definition, so a &quot; 
@@ -293,8 +298,8 @@ be &quot;FOCUS&quot; to use the <a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS
 attribute, can be &quot;MARKED&quot; to use the start of the selected groups of cells 
 (top-left selected cell), or can be a cell address &quot;L:C&quot;.</p>
 <p class="info">Data must be in plain text format. Lines can be separated in 
-DOS, UNIX or MAC format. Columns can be separated with tabs ('\t'), with 
-semicolon (';') or a custom value defined by the <strong>TEXTSEPARATOR</strong> attribute. Data 
+DOS, UNIX or MAC format. Columns can be separated with a tab ('\t'), with 
+a semicolon (';'), with a space (' ') or with a custom value defined by the <strong>TEXTSEPARATOR</strong> attribute. Data 
 must contain an exact matrix organization. Use the attribute <strong>TEXTSKIPLINES</strong> to 
 skip a number of lines in the beginning of the data. If data at the insert 
 position will have more lines or columns than the current matrix, then the
@@ -552,16 +557,21 @@ If the matrix is read-only some of the features are not shown.</p>
 	Html...      =&gt; (  &quot; )
 Import
 	Txt...       =&gt; Shows a file selection dialog and loads the cells from a file.
+Settings...         =&gt; Shows the Settings Dialog
+----------------
 Undo                =&gt; Undo 1 level
 Redo                =&gt; R<span class="style13">e</span>do 1 level
 Undo List...        =&gt; Show the Undo Dialog
+----------------
 Cut                 =&gt; Copy + Clear Cell Values
 Copy                =&gt; Copy to Clipboard (marked cells)
 Paste               =&gt; Paste from Clipboard (start at focus cell)
 Erase               =&gt; Clear Cell Values
 Select All          =&gt; Select All Cells
+----------------
 Find...             =&gt; Show the Find Dialog
 Go To...            =&gt; Show the Go To Cell Dialog
+----------------
 Sort...             =&gt; Show the Sort Dialog
 Freeze/UnFreeze     =&gt; Makes the current cell a non scrollable point / Reset to default
 Visibility
@@ -570,6 +580,7 @@ Visibility
 	Hide Line
 	Show Hidden Lines
 Numeric Units... / Numeric Decimals...   =&gt; Show Numeric Units Dialog or Numeric Decimals Dialog
+----------------
 Copy To (Same Column)    Copy cell value to other lines in the same column
 	All Lines       =&gt; Copy To All Lines
 	Here to Top     =&gt; Copy From the Current Cell to L=0

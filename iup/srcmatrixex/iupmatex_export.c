@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
+#include <locale.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -19,7 +20,7 @@
 #include "iup_matrixex.h"
 
 
-static void iMatrixExStrCopyNoSepTXT(char* buffer, const char* str, char sep)
+static void iMatrixExStrReplaceSep(char* buffer, const char* str, char sep)
 {
   while (*str)
   {
@@ -79,10 +80,14 @@ static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col, 
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
   int lin, col;
   int add_sep;
-  char* str, sep = '\t';
+  char* str, sep;
+  char *locale, *old_locale = NULL;
 
-  str = IupGetAttribute(ih, "TEXTSEPARATOR");
-  if (str) sep = *str;
+  sep = *(iupAttribGetStr(ih, "TEXTSEPARATOR"));
+
+  locale = IupGetAttribute(ih, "TEXTNUMERICLOCALE");
+  if (locale)
+    old_locale = setlocale(LC_NUMERIC, locale);
 
   str = iupAttribGetStr(ih, "COPYCAPTION");
   if (str)
@@ -105,7 +110,7 @@ static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col, 
           str = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);  /* get displayed value */
           if (str)
           {
-            iMatrixExStrCopyNoSepTXT(buffer, str, sep);
+            iMatrixExStrReplaceSep(buffer, str, sep);
             fprintf(file, "%s", buffer);
           }
           else
@@ -119,6 +124,9 @@ static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col, 
     if (add_sep)
       fprintf(file, "%s", "\n");
   }
+
+  if (old_locale)
+    setlocale(LC_NUMERIC, old_locale);
 }
 
 static char* iMatrixExGetCellAttrib(Ihandle* ih, const char* attrib, int lin, int col)

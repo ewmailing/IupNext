@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 
 #include "iup.h"
@@ -224,6 +225,50 @@ static int iMatrixExItemImport_CB(Ihandle* ih_item)
   IupSetStrAttribute(matex_data->ih, "PASTEFILE", filename);
 
   iMatrixListShowLastError(matex_data->ih);
+
+  return IUP_DEFAULT;
+}
+
+static int iMatrixExItemSettings_CB(Ihandle* ih_item)
+{
+  ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
+  int sep_index = 0, decimal_sep_index = 0, decimal_sep_old;
+  char sep_other[5] = "", *locale, *old_locale = NULL;
+  struct lconv * locale_info;
+
+  char sep = *(IupGetAttribute(matex_data->ih, "TEXTSEPARATOR"));
+  if (sep == ';') sep_index = 1;
+  else if (sep == ' ') sep_index = 2;
+
+  locale = IupGetAttribute(matex_data->ih, "TEXTNUMERICLOCALE");
+  if (locale) old_locale = setlocale(LC_NUMERIC, locale);
+  locale_info = localeconv();
+  if (locale_info->decimal_point[0] == ',')
+    decimal_sep_index = 1;
+  if (old_locale) setlocale(LC_NUMERIC, old_locale);
+  decimal_sep_old = decimal_sep_index;
+
+  if (IupGetParam("_@IUP_SETTINGS", NULL, NULL,
+                  "_@IUP_TEXTSEPARATOR%l|Tab|\";\"|\" \"|\n"
+                  "_@IUP_OTHER%s[^0-9]\n"
+                  "_@IUP_DECIMALSYMBOL%l|.|,|\n",
+                  &sep_index, sep_other, &decimal_sep_index, NULL))
+  {
+    const char* sep_str[] = { "\t", ";", " " };
+    if (sep_other[0] != 0)
+      IupSetStrAttribute(matex_data->ih, "TEXTSEPARATOR", sep_other);
+    else
+      IupSetStrAttribute(matex_data->ih, "TEXTSEPARATOR", sep_str[sep_index]);
+
+    /* avoid changing the application defined locale if not changed */
+    if (decimal_sep_old != decimal_sep_index)
+    {
+      if (decimal_sep_index == 0)
+        IupSetAttribute(matex_data->ih, "TEXTNUMERICLOCALE", "en-US");
+      else
+        IupSetAttribute(matex_data->ih, "TEXTNUMERICLOCALE", "pt-BR");
+    }
+  }
 
   return IUP_DEFAULT;
 }
@@ -512,6 +557,7 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
           NULL)), "IMAGE=IUP_FileSave"));
   }
 
+  IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SETTINGS", NULL), "IMAGE=IUP_ToolsSettings"), "ACTION", iMatrixExItemSettings_CB, NULL));
   IupAppend(menu, IupSeparator());
 
   /************************** Edit - Undo ****************************/
@@ -827,6 +873,10 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   {
     IupSetLanguageString("IUP_EXPORT", "Export");
     IupSetLanguageString("IUP_IMPORT", "Import");
+    IupSetLanguageString("IUP_SETTINGS", "Settings...");
+    IupSetLanguageString("IUP_TEXTSEPARATOR", "Number Separator:");
+    IupSetLanguageString("IUP_OTHER", "Other:");
+    IupSetLanguageString("IUP_DECIMALSYMBOL", "Decimal Symbol:");
     IupSetLanguageString("IUP_UNDO", "Undo\tCtrl+Z");
     IupSetLanguageString("IUP_REDO", "Redo\tCtrl+Y");
     IupSetLanguageString("IUP_UNDOLISTDLG", "Undo List...\tCtrl+U");
@@ -858,12 +908,12 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_COPYTOINTERVALS", "Copy To - Intervals");
     IupSetLanguageString("IUP_GOTO", "Go To");
 
-    IupSetLanguageString("IUP_DECIMALS", "Decimals");
+    IupSetLanguageString("IUP_UNITS", "Units:");
+    IupSetLanguageString("IUP_DECIMALS", "Decimals:");
     IupSetLanguageString("IUP_NUMERICDECIMALS", "Numeric Decimals");
     IupSetLanguageString("IUP_NUMERICDECIMALSDLG", "Numeric Decimals...");
     IupSetLanguageString("IUP_NUMERICUNITS", "Numeric Units");
     IupSetLanguageString("IUP_NUMERICUNITSDLG", "Numeric Units...");
-    IupSetLanguageString("IUP_UNITS", "Units");
 
     IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Invalid Selection.");
     IupSetLanguageString("IUP_ERRORNOTEXT", "Empty Text.");
@@ -876,6 +926,10 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   {
     IupSetLanguageString("IUP_EXPORT", "Exportar");
     IupSetLanguageString("IUP_IMPORT", "Importar");
+    IupSetLanguageString("IUP_SETTINGS", "Definições...");
+    IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de Números:");
+    IupSetLanguageString("IUP_OTHER", "Outro:");
+    IupSetLanguageString("IUP_DECIMALSYMBOL", "Símbolo Decimal:");
     IupSetLanguageString("IUP_UNDO", "Desfazer\tCtrl+Z");
     IupSetLanguageString("IUP_REDO", "Refazer\tCtrl+R");
     IupSetLanguageString("IUP_UNDOLISTDLG", "Lista de Desfazer...\tCtrl+U");
@@ -904,10 +958,10 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_HIDELINE", "Esconder Linha");    
     IupSetLanguageString("IUP_SHOWHIDDENLINES", "Mostrar Linhas Escondidas");
 
-    IupSetLanguageString("IUP_DECIMALS", "Decimais");
+    IupSetLanguageString("IUP_UNITS", "Unidades:");
+    IupSetLanguageString("IUP_DECIMALS", "Decimais:");
     IupSetLanguageString("IUP_NUMERICDECIMALS", "Número de Decimais");
     IupSetLanguageString("IUP_NUMERICDECIMALSDLG", "Número de Decimais...");
-    IupSetLanguageString("IUP_UNITS", "Unidades");
     IupSetLanguageString("IUP_NUMERICUNITS", "Unidades Numéricas");
     IupSetLanguageString("IUP_NUMERICUNITSDLG", "Unidades Numéricas...");
 
@@ -925,6 +979,14 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     {
       /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
          When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+      IupSetLanguageString("IUP_SETTINGS", "DefiniÃ§Ãµes...");
+      IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de NÃºmeros:");
+      IupSetLanguageString("IUP_DECIMALSYMBOL", "SÃ­mbolo Decimal:");
+
+      IupSetLanguageString("IUP_NUMERICDECIMALS", "NÃºmero de Decimais");
+      IupSetLanguageString("IUP_NUMERICDECIMALSDLG", "NÃºmero de Decimais...");
+      IupSetLanguageString("IUP_NUMERICUNITS", "Unidades NumÃ©ricas");
+      IupSetLanguageString("IUP_NUMERICUNITSDLG", "Unidades NumÃ©ricas...");
 
       IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "SeleÃ§Ã£o invÃ¡lida.");
       IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dado invÃ¡lido.");
