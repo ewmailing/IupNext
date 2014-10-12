@@ -138,9 +138,7 @@ there is a selection. If value is MARKED then the
 the selection. Value can also be a range of cells in the format &quot;L1:C1-L2:C2&quot;. Title cells are not copied, even when a line or column is fully 
 selected. If the column or line is invisible (its size=0) it is not copied. The <strong>TEXTSEPARATOR</strong> 
 attribute can used to define a column separator (default is tab '\t') and line 
-separator will be line feeds ('\n'). The <strong>TEXTNUMERICLOCALE</strong> 
-attribute can be used to set a different numeric locale during paste in case 
-numeric conversions are being processed when the cell value is set (since 3.12)</p>
+separator will be line feeds ('\n'). </p>
 <p class="info">When MARKMODE=CELLS and sparse cells are selected there are two options for copy 
 according to the <strong>COPYKEEPSTRUCT</strong> attribute, if &quot;Yes&quot; the copied 
 data will fit a rectangular region that contains all the selected cells and the 
@@ -159,11 +157,9 @@ file. Value is the file name to be saved. LASTERROR can also be set to
 file format will be defined by the <strong>TEXTFORMAT</strong> attribute, can be &quot;TXT&quot; (default), 
 &quot;HTML&quot; or &quot;LaTeX&quot;. The <strong>COPYCAPTION</strong> attribute can be used to define a caption 
 that will be added to the file before the data, depending on the file format.</p>
-<p class="info">When using TXT format, the <strong>TEXTSEPARATOR</strong> attribute can used to 
-define a column separator (default is tab '\t') and line separator will be line 
-feeds ('\n'). The <strong>TEXTNUMERICLOCALE</strong> attribute can be used to 
-set a different numeric locale during paste in case numeric conversions are 
-being processed when the cell value is set (since 3.12)<br>When using LaTeX format, the <strong>LATEXLABEL</strong> attribute can used to 
+<p class="info">When using TXT format, the <strong>TEXTSEPARATOR</strong> 
+attribute can used to define a column separator (default is tab '\t') and line 
+separator will be line feeds ('\n'). <br>When using LaTeX format, the <strong>LATEXLABEL</strong> attribute can used to 
 define a label for the table.<br>When using HTML format, the attributes 
 &quot;HTML&lt;TABLE&gt;&quot;, &quot;HTML&lt;TR&gt;&quot;, &quot;HTML&lt;TH&gt;&quot;, &quot;HTML&lt;TD&gt;&quot;, &quot;HTML&lt;CAPTION&gt;&quot; can use used 
 to define a complement to be inserted in the respective tag definition, so a &quot; 
@@ -214,6 +210,9 @@ value.</p>
 <p>
 <strong>MENUCONTEXT</strong>: enable the context menu. Can be Yes or No. 
 Default: Yes.</p>
+<p>
+<strong>NUMERICDECIMALSYMBOL</strong>: symbol used for decimal separator in 
+numeric values. (since 3.12)</p>
 <p>
 <strong>NUMERICFORMAT<em>id</em></strong>: format to convert the numeric data 
 into strings at the given column (id). If not defined the NUMERICFORMATDEF 
@@ -298,8 +297,8 @@ be &quot;FOCUS&quot; to use the <a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS
 attribute, can be &quot;MARKED&quot; to use the start of the selected groups of cells 
 (top-left selected cell), or can be a cell address &quot;L:C&quot;.</p>
 <p class="info">Data must be in plain text format. Lines can be separated in 
-DOS, UNIX or MAC format. Columns can be separated with a tab ('\t'), with 
-a semicolon (';'), with a space (' ') or with a custom value defined by the <strong>TEXTSEPARATOR</strong> attribute. Data 
+DOS, UNIX or MAC format. Columns can be separated with a tab ('\t'), or with 
+a semicolon (';'), or with a space (' ') or with a custom value defined by the <strong>TEXTSEPARATOR</strong> attribute. Data 
 must contain an exact matrix organization. Use the attribute <strong>TEXTSKIPLINES</strong> to 
 skip a number of lines in the beginning of the data. If data at the insert 
 position will have more lines or columns than the current matrix, then the
@@ -307,10 +306,8 @@ position will have more lines or columns than the current matrix, then the
 does not exist the matrix size is not changed, and the exceeding data will be discarded. If defined the <a href="iupmatrix_cb.html#EDITION_CB">
 EDITION_CB</a> callback will be called before the cell value is set. <strong>LASTERROR</strong> 
 can be set to &quot;NOTEXT&quot; (data is empty or NULL), &quot;INVALIDMATRIX&quot; (not a matrix 
-data). <strong>BUSY</strong> will be set to Yes during the operation. Only visible cells will 
-receive data. The <strong>TEXTNUMERICLOCALE</strong> attribute can be used to 
-set a different numeric locale during paste in case numeric conversions are 
-being processed when the cell value is set (since 3.10).</p>
+data). <strong>BUSY</strong> will be set to Yes during the operation. Only 
+visible cells will receive data. </p>
 <p>
 <strong>PASTEDATA</strong> (write-only): paste data from a memory buffer. Value 
 is the data. Insert position is obtained from the

@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -53,10 +54,48 @@ void iupMatrixModifyValue(Ihandle* ih, int lin, int col, const char* value)
     iupMatrixSetValue(ih, lin, col, value, -1);    /* call value_edit_cb, but NO numeric conversion */
 }
 
+static int iMatrixSetLocale(Ihandle* ih)
+{
+  char* decimal = iupAttribGet(ih, "NUMERICDECIMALSYMBOL");
+  if (decimal)
+  {
+    struct lconv* locale_info = localeconv();
+    if (locale_info->decimal_point[0] != decimal[0])
+    {
+      iupAttribSetStr(ih, "_IUP_OLD_LOCALE", setlocale(LC_NUMERIC, NULL));
+      if (decimal[0] == '.')
+      {
+        setlocale(LC_NUMERIC, "en-US");
+        return 1;
+      }
+      else if (decimal[0] == ',')
+      {
+        setlocale(LC_NUMERIC, "pt-BR");
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+
+static void iMatrixResetLocale(Ihandle* ih)
+{
+  char* old_locale = iupAttribGet(ih, "_IUP_OLD_LOCALE");
+  if (old_locale)
+  {
+    setlocale(LC_NUMERIC, old_locale);
+    iupAttribSet(ih, "_IUP_OLD_LOCALE", NULL);
+  }
+}
+
 static char* iMatrixSetValueNumeric(Ihandle* ih, int lin, int col, const char* value, int convert)
 {
+  int ret, locale_set;
   double number;
-  if (iupStrToDouble(value, &number))
+  locale_set = iMatrixSetLocale(ih);
+  ret = iupStrToDouble(value, &number);
+  iMatrixResetLocale(ih);
+  if (ret)
   {
     IFniid setvalue_cb;
 
@@ -71,7 +110,7 @@ static char* iMatrixSetValueNumeric(Ihandle* ih, int lin, int col, const char* v
       setvalue_cb(ih, lin, col, number);
       return NULL;
     }
-    else if (convert && ih->data->numeric_columns[col].unit_shown!=ih->data->numeric_columns[col].unit) 
+    else if (locale_set || (convert && ih->data->numeric_columns[col].unit_shown != ih->data->numeric_columns[col].unit))
     {
       /* only use the number if a conversion occurred */
       sprintf(ih->data->numeric_buffer_set, IUP_DOUBLE2STR, number);
@@ -296,7 +335,9 @@ static char* iMatrixGetValueNumericDisplay(Ihandle* ih, int lin, int col, const 
                                                     ih->data->numeric_columns[col].unit, /* from */
                                                     ih->data->numeric_columns[col].unit_shown);  /* to */
 
+  iMatrixSetLocale(ih);
   sprintf(ih->data->numeric_buffer_get, format, number);
+  iMatrixResetLocale(ih);
   return ih->data->numeric_buffer_get;
 }
 

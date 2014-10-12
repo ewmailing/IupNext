@@ -75,7 +75,7 @@ static int iMatrixExUndoDataSwap(ImatExData* matex_data, IundoData* undo_data)
 
     value = (char*)iupTableGetCurr(undo_data->data_table);
 
-    old_value = iupStrDup(iupMatrixExGetCellValue(matex_data->ih, lin, col, 0));
+    old_value = iupStrDup(iupMatrixExGetCellValue(matex_data->ih, lin, col, 0));  /* get internal value */
 
     iupMatrixExSetCellValue(matex_data->ih, lin, col, value);
 

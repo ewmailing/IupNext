@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
-#include <locale.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -19,21 +18,6 @@
 #include "iup_str.h"
 #include "iup_matrixex.h"
 
-
-static void iMatrixExStrReplaceSep(char* buffer, const char* str, char sep)
-{
-  while (*str)
-  {
-    if (*str==sep || *str=='\n')
-      *buffer = ' ';
-    else
-      *buffer = *str;
-
-    buffer++;
-    str++;
-  }
-  *buffer = 0;
-}
 
 static void iMatrixExStrCopyNoSepHTML(char* buffer, const char* str)
 {
@@ -75,19 +59,14 @@ static void iMatrixExStrCopyNoSepLaTeX(char* buffer, const char* str)
   *buffer = 0;
 }
 
-static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col, char* buffer)
+static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
   int lin, col;
   int add_sep;
   char* str, sep;
-  char *locale, *old_locale = NULL;
 
   sep = *(iupAttribGetStr(ih, "TEXTSEPARATOR"));
-
-  locale = IupGetAttribute(ih, "TEXTNUMERICLOCALE");
-  if (locale)
-    old_locale = setlocale(LC_NUMERIC, locale);
 
   str = iupAttribGetStr(ih, "COPYCAPTION");
   if (str)
@@ -109,24 +88,17 @@ static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col, 
 
           str = iupMatrixExGetCellValue(matex_data->ih, lin, col, 1);  /* get displayed value */
           if (str)
-          {
-            iMatrixExStrReplaceSep(buffer, str, sep);
-            fprintf(file, "%s", buffer);
-          }
+            fprintf(file, "%s", str);
           else
             fprintf(file, "%s", " ");
 
           add_sep = 1;
         }
       }
-    }
 
-    if (add_sep)
       fprintf(file, "%s", "\n");
+    }
   }
-
-  if (old_locale)
-    setlocale(LC_NUMERIC, old_locale);
 }
 
 static char* iMatrixExGetCellAttrib(Ihandle* ih, const char* attrib, int lin, int col)
@@ -404,7 +376,7 @@ static int iMatrixExSetCopyFileAttrib(Ihandle *ih, const char* value)
   else if (iupStrEqualNoCase(format, "LaTeX"))
     iMatrixExCopyLaTeX(ih, file, num_lin, num_col, buffer);
   else
-    iMatrixExCopyTXT(ih, file, num_lin, num_col, buffer);
+    iMatrixExCopyTXT(ih, file, num_lin, num_col);
 
   fclose(file);
   return 0;

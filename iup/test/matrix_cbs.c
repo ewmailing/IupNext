@@ -200,7 +200,8 @@ static Ihandle *create_mat(int mati)
   IupSetAttribute(mat,"1:3","1");
   IupSetAttribute(mat,"2:3","1.5");
   IupSetAttribute(mat,"3:3","2");
-
+  IupSetAttribute(mat, "NUMERICDECIMALSYMBOL", ",");
+  
 //  IupSetAttribute(mat,"BGCOLOR1:*","255 128 0");
   IupSetAttribute(mat,"BGCOLOR2:1","255 128 0");
   IupSetAttribute(mat,"FGCOLOR2:0","255 0 128");

@@ -233,19 +233,24 @@ static int iMatrixExItemSettings_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
   int sep_index = 0, decimal_sep_index = 0, decimal_sep_old;
-  char sep_other[5] = "", *locale, *old_locale = NULL;
-  struct lconv * locale_info;
+  char sep_other[5] = "", *decimal_symbol;
 
   char sep = *(IupGetAttribute(matex_data->ih, "TEXTSEPARATOR"));
   if (sep == ';') sep_index = 1;
   else if (sep == ' ') sep_index = 2;
 
-  locale = IupGetAttribute(matex_data->ih, "TEXTNUMERICLOCALE");
-  if (locale) old_locale = setlocale(LC_NUMERIC, locale);
-  locale_info = localeconv();
-  if (locale_info->decimal_point[0] == ',')
-    decimal_sep_index = 1;
-  if (old_locale) setlocale(LC_NUMERIC, old_locale);
+  decimal_symbol = IupGetAttribute(matex_data->ih, "NUMERICDECIMALSYMBOL");
+  if (decimal_symbol)
+  {
+    if (decimal_symbol[0] == ',')
+      decimal_sep_index = 1;
+  }
+  else
+  {
+    struct lconv * locale_info = localeconv();
+    if (locale_info->decimal_point[0] == ',')
+      decimal_sep_index = 1;
+  }
   decimal_sep_old = decimal_sep_index;
 
   if (IupGetParam("_@IUP_SETTINGS", NULL, NULL,
@@ -263,10 +268,8 @@ static int iMatrixExItemSettings_CB(Ihandle* ih_item)
     /* avoid changing the application defined locale if not changed */
     if (decimal_sep_old != decimal_sep_index)
     {
-      if (decimal_sep_index == 0)
-        IupSetAttribute(matex_data->ih, "TEXTNUMERICLOCALE", "en-US");
-      else
-        IupSetAttribute(matex_data->ih, "TEXTNUMERICLOCALE", "pt-BR");
+      const char* decimal_str[] = { ".", "," };
+      IupSetAttribute(matex_data->ih, "NUMERICDECIMALSYMBOL", decimal_str[decimal_sep_index]);
     }
   }
 
