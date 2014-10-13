@@ -91,7 +91,12 @@ static int iMatrixSetNumericFormatPrecisionAttrib(Ihandle* ih, int col, const ch
 {
   int precision;
   if (iupStrToInt(value, &precision))
-    IupSetStrfId(ih, "NUMERICFORMAT", col, "%%.%dlf",precision);
+  {
+    if (col == IUP_INVALID_ID)
+      IupSetStrf(ih, "NUMERICFORMATDEF", "%%.%dlf", precision);
+    else
+      IupSetStrfId(ih, "NUMERICFORMAT", col, "%%.%dlf", precision);
+  }
   return 0;
 }
 

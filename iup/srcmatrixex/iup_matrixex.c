@@ -162,7 +162,8 @@ static char* iMatrixExFileDlg(ImatExData* matex_data, int save, const char* filt
   IupSetStrAttribute(dlg,"FILTER", filter);
   IupSetStrAttribute(dlg,"FILTERINFO", info);
   IupSetStrAttribute(dlg,"EXTFILTER", extfilter);  /* Windows and GTK only, but more flexible */
-  IupSetAttributeHandle(dlg,"PARENTDIALOG", IupGetDialog(matex_data->ih));
+  IupSetStrAttribute(dlg, "DIRECTORY", iupAttribGet(matex_data->ih, "FILEDIRECTORY"));
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(matex_data->ih));
 
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   if (IupGetInt(dlg,"STATUS")!=-1)
@@ -182,13 +183,13 @@ static int iMatrixExItemExport_CB(Ihandle* ih_item)
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
   char *filter, *info, *extfilter, *filename;
 
-  if (iupStrEqual(IupGetAttribute(ih_item, "TEXTFORMAT"), "LaTeX"))
+  if (iupStrEqual(IupGetAttribute(ih_item, "FILEFORMAT"), "LaTeX"))
   {
     filter = "*.tex";  /* Motif does not support EXTFILTER, so define both */
     info = "LaTeX file (table format)";
     extfilter = "LaTeX file (table format)|*.tex|All Files|*.*|";
   }
-  else if (iupStrEqual(IupGetAttribute(ih_item, "TEXTFORMAT"), "HTML"))
+  else if (iupStrEqual(IupGetAttribute(ih_item, "FILEFORMAT"), "HTML"))
   {
     filter = "*.html;*.htm";
     info = "HTML file (table format)";
@@ -203,8 +204,9 @@ static int iMatrixExItemExport_CB(Ihandle* ih_item)
 
   filename = iMatrixExFileDlg(matex_data, 1, filter, info, extfilter);
 
-  IupSetStrAttribute(matex_data->ih, "TEXTFORMAT", IupGetAttribute(ih_item, "TEXTFORMAT"));
+  IupSetStrAttribute(matex_data->ih, "FILEFORMAT", IupGetAttribute(ih_item, "FILEFORMAT"));
   IupSetStrAttribute(matex_data->ih, "COPYFILE", filename);
+  IupSetStrAttribute(matex_data->ih, "LASTFILENAME", filename);
 
   iMatrixListShowLastError(matex_data->ih);
 
@@ -232,7 +234,7 @@ static int iMatrixExItemImport_CB(Ihandle* ih_item)
 static int iMatrixExItemSettings_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
-  int sep_index = 0, decimal_sep_index = 0, decimal_sep_old;
+  int sep_index = 0, decimal_sep_index = 0, decimal_sep_old, decimals, decimals_old;
   char sep_other[5] = "", *decimal_symbol;
 
   char sep = *(IupGetAttribute(matex_data->ih, "TEXTSEPARATOR"));
@@ -253,11 +255,15 @@ static int iMatrixExItemSettings_CB(Ihandle* ih_item)
   }
   decimal_sep_old = decimal_sep_index;
 
+  decimals = IupGetInt(matex_data->ih, "NUMERICFORMATPRECISION");  /* get the value for the whole matrix */
+  decimals_old = decimals;
+
   if (IupGetParam("_@IUP_SETTINGS", NULL, NULL,
                   "_@IUP_TEXTSEPARATOR%l|Tab|\";\"|\" \"|\n"
-                  "_@IUP_OTHER%s[^0-9]\n"
+                  "_@IUP_OTHERTEXTSEPARATOR%s[^0-9]\n"
+                  "_@IUP_DECIMALS%i[0]\n"
                   "_@IUP_DECIMALSYMBOL%l|.|,|\n",
-                  &sep_index, sep_other, &decimal_sep_index, NULL))
+                  &sep_index, sep_other, &decimals, &decimal_sep_index, NULL))
   {
     const char* sep_str[] = { "\t", ";", " " };
     if (sep_other[0] != 0)
@@ -271,6 +277,9 @@ static int iMatrixExItemSettings_CB(Ihandle* ih_item)
       const char* decimal_str[] = { ".", "," };
       IupSetAttribute(matex_data->ih, "NUMERICDECIMALSYMBOL", decimal_str[decimal_sep_index]);
     }
+
+    if (decimals_old != decimals)
+      IupSetInt(matex_data->ih, "NUMERICFORMATPRECISION", decimals);
 
     IupSetAttribute(matex_data->ih, "REDRAW", "ALL");
   }
@@ -543,16 +552,21 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
 {
   int readonly = IupGetInt(ih, "READONLY");
 
+  Ihandle* menu = IupMenu(NULL);
+
+  /************************** General ****************************/
+
+  IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SETTINGS", NULL), "IMAGE=IUP_ToolsSettings"), "ACTION", iMatrixExItemSettings_CB, NULL));
+  IupAppend(menu, IupSeparator());
+
   /************************** File ****************************/
 
-  Ihandle* menu = IupMenu(
-    IupSetAttributes(IupSubmenu("_@IUP_EXPORT",
+  IupAppend(menu, IupSetAttributes(IupSubmenu("_@IUP_EXPORT",
       IupMenu(
-        IupSetCallbacks(IupSetAttributes(IupItem("Txt..." , NULL), "TEXTFORMAT=TXT"),    "ACTION", iMatrixExItemExport_CB, NULL),
-        IupSetCallbacks(IupSetAttributes(IupItem("LaTeX...", NULL), "TEXTFORMAT=LaTeX"), "ACTION", iMatrixExItemExport_CB, NULL),
-        IupSetCallbacks(IupSetAttributes(IupItem("Html..." , NULL), "TEXTFORMAT=HTML"),  "ACTION", iMatrixExItemExport_CB, NULL),
-        NULL)), "IMAGE=IUP_FileOpen"),
-    NULL);
+        IupSetCallbacks(IupSetAttributes(IupItem("Txt..." , NULL), "FILEFORMAT=TXT"),    "ACTION", iMatrixExItemExport_CB, NULL),
+        IupSetCallbacks(IupSetAttributes(IupItem("LaTeX...", NULL), "FILEFORMAT=LaTeX"), "ACTION", iMatrixExItemExport_CB, NULL),
+        IupSetCallbacks(IupSetAttributes(IupItem("Html..." , NULL), "FILEFORMAT=HTML"),  "ACTION", iMatrixExItemExport_CB, NULL),
+        NULL)), "IMAGE=IUP_FileOpen"));
 
   if (!readonly)
   {
@@ -562,7 +576,6 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
           NULL)), "IMAGE=IUP_FileSave"));
   }
 
-  IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SETTINGS", NULL), "IMAGE=IUP_ToolsSettings"), "ACTION", iMatrixExItemSettings_CB, NULL));
   IupAppend(menu, IupSeparator());
 
   /************************** Edit - Undo ****************************/
@@ -884,7 +897,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_IMPORT", "Import");
     IupSetLanguageString("IUP_SETTINGS", "Settings...");
     IupSetLanguageString("IUP_TEXTSEPARATOR", "Number Separator:");
-    IupSetLanguageString("IUP_OTHER", "Other:");
+    IupSetLanguageString("IUP_OTHERTEXTSEPARATOR", "  - Other Num. Sep.:");
     IupSetLanguageString("IUP_DECIMALSYMBOL", "Decimal Symbol:");
     IupSetLanguageString("IUP_UNDO", "Undo\tCtrl+Z");
     IupSetLanguageString("IUP_REDO", "Redo\tCtrl+Y");
@@ -937,7 +950,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_IMPORT", "Importar");
     IupSetLanguageString("IUP_SETTINGS", "Definições...");
     IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de Números:");
-    IupSetLanguageString("IUP_OTHER", "Outro:");
+    IupSetLanguageString("IUP_OTHERTEXTSEPARATOR", "  - Outro Sep. de Num.:");
     IupSetLanguageString("IUP_DECIMALSYMBOL", "Símbolo Decimal:");
     IupSetLanguageString("IUP_UNDO", "Desfazer\tCtrl+Z");
     IupSetLanguageString("IUP_REDO", "Refazer\tCtrl+R");

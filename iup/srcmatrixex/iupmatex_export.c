@@ -387,7 +387,7 @@ static int iMatrixExSetCopyFileAttrib(Ihandle *ih, const char* value)
   skip_lin = iupAttribGetInt(ih, "SKIPLINES");
   skip_col = iupAttribGetInt(ih, "SKIPCOLUMNS");
 
-  format = iupAttribGetStr(ih, "TEXTFORMAT");
+  format = iupAttribGetStr(ih, "FILEFORMAT");
   if (iupStrEqualNoCase(format, "HTML"))
     iMatrixExCopyHTML(ih, file, num_lin, num_col, buffer, skip_lin, skip_col);
   else if (iupStrEqualNoCase(format, "LaTeX"))
@@ -403,7 +403,7 @@ void iupMatrixExRegisterExport(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "COPYFILE", NULL, iMatrixExSetCopyFileAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "TEXTFORMAT", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXT", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FILEFORMAT", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXT", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COPYCAPTION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SKIPLINES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SKIPCOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

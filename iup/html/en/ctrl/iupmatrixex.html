@@ -154,7 +154,7 @@ after setting it. To clear the internal buffer set it to NULL.</p>
 <p><strong>COPYFILE</strong> (write-only): copies all visible cells to a given 
 file. Value is the file name to be saved. LASTERROR can also be set to 
 &quot;INVALIDFILENAME&quot; (failed to open). Data will be in plain text format, but the 
-file format will be defined by the <strong>TEXTFORMAT</strong> attribute, can be &quot;TXT&quot; (default), 
+file format will be defined by the <strong>FILEFORMAT</strong> attribute, can be &quot;TXT&quot; (default), 
 &quot;HTML&quot; or &quot;LaTeX&quot;. The <strong>COPYCAPTION</strong> attribute can be used to define a caption 
 that will be added to the file before the data, depending on the file format.</p>
 <p class="info">When using TXT format, the <strong>TEXTSEPARATOR</strong> 
@@ -229,7 +229,8 @@ sprintf</strong> &quot;precision&quot; field in the
 <strong>NUMERICFORMAT<em>id</em></strong> attribute string if the format 
 &quot;%.&lt;precision&gt;lf&quot; . If the
 <strong>NUMERICFORMAT<em>id</em></strong> attribute is not defined returns NULL. 
-It is just a simple form to set the format attribute. (no redraw)</p>
+It is just a simple form to set the format attribute. If id is not used it will 
+affect the NUMERICFORMATDEF attribute. (no redraw)</p>
 <p>
 <strong>NUMERICFORMATDEF</strong>: default value used when NUMERICFORMATid is 
 not specified. Default: &quot;%.2lf&quot;.</p>
@@ -557,13 +558,18 @@ control.</p>
 <h4>Context Menu</h4>
 <p>The library adds a context menu where the user can execute the new features. 
 If the matrix is read-only some of the features are not shown.</p>
-<pre>Export
+<p>&nbsp;The FILEDIRECTORY 
+attribute can be used to control the initial directory in Export and Import file 
+dialogs (since 3.12). The LASTFILENAME attribute can be consulted after the file 
+dialogs were successfully closed (since 3.12).</p>
+<pre>Settings...         =&gt; Shows the Settings Dialog
+----------------
+Export
 	Txt...       =&gt; Shows a file selection dialog and saves the cells to a file.
 	LaTeX...     =&gt; ( &quot; )
-	Html...      =&gt; (  &quot; )
+	Html...      =&gt; ( &quot; )
 Import
 	Txt...       =&gt; Shows a file selection dialog and loads the cells from a file.
-Settings...         =&gt; Shows the Settings Dialog
 ----------------
 Undo                =&gt; Undo 1 level
 Redo                =&gt; R<span class="style13">e</span>do 1 level
@@ -608,6 +614,10 @@ Copy To (Same Column)    Copy cell value to other lines in the same column
     <tr>
       <td><img border="0" src="images/iupmatrixex_undo.png"></td>
       <td><img border="0" src="images/iupmatrixex_units.png"></td>
+    </tr>
+    <tr>
+      <td><img border="0" src="images/iupmatrixex_settings.png"></td>
+      <td><img border="0" src="images/iupmatrixex_decimals.png"></td>
     </tr>
   </table>
   </center>
