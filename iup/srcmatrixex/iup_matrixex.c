@@ -149,7 +149,7 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
     IupSetStrAttributeId2(ih,"FRAMEVERTCOLOR",IUP_INVALID_ID, col, fzcolor);
   }
 
-  IupSetAttribute(ih,"REDRAW","ALL");
+  IupSetAttribute(ih, "REDRAW", "ALL");
   return 1;  /* store freeze state */
 }
 
@@ -271,6 +271,8 @@ static int iMatrixExItemSettings_CB(Ihandle* ih_item)
       const char* decimal_str[] = { ".", "," };
       IupSetAttribute(matex_data->ih, "NUMERICDECIMALSYMBOL", decimal_str[decimal_sep_index]);
     }
+
+    IupSetAttribute(matex_data->ih, "REDRAW", "ALL");
   }
 
   return IUP_DEFAULT;
@@ -666,8 +668,11 @@ static int iMatrixSetShowMenuContextAttribId(Ihandle *ih, int lin, int col, cons
   if (menucontext_cb) menucontext_cb(ih, menu, lin, col);
 
   IupPopup(menu, x, y);
-  IupDestroy(menu);
 
+  menucontext_cb = (IFnnii)IupGetCallback(ih, "MENUCONTEXTCLOSE_CB");
+  if (menucontext_cb) menucontext_cb(ih, menu, lin, col);
+
+  IupDestroy(menu);
   return 0;
 }
 
@@ -859,6 +864,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
+  iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
   iupClassRegisterAttribute(ic, "MENUCONTEXT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId2(ic, "SHOWMENUCONTEXT", NULL, iMatrixSetShowMenuContextAttribId, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
