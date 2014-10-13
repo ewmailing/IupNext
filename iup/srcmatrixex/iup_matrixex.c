@@ -510,7 +510,7 @@ static int iMatrixExItemNumericUnits_CB(Ihandle* ih_item)
 
   sprintf(format, "_@IUP_UNITS%%l%s\n_@IUP_DECIMALS%%i[0]\n", list_str);
 
-  if (IupGetParam("_@IUP_NUMERICUNITS", NULL, NULL, format, &unit, &decimals, NULL))
+  if (IupGetParam("_@IUP_COLUMNUNITS", NULL, NULL, format, &unit, &decimals, NULL))
   {
     IupSetIntId(matex_data->ih, "NUMERICUNITSHOWNINDEX", col, unit);
     IupSetIntId(matex_data->ih, "NUMERICFORMATPRECISION", col, decimals);
@@ -530,7 +530,7 @@ static int iMatrixExItemNumericDecimals_CB(Ihandle* ih_item)
 
   decimals = IupGetIntId(matex_data->ih, "NUMERICFORMATPRECISION", col);
 
-  if (IupGetParam("_@IUP_NUMERICDECIMALS", NULL, NULL, "_@IUP_DECIMALS%i[0]\n", &decimals, NULL))
+  if (IupGetParam("_@IUP_COLUMNDECIMALS", NULL, NULL, "_@IUP_DECIMALS%i[0]\n", &decimals, NULL))
   {
     IupSetIntId(matex_data->ih, "NUMERICFORMATPRECISION", col, decimals);
     IupSetfAttribute(matex_data->ih, "REDRAW", "C%d", col);
@@ -628,9 +628,9 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
   if (IupGetAttributeId(ih, "NUMERICQUANTITY", col))
   {
     if (IupGetIntId(ih, "NUMERICQUANTITYINDEX", col))  /* not None */
-      IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_NUMERICUNITSDLG", NULL),   "ACTION", iMatrixExItemNumericUnits_CB, NULL));
+      IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_COLUMNUNITSDLG", NULL),   "ACTION", iMatrixExItemNumericUnits_CB, NULL));
     else
-      IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_NUMERICDECIMALSDLG", NULL),   "ACTION", iMatrixExItemNumericDecimals_CB, NULL));
+      IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_COLUMNDECIMALSDLG", NULL),   "ACTION", iMatrixExItemNumericDecimals_CB, NULL));
   }
 
   /************************** Data ****************************/
@@ -919,10 +919,10 @@ static void iMatrixExInitAttribCb(Iclass* ic)
 
     IupSetLanguageString("IUP_UNITS", "Units:");
     IupSetLanguageString("IUP_DECIMALS", "Decimals:");
-    IupSetLanguageString("IUP_NUMERICDECIMALS", "Numeric Decimals");
-    IupSetLanguageString("IUP_NUMERICDECIMALSDLG", "Numeric Decimals...");
-    IupSetLanguageString("IUP_NUMERICUNITS", "Numeric Units");
-    IupSetLanguageString("IUP_NUMERICUNITSDLG", "Numeric Units...");
+    IupSetLanguageString("IUP_COLUMNDECIMALS", "Column Decimals");
+    IupSetLanguageString("IUP_COLUMNDECIMALSDLG", "Column Decimals...");
+    IupSetLanguageString("IUP_COLUMNUNITS", "Column Units");
+    IupSetLanguageString("IUP_COLUMNUNITSDLG", "Column Units...");
 
     IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Invalid Selection.");
     IupSetLanguageString("IUP_ERRORNOTEXT", "Empty Text.");
@@ -969,10 +969,10 @@ static void iMatrixExInitAttribCb(Iclass* ic)
 
     IupSetLanguageString("IUP_UNITS", "Unidades:");
     IupSetLanguageString("IUP_DECIMALS", "Decimais:");
-    IupSetLanguageString("IUP_NUMERICDECIMALS", "N�mero de Decimais");
-    IupSetLanguageString("IUP_NUMERICDECIMALSDLG", "N�mero de Decimais...");
-    IupSetLanguageString("IUP_NUMERICUNITS", "Unidades Num�ricas");
-    IupSetLanguageString("IUP_NUMERICUNITSDLG", "Unidades Num�ricas...");
+    IupSetLanguageString("IUP_COLUMNDECIMALS", "Decimais da Coluna");
+    IupSetLanguageString("IUP_COLUMNDECIMALSDLG", "Decimais da Coluna...");
+    IupSetLanguageString("IUP_COLUMNUNITS", "Unidades da Coluna");
+    IupSetLanguageString("IUP_COLUMNUNITSDLG", "Unidades da Coluna...");
 
     IupSetLanguageString("IUP_COPYTOINTERVALS", "Copiar Para - Intervalos");
     IupSetLanguageString("IUP_GOTO", "Ir Para");
@@ -991,11 +991,6 @@ static void iMatrixExInitAttribCb(Iclass* ic)
       IupSetLanguageString("IUP_SETTINGS", "Definições...");
       IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de Números:");
       IupSetLanguageString("IUP_DECIMALSYMBOL", "Símbolo Decimal:");
-
-      IupSetLanguageString("IUP_NUMERICDECIMALS", "Número de Decimais");
-      IupSetLanguageString("IUP_NUMERICDECIMALSDLG", "Número de Decimais...");
-      IupSetLanguageString("IUP_NUMERICUNITS", "Unidades Numéricas");
-      IupSetLanguageString("IUP_NUMERICUNITSDLG", "Unidades Numéricas...");
 
       IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Seleção inválida.");
       IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dado inválido.");
