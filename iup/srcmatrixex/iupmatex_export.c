@@ -59,7 +59,7 @@ static void iMatrixExStrCopyNoSepLaTeX(char* buffer, const char* str)
   *buffer = 0;
 }
 
-static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col)
+static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col, int skip_lin, int skip_col)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
   int lin, col;
@@ -73,13 +73,13 @@ static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col)
     fprintf(file,"%s\n",str);
 
   /* Here includes the title cells */
-  for(lin = 0; lin <= num_lin; ++lin)
+  for (lin = 0; lin <= num_lin; ++lin)
   {
     add_sep = 0;
 
     if (iupMatrixExIsLineVisible(ih, lin))
     {
-      for(col = 0; col <= num_col; ++col)
+      for (col = 0; col <= num_col; ++col)
       {
         if (iupMatrixExIsColumnVisible(ih, col))
         {
@@ -94,10 +94,14 @@ static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col)
 
           add_sep = 1;
         }
+
+        if (col == 0) col += skip_col;
       }
 
       fprintf(file, "%s", "\n");
     }
+
+    if (lin == 0) lin += skip_lin;
   }
 }
 
@@ -198,7 +202,7 @@ static char* iMatrixExGetCellFormat(Ihandle *ih, int lin, int col, char* format)
   return format;
 }
 
-static void iMatrixExCopyHTML(Ihandle *ih, FILE* file, int num_lin, int num_col, char* buffer)
+static void iMatrixExCopyHTML(Ihandle *ih, FILE* file, int num_lin, int num_col, char* buffer, int skip_lin, int skip_col)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
   int lin, col;
@@ -225,13 +229,13 @@ static void iMatrixExCopyHTML(Ihandle *ih, FILE* file, int num_lin, int num_col,
     fprintf(file,"<CAPTION%s>%s</CAPTION>\n", caption, str);
 
   /* Here includes the title cells */
-  for(lin = 0; lin <= num_lin; ++lin)
+  for (lin = 0; lin <= num_lin; ++lin)
   {
     if (iupMatrixExIsLineVisible(ih, lin))
     {
       fprintf(file,"<TR%s> ", tr);
 
-      for(col = 0; col <= num_col; ++col)
+      for (col = 0; col <= num_col; ++col)
       {
         if (iupMatrixExIsColumnVisible(ih, col))
         {           
@@ -254,10 +258,14 @@ static void iMatrixExCopyHTML(Ihandle *ih, FILE* file, int num_lin, int num_col,
           else
             fprintf(file,"</TD> ");
         }
+
+        if (col == 0) col += skip_col;
       }
 
       fprintf(file,"</TR>\n");
     }
+
+    if (lin == 0) lin += skip_lin;
   }
 
   fprintf(file,"</TABLE>\n");
@@ -280,7 +288,7 @@ static int iMatrixExIsBoldLine(Ihandle* ih, int lin)
   return 0;
 }
 
-static void iMatrixExCopyLaTeX(Ihandle *ih, FILE* file, int num_lin, int num_col, char* buffer)
+static void iMatrixExCopyLaTeX(Ihandle *ih, FILE* file, int num_lin, int num_col, char* buffer, int skip_lin, int skip_col)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
   int lin, col;
@@ -293,15 +301,17 @@ static void iMatrixExCopyLaTeX(Ihandle *ih, FILE* file, int num_lin, int num_col
   fprintf(file,"\\begin{center}\n");
   fprintf(file,"\\begin{tabular}{");
 
-  for(col = 0; col <= num_col; ++col)
+  for (col = 0; col <= num_col; ++col)
   {
     if (iupMatrixExIsColumnVisible(ih, col))
       fprintf(file,"|r");
+
+    if (col == 0) col += skip_col;
   }
   fprintf(file,"|} \\hline\n");
 
   /* Here includes the title cells */
-  for(lin = 0; lin <= num_lin; ++lin)
+  for (lin = 0; lin <= num_lin; ++lin)
   {
     add_sep = 0;
 
@@ -309,7 +319,7 @@ static void iMatrixExCopyLaTeX(Ihandle *ih, FILE* file, int num_lin, int num_col
     {
       int is_bold = iMatrixExIsBoldLine(ih, lin);
 
-      for(col = 0; col <= num_col; ++col)
+      for (col = 0; col <= num_col; ++col)
       {
         if (iupMatrixExIsColumnVisible(ih, col))
         {    
@@ -333,10 +343,14 @@ static void iMatrixExCopyLaTeX(Ihandle *ih, FILE* file, int num_lin, int num_col
 
           add_sep = 1;
         }
+
+        if (col == 0) col += skip_col;
       }
 
       fprintf(file,"\\\\ \\hline\n");
     }
+
+    if (lin == 0) lin += skip_lin;
   }
 
   fprintf(file,"\\end{tabular}\n");
@@ -353,7 +367,7 @@ static void iMatrixExCopyLaTeX(Ihandle *ih, FILE* file, int num_lin, int num_col
 
 static int iMatrixExSetCopyFileAttrib(Ihandle *ih, const char* value)
 {
-  int num_lin, num_col;
+  int num_lin, num_col, skip_lin, skip_col;
   char buffer[1024];
   char* format;
 
@@ -370,13 +384,16 @@ static int iMatrixExSetCopyFileAttrib(Ihandle *ih, const char* value)
   num_lin = IupGetInt(ih, "NUMLIN");
   num_col = IupGetInt(ih, "NUMCOL");
 
+  skip_lin = iupAttribGetInt(ih, "SKIPLINES");
+  skip_col = iupAttribGetInt(ih, "SKIPCOLUMNS");
+
   format = iupAttribGetStr(ih, "TEXTFORMAT");
   if (iupStrEqualNoCase(format, "HTML"))
-    iMatrixExCopyHTML(ih, file, num_lin, num_col, buffer);
+    iMatrixExCopyHTML(ih, file, num_lin, num_col, buffer, skip_lin, skip_col);
   else if (iupStrEqualNoCase(format, "LaTeX"))
-    iMatrixExCopyLaTeX(ih, file, num_lin, num_col, buffer);
+    iMatrixExCopyLaTeX(ih, file, num_lin, num_col, buffer, skip_lin, skip_col);
   else
-    iMatrixExCopyTXT(ih, file, num_lin, num_col);
+    iMatrixExCopyTXT(ih, file, num_lin, num_col, skip_lin, skip_col);
 
   fclose(file);
   return 0;
@@ -388,7 +405,11 @@ void iupMatrixExRegisterExport(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "TEXTFORMAT", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXT", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COPYCAPTION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SKIPLINES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SKIPCOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "LATEXLABEL", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "HTML<TABLE>", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HTML<TR>", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HTML<TH>", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
