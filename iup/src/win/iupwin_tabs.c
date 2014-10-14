@@ -145,21 +145,28 @@ static int winTabsHasInVisible(Iarray* visible_array)
 
 static void winTabsSetVisibleArrayItem(Ihandle* ih, int pos, int visible)
 {
-  Iarray* visible_array = winTabsGetVisibleArray(ih);
-  int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
-
-  if (!visible && !ih->data->has_invisible)
-  {
-    int count = IupGetChildCount(ih);
-    winTabsInitVisibleArray(visible_array, count);
-  }
-
-  visible_array_array_data[pos] = visible;
-
-  if (!visible)
-    ih->data->has_invisible = 1;
+  /* if set to visible and all are visible, just return */
+  if (visible && !ih->data->has_invisible)
+    return;
   else
-    ih->data->has_invisible = winTabsHasInVisible(visible_array);
+  {
+    Iarray* visible_array = winTabsGetVisibleArray(ih);
+    int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
+
+    /* first invisible init array */
+    if (!visible && !ih->data->has_invisible)
+    {
+      int count = IupGetChildCount(ih);
+      winTabsInitVisibleArray(visible_array, count);
+    }
+
+    visible_array_array_data[pos] = visible;
+
+    if (!visible)
+      ih->data->has_invisible = 1;
+    else
+      ih->data->has_invisible = winTabsHasInVisible(visible_array);
+  }
 }
 
 static void winTabsInsertVisibleArrayItem(Ihandle* ih, int pos)
@@ -184,9 +191,14 @@ static void winTabsDeleteVisibleArrayItem(Ihandle* ih, int pos)
 
 static int winTabsIsTabVisible(Ihandle* ih, int pos)
 {
-  Iarray* visible_array = winTabsGetVisibleArray(ih);
-  int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
-  return visible_array_array_data[pos];
+  if (ih->data->has_invisible)
+  {
+    Iarray* visible_array = winTabsGetVisibleArray(ih);
+    int* visible_array_array_data = (int*)iupArrayGetData(visible_array);
+    return visible_array_array_data[pos];
+  }
+  else
+    return 1;
 }
 
 static int winTabsGetInsertPos(Ihandle* ih, int pos)
