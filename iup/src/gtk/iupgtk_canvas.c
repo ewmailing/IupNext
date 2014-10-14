@@ -264,6 +264,9 @@ static gboolean gtkCanvasExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Iha
   IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
   if (cb && !(ih->data->inside_resize))
   {
+    /* IMPORTANT: this will not fully work at the first time because the GTK internal double buffer already started. 
+                  On the first time, the canvas will be configured correctly but after calling the application callback,
+                  GTK will overwrite its contents with the BGCOLOR. */
     if (!iupAttribGet(ih, "_IUPGTK_NO_BGCOLOR"))
       gtkCanvasSetBgColorAttrib(ih, iupAttribGetStr(ih, "BGCOLOR"));  /* reset to update window attributes */
 

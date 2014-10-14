@@ -182,6 +182,10 @@ void iupdrvBaseUnMapMethod(Ihandle* ih)
 
 void iupdrvPostRedraw(Ihandle *ih)
 {
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
+  if (window)
+    gdk_window_invalidate_rect(window, NULL, TRUE);
+
   /* Post a REDRAW */
   gtk_widget_queue_draw(ih->handle);
 }
@@ -189,11 +193,15 @@ void iupdrvPostRedraw(Ihandle *ih)
 void iupdrvRedrawNow(Ihandle *ih)
 {
   GdkWindow* window = iupgtkGetWindow(ih->handle);
+  if (window)
+    gdk_window_invalidate_rect(window, NULL, TRUE);
+
   /* Post a REDRAW */
   gtk_widget_queue_draw(ih->handle);
+
   /* Force a REDRAW */
   if (window)
-    gdk_window_process_updates(window, FALSE);
+    gdk_window_process_updates(window, TRUE);
 }
 
 static GtkWidget* gtkGetWindowedParent(GtkWidget* widget)
