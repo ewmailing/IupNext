@@ -220,7 +220,6 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
       if (pMsg->modificationType&SC_MOD_BEFOREINSERT ||
           pMsg->modificationType&SC_MOD_BEFOREDELETE)
       {
-        IFn value_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
         IFniiis cb = (IFniiis)IupGetCallback(ih, "ACTION");
         if (cb)
         {
@@ -230,10 +229,17 @@ static void iScintillaNotify(Ihandle *ih, struct SCNotification* pMsg)
 
           cb(ih, insert, pMsg->position, pMsg->length, (char*)pMsg->text);
         }
+#ifndef GTK
+        PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
+#endif
+      }
 
+      if (pMsg->modificationType&SC_MOD_INSERTTEXT ||
+          pMsg->modificationType&SC_MOD_DELETETEXT)
+      {
+        IFn value_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
         if (value_cb)
           value_cb(ih);
-
 #ifndef GTK
         PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
 #endif
