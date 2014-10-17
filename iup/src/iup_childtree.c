@@ -463,14 +463,22 @@ int IupGetChildCount(Ihandle* ih)
 
 Ihandle* IupGetNextChild(Ihandle* ih, Ihandle* child)
 {
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return NULL;
-
   if (!child)
+  {
+    iupASSERT(iupObjectCheck(ih));
+    if (!iupObjectCheck(ih))
+      return NULL;
+
     return ih->firstchild;
+  }
   else
+  {
+    iupASSERT(iupObjectCheck(child));
+    if (!iupObjectCheck(child))
+      return NULL;
+
     return child->brother;
+  }
 }
 
 Ihandle* IupGetBrother(Ihandle* ih)
