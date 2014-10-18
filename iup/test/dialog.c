@@ -267,7 +267,7 @@ static void new_dialog(int test, char* tip)
   }
   else
   {
-//    IupSetAttribute(dlg, "PARENTDIALOG", "_MAIN_DIALOG_TEST_");
+    IupSetAttribute(dlg, "PARENTDIALOG", "_MAIN_DIALOG_TEST_");
     IupSetAttribute(dlg, "CURSOR", "CROSS");
   }
 
@@ -284,13 +284,16 @@ static void new_dialog(int test, char* tip)
   {
     IupSetAttribute(dlg, "CURSOR", "DLG_CURSOR");
     IupSetAttribute(dlg, "ICON", "DLG_ICON");
-    IupSetAttribute(dlg, "MINSIZE", "300x300");
-//    IupSetAttribute(dlg, "MINSIZE", "2x2");
-    IupSetAttribute(dlg, "MAXSIZE", "600x600");
 //    IupSetAttribute(dlg, "FONTSIZE", "20");
 
     {
       static int count = 0;
+      if (count == 0)
+      {
+        IupSetAttribute(dlg, "MINSIZE", "300x300");
+        //    IupSetAttribute(dlg, "MINSIZE", "2x2");
+        IupSetAttribute(dlg, "MAXSIZE", "600x600");
+      }
       if (count == 1)
       {
 //        IupSetAttribute(dlg, "FONT", "TIMES_ITALIC_14");
@@ -310,7 +313,7 @@ static void new_dialog(int test, char* tip)
         // Windows Only  
         IupSetAttribute(dlg, "TOPMOST", "YES");
         IupSetAttribute(dlg, "OPACITY", "128");
-        IupSetAttribute(dlg, "TOOLBOX", "YES");
+        IupSetAttribute(dlg, "TOOLBOX", "YES");  // NOT working in Windows 8
       }
       count++;
     }
