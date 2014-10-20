@@ -454,6 +454,11 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
             *b = iupALPHAPRE(*b,*a);
           }
         }
+        else
+        {
+          if (make_inactive)
+            iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
+        }
       }
       else /* bpp == 8 */
       {
