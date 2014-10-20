@@ -70,7 +70,7 @@ struct _IcontrolData
        dark_shadow;
 
   /* drawing canvas */
-  cdCanvas *cddbuffer;
+  cdCanvas *cd_canvas;
 };
 
 
@@ -92,8 +92,8 @@ static void iDialDrawVerticalBackground(Ihandle* ih, double amin, double amax, i
   {
     int y0 = (int)(yc - ih->data->radius * cos(a));
     int y1 = (int)(yc - ih->data->radius * cos(a+delta));
-    cdCanvasForeground(ih->data->cddbuffer, iDialGetFgColor(ih, a, amin));
-    cdCanvasBox(ih->data->cddbuffer, IDIAL_SPACE+1, ih->data->w-1-IDIAL_SPACE-2, y0, y1);
+    cdCanvasForeground(ih->data->cd_canvas, iDialGetFgColor(ih, a, amin));
+    cdCanvasBox(ih->data->cd_canvas, IDIAL_SPACE+1, ih->data->w-1-IDIAL_SPACE-2, y0, y1);
 
     if (y0 < *ymin) *ymin = y0;
 
@@ -104,8 +104,8 @@ static void iDialDrawVerticalBackground(Ihandle* ih, double amin, double amax, i
   {
     int y0 = (int)(yc + ih->data->radius * fabs(cos(a)));
     int y1 = (int)(yc + ih->data->radius * fabs(cos(a+delta)));
-    cdCanvasForeground(ih->data->cddbuffer, iDialGetFgColor(ih, a, amin));
-    cdCanvasBox(ih->data->cddbuffer, IDIAL_SPACE+1, ih->data->w-1-IDIAL_SPACE-2, y0, y1);
+    cdCanvasForeground(ih->data->cd_canvas, iDialGetFgColor(ih, a, amin));
+    cdCanvasBox(ih->data->cd_canvas, IDIAL_SPACE+1, ih->data->w-1-IDIAL_SPACE-2, y0, y1);
 
     if (y1 > *ymax) *ymax = y1;
 
@@ -138,7 +138,7 @@ static void iDialDrawVertical(Ihandle* ih)
 
   iDialDrawVerticalBackground(ih, amin, amax, &ymin, &ymax);
 
-  cdIupDrawRaiseRect(ih->data->cddbuffer, IDIAL_SPACE, ymin, ih->data->w-1-IDIAL_SPACE, ymax,
+  cdIupDrawRaiseRect(ih->data->cd_canvas, IDIAL_SPACE, ymin, ih->data->w-1-IDIAL_SPACE, ymax,
                       ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
 
   for (; a < amax; a += delta)    /* graduation */
@@ -150,7 +150,7 @@ static void iDialDrawVertical(Ihandle* ih)
     if (abs(y-ymin) < 3 || abs(ymax-y) < 3)
       continue;
 
-    cdIupDrawHorizSunkenMark(ih->data->cddbuffer, IDIAL_SPACE+1, ih->data->w-1-IDIAL_SPACE-2, y, ih->data->light_shadow, ih->data->dark_shadow);
+    cdIupDrawHorizSunkenMark(ih->data->cd_canvas, IDIAL_SPACE+1, ih->data->w-1-IDIAL_SPACE-2, y, ih->data->light_shadow, ih->data->dark_shadow);
   }
 }
 
@@ -163,8 +163,8 @@ static void iDialDrawHorizontalBackground(Ihandle* ih,double amin,double amax, i
   {
     int x0=(int)(xc - ih->data->radius * cos(a));
     int x1=(int)(xc - ih->data->radius * cos(a + delta));
-    cdCanvasForeground(ih->data->cddbuffer,iDialGetFgColor(ih, a, amin));
-    cdCanvasBox(ih->data->cddbuffer, x0, x1, IDIAL_SPACE+2, ih->data->h-1-IDIAL_SPACE-1);
+    cdCanvasForeground(ih->data->cd_canvas,iDialGetFgColor(ih, a, amin));
+    cdCanvasBox(ih->data->cd_canvas, x0, x1, IDIAL_SPACE+2, ih->data->h-1-IDIAL_SPACE-1);
 
     if (x0 < *xmin) *xmin = x0;
 
@@ -175,8 +175,8 @@ static void iDialDrawHorizontalBackground(Ihandle* ih,double amin,double amax, i
   {
     int x0 =(int)(xc + ih->data->radius * fabs(cos(a)));
     int x1 =(int)(xc + ih->data->radius * fabs(cos(a + delta)));
-    cdCanvasForeground(ih->data->cddbuffer, iDialGetFgColor(ih, a, amin));
-    cdCanvasBox(ih->data->cddbuffer, x0, x1, IDIAL_SPACE+2, ih->data->h-1-IDIAL_SPACE-1);
+    cdCanvasForeground(ih->data->cd_canvas, iDialGetFgColor(ih, a, amin));
+    cdCanvasBox(ih->data->cd_canvas, x0, x1, IDIAL_SPACE+2, ih->data->h-1-IDIAL_SPACE-1);
 
     if (x1 > *xmax) *xmax = x1;
 
@@ -209,7 +209,7 @@ static void iDialDrawHorizontal(Ihandle* ih)
 
   iDialDrawHorizontalBackground(ih, amin, amax, &xmin, &xmax);
 
-  cdIupDrawRaiseRect(ih->data->cddbuffer, xmin, IDIAL_SPACE, xmax, ih->data->h-1-IDIAL_SPACE,
+  cdIupDrawRaiseRect(ih->data->cd_canvas, xmin, IDIAL_SPACE, xmax, ih->data->h-1-IDIAL_SPACE,
                       ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
 
   for ( ; a < amax; a += delta)
@@ -221,26 +221,26 @@ static void iDialDrawHorizontal(Ihandle* ih)
     if (abs(x - xmin) < 3 || abs(xmax - x) < 3)
       continue;
 
-    cdIupDrawVertSunkenMark(ih->data->cddbuffer, x, IDIAL_SPACE+2, ih->data->h-1-IDIAL_SPACE-1, ih->data->light_shadow, ih->data->dark_shadow);
+    cdIupDrawVertSunkenMark(ih->data->cd_canvas, x, IDIAL_SPACE+2, ih->data->h-1-IDIAL_SPACE-1, ih->data->light_shadow, ih->data->dark_shadow);
   }
 }
 
 static void iDialDrawCircularMark(Ihandle* ih, int x1, int y1)
 {
-  cdCanvasForeground(ih->data->cddbuffer, ih->data->bgcolor);
-  cdCanvasBox(ih->data->cddbuffer,x1, x1+4, y1, y1+4);
+  cdCanvasForeground(ih->data->cd_canvas, ih->data->bgcolor);
+  cdCanvasBox(ih->data->cd_canvas,x1, x1+4, y1, y1+4);
 
-  cdCanvasForeground(ih->data->cddbuffer, ih->data->light_shadow);
-  cdCanvasLine(ih->data->cddbuffer, x1,   y1+1, x1,   y1+3);
-  cdCanvasLine(ih->data->cddbuffer, x1+1, y1+4, x1+3, y1+4);
+  cdCanvasForeground(ih->data->cd_canvas, ih->data->light_shadow);
+  cdCanvasLine(ih->data->cd_canvas, x1,   y1+1, x1,   y1+3);
+  cdCanvasLine(ih->data->cd_canvas, x1+1, y1+4, x1+3, y1+4);
 
-  cdCanvasForeground(ih->data->cddbuffer, ih->data->mid_shadow);
-  cdCanvasLine(ih->data->cddbuffer, x1+1, y1, x1+4, y1);
-  cdCanvasLine(ih->data->cddbuffer, x1+4, y1, x1+4, y1+3);
+  cdCanvasForeground(ih->data->cd_canvas, ih->data->mid_shadow);
+  cdCanvasLine(ih->data->cd_canvas, x1+1, y1, x1+4, y1);
+  cdCanvasLine(ih->data->cd_canvas, x1+4, y1, x1+4, y1+3);
 
-  cdCanvasForeground(ih->data->cddbuffer, ih->data->dark_shadow);
-  cdCanvasLine(ih->data->cddbuffer, x1+2, y1,   x1+3, y1);
-  cdCanvasLine(ih->data->cddbuffer, x1+4, y1+1, x1+4, y1+2);
+  cdCanvasForeground(ih->data->cd_canvas, ih->data->dark_shadow);
+  cdCanvasLine(ih->data->cd_canvas, x1+2, y1,   x1+3, y1);
+  cdCanvasLine(ih->data->cd_canvas, x1+4, y1+1, x1+4, y1+2);
 }
 
 static void iDialDrawCircular(Ihandle* ih)
@@ -250,16 +250,16 @@ static void iDialDrawCircular(Ihandle* ih)
   ih->data->radius = dialmin(ih->data->w, ih->data->h) / 2 - 2 * IDIAL_SPACE;
 
   wide = (int)(2 * ih->data->radius);
-  cdCanvasForeground(ih->data->cddbuffer, ih->data->mid_shadow);
-  cdCanvasLineWidth(ih->data->cddbuffer, 2);
-  cdCanvasArc(ih->data->cddbuffer, xc, yc, wide-1, wide-1, -135, 45.0);
-  cdCanvasLineWidth(ih->data->cddbuffer, 1);
-  cdCanvasForeground(ih->data->cddbuffer, ih->data->bgcolor);
-  cdCanvasSector(ih->data->cddbuffer, xc, yc, wide-2, wide-2, 0.0, 360.0);
-  cdCanvasForeground(ih->data->cddbuffer, ih->data->light_shadow);
-  cdCanvasArc(ih->data->cddbuffer, xc, yc, wide, wide, 45, 225);
-  cdCanvasForeground(ih->data->cddbuffer, ih->data->dark_shadow);
-  cdCanvasArc(ih->data->cddbuffer, xc, yc, wide, wide, -135, 45);
+  cdCanvasForeground(ih->data->cd_canvas, ih->data->mid_shadow);
+  cdCanvasLineWidth(ih->data->cd_canvas, 2);
+  cdCanvasArc(ih->data->cd_canvas, xc, yc, wide-1, wide-1, -135, 45.0);
+  cdCanvasLineWidth(ih->data->cd_canvas, 1);
+  cdCanvasForeground(ih->data->cd_canvas, ih->data->bgcolor);
+  cdCanvasSector(ih->data->cd_canvas, xc, yc, wide-2, wide-2, 0.0, 360.0);
+  cdCanvasForeground(ih->data->cd_canvas, ih->data->light_shadow);
+  cdCanvasArc(ih->data->cd_canvas, xc, yc, wide, wide, 45, 225);
+  cdCanvasForeground(ih->data->cd_canvas, ih->data->dark_shadow);
+  cdCanvasArc(ih->data->cd_canvas, xc, yc, wide, wide, -135, 45);
 
   for (i = 0; i < ih->data->num_div; ++i)
   {
@@ -268,8 +268,8 @@ static void iDialDrawCircular(Ihandle* ih)
 
     if (i == 0)
     {
-      cdCanvasForeground(ih->data->cddbuffer, CD_BLACK);
-      cdCanvasLine(ih->data->cddbuffer, xc, yc, x2, y2);
+      cdCanvasForeground(ih->data->cd_canvas, CD_BLACK);
+      cdCanvasLine(ih->data->cd_canvas, xc, yc, x2, y2);
     }
 
     iDialDrawCircularMark(ih, x2-2, y2-2);
@@ -281,20 +281,20 @@ static void iDialDrawCircular(Ihandle* ih)
 
 static void iDialRepaint(Ihandle* ih)
 {
-  if (!ih->data->cddbuffer)
+  if (!ih->data->cd_canvas)
     return;
 
   /* update render */
-  cdCanvasBackground(ih->data->cddbuffer, ih->data->bgcolor);
-  cdCanvasClear(ih->data->cddbuffer);
+  cdCanvasBackground(ih->data->cd_canvas, ih->data->bgcolor);
+  cdCanvasClear(ih->data->cd_canvas);
   ih->data->Draw(ih);
 
   /* update display */
-  cdCanvasFlush(ih->data->cddbuffer);
+  cdCanvasFlush(ih->data->cd_canvas);
   if (ih->data->has_focus)
   {
-    cdCanvas* cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
-    IupCdDrawFocusRect(ih, cdcanvas, 0, 0, ih->data->w - 1, ih->data->h - 1);
+    cdCanvas* cd_canvas_front = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
+    IupCdDrawFocusRect(ih, cd_canvas_front, 0, 0, ih->data->w - 1, ih->data->h - 1);
   }
 }
 
@@ -483,8 +483,8 @@ static int iDialButton_CB(Ihandle* ih, int button, int pressed, int x, int y)
 static int iDialResize_CB(Ihandle* ih)
 {
   /* update size */
-  cdCanvasActivate(ih->data->cddbuffer);
-  cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
+  cdCanvasActivate(ih->data->cd_canvas);
+  cdCanvasGetSize(ih->data->cd_canvas, &ih->data->w, &ih->data->h, NULL, NULL);
 
   /* update number of divisions */
   switch(ih->data->orientation)
@@ -505,8 +505,8 @@ static int iDialResize_CB(Ihandle* ih)
   if (ih->data->num_div < 3) ih->data->num_div = 3;
 
   /* update render */
-  cdCanvasBackground(ih->data->cddbuffer, ih->data->bgcolor);
-  cdCanvasClear(ih->data->cddbuffer);
+  cdCanvasBackground(ih->data->cd_canvas, ih->data->bgcolor);
+  cdCanvasClear(ih->data->cd_canvas);
   ih->data->Draw(ih);
   
   return IUP_DEFAULT;
@@ -514,15 +514,15 @@ static int iDialResize_CB(Ihandle* ih)
 
 static int iDialRedraw_CB(Ihandle* ih)
 {
-  if (!ih->data->cddbuffer)
+  if (!ih->data->cd_canvas)
     return IUP_DEFAULT;
 
   /* update display */
-  cdCanvasFlush(ih->data->cddbuffer);
+  cdCanvasFlush(ih->data->cd_canvas);
   if (ih->data->has_focus)
   {
-    cdCanvas* cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
-    IupCdDrawFocusRect(ih, cdcanvas, 0, 0, ih->data->w - 1, ih->data->h - 1);
+    cdCanvas* cd_canvas_front = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
+    IupCdDrawFocusRect(ih, cd_canvas_front, 0, 0, ih->data->w - 1, ih->data->h - 1);
   }
 
   return IUP_DEFAULT;
@@ -758,8 +758,8 @@ static char* iDialGetOrientationAttrib(Ihandle* ih)
 
 static int iDialMapMethod(Ihandle* ih)
 {
-  ih->data->cddbuffer = cdCreateCanvas(CD_IUPDBUFFER, ih);
-  if (!ih->data->cddbuffer)
+  ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFER, ih);
+  if (!ih->data->cd_canvas)
     return IUP_ERROR;
 
   return IUP_NOERROR;
@@ -767,10 +767,10 @@ static int iDialMapMethod(Ihandle* ih)
 
 static void iDialUnMapMethod(Ihandle* ih)
 {
-  if (ih->data->cddbuffer)
+  if (ih->data->cd_canvas)
   {
-    cdKillCanvas(ih->data->cddbuffer);
-    ih->data->cddbuffer = NULL;
+    cdKillCanvas(ih->data->cd_canvas);
+    ih->data->cd_canvas = NULL;
   }
 }
 

@@ -47,7 +47,7 @@
 
 int iupMatrixIsValid(Ihandle* ih, int check_cells)
 {
-  if (!ih->data->cddbuffer)
+  if (!ih->data->cd_canvas)
     return 0;
   if (check_cells && ((ih->data->columns.num == 0) || (ih->data->lines.num == 0)))
     return 0;
@@ -156,7 +156,7 @@ static int iMatrixSetFocusCellAttrib(Ihandle* ih, const char* value)
     ih->data->lines.focus_cell = lin;
     ih->data->columns.focus_cell = col;
 
-    if (ih->data->cddbuffer)
+    if (ih->data->cd_canvas)
       iupMatrixDrawUpdate(ih);
   }
 
@@ -1333,8 +1333,8 @@ static int iMatrixResize_CB(Ihandle* ih)
   int old_w = ih->data->w, 
       old_h = ih->data->h;
 
-  cdCanvasActivate(ih->data->cddbuffer);
-  cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
+  cdCanvasActivate(ih->data->cd_canvas);
+  cdCanvasGetSize(ih->data->cd_canvas, &ih->data->w, &ih->data->h, NULL, NULL);
 
   if (old_w != ih->data->w || old_h != ih->data->h)
     iupMatrixEditHide(ih);
@@ -1352,7 +1352,7 @@ static int iMatrixResize_CB(Ihandle* ih)
 
 static int iMatrixRedraw_CB(Ihandle* ih)
 {
-  if (!ih->data->cddbuffer)
+  if (!ih->data->cd_canvas)
     return IUP_DEFAULT;
 
   if (ih->data->callback_mode ||  /* in callback mode the values are not changed by attributes, so we can NOT wait for a REDRAW */
@@ -1421,8 +1421,8 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
 
 static int iMatrixMapMethod(Ihandle* ih)
 {
-  ih->data->cddbuffer = cdCreateCanvas(CD_IUPDBUFFER, ih);
-  if (!ih->data->cddbuffer)
+  ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFER, ih);
+  if (!ih->data->cd_canvas)
     return IUP_ERROR;
 
   if (IupGetCallback(ih, "VALUE_CB"))
@@ -1444,10 +1444,10 @@ static int iMatrixMapMethod(Ihandle* ih)
 
 static void iMatrixUnMapMethod(Ihandle* ih)
 {
-  if(ih->data->cddbuffer)
+  if(ih->data->cd_canvas)
   {
-    cdKillCanvas(ih->data->cddbuffer);
-    ih->data->cddbuffer = NULL;
+    cdKillCanvas(ih->data->cd_canvas);
+    ih->data->cd_canvas = NULL;
   }
 
   iupMatrixMemRelease(ih);

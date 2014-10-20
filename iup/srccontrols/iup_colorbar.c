@@ -41,7 +41,7 @@ struct _IcontrolData
 
   int w;                  /* size of the canvas - width                             */
   int h;                  /* size of the canvas - height                            */
-  cdCanvas* cddbuffer;    /* image canvas for double buffering                      */
+  cdCanvas* cd_canvas;    /* image canvas for double buffering                      */
   long int colors[256];   /* CD color vector                                        */
   int num_cells;          /* number of cells at the widgets                         */
   int num_parts;          /* number of sections used to split the colors cells area */
@@ -79,25 +79,25 @@ static struct {
 static void iColorbarDrawSunken(Ihandle* ih, int xmin, int xmax, int ymin, int ymax)
 {
   if (!ih->data->shadowed) return;
-  cdIupDrawSunkenRect(ih->data->cddbuffer, xmin, ymin, xmax, ymax, ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
+  cdIupDrawSunkenRect(ih->data->cd_canvas, xmin, ymin, xmax, ymax, ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
 }
 
 /* This function is used to draw a box for a cell. */
 static void iColorbarDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, int idx)
 {
   long int color = ih->data->colors[idx];
-  cdCanvasInteriorStyle(ih->data->cddbuffer, CD_SOLID);
+  cdCanvasInteriorStyle(ih->data->cd_canvas, CD_SOLID);
 
   if (color == ih->data->transparency)
   { 
     int xm = (xmin+xmax)/2;
     int ym = (ymin+ymax)/2;
-    cdCanvasForeground(ih->data->cddbuffer,0xeeeeee);
-    cdCanvasBox(ih->data->cddbuffer,xmin, xm, ymin, ym);
-    cdCanvasBox(ih->data->cddbuffer,xm, xmax, ym, ymax);
-    cdCanvasForeground(ih->data->cddbuffer,0xcccccc);
-    cdCanvasBox(ih->data->cddbuffer,xmin, xm, ym, ymax);
-    cdCanvasBox(ih->data->cddbuffer,xm, xmax, ymin, ym);
+    cdCanvasForeground(ih->data->cd_canvas,0xeeeeee);
+    cdCanvasBox(ih->data->cd_canvas,xmin, xm, ymin, ym);
+    cdCanvasBox(ih->data->cd_canvas,xm, xmax, ym, ymax);
+    cdCanvasForeground(ih->data->cd_canvas,0xcccccc);
+    cdCanvasBox(ih->data->cd_canvas,xmin, xm, ym, ymax);
+    cdCanvasBox(ih->data->cd_canvas,xm, xmax, ymin, ym);
   }
   else
   {
@@ -109,18 +109,18 @@ static void iColorbarDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax
       iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
       color = cdEncodeColor(r, g, b);
     }
-    cdCanvasForeground(ih->data->cddbuffer,color);
-    cdCanvasBegin(ih->data->cddbuffer,CD_FILL);
-    cdCanvasVertex(ih->data->cddbuffer,xmin, ymin); cdCanvasVertex(ih->data->cddbuffer,xmin, ymax);
-    cdCanvasVertex(ih->data->cddbuffer,xmax, ymax); cdCanvasVertex(ih->data->cddbuffer,xmax, ymin);
-    cdCanvasEnd(ih->data->cddbuffer);
+    cdCanvasForeground(ih->data->cd_canvas,color);
+    cdCanvasBegin(ih->data->cd_canvas,CD_FILL);
+    cdCanvasVertex(ih->data->cd_canvas,xmin, ymin); cdCanvasVertex(ih->data->cd_canvas,xmin, ymax);
+    cdCanvasVertex(ih->data->cd_canvas,xmax, ymax); cdCanvasVertex(ih->data->cd_canvas,xmax, ymin);
+    cdCanvasEnd(ih->data->cd_canvas);
   }
 
-  cdCanvasForeground(ih->data->cddbuffer,CD_BLACK);
-  cdCanvasBegin(ih->data->cddbuffer,CD_CLOSED_LINES);
-  cdCanvasVertex(ih->data->cddbuffer,xmin, ymin); cdCanvasVertex(ih->data->cddbuffer,xmin, ymax);
-  cdCanvasVertex(ih->data->cddbuffer,xmax, ymax); cdCanvasVertex(ih->data->cddbuffer,xmax, ymin);
-  cdCanvasEnd(ih->data->cddbuffer);
+  cdCanvasForeground(ih->data->cd_canvas,CD_BLACK);
+  cdCanvasBegin(ih->data->cd_canvas,CD_CLOSED_LINES);
+  cdCanvasVertex(ih->data->cd_canvas,xmin, ymin); cdCanvasVertex(ih->data->cd_canvas,xmin, ymax);
+  cdCanvasVertex(ih->data->cd_canvas,xmax, ymax); cdCanvasVertex(ih->data->cd_canvas,xmax, ymin);
+  cdCanvasEnd(ih->data->cd_canvas);
 }
 
 /* This function is used to get the largest square of a cell bounding box. */
@@ -282,8 +282,8 @@ static void iColorbarDrawFocusCell(Ihandle* ih)
   ymax -= delta;
 
   {
-    cdCanvas* cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
-    IupCdDrawFocusRect(ih, cdcanvas, xmin, ymin, xmax, ymax);
+    cdCanvas* cd_canvas_front = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
+    IupCdDrawFocusRect(ih, cd_canvas_front, xmin, ymin, xmax, ymax);
   }
 }
 
@@ -315,7 +315,7 @@ static void iColorbarRenderCells(Ihandle* ih)
 static void iColorbarRepaint(Ihandle* ih)
 {
   /* Checking errors or not initialized conditions */
-  if (ih->data->cddbuffer == NULL)
+  if (ih->data->cd_canvas == NULL)
     return;
 
   /* If object is buffering, it will be not drawn */
@@ -323,13 +323,13 @@ static void iColorbarRepaint(Ihandle* ih)
     return;
 
   /* update render */
-  cdCanvasBackground(ih->data->cddbuffer, ih->data->bgcolor);
-  cdCanvasClear(ih->data->cddbuffer);
+  cdCanvasBackground(ih->data->cd_canvas, ih->data->bgcolor);
+  cdCanvasClear(ih->data->cd_canvas);
   iColorbarRenderPreview(ih);
   iColorbarRenderCells(ih);
 
   /* update display */
-  cdCanvasFlush(ih->data->cddbuffer);
+  cdCanvasFlush(ih->data->cd_canvas);
   if (ih->data->has_focus)
     iColorbarDrawFocusCell(ih);
 }
@@ -610,11 +610,11 @@ static int iColorbarSetActiveAttrib(Ihandle* ih, const char* value)
 
 static int iColorbarRedraw_CB(Ihandle* ih)
 {
-  if (!ih->data->cddbuffer)
+  if (!ih->data->cd_canvas)
     return IUP_DEFAULT;
 
   /* update display */
-  cdCanvasFlush(ih->data->cddbuffer);
+  cdCanvasFlush(ih->data->cd_canvas);
   if (ih->data->has_focus)
     iColorbarDrawFocusCell(ih);
 
@@ -624,12 +624,12 @@ static int iColorbarRedraw_CB(Ihandle* ih)
 static int iColorbarResize_CB(Ihandle* ih)
 {
   /* update size */
-  cdCanvasActivate(ih->data->cddbuffer);
-  cdCanvasGetSize(ih->data->cddbuffer, &ih->data->w, &ih->data->h, NULL, NULL);
+  cdCanvasActivate(ih->data->cd_canvas);
+  cdCanvasGetSize(ih->data->cd_canvas, &ih->data->w, &ih->data->h, NULL, NULL);
 
   /* update render */
-  cdCanvasBackground(ih->data->cddbuffer, ih->data->bgcolor);
-  cdCanvasClear(ih->data->cddbuffer);
+  cdCanvasBackground(ih->data->cd_canvas, ih->data->bgcolor);
+  cdCanvasClear(ih->data->cd_canvas);
   iColorbarRenderPreview(ih);
   iColorbarRenderCells(ih);
 
@@ -651,7 +651,7 @@ static void iColorbarRenderPartsRepaint(Ihandle* ih, int preview, int idx)
   }
 
   /* update display */
-  cdCanvasFlush(ih->data->cddbuffer);
+  cdCanvasFlush(ih->data->cd_canvas);
   if (ih->data->has_focus)
     iColorbarDrawFocusCell(ih);
 }
@@ -660,9 +660,9 @@ static int iColorbarFocus_CB(Ihandle* ih, int focus)
 {
   ih->data->has_focus = focus;
 
-  if (ih->data->cddbuffer)
+  if (ih->data->cd_canvas)
   {
-    cdCanvasFlush(ih->data->cddbuffer);
+    cdCanvasFlush(ih->data->cd_canvas);
     if (ih->data->has_focus)
       iColorbarDrawFocusCell(ih);
   }
@@ -808,9 +808,9 @@ static int iColorbarKeyPress_CB(Ihandle* ih, int c, int press)
     return IUP_DEFAULT;
   }
 
-  if (ih->data->cddbuffer)
+  if (ih->data->cd_canvas)
   {
-    cdCanvasFlush(ih->data->cddbuffer);
+    cdCanvasFlush(ih->data->cd_canvas);
     if (ih->data->has_focus)
       iColorbarDrawFocusCell(ih);
   }
@@ -910,8 +910,8 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
 
 static int iColorbarMapMethod(Ihandle* ih)
 {
-  ih->data->cddbuffer = cdCreateCanvas(CD_IUPDBUFFER, ih);
-  if (!ih->data->cddbuffer)
+  ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFER, ih);
+  if (!ih->data->cd_canvas)
     return IUP_ERROR;
 
   return IUP_NOERROR;
@@ -919,10 +919,10 @@ static int iColorbarMapMethod(Ihandle* ih)
 
 static void iColorbarUnMapMethod(Ihandle* ih)
 {
-  if (ih->data->cddbuffer)
+  if (ih->data->cd_canvas)
   {
-    cdKillCanvas(ih->data->cddbuffer);
-    ih->data->cddbuffer = NULL;
+    cdKillCanvas(ih->data->cd_canvas);
+    ih->data->cd_canvas = NULL;
   }
 }
 

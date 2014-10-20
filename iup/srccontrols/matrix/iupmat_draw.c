@@ -51,10 +51,10 @@
 
 static void iMatrixDrawSetCellClipping(Ihandle* ih, int x1, int x2, int y1, int y2)
 {
-  int old_clip = cdCanvasClip(ih->data->cddbuffer, CD_QUERY);
+  int old_clip = cdCanvasClip(ih->data->cd_canvas, CD_QUERY);
   if (old_clip == CD_CLIPAREA)
   {
-    cdCanvasGetClipArea(ih->data->cddbuffer, &(ih->data->clip_x1), &(ih->data->clip_x2), &(ih->data->clip_y1), &(ih->data->clip_y2));
+    cdCanvasGetClipArea(ih->data->cd_canvas, &(ih->data->clip_x1), &(ih->data->clip_x2), &(ih->data->clip_y1), &(ih->data->clip_y2));
     y1 = iupMATRIX_INVERTYAXIS(ih, y1);
     y2 = iupMATRIX_INVERTYAXIS(ih, y2);
     if (x1 > x2) {int tmp = x1; x1 = x2; x2 = tmp;}
@@ -63,16 +63,16 @@ static void iMatrixDrawSetCellClipping(Ihandle* ih, int x1, int x2, int y1, int 
     if (x2 > ih->data->clip_x2) x2 = ih->data->clip_x2;
     if (y1 < ih->data->clip_y1) y1 = ih->data->clip_y1;
     if (y2 > ih->data->clip_y2) y2 = ih->data->clip_y2;
-    cdCanvasClipArea(ih->data->cddbuffer, x1, x2, y1, y2);
-    cdCanvasClip(ih->data->cddbuffer, CD_CLIPAREA);
+    cdCanvasClipArea(ih->data->cd_canvas, x1, x2, y1, y2);
+    cdCanvasClip(ih->data->cd_canvas, CD_CLIPAREA);
   }
 }
 
 static void iMatrixDrawResetCellClipping(Ihandle* ih)
 {
-  int old_clip = cdCanvasClip(ih->data->cddbuffer, CD_QUERY);
+  int old_clip = cdCanvasClip(ih->data->cd_canvas, CD_QUERY);
   if (old_clip == CD_CLIPAREA)
-    cdCanvasClipArea(ih->data->cddbuffer, ih->data->clip_x1, ih->data->clip_x2, ih->data->clip_y1, ih->data->clip_y2);
+    cdCanvasClipArea(ih->data->cd_canvas, ih->data->clip_x1, ih->data->clip_x2, ih->data->clip_y1, ih->data->clip_y2);
 }
 
 static int iMatrixDrawGetAlignmentLin0(Ihandle* ih)
@@ -117,17 +117,17 @@ static int iMatrixDrawCallDrawCB(Ihandle* ih, int lin, int col, int x1, int x2, 
   iMatrixDrawSetCellClipping(ih, x1, x2, y1, y2);
 
   old_cnv = cdActiveCanvas();
-  if (old_cnv != ih->data->cddbuffer) /* backward compatibility code */
-    cdActivate(ih->data->cddbuffer);
+  if (old_cnv != ih->data->cd_canvas) /* backward compatibility code */
+    cdActivate(ih->data->cd_canvas);
 
-  ret = draw_cb(ih, lin, col, x1, x2, iupMATRIX_INVERTYAXIS(ih, y1), iupMATRIX_INVERTYAXIS(ih, y2), ih->data->cddbuffer);
+  ret = draw_cb(ih, lin, col, x1, x2, iupMATRIX_INVERTYAXIS(ih, y1), iupMATRIX_INVERTYAXIS(ih, y2), ih->data->cd_canvas);
 
   iMatrixDrawResetCellClipping(ih);
 
-  if (old_cnv && old_cnv != ih->data->cddbuffer) /* backward compatibility code */
+  if (old_cnv && old_cnv != ih->data->cd_canvas) /* backward compatibility code */
   {
     cdActivate(old_cnv);
-    cdCanvasActivate(ih->data->cddbuffer);
+    cdCanvasActivate(ih->data->cd_canvas);
   }
 
   if (ret == IUP_DEFAULT)
@@ -150,7 +150,7 @@ static unsigned long iMatrixDrawSetFgColor(Ihandle* ih, int lin, int col, int ma
 {
   unsigned char r = 0, g = 0, b = 0;
   iupMatrixGetFgRGB(ih, lin, col, &r, &g, &b, marked, active);
-  return cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor(r, g, b));
+  return cdCanvasForeground(ih->data->cd_canvas, cdEncodeColor(r, g, b));
 }
 
 /* Change the CD foreground color, for the selected color to draw a cell with
@@ -167,14 +167,14 @@ static unsigned long iMatrixDrawSetBgColor(Ihandle* ih, int lin, int col, int ma
 {
   unsigned char r = 255, g = 255, b = 255;
   iupMatrixGetBgRGB(ih, lin, col, &r, &g, &b, marked, active);
-  return cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor(r, g, b));
+  return cdCanvasForeground(ih->data->cd_canvas, cdEncodeColor(r, g, b));
 }
 
 static unsigned long iMatrixDrawSetTypeColor(Ihandle* ih, const char* color, int marked, int active)
 {
   unsigned char r = 0, g = 0, b = 0;
   iupMatrixGetTypeRGB(ih, color, &r, &g, &b, marked, active);
-  return cdCanvasForeground(ih->data->cddbuffer, cdEncodeColor(r, g, b));
+  return cdCanvasForeground(ih->data->cd_canvas, cdEncodeColor(r, g, b));
 }
 
 static int iMatrixDrawGetFrameHorizColor(Ihandle* ih, int lin, int col, long *framecolor)
@@ -226,7 +226,7 @@ static int iMatrixDrawFrameVertLineHighlight(Ihandle* ih, int lin, int col, int 
       return 1;
   }
 
-  cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);  
+  cdCanvasForeground(ih->data->cd_canvas, CD_WHITE);  
   iupMATRIX_LINE(ih, x, y1, x, y2);
 
   return 0;
@@ -241,7 +241,7 @@ static int iMatrixDrawFrameHorizLineHighlight(Ihandle* ih, int lin, int col, int
       return 1;
   }
 
-  cdCanvasForeground(ih->data->cddbuffer, CD_WHITE);  
+  cdCanvasForeground(ih->data->cd_canvas, CD_WHITE);  
   iupMATRIX_LINE(ih, x1, y, x2, y);
 
   return 0;
@@ -253,7 +253,7 @@ static int iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1, 
   if (transp)
     return 1;
 
-  cdCanvasForeground(ih->data->cddbuffer, framecolor);
+  cdCanvasForeground(ih->data->cd_canvas, framecolor);
   iupMATRIX_LINE(ih, x1, y, x2, y);   /* bottom horizontal line */
   return 0;
 }
@@ -264,7 +264,7 @@ static int iMatrixDrawFrameVertLineCell(Ihandle* ih, int lin, int col, int x, in
   if (transp)
     return 1;
 
-  cdCanvasForeground(ih->data->cddbuffer, framecolor);
+  cdCanvasForeground(ih->data->cd_canvas, framecolor);
   iupMATRIX_LINE(ih, x, y1, x, y2);    /* right vertical line */
   return 0;
 }
@@ -360,7 +360,7 @@ static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int
 
   yc = (int)( (y1 + y2 ) / 2.0 - .5);
 
-  cdCanvasBegin(ih->data->cddbuffer, CD_FILL);
+  cdCanvasBegin(ih->data->cd_canvas, CD_FILL);
 
   if (iupStrEqualNoCase(sort, "DOWN"))
   {
@@ -375,7 +375,7 @@ static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int
     iupMATRIX_VERTEX(ih, x2 - 5, yc - 2);
   }
 
-  cdCanvasEnd(ih->data->cddbuffer);
+  cdCanvasEnd(ih->data->cd_canvas);
   return 1;
 }
 
@@ -399,18 +399,18 @@ static void iMatrixDrawDropFeedback(Ihandle* ih, int x2, int y1, int y2, int act
   iupMATRIX_BOX(ih, x1, x2, y1, y2);
 
   /* feedback frame */
-  cdCanvasForeground(ih->data->cddbuffer, framecolor);
+  cdCanvasForeground(ih->data->cd_canvas, framecolor);
   iupMATRIX_RECT(ih, x1, x2, y1, y2);
 
   /* feedback arrow */
   xh2 = x2 - IMAT_DROPBOX_W/2;
   yh2 = y2 - (y2 - y1)/2;
 
-  cdCanvasBegin(ih->data->cddbuffer, CD_FILL);
+  cdCanvasBegin(ih->data->cd_canvas, CD_FILL);
   iupMATRIX_VERTEX(ih, xh2, yh2 + 3);
   iupMATRIX_VERTEX(ih, xh2 + 4, yh2 - 1);
   iupMATRIX_VERTEX(ih, xh2 - 4, yh2 - 1);
-  cdCanvasEnd(ih->data->cddbuffer);
+  cdCanvasEnd(ih->data->cd_canvas);
 }
 
 void iupMatrixDrawSetToggleArea(int *x1, int *y1, int *x2, int *y2)
@@ -439,7 +439,7 @@ static void iMatrixDrawToggle(Ihandle* ih, int x2, int y1, int y2, int lin, int 
     bg_b = IMAT_ATENUATION(bg_b);
     bgcolor = cdEncodeColor(bg_r, bg_g, bg_b);
   }
-  cdCanvasForeground(ih->data->cddbuffer, bgcolor);
+  cdCanvasForeground(ih->data->cd_canvas, bgcolor);
   iupMATRIX_BOX(ih, x1, x2, y1, y2);
 
   /* toggle frame */
@@ -507,18 +507,18 @@ static void iMatrixDrawText(Ihandle* ih, int x1, int x2, int y1, int y2, int ali
   else
     iMatrixDrawSetCellClipping(ih, x1, x2, y1, y2);
 
-  IupCdSetFont(ih, ih->data->cddbuffer, iupMatrixGetFont(ih, lin, col));
+  IupCdSetFont(ih, ih->data->cd_canvas, iupMatrixGetFont(ih, lin, col));
 
   /* Create an space between text and cell frame */
   x1 += IMAT_PADDING_W/2;       x2 -= IMAT_PADDING_W/2;
   y1 += IMAT_PADDING_H/2;       y2 -= IMAT_PADDING_H/2;
 
   if (alignment == IMAT_ALIGN_CENTER)
-    cdCanvasTextAlignment(ih->data->cddbuffer, CD_CENTER);
+    cdCanvasTextAlignment(ih->data->cd_canvas, CD_CENTER);
   else if(alignment == IMAT_ALIGN_LEFT)
-    cdCanvasTextAlignment(ih->data->cddbuffer, CD_WEST);
+    cdCanvasTextAlignment(ih->data->cd_canvas, CD_WEST);
   else  /* RIGHT */
-    cdCanvasTextAlignment(ih->data->cddbuffer, CD_EAST);
+    cdCanvasTextAlignment(ih->data->cd_canvas, CD_EAST);
 
   if (num_line == 1)
   {
@@ -570,7 +570,7 @@ static void iMatrixDrawText(Ihandle* ih, int x1, int x2, int y1, int y2, int ali
 
   if (hidden_text_marks)
   {
-    cdCanvasTextAlignment(ih->data->cddbuffer, CD_EAST);
+    cdCanvasTextAlignment(ih->data->cd_canvas, CD_EAST);
     y = (int)((y1 + y2) / 2.0 - 0.5);
     iupMATRIX_TEXT(ih, x2+IMAT_PADDING_W/2, y, "...");
   }
@@ -588,7 +588,7 @@ static void iMatrixDrawColor(Ihandle* ih, int x1, int x2, int y1, int y2, int ma
   iupMATRIX_BOX(ih, x1, x2, y1, y2);
 
   /* Draw the frame */
-  cdCanvasForeground(ih->data->cddbuffer, framecolor);
+  cdCanvasForeground(ih->data->cd_canvas, framecolor);
   iupMATRIX_RECT(ih, x1, x2, y1, y2);
 }
 
@@ -616,8 +616,8 @@ static void iMatrixDrawFill(Ihandle* ih, int x1, int x2, int y1, int y2, int mar
     int empty1 = ((x2-x1)*fill)/100;
     char text[50];
     sprintf(text, "%d%%", fill);
-    IupCdSetFont(ih, ih->data->cddbuffer, iupMatrixGetFont(ih, lin, col));
-    cdCanvasTextAlignment(ih->data->cddbuffer, CD_CENTER);
+    IupCdSetFont(ih, ih->data->cd_canvas, iupMatrixGetFont(ih, lin, col));
+    cdCanvasTextAlignment(ih->data->cd_canvas, CD_CENTER);
 
     iMatrixDrawSetCellClipping(ih, x1 + empty1, x2, y1, y2);
     iupMATRIX_TEXT(ih, (x1 + x2) / 2, y, text);
@@ -631,7 +631,7 @@ static void iMatrixDrawFill(Ihandle* ih, int x1, int x2, int y1, int y2, int mar
 
 
   /* Draw the frame */
-  cdCanvasForeground(ih->data->cddbuffer, framecolor);
+  cdCanvasForeground(ih->data->cd_canvas, framecolor);
   iupMATRIX_RECT(ih, x1, x2, y1, y2);
 }
 
@@ -665,7 +665,7 @@ static void iMatrixDrawImage(Ihandle* ih, int x1, int x2, int y1, int y2, int al
     else  /* RIGHT */
       x = x2 - width;
 
-    cdIupDrawImage(ih->data->cddbuffer, image, x, iupMATRIX_INVERTYAXIS(ih, y), !active, bgcolor);
+    cdIupDrawImage(ih->data->cd_canvas, image, x, iupMATRIX_INVERTYAXIS(ih, y), !active, bgcolor);
   }
 
   iMatrixDrawResetCellClipping(ih);
@@ -751,8 +751,8 @@ static void iMatrixDrawMatrix(Ihandle* ih)
   /* fill the background because there will be empty cells */
   if ((ih->data->lines.num == 1) || (ih->data->columns.num == 1))
   {
-    cdCanvasBackground(ih->data->cddbuffer, cdIupConvertColor(ih->data->bgcolor_parent));
-    cdCanvasClear(ih->data->cddbuffer);
+    cdCanvasBackground(ih->data->cd_canvas, cdIupConvertColor(ih->data->bgcolor_parent));
+    cdCanvasClear(ih->data->cd_canvas);
   }
 
   /* Draw the corner between line and column titles, if necessary */
@@ -807,8 +807,8 @@ static void iMatrixDrawFocus(Ihandle* ih)
     y1++;
 
   {
-    cdCanvas* cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
-    IupCdDrawFocusRect(ih, cdcanvas, x1, iupMATRIX_INVERTYAXIS(ih, y1), x2, iupMATRIX_INVERTYAXIS(ih, y2));
+    cdCanvas* cd_canvas_front = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
+    IupCdDrawFocusRect(ih, cd_canvas_front, x1, iupMATRIX_INVERTYAXIS(ih, y1), x2, iupMATRIX_INVERTYAXIS(ih, y2));
   }
 }
 
@@ -859,7 +859,7 @@ void iupMatrixDrawTitleLines(Ihandle* ih, int lin1, int lin2)
   x2 = ih->data->columns.dt[0].size;
 
   iupMATRIX_CLIPAREA(ih, x1, x2, y1, ih->data->h-1);
-  cdCanvasClip(ih->data->cddbuffer, CD_CLIPAREA);
+  cdCanvasClip(ih->data->cd_canvas, CD_CLIPAREA);
 
   /* Find the initial position of the first line */
   if (first_lin == ih->data->lines.first)
@@ -898,7 +898,7 @@ void iupMatrixDrawTitleLines(Ihandle* ih, int lin1, int lin2)
     y1 = y2;
   }
 
-  cdCanvasClip(ih->data->cddbuffer, CD_CLIPOFF);
+  cdCanvasClip(ih->data->cd_canvas, CD_CLIPOFF);
 }
 
 /* Draw the column titles, visible, between col and lastcol, include it. 
@@ -942,7 +942,7 @@ void iupMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
   y2 = ih->data->lines.dt[0].size;
 
   iupMATRIX_CLIPAREA(ih, x1, ih->data->w-1, y1, y2);
-  cdCanvasClip(ih->data->cddbuffer, CD_CLIPAREA);
+  cdCanvasClip(ih->data->cd_canvas, CD_CLIPAREA);
 
   /* Find the initial position of the first column */
   if (first_col==ih->data->columns.first)
@@ -984,7 +984,7 @@ void iupMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
     x1 = x2;
   }
 
-  cdCanvasClip(ih->data->cddbuffer, CD_CLIPOFF);
+  cdCanvasClip(ih->data->cd_canvas, CD_CLIPOFF);
 }
 
 /* Redraw a block of cells of the matrix. Handle marked cells, change
@@ -1056,7 +1056,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   }
 
   iupMATRIX_CLIPAREA(ih, x1, x2, y1, y2);
-  cdCanvasClip(ih->data->cddbuffer, CD_CLIPOFF);  /* wait for background */
+  cdCanvasClip(ih->data->cd_canvas, CD_CLIPOFF);  /* wait for background */
 
   /* Find the initial position of the first column */
   if (first_col==ih->data->columns.first)
@@ -1083,7 +1083,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   if ((col2 == ih->data->columns.num-1) && (old_x2 > x2))
   {
     emptyarea_color = cdIupConvertColor(ih->data->bgcolor_parent);
-    cdCanvasForeground(ih->data->cddbuffer, emptyarea_color);
+    cdCanvasForeground(ih->data->cd_canvas, emptyarea_color);
 
     /* If it was drawn until the last column and remains space in the right of it,
        then delete this area with the the background color. */
@@ -1094,7 +1094,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   {
     if (emptyarea_color == -1)
       emptyarea_color = cdIupConvertColor(ih->data->bgcolor_parent);
-    cdCanvasForeground(ih->data->cddbuffer, emptyarea_color);
+    cdCanvasForeground(ih->data->cd_canvas, emptyarea_color);
 
     /* If it was drawn until the last line visible and remains space below it,
        then delete this area with the the background color. */
@@ -1102,7 +1102,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   }
 
   /* after the background */
-  cdCanvasClip(ih->data->cddbuffer, CD_CLIPAREA);
+  cdCanvasClip(ih->data->cd_canvas, CD_CLIPAREA);
 
   /***** Draw the cell values and frame */
   old_y1 = y1;
@@ -1164,7 +1164,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
     y1 = old_y1;  /* must reset also y */
   }
 
-  cdCanvasClip(ih->data->cddbuffer, CD_CLIPOFF);
+  cdCanvasClip(ih->data->cd_canvas, CD_CLIPOFF);
 }
 
 void iupMatrixDraw(Ihandle* ih, int update)
@@ -1182,7 +1182,7 @@ void iupMatrixDraw(Ihandle* ih, int update)
 
 void iupMatrixDrawUpdate(Ihandle* ih)
 {
-  cdCanvasFlush(ih->data->cddbuffer);
+  cdCanvasFlush(ih->data->cd_canvas);
 
   if (ih->data->has_focus)
     iMatrixDrawFocus(ih);

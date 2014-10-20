@@ -81,7 +81,7 @@ struct _IcontrolData
 
   int sync_view;
 
-  cdCanvas* cddbuffer;      /* double buffer drawing surface */
+  cdCanvas* cd_canvas;      /* double buffer drawing surface */
 };
 
 
@@ -89,7 +89,7 @@ static int iPPlotGetCDFontStyle(const char* value);
 
 static void iPPlotFlush(Ihandle* ih)
 {
-  cdCanvasFlush(ih->data->cddbuffer);
+  cdCanvasFlush(ih->data->cd_canvas);
 #ifdef USE_OPENGL
   IupGLSwapBuffers(ih);
 #endif
@@ -103,7 +103,7 @@ static void iPPlotSetPlotCurrent(Ihandle* ih, int p)
 
 static int iPPlotRedraw_CB(Ihandle* ih)
 {
-  if (!ih->data->cddbuffer)
+  if (!ih->data->cd_canvas)
     return IUP_DEFAULT;
 
   int old_current = ih->data->plt_index;
@@ -124,11 +124,11 @@ static void iPPlotUpdateSizes(Ihandle* ih)
 {
   int w, h;
 
-  if (!ih->data->cddbuffer)
+  if (!ih->data->cd_canvas)
     return;
 
-  cdCanvasActivate(ih->data->cddbuffer);
-  cdCanvasGetSize(ih->data->cddbuffer, &w, &h, NULL, NULL);
+  cdCanvasActivate(ih->data->cd_canvas);
+  cdCanvasGetSize(ih->data->cd_canvas, &w, &h, NULL, NULL);
 
   int numcol = ih->data->plots_numcol;
   if (numcol > ih->data->plots_count) numcol = ih->data->plots_count;
@@ -157,8 +157,8 @@ static int iPPlotFindPlot(Ihandle* ih, int x, int y)
 {
   int w, h;
 
-  cdCanvasActivate(ih->data->cddbuffer);
-  cdCanvasGetSize(ih->data->cddbuffer, &w, &h, NULL, NULL);
+  cdCanvasActivate(ih->data->cd_canvas);
+  cdCanvasGetSize(ih->data->cd_canvas, &w, &h, NULL, NULL);
 
   int numcol = ih->data->plots_numcol;
   if (numcol > ih->data->plots_count) numcol = ih->data->plots_count;
@@ -572,8 +572,8 @@ void IupPPlotPaintTo(Ihandle* ih, void* _cnv)
   if (!_cnv)
     return;
 
-  cdCanvas *old_cddbuffer  = ih->data->cddbuffer;
-  ih->data->cddbuffer = (cdCanvas*)_cnv;
+  cdCanvas *old_cddbuffer  = ih->data->cd_canvas;
+  ih->data->cd_canvas = (cdCanvas*)_cnv;
 
   iPPlotUpdateSizes(ih);
 
@@ -585,7 +585,7 @@ void IupPPlotPaintTo(Ihandle* ih, void* _cnv)
   }
   iPPlotSetPlotCurrent(ih, old_current);
 
-  ih->data->cddbuffer = old_cddbuffer;
+  ih->data->cd_canvas = old_cddbuffer;
 
   iPPlotUpdateSizes(ih);
 }
@@ -604,7 +604,7 @@ bool PostPainterCallbackIup::Draw(Painter &inPainter)
 {
   IFnC cb = (IFnC)IupGetCallback(_ih, "POSTDRAW_CB");
   if (cb)
-    cb(_ih, _ih->data->cddbuffer);
+    cb(_ih, _ih->data->cd_canvas);
 
   return true;
 }
@@ -619,7 +619,7 @@ bool PrePainterCallbackIup::Draw(Painter &inPainter)
 {
   IFnC cb = (IFnC)IupGetCallback(_ih, "PREDRAW_CB");
   if (cb)
-    cb(_ih, _ih->data->cddbuffer);
+    cb(_ih, _ih->data->cd_canvas);
 
   return true;
 }
@@ -883,7 +883,7 @@ DataDrawerBase* MarkDataDrawer::Clone() const {
 
 bool MarkDataDrawer::DrawPoint (int inScreenX, int inScreenY, const PRect &inRect, Painter &inPainter) const
 {
-  cdCanvasMark(_ih->data->cddbuffer, inScreenX, cdCanvasInvertYAxis(_ih->data->cddbuffer, inScreenY));
+  cdCanvasMark(_ih->data->cd_canvas, inScreenX, cdCanvasInvertYAxis(_ih->data->cd_canvas, inScreenY));
   return true;
 }
 
@@ -1018,7 +1018,7 @@ static int iPPlotSetRedrawAttrib(Ihandle* ih, const char* value)
   int flush = 1, 
     current = 0;
 
-  if (!ih->data->cddbuffer)
+  if (!ih->data->cd_canvas)
     return IUP_DEFAULT;
 
   if (iupStrEqualNoCase(value, "NOFLUSH"))
@@ -1046,7 +1046,7 @@ static int iPPlotSetRedrawAttrib(Ihandle* ih, const char* value)
 
   if (ih->data->plots_count == 1 &&
       ih->data->plt->_plot.mPlotDataContainer.GetPlotCount() == 0)
-    cdCanvasClear(ih->data->cddbuffer);
+    cdCanvasClear(ih->data->cd_canvas);
 
   // Do the flush once
   if (flush)
@@ -1581,7 +1581,7 @@ static char* iPPlotGetSyncViewAttrib(Ihandle* ih)
                                     
 static char* iPPlotGetCanvasAttrib(Ihandle* ih)
 {
-  return (char*)(ih->data->cddbuffer);
+  return (char*)(ih->data->cd_canvas);
 }
 
 static void iPPlotCheckCurrentDataSet(Ihandle* ih)
@@ -3070,16 +3070,16 @@ void PPainterIup::UpdateViewport()
 
   char StrData[100];
   sprintf(StrData, "%dx%d", _width, _height);
-  cdCanvasSetAttribute(_ih->data->cddbuffer, "SIZE", StrData);
+  cdCanvasSetAttribute(_ih->data->cd_canvas, "SIZE", StrData);
 #endif
 
-  cdCanvasActivate(_ih->data->cddbuffer);
-  cdCanvasOrigin(_ih->data->cddbuffer, _x, _y);
+  cdCanvasActivate(_ih->data->cd_canvas);
+  cdCanvasOrigin(_ih->data->cd_canvas, _x, _y);
 }
 
 void PPainterIup::Paint(int force, int flush)
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
 #ifdef USE_OPENGL
@@ -3110,86 +3110,86 @@ void PPainterIup::SetSize(int x, int y, int w, int h)
 
 void PPainterIup::FillArrow(int inX1, int inY1, int inX2, int inY2, int inX3, int inY3)
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdCanvasBegin(_ih->data->cddbuffer, CD_FILL);
-  cdCanvasVertex(_ih->data->cddbuffer, inX1, cdCanvasInvertYAxis(_ih->data->cddbuffer, inY1));
-  cdCanvasVertex(_ih->data->cddbuffer, inX2, cdCanvasInvertYAxis(_ih->data->cddbuffer, inY2));
-  cdCanvasVertex(_ih->data->cddbuffer, inX3, cdCanvasInvertYAxis(_ih->data->cddbuffer, inY3));
-  cdCanvasEnd(_ih->data->cddbuffer);
+  cdCanvasBegin(_ih->data->cd_canvas, CD_FILL);
+  cdCanvasVertex(_ih->data->cd_canvas, inX1, cdCanvasInvertYAxis(_ih->data->cd_canvas, inY1));
+  cdCanvasVertex(_ih->data->cd_canvas, inX2, cdCanvasInvertYAxis(_ih->data->cd_canvas, inY2));
+  cdCanvasVertex(_ih->data->cd_canvas, inX3, cdCanvasInvertYAxis(_ih->data->cd_canvas, inY3));
+  cdCanvasEnd(_ih->data->cd_canvas);
 }
 
 void PPainterIup::BeginArea()
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdCanvasBegin(_ih->data->cddbuffer, CD_FILL);
+  cdCanvasBegin(_ih->data->cd_canvas, CD_FILL);
 }
 
 void PPainterIup::AddVertex(float inX, float inY)
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdfCanvasVertex(_ih->data->cddbuffer, inX, cdfCanvasInvertYAxis(_ih->data->cddbuffer, inY));
+  cdfCanvasVertex(_ih->data->cd_canvas, inX, cdfCanvasInvertYAxis(_ih->data->cd_canvas, inY));
 }
 
 void PPainterIup::EndArea()
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdCanvasEnd(_ih->data->cddbuffer);
+  cdCanvasEnd(_ih->data->cd_canvas);
 }
 
 void PPainterIup::DrawLine(float inX1, float inY1, float inX2, float inY2)
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdfCanvasLine(_ih->data->cddbuffer, inX1, cdfCanvasInvertYAxis(_ih->data->cddbuffer, inY1),
-                                           inX2, cdfCanvasInvertYAxis(_ih->data->cddbuffer, inY2));
+  cdfCanvasLine(_ih->data->cd_canvas, inX1, cdfCanvasInvertYAxis(_ih->data->cd_canvas, inY1),
+                                           inX2, cdfCanvasInvertYAxis(_ih->data->cd_canvas, inY2));
 }
 
 void PPainterIup::FillRect(int inX, int inY, int inW, int inH)
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdCanvasBox(_ih->data->cddbuffer, inX, inX+inW, 
-              cdCanvasInvertYAxis(_ih->data->cddbuffer, inY),
-              cdCanvasInvertYAxis(_ih->data->cddbuffer, inY + inH - 1));
+  cdCanvasBox(_ih->data->cd_canvas, inX, inX+inW, 
+              cdCanvasInvertYAxis(_ih->data->cd_canvas, inY),
+              cdCanvasInvertYAxis(_ih->data->cd_canvas, inY + inH - 1));
 }
 
 void PPainterIup::SetClipRect(int inX, int inY, int inW, int inH)
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdCanvasClipArea(_ih->data->cddbuffer, inX, inX + inW - 1,
-                   cdCanvasInvertYAxis(_ih->data->cddbuffer, inY),
-                   cdCanvasInvertYAxis(_ih->data->cddbuffer, inY + inH - 1));
-  cdCanvasClip(_ih->data->cddbuffer, CD_CLIPAREA);
+  cdCanvasClipArea(_ih->data->cd_canvas, inX, inX + inW - 1,
+                   cdCanvasInvertYAxis(_ih->data->cd_canvas, inY),
+                   cdCanvasInvertYAxis(_ih->data->cd_canvas, inY + inH - 1));
+  cdCanvasClip(_ih->data->cd_canvas, CD_CLIPAREA);
 }
 
 void PPainterIup::SetLineColor(int inR, int inG, int inB)
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdCanvasForeground(_ih->data->cddbuffer, cdEncodeColor((unsigned char)inR,
+  cdCanvasForeground(_ih->data->cd_canvas, cdEncodeColor((unsigned char)inR,
                                                (unsigned char)inG,
                                                (unsigned char)inB));
 }
 
 void PPainterIup::SetFillColor(int inR, int inG, int inB)
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdCanvasForeground(_ih->data->cddbuffer, cdEncodeColor((unsigned char)inR,
+  cdCanvasForeground(_ih->data->cd_canvas, cdEncodeColor((unsigned char)inR,
                                                (unsigned char)inG,
                                                (unsigned char)inB));
 }
@@ -3198,10 +3198,10 @@ long PPainterIup::CalculateTextDrawSize(const char *inString)
 {
   int iw;
 
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return IUP_NOERROR;
 
-  cdCanvasGetTextSize(_ih->data->cddbuffer, const_cast<char *>(inString), &iw, NULL);
+  cdCanvasGetTextSize(_ih->data->cd_canvas, const_cast<char *>(inString), &iw, NULL);
 
   return iw;
 }
@@ -3210,51 +3210,51 @@ long PPainterIup::GetFontHeight() const
 {
   int ih;
 
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return IUP_NOERROR;
 
-  cdCanvasGetFontDim(_ih->data->cddbuffer, NULL, &ih, NULL, NULL);
+  cdCanvasGetFontDim(_ih->data->cd_canvas, NULL, &ih, NULL, NULL);
 
   return ih;
 }
 
 void PPainterIup::DrawText(int inX, int inY, short align, const char *inString)
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdCanvasTextAlignment(_ih->data->cddbuffer, align);
-  cdCanvasText(_ih->data->cddbuffer, inX, cdCanvasInvertYAxis(_ih->data->cddbuffer, inY), const_cast<char *>(inString));
+  cdCanvasTextAlignment(_ih->data->cd_canvas, align);
+  cdCanvasText(_ih->data->cd_canvas, inX, cdCanvasInvertYAxis(_ih->data->cd_canvas, inY), const_cast<char *>(inString));
 }
 
 void PPainterIup::DrawRotatedText(int inX, int inY, float inDegrees, short align, const char *inString)
 {
   double aprev;
 
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdCanvasTextAlignment(_ih->data->cddbuffer, align);
-  aprev = cdCanvasTextOrientation(_ih->data->cddbuffer, -inDegrees);
-  cdCanvasText(_ih->data->cddbuffer, inX, cdCanvasInvertYAxis(_ih->data->cddbuffer, inY), const_cast<char *>(inString));
-  cdCanvasTextOrientation(_ih->data->cddbuffer, aprev);
+  cdCanvasTextAlignment(_ih->data->cd_canvas, align);
+  aprev = cdCanvasTextOrientation(_ih->data->cd_canvas, -inDegrees);
+  cdCanvasText(_ih->data->cd_canvas, inX, cdCanvasInvertYAxis(_ih->data->cd_canvas, inY), const_cast<char *>(inString));
+  cdCanvasTextOrientation(_ih->data->cd_canvas, aprev);
 }
 
 void PPainterIup::SetStyle(const PStyle &inStyle)
 {
-  if (!_ih->data->cddbuffer)
+  if (!_ih->data->cd_canvas)
     return;
 
-  cdCanvasLineWidth(_ih->data->cddbuffer, inStyle.mPenWidth);
-  cdCanvasLineStyle(_ih->data->cddbuffer, inStyle.mPenStyle);
+  cdCanvasLineWidth(_ih->data->cd_canvas, inStyle.mPenWidth);
+  cdCanvasLineStyle(_ih->data->cd_canvas, inStyle.mPenStyle);
 
-  cdCanvasNativeFont(_ih->data->cddbuffer, IupGetAttribute(_ih, "FONT"));
+  cdCanvasNativeFont(_ih->data->cd_canvas, IupGetAttribute(_ih, "FONT"));
 
   if (inStyle.mFontStyle != -1 || inStyle.mFontSize != 0)
-    cdCanvasFont(_ih->data->cddbuffer, NULL, inStyle.mFontStyle, inStyle.mFontSize);
+    cdCanvasFont(_ih->data->cd_canvas, NULL, inStyle.mFontStyle, inStyle.mFontSize);
 
-  cdCanvasMarkType(_ih->data->cddbuffer, inStyle.mMarkStyle);
-  cdCanvasMarkSize(_ih->data->cddbuffer, inStyle.mMarkSize);
+  cdCanvasMarkType(_ih->data->cd_canvas, inStyle.mMarkStyle);
+  cdCanvasMarkSize(_ih->data->cd_canvas, inStyle.mMarkSize);
 }
 
 static int iPPlotMapMethod(Ihandle* ih)
@@ -3265,8 +3265,8 @@ static int iPPlotMapMethod(Ihandle* ih)
   IupGetIntInt(ih, "DRAWSIZE", &w, &h);
   sprintf(StrData, "%dx%d", w, h);
 
-  ih->data->cddbuffer = cdCreateCanvas(CD_GL, StrData);
-  if (!ih->data->cddbuffer)
+  ih->data->cd_canvas = cdCreateCanvas(CD_GL, StrData);
+  if (!ih->data->cd_canvas)
     return IUP_ERROR;
 #else
   int old_gdi = 0;
@@ -3275,14 +3275,14 @@ static int iPPlotMapMethod(Ihandle* ih)
     old_gdi = cdUseContextPlus(1);
 
   if (IupGetInt(ih, "USE_IMAGERGB"))
-    ih->data->cddbuffer = cdCreateCanvas(CD_IUPDBUFFERRGB, ih);
+    ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFERRGB, ih);
   else
-    ih->data->cddbuffer = cdCreateCanvas(CD_IUPDBUFFER, ih);
+    ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFER, ih);
 
   if (IupGetInt(ih, "USE_GDI+") || IupGetInt(ih, "USE_CONTEXTPLUS"))
     cdUseContextPlus(old_gdi);
 
-  if (!ih->data->cddbuffer)
+  if (!ih->data->cd_canvas)
     return IUP_ERROR;
 #endif
 
@@ -3294,10 +3294,10 @@ static int iPPlotMapMethod(Ihandle* ih)
 
 static void iPPlotUnMapMethod(Ihandle* ih)
 {
-  if (ih->data->cddbuffer != NULL)
+  if (ih->data->cd_canvas != NULL)
   {
-    cdKillCanvas(ih->data->cddbuffer);
-    ih->data->cddbuffer = NULL;
+    cdKillCanvas(ih->data->cd_canvas);
+    ih->data->cd_canvas = NULL;
   }
 }
 

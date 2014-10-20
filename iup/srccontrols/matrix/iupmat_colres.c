@@ -89,16 +89,16 @@ void iupMatrixColResFinish(Ihandle* ih, int x)
   /* delete feedback */
   if (ih->data->colres_drag_col_last_x != -1)
   {
-    cdCanvas* cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
+    cdCanvas* cd_canvas_front = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
 
     int y1 = ih->data->lines.dt[0].size;  /* from the bottom of the line of titles */
     int y2 = ih->data->h-1;             /* to the bottom of the matrix */
 
-    cdCanvasWriteMode(cdcanvas, CD_XOR);
-    cdCanvasForeground(cdcanvas, ih->data->colres_color);               
-    cdCanvasLine(cdcanvas, ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y1), 
+    cdCanvasWriteMode(cd_canvas_front, CD_XOR);
+    cdCanvasForeground(cd_canvas_front, ih->data->colres_color);               
+    cdCanvasLine(cd_canvas_front, ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y1), 
                                      ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y2));
-    cdCanvasWriteMode(cdcanvas, CD_REPLACE);
+    cdCanvasWriteMode(cd_canvas_front, CD_REPLACE);
   }
 
   ih->data->colres_dragging = 0;
@@ -122,7 +122,7 @@ void iupMatrixColResFinish(Ihandle* ih, int x)
 void iupMatrixColResMove(Ihandle* ih, int x)
 {
   int y1, y2;
-  cdCanvas* cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
+  cdCanvas* cd_canvas_front = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
 
   int delta = x - ih->data->colres_drag_col_start_x;
   int width = ih->data->columns.dt[ih->data->colres_drag_col].size + delta;
@@ -132,21 +132,21 @@ void iupMatrixColResMove(Ihandle* ih, int x)
   y1 = ih->data->lines.dt[0].size;  /* from the bottom of the line of titles */
   y2 = ih->data->h-1;             /* to the bottom of the matrix */
 
-  cdCanvasWriteMode(cdcanvas, CD_XOR);
-  cdCanvasForeground(cdcanvas, ih->data->colres_color);
+  cdCanvasWriteMode(cd_canvas_front, CD_XOR);
+  cdCanvasForeground(cd_canvas_front, ih->data->colres_color);
 
   /* If it is not the first time, move old line */
   if (ih->data->colres_drag_col_last_x != -1)
   {
-    cdCanvasLine(cdcanvas, ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y1), 
+    cdCanvasLine(cd_canvas_front, ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y1), 
                                      ih->data->colres_drag_col_last_x, iupMATRIX_INVERTYAXIS(ih, y2));
   }
 
-  cdCanvasLine(cdcanvas, x, iupMATRIX_INVERTYAXIS(ih, y1), 
+  cdCanvasLine(cd_canvas_front, x, iupMATRIX_INVERTYAXIS(ih, y1), 
                                    x, iupMATRIX_INVERTYAXIS(ih, y2));
 
   ih->data->colres_drag_col_last_x = x;
-  cdCanvasWriteMode(cdcanvas, CD_REPLACE);
+  cdCanvasWriteMode(cd_canvas_front, CD_REPLACE);
 }
 
 /* Change the cursor when it passes over a group of the column titles. */

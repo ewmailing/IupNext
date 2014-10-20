@@ -53,7 +53,7 @@ typedef struct _IcolorDlgData
   Ihandle *colortable_cbar, *alpha_val;
   Ihandle *help_bt;
 
-  cdCanvas* color_cddbuffer;
+  cdCanvas* cd_canvas_color;
 } IcolorDlgData;
 
 
@@ -61,18 +61,18 @@ static void iColorBrowserDlgColorCnvRepaint(IcolorDlgData* colordlg_data)
 {
   int x, y, w, h, width, height, box_size = 10;
 
-  if (!colordlg_data->color_cddbuffer)
+  if (!colordlg_data->cd_canvas_color)
     return;
 
-  cdCanvasGetSize(colordlg_data->color_cddbuffer, &width, &height, NULL, NULL);
+  cdCanvasGetSize(colordlg_data->cd_canvas_color, &width, &height, NULL, NULL);
 
-  cdCanvasBackground(colordlg_data->color_cddbuffer, CD_WHITE);
-  cdCanvasClear(colordlg_data->color_cddbuffer);
+  cdCanvasBackground(colordlg_data->cd_canvas_color, CD_WHITE);
+  cdCanvasClear(colordlg_data->cd_canvas_color);
 
   w = (width+box_size-1)/box_size;
   h = (height+box_size-1)/box_size;
 
-  cdCanvasForeground(colordlg_data->color_cddbuffer, CD_GRAY);
+  cdCanvasForeground(colordlg_data->cd_canvas_color, CD_GRAY);
 
   for (y = 0; y < h; y++)
   {                              
@@ -87,18 +87,18 @@ static void iColorBrowserDlgColorCnvRepaint(IcolorDlgData* colordlg_data)
         ymin = y*box_size;
         ymax = ymin+box_size;
 
-        cdCanvasBox(colordlg_data->color_cddbuffer, xmin, xmax, ymin, ymax);
+        cdCanvasBox(colordlg_data->cd_canvas_color, xmin, xmax, ymin, ymax);
       }
     }
   }
 
-  cdCanvasForeground(colordlg_data->color_cddbuffer, colordlg_data->previous_color);
-  cdCanvasBox(colordlg_data->color_cddbuffer, 0, width/2, 0, height);
+  cdCanvasForeground(colordlg_data->cd_canvas_color, colordlg_data->previous_color);
+  cdCanvasBox(colordlg_data->cd_canvas_color, 0, width/2, 0, height);
 
-  cdCanvasForeground(colordlg_data->color_cddbuffer, colordlg_data->color);
-  cdCanvasBox(colordlg_data->color_cddbuffer, width/2+1, width, 0, height);
+  cdCanvasForeground(colordlg_data->cd_canvas_color, colordlg_data->color);
+  cdCanvasBox(colordlg_data->cd_canvas_color, width/2+1, width, 0, height);
 
-  cdCanvasFlush(colordlg_data->color_cddbuffer);
+  cdCanvasFlush(colordlg_data->cd_canvas_color);
 }
 
 static void iColorBrowserDlgHSI2RGB(IcolorDlgData* colordlg_data)
@@ -258,10 +258,10 @@ static int iColorBrowserDlgColorCnvRedraw_CB(Ihandle* ih)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
-  if (!colordlg_data->color_cddbuffer)
+  if (!colordlg_data->cd_canvas_color)
     return IUP_DEFAULT;
 
-  cdCanvasActivate(colordlg_data->color_cddbuffer);
+  cdCanvasActivate(colordlg_data->cd_canvas_color);
 
   iColorBrowserDlgColorCnvRepaint(colordlg_data);
 
@@ -518,10 +518,10 @@ static int iColorBrowserDlgColorCnvButton_CB(Ihandle* ih, int b, int press, int 
   int width;
   (void)y;
 
-  if (b != IUP_BUTTON1 || !press || !colordlg_data->color_cddbuffer)
+  if (b != IUP_BUTTON1 || !press || !colordlg_data->cd_canvas_color)
     return IUP_DEFAULT;
 
-  cdCanvasGetSize(colordlg_data->color_cddbuffer, &width, NULL, NULL, NULL);
+  cdCanvasGetSize(colordlg_data->cd_canvas_color, &width, NULL, NULL, NULL);
 
   if (x < width/2)
   {
@@ -546,8 +546,8 @@ static int iColorBrowserDlgColorCnvResize_CB(Ihandle* ih)
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
   /* update size */
-  if (colordlg_data->color_cddbuffer)
-    cdCanvasActivate(colordlg_data->color_cddbuffer);
+  if (colordlg_data->cd_canvas_color)
+    cdCanvasActivate(colordlg_data->cd_canvas_color);
 
   return IUP_DEFAULT;
 }
@@ -555,7 +555,7 @@ static int iColorBrowserDlgColorCnvResize_CB(Ihandle* ih)
 static int iColorBrowserDlgColorCnvMap_CB(Ihandle* ih)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
-  colordlg_data->color_cddbuffer = cdCreateCanvas(CD_IUPDBUFFERRGB, ih);
+  colordlg_data->cd_canvas_color = cdCreateCanvas(CD_IUPDBUFFERRGB, ih);
   return IUP_DEFAULT;
 }
 
@@ -563,10 +563,10 @@ static int iColorBrowserDlgColorCnvUnMap_CB(Ihandle* ih)
 {
   IcolorDlgData* colordlg_data = (IcolorDlgData*)iupAttribGetInherit(ih, "_IUP_GC_DATA");
 
-  if (colordlg_data->color_cddbuffer)
+  if (colordlg_data->cd_canvas_color)
   {
-    cdKillCanvas(colordlg_data->color_cddbuffer);
-    colordlg_data->color_cddbuffer = NULL;
+    cdKillCanvas(colordlg_data->cd_canvas_color);
+    colordlg_data->cd_canvas_color = NULL;
   }
 
   return IUP_DEFAULT;
@@ -807,7 +807,7 @@ static char* iColorBrowserDlgGetColorTableAttrib(Ihandle* ih)
   for (i=0; i < 20; i++)
   {
     color_str = IupGetAttributeId(colordlg_data->colortable_cbar, "CELL", i);
-    inc = strlen(color_str);
+    inc = (int)strlen(color_str);
     memcpy(str+off, color_str, inc);
     memcpy(str+off+inc, ";", 1);
     off += inc+1;
