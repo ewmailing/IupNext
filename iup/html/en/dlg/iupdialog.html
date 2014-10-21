@@ -93,7 +93,9 @@ as the initial size of the dialog, its contents will be limited to this size as
 the minimum size, if you do not want that, then after showing the dialog reset 
 this size to NULL so the dialog can be resized to smaller values. But notice 
 that its contents will still be limited by the <strong>Natural</strong> size, to 
-also remove that limitation set SHRINK=YES.</p>
+also remove that limitation set SHRINK=YES. To only change the <strong>User</strong> 
+size in pixels, without resetting the <strong>Current</strong> size, set the 
+USERSIZE attribute (since 3.12).</p>
 <p class="info">Notice that the dialog size includes its decoration (it is the
 <strong>Window</strong> size), the area available for controls are returned by 
 the dialog

@@ -172,6 +172,11 @@ static char* iBaseGetNaturalSizeAttrib(Ihandle* ih)
   return iupStrReturnIntInt(ih->naturalwidth, ih->naturalheight, 'x');
 }
 
+static char* iBaseGetUserSizeAttrib(Ihandle* ih)
+{
+  return iupStrReturnIntInt(ih->userwidth, ih->userheight, 'x');
+}
+
 static char* iBaseGetPositionAttrib(Ihandle* ih)
 {
   return iupStrReturnIntInt(ih->x, ih->y, ',');
@@ -506,6 +511,7 @@ void iupBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iupBaseSetRasterSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHARSIZE", iupBaseGetCharSizeAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NATURALSIZE", iBaseGetNaturalSizeAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "USERSIZE", iBaseGetUserSizeAttrib, iupBaseSetRasterSizeAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "POSITION", iBaseGetPositionAttrib, iBaseSetPositionAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MINSIZE", NULL, iupBaseSetMinSizeAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

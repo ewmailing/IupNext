@@ -62,8 +62,10 @@ for larger font sizes.</p>
 is set, then <strong>RASTERSIZE</strong> is also updated.</p>
 <p>The average character size of the current <strong>FONT</strong> can be 
 obtained from the <a href="iup_font.html#CHARSIZE">CHARSIZE</a> attribute.</p>
-<p>To obtain the last computed <strong>Natural</strong> size of the control in pixels, use the read-only 
+<p>To obtain the last computed <strong>Natural</strong> size of the element in pixels, use the read-only 
 attribute <a href="iup_naturalsize.html">NATURALSIZE</a>. (Since 3.6)</p>
+<p>To obtain the <strong>User</strong> size of the element in pixels after it is 
+mapped, use the attribute <strong>USERSIZE</strong>. (Since 3.12)</p>
 <hr class="style1">
 <p>A <b>User</b> size of &quot;0x0&quot; can be set, it can also be set using NULL.</p>
 <p>If you wish to use the <b>User</b> size only as an initial size, change this attribute to NULL after the control is mapped, the returned size in 

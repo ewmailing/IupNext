@@ -219,7 +219,7 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
   ih->naturalwidth = ih->userwidth;
   ih->naturalheight = ih->userheight;
 
-  if (ih->iclass->childtype!=IUP_CHILDNONE || 
+  if (ih->iclass->childtype != IUP_CHILDNONE || 
       ih->iclass->nativetype == IUP_TYPEDIALOG)  /* pre-defined dialogs can restrict the number of children */
   {
     int w=0, h=0, children_expand=0;  /* if there is no children will not expand, when not a dialog */
@@ -229,6 +229,7 @@ void iupBaseComputeNaturalSize(Ihandle* ih)
        it is used to combine the container value with the children value. */
     iupBaseContainerUpdateExpand(ih);
 
+    /* for containers always compute */
     iupClassObjectComputeNaturalSize(ih, &w, &h, &children_expand);
 
     if (ih->iclass->nativetype == IUP_TYPEDIALOG)

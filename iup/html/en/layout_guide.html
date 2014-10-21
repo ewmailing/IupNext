@@ -42,7 +42,7 @@
 Current</strong>) described below are all related to the <strong>Window</strong> 
 size. </p>
 <p>The native <b>Client</b> size is used only internally to reposition the elements in the abstract layout, but it is 
-  available using the CLIENTSIZE attribute.</p>
+  available using the <a href="attrib/iup_clientsize.html">CLIENTSIZE</a> attribute.</p>
 <h3><a name="iup">IUP Sizes</a></h3>
 <h4>Natural Size</h4>
 <p>IUP does not require that the application specifies the size of any element. The sizes are automatically calculated 
@@ -53,6 +53,8 @@ time <strong>IupMap</strong> is called, even if the element is already mapped.</
 <p>The <b>Natural</b> size of a container is the size that allows all the elements inside the 
 container to be fully 
   displayed.
+Then the <strong>Natural</strong> size is calculated from the inner element to 
+the outer element (the dialog).
 <span class="style1">Important</span>: even if the element is invisible its size 
 will be included in the size of its containers, except when FLOATING=Yes.</p>
 <p>So consider the following code and its result. Each button size is large enough to display their respective text. 
@@ -62,7 +64,7 @@ will be included in the size of its containers, except when FLOATING=Yes.</p>
 Natural</strong> size. In this case they usually have SIZE or RASTERSIZE 
 pre-set.</p>
 <p>To obtain the last computed <strong>Natural</strong> size of the control in pixels, use the read-only 
-attribute <a href="attrib/iup_naturalsize.html">NATURALSIZE</a>.</p>
+attribute <a href="attrib/iup_naturalsize.html">NATURALSIZE</a> (since 3.6).</p>
   <table border="0" cellpadding="0" cellspacing="6" width="50%" id="AutoNumber2">
     <tr>
       <td width="50%" class="style2">
@@ -82,27 +84,60 @@ dlg:show()</pre>
       <img border="0" src="images/naturalsize.gif" width="251" height="179"></td>
     </tr>
   </table>
-<h4>Current Size and User Size (SIZE or RASTERSIZE)</h4>
+<h4>User Size</h4>
 <p>When the application defines the <a href="attrib/iup_size.html">SIZE</a> or 
 <a href="attrib/iup_rastersize.html">RASTERSIZE</a> attributes, it changes 
 the <b>User</b> size in IUP. The initial 
 internal value is &quot;0x0&quot;. When set to NULL the <b>User</b> size is 
-internally  set to &quot;0x0&quot;.</p>
+internally  set to &quot;0x0&quot;. If the element is <span class="style1">not 
+mapped</span> then the returned value by SIZE or RASTERSIZE is the <strong>User</strong> 
+size, if the element is mapped then the returned value is the <strong>Current</strong> 
+size. To obtain the <strong>User</strong> size after the element is mapped use the USERSIZE 
+attribute (since 3.12).</p>
 <p>By default the layout computation uses the <strong>Natural</strong> size of 
-the elements to compose the layout of the dialog, but if the <strong>User</strong> 
+the element to compose the layout of the dialog, but if the <strong>User</strong> 
+size is defined then it is used <span class="style1">instead</span> of the <strong>Natural</strong> size. 
+In this case the <strong>Natural</strong> size is not even computed. But there 
+are two exceptions.</p>
+<p>If the element is a container (not including the dialog) the <strong>User</strong> 
+size will be used <span class="style1">instead</span> of the <strong>Natural</strong> size
+<span class="style1">only</span> if <span class="style1">bigger</span> than the <strong>Natural</strong> size. 
+So for containers the <strong>User</strong> size will also act as a minimum 
+value for <strong>Natural</strong> size.</p>
+<p>For the 
+dialog, if the <strong>User</strong> 
 size is defined then it is used <span class="style1">instead</span> of the <strong>Natural</strong> size, 
-except for containers (not including the dialog) where the <strong>User</strong> 
-size will be used only if <span class="style1">bigger</span> than the <strong>Natural</strong> size. For the 
-dialog, when the <strong>User</strong> size is not defined, the <strong>Natural</strong> 
+but the <strong>Natural</strong> size of the dialog is always computed. And if the <strong>User</strong> size is not defined, the <strong>Natural</strong> 
 size is used only if <span class="style1">bigger</span> than the <strong>Current</strong> size, so in this 
-case the dialog will automatically increase its size to fit all its contents, 
-but if the <strong>Natural</strong> size is smaller then the dialog size will 
-remains the same, i.e. the dialog will not automatically shrink its size.</p>
-<p>The returned value for SIZE or RASTERSIZE is the <b>Current</b> size in IUP. 
-It returns the native 
-<b>Window</b> size of the element after the element is mapped to the native system. Before mapping, the returned value is the
-<b>User</b> size defined by SIZE or RASTERSIZE 
-  attributes if any, otherwise they are NULL.</p>
+case the dialog will always increase its size to fit all its contents. In other 
+words, in this case the dialog will not shrink its Current size unless the
+<strong>User</strong> size is defined. See 
+the <a href="#SHRINK">SHRINK</a> attribute guide bellow for an alternative.</p>
+<p>When the user is interactively changing the dialog size the <strong>Current</strong> 
+size is updated. But the dialog contents will always occupy the Natural size 
+available, being smaller or bigger than the dialog <strong>Current</strong> 
+size.</p>
+<p>When SIZE or 
+RASTERSIZE attributes are set for the dialog (changing the <strong>User</strong> 
+size) the <strong>Current</strong> size is also reset to &quot;0x0&quot;. Allowing the 
+application to force an update of its <strong>Window</strong> size. To only 
+change the <strong>User</strong> size in pixels, without resetting the <strong>
+Current</strong> size, set the USERSIZE attribute (since 3.12).</p>
+<h4>Current Size</h4>
+<p>After the <strong>Natural</strong> size is calculated for all the elements in 
+the dialog, the the <strong>Current</strong> size is set based on the available 
+space in the dialog. So the <strong>Current</strong> size is set from the outer 
+element (the dialog) to the inner element, in opposite of what it is done for 
+the <strong>Natural</strong> size. </p>
+<p>After all the elements have their <strong>Current</strong> size updated, the 
+elements positions are calculated, and finally, after the element is mapped, the
+<strong>Window</strong> size and position are set for the native elements. The
+<strong>Window</strong> size is set exactly to the <strong>Current</strong> 
+size.</p>
+<p>After the element is mapped the returned value for SIZE or RASTERSIZE is the <b>Current</b> size. 
+It actually returns the native 
+<b>Window</b> size of the element. Before mapping, the returned value is the
+<b>User</b> size.</p>
 <p>Defining the SIZE attribute of the buttons in the example we can make all have the same size. (In the following 
   example the dialog size was changed after it was displayed on screen)</p>
 <table border="0" cellpadding="0" cellspacing="6" width="50%" id="AutoNumber2">
@@ -170,16 +205,16 @@ bottom.</p>
 If the expansion is in the same direction of the box, for instance 
 expand=&quot;VERTICAL&quot; in the Vbox of the previous example, then the expandable 
 elements will receive equal spaces to expand according to the remaining empty 
-space in the box. This is why elements in diferent boxes does not align 
+space in the box. This is why elements in different boxes does not align 
 perfectly when EXPAND is set.</p>
-<h4>SHRINK</h4>
+<h4><a name="SHRINK">SHRINK</a></h4>
 <p>To reduce the size of the dialog and its containers to a size smaller than the
 <b>Natural</b> size the SHRINK attribute of the dialog can be used. If set to 
 YES all the containers of the dialog will be able to reduce its size. But be 
 aware that elements may overlap and the layout result could be visually bad if 
 the dialog size is smaller than its <strong>Natural</strong> size.</p>
 
-<p>Notice that in the example the dialog inicial size will be 0x0 because it is 
+<p>Notice that in the example the dialog initial size will be 0x0 because it is 
 not defined. The picture shown was captured after manually resizing the dialog. So when using 
 SHRINK usually you will also need to set the dialog initial size.</p>
 
@@ -228,7 +263,7 @@ to <b>mapped</b> it is performed one step at a time. Even when the constructor
 receives the children as a parameter <b>IupAppend</b> is called internally. When 
 you <b>detach</b> an element it will be automatically <b>unmapped</b> if 
 necessary. When you <b>destroy</b> an element it will be automatically <b>
-detached</b> if necessary. So explicity or implicity there will be a call to:</p>
+detached</b> if necessary. So explicitly or implicitly, there will be always a call to:</p>
 <pre>IupCreate  -&gt; IupAppend -&gt; IupMap
 IupDestroy &lt;- IupDetach &lt;- IupUnmap</pre>
 <p>A more simple and fast way to move an element from one position in the 
