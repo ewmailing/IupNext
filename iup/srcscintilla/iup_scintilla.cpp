@@ -591,6 +591,9 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
   iupClassRegisterCallback(ic, "ACTION", "iiis");
   iupClassRegisterCallback(ic, "ZOOM_CB", "i");
+  iupClassRegisterCallback(ic, "AUTOCSELECTION_CB", "is");
+  iupClassRegisterCallback(ic, "AUTOCCANCELLED_CB", "");
+  iupClassRegisterCallback(ic, "AUTOCCHARDELETED_CB", "");
 
   /* Common Callbacks */
   iupBaseRegisterCommonCallbacks(ic);

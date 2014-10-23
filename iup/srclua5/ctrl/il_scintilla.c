@@ -22,6 +22,14 @@ static int scintilla_marginclick_cb(Ihandle *self, int p0, int p1, char * p2)
   return iuplua_call(L, 3);
 }
 
+static int scintilla_autocselection_cb(Ihandle *self, int p0, char * p1)
+{
+  lua_State *L = iuplua_call_start(self, "autocselection_cb");
+  lua_pushinteger(L, p0);
+  lua_pushstring(L, p1);
+  return iuplua_call(L, 2);
+}
+
 static int scintilla_action(Ihandle *self, int p0, int p1, int p2, char * p3)
 {
   lua_State *L = iuplua_call_start(self, "action");
@@ -38,17 +46,16 @@ static int scintilla_autocchardeleted_cb(Ihandle *self)
   return iuplua_call(L, 0);
 }
 
-static int scintilla_autocselection_cb(Ihandle *self, int p0, char * p1)
-{
-  lua_State *L = iuplua_call_start(self, "autocselection_cb");
-  lua_pushinteger(L, p0);
-  lua_pushstring(L, p1);
-  return iuplua_call(L, 2);
-}
-
 static int scintilla_savepoint_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "savepoint_cb");
+  lua_pushinteger(L, p0);
+  return iuplua_call(L, 1);
+}
+
+static int scintilla_zoom_cb(Ihandle *self, int p0)
+{
+  lua_State *L = iuplua_call_start(self, "zoom_cb");
   lua_pushinteger(L, p0);
   return iuplua_call(L, 1);
 }
@@ -82,10 +89,11 @@ int iupscintillalua_open(lua_State * L)
   iuplua_register(L, Scintilla, "Scintilla");
 
   iuplua_register_cb(L, "MARGINCLICK_CB", (lua_CFunction)scintilla_marginclick_cb, NULL);
+  iuplua_register_cb(L, "AUTOCSELECTION_CB", (lua_CFunction)scintilla_autocselection_cb, NULL);
   iuplua_register_cb(L, "ACTION", (lua_CFunction)scintilla_action, "scintilla");
   iuplua_register_cb(L, "AUTOCCHARDELETED_CB", (lua_CFunction)scintilla_autocchardeleted_cb, NULL);
-  iuplua_register_cb(L, "AUTOCSELECTION_CB", (lua_CFunction)scintilla_autocselection_cb, NULL);
   iuplua_register_cb(L, "SAVEPOINT_CB", (lua_CFunction)scintilla_savepoint_cb, NULL);
+  iuplua_register_cb(L, "ZOOM_CB", (lua_CFunction)scintilla_zoom_cb, NULL);
   iuplua_register_cb(L, "HOTSPOTCLICK_CB", (lua_CFunction)scintilla_hotspotclick_cb, NULL);
   iuplua_register_cb(L, "AUTOCCANCELLED_CB", (lua_CFunction)scintilla_autoccancelled_cb, NULL);
 
