@@ -691,7 +691,7 @@ static void winCallDropDataCB(Ihandle* ih, CLIPFORMAT cf, HGLOBAL hData, int x, 
 
     winGetClipboardFormatName(cf, type, 256);
 
-    cbDropData(ih, iupwinStrFromSystem(type), targetData, size, x, y);
+    cbDropData(ih, iupwinStrFromSystem(type), targetData, (int)size, x, y);
 
     GlobalUnlock(hData);
   }

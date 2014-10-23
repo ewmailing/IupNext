@@ -247,7 +247,7 @@ int iupTreeFindNodeId(Ihandle* ih, InodeHandle* node_handle)
     node_cache++;
 
   if (node_cache->node_handle != NULL)
-    return node_cache - ih->data->node_cache;
+    return (int)(node_cache - ih->data->node_cache);
   else
     return -1;
 }
@@ -268,7 +268,7 @@ static int iTreeFindUserDataId(Ihandle* ih, void* userdata)
     node_cache++;
 
   if (node_cache->node_handle != NULL)
-    return node_cache - ih->data->node_cache;
+    return (int)(node_cache - ih->data->node_cache);
   else
     return -1;
 }
