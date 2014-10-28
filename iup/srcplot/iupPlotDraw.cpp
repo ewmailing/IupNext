@@ -68,7 +68,7 @@ void iupPlot::DrawBox(const iupPlotRect &inRect, cdCanvas* canvas) const
 {
   if (mBox.mShow)
   {
-    cdCanvasForeground(canvas, mBox.mColor);
+    cdCanvasSetForeground(canvas, mBox.mColor);
     iPlotSetLine(canvas, mBox.mLineStyle, mBox.mLineWidth);
 
     iPlotDrawRect(canvas, inRect.mX, inRect.mY, inRect.mWidth, inRect.mHeight);
@@ -85,7 +85,7 @@ bool iupPlot::DrawXGrid(const iupPlotRect &inRect, cdCanvas* canvas) const
     double theX;
     bool theIsMajorTick;
 
-    cdCanvasForeground(canvas, mGrid.mColor);
+    cdCanvasSetForeground(canvas, mGrid.mColor);
     iPlotSetLine(canvas, mGrid.mLineStyle, mGrid.mLineWidth);
 
     while (mAxisX.mTickIter->GetNextTick(theX, theIsMajorTick, NULL))
@@ -112,7 +112,7 @@ bool iupPlot::DrawYGrid(const iupPlotRect &inRect, cdCanvas* canvas) const
     bool theIsMajorTick;
     iupPlotRect theTickRect;
 
-    cdCanvasForeground(canvas, mGrid.mColor);
+    cdCanvasSetForeground(canvas, mGrid.mColor);
     iPlotSetLine(canvas, mGrid.mLineStyle, mGrid.mLineWidth);
 
     while (mAxisY.mTickIter->GetNextTick(theY, theIsMajorTick, NULL))
@@ -168,7 +168,7 @@ bool iupPlot::DrawXAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
   if (!mAxisX.mShow)
     return true;
 
-  cdCanvasForeground(canvas, mAxisX.mColor);
+  cdCanvasSetForeground(canvas, mAxisX.mColor);
   iPlotSetLine(canvas, CD_CONTINUOUS, mAxisX.mLineWidth);
 
   double theTargetY = 0;
@@ -278,7 +278,7 @@ bool iupPlot::DrawYAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
   if (!mAxisY.mShow)
     return true;
 
-  cdCanvasForeground(canvas, mAxisY.mColor);
+  cdCanvasSetForeground(canvas, mAxisY.mColor);
   iPlotSetLine(canvas, CD_CONTINUOUS, mAxisX.mLineWidth);
 
   double theTargetX = 0;
@@ -389,7 +389,7 @@ void iupPlot::DrawPlotTitle(cdCanvas* canvas) const
 {
   if (mTitle.GetText()) 
   {
-    cdCanvasForeground(canvas, mTitle.mColor);
+    cdCanvasSetForeground(canvas, mTitle.mColor);
     iupPlotSetFont(canvas, mTitle.mFontStyle, mTitle.mFontSize);
 
     // do not depend on theMargin
@@ -403,7 +403,7 @@ void iupPlot::DrawPlotTitle(cdCanvas* canvas) const
 
 void iupPlot::DrawPlotBackground(cdCanvas* canvas) const
 {
-  cdCanvasForeground(canvas, mBackColor);
+  cdCanvasSetForeground(canvas, mBackColor);
   cdCanvasBox(canvas, mViewport.mX, mViewport.mX + mViewport.mWidth - 1,
                       mViewport.mY, mViewport.mY + mViewport.mHeight - 1);
 }
@@ -482,34 +482,36 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
     cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1, 
                              theScreenY, theScreenY + theTotalHeight - 1);
 
-    cdCanvasForeground(canvas, mLegend.mBoxColor);
+    cdCanvasSetForeground(canvas, mLegend.mBoxColor);
+    iPlotSetLine(canvas, mLegend.mBoxLineStyle, mLegend.mBoxLineWidth);
     iPlotDrawRect(canvas, theScreenX, theScreenY, theMaxWidth, theTotalHeight);
-    cdCanvasForeground(canvas, mLegend.mBoxBackColor);
+    cdCanvasSetForeground(canvas, mLegend.mBoxBackColor);
     iPlotDrawBox(canvas, theScreenX+1, theScreenY+1, theMaxWidth-2, theTotalHeight-2);
 
     for (ds = 0; ds < mDataSetListCount; ds++)
     {
       iupPlotDataSet* dataset = mDataSetList[ds];
 
-      cdCanvasForeground(canvas, dataset->mColor);
+      cdCanvasSetForeground(canvas, dataset->mColor);
 
       int theLegendX = theScreenX + theMargin;
       int theLegendY = theScreenY + (mDataSetListCount-1 - ds)*theFontHeight + theMargin;
 
       theLegendY += theFontHeight / 2;
 
-      if (theMarkSpace)
+      if (dataset->mMode == IUP_PLOT_MARK || dataset->mMode == IUP_PLOT_MARKLINE)
       {
         iPlotSetMark(canvas, dataset->mMarkStyle, dataset->mMarkSize);
-        cdCanvasMark(canvas, theLegendX + theMarkSpace / 2, theLegendY);
+        cdCanvasMark(canvas, theLegendX + theMarkSpace / 2, theLegendY - theFontHeight/8);
       }
-      if (theLineSpace)
+      if (dataset->mMode != IUP_PLOT_MARK)
       {
         iPlotSetLine(canvas, dataset->mLineStyle, dataset->mLineWidth);
-        cdCanvasLine(canvas, theMarkSpace, theLegendY, theMarkSpace + theLineSpace - 3, theLegendY);
+        cdCanvasLine(canvas, theLegendX + theMarkSpace, theLegendY - theFontHeight / 8,
+                             theLegendX + theMarkSpace + theLineSpace - 3, theLegendY - theFontHeight / 8);
       }
 
-      iPlotDrawText(canvas, theMarkSpace + theLineSpace, theLegendY, CD_WEST, dataset->GetName());
+      iPlotDrawText(canvas, theLegendX + theMarkSpace + theLineSpace, theLegendY, CD_WEST, dataset->GetName());
     }
   }
 
@@ -635,7 +637,7 @@ bool iupPlot::DrawPlot(int inIndex, cdCanvas* canvas) const
   if (theXCount != theYCount)
     return false;
 
-  cdCanvasForeground(canvas, dataset->mColor);
+  cdCanvasSetForeground(canvas, dataset->mColor);
   iPlotSetLine(canvas, dataset->mLineStyle, dataset->mLineWidth);
   iPlotSetMark(canvas, dataset->mMarkStyle, dataset->mMarkSize);
 
