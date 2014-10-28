@@ -44,9 +44,21 @@ static inline void iPlotDrawBox(cdCanvas* canvas, double inX, double inY, double
   cdfCanvasBox(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
 }
 
-static int iPlotGetPrecisionNumChar(const char* inFormatString)
+static int iPlotCountDigit(int inNum)
 {
-  int precision;
+  int theCount = 0;
+  while (inNum != 0)
+  {
+    inNum = inNum / 10;
+    theCount++;
+  }
+  if (theCount == 0) theCount = 1;
+  return theCount;
+}
+
+static int iPlotGetPrecisionNumChar(const char* inFormatString, double inMin, double inMax)
+{
+  int precision = 0;
   while (*inFormatString)
   {
     if (*inFormatString == '.')
@@ -54,14 +66,24 @@ static int iPlotGetPrecisionNumChar(const char* inFormatString)
     inFormatString++;
   }
 
-  if (*inFormatString != '.')
-    return 0;
+  if (*inFormatString == '.')
+  {
+    inFormatString++;
+    iupStrToInt(inFormatString, &precision);
+  }
 
-  inFormatString++;
-  if (iupStrToInt(inFormatString, &precision))
-    return precision;
+  int theMin = iupPlotRound(inMin);
+  int theMax = iupPlotRound(inMax);
+  int theNumDigitMin = iPlotCountDigit(theMin);
+  int theNumDigitMax = iPlotCountDigit(theMax);
+  if (theNumDigitMin > theNumDigitMax)
+    precision += theNumDigitMin;
+  else
+    precision += theNumDigitMax;
 
-  return 0;
+  precision += 3;  // sign, decimal symbol, exp 
+
+  return precision;
 }
 
 void iupPlot::DrawBox(const iupPlotRect &inRect, cdCanvas* canvas) const
@@ -175,9 +197,9 @@ bool iupPlot::DrawXAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
   if (!mAxisX.mCrossOrigin) 
   {
     if (!mAxisY.mReverse) 
-      theTargetY = mAxisY.mMax;
-    else 
       theTargetY = mAxisY.mMin;
+    else 
+      theTargetY = mAxisY.mMax;
   }
 
   double theScreenY  = mAxisY.mTrafo->Transform(theTargetY);
@@ -216,9 +238,10 @@ bool iupPlot::DrawXAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
     if (mAxisX.mTick.mShowNumber)
     {
       int theXTickFontWidth, theXTickFontHeight;
-      cdCanvasGetFontDim(canvas, &theXTickFontWidth, &theXTickFontHeight, NULL, NULL);
+      cdCanvasGetTextSize(canvas, "1234567890.", &theXTickFontWidth, &theXTickFontHeight);
+      theXTickFontWidth /= 11;
       if (mAxisX.mTick.mRotateNumber)
-        theScreenY -= theXTickFontWidth * iPlotGetPrecisionNumChar(theFormatString);  // skip number
+        theScreenY -= theXTickFontWidth * iPlotGetPrecisionNumChar(theFormatString, mAxisX.mMin, mAxisX.mMax);  // skip number
       else
         theScreenY -= theXTickFontHeight;  // skip number
     }
@@ -279,7 +302,7 @@ bool iupPlot::DrawYAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
     return true;
 
   cdCanvasSetForeground(canvas, mAxisY.mColor);
-  iPlotSetLine(canvas, CD_CONTINUOUS, mAxisX.mLineWidth);
+  iPlotSetLine(canvas, CD_CONTINUOUS, mAxisY.mLineWidth);
 
   double theTargetX = 0;
   if (!mAxisY.mCrossOrigin) 
@@ -328,11 +351,12 @@ bool iupPlot::DrawYAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
     if (mAxisY.mTick.mShowNumber)
     {
       int theYTickFontWidth, theYTickFontHeight;
-      cdCanvasGetFontDim(canvas, &theYTickFontWidth, &theYTickFontHeight, NULL, NULL);
+      cdCanvasGetTextSize(canvas, "1234567890.", &theYTickFontWidth, &theYTickFontHeight);
+      theYTickFontWidth /= 11;
       if (mAxisY.mTick.mRotateNumber)
         theScreenX -= theYTickFontHeight;  // skip number
       else
-        theScreenX -= theYTickFontWidth * iPlotGetPrecisionNumChar(theFormatString);  // skip number
+        theScreenX -= theYTickFontWidth * iPlotGetPrecisionNumChar(theFormatString, mAxisY.mMin, mAxisY.mMax);  // skip number
     }
   }
 

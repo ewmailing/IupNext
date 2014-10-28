@@ -935,13 +935,16 @@ static int iPlotSetStandardFontAttrib(Ihandle* ih, const char* value)
     ih->data->plot_list[p]->mAxisX.mFontStyle = style;
     ih->data->plot_list[p]->mAxisY.mFontStyle = style;
     ih->data->plot_list[p]->mLegend.mFontStyle = style;
-    ih->data->plot_list[p]->mTitle.mFontStyle = style;
     ih->data->plot_list[p]->mAxisX.mTick.mFontSize = size;
     ih->data->plot_list[p]->mAxisY.mTick.mFontSize = size;
     ih->data->plot_list[p]->mAxisX.mFontSize = size;
     ih->data->plot_list[p]->mAxisY.mFontSize = size;
     ih->data->plot_list[p]->mLegend.mFontSize = size;
+
+    if (size > 0) size += 6;
+    else size -= 8;
     ih->data->plot_list[p]->mTitle.mFontSize = size;
+
     ih->data->plot_list[p]->mRedraw = 1;
   }
 

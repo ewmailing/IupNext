@@ -182,6 +182,7 @@ void iupPlotAxis::Init()
 void iupPlotAxis::SetNamedTickIter(const iupPlotDataString *inStringData)
 {
   mTickIter = &mNamedTickIter;
+  mTickIter->SetAxis(this);
   mNamedTickIter.SetStringList(inStringData);
 }
 
@@ -192,6 +193,10 @@ void iupPlotAxis::SetNamedTickIter(const iupPlotDataString *inStringData)
 iupPlot::iupPlot(Ihandle* _ih)
   :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mBackColor(CD_WHITE)
 {
+  int size = IupGetInt(ih, "FONTSIZE");
+  if (size > 0) size += 6;
+  else size -= 8;
+  mTitle.mFontSize = size;
 }
 
 iupPlot::~iupPlot()
