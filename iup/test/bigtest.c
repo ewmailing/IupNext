@@ -61,6 +61,7 @@ void SampleTest(void);
 void ProgressbarTest(void);
 void ProgressDlgTest(void);
 void PreDialogsTest(void);
+void PlotTest(void);
 #ifdef PPLOT_TEST
 void PPlotTest(void);
 #endif
@@ -131,6 +132,7 @@ static TestItems test_list[] = {
 #ifdef MGLPLOT_TEST
   {"MglPlot", MglPlotTest},
 #endif
+  { "Plot", PlotTest },
 #ifdef PPLOT_TEST
   {"PPlot", PPlotTest},
 #endif

@@ -1412,6 +1412,10 @@ wb_usr.tree =
               },
             },
             {
+              name= {nl= "IupPlot"},
+              link= "ctrl/iup_plot.html"
+            },
+            {
               name= {nl= "IupPPlot"},
               link= "ctrl/iup_pplot.html"
             },
