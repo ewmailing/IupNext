@@ -191,7 +191,8 @@ void iupPlotAxis::SetNamedTickIter(const iupPlotDataString *inStringData)
 
 
 iupPlot::iupPlot(Ihandle* _ih)
-  :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mBackColor(CD_WHITE)
+  :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), 
+  mBackColor(CD_WHITE), mMarginAuto(1, 1, 1, 1)
 {
   int size = IupGetInt(ih, "FONTSIZE");
   if (size > 0) size += 6;
@@ -310,12 +311,6 @@ void iupPlot::RemoveAllDatasets()
 
 bool iupPlot::Render(cdCanvas* canvas)
 {
-  iupPlotRect theRect;
-  theRect.mX = mMargin.mLeft;
-  theRect.mY = mMargin.mTop;
-  theRect.mWidth = mViewport.mWidth - mMargin.mLeft - mMargin.mRight;
-  theRect.mHeight = mViewport.mHeight - mMargin.mTop - mMargin.mBottom;
-
   if (!mDataSetListCount)
     return true;
 
@@ -326,13 +321,24 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (!CalculateAxisRanges())
     return false;
 
-  if (!this->CheckRange(mAxisX))
+  if (!CheckRange(mAxisX))
     return false;
 
-  if (!this->CheckRange(mAxisY))
+  if (!CheckRange(mAxisY))
     return false;
 
-  if (!CalculateTick(theRect, canvas))
+  CalculateTickSize(canvas, mAxisX.mTick);
+  CalculateTickSize(canvas, mAxisY.mTick);
+
+  CalculateMargins(canvas);
+
+  iupPlotRect theRect;
+  theRect.mX = mMargin.mLeft;
+  theRect.mY = mMargin.mTop;
+  theRect.mWidth = mViewport.mWidth - mMargin.mLeft - mMargin.mRight;
+  theRect.mHeight = mViewport.mHeight - mMargin.mTop - mMargin.mBottom;
+
+  if (!CalculateTickSpacing(theRect, canvas))
     return false;
 
   if (!CalculateXTransformation(theRect))

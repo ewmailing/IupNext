@@ -21,6 +21,7 @@ const double kRelMajorTickSize = 0.02;
 const double kFloatSmall = 1e-20;
 const double kLogMinClipValue = 1e-10;  // pragmatism to avoid problems with small values in log plot
 
+int iupPlotGetPrecisionNumChar(const char* inFormatString, double inMin, double inMax);
 
 inline int iupPlotRound(double inFloat)
 {
@@ -424,6 +425,7 @@ public:
     void DrawDataArea(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const;
     void DrawDataBar(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const;
 
+  void CalculateMargins(cdCanvas* canvas);
   bool CalculateAxisRanges();
     bool CalculateXRange(double &outXMin, double &outXMax);
     bool CalculateYRange(double &outYMin, double &outYMax);
@@ -432,8 +434,8 @@ public:
   bool CalculateXTransformation(const iupPlotRect &inRect);
     bool CalculateLinTransformation(int inBegin, int inEnd, const iupPlotAxis& inPlotAxis, iupPlotTrafoLinear* outTrafo);
     bool CalculateLogTransformation(int inBegin, int inEnd, const iupPlotAxis& inPlotAxis, iupPlotTrafoLog* outTrafo);
-  bool CalculateTick(const iupPlotRect &inRect, cdCanvas* canvas);
-  void SetTickSizes(int inFontHeight, iupPlotTick &ioTick);
+  bool CalculateTickSpacing(const iupPlotRect &inRect, cdCanvas* canvas);
+  void CalculateTickSize(cdCanvas* canvas, iupPlotTick &ioTick);
 
   void AddDataSet(iupPlotDataBase* inDataX, iupPlotDataBase* inDataY);
   void RemoveDataset(int inIndex);
@@ -444,7 +446,7 @@ public:
   Ihandle* ih;
   bool mRedraw;
 
-  iupPlotMargin mMargin;
+  iupPlotMargin mMargin, mMarginAuto;
 
   long mBackColor;
   iupPlotGrid mGrid;

@@ -78,9 +78,9 @@ static void InitPlots(void)
 
   /* PLOT 0 - MakeExamplePlot1 */
   IupSetAttribute(plot[0], "TITLE", "AutoScale");
-  IupSetAttribute(plot[0], "MARGINTOP", "40");
-  IupSetAttribute(plot[0], "MARGINLEFT", "40");
-  IupSetAttribute(plot[0], "MARGINBOTTOM", "50");
+//  IupSetAttribute(plot[0], "MARGINTOP", "40");
+  //  IupSetAttribute(plot[0], "MARGINLEFT", "40");
+  //  IupSetAttribute(plot[0], "MARGINBOTTOM", "50");
   IupSetAttribute(plot[0], "TITLEFONTSIZE", "16");
   IupSetAttribute(plot[0], "LEGENDSHOW", "YES");
   IupSetAttribute(plot[0], "AXS_XLABEL", "gnu (Foo)");
@@ -149,9 +149,9 @@ static void InitPlots(void)
   /* PLOT 1 - MakeExamplePlot2 */
   IupSetAttribute(plot[1], "TITLE", "No Autoscale+No CrossOrigin");
   IupSetAttribute(plot[1], "TITLEFONTSIZE", "16");
-  IupSetAttribute(plot[1], "MARGINTOP", "40");
-  IupSetAttribute(plot[1], "MARGINLEFT", "65");
-  IupSetAttribute(plot[1], "MARGINBOTTOM", "60");
+  //  IupSetAttribute(plot[1], "MARGINTOP", "40");
+  //IupSetAttribute(plot[1], "MARGINLEFT", "65");
+  //IupSetAttribute(plot[1], "MARGINBOTTOM", "60");
   IupSetAttribute(plot[1], "BGCOLOR", "0 192 192");
   IupSetAttribute(plot[1], "AXS_XLABEL", "Tg (X)");
   IupSetAttribute(plot[1], "AXS_YLABEL", "Tg (Y)");
@@ -196,9 +196,9 @@ static void InitPlots(void)
   /* PLOT 2 - MakeExamplePlot4 */
   IupSetAttribute(plot[2], "TITLE", "Log Scale");
   IupSetAttribute(plot[2], "TITLEFONTSIZE", "16");
-  IupSetAttribute(plot[2], "MARGINTOP", "40");
-  IupSetAttribute(plot[2], "MARGINLEFT", "70");
-  IupSetAttribute(plot[2], "MARGINBOTTOM", "60");
+  //IupSetAttribute(plot[2], "MARGINTOP", "40");
+  //IupSetAttribute(plot[2], "MARGINLEFT", "70");
+  //IupSetAttribute(plot[2], "MARGINBOTTOM", "60");
   IupSetAttribute(plot[2], "GRID", "YES");
   IupSetAttribute(plot[2], "AXS_XSCALE", "LOG10");
   IupSetAttribute(plot[2], "AXS_YSCALE", "LOG2");
@@ -222,9 +222,9 @@ static void InitPlots(void)
   /* PLOT 3 - MakeExamplePlot5 */
   IupSetAttribute(plot[3], "TITLE", "Bar Mode");
   IupSetAttribute(plot[3], "TITLEFONTSIZE", "16");
-  IupSetAttribute(plot[3], "MARGINTOP", "40");
-  IupSetAttribute(plot[3], "MARGINLEFT", "30");
-  IupSetAttribute(plot[3], "MARGINBOTTOM", "30");
+  //IupSetAttribute(plot[3], "MARGINTOP", "40");
+  //IupSetAttribute(plot[3], "MARGINLEFT", "30");
+  //IupSetAttribute(plot[3], "MARGINBOTTOM", "30");
 
   {
     const char * kLables[12] = {"jan","feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
@@ -240,9 +240,9 @@ static void InitPlots(void)
   /* PLOT 4 - MakeExamplePlot6 */
   IupSetAttribute(plot[4], "TITLE", "Marks Mode");
   IupSetAttribute(plot[4], "TITLEFONTSIZE", "16");
-  IupSetAttribute(plot[4], "MARGINTOP", "40");
-  IupSetAttribute(plot[4], "MARGINLEFT", "45");
-  IupSetAttribute(plot[4], "MARGINBOTTOM", "40");
+  //  IupSetAttribute(plot[4], "MARGINTOP", "40");
+  //IupSetAttribute(plot[4], "MARGINLEFT", "45");
+  //IupSetAttribute(plot[4], "MARGINBOTTOM", "40");
   IupSetAttribute(plot[4], "AXS_XAUTOMIN", "NO");
   IupSetAttribute(plot[4], "AXS_XAUTOMAX", "NO");
   IupSetAttribute(plot[4], "AXS_YAUTOMIN", "NO");
@@ -283,7 +283,7 @@ static void InitPlots(void)
   /* PLOT 5 - MakeExamplePlot8 */
   IupSetAttribute(plot[5], "TITLE", "Data Selection and Editing");
   IupSetAttribute(plot[5], "TITLEFONTSIZE", "16");
-  IupSetAttribute(plot[5], "MARGINTOP", "40");
+  //IupSetAttribute(plot[5], "MARGINTOP", "40");
 
   theFac = 100.0/(100*100*100);
   IupPlotBegin(plot[5], 0);
