@@ -192,12 +192,8 @@ void iupPlotAxis::SetNamedTickIter(const iupPlotDataString *inStringData)
 
 iupPlot::iupPlot(Ihandle* _ih)
   :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), 
-  mBackColor(CD_WHITE), mMarginAuto(1, 1, 1, 1)
+  mBackColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mDefaultFontSize(0), mDefaultFontStyle(-1)
 {
-  int size = IupGetInt(ih, "FONTSIZE");
-  if (size > 0) size += 6;
-  else size -= 8;
-  mTitle.mFontSize = size;
 }
 
 iupPlot::~iupPlot()
@@ -212,6 +208,13 @@ void iupPlot::SetViewport(int x, int y, int w, int h)
   mViewport.mWidth = w;
   mViewport.mHeight = h;
   mRedraw = true;
+}
+
+void iupPlot::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const
+{
+  if (inFontStyle == -1) inFontStyle = mDefaultFontStyle;
+  if (inFontSize == 0) inFontSize = mDefaultFontSize;
+  cdCanvasFont(canvas, NULL, inFontStyle, inFontSize);
 }
 
 static long iPlotGetDefaultColor(int index)
@@ -334,7 +337,7 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   iupPlotRect theRect;
   theRect.mX = mMargin.mLeft;
-  theRect.mY = mMargin.mTop;
+  theRect.mY = mMargin.mBottom;
   theRect.mWidth = mViewport.mWidth - mMargin.mLeft - mMargin.mRight;
   theRect.mHeight = mViewport.mHeight - mMargin.mTop - mMargin.mBottom;
 

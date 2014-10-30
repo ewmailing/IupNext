@@ -192,20 +192,19 @@ Yes. <font SIZE="3">When enabled text has a much better rendering, but 3D graphs
 will not process depth properly.</p>
 </font>
 <p><b><a href="../attrib/iup_bgcolor.html">BGCOLOR</a></b> (inheritable):  the 
-default background color. Default: "255 255 255".</p>
+default background color. Default: "255 255 255". When set BACKCOLOR of all 
+plots will be reset to the same value.</p>
 
 
 <p><b>CANVAS</b> (read-only): returns the internal CD canvas 
 where the draw operation occurs. Works only after mapped.</p>
 <p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b> (inheritable):  the default text 
 and line color. Default: &quot;0 0 0&quot;. When set, TITLE, AXIS, BOX and 
-LEGENDBOX colors are affected.</p>
+LEGENDBOX colors of all plots will be reset to the same value.</p>
 <p class="info"><strong>IMPORTANT</strong>: All color attributes accept and 
 extra component for alpha. The default alpha is always 255 (opaque). </p>
 <p><strong><a href="../attrib/iup_font.html">FONT</a></strong> (inheritable):
-  the default font used in all text elements of the plot: title, legend and labels.&nbsp; 
-When set, AXIS, BOX and TITLE fonts are changed, and dependent attributes are reset to 
-the default values. Use "Plain" or "" to reset a "Bold"/"Italic" styles.</p>
+  the default font used in all text elements of the plot: title, legend and labels.&nbsp;Use "Plain" or "" to reset a "Bold"/"Italic" styles.</p>
 <p><b>REDRAW</b> (write-only): redraw all plots and update the display. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
 attributes without visual output. Value can be NULL. If value is &quot;NOFLUSH&quot; 
 rendering is performed internally but display is not updated. If value is 
@@ -238,7 +237,8 @@ existing plot. </p>
 on the <strong>PLOT_CURRENT</strong> attribute.</h4>
 <h4>Area Configuration </h4>
 <p><b>MARGINLEFT, MARGINRIGHT, MARGINTOP, MARGINBOTTOM:</b> 
-margin of the dataset area in pixels. Default: &quot;10&quot;, &quot;10&quot;, &quot;10&quot;, &quot;10&quot;.</p>
+margin of the dataset area in pixels. If set to AUTO the margins are 
+automatically calculated to fit all visible elements. Default: &quot;AUTO&quot;, &quot;AUTO&quot;, &quot;AUTO&quot;, &quot;AUTO&quot;.</p>
 <p><strong>BACKCOLOR</strong>: background color of the plot. Default: BGCOLOR.</p>
 <h4>Title Configuration </h4>
 <p><b>TITLE:</b> the  title. Located always at the top center area.</p>
@@ -319,7 +319,7 @@ restored when zoom out completely.</p>
 NO. Default: NO. Default is Y oriented bottom to top, and X oriented from left 
 to right.</p>
 <p><b>AXS_XCROSSORIGIN, AXS_YCROSSORIGIN</b>: allow the axis to cross the 
-origin and to be placed inside the dataset area. Can be YES or NO. Default: YES.</p>
+origin and to be placed inside the dataset area. Can be YES or NO. Default: NO.</p>
 <p><b>AXS_XARROW, AXS_YARROW</b>: enable or disable the axis arrow display. Can be 
 YES or NO. Default: YES.</p>
 <p><b>AXS_XSCALE, AXS_YSCALE</b>: configures the scale of the respective axis. 

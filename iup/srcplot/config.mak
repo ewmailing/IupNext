@@ -19,7 +19,7 @@ LIBS = iup iupcd cdgl
 
 DEFINES = CD_NO_OLD_INTERFACE
 
-SRC = iup_plot.cpp  iup_plot2.cpp
+SRC = iup_plot.cpp  iupPlotCalc.cpp iupPlot.cpp iupPlotDraw.cpp iupPlotTick.cpp
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   ifneq ($(TEC_SYSMINOR), 4)

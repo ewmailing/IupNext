@@ -76,22 +76,23 @@ static void InitPlots(void)
   int theI;
   double x, y, theFac;
 
+  /************************************************************************/
   /* PLOT 0 - MakeExamplePlot1 */
   IupSetAttribute(plot[0], "TITLE", "AutoScale");
 //  IupSetAttribute(plot[0], "MARGINTOP", "40");
   //  IupSetAttribute(plot[0], "MARGINLEFT", "40");
   //  IupSetAttribute(plot[0], "MARGINBOTTOM", "50");
-  IupSetAttribute(plot[0], "TITLEFONTSIZE", "16");
+//  IupSetAttribute(plot[0], "TITLEFONTSIZE", "16");
   IupSetAttribute(plot[0], "LEGENDSHOW", "YES");
   IupSetAttribute(plot[0], "AXS_XLABEL", "gnu (Foo)");
   IupSetAttribute(plot[0], "AXS_YLABEL", "Space (m^3)");
-  IupSetAttribute(plot[0], "AXS_YFONTSIZE", "8");
-  IupSetAttribute(plot[0], "AXS_YTICKFONTSIZE", "8");
-  IupSetAttribute(plot[0], "AXS_XFONTSIZE", "10");
-  IupSetAttribute(plot[0], "AXS_YFONTSIZE", "10");
-  IupSetAttribute(plot[0], "AXS_XLABELCENTERED", "NO");
-  IupSetAttribute(plot[0], "AXS_YLABELCENTERED", "NO");
-  
+//  IupSetAttribute(plot[0], "AXS_YFONTSIZE", "8");
+//  IupSetAttribute(plot[0], "AXS_YTICKFONTSIZE", "8");
+//  IupSetAttribute(plot[0], "AXS_XFONTSIZE", "10");
+//  IupSetAttribute(plot[0], "AXS_YFONTSIZE", "10");
+  IupSetAttribute(plot[0], "AXS_XCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[0], "AXS_YCROSSORIGIN", "Yes");
+
 //  IupSetAttribute(plot[0], "USE_IMAGERGB", "YES");
 //  IupSetAttribute(plot[0], "USE_GDI+", "YES");
 
@@ -145,10 +146,10 @@ static void InitPlots(void)
   IupPlotEnd(plot[0]);
   IupSetAttribute(plot[0], "DS_LEGEND", "Curve 2");
 
-
-  /* PLOT 1 - MakeExamplePlot2 */
+  /************************************************************************/
+  /* PLOT 1 */
   IupSetAttribute(plot[1], "TITLE", "No Autoscale+No CrossOrigin");
-  IupSetAttribute(plot[1], "TITLEFONTSIZE", "16");
+//  IupSetAttribute(plot[1], "TITLEFONTSIZE", "16");
   //  IupSetAttribute(plot[1], "MARGINTOP", "40");
   //IupSetAttribute(plot[1], "MARGINLEFT", "65");
   //IupSetAttribute(plot[1], "MARGINBOTTOM", "60");
@@ -163,8 +164,6 @@ static void InitPlots(void)
   IupSetAttribute(plot[1], "AXS_XMAX", "60");
   IupSetAttribute(plot[1], "AXS_YMIN", "-0.5");
   IupSetAttribute(plot[1], "AXS_YMAX", "0.5");
-  IupSetAttribute(plot[1], "AXS_XCROSSORIGIN", "NO");
-  IupSetAttribute(plot[1], "AXS_YCROSSORIGIN", "NO");
   IupSetAttribute(plot[1], "AXS_XFONTSTYLE", "ITALIC");
   IupSetAttribute(plot[1], "AXS_YFONTSTYLE", "BOLD");
   IupSetAttribute(plot[1], "AXS_XREVERSE", "YES");
@@ -172,6 +171,8 @@ static void InitPlots(void)
   IupSetAttribute(plot[1], "GRIDLINESTYLE", "DOTTED");
   IupSetAttribute(plot[1], "GRID", "YES");
   IupSetAttribute(plot[1], "LEGENDSHOW", "YES");
+  IupSetAttribute(plot[1], "AXS_XLABELCENTERED", "Yes");
+  IupSetAttribute(plot[1], "AXS_YLABELCENTERED", "Yes");
 
   theFac = 1.0/(100*100*100);
   IupPlotBegin(plot[1], 0);
@@ -193,9 +194,10 @@ static void InitPlots(void)
   }
   IupPlotEnd(plot[1]);
 
-  /* PLOT 2 - MakeExamplePlot4 */
+  /************************************************************************/
+  /* PLOT 2 */
   IupSetAttribute(plot[2], "TITLE", "Log Scale");
-  IupSetAttribute(plot[2], "TITLEFONTSIZE", "16");
+//  IupSetAttribute(plot[2], "TITLEFONTSIZE", "16");
   //IupSetAttribute(plot[2], "MARGINTOP", "40");
   //IupSetAttribute(plot[2], "MARGINLEFT", "70");
   //IupSetAttribute(plot[2], "MARGINBOTTOM", "60");
@@ -219,9 +221,10 @@ static void InitPlots(void)
   IupSetAttribute(plot[2], "DS_COLOR", "100 100 200");
   IupSetAttribute(plot[2], "DS_LINESTYLE", "DOTTED");
 
-  /* PLOT 3 - MakeExamplePlot5 */
+  /************************************************************************/
+  /* PLOT 3 */
   IupSetAttribute(plot[3], "TITLE", "Bar Mode");
-  IupSetAttribute(plot[3], "TITLEFONTSIZE", "16");
+//  IupSetAttribute(plot[3], "TITLEFONTSIZE", "16");
   //IupSetAttribute(plot[3], "MARGINTOP", "40");
   //IupSetAttribute(plot[3], "MARGINLEFT", "30");
   //IupSetAttribute(plot[3], "MARGINBOTTOM", "30");
@@ -237,9 +240,10 @@ static void InitPlots(void)
   IupSetAttribute(plot[3], "DS_COLOR", "100 100 200");
   IupSetAttribute(plot[3], "DS_MODE", "BAR");
 
-  /* PLOT 4 - MakeExamplePlot6 */
+  /************************************************************************/
+  /* PLOT 4 */
   IupSetAttribute(plot[4], "TITLE", "Marks Mode");
-  IupSetAttribute(plot[4], "TITLEFONTSIZE", "16");
+//  IupSetAttribute(plot[4], "TITLEFONTSIZE", "16");
   //  IupSetAttribute(plot[4], "MARGINTOP", "40");
   //IupSetAttribute(plot[4], "MARGINLEFT", "45");
   //IupSetAttribute(plot[4], "MARGINBOTTOM", "40");
@@ -251,8 +255,6 @@ static void InitPlots(void)
   IupSetAttribute(plot[4], "AXS_XMAX", "0.011");
   IupSetAttribute(plot[4], "AXS_YMIN", "0");
   IupSetAttribute(plot[4], "AXS_YMAX", "0.22");
-  IupSetAttribute(plot[4], "AXS_XCROSSORIGIN", "NO");
-  IupSetAttribute(plot[4], "AXS_YCROSSORIGIN", "NO");
   IupSetAttribute(plot[4], "AXS_XTICKFORMAT", "%1.3f");
   IupSetAttribute(plot[4], "LEGENDSHOW", "YES");
   IupSetAttribute(plot[4], "LEGENDPOS", "BOTTOMRIGHT");
@@ -267,7 +269,7 @@ static void InitPlots(void)
   }
   IupPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARKLINE");
-  IupSetAttribute(plot[4], "DS_SHOWVALUES", "YES");
+//  IupSetAttribute(plot[4], "DS_SHOWVALUES", "YES");
 
   IupPlotBegin(plot[4], 0);
   for (theI=0; theI<=10; theI++) 
@@ -280,9 +282,10 @@ static void InitPlots(void)
   IupSetAttribute(plot[4], "DS_MODE", "MARK");
   IupSetAttribute(plot[4], "DS_MARKSTYLE", "HOLLOW_CIRCLE");
   
-  /* PLOT 5 - MakeExamplePlot8 */
+  /************************************************************************/
+  /* PLOT 5 */
   IupSetAttribute(plot[5], "TITLE", "Data Selection and Editing");
-  IupSetAttribute(plot[5], "TITLEFONTSIZE", "16");
+  //IupSetAttribute(plot[5], "TITLEFONTSIZE", "16");
   //IupSetAttribute(plot[5], "MARGINTOP", "40");
 
   theFac = 100.0/(100*100*100);
@@ -301,6 +304,8 @@ static void InitPlots(void)
   IupSetCallback(plot[5], "POSTDRAW_CB", (Icallback)postdraw_cb);
   IupSetCallback(plot[5], "PREDRAW_CB", (Icallback)predraw_cb);
   IupSetCallback(plot[5], "EDIT_CB", (Icallback)edit_cb);
+  IupSetAttribute(plot[5], "AXS_XCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[5], "AXS_YCROSSORIGIN", "Yes");
 
 }
 

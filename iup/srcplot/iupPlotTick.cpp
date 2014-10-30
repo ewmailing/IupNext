@@ -11,15 +11,7 @@ const double kTickValueVeryBig = 1.0e4;// switch to scientific format
 const double kTickValueVerySmall = 1.0e-3;
 const double kLittleIncrease = 1.0001;
 const double kLittleDecrease = 0.9999;
-const int kMinMinorTickScreenSize = 1;  // minor ticks should not become smaller than this
 const double kEps = 1e-4;
-
-
-template <class T> 
-inline const T & iPlotMax (const T &a, const T &b) 
-{
-  return b> a ? b: a;
-}
 
 
 /***********************************************************************************/
@@ -151,7 +143,7 @@ bool iupPlotTickIterLinear::GetNextTick (double &outTick, bool &outIsMajorTick, 
   return true;
 }
 
-bool iupPlotTickIterLinear::InitFromRanges (double inParRange, double inOrthoScreenRange, double inDivGuess, iupPlotTick &ioTick) const 
+bool iupPlotTickIterLinear::InitFromRanges (double inParRange, double inDivGuess, iupPlotTick &ioTick) const 
 {
   if (inDivGuess <= kFloatSmall)
     return false;
@@ -167,11 +159,6 @@ bool iupPlotTickIterLinear::InitFromRanges (double inParRange, double inOrthoScr
     ioTick.mMajorSpan = thePreferredSpan;
 
   ioTick.mMinorDivision = 5;
-  if (ioTick.mAutoSize) 
-  {
-    ioTick.mMinorSize = iPlotMax (kMinMinorTickScreenSize, iupPlotRound (inOrthoScreenRange*kRelMinorTickSize));
-    ioTick.mMajorSize = iPlotMax (ioTick.mMinorSize+1, iupPlotRound (inOrthoScreenRange*kRelMajorTickSize));
-  }
 
   iPlotMakeFormatString(ioTick.mMajorSpan, ioTick.mFormatString);
   return true;
@@ -213,7 +200,7 @@ bool iupPlotTickIterLog::Init ()
   return true;
 }
 
-bool iupPlotTickIterLog::InitFromRanges (double inParRange, double inOrthoScreenRange, double inDivGuess, iupPlotTick &ioTick) const 
+bool iupPlotTickIterLog::InitFromRanges (double inParRange, double inDivGuess, iupPlotTick &ioTick) const 
 {
   if (inDivGuess<=kFloatSmall)
     return false;
@@ -233,12 +220,6 @@ bool iupPlotTickIterLog::InitFromRanges (double inParRange, double inOrthoScreen
   ioTick.mMajorSpan = theBase-1;// relative
 
   ioTick.mMinorDivision = iupPlotRound (ioTick.mMajorSpan);
-
-  if (ioTick.mAutoSize)
-  {
-    ioTick.mMinorSize = iPlotMax(kMinMinorTickScreenSize, iupPlotRound(inOrthoScreenRange*kRelMinorTickSize));
-    ioTick.mMajorSize = iPlotMax(ioTick.mMinorSize + 1, iupPlotRound(inOrthoScreenRange*kRelMajorTickSize));
-  }
 
   strcpy(ioTick.mFormatString, "%.1e");
   return true;
@@ -335,9 +316,9 @@ bool iupPlotTickIterNamed::GetNextTick (double &outTick, bool &outIsMajorTick, c
   return false;
 }
 
-bool iupPlotTickIterNamed::InitFromRanges (double inParRange, double inOrthoScreenRange, double inDivGuess, iupPlotTick &outTick) const 
+bool iupPlotTickIterNamed::InitFromRanges (double inParRange, double inDivGuess, iupPlotTick &outTick) const 
 {
-  if (iupPlotTickIterLinear::InitFromRanges (inParRange, inOrthoScreenRange, inDivGuess, outTick)) 
+  if (iupPlotTickIterLinear::InitFromRanges (inParRange, inDivGuess, outTick)) 
   {
     outTick.mMinorDivision = 1;
     return true;

@@ -16,8 +16,6 @@
 #define __IUPPLOT_H__
 
 
-const double kRelMinorTickSize = 0.01;
-const double kRelMajorTickSize = 0.02;
 const double kFloatSmall = 1e-20;
 const double kLogMinClipValue = 1e-10;  // pragmatism to avoid problems with small values in log plot
 
@@ -42,12 +40,6 @@ inline double iupPlotExp(double inFloat, double inBase)
   return pow(inBase, inFloat);
 }
 
-inline void iupPlotSetFont(cdCanvas* canvas, int inFontStyle, int inFontSize)
-{
-  if (inFontStyle != -1 || inFontSize != 0)
-    cdCanvasFont(canvas, NULL, inFontStyle, inFontSize);
-}
-
 class iupPlotRect 
 {
 public:
@@ -64,7 +56,7 @@ public:
 class iupPlotMargin 
 {
 public:
-  iupPlotMargin() :mLeft(10), mRight(10), mTop(10), mBottom(10){}
+  iupPlotMargin() :mLeft(0), mRight(0), mTop(0), mBottom(0){}
   iupPlotMargin(int inLeft, int inRight, int inTop, int inBottom)
     : mLeft(inLeft), mRight(inRight), mTop(inTop), mBottom(inBottom) {}
 
@@ -197,7 +189,7 @@ public:
   virtual bool Init() = 0;
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString) = 0;
 
-  virtual bool InitFromRanges(double inParRange, double inOrthoScreenRange, double inDivGuess, iupPlotTick &outTickInfo) const = 0;
+  virtual bool InitFromRanges(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const = 0;
   virtual bool AdjustRange(double &, double &) const{ return true; };
   void SetAxis(const iupPlotAxis *inAxis) { mAxis = inAxis; };
 
@@ -211,7 +203,7 @@ public:
   iupPlotTickIterLinear() :mCurrentTick(0), mDelta(0){}
   virtual bool Init();
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
-  bool InitFromRanges(double inParRange, double inOrthoScreenRange, double inDivGuess, iupPlotTick &outTickInfo) const;
+  bool InitFromRanges(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
 protected:
   double mCurrentTick;
   long mCount;
@@ -226,7 +218,7 @@ public:
   virtual bool Init();
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
 
-  bool InitFromRanges(double inParRange, double inOrthoScreenRange, double inDivGuess, iupPlotTick &outTickInfo) const;
+  bool InitFromRanges(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
   virtual bool AdjustRange(double &ioMin, double &ioMax) const;
   double RoundUp(double inFloat) const;
   double RoundDown(double inFloat) const;
@@ -245,7 +237,7 @@ public:
 
   //  virtual bool Init ();
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
-  bool InitFromRanges(double inParRange, double inOrthoScreenRange, double inDivGuess, iupPlotTick &outTickInfo) const;
+  bool InitFromRanges(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
 protected:
   const iupPlotDataString* mStringData;
 };
@@ -281,7 +273,7 @@ class iupPlotAxis
 public:
   iupPlotAxis() 
     : mShow(true), mMin(0), mMax(0), mAutoScaleMin(true), mAutoScaleMax(true),
-      mReverse(false), mLogScale(false), mCrossOrigin(true), mColor(CD_BLACK),
+      mReverse(false), mLogScale(false), mCrossOrigin(false), mColor(CD_BLACK),
       mMaxDecades(-1), mLogBase(10), mLabelCentered(false),
       mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1),
       mFontSize(0), mFontStyle(-1) {}
@@ -407,6 +399,7 @@ public:
   void SetViewport(int x, int y, int w, int h);
   bool Render(cdCanvas* canvas);
   void Configure();
+  void SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const;
 
   void DrawPlotTitle(cdCanvas* canvas) const;
   void DrawPlotBackground(cdCanvas* canvas) const;
@@ -445,9 +438,11 @@ public:
 
   Ihandle* ih;
   bool mRedraw;
+  iupPlotRect mViewport;
+  int mDefaultFontSize;
+  int mDefaultFontStyle;
 
   iupPlotMargin mMargin, mMarginAuto;
-
   long mBackColor;
   iupPlotGrid mGrid;
   iupPlotAxis mAxisX;
@@ -458,10 +453,7 @@ public:
 
   iupPlotDataSet* mDataSetList[IUP_PLOT_MAX_DS];
   int mDataSetListCount;
-
   int mCurrentDataSet;
-
-  iupPlotRect mViewport;
 };
 
 #endif

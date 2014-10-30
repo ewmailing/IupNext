@@ -928,23 +928,10 @@ static int iPlotSetStandardFontAttrib(Ihandle* ih, const char* value)
   if (is_underline) style |= CD_UNDERLINE;
   if (is_strikeout) style |= CD_STRIKEOUT;
 
-  for (int p = 0; p<ih->data->plot_list_count; p++)
+  for (int p = 0; p < ih->data->plot_list_count; p++)
   {
-    ih->data->plot_list[p]->mAxisX.mTick.mFontStyle = style;
-    ih->data->plot_list[p]->mAxisY.mTick.mFontStyle = style;
-    ih->data->plot_list[p]->mAxisX.mFontStyle = style;
-    ih->data->plot_list[p]->mAxisY.mFontStyle = style;
-    ih->data->plot_list[p]->mLegend.mFontStyle = style;
-    ih->data->plot_list[p]->mAxisX.mTick.mFontSize = size;
-    ih->data->plot_list[p]->mAxisY.mTick.mFontSize = size;
-    ih->data->plot_list[p]->mAxisX.mFontSize = size;
-    ih->data->plot_list[p]->mAxisY.mFontSize = size;
-    ih->data->plot_list[p]->mLegend.mFontSize = size;
-
-    if (size > 0) size += 6;
-    else size -= 8;
-    ih->data->plot_list[p]->mTitle.mFontSize = size;
-
+    ih->data->plot_list[p]->mDefaultFontSize = size;
+    ih->data->plot_list[p]->mDefaultFontStyle = style;
     ih->data->plot_list[p]->mRedraw = 1;
   }
 
@@ -1045,9 +1032,13 @@ static char* iPlotGetLegendFontSizeAttrib(Ihandle* ih)
 
 static int iPlotSetMarginLeftAttrib(Ihandle* ih, const char* value)
 {
+  if (iupStrEqualNoCase(value, "AUTO"))
+    ih->data->current_plot->mMarginAuto.mLeft = 1;
+
   int ii;
   if (iupStrToInt(value, &ii))
   {
+    ih->data->current_plot->mMarginAuto.mLeft = 0;
     ih->data->current_plot->mMargin.mLeft = ii;
     ih->data->current_plot->mRedraw = 1;
   }
@@ -1056,9 +1047,13 @@ static int iPlotSetMarginLeftAttrib(Ihandle* ih, const char* value)
 
 static int iPlotSetMarginRightAttrib(Ihandle* ih, const char* value)
 {
+  if (iupStrEqualNoCase(value, "AUTO"))
+    ih->data->current_plot->mMarginAuto.mRight = 1;
+
   int ii;
   if (iupStrToInt(value, &ii))
   {
+    ih->data->current_plot->mMarginAuto.mRight = 0;
     ih->data->current_plot->mMargin.mRight = ii;
     ih->data->current_plot->mRedraw = 1;
   }
@@ -1067,9 +1062,13 @@ static int iPlotSetMarginRightAttrib(Ihandle* ih, const char* value)
 
 static int iPlotSetMarginTopAttrib(Ihandle* ih, const char* value)
 {
+  if (iupStrEqualNoCase(value, "AUTO"))
+    ih->data->current_plot->mMarginAuto.mTop = 1;
+
   int ii;
   if (iupStrToInt(value, &ii))
   {
+    ih->data->current_plot->mMarginAuto.mTop = 0;
     ih->data->current_plot->mMargin.mTop = ii;
     ih->data->current_plot->mRedraw = 1;
   }
@@ -1078,9 +1077,13 @@ static int iPlotSetMarginTopAttrib(Ihandle* ih, const char* value)
 
 static int iPlotSetMarginBottomAttrib(Ihandle* ih, const char* value)
 {
+  if (iupStrEqualNoCase(value, "AUTO"))
+    ih->data->current_plot->mMarginAuto.mBottom = 1;
+
   int ii;
   if (iupStrToInt(value, &ii))
   {
+    ih->data->current_plot->mMarginAuto.mBottom = 0;
     ih->data->current_plot->mMargin.mBottom = ii;
     ih->data->current_plot->mRedraw = 1;
   }
@@ -3148,10 +3151,10 @@ static Iclass* iPlotNewClass(void)
   iupClassRegisterAttribute(ic, "SYNCVIEW", iPlotGetSyncViewAttrib, iPlotSetSyncViewAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANVAS", iPlotGetCanvasAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "MARGINLEFT", iPlotGetMarginLeftAttrib, iPlotSetMarginLeftAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MARGINRIGHT", iPlotGetMarginRightAttrib, iPlotSetMarginRightAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MARGINTOP", iPlotGetMarginTopAttrib, iPlotSetMarginTopAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MARGINBOTTOM", iPlotGetMarginBottomAttrib, iPlotSetMarginBottomAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINLEFT", iPlotGetMarginLeftAttrib, iPlotSetMarginLeftAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINRIGHT", iPlotGetMarginRightAttrib, iPlotSetMarginRightAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINTOP", iPlotGetMarginTopAttrib, iPlotSetMarginTopAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINBOTTOM", iPlotGetMarginBottomAttrib, iPlotSetMarginBottomAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BACKCOLOR", iPlotGetBackColorAttrib, iPlotSetBackColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
@@ -3217,8 +3220,8 @@ static Iclass* iPlotNewClass(void)
   iupClassRegisterAttribute(ic, "AXS_YMAX", iPlotGetAxisYMaxAttrib, iPlotSetAxisYMaxAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XREVERSE", iPlotGetAxisXReverseAttrib, iPlotSetAxisXReverseAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YREVERSE", iPlotGetAxisYReverseAttrib, iPlotSetAxisYReverseAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_XCROSSORIGIN", iPlotGetAxisXCrossOriginAttrib, iPlotSetAxisXCrossOriginAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_YCROSSORIGIN", iPlotGetAxisYCrossOriginAttrib, iPlotSetAxisYCrossOriginAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XCROSSORIGIN", iPlotGetAxisXCrossOriginAttrib, iPlotSetAxisXCrossOriginAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YCROSSORIGIN", iPlotGetAxisYCrossOriginAttrib, iPlotSetAxisYCrossOriginAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XSCALE", iPlotGetAxisXScaleAttrib, iPlotSetAxisXScaleAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YSCALE", iPlotGetAxisYScaleAttrib, iPlotSetAxisYScaleAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XARROW", iPlotGetAxisXArrowAttrib, iPlotSetAxisXArrowAttrib, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

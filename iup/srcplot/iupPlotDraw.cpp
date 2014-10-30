@@ -226,7 +226,7 @@ bool iupPlot::DrawXAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
     char theFormatString[30];
 
     if (mAxisX.mTick.mShowNumber)
-      iupPlotSetFont(canvas, mAxisX.mTick.mFontStyle, mAxisX.mTick.mFontSize);
+      SetFont(canvas, mAxisX.mTick.mFontStyle, mAxisX.mTick.mFontSize);
 
     while (mAxisX.mTickIter->GetNextTick(theX, theIsMajorTick, theFormatString))
     {
@@ -250,7 +250,7 @@ bool iupPlot::DrawXAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
   if (mAxisX.GetLabel()) 
   {
     int theXFontHeight;
-    iupPlotSetFont(canvas, mAxisX.mFontStyle, mAxisX.mFontSize);
+    SetFont(canvas, mAxisX.mFontStyle, mAxisX.mFontSize);
     cdCanvasGetFontDim(canvas, NULL, &theXFontHeight, NULL, NULL);
 
     theScreenY -= theXFontHeight / 10;  // spacing
@@ -339,7 +339,7 @@ bool iupPlot::DrawYAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
     char theFormatString[30];
 
     if (mAxisY.mTick.mShowNumber)
-      iupPlotSetFont(canvas, mAxisY.mTick.mFontStyle, mAxisY.mTick.mFontSize);
+      SetFont(canvas, mAxisY.mTick.mFontStyle, mAxisY.mTick.mFontSize);
 
     while (mAxisY.mTickIter->GetNextTick(theY, theIsMajorTick, theFormatString))
     {
@@ -363,7 +363,7 @@ bool iupPlot::DrawYAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
   if (mAxisY.GetLabel()) 
   {
     int theYFontHeight;
-    iupPlotSetFont(canvas, mAxisY.mFontStyle, mAxisY.mFontSize);
+    SetFont(canvas, mAxisY.mFontStyle, mAxisY.mFontSize);
     cdCanvasGetFontDim(canvas, NULL, &theYFontHeight, NULL, NULL);
 
     theScreenX -= theYFontHeight / 10;  // spacing
@@ -414,7 +414,17 @@ void iupPlot::DrawPlotTitle(cdCanvas* canvas) const
   if (mTitle.GetText()) 
   {
     cdCanvasSetForeground(canvas, mTitle.mColor);
-    iupPlotSetFont(canvas, mTitle.mFontStyle, mTitle.mFontSize);
+
+    int theFontSize = mTitle.mFontSize;
+    if (theFontSize == 0)
+    {
+      int size = IupGetInt(ih, "FONTSIZE");
+      if (size > 0) size += 6;
+      else size -= 8;
+      theFontSize = size;
+    }
+
+    SetFont(canvas, mTitle.mFontStyle, theFontSize);
 
     // do not depend on theMargin
     int theX = mViewport.mX + mViewport.mWidth / 2;
@@ -439,7 +449,7 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
     int ds;
     int theFontHeight;
 
-    iupPlotSetFont(canvas, mLegend.mFontStyle, mLegend.mFontSize);
+    SetFont(canvas, mLegend.mFontStyle, mLegend.mFontSize);
     cdCanvasGetFontDim(canvas, NULL, &theFontHeight, NULL, NULL);
 
     int theMargin = theFontHeight / 2;
