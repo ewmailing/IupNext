@@ -78,10 +78,34 @@ static double iPlotRoundSpan(double inSpan)
   return theRes;
 }
 
-static void iPlotMakeFormatString(double inValue, char* outFormatString) 
+int iupPlotCalcPrecision(double inValue)
 {
   if (inValue < 0)
-    inValue = - inValue;
+    inValue = -inValue;
+
+  if (inValue > kTickValueVeryBig || inValue < kTickValueVerySmall)
+    return 1;
+  else
+  {
+    int thePrecision = 0;
+    if (inValue < 1)
+    {
+      double theSpan = inValue;
+      while (theSpan < 1 && thePrecision < 9)
+      {
+        thePrecision++;
+        theSpan *= 10;
+      }
+    }
+
+    return thePrecision;
+  }
+}
+
+static void iPlotMakeFormatString(double inValue, char* outFormatString)
+{
+  if (inValue < 0)
+    inValue = -inValue;
   
   if (inValue > kTickValueVeryBig || inValue < kTickValueVerySmall)
     strcpy(outFormatString, "%.1e");
@@ -120,14 +144,14 @@ bool iupPlotTickIterLinear::Init()
   mCount = (long)ceil(theMin/mDelta);
   mCurrentTick = mCount*mDelta;
 
-  strcpy(mFormatString, mAxis->mTick.mFormatString);
-
   return true;
 
 }
 
 bool iupPlotTickIterLinear::GetNextTick (double &outTick, bool &outIsMajorTick, char* outFormatString) 
 {
+  (void)outFormatString; // unused here
+
   if (!mAxis)
     return false;
   
@@ -136,14 +160,13 @@ bool iupPlotTickIterLinear::GetNextTick (double &outTick, bool &outIsMajorTick, 
   
   outTick = mCurrentTick;
   outIsMajorTick = (mCount%mAxis->mTick.mMinorDivision == 0);
-  if (outFormatString) strcpy(outFormatString, mFormatString);
 
   mCurrentTick += mDelta;
   mCount++;
   return true;
 }
 
-bool iupPlotTickIterLinear::InitFromRanges (double inParRange, double inDivGuess, iupPlotTick &ioTick) const 
+bool iupPlotTickIterLinear::CalculateSpacing (double inParRange, double inDivGuess, iupPlotTick &ioTick) const 
 {
   if (inDivGuess <= kFloatSmall)
     return false;
@@ -160,6 +183,7 @@ bool iupPlotTickIterLinear::InitFromRanges (double inParRange, double inDivGuess
 
   ioTick.mMinorDivision = 5;
 
+  // Calculated only once for Linear scale
   iPlotMakeFormatString(ioTick.mMajorSpan, ioTick.mFormatString);
   return true;
 }
@@ -200,7 +224,7 @@ bool iupPlotTickIterLog::Init ()
   return true;
 }
 
-bool iupPlotTickIterLog::InitFromRanges (double inParRange, double inDivGuess, iupPlotTick &ioTick) const 
+bool iupPlotTickIterLog::CalculateSpacing (double inParRange, double inDivGuess, iupPlotTick &ioTick) const 
 {
   if (inDivGuess<=kFloatSmall)
     return false;
@@ -235,7 +259,10 @@ bool iupPlotTickIterLog::GetNextTick (double &outTick, bool &outIsMajorTick, cha
 
   outTick = mCurrentTick;
   outIsMajorTick = (mCount%mAxis->mTick.mMinorDivision == 0);
+
+  // Calculated in every interation for Log scale
   if (outFormatString) iPlotMakeFormatString(outTick, outFormatString);
+
   double theBase = mAxis->mLogBase;
   double theLogNow = iupPlotLog(mCurrentTick, theBase);
   int thePowNow = (int)floor(theLogNow);
@@ -316,9 +343,9 @@ bool iupPlotTickIterNamed::GetNextTick (double &outTick, bool &outIsMajorTick, c
   return false;
 }
 
-bool iupPlotTickIterNamed::InitFromRanges (double inParRange, double inDivGuess, iupPlotTick &outTick) const 
+bool iupPlotTickIterNamed::CalculateSpacing (double inParRange, double inDivGuess, iupPlotTick &outTick) const 
 {
-  if (iupPlotTickIterLinear::InitFromRanges (inParRange, inDivGuess, outTick)) 
+  if (iupPlotTickIterLinear::CalculateSpacing (inParRange, inDivGuess, outTick)) 
   {
     outTick.mMinorDivision = 1;
     return true;

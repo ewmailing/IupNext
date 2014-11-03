@@ -26,20 +26,33 @@ static int iPlotCountDigit(int inNum)
   return theCount;
 }
 
-static int iPlotGetPrecisionNumChar(const char* inFormatString, double inMin, double inMax)
+static int iPlotGetPrecisionNumChar(bool inAutoSpacing, const char* inFormatString, double inMin, double inMax)
 {
-  int precision = 0;
-  while (*inFormatString)
-  {
-    if (*inFormatString == '.')
-      break;
-    inFormatString++;
-  }
+  int thePrecision = 0;
 
-  if (*inFormatString == '.')
+  if (inAutoSpacing)
   {
-    inFormatString++;
-    iupStrToInt(inFormatString, &precision);
+    int theMinPrecision = iupPlotCalcPrecision(inMin);
+    int theMaxPrecision = iupPlotCalcPrecision(inMax);
+    if (theMinPrecision > theMaxPrecision)
+      thePrecision = theMinPrecision;
+    else
+      thePrecision = theMaxPrecision;
+  }
+  else
+  {
+    while (*inFormatString)
+    {
+      if (*inFormatString == '.')
+        break;
+      inFormatString++;
+    }
+
+    if (*inFormatString == '.')
+    {
+      inFormatString++;
+      iupStrToInt(inFormatString, &thePrecision);
+    }
   }
 
   int theMin = iupPlotRound(inMin);
@@ -47,13 +60,13 @@ static int iPlotGetPrecisionNumChar(const char* inFormatString, double inMin, do
   int theNumDigitMin = iPlotCountDigit(theMin);
   int theNumDigitMax = iPlotCountDigit(theMax);
   if (theNumDigitMin > theNumDigitMax)
-    precision += theNumDigitMin;
+    thePrecision += theNumDigitMin;
   else
-    precision += theNumDigitMax;
+    thePrecision += theNumDigitMax;
 
-  precision += 3;  // sign, decimal symbol, exp 
+  thePrecision += 3;  // sign, decimal symbol, exp 
 
-  return precision;
+  return thePrecision;
 }
 
 void iupPlot::GetTickNumberSize(const iupPlotAxis& inAxis, cdCanvas* canvas, int *outWitdh, int *outHeight) const
@@ -63,7 +76,7 @@ void iupPlot::GetTickNumberSize(const iupPlotAxis& inAxis, cdCanvas* canvas, int
   cdCanvasGetTextSize(canvas, "1234567890.", &theTickFontWidth, &theTickFontHeight);
   theTickFontWidth /= 11;
   if (outHeight) *outHeight = theTickFontHeight;
-  if (outWitdh)  *outWitdh  = theTickFontWidth * iPlotGetPrecisionNumChar(inAxis.mTick.mFormatString, inAxis.mMin, inAxis.mMax);
+  if (outWitdh)  *outWitdh = theTickFontWidth * iPlotGetPrecisionNumChar(inAxis.mTick.mAutoSpacing, inAxis.mTick.mFormatString, inAxis.mMin, inAxis.mMax);
 }
 
 void iupPlot::CalculateMargins(cdCanvas* canvas)
@@ -420,7 +433,7 @@ bool iupPlot::CalculateTickSpacing(const iupPlotRect &inRect, cdCanvas* canvas)
     cdCanvasGetTextSize(canvas, "12345", &theTextWidth, NULL);
 
     double theDivGuess = inRect.mWidth / (kMajorTickXInitialFac*theTextWidth);
-    if (!mAxisX.mTickIter->InitFromRanges(theXRange, theDivGuess, mAxisX.mTick))
+    if (!mAxisX.mTickIter->CalculateSpacing(theXRange, theDivGuess, mAxisX.mTick))
       return false;
   }
 
@@ -431,7 +444,7 @@ bool iupPlot::CalculateTickSpacing(const iupPlotRect &inRect, cdCanvas* canvas)
     cdCanvasGetFontDim(canvas, NULL, &theYFontHeight, NULL, NULL);
 
     double theDivGuess = inRect.mHeight / (kMajorTickYInitialFac*theYFontHeight);
-    if (!mAxisY.mTickIter->InitFromRanges(theYRange, theDivGuess, mAxisY.mTick))
+    if (!mAxisY.mTickIter->CalculateSpacing(theYRange, theDivGuess, mAxisY.mTick))
       return false;
   }
 

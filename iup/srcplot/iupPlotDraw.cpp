@@ -119,27 +119,31 @@ static void iPlotFillArrow(cdCanvas* canvas, int inX1, int inY1, int inX2, int i
 
 static void iPlotDrawArrow(cdCanvas* canvas, double inX, double inY, int inVertical, int inDirection, int inSize)
 {
-  int x = iupPlotRound(inX);
-  int y = iupPlotRound(inY);
+  int theX = iupPlotRound(inX);
+  int theY = iupPlotRound(inY);
+
   inSize += 2; // to avoid too small sizes
-  int size2 = iupPlotRound(inSize*0.7);
+
+  int theSizeDir = iupPlotRound(inSize * 0.7);
   if (inVertical)
   {
-    int y1 = y;
-    y += inDirection*inSize;
-    cdCanvasLine(canvas, x, y, x, y1);
+    cdfCanvasLine(canvas, inX, inY, inX, inY + inDirection*inSize);  // complement the axis
 
-    int y2 = y - inDirection*size2;
-    iPlotFillArrow(canvas, x, y, x - size2, y2, x + size2, y2);
+    int theY1 = iupPlotRound(inY + inDirection*inSize);
+    int theY2 = theY1 - inDirection*theSizeDir;
+    iPlotFillArrow(canvas, theX,              theY1, 
+                           theX - theSizeDir, theY2, 
+                           theX + theSizeDir, theY2);
   }
   else
   {
-    int x1 = x;
-    x += inDirection*inSize;
-    cdCanvasLine(canvas, x, y, x1, y);
+    cdfCanvasLine(canvas, inX, inY, inX + inDirection*inSize, inY);
 
-    int x2 = x - inDirection*size2;
-    iPlotFillArrow(canvas, x, y, x2, y - size2, x2, y + size2);
+    int theX1 = iupPlotRound(inX + inDirection*inSize);
+    int theX2 = theX1 - inDirection*theSizeDir;
+    iPlotFillArrow(canvas, theX1, theY, 
+                           theX2, theY - theSizeDir, 
+                           theX2, theY + theSizeDir);
   }
 }
 
@@ -182,6 +186,7 @@ bool iupPlot::DrawXAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
     double theX;
     bool theIsMajorTick;
     char theFormatString[30];
+    strcpy(theFormatString, mAxisX.mTick.mFormatString);
 
     if (mAxisX.mTick.mShowNumber)
       SetFont(canvas, mAxisX.mTick.mFontStyle, mAxisX.mTick.mFontSize);
@@ -300,6 +305,7 @@ bool iupPlot::DrawYAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
     double theY;
     bool theIsMajorTick;
     char theFormatString[30];
+    strcpy(theFormatString, mAxisY.mTick.mFormatString);
 
     if (mAxisY.mTick.mShowNumber)
       SetFont(canvas, mAxisY.mTick.mFontStyle, mAxisY.mTick.mFontSize);

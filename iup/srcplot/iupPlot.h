@@ -19,6 +19,7 @@
 const double kFloatSmall = 1e-20;
 const double kLogMinClipValue = 1e-10;  // pragmatism to avoid problems with small values in log plot
 
+int iupPlotCalcPrecision(double inValue);
 
 inline int iupPlotRound(double inFloat)
 {
@@ -188,8 +189,8 @@ public:
   virtual bool Init() = 0;
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString) = 0;
 
-  virtual bool InitFromRanges(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const = 0;
-  virtual bool AdjustRange(double &, double &) const{ return true; };
+  virtual bool CalculateSpacing(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const = 0;
+  virtual bool AdjustRange(double &, double &) const { return true; };
   void SetAxis(const iupPlotAxis *inAxis) { mAxis = inAxis; };
 
 protected:
@@ -202,12 +203,11 @@ public:
   iupPlotTickIterLinear() :mCurrentTick(0), mDelta(0){}
   virtual bool Init();
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
-  bool InitFromRanges(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
+  bool CalculateSpacing(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
 protected:
   double mCurrentTick;
   long mCount;
   double mDelta;
-  char mFormatString[30];
 };
 
 class iupPlotTickIterLog : public iupPlotTickIterBase 
@@ -217,7 +217,7 @@ public:
   virtual bool Init();
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
 
-  bool InitFromRanges(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
+  bool CalculateSpacing(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
   virtual bool AdjustRange(double &ioMin, double &ioMax) const;
   double RoundUp(double inFloat) const;
   double RoundDown(double inFloat) const;
@@ -236,7 +236,7 @@ public:
 
   //  virtual bool Init ();
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
-  bool InitFromRanges(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
+  bool CalculateSpacing(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
 protected:
   const iupPlotDataString* mStringData;
 };
