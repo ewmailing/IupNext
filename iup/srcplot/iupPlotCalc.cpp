@@ -14,59 +14,121 @@ const double kMajorTickYInitialFac = 3.0;
 const double kRangeVerySmall = (double)1.0e-3;
 
 
+static int iPlotCountDigit(int inNum)
+{
+  int theCount = 0;
+  while (inNum != 0)
+  {
+    inNum = inNum / 10;
+    theCount++;
+  }
+  if (theCount == 0) theCount = 1;
+  return theCount;
+}
+
+static int iPlotGetPrecisionNumChar(const char* inFormatString, double inMin, double inMax)
+{
+  int precision = 0;
+  while (*inFormatString)
+  {
+    if (*inFormatString == '.')
+      break;
+    inFormatString++;
+  }
+
+  if (*inFormatString == '.')
+  {
+    inFormatString++;
+    iupStrToInt(inFormatString, &precision);
+  }
+
+  int theMin = iupPlotRound(inMin);
+  int theMax = iupPlotRound(inMax);
+  int theNumDigitMin = iPlotCountDigit(theMin);
+  int theNumDigitMax = iPlotCountDigit(theMax);
+  if (theNumDigitMin > theNumDigitMax)
+    precision += theNumDigitMin;
+  else
+    precision += theNumDigitMax;
+
+  precision += 3;  // sign, decimal symbol, exp 
+
+  return precision;
+}
+
+void iupPlot::GetTickNumberSize(const iupPlotAxis& inAxis, cdCanvas* canvas, int *outWitdh, int *outHeight) const
+{
+  int theTickFontWidth, theTickFontHeight;
+  SetFont(canvas, inAxis.mTick.mFontStyle, inAxis.mTick.mFontSize);
+  cdCanvasGetTextSize(canvas, "1234567890.", &theTickFontWidth, &theTickFontHeight);
+  theTickFontWidth /= 11;
+  if (outHeight) *outHeight = theTickFontHeight;
+  if (outWitdh)  *outWitdh  = theTickFontWidth * iPlotGetPrecisionNumChar(inAxis.mTick.mFormatString, inAxis.mMin, inAxis.mMax);
+}
+
 void iupPlot::CalculateMargins(cdCanvas* canvas)
 {
+  mMargin.mLeft = 0;
+  mMargin.mRight = 0;
+  mMargin.mTop = 0;
+  mMargin.mBottom = 0;
+
   if (mMarginAuto.mTop)
   {
     if (mTitle.GetText())
     {
-      int theFontSize = mTitle.mFontSize;
-      if (theFontSize == 0)
-      {
-        int size = IupGetInt(ih, "FONTSIZE");
-        if (size > 0) size += 6;
-        else size -= 8;
-        theFontSize = size;
-      }
-
-      SetFont(canvas, mTitle.mFontStyle, theFontSize);
+      SetTitleFont(canvas);
 
       int theTextHeight;
       cdCanvasGetTextSize(canvas, mTitle.GetText(), NULL, &theTextHeight);
-      mMargin.mTop = theTextHeight + 5 + theTextHeight/2;
+      mMargin.mTop += theTextHeight + 5 + theTextHeight/2;
     }
     else
     {
-      if (mAxisY.mShow && mAxisY.mShowArrow && !mAxisY.mReverse)
-        mMargin.mTop = mAxisY.mTick.mMinorSize + 2 + 5;
-      else
-        mMargin.mTop = 0;
-    }
-  }
+      if (mAxisY.mShow)
+      {
+        if (mAxisY.mShowArrow && !mAxisY.mReverse)
+          mMargin.mTop += mAxisY.mTick.mMinorSize + 2 + 5;  // size of the arrow
 
-  if (mMarginAuto.mRight)
-  {
-    if (mAxisX.mShow && mAxisX.mShowArrow && !mAxisX.mReverse)
-      mMargin.mRight = mAxisX.mTick.mMinorSize + 2 + 5;
-    else
-      mMargin.mRight = 0;
+        if (mAxisY.mTick.mShowNumber)
+        {
+          if (mAxisY.mTick.mRotateNumber)
+          {
+            int theYTickNumberHeight;
+            GetTickNumberSize(mAxisY, canvas, NULL, &theYTickNumberHeight);
+            mMargin.mBottom += theYTickNumberHeight / 2;
+          }
+          else
+          {
+            int theYTickNumberWidth;
+            GetTickNumberSize(mAxisY, canvas, &theYTickNumberWidth, NULL);
+            mMargin.mBottom += theYTickNumberWidth / 2;
+          }
+        }
+      }
+    }
   }
 
   if (mMarginAuto.mBottom)
   {
     if (mAxisX.mShow && !mAxisX.mCrossOrigin)
     {
-      mMargin.mBottom = mAxisX.mTick.mMajorSize;
+      mMargin.mBottom += mAxisX.mTick.mMajorSize;
 
       if (mAxisX.mTick.mShowNumber)
       {
-        int theXTickFontWidth, theXTickFontHeight;
-        cdCanvasGetTextSize(canvas, "1234567890.", &theXTickFontWidth, &theXTickFontHeight);
-        theXTickFontWidth /= 11;
         if (mAxisX.mTick.mRotateNumber)
-          mMargin.mBottom += theXTickFontWidth * iupPlotGetPrecisionNumChar(mAxisX.mTick.mFormatString, mAxisX.mMin, mAxisX.mMax);
+        {
+          int theXTickNumberWidth;
+          GetTickNumberSize(mAxisX, canvas, &theXTickNumberWidth, NULL);
+          mMargin.mBottom += theXTickNumberWidth;
+        }
         else
-          mMargin.mBottom += theXTickFontHeight;  // skip number
+        {
+          int theXTickNumberHeight;
+          GetTickNumberSize(mAxisX, canvas, NULL, &theXTickNumberHeight);
+          mMargin.mBottom += theXTickNumberHeight;
+        }
       }
 
       if (mAxisX.GetLabel())
@@ -78,25 +140,72 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
         mMargin.mBottom += theXFontHeight + theXFontHeight / 10;
       }
     }
-    else
-      mMargin.mBottom = 0;
+
+    if (mAxisY.mShow)
+    {
+      if (mAxisY.mTick.mShowNumber)
+      {
+        if (mAxisY.mTick.mRotateNumber)
+        {
+          int theYTickNumberHeight;
+          GetTickNumberSize(mAxisY, canvas, NULL, &theYTickNumberHeight);
+          mMargin.mBottom += theYTickNumberHeight/2;
+        }
+        else
+        {
+          int theYTickNumberWidth;
+          GetTickNumberSize(mAxisY, canvas, &theYTickNumberWidth, NULL);
+          mMargin.mBottom += theYTickNumberWidth/2;
+        }
+      }
+    }
+  }
+
+  if (mMarginAuto.mRight)
+  {
+    if (mAxisX.mShow)
+    {
+      if (mAxisX.mShowArrow && !mAxisX.mReverse)
+        mMargin.mRight += mAxisX.mTick.mMinorSize + 2 + 5;  // size of the arrow
+
+      if (mAxisX.mTick.mShowNumber)
+      {
+        if (mAxisX.mTick.mRotateNumber)
+        {
+          int theXTickNumberHeight;
+          GetTickNumberSize(mAxisX, canvas, NULL, &theXTickNumberHeight);
+          mMargin.mRight += theXTickNumberHeight/2;
+        }
+        else
+        {
+          int theXTickNumberWidth;
+          GetTickNumberSize(mAxisX, canvas, &theXTickNumberWidth, NULL);
+          mMargin.mRight += theXTickNumberWidth/2;
+        }
+      }
+    }
   }
 
   if (mMarginAuto.mLeft)
   {
     if (mAxisY.mShow && !mAxisY.mCrossOrigin)
     {
-      mMargin.mLeft = mAxisY.mTick.mMajorSize;
+      mMargin.mLeft += mAxisY.mTick.mMajorSize;
 
       if (mAxisY.mTick.mShowNumber)
       {
-        int theYTickFontWidth, theYTickFontHeight;
-        cdCanvasGetTextSize(canvas, "1234567890.", &theYTickFontWidth, &theYTickFontHeight);
-        theYTickFontWidth /= 11;
         if (mAxisY.mTick.mRotateNumber)
-          mMargin.mLeft += theYTickFontWidth * iupPlotGetPrecisionNumChar(mAxisY.mTick.mFormatString, mAxisY.mMin, mAxisY.mMax);
+        {
+          int theYTickNumberHeight;
+          GetTickNumberSize(mAxisY, canvas, NULL, &theYTickNumberHeight);
+          mMargin.mLeft += theYTickNumberHeight;
+        }
         else
-          mMargin.mLeft += theYTickFontHeight;  // skip number
+        {
+          int theYTickNumberWidth;
+          GetTickNumberSize(mAxisY, canvas, &theYTickNumberWidth, NULL);
+          mMargin.mLeft += theYTickNumberWidth;
+        }
       }
 
       if (mAxisY.GetLabel())
@@ -108,8 +217,28 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
         mMargin.mLeft += theYFontHeight + theYFontHeight / 10;
       }
     }
-    else
-      mMargin.mLeft = 0;
+
+    if (mAxisX.mShow)
+    {
+      if (mAxisX.mShowArrow && mAxisX.mReverse)
+        mMargin.mLeft += mAxisX.mTick.mMinorSize + 2 + 5;  // size of the arrow
+
+      if (mAxisX.mTick.mShowNumber)
+      {
+        if (mAxisX.mTick.mRotateNumber)
+        {
+          int theXTickNumberHeight;
+          GetTickNumberSize(mAxisX, canvas, NULL, &theXTickNumberHeight);
+          mMargin.mLeft += theXTickNumberHeight / 2;
+        }
+        else
+        {
+          int theXTickNumberWidth;
+          GetTickNumberSize(mAxisX, canvas, &theXTickNumberWidth, NULL);
+          mMargin.mLeft += theXTickNumberWidth / 2;
+        }
+      }
+    }
   }
 }
 
@@ -228,11 +357,11 @@ bool iupPlot::CalculateAxisRanges()
   return true;
 }
 
-bool iupPlot::CheckRange(const iupPlotAxis &inPlotAxis)
+bool iupPlot::CheckRange(const iupPlotAxis &inAxis)
 {
-  if (inPlotAxis.mLogScale) 
+  if (inAxis.mLogScale) 
   {
-    if (inPlotAxis.mMin < kLogMinClipValue)
+    if (inAxis.mMin < kLogMinClipValue)
       return false;
   }
   return true;

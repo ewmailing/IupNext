@@ -22,14 +22,14 @@ double iupPlotTrafoLinear::TransformBack(double inValue) const
     return 0;
 }
 
-bool iupPlotTrafoLinear::Calculate(int inBegin, int inEnd, const iupPlotAxis& inPlotAxis)
+bool iupPlotTrafoLinear::Calculate(int inBegin, int inEnd, const iupPlotAxis& inAxis)
 {
-  double theDataRange = inPlotAxis.mMax - inPlotAxis.mMin;
+  double theDataRange = inAxis.mMax - inAxis.mMin;
   if (theDataRange < kFloatSmall)
     return false;
 
-  double theMin = inPlotAxis.mMin;
-  if (inPlotAxis.mDiscrete)
+  double theMin = inAxis.mMin;
+  if (inAxis.mDiscrete)
   {
     theDataRange++;
     theMin -= 0.5;
@@ -38,13 +38,13 @@ bool iupPlotTrafoLinear::Calculate(int inBegin, int inEnd, const iupPlotAxis& in
   double theTargetRange = inEnd - inBegin;
   double theScale = theTargetRange / theDataRange;
 
-  if (!inPlotAxis.mReverse)
+  if (!inAxis.mReverse)
     mOffset = inBegin - theMin * theScale;
   else
     mOffset = inEnd + theMin * theScale;
 
   mSlope = theScale;
-  if (inPlotAxis.mReverse)
+  if (inAxis.mReverse)
     mSlope *= -1;
 
   return true;
@@ -68,25 +68,25 @@ double iupPlotTrafoLog::TransformBack(double inValue) const
     return 0;
 }
 
-bool iupPlotTrafoLog::Calculate(int inBegin, int inEnd, const iupPlotAxis& inPlotAxis)
+bool iupPlotTrafoLog::Calculate(int inBegin, int inEnd, const iupPlotAxis& inAxis)
 {
-  double theBase = inPlotAxis.mLogBase;
-  double theDataRange = iupPlotLog(inPlotAxis.mMax, theBase) - iupPlotLog(inPlotAxis.mMin, theBase);
+  double theBase = inAxis.mLogBase;
+  double theDataRange = iupPlotLog(inAxis.mMax, theBase) - iupPlotLog(inAxis.mMin, theBase);
   if (theDataRange < kFloatSmall)
     return false;
 
   double theTargetRange = inEnd - inBegin;
   double theScale = theTargetRange / theDataRange;
 
-  if (!inPlotAxis.mReverse)
-    mOffset = inBegin - iupPlotLog(inPlotAxis.mMin, theBase) * theScale;
+  if (!inAxis.mReverse)
+    mOffset = inBegin - iupPlotLog(inAxis.mMin, theBase) * theScale;
   else
-    mOffset = inEnd + iupPlotLog(inPlotAxis.mMin, theBase) * theScale;
+    mOffset = inEnd + iupPlotLog(inAxis.mMin, theBase) * theScale;
 
   mBase = theBase;
 
   mSlope = theScale;
-  if (inPlotAxis.mReverse)
+  if (inAxis.mReverse)
     mSlope *= -1;
 
   return true;

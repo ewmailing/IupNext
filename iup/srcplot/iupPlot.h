@@ -19,7 +19,6 @@
 const double kFloatSmall = 1e-20;
 const double kLogMinClipValue = 1e-10;  // pragmatism to avoid problems with small values in log plot
 
-int iupPlotGetPrecisionNumChar(const char* inFormatString, double inMin, double inMax);
 
 inline int iupPlotRound(double inFloat)
 {
@@ -74,7 +73,7 @@ public:
   virtual ~iupPlotTrafoBase() {}
   virtual double Transform(double inValue) const = 0;
   virtual double TransformBack(double inValue) const = 0;
-  virtual bool Calculate(int inBegin, int inEnd, const iupPlotAxis& inPlotAxis) = 0;
+  virtual bool Calculate(int inBegin, int inEnd, const iupPlotAxis& inAxis) = 0;
 };
 
 class iupPlotTrafoLinear : public iupPlotTrafoBase
@@ -84,7 +83,7 @@ public:
   double Transform(double inValue) const;
   double TransformBack(double inValue) const;
 
-  bool Calculate(int inBegin, int inEnd, const iupPlotAxis& inPlotAxis);
+  bool Calculate(int inBegin, int inEnd, const iupPlotAxis& inAxis);
 
   double mOffset;
   double mSlope;
@@ -97,7 +96,7 @@ public:
   double Transform(double inValue) const;
   double TransformBack(double inValue) const;
 
-  bool Calculate(int inBegin, int inEnd, const iupPlotAxis& inPlotAxis);
+  bool Calculate(int inBegin, int inEnd, const iupPlotAxis& inAxis);
 
   double mOffset;
   double mSlope;
@@ -402,6 +401,7 @@ public:
   void SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const;
 
   void DrawPlotTitle(cdCanvas* canvas) const;
+    void SetTitleFont(cdCanvas* canvas) const;
   void DrawPlotBackground(cdCanvas* canvas) const;
   void DrawBox(const iupPlotRect &inRect, cdCanvas* canvas) const;
   bool DrawXGrid(const iupPlotRect &inRect, cdCanvas* canvas) const;
@@ -422,13 +422,14 @@ public:
   bool CalculateAxisRanges();
     bool CalculateXRange(double &outXMin, double &outXMax);
     bool CalculateYRange(double &outYMin, double &outYMax);
-  bool CheckRange(const iupPlotAxis &inPlotAxis);
+  bool CheckRange(const iupPlotAxis &inAxis);
   bool CalculateYTransformation(const iupPlotRect &inRect);
   bool CalculateXTransformation(const iupPlotRect &inRect);
-    bool CalculateLinTransformation(int inBegin, int inEnd, const iupPlotAxis& inPlotAxis, iupPlotTrafoLinear* outTrafo);
-    bool CalculateLogTransformation(int inBegin, int inEnd, const iupPlotAxis& inPlotAxis, iupPlotTrafoLog* outTrafo);
+    bool CalculateLinTransformation(int inBegin, int inEnd, const iupPlotAxis& inAxis, iupPlotTrafoLinear* outTrafo);
+    bool CalculateLogTransformation(int inBegin, int inEnd, const iupPlotAxis& inAxis, iupPlotTrafoLog* outTrafo);
   bool CalculateTickSpacing(const iupPlotRect &inRect, cdCanvas* canvas);
   void CalculateTickSize(cdCanvas* canvas, iupPlotTick &ioTick);
+    void GetTickNumberSize(const iupPlotAxis& inAxis, cdCanvas* canvas, int *outWitdh, int *outHeight) const;
 
   void AddDataSet(iupPlotDataBase* inDataX, iupPlotDataBase* inDataY);
   void RemoveDataset(int inIndex);

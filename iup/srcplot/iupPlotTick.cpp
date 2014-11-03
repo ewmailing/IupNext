@@ -80,7 +80,7 @@ static double iPlotRoundSpan(double inSpan)
 
 static void iPlotMakeFormatString(double inValue, char* outFormatString) 
 {
-  if (inValue<0)
+  if (inValue < 0)
     inValue = - inValue;
   
   if (inValue > kTickValueVeryBig || inValue < kTickValueVerySmall)

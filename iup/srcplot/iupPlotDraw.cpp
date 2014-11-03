@@ -44,48 +44,6 @@ static inline void iPlotDrawBox(cdCanvas* canvas, double inX, double inY, double
   cdfCanvasBox(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
 }
 
-static int iPlotCountDigit(int inNum)
-{
-  int theCount = 0;
-  while (inNum != 0)
-  {
-    inNum = inNum / 10;
-    theCount++;
-  }
-  if (theCount == 0) theCount = 1;
-  return theCount;
-}
-
-int iupPlotGetPrecisionNumChar(const char* inFormatString, double inMin, double inMax)
-{
-  int precision = 0;
-  while (*inFormatString)
-  {
-    if (*inFormatString == '.')
-      break;
-    inFormatString++;
-  }
-
-  if (*inFormatString == '.')
-  {
-    inFormatString++;
-    iupStrToInt(inFormatString, &precision);
-  }
-
-  int theMin = iupPlotRound(inMin);
-  int theMax = iupPlotRound(inMax);
-  int theNumDigitMin = iPlotCountDigit(theMin);
-  int theNumDigitMax = iPlotCountDigit(theMax);
-  if (theNumDigitMin > theNumDigitMax)
-    precision += theNumDigitMin;
-  else
-    precision += theNumDigitMax;
-
-  precision += 3;  // sign, decimal symbol, exp 
-
-  return precision;
-}
-
 void iupPlot::DrawBox(const iupPlotRect &inRect, cdCanvas* canvas) const
 {
   if (mBox.mShow)
@@ -237,13 +195,18 @@ bool iupPlot::DrawXAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
     theScreenY -= mAxisX.mTick.mMajorSize;  // skip major tick
     if (mAxisX.mTick.mShowNumber)
     {
-      int theXTickFontWidth, theXTickFontHeight;
-      cdCanvasGetTextSize(canvas, "1234567890.", &theXTickFontWidth, &theXTickFontHeight);
-      theXTickFontWidth /= 11;
       if (mAxisX.mTick.mRotateNumber)
-        theScreenY -= theXTickFontWidth * iupPlotGetPrecisionNumChar(theFormatString, mAxisX.mMin, mAxisX.mMax);  // skip number
+      {
+        int theXTickNumberWidth;
+        GetTickNumberSize(mAxisX, canvas, &theXTickNumberWidth, NULL);
+        theScreenY -= theXTickNumberWidth;
+      }
       else
-        theScreenY -= theXTickFontHeight;  // skip number
+      {
+        int theXTickNumberHeight;
+        GetTickNumberSize(mAxisX, canvas, NULL, &theXTickNumberHeight);
+        theScreenY -= theXTickNumberHeight;
+      }
     }
   }
 
@@ -350,13 +313,18 @@ bool iupPlot::DrawYAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
     theScreenX -= mAxisY.mTick.mMajorSize;  // skip major tick
     if (mAxisY.mTick.mShowNumber)
     {
-      int theYTickFontWidth, theYTickFontHeight;
-      cdCanvasGetTextSize(canvas, "1234567890.", &theYTickFontWidth, &theYTickFontHeight);
-      theYTickFontWidth /= 11;
       if (mAxisY.mTick.mRotateNumber)
-        theScreenX -= theYTickFontHeight;  // skip number
+      {
+        int theYTickNumberHeight;
+        GetTickNumberSize(mAxisY, canvas, NULL, &theYTickNumberHeight);
+        theScreenX -= theYTickNumberHeight;
+      }
       else
-        theScreenX -= theYTickFontWidth * iupPlotGetPrecisionNumChar(theFormatString, mAxisY.mMin, mAxisY.mMax);  // skip number
+      {
+        int theYTickNumberWidth;
+        GetTickNumberSize(mAxisY, canvas, &theYTickNumberWidth, NULL);
+        theScreenX -= theYTickNumberWidth;
+      }
     }
   }
 
@@ -409,22 +377,28 @@ bool iupPlot::DrawYTick(double inY, double inScreenX, bool inMajor, const char*i
   return true;
 }
 
+void iupPlot::SetTitleFont(cdCanvas* canvas) const
+{
+  int theFontSize = mTitle.mFontSize;
+  if (theFontSize == 0)
+  {
+    int size = IupGetInt(ih, "FONTSIZE");
+    if (size > 0) size += 6;
+    else size -= 8;
+
+    theFontSize = size;
+  }
+
+  SetFont(canvas, mTitle.mFontStyle, theFontSize);
+}
+
 void iupPlot::DrawPlotTitle(cdCanvas* canvas) const
 {
   if (mTitle.GetText()) 
   {
     cdCanvasSetForeground(canvas, mTitle.mColor);
 
-    int theFontSize = mTitle.mFontSize;
-    if (theFontSize == 0)
-    {
-      int size = IupGetInt(ih, "FONTSIZE");
-      if (size > 0) size += 6;
-      else size -= 8;
-      theFontSize = size;
-    }
-
-    SetFont(canvas, mTitle.mFontStyle, theFontSize);
+    SetTitleFont(canvas);
 
     // do not depend on theMargin
     int theX = mViewport.mX + mViewport.mWidth / 2;
