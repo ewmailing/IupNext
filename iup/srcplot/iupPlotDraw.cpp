@@ -430,7 +430,7 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
     if (mLegend.mPosition == IUP_PLOT_BOTTOMCENTER)
       theMargin = 0;
     int theTotalHeight = mDataSetListCount*theFontHeight + 2 * theMargin;
-    int theMarkSpace = 0, theLineSpace = 0;
+    int theLineSpace = 20;
 
     int theWidth, theMaxWidth = 0;
     for (ds = 0; ds < mDataSetListCount; ds++)
@@ -441,15 +441,11 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
 
       if (dataset->mMode == IUP_PLOT_MARK || dataset->mMode == IUP_PLOT_MARKLINE)
       {
-        if (dataset->mMarkSize + 6 > theMarkSpace)
-          theMarkSpace = dataset->mMarkSize + 6;
-        theWidth += dataset->mMarkSize + 6;
+        if (dataset->mMarkSize + 6 > theLineSpace)
+          theLineSpace = dataset->mMarkSize + 6;
       }
-      if (dataset->mMode != IUP_PLOT_MARK)
-      {
-        theWidth += 10;
-        theLineSpace = 10;
-      }
+
+      theWidth += theLineSpace;
 
       if (theWidth > theMaxWidth)
         theMaxWidth = theWidth;
@@ -510,16 +506,16 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
       if (dataset->mMode == IUP_PLOT_MARK || dataset->mMode == IUP_PLOT_MARKLINE)
       {
         iPlotSetMark(canvas, dataset->mMarkStyle, dataset->mMarkSize);
-        cdCanvasMark(canvas, theLegendX + theMarkSpace / 2, theLegendY - theFontHeight/8);
+        cdCanvasMark(canvas, theLegendX + (theLineSpace - 3) / 2, theLegendY - theFontHeight / 8);
       }
       if (dataset->mMode != IUP_PLOT_MARK)
       {
         iPlotSetLine(canvas, dataset->mLineStyle, dataset->mLineWidth);
-        cdCanvasLine(canvas, theLegendX + theMarkSpace, theLegendY - theFontHeight / 8,
-                             theLegendX + theMarkSpace + theLineSpace - 3, theLegendY - theFontHeight / 8);
+        cdCanvasLine(canvas, theLegendX, theLegendY - theFontHeight / 8,
+                             theLegendX + theLineSpace - 3, theLegendY - theFontHeight / 8);
       }
 
-      iPlotDrawText(canvas, theLegendX + theMarkSpace + theLineSpace, theLegendY, CD_WEST, dataset->GetName());
+      iPlotDrawText(canvas, theLegendX + theLineSpace, theLegendY, CD_WEST, dataset->GetName());
     }
   }
 
