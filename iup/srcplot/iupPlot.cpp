@@ -249,7 +249,8 @@ long iupPlot::GetNextDatasetColor()
     for (i = 0; i<mDataSetListCount; i++)
     {
       // already used, get another
-      if (mDataSetList[i]->mColor == theColor)
+      long theDataSetColor = cdEncodeAlpha(mDataSetList[i]->mColor, 255);
+      if (theDataSetColor == theColor)
           break;
     }
 

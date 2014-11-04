@@ -503,7 +503,7 @@ void GLCanvasCubeTest(void)
   gsbox = IupGLSizeBox(gsbox);
 
   gframe1 = IupSetAttributes(IupGLFrame(hbox), "TITLE=Frame1");
-  gframe2 = IupSetAttributes(IupGLFrame(vbox), "BACKCOLOR=\"250 250 160\", FRAMECOLOR=\"250 250 160\"");
+  gframe2 = IupSetAttributes(IupGLFrame(vbox), "BACKCOLOR=\"250 250 160 128\", FRAMECOLOR=\"250 250 160\"");
   gframe3 = IupSetAttributes(IupGLFrame(gsbox), "TITLE=Frame3, TITLEBOX=Yes");
 //  IupSetAttributeHandle(gframe3, "TITLEBACKIMAGE", load_image_Tecgraf());
 

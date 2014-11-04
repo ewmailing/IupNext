@@ -79,7 +79,8 @@ static void InitPlots(void)
   /************************************************************************/
   /* PLOT 0 - MakeExamplePlot1 */
   IupSetAttribute(plot[0], "TITLE", "AutoScale");
-//  IupSetAttribute(plot[0], "MARGINTOP", "40");
+//  IupSetAttribute(plot[0], "FONT", "Helvetica, 12");
+  //  IupSetAttribute(plot[0], "MARGINTOP", "40");
   //  IupSetAttribute(plot[0], "MARGINLEFT", "40");
   //  IupSetAttribute(plot[0], "MARGINBOTTOM", "50");
 //  IupSetAttribute(plot[0], "TITLEFONTSIZE", "16");
@@ -93,8 +94,8 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "AXS_XCROSSORIGIN", "Yes");
   IupSetAttribute(plot[0], "AXS_YCROSSORIGIN", "Yes");
 
-//  IupSetAttribute(plot[0], "USE_IMAGERGB", "YES");
-//  IupSetAttribute(plot[0], "USE_GDI+", "YES");
+//  IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
+//  IupSetAttribute(plot[0], "GRAPHICSMODE", "IMAGERGB");
 
   theFac = 1.0/(100*100*100);
   IupPlotBegin(plot[0], 0);
@@ -269,7 +270,6 @@ static void InitPlots(void)
   }
   IupPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARKLINE");
-//  IupSetAttribute(plot[4], "DS_SHOWVALUES", "YES");
 
   IupPlotBegin(plot[4], 0);
   for (theI=0; theI<=10; theI++) 

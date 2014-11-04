@@ -234,7 +234,6 @@ public:
   iupPlotTickIterNamed(){}
   void SetStringList(const iupPlotDataString* inStringData) { mStringData = inStringData; };
 
-  //  virtual bool Init ();
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
   bool CalculateSpacing(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
 protected:
@@ -355,8 +354,8 @@ class iupPlotLegend
 public:
   iupPlotLegend() 
     : mShow(false), mFontSize(0), mFontStyle(-1), mPosition(IUP_PLOT_TOPRIGHT),
-      mBoxLineStyle(CD_CONTINUOUS), mBoxLineWidth(1), mBoxColor(CD_BLACK) 
-  { mBoxBackColor = cdEncodeAlpha(CD_WHITE, 0); }
+      mBoxLineStyle(CD_CONTINUOUS), mBoxLineWidth(1), mBoxColor(CD_BLACK), mBoxBackColor(CD_WHITE)
+  {}
 
   bool mShow;
   iupPlotLegendPosition mPosition;

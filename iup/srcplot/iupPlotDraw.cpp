@@ -34,9 +34,9 @@ static inline void iPlotDrawRotatedText(cdCanvas* canvas, double inX, double inY
   cdCanvasTextOrientation(canvas, theOldOrientation);
 }
 
-static inline void iPlotDrawRect(cdCanvas* canvas, double inX, double inY, double inW, double inH)
+static inline void iPlotDrawRect(cdCanvas* canvas, int inX, int inY, int inW, int inH)
 {
-  cdfCanvasRect(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
+  cdCanvasRect(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
 }
 
 static inline void iPlotDrawBox(cdCanvas* canvas, double inX, double inY, double inW, double inH)
@@ -492,11 +492,12 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
     cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1, 
                              theScreenY, theScreenY + theTotalHeight - 1);
 
+    cdCanvasSetForeground(canvas, mLegend.mBoxBackColor);
+    iPlotDrawBox(canvas, theScreenX+1, theScreenY+1, theMaxWidth-2, theTotalHeight-2);
+
     cdCanvasSetForeground(canvas, mLegend.mBoxColor);
     iPlotSetLine(canvas, mLegend.mBoxLineStyle, mLegend.mBoxLineWidth);
     iPlotDrawRect(canvas, theScreenX, theScreenY, theMaxWidth, theTotalHeight);
-    cdCanvasSetForeground(canvas, mLegend.mBoxBackColor);
-    iPlotDrawBox(canvas, theScreenX+1, theScreenY+1, theMaxWidth-2, theTotalHeight-2);
 
     for (ds = 0; ds < mDataSetListCount; ds++)
     {
