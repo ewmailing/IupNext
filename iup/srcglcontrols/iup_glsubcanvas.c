@@ -451,10 +451,18 @@ static int iGLSubCanvasMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
-static void iGLSubCanvasRelease(Iclass* ic)
+static void iGLSubCanvasReleaseMethod(Iclass* ic)
 {
   iupGLFontFinish();
   (void)ic;
+}
+
+static int iGLSubCanvasCreateMethod(Ihandle* ih, void** params)
+{
+  (void)params;
+  // to avoid system fonts that are not well processed by FreeType
+  iupAttribSet(ih, "FONTFACE", "Helvetica");  
+  return IUP_NOERROR;
 }
 
 Iclass* iupGLSubCanvasNewClass(void)
@@ -469,7 +477,8 @@ Iclass* iupGLSubCanvasNewClass(void)
 
   /* Class functions */
   ic->New = iupGLSubCanvasNewClass;
-  ic->Release = iGLSubCanvasRelease;
+  ic->Create = iGLSubCanvasCreateMethod;
+  ic->Release = iGLSubCanvasReleaseMethod;
   ic->Map = iGLSubCanvasMapMethod;
 
   /* Callbacks */
