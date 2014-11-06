@@ -336,6 +336,7 @@ iupStrRemove
 iupStrInsert
 iupSetFontStyleAttrib
 iupSetFontSizeAttrib
+iupSetFontFaceAttrib
 iupSetFontAttrib
 iupRegisterFindClass
 iupRegisterClass

@@ -243,6 +243,28 @@ char* iupGetFontFaceAttrib(Ihandle* ih)
   return iupStrReturnStr(typeface);
 }
 
+int iupSetFontFaceAttrib(Ihandle* ih, const char* value)
+{
+  int size = 0;
+  int is_bold = 0,
+    is_italic = 0,
+    is_underline = 0,
+    is_strikeout = 0;
+  char typeface[1024];
+  char* standardfont;
+
+  if (!value)
+    return 0;
+
+  standardfont = iupGetFontAttrib(ih);
+
+  if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return 0;
+
+  IupSetfAttribute(ih, "STANDARDFONT", "%s, %s%s%s%s %d", value, is_bold ? "Bold " : "", is_italic ? "Italic " : "", is_underline ? "Underline " : "", is_strikeout ? "Strikeout " : "", size);
+  return 0;
+}
+
 char* iupGetFontSizeAttrib(Ihandle* ih)
 {
   int size = 0;
@@ -279,7 +301,7 @@ int iupSetFontSizeAttrib(Ihandle* ih, const char* value)
   if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return 0;
 
-  IupSetfAttribute(ih, "STANDARDFONT", "%s, %s%s%s%s%s", typeface, is_bold?"Bold ":"", is_italic?"Italic ":"", is_underline?"Underline ":"", is_strikeout?"Strikeout ":"", value);
+  IupSetfAttribute(ih, "STANDARDFONT", "%s, %s%s%s%s %s", typeface, is_bold?"Bold ":"", is_italic?"Italic ":"", is_underline?"Underline ":"", is_strikeout?"Strikeout ":"", value);
   return 0;
 }
 
@@ -341,7 +363,7 @@ void iupSetDefaultFontSizeGlobalAttrib(const char* value)
   if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return;
 
-  IupSetfAttribute(NULL, "DEFAULTFONT", "%s, %s%s%s%s%s", typeface, is_bold?"Bold ":"", is_italic?"Italic ":"", is_underline?"Underline ":"", is_strikeout?"Strikeout ":"", value);
+  IupSetfAttribute(NULL, "DEFAULTFONT", "%s, %s%s%s%s %s", typeface, is_bold?"Bold ":"", is_italic?"Italic ":"", is_underline?"Underline ":"", is_strikeout?"Strikeout ":"", value);
 
   return;
 }
@@ -476,7 +498,7 @@ static const char * iFontGetStyleWord(const char *str, const char *last, int *wo
   while (result > str && !is_style_sep(*(result - 1)))
     result--;
 
-  *wordlen = last - result;
+  *wordlen = (int)(last - result);
   
   return result;
 }
@@ -548,7 +570,7 @@ int iupFontParsePango(const char *standardfont, char *typeface, int *size, int *
 
   if (standardfont != last)
   {
-    len = (last - standardfont);
+    len = (int)(last - standardfont);
     strncpy(typeface, standardfont, len);
     typeface[len] = 0;
     return 1;

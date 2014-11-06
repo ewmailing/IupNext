@@ -85,6 +85,10 @@ int iupSetFontStyleAttrib(Ihandle* ih, const char* value);
  * \ingroup attribfunc */
 int iupSetFontSizeAttrib(Ihandle* ih, const char* value);
 
+/** Changes the FONT face only.
+* \ingroup attribfunc */
+int iupSetFontFaceAttrib(Ihandle* ih, const char* value);
+
 /** Returns the FONT style.
  * \ingroup attribfunc */
 char* iupGetFontStyleAttrib(Ihandle* ih);
