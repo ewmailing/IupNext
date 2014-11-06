@@ -196,7 +196,8 @@ static int iPlotResize_CB(Ihandle* ih, int width, int height)
     glLoadIdentity();
     glTranslatef(0.375, 0.375, 0.0);  /* render all primitives at integer positions */
 
-    cdCanvasSetfAttribute(ih->data->cd_canvas, "SIZE", "%dx%d", width, height);
+    double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
+    cdCanvasSetfAttribute(ih->data->cd_canvas, "SIZE", "%dx%d %g", width, height, res);
   }
 
   iPlotUpdateViewports(ih);
@@ -3073,7 +3074,8 @@ static int iPlotMapMethod(Ihandle* ih)
   if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
   {
     IupGLMakeCurrent(ih);
-    ih->data->cd_canvas = cdCreateCanvasf(CD_GL, "%dx%d", ih->currentwidth, ih->currentheight);
+    double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
+    ih->data->cd_canvas = cdCreateCanvasf(CD_GL, "%dx%d %g", ih->currentwidth, ih->currentheight, res);
   }
   else if (ih->data->graphics_mode == IUP_PLOT_IMAGERGB)
     ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFERRGB, ih);

@@ -79,7 +79,7 @@ static void InitPlots(void)
   /************************************************************************/
   /* PLOT 0 - MakeExamplePlot1 */
   IupSetAttribute(plot[0], "TITLE", "AutoScale");
-//  IupSetAttribute(plot[0], "FONT", "Helvetica, 12");
+  IupSetAttribute(plot[0], "FONT", "Helvetica, 10");
   //  IupSetAttribute(plot[0], "MARGINTOP", "40");
   //  IupSetAttribute(plot[0], "MARGINLEFT", "40");
   //  IupSetAttribute(plot[0], "MARGINBOTTOM", "50");
@@ -94,7 +94,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "AXS_XCROSSORIGIN", "Yes");
   IupSetAttribute(plot[0], "AXS_YCROSSORIGIN", "Yes");
 
-//  IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
+  IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
 //  IupSetAttribute(plot[0], "GRAPHICSMODE", "IMAGERGB");
 
   theFac = 1.0/(100*100*100);
@@ -150,7 +150,8 @@ static void InitPlots(void)
   /************************************************************************/
   /* PLOT 1 */
   IupSetAttribute(plot[1], "TITLE", "No Autoscale+No CrossOrigin");
-//  IupSetAttribute(plot[1], "TITLEFONTSIZE", "16");
+  IupSetAttribute(plot[1], "FONT", "Helvetica, 10");
+  //  IupSetAttribute(plot[1], "TITLEFONTSIZE", "16");
   //  IupSetAttribute(plot[1], "MARGINTOP", "40");
   //IupSetAttribute(plot[1], "MARGINLEFT", "65");
   //IupSetAttribute(plot[1], "MARGINBOTTOM", "60");
@@ -174,6 +175,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[1], "LEGENDSHOW", "YES");
   IupSetAttribute(plot[1], "AXS_XLABELCENTERED", "Yes");
   IupSetAttribute(plot[1], "AXS_YLABELCENTERED", "Yes");
+  IupSetAttribute(plot[1], "GRAPHICSMODE", "IMAGERGB");
 
   theFac = 1.0/(100*100*100);
   IupPlotBegin(plot[1], 0);

@@ -18,7 +18,8 @@ void SplitTest(void)
   IupSetAttribute(ml, "MINSIZE", "30x");
   
   split = IupSplit(bt, ml);
-//  IupSetAttribute(split, "ORIENTATION", "VERTICAL");
+  //split = IupSplit(NULL, NULL);
+  //  IupSetAttribute(split, "ORIENTATION", "VERTICAL");
 //  IupSetAttribute(split, "ORIENTATION", "HORIZONTAL");
 //  IupSetAttribute(split, "COLOR", "0 255 0");
 //  IupSetAttribute(split, "LAYOUTDRAG", "NO");
@@ -34,6 +35,12 @@ void SplitTest(void)
   IupSetAttribute(dlg, "TITLE", "IupSplit Example");
 
   IupShow(dlg);
+
+  //IupAppend(split, bt);
+  //IupAppend(split, ml);
+  //IupMap(bt);
+  //IupMap(ml);
+  //IupRefresh(dlg);
 }
 
 #ifndef BIG_TEST
