@@ -56,7 +56,7 @@ typedef int (*IFniiffi)(Ihandle*, int, int, float, float, int); /* select_cb */
 typedef int (*IFniiffff)(Ihandle*, int, int, float, float, float*, float*); /* edit_cb */
 typedef int (*IFniiffs)(Ihandle*, int, int, float, float, char*);  /* plotbutton_cb */
 typedef int (*IFniidds)(Ihandle*, int, int, double, double, char*);  /* plotbutton_cb */
-typedef int (*IFndd)(Ihandle*, double, double);    /* plotmotion_cb */
+typedef int (*IFndds)(Ihandle*, double, double, char*);    /* plotmotion_cb */
 
 typedef char* (*sIFnii)(Ihandle*, int, int);  /* value_cb, font_cb */
 typedef char* (*sIFni)(Ihandle*, int);  /* cell_cb */

@@ -59,6 +59,9 @@ struct _IcontrolData
 
   cdCanvas* cd_canvas;
   int graphics_mode;
+
+  int last_click_x, 
+      last_click_y;
 };
 
 #ifndef M_E
@@ -176,6 +179,54 @@ static int iPlotResize_CB(Ihandle* ih, int width, int height)
   return IUP_DEFAULT;
 }
 
+static void iPlotPanStart(Ihandle *ih)
+{
+  ih->data->current_plot->PanStart();
+
+  if (ih->data->sync_view)
+  {
+    for (int p = 0; p<ih->data->plot_list_count; p++)
+    {
+      if (ih->data->plot_list[p] != ih->data->current_plot)
+        ih->data->plot_list[p]->PanStart();
+    }
+  }
+}
+
+static void iPlotPan(Ihandle *ih, int x1, int y1, int x2, int y2)
+{
+  double rx1, ry1, rx2, ry2;
+  ih->data->current_plot->TransformBack(x1, y1, rx1, ry1);
+  ih->data->current_plot->TransformBack(x2, y2, rx2, ry2);
+
+  double offsetX = rx2 - rx1;
+  double offsetY = ry2 - ry1;
+
+  ih->data->current_plot->Pan(offsetX, offsetY);
+
+  ih->data->current_plot->Render(ih->data->cd_canvas);
+
+  if (ih->data->sync_view)
+  {
+    for (int p = 0; p<ih->data->plot_list_count; p++)
+    {
+      if (ih->data->plot_list[p] != ih->data->current_plot)
+      {
+        ih->data->plot_list[p]->TransformBack(x1, y1, rx1, ry1);
+        ih->data->plot_list[p]->TransformBack(x2, y2, rx2, ry2);
+
+        offsetX = rx2 - rx1;
+        offsetY = ry2 - ry1;
+
+        ih->data->plot_list[p]->Pan(offsetX, offsetY);
+
+        ih->data->plot_list[p]->Render(ih->data->cd_canvas);
+      }
+    }
+  }
+
+  iPlotFlush(ih, ih->data->cd_canvas);
+}
 
 static void iPlotZoom(Ihandle *ih, int x, int y, float delta)
 {
@@ -230,7 +281,7 @@ static void iPlotScroll(Ihandle *ih, float delta, bool vertical)
   iPlotFlush(ih, ih->data->cd_canvas);
 }
 
-static int iPlotFindPlot(Ihandle* ih, int x, int y)
+static int iPlotFindPlot(Ihandle* ih, int x, int &y)
 {
   int w, h;
 
@@ -239,6 +290,8 @@ static int iPlotFindPlot(Ihandle* ih, int x, int y)
 
   cdCanvasActivate(ih->data->cd_canvas);
   cdCanvasGetSize(ih->data->cd_canvas, &w, &h, NULL, NULL);
+
+  y = cdCanvasInvertYAxis(ih->data->cd_canvas, y);
 
   int numcol = ih->data->numcol;
   if (numcol > ih->data->plot_list_count) numcol = ih->data->plot_list_count;
@@ -256,7 +309,7 @@ static int iPlotFindPlot(Ihandle* ih, int x, int y)
   return -1;
 }
 
-static int iPlotMouseButton_CB(Ihandle* ih, int btn, int stat, int x, int y, char* r)
+static int iPlotMouseButton_CB(Ihandle* ih, int button, int press, int x, int y, char* status)
 {
   int index = iPlotFindPlot(ih, x, y);
   if (index<0)
@@ -274,17 +327,37 @@ static int iPlotMouseButton_CB(Ihandle* ih, int btn, int stat, int x, int y, cha
 
     double rx, ry;
     ih->data->current_plot->TransformBack(x, y, rx, ry);
-    if (cb(ih, btn, stat, rx, ry, r) == IUP_IGNORE)
+    if (cb(ih, button, press, rx, ry, status) == IUP_IGNORE)
       return IUP_DEFAULT;
   }
 
-  //TODO
-//  ih->data->current_plot->MouseButton(btn, stat, x - ih->data->current_plot->mX, y - ih->data->current_plot->mY, r);
+  if (press)
+  {
+    ih->data->last_click_x = x;
+    ih->data->last_click_y = y;
+
+    if (button == IUP_BUTTON1)
+      iPlotPanStart(ih);
+  }
+  else
+  {
+    if (ih->data->last_click_x == x && ih->data->last_click_y == y && iup_iscontrol(status))
+    {
+      float delta = 0;
+      if (button == IUP_BUTTON1)
+        delta = 1.0;
+      else if (button == IUP_BUTTON3)
+        delta = -1.0;
+
+      if (delta)
+        iPlotZoom(ih, x, y, delta);
+    }
+  }
 
   return IUP_DEFAULT;
 }
 
-static int iPlotMouseMove_CB(Ihandle* ih, int x, int y)
+static int iPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
 {
   int index = iPlotFindPlot(ih, x, y);
   if (index<0)
@@ -295,21 +368,19 @@ static int iPlotMouseMove_CB(Ihandle* ih, int x, int y)
   x -= ih->data->current_plot->mViewport.mX;
   y -= ih->data->current_plot->mViewport.mY;
 
-  IFndd cb = (IFndd)IupGetCallback(ih, "PLOTMOTION_CB");
+  IFndds cb = (IFndds)IupGetCallback(ih, "PLOTMOTION_CB");
   if (cb) 
   {
     iPlotUpdateCanvasOrigin(ih->data->current_plot, ih->data->cd_canvas);
 
     double rx, ry;
     ih->data->current_plot->TransformBack(x, y, rx, ry);
-    if (cb(ih, rx, ry) == IUP_IGNORE)
+    if (cb(ih, rx, ry, status) == IUP_IGNORE)
       return IUP_DEFAULT;
   }
 
-  //TODO
-//  ih->data->current_plot->MouseMove(x - ih->data->current_plot->mX, y - ih->data->current_plot->mY);
-//  if (_InteractionContainer->HandleMouseEvent(theEvent))
-//    this->Paint(1, 1);
+  if (iup_isbutton1(status))
+    iPlotPan(ih, ih->data->last_click_x, ih->data->last_click_y, x, y);
 
   return IUP_DEFAULT;
 }
@@ -3071,7 +3142,7 @@ static Iclass* iPlotNewClass(void)
   /* IupPlot Callbacks */
   iupClassRegisterCallback(ic, "POSTDRAW_CB", "C");
   iupClassRegisterCallback(ic, "PREDRAW_CB", "C");
-  iupClassRegisterCallback(ic, "PLOTMOTION_CB", "dd");
+  iupClassRegisterCallback(ic, "PLOTMOTION_CB", "dds");
   iupClassRegisterCallback(ic, "PLOTBUTTON_CB", "iidds");
 
   //iupClassRegisterCallback(ic, "SELECT_CB", "iiffi");

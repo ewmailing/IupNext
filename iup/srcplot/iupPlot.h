@@ -288,6 +288,7 @@ public:
   bool ZoomIn(double inCenter);
   bool ZoomOut(double inCenter);
   bool ZoomTo(double inMin, double inMax);
+  void PanStart() { mPanMin = mMin; }
   bool Pan(double inOffset);
   bool Scroll(double inDelta, bool inFullPage);
   bool ScrollTo(double inMin);
@@ -336,6 +337,7 @@ protected:
   double mNoZoomMax;
   bool mNoZoomAutoScaleMin;
   bool mNoZoomAutoScaleMax;
+  double mPanMin;
 };
 
 class iupPlotGrid 
@@ -459,6 +461,7 @@ public:
   void ZoomIn(double inCenterX, double inCenterY) { if (mAxisX.ZoomIn(inCenterX)) mRedraw = 1; if (mAxisY.ZoomIn(inCenterY)) mRedraw = 1; }
   void ZoomOut(double inCenterX, double inCenterY) { if (mAxisX.ZoomOut(inCenterX)) mRedraw = 1; if (mAxisY.ZoomOut(inCenterY)) mRedraw = 1; }
   void ZoomTo(double inMinX, double inMaxX, double inMinY, double inMaxY) { if (mAxisX.ZoomTo(inMinX, inMaxX)) mRedraw = 1; if (mAxisY.ZoomTo(inMinY, inMaxY)) mRedraw = 1; }
+  void PanStart() { mAxisX.PanStart(); mAxisY.PanStart(); }
   void Pan(double inOffsetX, double inOffsetY) { if (mAxisX.Pan(inOffsetX)) mRedraw = 1; if (mAxisY.Pan(inOffsetY)) mRedraw = 1; }
   void Scroll(double inDelta, bool inFullPage, bool inVertical) { if (inVertical) { if (mAxisY.Scroll(inDelta, inFullPage)) mRedraw = 1; } else { if (mAxisX.Scroll(inDelta, inFullPage)) mRedraw = 1; } }
   void ScrollTo(double inMinX, double inMinY) { if (mAxisX.ScrollTo(inMinX)) mRedraw = 1; if (mAxisY.ScrollTo(inMinY)) mRedraw = 1; }

@@ -290,8 +290,8 @@ bool iupPlotAxis::Pan(double inOffset)
 
   double theRange = mMax - mMin;
 
-  mMin += inOffset;
-  mMax += inOffset;
+  mMin = mPanMin - inOffset;
+  mMax = mMin + theRange;
 
   CheckZoomOutLimit(theRange);
   return true;
