@@ -100,7 +100,7 @@ static void iPlotSetPlotCurrent(Ihandle* ih, int p)
   ih->data->current_plot = ih->data->plot_list[ih->data->current_plot_index];
 }
 
-static void iPlotUpdateOrigin(iupPlot* plot, cdCanvas* canvas)
+static void iPlotUpdateCanvasOrigin(iupPlot* plot, cdCanvas* canvas)
 {
   if (plot->ih->data->graphics_mode == IUP_PLOT_OPENGL)
     IupGLMakeCurrent(plot->ih);
@@ -109,41 +109,16 @@ static void iPlotUpdateOrigin(iupPlot* plot, cdCanvas* canvas)
   cdCanvasOrigin(canvas, plot->mViewport.mX, plot->mViewport.mY);
 }
 
-static void iPlotPaint(iupPlot* plot, cdCanvas* canvas, int force, int flush)
-{
-  if (!canvas)
-    return;
-
-  iPlotUpdateOrigin(plot, canvas);
-
-  if (force || plot->mRedraw)
-  {
-    plot->Render(canvas);
-    plot->mRedraw = 0;
-  }
-
-  if (flush)
-    iPlotFlush(plot->ih, canvas);
-}
-
 static int iPlotRedraw_CB(Ihandle* ih)
 {
-  int force = 0;  // no need to do a full redraw by default
-
-  if (!ih->data->cd_canvas)
-    return IUP_DEFAULT;
-
   if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
-  {
     IupGLMakeCurrent(ih);
-    force = 1;  // always do a full redraw in OpenGL
-  }
 
   int old_current = ih->data->current_plot_index;
   for(int p=0; p<ih->data->plot_list_count; p++)
   {
     iPlotSetPlotCurrent(ih, p);
-    iPlotPaint(ih->data->current_plot, ih->data->cd_canvas, force, 0);  /* no flush */
+    ih->data->current_plot->Render(ih->data->cd_canvas);
   }
   iPlotSetPlotCurrent(ih, old_current);
 
@@ -156,9 +131,6 @@ static int iPlotRedraw_CB(Ihandle* ih)
 static void iPlotUpdateViewports(Ihandle* ih)
 {
   int w, h;
-
-  if (!ih->data->cd_canvas)
-    return;
 
   cdCanvasActivate(ih->data->cd_canvas);
   cdCanvasGetSize(ih->data->cd_canvas, &w, &h, NULL, NULL);
@@ -204,9 +176,66 @@ static int iPlotResize_CB(Ihandle* ih, int width, int height)
   return IUP_DEFAULT;
 }
 
+
+static void iPlotZoom(Ihandle *ih, int x, int y, float delta)
+{
+  double rx, ry;
+  ih->data->current_plot->TransformBack(x, y, rx, ry);
+
+  if (delta > 0)
+    ih->data->current_plot->ZoomIn(rx, ry);
+  else
+    ih->data->current_plot->ZoomOut(rx, ry);
+
+  ih->data->current_plot->Render(ih->data->cd_canvas);  
+
+  if (ih->data->sync_view)
+  {
+    for (int p = 0; p<ih->data->plot_list_count; p++)
+    {
+      if (ih->data->plot_list[p] != ih->data->current_plot)
+      {
+        ih->data->plot_list[p]->TransformBack(x, y, rx, ry);
+
+        if (delta > 0)
+          ih->data->plot_list[p]->ZoomIn(rx, ry);
+        else
+          ih->data->plot_list[p]->ZoomOut(rx, ry);
+
+        ih->data->plot_list[p]->Render(ih->data->cd_canvas);  
+      }
+    }
+  }
+
+  iPlotFlush(ih, ih->data->cd_canvas);
+}
+
+static void iPlotScroll(Ihandle *ih, float delta, bool vertical)
+{
+  ih->data->current_plot->Scroll(delta, false, vertical);
+  ih->data->current_plot->Render(ih->data->cd_canvas);  
+
+  if (ih->data->sync_view)
+  {
+    for (int p = 0; p<ih->data->plot_list_count; p++)
+    {
+      if (ih->data->plot_list[p] != ih->data->current_plot)
+      {
+        ih->data->plot_list[p]->Scroll(delta, false, vertical);
+        ih->data->plot_list[p]->Render(ih->data->cd_canvas);
+      }
+    }
+  }
+
+  iPlotFlush(ih, ih->data->cd_canvas);
+}
+
 static int iPlotFindPlot(Ihandle* ih, int x, int y)
 {
   int w, h;
+
+  if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
+    IupGLMakeCurrent(ih);
 
   cdCanvasActivate(ih->data->cd_canvas);
   cdCanvasGetSize(ih->data->cd_canvas, &w, &h, NULL, NULL);
@@ -235,13 +264,16 @@ static int iPlotMouseButton_CB(Ihandle* ih, int btn, int stat, int x, int y, cha
 
   iPlotSetPlotCurrent(ih, index);
 
+  x -= ih->data->current_plot->mViewport.mX;
+  y -= ih->data->current_plot->mViewport.mY;
+
   IFniidds cb = (IFniidds)IupGetCallback(ih, "PLOTBUTTON_CB");
   if (cb) 
   {
-    iPlotUpdateOrigin(ih->data->current_plot, ih->data->cd_canvas);
+    iPlotUpdateCanvasOrigin(ih->data->current_plot, ih->data->cd_canvas);
 
-    double rx = ih->data->current_plot->mAxisX.mTrafo->TransformBack((double)(x - ih->data->current_plot->mViewport.mX));
-    double ry = ih->data->current_plot->mAxisY.mTrafo->TransformBack((double)(y - ih->data->current_plot->mViewport.mY));
+    double rx, ry;
+    ih->data->current_plot->TransformBack(x, y, rx, ry);
     if (cb(ih, btn, stat, rx, ry, r) == IUP_IGNORE)
       return IUP_DEFAULT;
   }
@@ -260,32 +292,50 @@ static int iPlotMouseMove_CB(Ihandle* ih, int x, int y)
 
   iPlotSetPlotCurrent(ih, index);
 
+  x -= ih->data->current_plot->mViewport.mX;
+  y -= ih->data->current_plot->mViewport.mY;
+
   IFndd cb = (IFndd)IupGetCallback(ih, "PLOTMOTION_CB");
   if (cb) 
   {
-    iPlotUpdateOrigin(ih->data->current_plot, ih->data->cd_canvas);
+    iPlotUpdateCanvasOrigin(ih->data->current_plot, ih->data->cd_canvas);
 
-    double rx = ih->data->current_plot->mAxisX.mTrafo->TransformBack((double)(x - ih->data->current_plot->mViewport.mX));
-    double ry = ih->data->current_plot->mAxisY.mTrafo->TransformBack((double)(y - ih->data->current_plot->mViewport.mY));
+    double rx, ry;
+    ih->data->current_plot->TransformBack(x, y, rx, ry);
     if (cb(ih, rx, ry) == IUP_IGNORE)
       return IUP_DEFAULT;
   }
 
   //TODO
 //  ih->data->current_plot->MouseMove(x - ih->data->current_plot->mX, y - ih->data->current_plot->mY);
+//  if (_InteractionContainer->HandleMouseEvent(theEvent))
+//    this->Paint(1, 1);
 
   return IUP_DEFAULT;
 }
 
-static int iPlotWheel_CB(Ihandle *ih, double delta, int x, int y, char* status)
+static int iPlotWheel_CB(Ihandle *ih, float delta, int x, int y, char* status)
 {
   int index = iPlotFindPlot(ih, x, y);
   if (index<0)
     return IUP_DEFAULT;
 
   iPlotSetPlotCurrent(ih, index);
-  //TODO
-  //ih->data->current_plot->MouseWheel(delta, status);
+
+  x -= ih->data->current_plot->mViewport.mX;
+  y -= ih->data->current_plot->mViewport.mY;
+
+  if (iup_iscontrol(status))
+    iPlotZoom(ih, x, y, delta);
+  else if (ih->data->current_plot->HasZoom())
+  {
+    bool vertical = true;
+    if (iup_isshift(status))
+      vertical = false;
+
+    iPlotScroll(ih, delta, vertical);
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -301,6 +351,10 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
   iPlotSetPlotCurrent(ih, old_current);
   return IUP_DEFAULT;
 } 
+
+
+/************************************************************************************/
+
 
 void IupPlotBegin(Ihandle* ih, int strXdata)
 {
@@ -632,7 +686,7 @@ void IupPlotPaintTo(Ihandle* ih, void* _cnv)
   for (int p = 0; p<ih->data->plot_list_count; p++)
   {
     iPlotSetPlotCurrent(ih, p);
-    iPlotPaint(ih->data->current_plot, ih->data->cd_canvas, 1, 0);  /* force redraw, no flush */
+    ih->data->current_plot->Render(ih->data->cd_canvas);  
   }
   iPlotSetPlotCurrent(ih, old_current);
 
@@ -642,9 +696,8 @@ void IupPlotPaintTo(Ihandle* ih, void* _cnv)
 }
 
 
-/* --------------------------------------------------------------------
-                      CD Gets - size and style
-   -------------------------------------------------------------------- */
+/************************************************************************************/
+
 
 static int iPlotGetCDFontStyle(const char* value)
 {
@@ -745,9 +798,7 @@ static int iPlotGetCDMarkStyle(const char* value)
 }
 
 
-/*****************************************************************************/
-/***** SET AND GET ATTRIBUTES ************************************************/
-/*****************************************************************************/
+/************************************************************************************/
 
 
 static int iPlotSetAntialiasAttrib(Ihandle* ih, const char* value)
@@ -769,9 +820,6 @@ static int iPlotSetRedrawAttrib(Ihandle* ih, const char* value)
   int flush = 1, 
     current = 0;
 
-  if (!ih->data->cd_canvas)
-    return IUP_DEFAULT;
-
   if (iupStrEqualNoCase(value, "NOFLUSH"))
     flush = 0;
   else if (iupStrEqualNoCase(value, "CURRENT"))
@@ -780,9 +828,12 @@ static int iPlotSetRedrawAttrib(Ihandle* ih, const char* value)
     current = 1;
   }
 
+  if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
+    IupGLMakeCurrent(ih);
+
   if (current)
   {
-    iPlotPaint(ih->data->current_plot, ih->data->cd_canvas, 1, 0);  /* force redraw, no flush */
+    ih->data->current_plot->Render(ih->data->cd_canvas);  
   }
   else
   {
@@ -790,7 +841,7 @@ static int iPlotSetRedrawAttrib(Ihandle* ih, const char* value)
     for (int p = 0; p < ih->data->plot_list_count; p++)
     {
       iPlotSetPlotCurrent(ih, p);
-      iPlotPaint(ih->data->current_plot, ih->data->cd_canvas, 1, 0);  /* force redraw, no flush */
+      ih->data->current_plot->Render(ih->data->cd_canvas);  
     }
     iPlotSetPlotCurrent(ih, old_current);
   }
@@ -1640,10 +1691,6 @@ static int iPlotSetClearAttrib(Ihandle* ih, const char* value)
   ih->data->current_plot->mRedraw = 1;
   return 0;
 }
-
-/* =============================== */
-/* current plot dataset attributes */
-/* =============================== */
 
 static int iPlotSetDSLineStyleAttrib(Ihandle* ih, const char* value)
 {
@@ -2938,136 +2985,9 @@ static char* iPlotGetAxisYAutoTickAttrib(Ihandle* ih)
   return iupStrReturnBoolean (axis->mTick.mAutoSpacing); 
 }
 
-#if 0
-//TODO
-void iupPlot::MouseButton(int btn, int stat, int x, int y, char *r)
-{
-  int old_size = _InteractionContainer->mZoomInteraction.GetZoomStackSize();
 
-  if( _InteractionContainer->HandleMouseEvent(theEvent))
-  {
-    if (btn == IUP_BUTTON1 && !_mouseDown && ih->data->sync_view)
-    {
-      this->Paint(1, 0);
+/************************************************************************************/
 
-      int size = _InteractionContainer->mZoomInteraction.GetZoomStackSize();
-      if (size != old_size)
-      {
-        int old_current = ih->data->current_plot_index;
-
-        for (int p = 0; p<ih->data->plot_list_count; p++)
-        {
-          if (ih->data->plot_list[p] != this)
-          {
-            int off_x = mMargin.mLeft - ih->data->plot_list[p]->mMargin.mLeft;
-            int off_y = mMargin.mTop - ih->data->plot_list[p]->mMargin.mTop;
-            ih->data->plot_list[p]->_InteractionContainer->mZoomInteraction.RepeatZoom(_InteractionContainer->mZoomInteraction, off_x, off_y);
-
-            iPlotSetPlotCurrent(ih, p);
-            ih->data->plot_list[p]->Paint(1, 0);
-          }
-        }
-
-        iPlotSetPlotCurrent(ih, old_current);
-      }
-
-      iPlotFlush(ih, ih->data->cd_canvas);
-    }
-    else
-      this->Paint(1, 1);
-  }
-}
-
-//TODO
-void iupPlot::Pan(double delta, bool vertical)
-{
-  double page, offset, Range, OriginalRange;
-  PAxisInfo OriginalAxis = _InteractionContainer->mZoomInteraction.mOriginalAxis;
-  if (vertical)
-  {
-    Range = mAxisY.mMax - mAxisY.mMin;
-    OriginalRange = OriginalAxis.mAxisY.mMax - OriginalAxis.mAxisY.mMin;
-  }
-  else
-  {
-    Range = mAxisX.mMax - mAxisX.mMin;
-    OriginalRange = OriginalAxis.mAxisX.mMax - OriginalAxis.mAxisX.mMin;
-  }
-
-  page = fabs(OriginalRange - Range)/10;
-  offset = page*delta;
-
-  if (vertical)
-  {
-    mAxisY.mMin -= offset;
-    mAxisY.mMax -= offset;
-
-    if (mAxisY.mMin < OriginalAxis.mAxisY.mMin)
-    {
-      mAxisY.mMin = OriginalAxis.mAxisY.mMin;
-      mAxisY.mMax = mAxisY.mMin + Range;
-    }
-    if (mAxisY.mMax > OriginalAxis.mAxisY.mMax)
-    {
-      mAxisY.mMax = OriginalAxis.mAxisY.mMax;
-      mAxisY.mMin = mAxisY.mMax - Range;
-    }
-  }
-  else
-  {
-    mAxisX.mMin += offset;
-    mAxisX.mMax += offset;
-
-    if (mAxisX.mMin < OriginalAxis.mAxisX.mMin)
-    {
-      mAxisX.mMin = OriginalAxis.mAxisX.mMin;
-      mAxisX.mMax = mAxisX.mMin + Range;
-    }
-    if (mAxisX.mMax > OriginalAxis.mAxisX.mMax)
-    {
-      mAxisX.mMax = OriginalAxis.mAxisX.mMax;
-      mAxisX.mMin = mAxisX.mMax - Range;
-    }
-  }
-}
-
-//TODO
-void iupPlot::MouseWheel(double delta, char *status)
-{
-  //int size = _InteractionContainer->mZoomInteraction.GetZoomStackSize();
-  //if (size > 0)
-  {
-    bool vertical = true;
-    if (iup_isshift(status))
-      vertical = false;
-  
-    Pan(delta, vertical);
-
-    if (ih->data->sync_view)
-    {
-      this->Paint(1, 0);
-
-      int old_current = ih->data->current_plot_index;
-
-      for (int p = 0; p<ih->data->plot_list_count; p++)
-      {
-        if (ih->data->plot_list[p] != this)
-        {
-          ih->data->plot_list[p]->Pan(delta, vertical);
-
-          iPlotSetPlotCurrent(ih, p);
-          ih->data->plot_list[p]->Paint(1, 0);
-        }
-      }
-      iPlotSetPlotCurrent(ih, old_current);
-
-      iPlotFlush(ih, ih->data->cd_canvas);
-    }
-    else
-      this->Paint(1, 1);
-  }
-}
-#endif
 
 static int iPlotMapMethod(Ihandle* ih)
 {

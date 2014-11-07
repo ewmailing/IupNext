@@ -272,7 +272,7 @@ public:
   iupPlotAxis() 
     : mShow(true), mMin(0), mMax(0), mAutoScaleMin(true), mAutoScaleMax(true),
       mReverse(false), mLogScale(false), mCrossOrigin(false), mColor(CD_BLACK),
-      mMaxDecades(-1), mLogBase(10), mLabelCentered(false),
+      mMaxDecades(-1), mLogBase(10), mLabelCentered(false), mHasZoom(false),
       mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1),
       mFontSize(0), mFontStyle(-1) {}
   ~iupPlotAxis() { SetLabel(NULL); }
@@ -282,6 +282,15 @@ public:
 
   void Init();
   void SetNamedTickIter(const iupPlotDataString *inStringXData);
+
+  bool HasZoom() const { return mHasZoom; }
+  bool ResetZoom();
+  bool ZoomIn(double inCenter);
+  bool ZoomOut(double inCenter);
+  bool ZoomTo(double inMin, double inMax);
+  bool Pan(double inOffset);
+  bool Scroll(double inDelta, bool inFullPage);
+  bool ScrollTo(double inMin);
 
   bool mShow;
   long mColor;
@@ -318,6 +327,15 @@ protected:
   iupPlotTickIterLinear mLinTickIter;
   iupPlotTickIterLog mLogTickIter;
   iupPlotTickIterNamed mNamedTickIter;
+
+  void InitZoom();
+  void CheckZoomOutLimit(double inRange);
+
+  bool mHasZoom;
+  double mNoZoomMin;
+  double mNoZoomMax;
+  bool mNoZoomAutoScaleMin;
+  bool mNoZoomAutoScaleMax;
 };
 
 class iupPlotGrid 
@@ -435,6 +453,19 @@ public:
   int FindDataset(const char* inName);
   void RemoveAllDatasets();
   long GetNextDatasetColor();
+
+  bool HasZoom() const { return mAxisX.HasZoom() || mAxisY.HasZoom(); }
+  void ResetZoom() { if (mAxisX.ResetZoom()) mRedraw = 1; if (mAxisY.ResetZoom()) mRedraw = 1; }
+  void ZoomIn(double inCenterX, double inCenterY) { if (mAxisX.ZoomIn(inCenterX)) mRedraw = 1; if (mAxisY.ZoomIn(inCenterY)) mRedraw = 1; }
+  void ZoomOut(double inCenterX, double inCenterY) { if (mAxisX.ZoomOut(inCenterX)) mRedraw = 1; if (mAxisY.ZoomOut(inCenterY)) mRedraw = 1; }
+  void ZoomTo(double inMinX, double inMaxX, double inMinY, double inMaxY) { if (mAxisX.ZoomTo(inMinX, inMaxX)) mRedraw = 1; if (mAxisY.ZoomTo(inMinY, inMaxY)) mRedraw = 1; }
+  void Pan(double inOffsetX, double inOffsetY) { if (mAxisX.Pan(inOffsetX)) mRedraw = 1; if (mAxisY.Pan(inOffsetY)) mRedraw = 1; }
+  void Scroll(double inDelta, bool inFullPage, bool inVertical) { if (inVertical) { if (mAxisY.Scroll(inDelta, inFullPage)) mRedraw = 1; } else { if (mAxisX.Scroll(inDelta, inFullPage)) mRedraw = 1; } }
+  void ScrollTo(double inMinX, double inMinY) { if (mAxisX.ScrollTo(inMinX)) mRedraw = 1; if (mAxisY.ScrollTo(inMinY)) mRedraw = 1; }
+
+  void TransformBack(int inX, int inY, double &outX, double &outY) {
+    outX = mAxisX.mTrafo->TransformBack((double)inX);
+    outY = mAxisY.mTrafo->TransformBack((double)inY); }
 
   Ihandle* ih;
   bool mRedraw;

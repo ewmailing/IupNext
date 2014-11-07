@@ -186,6 +186,152 @@ void iupPlotAxis::SetNamedTickIter(const iupPlotDataString *inStringData)
   mNamedTickIter.SetStringList(inStringData);
 }
 
+void iupPlotAxis::CheckZoomOutLimit(double inRange)
+{
+  if (mMin < mNoZoomMin)
+  {
+    mMin = mNoZoomMin;
+    mMax = mMin + inRange;
+  }
+  if (mMax > mNoZoomMax)
+  {
+    mMax = mNoZoomMax;
+    mMin = mMax - inRange;
+  }
+}
+
+void iupPlotAxis::InitZoom()
+{
+  if (!mHasZoom)
+  {
+    mHasZoom = true;
+    mAutoScaleMin = false;
+    mAutoScaleMax = false;
+
+    mNoZoomMin = mMin;
+    mNoZoomMax = mMax;
+    mNoZoomAutoScaleMin = mAutoScaleMin;
+    mNoZoomAutoScaleMax = mAutoScaleMax;
+  }
+}
+
+bool iupPlotAxis::ResetZoom()
+{
+  if (mHasZoom)
+  {
+    mHasZoom = false;
+
+    mMin = mNoZoomMin;
+    mMax = mNoZoomMax;
+    mAutoScaleMin = mNoZoomAutoScaleMin;
+    mAutoScaleMax = mNoZoomAutoScaleMax;
+    return true;
+  }
+  return false;
+}
+
+bool iupPlotAxis::ZoomOut(double inCenter)
+{
+  if (inCenter < mMin || inCenter > mMax)
+    return false;
+
+  InitZoom();
+
+  double theRange = mMax - mMin;
+  double theNewRange = theRange * 1.1; // 10%
+  double theFactor = (inCenter - mMin) / theRange;
+  double theOffset = (theNewRange - theRange);
+
+  mMin -= theOffset*theFactor;
+  mMax += theOffset*(1.0 - theFactor);
+
+  CheckZoomOutLimit(theRange);
+  return true;
+}
+
+bool iupPlotAxis::ZoomIn(double inCenter)
+{
+  if (inCenter < mMin || inCenter > mMax)
+    return false;
+
+  InitZoom();
+
+  double theRange = mMax - mMin;
+  double theNewRange = theRange * 0.9; // 10%
+  double theFactor = (inCenter - mMin) / theRange;
+  double theOffset = (theRange - theNewRange);
+
+  mMin += theOffset*theFactor;
+  mMax -= theOffset*(1.0 - theFactor);
+
+  // Check limits only in ZoomOut and Pan
+  return true;
+}
+
+bool iupPlotAxis::ZoomTo(double inMin, double inMax)
+{
+  if (inMin < mNoZoomMin || inMin > mNoZoomMax)
+    return false;
+
+  if (inMax < mNoZoomMin || inMax > mNoZoomMax)
+    return false;
+
+  InitZoom();
+
+  mMin = inMin;
+  mMax = inMax;
+  return true;
+}
+
+bool iupPlotAxis::Pan(double inOffset)
+{
+  if (!mHasZoom)
+    return false;
+
+  double theRange = mMax - mMin;
+
+  mMin += inOffset;
+  mMax += inOffset;
+
+  CheckZoomOutLimit(theRange);
+  return true;
+}
+
+bool iupPlotAxis::Scroll(double inDelta, bool inFullPage)
+{
+  if (!mHasZoom)
+    return false;
+
+  double theRange = mMax - mMin;
+
+  double thePage;
+  if (inFullPage)
+    thePage = theRange;
+  else
+    thePage = theRange / 10.0;
+
+  double theOffset = thePage * inDelta;
+
+  return Pan(theOffset);
+}
+
+bool iupPlotAxis::ScrollTo(double inMin)
+{
+  if (inMin < mNoZoomMin || inMin > mNoZoomMax)
+    return false;
+
+  if (!mHasZoom)
+    return false;
+
+  double theRange = mMax - mMin;
+
+  mMin = inMin;
+  mMax = mMin + theRange;
+
+  CheckZoomOutLimit(theRange);
+  return true;
+}
+
 
 /************************************************************************************************/
 
@@ -318,6 +464,11 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (!mDataSetListCount)
     return true;
 
+  if (!mRedraw)
+    return true;
+
+  cdCanvasOrigin(canvas, mViewport.mX, mViewport.mY);
+
   cdCanvasNativeFont(canvas, IupGetAttribute(ih, "FONT"));
 
   Configure();
@@ -398,6 +549,7 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (post_cb)
     post_cb(ih, canvas);
 
+  mRedraw = 0;
   return true;
 }
 
