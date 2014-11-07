@@ -179,6 +179,28 @@ static int iPlotResize_CB(Ihandle* ih, int width, int height)
   return IUP_DEFAULT;
 }
 
+static void iPlotResetZoom(Ihandle *ih)
+{
+  ih->data->current_plot->ResetZoom();
+  bool flush = ih->data->current_plot->mRedraw;
+  ih->data->current_plot->Render(ih->data->cd_canvas);
+
+  if (ih->data->sync_view)
+  {
+    for (int p = 0; p<ih->data->plot_list_count; p++)
+    {
+      if (ih->data->plot_list[p] != ih->data->current_plot)
+      {
+        ih->data->plot_list[p]->ResetZoom();
+        ih->data->plot_list[p]->Render(ih->data->cd_canvas);
+      }
+    }
+  }
+
+  if (flush)
+    iPlotFlush(ih, ih->data->cd_canvas);
+}
+
 static void iPlotPanStart(Ihandle *ih)
 {
   ih->data->current_plot->PanStart();
@@ -203,7 +225,7 @@ static void iPlotPan(Ihandle *ih, int x1, int y1, int x2, int y2)
   double offsetY = ry2 - ry1;
 
   ih->data->current_plot->Pan(offsetX, offsetY);
-
+  bool flush = ih->data->current_plot->mRedraw;
   ih->data->current_plot->Render(ih->data->cd_canvas);
 
   if (ih->data->sync_view)
@@ -219,13 +241,13 @@ static void iPlotPan(Ihandle *ih, int x1, int y1, int x2, int y2)
         offsetY = ry2 - ry1;
 
         ih->data->plot_list[p]->Pan(offsetX, offsetY);
-
         ih->data->plot_list[p]->Render(ih->data->cd_canvas);
       }
     }
   }
 
-  iPlotFlush(ih, ih->data->cd_canvas);
+  if (flush)
+    iPlotFlush(ih, ih->data->cd_canvas);
 }
 
 static void iPlotZoom(Ihandle *ih, int x, int y, float delta)
@@ -238,7 +260,8 @@ static void iPlotZoom(Ihandle *ih, int x, int y, float delta)
   else
     ih->data->current_plot->ZoomOut(rx, ry);
 
-  ih->data->current_plot->Render(ih->data->cd_canvas);  
+  bool flush = ih->data->current_plot->mRedraw;
+  ih->data->current_plot->Render(ih->data->cd_canvas);
 
   if (ih->data->sync_view)
   {
@@ -258,12 +281,14 @@ static void iPlotZoom(Ihandle *ih, int x, int y, float delta)
     }
   }
 
-  iPlotFlush(ih, ih->data->cd_canvas);
+  if (flush)
+    iPlotFlush(ih, ih->data->cd_canvas);
 }
 
 static void iPlotScroll(Ihandle *ih, float delta, bool vertical)
 {
   ih->data->current_plot->Scroll(delta, false, vertical);
+  bool flush = ih->data->current_plot->mRedraw;
   ih->data->current_plot->Render(ih->data->cd_canvas);  
 
   if (ih->data->sync_view)
@@ -278,7 +303,8 @@ static void iPlotScroll(Ihandle *ih, float delta, bool vertical)
     }
   }
 
-  iPlotFlush(ih, ih->data->cd_canvas);
+  if (flush)
+    iPlotFlush(ih, ih->data->cd_canvas);
 }
 
 static int iPlotFindPlot(Ihandle* ih, int x, int &y)
@@ -337,7 +363,12 @@ static int iPlotMouseButton_CB(Ihandle* ih, int button, int press, int x, int y,
     ih->data->last_click_y = y;
 
     if (button == IUP_BUTTON1)
-      iPlotPanStart(ih);
+    {
+      if (iup_isdouble(status))
+        iPlotResetZoom(ih);
+      else
+        iPlotPanStart(ih);
+    }
   }
   else
   {
@@ -919,7 +950,10 @@ static int iPlotSetRedrawAttrib(Ihandle* ih, const char* value)
 
   if (ih->data->plot_list_count == 1 &&
       ih->data->current_plot->mDataSetListCount == 0)
+  {
     cdCanvasClear(ih->data->cd_canvas);
+    flush = 1;
+  }
 
   // Do the flush once
   if (flush)
