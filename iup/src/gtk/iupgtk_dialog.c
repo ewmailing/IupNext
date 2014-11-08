@@ -805,6 +805,45 @@ static int gtkDialogSetOpacityAttrib(Ihandle *ih, const char *value)
 #endif
   return 1;
 }
+
+static int gtkDialogSetOpacityImageAttrib(Ihandle *ih, const char *value)
+{
+  GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0);
+  if (pixbuf)
+  {
+#if GTK_CHECK_VERSION(3, 0, 0)
+    GdkWindow* window = iupgtkGetWindow(ih->handle);
+    if (window)
+    {
+      cairo_region_t *shape;
+
+      int width = gdk_pixbuf_get_width(pixbuf);
+      int height = gdk_pixbuf_get_height(pixbuf);
+      cairo_surface_t* surface = gdk_window_create_similar_surface(window, CAIRO_CONTENT_COLOR_ALPHA, width, height);
+
+      cairo_t* cr = cairo_create(surface);
+      gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
+      //cairo_rectangle(cr, 0, 0, width, height);
+      cairo_paint(cr);
+      cairo_destroy(cr);
+
+      shape = gdk_cairo_region_create_from_surface(surface);
+      cairo_surface_destroy(surface);
+
+      gtk_widget_shape_combine_region(ih->handle, shape);
+      cairo_region_destroy(shape);
+    }
+#else
+    GdkPixmap* mask;
+    gdk_pixbuf_render_pixmap_and_mask(pixbuf, &mask, NULL, 255);
+    gtk_widget_shape_combine_mask(ih->handle, mask, 0, 0);
+    g_object_unref(mask);
+#endif
+    return 1;
+  }
+  return 0;
+}
+
 #endif
 
 static int gtkDialogSetIconAttrib(Ihandle* ih, const char *value)
@@ -850,14 +889,12 @@ static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     {
       /* TODO: this is NOT working!!!! */
       cairo_pattern_t* pattern;
-      cairo_surface_t* surface;
-      cairo_t* cr;
 
       int width = gdk_pixbuf_get_width(pixbuf);
       int height = gdk_pixbuf_get_height(pixbuf);
 
-      surface = gdk_window_create_similar_surface(window, CAIRO_CONTENT_COLOR_ALPHA, width, height);
-      cr = cairo_create(surface);
+      cairo_surface_t* surface = gdk_window_create_similar_surface(window, CAIRO_CONTENT_COLOR_ALPHA, width, height);
+      cairo_t* cr = cairo_create(surface);
       gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
       cairo_paint (cr);
       cairo_destroy (cr);
@@ -1044,6 +1081,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "DIALOGHINT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 #if GTK_CHECK_VERSION(2, 12, 0)
   iupClassRegisterAttribute(ic, "OPACITY", NULL, gtkDialogSetOpacityAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OPACITYIMAGE", NULL, gtkDialogSetOpacityImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 #endif
 #if GTK_CHECK_VERSION(2, 10, 0)
   iupClassRegisterAttribute(ic, "TRAY", NULL, gtkDialogSetTrayAttrib, NULL, NULL, IUPAF_NO_INHERIT);

@@ -225,6 +225,11 @@ the dialog is the active window (the window with focus). Can be Yes or No.
 alpha value. Valid values range from 0 (completely transparent) to 255 (opaque). 
 In Windows set to NULL to remove the LAYERED style bit. (GTK 2.12)</p>
 
+<p><strong>OPACITYIMAGE</strong> [Windows and GTK Only]: sets a transparent 
+image as the dialog shape so it is possible to create a non rectangle window. In Windows set to NULL to remove the LAYERED style bit. 
+In Windows must be set after <strong>IupShow</strong>. (GTK 2.12) 
+(since 3.12)</p>
+
 <p><strong>TOPMOST</strong> [Windows and GTK Only]:&nbsp; puts the dialog always 
 in front of all other dialogs in all applications. Default: NO.</p>
 

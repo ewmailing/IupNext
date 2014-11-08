@@ -1123,24 +1123,18 @@ static char* winDialogGetMdiNextAttrib(Ihandle *ih)
   return NULL;
 }
 
-typedef BOOL (WINAPI*winSetLayeredWindowAttributes)(
-  HWND hwnd,
-  COLORREF crKey,
-  BYTE bAlpha,
-  DWORD dwFlags);
-
-static int winDialogSetOpacityAttrib(Ihandle *ih, const char *value)
+static void winDialogSetLayered(Ihandle *ih, int enable)
 {
   DWORD dwExStyle = GetWindowLong(ih->handle, GWL_EXSTYLE);
-  if (!value)
+  if (!enable)
   {
     if (dwExStyle & WS_EX_LAYERED)
     {
       dwExStyle &= ~WS_EX_LAYERED;   /* remove the style */
       SetWindowLong(ih->handle, GWL_EXSTYLE, dwExStyle);
-      RedrawWindow(ih->handle, NULL, NULL, RDW_ERASE|RDW_INVALIDATE|RDW_FRAME|RDW_ALLCHILDREN); /* invalidate everything and all children */
+      RedrawWindow(ih->handle, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN); /* invalidate everything and all children */
     }
-    return 0;
+    return;
   }
 
   if (!(dwExStyle & WS_EX_LAYERED))
@@ -1148,14 +1142,17 @@ static int winDialogSetOpacityAttrib(Ihandle *ih, const char *value)
     dwExStyle |= WS_EX_LAYERED;   /* add the style */
     SetWindowLong(ih->handle, GWL_EXSTYLE, dwExStyle);
   }
+}
 
+#ifdef _OLD_CODE
   {
+    typedef BOOL(WINAPI*winSetLayeredWindowAttributes)(
+      HWND hwnd,
+      COLORREF crKey,
+      BYTE bAlpha,
+      DWORD dwFlags);
+
     static winSetLayeredWindowAttributes mySetLayeredWindowAttributes = NULL;
-
-    int opacity;
-    if (!iupStrToInt(value, &opacity))
-      return 0;
-
     if (!mySetLayeredWindowAttributes)
     {
       HMODULE hinstDll = LoadLibrary(TEXT("user32.dll"));
@@ -1166,9 +1163,66 @@ static int winDialogSetOpacityAttrib(Ihandle *ih, const char *value)
     if (mySetLayeredWindowAttributes)
       mySetLayeredWindowAttributes(ih->handle, 0, (BYTE)opacity, LWA_ALPHA);
   }
+#endif
 
+static int winDialogSetOpacityAttrib(Ihandle *ih, const char *value)
+{
+  int opacity;
+
+  if (!value)
+  {
+    winDialogSetLayered(ih, 0);
+    return 0;
+  }
+  else
+    winDialogSetLayered(ih, 1);
+
+  if (!iupStrToInt(value, &opacity))
+    return 0;
+
+  SetLayeredWindowAttributes(ih->handle, 0, (BYTE)opacity, LWA_ALPHA);
   RedrawWindow(ih->handle, NULL, NULL, RDW_ERASE|RDW_INVALIDATE|RDW_FRAME|RDW_ALLCHILDREN); /* invalidate everything and all children */
   return 1;
+}
+
+static int winDialogSetOpacityImageAttrib(Ihandle *ih, const char *value)
+{
+  HBITMAP hBitmap;
+
+  if (!value)
+  {
+    winDialogSetLayered(ih, 0);
+    return 0;
+  }
+  else
+    winDialogSetLayered(ih, 1);
+
+  hBitmap = (HBITMAP)iupImageGetImage(value, ih, 0);
+  if (!hBitmap)
+    return 0;
+  else
+  {
+    BLENDFUNCTION blend = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
+    POINT ptSrc = { 0, 0 };
+
+    HDC hDC = GetDC(NULL);
+    HDC hMemDC = CreateCompatibleDC(hDC);
+    HBITMAP oldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
+    int img_w, img_h, bpp;
+    SIZE size;
+
+    iupdrvImageGetInfo(hBitmap, &img_w, &img_h, &bpp);
+    size.cx = img_w;
+    size.cy = img_h;
+
+    UpdateLayeredWindow(ih->handle, hDC, NULL, &size, hMemDC, &ptSrc, RGB(0, 0, 0), &blend, ULW_ALPHA);
+
+    SelectObject(hMemDC, oldBitmap);
+    DeleteDC(hMemDC);
+    ReleaseDC(NULL, hDC);
+
+    return 1;
+  }
 }
 
 static int winDialogSetMdiArrangeAttrib(Ihandle *ih, const char *value)
@@ -1576,6 +1630,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "MDIACTIVE", winDialogGetMdiActiveAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MDINEXT", winDialogGetMdiNextAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPACITY", NULL, winDialogSetOpacityAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OPACITYIMAGE", NULL, winDialogSetOpacityImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LAYERALPHA", NULL, winDialogSetOpacityAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BRINGFRONT", NULL, winDialogSetBringFrontAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MAXIMIZED", winDialogGetMaximizedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
