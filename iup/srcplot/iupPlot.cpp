@@ -192,11 +192,16 @@ void iupPlotAxis::CheckZoomOutLimit(double inRange)
   {
     mMin = mNoZoomMin;
     mMax = mMin + inRange;
+    if (mMax > mNoZoomMax)
+      mMax = mNoZoomMax;
   }
+
   if (mMax > mNoZoomMax)
   {
     mMax = mNoZoomMax;
     mMin = mMax - inRange;
+    if (mMin < mNoZoomMin)
+      mMin = mNoZoomMin;
   }
 }
 
@@ -227,6 +232,7 @@ bool iupPlotAxis::ResetZoom()
     mAutoScaleMax = mNoZoomAutoScaleMax;
     return true;
   }
+
   return false;
 }
 
@@ -235,7 +241,8 @@ bool iupPlotAxis::ZoomOut(double inCenter)
   if (inCenter < mMin || inCenter > mMax)
     return false;
 
-  InitZoom();
+  if (!mHasZoom)
+    return false;
 
   double theRange = mMax - mMin;
   double theNewRange = theRange * 1.1; // 10%
@@ -245,7 +252,11 @@ bool iupPlotAxis::ZoomOut(double inCenter)
   mMin -= theOffset*theFactor;
   mMax += theOffset*(1.0 - theFactor);
 
-  CheckZoomOutLimit(theRange);
+  CheckZoomOutLimit(theNewRange);
+
+  if (mMin == mNoZoomMin && mMax == mNoZoomMax)
+    ResetZoom();
+
   return true;
 }
 
@@ -280,6 +291,10 @@ bool iupPlotAxis::ZoomTo(double inMin, double inMax)
 
   mMin = inMin;
   mMax = inMax;
+
+  if (mMin == mNoZoomMin && mMax == mNoZoomMax)
+    ResetZoom();
+
   return true;
 }
 

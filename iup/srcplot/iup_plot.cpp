@@ -121,6 +121,7 @@ static int iPlotRedraw_CB(Ihandle* ih)
   for(int p=0; p<ih->data->plot_list_count; p++)
   {
     iPlotSetPlotCurrent(ih, p);
+    ih->data->current_plot->mRedraw = 1;
     ih->data->current_plot->Render(ih->data->cd_canvas);
   }
   iPlotSetPlotCurrent(ih, old_current);
@@ -179,11 +180,11 @@ static int iPlotResize_CB(Ihandle* ih, int width, int height)
   return IUP_DEFAULT;
 }
 
-static void iPlotResetZoom(Ihandle *ih)
+static void iPlotResetZoom(Ihandle *ih, int redraw)
 {
   ih->data->current_plot->ResetZoom();
   bool flush = ih->data->current_plot->mRedraw;
-  ih->data->current_plot->Render(ih->data->cd_canvas);
+  if (redraw) ih->data->current_plot->Render(ih->data->cd_canvas);
 
   if (ih->data->sync_view)
   {
@@ -192,12 +193,12 @@ static void iPlotResetZoom(Ihandle *ih)
       if (ih->data->plot_list[p] != ih->data->current_plot)
       {
         ih->data->plot_list[p]->ResetZoom();
-        ih->data->plot_list[p]->Render(ih->data->cd_canvas);
+        if (redraw) ih->data->plot_list[p]->Render(ih->data->cd_canvas);
       }
     }
   }
 
-  if (flush)
+  if (redraw && flush)
     iPlotFlush(ih, ih->data->cd_canvas);
 }
 
@@ -365,7 +366,7 @@ static int iPlotMouseButton_CB(Ihandle* ih, int button, int press, int x, int y,
     if (button == IUP_BUTTON1)
     {
       if (iup_isdouble(status))
-        iPlotResetZoom(ih);
+        iPlotResetZoom(ih, 1);
       else
         iPlotPanStart(ih);
     }
@@ -2205,6 +2206,8 @@ static int iPlotSetAxisXAutoMinAttrib(Ihandle* ih, const char* value)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
 
+  iPlotResetZoom(ih, 0);
+
   if (iupStrBoolean(value))
     axis->mAutoScaleMin = true;
   else 
@@ -2217,6 +2220,8 @@ static int iPlotSetAxisXAutoMinAttrib(Ihandle* ih, const char* value)
 static int iPlotSetAxisYAutoMinAttrib(Ihandle* ih, const char* value)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
+
+  iPlotResetZoom(ih, 0);
 
   if (iupStrBoolean(value))
     axis->mAutoScaleMin = true;
@@ -2245,6 +2250,8 @@ static int iPlotSetAxisXAutoMaxAttrib(Ihandle* ih, const char* value)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
 
+  iPlotResetZoom(ih, 0);
+
   if (iupStrBoolean(value))
     axis->mAutoScaleMax = true;
   else 
@@ -2257,6 +2264,8 @@ static int iPlotSetAxisXAutoMaxAttrib(Ihandle* ih, const char* value)
 static int iPlotSetAxisYAutoMaxAttrib(Ihandle* ih, const char* value)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
+
+  iPlotResetZoom(ih, 0);
 
   if (iupStrBoolean(value))
     axis->mAutoScaleMax = true;
@@ -2286,6 +2295,8 @@ static int iPlotSetAxisXMinAttrib(Ihandle* ih, const char* value)
   double xx;
   if (iupStrToDouble(value, &xx))
   {
+    iPlotResetZoom(ih, 0);
+
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mMin = xx;
     ih->data->current_plot->mRedraw = 1;
@@ -2298,6 +2309,8 @@ static int iPlotSetAxisYMinAttrib(Ihandle* ih, const char* value)
   double xx;
   if (iupStrToDouble(value, &xx))
   {
+    iPlotResetZoom(ih, 0);
+
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mMin = xx;
     ih->data->current_plot->mRedraw = 1;
@@ -2322,6 +2335,8 @@ static int iPlotSetAxisXMaxAttrib(Ihandle* ih, const char* value)
   double xx;
   if (iupStrToDouble(value, &xx))
   {
+    iPlotResetZoom(ih, 0);
+
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mMax = xx;
     ih->data->current_plot->mRedraw = 1;
@@ -2334,6 +2349,8 @@ static int iPlotSetAxisYMaxAttrib(Ihandle* ih, const char* value)
   double xx;
   if (iupStrToDouble(value, &xx))
   {
+    iPlotResetZoom(ih, 0);
+
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mMax = xx;
     ih->data->current_plot->mRedraw = 1;
