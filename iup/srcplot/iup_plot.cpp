@@ -411,7 +411,7 @@ static int iPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
       return IUP_DEFAULT;
   }
 
-  if (iup_isbutton1(status))
+  if (iup_isbutton1(status) && (ih->data->last_click_x != x || ih->data->last_click_y != y))
     iPlotPan(ih, ih->data->last_click_x, ih->data->last_click_y, x, y);
 
   return IUP_DEFAULT;
