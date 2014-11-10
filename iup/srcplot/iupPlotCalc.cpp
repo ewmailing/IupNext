@@ -317,9 +317,7 @@ bool iupPlot::CalculateYRange(double &outYMin, double &outYMax)
       outYMax = theYMax;
   }
 
-  //TODO YRange can be 0 why????
-//  if (outYMin == 0 && outYMax == 0)
-    //return false;
+  // YRange can be 0
 
   return true;
 }

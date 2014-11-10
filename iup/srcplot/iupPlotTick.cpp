@@ -224,21 +224,10 @@ bool iupPlotTickIterLog::Init ()
   return true;
 }
 
-bool iupPlotTickIterLog::CalculateSpacing (double inParRange, double inDivGuess, iupPlotTick &ioTick) const 
+bool iupPlotTickIterLog::CalculateSpacing (double, double inDivGuess, iupPlotTick &ioTick) const 
 {
   if (inDivGuess<=kFloatSmall)
     return false;
-
-  /* TODO check this
-     There will be a compiler warning for inParRange unused. Leave it this way for now...
-
-  double thePreferredSpan = iPlotRoundSpan(inParRange/inDivGuess);
-  double thePreferredNrOfTicks = inParRange/thePreferredSpan;
-  if (thePreferredNrOfTicks <1)
-    ioTick.mMajorSpan = inParRange;
-  else
-    ioTick.mMajorSpan = thePreferredSpan;
-  */
 
   double theBase = mAxis->mLogBase;
   ioTick.mMajorSpan = theBase-1;// relative
@@ -290,8 +279,8 @@ bool iupPlotTickIterLog::AdjustRange (double &ioMin, double &ioMax) const
   if (ioMin <= 0 || ioMax<=0)
     return false;
   
-  ioMin = RoundDown (ioMin*kLittleIncrease);
-  ioMax = RoundUp (ioMax*kLittleDecrease);
+  ioMin = RoundDown(ioMin*kLittleIncrease);
+  ioMax = RoundUp(ioMax*kLittleDecrease);
 
   if (ioMin<kLogMinClipValue)
     ioMin = kLogMinClipValue;

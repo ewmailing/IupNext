@@ -326,6 +326,31 @@ static void iPlotZoom(Ihandle *ih, int x, int y, float delta)
   iPlotRedrawInteract(ih);
 }
 
+static void iPlotZoomTo(Ihandle *ih, int x1, int y1, int x2, int y2)
+{
+  double rx1, ry1, rx2, ry2;
+  ih->data->current_plot->TransformBack(x1, y1, rx1, ry1);
+  ih->data->current_plot->TransformBack(x2, y2, rx2, ry2);
+
+  ih->data->current_plot->ZoomTo(rx1, rx2, ry1, ry2);
+
+  if (ih->data->sync_view)
+  {
+    for (int p = 0; p<ih->data->plot_list_count; p++)
+    {
+      if (ih->data->plot_list[p] != ih->data->current_plot)
+      {
+        ih->data->plot_list[p]->TransformBack(x1, y1, rx1, ry1);
+        ih->data->plot_list[p]->TransformBack(x2, y2, rx2, ry2);
+
+        ih->data->plot_list[p]->ZoomTo(rx1, rx2, ry1, ry2);
+      }
+    }
+  }
+
+  iPlotRedrawInteract(ih);
+}
+
 static void iPlotScroll(Ihandle *ih, float delta, bool full_page, bool vertical)
 {
   ih->data->current_plot->Scroll(delta, full_page, vertical);
@@ -336,6 +361,28 @@ static void iPlotScroll(Ihandle *ih, float delta, bool full_page, bool vertical)
     {
       if (ih->data->plot_list[p] != ih->data->current_plot)
         ih->data->plot_list[p]->Scroll(delta, full_page, vertical);
+    }
+  }
+
+  iPlotRedrawInteract(ih);
+}
+
+static void iPlotScrollTo(Ihandle *ih, int x, int y)
+{
+  double rx, ry;
+  ih->data->current_plot->TransformBack(x, y, rx, ry);
+
+  ih->data->current_plot->ScrollTo(rx, ry);
+
+  if (ih->data->sync_view)
+  {
+    for (int p = 0; p<ih->data->plot_list_count; p++)
+    {
+      if (ih->data->plot_list[p] != ih->data->current_plot)
+      {
+        ih->data->plot_list[p]->TransformBack(x, y, rx, ry);
+        ih->data->plot_list[p]->ScrollTo(rx, ry);
+      }
     }
   }
 
@@ -399,24 +446,37 @@ static int iPlotMouseButton_CB(Ihandle* ih, int button, int press, int x, int y,
 
     if (button == IUP_BUTTON1)
     {
-      if (iup_isdouble(status))
-        iPlotResetZoom(ih, 1);
-      else
-        iPlotPanStart(ih);
+      if (!iup_iscontrol(status))
+      {
+        if (iup_isdouble(status))
+          iPlotResetZoom(ih, 1);
+        else
+          iPlotPanStart(ih);
+      }
+    }
+    else if (button == IUP_BUTTON2)
+    {
+      if (!iup_iscontrol(status))
+        iPlotScrollTo(ih, x, y);
     }
   }
   else
   {
-    if (ih->data->last_click_x == x && ih->data->last_click_y == y && iup_iscontrol(status))
+    if (iup_iscontrol(status))
     {
-      float delta = 0;
-      if (button == IUP_BUTTON1)
-        delta = 1.0;
-      else if (button == IUP_BUTTON3)
-        delta = -1.0;
+      if (ih->data->last_click_x == x && ih->data->last_click_y == y)
+      {
+        float delta = 0;
+        if (button == IUP_BUTTON1)
+          delta = 1.0;
+        else if (button == IUP_BUTTON3)
+          delta = -1.0;
 
-      if (delta)
-        iPlotZoom(ih, x, y, delta);
+        if (delta)
+          iPlotZoom(ih, x, y, delta);
+      }
+      else if (button == IUP_BUTTON1 && ih->data->last_click_x != x && ih->data->last_click_y != y)
+        iPlotZoomTo(ih, ih->data->last_click_x, ih->data->last_click_y, x, y);
     }
   }
 
@@ -445,7 +505,7 @@ static int iPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
       return IUP_DEFAULT;
   }
 
-  if (iup_isbutton1(status) && (ih->data->last_click_x != x || ih->data->last_click_y != y))
+  if (!iup_iscontrol(status) && iup_isbutton1(status) && (ih->data->last_click_x != x || ih->data->last_click_y != y))
     iPlotPan(ih, ih->data->last_click_x, ih->data->last_click_y, x, y);
   else if (ih->data->show_cross_hair)
   {
@@ -3421,9 +3481,3 @@ void IupPlotOpen(void)
     IupSetGlobal("_IUP_PLOT_OPEN", "1");
   }
 }
-
-/* TODO
-DS_MODES  STEM  STEP  
-          BARHORIZONTAL
-          CHART
-*/

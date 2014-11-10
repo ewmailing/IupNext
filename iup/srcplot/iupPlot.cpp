@@ -281,13 +281,18 @@ bool iupPlotAxis::ZoomIn(double inCenter)
 
 bool iupPlotAxis::ZoomTo(double inMin, double inMax)
 {
-  if (inMin < mNoZoomMin || inMin > mNoZoomMax)
-    return false;
-
-  if (inMax < mNoZoomMin || inMax > mNoZoomMax)
-    return false;
-
   InitZoom();
+
+  if (inMin > inMax) { double tmp = inMin; inMin = inMax; inMax = tmp; }
+
+  if (inMin < mNoZoomMin || inMin > mNoZoomMax ||
+      inMax < mNoZoomMin || inMax > mNoZoomMax)
+  {
+    if (mMin == mNoZoomMin && mMax == mNoZoomMax)
+      ResetZoom();
+
+    return false;
+  }
 
   mMin = inMin;
   mMax = inMax;
