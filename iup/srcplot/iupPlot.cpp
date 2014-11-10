@@ -327,7 +327,11 @@ bool iupPlotAxis::Scroll(double inDelta, bool inFullPage)
 
   double theOffset = thePage * inDelta;
 
-  return Pan(theOffset);
+  mMin += theOffset;
+  mMax += theOffset;
+
+  CheckZoomOutLimit(theRange);
+  return true;
 }
 
 bool iupPlotAxis::ScrollTo(double inMin)

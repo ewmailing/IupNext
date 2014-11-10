@@ -91,13 +91,6 @@ static int iupStrToColor(const char* str, long *color)
   return 0;
 }
 
-static void iPlotFlush(Ihandle* ih, cdCanvas* canvas)
-{
-  cdCanvasFlush(canvas);
-  if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
-    IupGLSwapBuffers(ih);
-}
-
 static void iPlotSetPlotCurrent(Ihandle* ih, int p)
 {
   ih->data->current_plot_index = p;
@@ -138,7 +131,12 @@ static void iPlotRedraw(Ihandle* ih, int flush, int only_current, int reset_redr
 
   // Do the flush once
   if (flush)
-    iPlotFlush(ih, ih->data->cd_canvas);
+  {
+    cdCanvasFlush(ih->data->cd_canvas);
+
+    if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
+      IupGLSwapBuffers(ih);
+  }
 }
 
 static int iPlotRedraw_CB(Ihandle* ih)
@@ -328,16 +326,16 @@ static void iPlotZoom(Ihandle *ih, int x, int y, float delta)
   iPlotRedrawInteract(ih);
 }
 
-static void iPlotScroll(Ihandle *ih, float delta, bool vertical)
+static void iPlotScroll(Ihandle *ih, float delta, bool full_page, bool vertical)
 {
-  ih->data->current_plot->Scroll(delta, false, vertical);
+  ih->data->current_plot->Scroll(delta, full_page, vertical);
 
   if (ih->data->sync_view)
   {
     for (int p = 0; p<ih->data->plot_list_count; p++)
     {
       if (ih->data->plot_list[p] != ih->data->current_plot)
-        ih->data->plot_list[p]->Scroll(delta, false, vertical);
+        ih->data->plot_list[p]->Scroll(delta, full_page, vertical);
     }
   }
 
@@ -474,13 +472,13 @@ static int iPlotWheel_CB(Ihandle *ih, float delta, int x, int y, char* status)
 
   if (iup_iscontrol(status))
     iPlotZoom(ih, x, y, delta);
-  else if (ih->data->current_plot->HasZoom())
+  else 
   {
     bool vertical = true;
     if (iup_isshift(status))
       vertical = false;
 
-    iPlotScroll(ih, delta, vertical);
+    iPlotScroll(ih, delta, false, vertical);
   }
 
   return IUP_DEFAULT;
@@ -488,20 +486,52 @@ static int iPlotWheel_CB(Ihandle *ih, float delta, int x, int y, char* status)
 
 static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
 {
-  if (c == K_cH && press)
+  if (!press)
+    return IUP_DEFAULT;
+
+  if (c == K_cH)
   {
     ih->data->show_cross_hair = !ih->data->show_cross_hair;
 
     for (int p = 0; p < ih->data->plot_list_count; p++)
     {
       if (ih->data->plot_list[p]->mCrossHair)
+      {
         ih->data->plot_list[p]->mRedraw = true;
-
-      ih->data->plot_list[p]->mCrossHair = false;
+        ih->data->plot_list[p]->mCrossHair = false;
+      }
     }
 
     if (!ih->data->show_cross_hair)  // was shown
       iPlotRedrawInteract(ih);
+  }
+  else if (c == K_plus)
+  {
+    int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth/2;
+    int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight/2;
+    iPlotZoom(ih, x, y, 1);
+  }
+  else if (c == K_minus)
+  {
+    int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth / 2;
+    int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight / 2;
+    iPlotZoom(ih, x, y, -1);
+  }
+  else if (c == K_LEFT || c == K_RIGHT)
+  {
+    float delta = 1.0f;
+    if (c == K_LEFT) delta = -1.0f;
+    iPlotScroll(ih, delta, false, false);
+  }
+  else if (c == K_UP || c == K_DOWN || c == K_PGUP || c == K_PGDN)
+  {
+    float delta = 1.0f;
+    if (c == K_DOWN || c == K_PGDN) delta = -1.0f;
+
+    bool full_page = false;
+    if (c == K_PGUP || c == K_PGDN) full_page = true;
+
+    iPlotScroll(ih, delta, full_page, true);
   }
 
   return IUP_DEFAULT;
