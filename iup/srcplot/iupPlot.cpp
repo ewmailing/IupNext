@@ -352,7 +352,7 @@ bool iupPlotAxis::ScrollTo(double inMin)
 
 
 iupPlot::iupPlot(Ihandle* _ih)
-  :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), 
+  :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mCrossHair(false),
   mBackColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mDefaultFontSize(0), mDefaultFontStyle(-1)
 {
 }
@@ -474,15 +474,39 @@ void iupPlot::RemoveAllDatasets()
   }
 }
 
+void iupPlot::Configure()
+{
+  mAxisX.Init();
+  mAxisY.Init();
+
+  if (mAxisX.mLogScale)
+    mAxisY.mCrossOrigin = false;  // change at the other axis
+  else
+  {
+    const iupPlotDataBase *theGlue = mDataSetList[0]->mDataX;
+    if (theGlue->IsString())
+    {
+      const iupPlotDataString *theStringXData = (const iupPlotDataString *)(theGlue);
+      mAxisX.SetNamedTickIter(theStringXData);
+    }
+  }
+
+  if (mAxisY.mLogScale)
+    mAxisX.mCrossOrigin = false;   // change at the other axis
+}
+
 bool iupPlot::Render(cdCanvas* canvas)
 {
-  if (!mDataSetListCount)
-    return true;
-
   if (!mRedraw)
     return true;
 
   cdCanvasOrigin(canvas, mViewport.mX, mViewport.mY);
+
+  // draw entire background, including the margins
+  DrawPlotBackground(canvas);
+
+  if (!mDataSetListCount)
+    return true;
 
   cdCanvasNativeFont(canvas, IupGetAttribute(ih, "FONT"));
 
@@ -521,9 +545,6 @@ bool iupPlot::Render(cdCanvas* canvas)
   cdCanvasClipArea(canvas, mViewport.mX, mViewport.mX + mViewport.mWidth - 1,
                            mViewport.mY, mViewport.mY + mViewport.mHeight - 1);
 
-  // draw entire background, including the margins
-  DrawPlotBackground(canvas);
-
   IFnC pre_cb = (IFnC)IupGetCallback(ih, "PREDRAW_CB");
   if (pre_cb)
     pre_cb(ih, canvas);
@@ -540,7 +561,8 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (!DrawYAxis(theRect, canvas))
     return false;
 
-  DrawBox(theRect, canvas);
+  if (mBox.mShow)
+    DrawBox(theRect, canvas);
 
   // clip the plotregion while drawing plots
   cdCanvasClipArea(canvas, theRect.mX, theRect.mX + theRect.mWidth - 1, 
@@ -551,6 +573,9 @@ bool iupPlot::Render(cdCanvas* canvas)
     if (!DrawPlot(ds, canvas))
       return false;
   }
+
+  if (mCrossHair)
+    DrawCrossHair(theRect, canvas);
 
   if (!DrawLegend(theRect, canvas))
     return false;
@@ -564,28 +589,7 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (post_cb)
     post_cb(ih, canvas);
 
-  mRedraw = 0;
+  mRedraw = false;
   return true;
-}
-
-void iupPlot::Configure()
-{
-  mAxisX.Init();
-  mAxisY.Init();
-
-  if (mAxisX.mLogScale)
-    mAxisY.mCrossOrigin = false;  // change at the other axis
-  else
-  {
-    const iupPlotDataBase *theGlue = mDataSetList[0]->mDataX;
-    if (theGlue->IsString())
-    {
-      const iupPlotDataString *theStringXData = (const iupPlotDataString *)(theGlue);
-      mAxisX.SetNamedTickIter(theStringXData);
-    }
-  }
-
-  if (mAxisY.mLogScale)
-    mAxisX.mCrossOrigin = false;   // change at the other axis
 }
 

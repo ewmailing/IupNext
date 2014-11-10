@@ -62,6 +62,7 @@ struct _IcontrolData
 
   int last_click_x, 
       last_click_y;
+  bool show_cross_hair;
 };
 
 #ifndef M_E
@@ -112,22 +113,52 @@ static void iPlotUpdateCanvasOrigin(iupPlot* plot, cdCanvas* canvas)
   cdCanvasOrigin(canvas, plot->mViewport.mX, plot->mViewport.mY);
 }
 
-static int iPlotRedraw_CB(Ihandle* ih)
+static void iPlotRedraw(Ihandle* ih, int flush, int only_current, int reset_redraw)
 {
-  if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
-    IupGLMakeCurrent(ih);
-
-  int old_current = ih->data->current_plot_index;
-  for(int p=0; p<ih->data->plot_list_count; p++)
+  if (only_current)
   {
-    iPlotSetPlotCurrent(ih, p);
-    ih->data->current_plot->mRedraw = 1;
+    if (reset_redraw)
+      ih->data->current_plot->mRedraw = true;
     ih->data->current_plot->Render(ih->data->cd_canvas);
   }
-  iPlotSetPlotCurrent(ih, old_current);
+  else
+  {
+    int old_current = ih->data->current_plot_index;
+    for (int p = 0; p < ih->data->plot_list_count; p++)
+    {
+      // Set current because of the draw callbacks
+      iPlotSetPlotCurrent(ih, p);
+
+      if (reset_redraw)
+        ih->data->current_plot->mRedraw = true;
+      ih->data->current_plot->Render(ih->data->cd_canvas);
+    }
+    iPlotSetPlotCurrent(ih, old_current);
+  }
 
   // Do the flush once
-  iPlotFlush(ih, ih->data->cd_canvas);
+  if (flush)
+    iPlotFlush(ih, ih->data->cd_canvas);
+}
+
+static int iPlotRedraw_CB(Ihandle* ih)
+{
+  // in the redraw callback
+  int flush = 1,  // always flush
+    only_current = 0,  // redraw all plots
+    reset_redraw = 0; // render only if necessary
+
+  if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
+  {
+    IupGLMakeCurrent(ih);
+
+    // in OpenGL mode must:
+    flush = 1;  // always flush
+    only_current = 0;  // redraw all plots
+    reset_redraw = 1;  // always render
+  }
+
+  iPlotRedraw(ih, flush, only_current, reset_redraw);
 
   return IUP_DEFAULT;
 }
@@ -180,26 +211,47 @@ static int iPlotResize_CB(Ihandle* ih, int width, int height)
   return IUP_DEFAULT;
 }
 
+static void iPlotRedrawInteract(Ihandle *ih)
+{
+  // when interacting
+  int flush = 0, // flush if necessary
+    only_current = 1, // draw all plots if sync
+    reset_redraw = 0;  // render only if necessary
+
+  if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
+  {
+    // in OpenGL mode must:
+    flush = 1;  // always flush
+    only_current = 0;  // redraw all plots
+    reset_redraw = 1;  // always render
+  }
+  else
+  {
+    if (ih->data->current_plot->mRedraw)
+      flush = 1;
+
+    if (ih->data->sync_view)
+      only_current = 0;
+  }
+
+  iPlotRedraw(ih, flush, only_current, reset_redraw);
+}
+
 static void iPlotResetZoom(Ihandle *ih, int redraw)
 {
   ih->data->current_plot->ResetZoom();
-  bool flush = ih->data->current_plot->mRedraw;
-  if (redraw) ih->data->current_plot->Render(ih->data->cd_canvas);
 
   if (ih->data->sync_view)
   {
     for (int p = 0; p<ih->data->plot_list_count; p++)
     {
       if (ih->data->plot_list[p] != ih->data->current_plot)
-      {
         ih->data->plot_list[p]->ResetZoom();
-        if (redraw) ih->data->plot_list[p]->Render(ih->data->cd_canvas);
-      }
     }
   }
 
-  if (redraw && flush)
-    iPlotFlush(ih, ih->data->cd_canvas);
+  if (redraw)
+    iPlotRedrawInteract(ih);
 }
 
 static void iPlotPanStart(Ihandle *ih)
@@ -226,8 +278,6 @@ static void iPlotPan(Ihandle *ih, int x1, int y1, int x2, int y2)
   double offsetY = ry2 - ry1;
 
   ih->data->current_plot->Pan(offsetX, offsetY);
-  bool flush = ih->data->current_plot->mRedraw;
-  ih->data->current_plot->Render(ih->data->cd_canvas);
 
   if (ih->data->sync_view)
   {
@@ -242,13 +292,11 @@ static void iPlotPan(Ihandle *ih, int x1, int y1, int x2, int y2)
         offsetY = ry2 - ry1;
 
         ih->data->plot_list[p]->Pan(offsetX, offsetY);
-        ih->data->plot_list[p]->Render(ih->data->cd_canvas);
       }
     }
   }
 
-  if (flush)
-    iPlotFlush(ih, ih->data->cd_canvas);
+  iPlotRedrawInteract(ih);
 }
 
 static void iPlotZoom(Ihandle *ih, int x, int y, float delta)
@@ -260,9 +308,6 @@ static void iPlotZoom(Ihandle *ih, int x, int y, float delta)
     ih->data->current_plot->ZoomIn(rx, ry);
   else
     ih->data->current_plot->ZoomOut(rx, ry);
-
-  bool flush = ih->data->current_plot->mRedraw;
-  ih->data->current_plot->Render(ih->data->cd_canvas);
 
   if (ih->data->sync_view)
   {
@@ -276,36 +321,27 @@ static void iPlotZoom(Ihandle *ih, int x, int y, float delta)
           ih->data->plot_list[p]->ZoomIn(rx, ry);
         else
           ih->data->plot_list[p]->ZoomOut(rx, ry);
-
-        ih->data->plot_list[p]->Render(ih->data->cd_canvas);  
       }
     }
   }
 
-  if (flush)
-    iPlotFlush(ih, ih->data->cd_canvas);
+  iPlotRedrawInteract(ih);
 }
 
 static void iPlotScroll(Ihandle *ih, float delta, bool vertical)
 {
   ih->data->current_plot->Scroll(delta, false, vertical);
-  bool flush = ih->data->current_plot->mRedraw;
-  ih->data->current_plot->Render(ih->data->cd_canvas);  
 
   if (ih->data->sync_view)
   {
     for (int p = 0; p<ih->data->plot_list_count; p++)
     {
       if (ih->data->plot_list[p] != ih->data->current_plot)
-      {
         ih->data->plot_list[p]->Scroll(delta, false, vertical);
-        ih->data->plot_list[p]->Render(ih->data->cd_canvas);
-      }
     }
   }
 
-  if (flush)
-    iPlotFlush(ih, ih->data->cd_canvas);
+  iPlotRedrawInteract(ih);
 }
 
 static int iPlotFindPlot(Ihandle* ih, int x, int &y)
@@ -413,6 +449,14 @@ static int iPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
 
   if (iup_isbutton1(status) && (ih->data->last_click_x != x || ih->data->last_click_y != y))
     iPlotPan(ih, ih->data->last_click_x, ih->data->last_click_y, x, y);
+  else if (ih->data->show_cross_hair)
+  {
+    ih->data->current_plot->mCrossHair = true;
+    ih->data->current_plot->mCrossHairX = x;
+    ih->data->current_plot->mRedraw = true;
+
+    iPlotRedrawInteract(ih);
+  }
 
   return IUP_DEFAULT;
 }
@@ -444,14 +488,22 @@ static int iPlotWheel_CB(Ihandle *ih, float delta, int x, int y, char* status)
 
 static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
 {
-  int old_current = ih->data->current_plot_index;
-  for (int p = 0; p<ih->data->plot_list_count; p++)
+  if (c == K_cH && press)
   {
-    iPlotSetPlotCurrent(ih, p);
-    //TODO
-    //    ih->data->current_plot->KeyPress(c, press);
+    ih->data->show_cross_hair = !ih->data->show_cross_hair;
+
+    for (int p = 0; p < ih->data->plot_list_count; p++)
+    {
+      if (ih->data->plot_list[p]->mCrossHair)
+        ih->data->plot_list[p]->mRedraw = true;
+
+      ih->data->plot_list[p]->mCrossHair = false;
+    }
+
+    if (!ih->data->show_cross_hair)  // was shown
+      iPlotRedrawInteract(ih);
   }
-  iPlotSetPlotCurrent(ih, old_current);
+
   return IUP_DEFAULT;
 } 
 
@@ -735,7 +787,7 @@ int IupPlotEnd(Ihandle* ih)
   iupAttribSet(ih, "_IUP_PLOT_XDATA", NULL);
   iupAttribSet(ih, "_IUP_PLOT_YDATA", NULL);
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return ih->data->current_plot->mCurrentDataSet;
 }
 
@@ -781,20 +833,18 @@ void IupPlotPaintTo(Ihandle* ih, void* _cnv)
     return;
 
   cdCanvas *old_cd_canvas  = ih->data->cd_canvas;
-  ih->data->cd_canvas = (cdCanvas*)_cnv;
 
+  ih->data->cd_canvas = (cdCanvas*)_cnv;
   iPlotUpdateViewports(ih);
 
-  int old_current = ih->data->current_plot_index;
-  for (int p = 0; p<ih->data->plot_list_count; p++)
-  {
-    iPlotSetPlotCurrent(ih, p);
-    ih->data->current_plot->Render(ih->data->cd_canvas);  
-  }
-  iPlotSetPlotCurrent(ih, old_current);
+  // when drawing to an external canvas
+  int flush = 0, // never flush
+    only_current = 0,  // draw all plots
+    reset_redraw = 1;  // always render
+
+  iPlotRedraw(ih, flush, only_current, reset_redraw);
 
   ih->data->cd_canvas = old_cd_canvas;
-
   iPlotUpdateViewports(ih);
 }
 
@@ -920,45 +970,32 @@ static char* iPlotGetAntialiasAttrib(Ihandle* ih)
 
 static int iPlotSetRedrawAttrib(Ihandle* ih, const char* value)
 {
-  int flush = 1, 
-    current = 0;
-
-  if (iupStrEqualNoCase(value, "NOFLUSH"))
-    flush = 0;
-  else if (iupStrEqualNoCase(value, "CURRENT"))
-  {
-    flush = 0;
-    current = 1;
-  }
+  // when REDRAW is set, the default is
+  int flush = 1, // always flush
+    only_current = 0, // redraw all plots
+    reset_redraw = 1;  // always render
 
   if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
+  {
     IupGLMakeCurrent(ih);
 
-  if (current)
-  {
-    ih->data->current_plot->Render(ih->data->cd_canvas);  
+    // in OpenGL mode must:
+    flush = 1;  // always flush
+    only_current = 0;  // redraw all plots
+    reset_redraw = 1;  // always render
   }
   else
   {
-    int old_current = ih->data->current_plot_index;
-    for (int p = 0; p < ih->data->plot_list_count; p++)
+    if (iupStrEqualNoCase(value, "NOFLUSH"))
+      flush = 0;
+    else if (iupStrEqualNoCase(value, "CURRENT"))
     {
-      iPlotSetPlotCurrent(ih, p);
-      ih->data->current_plot->Render(ih->data->cd_canvas);  
+      flush = 0;  // same as NOFLUSH
+      only_current = 1;
     }
-    iPlotSetPlotCurrent(ih, old_current);
   }
 
-  if (ih->data->plot_list_count == 1 &&
-      ih->data->current_plot->mDataSetListCount == 0)
-  {
-    cdCanvasClear(ih->data->cd_canvas);
-    flush = 1;
-  }
-
-  // Do the flush once
-  if (flush)
-    iPlotFlush(ih, ih->data->cd_canvas);
+  iPlotRedraw(ih, flush, only_current, reset_redraw);
 
   (void)value;  /* not used */
   return 0;
@@ -976,7 +1013,7 @@ static int iPlotSetLegendAttrib(Ihandle* ih, const char* value)
   else 
     ih->data->current_plot->mLegend.mShow = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -998,7 +1035,7 @@ static int iPlotSetLegendPosAttrib(Ihandle* ih, const char* value)
   else
     ih->data->current_plot->mLegend.mPosition = IUP_PLOT_TOPRIGHT;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1014,7 +1051,7 @@ static int iPlotSetBackColorAttrib(Ihandle* ih, const char* value)
   if (iupStrToColor(value, &color))
   {
     ih->data->current_plot->mBackColor = color;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1033,7 +1070,7 @@ static int iPlotSetBGColorAttrib(Ihandle* ih, const char* value)
     {
       ih->data->plot_list[p]->mLegend.mBoxBackColor = color;
       ih->data->plot_list[p]->mBackColor = color;
-      ih->data->plot_list[p]->mRedraw = 1;
+      ih->data->plot_list[p]->mRedraw = true;
     }
   }
   return 1;
@@ -1051,7 +1088,7 @@ static int iPlotSetFGColorAttrib(Ihandle* ih, const char* value)
       ih->data->plot_list[p]->mAxisY.mColor = color;
       ih->data->plot_list[p]->mLegend.mBoxColor = color;
       ih->data->plot_list[p]->mTitle.mColor = color;
-      ih->data->plot_list[p]->mRedraw = 1;
+      ih->data->plot_list[p]->mRedraw = true;
     }
   }
   return 1;
@@ -1084,7 +1121,7 @@ static int iPlotSetStandardFontAttrib(Ihandle* ih, const char* value)
   {
     ih->data->plot_list[p]->mDefaultFontSize = size;
     ih->data->plot_list[p]->mDefaultFontStyle = style;
-    ih->data->plot_list[p]->mRedraw = 1;
+    ih->data->plot_list[p]->mRedraw = true;
   }
 
   return 1;
@@ -1096,7 +1133,7 @@ static int iPlotSetTitleColorAttrib(Ihandle* ih, const char* value)
   if (iupStrToColor(value, &color))
   {
     ih->data->current_plot->mTitle.mColor = color;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1109,7 +1146,7 @@ static char* iPlotGetTitleColorAttrib(Ihandle* ih)
 static int iPlotSetTitleAttrib(Ihandle* ih, const char* value)
 {
   ih->data->current_plot->mTitle.SetText(value);
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1124,7 +1161,7 @@ static int iPlotSetTitleFontSizeAttrib(Ihandle* ih, const char* value)
   if (iupStrToInt(value, &ii))
   {
     ih->data->current_plot->mTitle.mFontSize = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1140,7 +1177,7 @@ static int iPlotSetTitleFontStyleAttrib(Ihandle* ih, const char* value)
   if (style != -1)
   {
     ih->data->current_plot->mTitle.mFontStyle = style;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1157,7 +1194,7 @@ static int iPlotSetLegendFontSizeAttrib(Ihandle* ih, const char* value)
     return 0;
 
   ih->data->current_plot->mLegend.mFontSize = xx;
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1168,7 +1205,7 @@ static int iPlotSetLegendFontStyleAttrib(Ihandle* ih, const char* value)
     return 0;
 
   ih->data->current_plot->mLegend.mFontStyle = style;
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1192,7 +1229,7 @@ static int iPlotSetMarginLeftAttrib(Ihandle* ih, const char* value)
   {
     ih->data->current_plot->mMarginAuto.mLeft = 0;
     ih->data->current_plot->mMargin.mLeft = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1207,7 +1244,7 @@ static int iPlotSetMarginRightAttrib(Ihandle* ih, const char* value)
   {
     ih->data->current_plot->mMarginAuto.mRight = 0;
     ih->data->current_plot->mMargin.mRight = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1222,7 +1259,7 @@ static int iPlotSetMarginTopAttrib(Ihandle* ih, const char* value)
   {
     ih->data->current_plot->mMarginAuto.mTop = 0;
     ih->data->current_plot->mMargin.mTop = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1237,7 +1274,7 @@ static int iPlotSetMarginBottomAttrib(Ihandle* ih, const char* value)
   {
     ih->data->current_plot->mMarginAuto.mBottom = 0;
     ih->data->current_plot->mMargin.mBottom = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1268,7 +1305,7 @@ static int iPlotSetGridColorAttrib(Ihandle* ih, const char* value)
   if (iupStrToColor(value, &color))
   {
     ih->data->current_plot->mGrid.mColor = color;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1281,7 +1318,7 @@ static char* iPlotGetGridColorAttrib(Ihandle* ih)
 static int iPlotSetGridLineStyleAttrib(Ihandle* ih, const char* value)
 {
   ih->data->current_plot->mGrid.mLineStyle = iPlotGetCDPenStyle(value);
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1301,7 +1338,7 @@ static int iPlotSetGridLineWidthAttrib(Ihandle* ih, const char* value)
   if (iupStrToInt(value, &ii))
   {
     ih->data->current_plot->mGrid.mLineWidth = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1318,7 +1355,7 @@ static char* iPlotGetGridLineWidthAttrib(Ihandle* ih)
 static int iPlotSetLegendBoxLineStyleAttrib(Ihandle* ih, const char* value)
 {
   ih->data->current_plot->mLegend.mBoxLineStyle = iPlotGetCDPenStyle(value);
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1330,7 +1367,7 @@ static char* iPlotGetLegendBoxLineStyleAttrib(Ihandle* ih)
 static int iPlotSetBoxLineStyleAttrib(Ihandle* ih, const char* value)
 {
   ih->data->current_plot->mBox.mLineStyle = iPlotGetCDPenStyle(value);
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1340,7 +1377,7 @@ static int iPlotSetBoxColorAttrib(Ihandle* ih, const char* value)
   if (iupStrToColor(value, &color))
   {
     ih->data->current_plot->mBox.mColor = color;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1357,7 +1394,7 @@ static int iPlotSetBoxAttrib(Ihandle* ih, const char* value)
   else
     ih->data->current_plot->mBox.mShow = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1372,7 +1409,7 @@ static int iPlotSetLegendBoxColorAttrib(Ihandle* ih, const char* value)
   if (iupStrToColor(value, &color))
   {
     ih->data->current_plot->mLegend.mBoxColor = color;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1388,7 +1425,7 @@ static int iPlotSetLegendBoxBackColorAttrib(Ihandle* ih, const char* value)
   if (iupStrToColor(value, &color))
   {
     ih->data->current_plot->mLegend.mBoxBackColor = color;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1409,7 +1446,7 @@ static int iPlotSetLegendBoxLineWidthAttrib(Ihandle* ih, const char* value)
   if (iupStrToInt(value, &ii))
   {
     ih->data->current_plot->mLegend.mBoxLineWidth = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1439,7 +1476,7 @@ static int iPlotSetBoxLineWidthAttrib(Ihandle* ih, const char* value)
   if (iupStrToInt(value, &ii))
   {
     ih->data->current_plot->mBox.mLineWidth = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1476,7 +1513,7 @@ static int iPlotSetGridAttrib(Ihandle* ih, const char* value)
     ih->data->current_plot->mGrid.mXGridOn = false;
   }
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1499,7 +1536,7 @@ static int iPlotSetCurrentAttrib(Ihandle* ih, const char* value)
   {
     int imax = ih->data->current_plot->mDataSetListCount;
     ih->data->current_plot->mCurrentDataSet = ( (ii>=0) && (ii<imax) ? ii : -1);
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   else
   {
@@ -1508,7 +1545,7 @@ static int iPlotSetCurrentAttrib(Ihandle* ih, const char* value)
     {
       int imax = ih->data->current_plot->mDataSetListCount;
       ih->data->current_plot->mCurrentDataSet = ( (ii>=0) && (ii<imax) ? ii : -1);
-      ih->data->current_plot->mRedraw = 1;
+      ih->data->current_plot->mRedraw = true;
     }
   }
   return 0;
@@ -1765,7 +1802,7 @@ static int iPlotSetRemoveAttrib(Ihandle* ih, const char* value)
   if (!value)
   {
     ih->data->current_plot->RemoveDataset(ih->data->current_plot->mCurrentDataSet);
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
     iPlotCheckCurrentDataSet(ih);
     return 0;
   }
@@ -1774,7 +1811,7 @@ static int iPlotSetRemoveAttrib(Ihandle* ih, const char* value)
   if (iupStrToInt(value, &ii))
   {
     ih->data->current_plot->RemoveDataset(ii);
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
     iPlotCheckCurrentDataSet(ih);
   }
   else
@@ -1783,7 +1820,7 @@ static int iPlotSetRemoveAttrib(Ihandle* ih, const char* value)
     if (ii != -1)
     {
       ih->data->current_plot->RemoveDataset(ii);
-      ih->data->current_plot->mRedraw = 1;
+      ih->data->current_plot->mRedraw = true;
       iPlotCheckCurrentDataSet(ih);
     }
   }
@@ -1794,7 +1831,7 @@ static int iPlotSetClearAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
   ih->data->current_plot->RemoveAllDatasets();
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1807,7 +1844,7 @@ static int iPlotSetDSLineStyleAttrib(Ihandle* ih, const char* value)
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
   dataset->mLineStyle = iPlotGetCDPenStyle(value);
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1834,7 +1871,7 @@ static int iPlotSetDSLineWidthAttrib(Ihandle* ih, const char* value)
   {
     iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
     dataset->mLineWidth = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1857,7 +1894,7 @@ static int iPlotSetDSMarkStyleAttrib(Ihandle* ih, const char* value)
   
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
   dataset->mMarkStyle = iPlotGetCDMarkStyle(value);
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1884,7 +1921,7 @@ static int iPlotSetDSMarkSizeAttrib(Ihandle* ih, const char* value)
   {
     iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
     dataset->mMarkSize = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1910,7 +1947,7 @@ static int iPlotSetDSNameAttrib(Ihandle* ih, const char* value)
   
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
   dataset->SetName(value);
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -1936,7 +1973,7 @@ static int iPlotSetDSColorAttrib(Ihandle* ih, const char* value)
   {
     iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
     dataset->mColor = color;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -1975,7 +2012,7 @@ static int iPlotSetDSModeAttrib(Ihandle* ih, const char* value)
   else  /* LINE */
     dataset->mMode = IUP_PLOT_LINE;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2005,7 +2042,7 @@ static int iPlotSetDSRemoveAttrib(Ihandle* ih, const char* value)
   {
     dataset->mDataX->RemoveItem(ii);
     dataset->mDataY->RemoveItem(ii);
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2028,7 +2065,7 @@ static int iPlotSetAxisXLabelAttrib(Ihandle* ih, const char* value)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
   axis->SetLabel(value);
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2036,7 +2073,7 @@ static int iPlotSetAxisYLabelAttrib(Ihandle* ih, const char* value)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
   axis->SetLabel(value);
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2061,7 +2098,7 @@ static int iPlotSetAxisXAttrib(Ihandle* ih, const char* value)
   else
     axis->mShow = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2074,7 +2111,7 @@ static int iPlotSetAxisYAttrib(Ihandle* ih, const char* value)
   else
     axis->mShow = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2101,7 +2138,7 @@ static int iPlotSetAxisXLabelCenteredAttrib(Ihandle* ih, const char* value)
   else 
    axis->mLabelCentered = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2114,7 +2151,7 @@ static int iPlotSetAxisYLabelCenteredAttrib(Ihandle* ih, const char* value)
   else 
    axis->mLabelCentered = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2139,7 +2176,7 @@ static int iPlotSetAxisXColorAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mColor = color;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2151,7 +2188,7 @@ static int iPlotSetAxisYColorAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mColor = color;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2174,7 +2211,7 @@ static int iPlotSetAxisXLineWidthAttrib(Ihandle* ih, const char* value)
   if (iupStrToInt(value, &ii))
   {
     ih->data->current_plot->mAxisX.mLineWidth = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2191,7 +2228,7 @@ static int iPlotSetAxisYLineWidthAttrib(Ihandle* ih, const char* value)
   if (iupStrToInt(value, &ii))
   {
     ih->data->current_plot->mAxisY.mLineWidth = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2213,7 +2250,7 @@ static int iPlotSetAxisXAutoMinAttrib(Ihandle* ih, const char* value)
   else 
     axis->mAutoScaleMin = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2228,7 +2265,7 @@ static int iPlotSetAxisYAutoMinAttrib(Ihandle* ih, const char* value)
   else 
     axis->mAutoScaleMin = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2257,7 +2294,7 @@ static int iPlotSetAxisXAutoMaxAttrib(Ihandle* ih, const char* value)
   else 
     axis->mAutoScaleMax = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2272,7 +2309,7 @@ static int iPlotSetAxisYAutoMaxAttrib(Ihandle* ih, const char* value)
   else 
     axis->mAutoScaleMax = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2299,7 +2336,7 @@ static int iPlotSetAxisXMinAttrib(Ihandle* ih, const char* value)
 
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mMin = xx;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2313,7 +2350,7 @@ static int iPlotSetAxisYMinAttrib(Ihandle* ih, const char* value)
 
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mMin = xx;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2339,7 +2376,7 @@ static int iPlotSetAxisXMaxAttrib(Ihandle* ih, const char* value)
 
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mMax = xx;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2353,7 +2390,7 @@ static int iPlotSetAxisYMaxAttrib(Ihandle* ih, const char* value)
 
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mMax = xx;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2379,7 +2416,7 @@ static int iPlotSetAxisXReverseAttrib(Ihandle* ih, const char* value)
   else
     axis->mReverse = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2392,7 +2429,7 @@ static int iPlotSetAxisYReverseAttrib(Ihandle* ih, const char* value)
   else 
     axis->mReverse = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2417,7 +2454,7 @@ static int iPlotSetAxisXCrossOriginAttrib(Ihandle* ih, const char* value)
   else 
     axis->mCrossOrigin = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2430,7 +2467,7 @@ static int iPlotSetAxisYCrossOriginAttrib(Ihandle* ih, const char* value)
   else 
     axis->mCrossOrigin = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2472,7 +2509,7 @@ static int iPlotSetAxisXScaleAttrib(Ihandle* ih, const char* value)
     axis->mLogBase  = (double)M_E;
   }
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2500,7 +2537,7 @@ static int iPlotSetAxisYScaleAttrib(Ihandle* ih, const char* value)
     axis->mLogBase  = (double)M_E;
   }
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2545,7 +2582,7 @@ static int iPlotSetAxisXFontSizeAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mFontSize = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2557,7 +2594,7 @@ static int iPlotSetAxisYFontSizeAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mFontSize = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2581,7 +2618,7 @@ static int iPlotSetAxisXFontStyleAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mFontStyle = style;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2593,7 +2630,7 @@ static int iPlotSetAxisYFontStyleAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mFontStyle = style;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2619,7 +2656,7 @@ static int iPlotSetAxisXArrowAttrib(Ihandle* ih, const char* value)
   else
     axis->mShowArrow = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2639,7 +2676,7 @@ static int iPlotSetAxisYArrowAttrib(Ihandle* ih, const char* value)
   else
     axis->mShowArrow = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2659,7 +2696,7 @@ static int iPlotSetAxisXAutoTickSizeAttrib(Ihandle* ih, const char* value)
   else 
     axis->mTick.mAutoSize = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2672,7 +2709,7 @@ static int iPlotSetAxisYAutoTickSizeAttrib(Ihandle* ih, const char* value)
   else 
     axis->mTick.mAutoSize = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2697,7 +2734,7 @@ static int iPlotSetAxisXTickSizeAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mTick.mMinorSize = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2709,7 +2746,7 @@ static int iPlotSetAxisYTickSizeAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mTick.mMinorSize = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2733,7 +2770,7 @@ static int iPlotSetAxisXTickMajorSizeAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mTick.mMajorSize = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2745,7 +2782,7 @@ static int iPlotSetAxisYTickMajorSizeAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mTick.mMajorSize = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2769,7 +2806,7 @@ static int iPlotSetAxisXTickFontSizeAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mTick.mFontSize = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2781,7 +2818,7 @@ static int iPlotSetAxisYTickFontSizeAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mTick.mFontSize = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2807,7 +2844,7 @@ static int iPlotSetAxisXTickFontStyleAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mTick.mFontStyle = style;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2819,7 +2856,7 @@ static int iPlotSetAxisYTickFontStyleAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mTick.mFontStyle = style;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -2847,7 +2884,7 @@ static int iPlotSetAxisXTickFormatAttrib(Ihandle* ih, const char* value)
   else
     strcpy(axis->mTick.mFormatString, "%.0f");
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2860,7 +2897,7 @@ static int iPlotSetAxisYTickFormatAttrib(Ihandle* ih, const char* value)
   else
     strcpy(axis->mTick.mFormatString, "%.0f");
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2885,7 +2922,7 @@ static int iPlotSetAxisXTickAttrib(Ihandle* ih, const char* value)
   else 
     axis->mTick.mShow = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2905,7 +2942,7 @@ static int iPlotSetAxisYTickAttrib(Ihandle* ih, const char* value)
   else 
     axis->mTick.mShow = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2925,7 +2962,7 @@ static int iPlotSetAxisXTickNumberAttrib(Ihandle* ih, const char* value)
   else
     axis->mTick.mShowNumber = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2938,7 +2975,7 @@ static int iPlotSetAxisYTickNumberAttrib(Ihandle* ih, const char* value)
   else
     axis->mTick.mShowNumber = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2965,7 +3002,7 @@ static int iPlotSetAxisXTickRotateNumberAttrib(Ihandle* ih, const char* value)
   else
     axis->mTick.mRotateNumber = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -2978,7 +3015,7 @@ static int iPlotSetAxisYTickRotateNumberAttrib(Ihandle* ih, const char* value)
   else
     axis->mTick.mRotateNumber = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -3003,7 +3040,7 @@ static int iPlotSetAxisXTickMajorSpanAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mTick.mMajorSpan = xx;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -3015,7 +3052,7 @@ static int iPlotSetAxisYTickMajorSpanAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mTick.mMajorSpan = xx;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -3039,7 +3076,7 @@ static int iPlotSetAxisXTickDivisionAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
     axis->mTick.mMinorDivision = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -3051,7 +3088,7 @@ static int iPlotSetAxisYTickDivisionAttrib(Ihandle* ih, const char* value)
   {
     iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
     axis->mTick.mMinorDivision = ii;
-    ih->data->current_plot->mRedraw = 1;
+    ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
@@ -3077,7 +3114,7 @@ static int iPlotSetAxisXAutoTickAttrib(Ihandle* ih, const char* value)
   else 
     axis->mTick.mAutoSpacing = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -3090,7 +3127,7 @@ static int iPlotSetAxisYAutoTickAttrib(Ihandle* ih, const char* value)
   else 
     axis->mTick.mAutoSpacing = false;
 
-  ih->data->current_plot->mRedraw = 1;
+  ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
@@ -3127,7 +3164,7 @@ static int iPlotMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   for(int p=0; p<ih->data->plot_list_count; p++)
-    ih->data->plot_list[p]->mRedraw = 1;
+    ih->data->plot_list[p]->mRedraw = true;
 
   return IUP_NOERROR;
 }

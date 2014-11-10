@@ -46,13 +46,10 @@ static inline void iPlotDrawBox(cdCanvas* canvas, double inX, double inY, double
 
 void iupPlot::DrawBox(const iupPlotRect &inRect, cdCanvas* canvas) const
 {
-  if (mBox.mShow)
-  {
-    cdCanvasSetForeground(canvas, mBox.mColor);
-    iPlotSetLine(canvas, mBox.mLineStyle, mBox.mLineWidth);
+  cdCanvasSetForeground(canvas, mBox.mColor);
+  iPlotSetLine(canvas, mBox.mLineStyle, mBox.mLineWidth);
 
-    iPlotDrawRect(canvas, inRect.mX, inRect.mY, inRect.mWidth, inRect.mHeight);
-  }
+  iPlotDrawRect(canvas, inRect.mX, inRect.mY, inRect.mWidth, inRect.mHeight);
 }
 
 bool iupPlot::DrawXGrid(const iupPlotRect &inRect, cdCanvas* canvas) const
@@ -381,6 +378,57 @@ bool iupPlot::DrawYTick(double inY, double inScreenX, bool inMajor, const char*i
 
   cdfCanvasLine(canvas, inScreenX, theScreenY, inScreenX - theTickSize, theScreenY);  
   return true;
+}
+
+bool iupPlot::GetCrossPoint(const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, int &outY) const
+{
+  int theCount = inXData->GetCount();
+  if (theCount == 0)
+    return false;
+  
+  double theXTarget = mAxisX.mTrafo->TransformBack((double)mCrossHairX);
+  bool theFirstIsLess = inXData->GetValue(0) < theXTarget;
+
+  for (int theI = 0; theI<theCount; theI++)
+  {
+    double theX = inXData->GetValue(theI);
+    double theY = inYData->GetValue(theI);
+    bool theCurrentIsLess = theX < theXTarget;
+
+    if (theCurrentIsLess != theFirstIsLess) 
+    {
+      outY = iupPlotRound(mAxisY.mTrafo->Transform(theY)); // transform to pixels
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void iupPlot::DrawCrossHair(const iupPlotRect &inRect, cdCanvas* canvas) const
+{
+  cdCanvasSetForeground(canvas, mAxisY.mColor);
+  iPlotSetLine(canvas, CD_CONTINUOUS, 1);
+
+  // Draw a vertical line at cursor X coordinate
+  cdCanvasLine(canvas, mCrossHairX, inRect.mY, mCrossHairX, inRect.mY + inRect.mHeight - 1);
+
+  for (int ds = 0; ds < mDataSetListCount; ds++)
+  {
+    iupPlotDataSet* dataset = mDataSetList[ds];
+
+    iupPlotDataBase *theXData = dataset->mDataX;
+    iupPlotDataBase *theYData = dataset->mDataY;
+
+    int theScreenY;
+    if (GetCrossPoint(theXData, theYData, theScreenY))
+    {
+      cdCanvasSetForeground(canvas, dataset->mColor);
+
+      // Draw a horizontal line at data Y coordinate
+      cdfCanvasLine(canvas, inRect.mX, theScreenY, inRect.mX + inRect.mWidth - 1, theScreenY);
+    }
+  }
 }
 
 void iupPlot::SetTitleFont(cdCanvas* canvas) const
