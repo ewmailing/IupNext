@@ -459,8 +459,8 @@ void iupPlot::DrawPlotTitle(cdCanvas* canvas) const
     SetTitleFont(canvas);
 
     // do not depend on theMargin
-    int theX = mViewport.mX + mViewport.mWidth / 2;
-    int theY = mViewport.mY + mViewport.mHeight - 5;  // add small spacing
+    int theX = mViewport.mWidth / 2;
+    int theY = mViewport.mHeight - 5;  // add small spacing
 
     cdCanvasTextAlignment(canvas, CD_NORTH);
     cdCanvasText(canvas, theX, theY, mTitle.GetText());
@@ -470,8 +470,7 @@ void iupPlot::DrawPlotTitle(cdCanvas* canvas) const
 void iupPlot::DrawPlotBackground(cdCanvas* canvas) const
 {
   cdCanvasSetForeground(canvas, mBackColor);
-  cdCanvasBox(canvas, mViewport.mX, mViewport.mX + mViewport.mWidth - 1,
-                      mViewport.mY, mViewport.mY + mViewport.mHeight - 1);
+  cdCanvasBox(canvas, 0, mViewport.mWidth - 1, 0, mViewport.mHeight - 1);
 }
 
 bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const 

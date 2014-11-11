@@ -568,6 +568,9 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   cdCanvasOrigin(canvas, mViewport.mX, mViewport.mY);
 
+  cdCanvasClip(canvas, CD_CLIPAREA);
+  cdCanvasClipArea(canvas, 0, mViewport.mWidth - 1, 0, mViewport.mHeight - 1);
+
   // draw entire background, including the margins
   DrawPlotBackground(canvas);
 
@@ -608,10 +611,6 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (!CalculateYTransformation(theRect))
     return false;
 
-  cdCanvasClip(canvas, CD_CLIPAREA);
-  cdCanvasClipArea(canvas, mViewport.mX, mViewport.mX + mViewport.mWidth - 1,
-                           mViewport.mY, mViewport.mY + mViewport.mHeight - 1);
-
   IFnC pre_cb = (IFnC)IupGetCallback(ih, "PREDRAW_CB");
   if (pre_cb)
     pre_cb(ih, canvas);
@@ -632,8 +631,7 @@ bool iupPlot::Render(cdCanvas* canvas)
     mBox.Draw(theRect, canvas);
 
   // clip the plotregion while drawing plots
-  cdCanvasClipArea(canvas, theRect.mX, theRect.mX + theRect.mWidth - 1, 
-                           theRect.mY, theRect.mY + theRect.mHeight - 1);
+  cdCanvasClipArea(canvas, theRect.mX, theRect.mX + theRect.mWidth - 1, theRect.mY, theRect.mY + theRect.mHeight - 1);
 
   for (int ds = 0; ds < mDataSetListCount; ds++) 
   {
@@ -650,8 +648,8 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (!DrawLegend(theRect, canvas))
     return false;
 
-  cdCanvasClipArea(canvas, mViewport.mX, mViewport.mX + mViewport.mWidth - 1, 
-                           mViewport.mY, mViewport.mY + mViewport.mHeight - 1);
+  cdCanvasClipArea(canvas, 0, mViewport.mWidth - 1, 
+                           0, mViewport.mHeight - 1);
 
   DrawPlotTitle(canvas);
 
