@@ -541,15 +541,24 @@ static int iPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
   int ds, sample;
   double rx, ry;
   const char* ds_name;
-  if (ih->data->current_plot->FindDataSetSample(x, y, ds, ds_name, sample, rx, ry))
+  const char* strX;
+  if (ih->data->current_plot->FindDataSetSample(x, y, ds, ds_name, sample, rx, ry, strX))
   {
     if (ih->data->last_tip_ds != ds && ih->data->last_tip_sample != sample)
     {
-      char str_x[20], str_y[20];
-      sprintf(str_x, ih->data->current_plot->mAxisX.mTick.mFormatString, rx);
+      char str_y[20];
       sprintf(str_y, ih->data->current_plot->mAxisY.mTick.mFormatString, ry);
-      IupSetfAttribute(ih, "TIP", "%s [%d]=(%s, %s)", ds_name, sample, str_x, str_y);
+      if (strX)
+        IupSetfAttribute(ih, "TIP", "%s [%d]=(%s, %s)", ds_name, sample, strX, str_y);
+      else
+      {
+        char str_x[20];
+        sprintf(str_x, ih->data->current_plot->mAxisX.mTick.mFormatString, rx);
+        IupSetfAttribute(ih, "TIP", "%s [%d]=(%s, %s)", ds_name, sample, str_x, str_y);
+      }
+
       IupSetAttribute(ih, "TIPVISIBLE", "Yes");
+
       ih->data->last_tip_ds = ds;
       ih->data->last_tip_sample = sample;
     }

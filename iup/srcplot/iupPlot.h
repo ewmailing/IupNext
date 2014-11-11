@@ -511,7 +511,7 @@ public:
   void RemoveAllDataSets();
   long GetNextDataSetColor();
 
-  bool FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSample, double &OutX, double &OutY) const;
+  bool FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSample, double &outX, double &outY, const char* &outStrX) const;
   bool FindSample(const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, double inX, double inY, double tolX, double tolY, 
                   int &outSample, double &outX, double &outY) const;
 };

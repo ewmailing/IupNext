@@ -503,7 +503,7 @@ bool iupPlot::FindSample(const iupPlotDataBase *inXData, const iupPlotDataBase *
   return false;
 }
 
-bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSample, double &OutX, double &OutY) const
+bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSample, double &outX, double &outY, const char* &outStrX) const
 {
   double theX = mAxisX.mTrafo->TransformBack((double)inX);
   double theY = mAxisY.mTrafo->TransformBack((double)inY);
@@ -517,8 +517,16 @@ bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &ou
     iupPlotDataBase *theXData = dataset->mDataX;
     iupPlotDataBase *theYData = dataset->mDataY;
 
-    if (FindSample(theXData, theYData, theX, theY, tolX, tolY, outSample, OutX, OutY))
+    if (FindSample(theXData, theYData, theX, theY, tolX, tolY, outSample, outX, outY))
     {
+      if (theXData->IsString())
+      {
+        const iupPlotDataString *theStringXData = (const iupPlotDataString *)(theXData);
+        outStrX = theStringXData->GetStrValue(outSample);
+      }
+      else
+        outStrX = NULL;
+
       outIndex = ds;
       outName = dataset->GetName();
       return true;
@@ -536,10 +544,10 @@ void iupPlot::Configure()
     mAxisY.mCrossOrigin = false;  // change at the other axis
   else
   {
-    const iupPlotDataBase *theGlue = mDataSetList[0]->mDataX;
-    if (theGlue->IsString())
+    const iupPlotDataBase *theXData = mDataSetList[0]->mDataX;
+    if (theXData->IsString())
     {
-      const iupPlotDataString *theStringXData = (const iupPlotDataString *)(theGlue);
+      const iupPlotDataString *theStringXData = (const iupPlotDataString *)(theXData);
       mAxisX.SetNamedTickIter(theStringXData);
     }
   }
