@@ -368,7 +368,7 @@ iupPlot::iupPlot(Ihandle* _ih)
 
 iupPlot::~iupPlot()
 {
-  RemoveAllDatasets();
+  RemoveAllDataSets();
 }
 
 void iupPlot::SetViewport(int x, int y, int w, int h)
@@ -407,7 +407,7 @@ static long iPlotGetDefaultColor(int index)
   }
 }
 
-long iupPlot::GetNextDatasetColor()
+long iupPlot::GetNextDataSetColor()
 {
   int def_color = 0, i = 0;
   long theColor;
@@ -438,7 +438,7 @@ void iupPlot::AddDataSet(iupPlotDataBase* inDataX, iupPlotDataBase* inDataY)
 {
   if (mDataSetListCount < IUP_PLOT_MAX_DS)
   {
-    long theColor = GetNextDatasetColor();
+    long theColor = GetNextDataSetColor();
 
     mCurrentDataSet = mDataSetListCount;
     mDataSetListCount++;
@@ -450,7 +450,7 @@ void iupPlot::AddDataSet(iupPlotDataBase* inDataX, iupPlotDataBase* inDataY)
   }
 }
 
-void iupPlot::RemoveDataset(int inIndex)
+void iupPlot::RemoveDataSet(int inIndex)
 {
   if (mCurrentDataSet == mDataSetListCount - 1)
     mCurrentDataSet--;
@@ -465,7 +465,7 @@ void iupPlot::RemoveDataset(int inIndex)
   mDataSetListCount--;
 }
 
-int iupPlot::FindDataset(const char* inName)
+int iupPlot::FindDataSet(const char* inName)
 {
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
@@ -475,12 +475,56 @@ int iupPlot::FindDataset(const char* inName)
   return -1;
 }
 
-void iupPlot::RemoveAllDatasets()
+void iupPlot::RemoveAllDataSets()
 {
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
     delete mDataSetList[ds];
   }
+}
+
+bool iupPlot::FindSample(const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, double inX, double inY, double tolX, double tolY, 
+                         int &outSample, double &outX, double &outY) const
+{
+  int theCount = inXData->GetCount();
+  for (int i = 0; i < theCount; i++)
+  {
+    outX = inXData->GetValue(i);
+    outY = inYData->GetValue(i);
+
+    if (fabs(outX - inX) < tolX && 
+        fabs(outY - inY) < tolY)
+    {
+      outSample = i;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSample, double &OutX, double &OutY) const
+{
+  double theX = mAxisX.mTrafo->TransformBack((double)inX);
+  double theY = mAxisY.mTrafo->TransformBack((double)inY);
+  double tolX = (fabs(mAxisX.mMax - mAxisX.mMin) / mViewport.mWidth) * 5.0;  // 5 pixels tolerance
+  double tolY = (fabs(mAxisY.mMax - mAxisY.mMin) / mViewport.mHeight) * 5.0;
+
+  for (int ds = 0; ds < mDataSetListCount; ds++)
+  {
+    iupPlotDataSet* dataset = mDataSetList[ds];
+
+    iupPlotDataBase *theXData = dataset->mDataX;
+    iupPlotDataBase *theYData = dataset->mDataY;
+
+    if (FindSample(theXData, theYData, theX, theY, tolX, tolY, outSample, OutX, OutY))
+    {
+      outIndex = ds;
+      outName = dataset->GetName();
+      return true;
+    }
+  }
+  return false;
 }
 
 void iupPlot::Configure()
@@ -585,6 +629,9 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   if (mCrossHair)
     DrawCrossHair(theRect, canvas);
+
+  if (mShowSelection)
+    DrawSelection(canvas);
 
   if (!DrawLegend(theRect, canvas))
     return false;

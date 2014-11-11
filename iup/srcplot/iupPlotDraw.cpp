@@ -44,6 +44,14 @@ static inline void iPlotDrawBox(cdCanvas* canvas, double inX, double inY, double
   cdfCanvasBox(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
 }
 
+void iupPlot::DrawSelection(cdCanvas* canvas) const
+{
+  cdCanvasSetForeground(canvas, mBox.mColor);
+  iPlotSetLine(canvas, mBox.mLineStyle, mBox.mLineWidth);
+
+  iPlotDrawRect(canvas, mSelection.mX, mSelection.mY, mSelection.mWidth, mSelection.mHeight);
+}
+
 void iupPlot::DrawBox(const iupPlotRect &inRect, cdCanvas* canvas) const
 {
   cdCanvasSetForeground(canvas, mBox.mColor);
@@ -389,14 +397,14 @@ bool iupPlot::GetCrossPoint(const iupPlotDataBase *inXData, const iupPlotDataBas
   double theXTarget = mAxisX.mTrafo->TransformBack((double)mCrossHairX);
   bool theFirstIsLess = inXData->GetValue(0) < theXTarget;
 
-  for (int theI = 0; theI<theCount; theI++)
+  for (int i = 0; i < theCount; i++)
   {
-    double theX = inXData->GetValue(theI);
-    double theY = inYData->GetValue(theI);
+    double theX = inXData->GetValue(i);
     bool theCurrentIsLess = theX < theXTarget;
 
     if (theCurrentIsLess != theFirstIsLess) 
     {
+      double theY = inYData->GetValue(i);
       outY = iupPlotRound(mAxisY.mTrafo->Transform(theY)); // transform to pixels
       return true;
     }

@@ -61,8 +61,12 @@ struct _IcontrolData
   int graphics_mode;
 
   int last_click_x, 
-      last_click_y;
+      last_click_y,
+      last_click_plot;
   bool show_cross_hair;
+
+  int last_tip_ds, 
+    last_tip_sample;
 };
 
 #ifndef M_E
@@ -443,6 +447,7 @@ static int iPlotMouseButton_CB(Ihandle* ih, int button, int press, int x, int y,
   {
     ih->data->last_click_x = x;
     ih->data->last_click_y = y;
+    ih->data->last_click_plot = index;
 
     if (button == IUP_BUTTON1)
     {
@@ -464,7 +469,7 @@ static int iPlotMouseButton_CB(Ihandle* ih, int button, int press, int x, int y,
   {
     if (iup_iscontrol(status))
     {
-      if (ih->data->last_click_x == x && ih->data->last_click_y == y)
+      if (ih->data->last_click_x == x && ih->data->last_click_y == y && ih->data->last_click_plot == index)
       {
         float delta = 0;
         if (button == IUP_BUTTON1)
@@ -475,8 +480,10 @@ static int iPlotMouseButton_CB(Ihandle* ih, int button, int press, int x, int y,
         if (delta)
           iPlotZoom(ih, x, y, delta);
       }
-      else if (button == IUP_BUTTON1 && ih->data->last_click_x != x && ih->data->last_click_y != y)
+      else if (button == IUP_BUTTON1 && ih->data->last_click_x != x && ih->data->last_click_y != y && ih->data->last_click_plot == index)
+      {
         iPlotZoomTo(ih, ih->data->last_click_x, ih->data->last_click_y, x, y);
+      }
     }
   }
 
@@ -505,13 +512,64 @@ static int iPlotMouseMove_CB(Ihandle* ih, int x, int y, char *status)
       return IUP_DEFAULT;
   }
 
-  if (!iup_iscontrol(status) && iup_isbutton1(status) && (ih->data->last_click_x != x || ih->data->last_click_y != y))
-    iPlotPan(ih, ih->data->last_click_x, ih->data->last_click_y, x, y);
-  else if (ih->data->show_cross_hair)
+  if (iup_isbutton1(status) && ih->data->last_click_plot == index)
   {
+    if (iup_iscontrol(status)) // || iup_isshift(status))
+    {
+      ih->data->current_plot->mRedraw = true;
+      ih->data->current_plot->mShowSelection = true;
+      ih->data->current_plot->mSelection.mX = ih->data->last_click_x < x? ih->data->last_click_x: x;
+      ih->data->current_plot->mSelection.mY = ih->data->last_click_y < y? ih->data->last_click_y: y;
+      ih->data->current_plot->mSelection.mWidth = abs(ih->data->last_click_x - x) + 1;
+      ih->data->current_plot->mSelection.mHeight = abs(ih->data->last_click_y - y) + 1;
+
+      iPlotRedrawInteract(ih);
+
+      ih->data->current_plot->mShowSelection = false;
+      return IUP_DEFAULT;
+    }
+    else
+    {
+      if (ih->data->last_click_x != x || ih->data->last_click_y != y)
+      {
+        iPlotPan(ih, ih->data->last_click_x, ih->data->last_click_y, x, y);
+        return IUP_DEFAULT;
+      }
+    }
+  }
+
+  int ds, sample;
+  double rx, ry;
+  const char* ds_name;
+  if (ih->data->current_plot->FindDataSetSample(x, y, ds, ds_name, sample, rx, ry))
+  {
+    if (ih->data->last_tip_ds != ds && ih->data->last_tip_sample != sample)
+    {
+      char str_x[20], str_y[20];
+      sprintf(str_x, ih->data->current_plot->mAxisX.mTick.mFormatString, rx);
+      sprintf(str_y, ih->data->current_plot->mAxisY.mTick.mFormatString, ry);
+      IupSetfAttribute(ih, "TIP", "%s [%d]=(%s, %s)", ds_name, sample, str_x, str_y);
+      IupSetAttribute(ih, "TIPVISIBLE", "Yes");
+      ih->data->last_tip_ds = ds;
+      ih->data->last_tip_sample = sample;
+    }
+  }
+  else
+  {
+    if (ih->data->last_tip_ds != -1 && ih->data->last_tip_sample != -1)
+    {
+      ih->data->last_tip_ds = -1;
+      ih->data->last_tip_sample = -1;
+      IupSetAttribute(ih, "TIP", NULL);
+      IupSetAttribute(ih, "TIPVISIBLE", "Yes");
+    }
+  }
+
+  if (ih->data->show_cross_hair)
+  {
+    ih->data->current_plot->mRedraw = true;
     ih->data->current_plot->mCrossHair = true;
     ih->data->current_plot->mCrossHairX = x;
-    ih->data->current_plot->mRedraw = true;
 
     iPlotRedrawInteract(ih);
   }
@@ -1630,7 +1688,7 @@ static int iPlotSetCurrentAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    ii = ih->data->current_plot->FindDataset(value);
+    ii = ih->data->current_plot->FindDataSet(value);
     if (ii != -1)
     {
       int imax = ih->data->current_plot->mDataSetListCount;
@@ -1891,7 +1949,7 @@ static int iPlotSetRemoveAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
   {
-    ih->data->current_plot->RemoveDataset(ih->data->current_plot->mCurrentDataSet);
+    ih->data->current_plot->RemoveDataSet(ih->data->current_plot->mCurrentDataSet);
     ih->data->current_plot->mRedraw = true;
     iPlotCheckCurrentDataSet(ih);
     return 0;
@@ -1900,16 +1958,16 @@ static int iPlotSetRemoveAttrib(Ihandle* ih, const char* value)
   int ii;
   if (iupStrToInt(value, &ii))
   {
-    ih->data->current_plot->RemoveDataset(ii);
+    ih->data->current_plot->RemoveDataSet(ii);
     ih->data->current_plot->mRedraw = true;
     iPlotCheckCurrentDataSet(ih);
   }
   else
   {
-    ii = ih->data->current_plot->FindDataset(value);
+    ii = ih->data->current_plot->FindDataSet(value);
     if (ii != -1)
     {
-      ih->data->current_plot->RemoveDataset(ii);
+      ih->data->current_plot->RemoveDataSet(ii);
       ih->data->current_plot->mRedraw = true;
       iPlotCheckCurrentDataSet(ih);
     }
@@ -1920,7 +1978,7 @@ static int iPlotSetRemoveAttrib(Ihandle* ih, const char* value)
 static int iPlotSetClearAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
-  ih->data->current_plot->RemoveAllDatasets();
+  ih->data->current_plot->RemoveAllDataSets();
   ih->data->current_plot->mRedraw = true;
   return 0;
 }
@@ -3281,6 +3339,9 @@ static int iPlotCreateMethod(Ihandle* ih, void **params)
   /* free the data alocated by IupCanvas */
   free(ih->data);
   ih->data = iupALLOCCTRLDATA();
+
+  ih->data->last_tip_ds = -1;
+  ih->data->last_tip_sample = -1;
 
   /* Initializing object with no cd canvases */
   ih->data->plot_list[0] = new iupPlot(ih);

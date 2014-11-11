@@ -447,6 +447,7 @@ public:
     void DrawDataArea(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const;
     void DrawDataBar(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const;
   void DrawCrossHair(const iupPlotRect &inRect, cdCanvas* canvas) const;
+  void DrawSelection(cdCanvas* canvas) const;
 
   /*********************************/
 
@@ -484,6 +485,9 @@ public:
   int mCrossHairX;
   bool GetCrossPoint(const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, int &outY) const;
 
+  bool mShowSelection;
+  iupPlotRect mSelection;
+
   /*********************************/
 
   iupPlotMargin mMargin, mMarginAuto;
@@ -502,10 +506,14 @@ public:
   int mCurrentDataSet;
 
   void AddDataSet(iupPlotDataBase* inDataX, iupPlotDataBase* inDataY);
-  void RemoveDataset(int inIndex);
-  int FindDataset(const char* inName);
-  void RemoveAllDatasets();
-  long GetNextDatasetColor();
+  void RemoveDataSet(int inIndex);
+  int FindDataSet(const char* inName);
+  void RemoveAllDataSets();
+  long GetNextDataSetColor();
+
+  bool FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSample, double &OutX, double &OutY) const;
+  bool FindSample(const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, double inX, double inY, double tolX, double tolY, 
+                  int &outSample, double &outX, double &outY) const;
 };
 
 #endif

@@ -217,7 +217,7 @@ bool iupPlotTickIterLog::Init ()
     while (theNext<=theMin*kLittleDecrease) 
     {
       mCurrentTick = theNext;
-      theNext += mDelta*iupPlotExp (thePowMin,theBase);
+      theNext += mDelta*iupPlotExp(thePowMin,theBase);
       mCount++;
     }
   }
@@ -232,7 +232,7 @@ bool iupPlotTickIterLog::CalculateSpacing (double, double inDivGuess, iupPlotTic
   double theBase = mAxis->mLogBase;
   ioTick.mMajorSpan = theBase-1;// relative
 
-  ioTick.mMinorDivision = iupPlotRound (ioTick.mMajorSpan);
+  ioTick.mMinorDivision = iupPlotRound(ioTick.mMajorSpan);
 
   strcpy(ioTick.mFormatString, "%.1e");
   return true;
@@ -259,7 +259,7 @@ bool iupPlotTickIterLog::GetNextTick (double &outTick, bool &outIsMajorTick, cha
   if (fabs (theLogNow-thePowNow)<kEps)
     outIsMajorTick = true;
 
-  mCurrentTick += mDelta*iupPlotExp (thePowNow, theBase);
+  mCurrentTick += mDelta*iupPlotExp(thePowNow, theBase);
   mCount++;
 
   return true;
