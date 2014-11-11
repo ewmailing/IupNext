@@ -79,6 +79,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\srcplot\iup_plot_attrib.cpp" />
     <ClInclude Include="..\srcplot\iupPlot.h" />
     <ClInclude Include="..\include\iup_plot.h" />
     <ClCompile Include="..\srcplot\iupPlotCalc.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="..\srcplot\iupPlotTick.cpp" />
     <ClCompile Include="..\srcplot\iup_plot.cpp" />
     <ClCompile Include="..\srcplot\iupPlot.cpp" />
+    <ClInclude Include="..\srcplot\iup_plot_ctrl.h" />
     <CustomBuildStep Include="..\srcplot\iup_plot.def" />
   </ItemGroup>
   <ItemGroup>

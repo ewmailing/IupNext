@@ -6,12 +6,14 @@
     <ClCompile Include="..\srcplot\iupPlotTick.cpp" />
     <ClCompile Include="..\srcplot\iupPlotCalc.cpp" />
     <ClCompile Include="..\srcplot\iupPlotDraw.cpp" />
+    <ClCompile Include="..\srcplot\iup_plot_attrib.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcplot\iupPlot.h" />
     <ClInclude Include="..\include\iup_plot.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\srcplot\iup_plot_ctrl.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\srcplot\iup_plot.def" />

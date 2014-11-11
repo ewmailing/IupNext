@@ -69,14 +69,14 @@ static int iPlotGetPrecisionNumChar(bool inAutoSpacing, const char* inFormatStri
   return thePrecision;
 }
 
-void iupPlot::GetTickNumberSize(const iupPlotAxis& inAxis, cdCanvas* canvas, int *outWitdh, int *outHeight) const
+void iupPlotAxis::GetTickNumberSize(cdCanvas* canvas, int *outWitdh, int *outHeight) const
 {
   int theTickFontWidth, theTickFontHeight;
-  SetFont(canvas, inAxis.mTick.mFontStyle, inAxis.mTick.mFontSize);
+  SetFont(canvas, mTick.mFontStyle, mTick.mFontSize);
   cdCanvasGetTextSize(canvas, "1234567890.", &theTickFontWidth, &theTickFontHeight);
   theTickFontWidth /= 11;
   if (outHeight) *outHeight = theTickFontHeight;
-  if (outWitdh)  *outWitdh = theTickFontWidth * iPlotGetPrecisionNumChar(inAxis.mTick.mAutoSpacing, inAxis.mTick.mFormatString, inAxis.mMin, inAxis.mMax);
+  if (outWitdh)  *outWitdh = theTickFontWidth * iPlotGetPrecisionNumChar(mTick.mAutoSpacing, mTick.mFormatString, mMin, mMax);
 }
 
 void iupPlot::CalculateMargins(cdCanvas* canvas)
@@ -108,13 +108,13 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
           if (mAxisY.mTick.mRotateNumber)
           {
             int theYTickNumberHeight;
-            GetTickNumberSize(mAxisY, canvas, NULL, &theYTickNumberHeight);
+            mAxisY.GetTickNumberSize(canvas, NULL, &theYTickNumberHeight);
             mMargin.mBottom += theYTickNumberHeight / 2;
           }
           else
           {
             int theYTickNumberWidth;
-            GetTickNumberSize(mAxisY, canvas, &theYTickNumberWidth, NULL);
+            mAxisY.GetTickNumberSize(canvas, &theYTickNumberWidth, NULL);
             mMargin.mBottom += theYTickNumberWidth / 2;
           }
         }
@@ -133,13 +133,13 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
         if (mAxisX.mTick.mRotateNumber)
         {
           int theXTickNumberWidth;
-          GetTickNumberSize(mAxisX, canvas, &theXTickNumberWidth, NULL);
+          mAxisX.GetTickNumberSize(canvas, &theXTickNumberWidth, NULL);
           mMargin.mBottom += theXTickNumberWidth;
         }
         else
         {
           int theXTickNumberHeight;
-          GetTickNumberSize(mAxisX, canvas, NULL, &theXTickNumberHeight);
+          mAxisX.GetTickNumberSize(canvas, NULL, &theXTickNumberHeight);
           mMargin.mBottom += theXTickNumberHeight;
         }
       }
@@ -161,13 +161,13 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
         if (mAxisY.mTick.mRotateNumber)
         {
           int theYTickNumberHeight;
-          GetTickNumberSize(mAxisY, canvas, NULL, &theYTickNumberHeight);
+          mAxisY.GetTickNumberSize(canvas, NULL, &theYTickNumberHeight);
           mMargin.mBottom += theYTickNumberHeight/2;
         }
         else
         {
           int theYTickNumberWidth;
-          GetTickNumberSize(mAxisY, canvas, &theYTickNumberWidth, NULL);
+          mAxisY.GetTickNumberSize(canvas, &theYTickNumberWidth, NULL);
           mMargin.mBottom += theYTickNumberWidth/2;
         }
       }
@@ -186,13 +186,13 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
         if (mAxisX.mTick.mRotateNumber)
         {
           int theXTickNumberHeight;
-          GetTickNumberSize(mAxisX, canvas, NULL, &theXTickNumberHeight);
+          mAxisX.GetTickNumberSize(canvas, NULL, &theXTickNumberHeight);
           mMargin.mRight += theXTickNumberHeight/2;
         }
         else
         {
           int theXTickNumberWidth;
-          GetTickNumberSize(mAxisX, canvas, &theXTickNumberWidth, NULL);
+          mAxisX.GetTickNumberSize(canvas, &theXTickNumberWidth, NULL);
           mMargin.mRight += theXTickNumberWidth/2;
         }
       }
@@ -210,13 +210,13 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
         if (mAxisY.mTick.mRotateNumber)
         {
           int theYTickNumberHeight;
-          GetTickNumberSize(mAxisY, canvas, NULL, &theYTickNumberHeight);
+          mAxisY.GetTickNumberSize(canvas, NULL, &theYTickNumberHeight);
           mMargin.mLeft += theYTickNumberHeight;
         }
         else
         {
           int theYTickNumberWidth;
-          GetTickNumberSize(mAxisY, canvas, &theYTickNumberWidth, NULL);
+          mAxisY.GetTickNumberSize(canvas, &theYTickNumberWidth, NULL);
           mMargin.mLeft += theYTickNumberWidth;
         }
       }
@@ -241,13 +241,13 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
         if (mAxisX.mTick.mRotateNumber)
         {
           int theXTickNumberHeight;
-          GetTickNumberSize(mAxisX, canvas, NULL, &theXTickNumberHeight);
+          mAxisX.GetTickNumberSize(canvas, NULL, &theXTickNumberHeight);
           mMargin.mLeft += theXTickNumberHeight / 2;
         }
         else
         {
           int theXTickNumberWidth;
-          GetTickNumberSize(mAxisX, canvas, &theXTickNumberWidth, NULL);
+          mAxisX.GetTickNumberSize(canvas, &theXTickNumberWidth, NULL);
           mMargin.mLeft += theXTickNumberWidth / 2;
         }
       }
@@ -322,7 +322,7 @@ bool iupPlot::CalculateYRange(double &outYMin, double &outYMax)
   return true;
 }
 
-bool iupPlot::CalculateAxisRanges() 
+bool iupPlot::CalculateAxisRange() 
 {
   if (mAxisX.mAutoScaleMin || mAxisX.mAutoScaleMax) 
   {

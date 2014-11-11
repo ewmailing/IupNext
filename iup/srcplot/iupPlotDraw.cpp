@@ -44,75 +44,6 @@ static inline void iPlotDrawBox(cdCanvas* canvas, double inX, double inY, double
   cdfCanvasBox(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
 }
 
-void iupPlot::DrawSelection(cdCanvas* canvas) const
-{
-  cdCanvasSetForeground(canvas, mBox.mColor);
-  iPlotSetLine(canvas, mBox.mLineStyle, mBox.mLineWidth);
-
-  iPlotDrawRect(canvas, mSelection.mX, mSelection.mY, mSelection.mWidth, mSelection.mHeight);
-}
-
-void iupPlot::DrawBox(const iupPlotRect &inRect, cdCanvas* canvas) const
-{
-  cdCanvasSetForeground(canvas, mBox.mColor);
-  iPlotSetLine(canvas, mBox.mLineStyle, mBox.mLineWidth);
-
-  iPlotDrawRect(canvas, inRect.mX, inRect.mY, inRect.mWidth, inRect.mHeight);
-}
-
-bool iupPlot::DrawXGrid(const iupPlotRect &inRect, cdCanvas* canvas) const
-{
-  if (mGrid.mXGridOn) 
-  {
-    if (!mAxisX.mTickIter->Init())
-      return false;
-
-    double theX;
-    bool theIsMajorTick;
-
-    cdCanvasSetForeground(canvas, mGrid.mColor);
-    iPlotSetLine(canvas, mGrid.mLineStyle, mGrid.mLineWidth);
-
-    while (mAxisX.mTickIter->GetNextTick(theX, theIsMajorTick, NULL))
-    {          
-      if (theIsMajorTick) 
-      {
-        double theScreenX = mAxisX.mTrafo->Transform(theX);
-        cdfCanvasLine(canvas, theScreenX, inRect.mY, theScreenX, inRect.mY + inRect.mHeight-1);
-      }
-    }
-  }
-
-  return true;
-}
-
-bool iupPlot::DrawYGrid(const iupPlotRect &inRect, cdCanvas* canvas) const
-{
-  if (mGrid.mYGridOn)
-  {
-    if (!mAxisY.mTickIter->Init())
-      return false;
-
-    double theY;
-    bool theIsMajorTick;
-    iupPlotRect theTickRect;
-
-    cdCanvasSetForeground(canvas, mGrid.mColor);
-    iPlotSetLine(canvas, mGrid.mLineStyle, mGrid.mLineWidth);
-
-    while (mAxisY.mTickIter->GetNextTick(theY, theIsMajorTick, NULL))
-    {            
-      if (theIsMajorTick) 
-      {
-        double theScreenY = mAxisY.mTrafo->Transform(theY);
-        cdfCanvasLine(canvas, inRect.mX, theScreenY, inRect.mX + inRect.mWidth - 1, theScreenY);
-      }
-    }
-  }
-
-  return true;
-}
-
 static void iPlotFillArrow(cdCanvas* canvas, int inX1, int inY1, int inX2, int inY2, int inX3, int inY3)
 {
   cdCanvasBegin(canvas, CD_FILL);
@@ -136,9 +67,9 @@ static void iPlotDrawArrow(cdCanvas* canvas, double inX, double inY, int inVerti
 
     int theY1 = iupPlotRound(inY + inDirection*inSize);
     int theY2 = theY1 - inDirection*theSizeDir;
-    iPlotFillArrow(canvas, theX,              theY1, 
-                           theX - theSizeDir, theY2, 
-                           theX + theSizeDir, theY2);
+    iPlotFillArrow(canvas, theX, theY1,
+                   theX - theSizeDir, theY2,
+                   theX + theSizeDir, theY2);
   }
   else
   {
@@ -146,243 +77,308 @@ static void iPlotDrawArrow(cdCanvas* canvas, double inX, double inY, int inVerti
 
     int theX1 = iupPlotRound(inX + inDirection*inSize);
     int theX2 = theX1 - inDirection*theSizeDir;
-    iPlotFillArrow(canvas, theX1, theY, 
-                           theX2, theY - theSizeDir, 
-                           theX2, theY + theSizeDir);
+    iPlotFillArrow(canvas, theX1, theY,
+                   theX2, theY - theSizeDir,
+                   theX2, theY + theSizeDir);
   }
 }
 
-bool iupPlot::DrawXAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
+
+/************************************************************************************/
+
+
+void iupPlotBox::Draw(const iupPlotRect &inRect, cdCanvas* canvas) const
 {
-  if (!mAxisX.mShow)
-    return true;
+  cdCanvasSetForeground(canvas, mColor);
+  iPlotSetLine(canvas, mLineStyle, mLineWidth);
 
-  cdCanvasSetForeground(canvas, mAxisX.mColor);
-  iPlotSetLine(canvas, CD_CONTINUOUS, mAxisX.mLineWidth);
+  iPlotDrawRect(canvas, inRect.mX, inRect.mY, inRect.mWidth, inRect.mHeight);
+}
 
-  double theTargetY = 0;
-  if (!mAxisX.mCrossOrigin) 
+bool iupPlotGrid::DrawX(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const
+{
+  if (mShowX) 
   {
-    if (!mAxisY.mReverse) 
-      theTargetY = mAxisY.mMin;
-    else 
-      theTargetY = mAxisY.mMax;
-  }
-
-  double theScreenY  = mAxisY.mTrafo->Transform(theTargetY);
-  double theScreenX1 = inRect.mX;
-  double theScreenX2 = theScreenX1 + inRect.mWidth;
-
-  cdfCanvasLine(canvas, theScreenX1, theScreenY, theScreenX2, theScreenY);
-
-  if (mAxisX.mShowArrow)
-  {
-    if (!mAxisX.mReverse)
-      iPlotDrawArrow(canvas, theScreenX2, theScreenY, 0, 1, mAxisX.mTick.mMinorSize);
-    else
-      iPlotDrawArrow(canvas, theScreenX1, theScreenY, 0, -1, mAxisX.mTick.mMinorSize);
-  }
-
-  if (mAxisX.mTick.mShow) 
-  {
-    if (!mAxisX.mTickIter->Init())
+    if (!inTickIter->Init())
       return false;
 
     double theX;
     bool theIsMajorTick;
-    char theFormatString[30];
-    strcpy(theFormatString, mAxisX.mTick.mFormatString);
 
-    if (mAxisX.mTick.mShowNumber)
-      SetFont(canvas, mAxisX.mTick.mFontStyle, mAxisX.mTick.mFontSize);
+    cdCanvasSetForeground(canvas, mColor);
+    iPlotSetLine(canvas, mLineStyle, mLineWidth);
 
-    while (mAxisX.mTickIter->GetNextTick(theX, theIsMajorTick, theFormatString))
-    {
-      if (!DrawXTick(theX, theScreenY, theIsMajorTick, theFormatString, canvas))
-        return false;
-    }
-
-    theScreenY -= mAxisX.mTick.mMajorSize;  // skip major tick
-    if (mAxisX.mTick.mShowNumber)
-    {
-      if (mAxisX.mTick.mRotateNumber)
+    while (inTickIter->GetNextTick(theX, theIsMajorTick, NULL))
+    {          
+      if (theIsMajorTick) 
       {
-        int theXTickNumberWidth;
-        GetTickNumberSize(mAxisX, canvas, &theXTickNumberWidth, NULL);
-        theScreenY -= theXTickNumberWidth;
+        double theScreenX = inTrafo->Transform(theX);
+        cdfCanvasLine(canvas, theScreenX, inRect.mY, theScreenX, inRect.mY + inRect.mHeight-1);
       }
-      else
-      {
-        int theXTickNumberHeight;
-        GetTickNumberSize(mAxisX, canvas, NULL, &theXTickNumberHeight);
-        theScreenY -= theXTickNumberHeight;
-      }
-    }
-  }
-
-  if (mAxisX.GetLabel()) 
-  {
-    int theXFontHeight;
-    SetFont(canvas, mAxisX.mFontStyle, mAxisX.mFontSize);
-    cdCanvasGetFontDim(canvas, NULL, &theXFontHeight, NULL, NULL);
-
-    theScreenY -= theXFontHeight / 10;  // spacing
-
-    if (mAxisX.mLabelCentered)
-    {
-      double theScreenX = theScreenX1 + inRect.mWidth / 2;
-      iPlotDrawText(canvas, theScreenX, theScreenY, CD_NORTH, mAxisX.GetLabel());
-    }
-    else
-    {
-      double theScreenX = theScreenX2;
-      iPlotDrawText(canvas, theScreenX, theScreenY, CD_NORTH_EAST, mAxisX.GetLabel());
     }
   }
 
   return true;
 }
 
-bool iupPlot::DrawXTick(double inX, double inScreenY, bool inMajor, const char*inFormatString, cdCanvas* canvas) const
+bool iupPlotGrid::DrawY(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const
+{
+  if (mShowY)
+  {
+    if (!inTickIter->Init())
+      return false;
+
+    double theY;
+    bool theIsMajorTick;
+    iupPlotRect theTickRect;
+
+    cdCanvasSetForeground(canvas, mColor);
+    iPlotSetLine(canvas, mLineStyle, mLineWidth);
+
+    while (inTickIter->GetNextTick(theY, theIsMajorTick, NULL))
+    {            
+      if (theIsMajorTick) 
+      {
+        double theScreenY = inTrafo->Transform(theY);
+        cdfCanvasLine(canvas, inRect.mX, theScreenY, inRect.mX + inRect.mWidth - 1, theScreenY);
+      }
+    }
+  }
+
+  return true;
+}
+
+bool iupPlotAxis::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisY) const
+{
+  if (!mShow)
+    return true;
+
+  cdCanvasSetForeground(canvas, mColor);
+  iPlotSetLine(canvas, CD_CONTINUOUS, mLineWidth);
+
+  double theTargetY = 0;
+  if (!mCrossOrigin) 
+  {
+    if (!inAxisY.mReverse) 
+      theTargetY = inAxisY.mMin;
+    else 
+      theTargetY = inAxisY.mMax;
+  }
+
+  double theScreenY  = inAxisY.mTrafo->Transform(theTargetY);
+  double theScreenX1 = inRect.mX;
+  double theScreenX2 = theScreenX1 + inRect.mWidth;
+
+  cdfCanvasLine(canvas, theScreenX1, theScreenY, theScreenX2, theScreenY);
+
+  if (mShowArrow)
+  {
+    if (!mReverse)
+      iPlotDrawArrow(canvas, theScreenX2, theScreenY, 0, 1, mTick.mMinorSize);
+    else
+      iPlotDrawArrow(canvas, theScreenX1, theScreenY, 0, -1, mTick.mMinorSize);
+  }
+
+  if (mTick.mShow) 
+  {
+    if (!mTickIter->Init())
+      return false;
+
+    double theX;
+    bool theIsMajorTick;
+    char theFormatString[30];
+    strcpy(theFormatString, mTick.mFormatString);
+
+    if (mTick.mShowNumber)
+      SetFont(canvas, mTick.mFontStyle, mTick.mFontSize);
+
+    while (mTickIter->GetNextTick(theX, theIsMajorTick, theFormatString))
+    {
+      if (!DrawXTick(theX, theScreenY, theIsMajorTick, theFormatString, canvas))
+        return false;
+    }
+
+    theScreenY -= mTick.mMajorSize;  // skip major tick
+    if (mTick.mShowNumber)
+    {
+      if (mTick.mRotateNumber)
+      {
+        int theXTickNumberWidth;
+        GetTickNumberSize(canvas, &theXTickNumberWidth, NULL);
+        theScreenY -= theXTickNumberWidth;
+      }
+      else
+      {
+        int theXTickNumberHeight;
+        GetTickNumberSize(canvas, NULL, &theXTickNumberHeight);
+        theScreenY -= theXTickNumberHeight;
+      }
+    }
+  }
+
+  if (GetLabel()) 
+  {
+    int theXFontHeight;
+    SetFont(canvas, mFontStyle, mFontSize);
+    cdCanvasGetFontDim(canvas, NULL, &theXFontHeight, NULL, NULL);
+
+    theScreenY -= theXFontHeight / 10;  // spacing
+
+    if (mLabelCentered)
+    {
+      double theScreenX = theScreenX1 + inRect.mWidth / 2;
+      iPlotDrawText(canvas, theScreenX, theScreenY, CD_NORTH, GetLabel());
+    }
+    else
+    {
+      double theScreenX = theScreenX2;
+      iPlotDrawText(canvas, theScreenX, theScreenY, CD_NORTH_EAST, GetLabel());
+    }
+  }
+
+  return true;
+}
+
+bool iupPlotAxis::DrawXTick(double inX, double inScreenY, bool inMajor, const char*inFormatString, cdCanvas* canvas) const
 {
   int theTickSize;
-  double theScreenX = mAxisX.mTrafo->Transform(inX);
+  double theScreenX = mTrafo->Transform(inX);
   if (inMajor) 
   {
-    theTickSize = mAxisX.mTick.mMajorSize;
+    theTickSize = mTick.mMajorSize;
 
-    if (mAxisX.mTick.mShowNumber)
+    if (mTick.mShowNumber)
     {
       char theBuf[128];
       sprintf(theBuf, inFormatString, inX);
-      double theScreenY = inScreenY - theTickSize - mAxisX.mTick.mMinorSize;  // Use minor size as spacing
-      if (mAxisY.mTick.mRotateNumber)
+      double theScreenY = inScreenY - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
+      if (mTick.mRotateNumber)
         iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, CD_EAST, theBuf);
       else
         iPlotDrawText(canvas, theScreenX, theScreenY, CD_NORTH, theBuf);
     }
   }
   else 
-    theTickSize = mAxisX.mTick.mMinorSize;
+    theTickSize = mTick.mMinorSize;
 
   cdfCanvasLine(canvas, theScreenX, inScreenY, theScreenX, inScreenY - theTickSize);
   return true;
 }
 
-bool iupPlot::DrawYAxis(const iupPlotRect &inRect, cdCanvas* canvas) const
+bool iupPlotAxis::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisX) const
 {
-  if (!mAxisY.mShow)
+  if (!mShow)
     return true;
 
-  cdCanvasSetForeground(canvas, mAxisY.mColor);
-  iPlotSetLine(canvas, CD_CONTINUOUS, mAxisY.mLineWidth);
+  cdCanvasSetForeground(canvas, mColor);
+  iPlotSetLine(canvas, CD_CONTINUOUS, mLineWidth);
 
   double theTargetX = 0;
-  if (!mAxisY.mCrossOrigin) 
+  if (!mCrossOrigin) 
   {
-    if (!mAxisX.mReverse) 
-      theTargetX = mAxisX.mMin;
+    if (!inAxisX.mReverse) 
+      theTargetX = inAxisX.mMin;
     else
-      theTargetX = mAxisX.mMax;
+      theTargetX = inAxisX.mMax;
   }
-  if (mAxisX.mDiscrete)
+  if (inAxisX.mDiscrete)
     theTargetX -= 0.5;
 
-  double theScreenX  = mAxisX.mTrafo->Transform(theTargetX);
+  double theScreenX  = inAxisX.mTrafo->Transform(theTargetX);
   double theScreenY1 = inRect.mY;
   double theScreenY2 = theScreenY1 + inRect.mHeight;
 
   cdfCanvasLine(canvas, theScreenX, theScreenY1, theScreenX, theScreenY2);
 
-  if (mAxisX.mShowArrow)
+  if (mShowArrow)
   {
-    if (!mAxisY.mReverse)
-      iPlotDrawArrow(canvas, theScreenX, theScreenY2, 1, 1, mAxisY.mTick.mMinorSize);
+    if (!mReverse)
+      iPlotDrawArrow(canvas, theScreenX, theScreenY2, 1, 1, mTick.mMinorSize);
     else
-      iPlotDrawArrow(canvas, theScreenX, theScreenY1, 1, -1, mAxisY.mTick.mMinorSize);
+      iPlotDrawArrow(canvas, theScreenX, theScreenY1, 1, -1, mTick.mMinorSize);
   }
 
-  if (mAxisY.mTick.mShow) 
+  if (mTick.mShow) 
   {
-    if (!mAxisY.mTickIter->Init())
+    if (!mTickIter->Init())
       return false;
 
     double theY;
     bool theIsMajorTick;
     char theFormatString[30];
-    strcpy(theFormatString, mAxisY.mTick.mFormatString);
+    strcpy(theFormatString, mTick.mFormatString);
 
-    if (mAxisY.mTick.mShowNumber)
-      SetFont(canvas, mAxisY.mTick.mFontStyle, mAxisY.mTick.mFontSize);
+    if (mTick.mShowNumber)
+      SetFont(canvas, mTick.mFontStyle, mTick.mFontSize);
 
-    while (mAxisY.mTickIter->GetNextTick(theY, theIsMajorTick, theFormatString))
+    while (mTickIter->GetNextTick(theY, theIsMajorTick, theFormatString))
     {
       if (!DrawYTick(theY, theScreenX, theIsMajorTick, theFormatString, canvas))
         return false;
     }
 
-    theScreenX -= mAxisY.mTick.mMajorSize;  // skip major tick
-    if (mAxisY.mTick.mShowNumber)
+    theScreenX -= mTick.mMajorSize;  // skip major tick
+    if (mTick.mShowNumber)
     {
-      if (mAxisY.mTick.mRotateNumber)
+      if (mTick.mRotateNumber)
       {
         int theYTickNumberHeight;
-        GetTickNumberSize(mAxisY, canvas, NULL, &theYTickNumberHeight);
+        GetTickNumberSize(canvas, NULL, &theYTickNumberHeight);
         theScreenX -= theYTickNumberHeight;
       }
       else
       {
         int theYTickNumberWidth;
-        GetTickNumberSize(mAxisY, canvas, &theYTickNumberWidth, NULL);
+        GetTickNumberSize(canvas, &theYTickNumberWidth, NULL);
         theScreenX -= theYTickNumberWidth;
       }
     }
   }
 
-  if (mAxisY.GetLabel()) 
+  if (GetLabel()) 
   {
     int theYFontHeight;
-    SetFont(canvas, mAxisY.mFontStyle, mAxisY.mFontSize);
+    SetFont(canvas, mFontStyle, mFontSize);
     cdCanvasGetFontDim(canvas, NULL, &theYFontHeight, NULL, NULL);
 
     theScreenX -= theYFontHeight / 10;  // spacing
 
-    if (mAxisY.mLabelCentered)
+    if (mLabelCentered)
     {
       double theScreenY = theScreenY1 + inRect.mHeight / 2;
-      iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, CD_SOUTH, mAxisY.GetLabel());
+      iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, CD_SOUTH, GetLabel());
     }
     else
     {
       double theScreenY = theScreenY2;
-      iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, CD_SOUTH_EAST, mAxisY.GetLabel());
+      iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, CD_SOUTH_EAST, GetLabel());
     }
   }
 
   return true;
 }
 
-bool iupPlot::DrawYTick(double inY, double inScreenX, bool inMajor, const char*inFormatString, cdCanvas* canvas) const
+bool iupPlotAxis::DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas) const
 {
   int theTickSize;
-  double theScreenY = mAxisY.mTrafo->Transform(inY);
+  double theScreenY = mTrafo->Transform(inY);
   if (inMajor) 
   {
-    theTickSize = mAxisY.mTick.mMajorSize;
+    theTickSize = mTick.mMajorSize;
 
-    if (mAxisY.mTick.mShowNumber)
+    if (mTick.mShowNumber)
     {
       char theBuf[128];
       sprintf(theBuf, inFormatString, inY);
-      double theScreenX = inScreenX - theTickSize - mAxisY.mTick.mMinorSize;  // Use minor size as spacing
-      if (mAxisY.mTick.mRotateNumber)
+      double theScreenX = inScreenX - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
+      if (mTick.mRotateNumber)
         iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, CD_SOUTH, theBuf);
       else
         iPlotDrawText(canvas, theScreenX, theScreenY, CD_EAST, theBuf);
     }
   }
   else 
-    theTickSize = mAxisY.mTick.mMinorSize;
+    theTickSize = mTick.mMinorSize;
 
   cdfCanvasLine(canvas, inScreenX, theScreenY, inScreenX - theTickSize, theScreenY);  
   return true;
@@ -585,16 +581,21 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
   return true;
 }
 
-void iupPlot::DrawDataLine(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const 
+
+/************************************************************************************/
+
+
+void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const
 {
+  int theCount = mDataX->GetCount();
   cdCanvasBegin(canvas, CD_OPEN_LINES);
 
-  for (int i = 0; i < inCount; i++) 
+  for (int i = 0; i < theCount; i++) 
   {
-    double theX = inXData.GetValue(i);
-    double theY = inYData.GetValue(i);
-    double theScreenX = mAxisX.mTrafo->Transform(theX);
-    double theScreenY = mAxisY.mTrafo->Transform(theY);
+    double theX = mDataX->GetValue(i);
+    double theY = mDataY->GetValue(i);
+    double theScreenX = inTrafoX->Transform(theX);
+    double theScreenY = inTrafoY->Transform(theY);
 
     cdfCanvasVertex(canvas, theScreenX, theScreenY);
   }
@@ -602,29 +603,31 @@ void iupPlot::DrawDataLine(const iupPlotDataBase &inXData, const iupPlotDataBase
   cdCanvasEnd(canvas);
 }
 
-void iupPlot::DrawDataMark(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const 
+void iupPlotDataSet::DrawDataMark(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const
 {
-  for (int i = 0; i < inCount; i++) 
+  int theCount = mDataX->GetCount();
+  for (int i = 0; i < theCount; i++)
   {
-    double theX = inXData.GetValue(i);
-    double theY = inYData.GetValue(i);
-    double theScreenX = mAxisX.mTrafo->Transform(theX);
-    double theScreenY = mAxisY.mTrafo->Transform(theY);
+    double theX = mDataX->GetValue(i);
+    double theY = mDataY->GetValue(i);
+    double theScreenX = inTrafoX->Transform(theX);
+    double theScreenY = inTrafoY->Transform(theY);
 
     cdCanvasMark(canvas, iupPlotRound(theScreenX), iupPlotRound(theScreenY));
   }
 }
 
-void iupPlot::DrawDataMarkLine(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const 
+void iupPlotDataSet::DrawDataMarkLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const
 {
+  int theCount = mDataX->GetCount();
   cdCanvasBegin(canvas, CD_OPEN_LINES);
 
-  for (int i = 0; i < inCount; i++) 
+  for (int i = 0; i < theCount; i++) 
   {
-    double theX = inXData.GetValue(i);
-    double theY = inYData.GetValue(i);
-    double theScreenX = mAxisX.mTrafo->Transform(theX);
-    double theScreenY = mAxisY.mTrafo->Transform(theY);
+    double theX = mDataX->GetValue(i);
+    double theY = mDataY->GetValue(i);
+    double theScreenX = inTrafoX->Transform(theX);
+    double theScreenY = inTrafoY->Transform(theY);
 
     cdCanvasMark(canvas, iupPlotRound(theScreenX), iupPlotRound(theScreenY));
     cdfCanvasVertex(canvas, theScreenX, theScreenY);
@@ -633,28 +636,29 @@ void iupPlot::DrawDataMarkLine(const iupPlotDataBase &inXData, const iupPlotData
   cdCanvasEnd(canvas);
 }
 
-void iupPlot::DrawDataArea(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const 
+void iupPlotDataSet::DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const
 {
+  int theCount = mDataX->GetCount();
   cdCanvasBegin(canvas, CD_FILL);
 
-  for (int i = 0; i < inCount; i++) 
+  for (int i = 0; i < theCount; i++) 
   {
-    double theX = inXData.GetValue(i);
-    double theY = inYData.GetValue(i);
-    double theScreenX = mAxisX.mTrafo->Transform(theX);
-    double theScreenY = mAxisY.mTrafo->Transform(theY);
+    double theX = mDataX->GetValue(i);
+    double theY = mDataY->GetValue(i);
+    double theScreenX = inTrafoX->Transform(theX);
+    double theScreenY = inTrafoY->Transform(theY);
 
     if (i == 0) 
     {
-      double theScreenY0 = mAxisY.mTrafo->Transform(0);
+      double theScreenY0 = inTrafoY->Transform(0);
       cdfCanvasVertex(canvas, theScreenX, theScreenY0);
     }
 
     cdfCanvasVertex(canvas, theScreenX, theScreenY);
 
-    if (i == inCount-1)
+    if (i == theCount-1)
     {
-      double theScreenY0 = mAxisY.mTrafo->Transform(0);
+      double theScreenY0 = inTrafoY->Transform(0);
       cdfCanvasVertex(canvas, theScreenX, theScreenY0);
     }
   }
@@ -662,24 +666,25 @@ void iupPlot::DrawDataArea(const iupPlotDataBase &inXData, const iupPlotDataBase
   cdCanvasEnd(canvas);
 }
 
-void iupPlot::DrawDataBar(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const 
+void iupPlotDataSet::DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const
 {
-  double theScreenY0 = mAxisY.mTrafo->Transform (0);
+  int theCount = mDataX->GetCount();
+  double theScreenY0 = inTrafoY->Transform(0);
 
-  double theMinX = inXData.GetValue(0);
-  double theScreenMinX = mAxisX.mTrafo->Transform(theMinX);
-  double theMaxX = inXData.GetValue(inCount-1);
-  double theScreenMaxX = mAxisX.mTrafo->Transform(theMaxX);
+  double theMinX = mDataX->GetValue(0);
+  double theScreenMinX = inTrafoX->Transform(theMinX);
+  double theMaxX = mDataX->GetValue(theCount-1);
+  double theScreenMaxX = inTrafoX->Transform(theMaxX);
 
-  double theBarWidth = (theScreenMaxX - theScreenMinX + 1) / inCount;
+  double theBarWidth = (theScreenMaxX - theScreenMinX + 1) / theCount;
   theBarWidth *= 0.9;
 
-  for (int i = 0; i < inCount; i++) 
+  for (int i = 0; i < theCount; i++) 
   {
-    double theX = inXData.GetValue(i);
-    double theY = inYData.GetValue(i);
-    double theScreenX = mAxisX.mTrafo->Transform(theX);
-    double theScreenY = mAxisY.mTrafo->Transform(theY);
+    double theX = mDataX->GetValue(i);
+    double theY = mDataY->GetValue(i);
+    double theScreenX = inTrafoX->Transform(theX);
+    double theScreenY = inTrafoY->Transform(theY);
 
     double theBarX = theScreenX - theBarWidth / 2;
     double theBarHeight = theScreenY - theScreenY0;
@@ -688,45 +693,38 @@ void iupPlot::DrawDataBar(const iupPlotDataBase &inXData, const iupPlotDataBase 
   }
 }
 
-bool iupPlot::DrawPlot(int inIndex, cdCanvas* canvas) const 
-{  
-  iupPlotDataSet* dataset = mDataSetList[inIndex];
-
-  iupPlotDataBase *theXData = dataset->mDataX;
-  iupPlotDataBase *theYData = dataset->mDataY;
-
-  int theXCount = theXData->GetCount();
-  int theYCount = theXData->GetCount();
+void iupPlotDataSet::DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const
+{
+  int theXCount = mDataX->GetCount();
+  int theYCount = mDataY->GetCount();
 
   if ((theXCount == 0) || (theYCount == 0))
-    return false;
+    return;
 
   if (theXCount != theYCount)
-    return false;
+    return;
 
-  cdCanvasSetForeground(canvas, dataset->mColor);
-  iPlotSetLine(canvas, dataset->mLineStyle, dataset->mLineWidth);
-  iPlotSetMark(canvas, dataset->mMarkStyle, dataset->mMarkSize);
+  cdCanvasSetForeground(canvas, mColor);
+  iPlotSetLine(canvas, mLineStyle, mLineWidth);
+  iPlotSetMark(canvas, mMarkStyle, mMarkSize);
 
-  switch (dataset->mMode)
+  switch (mMode)
   {
   case IUP_PLOT_LINE:
-    DrawDataLine(*theXData, *theYData, theXCount, canvas);
+    DrawDataLine(inTrafoX, inTrafoY, canvas);
     break;
   case IUP_PLOT_MARK:
-    DrawDataMark(*theXData, *theYData, theXCount, canvas);
+    DrawDataMark(inTrafoX, inTrafoY, canvas);
     break;
   case IUP_PLOT_MARKLINE:
-    DrawDataMarkLine(*theXData, *theYData, theXCount, canvas);
+    DrawDataMarkLine(inTrafoX, inTrafoY, canvas);
     break;
   case IUP_PLOT_AREA:
-    DrawDataArea(*theXData, *theYData, theXCount, canvas);
+    DrawDataArea(inTrafoX, inTrafoY, canvas);
     break;
   case IUP_PLOT_BAR:
-    DrawDataBar(*theXData, *theYData, theXCount, canvas);
+    DrawDataBar(inTrafoX, inTrafoY, canvas);
     break;
   }
-
-  return true;
 }
 

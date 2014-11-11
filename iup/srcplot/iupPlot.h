@@ -153,6 +153,20 @@ public:
   bool CalculateRange(double &outMin, double &outMax);
 };
 
+class iupPlotDataBool : public iupPlotDataBase
+{
+public:
+  iupPlotDataBool() :iupPlotDataBase(sizeof(bool)) { }
+
+  bool* GetBoolData() const { return (bool*)iupArrayGetData(mArray); }
+  double GetValue(int inIndex) const { bool* data = (bool*)iupArrayGetData(mArray); return (int)data[inIndex]; }
+
+  void AddItem(bool inBool) { bool* data = (bool*)iupArrayInc(mArray); data[iupArrayCount(mArray) - 1] = inBool; }
+  void InsertItem(int inIndex, bool inBool) { bool* data = (bool*)iupArrayInsert(mArray, inIndex, 1); data[inIndex] = inBool; }
+
+  bool CalculateRange(double &outMin, double &outMax) { outMin = 0; outMax = 1.0; }
+};
+
 enum iupPlotMode { IUP_PLOT_LINE, IUP_PLOT_MARK, IUP_PLOT_MARKLINE, IUP_PLOT_AREA, IUP_PLOT_BAR };
 
 class iupPlotDataSet
@@ -164,6 +178,13 @@ public:
   void SetName(const char* inName) { if (mName) free(mName); mName = iupStrDup(inName); }
   const char* GetName() {return mName; }
 
+  bool FindSample(double inX, double inY, double tolX, double tolY,
+                  int &outSample, double &outX, double &outY) const;
+
+  void DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
+
+ // void SelectSample(int inSample);
+
   long mColor;
   iupPlotMode mMode;
   int mLineStyle;
@@ -173,9 +194,16 @@ public:
 
   iupPlotDataBase* mDataX;
   iupPlotDataBase* mDataY;
+  iupPlotDataBool* mSelection;
 
 protected:
   char* mName;
+
+  void DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
+  void DrawDataMark(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
+  void DrawDataMarkLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
+  void DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
+  void DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
 };
 
 class iupPlotAxis;
@@ -274,7 +302,7 @@ public:
       mReverse(false), mLogScale(false), mCrossOrigin(false), mColor(CD_BLACK),
       mMaxDecades(-1), mLogBase(10), mLabelCentered(false), mHasZoom(false),
       mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1),
-      mFontSize(0), mFontStyle(-1) {}
+      mFontSize(0), mFontStyle(-1), mDefaultFontSize(0), mDefaultFontStyle(-1) {}
   ~iupPlotAxis() { SetLabel(NULL); }
 
   void SetLabel(const char* inLabel) { if (mLabel) free(mLabel); mLabel = iupStrDup(inLabel); }
@@ -282,6 +310,10 @@ public:
 
   void Init();
   void SetNamedTickIter(const iupPlotDataString *inStringXData);
+  void GetTickNumberSize(cdCanvas* canvas, int *outWitdh, int *outHeight) const;
+
+  bool DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisY) const;
+  bool DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisX) const;
 
   bool HasZoom() const { return mHasZoom; }
   bool ResetZoom();
@@ -306,6 +338,8 @@ public:
   int mFontSize;
   int mFontStyle;
   bool mLabelCentered;
+  int mDefaultFontSize;
+  int mDefaultFontStyle;
 
   bool mLogScale;
   int mMaxDecades;// property for auto logscale
@@ -321,6 +355,11 @@ public:
 
 protected:
   char* mLabel;
+
+  void SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const;
+
+  bool DrawXTick(double inX, double inScreenY, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;
+  bool DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;
 
   iupPlotTrafoLinear mLinTrafo;
   iupPlotTrafoLog mLogTrafo;
@@ -344,11 +383,14 @@ class iupPlotGrid
 {
 public:
   iupPlotGrid()
-    : mXGridOn(false), mYGridOn(false), mColor(cdEncodeColor(200, 200, 200)), 
+    : mShowX(false), mShowY(false), mColor(cdEncodeColor(200, 200, 200)), 
       mLineStyle(CD_CONTINUOUS), mLineWidth(1) {}
 
-  bool mXGridOn;
-  bool mYGridOn;
+  bool DrawX(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const;
+  bool DrawY(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const;
+
+  bool mShowX;
+  bool mShowY;
   long mColor;
   int  mLineStyle;
   int  mLineWidth;
@@ -360,6 +402,8 @@ public:
   iupPlotBox()
     : mShow(false), mColor(CD_BLACK),
       mLineStyle(CD_CONTINUOUS), mLineWidth(1) {}
+
+  void Draw(const iupPlotRect &inRect, cdCanvas* canvas) const;
 
   bool mShow;
   long mColor;
@@ -424,7 +468,7 @@ public:
 
   void SetViewport(int x, int y, int w, int h);
   bool Render(cdCanvas* canvas);
-  void Configure();
+  void ConfigureAxis();
   void SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const;
 
   /*********************************/
@@ -432,27 +476,13 @@ public:
   void DrawPlotTitle(cdCanvas* canvas) const;
     void SetTitleFont(cdCanvas* canvas) const;
   void DrawPlotBackground(cdCanvas* canvas) const;
-  void DrawBox(const iupPlotRect &inRect, cdCanvas* canvas) const;
-  bool DrawXGrid(const iupPlotRect &inRect, cdCanvas* canvas) const;
-  bool DrawYGrid(const iupPlotRect &inRect, cdCanvas* canvas) const;
-  bool DrawXAxis(const iupPlotRect &inRect, cdCanvas* canvas) const;
-  bool DrawYAxis(const iupPlotRect &inRect, cdCanvas* canvas) const;
-    bool DrawXTick(double inX, double inScreenY, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;
-    bool DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;
   bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas) const;
-  bool DrawPlot(int inIndex, cdCanvas* canvas) const;
-    void DrawDataLine(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const;
-    void DrawDataMark(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const;
-    void DrawDataMarkLine(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const;
-    void DrawDataArea(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const;
-    void DrawDataBar(const iupPlotDataBase &inXData, const iupPlotDataBase &inYData, int inCount, cdCanvas* canvas) const;
   void DrawCrossHair(const iupPlotRect &inRect, cdCanvas* canvas) const;
-  void DrawSelection(cdCanvas* canvas) const;
 
   /*********************************/
 
   void CalculateMargins(cdCanvas* canvas);
-  bool CalculateAxisRanges();
+  bool CalculateAxisRange();
     bool CalculateXRange(double &outXMin, double &outXMax);
     bool CalculateYRange(double &outYMin, double &outYMax);
   bool CheckRange(const iupPlotAxis &inAxis);
@@ -462,7 +492,6 @@ public:
     bool CalculateLogTransformation(int inBegin, int inEnd, const iupPlotAxis& inAxis, iupPlotTrafoLog* outTrafo);
   bool CalculateTickSpacing(const iupPlotRect &inRect, cdCanvas* canvas);
   void CalculateTickSize(cdCanvas* canvas, iupPlotTick &ioTick);
-    void GetTickNumberSize(const iupPlotAxis& inAxis, cdCanvas* canvas, int *outWitdh, int *outHeight) const;
 
   /*********************************/
 
@@ -512,8 +541,6 @@ public:
   long GetNextDataSetColor();
 
   bool FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSample, double &outX, double &outY, const char* &outStrX) const;
-  bool FindSample(const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, double inX, double inY, double tolX, double tolY, 
-                  int &outSample, double &outX, double &outY) const;
 };
 
 #endif

@@ -147,7 +147,7 @@ bool iupPlotDataReal::CalculateRange(double &outMin, double &outMax)
 
 iupPlotDataSet::iupPlotDataSet(iupPlotDataBase* inDataX, iupPlotDataBase* inDataY, const char* inLegend, long inColor)
   :mColor(inColor), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mMarkStyle(CD_X), mMarkSize(7),
-  mDataX(inDataX), mDataY(inDataY), mMode(IUP_PLOT_LINE), mName(NULL)
+   mDataX(inDataX), mDataY(inDataY), mMode(IUP_PLOT_LINE), mName(NULL), mSelection(NULL)
 {
   SetName(inLegend);
 }
@@ -157,6 +157,26 @@ iupPlotDataSet::~iupPlotDataSet()
   SetName(NULL);
   delete[] mDataX;
   delete[] mDataY;
+}
+
+bool iupPlotDataSet::FindSample(double inX, double inY, double tolX, double tolY,
+                                int &outSample, double &outX, double &outY) const
+{
+  int theCount = mDataX->GetCount();
+  for (int i = 0; i < theCount; i++)
+  {
+    outX = mDataX->GetValue(i);
+    outY = mDataY->GetValue(i);
+
+    if (fabs(outX - inX) < tolX &&
+        fabs(outY - inY) < tolY)
+    {
+      outSample = i;
+      return true;
+    }
+  }
+
+  return false;
 }
 
 
@@ -356,6 +376,13 @@ bool iupPlotAxis::ScrollTo(double inMin)
   return true;
 }
 
+void iupPlotAxis::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const
+{
+  if (inFontStyle == -1) inFontStyle = mDefaultFontStyle;
+  if (inFontSize == 0) inFontSize = mDefaultFontSize;
+  cdCanvasFont(canvas, NULL, inFontStyle, inFontSize);
+}
+
 
 /************************************************************************************************/
 
@@ -483,26 +510,6 @@ void iupPlot::RemoveAllDataSets()
   }
 }
 
-bool iupPlot::FindSample(const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, double inX, double inY, double tolX, double tolY, 
-                         int &outSample, double &outX, double &outY) const
-{
-  int theCount = inXData->GetCount();
-  for (int i = 0; i < theCount; i++)
-  {
-    outX = inXData->GetValue(i);
-    outY = inYData->GetValue(i);
-
-    if (fabs(outX - inX) < tolX && 
-        fabs(outY - inY) < tolY)
-    {
-      outSample = i;
-      return true;
-    }
-  }
-
-  return false;
-}
-
 bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSample, double &outX, double &outY, const char* &outStrX) const
 {
   double theX = mAxisX.mTrafo->TransformBack((double)inX);
@@ -514,11 +521,9 @@ bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &ou
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
 
-    iupPlotDataBase *theXData = dataset->mDataX;
-    iupPlotDataBase *theYData = dataset->mDataY;
-
-    if (FindSample(theXData, theYData, theX, theY, tolX, tolY, outSample, outX, outY))
+    if (dataset->FindSample(theX, theY, tolX, tolY, outSample, outX, outY))
     {
+      iupPlotDataBase *theXData = dataset->mDataX;
       if (theXData->IsString())
       {
         const iupPlotDataString *theStringXData = (const iupPlotDataString *)(theXData);
@@ -535,7 +540,7 @@ bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &ou
   return false;
 }
 
-void iupPlot::Configure()
+void iupPlot::ConfigureAxis()
 {
   mAxisX.Init();
   mAxisY.Init();
@@ -571,9 +576,9 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   cdCanvasNativeFont(canvas, IupGetAttribute(ih, "FONT"));
 
-  Configure();
+  ConfigureAxis();
 
-  if (!CalculateAxisRanges())
+  if (!CalculateAxisRange())
     return false;
 
   if (!CheckRange(mAxisX))
@@ -582,6 +587,7 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (!CheckRange(mAxisY))
     return false;
 
+  // Must be before calculate margins
   CalculateTickSize(canvas, mAxisX.mTick);
   CalculateTickSize(canvas, mAxisY.mTick);
 
@@ -610,20 +616,20 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (pre_cb)
     pre_cb(ih, canvas);
 
-  if (!DrawXGrid(theRect, canvas))
+  if (!mGrid.DrawX(mAxisX.mTickIter, mAxisX.mTrafo, theRect, canvas))
     return false;
 
-  if (!DrawYGrid(theRect, canvas))
+  if (!mGrid.DrawY(mAxisY.mTickIter, mAxisY.mTrafo, theRect, canvas))
     return false;
 
-  if (!DrawXAxis(theRect, canvas))
+  if (!mAxisX.DrawX(theRect, canvas, mAxisY))
     return false;
 
-  if (!DrawYAxis(theRect, canvas))
+  if (!mAxisY.DrawY(theRect, canvas, mAxisX))
     return false;
 
   if (mBox.mShow)
-    DrawBox(theRect, canvas);
+    mBox.Draw(theRect, canvas);
 
   // clip the plotregion while drawing plots
   cdCanvasClipArea(canvas, theRect.mX, theRect.mX + theRect.mWidth - 1, 
@@ -631,15 +637,15 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   for (int ds = 0; ds < mDataSetListCount; ds++) 
   {
-    if (!DrawPlot(ds, canvas))
-      return false;
+    iupPlotDataSet* dataset = mDataSetList[ds];
+    dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas);
   }
 
   if (mCrossHair)
     DrawCrossHair(theRect, canvas);
 
   if (mShowSelection)
-    DrawSelection(canvas);
+    mBox.Draw(mSelection, canvas);
 
   if (!DrawLegend(theRect, canvas))
     return false;
