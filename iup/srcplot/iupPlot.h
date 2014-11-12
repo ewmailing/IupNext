@@ -107,18 +107,21 @@ public:
 class iupPlotDataBase
 {
 public:
-  iupPlotDataBase(int inSize) :mIsString(false) { mArray = iupArrayCreate(20, inSize); }
+  iupPlotDataBase(int inSize) :mIsString(false), mCount(0) { mArray = iupArrayCreate(20, inSize); }
   virtual ~iupPlotDataBase() { iupArrayDestroy(mArray); }
 
   bool IsString() const { return mIsString; }
-  int GetCount() const { return iupArrayCount(mArray); }
+  int GetCount() const { return mCount; }
 
   virtual bool CalculateRange(double &outMin, double &outMax) = 0;
   virtual double GetValue(int inIndex) const = 0;
 
-  void RemoveItem(int inIndex) { iupArrayRemove(mArray, inIndex, 1); }
+  void RemoveItem(int inIndex) { 
+    if (inIndex < 0) inIndex = 0; if (inIndex > mCount) inIndex = mCount; 
+    iupArrayRemove(mArray, inIndex, 1); mCount--; }
 
 protected:
+  int mCount;
   Iarray* mArray;
   bool mIsString;
 };
@@ -126,45 +129,60 @@ protected:
 class iupPlotDataString : public iupPlotDataBase
 {
 public:
-  iupPlotDataString() :iupPlotDataBase(sizeof(char*)) { mIsString = true; }
+  iupPlotDataString() :iupPlotDataBase(sizeof(char*)) { mIsString = true; data = (char**)iupArrayGetData(mArray); }
   ~iupPlotDataString(); 
 
-  char** GetStrData() const { return (char**)iupArrayGetData(mArray); }
-  char*  GetStrValue(int inIndex) const { if (inIndex < 0 || inIndex >= iupArrayCount(mArray)) return NULL; char** data = (char**)iupArrayGetData(mArray); return data[inIndex]; }
+  char** GetStrData() const { return data; }
+  char*  GetStrValue(int inIndex) const { return data[inIndex]; }
   double GetValue(int inIndex) const { return inIndex; }
 
-  void AddItem(const char *inString) { char** data = (char**)iupArrayInc(mArray); data[iupArrayCount(mArray)-1] = iupStrDup(inString); }
-  void InsertItem(int inIndex, const char *inString) { char** data = (char**)iupArrayInsert(mArray, inIndex, 1); data[inIndex] = iupStrDup(inString); }
+  void AddItem(const char *inString) { data = (char**)iupArrayInc(mArray); data[mCount] = iupStrDup(inString); mCount++; }
+  void InsertItem(int inIndex, const char *inString) { 
+    if (inIndex < 0) inIndex = 0; if (inIndex > mCount) inIndex = mCount; 
+    data = (char**)iupArrayInsert(mArray, inIndex, 1); data[inIndex] = iupStrDup(inString); mCount++; }
 
   bool CalculateRange(double &outMin, double &outMax);
+
+protected:
+  char** data;
 };
 
 class iupPlotDataReal : public iupPlotDataBase
 {
 public:
-  iupPlotDataReal() :iupPlotDataBase(sizeof(double)) { }
+  iupPlotDataReal() :iupPlotDataBase(sizeof(double)) { data = (double*)iupArrayGetData(mArray); }
 
-  double* GetRealData() const { return (double*)iupArrayGetData(mArray); }
-  double GetValue(int inIndex) const { double* data = (double*)iupArrayGetData(mArray); return data[inIndex]; }
+  double* GetRealData() const { return data; }
+  double GetValue(int inIndex) const { return data[inIndex]; }
 
-  void AddItem(double inReal) { double* data = (double*)iupArrayInc(mArray); data[iupArrayCount(mArray) - 1] = inReal; }
-  void InsertItem(int inIndex, double inReal) { double* data = (double*)iupArrayInsert(mArray, inIndex, 1); data[inIndex] = inReal; }
+  void AddItem(double inReal) { data = (double*)iupArrayInc(mArray); data[mCount] = inReal; mCount++; }
+  void InsertItem(int inIndex, double inReal) { 
+    if (inIndex < 0) inIndex = 0; if (inIndex > mCount) inIndex = mCount;
+    data = (double*)iupArrayInsert(mArray, inIndex, 1); data[inIndex] = inReal; mCount++; }
 
   bool CalculateRange(double &outMin, double &outMax);
+
+protected:
+  double* data;
 };
 
 class iupPlotDataBool : public iupPlotDataBase
 {
 public:
-  iupPlotDataBool() :iupPlotDataBase(sizeof(bool)) { }
+  iupPlotDataBool() :iupPlotDataBase(sizeof(bool)) { data = (bool*)iupArrayGetData(mArray); }
 
-  bool* GetBoolData() const { return (bool*)iupArrayGetData(mArray); }
-  double GetValue(int inIndex) const { bool* data = (bool*)iupArrayGetData(mArray); return (int)data[inIndex]; }
+  bool* GetBoolData() const { return data; }
+  double GetValue(int inIndex) const { return (int)data[inIndex]; }
 
-  void AddItem(bool inBool) { bool* data = (bool*)iupArrayInc(mArray); data[iupArrayCount(mArray) - 1] = inBool; }
-  void InsertItem(int inIndex, bool inBool) { bool* data = (bool*)iupArrayInsert(mArray, inIndex, 1); data[inIndex] = inBool; }
+  void AddItem(bool inBool) { data = (bool*)iupArrayInc(mArray); data[mCount] = inBool; mCount++; }
+  void InsertItem(int inIndex, bool inBool) { 
+    if (inIndex < 0) inIndex = 0; if (inIndex > mCount) inIndex = mCount; 
+    data = (bool*)iupArrayInsert(mArray, inIndex, 1); data[inIndex] = inBool; mCount++; }
 
   bool CalculateRange(double &outMin, double &outMax) { outMin = 0; outMax = 1.0; }
+
+protected:
+  bool* data;
 };
 
 enum iupPlotMode { IUP_PLOT_LINE, IUP_PLOT_MARK, IUP_PLOT_MARKLINE, IUP_PLOT_AREA, IUP_PLOT_BAR };
