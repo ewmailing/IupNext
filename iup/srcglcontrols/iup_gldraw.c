@@ -365,16 +365,6 @@ void iupGLDrawArrow(Ihandle *ih, int x, int y, int size, const char* color, int 
   iupGLDrawPolyline(ih, points, 3, 1, color, active, 1);
 }
 
-/* isPowerOfTwo By Rick Regan
-   http://www.exploringbinary.com/ten-ways-to-check-if-an-integer-is-a-power-of-two-in-c/
-*/
-static int isPowerOfTwo(unsigned int x)
-{
-  while (((x & 1) == 0) && x > 1) /* While x is even and > 1 */
-    x >>= 1;
-  return (x == 1);
-}
-
 static int iGLIsOpenGL2orMore(void)
 {
   const char* glversion = (const char*)glGetString(GL_VERSION);
@@ -410,8 +400,7 @@ static GLuint iGLDrawGenTexture(Ihandle* ih, Ihandle* image, int active)
   texture = (GLuint)iupAttribGetInt(image, texture_name);
   if (texture)
     return texture;
-
-  if (iGLIsOpenGL2orMore() || (isPowerOfTwo(image->currentwidth) && isPowerOfTwo(image->currentheight)))
+  else
   {
     unsigned char* gldata = iupGLImageGetData(image, 1);
     int depth = iupAttribGetInt(image, "GL_DEPTH");
@@ -433,71 +422,69 @@ static GLuint iGLDrawGenTexture(Ihandle* ih, Ihandle* image, int active)
 
     return texture;
   }
-
-  return 0;
 }
 
-#define IGL_DRAWIMAGE_TEXTURE 1
-
-#ifdef IGL_DRAWIMAGE_TEXTURE
-static void iGLDrawTexture(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, Ihandle* image, int active)
+static void iGLDrawImage(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, Ihandle* image, int active)
 {
-  GLuint texture = iGLDrawGenTexture(ih, image, active);
-  if (texture)
+  if (iGLIsOpenGL2orMore())
   {
-    glDisable(GL_POLYGON_SMOOTH);
-    glEnable(GL_TEXTURE_2D);
+    GLuint texture = iGLDrawGenTexture(ih, image, active);
+    if (texture)
+    {
+      glDisable(GL_POLYGON_SMOOTH);
+      glEnable(GL_TEXTURE_2D);
 
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+      glBindTexture(GL_TEXTURE_2D, texture);
+      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+      /* y is oriented top to bottom in IUP */
+      ymin = ih->currentheight - 1 - ymin;
+      ymax = ih->currentheight - 1 - ymax;
+
+      /* y is at image bottom and oriented bottom to top in OpenGL */
+      { int tmp = ymin; ymin = ymax; ymax = tmp; }
+
+      glBegin(GL_QUADS);
+      glTexCoord2d(0.0, 0.0); glVertex2d(xmin, ymin);
+      glTexCoord2d(1.0, 0.0); glVertex2d(xmax + 0.375, ymin);
+      glTexCoord2d(1.0, 1.0); glVertex2d(xmax + 0.375, ymax + 0.375);
+      glTexCoord2d(0.0, 1.0); glVertex2d(xmin, ymax + 0.375);
+      glEnd();
+
+      glDisable(GL_TEXTURE_2D);
+      glEnable(GL_POLYGON_SMOOTH);
+    }
+  }
+  else
+  {
+    /* glDrawPixels is not affected by transformations.
+       glRasterPos2i will be clipped if outside the canvas
+       and the image will not be drawn.
+       So we will avoid these two functions and use textures by default. */
+    int rw = xmax - xmin + 1;
+    int rh = ymax - ymin + 1;
+    unsigned char* gldata = iupGLImageGetData(image, active);
+    int depth = iupAttribGetInt(image, "GL_DEPTH");
+    int format = GL_RGB;
+    if (depth == 4)
+      format = GL_RGBA;
+
+    /* y is at image bottom and oriented bottom to top in OpenGL */
+    ymin = ymax;
 
     /* y is oriented top to bottom in IUP */
     ymin = ih->currentheight - 1 - ymin;
-    ymax = ih->currentheight - 1 - ymax;
 
-    /* y is at image bottom and oriented bottom to top in OpenGL */
-    { int tmp = ymin; ymin = ymax; ymax = tmp; }
+    if (image->currentwidth != rw || image->currentheight != rh)
+      glPixelZoom((GLfloat)rw / (GLfloat)image->currentwidth, (GLfloat)rh / (GLfloat)image->currentheight);
 
-    glBegin(GL_QUADS);
-    glTexCoord2d(0.0, 0.0); glVertex2d(xmin, ymin);
-    glTexCoord2d(1.0, 0.0); glVertex2d(xmax + 0.375, ymin);
-    glTexCoord2d(1.0, 1.0); glVertex2d(xmax + 0.375, ymax + 0.375);
-    glTexCoord2d(0.0, 1.0); glVertex2d(xmin, ymax + 0.375);
-    glEnd();
+    glRasterPos2i(xmin, ymin);
+    glDrawPixels(image->currentwidth, image->currentheight, format, GL_UNSIGNED_BYTE, gldata);
 
-    glDisable(GL_TEXTURE_2D);
-    glEnable(GL_POLYGON_SMOOTH);
+    if (image->currentwidth != rw || image->currentheight != rh)
+      glPixelZoom(1.0f, 1.0f);
   }
 }
-
-#else
-
-static void iGLDrawPixels(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, Ihandle* image, int active)
-{
-  int rw = xmax - xmin + 1;
-  int rh = ymax - ymin + 1;
-  unsigned char* gldata = iupGLImageGetData(image, active);
-  int depth = iupAttribGetInt(image, "GL_DEPTH");
-  int format = GL_RGB;
-  if (depth == 4)
-    format = GL_RGBA;
-
-  /* y is at image bottom and oriented bottom to top in OpenGL */
-  ymin = ymax;
-
-  /* y is oriented top to bottom in IUP */
-  ymin = ih->currentheight - 1 - ymin;
-
-  if (image->currentwidth != rw || image->currentheight != rh)
-    glPixelZoom((GLfloat)rw / (GLfloat)image->currentwidth, (GLfloat)rh / (GLfloat)image->currentheight);
-
-  glRasterPos2i(xmin, ymin);
-  glDrawPixels(image->currentwidth, image->currentheight, format, GL_UNSIGNED_BYTE, gldata);
-
-  if (image->currentwidth != rw || image->currentheight != rh)
-    glPixelZoom(1.0f, 1.0f);
-}
-#endif
 
 void iupGLDrawImageZoom(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, const char* baseattrib, const char* imagename, int active)
 {
@@ -508,26 +495,14 @@ void iupGLDrawImageZoom(Ihandle *ih, int xmin, int xmax, int ymin, int ymax, con
 
   image = iupGLIconGetImageHandle(ih, baseattrib, imagename, active);
   if (image)
-  {
-#ifdef IGL_DRAWIMAGE_TEXTURE
-    iGLDrawTexture(ih, xmin, xmax, ymin, ymax, image, active);
-#else
-    iGLDrawPixels(ih, xmin, xmax, ymin, ymax, image, active);
-#endif
-  }
+    iGLDrawImage(ih, xmin, xmax, ymin, ymax, image, active);
 }
 
 void iupGLDrawImage(Ihandle* ih, int x, int y, const char* baseattrib, const char* imagename, int active)
 {
   Ihandle* image = iupGLIconGetImageHandle(ih, baseattrib, imagename, active);
   if (image)
-  {
-#ifdef IGL_DRAWIMAGE_TEXTURE
-    iGLDrawTexture(ih, x, x + image->currentwidth - 1, y, y + image->currentheight - 1, image, active);
-#else
-    iGLDrawPixels(ih, x, x + image->currentwidth - 1, y, y + image->currentheight - 1, image, active);
-#endif
-  }
+    iGLDrawImage(ih, x, x + image->currentwidth - 1, y, y + image->currentheight - 1, image, active);
 }
 
 void iupGLDrawText(Ihandle* ih, int x, int y, const char* str, const char* color, int active)
