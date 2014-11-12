@@ -38,6 +38,13 @@
 <p>This is an additional control that depends on the CD library. It is included 
 in the 
 <a href="../iupcontrols.html">IupControls</a> library.</p>
+<p>It completely replaces the old <a href="iup_pplot.html">IupPPlot</a> control. 
+This control eliminates all the limitations and issues we have with the PPlot 
+library. But we reused several <a href="http://pplot.sourceforge.net/">PPlot</a> 
+source code parts, so we would like to thank the author Pier Philipsen for 
+making it with a with a very flexible BSD License. We also would like to thank 
+Marian Trifon for the first IupPPlot implementation which part was reused here. 
+See "<a href="#Differences">Differences from IupPPlot</a>" bellow.</p>
 <h3>Initialization and Usage</h3>
 <p>The <b>IupPlotOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The &quot;iup_plot.h&quot; file must also be included in the source code. The program must be linked to the controls 
@@ -72,7 +79,7 @@ is disabled, then it is positioned at the left-bottom. If values are only positi
 origin will be placed in left 
 bottom position. If values are negative and positive then origin will be placed 
 inside the plot. The ticks in the axis are also automatically distributed.</p>
-<h3>Interaction</h3>
+<h3><a name="Interaction">Interaction</a></h3>
 <h4>Zoom</h4>
 <p>Zoom in can be done selecting a region using the left mouse button. Zoom out 
 is done with a single click of the left mouse button. If the <b>Ctrl+X</b> key 
@@ -172,12 +179,17 @@ void <b>IupPlotGetSampleStr</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sam
 <p>Returns the sample value in a dataset at the given <strong>sample_index</strong>. 
 Can be used only after the dataset is added to the plot. </p>
 <hr>
-<pre>void <b>IupPlotTransform</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>, int *<b>ix</b>, int *<b>iy</b>); [in C]
-<b>iup.PlotTransform</b>(<b>ih</b>: ihandle, <b>x, y</b>: number) -&gt; (<b>ix</b>, <b>iy</b>: number) [in Lua]</pre>
+<pre>void <b>IupPlotTransform</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>, double *<b>cnv_x</b>, double *<b>cnv_y</b>); [in C]
+<b>iup.PlotTransform</b>(<b>ih</b>: ihandle, <b>x, y</b>: number) -&gt; (<b>cnv_x</b>, <b>cnv_y</b>: number) [in Lua]</pre>
 <p>Converts coordinates in plot units to pixels. It should be used in PREDRAW_CB 
 and POSTDRAW_CB callbacks only. Output variables can be NULL if not used. It can 
 be used inside other callbacks, but make sure that the drawing after a resize is 
 done.</p>
+<hr>
+<pre>void <b>IupPlotTransformTo</b>(Ihandle* <b>ih</b>, double <b>cnv_x</b>, double <b>cnv_y</b>, double *<b>x</b>, double *<b>y</b>); [in C]
+<b>iup.PlotTransformTo</b>(<b>ih</b>: ihandle, <b>cnv_x, cnv_y</b>: number) -&gt; (<b>x</b>, <b>y</b>: number) [in Lua]</pre>
+<p>Converts coordinates from pixels to plot coordinates. It can be used only inside PREDRAW_CB 
+and POSTDRAW_CB callbacks. Output variables can be NULL if not used.</p>
 <hr>
 <pre>void <b>IupPlotPaintTo</b>(Ihandle* <b>ih</b>, cdCanvas* <b>cnv</b>); [in C]
 <b>iup.PlotPaintTo</b>(<b>ih</b>: ihandle, <b>cnv</b>: cdCanvas) [in Lua]</pre>
@@ -187,10 +199,8 @@ inheritable, except when noted)</span></h3>
 
 
 <p><strong>ANTIALIAS</strong>: Enable or disable the 
-anti-aliasing support when in OpenGL. Ignored when OPENGL=NO. Default: 
-Yes. <font SIZE="3">When enabled text has a much better rendering, but 3D graphs 
-will not process depth properly.</p>
-</font>
+anti-aliasing support in OpenGL. Default: 
+Yes.</p>
 <p><b><a href="../attrib/iup_bgcolor.html">BGCOLOR</a></b> (inheritable):  the 
 default background color. Default: "255 255 255". When set BACKCOLOR and LEGENDBOXBACKCOLOR<b> </b>of all 
 plots will be reset to the same value.</p>
@@ -205,6 +215,15 @@ LEGENDBOX colors of all plots will be reset to the same value.</p>
 extra component for alpha. The default alpha is always 255 (opaque). </p>
 <p><strong><a href="../attrib/iup_font.html">FONT</a></strong> (inheritable):
   the default font used in all text elements of the plot: title, legend and labels.&nbsp;Use "Plain" or "" to reset a "Bold"/"Italic" styles.</p>
+<p><strong>GRAPHICSMODE</strong>: the internal graphics mode. Can be set only 
+before map. Can be OPENGL, IMAGERGB, NATIVEPLUS or NATIVE. OPENGL will use 
+OpenGL, it is faster for big data sets but text has a slightly slower quality, 
+and has alpha and anti-aliasing support. IMAGERGB is the slowest, has the same 
+text issues as OpenGL, but also has alpha and anti-aliasing support. NATIVE is 
+the system default (GDI in Windows, GDK/Cairo in GTK 2/3, X11 in Motif) it has 
+the best text render, it is fast for regular datasets, but it does not have 
+anti-aliasing nor alpha (except in GTK 3). NATIVEPLUS uses GDI+ in Windows and 
+Cairo in GTK 2, so it has anti-aliasing and alpha support. Default: NATIVE. </p>
 <p><b>REDRAW</b> (write-only): redraw all plots and update the display. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
 attributes without visual output. Value can be NULL. If value is &quot;NOFLUSH&quot; 
 rendering is performed internally but display is not updated. If value is 
@@ -523,13 +542,18 @@ use the <b>IupPlotTransform</b> function.</p>
   <a href="../call/iup_help_cb.html">HELP_CB</a>: All common callbacks are 
 supported.</p>
   
-<h3>Differences from IupPPlot</h3>
+<h3><a name="Differences">Differences from IupPPlot</a></h3>
 
-<p>Uses OpenGL for screen output but using the CD_GL driver, so other CD 
-metafile drivers can also be used.</p>
-<p>Selection and editing of a dataset using the DS_EDIT attribute are not 
-	implemented.</p>
-<p>All functions use double floating point precision.</p>
+<p>No STL dependency. All parameters and coordinates are in double floating 
+point precision.</p>
+<p>Can draw using OpenGL. Internally will use the CD_GL driver so other CD 
+metafile drivers can be used in <b>IupPlotPaintTo</b>.</p>
+<p>All <strong>IupPPlot</strong> attributes are supported, some were renamed but 
+the old names are still supported.</p>
+<p>There are several new attributes and callbacks, check the documentation.</p>
+<p><span class="style1"><strong>IMPORTANT</strong></span>: interaction has 
+heavily changed. Zoom, Pan and Selection is now done totally different from
+<strong>IupPPlot</strong>. See <a href="#Interaction">Interaction</a> above.</p>
   
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
@@ -553,7 +577,7 @@ metafile drivers can also be used.</p>
 </div>
 <h3><a name="SeeAlso">See Also</a></h3>
 
-<p><a href="../elem/iupcanvas.html">IupCanvas</a>, <a href="iup_mglplot.html">
+<p><a href="../elem/iupcanvas.html">IupCanvas</a>, <a href="iup_pplot.html">IupPPlot</a>, <a href="iup_mglplot.html">
 IupMglPlot</a></p>
 
 </body>

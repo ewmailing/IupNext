@@ -96,32 +96,7 @@ bool iupPlotTrafoLog::Calculate(int inBegin, int inEnd, const iupPlotAxis& inAxi
 /************************************************************************************************/
 
 
-iupPlotDataString::~iupPlotDataString()
-{
-  int theCount = iupArrayCount(mArray);
-  char** theData = (char**)iupArrayGetData(mArray);
-  for (int i = 0; i < theCount; i++) 
-    free(theData[i]);
-}
-
-bool iupPlotDataString::CalculateRange(double &outMin, double &outMax)
-{
-  int theCount = iupArrayCount(mArray);
-  if (theCount > 0)
-  {
-    outMin = 0;
-    outMax = theCount-1;
-    return true;
-  }
-
-  return false;
-}
-
-
-/************************************************************************************************/
-
-
-bool iupPlotDataReal::CalculateRange(double &outMin, double &outMax)
+bool iupPlotDataReal::CalculateRange(double &outMin, double &outMax) const
 {
   int theCount = iupArrayCount(mArray);
   if (theCount > 0)
@@ -141,42 +116,177 @@ bool iupPlotDataReal::CalculateRange(double &outMin, double &outMax)
   return false;
 }
 
+iupPlotDataString::~iupPlotDataString()
+{
+  for (int i = 0; i < mCount; i++) 
+    free(mData[i]);
+}
+
+bool iupPlotDataString::CalculateRange(double &outMin, double &outMax) const
+{
+  if (mCount > 0)
+  {
+    outMin = 0;
+    outMax = mCount - 1;
+    return true;
+  }
+
+  return false;
+}
+
+bool iupPlotDataBool::CalculateRange(double &outMin, double &outMax) const
+{
+  if (mCount > 0)
+  {
+    outMin = 0;
+    outMax = mCount - 1;
+    return true;
+  }
+
+  return false;
+}
+
 
 /************************************************************************************************/
 
 
-iupPlotDataSet::iupPlotDataSet(iupPlotDataBase* inDataX, iupPlotDataBase* inDataY, const char* inLegend, long inColor)
-  :mColor(inColor), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mMarkStyle(CD_X), mMarkSize(7),
-   mDataX(inDataX), mDataY(inDataY), mMode(IUP_PLOT_LINE), mName(NULL), mSelection(NULL)
+iupPlotDataSet::iupPlotDataSet(bool strXdata)
+  :mColor(CD_BLACK), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mMarkStyle(CD_X), mMarkSize(7),
+   mMode(IUP_PLOT_LINE), mName(NULL), mHasSelection(false)
 {
-  SetName(inLegend);
+  if (strXdata)
+    mDataX = (iupPlotDataBase*)(new iupPlotDataString());
+  else
+    mDataX = (iupPlotDataBase*)(new iupPlotDataReal());
+
+  mDataY = (iupPlotDataBase*)new iupPlotDataReal();
+
+  mSelection = new iupPlotDataBool();
 }
 
 iupPlotDataSet::~iupPlotDataSet()
 {
   SetName(NULL);
+
   delete[] mDataX;
   delete[] mDataY;
+  delete[] mSelection;
 }
 
 bool iupPlotDataSet::FindSample(double inX, double inY, double tolX, double tolY,
-                                int &outSample, double &outX, double &outY) const
+                                int &outSampleIndex, double &outX, double &outY) const
 {
   int theCount = mDataX->GetCount();
   for (int i = 0; i < theCount; i++)
   {
-    outX = mDataX->GetValue(i);
-    outY = mDataY->GetValue(i);
+    outX = mDataX->GetSample(i);
+    outY = mDataY->GetSample(i);
 
     if (fabs(outX - inX) < tolX &&
         fabs(outY - inY) < tolY)
     {
-      outSample = i;
+      outSampleIndex = i;
       return true;
     }
   }
 
   return false;
+}
+
+int iupPlotDataSet::GetCount()
+{
+  return mDataX->GetCount();
+}
+
+void iupPlotDataSet::AddSample(double inX, double inY)
+{
+  iupPlotDataReal *theXData = (iupPlotDataReal*)mDataX;
+  iupPlotDataReal *theYData = (iupPlotDataReal*)mDataY;
+
+  if (theXData->IsString())
+    return;
+
+  theXData->AddSample(inX);
+  theYData->AddSample(inY);
+  mSelection->AddSample(false);
+}
+
+void iupPlotDataSet::InsertSample(int inSampleIndex, double inX, double inY)
+{
+  iupPlotDataReal *theXData = (iupPlotDataReal*)mDataX;
+  iupPlotDataReal *theYData = (iupPlotDataReal*)mDataY;
+
+  if (theXData->IsString())
+    return;
+
+  theXData->InsertSample(inSampleIndex, inX);
+  theYData->InsertSample(inSampleIndex, inY);
+  mSelection->InsertSample(inSampleIndex, false);
+}
+
+void iupPlotDataSet::AddSample(const char* inX, double inY)
+{
+  iupPlotDataString *theXData = (iupPlotDataString*)mDataX;
+  iupPlotDataReal *theYData = (iupPlotDataReal*)mDataY;
+
+  if (!theXData->IsString())
+    return;
+
+  theXData->AddSample(inX);
+  theYData->AddSample(inY);
+  mSelection->AddSample(false);
+}
+
+void iupPlotDataSet::InsertSample(int inSampleIndex, const char* inX, double inY)
+{
+  iupPlotDataString *theXData = (iupPlotDataString*)mDataX;
+  iupPlotDataReal *theYData = (iupPlotDataReal*)mDataY;
+
+  if (!theXData->IsString())
+    return;
+
+  theXData->InsertSample(inSampleIndex, inX);
+  theYData->InsertSample(inSampleIndex, inY);
+  mSelection->InsertSample(inSampleIndex, false);
+}
+
+void iupPlotDataSet::RemoveSample(int inSampleIndex)
+{
+  mDataX->RemoveSample(inSampleIndex);
+  mDataY->RemoveSample(inSampleIndex);
+  mSelection->RemoveSample(inSampleIndex);
+}
+
+void iupPlotDataSet::GetSample(int inSampleIndex, double *inX, double *inY)
+{
+  iupPlotDataReal *theXData = (iupPlotDataReal*)mDataX;
+  iupPlotDataReal *theYData = (iupPlotDataReal*)mDataY;
+
+  if (theXData->IsString())
+    return;
+
+  int theCount = theXData->GetCount();
+  if (inSampleIndex < 0 || inSampleIndex >= theCount)
+    return;
+
+  if (inX) *inX = theXData->GetSample(inSampleIndex);
+  if (inY) *inY = theYData->GetSample(inSampleIndex);
+}
+
+void iupPlotDataSet::GetSample(int inSampleIndex, const char* *inX, double *inY)
+{
+  iupPlotDataString *theXData = (iupPlotDataString*)mDataX;
+  iupPlotDataReal *theYData = (iupPlotDataReal*)mDataY;
+
+  if (!theXData->IsString())
+    return;
+
+  int theCount = theXData->GetCount();
+  if (inSampleIndex < 0 || inSampleIndex >= theCount)
+    return;
+
+  if (inX) *inX = theXData->GetSampleString(inSampleIndex);
+  if (inY) *inY = theYData->GetSample(inSampleIndex);
 }
 
 
@@ -461,7 +571,7 @@ long iupPlot::GetNextDataSetColor()
   return theColor;
 }
 
-void iupPlot::AddDataSet(iupPlotDataBase* inDataX, iupPlotDataBase* inDataY)
+void iupPlot::AddDataSet(iupPlotDataSet* inDataSet)
 {
   if (mDataSetListCount < IUP_PLOT_MAX_DS)
   {
@@ -473,7 +583,10 @@ void iupPlot::AddDataSet(iupPlotDataBase* inDataX, iupPlotDataBase* inDataY)
     char theLegend[30];
     sprintf(theLegend, "plot %d", mCurrentDataSet);
 
-    mDataSetList[mCurrentDataSet] = new iupPlotDataSet(inDataX, inDataY, theLegend, theColor);
+    mDataSetList[mCurrentDataSet] = inDataSet;
+    
+    inDataSet->SetName(theLegend);
+    inDataSet->mColor = theColor;
   }
 }
 
@@ -510,7 +623,7 @@ void iupPlot::RemoveAllDataSets()
   }
 }
 
-bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSample, double &outX, double &outY, const char* &outStrX) const
+bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const
 {
   double theX = mAxisX.mTrafo->TransformBack((double)inX);
   double theY = mAxisY.mTrafo->TransformBack((double)inY);
@@ -521,13 +634,13 @@ bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &ou
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
 
-    if (dataset->FindSample(theX, theY, tolX, tolY, outSample, outX, outY))
+    if (dataset->FindSample(theX, theY, tolX, tolY, outSampleIndex, outX, outY))
     {
-      iupPlotDataBase *theXData = dataset->mDataX;
+      const iupPlotDataBase *theXData = dataset->GetDataX();
       if (theXData->IsString())
       {
         const iupPlotDataString *theStringXData = (const iupPlotDataString *)(theXData);
-        outStrX = theStringXData->GetStrValue(outSample);
+        outStrX = theStringXData->GetSampleString(outSampleIndex);
       }
       else
         outStrX = NULL;
@@ -549,7 +662,7 @@ void iupPlot::ConfigureAxis()
     mAxisY.mCrossOrigin = false;  // change at the other axis
   else
   {
-    const iupPlotDataBase *theXData = mDataSetList[0]->mDataX;
+    const iupPlotDataBase *theXData = mDataSetList[0]->GetDataX();
     if (theXData->IsString())
     {
       const iupPlotDataString *theStringXData = (const iupPlotDataString *)(theXData);
@@ -642,8 +755,8 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (mCrossHair)
     DrawCrossHair(theRect, canvas);
 
-  if (mShowSelection)
-    mBox.Draw(mSelection, canvas);
+  if (mShowSelectionBand)
+    mBox.Draw(mSelectionBand, canvas);
 
   if (!DrawLegend(theRect, canvas))
     return false;

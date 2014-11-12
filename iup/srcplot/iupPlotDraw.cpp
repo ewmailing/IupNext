@@ -391,16 +391,16 @@ bool iupPlot::GetCrossPoint(const iupPlotDataBase *inXData, const iupPlotDataBas
     return false;
   
   double theXTarget = mAxisX.mTrafo->TransformBack((double)mCrossHairX);
-  bool theFirstIsLess = inXData->GetValue(0) < theXTarget;
+  bool theFirstIsLess = inXData->GetSample(0) < theXTarget;
 
   for (int i = 0; i < theCount; i++)
   {
-    double theX = inXData->GetValue(i);
+    double theX = inXData->GetSample(i);
     bool theCurrentIsLess = theX < theXTarget;
 
     if (theCurrentIsLess != theFirstIsLess) 
     {
-      double theY = inYData->GetValue(i);
+      double theY = inYData->GetSample(i);
       outY = iupPlotRound(mAxisY.mTrafo->Transform(theY)); // transform to pixels
       return true;
     }
@@ -421,8 +421,8 @@ void iupPlot::DrawCrossHair(const iupPlotRect &inRect, cdCanvas* canvas) const
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
 
-    iupPlotDataBase *theXData = dataset->mDataX;
-    iupPlotDataBase *theYData = dataset->mDataY;
+    const iupPlotDataBase *theXData = dataset->GetDataX();
+    const iupPlotDataBase *theYData = dataset->GetDataY();
 
     int theScreenY;
     if (GetCrossPoint(theXData, theYData, theScreenY))
@@ -591,8 +591,8 @@ void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlo
 
   for (int i = 0; i < theCount; i++) 
   {
-    double theX = mDataX->GetValue(i);
-    double theY = mDataY->GetValue(i);
+    double theX = mDataX->GetSample(i);
+    double theY = mDataY->GetSample(i);
     double theScreenX = inTrafoX->Transform(theX);
     double theScreenY = inTrafoY->Transform(theY);
 
@@ -607,8 +607,8 @@ void iupPlotDataSet::DrawDataMark(const iupPlotTrafoBase *inTrafoX, const iupPlo
   int theCount = mDataX->GetCount();
   for (int i = 0; i < theCount; i++)
   {
-    double theX = mDataX->GetValue(i);
-    double theY = mDataY->GetValue(i);
+    double theX = mDataX->GetSample(i);
+    double theY = mDataY->GetSample(i);
     double theScreenX = inTrafoX->Transform(theX);
     double theScreenY = inTrafoY->Transform(theY);
 
@@ -621,14 +621,16 @@ void iupPlotDataSet::DrawDataMarkLine(const iupPlotTrafoBase *inTrafoX, const iu
   int theCount = mDataX->GetCount();
   cdCanvasBegin(canvas, CD_OPEN_LINES);
 
-  for (int i = 0; i < theCount; i++) 
+  for (int i = 0; i < theCount; i++)
   {
-    double theX = mDataX->GetValue(i);
-    double theY = mDataY->GetValue(i);
+    double theX = mDataX->GetSample(i);
+    double theY = mDataY->GetSample(i);
     double theScreenX = inTrafoX->Transform(theX);
     double theScreenY = inTrafoY->Transform(theY);
 
+    // No worry that will be drawn before the polygon, they both have the same color
     cdCanvasMark(canvas, iupPlotRound(theScreenX), iupPlotRound(theScreenY));
+
     cdfCanvasVertex(canvas, theScreenX, theScreenY);
   }
 
@@ -642,8 +644,8 @@ void iupPlotDataSet::DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlo
 
   for (int i = 0; i < theCount; i++) 
   {
-    double theX = mDataX->GetValue(i);
-    double theY = mDataY->GetValue(i);
+    double theX = mDataX->GetSample(i);
+    double theY = mDataY->GetSample(i);
     double theScreenX = inTrafoX->Transform(theX);
     double theScreenY = inTrafoY->Transform(theY);
 
@@ -670,9 +672,9 @@ void iupPlotDataSet::DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlot
   int theCount = mDataX->GetCount();
   double theScreenY0 = inTrafoY->Transform(0);
 
-  double theMinX = mDataX->GetValue(0);
+  double theMinX = mDataX->GetSample(0);
   double theScreenMinX = inTrafoX->Transform(theMinX);
-  double theMaxX = mDataX->GetValue(theCount-1);
+  double theMaxX = mDataX->GetSample(theCount-1);
   double theScreenMaxX = inTrafoX->Transform(theMaxX);
 
   double theBarWidth = (theScreenMaxX - theScreenMinX + 1) / theCount;
@@ -680,8 +682,8 @@ void iupPlotDataSet::DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlot
 
   for (int i = 0; i < theCount; i++) 
   {
-    double theX = mDataX->GetValue(i);
-    double theY = mDataY->GetValue(i);
+    double theX = mDataX->GetSample(i);
+    double theY = mDataY->GetSample(i);
     double theScreenX = inTrafoX->Transform(theX);
     double theScreenY = inTrafoY->Transform(theY);
 
@@ -689,6 +691,32 @@ void iupPlotDataSet::DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlot
     double theBarHeight = theScreenY - theScreenY0;
 
     iPlotDrawBox(canvas, theBarX, theScreenY0, theBarWidth, theBarHeight);
+  }
+}
+
+void iupPlotDataSet::DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const
+{
+  int theCount = mDataX->GetCount();
+
+  cdCanvasMarkSize(canvas, 5);
+
+  for (int i = 0; i < theCount; i++)
+  {
+    if (mSelection->GetSampleBool(i))
+    {
+      double theX = mDataX->GetSample(i);
+      double theY = mDataY->GetSample(i);
+      double theScreenX = inTrafoX->Transform(theX);
+      double theScreenY = inTrafoY->Transform(theY);
+
+      cdCanvasMarkType(canvas, CD_BOX);
+      cdCanvasSetForeground(canvas, cdEncodeAlpha(CD_GRAY, 128));
+      cdCanvasMark(canvas, iupPlotRound(theScreenX), iupPlotRound(theScreenY));
+
+      cdCanvasMarkType(canvas, CD_HOLLOW_BOX);
+      cdCanvasSetForeground(canvas, cdEncodeAlpha(CD_BLACK, 128));
+      cdCanvasMark(canvas, iupPlotRound(theScreenX), iupPlotRound(theScreenY));
+    }
   }
 }
 
@@ -725,5 +753,8 @@ void iupPlotDataSet::DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTra
     DrawDataBar(inTrafoX, inTrafoY, canvas);
     break;
   }
+
+  if (mHasSelection)
+    DrawSelection(inTrafoX, inTrafoY, canvas);
 }
 

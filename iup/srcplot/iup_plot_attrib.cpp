@@ -984,6 +984,8 @@ static int iPlotSetGraphicsModeAttrib(Ihandle* ih, const char* value)
   }
   else if (iupStrEqualNoCase(value, "IMAGERGB"))
     ih->data->graphics_mode = IUP_PLOT_IMAGERGB;
+  else if (iupStrEqualNoCase(value, "NATIVEPLUS"))
+    ih->data->graphics_mode = IUP_PLOT_NATIVEPLUS;
   else
     ih->data->graphics_mode = IUP_PLOT_NATIVE;
 
@@ -992,10 +994,23 @@ static int iPlotSetGraphicsModeAttrib(Ihandle* ih, const char* value)
 
 static char* iPlotGetGraphicsModeAttrib(Ihandle* ih)
 {
-  char* graphics_mode_str[] = { "NATIVE", "IMAGERGB", "OPENGL" };
+  char* graphics_mode_str[] = { "NATIVE", "NATIVEPLUS", "IMAGERGB", "OPENGL" };
   return graphics_mode_str[ih->data->graphics_mode];
 }
 
+static int iPlotSetUseImageRGBAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    return iPlotSetGraphicsModeAttrib(ih, "IMAGERGB");
+  return 0;
+}
+
+static int iPlotSetUseContextPlusAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    return iPlotSetGraphicsModeAttrib(ih, "NATIVEPLUS");
+  return 0;
+}
 
 static char* iPlotGetCanvasAttrib(Ihandle* ih)
 {
@@ -1241,12 +1256,11 @@ static int iPlotSetDSRemoveAttrib(Ihandle* ih, const char* value)
       ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
     return 0;
 
-  iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
-
   if (iupStrToInt(value, &ii))
   {
-    dataset->mDataX->RemoveItem(ii);
-    dataset->mDataY->RemoveItem(ii);
+    iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
+    dataset->RemoveSample(ii);
+
     ih->data->current_plot->mRedraw = true;
   }
   return 0;
@@ -1259,7 +1273,7 @@ static char* iPlotGetDSCountAttrib(Ihandle* ih)
     return NULL;
 
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
-  return iupStrReturnInt(dataset->mDataX->GetCount());
+  return iupStrReturnInt(dataset->GetCount());
 }
 
 /* ========== */
@@ -2363,6 +2377,8 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "SYNCVIEW", iPlotGetSyncViewAttrib, iPlotSetSyncViewAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANVAS", iPlotGetCanvasAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "GRAPHICSMODE", iPlotGetGraphicsModeAttrib, iPlotSetGraphicsModeAttrib, IUPAF_SAMEASSYSTEM, "NATIVE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "USE_IMAGERGB", NULL, iPlotSetUseImageRGBAttrib, IUPAF_SAMEASSYSTEM, "NATIVE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "USE_CONTEXTPLUS", NULL, iPlotSetUseContextPlusAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "MARGINLEFT", iPlotGetMarginLeftAttrib, iPlotSetMarginLeftAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARGINRIGHT", iPlotGetMarginRightAttrib, iPlotSetMarginRightAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

@@ -438,15 +438,15 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
     if (iup_iscontrol(status)) // || iup_isshift(status))
     {
       ih->data->current_plot->mRedraw = true;
-      ih->data->current_plot->mShowSelection = true;
-      ih->data->current_plot->mSelection.mX = ih->data->last_click_x < x? ih->data->last_click_x: x;
-      ih->data->current_plot->mSelection.mY = ih->data->last_click_y < y? ih->data->last_click_y: y;
-      ih->data->current_plot->mSelection.mWidth = abs(ih->data->last_click_x - x) + 1;
-      ih->data->current_plot->mSelection.mHeight = abs(ih->data->last_click_y - y) + 1;
+      ih->data->current_plot->mShowSelectionBand = true;
+      ih->data->current_plot->mSelectionBand.mX = ih->data->last_click_x < x? ih->data->last_click_x: x;
+      ih->data->current_plot->mSelectionBand.mY = ih->data->last_click_y < y? ih->data->last_click_y: y;
+      ih->data->current_plot->mSelectionBand.mWidth = abs(ih->data->last_click_x - x) + 1;
+      ih->data->current_plot->mSelectionBand.mHeight = abs(ih->data->last_click_y - y) + 1;
 
       iPlotRedrawInteract(ih);
 
-      ih->data->current_plot->mShowSelection = false;
+      ih->data->current_plot->mShowSelectionBand = false;
       return IUP_DEFAULT;
     }
     else
@@ -602,21 +602,11 @@ void IupPlotBegin(Ihandle* ih, int strXdata)
       !IupClassMatch(ih, "plot"))
     return;
 
-  iupPlotDataBase* inXData = (iupPlotDataBase*)iupAttribGet(ih, "_IUP_PLOT_XDATA");
-  iupPlotDataBase* inYData = (iupPlotDataBase*)iupAttribGet(ih, "_IUP_PLOT_YDATA");
+  iupPlotDataSet* theDataSet = (iupPlotDataSet*)iupAttribGet(ih, "_IUP_PLOT_DATASET");
+  if (theDataSet) delete theDataSet;
 
-  if (inXData) delete inXData;
-  if (inYData) delete inYData;
-
-  if (strXdata)
-    inXData = (iupPlotDataBase*)(new iupPlotDataString());
-  else
-    inXData = (iupPlotDataBase*)(new iupPlotDataReal());
-
-  inYData = (iupPlotDataBase*)new iupPlotDataReal();
-
-  iupAttribSet(ih, "_IUP_PLOT_XDATA",    (char*)inXData);
-  iupAttribSet(ih, "_IUP_PLOT_YDATA",    (char*)inYData);
+  theDataSet = new iupPlotDataSet(strXdata? true: false);
+  iupAttribSet(ih, "_IUP_PLOT_DATASET", (char*)theDataSet);
 }
 
 void IupPlotAdd(Ihandle* ih, double x, double y)
@@ -629,14 +619,8 @@ void IupPlotAdd(Ihandle* ih, double x, double y)
       !IupClassMatch(ih, "plot"))
     return;
 
-  iupPlotDataReal* inXData = (iupPlotDataReal*)iupAttribGet(ih, "_IUP_PLOT_XDATA");
-  iupPlotDataReal* inYData = (iupPlotDataReal*)iupAttribGet(ih, "_IUP_PLOT_YDATA");
-
-  if (!inYData || !inXData || inXData->IsString())
-    return;
-
-  inXData->AddItem(x);
-  inYData->AddItem(y);
+  iupPlotDataSet* theDataSet = (iupPlotDataSet*)iupAttribGet(ih, "_IUP_PLOT_DATASET");
+  theDataSet->AddSample(x, y);
 }
 
 void IupPlotAddStr(Ihandle* ih, const char* x, double y)
@@ -645,18 +629,34 @@ void IupPlotAddStr(Ihandle* ih, const char* x, double y)
   if (!iupObjectCheck(ih))
     return;
 
-  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
       !IupClassMatch(ih, "plot"))
-    return;
+      return;
 
-  iupPlotDataString *inXData = (iupPlotDataString*)iupAttribGet(ih, "_IUP_PLOT_XDATA");
-  iupPlotDataReal *inYData = (iupPlotDataReal*)iupAttribGet(ih, "_IUP_PLOT_YDATA");
+  iupPlotDataSet* theDataSet = (iupPlotDataSet*)iupAttribGet(ih, "_IUP_PLOT_DATASET");
+  theDataSet->AddSample(x, y);
+}
 
-  if (!inYData || !inXData || !inXData->IsString())
-    return;
+int IupPlotEnd(Ihandle* ih)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return -1;
 
-  inXData->AddItem(x);
-  inYData->AddItem(y);
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+      return -1;
+
+  iupPlotDataSet* theDataSet = (iupPlotDataSet*)iupAttribGet(ih, "_IUP_PLOT_DATASET");
+  if (theDataSet)
+    return -1;
+
+  ih->data->current_plot->AddDataSet(theDataSet);
+
+  iupAttribSet(ih, "_IUP_PLOT_DATASET", NULL);
+
+  ih->data->current_plot->mRedraw = true;
+  return ih->data->current_plot->mCurrentDataSet;
 }
 
 void IupPlotInsertStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* inX, double inY)
@@ -670,14 +670,7 @@ void IupPlotInsertStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* i
     return;
 
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
-  iupPlotDataString *theXData = (iupPlotDataString*)theDataSet->mDataX;
-  iupPlotDataReal *theYData = (iupPlotDataReal*)theDataSet->mDataY;
-
-  if (!theYData || !theXData || !theXData->IsString())
-    return;
-
-  theXData->InsertItem(inSampleIndex, inX);
-  theYData->InsertItem(inSampleIndex, inY);
+  theDataSet->InsertSample(inSampleIndex, inX, inY);
 }
 
 void IupPlotInsert(Ihandle* ih, int inIndex, int inSampleIndex, double inX, double inY)
@@ -691,64 +684,7 @@ void IupPlotInsert(Ihandle* ih, int inIndex, int inSampleIndex, double inX, doub
     return;
 
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
-  iupPlotDataReal *theXData = (iupPlotDataReal*)theDataSet->mDataX;
-  iupPlotDataReal *theYData = (iupPlotDataReal*)theDataSet->mDataY;
-
-  if (!theYData || !theXData || theXData->IsString())
-    return;
-
-  theXData->InsertItem(inSampleIndex, inX);
-  theYData->InsertItem(inSampleIndex, inY);
-}
-
-void IupPlotGetSample(Ihandle* ih, int inIndex, int inSampleIndex, double *x, double *y)
-{
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return;
-
-  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
-    !IupClassMatch(ih, "plot"))
-    return;
-
-  iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
-  iupPlotDataReal *theXData = (iupPlotDataReal*)theDataSet->mDataX;
-  iupPlotDataReal *theYData = (iupPlotDataReal*)theDataSet->mDataY;
-
-  if (!theYData || !theXData || theXData->IsString())
-    return;
-
-  int theCount = theXData->GetCount();
-  if (inSampleIndex < 0 || inSampleIndex >= theCount)
-    return;
-
-  if (x) *x = theXData->GetValue(inSampleIndex);
-  if (y) *y = theYData->GetValue(inSampleIndex);
-}
-
-void IupPlotGetSampleStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* *x, double *y)
-{
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return;
-
-  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
-    !IupClassMatch(ih, "plot"))
-    return;
-
-  iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
-  iupPlotDataString *theXData = (iupPlotDataString*)theDataSet->mDataX;
-  iupPlotDataReal *theYData = (iupPlotDataReal*)theDataSet->mDataY;
-
-  if (!theYData || !theXData || !theXData->IsString())
-    return;
-
-  int theCount = theXData->GetCount();
-  if (inSampleIndex < 0 || inSampleIndex >= theCount)
-    return;
-
-  if (x) *x = theXData->GetStrValue(inSampleIndex);
-  if (y) *y = theYData->GetValue(inSampleIndex);
+  theDataSet->InsertSample(inSampleIndex, inX, inY);
 }
 
 void IupPlotAddPoints(Ihandle* ih, int inIndex, double *x, double *y, int count)
@@ -762,17 +698,8 @@ void IupPlotAddPoints(Ihandle* ih, int inIndex, double *x, double *y, int count)
     return;
 
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
-  iupPlotDataReal *theXData = (iupPlotDataReal*)theDataSet->mDataX;
-  iupPlotDataReal *theYData = (iupPlotDataReal*)theDataSet->mDataY;
-
-  if (!theYData || !theXData || theXData->IsString())
-    return;
-
   for (int i=0; i<count; i++)
-  {
-    theXData->AddItem(x[i]);
-    theYData->AddItem(y[i]);
-  }
+    theDataSet->AddSample(x[i], y[i]);
 }
 
 void IupPlotAddStrPoints(Ihandle* ih, int inIndex, const char** x, double* y, int count)
@@ -786,17 +713,8 @@ void IupPlotAddStrPoints(Ihandle* ih, int inIndex, const char** x, double* y, in
     return;
 
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
-  iupPlotDataString *theXData = (iupPlotDataString*)theDataSet->mDataX;
-  iupPlotDataReal *theYData = (iupPlotDataReal*)theDataSet->mDataY;
-
-  if (!theYData || !theXData || !theXData->IsString())
-    return;
-
-  for (int i=0; i<count; i++)
-  {
-    theXData->AddItem(x[i]);
-    theYData->AddItem(y[i]);
-  }
+  for (int i = 0; i<count; i++)
+    theDataSet->AddSample(x[i], y[i]);
 }
 
 void IupPlotInsertStrPoints(Ihandle* ih, int inIndex, int inSampleIndex, const char** inX, double* inY, int count)
@@ -810,17 +728,9 @@ void IupPlotInsertStrPoints(Ihandle* ih, int inIndex, int inSampleIndex, const c
     return;
 
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
-  iupPlotDataString *theXData = (iupPlotDataString*)theDataSet->mDataX;
-  iupPlotDataReal *theYData = (iupPlotDataReal*)theDataSet->mDataY;
-
-  if (!theYData || !theXData || !theXData->IsString())
-    return;
 
   for (int i=0; i<count; i++)
-  {
-    theXData->InsertItem(inSampleIndex+i, inX[i]);
-    theYData->InsertItem(inSampleIndex+i, inY[i]);
-  }
+    theDataSet->InsertSample(inSampleIndex + i, inX[i], inY[i]);
 }
 
 void IupPlotInsertPoints(Ihandle* ih, int inIndex, int inSampleIndex, double *inX, double *inY, int count)
@@ -834,59 +744,40 @@ void IupPlotInsertPoints(Ihandle* ih, int inIndex, int inSampleIndex, double *in
     return;
 
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
-  iupPlotDataReal *theXData = (iupPlotDataReal*)theDataSet->mDataX;
-  iupPlotDataReal *theYData = (iupPlotDataReal*)theDataSet->mDataY;
-
-  if (!theYData || !theXData || theXData->IsString())
-    return;
 
   for (int i=0; i<count; i++)
-  {
-    theXData->InsertItem(inSampleIndex+i, inX[i]);
-    theYData->InsertItem(inSampleIndex+i, inY[i]);
-  }
+    theDataSet->InsertSample(inSampleIndex + i, inX[i], inY[i]);
 }
 
-int IupPlotEnd(Ihandle* ih)
-{
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return -1;
-
-  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
-      !IupClassMatch(ih, "plot"))
-    return -1;
-
-  iupPlotDataBase* inXData = (iupPlotDataBase*)iupAttribGet(ih, "_IUP_PLOT_XDATA");
-  iupPlotDataBase* inYData = (iupPlotDataBase*)iupAttribGet(ih, "_IUP_PLOT_YDATA");
-  if (!inYData || !inXData)
-    return -1;
-
-  /* add to plot */
-  ih->data->current_plot->AddDataSet(inXData, inYData);
-
-  iupAttribSet(ih, "_IUP_PLOT_XDATA", NULL);
-  iupAttribSet(ih, "_IUP_PLOT_YDATA", NULL);
-
-  ih->data->current_plot->mRedraw = true;
-  return ih->data->current_plot->mCurrentDataSet;
-}
-
-void IupPlotTransform(Ihandle* ih, double x, double y, int *ix, int *iy)
+void IupPlotGetSample(Ihandle* ih, int inIndex, int inSampleIndex, double *x, double *y)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
 
-  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
       !IupClassMatch(ih, "plot"))
-    return;
+      return;
 
-  if (ix) *ix = iupRound(ih->data->current_plot->mAxisX.mTrafo->Transform(x));
-  if (iy) *iy = iupRound(ih->data->current_plot->mAxisY.mTrafo->Transform(y));
+  iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
+  theDataSet->GetSample(inSampleIndex, x, y);
 }
 
-void IupPlotTransformTo(Ihandle* ih, int x, int y, double *rx, double *ry)
+void IupPlotGetSampleStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* *x, double *y)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+      return;
+
+  iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
+  theDataSet->GetSample(inSampleIndex, x, y);
+}
+
+void IupPlotTransform(Ihandle* ih, double x, double y, double *cnv_x, double *cnv_y)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -896,11 +787,11 @@ void IupPlotTransformTo(Ihandle* ih, int x, int y, double *rx, double *ry)
       !IupClassMatch(ih, "plot"))
     return;
 
-  if (rx) *rx = ih->data->current_plot->mAxisX.mTrafo->TransformBack((double)x);
-  if (ry) *ry = ih->data->current_plot->mAxisY.mTrafo->TransformBack((double)y);
+  if (cnv_x) *cnv_x = ih->data->current_plot->mAxisX.mTrafo->Transform(x);
+  if (cnv_y) *cnv_y = ih->data->current_plot->mAxisY.mTrafo->Transform(y);
 }
 
-void IupPlotPaintTo(Ihandle* ih, void* _cnv)
+void IupPlotTransformTo(Ihandle* ih, double cnv_x, double cnv_y, double *x, double *y)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -910,12 +801,26 @@ void IupPlotPaintTo(Ihandle* ih, void* _cnv)
       !IupClassMatch(ih, "plot"))
     return;
 
-  if (!_cnv)
+  if (x) *x = ih->data->current_plot->mAxisX.mTrafo->TransformBack(cnv_x);
+  if (y) *y = ih->data->current_plot->mAxisY.mTrafo->TransformBack(cnv_y);
+}
+
+void IupPlotPaintTo(Ihandle* ih, cdCanvas* cnv)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+      !IupClassMatch(ih, "plot"))
+    return;
+
+  if (!cnv)
     return;
 
   cdCanvas *old_cd_canvas  = ih->data->cd_canvas;
 
-  ih->data->cd_canvas = (cdCanvas*)_cnv;
+  ih->data->cd_canvas = (cdCanvas*)cnv;
   iupPlotUpdateViewports(ih);
 
   // when drawing to an external canvas
@@ -943,6 +848,12 @@ static int iPlotMapMethod(Ihandle* ih)
   }
   else if (ih->data->graphics_mode == IUP_PLOT_IMAGERGB)
     ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFERRGB, ih);
+  else if (ih->data->graphics_mode == IUP_PLOT_NATIVEPLUS)
+  {
+    int old_plus = cdUseContextPlus(1);
+    ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFER, ih);
+    cdUseContextPlus(old_plus);
+  }
   else
     ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFER, ih);
   if (!ih->data->cd_canvas)
@@ -967,6 +878,10 @@ static void iPlotDestroyMethod(Ihandle* ih)
 {
   for(int p=0; p<ih->data->plot_list_count; p++)
     delete ih->data->plot_list[p];
+
+  iupPlotDataSet* theDataSet = (iupPlotDataSet*)iupAttribGet(ih, "_IUP_PLOT_DATASET");
+  if (theDataSet)
+    delete theDataSet;
 }
 
 static int iPlotCreateMethod(Ihandle* ih, void **params)

@@ -12,6 +12,10 @@
 .style2 {
 	text-decoration: underline;
 }
+.auto-style1 {
+	font-size: large;
+	color: #FF0000;
+}
 </style>
 </head>
 <body>
@@ -26,17 +30,17 @@
   </ul>
 </div>
 
-<h2>IupPPlot</h2>
+<h2>IupPPlot<span class="auto-style1"> (DEPRECATED since 3.12 use
+<a href="iup_plot.html">IupPlot</a> instead)</span></h2>
 <p>Creates a plot of one or more data sets. It inherits from 
 <a href="../elem/iupcanvas.html">IupCanvas</a>. Uses the PPlot library.</p>
 <p>PPlot is a library for creating plots that is system independent. It is 
-maintained by Pier Philipsen (pierphil@xs4all.nl) and available at SourceForge
+maintained by Pier Philipsen and available at SourceForge
 <a href="http://pplot.sourceforge.net/">http://pplot.sourceforge.net/</a> with a 
 very flexible BSD License). IupPPlot library includes the PPlot source code so no external 
 references are needed. Also the standard PPlot distribution source code was 
 changed to improve features and visual appearance.</p>
-<p>IupPPlot first implementation was written by Marian Trifon 
-(mtrif@katamail.com), then completed and documented by the IUP team.</p>
+<p>IupPPlot first implementation was written by Marian Trifon, then completed and documented by the IUP team.</p>
 <h3>Initialization and Usage</h3>
 <p>The <b>IupPPlotOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The &quot;iup_pplot.h&quot; file must also be included in the source code. The program must be linked to the controls 

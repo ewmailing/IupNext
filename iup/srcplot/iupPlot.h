@@ -113,12 +113,12 @@ public:
   bool IsString() const { return mIsString; }
   int GetCount() const { return mCount; }
 
-  virtual bool CalculateRange(double &outMin, double &outMax) = 0;
-  virtual double GetValue(int inIndex) const = 0;
+  virtual bool CalculateRange(double &outMin, double &outMax) const = 0;
+  virtual double GetSample(int inSampleIndex) const = 0;
 
-  void RemoveItem(int inIndex) { 
-    if (inIndex < 0) inIndex = 0; if (inIndex > mCount) inIndex = mCount; 
-    iupArrayRemove(mArray, inIndex, 1); mCount--; }
+  void RemoveSample(int inSampleIndex) { 
+    if (inSampleIndex < 0) inSampleIndex = 0; if (inSampleIndex > mCount) inSampleIndex = mCount; 
+    iupArrayRemove(mArray, inSampleIndex, 1); mCount--; }
 
 protected:
   int mCount;
@@ -126,63 +126,64 @@ protected:
   bool mIsString;
 };
 
-class iupPlotDataString : public iupPlotDataBase
-{
-public:
-  iupPlotDataString() :iupPlotDataBase(sizeof(char*)) { mIsString = true; data = (char**)iupArrayGetData(mArray); }
-  ~iupPlotDataString(); 
-
-  char** GetStrData() const { return data; }
-  char*  GetStrValue(int inIndex) const { return data[inIndex]; }
-  double GetValue(int inIndex) const { return inIndex; }
-
-  void AddItem(const char *inString) { data = (char**)iupArrayInc(mArray); data[mCount] = iupStrDup(inString); mCount++; }
-  void InsertItem(int inIndex, const char *inString) { 
-    if (inIndex < 0) inIndex = 0; if (inIndex > mCount) inIndex = mCount; 
-    data = (char**)iupArrayInsert(mArray, inIndex, 1); data[inIndex] = iupStrDup(inString); mCount++; }
-
-  bool CalculateRange(double &outMin, double &outMax);
-
-protected:
-  char** data;
-};
-
 class iupPlotDataReal : public iupPlotDataBase
 {
 public:
-  iupPlotDataReal() :iupPlotDataBase(sizeof(double)) { data = (double*)iupArrayGetData(mArray); }
+  iupPlotDataReal() :iupPlotDataBase(sizeof(double)) { mData = (double*)iupArrayGetData(mArray); }
 
-  double* GetRealData() const { return data; }
-  double GetValue(int inIndex) const { return data[inIndex]; }
+  double GetSample(int inSampleIndex) const { return mData[inSampleIndex]; }
 
-  void AddItem(double inReal) { data = (double*)iupArrayInc(mArray); data[mCount] = inReal; mCount++; }
-  void InsertItem(int inIndex, double inReal) { 
-    if (inIndex < 0) inIndex = 0; if (inIndex > mCount) inIndex = mCount;
-    data = (double*)iupArrayInsert(mArray, inIndex, 1); data[inIndex] = inReal; mCount++; }
+  void AddSample(double inReal) { mData = (double*)iupArrayInc(mArray); mData[mCount] = inReal; mCount++; }
+  void InsertSample(int inSampleIndex, double inReal) {
+    if (inSampleIndex < 0) inSampleIndex = 0; if (inSampleIndex > mCount) inSampleIndex = mCount;
+    mData = (double*)iupArrayInsert(mArray, inSampleIndex, 1); mData[inSampleIndex] = inReal; mCount++; }
 
-  bool CalculateRange(double &outMin, double &outMax);
+  bool CalculateRange(double &outMin, double &outMax) const;
 
 protected:
-  double* data;
+  double* mData;
+};
+
+class iupPlotDataString : public iupPlotDataBase
+{
+public:
+  iupPlotDataString() :iupPlotDataBase(sizeof(char*)) { mIsString = true; mData = (char**)iupArrayGetData(mArray); }
+  ~iupPlotDataString(); 
+
+  double GetSample(int inSampleIndex) const { return inSampleIndex; }
+
+  const char* GetSampleString(int inSampleIndex) const { return mData[inSampleIndex]; }
+
+  void AddSample(const char *inString) { mData = (char**)iupArrayInc(mArray); mData[mCount] = iupStrDup(inString); mCount++; }
+  void InsertSample(int inSampleIndex, const char *inString) { 
+    if (inSampleIndex < 0) inSampleIndex = 0; if (inSampleIndex > mCount) inSampleIndex = mCount; 
+    mData = (char**)iupArrayInsert(mArray, inSampleIndex, 1); mData[inSampleIndex] = iupStrDup(inString); mCount++; }
+
+  bool CalculateRange(double &outMin, double &outMax) const;
+
+protected:
+  char** mData;
 };
 
 class iupPlotDataBool : public iupPlotDataBase
 {
 public:
-  iupPlotDataBool() :iupPlotDataBase(sizeof(bool)) { data = (bool*)iupArrayGetData(mArray); }
+  iupPlotDataBool() :iupPlotDataBase(sizeof(bool)) { mData = (bool*)iupArrayGetData(mArray); }
 
-  bool* GetBoolData() const { return data; }
-  double GetValue(int inIndex) const { return (int)data[inIndex]; }
+  double GetSample(int inSampleIndex) const { return (int)mData[inSampleIndex]; }
 
-  void AddItem(bool inBool) { data = (bool*)iupArrayInc(mArray); data[mCount] = inBool; mCount++; }
-  void InsertItem(int inIndex, bool inBool) { 
-    if (inIndex < 0) inIndex = 0; if (inIndex > mCount) inIndex = mCount; 
-    data = (bool*)iupArrayInsert(mArray, inIndex, 1); data[inIndex] = inBool; mCount++; }
+  bool GetSampleBool(int inSampleIndex) const { return mData[inSampleIndex]; }
+  void SetSampleBool(int inSampleIndex, bool inBool) { mData[inSampleIndex] = inBool; }
 
-  bool CalculateRange(double &outMin, double &outMax) { outMin = 0; outMax = 1.0; }
+  void AddSample(bool inBool) { mData = (bool*)iupArrayInc(mArray); mData[mCount] = inBool; mCount++; }
+  void InsertSample(int inSampleIndex, bool inBool) { 
+    if (inSampleIndex < 0) inSampleIndex = 0; if (inSampleIndex > mCount) inSampleIndex = mCount; 
+    mData = (bool*)iupArrayInsert(mArray, inSampleIndex, 1); mData[inSampleIndex] = inBool; mCount++; }
+
+  bool CalculateRange(double &outMin, double &outMax) const;
 
 protected:
-  bool* data;
+  bool* mData;
 };
 
 enum iupPlotMode { IUP_PLOT_LINE, IUP_PLOT_MARK, IUP_PLOT_MARKLINE, IUP_PLOT_AREA, IUP_PLOT_BAR };
@@ -190,18 +191,30 @@ enum iupPlotMode { IUP_PLOT_LINE, IUP_PLOT_MARK, IUP_PLOT_MARKLINE, IUP_PLOT_ARE
 class iupPlotDataSet
 {
 public:
-  iupPlotDataSet(iupPlotDataBase* inDataX, iupPlotDataBase* inDataY, const char* inName, long inColor);
+  iupPlotDataSet(bool strXdata);
   ~iupPlotDataSet();
 
   void SetName(const char* inName) { if (mName) free(mName); mName = iupStrDup(inName); }
   const char* GetName() {return mName; }
 
   bool FindSample(double inX, double inY, double tolX, double tolY,
-                  int &outSample, double &outX, double &outY) const;
+                  int &outSampleIndex, double &outX, double &outY) const;
 
   void DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
 
- // void SelectSample(int inSample);
+  int GetCount();
+  void AddSample(double inX, double inY);
+  void InsertSample(int inSampleIndex, double inX, double inY);
+  void AddSample(const char* inX, double inY);
+  void InsertSample(int inSampleIndex, const char* inX, double inY);
+  void RemoveSample(int inSampleIndex);
+  void GetSample(int inSampleIndex, double *inX, double *inY);
+  void GetSample(int inSampleIndex, const char* *inX, double *inY);
+
+  const iupPlotDataBase* GetDataX() const { return mDataX; }
+  const iupPlotDataBase* GetDataY() const { return mDataY; }
+
+    // void SelectSample(int inSample);
 
   long mColor;
   iupPlotMode mMode;
@@ -210,18 +223,20 @@ public:
   int mMarkStyle;
   int mMarkSize;
 
+protected:
+  char* mName;
+
   iupPlotDataBase* mDataX;
   iupPlotDataBase* mDataY;
   iupPlotDataBool* mSelection;
-
-protected:
-  char* mName;
+  bool mHasSelection;
 
   void DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
   void DrawDataMark(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
   void DrawDataMarkLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
   void DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
   void DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
+  void DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
 };
 
 class iupPlotAxis;
@@ -232,11 +247,13 @@ class iupPlotTickIterBase
 public:
   iupPlotTickIterBase() :mAxis(NULL){}
   virtual ~iupPlotTickIterBase() {}
+
   virtual bool Init() = 0;
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString) = 0;
 
   virtual bool CalculateSpacing(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const = 0;
   virtual bool AdjustRange(double &, double &) const { return true; };
+
   void SetAxis(const iupPlotAxis *inAxis) { mAxis = inAxis; };
 
 protected:
@@ -247,9 +264,12 @@ class iupPlotTickIterLinear : public iupPlotTickIterBase
 {
 public:
   iupPlotTickIterLinear() :mCurrentTick(0), mDelta(0){}
+
   virtual bool Init();
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
+
   bool CalculateSpacing(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
+
 protected:
   double mCurrentTick;
   long mCount;
@@ -260,11 +280,13 @@ class iupPlotTickIterLog : public iupPlotTickIterBase
 {
 public:
   iupPlotTickIterLog() :mCurrentTick(0), mDelta(0){}
+
   virtual bool Init();
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
 
   bool CalculateSpacing(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
   virtual bool AdjustRange(double &ioMin, double &ioMax) const;
+
   double RoundUp(double inFloat) const;
   double RoundDown(double inFloat) const;
 
@@ -278,10 +300,12 @@ class iupPlotTickIterNamed : public iupPlotTickIterLinear
 {
 public:
   iupPlotTickIterNamed(){}
+
   void SetStringList(const iupPlotDataString* inStringData) { mStringData = inStringData; };
 
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
   bool CalculateSpacing(double inParRange, double inDivGuess, iupPlotTick &outTickInfo) const;
+
 protected:
   const iupPlotDataString* mStringData;
 };
@@ -532,8 +556,8 @@ public:
   int mCrossHairX;
   bool GetCrossPoint(const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, int &outY) const;
 
-  bool mShowSelection;
-  iupPlotRect mSelection;
+  bool mShowSelectionBand;
+  iupPlotRect mSelectionBand;
 
   /*********************************/
 
@@ -552,13 +576,13 @@ public:
   int mDataSetListCount;
   int mCurrentDataSet;
 
-  void AddDataSet(iupPlotDataBase* inDataX, iupPlotDataBase* inDataY);
+  void AddDataSet(iupPlotDataSet* inDataSet);
   void RemoveDataSet(int inIndex);
   int FindDataSet(const char* inName);
   void RemoveAllDataSets();
   long GetNextDataSetColor();
 
-  bool FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSample, double &outX, double &outY, const char* &outStrX) const;
+  bool FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const;
 };
 
 #endif

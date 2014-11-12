@@ -313,19 +313,18 @@ bool iupPlotTickIterNamed::GetNextTick (double &outTick, bool &outIsMajorTick, c
 {
   if (iupPlotTickIterLinear::GetNextTick (outTick, outIsMajorTick, outFormatString)) 
   {
-    int theIndex = iupPlotRound (outTick);
+    int theSampleIndex = iupPlotRound(outTick);
 
     // TODO: improve this
-    if (fabs(outTick - (double)theIndex) > 0.1 ) 
+    if (fabs(outTick - (double)theSampleIndex) > 0.1)
     {
       if (outFormatString) strcpy(outFormatString, "");
       return true;
     }
 
-    if (theIndex >= 0 && theIndex < mStringData->GetCount())
+    if (theSampleIndex >= 0 && theSampleIndex < mStringData->GetCount())
     {
-      char** data = mStringData->GetStrData();
-      if (outFormatString) strcpy(outFormatString, data[theIndex]);
+      if (outFormatString) strcpy(outFormatString, mStringData->GetSampleString(theSampleIndex));
       return true;
     }
   }

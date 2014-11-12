@@ -36,10 +36,12 @@ void IupPlotAddStrPoints(Ihandle* ih, int index, const char** x, double* y, int 
 void IupPlotGetSample(Ihandle* ih, int index, int sample_index, double *x, double *y);
 void IupPlotGetSampleStr(Ihandle* ih, int index, int sample_index, const char* *x, double *y);
 
-void IupPlotTransform(Ihandle* ih, double x, double y, int *ix, int *iy);
-void IupPlotTransformTo(Ihandle* ih, int x, int y, double *rx, double *ry);
+void IupPlotTransform(Ihandle* ih, double x, double y, double *cnv_x, double *cnv_y);
+void IupPlotTransformTo(Ihandle* ih, double cnv_x, int cnv_y, double *x, double *y);
 
-void IupPlotPaintTo(Ihandle *ih, void *cnv);
+typedef struct _cdCanvas cdCanvas;
+
+void IupPlotPaintTo(Ihandle *ih, cdCanvas* cnv);
 /***********************************************/
 
 
