@@ -18,9 +18,6 @@
 .auto-style2 {
 	font-weight: normal;
 }
-.auto-style3 {
-	color: #00FF00;
-}
 </style>
 </head>
 <body>
@@ -51,7 +48,8 @@ See "<a href="#Differences">Differences from IupPPlot</a>" bellow.</p>
 <h3>Initialization and Usage</h3>
 <p>The <b>IupPlotOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The &quot;iup_plot.h&quot; file must also be included in the source code. The program must be linked to the controls 
-  library (iup_plot), and with the CD library.</p>
+  library (iup_plot), with the main CD library, with the cdgl and cdcontextplus 
+libraries, and with the iupgl library.</p>
 <p>To make the control available in Lua use require&quot;iuplua_plot&quot; or manually 
 call the initialization function in C, 
 <b>iupplotlua_open</b>, after calling <b>iuplua_open</b>.
@@ -80,9 +78,7 @@ major ticks.</p>
 <p>The <b>axis</b> are always positioned at the left-bottom, except when cross-origin 
 is enabled, then it is positioned at the origin and zoom and pan will affect its 
 position. Cross-origin will be automatically disable if a logarithm scale is 
-used. <span class="auto-style3">If values are only positive then the origin will 
-be placed in left bottom position. If values are negative and positive then 
-origin will be placed inside the plot.</span></p>
+used.</p>
 <h3><a name="Interaction">Interaction</a></h3>
 <h4>Zoom &amp; Pan</h4>
 <p><strong>Zoom</strong> can be done while pressing the <strong>Ctrl</strong> 
@@ -552,7 +548,7 @@ metafile drivers can be used in <b>IupPlotPaintTo</b>.</p>
 EDIT* callbacks. Some attributes were renamed but 
 the old names are also supported.</p>
 <p>There are several new attributes and callbacks, check the documentation.</p>
-<p><span class="style1"><strong>IMPORTANT</strong></span>: interaction has 
+<p><span class="style1"><strong>IMPORTANT</strong></span>: interaction was 
 heavily changed. Zoom, Pan and Selection is now done totally different from
 <strong>IupPPlot</strong>. See <a href="#Interaction">Interaction</a> above.</p>
   
