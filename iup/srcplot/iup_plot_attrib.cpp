@@ -8,11 +8,10 @@
 #include <math.h>
 #include <string.h>
 
-#include "iup.h"
+#include "iupPlot.h"
+
 #include "iup_plot.h"
 #include "iupgl.h"
-
-#include <cd.h>
 
 #include "iup_class.h"
 #include "iup_register.h"
@@ -23,7 +22,6 @@
 #include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
 
-#include "iupPlot.h"
 #include "iup_plot_ctrl.h"
 
 
@@ -972,6 +970,17 @@ static char* iPlotGetSyncViewAttrib(Ihandle* ih)
   return iupStrReturnBoolean(ih->data->sync_view);
 }
                           
+static int iPlotSetReadOnlyAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->read_only = iupStrBoolean(value);
+  return 0;
+}
+
+static char* iPlotGetReadOnlyAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->read_only);
+}
+
 static int iPlotSetGraphicsModeAttrib(Ihandle* ih, const char* value)
 {
   if (ih->handle)  // Can be set only before map
@@ -2375,9 +2384,10 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "ANTIALIAS", iPlotGetAntialiasAttrib, iPlotSetAntialiasAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iPlotSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SYNCVIEW", iPlotGetSyncViewAttrib, iPlotSetSyncViewAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "READONLY", iPlotGetReadOnlyAttrib, iPlotSetReadOnlyAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANVAS", iPlotGetCanvasAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "GRAPHICSMODE", iPlotGetGraphicsModeAttrib, iPlotSetGraphicsModeAttrib, IUPAF_SAMEASSYSTEM, "NATIVE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "USE_IMAGERGB", NULL, iPlotSetUseImageRGBAttrib, IUPAF_SAMEASSYSTEM, "NATIVE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "USE_IMAGERGB", NULL, iPlotSetUseImageRGBAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "USE_CONTEXTPLUS", NULL, iPlotSetUseContextPlusAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "MARGINLEFT", iPlotGetMarginLeftAttrib, iPlotSetMarginLeftAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

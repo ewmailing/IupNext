@@ -6,6 +6,7 @@
 */
 
 #include "iup.h"
+#include "iupcbs.h"
 
 #include "iup_array.h"
 #include "iup_str.h"
@@ -186,6 +187,13 @@ protected:
   bool* mData;
 };
 
+struct iupPlotSampleNotify
+{
+  Ihandle* ih;
+  int ds;
+  IFniiddi cb;
+};
+
 enum iupPlotMode { IUP_PLOT_LINE, IUP_PLOT_MARK, IUP_PLOT_MARKLINE, IUP_PLOT_AREA, IUP_PLOT_BAR };
 
 class iupPlotDataSet
@@ -200,7 +208,7 @@ public:
   bool FindSample(double inX, double inY, double tolX, double tolY,
                   int &outSampleIndex, double &outX, double &outY) const;
 
-  void DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
+  void DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
 
   int GetCount();
   void AddSample(double inX, double inY);
@@ -213,8 +221,11 @@ public:
 
   const iupPlotDataBase* GetDataX() const { return mDataX; }
   const iupPlotDataBase* GetDataY() const { return mDataY; }
+  const iupPlotDataBool* GetSelection() const { return mSelection; }
 
-    // void SelectSample(int inSample);
+  bool SelectSamples(double inMinX, double inMaxX, double inMinY, double inMaxY, const iupPlotSampleNotify* inNotify);
+  bool ClearSelection(const iupPlotSampleNotify* inNotify);
+  bool DeleteSelectedSamples(const iupPlotSampleNotify* inNotify);
 
   long mColor;
   iupPlotMode mMode;
@@ -229,14 +240,14 @@ protected:
   iupPlotDataBase* mDataX;
   iupPlotDataBase* mDataY;
   iupPlotDataBool* mSelection;
-  bool mHasSelection;
+  bool mHasSelected;
 
-  void DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
-  void DrawDataMark(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
-  void DrawDataMarkLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
-  void DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
-  void DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
-  void DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas) const;
+  void DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataMark(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataMarkLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
 };
 
 class iupPlotAxis;
@@ -520,6 +531,7 @@ public:
   void DrawPlotBackground(cdCanvas* canvas) const;
   bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas) const;
   void DrawCrossHair(const iupPlotRect &inRect, cdCanvas* canvas) const;
+    void DrawCrossPoints(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
 
   /*********************************/
 
@@ -554,7 +566,6 @@ public:
 
   bool mCrossHair;
   int mCrossHairX;
-  bool GetCrossPoint(const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, int &outY) const;
 
   bool mShowSelectionBand;
   iupPlotRect mSelectionBand;
@@ -583,6 +594,9 @@ public:
   long GetNextDataSetColor();
 
   bool FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const;
+  void SelectDataSetSamples(double inMinX, double inMaxX, double inMinY, double inMaxY);
+  void DeleteSelectedDataSetSamples();
+  void ClearDataSetSelection();
 };
 
 #endif

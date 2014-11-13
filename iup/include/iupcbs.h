@@ -7,6 +7,8 @@
 #ifndef __IUPCBS_H 
 #define __IUPCBS_H
 
+typedef struct _cdCanvas cdCanvas;
+
 typedef int (*IFidle)(void);  /* idle */
 
 typedef void(*IFi)(int); /* globalentermodal_cb, globalleavemodal_cb,  */
@@ -20,7 +22,7 @@ typedef int (*IFni)(Ihandle*, int);   /* k_any, show_cb, toggle_action, spin_cb,
 typedef int (*IFnii)(Ihandle*, int, int);  /* resize_cb, caret_cb, matrix_mousemove_cb, enteritem_cb, leaveitem_cb, scrolltop_cb, dropcheck_cb, selection_cb, select_cb, switch_cb, scrolling_cb, vspan_cb, hspan_cb */
 typedef int (*IFniii)(Ihandle*, int, int, int); /* trayclick_cb, edition_cb */
 typedef int (*IFniiii)(Ihandle*, int, int, int, int); /* dragdrop_cb */
-typedef int (*IFniiiiiiC)(Ihandle*, int, int, int, int, int, int, void*);  /* draw_cb */
+typedef int (*IFniiiiiiC)(Ihandle*, int, int, int, int, int, int, cdCanvas*);  /* draw_cb */
 typedef int (*IFniiiiii)(Ihandle*, int, int, int, int, int, int);  /* OLD draw_cb */
 
 typedef int (*IFnff)(Ihandle*, float, float);    /* canvas_action, plotmotion_cb (pplot) */
@@ -50,9 +52,11 @@ typedef int (*IFniinsii)(Ihandle*, int, int, Ihandle*, char*, int, int); /* drop
 typedef int (*IFnccc)(Ihandle*, unsigned char, unsigned char, unsigned char); /* drag_cb, change_cb */
 typedef int (*IFniIIII)(Ihandle*, int, int*, int*, int*, int*); /* multitouch_cb */
 
-typedef int (*IFnC)(Ihandle*, void*); /* postdraw_cb, predraw_cb */
-typedef int (*IFniiff)(Ihandle*, int, int, float, float); /* delete_cb */
-typedef int (*IFniiffi)(Ihandle*, int, int, float, float, int); /* select_cb */
+typedef int (*IFnC)(Ihandle*, cdCanvas*); /* postdraw_cb, predraw_cb */
+typedef int (*IFniiff)(Ihandle*, int, int, float, float); /* delete_cb (pplot) */
+typedef int (*IFniiffi)(Ihandle*, int, int, float, float, int); /* select_cb (pplot) */
+typedef int (*IFniidd)(Ihandle*, int, int, double, double); /* delete_cb */
+typedef int (*IFniiddi)(Ihandle*, int, int, double, double, int); /* select_cb */
 typedef int (*IFniiffff)(Ihandle*, int, int, float, float, float*, float*); /* edit_cb */
 typedef int (*IFniiffs)(Ihandle*, int, int, float, float, char*);  /* plotbutton_cb (pplot) */
 typedef int (*IFniidds)(Ihandle*, int, int, double, double, char*);  /* plotbutton_cb */

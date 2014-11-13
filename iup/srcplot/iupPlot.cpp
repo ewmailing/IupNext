@@ -5,9 +5,17 @@
 #include <string.h>
 
 #include "iupPlot.h"
-#include "iupcbs.h"
 
 
+inline static void iPlotCheckMinMax(double &inoutMin, double &inoutMax)
+{
+  if (inoutMin > inoutMax) 
+  { 
+    double theTmp = inoutMin;
+    inoutMin = inoutMax;
+    inoutMax = theTmp;
+  }
+}
 
 double iupPlotTrafoLinear::Transform(double inValue) const 
 {
@@ -152,7 +160,7 @@ bool iupPlotDataBool::CalculateRange(double &outMin, double &outMax) const
 
 iupPlotDataSet::iupPlotDataSet(bool strXdata)
   :mColor(CD_BLACK), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mMarkStyle(CD_X), mMarkSize(7),
-   mMode(IUP_PLOT_LINE), mName(NULL), mHasSelection(false)
+   mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false)
 {
   if (strXdata)
     mDataX = (iupPlotDataBase*)(new iupPlotDataString());
@@ -191,6 +199,120 @@ bool iupPlotDataSet::FindSample(double inX, double inY, double tolX, double tolY
   }
 
   return false;
+}
+
+bool iupPlotDataSet::SelectSamples(double inMinX, double inMaxX, double inMinY, double inMaxY, const iupPlotSampleNotify* inNotify)
+{
+  bool theChanged = false;
+  mHasSelected = false;
+
+  int theCount = mDataX->GetCount();
+  for (int i = 0; i < theCount; i++)
+  {
+    double theX = mDataX->GetSample(i);
+    double theY = mDataY->GetSample(i);
+    bool theSelected = mSelection->GetSampleBool(i);
+
+    if (theX >= inMinX && theX <= inMaxX &&
+        theY >= inMinY && theY <= inMaxY)
+    {
+      mHasSelected = true;
+
+      if (!theSelected)
+      {
+        if (inNotify)
+        {
+          int ret = inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)theSelected);
+          if (ret == IUP_IGNORE)
+            continue;
+        }
+
+        theChanged = true;
+        mSelection->SetSampleBool(i, true);
+      }
+    }
+    else
+    {
+      if (theSelected)
+      {
+        if (inNotify)
+        {
+          int ret = inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)theSelected);
+          if (ret == IUP_IGNORE)
+            continue;
+        }
+
+        theChanged = true;
+        mSelection->SetSampleBool(i, false);
+      }
+    }
+  }
+
+  return theChanged;
+}
+
+bool iupPlotDataSet::ClearSelection(const iupPlotSampleNotify* inNotify)
+{
+  bool theChanged = false;
+
+  if (!mHasSelected)
+    return theChanged;
+
+  mHasSelected = false;
+
+  int theCount = mDataX->GetCount();
+  for (int i = 0; i < theCount; i++)
+  {
+    bool theSelected = mSelection->GetSampleBool(i);
+    if (theSelected)
+    {
+      if (inNotify)
+      {
+        double theX = mDataX->GetSample(i);
+        double theY = mDataY->GetSample(i);
+        int ret = inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)theSelected);
+        if (ret == IUP_IGNORE)
+          continue;
+      }
+
+      theChanged = true;
+      mSelection->SetSampleBool(i, false);
+    }
+  }
+
+  return theChanged;
+}
+
+bool iupPlotDataSet::DeleteSelectedSamples(const iupPlotSampleNotify* inNotify)
+{
+  bool theChanged = false;
+
+  if (!mHasSelected)
+    return theChanged;
+
+  mHasSelected = false;
+
+  int theCount = mDataX->GetCount();
+  for (int i = theCount-1; i >= 0; i--)
+  {
+    bool theSelected = mSelection->GetSampleBool(i);
+    if (theSelected)
+    {
+      if (inNotify)
+      {
+        double theX = mDataX->GetSample(i);
+        double theY = mDataY->GetSample(i);
+        int ret = inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)theSelected);
+        if (ret == IUP_IGNORE)
+          continue;
+      }
+
+      theChanged = true;
+      RemoveSample(i);
+    }
+  }
+
+  return theChanged;
 }
 
 int iupPlotDataSet::GetCount()
@@ -413,7 +535,7 @@ bool iupPlotAxis::ZoomTo(double inMin, double inMax)
 {
   InitZoom();
 
-  if (inMin > inMax) { double tmp = inMin; inMin = inMax; inMax = tmp; }
+  iPlotCheckMinMax(inMin, inMax);
 
   if (inMin < mNoZoomMin || inMin > mNoZoomMax ||
       inMax < mNoZoomMin || inMax > mNoZoomMax)
@@ -653,6 +775,129 @@ bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &ou
   return false;
 }
 
+void iupPlot::SelectDataSetSamples(double inMinX, double inMaxX, double inMinY, double inMaxY)
+{
+  bool theChanged = false;
+
+  iPlotCheckMinMax(inMinX, inMaxX);
+  iPlotCheckMinMax(inMinY, inMaxY);
+
+  IFniiddi select_cb = (IFniiddi)IupGetCallback(ih, "SELECT_CB");
+  if (select_cb)
+  {
+    Icallback cb = IupGetCallback(ih, "SELECTBEGIN_CB");
+    if (cb && cb(ih) == IUP_IGNORE)
+      return;
+  }
+
+  for (int ds = 0; ds < mDataSetListCount; ds++)
+  {
+    iupPlotDataSet* dataset = mDataSetList[ds];
+
+    if (select_cb)
+    {
+      iupPlotSampleNotify inNotify = { ih, ds, select_cb };
+      if (dataset->SelectSamples(inMinX, inMaxX, inMinY, inMaxY, &inNotify))
+        theChanged = true;
+    }
+    else
+    {
+      if (dataset->SelectSamples(inMinX, inMaxX, inMinY, inMaxY, NULL))
+        theChanged = true;
+    }
+  }
+
+  if (select_cb)
+  {
+    Icallback cb = IupGetCallback(ih, "SELECTEND_CB");
+    if (cb)
+      return;
+  }
+
+  if (theChanged)
+    mRedraw = true;
+}
+
+void iupPlot::ClearDataSetSelection()
+{
+  bool theChanged = false;
+
+  IFniiddi select_cb = (IFniiddi)IupGetCallback(ih, "SELECT_CB");
+  if (select_cb)
+  {
+    Icallback cb = IupGetCallback(ih, "SELECTBEGIN_CB");
+    if (cb && cb(ih) == IUP_IGNORE)
+      return;
+  }
+
+  for (int ds = 0; ds < mDataSetListCount; ds++)
+  {
+    iupPlotDataSet* dataset = mDataSetList[ds];
+
+    if (select_cb)
+    {
+      iupPlotSampleNotify inNotify = { ih, ds, select_cb };
+      if (dataset->ClearSelection(&inNotify))
+        theChanged = true;
+    }
+    else
+    {
+      if (dataset->ClearSelection(NULL))
+        theChanged = true;
+    }
+  }
+
+  if (select_cb)
+  {
+    Icallback cb = IupGetCallback(ih, "SELECTEND_CB");
+    if (cb)
+      return;
+  }
+
+  if (theChanged)
+    mRedraw = true;
+}
+
+void iupPlot::DeleteSelectedDataSetSamples()
+{
+  bool theChanged = false;
+
+  IFniiddi select_cb = (IFniiddi)IupGetCallback(ih, "DELETE_CB");
+  if (select_cb)
+  {
+    Icallback cb = IupGetCallback(ih, "DELETEBEGIN_CB");
+    if (cb && cb(ih) == IUP_IGNORE)
+      return;
+  }
+
+  for (int ds = 0; ds < mDataSetListCount; ds++)
+  {
+    iupPlotDataSet* dataset = mDataSetList[ds];
+
+    if (select_cb)
+    {
+      iupPlotSampleNotify inNotify = { ih, ds, select_cb };
+      if (dataset->DeleteSelectedSamples(&inNotify))
+        theChanged = true;
+    }
+    else
+    {
+      if (dataset->DeleteSelectedSamples(NULL))
+        theChanged = true;
+    }
+  }
+
+  if (select_cb)
+  {
+    Icallback cb = IupGetCallback(ih, "DELETEEND_CB");
+    if (cb)
+      return;
+  }
+
+  if (theChanged)
+    mRedraw = true;
+}
+
 void iupPlot::ConfigureAxis()
 {
   mAxisX.Init();
@@ -746,10 +991,19 @@ bool iupPlot::Render(cdCanvas* canvas)
   // clip the plotregion while drawing plots
   cdCanvasClipArea(canvas, theRect.mX, theRect.mX + theRect.mWidth - 1, theRect.mY, theRect.mY + theRect.mHeight - 1);
 
+  IFniiddi drawsample_cb = (IFniiddi)IupGetCallback(ih, "DRAWSAMPLE_CB");
+
   for (int ds = 0; ds < mDataSetListCount; ds++) 
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
-    dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas);
+
+    if (drawsample_cb)
+    {
+      iupPlotSampleNotify inNotify = { ih, ds, drawsample_cb };
+      dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, &inNotify);
+    }
+    else
+      dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, NULL);
   }
 
   if (mCrossHair)

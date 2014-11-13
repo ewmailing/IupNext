@@ -8,13 +8,12 @@
 #include <math.h>
 #include <string.h>
 
-#include "iup.h"
-#include "iupcbs.h"
+#include "iupPlot.h"
+
 #include "iup_plot.h"
 #include "iupkey.h"
 #include "iupgl.h"
 
-#include <cd.h>
 #include <cdgl.h>
 #include <cdiup.h>
 
@@ -28,7 +27,6 @@
 #include "iup_stdcontrols.h"
 #include "iup_assert.h"
 
-#include "iupPlot.h"
 #include "iup_plot_ctrl.h"
 
 
@@ -406,6 +404,16 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
         iPlotZoomTo(ih, ih->data->last_click_x, ih->data->last_click_y, x, y);
       }
     }
+    else if (iup_isshift(status))
+    {
+      double rx1, ry1, rx2, ry2;
+      ih->data->current_plot->TransformBack(ih->data->last_click_x, ih->data->last_click_y, rx1, ry1);
+      ih->data->current_plot->TransformBack(x, y, rx2, ry2);
+
+      ih->data->current_plot->SelectDataSetSamples(rx1, rx2, ry1, ry2);
+
+      iPlotRedrawInteract(ih);
+    }
   }
 
   return IUP_DEFAULT;
@@ -435,7 +443,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
 
   if (iup_isbutton1(status) && ih->data->last_click_plot == index)
   {
-    if (iup_iscontrol(status)) // || iup_isshift(status))
+    if (iup_iscontrol(status) || iup_isshift(status))
     {
       ih->data->current_plot->mRedraw = true;
       ih->data->current_plot->mShowSelectionBand = true;
@@ -584,6 +592,19 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
 
     iPlotScroll(ih, delta, full_page, true);
   }
+  else if (c == K_DEL)
+  {
+    if (!ih->data->read_only)
+    {
+      ih->data->current_plot->DeleteSelectedDataSetSamples();
+      iPlotRedrawInteract(ih);
+    }
+  }
+  else if (c == K_ESC)
+  {
+    ih->data->current_plot->ClearDataSetSelection();
+    iPlotRedrawInteract(ih);
+  }
 
   return IUP_DEFAULT;
 } 
@@ -603,7 +624,8 @@ void IupPlotBegin(Ihandle* ih, int strXdata)
     return;
 
   iupPlotDataSet* theDataSet = (iupPlotDataSet*)iupAttribGet(ih, "_IUP_PLOT_DATASET");
-  if (theDataSet) delete theDataSet;
+  if (theDataSet) 
+    delete theDataSet;
 
   theDataSet = new iupPlotDataSet(strXdata? true: false);
   iupAttribSet(ih, "_IUP_PLOT_DATASET", (char*)theDataSet);
@@ -648,7 +670,7 @@ int IupPlotEnd(Ihandle* ih)
       return -1;
 
   iupPlotDataSet* theDataSet = (iupPlotDataSet*)iupAttribGet(ih, "_IUP_PLOT_DATASET");
-  if (theDataSet)
+  if (!theDataSet)
     return -1;
 
   ih->data->current_plot->AddDataSet(theDataSet);
@@ -892,14 +914,13 @@ static int iPlotCreateMethod(Ihandle* ih, void **params)
   free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
+  ih->data->read_only = 1;
+  ih->data->plot_list_count = 1;
+  ih->data->numcol = 1;
   ih->data->last_tip_ds = -1;
   ih->data->last_tip_sample = -1;
 
-  /* Initializing object with no cd canvases */
   ih->data->plot_list[0] = new iupPlot(ih);
-  ih->data->numcol = 1;
-  ih->data->plot_list_count = 1;
-
   ih->data->current_plot = ih->data->plot_list[ih->data->current_plot_index];
 
   /* IupCanvas callbacks */
@@ -907,8 +928,8 @@ static int iPlotCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "RESIZE_CB",   (Icallback)iPlotResize_CB);
   IupSetCallback(ih, "BUTTON_CB",   (Icallback)iPlotButton_CB);
   IupSetCallback(ih, "MOTION_CB",   (Icallback)iPlotMotion_CB);
+  IupSetCallback(ih, "WHEEL_CB", (Icallback)iPlotWheel_CB);
   IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iPlotKeyPress_CB);
-  IupSetCallback(ih, "WHEEL_CB",    (Icallback)iPlotWheel_CB);
 
   return IUP_NOERROR;
 }
@@ -933,12 +954,15 @@ static Iclass* iPlotNewClass(void)
   /* IupPlot Callbacks */
   iupClassRegisterCallback(ic, "POSTDRAW_CB", "C");
   iupClassRegisterCallback(ic, "PREDRAW_CB", "C");
+  iupClassRegisterCallback(ic, "DRAWSAMPLE_CB", "iiddi");
   iupClassRegisterCallback(ic, "PLOTMOTION_CB", "dds");
   iupClassRegisterCallback(ic, "PLOTBUTTON_CB", "iidds");
-
-  //iupClassRegisterCallback(ic, "SELECT_CB", "iiffi");
-  //iupClassRegisterCallback(ic, "SELECTBEGIN_CB", "");
-  //iupClassRegisterCallback(ic, "SELECTEND_CB", "");
+  iupClassRegisterCallback(ic, "DELETE_CB", "iidd");
+  iupClassRegisterCallback(ic, "DELETEBEGIN_CB", "");
+  iupClassRegisterCallback(ic, "DELETEEND_CB", "");
+  iupClassRegisterCallback(ic, "SELECT_CB", "iiddi");
+  iupClassRegisterCallback(ic, "SELECTBEGIN_CB", "");
+  iupClassRegisterCallback(ic, "SELECTEND_CB", "");
 
   iupPlotRegisterAttributes(ic);
 

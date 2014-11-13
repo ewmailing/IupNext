@@ -54,12 +54,12 @@ static int edit_cb(Ihandle* ih, int index, int sample_index, double x, double y,
 
 static int postdraw_cb(Ihandle* ih, cdCanvas* cnv)
 {
-  int ix, iy;
+  double ix, iy;
 
   IupPlotTransform(ih, 0.003f, 0.02f, &ix, &iy);
   cdCanvasFont(cnv, NULL, CD_BOLD, 10);
   cdCanvasTextAlignment(cnv, CD_SOUTH);
-  cdCanvasText(cnv, ix, iy, "My Inline Legend");
+  cdfCanvasText(cnv, ix, iy, "My Inline Legend");
   printf("POSTDRAW_CB()\n");
 
   return IUP_DEFAULT;

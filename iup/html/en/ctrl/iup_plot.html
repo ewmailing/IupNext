@@ -18,6 +18,9 @@
 .auto-style2 {
 	font-weight: normal;
 }
+.auto-style3 {
+	color: #00FF00;
+}
 </style>
 </head>
 <body>
@@ -74,47 +77,50 @@ corners of the dataset area.</p>
 <p>The <b>grid</b> is automatically spaced accordingly the current axis 
 major ticks.</p>
 <p>The <b>title</b> is always centered in the top of the plot.</p>
-<p>The <b>axis</b> are always positioned at the origin, except when CrossOrigin 
-is disabled, then it is positioned at the left-bottom. If values are only positive then the 
-origin will be placed in left 
-bottom position. If values are negative and positive then origin will be placed 
-inside the plot. The ticks in the axis are also automatically distributed.</p>
+<p>The <b>axis</b> are always positioned at the left-bottom, except when cross-origin 
+is enabled, then it is positioned at the origin and zoom and pan will affect its 
+position. Cross-origin will be automatically disable if a logarithm scale is 
+used. <span class="auto-style3">If values are only positive then the origin will 
+be placed in left bottom position. If values are negative and positive then 
+origin will be placed inside the plot.</span></p>
 <h3><a name="Interaction">Interaction</a></h3>
-<h4>Zoom</h4>
-<p>Zoom in can be done selecting a region using the left mouse button. Zoom out 
-is done with a single click of the left mouse button. If the <b>Ctrl+X</b> key 
-combination is pressed the zoom selection is restricted to the X axis, the Y 
-axis will be left unchanged. If the <b>Ctrl+Y</b> key combination is pressed the 
-zoom selection is restricted to the Y axis, the X axis will be left unchanged. 
-If the <b>Ctrl+R</b> key combination is pressed the zoom selection is restored 
-to a free rectangle.</p>
-<p>The mouse <strong>Wheel</strong> will pan in the vertical direction, and when
-<strong>Shift</strong> is pressed will pan in the horizontal direction. </p>
-<p>Each zoom in operation is stacked, so each zoom out operation goes back the 
-the previous zoom selection.</p>
-<p>Zoom operates on <b>AXS_XMAX, AXS_XMIN, AXS_YMAX, AXS_YMIN</b> even if <b>
+<h4>Zoom &amp; Pan</h4>
+<p><strong>Zoom</strong> can be done while pressing the <strong>Ctrl</strong> 
+key and interacting with the control. A single click is with the left mouse 
+button will zoom in by 10%, a single click with the right mouse button will zoom 
+out by 10%. The same result can be obtained by moving the mouse wheel. To zoom 
+in to a region, click with the left mouse button, drag to form a selection 
+rectangle and release the button. In all cases the <strong>Ctrl</strong> key 
+must be pressed during the interaction.</p>
+<p>&nbsp;Zoom can be reset by double clicking with the left mouse button. Zoom 
+in and out can also be performed using the "+" and "-" keys respectively. </p>
+<p><strong>Pan</strong> is performed after zoom in and it does not uses the Ctrl 
+key. Simply click with the left mouse button and drag the plot to pan. The mouse 
+wheel will pan in the vertical direction by default, and when Shift is pressed will pan in the horizontal direction. 
+Pan can also be performed using the arrow keys, and with the PgDn/PgUp keys. A 
+single click with the middle mouse button will try to position the origin at 
+that coordinate. </p>
+<p>Zoom and Pan operate on <b>AXS_XMAX, AXS_XMIN, AXS_YMAX, AXS_YMIN</b> even if <b>
 AUTOMIN/MAX</b> is enabled. The axis may be hidden depending on the selected 
 rectangle. The <b>
 AUTOMIN/MAX</b> attributes will be disabled during zoom in, and restored when 
-zoom out completely.</p>
-<h4>CrossHair Cursor</h4>
-<p>If you press the <b>Ctrl+Shift</b> key combination, while holding the left 
-mouse button down, a cross hair cursor will be displayed for each dataset in the 
-plot. The X coordinate will control the cursor, the Y coordinate will reflect 
+zoom out completely. The zoom out and pan are limited to the original attribute 
+values when zoom in started.</p>
+<h4>Cross Hair &amp; TIP</h4>
+<p>The cross hair cursor is activated and deactivated using the <b>Ctrl+H</b> key combination. The X coordinate will control the cursor, the Y coordinate will reflect 
 each dataset correspondent value.</p>
-<h4>Selection and Editing</h4>
-<p>Selection and editing of a dataset can be enabled using the <b>DS_EDIT</b> 
-attribute.</p>
-<p>To select all the samples in the dataset press the <b>Shift</b> key while 
-clicking with the left mouse button near a sample in the dataset. To deselect 
-all samples press the <b>Shift</b> key while clicking with the left mouse button 
-in the background.</p>
-<p>To select or deselect individual samples press the <b>Ctrl</b> key while 
-clicking with the left mouse button near the sample in the dataset.</p>
+<p>When the cursor is close to a sample, a TIP will be shown with the dataset 
+name, sample index and coordinate values.</p>
+<h4>Selection</h4>
+<p>Selection can be done while pressing the <strong>Shift</strong> key and 
+interacting with the control. To select all the samples inside a region, click 
+with the left mouse button, drag to form a selection rectangle and release the 
+button (while pressing the Shift key). The new selection will always replace the 
+previous one.</p>
+<p>To clear the selection just select an empty region or select an area with no 
+samples. Pressing the Esc key will also clear the selection.</p>
 <p>After selecting samples use the <b>Del</b> key to remove the selected 
-samples. Also use the arrow keys to move the Y coordinate of the selected 
-samples. Press the <b>Ctrl</b> key to increase the step size when moving the Y 
-coordinate.</p>
+samples, but this will only work if READONLY=NO.</p>
 <h3><a name="Creation">Creation</a></h3>
 <div>
   <pre>Ihandle* IupPlot(void); [in C]
@@ -138,7 +144,8 @@ called with strXdata=0.</p>
 <b>iup.PlotAddStr</b>(<b>ih</b>: ihandle, <b>x</b>: string, <b>y</b>: number) [in Lua]</pre>
 <p>Same as <b>IupPlotAdd</b>, but allows to use a string as the X 
 axis value. Can only be called if <b>IupPlotBegin</b> was called with 
-strXdata=1.</p>
+strXdata=1. Strings will be shown only in linear scale, they will not be shown 
+in Logarithm scale.</p>
 <hr>
 <pre>int <b>IupPlotEnd</b>(Ihandle* <b>ih</b>); [in C]
 <b>iup.PlotEnd</b>(<b>ih</b>: ihandle) -&gt; (<b>index</b>: number) [in Lua]</pre>
@@ -181,15 +188,15 @@ Can be used only after the dataset is added to the plot. </p>
 <hr>
 <pre>void <b>IupPlotTransform</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>, double *<b>cnv_x</b>, double *<b>cnv_y</b>); [in C]
 <b>iup.PlotTransform</b>(<b>ih</b>: ihandle, <b>x, y</b>: number) -&gt; (<b>cnv_x</b>, <b>cnv_y</b>: number) [in Lua]</pre>
-<p>Converts coordinates in plot units to pixels. It should be used in PREDRAW_CB 
-and POSTDRAW_CB callbacks only. Output variables can be NULL if not used. It can 
-be used inside other callbacks, but make sure that the drawing after a resize is 
-done.</p>
+<p>Converts coordinates in plot units to pixels. It should be used inside 
+callbacks only. Output variables can be NULL if not used. Y canvas coordinates 
+is in CD bottom to top orientation.</p>
 <hr>
 <pre>void <b>IupPlotTransformTo</b>(Ihandle* <b>ih</b>, double <b>cnv_x</b>, double <b>cnv_y</b>, double *<b>x</b>, double *<b>y</b>); [in C]
 <b>iup.PlotTransformTo</b>(<b>ih</b>: ihandle, <b>cnv_x, cnv_y</b>: number) -&gt; (<b>x</b>, <b>y</b>: number) [in Lua]</pre>
-<p>Converts coordinates from pixels to plot coordinates. It can be used only inside PREDRAW_CB 
-and POSTDRAW_CB callbacks. Output variables can be NULL if not used.</p>
+<p>Converts coordinates from pixels to plot coordinates. It should be used 
+inside callbacks only. Output variables can be NULL if not used. Y canvas 
+coordinates is in CD bottom to top orientation.</p>
 <hr>
 <pre>void <b>IupPlotPaintTo</b>(Ihandle* <b>ih</b>, cdCanvas* <b>cnv</b>); [in C]
 <b>iup.PlotPaintTo</b>(<b>ih</b>: ihandle, <b>cnv</b>: cdCanvas) [in Lua]</pre>
@@ -224,6 +231,8 @@ the system default (GDI in Windows, GDK/Cairo in GTK 2/3, X11 in Motif) it has
 the best text render, it is fast for regular datasets, but it does not have 
 anti-aliasing nor alpha (except in GTK 3). NATIVEPLUS uses GDI+ in Windows and 
 Cairo in GTK 2, so it has anti-aliasing and alpha support. Default: NATIVE. </p>
+<p><strong>READONLY</strong>: allow the selected samples to be removed when the 
+Del key is pressed.</p>
 <p><b>REDRAW</b> (write-only): redraw all plots and update the display. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
 attributes without visual output. Value can be NULL. If value is &quot;NOFLUSH&quot; 
 rendering is performed internally but display is not updated. If value is 
@@ -239,8 +248,14 @@ control. Default: 1. The minimum value is 1. If set to a smaller value will
 automatically remove the remaining plots. If set to a larger value will 
 automatically add new plots at the end. The maximum number of plots is 20.</p>
 <p><strong>PLOT_CURRENT</strong>: current plot index. Default: 0. <font SIZE="3">
-All plot attributes are dependent on this value. When set can use also the <b>TITLE </b>
-name as value.</font></p>
+When set can use also the <b>TITLE </b>
+name as value.
+All plot attributes and callbacks are dependent on this value. </font></p>
+<p class="info"><span class="style1"><strong>IMPORTANT</strong></span>:
+<font SIZE="3">
+When a <strong>IupCanvas</strong> mouse event occurs, such as BUTTON_CB, 
+WHELL_CB or MOTION_CB, the current plot is set to the plot where the event 
+occurred.</font></p>
 <p><strong>PLOT_INSERT</strong> (write-only): inserts a new plot at the given 
 index. If value is NULL will append after the last plot. Value can also be the 
 TITLE of an existing plot. <font SIZE="3">When a new plot is inserted it becomes 
@@ -252,7 +267,8 @@ empty space will be displayed.</p>
 <p><strong>PLOT_REMOVE</strong> (write-only): removes a plot given its index. If 
 value is NULL the current plot is removed. Value can also be the TITLE of an 
 existing plot. </p>
-<h4><span class="style1">IMPORTANT:</span> All the following attributes depend 
+<h4><span class="style1">IMPORTANT:</span> All the following attributes and 
+callbacks are dependent 
 on the <strong>PLOT_CURRENT</strong> attribute.</h4>
 <h4>Area Configuration </h4>
 <p><b>MARGINLEFT, MARGINRIGHT, MARGINTOP, MARGINBOTTOM:</b> 
@@ -431,6 +447,25 @@ will begin or end. But they are called only if DELETE_CB is also defined.</p>
     If DELETEBEGIN_CB returns IUP_IGNORE the delete operation for 
     all the selected samples are aborted.</p>
   
+<p><b>DRAWSAMPLE_CB</b>:
+  Action generated when  a sample is drawn. Its is called for all samples, then 
+it is called again for all selected samples, and this repeats for each data set.</p>
+  
+    <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>int <strong>select</strong>); [in C]
+<strong>elem</strong>:select_cb(<b>index, sample_index, x, y, select</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>index</strong>: index of the dataset<br>
+    <b>sample_index</b>: index of the sample in the dataset<strong><br>
+    x</strong>: X coordinate value of the sample<br>
+    <strong>y</strong>: Y coordinate value of the sample<br>
+    <b>select</b>: boolean value that a non zero value indicates if the point is 
+    selected.</p>
+    <p class="info">
+    <span class="style2">Returns:</span>
+    When called by the second time for a selected sample, if IUP_IGNORE is 
+	returned the selection is not dawn.</p>
+  
 <p><b>SELECT_CB</b>:
   Action generated when  a sample is selected.
     If multiple points are selected it is called once for each new selected point. 
@@ -463,41 +498,6 @@ defined.</p>
     <p class="info">
     <span class="style2">Returns:</span>
     If SELECTBEGIN_CB returns IUP_IGNORE the selection operation is 
-    aborted.</p>
-  
-<p><b>EDIT_CB</b>:
-  Action generated when  a sample is selected.
-    If multiple points are selected it is called once for each new selected point. 
-It is called only if the selection state of the sample is about to be changed.</p>
-  
-    <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>double <strong>*new_x</strong>, double <strong>*new_y</strong>); [in C]
-<strong>elem</strong>:edit_cb(<b>index, sample_index, x, y, </b><strong>new_x, new_y</strong>: number) -&gt; (<strong>new_x, new_y, ret</strong>: number) [in Lua]</pre>
-    <p class="info"><strong>ih</strong>:
-  identifier of the element that activated the 
-  event.<br><strong>index</strong>: index of the dataset<br>
-    <b>sample_index</b>: index of the sample in the dataset<strong><br>
-    x</strong>: X coordinate value of the sample<br>
-    <strong>y</strong>: Y coordinate value of the sample<br>
-    <strong>new_x</strong>: the new X coordinate value of the sample<br>
-    <strong>new_y</strong>: the new Y coordinate value of the sample</p>
-    <p class="info">
-    <span class="style2">Returns:</span>
-    If IUP_IGNORE then the sample is not edited. The 
-    application can changed the new value before it is edited.</p>
-  
-<p><b>EDITBEGIN_CB, EDITEND_CB</b>: Actions generated when an editing 
-operation will begin or end. But they are called only if EDIT_CB is also 
-defined.</p>
-  
-    <pre>int function(Ihandle *<strong>ih</strong>); [in C]
-<strong>elem</strong>:editbegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
-<strong>elem</strong>:editend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-    <p class="info"><strong>ih</strong>:
-  identifier of the element that activated the 
-  event.</p>
-    <p class="info">
-    <span class="style2">Returns:</span>
-    If EDITBEGIN_CB returns IUP_IGNORE the editing operation is 
     aborted.</p>
   
   
@@ -548,8 +548,9 @@ supported.</p>
 point precision.</p>
 <p>Can draw using OpenGL. Internally will use the CD_GL driver so other CD 
 metafile drivers can be used in <b>IupPlotPaintTo</b>.</p>
-<p>All <strong>IupPPlot</strong> attributes are supported, some were renamed but 
-the old names are still supported.</p>
+<p>All <strong>IupPPlot</strong> attributes are supported, except DS_EDIT and 
+EDIT* callbacks. Some attributes were renamed but 
+the old names are also supported.</p>
 <p>There are several new attributes and callbacks, check the documentation.</p>
 <p><span class="style1"><strong>IMPORTANT</strong></span>: interaction has 
 heavily changed. Zoom, Pan and Selection is now done totally different from
