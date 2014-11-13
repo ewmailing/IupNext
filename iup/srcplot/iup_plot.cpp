@@ -16,6 +16,13 @@
 
 #include <cdgl.h>
 #include <cdiup.h>
+#include <cdprint.h>
+#include <cdsvg.h>
+#include <cdemf.h>
+#include <cdwmf.h>
+#include <cdcgm.h>
+#include <cdclipbd.h>
+#include <cdps.h>
 
 #include "iup_class.h"
 #include "iup_register.h"
@@ -30,6 +37,282 @@
 #include "iup_plot_ctrl.h"
 
 
+static int iPlotSelectFile(Ihandle* parent, char* filename, const char* title, const char* extfilter)
+{
+  Ihandle* filedlg = IupFileDlg();
+
+  IupSetStrAttribute(filedlg, "DIALOGTYPE", "SAVE");
+  IupSetStrAttribute(filedlg, "EXTFILTER", extfilter);
+  IupSetStrAttribute(filedlg, "TITLE", title);
+  IupSetStrAttribute(filedlg, "FILE", filename);
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", parent);
+
+  IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+  if (IupGetInt(filedlg, "STATUS") != -1)
+  {
+    char* value = IupGetAttribute(filedlg, "VALUE");
+    strcpy(filename, value);
+
+    IupDestroy(filedlg);
+    return 1;
+  }
+
+  IupDestroy(filedlg);
+  return 0;
+}
+
+static int iPlotCopyAsPicture_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  char StrData[100];
+  int w, h;
+  IupGetIntInt(ih, "DRAWSIZE", &w, &h);
+  sprintf(StrData, "%dx%d", w, h);
+  cdCanvas* cd_canvas = cdCreateCanvas(CD_CLIPBOARD, StrData);
+  IupPlotPaintTo(ih, cd_canvas);
+  cdKillCanvas(cd_canvas);
+  return IUP_DEFAULT;
+}
+
+static int iPlotCopyAsImage_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  char StrData[100];
+  int w, h;
+  IupGetIntInt(ih, "DRAWSIZE", &w, &h);
+  sprintf(StrData, "%dx%d -b", w, h);
+  cdCanvas* cd_canvas = cdCreateCanvas(CD_CLIPBOARD, StrData);
+  IupPlotPaintTo(ih, cd_canvas);
+  cdKillCanvas(cd_canvas);
+  return IUP_DEFAULT;
+}
+
+static int iPlotExportEPS_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  char filename[10240] = "*.eps";
+  if (iPlotSelectFile(IupGetDialog(ih), filename, "Export Picture", "Encapsulated Postscript (EPS)|*.eps|All Files|*.*|"))
+  {
+    char StrData[10240];
+    int dpi = IupGetInt(NULL, "SCREENDPI");
+    sprintf(StrData, "%s -e -s%d", filename, dpi);
+    cdCanvas* cd_canvas = cdCreateCanvas(CD_PS, StrData);
+    if (cd_canvas)
+    {
+      IupPlotPaintTo(ih, cd_canvas);
+      cdKillCanvas(cd_canvas);
+    }
+    else
+      IupMessagef("Error", "Error saving file: %s", filename);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iPlotExportSVG_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  char filename[10240] = "*.svg";
+  if (iPlotSelectFile(IupGetDialog(ih), filename, "Export Picture", "Scalable Vector Graphics (SVG)|*.svg|All Files|*.*|"))
+  {
+    char StrData[10240];
+    int w, h;
+    IupGetIntInt(ih, "DRAWSIZE", &w, &h);
+    double res = (double)IupGetInt(NULL, "SCREENDPI") / 25.4;
+    double w_mm = ((double)w) / res;
+    double h_mm = ((double)h) / res;
+    sprintf(StrData, "%s %gx%g", filename, w_mm, h_mm);
+    cdCanvas* cd_canvas = cdCreateCanvas(CD_SVG, StrData);
+    if (cd_canvas)
+    {
+      IupPlotPaintTo(ih, cd_canvas);
+      cdKillCanvas(cd_canvas);
+    }
+    else
+      IupMessagef("Error", "Error saving file: %s", filename);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iPlotExportCGM_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  char filename[10240] = "*.cgm";
+  if (iPlotSelectFile(IupGetDialog(ih), filename, "Export Picture", "Computer Graphics Metafile (CGM)|*.cgm|All Files|*.*|"))
+  {
+    char StrData[10240];
+    int w, h;
+    IupGetIntInt(ih, "DRAWSIZE", &w, &h);
+    double res = (double)IupGetInt(NULL, "SCREENDPI") / 25.4;
+    double w_mm = ((double)w) / res;
+    double h_mm = ((double)h) / res;
+    sprintf(StrData, "%s %gx%g", filename, w_mm, h_mm);
+    cdCanvas* cd_canvas = cdCreateCanvas(CD_CGM, StrData);
+    if (cd_canvas)
+    {
+      IupPlotPaintTo(ih, cd_canvas);
+      cdKillCanvas(cd_canvas);
+    }
+    else
+      IupMessagef("Error", "Error saving file: %s", filename);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iPlotExportEMF_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  char filename[10240] = "*.emf";
+  if (iPlotSelectFile(IupGetDialog(ih), filename, "Export Picture", "Windows Enhanced Metafile (EMF)|*.emf|All Files|*.*|"))
+  {
+    char StrData[10240];
+    int w, h;
+    IupGetIntInt(ih, "DRAWSIZE", &w, &h);
+    sprintf(StrData, "%s %dx%d", filename, w, h);
+    cdCanvas* cd_canvas = cdCreateCanvas(CD_EMF, StrData);
+    if (cd_canvas)
+    {
+      IupPlotPaintTo(ih, cd_canvas);
+      cdKillCanvas(cd_canvas);
+    }
+    else
+      IupMessagef("Error", "Error saving file: %s", filename);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iPlotExportWMF_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  char filename[10240] = "*.wmf";
+  if (iPlotSelectFile(IupGetDialog(ih), filename, "Export Picture", "Windows Metafile (WMF)|*.wmf|All Files|*.*|"))
+  {
+    char StrData[10240];
+    int w, h;
+    IupGetIntInt(ih, "DRAWSIZE", &w, &h);
+    sprintf(StrData, "%s %dx%d", filename, w, h);
+    cdCanvas* cd_canvas = cdCreateCanvas(CD_WMF, StrData);
+    if (cd_canvas)
+    {
+      IupPlotPaintTo(ih, cd_canvas);
+      cdKillCanvas(cd_canvas);
+    }
+    else
+      IupMessagef("Error", "Error saving file: %s", filename);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iPlotPrint_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  cdCanvas* cd_canvas = cdCreateCanvas(CD_PRINTER, "Plot -d");
+  IupPlotPaintTo(ih, cd_canvas);
+  cdKillCanvas(cd_canvas);
+  return IUP_DEFAULT;
+}
+
+static int iPlotKeyPress_CB(Ihandle* ih, int c, int press);
+static void iPlotRedrawInteract(Ihandle *ih);
+
+static int iPlotZoomIn_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  return iPlotKeyPress_CB(ih, K_plus, 1);
+}
+
+static int iPlotZoomOut_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  return iPlotKeyPress_CB(ih, K_minus, 1);
+}
+
+static int iPlotZoomReset_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  return iPlotKeyPress_CB(ih, K_period, 1);
+}
+
+static int iPlotShowLegend_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  if (ih->data->current_plot->mLegend.mShow)
+    ih->data->current_plot->mLegend.mShow = false;
+  else
+    ih->data->current_plot->mLegend.mShow = true;
+
+  ih->data->current_plot->mRedraw = true;
+  iPlotRedrawInteract(ih);
+  return IUP_DEFAULT;
+}
+
+static int iPlotShowGrid_CB(Ihandle* self)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  if (ih->data->current_plot->mGrid.mShowX || ih->data->current_plot->mGrid.mShowY)
+  {
+    ih->data->current_plot->mGrid.mShowY = false;
+    ih->data->current_plot->mGrid.mShowX = false;
+  }
+  else
+  {
+    ih->data->current_plot->mGrid.mShowX = true;
+    ih->data->current_plot->mGrid.mShowY = true;
+  }
+
+  ih->data->current_plot->mRedraw = true;
+  iPlotRedrawInteract(ih);
+  return IUP_DEFAULT;
+}
+
+static Ihandle* iPlotCreateMenuContext(Ihandle* ih)
+{
+  Ihandle* menu = IupMenu(
+    IupSetCallbacks(IupItem("Zoom In\t+", NULL), "ACTION", iPlotZoomIn_CB, NULL),
+    IupSetCallbacks(IupItem("Zoom Out\t-", NULL), "ACTION", iPlotZoomOut_CB, NULL),
+    IupSetCallbacks(IupItem("Reset Zoom\t.", NULL), "ACTION", iPlotZoomReset_CB, NULL),
+    IupSeparator(),
+    IupSetCallbacks(IupItem("Show/Hide Legend", NULL), "ACTION", iPlotShowLegend_CB, NULL),
+    IupSetCallbacks(IupItem("Show/Hide Grid", NULL), "ACTION", iPlotShowGrid_CB, NULL),
+    IupSeparator(),
+    IupSetCallbacks(IupItem("Copy As Picture", NULL), "ACTION", iPlotCopyAsPicture_CB, NULL),
+    IupSetCallbacks(IupItem("Copy As Bitmap", NULL), "ACTION", iPlotCopyAsImage_CB, NULL),
+    IupSeparator(),
+    IupSetCallbacks(IupItem("Export to SVG...", NULL), "ACTION", iPlotExportSVG_CB, NULL),
+    IupSetCallbacks(IupItem("Export to EPS...", NULL), "ACTION", iPlotExportEPS_CB, NULL),
+    IupSetCallbacks(IupItem("Export to CGM...", NULL), "ACTION", iPlotExportCGM_CB, NULL),
+#ifdef WIN32
+    IupSetCallbacks(IupItem("Export to EMF...", NULL), "ACTION", iPlotExportEMF_CB, NULL),
+    IupSetCallbacks(IupItem("Export to WMF...", NULL), "ACTION", iPlotExportWMF_CB, NULL),
+#endif
+    IupSeparator(),
+    IupSetCallbacks(IupItem("Print...", NULL), "ACTION", iPlotPrint_CB, NULL),
+    NULL);
+
+  IupSetAttribute(menu, "PLOT", (char*)ih);
+
+  return menu;
+}
+
+void iupPlotShowMenuContext(Ihandle* ih, int x, int y)
+{
+  Ihandle* menu = iPlotCreateMenuContext(ih);
+  IFnnii menucontext_cb;
+
+  menucontext_cb = (IFnnii)IupGetCallback(ih, "MENUCONTEXT_CB");
+  if (menucontext_cb)
+    menucontext_cb(ih, menu, x, y);
+
+  int sx, sy;
+  IupGetIntInt(ih, "SCREENPOSITION", &sx, &sy);
+
+  IupPopup(menu, sx + x + ih->data->current_plot->mViewport.mX, sy + y + ih->data->current_plot->mViewport.mY);
+
+  menucontext_cb = (IFnnii)IupGetCallback(ih, "MENUCONTEXTCLOSE_CB");
+  if (menucontext_cb) 
+    menucontext_cb(ih, menu, x, y);
+
+  IupDestroy(menu);
+}
 
 void iupPlotSetPlotCurrent(Ihandle* ih, int p)
 {
@@ -383,6 +666,8 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
       if (!iup_iscontrol(status))
         iPlotScrollTo(ih, x, y);
     }
+    else if (button == IUP_BUTTON3 && IupGetInt(ih, "MENUCONTEXT"))
+      iupPlotShowMenuContext(ih, x, y);
   }
   else
   {
@@ -575,6 +860,10 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
     int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth / 2;
     int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight / 2;
     iPlotZoom(ih, x, y, -1);
+  }
+  else if (c == K_period)
+  {
+    iupPlotResetZoom(ih, 1);
   }
   else if (c == K_LEFT || c == K_RIGHT)
   {
@@ -963,6 +1252,8 @@ static Iclass* iPlotNewClass(void)
   iupClassRegisterCallback(ic, "SELECT_CB", "iiddi");
   iupClassRegisterCallback(ic, "SELECTBEGIN_CB", "");
   iupClassRegisterCallback(ic, "SELECTEND_CB", "");
+  iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
+  iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
 
   iupPlotRegisterAttributes(ic);
 

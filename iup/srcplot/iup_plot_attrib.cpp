@@ -1021,6 +1021,14 @@ static int iPlotSetUseContextPlusAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iPlotSetShowMenuContextAttrib(Ihandle* ih, const char* value)
+{
+  int x = 0, y = 0;
+  iupStrToIntInt(value, &x, &y, ',');
+  iupPlotShowMenuContext(ih, x, y);
+  return 0;
+}
+
 static char* iPlotGetCanvasAttrib(Ihandle* ih)
 {
   return (char*)(ih->data->cd_canvas);
@@ -2389,6 +2397,8 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "GRAPHICSMODE", iPlotGetGraphicsModeAttrib, iPlotSetGraphicsModeAttrib, IUPAF_SAMEASSYSTEM, "NATIVE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "USE_IMAGERGB", NULL, iPlotSetUseImageRGBAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "USE_CONTEXTPLUS", NULL, iPlotSetUseContextPlusAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MENUCONTEXT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWMENUCONTEXT", NULL, iPlotSetShowMenuContextAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "MARGINLEFT", iPlotGetMarginLeftAttrib, iPlotSetMarginLeftAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARGINRIGHT", iPlotGetMarginRightAttrib, iPlotSetMarginRightAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

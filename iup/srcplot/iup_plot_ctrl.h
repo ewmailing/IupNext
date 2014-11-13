@@ -39,6 +39,7 @@ void iupPlotRedraw(Ihandle* ih, int flush, int only_current, int reset_redraw);
 void iupPlotResetZoom(Ihandle *ih, int redraw);
 
 void iupPlotSetPlotCurrent(Ihandle* ih, int p);
+void iupPlotShowMenuContext(Ihandle* ih, int x, int y);
 
 
 #endif

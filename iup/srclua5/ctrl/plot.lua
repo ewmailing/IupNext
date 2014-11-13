@@ -19,6 +19,8 @@ local ctrl = {
     deleteend_cb = "",
     plotmotion_cb = "dd",
     plotbutton_cb = "nndds",
+    menucontext_cb = "inn",
+    menucontextclose_cb = "inn",
   },
   include = "iup_plot.h",
   extrafuncs = 1,

@@ -88,7 +88,8 @@ out by 10%. The same result can be obtained by moving the mouse wheel. To zoom
 in to a region, click with the left mouse button, drag to form a selection 
 rectangle and release the button. In all cases the <strong>Ctrl</strong> key 
 must be pressed during the interaction.</p>
-<p>&nbsp;Zoom can be reset by double clicking with the left mouse button. Zoom 
+<p>&nbsp;Zoom can be reset by double clicking with the left mouse button or 
+pressing the "." key. Zoom 
 in and out can also be performed using the "+" and "-" keys respectively. </p>
 <p><strong>Pan</strong> is performed after zoom in and it does not uses the Ctrl 
 key. Simply click with the left mouse button and drag the plot to pan. The mouse 
@@ -117,6 +118,14 @@ previous one.</p>
 samples. Pressing the Esc key will also clear the selection.</p>
 <p>After selecting samples use the <b>Del</b> key to remove the selected 
 samples, but this will only work if READONLY=NO.</p>
+<p>Selection and delete behavior can be controlled using the respective
+<a href="#Callbacks">callbacks</a>.</p>
+<h4>Context Menu</h4>
+<p>The context menu is shown by a single click with the right mouse button. The 
+default menu contains the following items:</p>
+<pre>vfgfg</pre>
+<p>Context menu behavior can be controlled using the respective
+<a href="#Callbacks">callbacks</a>.</p>
 <h3><a name="Creation">Creation</a></h3>
 <div>
   <pre>Ihandle* IupPlot(void); [in C]
@@ -227,6 +236,9 @@ the system default (GDI in Windows, GDK/Cairo in GTK 2/3, X11 in Motif) it has
 the best text render, it is fast for regular datasets, but it does not have 
 anti-aliasing nor alpha (except in GTK 3). NATIVEPLUS uses GDI+ in Windows and 
 Cairo in GTK 2, so it has anti-aliasing and alpha support. Default: NATIVE. </p>
+<p>
+<strong>MENUCONTEXT</strong>: enable the context menu. Can be Yes or No. 
+Default: Yes.</p>
 <p><strong>READONLY</strong>: allow the selected samples to be removed when the 
 Del key is pressed.</p>
 <p><b>REDRAW</b> (write-only): redraw all plots and update the display. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
@@ -234,6 +246,12 @@ attributes without visual output. Value can be NULL. If value is &quot;NOFLUSH&q
 rendering is performed internally but display is not updated. If value is 
 &quot;CURRENT&quot; only the current plot defined by &quot;PLOT_CURRENT&quot; will be updated and it 
 will behave as &quot;NOFLUSH&quot;. Works only after mapped.</p>
+
+
+<p>
+<strong>SHOWMENUCONTEXT</strong> (write-only): show the context menu in the 
+given position. Value has the "x:y" format and is relative to the current plot 
+left-bottom corner.</p>
 
 
 <p><strong>SYNCVIEW</strong>: when a plot view is changed by 
@@ -462,6 +480,28 @@ it is called again for all selected samples, and this repeats for each data set.
     When called by the second time for a selected sample, if IUP_IGNORE is 
 	returned the selection is not dawn.</p>
   
+<p><strong><a name="MENUCONTEXT_CB">MENUCONTEXT_CB</a></strong>: Action generated 
+after the context menu is created but before it is displayed, so the application 
+can add or removed items from the menu. Only shown if MENUCONTEXT=Yes.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle*<strong> menu</strong>, int <strong>x</strong>, int <strong>x</strong>); [in C]<br><strong>elem</strong>:menucontext_cb(<strong>menu: </strong>ihandle, <strong>x</strong>,<strong> x</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>menu</strong>:
+    identifier of the menu that will 
+    be shown to the user.<br>
+    <strong>x</strong>, <strong>y</strong>:
+    coordinates inside the current plot.<br></p>
+
+<p><strong>MENUCONTEXTCLOSE_CB</strong>: Same as MENUCONTEXT_CB, but called 
+after the context menu is closed. Only shown if MENUCONTEXT=Yes.</p>
+
+  
+    
 <p><b>SELECT_CB</b>:
   Action generated when  a sample is selected.
     If multiple points are selected it is called once for each new selected point. 

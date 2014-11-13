@@ -14,6 +14,7 @@ local ctrl = {
     numericsetvalue_cb = "nnd",
     sortcolumncompare_cb = "nnn",
     menucontext_cb = "inn",
+    menucontextclose_cb = "inn",
   },
   include = "iupmatrixex.h",
   extrafuncs = 1,
