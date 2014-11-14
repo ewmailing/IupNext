@@ -18,6 +18,9 @@
 .auto-style2 {
 	font-weight: normal;
 }
+.auto-style3 {
+	background-color: #CEE7FF;
+}
 </style>
 </head>
 <body>
@@ -123,7 +126,24 @@ samples, but this will only work if READONLY=NO.</p>
 <h4>Context Menu</h4>
 <p>The context menu is shown by a single click with the right mouse button. The 
 default menu contains the following items:</p>
-<pre>vfgfg</pre>
+<pre>Zoom In  +
+Zoom Out -
+Reset Zoom  .
+-----------
+Show/Hide Legend
+Show/Hide Grid 
+-----------
+Copy As Picture      (copy to clipboard, EMF format)
+Copy As Bitmap
+-----------
+Export to SVG...     (export the plot to a m<span class="auto-style3">eta</span>file, SVG format)
+Export to EPS...     ( " , EPS format )
+Export to CGM...     ( " , CGM format) 
+Export to EMF...     ( " , EMF format, windows only)
+Export to WMF...     ( " , EMF format, windows only)
+-----------
+Print...
+</pre>
 <p>Context menu behavior can be controlled using the respective
 <a href="#Callbacks">callbacks</a>.</p>
 <h3><a name="Creation">Creation</a></h3>

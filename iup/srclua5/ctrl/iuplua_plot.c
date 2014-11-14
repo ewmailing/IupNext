@@ -44,14 +44,14 @@ static int PlotBegin(lua_State *L)
 static int PlotAdd(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPlotAdd(ih, (float)luaL_checknumber(L,2), (float)luaL_checknumber(L,3));
+  IupPlotAdd(ih, luaL_checknumber(L,2), luaL_checknumber(L,3));
   return 0;
 }
 
 static int PlotAddStr(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPlotAddStr(ih, luaL_checkstring(L,2), (float)luaL_checknumber(L,3));
+  IupPlotAddStr(ih, luaL_checkstring(L,2), luaL_checknumber(L,3));
   return 0;
 }
 
@@ -66,23 +66,23 @@ static int PlotEnd(lua_State *L)
 static int PlotInsertStr(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPlotInsertStr(ih, luaL_checkint(L,2), luaL_checkint(L,3), luaL_checkstring(L,4), (float)luaL_checknumber(L,5));
+  IupPlotInsertStr(ih, luaL_checkint(L,2), luaL_checkint(L,3), luaL_checkstring(L,4), luaL_checknumber(L,5));
   return 0;
 }
 
 static int PlotInsert(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPlotInsert(ih, luaL_checkint(L,2), luaL_checkint(L,3), (float)luaL_checknumber(L,4), (float)luaL_checknumber(L,5));
+  IupPlotInsert(ih, luaL_checkint(L,2), luaL_checkint(L,3), luaL_checknumber(L,4), luaL_checknumber(L,5));
   return 0;
 }
 
 static int PlotInsertPoints(lua_State *L)
 {
-  float *px, *py;
+  double *px, *py;
   int count = luaL_checkint(L, 6);
-  px = iuplua_checkfloat_array(L, 4, count);
-  py = iuplua_checkfloat_array(L, 5, count);
+  px = iuplua_checkdouble_array(L, 4, count);
+  py = iuplua_checkdouble_array(L, 5, count);
   IupPlotInsertPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
   free(px);
   free(py);
@@ -91,11 +91,11 @@ static int PlotInsertPoints(lua_State *L)
 
 static int PlotInsertStrPoints(lua_State *L)
 {
-  float *py;
+  double *py;
   char* *px;
   int count = luaL_checkint(L, 6);
   px = iuplua_checkstring_array(L, 4, count);
-  py = iuplua_checkfloat_array(L, 5, count);
+  py = iuplua_checkdouble_array(L, 5, count);
   IupPlotInsertStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
   free(px);
   free(py);
@@ -104,10 +104,10 @@ static int PlotInsertStrPoints(lua_State *L)
 
 static int PlotAddPoints(lua_State *L)
 {
-  float *px, *py;
+  double *px, *py;
   int count = luaL_checkint(L, 5);
-  px = iuplua_checkfloat_array(L, 3, count);
-  py = iuplua_checkfloat_array(L, 4, count);
+  px = iuplua_checkdouble_array(L, 3, count);
+  py = iuplua_checkdouble_array(L, 4, count);
   IupPlotAddPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
   free(px);
   free(py);
@@ -116,11 +116,11 @@ static int PlotAddPoints(lua_State *L)
 
 static int PlotAddStrPoints(lua_State *L)
 {
-  float *py;
+  double *py;
   char* *px;
   int count = luaL_checkint(L, 5);
   px = iuplua_checkstring_array(L, 3, count);
-  py = iuplua_checkfloat_array(L, 4, count);
+  py = iuplua_checkdouble_array(L, 4, count);
   IupPlotAddStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
   free(px);
   free(py);
@@ -130,7 +130,7 @@ static int PlotAddStrPoints(lua_State *L)
 static int PlotGetSample(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  float x, y;
+  double x, y;
   IupPlotGetSample(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), &x, &y);
   lua_pushnumber(L, x);
   lua_pushnumber(L, y);
@@ -140,7 +140,7 @@ static int PlotGetSample(lua_State *L)
 static int PlotGetSampleStr(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  float y;
+  double y;
   const char* x;
   IupPlotGetSampleStr(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), &x, &y);
   lua_pushstring(L, x);
@@ -151,17 +151,17 @@ static int PlotGetSampleStr(lua_State *L)
 static int PlotTransform(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  int ix, iy;
-  IupPlotTransform(ih, (float)luaL_checknumber(L,2), (float)luaL_checknumber(L,3), &ix, &iy);
-  lua_pushinteger(L, ix);
-  lua_pushinteger(L, iy);
+  double ix, iy;
+  IupPlotTransform(ih, luaL_checknumber(L,2), luaL_checknumber(L,3), &ix, &iy);
+  lua_pushnumber(L, ix);
+  lua_pushnumber(L, iy);
   return 2;
 }
 
 static int PlotTransformTo(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  float rx, ry;
+  double rx, ry;
   IupPlotTransformTo(ih, (int)luaL_checkinteger(L, 2), (int)luaL_checkinteger(L, 3), &rx, &ry);
   lua_pushnumber(L, rx);
   lua_pushnumber(L, ry);
