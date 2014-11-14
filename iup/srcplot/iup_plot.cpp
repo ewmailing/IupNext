@@ -311,7 +311,12 @@ void iupPlotShowMenuContext(Ihandle* ih, int x, int y)
   int sx, sy;
   IupGetIntInt(ih, "SCREENPOSITION", &sx, &sy);
 
-  IupPopup(menu, sx + x + ih->data->current_plot->mViewport.mX, sy + y + ih->data->current_plot->mViewport.mY);
+  int ih_x = x + ih->data->current_plot->mViewport.mX;
+  int ih_y = y + ih->data->current_plot->mViewport.mY;
+
+  ih_y = ih->currentheight - 1 - ih_y;
+
+  IupPopup(menu, sx + ih_x, sy + ih_y);
 
   menucontext_cb = (IFnnii)IupGetCallback(ih, "MENUCONTEXTCLOSE_CB");
   if (menucontext_cb) 
