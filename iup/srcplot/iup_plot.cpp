@@ -120,7 +120,7 @@ static int iPlotExportSVG_CB(Ihandle* self)
     double res = (double)IupGetInt(NULL, "SCREENDPI") / 25.4;
     double w_mm = ((double)w) / res;
     double h_mm = ((double)h) / res;
-    sprintf(StrData, "%s %gx%g", filename, w_mm, h_mm);
+    sprintf(StrData, "%s %gx%g %g", filename, w_mm, h_mm, res);
     cdCanvas* cd_canvas = cdCreateCanvas(CD_SVG, StrData);
     if (cd_canvas)
     {
@@ -145,7 +145,7 @@ static int iPlotExportCGM_CB(Ihandle* self)
     double res = (double)IupGetInt(NULL, "SCREENDPI") / 25.4;
     double w_mm = ((double)w) / res;
     double h_mm = ((double)h) / res;
-    sprintf(StrData, "%s %gx%g", filename, w_mm, h_mm);
+    sprintf(StrData, "%s %gx%g %g", filename, w_mm, h_mm, res);
     cdCanvas* cd_canvas = cdCreateCanvas(CD_CGM, StrData);
     if (cd_canvas)
     {
