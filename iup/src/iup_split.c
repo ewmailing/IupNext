@@ -335,6 +335,7 @@ static int iSplitMotion_CB(Ihandle* bar, int x, int y, char *status)
   {
     if (iup_isbutton1(status))  /* DRAG MOVE */
     {
+      int old_val = ih->data->val;
       int cur_x, cur_y;
 
       iupStrToIntInt(IupGetGlobal("CURSORPOS"), &cur_x, &cur_y, 'x');
@@ -353,6 +354,9 @@ static int iSplitMotion_CB(Ihandle* bar, int x, int y, char *status)
       }
 
       iSplitAdjustVal(ih);
+
+      if (old_val != ih->data->val)
+        iupBaseCallValueChangedCb(ih);
 
       if (ih->data->layoutdrag)
       {
@@ -704,6 +708,7 @@ static void iSplitComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chi
 
 static void iSplitSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
+  int old_val = ih->data->val;
   Ihandle *child1, *child2 = NULL;
   child1 = ih->firstchild->brother;
   if (child1)
@@ -785,6 +790,9 @@ static void iSplitSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
       }
     }
   }
+
+  if (old_val != ih->data->val)
+    iupBaseCallValueChangedCb(ih);
 }
 
 static void iSplitSetChildrenPositionMethod(Ihandle* ih, int x, int y)
@@ -884,6 +892,8 @@ Iclass* iupSplitNewClass(void)
   ic->ComputeNaturalSize = iSplitComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iSplitSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition    = iSplitSetChildrenPositionMethod;
+
+  iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
