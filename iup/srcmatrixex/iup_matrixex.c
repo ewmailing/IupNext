@@ -153,12 +153,12 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
   return 1;  /* store freeze state */
 }
 
-static char* iMatrixExFileDlg(ImatExData* matex_data, int save, const char* filter, const char* info, const char* extfilter)
+static char* iMatrixExFileDlg(ImatExData* matex_data, int save, const char* title, const char* filter, const char* info, const char* extfilter)
 {
   Ihandle* dlg = IupFileDlg();
 
   IupSetAttribute(dlg,"DIALOGTYPE", save? "SAVE": "OPEN");
-  IupSetAttribute(dlg,"TITLE","Export Table");
+  IupSetAttribute(dlg, "TITLE", title);
   IupSetStrAttribute(dlg,"FILTER", filter);
   IupSetStrAttribute(dlg,"FILTERINFO", info);
   IupSetStrAttribute(dlg,"EXTFILTER", extfilter);  /* Windows and GTK only, but more flexible */
@@ -202,7 +202,7 @@ static int iMatrixExItemExport_CB(Ihandle* ih_item)
     extfilter = "Text file|*.txt|All Files|*.*|";
   }
 
-  filename = iMatrixExFileDlg(matex_data, 1, filter, info, extfilter);
+  filename = iMatrixExFileDlg(matex_data, 1, "_@IUP_EXPORT", filter, info, extfilter);
 
   IupSetStrAttribute(matex_data->ih, "FILEFORMAT", IupGetAttribute(ih_item, "FILEFORMAT"));
   IupSetStrAttribute(matex_data->ih, "COPYFILE", filename);
@@ -222,7 +222,7 @@ static int iMatrixExItemImport_CB(Ihandle* ih_item)
   info = "Text file";
   extfilter = "Text file|*.txt|All Files|*.*|";
 
-  filename = iMatrixExFileDlg(matex_data, 0, filter, info, extfilter);
+  filename = iMatrixExFileDlg(matex_data, 0, "_@IUP_IMPORT", filter, info, extfilter);
 
   IupSetStrAttribute(matex_data->ih, "PASTEFILE", filename);
 
@@ -258,7 +258,7 @@ static int iMatrixExItemSettings_CB(Ihandle* ih_item)
   decimals = IupGetInt(matex_data->ih, "NUMERICFORMATPRECISION");  /* get the value for the whole matrix */
   decimals_old = decimals;
 
-  if (IupGetParam("_@IUP_SETTINGS", NULL, NULL,
+  if (IupGetParam("_@IUP_SETTINGSDLG", NULL, NULL,
                   "_@IUP_TEXTSEPARATOR%l|Tab|\";\"|\" \"|\n"
                   "_@IUP_OTHERTEXTSEPARATOR%s[^0-9]\n"
                   "_@IUP_DECIMALS%i[0]\n"
@@ -556,7 +556,7 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
 
   /************************** General ****************************/
 
-  IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SETTINGS", NULL), "IMAGE=IUP_ToolsSettings"), "ACTION", iMatrixExItemSettings_CB, NULL));
+  IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SETTINGSDLG", NULL), "IMAGE=IUP_ToolsSettings"), "ACTION", iMatrixExItemSettings_CB, NULL));
   IupAppend(menu, IupSeparator());
 
   /************************** File ****************************/
@@ -583,8 +583,8 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
   if (!readonly)
   {
     Ihandle *undo, *redo, *undolist;
-    IupAppend(menu, undo = IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_UNDO", NULL), "IMAGE=IUP_EditUndo"), "ACTION", iMatrixExItemUndo_CB, NULL));
-    IupAppend(menu, redo = IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_REDO", NULL), "IMAGE=IUP_EditRedo"), "ACTION", iMatrixExItemRedo_CB, NULL));
+    IupAppend(menu, undo = IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_UNDOAC", NULL), "IMAGE=IUP_EditUndo"), "ACTION", iMatrixExItemUndo_CB, NULL));
+    IupAppend(menu, redo = IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_REDOAC", NULL), "IMAGE=IUP_EditRedo"), "ACTION", iMatrixExItemRedo_CB, NULL));
     IupAppend(menu, undolist = IupSetCallbacks(IupItem("_@IUP_UNDOLISTDLG", NULL), "ACTION", iMatrixExItemUndoList_CB, NULL));
 
     if (!IupGetInt(ih, "UNDO"))
@@ -600,14 +600,14 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
   /************************** Edit - Clipboard ****************************/
 
   if (!readonly)
-    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_CUT", NULL), "IMAGE=IUP_EditCut"),  "ACTION", iMatrixExItemCut_CB, NULL));
-  IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_COPY",  NULL), "IMAGE=IUP_EditCopy"), "ACTION", iMatrixExItemCopy_CB, NULL));
+    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_CUTAC", NULL), "IMAGE=IUP_EditCut"),  "ACTION", iMatrixExItemCut_CB, NULL));
+  IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_COPYAC",  NULL), "IMAGE=IUP_EditCopy"), "ACTION", iMatrixExItemCopy_CB, NULL));
   if (!readonly)
   {
-    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_PASTE", NULL), "IMAGE=IUP_EditPaste"), "ACTION", iMatrixExItemPaste_CB, NULL));
-    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_ERASE", NULL), "IMAGE=IUP_EditErase"), "ACTION", iMatrixExItemDel_CB, NULL));
+    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_PASTEAC", NULL), "IMAGE=IUP_EditPaste"), "ACTION", iMatrixExItemPaste_CB, NULL));
+    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_ERASEAC", NULL), "IMAGE=IUP_EditErase"), "ACTION", iMatrixExItemDel_CB, NULL));
   }
-  IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_SELECTALL", NULL), "ACTION", iMatrixExItemSelectAll_CB, NULL));
+  IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_SELECTALLAC", NULL), "ACTION", iMatrixExItemSelectAll_CB, NULL));
   IupAppend(menu, IupSeparator());
 
   /************************** Edit - Find ****************************/
@@ -895,20 +895,20 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   {
     IupSetLanguageString("IUP_EXPORT", "Export");
     IupSetLanguageString("IUP_IMPORT", "Import");
-    IupSetLanguageString("IUP_SETTINGS", "Settings...");
+    IupSetLanguageString("IUP_SETTINGSDLG", "Settings...");
     IupSetLanguageString("IUP_TEXTSEPARATOR", "Number Separator:");
     IupSetLanguageString("IUP_OTHERTEXTSEPARATOR", "  - Other Num. Sep.:");
     IupSetLanguageString("IUP_DECIMALSYMBOL", "Decimal Symbol:");
-    IupSetLanguageString("IUP_UNDO", "Undo\tCtrl+Z");
-    IupSetLanguageString("IUP_REDO", "Redo\tCtrl+Y");
+    IupSetLanguageString("IUP_UNDOAC", "Undo\tCtrl+Z");
+    IupSetLanguageString("IUP_REDOAC", "Redo\tCtrl+Y");
     IupSetLanguageString("IUP_UNDOLISTDLG", "Undo List...\tCtrl+U");
     IupSetLanguageString("IUP_UNDOLIST", "Undo List");
     IupSetLanguageString("IUP_CURRENTSTATE", "Current State");
-    IupSetLanguageString("IUP_CUT", "Cut\tCtrl+X");
-    IupSetLanguageString("IUP_COPY", "Copy\tCtrl+C");
-    IupSetLanguageString("IUP_PASTE", "Paste\tCtrl+V");
-    IupSetLanguageString("IUP_ERASE", "Erase\tDel");
-    IupSetLanguageString("IUP_SELECTALL", "Select All\tCtrl+A");
+    IupSetLanguageString("IUP_CUTAC", "Cut\tCtrl+X");
+    IupSetLanguageString("IUP_COPYAC", "Copy\tCtrl+C");
+    IupSetLanguageString("IUP_PASTEAC", "Paste\tCtrl+V");
+    IupSetLanguageString("IUP_ERASEAC", "Erase\tDel");
+    IupSetLanguageString("IUP_SELECTALLAC", "Select All\tCtrl+A");
     IupSetLanguageString("IUP_FINDDLG", "Find...\tCtrl+F");
     IupSetLanguageString("IUP_GOTODLG", "Go To...\tCtrl+G");
     IupSetLanguageString("IUP_SORTDLG", "Sort...");
@@ -948,20 +948,20 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   {
     IupSetLanguageString("IUP_EXPORT", "Exportar");
     IupSetLanguageString("IUP_IMPORT", "Importar");
-    IupSetLanguageString("IUP_SETTINGS", "Definições...");
+    IupSetLanguageString("IUP_SETTINGSDLG", "Definições...");
     IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de Números:");
     IupSetLanguageString("IUP_OTHERTEXTSEPARATOR", "  - Outro Sep. de Num.:");
     IupSetLanguageString("IUP_DECIMALSYMBOL", "Símbolo Decimal:");
-    IupSetLanguageString("IUP_UNDO", "Desfazer\tCtrl+Z");
-    IupSetLanguageString("IUP_REDO", "Refazer\tCtrl+R");
+    IupSetLanguageString("IUP_UNDOAC", "Desfazer\tCtrl+Z");
+    IupSetLanguageString("IUP_REDOAC", "Refazer\tCtrl+R");
     IupSetLanguageString("IUP_UNDOLISTDLG", "Lista de Desfazer...\tCtrl+U");
     IupSetLanguageString("IUP_UNDOLIST", "Lista de Desfazer");
     IupSetLanguageString("IUP_CURRENTSTATE", "Estado Corrente");
-    IupSetLanguageString("IUP_CUT", "Recortar\tCtrl+X");
-    IupSetLanguageString("IUP_COPY", "Copiar\tCtrl+C");
-    IupSetLanguageString("IUP_PASTE", "Colar\tCtrl+V");
-    IupSetLanguageString("IUP_ERASE", "Apagar\tDel");
-    IupSetLanguageString("IUP_SELECTALL", "Selecinar Tudo\tCtrl+T");
+    IupSetLanguageString("IUP_CUTAC", "Recortar\tCtrl+X");
+    IupSetLanguageString("IUP_COPYAC", "Copiar\tCtrl+C");
+    IupSetLanguageString("IUP_PASTEAC", "Colar\tCtrl+V");
+    IupSetLanguageString("IUP_ERASEAC", "Apagar\tDel");
+    IupSetLanguageString("IUP_SELECTALLAC", "Selecinar Tudo\tCtrl+T");
     IupSetLanguageString("IUP_FINDDLG", "Localizar...\tCtrl+L");
     IupSetLanguageString("IUP_GOTODLG", "Ir Para...\tCtrl+G");
     IupSetLanguageString("IUP_SORTDLG", "Classificar...");
@@ -1001,7 +1001,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     {
       /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
          When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
-      IupSetLanguageString("IUP_SETTINGS", "DefiniÃ§Ãµes...");
+      IupSetLanguageString("IUP_SETTINGSDLG", "DefiniÃ§Ãµes...");
       IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de NÃºmeros:");
       IupSetLanguageString("IUP_DECIMALSYMBOL", "SÃ­mbolo Decimal:");
 

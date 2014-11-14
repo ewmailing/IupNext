@@ -33,6 +33,7 @@
 #include "iup_drvfont.h"
 #include "iup_stdcontrols.h"
 #include "iup_assert.h"
+#include "iup_predialogs.h"
 
 #include "iup_plot_ctrl.h"
 
@@ -61,7 +62,7 @@ static int iPlotSelectFile(Ihandle* parent, char* filename, const char* title, c
   return 0;
 }
 
-static int iPlotCopyAsPicture_CB(Ihandle* self)
+static int iPlotCopyAsMetafile_CB(Ihandle* self)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
   char StrData[100];
@@ -91,7 +92,7 @@ static int iPlotExportEPS_CB(Ihandle* self)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
   char filename[10240] = "*.eps";
-  if (iPlotSelectFile(IupGetDialog(ih), filename, "Export Picture", "Encapsulated Postscript (EPS)|*.eps|All Files|*.*|"))
+  if (iPlotSelectFile(IupGetDialog(ih), filename, "_@IUP_EXPORT", "Encapsulated Postscript (EPS)|*.eps|All Files|*.*|"))
   {
     char StrData[10240];
     int dpi = IupGetInt(NULL, "SCREENDPI");
@@ -103,7 +104,7 @@ static int iPlotExportEPS_CB(Ihandle* self)
       cdKillCanvas(cd_canvas);
     }
     else
-      IupMessagef("Error", "Error saving file: %s", filename);
+      iupShowError(IupGetDialog(ih), "IUP_ERRORFILEOPEN");
   }
   return IUP_DEFAULT;
 }
@@ -112,7 +113,7 @@ static int iPlotExportSVG_CB(Ihandle* self)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
   char filename[10240] = "*.svg";
-  if (iPlotSelectFile(IupGetDialog(ih), filename, "Export Picture", "Scalable Vector Graphics (SVG)|*.svg|All Files|*.*|"))
+  if (iPlotSelectFile(IupGetDialog(ih), filename, "_@IUP_EXPORT", "Scalable Vector Graphics (SVG)|*.svg|All Files|*.*|"))
   {
     char StrData[10240];
     int w, h;
@@ -128,7 +129,7 @@ static int iPlotExportSVG_CB(Ihandle* self)
       cdKillCanvas(cd_canvas);
     }
     else
-      IupMessagef("Error", "Error saving file: %s", filename);
+      iupShowError(IupGetDialog(ih), "IUP_ERRORFILEOPEN");
   }
   return IUP_DEFAULT;
 }
@@ -137,7 +138,7 @@ static int iPlotExportCGM_CB(Ihandle* self)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
   char filename[10240] = "*.cgm";
-  if (iPlotSelectFile(IupGetDialog(ih), filename, "Export Picture", "Computer Graphics Metafile (CGM)|*.cgm|All Files|*.*|"))
+  if (iPlotSelectFile(IupGetDialog(ih), filename, "_@IUP_EXPORT", "Computer Graphics Metafile (CGM)|*.cgm|All Files|*.*|"))
   {
     char StrData[10240];
     int w, h;
@@ -153,7 +154,7 @@ static int iPlotExportCGM_CB(Ihandle* self)
       cdKillCanvas(cd_canvas);
     }
     else
-      IupMessagef("Error", "Error saving file: %s", filename);
+      iupShowError(IupGetDialog(ih), "IUP_ERRORFILEOPEN");
   }
   return IUP_DEFAULT;
 }
@@ -162,7 +163,7 @@ static int iPlotExportEMF_CB(Ihandle* self)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
   char filename[10240] = "*.emf";
-  if (iPlotSelectFile(IupGetDialog(ih), filename, "Export Picture", "Windows Enhanced Metafile (EMF)|*.emf|All Files|*.*|"))
+  if (iPlotSelectFile(IupGetDialog(ih), filename, "_@IUP_EXPORT", "Windows Enhanced Metafile (EMF)|*.emf|All Files|*.*|"))
   {
     char StrData[10240];
     int w, h;
@@ -175,7 +176,7 @@ static int iPlotExportEMF_CB(Ihandle* self)
       cdKillCanvas(cd_canvas);
     }
     else
-      IupMessagef("Error", "Error saving file: %s", filename);
+      iupShowError(IupGetDialog(ih), "IUP_ERRORFILEOPEN");
   }
   return IUP_DEFAULT;
 }
@@ -184,7 +185,7 @@ static int iPlotExportWMF_CB(Ihandle* self)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
   char filename[10240] = "*.wmf";
-  if (iPlotSelectFile(IupGetDialog(ih), filename, "Export Picture", "Windows Metafile (WMF)|*.wmf|All Files|*.*|"))
+  if (iPlotSelectFile(IupGetDialog(ih), filename, "_@IUP_EXPORT", "Windows Metafile (WMF)|*.wmf|All Files|*.*|"))
   {
     char StrData[10240];
     int w, h;
@@ -197,7 +198,7 @@ static int iPlotExportWMF_CB(Ihandle* self)
       cdKillCanvas(cd_canvas);
     }
     else
-      IupMessagef("Error", "Error saving file: %s", filename);
+      iupShowError(IupGetDialog(ih), "IUP_ERRORFILEOPEN");
   }
   return IUP_DEFAULT;
 }
@@ -267,25 +268,30 @@ static int iPlotShowGrid_CB(Ihandle* self)
 static Ihandle* iPlotCreateMenuContext(Ihandle* ih)
 {
   Ihandle* menu = IupMenu(
-    IupSetCallbacks(IupItem("Zoom In\t+", NULL), "ACTION", iPlotZoomIn_CB, NULL),
-    IupSetCallbacks(IupItem("Zoom Out\t-", NULL), "ACTION", iPlotZoomOut_CB, NULL),
-    IupSetCallbacks(IupItem("Reset Zoom\t.", NULL), "ACTION", iPlotZoomReset_CB, NULL),
+    IupSetCallbacks(IupItem("_@IUP_ZOOMINAC", NULL), "ACTION", iPlotZoomIn_CB, NULL),
+    IupSetCallbacks(IupItem("_@IUP_ZOOMOUTAC", NULL), "ACTION", iPlotZoomOut_CB, NULL),
+    IupSetCallbacks(IupItem("_@IUP_RESETZOOMAC", NULL), "ACTION", iPlotZoomReset_CB, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupItem("Show/Hide Legend", NULL), "ACTION", iPlotShowLegend_CB, NULL),
-    IupSetCallbacks(IupItem("Show/Hide Grid", NULL), "ACTION", iPlotShowGrid_CB, NULL),
+    IupSetCallbacks(IupItem("_@IUP_SHOWHIDELEGEND", NULL), "ACTION", iPlotShowLegend_CB, NULL),
+    IupSetCallbacks(IupItem("_@IUP_SHOWHIDEGRID", NULL), "ACTION", iPlotShowGrid_CB, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupItem("Copy As Picture", NULL), "ACTION", iPlotCopyAsPicture_CB, NULL),
-    IupSetCallbacks(IupItem("Copy As Bitmap", NULL), "ACTION", iPlotCopyAsImage_CB, NULL),
-    IupSeparator(),
-    IupSetCallbacks(IupItem("Export to SVG...", NULL), "ACTION", iPlotExportSVG_CB, NULL),
-    IupSetCallbacks(IupItem("Export to EPS...", NULL), "ACTION", iPlotExportEPS_CB, NULL),
-    IupSetCallbacks(IupItem("Export to CGM...", NULL), "ACTION", iPlotExportCGM_CB, NULL),
+    IupSubmenu("_@IUP_COPY",
+      IupMenu(
+        IupSetCallbacks(IupItem("Metafile", NULL), "ACTION", iPlotCopyAsMetafile_CB, NULL),
+        IupSetCallbacks(IupItem("Bitmap", NULL), "ACTION", iPlotCopyAsImage_CB, NULL),
+        NULL)),
+    IupSubmenu("_@IUP_EXPORT",
+      IupMenu(
+        IupSetCallbacks(IupItem("SVG...", NULL), "ACTION", iPlotExportSVG_CB, NULL),
+        IupSetCallbacks(IupItem("EPS...", NULL), "ACTION", iPlotExportEPS_CB, NULL),
+        IupSetCallbacks(IupItem("CGM...", NULL), "ACTION", iPlotExportCGM_CB, NULL),
 #ifdef WIN32
-    IupSetCallbacks(IupItem("Export to EMF...", NULL), "ACTION", iPlotExportEMF_CB, NULL),
-    IupSetCallbacks(IupItem("Export to WMF...", NULL), "ACTION", iPlotExportWMF_CB, NULL),
+        IupSetCallbacks(IupItem("EMF...", NULL), "ACTION", iPlotExportEMF_CB, NULL),
+        IupSetCallbacks(IupItem("WMF...", NULL), "ACTION", iPlotExportWMF_CB, NULL),
 #endif
+        NULL)),
     IupSeparator(),
-    IupSetCallbacks(IupItem("Print...", NULL), "ACTION", iPlotPrint_CB, NULL),
+    IupSetCallbacks(IupItem("_@IUP_PRINTDLG", NULL), "ACTION", iPlotPrint_CB, NULL),
     NULL);
 
   IupSetAttribute(menu, "PLOT", (char*)ih);
@@ -1256,6 +1262,32 @@ static Iclass* iPlotNewClass(void)
   iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
 
   iupPlotRegisterAttributes(ic);
+
+  if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
+  {
+    IupSetLanguageString("IUP_EXPORT", "Export");
+    IupSetLanguageString("IUP_COPY", "Copy");
+    IupSetLanguageString("IUP_PRINTDLG", "Print...");
+
+    IupSetLanguageString("IUP_ZOOMINAC", "Zoom In\t+");
+    IupSetLanguageString("IUP_ZOOMOUTAC", "Zoom Out\t-");
+    IupSetLanguageString("IUP_RESETZOOMAC", "Reset Zoom\t.");
+    IupSetLanguageString("IUP_SHOWHIDELEGEND", "Show/Hide Legend");
+    IupSetLanguageString("IUP_SHOWHIDEGRID", "Show/Hide Grid");
+
+  }
+  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+  {
+    IupSetLanguageString("IUP_EXPORT", "Exportar");
+    IupSetLanguageString("IUP_COPY", "Copiar");
+    IupSetLanguageString("IUP_PRINTDLG", "Imprimir...");
+
+    IupSetLanguageString("IUP_ZOOMINAC", "Mais Zoom\t+");
+    IupSetLanguageString("IUP_ZOOMOUTAC", "Menos Zoom\t-");
+    IupSetLanguageString("IUP_RESETZOOMAC", "Reiniciar Zoom\t.");
+    IupSetLanguageString("IUP_SHOWHIDELEGEND", "Mostra/Esconde Legends");
+    IupSetLanguageString("IUP_SHOWHIDEGRID", "Mostra/Esconde Grade");
+  }
 
   return ic;
 }
