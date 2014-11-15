@@ -108,7 +108,7 @@ public:
 class iupPlotDataBase
 {
 public:
-  iupPlotDataBase(int inSize) :mIsString(false), mCount(0) { mArray = iupArrayCreate(20, inSize); }
+  iupPlotDataBase(int inSize) : mCount(0), mIsString(false) { mArray = iupArrayCreate(20, inSize); }
   virtual ~iupPlotDataBase() { iupArrayDestroy(mArray); }
 
   bool IsString() const { return mIsString; }

@@ -136,7 +136,7 @@ ifdef ALL_STATIC
     endif
   endif
   
-  IUPLUA_TUIO = Yes
+  #IUPLUA_TUIO = Yes
   ifdef IUPLUA_TUIO
     DEFINES += IUPLUA_TUIO
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
@@ -182,7 +182,8 @@ ifneq ($(findstring Linux, $(TEC_UNAME)), )
   LIBS += dl 
   #To allow late binding
   LFLAGS = -Wl,-E
-  LIBS += readline history curses ncurses
+  LIBS += readline history 
+#  LIBS += curses ncurses
 endif
 
 ifneq ($(findstring BSD, $(TEC_UNAME)), )

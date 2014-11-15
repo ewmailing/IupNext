@@ -26,3 +26,7 @@ ifneq ($(findstring MacOS, $(TEC_UNAME)), )
     BUILD_DYLIB=Yes
   endif
 endif
+
+ifneq ($(findstring Linux, $(TEC_UNAME)), )
+  CPPFLAGS = -Wno-reorder -Wno-write-strings
+endif

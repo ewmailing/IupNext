@@ -159,6 +159,7 @@ static int iPlotExportCGM_CB(Ihandle* self)
   return IUP_DEFAULT;
 }
 
+#ifdef WIN32
 static int iPlotExportEMF_CB(Ihandle* self)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
@@ -202,11 +203,12 @@ static int iPlotExportWMF_CB(Ihandle* self)
   }
   return IUP_DEFAULT;
 }
+#endif
 
 static int iPlotPrint_CB(Ihandle* self)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
-  cdCanvas* cd_canvas = cdCreateCanvas(CD_PRINTER, "Plot -d");
+  cdCanvas* cd_canvas = cdCreateCanvas(CD_PRINTER, (void*)"Plot -d");
   IupPlotPaintTo(ih, cd_canvas);
   cdKillCanvas(cd_canvas);
   return IUP_DEFAULT;
