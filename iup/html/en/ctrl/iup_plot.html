@@ -571,10 +571,12 @@ but coordinates are double in plot scale. It is called before the internal
 processing, if returns IUP_IGNORE internal processing will not be done. </p>
 
   
-<p><b>PREDRAW_CB, POSTDRAW_CB</b>: Actions generated before and after the redraw 
+<p><b>PREDRAW_CB, POSTDRAW_CB</b>: Actions generated before and after the draw 
 operation. Predraw can be used to draw a different background and Postdraw can 
 be used to draw additional information in the plot. Predraw has no restrictions, 
-but Postdraw is clipped to the dataset area. To position elements in plot units, 
+but Postdraw is clipped to the dataset area. Predraw is called after the 
+background is drawn, and Postdraw is called before the legend and title are drawn (the last 
+drawn elements). To position primitives in plot units, 
 use the <b>IupPlotTransform</b> function.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, cdCanvas* <strong>cnv</strong>); [in C]
@@ -618,16 +620,16 @@ heavily changed. Zoom, Pan and Selection is now done totally different from
   <center>
   <table border="0" cellpadding="6" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
     <tr>
-      <td><img border="0" src="images/iup_plot0.gif"></td>
-      <td><img border="0" src="images/iup_plot1.gif"></td>
+      <td><img border="0" src="images/iup_plot0.png"></td>
+      <td><img border="0" src="images/iup_plot1.png"></td>
     </tr>
     <tr>
-      <td><img border="0" src="images/iup_plot2.gif"></td>
-      <td><img border="0" src="images/iup_plot3.gif"></td>
+      <td><img border="0" src="images/iup_plot2.png"></td>
+      <td><img border="0" src="images/iup_plot3.png"></td>
     </tr>
     <tr>
-      <td><img border="0" src="images/iup_plot4.gif"></td>
-      <td><img border="0" src="images/iup_plot5.gif"></td>
+      <td><img border="0" src="images/iup_plot4.png"></td>
+      <td><img border="0" src="images/iup_plot5.png"></td>
     </tr>
   </table>
   </center>

@@ -63,7 +63,7 @@ static void iPlotPlotInsert(Ihandle* ih, int p)
   for (int i = ih->data->plot_list_count; i>p; i--)
     ih->data->plot_list[i] = ih->data->plot_list[i - 1];
 
-  ih->data->plot_list[p] = new iupPlot(ih);
+  ih->data->plot_list[p] = new iupPlot(ih, ih->data->default_font_style, ih->data->default_font_size);
 
   ih->data->plot_list_count++;
 
@@ -353,6 +353,9 @@ static int iPlotSetStandardFontAttrib(Ihandle* ih, const char* value)
   if (is_italic) style |= CD_ITALIC;
   if (is_underline) style |= CD_UNDERLINE;
   if (is_strikeout) style |= CD_STRIKEOUT;
+
+  ih->data->default_font_size = size;
+  ih->data->default_font_style = style;
 
   for (int p = 0; p < ih->data->plot_list_count; p++)
   {
@@ -855,7 +858,7 @@ static int iPlotSetPlotCountAttrib(Ihandle* ih, const char* value)
         {
           // Add at the end
           for (int i=ih->data->plot_list_count; i<count; i++)
-            ih->data->plot_list[i] = new iupPlot(ih);
+            ih->data->plot_list[i] = new iupPlot(ih, ih->data->default_font_style, ih->data->default_font_size);
         }
       }
 

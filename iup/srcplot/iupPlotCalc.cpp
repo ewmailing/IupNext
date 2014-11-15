@@ -80,13 +80,10 @@ void iupPlotAxis::GetTickNumberSize(cdCanvas* canvas, int *outWitdh, int *outHei
 
 void iupPlot::CalculateMargins(cdCanvas* canvas)
 {
-  mMargin.mLeft = 0;
-  mMargin.mRight = 0;
-  mMargin.mTop = 0;
-  mMargin.mBottom = 0;
-
   if (mMarginAuto.mTop)
   {
+    mMargin.mTop = 0;
+
     if (mTitle.GetText())
     {
       SetTitleFont(canvas);
@@ -123,6 +120,8 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
 
   if (mMarginAuto.mBottom)
   {
+    mMargin.mBottom = 0;
+
     if (mAxisX.mShow && !mAxisX.mCrossOrigin)
     {
       mMargin.mBottom += mAxisX.mTick.mMajorSize;
@@ -175,6 +174,8 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
 
   if (mMarginAuto.mRight)
   {
+    mMargin.mRight = 0;
+
     if (mAxisX.mShow)
     {
       if (mAxisX.mShowArrow && !mAxisX.mReverse)
@@ -200,6 +201,8 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
 
   if (mMarginAuto.mLeft)
   {
+    mMargin.mLeft = 0;
+
     if (mAxisY.mShow && !mAxisY.mCrossOrigin)
     {
       mMargin.mLeft += mAxisY.mTick.mMajorSize;

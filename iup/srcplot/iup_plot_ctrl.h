@@ -22,6 +22,8 @@ struct _IcontrolData
 
   cdCanvas* cd_canvas;
   int graphics_mode;
+  int default_font_size;
+  int default_font_style;
 
   int last_click_x,
     last_click_y,

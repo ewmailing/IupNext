@@ -619,9 +619,11 @@ void iupPlotAxis::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) con
 /************************************************************************************************/
 
 
-iupPlot::iupPlot(Ihandle* _ih)
+iupPlot::iupPlot(Ihandle* _ih, int inDefaultFontStyle, int inDefaultFontSize)
   :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mCrossHair(false),
-  mBackColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mDefaultFontSize(0), mDefaultFontStyle(-1)
+  mBackColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), 
+  mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle),
+  mAxisX(inDefaultFontStyle, inDefaultFontSize), mAxisY(inDefaultFontStyle, inDefaultFontSize)
 {
 }
 
@@ -1012,6 +1014,10 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (mShowSelectionBand)
     mBox.Draw(mSelectionBand, canvas);
 
+  IFnC post_cb = (IFnC)IupGetCallback(ih, "POSTDRAW_CB");
+  if (post_cb)
+    post_cb(ih, canvas);
+
   if (!DrawLegend(theRect, canvas))
     return false;
 
@@ -1019,10 +1025,6 @@ bool iupPlot::Render(cdCanvas* canvas)
                            0, mViewport.mHeight - 1);
 
   DrawPlotTitle(canvas);
-
-  IFnC post_cb = (IFnC)IupGetCallback(ih, "POSTDRAW_CB");
-  if (post_cb)
-    post_cb(ih, canvas);
 
   mRedraw = false;
   return true;

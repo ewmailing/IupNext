@@ -350,12 +350,12 @@ public:
 class iupPlotAxis
 {
 public:
-  iupPlotAxis() 
+  iupPlotAxis(int inDefaultFontStyle, int inDefaultFontSize)
     : mShow(true), mMin(0), mMax(0), mAutoScaleMin(true), mAutoScaleMax(true),
       mReverse(false), mLogScale(false), mCrossOrigin(false), mColor(CD_BLACK),
       mMaxDecades(-1), mLogBase(10), mLabelCentered(false), mHasZoom(false),
       mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1),
-      mFontSize(0), mFontStyle(-1), mDefaultFontSize(0), mDefaultFontStyle(-1) {}
+      mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle) {}
   ~iupPlotAxis() { SetLabel(NULL); }
 
   void SetLabel(const char* inLabel) { if (mLabel) free(mLabel); mLabel = iupStrDup(inLabel); }
@@ -508,7 +508,7 @@ protected:
 class iupPlot
 {
 public:
-  iupPlot(Ihandle* ih);
+  iupPlot(Ihandle* ih, int inDefaultFontStyle, int inDefaultFontSize);
   ~iupPlot();
 
   /*********************************/
