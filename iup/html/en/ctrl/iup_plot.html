@@ -270,8 +270,8 @@ will behave as &quot;NOFLUSH&quot;. Works only after mapped.</p>
 
 <p>
 <strong>SHOWMENUCONTEXT</strong> (write-only): show the context menu in the 
-given position. Value has the "x:y" format and is relative to the current plot 
-left-bottom corner.</p>
+given position. Value has the "x:y" format and is relative to the left-top corner 
+of the screen.</p>
 
 
 <p><strong>SYNCVIEW</strong>: when a plot view is changed by 
@@ -515,7 +515,7 @@ can add or removed items from the menu. Only shown if MENUCONTEXT=Yes.</p>
     identifier of the menu that will 
     be shown to the user.<br>
     <strong>x</strong>, <strong>y</strong>:
-    coordinates inside the current plot.<br></p>
+    canvas coordinates inside the current plot.<br></p>
 
 <p><strong>MENUCONTEXTCLOSE_CB</strong>: Same as MENUCONTEXT_CB, but called 
 after the context menu is closed. Only shown if MENUCONTEXT=Yes.</p>

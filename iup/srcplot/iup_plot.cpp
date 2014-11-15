@@ -301,7 +301,7 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih)
   return menu;
 }
 
-void iupPlotShowMenuContext(Ihandle* ih, int x, int y)
+void iupPlotShowMenuContext(Ihandle* ih, int screen_x, int screen_y, int x, int y)
 {
   Ihandle* menu = iPlotCreateMenuContext(ih);
   IFnnii menucontext_cb;
@@ -310,15 +310,7 @@ void iupPlotShowMenuContext(Ihandle* ih, int x, int y)
   if (menucontext_cb)
     menucontext_cb(ih, menu, x, y);
 
-  int sx, sy;
-  IupGetIntInt(ih, "SCREENPOSITION", &sx, &sy);
-
-  int ih_x = x + ih->data->current_plot->mViewport.mX;
-  int ih_y = y + ih->data->current_plot->mViewport.mY;
-
-  ih_y = ih->currentheight - 1 - ih_y;
-
-  IupPopup(menu, sx + ih_x, sy + ih_y);
+  IupPopup(menu, screen_x, screen_y);
 
   menucontext_cb = (IFnnii)IupGetCallback(ih, "MENUCONTEXTCLOSE_CB");
   if (menucontext_cb) 
@@ -638,6 +630,7 @@ static int iPlotFindPlot(Ihandle* ih, int x, int &y)
 
 static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char* status)
 {
+  int screen_x = x, screen_y = y;
   int index = iPlotFindPlot(ih, x, y);
   if (index<0)
     return IUP_DEFAULT;
@@ -683,7 +676,15 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
         iPlotScrollTo(ih, x, y);
     }
     else if (button == IUP_BUTTON3 && IupGetInt(ih, "MENUCONTEXT"))
-      iupPlotShowMenuContext(ih, x, y);
+    {
+      int sx, sy;
+      IupGetIntInt(ih, "SCREENPOSITION", &sx, &sy);
+
+      screen_x += sx;
+      screen_y += sy;
+
+      iupPlotShowMenuContext(ih, screen_x, screen_y, x, y);
+    }
   }
   else
   {
