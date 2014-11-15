@@ -644,6 +644,9 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
 
   iupPlotSetPlotCurrent(ih, index);
 
+  if (ih->data->current_plot->mDataSetListCount == 0)
+    return IUP_DEFAULT;
+
   x -= ih->data->current_plot->mViewport.mX;
   y -= ih->data->current_plot->mViewport.mY;
 
@@ -724,6 +727,9 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
     return IUP_DEFAULT;
 
   iupPlotSetPlotCurrent(ih, index);
+
+  if (ih->data->current_plot->mDataSetListCount == 0)
+    return IUP_DEFAULT;
 
   x -= ih->data->current_plot->mViewport.mX;
   y -= ih->data->current_plot->mViewport.mY;
@@ -821,6 +827,9 @@ static int iPlotWheel_CB(Ihandle *ih, float delta, int x, int y, char* status)
 
   iupPlotSetPlotCurrent(ih, index);
 
+  if (ih->data->current_plot->mDataSetListCount == 0)
+    return IUP_DEFAULT;
+
   x -= ih->data->current_plot->mViewport.mX;
   y -= ih->data->current_plot->mViewport.mY;
 
@@ -861,8 +870,14 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
 
     if (!ih->data->show_cross_hair)  // was shown
       iPlotRedrawInteract(ih);
+
+    return IUP_DEFAULT;
   }
-  else if (c == K_plus)
+
+  if (ih->data->current_plot->mDataSetListCount == 0)
+    return IUP_DEFAULT;
+
+  if (c == K_plus)
   {
     int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth/2;
     int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight/2;
