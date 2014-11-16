@@ -1675,9 +1675,14 @@ wb_usr.tree =
         },
         { link= "", name= {en= "" } },
         {
+          name= {nl= "IupConfig"},
+          link= "func/iupconfig.html"
+        },
+        {
           name= {nl= "IupHelp"},
           link= "func/iuphelp.html"
         },
+        { link= "", name= {en= "" } },
         {
           name= {nl= "iupMask"},
           link= "ctrl/iupmask.html"

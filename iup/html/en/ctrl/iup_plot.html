@@ -65,7 +65,11 @@ Lua control
 legend</b> <b>box</b>, a <b>grid</b>, a <b>dataset</b> <b>area</b> and as many
 <b>datasets</b> you want. </p>
 <p>Each data set is added using the <a href="#aux"><b>Auxiliary </b><strong>Functions</strong></a>. All other plot 
-parameters are configured by attributes.</p>
+parameters are configured by attributes. <strong>IupPlot</strong> support plots 
+of
+<strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
+linear</strong><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">&nbsp;</span>sequential 
+data, as a sequence of 2D points ([x1,y1],[x2,y2],...) coordinates.</span></p>
 <p>If no attribute is set, the default values were selected to best display 
 the plot.</p>
 <p>When setting attributes the plot is NOT redrawn until the REDRAW attribute is 
@@ -179,8 +183,8 @@ The data set can be empty. Redraw is NOT
 done until the REDRAW attribute is set. Also it will change the current dataset 
 index to the return value. You can only set attributes of a dataset AFTER you 
 added the dataset.&nbsp; Can only be called if <b>IupPlotBegin</b> was called. 
-Whenever you create a dataset all its &quot;DS_*&quot; attributes will be set to the 
-default values. Notice that DS_MODE must be set before other &quot;DS_*&quot; attributes.</p>
+Whenever you create a dataset all its "DS_*" attributes will be set to the 
+default values. </p>
 <hr>
 <pre>void <b>IupPlotInsert</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, double <b>x</b>, double <b>y</b>); [in C]
 void <b>IupPlotInsertStr</b>(Ihandle *<b>ih</b>, int <b>index</b>, int <b>sample_index</b>, const char* <b>x</b>, double <b>y</b>);
