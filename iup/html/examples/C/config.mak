@@ -17,7 +17,7 @@ endif
 INCLUDES = ../include
 
 USE_IUP3 = Yes
-USE_STATIC = Yes
+#USE_STATIC = Yes
 IUP = ../../..
 
 #DBG = Yes
@@ -47,7 +47,7 @@ IUP = ../../..
 #SRC = multiline2.c
 #SRC = progressbar.c
 #SRC = radio.c
-SRC = sample.c
+#SRC = sample.c
 #SRC = sbox1.c
 #SRC = sbox2.c
 #SRC = scanf.c
@@ -76,8 +76,8 @@ SRC = sample.c
 
 #LIBS = cdcontextplus gdiplus
 
-#USE_OPENGL = Yes
-#SRC = glcanvas.c
+USE_OPENGL = Yes
+SRC = glcanvas.c
 
 #IUPWEB_SAMPLE=Yes
 ifdef IUPWEB_SAMPLE

@@ -1,4 +1,3 @@
-#ifdef USE_OPENGL
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -594,5 +593,4 @@ int main(int argc, char* argv[])
 
   return EXIT_SUCCESS;
 }
-#endif
 #endif
