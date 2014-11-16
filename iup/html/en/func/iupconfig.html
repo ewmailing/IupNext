@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupConfig</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+.auto-style1 {
+	font-size: large;
+}
+</style>
+</head>
+<body>
+
+<h2>IupConfig<span class="auto-style1"> (since 3.12)</span></h2>
+<p>A group of functions to load, store and save application configuration 
+variables. The functions are NOT available in LED, nor in Lua.</p>
+<p>For example, the list of Recent Files, the last position and size of a 
+dialog, last used parameters in dialogs, etc.</p>
+<p>Each variable has a key name, a value and a group that it belongs to. The 
+file is based on a simple configuration file like &quot;.ini&quot; or &quot;.cfg&quot;. Each ground 
+can has more than one key, but all keys in the same group must have different 
+names. Group and Key names can NOT have a period &quot;.&quot;. The file syntax is such 
+as:</p>
+<pre>[Group]
+Key=Value
+Key=Value
+...</pre>
+<h3>Guide</h3>
+<p>First create a new configuration database using the <strong>IupConfig</strong> 
+constructor. To destroy it use the <strong>IupDestroy</strong> function. Then 
+when the application is started call <strong>IupConfigLoad</strong> and when the 
+application is about to close, call <strong>IupConfigSave</strong>.</p>
+<p>To retrieve variables use the <strong>IupConfigGetVariable</strong>* 
+functions and after they where changed store them using the <strong>
+IupConfigSetVariable</strong>* functions.</p>
+<h3>
+Creation</h3>
+<pre>Ihandle* IupConfig(void); [in C]</pre>
+<p>Returns a new database where the variables will be stored.</p>
+<h3>File Storage</h3>
+<pre>int <strong>IupConfigLoad</strong>(Ihandle* <strong>ih</strong>);
+int <strong>IupConfigSave</strong>(Ihandle* <strong>ih</strong>);</pre>
+<p>Loads or saves the configuration file. Returns a non zero value if successful 
+and zero if failed.</p>
+<p>The filename (with path) can be set using a regular attribute called 
+APP_FILENAME. </p>
+<p>But the most interesting is to let the filename to be dynamically constructed 
+using the APP_NAME attribute. In this case APP_FILENAME must no be defined. The 
+file name creation will depend on the system and on its usage.</p>
+<p>There are two defined usages. First, for a <strong>User Configuration File,</strong> 
+it will be stored on the user Home folder. Second, as an <strong>Application 
+Configuration File,</strong> it will stored in the same folder as the 
+executable.</p>
+<p>The <strong>User Configuration File </strong>is the most common usage. In 
+UNIX, the filename will be &quot;&lt;HOME&gt;/.&lt;APP_NAME&gt;&quot;, where &quot;&lt;HOME&gt;&quot; is replaced by 
+the &quot;HOME&quot; environment variable contents, and &lt;APP_NAME&gt; replaced by the 
+APP_NAME attribute value. In Windows, the filename will be 
+&quot;&lt;HOMEDRIVE&gt;&lt;HOMEPATH&gt;\&lt;APP_NAME&gt;.cfg&quot;, where HOMEDRIVE and HOMEPATH are also 
+obtained from environment variables.</p>
+<p>The <strong>Application Configuration File</strong> is defined by setting the 
+attribute APP_CONFIG to Yes. In this case the attribute APP_PATH must also be 
+set. In UNIX, the filename will be &quot;&lt;APP_PATH&gt;.&lt;APP_NAME&gt;&quot;,&nbsp; and in Windows 
+will be &quot;&lt;APP_PATH&gt;&lt;APP_NAME&gt;.cfg&quot;. Notice that the attribute APP_PATH must 
+contains a folder separator &quot;/&quot; at the end.</p>
+<p>After the functions are called the attribute FILENAME is set reflecting the 
+constructed filename.</p>
+
+<h3>
+Variables</h3>
+
+<pre>void <strong>IupConfigSetVariableStr</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, const char* <strong>value</strong>);
+void <strong>IupConfigSetVariableStrId</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>, const char* <strong>value</strong>);
+void <strong>IupConfigSetVariableInt</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>value</strong>);
+void <strong>IupConfigSetVariableIntId</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>, int <strong>value</strong>);
+void <strong>IupConfigSetVariableDouble</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, double <strong>value</strong>);
+void <strong>IupConfigSetVariableDoubleId</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>, double <strong>value</strong>);
+
+const char* <strong>IupConfigGetVariableStr</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>);
+const char* <strong>IupConfigGetVariableStrId</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>);
+int    <strong>IupConfigGetVariableInt</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>);
+int    <strong>IupConfigGetVariableIntId</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>);
+double <strong>IupConfigGetVariableDouble</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>);
+double <strong>IupConfigGetVariableDoubleId</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>);
+
+const char* <strong>IupConfigGetVariableStrDef</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, const char* <strong>def</strong>);
+const char* <strong>IupConfigGetVariableStrIdDef</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>, const char* <strong>def</strong>);
+int    <strong>IupConfigGetVariableIntDef</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>def</strong>);
+int    <strong>IupConfigGetVariableIntIdDef</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>, int <strong>def</strong>);
+double <strong>IupConfigGetVariableDoubleDef</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, double <strong>def</strong>);
+double <strong>IupConfigGetVariableDoubleIdDef</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>, double <strong>def</strong>);
+</pre>
+
+<p><b>ih</b>: Identifier of the configuration database<br><strong>group</strong>: 
+group name of the variable<br>
+
+  <strong>key</strong>: key name of the variable<br>
+<strong>id</strong>: used when the variable has a sequential number<br>
+
+<b>value</b>: value of the variable<br><strong>def</strong>: default value of 
+the variable</p>
+
+<p><span class="style1">Returns:</span> the variable value or NULL (or 0 for 
+integer and double) if 
+  the variable is not set or does not exist. When the variable may not exist you 
+can use the functions with <strong>def</strong> to use a default value.</p>
+
+
+<p>These functions are very similar to the <strong>IupSetAttribute</strong> and
+<strong>IupGetAttribute</strong> functions. Internally the variables are stored 
+as attributes using a &quot;&lt;GROUP&gt;.&lt;KEY&gt;&quot; combination, that's why group and key 
+names can not have periods &quot;.&quot;.</p>
+<h3>Recent File Menu</h3>
+<pre>void <strong>IupConfigRecentInit</strong>(Ihandle* <strong>ih</strong>, Ihandle* <strong>menu</strong>, Icallback <strong>recent_cb</strong>, int <strong>max_recent</strong>);
+void <strong>IupConfigRecentUpdate</strong>(Ihandle* <strong>ih</strong>, const char* <strong>filename</strong>);
+</pre>
+<p>XXX</p>
+<h3>Dialog Position and Size</h3>
+<pre>void <strong>IupConfigDialogShow</strong>(Ihandle* <strong>ih</strong>, Ihandle* <strong>dialog</strong>, const char* <strong>name</strong>);
+void <strong>IupConfigDialogClosed</strong>(Ihandle* <strong>ih</strong>, Ihandle* <strong>dialog</strong>, const char* <strong>name</strong>);
+</pre>
+<p>XXX</p>
+<h3>See Also</h3>
+<p> <a href="iupdestroy.html">IupDestroy</a>, <a href="iupsetattribute.html">
+IupSetAttribute</a>, <a href="iupgetattribute.html">IupGetAttribute</a> </p>
+
+</body>
+
+</html>
