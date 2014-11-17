@@ -63,6 +63,14 @@ static int PlotEnd(lua_State *L)
   return 1;
 }
 
+static int PlotLoadData(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  int ret = IupPlotLoadData(ih, luaL_checkstring(L, 2), luaL_checkint(L, 3));
+  lua_pushinteger(L, ret);
+  return 1;
+}
+
 static int PlotInsertStr(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -183,7 +191,8 @@ void iuplua_plotfuncs_open (lua_State *L)
   iuplua_register(L, PlotBegin       ,"PlotBegin");
   iuplua_register(L, PlotAdd         ,"PlotAdd");
   iuplua_register(L, PlotAddStr      ,"PlotAddStr");
-  iuplua_register(L, PlotEnd         ,"PlotEnd");
+  iuplua_register(L, PlotEnd         ,"PlotEnd"); 
+  iuplua_register(L, PlotLoadData    ,"PlotLoadData");
   iuplua_register(L, PlotInsertStr   ,"PlotInsertStr");
   iuplua_register(L, PlotInsert      ,"PlotInsert");
   iuplua_register(L, PlotInsertPoints    ,"PlotInsertPoints");

@@ -34,6 +34,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_assert.h"
 #include "iup_predialogs.h"
+#include "iup_linefile.h"
 
 #include "iup_plot_ctrl.h"
 
@@ -1172,6 +1173,180 @@ void IupPlotPaintTo(Ihandle* ih, cdCanvas* cnv)
 
   ih->data->cd_canvas = old_cd_canvas;
   iupPlotUpdateViewports(ih);
+}
+
+
+static const char* iPlotSkipValue(const char* line_buffer)
+{
+  // fix next separator
+  char ch = *line_buffer;
+  while (ch != ' ' && ch != '\t' && ch != ';' && ch != 0)
+  {
+    line_buffer++;
+    ch = *line_buffer;
+  }
+
+  // skip separators
+  while ((ch == ' ' || ch == '\t' || ch == ';') && ch != 0)
+  {
+    line_buffer++;
+    ch = *line_buffer;
+  }
+
+  return line_buffer;
+}
+
+static int iPlotCountCurves(const char* line_buffer)
+{
+  int curves_count = 0;
+
+  while (*line_buffer != 0)
+  {
+    line_buffer = iPlotSkipValue(line_buffer);
+    curves_count++;
+  }
+
+  return curves_count;
+}
+
+static int iPlotAddToDataSets(Ihandle* ih, const char* line_buffer, int ds_start, int ds_count)
+{
+  double x = 0;
+  double value;
+
+  for (int ds = 0; ds < ds_count; ds++)
+  {
+    int ret = sscanf(line_buffer, "%lf", &value);
+    if (!ret)
+      return 0;
+
+    line_buffer = iPlotSkipValue(line_buffer);
+
+    if (ds == 0)
+      x = value;
+    else
+    {
+      double y = value;
+
+      iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[ds_start + ds-1];
+      theDataSet->AddSample(x, y);
+    }
+  }
+
+  return 1;
+}
+
+static int iPlotAddToDataSetsStrX(Ihandle* ih, const char* line_buffer, int ds_start, int ds_count)
+{
+  char x[100] = "";
+  double value = 0;
+
+  for (int ds = 0; ds < ds_count; ds++)
+  {
+    if (ds == 0)
+    {
+      int ret = sscanf(line_buffer, "%s", x);
+      if (!ret)
+        return 0;
+    }
+    else
+    {
+      int ret = sscanf(line_buffer, "%lf", &value);
+      if (!ret)
+        return 0;
+    }
+
+    line_buffer = iPlotSkipValue(line_buffer);
+
+    if (ds != 0)
+    {
+      double y = value;
+
+      iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[ds_start + ds - 1];
+      theDataSet->AddSample(x, y);
+    }
+  }
+
+  return 1;
+}
+
+static int iPlotLoadDataFile(Ihandle* ih, IlineFile* line_file, int strXdata)
+{
+  int first_line = 1;
+  int curves_count = 0;
+  int ds, ds_start = ih->data->current_plot->mDataSetListCount;
+
+  do
+  {
+    int line_len = iupLineFileReadLine(line_file);
+    if (line_len == -1)
+      return 0;
+
+    const char* line_buffer = iupLineFileGetBuffer(line_file);
+
+    int i = 0;
+    while (line_buffer[i] == ' ') /* ignore spaces at start */
+      i++;
+
+    if (line_buffer[i] == 0) /* skip empty line */
+      continue;
+
+    if (line_buffer[i] == '#') /* "#" signifies a comment line when used as the first non-space character on a line */
+      continue;
+
+    if (first_line)
+    {
+      curves_count = iPlotCountCurves(line_buffer);
+      if (curves_count < 2) // must have at least X and Y1, could have Y2, Y3, ...
+        return 0;
+
+      for (ds = 0; ds < curves_count - 1; ds++)
+      {
+        iupPlotDataSet* theDataSet = new iupPlotDataSet(strXdata? true: false);
+        ih->data->current_plot->AddDataSet(theDataSet);
+      }
+
+      first_line = 0;
+    }
+
+    if (strXdata)
+    {
+      if (!iPlotAddToDataSetsStrX(ih, line_buffer + i, ds_start, curves_count))
+        return 0;
+    }
+    else
+    {
+      if (!iPlotAddToDataSets(ih, line_buffer + i, ds_start, curves_count))
+        return 0;
+    }
+
+  } while (!iupLineFileEOF(line_file));
+
+  return 1;
+}
+
+int IupPlotLoadData(Ihandle* ih, const char* filename, int strXdata)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return 0;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+      return 0;
+
+  if (!filename)
+    return 0;
+
+  IlineFile* line_file = iupLineFileOpen(filename);
+  if (!line_file)
+    return 0;
+
+  int error = iPlotLoadDataFile(ih, line_file, strXdata);
+
+  iupLineFileClose(line_file);
+
+  return error;
 }
 
 

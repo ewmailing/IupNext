@@ -5,6 +5,7 @@ EXPORTS
   IupPlotAdd
   IupPlotAddStr
   IupPlotEnd
+  IupPlotLoadData
   IupPlotInsertStr
   IupPlotInsert
   IupPlotTransform

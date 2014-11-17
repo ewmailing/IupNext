@@ -290,6 +290,9 @@ static void InitPlots(void)
   //IupSetAttribute(plot[5], "TITLEFONTSIZE", "16");
   //IupSetAttribute(plot[5], "MARGINTOP", "40");
 
+#if 0
+  IupPlotLoadData(plot[5], "../test/plot.dat", 0);
+#else
   theFac = 100.0/(100*100*100);
   IupPlotBegin(plot[5], 0);
   for (theI=-10; theI<=10; theI++) 
@@ -299,16 +302,16 @@ static void InitPlots(void)
     IupPlotAdd(plot[5], x, y);
   }
   IupPlotEnd(plot[5]);
+
+  IupSetAttribute(plot[5], "AXS_XCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[5], "AXS_YCROSSORIGIN", "Yes");
+#endif
+
   IupSetAttribute(plot[5], "DS_COLOR", "100 100 200");
-  IupSetAttribute(plot[5], "DS_EDIT", "YES");
   IupSetCallback(plot[5], "DELETE_CB", (Icallback)delete_cb);
   IupSetCallback(plot[5], "SELECT_CB", (Icallback)select_cb);
   IupSetCallback(plot[5], "POSTDRAW_CB", (Icallback)postdraw_cb);
   IupSetCallback(plot[5], "PREDRAW_CB", (Icallback)predraw_cb);
-  IupSetCallback(plot[5], "EDIT_CB", (Icallback)edit_cb);
-  IupSetAttribute(plot[5], "AXS_XCROSSORIGIN", "Yes");
-  IupSetAttribute(plot[5], "AXS_YCROSSORIGIN", "Yes");
-
 }
 
 static int tabs_get_index(void)

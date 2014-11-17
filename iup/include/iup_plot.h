@@ -19,10 +19,13 @@ Ihandle* IupPlot(void);
 
 /***********************************************/
 /*           Additional API                    */
+
 void IupPlotBegin(Ihandle *ih, int strXdata);
 void IupPlotAdd(Ihandle *ih, double x, double y);
 void IupPlotAddStr(Ihandle *ih, const char* x, double y);
 int  IupPlotEnd(Ihandle *ih);
+
+int IupPlotLoadData(Ihandle* ih, const char* filename, int strXdata);
 
 void IupPlotInsertStr(Ihandle *ih, int index, int sample_index, const char* x, double y);
 void IupPlotInsert(Ihandle *ih, int index, int sample_index, double x, double y);
@@ -37,11 +40,12 @@ void IupPlotGetSample(Ihandle* ih, int index, int sample_index, double *x, doubl
 void IupPlotGetSampleStr(Ihandle* ih, int index, int sample_index, const char* *x, double *y);
 
 void IupPlotTransform(Ihandle* ih, double x, double y, double *cnv_x, double *cnv_y);
-void IupPlotTransformTo(Ihandle* ih, double cnv_x, int cnv_y, double *x, double *y);
+void IupPlotTransformTo(Ihandle* ih, double cnv_x, double cnv_y, double *x, double *y);
 
 typedef struct _cdCanvas cdCanvas;
 
 void IupPlotPaintTo(Ihandle *ih, cdCanvas* cnv);
+
 /***********************************************/
 
 
