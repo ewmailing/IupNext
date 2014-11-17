@@ -39,7 +39,7 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
     iuplua_plugstate(L, dialog);
     iuplua_pushihandle(L, dialog);
     lua_pushinteger(L, param_index);
-    if (iuplua_call_raw(L, 2, 1) == 0)    /* 2 args, 1 return */
+    if (iuplua_call_raw(L, 2, 1) == LUA_OK)    /* 2 args, 1 return */
     {
       ret = (int)lua_tointeger(L, -1);
       lua_pop(L, 1);

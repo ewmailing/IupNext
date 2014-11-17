@@ -24,12 +24,12 @@
 static int matrix_draw_cb(Ihandle *self, int p0, int p1, int p2, int p3, int p4, int p5, cdCanvas* cnv)
 {
   lua_State *L = iuplua_call_start(self, "draw_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushnumber(L, p2);
-  lua_pushnumber(L, p3);
-  lua_pushnumber(L, p4);
-  lua_pushnumber(L, p5);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
+  lua_pushinteger(L, p3);
+  lua_pushinteger(L, p4);
+  lua_pushinteger(L, p5);
   cdlua_pushcanvas(L, cnv);
   return iuplua_call(L, 7);
 }
@@ -42,8 +42,8 @@ static int matrix_color_cb(Ihandle *self, int p0, int p1, unsigned int *p2, unsi
   /* don't have control over the number of returned values because of LUA_MULTRET,
      so must restore stack manually */
 
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
+  lua_pushinteger(L, p0);
+  lua_pushinteger(L, p1);
 
   /* similar to iuplua_call */
   status = iuplua_call_raw(L, 2 + 2, LUA_MULTRET);   /* 2 args + 2 args(errormsg, handle), variable number of returns */
@@ -65,9 +65,9 @@ static int matrix_color_cb(Ihandle *self, int p0, int p1, unsigned int *p2, unsi
       return IUP_IGNORE;
     }
 
-    *p2 = (unsigned int)lua_tointeger(L, -4);
-    *p3 = (unsigned int)lua_tointeger(L, -3);
-    *p4 = (unsigned int)lua_tointeger(L, -2);
+    *p2 = (unsigned int)lua_tointeger(L, -4);  /* R */
+    *p3 = (unsigned int)lua_tointeger(L, -3);  /* G */
+    *p4 = (unsigned int)lua_tointeger(L, -2);  /* B */
     lua_settop(L, top);  /* remove the results */
     return IUP_DEFAULT;  
   }
