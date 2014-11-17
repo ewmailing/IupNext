@@ -45,6 +45,9 @@ Creation</h3>
 <h3>File Storage</h3>
 <pre>int <strong>IupConfigLoad</strong>(Ihandle* <strong>ih</strong>);
 int <strong>IupConfigSave</strong>(Ihandle* <strong>ih</strong>);</pre>
+
+<p><b>ih</b>: Identifier of the configuration database</p>
+
 <p>Loads or saves the configuration file. Returns a non zero value if successful 
 and zero if failed.</p>
 <p>The filename (with path) can be set using a regular attribute called 
@@ -118,12 +121,35 @@ names can not have periods &quot;.&quot;.</p>
 <pre>void <strong>IupConfigRecentInit</strong>(Ihandle* <strong>ih</strong>, Ihandle* <strong>menu</strong>, Icallback <strong>recent_cb</strong>, int <strong>max_recent</strong>);
 void <strong>IupConfigRecentUpdate</strong>(Ihandle* <strong>ih</strong>, const char* <strong>filename</strong>);
 </pre>
-<p>XXX</p>
+
+<p><b>ih</b>: Identifier of the configuration database<br><strong>menu</strong>: 
+menu where the recent file items will be listed<br>
+
+  <strong>recent_cb</strong>: callback that will be called when a recent file 
+item is selected on the menu<br>
+<strong>max_recent</strong>: the maximum number of recent file items.<br>
+
+<strong>filename</strong>: name of the file that where just saved or open</p>
+<p>These functions store and manage a &quot;Recent Files&quot; menu for the application. 
+Call <strong>IupConfigRecentInit </strong>once to initialize the menu. Then 
+every time a file is open or saved call <strong>IupConfigRecentUpdate</strong> 
+so that the menu gest updated. The last file will be always on the top of the 
+list.</p>
 <h3>Dialog Position and Size</h3>
 <pre>void <strong>IupConfigDialogShow</strong>(Ihandle* <strong>ih</strong>, Ihandle* <strong>dialog</strong>, const char* <strong>name</strong>);
 void <strong>IupConfigDialogClosed</strong>(Ihandle* <strong>ih</strong>, Ihandle* <strong>dialog</strong>, const char* <strong>name</strong>);
 </pre>
-<p>XXX</p>
+
+<p><b>ih</b>: Identifier of the configuration database<br><strong>dialog</strong>: 
+the dialog to manage the size and position<br>
+
+  <strong>name</strong>: a name for this dialog</p>
+<p>These functions store and manage the position and size of a dialog. So when 
+the application is run again the dialog can be show at its last position and 
+size. Use the function <strong>IupConfigDialogShow</strong> to show the dialog 
+adjusting its size and position. And use the function <strong>IupConfigDialogClosed</strong> 
+to save the last dialog position and size when the dialog is about to be closed, 
+usually inside the dialog CLOSE_CB callback.</p>
 <h3>See Also</h3>
 <p> <a href="iupdestroy.html">IupDestroy</a>, <a href="iupsetattribute.html">
 IupSetAttribute</a>, <a href="iupgetattribute.html">IupGetAttribute</a> </p>
