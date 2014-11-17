@@ -134,6 +134,11 @@ int iupStrHasSpace(const char* str);
  * \ingroup str */
 #define iup_isdigit(_c) (_c>='0' && _c<='9')
 
+#define iup_isnumber(_c) ((_c>='0' && _c<='9') || \
+                          _c == '.'  || _c == ',' || \
+                          _c == '-' || _c == '+' || \
+                          _c == 'e' || _c == 'E')
+
 /** Converts a character into upper case. \n
  * It will work only for character codes <128.
  * \ingroup str */
