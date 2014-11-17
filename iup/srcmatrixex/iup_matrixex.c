@@ -158,7 +158,7 @@ static char* iMatrixExFileDlg(ImatExData* matex_data, int save, const char* titl
   Ihandle* dlg = IupFileDlg();
 
   IupSetAttribute(dlg,"DIALOGTYPE", save? "SAVE": "OPEN");
-  IupSetAttribute(dlg, "TITLE", title);
+  IupSetStrAttribute(dlg, "TITLE", title);
   IupSetStrAttribute(dlg,"FILTER", filter);
   IupSetStrAttribute(dlg,"FILTERINFO", info);
   IupSetStrAttribute(dlg,"EXTFILTER", extfilter);  /* Windows and GTK only, but more flexible */
@@ -203,12 +203,14 @@ static int iMatrixExItemExport_CB(Ihandle* ih_item)
   }
 
   filename = iMatrixExFileDlg(matex_data, 1, "_@IUP_EXPORT", filter, info, extfilter);
+  if (filename)
+  {
+    IupSetStrAttribute(matex_data->ih, "FILEFORMAT", IupGetAttribute(ih_item, "FILEFORMAT"));
+    IupSetStrAttribute(matex_data->ih, "COPYFILE", filename);
+    IupSetStrAttribute(matex_data->ih, "LASTFILENAME", filename);
 
-  IupSetStrAttribute(matex_data->ih, "FILEFORMAT", IupGetAttribute(ih_item, "FILEFORMAT"));
-  IupSetStrAttribute(matex_data->ih, "COPYFILE", filename);
-  IupSetStrAttribute(matex_data->ih, "LASTFILENAME", filename);
-
-  iMatrixListShowLastError(matex_data->ih);
+    iMatrixListShowLastError(matex_data->ih);
+  }
 
   return IUP_DEFAULT;
 }
@@ -223,10 +225,11 @@ static int iMatrixExItemImport_CB(Ihandle* ih_item)
   extfilter = "Text file|*.txt|All Files|*.*|";
 
   filename = iMatrixExFileDlg(matex_data, 0, "_@IUP_IMPORT", filter, info, extfilter);
-
-  IupSetStrAttribute(matex_data->ih, "PASTEFILE", filename);
-
-  iMatrixListShowLastError(matex_data->ih);
+  if (filename)
+  {
+    IupSetStrAttribute(matex_data->ih, "PASTEFILE", filename);
+    iMatrixListShowLastError(matex_data->ih);
+  }
 
   return IUP_DEFAULT;
 }
