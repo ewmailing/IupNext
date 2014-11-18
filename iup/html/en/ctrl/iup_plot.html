@@ -51,8 +51,10 @@ See "<a href="#Differences">Differences from IupPPlot</a>" bellow.</p>
 <h3>Initialization and Usage</h3>
 <p>The <b>IupPlotOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The &quot;iup_plot.h&quot; file must also be included in the source code. The program must be linked to the controls 
-  library (iup_plot), with the main CD library, with the cdgl and cdcontextplus 
-libraries, and with the iupgl library.</p>
+  library (iup_plot), with the main CD library, with the 
+<a href="http://www.tecgraf.puc-rio.br/cd/en/drv/gl.html" target="_blank">cdgl</a> and 
+<a href="http://www.tecgraf.puc-rio.br/cd/en/drv/gdiplus.html" target="_blank">cdcontextplus</a> 
+libraries, and with the <a href="iupglcanvas.html">iupgl</a> library.</p>
 <p>To make the control available in Lua use require&quot;iuplua_plot&quot; or manually 
 call the initialization function in C, 
 <b>iupplotlua_open</b>, after calling <b>iuplua_open</b>.
@@ -111,8 +113,11 @@ AUTOMIN/MAX</b> attributes will be disabled during zoom in, and restored when
 zoom out completely. The zoom out and pan are limited to the original attribute 
 values when zoom in started.</p>
 <h4>Cross Hair &amp; TIP</h4>
-<p>The cross hair cursor is activated and deactivated using the <b>Ctrl+H</b> key combination. The X coordinate will control the cursor, the Y coordinate will reflect 
-each dataset correspondent value.</p>
+<p>The cross hair cursor is activated and deactivated using the <b>Ctrl+H</b> or
+<strong>Ctrl+V</strong> key combinations. When Ctrl+H is used the X coordinate will control the cursor, the Y coordinate will reflect 
+each dataset correspondent value (an Horizontaly controlled cross-hair). When 
+Ctrl+V is used the Y coordinate will control the cursor, the X coordinate will reflect 
+each dataset correspondent value (a Vertically controlled cross-hair).</p>
 <p>When the cursor is close to a sample, a TIP will be shown with the dataset 
 name, sample index and coordinate values.</p>
 <h4>Selection</h4>
@@ -272,7 +277,7 @@ text issues as OpenGL, but also has alpha and anti-aliasing support. NATIVE is
 the system default (GDI in Windows, GDK/Cairo in GTK 2/3, X11 in Motif) it has 
 the best text render, it is fast for regular datasets, but it does not have 
 anti-aliasing nor alpha (except in GTK 3). NATIVEPLUS uses GDI+ in Windows and 
-Cairo in GTK 2, so it has anti-aliasing and alpha support. Default: NATIVE. </p>
+Cairo in GTK 2, so it has anti-aliasing and alpha support. Default: NATIVEPLUS. </p>
 <p>
 <strong>MENUCONTEXT</strong>: enable the context menu. Can be Yes or No. 
 Default: Yes.</p>
