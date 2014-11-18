@@ -30,9 +30,10 @@ static char* strGetGroupKeyName(const char* group, const char* key)
 
 static char* strSetGroupKeyName(const char* groupkey, char* group)
 {
+  int len;
   const char* key = strchr(groupkey, '.');
   if (!key) return NULL;
-  int len = (int)(key - groupkey);
+  len = (int)(key - groupkey);
   memcpy(group, groupkey, len);
   group[len] = 0;
   return (char*)(key + 1);
@@ -45,20 +46,24 @@ Ihandle* IupConfig(void)
 
 static char* iConfigSetFilename(Ihandle* ih)
 {
+  char* app_name;
+  char* app_path;
+  int app_config;
+  char* home;
+  
+  char filename[10240] = "";
   char* app_filename = IupGetAttribute(ih, "APP_FILENAME");
   if (app_filename)
     return app_filename;
 
-  char* app_name = IupGetAttribute(ih, "APP_NAME");
-  char* app_path = IupGetAttribute(ih, "APP_PATH");
-  int app_config = IupGetInt(ih, "APP_CONFIG");
+  app_name = IupGetAttribute(ih, "APP_NAME");
+  app_path = IupGetAttribute(ih, "APP_PATH");
+  app_config = IupGetInt(ih, "APP_CONFIG");
 
   if (!app_name)
     return NULL;
 
-  char filename[10240] = "";
-
-  char* home = getenv("HOME");
+  home = getenv("HOME");
   if (home && !app_config)
   {
     /* UNIX format */
@@ -110,16 +115,17 @@ static int sort_names_cb(const void* elem1, const void* elem2)
 
 int IupConfigLoad(Ihandle* ih)
 {
+  char group[GROUPKEYSIZE] = "";
+  char key[GROUPKEYSIZE];
+  IlineFile* line_file;
+  
   char* filename = iConfigSetFilename(ih);
   if (!filename)
     return -3;
 
-  IlineFile* line_file = iupLineFileOpen(filename);
+  line_file = iupLineFileOpen(filename);
   if (!line_file)
     return -1;
-
-  char group[GROUPKEYSIZE] = "";
-  char key[GROUPKEYSIZE];
 
   do
   {
@@ -165,22 +171,27 @@ int IupConfigLoad(Ihandle* ih)
 
 int IupConfigSave(Ihandle* ih)
 {
+  char* names[MAX_LINES];
+  FILE* file;
+  int i, count;
+  char last_group[GROUPKEYSIZE] = "", group[GROUPKEYSIZE], *key;
+  
   char* filename = iConfigSetFilename(ih);
   if (!filename)
     return -3;
 
-  FILE* file = fopen(filename, "w");
+  file = fopen(filename, "w");
   if (!file)
     return -1;
 
-  char* names[MAX_LINES];
-  int count = IupGetAllAttributes(ih, names, MAX_LINES);
-  char last_group[GROUPKEYSIZE] = "", group[GROUPKEYSIZE], *key;
+  count = IupGetAllAttributes(ih, names, MAX_LINES);
 
   qsort(names, count, sizeof(char*), sort_names_cb);
 
-  for (int i = 0; i<count; i++)
+  for (i = 0; i<count; i++)
   {
+    char* value;
+    
     key = strSetGroupKeyName(names[i], group);
     if (!key)
       continue;
@@ -192,7 +203,7 @@ int IupConfigSave(Ihandle* ih)
       strcpy(last_group, group);
     }
 
-    char* value = IupGetAttribute(ih, names[i]);
+    value = IupGetAttribute(ih, names[i]);
     fprintf(file, "%s=%s\n", key, value);
 
     if (ferror(file))
@@ -469,17 +480,19 @@ void IupConfigDialogShow(Ihandle* ih, Ihandle* dialog, const char* name)
 void IupConfigDialogClosed(Ihandle* ih, Ihandle* dialog, const char* name)
 {
   int x, y;
+  int width, height;
+  int maximized;
+  int screen_width = 0, screen_height = 0;
+  
   IupGetIntInt(dialog, "SCREENPOSITION", &x, &y);
   IupConfigSetVariableInt(ih, name, "X", x);
   IupConfigSetVariableInt(ih, name, "Y", y);
 
-  int width, height;
   IupGetIntInt(dialog, "RASTERSIZE", &width, &height);
   IupConfigSetVariableInt(ih, name, "Width", width);
   IupConfigSetVariableInt(ih, name, "Height", height);
 
-  int maximized = IupGetInt(dialog, "MAXIMIZED"); // Windows Only
-  int screen_width = 0, screen_height = 0;
+  maximized = IupGetInt(dialog, "MAXIMIZED"); // Windows Only
   IupGetIntInt(NULL, "SCREENSIZE", &screen_width, &screen_height);
   if (maximized || 
       ((x < 0 && (2 * x + width == screen_width)) &&    // Works only for the main screen
