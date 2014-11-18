@@ -676,7 +676,7 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
       if (!iup_iscontrol(status))
         iPlotScrollTo(ih, x, y);
     }
-    else if (button == IUP_BUTTON3 && IupGetInt(ih, "MENUCONTEXT"))
+    else if (button == IUP_BUTTON3 && !iup_iscontrol(status) && IupGetInt(ih, "MENUCONTEXT"))
     {
       int sx, sy;
       IupGetIntInt(ih, "SCREENPOSITION", &sx, &sy);
@@ -812,8 +812,16 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
   if (ih->data->show_cross_hair)
   {
     ih->data->current_plot->mRedraw = true;
-    ih->data->current_plot->mCrossHair = true;
-    ih->data->current_plot->mCrossHairX = x;
+    if (ih->data->show_cross_hair == IUP_PLOT_CROSSHORIZ)
+    {
+      ih->data->current_plot->mCrossHairH = true;
+      ih->data->current_plot->mCrossHairX = x;
+    }
+    else
+    {
+      ih->data->current_plot->mCrossHairV = true;
+      ih->data->current_plot->mCrossHairY = y;
+    }
 
     iPlotRedrawInteract(ih);
   }
@@ -857,20 +865,31 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
   if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
     IupGLMakeCurrent(ih);
 
-  if (c == K_cH)
+  if (c == K_cH || c == K_cV)
   {
-    ih->data->show_cross_hair = !ih->data->show_cross_hair;
+    int CH = IUP_PLOT_CROSSHORIZ;
+    if (c == K_cV) CH = IUP_PLOT_CROSSVERT;
+
+    if (ih->data->show_cross_hair == CH)
+      ih->data->show_cross_hair = IUP_PLOT_CROSSNONE;
+    else
+      ih->data->show_cross_hair = CH;
 
     for (int p = 0; p < ih->data->plot_list_count; p++)
     {
-      if (ih->data->plot_list[p]->mCrossHair)
+      if (ih->data->plot_list[p]->mCrossHairH)
       {
         ih->data->plot_list[p]->mRedraw = true;
-        ih->data->plot_list[p]->mCrossHair = false;
+        ih->data->plot_list[p]->mCrossHairH = false;
+      }
+      if (ih->data->plot_list[p]->mCrossHairV)
+      {
+        ih->data->plot_list[p]->mRedraw = true;
+        ih->data->plot_list[p]->mCrossHairV = false;
       }
     }
 
-    if (!ih->data->show_cross_hair)  // was shown
+    if (ih->data->show_cross_hair != IUP_PLOT_CROSSNONE)  // was shown
       iPlotRedrawInteract(ih);
 
     return IUP_DEFAULT;
@@ -1412,6 +1431,7 @@ static int iPlotCreateMethod(Ihandle* ih, void **params)
   ih->data->numcol = 1;
   ih->data->last_tip_ds = -1;
   ih->data->last_tip_sample = -1;
+  ih->data->graphics_mode = IUP_PLOT_NATIVEPLUS;
 
   ih->data->plot_list[0] = new iupPlot(ih, 0, 0);   // font style/size will be initialized bt stardardfont initialization
   ih->data->current_plot = ih->data->plot_list[ih->data->current_plot_index];
@@ -1498,6 +1518,7 @@ Ihandle* IupPlot(void)
 void IupPlotOpen(void)
 {
   IupGLCanvasOpen();
+  cdInitContextPlus();
 
   if (!IupGetGlobal("_IUP_PLOT_OPEN"))
   {

@@ -5,6 +5,7 @@
 #define IUP_PLOT_MAX_PLOTS 20
 
 enum { IUP_PLOT_NATIVE, IUP_PLOT_NATIVEPLUS, IUP_PLOT_IMAGERGB, IUP_PLOT_OPENGL };
+enum { IUP_PLOT_CROSSNONE, IUP_PLOT_CROSSVERT, IUP_PLOT_CROSSHORIZ };
 
 struct _IcontrolData
 {
@@ -28,7 +29,7 @@ struct _IcontrolData
   int last_click_x,
     last_click_y,
     last_click_plot;
-  bool show_cross_hair;
+  int show_cross_hair;
 
   int last_tip_ds,
     last_tip_sample;

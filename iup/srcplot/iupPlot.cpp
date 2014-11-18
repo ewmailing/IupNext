@@ -620,7 +620,7 @@ void iupPlotAxis::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) con
 
 
 iupPlot::iupPlot(Ihandle* _ih, int inDefaultFontStyle, int inDefaultFontSize)
-  :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mCrossHair(false),
+  :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mCrossHairH(false),
   mBackColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), 
   mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle),
   mAxisX(inDefaultFontStyle, inDefaultFontSize), mAxisY(inDefaultFontStyle, inDefaultFontSize)
@@ -1008,8 +1008,10 @@ bool iupPlot::Render(cdCanvas* canvas)
       dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, NULL);
   }
 
-  if (mCrossHair)
-    DrawCrossHair(theRect, canvas);
+  if (mCrossHairH)
+    DrawCrossHairH(theRect, canvas);
+  else if (mCrossHairV)
+    DrawCrossHairV(theRect, canvas);
 
   if (mShowSelectionBand)
     mBox.Draw(mSelectionBand, canvas);

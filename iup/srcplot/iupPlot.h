@@ -530,8 +530,10 @@ public:
     void SetTitleFont(cdCanvas* canvas) const;
   void DrawPlotBackground(cdCanvas* canvas) const;
   bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas) const;
-  void DrawCrossHair(const iupPlotRect &inRect, cdCanvas* canvas) const;
-    void DrawCrossPoints(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
+  void DrawCrossHairH(const iupPlotRect &inRect, cdCanvas* canvas) const;
+    void DrawCrossPointsH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
+  void DrawCrossHairV(const iupPlotRect &inRect, cdCanvas* canvas) const;
+    void DrawCrossPointsV(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
 
   /*********************************/
 
@@ -564,8 +566,8 @@ public:
 
   /*********************************/
 
-  bool mCrossHair;
-  int mCrossHairX;
+  bool mCrossHairH, mCrossHairV;
+  int mCrossHairX, mCrossHairY;
 
   bool mShowSelectionBand;
   iupPlotRect mSelectionBand;

@@ -383,7 +383,7 @@ bool iupPlotAxis::DrawYTick(double inY, double inScreenX, bool inMajor, const ch
   return true;
 }
 
-void iupPlot::DrawCrossPoints(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const
+void iupPlot::DrawCrossPointsH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const
 {
   int theCount = inXData->GetCount();
   if (theCount == 0)
@@ -403,11 +403,13 @@ void iupPlot::DrawCrossPoints(const iupPlotRect &inRect, const iupPlotDataBase *
       int theScreenY = iupPlotRound(mAxisY.mTrafo->Transform(theY)); // transform to pixels
       // Draw a horizontal line at data Y coordinate
       cdfCanvasLine(canvas, inRect.mX, theScreenY, inRect.mX + inRect.mWidth - 1, theScreenY);
+
+      theFirstIsLess = theCurrentIsLess;
     }
   }
 }
 
-void iupPlot::DrawCrossHair(const iupPlotRect &inRect, cdCanvas* canvas) const
+void iupPlot::DrawCrossHairH(const iupPlotRect &inRect, cdCanvas* canvas) const
 {
   cdCanvasSetForeground(canvas, mAxisY.mColor);
   iPlotSetLine(canvas, CD_CONTINUOUS, 1);
@@ -424,7 +426,54 @@ void iupPlot::DrawCrossHair(const iupPlotRect &inRect, cdCanvas* canvas) const
 
     cdCanvasSetForeground(canvas, dataset->mColor);
 
-    DrawCrossPoints(inRect, theXData, theYData, canvas);
+    DrawCrossPointsH(inRect, theXData, theYData, canvas);
+  }
+}
+
+void iupPlot::DrawCrossPointsV(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const
+{
+  int theCount = inXData->GetCount();
+  if (theCount == 0)
+    return;
+
+  double theYTarget = mAxisY.mTrafo->TransformBack((double)mCrossHairY);
+  bool theFirstIsLess = inYData->GetSample(0) < theYTarget;
+
+  for (int i = 0; i < theCount; i++)
+  {
+    double theY = inYData->GetSample(i);
+    bool theCurrentIsLess = theY < theYTarget;
+
+    if (theCurrentIsLess != theFirstIsLess)
+    {
+      double theX = inXData->GetSample(i);
+      int theScreenX = iupPlotRound(mAxisX.mTrafo->Transform(theX)); // transform to pixels
+      // Draw a vertical line at data X coordinate
+      cdfCanvasLine(canvas, theScreenX, inRect.mY, theScreenX, inRect.mY + inRect.mHeight - 1);
+
+      theFirstIsLess = theCurrentIsLess;
+    }
+  }
+}
+
+void iupPlot::DrawCrossHairV(const iupPlotRect &inRect, cdCanvas* canvas) const
+{
+  cdCanvasSetForeground(canvas, mAxisX.mColor);
+  iPlotSetLine(canvas, CD_CONTINUOUS, 1);
+
+  // Draw an horizontal line at cursor Y coordinate
+  cdCanvasLine(canvas, inRect.mX, mCrossHairY, inRect.mX + inRect.mWidth - 1, mCrossHairY);
+
+  for (int ds = 0; ds < mDataSetListCount; ds++)
+  {
+    iupPlotDataSet* dataset = mDataSetList[ds];
+
+    const iupPlotDataBase *theXData = dataset->GetDataX();
+    const iupPlotDataBase *theYData = dataset->GetDataY();
+
+    cdCanvasSetForeground(canvas, dataset->mColor);
+
+    DrawCrossPointsV(inRect, theXData, theYData, canvas);
   }
 }
 
