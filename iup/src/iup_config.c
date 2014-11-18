@@ -112,11 +112,11 @@ int IupConfigLoad(Ihandle* ih)
 {
   char* filename = iConfigSetFilename(ih);
   if (!filename)
-    return 0;
+    return -3;
 
   IlineFile* line_file = iupLineFileOpen(filename);
   if (!line_file)
-    return 0;
+    return -1;
 
   char group[GROUPKEYSIZE] = "";
   char key[GROUPKEYSIZE];
@@ -127,7 +127,7 @@ int IupConfigLoad(Ihandle* ih)
 
     int line_len = iupLineFileReadLine(line_file);
     if (line_len == -1)
-      return 0;
+      return -2;
 
     line_buffer = iupLineFileGetBuffer(line_file);
 
@@ -160,18 +160,18 @@ int IupConfigLoad(Ihandle* ih)
   } while (!iupLineFileEOF(line_file));
 
   iupLineFileClose(line_file);
-  return 1;
+  return 0;
 }
 
 int IupConfigSave(Ihandle* ih)
 {
   char* filename = iConfigSetFilename(ih);
   if (!filename)
-    return 0;
+    return -3;
 
   FILE* file = fopen(filename, "w");
   if (!file)
-    return 0;
+    return -1;
 
   char* names[MAX_LINES];
   int count = IupGetAllAttributes(ih, names, MAX_LINES);
@@ -198,12 +198,12 @@ int IupConfigSave(Ihandle* ih)
     if (ferror(file))
     {
       fclose(file);
-      return 0;
+      return -2;
     }
   }
 
   fclose(file);
-  return 1;
+  return 0;
 }
 
 void IupConfigSetVariableStrId(Ihandle* ih, const char* group, const char* key, int id, const char* value)

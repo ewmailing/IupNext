@@ -47,9 +47,11 @@ Creation</h3>
 int <strong>IupConfigSave</strong>(Ihandle* <strong>ih</strong>);</pre>
 
 <p><b>ih</b>: Identifier of the configuration database</p>
+<p><span class="style1">Returns:</span> an error code. 0= no error; -1=error 
+opening the file; -2=error accessing the file; -3=error during filename 
+construction</p>
 
-<p>Loads or saves the configuration file. Returns a non zero value if successful 
-and zero if failed.</p>
+<p>Loads or saves the configuration file. </p>
 <p>The filename (with path) can be set using a regular attribute called 
 APP_FILENAME. </p>
 <p>But the most interesting is to let the filename to be dynamically constructed 
