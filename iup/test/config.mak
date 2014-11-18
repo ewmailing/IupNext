@@ -129,12 +129,13 @@ LINKER = g++
 DEFINES += PPLOT_TEST
 SRC += pplot.c plot.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += iup_pplot iup_plot
+  LIBS += iup_pplot iup_plot cdcontextplus gdiplus
 #  LIBS += cdpdflib
 #  LDIR += $(IUP)/lib/$(TEC_UNAME)
 else
   SLIB += $(IUP_LIB)/libiup_pplot.a
   SLIB += $(IUP_LIB)/libiup_plot.a
+  SLIB += $(CD_LIB)/libcdcontextplus.a
 #  SLIB += $(CD_LIB)/libcdpdflib.a
 endif
 
