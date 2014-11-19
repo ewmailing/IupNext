@@ -1582,6 +1582,7 @@ static Iclass* iPlotNewClass(void)
   /* IupPlot Callbacks */
   iupClassRegisterCallback(ic, "POSTDRAW_CB", "C");
   iupClassRegisterCallback(ic, "PREDRAW_CB", "C");
+  iupClassRegisterCallback(ic, "CLICKSAMPLE_CB", "iiddi");
   iupClassRegisterCallback(ic, "DRAWSAMPLE_CB", "iiddi");
   iupClassRegisterCallback(ic, "PLOTMOTION_CB", "dds");
   iupClassRegisterCallback(ic, "PLOTBUTTON_CB", "iidds");
