@@ -411,6 +411,56 @@ void iupPlotDataSet::GetSample(int inSampleIndex, const char* *inX, double *inY)
   if (inY) *inY = theYData->GetSample(inSampleIndex);
 }
 
+bool iupPlotDataSet::GetSampleSelection(int inSampleIndex)
+{
+  int theCount = mDataX->GetCount();
+  if (inSampleIndex < 0 || inSampleIndex >= theCount)
+    return false;
+
+  return mSelection->GetSampleBool(inSampleIndex);
+}
+
+void iupPlotDataSet::SetSample(int inSampleIndex, double inX, double inY)
+{
+  iupPlotDataReal *theXData = (iupPlotDataReal*)mDataX;
+  iupPlotDataReal *theYData = (iupPlotDataReal*)mDataY;
+
+  if (theXData->IsString())
+    return;
+
+  int theCount = theXData->GetCount();
+  if (inSampleIndex < 0 || inSampleIndex >= theCount)
+    return;
+
+  theXData->SetSample(inSampleIndex, inX);
+  theYData->SetSample(inSampleIndex, inY);
+}
+
+void iupPlotDataSet::SetSample(int inSampleIndex, const char* inX, double inY)
+{
+  iupPlotDataString *theXData = (iupPlotDataString*)mDataX;
+  iupPlotDataReal *theYData = (iupPlotDataReal*)mDataY;
+
+  if (!theXData->IsString())
+    return;
+
+  int theCount = theXData->GetCount();
+  if (inSampleIndex < 0 || inSampleIndex >= theCount)
+    return;
+
+  theXData->SetSampleString(inSampleIndex, inX);
+  theYData->SetSample(inSampleIndex, inY);
+}
+
+void iupPlotDataSet::SetSampleSelection(int inSampleIndex, bool inSelected)
+{
+  int theCount = mDataX->GetCount();
+  if (inSampleIndex < 0 || inSampleIndex >= theCount)
+    return;
+
+  mSelection->SetSampleBool(inSampleIndex, inSelected);
+}
+
 
 /************************************************************************************************/
 

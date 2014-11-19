@@ -133,6 +133,7 @@ public:
   iupPlotDataReal() :iupPlotDataBase(sizeof(double)) { mData = (double*)iupArrayGetData(mArray); }
 
   double GetSample(int inSampleIndex) const { return mData[inSampleIndex]; }
+  void SetSample(int inSampleIndex, double inReal) const { mData[inSampleIndex] = inReal; }
 
   void AddSample(double inReal) { mData = (double*)iupArrayInc(mArray); mData[mCount] = inReal; mCount++; }
   void InsertSample(int inSampleIndex, double inReal) {
@@ -154,6 +155,7 @@ public:
   double GetSample(int inSampleIndex) const { return inSampleIndex; }
 
   const char* GetSampleString(int inSampleIndex) const { return mData[inSampleIndex]; }
+  void SetSampleString(int inSampleIndex, const char *inString) const { free(mData[inSampleIndex]); mData[inSampleIndex] = iupStrDup(inString); }
 
   void AddSample(const char *inString) { mData = (char**)iupArrayInc(mArray); mData[mCount] = iupStrDup(inString); mCount++; }
   void InsertSample(int inSampleIndex, const char *inString) { 
@@ -218,6 +220,10 @@ public:
   void RemoveSample(int inSampleIndex);
   void GetSample(int inSampleIndex, double *inX, double *inY);
   void GetSample(int inSampleIndex, const char* *inX, double *inY);
+  bool GetSampleSelection(int inSampleIndex);
+  void SetSample(int inSampleIndex, double inX, double inY);
+  void SetSample(int inSampleIndex, const char* inX, double inY);
+  void SetSampleSelection(int inSampleIndex, bool inSelected);
 
   const iupPlotDataBase* GetDataX() const { return mDataX; }
   const iupPlotDataBase* GetDataY() const { return mDataY; }

@@ -717,6 +717,19 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
 
       iPlotRedrawInteract(ih);
     }
+    else
+    {
+      IFniiddi clicksample_cb = (IFniiddi)IupGetCallback(ih, "CLICKSAMPLE_CB");
+      if (clicksample_cb)
+      {
+        int ds, sample;
+        double rx, ry;
+        const char* ds_name;
+        const char* strX;
+        if (ih->data->current_plot->FindDataSetSample(x, y, ds, ds_name, sample, rx, ry, strX))
+          clicksample_cb(ih, ds, sample, rx, ry, button);
+      }
+    }
   }
 
   return IUP_DEFAULT;
@@ -1029,6 +1042,9 @@ void IupPlotInsertStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* i
       !IupClassMatch(ih, "plot"))
     return;
 
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
+    return;
+
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
   theDataSet->InsertSample(inSampleIndex, inX, inY);
 }
@@ -1043,6 +1059,9 @@ void IupPlotInsert(Ihandle* ih, int inIndex, int inSampleIndex, double inX, doub
       !IupClassMatch(ih, "plot"))
     return;
 
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
+    return;
+
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
   theDataSet->InsertSample(inSampleIndex, inX, inY);
 }
@@ -1055,6 +1074,9 @@ void IupPlotAddPoints(Ihandle* ih, int inIndex, double *x, double *y, int count)
 
   if (ih->iclass->nativetype != IUP_TYPECANVAS || 
       !IupClassMatch(ih, "plot"))
+    return;
+
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
     return;
 
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
@@ -1072,6 +1094,9 @@ void IupPlotAddStrPoints(Ihandle* ih, int inIndex, const char** x, double* y, in
       !IupClassMatch(ih, "plot"))
     return;
 
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
+    return;
+
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
   for (int i = 0; i<count; i++)
     theDataSet->AddSample(x[i], y[i]);
@@ -1085,6 +1110,9 @@ void IupPlotInsertStrPoints(Ihandle* ih, int inIndex, int inSampleIndex, const c
 
   if (ih->iclass->nativetype != IUP_TYPECANVAS || 
       !IupClassMatch(ih, "plot"))
+    return;
+
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
     return;
 
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
@@ -1103,6 +1131,9 @@ void IupPlotInsertPoints(Ihandle* ih, int inIndex, int inSampleIndex, double *in
       !IupClassMatch(ih, "plot"))
     return;
 
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
+    return;
+
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
 
   for (int i=0; i<count; i++)
@@ -1119,6 +1150,9 @@ void IupPlotGetSample(Ihandle* ih, int inIndex, int inSampleIndex, double *x, do
       !IupClassMatch(ih, "plot"))
       return;
 
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
+    return;
+
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
   theDataSet->GetSample(inSampleIndex, x, y);
 }
@@ -1133,8 +1167,89 @@ void IupPlotGetSampleStr(Ihandle* ih, int inIndex, int inSampleIndex, const char
       !IupClassMatch(ih, "plot"))
       return;
 
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
+    return;
+
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
   theDataSet->GetSample(inSampleIndex, x, y);
+}
+
+int IupPlotGetSampleSelection(Ihandle* ih, int inIndex, int inSampleIndex)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return -1;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+      return -1;
+
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
+    return -1;
+
+  iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
+
+  int theCount = theDataSet->GetCount();
+  if (inSampleIndex < 0 || inSampleIndex >= theCount)
+    return -1;
+
+  return theDataSet->GetSampleSelection(inSampleIndex);
+}
+
+void IupPlotSetSample(Ihandle* ih, int inIndex, int inSampleIndex, double x, double y)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+      return;
+
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
+    return;
+
+  iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
+  theDataSet->SetSample(inSampleIndex, x, y);
+}
+
+void IupPlotSetSampleStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* x, double y)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+      return;
+
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
+    return;
+
+  iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
+  theDataSet->SetSample(inSampleIndex, x, y);
+}
+
+void IupPlotSetSampleSelection(Ihandle* ih, int inIndex, int inSampleIndex, int inSelected)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+      return;
+
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
+    return;
+
+  iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
+
+  int theCount = theDataSet->GetCount();
+  if (inSampleIndex < 0 || inSampleIndex >= theCount)
+    return;
+
+  return theDataSet->SetSampleSelection(inSampleIndex, inSelected ? true : false);
 }
 
 void IupPlotTransform(Ihandle* ih, double x, double y, double *cnv_x, double *cnv_y)
@@ -1215,17 +1330,17 @@ static const char* iPlotSkipValue(const char* line_buffer)
   return line_buffer;
 }
 
-static int iPlotCountCurves(const char* line_buffer)
+static int iPlotCountDataSets(const char* line_buffer)
 {
-  int curves_count = 0;
+  int ds_count = 0;
 
   while (*line_buffer != 0)
   {
     line_buffer = iPlotSkipValue(line_buffer);
-    curves_count++;
+    ds_count++;
   }
 
-  return curves_count;
+  return ds_count;
 }
 
 static int iPlotAddToDataSets(Ihandle* ih, const char* line_buffer, int ds_start, int ds_count)
@@ -1292,7 +1407,7 @@ static int iPlotAddToDataSetsStrX(Ihandle* ih, const char* line_buffer, int ds_s
 static int iPlotLoadDataFile(Ihandle* ih, IlineFile* line_file, int strXdata)
 {
   int first_line = 1;
-  int curves_count = 0;
+  int ds_count = 0;
   int ds, ds_start = ih->data->current_plot->mDataSetListCount;
 
   do
@@ -1315,11 +1430,11 @@ static int iPlotLoadDataFile(Ihandle* ih, IlineFile* line_file, int strXdata)
 
     if (first_line)
     {
-      curves_count = iPlotCountCurves(line_buffer);
-      if (curves_count < 2) // must have at least X and Y1, could have Y2, Y3, ...
+      ds_count = iPlotCountDataSets(line_buffer);
+      if (ds_count < 2) // must have at least X and Y1, could have Y2, Y3, ...
         return 0;
 
-      for (ds = 0; ds < curves_count - 1; ds++)
+      for (ds = 0; ds < ds_count - 1; ds++)
       {
         iupPlotDataSet* theDataSet = new iupPlotDataSet(strXdata? true: false);
         ih->data->current_plot->AddDataSet(theDataSet);
@@ -1330,12 +1445,12 @@ static int iPlotLoadDataFile(Ihandle* ih, IlineFile* line_file, int strXdata)
 
     if (strXdata)
     {
-      if (!iPlotAddToDataSetsStrX(ih, line_buffer + i, ds_start, curves_count))
+      if (!iPlotAddToDataSetsStrX(ih, line_buffer + i, ds_start, ds_count))
         return 0;
     }
     else
     {
-      if (!iPlotAddToDataSets(ih, line_buffer + i, ds_start, curves_count))
+      if (!iPlotAddToDataSets(ih, line_buffer + i, ds_start, ds_count))
         return 0;
     }
 

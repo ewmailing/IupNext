@@ -27,17 +27,21 @@ int  IupPlotEnd(Ihandle *ih);
 
 int IupPlotLoadData(Ihandle* ih, const char* filename, int strXdata);
 
-void IupPlotInsertStr(Ihandle *ih, int index, int sample_index, const char* x, double y);
-void IupPlotInsert(Ihandle *ih, int index, int sample_index, double x, double y);
+void IupPlotInsertStr(Ihandle *ih, int ds_index, int sample_index, const char* x, double y);
+void IupPlotInsert(Ihandle *ih, int ds_index, int sample_index, double x, double y);
 
-void IupPlotInsertStrPoints(Ihandle* ih, int index, int sample_index, const char** x, double* y, int count);
-void IupPlotInsertPoints(Ihandle* ih, int index, int sample_index, double *x, double *y, int count);
+void IupPlotInsertStrPoints(Ihandle* ih, int ds_index, int sample_index, const char** x, double* y, int count);
+void IupPlotInsertPoints(Ihandle* ih, int ds_index, int sample_index, double *x, double *y, int count);
 
-void IupPlotAddPoints(Ihandle* ih, int index, double *x, double *y, int count);
-void IupPlotAddStrPoints(Ihandle* ih, int index, const char** x, double* y, int count);
+void IupPlotAddPoints(Ihandle* ih, int ds_index, double *x, double *y, int count);
+void IupPlotAddStrPoints(Ihandle* ih, int ds_index, const char** x, double* y, int count);
 
-void IupPlotGetSample(Ihandle* ih, int index, int sample_index, double *x, double *y);
-void IupPlotGetSampleStr(Ihandle* ih, int index, int sample_index, const char* *x, double *y);
+void IupPlotGetSample(Ihandle* ih, int ds_index, int sample_index, double *x, double *y);
+void IupPlotGetSampleStr(Ihandle* ih, int ds_index, int sample_index, const char* *x, double *y);
+int IupPlotGetSampleSelection(Ihandle* ih, int ds_index, int sample_index);
+void IupPlotSetSample(Ihandle* ih, int ds_index, int sample_index, double x, double y);
+void IupPlotSetSampleStr(Ihandle* ih, int ds_index, int sample_index, const char* x, double y);
+void IupPlotSetSampleSelection(Ihandle* ih, int ds_index, int sample_index, int selected);
 
 void IupPlotTransform(Ihandle* ih, double x, double y, double *cnv_x, double *cnv_y);
 void IupPlotTransformTo(Ihandle* ih, double cnv_x, double cnv_y, double *x, double *y);

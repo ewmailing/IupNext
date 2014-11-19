@@ -232,6 +232,24 @@ void <b>IupPlotGetSampleStr</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>
 <p>Returns the sample value in a dataset at the given <strong>sample_index</strong>. 
 Can be used only after the dataset is added to the plot. </p>
 <hr>
+<pre>int <strong>IupPlotGetSampleSelection</strong>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>); [in C]
+<b>iup.PlotGetSampleSelection</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number) -&gt; (<strong>selected</strong>: number) [in Lua]</pre>
+<p>Returns the sample selected state in a dataset at the given <strong>sample_index</strong>. 
+Can be used only after the dataset is added to the plot. By default all samples 
+are not selected. Returns -1 if an error occourred.</p>
+<hr>
+<pre>void <b>IupPlotSetSample</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, double <b>x</b>, double <b>y</b>); [in C]
+void <b>IupPlotSetSampleStr</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, const char* <b>x</b>, double <b>y</b>);
+<b>iup.PlotSetSample</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number) -&gt; (<b>x, y</b>: number) [in Lua]
+<b>iup.PlotSetSampleStr</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number) -&gt; (<b>x</b>: string<b>, y</b>: number)</pre>
+<p>Changes the sample value in a dataset at the given <strong>sample_index</strong>. 
+Can be used only after the dataset is added to the plot. </p>
+<hr>
+<pre>void <strong>IupPlotSetSampleSelection</strong>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, int <b>selected</b>); [in C]
+<b>iup.PlotSetSampleSelection</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index, <strong>selected</strong></b>: number) [in Lua]</pre>
+<p>Changes the sample selected state in a dataset at the given <strong>sample_index</strong>. 
+Can be used only after the dataset is added to the plot. </p>
+<hr>
 <pre>void <b>IupPlotTransform</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>, double *<b>cnv_x</b>, double *<b>cnv_y</b>); [in C]
 <b>iup.PlotTransform</b>(<b>ih</b>: ihandle, <b>x, y</b>: number) -&gt; (<b>cnv_x</b>, <b>cnv_y</b>: number) [in Lua]</pre>
 <p>Converts coordinates in plot units to pixels. It should be used inside 
@@ -477,11 +495,11 @@ also accepted.&nbsp;</p>
 dataset.
     If multiple points are selected it is called once for each selected point.</p>
   
-    <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y</strong>); [in C]
-<strong>elem</strong>:delete_cb(<b>index, sample_index, x, y</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y</strong>); [in C]
+<strong>elem</strong>:delete_cb(<b>ds_index, sample_index, x, y</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br><strong>index</strong>: index of the dataset<br>
+  event.<br> <b>ds_index</b>: index of the dataset<br>
     <b>sample_index</b>: index of the sample in the dataset<strong><br>
     x</strong>: X coordinate value of the sample<br>
     <strong>y</strong>: Y coordinate value of the sample</p>
@@ -503,19 +521,38 @@ will begin or end. But they are called only if DELETE_CB is also defined.</p>
     If DELETEBEGIN_CB returns IUP_IGNORE the delete operation for 
     all the selected samples are aborted.</p>
   
-<p><b>DRAWSAMPLE_CB</b>:
-  Action generated when  a sample is drawn. Its is called for all samples, then 
-it is called again for all selected samples, and this repeats for each data set.</p>
   
-    <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>int <strong>select</strong>); [in C]
-<strong>elem</strong>:select_cb(<b>index, sample_index, x, y, select</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    
+<p><b>CLICKSAMPLE_CB</b>:
+  Action generated when  a sample is clicked. </p>
+  
+    <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>int <strong>button</strong>); [in C]
+<strong>elem</strong>:clicksample_cb(<b>ds_index, sample_index, x, y, <strong>button</strong></b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br> <b>ds_index</b>: index of the dataset<br>
+    <b>sample_index</b>: index of the sample in the dataset<strong><br>
+    x</strong>: X coordinate value of the sample<br>
+    <strong>y</strong>: Y coordinate value of the sample<br>
+<strong>button</strong>: identifies the activated mouse button<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;IUP_BUTTON1 - left mouse button (button 1)<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;IUP_BUTTON2 - middle mouse button (button 2)<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;IUP_BUTTON3 - right mouse button (button 3)<br>
+    </p>
+  
+<p><b>DRAWSAMPLE_CB</b>:
+  Action generated when  a sample is drawn. When the plot is redraw, tssis called for aeachamples, then 
+it is called again for all selected samples, and this repeats for each data set., and this repeats for each data set.</p>
+  
+    <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>int <strong>selected</strong>); [in C]
+<strong>elem</strong>:drawsample_cb(<b>ds_index, sample_index, x, y, selected</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br><strong>index</strong>: index of the dataset<br>
     <b>sample_index</b>: index of the sample in the dataset<strong><br>
     x</strong>: X coordinate value of the sample<br>
     <strong>y</strong>: Y coordinate value of the sample<br>
-    <b>select</b>: boolean value that a non zero value indicates if the point is 
+    <b>select</b>: indicates if the point is 
     selected.</p>
     <p class="info">
     <span class="style2">Returns:</span>
@@ -549,15 +586,15 @@ after the context menu is closed. Only shown if MENUCONTEXT=Yes.</p>
     If multiple points are selected it is called once for each new selected point. 
 It is called only if the selection state of the sample is about to be changed.</p>
   
-    <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>int <strong>select</strong>); [in C]
-<strong>elem</strong>:select_cb(<b>index, sample_index, x, y, select</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>int <strong>selected</strong>); [in C]
+<strong>elem</strong>:select_cb(<b>ds_index, sample_index, x, y, selected</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br><strong>index</strong>: index of the dataset<br>
+  event.<br> <b>ds_index</b>: index of the dataset<br>
     <b>sample_index</b>: index of the sample in the dataset<strong><br>
     x</strong>: X coordinate value of the sample<br>
     <strong>y</strong>: Y coordinate value of the sample<br>
-    <b>select</b>: boolean value that a non zero value indicates if the point is 
+    <b>select</b>: indicates if the point is 
     to be selected.</p>
     <p class="info">
     <span class="style2">Returns:</span>

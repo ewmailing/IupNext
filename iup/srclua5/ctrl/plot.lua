@@ -9,6 +9,7 @@ local ctrl = {
   subdir = "ctrl",
   callback = {
     drawsample_cb = "nnddn",
+    clicksample_cb = "nnddn",
     select_cb = "nnddn",
     selectbegin_cb = "",
     selectend_cb = "",

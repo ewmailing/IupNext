@@ -17,3 +17,7 @@ EXPORTS
   IupPlotAddStrPoints
   IupPlotGetSample
   IupPlotGetSampleStr
+  IupPlotGetSampleSelection
+  IupPlotSetSample
+  IupPlotSetSampleStr
+  IupPlotSetSampleSelection

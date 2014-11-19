@@ -156,6 +156,35 @@ static int PlotGetSampleStr(lua_State *L)
   return 2;
 }
 
+static int PlotGetSampleSelection(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  int selected = IupPlotGetSampleSelection(ih, luaL_checkint(L, 2), luaL_checkint(L, 3));
+  lua_pushboolean(L, selected);
+  return 1;
+}
+
+static int PlotSetSample(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  IupPlotSetSample(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), luaL_checknumber(L, 4), luaL_checknumber(L, 5));
+  return 0;
+}
+
+static int PlotSetSampleStr(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  IupPlotSetSampleStr(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), luaL_checkstring(L, 4), luaL_checknumber(L, 5));
+  return 0;
+}
+
+static int PlotSetSampleSelection(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  IupPlotSetSampleSelection(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), luaL_checkint(L, 4));
+  return 0;
+}
+
 static int PlotTransform(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -201,6 +230,11 @@ void iuplua_plotfuncs_open (lua_State *L)
   iuplua_register(L, PlotAddStrPoints    ,"PlotAddStrPoints");
   iuplua_register(L, PlotGetSample, "PlotGetSample");
   iuplua_register(L, PlotGetSampleStr, "PlotGetSampleStr");
+  iuplua_register(L, PlotGetSampleSelection, "PlotGetSampleSelection");
+  iuplua_register(L, PlotSetSample, "PlotSetSample");
+  iuplua_register(L, PlotSetSampleStr, "PlotSetSampleStr");
+  iuplua_register(L, PlotSetSampleSelection, "PlotSetSampleSelection");
+
   iuplua_register(L, PlotTransform, "PlotTransform");
   iuplua_register(L, PlotTransformTo, "PlotTransformTo");
   iuplua_register(L, PlotPaintTo, "PlotPaintTo");
