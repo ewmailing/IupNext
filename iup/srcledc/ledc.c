@@ -39,7 +39,7 @@ static Tlist* all_late;
 
 static int nerrors = 0;
 
-#define nheaders 10
+#define nheaders 11
 
 static struct {
   char* name;
