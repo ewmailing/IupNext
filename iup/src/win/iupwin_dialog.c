@@ -49,6 +49,7 @@ static int winDialogSetTrayAttrib(Ihandle *ih, const char *value);
 /****************************************************************
                      ITaskbarList3 resources
 ****************************************************************/
+#ifndef __MINGW32__
 #include "Shobjidl.h"
 
 #ifdef __ITaskbarList3_FWD_DEFINED__  /* Only available since VC10 */
@@ -90,6 +91,7 @@ static int winDialogSetTaskBarProgressStateAttrib(Ihandle *ih, const char *value
 }
 
 #endif  /* __ITaskbarList3_FWD_DEFINED__ */
+#endif
 
 /****************************************************************
                      Utilities

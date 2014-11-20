@@ -3,6 +3,7 @@ LIBNAME  = iup_plot
 OPT = YES
 
 USE_CD = Yes
+USE_OPENGL = Yes
 
 ifdef DBG
   DEFINES += IUP_ASSERT
@@ -15,7 +16,7 @@ endif
 
 INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  
-LIBS = iup iupcd cdgl
+LIBS = iup iupgl iupcd cdgl cdcontextplus
 
 DEFINES = CD_NO_OLD_INTERFACE
 
