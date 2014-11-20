@@ -16,7 +16,10 @@ endif
 
 INCLUDES = ../include ../src
 LDIR = ../lib/$(TEC_UNAME)  
-LIBS = iup iupgl iupcd cdgl cdcontextplus
+LIBS = iup iupgl iupcd cdgl 
+ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  LIBS += cdcontextplus
+endif
 
 DEFINES = CD_NO_OLD_INTERFACE
 
@@ -29,5 +32,8 @@ ifneq ($(findstring MacOS, $(TEC_UNAME)), )
 endif
 
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
+  CPPFLAGS = -Wno-reorder -Wno-write-strings
+endif
+ifneq ($(findstring cygw, $(TEC_UNAME)), )
   CPPFLAGS = -Wno-reorder -Wno-write-strings
 endif
