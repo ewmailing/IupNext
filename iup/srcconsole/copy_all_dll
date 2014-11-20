@@ -54,5 +54,5 @@ Copy_DLLs dll10 Win64 5.1
 Copy_DLLs dll10 Win32 52
 Copy_DLLs dll10 Win64 52
 
-#Copy_DLLs cygw17 cygw17 5.1
-#Copy_DLLs cygw17 cygw17 52
+Copy_DLLs cygw17 cygw17 5.1
+Copy_DLLs cygw17 cygw17 52
