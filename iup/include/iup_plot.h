@@ -46,6 +46,8 @@ void IupPlotSetSampleSelection(Ihandle* ih, int ds_index, int sample_index, int 
 void IupPlotTransform(Ihandle* ih, double x, double y, double *cnv_x, double *cnv_y);
 void IupPlotTransformTo(Ihandle* ih, double cnv_x, double cnv_y, double *x, double *y);
 
+struct _cdCanvas;
+
 void IupPlotPaintTo(Ihandle *ih, struct _cdCanvas* cnv);
 
 /***********************************************/
