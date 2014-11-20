@@ -52,9 +52,10 @@ See "<a href="#Differences">Differences from IupPPlot</a>" bellow.</p>
 <p>The <b>IupPlotOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The &quot;iup_plot.h&quot; file must also be included in the source code. The program must be linked to the controls 
   library (iup_plot), with the main CD library, with the 
-<a href="http://www.tecgraf.puc-rio.br/cd/en/drv/gl.html" target="_blank">cdgl</a> and 
+<a href="http://www.tecgraf.puc-rio.br/cd/en/drv/gl.html" target="_blank">cdgl</a> 
+library (and 
 <a href="http://www.tecgraf.puc-rio.br/cd/en/drv/gdiplus.html" target="_blank">cdcontextplus</a> 
-libraries, and with the <a href="iupglcanvas.html">iupgl</a> library.</p>
+library in Windows), and with the <a href="iupglcanvas.html">iupgl</a> library.</p>
 <p>To make the control available in Lua use require&quot;iuplua_plot&quot; or manually 
 call the initialization function in C, 
 <b>iupplotlua_open</b>, after calling <b>iuplua_open</b>.
