@@ -19,7 +19,7 @@ int main(int argc, char **argv)
    "IupScanf Example\n"
    "Text: %300.5%s\n"
    "Real: %20.10%g\n"
-   "Integer: %20.10%d\n"
+   "Integer: %3.10%d\n"
   };
   
   IupOpen(&argc, &argv);
