@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.9
+VERSION = 4.11
 
 
 #---------------------------------#
@@ -133,16 +133,18 @@ ifndef TEC_UNAME
 
   # MacOS and Intel
   ifeq ($(TEC_SYSNAME), MacOS)
-    ifeq ($(TEC_SYSMINOR), 6)
-      TEC_SYSARCH:=x64
-    else
-    ifeq ($(TEC_SYSMINOR), 7)
-      TEC_SYSARCH:=x64
-    else
+    ifeq ($(TEC_SYSMINOR), 5)
       ifeq ($(TEC_SYSARCH), x86)
         TEC_UNAME:=$(TEC_UNAME)x86
       endif
-    endif
+    else
+      ifeq ($(TEC_SYSMINOR), 4)
+        ifeq ($(TEC_SYSARCH), x86)
+          TEC_UNAME:=$(TEC_UNAME)x86
+        endif
+      else
+        TEC_SYSARCH:=x64
+      endif
     endif
   endif
 endif
@@ -255,6 +257,12 @@ ifndef NO_GTK_DEFAULT
     ifeq ($(TEC_SYSARCH), x86)
       GTK_DEFAULT = Yes
     endif
+  endif
+endif
+
+ifdef GTK_DEFAULT
+  ifneq ($(findstring Linux31, $(TEC_UNAME)), )
+    USE_GTK3 = Yes
   endif
 endif
 
@@ -411,6 +419,8 @@ ifndef LINKER
 endif
 
 ifndef USE_STATIC
+  # When using dynamic libraries,
+  # there is no need to include indirect dependencies
   NO_OVERRIDE = Yes
 endif
 ifneq ($(findstring AIX, $(TEC_UNAME)), )
@@ -506,10 +516,6 @@ else
   #   GTK := /gtk/inst
   else
     GTK = /usr
-    ifneq ($(findstring Linux3, $(TEC_UNAME)), )
-      # Not Yet, wait for IUP 4.0?
-      #USE_GTK3 = Yes
-    endif
   endif
 endif
 
@@ -784,6 +790,27 @@ ifdef USE_IUPCONTROLS
   endif
 endif
 
+ifdef USE_IUPGLCONTROLS
+  override USE_OPENGL = Yes
+  override USE_IUP = Yes
+  IUP_LIB ?= $(IUP)/lib/$(TEC_UNAME_LIB_DIR)
+  CD_LIB ?= $(CD)/lib/$(TEC_UNAME_LIB_DIR)
+  
+  ifdef USE_IUPLUA
+    ifdef USE_STATIC
+      SLIB += $(IUP_LIB)/libiupluaglcontrols$(LIBLUASUFX).a
+    else
+      LIBS += iupluaglcontrols$(LIBLUASUFX)
+    endif
+  endif
+  
+  ifdef USE_STATIC
+    SLIB += $(IUP_LIB)/libiupglcontrols.a $(CD_LIB)/libftgl.a
+  else
+    LIBS += iupglcontrols ftgl
+  endif
+endif
+
 ifdef USE_IMLUA
   override USE_IM = Yes
   IM_LIB ?= $(IM)/lib/$(TEC_UNAME_LIB_DIR)
@@ -917,17 +944,21 @@ endif
 
 ifdef USE_CD
   CD_SUFFIX ?=
-  ifndef NO_OVERRIDE
-    override USE_X11 = Yes
-  endif
-  ifndef USE_CD_OLD
-    ifdef GTK_DEFAULT
-      ifdef USE_MOTIF
-        CD_SUFFIX := x11
+  ifdef GTK_DEFAULT
+    LINK_CAIRO = Yes
+    ifdef USE_MOTIF
+      CD_SUFFIX := x11
+      ifndef NO_OVERRIDE
+        override USE_X11 = Yes
       endif
+    endif
+  else
+    ifdef USE_GTK
+      LINK_CAIRO = Yes
+      CD_SUFFIX := gdk
     else
-      ifdef USE_GTK
-        CD_SUFFIX := gdk
+      ifndef NO_OVERRIDE
+        override USE_X11 = Yes
       endif
     endif
   endif
@@ -945,19 +976,10 @@ ifdef USE_CD
       # To use Cairo with X11 base driver (NOT for GDK)
       # Can NOT be used together with XRender
       SLIB += $(CD_LIB)/libcdcairo.a
-      LIBS += pangocairo-1.0 cairo
+      LINK_CAIRO = Yes
     endif
     
     SLIB += $(CD_LIB)/libcd$(CD_SUFFIX).a
-    
-    ifneq ($(findstring Linux26g4, $(TEC_UNAME)), )
-      LIBS += fontconfig
-    endif
-    ifneq ($(findstring Linux3, $(TEC_UNAME)), )
-      LIBS += fontconfig
-    endif
-    
-    LINK_FREETYPE = Yes
   else
     ifdef USE_XRENDER
       CHECK_XRENDER = Yes
@@ -969,31 +991,28 @@ ifdef USE_CD
       # To use Cairo with X11 base driver (NOT for GDK)
       # Can NOT be used together with XRender
       LIBS += cdcairo
-      LIBS += pangocairo-1.0 cairo
+      LINK_CAIRO = Yes
     endif
     
     ifdef USE_HAIKU
-	    LINK_FREETYPE = Yes
-	    LIBS += fontconfig xml2
+	    LIBS += xml2
 	  endif
     
     LIBS += cd$(CD_SUFFIX)
     LDIR += $(CD_LIB)
-    
-    ifndef NO_OVERRIDE
-      # Freetype and Fontconfig is already included in GTK
-      ifndef USE_GTK
-        ifneq ($(findstring Linux26g4, $(TEC_UNAME)), )
-          LIBS += fontconfig
-        endif
-        ifneq ($(findstring Linux3, $(TEC_UNAME)), )
-          LIBS += fontconfig
-        endif
-        
-        LINK_FREETYPE = Yes
-      endif
-    endif
   endif
+  
+  ifneq ($(findstring Linux26g4, $(TEC_UNAME)), )
+    LIBS += fontconfig
+  endif
+  ifneq ($(findstring Linux3, $(TEC_UNAME)), )
+    LIBS += fontconfig
+  endif
+  ifneq ($(findstring cygw, $(TEC_UNAME)), )
+    LIBS += fontconfig
+  endif
+    
+  LINK_FREETYPE = Yes
 
   CD_INC ?= $(CD)/include
   INCLUDES += $(CD_INC)
@@ -1029,8 +1048,14 @@ ifdef LINK_FREETYPE
   endif
   
   ifdef USE_STATIC
-    FREETYPE_LIB = $(CD_LIB)
-    SLIB += $(FREETYPE_LIB)/lib$(FREETYPE).a
+    ifndef GTK_DEFAULT
+      FREETYPE_LIB = $(CD_LIB)
+      SLIB += $(FREETYPE_LIB)/lib$(FREETYPE).a
+    else
+      # If GTK is the default, 
+      # use freetype from the system even when static link
+      LIBS += $(FREETYPE)
+    endif
   else
     LIBS += $(FREETYPE)
   endif
@@ -1111,7 +1136,7 @@ ifdef USE_GTK
         override USE_X11 = Yes
       endif
       ifdef GTK_MAC
-        LIBS += gtk-quartz-$(GTKSFX).0 gdk-quartz-$(GTKSFX).0 pango-1.0
+        LIBS += gtk-quartz-$(GTKSFX).0 gdk-quartz-$(GTKSFX).0 pango???-1.0
       else
         LIBS += gtk-x11-$(GTKSFX).0 gdk-x11-$(GTKSFX).0 pangox-1.0
       endif
@@ -1136,11 +1161,15 @@ ifdef USE_GTK
         override USE_X11 = Yes
       endif
       ifdef USE_GTK3
-        LIBS += gtk-3 gdk-3
+        LIBS += gtk-3 gdk-3 
+        LINK_CAIRO = Yes
       else
-        LIBS += gtk-x11-2.0 gdk-x11-2.0
+        LIBS += gtk-x11-2.0 gdk-x11-2.0 pangox-1.0
       endif
-      LIBS += pangox-1.0
+    endif
+    
+    ifdef LINK_CAIRO
+      LIBS += pangocairo-1.0 cairo
     endif
 
     LIBS += gdk_pixbuf-2.0 pango-1.0 gobject-2.0 gmodule-2.0 glib-2.0

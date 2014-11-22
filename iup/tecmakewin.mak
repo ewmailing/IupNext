@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.9
+VERSION = 4.11
 
 
 #---------------------------------#
@@ -1022,6 +1022,15 @@ ifdef USE_IUPCONTROLS
   LIBS += iupcontrols
 endif
 
+ifdef USE_IUPGLCONTROLS
+  override USE_OPENGL = Yes
+  override USE_IUP = Yes
+  ifdef USE_IUPLUA
+    LIBS += iupluaglcontrols$(LIBLUASUFX)
+  endif
+  LIBS += iupglcontrols ftgl
+endif
+
 ifdef USE_IMLUA
   override USE_IM = Yes
   LIBS += imlua$(LIBLUASUFX)
@@ -1501,7 +1510,7 @@ endif
 
 
 #---------------------------------#
-# Rule to add a manifest file to the generted binary
+# Rule to add a manifest file to the generated binary
 .PHONY: addmanifest
 addmanifest:
   ifdef NEW_VC_COMPILER
