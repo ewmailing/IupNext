@@ -17,6 +17,7 @@
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
+#include "iup_focus.h"
 #include "iup_dlglist.h"
 #include "iup_assert.h"
 #include "iup_draw.h"
@@ -69,8 +70,8 @@ static char* iLayoutGetTitle(Ihandle* ih)
 
 static void iLayoutRemoveExt(char* title, const char* ext)
 {
-  int len = strlen(title);
-  int len_ext = strlen(ext);
+  int len = (int)strlen(title);
+  int len_ext = (int)strlen(ext);
   if (len_ext == 1)
   {
     if (tolower(title[len-1])==ext[0] &&
@@ -599,7 +600,7 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* name, i
     }
     else
     {
-      count = strlen(format);
+      count = (int)strlen(format);
 
       fprintf(file, "(");
 
@@ -683,29 +684,29 @@ static void iLayoutExportDialog(Ihandle* dialog, const char* filename, const cha
 
 static int iLayoutGetExportFile(Ihandle* parent, char* filename)
 {
-  Ihandle *dlg = 0;
+  Ihandle *file_dlg = 0;
   int ret;
   char filter[4096] = "*.*";
   static char dir[4096] = "";  /* static will make the dir persist from one call to another if not defined */
 
-  dlg = IupFileDlg();
+  file_dlg = IupFileDlg();
 
   iupStrFileNameSplit(filename, dir, filter);
 
-  IupSetAttribute(dlg, "FILTER", filter);
-  IupSetAttribute(dlg, "DIRECTORY", dir);
-  IupSetAttribute(dlg, "DIALOGTYPE", "SAVE");
-  IupSetAttribute(dlg, "ALLOWNEW", "YES");
-  IupSetAttribute(dlg, "NOCHANGEDIR", "YES");
-  IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
-  IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+  IupSetAttribute(file_dlg, "FILTER", filter);
+  IupSetAttribute(file_dlg, "DIRECTORY", dir);
+  IupSetAttribute(file_dlg, "DIALOGTYPE", "SAVE");
+  IupSetAttribute(file_dlg, "ALLOWNEW", "YES");
+  IupSetAttribute(file_dlg, "NOCHANGEDIR", "YES");
+  IupSetAttributeHandle(file_dlg, "PARENTDIALOG", parent);
+  IupSetAttribute(file_dlg, "ICON", IupGetGlobal("ICON"));
 
-  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+  IupPopup(file_dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
-  ret = IupGetInt(dlg, "STATUS");
+  ret = IupGetInt(file_dlg, "STATUS");
   if (ret != -1)
   {
-    char* value = IupGetAttribute(dlg, "VALUE");
+    char* value = IupGetAttribute(file_dlg, "VALUE");
     if (value) 
     {
       strcpy(filename, value);
@@ -713,7 +714,7 @@ static int iLayoutGetExportFile(Ihandle* parent, char* filename)
     }
   }
 
-  IupDestroy(dlg);
+  IupDestroy(file_dlg);
 
   return ret;
 }
@@ -1954,7 +1955,7 @@ static int iLayoutContextMenuAdd_CB(Ihandle* menu)
         iclass->nativetype == IUP_TYPECANVAS)
       *p_str++ = class_list_str[i];
   }
-  count = p_str-class_list_str;
+  count = (int)(p_str - class_list_str);
 
   IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
@@ -2096,9 +2097,29 @@ static int iLayoutContextMenuUnmap_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
+static int iLayoutContextMenuSetFocus_CB(Ihandle* menu)
+{
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
+
+  IupSetFocus(elem);
+
+  return IUP_DEFAULT;
+}
+
+static void iLayoutBlink(Ihandle* ih);
+
+static int iLayoutContextMenuBlink_CB(Ihandle* menu)
+{
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
+
+  iLayoutBlink(elem);
+
+  return IUP_DEFAULT;
+}
+
 static int iLayoutContextMenuRemove_CB(Ihandle* menu)
 {
-  Ihandle* msg;
+  Ihandle* msg_dlg;
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
   if (!elem)  /* can be called from a key press */
@@ -2112,15 +2133,15 @@ static int iLayoutContextMenuRemove_CB(Ihandle* menu)
     return IUP_DEFAULT;
   }
 
-  msg = IupMessageDlg();
-  IupSetAttribute(msg,"DIALOGTYPE", "QUESTION");
-  IupSetAttribute(msg,"BUTTONS", "OKCANCEL");
-  IupSetAttribute(msg,"TITLE", "Element Remove");
-  IupSetAttribute(msg,"VALUE", "Remove the selected element?");
+  msg_dlg = IupMessageDlg();
+  IupSetAttribute(msg_dlg,"DIALOGTYPE", "QUESTION");
+  IupSetAttribute(msg_dlg,"BUTTONS", "OKCANCEL");
+  IupSetAttribute(msg_dlg,"TITLE", "Element Remove");
+  IupSetAttribute(msg_dlg,"VALUE", "Remove the selected element?");
 
-  IupPopup(msg, IUP_MOUSEPOS, IUP_MOUSEPOS);
+  IupPopup(msg_dlg, IUP_MOUSEPOS, IUP_MOUSEPOS);
 
-  if (IupGetInt(msg, "BUTTONRESPONSE")==1)
+  if (IupGetInt(msg_dlg, "BUTTONRESPONSE")==1)
   {
     int id = IupTreeGetId(layoutdlg->tree, elem);
 
@@ -2225,14 +2246,19 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* ih, Ihandle* d
   int can_paste = layoutdlg->copy!=NULL;
   int can_map = (ih->handle==NULL)&&(ih->parent==NULL || ih->parent->handle!=NULL);
   int can_unmap = ih->handle!=NULL;
+  int can_blink = (ih->iclass->nativetype != IUP_TYPEVOID && IupGetInt(ih, "VISIBLE"));
+  int can_focus = iupFocusCanAccept(ih);
 
   menu = IupMenu(
     IupSetCallbacks(IupItem("Properties...", NULL), "ACTION", iLayoutContextMenuProperties_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Map", NULL), can_map? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutContextMenuMap_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Map", NULL), can_map ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuMap_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Unmap", NULL), can_unmap? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutContextMenuUnmap_CB, NULL),
     IupSeparator(),
+    IupSetCallbacks(IupSetAttributes(IupItem("Blink", NULL), can_blink ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuBlink_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Set Focus", NULL), can_focus ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuSetFocus_CB, NULL),
+    IupSeparator(),
     IupSetCallbacks(IupSetAttributes(IupItem("Copy", NULL), can_copy? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutContextMenuCopy_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Paste Child", NULL), can_paste&&is_container? "ACTIVE=Yes, _IUP_PASTECHILD=1": "ACTIVE=No, _IUP_PASTECHILD=1"), "ACTION", iLayoutContextMenuPaste_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Paste Child", NULL), can_paste && is_container? "ACTIVE=Yes, _IUP_PASTECHILD=1": "ACTIVE=No, _IUP_PASTECHILD=1"), "ACTION", iLayoutContextMenuPaste_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Paste Brother", NULL), can_paste? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutContextMenuPaste_CB, NULL),
     IupSeparator(),
     IupSetCallbacks(IupSetAttributes(IupItem("Add Child...", NULL), is_container? "ACTIVE=Yes, _IUP_ADDCHILD=1": "ACTIVE=No, _IUP_ADDCHILD=1"), "ACTION", iLayoutContextMenuAdd_CB, NULL),
