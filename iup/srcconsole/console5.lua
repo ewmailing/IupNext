@@ -77,7 +77,8 @@ end
 function iup_console.butSaveasFile:action()
   local fd = iup.filedlg{dialogtype="SAVE", title="Save File", 
                          nochangedir="NO", directory=iup_console.last_directory,
-                         filter="*.*", filterinfo="All files",allownew=yes}
+                         extfilter="Lua files|*.lua|All Files|*.*|",
+                         filter="*.lua", filterinfo="Lua files",allownew=yes}
                          
   fd:popup(iup.LEFT, iup.LEFT)
   
@@ -121,6 +122,7 @@ end
 function iup_console.butLoadFile:action()
   local fd=iup.filedlg{dialogtype="OPEN", title="Load File", 
                        nochangedir="NO", directory=iup_console.last_directory,
+                       extfilter="Lua files|*.lua|All Files|*.*|",
                        filter="*.*", filterinfo="All Files", allownew="NO"}
   fd:popup(iup.CENTER, iup.CENTER)
   local status = fd.status
