@@ -41,8 +41,8 @@ static int enter(Ihandle *self, int lin, int col)
 static int dropselect(Ihandle *self, int lin, int col, Ihandle *drop, char *t, int i, int v)
 {
   printf("dropselect_cb(%d, %d, %s, i=%d v=%d)\n", lin, col, t, i, v);
-  // return IUP_CONTINUE;
-  return IUP_DEFAULT;
+  return IUP_CONTINUE;
+ // return IUP_DEFAULT;
 }
 
 static int dropcheck(Ihandle *self, int lin, int col)
