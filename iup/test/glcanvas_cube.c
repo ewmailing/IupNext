@@ -583,7 +583,7 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(canvas, "MARGIN", "10x10");
 
   box = IupVbox(canvas, NULL);
-  IupSetAttribute(box, "MARGIN", "5x5");
+  IupSetAttribute(box, "MARGIN", "25x25");
 
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupGLCanvas Test");

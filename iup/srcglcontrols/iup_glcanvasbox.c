@@ -24,7 +24,7 @@
 
 
 
-static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y)
+static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y, int top)
 {
   Ihandle* child = ih->firstchild;
 
@@ -34,8 +34,11 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y)
     int client_x = 0, client_y = 0, client_w = 0, client_h = 0;
     IupGetIntInt(ih, "CLIENTSIZE", &client_w, &client_h);
     IupGetIntInt(ih, "CLIP_MIN", &client_x, &client_y);
-    client_x += ih->x;
-    client_y += ih->y;
+    if (!top)
+    {
+      client_x += ih->x;
+      client_y += ih->y;
+    }
 
     if (x >= client_x && x < client_x + client_w &&
         y >= client_y && y < client_y + client_h)
@@ -58,7 +61,7 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y)
             x >= child->x && x < child->x + child->currentwidth &&
             y >= child->y && y < child->y + child->currentheight)
         {
-          ih = iGLCanvasBoxPickChild(child, x, y);
+          ih = iGLCanvasBoxPickChild(child, x, y, 0);
           if (ih)
             return ih;
           else
@@ -122,7 +125,7 @@ static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, in
 {
   IFniiiis cb;
 
-  Ihandle* child = iGLCanvasBoxPickChild(ih, x, y);
+  Ihandle* child = iGLCanvasBoxPickChild(ih, x, y, 1);
 
   if (child || !pressed)
     iupAttribSet(ih, "_IUP_GLBOX_SELFBUTTON", NULL);
@@ -244,7 +247,7 @@ static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
   {
     Ihandle* child = (Ihandle*)iupAttribGet(ih, "_IUP_GLBOX_LASTBUTTON");
     if (!child)
-      child = iGLCanvasBoxPickChild(ih, x, y);
+      child = iGLCanvasBoxPickChild(ih, x, y, 1);
 
     if (child)
       iGLCanvasBoxEnterChild(ih, child, x - child->x, y - child->y);
@@ -275,7 +278,7 @@ static int iGLCanvasBoxWHEEL_CB(Ihandle* ih, float delta, int x, int y, char *st
 {
   IFnfiis cb;
 
-  Ihandle* child = iGLCanvasBoxPickChild(ih, x, y);
+  Ihandle* child = iGLCanvasBoxPickChild(ih, x, y, 1);
   if (child)
   {
     int ret = IUP_DEFAULT;
