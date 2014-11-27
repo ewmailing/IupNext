@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 
   mlist = IupMatrixList();
   IupSetInt(mlist, "COUNT", 10);
-  IupSetInt(mlist, "VISIBLELINES", 5);
+  IupSetInt(mlist, "VISIBLELINES", 9);
     IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR:IMAGE");
 //  IupSetAttribute(mlist, "COLUMNORDER", "LABEL:COLOR");
 //  IupSetAttribute(mlist, "COLUMNORDER", "LABEL");
