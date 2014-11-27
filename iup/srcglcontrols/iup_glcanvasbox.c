@@ -350,7 +350,14 @@ static void iGLCanvasBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   for (child = ih->firstchild; child; child = child->brother)
   {
     /* update children to their own natural size */
-    iupBaseSetCurrentSize(child, child->naturalwidth, child->naturalheight, shrink);
+    int width = child->naturalwidth;
+    int height = child->naturalheight;
+    if (iupAttribGetBoolean(child, "EXPANDHORIZONTAL"))
+      width = ih->currentwidth;
+    if (iupAttribGetBoolean(child, "EXPANDVERTICAL"))
+      height = ih->currentheight;
+
+    iupBaseSetCurrentSize(child, width, height, shrink);
   }
 }
 
