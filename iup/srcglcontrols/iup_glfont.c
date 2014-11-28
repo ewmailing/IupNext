@@ -432,21 +432,21 @@ static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *standar
 
   iGLGetFontFilename(filename, typeface, is_bold, is_italic);
 
+  if (size < 0)
+    size = (int)((-size*72.0) / res + 0.5);  /* convert to points */
+
   /* Check if the filename already exists in cache */
   fonts = (IglFont*)iupArrayGetData(gl_fonts);
   count = iupArrayCount(gl_fonts);
   for (i = 0; i < count; i++)
   {
-    if (iupStrEqualNoCase(filename, fonts[i].filename))
+    if (iupStrEqualNoCase(filename, fonts[i].filename) && fonts[i].size == size)
       return &fonts[i];
   }
 
   font = ftglCreateTextureFont(filename);
   if (!font)
     return NULL;
-
-  if (size < 0)
-    size = (int)((-size*72.0) / res + 0.5);  /* convert to points */
 
   ftglSetFontFaceSize(font, size, (int)res);
 

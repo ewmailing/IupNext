@@ -380,7 +380,7 @@ void GLCanvasCubeTest(void)
 
   glabel = IupGLLabel("Label");
 //  IupSetAttribute(glabel, "FGCOLOR", "255 255 255");
-  IupSetAttribute(glabel, "FONT", "Arial, 18");
+  IupSetAttribute(glabel, "FONT", "Helvetica, 24");
   IupSetAttributeHandle(glabel, "IMAGE", load_image_Tecgraf());
 
   gbutton1 = IupGLButton("Button");
