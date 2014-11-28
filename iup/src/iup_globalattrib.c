@@ -89,6 +89,11 @@ static void iGlobalSet(const char *name, const char *value, int store)
     iupSetDefaultFontStyleGlobalAttrib(value);
     return;
   }
+  if (iupStrEqual(name, "DEFAULTFONTFACE"))
+  {
+    iupSetDefaultFontFaceGlobalAttrib(value);
+    return;
+  }
   if (iupStrEqual(name, "KEYPRESS"))
   {
     int key;
@@ -164,6 +169,8 @@ char* IupGetGlobal(const char *name)
     return iupGetDefaultFontSizeGlobalAttrib();
   if (iupStrEqual(name, "DEFAULTFONTSTYLE"))
     return iupGetDefaultFontStyleGlobalAttrib();
+  if (iupStrEqual(name, "DEFAULTFONTFACE"))
+    return iupGetDefaultFontFaceGlobalAttrib();
   if (iupStrEqual(name, "CURSORPOS"))
   {
     int x, y;

@@ -461,7 +461,7 @@ static int iGLSubCanvasCreateMethod(Ihandle* ih, void** params)
 {
   (void)params;
   // to avoid system fonts that are not well processed by FreeType
-  iupAttribSet(ih, "FONTFACE", "Helvetica");  
+  iupAttribSetClassObject(ih, "FONTFACE", "Helvetica");
   return IUP_NOERROR;
 }
 

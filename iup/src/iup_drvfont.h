@@ -106,6 +106,8 @@ void  iupSetDefaultFontSizeGlobalAttrib(const char* value);
 char* iupGetDefaultFontSizeGlobalAttrib(void);
 int   iupSetDefaultFontStyleGlobalAttrib(const char* value);
 char* iupGetDefaultFontStyleGlobalAttrib(void);
+int   iupSetDefaultFontFaceGlobalAttrib(const char* value);
+char* iupGetDefaultFontFaceGlobalAttrib(void);
 
 
 /* Updates the STANDARDFONT attrib.

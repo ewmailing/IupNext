@@ -42,6 +42,8 @@ top although they will not be clipped by <strong>IupGLFrame</strong> and other
 VERTICALALIGN and/or HORIZONTALALIGN attributes, or using a position in pixels 
 relative to the top left corner of the box by setting the attribute
 <a href="../attrib/iup_position.html">POSITION</a>.</p>
+<p>Each direct children will be sized to its natural size by default, except if 
+EXPANDHORIZONTAL or EXPANDVERTICAL are set.</p>
 
 <p>The box can be created with no elements and be dynamic filled using
   <a href="../func/iupappend.html">IupAppend</a> or
@@ -105,6 +107,16 @@ Vertically aligns the element inside the box. Possible values: &quot;ATOP&quot;,
 &quot;ACENTER&quot;, &quot;ABOTTOM&quot; or &quot;FLOAT&quot;. Default: &quot;FLOAT&quot;. When FLOAT is used 
 its vertical position is obtained from the <a href="../attrib/iup_position.html">
 POSITION</a> attribute.</p>
+
+
+<p><strong>EXPANDHORIZONTAL</strong> (<font SIZE="3">non inheritable</font>) <strong>(at children only)</strong>:
+  Expand the horizontal size of the element to the box width. Can be Yes or No. 
+Default: No. (since 3.13)</p>
+
+
+<p><strong>EXPAND<span lang="pt-br">VERTICAL</span></strong> (<font SIZE="3">non inheritable</font>) <strong>(at children only)</strong>:
+  Expand the vertical size of the element to the box height. Can be Yes or No. 
+Default: No. (since 3.13)</p>
 
 <h3><a name="Callbacks">Callbacks</a></h3>
 

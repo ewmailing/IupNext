@@ -67,5 +67,6 @@
     <ClCompile Include="..\test\gridbox.c" />
     <ClCompile Include="..\test\expander.c" />
     <ClCompile Include="..\test\progressdlg.c" />
+    <ClCompile Include="..\test\plot.c" />
   </ItemGroup>
 </Project>
