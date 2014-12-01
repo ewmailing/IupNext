@@ -73,25 +73,32 @@ static int winCanvasSetDXAttrib(Ihandle* ih, const char *value)
     if (dx >= (xmax-xmin))
     {
       if (iupAttribGetBoolean(ih, "XAUTOHIDE"))
+      {
         ShowScrollBar(ih->handle, SB_HORZ, FALSE);
+        iupAttribSet(ih, "XHIDDEN", "YES");
+      }
       else
         EnableScrollBar(ih->handle, SB_HORZ, ESB_DISABLE_BOTH);
 
       ih->data->posx = (float)xmin;
       SetScrollPos(ih->handle, SB_HORZ, IUP_SB_MIN, TRUE);
-      return 1;
     }
     else
     {
-      ShowScrollBar(ih->handle, SB_HORZ, FALSE);
+      /* Force a FALSE because of a misbehavior when both scrollbars are update one after another */
+      if (iupAttribGetInt(ih, "XHIDDEN"))
+        ShowScrollBar(ih->handle, SB_HORZ, FALSE);
       EnableScrollBar(ih->handle, SB_HORZ, ESB_ENABLE_BOTH);
 
       winCanvasSetScrollInfo(ih->handle, IUP_SB_MIN, IUP_SB_MAX, iposx, ipagex, SB_HORZ);
-      ShowScrollBar(ih->handle, SB_HORZ, TRUE);
+      if (iupAttribGetInt(ih, "XHIDDEN"))
+        ShowScrollBar(ih->handle, SB_HORZ, TRUE);
 
       /* update position because it could be corrected */
       iupCanvasCalcScrollRealPos(xmin, xmax, &posx, 
                                  IUP_SB_MIN, IUP_SB_MAX, ipagex, &iposx);
+
+      iupAttribSet(ih, "XHIDDEN", "NO");
 
       ih->data->posx = (float)posx;
     }
@@ -120,7 +127,10 @@ static int winCanvasSetDYAttrib(Ihandle* ih, const char *value)
     if (dy >= (ymax-ymin))
     {
       if (iupAttribGetBoolean(ih, "YAUTOHIDE"))
+      {
         ShowScrollBar(ih->handle, SB_VERT, FALSE);
+        iupAttribSet(ih, "YHIDDEN", "YES");
+      }
       else
         EnableScrollBar(ih->handle, SB_VERT, ESB_DISABLE_BOTH);
 
@@ -130,15 +140,20 @@ static int winCanvasSetDYAttrib(Ihandle* ih, const char *value)
     }
     else
     {
-      ShowScrollBar(ih->handle, SB_VERT, FALSE);
+      /* Force a FALSE because of a misbehavior when both scrollbars are update one after another */
+      if (iupAttribGetInt(ih, "YHIDDEN"))
+        ShowScrollBar(ih->handle, SB_VERT, FALSE);
       EnableScrollBar(ih->handle, SB_VERT, ESB_ENABLE_BOTH);
 
       winCanvasSetScrollInfo(ih->handle, IUP_SB_MIN, IUP_SB_MAX, iposy, ipagey, SB_VERT);
-      ShowScrollBar(ih->handle, SB_VERT, TRUE);
+      if (iupAttribGetInt(ih, "YHIDDEN"))
+        ShowScrollBar(ih->handle, SB_VERT, TRUE);
 
       /* update position because it could be corrected */
       iupCanvasCalcScrollRealPos(ymin, ymax, &posy, 
                                  IUP_SB_MIN, IUP_SB_MAX, ipagey, &iposy);
+
+      iupAttribSet(ih, "YHIDDEN", "NO");
 
       ih->data->posy = (float)posy;
     }

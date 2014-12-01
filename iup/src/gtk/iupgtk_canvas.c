@@ -411,13 +411,14 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
           gtk_widget_hide(sb_horiz);
           gtkCanvasUpdateChildLayout(ih, 1);
         }
+
+        iupAttribSet(ih, "XHIDDEN", "YES");
       }
       else
         gtk_widget_set_sensitive(sb_horiz, FALSE);
 
       ih->data->posx = (float)xmin;
       gtkCanvasAdjustmentSetValue(ih, sb_horiz_adjust, xmin);
-      return 1;
     }
     else
     {
@@ -427,7 +428,6 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
         gtkCanvasUpdateChildLayout(ih, 1);
       }
       gtk_widget_set_sensitive(sb_horiz, TRUE);
-    }
 
 #if GTK_CHECK_VERSION(2, 14, 0)
     {
@@ -437,7 +437,6 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
       gtk_adjustment_configure(sb_horiz_adjust, dvalue, xmin, xmax, linex, page_size, dx);
     }
 #else
-    {
       sb_horiz_adjust->lower = xmin;
       sb_horiz_adjust->upper = xmax;
       sb_horiz_adjust->step_increment = linex;
@@ -447,11 +446,12 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
       sb_horiz_adjust->page_increment = sb_horiz_adjust->page_size;
 
       gtk_adjustment_changed(sb_horiz_adjust);
-    }
 #endif
+      iupAttribSet(ih, "XHIDDEN", "NO");
 
-    if (value_changed)
-      gtk_adjustment_value_changed(sb_horiz_adjust);
+      if (value_changed)
+        gtk_adjustment_value_changed(sb_horiz_adjust);
+    }
   }
   return 1;
 }
@@ -493,13 +493,14 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
           gtk_widget_hide(sb_vert);
           gtkCanvasUpdateChildLayout(ih, 1);
         }
+        
+        iupAttribSet(ih, "YHIDDEN", "YES");
       }
       else
         gtk_widget_set_sensitive(sb_vert, FALSE);
 
       ih->data->posy = (float)ymin;
       gtkCanvasAdjustmentSetValue(ih, sb_vert_adjust, ymin);
-      return 1;
     }
     else
     {
@@ -509,7 +510,6 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
         gtkCanvasUpdateChildLayout(ih, 1);
       }
       gtk_widget_set_sensitive(sb_vert, TRUE);
-    }
 
 #if GTK_CHECK_VERSION(2, 14, 0)
     {
@@ -519,7 +519,6 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
       gtk_adjustment_configure(sb_vert_adjust, dvalue, ymin, ymax, liney, page_size, dy);
     }
 #else
-    {
       sb_vert_adjust->lower = ymin;
       sb_vert_adjust->upper = ymax;
       sb_vert_adjust->step_increment = liney;
@@ -529,11 +528,12 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
       sb_vert_adjust->page_increment = sb_vert_adjust->page_size;
 
       gtk_adjustment_changed(sb_vert_adjust);
-    }
 #endif
+      iupAttribSet(ih, "YHIDDEN", "NO");
 
-    if (value_changed)
-      gtk_adjustment_value_changed(sb_vert_adjust);
+      if (value_changed)
+        gtk_adjustment_value_changed(sb_vert_adjust);
+    }
   }
   return 1;
 }

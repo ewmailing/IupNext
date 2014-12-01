@@ -285,13 +285,14 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
           XtUnmanageChild(sb_horiz);
           motCanvasUpdateScrollLayout(ih);
         }
+
+        iupAttribSet(ih, "XHIDDEN", "YES");
       }
       else
         XtSetSensitive(sb_horiz, False);
 
       ih->data->posx = (float)xmin;
       XtVaSetValues(sb_horiz, XmNvalue, IUP_SB_MIN, NULL);
-      return 1;
     }
     else
     {
@@ -301,15 +302,17 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
         motCanvasUpdateScrollLayout(ih);
       }
       XtSetSensitive(sb_horiz, True);
+
+      motCanvasSetScrollInfo(sb_horiz, IUP_SB_MIN, IUP_SB_MAX, iposx, ipagex, ilinex);
+
+      /* update position because it could be corrected */
+      iupCanvasCalcScrollRealPos(xmin, xmax, &posx, 
+                                 IUP_SB_MIN, IUP_SB_MAX, ipagex, &iposx);
+
+      iupAttribSet(ih, "XHIDDEN", "NO");
+
+      ih->data->posx = (float)posx;
     }
-
-    motCanvasSetScrollInfo(sb_horiz, IUP_SB_MIN, IUP_SB_MAX, iposx, ipagex, ilinex);
-
-    /* update position because it could be corrected */
-    iupCanvasCalcScrollRealPos(xmin, xmax, &posx, 
-                               IUP_SB_MIN, IUP_SB_MAX, ipagex, &iposx);
-
-    ih->data->posx = (float)posx;
   }
   return 1;
 }
@@ -386,13 +389,14 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
           XtUnmanageChild(sb_vert);
           motCanvasUpdateScrollLayout(ih);
         }
+
+        iupAttribSet(ih, "YHIDDEN", "YES");
       }
       else
         XtSetSensitive(sb_vert, False);
 
       ih->data->posy = (float)ymin;
       XtVaSetValues(sb_vert, XmNvalue, IUP_SB_MIN, NULL);
-      return 1;
     }
     else
     {
@@ -402,15 +406,17 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
         motCanvasUpdateScrollLayout(ih);
       }
       XtSetSensitive(sb_vert, True);
+
+      motCanvasSetScrollInfo(sb_vert, IUP_SB_MIN, IUP_SB_MAX, iposy, ipagey, iliney);
+
+      /* update position because it could be corrected */
+      iupCanvasCalcScrollRealPos(ymin, ymax, &posy, 
+                                 IUP_SB_MIN, IUP_SB_MAX, ipagey, &iposy);
+
+      iupAttribSet(ih, "YHIDDEN", "NO");
+
+      ih->data->posy = (float)posy;
     }
-
-    motCanvasSetScrollInfo(sb_vert, IUP_SB_MIN, IUP_SB_MAX, iposy, ipagey, iliney);
-
-    /* update position because it could be corrected */
-    iupCanvasCalcScrollRealPos(ymin, ymax, &posy, 
-                               IUP_SB_MIN, IUP_SB_MAX, ipagey, &iposy);
-
-    ih->data->posy = (float)posy;
   }
   return 1;
 }
