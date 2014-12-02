@@ -1262,20 +1262,18 @@ static void winTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
   }
 }
 
-static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
+static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
 {
   if (ih->handle)
   {
     HWND tab_container = (HWND)iupAttribGet(child, "_IUPTAB_CONTAINER");
     if (tab_container)
     {
-      /* can not use IupGetChildPos here, because child has already been detached */
       int p = winTabsGetPageWindowPos(ih, tab_container);
-      int pos = winTabsPosFixFromWin(ih, p);
 
       iupTabsCheckCurrentTab(ih, pos, 1);
       winTabsDeleteVisibleArrayItem(ih, pos);
-      winTabsDeleteItem(ih, p, tab_container);
+      if (p != -1) winTabsDeleteItem(ih, p, tab_container);
 
       iupwinHandleRemove(tab_container);
       DestroyWindow(tab_container);

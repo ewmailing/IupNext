@@ -551,7 +551,7 @@ static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
   }
 }
 
-static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
+static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
 {
   if (ih->handle)
   {
@@ -559,7 +559,6 @@ static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
     if (child_manager)
     {
       Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
-      int pos = iupAttribGetInt(child, "_IUPMOT_TABNUMBER");  /* did not work when using XtVaGetValues(child_manager, XmNpageNumber) */
 
       iupTabsCheckCurrentTab(ih, pos, 1);
 

@@ -134,13 +134,13 @@ static void iClassObjectChildAdded(Iclass* ic, Ihandle* ih, Ihandle* child)
     ic->ChildAdded(ih, child);
 }
 
-static void iClassObjectChildRemoved(Iclass* ic, Ihandle* ih, Ihandle* child)
+static void iClassObjectChildRemoved(Iclass* ic, Ihandle* ih, Ihandle* child, int pos)
 {
   if (ic->parent)
-    iClassObjectChildRemoved(ic->parent, ih, child);
+    iClassObjectChildRemoved(ic->parent, ih, child, pos);
 
   if (ic->ChildRemoved)
-    ic->ChildRemoved(ih, child);
+    ic->ChildRemoved(ih, child, pos);
 }
 
 static void iClassLayoutUpdate(Iclass* ic, Ihandle *ih)
@@ -214,9 +214,9 @@ void iupClassObjectChildAdded(Ihandle* ih, Ihandle* child)
   iClassObjectChildAdded(ih->iclass, ih, child);
 }
 
-void iupClassObjectChildRemoved(Ihandle* ih, Ihandle* child)
+void iupClassObjectChildRemoved(Ihandle* ih, Ihandle* child, int pos)
 {
-  iClassObjectChildRemoved(ih->iclass, ih, child);
+  iClassObjectChildRemoved(ih->iclass, ih, child, pos);
 }
 
 void iupClassObjectLayoutUpdate(Ihandle *ih)

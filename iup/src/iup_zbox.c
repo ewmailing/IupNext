@@ -59,8 +59,10 @@ static void iZboxChildAddedMethod(Ihandle* ih, Ihandle* child)
     IupSetAttribute(child, "VISIBLE", "NO");
 }
 
-static void iZboxChildRemovedMethod(Ihandle* ih, Ihandle* child)
+static void iZboxChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
 {
+  (void)pos;
+
   if (child == ih->data->value_handle)
   {
     /* reset to the first child, even if it is NULL */

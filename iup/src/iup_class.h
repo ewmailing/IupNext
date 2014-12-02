@@ -145,7 +145,7 @@ struct Iclass_
    * Called only from IupDetach or IupReparent. 
    * The child is already detached.
    */
-  void (*ChildRemoved)(Ihandle* ih, Ihandle* child);
+  void(*ChildRemoved)(Ihandle* ih, Ihandle* child, int pos);
 
 
   /** Method that update size and position of the native control. \n
@@ -411,7 +411,7 @@ void iupClassObjectChildAdded(Ihandle* ih, Ihandle* child);
 /** Calls \ref Iclass::ChildRemoved method. 
  * \ingroup iclassobject
  */
-void iupClassObjectChildRemoved(Ihandle* ih, Ihandle* child);
+void iupClassObjectChildRemoved(Ihandle* ih, Ihandle* child, int pos);
 
 /** Calls \ref Iclass::LayoutUpdate method. 
  * \ingroup iclassobject

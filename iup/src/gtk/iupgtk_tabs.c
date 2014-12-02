@@ -517,15 +517,13 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
   }
 }
 
-static void gtkTabsChildRemovedMethod(Ihandle* ih, Ihandle* child)
+static void gtkTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
 {
   if (ih->handle)
   {
     GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_PAGE");
     if (tab_page)
     {
-      int pos = gtk_notebook_page_num((GtkNotebook*)ih->handle, tab_page);
-
       iupTabsCheckCurrentTab(ih, pos, 1);
 
       iupAttribSet(ih, "_IUPGTK_IGNORE_CHANGE", "1");
