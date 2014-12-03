@@ -511,6 +511,7 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
   {
     ctrl = IupLabel("");
     IupSetAttribute(ctrl, "SEPARATOR", "HORIZONTAL");
+    IupSetAttribute(ctrl, "EXPAND", "HORIZONTAL");
 
     IupAppend(box, ctrl);
   }
