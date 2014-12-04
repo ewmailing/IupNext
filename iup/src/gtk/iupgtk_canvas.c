@@ -203,6 +203,10 @@ static gboolean gtkCanvasScrollEvent(GtkWidget *widget, GdkEventScroll *evt, Iha
 {    
   /* occurs only for the mouse wheel. Not related to the scrollbars */
   IFnfiis wcb = (IFnfiis)IupGetCallback(ih, "WHEEL_CB");
+
+  if (evt->direction > GDK_SCROLL_RIGHT)
+    return TRUE;
+
   if (wcb)
   {
     int delta = evt->direction==GDK_SCROLL_UP||evt->direction==GDK_SCROLL_LEFT? 1: -1;
@@ -721,8 +725,9 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   gtk_widget_add_events(ih->handle, GDK_EXPOSURE_MASK|
     GDK_POINTER_MOTION_MASK|GDK_POINTER_MOTION_HINT_MASK|
     GDK_BUTTON_PRESS_MASK|GDK_BUTTON_RELEASE_MASK|GDK_BUTTON_MOTION_MASK|
-    GDK_KEY_PRESS_MASK|GDK_KEY_RELEASE_MASK|
-    GDK_ENTER_NOTIFY_MASK|GDK_LEAVE_NOTIFY_MASK|
+    GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | 
+    GDK_SCROLL_MASK |  /* Added for GTK3, but it seems to work ok for GTK2 */
+    GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK |
     GDK_FOCUS_CHANGE_MASK|GDK_STRUCTURE_MASK);
 
   /* To receive keyboard events, you will need to set the GTK_CAN_FOCUS flag on the drawing area. */

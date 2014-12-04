@@ -368,7 +368,7 @@ void CanvasTest(void)
   IupSetCallback(canvas, "BUTTON_CB",    (Icallback)button_cb);
 //  IupSetCallback(canvas, "MOTION_CB",    (Icallback)motion_cb);
   IupSetCallback(canvas, "SCROLL_CB",  (Icallback)scroll_cb);
-//  IupSetCallback(canvas, "WHEEL_CB",    (Icallback)wheel_cb);
+  IupSetCallback(canvas, "WHEEL_CB",    (Icallback)wheel_cb);
 
   IupSetCallback(canvas, "RESIZE_CB",    (Icallback)resize_cb);
 //  IupSetAttribute(canvas, "BGCOLOR", "255 128 128");
