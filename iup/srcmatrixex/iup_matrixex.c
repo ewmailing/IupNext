@@ -681,7 +681,15 @@ static int iMatrixSetShowMenuContextAttribId(Ihandle *ih, int lin, int col, cons
   IupSetfAttribute(menu, "MENUCONTEXT_CELL", "%d:%d", lin, col);
 
   menucontext_cb = (IFnnii)IupGetCallback(ih, "MENUCONTEXT_CB");
-  if (menucontext_cb) menucontext_cb(ih, menu, lin, col);
+  if (menucontext_cb)
+  {
+    int ret = menucontext_cb(ih, menu, lin, col);
+    if (ret == IUP_IGNORE)
+    {
+      IupDestroy(menu);
+      return 0;
+    }
+  }
 
   IupPopup(menu, x, y);
 
