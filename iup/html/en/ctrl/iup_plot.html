@@ -525,7 +525,8 @@ will begin or end. But they are called only if DELETE_CB is also defined.</p>
   
     
 <p><b>CLICKSAMPLE_CB</b>:
-  Action generated when  a sample is clicked. </p>
+  Action generated when  a sample is clicked. Called when the mouse button is 
+released.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>int <strong>button</strong>); [in C]
 <strong>elem</strong>:clicksample_cb(<b>ds_index, sample_index, x, y, <strong>button</strong></b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -542,7 +543,8 @@ will begin or end. But they are called only if DELETE_CB is also defined.</p>
     </p>
   
 <p><b>DRAWSAMPLE_CB</b>:
-  Action generated when  a sample is drawn. When the plot is redraw, tssis called for aeachamples, then 
+  Action generated when  a sample is drawn. When the plot is redraw, it is called for 
+each sample, then 
 it is called again for all selected samples, and this repeats for each data set., and this repeats for each data set.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>int <strong>selected</strong>); [in C]
@@ -561,12 +563,12 @@ it is called again for all selected samples, and this repeats for each data set.
 	returned the selection is not dawn.</p>
   
 <p><strong><a name="MENUCONTEXT_CB">MENUCONTEXT_CB</a></strong>: Action generated 
-after the context menu is created but before it is displayed, so the application 
-can add or removed items from the menu. Only shown if MENUCONTEXT=Yes.</p>
+after the context menu (right click) is created but before it is displayed, so the application 
+can add or removed items from the menu. Called when the mouse button is pressed. Only shown if MENUCONTEXT=Yes.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, Ihandle*<strong> menu</strong>, int <strong>x</strong>, int <strong>x</strong>); [in C]<br><strong>elem</strong>:menucontext_cb(<strong>menu: </strong>ihandle, <strong>x</strong>,<strong> x</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle*<strong> menu</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]<br><strong>elem</strong>:menucontext_cb(<strong>menu: </strong>ihandle, <strong>x</strong>,<strong> y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
