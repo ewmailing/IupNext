@@ -676,7 +676,7 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
       if (!iup_iscontrol(status))
         iPlotScrollTo(ih, x, y);
     }
-    else if (button == IUP_BUTTON3 && !iup_iscontrol(status) && IupGetInt(ih, "MENUCONTEXT"))
+    else if (button == IUP_BUTTON3 && !iup_iscontrol(status) && !iup_isshift(status) && IupGetInt(ih, "MENUCONTEXT"))
     {
       int sx, sy;
       IupGetIntInt(ih, "SCREENPOSITION", &sx, &sy);
@@ -707,7 +707,7 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
         iPlotZoomTo(ih, ih->data->last_click_x, ih->data->last_click_y, x, y);
       }
     }
-    else if (iup_isshift(status))
+    else if (button == IUP_BUTTON1 && iup_isshift(status))
     {
       double rx1, ry1, rx2, ry2;
       ih->data->current_plot->TransformBack(ih->data->last_click_x, ih->data->last_click_y, rx1, ry1);
@@ -717,7 +717,8 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
 
       iPlotRedrawInteract(ih);
     }
-    else
+
+    if (!iup_iscontrol(status) && ih->data->last_click_x == x && ih->data->last_click_y == y && ih->data->last_click_plot == index)
     {
       IFniiddi clicksample_cb = (IFniiddi)IupGetCallback(ih, "CLICKSAMPLE_CB");
       if (clicksample_cb)
