@@ -469,6 +469,8 @@ static Ihandle* iParamCreateBox(Ihandle* param, const char *type)
   {
     box = IupHbox(label, NULL);
     IupSetAttribute(box,"ALIGNMENT","ACENTER");
+
+    IupSetAttribute(label, "FONTSTYLE", "Bold");
   }
   else
   {
