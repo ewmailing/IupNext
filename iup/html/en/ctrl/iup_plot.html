@@ -526,7 +526,8 @@ will begin or end. But they are called only if DELETE_CB is also defined.</p>
     
 <p><b>CLICKSAMPLE_CB</b>:
   Action generated when  a sample is clicked. Called when the mouse button is 
-released.</p>
+released, with no Ctrl key and IUP_BUTTON3 only when Shift is pressed, to avoid 
+conflict with zoom and context menu situations.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>int <strong>button</strong>); [in C]
 <strong>elem</strong>:clicksample_cb(<b>ds_index, sample_index, x, y, <strong>button</strong></b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -564,7 +565,8 @@ it is called again for all selected samples, and this repeats for each data set.
   
 <p><strong><a name="MENUCONTEXT_CB">MENUCONTEXT_CB</a></strong>: Action generated 
 after the context menu (right click) is created but before it is displayed, so the application 
-can add or removed items from the menu. Called when the mouse button is pressed. Only shown if MENUCONTEXT=Yes.</p>
+can add or removed items from the menu. Called when the mouse button is pressed, 
+with no Ctrl nor Shift keys. Only shown if MENUCONTEXT=Yes.</p>
 
   
     
