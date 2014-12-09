@@ -239,6 +239,7 @@ public:
   int mLineWidth;
   int mMarkStyle;
   int mMarkSize;
+  void* mUserData;
 
 protected:
   char* mName;

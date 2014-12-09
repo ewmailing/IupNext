@@ -1213,6 +1213,28 @@ static char* iPlotGetDSNameAttrib(Ihandle* ih)
   return iupStrReturnStr(dataset->GetName());
 }
 
+static int iPlotSetDSUserDataAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->current_plot->mCurrentDataSet <  0 ||
+      ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
+      return 0;
+
+  iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
+  dataset->mUserData = (void*)value;
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
+
+static char* iPlotGetDSUserDataAttrib(Ihandle* ih)
+{
+  if (ih->data->current_plot->mCurrentDataSet < 0 ||
+      ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
+      return NULL;
+
+  iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
+  return (char*)dataset->mUserData;
+}
+
 static int iPlotSetDSColorAttrib(Ihandle* ih, const char* value)
 {
   long color;
@@ -2457,6 +2479,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "DS_MODE", iPlotGetDSModeAttrib, iPlotSetDSModeAttrib, IUPAF_SAMEASSYSTEM, "LINE", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_REMOVE", NULL, iPlotSetDSRemoveAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_COUNT", iPlotGetDSCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_USERDATA", iPlotGetDSUserDataAttrib, iPlotSetDSUserDataAttrib, NULL, NULL, IUPAF_NO_STRING | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "AXS_X", iPlotGetAxisXAttrib, iPlotSetAxisXAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_Y", iPlotGetAxisYAttrib, iPlotSetAxisYAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
