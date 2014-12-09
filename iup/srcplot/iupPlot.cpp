@@ -797,10 +797,10 @@ void iupPlot::RemoveAllDataSets()
   }
 }
 
-bool iupPlot::FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const
+bool iupPlot::FindDataSetSample(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const
 {
-  double theX = mAxisX.mTrafo->TransformBack((double)inX);
-  double theY = mAxisY.mTrafo->TransformBack((double)inY);
+  double theX = mAxisX.mTrafo->TransformBack(inX);
+  double theY = mAxisY.mTrafo->TransformBack(inY);
   double tolX = (fabs(mAxisX.mMax - mAxisX.mMin) / mViewport.mWidth) * 5.0;  // 5 pixels tolerance
   double tolY = (fabs(mAxisY.mMax - mAxisY.mMin) / mViewport.mHeight) * 5.0;
 

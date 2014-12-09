@@ -21,3 +21,4 @@ EXPORTS
   IupPlotSetSample
   IupPlotSetSampleStr
   IupPlotSetSampleSelection
+  IupPlotFindSample

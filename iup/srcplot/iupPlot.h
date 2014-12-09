@@ -602,7 +602,7 @@ public:
   void RemoveAllDataSets();
   long GetNextDataSetColor();
 
-  bool FindDataSetSample(int inX, int inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const;
+  bool FindDataSetSample(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const;
   void SelectDataSetSamples(double inMinX, double inMaxX, double inMinY, double inMaxY);
   void DeleteSelectedDataSetSamples();
   void ClearDataSetSelection();

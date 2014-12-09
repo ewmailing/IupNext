@@ -71,6 +71,22 @@ static int PlotLoadData(lua_State *L)
   return 1;
 }
 
+static int PlotFindSample(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  int ds_index, sample_index;
+  int ret = IupPlotFindSample(ih, luaL_checknumber(L, 2), luaL_checknumber(L, 3), &ds_index, &sample_index);
+  lua_pushinteger(L, ret);
+  if (ret)
+  {
+    lua_pushinteger(L, ds_index);
+    lua_pushinteger(L, sample_index);
+    return 3;
+  }
+  else
+    return 1;
+}
+
 static int PlotInsertStr(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -222,6 +238,7 @@ void iuplua_plotfuncs_open (lua_State *L)
   iuplua_register(L, PlotAddStr      ,"PlotAddStr");
   iuplua_register(L, PlotEnd         ,"PlotEnd"); 
   iuplua_register(L, PlotLoadData    ,"PlotLoadData");
+  iuplua_register(L, PlotFindSample  ,"PlotFindSample");
   iuplua_register(L, PlotInsertStr   ,"PlotInsertStr");
   iuplua_register(L, PlotInsert      ,"PlotInsert");
   iuplua_register(L, PlotInsertPoints    ,"PlotInsertPoints");

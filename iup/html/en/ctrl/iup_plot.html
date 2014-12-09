@@ -193,7 +193,7 @@ Whenever you create a dataset all its "DS_*" attributes will be set to the
 default values. </p>
 <hr>
 <pre>int <b>IupPlotLoadData</b>(Ihandle *<b>ih</b>, const char* <b>filename</b>, int <b>strXdata</b>); [in C]
-<b>iup.PlotLoadData</b>(<b>ih</b>: ihandle, <b>filename</b>: string, <b>strXdata</b>: number) [in Lua]</pre>
+<b>iup.PlotLoadData</b>(<b>ih</b>: ihandle, <b>filename</b>: string, <b>strXdata</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p>Creates new datasets from data stored in a file. 
 The file must contains space (&#39; &#39;), tab ('\t') or semicolon (';') separated numeric data in text format. The text can contains 
 line comments starting with &#39;#&#39;. The file can have more than one dataset 
@@ -237,7 +237,7 @@ Can be used only after the dataset is added to the plot. </p>
 <b>iup.PlotGetSampleSelection</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number) -&gt; (<strong>selected</strong>: number) [in Lua]</pre>
 <p>Returns the sample selected state in a dataset at the given <strong>sample_index</strong>. 
 Can be used only after the dataset is added to the plot. By default all samples 
-are not selected. Returns -1 if an error occourred.</p>
+are not selected. Returns -1 if an error occurred.</p>
 <hr>
 <pre>void <b>IupPlotSetSample</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, double <b>x</b>, double <b>y</b>); [in C]
 void <b>IupPlotSetSampleStr</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, const char* <b>x</b>, double <b>y</b>);
@@ -262,6 +262,13 @@ is in CD bottom to top orientation.</p>
 <p>Converts coordinates from pixels to plot coordinates. It should be used 
 inside callbacks only. Output variables can be NULL if not used. Y canvas 
 coordinates is in CD bottom to top orientation.</p>
+<hr>
+<pre>int <b>IupPlotFindSample</b>(Ihandle* <b>ih</b>, double <b>cnv_x</b>, double <b>cnv_y</b>, int <b>*ds_index</b>, int <b>*sample_index</b>); [in C]
+<b>iup.PlotFindSample</b>(<b>ih</b>: ihandle, <b>cnv_x, cnv_y</b>: number) -&gt; (<strong>ret, ds_index</strong>, <strong>sample_index</strong>: number) [in Lua]</pre>
+<p>Returns the nearest sample of the nearest dataset within a 5 pixels tolerance 
+neiborhood. Returns a non zero value is successful, or a zero value if failed. 
+It should be used inside callbacks only. Output variables can be NULL if not used. Y canvas 
+coordinates is in CD bottom to top orientation. (since 3.13)</p>
 <hr>
 <pre>void <b>IupPlotPaintTo</b>(Ihandle* <b>ih</b>, cdCanvas* <b>cnv</b>); [in C]
 <b>iup.PlotPaintTo</b>(<b>ih</b>: ihandle, <b>cnv</b>: cdCanvas) [in Lua]</pre>
@@ -572,7 +579,7 @@ with no Ctrl nor Shift keys. Only shown if MENUCONTEXT=Yes.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, Ihandle*<strong> menu</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]<br><strong>elem</strong>:menucontext_cb(<strong>menu: </strong>ihandle, <strong>x</strong>,<strong> y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle*<strong> menu</strong>, int <strong>cnv_x</strong>, int <strong>cnv_y</strong>); [in C]<br><strong>elem</strong>:menucontext_cb(<strong>menu: </strong>ihandle, <strong>cnv_x</strong>,<strong> cnv_y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -580,7 +587,7 @@ with no Ctrl nor Shift keys. Only shown if MENUCONTEXT=Yes.</p>
   event.<br><strong>menu</strong>:
     identifier of the menu that will 
     be shown to the user.<br>
-    <strong>x</strong>, <strong>y</strong>:
+    <strong>cnv_x</strong>, <strong>cnv_y</strong>:
     canvas coordinates inside the current plot.<br></p>
 
 <p><strong>MENUCONTEXTCLOSE_CB</strong>: Same as MENUCONTEXT_CB, but called 
@@ -625,15 +632,15 @@ defined.</p>
   
   
 <p><strong>PLOTBUTTON_CB</strong>: similar to
-<a href="../call/iup_button_cb.html">BUTTON_CB</a> but coordinates are double in 
-plot scale. It is called before the internal processing, if returns IUP_IGNORE 
+<a href="../call/iup_button_cb.html">BUTTON_CB</a> but coordinates are in 
+plot scale with double precision. It is called before the internal processing, if returns IUP_IGNORE 
 internal processing will not be done. </p>
 
   
 
   
 <p><strong>PLOTMOTION_CB</strong>: similar to <a href="../call/iup_motion_cb.html">MOTION_CB</a> 
-but coordinates are double in plot scale. It is called before the internal 
+but coordinates are in plot scale with double precision. It is called before the internal 
 processing, if returns IUP_IGNORE internal processing will not be done. </p>
 
   

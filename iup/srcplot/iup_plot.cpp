@@ -727,7 +727,7 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
         double rx, ry;
         const char* ds_name;
         const char* strX;
-        if (ih->data->current_plot->FindDataSetSample(x, y, ds, ds_name, sample, rx, ry, strX))
+        if (ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample, rx, ry, strX))
           clicksample_cb(ih, ds, sample, rx, ry, button);
       }
     }
@@ -791,7 +791,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
   double rx, ry;
   const char* ds_name;
   const char* strX;
-  if (ih->data->current_plot->FindDataSetSample(x, y, ds, ds_name, sample, rx, ry, strX))
+  if (ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample, rx, ry, strX))
   {
     if (ih->data->last_tip_ds != ds && ih->data->last_tip_sample != sample)
     {
@@ -1482,6 +1482,30 @@ int IupPlotLoadData(Ihandle* ih, const char* filename, int strXdata)
   iupLineFileClose(line_file);
 
   return error;
+}
+
+int IupPlotFindSample(Ihandle* ih, double cnv_x, double cnv_y, int *ds_index, int *sample_index)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return 0;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+      return 0;
+
+  int ds, sample;
+  double rx, ry;
+  const char* ds_name;
+  const char* strX;
+  if (ih->data->current_plot->FindDataSetSample(cnv_x, cnv_y, ds, ds_name, sample, rx, ry, strX))
+  {
+    if (ds_index) *ds_index = ds;
+    if (sample_index) *sample_index = sample;
+    return 1;
+  }
+
+  return 0;
 }
 
 
