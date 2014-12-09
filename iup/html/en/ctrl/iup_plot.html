@@ -347,7 +347,7 @@ plot. Default: 1. The plots will fill the space starting at the first line at
 the top from left to right. If there is not enough plots to fill all columns an 
 empty space will be displayed.</p>
 <p><strong>PLOT_REMOVE</strong> (write-only): removes a plot given its index. If 
-value is NULL the current plot is removed. Value can also be the TITLE of an 
+value is "CURRENT" or NULL the current plot is removed. Value can also be the TITLE of an 
 existing plot. </p>
 <h4><span class="style1">IMPORTANT:</span> All the following attributes and 
 callbacks are dependent 
@@ -392,7 +392,7 @@ specific axis. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>
 <p><b>BOXLINESTYLE</b>: line style of the grid. </p>
 <h4>Dataset List Management </h4>
 <p><b>REMOVE</b> (write-only): removes a dataset given its index or its <font SIZE="3">DS_NAME </font>
-attribute. Notice that after removing a dataset the other 
+attribute, "CURRENT" or NULL are also accepted to remove the current dataset (since 3.13). Notice that after removing a dataset the other 
 datasets indices that are greater than the given index will be updated.</p>
 <p><b>CLEAR</b> (write-only): removes all datasets. Value is ignored.</p>
 <p><b>COUNT</b> [read-only]: <font SIZE="3">total number of datasets.</font></p>

@@ -935,7 +935,7 @@ static int iPlotSetPlotRemoveAttrib(Ihandle* ih, const char* value)
   if (ih->data->plot_list_count == 1)
     return 0;
 
-  if (!value)
+  if (!value || iupStrEqualNoCase(value, "CURRENT"))
   {
     iPlotPlotRemove(ih, ih->data->current_plot_index);
     return 0;
@@ -1051,7 +1051,7 @@ static char* iPlotGetCanvasAttrib(Ihandle* ih)
 
 static int iPlotSetRemoveAttrib(Ihandle* ih, const char* value)
 {
-  if (!value)
+  if (!value || iupStrEqualNoCase(value, "CURRENT"))
   {
     ih->data->current_plot->RemoveDataSet(ih->data->current_plot->mCurrentDataSet);
     ih->data->current_plot->mRedraw = true;
