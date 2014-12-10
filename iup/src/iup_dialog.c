@@ -681,6 +681,12 @@ static char* iDialogGetRasterSizeAttrib(Ihandle* ih)
   return iupStrReturnIntInt(width, height, 'x');
 }
 
+static int iDialogSetNActiveAttrib(Ihandle* ih, const char* value)
+{
+  iupdrvSetActive(ih, iupStrBoolean(value));
+  return 0;
+}
+
 static int iDialogSetVisibleAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
@@ -864,6 +870,9 @@ Iclass* iupDialogNewClass(void)
 
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);
+
+  /* Dialog only */
+  iupClassRegisterAttribute(ic, "NACTIVE", iupBaseGetActiveAttrib, iDialogSetNActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT | IUPAF_NO_INHERIT);
 
   /* Drag&Drop */
   iupdrvRegisterDragDropAttrib(ic);
