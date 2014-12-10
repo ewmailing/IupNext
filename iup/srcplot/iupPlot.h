@@ -215,6 +215,8 @@ public:
   int GetCount();
   void AddSample(double inX, double inY);
   void InsertSample(int inSampleIndex, double inX, double inY);
+  void AddSampleSegment(double inX, double inY, bool inSegment);
+  void InsertSampleSegment(int inSampleIndex, double inX, double inY, bool inSegment);
   void AddSample(const char* inX, double inY);
   void InsertSample(int inSampleIndex, const char* inX, double inY);
   void RemoveSample(int inSampleIndex);
@@ -228,6 +230,7 @@ public:
   const iupPlotDataBase* GetDataX() const { return mDataX; }
   const iupPlotDataBase* GetDataY() const { return mDataY; }
   const iupPlotDataBool* GetSelection() const { return mSelection; }
+  const iupPlotDataBool* GetSegment() const { return mSegment; }
 
   bool SelectSamples(double inMinX, double inMaxX, double inMinY, double inMaxY, const iupPlotSampleNotify* inNotify);
   bool ClearSelection(const iupPlotSampleNotify* inNotify);
@@ -247,7 +250,10 @@ protected:
   iupPlotDataBase* mDataX;
   iupPlotDataBase* mDataY;
   iupPlotDataBool* mSelection;
+  iupPlotDataBool* mSegment;
   bool mHasSelected;
+
+  void InitSegment();
 
   void DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
   void DrawDataMark(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;

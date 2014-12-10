@@ -4,10 +4,12 @@ EXPORTS
   IupPlotBegin
   IupPlotAdd
   IupPlotAddStr
+  IupPlotAddSegment
   IupPlotEnd
   IupPlotLoadData
-  IupPlotInsertStr
   IupPlotInsert
+  IupPlotInsertStr
+  IupPlotInsertSegment
   IupPlotTransform
   IupPlotTransformTo
   IupPlotPaintTo

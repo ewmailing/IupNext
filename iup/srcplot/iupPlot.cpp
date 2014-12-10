@@ -170,6 +170,7 @@ iupPlotDataSet::iupPlotDataSet(bool strXdata)
   mDataY = (iupPlotDataBase*)new iupPlotDataReal();
 
   mSelection = new iupPlotDataBool();
+  mSegment = NULL;
 }
 
 iupPlotDataSet::~iupPlotDataSet()
@@ -179,6 +180,8 @@ iupPlotDataSet::~iupPlotDataSet()
   delete[] mDataX;
   delete[] mDataY;
   delete[] mSelection;
+  if (mSegment)
+    delete[] mSegment;
 }
 
 bool iupPlotDataSet::FindSample(double inX, double inY, double tolX, double tolY,
@@ -331,6 +334,8 @@ void iupPlotDataSet::AddSample(double inX, double inY)
   theXData->AddSample(inX);
   theYData->AddSample(inY);
   mSelection->AddSample(false);
+  if (mSegment)
+    mSegment->AddSample(false);
 }
 
 void iupPlotDataSet::InsertSample(int inSampleIndex, double inX, double inY)
@@ -344,6 +349,51 @@ void iupPlotDataSet::InsertSample(int inSampleIndex, double inX, double inY)
   theXData->InsertSample(inSampleIndex, inX);
   theYData->InsertSample(inSampleIndex, inY);
   mSelection->InsertSample(inSampleIndex, false);
+  if (mSegment)
+    mSegment->InsertSample(inSampleIndex, false);
+}
+
+void iupPlotDataSet::InitSegment()
+{
+  mSegment = new iupPlotDataBool();
+
+  int theCount = mDataX->GetCount();
+  for (int i = 0; i < theCount; i++)
+    mSegment->AddSample(false);
+}
+
+void iupPlotDataSet::AddSampleSegment(double inX, double inY, bool inSegment)
+{
+  iupPlotDataReal *theXData = (iupPlotDataReal*)mDataX;
+  iupPlotDataReal *theYData = (iupPlotDataReal*)mDataY;
+
+  if (theXData->IsString())
+    return;
+
+  if (!mSegment)
+    InitSegment();
+
+  theXData->AddSample(inX);
+  theYData->AddSample(inY);
+  mSelection->AddSample(false);
+  mSegment->AddSample(inSegment);
+}
+
+void iupPlotDataSet::InsertSampleSegment(int inSampleIndex, double inX, double inY, bool inSegment)
+{
+  iupPlotDataReal *theXData = (iupPlotDataReal*)mDataX;
+  iupPlotDataReal *theYData = (iupPlotDataReal*)mDataY;
+
+  if (theXData->IsString())
+    return;
+
+  if (!mSegment)
+    InitSegment();
+
+  theXData->InsertSample(inSampleIndex, inX);
+  theYData->InsertSample(inSampleIndex, inY);
+  mSelection->InsertSample(inSampleIndex, false);
+  mSegment->InsertSample(inSampleIndex, inSegment);
 }
 
 void iupPlotDataSet::AddSample(const char* inX, double inY)
@@ -377,6 +427,8 @@ void iupPlotDataSet::RemoveSample(int inSampleIndex)
   mDataX->RemoveSample(inSampleIndex);
   mDataY->RemoveSample(inSampleIndex);
   mSelection->RemoveSample(inSampleIndex);
+  if (mSegment)
+    mSegment->RemoveSample(inSampleIndex);
 }
 
 void iupPlotDataSet::GetSample(int inSampleIndex, double *inX, double *inY)

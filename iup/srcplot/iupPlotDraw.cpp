@@ -544,10 +544,10 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
           theLineSpace = dataset->mMarkSize + 6;
       }
 
-      theWidth += theLineSpace;
+theWidth += theLineSpace;
 
-      if (theWidth > theMaxWidth)
-        theMaxWidth = theWidth;
+if (theWidth > theMaxWidth)
+theMaxWidth = theWidth;
     }
 
     if (theMaxWidth == 0)
@@ -582,11 +582,11 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
       break;
     }
 
-    cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1, 
-                             theScreenY, theScreenY + theTotalHeight - 1);
+    cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1,
+                     theScreenY, theScreenY + theTotalHeight - 1);
 
     cdCanvasSetForeground(canvas, mLegend.mBoxBackColor);
-    iPlotDrawBox(canvas, theScreenX+1, theScreenY+1, theMaxWidth-2, theTotalHeight-2);
+    iPlotDrawBox(canvas, theScreenX + 1, theScreenY + 1, theMaxWidth - 2, theTotalHeight - 2);
 
     cdCanvasSetForeground(canvas, mLegend.mBoxColor);
     iPlotSetLine(canvas, mLegend.mBoxLineStyle, mLegend.mBoxLineWidth);
@@ -599,7 +599,7 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
       cdCanvasSetForeground(canvas, dataset->mColor);
 
       int theLegendX = theScreenX + theMargin;
-      int theLegendY = theScreenY + (mDataSetListCount-1 - ds)*theFontHeight + theMargin;
+      int theLegendY = theScreenY + (mDataSetListCount - 1 - ds)*theFontHeight + theMargin;
 
       theLegendY += theFontHeight / 2;
 
@@ -612,7 +612,7 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
       {
         iPlotSetLine(canvas, dataset->mLineStyle, dataset->mLineWidth);
         cdCanvasLine(canvas, theLegendX, theLegendY - theFontHeight / 8,
-                             theLegendX + theLineSpace - 3, theLegendY - theFontHeight / 8);
+                     theLegendX + theLineSpace - 3, theLegendY - theFontHeight / 8);
       }
 
       iPlotDrawText(canvas, theLegendX + theLineSpace, theLegendY, CD_WEST, dataset->GetName());
@@ -631,7 +631,7 @@ void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlo
   int theCount = mDataX->GetCount();
   cdCanvasBegin(canvas, CD_OPEN_LINES);
 
-  for (int i = 0; i < theCount; i++) 
+  for (int i = 0; i < theCount; i++)
   {
     double theX = mDataX->GetSample(i);
     double theY = mDataY->GetSample(i);
@@ -640,6 +640,12 @@ void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlo
 
     if (inNotify)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
+
+    if (mSegment && mSegment->GetSampleBool(i))
+    {
+      cdCanvasEnd(canvas);
+      cdCanvasBegin(canvas, CD_OPEN_LINES);
+    }
 
     cdfCanvasVertex(canvas, theScreenX, theScreenY);
   }
@@ -682,6 +688,12 @@ void iupPlotDataSet::DrawDataMarkLine(const iupPlotTrafoBase *inTrafoX, const iu
     // No worry that will be drawn before the polygon, they both have the same color
     cdCanvasMark(canvas, iupPlotRound(theScreenX), iupPlotRound(theScreenY));
 
+    if (mSegment && mSegment->GetSampleBool(i))
+    {
+      cdCanvasEnd(canvas);
+      cdCanvasBegin(canvas, CD_OPEN_LINES);
+    }
+
     cdfCanvasVertex(canvas, theScreenX, theScreenY);
   }
 
@@ -692,6 +704,8 @@ void iupPlotDataSet::DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlo
 {
   int theCount = mDataX->GetCount();
   cdCanvasBegin(canvas, CD_FILL);
+  double theScreenY0 = inTrafoY->Transform(0);
+  double theLastX = 0;
 
   for (int i = 0; i < theCount; i++) 
   {
@@ -704,18 +718,20 @@ void iupPlotDataSet::DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlo
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
     if (i == 0) 
+      cdfCanvasVertex(canvas, theScreenX, theScreenY0);
+
+    if (mSegment && mSegment->GetSampleBool(i))
     {
-      double theScreenY0 = inTrafoY->Transform(0);
+      cdfCanvasVertex(canvas, theLastX,   theScreenY0);
       cdfCanvasVertex(canvas, theScreenX, theScreenY0);
     }
 
     cdfCanvasVertex(canvas, theScreenX, theScreenY);
 
     if (i == theCount-1)
-    {
-      double theScreenY0 = inTrafoY->Transform(0);
       cdfCanvasVertex(canvas, theScreenX, theScreenY0);
-    }
+
+    theLastX = theScreenX;
   }
 
   cdCanvasEnd(canvas);

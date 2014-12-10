@@ -1011,6 +1011,20 @@ void IupPlotAddStr(Ihandle* ih, const char* x, double y)
   theDataSet->AddSample(x, y);
 }
 
+void IupPlotAddSegment(Ihandle* ih, double x, double y)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+      return;
+
+  iupPlotDataSet* theDataSet = (iupPlotDataSet*)iupAttribGet(ih, "_IUP_PLOT_DATASET");
+  theDataSet->AddSampleSegment(x, y, true);
+}
+
 int IupPlotEnd(Ihandle* ih)
 {
   iupASSERT(iupObjectCheck(ih));
@@ -1033,6 +1047,23 @@ int IupPlotEnd(Ihandle* ih)
   return ih->data->current_plot->mCurrentDataSet;
 }
 
+void IupPlotInsert(Ihandle* ih, int inIndex, int inSampleIndex, double inX, double inY)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+      return;
+
+  if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
+    return;
+
+  iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
+  theDataSet->InsertSample(inSampleIndex, inX, inY);
+}
+
 void IupPlotInsertStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* inX, double inY)
 {
   iupASSERT(iupObjectCheck(ih));
@@ -1050,21 +1081,21 @@ void IupPlotInsertStr(Ihandle* ih, int inIndex, int inSampleIndex, const char* i
   theDataSet->InsertSample(inSampleIndex, inX, inY);
 }
 
-void IupPlotInsert(Ihandle* ih, int inIndex, int inSampleIndex, double inX, double inY)
+void IupPlotInsertSegment(Ihandle* ih, int inIndex, int inSampleIndex, double inX, double inY)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
 
-  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
       !IupClassMatch(ih, "plot"))
-    return;
+      return;
 
   if (inIndex < 0 || inIndex >= ih->data->current_plot->mDataSetListCount)
     return;
 
   iupPlotDataSet* theDataSet = ih->data->current_plot->mDataSetList[inIndex];
-  theDataSet->InsertSample(inSampleIndex, inX, inY);
+  theDataSet->InsertSampleSegment(inSampleIndex, inX, inY, true);
 }
 
 void IupPlotAddPoints(Ihandle* ih, int inIndex, double *x, double *y, int count)

@@ -175,6 +175,12 @@ is a string.</p>
 <p>Adds a sample to the dataset. Can only be called if <b>IupPlotBegin</b> was 
 called with strXdata=0.</p>
 <hr>
+<pre>void <b>IupPlotAddSegment</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>); [in C]
+<b>iup.PlotAddSegment</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>: number) [in Lua]</pre>
+<p>Same as <b>IupPlotAdd</b>, but the point starts a new segment. In drawing 
+mode where samples are connected by lines this will create an empty space. 
+(since 3.13)</p>
+<hr>
 <pre>void <b>IupPlotAddStr</b>(Ihandle* <b>ih</b>, const char* <b>x</b>, double <b>y</b>); [in C]
 <b>iup.PlotAddStr</b>(<b>ih</b>: ihandle, <b>x</b>: string, <b>y</b>: number) [in Lua]</pre>
 <p>Same as <b>IupPlotAdd</b>, but allows to use a string as the X 
@@ -205,8 +211,10 @@ that if it fails during data read, but after the fist line, the datasets were
 already created and they will not be destroyed when the function returns.</p>
 <hr>
 <pre>void <b>IupPlotInsert</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, double <b>x</b>, double <b>y</b>); [in C]
+void <b>IupPlotInsertSegment</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, const char* <b>x</b>, double <b>y</b>);
 void <b>IupPlotInsertStr</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, const char* <b>x</b>, double <b>y</b>);
 <b>iup.PlotInsert</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index, x, y</b>: number) [in Lua]
+<b>iup.PlotInsertSegment</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number<b>, x</b>: string<b>, y</b>: number)
 <b>iup.PlotInsertStr</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number<b>, x</b>: string<b>, y</b>: number)</pre>
 <p>Inserts a sample in a dataset at the given <strong>sample_index</strong>. Can 
 be used only after the dataset is added to the 

@@ -55,6 +55,13 @@ static int PlotAddStr(lua_State *L)
   return 0;
 }
 
+static int PlotAddSegment(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  IupPlotAddSegment(ih, luaL_checknumber(L, 2), luaL_checknumber(L, 3));
+  return 0;
+}
+
 static int PlotEnd(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -87,6 +94,13 @@ static int PlotFindSample(lua_State *L)
     return 1;
 }
 
+static int PlotInsert(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  IupPlotInsert(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), luaL_checknumber(L, 4), luaL_checknumber(L, 5));
+  return 0;
+}
+
 static int PlotInsertStr(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -94,10 +108,10 @@ static int PlotInsertStr(lua_State *L)
   return 0;
 }
 
-static int PlotInsert(lua_State *L)
+static int PlotInsertSegment(lua_State *L)
 {
-  Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPlotInsert(ih, luaL_checkint(L,2), luaL_checkint(L,3), luaL_checknumber(L,4), luaL_checknumber(L,5));
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  IupPlotInsertSegment(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), luaL_checknumber(L, 4), luaL_checknumber(L, 5));
   return 0;
 }
 
@@ -231,16 +245,18 @@ static int PlotPaintTo(lua_State *L)
 void iuplua_plotfuncs_open (lua_State *L)
 {
   iuplua_register_cb(L, "PREDRAW_CB", (lua_CFunction)plot_predraw_cb, NULL);
-  iuplua_register_cb(L, "POSTDRAW_CB", (lua_CFunction)plot_postdraw_cb, NULL);
+  iuplua_register_cb(L, "POSTDRAW_CB", (lua_CFunction)plot_postdraw_cb, NULL); 
 
   iuplua_register(L, PlotBegin       ,"PlotBegin");
   iuplua_register(L, PlotAdd         ,"PlotAdd");
   iuplua_register(L, PlotAddStr      ,"PlotAddStr");
-  iuplua_register(L, PlotEnd         ,"PlotEnd"); 
+  iuplua_register(L, PlotAddSegment  ,"PlotAddSegment");
+  iuplua_register(L, PlotEnd         ,"PlotEnd");
   iuplua_register(L, PlotLoadData    ,"PlotLoadData");
   iuplua_register(L, PlotFindSample  ,"PlotFindSample");
-  iuplua_register(L, PlotInsertStr   ,"PlotInsertStr");
   iuplua_register(L, PlotInsert      ,"PlotInsert");
+  iuplua_register(L, PlotInsertStr   ,"PlotInsertStr");
+  iuplua_register(L, PlotInsertSegment, "PlotInsertSegment");
   iuplua_register(L, PlotInsertPoints    ,"PlotInsertPoints");
   iuplua_register(L, PlotInsertStrPoints ,"PlotInsertStrPoints");
   iuplua_register(L, PlotAddPoints       ,"PlotAddPoints");
