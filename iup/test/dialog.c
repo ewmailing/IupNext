@@ -358,7 +358,10 @@ static void new_dialog(int test, char* tip)
                    
   // Windows and GTK Only  
   IupSetCallback(dlg, "DROPFILES_CB", (Icallback)dropfiles_cb);
-  
+
+//  IupMap(dlg);
+//  IupSetAttribute(dlg, "CLIENTSIZE", "500x500");
+
   if (test == 0 || test == 1)
     IupShow(dlg);
   else if (test == 3)

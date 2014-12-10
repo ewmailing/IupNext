@@ -452,7 +452,12 @@ void IupConfigDialogShow(Ihandle* ih, Ihandle* dialog, const char* name)
         if (height == 0)
           height = screen_height;
 
+#ifdef WIN32
         IupSetfAttribute(dialog, "RASTERSIZE", "%dx%d", width, height);
+#else
+        IupMap(dialog);
+        IupSetfAttribute(dialog, "CLIENTSIZE", "%dx%d", width, height);
+#endif
         set_size = 1;
       }
     }
@@ -488,9 +493,14 @@ void IupConfigDialogClosed(Ihandle* ih, Ihandle* dialog, const char* name)
   IupConfigSetVariableInt(ih, name, "X", x);
   IupConfigSetVariableInt(ih, name, "Y", y);
 
+#ifdef WIN32
   IupGetIntInt(dialog, "RASTERSIZE", &width, &height);
+#else
+  IupGetIntInt(dialog, "CLIENTSIZE", &width, &height);
+#endif
   IupConfigSetVariableInt(ih, name, "Width", width);
   IupConfigSetVariableInt(ih, name, "Height", height);
+
 
   maximized = IupGetInt(dialog, "MAXIMIZED"); // Windows Only
   IupGetIntInt(NULL, "SCREENSIZE", &screen_width, &screen_height);
