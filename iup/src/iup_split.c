@@ -136,8 +136,10 @@ static int iSplitCalcVal(Ihandle* ih, int size1)
 
 static void iSplitAdjustVal(Ihandle* ih)
 {
-  if (ih->data->val < ih->data->min) ih->data->val = ih->data->min;
-  if (ih->data->val > ih->data->max) ih->data->val = ih->data->max;
+  if (ih->data->val < ih->data->min) 
+    ih->data->val = ih->data->min;
+  if (ih->data->val > ih->data->max) 
+    ih->data->val = ih->data->max;
 
   if (ih->data->autohide)
     iSplitAutoHide(ih);  
