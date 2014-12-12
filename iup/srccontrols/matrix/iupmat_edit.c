@@ -33,6 +33,8 @@ static void iMatrixEditUpdateValue(Ihandle* ih)
 {
   char *value = iupMatrixEditGetValue(ih);
 
+  iupAttribSet(ih, "CELL_EDITED", "Yes");
+
   if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOPUSHBEGIN", "EDITCELL");
 
   iupMatrixSetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value, 1);
@@ -41,11 +43,13 @@ static void iMatrixEditUpdateValue(Ihandle* ih)
 
   iupBaseCallValueChangedCb(ih);
 
+  iupAttribSet(ih, "CELL_EDITED", NULL);
+
   iupMatrixPrepareDrawData(ih);
   iupMatrixDrawCells(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 }
 
-static int iMatrixEditCallEditionCb(Ihandle* ih, int mode, int update)
+static int iMatrixEditCallEditionCbUpdateValue(Ihandle* ih, int mode, int update)
 {
   int ret = iupMatrixAuxCallEditionCbLinCol(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, mode, update);
 
@@ -66,7 +70,7 @@ static int iMatrixEditFinish(Ihandle* ih, int setfocus, int update, int accept_i
       return IUP_DEFAULT;
 
     iupAttribSet(ih, "_IUPMAT_CALL_EDITION", "1");
-    ret = iMatrixEditCallEditionCb(ih, 0, update);
+    ret = iMatrixEditCallEditionCbUpdateValue(ih, 0, update);
     iupAttribSet(ih, "_IUPMAT_CALL_EDITION", NULL);
 
     if (ret == IUP_IGNORE && accept_ignore)
@@ -123,7 +127,7 @@ static int iMatrixMenuItemAction(Ihandle* ih)
 
   IupStoreAttribute(ih_menu, "VALUE", t);
 
-  iMatrixEditCallEditionCb(ih_matrix, 0, 1);  /* always update, similar to iMatrixEditConfirm */
+  iMatrixEditCallEditionCbUpdateValue(ih_matrix, 0, 1);  /* always update, similar to iMatrixEditConfirm */
   iupMatrixDrawUpdate(ih_matrix);
 
   return IUP_DEFAULT;
@@ -339,7 +343,7 @@ int iupMatrixEditShow(Ihandle* ih)
     return 0;
 
   /* notify application */
-  if (iMatrixEditCallEditionCb(ih, 1, 0) == IUP_IGNORE)  /* only place where mode=1 */
+  if (iMatrixEditCallEditionCbUpdateValue(ih, 1, 0) == IUP_IGNORE)  /* only place where mode=1 */
     return 0;
 
   if (iMatrixEditCallMenuDropCb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))

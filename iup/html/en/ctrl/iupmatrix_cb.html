@@ -101,9 +101,10 @@ the event.<br>
 <strong>lin</strong>, <strong>col</strong>: Coordinates of the cell where the 
 mouse button was pressed.<br>
 <strong>status</strong>: Value of the toggle. Can be 1 or 0.</p>
-<p><strong>VALUECHANGED_CB</strong>:
-  Called after the value was interactively changed by the user or after a group 
-of values where programmatically changed in a single operation. (since 3.9)</p>
+<p><strong>VALUECHANGED_CB</strong>: Called after the value was interactively 
+changed by the user or after a group of values where programmatically changed in 
+a single operation (since 3.9). When it was interactively changed the temporary 
+attribute CELL_EDITED will be set to Yes during the callback (since 3.13).</p>
 
 <pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
@@ -368,7 +369,8 @@ when it is mapped.</p>
 to notify the application that the value of a cell was changed. Never called when READONLY=YES. This callback is usually set in callback mode, but also works in 
   normal mode. When in normal mode, it is called after the new value has been 
 internally stored, so to refuse the new value simply reset the cell to the 
-desired value. </p>
+desired value. When it was interactively changed the temporary attribute 
+CELL_EDITED will be set to Yes during the callback (since 3.13).</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>newval</strong>); [in C]
 <strong>elem</strong>:value_edit_cb(<strong>lin, col</strong>: number<strong>, newval</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
