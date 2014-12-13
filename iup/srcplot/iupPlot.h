@@ -340,7 +340,7 @@ public:
   iupPlotTick() 
     :mAutoSpacing(true), mAutoSize(true), mMinorDivision(1), mShowNumber(true),
     mMajorSpan(1), mMajorSize(1), mMinorSize(1), mShow(true),
-    mFontSize(0), mFontStyle(-1), mRotateNumber(false)
+    mFontSize(0), mFontStyle(-1), mRotateNumber(false), mUserFormatString(false)
   { strcpy(mFormatString, "%.0f"); }
 
   bool mShow;
@@ -348,6 +348,7 @@ public:
   bool mShowNumber;
   bool mRotateNumber;
   char mFormatString[30];
+  bool mUserFormatString;
   int mFontSize;
   int mFontStyle;
 
@@ -368,7 +369,8 @@ public:
       mReverse(false), mLogScale(false), mCrossOrigin(false), mColor(CD_BLACK),
       mMaxDecades(-1), mLogBase(10), mLabelCentered(false), mHasZoom(false),
       mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1),
-      mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle) {}
+      mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize), 
+      mDefaultFontStyle(inDefaultFontStyle) { strcpy(mTipFormat, "%.2f"); }
   ~iupPlotAxis() { SetLabel(NULL); }
 
   void SetLabel(const char* inLabel) { if (mLabel) free(mLabel); mLabel = iupStrDup(inLabel); }
@@ -400,6 +402,7 @@ public:
   bool mReverse;
   bool mCrossOrigin;
   bool mShowArrow;
+  char mTipFormat[30];
 
   int mFontSize;
   int mFontStyle;

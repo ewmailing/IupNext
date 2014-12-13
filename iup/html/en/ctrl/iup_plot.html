@@ -332,6 +332,10 @@ of the screen.</p>
 
 <p><strong>SYNCVIEW</strong>: when a plot view is changed by 
 interactive zoom or pan, the other plots are zoomed or panned accordingly. </p>
+<p><strong>TIPFORMAT</strong>: format of the automatic TIP when mouse is over a 
+sample. Default: "%s (%s, %s)". First parameter is DS_NAME, then X and Y 
+sample values converted to strings using AXS_XTIPFORMAT and AXS_YTIPFORMAT 
+accordingly. (since 3.13)</p>
 <h4>Multiple Plots Management&nbsp; </h4>
 <p><strong>PLOT_COUNT</strong>: defines the number of multiple plots in the same 
 control. Default: 1. The minimum value is 1. If set to a smaller value will 
@@ -452,6 +456,9 @@ YES or NO. Default: YES.</p>
 <p><b>AXS_XSCALE, AXS_YSCALE</b>: configures the scale of the respective axis. 
 Can be: LIN (linear), LOG10 (base 10), LOG2 (base 2) and LOGN (base e). Default: 
 LIN.</p>
+<p><strong>AXS_XTIPFORMAT</strong>, <strong>AXS_YTIPFORMAT</strong>: format to 
+numeric conversion when an automatic tip is shown. See TIPFORMAT attribute. 
+Default: "%.2f". (since 3.13)</p>
 <h4>Axis Label Configuration&nbsp; </h4>
 <p><b>AXS_XLABEL, AXS_YLABEL</b>: text label of the&nbsp; respective axis.</p>
 <p><b>AXS_XLABELCENTERED</b>, <b>AXS_YLABELCENTERED</b>: text label position at 

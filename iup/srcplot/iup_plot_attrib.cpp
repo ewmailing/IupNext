@@ -2152,10 +2152,16 @@ static int iPlotSetAxisXTickFormatAttrib(Ihandle* ih, const char* value)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
 
-  if (value && value[0]!=0)
+  if (value && value[0] != 0)
+  {
     strcpy(axis->mTick.mFormatString, value);
+    axis->mTick.mUserFormatString = true;
+  }
   else
+  {
     strcpy(axis->mTick.mFormatString, "%.0f");
+    axis->mTick.mUserFormatString = false;
+  }
 
   ih->data->current_plot->mRedraw = true;
   return 0;
@@ -2165,10 +2171,16 @@ static int iPlotSetAxisYTickFormatAttrib(Ihandle* ih, const char* value)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
 
-  if (value && value[0]!=0)
+  if (value && value[0] != 0)
+  {
     strcpy(axis->mTick.mFormatString, value);
+    axis->mTick.mUserFormatString = true;
+  }
   else
+  {
     strcpy(axis->mTick.mFormatString, "%.0f");
+    axis->mTick.mUserFormatString = false;
+  }
 
   ih->data->current_plot->mRedraw = true;
   return 0;
@@ -2184,6 +2196,42 @@ static char* iPlotGetAxisYTickFormatAttrib(Ihandle* ih)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
   return iupStrReturnStr(axis->mTick.mFormatString);
+}
+
+static int iPlotSetAxisXTipFormatAttrib(Ihandle* ih, const char* value)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
+
+  if (value && value[0] != 0)
+    strcpy(axis->mTipFormat, value);
+  else
+    strcpy(axis->mTipFormat, "%.2f");
+
+  return 0;
+}
+
+static int iPlotSetAxisYTipFormatAttrib(Ihandle* ih, const char* value)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
+
+  if (value && value[0] != 0)
+    strcpy(axis->mTipFormat, value);
+  else
+    strcpy(axis->mTipFormat, "%.2f");
+
+  return 0;
+}
+
+static char* iPlotGetAxisXTipFormatAttrib(Ihandle* ih)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
+  return iupStrReturnStr(axis->mTipFormat);
+}
+
+static char* iPlotGetAxisYTipFormatAttrib(Ihandle* ih)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
+  return iupStrReturnStr(axis->mTipFormat);
 }
 
 static int iPlotSetAxisXTickAttrib(Ihandle* ih, const char* value)
@@ -2436,6 +2484,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "USE_CONTEXTPLUS", NULL, iPlotSetUseContextPlusAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MENUCONTEXT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWMENUCONTEXT", NULL, iPlotSetShowMenuContextAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TIPFORMAT", NULL, NULL, IUPAF_SAMEASSYSTEM, "%s (%s, %s)", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "MARGINLEFT", iPlotGetMarginLeftAttrib, iPlotSetMarginLeftAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARGINRIGHT", iPlotGetMarginRightAttrib, iPlotSetMarginRightAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -2549,6 +2598,9 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "AXS_YTICKFONTSIZE", iPlotGetAxisYTickFontSizeAttrib, iPlotSetAxisYTickFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKFONTSTYLE", iPlotGetAxisXTickFontStyleAttrib, iPlotSetAxisXTickFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKFONTSTYLE", iPlotGetAxisYTickFontStyleAttrib, iPlotSetAxisYTickFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "AXS_XTIPFORMAT", iPlotGetAxisXTipFormatAttrib, iPlotSetAxisXTipFormatAttrib, IUPAF_SAMEASSYSTEM, "%.0f", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTIPFORMAT", iPlotGetAxisYTipFormatAttrib, iPlotSetAxisYTipFormatAttrib, IUPAF_SAMEASSYSTEM, "%.0f", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "REMOVE", NULL, iPlotSetRemoveAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLEAR", NULL, iPlotSetClearAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

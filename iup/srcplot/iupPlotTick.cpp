@@ -184,7 +184,8 @@ bool iupPlotTickIterLinear::CalculateSpacing (double inParRange, double inDivGue
   ioTick.mMinorDivision = 5;
 
   // Calculated only once for Linear scale
-  iPlotMakeFormatString(ioTick.mMajorSpan, ioTick.mFormatString);
+  if (!ioTick.mUserFormatString)
+    iPlotMakeFormatString(ioTick.mMajorSpan, ioTick.mFormatString);
   return true;
 }
 

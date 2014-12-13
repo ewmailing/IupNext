@@ -795,15 +795,18 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
   {
     if (ih->data->last_tip_ds != ds && ih->data->last_tip_sample != sample)
     {
-      char str_y[20];
-      sprintf(str_y, ih->data->current_plot->mAxisY.mTick.mFormatString, ry);
+      char* tipformat = iupAttribGetStr(ih, "TIPFORMAT");
+      char str_Y[100];
+      sprintf(str_Y, ih->data->current_plot->mAxisY.mTipFormat, ry);
       if (strX)
-        IupSetfAttribute(ih, "TIP", "%s (%s, %s)", ds_name, strX, str_y);
+      {
+        IupSetfAttribute(ih, "TIP", tipformat, ds_name, strX, str_Y);
+      }
       else
       {
-        char str_x[20];
-        sprintf(str_x, ih->data->current_plot->mAxisX.mTick.mFormatString, rx);
-        IupSetfAttribute(ih, "TIP", "%s (%s, %s)", ds_name, str_x, str_y);
+        char str_X[100];
+        sprintf(str_X, ih->data->current_plot->mAxisX.mTipFormat, rx);
+        IupSetfAttribute(ih, "TIP", tipformat, ds_name, str_X, str_Y);
       }
 
       IupSetAttribute(ih, "TIPVISIBLE", "Yes");
