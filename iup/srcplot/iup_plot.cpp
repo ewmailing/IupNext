@@ -633,8 +633,11 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
 {
   int screen_x = x, screen_y = y;
   int index = iPlotFindPlot(ih, x, y);
-  if (index<0)
+  if (index < 0)
+  {
+    iPlotRedrawInteract(ih);
     return IUP_DEFAULT;
+  }
 
   iupPlotSetPlotCurrent(ih, index);
 

@@ -639,14 +639,11 @@ bool iupPlotAxis::ZoomTo(double inMin, double inMax)
 
   iPlotCheckMinMax(inMin, inMax);
 
-  if (inMin < mNoZoomMin || inMin > mNoZoomMax ||
-      inMax < mNoZoomMin || inMax > mNoZoomMax)
-  {
-    if (mMin == mNoZoomMin && mMax == mNoZoomMax)
-      ResetZoom();
-
+  if (inMin > mNoZoomMax || inMax < mNoZoomMin)
     return false;
-  }
+
+  if (inMin < mNoZoomMin) inMin = mNoZoomMin;
+  if (inMax > mNoZoomMax) inMax = mNoZoomMax;
 
   mMin = inMin;
   mMax = inMax;
@@ -1116,7 +1113,24 @@ bool iupPlot::Render(cdCanvas* canvas)
     DrawCrossHairV(theRect, canvas);
 
   if (mShowSelectionBand)
+  {
+    if (mSelectionBand.mX < theRect.mX) 
+    { 
+      mSelectionBand.mWidth = mSelectionBand.mX + mSelectionBand.mWidth - theRect.mX; 
+      mSelectionBand.mX = theRect.mX; 
+    }
+    if (mSelectionBand.mY < theRect.mY) 
+    {
+      mSelectionBand.mHeight = mSelectionBand.mY + mSelectionBand.mHeight - theRect.mY; 
+      mSelectionBand.mY = theRect.mY;
+    }
+    if (mSelectionBand.mX + mSelectionBand.mWidth > theRect.mX + theRect.mWidth)
+      mSelectionBand.mWidth = theRect.mX + theRect.mWidth - mSelectionBand.mX;
+    if (mSelectionBand.mY + mSelectionBand.mHeight > theRect.mY + theRect.mHeight)
+      mSelectionBand.mHeight = theRect.mY + theRect.mHeight - mSelectionBand.mY;
+
     mBox.Draw(mSelectionBand, canvas);
+  }
 
   IFnC post_cb = (IFnC)IupGetCallback(ih, "POSTDRAW_CB");
   if (post_cb)
