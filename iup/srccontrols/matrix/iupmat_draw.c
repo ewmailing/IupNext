@@ -41,7 +41,7 @@
 #define IMAT_ALIGN_RIGHT   3
 
 #define IMAT_DROPBOX_W 16
-#define IMAT_TOGGLE_SIZE 16
+#define IMAT_TOGGLE_SIZE 12
 
 
 
@@ -449,14 +449,14 @@ static void iMatrixDrawToggle(Ihandle* ih, int x2, int y1, int y2, int lin, int 
   /* toggle check */
   if (iupAttribGetIntId2(ih, "TOGGLEVALUE", lin, col))
   {
-    iupMATRIX_LINE(ih,x1+4,y1+7,x1+6,y1+9);
-    iupMATRIX_LINE(ih,x1+6,y1+9,x1+11,y1+4);
+    int half = IMAT_TOGGLE_SIZE/2;
+    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 2, x1 + half - 2 + 6, y2 - 2 - 6);
+    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 3, x1 + half - 2 + 6, y2 - 3 - 6);
+    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 4, x1 + half - 2 + 5, y2 - 4 - 5);
 
-    iupMATRIX_LINE(ih,x1+4,y1+8,x1+6,y1+10);
-    iupMATRIX_LINE(ih,x1+6,y1+10,x1+11,y1+5);
-
-    iupMATRIX_LINE(ih,x1+4,y1+9,x1+6,y1+11);
-    iupMATRIX_LINE(ih,x1+6,y1+11,x1+11,y1+6);
+    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 2, x1 + half - 2 - 2, y2 - 2 - 2);
+    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 3, x1 + half - 2 - 2, y2 - 3 - 2);
+    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 4, x1 + half - 2 - 1, y2 - 4 - 1);
   }
 }
 
