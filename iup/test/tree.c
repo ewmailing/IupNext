@@ -547,7 +547,8 @@ static void init_tree(void)
   IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
 
 //  IupSetAttribute(tree, "FONT", "COURIER_NORMAL_14");
-//  IupSetAttribute(tree, "FGCOLOR", "255 0 0");
+//  IupSetAttribute(tree, "FONTSIZE", "36");
+  //  IupSetAttribute(tree, "FGCOLOR", "255 0 0");
 //  IupSetAttribute(tree, "SPACING",   "10");
 //  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
 //  IupSetAttribute(tree, "BGCOLOR", "128 0 255");
@@ -555,7 +556,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
 //  IupSetAttribute(tree, "SHOWRENAME",   "YES");
 //  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-//  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
+  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
 //  IupSetAttribute(tree, "SHOWTOGGLE",   "3STATE");
 //  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
 

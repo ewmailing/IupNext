@@ -676,7 +676,7 @@ static int winTreeGetImageIndex(Ihandle* ih, const char* name)
 
     /* create the image list if does not exist */
     image_list = ImageList_Create(width, height, ILC_COLOR32, 0, 50);
-    SendMessage(ih->handle, TVM_SETIMAGELIST, 0, (LPARAM)image_list);
+    SendMessage(ih->handle, TVM_SETIMAGELIST, TVSIL_NORMAL, (LPARAM)image_list);
   }
 
   /* check if that bitmap is already added to the list,
@@ -2973,10 +2973,6 @@ static void winTreeUnMapMethod(Ihandle* ih)
   }
 
   image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_NORMAL, 0);
-  if (image_list)
-    ImageList_Destroy(image_list);
-
-  image_list = (HIMAGELIST)SendMessage(ih->handle, TVM_GETIMAGELIST, TVSIL_STATE, 0);
   if (image_list)
     ImageList_Destroy(image_list);
 
