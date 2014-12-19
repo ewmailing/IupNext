@@ -5,7 +5,7 @@ APPTYPE = console
 STRIP = 
 OPT = YES      
 NO_SCRIPTS = Yes
-# IM and IupPPlot uses C++
+# IM and IupPlot uses C++
 LINKER = $(CPPC)
 
 NO_LUAOBJECT = Yes
@@ -87,9 +87,11 @@ ifdef ALL_STATIC
     USE_CDLUA = Yes
     USE_IUPCONTROLS = Yes
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      LIBS += iuplua_pplot$(LIBLUASUFX) iup_pplot
+      LIBS += iuplua_plot$(LIBLUASUFX) iup_plot cdgl
+      LIBS += iupluamatrixex$(LIBLUASUFX) iupmatrixex
     else
-      SLIB += $(IUP_LIB)/libiuplua_pplot$(LIBLUASUFX).a $(IUP_LIB)/libiup_pplot.a
+      SLIB += $(IUP_LIB)/libiuplua_plot$(LIBLUASUFX).a $(IUP_LIB)/libiup_plot.a $(CD_LIB)/libcdgl.a
+      SLIB += $(IUP_LIB)/libiupluamatrixex$(LIBLUASUFX).a $(IUP_LIB)/libiupmatrixex.a
     endif
       
     ifndef IUPLUA_NO_IM
