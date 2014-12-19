@@ -35,8 +35,10 @@
 #ifndef IUPLUA_NO_CD
 #include "iupcontrols.h"
 #include "iupluacontrols.h"
-#include "iup_pplot.h"
-#include "iuplua_pplot.h"
+#include "iupmatrixex.h"
+#include "iupluamatrixex.h"
+#include "iup_plot.h"
+#include "iuplua_plot.h"
 #include <cd.h>
 #include <cdgdiplus.h>
 #include <cdlua.h>
@@ -517,7 +519,8 @@ static void iuplua_openlibs (lua_State *L) {
 #endif
 #ifndef IUPLUA_NO_CD
   iupcontrolslua_open(L);
-  iup_pplotlua_open(L);
+  iupmatrixexlua_open(L);
+  iup_plotlua_open(L);
   cdlua_open(L);
   cdluaiup_open(L);
 #endif

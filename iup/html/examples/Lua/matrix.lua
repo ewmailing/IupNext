@@ -16,6 +16,7 @@ mat:setcell(1,2,"4.6")
 mat:setcell(2,2,"1.3")
 mat:setcell(3,2,"1.4")
 dlg = iup.dialog{iup.vbox{mat; margin="10x10"}}
+
 dlg:showxy(iup.CENTER, iup.CENTER)
 
 if (iup.MainLoopLevel()==0) then

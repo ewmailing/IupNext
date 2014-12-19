@@ -17,6 +17,7 @@
 #include "iup_attrib.h"
 #include "iup_object.h"
 #include "iup_assert.h"
+#include "iup_predialogs.h"
 
 
 static int math_sum(lua_State *L) 
@@ -68,12 +69,15 @@ static int luamatrix_pushvalue(lua_State *L, const char* value)
 
 static int formula_range(lua_State *L)
 {
-  Ihandle *ih = iuplua_checkihandle(L, 1);
-  int lin1 = luaL_checkint(L, 2);
-  int col1 = luaL_checkint(L, 3);
-  int lin2 = luaL_checkint(L, 4);
-  int col2 = luaL_checkint(L, 5);
+  Ihandle *ih;
+  int lin1 = luaL_checkint(L, 1);
+  int col1 = luaL_checkint(L, 2);
+  int lin2 = luaL_checkint(L, 3);
+  int col2 = luaL_checkint(L, 4);
   int lin, col, count;
+
+  lua_getglobal(L, "matrix");
+  ih = (Ihandle*)lua_touserdata(L, -1);
 
   count = 0;
 
@@ -93,18 +97,32 @@ static int formula_range(lua_State *L)
 
 static int formula_cell(lua_State *L)
 {
-  Ihandle *ih = iuplua_checkihandle(L, 1);
-  int lin = luaL_checkint(L, 2);
-  int col = luaL_checkint(L, 3);
+  Ihandle *ih;
+
+  int lin = luaL_checkint(L, 1);
+  int col = luaL_checkint(L, 2);
+
+  lua_getglobal(L, "matrix");
+  ih = (Ihandle*)lua_touserdata(L, -1);
 
   char* value = IupGetAttributeId2(ih, "", lin, col);
   return luamatrix_pushvalue(L, value);
 }
 
-void IupMatrixSetFormula(Ihandle* ih, int col, const char* formula)
+static void ShowFormulaError(Ihandle* ih, lua_State *L)
+{
+  const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
+  const char* error = lua_tostring(L, -1);
+  char msg[1024];
+  sprintf(msg, "%s\n  Lua error: %s", str_message, error);
+  iupShowError(IupGetDialog(ih), msg);
+}
+
+void IupMatrixExSetFormula(Ihandle* ih, int col, const char* formula)
 {
   lua_State *L;
   int lin, numlin;
+  char formula_func[1024];
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -135,28 +153,52 @@ void IupMatrixSetFormula(Ihandle* ih, int col, const char* formula)
 
   numlin = IupGetInt(ih, "NUMLIN");
 
-  lua_pushinteger(L, col);
-  lua_setglobal(L, "col");
+  lua_pushlightuserdata(L, ih);
+  lua_setglobal(L, "matrix");
+
+  sprintf(formula_func, "function matrix_formula(lin, col)\n"
+                        "  return %s\n"
+                        "end\n", formula);
+
+  if (luaL_dostring(L, formula_func) != 0)
+  {
+    ShowFormulaError(ih, L);
+    lua_close(L);
+    return;
+  }
 
   for (lin = 1; lin <= numlin; lin++)
   {
+    lua_getglobal(L, "matrix_formula");
     lua_pushinteger(L, lin);
-    lua_setglobal(L, "lin");
+    lua_pushinteger(L, col);
 
-    luaL_dostring(L, formula);
+    if (lua_pcall(L, 2, 1, 0) != 0)
+    {
+      ShowFormulaError(ih, L);
+      lua_close(L);
+      return;
+    }
 
     if (lua_isnumber(L, -1))
     {
       double num = lua_tonumber(L, -1);
       IupSetDoubleId2(ih, "", lin, col, num);
     }
+    else if (lua_isnil(L, -1))
+      IupSetAttributeId2(ih, "", lin, col, NULL);
+    else if (lua_isboolean(L, -1))
+    {
+      int num = lua_toboolean(L, -1);
+      IupSetIntId2(ih, "", lin, col, num);
+    }
     else
     {
-      const char* value = luaL_checkstring(L, -1);
+      const char* value = lua_tostring(L, -1);
       IupSetStrAttributeId2(ih, "", lin, col, value);
     }
 
-    lua_pop(L, -1);
+    lua_pop(L, 1);  /* removed the result from the stack */
   }
 
   lua_close(L);
@@ -284,6 +326,13 @@ char *Dmatrix::GetValueLua(Column *C, int lin, int col)
 
 #endif
 
+static int MatrixExSetFormula(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  IupMatrixExSetFormula(ih, luaL_checkint(L, 2), luaL_checkstring(L, 3));
+  return 0;
+}
+
 static int MatrixExInit(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -294,6 +343,7 @@ static int MatrixExInit(lua_State *L)
 void iuplua_matrixexfuncs_open (lua_State *L)
 {
   iuplua_register(L, MatrixExInit, "MatrixExInit");
+  iuplua_register(L, MatrixExSetFormula, "MatrixExSetFormula");
 }
 
 int iup_matrixexlua_open(lua_State * L);
