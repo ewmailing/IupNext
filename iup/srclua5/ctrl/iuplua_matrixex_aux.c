@@ -9,6 +9,7 @@
 #include <lualib.h>
 
 #include "iup.h"
+#include "iupcbs.h"
 #include "iupmatrixex.h"
 
 #include "iuplua.h"
@@ -18,6 +19,9 @@
 #include "iup_object.h"
 #include "iup_assert.h"
 #include "iup_predialogs.h"
+
+
+typedef int(*IFnL)(Ihandle*, lua_State *L);
 
 
 static int math_sum(lua_State *L) 
@@ -109,6 +113,12 @@ static int formula_cell(lua_State *L)
   return luamatrix_pushvalue(L, value);
 }
 
+static int formula_ifelse(lua_State *L)
+{
+  lua_toboolean(L, 1) ? lua_pushvalue(L, 2) : lua_pushvalue(L, 3);
+  return 1;
+}
+
 static void ShowFormulaError(Ihandle* ih, lua_State *L)
 {
   const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
@@ -118,11 +128,12 @@ static void ShowFormulaError(Ihandle* ih, lua_State *L)
   iupShowError(IupGetDialog(ih), msg);
 }
 
-void IupMatrixExSetFormula(Ihandle* ih, int col, const char* formula)
+void IupMatrixExSetFormula(Ihandle* ih, int col, const char* formula, const char* init)
 {
   lua_State *L;
   int lin, numlin;
   char formula_func[1024];
+  IFnL init_cb;
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -147,9 +158,16 @@ void IupMatrixExSetFormula(Ihandle* ih, int col, const char* formula)
 
   lua_register(L, "sum", math_sum);
   lua_register(L, "average", math_average);
-
   lua_register(L, "range", formula_range);
   lua_register(L, "cell", formula_cell);
+  lua_register(L, "ifelse", formula_ifelse);
+
+  if (init)
+    luaL_dostring(L, init);
+
+  init_cb = (IFnL)IupGetCallback(ih, "INIT_CB");
+  if (init_cb)
+    init_cb(ih, L);
 
   numlin = IupGetInt(ih, "NUMLIN");
 
@@ -329,7 +347,7 @@ char *Dmatrix::GetValueLua(Column *C, int lin, int col)
 static int MatrixExSetFormula(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupMatrixExSetFormula(ih, luaL_checkint(L, 2), luaL_checkstring(L, 3));
+  IupMatrixExSetFormula(ih, luaL_checkint(L, 2), luaL_checkstring(L, 3), luaL_optstring(L, 4, NULL));
   return 0;
 }
 
