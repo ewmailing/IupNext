@@ -53,12 +53,15 @@ static int math_average(lua_State *L)
   return 1;
 }
 
-static int luamatrix_pushvalue(lua_State *L, const char* value)
+static int luamatrix_pushvalue(lua_State *L, const char* value, int only_number)
 {
   double num;
 
   if (!value || value[0] == 0)
   {
+    if (only_number)
+      return 0;
+
     lua_pushnil(L);
     return 1;
   }
@@ -66,7 +69,12 @@ static int luamatrix_pushvalue(lua_State *L, const char* value)
   if (sscanf(value, "%lf", &num) == 1)
     lua_pushnumber(L, num);
   else
+  {
+    if (only_number)
+      return 0;
+
     lua_pushstring(L, value);
+  }
 
   return 1;
 }
@@ -78,7 +86,11 @@ static int formula_range(lua_State *L)
   int col1 = luaL_checkint(L, 2);
   int lin2 = luaL_checkint(L, 3);
   int col2 = luaL_checkint(L, 4);
+  int only_number = 0;
   int lin, col, count;
+
+  if (lua_isboolean(L, 5))
+    only_number = lua_toboolean(L, 5);
 
   lua_getglobal(L, "matrix");
   ih = (Ihandle*)lua_touserdata(L, -1);
@@ -90,9 +102,9 @@ static int formula_range(lua_State *L)
     for (col = col1; col <= col2; col++)
     {
       char* value = IupGetAttributeId2(ih, "", lin, col);
-      luamatrix_pushvalue(L, value);
 
-      count++;
+      if (luamatrix_pushvalue(L, value, only_number))
+        count++;
     }
   }
 
@@ -110,7 +122,7 @@ static int formula_cell(lua_State *L)
   ih = (Ihandle*)lua_touserdata(L, -1);
 
   char* value = IupGetAttributeId2(ih, "", lin, col);
-  return luamatrix_pushvalue(L, value);
+  return luamatrix_pushvalue(L, value, 0);
 }
 
 static int formula_ifelse(lua_State *L)
