@@ -114,6 +114,7 @@ static int formula_range(lua_State *L)
 static int formula_cell(lua_State *L)
 {
   Ihandle *ih;
+  char* value;
 
   int lin = luaL_checkint(L, 1);
   int col = luaL_checkint(L, 2);
@@ -121,7 +122,7 @@ static int formula_cell(lua_State *L)
   lua_getglobal(L, "matrix");
   ih = (Ihandle*)lua_touserdata(L, -1);
 
-  char* value = IupGetAttributeId2(ih, "", lin, col);
+  value = IupGetAttributeId2(ih, "", lin, col);
   return luamatrix_pushvalue(L, value, 0);
 }
 
