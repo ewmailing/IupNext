@@ -568,7 +568,7 @@ control.</p>
 formula is executed for each line within the column. Internally uses
 <a href="http://www.lua.org" target="_blank">Lua</a> to parse the formula.
 <strong>init</strong> is an optional Lua initialization code that is called only 
-once (can be NULL). The callback <span class="auto-style1">&quot;int INIT_CB(Ihandle* 
+once (can be NULL). The callback <span class="auto-style1">&quot;int FORMULAINIT_CB(Ihandle* 
 ih, , lua_State *L);</span>&quot; can also be used to initialized the Lua state. All 
 Lua standard libraries are pre-loaded.</p>
 <p>This function is available in the &quot;iupluamatrixex&quot; library but it does not 

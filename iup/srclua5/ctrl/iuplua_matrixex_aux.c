@@ -178,7 +178,7 @@ void IupMatrixExSetFormula(Ihandle* ih, int col, const char* formula, const char
   if (init)
     luaL_dostring(L, init);
 
-  init_cb = (IFnL)IupGetCallback(ih, "INIT_CB");
+  init_cb = (IFnL)IupGetCallback(ih, "FORMULAINIT_CB");
   if (init_cb)
     init_cb(ih, L);
 
