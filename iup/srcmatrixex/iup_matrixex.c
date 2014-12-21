@@ -954,6 +954,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_ERRORNOSELECTION", "Empty Selection.");
     IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Invalid Interval.");
     IupSetLanguageString("IUP_ERRORFILEOPEN", "Failed to open file.");
+    IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Invalid Formula.");
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
   {
@@ -1007,6 +1008,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_ERRORNOSELECTION", "Sele��o vazia.");
     IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inv�lido.");
     IupSetLanguageString("IUP_ERRORFILEOPEN", "Falha ao abrir o arquivo..");
+    IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "F�rmula Inv�lida.");
 
     if (IupGetInt(NULL, "UTF8MODE"))
     {
@@ -1020,6 +1022,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
       IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dado inválido.");
       IupSetLanguageString("IUP_ERRORNOSELECTION", "Seleção vazia.");
       IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inválido.");
+      IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Fórmula Inválida.");
     }
   }
 }
