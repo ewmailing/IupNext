@@ -28,6 +28,9 @@ int  IupPlotEnd(Ihandle *ih);
 
 int  IupPlotLoadData(Ihandle* ih, const char* filename, int strXdata);
 
+/* available only when linking with "iupluaplot" */
+int IupPlotSetFormula(Ihandle* ih, int sample_count, const char* formula, const char* init);
+
 void IupPlotInsert(Ihandle *ih, int ds_index, int sample_index, double x, double y);
 void IupPlotInsertStr(Ihandle *ih, int ds_index, int sample_index, const char* x, double y);
 void IupPlotInsertSegment(Ihandle *ih, int ds_index, int sample_index, double x, double y);
