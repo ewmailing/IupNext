@@ -9,10 +9,10 @@
 #include <lualib.h>
 
 #include "iup.h"
-#include "iupcbs.h"
 #include "iupmatrixex.h"
 
 #include "iuplua.h"
+#include "iupluamatrixex.h"
 #include "il.h"
 
 #include "iup_attrib.h"
@@ -229,7 +229,7 @@ void IupMatrixExSetFormula(Ihandle* ih, int col, const char* formula, const char
       IupSetStrAttributeId2(ih, "", lin, col, value);
     }
 
-    lua_pop(L, 1);  /* removed the result from the stack */
+    lua_pop(L, 1);  /* remove the result from the stack */
   }
 
   lua_close(L);

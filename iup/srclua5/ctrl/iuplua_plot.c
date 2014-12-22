@@ -8,6 +8,7 @@
 
 #include <lua.h>
 #include <lauxlib.h>
+#include <lualib.h>
 
 #include "iup.h"
 #include "iup_plot.h"
@@ -19,6 +20,133 @@
 #include "iuplua_plot.h"
 #include "il.h"
 
+#include "iup_object.h"
+#include "iup_assert.h"
+#include "iup_predialogs.h"
+
+
+typedef int(*IFnL)(Ihandle*, lua_State *L);
+
+static void ShowFormulaError(Ihandle* ih, lua_State *L)
+{
+  const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
+  const char* error = lua_tostring(L, -1);
+  char msg[1024];
+  sprintf(msg, "%s\n  Lua error: %s", str_message, error);
+  iupShowError(IupGetDialog(ih), msg);
+}
+
+int IupPlotSetFormula(Ihandle* ih, int sample_count, const char* formula, const char* init)
+{
+  lua_State *L;
+  int i, ds_index, ret_count = 1;
+  double min, max, step, p, x, y;
+  char formula_func[1024];
+  IFnL init_cb;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return -1;
+
+  /* must be an IupMatrix */
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+    return -1;
+
+  L = luaL_newstate();
+  luaL_openlibs(L);
+
+  {
+    const char* register_global =
+      "function openpackage(ns)\n"
+      "  for n, v in pairs(ns) do _G[n] = v end\n"
+      "end\n"
+      "openpackage(math)\n";
+    luaL_dostring(L, register_global);
+  }
+
+  if (init)
+    luaL_dostring(L, init);
+
+  init_cb = (IFnL)IupGetCallback(ih, "FORMULAINIT_CB");
+  if (init_cb)
+    init_cb(ih, L);
+
+  lua_pushlightuserdata(L, ih);
+  lua_setglobal(L, "plot");
+
+  if (IupGetInt(ih, "FORMULA_PARAMETRIC"))
+    ret_count = 2;
+
+  sprintf(formula_func, "function plot_formula(sample_index, %s)\n"
+          "  return %s\n"
+          "end\n", ret_count == 2 ? "p" : "x", formula);
+
+  if (luaL_dostring(L, formula_func) != 0)
+  {
+    ShowFormulaError(ih, L);
+    lua_close(L);
+    return -1;
+  }
+
+  min = IupGetDouble(ih, "FORMULA_MIN");
+  max = IupGetDouble(ih, "FORMULA_MAX");
+  step = (max - min) / (double)(sample_count - 1);
+
+  IupPlotBegin(ih, 0);
+
+  for (i = 0, p = min; i < sample_count; i++, p += step)
+  {
+    lua_getglobal(L, "plot_formula");
+    lua_pushinteger(L, i);
+    lua_pushnumber(L, p);
+
+    if (lua_pcall(L, 2, ret_count, 0) != 0)
+    {
+      ShowFormulaError(ih, L);
+      lua_close(L);
+      return -1;
+    }
+
+    if (!lua_isnumber(L, -1))
+    {
+      const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
+      iupShowError(IupGetDialog(ih), str_message);
+      lua_close(L);
+      return -1;
+    }
+
+    if (ret_count == 2)
+    {
+      if (!lua_isnumber(L, -2))
+      {
+        const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
+        iupShowError(IupGetDialog(ih), str_message);
+        lua_close(L);
+        return -1;
+      }
+
+      x = lua_tonumber(L, -2);
+      y = lua_tonumber(L, -1);
+
+      lua_pop(L, 2);  /* remove the result from the stack */
+    }
+    else
+    {
+      x = p;
+      y = lua_tonumber(L, -1);
+
+      lua_pop(L, 1);  /* remove the result from the stack */
+    }
+
+    IupPlotAdd(ih, x, y);
+  }
+
+  ds_index = IupPlotEnd(ih);
+
+  lua_close(L);
+  return ds_index;
+}
 
 static int plot_postdraw_cb(Ihandle *self, cdCanvas* cnv)
 {
@@ -74,6 +202,14 @@ static int PlotLoadData(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
   int ret = IupPlotLoadData(ih, luaL_checkstring(L, 2), luaL_checkint(L, 3));
+  lua_pushinteger(L, ret);
+  return 1;
+}
+
+static int PlotSetFormula(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  int ret = IupPlotSetFormula(ih, luaL_checkint(L, 2), luaL_checkstring(L, 3), luaL_optstring(L, 4, NULL));
   lua_pushinteger(L, ret);
   return 1;
 }
@@ -253,6 +389,7 @@ void iuplua_plotfuncs_open (lua_State *L)
   iuplua_register(L, PlotAddSegment  ,"PlotAddSegment");
   iuplua_register(L, PlotEnd         ,"PlotEnd");
   iuplua_register(L, PlotLoadData    ,"PlotLoadData");
+  iuplua_register(L, PlotSetFormula  ,"PlotSetFormula");
   iuplua_register(L, PlotFindSample  ,"PlotFindSample");
   iuplua_register(L, PlotInsert      ,"PlotInsert");
   iuplua_register(L, PlotInsertStr   ,"PlotInsertStr");
