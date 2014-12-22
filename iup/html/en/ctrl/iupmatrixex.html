@@ -615,7 +615,12 @@ special operations:</p>
                      and others are skipped.
 <strong>cell</strong>(lin, col) - returns the cell value at given line and column.
 <strong>ifelse</strong>(test, value_true, value_false) - if test boolean is true then return value_true,
-                                        if not return value_falseor else.</pre>
+                                        if not return value_falseor else.
+       The problem with ifelse is that both values are evaluated before calling the function.
+       In Lua the solution is to use logical operators:
+       test <strong>and</strong> value_true <strong>or</strong> value_false
+       (but value_true can not be <strong>false</strong>)
+       See <a href="http://lua-users.org/wiki/TernaryOperatorhttp://lua-users.org/wiki/TernaryOperator" target="_blank">http://lua-users.org/wiki/TernaryOperator</a></pre>
 <p>Some formula examples:</p>
 <pre>&quot;cos(pi*lin/4)&quot;
 &quot;cell(lin, 1) + cell(lin, 2)&quot;
