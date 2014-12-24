@@ -58,7 +58,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (21/Dec/2014)</h3>
+<h3>SVN (24/Dec/2014)</h3>
 
 <ul>
 
@@ -80,6 +80,8 @@ version 3.x.</p>
 	<strong>IupMatrix</strong>.</li>
 	<li><span class="hist_new">New:</span> <b>IupMatrixExSetFormula</b> 
 	auxiliary function for <strong>IupMatrixEx</strong>.</li>
+	<li><span class="hist_new">New:</span> <b>IupPlotSetFormula</b> 
+	auxiliary function for <strong>IupPlot</strong>.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	IupLua console file selection to include filter &quot;*.lua&quot;.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
@@ -88,6 +90,10 @@ version 3.x.</p>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	processing of <a name="MENUCONTEXT_CB">MENUCONTEXT_CB</a> callback return 
 	value to accept IUP_IGNORE in <strong>IupMatrixEx</strong>.</li>
+	<li> <b><strong><span class="hist_changed">Changed:</span></strong> 
+	IupPlotInsertPoints, IupPlotInsertStrPoints, IupPlotAddPoints, IupPlotAddStrPoints</b>, 
+	renamed to <b>IupPlotInsertSamples, IupPlotInsertStrSamples, 
+	IupPlotAddSamples, IupPlotAddStrSamples.</b></li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupScanf</strong> when
 	<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
 	maximum number of characters allowed is reached by the data in a given 

@@ -1104,7 +1104,7 @@ void IupPlotInsertSegment(Ihandle* ih, int inIndex, int inSampleIndex, double in
   theDataSet->InsertSampleSegment(inSampleIndex, inX, inY, true);
 }
 
-void IupPlotAddPoints(Ihandle* ih, int inIndex, double *x, double *y, int count)
+void IupPlotAddSamples(Ihandle* ih, int inIndex, double *x, double *y, int count)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -1122,7 +1122,7 @@ void IupPlotAddPoints(Ihandle* ih, int inIndex, double *x, double *y, int count)
     theDataSet->AddSample(x[i], y[i]);
 }
 
-void IupPlotAddStrPoints(Ihandle* ih, int inIndex, const char** x, double* y, int count)
+void IupPlotAddStrSamples(Ihandle* ih, int inIndex, const char** x, double* y, int count)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -1140,7 +1140,7 @@ void IupPlotAddStrPoints(Ihandle* ih, int inIndex, const char** x, double* y, in
     theDataSet->AddSample(x[i], y[i]);
 }
 
-void IupPlotInsertStrPoints(Ihandle* ih, int inIndex, int inSampleIndex, const char** inX, double* inY, int count)
+void IupPlotInsertStrSamples(Ihandle* ih, int inIndex, int inSampleIndex, const char** inX, double* inY, int count)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -1159,7 +1159,7 @@ void IupPlotInsertStrPoints(Ihandle* ih, int inIndex, int inSampleIndex, const c
     theDataSet->InsertSample(inSampleIndex + i, inX[i], inY[i]);
 }
 
-void IupPlotInsertPoints(Ihandle* ih, int inIndex, int inSampleIndex, double *inX, double *inY, int count)
+void IupPlotInsertSamples(Ihandle* ih, int inIndex, int inSampleIndex, double *inX, double *inY, int count)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -1671,6 +1671,7 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_SHOWHIDELEGEND", "Show/Hide Legend");
     IupSetLanguageString("IUP_SHOWHIDEGRID", "Show/Hide Grid");
 
+    IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Invalid Formula.");
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
   {
@@ -1683,6 +1684,14 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_RESETZOOMAC", "Reiniciar Zoom\t.");
     IupSetLanguageString("IUP_SHOWHIDELEGEND", "Mostra/Esconde Legends");
     IupSetLanguageString("IUP_SHOWHIDEGRID", "Mostra/Esconde Grade");
+
+    IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "FÛrmula Inv·lida.");
+    if (IupGetInt(NULL, "UTF8MODE"))
+    {
+      /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
+      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+      IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "F√≥rmula Inv√°lida.");
+    }
   }
 
   return ic;

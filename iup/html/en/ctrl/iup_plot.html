@@ -72,7 +72,7 @@ parameters are configured by attributes. <strong>IupPlot</strong> support plots
 of
 <strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
 linear</strong><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">&nbsp;</span>sequential 
-data, as a sequence of 2D points ([x1,y1],[x2,y2],...) coordinates.</span></p>
+data, as a sequence of 2D samples ([x1,y1],[x2,y2],...) coordinates.</span></p>
 <p>If no attribute is set, the default values were selected to best display 
 the plot.</p>
 <p>When setting attributes the plot is NOT redrawn until the REDRAW attribute is 
@@ -177,7 +177,7 @@ called with strXdata=0.</p>
 <hr>
 <pre>void <b>IupPlotAddSegment</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>); [in C]
 <b>iup.PlotAddSegment</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>: number) [in Lua]</pre>
-<p>Same as <b>IupPlotAdd</b>, but the point starts a new segment. In drawing 
+<p>Same as <b>IupPlotAdd</b>, but the sample starts a new segment. In drawing 
 mode where samples are connected by lines this will create an empty space. 
 (since 3.13)</p>
 <hr>
@@ -220,17 +220,17 @@ void <b>IupPlotInsertStr</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sam
 be used only after the dataset is added to the 
 plot.</p>
 <hr>
-<pre>void <b>IupPlotInsertPoints</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, double* <b>x</b>, double* <b>y</b>, int <strong>count</strong>); [in C]
-void <b>IupPlotInsertStrPoints</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, const char** <b>x</b>, double* <b>y</b>, int <strong>count</strong>);
-<b>iup.PlotInsertPoints</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number<b>, x, y</b>: table of number) [in Lua]
-<b>iup.PlotInsertStrPoints</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number<b>, x, y</b>: table of number)</pre>
+<pre>void <b>IupPlotInsertSamples</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, double* <b>x</b>, double* <b>y</b>, int <strong>count</strong>); [in C]
+void <b>IupPlotInsertStrSamples</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, const char** <b>x</b>, double* <b>y</b>, int <strong>count</strong>);
+<b>iup.PlotInsertSamples</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number<b>, x, y</b>: table of number) [in Lua]
+<b>iup.PlotInsertStrSamples</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number<b>, x, y</b>: table of number)</pre>
 <p>Inserts an array of samples in a dataset at the given <strong>sample_index</strong>. 
 Can be used only after the dataset is added to the plot. </p>
 <hr>
-<pre>void <b>IupPlotAddPoints</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, double* <b>x</b>, double* <b>y</b>, int <strong>count</strong>); [in C]
-void <b>IupPlotAddStrPoints</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, const char** <b>x</b>, double* <b>y</b>, int <strong>count</strong>);
-<b>iup.PlotAddPoints</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number<b>, x, y</b>: table of number) [in Lua]
-<b>iup.PlotAddStrPoints</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number<b>, x, y</b>: table of number)</pre>
+<pre>void <b>IupPlotAddSamples</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, double* <b>x</b>, double* <b>y</b>, int <strong>count</strong>); [in C]
+void <b>IupPlotAddStrSamples</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, const char** <b>x</b>, double* <b>y</b>, int <strong>count</strong>);
+<b>iup.PlotAddSamples</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number<b>, x, y</b>: table of number) [in Lua]
+<b>iup.PlotAddStrSamples</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number<b>, x, y</b>: table of number)</pre>
 <p>Adds an array of samples in a dataset at the end. Can be used only after the 
 dataset is added to the plot. </p>
 <hr>
@@ -282,6 +282,62 @@ coordinates is in CD bottom to top orientation. (since 3.13)</p>
 <b>iup.PlotPaintTo</b>(<b>ih</b>: ihandle, <b>cnv</b>: cdCanvas) [in Lua]</pre>
 <p>Plots to the given CD canvas instead of the display canvas. The element does 
 not need to be mapped neither to be inside a dialog for this function to work.</p>
+<hr>
+<pre>void <b>IupPlotSetFormula</b>(Ihandle* <b>ih</b>, int <strong>sample_count</strong>, const char* <strong>formula</strong>, const char* <strong>init</strong>); [in C]
+<b>iup.PlotSetFormula</b>(<b>ih</b>: ihandle, <strong>sample_count</strong>: number, <strong>formula</strong>: string [<strong>init</strong>: string]) [in Lua]</pre>
+<p>Creates a new dataset and generate samples using the formula (since 3.13). The 
+formula is executed for each sample within the dataset. Internally uses
+<a href="http://www.lua.org" target="_blank">Lua</a> to parse the formula.
+<strong>init</strong> is an optional Lua initialization code that is called only 
+once (can be NULL). The callback <span class="auto-style1">&quot;int FORMULAINIT_CB(Ihandle* 
+ih, , lua_State *L);</span>&quot; can also be used to initialized the Lua state. All 
+Lua standard libraries are pre-loaded.</p>
+<p>This function is available in the &quot;iupluaplot&quot; library but it does not 
+requires an active Lua context, because it uses a temporary Lua context. If 
+called from Lua it will also be independent from the application's Lua context. 
+To use it in C/C++ you must link also with Lua and iuplua even when not using 
+theses libraries directly.</p>
+<p>The formula will be encapsulated within an internal Lua function so it will 
+not affect the call of subsequent samples. This internal function receives two 
+parameters &quot;<strong>sample_index</strong>&quot; and &quot;<strong>x</strong>&quot; correspondent to the current 
+sample being processed 
+during script execution. "<strong>y</strong>" will be calculated by the formula. The 
+formula can contain only one valid Lua statement that will 
+be retuned by the internal Lua function. The formula can evaluate to numbers 
+only. The x parameter will vary from <strong>FORMULA_MIN</strong> and <strong>
+FORMULA_MAX</strong> attributes those default values are 0.0 and 1.0. The 
+interval will be divided in <strong>sample_count</strong>-1 steps.</p>
+<p>If the attribute <strong>FORMULA_PARAMETRIC</strong> is set to Yes, then the 
+second attribute is replaced by "<strong>t</strong>". The interval and the steps 
+are the same BUT the formula must then return 2 numeric parameters: "<strong>x</strong>,
+<strong>y</strong>".</p>
+<p>The most commonly used tokens are:</p>
+<pre style="font-size: medium; color: rgb(0, 0, 0); font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: justify; text-indent: 0px; text-transform: none; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px;">+&nbsp; (addition)&nbsp;
+-&nbsp; (subtraction and negation)&nbsp;
+*&nbsp; (multiplication)&nbsp;
+/&nbsp; (division)&nbsp;
+%&nbsp; (modulo)
+^&nbsp; (exponentiation)
+== (equal)
+~= (different)
+&lt;  (less than)
+&gt;  (greater than)
+&lt;= (less than or equal)
+&gt;= (greater than or equal)
+and (logical and)
+or  (logical or)
+not (logical not)</pre>
+<p>The Lua
+<a href="http://www.lua.org/manual/5.2/manual.html#6.6" target="_blank">Math 
+Functions</a> are loaded also at the global level, so there is no need for the 
+&quot;math.&quot; prefix. The most commonly used functions are:</p>
+<pre><strong>abs</strong>(x)    <strong>acos</strong>(x)    <strong>asin</strong>(x)    <strong>atan</strong>(x)    <strong>atan2</strong>(y,x)    <strong>ceil</strong>(x)    <strong>cos</strong>(x)
+<strong>deg</strong>(x)    <strong>exp</strong>(x)     <strong>floor</strong>(x)   <strong>log</strong>(x)     <strong>min</strong>(x,...)    <strong>max</strong>(x,...) <strong>pow</strong>(x,y)
+<strong>sin</strong>(x)    <strong>sqrt</strong>(x)    <strong>tan</strong>(x)</pre>
+<p>Some formula examples:</p>
+<pre>&quot;cos(pi*<strong>x</strong>)&quot;
+&quot;<strong>x</strong>^2&quot;
+"cos(<strong>t</strong>), sin(<strong>t</strong>)"</pre>
 <h3><a name="Attributes">Attributes</a> <span class="auto-style2">(All non 
 inheritable, except when noted)</span></h3>
 
@@ -518,7 +574,7 @@ also accepted.&nbsp;</p>
 <p><b>DELETE_CB</b>:
   Action generated when the Del key is pressed to removed a sample from a 
 dataset.
-    If multiple points are selected it is called once for each selected point.</p>
+    If multiple samples are selected it is called once for each selected sample.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y</strong>); [in C]
 <strong>elem</strong>:delete_cb(<b>ds_index, sample_index, x, y</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -580,7 +636,7 @@ it is called again for all selected samples, and this repeats for each data set.
     <b>sample_index</b>: index of the sample in the dataset<strong><br>
     x</strong>: X coordinate value of the sample<br>
     <strong>y</strong>: Y coordinate value of the sample<br>
-    <b>select</b>: indicates if the point is 
+    <b>select</b>: indicates if the sample is 
     selected.</p>
     <p class="info">
     <span class="style2">Returns:</span>
@@ -612,7 +668,8 @@ after the context menu is closed. Only shown if MENUCONTEXT=Yes.</p>
     
 <p><b>SELECT_CB</b>:
   Action generated when  a sample is selected.
-    If multiple points are selected it is called once for each new selected point. 
+    If multiple samples are selected it is called once for each new selected 
+sample. 
 It is called only if the selection state of the sample is about to be changed.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>int <strong>selected</strong>); [in C]
@@ -623,7 +680,7 @@ It is called only if the selection state of the sample is about to be changed.</
     <b>sample_index</b>: index of the sample in the dataset<strong><br>
     x</strong>: X coordinate value of the sample<br>
     <strong>y</strong>: Y coordinate value of the sample<br>
-    <b>select</b>: indicates if the point is 
+    <b>select</b>: indicates if the sample is 
     to be selected.</p>
     <p class="info">
     <span class="style2">Returns:</span>

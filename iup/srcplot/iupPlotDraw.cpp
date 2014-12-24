@@ -383,7 +383,7 @@ bool iupPlotAxis::DrawYTick(double inY, double inScreenX, bool inMajor, const ch
   return true;
 }
 
-void iupPlot::DrawCrossPointsH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const
+void iupPlot::DrawCrossSamplesH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const
 {
   int theCount = inXData->GetCount();
   if (theCount == 0)
@@ -426,11 +426,11 @@ void iupPlot::DrawCrossHairH(const iupPlotRect &inRect, cdCanvas* canvas) const
 
     cdCanvasSetForeground(canvas, dataset->mColor);
 
-    DrawCrossPointsH(inRect, theXData, theYData, canvas);
+    DrawCrossSamplesH(inRect, theXData, theYData, canvas);
   }
 }
 
-void iupPlot::DrawCrossPointsV(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const
+void iupPlot::DrawCrossSamplesV(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const
 {
   int theCount = inXData->GetCount();
   if (theCount == 0)
@@ -473,7 +473,7 @@ void iupPlot::DrawCrossHairV(const iupPlotRect &inRect, cdCanvas* canvas) const
 
     cdCanvasSetForeground(canvas, dataset->mColor);
 
-    DrawCrossPointsV(inRect, theXData, theYData, canvas);
+    DrawCrossSamplesV(inRect, theXData, theYData, canvas);
   }
 }
 

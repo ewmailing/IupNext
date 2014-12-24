@@ -80,7 +80,7 @@ int IupPlotSetFormula(Ihandle* ih, int sample_count, const char* formula, const 
 
   sprintf(formula_func, "function plot_formula(sample_index, %s)\n"
           "  return %s\n"
-          "end\n", ret_count == 2 ? "p" : "x", formula);
+          "end\n", ret_count == 2 ? "t" : "x", formula);
 
   if (luaL_dostring(L, formula_func) != 0)
   {
@@ -251,51 +251,51 @@ static int PlotInsertSegment(lua_State *L)
   return 0;
 }
 
-static int PlotInsertPoints(lua_State *L)
+static int PlotInsertSamples(lua_State *L)
 {
   double *px, *py;
   int count = luaL_checkint(L, 6);
   px = iuplua_checkdouble_array(L, 4, count);
   py = iuplua_checkdouble_array(L, 5, count);
-  IupPlotInsertPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  IupPlotInsertSamples(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
   free(px);
   free(py);
   return 0;
 }
 
-static int PlotInsertStrPoints(lua_State *L)
+static int PlotInsertStrSamples(lua_State *L)
 {
   double *py;
   char* *px;
   int count = luaL_checkint(L, 6);
   px = iuplua_checkstring_array(L, 4, count);
   py = iuplua_checkdouble_array(L, 5, count);
-  IupPlotInsertStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  IupPlotInsertStrSamples(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
   free(px);
   free(py);
   return 0;
 }
 
-static int PlotAddPoints(lua_State *L)
+static int PlotAddSamples(lua_State *L)
 {
   double *px, *py;
   int count = luaL_checkint(L, 5);
   px = iuplua_checkdouble_array(L, 3, count);
   py = iuplua_checkdouble_array(L, 4, count);
-  IupPlotAddPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  IupPlotAddSamples(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
   free(px);
   free(py);
   return 0;
 }
 
-static int PlotAddStrPoints(lua_State *L)
+static int PlotAddStrSamples(lua_State *L)
 {
   double *py;
   char* *px;
   int count = luaL_checkint(L, 5);
   px = iuplua_checkstring_array(L, 3, count);
   py = iuplua_checkdouble_array(L, 4, count);
-  IupPlotAddStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  IupPlotAddStrSamples(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -394,10 +394,10 @@ void iuplua_plotfuncs_open (lua_State *L)
   iuplua_register(L, PlotInsert      ,"PlotInsert");
   iuplua_register(L, PlotInsertStr   ,"PlotInsertStr");
   iuplua_register(L, PlotInsertSegment, "PlotInsertSegment");
-  iuplua_register(L, PlotInsertPoints    ,"PlotInsertPoints");
-  iuplua_register(L, PlotInsertStrPoints ,"PlotInsertStrPoints");
-  iuplua_register(L, PlotAddPoints       ,"PlotAddPoints");
-  iuplua_register(L, PlotAddStrPoints    ,"PlotAddStrPoints");
+  iuplua_register(L, PlotInsertSamples    ,"PlotInsertSamples");
+  iuplua_register(L, PlotInsertStrSamples ,"PlotInsertStrSamples");
+  iuplua_register(L, PlotAddSamples       ,"PlotAddSamples");
+  iuplua_register(L, PlotAddStrSamples    ,"PlotAddStrSamples");
   iuplua_register(L, PlotGetSample, "PlotGetSample");
   iuplua_register(L, PlotGetSampleStr, "PlotGetSampleStr");
   iuplua_register(L, PlotGetSampleSelection, "PlotGetSampleSelection");

@@ -547,9 +547,9 @@ public:
   void DrawPlotBackground(cdCanvas* canvas) const;
   bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas) const;
   void DrawCrossHairH(const iupPlotRect &inRect, cdCanvas* canvas) const;
-    void DrawCrossPointsH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
+    void DrawCrossSamplesH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
   void DrawCrossHairV(const iupPlotRect &inRect, cdCanvas* canvas) const;
-    void DrawCrossPointsV(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
+    void DrawCrossSamplesV(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
 
   /*********************************/
 

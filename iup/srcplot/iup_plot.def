@@ -13,10 +13,10 @@ EXPORTS
   IupPlotTransform
   IupPlotTransformTo
   IupPlotPaintTo
-  IupPlotInsertStrPoints
-  IupPlotInsertPoints
-  IupPlotAddPoints
-  IupPlotAddStrPoints
+  IupPlotInsertStrSamples
+  IupPlotInsertSamples
+  IupPlotAddSamples
+  IupPlotAddStrSamples
   IupPlotGetSample
   IupPlotGetSampleStr
   IupPlotGetSampleSelection

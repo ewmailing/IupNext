@@ -35,11 +35,11 @@ void IupPlotInsert(Ihandle *ih, int ds_index, int sample_index, double x, double
 void IupPlotInsertStr(Ihandle *ih, int ds_index, int sample_index, const char* x, double y);
 void IupPlotInsertSegment(Ihandle *ih, int ds_index, int sample_index, double x, double y);
 
-void IupPlotInsertStrPoints(Ihandle* ih, int ds_index, int sample_index, const char** x, double* y, int count);
-void IupPlotInsertPoints(Ihandle* ih, int ds_index, int sample_index, double *x, double *y, int count);
+void IupPlotInsertStrSamples(Ihandle* ih, int ds_index, int sample_index, const char** x, double* y, int count);
+void IupPlotInsertSamples(Ihandle* ih, int ds_index, int sample_index, double *x, double *y, int count);
 
-void IupPlotAddPoints(Ihandle* ih, int ds_index, double *x, double *y, int count);
-void IupPlotAddStrPoints(Ihandle* ih, int ds_index, const char** x, double* y, int count);
+void IupPlotAddSamples(Ihandle* ih, int ds_index, double *x, double *y, int count);
+void IupPlotAddStrSamples(Ihandle* ih, int ds_index, const char** x, double* y, int count);
 
 void IupPlotGetSample(Ihandle* ih, int ds_index, int sample_index, double *x, double *y);
 void IupPlotGetSampleStr(Ihandle* ih, int ds_index, int sample_index, const char* *x, double *y);
