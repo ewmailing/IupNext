@@ -1302,7 +1302,6 @@ static int iMatrixSetVisibleAttrib(Ihandle* ih, const char* value)
 /*   Callbacks registered to the Canvas                                      */
 /*****************************************************************************/
 
-
 static int iMatrixFocus_CB(Ihandle* ih, int focus)
 {
   int rc = IUP_DEFAULT;

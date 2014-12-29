@@ -131,8 +131,8 @@ static void InitPlots(void)
       py[theI] = y;
       count++;
     }
-    //IupPlotAddPoints(plot[0], index, px, py, count);
-    IupPlotInsertPoints(plot[0], index, 100, px, py, count);
+    //IupPlotAddSamples(plot[0], index, px, py, count);
+    IupPlotInsertSamples(plot[0], index, 100, px, py, count);
   }
 
   IupSetAttribute(plot[0], "DS_LEGEND", "Curve 1");

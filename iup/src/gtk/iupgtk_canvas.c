@@ -703,11 +703,11 @@ static int gtkCanvasMapMethod(Ihandle* ih)
 
   g_signal_connect(G_OBJECT(ih->handle), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "key-press-event",    G_CALLBACK(iupgtkKeyPressEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "key-press-event",    G_CALLBACK(iupgtkKeyPressEvent),   ih);
   g_signal_connect(G_OBJECT(ih->handle), "key-release-event",  G_CALLBACK(iupgtkKeyReleaseEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "show-help",          G_CALLBACK(iupgtkShowHelp), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "show-help",          G_CALLBACK(iupgtkShowHelp),        ih);
 
 #if GTK_CHECK_VERSION(3, 0, 0)
   g_signal_connect(G_OBJECT(ih->handle), "draw",               G_CALLBACK(gtkCanvasDraw), ih);
