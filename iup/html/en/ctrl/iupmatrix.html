@@ -306,6 +306,25 @@ of the cell.</p>
 dialog is resized. So more columns and lines will be displayed. But the matrix 
 Natural size will be used as minimum size. To remove the minimum size limitation set 
 NUMCOL_VISIBLE and NUMLIN_VISIBLE to 0 after showing it for the first time.</p>
+<h4>Edition Mode</h4>
+<p>When READONLY=NO and there is no EDITION_CB callback or the callback return 
+is
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
+IUP_DEFAULT, the matrix cell values can be edited. </span></p>
+<p>
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
+Editing starts automatically when the user press a character key when the focus 
+is at a cell, then the old cell value is replaced by the new one being typed. I</span>f <b>F2, Enter</b> or 
+<b>Space</b> is pressed, the current cell enters the edition mode with the 
+current text of the cell. And double-clicking a cell  
+  enters the edition mode (in Motif the 
+  user must click again to the edit control get the focus).</p>
+<p>The new value will be accepted if the user press <strong>Enter</strong> 
+during edition mode. Pressing <strong>Esc</strong> will cancel the editing and 
+the the old value remains. The cell will also leave the edition mode if the user clicked 
+  in another cell or in another control, then the new value will be 
+automatically accepted. But the value confirmation still depends on the
+  EDITION_CB callback return code.</p>
 <h4>Keyboard Navigation</h4>
 <p>Keyboard navigation through the matrix cells outside the edition 
   mode is done by using the following keys:</p>
@@ -330,12 +349,6 @@ area is reached then the cells are automatically scrolled. Also if a cell
 partially visible is edited then first it is scrolled to the visible area. Also 
 while pressing together the <strong>Shift</strong> key and marks are enabled 
 with MARKMULTIPLE=Yes then a continuous area will be selected (since 3.9).</p>
-<p>When the matrix is outside the edition mode, pressing any character key makes the current key to enter in the edition 
-  mode, the old text is replaced by the new one being typed. If <b>F2, Enter</b> or 
-<b>Space</b> is pressed, the current cell enters the edition mode with the 
-current text of the cell. Double-clicking a cell also 
-  enters the edition mode (in Motif the 
-  user must click again to the edit control get the focus).</p>
 <p>Inside the <b>edition mode</b>, the 
   following keys are used 
   for a text field:</p>
@@ -351,12 +364,11 @@ current text of the cell. Double-clicking a cell also
 	<li><strong>Esc</strong>: leave the edition mode. The new value is ignored 
 	and the old value remains.</li>
 </ul>
-<p>The cell will also leave the edition mode if the user clicked 
-  in another cell or in another control, then the value will be confirmed. When pressing 
+<p>When pressing 
 <b>Enter</b> 
-  to confirm the value the focus goes to the cell below the current cell, if at the last line then the focus goes to 
-  the cell on the left. The value confirmation depends on the
-  EDITION_CB callback return code.</p>
+  to confirm the value the focus goes to the cell below the current cell, if at 
+the last line then the focus goes to the cell on the left. This can be 
+controlled using the EDITNEXT attribute.</p>
 <h4>Marks (Selected Cells)</h4>
 <p>When a mark mode is set the cells can be marked using mouse.</p>
 <p>A marked cell will have its background attenuated to indicate that it is marked. 

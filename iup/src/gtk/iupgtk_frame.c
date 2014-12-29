@@ -49,6 +49,20 @@ static int gtkFrameSetTitleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int gtkFrameSetSunkenAttrib(Ihandle* ih, const char* value)
+{
+  if (!iupAttribGetStr(ih, "_IUPFRAME_HAS_TITLE"))
+  {
+    if (iupStrBoolean(value))
+      gtk_frame_set_shadow_type((GtkFrame*)ih->handle, GTK_SHADOW_IN);
+    else
+      gtk_frame_set_shadow_type((GtkFrame*)ih->handle, GTK_SHADOW_ETCHED_IN);
+
+    return 1;
+  }
+  return 0;
+}
+
 static int gtkFrameSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
@@ -110,7 +124,7 @@ static void* gtkFrameGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* c
 
 static int gtkFrameMapMethod(Ihandle* ih)
 {
-  char *value, *title;
+  char *title;
   GtkWidget *inner_parent;
 
   if (!ih->parent)
@@ -126,12 +140,6 @@ static int gtkFrameMapMethod(Ihandle* ih)
     iupAttribSet(ih, "_IUPFRAME_HAS_TITLE", "1");
   else
   {
-    value = iupAttribGetStr(ih, "SUNKEN");
-    if (iupStrBoolean(value))
-      gtk_frame_set_shadow_type((GtkFrame*)ih->handle, GTK_SHADOW_IN);
-    else
-      gtk_frame_set_shadow_type((GtkFrame*)ih->handle, GTK_SHADOW_ETCHED_IN);
-
     if (iupAttribGet(ih, "BGCOLOR"))
       iupAttribSet(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
   }
@@ -171,6 +179,7 @@ void iupdrvFrameInitClass(Iclass* ic)
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", iupFrameGetBgColorAttrib, gtkFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "SUNKEN", NULL, gtkFrameSetSunkenAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkFrameSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_DEFAULT);
