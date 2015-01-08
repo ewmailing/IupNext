@@ -124,6 +124,8 @@ void iupdrvDialogGetPosition(Ihandle *ih, InativeHandle* handle, int *x, int *y)
   GetWindowRect(handle, &rect);
   if (x) *x = rect.left;
   if (y) *y = rect.top;
+
+  iupdrvAddScreenOffset(x, y, -1);
 }
 
 void iupdrvDialogSetPosition(Ihandle *ih, int x, int y)

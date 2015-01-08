@@ -9,6 +9,9 @@
 .style1 {
 	text-decoration: underline;
 }
+.auto-style1 {
+	background-color: #FFFFFF;
+}
 </style>
 </head>
 <body>
@@ -81,8 +84,13 @@ main screen.
   IUP_ERROR..</p>
 <h3>Notes</h3>
 <p>Will call <b>IupMap</b> for the element.</p>
-<p><strong>x</strong> and <strong>y</strong> positions are the same as returned 
+<p><strong>x</strong> and <strong>y</strong> values are the same as returned 
 by the <a href="../attrib/iup_screenposition.html">SCREENPOSITION</a> attribute.</p>
+<p>
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
+IUP_MOUSEPOS position is the same as if the global attribute
+<a href="../attrib/iup_globals.html#cursorpos">CURSORPOS</a> w<span class="auto-style1">as</span> 
+used to obtain x,y values.</span></p>
 <p>See the <a href="../dlg/iupdialog.html#PLACEMENT">PLACEMENT</a> attribute for other position and show 
   options.</p>
 <p>When IUP_CENTERPARENT is used but PARENTDIALOG is not defined then it is 
@@ -91,7 +99,7 @@ replaced by IUP_CENTER.</p>
 be replaced by IUP_CENTERPARENT.</p>
 <p>The main screen size does not include additional monitors.</p>
 <p><b>IupPopup</b> works just like <b>IupShow</b> and <b>IupShowXY</b>, but it inhibits interaction with other dialogs and interrupts the processing until 
-  IUP_CLOSE is returned in a callback or the dialog is hidden. Althougth it 
+  IUP_CLOSE is returned in a callback or the dialog is hidden. Although it 
   interrupts the processing, it does not destroy the dialog when it ends. To destroy the dialog, 
   <b>IupDestroy</b> must be called.</p>
 <p>IMPORTANT: Calling <b>IupPopup</b> for an already visible dialog will only update its position 

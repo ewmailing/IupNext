@@ -82,10 +82,7 @@ static void iMenuAdjustPos(int *x, int *y)
     iupdrvGetScreenSize(&screen_width, &screen_height);
 
   if (*x == IUP_MOUSEPOS || *y == IUP_MOUSEPOS)
-  {
     iupdrvGetCursorPos(&cursor_x, &cursor_y);
-    iupdrvAddScreenOffset(&cursor_x, &cursor_y, -1);  /* de-compensate for add offset bellow */
-  }
 
   switch (*x)
   {

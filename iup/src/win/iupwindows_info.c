@@ -79,6 +79,8 @@ void iupdrvGetCursorPos(int *x, int *y)
   GetCursorPos(&CursorPoint);
   *x = (int)CursorPoint.x;
   *y = (int)CursorPoint.y;
+
+  iupdrvAddScreenOffset(x, y, -1);
 }
 
 void iupdrvGetKeyState(char* key)

@@ -80,8 +80,11 @@ and then consult its value, if NULL abort the second instance by calling <strong
 IupClose</strong> and returning from <em>main</em>.</p>
 <h2 style="text-align: center">System <a name="Keyboard">Mouse and Keyboard</a></h2>
 <h3><strong><a name="cursorpos">CURSORPOS</a></strong></h3>
-<p>Controls and returns the cursor position in absolute coordinates relative to the upper left corner 
-of the screen. Accept values in the format &quot;X<b>x</b>Y&quot; (in C &quot;%dx%d), example &quot;200x200&quot;. 
+<p>Controls and returns the cursor position in absolute coordinates relative to the 
+origin 
+of the main screen. The origin of the main screen is at the upper left corner, 
+in Windows it is affected by the position of the Start Menu when it is at the 
+top or left side of the screen. Accept values in the format &quot;X<b>x</b>Y&quot; (in C &quot;%dx%d), example &quot;200x200&quot;. 
 In GTK and Motif also generates mouse motion messages. (since GTK 2.8)</p>
 <h3><strong><a name="MOUSEBUTTON">MOUSEBUTTON</a> </strong>(write-only) 
 <span class="style2">(since 3.3)</span></h3>
