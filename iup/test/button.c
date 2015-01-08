@@ -177,6 +177,7 @@ static void show_menu(Ihandle* ih)
   y += IupGetInt2(ih, "RASTERSIZE");
 
   IupPopup(menu, x, y);
+
   IupDestroy(menu);
 }
 
