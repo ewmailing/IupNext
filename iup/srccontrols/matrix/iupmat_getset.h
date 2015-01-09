@@ -12,15 +12,17 @@
 extern "C" {
 #endif
 
-void  iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int user_edited);
+  /* Used for draw, size computation and edition */
 char* iupMatrixGetValue(Ihandle* ih, int lin, int col);
-
-void  iupMatrixCopyValue(Ihandle* ih, int lin1, int col1, int lin2, int col2);
-void iupMatrixModifyValue(Ihandle* ih, int lin, int col, const char* value);
-
+/* Used for getting a string representation with maximum precision in getattribute and copycell */
+char* iupMatrixGetValueString(Ihandle* ih, int lin, int col);  
+/* Used only when sorting numeric values */
 double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col);
+/* Used only when sorting NON numeric values */
 char* iupMatrixGetValueText(Ihandle* ih, int lin, int col);
-char* iupMatrixGetValueString(Ihandle* ih, int lin, int col);
+
+void  iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int user_edited);
+void iupMatrixModifyValue(Ihandle* ih, int lin, int col, const char* value);
 
 void iupMatrixSetCellFlag(Ihandle* ih, int lin, int col, unsigned char attr, int set);
 int iupMatrixGetCellOffset(Ihandle* ih, int lin, int col, int *x, int *y);

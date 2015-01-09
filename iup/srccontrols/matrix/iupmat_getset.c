@@ -45,10 +45,10 @@ int iupMatrixCheckCellPos(Ihandle* ih, int lin, int col)
 
 void iupMatrixModifyValue(Ihandle* ih, int lin, int col, const char* value)
 {
-  /* This is a one call only. It is useful to support READONLY 
+  /* Called when modifying multiple cells in a sequence.
+     It is useful to support READONLY 
      and cell read-only by returning IUP_IGNORE. 
      Here is the only place where both mode=1 and update=1. 
-     Called when a processing is modifying several cells.
      */
   if (iupMatrixAuxCallEditionCbLinCol(ih, lin, col, 1, 1) != IUP_IGNORE)
     iupMatrixSetValue(ih, lin, col, value, -1);    /* call value_edit_cb, but NO numeric conversion */
@@ -343,7 +343,7 @@ static char* iMatrixGetValueNumericDisplay(Ihandle* ih, int lin, int col, const 
 
 char* iupMatrixGetValue (Ihandle* ih, int lin, int col)
 {  
-  /* NOTICE: this function is CAN BE called before map */
+  /* NOTICE: this function CAN BE called before map */
   if (!ih->handle)
     return iupAttribGetId2(ih, "", lin, col);
   else
