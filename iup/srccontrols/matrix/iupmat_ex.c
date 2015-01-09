@@ -232,6 +232,8 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
   int* sort_line_index;
   IFniii sort_cb;
 
+  /* Notice that sort_line_index[0] is always 0 */
+
   if (!ih->data->sort_line_index)
     ih->data->sort_line_index = (int*)calloc(ih->data->lines.num_alloc, sizeof(int));
   sort_line_index = ih->data->sort_line_index;
@@ -282,6 +284,9 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
     iupStrToIntInt(value, &lin1, &lin2, '-');
 
   iupAttribSetStrf(ih, "SORTCOLUMNINTERVAL", "%d,%d", lin1, lin2);
+
+  if (lin1 < 1) lin1 = 1;
+  if (lin2 < lin1) lin2 = lin1;
 
   ascending = iupStrEqualNoCase(iupAttribGetStr(ih, "SORTCOLUMNORDER"), "ASCENDING");
   

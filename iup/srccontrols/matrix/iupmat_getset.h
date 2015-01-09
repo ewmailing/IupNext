@@ -17,9 +17,9 @@ char* iupMatrixGetValue(Ihandle* ih, int lin, int col);
 /* Used for getattribute, copy cell and undo (internal),
    also a string with maximum precision when numeric. */
 char* iupMatrixGetValueString(Ihandle* ih, int lin, int col);  
-/* Used only when sorting numeric values (display) */
+/* Used only when sorting numeric values (internal) */
 double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col);
-/* Used only when sorting NON numeric values (display) */
+/* Used only when sorting NON numeric values (internal) */
 char* iupMatrixGetValueText(Ihandle* ih, int lin, int col);
 
 void  iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int user_edited);

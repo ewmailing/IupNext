@@ -166,15 +166,11 @@ void iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int use
     ih->data->need_calcsize = 1;
 }
 
-double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col)
+char* iupMatrixGetValueText(Ihandle* ih, int lin, int col)
 {
   char* value;
-  double number;
 
-  if (lin==0)
-    return 0;
-
-  if (ih->data->sort_has_index)
+  if (lin != 0 && ih->data->sort_has_index)
   {
     int index = ih->data->sort_line_index[lin];
     if (index != 0) lin = index;
@@ -188,6 +184,15 @@ double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col)
   }
   else
     value = ih->data->cells[lin][col].value;
+
+  return value;
+}
+
+double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col)
+{
+  double number;
+
+  char* value = iupMatrixGetValueText(ih, lin, col);
 
   if (!value)
   {
@@ -206,49 +211,9 @@ double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col)
   return number;
 }
 
-char* iupMatrixGetValueText(Ihandle* ih, int lin, int col)
-{  
-  char* value;
-
-  if (lin==0)
-    return NULL;
-
-  if (ih->data->sort_has_index)
-  {
-    int index = ih->data->sort_line_index[lin];
-    if (index != 0) lin = index;
-  }
-
-  if (ih->data->callback_mode)
-  {
-    /* only called in callback mode */
-    sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
-    value = value_cb(ih, lin, col);
-  }
-  else
-    value = ih->data->cells[lin][col].value;
-
-  return value;
-}
-
 char* iupMatrixGetValueString(Ihandle* ih, int lin, int col)
 {  
-  char* value;
-
-  if (lin!=0 && ih->data->sort_has_index)
-  {
-    int index = ih->data->sort_line_index[lin];
-    if (index != 0) lin = index;
-  }
-
-  if (ih->data->callback_mode)
-  {
-    /* only called in callback mode */
-    sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
-    value = value_cb(ih, lin, col);
-  }
-  else
-    value = ih->data->cells[lin][col].value;
+  char* value = iupMatrixGetValueText(ih, lin, col);
 
   if (!value && lin!=0 && ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
   {
@@ -256,7 +221,7 @@ char* iupMatrixGetValueString(Ihandle* ih, int lin, int col)
     if (getvalue_cb)
     {
       double number = getvalue_cb(ih, lin, col);
-      sprintf(ih->data->numeric_buffer_get, IUP_DOUBLE2STR, number);
+      sprintf(ih->data->numeric_buffer_get, IUP_DOUBLE2STR, number);  /* maximum precision */
       return ih->data->numeric_buffer_get;
     }
   }
@@ -341,29 +306,14 @@ static char* iMatrixGetValueNumericDisplay(Ihandle* ih, int lin, int col, const 
   return ih->data->numeric_buffer_get;
 }
 
-char* iupMatrixGetValue (Ihandle* ih, int lin, int col)
+char* iupMatrixGetValue(Ihandle* ih, int lin, int col)
 {  
   /* NOTICE: this function CAN BE called before map */
   if (!ih->handle)
     return iupAttribGetId2(ih, "", lin, col);
   else
   {
-    char* value;
-
-    if (lin != 0 && ih->data->sort_has_index)
-    {
-      int index = ih->data->sort_line_index[lin];
-      if (index != 0) lin = index;
-    }
-
-    if (ih->data->callback_mode)
-    {
-      /* only called in callback mode */
-      sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
-      value = value_cb(ih, lin, col);
-    }
-    else
-      value = ih->data->cells[lin][col].value;
+    char* value = iupMatrixGetValueText(ih, lin, col);
 
     if (ih->data->numeric_columns && ih->data->numeric_columns[col].flags & IMAT_IS_NUMERIC)
       return iMatrixGetValueNumericDisplay(ih, lin, col, value);
