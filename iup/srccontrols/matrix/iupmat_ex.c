@@ -33,9 +33,9 @@
 char* iupMatrixExGetCellValue(Ihandle* ih, int lin, int col, int convert)
 {
   if (convert)
-    return iupMatrixGetValue(ih, lin, col);  /* Display value */
+    return iupMatrixGetValueDisplay(ih, lin, col);  /* Display value */
   else
-    return iupMatrixGetValueString(ih, lin, col);  /* Internal value (Maximum Precision) */
+    return iupMatrixGetValue(ih, lin, col);  /* Internal value (Maximum Precision) */
 }
 
 /* Exported to IupMatrixEx */
@@ -307,7 +307,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
       for (lin=lin1; lin<=lin2; lin++)
       {
         sort_line_number[lin-lin1].lin = sort_line_index[lin]!=0? sort_line_index[lin]: lin;
-        sort_line_number[lin-lin1].number = iupMatrixGetValueNumber(ih, lin, col);
+        sort_line_number[lin-lin1].number = iupMatrixGetValueNumeric(ih, lin, col);
       }
 
       qsort(sort_line_number,lin2-lin1+1,sizeof(ImatSortNumber), iMatrixCompareNumberFunc);
@@ -329,7 +329,7 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
       for (lin=lin1; lin<=lin2; lin++)
       {
         sort_line_text[lin-lin1].lin = sort_line_index[lin]!=0? sort_line_index[lin]: lin;
-        sort_line_text[lin-lin1].text = iupMatrixGetValueText(ih, lin, col);
+        sort_line_text[lin-lin1].text = iupMatrixGetValueDisplay(ih, lin, col);
 
         if (ih->data->callback_mode)
           sort_line_text[lin-lin1].text = iupStrDup(sort_line_text[lin-lin1].text);

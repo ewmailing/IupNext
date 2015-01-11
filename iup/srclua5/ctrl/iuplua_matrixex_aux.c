@@ -19,10 +19,10 @@
 #include "iup_object.h"
 #include "iup_assert.h"
 #include "iup_predialogs.h"
+#include "iup_str.h"
 
 
 typedef int(*IFnL)(Ihandle*, lua_State *L);
-typedef char* (*sIFniis)(Ihandle*, int, int, char*);
 
 
 static int math_sum(lua_State *L) 
@@ -265,7 +265,7 @@ void IupMatrixExSetFormula(Ihandle* ih, int col, const char* formula, const char
   lua_close(L);
 }
 
-static char* iMatrixExDynamicTranslate_CB(Ihandle* ih, int lin, int col, char* value)
+static char* iMatrixExDynamicTranslateValue_CB(Ihandle* ih, int lin, int col, char* value)
 {
   if (value && value[0] == '=')
   {
@@ -288,11 +288,13 @@ static char* iMatrixExDynamicTranslate_CB(Ihandle* ih, int lin, int col, char* v
     if (lua_isnumber(L, -1))
     {
       double num = lua_tonumber(L, -1);
-
+      iupAttribSetDouble(ih, "FORMULA_RETURN", num);
     }
-
-    value = (char*)lua_tostring(L, -1);
-    iupAttribSetStr(ih, "FORMULA_RETURN", value);
+    else
+    {
+      const char* str = lua_tostring(L, -1);
+      iupAttribSetStr(ih, "FORMULA_RETURN", str);
+    }
 
     lua_pop(L, 1);  /* remove the result from the stack */
     return iupAttribGet(ih, "FORMULA_RETURN");
@@ -305,7 +307,7 @@ static int iMatrixExLDestroy_CB(Ihandle* ih)
 {
   Icallback cb = IupGetCallback(ih, "OLD_LDESTROY_CB");
   lua_State* L = (lua_State*)iupAttribGet(ih, "_IUPMATRIXEX_LUASTATE");
-  IupSetCallback(ih, "TRANSLATE_CB", NULL);
+  IupSetCallback(ih, "TRANSLATEVALUE_CB", NULL);
   lua_close(L);
   if (cb)
     cb(ih);
@@ -327,7 +329,7 @@ void IupMatrixExSetDynamic(Ihandle* ih, const char* init)
     IupSetCallback(ih, "OLD_LDESTROY_CB", cb);
   IupSetCallback(ih, "LDESTROY_CB", iMatrixExLDestroy_CB);
 
-  IupSetCallback(ih, "TRANSLATE_CB", (Icallback)iMatrixExDynamicTranslate_CB);
+  IupSetCallback(ih, "TRANSLATEVALUE_CB", (Icallback)iMatrixExDynamicTranslateValue_CB);
 }
 
 static int MatrixExSetFormula(lua_State *L)

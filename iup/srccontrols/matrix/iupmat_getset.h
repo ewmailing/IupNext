@@ -12,15 +12,15 @@
 extern "C" {
 #endif
 
-/* Used for draw, size computation and edition (display) */
-char* iupMatrixGetValue(Ihandle* ih, int lin, int col);
+/* Used for draw, size computation and edition (display).
+   The internal value may have been translated, converted or formatted. */
+char* iupMatrixGetValueDisplay(Ihandle* ih, int lin, int col);
+/* Used only when sorting numeric values.
+   The internal value may have been translated or converted. */
+double iupMatrixGetValueNumeric(Ihandle* ih, int lin, int col);
 /* Used for getattribute, copy cell and undo (internal),
    also a string with maximum precision when numeric. */
-char* iupMatrixGetValueString(Ihandle* ih, int lin, int col);  
-/* Used only when sorting numeric values (internal) */
-double iupMatrixGetValueNumber(Ihandle* ih, int lin, int col);
-/* Used only when sorting NON numeric values (internal) */
-char* iupMatrixGetValueText(Ihandle* ih, int lin, int col);
+char* iupMatrixGetValue(Ihandle* ih, int lin, int col);  
 
 void  iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int user_edited);
 void iupMatrixModifyValue(Ihandle* ih, int lin, int col, const char* value);

@@ -709,7 +709,7 @@ static void iMatrixDrawCellValue(Ihandle* ih, int x1, int x2, int y1, int y2, in
   if (draw_cb && !iMatrixDrawCallDrawCB(ih, lin, col, x1, x2, y1, y2, draw_cb))
     return;
 
-  value = iupMatrixGetValue(ih, lin, col);
+  value = iupMatrixGetValueDisplay(ih, lin, col);
 
   /* Put the text */
   if (value && *value)

@@ -408,7 +408,7 @@ int iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode, int
 
 static void iMatrixAuxCopyValue(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 {
-  char* value = iupMatrixGetValueString(ih, lin1, col1);
+  char* value = iupMatrixGetValue(ih, lin1, col1);
   iupMatrixModifyValue(ih, lin2, col2, value);
 }
 

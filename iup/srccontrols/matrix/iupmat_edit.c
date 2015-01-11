@@ -168,7 +168,7 @@ static int iMatrixEditCallMenuDropCb(Ihandle* ih, int lin, int col)
   {
     Ihandle* menu = IupMenu(NULL);
     int ret;
-    char* value = iupMatrixGetValue(ih, lin, col);
+    char* value = iupMatrixGetValueDisplay(ih, lin, col);
     if (!value) value = "";
 
     iupAttribSet(menu, "PREVIOUSVALUE", value);
@@ -211,7 +211,7 @@ static int iMatrixEditCallDropdownCb(Ihandle* ih, int lin, int col)
   if(cb)
   {
     int ret;
-    char* value = iupMatrixGetValue(ih, lin, col);
+    char* value = iupMatrixGetValueDisplay(ih, lin, col);
     if (!value) value = "";
 
     IupStoreAttribute(ih->data->droph, "PREVIOUSVALUE", value);
@@ -263,7 +263,7 @@ static void iMatrixEditChooseElement(Ihandle* ih)
 
     /* dropdown values are set by the user in DROP_CB.
     text value is set here from cell contents. */
-    value = iupMatrixGetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+    value = iupMatrixGetValueDisplay(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
     if (!value) value = "";
     IupStoreAttribute(ih->data->texth, "VALUE", value);
     IupStoreAttribute(ih->data->texth, "PREVIOUSVALUE", value);

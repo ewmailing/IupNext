@@ -58,7 +58,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (24/Dec/2014)</h3>
+<h3>SVN (11/Jan/2015)</h3>
 
 <ul>
 
@@ -79,7 +79,10 @@ version 3.x.</p>
 	VALUE_EDIT_CB and VALUECHANGED_CB when the cell was interactively changed in
 	<strong>IupMatrix</strong>.</li>
 	<li><span class="hist_new">New:</span> <b>IupMatrixExSetFormula</b> 
-	auxiliary function for <strong>IupMatrixEx</strong>.</li>
+	and <strong>IupMatrixExSetDynamic</strong> 
+	auxiliary functions for <strong>IupMatrixEx</strong>. </li>
+	<li><span class="hist_new">New:</span> TRANSLATEVALUE_CB callback for
+	<strong>IupMatrix</strong>.</li>
 	<li><span class="hist_new">New:</span> <b>IupPlotSetFormula</b> 
 	auxiliary function for <strong>IupPlot</strong>.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
@@ -122,6 +125,8 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupShow</strong> when 
 	redisplaying a dialog without changing its position when Start Menu is 
 	positioned at left or top of the screen in Windows.</li>
+	<li><span class="hist_fixed">Fixed:</span> sorting of numeric values in
+	<strong>IupMatrixEx</strong>.</li>
 
 </ul>
 

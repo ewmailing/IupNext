@@ -64,6 +64,7 @@ typedef int (*IFndds)(Ihandle*, double, double, char*);    /* plotmotion_cb */
 
 typedef char* (*sIFnii)(Ihandle*, int, int);  /* value_cb, font_cb */
 typedef char* (*sIFni)(Ihandle*, int);  /* cell_cb */
+typedef char* (*sIFniis)(Ihandle*, int, int, char*);  /* translatevalue_cb */
 
 typedef double (*dIFnii)(Ihandle*, int, int);  /* numericgetvalue_cb */
 typedef void   (*IFniid)(Ihandle*, int, int, double);  /* numericsetvalue_cb */

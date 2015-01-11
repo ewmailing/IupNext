@@ -234,7 +234,7 @@ static char* iMatrixGetValueAttrib(Ihandle* ih)
   if (IupGetInt(ih->data->datah, "VISIBLE"))
     return iupMatrixEditGetValue(ih);
   else 
-    return iupMatrixGetValueString(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
+    return iupMatrixGetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
 }
 
 static int iMatrixSetCaretAttrib(Ihandle* ih, const char* value)
@@ -581,7 +581,7 @@ static void iMatrixFitColText(Ihandle* ih, int col)
 
   for(lin = 0; lin < ih->data->lines.num; lin++)
   {
-    char* title_value = iupMatrixGetValue(ih, lin, col);
+    char* title_value = iupMatrixGetValueDisplay(ih, lin, col);
     if (title_value && title_value[0])
     {
       int w;
@@ -605,7 +605,7 @@ static void iMatrixFitLineText(Ihandle* ih, int line)
 
   for(col = 0; col < ih->data->columns.num; col++)
   {
-    char* title_value = iupMatrixGetValue(ih, line, col);
+    char* title_value = iupMatrixGetValueDisplay(ih, line, col);
     if (title_value && title_value[0])
     {
       int h;
@@ -845,7 +845,7 @@ static int iMatrixSetIdValueAttrib(Ihandle* ih, int lin, int col, const char* va
 static char* iMatrixGetIdValueAttrib(Ihandle* ih, int lin, int col)
 {
   if (iupMatrixCheckCellPos(ih, lin, col))
-    return iupMatrixGetValueString(ih, lin, col);
+    return iupMatrixGetValue(ih, lin, col);
   return NULL;
 }
 
