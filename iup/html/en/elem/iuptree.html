@@ -55,11 +55,17 @@ tree() [in LED]</pre>
 
 
 <h4><a href="iuptree_attrib.html#global">General</a></h4>
-<p class="info"><strong>ADDEXPANDED<br>
+<p class="info"><strong>ADDEXPANDED<br>ADDROOT<br>AUTOREDRAW<br>
 BGCOLOR<br>
 CANFOCUS<br>
 COUNT<br>
 DRAGDROPTREE<br>
+<strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
+DROPFILESTARGET</strong><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">&nbsp;<br>
+<strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
+DROPEQUALDRAG</strong>&nbsp;<br>
+<strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
+EMPTYAS3STATE</strong>&nbsp;</span></span><br>
 EXPAND<br>
 FGCOLOR<br>
 HIDELINES<br>
@@ -72,25 +78,25 @@ SPACING<br>
 TOPITEM</strong></p>
 <h4><a href="iuptree_attrib.html#nodes">Nodes</a></h4>
 <p class="info"><strong>CHILDCOUNT<br>
-    FGCOLOR<br>
+    COLOR<br>
     DEPTH<br>
     KIND<br>
     PARENT<br>
     STATE<br>
     TITLE<br>
 TITLEFONT<br>TOGGLEVALUE<br>TOGGLEVISIBLE<br>
+<strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
+TOTALCHILDCOUNT</strong><br>
 USERDATA</strong></p>
 <h4><a href="iuptree_attrib.html#images">Images</a></h4>
-<p class="info"><strong>IMAGELEAF<br>
+<p class="info"><strong>IMAGE<br>IMAGEEXPANDED<br>IMAGELEAF<br>
     IMAGEBRANCHCOLLAPSED<br>
-    IMAGEBRANCHEXPANDED<br>
-    IMAGEid<br>
-    IMAGEEXPANDEDid</strong></p>
+    IMAGEBRANCHEXPANDED</strong></p>
 <h4><a href="iuptree_attrib.html#focus">Focus Node</a></h4>
 <p class="info"><strong>VALUE</strong></p>
 <h4><a href="iuptree_attrib.html#marks">Marks</a></h4>
 <p class="info"><strong>MARK<br>
-MARKEDid<br>
+MARKED<br>
     MARKEDNODES<br>MARKMODE<br>
 MARKSTART</strong></p>
 <h4><a href="iuptree_attrib.html#tree">Hierarchy</a></h4>
@@ -104,7 +110,7 @@ DELNODE<br>
     INSERTBRANCH<br>
 MOVENODE</strong></p>
 <h4><a href="iuptree_attrib.html#edit">Editing</a></h4>
-<p class="info"><b>RENAMENODE<br>
+<p class="info"><b>RENAME<br>
 </b> <strong>RENAMECARET<br>
     RENAMESELECTION<br>
     SHOWRENAME</strong></p>
@@ -115,6 +121,9 @@ MOVENODE</strong></p>
 <strong>MULTISELECTION_CB</strong>:
   Action generated when multiple nodes are 
   selected with the mouse and the shift key pressed.<br>
+<strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
+MULTIUNSELECTION_CB</strong><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">: 
+Action generated before multiple nodes are unselected in one single operation.</span><br>
 <strong>BRANCHOPEN_CB</strong>:
   Action generated when a branch is expanded. <br>
 <strong>BRANCHCLOSE_CB</strong>:

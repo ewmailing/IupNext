@@ -61,7 +61,7 @@ static int iMatrixEditCallEditionCbUpdateValue(Ihandle* ih, int mode, int update
 
 static int iMatrixEditFinish(Ihandle* ih, int setfocus, int update, int accept_ignore)
 {
-  if (IupGetInt(ih->data->datah, "VISIBLE"))
+  if (ih->data->editing)
   {
     int ret;
 
@@ -75,6 +75,8 @@ static int iMatrixEditFinish(Ihandle* ih, int setfocus, int update, int accept_i
 
     if (ret == IUP_IGNORE && accept_ignore)
       return IUP_IGNORE;
+
+    ih->data->editing = 0;
 
     iupAttribSet(ih, "_IUPMAT_IGNOREFOCUS", "1");
 
@@ -309,6 +311,7 @@ static int iMatrixEditKillFocus_CB(Ihandle* ih)
 
 int iupMatrixEditIsVisible(Ihandle* ih)
 {
+  //TODO
   if (!IupGetInt(ih, "ACTIVE"))
     return 0;
 
@@ -334,6 +337,7 @@ int iupMatrixEditShow(Ihandle* ih)
   if (ih->data->columns.num <= 1 || ih->data->lines.num <= 1)
     return 0;
 
+  //TODO
   /* not active */
   if(!IupGetInt(ih, "ACTIVE"))
     return 0;
@@ -348,6 +352,8 @@ int iupMatrixEditShow(Ihandle* ih)
 
   if (iMatrixEditCallMenuDropCb(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell))
     return 0;
+
+  ih->data->editing = 1;
 
   /* select edit control */
   iMatrixEditChooseElement(ih);

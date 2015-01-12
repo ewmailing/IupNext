@@ -35,6 +35,10 @@ void  IupMatSetfAttribute (Ihandle* ih, const char* name, int lin, int col, cons
 #define IUP_PRIMARY -1
 #define IUP_SECONDARY -2
 
+/* available only when linking with "iupluamatrix" */
+void IupMatrixSetFormula(Ihandle* ih, int col, const char* formula, const char* init);
+void IupMatrixSetDynamic(Ihandle* ih, const char* init);
+
 
 #ifdef __cplusplus
 }

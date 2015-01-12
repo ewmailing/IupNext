@@ -220,10 +220,12 @@ static int iMatrixSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->columns.num <= 1 || ih->data->lines.num <= 1)
     return 0;
-  if (IupGetInt(ih->data->datah, "VISIBLE"))
+
+  if (ih->data->editing)
     IupStoreAttribute(ih->data->datah, "VALUE", value);
   else 
     iupMatrixSetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell, value, 0);
+
   return 0;
 }
 
@@ -231,7 +233,8 @@ static char* iMatrixGetValueAttrib(Ihandle* ih)
 {
   if (ih->data->columns.num <= 1 || ih->data->lines.num <= 1)
     return NULL;
-  if (IupGetInt(ih->data->datah, "VISIBLE"))
+
+  if (ih->data->editing)
     return iupMatrixEditGetValue(ih);
   else 
     return iupMatrixGetValue(ih, ih->data->lines.focus_cell, ih->data->columns.focus_cell);
@@ -371,7 +374,12 @@ static int iMatrixSetEditModeAttrib(Ihandle* ih, const char* value)
 
 static char* iMatrixGetEditModeAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean (iupMatrixEditIsVisible(ih)); 
+  return iupStrReturnBoolean(iupMatrixEditIsVisible(ih)); 
+}
+
+static char* iMatrixGetEditingAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->editing);
 }
 
 static int iMatrixSetEditNextAttrib(Ihandle* ih, const char* value)
@@ -1281,7 +1289,7 @@ static char* iMatrixGetNumLinVisibleAttrib(Ihandle* ih)
 static char* iMatrixGetMaskDataAttrib(Ihandle* ih)
 {
   /* Used only by the OLD iupmask API */
-  if (IupGetInt(ih->data->datah, "VISIBLE"))
+  if (ih->data->editing)
     return IupGetAttribute(ih->data->datah,"OLD_MASK_DATA");
   else
     return NULL;
@@ -1646,6 +1654,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterCallback(ic, "DRAW_CB", "iiiiiiv");
   iupClassRegisterCallback(ic, "DROPCHECK_CB", "ii");
   iupClassRegisterCallback(ic, "TYPE_CB", "ii=s");
+  iupClassRegisterCallback(ic, "TRANSLATEVALUE_CB", "iis=s");
   /* --- Editing --- */
   iupClassRegisterCallback(ic, "MENUDROP_CB", "nii");
   iupClassRegisterCallback(ic, "DROP_CB", "nii");
@@ -1736,6 +1745,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "ORIGINOFFSET", iMatrixGetOriginOffsetAttrib, NULL, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOW", NULL, iMatrixSetShowAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDIT_MODE", iMatrixGetEditModeAttrib, iMatrixSetEditModeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EDITING", iMatrixGetEditingAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITNEXT", iMatrixGetEditNextAttrib, iMatrixSetEditNextAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iupMatrixDrawSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId2(ic, "CLEARVALUE", NULL, iMatrixSetClearValueAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -1765,6 +1775,22 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iMatrixGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupMatrixRegisterEx(ic);
+
+  if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
+  {
+    IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Invalid Formula.");
+  }
+  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+  {
+    IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "FÛrmula Inv·lida.");
+
+    if (IupGetInt(NULL, "UTF8MODE"))
+    {
+      /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
+      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+      IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "F√≥rmula Inv√°lida.");
+    }
+  }
 
   if (!IupGetHandle("IupMatrixCrossCursor"))
     iMatrixCreateCursor();

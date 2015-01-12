@@ -103,6 +103,7 @@ struct _IcontrolData
   Ihandle* texth;   /* Text handle                    */
   Ihandle* droph;   /* Dropdown handle                */
   Ihandle* datah;   /* Current active edition element, may be equal to texth or droph */
+  int editing;
 
   cdCanvas* cd_canvas;
 

@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<h2>IupMatrix Attributes<span class="style1"> (all non inheritable with 
+<h2>IupMatrix Attributes<span class="style1"> (all non inheritable, with 
 exceptions)</span></h2>
 <h3>General Attributes</h3>
 <p><strong><a name="CURSOR">CURSOR</a></strong>:
@@ -27,8 +27,13 @@ exceptions)</span></h2>
 &quot;IupMatrixCrossCursor&quot;.</p>
 <p><strong><a name="EDIT_MODE">EDIT_MODE</a></strong>:
   When set to YES, programmatically puts the 
-  current cell in edition mode, allowing the user to modify its value. When consulted informs if the the current cell is 
-  being edited. Possible values: &quot;YES&quot; or &quot;NO&quot;.</p>
+  current cell in edition mode, allowing the user to modify its value. When consulted informs if the 
+editing control is visible (text or dropdown). Possible values: &quot;YES&quot; or &quot;NO&quot;.</p>
+<p><strong>EDITING</strong> (read-only): returns Yes if the editing process is 
+active. It is set to Yes after EDITION_CB, after MENUDROP_CB,&nbsp; before 
+DROP_CB and before the editing control is made visible. Set to NO when editing 
+is about to end, after EDITION_CB and after the value has been updated, but 
+before the editing control is made invisible. (since 3.13)</p>
 <p><strong><a name="EDITNEXT">EDITNEXT</a></strong>: controls how the next cell after editing is 
 chosen. Can be LIN, COL, LINCR, COLCR. Default: LIN. (since 3.4)</p>
 <p class="info">LIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - go to the next line, if at 

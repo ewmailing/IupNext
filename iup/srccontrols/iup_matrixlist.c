@@ -708,7 +708,7 @@ static int iMatrixListSetValueAttrib(Ihandle* ih, const char* value)
   if (ih->data->columns.num <= 1 || ih->data->lines.num <= 1)
     return 0;
 
-  if (IupGetInt(ih->data->datah, "VISIBLE"))
+  if (ih->data->editing)
     IupStoreAttribute(ih->data->datah, "VALUE", value);
   else 
     iupMatrixSetValue(ih, ih->data->lines.focus_cell, mtxList->label_col, value, 0);
@@ -725,7 +725,7 @@ static char* iMatrixListGetValueAttrib(Ihandle* ih)
   if (ih->data->columns.num <= 1 || ih->data->lines.num <= 1)
     return NULL;
 
-  if (IupGetInt(ih->data->datah, "VISIBLE"))
+  if (ih->data->editing)
     return iupMatrixEditGetValue(ih);
   else 
     return iupMatrixGetValue(ih, ih->data->lines.focus_cell, mtxList->label_col);

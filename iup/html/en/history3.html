@@ -58,13 +58,14 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (11/Jan/2015)</h3>
+<h3>SVN (12/Jan/2015)</h3>
 
 <ul>
 
+	<li><span class="hist_new">New:</span> global attribute DEFAULTFONTFACE.</li>
+
 	<li><span class="hist_new">New:</span> EXPANDVERTICAL and EXPANDHORIZONTAL 
 	for <strong>IupGLCanvasBox</strong> children.</li>
-	<li><span class="hist_new">New:</span> global attribute DEFAULTFONTFACE.</li>
 	<li><span class="hist_new">New:</span> <strong>XHIDDEN </strong>and <strong>
 	YHIDDEN</strong> attributes for scrollbar information in <strong>IupCanvas</strong>.</li>
 	<li><span class="hist_new">New:</span> TIPFORMAT, AXS_XTIPFORMAT, 
@@ -73,25 +74,27 @@ version 3.x.</p>
 	<li><span class="hist_new">New:</span> <strong>IupPlotFindSample</strong>, <b>IupPlotAddSegment, </b>
 	<strong>IupPlotInsertSegment</strong> 
 	auxiliary functions for <strong>IupPlot</strong>.</li>
+	<li><span class="hist_new">New:</span> <b>IupPlotSetFormula</b> 
+	auxiliary function for <strong>IupPlot</strong>.</li>
 	<li><span class="hist_new">New:</span> NACTIVE attribute for the <strong>
 	IupDialog</strong>.</li>
 	<li><span class="hist_new">New:</span> CELL_EDITED attribute set during 
 	VALUE_EDIT_CB and VALUECHANGED_CB when the cell was interactively changed in
 	<strong>IupMatrix</strong>.</li>
-	<li><span class="hist_new">New:</span> <b>IupMatrixExSetFormula</b> 
-	and <strong>IupMatrixExSetDynamic</strong> 
-	auxiliary functions for <strong>IupMatrixEx</strong>. </li>
+	<li><span class="hist_new">New:</span> <b>IupMatrixSetFormula</b> 
+	and <strong>IupMatrixSetDynamic</strong> 
+	auxiliary functions for <strong>IupMatrix</strong>. </li>
 	<li><span class="hist_new">New:</span> TRANSLATEVALUE_CB callback for
 	<strong>IupMatrix</strong>.</li>
-	<li><span class="hist_new">New:</span> <b>IupPlotSetFormula</b> 
-	auxiliary function for <strong>IupPlot</strong>.</li>
+	<li><span class="hist_new">New:</span> EDITING state attribute for <strong>
+	IupMatrix</strong>.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	IupLua console file selection to include filter &quot;*.lua&quot;.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	<strong>IupLayoutDialog</strong> context menu to include &quot;Set Focus&quot; and 
 	&quot;Blink&quot; items.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
-	processing of <a name="MENUCONTEXT_CB">MENUCONTEXT_CB</a> callback return 
+	processing of MENUCONTEXT_CB callback return 
 	value to accept IUP_IGNORE in <strong>IupMatrixEx</strong>.</li>
 	<li> <b><strong><span class="hist_changed">Changed:</span></strong> 
 	IupPlotInsertPoints, IupPlotInsertStrPoints, IupPlotAddPoints, IupPlotAddStrPoints</b>, 

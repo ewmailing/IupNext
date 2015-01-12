@@ -248,6 +248,17 @@ the event.<br>
 <p class="info"><span class="style1">Returns:</span> IUP_DEFAULT will show a drop feedback, 
     IUP_CONTINUE will show and enable the toggle button, or IUP_IGNORE to draw 
 nothing.</p>
+<p><strong><a name="TRANSLATEVALUE_CB">TRANSLATEVALUE_CB</a></strong>:
+  Action generated to translate the value of a 
+  cell during display and size computation. Called both for common cells and for line and column titles. 
+(since 3.13)</p>
+<pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>value</strong>); [in C]
+<strong>elem</strong>:translatevalue_cb(<strong>lin, col</strong>: number, <strong>value</strong>: string) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
+    <strong>lin</strong>, <strong>col</strong>:
+    Coordinates of the cell.<br>value: original cell value</p>
+<p class="info"><span class="style1">Returns:</span> the string to be drawn. </p>
 <h3>Editing</h3>
 <p><strong><a name="DROP_CB">DROP_CB</a></strong>:
   Action generated before the current cell 
