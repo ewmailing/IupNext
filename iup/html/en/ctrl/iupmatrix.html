@@ -280,7 +280,7 @@ formula is executed for each line within the column. Internally uses
 once (can be NULL). The callback <span class="auto-style1">&quot;int <strong>FORMULAINIT_CB</strong>(Ihandle* 
 ih, lua_State *L);</span>&quot; can also be used to initialize the Lua state. All 
 Lua standard libraries are pre-loaded.</p>
-<p>This function is available in the &quot;iupluamatrix&quot; library but it does not 
+<p>This function is available in the &quot;iupluacontrols&quot; library but it does not 
 requires an active Lua context, because it uses a temporary Lua context. If 
 called from Lua it will also be independent from the application's Lua context. 
 To use it in C/C++ you must link also with Lua and iuplua even when not using 
@@ -357,7 +357,7 @@ the function call. All Lua standard libraries are pre-loaded.</p>
 <p>This Lua state is saved for processing during the TRANSLATEVALUE_CB callback. 
 If called again the previous state will be destroyed and a new one will be 
 created.</p>
-<p>This function is available in the &quot;iupluamatrix&quot; library but it does not 
+<p>This function is available in the &quot;iupluacontrols&quot; library but it does not 
 requires an active Lua context, because it uses a temporary Lua context. If 
 called from Lua it will also be independent from the application's Lua context. 
 To use it in C/C++ you must link also with Lua and iuplua even when not using 

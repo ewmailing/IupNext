@@ -30,10 +30,11 @@ exceptions)</span></h2>
   current cell in edition mode, allowing the user to modify its value. When consulted informs if the 
 editing control is visible (text or dropdown). Possible values: &quot;YES&quot; or &quot;NO&quot;.</p>
 <p><strong>EDITING</strong> (read-only): returns Yes if the editing process is 
-active. It is set to Yes after EDITION_CB, after MENUDROP_CB,&nbsp; before 
-DROP_CB and before the editing control is made visible. Set to NO when editing 
-is about to end, after EDITION_CB and after the value has been updated, but 
-before the editing control is made invisible. (since 3.13)</p>
+active for text or dropdown. It is set to Yes after EDITION_CB, after 
+MENUDROP_CB,&nbsp; before DROP_CB and before the editing control is made 
+visible. Set to NO when editing is about to end, after EDITION_CB and after the 
+value has been updated, but before the editing control is made invisible. (since 
+3.13)</p>
 <p><strong><a name="EDITNEXT">EDITNEXT</a></strong>: controls how the next cell after editing is 
 chosen. Can be LIN, COL, LINCR, COLCR. Default: LIN. (since 3.4)</p>
 <p class="info">LIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - go to the next line, if at 
