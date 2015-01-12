@@ -311,7 +311,6 @@ static int iMatrixEditKillFocus_CB(Ihandle* ih)
 
 int iupMatrixEditIsVisible(Ihandle* ih)
 {
-  //TODO
   if (!IupGetInt(ih, "ACTIVE"))
     return 0;
 
@@ -337,13 +336,11 @@ int iupMatrixEditShow(Ihandle* ih)
   if (ih->data->columns.num <= 1 || ih->data->lines.num <= 1)
     return 0;
 
-  //TODO
-  /* not active */
-  if(!IupGetInt(ih, "ACTIVE"))
-    return 0;
-
-  /* already visible */
-  if(IupGetInt(ih->data->datah, "VISIBLE"))
+  /* already editing, not active, already visible */
+  /* redundant check, left for historical reasons */
+  if (ih->data->editing ||
+      !IupGetInt(ih, "ACTIVE") ||
+      IupGetInt(ih->data->datah, "VISIBLE"))
     return 0;
 
   /* notify application */

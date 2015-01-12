@@ -409,13 +409,6 @@ static char* iMatrixGetEditNextAttrib(Ihandle* ih)
   }
 }
 
-static int iMatrixSetActiveAttrib(Ihandle* ih, const char* value)
-{
-  iupBaseSetActiveAttrib(ih, value);
-  iupMatrixDraw(ih, 1);
-  return 0;
-}
-
 static int iMatrixHasColWidth(Ihandle* ih, int col)
 {
   char* value = iupAttribGetId(ih, "WIDTH", col);
@@ -1295,11 +1288,24 @@ static char* iMatrixGetMaskDataAttrib(Ihandle* ih)
     return NULL;
 }
 
+static int iMatrixSetActiveAttrib(Ihandle* ih, const char* value)
+{
+  if (!iupStrBoolean(value))
+  {
+    if (ih->data->editing || iupMatrixEditIsVisible(ih))  /* redundant check, left for historical reasons */
+      iupMatrixEditHide(ih);
+  }
+
+  iupBaseSetActiveAttrib(ih, value);
+  iupMatrixDraw(ih, 1);
+  return 0;
+}
+
 static int iMatrixSetVisibleAttrib(Ihandle* ih, const char* value)
 {
   if (!iupStrBoolean(value))
   {
-    if (iupMatrixEditIsVisible(ih))
+    if (ih->data->editing || iupMatrixEditIsVisible(ih))  /* redundant check, left for historical reasons */
       iupMatrixEditHide(ih);
   }
 
@@ -1667,7 +1673,9 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterCallback(ic, "MARK_CB", "ii");
   iupClassRegisterCallback(ic, "MARKEDIT_CB", "iii");
 
-  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iMatrixSetVisibleAttrib, "YES", "NO", IUPAF_NO_SAVE|IUPAF_DEFAULT);
+  /* Overwrite IupCanvas Attributes */
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iMatrixSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iMatrixSetVisibleAttrib, "YES", "NO", IUPAF_NO_SAVE | IUPAF_DEFAULT);
 
   /* Change the Canvas default */
   iupClassRegisterReplaceAttribDef(ic, "CURSOR", "IupMatrixCrossCursor", "ARROW");
@@ -1767,9 +1775,6 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "RESIZEMATRIXCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "102 102 102", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDEFOCUS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWFILLVALUE", iMatrixGetShowFillValueAttrib, iMatrixSetShowFillValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-
-  /* Overwrite IupCanvas Attributes */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iMatrixSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* IupMatrix Attributes - MASK */
   iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iMatrixGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

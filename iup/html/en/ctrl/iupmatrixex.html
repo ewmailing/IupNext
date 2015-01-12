@@ -44,7 +44,7 @@
 	  background-color: #CEE7FF;
   }
   .auto-style1 {
-	font-family: "Courier New", Courier, monospace;
+	background-color: #E1E1E1;
 }
   </style>
 </head>
@@ -79,17 +79,18 @@
 
   
 <p>
-  <strong>IupMatrix</strong> expansion library.</p>
-<p>
+  An extension library for
+  <strong>IupMatrix</strong>.
   This library adds new features to the <strong>IupMatrix</strong> in order to 
-  expand the current features to wider the <strong>IupMatrix</strong> 
-  applications.</p>
+  extend the current features. Adds support for Import/Export, Clipboard, 
+  Undo/Redo, Find, Sort, Column Visibility, Numeric Columns, Numeric Units, 
+  Context Menu and others. </p>
 <p>
-  The expansion can be used in two different ways: using a new control called
+  The extension can be used in two different ways: using a new control called
   <strong>IupMatrixEx</strong>, or by calling <strong>IupMatrixExInit</strong> 
   for an existing <strong>IupMatrix</strong> control.</p>
 <p>
-  The matrix can be used in callback mode or in standard more.</p>
+  It can be used in callback mode or in standard more.</p>
 <p>
   Based on the DMatrix library created by Bruno Kassar and Luiz CristÛv„o Gomez 
   Coelho.</p>
@@ -141,6 +142,11 @@ contents internally as a result of an operation such as paste or duplicate. Can
 be canceled setting to No. See the BUSY_CB callback for more information.</p>
 <p><strong>BUSYPROGRESS</strong>: flag to display a progress dialog while data 
 is being changed. Can be Yes or No. Default: No.</p>
+<p>
+<strong>LASTERROR</strong> (read-only): set when an error occurred during an 
+operation. It is reset to NULL at the start of every operation that sets its 
+value.</p>
+<h4>Import/Export a<span class="auto-style1">nd </span>Clipboard</h4>
 <p><strong>COPY</strong> (write-only): copies the selected cells to the 
 clipboard in TEXT format. If value is ALL then all cells are copied regardless if 
 there is a selection. If value is MARKED then the
@@ -180,13 +186,35 @@ used to add the attributes ALIGNMENT?, BGCOLOR?:?, FGCOLOR?:? and FONT?:? to the
 matrix to a file, not counting the title line if any. (since 3.12)<br><strong>
 SKIPCOLUMNS</strong>: number of columns to skip at start when exporting the 
 matrix to a file, not counting the title columns if any. (since 3.12)</p>
-<p><strong>COPYCOLTO<em>L:C</em></strong> (write-only): copies the value of the 
-given cell to a specified range of cells in the same column. Value can be &quot;ALL&quot; 
-(for all lines), TOP (for all lines before the given line), BOTTOM (for all 
-lines after the given line), MARKED (for all lines where the cell is marked), or 
-a series of intervals in the format &quot;L1-L2,L3-L4,L5,L6-L7,...&quot;. BUSY 
-will be set to Yes during the operation.&nbsp; Only visible cells will receive 
-data. </p>
+<p>
+<strong>PASTE</strong> (write-only): paste data from the clipboard. Data is 
+obtained from the clipboard in TEXT format. Value is the insert position, it can 
+be &quot;FOCUS&quot; to use the <a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a> 
+attribute, can be &quot;MARKED&quot; to use the start of the selected groups of cells 
+(top-left selected cell), or can be a cell address &quot;L:C&quot;.</p>
+<p class="info">Data must be in plain text format. Lines can be separated in 
+DOS, UNIX or MAC format. Columns can be separated with a tab ('\t'), or with 
+a semicolon (';'), or with a space (' ') or with a custom value defined by the <strong>TEXTSEPARATOR</strong> attribute. Data 
+must contain an exact matrix organization. Use the attribute <strong>TEXTSKIPLINES</strong> to 
+skip a number of lines in the beginning of the data. If data at the insert 
+position will have more lines or columns than the current matrix, then the
+<a href="#PASTESIZE_CB">PASTESIZE_CB</a> callback is called, if the callback 
+does not exist the matrix size is not changed, and the exceeding data will be discarded. If defined the <a href="iupmatrix_cb.html#EDITION_CB">
+EDITION_CB</a> callback will be called before the cell value is set. <strong>LASTERROR</strong> 
+can be set to &quot;NOTEXT&quot; (data is empty or NULL), &quot;INVALIDMATRIX&quot; (not a matrix 
+data). <strong>BUSY</strong> will be set to Yes during the operation. Only 
+visible cells will receive data. </p>
+<p>
+<strong>PASTEDATA</strong> (write-only): paste data from a memory buffer. Value 
+is the data. Insert position is obtained from the
+<a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a> attribute. See PASTE 
+for more details.</p>
+<p>
+<strong>PASTEFILE</strong> (write-only): paste data from a file. Value is the 
+file name to be loaded. Insert position is always &quot;0:0&quot;. See PASTE for more 
+details. LASTERROR can also be set to &quot;INVALIDFILENAME&quot; (failed to open).</p>
+<h4>
+Find</h4>
 <p><strong>FIND</strong>: searches for the given text in the matrix 
 cells. The search will start at the FOCUS_CELL cell, if found the FOCUS_CELL 
 will be changed to the cell where the text were found and the cell will also be 
@@ -207,6 +235,68 @@ used for comparison or it will search for the first occurrence of the text
 inside the cell. Can be Yes or No. Default: Yes.</p>
 <p><strong>FINDMATCHSELECTION</strong>: defines if the whole matrix will 
 be searched or just the selected cells. Can be Yes or No. Default: No.</p>
+<h4>Undo/Redo</h4>
+<p>
+<strong>UNDOREDO</strong>: Enable or disable the Undo/Redo support. Can be Yes 
+or No. Default: No. Undo/Redo support is available only for cell values, 
+interactively or programmatically changed. Attributes are not saved/restored.</p>
+<p>
+<strong>UNDOCOUNT</strong> (read-only): Returns the total number of stored undo 
+levels.</p>
+<p>
+<strong>UNDONAME<em>id</em></strong> (read-only): Returns a name for the given 
+undo level. It represents the operation that was performed. Uses descriptive 
+strings based on the names &quot;PASTECLIP&quot;, &quot;PASTEDATA&quot;, &quot;PASTEFILE&quot;, 
+&quot;COPYCOLTO:ALL&quot;, &quot;COPYCOLTO:TOP&quot;, &quot;COPYCOLTO:BOTTOM&quot;, &quot;COPYCOLTO:MARKED&quot;, 
+&quot;COPYCOLTO:INTERVAL&quot;, &quot;CLEARVALUE&quot;, &quot;SETCELL&quot; and &quot;EDITCELL&quot;, that are 
+language dependent.</p>
+<p>
+<strong>UNDO</strong>: Sets the number of undo levels to be performed. If value 
+is NULL will undo 1 level. When retrieved returns Yes or No indicating if it has 
+Undo to be performed. BUSY will be set to Yes during the operation.</p>
+<p>
+<strong>REDO</strong>: Sets the number of redo levels to be performed. If value 
+is NULL will redo 1 level. When retrieved returns Yes or No indicating if it has 
+Redo to be performed. BUSY will be set to Yes during the operation.</p>
+<p>
+<strong>UNDOCLEAR</strong> (write-only): clears all Undo/Redo information.</p>
+<h4>Sort</h4>
+<p>
+<strong>SORTCOLUMN<em>id</em></strong> (write-only): sort the specified lines of 
+the matrix based on the values of the given column (id). Can be ALL (1-NUMLIN), 
+an interval in the format &quot;L1-L2&quot;, INVERT (invert the order in the current 
+interval of the current column, id is ignored) or RESET (remove any ordering). 
+The SORTSIGN<em>id</em> 
+attribute will be updated to reflect the ordering. </p>
+<p class="info">When the SORTCOLUMNCOMPARE_CB callback is NOT defined, and the column 
+in NOT numeric, then the text is sorted using an <strong>Alphanumeric Algorithm</strong>. This 
+means that numbers and text in the same value are sorted separately (for ex: A1 A2 A11 A30 
+B1). Also 
+natural alphabetic order is used: 123...aA·¡...bBcC... The internal comparison 
+will work only for Latin-1 
+characters, even if UTF8MODE is Yes.<br><strong>IMPORTANT</strong>: The sort 
+will not affect the original data, only how it is displayed from the original 
+data and how it is updated to the original data. The line and cell attributes of 
+the sorted will NOT be affected. This means that colors and fonts will NOT 
+follow the sort order, also means that cell address in FOCUS_CELL, MARKED, 
+ORIGIN, SHOW, HEIGHTn, and others, are all relative to the displayed cells and 
+they do NOT follow the sort order. *VALUE_CB, EDITION_CB and VALUE_EDIT_CB will 
+be called with the correct index following the sort order, all other callbacks 
+won't.</p>
+<p>
+<strong>SORTCOLUMNORDER</strong>: defines if the number or text comparison is in 
+ASCENDING or DESCENDING order. Default: ASCENDING. Used during SORTCOLUMN<em>id</em> 
+and when the SORTCOLUMNCOMPARE_CB callback is NOT defined. Used to update the SORTSIGN<em>id</em> 
+attribute when the SORTCOLUMNCOMPARE_CB callback is defined. </p>
+<p>
+<strong>SORTCOLUMNCASESENSITIVE</strong>: defines if the text comparison is case 
+sensitive. Can be Yes or No. Default: Yes. Used only during SORTCOLUMN<em>id</em> 
+and when the SORTCOLUMNCOMPARE_CB callback is not defined.</p>
+<p>
+<strong>SORTCOLUMNINTERVAL</strong> (read-only): Returns the last sorted 
+interval, in the format &quot;L1,L2&quot;.</p>
+<h4>
+Column Visibility</h4>
 <p><strong>FREEZE:</strong> freezes the scroll of columns and lines up to the 
 given cell. Can be: &quot;Yes&quot; - uses the value of the FOCUS_CELL attribute, &quot;<em>L</em>:<em>C</em>&quot; 
 where L and C are the line and column, or &quot;No&quot; clear the freeze state. 
@@ -218,12 +308,41 @@ defined by FREEZECOLOR.</p>
   color used for the freeze lines. Default: &quot;0 0 255&quot;. Used only by the FREEZE 
 attribute.</p>
 <p>
-<strong>LASTERROR</strong> (read-only): set when an error occurred during an 
-operation. It is reset to NULL at the start of every operation that sets its 
-value.</p>
+<strong>VISIBLECOL<em>id</em></strong>: returns if the column is visible (&quot;Yes&quot; 
+or &quot;No&quot;). Actually checks for WIDTHid and RASTERWIDTHid if they are defined and 
+non zero, but more complex logic when id=0. When changed will simply set those 
+attributes to zero or NULL (when setting to NULL and col=0 not necessarily the 
+column will became visible because of the internal matrix logic for titles). </p>
+<p>
+<strong>VISIBLELIN<em>id</em></strong>: returns if the line is visible (&quot;Yes&quot; or 
+&quot;No&quot;). Actually checks for HEIGHTid and RASTERHEIGHTid if they are defined and 
+non zero, but more complex logic when id=0. When changed will simply set those 
+attributes to zero or NULL (when setting to NULL and lin=0 not necessarily the 
+line will became visible because of the internal matrix logic for titles). </p>
+<h4>Context Menu</h4>
 <p>
 <strong>MENUCONTEXT</strong>: enable the context menu. Can be Yes or No. 
 Default: Yes.</p>
+<p>
+<strong>SHOWCONTEXTMENU</strong><em>L:C</em> (write-only): shows the context 
+menu using the L:C cell as reference and its value as screen position in the 
+format &quot;x:y&quot;. (since 3.12)</p>
+<p>
+<strong>SHOWMENUCONTEXT</strong> (write-only): show the context menu in the 
+given cel. Value has the &quot;<em>L</em>:<em>C</em>&quot; format.</p>
+<h4>Copy Cells</h4>
+<p><strong>COPYCOLTO<em>L:C</em></strong> (write-only): copies the value of the 
+given cell to a specified range of cells in the same column. Value can be &quot;ALL&quot; 
+(for all lines), TOP (for all lines before the given line), BOTTOM (for all 
+lines after the given line), MARKED (for all lines where the cell is marked), or 
+a series of intervals in the format &quot;L1-L2,L3-L4,L5,L6-L7,...&quot;. BUSY 
+will be set to Yes during the operation.&nbsp; Only visible cells will receive 
+data. </p>
+<h4>Numeric Columns</h4>
+<p>
+Numeric columns are enabled when the NUMERICQUANTITY<em>id<strong> </strong></em>&nbsp;attribute 
+is set. To define a numeric column without using units simply set NUMERICQUANTITY<em>id<strong> </strong></em>&nbsp;to 
+&quot;None&quot;.</p>
 <p>
 <strong>NUMERICDECIMALSYMBOL</strong>: symbol used for decimal separator in 
 numeric values. (since 3.12)</p>
@@ -251,6 +370,8 @@ function in C. It can contain other strings, and will receive two parameters the
 current column title string (&quot;0:C&quot;) and the current column unit shown. If the 
 current title is NULL, then only the unit parameter is passed. If not specified 
 then only the title string (&quot;0:C&quot;) is used.&nbsp; (no redraw)</p>
+<h4>
+Numeric Units</h4>
 <p>
 <strong>NUMERICQUANTITY<em>id</em></strong>: Quantity used to define units for 
 the numeric data at the given column (id). Must set this attribute for the other 
@@ -305,111 +426,8 @@ a NUMERICUNITSEARCH* set. Returns NULL if not found.</p>
 <p>
 <strong>NUMERICFOUNDUNITSYMBOL</strong> (read-only): Returns the unit symbol 
 found after a NUMERICUNITSEARCH* set. Returns NULL if not found.</p>
-<p>
-<strong>PASTE</strong> (write-only): paste data from the clipboard. Data is 
-obtained from the clipboard in TEXT format. Value is the insert position, it can 
-be &quot;FOCUS&quot; to use the <a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a> 
-attribute, can be &quot;MARKED&quot; to use the start of the selected groups of cells 
-(top-left selected cell), or can be a cell address &quot;L:C&quot;.</p>
-<p class="info">Data must be in plain text format. Lines can be separated in 
-DOS, UNIX or MAC format. Columns can be separated with a tab ('\t'), or with 
-a semicolon (';'), or with a space (' ') or with a custom value defined by the <strong>TEXTSEPARATOR</strong> attribute. Data 
-must contain an exact matrix organization. Use the attribute <strong>TEXTSKIPLINES</strong> to 
-skip a number of lines in the beginning of the data. If data at the insert 
-position will have more lines or columns than the current matrix, then the
-<a href="#PASTESIZE_CB">PASTESIZE_CB</a> callback is called, if the callback 
-does not exist the matrix size is not changed, and the exceeding data will be discarded. If defined the <a href="iupmatrix_cb.html#EDITION_CB">
-EDITION_CB</a> callback will be called before the cell value is set. <strong>LASTERROR</strong> 
-can be set to &quot;NOTEXT&quot; (data is empty or NULL), &quot;INVALIDMATRIX&quot; (not a matrix 
-data). <strong>BUSY</strong> will be set to Yes during the operation. Only 
-visible cells will receive data. </p>
-<p>
-<strong>PASTEDATA</strong> (write-only): paste data from a memory buffer. Value 
-is the data. Insert position is obtained from the
-<a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a> attribute. See PASTE 
-for more details.</p>
-<p>
-<strong>PASTEFILE</strong> (write-only): paste data from a file. Value is the 
-file name to be loaded. Insert position is always &quot;0:0&quot;. See PASTE for more 
-details. LASTERROR can also be set to &quot;INVALIDFILENAME&quot; (failed to open).</p>
-<p>
-<strong>SHOWMENUCONTEXT</strong> (write-only): show the context menu in the 
-given cel. Value has the &quot;<em>L</em>:<em>C</em>&quot; format.</p>
-<p>
-<strong>SORTCOLUMN<em>id</em></strong> (write-only): sort the specified lines of 
-the matrix based on the values of the given column (id). Can be ALL (1-NUMLIN), 
-an interval in the format &quot;L1-L2&quot;, INVERT (invert the order in the current 
-interval of the current column, id is ignored) or RESET (remove any ordering). 
-The SORTSIGN<em>id</em> 
-attribute will be updated to reflect the ordering. </p>
-<p class="info">When the SORTCOLUMNCOMPARE_CB callback is NOT defined, and the column 
-in NOT numeric, then the text is sorted using an <strong>Alphanumeric Algorithm</strong>. This 
-means that numbers and text in the same value are sorted separately (for ex: A1 A2 A11 A30 
-B1). Also 
-natural alphabetic order is used: 123...aA·¡...bBcC... The internal comparison 
-will work only for Latin-1 
-characters, even if UTF8MODE is Yes.<br><strong>IMPORTANT</strong>: The sort 
-will not affect the original data, only how it is displayed from the original 
-data and how it is updated to the original data. The line and cell attributes of 
-the sorted will NOT be affected. This means that colors and fonts will NOT 
-follow the sort order, also means that cell address in FOCUS_CELL, MARKED, 
-ORIGIN, SHOW, HEIGHTn, and others, are all relative to the displayed cells and 
-they do NOT follow the sort order. *VALUE_CB, EDITION_CB and VALUE_EDIT_CB will 
-be called with the correct index following the sort order, all other callbacks 
-won't.</p>
-<p>
-<strong>SORTCOLUMNORDER</strong>: defines if the number or text comparison is in 
-ASCENDING or DESCENDING order. Default: ASCENDING. Used during SORTCOLUMN<em>id</em> 
-and when the SORTCOLUMNCOMPARE_CB callback is NOT defined. Used to update the SORTSIGN<em>id</em> 
-attribute when the SORTCOLUMNCOMPARE_CB callback is defined. </p>
-<p>
-<strong>SORTCOLUMNCASESENSITIVE</strong>: defines if the text comparison is case 
-sensitive. Can be Yes or No. Default: Yes. Used only during SORTCOLUMN<em>id</em> 
-and when the SORTCOLUMNCOMPARE_CB callback is not defined.</p>
-<p>
-<strong>SORTCOLUMNINTERVAL</strong> (read-only): Returns the last sorted 
-interval, in the format &quot;L1,L2&quot;.</p>
-<p>
-<strong>UNDOREDO</strong>: Enable or disable the Undo/Redo support. Can be Yes 
-or No. Default: No. Undo/Redo support is available only for cell values, 
-interactively or programmatically changed. Attributes are not saved/restored.</p>
-<p>
-<strong>UNDOCOUNT</strong> (read-only): Returns the total number of stored undo 
-levels.</p>
-<p>
-<strong>UNDONAME<em>id</em></strong> (read-only): Returns a name for the given 
-undo level. It represents the operation that was performed. Uses descriptive 
-strings based on the names &quot;PASTECLIP&quot;, &quot;PASTEDATA&quot;, &quot;PASTEFILE&quot;, 
-&quot;COPYCOLTO:ALL&quot;, &quot;COPYCOLTO:TOP&quot;, &quot;COPYCOLTO:BOTTOM&quot;, &quot;COPYCOLTO:MARKED&quot;, 
-&quot;COPYCOLTO:INTERVAL&quot;, &quot;CLEARVALUE&quot;, &quot;SETCELL&quot; and &quot;EDITCELL&quot;, that are 
-language dependent.</p>
-<p>
-<strong>UNDO</strong>: Sets the number of undo levels to be performed. If value 
-is NULL will undo 1 level. When retrieved returns Yes or No indicating if it has 
-Undo to be performed. BUSY will be set to Yes during the operation.</p>
-<p>
-<strong>REDO</strong>: Sets the number of redo levels to be performed. If value 
-is NULL will redo 1 level. When retrieved returns Yes or No indicating if it has 
-Redo to be performed. BUSY will be set to Yes during the operation.</p>
-<p>
-<strong>SHOWCONTEXTMENU</strong><em>L:C</em> (write-only): shows the context 
-menu using the L:C cell as reference and its value as screen position in the 
-format &quot;x:y&quot;. (since 3.12)</p>
-<p>
-<strong>UNDOCLEAR</strong> (write-only): clears all Undo/Redo information.</p>
-<p>
-<strong>VISIBLECOL<em>id</em></strong>: returns if the column is visible (&quot;Yes&quot; 
-or &quot;No&quot;). Actually checks for WIDTHid and RASTERWIDTHid if they are defined and 
-non zero, but more complex logic when id=0. When changed will simply set those 
-attributes to zero or NULL (when setting to NULL and col=0 not necessarily the 
-column will became visible because of the internal matrix logic for titles). </p>
-<p>
-<strong>VISIBLELIN<em>id</em></strong>: returns if the line is visible (&quot;Yes&quot; or 
-&quot;No&quot;). Actually checks for HEIGHTid and RASTERHEIGHTid if they are defined and 
-non zero, but more complex logic when id=0. When changed will simply set those 
-attributes to zero or NULL (when setting to NULL and lin=0 not necessarily the 
-line will became visible because of the internal matrix logic for titles). </p>
-<hr>
+<h4>
+Numeric Units Database</h4>
 <p>
 The following attributes will affect all <strong>IupMatrixEx</strong> controls. 
 So the application can register new quantities and all <strong>IupMatrixEx</strong> 
@@ -885,7 +903,7 @@ classification.</p>
 		<td class="style12">None</td>
 		<td class="style12">&nbsp;</td>
 		<td class="style12">&nbsp;</td>
-		<td class="style12">Use numeric values <br>but without quantity.</td>
+		<td class="style12">Use numeric values <br>but without using units.</td>
 	</tr>
 </table>
 
