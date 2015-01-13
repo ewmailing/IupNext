@@ -269,8 +269,20 @@ static int iPlotSetLegendPosAttrib(Ihandle* ih, const char* value)
     ih->data->current_plot->mLegend.mPosition = IUP_PLOT_BOTTOMRIGHT;
   else if (iupStrEqualNoCase(value, "BOTTOMCENTER"))
     ih->data->current_plot->mLegend.mPosition = IUP_PLOT_BOTTOMCENTER;
-  else
+  else if (iupStrEqualNoCase(value, "TOPRIGHT"))
     ih->data->current_plot->mLegend.mPosition = IUP_PLOT_TOPRIGHT;
+  else if (iupStrEqualNoCase(value, "XY"))
+    ih->data->current_plot->mLegend.mPosition = IUP_PLOT_XY;
+  else
+  {
+    int x, y;
+    if (iupStrToIntInt(value, &x, &y, ',') == 2)
+    {
+      ih->data->current_plot->mLegend.mPosition = IUP_PLOT_XY;
+      ih->data->current_plot->mLegend.mPosX = x;
+      ih->data->current_plot->mLegend.mPosY = y;
+    }
+  }
 
   ih->data->current_plot->mRedraw = true;
   return 0;
@@ -278,8 +290,13 @@ static int iPlotSetLegendPosAttrib(Ihandle* ih, const char* value)
 
 static char* iPlotGetLegendPosAttrib(Ihandle* ih)
 {
-  const char* legendpos_str[4] = {"TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT"};
-  return (char*)legendpos_str[ih->data->current_plot->mLegend.mPosition];
+  if (ih->data->current_plot->mLegend.mPosition == IUP_PLOT_XY)
+    return iupStrReturnIntInt(ih->data->current_plot->mLegend.mPosX, ih->data->current_plot->mLegend.mPosY, ',');
+  else
+  {
+    const char* legendpos_str[] = { "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT", "BOTTOMCENTER", "XY" };
+    return (char*)legendpos_str[ih->data->current_plot->mLegend.mPosition];
+  }
 }
 
 static int iPlotSetBackColorAttrib(Ihandle* ih, const char* value)

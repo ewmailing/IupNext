@@ -435,8 +435,8 @@ automatically calculated to fit all visible elements. Default: &quot;AUTO&quot;,
 and style. Default: FONT, but size is increased by 6 points. </p>
 <p><strong>TITLEPOS</strong>: position of the title. If AUTO will position the 
 title at top-center of the plot area, else it can be a position in the format "x,y" 
-in pixels inside the plot area. If set to NOAUTO it will disable the automatic 
-position but reuse the last calculated value. Default: AUTO. (since 3.13)</p>
+in pixels inside the plot area relative to the top-left corner. If set to NOAUTO 
+it will disable the automatic position but reuse the last calculated position. Default: AUTO. (since 3.13)</p>
 <h4>Legend Configuration </h4>
 <p><b>LEGEND</b>: shows or hides the legend box. Can be YES or NO. Default: 
 NO. LEGENDSHOW is also accepted.</p>
@@ -450,9 +450,12 @@ respective dataset.</p>
 <p><b>LEGENDFONTSIZE, LEGENDFONTSTYLE</b>: the legend box text font size and style. 
 Default: FONT.</p>
 <p><b>LEGENDPOS</b>: legend box position. Can be: "TOPLEFT", "TOPRIGHT", 
-"BOTTOMLEFT", "BOTTOMRIGHT, or "BOTTOMCENTER". Default: "TOPRIGHT". The legend 
+"BOTTOMLEFT", "BOTTOMRIGHT, "BOTTOMCENTER" or "XY". Default: "TOPRIGHT". The legend 
 box is displayed inside the dataset area, except for BOTTOMCENTER that is displayed 
-bellow the dataset area, along with the axis.</p>
+bellow the dataset area, along with the X axis. If value is in the format "x,y" 
+then automatic positioning is disabled and a position in pixels inside the plot 
+area relative to the top-left corner is used instead (since 3.13), if value is 
+"XY" then the last calculated position is reused (since 3.13).</p>
 <h4>Grid Configuration </h4>
 <p><b>GRID</b>: shows or hides the grid in both or a 
 specific axis. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>

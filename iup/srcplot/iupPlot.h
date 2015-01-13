@@ -480,18 +480,19 @@ public:
   int  mLineWidth;
 };
 
-enum iupPlotLegendPosition { IUP_PLOT_TOPLEFT, IUP_PLOT_TOPRIGHT, IUP_PLOT_BOTTOMLEFT, IUP_PLOT_BOTTOMRIGHT, IUP_PLOT_BOTTOMCENTER };
+enum iupPlotLegendPosition { IUP_PLOT_TOPLEFT, IUP_PLOT_TOPRIGHT, IUP_PLOT_BOTTOMLEFT, IUP_PLOT_BOTTOMRIGHT, IUP_PLOT_BOTTOMCENTER, IUP_PLOT_XY };
 
 class iupPlotLegend
 {
 public:
   iupPlotLegend() 
-    : mShow(false), mFontSize(0), mFontStyle(-1), mPosition(IUP_PLOT_TOPRIGHT),
+    : mShow(false), mFontSize(0), mFontStyle(-1), mPosition(IUP_PLOT_TOPRIGHT), mPosX(0), mPosY(0),
       mBoxLineStyle(CD_CONTINUOUS), mBoxLineWidth(1), mBoxColor(CD_BLACK), mBoxBackColor(CD_WHITE)
   {}
 
   bool mShow;
   iupPlotLegendPosition mPosition;
+  int mPosX, mPosY;
   int mFontSize;
   int mFontStyle;
 
@@ -548,7 +549,7 @@ public:
   void DrawPlotTitle(cdCanvas* canvas) const;
     void SetTitleFont(cdCanvas* canvas) const;
   void DrawPlotBackground(cdCanvas* canvas) const;
-  bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas) const;
+  bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, int &inLastX, int &inLastY) const;
   void DrawCrossHairH(const iupPlotRect &inRect, cdCanvas* canvas) const;
     void DrawCrossSamplesH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
   void DrawCrossHairV(const iupPlotRect &inRect, cdCanvas* canvas) const;

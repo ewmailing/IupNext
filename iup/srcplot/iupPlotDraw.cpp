@@ -511,7 +511,7 @@ void iupPlot::DrawPlotBackground(cdCanvas* canvas) const
   cdCanvasBox(canvas, 0, mViewport.mWidth - 1, 0, mViewport.mHeight - 1);
 }
 
-bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const 
+bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, int &inLastX, int &inLastY) const
 {
   if (mLegend.mShow)
   {
@@ -551,35 +551,48 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
 
     theMaxWidth += 2 * theMargin;
 
-    int theScreenX = inRect.mX;
-    int theScreenY = inRect.mY;
+    int theScreenX, theScreenY;
 
-    switch (mLegend.mPosition)
+    if (mLegend.mPosition == IUP_PLOT_XY)
     {
-    case IUP_PLOT_TOPLEFT:
-      theScreenX += 2;
-      theScreenY += inRect.mHeight - theTotalHeight - 2;
-      break;
-    case IUP_PLOT_BOTTOMLEFT:
-      theScreenX += 2;
-      theScreenY += 2;
-      break;
-    case IUP_PLOT_BOTTOMRIGHT:
-      theScreenX += inRect.mWidth - theMaxWidth - 2;
-      theScreenY += 2;
-      break;
-    case IUP_PLOT_BOTTOMCENTER:
-      theScreenX += (inRect.mWidth - theMaxWidth) / 2;
-      theScreenY = theFontHeight / 4;
-      break;
-    default: // IUP_PLOT_TOPRIGHT
-      theScreenX += inRect.mWidth - theMaxWidth - 2;
-      theScreenY += inRect.mHeight - theTotalHeight - 2;
-      break;
+      theScreenX = inLastX;
+      theScreenY = inLastY;
+    }
+    else
+    {
+      theScreenX = inRect.mX;
+      theScreenY = inRect.mY;
+
+      switch (mLegend.mPosition)
+      {
+      case IUP_PLOT_TOPLEFT:
+        theScreenX += 2;
+        theScreenY += inRect.mHeight - theTotalHeight - 2;
+        break;
+      case IUP_PLOT_BOTTOMLEFT:
+        theScreenX += 2;
+        theScreenY += 2;
+        break;
+      case IUP_PLOT_BOTTOMRIGHT:
+        theScreenX += inRect.mWidth - theMaxWidth - 2;
+        theScreenY += 2;
+        break;
+      case IUP_PLOT_BOTTOMCENTER:
+        theScreenX += (inRect.mWidth - theMaxWidth) / 2;
+        theScreenY = theFontHeight / 4;
+        break;
+      default: // IUP_PLOT_TOPRIGHT
+        theScreenX += inRect.mWidth - theMaxWidth - 2;
+        theScreenY += inRect.mHeight - theTotalHeight - 2;
+        break;
+      }
+
+      inLastX = theScreenX;
+      inLastY = theScreenY;
     }
 
     cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1,
-                     theScreenY, theScreenY + theTotalHeight - 1);
+                             theScreenY, theScreenY + theTotalHeight - 1);
 
     cdCanvasSetForeground(canvas, mLegend.mBoxBackColor);
     iPlotDrawBox(canvas, theScreenX + 1, theScreenY + 1, theMaxWidth - 2, theTotalHeight - 2);
