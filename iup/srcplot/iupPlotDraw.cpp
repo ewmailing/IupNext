@@ -109,7 +109,7 @@ bool iupPlotGrid::DrawX(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTra
 
     while (inTickIter->GetNextTick(theX, theIsMajorTick, NULL))
     {          
-      if (theIsMajorTick) 
+      if ((theIsMajorTick && mMajor) || (!theIsMajorTick && !mMajor))
       {
         double theScreenX = inTrafo->Transform(theX);
         cdfCanvasLine(canvas, theScreenX, inRect.mY, theScreenX, inRect.mY + inRect.mHeight-1);
@@ -136,7 +136,7 @@ bool iupPlotGrid::DrawY(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTra
 
     while (inTickIter->GetNextTick(theY, theIsMajorTick, NULL))
     {            
-      if (theIsMajorTick) 
+      if ((theIsMajorTick && mMajor) || (!theIsMajorTick && !mMajor))
       {
         double theScreenY = inTrafo->Transform(theY);
         cdfCanvasLine(canvas, inRect.mX, theScreenY, inRect.mX + inRect.mWidth - 1, theScreenY);

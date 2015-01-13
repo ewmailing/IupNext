@@ -720,7 +720,7 @@ void iupPlotAxis::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) con
 
 iupPlot::iupPlot(Ihandle* _ih, int inDefaultFontStyle, int inDefaultFontSize)
   :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mCrossHairH(false),
-  mBackColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), 
+  mBackColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mGrid(true), mGridMinor(false),
   mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle),
   mAxisX(inDefaultFontStyle, inDefaultFontSize), mAxisY(inDefaultFontStyle, inDefaultFontSize)
 {
@@ -1079,8 +1079,14 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (!mGrid.DrawX(mAxisX.mTickIter, mAxisX.mTrafo, theRect, canvas))
     return false;
 
+  if (mGrid.mShowX)
+    mGridMinor.DrawX(mAxisX.mTickIter, mAxisX.mTrafo, theRect, canvas);
+
   if (!mGrid.DrawY(mAxisY.mTickIter, mAxisY.mTrafo, theRect, canvas))
     return false;
+
+  if (mGrid.mShowY)
+    mGridMinor.DrawY(mAxisY.mTickIter, mAxisY.mTrafo, theRect, canvas);
 
   if (!mAxisX.DrawX(theRect, canvas, mAxisY))
     return false;

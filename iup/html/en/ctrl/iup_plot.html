@@ -458,11 +458,14 @@ area relative to the top-left corner is used instead (since 3.13), if value is
 "XY" then the last calculated position is reused (since 3.13).</p>
 <h4>Grid Configuration </h4>
 <p><b>GRID</b>: shows or hides the grid in both or a 
-specific axis. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>
+specific axis at the major ticks. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>
 <p><b>GRIDCOLOR</b>: grid color. Default: &quot;200 200 200&quot;.</p>
 <p><b>GRIDLINEWIDTH</b>: line width of the box. Default: 1.</p>
 <p><b>GRIDLINESTYLE</b>: line style of the grid. Can be: &quot;CONTINUOUS&quot;, 
 &quot;DASHED&quot;, &quot;DOTTED&quot;, &quot;DASH_DOT&quot;, &quot;DASH_DOT_DOT&quot;. Default is &quot;CONTINUOUS&quot;.</p>
+<p><strong>GRIDMINOR</strong>, <strong>GRIDMINORCOLOR</strong>, <b>GRIDLINEWIDTH</b> 
+and <b>GRIDLINESTYLE</b>: are the same attributes for a grid at the minor ticks, 
+but they are visible only if the major ticks grid are visible too. (since 3.13)</p>
 <h4>Box Configuration </h4>
 <p><b>BOX</b>: draws a bounding box around the dataset area. Default: NO.</p>
 <p><b>BOXCOLOR</b>: box line color. Default: FGCOLOR.</p>

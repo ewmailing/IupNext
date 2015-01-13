@@ -594,6 +594,45 @@ static char* iPlotGetMarginBottomAttrib(Ihandle* ih)
   return iupStrReturnInt(ih->data->current_plot->mMargin.mBottom);
 }
 
+static int iPlotSetGridAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "VERTICAL"))  /* vertical grid - X axis  */
+  {
+    ih->data->current_plot->mGrid.mShowX = true;
+    ih->data->current_plot->mGrid.mShowY = false;
+  }
+  else if (iupStrEqualNoCase(value, "HORIZONTAL")) /* horizontal grid - Y axis */
+  {
+    ih->data->current_plot->mGrid.mShowY = true;
+    ih->data->current_plot->mGrid.mShowX = false;
+  }
+  else if (iupStrEqualNoCase(value, "YES"))
+  {
+    ih->data->current_plot->mGrid.mShowX = true;
+    ih->data->current_plot->mGrid.mShowY = true;
+  }
+  else
+  {
+    ih->data->current_plot->mGrid.mShowY = false;
+    ih->data->current_plot->mGrid.mShowX = false;
+  }
+
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
+
+static char* iPlotGetGridAttrib(Ihandle* ih)
+{
+  if (ih->data->current_plot->mGrid.mShowX && ih->data->current_plot->mGrid.mShowY)
+    return "YES";
+  else if (ih->data->current_plot->mGrid.mShowY)
+    return "HORIZONTAL";
+  else if (ih->data->current_plot->mGrid.mShowX)
+    return "VERTICAL";
+  else
+    return "NO";
+}
+
 static int iPlotSetGridColorAttrib(Ihandle* ih, const char* value)
 {
   long color;
@@ -645,6 +684,98 @@ static char* iPlotGetGridLineWidthAttrib(Ihandle* ih)
       return NULL;
 
   return iupStrReturnInt(ih->data->current_plot->mGrid.mLineWidth);
+}
+
+static int iPlotSetGridMinorAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "VERTICAL"))  /* vertical grid - X axis  */
+  {
+    ih->data->current_plot->mGridMinor.mShowX = true;
+    ih->data->current_plot->mGridMinor.mShowY = false;
+  }
+  else if (iupStrEqualNoCase(value, "HORIZONTAL")) /* horizontal grid - Y axis */
+  {
+    ih->data->current_plot->mGridMinor.mShowY = true;
+    ih->data->current_plot->mGridMinor.mShowX = false;
+  }
+  else if (iupStrEqualNoCase(value, "YES"))
+  {
+    ih->data->current_plot->mGridMinor.mShowX = true;
+    ih->data->current_plot->mGridMinor.mShowY = true;
+  }
+  else
+  {
+    ih->data->current_plot->mGridMinor.mShowY = false;
+    ih->data->current_plot->mGridMinor.mShowX = false;
+  }
+
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
+
+static char* iPlotGetGridMinorAttrib(Ihandle* ih)
+{
+  if (ih->data->current_plot->mGridMinor.mShowX && ih->data->current_plot->mGridMinor.mShowY)
+    return "YES";
+  else if (ih->data->current_plot->mGridMinor.mShowY)
+    return "HORIZONTAL";
+  else if (ih->data->current_plot->mGridMinor.mShowX)
+    return "VERTICAL";
+  else
+    return "NO";
+}
+
+static int iPlotSetGridMinorColorAttrib(Ihandle* ih, const char* value)
+{
+  long color;
+  if (iupStrToColor(value, &color))
+  {
+    ih->data->current_plot->mGridMinor.mColor = color;
+    ih->data->current_plot->mRedraw = true;
+  }
+  return 0;
+}
+
+static char* iPlotGetGridMinorColorAttrib(Ihandle* ih)
+{
+  return iupStrReturnColor(ih->data->current_plot->mGridMinor.mColor);
+}
+
+static int iPlotSetGridMinorLineStyleAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->current_plot->mGridMinor.mLineStyle = iPlotGetCDPenStyle(value);
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
+
+static char* iPlotGetGridMinorLineStyleAttrib(Ihandle* ih)
+{
+  return iPlotGetPlotPenStyle(ih->data->current_plot->mGridMinor.mLineStyle);
+}
+
+static int iPlotSetGridMinorLineWidthAttrib(Ihandle* ih, const char* value)
+{
+  int ii;
+
+  if (ih->data->current_plot->mCurrentDataSet <  0 ||
+      ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
+      return 0;
+
+  if (iupStrToInt(value, &ii))
+  {
+    ih->data->current_plot->mGridMinor.mLineWidth = ii;
+    ih->data->current_plot->mRedraw = true;
+  }
+  return 0;
+}
+
+static char* iPlotGetGridMinorLineWidthAttrib(Ihandle* ih)
+{
+  if (ih->data->current_plot->mCurrentDataSet < 0 ||
+      ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
+      return NULL;
+
+  return iupStrReturnInt(ih->data->current_plot->mGridMinor.mLineWidth);
 }
 
 static int iPlotSetLegendBoxLineStyleAttrib(Ihandle* ih, const char* value)
@@ -783,45 +914,6 @@ static char* iPlotGetBoxLineWidthAttrib(Ihandle* ih)
       return NULL;
 
   return iupStrReturnInt(ih->data->current_plot->mBox.mLineWidth);
-}
-
-static int iPlotSetGridAttrib(Ihandle* ih, const char* value)
-{
-  if (iupStrEqualNoCase(value, "VERTICAL"))  /* vertical grid - X axis  */
-  {
-    ih->data->current_plot->mGrid.mShowX = true;
-    ih->data->current_plot->mGrid.mShowY = false;
-  }
-  else if (iupStrEqualNoCase(value, "HORIZONTAL")) /* horizontal grid - Y axis */
-  {
-    ih->data->current_plot->mGrid.mShowY = true;
-    ih->data->current_plot->mGrid.mShowX = false;
-  }
-  else if (iupStrEqualNoCase(value, "YES"))
-  {
-    ih->data->current_plot->mGrid.mShowX = true;
-    ih->data->current_plot->mGrid.mShowY = true;
-  }
-  else
-  {
-    ih->data->current_plot->mGrid.mShowY = false;
-    ih->data->current_plot->mGrid.mShowX = false;
-  }
-
-  ih->data->current_plot->mRedraw = true;
-  return 0;
-}
-
-static char* iPlotGetGridAttrib(Ihandle* ih)
-{
-  if (ih->data->current_plot->mGrid.mShowX && ih->data->current_plot->mGrid.mShowY)
-    return "YES";
-  else if (ih->data->current_plot->mGrid.mShowY)
-    return "HORIZONTAL";
-  else if (ih->data->current_plot->mGrid.mShowX)
-    return "VERTICAL";
-  else
-    return "NO";
 }
 
 static int iPlotSetCurrentAttrib(Ihandle* ih, const char* value)
@@ -2560,10 +2652,14 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "LEGENDBOXLINESTYLE", iPlotGetLegendBoxLineStyleAttrib, iPlotSetLegendBoxLineStyleAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDBOXLINEWIDTH", iPlotGetLegendBoxLineWidthAttrib, iPlotSetLegendBoxLineWidthAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "GRIDCOLOR", iPlotGetGridColorAttrib, iPlotSetGridColorAttrib, IUPAF_SAMEASSYSTEM, "200 200 200", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "GRID", iPlotGetGridAttrib, iPlotSetGridAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GRID", iPlotGetGridAttrib, iPlotSetGridAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GRIDCOLOR", iPlotGetGridColorAttrib, iPlotSetGridColorAttrib, IUPAF_SAMEASSYSTEM, "200 200 200", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "GRIDLINESTYLE", iPlotGetGridLineStyleAttrib, iPlotSetGridLineStyleAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "GRIDLINEWIDTH", iPlotGetGridLineWidthAttrib, iPlotSetGridLineWidthAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GRIDMINOR", iPlotGetGridMinorAttrib, iPlotSetGridMinorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GRIDMINORCOLOR", iPlotGetGridMinorColorAttrib, iPlotSetGridMinorColorAttrib, IUPAF_SAMEASSYSTEM, "200 200 200", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GRIDMINORLINESTYLE", iPlotGetGridMinorLineStyleAttrib, iPlotSetGridMinorLineStyleAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "GRIDMINORLINEWIDTH", iPlotGetGridMinorLineWidthAttrib, iPlotSetGridMinorLineWidthAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BOX", iPlotGetBoxAttrib, iPlotSetBoxAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BOXCOLOR", iPlotGetBoxColorAttrib, iPlotSetBoxColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

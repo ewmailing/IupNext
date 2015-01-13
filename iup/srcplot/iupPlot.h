@@ -451,13 +451,14 @@ protected:
 class iupPlotGrid 
 {
 public:
-  iupPlotGrid()
+  iupPlotGrid(bool inMajor)
     : mShowX(false), mShowY(false), mColor(cdEncodeColor(200, 200, 200)), 
-      mLineStyle(CD_CONTINUOUS), mLineWidth(1) {}
+      mLineStyle(CD_CONTINUOUS), mLineWidth(1), mMajor(inMajor) {}
 
   bool DrawX(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const;
   bool DrawY(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const;
 
+  bool mMajor;
   bool mShowX;
   bool mShowY;
   long mColor;
@@ -598,6 +599,7 @@ public:
   iupPlotMargin mMargin, mMarginAuto;
   long mBackColor;
   iupPlotGrid mGrid;
+  iupPlotGrid mGridMinor;
   iupPlotAxis mAxisX;
   iupPlotAxis mAxisY;
   iupPlotBox mBox;
