@@ -1,6 +1,6 @@
---require( "iuplua" )
---require( "iupluacontrols" )
---require( "iupluamatrixex" )
+require( "iuplua" )
+require( "iupluacontrols" )
+require( "iupluamatrixex" )
 
 mat = iup.matrixex {
   numcol=5, 
@@ -33,9 +33,11 @@ dlg = iup.dialog{iup.vbox{mat; margin="10x10"}}
 --iup.MatrixSetFormula(mat, 3, "cell(lin, 1) < 3")
 --mat.redraw = "Yes"
 
---iup.MatrixSetDynamic(mat)
+--iup.MatrixSetFormula(mat, 3, "cell(lin, 1) + cell(lin, 2)")
 
-iup.MatrixSetFormula(mat, 3, "cell(lin, 1) + cell(lin, 2)")
+mat:setcell(1,3,"=3+3")
+mat:setcell(2,3,"=sin(pi/4)")
+iup.MatrixSetDynamic(mat)
 
 dlg:showxy(iup.CENTER, iup.CENTER)
 
