@@ -2677,7 +2677,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "TITLEPOS", iPlotGetTitlePosAttrib, iPlotSetTitlePosAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "LEGEND", iPlotGetLegendAttrib, iPlotSetLegendAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-      iupClassRegisterAttribute(ic, "LEGENDSHOW", iPlotGetLegendAttrib, iPlotSetLegendAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "LEGENDSHOW", iPlotGetLegendAttrib, iPlotSetLegendAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDPOS", iPlotGetLegendPosAttrib, iPlotSetLegendPosAttrib, IUPAF_SAMEASSYSTEM, "TOPRIGHT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDFONTSIZE", iPlotGetLegendFontSizeAttrib, iPlotSetLegendFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDFONTSTYLE", iPlotGetLegendFontStyleAttrib, iPlotSetLegendFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -2705,7 +2705,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "DS_MARKSTYLE", iPlotGetDSMarkStyleAttrib, iPlotSetDSMarkStyleAttrib, IUPAF_SAMEASSYSTEM, "X", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_MARKSIZE", iPlotGetDSMarkSizeAttrib, iPlotSetDSMarkSizeAttrib, IUPAF_SAMEASSYSTEM, "7", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_NAME", iPlotGetDSNameAttrib, iPlotSetDSNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-    iupClassRegisterAttribute(ic, "DS_LEGEND", iPlotGetDSNameAttrib, iPlotSetDSNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "DS_LEGEND", iPlotGetDSNameAttrib, iPlotSetDSNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_COLOR", iPlotGetDSColorAttrib, iPlotSetDSColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_MODE", iPlotGetDSModeAttrib, iPlotSetDSModeAttrib, IUPAF_SAMEASSYSTEM, "LINE", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_REMOVE", NULL, iPlotSetDSRemoveAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -2750,25 +2750,25 @@ void iupPlotRegisterAttributes(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "AXS_XTICKSIZEAUTO", iPlotGetAxisXAutoTickSizeAttrib, iPlotSetAxisXAutoTickSizeAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKSIZEAUTO", iPlotGetAxisYAutoTickSizeAttrib, iPlotSetAxisYAutoTickSizeAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-      iupClassRegisterAttribute(ic, "AXS_XAUTOTICKSIZE", iPlotGetAxisXAutoTickSizeAttrib, iPlotSetAxisXAutoTickSizeAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-      iupClassRegisterAttribute(ic, "AXS_YAUTOTICKSIZE", iPlotGetAxisYAutoTickSizeAttrib, iPlotSetAxisYAutoTickSizeAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "AXS_XAUTOTICKSIZE", iPlotGetAxisXAutoTickSizeAttrib, iPlotSetAxisXAutoTickSizeAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "AXS_YAUTOTICKSIZE", iPlotGetAxisYAutoTickSizeAttrib, iPlotSetAxisYAutoTickSizeAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKMINORSIZE", iPlotGetAxisXTickSizeAttrib, iPlotSetAxisXTickSizeAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKMINORSIZE", iPlotGetAxisYTickSizeAttrib, iPlotSetAxisYTickSizeAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-      iupClassRegisterAttribute(ic, "AXS_XTICKSIZE", iPlotGetAxisXTickSizeAttrib, iPlotSetAxisXTickSizeAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-      iupClassRegisterAttribute(ic, "AXS_YTICKSIZE", iPlotGetAxisYTickSizeAttrib, iPlotSetAxisYTickSizeAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "AXS_XTICKSIZE", iPlotGetAxisXTickSizeAttrib, iPlotSetAxisXTickSizeAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "AXS_YTICKSIZE", iPlotGetAxisYTickSizeAttrib, iPlotSetAxisYTickSizeAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKMAJORSIZE", iPlotGetAxisXTickMajorSizeAttrib, iPlotSetAxisXTickMajorSizeAttrib, IUPAF_SAMEASSYSTEM, "8", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKMAJORSIZE", iPlotGetAxisYTickMajorSizeAttrib, iPlotSetAxisYTickMajorSizeAttrib, IUPAF_SAMEASSYSTEM, "8", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "AXS_XTICKAUTO", iPlotGetAxisXAutoTickAttrib, iPlotSetAxisXAutoTickAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKAUTO", iPlotGetAxisYAutoTickAttrib, iPlotSetAxisYAutoTickAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-      iupClassRegisterAttribute(ic, "AXS_XAUTOTICK", iPlotGetAxisXAutoTickAttrib, iPlotSetAxisXAutoTickAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-      iupClassRegisterAttribute(ic, "AXS_YAUTOTICK", iPlotGetAxisYAutoTickAttrib, iPlotSetAxisYAutoTickAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "AXS_XAUTOTICK", iPlotGetAxisXAutoTickAttrib, iPlotSetAxisXAutoTickAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "AXS_YAUTOTICK", iPlotGetAxisYAutoTickAttrib, iPlotSetAxisYAutoTickAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKMAJORSPAN", iPlotGetAxisXTickMajorSpanAttrib, iPlotSetAxisXTickMajorSpanAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKMAJORSPAN", iPlotGetAxisYTickMajorSpanAttrib, iPlotSetAxisYTickMajorSpanAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKMINORDIVISION", iPlotGetAxisXTickDivisionAttrib, iPlotSetAxisXTickDivisionAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKMINORDIVISION", iPlotGetAxisYTickDivisionAttrib, iPlotSetAxisYTickDivisionAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-      iupClassRegisterAttribute(ic, "AXS_XTICKDIVISION", iPlotGetAxisXTickDivisionAttrib, iPlotSetAxisXTickDivisionAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-      iupClassRegisterAttribute(ic, "AXS_YTICKDIVISION", iPlotGetAxisYTickDivisionAttrib, iPlotSetAxisYTickDivisionAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "AXS_XTICKDIVISION", iPlotGetAxisXTickDivisionAttrib, iPlotSetAxisXTickDivisionAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "AXS_YTICKDIVISION", iPlotGetAxisYTickDivisionAttrib, iPlotSetAxisYTickDivisionAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "AXS_XTICKNUMBER", iPlotGetAxisXTickNumberAttrib, iPlotSetAxisXTickNumberAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKNUMBER", iPlotGetAxisYTickNumberAttrib, iPlotSetAxisYTickNumberAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
