@@ -26,11 +26,15 @@ function ctrl.createElement(class, param)
 end
 
 function ctrl.setcell(handle, l, c, val)
-  iup.MatSetAttribute(handle,"",l,c,val)
+  iup.SetAttributeId2(handle,"",l,c,val)
 end
 
 function ctrl.getcell(handle, l, c)
-  return iup.MatGetAttribute(handle,"",l,c)
+  return iup.GetAttributeId2(handle,"",l,c)
+end
+
+function ctrl.setformula(handle, col, formula)
+  iup.MatrixSetFormula(handle, col, formula)
 end
 
 iup.RegisterWidget(ctrl)

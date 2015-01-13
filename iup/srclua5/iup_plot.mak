@@ -12,7 +12,7 @@ USE_IUP3 = Yes
 USE_IUPLUA = Yes
 USE_CDLUA = Yes
 
-INCLUDES = ../srclua5
+INCLUDES =  ../src ../srclua5
 LIBS = iup_plot
 DEF_FILE = ctrl/iuplua_plot.def
 

@@ -28,12 +28,14 @@ mat:setcell(2,2,"1.3")
 mat:setcell(3,2,"1.4")
 dlg = iup.dialog{iup.vbox{mat; margin="10x10"}}
 
---iup.MatrixExSetFormula(mat, 3, "cos(pi*lin/4)")
---iup.MatrixExSetFormula(mat, 3, "cell(\"x\", 1)") -- error
---iup.MatrixExSetFormula(mat, 3, "cell(lin, 1) < 3")
+--iup.MatrixSetFormula(mat, 3, "cos(pi*lin/4)")
+--iup.MatrixSetFormula(mat, 3, "cell(\"x\", 1)") -- error
+--iup.MatrixSetFormula(mat, 3, "cell(lin, 1) < 3")
 --mat.redraw = "Yes"
 
-iup.MatrixExSetFormula(mat, 3, "cell(lin, 1) + cell(lin, 2)")
+--iup.MatrixSetDynamic(mat)
+
+iup.MatrixSetFormula(mat, 3, "cell(lin, 1) + cell(lin, 2)")
 
 dlg:showxy(iup.CENTER, iup.CENTER)
 

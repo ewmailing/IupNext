@@ -28,6 +28,7 @@ local ctrl = {
     type_cb = {"nn", ret = "s"}, -- ret is return type
     value_cb = {"nn", ret = "s"}, -- ret is return type
     value_edit_cb = "nns",
+    translatevalue_cb = {"nns", ret = "s"}, -- ret is return type
     mark_cb = "nn",
     markedit_cb = "nnn",
     resizematrix_cb = "nn",
@@ -46,6 +47,10 @@ end
 
 function ctrl.getcell(handle, l, c)
   return iup.GetAttributeId2(handle,"",l,c)
+end
+
+function ctrl.setformula(handle, col, formula)
+  iup.MatrixSetFormula(handle, col, formula)
 end
 
 iup.RegisterWidget(ctrl)
