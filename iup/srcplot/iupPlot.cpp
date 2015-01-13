@@ -1049,6 +1049,8 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (!CheckRange(mAxisY))
     return false;
 
+  CalculateTitlePos();
+
   // Must be before calculate margins
   CalculateTickSize(canvas, mAxisX.mTick);
   CalculateTickSize(canvas, mAxisY.mTick);

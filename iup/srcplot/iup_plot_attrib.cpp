@@ -431,6 +431,40 @@ static char* iPlotGetTitleFontStyleAttrib(Ihandle* ih)
   return iPlotGetPlotFontStyle(ih->data->current_plot->mTitle.mFontStyle);
 }
 
+static int iPlotSetTitlePosAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "AUTO"))
+  {
+    ih->data->current_plot->mTitle.mAutoPos = true;
+    ih->data->current_plot->mRedraw = true;
+  }
+  else if(iupStrEqualNoCase(value, "NOAUTO"))
+  {
+    ih->data->current_plot->mTitle.mAutoPos = false;
+    ih->data->current_plot->mRedraw = true;
+  }
+  else
+  {
+    int x, y;
+    if (iupStrToIntInt(value, &x, &y, ',')==2)
+    {
+      ih->data->current_plot->mTitle.mAutoPos = false;
+      ih->data->current_plot->mTitle.mPosX = x;
+      ih->data->current_plot->mTitle.mPosY = y;
+      ih->data->current_plot->mRedraw = true;
+    }
+  }
+  return 0;
+}
+
+static char* iPlotGetTitlePosAttrib(Ihandle* ih)
+{
+  if (ih->data->current_plot->mTitle.mAutoPos)
+    return "AUTO";
+  else
+    return iupStrReturnIntInt(ih->data->current_plot->mTitle.mPosX, ih->data->current_plot->mTitle.mPosY, ',');
+}
+
 static int iPlotSetLegendFontSizeAttrib(Ihandle* ih, const char* value)
 {
   int xx;
@@ -2497,6 +2531,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "TITLECOLOR", iPlotGetTitleColorAttrib, iPlotSetTitleColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEFONTSIZE", iPlotGetTitleFontSizeAttrib, iPlotSetTitleFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEFONTSTYLE", iPlotGetTitleFontStyleAttrib, iPlotSetTitleFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEPOS", iPlotGetTitlePosAttrib, iPlotSetTitlePosAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "LEGEND", iPlotGetLegendAttrib, iPlotSetLegendAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
       iupClassRegisterAttribute(ic, "LEGENDSHOW", iPlotGetLegendAttrib, iPlotSetLegendAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

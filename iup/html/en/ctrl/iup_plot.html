@@ -64,6 +64,9 @@ and the program must be linked to the
 Lua control 
   library (iuplua_plot).</p>
 <h3>Guide</h3>
+<p>The control can contain more than one plot in a rectangular grid. Each plot 
+will then has an exclusive plot area inside the control. When it is just one 
+plot this area will occupy the whole control area.</p>
 <p>Each plot can contain 2 <b>axis</b> (X and Y), a <b>title</b>, a <b>
 legend</b> <b>box</b>, a <b>grid</b>, a <b>dataset</b> <b>area</b> and as many
 <b>datasets</b> you want. </p>
@@ -403,7 +406,7 @@ name as value.
 All plot attributes and callbacks are dependent on this value. </font></p>
 <p class="info"><span class="style1"><strong>IMPORTANT</strong></span>:
 <font SIZE="3">
-When a <strong>IupCanvas</strong> mouse event occurs, such as BUTTON_CB, 
+When an <strong>IupCanvas</strong> mouse event occurs, such as BUTTON_CB, 
 WHELL_CB or MOTION_CB, the current plot is set to the plot where the event 
 occurred.</font></p>
 <p><strong>PLOT_INSERT</strong> (write-only): inserts a new plot at the given 
@@ -426,10 +429,14 @@ margin of the dataset area in pixels. If set to AUTO the margins are
 automatically calculated to fit all visible elements. Default: &quot;AUTO&quot;, &quot;AUTO&quot;, &quot;AUTO&quot;, &quot;AUTO&quot;.</p>
 <p><strong>BACKCOLOR</strong>: background color of the plot. Default: BGCOLOR.</p>
 <h4>Title Configuration </h4>
-<p><b>TITLE:</b> the  title. Located always at the top center area.</p>
+<p><b>TITLE:</b> the title. If NULL will not be displayed.</p>
 <p><b>TITLECOLOR</b>: title color. Default: FGCOLOR.</p>
 <p><b>TITLEFONTSIZE, TITLEFONTSTYLE:</b> the title font size 
 and style. Default: FONT, but size is increased by 6 points. </p>
+<p><strong>TITLEPOS</strong>: position of the title. If AUTO will position the 
+title at top-center of the plot area, else it can be a position in the format "x,y" 
+in pixels inside the plot area. If set to NOAUTO it will disable the automatic 
+position but reuse the last calculated value. Default: AUTO. (since 3.13)</p>
 <h4>Legend Configuration </h4>
 <p><b>LEGEND</b>: shows or hides the legend box. Can be YES or NO. Default: 
 NO. LEGENDSHOW is also accepted.</p>
@@ -444,8 +451,8 @@ respective dataset.</p>
 Default: FONT.</p>
 <p><b>LEGENDPOS</b>: legend box position. Can be: "TOPLEFT", "TOPRIGHT", 
 "BOTTOMLEFT", "BOTTOMRIGHT, or "BOTTOMCENTER". Default: "TOPRIGHT". The legend 
-box is displayed inside the plot area, except for BOTTOMCENTER that is displayed 
-bellow the plot area, along with the axis.</p>
+box is displayed inside the dataset area, except for BOTTOMCENTER that is displayed 
+bellow the dataset area, along with the axis.</p>
 <h4>Grid Configuration </h4>
 <p><b>GRID</b>: shows or hides the grid in both or a 
 specific axis. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>

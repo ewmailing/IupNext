@@ -78,13 +78,23 @@ void iupPlotAxis::GetTickNumberSize(cdCanvas* canvas, int *outWitdh, int *outHei
   if (outWitdh)  *outWitdh = theTickFontWidth * iPlotGetPrecisionNumChar(mTick.mAutoSpacing, mTick.mFormatString, mMin, mMax);
 }
 
+void iupPlot::CalculateTitlePos()
+{
+  // it does not depend on theMargin
+  if (mTitle.mAutoPos)
+  {
+    mTitle.mPosX = mViewport.mWidth / 2;
+    mTitle.mPosY = mViewport.mHeight - 5;  // add small spacing
+  }
+}
+
 void iupPlot::CalculateMargins(cdCanvas* canvas)
 {
   if (mMarginAuto.mTop)
   {
     mMargin.mTop = 0;
 
-    if (mTitle.GetText())
+    if (mTitle.GetText() && mTitle.mAutoPos)
     {
       SetTitleFont(canvas);
 

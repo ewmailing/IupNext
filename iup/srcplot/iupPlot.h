@@ -505,7 +505,8 @@ class iupPlotTitle
 {
 public:
   iupPlotTitle() 
-    : mColor(CD_BLACK), mText(NULL), mFontSize(0), mFontStyle(-1) {}
+    : mColor(CD_BLACK), mText(NULL), mFontSize(0), mFontStyle(-1), 
+      mAutoPos(true), mPosX(0), mPosY(0) {}
   ~iupPlotTitle() { SetText(NULL); }
 
   void SetText(const char* inValue) { if (mText) free(mText); if (inValue) mText = iupStrDup(inValue); }
@@ -514,6 +515,8 @@ public:
   long mColor;
   int mFontSize;
   int mFontStyle;
+  bool mAutoPos;
+  int mPosX, mPosY;
 
 protected:
   char* mText;
@@ -553,6 +556,7 @@ public:
 
   /*********************************/
 
+  void CalculateTitlePos();
   void CalculateMargins(cdCanvas* canvas);
   bool CalculateAxisRange();
     bool CalculateXRange(double &outXMin, double &outXMax);

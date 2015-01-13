@@ -500,12 +500,8 @@ void iupPlot::DrawPlotTitle(cdCanvas* canvas) const
 
     SetTitleFont(canvas);
 
-    // do not depend on theMargin
-    int theX = mViewport.mWidth / 2;
-    int theY = mViewport.mHeight - 5;  // add small spacing
-
     cdCanvasTextAlignment(canvas, CD_NORTH);
-    cdCanvasText(canvas, theX, theY, mTitle.GetText());
+    cdCanvasText(canvas, mTitle.mPosX, mTitle.mPosY, mTitle.GetText());
   }
 }
 
@@ -544,10 +540,10 @@ bool iupPlot::DrawLegend (const iupPlotRect &inRect, cdCanvas* canvas) const
           theLineSpace = dataset->mMarkSize + 6;
       }
 
-theWidth += theLineSpace;
+      theWidth += theLineSpace;
 
-if (theWidth > theMaxWidth)
-theMaxWidth = theWidth;
+      if (theWidth > theMaxWidth)
+        theMaxWidth = theWidth;
     }
 
     if (theMaxWidth == 0)
