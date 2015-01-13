@@ -339,7 +339,7 @@ class iupPlotTick
 public:
   iupPlotTick() 
     :mAutoSpacing(true), mAutoSize(true), mMinorDivision(1), mShowNumber(true),
-    mMajorSpan(1), mMajorSize(1), mMinorSize(1), mShow(true),
+    mMajorSpan(1), mMajorSize(1), mMinorSize(1), mShow(true), mRotateNumberAngle(90),
     mFontSize(0), mFontStyle(-1), mRotateNumber(false), mUserFormatString(false)
   { strcpy(mFormatString, "%.0f"); }
 
@@ -347,6 +347,7 @@ public:
 
   bool mShowNumber;
   bool mRotateNumber;
+  double mRotateNumberAngle;
   char mFormatString[30];
   bool mUserFormatString;
   int mFontSize;

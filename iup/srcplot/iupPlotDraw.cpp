@@ -252,7 +252,7 @@ bool iupPlotAxis::DrawXTick(double inX, double inScreenY, bool inMajor, const ch
       sprintf(theBuf, inFormatString, inX);
       double theScreenY = inScreenY - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
       if (mTick.mRotateNumber)
-        iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, CD_EAST, theBuf);
+        iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, CD_EAST, theBuf);
       else
         iPlotDrawText(canvas, theScreenX, theScreenY, CD_NORTH, theBuf);
     }
@@ -371,7 +371,7 @@ bool iupPlotAxis::DrawYTick(double inY, double inScreenX, bool inMajor, const ch
       sprintf(theBuf, inFormatString, inY);
       double theScreenX = inScreenX - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
       if (mTick.mRotateNumber)
-        iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, CD_SOUTH, theBuf);
+        iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, CD_SOUTH, theBuf);
       else
         iPlotDrawText(canvas, theScreenX, theScreenY, CD_EAST, theBuf);
     }

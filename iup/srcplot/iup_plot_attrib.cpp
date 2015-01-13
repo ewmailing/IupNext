@@ -2497,6 +2497,40 @@ static char* iPlotGetAxisYTickRotateNumberAttrib(Ihandle* ih)
   return iupStrReturnBoolean(axis->mTick.mRotateNumber);
 }
 
+static int iPlotSetAxisXTickRotateNumberAngleAttrib(Ihandle* ih, const char* value)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
+
+  if (iupStrToDouble(value, &(axis->mTick.mRotateNumberAngle)))
+    ih->data->current_plot->mRedraw = true;
+
+  return 0;
+}
+
+static int iPlotSetAxisYTickRotateNumberAngleAttrib(Ihandle* ih, const char* value)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
+
+  if (iupStrToDouble(value, &(axis->mTick.mRotateNumberAngle)))
+    ih->data->current_plot->mRedraw = true;
+
+  return 0;
+}
+
+static char* iPlotGetAxisXTickRotateNumberAngleAttrib(Ihandle* ih)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
+
+  return iupStrReturnDouble(axis->mTick.mRotateNumberAngle);
+}
+
+static char* iPlotGetAxisYTickRotateNumberAngleAttrib(Ihandle* ih)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
+
+  return iupStrReturnDouble(axis->mTick.mRotateNumberAngle);
+}
+
 static int iPlotSetAxisXTickMajorSpanAttrib(Ihandle* ih, const char* value)
 {
   double xx;
@@ -2740,6 +2774,8 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "AXS_YTICKNUMBER", iPlotGetAxisYTickNumberAttrib, iPlotSetAxisYTickNumberAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKROTATENUMBER", iPlotGetAxisXTickRotateNumberAttrib, iPlotSetAxisXTickRotateNumberAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKROTATENUMBER", iPlotGetAxisYTickRotateNumberAttrib, iPlotSetAxisYTickRotateNumberAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTICKROTATENUMBERANGLE", iPlotGetAxisXTickRotateNumberAngleAttrib, iPlotSetAxisXTickRotateNumberAngleAttrib, IUPAF_SAMEASSYSTEM, "90", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTICKROTATENUMBERANGLE", iPlotGetAxisYTickRotateNumberAngleAttrib, iPlotSetAxisYTickRotateNumberAngleAttrib, IUPAF_SAMEASSYSTEM, "90", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKFORMAT", iPlotGetAxisXTickFormatAttrib, iPlotSetAxisXTickFormatAttrib, IUPAF_SAMEASSYSTEM, "%.0f", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTICKFORMAT", iPlotGetAxisYTickFormatAttrib, iPlotSetAxisYTickFormatAttrib, IUPAF_SAMEASSYSTEM, "%.0f", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XTICKFONTSIZE", iPlotGetAxisXTickFontSizeAttrib, iPlotSetAxisXTickFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
