@@ -99,10 +99,11 @@ if (value2 == 0)
     &quot;INDEX&quot; - returns an integer value associated with the parameter index. 
 <strong>IupGetInt</strong> can also 
     be used.<br>
-    &quot;VALUE&quot; - returns the parameter value as a string, but 
+    &quot;VALUE&quot; - returns the value of the parameter. 
 <strong>IupGetFloat</strong> and <strong>IupGetInt</strong> 
-    can also be used. It usually contains the new value of the control while the 
-VALUE attribute of the control still has the old value.</p>
+    can also be used. For the current parameter inside the callback contains the new value 
+that will be applied to the control, to get the old value use the VALUE 
+attribute for the CONTROL returned Ihandle*.</p>
 <p>In Lua, to retrieve a parameter you must use the following function:</p>
 <pre>iup.GetParamParam(<strong>dialog: </strong>ihandle, <b>param_index</b><strong>: </strong>number)-&gt; (<b>param</b>: ihandle) [in Lua]</pre>
 <p><strong>dialog</strong>:
@@ -216,6 +217,13 @@ set to capture 3 or 4 unsigned integers from 0 to 255 (R G B) or (R G B A)
   number with a valuator. All the multiline strings will increase size equally in both directions.</p>
 <p>The dialog uses a global attribute called &quot;PARENTDIALOG&quot; as the parent dialog if it is defined. It also uses a 
   global attribute called &quot;ICON&quot; as the dialog icon if it is defined.</p>
+<h3><a name="aux">Utility Functions</a></h3>
+<pre>Ihandle* IupParamf(const char* <strong>format</strong>); [in C]
+iup.Paramf(<strong>format</strong>: string) -&gt; <strong>elem</strong>: ihandle [in Lua]</pre>
+<p>XXX</p>
+<pre>Ihandle* IupParamBox(Ihandle* <strong>parent</strong>, Ihandle** <strong>params</strong>, int <strong>count</strong>); [in C]
+iup.ParamBox(<strong>parent</strong>: ihandle, <strong>params</strong>: table of ihandle) -&gt; <strong>elem</strong>: ihandle [in Lua]</pre>
+<p>XXX</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <p>Here is an example showing many the possible parameters. We show only one for each type, but you can have as many 
