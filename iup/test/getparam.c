@@ -11,25 +11,25 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
 {                
   switch(param_index)
   {
-  case IUP_GETPARAM_OK:
-    printf("IupGetParam - OK\n");
+  case IUP_GETPARAM_BUTTON1:
+    printf("IupGetParam - Button1 (OK)\n");
     break;
   case IUP_GETPARAM_INIT:
     {
       Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", param_index);
       IupSetfAttribute(param, "MAXSTR", "%d", 30);
 
-      printf("IupGetParam - Map\n");
+      printf("IupGetParam - Init\n");
       break;
     }
-  case IUP_GETPARAM_CANCEL:
-    printf("IupGetParam - Cancel\n");
+  case IUP_GETPARAM_BUTTON2:
+    printf("IupGetParam - Button2 (Cancel)\n");
     break;
-  case IUP_GETPARAM_HELP:
-    printf("IupGetParam - Help\n");
+  case IUP_GETPARAM_BUTTON3:
+    printf("IupGetParam - Button3 (Help)\n");
     break;
-  case 1:
-    return 0;
+//  case 1:
+//    return 0;  /* make it read-only */
   default:
     {
       Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", param_index);
@@ -57,7 +57,7 @@ void GetParamTest(void)
   
   if (!IupGetParam("Title", param_action, 0,
                    "Bt%u[, MyCancel, Help!]\n"
-                   "&Boolean 100%%:%b[No,Yes]\n"
+                   "&Boolean:%b[No,Yes]\n"
                    "&Integer:%i\n"
                    "Real 1:%r\n"
                    "Sep1 %t\n"

@@ -307,6 +307,8 @@ int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char
 typedef int (*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);
 int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format,...);
 int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
+Ihandle* IupParamf(const char* format);
+Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count);
 
 Ihandle* IupLayoutDialog(Ihandle* dialog);
 Ihandle* IupElementPropertiesDialog(Ihandle* elem);
@@ -410,10 +412,13 @@ enum{IUP_SBUP,   IUP_SBDN,    IUP_SBPGUP,   IUP_SBPGDN,    IUP_SBPOSV, IUP_SBDRA
 /************************************************************************/
 /*                   IupGetParam Callback situations                    */
 /************************************************************************/
-#define IUP_GETPARAM_OK     -1
-#define IUP_GETPARAM_INIT   -2
-#define IUP_GETPARAM_CANCEL -3
-#define IUP_GETPARAM_HELP   -4
+#define IUP_GETPARAM_BUTTON1 -1
+#define IUP_GETPARAM_INIT    -2
+#define IUP_GETPARAM_BUTTON2 -3
+#define IUP_GETPARAM_BUTTON3 -4
+#define IUP_GETPARAM_OK     IUP_GETPARAM_BUTTON1
+#define IUP_GETPARAM_CANCEL IUP_GETPARAM_BUTTON2
+#define IUP_GETPARAM_HELP   IUP_GETPARAM_BUTTON3
 
 
 /************************************************************************/

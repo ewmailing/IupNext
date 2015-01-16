@@ -80,7 +80,10 @@ iup.MASK_UINT    = "/d+"
 ----------------------------------------------------------------------------
 --  IupGetParam Callback situations
 ----------------------------------------------------------------------------
-iup.GETPARAM_OK     = -1
-iup.GETPARAM_INIT   = -2
-iup.GETPARAM_CANCEL = -3
-iup.GETPARAM_HELP   = -4
+iup.GETPARAM_BUTTON1 = -1
+iup.GETPARAM_INIT    = -2
+iup.GETPARAM_BUTTON2 = -3
+iup.GETPARAM_BUTTON3 = -4
+iup.GETPARAM_OK      = iup.GETPARAM_BUTTON1
+iup.GETPARAM_CANCEL  = iup.GETPARAM_BUTTON2
+iup.GETPARAM_HELP    = iup.GETPARAM_BUTTON3

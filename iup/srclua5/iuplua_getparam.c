@@ -195,8 +195,28 @@ static int GetParamParam(lua_State *L)
   Ihandle *dialog = iuplua_checkihandle(L, 1);
   int param_index = luaL_checkint(L, 2);
   Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", param_index);
+  if (!iuplua_getstate(param))
+    iuplua_plugstate(L, param);
+  iuplua_pushihandle(L, param);
+  return 1;
+}
+
+static int Param(lua_State *L)
+{
+  Ihandle* param = IupParamf(luaL_checkstring(L, 1));
   iuplua_plugstate(L, param);
   iuplua_pushihandle(L, param);
+  return 1;
+}
+
+static int ParamBox(lua_State *L)
+{
+  Ihandle* parent = iuplua_checkihandle(L, 1);
+  int count = iuplua_getn(L, 2);
+  Ihandle** params = iuplua_checkihandle_array(L, 2, count);
+  Ihandle* param_box = IupParamBox(parent, params, count);
+  iuplua_plugstate(L, param_box);
+  iuplua_pushihandle(L, param_box);
   return 1;
 }
 
@@ -204,4 +224,6 @@ void iupgetparamlua_open(lua_State * L)
 {
   iuplua_register(L, GetParam, "GetParam");
   iuplua_register(L, GetParamParam, "GetParamParam");
+  iuplua_register(L, Param, "Paramf");
+  iuplua_register(L, ParamBox, "ParamBox");
 }
