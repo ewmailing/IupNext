@@ -50,15 +50,18 @@ static int iParamButton2_CB(Ihandle* self)
   Ihandle* param_box = (Ihandle*)iupAttribGetInherit(self, "PARAMBOX");
   Iparamcb cb = (Iparamcb)IupGetCallback(param_box, "PARAM_CB");
   iupAttribSet(param_box, "STATUS", "0");
-  if (cb) cb(param_box, IUP_GETPARAM_BUTTON2, (void*)iupAttribGet(param_box, "USERDATA"));
-  return IUP_CLOSE;
+  if (cb && !cb(param_box, IUP_GETPARAM_BUTTON2, (void*)iupAttribGet(param_box, "USERDATA")))
+    return IUP_DEFAULT;
+  else
+    return IUP_CLOSE;
 }
 
 static int iParamButton3_CB(Ihandle* self)
 {
   Ihandle* param_box = (Ihandle*)iupAttribGetInherit(self, "PARAMBOX");
   Iparamcb cb = (Iparamcb)IupGetCallback(param_box, "PARAM_CB");
-  if (cb) cb(param_box, IUP_GETPARAM_BUTTON3, (void*)iupAttribGet(param_box, "USERDATA"));
+  if (cb) 
+    cb(param_box, IUP_GETPARAM_BUTTON3, (void*)iupAttribGet(param_box, "USERDATA"));
   return IUP_DEFAULT;
 }
 
@@ -928,11 +931,11 @@ Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count)
           *param_box, *button_box, *ctrl_box;
   int i, p, expand;
 
-  button_1 = IupButton(IupGetLanguageString("IUP_OK"), NULL);  /* default is OK */
+  button_1 = IupButton(IupGetLanguageString(parent? "IUP_APPLY": "IUP_OK"), NULL);  /* default is OK */
   IupSetAttribute(button_1, "PADDING", "20x0");
   IupSetCallback(button_1, "ACTION", (Icallback)iParamButton1_CB);
 
-  button_2 = IupButton(IupGetLanguageString("IUP_CANCEL"), NULL);  /* default is Cancel */
+  button_2 = IupButton(IupGetLanguageString(parent? "IUP_RESET": "IUP_CANCEL"), NULL);  /* default is Cancel */
   IupSetAttribute(button_2, "PADDING", "20x0");
   IupSetCallback(button_2, "ACTION", (Icallback)iParamButton2_CB);
   
@@ -1100,7 +1103,7 @@ static void iParamStrSetInterval(char* extra, Ihandle* param)
 
   if (max[0])
   {
-    iupAttribSet(param, "INTERVAL", "1");
+    iupAttribSet(param, "INTERVAL", "Yes");
     iupAttribSetStr(param, "MIN", min);
     iupAttribSetStr(param, "MAX", max);
     if (step[0])
@@ -1108,7 +1111,7 @@ static void iParamStrSetInterval(char* extra, Ihandle* param)
   }
   else
   {
-    iupAttribSet(param, "PARTIAL", "1");
+    iupAttribSet(param, "PARTIAL", "Yes");
     iupAttribSetStr(param, "MIN", min);
   }
 }
@@ -1306,38 +1309,38 @@ Ihandle* IupParamf(const char* format)
   {
   case 'b':
     iupAttribSet(param, "TYPE", "BOOLEAN");
-    iupAttribSet(param, "DATATYPE", "INTEGER");
+    iupAttribSet(param, "DATATYPE", "INT");
     extra = iParamStrGetExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamStrSetBoolNames(extra, param);
     break;
   case 'l':
     iupAttribSet(param, "TYPE", "LIST");
-    iupAttribSet(param, "DATATYPE", "INTEGER");
+    iupAttribSet(param, "DATATYPE", "INT");
     extra = iParamStrGetExtra(line_ptr, '|', '|', &count);  line_ptr += count;
     iParamStrSetListItems(extra, param);
     break;
   case 'o':
     iupAttribSet(param, "TYPE", "OPTIONS");
-    iupAttribSet(param, "DATATYPE", "INTEGER");
+    iupAttribSet(param, "DATATYPE", "INT");
     extra = iParamStrGetExtra(line_ptr, '|', '|', &count);  line_ptr += count;
     iParamStrSetListItems(extra, param);
     break;
   case 'A':
     iupAttribSet(param, "TYPE", "REAL");
     iupAttribSet(param, "DATATYPE", "DOUBLE");
-    iupAttribSet(param, "ANGLE", "1");
+    iupAttribSet(param, "ANGLE", "Yes");
     extra = iParamStrGetExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamStrSetInterval(extra, param);
     break;
   case 'a':
     iupAttribSet(param, "TYPE", "REAL");
     iupAttribSet(param, "DATATYPE", "FLOAT");
-    iupAttribSet(param, "ANGLE", "1");
+    iupAttribSet(param, "ANGLE", "Yes");
     extra = iParamStrGetExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamStrSetInterval(extra, param);
     break;
   case 'm':
-    iupAttribSet(param, "MULTILINE", "1");
+    iupAttribSet(param, "MULTILINE", "Yes");
     /* continue */
   case 's':
     iupAttribSet(param, "TYPE", "STRING");
@@ -1350,7 +1353,7 @@ Ihandle* IupParamf(const char* format)
     break;
   case 'i':
     iupAttribSet(param, "TYPE", "INTEGER");
-    iupAttribSet(param, "DATATYPE", "INTEGER");
+    iupAttribSet(param, "DATATYPE", "INT");
     extra = iParamStrGetExtra(line_ptr, '[', ']', &count);  line_ptr += count;
     iParamStrSetInterval(extra, param);
     break;
@@ -1487,7 +1490,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
       iupAttribSetDouble(params[i], "VALUE", *data_double);
       p++;
     }
-    else if (iupStrEqualNoCase(data_type, "INTEGER"))
+    else if (iupStrEqualNoCase(data_type, "INT"))
     {
       int *data_int = (int*)(param_data[p]);
       if (!data_int) { free(params); return 0; }
@@ -1538,7 +1541,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
     {
       Ihandle* param = params[i];
       char* data_type = iupAttribGet(param, "DATATYPE");
-      if (iupStrEqualNoCase(data_type, "INTEGER"))
+      if (iupStrEqualNoCase(data_type, "INT"))
       {
         int *data_int = (int*)(param_data[p]);
         *data_int = iupAttribGetInt(param, "VALUE");

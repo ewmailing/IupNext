@@ -358,7 +358,6 @@ void iupMatrixExRegisterSort(Iclass* ic)
   {
     IupSetLanguageString("IUP_SORTBYCOLUMN", "Sort Lines by Column");
     IupSetLanguageString("IUP_INVERT", "Invert");
-    IupSetLanguageString("IUP_RESET", "Reset");
     IupSetLanguageString("IUP_SORT", "Sort");
     
     IupSetLanguageString("IUP_INVERT_TIP", "Just invert the current sort. New parameters are ignored.");
@@ -377,7 +376,6 @@ void iupMatrixExRegisterSort(Iclass* ic)
   {
     IupSetLanguageString("IUP_SORTBYCOLUMN", "Classificar Linhas por Coluna");
     IupSetLanguageString("IUP_INVERT", "Inverter");
-    IupSetLanguageString("IUP_RESET", "Reiniciar");
     IupSetLanguageString("IUP_SORT", "Ordenar");
     
     IupSetLanguageString("IUP_INVERT_TIP", "Apenas inverte a ordenação corrente. Novos parâmetros são ignorados.");
