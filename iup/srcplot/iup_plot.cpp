@@ -268,7 +268,86 @@ static int iPlotShowGrid_CB(Ihandle* self)
   return IUP_DEFAULT;
 }
 
-static Ihandle* iPlotCreateMenuContext(Ihandle* ih)
+static int iPlotGetListIndex(const char** list, int count, const char* value)
+{
+  for (int i = 0; i < count; i++)
+  {
+    if (iupStrEqualNoCase(list[i], value))
+      return i;
+  }
+  return 0;
+}
+
+static int iPlotDatasetProperties_CB(Ihandle* ih_item)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
+  char* ds_name = IupGetAttribute(ih_item, "DS_NAME");
+  char name[100];
+  strcpy(name, ds_name);
+
+  IupSetStrAttribute(ih, "CURRENT", ds_name);
+
+  const char* ds_color = IupGetAttribute(ih, "DS_COLOR");
+  char color[30];
+  strcpy(color, ds_color);
+
+  const char* ds_mode = IupGetAttribute(ih, "DS_MODE");
+  const char* mode_list[] = { "LINE", "MARK", "MARKLINE", "BAR", "AREA" };
+  int mode = iPlotGetListIndex(mode_list, 5, ds_mode);
+
+  const char* ds_linestyle = IupGetAttribute(ih, "DS_LINESTYLE");
+  const char* linestyle_list[] = { "CONTINUOUS", "DASHED", "DOTTED", "DASH_DOT", "DASH_DOT_DOT" };
+  int linestyle = iPlotGetListIndex(linestyle_list, 5, ds_linestyle);
+
+  int linewidth = IupGetInt(ih, "DS_LINEWIDTH");
+
+  const char* ds_markstyle = IupGetAttribute(ih, "DS_MARKSTYLE");
+  const char* markstyle_list[] = { "PLUS", "STAR", "CIRCLE", "X", "BOX", "DIAMOND", "HOLLOW_CIRCLE", "HOLLOW_BOX", "HOLLOW_DIAMOND" };
+  int markstyle = iPlotGetListIndex(markstyle_list, 9, ds_markstyle);
+
+  int marksize = IupGetInt(ih, "DS_MARKSIZE");
+
+  char format[1024] = 
+    "_@IUP_NAME%s\n"
+    "_@IUP_COLOR%c\n"
+    "_@IUP_MODE%l|_@IUP_LINE|_@IUP_MARK|_@IUP_MARKLINE|_@IUP_BAR|_@IUP_AREA|\n"
+    "_@IUP_LINESTYLE%l|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|\n"
+    "_@IUP_LINEWIDTH%i[1,,]\n"
+    "_@IUP_MARKSTYLE%l|_@IUP_PLUS|_@IUP_STAR|_@IUP_CIRCLE|_@IUP_X|_@IUP_BOX|_@IUP_DIAMOND|_@IUP_HOLLOW_CIRCLE|_@IUP_HOLLOW_BOX|_@IUP_HOLLOW_DIAMOND|\n"
+    "_@IUP_MARKSIZE%i[1,,]\n";
+
+  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", NULL, NULL, format,
+                   name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize, NULL))
+    return IUP_DEFAULT;
+
+  IupSetStrAttribute(ih, "DS_NAME", name);
+  IupSetStrAttribute(ih, "DS_COLOR", color);
+
+  ds_mode = mode_list[mode];
+  IupSetStrAttribute(ih, "DS_MODE", ds_mode);
+
+  ds_linestyle = linestyle_list[linestyle];
+  IupSetStrAttribute(ih, "DS_LINESTYLE", ds_linestyle);
+
+  IupSetInt(ih, "DS_LINEWIDTH", linewidth);
+
+  ds_markstyle = markstyle_list[markstyle];
+  IupSetStrAttribute(ih, "DS_MARKSTYLE", ds_markstyle);
+
+  IupSetInt(ih, "DS_MARKSIZE", marksize);
+
+  IupSetAttribute(ih, "REDRAW", NULL);
+
+  return IUP_DEFAULT;
+}
+
+static int iPlotProperties_CB(Ihandle* self)
+{
+
+  return IUP_DEFAULT;
+}
+
+static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
 {
   Ihandle* menu = IupMenu(
     IupSetCallbacks(IupItem("_@IUP_ZOOMINAC", NULL), "ACTION", iPlotZoomIn_CB, NULL),
@@ -297,6 +376,26 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih)
     IupSetCallbacks(IupItem("_@IUP_PRINTDLG", NULL), "ACTION", iPlotPrint_CB, NULL),
     NULL);
 
+  if (IupGetInt(ih, "MENUITEMPROPERTIES"))
+  {
+    Ihandle* item;
+    IupAppend(menu, IupSeparator());
+    IupAppend(menu, IupSetCallbacks(item = IupItem("_@IUP_DATASETPROPERTIESDLG", NULL), "ACTION", iPlotDatasetProperties_CB, NULL));
+    IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_PROPERTIESDLG", NULL), "ACTION", iPlotProperties_CB, NULL));
+
+    int ds, sample;
+    double rx, ry;
+    const char* ds_name;
+    const char* strX;
+    if (ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample, rx, ry, strX))
+    {
+      IupSetStrAttribute(item, "DS_NAME", ds_name);
+      IupSetAttribute(item, "ACTIVE", "YES");
+    }
+    else
+      IupSetAttribute(item, "ACTIVE", "NO");
+  }
+
   IupSetAttribute(menu, "PLOT", (char*)ih);
 
   return menu;
@@ -304,7 +403,7 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih)
 
 void iupPlotShowMenuContext(Ihandle* ih, int screen_x, int screen_y, int x, int y)
 {
-  Ihandle* menu = iPlotCreateMenuContext(ih);
+  Ihandle* menu = iPlotCreateMenuContext(ih, x, y);
   IFnnii menucontext_cb;
 
   menucontext_cb = (IFnnii)IupGetCallback(ih, "MENUCONTEXT_CB");
@@ -1672,6 +1771,36 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_SHOWHIDEGRID", "Show/Hide Grid");
 
     IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Invalid Formula.");
+
+    IupSetLanguageString("IUP_PROPERTIESDLG", "Properties...");
+    IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "Dataset Properties...");
+    
+     IupSetLanguageString("IUP_NAME", "Name:");
+     IupSetLanguageString("IUP_COLOR", "Color:");
+     IupSetLanguageString("IUP_MODE", "Mode:");
+     IupSetLanguageString("IUP_LINE", "Line");
+     IupSetLanguageString("IUP_MARK", "Mark");
+     IupSetLanguageString("IUP_MARKLINE", "Mark & Line");
+     IupSetLanguageString("IUP_BAR", "Bar");
+     IupSetLanguageString("IUP_AREA", "Area");
+     IupSetLanguageString("IUP_LINESTYLE", "Line Style:");
+     IupSetLanguageString("IUP_CONTINUOUS", "Continuous");
+     IupSetLanguageString("IUP_DASHED", "Dashed");
+     IupSetLanguageString("IUP_DOTTED", "Dotted");
+     IupSetLanguageString("IUP_DASH_DOT", "Dash Dot");
+     IupSetLanguageString("IUP_DASH_DOT_DOT", "Dash Dot Dot");
+     IupSetLanguageString("IUP_LINEWIDTH", "Line Width:");
+     IupSetLanguageString("IUP_MARKSTYLE", "Mark Style:");
+     IupSetLanguageString("IUP_PLUS", "Plus");
+     IupSetLanguageString("IUP_STAR", "Star");
+     IupSetLanguageString("IUP_CIRCLE", "Circle");
+     IupSetLanguageString("IUP_X", "X");
+     IupSetLanguageString("IUP_BOX", "Box");
+     IupSetLanguageString("IUP_DIAMOND", "Diamond");
+     IupSetLanguageString("IUP_HOLLOW_CIRCLE", "Hollow Circle");
+     IupSetLanguageString("IUP_HOLLOW_BOX", "Hollow Box");
+     IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Hollow Diamond");
+     IupSetLanguageString("IUP_MARKSIZE", "Mark Size:");
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
   {
@@ -1686,11 +1815,51 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_SHOWHIDEGRID", "Mostra/Esconde Grade");
 
     IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "FÛrmula Inv·lida.");
+
+
+    IupSetLanguageString("IUP_PROPERTIESDLG", "Properties...");
+    IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "Dataset Properties...");
+
+    IupSetLanguageString("IUP_NAME", "Nome:");
+    IupSetLanguageString("IUP_COLOR", "Cor:");
+    IupSetLanguageString("IUP_MODE", "Modo:");
+    IupSetLanguageString("IUP_LINE", "Linha");
+    IupSetLanguageString("IUP_MARK", "Marca");
+    IupSetLanguageString("IUP_MARKLINE", "Marca e Linha");
+    IupSetLanguageString("IUP_BAR", "Barra");
+    IupSetLanguageString("IUP_AREA", "¡rea");
+    IupSetLanguageString("IUP_LINESTYLE", "Estilo de Linha:");
+    IupSetLanguageString("IUP_CONTINUOUS", "ContÌnuo");
+    IupSetLanguageString("IUP_DASHED", "Tracejada");
+    IupSetLanguageString("IUP_DOTTED", "Pontilhado");
+    IupSetLanguageString("IUP_DASH_DOT", "TraÁo Ponto");
+    IupSetLanguageString("IUP_DASH_DOT_DOT", "TraÁo Ponto Ponto");
+    IupSetLanguageString("IUP_LINEWIDTH", "Largura de Linha:");
+    IupSetLanguageString("IUP_MARKSTYLE", "Estilo de Marca:");
+    IupSetLanguageString("IUP_PLUS", "Mais");
+    IupSetLanguageString("IUP_STAR", "Estrela");
+    IupSetLanguageString("IUP_CIRCLE", "CÌrculo");
+    IupSetLanguageString("IUP_X", "X");
+    IupSetLanguageString("IUP_BOX", "Caixa");
+    IupSetLanguageString("IUP_DIAMOND", "Diamante");
+    IupSetLanguageString("IUP_HOLLOW_CIRCLE", "CÌrculo Oco");
+    IupSetLanguageString("IUP_HOLLOW_BOX", "Caixa Oca");
+    IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Diamante Oco");
+    IupSetLanguageString("IUP_MARKSIZE", "Tamanho de Marca:");
+
     if (IupGetInt(NULL, "UTF8MODE"))
     {
       /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
-      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+         When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+
       IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "F√≥rmula Inv√°lida.");
+
+      IupSetLanguageString("IUP_AREA", "√Årea");
+      IupSetLanguageString("IUP_CONTINUOUS", "Cont√≠nuo");
+      IupSetLanguageString("IUP_DASH_DOT", "Tra√ßo Ponto");
+      IupSetLanguageString("IUP_DASH_DOT_DOT", "Tra√ßo Ponto Ponto");
+      IupSetLanguageString("IUP_CIRCLE", "C√≠rculo");
+      IupSetLanguageString("IUP_HOLLOW_CIRCLE", "C√≠rculo Oco");
     }
   }
 

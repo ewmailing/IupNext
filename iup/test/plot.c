@@ -599,8 +599,12 @@ void PlotTest(void)
   IupPlotOpen();     /* init IupPlot library */
 
   /* create plots */
-  for (ii=0; ii<MAXPLOT; ii++)
+  for (ii = 0; ii < MAXPLOT; ii++)
+  {
     plot[ii] = IupPlot();
+
+    IupSetAttribute(plot[ii], "SHOWPROPERTIES", "Yes");
+  }
 
   /* left panel: plot control
      Y zooming               */
