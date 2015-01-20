@@ -50,6 +50,7 @@ static int iPlotSelectFile(Ihandle* parent, char* filename, const char* title, c
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", parent);
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
     char* value = IupGetAttribute(filedlg, "VALUE");
@@ -341,8 +342,61 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int iPlotProperties_CB(Ihandle* self)
+static int iPlotTreeSelection_CB(Ihandle *ih_tree, int id, int status)
 {
+  if (status == 1)
+  {
+
+  }
+  return IUP_DEFAULT;
+}
+
+static int iPlotPropertiesKEsc_CB(Ihandle*)
+{
+  return IUP_CLOSE;
+}
+
+static int iPlotProperties_CB(Ihandle* ih_item)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
+  Ihandle* parent = IupGetDialog(ih);
+
+  Ihandle* tree = IupTree();
+  IupSetAttribute(tree, "ADDROOT", "NO");
+  IupSetCallback(tree, "SELECTION_CB", (Icallback)iPlotTreeSelection_CB);
+  IupSetAttribute(tree, "SIZE", "130x120");
+
+  Ihandle* zbox = IupZbox(NULL);
+
+  Ihandle* dlg = IupDialog(IupHbox(tree, IupFrame(zbox), NULL));
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
+  IupSetStrAttribute(dlg, "TITLE", "_@IUP_PROPERTIESDLG");
+  IupSetCallback(dlg, "K_ESC", iPlotPropertiesKEsc_CB);
+
+  if (IupGetAttribute(parent, "ICON"))
+    IupSetStrAttribute(dlg, "ICON", IupGetAttribute(parent, "ICON"));
+  else
+    IupSetStrAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+
+  IupMap(dlg);
+
+  IupSetStrAttribute(tree, "ADDLEAF-1", "_@IUP_BACKGROUND");
+  IupSetStrAttribute(tree, "ADDLEAF0", "_@IUP_TITLE");
+  IupSetStrAttribute(tree, "ADDLEAF1", "_@IUP_LEGEND");
+  IupSetStrAttribute(tree, "ADDLEAF2", "_@IUP_BOX");
+  IupSetStrAttribute(tree, "ADDLEAF3", "_@IUP_GRID");
+  IupSetStrAttribute(tree, "ADDBRANCH4", "_@IUP_XAXIS");
+  IupSetStrAttribute(tree, "ADDLEAF5", "_@IUP_AXISLABEL");
+  IupSetStrAttribute(tree, "ADDLEAF6", "_@IUP_AXISTICKS");
+  IupSetStrAttribute(tree, "ADDLEAF7", "_@IUP_AXISTICKSNUMBER");
+  IupSetStrAttribute(tree, "INSERTBRANCH5", "_@IUP_YAXIS");
+  IupSetStrAttribute(tree, "ADDLEAF9", "_@IUP_AXISLABEL");
+  IupSetStrAttribute(tree, "ADDLEAF10", "_@IUP_AXISTICKS");
+  IupSetStrAttribute(tree, "ADDLEAF11", "_@IUP_AXISTICKSNUMBER");
+
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  IupDestroy(dlg);
 
   return IUP_DEFAULT;
 }
