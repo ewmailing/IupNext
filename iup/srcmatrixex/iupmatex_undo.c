@@ -382,8 +382,8 @@ static Ihandle* iMatrixExUndoCreateDialog(ImatExData* matex_data)
   parent = IupGetDialog(matex_data->ih);
 
   dlg = IupDialog(list);
-  IupSetAttribute(dlg, "MAXBOX" ,"NO" );
-  IupSetAttribute(dlg, "MINBOX" ,"NO" );
+  IupSetAttribute(dlg, "MAXBOX" ,"NO");
+  IupSetAttribute(dlg, "MINBOX" ,"NO");
   IupSetAttribute(dlg, "TOOLBOX","YES");
   IupSetStrAttribute(dlg, "TITLE"  ,"_@IUP_UNDOLIST");
   IupSetAttributeHandle(dlg,"PARENTDIALOG", parent);

@@ -603,7 +603,7 @@ void PlotTest(void)
   {
     plot[ii] = IupPlot();
 
-    IupSetAttribute(plot[ii], "SHOWPROPERTIES", "Yes");
+    IupSetAttribute(plot[ii], "MENUITEMPROPERTIES", "Yes");
   }
 
   /* left panel: plot control

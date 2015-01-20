@@ -334,14 +334,14 @@ is a summary of the functions that can be used to update an element state:</p>
 the system to schedule a redraw. Rarely used.</p>
 <p><a href="func/iupredraw.html">IupRedraw</a> - has the same effect of <strong>
 IupUpdate</strong> but forces the element to redraw now.&nbsp; </p>
-<p>&nbsp;<a href="func/iuprefresh.html">IupRefresh</a> - if the application 
+<p><a href="func/iuprefresh.html">IupRefresh</a> - if the application 
 changed some attribute that affects the natural size, for instance SIZE or 
 RASTERSIZE among others, the actual element size is NOT immediately updated. 
 That's because it can affect the size and position of other elements in the 
 dialog. <strong>IupRefresh</strong> will force an update in the layout of the 
 hole dialog, and of course if an element has its size changed its appearance 
 will be automatically updated.</p>
-<p>&nbsp;<a href="func/iupflush.html">IupFlush</a> - process all events that are 
+<p><a href="func/iupflush.html">IupFlush</a> - process all events that are 
 waiting to be processed. When you set an attribute, a system event is generated, 
 but it will wait until is processed by the event loop. Sometimes the application 
 needs an immediate result, so calling <strong>IupFlush</strong> will process 

@@ -166,6 +166,7 @@ static char* iMatrixExFileDlg(ImatExData* matex_data, int save, const char* titl
   IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(matex_data->ih));
 
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
   if (IupGetInt(dlg,"STATUS")!=-1)
   {
     char* value = IupGetAttribute(dlg, "VALUE");
