@@ -54,13 +54,13 @@ iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: strin
   <p><b>dialog</b>: dialog handle<br>
   <b>param_index</b>: current parameter being 
     changed. Can have negative values to indicate specific situations: <br>
-&nbsp;&nbsp;&nbsp; IUP_GETPARAM_OK (-1) = if the user pressed the <b>OK</b> button;<br>
+&nbsp;&nbsp;&nbsp; IUP_GETPARAM_BUTTON1 (-1) = if the user pressed the button 1;<br>
 &nbsp;&nbsp;&nbsp; IUP_GETPARAM_INIT&nbsp;(-2)&nbsp; = after the dialog is 
   <b>mapped</b> and just before 
     it is shown;<br>
-&nbsp;&nbsp;&nbsp; IUP_GETPARAM_CANCEL (-3) = if the user pressed the <b>Cancel</b> button;<br>
-&nbsp;&nbsp;&nbsp; IUP_GETPARAM_HELP 
-	(-4) = if the user pressed the <strong>Help</strong> button, if any;<br>
+&nbsp;&nbsp;&nbsp; IUP_GETPARAM_BUTTON2 (-3) = if the user pressed the button 2;<br>
+&nbsp;&nbsp;&nbsp; IUP_GETPARAM_BUTTON3 
+	(-4) = if the user pressed the button 3, if any;<br>
   <b>user_data</b>: a user pointer that is passed in the function call.</p>
   <p><span class="style1">Returns:</span> You can reject the change or the 
   button action by returning 0 in the callback, otherwise you must return 1.</p>
@@ -232,15 +232,20 @@ IupParamBox</strong> bellow. Each parameter format follows the same
 specifications as the <strong>IupGetParam</strong> function, including the line 
 feed. </p>
 <p>The <strong>IupUser</strong> element can be directly used if the internal 
-attributes are set:</p>
-<p><strong>TITLE</strong>: title of the parameter, used as label.<br><strong>
+attributes are set. Here are the respective attributes according to the <strong>
+IupGetParam</strong> format specification: </p>
+<p><strong>TITLE</strong>: text of the parameter, used as label.<br>
+--------------------------------------------------------<br><strong>
 TYPE</strong>: can be BOOLEAN, LIST, OPTIONS, REAL, STRING, INTEGER, FILE, 
 COLOR, SEPARATOR, BUTTONNAMES and HANDLE. And describe the type of the 
 parameter.<br><strong>DATATYPE</strong>: can be INT (int), FLOAT (float), DOUBLE 
 (double), STRING (char*), HANDLE (Ihandle*) or NONE (when buttons and separators 
 are used). And describe the C data type that must be passed to <strong>
-IupGetParam</strong> to initialize and receive parameter values.<br><strong>
-VALUE</strong>: the parameter value.<br><strong>TRUE</strong>, <strong>FALSE</strong>: 
+IupGetParam</strong> to initialize and receive parameter values.<br>
+<strong>MULTILINE</strong>: can be Yes or No. Defines if the edit box can have 
+more than one line.<br><strong>
+ANGLE</strong>: can be Yes or No. defines if the REAL type is an angle.<br>
+--------------------------------------------------------<br><strong>TRUE</strong>, <strong>FALSE</strong>: 
 boolean names.<br><strong>INTERVAL</strong> (Yes/No), <strong>MIN</strong>,
 <strong>MAX</strong>, <strong>STEP</strong>, <strong>PARTIAL</strong> (Yes/No): 
 optional limits for <u>integer</u> and
@@ -251,11 +256,11 @@ NOOVERWRITEPROMPT</strong>: used for the FILE parameter dialog. See
 BUTTON2</strong>, <strong>BUTTON3</strong>: button names. Default is 
 "OK/Cancel/Help" for regular <strong>IupGetParam</strong>, and 
 "Apply/Reset/Help" for <strong>IupParamBox</strong>.<br><strong>0, 1, 2, 3, ...</strong> 
-: list items.<br><strong>MASK</strong>: mask for the edit box input.<br><strong>
-ANGLE</strong>: can be Yes or No. defines if the REAL type is an angle.<br>
-<strong>MULTILINE</strong>: can be Yes or No. Defines if the edit box can have 
-more than one line.<br><strong>TIP</strong>: title for the TIP.<br><strong>
-STATUS</strong>: set to 1 when button1 is activated and set to 0 when button2 is 
+: list items.<br><strong>MASK</strong>: mask for the edit box input.<br>
+--------------------------------------------------------<br><strong>TIP</strong>: 
+text of the tip.<br>
+--------------------------------------------------------<br><strong>
+VALUE</strong>: the parameter value.<strong><br>STATUS</strong>: set to 1 when button1 is activated and set to 0 when button2 is 
 activated.</p>
 <pre>Ihandle* IupParamBox(Ihandle* <strong>parent</strong>, Ihandle** <strong>params</strong>, int <strong>count</strong>); [in C]
 iup.ParamBox(<strong>parent</strong>: ihandle, <strong>params</strong>: table of ihandle) -&gt; <strong>elem</strong>: ihandle [in Lua]</pre>

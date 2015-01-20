@@ -17,6 +17,9 @@
 #define __IUPPLOT_H__
 
 
+enum iupPlotMode { IUP_PLOT_LINE, IUP_PLOT_MARK, IUP_PLOT_MARKLINE, IUP_PLOT_AREA, IUP_PLOT_BAR };
+enum iupPlotLegendPosition { IUP_PLOT_TOPRIGHT, IUP_PLOT_TOPLEFT, IUP_PLOT_BOTTOMRIGHT, IUP_PLOT_BOTTOMLEFT, IUP_PLOT_BOTTOMCENTER, IUP_PLOT_XY };
+
 const double kFloatSmall = 1e-20;
 const double kLogMinClipValue = 1e-10;  // pragmatism to avoid problems with small values in log plot
 
@@ -195,8 +198,6 @@ struct iupPlotSampleNotify
   int ds;
   IFniiddi cb;
 };
-
-enum iupPlotMode { IUP_PLOT_LINE, IUP_PLOT_MARK, IUP_PLOT_MARKLINE, IUP_PLOT_AREA, IUP_PLOT_BAR };
 
 class iupPlotDataSet
 {
@@ -481,8 +482,6 @@ public:
   int  mLineStyle;
   int  mLineWidth;
 };
-
-enum iupPlotLegendPosition { IUP_PLOT_TOPLEFT, IUP_PLOT_TOPRIGHT, IUP_PLOT_BOTTOMLEFT, IUP_PLOT_BOTTOMRIGHT, IUP_PLOT_BOTTOMCENTER, IUP_PLOT_XY };
 
 class iupPlotLegend
 {

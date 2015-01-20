@@ -448,8 +448,9 @@ respective dataset.</p>
 <p><b>LEGENDBOX</b>: draws a box around the legend area. Default: YES.</p>
 <p><b>LEGENDBOXCOLOR</b>: box line color. Default: FGCOLOR.</p>
 <p><b>LEGENDBOXBACKCOLOR</b>: box background color. Default: BGCOLOR.</p>
+<p><b>LEGENDBOXLINESTYLE</b>: line style of the grid. Can be: "CONTINUOUS", 
+"DASHED", "DOTTED", "DASH_DOT", "DASH_DOT_DOT". Default is "CONTINUOUS".</p>
 <p><b>LEGENDBOXLINEWIDTH</b>: line width of the legend box. Default: 1.</p>
-<p><b>LEGENDBOXLINESTYLE</b>: line style of the grid. </p>
 <p><b>LEGENDFONTSIZE, LEGENDFONTSTYLE</b>: the legend box text font size and style. 
 Default: FONT.</p>
 <p><b>LEGENDPOS</b>: legend box position. Can be: "TOPLEFT", "TOPRIGHT", 
@@ -463,17 +464,18 @@ area relative to the top-left corner is used instead (since 3.13), if value is
 <p><b>GRID</b>: shows or hides the grid in both or a 
 specific axis at the major ticks. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>
 <p><b>GRIDCOLOR</b>: grid color. Default: &quot;200 200 200&quot;.</p>
-<p><b>GRIDLINEWIDTH</b>: line width of the box. Default: 1.</p>
 <p><b>GRIDLINESTYLE</b>: line style of the grid. Can be: &quot;CONTINUOUS&quot;, 
 &quot;DASHED&quot;, &quot;DOTTED&quot;, &quot;DASH_DOT&quot;, &quot;DASH_DOT_DOT&quot;. Default is &quot;CONTINUOUS&quot;.</p>
-<p><strong>GRIDMINOR</strong>, <strong>GRIDMINORCOLOR</strong>, <b>GRIDLINEWIDTH</b> 
-and <b>GRIDLINESTYLE</b>: are the same attributes for a grid at the minor ticks, 
+<p><b>GRIDLINEWIDTH</b>: line width of the box. Default: 1.</p>
+<p><strong>GRIDMINOR</strong>, <strong>GRIDMINORCOLOR</strong>, <b>GRIDLINESTYLE</b> 
+and <b>GRIDLINEWIDTH</b>: are the same attributes for a grid at the minor ticks, 
 but they are visible only if the major ticks grid are visible too. (since 3.13)</p>
 <h4>Box Configuration </h4>
 <p><b>BOX</b>: draws a bounding box around the dataset area. Default: NO.</p>
 <p><b>BOXCOLOR</b>: box line color. Default: FGCOLOR.</p>
+<p><b>BOXLINESTYLE</b>: line style of the grid. Can be: "CONTINUOUS", "DASHED", 
+"DOTTED", "DASH_DOT", "DASH_DOT_DOT". Default is "CONTINUOUS".</p>
 <p><b>BOXLINEWIDTH</b>: line width of the box. Default: 1.</p>
-<p><b>BOXLINESTYLE</b>: line style of the grid. </p>
 <h4>Dataset List Management </h4>
 <p><b>REMOVE</b> (write-only): removes a dataset given its index or its <font SIZE="3">DS_NAME </font>
 attribute, "CURRENT" or NULL are also accepted to remove the current dataset (since 3.13). Notice that after removing a dataset the other 

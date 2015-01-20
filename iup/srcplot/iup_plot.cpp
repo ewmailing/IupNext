@@ -342,7 +342,84 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int iPlotTreeSelection_CB(Ihandle *ih_tree, int id, int status)
+struct iPlotAttribParam
+{
+  const char* name;
+  const char* default_name;
+
+  const char* label;
+  const char* type;
+  const char* extra;
+  const char* tip;
+};
+
+static const char* iplot_font_styles = { "|_@IUP_PLAIN|_@IUP_BOLD|_@IUP_ITALIC|_@IUP_BOLDITALIC|" };
+static const char* iplot_legend_positions = { "|_@IUP_TOPRIGHT|_@IUP_TOPLEFT|_@IUP_BOTTOMRIGHT|_@IUP_BOTTOMLEFT|_@IUP_BOTTOMCENTER|_@IUP_XY|" };
+static const char* iplot_line_styles = { "|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|" };
+
+static iPlotAttribParam iplot_background_attribs[] = {
+  { "MARGINLEFT", NULL, "_@IUP_MARGINLEFT", "s", "/d+|AUTO", "{123...|AUTO}" },
+  { "MARGINRIGHT", NULL, "_@IUP_MARGINRIGHT", "s", "/d+|AUTO", "{123...|AUTO}" },
+  { "MARGINTOP", NULL, "_@IUP_MARGINTOP", "s", "/d+|AUTO", "{123...|AUTO}" },
+  { "MARGINBOTTOM", NULL, "_@IUP_MARGINBOTTOM", "s", "/d+|AUTO", "{123...|AUTO}" },
+  { "BACKCOLOR", "BGCOLOR", "_@IUP_COLOR", "c", "", "" },
+  { NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_title_attribs[] = {
+  { "TITLE", NULL, "_@IUP_TITLE", "s", "", "" },
+  { "TITLECOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "" },
+  { "TITLEFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_font_styles, "" },
+  { "TITLEFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "" },
+  { "TITLEPOS", NULL, "_@IUP_POSITION", "s", "/d+[,]/d+|AUTO", "{x,y (pixels)|AUTO}" },
+  { NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_legend_attribs[] = {
+  { "LEGEND", NULL, "_@IUP_LEGEND", "b", "", "" },
+  { "LEGENDFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_font_styles, "" },
+  { "LEGENDFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "" },
+  { "LEGENDPOS", NULL, "_@IUP_POSITION", "s", iplot_legend_positions, "" },
+  { "LEGENDPOSXY", NULL, "_@IUP_POSITIONXY", "s", "/d+[,]/d+", "{x,y (pixels)}" },
+  { NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_legendbox_attribs[] = {
+  { "LEGENDBOX", NULL, "_@IUP_LEGENDBOX", "b", "", "" },
+  { "LEGENDBOXCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "" },
+  { "LEGENDBOXBACKCOLOR", "BGCOLOR", "_@IUP_COLOR", "c", "", "" },
+  { "LEGENDBOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_line_styles, "" },
+  { "LEGENDBOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "" },
+  { "LEGENDBOXFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_font_styles, "" },
+  { "LEGENDBOXFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "" },
+  { NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_grid_attribs[] = {
+  { "GRID", NULL, "_@IUP_GRID", "b", "", "" },
+  { "GRIDCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "" },
+  { "GRIDLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_line_styles, "" },
+  { "GRIDLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "" },
+  { NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_gridminor_attribs[] = {
+  { "GRIDMINOR", NULL, "_@IUP_GRIDMINOR", "b", "", "" },
+  { "GRIDMINORCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "" },
+  { "GRIDMINORLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_line_styles, "" },
+  { "GRIDMINORLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "" },
+  { NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_box_attribs[] = {
+  { "BOX", NULL, "_@IUP_BOX", "b", "", "" },
+  { "BOXCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "" },
+  { "BOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_line_styles, "" },
+  { "BOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "" },
+  { NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static int iPlotPropertiesTreeSelection_CB(Ihandle *ih_tree, int id, int status)
 {
   if (status == 1)
   {
@@ -351,9 +428,40 @@ static int iPlotTreeSelection_CB(Ihandle *ih_tree, int id, int status)
   return IUP_DEFAULT;
 }
 
+static int iPlotPropertiesParam_CB(Ihandle* parambox, int param_index, void* user_data)
+{
+  return 1;
+}
+
 static int iPlotPropertiesKEsc_CB(Ihandle*)
 {
   return IUP_CLOSE;
+}
+
+static void iPlotPropertiesAddParamBox(Ihandle* ih, Ihandle* parent, iPlotAttribParam* attribs)
+{
+  Ihandle* params[50];
+  int count = 0;
+  char format[10240];
+
+  while (attribs[count].name)
+  {
+    sprintf(format, "%s%%%s%s%s\n", attribs[count].label, attribs[count].type, attribs[count].extra, attribs[count].tip);
+    params[count] = IupParamf(format);
+
+    IupSetStrAttribute(params[count], "PLOT_ATTRIB", attribs[count].name);
+    IupSetStrAttribute(params[count], "PLOT_DEFAULTATTRIB", attribs[count].default_name);
+
+    char* value = IupGetAttribute(ih, attribs[count].name);
+    if (!value && attribs[count].default_name)
+      IupGetAttribute(ih, attribs[count].default_name);
+    IupSetStrAttribute(params[count], "VALUE", value);
+
+    count++;
+  }
+
+  Ihandle* parambox = IupParamBox(parent, params, count);
+  IupSetCallback(parambox, "PARAM_CB", (Icallback)iPlotPropertiesParam_CB);
 }
 
 static int iPlotProperties_CB(Ihandle* ih_item)
@@ -363,12 +471,20 @@ static int iPlotProperties_CB(Ihandle* ih_item)
 
   Ihandle* tree = IupTree();
   IupSetAttribute(tree, "ADDROOT", "NO");
-  IupSetCallback(tree, "SELECTION_CB", (Icallback)iPlotTreeSelection_CB);
-  IupSetAttribute(tree, "SIZE", "130x120");
+  IupSetCallback(tree, "SELECTION_CB", (Icallback)iPlotPropertiesTreeSelection_CB);
+  IupSetAttribute(tree, "SIZE", "130x140");
 
   Ihandle* zbox = IupZbox(NULL);
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_background_attribs);
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_title_attribs);
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_legend_attribs);
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_legendbox_attribs);
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_grid_attribs);
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_gridminor_attribs);
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_box_attribs);
+  IupSetAttribute(zbox, "PLOT", (char*)ih);
 
-  Ihandle* dlg = IupDialog(IupHbox(tree, IupFrame(zbox), NULL));
+  Ihandle* dlg = IupDialog(IupHbox(tree, zbox, NULL));
   IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
   IupSetStrAttribute(dlg, "TITLE", "_@IUP_PROPERTIESDLG");
   IupSetCallback(dlg, "K_ESC", iPlotPropertiesKEsc_CB);
@@ -380,19 +496,21 @@ static int iPlotProperties_CB(Ihandle* ih_item)
 
   IupMap(dlg);
 
-  IupSetStrAttribute(tree, "ADDLEAF-1", "_@IUP_BACKGROUND");
-  IupSetStrAttribute(tree, "ADDLEAF0", "_@IUP_TITLE");
-  IupSetStrAttribute(tree, "ADDLEAF1", "_@IUP_LEGEND");
-  IupSetStrAttribute(tree, "ADDLEAF2", "_@IUP_BOX");
-  IupSetStrAttribute(tree, "ADDLEAF3", "_@IUP_GRID");
-  IupSetStrAttribute(tree, "ADDBRANCH4", "_@IUP_XAXIS");
-  IupSetStrAttribute(tree, "ADDLEAF5", "_@IUP_AXISLABEL");
-  IupSetStrAttribute(tree, "ADDLEAF6", "_@IUP_AXISTICKS");
-  IupSetStrAttribute(tree, "ADDLEAF7", "_@IUP_AXISTICKSNUMBER");
-  IupSetStrAttribute(tree, "INSERTBRANCH5", "_@IUP_YAXIS");
-  IupSetStrAttribute(tree, "ADDLEAF9", "_@IUP_AXISLABEL");
-  IupSetStrAttribute(tree, "ADDLEAF10", "_@IUP_AXISTICKS");
-  IupSetStrAttribute(tree, "ADDLEAF11", "_@IUP_AXISTICKSNUMBER");
+  IupSetStrAttribute(tree, "ADDLEAF-1", "_@IUP_BACKGROUND");  /* 0 */
+  IupSetStrAttribute(tree, "ADDLEAF0", "_@IUP_TITLE");        /* 1 */
+  IupSetStrAttribute(tree, "ADDBRANCH1", "_@IUP_LEGEND");     /* 2 */
+    IupSetStrAttribute(tree, "ADDLEAF2", "_@IUP_LEGENDBOX");  /* 3 */
+  IupSetStrAttribute(tree, "INSERTLEAF2", "_@IUP_BOX");       /* 4 */
+  IupSetStrAttribute(tree, "ADDBRANCH4", "_@IUP_GRID");       /* 5 */
+    IupSetStrAttribute(tree, "ADDLEAF5", "_@IUP_GRIDMINOR");  /* 6 */
+  IupSetStrAttribute(tree, "INSERTBRANCH5", "_@IUP_XAXIS");   /* 7 */
+    IupSetStrAttribute(tree, "ADDLEAF7", "_@IUP_AXISLABEL");  /* 8 */
+    IupSetStrAttribute(tree, "ADDLEAF8", "_@IUP_AXISTICKS");  /* 9 */
+    IupSetStrAttribute(tree, "ADDLEAF9", "_@IUP_AXISTICKSNUMBER");   /* 10 */
+  IupSetStrAttribute(tree, "INSERTBRANCH7", "_@IUP_YAXIS");          /* 11 */
+    IupSetStrAttribute(tree, "ADDLEAF11", "_@IUP_AXISLABEL");        /* 12 */
+    IupSetStrAttribute(tree, "ADDLEAF12", "_@IUP_AXISTICKS");        /* 13 */
+    IupSetStrAttribute(tree, "ADDLEAF13", "_@IUP_AXISTICKSNUMBER");  /* 14 */
 
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 

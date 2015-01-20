@@ -14,9 +14,10 @@ static int spin_cb(Ihandle* ih, int inc)
 
 void SpinTest(void)
 {
-  Ihandle *dlg, *spinbox;
+  Ihandle *dlg, *spinbox, *text;
 
-  spinbox = IupSpinbox(IupSetAttributes(IupText(NULL), "SIZE=50x, EXPAND=HORIZONTAL, FONT=\"Times, 24\""));
+  spinbox = IupSpinbox(IupSetAttributes(text = IupText(NULL), "SIZE=50x, EXPAND=HORIZONTAL, FONT=\"Times, 24\""));
+//  IupSetAttribute(text, "MASK", "/d+|AUTO");
 
   IupSetCallback(spinbox, "SPIN_CB", (Icallback)spin_cb);
 
