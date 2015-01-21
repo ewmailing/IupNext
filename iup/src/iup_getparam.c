@@ -34,6 +34,17 @@ static void iParamSetDoublePrec(Ihandle* ih, const char* name, double num, int p
                     Internal Callbacks
 *******************************************************************************************/
 
+static int iParamDlgClose_CB(Ihandle* dlg)
+{
+  Ihandle* param_box = (Ihandle*)iupAttribGetInherit(dlg, "PARAMBOX");
+  Iparamcb cb = (Iparamcb)IupGetCallback(param_box, "PARAM_CB");
+  iupAttribSet(param_box, "STATUS", "0");
+  if (cb && !cb(param_box, IUP_GETPARAM_CLOSE, (void*)iupAttribGet(param_box, "USERDATA")))
+    return IUP_IGNORE;
+  else
+    return IUP_CLOSE;
+}
+
 static int iParamButton1_CB(Ihandle* self)
 {
   Ihandle* param_box = (Ihandle*)iupAttribGetInherit(self, "PARAMBOX");
@@ -1007,6 +1018,7 @@ Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count)
       IupSetAttribute(dlg, "MINBOX", "NO");
       IupSetAttribute(dlg, "MAXBOX", "NO");
     }
+
     IupSetAttributeHandle(dlg, "DEFAULTENTER", button_1);
     IupSetAttributeHandle(dlg, "DEFAULTESC", button_2);
 
@@ -1026,6 +1038,10 @@ Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count)
       p++;
     }
   }
+
+  iupAttribSet(param_box, "BUTTON1", (char*)button_1);
+  iupAttribSet(param_box, "BUTTON2", (char*)button_2);
+  iupAttribSet(param_box, "BUTTON3", (char*)button_3);
 
   iupLayoutCompute(param_box);
 
@@ -1521,6 +1537,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
   IupSetStrAttribute(dlg, "TITLE", (char*)title);
   IupSetCallback(dlg, "PARAM_CB", (Icallback)action);
+  IupSetCallback(dlg, "CLOSE_CB", (Icallback)iParamDlgClose_CB);
   iupAttribSet(dlg, "USERDATA", (char*)user_data);
 
   if (action) 

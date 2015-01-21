@@ -269,77 +269,22 @@ static int iPlotShowGrid_CB(Ihandle* self)
   return IUP_DEFAULT;
 }
 
-static int iPlotGetListIndex(const char** list, int count, const char* value)
+static const char* iplot_linestyle_list[] = { "CONTINUOUS", "DASHED", "DOTTED", "DASH_DOT", "DASH_DOT_DOT", NULL };
+static const char* iplot_markstyle_list[] = { "PLUS", "STAR", "CIRCLE", "X", "BOX", "DIAMOND", "HOLLOW_CIRCLE", "HOLLOW_BOX", "HOLLOW_DIAMOND", NULL };
+static const char* iplot_fontstyle_list[] = { "PLAIN", "BOLD", "ITALIC", "BOLDITALIC", NULL };
+static const char* iplot_legendpos_list[] = { "TOPRIGHT", "TOPLEFT", "BOTTOMRIGHT", "BOTTOMLEFT", "BOTTOMCENTER", "XY", NULL };
+
+static int iPlotGetListIndex(const char** list, const char* value)
 {
-  for (int i = 0; i < count; i++)
+  int i = 0;
+  while (list[i])
   {
     if (iupStrEqualNoCase(list[i], value))
       return i;
+
+    i++;
   }
   return 0;
-}
-
-static int iPlotDatasetProperties_CB(Ihandle* ih_item)
-{
-  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
-  char* ds_name = IupGetAttribute(ih_item, "DS_NAME");
-  char name[100];
-  strcpy(name, ds_name);
-
-  IupSetStrAttribute(ih, "CURRENT", ds_name);
-
-  const char* ds_color = IupGetAttribute(ih, "DS_COLOR");
-  char color[30];
-  strcpy(color, ds_color);
-
-  const char* ds_mode = IupGetAttribute(ih, "DS_MODE");
-  const char* mode_list[] = { "LINE", "MARK", "MARKLINE", "BAR", "AREA" };
-  int mode = iPlotGetListIndex(mode_list, 5, ds_mode);
-
-  const char* ds_linestyle = IupGetAttribute(ih, "DS_LINESTYLE");
-  const char* linestyle_list[] = { "CONTINUOUS", "DASHED", "DOTTED", "DASH_DOT", "DASH_DOT_DOT" };
-  int linestyle = iPlotGetListIndex(linestyle_list, 5, ds_linestyle);
-
-  int linewidth = IupGetInt(ih, "DS_LINEWIDTH");
-
-  const char* ds_markstyle = IupGetAttribute(ih, "DS_MARKSTYLE");
-  const char* markstyle_list[] = { "PLUS", "STAR", "CIRCLE", "X", "BOX", "DIAMOND", "HOLLOW_CIRCLE", "HOLLOW_BOX", "HOLLOW_DIAMOND" };
-  int markstyle = iPlotGetListIndex(markstyle_list, 9, ds_markstyle);
-
-  int marksize = IupGetInt(ih, "DS_MARKSIZE");
-
-  char format[1024] = 
-    "_@IUP_NAME%s\n"
-    "_@IUP_COLOR%c\n"
-    "_@IUP_MODE%l|_@IUP_LINE|_@IUP_MARK|_@IUP_MARKLINE|_@IUP_BAR|_@IUP_AREA|\n"
-    "_@IUP_LINESTYLE%l|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|\n"
-    "_@IUP_LINEWIDTH%i[1,,]\n"
-    "_@IUP_MARKSTYLE%l|_@IUP_PLUS|_@IUP_STAR|_@IUP_CIRCLE|_@IUP_X|_@IUP_BOX|_@IUP_DIAMOND|_@IUP_HOLLOW_CIRCLE|_@IUP_HOLLOW_BOX|_@IUP_HOLLOW_DIAMOND|\n"
-    "_@IUP_MARKSIZE%i[1,,]\n";
-
-  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", NULL, NULL, format,
-                   name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize, NULL))
-    return IUP_DEFAULT;
-
-  IupSetStrAttribute(ih, "DS_NAME", name);
-  IupSetStrAttribute(ih, "DS_COLOR", color);
-
-  ds_mode = mode_list[mode];
-  IupSetStrAttribute(ih, "DS_MODE", ds_mode);
-
-  ds_linestyle = linestyle_list[linestyle];
-  IupSetStrAttribute(ih, "DS_LINESTYLE", ds_linestyle);
-
-  IupSetInt(ih, "DS_LINEWIDTH", linewidth);
-
-  ds_markstyle = markstyle_list[markstyle];
-  IupSetStrAttribute(ih, "DS_MARKSTYLE", ds_markstyle);
-
-  IupSetInt(ih, "DS_MARKSIZE", marksize);
-
-  IupSetAttribute(ih, "REDRAW", NULL);
-
-  return IUP_DEFAULT;
 }
 
 struct iPlotAttribParam
@@ -351,90 +296,275 @@ struct iPlotAttribParam
   const char* type;
   const char* extra;
   const char* tip;
+
+  const char** list;
 };
 
-static const char* iplot_font_styles = { "|_@IUP_PLAIN|_@IUP_BOLD|_@IUP_ITALIC|_@IUP_BOLDITALIC|" };
-static const char* iplot_legend_positions = { "|_@IUP_TOPRIGHT|_@IUP_TOPLEFT|_@IUP_BOTTOMRIGHT|_@IUP_BOTTOMLEFT|_@IUP_BOTTOMCENTER|_@IUP_XY|" };
-static const char* iplot_line_styles = { "|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|" };
+static const char* iplot_fontstyle_extra = { "|_@IUP_PLAIN|_@IUP_BOLD|_@IUP_ITALIC|_@IUP_BOLDITALIC|" };
+static const char* iplot_legendpos_extra = { "|_@IUP_TOPRIGHT|_@IUP_TOPLEFT|_@IUP_BOTTOMRIGHT|_@IUP_BOTTOMLEFT|_@IUP_BOTTOMCENTER|_@IUP_XY|" };
+static const char* iplot_linestyle_extra = { "|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|" };
 
 static iPlotAttribParam iplot_background_attribs[] = {
-  { "MARGINLEFT", NULL, "_@IUP_MARGINLEFT", "s", "/d+|AUTO", "{123...|AUTO}" },
-  { "MARGINRIGHT", NULL, "_@IUP_MARGINRIGHT", "s", "/d+|AUTO", "{123...|AUTO}" },
-  { "MARGINTOP", NULL, "_@IUP_MARGINTOP", "s", "/d+|AUTO", "{123...|AUTO}" },
-  { "MARGINBOTTOM", NULL, "_@IUP_MARGINBOTTOM", "s", "/d+|AUTO", "{123...|AUTO}" },
-  { "BACKCOLOR", "BGCOLOR", "_@IUP_COLOR", "c", "", "" },
-  { NULL, NULL, NULL, NULL, NULL, NULL }
+  { "MARGINLEFT", NULL, "_@IUP_MARGINLEFT", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
+  { "MARGINRIGHT", NULL, "_@IUP_MARGINRIGHT", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
+  { "MARGINTOP", NULL, "_@IUP_MARGINTOP", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
+  { "MARGINBOTTOM", NULL, "_@IUP_MARGINBOTTOM", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
+  { "BACKCOLOR", "BGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_title_attribs[] = {
-  { "TITLE", NULL, "_@IUP_TITLE", "s", "", "" },
-  { "TITLECOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "" },
-  { "TITLEFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_font_styles, "" },
-  { "TITLEFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "" },
-  { "TITLEPOS", NULL, "_@IUP_POSITION", "s", "/d+[,]/d+|AUTO", "{x,y (pixels)|AUTO}" },
-  { NULL, NULL, NULL, NULL, NULL, NULL }
+  { "TITLE", NULL, "_@IUP_TITLE", "s", "", "", NULL },
+  { "TITLECOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "TITLEFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "TITLEFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { "TITLEPOS", NULL, "_@IUP_POSITION", "s", "/d+[,]/d+|AUTO", "{x,y (pixels) | AUTO}", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_legend_attribs[] = {
-  { "LEGEND", NULL, "_@IUP_LEGEND", "b", "", "" },
-  { "LEGENDFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_font_styles, "" },
-  { "LEGENDFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "" },
-  { "LEGENDPOS", NULL, "_@IUP_POSITION", "s", iplot_legend_positions, "" },
-  { "LEGENDPOSXY", NULL, "_@IUP_POSITIONXY", "s", "/d+[,]/d+", "{x,y (pixels)}" },
-  { NULL, NULL, NULL, NULL, NULL, NULL }
+  { "LEGEND", NULL, "_@IUP_LEGEND", "b", "", "", NULL },
+  { "LEGENDFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "LEGENDFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { "LEGENDPOS", NULL, "_@IUP_POSITION", "l", iplot_legendpos_extra, "", iplot_legendpos_list },
+  { "LEGENDPOSXY", NULL, "_@IUP_POSITIONXY", "s", "/d+[,]/d+", "{x,y (pixels)}", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_legendbox_attribs[] = {
-  { "LEGENDBOX", NULL, "_@IUP_LEGENDBOX", "b", "", "" },
-  { "LEGENDBOXCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "" },
-  { "LEGENDBOXBACKCOLOR", "BGCOLOR", "_@IUP_COLOR", "c", "", "" },
-  { "LEGENDBOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_line_styles, "" },
-  { "LEGENDBOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "" },
-  { "LEGENDBOXFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_font_styles, "" },
-  { "LEGENDBOXFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "" },
-  { NULL, NULL, NULL, NULL, NULL, NULL }
+  { "LEGENDBOX", NULL, "_@IUP_LEGENDBOX", "b", "", "", NULL },
+  { "LEGENDBOXCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "LEGENDBOXBACKCOLOR", "BGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "LEGENDBOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
+  { "LEGENDBOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
+  { "LEGENDBOXFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "LEGENDBOXFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_grid_attribs[] = {
-  { "GRID", NULL, "_@IUP_GRID", "b", "", "" },
-  { "GRIDCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "" },
-  { "GRIDLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_line_styles, "" },
-  { "GRIDLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "" },
-  { NULL, NULL, NULL, NULL, NULL, NULL }
+  { "GRID", NULL, "_@IUP_GRID", "b", "", "", NULL },
+  { "GRIDCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "GRIDLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
+  { "GRIDLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_gridminor_attribs[] = {
-  { "GRIDMINOR", NULL, "_@IUP_GRIDMINOR", "b", "", "" },
-  { "GRIDMINORCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "" },
-  { "GRIDMINORLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_line_styles, "" },
-  { "GRIDMINORLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "" },
-  { NULL, NULL, NULL, NULL, NULL, NULL }
+  { "GRIDMINOR", NULL, "_@IUP_GRIDMINOR", "b", "", "", NULL },
+  { "GRIDMINORCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "GRIDMINORLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
+  { "GRIDMINORLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_box_attribs[] = {
-  { "BOX", NULL, "_@IUP_BOX", "b", "", "" },
-  { "BOXCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "" },
-  { "BOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_line_styles, "" },
-  { "BOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "" },
-  { NULL, NULL, NULL, NULL, NULL, NULL }
+  { "BOX", NULL, "_@IUP_BOX", "b", "", "", NULL },
+  { "BOXCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "BOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
+  { "BOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
+
+static void iPlotSetParamValue(Ihandle* param, const char* value)
+{
+  Ihandle* control = (Ihandle*)IupGetAttribute(param, "CONTROL");
+  Ihandle* auxcontrol = (Ihandle*)IupGetAttribute(param, "AUXCONTROL");
+
+  if (value && iupStrEqualNoCase(IupGetAttribute(param, "TYPE"), "LIST"))
+  {
+    const char** list = (const char**)IupGetAttribute(param, "PLOT_ATTRIBLIST");
+    int index = iPlotGetListIndex(list, value);
+
+    IupSetInt(param, "VALUE", index);
+    IupSetInt(control, "VALUE", index+1);
+    // No Aux here
+  }
+  else
+  {
+    IupSetStrAttribute(param, "VALUE", value);
+    IupSetStrAttribute(control, "VALUE", value);
+    if (auxcontrol) IupSetStrAttribute(auxcontrol, "VALUE", value);
+  }
+}
+
+static const char* iPlotGetParamValue(Ihandle* param, Ihandle* ih)
+{
+  char* value = IupGetAttribute(param, "VALUE");
+  if (!value || value[0] == 0)
+    return NULL;  /* reset to default */
+  else
+  {
+    char* default_name = IupGetAttribute(param, "PLOT_DEFAULTATTRIB");
+    if (default_name)
+    {
+      char* default_value = IupGetAttribute(ih, default_name);
+      if (iupStrEqualNoCase(value, default_value))
+        return NULL;  /* reset to default */
+    }
+
+    if (iupStrEqualNoCase(IupGetAttribute(param, "TYPE"), "LIST"))
+    {
+      const char** list = (const char**)IupGetAttribute(param, "PLOT_ATTRIBLIST");
+      int index;
+      iupStrToInt(value, &index);
+      return list[index];
+    }
+
+    return value;
+  }
+}
+
+static void iPlotPropertiesInit(Ihandle* parambox)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(parambox, "PLOT");
+
+  int i = 0;
+  Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
+  while (param)
+  {
+    char* name = IupGetAttribute(param, "PLOT_ATTRIB");
+    if (name)
+    {
+      // From Plot
+      char* value = IupGetAttribute(ih, name);
+      // To Param
+      iPlotSetParamValue(param, value);
+    }
+
+    param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
+    i++;
+  }
+
+  IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
+  IupSetAttribute(ih, "REDRAW", NULL);
+}
+
+static void iPlotPropertiesResetChanges(Ihandle* parambox)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(parambox, "PLOT");
+
+  int i = 0;
+  Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
+  while (param)
+  {
+    char* name = IupGetAttribute(param, "PLOT_ATTRIB");
+    if (name)
+    {
+      // From Plot Original Value
+      char* value = IupGetAttribute(param, "RESET_VALUE");
+      // To Plot
+      IupSetStrAttribute(ih, name, value);
+      // To Param
+      iPlotSetParamValue(param, value);
+    }
+
+    param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
+    i++;
+  }
+
+  IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
+  IupSetAttribute(ih, "REDRAW", NULL);
+}
+
+static void iPlotPropertiesApplyChanges(Ihandle* parambox)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(parambox, "PLOT");
+
+  int i = 0;
+  Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
+  while (param)
+  {
+    char* name = IupGetAttribute(param, "PLOT_ATTRIB");
+    if (name)
+    {
+      // From Param
+      const char* value = iPlotGetParamValue(param, ih);
+      // To Plot
+      IupSetAttribute(ih, name, value);
+    }
+
+    param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
+    i++;
+  }
+
+  IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
+  IupSetAttribute(ih, "REDRAW", NULL);
+}
+
+static void iPlotPropertiesCheckChanges(Ihandle* parambox)
+{
+  if (IupGetInt(parambox, "PLOT_CHANGED"))
+  {
+    Ihandle* dlg = IupMessageDlg();
+
+    IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(parambox));
+
+    IupSetAttribute(dlg, "DIALOGTYPE", "WARNING");
+    IupSetAttribute(dlg, "BUTTONS", "YESNO");
+
+    IupSetStrAttribute(dlg, "TITLE", "_@IUP_WARNING");
+    IupSetStrAttribute(dlg, "VALUE", "_@IUP_CHANGESNOTAPPLIEDAPPLY");
+
+    IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
+
+    int ret = IupGetInt(dlg, "BUTTONRESPONSE");
+    IupDestroy(dlg);
+
+    if (ret == 1)
+      iPlotPropertiesApplyChanges(parambox);
+    else
+      IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
+  }
+}
 
 static int iPlotPropertiesTreeSelection_CB(Ihandle *ih_tree, int id, int status)
 {
+  if (status == 0)
+  {
+    Ihandle* zbox = IupGetBrother(ih_tree);
+    Ihandle* parambox = (Ihandle*)IupGetAttribute(zbox, "VALUE_HANDLE");
+    iPlotPropertiesCheckChanges(parambox);
+  }
   if (status == 1)
   {
-
+    Ihandle* zbox = IupGetBrother(ih_tree);
+    IupSetInt(zbox, "VALUEPOS", id);
+    Ihandle* parambox = (Ihandle*)IupGetAttribute(zbox, "VALUE_HANDLE");
+    iPlotPropertiesInit(parambox);
   }
   return IUP_DEFAULT;
 }
 
-static int iPlotPropertiesParam_CB(Ihandle* parambox, int param_index, void* user_data)
+static int iPlotPropertiesParam_CB(Ihandle* parambox, int param_index, void*)
 {
+  if (param_index == IUP_GETPARAM_BUTTON1)
+  {
+    iPlotPropertiesApplyChanges(parambox);
+    return 0;
+  }
+  if (param_index == IUP_GETPARAM_BUTTON2)
+  {
+    iPlotPropertiesResetChanges(parambox);
+    return 0;
+  }
+  if (param_index == IUP_GETPARAM_BUTTON3)
+  {
+    iPlotPropertiesCheckChanges(parambox);
+
+    IupExitLoop();
+    return 0;
+  }
+
+  IupSetAttribute(parambox, "PLOT_CHANGED", "1");
   return 1;
 }
 
-static int iPlotPropertiesKEsc_CB(Ihandle*)
+static int iPlotPropertiesClose_CB(Ihandle* dlg)
 {
+  Ihandle* zbox = IupGetChild(dlg, 1);
+  Ihandle* parambox = (Ihandle*)IupGetAttribute(zbox, "VALUE_HANDLE");
+  iPlotPropertiesCheckChanges(parambox);
   return IUP_CLOSE;
 }
 
@@ -451,14 +581,19 @@ static void iPlotPropertiesAddParamBox(Ihandle* ih, Ihandle* parent, iPlotAttrib
 
     IupSetStrAttribute(params[count], "PLOT_ATTRIB", attribs[count].name);
     IupSetStrAttribute(params[count], "PLOT_DEFAULTATTRIB", attribs[count].default_name);
+    IupSetAttribute(params[count], "PLOT_ATTRIBLIST", (char*)(attribs[count].list));
 
     char* value = IupGetAttribute(ih, attribs[count].name);
-    if (!value && attribs[count].default_name)
-      IupGetAttribute(ih, attribs[count].default_name);
-    IupSetStrAttribute(params[count], "VALUE", value);
+    if ((!value || value[0]==0) && attribs[count].default_name)
+      value = IupGetAttribute(ih, attribs[count].default_name);
+    iPlotSetParamValue(params[count], value);
+    IupSetStrAttribute(params[count], "RESET_VALUE", value);
 
     count++;
   }
+
+  params[count] = IupParamf("%u[,,_@IUP_CLOSE]");
+  count++;
 
   Ihandle* parambox = IupParamBox(parent, params, count);
   IupSetCallback(parambox, "PARAM_CB", (Icallback)iPlotPropertiesParam_CB);
@@ -473,21 +608,23 @@ static int iPlotProperties_CB(Ihandle* ih_item)
   IupSetAttribute(tree, "ADDROOT", "NO");
   IupSetCallback(tree, "SELECTION_CB", (Icallback)iPlotPropertiesTreeSelection_CB);
   IupSetAttribute(tree, "SIZE", "130x140");
+  IupSetAttribute(tree, "IMAGELEAF", "IMGPAPER");
 
   Ihandle* zbox = IupZbox(NULL);
-  iPlotPropertiesAddParamBox(ih, zbox, iplot_background_attribs);
-  iPlotPropertiesAddParamBox(ih, zbox, iplot_title_attribs);
-  iPlotPropertiesAddParamBox(ih, zbox, iplot_legend_attribs);
-  iPlotPropertiesAddParamBox(ih, zbox, iplot_legendbox_attribs);
-  iPlotPropertiesAddParamBox(ih, zbox, iplot_grid_attribs);
-  iPlotPropertiesAddParamBox(ih, zbox, iplot_gridminor_attribs);
-  iPlotPropertiesAddParamBox(ih, zbox, iplot_box_attribs);
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_background_attribs);    /* 0 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_title_attribs);         /* 1 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_legend_attribs);        /* 2 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_legendbox_attribs);     /* 3 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_box_attribs);           /* 4 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_grid_attribs);          /* 5 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_gridminor_attribs);     /* 6 */
   IupSetAttribute(zbox, "PLOT", (char*)ih);
 
   Ihandle* dlg = IupDialog(IupHbox(tree, zbox, NULL));
   IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
   IupSetStrAttribute(dlg, "TITLE", "_@IUP_PROPERTIESDLG");
-  IupSetCallback(dlg, "K_ESC", iPlotPropertiesKEsc_CB);
+  IupSetCallback(dlg, "K_ESC", iPlotPropertiesClose_CB);
+  IupSetCallback(dlg, "CLOSE_CB", (Icallback)iPlotPropertiesClose_CB);
 
   if (IupGetAttribute(parent, "ICON"))
     IupSetStrAttribute(dlg, "ICON", IupGetAttribute(parent, "ICON"));
@@ -515,6 +652,67 @@ static int iPlotProperties_CB(Ihandle* ih_item)
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   IupDestroy(dlg);
+
+  return IUP_DEFAULT;
+}
+
+static int iPlotDatasetProperties_CB(Ihandle* ih_item)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
+  char* ds_name = IupGetAttribute(ih_item, "DS_NAME");
+  char name[100];
+  strcpy(name, ds_name);
+
+  IupSetStrAttribute(ih, "CURRENT", ds_name);
+
+  const char* ds_color = IupGetAttribute(ih, "DS_COLOR");
+  char color[30];
+  strcpy(color, ds_color);
+
+  const char* ds_mode = IupGetAttribute(ih, "DS_MODE");
+  const char* mode_list[] = { "LINE", "MARK", "MARKLINE", "BAR", "AREA", NULL };
+  int mode = iPlotGetListIndex(mode_list, ds_mode);
+
+  const char* ds_linestyle = IupGetAttribute(ih, "DS_LINESTYLE");
+  int linestyle = iPlotGetListIndex(iplot_linestyle_list, ds_linestyle);
+
+  int linewidth = IupGetInt(ih, "DS_LINEWIDTH");
+
+  const char* ds_markstyle = IupGetAttribute(ih, "DS_MARKSTYLE");
+  int markstyle = iPlotGetListIndex(iplot_markstyle_list, ds_markstyle);
+
+  int marksize = IupGetInt(ih, "DS_MARKSIZE");
+
+  char format[1024] =
+    "_@IUP_NAME%s\n"
+    "_@IUP_COLOR%c\n"
+    "_@IUP_MODE%l|_@IUP_LINE|_@IUP_MARK|_@IUP_MARKLINE|_@IUP_BAR|_@IUP_AREA|\n"
+    "_@IUP_LINESTYLE%l|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|\n"
+    "_@IUP_LINEWIDTH%i[1,,]\n"
+    "_@IUP_MARKSTYLE%l|_@IUP_PLUS|_@IUP_STAR|_@IUP_CIRCLE|_@IUP_X|_@IUP_BOX|_@IUP_DIAMOND|_@IUP_HOLLOW_CIRCLE|_@IUP_HOLLOW_BOX|_@IUP_HOLLOW_DIAMOND|\n"
+    "_@IUP_MARKSIZE%i[1,,]\n";
+
+  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", NULL, NULL, format,
+    name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize, NULL))
+    return IUP_DEFAULT;
+
+  IupSetStrAttribute(ih, "DS_NAME", name);
+  IupSetStrAttribute(ih, "DS_COLOR", color);
+
+  ds_mode = mode_list[mode];
+  IupSetStrAttribute(ih, "DS_MODE", ds_mode);
+
+  ds_linestyle = iplot_linestyle_list[linestyle];
+  IupSetStrAttribute(ih, "DS_LINESTYLE", ds_linestyle);
+
+  IupSetInt(ih, "DS_LINEWIDTH", linewidth);
+
+  ds_markstyle = iplot_markstyle_list[markstyle];
+  IupSetStrAttribute(ih, "DS_MARKSTYLE", ds_markstyle);
+
+  IupSetInt(ih, "DS_MARKSIZE", marksize);
+
+  IupSetAttribute(ih, "REDRAW", NULL);
 
   return IUP_DEFAULT;
 }
@@ -1947,32 +2145,67 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_PROPERTIESDLG", "Properties...");
     IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "Dataset Properties...");
     
-     IupSetLanguageString("IUP_NAME", "Name:");
-     IupSetLanguageString("IUP_COLOR", "Color:");
-     IupSetLanguageString("IUP_MODE", "Mode:");
-     IupSetLanguageString("IUP_LINE", "Line");
-     IupSetLanguageString("IUP_MARK", "Mark");
-     IupSetLanguageString("IUP_MARKLINE", "Mark & Line");
-     IupSetLanguageString("IUP_BAR", "Bar");
-     IupSetLanguageString("IUP_AREA", "Area");
-     IupSetLanguageString("IUP_LINESTYLE", "Line Style:");
-     IupSetLanguageString("IUP_CONTINUOUS", "Continuous");
-     IupSetLanguageString("IUP_DASHED", "Dashed");
-     IupSetLanguageString("IUP_DOTTED", "Dotted");
-     IupSetLanguageString("IUP_DASH_DOT", "Dash Dot");
-     IupSetLanguageString("IUP_DASH_DOT_DOT", "Dash Dot Dot");
-     IupSetLanguageString("IUP_LINEWIDTH", "Line Width:");
-     IupSetLanguageString("IUP_MARKSTYLE", "Mark Style:");
-     IupSetLanguageString("IUP_PLUS", "Plus");
-     IupSetLanguageString("IUP_STAR", "Star");
-     IupSetLanguageString("IUP_CIRCLE", "Circle");
-     IupSetLanguageString("IUP_X", "X");
-     IupSetLanguageString("IUP_BOX", "Box");
-     IupSetLanguageString("IUP_DIAMOND", "Diamond");
-     IupSetLanguageString("IUP_HOLLOW_CIRCLE", "Hollow Circle");
-     IupSetLanguageString("IUP_HOLLOW_BOX", "Hollow Box");
-     IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Hollow Diamond");
-     IupSetLanguageString("IUP_MARKSIZE", "Mark Size:");
+    IupSetLanguageString("IUP_NAME", "Name:");
+    IupSetLanguageString("IUP_COLOR", "Color:");
+    IupSetLanguageString("IUP_MODE", "Mode:");
+    IupSetLanguageString("IUP_LINE", "Line");
+    IupSetLanguageString("IUP_MARK", "Mark");
+    IupSetLanguageString("IUP_MARKLINE", "Mark & Line");
+    IupSetLanguageString("IUP_BAR", "Bar");
+    IupSetLanguageString("IUP_AREA", "Area");
+    IupSetLanguageString("IUP_LINESTYLE", "Line Style:");
+    IupSetLanguageString("IUP_CONTINUOUS", "Continuous");
+    IupSetLanguageString("IUP_DASHED", "Dashed");
+    IupSetLanguageString("IUP_DOTTED", "Dotted");
+    IupSetLanguageString("IUP_DASH_DOT", "Dash Dot");
+    IupSetLanguageString("IUP_DASH_DOT_DOT", "Dash Dot Dot");
+    IupSetLanguageString("IUP_LINEWIDTH", "Line Width:");
+    IupSetLanguageString("IUP_MARKSTYLE", "Mark Style:");
+    IupSetLanguageString("IUP_PLUS", "Plus");
+    IupSetLanguageString("IUP_STAR", "Star");
+    IupSetLanguageString("IUP_CIRCLE", "Circle");
+    IupSetLanguageString("IUP_X", "X");
+    IupSetLanguageString("IUP_BOX", "Box");
+    IupSetLanguageString("IUP_DIAMOND", "Diamond");
+    IupSetLanguageString("IUP_HOLLOW_CIRCLE", "Hollow Circle");
+    IupSetLanguageString("IUP_HOLLOW_BOX", "Hollow Box");
+    IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Hollow Diamond");
+    IupSetLanguageString("IUP_MARKSIZE", "Mark Size:");
+
+    IupSetLanguageString("IUP_CLOSE", "Close");
+
+    IupSetLanguageString("IUP_BACKGROUND", "Background");
+    IupSetLanguageString("IUP_TITLE", "Title");
+    IupSetLanguageString("IUP_LEGEND", "Legend");
+    IupSetLanguageString("IUP_LEGENDBOX", "Legend Box");
+    IupSetLanguageString("IUP_GRID", "Grid");
+    IupSetLanguageString("IUP_GRIDMINOR", "Grid Minor");
+    IupSetLanguageString("IUP_XAXIS", "X Axis");
+    IupSetLanguageString("IUP_YAXIS", "Y Axis");
+    IupSetLanguageString("IUP_AXISLABEL", "Axis Label");
+    IupSetLanguageString("IUP_AXISTICKS", "Axis Ticks");
+    IupSetLanguageString("IUP_AXISTICKSNUMBER", "Axis Ticks Number");
+
+    IupSetLanguageString("IUP_MARGINLEFT", "Margin Left");
+    IupSetLanguageString("IUP_MARGINRIGHT", "Margin Right");
+    IupSetLanguageString("IUP_MARGINTOP", "Margin Top");
+    IupSetLanguageString("IUP_MARGINBOTTOM", "Margin Bottom");
+
+    IupSetLanguageString("IUP_FONTSTYLE", "Font Style");
+    IupSetLanguageString("IUP_FONTSIZE", "Font Size");
+    IupSetLanguageString("IUP_PLAIN", "Plain");
+    IupSetLanguageString("IUP_BOLD", "Bold");
+    IupSetLanguageString("IUP_ITALIC", "Italic");
+    IupSetLanguageString("IUP_BOLDITALIC", "Bold Italic");
+
+    IupSetLanguageString("IUP_POSITION", "Position");
+    IupSetLanguageString("IUP_POSITIONXY", "Position (x,y)");
+    IupSetLanguageString("IUP_TOPRIGHT", "Top Right");
+    IupSetLanguageString("IUP_TOPLEFT", "Top Left");
+    IupSetLanguageString("IUP_BOTTOMRIGHT", "Bottom Right");
+    IupSetLanguageString("IUP_BOTTOMLEFT", "Bottom Left");
+    IupSetLanguageString("IUP_BOTTOMCENTER", "Bottom Center");
+    IupSetLanguageString("IUP_XY", "(x,y)");
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
   {

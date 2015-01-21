@@ -57,13 +57,16 @@ iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: strin
 &nbsp;&nbsp;&nbsp; IUP_GETPARAM_BUTTON1 (-1) = if the user pressed the button 1;<br>
 &nbsp;&nbsp;&nbsp; IUP_GETPARAM_INIT&nbsp;(-2)&nbsp; = after the dialog is 
   <b>mapped</b> and just before 
-    it is shown;<br>
+    it is shown. Not called for <strong>IupParamBox</strong>;<br>
 &nbsp;&nbsp;&nbsp; IUP_GETPARAM_BUTTON2 (-3) = if the user pressed the button 2;<br>
 &nbsp;&nbsp;&nbsp; IUP_GETPARAM_BUTTON3 
-	(-4) = if the user pressed the button 3, if any;<br>
+	(-4) = if the user pressed the button 3, if any;<br>&nbsp;&nbsp;&nbsp; 
+  IUP_GETPARAM_CLOSE (-5) = if the user clicked on the dialog close button. Not 
+  called for <strong>IupParamBox</strong>; (since 3.13)<br>
   <b>user_data</b>: a user pointer that is passed in the function call.</p>
   <p><span class="style1">Returns:</span> You can reject the change or the 
-  button action by returning 0 in the callback, otherwise you must return 1.</p>
+  button action by returning 0 in the callback, otherwise you must return 1. By 
+  default button 1 and button2 will close the dialog.</p>
   <p>Internally the callback is stored as a regular callback with the "PARAM_CB" 
   name.</p>
 	<p>You should not programmatically change the current parameter value during the callback. On the other hand you can 
@@ -92,8 +95,9 @@ if (value2 == 0)
 <p>For the dialog:</p>
 <p>&quot;PARAMn&quot; - returns an IUP Ihandle* representing the n<sup>th</sup> parameter, indexed 
     by the declaration order, not counting separators or button names.<br>
-    &quot;OK&quot; - returns an IUP Ihandle*, the main button.<br>
-    &quot;CANCEL&quot; - returns an IUP Ihandle*, the close button.</p>
+    &quot;BUTTON1&quot; - returns an IUP Ihandle*, the button 1.<br>
+    &quot;BUTTON2&quot; - returns an IUP Ihandle*, the button 2. <br>&quot;BUTTON3&quot; - returns an IUP Ihandle*, the button 
+3.</p>
 <p>For a parameter:</p>
 <p>&quot;LABEL&quot; - returns an IUP Ihandle*, the label associated with the parameter.<br>
     &quot;CONTROL&quot; - returns an IUP Ihandle*, the real control associated with the parameter.<br>
@@ -260,8 +264,8 @@ BUTTON2</strong>, <strong>BUTTON3</strong>: button names. Default is
 --------------------------------------------------------<br><strong>TIP</strong>: 
 text of the tip.<br>
 --------------------------------------------------------<br><strong>
-VALUE</strong>: the parameter value.<strong><br>STATUS</strong>: set to 1 when button1 is activated and set to 0 when button2 is 
-activated.</p>
+VALUE</strong>: the parameter value.<strong><br>STATUS</strong>: set to 1 when button1 is activated, and set to 0 when button2 is 
+activated or the dialog close button is clicked.</p>
 <pre>Ihandle* IupParamBox(Ihandle* <strong>parent</strong>, Ihandle** <strong>params</strong>, int <strong>count</strong>); [in C]
 iup.ParamBox(<strong>parent</strong>: ihandle, <strong>params</strong>: table of ihandle) -&gt; <strong>elem</strong>: ihandle [in Lua]</pre>
 <p>Creates the <strong>IupGetParam</strong> dialog contents with the array of 
