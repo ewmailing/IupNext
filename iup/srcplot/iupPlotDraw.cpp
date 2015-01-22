@@ -594,12 +594,15 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, int &inLas
     cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1,
                              theScreenY, theScreenY + theTotalHeight - 1);
 
-    cdCanvasSetForeground(canvas, mLegend.mBoxBackColor);
-    iPlotDrawBox(canvas, theScreenX + 1, theScreenY + 1, theMaxWidth - 2, theTotalHeight - 2);
+    if (mLegend.mBoxShow)
+    {
+      cdCanvasSetForeground(canvas, mLegend.mBoxBackColor);
+      iPlotDrawBox(canvas, theScreenX + 1, theScreenY + 1, theMaxWidth - 2, theTotalHeight - 2);
 
-    cdCanvasSetForeground(canvas, mLegend.mBoxColor);
-    iPlotSetLine(canvas, mLegend.mBoxLineStyle, mLegend.mBoxLineWidth);
-    iPlotDrawRect(canvas, theScreenX, theScreenY, theMaxWidth, theTotalHeight);
+      cdCanvasSetForeground(canvas, mLegend.mBoxColor);
+      iPlotSetLine(canvas, mLegend.mBoxLineStyle, mLegend.mBoxLineWidth);
+      iPlotDrawRect(canvas, theScreenX, theScreenY, theMaxWidth, theTotalHeight);
+    }
 
     for (ds = 0; ds < mDataSetListCount; ds++)
     {

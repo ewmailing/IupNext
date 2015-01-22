@@ -580,7 +580,6 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
     ctrl = IupList(NULL);
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamListAction_CB);
     IupSetAttribute(ctrl, "DROPDOWN", "YES");
-    IupSetInt(ctrl, "VALUE", iupAttribGetInt(param, "VALUE")+1);
 
     while (*iupAttribGetId(param, "", i) != 0)
     {
@@ -588,6 +587,8 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
       i++;
     }
     IupStoreAttributeId(ctrl, "", i+1, NULL);
+
+    IupSetInt(ctrl, "VALUE", iupAttribGetInt(param, "VALUE") + 1);
 
     IupAppend(box, ctrl);
   }

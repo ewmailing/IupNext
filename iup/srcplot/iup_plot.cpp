@@ -269,11 +269,6 @@ static int iPlotShowGrid_CB(Ihandle* self)
   return IUP_DEFAULT;
 }
 
-static const char* iplot_linestyle_list[] = { "CONTINUOUS", "DASHED", "DOTTED", "DASH_DOT", "DASH_DOT_DOT", NULL };
-static const char* iplot_markstyle_list[] = { "PLUS", "STAR", "CIRCLE", "X", "BOX", "DIAMOND", "HOLLOW_CIRCLE", "HOLLOW_BOX", "HOLLOW_DIAMOND", NULL };
-static const char* iplot_fontstyle_list[] = { "PLAIN", "BOLD", "ITALIC", "BOLDITALIC", NULL };
-static const char* iplot_legendpos_list[] = { "TOPRIGHT", "TOPLEFT", "BOTTOMRIGHT", "BOTTOMLEFT", "BOTTOMCENTER", "XY", NULL };
-
 static int iPlotGetListIndex(const char** list, const char* value)
 {
   int i = 0;
@@ -300,21 +295,27 @@ struct iPlotAttribParam
   const char** list;
 };
 
+static const char* iplot_linestyle_list[] = { "CONTINUOUS", "DASHED", "DOTTED", "DASH_DOT", "DASH_DOT_DOT", NULL };
+static const char* iplot_fontstyle_list[] = { "", "BOLD", "ITALIC", "BOLDITALIC", NULL };
+static const char* iplot_legendpos_list[] = { "TOPRIGHT", "TOPLEFT", "BOTTOMRIGHT", "BOTTOMLEFT", "BOTTOMCENTER", "XY", NULL };
+static const char* iplot_grid_list[] = { "NO", "YES", "HORIZONTAL", "VERTICAL", NULL };
+
+static const char* iplot_linestyle_extra = { "|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|" };
 static const char* iplot_fontstyle_extra = { "|_@IUP_PLAIN|_@IUP_BOLD|_@IUP_ITALIC|_@IUP_BOLDITALIC|" };
 static const char* iplot_legendpos_extra = { "|_@IUP_TOPRIGHT|_@IUP_TOPLEFT|_@IUP_BOTTOMRIGHT|_@IUP_BOTTOMLEFT|_@IUP_BOTTOMCENTER|_@IUP_XY|" };
-static const char* iplot_linestyle_extra = { "|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|" };
+static const char* iplot_grid_extra = { "|_@IUP_NO|_@IUP_YES|_@IUP_HORIZONTAL|_@IUP_VERTICAL|" };
 
 static iPlotAttribParam iplot_background_attribs[] = {
   { "MARGINLEFT", NULL, "_@IUP_MARGINLEFT", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
   { "MARGINRIGHT", NULL, "_@IUP_MARGINRIGHT", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
   { "MARGINTOP", NULL, "_@IUP_MARGINTOP", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
   { "MARGINBOTTOM", NULL, "_@IUP_MARGINBOTTOM", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
-  { "BACKCOLOR", "BGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "BACKCOLOR", "BGCOLOR", "_@IUP_BACKCOLOR", "c", "", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_title_attribs[] = {
-  { "TITLE", NULL, "_@IUP_TITLE", "s", "", "", NULL },
+  { "TITLE", NULL, "_@IUP_TEXT", "s", "", "", NULL },
   { "TITLECOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
   { "TITLEFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "TITLEFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
@@ -323,7 +324,7 @@ static iPlotAttribParam iplot_title_attribs[] = {
 };
 
 static iPlotAttribParam iplot_legend_attribs[] = {
-  { "LEGEND", NULL, "_@IUP_LEGEND", "b", "", "", NULL },
+  { "LEGEND", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "LEGENDFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "LEGENDFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { "LEGENDPOS", NULL, "_@IUP_POSITION", "l", iplot_legendpos_extra, "", iplot_legendpos_list },
@@ -332,18 +333,16 @@ static iPlotAttribParam iplot_legend_attribs[] = {
 };
 
 static iPlotAttribParam iplot_legendbox_attribs[] = {
-  { "LEGENDBOX", NULL, "_@IUP_LEGENDBOX", "b", "", "", NULL },
+  { "LEGENDBOX", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "LEGENDBOXCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
-  { "LEGENDBOXBACKCOLOR", "BGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "LEGENDBOXBACKCOLOR", "BGCOLOR", "_@IUP_BACKCOLOR", "c", "", "", NULL },
   { "LEGENDBOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
   { "LEGENDBOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
-  { "LEGENDBOXFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
-  { "LEGENDBOXFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_grid_attribs[] = {
-  { "GRID", NULL, "_@IUP_GRID", "b", "", "", NULL },
+  { "GRID", NULL, "_@IUP_SHOW", "l", iplot_grid_extra, "", iplot_grid_list },
   { "GRIDCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
   { "GRIDLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
   { "GRIDLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
@@ -351,7 +350,7 @@ static iPlotAttribParam iplot_grid_attribs[] = {
 };
 
 static iPlotAttribParam iplot_gridminor_attribs[] = {
-  { "GRIDMINOR", NULL, "_@IUP_GRIDMINOR", "b", "", "", NULL },
+  { "GRIDMINOR", NULL, "_@IUP_SHOW", "l", iplot_grid_extra, "", iplot_grid_list },
   { "GRIDMINORCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
   { "GRIDMINORLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
   { "GRIDMINORLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
@@ -359,17 +358,21 @@ static iPlotAttribParam iplot_gridminor_attribs[] = {
 };
 
 static iPlotAttribParam iplot_box_attribs[] = {
-  { "BOX", NULL, "_@IUP_BOX", "b", "", "", NULL },
+  { "BOX", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "BOXCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
   { "BOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
   { "BOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
-static void iPlotSetParamValue(Ihandle* param, const char* value)
+static void iPlotSetParamValue(Ihandle* param, Ihandle* ih, const char* value)
 {
   Ihandle* control = (Ihandle*)IupGetAttribute(param, "CONTROL");
   Ihandle* auxcontrol = (Ihandle*)IupGetAttribute(param, "AUXCONTROL");
+
+  char* default_name = IupGetAttribute(param, "PLOT_DEFAULTATTRIB");
+  if ((!value || value[0] == 0) && default_name)
+    value = IupGetAttribute(ih, default_name);
 
   if (value && iupStrEqualNoCase(IupGetAttribute(param, "TYPE"), "LIST"))
   {
@@ -377,13 +380,13 @@ static void iPlotSetParamValue(Ihandle* param, const char* value)
     int index = iPlotGetListIndex(list, value);
 
     IupSetInt(param, "VALUE", index);
-    IupSetInt(control, "VALUE", index+1);
+    if (control) IupSetInt(control, "VALUE", index + 1);
     // No Aux here
   }
   else
   {
     IupSetStrAttribute(param, "VALUE", value);
-    IupSetStrAttribute(control, "VALUE", value);
+    if (control) IupSetStrAttribute(control, "VALUE", value);
     if (auxcontrol) IupSetStrAttribute(auxcontrol, "VALUE", value);
   }
 }
@@ -429,7 +432,7 @@ static void iPlotPropertiesInit(Ihandle* parambox)
       // From Plot
       char* value = IupGetAttribute(ih, name);
       // To Param
-      iPlotSetParamValue(param, value);
+      iPlotSetParamValue(param, ih, value);
     }
 
     param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
@@ -451,12 +454,15 @@ static void iPlotPropertiesResetChanges(Ihandle* parambox)
     char* name = IupGetAttribute(param, "PLOT_ATTRIB");
     if (name)
     {
-      // From Plot Original Value
-      char* value = IupGetAttribute(param, "RESET_VALUE");
+      // From Original Value
+      const char* value = IupGetAttribute(param, "RESET_VALUE");
+      // To Param
+      iPlotSetParamValue(param, ih, value);
+
+      // From Param
+      value = iPlotGetParamValue(param, ih);
       // To Plot
       IupSetStrAttribute(ih, name, value);
-      // To Param
-      iPlotSetParamValue(param, value);
     }
 
     param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
@@ -583,10 +589,10 @@ static void iPlotPropertiesAddParamBox(Ihandle* ih, Ihandle* parent, iPlotAttrib
     IupSetStrAttribute(params[count], "PLOT_DEFAULTATTRIB", attribs[count].default_name);
     IupSetAttribute(params[count], "PLOT_ATTRIBLIST", (char*)(attribs[count].list));
 
+    // From Plot
     char* value = IupGetAttribute(ih, attribs[count].name);
-    if ((!value || value[0]==0) && attribs[count].default_name)
-      value = IupGetAttribute(ih, attribs[count].default_name);
-    iPlotSetParamValue(params[count], value);
+    // To Param
+    iPlotSetParamValue(params[count], ih, value);
     IupSetStrAttribute(params[count], "RESET_VALUE", value);
 
     count++;
@@ -679,7 +685,8 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
   int linewidth = IupGetInt(ih, "DS_LINEWIDTH");
 
   const char* ds_markstyle = IupGetAttribute(ih, "DS_MARKSTYLE");
-  int markstyle = iPlotGetListIndex(iplot_markstyle_list, ds_markstyle);
+  const char* markstyle_list[] = { "PLUS", "STAR", "CIRCLE", "X", "BOX", "DIAMOND", "HOLLOW_CIRCLE", "HOLLOW_BOX", "HOLLOW_DIAMOND", NULL };
+  int markstyle = iPlotGetListIndex(markstyle_list, ds_markstyle);
 
   int marksize = IupGetInt(ih, "DS_MARKSIZE");
 
@@ -707,7 +714,7 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
 
   IupSetInt(ih, "DS_LINEWIDTH", linewidth);
 
-  ds_markstyle = iplot_markstyle_list[markstyle];
+  ds_markstyle = markstyle_list[markstyle];
   IupSetStrAttribute(ih, "DS_MARKSTYLE", ds_markstyle);
 
   IupSetInt(ih, "DS_MARKSIZE", marksize);
@@ -2147,6 +2154,7 @@ static Iclass* iPlotNewClass(void)
     
     IupSetLanguageString("IUP_NAME", "Name:");
     IupSetLanguageString("IUP_COLOR", "Color:");
+    IupSetLanguageString("IUP_BACKCOLOR", "Background Color:");
     IupSetLanguageString("IUP_MODE", "Mode:");
     IupSetLanguageString("IUP_LINE", "Line");
     IupSetLanguageString("IUP_MARK", "Mark");
@@ -2186,20 +2194,26 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_AXISTICKS", "Axis Ticks");
     IupSetLanguageString("IUP_AXISTICKSNUMBER", "Axis Ticks Number");
 
-    IupSetLanguageString("IUP_MARGINLEFT", "Margin Left");
-    IupSetLanguageString("IUP_MARGINRIGHT", "Margin Right");
-    IupSetLanguageString("IUP_MARGINTOP", "Margin Top");
-    IupSetLanguageString("IUP_MARGINBOTTOM", "Margin Bottom");
+    IupSetLanguageString("IUP_TEXT", "Text:");
+    IupSetLanguageString("IUP_SHOW", "Show:");
+    IupSetLanguageString("IUP_HORIZONTAL", "Horizontal");
+    IupSetLanguageString("IUP_VERTICAL", "Vertical");
+    IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Changes Not Applied. Apply?");
 
-    IupSetLanguageString("IUP_FONTSTYLE", "Font Style");
-    IupSetLanguageString("IUP_FONTSIZE", "Font Size");
+    IupSetLanguageString("IUP_MARGINLEFT", "Margin Left:");
+    IupSetLanguageString("IUP_MARGINRIGHT", "Margin Right:");
+    IupSetLanguageString("IUP_MARGINTOP", "Margin Top:");
+    IupSetLanguageString("IUP_MARGINBOTTOM", "Margin Bottom:");
+
+    IupSetLanguageString("IUP_FONTSTYLE", "Font Style:");
+    IupSetLanguageString("IUP_FONTSIZE", "Font Size:");
     IupSetLanguageString("IUP_PLAIN", "Plain");
     IupSetLanguageString("IUP_BOLD", "Bold");
     IupSetLanguageString("IUP_ITALIC", "Italic");
     IupSetLanguageString("IUP_BOLDITALIC", "Bold Italic");
 
-    IupSetLanguageString("IUP_POSITION", "Position");
-    IupSetLanguageString("IUP_POSITIONXY", "Position (x,y)");
+    IupSetLanguageString("IUP_POSITION", "Position:");
+    IupSetLanguageString("IUP_POSITIONXY", "Position (x,y):");
     IupSetLanguageString("IUP_TOPRIGHT", "Top Right");
     IupSetLanguageString("IUP_TOPLEFT", "Top Left");
     IupSetLanguageString("IUP_BOTTOMRIGHT", "Bottom Right");
@@ -2220,7 +2234,6 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_SHOWHIDEGRID", "Mostra/Esconde Grade");
 
     IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Fórmula Inválida.");
-
 
     IupSetLanguageString("IUP_PROPERTIESDLG", "Properties...");
     IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "Dataset Properties...");

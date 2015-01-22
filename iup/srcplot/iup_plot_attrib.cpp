@@ -294,7 +294,7 @@ static char* iPlotGetLegendPosAttrib(Ihandle* ih)
     return iupStrReturnIntInt(ih->data->current_plot->mLegend.mPosX, ih->data->current_plot->mLegend.mPosY, ',');
   else
   {
-    const char* legendpos_str[] = { "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT", "BOTTOMCENTER", "XY" };
+    const char* legendpos_str[] = { "TOPRIGHT", "TOPLEFT", "BOTTOMRIGHT", "BOTTOMLEFT", "BOTTOMCENTER", "XY" };
     return (char*)legendpos_str[ih->data->current_plot->mLegend.mPosition];
   }
 }
@@ -429,7 +429,17 @@ static int iPlotSetTitleFontSizeAttrib(Ihandle* ih, const char* value)
 
 static char* iPlotGetTitleFontSizeAttrib(Ihandle* ih)
 {
-  return iPlotGetPlotFontSize(ih->data->current_plot->mTitle.mFontSize);
+  int theFontSize = ih->data->current_plot->mTitle.mFontSize;
+  if (theFontSize == 0)
+  {
+    int size = IupGetInt(ih, "FONTSIZE");
+    if (size > 0) size += 6;
+    else size -= 8;
+
+    theFontSize = size;
+  }
+
+  return iPlotGetPlotFontSize(theFontSize);
 }
 
 static int iPlotSetTitleFontStyleAttrib(Ihandle* ih, const char* value)
@@ -827,6 +837,22 @@ static int iPlotSetBoxAttrib(Ihandle* ih, const char* value)
 static char* iPlotGetBoxAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean(ih->data->current_plot->mBox.mShow);
+}
+
+static int iPlotSetLegendBoxAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->current_plot->mLegend.mBoxShow = true;
+  else
+    ih->data->current_plot->mLegend.mBoxShow = false;
+
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
+
+static char* iPlotGetLegendBoxAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->current_plot->mLegend.mBoxShow);
 }
 
 static int iPlotSetLegendBoxColorAttrib(Ihandle* ih, const char* value)
@@ -2682,6 +2708,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "LEGENDPOS", iPlotGetLegendPosAttrib, iPlotSetLegendPosAttrib, IUPAF_SAMEASSYSTEM, "TOPRIGHT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDFONTSIZE", iPlotGetLegendFontSizeAttrib, iPlotSetLegendFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDFONTSTYLE", iPlotGetLegendFontStyleAttrib, iPlotSetLegendFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LEGENDBOX", iPlotGetLegendBoxAttrib, iPlotSetLegendBoxAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDBOXCOLOR", iPlotGetLegendBoxColorAttrib, iPlotSetLegendBoxColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDBOXBACKCOLOR", iPlotGetLegendBoxBackColorAttrib, iPlotSetLegendBoxBackColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDBOXLINESTYLE", iPlotGetLegendBoxLineStyleAttrib, iPlotSetLegendBoxLineStyleAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

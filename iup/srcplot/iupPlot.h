@@ -487,7 +487,7 @@ class iupPlotLegend
 {
 public:
   iupPlotLegend() 
-    : mShow(false), mFontSize(0), mFontStyle(-1), mPosition(IUP_PLOT_TOPRIGHT), mPosX(0), mPosY(0),
+    : mShow(false), mBoxShow(true), mFontSize(0), mFontStyle(-1), mPosition(IUP_PLOT_TOPRIGHT), mPosX(0), mPosY(0),
       mBoxLineStyle(CD_CONTINUOUS), mBoxLineWidth(1), mBoxColor(CD_BLACK), mBoxBackColor(CD_WHITE)
   {}
 
@@ -497,6 +497,7 @@ public:
   int mFontSize;
   int mFontStyle;
 
+  bool mBoxShow;
   long mBoxColor;
   long mBoxBackColor;
   int  mBoxLineStyle;
