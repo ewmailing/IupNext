@@ -125,7 +125,8 @@ attribute for the CONTROL returned Ihandle*.</p>
       is a descriptive text, to be placed to the 
       left of the entry field in a label. It can contains any string, but to 
 contain a &#39;%&#39; must use two characters &quot;%%&quot; to avoid conflict with the type 
-separator (since 3.6).</p>
+separator (since 3.6). If it is preceded by n '\t' characters then the parameter 
+will be indented by the same number (since 3.13).</p>
 <p><strong><em>x</em></strong>
       is the type of the parameter. 
       The valid options are:</p>
@@ -239,7 +240,8 @@ feed. </p>
 <p>The <strong>IupUser</strong> element can be directly used if the internal 
 attributes are set. Here are the respective attributes according to the <strong>
 IupGetParam</strong> format specification: </p>
-<p><strong>TITLE</strong>: text of the parameter, used as label.<br>
+<p><strong>TITLE</strong>: text of the parameter, used as label.<br><strong>
+INDENT</strong>: number of indentation levels.<br>
 --------------------------------------------------------<br><strong>
 TYPE</strong>: can be BOOLEAN, LIST, OPTIONS, REAL, STRING, INTEGER, FILE, 
 COLOR, SEPARATOR, BUTTONNAMES and HANDLE. And describe the type of the 

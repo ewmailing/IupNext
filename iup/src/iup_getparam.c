@@ -541,7 +541,10 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
     }
     else
     {
-      box = IupHbox(IupSetAttributes(IupFill(), "SIZE=5"), label, NULL);
+      Ihandle* fill = IupFill();
+      int indent = iupAttribGetInt(param, "INDENT");
+      IupSetInt(fill, "SIZE", 5*(indent+1));
+      box = IupHbox(fill, label, NULL);
       IupSetAttribute(box,"ALIGNMENT","ACENTER");
     }
   }
@@ -1308,6 +1311,16 @@ Ihandle* IupParamf(const char* format)
   line_ptr += 2;
 
   param = IupUser();
+  if (title[0] == '\t')
+  {
+    int indent = 0;
+    while (title[0] == '\t')
+    {
+      indent++;
+      title++;
+    }
+    iupAttribSetInt(param, "INDENT", indent);
+  }
   iupAttribSetStr(param, "TITLE", title);
   
 /**********************************************************************************

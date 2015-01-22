@@ -309,13 +309,13 @@ static const char* iplot_scale_extra = { "|_@IUP_LINEAR|_@IUP_LOG10|_@IUP_LOG2|_
 
 static iPlotAttribParam iplot_background_attribs[] = {
   { "MARGINLEFTAUTO", NULL, "_@IUP_MARGINLEFT", "b", "[ ,Auto]", "", NULL },
-  { "MARGINLEFT", NULL, "_@IUP_VALUE", "i", "", "", NULL },
+  { "MARGINLEFT", NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
   { "MARGINRIGHTAUTO", NULL, "_@IUP_MARGINRIGHT", "b", "", "", NULL },
-  { "MARGINRIGHT", NULL, "_@IUP_VALUE", "i", "", "", NULL },
+  { "MARGINRIGHT", NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
   { "MARGINTOPAUTO", NULL, "_@IUP_MARGINTOP", "b", "[ ,Auto]", "", NULL },
-  { "MARGINTOP", NULL, "_@IUP_VALUE", "i", "", "", NULL },
+  { "MARGINTOP", NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
   { "MARGINBOTTOMAUTO", NULL, "_@IUP_MARGINBOTTOM", "b", "[ ,Auto]", "", NULL },
-  { "MARGINBOTTOM", NULL, "_@IUP_VALUE", "i", "", "", NULL },
+  { "MARGINBOTTOM", NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
   { "", NULL, "", "t", NULL, NULL, NULL },
   { "BACKCOLOR", "BGCOLOR", "_@IUP_BACKCOLOR", "c", "", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
@@ -327,7 +327,7 @@ static iPlotAttribParam iplot_title_attribs[] = {
   { "TITLEFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "TITLEFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { "TITLEPOSAUTO", NULL, "_@IUP_POSITION", "b", "[ ,Auto]", "", NULL },
-  { "TITLEPOS", NULL, "_@IUP_POSXY", "s", "/d+[,]/d+", "{(pixels)}", NULL },
+  { "TITLEPOSXY", NULL, "\t_@IUP_POSXY", "s", "/d+[,]/d+", "{(pixels)}", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
@@ -336,7 +336,7 @@ static iPlotAttribParam iplot_legend_attribs[] = {
   { "LEGENDFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "LEGENDFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { "LEGENDPOS", NULL, "_@IUP_POSITION", "l", iplot_legendpos_extra, "", iplot_legendpos_list },
-  { "LEGENDPOSXY", NULL, "_@IUP_POSXY", "s", "/d+[,]/d+", "{(pixels)}", NULL },
+  { "LEGENDPOSXY", NULL, "\t_@IUP_POSXY", "s", "/d+[,]/d+", "{(pixels)}", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
@@ -380,9 +380,9 @@ static iPlotAttribParam iplot_axisX_attribs[] = {
   { "AXS_XLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
   { "", NULL, "", "t", NULL, NULL, NULL },
   { "AXS_XAUTOMIN", NULL, "_@IUP_MIN", "b", "[ ,Auto]", "", NULL },
-  { "AXS_XMIN", NULL, "_@IUP_VALUE", "R", "", "", NULL },
+  { "AXS_XMIN", NULL, "\t_@IUP_VALUE", "R", "", "", NULL },
   { "AXS_XAUTOMAX", NULL, "_@IUP_MAX", "b", "[ ,Auto]", "", NULL },
-  { "AXS_XMAX", NULL, "_@IUP_VALUE", "R", "", "", NULL },
+  { "AXS_XMAX", NULL, "\t_@IUP_VALUE", "R", "", "", NULL },
   { "AXS_XSCALE", NULL, "_@IUP_SCALE", "l", iplot_scale_extra, "", iplot_scale_list },
   { "AXS_XREVERSE", NULL, "_@IUP_REVERSE", "b", "", "", NULL },
   { "AXS_XCROSSORIGIN", NULL, "_@IUP_CROSSORIGIN", "b", "", "", NULL },
@@ -396,9 +396,9 @@ static iPlotAttribParam iplot_axisY_attribs[] = {
   { "AXS_YLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
   { "", NULL, "", "t", NULL, NULL, NULL },
   { "AXS_YAUTOMIN", NULL, "_@IUP_MIN", "b", "[ ,Auto]", "", NULL },
-  { "AXS_YMIN", NULL, "_@IUP_VALUE", "R", "", "", NULL },
+  { "AXS_YMIN", NULL, "\t_@IUP_VALUE", "R", "", "", NULL },
   { "AXS_YAUTOMAX", NULL, "_@IUP_MAX", "b", "[ ,Auto]", "", NULL },
-  { "AXS_YMAX", NULL, "_@IUP_VALUE", "R", "", "", NULL },
+  { "AXS_YMAX", NULL, "\t_@IUP_VALUE", "R", "", "", NULL },
   { "AXS_YSCALE", NULL, "_@IUP_SCALE", "l", iplot_scale_extra, "", iplot_scale_list },
   { "AXS_YREVERSE", NULL, "_@IUP_REVERSE", "b", "", "", NULL },
   { "AXS_YCROSSORIGIN", NULL, "_@IUP_CROSSORIGIN", "b", "", "", NULL },
@@ -424,29 +424,29 @@ static iPlotAttribParam iplot_axisYlabel_attribs[] = {
 static iPlotAttribParam iplot_axisXticks_attribs[] = {
   { "AXS_XTICKS", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "AXS_XTICKAUTO", NULL, "_@IUP_SPACING", "b", "[ ,Auto]", "", NULL },
-  { "AXS_XTICKMAJORSPAN", NULL, "_@IUP_MAJORSPAN", "R", "", "", NULL },
-  { "AXS_XTICKMINORDIVISION", NULL, "_@IUP_MINORDIVISION", "i", "[1,,]", "", NULL },
+  { "AXS_XTICKMAJORSPAN", NULL, "\t_@IUP_MAJORSPAN", "R", "", "", NULL },
+  { "AXS_XTICKMINORDIVISION", NULL, "\t_@IUP_MINORDIVISION", "i", "[1,,]", "", NULL },
   { "AXS_XTICKAUTOSIZE", NULL, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
-  { "AXS_XTICKMAJORSIZE", NULL, "_@IUP_MAJOR", "i", "[1,,]", "", NULL },
-  { "AXS_XTICKMINORSIZE", NULL, "_@IUP_MINOR", "i", "[1,,]", "", NULL },
+  { "AXS_XTICKMAJORSIZE", NULL, "\t_@IUP_MAJOR", "i", "[1,,]", "", NULL },
+  { "AXS_XTICKMINORSIZE", NULL, "\t_@IUP_MINOR", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_axisYticks_attribs[] = {
   { "AXS_YTICKS", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "AXS_YTICKAUTO", NULL, "_@IUP_SPACING", "b", "[ ,Auto]", "", NULL },
-  { "AXS_YTICKMAJORSPAN", NULL, "_@IUP_MAJORSPAN", "R", "", "", NULL },
-  { "AXS_YTICKMINORDIVISION", NULL, "_@IUP_MINORDIVISION", "i", "[1,,]", "", NULL },
+  { "AXS_YTICKMAJORSPAN", NULL, "\t_@IUP_MAJORSPAN", "R", "", "", NULL },
+  { "AXS_YTICKMINORDIVISION", NULL, "\t_@IUP_MINORDIVISION", "i", "[1,,]", "", NULL },
   { "AXS_YTICKAUTOSIZE", NULL, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
-  { "AXS_YTICKMAJORSIZE", NULL, "_@IUP_MAJOR", "i", "[1,,]", "", NULL },
-  { "AXS_YTICKMINORSIZE", NULL, "_@IUP_MINOR", "i", "[1,,]", "", NULL },
+  { "AXS_YTICKMAJORSIZE", NULL, "\t_@IUP_MAJOR", "i", "[1,,]", "", NULL },
+  { "AXS_YTICKMINORSIZE", NULL, "\t_@IUP_MINOR", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_axisXticksnumber_attribs[] = {
   { "AXS_XTICKSNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "AXS_XTICKSROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
-  { "AXS_XTICKSROTATENUMBERANGLE", NULL, "_@IUP_ANGLE", "a", "", "", NULL },
+  { "AXS_XTICKSROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "a", "", "", NULL },
   { "AXS_XTICKFORMATPRECISION", NULL, "_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
   { "AXS_XTICKFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "AXS_XTICKFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
@@ -456,7 +456,7 @@ static iPlotAttribParam iplot_axisXticksnumber_attribs[] = {
 static iPlotAttribParam iplot_axisYticksnumber_attribs[] = {
   { "AXS_YTICKSNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "AXS_YTICKSROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
-  { "AXS_YTICKSROTATENUMBERANGLE", NULL, "_@IUP_ANGLE", "a", "", "", NULL },
+  { "AXS_YTICKSROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "a", "", "", NULL },
   { "AXS_YTICKFORMATPRECISION", NULL, "_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
   { "AXS_YTICKFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "AXS_YTICKFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
