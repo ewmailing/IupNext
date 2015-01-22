@@ -563,6 +563,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
       IupSetAttribute(ctrl, "VALUE", "OFF");
     }
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamToggleAction_CB);
+    IupSetAttribute(ctrl, "EXPAND", "HORIZONTAL");
 
     IupAppend(box, ctrl);
   }
@@ -648,7 +649,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
         IupStoreAttribute(ctrl, "MASK", mask);
     }
 
-    iupAttribSet(param, "EXPAND", "1");
+    iupAttribSet(param, "TEXTEXPAND", "1");
   }
   else if (iupStrEqual(type, "FILE"))
   {
@@ -662,18 +663,16 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
       IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
       IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
-      iupAttribSet(param, "EXPAND", "1");
+      iupAttribSet(param, "TEXTEXPAND", "1");
       IupSetAttribute(box,"NORMALIZESIZE","VERTICAL");
       
       aux = IupButton("...", "");
-      IupSetAttribute(aux, "EXPAND", "NO");
       IupStoreAttribute(aux, "FONT", "Times, Bold 10");
       IupSetAttribute(aux, "SIZE", "16x");
-
       IupSetCallback(aux, "ACTION", (Icallback)iParamFileButton_CB);
       iupAttribSet(aux, "PARAM", (char*)param);
       iupAttribSet(aux, "CONTROL", (char*)ctrl);
-      IupSetAttribute(aux, "EXPAND", "NO");
+      iupAttribSet(param, "AUXCONTROL", (char*)aux);
 
       IupAppend(box, aux); 
   }
@@ -690,20 +689,17 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
       IupSetAttribute(ctrl, "MASK", "(/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)) (/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)) (/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5)) (/d|/d/d|1/d/d|2(0|1|2|3|4)/d|25(0|1|2|3|4|5))");
       IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
-      iupAttribSet(param, "EXPAND", "1");
+      iupAttribSet(param, "TEXTEXPAND", "1");
       IupSetAttribute(box,"NORMALIZESIZE","VERTICAL");
 
       aux = IupButton(NULL, NULL);
-      IupSetAttribute(aux, "EXPAND", "NO");
       IupStoreAttribute(aux, "FONT", "Times, Bold Italic 11");
       IupSetAttribute(aux, "SIZE", "16x");
       IupStoreAttribute(aux, "BGCOLOR", iupAttribGet(param, "VALUE"));
-
       IupSetCallback(aux, "ACTION", (Icallback)iParamColorButton_CB);
-      iupAttribSet(param, "AUXCONTROL", (char*)aux);
       iupAttribSet(aux, "PARAM", (char*)param);
       iupAttribSet(aux, "CONTROL", (char*)ctrl);
-      IupSetAttribute(aux, "EXPAND", "NO");
+      iupAttribSet(param, "AUXCONTROL", (char*)aux);
 
       IupAppend(box, aux); 
   }
@@ -719,19 +715,17 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
       IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
       IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
 
-      iupAttribSet(param, "EXPAND", "1");
+      iupAttribSet(param, "TEXTEXPAND", "1");
       IupSetAttribute(box,"NORMALIZESIZE","VERTICAL");
       
       aux = IupButton("F", NULL);
-      IupSetAttribute(aux, "EXPAND", "NO");
       IupStoreAttribute(aux, "FONT", "Times, Bold Italic 11");
       IupSetAttribute(aux, "SIZE", "16x");
 
       IupSetCallback(aux, "ACTION", (Icallback)iParamFontButton_CB);
-      iupAttribSet(param, "AUXCONTROL", (char*)aux);
       iupAttribSet(aux, "PARAM", (char*)param);
       iupAttribSet(aux, "CONTROL", (char*)ctrl);
-      IupSetAttribute(aux, "EXPAND", "NO");
+      iupAttribSet(param, "AUXCONTROL", (char*)aux);
 
       IupAppend(box, aux); 
   }
@@ -852,7 +846,6 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
         IupStoreAttribute(aux, "VALUE", iupAttribGet(param, "VALUE"));
         IupSetAttribute(aux, "EXPAND", "HORIZONTAL");
         iupAttribSet(param, "AUXCONTROL", (char*)aux);
-        iupAttribSet(param, "EXPAND", "1");
         step = iupAttribGet(param, "STEP");
         if (step)
           IupSetDouble(aux, "STEP", iupAttribGetDouble(param, "STEP")/(iupAttribGetDouble(param, "MAX")-iupAttribGetDouble(param, "MIN")));
@@ -941,7 +934,7 @@ Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count)
 {
   Ihandle *button_1, *button_2, *button_3=NULL, 
           *param_box, *button_box, *ctrl_box;
-  int i, p, expand;
+  int i, p, text_expand;
 
   button_1 = IupButton(IupGetLanguageString(parent? "IUP_APPLY": "IUP_OK"), NULL);  /* default is OK */
   IupSetAttribute(button_1, "PADDING", "20x0");
@@ -953,7 +946,7 @@ Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count)
   
   ctrl_box = IupVbox(NULL);
 
-  expand = 0;
+  text_expand = 0;
   for (i = 0; i < count; i++)
   {
     char *type = iupAttribGet(params[i], "TYPE");
@@ -985,8 +978,8 @@ Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count)
     else
       IupAppend(ctrl_box, iParamCreateCtrlBox(params[i], type));
 
-    if (IupGetInt(params[i], "EXPAND"))
-      expand = 1;
+    if (IupGetInt(params[i], "TEXTEXPAND"))
+      text_expand = 1;
   }
 
   button_box = IupHbox(
@@ -1009,10 +1002,10 @@ Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count)
   {
     Ihandle* dlg = IupDialog(param_box);
 
-    if (!expand)
+    if (!text_expand)
     {
-      IupSetAttribute(dlg, "DIALOGFRAME", "YES");
-      IupSetAttribute(dlg, "DIALOGHINT", "YES");
+      IupSetAttribute(dlg, "DIALOGFRAME", "YES");  /* RESIZE=NO, MINBOX=NO and MAXBOX=NO */
+      IupSetAttribute(dlg, "DIALOGHINT", "YES");  /* GTK Only */
     }
     else
     {

@@ -299,17 +299,24 @@ static const char* iplot_linestyle_list[] = { "CONTINUOUS", "DASHED", "DOTTED", 
 static const char* iplot_fontstyle_list[] = { "", "BOLD", "ITALIC", "BOLDITALIC", NULL };
 static const char* iplot_legendpos_list[] = { "TOPRIGHT", "TOPLEFT", "BOTTOMRIGHT", "BOTTOMLEFT", "BOTTOMCENTER", "XY", NULL };
 static const char* iplot_grid_list[] = { "NO", "YES", "HORIZONTAL", "VERTICAL", NULL };
+static const char* iplot_scale_list[] = { "LIN", "LOG10", "LOG2", "LOGN", NULL };
 
 static const char* iplot_linestyle_extra = { "|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|" };
 static const char* iplot_fontstyle_extra = { "|_@IUP_PLAIN|_@IUP_BOLD|_@IUP_ITALIC|_@IUP_BOLDITALIC|" };
 static const char* iplot_legendpos_extra = { "|_@IUP_TOPRIGHT|_@IUP_TOPLEFT|_@IUP_BOTTOMRIGHT|_@IUP_BOTTOMLEFT|_@IUP_BOTTOMCENTER|_@IUP_XY|" };
 static const char* iplot_grid_extra = { "|_@IUP_NO|_@IUP_YES|_@IUP_HORIZONTAL|_@IUP_VERTICAL|" };
+static const char* iplot_scale_extra = { "|_@IUP_LINEAR|_@IUP_LOG10|_@IUP_LOG2|_@IUP_LOGN|" };
 
 static iPlotAttribParam iplot_background_attribs[] = {
-  { "MARGINLEFT", NULL, "_@IUP_MARGINLEFT", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
-  { "MARGINRIGHT", NULL, "_@IUP_MARGINRIGHT", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
-  { "MARGINTOP", NULL, "_@IUP_MARGINTOP", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
-  { "MARGINBOTTOM", NULL, "_@IUP_MARGINBOTTOM", "s", "/d+|AUTO", "{123... | AUTO}", NULL },
+  { "MARGINLEFTAUTO", NULL, "_@IUP_MARGINLEFT", "b", "[ ,Auto]", "", NULL },
+  { "MARGINLEFT", NULL, "_@IUP_VALUE", "i", "", "", NULL },
+  { "MARGINRIGHTAUTO", NULL, "_@IUP_MARGINRIGHT", "b", "", "", NULL },
+  { "MARGINRIGHT", NULL, "_@IUP_VALUE", "i", "", "", NULL },
+  { "MARGINTOPAUTO", NULL, "_@IUP_MARGINTOP", "b", "[ ,Auto]", "", NULL },
+  { "MARGINTOP", NULL, "_@IUP_VALUE", "i", "", "", NULL },
+  { "MARGINBOTTOMAUTO", NULL, "_@IUP_MARGINBOTTOM", "b", "[ ,Auto]", "", NULL },
+  { "MARGINBOTTOM", NULL, "_@IUP_VALUE", "i", "", "", NULL },
+  { "", NULL, "", "t", NULL, NULL, NULL },
   { "BACKCOLOR", "BGCOLOR", "_@IUP_BACKCOLOR", "c", "", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
@@ -319,7 +326,8 @@ static iPlotAttribParam iplot_title_attribs[] = {
   { "TITLECOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
   { "TITLEFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "TITLEFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
-  { "TITLEPOS", NULL, "_@IUP_POSITION", "s", "/d+[,]/d+|AUTO", "{x,y (pixels) | AUTO}", NULL },
+  { "TITLEPOSAUTO", NULL, "_@IUP_POSITION", "b", "[ ,Auto]", "", NULL },
+  { "TITLEPOS", NULL, "_@IUP_POSXY", "s", "/d+[,]/d+", "{(pixels)}", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
@@ -328,7 +336,7 @@ static iPlotAttribParam iplot_legend_attribs[] = {
   { "LEGENDFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "LEGENDFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { "LEGENDPOS", NULL, "_@IUP_POSITION", "l", iplot_legendpos_extra, "", iplot_legendpos_list },
-  { "LEGENDPOSXY", NULL, "_@IUP_POSITIONXY", "s", "/d+[,]/d+", "{x,y (pixels)}", NULL },
+  { "LEGENDPOSXY", NULL, "_@IUP_POSXY", "s", "/d+[,]/d+", "{(pixels)}", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
@@ -362,6 +370,96 @@ static iPlotAttribParam iplot_box_attribs[] = {
   { "BOXCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
   { "BOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
   { "BOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_axisX_attribs[] = {
+  { "AXS_X", NULL, "_@IUP_SHOW", "b", "", "", NULL },
+  { "AXS_XARROW", NULL, "_@IUP_SHOWARROW", "b", "", "", NULL },
+  { "AXS_XCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "AXS_XLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
+  { "", NULL, "", "t", NULL, NULL, NULL },
+  { "AXS_XAUTOMIN", NULL, "_@IUP_MIN", "b", "[ ,Auto]", "", NULL },
+  { "AXS_XMIN", NULL, "_@IUP_VALUE", "R", "", "", NULL },
+  { "AXS_XAUTOMAX", NULL, "_@IUP_MAX", "b", "[ ,Auto]", "", NULL },
+  { "AXS_XMAX", NULL, "_@IUP_VALUE", "R", "", "", NULL },
+  { "AXS_XSCALE", NULL, "_@IUP_SCALE", "l", iplot_scale_extra, "", iplot_scale_list },
+  { "AXS_XREVERSE", NULL, "_@IUP_REVERSE", "b", "", "", NULL },
+  { "AXS_XCROSSORIGIN", NULL, "_@IUP_CROSSORIGIN", "b", "", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_axisY_attribs[] = {
+  { "AXS_Y", NULL, "_@IUP_SHOW", "b", "", "", NULL },
+  { "AXS_YARROW", NULL, "_@IUP_SHOWARROW", "b", "", "", NULL },
+  { "AXS_YCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "AXS_YLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
+  { "", NULL, "", "t", NULL, NULL, NULL },
+  { "AXS_YAUTOMIN", NULL, "_@IUP_MIN", "b", "[ ,Auto]", "", NULL },
+  { "AXS_YMIN", NULL, "_@IUP_VALUE", "R", "", "", NULL },
+  { "AXS_YAUTOMAX", NULL, "_@IUP_MAX", "b", "[ ,Auto]", "", NULL },
+  { "AXS_YMAX", NULL, "_@IUP_VALUE", "R", "", "", NULL },
+  { "AXS_YSCALE", NULL, "_@IUP_SCALE", "l", iplot_scale_extra, "", iplot_scale_list },
+  { "AXS_YREVERSE", NULL, "_@IUP_REVERSE", "b", "", "", NULL },
+  { "AXS_YCROSSORIGIN", NULL, "_@IUP_CROSSORIGIN", "b", "", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_axisXlabel_attribs[] = {
+  { "AXS_XLABEL", NULL, "_@IUP_TEXT", "s", "", "", NULL },
+  { "AXS_XLABELCENTERED", NULL, "_@IUP_CENTERED", "b", "", "", NULL },
+  { "AXS_XFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "AXS_XFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_axisYlabel_attribs[] = {
+  { "AXS_YLABEL", NULL, "_@IUP_TEXT", "s", "", "", NULL },
+  { "AXS_YLABELCENTERED", NULL, "_@IUP_CENTERED", "b", "", "", NULL },
+  { "AXS_YFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "AXS_YFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_axisXticks_attribs[] = {
+  { "AXS_XTICKS", NULL, "_@IUP_SHOW", "b", "", "", NULL },
+  { "AXS_XTICKAUTO", NULL, "_@IUP_SPACING", "b", "[ ,Auto]", "", NULL },
+  { "AXS_XTICKMAJORSPAN", NULL, "_@IUP_MAJORSPAN", "R", "", "", NULL },
+  { "AXS_XTICKMINORDIVISION", NULL, "_@IUP_MINORDIVISION", "i", "[1,,]", "", NULL },
+  { "AXS_XTICKAUTOSIZE", NULL, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
+  { "AXS_XTICKMAJORSIZE", NULL, "_@IUP_MAJOR", "i", "[1,,]", "", NULL },
+  { "AXS_XTICKMINORSIZE", NULL, "_@IUP_MINOR", "i", "[1,,]", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_axisYticks_attribs[] = {
+  { "AXS_YTICKS", NULL, "_@IUP_SHOW", "b", "", "", NULL },
+  { "AXS_YTICKAUTO", NULL, "_@IUP_SPACING", "b", "[ ,Auto]", "", NULL },
+  { "AXS_YTICKMAJORSPAN", NULL, "_@IUP_MAJORSPAN", "R", "", "", NULL },
+  { "AXS_YTICKMINORDIVISION", NULL, "_@IUP_MINORDIVISION", "i", "[1,,]", "", NULL },
+  { "AXS_YTICKAUTOSIZE", NULL, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
+  { "AXS_YTICKMAJORSIZE", NULL, "_@IUP_MAJOR", "i", "[1,,]", "", NULL },
+  { "AXS_YTICKMINORSIZE", NULL, "_@IUP_MINOR", "i", "[1,,]", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_axisXticksnumber_attribs[] = {
+  { "AXS_XTICKSNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
+  { "AXS_XTICKSROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
+  { "AXS_XTICKSROTATENUMBERANGLE", NULL, "_@IUP_ANGLE", "a", "", "", NULL },
+  { "AXS_XTICKFORMATPRECISION", NULL, "_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
+  { "AXS_XTICKFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "AXS_XTICKFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+
+static iPlotAttribParam iplot_axisYticksnumber_attribs[] = {
+  { "AXS_YTICKSNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
+  { "AXS_YTICKSROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
+  { "AXS_YTICKSROTATENUMBERANGLE", NULL, "_@IUP_ANGLE", "a", "", "", NULL },
+  { "AXS_YTICKFORMATPRECISION", NULL, "_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
+  { "AXS_YTICKFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "AXS_YTICKFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
@@ -585,15 +683,18 @@ static void iPlotPropertiesAddParamBox(Ihandle* ih, Ihandle* parent, iPlotAttrib
     sprintf(format, "%s%%%s%s%s\n", attribs[count].label, attribs[count].type, attribs[count].extra, attribs[count].tip);
     params[count] = IupParamf(format);
 
-    IupSetStrAttribute(params[count], "PLOT_ATTRIB", attribs[count].name);
-    IupSetStrAttribute(params[count], "PLOT_DEFAULTATTRIB", attribs[count].default_name);
-    IupSetAttribute(params[count], "PLOT_ATTRIBLIST", (char*)(attribs[count].list));
+    if (attribs[count].name[0] != 0)
+    {
+      IupSetStrAttribute(params[count], "PLOT_ATTRIB", attribs[count].name);
+      IupSetStrAttribute(params[count], "PLOT_DEFAULTATTRIB", attribs[count].default_name);
+      IupSetAttribute(params[count], "PLOT_ATTRIBLIST", (char*)(attribs[count].list));
 
-    // From Plot
-    char* value = IupGetAttribute(ih, attribs[count].name);
-    // To Param
-    iPlotSetParamValue(params[count], ih, value);
-    IupSetStrAttribute(params[count], "RESET_VALUE", value);
+      // From Plot
+      char* value = IupGetAttribute(ih, attribs[count].name);
+      // To Param
+      iPlotSetParamValue(params[count], ih, value);
+      IupSetStrAttribute(params[count], "RESET_VALUE", value);
+    }
 
     count++;
   }
@@ -613,7 +714,8 @@ static int iPlotProperties_CB(Ihandle* ih_item)
   Ihandle* tree = IupTree();
   IupSetAttribute(tree, "ADDROOT", "NO");
   IupSetCallback(tree, "SELECTION_CB", (Icallback)iPlotPropertiesTreeSelection_CB);
-  IupSetAttribute(tree, "SIZE", "130x140");
+  IupSetAttribute(tree, "EXPAND", "VERTICAL");
+  IupSetAttribute(tree, "SIZE", "100x140");
   IupSetAttribute(tree, "IMAGELEAF", "IMGPAPER");
 
   Ihandle* zbox = IupZbox(NULL);
@@ -624,6 +726,15 @@ static int iPlotProperties_CB(Ihandle* ih_item)
   iPlotPropertiesAddParamBox(ih, zbox, iplot_box_attribs);           /* 4 */
   iPlotPropertiesAddParamBox(ih, zbox, iplot_grid_attribs);          /* 5 */
   iPlotPropertiesAddParamBox(ih, zbox, iplot_gridminor_attribs);     /* 6 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_axisX_attribs);         /* 7 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_axisXlabel_attribs);    /* 8 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_axisXticks_attribs);    /* 9 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_axisXticksnumber_attribs);  /* 10 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_axisY_attribs);             /* 11 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_axisYlabel_attribs);        /* 12 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_axisYticks_attribs);        /* 13 */
+  iPlotPropertiesAddParamBox(ih, zbox, iplot_axisYticksnumber_attribs);  /* 14 */
+
   IupSetAttribute(zbox, "PLOT", (char*)ih);
 
   Ihandle* dlg = IupDialog(IupHbox(tree, zbox, NULL));
@@ -631,6 +742,8 @@ static int iPlotProperties_CB(Ihandle* ih_item)
   IupSetStrAttribute(dlg, "TITLE", "_@IUP_PROPERTIESDLG");
   IupSetCallback(dlg, "K_ESC", iPlotPropertiesClose_CB);
   IupSetCallback(dlg, "CLOSE_CB", (Icallback)iPlotPropertiesClose_CB);
+  IupSetAttribute(dlg, "MINBOX", "NO");
+  IupSetAttribute(dlg, "MAXBOX", "NO");
 
   if (IupGetAttribute(parent, "ICON"))
     IupSetStrAttribute(dlg, "ICON", IupGetAttribute(parent, "ICON"));
@@ -2198,6 +2311,8 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_SHOW", "Show:");
     IupSetLanguageString("IUP_HORIZONTAL", "Horizontal");
     IupSetLanguageString("IUP_VERTICAL", "Vertical");
+
+    IupSetLanguageString("IUP_WARNING", "Warning!");
     IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Changes Not Applied. Apply?");
 
     IupSetLanguageString("IUP_MARGINLEFT", "Margin Left:");
@@ -2213,13 +2328,39 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_BOLDITALIC", "Bold Italic");
 
     IupSetLanguageString("IUP_POSITION", "Position:");
-    IupSetLanguageString("IUP_POSITIONXY", "Position (x,y):");
+    IupSetLanguageString("IUP_POSXY", "(x,y):");
     IupSetLanguageString("IUP_TOPRIGHT", "Top Right");
     IupSetLanguageString("IUP_TOPLEFT", "Top Left");
     IupSetLanguageString("IUP_BOTTOMRIGHT", "Bottom Right");
     IupSetLanguageString("IUP_BOTTOMLEFT", "Bottom Left");
     IupSetLanguageString("IUP_BOTTOMCENTER", "Bottom Center");
     IupSetLanguageString("IUP_XY", "(x,y)");
+
+    IupSetLanguageString("IUP_SHOWARROW", "Show Arrow:");
+    IupSetLanguageString("IUP_MIN", "Min:");
+    IupSetLanguageString("IUP_MAX", "Max:");
+    IupSetLanguageString("IUP_REVERSE", "Reverse:");
+    IupSetLanguageString("IUP_CROSSORIGIN", "Cross Origin:");
+    IupSetLanguageString("IUP_CENTERED", "Centered:");
+
+    IupSetLanguageString("IUP_SCALE", "Scale:");
+    IupSetLanguageString("IUP_LINEAR", "Linear");
+    IupSetLanguageString("IUP_LOG10", "Logarithm (base 10)");
+    IupSetLanguageString("IUP_LOG2", "Logarithm (base 2)");
+    IupSetLanguageString("IUP_LOGN", "Logarithm (base e)");
+
+    IupSetLanguageString("IUP_SPACING", "Spacing:");
+    IupSetLanguageString("IUP_MAJORSPAN", "Major Span:");
+    IupSetLanguageString("IUP_MINORDIVISION", "Minor Division:");
+    IupSetLanguageString("IUP_SIZE", "Size:");
+    IupSetLanguageString("IUP_MAJOR", "Major:");
+    IupSetLanguageString("IUP_MINOR", "Minor:");
+
+    IupSetLanguageString("IUP_ROTATE", "Rotate:");
+    IupSetLanguageString("IUP_ANGLE", "Angle:");
+
+    IupSetLanguageString("IUP_VALUE", "Value:");
+    IupSetLanguageString("IUP_DECIMALS", "Decimals:");
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
   {
