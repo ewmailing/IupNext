@@ -422,31 +422,31 @@ static iPlotAttribParam iplot_axisYlabel_attribs[] = {
 };
 
 static iPlotAttribParam iplot_axisXticks_attribs[] = {
-  { "AXS_XTICKS", NULL, "_@IUP_SHOW", "b", "", "", NULL },
+  { "AXS_XTICK", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "AXS_XTICKAUTO", NULL, "_@IUP_SPACING", "b", "[ ,Auto]", "", NULL },
   { "AXS_XTICKMAJORSPAN", NULL, "\t_@IUP_MAJORSPAN", "R", "", "", NULL },
   { "AXS_XTICKMINORDIVISION", NULL, "\t_@IUP_MINORDIVISION", "i", "[1,,]", "", NULL },
-  { "AXS_XTICKAUTOSIZE", NULL, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
+  { "AXS_XTICKSIZEAUTO", NULL, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
   { "AXS_XTICKMAJORSIZE", NULL, "\t_@IUP_MAJOR", "i", "[1,,]", "", NULL },
   { "AXS_XTICKMINORSIZE", NULL, "\t_@IUP_MINOR", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_axisYticks_attribs[] = {
-  { "AXS_YTICKS", NULL, "_@IUP_SHOW", "b", "", "", NULL },
+  { "AXS_YTICK", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "AXS_YTICKAUTO", NULL, "_@IUP_SPACING", "b", "[ ,Auto]", "", NULL },
   { "AXS_YTICKMAJORSPAN", NULL, "\t_@IUP_MAJORSPAN", "R", "", "", NULL },
   { "AXS_YTICKMINORDIVISION", NULL, "\t_@IUP_MINORDIVISION", "i", "[1,,]", "", NULL },
-  { "AXS_YTICKAUTOSIZE", NULL, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
+  { "AXS_YTICKSIZEAUTO", NULL, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
   { "AXS_YTICKMAJORSIZE", NULL, "\t_@IUP_MAJOR", "i", "[1,,]", "", NULL },
   { "AXS_YTICKMINORSIZE", NULL, "\t_@IUP_MINOR", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_axisXticksnumber_attribs[] = {
-  { "AXS_XTICKSNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
-  { "AXS_XTICKSROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
-  { "AXS_XTICKSROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "A", "", "", NULL },
+  { "AXS_XTICKNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
+  { "AXS_XTICKROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
+  { "AXS_XTICKROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "A", "", "", NULL },
   { "AXS_XTICKFORMATPRECISION", NULL, "_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
   { "AXS_XTICKFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "AXS_XTICKFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
@@ -454,9 +454,9 @@ static iPlotAttribParam iplot_axisXticksnumber_attribs[] = {
 };
 
 static iPlotAttribParam iplot_axisYticksnumber_attribs[] = {
-  { "AXS_YTICKSNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
-  { "AXS_YTICKSROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
-  { "AXS_YTICKSROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "A", "", "", NULL },
+  { "AXS_YTICKNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
+  { "AXS_YTICKROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
+  { "AXS_YTICKROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "A", "", "", NULL },
   { "AXS_YTICKFORMATPRECISION", NULL, "_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
   { "AXS_YTICKFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "AXS_YTICKFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },

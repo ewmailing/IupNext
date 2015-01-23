@@ -973,7 +973,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_COPYAC", "Copiar\tCtrl+C");
     IupSetLanguageString("IUP_PASTEAC", "Colar\tCtrl+V");
     IupSetLanguageString("IUP_ERASEAC", "Apagar\tDel");
-    IupSetLanguageString("IUP_SELECTALLAC", "Selecinar Tudo\tCtrl+T");
+    IupSetLanguageString("IUP_SELECTALLAC", "Selecionar Tudo\tCtrl+T");
     IupSetLanguageString("IUP_FINDDLG", "Localizar...\tCtrl+L");
     IupSetLanguageString("IUP_GOTODLG", "Ir Para...\tCtrl+G");
     IupSetLanguageString("IUP_SORTDLG", "Classificar...");
