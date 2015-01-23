@@ -446,7 +446,7 @@ static iPlotAttribParam iplot_axisYticks_attribs[] = {
 static iPlotAttribParam iplot_axisXticksnumber_attribs[] = {
   { "AXS_XTICKSNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "AXS_XTICKSROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
-  { "AXS_XTICKSROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "a", "", "", NULL },
+  { "AXS_XTICKSROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "A", "", "", NULL },
   { "AXS_XTICKFORMATPRECISION", NULL, "_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
   { "AXS_XTICKFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "AXS_XTICKFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
@@ -456,12 +456,21 @@ static iPlotAttribParam iplot_axisXticksnumber_attribs[] = {
 static iPlotAttribParam iplot_axisYticksnumber_attribs[] = {
   { "AXS_YTICKSNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "AXS_YTICKSROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
-  { "AXS_YTICKSROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "a", "", "", NULL },
+  { "AXS_YTICKSROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "A", "", "", NULL },
   { "AXS_YTICKFORMATPRECISION", NULL, "_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
   { "AXS_YTICKFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "AXS_YTICKFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
+
+static void iPlotSetDouble(Ihandle* ih, Ihandle* control, const char* name, double num)
+{
+  char value[80];
+  int prec = IupGetInt(ih, "PRECISION");
+  if (prec <= 0) prec = IupGetInt(NULL, "DEFAULTPRECISION");
+  sprintf(value, "%.*f", prec, num);
+  IupStoreAttribute(control, name, value);
+}
 
 static void iPlotSetParamValue(Ihandle* param, Ihandle* ih, const char* value)
 {
@@ -484,7 +493,16 @@ static void iPlotSetParamValue(Ihandle* param, Ihandle* ih, const char* value)
   else
   {
     IupSetStrAttribute(param, "VALUE", value);
-    if (control) IupSetStrAttribute(control, "VALUE", value);
+    if (control)
+    {
+      if (iupStrEqualNoCase(iupAttribGet(param, "TYPE"), "REAL"))
+      {
+        double num = IupGetDouble(param, "VALUE");
+        iPlotSetDouble(ih, control, "VALUE", num);
+      }
+      else
+        IupSetStrAttribute(control, "VALUE", value);
+    }
     if (auxcontrol) IupSetStrAttribute(auxcontrol, "VALUE", value);
   }
 }

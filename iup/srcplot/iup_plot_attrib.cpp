@@ -273,16 +273,6 @@ static int iPlotSetLegendPosAttrib(Ihandle* ih, const char* value)
     ih->data->current_plot->mLegend.mPosition = IUP_PLOT_TOPRIGHT;
   else if (iupStrEqualNoCase(value, "XY"))
     ih->data->current_plot->mLegend.mPosition = IUP_PLOT_XY;
-  else
-  {
-    int x, y;
-    if (iupStrToIntInt(value, &x, &y, ',') == 2)
-    {
-      ih->data->current_plot->mLegend.mPosition = IUP_PLOT_XY;
-      ih->data->current_plot->mLegend.mPosX = x;
-      ih->data->current_plot->mLegend.mPosY = y;
-    }
-  }
 
   ih->data->current_plot->mRedraw = true;
   return 0;
@@ -290,13 +280,27 @@ static int iPlotSetLegendPosAttrib(Ihandle* ih, const char* value)
 
 static char* iPlotGetLegendPosAttrib(Ihandle* ih)
 {
-  if (ih->data->current_plot->mLegend.mPosition == IUP_PLOT_XY)
-    return iupStrReturnIntInt(ih->data->current_plot->mLegend.mPosX, ih->data->current_plot->mLegend.mPosY, ',');
-  else
+  const char* legendpos_str[] = { "TOPRIGHT", "TOPLEFT", "BOTTOMRIGHT", "BOTTOMLEFT", "BOTTOMCENTER", "XY" };
+  return (char*)legendpos_str[ih->data->current_plot->mLegend.mPosition];
+}
+
+static int iPlotSetLegendPosXYAttrib(Ihandle* ih, const char* value)
+{
+  int x, y;
+  if (iupStrToIntInt(value, &x, &y, ',') == 2)
   {
-    const char* legendpos_str[] = { "TOPRIGHT", "TOPLEFT", "BOTTOMRIGHT", "BOTTOMLEFT", "BOTTOMCENTER", "XY" };
-    return (char*)legendpos_str[ih->data->current_plot->mLegend.mPosition];
+    ih->data->current_plot->mLegend.mPosition = IUP_PLOT_XY;
+    ih->data->current_plot->mLegend.mPosX = x;
+    ih->data->current_plot->mLegend.mPosY = y;
   }
+
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
+
+static char* iPlotGetLegendPosXYAttrib(Ihandle* ih)
+{
+  return iupStrReturnIntInt(ih->data->current_plot->mLegend.mPosX, ih->data->current_plot->mLegend.mPosY, ',');
 }
 
 static int iPlotSetBackColorAttrib(Ihandle* ih, const char* value)
@@ -458,38 +462,38 @@ static char* iPlotGetTitleFontStyleAttrib(Ihandle* ih)
   return iPlotGetPlotFontStyle(ih->data->current_plot->mTitle.mFontStyle);
 }
 
-static int iPlotSetTitlePosAttrib(Ihandle* ih, const char* value)
+static int iPlotSetTitlePosAutoAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "AUTO"))
-  {
+  if (iupStrBoolean(value))
     ih->data->current_plot->mTitle.mAutoPos = true;
-    ih->data->current_plot->mRedraw = true;
-  }
-  else if(iupStrEqualNoCase(value, "NOAUTO"))
+  else 
+    ih->data->current_plot->mTitle.mAutoPos = false;
+
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
+
+static char* iPlotGetTitlePosAutoAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->current_plot->mTitle.mAutoPos);
+}
+
+static int iPlotSetTitlePosXYAttrib(Ihandle* ih, const char* value)
+{
+  int x, y;
+  if (iupStrToIntInt(value, &x, &y, ',') == 2)
   {
     ih->data->current_plot->mTitle.mAutoPos = false;
+    ih->data->current_plot->mTitle.mPosX = x;
+    ih->data->current_plot->mTitle.mPosY = y;
     ih->data->current_plot->mRedraw = true;
-  }
-  else
-  {
-    int x, y;
-    if (iupStrToIntInt(value, &x, &y, ',')==2)
-    {
-      ih->data->current_plot->mTitle.mAutoPos = false;
-      ih->data->current_plot->mTitle.mPosX = x;
-      ih->data->current_plot->mTitle.mPosY = y;
-      ih->data->current_plot->mRedraw = true;
-    }
   }
   return 0;
 }
 
-static char* iPlotGetTitlePosAttrib(Ihandle* ih)
+static char* iPlotGetTitlePosXYAttrib(Ihandle* ih)
 {
-  if (ih->data->current_plot->mTitle.mAutoPos)
-    return "AUTO";
-  else
-    return iupStrReturnIntInt(ih->data->current_plot->mTitle.mPosX, ih->data->current_plot->mTitle.mPosY, ',');
+  return iupStrReturnIntInt(ih->data->current_plot->mTitle.mPosX, ih->data->current_plot->mTitle.mPosY, ',');
 }
 
 static int iPlotSetLegendFontSizeAttrib(Ihandle* ih, const char* value)
@@ -524,17 +528,66 @@ static char* iPlotGetLegendFontSizeAttrib(Ihandle* ih)
   return iPlotGetPlotFontSize(ih->data->current_plot->mLegend.mFontSize);
 }
 
+static int iPlotSetMarginLeftAutoAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->current_plot->mMarginAuto.mLeft = iupStrBoolean(value);
+  return 0;
+}
+
+static int iPlotSetMarginRightAutoAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->current_plot->mMarginAuto.mRight = iupStrBoolean(value);
+  return 0;
+}
+
+static int iPlotSetMarginTopAutoAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->current_plot->mMarginAuto.mTop = iupStrBoolean(value);
+  return 0;
+}
+
+static int iPlotSetMarginBottomAutoAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->current_plot->mMarginAuto.mBottom = iupStrBoolean(value);
+  return 0;
+}
+
+static char* iPlotGetMarginLeftAutoAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->current_plot->mMarginAuto.mLeft);
+}
+
+static char* iPlotGetMarginRightAutoAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->current_plot->mMarginAuto.mRight);
+}
+
+static char* iPlotGetMarginTopAutoAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->current_plot->mMarginAuto.mTop);
+}
+
+static char* iPlotGetMarginBottomAutoAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->current_plot->mMarginAuto.mBottom);
+}
+
 static int iPlotSetMarginLeftAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "AUTO"))
-    ih->data->current_plot->mMarginAuto.mLeft = 1;
-
-  int ii;
-  if (iupStrToInt(value, &ii))
   {
-    ih->data->current_plot->mMarginAuto.mLeft = 0;
-    ih->data->current_plot->mMargin.mLeft = ii;
+    ih->data->current_plot->mMarginAuto.mLeft = 1;
     ih->data->current_plot->mRedraw = true;
+  }
+  else
+  {
+    int ii;
+    if (iupStrToInt(value, &ii))
+    {
+      ih->data->current_plot->mMarginAuto.mLeft = 0;
+      ih->data->current_plot->mMargin.mLeft = ii;
+      ih->data->current_plot->mRedraw = true;
+    }
   }
   return 0;
 }
@@ -542,14 +595,19 @@ static int iPlotSetMarginLeftAttrib(Ihandle* ih, const char* value)
 static int iPlotSetMarginRightAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "AUTO"))
-    ih->data->current_plot->mMarginAuto.mRight = 1;
-
-  int ii;
-  if (iupStrToInt(value, &ii))
   {
-    ih->data->current_plot->mMarginAuto.mRight = 0;
-    ih->data->current_plot->mMargin.mRight = ii;
+    ih->data->current_plot->mMarginAuto.mRight = 1;
     ih->data->current_plot->mRedraw = true;
+  }
+  else
+  {
+    int ii;
+    if (iupStrToInt(value, &ii))
+    {
+      ih->data->current_plot->mMarginAuto.mRight = 0;
+      ih->data->current_plot->mMargin.mRight = ii;
+      ih->data->current_plot->mRedraw = true;
+    }
   }
   return 0;
 }
@@ -557,14 +615,19 @@ static int iPlotSetMarginRightAttrib(Ihandle* ih, const char* value)
 static int iPlotSetMarginTopAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "AUTO"))
-    ih->data->current_plot->mMarginAuto.mTop = 1;
-
-  int ii;
-  if (iupStrToInt(value, &ii))
   {
-    ih->data->current_plot->mMarginAuto.mTop = 0;
-    ih->data->current_plot->mMargin.mTop = ii;
+    ih->data->current_plot->mMarginAuto.mTop = 1;
     ih->data->current_plot->mRedraw = true;
+  }
+  else
+  {
+    int ii;
+    if (iupStrToInt(value, &ii))
+    {
+      ih->data->current_plot->mMarginAuto.mTop = 0;
+      ih->data->current_plot->mMargin.mTop = ii;
+      ih->data->current_plot->mRedraw = true;
+    }
   }
   return 0;
 }
@@ -572,14 +635,19 @@ static int iPlotSetMarginTopAttrib(Ihandle* ih, const char* value)
 static int iPlotSetMarginBottomAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "AUTO"))
-    ih->data->current_plot->mMarginAuto.mBottom = 1;
-
-  int ii;
-  if (iupStrToInt(value, &ii))
   {
-    ih->data->current_plot->mMarginAuto.mBottom = 0;
-    ih->data->current_plot->mMargin.mBottom = ii;
+    ih->data->current_plot->mMarginAuto.mBottom = 1;
     ih->data->current_plot->mRedraw = true;
+  }
+  else
+  {
+    int ii;
+    if (iupStrToInt(value, &ii))
+    {
+      ih->data->current_plot->mMarginAuto.mBottom = 0;
+      ih->data->current_plot->mMargin.mBottom = ii;
+      ih->data->current_plot->mRedraw = true;
+    }
   }
   return 0;
 }
@@ -2690,6 +2758,10 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "SHOWMENUCONTEXT", NULL, iPlotSetShowMenuContextAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TIPFORMAT", NULL, NULL, IUPAF_SAMEASSYSTEM, "%s (%s, %s)", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "MARGINLEFTAUTO", iPlotGetMarginLeftAutoAttrib, iPlotSetMarginLeftAutoAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINRIGHTAUTO", iPlotGetMarginRightAutoAttrib, iPlotSetMarginRightAutoAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINTOPAUTO", iPlotGetMarginTopAutoAttrib, iPlotSetMarginTopAutoAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARGINBOTTOMAUTO", iPlotGetMarginBottomAutoAttrib, iPlotSetMarginBottomAutoAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARGINLEFT", iPlotGetMarginLeftAttrib, iPlotSetMarginLeftAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARGINRIGHT", iPlotGetMarginRightAttrib, iPlotSetMarginRightAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARGINTOP", iPlotGetMarginTopAttrib, iPlotSetMarginTopAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -2701,11 +2773,13 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "TITLECOLOR", iPlotGetTitleColorAttrib, iPlotSetTitleColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEFONTSIZE", iPlotGetTitleFontSizeAttrib, iPlotSetTitleFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEFONTSTYLE", iPlotGetTitleFontStyleAttrib, iPlotSetTitleFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLEPOS", iPlotGetTitlePosAttrib, iPlotSetTitlePosAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEPOSAUTO", iPlotGetTitlePosAutoAttrib, iPlotSetTitlePosAutoAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEPOSXY", iPlotGetTitlePosXYAttrib, iPlotSetTitlePosXYAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "LEGEND", iPlotGetLegendAttrib, iPlotSetLegendAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   /*OLD*/iupClassRegisterAttribute(ic, "LEGENDSHOW", iPlotGetLegendAttrib, iPlotSetLegendAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDPOS", iPlotGetLegendPosAttrib, iPlotSetLegendPosAttrib, IUPAF_SAMEASSYSTEM, "TOPRIGHT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LEGENDPOSXY", iPlotGetLegendPosXYAttrib, iPlotSetLegendPosXYAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDFONTSIZE", iPlotGetLegendFontSizeAttrib, iPlotSetLegendFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDFONTSTYLE", iPlotGetLegendFontStyleAttrib, iPlotSetLegendFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LEGENDBOX", iPlotGetLegendBoxAttrib, iPlotSetLegendBoxAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
