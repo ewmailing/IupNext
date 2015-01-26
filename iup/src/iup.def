@@ -298,6 +298,7 @@ iupStrReturnIntInt
 iupStrReturnFloat
 iupStrReturnDouble
 iupStrReturnStrStr
+iupStrGetFormatPrecision
 iupStrReplace
 iupStrProcessMnemonic
 iupStrFindMnemonic

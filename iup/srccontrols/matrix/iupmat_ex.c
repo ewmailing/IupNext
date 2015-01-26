@@ -93,9 +93,9 @@ static int iMatrixSetNumericFormatPrecisionAttrib(Ihandle* ih, int col, const ch
   if (iupStrToInt(value, &precision))
   {
     if (col == IUP_INVALID_ID)
-      IupSetStrf(ih, "NUMERICFORMATDEF", "%%.%dlf", precision);
+      IupSetStrf(ih, "NUMERICFORMATDEF", "%%.%df", precision);
     else
-      IupSetStrfId(ih, "NUMERICFORMAT", col, "%%.%dlf", precision);
+      IupSetStrfId(ih, "NUMERICFORMAT", col, "%%.%df", precision);
   }
   else
   {
@@ -105,26 +105,6 @@ static int iMatrixSetNumericFormatPrecisionAttrib(Ihandle* ih, int col, const ch
       IupSetAttributeId(ih, "NUMERICFORMAT", col, NULL);
   }
   return 0;
-}
-
-static int iMatrixGetPrecisionFromFormat (const char* format)
-{
-  int precision;
-  while (*format)
-  {
-    if (*format=='.')
-     break;
-    format++;
-  }
-
-  if (*format!='.')
-    return -1;
-
-  format++;
-  if (iupStrToInt(format, &precision))
-    return precision;
-
-  return -1;
 }
 
 static char* iMatrixGetNumericFormatPrecisionAttrib(Ihandle* ih, int col)
@@ -137,7 +117,7 @@ static char* iMatrixGetNumericFormatPrecisionAttrib(Ihandle* ih, int col)
   if (!value)
     return NULL;
 
-  precision = iMatrixGetPrecisionFromFormat(value);
+  precision = iupStrGetFormatPrecision(value);
   if (precision == -1)
     return NULL;
 

@@ -209,6 +209,10 @@ char* iupStrReturnStrStr(const char *str1, const char *str2, char sep);
  * \ingroup str */
 char* iupStrReturnIntInt(int i1, int i2, char sep);
 
+/** Returns the number of decimals in a format string for floating point output.
+ *\ingroup str */
+int iupStrGetFormatPrecision(const char* format);
+
 
 
 /** Extract RGB components from the string. Returns 0 or 1.

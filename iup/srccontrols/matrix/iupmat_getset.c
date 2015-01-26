@@ -251,11 +251,11 @@ char* iupMatrixGetNumericFormatDef(Ihandle* ih)
   {
     int prec = IupGetInt(NULL, "DEFAULTPRECISION");
     if (prec == 2)
-      format = "%.2lf";
+      format = "%.2f";
     else
     {
       static char f[30];
-      sprintf(f, "%%.%dlf", prec);
+      sprintf(f, "%%.%df", prec);
       format = f;
     }
   }

@@ -525,6 +525,26 @@ char* iupStrReturnIntInt(int i1, int i2, char sep)
   return str;
 }
 
+int iupStrGetFormatPrecision(const char* format)
+{
+  int precision;
+  while (*format)
+  {
+    if (*format == '.')
+      break;
+    format++;
+  }
+
+  if (*format != '.')
+    return -1;
+
+  format++;
+  if (iupStrToInt(format, &precision))
+    return precision;
+
+  return -1;
+}
+
 int iupStrToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned char *b)
 {
   unsigned int ri = 0, gi = 0, bi = 0;
