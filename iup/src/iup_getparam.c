@@ -1036,6 +1036,8 @@ Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count)
     }
   }
 
+  iupAttribSetInt(param_box, "PARAMCOUNT", p);
+
   iupAttribSet(param_box, "BUTTON1", (char*)button_1);
   iupAttribSet(param_box, "BUTTON2", (char*)button_2);
   iupAttribSet(param_box, "BUTTON3", (char*)button_3);
@@ -1048,7 +1050,7 @@ Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count)
   if (!parent)
     IupSetAttribute(param_box, "SIZE", NULL);
 
-  IupSetAttribute(param_box, "PARAMBOX", (char*)param_box);
+  IupSetAttribute(param_box, "PARAMBOX", (char*)param_box);  /* found by inheritance */
 
   return param_box;
 }
@@ -1543,8 +1545,8 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
   IupSetStrAttribute(dlg, "TITLE", (char*)title);
-  IupSetCallback(dlg, "PARAM_CB", (Icallback)action);
   IupSetCallback(dlg, "CLOSE_CB", (Icallback)iParamDlgClose_CB);
+  IupSetCallback(dlg, "PARAM_CB", (Icallback)action);
   iupAttribSet(dlg, "USERDATA", (char*)user_data);
 
   if (action) 

@@ -273,10 +273,12 @@ activated or the dialog close button is clicked.</p>
 iup.ParamBox(<strong>parent</strong>: ihandle, <strong>params</strong>: table of ihandle) -&gt; <strong>elem</strong>: ihandle [in Lua]</pre>
 <p>Creates the <strong>IupGetParam</strong> dialog contents with the array of 
 parameters. This includes the button box at the bottom.&nbsp; </p>
-<p>The PARAM_CB callback will receive the box handle instead of the <strong>
+<p>The <strong>PARAM_CB</strong> callback will receive the box handle instead of the <strong>
 IupGetParam</strong> dialog handle. Buttons 1 and 2 will still close the dialog 
 as in <strong>IupGetParam</strong> (by returning IUP_CLOSE internally), so to 
 change that behavior return 0 in the callback. </p>
+<p>The <strong>PARAMCOUNT</strong> attribute contains the number of parameters 
+not counting separators and button names.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <p>Here is an example showing many of the possible parameters. We show only one for each type, but you can have as many 
