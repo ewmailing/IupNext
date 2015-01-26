@@ -356,12 +356,13 @@ plots will be reset to the same value.</p>
 <p><b>CANVAS</b> (read-only): returns the internal CD canvas 
 where the draw operation occurs. Works only after mapped.</p>
 <p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b> (inheritable):  the default text 
-and line color. Default: &quot;0 0 0&quot;. When set, TITLE, AXIS, BOX and 
+and line color. Default: &quot;0 0 0 255&quot;. When set, TITLE, AXIS, BOX and 
 LEGENDBOX colors of all plots will be reset to the same value.</p>
 <p class="info"><strong>IMPORTANT</strong>: All color attributes accept and 
 extra component for alpha. The default alpha is always 255 (opaque). </p>
 <p><strong><a href="../attrib/iup_font.html">FONT</a></strong> (inheritable):
-  the default font used in all text elements of the plot: title, legend and labels.&nbsp;Use "Plain" or "" to reset a "Bold"/"Italic" styles.</p>
+  the default font used in all text elements of the plot: title, legend and labels.&nbsp;Use "Plain" or "" to reset "Bold"/"Italic" styles. 
+When set, will not overwrite *FONTSTYLE nor *FONTSIZE attributes.</p>
 <p><strong>GRAPHICSMODE</strong>: the internal graphics mode. Can be set only 
 before map. Can be OPENGL, IMAGERGB, NATIVEPLUS or NATIVE. OPENGL will use 
 OpenGL, it is faster for big data sets but text has a slightly slower quality, 
@@ -578,9 +579,17 @@ YES or NO. Default: NO.</p>
 <p><b>AXS_XTICKROTATENUMBERANGLE, AXS_YTICKROTATENUMBERANGLE</b>: angle of rotation 
 in degrees. Use values between 90º and 45º for better results. Default: 90. 
 (since 3.13)</p>
-<p><b>AXS_XTICKFORMAT, AXS_YTICKFORMAT</b>: axis tick number C format string for 
-linear scale axis. 
-(For the log scale axis the format is dynamically calculated). Default: &quot;%.0f&quot;.</p>
+<p><b>AXS_XTICKFORMATAUTO, AXS_YTICKFORMATAUTO</b>: enable the automatic axis tick number format. 
+For the log scale axis the format is dynamically changed for every major tick. Default: &quot;Yes&quot;. 
+(since 3.13)</p>
+<p><b>AXS_XTICKFORMAT, AXS_YTICKFORMAT</b>: axis tick number C format string. 
+If set will also set AXS_?TICKFORMATAUTO to NO. Default: &quot;%.0f&quot;.</p>
+<p>
+<b>AXS_XTICKFORMATPRECISION, AXS_YTICKFORMATPRECISION</b>: will set the <strong>
+sprintf</strong> &quot;precision&quot; field in the
+AXS_?TICKFORMAT<b> </b>attributes string if the format 
+&quot;%.&lt;precision&gt;f&quot;. It is just a simple form to set and get the 
+precision of the format attribute. (since 3.13)</p>
 <p><b>AXS_XTICKFONTSIZE, AXS_YTICKFONTSIZE, AXS_XTICKFONTSTYLE, 
 AXS_YTICKFONTSTYLE</b>: axis tick number font size and style.</p>
 <blockquote>

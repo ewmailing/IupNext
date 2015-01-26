@@ -285,7 +285,7 @@ static int iPlotGetListIndex(const char** list, const char* value)
 struct iPlotAttribParam
 {
   const char* name;
-  const char* default_name;
+  Icallback check;
 
   const char* label;
   const char* type;
@@ -307,43 +307,60 @@ static const char* iplot_legendpos_extra = { "|_@IUP_TOPRIGHT|_@IUP_TOPLEFT|_@IU
 static const char* iplot_grid_extra = { "|_@IUP_NO|_@IUP_YES|_@IUP_HORIZONTAL|_@IUP_VERTICAL|" };
 static const char* iplot_scale_extra = { "|_@IUP_LINEAR|_@IUP_LOG10|_@IUP_LOG2|_@IUP_LOGN|" };
 
+static int iPlotCheckBool(Ihandle* param)
+{
+  return !iupAttribGetBoolean(param, "VALUE");
+}
+
+static int iPlotCheckBool2(Ihandle* param)
+{
+  iupAttribSetInt(param, "CHILDCOUNT", 2);
+  return !iupAttribGetBoolean(param, "VALUE");
+}
+
+static int iPlotCheckLegendXY(Ihandle* param)
+{
+  int index = iupAttribGetInt(param, "VALUE");
+  return iupStrEqualNoCase(iplot_legendpos_list[index], "XY");
+}
+
 static iPlotAttribParam iplot_background_attribs[] = {
-  { "MARGINLEFTAUTO", NULL, "_@IUP_MARGINLEFT", "b", "[ ,Auto]", "", NULL },
-  { "MARGINLEFT", NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
-  { "MARGINRIGHTAUTO", NULL, "_@IUP_MARGINRIGHT", "b", "", "", NULL },
-  { "MARGINRIGHT", NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
-  { "MARGINTOPAUTO", NULL, "_@IUP_MARGINTOP", "b", "[ ,Auto]", "", NULL },
-  { "MARGINTOP", NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
-  { "MARGINBOTTOMAUTO", NULL, "_@IUP_MARGINBOTTOM", "b", "[ ,Auto]", "", NULL },
+  { "MARGINLEFTAUTO",   iPlotCheckBool, "_@IUP_MARGINLEFT", "b", "[ ,Auto]", "", NULL },
+  { "MARGINLEFT",   NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
+  { "MARGINRIGHTAUTO",  iPlotCheckBool, "_@IUP_MARGINRIGHT", "b", "", "", NULL },
+  { "MARGINRIGHT",  NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
+  { "MARGINTOPAUTO",    iPlotCheckBool, "_@IUP_MARGINTOP", "b", "[ ,Auto]", "", NULL },
+  { "MARGINTOP",    NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
+  { "MARGINBOTTOMAUTO", iPlotCheckBool, "_@IUP_MARGINBOTTOM", "b", "[ ,Auto]", "", NULL },
   { "MARGINBOTTOM", NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
   { "", NULL, "", "t", NULL, NULL, NULL },
-  { "BACKCOLOR", "BGCOLOR", "_@IUP_BACKCOLOR", "c", "", "", NULL },
+  { "BACKCOLOR", NULL, "_@IUP_BACKCOLOR", "c", "", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_title_attribs[] = {
   { "TITLE", NULL, "_@IUP_TEXT", "s", "", "", NULL },
-  { "TITLECOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
-  { "TITLEFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
-  { "TITLEFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
-  { "TITLEPOSAUTO", NULL, "_@IUP_POSITION", "b", "[ ,Auto]", "", NULL },
+  { "TITLECOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
+  { "TITLEFONTSTYLE", NULL, "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "TITLEFONTSIZE", NULL, "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { "TITLEPOSAUTO", iPlotCheckBool, "_@IUP_POSITION", "b", "[ ,Auto]", "", NULL },
   { "TITLEPOSXY", NULL, "\t_@IUP_POSXY", "s", "/d+[,]/d+", "{(pixels)}", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_legend_attribs[] = {
   { "LEGEND", NULL, "_@IUP_SHOW", "b", "", "", NULL },
-  { "LEGENDFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
-  { "LEGENDFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
-  { "LEGENDPOS", NULL, "_@IUP_POSITION", "l", iplot_legendpos_extra, "", iplot_legendpos_list },
+  { "LEGENDFONTSTYLE", NULL, "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "LEGENDFONTSIZE", NULL, "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { "LEGENDPOS", iPlotCheckLegendXY, "_@IUP_POSITION", "l", iplot_legendpos_extra, "", iplot_legendpos_list },
   { "LEGENDPOSXY", NULL, "\t_@IUP_POSXY", "s", "/d+[,]/d+", "{(pixels)}", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_legendbox_attribs[] = {
   { "LEGENDBOX", NULL, "_@IUP_SHOW", "b", "", "", NULL },
-  { "LEGENDBOXCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
-  { "LEGENDBOXBACKCOLOR", "BGCOLOR", "_@IUP_BACKCOLOR", "c", "", "", NULL },
+  { "LEGENDBOXCOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
+  { "LEGENDBOXBACKCOLOR", NULL, "_@IUP_BACKCOLOR", "c", "", "", NULL },
   { "LEGENDBOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
   { "LEGENDBOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
@@ -351,7 +368,7 @@ static iPlotAttribParam iplot_legendbox_attribs[] = {
 
 static iPlotAttribParam iplot_grid_attribs[] = {
   { "GRID", NULL, "_@IUP_SHOW", "l", iplot_grid_extra, "", iplot_grid_list },
-  { "GRIDCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "GRIDCOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
   { "GRIDLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
   { "GRIDLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
@@ -359,7 +376,7 @@ static iPlotAttribParam iplot_grid_attribs[] = {
 
 static iPlotAttribParam iplot_gridminor_attribs[] = {
   { "GRIDMINOR", NULL, "_@IUP_SHOW", "l", iplot_grid_extra, "", iplot_grid_list },
-  { "GRIDMINORCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "GRIDMINORCOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
   { "GRIDMINORLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
   { "GRIDMINORLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
@@ -367,7 +384,7 @@ static iPlotAttribParam iplot_gridminor_attribs[] = {
 
 static iPlotAttribParam iplot_box_attribs[] = {
   { "BOX", NULL, "_@IUP_SHOW", "b", "", "", NULL },
-  { "BOXCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "BOXCOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
   { "BOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
   { "BOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
@@ -376,12 +393,12 @@ static iPlotAttribParam iplot_box_attribs[] = {
 static iPlotAttribParam iplot_axisX_attribs[] = {
   { "AXS_X", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "AXS_XARROW", NULL, "_@IUP_SHOWARROW", "b", "", "", NULL },
-  { "AXS_XCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "AXS_XCOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
   { "AXS_XLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
   { "", NULL, "", "t", NULL, NULL, NULL },
-  { "AXS_XAUTOMIN", NULL, "_@IUP_MIN", "b", "[ ,Auto]", "", NULL },
+  { "AXS_XAUTOMIN", iPlotCheckBool, "_@IUP_MIN", "b", "[ ,Auto]", "", NULL },
   { "AXS_XMIN", NULL, "\t_@IUP_VALUE", "R", "", "", NULL },
-  { "AXS_XAUTOMAX", NULL, "_@IUP_MAX", "b", "[ ,Auto]", "", NULL },
+  { "AXS_XAUTOMAX", iPlotCheckBool, "_@IUP_MAX", "b", "[ ,Auto]", "", NULL },
   { "AXS_XMAX", NULL, "\t_@IUP_VALUE", "R", "", "", NULL },
   { "AXS_XSCALE", NULL, "_@IUP_SCALE", "l", iplot_scale_extra, "", iplot_scale_list },
   { "AXS_XREVERSE", NULL, "_@IUP_REVERSE", "b", "", "", NULL },
@@ -392,12 +409,12 @@ static iPlotAttribParam iplot_axisX_attribs[] = {
 static iPlotAttribParam iplot_axisY_attribs[] = {
   { "AXS_Y", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "AXS_YARROW", NULL, "_@IUP_SHOWARROW", "b", "", "", NULL },
-  { "AXS_YCOLOR", "FGCOLOR", "_@IUP_COLOR", "c", "", "", NULL },
+  { "AXS_YCOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
   { "AXS_YLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
   { "", NULL, "", "t", NULL, NULL, NULL },
-  { "AXS_YAUTOMIN", NULL, "_@IUP_MIN", "b", "[ ,Auto]", "", NULL },
+  { "AXS_YAUTOMIN", iPlotCheckBool, "_@IUP_MIN", "b", "[ ,Auto]", "", NULL },
   { "AXS_YMIN", NULL, "\t_@IUP_VALUE", "R", "", "", NULL },
-  { "AXS_YAUTOMAX", NULL, "_@IUP_MAX", "b", "[ ,Auto]", "", NULL },
+  { "AXS_YAUTOMAX", iPlotCheckBool, "_@IUP_MAX", "b", "[ ,Auto]", "", NULL },
   { "AXS_YMAX", NULL, "\t_@IUP_VALUE", "R", "", "", NULL },
   { "AXS_YSCALE", NULL, "_@IUP_SCALE", "l", iplot_scale_extra, "", iplot_scale_list },
   { "AXS_YREVERSE", NULL, "_@IUP_REVERSE", "b", "", "", NULL },
@@ -408,25 +425,25 @@ static iPlotAttribParam iplot_axisY_attribs[] = {
 static iPlotAttribParam iplot_axisXlabel_attribs[] = {
   { "AXS_XLABEL", NULL, "_@IUP_TEXT", "s", "", "", NULL },
   { "AXS_XLABELCENTERED", NULL, "_@IUP_CENTERED", "b", "", "", NULL },
-  { "AXS_XFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
-  { "AXS_XFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { "AXS_XFONTSTYLE", NULL, "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "AXS_XFONTSIZE", NULL, "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_axisYlabel_attribs[] = {
   { "AXS_YLABEL", NULL, "_@IUP_TEXT", "s", "", "", NULL },
   { "AXS_YLABELCENTERED", NULL, "_@IUP_CENTERED", "b", "", "", NULL },
-  { "AXS_YFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
-  { "AXS_YFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { "AXS_YFONTSTYLE", NULL, "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "AXS_YFONTSIZE", NULL, "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_axisXticks_attribs[] = {
   { "AXS_XTICK", NULL, "_@IUP_SHOW", "b", "", "", NULL },
-  { "AXS_XTICKAUTO", NULL, "_@IUP_SPACING", "b", "[ ,Auto]", "", NULL },
-  { "AXS_XTICKMAJORSPAN", NULL, "\t_@IUP_MAJORSPAN", "R", "", "", NULL },
+  { "AXS_XTICKAUTO", iPlotCheckBool2, "_@IUP_SPACING", "b", "[ ,Auto]", "", NULL },
+  { "AXS_XTICKMAJORSPAN",     NULL, "\t_@IUP_MAJORSPAN", "R", "", "", NULL },
   { "AXS_XTICKMINORDIVISION", NULL, "\t_@IUP_MINORDIVISION", "i", "[1,,]", "", NULL },
-  { "AXS_XTICKSIZEAUTO", NULL, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
+  { "AXS_XTICKSIZEAUTO", iPlotCheckBool2, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
   { "AXS_XTICKMAJORSIZE", NULL, "\t_@IUP_MAJOR", "i", "[1,,]", "", NULL },
   { "AXS_XTICKMINORSIZE", NULL, "\t_@IUP_MINOR", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
@@ -434,10 +451,10 @@ static iPlotAttribParam iplot_axisXticks_attribs[] = {
 
 static iPlotAttribParam iplot_axisYticks_attribs[] = {
   { "AXS_YTICK", NULL, "_@IUP_SHOW", "b", "", "", NULL },
-  { "AXS_YTICKAUTO", NULL, "_@IUP_SPACING", "b", "[ ,Auto]", "", NULL },
-  { "AXS_YTICKMAJORSPAN", NULL, "\t_@IUP_MAJORSPAN", "R", "", "", NULL },
+  { "AXS_YTICKAUTO", iPlotCheckBool2, "_@IUP_SPACING", "b", "[ ,Auto]", "", NULL },
+  { "AXS_YTICKMAJORSPAN",     NULL, "\t_@IUP_MAJORSPAN", "R", "", "", NULL },
   { "AXS_YTICKMINORDIVISION", NULL, "\t_@IUP_MINORDIVISION", "i", "[1,,]", "", NULL },
-  { "AXS_YTICKSIZEAUTO", NULL, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
+  { "AXS_YTICKSIZEAUTO", iPlotCheckBool2, "_@IUP_SIZE", "b", "[ ,Auto]", "", NULL },
   { "AXS_YTICKMAJORSIZE", NULL, "\t_@IUP_MAJOR", "i", "[1,,]", "", NULL },
   { "AXS_YTICKMINORSIZE", NULL, "\t_@IUP_MINOR", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
@@ -445,41 +462,38 @@ static iPlotAttribParam iplot_axisYticks_attribs[] = {
 
 static iPlotAttribParam iplot_axisXticksnumber_attribs[] = {
   { "AXS_XTICKNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
-  { "AXS_XTICKROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
+  { "AXS_XTICKROTATENUMBER", iPlotCheckBool, "_@IUP_ROTATE", "b", "", "", NULL },
   { "AXS_XTICKROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "A", "", "", NULL },
-  { "AXS_XTICKFORMATPRECISION", NULL, "_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
-  { "AXS_XTICKFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
-  { "AXS_XTICKFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { "AXS_XTICKFORMATAUTO", iPlotCheckBool, "_@IUP_FORMAT", "b", "[ ,Auto]", "", NULL },
+  { "AXS_XTICKFORMATPRECISION",   NULL, "\t_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
+  { "AXS_XTICKFONTSTYLE", NULL, "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "AXS_XTICKFONTSIZE", NULL, "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 static iPlotAttribParam iplot_axisYticksnumber_attribs[] = {
   { "AXS_YTICKNUMBER", NULL, "_@IUP_SHOW", "b", "", "", NULL },
-  { "AXS_YTICKROTATENUMBER", NULL, "_@IUP_ROTATE", "b", "", "", NULL },
+  { "AXS_YTICKROTATENUMBER", iPlotCheckBool, "_@IUP_ROTATE", "b", "", "", NULL },
   { "AXS_YTICKROTATENUMBERANGLE", NULL, "\t_@IUP_ANGLE", "A", "", "", NULL },
-  { "AXS_YTICKFORMATPRECISION", NULL, "_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
-  { "AXS_YTICKFONTSTYLE", "FONTSTYLE", "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
-  { "AXS_YTICKFONTSIZE", "FONTSIZE", "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
+  { "AXS_YTICKFORMATAUTO", iPlotCheckBool, "_@IUP_FORMAT", "b", "[ ,Auto]", "", NULL },
+  { "AXS_YTICKFORMATPRECISION",   NULL, "\t_@IUP_DECIMALS", "i", "[0,,]", "", NULL },
+  { "AXS_YTICKFONTSTYLE", NULL, "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
+  { "AXS_YTICKFONTSIZE", NULL, "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
-static void iPlotSetDouble(Ihandle* ih, Ihandle* control, const char* name, double num)
+static void iPlotSetDouble(Ihandle* control, const char* name, double num, int prec)
 {
   char value[80];
-  int prec = IupGetInt(ih, "PRECISION");
   if (prec <= 0) prec = IupGetInt(NULL, "DEFAULTPRECISION");
   sprintf(value, "%.*f", prec, num);
   IupStoreAttribute(control, name, value);
 }
 
-static void iPlotSetParamValue(Ihandle* param, Ihandle* ih, const char* value)
+static void iPlotSetParamValue(Ihandle* param, const char* value)
 {
   Ihandle* control = (Ihandle*)IupGetAttribute(param, "CONTROL");
   Ihandle* auxcontrol = (Ihandle*)IupGetAttribute(param, "AUXCONTROL");
-
-  char* default_name = IupGetAttribute(param, "PLOT_DEFAULTATTRIB");
-  if ((!value || value[0] == 0) && default_name)
-    value = IupGetAttribute(ih, default_name);
 
   if (value && iupStrEqualNoCase(IupGetAttribute(param, "TYPE"), "LIST"))
   {
@@ -498,7 +512,8 @@ static void iPlotSetParamValue(Ihandle* param, Ihandle* ih, const char* value)
       if (iupStrEqualNoCase(iupAttribGet(param, "TYPE"), "REAL"))
       {
         double num = IupGetDouble(param, "VALUE");
-        iPlotSetDouble(ih, control, "VALUE", num);
+        int prec = IupGetInt(param, "PRECISION");
+        iPlotSetDouble(control, "VALUE", num, prec);
       }
       else
         IupSetStrAttribute(control, "VALUE", value);
@@ -507,21 +522,13 @@ static void iPlotSetParamValue(Ihandle* param, Ihandle* ih, const char* value)
   }
 }
 
-static const char* iPlotGetParamValue(Ihandle* param, Ihandle* ih)
+static const char* iPlotGetParamValue(Ihandle* param)
 {
   char* value = IupGetAttribute(param, "VALUE");
   if (!value || value[0] == 0)
     return NULL;  /* reset to default */
   else
   {
-    char* default_name = IupGetAttribute(param, "PLOT_DEFAULTATTRIB");
-    if (default_name)
-    {
-      char* default_value = IupGetAttribute(ih, default_name);
-      if (iupStrEqualNoCase(value, default_value))
-        return NULL;  /* reset to default */
-    }
-
     if (iupStrEqualNoCase(IupGetAttribute(param, "TYPE"), "LIST"))
     {
       const char** list = (const char**)IupGetAttribute(param, "PLOT_ATTRIBLIST");
@@ -534,25 +541,42 @@ static const char* iPlotGetParamValue(Ihandle* param, Ihandle* ih)
   }
 }
 
+static void iPlotPropertiesCheckParam(Ihandle* parambox, Ihandle* param, int param_index)
+{
+  Icallback check = IupGetCallback(param, "PLOT_ATTRIBCHECK");
+  if (check)
+  {
+    int active = check(param);
+    int count = iupAttribGetInt(param, "CHILDCOUNT");
+    if (count == 0) count = 1;
+    while (count)
+    {
+      param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", param_index + count);
+
+      Ihandle* control = (Ihandle*)IupGetAttribute(param, "CONTROL");
+      IupSetInt(IupGetParent(control), "ACTIVE", active);
+
+      count--;
+    }
+  }
+}
+
 static void iPlotPropertiesInit(Ihandle* parambox)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(parambox, "PLOT");
 
-  int i = 0;
-  Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
-  while (param)
+  int i, count = IupGetInt(parambox, "PARAMCOUNT");
+  for (i = 0; i < count; i++)
   {
+    Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
     char* name = IupGetAttribute(param, "PLOT_ATTRIB");
-    if (name)
-    {
-      // From Plot
-      char* value = IupGetAttribute(ih, name);
-      // To Param
-      iPlotSetParamValue(param, ih, value);
-    }
 
-    param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
-    i++;
+    // From Plot
+    char* value = IupGetAttribute(ih, name);
+    // To Param
+    iPlotSetParamValue(param, value);
+
+    iPlotPropertiesCheckParam(parambox, param, i);
   }
 
   IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
@@ -563,26 +587,23 @@ static void iPlotPropertiesResetChanges(Ihandle* parambox)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(parambox, "PLOT");
 
-  int i = 0;
-  Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
-  while (param)
-  {
+  int i, count = IupGetInt(parambox, "PARAMCOUNT");
+  for (i = count-1; i >= 0; i--) // backwards to avoid dependencies
+  { 
+    Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
     char* name = IupGetAttribute(param, "PLOT_ATTRIB");
-    if (name)
-    {
-      // From Original Value
-      const char* value = IupGetAttribute(param, "RESET_VALUE");
-      // To Param
-      iPlotSetParamValue(param, ih, value);
 
-      // From Param
-      value = iPlotGetParamValue(param, ih);
-      // To Plot
-      IupSetStrAttribute(ih, name, value);
-    }
+    // From Original Value
+    const char* value = IupGetAttribute(param, "RESET_VALUE");
+    // To Param
+    iPlotSetParamValue(param, value);
 
-    param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
-    i++;
+    // From Param
+    value = iPlotGetParamValue(param);
+    // To Plot
+    IupSetStrAttribute(ih, name, value);
+
+    iPlotPropertiesCheckParam(parambox, param, i);
   }
 
   IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
@@ -593,21 +614,18 @@ static void iPlotPropertiesApplyChanges(Ihandle* parambox)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(parambox, "PLOT");
 
-  int i = 0;
-  Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
-  while (param)
+  int i, count = IupGetInt(parambox, "PARAMCOUNT");
+  for (i = count - 1; i >= 0; i--) // backwards to avoid dependencies
   {
+    Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
     char* name = IupGetAttribute(param, "PLOT_ATTRIB");
-    if (name)
-    {
-      // From Param
-      const char* value = iPlotGetParamValue(param, ih);
-      // To Plot
-      IupSetAttribute(ih, name, value);
-    }
 
-    param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
-    i++;
+    // From Param
+    const char* value = iPlotGetParamValue(param);
+    // To Plot
+    IupSetAttribute(ih, name, value);
+
+    iPlotPropertiesCheckParam(parambox, param, i);
   }
 
   IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
@@ -678,6 +696,9 @@ static int iPlotPropertiesParam_CB(Ihandle* parambox, int param_index, void*)
     return 0;
   }
 
+  Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", param_index);
+  iPlotPropertiesCheckParam(parambox, param, param_index);
+
   IupSetAttribute(parambox, "PLOT_CHANGED", "1");
   return 1;
 }
@@ -704,13 +725,14 @@ static void iPlotPropertiesAddParamBox(Ihandle* ih, Ihandle* parent, iPlotAttrib
     if (attribs[count].name[0] != 0)
     {
       IupSetStrAttribute(params[count], "PLOT_ATTRIB", attribs[count].name);
-      IupSetStrAttribute(params[count], "PLOT_DEFAULTATTRIB", attribs[count].default_name);
       IupSetAttribute(params[count], "PLOT_ATTRIBLIST", (char*)(attribs[count].list));
+      IupSetCallback(params[count], "PLOT_ATTRIBCHECK", attribs[count].check);
+      IupSetInt(params[count], "PRECISION", IupGetInt(ih, "PRECISION"));
 
       // From Plot
       char* value = IupGetAttribute(ih, attribs[count].name);
       // To Param
-      iPlotSetParamValue(params[count], ih, value);
+      iPlotSetParamValue(params[count], value);
       IupSetStrAttribute(params[count], "RESET_VALUE", value);
     }
 
@@ -722,6 +744,13 @@ static void iPlotPropertiesAddParamBox(Ihandle* ih, Ihandle* parent, iPlotAttrib
 
   Ihandle* parambox = IupParamBox(parent, params, count);
   IupSetCallback(parambox, "PARAM_CB", (Icallback)iPlotPropertiesParam_CB);
+
+  count = IupGetInt(parambox, "PARAMCOUNT");
+  for (int i = 0; i < count; i++)
+  {
+    Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
+    iPlotPropertiesCheckParam(parambox, param, i);
+  }
 }
 
 static int iPlotProperties_CB(Ihandle* ih_item)
@@ -2379,6 +2408,7 @@ static Iclass* iPlotNewClass(void)
 
     IupSetLanguageString("IUP_VALUE", "Value:");
     IupSetLanguageString("IUP_DECIMALS", "Decimals:");
+    IupSetLanguageString("IUP_FORMAT", "Format:");
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
   {
