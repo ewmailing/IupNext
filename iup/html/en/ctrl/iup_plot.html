@@ -21,6 +21,9 @@
 .auto-style3 {
 	background-color: #CEE7FF;
 }
+.auto-style4 {
+	margin-left: 40px;
+}
 </style>
 </head>
 <body>
@@ -348,21 +351,10 @@ inheritable, except when noted)</span></h3>
 <p><strong>ANTIALIAS</strong>: Enable or disable the 
 anti-aliasing support when available. Default: 
 Yes.</p>
-<p><b><a href="../attrib/iup_bgcolor.html">BGCOLOR</a></b> (inheritable):  the 
-default background color. Default: "255 255 255". When set BACKCOLOR and LEGENDBOXBACKCOLOR<b> </b>of all 
-plots will be reset to the same value.</p>
 
 
 <p><b>CANVAS</b> (read-only): returns the internal CD canvas 
 where the draw operation occurs. Works only after mapped.</p>
-<p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b> (inheritable):  the default text 
-and line color. Default: &quot;0 0 0 255&quot;. When set, TITLE, AXIS, BOX and 
-LEGENDBOX colors of all plots will be reset to the same value.</p>
-<p class="info"><strong>IMPORTANT</strong>: All color attributes accept and 
-extra component for alpha. The default alpha is always 255 (opaque). </p>
-<p><strong><a href="../attrib/iup_font.html">FONT</a></strong> (inheritable):
-  the default font used in all text elements of the plot: title, legend and labels.&nbsp;Use "Plain" or "" to reset "Bold"/"Italic" styles. 
-When set, will not overwrite *FONTSTYLE nor *FONTSIZE attributes.</p>
 <p><strong>GRAPHICSMODE</strong>: the internal graphics mode. Can be set only 
 before map. Can be OPENGL, IMAGERGB, NATIVEPLUS or NATIVE. OPENGL will use 
 OpenGL, it is faster for big data sets but text has a slightly slower quality, 
@@ -372,12 +364,6 @@ the system default (GDI in Windows, GDK/Cairo in GTK 2/3, X11 in Motif) it has
 the best text render, it is fast for regular datasets, but it does not have 
 anti-aliasing nor alpha (except in GTK 3). NATIVEPLUS uses GDI+ in Windows and 
 Cairo in GTK 2, so it has anti-aliasing and alpha support. Default: NATIVEPLUS. </p>
-<p>
-<strong>MENUCONTEXT</strong>: enable the context menu. Can be Yes or No. 
-Default: Yes.</p>
-<p>
-<strong>MENUITEMPROPERTIES</strong>: enable the properties menu item in the 
-context menu. Can be Yes or No. Default: No. (since 3.13)</p>
 <p><strong>READONLY</strong>: allow the selected samples to be removed when the 
 Del key is pressed.</p>
 <p><b>REDRAW</b> (write-only): redraw all plots and update the display. All other attributes will <span class="style1"><strong>NOT</strong></span> update the display, so you can set many 
@@ -387,18 +373,39 @@ rendering is performed internally but display is not updated. If value is
 will behave as &quot;NOFLUSH&quot;. Works only after mapped.</p>
 
 
-<p>
-<strong>SHOWMENUCONTEXT</strong> (write-only): show the context menu in the 
-given position. Value has the "x:y" format and is relative to the left-top corner 
-of the screen.</p>
-
-
 <p><strong>SYNCVIEW</strong>: when a plot view is changed by 
 interactive zoom or pan, the other plots are zoomed or panned accordingly. </p>
 <p><strong><a name="TIPFORMAT">TIPFORMAT</a></strong>: format of the automatic TIP when mouse is over a 
 sample. Default: "%s (%s, %s)". First parameter is DS_NAME, then X and Y 
 sample values converted to strings using <a href="#AXS_XTIPFORMAT">AXS_XTIPFORMAT</a> and AXS_YTIPFORMAT 
 accordingly. (since 3.13)</p>
+<hr class="auto-style4">
+<p class="info">All color attributes accept and 
+extra component for alpha. The default alpha is always 255 (opaque). </p>
+<p><b><a href="../attrib/iup_bgcolor.html">BGCOLOR</a></b> (inheritable):  the 
+default background color. Default: "255 255 255". When set BACKCOLOR and LEGENDBOXBACKCOLOR<b> </b>of all 
+plots will be reset to the same value.</p>
+
+
+<p><b><a href="../attrib/iup_fgcolor.html">FGCOLOR</a></b> (inheritable):  the default text 
+and line color. Default: &quot;0 0 0 255&quot;. When set, TITLE, AXIS, BOX and 
+LEGENDBOX colors of all plots will be reset to the same value.</p>
+<p><strong><a href="../attrib/iup_font.html">FONT</a></strong> (inheritable):
+  the default font used in all text elements of the plot: title, legend and labels.&nbsp;Use "Plain" or "" to reset "Bold"/"Italic" styles. 
+When set, will not overwrite *FONTSTYLE nor *FONTSIZE attributes.</p>
+<hr class="auto-style4">
+<p>
+<strong>MENUCONTEXT</strong>: enable the context menu. Can be Yes or No. 
+Default: Yes.</p>
+<p>
+<strong>MENUITEMPROPERTIES</strong>: enable the properties menu item in the 
+context menu. Can be Yes or No. Default: No. (since 3.13)</p>
+<p>
+<strong>SHOWMENUCONTEXT</strong> (write-only): show the context menu in the 
+given position. Value has the "x:y" format and is relative to the left-top corner 
+of the screen.</p>
+
+
 <h4>Multiple Plots Management&nbsp; </h4>
 <p><strong>PLOT_COUNT</strong>: defines the number of multiple plots in the same 
 control. Default: 1. The minimum value is 1. If set to a smaller value will 
@@ -542,6 +549,12 @@ LIN.</p>
 <p><strong><a name="AXS_XTIPFORMAT">AXS_XTIPFORMAT</a></strong>, <strong>AXS_YTIPFORMAT</strong>: format to 
 numeric conversion when an automatic tip is shown. See <a href="#TIPFORMAT">TIPFORMAT</a> attribute. 
 Default: "%.2f". (since 3.13)</p>
+<p>
+<b>AXS_XTIPFORMATPRECISION, AXS_YTIPFORMATPRECISION</b>: will set the <strong>
+sprintf</strong> &quot;precision&quot; field in the
+AXS_?TIPFORMAT<b> </b>attributes string if the format 
+&quot;%.&lt;precision&gt;f&quot;. It is just a simple form to set and get the 
+precision of the format attribute. (since 3.13)</p>
 <h4>Axis Label Configuration&nbsp; </h4>
 <p><b>AXS_XLABEL, AXS_YLABEL</b>: text label of the&nbsp; respective axis.</p>
 <p><b>AXS_XLABELCENTERED</b>, <b>AXS_YLABELCENTERED</b>: text label position at 

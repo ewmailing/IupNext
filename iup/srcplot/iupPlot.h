@@ -372,7 +372,7 @@ public:
       mMaxDecades(-1), mLogBase(10), mLabelCentered(false), mHasZoom(false),
       mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1),
       mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize), 
-      mDefaultFontStyle(inDefaultFontStyle) { strcpy(mTipFormat, "%.2f"); }
+      mDefaultFontStyle(inDefaultFontStyle) { strcpy(mTipFormatString, "%.2f"); }
   ~iupPlotAxis() { SetLabel(NULL); }
 
   void SetLabel(const char* inLabel) { if (mLabel) free(mLabel); mLabel = iupStrDup(inLabel); }
@@ -404,7 +404,7 @@ public:
   bool mReverse;
   bool mCrossOrigin;
   bool mShowArrow;
-  char mTipFormat[30];
+  char mTipFormatString[30];
 
   int mFontSize;
   int mFontStyle;

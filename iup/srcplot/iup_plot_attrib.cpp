@@ -2470,9 +2470,9 @@ static int iPlotSetAxisXTipFormatAttrib(Ihandle* ih, const char* value)
   iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
 
   if (value && value[0] != 0)
-    strcpy(axis->mTipFormat, value);
+    strcpy(axis->mTipFormatString, value);
   else
-    strcpy(axis->mTipFormat, "%.2f");
+    strcpy(axis->mTipFormatString, "%.2f");
 
   return 0;
 }
@@ -2482,23 +2482,61 @@ static int iPlotSetAxisYTipFormatAttrib(Ihandle* ih, const char* value)
   iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
 
   if (value && value[0] != 0)
-    strcpy(axis->mTipFormat, value);
+    strcpy(axis->mTipFormatString, value);
   else
-    strcpy(axis->mTipFormat, "%.2f");
+    strcpy(axis->mTipFormatString, "%.2f");
 
+  return 0;
+}
+
+static int iPlotSetAxisXTipFormatPrecisionAttrib(Ihandle* ih, const char* value)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
+
+  int precision;
+  if (iupStrToInt(value, &precision))
+    sprintf(axis->mTipFormatString, "%%.%df", precision);
+  else
+    strcpy(axis->mTipFormatString, "%.2f");
+  return 0;
+}
+
+static int iPlotSetAxisYTipFormatPrecisionAttrib(Ihandle* ih, const char* value)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
+
+  int precision;
+  if (iupStrToInt(value, &precision))
+    sprintf(axis->mTipFormatString, "%%.%df", precision);
+  else
+    strcpy(axis->mTipFormatString, "%.2f");
   return 0;
 }
 
 static char* iPlotGetAxisXTipFormatAttrib(Ihandle* ih)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
-  return iupStrReturnStr(axis->mTipFormat);
+  return iupStrReturnStr(axis->mTipFormatString);
 }
 
 static char* iPlotGetAxisYTipFormatAttrib(Ihandle* ih)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
-  return iupStrReturnStr(axis->mTipFormat);
+  return iupStrReturnStr(axis->mTipFormatString);
+}
+
+static char* iPlotGetAxisXTipFormatPrecisionAttrib(Ihandle* ih)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
+  int precision = iupStrGetFormatPrecision(axis->mTipFormatString);
+  return iupStrReturnInt(precision);
+}
+
+static char* iPlotGetAxisYTipFormatPrecisionAttrib(Ihandle* ih)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
+  int precision = iupStrGetFormatPrecision(axis->mTipFormatString);
+  return iupStrReturnInt(precision);
 }
 
 static int iPlotSetAxisXTickAttrib(Ihandle* ih, const char* value)
@@ -2921,6 +2959,8 @@ void iupPlotRegisterAttributes(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "AXS_XTIPFORMAT", iPlotGetAxisXTipFormatAttrib, iPlotSetAxisXTipFormatAttrib, IUPAF_SAMEASSYSTEM, "%.2f", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YTIPFORMAT", iPlotGetAxisYTipFormatAttrib, iPlotSetAxisYTipFormatAttrib, IUPAF_SAMEASSYSTEM, "%.2f", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XTIPFORMATPRECISION", iPlotGetAxisXTipFormatPrecisionAttrib, iPlotSetAxisXTipFormatPrecisionAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YTIPFORMATPRECISION", iPlotGetAxisYTipFormatPrecisionAttrib, iPlotSetAxisYTipFormatPrecisionAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "REMOVE", NULL, iPlotSetRemoveAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLEAR", NULL, iPlotSetClearAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

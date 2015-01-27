@@ -1435,7 +1435,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
     {
       char* tipformat = iupAttribGetStr(ih, "TIPFORMAT");
       char str_Y[100];
-      sprintf(str_Y, ih->data->current_plot->mAxisY.mTipFormat, ry);
+      sprintf(str_Y, ih->data->current_plot->mAxisY.mTipFormatString, ry);
       if (strX)
       {
         IupSetfAttribute(ih, "TIP", tipformat, ds_name, strX, str_Y);
@@ -1443,7 +1443,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
       else
       {
         char str_X[100];
-        sprintf(str_X, ih->data->current_plot->mAxisX.mTipFormat, rx);
+        sprintf(str_X, ih->data->current_plot->mAxisX.mTipFormatString, rx);
         IupSetfAttribute(ih, "TIP", tipformat, ds_name, str_X, str_Y);
       }
 
