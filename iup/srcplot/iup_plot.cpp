@@ -325,16 +325,17 @@ static int iPlotCheckLegendXY(Ihandle* param)
 }
 
 static iPlotAttribParam iplot_background_attribs[] = {
-  { "MARGINLEFTAUTO",   iPlotCheckBool, "_@IUP_MARGINLEFT", "b", "[ ,Auto]", "", NULL },
+  { "", NULL, "_@IUP_MARGIN", "t", NULL, NULL, NULL },
+  { "MARGINLEFTAUTO", iPlotCheckBool, "_@IUP_LEFT", "b", "[ ,Auto]", "", NULL },
   { "MARGINLEFT",   NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
-  { "MARGINRIGHTAUTO",  iPlotCheckBool, "_@IUP_MARGINRIGHT", "b", "", "", NULL },
+  { "MARGINRIGHTAUTO",  iPlotCheckBool, "_@IUP_RIGHT", "b", "", "", NULL },
   { "MARGINRIGHT",  NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
-  { "MARGINTOPAUTO",    iPlotCheckBool, "_@IUP_MARGINTOP", "b", "[ ,Auto]", "", NULL },
+  { "MARGINTOPAUTO",    iPlotCheckBool, "_@IUP_TOP", "b", "[ ,Auto]", "", NULL },
   { "MARGINTOP",    NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
-  { "MARGINBOTTOMAUTO", iPlotCheckBool, "_@IUP_MARGINBOTTOM", "b", "[ ,Auto]", "", NULL },
+  { "MARGINBOTTOMAUTO", iPlotCheckBool, "_@IUP_BOTTOM", "b", "[ ,Auto]", "", NULL },
   { "MARGINBOTTOM", NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
   { "", NULL, "", "t", NULL, NULL, NULL },
-  { "BACKCOLOR", NULL, "_@IUP_BACKCOLOR", "c", "", "", NULL },
+  { "BACKCOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
@@ -360,7 +361,7 @@ static iPlotAttribParam iplot_legend_attribs[] = {
 static iPlotAttribParam iplot_legendbox_attribs[] = {
   { "LEGENDBOX", NULL, "_@IUP_SHOW", "b", "", "", NULL },
   { "LEGENDBOXCOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
-  { "LEGENDBOXBACKCOLOR", NULL, "_@IUP_BACKCOLOR", "c", "", "", NULL },
+  { "LEGENDBOXBACKCOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
   { "LEGENDBOXLINESTYLE", NULL, "_@IUP_LINESTYLE", "l", iplot_linestyle_extra, "", iplot_linestyle_list },
   { "LEGENDBOXLINEWIDTH", NULL, "_@IUP_LINEWIDTH", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
@@ -2312,7 +2313,6 @@ static Iclass* iPlotNewClass(void)
     
     IupSetLanguageString("IUP_NAME", "Name:");
     IupSetLanguageString("IUP_COLOR", "Color:");
-    IupSetLanguageString("IUP_BACKCOLOR", "Background Color:");
     IupSetLanguageString("IUP_MODE", "Mode:");
     IupSetLanguageString("IUP_LINE", "Line");
     IupSetLanguageString("IUP_MARK", "Mark");
@@ -2360,10 +2360,11 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_WARNING", "Warning!");
     IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Changes Not Applied. Apply?");
 
-    IupSetLanguageString("IUP_MARGINLEFT", "Margin Left:");
-    IupSetLanguageString("IUP_MARGINRIGHT", "Margin Right:");
-    IupSetLanguageString("IUP_MARGINTOP", "Margin Top:");
-    IupSetLanguageString("IUP_MARGINBOTTOM", "Margin Bottom:");
+    IupSetLanguageString("IUP_MARGIN", "Margin");
+    IupSetLanguageString("IUP_LEFT", "Left:");
+    IupSetLanguageString("IUP_RIGHT", "Right:");
+    IupSetLanguageString("IUP_TOP", "Top:");
+    IupSetLanguageString("IUP_BOTTOM", "Bottom:");
 
     IupSetLanguageString("IUP_FONTSTYLE", "Font Style:");
     IupSetLanguageString("IUP_FONTSIZE", "Font Size:");
@@ -2474,10 +2475,11 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_WARNING", "Atenção!");
     IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Modificações não aplicadas. Aplicar?");
 
-    IupSetLanguageString("IUP_MARGINLEFT", "Margem Esquerda:");
-    IupSetLanguageString("IUP_MARGINRIGHT", "Margem Direita:");
-    IupSetLanguageString("IUP_MARGINTOP", "Margem Superior:");
-    IupSetLanguageString("IUP_MARGINBOTTOM", "Margem Inferior:");
+    IupSetLanguageString("IUP_MARGIN", "Margem");
+    IupSetLanguageString("IUP_LEFT", "Esquerda:");
+    IupSetLanguageString("IUP_RIGHT", "Direita:");
+    IupSetLanguageString("IUP_TOP", "Superior:");
+    IupSetLanguageString("IUP_BOTTOM", "Inferior:");
 
     IupSetLanguageString("IUP_FONTSTYLE", "Estilo da Fonte:");
     IupSetLanguageString("IUP_FONTSIZE", "Tamanho da Fonte:");
