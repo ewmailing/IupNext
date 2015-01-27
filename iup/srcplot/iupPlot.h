@@ -487,13 +487,13 @@ class iupPlotLegend
 {
 public:
   iupPlotLegend() 
-    : mShow(false), mBoxShow(true), mFontSize(0), mFontStyle(-1), mPosition(IUP_PLOT_TOPRIGHT), mPosX(0), mPosY(0),
+    : mShow(false), mBoxShow(true), mFontSize(0), mFontStyle(-1), mPosition(IUP_PLOT_TOPRIGHT), 
       mBoxLineStyle(CD_CONTINUOUS), mBoxLineWidth(1), mBoxColor(CD_BLACK), mBoxBackColor(CD_WHITE)
   {}
 
   bool mShow;
   iupPlotLegendPosition mPosition;
-  int mPosX, mPosY;
+  iupPlotRect mPos;
   int mFontSize;
   int mFontStyle;
 
@@ -551,7 +551,7 @@ public:
   void DrawPlotTitle(cdCanvas* canvas) const;
     void SetTitleFont(cdCanvas* canvas) const;
   void DrawPlotBackground(cdCanvas* canvas) const;
-  bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, int &inLastX, int &inLastY) const;
+  bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const;
   void DrawCrossHairH(const iupPlotRect &inRect, cdCanvas* canvas) const;
     void DrawCrossSamplesH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
   void DrawCrossHairV(const iupPlotRect &inRect, cdCanvas* canvas) const;
@@ -561,6 +561,7 @@ public:
 
   void CalculateTitlePos();
   bool CheckInsideTitle(cdCanvas* canvas, int x, int y);
+  bool CheckInsideLegend(cdCanvas* canvas, int x, int y);
   void CalculateMargins(cdCanvas* canvas);
   bool CalculateAxisRange();
     bool CalculateXRange(double &outXMin, double &outXMax);

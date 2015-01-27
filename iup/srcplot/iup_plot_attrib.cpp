@@ -315,8 +315,8 @@ static int iPlotSetLegendPosXYAttrib(Ihandle* ih, const char* value)
   if (iupStrToIntInt(value, &x, &y, ',') == 2)
   {
     ih->data->current_plot->mLegend.mPosition = IUP_PLOT_XY;
-    ih->data->current_plot->mLegend.mPosX = x;
-    ih->data->current_plot->mLegend.mPosY = y;
+    ih->data->current_plot->mLegend.mPos.mX = x;
+    ih->data->current_plot->mLegend.mPos.mY = y;
   }
 
   ih->data->current_plot->mRedraw = true;
@@ -325,7 +325,7 @@ static int iPlotSetLegendPosXYAttrib(Ihandle* ih, const char* value)
 
 static char* iPlotGetLegendPosXYAttrib(Ihandle* ih)
 {
-  return iupStrReturnIntInt(ih->data->current_plot->mLegend.mPosX, ih->data->current_plot->mLegend.mPosY, ',');
+  return iupStrReturnIntInt(ih->data->current_plot->mLegend.mPos.mX, ih->data->current_plot->mLegend.mPos.mY, ',');
 }
 
 static int iPlotSetBackColorAttrib(Ihandle* ih, const char* value)

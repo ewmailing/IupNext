@@ -511,7 +511,7 @@ void iupPlot::DrawPlotBackground(cdCanvas* canvas) const
   cdCanvasBox(canvas, 0, mViewport.mWidth - 1, 0, mViewport.mHeight - 1);
 }
 
-bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, int &inLastX, int &inLastY) const
+bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const
 {
   if (mLegend.mShow)
   {
@@ -555,8 +555,8 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, int &inLas
 
     if (mLegend.mPosition == IUP_PLOT_XY)
     {
-      theScreenX = inLastX;
-      theScreenY = inLastY;
+      theScreenX = ioPos.mX;
+      theScreenY = cdCanvasInvertYAxis(canvas, ioPos.mY);
     }
     else
     {
@@ -587,9 +587,12 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, int &inLas
         break;
       }
 
-      inLastX = theScreenX;
-      inLastY = theScreenY;
+      ioPos.mX = theScreenX;
+      ioPos.mY = cdCanvasInvertYAxis(canvas, theScreenY);
     }
+
+    ioPos.mWidth = theMaxWidth;
+    ioPos.mHeight = theTotalHeight;
 
     cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1,
                              theScreenY, theScreenY + theTotalHeight - 1);

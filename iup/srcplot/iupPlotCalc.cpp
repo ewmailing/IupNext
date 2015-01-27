@@ -108,6 +108,20 @@ bool iupPlot::CheckInsideTitle(cdCanvas* canvas, int x, int y)
   return false;
 }
 
+bool iupPlot::CheckInsideLegend(cdCanvas* canvas, int x, int y)
+{
+  if (mLegend.mShow)
+  {
+    int theY = cdCanvasInvertYAxis(canvas, mLegend.mPos.mY);
+
+    if (x >= mLegend.mPos.mX && x < mLegend.mPos.mX + mLegend.mPos.mWidth &&
+        y >= theY            && y < theY + mLegend.mPos.mHeight)
+      return true;
+  }
+
+  return false;
+}
+
 void iupPlot::CalculateMargins(cdCanvas* canvas)
 {
   if (mMarginAuto.mTop)

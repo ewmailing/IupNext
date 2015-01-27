@@ -1144,7 +1144,7 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (post_cb)
     post_cb(ih, canvas);
 
-  if (!DrawLegend(theRect, canvas, mLegend.mPosX, mLegend.mPosY))
+  if (!DrawLegend(theRect, canvas, mLegend.mPos))
     return false;
 
   cdCanvasClipArea(canvas, 0, mViewport.mWidth - 1, 
