@@ -543,7 +543,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
     {
       Ihandle* fill = IupFill();
       int indent = iupAttribGetInt(param, "INDENT");
-      IupSetInt(fill, "SIZE", 5*(indent+1));
+      IupSetInt(fill, "SIZE", 5 + 8*indent);
       box = IupHbox(fill, label, NULL);
       IupSetAttribute(box,"ALIGNMENT","ACENTER");
     }
@@ -886,7 +886,7 @@ static void iParamBoxNormalizeSize(Ihandle** params, int count)
   lbl_width = 0;
   for (i = 0; i < count; i++)
   {
-    int w = IupGetInt((Ihandle*)iupAttribGet(params[i], "LABEL"), "SIZE");
+    int w = IupGetInt((Ihandle*)iupAttribGet(params[i], "LABEL"), "NATURALSIZE");
     if (w > lbl_width)
       lbl_width = w;
   }
@@ -900,8 +900,9 @@ static void iParamBoxNormalizeSize(Ihandle** params, int count)
       {
         /* set a minimum size for lists */
         Ihandle* ctrl = (Ihandle*)iupAttribGet(params[i], "CONTROL");
-        if (IupGetInt(ctrl, "SIZE") < 50)
-          IupSetAttribute(ctrl, "SIZE", "50x");
+        int charwidth = IupGetInt(ctrl, "CHARSIZE");
+        if (IupGetInt(ctrl, "NATURALSIZE") * 4 < 50 * charwidth)
+          IupSetInt(ctrl, "RASTERSIZE", (50 * charwidth) / 4);
       }
       else if (iupStrEqual(type, "BOOLEAN"))
       {
@@ -909,26 +910,26 @@ static void iParamBoxNormalizeSize(Ihandle** params, int count)
         Ihandle* ctrl = (Ihandle*)iupAttribGet(params[i], "CONTROL");
         int wf = iupdrvFontGetStringWidth(ctrl, iupAttribGet(params[i], "FALSE"));
         int wt = iupdrvFontGetStringWidth(ctrl, iupAttribGet(params[i], "TRUE"));
-        int w = IupGetInt(ctrl, "SIZE");
+        int w = IupGetInt(ctrl, "NATURALSIZE");
         int v = IupGetInt(ctrl, "VALUE");
         if (v) /* True */
         {
           int box = w - wt;
           wf += box;
           if (wf > w)
-            IupSetfAttribute(ctrl, "SIZE", "%dx", wf + 8);
+            IupSetfAttribute(ctrl, "RASTERSIZE", "%dx", wf + 8);
         }
         else
         {
           int box = w - wf;
           wt += box;
           if (wt > w)
-            IupSetfAttribute(ctrl, "SIZE", "%dx", wt + 8);
+            IupSetfAttribute(ctrl, "RASTERSIZE", "%dx", wt + 8);
         }
       }
 
       /* set the same size for all labels so they will align the controls column */
-      IupSetfAttribute((Ihandle*)iupAttribGet(params[i], "LABEL"), "SIZE", "%dx", lbl_width);
+      IupSetfAttribute((Ihandle*)iupAttribGet(params[i], "LABEL"), "RASTERSIZE", "%dx", lbl_width);
     }
   }
 }
