@@ -349,7 +349,7 @@ static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
     value = iupAttribGet(matex_data->ih, "_IUP_LAST_COPYCOL_INTERVAL");
     if (value) iupStrCopyN(interval, 200, value);
 
-    if (IupGetParam(IupGetLanguageString("IUP_COPYTOINTERVALS"), NULL, NULL, "L1-L2,L3,L4-L5,... %s\n", interval, NULL))
+    if (IupGetParam("_@IUP_COPYTOINTERVALS", NULL, NULL, "L1-L2,L3,L4-L5,... %s\n", interval, NULL))
     {
       IupSetStrAttributeId2(matex_data->ih, "COPYCOLTO", lin, col, interval);
       iupAttribSetStr(matex_data->ih, "_IUP_LAST_COPYCOL_INTERVAL", interval);
@@ -406,7 +406,7 @@ static int iMatrixExItemGoTo_CB(Ihandle* ih_item)
   value = iupAttribGet(matex_data->ih, "_IUP_LAST_GOTO_CELL");
   if (value) iupStrCopyN(cell, 100, value);
 
-  if (IupGetParam(IupGetLanguageString("IUP_GOTO"), NULL, NULL, "L:C %s\n", cell, NULL))
+  if (IupGetParam("_@IUP_GOTO", NULL, NULL, "L:C %s\n", cell, NULL))
   {
     IupSetStrAttribute(matex_data->ih, "SHOW", cell);
     IupSetStrAttribute(matex_data->ih, "FOCUS_CELL", cell);

@@ -940,11 +940,11 @@ Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count)
           *param_box, *button_box, *ctrl_box;
   int i, p, text_expand;
 
-  button_1 = IupButton(IupGetLanguageString(parent? "IUP_APPLY": "IUP_OK"), NULL);  /* default is OK */
+  button_1 = IupButton(parent? "_@IUP_APPLY": "_@IUP_OK", NULL);  /* default is OK */
   IupSetAttribute(button_1, "PADDING", "20x0");
   IupSetCallback(button_1, "ACTION", (Icallback)iParamButton1_CB);
 
-  button_2 = IupButton(IupGetLanguageString(parent? "IUP_RESET": "IUP_CANCEL"), NULL);  /* default is Cancel */
+  button_2 = IupButton(parent? "_@IUP_RESET": "_@IUP_CANCEL", NULL);  /* default is Cancel */
   IupSetAttribute(button_2, "PADDING", "20x0");
   IupSetCallback(button_2, "ACTION", (Icallback)iParamButton2_CB);
   

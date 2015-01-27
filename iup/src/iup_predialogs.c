@@ -64,11 +64,11 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
   IupSetAttributeId(lst,"",i+1,NULL);
   IupSetAttribute(lst,"EXPAND","YES");
 
-  ok = IupButton(IupGetLanguageString("IUP_OK"), NULL);
+  ok = IupButton("_@IUP_OK", NULL);
   IupSetAttribute(ok,"PADDING" ,"20x0");
   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
-  cancel = IupButton(IupGetLanguageString("IUP_CANCEL"), NULL);
+  cancel = IupButton("_@IUP_CANCEL", NULL);
   IupSetAttribute(cancel,"PADDING" ,"20x0");
   IupSetCallback(cancel, "ACTION", (Icallback)CB_button_CANCEL);
 
@@ -165,16 +165,16 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
   if (b1 == NULL)
     return 0;
 
-  len = strlen(b1);
+  len = (int)strlen(b1);
   if (b2)
   {
-    int len2 = strlen(b2);
+    int len2 = (int)strlen(b2);
     if (len2 > len)
       len = len2;
   }
   if (b3)
   {
-    int len3 = strlen(b3);
+    int len3 = (int)strlen(b3);
     if (len3 > len)
       len = len3;
   }
@@ -279,11 +279,11 @@ int  iupDataEntry(int    maxlin,
   lbl[i] = NULL;
   IupInsert(vb, NULL, IupNormalizerv(lbl));
 
-  ok = IupButton(IupGetLanguageString("IUP_OK"), NULL);
+  ok = IupButton("_@IUP_OK", NULL);
   IupSetAttribute(ok, "PADDING", "20x0");
   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
-  cancel = IupButton(IupGetLanguageString("IUP_CANCEL"), NULL);
+  cancel = IupButton("_@IUP_CANCEL", NULL);
   IupSetAttribute(cancel, "PADDING", "20x0");
   IupSetCallback(cancel, "ACTION", (Icallback)CB_button_CANCEL);
 
@@ -382,11 +382,11 @@ int IupGetText(const char* title, char* text)
   IupSetAttribute(multi_text, "VISIBLELINES", "10");
   IupSetAttribute(multi_text, "VISIBLECOLUMNS", "50");
 
-  ok = IupButton(IupGetLanguageString("IUP_OK"), NULL);
+  ok = IupButton("_@IUP_OK", NULL);
   IupSetAttribute(ok, "PADDING", "20x0");
   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
-  cancel  = IupButton(IupGetLanguageString("IUP_CANCEL"), NULL);
+  cancel  = IupButton("_@IUP_CANCEL", NULL);
   IupSetAttribute(cancel, "PADDING", "20x0");
   IupSetCallback(cancel, "ACTION", (Icallback)CB_button_CANCEL);
 
@@ -438,7 +438,7 @@ int IupGetColor(int x, int y, unsigned char *r, unsigned char *g, unsigned char 
   int ret;
   Ihandle* dlg = IupColorDlg();
 
-  IupSetAttribute(dlg, "TITLE",  IupGetLanguageString("IUP_GETCOLOR"));
+  IupSetStrAttribute(dlg, "TITLE",  "_@IUP_GETCOLOR");
   IupSetfAttribute(dlg, "VALUE", "%d %d %d", *r, *g, *b);
   IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
@@ -463,7 +463,7 @@ void iupShowVersion(void)
                       IupLabel(IupVersionDate()),
                       IupLabel(IUP_COPYRIGHT),
                       NULL)), 
-                    IupButton(IupGetLanguageString("IUP_OK"), NULL),
+                    IupButton("_@IUP_OK", NULL),
                     NULL));
 
   IupSetAttribute(dlg,"TITLE","IUP Version");
@@ -488,9 +488,9 @@ void iupShowError(Ihandle* parent, const char* message)
   }
 
   if (!title)
-    title = IupGetLanguageString("IUP_ERROR");
+    title = "_@IUP_ERROR";
 
-  IupSetAttribute(dlg, "TITLE", title);
+  IupSetStrAttribute(dlg, "TITLE", title);
   IupSetAttribute(dlg, "DIALOGTYPE", "ERROR");
   IupSetAttribute(dlg, "BUTTONS", "OK");
 

@@ -873,17 +873,17 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
   /* ======================================================================= */
   /* BUTTONS   ============================================================= */
   /* ======================================================================= */
-  ok_bt = IupButton(IupGetLanguageString("IUP_OK"), NULL);                      /* Ok Button */
+  ok_bt = IupButton("_@IUP_OK", NULL);                      /* Ok Button */
   IupSetAttribute(ok_bt, "PADDING", "20x0");
   IupSetCallback (ok_bt, "ACTION", (Icallback)iColorBrowserDlgButtonOK_CB);
   IupSetAttributeHandle(ih, "DEFAULTENTER", ok_bt);
 
-  cancel_bt = IupButton(IupGetLanguageString("IUP_CANCEL"), NULL);          /* Cancel Button */
+  cancel_bt = IupButton("_@IUP_CANCEL", NULL);          /* Cancel Button */
   IupSetAttribute(cancel_bt, "PADDING", "20x0");
   IupSetCallback (cancel_bt, "ACTION", (Icallback)iColorBrowserDlgButtonCancel_CB);
   IupSetAttributeHandle(ih, "DEFAULTESC", cancel_bt);
 
-  colordlg_data->help_bt = IupButton(IupGetLanguageString("IUP_HELP"), NULL);            /* Help Button */
+  colordlg_data->help_bt = IupButton("_@IUP_HELP", NULL);            /* Help Button */
   IupSetAttribute(colordlg_data->help_bt, "PADDING", "20x0");
   IupSetCallback (colordlg_data->help_bt, "ACTION", (Icallback)iColorBrowserDlgButtonHelp_CB);
 
@@ -1018,37 +1018,37 @@ static int iColorBrowserDlgCreateMethod(Ihandle* ih, void** params)
 
   col1 = IupVbox(colordlg_data->color_browser, IupSetAttributes(IupHbox(colordlg_data->color_cnv, NULL), "MARGIN=30x0"),NULL);
 
-  hsi_vb = IupVbox(IupSetAttributes(IupHbox(IupLabel(IupGetLanguageString("IUP_HUE")), 
+  hsi_vb = IupVbox(IupSetAttributes(IupHbox(IupLabel("_@IUP_HUE"), 
                                             colordlg_data->hue_txt, 
                                             NULL), "ALIGNMENT=ACENTER"),
-                   IupSetAttributes(IupHbox(IupLabel(IupGetLanguageString("IUP_SATURATION")), 
+                   IupSetAttributes(IupHbox(IupLabel("_@IUP_SATURATION"), 
                                             colordlg_data->saturation_txt, 
                                             NULL), "ALIGNMENT=ACENTER"),
-                   IupSetAttributes(IupHbox(IupLabel(IupGetLanguageString("IUP_INTENSITY")), 
+                   IupSetAttributes(IupHbox(IupLabel("_@IUP_INTENSITY"), 
                                             colordlg_data->intensity_txt, 
                                             NULL), "ALIGNMENT=ACENTER"),
                    NULL);
   IupSetAttribute(hsi_vb, "GAP", "5");
   
-  rgb_vb = IupVbox(IupSetAttributes(IupHbox(IupLabel(IupGetLanguageString("IUP_RED")), 
+  rgb_vb = IupVbox(IupSetAttributes(IupHbox(IupLabel("_@IUP_RED"), 
                                             colordlg_data->red_txt, 
                                             NULL), "ALIGNMENT=ACENTER"),
-                   IupSetAttributes(IupHbox(IupLabel(IupGetLanguageString("IUP_GREEN")), 
+                   IupSetAttributes(IupHbox(IupLabel("_@IUP_GREEN"), 
                                             colordlg_data->green_txt, 
                                             NULL), "ALIGNMENT=ACENTER"),
-                   IupSetAttributes(IupHbox(IupLabel(IupGetLanguageString("IUP_BLUE")), 
+                   IupSetAttributes(IupHbox(IupLabel("_@IUP_BLUE"), 
                                             colordlg_data->blue_txt, 
                                             NULL), "ALIGNMENT=ACENTER"),
                    NULL);
   IupSetAttribute(rgb_vb, "GAP", "5");
   
-  clr_vb = IupVbox(IupSetAttributes(IupHbox(IupLabel(IupGetLanguageString("IUP_OPACITY")), 
+  clr_vb = IupVbox(IupSetAttributes(IupHbox(IupLabel("_@IUP_OPACITY"), 
                                             colordlg_data->alpha_txt, colordlg_data->alpha_val, 
                                             NULL), "ALIGNMENT=ACENTER"),
                    IupSetAttributes(IupHbox(IupLabel("He&xa:"), 
                                             colordlg_data->colorhex_txt, 
                                             NULL), "ALIGNMENT=ACENTER"),
-                   IupSetAttributes(IupVbox(IupLabel(IupGetLanguageString("IUP_PALETTE")), 
+                   IupSetAttributes(IupVbox(IupLabel("_@IUP_PALETTE"), 
                                             colordlg_data->colortable_cbar,
                                             NULL), "GAP=3"),
                    NULL);

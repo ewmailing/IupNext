@@ -240,7 +240,7 @@ static int iProgressDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(marquee,"MARQUEE","Yes");
   IupSetAttribute(marquee,"VISIBLE","No");
 
-  cancel = IupButton(IupGetLanguageString("IUP_CANCEL"), NULL);
+  cancel = IupButton("_@IUP_CANCEL", NULL);
   IupSetAttribute(cancel,"PADDING","5x3");
   IupSetCallback(cancel, "ACTION", (Icallback) iProgressDlgCancel_CB);
   IupSetAttributeHandle(ih, "DEFAULTESC", cancel);
