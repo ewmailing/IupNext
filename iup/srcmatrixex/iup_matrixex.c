@@ -1026,8 +1026,8 @@ static void iMatrixExInitAttribCb(Iclass* ic)
 
     IupSetLanguageString("IUP_COPYTOINTERVAL", "Copy To - Interval");
     IupSetLanguageString("IUP_GOTO", "Go To");
-    IupSetLanguageString("IUP_LINE", "Line");
-    IupSetLanguageString("IUP_COLUMN", "Column");
+    IupSetLanguageString("IUP_LINE", "Line:");
+    IupSetLanguageString("IUP_COLUMN", "Column:");
     IupSetLanguageString("IUP_LINESTART", "Line Start:");
     IupSetLanguageString("IUP_LINEEND", "Line End:");
 
@@ -1090,8 +1090,8 @@ static void iMatrixExInitAttribCb(Iclass* ic)
 
     IupSetLanguageString("IUP_COPYTOINTERVAL", "Copiar Para - Intervalo");
     IupSetLanguageString("IUP_GOTO", "Ir Para");
-    IupSetLanguageString("IUP_LINE", "Linha");
-    IupSetLanguageString("IUP_COLUMN", "Coluna");
+    IupSetLanguageString("IUP_LINE", "Linha:");
+    IupSetLanguageString("IUP_COLUMN", "Coluna:");
     IupSetLanguageString("IUP_LINESTART", "Linha Inicial:");
     IupSetLanguageString("IUP_LINEEND", "Linha Final:");
 

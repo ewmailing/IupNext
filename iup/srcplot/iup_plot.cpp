@@ -852,7 +852,7 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
   char format[1024] =
     "_@IUP_NAME%s\n"
     "_@IUP_COLOR%c\n"
-    "_@IUP_MODE%l|_@IUP_LINE|_@IUP_MARK|_@IUP_MARKLINE|_@IUP_BAR|_@IUP_AREA|\n"
+    "_@IUP_MODE%l|_@IUP_LINES|_@IUP_MARKS|_@IUP_MARKSLINES|_@IUP_BARS|_@IUP_AREA|\n"
     "_@IUP_LINESTYLE%l|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|\n"
     "_@IUP_LINEWIDTH%i[1,,]\n"
     "_@IUP_MARKSTYLE%l|_@IUP_PLUS|_@IUP_STAR|_@IUP_CIRCLE|_@IUP_X|_@IUP_BOX|_@IUP_DIAMOND|_@IUP_HOLLOW_CIRCLE|_@IUP_HOLLOW_BOX|_@IUP_HOLLOW_DIAMOND|\n"
@@ -2314,10 +2314,10 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_NAME", "Name:");
     IupSetLanguageString("IUP_COLOR", "Color:");
     IupSetLanguageString("IUP_MODE", "Mode:");
-    IupSetLanguageString("IUP_LINE", "Line");
-    IupSetLanguageString("IUP_MARK", "Mark");
-    IupSetLanguageString("IUP_MARKLINE", "Mark & Line");
-    IupSetLanguageString("IUP_BAR", "Bar");
+    IupSetLanguageString("IUP_LINES", "Lines");
+    IupSetLanguageString("IUP_MARKS", "Marks");
+    IupSetLanguageString("IUP_MARKSLINES", "Marks & Lines");
+    IupSetLanguageString("IUP_BARS", "Bars");
     IupSetLanguageString("IUP_AREA", "Area");
     IupSetLanguageString("IUP_LINESTYLE", "Line Style:");
     IupSetLanguageString("IUP_CONTINUOUS", "Continuous");
@@ -2429,10 +2429,10 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_NAME", "Nome:");
     IupSetLanguageString("IUP_COLOR", "Cor:");
     IupSetLanguageString("IUP_MODE", "Modo:");
-    IupSetLanguageString("IUP_LINE", "Linha");
-    IupSetLanguageString("IUP_MARK", "Marca");
-    IupSetLanguageString("IUP_MARKLINE", "Marca e Linha");
-    IupSetLanguageString("IUP_BAR", "Barra");
+    IupSetLanguageString("IUP_LINES", "Linhas");
+    IupSetLanguageString("IUP_MARKS", "Marcas");
+    IupSetLanguageString("IUP_MARKSLINES", "Marcas e Linhas");
+    IupSetLanguageString("IUP_BARS", "Barras");
     IupSetLanguageString("IUP_AREA", "Área");
     IupSetLanguageString("IUP_LINESTYLE", "Estilo de Linha:");
     IupSetLanguageString("IUP_CONTINUOUS", "Contínuo");
