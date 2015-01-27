@@ -1293,6 +1293,8 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
       return IUP_DEFAULT;
   }
 
+  ih->data->last_pos_moving = 0;
+
   if (press)
   {
     ih->data->last_click_x = x;
@@ -1306,7 +1308,17 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
         if (iup_isdouble(status))
           iupPlotResetZoom(ih, 1);
         else
-          iPlotPanStart(ih);
+        {
+          if (!ih->data->current_plot->mTitle.mAutoPos && 
+              ih->data->current_plot->CheckInsideTitle(ih->data->cd_canvas, x, y))
+          {
+            ih->data->last_pos_x = ih->data->current_plot->mTitle.mPosX;
+            ih->data->last_pos_y = ih->data->current_plot->mTitle.mPosY;
+            ih->data->last_pos_moving = 1;
+          }
+          else
+            iPlotPanStart(ih);
+        }
       }
     }
     else if (button == IUP_BUTTON2)
@@ -1376,6 +1388,9 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
 
 static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
 {
+  if (iupStrEqualNoCase(IupGetAttribute(ih, "CURSOR"), "HAND"))
+    IupSetAttribute(ih, "CURSOR", NULL);
+
   int index = iPlotFindPlot(ih, x, y);
   if (index<0)
     return IUP_DEFAULT;
@@ -1399,6 +1414,10 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
       return IUP_DEFAULT;
   }
 
+  if (!ih->data->current_plot->mTitle.mAutoPos &&
+      ih->data->current_plot->CheckInsideTitle(ih->data->cd_canvas, x, y))
+    IupSetAttribute(ih, "CURSOR", "HAND");
+
   if (iup_isbutton1(status) && ih->data->last_click_plot == index)
   {
     if (iup_iscontrol(status) || iup_isshift(status))
@@ -1419,6 +1438,15 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
     {
       if (ih->data->last_click_x != x || ih->data->last_click_y != y)
       {
+        if (!ih->data->current_plot->mTitle.mAutoPos && ih->data->last_pos_moving == 1)
+        {
+          ih->data->current_plot->mTitle.mPosX = ih->data->last_pos_x + (x - ih->data->last_click_x);
+          ih->data->current_plot->mTitle.mPosY = ih->data->last_pos_y - (y - ih->data->last_click_y);
+
+          iPlotRedrawInteract(ih);
+          return IUP_DEFAULT;
+        }
+
         iPlotPan(ih, ih->data->last_click_x, ih->data->last_click_y, x, y);
         return IUP_DEFAULT;
       }

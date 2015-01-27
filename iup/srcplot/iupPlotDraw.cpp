@@ -501,7 +501,7 @@ void iupPlot::DrawPlotTitle(cdCanvas* canvas) const
     SetTitleFont(canvas);
 
     cdCanvasTextAlignment(canvas, CD_NORTH);
-    cdCanvasText(canvas, mTitle.mPosX, mTitle.mPosY, mTitle.GetText());
+    cdCanvasText(canvas, mTitle.mPosX, cdCanvasInvertYAxis(canvas, mTitle.mPosY), mTitle.GetText());
   }
 }
 

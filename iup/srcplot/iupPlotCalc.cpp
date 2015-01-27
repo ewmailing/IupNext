@@ -84,8 +84,28 @@ void iupPlot::CalculateTitlePos()
   if (mTitle.mAutoPos)
   {
     mTitle.mPosX = mViewport.mWidth / 2;
-    mTitle.mPosY = mViewport.mHeight - 5;  // add small spacing
+    mTitle.mPosY = 5;  // add small spacing
   }
+}
+
+bool iupPlot::CheckInsideTitle(cdCanvas* canvas, int x, int y)
+{
+  // it does not depend on theMargin
+  if (mTitle.GetText())
+  {
+    SetTitleFont(canvas);
+
+    cdCanvasTextAlignment(canvas, CD_NORTH);
+
+    int xmin, xmax, ymin, ymax;
+    cdCanvasGetTextBox(canvas, mTitle.mPosX, cdCanvasInvertYAxis(canvas, mTitle.mPosY), mTitle.GetText(), &xmin, &xmax, &ymin, &ymax);
+
+    if (x >= xmin && x <= xmax && 
+        y >= ymin && y <= ymax)
+      return true;
+  }
+
+  return false;
 }
 
 void iupPlot::CalculateMargins(cdCanvas* canvas)

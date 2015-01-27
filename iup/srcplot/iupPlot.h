@@ -560,6 +560,7 @@ public:
   /*********************************/
 
   void CalculateTitlePos();
+  bool CheckInsideTitle(cdCanvas* canvas, int x, int y);
   void CalculateMargins(cdCanvas* canvas);
   bool CalculateAxisRange();
     bool CalculateXRange(double &outXMin, double &outXMax);

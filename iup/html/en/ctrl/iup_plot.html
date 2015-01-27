@@ -450,10 +450,12 @@ re-use the last calculated margin. Default: "YES". (since 3.13)</p>
 and style. Default: FONT, but size is increased by 6 points. </p>
 <p><strong>TITLEPOSAUTO</strong>: If Yes will position the title at top-center 
 of the plot area, else it will use TITLEPOSXY to position the title. If set to NO 
-it will disable the automatic position but reuse the last calculated position. Default: 
+it will disable the automatic position but reuse the last calculated position, 
+and it will enable the interactive change of the title position. Default: 
 Yes. (since 3.13)</p>
 <p><strong>TITLEPOSXY</strong>: position of the title in the format "x,y" 
-in pixels inside the plot area relative to the top-left corner. When set will 
+in pixels inside the plot area relative to the top-left corner of the screen and 
+anchored at the north-center point of the title bounding box. When set will 
 also set TITLEPOSAUTO to No. (since 3.13)</p>
 <h4>Legend Configuration </h4>
 <p><b>LEGEND</b>: shows or hides the legend box. Can be YES or NO. Default: 

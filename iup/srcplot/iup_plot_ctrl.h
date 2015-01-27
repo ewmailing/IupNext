@@ -27,9 +27,13 @@ struct _IcontrolData
   int default_font_style;
 
   int last_click_x,
-    last_click_y,
-    last_click_plot;
+      last_click_y,
+      last_click_plot;
   int show_cross_hair;
+
+  int last_pos_x,
+      last_pos_y,
+      last_pos_moving;
 
   int last_tip_ds,
     last_tip_sample;
