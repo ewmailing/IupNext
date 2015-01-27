@@ -482,10 +482,10 @@ static iPlotAttribParam iplot_axisYticksnumber_attribs[] = {
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
-static void iPlotSetDouble(Ihandle* control, const char* name, double num, int prec)
+static void iPlotSetDouble(Ihandle* control, const char* name, double num)
 {
   char value[80];
-  if (prec <= 0) prec = IupGetInt(NULL, "DEFAULTPRECISION");
+  int prec = IupGetInt(NULL, "DEFAULTPRECISION");
   sprintf(value, "%.*f", prec, num);
   IupStoreAttribute(control, name, value);
 }
@@ -512,8 +512,7 @@ static void iPlotSetParamValue(Ihandle* param, const char* value)
       if (iupStrEqualNoCase(iupAttribGet(param, "TYPE"), "REAL"))
       {
         double num = IupGetDouble(param, "VALUE");
-        int prec = IupGetInt(param, "PRECISION");
-        iPlotSetDouble(control, "VALUE", num, prec);
+        iPlotSetDouble(control, "VALUE", num);
       }
       else
         IupSetStrAttribute(control, "VALUE", value);
@@ -727,7 +726,6 @@ static void iPlotPropertiesAddParamBox(Ihandle* ih, Ihandle* parent, iPlotAttrib
       IupSetStrAttribute(params[count], "PLOT_ATTRIB", attribs[count].name);
       IupSetAttribute(params[count], "PLOT_ATTRIBLIST", (char*)(attribs[count].list));
       IupSetCallback(params[count], "PLOT_ATTRIBCHECK", attribs[count].check);
-      IupSetInt(params[count], "PRECISION", IupGetInt(ih, "PRECISION"));
 
       // From Plot
       char* value = IupGetAttribute(ih, attribs[count].name);
@@ -2454,19 +2452,101 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Diamante Oco");
     IupSetLanguageString("IUP_MARKSIZE", "Tamanho de Marca:");
 
+    IupSetLanguageString("IUP_CLOSE", "Fechar");
+
+    IupSetLanguageString("IUP_BACKGROUND", "Fundo");
+    IupSetLanguageString("IUP_TITLE", "Título");
+    IupSetLanguageString("IUP_LEGEND", "Legenda");
+    IupSetLanguageString("IUP_LEGENDBOX", "Caixa da Legenda");
+    IupSetLanguageString("IUP_GRID", "Grade");
+    IupSetLanguageString("IUP_GRIDMINOR", "Grade Secundária");
+    IupSetLanguageString("IUP_XAXIS", "Eixo X");
+    IupSetLanguageString("IUP_YAXIS", "Eixo Y");
+    IupSetLanguageString("IUP_AXISLABEL", "Etiqueta do Eixo");
+    IupSetLanguageString("IUP_AXISTICKS", "Marcas do Eixo");
+    IupSetLanguageString("IUP_AXISTICKSNUMBER", "Números do Eixo");
+
+    IupSetLanguageString("IUP_TEXT", "Texto:");
+    IupSetLanguageString("IUP_SHOW", "Mostrar:");
+    IupSetLanguageString("IUP_HORIZONTAL", "Horizontal");
+    IupSetLanguageString("IUP_VERTICAL", "Vertical");
+
+    IupSetLanguageString("IUP_WARNING", "Atenção!");
+    IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Modificações não aplicadas. Aplicar?");
+
+    IupSetLanguageString("IUP_MARGINLEFT", "Margem Esquerda:");
+    IupSetLanguageString("IUP_MARGINRIGHT", "Margem Direita:");
+    IupSetLanguageString("IUP_MARGINTOP", "Margem Superior:");
+    IupSetLanguageString("IUP_MARGINBOTTOM", "Margem Inferior:");
+
+    IupSetLanguageString("IUP_FONTSTYLE", "Estilo da Fonte:");
+    IupSetLanguageString("IUP_FONTSIZE", "Tamanho da Fonte:");
+    IupSetLanguageString("IUP_PLAIN", "Regular");
+    IupSetLanguageString("IUP_BOLD", "Negrito");
+    IupSetLanguageString("IUP_ITALIC", "Itálico");
+    IupSetLanguageString("IUP_BOLDITALIC", "Negrito Itálico");
+
+    IupSetLanguageString("IUP_POSITION", "Posição:");
+    IupSetLanguageString("IUP_POSXY", "(x,y):");
+    IupSetLanguageString("IUP_TOPRIGHT", "Superior Direita");
+    IupSetLanguageString("IUP_TOPLEFT", "Superior Esquerda");
+    IupSetLanguageString("IUP_BOTTOMRIGHT", "Inferior Direita");
+    IupSetLanguageString("IUP_BOTTOMLEFT", "Inferior Esquerda");
+    IupSetLanguageString("IUP_BOTTOMCENTER", "Inferior Centro");
+    IupSetLanguageString("IUP_XY", "(x,y)");
+
+    IupSetLanguageString("IUP_SHOWARROW", "Mostrar Seta:");
+    IupSetLanguageString("IUP_MIN", "Min:");
+    IupSetLanguageString("IUP_MAX", "Max:");
+    IupSetLanguageString("IUP_REVERSE", "Reverso:");
+    IupSetLanguageString("IUP_CROSSORIGIN", "Origem Cruzada:");
+    IupSetLanguageString("IUP_CENTERED", "Centrado:");
+
+    IupSetLanguageString("IUP_SCALE", "Escala:");
+    IupSetLanguageString("IUP_LINEAR", "Linear");
+    IupSetLanguageString("IUP_LOG10", "Logaritmo (base 10)");
+    IupSetLanguageString("IUP_LOG2", "Logaritmo (base 2)");
+    IupSetLanguageString("IUP_LOGN", "Logaritmo (base e)");
+
+    IupSetLanguageString("IUP_SPACING", "Espaçamento:");
+    IupSetLanguageString("IUP_MAJORSPAN", "Intervalo Principal:");
+    IupSetLanguageString("IUP_MINORDIVISION", "Divisões Secundárias:");
+    IupSetLanguageString("IUP_SIZE", "Tamanho:");
+    IupSetLanguageString("IUP_MAJOR", "Principal:");
+    IupSetLanguageString("IUP_MINOR", "Secundário:");
+
+    IupSetLanguageString("IUP_ROTATE", "Rotação:");
+    IupSetLanguageString("IUP_ANGLE", "Ângulo:");
+
+    IupSetLanguageString("IUP_VALUE", "Valor:");
+    IupSetLanguageString("IUP_DECIMALS", "Decimais:");
+    IupSetLanguageString("IUP_FORMAT", "Formato:");
+
     if (IupGetInt(NULL, "UTF8MODE"))
     {
       /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
          When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
 
       IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "FÃ³rmula InvÃ¡lida.");
-
       IupSetLanguageString("IUP_AREA", "Ãrea");
       IupSetLanguageString("IUP_CONTINUOUS", "ContÃ­nuo");
       IupSetLanguageString("IUP_DASH_DOT", "TraÃ§o Ponto");
       IupSetLanguageString("IUP_DASH_DOT_DOT", "TraÃ§o Ponto Ponto");
       IupSetLanguageString("IUP_CIRCLE", "CÃ­rculo");
       IupSetLanguageString("IUP_HOLLOW_CIRCLE", "CÃ­rculo Oco");
+      IupSetLanguageString("IUP_TITLE", "TÃ­tulo");
+      IupSetLanguageString("IUP_GRIDMINOR", "Grade SecundÃ¡ria");
+      IupSetLanguageString("IUP_AXISTICKSNUMBER", "NÃºmeros do Eixo");
+      IupSetLanguageString("IUP_WARNING", "AtenÃ§Ã£o!");
+      IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "ModificaÃ§Ãµes nÃ£o aplicadas. Aplicar?");
+      IupSetLanguageString("IUP_ITALIC", "ItÃ¡lico");
+      IupSetLanguageString("IUP_BOLDITALIC", "Negrito ItÃ¡lico");
+      IupSetLanguageString("IUP_POSITION", "PosiÃ§Ã£o:");
+      IupSetLanguageString("IUP_SPACING", "EspaÃ§amento:");
+      IupSetLanguageString("IUP_MINORDIVISION", "DivisÃµes SecundÃ¡rias:");
+      IupSetLanguageString("IUP_MINOR", "SecundÃ¡rio:");
+      IupSetLanguageString("IUP_ROTATE", "RotaÃ§Ã£o:");
+      IupSetLanguageString("IUP_ANGLE", "Ã‚ngulo:");
     }
   }
 
