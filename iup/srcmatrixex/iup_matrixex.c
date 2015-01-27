@@ -334,6 +334,8 @@ static int iMatrixExItemSelectAll_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int iMatrixExFindLin(Ihandle* ih, const char* line);
+
 static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
@@ -345,14 +347,39 @@ static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
 
   if (iupStrEqual(value, "INTERVAL"))
   {
-    char interval[200] = "";
-    value = iupAttribGet(matex_data->ih, "_IUP_LAST_COPYCOL_INTERVAL");
-    if (value) iupStrCopyN(interval, 200, value);
-
-    if (IupGetParam("_@IUP_COPYTOINTERVALS", NULL, NULL, "L1-L2,L3,L4-L5,... %s\n", interval, NULL))
+    if (iupAttribGetInt(matex_data->ih, "CELLBYTITLE"))
     {
-      IupSetStrAttributeId2(matex_data->ih, "COPYCOLTO", lin, col, interval);
-      iupAttribSetStr(matex_data->ih, "_IUP_LAST_COPYCOL_INTERVAL", interval);
+      char line1[50] = "";
+      char line2[50] = "";
+
+      char* last_lin1 = iupAttribGet(matex_data->ih, "_IUP_LAST_COPYTO_LIN1");
+      char* last_lin2 = iupAttribGet(matex_data->ih, "_IUP_LAST_COPYTO_LIN2");
+      iupStrCopyN(line1, 50, last_lin1);
+      iupStrCopyN(line2, 50, last_lin2);
+
+      if (IupGetParam("_@IUP_COPYTOINTERVAL", NULL, NULL, "_@IUP_LINESTART%s\n_@IUP_LINEEND%s\n", line1, line2, NULL))
+      {
+        int lin1 = iMatrixExFindLin(matex_data->ih, line1);
+        int lin2 = iMatrixExFindLin(matex_data->ih, line2);
+
+        IupSetStrfId2(matex_data->ih, "COPYCOLTO", lin, col, "%d-%d", lin1, lin2);
+
+        iupAttribSetStr(matex_data->ih, "_IUP_LAST_COPYTO_LIN1", line1);
+        iupAttribSetStr(matex_data->ih, "_IUP_LAST_COPYTO_LIN2", line2);
+      }
+    }
+    else
+    {
+      int lin1 = iupAttribGetInt(matex_data->ih, "_IUP_LAST_COPYTO_LIN1");
+      int lin2 = iupAttribGetInt(matex_data->ih, "_IUP_LAST_COPYTO_LIN2");
+
+      if (IupGetParam("_@IUP_COPYTOINTERVAL", NULL, NULL, "_@IUP_LINESTART%i[1,,]\n_@IUP_LINEEND%i[1,,]\n", &lin1, &lin2, NULL))
+      {
+        IupSetStrfId2(matex_data->ih, "COPYCOLTO", lin, col, "%d-%d", lin1, lin2);
+
+        iupAttribSetInt(matex_data->ih, "_IUP_LAST_COPYTO_LIN1", lin1);
+        iupAttribSetInt(matex_data->ih, "_IUP_LAST_COPYTO_LIN2", lin2);
+      }
     }
   }
   else
@@ -394,23 +421,81 @@ static int iMatrixExItemFind_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int iMatrixExFindLin(Ihandle* ih, const char* line)
+{
+  int lin, num_lin = IupGetInt(ih, "NUMLIN");
+
+  for (lin = 1; lin <= num_lin; lin++)
+  {
+    char* value = iupMatrixExGetCellValue(ih, lin, 0, 1);  /* get displayed value */
+    if (value && value[0] != 0)
+    {
+      if (iupStrEqual(value, line))
+        return lin;
+    }
+  }
+
+  return 1;
+}
+
+static int iMatrixExFindCol(Ihandle* ih, const char* column)
+{
+  int col, num_col = IupGetInt(ih, "NUMCOL");
+
+  for (col = 1; col <= num_col; col++)
+  {
+    char* value = iupMatrixExGetCellValue(ih, 0, col, 1);  /* get displayed value */
+    if (value && value[0] != 0)
+    {
+      if (iupStrEqual(value, column))
+        return col;
+    }
+  }
+
+  return 1;
+}
+
 static int iMatrixExItemGoTo_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
-  char cell[100] = "";
-  char* value;
-
   if (!matex_data)  /* will be called also by the shortcut key */
    matex_data = (ImatExData*)iupAttribGet(ih_item, "_IUP_MATEX_DATA");
 
-  value = iupAttribGet(matex_data->ih, "_IUP_LAST_GOTO_CELL");
-  if (value) iupStrCopyN(cell, 100, value);
-
-  if (IupGetParam("_@IUP_GOTO", NULL, NULL, "L:C %s\n", cell, NULL))
+  if (iupAttribGetInt(matex_data->ih, "CELLBYTITLE"))
   {
-    IupSetStrAttribute(matex_data->ih, "SHOW", cell);
-    IupSetStrAttribute(matex_data->ih, "FOCUS_CELL", cell);
-    iupAttribSetStr(matex_data->ih, "_IUP_LAST_GOTO_CELL", cell);
+    char line[50] = "";
+    char column[50] = "";
+
+    char* last_lin = iupAttribGet(matex_data->ih, "_IUP_LAST_GOTO_LIN");
+    char* last_col = iupAttribGet(matex_data->ih, "_IUP_LAST_GOTO_COL");
+    iupStrCopyN(line, 50, last_lin);
+    iupStrCopyN(column, 50, last_col);
+
+    if (IupGetParam("_@IUP_GOTO", NULL, NULL, "_@IUP_LINE%s\n_@IUP_COLUMN%s\n", line, column, NULL))
+    {
+      int lin = iMatrixExFindLin(matex_data->ih, line);
+      int col = iMatrixExFindCol(matex_data->ih, column);
+
+      IupSetfAttribute(matex_data->ih, "SHOW", "%d:%d", lin, col);
+      IupSetfAttribute(matex_data->ih, "FOCUS_CELL", "%d:%d", lin, col);
+
+      iupAttribSetStr(matex_data->ih, "_IUP_LAST_GOTO_LIN", line);
+      iupAttribSetStr(matex_data->ih, "_IUP_LAST_GOTO_COL", column);
+    }
+  }
+  else
+  {
+    int lin = iupAttribGetInt(matex_data->ih, "_IUP_LAST_GOTO_LIN");
+    int col = iupAttribGetInt(matex_data->ih, "_IUP_LAST_GOTO_COL");
+
+    if (IupGetParam("_@IUP_GOTO", NULL, NULL, "_@IUP_LINE%i[1,,]\n_@IUP_COLUMN%i[1,,]\n", &lin, &col, NULL))
+    {
+      IupSetStrf(matex_data->ih, "SHOW", "%d:%d", lin, col);
+      IupSetStrf(matex_data->ih, "FOCUS_CELL", "%d:%d", lin, col);
+
+      iupAttribSetInt(matex_data->ih, "_IUP_LAST_GOTO_LIN", lin);
+      iupAttribSetInt(matex_data->ih, "_IUP_LAST_GOTO_COL", col);
+    }
   }
 
   return IUP_DEFAULT;
@@ -939,8 +1024,12 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_HIDELINE", "Hide Line");    
     IupSetLanguageString("IUP_SHOWHIDDENLINES", "Show Hidden Lines");
 
-    IupSetLanguageString("IUP_COPYTOINTERVALS", "Copy To - Intervals");
+    IupSetLanguageString("IUP_COPYTOINTERVAL", "Copy To - Interval");
     IupSetLanguageString("IUP_GOTO", "Go To");
+    IupSetLanguageString("IUP_LINE", "Line");
+    IupSetLanguageString("IUP_COLUMN", "Column");
+    IupSetLanguageString("IUP_LINESTART", "Line Start:");
+    IupSetLanguageString("IUP_LINEEND", "Line End:");
 
     IupSetLanguageString("IUP_UNITS", "Units:");
     IupSetLanguageString("IUP_DECIMALS", "Decimals:");
@@ -999,8 +1088,12 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_COLUMNUNITS", "Unidades da Coluna");
     IupSetLanguageString("IUP_COLUMNUNITSDLG", "Unidades da Coluna...");
 
-    IupSetLanguageString("IUP_COPYTOINTERVALS", "Copiar Para - Intervalos");
+    IupSetLanguageString("IUP_COPYTOINTERVAL", "Copiar Para - Intervalo");
     IupSetLanguageString("IUP_GOTO", "Ir Para");
+    IupSetLanguageString("IUP_LINE", "Linha");
+    IupSetLanguageString("IUP_COLUMN", "Coluna");
+    IupSetLanguageString("IUP_LINESTART", "Linha Inicial:");
+    IupSetLanguageString("IUP_LINEEND", "Linha Final:");
 
     IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Seleção inválida.");
     IupSetLanguageString("IUP_ERRORNOTEXT", "Texto vazio.");

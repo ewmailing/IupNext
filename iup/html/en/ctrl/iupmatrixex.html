@@ -586,10 +586,13 @@ the line numbers of the two cells being compared.</p>
 <h4>Context Menu</h4>
 <p>The library adds a context menu where the user can execute the new features. 
 If the matrix is read-only some of the features are not shown.</p>
-<p>&nbsp;The FILEDIRECTORY 
+<p>The FILEDIRECTORY 
 attribute can be used to control the initial directory in Export and Import file 
 dialogs (since 3.12). The LASTFILENAME attribute can be consulted after the file 
 dialogs were successfully closed (since 3.12).</p>
+<p>The CELLBYTITLE attribute controls how the &quot;Go To...&quot; dialog and the &quot;Copy To 
+- Interval&quot; dialog interpret line and column values. If set to Yes, then the 
+title lines/columns are used as indices to locate the cell. (since 3.13)</p>
 <pre>Settings...         =&gt; Shows the Settings Dialog
 ----------------
 Export

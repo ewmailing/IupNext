@@ -214,6 +214,7 @@ static Ihandle *create_mat(int mati)
   IupSetAttribute(mat,"SORTSIGN1","UP");
 //  IupSetAttribute(mat,"SORTSIGN2","DOWN");
   IupSetAttribute(mat,"FRAMEVERTCOLOR2:2","255 255 255");
+  IupSetAttribute(mat, "CELLBYTITLE", "Yes");
 
 //  IupSetAttribute(mat,"MARKAREA","NOT_CONTINUOUS");
 //  IupSetAttribute(mat,"MARKMULTIPLE","YES");
