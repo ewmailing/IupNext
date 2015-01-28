@@ -16,6 +16,7 @@
 #include "iup.h"
 #include "iupcontrols.h"
 #include "iup_plot.h"
+#include "iupim.h"
 
 #include <cd.h>
 #include <cdiup.h>
@@ -96,6 +97,7 @@ static void InitPlots(void)
 
 //  IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
 //  IupSetAttribute(plot[0], "GRAPHICSMODE", "IMAGERGB");
+  IupSetAttribute(plot[0], "ACTIVE", "No");
 
   if (0)
   {

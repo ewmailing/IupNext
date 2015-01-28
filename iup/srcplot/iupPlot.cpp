@@ -1164,6 +1164,9 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   DrawTitle(canvas);
 
+  if (!IupGetInt(ih, "ACTIVE"))
+    DrawInactive(canvas);
+
   mRedraw = false;
   return true;
 }

@@ -557,6 +557,7 @@ public:
     void DrawCrossSamplesH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
   void DrawCrossHairV(const iupPlotRect &inRect, cdCanvas* canvas) const;
     void DrawCrossSamplesV(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
+  void DrawInactive(cdCanvas* canvas) const;
 
   /*********************************/
 
