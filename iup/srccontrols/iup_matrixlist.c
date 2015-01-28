@@ -967,7 +967,7 @@ static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int li
     x /= 2; x += x1;
     y /= 2; y += y2;
 
-    cdIupDrawImage(cnv, image, x, y, make_inactive, bgcolor);
+    cdIupDrawImage(cnv, image, x, y, 0, 0, make_inactive, bgcolor);
   }
 
   return IUP_DEFAULT;  /* draw nothing more */

@@ -25,7 +25,7 @@ void cdIupDrawHorizSunkenMark(cdCanvas *canvas, int x1, int x2, int y, long ligh
 void cdIupDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2);
 
 /* for drawing an IupImage on a CD canvas */
-void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_inactive, long bgcolor);
+void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int w, int h, int make_inactive, long bgcolor);
 
 /* for drawing in CD but using IUP native functions */
 void IupCdDrawFocusRect(Ihandle* ih, cdCanvas *canvas, int x1, int y1, int x2, int y2);

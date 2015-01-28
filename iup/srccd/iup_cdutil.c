@@ -254,7 +254,7 @@ static unsigned char* iUtilBuildImageBuffer(Ihandle *image, int width, int heigh
   return image_buffer;
 }
 
-void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_inactive, long bgcolor)
+void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int w, int h, int make_inactive, long bgcolor)
 {
   int plane_size, depth;
   int width = IupGetInt(image, "WIDTH");
@@ -267,6 +267,9 @@ void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_ina
     depth = 3;
   else if (bpp==32)
     depth = 4;
+
+  if (w == 0) w = width;
+  if (h == 0) h = height;
 
   /* The buffer will be destroyed in IupImage unmap */
   if (depth!=1 && make_inactive)
@@ -296,7 +299,7 @@ void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_ina
 
     cdCanvasPutImageRectMap(canvas, width, height, 
                             image_buffer, palette, 
-                            x, y, width, height, 0, 0, 0, 0);
+                            x, y, w, h, 0, 0, 0, 0);
   }
   else if (depth==3)
   {
@@ -304,7 +307,7 @@ void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_ina
                             image_buffer + 0*plane_size,
                             image_buffer + 1*plane_size,
                             image_buffer + 2*plane_size,
-                            x, y, width, height, 0, 0, 0, 0);
+                            x, y, w, h, 0, 0, 0, 0);
   }
   else /* depth==4 */
   {
@@ -313,7 +316,7 @@ void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_ina
                              image_buffer + 1*plane_size,
                              image_buffer + 2*plane_size,
                              image_buffer + 3*plane_size,
-                             x, y, width, height, 0, 0, 0, 0);
+                             x, y, w, h, 0, 0, 0, 0);
   }
 }
 

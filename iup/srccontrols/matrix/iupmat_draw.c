@@ -665,7 +665,7 @@ static void iMatrixDrawImage(Ihandle* ih, int x1, int x2, int y1, int y2, int al
     else  /* RIGHT */
       x = x2 - width;
 
-    cdIupDrawImage(ih->data->cd_canvas, image, x, iupMATRIX_INVERTYAXIS(ih, y), !active, bgcolor);
+    cdIupDrawImage(ih->data->cd_canvas, image, x, iupMATRIX_INVERTYAXIS(ih, y), 0, 0, !active, bgcolor);
   }
 
   iMatrixDrawResetCellClipping(ih);
