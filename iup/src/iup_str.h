@@ -209,10 +209,14 @@ char* iupStrReturnStrStr(const char *str1, const char *str2, char sep);
  * \ingroup str */
 char* iupStrReturnIntInt(int i1, int i2, char sep);
 
+
 /** Returns the number of decimals in a format string for floating point output.
- *\ingroup str */
+ * \ingroup str */
 int iupStrGetFormatPrecision(const char* format);
 
+/** Prints a double in a string using the given decimal symbol.
+ * \ingroup str */
+void iupStrPrintfDoubleLocale(char *str, const char *format, double d, const char* decimal_symbol);
 
 
 /** Extract RGB components from the string. Returns 0 or 1.
@@ -246,6 +250,12 @@ int iupStrToFloatDef(const char *str, float *f, float def);
  * \ingroup str */
 int iupStrToDouble(const char *str, double *d);
 int iupStrToDoubleDef(const char *str, double *d, double def);
+
+/** Converts the string to a double using the given decimal symbol. 
+ * The string must contains only the real value.
+ * Returns a a non zero value if sucessfull. Returns 2 if a locale was set.
+ * \ingroup str */
+int iupStrToDoubleLocale(const char *str, double *d, const char* decimal_symbol);
 
 /** Converts the string to two float. The string must contains two real values in sequence,
  * separated by the given character (usually 'x' or ':').

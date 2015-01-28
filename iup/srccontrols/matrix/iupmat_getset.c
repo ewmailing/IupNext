@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <locale.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -54,47 +53,10 @@ void iupMatrixModifyValue(Ihandle* ih, int lin, int col, const char* value)
     iupMatrixSetValue(ih, lin, col, value, -1);    /* call value_edit_cb, but NO numeric conversion */
 }
 
-static int iMatrixSetLocale(Ihandle* ih)
-{
-  char* decimal = iupAttribGet(ih, "NUMERICDECIMALSYMBOL");
-  if (decimal)
-  {
-    struct lconv* locale_info = localeconv();
-    if (locale_info->decimal_point[0] != decimal[0])
-    {
-      iupAttribSetStr(ih, "_IUP_OLD_LOCALE", setlocale(LC_NUMERIC, NULL));
-      if (decimal[0] == '.')
-      {
-        setlocale(LC_NUMERIC, "en-US");
-        return 1;
-      }
-      else if (decimal[0] == ',')
-      {
-        setlocale(LC_NUMERIC, "pt-BR");
-        return 1;
-      }
-    }
-  }
-  return 0;
-}
-
-static void iMatrixResetLocale(Ihandle* ih)
-{
-  char* old_locale = iupAttribGet(ih, "_IUP_OLD_LOCALE");
-  if (old_locale)
-  {
-    setlocale(LC_NUMERIC, old_locale);
-    iupAttribSet(ih, "_IUP_OLD_LOCALE", NULL);
-  }
-}
-
 static char* iMatrixSetValueNumeric(Ihandle* ih, int lin, int col, const char* value, int convert)
 {
-  int ret, locale_set;
   double number;
-  locale_set = iMatrixSetLocale(ih);
-  ret = iupStrToDouble(value, &number);
-  iMatrixResetLocale(ih);
+  int ret = iupStrToDoubleLocale(value, &number, iupAttribGet(ih, "NUMERICDECIMALSYMBOL"));
   if (ret)
   {
     IFniid setvalue_cb;
@@ -110,9 +72,9 @@ static char* iMatrixSetValueNumeric(Ihandle* ih, int lin, int col, const char* v
       setvalue_cb(ih, lin, col, number);
       return NULL;
     }
-    else if (locale_set || (convert && ih->data->numeric_columns[col].unit_shown != ih->data->numeric_columns[col].unit))
+    else if (ret==2 || (convert && ih->data->numeric_columns[col].unit_shown != ih->data->numeric_columns[col].unit))
     {
-      /* only use the number if a conversion occurred */
+      /* only use the number if locale was set or a conversion occurred */
       sprintf(ih->data->numeric_buffer_set, IUP_DOUBLE2STR, number);
       value = ih->data->numeric_buffer_set;
     }
@@ -319,9 +281,7 @@ static char* iMatrixGetValueNumericFormatted(Ihandle* ih, int lin, int col, cons
   if (format == NULL)
     format = iupMatrixGetNumericFormatDef(ih);
 
-  iMatrixSetLocale(ih);
-  sprintf(ih->data->numeric_buffer_get, format, number);
-  iMatrixResetLocale(ih);
+  iupStrPrintfDoubleLocale(ih->data->numeric_buffer_get, format, number, iupAttribGet(ih, "NUMERICDECIMALSYMBOL"));
   return ih->data->numeric_buffer_get;
 }
 

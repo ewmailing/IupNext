@@ -335,6 +335,8 @@ iupStrBoolean
 iupStrFalse
 iupStrRemove
 iupStrInsert
+iupStrPrintfDoubleLocale
+iupStrToDoubleLocale
 iupSetFontStyleAttrib
 iupSetFontSizeAttrib
 iupSetFontFaceAttrib

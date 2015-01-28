@@ -10,6 +10,7 @@
 #include <stdio.h>  
 #include <limits.h>
 #include <stdarg.h>
+#include <locale.h>
 
 #include "iup_str.h"
 
@@ -1041,7 +1042,7 @@ char* iupStrConvertToC(const char* str)
   if (!count)
     return (char*)str;
 
-  len = pstr-str;
+  len = (int)(pstr-str);
   new_str = malloc(len+count+1);
   pstr = str;
   pnstr = new_str;
@@ -1578,4 +1579,71 @@ int iupStrIsAscii(const char* str)
     str++;
   }
   return 1;
+}
+
+static char* iStrSetLocale(const char* decimal_symbol)
+{
+  if (decimal_symbol)
+  {
+    struct lconv* locale_info = localeconv();
+    if (locale_info->decimal_point[0] != decimal_symbol[0])
+    {
+      char* old_locale = setlocale(LC_NUMERIC, NULL);
+
+      if (decimal_symbol[0] == '.')
+      {
+        setlocale(LC_NUMERIC, "en-US");
+        return iupStrDup(old_locale);
+      }
+      else if (decimal_symbol[0] == ',')
+      {
+        setlocale(LC_NUMERIC, "pt-BR");
+        return iupStrDup(old_locale);
+      }
+    }
+  }
+
+  return NULL;
+}
+
+static void iStrResetLocale(char* old_locale)
+{
+  if (old_locale)
+  {
+    setlocale(LC_NUMERIC, old_locale);
+    free(old_locale);
+  }
+}
+
+int iupStrToDoubleLocale(const char *str, double *d, const char* decimal_symbol)
+{
+  int ret, locale_set = 0;
+  char* old_locale;
+
+  if (!str) 
+    return 0;
+
+  old_locale = iStrSetLocale(decimal_symbol);
+  if (old_locale) locale_set = 1;
+
+  ret = sscanf(str, "%lf", d);
+
+  iStrResetLocale(old_locale);
+
+  if (ret != 1) 
+    return 0;
+
+  if (locale_set)
+    return 2;
+  else
+    return 1;
+}
+
+void iupStrPrintfDoubleLocale(char *str, const char *format, double d, const char* decimal_symbol)
+{
+  char* old_locale = iStrSetLocale(decimal_symbol);
+
+  sprintf(str, format, d);
+
+  iStrResetLocale(old_locale);
 }
