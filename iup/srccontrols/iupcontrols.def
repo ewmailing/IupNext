@@ -37,14 +37,3 @@ iupmaskMatRemove
 
 iupMatrixExGetCellValue
 iupMatrixExSetCellValue
-
-cdIupCalcShadows
-cdIupConvertColor
-cdIupDrawSunkenRect
-cdIupDrawRaiseRect
-cdIupDrawVertSunkenMark
-cdIupDrawHorizSunkenMark
-cdIupDrawFocusRect
-cdIupDrawImage
-IupCdDrawFocusRect
-IupCdSetFont

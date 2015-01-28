@@ -119,31 +119,6 @@ void cdIupDrawHorizSunkenMark(cdCanvas *canvas, int x1, int x2, int y, long ligh
   cdCanvasLine(canvas, x1, y, x2, y);
 }
 
-void IupCdDrawFocusRect(Ihandle* ih, cdCanvas *canvas, int x1, int y1, int x2, int y2)
-{
-  int y, x, w, h;
-
-#ifdef WIN32
-  void* gc = cdCanvasGetAttribute(canvas, "HDC");
-  if (!gc)
-    gc = cdCanvasGetAttribute(canvas, "GC");  /* for Cairo running in Windows */
-#else
-  void* gc = cdCanvasGetAttribute(canvas, "GC");  /* works for X11, GDK and Cairo */
-#endif
-
-  cdCanvasUpdateYAxis(canvas, &y1);
-  cdCanvasUpdateYAxis(canvas, &y2);
-  y = y1;
-  if (y2<y1) y = y2;
-  x = x1;
-  if (x2<x1) x = x2;
-
-  w = abs(x2-x1)+1;
-  h = abs(y2-y1)+1;
-
-  iupdrvDrawFocusRect(ih, gc, x, y, w, h);
-}
-
 void cdIupDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2)
 {
   int old_linestyle = cdCanvasLineStyle(canvas, CD_DOTTED);
@@ -157,17 +132,11 @@ void cdIupDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2)
   cdCanvasLineStyle(canvas, old_linestyle);
 }
 
-void IupCdSetFont(Ihandle* ih, cdCanvas *canvas, const char* font)
-{
-  char* lastfont = iupAttribGetStr(ih, "_IUPCD_LASTFONT");
-  if (!lastfont || !iupStrEqual(lastfont, font))
-  {
-    iupAttribSetStr(ih, "_IUPCD_LASTFONT", font);
-    cdCanvasNativeFont(canvas, font);
-  }
-}
 
-static void cdIupInitPalette(Ihandle* image, long* palette, long bgcolor, int make_inactive)
+/************************************************************************/
+
+
+static void iUtilInitPalette(Ihandle* image, long* palette, long bgcolor, int make_inactive)
 {
   int i;
   unsigned char r, g, b, bg_r, bg_g, bg_b;
@@ -187,7 +156,7 @@ static void cdIupInitPalette(Ihandle* image, long* palette, long bgcolor, int ma
   }
 }
 
-static unsigned char* cdIupBuildImageBuffer(Ihandle *image, int width, int height, int depth, int make_inactive, long bgcolor)
+static unsigned char* iUtilBuildImageBuffer(Ihandle *image, int width, int height, int depth, int make_inactive, long bgcolor)
 {
   int size, plane_size, i, j;
   unsigned char bg_r, bg_g, bg_b;
@@ -307,7 +276,7 @@ void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_ina
 
   if (!image_buffer)
   {
-    image_buffer = cdIupBuildImageBuffer(image, width, height, depth, make_inactive, bgcolor);
+    image_buffer = iUtilBuildImageBuffer(image, width, height, depth, make_inactive, bgcolor);
 
     if (depth!=1 && make_inactive)
       iupAttribSet(image, "_IUPIMAGE_CDIMAGE_INACTIVE", (char*)image_buffer);
@@ -323,7 +292,7 @@ void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_ina
   if (depth==1)
   {
     long palette[256];
-    cdIupInitPalette(image, palette, bgcolor, make_inactive);
+    iUtilInitPalette(image, palette, bgcolor, make_inactive);
 
     cdCanvasPutImageRectMap(canvas, width, height, 
                             image_buffer, palette, 
@@ -347,3 +316,43 @@ void cdIupDrawImage(cdCanvas *canvas, Ihandle *image, int x, int y, int make_ina
                              x, y, width, height, 0, 0, 0, 0);
   }
 }
+
+
+/************************************************************************/
+
+
+void IupCdSetFont(Ihandle* ih, cdCanvas *canvas, const char* font)
+{
+  char* lastfont = iupAttribGetStr(ih, "_IUPCD_LASTFONT");
+  if (!lastfont || !iupStrEqual(lastfont, font))
+  {
+    iupAttribSetStr(ih, "_IUPCD_LASTFONT", font);
+    cdCanvasNativeFont(canvas, font);
+  }
+}
+
+void IupCdDrawFocusRect(Ihandle* ih, cdCanvas *canvas, int x1, int y1, int x2, int y2)
+{
+  int y, x, w, h;
+
+#ifdef WIN32
+  void* gc = cdCanvasGetAttribute(canvas, "HDC");
+  if (!gc)
+    gc = cdCanvasGetAttribute(canvas, "GC");  /* for Cairo running in Windows */
+#else
+  void* gc = cdCanvasGetAttribute(canvas, "GC");  /* works for X11, GDK and Cairo */
+#endif
+
+  cdCanvasUpdateYAxis(canvas, &y1);
+  cdCanvasUpdateYAxis(canvas, &y2);
+  y = y1;
+  if (y2<y1) y = y2;
+  x = x1;
+  if (x2<x1) x = x2;
+
+  w = abs(x2 - x1) + 1;
+  h = abs(y2 - y1) + 1;
+
+  iupdrvDrawFocusRect(ih, gc, x, y, w, h);
+}
+

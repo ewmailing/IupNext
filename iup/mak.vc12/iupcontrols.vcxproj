@@ -47,7 +47,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;..\src;..\srccontrols;..\..\cd\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\src;..\srccd;..\srccontrols;..\..\cd\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;CD_NO_OLD_INTERFACE;_CRT_SECURE_NO_DEPRECATE;IUP_ASSERT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -67,7 +67,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;..\src;..\srccontrols;..\..\cd\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\src;..\srccd;..\srccontrols;..\..\cd\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;CD_NO_OLD_INTERFACE;_CRT_SECURE_NO_DEPRECATE;IUP_ASSERT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -96,7 +96,6 @@
     <ClInclude Include="..\include\iuptabs.h" />
     <ClInclude Include="..\include\iuptree.h" />
     <ClInclude Include="..\include\iupval.h" />
-    <ClInclude Include="..\srccontrols\iup_cdutil.h" />
     <ClInclude Include="..\srccontrols\iup_controls.h" />
     <ClInclude Include="..\srccontrols\color\iup_colorhsi.h" />
     <ClInclude Include="..\srccontrols\matrix\iupmat_aux.h" />
@@ -131,7 +130,6 @@
     <ClCompile Include="..\srccontrols\matrix\iupmat_numlc.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_scroll.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmatrix.c" />
-    <ClCompile Include="..\srccontrols\iup_cdutil.c" />
     <ClCompile Include="..\srccontrols\iup_cells.c" />
     <ClCompile Include="..\srccontrols\iup_colorbar.c" />
     <ClCompile Include="..\srccontrols\iup_controls.c" />
