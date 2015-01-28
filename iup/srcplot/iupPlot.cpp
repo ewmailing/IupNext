@@ -721,13 +721,16 @@ void iupPlotAxis::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) con
 iupPlot::iupPlot(Ihandle* _ih, int inDefaultFontStyle, int inDefaultFontSize)
   :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mCrossHairH(false),
   mBackColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mGrid(true), mGridMinor(false),
-  mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle),
+  mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle), mBackImage(NULL),
   mAxisX(inDefaultFontStyle, inDefaultFontSize), mAxisY(inDefaultFontStyle, inDefaultFontSize)
 {
 }
 
 iupPlot::~iupPlot()
 {
+  if (mBackImage)
+    free(mBackImage);
+
   RemoveAllDataSets();
 }
 
@@ -1025,13 +1028,19 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (!mRedraw)
     return true;
 
+  // Shift the drawing area to the plot viewport
   cdCanvasOrigin(canvas, mViewport.mX, mViewport.mY);
 
+  // There are no additional transformations set in the CD canvas,
+  // all transformations are done here.
+
   cdCanvasClip(canvas, CD_CLIPAREA);
+
+  // Clip the drawing area to the plot viewport
   cdCanvasClipArea(canvas, 0, mViewport.mWidth - 1, 0, mViewport.mHeight - 1);
 
-  // draw entire background, including the margins
-  DrawPlotBackground(canvas);
+  // draw entire plot viewport
+  DrawBackground(canvas);
 
   if (!mDataSetListCount)
     return true;
@@ -1057,48 +1066,51 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   CalculateMargins(canvas);
 
-  iupPlotRect theRect;
-  theRect.mX = mMargin.mLeft;
-  theRect.mY = mMargin.mBottom;
-  theRect.mWidth = mViewport.mWidth - mMargin.mLeft - mMargin.mRight;
-  theRect.mHeight = mViewport.mHeight - mMargin.mTop - mMargin.mBottom;
+  iupPlotRect theDatasetArea;
+  theDatasetArea.mX = mMargin.mLeft;
+  theDatasetArea.mY = mMargin.mBottom;
+  theDatasetArea.mWidth = mViewport.mWidth - mMargin.mLeft - mMargin.mRight;
+  theDatasetArea.mHeight = mViewport.mHeight - mMargin.mTop - mMargin.mBottom;
 
-  if (!CalculateTickSpacing(theRect, canvas))
+  if (!CalculateTickSpacing(theDatasetArea, canvas))
     return false;
 
-  if (!CalculateXTransformation(theRect))
+  if (!CalculateXTransformation(theDatasetArea))
     return false;
 
-  if (!CalculateYTransformation(theRect))
+  if (!CalculateYTransformation(theDatasetArea))
     return false;
 
   IFnC pre_cb = (IFnC)IupGetCallback(ih, "PREDRAW_CB");
   if (pre_cb)
     pre_cb(ih, canvas);
 
-  if (!mGrid.DrawX(mAxisX.mTickIter, mAxisX.mTrafo, theRect, canvas))
+  if (mBackImage)
+    DrawBackgroundImage(canvas);
+
+  if (!mGrid.DrawX(mAxisX.mTickIter, mAxisX.mTrafo, theDatasetArea, canvas))
     return false;
 
   if (mGrid.mShowX)
-    mGridMinor.DrawX(mAxisX.mTickIter, mAxisX.mTrafo, theRect, canvas);
+    mGridMinor.DrawX(mAxisX.mTickIter, mAxisX.mTrafo, theDatasetArea, canvas);
 
-  if (!mGrid.DrawY(mAxisY.mTickIter, mAxisY.mTrafo, theRect, canvas))
+  if (!mGrid.DrawY(mAxisY.mTickIter, mAxisY.mTrafo, theDatasetArea, canvas))
     return false;
 
   if (mGrid.mShowY)
-    mGridMinor.DrawY(mAxisY.mTickIter, mAxisY.mTrafo, theRect, canvas);
+    mGridMinor.DrawY(mAxisY.mTickIter, mAxisY.mTrafo, theDatasetArea, canvas);
 
-  if (!mAxisX.DrawX(theRect, canvas, mAxisY))
+  if (!mAxisX.DrawX(theDatasetArea, canvas, mAxisY))
     return false;
 
-  if (!mAxisY.DrawY(theRect, canvas, mAxisX))
+  if (!mAxisY.DrawY(theDatasetArea, canvas, mAxisX))
     return false;
 
   if (mBox.mShow)
-    mBox.Draw(theRect, canvas);
+    mBox.Draw(theDatasetArea, canvas);
 
-  // clip the plotregion while drawing plots
-  cdCanvasClipArea(canvas, theRect.mX, theRect.mX + theRect.mWidth - 1, theRect.mY, theRect.mY + theRect.mHeight - 1);
+  // clip to the dataset area
+  cdCanvasClipArea(canvas, theDatasetArea.mX, theDatasetArea.mX + theDatasetArea.mWidth - 1, theDatasetArea.mY, theDatasetArea.mY + theDatasetArea.mHeight - 1);
 
   IFniiddi drawsample_cb = (IFniiddi)IupGetCallback(ih, "DRAWSAMPLE_CB");
 
@@ -1116,26 +1128,26 @@ bool iupPlot::Render(cdCanvas* canvas)
   }
 
   if (mCrossHairH)
-    DrawCrossHairH(theRect, canvas);
+    DrawCrossHairH(theDatasetArea, canvas);
   else if (mCrossHairV)
-    DrawCrossHairV(theRect, canvas);
+    DrawCrossHairV(theDatasetArea, canvas);
 
   if (mShowSelectionBand)
   {
-    if (mSelectionBand.mX < theRect.mX) 
+    if (mSelectionBand.mX < theDatasetArea.mX) 
     { 
-      mSelectionBand.mWidth = mSelectionBand.mX + mSelectionBand.mWidth - theRect.mX; 
-      mSelectionBand.mX = theRect.mX; 
+      mSelectionBand.mWidth = mSelectionBand.mX + mSelectionBand.mWidth - theDatasetArea.mX; 
+      mSelectionBand.mX = theDatasetArea.mX; 
     }
-    if (mSelectionBand.mY < theRect.mY) 
+    if (mSelectionBand.mY < theDatasetArea.mY) 
     {
-      mSelectionBand.mHeight = mSelectionBand.mY + mSelectionBand.mHeight - theRect.mY; 
-      mSelectionBand.mY = theRect.mY;
+      mSelectionBand.mHeight = mSelectionBand.mY + mSelectionBand.mHeight - theDatasetArea.mY; 
+      mSelectionBand.mY = theDatasetArea.mY;
     }
-    if (mSelectionBand.mX + mSelectionBand.mWidth > theRect.mX + theRect.mWidth)
-      mSelectionBand.mWidth = theRect.mX + theRect.mWidth - mSelectionBand.mX;
-    if (mSelectionBand.mY + mSelectionBand.mHeight > theRect.mY + theRect.mHeight)
-      mSelectionBand.mHeight = theRect.mY + theRect.mHeight - mSelectionBand.mY;
+    if (mSelectionBand.mX + mSelectionBand.mWidth > theDatasetArea.mX + theDatasetArea.mWidth)
+      mSelectionBand.mWidth = theDatasetArea.mX + theDatasetArea.mWidth - mSelectionBand.mX;
+    if (mSelectionBand.mY + mSelectionBand.mHeight > theDatasetArea.mY + theDatasetArea.mHeight)
+      mSelectionBand.mHeight = theDatasetArea.mY + theDatasetArea.mHeight - mSelectionBand.mY;
 
     mBox.Draw(mSelectionBand, canvas);
   }
@@ -1144,13 +1156,13 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (post_cb)
     post_cb(ih, canvas);
 
-  if (!DrawLegend(theRect, canvas, mLegend.mPos))
+  if (!DrawLegend(theDatasetArea, canvas, mLegend.mPos))
     return false;
 
-  cdCanvasClipArea(canvas, 0, mViewport.mWidth - 1, 
-                           0, mViewport.mHeight - 1);
+  // Clip the drawing area to the viewport
+  cdCanvasClipArea(canvas, 0, mViewport.mWidth - 1, 0, mViewport.mHeight - 1);
 
-  DrawPlotTitle(canvas);
+  DrawTitle(canvas);
 
   mRedraw = false;
   return true;

@@ -94,8 +94,21 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "AXS_XCROSSORIGIN", "Yes");
   IupSetAttribute(plot[0], "AXS_YCROSSORIGIN", "Yes");
 
-  IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
+//  IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
 //  IupSetAttribute(plot[0], "GRAPHICSMODE", "IMAGERGB");
+
+  if (0)
+  {
+    Ihandle* image = IupLoadImage("../test/corsega.tif");
+    if (image)
+    {
+      IupSetAttributeHandle(plot[0], "BACKIMAGE", image);
+      IupSetAttribute(plot[0], "BACKIMAGE_XMIN", "-100");
+      IupSetAttribute(plot[0], "BACKIMAGE_XMAX", "150");
+      IupSetAttribute(plot[0], "BACKIMAGE_YMIN", "-2");
+      IupSetAttribute(plot[0], "BACKIMAGE_YMAX", "2");
+    }
+  }
 
   theFac = 1.0/(100*100*100);
   IupPlotBegin(plot[0], 0);

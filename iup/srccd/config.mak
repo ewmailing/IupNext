@@ -9,7 +9,7 @@ DEF_FILE = iupcd.def
 USE_CD=YES
 # Can not use USE_IUP because Tecmake will include "iupcd" in linker
 
-INCLUDES = ../include
+INCLUDES = ../include ../src
 LIBS = iup
 LDIR = ../lib/$(TEC_UNAME)
 

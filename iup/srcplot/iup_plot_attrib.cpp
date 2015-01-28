@@ -309,6 +309,19 @@ static char* iPlotGetLegendPosAttrib(Ihandle* ih)
   return (char*)legendpos_str[ih->data->current_plot->mLegend.mPosition];
 }
 
+static int iPlotSetBackImageAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->current_plot->mBackImage) free(ih->data->current_plot->mBackImage);
+  ih->data->current_plot->mBackImage = iupStrDup(value);
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
+
+static char* iPlotGetBackImageAttrib(Ihandle* ih)
+{
+  return ih->data->current_plot->mBackImage;
+}
+
 static int iPlotSetLegendPosXYAttrib(Ihandle* ih, const char* value)
 {
   int x, y;
@@ -326,6 +339,70 @@ static int iPlotSetLegendPosXYAttrib(Ihandle* ih, const char* value)
 static char* iPlotGetLegendPosXYAttrib(Ihandle* ih)
 {
   return iupStrReturnIntInt(ih->data->current_plot->mLegend.mPos.mX, ih->data->current_plot->mLegend.mPos.mY, ',');
+}
+
+static int iPlotSetBackImageXMinAttrib(Ihandle* ih, const char* value)
+{
+  double xx;
+  if (iupStrToDouble(value, &xx))
+  {
+    ih->data->current_plot->mBackImageMinX = xx;
+    ih->data->current_plot->mRedraw = true;
+  }
+  return 0;
+}
+
+static int iPlotSetBackImageYMinAttrib(Ihandle* ih, const char* value)
+{
+  double xx;
+  if (iupStrToDouble(value, &xx))
+  {
+    ih->data->current_plot->mBackImageMinY = xx;
+    ih->data->current_plot->mRedraw = true;
+  }
+  return 0;
+}
+
+static char* iPlotGetBackImageXMinAttrib(Ihandle* ih)
+{
+  return iupStrReturnDouble(ih->data->current_plot->mBackImageMinX);
+}
+
+static char* iPlotGetBackImageYMinAttrib(Ihandle* ih)
+{
+  return iupStrReturnDouble(ih->data->current_plot->mBackImageMinY);
+}
+
+static int iPlotSetBackImageXMaxAttrib(Ihandle* ih, const char* value)
+{
+  double xx;
+  if (iupStrToDouble(value, &xx))
+  {
+    ih->data->current_plot->mBackImageMaxX = xx;
+    ih->data->current_plot->mRedraw = true;
+  }
+  return 0;
+}
+
+static int iPlotSetBackImageYMaxAttrib(Ihandle* ih, const char* value)
+{
+  double xx;
+  if (iupStrToDouble(value, &xx))
+  {
+    ih->data->current_plot->mBackImageMaxY = xx;
+    ih->data->current_plot->mRedraw = true;
+  }
+  return 0;
+}
+
+static char* iPlotGetBackImageXMaxAttrib(Ihandle* ih)
+{
+  return iupStrReturnDouble(ih->data->current_plot->mBackImageMaxX);
+}
+
+static char* iPlotGetBackImageYMaxAttrib(Ihandle* ih)
+{
+  return iupStrReturnDouble(ih->data->current_plot->mBackImageMaxY);
 }
 
 static int iPlotSetBackColorAttrib(Ihandle* ih, const char* value)
@@ -2836,6 +2913,11 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "MARGINBOTTOM", iPlotGetMarginBottomAttrib, iPlotSetMarginBottomAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BACKCOLOR", iPlotGetBackColorAttrib, iPlotSetBackColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGE", iPlotGetBackImageAttrib, iPlotSetBackImageAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGE_XMIN", iPlotGetBackImageXMinAttrib, iPlotSetBackImageXMinAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGE_YMIN", iPlotGetBackImageYMinAttrib, iPlotSetBackImageYMinAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGE_XMAX", iPlotGetBackImageXMaxAttrib, iPlotSetBackImageXMaxAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGE_YMAX", iPlotGetBackImageYMaxAttrib, iPlotSetBackImageYMaxAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TITLE", iPlotGetTitleAttrib, iPlotSetTitleAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLECOLOR", iPlotGetTitleColorAttrib, iPlotSetTitleColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

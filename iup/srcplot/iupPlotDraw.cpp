@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "iupPlot.h"
+#include "iup_cdutil.h"
 
 
 static inline void iPlotSetLine(cdCanvas* canvas, int inLineStyle, int inLineWidth)
@@ -492,7 +493,7 @@ void iupPlot::SetTitleFont(cdCanvas* canvas) const
   SetFont(canvas, mTitle.mFontStyle, theFontSize);
 }
 
-void iupPlot::DrawPlotTitle(cdCanvas* canvas) const
+void iupPlot::DrawTitle(cdCanvas* canvas) const
 {
   if (mTitle.GetText()) 
   {
@@ -505,10 +506,32 @@ void iupPlot::DrawPlotTitle(cdCanvas* canvas) const
   }
 }
 
-void iupPlot::DrawPlotBackground(cdCanvas* canvas) const
+void iupPlot::DrawBackground(cdCanvas* canvas) const
 {
   cdCanvasSetForeground(canvas, mBackColor);
   cdCanvasBox(canvas, 0, mViewport.mWidth - 1, 0, mViewport.mHeight - 1);
+}
+
+void iupPlot::DrawBackgroundImage(cdCanvas* canvas) const
+{
+  Ihandle* image = IupGetHandle(mBackImage);
+  if (image)
+  {
+    double theScreenMinX = mAxisX.mTrafo->Transform(mBackImageMinX);
+    double theScreenMinY = mAxisY.mTrafo->Transform(mBackImageMinY);
+    double theScreenMaxX = mAxisX.mTrafo->Transform(mBackImageMaxX);
+    double theScreenMaxY = mAxisY.mTrafo->Transform(mBackImageMaxY);
+
+    double theScreenW = theScreenMaxX - theScreenMinX + 1;
+    double theScreenH = theScreenMaxY - theScreenMinY + 1;
+
+    int theX = iupPlotRound(theScreenMinX);
+    int theY = iupPlotRound(theScreenMinY);
+    int theW = iupPlotRound(theScreenW);
+    int theH = iupPlotRound(theScreenH);
+
+    cdIupDrawImage(canvas, image, theX, theY, theW, theH, 0, mBackColor);
+  }
 }
 
 bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const
@@ -594,6 +617,7 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRec
     ioPos.mWidth = theMaxWidth;
     ioPos.mHeight = theTotalHeight;
 
+    // Clip to the legend box
     cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1,
                              theScreenY, theScreenY + theTotalHeight - 1);
 

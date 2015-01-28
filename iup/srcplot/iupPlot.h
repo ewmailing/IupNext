@@ -548,9 +548,10 @@ public:
 
   /*********************************/
 
-  void DrawPlotTitle(cdCanvas* canvas) const;
+  void DrawTitle(cdCanvas* canvas) const;
     void SetTitleFont(cdCanvas* canvas) const;
-  void DrawPlotBackground(cdCanvas* canvas) const;
+  void DrawBackground(cdCanvas* canvas) const;
+  void DrawBackgroundImage(cdCanvas* canvas) const;
   bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const;
   void DrawCrossHairH(const iupPlotRect &inRect, cdCanvas* canvas) const;
     void DrawCrossSamplesH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
@@ -601,6 +602,8 @@ public:
 
   iupPlotMargin mMargin, mMarginAuto;
   long mBackColor;
+  char* mBackImage;
+  double mBackImageMinX, mBackImageMaxX, mBackImageMinY, mBackImageMaxY;
   iupPlotGrid mGrid;
   iupPlotGrid mGridMinor;
   iupPlotAxis mAxisX;

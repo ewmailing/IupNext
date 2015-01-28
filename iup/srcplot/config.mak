@@ -14,7 +14,7 @@ ifdef DBG
   endif  
 endif  
 
-INCLUDES = ../include ../src
+INCLUDES = ../include ../src ../srccd
 LDIR = ../lib/$(TEC_UNAME)  
 LIBS = iup iupgl iupcd cdgl 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
