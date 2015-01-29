@@ -2417,7 +2417,7 @@ static char* iPlotGetAxisYTickFontStyleAttrib(Ihandle* ih)
 static int iPlotSetAxisXTickFormatAutoAttrib(Ihandle* ih, const char* value)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
-  axis->mTick.mFormatStringAuto = iupStrBoolean(value)? true: false;
+  axis->mTick.mFormatAuto = iupStrBoolean(value)? true: false;
   ih->data->current_plot->mRedraw = true;
   return 0;
 }
@@ -2425,7 +2425,7 @@ static int iPlotSetAxisXTickFormatAutoAttrib(Ihandle* ih, const char* value)
 static int iPlotSetAxisYTickFormatAutoAttrib(Ihandle* ih, const char* value)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
-  axis->mTick.mFormatStringAuto = iupStrBoolean(value)? true: false;
+  axis->mTick.mFormatAuto = iupStrBoolean(value)? true: false;
   ih->data->current_plot->mRedraw = true;
   return 0;
 }
@@ -2433,13 +2433,13 @@ static int iPlotSetAxisYTickFormatAutoAttrib(Ihandle* ih, const char* value)
 static char* iPlotGetAxisXTickFormatAutoAttrib(Ihandle* ih)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
-  return iupStrReturnBoolean(axis->mTick.mFormatStringAuto);
+  return iupStrReturnBoolean(axis->mTick.mFormatAuto);
 }
 
 static char* iPlotGetAxisYTickFormatAutoAttrib(Ihandle* ih)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
-  return iupStrReturnBoolean(axis->mTick.mFormatStringAuto);
+  return iupStrReturnBoolean(axis->mTick.mFormatAuto);
 }
 
 static int iPlotSetAxisXTickFormatAttrib(Ihandle* ih, const char* value)
@@ -2449,12 +2449,12 @@ static int iPlotSetAxisXTickFormatAttrib(Ihandle* ih, const char* value)
   if (value && value[0] != 0)
   {
     strcpy(axis->mTick.mFormatString, value);
-    axis->mTick.mFormatStringAuto = false;
+    axis->mTick.mFormatAuto = false;
   }
   else
   {
     strcpy(axis->mTick.mFormatString, "%.0f");
-    axis->mTick.mFormatStringAuto = true;
+    axis->mTick.mFormatAuto = true;
   }
 
   ih->data->current_plot->mRedraw = true;
@@ -2468,12 +2468,12 @@ static int iPlotSetAxisYTickFormatAttrib(Ihandle* ih, const char* value)
   if (value && value[0] != 0)
   {
     strcpy(axis->mTick.mFormatString, value);
-    axis->mTick.mFormatStringAuto = false;
+    axis->mTick.mFormatAuto = false;
   }
   else
   {
     strcpy(axis->mTick.mFormatString, "%.0f");
-    axis->mTick.mFormatStringAuto = true;
+    axis->mTick.mFormatAuto = true;
   }
 
   ih->data->current_plot->mRedraw = true;
@@ -2488,12 +2488,12 @@ static int iPlotSetAxisXTickFormatPrecisionAttrib(Ihandle* ih, const char* value
   if (iupStrToInt(value, &precision))
   {
     sprintf(axis->mTick.mFormatString, "%%.%df", precision);
-    axis->mTick.mFormatStringAuto = false;
+    axis->mTick.mFormatAuto = false;
   }
   else
   {
     strcpy(axis->mTick.mFormatString, "%.0f");
-    axis->mTick.mFormatStringAuto = true;
+    axis->mTick.mFormatAuto = true;
   }
   return 0;
 }
@@ -2506,12 +2506,12 @@ static int iPlotSetAxisYTickFormatPrecisionAttrib(Ihandle* ih, const char* value
   if (iupStrToInt(value, &precision))
   {
     sprintf(axis->mTick.mFormatString, "%%.%df", precision);
-    axis->mTick.mFormatStringAuto = false;
+    axis->mTick.mFormatAuto = false;
   }
   else
   {
     strcpy(axis->mTick.mFormatString, "%.0f");
-    axis->mTick.mFormatStringAuto = true;
+    axis->mTick.mFormatAuto = true;
   }
   return 0;
 }

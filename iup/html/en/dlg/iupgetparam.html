@@ -207,17 +207,18 @@ empty values to use the default values. No mask can be set.</p>
 <p>A integer parameter always has a spin attached to the text to increment and 
 decrement the value. A real parameter only has a spin in a full interval is 
 defined (min and max), in this case the default step is (max-min)/20. When the 
-callback is called because a spin was activated then the attribute "SPINNING" of 
+callback is called because a spin was activated then the attribute "<strong>SPINNING</strong>" of 
 the dialog will be defined to a non NULL and non zero value.</p>
-<p>The default precision for real value display is 2. But inside the callback 
-the application can set the dialog attribute "PRECISION" to a larger value if 
-necessary. It will work only after the value has been interactively changed. 
-(since 3.11.1) The global attribute DEFAULTPRECISION can also be used to change 
-the default precision. (since 3.11.2)</p>
+<p>The default precision for real value display is given by the global attribute
+<a href="../attrib/iup_globals.html#DEFAULTPRECISION">DEFAULTPRECISION</a>. But inside the callback 
+the application can set the param attribute "<strong>PRECISION</strong>" to use 
+another value. It will work only during interactive changes. The decimal symbol 
+will used the <a href="../attrib/iup_globals.html#DEFAULTDECIMALSYMBOL">
+DEFAULTDECIMALSYMBOL</a> global attribute. (since 3.13)</p>
 <p>The function does not allocate memory space to store the text entered by the 
 user. Therefore, the string parameter must be large enough to contain the user 
-input. If you want to set a maximum size for the string you can set the MAXSTR 
-attribute for a parameter Ihandle, inside the callback when param_index=IUP_GETPARAM_INIT 
+input. If you want to set a maximum size for the string you can set the param 
+attribute <strong>MAXSTR</strong>, inside the callback when param_index=IUP_GETPARAM_INIT 
 (since 3.6). Its default value is 10240 for multiline strings, 4096 for file names, 
 and 512 for other strings.</p>
 <p>There is no extra parameters for the color string. The mask is automatically 
@@ -225,8 +226,8 @@ set to capture 3 or 4 unsigned integers from 0 to 255 (R G B) or (R G B A)
 (alpha is optional).</p>
 <p>The dialog is resizable if it contains a string, a multiline string or a 
   number with a valuator. All the multiline strings will increase size equally in both directions.</p>
-<p>The dialog uses a global attribute called &quot;PARENTDIALOG&quot; as the parent dialog if it is defined. It also uses a 
-  global attribute called &quot;ICON&quot; as the dialog icon if it is defined.</p>
+<p>The dialog uses a global attribute called &quot;<strong>PARENTDIALOG</strong>&quot; as the parent dialog if it is defined. It also uses a 
+  global attribute called &quot;<strong>ICON</strong>&quot; as the dialog icon if it is defined.</p>
 <h3><a name="aux">Utility Functions</a> (since 3.13)</h3>
 <p>Both functions bellow are used internally in <strong>IupGetParam</strong>. 
 But they can be used to integrate the <strong>IupGetParam</strong> contents in 

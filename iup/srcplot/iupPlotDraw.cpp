@@ -250,7 +250,8 @@ bool iupPlotAxis::DrawXTick(double inX, double inScreenY, bool inMajor, const ch
     if (mTick.mShowNumber)
     {
       char theBuf[128];
-      sprintf(theBuf, inFormatString, inX);
+      iupStrPrintfDoubleLocale(theBuf, inFormatString, inX, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
+
       double theScreenY = inScreenY - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
       if (mTick.mRotateNumber)
         iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, CD_EAST, theBuf);
@@ -369,7 +370,8 @@ bool iupPlotAxis::DrawYTick(double inY, double inScreenX, bool inMajor, const ch
     if (mTick.mShowNumber)
     {
       char theBuf[128];
-      sprintf(theBuf, inFormatString, inY);
+      iupStrPrintfDoubleLocale(theBuf, inFormatString, inY, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
+
       double theScreenX = inScreenX - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
       if (mTick.mRotateNumber)
         iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, CD_SOUTH, theBuf);

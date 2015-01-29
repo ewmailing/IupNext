@@ -483,11 +483,14 @@ static iPlotAttribParam iplot_axisYticksnumber_attribs[] = {
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
-static void iPlotSetDouble(Ihandle* control, const char* name, double num)
+static void iPlotSetParamDouble(Ihandle* control, const char* name, double num)
 {
   char value[80];
+  char format[30];
   int prec = IupGetInt(NULL, "DEFAULTPRECISION");
-  sprintf(value, "%.*f", prec, num);
+  sprintf(format, "%%.%df", prec);
+  iupStrPrintfDoubleLocale(value, format, num, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
+
   IupStoreAttribute(control, name, value);
 }
 
@@ -513,7 +516,7 @@ static void iPlotSetParamValue(Ihandle* param, const char* value)
       if (iupStrEqualNoCase(iupAttribGet(param, "TYPE"), "REAL"))
       {
         double num = IupGetDouble(param, "VALUE");
-        iPlotSetDouble(control, "VALUE", num);
+        iPlotSetParamDouble(control, "VALUE", num);
       }
       else
         IupSetStrAttribute(control, "VALUE", value);
@@ -1481,8 +1484,10 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
     if (ih->data->last_tip_ds != ds && ih->data->last_tip_sample != sample)
     {
       char* tipformat = iupAttribGetStr(ih, "TIPFORMAT");
+
       char str_Y[100];
-      sprintf(str_Y, ih->data->current_plot->mAxisY.mTipFormatString, ry);
+      iupStrPrintfDoubleLocale(str_Y, ih->data->current_plot->mAxisY.mTipFormatString, ry, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
+
       if (strX)
       {
         IupSetfAttribute(ih, "TIP", tipformat, ds_name, strX, str_Y);
@@ -1490,7 +1495,8 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
       else
       {
         char str_X[100];
-        sprintf(str_X, ih->data->current_plot->mAxisX.mTipFormatString, rx);
+        iupStrPrintfDoubleLocale(str_X, ih->data->current_plot->mAxisX.mTipFormatString, rx, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
+
         IupSetfAttribute(ih, "TIP", tipformat, ds_name, str_X, str_Y);
       }
 

@@ -609,7 +609,9 @@ in degrees. Use values between 90º and 45º for better results. Default: 90.
 For the log scale axis the format is dynamically changed for every major tick. Default: &quot;Yes&quot;. 
 (since 3.13)</p>
 <p><b>AXS_XTICKFORMAT, AXS_YTICKFORMAT</b>: axis tick number C format string. 
-If set will also set AXS_?TICKFORMATAUTO to NO. Default: &quot;%.0f&quot;.</p>
+If set will also set AXS_?TICKFORMATAUTO to NO. Default: &quot;%.0f&quot;. The 
+decimal symbol will follow the DEFAULTDECIMALSYMBOL global attribute definition 
+if any (since 3.13).</p>
 <p>
 <b>AXS_XTICKFORMATPRECISION, AXS_YTICKFORMATPRECISION</b>: will set the <strong>
 sprintf</strong> &quot;precision&quot; field in the

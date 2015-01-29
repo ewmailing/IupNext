@@ -44,10 +44,6 @@ be used if you set the element handle to NULL.</p>
 <h3><a name="copyright"><strong>COPYRIGHT</strong></a> (read-only)</h3>
 <p>Returns the IUP's copyright.</p>
 <p>&nbsp;Ex: &quot;Copyright (C) 1994-2014 Tecgraf/PUC-Rio&quot;.</p>
-<h3>LASTERROR [Windows Only]<span class="style2"> (since 3.6)</span></h3>
-<p>If an error is found, returns a string with the system error description.</p>
-<h3>IUPLUA_THREADED<span class="style2"> (since 3.6)</span></h3>
-<p>If defined allow IUP to be used inside coroutines in Lua.</p>
 <h3><a name="driver"><strong>DRIVER</strong></a> (read-only)</h3>
 <p>Informs the current driver being used.</p>
 <p>Two drivers are available now, one for each platform: "GTK", "Motif" and "Win32".</p>
@@ -56,10 +52,22 @@ be used if you set the element handle to NULL.</p>
 <p>When the last visible dialog is closed the <b>IupExitLoop</b> function is called. To avoid that set 
 LOCKLOOP=YES before hiding the last dialog. Possible values: &quot;YES&quot; or &quot;NO&quot;. 
 Default: &quot;NO&quot;. </p>
+<h3>LASTERROR [Windows Only]<span class="style2">&nbsp; (read-only) (since 3.6)</span></h3>
+<p>If an error is found, returns a string with the system error description.</p>
 <h3><strong><a name="UTF8MODE">UTF8MODE</a></strong> [Windows and GTK Only]</h3>
 <p>By default IUP uses strings in the current locale (See
 <a href="iup_font.html#Encoding">FONT</a> attribute). To use UTF-8 strings set 
 this attribute to Yes. Default: NO.</p>
+<h3><a name="DEFAULTPRECISION">DEFAULTPRECISION</a><span class="style2"> (since 3.11.2)</span></h3>
+<p>The default number of decimal places used in floating point output by some 
+controls (<strong>IupMatrixEx</strong> and <strong>
+IupGetParam</strong>). Local attributes may overwrite the default. Default: 2.</p>
+<h3><strong><a name="DEFAULTDECIMALSYMBOL">DEFAULTDECIMALSYMBOL</a><span class="style2"> 
+(since 3.13)</span></strong></h3>
+<p>Symbol used for decimal separator in numeric values used in floating point 
+output by some controls (<strong>IupMatrixEx,</strong> <strong>
+IupGetParam</strong> and <strong>IupPlot</strong>). Can be &quot;.&quot; or &quot;,&quot; only. 
+Default uses the one defined by the system locale.</p>
 <h3><strong>UTF8MODE_FILE</strong> [Windows Only]</h3>
 <p>By default IUP uses file names in the current locale, even when UTF8MODE=Yes. To use UTF-8 
 file names set 
@@ -70,6 +78,8 @@ this attribute to Yes. Default: NO.</p>
 <p>Flag indicating that GTK is using a global menu instead of a per window menu. 
 See more information at the <a href="../drv/gtk.html">GTK driver</a> 
 documentation.</p>
+<h3>IUPLUA_THREADED<span class="style2"> (since 3.6)</span></h3>
+<p>If defined allow IUP to be used inside coroutines in Lua.</p>
 <h3><strong>SINGLEINSTANCE</strong> [Windows Only]<span class="style2"> (since 3.2)</span></h3>
 <p>Restricts the number of instances of the application by using a name to 
 identify it. The value must also be a partial match to the title of a dialog 

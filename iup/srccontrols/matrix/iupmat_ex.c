@@ -107,6 +107,14 @@ static int iMatrixSetNumericFormatPrecisionAttrib(Ihandle* ih, int col, const ch
   return 0;
 }
 
+static char* iMatrixGetNumericDecimalSymbolAttrib(Ihandle* ih)
+{
+  char* value = iupAttribGet(ih, "NUMERICDECIMALSYMBOL");
+  if (!value)
+    value = IupGetGlobal("DEFAULTDECIMALSYMBOL");
+  return value;
+}
+
 static char* iMatrixGetNumericFormatPrecisionAttrib(Ihandle* ih, int col)
 {
   int precision;
@@ -371,7 +379,7 @@ void iupMatrixRegisterEx(Iclass* ic)
   iupClassRegisterAttributeId(ic, "NUMERICUNITINDEX", NULL, iMatrixSetNumericUnitIndexAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NUMERICUNITSHOWNINDEX", NULL, iMatrixSetNumericUnitShownIndexAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMERICFORMATDEF", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NUMERICDECIMALSYMBOL", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICDECIMALSYMBOL", iMatrixGetNumericDecimalSymbolAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterCallback(ic, "NUMERICGETVALUE_CB", "ii=d");
   iupClassRegisterCallback(ic, "NUMERICSETVALUE_CB", "iid");

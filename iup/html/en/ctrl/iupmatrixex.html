@@ -344,7 +344,9 @@ is set. To define a numeric column without using units simply set NUMERICQUANTIT
 &quot;None&quot;.</p>
 <p>
 <strong>NUMERICDECIMALSYMBOL</strong>: symbol used for decimal separator in 
-numeric values. (since 3.12)</p>
+numeric values. Can be &quot;.&quot; or &quot;,&quot; only. If not defined will try the 
+<a href="../attrib/iup_globals.html#DEFAULTDECIMALSYMBOL">DEFAULTDECIMALSYMBOL</a> global 
+attribute. (since 3.12)</p>
 <p>
 <strong>NUMERICFORMAT<em>id</em></strong>: format to convert the numeric data 
 into strings at the given column (id). If not defined the NUMERICFORMATDEF 
@@ -361,7 +363,10 @@ It is just a simple form to set the format attribute. If id is not used it will
 affect the NUMERICFORMATDEF attribute. (no redraw)</p>
 <p>
 <strong>NUMERICFORMATDEF</strong>: default value used when NUMERICFORMATid is 
-not specified. Default: &quot;%.2f&quot;.</p>
+not specified. If not defined it will used the
+<a href="../attrib/iup_globals.html#DEFAULTPRECISION">DEFAULTPRECISION</a> 
+global attribute to build one (for intance &quot;%.2f&quot; if the 
+DEFAULTPRECISION is 2).</p>
 <p>
 <strong>NUMERICFORMATTITLE<em>id</em></strong>: format of the title at the given 
 column (id). Uses the same format specification of the <strong>sprintf</strong> 
@@ -387,7 +392,7 @@ redraw)</p>
 units for the current quantity at the given column (id).</p>
 <p>
 <strong>NUMERICUNIT<em>id</em></strong>: Unit of the numbers set into the matrix 
-at the given column (id) using the unit name as value. Must be in the same category of the NUMERICFORMAT 
+at the given column (id) using the unit name as value. Must be in the same category of the NUMERICQUANTITYid 
 attribute. For the available options see <a href="#UNITS">
 Available Quantity and Units</a> table bellow. The application must process numbers for the column only in this 
 unit, when getting or setting attributes. But the values passed to the 

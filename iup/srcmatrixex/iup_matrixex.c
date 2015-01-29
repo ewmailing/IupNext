@@ -248,13 +248,13 @@ static int iMatrixExItemSettings_CB(Ihandle* ih_item)
   decimal_symbol = IupGetAttribute(matex_data->ih, "NUMERICDECIMALSYMBOL");
   if (decimal_symbol)
   {
-    if (decimal_symbol[0] == ',')
+    if (decimal_symbol[0] == ',')  /* else is '.' */
       decimal_sep_index = 1;
   }
-  else
+  else  /* if not defined get from system */
   {
     struct lconv * locale_info = localeconv();
-    if (locale_info->decimal_point[0] == ',')
+    if (locale_info->decimal_point[0] == ',')  /* else is '.' */
       decimal_sep_index = 1;
   }
   decimal_sep_old = decimal_sep_index;

@@ -25,8 +25,11 @@
 static void iParamSetDoublePrec(Ihandle* ih, const char* name, double num, int prec)
 {
   char value[80];
+  char format[30];
   if (prec <= 0) prec = IupGetInt(NULL, "DEFAULTPRECISION");
-  sprintf(value, "%.*f", prec, num);
+  sprintf(format, "%%.%df", prec);
+  iupStrPrintfDoubleLocale(value, format, num, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
+
   IupStoreAttribute(ih, name, value);
 }
 
@@ -232,7 +235,7 @@ static int iParamValAction_CB(Ihandle *self)
     IupSetInt(ctrl, "VALUE", (int)val);
   else
   {
-    int prec = IupGetInt(param_box, "PRECISION");
+    int prec = IupGetInt(param, "PRECISION");
     iParamSetDoublePrec(ctrl, "VALUE", val, prec);
   }
 
@@ -453,7 +456,7 @@ static int iParamSpinReal_CB(Ihandle *self, int pos)
   }
 
   {
-    int prec = IupGetInt(param_box, "PRECISION");
+    int prec = IupGetInt(param, "PRECISION");
     iParamSetDoublePrec(ctrl, "VALUE", val, prec);
   }
 
@@ -742,7 +745,8 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
     if (iupStrEqual(type, "REAL"))
     {
       double val = iupAttribGetDouble(param, "VALUE");
-      iParamSetDoublePrec(ctrl, "VALUE", val, 0);
+      int prec = IupGetInt(param, "PRECISION");
+      iParamSetDoublePrec(ctrl, "VALUE", val, prec);
 
       if (iupAttribGetInt(param, "INTERVAL"))
       {
