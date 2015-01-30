@@ -130,7 +130,16 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
   Ihandle* aux = (Ihandle*)iupAttribGet(param, "AUXCONTROL");
   (void)c;
  
-  iupAttribSetStr(param, "VALUE", after);
+  if (iupStrEqual(iupAttribGet(param, "TYPE"), "REAL"))
+  {
+    double val = 0;
+    if (iupStrToDoubleLocale(after, &val, IupGetGlobal("DEFAULTDECIMALSYMBOL")))
+      iupAttribSetDouble(param, "VALUE", val);
+    else
+      iupAttribSetStr(param, "VALUE", after);
+  }
+  else
+    iupAttribSetStr(param, "VALUE", after);
 
   if (cb && !cb(param_box, iupAttribGetInt(param, "INDEX"), (void*)iupAttribGet(param_box, "USERDATA"))) 
   {
@@ -153,9 +162,8 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
     {
       double min = iupAttribGetDouble(param, "MIN");
       double step = iupAttribGetDouble(self, "_IUPGP_INCSTEP");
-      double val;
-      if (iupStrToDouble(after, &val))
-        IupSetInt(self, "SPINVALUE", (int)((val-min)/step + 0.5));
+      double val = iupAttribGetDouble(param, "VALUE");
+      IupSetInt(self, "SPINVALUE", (int)((val-min)/step + 0.5));
     }
     else
     {
@@ -245,8 +253,8 @@ static int iParamValAction_CB(Ihandle *self)
     {
       double min = iupAttribGetDouble(param, "MIN");
       double step = iupAttribGetDouble(ctrl, "_IUPGP_INCSTEP");
-      double val = IupGetDouble(ctrl, "VALUE");
-      IupSetInt(ctrl, "SPINVALUE", (int)((val-min)/step + 0.5));
+      double val = iupAttribGetDouble(param, "VALUE");
+      IupSetInt(ctrl, "SPINVALUE", (int)((val - min) / step + 0.5));
     }
     else
     {
@@ -748,6 +756,8 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
       int prec = IupGetInt(param, "PRECISION");
       iParamSetDoublePrec(ctrl, "VALUE", val, prec);
 
+      IupSetAttribute(ctrl, "MASKDECIMALSYMBOL", IupGetGlobal("DEFAULTDECIMALSYMBOL"));
+
       if (iupAttribGetInt(param, "INTERVAL"))
       {
         double min = iupAttribGetDouble(param, "MIN");
@@ -755,7 +765,6 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
         double step = iupAttribGetDouble(param, "STEP");
         double val = iupAttribGetDouble(param, "VALUE");
         if (step == 0) step = (max-min)/20.0;
-        IupSetAttribute(ctrl, "MASKDECIMALSYMBOL", IupGetGlobal("DEFAULTDECIMALSYMBOL"));
         IupSetfAttribute(ctrl, "MASKFLOAT", IUP_DOUBLE2STR":"IUP_DOUBLE2STR, min, max);
                              
         /* here spin is always [0-spinmax] converted to [min-max] */
@@ -775,27 +784,15 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
       {
         double min = iupAttribGetDouble(param, "MIN");
         if (min == 0)
-        {
-          char* decimal_symbol = IupGetGlobal("DEFAULTDECIMALSYMBOL");
-          if (decimal_symbol && decimal_symbol[0] == ',')
-            IupSetAttribute(ctrl, "MASK", IUP_MASK_UFLOATCOMMA);
-          else
-            IupSetAttribute(ctrl, "MASK", IUP_MASK_UFLOAT);
-        }
+          IupSetAttribute(ctrl, "MASKREAL", "UNSIGNED");
         else
-        {
-          IupSetAttribute(ctrl, "MASKDECIMALSYMBOL", IupGetGlobal("DEFAULTDECIMALSYMBOL"));
           IupSetfAttribute(ctrl, "MASKFLOAT", IUP_DOUBLE2STR":"IUP_DOUBLE2STR, min, 1.0e10);
-        }
+
         IupAppend(box, ctrl);
       }
       else
       {
-        char* decimal_symbol = IupGetGlobal("DEFAULTDECIMALSYMBOL");
-        if (decimal_symbol && decimal_symbol[0] == ',')
-          IupSetAttribute(ctrl, "MASK", IUP_MASK_FLOATCOMMA);
-        else
-          IupSetAttribute(ctrl, "MASK", IUP_MASK_FLOAT);
+        IupSetAttribute(ctrl, "MASKREAL", "SIGNED");
         IupAppend(box, ctrl);
       }
     }

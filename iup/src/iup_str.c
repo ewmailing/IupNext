@@ -1592,13 +1592,15 @@ static char* iStrSetLocale(const char* decimal_symbol)
 
       if (decimal_symbol[0] == '.')
       {
+        old_locale = iupStrDup(old_locale);  /* must be before another setlocale */
         setlocale(LC_NUMERIC, "en-US");
-        return iupStrDup(old_locale);
+        return old_locale;
       }
       else if (decimal_symbol[0] == ',')
       {
+        old_locale = iupStrDup(old_locale);  /* must be before another setlocale */
         setlocale(LC_NUMERIC, "pt-BR");
-        return iupStrDup(old_locale);
+        return old_locale;
       }
     }
   }

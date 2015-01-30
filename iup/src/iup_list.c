@@ -545,6 +545,39 @@ static int iListSetMaskFloatAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iListSetMaskRealAttrib(Ihandle* ih, const char* value)
+{
+  if (!ih->data->has_editbox)
+    return 0;
+
+  if (!value)
+  {
+    if (ih->data->mask)
+    {
+      iupMaskDestroy(ih->data->mask);
+      ih->data->mask = NULL;
+    }
+  }
+  else
+  {
+    Imask* mask;
+    char* decimal_symbol = iupAttribGet(ih, "MASKDECIMALSYMBOL");
+    int positive = 0;
+
+    if (iupStrEqualNoCase(value, "UNSIGNED"))
+      positive = 1;
+
+    mask = iupMaskCreateReal(positive, decimal_symbol);
+
+    if (ih->data->mask)
+      iupMaskDestroy(ih->data->mask);
+
+    ih->data->mask = mask;
+  }
+
+  return 0;
+}
+
 static int iListSetShowImageAttrib(Ihandle* ih, const char* value)
 {
   /* valid only before map */
@@ -1044,7 +1077,8 @@ Iclass* iupListNewClass(void)
   iupClassRegisterAttribute(ic, "MASK", iListGetMaskAttrib, iListSetMaskAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKINT", NULL, iListSetMaskIntAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iListSetMaskFloatAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iListGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASKREAL", NULL, iListSetMaskRealAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iListGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

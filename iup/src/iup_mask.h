@@ -30,9 +30,13 @@ Imask* iupMaskCreate(const char* mask_str, int casei);
  * \ingroup mask */
 Imask* iupMaskCreateInt(int min, int max);
 
-/** Creates a float mask with limits.
+/** Creates a real mask with limits.
  * \ingroup mask */
 Imask* iupMaskCreateFloat(float min, float max, const char* decimal_symbol);
+
+/** Creates a real mask.
+* \ingroup mask */
+Imask* iupMaskCreateReal(int positive, const char* decimal_symbol);
 
 /** Destroys the mask.
  * \ingroup mask */

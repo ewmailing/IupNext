@@ -316,6 +316,36 @@ static int iTextSetMaskFloatAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iTextSetMaskRealAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+  {
+    if (ih->data->mask)
+    {
+      iupMaskDestroy(ih->data->mask);
+      ih->data->mask = NULL;
+    }
+  }
+  else
+  {
+    Imask* mask;
+    char* decimal_symbol = iupAttribGet(ih, "MASKDECIMALSYMBOL");
+    int positive = 0;
+
+    if (iupStrEqualNoCase(value, "UNSIGNED"))
+      positive = 1;
+
+    mask = iupMaskCreateReal(positive, decimal_symbol);
+
+    if (ih->data->mask)
+      iupMaskDestroy(ih->data->mask);
+
+    ih->data->mask = mask;
+  }
+
+  return 0;
+}
+
 static int iTextSetMultilineAttrib(Ihandle* ih, const char* value)
 {
   /* valid only before map */
@@ -589,7 +619,8 @@ Iclass* iupTextNewClass(void)
   iupClassRegisterAttribute(ic, "MASK", iTextGetMaskAttrib, iTextSetMaskAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKINT", NULL, iTextSetMaskIntAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iTextSetMaskFloatAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iTextGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASKREAL", NULL, iTextSetMaskRealAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iTextGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPIN", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

@@ -348,6 +348,7 @@ iupObjectCheck
 iupMaskDestroy
 iupMaskCreateInt
 iupMaskCreateFloat
+iupMaskCreateReal
 iupMaskCreate
 iupMaskCheck
 iupMaskGetStr

@@ -71,11 +71,13 @@ iup.RECTEXT = 1
 ----------------------------------------------------------------------------
 --  Pre-Defined Masks        
 ----------------------------------------------------------------------------
-iup.MASK_FLOAT   = "[+/-]?(/d+/.?/d*|/./d+)"
-iup.MASK_UFLOAT  = "(/d+/.?/d*|/./d+)"
-iup.MASK_EFLOAT  = "[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
-iup.MASK_INT     = "[+/-]?/d+"
-iup.MASK_UINT    = "/d+"
+iup.MASK_FLOAT       = "[+/-]?(/d+/.?/d*|/./d+)"
+iup.MASK_UFLOAT      =       "(/d+/.?/d*|/./d+)"
+iup.MASK_EFLOAT      = "[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
+iup.MASK_FLOATCOMMA  = "[+/-]?(/d+/,?/d*|/,/d+)"
+iup.MASK_UFLOATCOMMA =       "(/d+/,?/d*|/,/d+)"
+iup.MASK_INT         =  "[+/-]?/d+"
+iup.MASK_UINT        =        "/d+"
 
 ----------------------------------------------------------------------------
 --  IupGetParam Callback situations

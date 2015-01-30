@@ -114,6 +114,8 @@ void iupmasklua_open(lua_State *L)
   iuplua_regstring(L, IUP_MASK_FLOAT, "MASK_FLOAT");
   iuplua_regstring(L, IUP_MASK_UFLOAT, "MASK_UFLOAT");
   iuplua_regstring(L, IUP_MASK_EFLOAT, "MASK_EFLOAT");
+  iuplua_regstring(L, IUP_MASK_FLOATCOMMA, "MASK_FLOATCOMMA");
+  iuplua_regstring(L, IUP_MASK_UFLOATCOMMA, "MASK_UFLOATCOMMA");
   iuplua_regstring(L, IUP_MASK_INT, "MASK_INT");
   iuplua_regstring(L, IUP_MASK_UINT, "MASK_UINT");
 

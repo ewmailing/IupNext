@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <locale.h>
 
 #include "iup_maskparse.h"
 #include "iup_mask.h"
@@ -116,24 +117,44 @@ Imask* iupMaskCreateInt(int min, int max)
   return mask;
 }
 
-Imask* iupMaskCreateFloat(float min, float max, const char* decimal_symbol)
+Imask* iupMaskCreateReal(int positive, const char* decimal_symbol)
 {
   Imask* mask;
+  int use_comma = 0;
 
-  if (decimal_symbol && decimal_symbol[0] == ',')
+  if (decimal_symbol)
   {
-    if (min < 0)
-      mask = iupMaskCreate(IUP_MASK_FLOATCOMMA, 0);
-    else
-      mask = iupMaskCreate(IUP_MASK_UFLOATCOMMA, 0);
+    if (decimal_symbol[0] == ',')
+      use_comma = 1;
   }
   else
   {
-    if (min < 0)
-      mask = iupMaskCreate(IUP_MASK_FLOAT, 0);
-    else
-      mask = iupMaskCreate(IUP_MASK_UFLOAT, 0);
+    struct lconv* locale_info = localeconv();
+    if (locale_info->decimal_point[0] == ',')
+      use_comma = 1;
   }
+
+  if (use_comma)
+  {
+    if (positive)
+      mask = iupMaskCreate(IUP_MASK_UFLOATCOMMA, 0);
+    else
+      mask = iupMaskCreate(IUP_MASK_FLOATCOMMA, 0);
+  }
+  else
+  {
+    if (positive)
+      mask = iupMaskCreate(IUP_MASK_UFLOAT, 0);
+    else
+      mask = iupMaskCreate(IUP_MASK_FLOAT, 0);
+  }
+
+  return mask;
+}
+
+Imask* iupMaskCreateFloat(float min, float max, const char* decimal_symbol)
+{
+  Imask* mask = iupMaskCreateReal(min >= 0, decimal_symbol);
 
   if (mask)
   {
