@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
 
 //  IupSetGlobal("UTF8MODE", "Yes");
 //  IupSetGlobal("LANGUAGE", "PORTUGUESE");
-  IupSetGlobal("DEFAULTDECIMALSYMBOL", ",");
+//  IupSetGlobal("DEFAULTDECIMALSYMBOL", ",");
 
   dlg = IupDialog(IupVbox(list = IupList(NULL), NULL));
   IupSetAttribute(dlg, "MARGIN", "10x10");
