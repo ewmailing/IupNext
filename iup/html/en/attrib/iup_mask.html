@@ -12,6 +12,9 @@
 .style2 {
 	font-size: large;
 }
+.auto-style1 {
+	font-weight: normal;
+}
 </style>
 </head>
 <body>
@@ -58,24 +61,39 @@ validated by the current MASK use VALUEMASKED.</p>
 		<td>&quot;[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?&quot;</td>
 		<td>floating point number with exponential notation</td>
 	</tr>
+	<tr>
+		<td>IUP_MASK_FLOATCOMMA</td>
+		<td>&quot;[+/-]?(/d+/,?/d*|/,/d+)&quot;&nbsp;</td>
+		<td>floating point number</td>
+	</tr>
+	<tr>
+		<td>IUP_MASK_UFLOATCOMMA</td>
+		<td>&quot;(/d+/,?/d*|/,/d+)&quot;</td>
+		<td>unsigned floating point number</td>
+	</tr>
 	</table>
     
 <h3>Auxiliary Attributes</h3>
-<h4>MASKCASEI (non inheritable) </h4>
+<h4>MASKCASEI<span class="auto-style1"> (non inheritable) </span> </h4>
 <font SIZE="3">
 <p>If YES, will turn the filter case insensitive. Default: NO<font SIZE="3">. 
 Must be set before MASK.</font></p>
 </font>
-<h4>MASKINT (non inheritable) (write only)</h4>
+<h4>MASKDECIMALSYMBOL<span class="auto-style1"> (non inheritable) (since 3.13)</span></h4>
+<font SIZE="3">
+<p>The decimal symbol for string/float conversion. 
+Can be &quot;.&quot; or &quot;,&quot;. Must be set before MASKFLOAT.</p>
+</font>
+<h4>MASKINT<span class="auto-style1"> (non inheritable) (write only)</span></h4>
 <font SIZE="3">
 <p>Defines an integer mask with limits. Format: &quot;%d:%d&quot; (&quot;min:max&quot;). It will 
-replace MASK.</p>
+replace MASK using one of the pre-defined masks.</p>
 </font>
-<h4>MASKFLOAT (non inheritable) (write only)</h4>
+<h4>MASKFLOAT<span class="auto-style1"> (non inheritable) (write only)</span></h4>
 <font SIZE="3">
 <p>Defines a floating point mask with limits. Format: &quot;%g:%g&quot;<font SIZE="3">
 (&quot;min:max&quot;)</font>.<font SIZE="3">
-It will replace MASK.</font></p>
+It will replace MASK using one of the pre-defined masks.</font></p>
 </font>
 
 
@@ -274,7 +292,7 @@ below.
   </tr>
   <tr>
     <td>%pattern</td>
-    <td>Returns the firstmatch found, but searches all the text </td>
+    <td>Returns the first match found, but searches all the text </td>
   </tr>
 </table>
 <h3>Examples</h3>

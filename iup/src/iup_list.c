@@ -425,6 +425,31 @@ static char* iListGetMaskDataAttrib(Ihandle* ih)
   return (char*)ih->data->mask;
 }
 
+static char* iListGetMaskAttrib(Ihandle* ih)
+{
+  if (!ih->data->has_editbox)
+    return NULL;
+
+  if (ih->data->mask)
+    return iupMaskGetStr(ih->data->mask);
+  else
+    return NULL;
+}
+
+static int iListSetValueMaskedAttrib(Ihandle* ih, const char* value)
+{
+  if (!ih->data->has_editbox)
+    return 0;
+
+  if (value)
+  {
+    if (ih->data->mask && iupMaskCheck(ih->data->mask, value) == 0)
+      return 0; /* abort */
+    IupStoreAttribute(ih, "VALUE", value);
+  }
+  return 0;
+}
+
 static int iListSetMaskAttrib(Ihandle* ih, const char* value)
 {
   if (!ih->data->has_editbox)
@@ -433,7 +458,10 @@ static int iListSetMaskAttrib(Ihandle* ih, const char* value)
   if (!value)
   {
     if (ih->data->mask)
+    {
       iupMaskDestroy(ih->data->mask);
+      ih->data->mask = NULL;
+    }
   }
   else
   {
@@ -445,7 +473,7 @@ static int iListSetMaskAttrib(Ihandle* ih, const char* value)
         iupMaskDestroy(ih->data->mask);
 
       ih->data->mask = mask;
-      return 1;
+      return 0;
     }
   }
 
@@ -460,9 +488,10 @@ static int iListSetMaskIntAttrib(Ihandle* ih, const char* value)
   if (!value)
   {
     if (ih->data->mask)
+    {
       iupMaskDestroy(ih->data->mask);
-
-    iupAttribSet(ih, "MASK", NULL);
+      ih->data->mask = NULL;
+    }
   }
   else
   {
@@ -478,11 +507,6 @@ static int iListSetMaskIntAttrib(Ihandle* ih, const char* value)
       iupMaskDestroy(ih->data->mask);
 
     ih->data->mask = mask;
-
-    if (min < 0)
-      iupAttribSet(ih, "MASK", IUP_MASK_INT);
-    else
-      iupAttribSet(ih, "MASK", IUP_MASK_UINT);
   }
 
   return 0;
@@ -496,29 +520,26 @@ static int iListSetMaskFloatAttrib(Ihandle* ih, const char* value)
   if (!value)
   {
     if (ih->data->mask)
+    {
       iupMaskDestroy(ih->data->mask);
-
-    iupAttribSet(ih, "MASK", NULL);
+      ih->data->mask = NULL;
+    }
   }
   else
   {
     Imask* mask;
     float min, max;
+    char* decimal_symbol = iupAttribGet(ih, "MASKDECIMALSYMBOL");
 
     if (iupStrToFloatFloat(value, &min, &max, ':')!=2)
       return 0;
 
-    mask = iupMaskCreateFloat(min,max);
+    mask = iupMaskCreateFloat(min, max, decimal_symbol);
 
     if (ih->data->mask)
       iupMaskDestroy(ih->data->mask);
 
     ih->data->mask = mask;
-
-    if (min < 0)
-      iupAttribSet(ih, "MASK", IUP_MASK_FLOAT);
-    else
-      iupAttribSet(ih, "MASK", IUP_MASK_UFLOAT);
   }
 
   return 0;
@@ -1017,8 +1038,10 @@ Iclass* iupListNewClass(void)
   iupClassRegisterAttribute(ic, "APPENDITEM", NULL, iListSetAppendItemAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REMOVEITEM", NULL, iListSetRemoveItemAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "MASKCASEI", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MASK", NULL, iListSetMaskAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUEMASKED", NULL, iListSetValueMaskedAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASKCASEI", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASKDECIMALSYMBOL", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASK", iListGetMaskAttrib, iListSetMaskAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKINT", NULL, iListSetMaskIntAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iListSetMaskFloatAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iListGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

@@ -12,11 +12,13 @@
 #include "iup_mask.h"
 #include "iup_str.h"
 
-
-#define IUP_MASK_FLOAT      "[+/-]?(/d+/.?/d*|/./d+)"
-#define IUP_MASK_UFLOAT     "(/d+/.?/d*|/./d+)"
-#define IUP_MASK_INT	      "[+/-]?/d+"
-#define IUP_MASK_UINT     	"/d+"
+/* redefine here to avoid include iup.h */
+#define IUP_MASK_FLOAT        "[+/-]?(/d+/.?/d*|/./d+)"
+#define IUP_MASK_UFLOAT             "(/d+/.?/d*|/./d+)"
+#define IUP_MASK_FLOATCOMMA   "[+/-]?(/d+/,?/d*|/,/d+)"
+#define IUP_MASK_UFLOATCOMMA        "(/d+/,?/d*|/,/d+)"
+#define IUP_MASK_INT           "[+/-]?/d+"
+#define IUP_MASK_UINT                "/d+"
 
 struct _Imask
 {
@@ -114,14 +116,24 @@ Imask* iupMaskCreateInt(int min, int max)
   return mask;
 }
 
-Imask* iupMaskCreateFloat(float min, float max)
+Imask* iupMaskCreateFloat(float min, float max, const char* decimal_symbol)
 {
   Imask* mask;
 
-  if (min < 0)
-    mask = iupMaskCreate(IUP_MASK_FLOAT, 0);
+  if (decimal_symbol && decimal_symbol[0] == ',')
+  {
+    if (min < 0)
+      mask = iupMaskCreate(IUP_MASK_FLOATCOMMA, 0);
+    else
+      mask = iupMaskCreate(IUP_MASK_UFLOATCOMMA, 0);
+  }
   else
-    mask = iupMaskCreate(IUP_MASK_UFLOAT, 0);
+  {
+    if (min < 0)
+      mask = iupMaskCreate(IUP_MASK_FLOAT, 0);
+    else
+      mask = iupMaskCreate(IUP_MASK_UFLOAT, 0);
+  }
 
   if (mask)
   {

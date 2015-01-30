@@ -32,7 +32,7 @@ Imask* iupMaskCreateInt(int min, int max);
 
 /** Creates a float mask with limits.
  * \ingroup mask */
-Imask* iupMaskCreateFloat(float min, float max);
+Imask* iupMaskCreateFloat(float min, float max, const char* decimal_symbol);
 
 /** Destroys the mask.
  * \ingroup mask */

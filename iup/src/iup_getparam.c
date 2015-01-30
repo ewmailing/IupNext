@@ -755,6 +755,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
         double step = iupAttribGetDouble(param, "STEP");
         double val = iupAttribGetDouble(param, "VALUE");
         if (step == 0) step = (max-min)/20.0;
+        IupSetAttribute(ctrl, "MASKDECIMALSYMBOL", IupGetGlobal("DEFAULTDECIMALSYMBOL"));
         IupSetfAttribute(ctrl, "MASKFLOAT", IUP_DOUBLE2STR":"IUP_DOUBLE2STR, min, max);
                              
         /* here spin is always [0-spinmax] converted to [min-max] */
@@ -774,14 +775,27 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
       {
         double min = iupAttribGetDouble(param, "MIN");
         if (min == 0)
-          IupSetAttribute(ctrl, "MASK", IUP_MASK_UFLOAT);
+        {
+          char* decimal_symbol = IupGetGlobal("DEFAULTDECIMALSYMBOL");
+          if (decimal_symbol && decimal_symbol[0] == ',')
+            IupSetAttribute(ctrl, "MASK", IUP_MASK_UFLOATCOMMA);
+          else
+            IupSetAttribute(ctrl, "MASK", IUP_MASK_UFLOAT);
+        }
         else
+        {
+          IupSetAttribute(ctrl, "MASKDECIMALSYMBOL", IupGetGlobal("DEFAULTDECIMALSYMBOL"));
           IupSetfAttribute(ctrl, "MASKFLOAT", IUP_DOUBLE2STR":"IUP_DOUBLE2STR, min, 1.0e10);
+        }
         IupAppend(box, ctrl);
       }
       else
       {
-        IupSetAttribute(ctrl, "MASK", IUP_MASK_FLOAT);
+        char* decimal_symbol = IupGetGlobal("DEFAULTDECIMALSYMBOL");
+        if (decimal_symbol && decimal_symbol[0] == ',')
+          IupSetAttribute(ctrl, "MASK", IUP_MASK_FLOATCOMMA);
+        else
+          IupSetAttribute(ctrl, "MASK", IUP_MASK_FLOAT);
         IupAppend(box, ctrl);
       }
     }

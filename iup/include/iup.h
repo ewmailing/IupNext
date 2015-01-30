@@ -395,11 +395,13 @@ enum{IUP_SBUP,   IUP_SBDN,    IUP_SBPGUP,   IUP_SBPGDN,    IUP_SBPOSV, IUP_SBDRA
 /************************************************************************/
 /*                      Pre-Defined Masks                               */
 /************************************************************************/
-#define IUP_MASK_FLOAT    "[+/-]?(/d+/.?/d*|/./d+)"
-#define IUP_MASK_UFLOAT   "(/d+/.?/d*|/./d+)"
-#define IUP_MASK_EFLOAT   "[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
-#define IUP_MASK_INT      "[+/-]?/d+"
-#define IUP_MASK_UINT     "/d+"
+#define IUP_MASK_FLOAT       "[+/-]?(/d+/.?/d*|/./d+)"
+#define IUP_MASK_UFLOAT            "(/d+/.?/d*|/./d+)"
+#define IUP_MASK_EFLOAT      "[+/-]?(/d+/.?/d*|/./d+)([eE][+/-]?/d+)?"
+#define IUP_MASK_FLOATCOMMA  "[+/-]?(/d+/,?/d*|/,/d+)"
+#define IUP_MASK_UFLOATCOMMA       "(/d+/,?/d*|/,/d+)"
+#define IUP_MASK_INT          "[+/-]?/d+"
+#define IUP_MASK_UINT               "/d+"
 
 /* Old definitions for backward compatibility */
 #define IUPMASK_FLOAT     IUP_MASK_FLOAT

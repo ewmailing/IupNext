@@ -289,6 +289,11 @@ selected (since 3.0) (In Motif when DROPDOWN=YES there is always an item
 retrieves the value attribute using a string of an item. Works only when 
 EDITBOX=NO and DROPDOWN=YES and MULTIPLE=NO. When set it will search for the 
 first item with the same string. (since 3.12) </p>
+<p><b>VALUEMASKED </b>(<font size="3">non inheritable</font>) (write-only): sets 
+VALUE but first checks if it is validated by MASK. If not does nothing. Works 
+only when EDITBOX=YES. (since 
+3.13)</p>
+
 <p><b>VISIBLE_ITEMS </b>[Windows and Motif Only]: Number of items that are 
 visible when DROPDOWN=YES is used for the dropdown list. Default: 5.</p>
 
