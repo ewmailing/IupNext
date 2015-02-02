@@ -851,6 +851,9 @@ void iupPlot::RemoveAllDataSets()
 
 bool iupPlot::FindDataSetSample(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const
 {
+  if (!mAxisX.mTrafo || !mAxisY.mTrafo)
+    return false;
+
   double theX = mAxisX.mTrafo->TransformBack(inX);
   double theY = mAxisY.mTrafo->TransformBack(inY);
   double tolX = (fabs(mAxisX.mMax - mAxisX.mMin) / mViewport.mWidth) * 5.0;  // 5 pixels tolerance

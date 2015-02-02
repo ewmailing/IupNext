@@ -2296,6 +2296,7 @@ static int iPlotCreateMethod(Ihandle* ih, void **params)
   ih->data->numcol = 1;
   ih->data->last_tip_ds = -1;
   ih->data->last_tip_sample = -1;
+  ih->data->last_click_plot = -1;
   ih->data->graphics_mode = IUP_PLOT_NATIVEPLUS;
 
   ih->data->plot_list[0] = new iupPlot(ih, 0, 0);   // font style/size will be initialized bt stardardfont initialization

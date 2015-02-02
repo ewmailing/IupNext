@@ -97,7 +97,7 @@ static void InitPlots(void)
 
 //  IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
 //  IupSetAttribute(plot[0], "GRAPHICSMODE", "IMAGERGB");
-  IupSetAttribute(plot[0], "ACTIVE", "No");
+//  IupSetAttribute(plot[0], "ACTIVE", "No");
 
   if (0)
   {
