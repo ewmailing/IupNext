@@ -124,6 +124,7 @@
     <ClCompile Include="..\srcmglplot\src\canvas.cpp" />
     <ClCompile Include="..\srcmglplot\src\canvas_cf.cpp" />
     <ClCompile Include="..\srcmglplot\src\complex.cpp" />
+    <ClCompile Include="..\srcmglplot\src\complex_ex.cpp" />
     <ClCompile Include="..\srcmglplot\src\complex_io.cpp" />
     <ClCompile Include="..\srcmglplot\src\cont.cpp" />
     <ClCompile Include="..\srcmglplot\src\crust.cpp" />
