@@ -54,9 +54,12 @@ void MGL_EXPORT mgl_reload_class(void *p);
 /// Abstract class for windows displaying graphics
 class MGL_EXPORT mglWnd : public mglGraph
 {
+	mglWnd(const mglWnd &t) {}	// copying is not allowed
+	const mglWnd &operator=(const mglWnd &t)	{	return t;	}
 public:
 	mglWnd() : mglGraph(-1)	{}
-	virtual int Run()=0;			///< Run main loop for event handling
+	virtual ~mglWnd() {}
+	virtual int Run()=0;		///< Run main loop for event handling
 
 	inline void ToggleAlpha()	///< Switch on/off transparency (do not overwrite user settings)
 	{	mgl_wnd_toggle_alpha(gr);	}
@@ -80,8 +83,16 @@ public:
 	{	mgl_wnd_prev_frame(gr);	}
 	inline void Animation()		///< Run slideshow (animation) of frames
 	{	mgl_wnd_animation(gr);	}
-	void SetClickFunc(void (*func)(void *p))	///< Callback function for mouse click
+	inline void SetClickFunc(void (*func)(void *p))	///< Callback function for mouse click
 	{	mgl_set_click_func(gr,func);	}
+	/// Set callback functions for drawing and data reloading
+	inline void SetDrawFunc(int (*draw)(mglBase *gr, void *p), void *par=NULL, void (*reload)(void *p)=NULL)
+	{	mgl_wnd_set_func(gr,draw,par,reload);	}
+	inline void SetDrawFunc(int (*draw)(mglGraph *gr))
+	{	mgl_wnd_set_func(gr,draw?mgl_draw_graph:0,(void*)draw,0);	}
+	inline void SetDrawFunc(mglDraw *draw)
+	{	mgl_wnd_set_func(gr,draw?mgl_draw_class:0,draw,mgl_reload_class);
+		mgl_set_click_func(gr, mgl_click_class);	}
 
 	inline void SetDelay(double dt)	///< Set delay for animation in seconds
 	{	mgl_wnd_set_delay(gr, dt);	}

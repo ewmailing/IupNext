@@ -25,6 +25,7 @@
 #else
 #include <algorithm.h>
 #endif
+#include <list>
 
 #include "mgl2/surf.h"
 #include "mgl2/cont.h"
@@ -39,21 +40,26 @@
 //-----------------------------------------------------------------------------
 void MGL_NO_EXPORT mgl_string_curve(mglBase *gr,long f,long ,const long *ff,const long *nn,const wchar_t *text, const char *font, mreal size)
 {
-	if(f<0 || nn[f]==-1)	return;	// do nothing since there is no curve
+	if(f<0 || nn[f]<0)	return;	// do nothing since there is no curve
 	if(!font)	font="";
 	int pos = strchr(font,'T') ? 1:-1, align;
-	char cc=mglGetStyle(font,0,&align);		align = align&3;
-	mreal c=cc ? -cc : gr->GetClrC(ff[f]);
+	bool cc=mglGetStyle(font,0,&align);		align = align&3;
 	mreal h=gr->TextHeight(font,size)/2, tet, tt;
 	wchar_t L[2]=L"a";
 	register long i,j,k,m;
 
 	std::vector<mglPoint> qa, qb;	// curves above and below original
-	mglPoint p=gr->GetPntP(ff[f]), q=p, s=gr->GetPntP(ff[nn[f]]), l=!(s-q), t=l;
+	if(ff[f]<0)	for(i=nn[f];i>=0 && i!=f;i=nn[i])	// find first real point
+		if(ff[i]>=0)	{	f=i;	break;	}
+	if(ff[f]<0)	return;
+	mreal c=cc?gr->AddTexture(font) : gr->GetClrC(ff[f]);
+	mglPoint p=gr->GetPntP(ff[f]), q=p, s;
+	for(i=nn[f];i>=0 && i!=f;i=nn[i])	// find second real point
+		if(ff[i]>=0)	{	s=gr->GetPntP(ff[i]);	break;	}
+	mglPoint l=!(s-q), t=l;
 	qa.push_back(q+l*h);	qb.push_back(q-l*h);
 	for(i=nn[f];i>=0 && i!=f;i=nn[i])	// construct curves
 	{
-		if(gr->Stop)	return;
 		p=q;	q=s;	l=t;
 		if(nn[i]>=0 && ff[nn[i]]>=0)	{	s=gr->GetPntP(ff[nn[i]]);	t=!(s-q);	}
 		tet = t.x*l.y-t.y*l.x;
@@ -68,13 +74,16 @@ void MGL_NO_EXPORT mgl_string_curve(mglBase *gr,long f,long ,const long *ff,cons
 	if(pos>0)	qa=qb;
 	// adjust text direction
 	bool rev = align==2;
-	char *fnt = new char[strlen(font)+3];	strcpy(fnt,font);
+	const char *ffont=mglchr(font,':');
+	char *fnt = new char[strlen(font)+5];
+	if(ffont) strcpy(fnt,ffont);	else *fnt=0;
 	if(qa[0].x>qa[1].x)
 	{
 		if(align==0){	strcat(fnt,":R");	align=2;	}
 		else if(align==1)	rev = true;
 		else		{	strcat(fnt,":L");	align=0;	}
 	}
+	if(mglchr(font,'T'))	strcat(fnt,":T");
 	if(rev)	reverse(qa.begin(),qa.end());
 	long len = mgl_wcslen(text);
 	mreal *wdt=new mreal[len+1];
@@ -88,7 +97,6 @@ void MGL_NO_EXPORT mgl_string_curve(mglBase *gr,long f,long ,const long *ff,cons
 	mreal a,b,d,w,t1,t2;
 	for(i=j=0,tt=0;j<len;j++)
 	{
-		if(gr->Stop)	{	delete []wdt;	delete []pt;	delete []fnt;	return;	}
 		w = align==1 ? wdt[j] : (wdt[j]+wdt[j+1])/2;	p = pt[j];
 		for(k=i+1;k<m;k++)	if((p-qa[k]).norm()>w)	break;
 		if(k>i+1 && k<m)	tt=-1;
@@ -102,10 +110,11 @@ void MGL_NO_EXPORT mgl_string_curve(mglBase *gr,long f,long ,const long *ff,cons
 		tt=t1;	pt[j+1] = q+(s-q)*tt;
 	}
 	if(rev)	pos=-pos;
+	mreal dc = (cc && len>1)?1/MGL_FEPSILON/(len-1):0;
 	for(j=0;j<len;j++)	// draw text
 	{
 		L[0] = text[align!=2?j:len-1-j];	s = pt[j+1]-pt[j];	l = !s;
-		gr->text_plot(gr->AddPnt(pt[j]+(pos*h)*l,c,s,-1,-1),L,font,size,0.05,c);
+		gr->text_plot(gr->AddPnt(pt[j]+(pos*h)*l,c+dc*i,s,-1,-1),L,fnt,size,0.05,c+dc*j);
 	}
 	delete []wdt;	delete []pt;	delete []fnt;
 }
@@ -119,18 +128,8 @@ void MGL_EXPORT mgl_textw_xyz(HMGL gr, HCDT x, HCDT y, HCDT z,const wchar_t *tex
 	static int cgid=1;	gr->StartGroup("TextC",cgid++);
 
 	long *nn = new long[n], *ff = new long[n];
-	const mglData *mdx = dynamic_cast<const mglData *>(x);
-	const mglData *mdy = dynamic_cast<const mglData *>(y);
-	const mglData *mdz = dynamic_cast<const mglData *>(z);
-	if(mdx && mdy && mdz)
-#pragma omp parallel for
-		for(long i=0;i<n;i++)
-			ff[i] = gr->AddPnt(mglPoint(mdx->a[i],mdy->a[i],mdz->a[i]),-1);
-	else
-#pragma omp parallel for
-		for(long i=0;i<n;i++)
-			ff[i] = gr->AddPnt(mglPoint(x->v(i),y->v(i),z->v(i)),-1);
-#pragma omp parallel for
+	for(long i=0;i<n;i++)
+		ff[i] = gr->AddPnt(mglPoint(x->v(i),y->v(i),z->v(i)),-1);
 	for(long i=1;i<n;i++)	nn[i-1] = i;
 	nn[n-1]=-1;
 	mgl_string_curve(gr,0,n,ff,nn,text,font,-1);
@@ -141,17 +140,15 @@ void MGL_EXPORT mgl_textw_xyz(HMGL gr, HCDT x, HCDT y, HCDT z,const wchar_t *tex
 void MGL_EXPORT mgl_textw_xy(HMGL gr, HCDT x, HCDT y, const wchar_t *text, const char *font, const char *opt)
 {
 	gr->SaveState(opt);
-	mglData z(y->GetNx());
-	mreal zm = gr->AdjustZMin();	z.Fill(zm,zm);
+	mglDataV z(y->GetNx());	z.Fill(gr->AdjustZMin());
 	mgl_textw_xyz(gr,x,y,&z,text,font,0);
 }
 //-----------------------------------------------------------------------------
 void MGL_EXPORT mgl_textw_y(HMGL gr, HCDT y, const wchar_t *text, const char *font, const char *opt)
 {
 	gr->SaveState(opt);
-	mglData x(y->GetNx()), z(y->GetNx());
-	x.Fill(gr->Min.x,gr->Max.x);
-	mreal zm = gr->AdjustZMin();	z.Fill(zm,zm);
+	mglDataV x(y->GetNx()), z(y->GetNx());
+	x.Fill(gr->Min.x,gr->Max.x);	z.Fill(gr->AdjustZMin());
 	mgl_textw_xyz(gr,&x,y,&z,text,font,0);
 }
 //-----------------------------------------------------------------------------
@@ -162,16 +159,14 @@ void MGL_EXPORT mgl_text_xyz(HMGL gr, HCDT x, HCDT y, HCDT z,const char *text, c
 //-----------------------------------------------------------------------------
 void MGL_EXPORT mgl_text_xy(HMGL gr, HCDT x, HCDT y, const char *text, const char *font, const char *opt)
 {
-	mglData z(y->GetNx());
-	mreal zm = gr->AdjustZMin();	z.Fill(zm,zm);
+	mglDataV z(y->GetNx());	z.Fill(gr->AdjustZMin());
 	mgl_text_xyz(gr,x,y,&z,text,font,opt);
 }
 //-----------------------------------------------------------------------------
 void MGL_EXPORT mgl_text_y(HMGL gr, HCDT y, const char *text, const char *font, const char *opt)
 {
-	mglData x(y->GetNx()), z(y->GetNx());
-	x.Fill(gr->Min.x,gr->Max.x);
-	mreal zm = gr->AdjustZMin();	z.Fill(zm,zm);
+	mglDataV x(y->GetNx()), z(y->GetNx());
+	x.Fill(gr->Min.x,gr->Max.x);	z.Fill(gr->AdjustZMin());
 	mgl_text_xyz(gr,&x,y,&z,text,font,opt);
 }
 //-----------------------------------------------------------------------------
@@ -199,136 +194,176 @@ mgl_text_y(_GR_, _DA_(y),s,f,o);	delete []o;	delete []s;	delete []f;	}
 //	Cont series
 //
 //-----------------------------------------------------------------------------
-struct mglSegment
-{
-	long next,prev;
-	mglPoint p1,p2;
-	mglSegment(mglPoint q1,mglPoint q2)	{p1=q1;p2=q2;next=prev=-1;}
-};
-// function for connecting arbitrary line segments
-/*void MGL_NO_EXPORT mgl_connect(HMGL gr, mreal val, HCDT a, HCDT x, HCDT y, HCDT z, mreal c, int text,long ak)
-{
-	long n=a->GetNx(), m=a->GetNy();
-	if(n<2 || m<2 || x->GetNx()*x->GetNy()!=n*m || y->GetNx()*y->GetNy()!=n*m || z->GetNx()*z->GetNy()!=n*m)
-	{	gr->SetWarn(mglWarnDim,"ContGen");	return;	}
-	std::vector<mglSegment> ss,cc;
-
-	register long i,j;
-	mreal d1,d2,d3,d4;
-	bool o1,o2,o3,o4;
-	mglPoint p1,p2,p3,p4,q1,q2,q3,q4;
-	for(i=0;i<n;i++)	for(j=0;j<m;j++)	// prepare segments
-	{
-		if(gr->Stop)	return;
-		d1 = mgl_d(val,a->v(i,j,ak),a->v(i+1,j,ak));		o1 = d1>=0 && d1<1;
-		d2 = mgl_d(val,a->v(i,j,ak),a->v(i,j+1,ak));		o2 = d2>=0 && d2<1;
-		d3 = mgl_d(val,a->v(i+1,j+1,ak),a->v(i+1,j,ak));	o3 = d3>=0 && d3<1;
-		d4 = mgl_d(val,a->v(i+1,j+1,ak),a->v(i,j+1,ak));	o4 = d4>=0 && d4<1;
-		p1 = mglPoint(x->v(i,j), y->v(i,j),z->v(i,j));
-		p2 = mglPoint(x->v(i+1,j), y->v(i+1,j),z->v(i+1,j));
-		p3 = mglPoint(x->v(i,j+1), y->v(i,j+1),z->v(i,j+1));
-		p4 = mglPoint(x->v(i+1,j+1), y->v(i+1,j+1),z->v(i+1,j+1));
-		q1 = p1*(1-d1)+p2*d1;	q2 = p1*(1-d2)+p3*d1;
-		q3 = p4*(1-d3)+p2*d3;	q4 = p4*(1-d4)+p3*d4;
-		if(o1 && o2)	{	o1 = o2 = false;	ss.push_back(mglSegment(q1,q2));	}
-		if(o1 && o3)	{	o1 = o3 = false;	ss.push_back(mglSegment(q1,q3));	}
-		if(o1 && o4)	{	o1 = o4 = false;	ss.push_back(mglSegment(q1,q4));	}
-		if(o2 && o3)	{	o2 = o3 = false;	ss.push_back(mglSegment(q2,q3));	}
-		if(o2 && o4)	{	o2 = o4 = false;	ss.push_back(mglSegment(q2,q4));	}
-		if(o3 && o4)	{	o3 = o4 = false;	ss.push_back(mglSegment(q3,q4));	}
-	}
-	// connect it
-	if(ss.size()==0)	return;
-	for(i=0;i<ss.size();i++)	// lets try most stupid algorithm (can be VERY slow)
-	{
-		mglSegment &s1=ss[i];
-		for(j=0;j<ss.size();j++)
-		{
-			mglSegment &s2=ss[j];
-			if(s2.prev<0 && s1.p2==s2.p1)	{	s1.next = j;	s2.prev=i;	continue;	}
-			if(s2.next<0 && s1.p1==s2.p2)	{	s1.prev = j;	s2.next=i;	continue;	}
-			//			if(s2.prev<0 && s1.p2==s2.p1)
-			//			{	s1.next = j;	s2.prev=i;	continue;	}
-		}
-	}
-}*/
+#include "cont.hpp"
 //-----------------------------------------------------------------------------
-// NOTE! returned must be deleted!!!
-struct mglPnt2	{	mreal x,y;	mglPnt2(mreal xx=0,mreal yy=0)	{x=xx;y=yy;}	};
-long *mgl_cont_prep(mreal val, HCDT a,long ak, std::vector<mglPnt2> &kk)
+std::vector<mglSegment> MGL_EXPORT mgl_get_lines(mreal val, HCDT a, HCDT x, HCDT y, HCDT z, long ak)
 {
 	long n=a->GetNx(), m=a->GetNy();
-	mreal d, r, kx, ky;
-	register long i,j,k, pc=0;
-	kk.clear();
-	// add intersection point of isoline and Y axis
-	const mglData *ma = dynamic_cast<const mglData *>(a);
-	if(ma)
+	std::vector<mglSegment> lines;
+	// first add all possible lines
+	for(long j=0;j<m-1;j++)	for(long i=0;i<n-1;i++)
 	{
-		for(j=0;j<m;j++)	for(i=0;i<n-1;i++)
+		register mreal v1=a->v(i,j,ak),v2=a->v(i+1,j,ak),v3=a->v(i,j+1,ak),v4=a->v(i+1,j+1,ak);
+		register mreal dl=mgl_d(val,v1,v3),dr=mgl_d(val,v2,v4),dp=mgl_d(val,v1,v2),dn=mgl_d(val,v3,v4);
+		bool added=false;
+		if(v1>val || v4>val)
 		{
-			d = mgl_d(val,ma->a[i+n*(j+m*ak)],ma->a[i+1+n*(j+m*ak)]);
-			if(d>=0 && d<1)	kk.push_back(mglPnt2(i+d,j));
+			mglSegment line;
+			if(line.set(0,dl,dn,1,i,j,ak,x,y,z))	{	lines.push_back(line);	added=true;	}
+			if(line.set(1,dr,dp,0,i,j,ak,x,y,z))	{	lines.push_back(line);	added=true;	}
 		}
-		// add intersection point of isoline and X axis
-		for(j=0;j<m-1;j++)	for(i=0;i<n;i++)
+		else
 		{
-			d = mgl_d(val,ma->a[i+n*(j+m*ak)],ma->a[i+n*(j+1+m*ak)]);
-			if(d>=0 && d<1)	kk.push_back(mglPnt2(i,j+d));
+			mglSegment line;
+			if(line.set(0,dl,dp,0,i,j,ak,x,y,z))	{	lines.push_back(line);	added=true;	}
+			if(line.set(1,dr,dn,1,i,j,ak,x,y,z))	{	lines.push_back(line);	added=true;	}
+		}
+		if(!added)	// try to add any other variants
+		{
+			mglSegment line;
+			if(line.set(0,dl,1,dr,i,j,ak,x,y,z))		lines.push_back(line);
+			else if(line.set(dp,0,dn,1,i,j,ak,x,y,z))	lines.push_back(line);
+			else if(line.set(0,dl,dn,1,i,j,ak,x,y,z))	lines.push_back(line);
+			else if(line.set(1,dr,dp,0,i,j,ak,x,y,z))	lines.push_back(line);
+			else if(line.set(0,dl,dp,0,i,j,ak,x,y,z))	lines.push_back(line);
+			else if(line.set(1,dr,dn,1,i,j,ak,x,y,z))	lines.push_back(line);
 		}
 	}
-	else	for(j=0;j<m-1;j++)	for(i=0;i<n-1;i++)
+	return lines;
+}
+//-----------------------------------------------------------------------------
+std::vector<mglSegment> MGL_EXPORT mgl_get_curvs(HMGL gr, std::vector<mglSegment> lines)
+{
+	long n = lines.size(), m = n;
+	const long nsl=(n>0 && n*n>100)?sqrt(double(n)):10;
+	mreal dxsl = nsl/((gr->Max.x-gr->Min.x)*MGL_FEPSILON), x0 = gr->Min.x;
+	mreal dysl = nsl/((gr->Max.y-gr->Min.y)*MGL_FEPSILON), y0 = gr->Min.y;
+	std::vector<long> *xsl, *ysl;
+	xsl = new std::vector<long>[nsl+1];
+	ysl = new std::vector<long>[nsl+1];
+	for(long i=0;i<n;i++)	// group lines by position of its x-coor
 	{
-		register mreal vv = a->v(i,j,ak);
-		d = (i<n-1)?mgl_d(val,vv,a->v(i+1,j,ak)):-1;
-		if(d>=0 && d<1)	kk.push_back(mglPnt2(i+d,j));
-		d = (j<m-1)?mgl_d(val,vv,a->v(i,j+1,ak)):-1;
-		if(d>=0 && d<1)	kk.push_back(mglPnt2(i,j+d));
+		register long i1 = (lines[i].p1.x-x0)*dxsl, i2 = (lines[i].p2.x-x0)*dxsl;
+		if(i1<0)	i1=0;	if(i1>nsl)	i1=nsl;
+		if(i2<0)	i2=0;	if(i2>nsl)	i2=nsl;
+		if(i1==i2 && i1*(i1-nsl)<=0)	xsl[i1].push_back(i);
+		else
+		{
+			if(i1*(i1-nsl)<=0)	xsl[i1].push_back(i);
+			if(i2*(i2-nsl)<=0)	xsl[i2].push_back(i);
+		}
+		i1 = (lines[i].p1.y-y0)*dysl;
+		i2 = (lines[i].p2.y-y0)*dysl;
+		if(i1<0)	i1=0;	if(i1>nsl)	i1=nsl;
+		if(i2<0)	i2=0;	if(i2>nsl)	i2=nsl;
+		if(i1==i2 && i1*(i1-nsl)<=0)	ysl[i1].push_back(i);
+		else
+		{
+			if(i1*(i1-nsl)<=0)	ysl[i1].push_back(i);
+			if(i2*(i2-nsl)<=0)	ysl[i2].push_back(i);
+		}
 	}
-
-	pc = kk.size();
-	if(pc==0)	return	NULL;	// deallocate arrays and finish if no point
-	// allocate arrays for curve (nn - next, ff - prev)
-	long *nn = new long[pc], *ff = new long[pc];
-	// -1 is not parsed, -2 starting
-	for(i=0;i<pc;i++)	nn[i] = ff[i] = -1;
-	// connect points to line
-	long i11,i12,i21,i22,j11,j12,j21,j22;
-	j=-1;	// current point
-	do{
-		if(j>=0)
+	size_t xm=0,ym=0;
+	for(long i=0;i<=nsl;i++)
+	{
+		if(xm<xsl[i].size())	xm=xsl[i].size();
+		if(ym<ysl[i].size())	ym=ysl[i].size();
+	}
+	std::vector<mglSegment> curvs;
+	char *used = new char[n];	memset(used,0,n);
+	// create curves from lines
+	while(m>0)	// NOTE! This algorithm can be *very* slow!!!
+	{
+		mglSegment curv;
+		bool added = false;
+		for(long i=0;i<n;i++)	if(!used[i])	// find any first line segment
 		{
-			kx = kk[j].x;	ky = kk[j].y;	i = -1;
-			i11 = long(kx+1e-5);	i12 = long(kx-1e-5);
-			j11 = long(ky+1e-5);	j12 = long(ky-1e-5);
-			r=10;
-			for(k=0;k<pc;k++)	// find closest point in grid
-			{
-				if(k==j || k==ff[j] || ff[k]!=-1)	continue;	// point is marked
-				i21 = long(kk[k].x+1e-5);	i22 = long(kk[k].x-1e-5);
-				j21 = long(kk[k].y+1e-5);	j22 = long(kk[k].y-1e-5);
-				// check if in the same cell
-				register bool cond = (i11==i21 || i11==i22 || i12==i21 || i12==i22) &&
-				(j11==j21 || j11==j22 || j12==j21 || j12==j22);
-				d = hypot(kk[k].x-kx,kk[k].y-ky);	// if several then select closest
-				if(cond && d<r)	{	r=d;	i=k;	}
-			}
-			if(i<0)	j = -1;	// no free close points
-			else			// mark the point
-			{	nn[j] = i;	ff[i] = j;	j = nn[i]<0 ? i : -1;	}
+			curv.before(lines[i].p1);
+			curv.after(lines[i].p2);
+			used[i]=1;	m--;
+			added=true;	break;
 		}
-		if(j<0)
+		while(added && m>0)
 		{
-			for(k=0;k<pc;k++)	if(nn[k]==-1)	// first check edges
+			added = false;
+			register long i1, i2;
+			if(xm<=ym)
+			{	i1 = (curv.p1.x-x0)*dxsl;	i2 = (curv.p2.x-x0)*dxsl;	}
+			else
+			{	i1 = (curv.p1.y-y0)*dysl;	i2 = (curv.p2.y-y0)*dysl;	}
+			if(i1<0)	i1=0;	if(i1>nsl)	i1=nsl;
+			if(i2<0)	i2=0;	if(i2>nsl)	i2=nsl;
+			const std::vector<long> &isl1=(xm<=ym)?xsl[i1]:ysl[i1];
+			for(size_t i=0;i<isl1.size();i++)	// first find continuation of first point
 			{
-				if(kk[k].x==0 || fabs(kk[k].x-n+1)<1e-5 || kk[k].y==0 || fabs(kk[k].y-m+1)<1e-5)
-				{	nn[k]=-2;	j = k;	break;	}
+				register long ii = isl1[i];
+				const mglSegment &l=lines[ii];
+				if(used[ii])	continue;
+				if(l.p1==curv.p1)		{	curv.before(l.p2);	used[ii]=1;	m--;	added=true;	break;	}
+				else if(l.p2==curv.p1)	{	curv.before(l.p1);	used[ii]=1;	m--;	added=true;	break;	}
 			}
-			if(j<0)	for(k=0;k<pc;k++)	if(nn[k]==-1)	// or any points inside
-			{	j = k;	nn[k]=-2;	break;	}
+			const std::vector<long> &isl2=(xm<=ym)?xsl[i2]:ysl[i2];
+			if(m>0)	for(size_t i=0;i<isl2.size();i++)	// now the same for second point
+			{
+				register long ii = isl2[i];
+				const mglSegment &l=lines[ii];
+				if(used[ii])	continue;
+				if(l.p1==curv.p2)		{	curv.after(l.p2);	used[ii]=1;	m--;	added=true;	break;	}
+				else if(l.p2==curv.p2)	{	curv.after(l.p1);	used[ii]=1;	m--;	added=true;	break;	}
+			}
 		}
-	}while(j>=0);
-	delete []ff;	return nn;
+		curvs.push_back(curv);
+	}
+	delete []used;	delete []xsl;	delete []ysl;
+	return curvs;
+}
+//-----------------------------------------------------------------------------
+void MGL_NO_EXPORT mgl_draw_curvs(HMGL gr, mreal val, mreal c, int text, const std::vector<mglSegment> &curvs)
+{
+	long pc=0;
+	for(size_t i=0;i<curvs.size();i++)	pc += curvs[i].pp.size();
+	gr->Reserve(pc);
+	// fill arguments for other functions
+	long *ff = new long[pc], *nn = new long[pc], m=0;
+	for(size_t i=0;i<curvs.size();i++)
+	{
+		const std::list<mglPoint> &pp=curvs[i].pp;
+		for(std::list<mglPoint>::const_iterator it=pp.begin(); it != pp.end(); ++it)
+		{
+			ff[m] = gr->AddPnt(*it, c);
+			nn[m] = m+1;	m++;
+		}
+		nn[m-1]=-1;
+	}
+	if(text && pc>1)
+	{
+		wchar_t wcs[64];
+		mglprintf(wcs,64,L"%4.3g",val);
+		mreal del = 2*gr->TextWidth(wcs,"",-0.5);
+		// find width and height of drawing area
+		mreal ar=gr->GetRatio(), w=gr->FontFactor(), h;
+		if(del<w/5)	del = w/5;
+		if(ar<1) h=w/ar;	else {	h=w;	w*=ar;	}
+		long m=long(2*w/del)+1, n=long(2*h/del)+1;
+		long *oo=new long[n*m];
+		mreal *rr=new mreal[n*m];
+		for(long i=0;i<n*m;i++)	{	oo[i]=-1;	rr[i]=del*del/4;	}
+		for(long k=0;k<pc;k++)	// print label several times if possible
+		{
+			if(nn[k]<0)	continue;
+			mglPoint t = gr->GetPntP(ff[k]);
+			long i = long(t.x/del);	t.x -= i*del;
+			long j = long(t.y/del);	t.y -= j*del;
+			if(i<0 || i>=m || j<0 || j>=n)	continue;	// never should be here!
+			mreal xx = t.x*t.x+t.y*t.y;	i += m*j;
+			if(rr[i]>xx)	{	rr[i]=xx;	oo[i]=k;	}
+		}
+		for(long i=0;i<n*m;i++)	if(oo[i]>=0)
+			mgl_string_curve(gr,oo[i],pc,ff,nn,wcs,text==1?"t:C":"T:C",-0.5);
+		delete []oo;	delete []rr;
+	}
+	for(long i=0;i<pc;i++)	if(nn[i]>=0)	gr->line_plot(ff[i], ff[nn[i]]);
+	delete []nn;	delete []ff;
 }
 //-----------------------------------------------------------------------------
 // NOTE! All data MUST have the same size! Only first slice is used!
@@ -338,55 +373,14 @@ void MGL_EXPORT mgl_cont_gen(HMGL gr, mreal val, HCDT a, HCDT x, HCDT y, HCDT z,
 	if(n<2 || m<2 || x->GetNx()*x->GetNy()!=n*m || y->GetNx()*y->GetNy()!=n*m || z->GetNx()*z->GetNy()!=n*m)
 	{	gr->SetWarn(mglWarnDim,"ContGen");	return;	}
 
-	std::vector<mglPnt2> kk;
-	long *nn = mgl_cont_prep(val, a, ak, kk), *ff;
-	if(!nn)	return;	// nothing to do
-	register long i, pc=kk.size();
-	register mreal xx, yy;
-	ff = new long[pc];	gr->Reserve(pc);
-	for(i=0;i<pc;i++)
-	{
-		xx = kk[i].x;	yy = kk[i].y;
-		ff[i] = gr->AddPnt(mglPoint(mgl_data_linear(x,xx,yy,ak), mgl_data_linear(y,xx,yy,ak), mgl_data_linear(z,xx,yy,ak)), c);
-	}
-
-	if(text && pc>1)
-	{
-		wchar_t wcs[64];
-		mglprintf(wcs,64,L"%4.3g",val);
-		mglPoint t;
-		mreal del = 2*gr->TextWidth(wcs,"",-0.5);
-		// find width and height of drawing area
-		mreal ar=gr->GetRatio(), w=gr->FontFactor(), h;
-		if(del<w/5)	del = w/5;
-		if(ar<1) h=w/ar;	else {	h=w;	w*=ar;	}
-		m=long(2*w/del)+1;	n=long(2*h/del)+1;	// don't need data size anymore
-		long *oo=new long[n*m];
-		mreal *rr=new mreal[n*m];
-		for(i=0;i<n*m;i++)	{	oo[i]=-1;	rr[i]=del*del/4;	}
-
-		register long j,k;
-		for(k=0;k<pc;k++)	// print label several times if possible
-		{
-			if(nn[k]<0)	continue;
-			t = gr->GetPntP(ff[k]);
-			i = long(t.x/del);	t.x -= i*del;
-			j = long(t.y/del);	t.y -= j*del;
-			if(i<0 || i>=m || j<0 || j>=n)	continue;	// never should be here!
-			xx = t.x*t.x+t.y*t.y;	i += m*j;
-			if(rr[i]>xx)	{	rr[i]=xx;	oo[i]=k;	}
-		}
-		for(i=0;i<n*m;i++)	if(oo[i]>=0)
-			mgl_string_curve(gr,oo[i],pc,ff,nn,wcs,"t:C",-0.5);
-		delete []oo;	delete []rr;
-	}
-	for(i=0;i<pc;i++)	if(nn[i]>=0)	gr->line_plot(ff[i], ff[nn[i]]);
-	delete []nn;	delete []ff;
+	mgl_draw_curvs(gr,val,c,text,mgl_get_curvs(gr,mgl_get_lines(val,a,x,y,z,ak)));
 }
 //-----------------------------------------------------------------------------
 void MGL_EXPORT mgl_cont_gen(HMGL gr, double val, HCDT a, HCDT x, HCDT y, HCDT z, const char *sch)
 {
-	bool text=(mglchr(sch,'t'));
+	int text=0;
+	if(mglchr(sch,'t'))	text=1;
+	if(mglchr(sch,'T'))	text=2;
 	gr->SetPenPal(sch);
 	mgl_cont_gen(gr,val,a,x,y,z,gr->CDef,text,0);
 }
@@ -399,7 +393,9 @@ void MGL_EXPORT mgl_cont_xy_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, const c
 	gr->SaveState(opt);
 	static int cgid=1;	gr->StartGroup("Cont",cgid++);
 
-	bool text=(mglchr(sch,'t'));
+	int text=0;
+	if(mglchr(sch,'t'))	text=1;
+	if(mglchr(sch,'T'))	text=2;
 	bool fixed=(mglchr(sch,'_')) || (gr->Min.z==gr->Max.z);
 	long s=gr->AddTexture(sch);
 	gr->SetPenPal(sch);
@@ -408,32 +404,22 @@ void MGL_EXPORT mgl_cont_xy_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, const c
 	if(x->GetNx()*x->GetNy()!=m*n || y->GetNx()*y->GetNy()!=m*n)	// make
 	{
 		xx.Create(n, m);		yy.Create(n, m);
-		const mglData *mx = dynamic_cast<const mglData *>(x);
-		const mglData *my = dynamic_cast<const mglData *>(y);
-		if(mx && my)
-#pragma omp parallel for collapse(2)
-			for(long i=0;i<n;i++)	for(long j=0;j<m;j++)
-			{	xx.a[i+n*j] = mx->a[i];	yy.a[i+n*j] = my->a[j];	}
-		else
-#pragma omp parallel for collapse(2)
-			for(long i=0;i<n;i++)	for(long j=0;j<m;j++)
-			{	xx.a[i+n*j] = x->v(i);	yy.a[i+n*j] = y->v(j);	}
+		for(long i=0;i<n;i++)	xx.a[i]=x->v(i);
+		for(long j=1;j<m;j++)	memcpy(xx.a+n*j,xx.a,n*sizeof(mreal));
+		for(long j=0;j<m;j++)
+		{	mreal t=y->v(j);	for(long i=0;i<n;i++)	yy.a[i+n*j]=t;	}
 		x = &xx;	y = &yy;
 	}
 	// x, y -- have the same size z
-#pragma omp parallel
+	mglDataV zz(n, m);
+	for(long i=0;i<v->GetNx();i++)	for(long j=0;j<z->GetNz();j++)
 	{
-		mglData zz(n, m);
-#pragma omp for collapse(2)
-		for(long j=0;j<z->GetNz();j++)	for(long i=0;i<v->GetNx();i++)
-		{
-			if(gr->Stop)	continue;
-			mreal v0 = v->v(i), z0 = fixed ? gr->Min.z : v0;
-			if(z->GetNz()>1)
-				z0 = gr->Min.z+(gr->Max.z-gr->Min.z)*mreal(j)/(z->GetNz()-1);
-			zz.Fill(z0,z0);
-			mgl_cont_gen(gr,v0,z,x,y,&zz,gr->GetC(s,v0),text,j);
-		}
+		if(gr->NeedStop())	{	i = v->GetNx();	j = z->GetNz();	continue;	}
+		mreal v0 = v->v(i), z0 = fixed ? gr->Min.z : v0;
+		if(z->GetNz()>1)
+			z0 = gr->Min.z+(gr->Max.z-gr->Min.z)*mreal(j)/(z->GetNz()-1);
+		zz.Fill(z0,z0);
+		mgl_cont_gen(gr,v0,z,x,y,&zz,gr->GetC(s,v0),text,j);
 	}
 	gr->EndGroup();
 }
@@ -443,7 +429,7 @@ void MGL_EXPORT mgl_cont_val(HMGL gr, HCDT v, HCDT z, const char *sch, const cha
 	register long n = z->GetNx(), m = z->GetNy();
 	if(m<2 || n<2)	{	gr->SetWarn(mglWarnLow,"Cont");	return;	}
 	gr->SaveState(opt);
-	mglData x(n, m), y(n, m);
+	mglDataV x(n, m), y(n, m);
 	x.Fill(gr->Min.x,gr->Max.x,'x');
 	y.Fill(gr->Min.y,gr->Max.y,'y');
 	mgl_cont_xy_val(gr,v,&x,&y,z,sch,0);
@@ -499,16 +485,15 @@ long MGL_NO_EXPORT mgl_add_pnt(HMGL gr, mreal d, HCDT x, HCDT y, HCDT z, long i1
 	long res=-1;
 	if(edge || (d>0 && d<1))
 	{
-		mglPoint p,u,v;
-		p = mglPoint(x->v(i1,j1)*(1-d)+x->v(i2,j2)*d,
-					 y->v(i1,j1)*(1-d)+y->v(i2,j2)*d,
-					 z->v(i1,j1)*(1-d)+z->v(i2,j2)*d);
-		u = mglPoint(x->dvx(i1,j1)*(1-d)+x->dvx(i2,j2)*d,
-					 y->dvx(i1,j1)*(1-d)+y->dvx(i2,j2)*d,
-					 z->dvx(i1,j1)*(1-d)+z->dvx(i2,j2)*d);
-		v = mglPoint(x->dvy(i1,j1)*(1-d)+x->dvy(i2,j2)*d,
-					 y->dvy(i1,j1)*(1-d)+y->dvy(i2,j2)*d,
-					 z->dvy(i1,j1)*(1-d)+z->dvy(i2,j2)*d);
+		mglPoint p(x->v(i1,j1)*(1-d)+x->v(i2,j2)*d,
+					y->v(i1,j1)*(1-d)+y->v(i2,j2)*d,
+					z->v(i1,j1)*(1-d)+z->v(i2,j2)*d);
+		mglPoint u(x->dvx(i1,j1)*(1-d)+x->dvx(i2,j2)*d,
+					y->dvx(i1,j1)*(1-d)+y->dvx(i2,j2)*d,
+					z->dvx(i1,j1)*(1-d)+z->dvx(i2,j2)*d);
+		mglPoint v(x->dvy(i1,j1)*(1-d)+x->dvy(i2,j2)*d,
+					y->dvy(i1,j1)*(1-d)+y->dvy(i2,j2)*d,
+					z->dvy(i1,j1)*(1-d)+z->dvy(i2,j2)*d);
 		res = gr->AddPnt(p,c,u^v);
 	}
 	return res;
@@ -517,25 +502,22 @@ long MGL_NO_EXPORT mgl_add_pnt(HMGL gr, mreal d, HCDT x, HCDT y, HCDT z, long i1
 void MGL_NO_EXPORT mgl_add_range(HMGL gr, HCDT a, HCDT x, HCDT y, HCDT z, long i1, long j1, long di, long dj, mreal c, long &u1, long &u2, long ak, mreal v1, mreal v2)
 {
 	long i2=i1+di, j2=j1+dj;
-
 	mreal f1 = a->v(i1,j1,ak),	f2 = a->v(i2,j2,ak), d1, d2;
 	d1 = mgl_d(v1,f1,f2);
 	u1 = mgl_add_pnt(gr,d1,x,y,z,i1,j1,i2,j2,c,false);
 	d2 = mgl_d(v2,f1,f2);
 	u2 = mgl_add_pnt(gr,d2,x,y,z,i1,j1,i2,j2,c,false);
 	if(d1>d2)	{	j2=u1;	u1=u2;	u2=j2;	}
+	if(u1<0)	{	u1=u2;	u2=-1;	}
 }
 //-----------------------------------------------------------------------------
 void MGL_NO_EXPORT mgl_add_edges(HMGL gr, HCDT a, HCDT x, HCDT y, HCDT z, long i1, long j1, long di, long dj, mreal c, long &u1, long &u2, long ak, mreal v1, mreal v2)
 {
 	long i2=i1+di, j2=j1+dj;
 	u1 = u2 = -1;
-
 	mreal f1 = a->v(i1,j1,ak),	f2 = a->v(i2,j2,ak);
-	if(f1<=v2 && f1>=v1)
-		u1 = mgl_add_pnt(gr,0,x,y,z,i1,j1,i2,j2,c,true);
-	if(f2<=v2 && f2>=v1)
-		u2 = mgl_add_pnt(gr,1,x,y,z,i1,j1,i2,j2,c,true);
+	if(f1<=v2 && f1>=v1)	u1 = mgl_add_pnt(gr,0,x,y,z,i1,j1,i2,j2,c,true);
+	if(f2<=v2 && f2>=v1)	u2 = mgl_add_pnt(gr,1,x,y,z,i1,j1,i2,j2,c,true);
 }
 //-----------------------------------------------------------------------------
 void MGL_EXPORT mgl_contf_gen(HMGL gr, mreal v1, mreal v2, HCDT a, HCDT x, HCDT y, HCDT z, mreal c, long ak)
@@ -545,12 +527,11 @@ void MGL_EXPORT mgl_contf_gen(HMGL gr, mreal v1, mreal v2, HCDT a, HCDT x, HCDT 
 	{	gr->SetWarn(mglWarnDim,"ContFGen");	return;	}
 
 	register long i,j;
-	gr->Reserve(n*m);
+	gr->Reserve(8*n*m);
 	long *kk = new long[4*n], l1,l2, r1,r2, t1,t2, u1,u2, b1,b2, d1,d2, p[8],num;
 	memset(kk,-1,2*n*sizeof(long));
 	for(i=0;i<n-1;i++)	// add intersection points for first line
 	{
-		if(gr->Stop)	{	delete []kk;	return;	}
 		mgl_add_range(gr,a,x,y,z, i,0,1,0, c,u1,u2, ak,v1,v2);
 		kk[4*i]=u1;		kk[4*i+1]=u2;
 		mgl_add_edges(gr,a,x,y,z, i,0,1,0, c,d1,d2, ak,v1,v2);
@@ -561,7 +542,6 @@ void MGL_EXPORT mgl_contf_gen(HMGL gr, mreal v1, mreal v2, HCDT a, HCDT x, HCDT 
 		mgl_add_range(gr,a,x,y,z, 0,j-1,0,1, c,r1,r2, ak,v1,v2);
 		for(i=0;i<n-1;i++)
 		{
-			if(gr->Stop)	{	delete []kk;	return;	}
 			l1 = r1;		l2 = r2;	num=0;
 			t1 = kk[4*i];	t2 = kk[4*i+1];
 			b1 = kk[4*i+2];	b2 = kk[4*i+3];
@@ -579,7 +559,17 @@ void MGL_EXPORT mgl_contf_gen(HMGL gr, mreal v1, mreal v2, HCDT a, HCDT x, HCDT 
 			if(d2>=0)	p[num++] = d2;	if(u2>=0)	p[num++] = u2;
 			if(u1>=0)	p[num++] = u1;	if(d1>=0)	p[num++] = d1;
 			if(l2>=0)	p[num++] = l2;	if(l1>=0)	p[num++] = l1;
+
+			//	d1	u1	u2	d2
+			//	l2			r2
+			//	l1			r1
+			//	b1	t1	t2	b2
+
 			// draw it
+			bool b1d2 = a->v(i+1,j,ak)>v2 && a->v(i,j-1,ak)>v2;
+			bool b2d1 = a->v(i,j,ak)>v2 && a->v(i+1,j-1,ak)>v2;
+//			mreal vv = mgl_data_linear(a,i+0.5,j-0.5,ak);
+//			vv = (vv-v1)*(vv-v2);
 			if(num<3)	continue;
 			if(num==4)	gr->quad_plot(p[0],p[1],p[3],p[2]);
 			else if(num==3)	gr->trig_plot(p[0],p[1],p[2]);
@@ -590,8 +580,74 @@ void MGL_EXPORT mgl_contf_gen(HMGL gr, mreal v1, mreal v2, HCDT a, HCDT x, HCDT 
 			}
 			else if(num==6)
 			{
-				gr->quad_plot(p[0],p[1],p[3],p[2]);
-				gr->quad_plot(p[0],p[3],p[5],p[4]);
+				if(b1>=0 && b2>=0)
+				{
+					gr->quad_plot(b1,b2,l1,r1);
+					gr->quad_plot(l1,r1,u1,u2);
+				}
+				else if(d1>=0 && d2>=0)
+				{
+					gr->quad_plot(d1,d2,l1,r1);
+					gr->quad_plot(l1,r1,t1,t2);
+				}
+				else if(b1>=0 && d2>=0)
+				{
+					if(b2d1)
+					{	gr->trig_plot(b1,t1,l1);	gr->trig_plot(r1,u1,d2);	}
+					else
+					{	gr->quad_plot(b1,t1,l1,r1);	gr->quad_plot(l1,r1,u1,d2);	}
+				}
+				else if(d1>=0 && b2>=0)
+				{
+					if(b1d2)
+					{	gr->trig_plot(t1,b2,r1);	gr->trig_plot(l1,d1,u1);	}
+					else
+					{	gr->quad_plot(t1,b2,l1,r1);	gr->quad_plot(l1,r1,d1,u1);	}
+				}
+				else if(b1>=0 && d1>=0)
+				{
+					gr->quad_plot(b1,d1,t1,u1);
+					gr->quad_plot(t1,u1,r1,r2);
+				}
+				else if(d2>=0 && b2>=0)
+				{
+					gr->quad_plot(d2,b2,u1,t1);
+					gr->quad_plot(t1,u1,l1,l2);
+				}
+			}
+			else if(num==7)
+			{
+				if(b1>=0)
+				{
+					gr->trig_plot(b1,l1,t1);	gr->quad_plot(r1,r2,u1,u2);
+					if(!b2d1)	gr->quad_plot(l1,t1,u1,r1);
+				}
+				else if(b2>=0)
+				{
+					gr->trig_plot(b2,r1,t1);	gr->quad_plot(l1,l2,u2,u1);
+					if(!b1d2)	gr->quad_plot(r1,t1,u2,l1);
+				}
+				else if(d2>=0)
+				{
+					gr->trig_plot(d2,r1,u1);	gr->quad_plot(l1,l2,t1,t2);
+					if(!b2d1)	gr->quad_plot(r1,u1,t2,l2);
+				}
+				else if(d1>=0)
+				{
+					gr->trig_plot(d1,l1,u1);	gr->quad_plot(r1,r2,t2,t1);
+					if(!b1d2)	gr->quad_plot(l1,u1,t1,r2);
+				}
+			}
+			else if(num==8)
+			{
+				if(b2d1)
+				{	if(l2<0)	{	l2=l1;	l1=b1;	}	if(r2<0)	r2=d2;
+					if(t2<0)	{	t2=t1;	t1=b1;	}	if(u2<0)	u2=d2;
+					gr->quad_plot(r1,r2,u1,u2);	gr->quad_plot(l1,l2,t1,t2);	}
+				else
+				{	if(l2<0)	l2=d1;	if(r2<0)	{	r2=r1;	r1=b2;	}
+					if(t2<0)	t2=b2;	if(u2<0)	{	u2=u1;	u1=d1;	}
+					gr->quad_plot(r1,r2,t2,t1);	gr->quad_plot(l1,l2,u2,u1);	}
 			}
 		}
 	}
@@ -618,32 +674,22 @@ void MGL_EXPORT mgl_contf_xy_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, const 
 	if(x->GetNx()*x->GetNy()!=m*n || y->GetNx()*y->GetNy()!=m*n)	// make
 	{
 		xx.Create(n, m);		yy.Create(n, m);
-		const mglData *mx = dynamic_cast<const mglData *>(x);
-		const mglData *my = dynamic_cast<const mglData *>(y);
-		if(mx && my)
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<m;j++)	for(long i=0;i<n;i++)
-			{	xx.a[i+n*j] = mx->a[i];	yy.a[i+n*j] = my->a[j];	}
-		else
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<m;j++)	for(long i=0;i<n;i++)
-			{	xx.a[i+n*j] = x->v(i);	yy.a[i+n*j] = y->v(j);	}
+		for(long i=0;i<n;i++)	xx.a[i]=x->v(i);
+		for(long j=1;j<m;j++)	memcpy(xx.a+n*j,xx.a,n*sizeof(mreal));
+		for(long j=0;j<m;j++)
+		{	mreal t=y->v(j);	for(long i=0;i<n;i++)	yy.a[i+n*j]=t;	}
 		x = &xx;	y = &yy;
 	}
 	// x, y -- have the same size z
-#pragma omp parallel
+	mglDataV zz(n, m);
+	for(long i=0;i<v->GetNx()-1;i++)	for(long j=0;j<z->GetNz();j++)
 	{
-		mglData zz(n, m);
-#pragma omp for collapse(2)
-		for(long j=0;j<z->GetNz();j++)	for(long i=0;i<v->GetNx()-1;i++)
-		{
-			if(gr->Stop)	continue;
-			mreal v0 = v->v(i), z0 = fixed ? gr->Min.z : v0;
-			if(z->GetNz()>1)
-				z0 = gr->Min.z+(gr->Max.z-gr->Min.z)*mreal(j)/(z->GetNz()-1);
-			zz.Fill(z0,z0);
-			mgl_contf_gen(gr,v0,v->v(i+1),z,x,y,&zz,gr->GetC(s,v0),j);
-		}
+		if(gr->NeedStop())	{	i = v->GetNx();	j = z->GetNz();	continue;	}
+		mreal v0 = v->v(i), z0 = fixed ? gr->Min.z : v0;
+		if(z->GetNz()>1)
+			z0 = gr->Min.z+(gr->Max.z-gr->Min.z)*mreal(j)/(z->GetNz()-1);
+		zz.Fill(z0,z0);
+		mgl_contf_gen(gr,v0,v->v(i+1),z,x,y,&zz,gr->GetC(s,v0),j);
 	}
 	gr->EndGroup();
 }
@@ -653,7 +699,7 @@ void MGL_EXPORT mgl_contf_val(HMGL gr, HCDT v, HCDT z, const char *sch, const ch
 	register long n = z->GetNx(), m = z->GetNy();
 	if(n<2 || m<2)	{	gr->SetWarn(mglWarnLow,"Cont");	return;	}
 	gr->SaveState(opt);
-	mglData x(n, m), y(n, m);
+	mglDataV x(n, m), y(n, m);
 	x.Fill(gr->Min.x,gr->Max.x,'x');
 	y.Fill(gr->Min.y,gr->Max.y,'y');
 	mgl_contf_xy_val(gr,v,&x,&y,z,sch,0);
@@ -664,7 +710,7 @@ void MGL_EXPORT mgl_contf_xy(HMGL gr, HCDT x, HCDT y, HCDT z, const char *sch, c
 	mreal r = gr->SaveState(opt);
 	long Num = mgl_isnan(r)?7:long(r+0.5);
 	if(Num<1)	{	gr->SetWarn(mglWarnCnt,"Cont");	return;	}
-	mglData v(Num+2);	v.Fill(gr->Min.c, gr->Max.c);
+	mglDataV v(Num+2);	v.Fill(gr->Min.c, gr->Max.c);
 	mgl_contf_xy_val(gr,&v,x,y,z,sch,0);
 }
 //-----------------------------------------------------------------------------
@@ -673,7 +719,7 @@ void MGL_EXPORT mgl_contf(HMGL gr, HCDT z, const char *sch, const char *opt)
 	mreal r = gr->SaveState(opt);
 	long Num = mgl_isnan(r)?7:long(r+0.5);
 	if(Num<1)	{	gr->SetWarn(mglWarnCnt,"Cont");	return;	}
-	mglData v(Num+2);	v.Fill(gr->Min.c, gr->Max.c);
+	mglDataV v(Num+2);	v.Fill(gr->Min.c, gr->Max.c);
 	mgl_contf_val(gr,&v,z,sch,0);
 }
 //-----------------------------------------------------------------------------
@@ -705,22 +751,22 @@ void MGL_EXPORT mgl_contf_(uintptr_t *gr, uintptr_t *a, const char *sch, const c
 //-----------------------------------------------------------------------------
 int MGL_NO_EXPORT mgl_get_ncol(const char *sch, char *res)
 {
-	register long i,j=0;
-	if(sch)	for(i=0;sch[i]&&sch[i]!=':';i++)	if(strchr(MGL_COLORS,sch[i]))
+	long j=0;
+	if(sch)	for(long i=0;sch[i]&&sch[i]!=':';i++)	if(strchr(MGL_COLORS,sch[i]))
 	{	if(res)	res[j]=sch[i];	j++;	}
 	return j?j:strlen(MGL_DEF_PAL);
 }
 //-----------------------------------------------------------------------------
 void MGL_EXPORT mgl_contd_xy_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, const char *sch, const char *opt)
 {
-	long i,j=0,n=z->GetNx(),m=z->GetNy();
+	long j=0,n=z->GetNx(),m=z->GetNy();
 	if(mgl_check_dim2(gr,x,y,z,0,"ContD"))	return;
 
 	gr->SaveState(opt);
 	static int cgid=1;	gr->StartGroup("ContD",cgid++);
 
 	bool fixed=(mglchr(sch,'_')) || (gr->Min.z==gr->Max.z);
-	if(sch)	for(i=0;sch[i];i++)	if(strchr(MGL_COLORS,sch[i]))	j++;
+	if(sch)	for(long i=0;sch[i];i++)	if(strchr(MGL_COLORS,sch[i]))	j++;
 	if(j==0)	sch = MGL_DEF_PAL;
 	long s = gr->AddTexture(sch,1);
 	int nc = gr->GetNumPal(s*256);
@@ -728,33 +774,23 @@ void MGL_EXPORT mgl_contd_xy_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, const 
 	if(x->GetNx()*x->GetNy()!=m*n || y->GetNx()*y->GetNy()!=m*n)	// make
 	{
 		xx.Create(n, m);		yy.Create(n, m);
-		const mglData *mx = dynamic_cast<const mglData *>(x);
-		const mglData *my = dynamic_cast<const mglData *>(y);
-		if(mx && my)
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<m;j++)	for(long i=0;i<n;i++)
-			{	xx.a[i+n*j] = mx->a[i];	yy.a[i+n*j] = my->a[j];	}
-		else
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<m;j++)	for(long i=0;i<n;i++)
-			{	xx.a[i+n*j] = x->v(i);	yy.a[i+n*j] = y->v(j);	}
+		for(long i=0;i<n;i++)	xx.a[i]=x->v(i);
+		for(long j=1;j<m;j++)	memcpy(xx.a+n*j,xx.a,n*sizeof(mreal));
+		for(long j=0;j<m;j++)
+		{	mreal t=y->v(j);	for(long i=0;i<n;i++)	yy.a[i+n*j]=t;	}
 		x = &xx;	y = &yy;
 	}
 	// x, y -- have the same size z
 	mreal dc = nc>1 ? 1/(MGL_FEPSILON*(nc-1)) : 0;
-#pragma omp parallel
+	mglDataV zz(n, m);
+	for(long i=0;i<v->GetNx()-1;i++)	for(long j=0;j<z->GetNz();j++)
 	{
-		mglData zz(n, m);
-#pragma omp for collapse(2)
-		for(long j=0;j<z->GetNz();j++)	for(long i=0;i<v->GetNx()-1;i++)
-		{
-			if(gr->Stop)	continue;
-			mreal v0 = v->v(i), z0 = fixed ? gr->Min.z : v0;
-			if(z->GetNz()>1)
-				z0 = gr->Min.z+(gr->Max.z-gr->Min.z)*mreal(j)/(z->GetNz()-1);
-			zz.Fill(z0,z0);
-			mgl_contf_gen(gr,v0,v->v(i+1),z,x,y,&zz,s+i*dc,j);
-		}
+		if(gr->NeedStop())	{	i = v->GetNx();	j = z->GetNz();	continue;	}
+		mreal v0 = v->v(i), z0 = fixed ? gr->Min.z : v0;
+		if(z->GetNz()>1)
+			z0 = gr->Min.z+(gr->Max.z-gr->Min.z)*mreal(j)/(z->GetNz()-1);
+		zz.Fill(z0,z0);
+		mgl_contf_gen(gr,v0,v->v(i+1),z,x,y,&zz,s+i*dc,j);
 	}
 	gr->EndGroup();
 }
@@ -764,7 +800,7 @@ void MGL_EXPORT mgl_contd_val(HMGL gr, HCDT v, HCDT z, const char *sch, const ch
 	register long n = z->GetNx(), m = z->GetNy();
 	if(n<2 || m<2)	{	gr->SetWarn(mglWarnLow,"ContD");	return;	}
 	gr->SaveState(opt);
-	mglData x(n, m), y(n, m);
+	mglDataV x(n, m), y(n, m);
 	x.Fill(gr->Min.x,gr->Max.x,'x');
 	y.Fill(gr->Min.y,gr->Max.y,'y');
 	mgl_contd_xy_val(gr,v,&x,&y,z,sch,0);
@@ -773,7 +809,7 @@ void MGL_EXPORT mgl_contd_val(HMGL gr, HCDT v, HCDT z, const char *sch, const ch
 void MGL_EXPORT mgl_contd_xy(HMGL gr, HCDT x, HCDT y, HCDT z, const char *sch, const char *opt)
 {
 	gr->SaveState(opt);
-	mglData v(mgl_get_ncol(sch,0)+1);
+	mglDataV v(mgl_get_ncol(sch,0)+1);
 	v.Fill(gr->Min.c, gr->Max.c);
 	mgl_contd_xy_val(gr,&v,x,y,z,sch,0);
 }
@@ -781,7 +817,7 @@ void MGL_EXPORT mgl_contd_xy(HMGL gr, HCDT x, HCDT y, HCDT z, const char *sch, c
 void MGL_EXPORT mgl_contd(HMGL gr, HCDT z, const char *sch, const char *opt)
 {
 	gr->SaveState(opt);
-	mglData v(mgl_get_ncol(sch,0)+1);
+	mglDataV v(mgl_get_ncol(sch,0)+1);
 	v.Fill(gr->Min.c, gr->Max.c);
 	mgl_contd_val(gr,&v,z,sch,0);
 }
@@ -818,23 +854,19 @@ void MGL_EXPORT mgl_contv_gen(HMGL gr, mreal val, mreal dval, HCDT a, HCDT x, HC
 	if(n<2 || m<2 || x->GetNx()*x->GetNy()!=n*m || y->GetNx()*y->GetNy()!=n*m || z->GetNx()*z->GetNy()!=n*m)
 	{	gr->SetWarn(mglWarnDim,"ContGen");	return;	}
 
-	std::vector<mglPnt2> kk;
-	long *nn = mgl_cont_prep(val, a, ak, kk), *ff;
-	if(!nn)	return;	// nothing to do
-	register long i, pc=kk.size();
-	register mreal xx, yy;
-	ff = new long[2*pc];	gr->Reserve(2*pc);
-	mglPoint p,q;
-	for(i=0;i<pc;i++)
+	const std::vector<mglSegment> curvs = mgl_get_curvs(gr,mgl_get_lines(val,a,x,y,z,ak));
+	for(size_t i=0;i<curvs.size();i++)
 	{
-		xx = kk[i].x;	yy = kk[i].y;
-		p = mglPoint(mgl_data_linear(x,xx,yy,ak), mgl_data_linear(y,xx,yy,ak), mgl_data_linear(z,xx,yy,ak));
-		q = mglPoint(p.y,-p.x);		ff[i] = gr->AddPnt(p, c, q);
-		ff[i+pc] = gr->AddPnt(mglPoint(p.x, p.y, p.z+dval), c, q);
+		const std::list<mglPoint> &pp=curvs[i].pp;
+		long f2=-1,g2=-1;
+		for(std::list<mglPoint>::const_iterator it=pp.begin(); it != pp.end(); ++it)
+		{
+			mglPoint p=*it,q(p.y,-p.x);
+			long f1 = f2;	f2 = gr->AddPnt(p,c,q);	p.z+=dval;
+			long g1 = g2;	g2 = gr->AddPnt(p,c,q);
+			gr->quad_plot(f1,g1,f2,g2);
+		}
 	}
-
-	for(i=0;i<pc;i++)	if(nn[i]>=0)	gr->quad_plot(ff[i], ff[nn[i]], ff[i+pc], ff[nn[i]+pc]);
-	delete []nn;	delete []ff;
 }
 //-----------------------------------------------------------------------------
 void MGL_EXPORT mgl_contv_xy_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, const char *sch, const char *opt)
@@ -852,35 +884,25 @@ void MGL_EXPORT mgl_contv_xy_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, const 
 	if(x->GetNx()*x->GetNy()!=m*n || y->GetNx()*y->GetNy()!=m*n)	// make
 	{
 		xx.Create(n, m);		yy.Create(n, m);
-		const mglData *mx = dynamic_cast<const mglData *>(x);
-		const mglData *my = dynamic_cast<const mglData *>(y);
-		if(mx && my)
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<m;j++)	for(long i=0;i<n;i++)
-			{	xx.a[i+n*j] = mx->a[i];	yy.a[i+n*j] = my->a[j];	}
-		else
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<m;j++)	for(long i=0;i<n;i++)
-			{	xx.a[i+n*j] = x->v(i);	yy.a[i+n*j] = y->v(j);	}
+		for(long i=0;i<n;i++)	xx.a[i]=x->v(i);
+		for(long j=1;j<m;j++)	memcpy(xx.a+n*j,xx.a,n*sizeof(mreal));
+		for(long j=0;j<m;j++)
+		{	mreal t=y->v(j);	for(long i=0;i<n;i++)	yy.a[i+n*j]=t;	}
 		x = &xx;	y = &yy;
 	}
 	// x, y -- have the same size z
-#pragma omp parallel
+	mglDataV zz(n, m);
+	for(long i=0;i<v->GetNx();i++)	for(long j=0;j<z->GetNz();j++)
 	{
-		mglData zz(n, m);
-#pragma omp for collapse(2)
-		for(long j=0;j<z->GetNz();j++)	for(long i=0;i<v->GetNx();i++)
-		{
-			if(gr->Stop)	continue;
-			mreal v0 = v->v(i), z0 = fixed ? gr->Min.z : v0;
-			if(z->GetNz()>1)	z0 = gr->Min.z+(gr->Max.z-gr->Min.z)*mreal(j)/(z->GetNz()-1);
-			zz.Fill(z0,z0);
-			mreal dv = (gr->Max.c-gr->Min.c)/8;
-			if(i>0)	dv = v->v(i-1)-v->v(i);
-			else if(i<v->GetNx()-1)	dv = v->v(i)-v->v(i+1);
-			if(fixed)	dv=-dv;
-			mgl_contv_gen(gr,v0,dv,z,x,y,&zz,gr->GetC(s,v0),j);
-		}
+		if(gr->NeedStop())	{	i = v->GetNx();	j = z->GetNz();	continue;	}
+		mreal v0 = v->v(i), z0 = fixed ? gr->Min.z : v0;
+		if(z->GetNz()>1)	z0 = gr->Min.z+(gr->Max.z-gr->Min.z)*mreal(j)/(z->GetNz()-1);
+		zz.Fill(z0,z0);
+		mreal dv = (gr->Max.c-gr->Min.c)/8;
+		if(i>0)	dv = v->v(i-1)-v->v(i);
+		else if(i<v->GetNx()-1)	dv = v->v(i)-v->v(i+1);
+		if(fixed)	dv=-dv;
+		mgl_contv_gen(gr,v0,dv,z,x,y,&zz,gr->GetC(s,v0),j);
 	}
 	gr->EndGroup();
 }
@@ -890,7 +912,7 @@ void MGL_EXPORT mgl_contv_val(HMGL gr, HCDT v, HCDT z, const char *sch, const ch
 	register long n = z->GetNx(), m = z->GetNy();
 	if(n<2 || m<2)	{	gr->SetWarn(mglWarnLow,"Cont");	return;	}
 	gr->SaveState(opt);
-	mglData x(n, m), y(n, m);
+	mglDataV x(n, m), y(n, m);
 	x.Fill(gr->Min.x,gr->Max.x,'x');
 	y.Fill(gr->Min.y,gr->Max.y,'y');
 	mgl_contv_xy_val(gr,v,&x,&y,z,sch,0);
@@ -945,7 +967,7 @@ struct _mgl_slice	{	mglData x,y,z,a;	};
 //-----------------------------------------------------------------------------
 void MGL_NO_EXPORT mgl_get_slice(_mgl_slice &s, HCDT x, HCDT y, HCDT z, HCDT a, char dir, mreal d, bool both)
 {
-	register long i,j,i0,n=a->GetNx(),m=a->GetNy(),l=a->GetNz(), nx=1,ny=1,p;
+	register long n=a->GetNx(),m=a->GetNy(),l=a->GetNz(), nx=1,ny=1,p;
 
 	if(dir=='x')	{	nx = m;	ny = l;	if(d<0)	d = n/2.;	}
 	if(dir=='y')	{	nx = n;	ny = l;	if(d<0)	d = m/2.;	}
@@ -960,39 +982,46 @@ void MGL_NO_EXPORT mgl_get_slice(_mgl_slice &s, HCDT x, HCDT y, HCDT z, HCDT a, 
 
 	if(both)
 	{
-		if(dir=='x')	for(j=0;j<ny;j++)	for(i=0;i<nx;i++)
-		{
-			i0 = i+nx*j;
-			s.x.a[i0] = x->v(p,i,j)*(1-d) + x->v(p+1,i,j)*d;
-			s.y.a[i0] = y->v(p,i,j)*(1-d) + y->v(p+1,i,j)*d;
-			s.z.a[i0] = z->v(p,i,j)*(1-d) + z->v(p+1,i,j)*d;
-			s.a.a[i0] = a->v(p,i,j)*(1-d) + a->v(p+1,i,j)*d;
-		}
-		if(dir=='y')	for(j=0;j<ny;j++)	for(i=0;i<nx;i++)
-		{
-			i0 = i+nx*j;
-			s.x.a[i0] = x->v(i,p,j)*(1-d) + x->v(i,p+1,j)*d;
-			s.y.a[i0] = y->v(i,p,j)*(1-d) + y->v(i,p+1,j)*d;
-			s.z.a[i0] = z->v(i,p,j)*(1-d) + z->v(i,p+1,j)*d;
-			s.a.a[i0] = a->v(i,p,j)*(1-d) + a->v(i,p+1,j)*d;
-		}
-		if(dir=='z')	for(j=0;j<ny;j++)	for(i=0;i<nx;i++)
-		{
-			i0 = i+nx*j;
-			s.x.a[i0] = x->v(i,j,p)*(1-d) + x->v(i,j,p+1)*d;
-			s.y.a[i0] = y->v(i,j,p)*(1-d) + y->v(i,j,p+1)*d;
-			s.z.a[i0] = z->v(i,j,p)*(1-d) + z->v(i,j,p+1)*d;
-			s.a.a[i0] = a->v(i,j,p)*(1-d) + a->v(i,j,p+1)*d;
-		}
+		if(dir=='x')
+#pragma omp parallel for collapse(2)
+			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
+			{
+				register long i0 = i+nx*j;
+				s.x.a[i0] = x->v(p,i,j)*(1-d) + x->v(p+1,i,j)*d;
+				s.y.a[i0] = y->v(p,i,j)*(1-d) + y->v(p+1,i,j)*d;
+				s.z.a[i0] = z->v(p,i,j)*(1-d) + z->v(p+1,i,j)*d;
+				s.a.a[i0] = a->v(p,i,j)*(1-d) + a->v(p+1,i,j)*d;
+			}
+		if(dir=='y')
+#pragma omp parallel for collapse(2)
+			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
+			{
+				register long i0 = i+nx*j;
+				s.x.a[i0] = x->v(i,p,j)*(1-d) + x->v(i,p+1,j)*d;
+				s.y.a[i0] = y->v(i,p,j)*(1-d) + y->v(i,p+1,j)*d;
+				s.z.a[i0] = z->v(i,p,j)*(1-d) + z->v(i,p+1,j)*d;
+				s.a.a[i0] = a->v(i,p,j)*(1-d) + a->v(i,p+1,j)*d;
+			}
+		if(dir=='z')
+#pragma omp parallel for collapse(2)
+			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
+			{
+				register long i0 = i+nx*j;
+				s.x.a[i0] = x->v(i,j,p)*(1-d) + x->v(i,j,p+1)*d;
+				s.y.a[i0] = y->v(i,j,p)*(1-d) + y->v(i,j,p+1)*d;
+				s.z.a[i0] = z->v(i,j,p)*(1-d) + z->v(i,j,p+1)*d;
+				s.a.a[i0] = a->v(i,j,p)*(1-d) + a->v(i,j,p+1)*d;
+			}
 	}
 	else	// x, y, z -- vectors
 	{
 		if(dir=='x')
 		{
 			v = x->v(p)*(1-d)+x->v(p+1)*d;
-			for(j=0;j<ny;j++)	for(i=0;i<nx;i++)
+#pragma omp parallel for collapse(2)
+			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
 			{
-				i0 = i+nx*j;	s.x.a[i0] = v;
+				register long i0 = i+nx*j;	s.x.a[i0] = v;
 				s.y.a[i0] = y->v(i);	s.z.a[i0] = z->v(j);
 				s.a.a[i0] = a->v(p,i,j)*(1-d) + a->v(p+1,i,j)*d;
 			}
@@ -1000,9 +1029,10 @@ void MGL_NO_EXPORT mgl_get_slice(_mgl_slice &s, HCDT x, HCDT y, HCDT z, HCDT a, 
 		if(dir=='y')
 		{
 			v = y->v(p)*(1-d)+y->v(p+1)*d;
-			for(j=0;j<ny;j++)	for(i=0;i<nx;i++)
+#pragma omp parallel for collapse(2)
+			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
 			{
-				i0 = i+nx*j;	s.y.a[i0] = v;
+				register long i0 = i+nx*j;	s.y.a[i0] = v;
 				s.x.a[i0] = x->v(i);	s.z.a[i0] = z->v(j);
 				s.a.a[i0] = a->v(i,p,j)*(1-d) + a->v(i,p+1,j)*d;
 			}
@@ -1010,97 +1040,12 @@ void MGL_NO_EXPORT mgl_get_slice(_mgl_slice &s, HCDT x, HCDT y, HCDT z, HCDT a, 
 		if(dir=='z')
 		{
 			v = z->v(p)*(1-d)+z->v(p+1)*d;
-			for(j=0;j<ny;j++)	for(i=0;i<nx;i++)
+#pragma omp parallel for collapse(2)
+			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
 			{
-				i0 = i+nx*j;	s.z.a[i0] = v;
+				register long i0 = i+nx*j;	s.z.a[i0] = v;
 				s.x.a[i0] = x->v(i);	s.y.a[i0] = y->v(j);
 				s.a.a[i0] = a->v(i,j,p)*(1-d) + a->v(i,j,p+1)*d;
-			}
-		}
-	}
-}
-//-----------------------------------------------------------------------------
-void MGL_NO_EXPORT mgl_get_slice_md(_mgl_slice &s, const mglData *x, const mglData *y, const mglData *z, const mglData *a, char dir, mreal d, bool both)
-{
-	long n=a->nx,m=a->ny,l=a->nz, nx=1,ny=1,p;
-
-	if(dir=='x')	{	nx = m;	ny = l;	if(d<0)	d = n/2.;	}
-	if(dir=='y')	{	nx = n;	ny = l;	if(d<0)	d = m/2.;	}
-	if(dir=='z')	{	nx = n;	ny = m;	if(d<0)	d = l/2.;	}
-	s.x.Create(nx,ny);	s.y.Create(nx,ny);
-	s.z.Create(nx,ny);	s.a.Create(nx,ny);
-	p = long(d);	d -= p;
-	if(dir=='x' && p>=n-1)	{	d+=p-n+2;	p=n-2;	}
-	if(dir=='y' && p>=m-1)	{	d+=p-m+2.;	p=m-2;	}
-	if(dir=='z' && p>=l-1)	{	d+=p-l+2;	p=l-2;	}
-	mreal v;
-
-	if(both)
-	{
-		if(dir=='x')
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
-			{
-				register long i0 = i+nx*j, i1 = p+n*(i+m*j);
-				s.x.a[i0] = x->a[i1]*(1-d) + x->a[i1+1]*d;
-				s.y.a[i0] = y->a[i1]*(1-d) + y->a[i1+1]*d;
-				s.z.a[i0] = z->a[i1]*(1-d) + z->a[i1+1]*d;
-				s.a.a[i0] = a->a[i1]*(1-d) + a->a[i1+1]*d;
-			}
-		if(dir=='y')
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
-			{
-				register long i0 = i+nx*j, i1 = i+n*(p+m*j);
-				s.x.a[i0] = x->a[i1]*(1-d) + x->a[i1+n]*d;
-				s.y.a[i0] = y->a[i1]*(1-d) + y->a[i1+n]*d;
-				s.z.a[i0] = z->a[i1]*(1-d) + z->a[i1+n]*d;
-				s.a.a[i0] = a->a[i1]*(1-d) + a->a[i1+n]*d;
-			}
-		if(dir=='z')
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
-			{
-				register long i0 = i+nx*j, i1 = i+n*(j+m*p);
-				s.x.a[i0] = x->a[i1]*(1-d) + x->a[i1+n*m]*d;
-				s.y.a[i0] = y->a[i1]*(1-d) + y->a[i1+n*m]*d;
-				s.z.a[i0] = z->a[i1]*(1-d) + z->a[i1+n*m]*d;
-				s.a.a[i0] = a->a[i1]*(1-d) + a->a[i1+n*m]*d;
-			}
-	}
-	else	// x, y, z -- vectors
-	{
-		if(dir=='x')
-		{
-			v = x->a[p]*(1-d)+x->a[p+1]*d;
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
-			{
-				register long i0 = i+nx*j, i1 = p+n*(i+m*j);
-				s.x.a[i0] = v;	s.y.a[i0] = y->a[i];	s.z.a[i0] = z->a[j];
-				s.a.a[i0] = a->a[i1]*(1-d) + a->a[i1+1]*d;
-			}
-		}
-		if(dir=='y')
-		{
-			v = y->a[p]*(1-d)+y->a[p+1]*d;
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
-			{
-				register long i0 = i+nx*j, i1 = i+n*(p+m*j);
-				s.x.a[i0] = x->a[i];	s.y.a[i0] = v;	s.z.a[i0] = z->a[j];
-				s.a.a[i0] = a->a[i1]*(1-d) + a->a[i1+n]*d;
-			}
-		}
-		if(dir=='z')
-		{
-			v = z->a[p]*(1-d)+z->a[p+1]*d;
-#pragma omp parallel for collapse(2)
-			for(long j=0;j<ny;j++)	for(long i=0;i<nx;i++)
-			{
-				register long i0 = i+nx*j, i1 = i+n*(j+m*p);
-				s.x.a[i0] = x->a[i];	s.y.a[i0] = y->a[j];	s.z.a[i0] = v;
-				s.a.a[i0] = a->a[i1]*(1-d) + a->a[i1+n*m]*d;
 			}
 		}
 	}
@@ -1117,18 +1062,14 @@ void MGL_EXPORT mgl_cont3_xyz_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, HCDT 
 	if(mglchr(sch,'x'))	dir='x';
 	if(mglchr(sch,'z'))	dir='z';
 
-	bool text=(mglchr(sch,'t'));
+	int text=0;
+	if(mglchr(sch,'t'))	text=1;
+	if(mglchr(sch,'T'))	text=2;
 	long ss=gr->AddTexture(sch);
 	gr->SetPenPal(sch);
 
 	_mgl_slice s;
-	const mglData *mx = dynamic_cast<const mglData *>(x);
-	const mglData *my = dynamic_cast<const mglData *>(y);
-	const mglData *mz = dynamic_cast<const mglData *>(z);
-	const mglData *ma = dynamic_cast<const mglData *>(a);
-	if(mx&&my&&mz&&ma)	mgl_get_slice_md(s,mx,my,mz,ma,dir,sVal,both);
-	else mgl_get_slice(s,x,y,z,a,dir,sVal,both);
-#pragma omp parallel for
+	mgl_get_slice(s,x,y,z,a,dir,sVal,both);
 	for(long i=0;i<v->GetNx();i++)
 	{
 		register mreal v0 = v->v(i);
@@ -1140,7 +1081,7 @@ void MGL_EXPORT mgl_cont3_xyz_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, HCDT 
 void MGL_EXPORT mgl_cont3_val(HMGL gr, HCDT v, HCDT a, const char *sch, double sVal, const char *opt)
 {
 	gr->SaveState(opt);
-	mglData x(a->GetNx()), y(a->GetNy()),z(a->GetNz());
+	mglDataV x(a->GetNx()), y(a->GetNy()),z(a->GetNz());
 	x.Fill(gr->Min.x,gr->Max.x);
 	y.Fill(gr->Min.y,gr->Max.y);
 	z.Fill(gr->Min.z,gr->Max.z);
@@ -1205,12 +1146,7 @@ void MGL_EXPORT mgl_dens3_xyz(HMGL gr, HCDT x, HCDT y, HCDT z, HCDT a, const cha
 	if(mglchr(sch,'z'))	dir='z';
 
 	_mgl_slice s;
-	const mglData *mx = dynamic_cast<const mglData *>(x);
-	const mglData *my = dynamic_cast<const mglData *>(y);
-	const mglData *mz = dynamic_cast<const mglData *>(z);
-	const mglData *ma = dynamic_cast<const mglData *>(a);
-	if(mx&&my&&mz&&ma)	mgl_get_slice_md(s,mx,my,mz,ma,dir,sVal,both);
-	else mgl_get_slice(s,x,y,z,a,dir,sVal,both);
+	mgl_get_slice(s,x,y,z,a,dir,sVal,both);
 	mgl_surfc_xy(gr,&s.x,&s.y,&s.z,&s.a,sch,0);
 	gr->EndGroup();
 }
@@ -1218,7 +1154,7 @@ void MGL_EXPORT mgl_dens3_xyz(HMGL gr, HCDT x, HCDT y, HCDT z, HCDT a, const cha
 void MGL_EXPORT mgl_dens3(HMGL gr, HCDT a, const char *sch, double sVal, const char *opt)
 {
 	gr->SaveState(opt);
-	mglData x(a->GetNx()), y(a->GetNy()),z(a->GetNz());
+	mglDataV x(a->GetNx()), y(a->GetNy()),z(a->GetNz());
 	x.Fill(gr->Min.x,gr->Max.x);
 	y.Fill(gr->Min.y,gr->Max.y);
 	z.Fill(gr->Min.z,gr->Max.z);
@@ -1252,12 +1188,7 @@ void MGL_EXPORT mgl_grid3_xyz(HMGL gr, HCDT x, HCDT y, HCDT z, HCDT a, const cha
 	if(mglchr(sch,'z'))	dir='z';
 
 	_mgl_slice s;
-	const mglData *mx = dynamic_cast<const mglData *>(x);
-	const mglData *my = dynamic_cast<const mglData *>(y);
-	const mglData *mz = dynamic_cast<const mglData *>(z);
-	const mglData *ma = dynamic_cast<const mglData *>(a);
-	if(mx&&my&&mz&&ma)	mgl_get_slice_md(s,mx,my,mz,ma,dir,sVal,both);
-	else mgl_get_slice(s,x,y,z,a,dir,sVal,both);
+	mgl_get_slice(s,x,y,z,a,dir,sVal,both);
 	mgl_mesh_xy(gr,&s.x,&s.y,&s.z,sch,0);
 	gr->EndGroup();
 }
@@ -1265,7 +1196,7 @@ void MGL_EXPORT mgl_grid3_xyz(HMGL gr, HCDT x, HCDT y, HCDT z, HCDT a, const cha
 void MGL_EXPORT mgl_grid3(HMGL gr, HCDT a, const char *sch, double sVal, const char *opt)
 {
 	gr->SaveState(opt);
-	mglData x(a->GetNx()), y(a->GetNy()), z(a->GetNz());
+	mglDataV x(a->GetNx()), y(a->GetNy()), z(a->GetNz());
 	x.Fill(gr->Min.x,gr->Max.x);
 	y.Fill(gr->Min.y,gr->Max.y);
 	z.Fill(gr->Min.z,gr->Max.z);
@@ -1300,13 +1231,7 @@ void MGL_EXPORT mgl_contf3_xyz_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, HCDT
 
 	long ss=gr->AddTexture(sch);
 	_mgl_slice s;
-	const mglData *mx = dynamic_cast<const mglData *>(x);
-	const mglData *my = dynamic_cast<const mglData *>(y);
-	const mglData *mz = dynamic_cast<const mglData *>(z);
-	const mglData *ma = dynamic_cast<const mglData *>(a);
-	if(mx&&my&&mz&&ma)	mgl_get_slice_md(s,mx,my,mz,ma,dir,sVal,both);
-	else mgl_get_slice(s,x,y,z,a,dir,sVal,both);
-#pragma omp parallel for
+	mgl_get_slice(s,x,y,z,a,dir,sVal,both);
 	for(long i=0;i<v->GetNx()-1;i++)
 	{
 		register mreal v0 = v->v(i);
@@ -1318,7 +1243,7 @@ void MGL_EXPORT mgl_contf3_xyz_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, HCDT
 void MGL_EXPORT mgl_contf3_val(HMGL gr, HCDT v, HCDT a, const char *sch, double sVal, const char *opt)
 {
 	gr->SaveState(opt);
-	mglData x(a->GetNx()), y(a->GetNy()),z(a->GetNz());
+	mglDataV x(a->GetNx()), y(a->GetNy()),z(a->GetNz());
 	x.Fill(gr->Min.x,gr->Max.x);
 	y.Fill(gr->Min.y,gr->Max.y);
 	z.Fill(gr->Min.z,gr->Max.z);
@@ -1330,7 +1255,7 @@ void MGL_EXPORT mgl_contf3_xyz(HMGL gr, HCDT x, HCDT y, HCDT z, HCDT a, const ch
 	mreal r = gr->SaveState(opt);
 	long Num = mgl_isnan(r)?7:long(r+0.5);
 	if(Num<1)	{	gr->SetWarn(mglWarnCnt,"ContF3");	return;	}
-	mglData v(Num+2);	v.Fill(gr->Min.c, gr->Max.c);
+	mglDataV v(Num+2);	v.Fill(gr->Min.c, gr->Max.c);
 	mgl_contf3_xyz_val(gr,&v,x,y,z,a,sch,sVal,0);
 }
 //-----------------------------------------------------------------------------
@@ -1339,7 +1264,7 @@ void MGL_EXPORT mgl_contf3(HMGL gr, HCDT a, const char *sch, double sVal, const 
 	mreal r = gr->SaveState(opt);
 	long Num = mgl_isnan(r)?7:long(r+0.5);
 	if(Num<1)	{	gr->SetWarn(mglWarnCnt,"ContF3");	return;	}
-	mglData v(Num+2);	v.Fill(gr->Min.c, gr->Max.c);
+	mglDataV v(Num+2);	v.Fill(gr->Min.c, gr->Max.c);
 	mgl_contf3_val(gr,&v,a,sch,sVal,0);
 }
 //-----------------------------------------------------------------------------
@@ -1371,7 +1296,7 @@ delete []o;	delete []s;	}
 //	Axial series
 //
 //-----------------------------------------------------------------------------
-long MGL_NO_EXPORT mgl_find_prev(long i, long pc, long *nn)
+long MGL_LOCAL_PURE mgl_find_prev(long i, long pc, long *nn)
 {
 	for(long k=0;k<pc;k++)	if(nn[k]==i)	return k;
 	return -1;
@@ -1383,14 +1308,12 @@ void MGL_NO_EXPORT mgl_axial_plot(mglBase *gr,long pc, mglPoint *ff, long *nn,ch
 	if(dir=='y')	a = mglPoint(0,1,0);
 	b = !a;	c = a^b;
 
-	register long i,j,k;
 	long p1,p2,p3,p4;
 	gr->Reserve(pc*82);
-	for(i=0;i<pc;i++)
+	for(long i=0;i<pc;i++)
 	{
-		if(gr->Stop)	return;
-		k = mgl_find_prev(i,pc,nn);
 		if(nn[i]<0)	continue;
+		register long k = mgl_find_prev(i,pc,nn);
 		q1 = k<0 ? ff[nn[i]]-ff[i]  : (ff[nn[i]]-ff[k])*0.5;
 		q2 = nn[nn[i]]<0 ? ff[nn[i]]-ff[i]  : (ff[nn[nn[i]]]-ff[i])*0.5;
 
@@ -1401,7 +1324,7 @@ void MGL_NO_EXPORT mgl_axial_plot(mglBase *gr,long pc, mglPoint *ff, long *nn,ch
 		if(wire==1)	gr->line_plot(p1,p2);
 		else if(wire)	{	gr->mark_plot(p1,'.');	gr->mark_plot(p2,'.');	}
 
-		for(j=1;j<41;j++)
+		for(long j=1;j<41;j++)
 		{
 			p3 = p1;	p4 = p2;
 			register float co = mgl_cos[(j*18)%360], si = mgl_cos[(270+j*18)%360];
@@ -1427,8 +1350,7 @@ void MGL_EXPORT mgl_axial_gen(HMGL gr, mreal val, HCDT a, HCDT x, HCDT y, mreal 
 	{	gr->SetWarn(mglWarnDim,"ContGen");	return;	}
 
 	mglPoint *kk = new mglPoint[2*n*m],*pp = new mglPoint[2*n*m],p;
-	mreal d, kx, ky;
-	register long i,j,k, pc=0,i0;
+	long pc=0;
 	// Usually number of points is much smaller. So, there is no reservation.
 	//	gr->Reserve(2*n*m);
 
@@ -1436,11 +1358,10 @@ void MGL_EXPORT mgl_axial_gen(HMGL gr, mreal val, HCDT a, HCDT x, HCDT y, mreal 
 	const mglData *mx = dynamic_cast<const mglData *>(x);
 	const mglData *my = dynamic_cast<const mglData *>(y);
 	const mglData *ma = dynamic_cast<const mglData *>(a);
-	if(mx&&my&&ma)	for(j=0;j<m;j++)	for(i=0;i<n;i++)
+	if(mx&&my&&ma)	for(long j=0;j<m;j++)	for(long i=0;i<n;i++)
 	{
-		if(gr->Stop)	{	delete []kk;	delete []pp;	return;	}
-		i0 = i+n*j;
-		d = (i<n-1)?mgl_d(val,ma->a[i0+n*m*ak],ma->a[i0+1+n*m*ak]):-1;
+		register long i0 = i+n*j;
+		mreal d = (i<n-1)?mgl_d(val,ma->a[i0+n*m*ak],ma->a[i0+1+n*m*ak]):-1;
 		if(d>=0 && d<1)
 		{
 			pp[pc] = mglPoint(mx->a[i0]*(1-d)+mx->a[i0+1]*d, my->a[i0]*(1-d)+my->a[i0+1]*d);
@@ -1453,11 +1374,10 @@ void MGL_EXPORT mgl_axial_gen(HMGL gr, mreal val, HCDT a, HCDT x, HCDT y, mreal 
 			kk[pc] = mglPoint(i,j+d);	pc++;
 		}
 	}
-	else	for(j=0;j<m;j++)	for(i=0;i<n;i++)
+	else	for(long j=0;j<m;j++)	for(long i=0;i<n;i++)
 	{
-		if(gr->Stop)	{	delete []kk;	delete []pp;	return;	}
 		register mreal va=a->v(i,j,ak),vx=x->v(i,j),vy=y->v(i,j);
-		d = (i<n-1)?mgl_d(val,va,a->v(i+1,j,ak)):-1;
+		mreal d = (i<n-1)?mgl_d(val,va,a->v(i+1,j,ak)):-1;
 		if(d>=0 && d<1)
 		{
 			pp[pc] = mglPoint(vx*(1-d)+x->v(i+1,j)*d, vy*(1-d)+y->v(i+1,j)*d);
@@ -1474,22 +1394,20 @@ void MGL_EXPORT mgl_axial_gen(HMGL gr, mreal val, HCDT a, HCDT x, HCDT y, mreal 
 	if(pc==0)	{	delete []kk;	delete []pp;	return;	}
 	// allocate arrays for curve
 	long *nn = new long[pc], *ff = new long[pc];
-	for(i=0;i<pc;i++)	nn[i] = ff[i] = -1;
+	for(long i=0;i<pc;i++)	nn[i] = ff[i] = -1;
 	// connect points to line
-	long i11,i12,i21,i22,j11,j12,j21,j22;
-	j=-1;	// current point
+	long j=-1;	// current point
 	do{
-		if(gr->Stop)	{	delete []kk;	delete []pp;	delete []nn;	delete []ff;	return;	}
 		if(j>=0)
 		{
-			kx = kk[j].x;	ky = kk[j].y;	i = -1;
-			i11 = long(kx+1e-5);	i12 = long(kx-1e-5);
-			j11 = long(ky+1e-5);	j12 = long(ky-1e-5);
-			for(k=0;k<pc;k++)	// find closest point in grid
+			mreal kx = kk[j].x, ky = kk[j].y;	long i = -1;
+			long i11 = long(kx+1e-5), i12 = long(kx-1e-5);
+			long j11 = long(ky+1e-5), j12 = long(ky-1e-5);
+			for(long k=0;k<pc;k++)	// find closest point in grid
 			{
 				if(k==j || k==ff[j] || ff[k]!=-1)	continue;	// point is marked
-				i21 = long(kk[k].x+1e-5);	i22 = long(kk[k].x-1e-5);
-				j21 = long(kk[k].y+1e-5);	j22 = long(kk[k].y-1e-5);
+				long i21 = long(kk[k].x+1e-5), i22 = long(kk[k].x-1e-5);
+				long j21 = long(kk[k].y+1e-5), j22 = long(kk[k].y-1e-5);
 				// check if in the same cell
 				register bool cond = (i11==i21 || i11==i22 || i12==i21 || i12==i22) &&
 				(j11==j21 || j11==j22 || j12==j21 || j12==j22);
@@ -1501,12 +1419,12 @@ void MGL_EXPORT mgl_axial_gen(HMGL gr, mreal val, HCDT a, HCDT x, HCDT y, mreal 
 		}
 		if(j<0)
 		{
-			for(k=0;k<pc;k++)	if(nn[k]==-1)	// first check edges
+			for(long k=0;k<pc;k++)	if(nn[k]==-1)	// first check edges
 			{
 				if(kk[k].x==0 || fabs(kk[k].x-n+1)<1e-5 || kk[k].y==0 || fabs(kk[k].y-m+1)<1e-5)
 				{	nn[k]=-2;	j = k;	break;	}
 			}
-			if(j<0)	for(k=0;k<pc;k++)	if(nn[k]==-1)	// or any points inside
+			if(j<0)	for(long k=0;k<pc;k++)	if(nn[k]==-1)	// or any points inside
 			{	j = k;	nn[k]=-2;	break;	}
 		}
 	}while(j>=0);
@@ -1529,25 +1447,18 @@ void MGL_EXPORT mgl_axial_xy_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, const 
 	if(x->GetNx()*x->GetNy()!=m*n || y->GetNx()*y->GetNy()!=m*n)	// make
 	{
 		xx.Create(n, m);		yy.Create(n, m);
-		const mglData *mx = dynamic_cast<const mglData *>(x);
-		const mglData *my = dynamic_cast<const mglData *>(y);
-		if(mx && my)
-#pragma omp parallel for collapse(2)
-			for(long i=0;i<n;i++)	for(long j=0;j<m;j++)
-			{	xx.a[i+n*j] = mx->a[i];	yy.a[i+n*j] = my->a[j];	}
-		else
-#pragma omp parallel for collapse(2)
-			for(long i=0;i<n;i++)	for(long j=0;j<m;j++)
-			{	xx.a[i+n*j] = x->v(i);	yy.a[i+n*j] = y->v(j);	}
+		for(long i=0;i<n;i++)	xx.a[i]=x->v(i);
+		for(long j=1;j<m;j++)	memcpy(xx.a+n*j,xx.a,n*sizeof(mreal));
+		for(long j=0;j<m;j++)
+		{	mreal t=y->v(j);	for(long i=0;i<n;i++)	yy.a[i+n*j]=t;	}
 		x = &xx;	y = &yy;
 	}
 	// x, y -- have the same size z
 	int wire = mglchr(sch,'#')?1:0;
 	if(mglchr(sch,'.'))	wire = 2;
-#pragma omp parallel for collapse(2)
-	for(long j=0;j<z->GetNz();j++)	for(long i=0;i<v->GetNx();i++)
+	for(long i=0;i<v->GetNx();i++)	for(long j=0;j<z->GetNz();j++)
 	{
-		if(gr->Stop)	continue;
+		if(gr->NeedStop())	{	i = v->GetNx();	j = z->GetNz();	continue;	}
 		register mreal v0 = v->v(i);
 		mgl_axial_gen(gr,v0,z,x,y,gr->GetC(s,v0),dir,j,wire);
 	}
@@ -1559,7 +1470,7 @@ void MGL_EXPORT mgl_axial_val(HMGL gr, HCDT v, HCDT a, const char *sch, const ch
 	register long n=a->GetNx(), m=a->GetNy();
 	if(n<2 || m<2)	{	gr->SetWarn(mglWarnLow,"Axial");	return;	}
 	gr->SaveState(opt);
-	mglData x(n, m), y(n, m);
+	mglDataV x(n, m), y(n, m);
 	if(gr->Max.x*gr->Min.x>=0)	x.Fill(gr->Min.x,gr->Max.x,'x');
 	else	x.Fill(0,gr->Max.x,'x');
 	y.Fill(gr->Min.y,gr->Max.y,'y');

@@ -33,29 +33,29 @@ class MGL_EXPORT mglFormula					// îáúåêò äëÿ ââîäà è âû÷èñ�
 {
 public:
 	/// Evaluates the formula for 'x','r'=\a x, 'y','n'=\a y, 'z','t'=\a z, 'u'=\a u
-	mreal Calc(mreal x,mreal y=0,mreal z=0,mreal u=0) const;
+	mreal Calc(mreal x,mreal y=0,mreal z=0,mreal u=0) const MGL_FUNC_PURE;
 	/// Evaluates the formula for 'x, y, z, u, v, w'
-	mreal Calc(mreal x,mreal y,mreal z,mreal u,mreal v,mreal w) const;
+	mreal Calc(mreal x,mreal y,mreal z,mreal u,mreal v,mreal w) const MGL_FUNC_PURE;
 	/// Evaluates the formula for variables var
-	mreal Calc(const mreal var[MGL_VS]) const;
+	mreal Calc(const mreal var[MGL_VS]) const MGL_FUNC_PURE;
 	/// Evaluates the formula for 'x','r'=\a x, 'y','n'=\a y, 'z','t'=\a z, 'u'=\a u
-	mreal CalcD(char diff, mreal x,mreal y=0,mreal z=0,mreal u=0) const;
+	mreal CalcD(char diff, mreal x,mreal y=0,mreal z=0,mreal u=0) const MGL_FUNC_PURE;
 	/// Evaluates the formula for 'x, y, z, u, v, w'
-	mreal CalcD(char diff, mreal x,mreal y,mreal z,mreal u,mreal v,mreal w) const;
+	mreal CalcD(char diff, mreal x,mreal y,mreal z,mreal u,mreal v,mreal w) const MGL_FUNC_PURE;
 	/// Evaluates the derivates of the formula for variables var respect to variable diff
-	mreal CalcD(const mreal var[MGL_VS], char diff) const;
+	mreal CalcD(const mreal var[MGL_VS], char diff) const MGL_FUNC_PURE;
 	/// Return error code
-	int GetError() const;
+	inline int GetError() const	{	return Error;	}
 	/// Parse the formula str and create formula-tree
 	mglFormula(const char *str);
 	/// Clean up formula-tree
 	~mglFormula();
 protected:
-	mreal CalcIn(const mreal *a1) const;
-	mreal CalcDIn(int id, const mreal *a1) const;
+	mreal CalcIn(const mreal *a1) const MGL_FUNC_PURE;
+	mreal CalcDIn(int id, const mreal *a1) const MGL_FUNC_PURE;
 	mglFormula *Left,*Right;	// first and second argument of the function
 	int Kod;					// the function ID
-	mreal Res;				// the number or the variable ID
+	mreal Res;					// the number or the variable ID
 	static int Error;
 };
 //-----------------------------------------------------------------------------

@@ -24,15 +24,31 @@
 #ifndef SWIG
 
 #include "mgl2/dllexport.h"
-#ifdef MGL_SRC
+#if MGL_HAVE_ATTRIBUTE
+#define MGL_FUNC_CONST	__attribute__((const))
+#define MGL_FUNC_PURE	__attribute__((pure))
+#else
+#define MGL_FUNC_CONST
+#define MGL_FUNC_PURE
+#endif
+#define MGL_EXPORT_CONST	MGL_EXPORT MGL_FUNC_CONST
+#define MGL_EXPORT_PURE		MGL_EXPORT MGL_FUNC_PURE
+#define MGL_LOCAL_CONST		MGL_NO_EXPORT MGL_FUNC_CONST
+#define MGL_LOCAL_PURE		MGL_NO_EXPORT MGL_FUNC_PURE
+
+#if MGL_HAVE_RVAL	// C++11 don't support register keyword
+#if (!defined(_MSC_VER)) || (defined(_MSC_VER) && (_MSC_VER < 1310))
+#define register
+#endif
+#endif
+
 #if MGL_HAVE_OMP
 #include <omp.h>
 #endif
-#endif
 
 #endif
 
-#define MGL_VER2 	2.2	// minor version of MathGL 2.* (like 1.3 for v.2.1.3)
+#define MGL_VER2 	3.1	// minor version of MathGL 2.* (like 1.3 for v.2.1.3)
 //-----------------------------------------------------------------------------
 #ifdef WIN32 //_MSC_VER needs this before math.h
 #define	_USE_MATH_DEFINES
@@ -77,34 +93,22 @@ typedef unsigned long uintptr_t;
 #include <string.h>
 #include <wchar.h>
 
-#if (defined(_MSC_VER) && _MSC_VER < 1800) || defined(__BORLANDC__)
-#define fmin(a,b)	((a)<(b))?(a):(b)
-#define fmax(a,b)	((a)>(b))?(a):(b)
-#endif
-
 #if defined(_MSC_VER)
+#if (_MSC_VER<1800)
 #define collapse(a)	// MSVS don't support OpenMP 3.*
 #define strtoull _strtoui64
+#define hypot	_hypot
 #define getcwd	_getcwd
 #define chdir	_chdir // BORLAND has chdir
-#define snprintf _snprintf
-#if (_MSC_VER < 1800)
-#define hypot	_hypot
 #endif
+#define snprintf _snprintf
 #endif
 
-#if defined(_MSC_VER) || defined(__BORLANDC__)
+#if !MGL_SYS_NAN
 #include <float.h>
 #include <math.h>
-
-#ifdef WIN32
 const unsigned long long mgl_nan[2] = {0x7fffffffffffffff, 0x7fffffff};
 const unsigned long long mgl_inf[2] = {0x7ff0000000000000, 0x7f800000};
-#else
-const unsigned long mgl_nan[2] = {0x7fffffffffffffff, 0x7fffffff};
-const unsigned long mgl_inf[2] = {0x7ff0000000000000, 0x7f800000};
-#endif
-
 #define NANd    (*(double*)mgl_nan)
 #define NANf    (*(float*)(mgl_nan+1))
 #define INFd    (*(double*)mgl_inf)
@@ -125,8 +129,7 @@ const unsigned long mgl_inf[2] = {0x7ff0000000000000, 0x7f800000};
 #define INFINITY	INFf
 #endif
 #endif
-
-#endif
+#endif	// !MGL_SYS_NAN
 
 #ifndef M_PI
 #define M_PI	3.14159265358979323846  /* pi */
@@ -156,23 +159,23 @@ typedef float mreal;
 #define MGL_DEF_VIEWER "evince"
 #endif
 //-----------------------------------------------------------------------------
+#if MGL_HAVE_TYPEOF
+#define mgl_isbad(a)	({typeof (a) _a = (a); _a-_a!=mreal(0.);})
+#define mgl_isfin(a)	({typeof (a) _a = (a); _a-_a==mreal(0.);})
+#define mgl_isnum(a)	({typeof (a) _a = (a); _a==_a;})
+#define mgl_isnan(a)	({typeof (a) _a = (a); _a!=_a;})
+#define mgl_min(a,b)	({typeof (a) _a = (a); typeof (b) _b = (b); _a > _b ? _b : _a;})
+#define mgl_max(a,b)	({typeof (a) _a = (a); typeof (b) _b = (b); _a > _b ? _a : _b;})
+#define mgl_sign(a)		({typeof (a) _a = (a); _a<0 ? -1:1;})
+#else
 #define mgl_min(a,b)	(((a)>(b)) ? (b) : (a))
 #define mgl_max(a,b)	(((a)>(b)) ? (a) : (b))
 #define mgl_isnan(a)	((a)!=(a))
-//#define mgl_isnum(a)	((a)==(a) && 2*(a)!=(a))
 #define mgl_isnum(a)	((a)==(a))
-#define mgl_isfin(a)	((a)-(a)==0.)
-#define mgl_isbad(a)	((a)-(a)!=0.)
-//-----------------------------------------------------------------------------
-#define SMOOTH_NONE		0
-#define SMOOTH_LINE_3	1
-#define SMOOTH_LINE_5	2
-#define SMOOTH_QUAD_5	3
-//-----------------------------------------------------------------------------
-#define MGL_HIST_IN		0
-#define MGL_HIST_SUM	1
-#define MGL_HIST_UP		2
-#define MGL_HIST_DOWN	3
+#define mgl_isfin(a)	((a)-(a)==mreal(0.))
+#define mgl_isbad(a)	((a)-(a)!=mreal(0.))
+#define mgl_sign(a)		((a)<0 ? -1:1)
+#endif
 //-----------------------------------------------------------------------------
 enum{	// types of predefined curvelinear coordinate systems
 	mglCartesian = 0,	// no transformation
@@ -228,6 +231,11 @@ enum{	// Codes for warnings/messages
 #define MGL_DEF_SCH	"BbcyrR"	// default palette
 #define MGL_COLORS	"kwrgbcymhWRGBCYMHlenpquLENPQU"
 //-----------------------------------------------------------------------------
+/// Brushes for mask with symbol "-+=;oOsS~<>jdD*^" correspondingly
+extern uint64_t mgl_mask_val[16];
+#define MGL_MASK_ID		"-+=;oOsS~<>jdD*^"
+#define MGL_SOLID_MASK	0xffffffffffffffff
+//-----------------------------------------------------------------------------
 #define MGL_TRANSP_NORM		0x000000
 #define MGL_TRANSP_GLASS 	0x000001
 #define MGL_TRANSP_LAMP		0x000002
@@ -252,34 +260,52 @@ enum{	// Codes for warnings/messages
 #define MGL_ONESIDED 		0x080000 	///< Render only front side of surfaces if output format supports (for debugging)
 #define MGL_NO_ORIGIN 		0x100000 	///< Don't draw tick labels at axis origin
 //-----------------------------------------------------------------------------
+#if MGL_HAVE_C99_COMPLEX
+#include <complex.h>
+#if MGL_USE_DOUBLE
+typedef double _Complex mdual;
+#ifndef _Complex_I
+#define _Complex_I (double _Complex){0, 1}
+#endif
+#else
+typedef float _Complex mdual;
+#ifndef _Complex_I
+#define _Complex_I (float _Complex){0, 1}
+#endif
+#endif
+#define mgl_abs(x)	cabs(x)
+#endif
 #ifdef __cplusplus
 //-----------------------------------------------------------------------------
 extern float mgl_cos[360];	///< contain cosine with step 1 degree
 //-----------------------------------------------------------------------------
 #include <complex>
 typedef std::complex<mreal> dual;
+typedef std::complex<double> ddual;
+#if !MGL_HAVE_C99_COMPLEX
+#define mdual dual
+#define _Complex_I dual(0,1)
+#define mgl_abs(x)	abs(x)
+#endif
 //-----------------------------------------------------------------------------
 extern "C" {
 #else
 #include <complex.h>
-#if MGL_USE_DOUBLE
-typedef double _Complex dual;
-#else
-typedef float _Complex dual;
-#endif
+typedef double _Complex ddual;
+#define dual	mdual
 #endif
 /// Find length of wchar_t string (bypass standard wcslen bug)
-double MGL_EXPORT mgl_hypot(double x, double y);
+double MGL_EXPORT_CONST mgl_hypot(double x, double y);
 /// Find length of wchar_t string (bypass standard wcslen bug)
-size_t MGL_EXPORT mgl_wcslen(const wchar_t *str);
+size_t MGL_EXPORT_PURE mgl_wcslen(const wchar_t *str);
 /// Get RGB values for given color id or fill by -1 if no one found
 void MGL_EXPORT mgl_chrrgb(char id, float rgb[3]);
 /// Check if string contain color id and return its number
-long MGL_EXPORT mgl_have_color(const char *stl);
+long MGL_EXPORT_PURE mgl_have_color(const char *stl);
 /// Find symbol in string excluding {} and return its position or NULL
-const char *mglchr(const char *str, char ch);
+MGL_EXPORT_PURE const char *mglchr(const char *str, char ch);
 /// Find any symbol from chr in string excluding {} and return its position or NULL
-const char *mglchrs(const char *str, const char *chr);
+MGL_EXPORT_PURE const char *mglchrs(const char *str, const char *chr);
 /// Set number of thread for plotting and data handling (for pthread version only)
 void MGL_EXPORT mgl_set_num_thr(int n);
 void MGL_EXPORT mgl_set_num_thr_(int *n);
@@ -295,6 +321,12 @@ void MGL_EXPORT mgl_wcslwr(wchar_t *str);
 void MGL_EXPORT mgl_wcstombs(char *dst, const wchar_t *src, int size);
 /// Clear internal data for speeding up FFT and Hankel transforms
 void MGL_EXPORT mgl_clear_fft();
+/// Set global warning message
+void MGL_EXPORT mgl_set_global_warn(const char *text);
+void MGL_EXPORT mgl_set_global_warn_(const char *text,int);
+/// Get text of global warning message(s)
+MGL_EXPORT_PURE const char *mgl_get_global_warn();
+int MGL_EXPORT mgl_get_global_warn_(char *out, int len);
 #ifdef __cplusplus
 }
 #endif

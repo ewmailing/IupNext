@@ -58,6 +58,20 @@ void MGL_EXPORT mgl_tricont_xyzc_(uintptr_t *gr, uintptr_t *nums, uintptr_t *x, 
 void MGL_EXPORT mgl_tricont_xyc(HMGL gr, HCDT nums, HCDT x, HCDT y, HCDT z, const char *sch, const char *opt);
 void MGL_EXPORT mgl_tricont_xyc_(uintptr_t *gr, uintptr_t *nums, uintptr_t *x, uintptr_t *y, uintptr_t *z, const char *sch, const char *opt,int, int);
 
+
+/// Draw manual contour tubes for triangle mesh for points in arrays {x,y,z} with specified color c.
+void MGL_EXPORT mgl_tricontv_xyzcv(HMGL gr, HCDT v, HCDT nums, HCDT x, HCDT y, HCDT z, HCDT c, const char *sch, const char *opt);
+void MGL_EXPORT mgl_tricontv_xyzcv_(uintptr_t *gr, uintptr_t *v, uintptr_t *nums, uintptr_t *x, uintptr_t *y, uintptr_t *z, uintptr_t *c, const char *sch, const char *opt,int,int);
+/// Draw manual contour tubes for triangle mesh for points in arrays {x,y,z}.
+void MGL_EXPORT mgl_tricontv_xycv(HMGL gr, HCDT v, HCDT nums, HCDT x, HCDT y, HCDT z, const char *sch, const char *opt);
+void MGL_EXPORT mgl_tricontv_xycv_(uintptr_t *gr, uintptr_t *v, uintptr_t *nums, uintptr_t *x, uintptr_t *y, uintptr_t *z, const char *sch, const char *opt,int,int);
+/// Draw contour tubes for triangle mesh for points in arrays {x,y,z} with specified color c.
+void MGL_EXPORT mgl_tricontv_xyzc(HMGL gr, HCDT nums, HCDT x, HCDT y, HCDT z, HCDT c, const char *sch, const char *opt);
+void MGL_EXPORT mgl_tricontv_xyzc_(uintptr_t *gr, uintptr_t *nums, uintptr_t *x, uintptr_t *y, uintptr_t *z, uintptr_t *c, const char *sch, const char *opt,int, int);
+/// Draw contour tubes for triangle mesh for points in arrays {x,y,z}.
+void MGL_EXPORT mgl_tricontv_xyc(HMGL gr, HCDT nums, HCDT x, HCDT y, HCDT z, const char *sch, const char *opt);
+void MGL_EXPORT mgl_tricontv_xyc_(uintptr_t *gr, uintptr_t *nums, uintptr_t *x, uintptr_t *y, uintptr_t *z, const char *sch, const char *opt,int, int);
+
 /// Draw dots in points {x,y,z}.
 void MGL_EXPORT mgl_dots(HMGL gr, HCDT x, HCDT y, HCDT z, const char *sch, const char *opt);
 void MGL_EXPORT mgl_dots_(uintptr_t *gr, uintptr_t *x, uintptr_t *y, uintptr_t *z, const char *sch, const char *opt,int,int);

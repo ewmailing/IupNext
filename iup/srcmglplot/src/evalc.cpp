@@ -56,12 +56,13 @@ EQ_EXPI,		// exponential function \exp(i*x)
 EQ_LN,		// logarithm of x, ln(x)
 EQ_LG,		// decimal logarithm of x, lg(x) = ln(x)/ln(10)
 EQ_ABS,		// absolute value
+EQ_ARG,		// argument (or phase) of complex number
 EQ_LAST		// id of last entry
 };
 //-----------------------------------------------------------------------------
 int mglFormulaC::Error=0;
-bool mglCheck(char *str,int n);
-int mglFindInText(char *str,const char *lst);
+bool MGL_LOCAL_PURE mglCheck(char *str,int n);
+int MGL_LOCAL_PURE mglFindInText(char *str,const char *lst);
 //-----------------------------------------------------------------------------
 mglFormulaC::~mglFormulaC()
 {
@@ -76,7 +77,6 @@ mglFormulaC::mglFormulaC(const char *string)
 	Left=Right=0;
 	Res=0; Kod=0;
 	if(!string)	{	Kod = EQ_NUM;	Res = 0;	return;	}
-//printf("%s\n",string);	fflush(stdout);
 	char *str = new char[strlen(string)+1];
 	strcpy(str,string);
 	long n,len;
@@ -126,6 +126,7 @@ mglFormulaC::mglFormulaC(const char *string)
 		{	Kod=EQ_A;	Res = str[0]-'a';	}
 		else if(!strcmp(str,"rnd")) Kod=EQ_RND;
 		else if(!strcmp(str,"pi")) Res=M_PI;
+		else if(!strcmp(str,"inf")) Res=INFINITY;
 		else if(str[0]=='i')	Res = dual(0,str[1]>' '?atof(str+1):1);
 		else Res=atof(str);					// this is number
 	}
@@ -155,6 +156,7 @@ mglFormulaC::mglFormulaC(const char *string)
 		else if(!strcmp(name,"lg")) Kod=EQ_LG;
 		else if(!strcmp(name,"ln")) Kod=EQ_LN;
 		else if(!strcmp(name,"abs")) Kod=EQ_ABS;
+		else if(!strcmp(name,"arg")) Kod=EQ_ARG;
 		else {	delete []str;	return;	}	// unknown function
 		n=mglFindInText(str,",");
 		if(n>=0)
@@ -204,34 +206,35 @@ dual mglFormulaC::Calc(const dual var[MGL_VS]) const
 	return CalcIn(var);
 }
 //-----------------------------------------------------------------------------
-dual MGL_NO_EXPORT addc(dual a,dual b)	{return a+b;}
-dual MGL_NO_EXPORT subc(dual a,dual b)	{return a-b;}
-dual MGL_NO_EXPORT mulc(dual a,dual b)	{return a*b;}
-dual MGL_NO_EXPORT divc(dual a,dual b)	{return a/b;}
-dual MGL_NO_EXPORT ipwc(dual a,dual b)	{return mgl_ipowc(a,int(b.real()));}
-dual MGL_NO_EXPORT powc(dual a,dual b)	{return exp(b*log(a));	}
-dual MGL_NO_EXPORT llgc(dual a,dual b)	{return log(a)/log(b);	}
-dual MGL_NO_EXPORT expi(dual a)	{	return exp(dual(0,1)*a);	}
-dual MGL_NO_EXPORT expi(double a)	{	return dual(cos(a),sin(a));	}
+dual MGL_LOCAL_CONST addc(dual a,dual b)	{return a+b;}
+dual MGL_LOCAL_CONST subc(dual a,dual b)	{return a-b;}
+dual MGL_LOCAL_CONST mulc(dual a,dual b)	{return a*b;}
+dual MGL_LOCAL_CONST divc(dual a,dual b)	{return a/b;}
+dual MGL_LOCAL_CONST ipwc(dual a,dual b)	{return mgl_ipowc(a,int(b.real()));}
+dual MGL_LOCAL_CONST powc(dual a,dual b)	{return exp(b*log(a));	}
+dual MGL_LOCAL_CONST llgc(dual a,dual b)	{return log(a)/log(b);	}
+dual MGL_LOCAL_CONST expi(dual a)	{	return exp(dual(0,1)*a);	}
+dual MGL_LOCAL_CONST expi(double a)	{	return dual(cos(a),sin(a));	}
 //-----------------------------------------------------------------------------
 dual MGL_NO_EXPORT ic = dual(0,1);
-dual MGL_NO_EXPORT asinhc(dual x)	{	return log(x+sqrt(x*x+mreal(1)));	}
-dual MGL_NO_EXPORT acoshc(dual x)	{	return log(x+sqrt(x*x-mreal(1)));	}
-dual MGL_NO_EXPORT atanhc(dual x)	{	return log((mreal(1)+x)/(mreal(1)-x))/mreal(2);	}
-dual MGL_NO_EXPORT sinc(dual x)	{	return sin(x);	}
-dual MGL_NO_EXPORT cosc(dual x)	{	return cos(x);	}
-dual MGL_NO_EXPORT tanc(dual x)	{	return tan(x);	}
-dual MGL_NO_EXPORT sinhc(dual x)	{	return sinh(x);	}
-dual MGL_NO_EXPORT coshc(dual x)	{	return cosh(x);	}
-dual MGL_NO_EXPORT tanhc(dual x)	{	return tanh(x);	}
-dual MGL_NO_EXPORT asinc(dual x)	{	return log(ic*x+sqrt(mreal(1)-x*x))/ic;	}
-dual MGL_NO_EXPORT acosc(dual x)	{	return log(x+sqrt(x*x-mreal(1)))/ic;	}
-dual MGL_NO_EXPORT atanc(dual x)	{	return log((ic-x)/(ic+x))/(mreal(2)*ic);	}
-dual MGL_NO_EXPORT expc(dual x)	{	return exp(x);	}
-dual MGL_NO_EXPORT sqrtc(dual x)	{	return sqrt(x);	}
-dual MGL_NO_EXPORT logc(dual x)	{	return log(x);	}
-dual MGL_NO_EXPORT absc(dual x)	{	return abs(x);	}
-dual MGL_NO_EXPORT lgc(dual x)	{	return log10(x);}
+dual MGL_LOCAL_CONST asinhc(dual x)	{	return log(x+sqrt(x*x+mreal(1)));	}
+dual MGL_LOCAL_CONST acoshc(dual x)	{	return log(x+sqrt(x*x-mreal(1)));	}
+dual MGL_LOCAL_CONST atanhc(dual x)	{	return log((mreal(1)+x)/(mreal(1)-x))/mreal(2);	}
+dual MGL_LOCAL_CONST sinc(dual x)	{	return sin(x);	}
+dual MGL_LOCAL_CONST cosc(dual x)	{	return cos(x);	}
+dual MGL_LOCAL_CONST tanc(dual x)	{	return tan(x);	}
+dual MGL_LOCAL_CONST sinhc(dual x)	{	return sinh(x);	}
+dual MGL_LOCAL_CONST coshc(dual x)	{	return cosh(x);	}
+dual MGL_LOCAL_CONST tanhc(dual x)	{	return tanh(x);	}
+dual MGL_LOCAL_CONST asinc(dual x)	{	return log(ic*x+sqrt(mreal(1)-x*x))/ic;	}
+dual MGL_LOCAL_CONST acosc(dual x)	{	return log(x+sqrt(x*x-mreal(1)))/ic;	}
+dual MGL_LOCAL_CONST atanc(dual x)	{	return log((ic-x)/(ic+x))/(mreal(2)*ic);	}
+dual MGL_LOCAL_CONST expc(dual x)	{	return exp(x);	}
+dual MGL_LOCAL_CONST sqrtc(dual x)	{	return sqrt(x);	}
+dual MGL_LOCAL_CONST logc(dual x)	{	return log(x);	}
+dual MGL_LOCAL_CONST absc(dual x)	{	return abs(x);	}
+dual MGL_LOCAL_CONST argc(dual x)	{	return arg(x);	}
+dual MGL_LOCAL_CONST lgc(dual x)	{	return log10(x);}
 //-----------------------------------------------------------------------------
 typedef dual (*func_1)(dual);
 typedef dual (*func_2)(dual, dual);
@@ -261,30 +264,30 @@ dual mglFormulaC::CalcIn(const dual *a1) const
 	return NAN;
 }
 //-----------------------------------------------------------------------------
-dual MGL_EXPORT mgl_ipowc(dual x,int n)
+mdual MGL_EXPORT_CONST mgl_ipowc(dual x,int n)
 {
 	dual t;
-	if(n==2)	return x*x;
-	if(n==1)	return x;
-	if(n<0)		return mreal(1)/mgl_ipowc(x,-n);
+	if(n==2)	{	t = x*x;	return t.real()+t.imag()*_Complex_I;	}
+	if(n==1)	return x.real()+x.imag()*_Complex_I;
+	if(n<0)		{	t = mreal(1)/mgl_ipowc(x,-n);	return t.real()+t.imag()*_Complex_I;	}
 	if(n==0)	return mreal(1);
 	t = mgl_ipowc(x,n/2);	t = t*t;
 	if(n%2==1)	t *= x;
-	return t;
+	return t.real()+t.imag()*_Complex_I;
 }
-dual MGL_EXPORT mgl_ipowc_(dual *x,int *n)	{	return mgl_ipowc(*x,*n);	}
+mdual MGL_EXPORT_PURE mgl_ipowc_(dual *x,int *n)	{	return mgl_ipowc(*x,*n);	}
 //-----------------------------------------------------------------------------
 HAEX MGL_EXPORT mgl_create_cexpr(const char *expr)	{	return new mglFormulaC(expr);	}
 uintptr_t MGL_EXPORT mgl_create_cexpr_(const char *expr, int l)
 {	char *s=new char[l+1];	memcpy(s,expr,l);	s[l]=0;
 	uintptr_t res = uintptr_t(mgl_create_cexpr(s));
 	delete []s;	return res;	}
-void MGL_EXPORT mgl_delete_cexpr(HAEX ex)	{	delete ex;	}
+void MGL_EXPORT mgl_delete_cexpr(HAEX ex)	{	if(ex)	delete ex;	}
 void MGL_EXPORT mgl_delete_cexpr_(uintptr_t *ex)	{	mgl_delete_cexpr((HAEX)ex);	}
-dual MGL_EXPORT mgl_cexpr_eval(HAEX ex, dual x, dual y,dual z)
-{	return ex->Calc(x,y,z);	}
-dual MGL_EXPORT mgl_cexpr_eval_(uintptr_t *ex, dual *x, dual *y, dual *z)
+mdual MGL_EXPORT_PURE mgl_cexpr_eval(HAEX ex, dual x, dual y,dual z)
+{	dual r = ex->Calc(x,y,z);	return r.real()+r.imag()*_Complex_I;	}
+mdual MGL_EXPORT mgl_cexpr_eval_(uintptr_t *ex, dual *x, dual *y, dual *z)
 {	return mgl_cexpr_eval((HAEX) ex, *x,*y,*z);		}
-dual MGL_EXPORT mgl_cexpr_eval_v(HAEX ex, dual *var)
-{	return ex->Calc(var);	}
+mdual MGL_EXPORT mgl_cexpr_eval_v(HAEX ex, dual *var)
+{	dual r = ex->Calc(var);	return r.real()+r.imag()*_Complex_I;	}
 //-----------------------------------------------------------------------------

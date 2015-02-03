@@ -71,6 +71,16 @@ void MGL_EXPORT mgl_ellipse_(uintptr_t* gr, mreal *x1, mreal *y1, mreal *z1, mre
 /// Draws the rhomb between points p1,p2 with color stl and width r
 void MGL_EXPORT mgl_rhomb(HMGL gr, double x1, double y1, double z1, double x2, double y2, double z2, double r, const char *stl);
 void MGL_EXPORT mgl_rhomb_(uintptr_t* gr, mreal *x1, mreal *y1, mreal *z1, mreal *x2, mreal *y2, mreal *z2, mreal *r, const char *stl, int);
+/// Draws the polygon based on points p1,p2 with color stl
+void MGL_EXPORT mgl_polygon(HMGL gr, double x1, double y1, double z1, double x2, double y2, double z2, int n, const char *stl);
+void MGL_EXPORT mgl_polygon_(uintptr_t* gr, mreal *x1, mreal *y1, mreal *z1, mreal *x2, mreal *y2, mreal *z2, int *n, const char *stl, int);
+	/// Draws the arc around axis pr with center at p0 and starting from p1, by color stl and angle a (in degrees)
+void MGL_EXPORT mgl_arc_ext(HMGL gr, double x0, double y0, double z0, double xr, double yr, double zr, double x1, double y1, double z1, double a, const char* stl);
+void MGL_EXPORT mgl_arc_ext_(uintptr_t* gr, mreal *x0, mreal *y0, mreal *z0, mreal *xr, mreal *yr, mreal *zr, mreal *x1, mreal *y1, mreal *z1, mreal *a, const char *stl, int);
+	/// Draws the arc around axis 'z' with center at p0 and starting from p1, by color stl and angle a (in degrees)
+void MGL_EXPORT mgl_arc(HMGL gr, double x0, double y0, double x1, double y1, double a, const char* stl);
+void MGL_EXPORT mgl_arc_(uintptr_t* gr, mreal *x0, mreal *y0, mreal *x1, mreal *y1, mreal *a, const char *stl,int l);
+
 
 /// Draw cones from points {x,y,z} to axis plane
 void MGL_EXPORT mgl_cones_xyz(HMGL graph, HCDT x, HCDT y, HCDT z, const char *pen, const char *opt);
@@ -135,6 +145,11 @@ void MGL_EXPORT mgl_label_y_(uintptr_t *graph, uintptr_t *y, const char *text, c
 void MGL_EXPORT mgl_table(HMGL gr, double x, double y, HCDT val, const char *text, const char *fnt, const char *opt);
 void MGL_EXPORT mgl_table_(uintptr_t *gr, mreal *x, mreal *y, uintptr_t *val, const char *text, const char *fnt, const char *opt,int,int,int);
 void MGL_EXPORT mgl_tablew(HMGL gr, double x, double y, HCDT val, const wchar_t *text, const char *fnt, const char *opt);
+
+/// Draws bitmap (logo) which is stretched along whole axis range
+void MGL_EXPORT mgl_logo(HMGL gr, long w, long h, const unsigned char *rgba, int smooth, const char *opt);
+void MGL_EXPORT mgl_logo_file(HMGL gr, const char *fname, int smooth, const char *opt);
+void MGL_EXPORT mgl_logo_file_(uintptr_t *gr, const char *fname, int *smooth, const char *opt,int l,int n);
 
 #ifdef __cplusplus
 }

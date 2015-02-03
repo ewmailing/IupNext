@@ -45,22 +45,16 @@ void MGL_EXPORT mgl_strcls(char *str)
 	delete []tmp;
 }
 //-----------------------------------------------------------------------------
-int MGL_EXPORT mgl_strpos(const char *str,char *fnd)
+long MGL_EXPORT_PURE mgl_strpos(const char *str,char *fnd)
 {
 	const char *p=strstr(str,fnd);
-	int res;
-	if(p)	res = p-str;
-	else	res = -1;
-	return res;
+	return p?p-str:-1L;
 }
 //-----------------------------------------------------------------------------
-int MGL_EXPORT mgl_chrpos(const char *str,char ch)
+long MGL_EXPORT_PURE mgl_chrpos(const char *str,char ch)
 {
 	const char *p=str?strchr(str,ch):0;
-	int res;
-	if(p)	res = p-str;
-	else	res = -1;
-	return res;
+	return p?p-str:-1L;
 }
 //-----------------------------------------------------------------------------
 MGL_EXPORT char *mgl_fgetstr(FILE *fp)
@@ -81,7 +75,7 @@ MGL_EXPORT char *mgl_fgetstr(FILE *fp)
 void MGL_EXPORT mgl_fgetpar(FILE *fp, const char *str, ...)
 {
 	if(!str || !str[0])	return;
-	long len=strlen(str), *n;	double *v;
+	long len=strlen(str);
 	char *s, *t;
 	va_list lst;
 	va_start(lst,str);
@@ -91,8 +85,8 @@ void MGL_EXPORT mgl_fgetpar(FILE *fp, const char *str, ...)
 		if(str[i]=='%')
 		{
 			if(str[i+1]=='s')	{	s = va_arg(lst, char*);	strcpy(s, t);	}
-			if(strchr("efg",str[i+1]))	{	v = va_arg(lst, double*);	*v = atof(t);	}
-			if(strchr("ld",str[i+1]))	{	n = va_arg(lst, long*); 	*n = atol(t);	}
+			if(strchr("efg",str[i+1]))	{	double *v = va_arg(lst, double*);	*v = atof(t);	}
+			if(strchr("ld",str[i+1]))	{	long *n = va_arg(lst, long*); 	*n = atol(t);	}
 			i++;
 		}
 		if(str[i]==':')
@@ -104,7 +98,7 @@ void MGL_EXPORT mgl_fgetpar(FILE *fp, const char *str, ...)
 	}
 }
 //-----------------------------------------------------------------------------
-int MGL_EXPORT mgl_istrue(char ch)
+int MGL_EXPORT_CONST mgl_istrue(char ch)
 {	return (ch=='1' || ch=='t' || ch=='+' || ch=='v');	}
 //-----------------------------------------------------------------------------
 void MGL_EXPORT mgl_test(const char *str, ...)
@@ -112,7 +106,7 @@ void MGL_EXPORT mgl_test(const char *str, ...)
 	char buf[256];
 	va_list lst;
 	va_start(lst,str);
-	vsnprintf(buf,256,str,lst);
+	vsnprintf(buf,256,str,lst);	buf[255]=0;
 	va_end(lst);
 	printf("TEST: %s\n",buf);
 	fflush(stdout);
@@ -123,7 +117,7 @@ void MGL_EXPORT mgl_info(const char *str, ...)
 	char buf[256];
 	va_list lst;
 	va_start(lst,str);
-	vsnprintf(buf,256,str,lst);
+	vsnprintf(buf,256,str,lst);	buf[255]=0;
 	va_end(lst);
 	printf("%s",buf);
 	FILE *fp = fopen("info.txt","at");
@@ -173,7 +167,6 @@ void MGL_EXPORT mgl_difr_grid_old(dual *a,int n,int step,dual q,int Border,dual 
 	else	for(long i=0;i<n;i++)	b[i] = a[i*step];
 	for(long k=kk;k>0;k--)	// 3 iterations
 	{
-//#pragma omp parallel for
 		for(long i=1;i<n-1;i++)
 			d[i] = a[i*step] + adt*(b[i-1]+b[i+1]-mreal(2)*b[i])/mreal(k);
 		memcpy(b,d,n*sizeof(dual));
@@ -219,14 +212,12 @@ void MGL_EXPORT mgl_difr_axial_old(dual *a,int n,int step,dual q,int Border,dual
 	for(long k=kk;k>0;k--)	// kk iterations
 	{
 		d[ii] = a[ii] + adt*(b[ii+1]-b[ii])*(ff/k);
-//#pragma omp parallel for
 		for(long i=ii+1;i<n-1;i++)
 		{
 			register mreal dd = i+di;
 			dd = 1./(sqrt(dd*dd+1.)+dd);	// corrections for "axiality"
 			register mreal gg = 1+dd*dd;
-			d[i] = a[i*step] + adt*( b[i-1]*((gg-dd)/k) -
-			b[i]*(2*gg/k) + b[i+1]*((gg+dd)/k) );
+			d[i] = a[i*step] + adt*( b[i-1]*((gg-dd)/k) - b[i]*(2*gg/k) + b[i+1]*((gg+dd)/k) );
 		}
 		memcpy(b,d,n*sizeof(dual));
 		switch(Border)
@@ -263,11 +254,8 @@ double MGL_EXPORT mgl_gauss_rnd()
 //-----------------------------------------------------------------------------
 void MGL_EXPORT mgl_fft_freq(double *freq, long nn)
 {
-#pragma omp parallel for
-	for(long i=0;i<=nn/2;i++)
-	{
-		freq[i] = i;
-		if(i>0) freq[nn-i] = -(double)(i);
-	}
+	freq[0] = 0;
+	for(long i=1;i<=nn/2;i++)
+	{	freq[i] = i; freq[nn-i] = -i;	}
 }
 //-----------------------------------------------------------------------------

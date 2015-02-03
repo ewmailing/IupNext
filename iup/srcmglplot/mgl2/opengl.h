@@ -26,11 +26,11 @@ class MGL_EXPORT mglCanvasGL : public mglCanvas
 {
 public:
 	mglCanvasGL();
-	~mglCanvasGL();
+	virtual ~mglCanvasGL();
 
 	void SetQuality(int =0)	{	Quality=2;	}
 	void Finish();
-	void SetSize(int ,int )	{}
+	void SetSize(int ,int ,bool clf=true)	{	if(clf)	Clf();	}
 	void View(mreal tetX,mreal tetY,mreal tetZ);
 	void Zoom(mreal x1, mreal y1, mreal x2, mreal y2);
 /*	int NewFrame();
@@ -43,6 +43,7 @@ public:
 	void Light(int n, bool enable);
 	void AddLight(int n,mglPoint r,mglPoint d, char c='w', mreal bright=0.5, mreal ap=0);
 	void Clf(mglColor Back=NC);
+	void Clf(const char *col);
 
 protected:
 	// provide fastest variant for usual points (not glyphs or marks)

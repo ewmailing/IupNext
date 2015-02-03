@@ -1,5 +1,5 @@
 /***************************************************************************
- * evalc.h is part of Math Graphic Library
+ * cont.cpp is part of Math Graphic Library
  * Copyright (C) 2007-2014 Alexey Balakin <mathgl.abalakin@gmail.ru>       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,33 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _MGL_EVALC_H_
-#define _MGL_EVALC_H_
 //-----------------------------------------------------------------------------
-#include "mgl2/eval.h"
-//-----------------------------------------------------------------------------
-/// Class for evaluating formula specified by the string
-class MGL_EXPORT mglFormulaC					// ������ ��� ����� � ���������� ������
+struct mglSegment
 {
-public:
-	/// Evaluates the formula for 'x','r'=\a x, 'y','n'=\a y, 'z','t'=\a z, 'u'=\a u
-	dual Calc(dual x,dual y=0,dual z=0,dual u=0) const MGL_FUNC_PURE;
-	/// Evaluates the formula for 'x, y, z, u, v, w'
-	dual Calc(dual x,dual y,dual z,dual u,dual v,dual w) const MGL_FUNC_PURE;
-	/// Evaluates the formula for variables var
-	dual Calc(const dual var[MGL_VS]) const MGL_FUNC_PURE;
-	/// Return error code
-	inline int GetError() const	{	return Error;	}
-	/// Parse the formula str and create formula-tree
-	mglFormulaC(const char *str);
-	/// Clean up formula-tree
-	virtual ~mglFormulaC();
-protected:
-	dual CalcIn(const dual *a1) const MGL_FUNC_PURE;
-	mglFormulaC *Left,*Right;	// first and second argument of the function
-	int Kod;					// the function ID
-	dual Res;					// the number or the variable ID
-	static int Error;
+	mglPoint p1,p2;	// edges
+	std::list<mglPoint> pp;
+	bool set(mreal u1,mreal v1,mreal u2,mreal v2,long i,long j,long k,HCDT x, HCDT y, HCDT z)
+	{
+		bool res=(v1>=0 && v1<=MGL_FEPSILON && u1>=0 && u1<=MGL_FEPSILON && v2>=0 && v2<=MGL_FEPSILON && u2>=0 && u2<=MGL_FEPSILON);
+		if(v1==v2 && u1==u2)	res=false;	// NOTE: shouldn't be here never
+		if(res)
+		{
+			p1 = mglPoint(mgl_data_linear(x,i+u1,j+v1,k), mgl_data_linear(y,i+u1,j+v1,k), mgl_data_linear(z,i+u1,j+v1,k));
+			p2 = mglPoint(mgl_data_linear(x,i+u2,j+v2,k), mgl_data_linear(y,i+u2,j+v2,k), mgl_data_linear(z,i+u2,j+v2,k));
+		}
+		return res;
+	}
+	void before(const mglPoint &p)	{	p1 = p;	pp.push_front(p);	}
+	void after(const mglPoint &p)	{	p2 = p;	pp.push_back(p);	}
 };
 //-----------------------------------------------------------------------------
-#endif
+std::vector<mglSegment> MGL_EXPORT mgl_get_curvs(HMGL gr, std::vector<mglSegment> lines);
+void MGL_NO_EXPORT mgl_draw_curvs(HMGL gr, mreal val, mreal c, int text, const std::vector<mglSegment> &curvs);
+//-----------------------------------------------------------------------------

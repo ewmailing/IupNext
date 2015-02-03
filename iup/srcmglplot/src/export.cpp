@@ -72,7 +72,7 @@ int MGL_NO_EXPORT mgl_pnga_save(const char *fname, int w, int h, unsigned char *
 	if(fl)	fclose(fp);
 	return 0;
 #else
-	mglGlobalMess += "PNG support was disabled. Please, enable it and rebuild MathGL.\n";
+	mgl_set_global_warn("PNG support was disabled. Please, enable it and rebuild MathGL.");
 	return 1;
 #endif
 }
@@ -106,7 +106,7 @@ int MGL_NO_EXPORT mgl_png_save(const char *fname, int w, int h, unsigned char **
 	if(fl)	fclose(fp);
 	return 0;
 #else
-	mglGlobalMess += "PNG support was disabled. Please, enable it and rebuild MathGL.\n";
+	mgl_set_global_warn("PNG support was disabled. Please, enable it and rebuild MathGL.");
 	return 1;
 #endif
 }
@@ -193,7 +193,7 @@ int MGL_NO_EXPORT mgl_jpeg_save(const char *fname, int w, int h, unsigned char *
 	if(fl)	fclose(fp);
 	return 0;
 #else
-	mglGlobalMess += "JPEG support was disabled. Please, enable it and rebuild MathGL.\n";
+	mgl_set_global_warn("JPEG support was disabled. Please, enable it and rebuild MathGL.");
 	return 1;
 #endif
 }
@@ -203,7 +203,7 @@ void MGL_NO_EXPORT mgl_printf(void *fp, bool gz, const char *str, ...)	// NOTE T
 	static char buf[1024];
 	va_list lst;
 	va_start(lst,str);
-	vsnprintf(buf,1023,str,lst);
+	vsnprintf(buf,1023,str,lst);	buf[1023]=0;
 	va_end(lst);
 	if(gz)	gzprintf((gzFile)fp, "%s", buf);
 	else	fprintf((FILE *)fp, "%s", buf);
@@ -214,7 +214,7 @@ std::string MGL_NO_EXPORT mgl_sprintf(const char *str, ...)
 	char *buf=new char[1024];
 	va_list lst;
 	va_start(lst,str);
-	vsnprintf(buf,1023,str,lst);
+	vsnprintf(buf,1023,str,lst);	buf[1023]=0;
 	va_end(lst);
 	std::string res = buf;	delete []buf;
 	return res;
@@ -223,21 +223,37 @@ std::string MGL_NO_EXPORT mgl_sprintf(const char *str, ...)
 int MGL_NO_EXPORT mgl_bps_save(const char *fname, int w, int h, unsigned char **p)
 {
 	time_t now;	time(&now);
-	register long i,j;
 	bool gz = fname[strlen(fname)-1]=='z';
 
 	void *fp;
 	if(!strcmp(fname,"-"))	fp = stdout;		// allow to write in stdout
-	else		fp = gz ? (void*)gzopen(fname,"wt") : (void*)fopen(fname,"wt");
+	else
+	{
+		fp = gz ? (void*)gzopen(fname,"wt") : (void*)fopen(fname,"wt");
+		if(gz)
+		{
+			unsigned len = strlen(fname), pos=0;
+			char *buf = new char[len+4];
+			memcpy(buf,fname,len);
+			if(buf[len-3]=='.')	pos = len-2;
+			else if(buf[len-2]=='.')	pos = len-1;
+			else	{	buf[len-1]='.';	pos = len;	}
+			if(pos)	{	buf[pos]=buf[pos+1]='b';	buf[pos+2]=0;	}
+			FILE *fb = fopen(buf,"w");
+			fprintf(fb, "%%%%BoundingBox: 0 0 %d %d\n", w, h);
+			fclose(fb);	delete []buf;
+		}
+	}
 	mgl_printf(fp, gz, "%%!PS-Adobe-3.0 EPSF-3.0\n%%%%BoundingBox: 0 0 %d %d\n",w,h);
 	mgl_printf(fp, gz, "%%%%Created by MathGL library\n%%%%Title: %s\n", fname);
 	mgl_printf(fp, gz, "%%%%CreationDate: %s\n",ctime(&now));
 	mgl_printf(fp, gz, "%d %d 8 [1 0 0 1 0 0] {currentfile %d string readhexstring pop} false 3 colorimage\n",
-			w,h,1+w*h/40);
-	for(j=h-1;j>=0;j--)	for(i=0;i<w;i++)
+			w,h,w*h/40);
+	for(long j=0;j<h;j++)	for(long i=0;i<w;i++)
 	{
-		if((i+w*(h-j-1))%40==0 && i+j>0)	mgl_printf(fp, gz, "\n");
-		mgl_printf(fp, gz, "%02x%02x%02x",p[j][3*i],p[j][3*i+1],p[j][3*i+2]);
+		if((i+w*j)%40==0 && i+j>0)	mgl_printf(fp, gz, "\n");
+		register long jj=h-1-j;
+		mgl_printf(fp, gz, "%02x%02x%02x",p[jj][3*i],p[jj][3*i+1],p[jj][3*i+2]);
 	}
 	mgl_printf(fp, gz, "\n\nshowpage\n%%%%EOF\n");
 	if(strcmp(fname,"-"))	{	if(gz)	gzclose((gzFile)fp);	else	fclose((FILE *)fp);	}
@@ -255,11 +271,9 @@ int MGL_NO_EXPORT mgl_gif_save(const char *fname, int w, int h, unsigned char **
 	// define colormap
 	GifColorType col[256];
 	memset(col,0,256*sizeof(GifColorType));
-	register long m;
-	register int i,j,k,ii;
-	for(i=0;i<6;i++)	for(j=0;j<6;j++)	for(k=0;k<6;k++)
+	for(int i=0;i<6;i++)	for(int j=0;j<6;j++)	for(int k=0;k<6;k++)
 	{
-		m = i+6*(j+6*k);		// part 1
+		long m = i+6*(j+6*k);		// part 1
 		col[m].Red = 51*i;
 		col[m].Green=51*j;
 		col[m].Blue =51*k;
@@ -277,19 +291,23 @@ int MGL_NO_EXPORT mgl_gif_save(const char *fname, int w, int h, unsigned char **
 	// write frame
 	EGifPutImageDesc(fg, 0, 0, w, h, 0, 0);
 	GifPixelType *line = new GifPixelType[w*h];
-	for(m=0;m<w*h;m++)
+	for(long m=0;m<w*h;m++)
 	{
-		ii = 3*(m%w);	k = m/w;
-		i = (l[k][ii]+25)/51;
-		j = (l[k][ii+1]+25)/51;
+		long ii = 3*(m%w), k = m/w;
+		int i = (l[k][ii]+25)/51;
+		int j = (l[k][ii+1]+25)/51;
 		k = (l[k][ii+2]+25)/51;
 		line[m] = i+6*(j+6*k);
 	}
 	EGifPutLine(fg, line, w*h);
+#if GIFLIB_MAJOR>5 || (GIFLIB_MAJOR==5 && GIFLIB_MINOR>0)
+	EGifCloseFile(fg,0);
+#else
 	EGifCloseFile(fg);
+#endif
 	delete []line;	return 0;
 #else
-	mglGlobalMess += "GIF support was disabled. Please, enable it and rebuild MathGL.\n";
+	mgl_set_global_warn("GIF support was disabled. Please, enable it and rebuild MathGL.");
 	return 1;
 #endif
 }
@@ -301,9 +319,13 @@ int MGL_NO_EXPORT mgl_gif_save(const char *fname, int w, int h, unsigned char **
 void mglCanvas::StartGIF(const char *fname, int ms)
 {
 #if MGL_HAVE_GIF
-	if(gif)	EGifCloseFile(gif);
 	std::string fn=fname;
 	if(fn.empty())	{	fn=PlotId+".gif";	fname = fn.c_str();	}
+#if GIFLIB_MAJOR>5 || (GIFLIB_MAJOR==5 && GIFLIB_MINOR>0)
+	if(gif)	EGifCloseFile(gif,0);
+#else
+	if(gif)	EGifCloseFile(gif);
+#endif
 #if GIFLIB_MAJOR>=5
 	gif = EGifOpenFileName(fname, 0, 0);
 	EGifSetGifVersion(gif,true);
@@ -340,7 +362,9 @@ void mglCanvas::StartGIF(const char *fname, int ms)
 #endif
 	// put animation parameters
 	ms /= 10;
-	unsigned char ext1[11] = {0x4E, 0x45, 0x54, 0x53, 0x43, 0x41, 0x50, 0x45, 0x32, 0x2E, 0x30}, ext3[3] = {0x01, 0xff, 0xff}, ext2[9] = {0x08, ms%256, ms/256, 0xff};
+	unsigned char ext1[11] = {0x4E, 0x45, 0x54, 0x53, 0x43, 0x41, 0x50, 0x45, 0x32, 0x2E, 0x30};
+	unsigned char ext2[9] = {0x08, (unsigned char)(ms%256), (unsigned char)(ms/256), 0xff};
+	unsigned char ext3[3] = {0x01, 0xff, 0xff};
 #if GIFLIB_MAJOR>=5
 	EGifPutExtensionLeader(gif,0xff);
 	EGifPutExtensionBlock(gif,11,ext1);
@@ -353,16 +377,20 @@ void mglCanvas::StartGIF(const char *fname, int ms)
 	EGifPutExtension(gif,0xf9,4,ext2);
 #endif
 #else
-	mglGlobalMess += "GIF support was disabled. Please, enable it and rebuild MathGL.\n";
+	mgl_set_global_warn("GIF support was disabled. Please, enable it and rebuild MathGL.");
 #endif
 }
 //-----------------------------------------------------------------------------
 void mglCanvas::CloseGIF()
 {
 #if MGL_HAVE_GIF
-	if(gif)	EGifCloseFile(gif);
+#if GIFLIB_MAJOR>5 || (GIFLIB_MAJOR==5 && GIFLIB_MINOR>0)
+	if(gif)	EGifCloseFile(gif,0);
 #else
-	mglGlobalMess += "GIF support was disabled. Please, enable it and rebuild MathGL.\n";
+	if(gif)	EGifCloseFile(gif);
+#endif
+#else
+	mgl_set_global_warn("GIF support was disabled. Please, enable it and rebuild MathGL.");
 #endif
 	gif = 0;
 }
@@ -385,21 +413,17 @@ void mglCanvas::EndFrame()
 	if(!l)	return;
 	EGifPutImageDesc(gif, 0, 0, width, height, 0, 0);
 	GifPixelType *line = new GifPixelType[n];
-	register long m;
-	register int i,j,k,ii;
-	for(m=0;m<n;m++)
+	for(long m=0;m<n;m++)
 	{
-		ii = 3*(m%width);	k = m/width;
-		i = (l[k][ii]+25)/51;
-		j = (l[k][ii+1]+25)/51;
+		long ii = 3*(m%width), k = m/width;
+		int i = (l[k][ii]+25)/51;
+		int j = (l[k][ii+1]+25)/51;
 		k = (l[k][ii+2]+25)/51;
 		line[m] = i+6*(j+6*k);
 	}
 	EGifPutLine(gif, line, n);
 	delete []line;	free(l);
 	if(f)	free(f);
-//#else
-//	mglGlobalMess += "GIF support was disabled. Please, enable it and rebuild MathGL.\n";
 #endif
 }
 //-----------------------------------------------------------------------------
@@ -407,7 +431,6 @@ void mglCanvas::DelFrame(long i)
 {
 #if MGL_HAVE_PTHREAD
 	pthread_mutex_lock(&mutexDrw);
-#pragma omp critical(drw)
 	if(get(MGL_VECT_FRAME))	DrwDat.erase(DrwDat.begin()+i);
 	pthread_mutex_unlock(&mutexDrw);
 #else
@@ -553,7 +576,7 @@ void MGL_EXPORT mgl_write_frame(HMGL gr, const char *fname,const char *descr)
 {
 	char buf[64];
 	if(!fname || !fname[0])
-	{	snprintf(buf,64,"%s%04d.jpg",_Gr_->PlotId.c_str(),_Gr_->GetNumFrame());	fname = buf;	}
+	{	snprintf(buf,64,"%s%04d.jpg",_Gr_->PlotId.c_str(),_Gr_->GetNumFrame());	buf[63]=0;	fname = buf;	}
 	int len=strlen(fname);
 	if(!strcmp(fname+len-4,".jpg")) 	mgl_write_jpg(gr,fname,descr);
 	if(!strcmp(fname+len-5,".jpeg"))	mgl_write_jpg(gr,fname,descr);
@@ -562,10 +585,13 @@ void MGL_EXPORT mgl_write_frame(HMGL gr, const char *fname,const char *descr)
 	if(!strcmp(fname+len-4,".png")) 	mgl_write_png(gr,fname,descr);
 	if(!strcmp(fname+len-4,".eps")) 	mgl_write_eps(gr,fname,descr);
 	if(!strcmp(fname+len-5,".epsz"))	mgl_write_eps(gr,fname,descr);
+	if(!strcmp(fname+len-7,".eps.gz"))	mgl_write_eps(gr,fname,descr);
 	if(!strcmp(fname+len-4,".bps")) 	mgl_write_bps(gr,fname,descr);
 	if(!strcmp(fname+len-5,".bpsz"))	mgl_write_bps(gr,fname,descr);
+	if(!strcmp(fname+len-7,".bps.gz"))	mgl_write_bps(gr,fname,descr);
 	if(!strcmp(fname+len-4,".svg")) 	mgl_write_svg(gr,fname,descr);
 	if(!strcmp(fname+len-5,".svgz"))	mgl_write_svg(gr,fname,descr);
+	if(!strcmp(fname+len-7,".svg.gz"))	mgl_write_svg(gr,fname,descr);
 	if(!strcmp(fname+len-4,".gif")) 	mgl_write_gif(gr,fname,descr);
 	if(!strcmp(fname+len-4,".bmp")) 	mgl_write_bmp(gr,fname,descr);
 	if(!strcmp(fname+len-4,".tga")) 	mgl_write_tga(gr,fname,descr);
@@ -591,14 +617,14 @@ void MGL_EXPORT mgl_write_frame_(uintptr_t *gr, const char *fname,const char *de
 void MGL_EXPORT mgl_show_image(HMGL gr, const char *viewer, int keep)
 {
 	char fname[128], *cmd = new char [128];
-	snprintf(fname,128,"%s.png", tmpnam(NULL));
+	snprintf(fname,128,"%s.png", tmpnam(NULL));	fname[127]=0;
 	mgl_write_png_solid(gr,fname,"MathGL ShowImage file");
 	if(!viewer || !viewer[0])
 		viewer = MGL_DEF_VIEWER;
 #ifdef WIN32
 		if(keep)
 		{
-			snprintf(cmd,128,"%s %s &", viewer,fname);
+			snprintf(cmd,128,"%s %s &", viewer,fname);	cmd[127]=0;
 			if(system(cmd)==-1)	printf("Error to call external viewer\n");
 			Sleep(2000);
 			snprintf(cmd,128,"del %s", fname);
@@ -607,13 +633,14 @@ void MGL_EXPORT mgl_show_image(HMGL gr, const char *viewer, int keep)
 #else
 		if(keep)
 		{
-			snprintf(cmd,128,"%s %s &", viewer,fname);
+			snprintf(cmd,128,"%s %s &", viewer,fname);	cmd[127]=0;
 			if(system(cmd)==-1)	printf("Error to call external viewer\n");
 			sleep(2);
 			snprintf(cmd,128,"rm %s", fname);
 		}
 		else	snprintf(cmd,128,"%s %s; rm %s", viewer,fname,fname);
 #endif
+		cmd[127] = 0;
 		if(system(cmd)==-1)	printf("Error to call external viewer\n");
 		delete []cmd;
 }

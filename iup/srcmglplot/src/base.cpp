@@ -24,7 +24,7 @@
 char *mgl_strdup(const char *s)
 {
 	char *r = (char *)malloc((strlen(s)+1)*sizeof(char));
-	memcpy(r,s,(strlen(s)+1)*sizeof(char));
+	if(r)	memcpy(r,s,(strlen(s)+1)*sizeof(char));
 	return r;
 }
 //-----------------------------------------------------------------------------
@@ -45,7 +45,7 @@ void MGL_EXPORT mgl_create_cpp_font(HMGL gr, const wchar_t *how)
 		l += 2*f->GetNl(0,ch);
 		n += 6*f->GetNt(0,ch);
 	}
-	printf("unsigned mgl_numg=%lu, mgl_cur=%lu;\n",(unsigned long)s.size(),l+n);
+	printf("const long mgl_numg=%lu, mgl_cur=%lu;\n",(unsigned long)s.size(),l+n);
 	printf("float mgl_fact=%g;\n",f->GetFact(0)/mgl_fgen);
 	printf("long mgl_gen_fnt[%lu][6] = {\n", (unsigned long)s.size());
 	for(i=m=0;i<s.size();i++)	// first write symbols descriptions
@@ -89,7 +89,7 @@ void MGL_EXPORT mgl_strlwr(char *str)
 //-----------------------------------------------------------------------------
 mglBase::mglBase()
 {
-	Flag=0;	saved=false;
+	Flag=0;	saved=false;	PrmInd=NULL;
 #if MGL_HAVE_PTHREAD
 	pthread_mutex_init(&mutexPnt,0);
 	pthread_mutex_init(&mutexTxt,0);
@@ -102,24 +102,42 @@ mglBase::mglBase()
 	pthread_mutex_init(&mutexGlf,0);
 	pthread_mutex_init(&mutexAct,0);
 	pthread_mutex_init(&mutexDrw,0);
+	pthread_mutex_init(&mutexClf,0);
+	Pnt.set_mutex(&mutexClf);
+	Prm.set_mutex(&mutexClf);
+	Sub.set_mutex(&mutexClf);
+	Txt.set_mutex(&mutexClf);
+#endif
+#if MGL_HAVE_OMP
+	omp_init_lock(&lockClf);
+	Pnt.set_mutex(&lockClf);
+	Prm.set_mutex(&lockClf);
+	Sub.set_mutex(&lockClf);
+	Txt.set_mutex(&lockClf);
 #endif
 	fnt=0;	*FontDef=0;	fx=fy=fz=fa=fc=0;
 	AMin = mglPoint(0,0,0,0);	AMax = mglPoint(1,1,1,1);
 
 	InUse = 1;	SetQuality();	FaceNum = 0;
 	// Always create default palette txt[0] and default scheme txt[1]
-#pragma omp critical(txt)
-	{
-		mglTexture t1(MGL_DEF_PAL,-1), t2(MGL_DEF_SCH,1);
-		Txt.reserve(3);
-		MGL_PUSH(Txt,t1,mutexTxt);
-		MGL_PUSH(Txt,t2,mutexTxt);
-	}
-	memcpy(last_style,"{k5}-1\0",8);
+	mglTexture t1(MGL_DEF_PAL,-1), t2(MGL_DEF_SCH,1);
+	Txt.reserve(3);
+	MGL_PUSH(Txt,t1,mutexTxt);
+	MGL_PUSH(Txt,t2,mutexTxt);
+
+	strcpy(last_style,"__1 {dFFFF}k\0");
 	MinS=mglPoint(-1,-1,-1);	MaxS=mglPoint(1,1,1);
 	fnt = new mglFont;	fnt->gr = this;	PrevState=NAN;
 }
-mglBase::~mglBase()	{	ClearEq();	delete fnt;	}
+mglBase::~mglBase()
+{
+	ClearEq();	ClearPrmInd();	delete fnt;
+	Pnt.set_mutex(0);	Prm.set_mutex(0);
+	Sub.set_mutex(0);	Txt.set_mutex(0);
+#if MGL_HAVE_OMP
+	omp_destroy_lock(&lockClf);
+#endif
+}
 //-----------------------------------------------------------------------------
 void mglBase::RestoreFont()	{	fnt->Restore();	}
 void mglBase::LoadFont(const char *name, const char *path)
@@ -145,14 +163,14 @@ void mglBase::AddActive(long k,int n)
 }
 //-----------------------------------------------------------------------------
 mreal mglBase::GetRatio() const	{	return 1;	}
-int mglBase::GetWidth() const	{	return 1;	}
+int mglBase::GetWidth()  const	{	return 1;	}
 int mglBase::GetHeight() const	{	return 1;	}
 //-----------------------------------------------------------------------------
 void mglBase::StartGroup(const char *name, int id)
 {
 	LightScale(&B);
 	char buf[128];
-	snprintf(buf,128,"%s_%d",name,id);
+	snprintf(buf,128,"%s_%d",name,id);	buf[127]=0;
 	StartAutoGroup(buf);
 }
 //-----------------------------------------------------------------------------
@@ -177,17 +195,20 @@ const char *mglWarn[mglWarnEnd] = {"data dimension(s) is incompatible",	//mglWar
 								"There are too long string in script",	//mglScrLong
 								"There are unbalanced ' in script"};	//mglScrStr
 //-----------------------------------------------------------------------------
+extern bool mglPrintWarn;
 void mglBase::SetWarn(int code, const char *who)
 {
+	std::string warn;
 	WarnCode = code>0 ? code:0;
 	if(code>0 && code<mglWarnEnd)
 	{
-		if(who && *who)	Mess = Mess+"\n"+who+": ";
-		else Mess += "\n";
-		Mess = Mess+mglWarn[code-1];
+		if(who && *who)	warn = std::string(who)+": ";
+		warn = warn+mglWarn[code-1];
 	}
 	else if(!code)	Mess="";
-	else if(who && *who)	Mess = Mess+(code==-2?"":"\n")+who;
+	else if(who && *who)	warn = who;
+	if(mglPrintWarn && !warn.empty())	fprintf(stderr,"MathGL message - %s\n",warn.c_str());
+	if(code && !warn.empty())	Mess = Mess+(code==-2?"":"\n")+warn;
 	LoadState();
 }
 //-----------------------------------------------------------------------------
@@ -197,10 +218,13 @@ void mglGlyph::Create(long Nt, long Nl)
 {
 	if(Nt<0 || Nl<0)	return;
 	nt=Nt;	nl=Nl;
-	if(trig)	delete []trig;
-	trig = nt>0?new short[6*nt]:0;
-	if(line)	delete []line;
-	line = nl>0?new short[2*nl]:0;
+#pragma omp critical(glf_create)
+	{
+		if(trig)	delete []trig;
+		trig = nt>0?new short[6*nt]:0;
+		if(line)	delete []line;
+		line = nl>0?new short[2*nl]:0;
+	}
 }
 //-----------------------------------------------------------------------------
 bool mglGlyph::operator==(const mglGlyph &g)
@@ -219,7 +243,8 @@ long mglBase::AddGlyph(int s, long j)
 	memcpy(g.trig, fnt->GetTr(s,j), 6*g.nt*sizeof(short));
 	memcpy(g.line, fnt->GetLn(s,j), 2*g.nl*sizeof(short));
 	// now let find the similar glyph
-	for(size_t i=0;i<Glf.size();i++)	if(g==Glf[i])	return i;
+	for(size_t i=0;i<Glf.size();i++)
+		if(g!=Glf[i])	continue;	else	return i;
 	// if no one then let add it
 	long k;
 #pragma omp critical(glf)
@@ -233,7 +258,7 @@ long mglBase::AddPnt(const mglMatrix *mat, mglPoint p, mreal c, mglPoint n, mrea
 	// scl=0 -- no scaling
 	// scl&1 -- usual scaling
 	// scl&2 -- disable NAN at scaling
-	// scl&4 -- ???
+	// scl&4 -- disable NAN for normales if no light
 	// scl&8 -- bypass palette for enabling alpha
 	if(mgl_isnan(c) || mgl_isnan(a))	return -1;
 	bool norefr = mgl_isnan(n.x) && mgl_isnan(n.y) && !mgl_isnan(n.z);
@@ -281,16 +306,16 @@ long mglBase::CopyNtoC(long from, mreal c)
 {
 	if(from<0)	return -1;
 	mglPnt p=Pnt[from];
-	if(mgl_isnum(c))	{	p.c=c;	p.t=0;	Txt[long(c)].GetC(c,0,p);	}
+	if(mgl_isnum(c))	{	p.c=c;	p.t=1;	Txt[long(c)].GetC(c,0,p);	p.a=1;	}
 	long k;
 #pragma omp critical(pnt)
 	{k=Pnt.size();	MGL_PUSH(Pnt,p,mutexPnt);}	return k;
 }
 //-----------------------------------------------------------------------------
-long mglBase::CopyProj(long from, mglPoint p, mglPoint n)
+long mglBase::CopyProj(long from, mglPoint p, mglPoint n, short sub)
 {
 	if(from<0)	return -1;
-	mglPnt q=Pnt[from];
+	mglPnt q=Pnt[from];	q.sub = sub;
 	q.x=q.xx=p.x;	q.y=q.yy=p.y;	q.z=q.zz=p.z;
 	q.u = n.x;		q.v = n.y;		q.w = n.z;
 	long k;
@@ -300,7 +325,7 @@ long mglBase::CopyProj(long from, mglPoint p, mglPoint n)
 //-----------------------------------------------------------------------------
 void mglBase::Reserve(long n)
 {
-	if(TernAxis&4)	n*=4;
+	if(TernAxis&12)	n*=4;
 #pragma omp critical(pnt)
 	Pnt.reserve(n);
 #pragma omp critical(prm)
@@ -427,17 +452,21 @@ bool mglBase::ScalePoint(const mglMatrix *, mglPoint &p, mglPoint &n, bool use_n
 		if(z2>Max.z)	{z=Max.z;	n=mglPoint(0,0,1);}
 	}
 
-	x1=x;	y1=y;	z1=z;	x2=y2=z2=1;
-	if(fx)	{	x1 = fx->Calc(x,y,z);	x2 = fx->CalcD('x',x,y,z);	}
-	if(fy)	{	y1 = fy->Calc(x,y,z);	y2 = fy->CalcD('y',x,y,z);	}
-	if(fz)	{	z1 = fz->Calc(x,y,z);	z2 = fz->CalcD('z',x,y,z);	}
+	x1=x;	y1=y;	z1=z;
+	register mreal xx=1,xy=0,xz=0,yx=0,yy=1,yz=0,zx=0,zy=0,zz=1;
+	if(fx)	{	x1 = fx->Calc(x,y,z);	xx = fx->CalcD('x',x,y,z);	xy = fx->CalcD('y',x,y,z);	xz = fx->CalcD('z',x,y,z);	}
+	if(fy)	{	y1 = fy->Calc(x,y,z);	yx = fy->CalcD('x',x,y,z);	yy = fy->CalcD('y',x,y,z);	yz = fy->CalcD('z',x,y,z);	}
+	if(fz)	{	z1 = fz->Calc(x,y,z);	zx = fz->CalcD('x',x,y,z);	zy = fz->CalcD('y',x,y,z);	zz = fz->CalcD('z',x,y,z);	}
 	if(mgl_isnan(x1) || mgl_isnan(y1) || mgl_isnan(z1))	{	x=NAN;	return false;	}
 
-	register mreal d;	// TODO: should I update normale for infinite light source (x=NAN)?!?
-	d = 1/(FMax.x - FMin.x);	x = (2*x1 - FMin.x - FMax.x)*d;	x2 *= 2*d;
-	d = 1/(FMax.y - FMin.y);	y = (2*y1 - FMin.y - FMax.y)*d;	y2 *= 2*d;
-	d = 1/(FMax.z - FMin.z);	z = (2*z1 - FMin.z - FMax.z)*d;	z2 *= 2*d;
-	n.x *= y2*z2;	n.y *= x2*z2;	n.z *= x2*y2;
+	register mreal d;
+	d = 1/(FMax.x - FMin.x);	x = (2*x1 - FMin.x - FMax.x)*d;	xx /= d;	xy /= d;	xz /= d;
+	d = 1/(FMax.y - FMin.y);	y = (2*y1 - FMin.y - FMax.y)*d;	yx /= d;	yy /= d;	yz /= d;
+	d = 1/(FMax.z - FMin.z);	z = (2*z1 - FMin.z - FMax.z)*d;	zx /= d;	zy /= d;	zz /= d;
+	register mreal nx=n.x, ny=n.y, nz=n.z;
+	n.x = nx*xx+ny*xy+nz*xz;
+	n.y = nx*yx+ny*yy+nz*yz;
+	n.z = nx*zx+ny*zy+nz*zz;
 	if((TernAxis&3)==1)	// usual ternary axis
 	{
 		if(x+y>0)
@@ -533,8 +562,8 @@ void mglBase::CRange(mreal v1,mreal v2,bool add)
 	if(v1==v2 && !add)	return;
 	if(!add)
 	{
-		if(v1==v1)	Min.c = v1;	
-		if(v2==v2)	Max.c = v2;		
+		if(mgl_isnum(v1))	Min.c = v1;
+		if(mgl_isnum(v2))	Max.c = v2;
 	}
 	else if(Min.c<Max.c)
 	{
@@ -568,8 +597,8 @@ void mglBase::XRange(mreal v1,mreal v2,bool add)
 	if(v1==v2 && !add)	return;
 	if(!add)
 	{
-		if(v1==v1)	Min.x = v1;	
-		if(v2==v2)	Max.x = v2;		
+		if(mgl_isnum(v1))	Min.x = v1;
+		if(mgl_isnum(v2))	Max.x = v2;
 	}
 	else if(Min.x<Max.x)
 	{
@@ -603,8 +632,8 @@ void mglBase::YRange(mreal v1,mreal v2,bool add)
 	if(v1==v2 && !add)	return;
 	if(!add)
 	{
-		if(v1==v1)	Min.y = v1;	
-		if(v2==v2)	Max.y = v2;		
+		if(mgl_isnum(v1))	Min.y = v1;
+		if(mgl_isnum(v2))	Max.y = v2;
 	}
 	else if(Min.y<Max.y)
 	{
@@ -639,8 +668,8 @@ void mglBase::ZRange(mreal v1,mreal v2,bool add)
 	if(v1==v2 && !add)	return;
 	if(!add)
 	{
-		if(v1==v1)	Min.z = v1;	
-		if(v2==v2)	Max.z = v2;		
+		if(mgl_isnum(v1))	Min.z = v1;
+		if(mgl_isnum(v2))	Max.z = v2;
 	}
 	else if(Min.z<Max.z)
 	{
@@ -708,8 +737,11 @@ void mglBase::SetFunc(const char *EqX,const char *EqY,const char *EqZ,const char
 //-----------------------------------------------------------------------------
 void mglBase::CutOff(const char *EqC)
 {
-	if(fc)	delete fc;
-	if(EqC && EqC[0])	fc = new mglFormula(EqC);	else	fc = 0;
+#pragma omp critical(eq)
+	{
+		if(fc)	delete fc;
+		fc = (EqC && EqC[0])?new mglFormula(EqC):0;
+	}
 }
 //-----------------------------------------------------------------------------
 void mglBase::SetCoor(int how)
@@ -749,9 +781,12 @@ void mglBase::SetCoor(int how)
 //-----------------------------------------------------------------------------
 void mglBase::ClearEq()
 {
-	if(fx)	delete fx;	if(fy)	delete fy;	if(fz)	delete fz;
-	if(fa)	delete fa;	if(fc)	delete fc;
-	fx = fy = fz = fc = fa = 0;
+#pragma omp critical(eq)
+	{
+		if(fx)	delete fx;	if(fy)	delete fy;	if(fz)	delete fz;
+		if(fa)	delete fa;	if(fc)	delete fc;
+		fx = fy = fz = fc = fa = 0;
+	}
 	RecalcBorder();
 }
 //-----------------------------------------------------------------------------
@@ -795,24 +830,23 @@ void mglTexture::Set(const char *s, int smooth, mreal alpha)
 	strncpy(Sch,s,259);	Smooth=smooth;	Alpha=alpha;
 
 	register long i,j=0,m=0,l=strlen(s);
-	const char *dig = "0123456789abcdefABCDEF";
 	bool map = smooth==2 || mglchr(s,'%'), sm = smooth>=0 && !strchr(s,'|');	// Use mapping, smoothed colors
-	for(i=0;i<l;i++)		// find number of colors
+	for(i=n=0;i<l;i++)		// find number of colors
 	{
 		if(smooth>=0 && s[i]==':' && j<1)	break;
-		if(s[i]=='[')	j++;	if(s[i]==']')	j--;
+		if(s[i]=='{' && strchr(MGL_COLORS"x",s[i+1]) && j<1)	n++;
+		if(s[i]=='[' || s[i]=='{')	j++;	if(s[i]==']' || s[i]=='}')	j--;
 		if(strchr(MGL_COLORS,s[i]) && j<1)	n++;
-		if(s[i]=='x' && i>0 && s[i-1]=='{' && j<1)	n++;
 //		if(smooth && s[i]==':')	break;	// NOTE: should use []
 	}
 	if(!n)
 	{
-		if((strchr(s,'|') || strchr(s,'!')) && !smooth)	// sharp colors
+		if(strchr(s,'|') && !smooth)	// sharp colors
 		{	n=l=6;	s=MGL_DEF_SCH;	sm = false;	}
 		else if(smooth==0)		// none colors but color scheme
 		{	n=l=6;	s=MGL_DEF_SCH;	}
-		else	return;
 	}
+	if(n<=0)	return;
 	bool man=sm;
 	mglColor *c = new mglColor[2*n];		// Colors itself
 	mreal *val = new mreal[n];
@@ -826,20 +860,18 @@ void mglTexture::Set(const char *s, int smooth, mreal alpha)
 			if(m>0 && s[i+1]>'0' && s[i+1]<='9')// ext color
 			{	c[2*n] = mglColor(s[i],(s[i+1]-'0')/5.f);	i++;	}
 			else	c[2*n] = mglColor(s[i]);	// usual color
-			val[n]=-1;	n++;
+			val[n]=-1;	c[2*n].a = -1;	n++;
 		}
 		if(s[i]=='x' && i>0 && s[i-1]=='{' && j<1)	// {xRRGGBB,val} format, where val in [0,1]
 		{
-			if(strchr(dig,s[i+1]) && strchr(dig,s[i+2]) && strchr(dig,s[i+3]) && strchr(dig,s[i+4]) && strchr(dig,s[i+5]) && strchr(dig,s[i+6]))
-			{
-				char ss[3]="00";	c[2*n].a = 1;
-				ss[0] = s[i+1];	ss[1] = s[i+2];	c[2*n].r = strtol(ss,0,16)/255.;
-				ss[0] = s[i+3];	ss[1] = s[i+4];	c[2*n].g = strtol(ss,0,16)/255.;
-				ss[0] = s[i+5];	ss[1] = s[i+6];	c[2*n].b = strtol(ss,0,16)/255.;
-				if(strchr(dig,s[i+7]) && strchr(dig,s[i+8]))
-				{	ss[0] = s[i+7];	ss[1] = s[i+8];	c[2*n].a = strtol(ss,0,16)/255.;	i+=2;	}
-				val[n]=-1;	i+=6;	n++;
-			}
+			uint32_t id = strtoul(s+1+i,0,16);
+			if(memchr(s+i+1,'}',8) || memchr(s+i+1,',',8))	c[2*n].a = -1;
+			else	{	c[2*n].a = (id%256)/255.;	id /= 256;	}
+			c[2*n].b = (id%256)/255.;	id /= 256;
+			c[2*n].g = (id%256)/255.;	id /= 256;
+			c[2*n].r = (id%256)/255.;
+			while(strchr("0123456789abcdefABCDEFx",s[i]))	i++;
+			val[n]=-1;	n++;	i--;
 		}
 		if(s[i]==',' && m>0 && j<1 && n>0)
 			val[n-1] = atof(s+i+1);
@@ -848,7 +880,11 @@ void mglTexture::Set(const char *s, int smooth, mreal alpha)
 		{	man=false;	alpha = 0.1*(s[i+1]-'0');	i++;	}
 	}
 	for(long i=0;i<n;i++)	// default texture
-	{	c[2*i+1]=c[2*i];	c[2*i].a=man?0:alpha;	c[2*i+1].a=alpha;	}
+	{
+		if(c[2*i].a<0)	c[2*i].a=alpha;
+		c[2*i+1]=c[2*i];
+		if(man)	c[2*i].a=0;
+	}
 	if(map && sm)		// map texture
 	{
 		if(n==2)
@@ -878,13 +914,11 @@ void mglTexture::Set(const char *s, int smooth, mreal alpha)
 	}
 	// fill texture itself
 	mreal v=sm?(n-1)/255.:n/256.;
-	if(!sm)
-//#pragma omp parallel for	// remove parallel here due to possible race conditions for v<1
-		for(long i=0;i<256;i++)
-		{
-			register long j = 2*long(v*i);	//u-=j;
-			col[2*i] = c[j];	col[2*i+1] = c[j+1];
-		}
+	if(!sm)	for(long i=0;i<256;i++)
+	{
+		register long j = 2*long(v*i);	//u-=j;
+		col[2*i] = c[j];	col[2*i+1] = c[j+1];
+	}
 	else	for(i=i1=0;i<256;i++)
 	{
 		register mreal u = v*i;	j = long(u);	//u-=j;
@@ -906,25 +940,20 @@ mglColor mglTexture::GetC(mreal u,mreal v) const
 {
 	u -= long(u);
 	register long i=long(255*u);	u = u*255-i;
-	const mglColor *s=col+2*i;	//mglColor p;
+	const mglColor *s=col+2*i;
 	return (s[0]*(1-u)+s[2]*u)*(1-v) + (s[1]*(1-u)+s[3]*u)*v;
-// 	p.r = (s[0].r*(1-u)+s[2].r*u)*(1-v) + (s[1].r*(1-u)+s[3].r*u)*v;
-// 	p.g = (s[0].g*(1-u)+s[2].g*u)*(1-v) + (s[1].g*(1-u)+s[3].g*u)*v;
-// 	p.b = (s[0].b*(1-u)+s[2].b*u)*(1-v) + (s[1].b*(1-u)+s[3].b*u)*v;
-// 	p.a = (s[0].a*(1-u)+s[2].a*u)*(1-v) + (s[1].a*(1-u)+s[3].a*u)*v;
-// 	return p;
 }
 //-----------------------------------------------------------------------------
 void mglTexture::GetC(mreal u,mreal v,mglPnt &p) const
 {
 	u -= long(u);
 	register long i=long(255*u);	u = u*255-i;
-	const mglColor *s=col+2*i;
-	p.r = (s[0].r*(1-u)+s[2].r*u)*(1-v) + (s[1].r*(1-u)+s[3].r*u)*v;
-	p.g = (s[0].g*(1-u)+s[2].g*u)*(1-v) + (s[1].g*(1-u)+s[3].g*u)*v;
-	p.b = (s[0].b*(1-u)+s[2].b*u)*(1-v) + (s[1].b*(1-u)+s[3].b*u)*v;
-	p.a = (s[0].a*(1-u)+s[2].a*u)*(1-v) + (s[1].a*(1-u)+s[3].a*u)*v;
-//	p.a = (s[0].a*(1-u)+s[2].a*u)*v + (s[1].a*(1-u)+s[3].a*u)*(1-v);	// for alpha use inverted
+	const mglColor &s0=col[2*i], &s1=col[2*i+1], &s2=col[2*i+2], &s3=col[2*i+3];
+	p.r = (s0.r*(1-u)+s2.r*u)*(1-v) + (s1.r*(1-u)+s3.r*u)*v;
+	p.g = (s0.g*(1-u)+s2.g*u)*(1-v) + (s1.g*(1-u)+s3.g*u)*v;
+	p.b = (s0.b*(1-u)+s2.b*u)*(1-v) + (s1.b*(1-u)+s3.b*u)*v;
+	p.a = (s0.a*(1-u)+s2.a*u)*(1-v) + (s1.a*(1-u)+s3.a*u)*v;
+//	p.a = (s0.a*(1-u)+s2.a*u)*v + (s1.a*(1-u)+s3.a*u)*(1-v);	// for alpha use inverted
 }
 //-----------------------------------------------------------------------------
 long mglBase::AddTexture(const char *cols, int smooth)
@@ -934,7 +963,8 @@ long mglBase::AddTexture(const char *cols, int smooth)
 	if(t.n==0)	return smooth<0 ? 0:1;
 	if(smooth<0)	CurrPal=0;
 	// check if already exist
-	for(size_t i=0;i<Txt.size();i++)	if(t.IsSame(Txt[i]))	return i;
+	for(size_t i=0;i<Txt.size();i++)
+		if(!t.IsSame(Txt[i]))	continue;	else	return i;
 	// create new one
 	long k;
 #pragma omp critical(txt)
@@ -950,7 +980,6 @@ mreal mglBase::AddTexture(mglColor c)
 			return i+j/255.;
 	// add new texture
 	mglTexture t;
-#pragma omp parallel for
 	for(long i=0;i<MGL_TEXTURE_COLOURS;i++)	t.col[i]=c;
 	long k;
 #pragma omp critical(txt)
@@ -961,36 +990,25 @@ mreal mglBase::AddTexture(mglColor c)
 //-----------------------------------------------------------------------------
 mreal mglBase::NextColor(long &id)
 {
-	long i=abs(id)/256, n=Txt[i].n, p=abs(id)&0xff;
+	long i=labs(id)/256, n=Txt[i].n, p=labs(id)&0xff;
 	if(id>=0)	{	p=(p+1)%n;	id = 256*i+p;	}
-	mglColor c = Txt[i].col[int(MGL_TEXTURE_COLOURS*(p+0.5)/n)];
-	mreal dif, dmin=1;
-	// try to find closest color
-	for(long j=0;mglColorIds[j].id;j++)	for(long k=1;k<10;k++)
-	{
-		mglColor cc;	cc.Set(mglColorIds[j].col,k/5.);
-		dif = (c-cc).NormS();
-		if(dif<dmin)
-		{
-			last_style[1] = mglColorIds[j].id;
-			last_style[2] = k+'0';
-			dmin=dif;
-		}
-	}
+	CDef = i + (n>0 ? (p+0.5)/n : 0);	CurrPal++;
+	sprintf(last_style+11,"{&%g}",CDef);
 	if(!leg_str.empty())
 	{	AddLegend(leg_str.c_str(),last_style);	leg_str.clear();	}
-	CDef = i + (n>0 ? (p+0.5)/n : 0);	CurrPal++;
 	return CDef;
 }
 //-----------------------------------------------------------------------------
 mreal mglBase::NextColor(long id, long sh)
 {
-	long i=abs(id)/256, n=Txt[i].n, p=abs(id)&0xff;
+	long i=labs(id)/256, n=Txt[i].n, p=labs(id)&0xff;
 	if(id>=0)	p=(p+sh)%n;
-	return i + (n>0 ? (p+0.5)/n : 0);
+	mreal cc = i + (n>0 ? (p+0.5)/n : 0);
+	sprintf(last_style+11,"{&%g}",cc);
+	return cc;
 }
 //-----------------------------------------------------------------------------
-const char *mglchrs(const char *str, const char *chr)
+MGL_EXPORT_PURE const char *mglchrs(const char *str, const char *chr)
 {
 	if(!str || !str[0] || !chr || !chr[0])	return NULL;
 	size_t l=strlen(chr);
@@ -1002,7 +1020,7 @@ const char *mglchrs(const char *str, const char *chr)
 	return NULL;
 }
 //-----------------------------------------------------------------------------
-const char *mglchr(const char *str, char ch)
+MGL_EXPORT_PURE const char *mglchr(const char *str, char ch)
 {
 	if(!str || !str[0])	return NULL;
 	size_t l=strlen(str),k=0;
@@ -1020,50 +1038,67 @@ char mglBase::SetPenPal(const char *p, long *Id, bool pal)
 {
 	char mk=0;
 	PDef = 0xffff;	// reset to solid line
-	memcpy(last_style,"{k5}-1\0",8);
+	strcpy(last_style,"__1 {dFFFF}k\0");
 
+	const char *s;
 	Arrow1 = Arrow2 = 0;	PenWidth = 1;
 	if(p && *p)
 	{
 //		const char *col = "wkrgbcymhRGBCYMHWlenuqpLENUQP";
 		unsigned val[8] = {0x0000, 0xffff, 0x00ff, 0x0f0f, 0x1111, 0x087f, 0x2727, 0x3333};
-		const char *stl = " -|;:ji=", *s;
+		const char *stl = " -|;:ji=";
 		const char *mrk = "*o+xsd.^v<>";
 		const char *MRK = "YOPXSDCTVLR";
 		const char *wdh = "123456789";
-		const char *arr = "AKDTVISO_";
+		const char *arr = "AKDTVISOX_";
 		long m=0;
 		size_t l=strlen(p);
 		for(size_t i=0;i<l;i++)
 		{
 			if(p[i]=='{')	m++;	if(p[i]=='}')	m--;
+			if(m>0 && p[i]=='d')	PDef = strtol(p+i+1,0,16);
 			if(m>0)	continue;
 			s = mglchr(stl,p[i]);
-			if(s)	{	PDef = val[s-stl];	last_style[4]=p[i];	}
-			else if(mglchr(mrk,p[i]))	mk = p[i];
+			if(s)
+			{	PDef = val[s-stl];	sprintf(last_style+6,"%04x",PDef);	last_style[10]='}';	}
+			else if(mglchr(mrk,p[i]))
+			{	mk = p[i];	last_style[3] = mk;	}
 			else if(mglchr(wdh,p[i]))
-			{	last_style[5] = p[i];	PenWidth = p[i]-'0';	}
+			{	PenWidth = p[i]-'0';	last_style[2] = p[i];	}
 			else if(mglchr(arr,p[i]))
 			{
 				if(!Arrow2)	Arrow2 = p[i];
 				else	Arrow1 = p[i];
 			}
 		}
-		if(Arrow1=='_')	Arrow1=0;	if(Arrow2=='_')	Arrow2=0;
+		if(!Arrow1)	Arrow1='_';		if(!Arrow2)	Arrow2='_';
 		if(mglchr(p,'#'))
 		{
 			s = mglchr(mrk,mk);
-			if(s)	mk = MRK[s-mrk];
+			if(s)
+			{	mk = MRK[s-mrk];	last_style[3] = mk;	}
 		}
+		if((s=strstr(p,"{&"))!=0)
+		{	mk = last_style[3] = p[3];	strcpy(last_style+11,s);	}
+		last_style[0] = Arrow1;	last_style[1] = Arrow2;
 	}
 	if(pal)
 	{
-		last_style[6]=mk;
-		long tt, n;
-		tt = AddTexture(p,-1);	n=Txt[tt].n;
-		CDef = tt+((n+CurrPal-1)%n+0.5)/n;
-		if(Id)	*Id=long(tt)*256+(n+CurrPal-1)%n;
+		if((s=strstr(p,"{&"))!=0)
+		{
+			CDef = atof(s+2);
+//			if(Id)	*Id=long(tt)*256+(n+CurrPal-1)%n;
+		}
+		else
+		{
+			long tt, n;
+			tt = AddTexture(p,-1);	n=Txt[tt].n;
+			CDef = tt+((n+CurrPal-1)%n+0.5)/n;
+			if(Id)	*Id=long(tt)*256+(n+CurrPal-1)%n;
+			sprintf(last_style+11,"{&%g}",CDef);
+		}
 	}
+	if(Arrow1=='_')	Arrow1=0;	if(Arrow2=='_')	Arrow2=0;
 	return mk;
 }
 //-----------------------------------------------------------------------------
@@ -1088,6 +1123,7 @@ void mglBase::SetMask(const char *p)
 		for(long i=0;i<l;i++)
 		{
 			if(p[i]=='{')	m++;	if(p[i]=='}')	m--;
+			if(m>0 && p[i]=='s')	mask = strtoull(p+i+1,0,16);
 			if(m>0)	continue;
 			if(p[i]==':')	break;
 			s = mglchr(msk, p[i]);
@@ -1156,7 +1192,7 @@ void mglBase::vect_plot(long p1, long p2, mreal s)
 	line_plot(p1,p2);	line_plot(n1,p2);	line_plot(p2,n2);
 }
 //-----------------------------------------------------------------------------
-int mglFindArg(const char *str)
+int MGL_LOCAL_PURE mglFindArg(const char *str)
 {
 	long l=0,k=0,len=strlen(str);
 	for(long i=0;i<len;i++)
@@ -1185,19 +1221,18 @@ mreal mglBase::SaveState(const char *opt)
 	MNS=MeshNum;	CSS=Flag;	LSS=AmbBr;
 	MinS=Min;		MaxS=Max;	saved=true;
 	// parse option
-	char *qi=mgl_strdup(opt),*q=qi, *s,*a,*b,*c;
-	long n;
+	char *qi=mgl_strdup(opt),*q=qi, *s;
 	mgl_strtrim(q);
 	// NOTE: not consider '#' inside legend entry !!!
-	s=(char*)strchr(q,'#');	if(s)	*s=0;
+	s=strchr(q,'#');	if(s)	*s=0;
 	mreal res=NAN;
 	while(q && *q)
 	{
-    s = q;	q = (char*)strchr(s, ';');
+		s=q;	q=strchr(s,';');
 		if(q)	{	*q=0;	q++;	}
-		mgl_strtrim(s);		a=s;
-		n=mglFindArg(s);	if(n>0)	{	s[n]=0;		s=s+n+1;	}
-		mgl_strtrim(a);		b=s;
+		mgl_strtrim(s);		char *a=s;
+		long n=mglFindArg(s);	if(n>0)	{	s[n]=0;		s=s+n+1;	}
+		mgl_strtrim(a);		char *b=s;
 		n=mglFindArg(s);	if(n>0)	{	s[n]=0;		s=s+n+1;	}
 		mgl_strtrim(b);
 
@@ -1205,7 +1240,7 @@ mreal mglBase::SaveState(const char *opt)
 		if(!strcmp(b,"on"))	ff=1;
 		if(!strcmp(a+1,"range"))
 		{
-			n=mglFindArg(s);	c=s;
+			n=mglFindArg(s);	char *c=s;
 			if(n>0)	{	s[n]=0;	s=s+n+1;	}
 			mgl_strtrim(c);		ss = atof(c);
 			if(a[0]=='x')		{	Min.x=ff;	Max.x=ss;	}
@@ -1254,7 +1289,7 @@ bool MGL_EXPORT mgl_check_dim2(HMGL gr, HCDT x, HCDT y, HCDT z, HCDT a, const ch
 //	if(!gr || !x || !y || !z)	return true;		// if data is absent then should be segfault!!!
 	register long n=z->GetNx(),m=z->GetNy();
 	if(n<2 || m<2)	{	gr->SetWarn(mglWarnLow,name);	return true;	}
-	if(a && n*m*z->GetNz()!=a->GetNx()*a->GetNy()*a->GetNz())
+	if(a && z->GetNN()!=a->GetNN())
 	{	gr->SetWarn(mglWarnDim,name);	return true;	}
 	if(less)
 	{
@@ -1318,9 +1353,9 @@ bool MGL_EXPORT mgl_check_dim3(HMGL gr, bool both, HCDT x, HCDT y, HCDT z, HCDT 
 	register long n=a->GetNx(),m=a->GetNy(),l=a->GetNz();
 	if(n<2 || m<2 || l<2)
 	{	gr->SetWarn(mglWarnLow,name);	return true;	}
-	if(!(both || (x->GetNx()==n && y->GetNx()==m && z->GetNx()==l)))
+	if(!both && (x->GetNx()!=n || y->GetNx()!=m || z->GetNx()!=l))
 	{	gr->SetWarn(mglWarnDim,name);	return true;	}
-	if(b && b->GetNx()*b->GetNy()*b->GetNz()!=n*m*l)
+	if(b && b->GetNN()!=n*m*l)
 	{	gr->SetWarn(mglWarnDim,name);	return true;	}
 	return false;
 }
@@ -1335,20 +1370,26 @@ bool MGL_EXPORT mgl_check_trig(HMGL gr, HCDT nums, HCDT x, HCDT y, HCDT z, HCDT 
 	return false;
 }
 //-----------------------------------------------------------------------------
+bool MGL_EXPORT mgl_isnboth(HCDT x, HCDT y, HCDT z, HCDT a)
+{
+	register long n=a->GetNN();
+	return x->GetNN()!=n || y->GetNN()!=n || z->GetNN()!=n;
+}
+//-----------------------------------------------------------------------------
 bool MGL_EXPORT mgl_isboth(HCDT x, HCDT y, HCDT z, HCDT a)
 {
-	register long n=a->GetNx(),m=a->GetNy(),l=a->GetNz();
-	return x->GetNx()*x->GetNy()*x->GetNz()==n*m*l && y->GetNx()*y->GetNy()*y->GetNz()==n*m*l && z->GetNx()*z->GetNy()*z->GetNz()==n*m*l;
+	register long n=a->GetNN();
+	return x->GetNN()==n && y->GetNN()==n && z->GetNN()==n;
 }
 //-----------------------------------------------------------------------------
 bool MGL_EXPORT mgl_check_vec3(HMGL gr, HCDT x, HCDT y, HCDT z, HCDT ax, HCDT ay, HCDT az, const char *name)
 {
 // 	if(!gr || !x || !y || !z || !ax || !ay || !az)	return true;		// if data is absent then should be segfault!!!
-	register long n=ax->GetNx(),m=ax->GetNy(),l=ax->GetNz();
-	if(n*m*l!=ay->GetNx()*ay->GetNy()*ay->GetNz() || n*m*l!=az->GetNx()*az->GetNy()*az->GetNz())
+	register long n=ax->GetNx(),m=ax->GetNy(),l=ax->GetNz(), nn=n*m*l;
+	if(nn!=ay->GetNN() || nn!=az->GetNN())
 	{	gr->SetWarn(mglWarnDim,name);	return true;	}
 	if(n<2 || m<2 || l<2)	{	gr->SetWarn(mglWarnLow,name);	return true;	}
-	bool both = x->GetNx()*x->GetNy()*x->GetNz()==n*m*l && y->GetNx()*y->GetNy()*y->GetNz()==n*m*l && z->GetNx()*z->GetNy()*z->GetNz()==n*m*l;
+	bool both = x->GetNN()==nn && y->GetNN()==nn && z->GetNN()==nn;
 	if(!(both || (x->GetNx()==n && y->GetNx()==m && z->GetNx()==l)))
 	{	gr->SetWarn(mglWarnDim,name);	return true;	}
 	return false;
@@ -1382,23 +1423,29 @@ void mglBase::ClearUnused()
 		}
 		// now add proper indexes
 		l=Pnt.size();
-		std::vector<mglPnt> pnt;
+		mglStack<mglPnt> pnt;	pnt.reserve(l);
 		for(size_t i=0;i<l;i++)	if(used[i])
-		{	pnt.push_back(Pnt[i]);	used[i]=pnt.size();	}
+		{	pnt.push_back(Pnt[i]);	used[i]=pnt.size()-1;	}
 		Pnt = pnt;	pnt.clear();
 		// now replace point id
 		l=Prm.size();
 		for(size_t i=0;i<l;i++)
 		{
-			mglPrim &p=Prm[i];	p.n1=used[p.n1]-1;
-			if(p.type==1 || p.type==4)	p.n2=used[p.n2]-1;
-			if(p.type==2)	{	p.n2=used[p.n2]-1;	p.n3=used[p.n3]-1;	}
-			if(p.type==3)	{	p.n2=used[p.n2]-1;	p.n3=used[p.n3]-1;	p.n4=used[p.n4]-1;	}
+			mglPrim &p=Prm[i];	p.n1=used[p.n1];
+			if(p.type==1 || p.type==4)	p.n2=used[p.n2];
+			if(p.type==2)	{	p.n2=used[p.n2];	p.n3=used[p.n3];	}
+			if(p.type==3)	{	p.n2=used[p.n2];	p.n3=used[p.n3];	p.n4=used[p.n4];	}
 		}
 		delete []used;
 	}
 #if MGL_HAVE_PTHREAD
 	pthread_mutex_unlock(&mutexPnt);	pthread_mutex_unlock(&mutexPrm);
 #endif
+}
+//-----------------------------------------------------------------------------
+void mglBase::ClearPrmInd()
+{
+#pragma omp critical(prmind)
+	{	if(PrmInd)	delete []PrmInd;	PrmInd=NULL;	}
 }
 //-----------------------------------------------------------------------------

@@ -24,14 +24,17 @@
 #ifdef __cplusplus
 #include "mgl2/data.h"
 #include "mgl2/datac.h"
+#include <sys/stat.h>
 //-----------------------------------------------------------------------------
 /// Wrapper class for all graphics
 class MGL_EXPORT mglGraph
 {
+	mglGraph(const mglGraph &t) {}	// copying is not allowed
+	const mglGraph &operator=(const mglGraph &t)	{	return t;	}
 protected:
 	HMGL gr;
 public:
-	inline mglGraph(int kind=0, int width=600, int height=400)
+	mglGraph(int kind=0, int width=600, int height=400)
 	{
 		if(kind==-1)	gr=NULL;
 #if MGL_HAVE_OPENGL
@@ -39,17 +42,15 @@ public:
 #else
 		else if(kind==1)
 		{	gr=mgl_create_graph(width, height);
-			mglGlobalMess += "OpenGL support was disabled. Please, enable it and rebuild MathGL.\n";	}
+			SetGlobalWarn("OpenGL support was disabled. Please, enable it and rebuild MathGL.");	}
 #endif
 		else	gr=mgl_create_graph(width, height);
 	}
-	inline mglGraph(const mglGraph &graph)
-	{	gr = graph.gr;	mgl_use_graph(gr,1);	}
-	inline mglGraph(HMGL graph)
+	mglGraph(HMGL graph)
 	{	gr = graph;		mgl_use_graph(gr,1);	}
 	virtual ~mglGraph()
 	{	if(mgl_use_graph(gr,-1)<1)	mgl_delete_graph(gr);	}
-	/// Get pointer to internal mglCanvas object
+	/// Get pointer to internal HMGL object
 	inline HMGL Self()	{	return gr;	}
 	/// Set default parameters for plotting
 	inline void DefaultPlotParam()			{	mgl_set_def_param(gr);	}
@@ -57,6 +58,14 @@ public:
 	inline void SetPlotId(const char *id)	{	mgl_set_plotid(gr,id);	}
 	/// Get name of plot for saving filename
 	inline const char *GetPlotId()	{	return mgl_get_plotid(gr);	}
+
+	/// Ask to stop drawing
+	inline void Stop(bool stop=true)	{	mgl_ask_stop(gr, stop);	}
+	/// Check if plot termination is asked
+	inline bool NeedStop()	{	return mgl_need_stop(gr);	}
+	/// Set callback function for event processing
+	inline void SetEventFunc(void (*func)(void *), void *par=NULL)
+	{	mgl_set_event_func(gr, func, par);	}
 
 	/// Set the transparency on/off.
 	inline void Alpha(bool enable)			{	mgl_set_alpha(gr, enable);	}
@@ -121,6 +130,8 @@ public:
 	inline void RestoreFont()				{	mgl_restore_font(gr);	}
 	/// Set to use or not text rotation
 	inline void SetRotatedText(bool rotated)	{	mgl_set_rotated_text(gr, rotated);	}
+	/// Set default font for all new HMGL and mglGraph objects
+	static inline void SetDefFont(const char *name, const char *path=NULL)	{	mgl_def_font(name,path);	}
 
 	/// Set default palette
 	inline void SetPalette(const char *colors)	{	mgl_set_palette(gr, colors);	}
@@ -140,8 +151,16 @@ public:
 	inline int  GetWarn()	{	return mgl_get_warn(gr);}
 	/// Set warning code ant fill message
 	inline void SetWarn(int code, const char *info)	{	mgl_set_warn(gr,code,info);	}
-	/// Set buffer for warning messages
+	/// Get text of warning message(s)
 	inline const char *Message()	{	return mgl_get_mess(gr);	}
+	/// Set global warning message
+	static inline void SetGlobalWarn(const char *text)	{	mgl_set_global_warn(text);	}
+	/// Get text of global warning message(s)
+	static inline const char *GlobalWarn()	{	return mgl_get_global_warn();	}
+	/// Suppress printing warnings to stderr
+	static inline void SuppressWarn(bool on)	{	mgl_suppress_warn(on);	}
+	/// Check if MathGL version is valid (return false) or not (return true)
+	static inline bool CheckVersion(const char *ver)	{	return mgl_check_version(ver);	}
 
 	/// Set axis range scaling -- simplified way to shift/zoom axis range -- need to replot whole image!
 	inline void ZoomAxis(mglPoint p1=mglPoint(0,0,0,0), mglPoint p2=mglPoint(1,1,1,1))
@@ -181,7 +200,7 @@ public:
 	/// Set axis origin
 	inline void SetOrigin(mglPoint p)
 	{	mgl_set_origin(gr, p.x, p.y, p.z);	}
-	inline void SetOrigin(double x0, double y0, double z0=NaN)
+	inline void SetOrigin(double x0, double y0, double z0=mglNaN)
 	{	mgl_set_origin(gr, x0, y0, z0);	}
 
 	/// Set the transformation formulas for coordinate
@@ -216,9 +235,16 @@ public:
 	{	mgl_set_ticks_val(gr,dir,&v,lbl,add);	}
 	inline void SetTicksVal(char dir, const mglDataA &v, const wchar_t *lbl, bool add=false)
 	{	mgl_set_ticks_valw(gr,dir,&v,lbl,add);	}
-	/// Set the ticks parameters
-	inline void SetTicks(char dir, double d=0, int ns=0, double org=NaN)
-	{	mgl_set_ticks(gr, dir, d, ns, org);	}
+	/// Add manual tick at given position. Use "" to disable this feature.
+	inline void AddTick(char dir, double val, const char *lbl)
+	{	mgl_add_tick(gr,dir,val,lbl);	}
+	inline void AddTick(char dir, double val, const wchar_t *lbl)
+	{	mgl_add_tickw(gr,dir,val,lbl);	}
+	/// Set the ticks parameters and string for its factor
+	inline void SetTicks(char dir, double d=0, int ns=0, double org=mglNaN, const char *factor="")
+	{	mgl_set_ticks_fact(gr, dir, d, ns, org, factor);	}
+	inline void SetTicks(char dir, double d, int ns, double org, const wchar_t *factor)
+	{	mgl_set_ticks_factw(gr, dir, d, ns, org, factor);	}
 	/// Auto adjust ticks
 	inline void Adjust(const char *dir="xyzc")
 	{	mgl_adjust_ticks(gr, dir);	}
@@ -288,6 +314,9 @@ public:
 	/// Set angle of view independently from Rotate().
 	inline void View(double TetX,double TetZ=0,double TetY=0)
 	{	mgl_view(gr, TetX, TetZ, TetY);	}
+	/// Set angle of view independently from Rotate().
+	inline void ViewAsRotate(double TetZ,double TetX,double TetY=0)
+	{	mgl_view(gr, -TetX, -TetZ, -TetY);	}
 	/// Zoom in/out a part of picture (use Zoom(0, 0, 1, 1) for restore default)
 	inline void Zoom(double x1, double y1, double x2, double y2)
 	{	mgl_zoom(gr, x1, y1, x2, y2);	}
@@ -388,6 +417,8 @@ public:
 	inline void SetFrame(int i)	{	mgl_set_frame(gr, i);	}
 	/// Append drawing data from i-th frame (work if MGL_VECT_FRAME is set on)
 	inline void ShowFrame(int i){	mgl_show_frame(gr, i);	}
+	/// Clear list of primitives for current drawing
+	inline void ClearFrame()	{	mgl_clear_frame(gr);	}
 
 	/// Start write frames to cinema using GIF format
 	inline void StartGIF(const char *fname, int ms=100)
@@ -402,21 +433,23 @@ public:
 	{	mgl_import_mgld(gr, fname, add);	}
 
 	/// Copy RGB values into array which is allocated by user
-	inline void GetRGB(char *imgdata, int imglen)
+	inline bool GetRGB(char *imgdata, int imglen)
 	{
 		long w=mgl_get_width(gr), h=mgl_get_height(gr);
 		if(imglen>=3*w*h)	memcpy(imgdata, mgl_get_rgb(gr),3*w*h);
+		return imglen>=3*w*h;
 	}
 	inline const unsigned char *GetRGB()		{	return mgl_get_rgb(gr);	}
 	/// Copy RGBA values into array which is allocated by user
-	inline void GetRGBA(char *imgdata, int imglen)
+	inline bool GetRGBA(char *imgdata, int imglen)
 	{
 		long w=mgl_get_width(gr), h=mgl_get_height(gr);
 		if(imglen>=4*w*h)	memcpy(imgdata, mgl_get_rgba(gr),4*w*h);
+		return imglen>=4*w*h;
 	}
 	inline const unsigned char *GetRGBA()	{	return mgl_get_rgba(gr);	}
 	/// Copy BGRN values into array which is allocated by user
-	inline void GetBGRN(unsigned char *imgdata, int imglen)
+	inline bool GetBGRN(unsigned char *imgdata, int imglen)
 	{
 		long w=mgl_get_width(gr), h=mgl_get_height(gr), i;
 		const unsigned char *buf=mgl_get_rgb(gr);
@@ -427,7 +460,16 @@ public:
 			imgdata[4*i+2] = buf[3*i];
 			imgdata[4*i+3] = 255;
 		}
+		return imglen>=4*w*h;
 	}
+	/// Copy RGBA values of background image into array which is allocated by user
+	inline bool GetBackground(char *imgdata, int imglen)
+	{
+		long w=mgl_get_width(gr), h=mgl_get_height(gr);
+		if(imglen>=4*w*h)	memcpy(imgdata, mgl_get_background(gr),4*w*h);
+		return imglen>=4*w*h;
+	}
+	inline const unsigned char *GetBackground()	{	return mgl_get_background(gr);	}
 	/// Get width of the image
 	inline int GetWidth()	{	return mgl_get_width(gr);	}
 	/// Get height of the image
@@ -460,10 +502,18 @@ public:
 
 	/// Clear up the frame
 	inline void Clf(double r, double g, double b)	{	mgl_clf_rgb(gr, r, g, b);	}
+	inline void Clf(const char *col)	{	mgl_clf_str(gr, col);	}
 	inline void Clf(char col)	{	mgl_clf_chr(gr, col);	}
 	inline void Clf()	{	mgl_clf(gr);	}
 	/// Clear unused points and primitives. Useful only in combination with SetFaceNum().
 	inline void ClearUnused()	{	mgl_clear_unused(gr);	}
+
+	/// Load background image
+	inline void LoadBackground(const char *fname, double alpha=1)
+	{	mgl_load_background(gr,fname,alpha);	}
+	/// Force drawing the image and use it as background one
+	inline void Rasterize()			{	mgl_rasterize(gr);	}
+
 	/// Draws the point (ball) at position {x,y,z} with color c
 	inline void Ball(mglPoint p, char c='r')
 	{	char s[3]={'.',c,0};	mgl_mark(gr, p.x, p.y, p.z, s);	}
@@ -510,6 +560,20 @@ public:
 	/// Draws the rhomb between points p1,p2 with color stl and width r
 	inline void Rhomb(mglPoint p1, mglPoint p2, double r, const char *stl="r")
 	{	mgl_rhomb(gr, p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, r,stl);	}
+	/// Draws the polygon based on points p1,p2 with color stl
+	inline void Polygon(mglPoint p1, mglPoint p2, int n, const char *stl="r")
+	{	mgl_polygon(gr, p1.x, p1.y, p1.z, p2.x, p2.y, p2.z, n,stl);	}
+	/// Draws the arc around axis pr with center at p0 and starting from p1, by color stl and angle a (in degrees)
+	inline void Arc(mglPoint p0, mglPoint pr, mglPoint p1, double a, const char *stl="r")
+	{	mgl_arc_ext(gr, p0.x,p0.y,p0.z, pr.x,pr.y,pr.z, p1.x,p1.y,p1.z, a,stl);	}
+	/// Draws the arc around axis 'z' with center at p0 and starting from p1, by color stl and angle a (in degrees)
+	inline void Arc(mglPoint p0, mglPoint p1, double a, const char *stl="r")
+	{	mgl_arc_ext(gr, p0.x,p0.y,p0.z, 0,0,1, p1.x,p1.y,p0.z, a,stl);	}
+	/// Draws bitmap (logo) which is stretched along whole axis range
+	inline void Logo(long w, long h, const unsigned char *rgba, bool smooth=false, const char *opt="")
+	{	mgl_logo(gr, w, h, rgba, smooth, opt);	}
+	inline void Logo(const char *fname, bool smooth=false, const char *opt="")
+	{	mgl_logo_file(gr, fname, smooth, opt);	}
 
 	/// Print text in position p with specified font
 	inline void Putsw(mglPoint p,const wchar_t *text,const char *font=":C",double size=-1)
@@ -1013,43 +1077,43 @@ public:
 	{	mgl_pipe_3d(gr, &ax, &ay, &az, sch, r0, opt);	}
 
 	/// Draw density plot for data at x = sVal
-	inline void DensX(const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void DensX(const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_dens_x(gr, &a, stl, sVal, opt);	}
 	/// Draw density plot for data at y = sVal
-	inline void DensY(const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void DensY(const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_dens_y(gr, &a, stl, sVal, opt);	}
 	/// Draw density plot for data at z = sVal
-	inline void DensZ(const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void DensZ(const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_dens_z(gr, &a, stl, sVal, opt);	}
 	/// Draw contour lines for data at x = sVal
-	inline void ContX(const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContX(const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_cont_x(gr, &a, stl, sVal, opt);	}
-	inline void ContX(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContX(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_cont_x_val(gr, &v, &a, stl, sVal, opt);	}
 	/// Draw contour lines for data at y = sVal
-	inline void ContY(const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContY(const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_cont_y(gr, &a, stl, sVal, opt);	}
-	inline void ContY(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContY(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_cont_y_val(gr, &v, &a, stl, sVal, opt);	}
 	/// Draw contour lines for data at z = sVal
-	inline void ContZ(const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContZ(const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_cont_z(gr, &a, stl, sVal, opt);	}
-	inline void ContZ(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContZ(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_cont_z_val(gr, &v, &a, stl, sVal, opt);	}
 	/// Draw solid contours for data at x = sVal
-	inline void ContFX(const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContFX(const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_contf_x(gr, &a, stl, sVal, opt);	}
-	inline void ContFX(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContFX(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_contf_x_val(gr, &v, &a, stl, sVal, opt);	}
 	/// Draw solid contours for data at y = sVal
-	inline void ContFY(const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContFY(const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_contf_y(gr, &a, stl, sVal, opt);	}
-	inline void ContFY(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContFY(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_contf_y_val(gr, &v, &a, stl, sVal, opt);	}
 	/// Draw solid contours for data at z = sVal
-	inline void ContFZ(const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContFZ(const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_contf_z(gr, &a, stl, sVal, opt);	}
-	inline void ContFZ(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=NaN, const char *opt="")
+	inline void ContFZ(const mglDataA &v, const mglDataA &a, const char *stl="", double sVal=mglNaN, const char *opt="")
 	{	mgl_contf_z_val(gr, &v, &a, stl, sVal, opt);	}
 
 	/// Draw curve for formula with x in x-axis range
@@ -1089,6 +1153,16 @@ public:
 	{	mgl_tricont_xyzc(gr, &nums, &x, &y, &z, &a, sch, opt);	}
 	inline void TriContV(const mglDataA &v, const mglDataA &nums, const mglDataA &x, const mglDataA &y, const mglDataA &z, const mglDataA &a, const char *sch="", const char *opt="")
 	{	mgl_tricont_xyzcv(gr, &v, &nums, &x, &y, &z, &a, sch, opt);	}
+	inline void TriCont(const mglDataA &v, const mglDataA &nums, const mglDataA &x, const mglDataA &y, const mglDataA &z, const mglDataA &a, const char *sch="", const char *opt="")
+	{	mgl_tricont_xyzcv(gr, &v, &nums, &x, &y, &z, &a, sch, opt);	}
+
+	/// Draw contour tubes for triangle mesh for points in arrays {x,y,z} with specified color c.
+	inline void TriContVt(const mglDataA &nums, const mglDataA &x, const mglDataA &y, const mglDataA &z, const char *sch="", const char *opt="")
+	{	mgl_tricontv_xyc(gr, &nums, &x, &y, &z, sch, opt);	}
+	inline void TriContVt(const mglDataA &nums, const mglDataA &x, const mglDataA &y, const mglDataA &z, const mglDataA &a, const char *sch="", const char *opt="")
+	{	mgl_tricontv_xyzc(gr, &nums, &x, &y, &z, &a, sch, opt);	}
+	inline void TriContVt(const mglDataA &v, const mglDataA &nums, const mglDataA &x, const mglDataA &y, const mglDataA &z, const mglDataA &a, const char *sch="", const char *opt="")
+	{	mgl_tricontv_xyzcv(gr, &v, &nums, &x, &y, &z, &a, sch, opt);	}
 
 	/// Draw dots in points {x,y,z}.
 	inline void Dots(const mglDataA &x, const mglDataA &y, const mglDataA &z, const char *sch="", const char *opt="")
@@ -1156,8 +1230,11 @@ public:
 	inline void PutsFit(mglPoint p, const char *prefix=0, const char *font="", double size=-1)
 	{	mgl_puts_fit(gr, p.x, p.y, p.z, prefix, font, size);	}
 	/// Get last fitted formula
-	inline const char *GetFit()
+	inline const char *GetFit()	const
 	{	return mgl_get_fit(gr);	}
+	/// Get chi for last fitted formula
+	static inline mreal GetFitChi()
+	{	return mgl_get_fit_chi();	}
 
 	/// Solve PDE with x,y,z in range [Min, Max]
 	inline mglData PDE(const char *ham, const mglDataA &ini_re, const mglDataA &ini_im, double dz=0.1, double k0=100, const char *opt="")
@@ -1214,7 +1291,11 @@ public:
 	mglParse(mglParse &p)	{	pr = p.pr;	mgl_use_parser(pr,1);	}
 	mglParse(bool setsize=false)
 	{	pr=mgl_create_parser();	mgl_parser_allow_setsize(pr, setsize);	}
-	~mglParse()	{	if(mgl_use_parser(pr,-1)<1)	mgl_delete_parser(pr);	}
+	virtual ~mglParse()
+	{
+#pragma omp critical
+		if(mgl_use_parser(pr,-1)<1)	mgl_delete_parser(pr);
+	}
 	/// Get pointer to internal mglParser object
 	inline HMPR Self()	{	return pr;	}
 	/// Parse and draw single line of the MGL script
@@ -1231,7 +1312,7 @@ public:
 	inline void Execute(mglGraph *gr, FILE *fp, bool print=false)
 	{	mgl_parse_file(gr->Self(), pr, fp, print);	}
 
-	/// Return type of command: 0 - not found, 1 - data plot, 2 - other plot,
+	/// Return type of command: 0 - not found, 1 - other data plot, 2 - func plot,
 	///		3 - setup, 4 - data handle, 5 - data create, 6 - subplot, 7 - program
 	///		8 - 1d plot, 9 - 2d plot, 10 - 3d plot, 11 - dd plot, 12 - vector plot
 	///		13 - axis, 14 - primitives, 15 - axis setup, 16 - text/legend, 17 - data transform
@@ -1249,6 +1330,9 @@ public:
 	/// Get number of defined commands
 	inline long GetCmdNum()
 	{	return mgl_parser_cmd_num(pr);	}
+	/// Load new commands from external dynamic Library (must have "const mglCommand *mgl_cmd_extra" variable)
+	inline void LoadDLL(const char *fname)
+	{	mgl_parser_load(pr, fname);	}
 
 	/// Set value for parameter $N
 	inline void AddParam(int id, const char *str)
@@ -1261,6 +1345,8 @@ public:
 	inline void AllowSetSize(bool allow)	{	mgl_parser_allow_setsize(pr, allow);	}
 	/// Allow reading/saving files
 	inline void AllowFileIO(bool allow)		{	mgl_parser_allow_file_io(pr, allow);	}
+	/// Allow loading commands from external libraries
+	inline void AllowDllCall(bool allow)	{	mgl_parser_allow_dll_call(pr, allow);	}
 	/// Set flag to stop script parsing
 	inline void Stop()	{	mgl_parser_stop(pr);	}
 
@@ -1272,16 +1358,23 @@ public:
 
 	/// Find variable with given name or add a new one
 	/// NOTE !!! You must not delete obtained data arrays !!!
-	inline mglVar *AddVar(const char *name)
-	{	return dynamic_cast<mglVar *>(mgl_parser_add_var(pr, name));	}
-	inline mglVar *AddVar(const wchar_t *name)
-	{	return dynamic_cast<mglVar *>(mgl_parser_add_varw(pr, name));	}
+	inline mglData *AddVar(const char *name)
+	{	return mgl_parser_add_var(pr, name);	}
+	inline mglData *AddVar(const wchar_t *name)
+	{	return mgl_parser_add_varw(pr, name);	}
 	/// Find variable with given name or return NULL if no one
 	/// NOTE !!! You must not delete obtained data arrays !!!
-	inline mglVar *FindVar(const char *name)
-	{	return dynamic_cast<mglVar *>(mgl_parser_find_var(pr, name));	}
-	inline mglVar *FindVar(const wchar_t *name)
-	{	return dynamic_cast<mglVar *>(mgl_parser_find_varw(pr, name));	}
+	inline mglDataA *FindVar(const char *name)
+	{	return mgl_parser_find_var(pr, name);	}
+	inline mglDataA *FindVar(const wchar_t *name)
+	{	return mgl_parser_find_varw(pr, name);	}
+	/// Get variable with given id. Can be NULL for temporary ones.
+	/// NOTE !!! You must not delete obtained data arrays !!!
+	inline mglDataA *GetVar(unsigned long id)
+	{	return mgl_parser_get_var(pr,id);	}
+	/// Get number of variables
+	inline long GetNumVar()
+	{	return mgl_parser_num_var(pr);	}
 	/// Delete variable with name
 	inline void DeleteVar(const char *name)		{	mgl_parser_del_var(pr, name);		}
 	inline void DeleteVar(const wchar_t *name)	{	mgl_parser_del_varw(pr, name);		}

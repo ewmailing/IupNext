@@ -21,31 +21,47 @@
 #include <ctype.h>
 #include <wctype.h>
 
-// #ifdef WIN32
-// #include <windows.h>
-// #else
-// #include <wchar.h>
-// #endif
+#if !defined(__BORLANDC__) || (__CODEGEARC__ >=  0x0630)
+#include <algorithm>
+#else
+#include <algorithm.h>
+#endif
 
 #include "mgl2/base.h"
 #include "mgl2/font.h"
+#include "def_font.cpp"
 //-----------------------------------------------------------------------------
-extern unsigned mgl_numg, mgl_cur;
-extern float mgl_fact;
-extern long mgl_gen_fnt[516][6];
-extern short mgl_buf_fnt[246080];
 extern mglTeXsymb mgl_tex_symb[];
+extern long mgl_tex_num;
 //mglFont mglDefFont("nofont");
 mglFont mglDefFont;
 //-----------------------------------------------------------------------------
-char mglGetStyle(const char *how, int *font, int *align)
+long MGL_EXPORT_PURE mgl_internal_code(unsigned s, const std::vector<mglGlyphDescr> &glyphs)
 {
-	char col=0;
+	register long i1=0,i2=glyphs.size()-1;
+	register wchar_t j = wchar_t(s & MGL_FONT_MASK);
+	// let suppose that id[i]<id[i+1]
+	while(i1<i2)
+	{
+		register long i = (i1+i2)/2;
+		if(j<glyphs[i].id)		i2 = i;
+		else if(j>glyphs[i].id)	i1=i+1;
+		else return i;
+	}
+	return j==glyphs[i2].id ? i2 : -1;
+}
+//-----------------------------------------------------------------------------
+bool MGL_EXPORT mglGetStyle(const char *how, int *font, int *align)
+{
+	bool col=false;
 	if(align)	*align = 1;	// centering text by default
 	if(!how || *how==0)	return col;
 	// NOTE: no brightness for text color
 	for(;*how && *how!=':';how++)
-		if(strchr(MGL_COLORS,*how))	col=*how;
+	{
+		if(strchr(MGL_COLORS,*how))		col = true;
+		if(*how=='{' && how[1]=='x')	col = true;
+	}
 	if(align)
 	{
 		*align = 1;
@@ -66,11 +82,11 @@ char mglGetStyle(const char *how, int *font, int *align)
 	return col;
 }
 //-----------------------------------------------------------------------------
-float mglFont::Puts(const char *str,const char *how,float col) const
+float mglFont::Puts(const char *str,const char *how,float c1,float c2) const
 {
 	int font=0, align=1;	float w=0;
-	char cc=mglGetStyle(how,&font,&align);
-	MGL_TO_WCS(str,w = Puts(wcs,font,align,cc?-cc:col));
+	mglGetStyle(how,&font,&align);
+	MGL_TO_WCS(str,w = Puts(wcs,font,align,c1,c2));
 	return w;
 }
 //-----------------------------------------------------------------------------
@@ -82,11 +98,11 @@ float mglFont::Width(const char *str,const char *how) const
 	return w;
 }
 //-----------------------------------------------------------------------------
-float mglFont::Puts(const wchar_t *str,const char *how,float col) const
+float mglFont::Puts(const wchar_t *str,const char *how,float c1,float c2) const
 {
 	int font=0, align=1;
-	char cc=mglGetStyle(how,&font,&align);
-	return Puts(str, font, align,cc?-cc:col);
+	mglGetStyle(how,&font,&align);
+	return Puts(str, font, align,c1,c2);
 }
 //-----------------------------------------------------------------------------
 float mglFont::Width(const wchar_t *str,const char *how) const
@@ -96,59 +112,58 @@ float mglFont::Width(const wchar_t *str,const char *how) const
 	return Width(str, font);
 }
 //-----------------------------------------------------------------------------
-float mglFont::Puts(const wchar_t *str,int font,int align, float col) const
+float mglFont::Puts(const wchar_t *str,int font,int align, float c1,float c2) const
 {
-	if(numg==0 || !str || *str==0)	return 0;
+	if(GetNumGlyph()==0 || !str || *str==0)	return 0;
 	float ww=0,w=0,h = (align&4) ? 500./fact[0] : 0;
-	size_t size = mgl_wcslen(str)+1,i,num=0;
+	size_t size = mgl_wcslen(str)+1,num=0;
 	if(parse)
 	{
 		unsigned *wcs = new unsigned[size], *buf=wcs;
 		memcpy(wcs,str,size*sizeof(wchar_t));
 		Convert(str, wcs);
-		for(i=0;wcs[i];i++)
+		for(size_t i=0;wcs[i];i++)
 		{
 			if(wcs[i]=='\n')	// parse '\n' symbol
 			{
-				wcs[i]=0;	w = Puts(buf,0,0,1.f,0x10|font,col);	// find width
-				Puts(buf,-w*(align&3)/2.f,-h - 500.*num/fact[0],1.f,font,col);	// draw it really
+				wcs[i]=0;	w = Puts(buf,0,0,1.f,0x10|font,c1,c2);	// find width
+				Puts(buf,-w*(align&3)/2.f,-h - 500.*num/fact[0],1.f,font,c1,c2);	// draw it really
 				buf=wcs+i+1;	num++;	if(w>ww)	ww=w;
 			}
 			if(wcs[i]=='\\' && wcs[i+1]=='n' && (wcs[i+2]>' ' || wcschr(L"{}[]()!@#$%^&*/-?.,_=+\\\"", wcs[i+2])))	// parse '\n' symbol
 			{
-				wcs[i]=0;	w = Puts(buf,0,0,1.f,0x10|font,col);	// find width
-				Puts(buf,-w*(align&3)/2.f,-h - 500.*num/fact[0],1.f,font,col);	// draw it really
+				wcs[i]=0;	w = Puts(buf,0,0,1.f,0x10|font,c1,c2);	// find width
+				Puts(buf,-w*(align&3)/2.f,-h - 500.*num/fact[0],1.f,font,c1,c2);	// draw it really
 				buf=wcs+i+2;	num++;	if(w>ww)	ww=w;
 			}
 		}
 		// draw string itself
-		w = Puts(buf,0,0,1.f,0x10|font,col);	// find width
-		Puts(buf,-w*(align&3)/2.f,-h - 500.*num/fact[0],1.f,font,col);	// draw it really
+		w = Puts(buf,0,0,1.f,0x10|font,c1,c2);	// find width
+		Puts(buf,-w*(align&3)/2.f,-h - 500.*num/fact[0],1.f,font,c1,c2);	// draw it really
 		if(w>ww)	ww=w;
 		delete []wcs;
 	}
 	else
 	{
 		int s = (font/MGL_FONT_BOLD)&3;
-		long j;
 		h *= fact[0]/fact[s];
-		for(i=0;i<size;i++)		// find width
+		for(size_t i=0;i<size;i++)		// find width
 		{
-			j = str[i]!=' ' ? Internal(str[i]) : Internal('!');
+			long j = str[i]!=' ' ? Internal(str[i]) : Internal('!');
 			if(j==-1)	continue;
-			w+= width[s][j]/fact[s];
+			w+= GetWidth(s,j)/fact[s];
 		}
 		ww = w;		w *= -(align&3)/2.f;
-		if(gr)	for(i=0;i<size;i++)		// draw it
+		if(gr)	for(size_t i=0;i<size;i++)		// draw it
 		{
+			long j=0;	//Internal('!');
 			if(str[i]!=' ')
 			{
 				j = Internal(str[i]);
 				if(j==-1)	continue;
-				gr->Glyph(w, -h, 1, s+(font&MGL_FONT_WIRE)?4:0, j, col);
+				gr->Glyph(w, -h, 1, (s+(font&MGL_FONT_WIRE))?4:0, j, c1+i*(c2-c1)/(size-1));
 			}
-			else	j = 0;//Internal('!');
-			w+= width[s][j]/fact[s];
+			w+= GetWidth(s,j)/fact[s];
 		}
 	}
 	return ww;
@@ -156,32 +171,31 @@ float mglFont::Puts(const wchar_t *str,int font,int align, float col) const
 //-----------------------------------------------------------------------------
 float mglFont::Width(const wchar_t *str,int font) const
 {
-	if(numg==0 || !str || *str==0)	return 0;
+	if(GetNumGlyph()==0 || !str || *str==0)	return 0;
 	float ww=0,w=0;
-	size_t size = mgl_wcslen(str)+1,i;
+	size_t size = mgl_wcslen(str)+1;
 	if(parse)
 	{
 		unsigned *wcs = new unsigned[size], *buf=wcs;
 		memcpy(wcs,str,size*sizeof(wchar_t));
 		Convert(str, wcs);
-		for(i=0;wcs[i];i++)	if(wcs[i]=='\n')	// parse '\n' symbol
+		for(size_t i=0;wcs[i];i++)	if(wcs[i]=='\n')	// parse '\n' symbol
 		{
-			wcs[i]=0;	w = Puts(buf,0,0,1.,0x10|font,'k');	// find width
+			wcs[i]=0;	w = Puts(buf,0,0,1.,0x10|font,'k','k');	// find width
 			buf=wcs+i+1;	if(w>ww)	ww=w;
 		}
-		w = Puts(buf,0,0,1.,0x10|font,'k');
+		w = Puts(buf,0,0,1.,0x10|font,'k','k');
 		if(w<ww)	w=ww;
 		delete []wcs;
 	}
 	else
 	{
-		long j;
 		int s = (font/MGL_FONT_BOLD)&3;
-		for(i=0;i<size;i++)
+		for(size_t i=0;i<size;i++)
 		{
-			j = str[i]!=' ' ? Internal(str[i]) : Internal('!');
+			long j = str[i]!=' ' ? Internal(str[i]) : Internal('!');
 			if(j==-1)	continue;
-			w+= width[s][j]/fact[s];
+			w+= GetWidth(s,j)/fact[s];
 		}
 	}
 	return w;
@@ -189,14 +203,14 @@ float mglFont::Width(const wchar_t *str,int font) const
 //-----------------------------------------------------------------------------
 float mglFont::Height(int font) const
 {
-	if(numg==0)	return 0;
+	if(GetNumGlyph()==0)	return 0;
 	int s = (font/MGL_FONT_BOLD)&3;
 	return (500.f)/fact[s];
 }
 //-----------------------------------------------------------------------------
 float mglFont::Height(const char *how) const
 {
-	if(numg==0)	return 0;
+	if(GetNumGlyph()==0)	return 0;
 	int s=0;
 	if(how)
 	{
@@ -206,27 +220,12 @@ float mglFont::Height(const char *how) const
 	return (500.f)/fact[s];
 }
 //-----------------------------------------------------------------------------
-long mglFont::Internal(unsigned s) const
-{
-	register long i,i1=0,i2=numg-1;
-	register wchar_t j = wchar_t(s & MGL_FONT_MASK);
-	// let suppose that id[i]<id[i+1]
-	while(i1<i2)
-	{
-		i = (i1+i2)/2;
-		if(j<id[i])			i2 = i;
-		else if(j>id[i])	i1=i+1;	// i is bad
-		else return i;
-	}
-	return j==id[i2] ? i2 : -1;
-}
-//-----------------------------------------------------------------------------
 /// Table of acents and its UTF8 codes
 MGL_NO_EXPORT mglTeXsymb mgl_act_symb[] = {
 	{0x02c6, L"hat"}, {0x02dc, L"tilde"}, {0x02d9, L"dot"}, {0x00a8, L"ddot"}, {0x20db, L"dddot"}, {0x20dc, L"ddddot"}, {0x02ca, L"acute"}, {0x02c7, L"check"}, {0x02cb, L"grave"}, {0x20d7, L"vec"}, {0x02c9, L"bar"}, {0x02d8, L"breve"},
 	/*end*/{0, L"\0"}};
 //-----------------------------------------------------------------------------
-int MGL_NO_EXPORT mgl_tex_symb_cmp(const void *a, const void *b)
+int MGL_LOCAL_PURE mgl_tex_symb_cmp(const void *a, const void *b)
 {
 	const mglTeXsymb *aa = (const mglTeXsymb *)a;
 	const mglTeXsymb *bb = (const mglTeXsymb *)b;
@@ -239,10 +238,10 @@ unsigned mglFont::Parse(const wchar_t *s) const
 	register long k;
 	unsigned res = unsigned(-2);		// Default is no symbol
 	if(!s || !s[0])	return res;
-	for(k=0;mgl_tex_symb[k].kod;k++);	// determine the number of symbols
+//	for(k=0;mgl_tex_symb[k].kod;k++);	// determine the number of symbols
 	mglTeXsymb tst, *rts;
 	tst.tex = s;
-	rts = (mglTeXsymb *) bsearch(&tst, mgl_tex_symb, k, sizeof(mglTeXsymb), mgl_tex_symb_cmp);
+	rts = (mglTeXsymb *) bsearch(&tst, mgl_tex_symb, mgl_tex_num, sizeof(mglTeXsymb), mgl_tex_symb_cmp);
 	if(rts)	return rts->kod;
 
 //	for(k=0;mgl_tex_symb[k].kod;k++)	// special symbols
@@ -287,10 +286,10 @@ unsigned mglFont::Parse(const wchar_t *s) const
 void mglFont::Convert(const wchar_t *str, unsigned *res) const
 {
 	register size_t r,i,j,k,i0;
-	wchar_t s[128]=L"", ch;		// TeX command and current char
+	wchar_t s[128]=L"";		// TeX command and current char
 	for(i=j=0;str[i];i++)
 	{
-		ch = str[i];
+		wchar_t ch = str[i];
 		if(ch=='\\')	// It can be TeX command
 		{
 			if(wcschr(L"{}_^\\@# ",str[i+1]))	// No, it is usual symbol
@@ -311,6 +310,7 @@ void mglFont::Convert(const wchar_t *str, unsigned *res) const
 				}
 			}
 		}
+		else if(ch=='\b'){}
 		else if(ch<=' ' && ch!='\n')	res[j++] = ' ';	// no \t at this moment :(
 		else if(ch=='_')	res[j++] = MGL_FONT_LOWER;
 		else if(ch=='^')	res[j++] = MGL_FONT_UPPER;
@@ -318,7 +318,7 @@ void mglFont::Convert(const wchar_t *str, unsigned *res) const
 		else if(ch=='{')	res[j++] = unsigned(-3);
 		else if(ch=='}')	res[j++] = unsigned(-4);
 		else if(ch=='#' && str[i+1]>' ')
-			res[j++] = MGL_COLOR_MASK + (0xff & str[++i]);
+			res[j++] = MGL_COLOR_MASK + (0xff & str[++i]);	// TODO inline colors -- stack of RGBA colors + index
 		else	res[j++] = ch;				// It is just symbol
 	}
 	res[j] = 0;
@@ -352,8 +352,8 @@ float mglFont::get_ptr(long &i,unsigned *str, unsigned **b1, unsigned **b2,float
 	}
 	else	{	s2[0] = str[i];	*b2 = s2;	i++;	}
 	i--;
-	w1 = Puts(*b1, 0, 0, f1, 0x10|st,'k');
-	w2 = Puts(*b2, 0, 0, f2, 0x10|st,'k');
+	w1 = Puts(*b1, 0, 0, f1, 0x10|st,'k','k');
+	w2 = Puts(*b2, 0, 0, f2, 0x10|st,'k','k');
 	return w1>w2 ? w1 : w2;
 }
 //-----------------------------------------------------------------------------
@@ -365,37 +365,37 @@ void mglFont::draw_ouline(int st, float x, float y, float f, float g, float ww, 
 		gr->Glyph(x,y-200*f/g, ww*g, (st&MGL_FONT_WIRE)?12:8, 0, ccol);
 }
 //-----------------------------------------------------------------------------
-#define MGL_CLEAR_STYLE {st = style;	yy = y;	ff = f;	ccol=col;	a = (st/MGL_FONT_BOLD)&3;}
-float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,float col) const
+#define MGL_CLEAR_STYLE {st = style;	yy = y;	ff = f;	ccol=c1+dc*i;	a = (st/MGL_FONT_BOLD)&3;}
+float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,float c1,float c2) const
 {
-	if(numg==0)	return 0;
-	register long j,k;
-	long i;
-	register unsigned s,ss;
+	if(GetNumGlyph()==0)	return 0;
 	float w=0;				// string width
 	int st = style;			// current style
 	unsigned *b1, *b2;		// pointer to substring
 	unsigned *str;			// string itself
 	float yy=y, ff=f, ww, w1, w2;
-	float ccol=col;
 	int a = (st/MGL_FONT_BOLD)&3;
+	long i;
 	for(i=0;text[i];i++);
+	float dc=i>1?(c2-c1)/(i-1):0;
 	str = new unsigned[i+1];
 	memcpy(str,text,(i+1)*sizeof(unsigned));
 
-	for(i=0;str[i];i++)
+	float ccol = 0;
+	for(long i=0;str[i];i++)
 	{
-		s = str[i];		ww = 0;
+		ccol = ccol<0?ccol:c1+dc*i;
+		unsigned s = str[i];		ww = 0;
 		if(s==unsigned(-3))	// recursion call here
 		{
 			i++;	b1 = str+i;
-			for(k=1;k>0 && str[i];i++)
+			for(long k=1;k>0 && str[i];i++)
 			{
 				if(str[i]==unsigned(-4))	k--;
 				if(str[i]==unsigned(-3))	k++;
 			}
 			str[i-1]=0;	i--;
-			ww = Puts(b1, x, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
+			ww = Puts(b1, x, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
 			if(gr && !(style&0x10))	// add under-/over- line now
 				draw_ouline(st,x,y,f,fact[a],ww,ccol);
 			MGL_CLEAR_STYLE
@@ -403,15 +403,15 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 		else if(s=='\n')	// newline
 		{
 			ww = get_ptr(i, str, &b1, &b2, w1, w2, ff, ff, st);
-			Puts(b1, x+(ww-w1)/2, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
-			Puts(b2, x+(ww-w2)/2, yy-600*ff/fact[a], ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
+			Puts(b1, x+(ww-w1)/2, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
+			Puts(b2, x+(ww-w2)/2, yy-600*ff/fact[a], ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
 			MGL_CLEAR_STYLE
 		}
 		else if(s==unsigned(-9))	// underset
 		{
 			ww = get_ptr(i, str, &b1, &b2, w1, w2, ff, ff/4, st);
-			Puts(b1, x+(ww-w1)/2, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
-			Puts(b2, x+(ww-w2)/2, yy-150*ff/fact[a], ff/4, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
+			Puts(b1, x+(ww-w1)/2, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
+			Puts(b2, x+(ww-w2)/2, yy-150*ff/fact[a], ff/4, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
 			if(gr && !(style&0x10))	// add under-/over- line now
 				draw_ouline(st,x,y,f,fact[a],ww,ccol);
 			MGL_CLEAR_STYLE
@@ -419,8 +419,8 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 		else if(s==unsigned(-8))	// overset
 		{
 			ww = get_ptr(i, str, &b1, &b2, w1, w2, ff, ff/4, st);
-			Puts(b1, x+(ww-w1)/2, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
-			Puts(b2, x+(ww-w2)/2, yy+375*ff/fact[a], ff/4, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
+			Puts(b1, x+(ww-w1)/2, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
+			Puts(b2, x+(ww-w2)/2, yy+375*ff/fact[a], ff/4, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
 			if(gr && !(style&0x10))	// add under-/over- line now
 				draw_ouline(st,x,y,f,fact[a],ww,ccol);
 			MGL_CLEAR_STYLE
@@ -428,8 +428,8 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 		else if(s==unsigned(-12))	// sub
 		{
 			ww = get_ptr(i, str, &b1, &b2, w1, w2, ff, ff/4, st);
-			Puts(b1, x+(ww-w1)/2, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
-			Puts(b2, x+(ww-w2)/2, yy-250*ff/fact[a], ff/4, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
+			Puts(b1, x+(ww-w1)/2, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
+			Puts(b2, x+(ww-w2)/2, yy-250*ff/fact[a], ff/4, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
 			if(gr && !(style&0x10))	// add under-/over- line now
 				draw_ouline(st,x,y,f,fact[a],ww,ccol);
 			MGL_CLEAR_STYLE
@@ -437,8 +437,8 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 		else if(s==unsigned(-13))	// sup
 		{
 			ww = get_ptr(i, str, &b1, &b2, w1, w2, ff, ff/4, st);
-			Puts(b1, x+(ww-w1)/2, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
-			Puts(b2, x+(ww-w2)/2, yy+450*ff/fact[a], ff/4, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
+			Puts(b1, x+(ww-w1)/2, yy, ff, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
+			Puts(b2, x+(ww-w2)/2, yy+450*ff/fact[a], ff/4, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
 			if(gr && !(style&0x10))	// add under-/over- line now
 				draw_ouline(st,x,y,f,fact[a],ww,ccol);
 			MGL_CLEAR_STYLE
@@ -446,8 +446,8 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 		else if(s==unsigned(-11))	// stackl
 		{
 			ww = get_ptr(i, str, &b1, &b2, w1, w2, ff*0.45, ff*0.45, st);
-			Puts(b1, x, yy+250*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
-			Puts(b2, x, yy-110*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
+			Puts(b1, x, yy+250*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
+			Puts(b2, x, yy-110*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
 			if(gr && !(style&0x10))	// add under-/over- line now
 				draw_ouline(st,x,y,f,fact[a],ww,ccol);
 			MGL_CLEAR_STYLE
@@ -455,8 +455,8 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 		else if(s==unsigned(-10))	// stacr
 		{
 			ww = get_ptr(i, str, &b1, &b2, w1, w2, ff*0.45, ff*0.45, st);
-			Puts(b1, x+(ww-w1), yy+250*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
-			Puts(b2, x+(ww-w2), yy-110*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
+			Puts(b1, x+(ww-w1), yy+250*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
+			Puts(b2, x+(ww-w2), yy-110*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
 			if(gr && !(style&0x10))	// add under-/over- line now
 				draw_ouline(st,x,y,f,fact[a],ww,ccol);
 			MGL_CLEAR_STYLE
@@ -464,8 +464,8 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 		else if(s==unsigned(-7))	// stack
 		{
 			ww = get_ptr(i, str, &b1, &b2, w1, w2, ff*0.45, ff*0.45, st);
-			Puts(b1, x+(ww-w1)/2, yy+250*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
-			Puts(b2, x+(ww-w2)/2, yy-110*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
+			Puts(b1, x+(ww-w1)/2, yy+250*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
+			Puts(b2, x+(ww-w2)/2, yy-110*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
 			if(gr && !(style&0x10))	// add under-/over- line now
 				draw_ouline(st,x,y,f,fact[a],ww,ccol);
 			MGL_CLEAR_STYLE
@@ -473,8 +473,8 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 		else if(s==unsigned(-6))	// frac
 		{
 			ww = get_ptr(i, str, &b1, &b2, w1, w2, ff*0.45, ff*0.45, st);
-			Puts(b1, x+(ww-w1)/2, yy+250*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
-			Puts(b2, x+(ww-w2)/2, yy-110*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol);
+			Puts(b1, x+(ww-w1)/2, yy+250*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
+			Puts(b2, x+(ww-w2)/2, yy-110*ff/fact[a], ff*0.45, (st&(~MGL_FONT_OLINE)&(~MGL_FONT_ULINE)), ccol,ccol);
 			if(gr && !(style&0x10))	// add under-/over- line now
 			{
 				draw_ouline(st,x,y,f,fact[a],ww,ccol);
@@ -485,8 +485,8 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 		else if(s==unsigned(-4))	MGL_CLEAR_STYLE	// should be never here but if I miss sth ...
 		else if(s==unsigned(-14))	// script symbols
 		{
-			k=1;
-			if(str[i+1]==unsigned(-3))	for(j=i+2;k>0 && str[j];j++)
+			long k=1;
+			if(str[i+1]==unsigned(-3))	for(long j=i+2;k>0 && str[j];j++)
 			{
 				if(str[j]==unsigned(-3))	k++;
 				if(str[j]==unsigned(-4))	k--;
@@ -499,12 +499,13 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 		else if(s==unsigned(-1))	// set normal font
 			st = style & MGL_FONT_ROMAN;
 		else if((s&MGL_COLOR_MASK)==MGL_COLOR_MASK)	// color specification
-			ccol = -float(s & 0xff);
+			ccol = -float(s & 0xff);	// TODO inline colors -- make textures
 		else
 		{
-			ss = s&MGL_FONT_MASK;
+			unsigned ss = s&MGL_FONT_MASK;
 			if(ss)	// draw symbol (glyph)
 			{
+				long j = Internal('!');
 				if(ss>' ')
 				{
 					j = Internal(ss);
@@ -516,8 +517,7 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 						else					gr->Glyph(x,yy,ff,a,j,ccol);
 					}
 				}
-				else	j = Internal('!');
-				ww = ff*width[a][j]/fact[a];
+				ww = ff*GetWidth(a,j)/fact[a];
 				if(gr && !(style&0x10))	// add under-/over- line now
 					draw_ouline(st,x,y,f,fact[a],ww,ccol);
 				if(s & MGL_FONT_ZEROW)	ww = 0;
@@ -540,116 +540,59 @@ float mglFont::Puts(const unsigned *text, float x,float y,float f,int style,floa
 	return w;
 }
 //-----------------------------------------------------------------------------
-void mglFont::mem_alloc()
-{
-	id = new wchar_t[numg];
-	width[0] = new short[numg];	width[1] = new short[numg];
-	width[2] = new short[numg];	width[3] = new short[numg];
-	tr[0] = new int[numg];	numt[0] = new short[numg];
-	tr[1] = new int[numg];	numt[1] = new short[numg];
-	tr[2] = new int[numg];	numt[2] = new short[numg];
-	tr[3] = new int[numg];	numt[3] = new short[numg];
-	ln[0] = new int[numg];	numl[0] = new short[numg];
-	ln[1] = new int[numg];	numl[1] = new short[numg];
-	ln[2] = new int[numg];	numl[2] = new short[numg];
-	ln[3] = new int[numg];	numl[3] = new short[numg];
-}
-//-----------------------------------------------------------------------------
 // copy normal style as default for other styles
 void mglFont::main_copy()
 {
-#pragma omp parallel sections
+#pragma omp parallel for
+	for(long i=0;i<long(glyphs.size());i++)
 	{
-#pragma omp section
-		memcpy(numl[1],numl[0],numg*sizeof(short));
-#pragma omp section
-		memcpy(numl[2],numl[0],numg*sizeof(short));
-#pragma omp section
-		memcpy(numl[3],numl[0],numg*sizeof(short));
-#pragma omp section
-		memcpy(ln[1],ln[0],numg*sizeof(int));
-#pragma omp section
-		memcpy(ln[2],ln[0],numg*sizeof(int));
-#pragma omp section
-		memcpy(ln[3],ln[0],numg*sizeof(int));
-#pragma omp section
-		memcpy(numt[1],numt[0],numg*sizeof(short));
-#pragma omp section
-		memcpy(numt[2],numt[0],numg*sizeof(short));
-#pragma omp section
-		memcpy(numt[3],numt[0],numg*sizeof(short));
-#pragma omp section
-		memcpy(tr[1],tr[0],numg*sizeof(int));
-#pragma omp section
-		memcpy(tr[2],tr[0],numg*sizeof(int));
-#pragma omp section
-		memcpy(tr[3],tr[0],numg*sizeof(int));
-#pragma omp section
-		memcpy(width[1],width[0],numg*sizeof(short));
-#pragma omp section
-		memcpy(width[2],width[0],numg*sizeof(short));
-#pragma omp section
-		memcpy(width[3],width[0],numg*sizeof(short));
+		mglGlyphDescr &g = glyphs[i];
+		g.numl[1] = g.numl[2] = g.numl[3] = g.numl[0];
+		g.numt[1] = g.numt[2] = g.numt[3] = g.numt[0];
+		g.ln[1] = g.ln[2] = g.ln[3] = g.ln[0];
+		g.tr[1] = g.tr[2] = g.tr[3] = g.tr[0];
+		g.width[1] = g.width[2] = g.width[3] = g.width[0];
 	}
 }
 //-----------------------------------------------------------------------------
 bool mglFont::read_def()
 {
-	numg = mgl_numg;
 	// copy default factor for other font styles;
 	fact[1] = fact[2] = fact[3] = fact[0] = mgl_fact*mgl_fgen;
 	Buf = new short[mgl_cur];	// prealocate buffer
 	memset(Buf,0,mgl_cur*sizeof(short));
 	// now allocate memory for all fonts
-	mem_alloc();
+	mem_alloc(mgl_numg);
 	// and load symbols itself
 #ifndef WIN32	// win32 don't initialized threads before main()
 #pragma omp parallel for
 #endif
-	for(long i=0;i<int(numg);i++)
+	for(size_t i=0;i<mgl_numg;i++)
 	{
-		id[i] = mgl_gen_fnt[i][0];
-		width[0][i] = mgl_gen_fnt[i][1];
-		numl[0][i] = mgl_gen_fnt[i][2];
-		ln[0][i] = mgl_gen_fnt[i][3];
-		numt[0][i] = mgl_gen_fnt[i][4];
-		tr[0][i] = mgl_gen_fnt[i][5];
+		mglGlyphDescr &g = glyphs[i];
+		g.id = mgl_gen_fnt[i][0];
+		g.width[0] = g.width[1] = g.width[2] = g.width[3] = mgl_gen_fnt[i][1];
+		g.numl[0] = g.numl[1] = g.numl[2] = g.numl[3] = mgl_gen_fnt[i][2];
+		g.ln[0] = g.ln[1] = g.ln[2] = g.ln[3] = mgl_gen_fnt[i][3];
+		g.numt[0] = g.numt[1] = g.numt[2] = g.numt[3] = mgl_gen_fnt[i][4];
+		g.tr[0] = g.tr[1] = g.tr[2] = g.tr[3] = mgl_gen_fnt[i][5];
 	}
 	memcpy(Buf, mgl_buf_fnt, mgl_cur*sizeof(short));
 	numb = mgl_cur;
-#ifndef WIN32	// win32 don't initialized threads before main()
-	main_copy();	// copy normal style as default for other styles
-#else
-	memcpy(numl[1],numl[0],numg*sizeof(short));
-	memcpy(numl[2],numl[0],numg*sizeof(short));
-	memcpy(numl[3],numl[0],numg*sizeof(short));
-	memcpy(ln[1],ln[0],numg*sizeof(int));
-	memcpy(ln[2],ln[0],numg*sizeof(int));
-	memcpy(ln[3],ln[0],numg*sizeof(int));
-	memcpy(numt[1],numt[0],numg*sizeof(short));
-	memcpy(numt[2],numt[0],numg*sizeof(short));
-	memcpy(numt[3],numt[0],numg*sizeof(short));
-	memcpy(tr[1],tr[0],numg*sizeof(int));
-	memcpy(tr[2],tr[0],numg*sizeof(int));
-	memcpy(tr[3],tr[0],numg*sizeof(int));
-	memcpy(width[1],width[0],numg*sizeof(short));
-	memcpy(width[2],width[0],numg*sizeof(short));
-	memcpy(width[3],width[0],numg*sizeof(short));
-#endif
 	return true;
 }
 //-----------------------------------------------------------------------------
-bool mglFont::read_data(const char *fname, float *ff, short *wdt, short *lnum, int *posl, short *tnum, int *post, std::vector<short> &buf)	// TODO add buffer for input file?!
+bool mglFont::read_data(const char *fname, int s, std::vector<short> &buf, std::vector<mglGlyphDescr> &extra)
 {
 	gzFile fp;
 	char str[256];
 	int n, tmpw, tmpnl, tmpnt, retVal;
-	unsigned s, tmpi, tmppl, tmppt;
+	unsigned ss, tmpi, tmppl, tmppt;
 	fp = gzopen(fname,"r");	if(!fp)	return false;	// false if no file
 	// first string is comment (not used), second string have information
 	if(!gzgets(fp,str,256) || strncmp(str,"# font",6) || !gzgets(fp,str,256))
 	{	gzclose(fp);	return false;	}
-	retVal = sscanf(str, "%d%f%u", &n, ff, &s);
+	retVal = sscanf(str, "%d%f%u", &n, fact+s, &ss);
 	//Check sscanf read all data  (3 items)
 	if(retVal != 3)	{	gzclose(fp);	return false;	}
 
@@ -658,12 +601,26 @@ bool mglFont::read_data(const char *fname, float *ff, short *wdt, short *lnum, i
 		gzgets(fp,str,256);
 		retVal = sscanf(str,"%u%d%d%u%d%u", &tmpi, &tmpw, &tmpnl, &tmppl, &tmpnt, &tmppt);
 		if(retVal != 6)	{	gzclose(fp);	buf.clear();	return false;	}
-		long j=Internal(unsigned(tmpi));	if(j<0)	continue;
-		if(wdt)	wdt[j] = tmpw;
-		lnum[j] = tmpnl;	posl[j] = -1-tmppl;
-		tnum[j] = tmpnt;	post[j] = -1-tmppt;
+		long j=Internal(unsigned(tmpi));
+		if(j>=0)	// known symbol
+		{
+			mglGlyphDescr &g = glyphs[j];	g.width[s] = tmpw;
+			g.ln[s] = -1-tmppl;		g.tr[s] = -1-tmppt;
+			g.numl[s] = tmpnl;		g.numt[s] = tmpnt;
+		}
+		else
+		{
+			mglGlyphDescr g;	g.id = tmpi;
+			g.width[0] = g.width[1] = g.width[2] = g.width[3] = tmpw;
+			g.numl[0] = g.numl[1] = g.numl[2] = g.numl[3] = tmpnl;
+			g.ln[0] = g.ln[1] = g.ln[2] = g.ln[3] = -1-tmppl;
+			g.numt[0] = g.numt[1] = g.numt[2] = g.numt[3] = tmpnt;
+			g.tr[0] = g.tr[1] = g.tr[2] = g.tr[3] = -1-tmppt;
+#pragma omp critical
+			extra.push_back(g);
+		}
 	}
-	for(unsigned i=0;i<s;i++)
+	for(unsigned i=0;i<ss;i++)
 	{
 		for(int j=0;j<256;j++)	if((str[j] = gzgetc(fp))<=' ')	break;
 		buf.push_back(atoi(str));
@@ -672,11 +629,11 @@ bool mglFont::read_data(const char *fname, float *ff, short *wdt, short *lnum, i
 	return true;
 }
 //-----------------------------------------------------------------------------
-bool mglFont::read_main(const char *fname, std::vector<short> &buf)	// TODO add buffer for input file?!
+bool mglFont::read_main(const char *fname, std::vector<short> &buf)
 {
 	gzFile fp;
 	int tmpi, tmpw, tmpnl, tmpnt;
-	unsigned s, tmppl, tmppt;
+	unsigned s, tmppl, tmppt,numg;
 	char str[256];
 
 	fp = gzopen(fname,"r");	if(!fp)	return false;	// this font must be in any case
@@ -686,15 +643,18 @@ bool mglFont::read_main(const char *fname, std::vector<short> &buf)	// TODO add 
 	sscanf(str, "%u%f%u", &numg, fact, &s);
 	fact[1] = fact[2] = fact[3] = fact[0];	// copy default factor for other font styles;
 	// now allocate memory for all fonts
-	mem_alloc();
+	mem_alloc(numg);
 	// and load symbols itself
 	for(size_t i=0;i<numg;i++)
 	{
 		gzgets(fp,str,256);
 		sscanf(str,"%d%d%d%u%d%u", &tmpi, &tmpw, &tmpnl, &tmppl, &tmpnt, &tmppt);
-		id[i] = tmpi;		width[0][i] = tmpw;
-		numl[0][i] = tmpnl; ln[0][i] = tmppl;
-		numt[0][i] = tmpnt;	tr[0][i] = tmppt;
+		mglGlyphDescr &g = glyphs[i];	g.id = tmpi;
+		g.width[0] = g.width[1] = g.width[2] = g.width[3] = tmpw;
+		g.numl[0] = g.numl[1] = g.numl[2] = g.numl[3] = tmpnl;
+		g.ln[0] = g.ln[1] = g.ln[2] = g.ln[3] = tmppl;
+		g.numt[0] = g.numt[1] = g.numt[2] = g.numt[3] = tmpnt;
+		g.tr[0] = g.tr[1] = g.tr[2] = g.tr[3] = tmppt;
 	}
 	for(unsigned i=0;i<s;i++)
 	{
@@ -702,11 +662,9 @@ bool mglFont::read_main(const char *fname, std::vector<short> &buf)	// TODO add 
 		buf.push_back(atoi(str));
 	}
 	gzclose(fp);	// finish wire normal font
-	main_copy();	// copy normal style as default for other styles
 	return true;
 }
 //-----------------------------------------------------------------------------
-//extern std::string mglGlobalMess;	///< Buffer for receiving global messages
 bool mglFont::Load(const char *base, const char *path)
 {
 //	base = 0;
@@ -715,7 +673,7 @@ bool mglFont::Load(const char *base, const char *path)
 	sep='\\';
 #endif
 	char str[256];
-	const char *oldLocale = setlocale(LC_NUMERIC,"C");
+	std::string loc = setlocale(LC_NUMERIC,"C");
 	if(!path)	path = MGL_FONT_PATH;
 	if(base && *base)
 	{
@@ -728,67 +686,125 @@ bool mglFont::Load(const char *base, const char *path)
 			path = buf;		buf[i]=0;	base = buf+i+1;
 		}
 	}
-	Clear();							// first clear old
+	Clear();	// first clear old
 
-	snprintf(str,256,"%s%c%s.vfm",path,sep,base?base:"");
+	snprintf(str,256,"%s%c%s.vfm",path,sep,base?base:"");	str[255]=0;
 	std::vector<short> norm, bold, ital, both;
 	if(!(base && *base) || !read_main(str,norm))
 	{
-//		mglGlobalMess += "Load built-in font.\n";
-		read_def();	setlocale(LC_NUMERIC,oldLocale);
+		read_def();	setlocale(LC_NUMERIC,loc.c_str());
 		if(buf)	delete []buf;	return true;
 	}
 	fact[1] = fact[2] = fact[3] = fact[0];
 
+	std::vector<mglGlyphDescr> ex_b,ex_i,ex_bi;
 #pragma omp parallel sections
 	{
 		//================== bold ===========================================
 #pragma omp section
 		{	char str[256];	snprintf(str,256,"%s%c%s_b.vfm",path,sep,base);	// this file may absent
-		read_data(str, fact+1, width[1], numl[1], ln[1], numt[1], tr[1], bold);	}
+			str[255]=0;	read_data(str, 1, bold, ex_b);	}
 
 		//================== italic =========================================
 #pragma omp section
 		{	char str[256];	snprintf(str,256,"%s%c%s_i.vfm",path,sep,base);
-		read_data(str, fact+2, width[2], numl[2], ln[2], numt[2], tr[2], ital);	}
+			str[255]=0;	read_data(str, 2, ital, ex_i);	}
 
 		//================== bold-italic ====================================
 #pragma omp section
 		{	char str[256];	snprintf(str,256,"%s%c%s_bi.vfm",path,sep,base);
-		read_data(str, fact+3, width[3], numl[3], ln[3], numt[3], tr[3], both);	}
+			str[255]=0;	read_data(str, 3, both, ex_bi);	}
 	}
 
 	// now collect data
 	numb = norm.size()+bold.size()+ital.size()+both.size();
 	Buf = new short[numb];
-#pragma omp parallel for
-	for(long i=0;i<long(norm.size());i++)	Buf[i]=norm[i];
+	memcpy(Buf,norm.data(),norm.size()*sizeof(short));
 	long cur = norm.size(), len = long(bold.size());
 	if(bold.size()>0)
+		memcpy(Buf+cur,bold.data(),bold.size()*sizeof(short));
 #pragma omp parallel for
-		for(long i=0;i<len;i++)	Buf[i+cur]=bold[i];
+	for(long i=0;i<GetNumGlyph();i++)	if(glyphs[i].ln[1]<0)
+	{	glyphs[i].ln[1] = cur-1-glyphs[i].ln[1];	glyphs[i].tr[1] = cur-1-glyphs[i].tr[1];	}
 #pragma omp parallel for
-	for(long i=0;i<numg;i++)	if(ln[1][i]<0)
-	{	ln[1][i] = cur-1-ln[1][i];	tr[1][i] = cur-1-tr[1][i];	}
+	for(long i=0;i<long(ex_b.size());i++)	if(ex_b[i].ln[1]<0)
+	{
+		mglGlyphDescr &g = ex_b[i];
+		g.ln[0] = g.ln[1] = g.ln[2] = g.ln[3] = cur-1-g.ln[1];
+		g.tr[0] = g.tr[1] = g.tr[2] = g.tr[3] = cur-1-g.tr[1];
+	}
 	cur += len;		len = long(ital.size());
 	if(ital.size()>0)
+		memcpy(Buf+cur,ital.data(),ital.size()*sizeof(short));
 #pragma omp parallel for
-		for(long i=0;i<len;i++)	Buf[i+cur]=ital[i];
+	for(long i=0;i<GetNumGlyph();i++)	if(glyphs[i].ln[2]<0)
+	{	glyphs[i].ln[2] = cur-1-glyphs[i].ln[2];	glyphs[i].tr[2] = cur-1-glyphs[i].tr[2];	}
 #pragma omp parallel for
-	for(long i=0;i<numg;i++)	if(ln[2][i]<0)
-	{	ln[2][i] = cur-1-ln[2][i];	tr[2][i] = cur-1-tr[2][i];	}
-	cur += len;		len = long(both.size());
+	for(long i=0;i<long(ex_i.size());i++)	if(ex_i[i].ln[2]<0)
+	{
+		mglGlyphDescr &g = ex_i[i];
+		g.ln[0] = g.ln[1] = g.ln[2] = g.ln[3] = cur-1-g.ln[2];
+		g.tr[0] = g.tr[1] = g.tr[2] = g.tr[3] = cur-1-g.tr[2];
+	}
+	cur += len;
 	if(both.size()>0)
+		memcpy(Buf+cur,both.data(),both.size()*sizeof(short));
 #pragma omp parallel for
-		for(long i=0;i<len;i++)	Buf[i+cur]=both[i];
+	for(long i=0;i<GetNumGlyph();i++)	if(glyphs[i].ln[3]<0)
+	{	glyphs[i].ln[3] = cur-1-glyphs[i].ln[3];	glyphs[i].tr[3] = cur-1-glyphs[i].tr[3];	}
 #pragma omp parallel for
-	for(long i=0;i<numg;i++)	if(ln[3][i]<0)
-	{	ln[3][i] = cur-1-ln[3][i];	tr[3][i] = cur-1-tr[3][i];	}
+	for(long i=0;i<long(ex_bi.size());i++)	if(ex_bi[i].ln[3]<0)
+	{
+		mglGlyphDescr &g = ex_bi[i];
+		g.ln[0] = g.ln[1] = g.ln[2] = g.ln[3] = cur-1-g.ln[3];
+		g.tr[0] = g.tr[1] = g.tr[2] = g.tr[3] = cur-1-g.tr[3];
+	}
+	// now add missing symbols
+	if(ex_b.size()==0)	ex_b = ex_i;
+	else
+	{
+		for(size_t i=0;i<ex_i.size();i++)	// add from ex_i
+		{
+			long j = mgl_internal_code(ex_i[i].id, ex_b);
+			if(j>=0)	// known symbol
+			{
+				mglGlyphDescr &g = ex_b[j], &f = ex_i[i];
+				g.width[2] = f.width[2];
+				g.ln[2] = f.ln[2];		g.tr[2] = f.tr[2];
+				g.numl[2] = f.numl[2];	g.numt[2] = f.numt[2];
+			}
+			else	ex_b.push_back(ex_i[i]);
+		}
+		std::sort(ex_b.begin(),ex_b.end());
+	}
+	if(ex_b.size()==0)	ex_b = ex_bi;
+	else
+	{
+		for(size_t i=0;i<ex_bi.size();i++)	// add from ex_bi
+		{
+			long j = mgl_internal_code(ex_bi[i].id, ex_b);
+			if(j>=0)	// known symbol
+			{
+				mglGlyphDescr &g = ex_b[j], &f = ex_bi[i];
+				g.width[2] = f.width[3];
+				g.ln[2] = f.ln[3];		g.tr[2] = f.tr[3];
+				g.numl[2] = f.numl[3];	g.numt[2] = f.numt[3];
+			}
+			else	ex_b.push_back(ex_bi[i]);
+		}
+		std::sort(ex_b.begin(),ex_b.end());
+	}
+	if(ex_b.size()>0)
+	{
+		glyphs.reserve(ex_b.size());	// preallocate memory
+		glyphs.insert(glyphs.end(), ex_b.begin(), ex_b.end());
+		std::sort(glyphs.begin(),glyphs.end());
+	}
 
 	// Finally normalize all factors
 	fact[0] *= mgl_fgen;	fact[1] *= mgl_fgen;
 	fact[2] *= mgl_fgen;	fact[3] *= mgl_fgen;
-	setlocale(LC_NUMERIC,oldLocale);
+	setlocale(LC_NUMERIC,loc.c_str());
 	if(buf)	delete []buf;
 	return true;
 }
@@ -811,7 +827,7 @@ void MGL_NO_EXPORT mgl_init()
 //-----------------------------------------------------------------------------
 mglFont::mglFont(const char *name, const char *path)
 {
-	parse = true;	numg=0;	gr=0;
+	parse = true;	gr=0;	Buf=0;
 //	if(this==&mglDefFont)	Load(name, path);	else	Copy(&mglDefFont);
 	if(name && *name)	Load(name, path);
 	else if(this!=&mglDefFont)	Copy(&mglDefFont);
@@ -821,78 +837,26 @@ mglFont::mglFont(const char *name, const char *path)
 		Load(MGL_DEF_FONT_NAME,0);
 	}
 }
-mglFont::~mglFont()	{	Clear();	}
+mglFont::~mglFont()	{	if(Buf)	delete []Buf;	}
 void mglFont::Restore()	{	Copy(&mglDefFont);	}
 //-----------------------------------------------------------------------------
 void mglFont::Clear()
 {
-//	if(gr)	gr->Clf();
-	if(numg)
-	{
-		delete []id;	delete []Buf;	numg = 0;
-		delete [](width[0]);	delete [](width[1]);	delete [](width[2]);	delete [](width[3]);
-		delete [](tr[0]);		delete [](tr[1]);		delete [](tr[2]);		delete [](tr[3]);
-		delete [](ln[0]);		delete [](ln[1]);		delete [](ln[2]);		delete [](ln[3]);
-		delete [](numt[0]);		delete [](numt[1]);		delete [](numt[2]);		delete [](numt[3]);
-		delete [](numl[0]);		delete [](numl[1]);		delete [](numl[2]);		delete [](numl[3]);
-	}
+//#pragma omp critical(font)
+	{	if(Buf)	delete []Buf;	Buf=0;	glyphs.clear();	}
 }
 //-----------------------------------------------------------------------------
 void mglFont::Copy(mglFont *f)
 {
 	if(!f || f==this)	return;
-	Clear();
-	numg = f->numg;		numb = f->numb;
-	mem_alloc();
-	// copy general data
-#pragma omp parallel sections
-	{
-#pragma omp section
-		memcpy(id,f->id,numg*sizeof(wchar_t));
-#pragma omp section
-		memcpy(width[0],f->width[0],numg*sizeof(short));
-#pragma omp section
-		memcpy(width[1],f->width[1],numg*sizeof(short));
-#pragma omp section
-		memcpy(width[2],f->width[2],numg*sizeof(short));
-#pragma omp section
-		memcpy(width[3],f->width[3],numg*sizeof(short));
-#pragma omp section
-		memcpy(tr[0],f->tr[0],numg*sizeof(unsigned));
-#pragma omp section
-		memcpy(tr[1],f->tr[1],numg*sizeof(unsigned));
-#pragma omp section
-		memcpy(tr[2],f->tr[2],numg*sizeof(unsigned));
-#pragma omp section
-		memcpy(tr[3],f->tr[3],numg*sizeof(unsigned));
-#pragma omp section
-		memcpy(numt[0],f->numt[0],numg*sizeof(short));
-#pragma omp section
-		memcpy(numt[1],f->numt[1],numg*sizeof(short));
-#pragma omp section
-		memcpy(numt[2],f->numt[2],numg*sizeof(short));
-#pragma omp section
-		memcpy(numt[3],f->numt[3],numg*sizeof(short));
-#pragma omp section
-		memcpy(ln[0],f->ln[0],numg*sizeof(unsigned));
-#pragma omp section
-		memcpy(ln[1],f->ln[1],numg*sizeof(unsigned));
-#pragma omp section
-		memcpy(ln[2],f->ln[2],numg*sizeof(unsigned));
-#pragma omp section
-		memcpy(ln[3],f->ln[3],numg*sizeof(unsigned));
-#pragma omp section
-		memcpy(numl[0],f->numl[0],numg*sizeof(short));
-#pragma omp section
-		memcpy(numl[1],f->numl[1],numg*sizeof(short));
-#pragma omp section
-		memcpy(numl[2],f->numl[2],numg*sizeof(short));
-#pragma omp section
-		memcpy(numl[3],f->numl[3],numg*sizeof(short));
-#pragma omp section
-		memcpy(fact,f->fact,4*sizeof(float));
-	}
-	// now copy symbols descriptions
-	Buf = new short[numb];	memcpy(Buf, f->Buf, numb*sizeof(short));
+#pragma omp critical(font)
+	{	if(Buf)	delete []Buf;	Buf=0;	}
+	// copy scale factors
+	memcpy(fact,f->fact,4*sizeof(float));
+	// copy symbols descriptions
+	numb = f->numb;	Buf = new short[numb];	memcpy(Buf, f->Buf, numb*sizeof(short));
+	// copy symbol parameters
+	glyphs.resize(f->glyphs.size());
+	memcpy(glyphs.data(),f->glyphs.data(),glyphs.size()*sizeof(mglGlyphDescr));
 }
 //-----------------------------------------------------------------------------

@@ -25,11 +25,11 @@ using namespace std;
  */
 
 
-// Global replace int->long by A.Balakin 7 August 2012 -- 64bit version can handle huge data arrays
+// Global replace int->long by A.Balakin 21 April 2014 -- 64bit version can handle huge data arrays
 
 
-void circle_cent2(float r1,float c1, float r2,float c2, float r3,float c3,
-				  float &r,float &c, float &ro2)
+void circle_cent2(double r1,double c1, double r2,double c2, double r3,double c3,
+				  double &r,double &c, double &ro2)
 {
 	/*
 	 *  function to return the center of a circle and its radius
@@ -37,28 +37,28 @@ void circle_cent2(float r1,float c1, float r2,float c2, float r3,float c3,
 	 * but will return r0 = -1 if it is.
 	 */
 
-	float v1 = 2*(r2-r1), v2 = 2*(c2-c1), v3 = r2*r2 - r1*r1 + c2*c2 - c1*c1;
-	float v4 = 2*(r3-r1),
-		  v5 = 2*(c3-c1),
-		  v6 = r3*r3 - r1*r1 + c3*c3 - c1*c1,
+	double a1 = (r1+r2)/2.0;
+	double a2 = (c1+c2)/2.0;
+	double b1 = (r3+r2)/2.0;
+	double b2 = (c3+c2)/2.0;
 
-		  v7 =  v2*v4 - v1*v5;
-	if( v7 == 0 )
-	{
-		r=0;
-		c=0;
-		ro2 = -1;
-		return;
-	}
+	double e2 = r1-r2;
+	double e1 = -c1+c2;
 
-	c = (v4*v3 - v1*v6)/v7;
-	if( v1 != 0 )
-		r = (v3 - c*v2)/v1;
-	else
-		r = (v6 - c*v5)/v4;
+	double q2 = r3-r2;
+	double q1 = -c3+c2;
 
-	ro2 = ( (r-r1)*(r-r1) + (c-c1)*(c-c1) );
+	r=0;
+	c=0;
+	ro2=-1;
+	if( e1*-q2 + e2*q1 == 0 ) return;
 
+	double beta = (-e2*(b1-a1) + e1*(b2-a2))/( e2*q1-e1*q2);
+
+	r = b1 + q1*beta;
+	c = b2 + q2*beta;
+
+	ro2 = (r1-r)*(r1-r) + (c1-c)*(c1-c);
 	return;
 }
 
@@ -78,7 +78,7 @@ long read_Shx(std::vector<Shx> &pts, char * fname)
 {
 	char s0[513];
 	long nump =0;
-	float p1,p2;
+	double p1,p2;
 
 	Shx pt;
 
@@ -105,9 +105,8 @@ long read_Shx(std::vector<Shx> &pts, char * fname)
 				{
 					copy( line.begin(), line.end(), s0);
 					s0[line.length()] = 0;
-					long v = sscanf( s0, "%g %g", &p1,&p2);
-					if( v>0 )
-					{
+					long v = sscanf( s0, "%lg %lg", &p1,&p2);
+					if( v>0 ) {
 						pt.id = nump;
 						nump++;
 						pt.r = p1;
@@ -123,7 +122,7 @@ long read_Shx(std::vector<Shx> &pts, char * fname)
 			{
 				copy( line.begin(), line.end(), s0);
 				s0[line.length()] = 0;
-				long v = sscanf( s0, "%g %g", &p1,&p2);
+				long v = sscanf( s0, "%lg %lg", &p1,&p2);
 				if( v>0 )
 				{
 					pt.id = nump;
@@ -141,7 +140,7 @@ long read_Shx(std::vector<Shx> &pts, char * fname)
 				{
 					copy( line.begin(), line.end(), s0);
 					s0[line.length()] = 0;
-					long v = sscanf( s0, "%g %g", &p1,&p2);
+					long v = sscanf( s0, "%lg %lg", &p1,&p2);
 					if( v>0 )
 					{
 						pt.id = nump;
@@ -222,18 +221,18 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 
 	if( nump < 3 )
 	{
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //		cerr << "less than 3 points, aborting " << endl;
 		return(-1);
 	}
 
 
-	float r = pts[0].r;
-	float c = pts[0].c;
+	double r = pts[0].r;
+	double c = pts[0].c;
 	for( long k=0; k<nump; k++)
 	{
-		float dr = pts[k].r-r;
-		float dc = pts[k].c-c;
+		double dr = pts[k].r-r;
+		double dc = pts[k].c-c;
 
 		pts[k].ro = dr*dr + dc*dc;
 
@@ -242,13 +241,13 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 	sort( pts.begin(), pts.end() );
 
 
-	float r1 = pts[0].r;
-	float c1 = pts[0].c;
+	double r1 = pts[0].r;
+	double c1 = pts[0].c;
 
-	float r2 = pts[1].r;
-	float c2 = pts[1].c;
+	double r2 = pts[1].r;
+	double c2 = pts[1].c;
 	long mid = -1;
-	float romin2 = 100000000.0, ro2, R=0,C=0;	// added by A.Balakin 6 July 2012 -- uninitialised variable
+	double romin2 =  9.0e20, ro2, R=0,C=0;	// added by A.Balakin 21 April 2014 -- uninitialised variable
 
 	long k=2;
 	while (k<nump)
@@ -271,7 +270,7 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 
 	if( mid < 0 )
 	{
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //		cerr << "linear structure, aborting " << endl;
 		return(-2);
 	}
@@ -287,8 +286,8 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 
 	for( long k=0; k<nump-3; k++)
 	{
-		float dr = pts[k].r-R;
-		float dc = pts[k].c-C;
+		double dr = pts[k].r-R;
+		double dc = pts[k].c-C;
 
 		pts[k].ro = dr*dr + dc*dc;
 
@@ -300,8 +299,6 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 	pts.insert(pts.begin(), pt1);
 	pts.insert(pts.begin(), pt0);
 
-	//  long slump [nump];
-//  long * slump  = new long [nump];
 	std::vector<long> slump;
 	slump.resize(nump);
 
@@ -325,13 +322,13 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 	std::vector<Shx> hull;
 
 
-	r = (pts[0].r + pts[1].r + pts[2].r )/(float) 3.0;
-	c = (pts[0].c + pts[1].c + pts[2].c )/(float) 3.0;
+	r = (pts[0].r + pts[1].r + pts[2].r )/(double) 3.0;
+	c = (pts[0].c + pts[1].c + pts[2].c )/(double) 3.0;
 
-	float dr0 = pts[0].r - r,  dc0 = pts[0].c - c;
-	float tr01 =  pts[1].r - pts[0].r, tc01 =  pts[1].c - pts[0].c;
+	double dr0 = pts[0].r - r,  dc0 = pts[0].c - c;
+	double tr01 =  pts[1].r - pts[0].r, tc01 =  pts[1].c - pts[0].c;
 
-	float df = -tr01* dc0 + tc01*dr0;
+	double df = -tr01* dc0 + tc01*dr0;
 	if( df < 0 )    // [ 0 1 2 ]
 	{
 		pt0.tr = pt1.r-pt0.r;
@@ -386,9 +383,9 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 	// and creating triangles....
 	// that will need to be flipped.
 
-	float dr, dc, rx,cx;
+	double dr, dc, rx,cx;
 	Shx  ptx;
-	long numt=0;	// added by A.Balakin 6 July 2012 -- uninitialised variable
+	long numt=0;	// added by A.Balakin 21 April 2014 -- uninitialised variable
 
 	for( long k=3; k<nump; k++)
 	{
@@ -398,7 +395,7 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 		ptx.c = cx;
 		ptx.id = pts[k].id;
 
-		long numh = (long) hull.size()/*, numh_old = numh*/;	// commented by A.Balakin 6 July 2012 -- unused variable
+		long numh = (long) hull.size()/*, numh_old = numh*/;	// commented by A.Balakin 21 April 2014 -- unused variable
 		dr = rx- hull[0].r;
 		dc = cx- hull[0].c;  // outwards pointing from hull[0] to pt.
 
@@ -406,10 +403,10 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 		long hidx;  // new hull point location within hull.....
 
 
-		float df = -dc* hull[0].tr + dr*hull[0].tc;    // visibility test vector.
+		double df = -dc* hull[0].tr + dr*hull[0].tc;    // visibility test vector.
 		if( df < 0 )   // starting with a visible hull facet !!!
 		{
-//			long e1 = 1, e2 = numh;	// commented by A.Balakin 6 July 2012 -- unused variable
+//			long e1 = 1, e2 = numh;	// commented by A.Balakin 21 April 2014 -- unused variable
 			hidx = 0;
 
 			// check to see if segment numh is also visible
@@ -678,17 +675,17 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 
 	}
 
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //	cerr << "of triangles " << triads.size() << " to be flipped. "<< endl;
 
 	//  write_Triads(triads, "tris0.mat");
 
-	std::set<long> ids, ids2;
+	std::set<long> ids;
 
 	long tf = T_flip_pro( pts, triads, slump, numt, 0, ids);
 	if( tf < 0 )
 	{
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //		cerr << "cannot triangualte this set " << endl;
 		return(-3);
 	}
@@ -704,7 +701,25 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 		nit ++;
 		if( tf < 0 )
 		{
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
+//			cerr << "cannot triangualte this set " << endl;
+			return(-4);
+		}
+	}
+
+	ids.clear();
+	nits = T_flip_edge( pts, triads, slump, numt, 0, ids);
+	nit=0;
+
+	while(  nits > 0 && nit < 100) {
+
+		tf = T_flip_pro_idx( pts, triads, slump, ids);
+		nits = (long) ids.size();
+		//	cerr << "flipping cycle  " << nit << "   active triangles " << nits << endl;
+		nit ++;
+		if( tf < 0 )
+		{
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //			cerr << "cannot triangualte this set " << endl;
 			return(-4);
 		}
@@ -713,8 +728,8 @@ long s_hull_pro( std::vector<Shx> &pts, std::vector<Triad> &triads)
 }
 
 
-void circle_cent4(float r1,float c1, float r2,float c2, float r3,float c3,
-				  float &r,float &c, float &ro2)
+void circle_cent4(double r1,double c1, double r2,double c2, double r3,double c3,
+				  double &r,double &c, double &ro2)
 {
 	/*
 	 *  function to return the center of a circle and its radius
@@ -743,9 +758,9 @@ void circle_cent4(float r1,float c1, float r2,float c2, float r3,float c3,
 	else
 		rd = (v6 - c*v5)/v4;
 
-	ro2 = (float)  ( (rd-r1)*(rd-r1) + (cd-c1)*(cd-c1) );
-	r = (float) rd;
-	c = (float) cd;
+	ro2 = (double)  ( (rd-r1)*(rd-r1) + (cd-c1)*(cd-c1) );
+	r = (double) rd;
+	c = (double) cd;
 
 	return;
 }
@@ -756,16 +771,13 @@ void circle_cent4(float r1,float c1, float r2,float c2, float r3,float c3,
    erase duplicate points, do not change point ids.
 
 */
-// Change return type to size_t to be 64 bit compatible -- by A.Balakin 7 August 2012
 
-size_t de_duplicate( std::vector<Shx> &pts, std::vector<size_t> &outx )
-{
+long de_duplicate( std::vector<Shx> &pts, std::vector<long> &outx ) {
 
-	size_t nump = pts.size();
+	long nump = (long) pts.size();
 	std::vector<Dupex> dpx;
 	Dupex d;
-	for( size_t k=0; k<nump; k++)
-	{
+	for( long k=0; k<nump; k++) {
 		d.r = pts[k].r;
 		d.c = pts[k].c;
 		d.id = k;
@@ -774,11 +786,10 @@ size_t de_duplicate( std::vector<Shx> &pts, std::vector<size_t> &outx )
 
 	sort(dpx.begin(), dpx.end());
 
-	for( size_t k=0; k<nump-1; k++)
-	{
+	for( long k=0; k<nump-1; k++) {
 		if( dpx[k].r == dpx[k+1].r && dpx[k].c == dpx[k+1].c )
 		{
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //			cerr << "duplicate-point ids " << dpx[k].id << "  " << dpx[k+1].id << "   at  ("  << pts[dpx[k+1].id].r << "," << pts[dpx[k+1].id].c << ")" << endl;
 			outx.push_back( dpx[k+1].id);
 		}
@@ -789,10 +800,9 @@ size_t de_duplicate( std::vector<Shx> &pts, std::vector<size_t> &outx )
 
 	sort(outx.begin(), outx.end());
 
-	size_t nx = outx.size();
-	for( size_t k=nx; k>0; k--)
-	{
-		pts.erase(pts.begin()+outx[k-1]);
+	long nx = (long) outx.size();
+	for( long k=nx-1; k>=0; k--) {
+		pts.erase(pts.begin()+outx[k]);
 	}
 
 	return(nx);
@@ -814,7 +824,7 @@ size_t de_duplicate( std::vector<Shx> &pts, std::vector<size_t> &outx )
 long T_flip_pro( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vector<long> &slump, long numt, long start, std::set<long> &ids)
 {
 
-	float r3,c3;
+	double r3,c3;
 	long pa,pb,pc, pd, D, L1, L2, L3, L4, T2;
 
 	Triad tx, tx2;
@@ -888,10 +898,15 @@ long T_flip_pro( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vector<
 			}
 			else
 			{
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //				cerr << "triangle flipping error. " << t << endl;
 				return(-5);
 			}
+
+
+// Commented by A.Balakin 21 April 2014 -- unused variable
+//			if( pd < 0 || pd > 100)
+//				long dfx = 9;
 
 			r3 = pts[pd].r;
 			c3 = pts[pd].c;
@@ -1014,7 +1029,7 @@ long T_flip_pro( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vector<
 			}
 			else
 			{
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //				cerr << "triangle flipping error. " << t << endl;
 				return(-5);
 			}
@@ -1143,7 +1158,7 @@ long T_flip_pro( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vector<
 			}
 			else
 			{
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //				cerr << "triangle flipping error. " << t << endl;
 				return(-5);
 			}
@@ -1217,38 +1232,38 @@ long T_flip_pro( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vector<
 /* minimum angle cnatraint for circum circle test.
    due to Cline & Renka
 
-   A   --    B
+   A   --	B
 
-   |    /    |
+   |	/	|
 
-   C   --    D
+   C   --	D
 
 
  */
 
-long Cline_Renka_test(float &Ax, float &Ay,
-					 float &Bx, float &By,
-					 float &Cx, float &Cy,
-					 float &Dx, float &Dy)
+long Cline_Renka_test(double &Ax, double &Ay,
+					 double &Bx, double &By,
+					 double &Cx, double &Cy,
+					 double &Dx, double &Dy)
 {
 
-	float v1x = Bx-Ax, v1y = By-Ay,    v2x = Cx-Ax, v2y = Cy-Ay,
-		  v3x = Bx-Dx, v3y = By-Dy,    v4x = Cx-Dx, v4y = Cy-Dy;
-	float cosA = v1x*v2x + v1y*v2y;
-	float cosD = v3x*v4x + v3y*v4y;
+	double v1x = Bx-Ax, v1y = By-Ay,	v2x = Cx-Ax, v2y = Cy-Ay,
+		  v3x = Bx-Dx, v3y = By-Dy,	v4x = Cx-Dx, v4y = Cy-Dy;
+	double cosA = v1x*v2x + v1y*v2y;
+	double cosD = v3x*v4x + v3y*v4y;
 
 	if( cosA < 0 && cosD < 0 ) // two obtuse angles
 		return(-1);
 
-//	float ADX = Ax-Dx, ADy = Ay-Dy;	// commented by A.Balakin 6 July 2012 -- unused variable
+//	double ADX = Ax-Dx, ADy = Ay-Dy;	// commented by A.Balakin 21 April 2014 -- unused variable
 
 
 	if( cosA > 0 && cosD > 0 )  // two acute angles
 		return(1);
 
 
-	float sinA = fabs(v1x*v2y - v1y*v2x);
-	float sinD = fabs(v3x*v4y - v3y*v4x);
+	double sinA = fabs(v1x*v2y - v1y*v2x);
+	double sinD = fabs(v3x*v4y - v3y*v4x);
 
 	if( cosA*sinD + sinA*cosD < 0 )
 		return(-1);
@@ -1266,7 +1281,7 @@ long Cline_Renka_test(float &Ax, float &Ay,
 long T_flip_pro_idx( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vector<long> &slump, std::set<long> &ids)
 {
 
-	float  r3,c3;
+	double  r3,c3;
 	long pa,pb,pc, pd,  D, L1, L2, L3, L4, T2;
 
 	Triad tx, tx2;
@@ -1346,7 +1361,7 @@ long T_flip_pro_idx( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vec
 			}
 			else
 			{
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //				cerr << "triangle flipping error. " << t << "  T2: " <<  T2<<  endl;
 				return(-6);
 			}
@@ -1473,7 +1488,7 @@ long T_flip_pro_idx( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vec
 			}
 			else
 			{
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //				cerr << "triangle flipping error. " << t <<  endl;
 				return(-6);
 			}
@@ -1599,7 +1614,7 @@ long T_flip_pro_idx( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vec
 			}
 			else
 			{
-// Commented by A.Balakin 2 July 2012 -- library shouldn't print anything
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
 //				cerr << "triangle flipping error. " << t << endl;
 				return(-6);
 			}
@@ -1616,8 +1631,6 @@ long T_flip_pro_idx( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vec
 				L2 = tri.bc;
 				if( L1 != L3 && L2 != L4 )   // need this check for stability.
 				{
-
-
 					tx.a = tri.b;
 					tx.b = tri.a;
 					tx.c = D;
@@ -1626,18 +1639,14 @@ long T_flip_pro_idx( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vec
 					tx.ac = T2;
 					tx.bc = L3;
 
-
 					// triangle 2;
 					tx2.a = tri.b;
 					tx2.b = tri.c;
 					tx2.c = D;
 
-
-
 					tx2.ab = L2;
 					tx2.ac = t;
 					tx2.bc = L4;
-
 
 					ids2.insert(t);
 					ids2.insert(T2);
@@ -1666,13 +1675,470 @@ long T_flip_pro_idx( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vec
 				}
 			}
 		}
-
-
 	}
 
 	ids.clear();
 	ids.insert(ids2.begin(), ids2.end());
 
+	return(1);
+}
+
+/* test the seed configuration to see if the center
+   of the circum circle lies inside the seed triangle.
+
+   if not issue a warning.
+*/
+
+
+long  test_center(Shx &pt0, Shx &pt1,Shx &pt2)
+{
+	double r01 = pt1.r - pt0.r;
+	double c01 = pt1.c - pt0.c;
+
+	double r02 = pt2.r - pt0.r;
+	double c02 = pt2.c - pt0.c;
+
+	double r21 = pt1.r - pt2.r;
+	double c21 = pt1.c - pt2.c;
+
+	double v = r01*r02 + c01*c02;
+	if( v < 0 ) return(-1);
+
+	v = r21*r02 + c21*c02;
+	if( v > 0 ) return(-1);
+
+	v = r01*r21 + c01*c21;
+	if( v < 0 ) return(-1);
+
+	return(1);
+}
+
+long de_duplicateX( std::vector<Shx> &pts, std::vector<long> &outx,std::vector<Shx> &pts2 )
+{
+	long nump = (long) pts.size();
+	std::vector<Dupex> dpx;
+	Dupex d;
+	for( long k=0; k<nump; k++)
+	{
+		d.r = pts[k].r;
+		d.c = pts[k].c;
+		d.id = k;
+		dpx.push_back(d);
+	}
+
+	sort(dpx.begin(), dpx.end());
+
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
+//	cerr << "de-duplicating ";
+	pts2.clear();
+	pts2.push_back(pts[dpx[0].id]);
+	pts2[0].id = 0;
+	long cnt = 1;
+
+	for( long k=0; k<nump-1; k++)
+	{
+		if( dpx[k].r == dpx[k+1].r && dpx[k].c == dpx[k+1].c )
+		{
+			//cerr << "duplicate-point ids " << dpx[k].id << "  " << dpx[k+1].id << "   at  ("  << pts[dpx[k+1].id].r << "," << pts[dpx[k+1].id].c << ")" << endl;
+			//cerr << dpx[k+1].id << " ";
+
+			outx.push_back( dpx[k+1].id);
+		}
+		else
+		{
+			pts[dpx[k+1].id].id = cnt;
+			pts2.push_back(pts[dpx[k+1].id]);
+			cnt++;
+		}
+	}
+
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
+//	cerr << "removed  " << outx.size() << endl;
+
+	return(outx.size());
+}
+
+
+
+long T_flip_edge( std::vector<Shx> &pts, std::vector<Triad> &triads, std::vector<long> &slump, long numt, long start, std::set<long> &ids)
+{
+	double r3,c3;
+	long pa,pb,pc, pd, D, L1, L2, L3, L4, T2;
+
+	Triad tx, tx2;
+
+
+	for( long t=start; t<numt; t++)
+	{
+		Triad &tri = triads[t];
+		// test all 3 neighbours of tri
+
+		long flipped = 0;
+
+		if( tri.bc >= 0  && (tri.ac < 0 || tri.ab < 0) )
+		{
+			pa = slump[tri.a];
+			pb = slump[tri.b];
+			pc = slump[tri.c];
+
+			T2 = tri.bc;
+			Triad &t2 = triads[T2];
+			// find relative orientation (shared limb).
+			if( t2.ab == t )
+			{
+				D = t2.c;
+				pd = slump[t2.c];
+
+				if( tri.b == t2.a)
+				{
+					L3 = t2.ac;
+					L4 = t2.bc;
+				}
+				else {
+					L3 = t2.bc;
+					L4 = t2.ac;
+				}
+			}
+			else if(  t2.ac == t )
+			{
+				D = t2.b;
+				pd = slump[t2.b];
+
+				if( tri.b == t2.a)
+				{
+					L3 = t2.ab;
+					L4 = t2.bc;
+				}
+				else
+				{
+					L3 = t2.bc;
+					L4 = t2.ab;
+				}
+			}
+			else if(  t2.bc == t )
+			{
+				D = t2.a;
+				pd = slump[t2.a];
+
+				if( tri.b == t2.b)
+				{
+					L3 = t2.ab;
+					L4 = t2.ac;
+				}
+				else
+				{
+					L3 = t2.ac;
+					L4 = t2.ab;
+				}
+			}
+			else
+			{
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
+//				cerr << "triangle flipping error. " << t << endl;
+				return(-5);
+			}
+
+
+// Commented by A.Balakin 21 April 2014 -- unused variable
+//			if( pd < 0 || pd > 100)
+//				long dfx = 9;
+
+			r3 = pts[pd].r;
+			c3 = pts[pd].c;
+
+			long XX = Cline_Renka_test( pts[pa].r, pts[pa].c, pts[pb].r, pts[pb].c,
+									   pts[pc].r, pts[pc].c, r3, c3 );
+
+			if( XX < 0 ) {
+
+				L1 = tri.ab;
+				L2 = tri.ac;
+				//	if( L1 != L3 && L2 != L4 ){  // need this check for stability.
+
+				tx.a = tri.a;
+				tx.b = tri.b;
+				tx.c = D;
+
+				tx.ab = L1;
+				tx.ac = T2;
+				tx.bc = L3;
+
+
+				// triangle 2;
+				tx2.a = tri.a;
+				tx2.b = tri.c;
+				tx2.c = D;
+
+				tx2.ab = L2;
+				tx2.ac = t;
+				tx2.bc = L4;
+
+
+				ids.insert(t);
+				ids.insert(T2);
+
+				t2 = tx2;
+				tri = tx;
+				flipped = 1;
+
+				// change knock on triangle labels.
+				if( L3 >= 0 )
+				{
+					Triad &t3 = triads[L3];
+					if( t3.ab == T2 ) t3.ab = t;
+					else if( t3.bc == T2 ) t3.bc = t;
+					else if( t3.ac == T2 ) t3.ac = t;
+				}
+
+				if(L2 >= 0 )
+				{
+					Triad &t4 = triads[L2];
+					if( t4.ab == t ) t4.ab = T2;
+					else if( t4.bc == t ) t4.bc = T2;
+					else if( t4.ac == t ) t4.ac = T2;
+				}
+				//	}
+			}
+		}
+
+
+		if(  flipped == 0 && tri.ab >= 0  && (tri.ac < 0 || tri.bc < 0))
+		{
+			pc = slump[tri.c];
+			pb = slump[tri.b];
+			pa = slump[tri.a];
+
+			T2 = tri.ab;
+			Triad &t2 = triads[T2];
+			// find relative orientation (shared limb).
+			if( t2.ab == t )
+			{
+				D = t2.c;
+				pd = slump[t2.c];
+
+				if( tri.a == t2.a)
+				{
+					L3 = t2.ac;
+					L4 = t2.bc;
+				}
+				else
+				{
+					L3 = t2.bc;
+					L4 = t2.ac;
+				}
+			}
+			else if(  t2.ac == t )
+			{
+				D = t2.b;
+				pd = slump[t2.b];
+
+				if( tri.a == t2.a)
+				{
+					L3 = t2.ab;
+					L4 = t2.bc;
+				}
+				else
+				{
+					L3 = t2.bc;
+					L4 = t2.ab;
+				}
+			}
+			else if(  t2.bc == t )
+			{
+				D = t2.a;
+				pd = slump[t2.a];
+
+				if( tri.a == t2.b)
+				{
+					L3 = t2.ab;
+					L4 = t2.ac;
+				}
+				else
+				{
+					L3 = t2.ac;
+					L4 = t2.ab;
+				}
+			}
+			else {
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
+//				cerr << "triangle flipping error. " << t << endl;
+				return(-5);
+			}
+
+			r3 = pts[pd].r;
+			c3 = pts[pd].c;
+
+			long XX = Cline_Renka_test( pts[pc].r, pts[pc].c, pts[pb].r, pts[pb].c,
+									   pts[pa].r, pts[pa].c,r3, c3);
+
+			if( XX < 0)
+			{
+				L1 = tri.ac;
+				L2 = tri.bc;
+				//	if( L1 != L3 && L2 != L4 ){  // need this check for stability.
+
+				tx.a = tri.c;
+				tx.b = tri.a;
+				tx.c = D;
+
+				tx.ab = L1;
+				tx.ac = T2;
+				tx.bc = L3;
+
+				// triangle 2;
+				tx2.a = tri.c;
+				tx2.b = tri.b;
+				tx2.c = D;
+
+				tx2.ab = L2;
+				tx2.ac = t;
+				tx2.bc = L4;
+
+				ids.insert(t);
+				ids.insert(T2);
+
+				t2 = tx2;
+				tri = tx;
+				flipped = 1;
+
+				// change knock on triangle labels.
+				if( L3 >= 0 )
+				{
+					Triad &t3 = triads[L3];
+					if( t3.ab == T2 ) t3.ab = t;
+					else if( t3.bc == T2 ) t3.bc = t;
+					else if( t3.ac == T2 ) t3.ac = t;
+				}
+
+				if(L2 >= 0 )
+				{
+					Triad &t4 = triads[L2];
+					if( t4.ab == t ) t4.ab = T2;
+					else if( t4.bc == t ) t4.bc = T2;
+					else if( t4.ac == t ) t4.ac = T2;
+				}
+			}
+		}
+
+
+		if( flipped == 0 && tri.ac >= 0  && (tri.bc < 0 || tri.ab < 0) )
+		{
+			pc = slump[tri.c];
+			pb = slump[tri.b];
+			pa = slump[tri.a];
+
+			T2 = tri.ac;
+			Triad &t2 = triads[T2];
+			// find relative orientation (shared limb).
+			if( t2.ab == t )
+			{
+				D = t2.c;
+				pd = slump[t2.c];
+
+				if( tri.a == t2.a)
+				{
+					L3 = t2.ac;
+					L4 = t2.bc;
+				}
+				else
+				{
+					L3 = t2.bc;
+					L4 = t2.ac;
+				}
+			}
+			else if(  t2.ac == t )
+			{
+				D = t2.b;
+				pd = slump[t2.b];
+
+				if( tri.a == t2.a)
+				{
+					L3 = t2.ab;
+					L4 = t2.bc;
+				}
+				else {
+					L3 = t2.bc;
+					L4 = t2.ab;
+				}
+			}
+			else if(  t2.bc == t )
+			{
+				D = t2.a;
+				pd = slump[t2.a];
+
+				if( tri.a == t2.b)
+				{
+					L3 = t2.ab;
+					L4 = t2.ac;
+				}
+				else
+				{
+					L3 = t2.ac;
+					L4 = t2.ab;
+				}
+			}
+			else
+			{
+// Commented by A.Balakin 21 April 2014 -- library shouldn't print anything
+//				cerr << "triangle flipping error. " << t << endl;
+				return(-5);
+			}
+
+			r3 = pts[pd].r;
+			c3 = pts[pd].c;
+
+			long XX = Cline_Renka_test( pts[pb].r, pts[pb].c, pts[pa].r, pts[pa].c,
+									   pts[pc].r, pts[pc].c,r3, c3);
+
+			if( XX < 0 )
+			{
+				L1 = tri.ab;   // .ac shared limb
+				L2 = tri.bc;
+				//	if( L1 != L3 && L2 != L4 ){  // need this check for stability.
+
+				tx.a = tri.b;
+				tx.b = tri.a;
+				tx.c = D;
+
+				tx.ab = L1;
+				tx.ac = T2;
+				tx.bc = L3;
+
+
+				// triangle 2;
+				tx2.a = tri.b;
+				tx2.b = tri.c;
+				tx2.c = D;
+
+				tx2.ab = L2;
+				tx2.ac = t;
+				tx2.bc = L4;
+
+				ids.insert(t);
+				ids.insert(T2);
+
+				t2 = tx2;
+				tri = tx;
+
+				// change knock on triangle labels.
+				if( L3 >= 0 )
+				{
+					Triad &t3 = triads[L3];
+					if( t3.ab == T2 ) t3.ab = t;
+					else if( t3.bc == T2 ) t3.bc = t;
+					else if( t3.ac == T2 ) t3.ac = t;
+				}
+
+				if(L2 >= 0 )
+				{
+					Triad &t4 = triads[L2];
+					if( t4.ab == t ) t4.ab = T2;
+					else if( t4.bc == t ) t4.bc = T2;
+					else if( t4.ac == t ) t4.ac = T2;
+				}
+			}
+		}
+	}
 	return(1);
 }
 

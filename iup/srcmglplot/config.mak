@@ -24,7 +24,7 @@ SRCMGLPLOT = addon.cpp complex.cpp data_gr.cpp evalp.cpp fit.cpp pde.cpp vect.cp
              base_cf.cpp crust.cpp def_font.cpp export_2d.cpp opengl.cpp prim.cpp \
              canvas.cpp data.cpp eval.cpp export_3d.cpp other.cpp surf.cpp \
              canvas_cf.cpp data_ex.cpp evalc.cpp fft.cpp parser.cpp tex_table.cpp \
-             s_hull/s_hull_pro.cpp
+             complex_ex.cpp s_hull/s_hull_pro.cpp
 SRCMGLPLOT := $(addprefix src/, $(SRCMGLPLOT))
 
 SRC = iup_mglplot.cpp $(SRCMGLPLOT)

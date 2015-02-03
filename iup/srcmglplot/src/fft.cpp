@@ -127,23 +127,18 @@ void MGL_EXPORT mgl_fft(double *x, long s, long n, const void *wt, void *ws, int
 	const double *c = (const double *)wt;
 	double *d = (double *)ws, f = inv?1./n:1;
 	memset(d,0,2*n*sizeof(double));
-	if(inv)
-//#pragma omp parallel for	// NOTE only 1st for can be used!
-		for(long i=0;i<n;i++)	for(long j=0;j<n;j++)
-		{
-			register long ii = 2*(i+n*j), jj = 2*j*s;
-			d[2*i] 	+= x[jj]*c[ii]+x[jj+1]*c[ii+1];
-			d[2*i+1]+= x[jj+1]*c[ii]-x[jj]*c[ii+1];
-		}
-	else
-//#pragma omp parallel for	// NOTE only 1st for can be used!
-		for(long i=0;i<n;i++)	for(long j=0;j<n;j++)
-		{
-			register long ii = 2*(i+n*j), jj = 2*j*s;
-			d[2*i] 	+= x[jj]*c[ii]-x[jj+1]*c[ii+1];
-			d[2*i+1]+= x[jj+1]*c[ii]+x[jj]*c[ii+1];
-		}
-//#pragma omp parallel for
+	if(inv)	for(long i=0;i<n;i++)	for(long j=0;j<n;j++)
+	{
+		register long ii = 2*(i+n*j), jj = 2*j*s;
+		d[2*i] 	+= x[jj]*c[ii]+x[jj+1]*c[ii+1];
+		d[2*i+1]+= x[jj+1]*c[ii]-x[jj]*c[ii+1];
+	}
+	else	for(long i=0;i<n;i++)	for(long j=0;j<n;j++)
+	{
+		register long ii = 2*(i+n*j), jj = 2*j*s;
+		d[2*i] 	+= x[jj]*c[ii]-x[jj+1]*c[ii+1];
+		d[2*i+1]+= x[jj+1]*c[ii]+x[jj]*c[ii+1];
+	}
 	for(long j=0;j<n;j++)
 	{	register long jj = 2*j*s;	x[jj] = d[2*j]*f;	x[jj+1] = d[2*j+1]*f;	}
 #endif
@@ -168,14 +163,14 @@ MGL_NO_EXPORT void* mgl_fftx(void *par)
 MGL_NO_EXPORT void* mgl_ffty(void *par)
 {
 	mglThreadT *t=(mglThreadT *)par;
-	register long i,nx=t->p[0],ny=t->p[1];
+	long nx=t->p[0],ny=t->p[1];
 #if !MGL_HAVE_PTHREAD
 #pragma omp parallel
 #endif
 	{
-		void *w = mgl_fft_alloc_thr(nx);
+		void *w = mgl_fft_alloc_thr(ny);
 #pragma omp for nowait
-		for(i=t->id;i<t->n;i+=mglNumThr)
+		for(long i=t->id;i<t->n;i+=mglNumThr)
 			mgl_fft(t->b+2*(i%nx)+2*nx*ny*(i/nx), nx, ny, t->v, w, t->p[3]);
 		mgl_fft_free_thr(w);
 	}
@@ -184,14 +179,14 @@ MGL_NO_EXPORT void* mgl_ffty(void *par)
 MGL_NO_EXPORT void* mgl_fftz(void *par)
 {
 	mglThreadT *t=(mglThreadT *)par;
-	register long i,nx=t->p[0],ny=t->p[1],nz=t->p[2];
+	long nx=t->p[0],ny=t->p[1],nz=t->p[2];
 #if !MGL_HAVE_PTHREAD
 #pragma omp parallel
 #endif
 	{
-		void *w = mgl_fft_alloc_thr(nx);
+		void *w = mgl_fft_alloc_thr(nz);
 #pragma omp for nowait
-		for(i=t->id;i<t->n;i+=mglNumThr)
+		for(long i=t->id;i<t->n;i+=mglNumThr)
 			mgl_fft(t->b+2*i, nx*ny, nz, t->v, w, t->p[3]);
 		mgl_fft_free_thr(w);
 	}
@@ -632,7 +627,7 @@ MGL_NO_EXPORT void* mgl_cosx(void *par)
 			for(long j=0;j<nn;j++)	b[2*j]=(a[j+k]+a[nn-j+k])*0.5-sin(M_PI*j/nn)*(a[j+k]-a[nn-j+k]);
 			mgl_fft(b,1,nn,t->v,w,false);
 			double f1=0.5*(a[k]-a[nn+k]), s=-1;
-			a[nn+k]=0.5*(a[k]+a[nn+k]*(nn%2?-1:1));
+			a[nn+k]=0.5*(a[k]+a[nn+k]*((nn%2)?-1:1));
 			for(long j=1;j<nn;j++)
 			{
 				f1 += a[j+k]*cos(M_PI*j/nn);
@@ -669,7 +664,7 @@ MGL_NO_EXPORT void* mgl_cosy(void *par)
 			for(long j=0;j<nn;j++)	b[2*j]=(a[i+nx*(ny*k+j)]+a[i+nx*(ny*k+nn-j)])*0.5-sin(M_PI*j/nn)*(a[i+nx*(ny*k+j)]-a[i+nx*(ny*k+nn-j)]);
 			mgl_fft(b,1,nn,t->v,w,false);
 			double f1=0.5*(a[i+nx*ny*k]-a[i+nx*(ny*k+nn)]), s=-1;
-			a[i+nx*(ny*k+nn)]=0.5*(a[i+nx*ny*k]+a[i+nx*(ny*k+nn)]*(nn%2?-1:1));
+			a[i+nx*(ny*k+nn)]=0.5*(a[i+nx*ny*k]+a[i+nx*(ny*k+nn)]*((nn%2)?-1:1));
 			for(long j=1;j<nn;j++)
 			{
 				f1 += a[i+nx*(ny*k+j)]*cos(M_PI*j/nn);
@@ -706,7 +701,7 @@ MGL_NO_EXPORT void* mgl_cosz(void *par)
 			for(long j=0;j<nn;j++)	b[2*j]=(a[i+k*j]+a[i+k*(nn-j)])*0.5-sin(M_PI*j/nn)*(a[i+k*j]-a[i+k*(nn-j)]);
 			mgl_fft(b,1,nn,t->v,w,false);
 			double f1=0.5*(a[i]-a[i+k*nn]), s=-1;
-			a[i+k*nn]=0.5*(a[i]+a[i+k*nn]*(nn%2?-1:1));
+			a[i+k*nn]=0.5*(a[i]+a[i+k*nn]*((nn%2)?-1:1));
 			for(long j=1;j<nn;j++)
 			{
 				f1 += a[i+k*j]*cos(M_PI*j/nn);
@@ -761,21 +756,14 @@ void MGL_EXPORT mgl_data_cosfft(HMDT d, const char *dir)
 HMDT MGL_EXPORT mgl_transform_a(HCDT am, HCDT ph, const char *tr)
 {
 	long nx = am->GetNx(), ny = am->GetNy(), nz = am->GetNz();
-	if(nx*ny*nz != ph->GetNx()*ph->GetNy()*ph->GetNz() || !tr || tr[0]==0)
-		return 0;
+	if(nx*ny*nz != ph->GetNN() || !tr || tr[0]==0)	return 0;
 	mglData re(nx,ny,nz), im(nx,ny,nz);
-	const mglData *da=dynamic_cast<const mglData *>(am);
-	const mglData *dp=dynamic_cast<const mglData *>(ph);
-	if(da && dp)
 #pragma omp parallel for
-		for(long i=0;i<nx*ny*nz;i++)
-		{	re.a[i] = da->a[i]*cos(dp->a[i]);
-			im.a[i] = da->a[i]*sin(dp->a[i]);	}
-	else
-#pragma omp parallel for
-		for(long i=0;i<nx*ny*nz;i++)
-		{	re.a[i] = am->vthr(i)*cos(ph->vthr(i));
-			im.a[i] = am->vthr(i)*sin(ph->vthr(i));	}
+	for(long i=0;i<nx*ny*nz;i++)
+	{
+		register mreal a=am->vthr(i), p=ph->vthr(i);
+		re.a[i] = a*cos(p);	im.a[i] = a*sin(p);
+	}
 	return mgl_transform(&re, &im, tr);
 }
 //-----------------------------------------------------------------------------
@@ -783,8 +771,7 @@ HMDT MGL_EXPORT mgl_transform(HCDT re, HCDT im, const char *tr)
 {
 	if(!tr || *tr==0)	return 0;
 	long nx = re->GetNx(), ny = re->GetNy(), nz = re->GetNz();
-	if(nx*ny*nz != im->GetNx()*im->GetNy()*im->GetNz() || !tr || tr[0]==0)
-		return 0;
+	if(nx*ny*nz != im->GetNN() || !tr || tr[0]==0)	return 0;
 	mglData rr(re),ii(im);
 	if(strchr(tr,'i') && strchr(tr,'f'))	// general case
 	{
@@ -1084,30 +1071,28 @@ void MGL_EXPORT mgl_data_hankel_(uintptr_t *d, const char *dir,int l)
 void MGL_EXPORT mgl_data_fill_sample(HMDT d, const char *how)
 {
 	if(!how || *how==0)	return;
-	bool xx = strchr(how,'x');
-	long n=d->nx;
+	bool kk = strchr(how,'k');
+	long n=d->nx,dn=1;
 	mreal *aa=d->a;
+	if(strchr(how,'y'))	{	n=d->ny;	dn=d->nx;	}
+	if(strchr(how,'z'))	{	n=d->nz;	dn=d->nx*d->ny;	}
 	if(strchr(how,'h'))	// Hankel
 	{
 #if MGL_HAVE_GSL
 		gsl_dht *dht = gsl_dht_new(n,0,1);
 #pragma omp parallel for
 		for(long i=0;i<n;i++)
-			aa[i] = xx ? gsl_dht_x_sample(dht, i) : gsl_dht_k_sample(dht, i);
+			aa[i*dn] = kk ? gsl_dht_k_sample(dht, i) : gsl_dht_x_sample(dht, i);
 		gsl_dht_free(dht);
 #endif
 	}
 	else	// Fourier
 	{
-		if(xx)
-#pragma omp parallel for
-			for(long i=0;i<n;i++)	aa[i] = mreal(2*i-n)/n;
-		else
-#pragma omp parallel for
-			for(long i=0;i<n;i++)	aa[i] = M_PI*(i<n/2 ? i:i-n);
+		if(kk)	for(long i=0;i<n;i++)	aa[i*dn] = M_PI*(i<n/2 ? i:i-n);
+		else	for(long i=0;i<n;i++)	aa[i*dn] = mreal(2*i-n)/n;
 	}
 #pragma omp parallel for
-	for(long i=1;i<d->ny*d->nz;i++)	memcpy(aa+i*n,aa,n*sizeof(mreal));
+	for(long i=0;i<d->GetNN();i++)	aa[i] = aa[((i%(n*dn))/dn)*dn];
 }
 void MGL_EXPORT mgl_data_fill_sample_(uintptr_t *d, const char *how,int l)
 {	char *s=new char[l+1];	memcpy(s,how,l);	s[l]=0;
@@ -1274,7 +1259,7 @@ MGL_NO_EXPORT double *mgl_d_correl(HCDT d1, HCDT d2, const char *dir)
 		{	mgl_fft_data.wtz = wt;	clear = false;	mgl_fft_data.wnz=nz;	}
 	}
 	if(clear)	mgl_fft_free(wt,0,0);
-	return a;
+	delete []b;	return a;
 }
 //-----------------------------------------------------------------------------
 HADT MGL_EXPORT mgl_datac_correl(HCDT d1, HCDT d2, const char *dir)

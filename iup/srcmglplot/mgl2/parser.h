@@ -23,16 +23,19 @@
 #ifdef __cplusplus
 #include "mgl2/mgl.h"
 #include <string>
+#if MGL_HAVE_LTDL
+#include <ltdl.h>
+#endif
 //-----------------------------------------------------------------------------
 /// Structure for the command argument.
 struct mglArg
 {
 	int type;		///< Type of argument {0-data,1-string,2-number}
-	mglData *d;		///< Pointer to data (used if type==0)
+	mglDataA *d;	///< Pointer to data (used if type==0)
 	std::wstring w;	///< String with parameters
 	std::string s;	///< String with parameters
 	mreal v;		///< Numerical value (used if type==2)
-	mglArg()	{	type=-1;	d=0;	v=0;	}
+	mglArg():type(-1),d(0),v(0)	{}
 };
 //-----------------------------------------------------------------------------
 /// Structure for MGL command
@@ -56,12 +59,7 @@ struct mglNum
 {
 	mreal d;		///< Number itself
 	std::wstring s;	///< Number name
-	mglNum *next;	///< Pointer to next instance in list
-	mglNum *prev;	///< Pointer to prev instance in list
-	mglNum()	{	d=0;	next=prev=0;	}
-	~mglNum();
-	/// Move variable after var and copy func from var (if func is 0)
-	void MoveAfter(mglNum *var);
+	mglNum(mreal val=0):d(val)	{}
 };
 //-----------------------------------------------------------------------------
 /// Structure for function name and position.
@@ -70,18 +68,17 @@ struct mglFunc
 	long pos;
 	int narg;
 	std::wstring func;
-//	wchar_t func[64];
 	mglFunc(long p, const wchar_t *f);
-	mglFunc(const mglFunc &f);
-	mglFunc()	{	pos=narg=-1;	}
+	mglFunc(const mglFunc &f):pos(f.pos),narg(f.narg),func(f.func)	{}
+	mglFunc():pos(-1),narg(-1)	{}
 };
 //-----------------------------------------------------------------------------
 /// Structure for stack of functions and its arguments.
 struct mglFnStack
 {
-	mglFnStack()	{pos=0;}
 	long pos;
 	std::wstring par[10];
+	mglFnStack():pos(0)	{}
 };
 //-----------------------------------------------------------------------------
 /// Function for asking question in console mode
@@ -92,19 +89,24 @@ class mglParser
 {
 friend void mgl_export(wchar_t *out, const wchar_t *in, int type);
 public:
-	mglVar *DataList;	///< List with data and its names
-	mglNum *NumList;	///< List with numbers and its names
+#if MGL_HAVE_LTDL
+	std::vector<lt_dlhandle> DllOpened;	///< Opened external DLL (keep )
+#endif
+	std::vector<mglDataA*> DataList;	///< List with data and its names
+	std::vector<mglNum*> NumList;	///< List with numbers and its names
+	bool AllowDllCall;	///< Allow calls from external dynamic libraries
 	bool AllowSetSize;	///< Allow using setsize command
 	bool AllowFileIO;	///< Allow reading/saving files
 	bool Stop;			///< Stop command was. Flag prevent further execution
 	mglCommand *Cmd;	///< Table of MGL commands (can be changed by user). It MUST be sorted by 'name'!!!
 	long InUse;			///< Smart pointer (number of users)
+	const mglBase *curGr;	///< Current grapher
 
 	mglParser(bool setsize=false);
-	~mglParser();
+	virtual ~mglParser();
 	/// Find the command by the keyword name
-	mglCommand *FindCommand(const char *name);
-	mglCommand *FindCommand(const wchar_t *name);
+	const mglCommand *FindCommand(const char *name) const MGL_FUNC_PURE;
+	const mglCommand *FindCommand(const wchar_t *name) const MGL_FUNC_PURE;
 	/// Parse and execute the string of MGL script
 	inline int Parse(HMGL gr, const char *str, long pos=0)
 	{	mglGraph GR(gr);	return Parse(&GR,str,pos);	}
@@ -134,14 +136,14 @@ public:
 	/// Check if name is function and return its address (or 0 if no)
 	long IsFunc(const std::wstring &name, int *narg=0);
 	/// Find variable or return 0 if absent
-	mglVar *FindVar(const char *name);
-	mglVar *FindVar(const wchar_t *name);
+	mglDataA *FindVar(const char *name) MGL_FUNC_PURE;
+	mglDataA *FindVar(const wchar_t *name) MGL_FUNC_PURE;
 	/// Find variable or create it if absent
-	mglVar *AddVar(const char *name);
-	mglVar *AddVar(const wchar_t *name);
+	mglData *AddVar(const char *name);
+	mglData *AddVar(const wchar_t *name);
 	/// Find number or return 0 if absent
-	mglNum *FindNum(const char *name);
-	mglNum *FindNum(const wchar_t *name);
+	mglNum *FindNum(const char *name) MGL_FUNC_PURE;
+	mglNum *FindNum(const wchar_t *name) MGL_FUNC_PURE;
 	/// Find number or create it if absent
 	mglNum *AddNum(const char *name);
 	mglNum *AddNum(const wchar_t *name);
@@ -152,8 +154,6 @@ public:
 	void AddCommand(mglCommand *cmd, int num=0);
 	/// Restore Once flag
 	inline void RestoreOnce()	{	Once = true;	}
-	/// Delete variable
-	void DeleteVar(mglVar *v);
 	/// Delete variable by its name
 	void DeleteVar(const char *name);
 	void DeleteVar(const wchar_t *name);

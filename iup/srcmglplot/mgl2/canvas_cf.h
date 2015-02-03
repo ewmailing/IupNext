@@ -43,6 +43,9 @@ void MGL_EXPORT mgl_combine_gr_(uintptr_t *gr, uintptr_t *gr2);
 /// Force preparing the image. It can be useful for OpenGL mode mostly.
 void MGL_EXPORT mgl_finish(HMGL gr);
 void MGL_EXPORT mgl_finish_(uintptr_t *gr);
+/// Force preparing the image and save result into background one.
+void MGL_EXPORT mgl_rasterize(HMGL gr);
+void MGL_EXPORT mgl_rasterize_(uintptr_t *gr);
 
 /// Set tick length
 void MGL_EXPORT mgl_set_tick_len(HMGL gr, double len, double stt);
@@ -54,17 +57,29 @@ void MGL_EXPORT mgl_set_axis_stl_(uintptr_t *gr, const char *stl, const char *tc
 /// Auto adjust ticks
 void MGL_EXPORT mgl_adjust_ticks(HMGL gr, const char *dir);
 void MGL_EXPORT mgl_adjust_ticks_(uintptr_t *gr, const char *dir, int);
+/// Auto adjust ticks and set ticks format ("+E0123456789-fF")
+void MGL_EXPORT mgl_adjust_ticks_ext(HMGL gr, const char *dir, const char *stl);
+void MGL_EXPORT mgl_adjust_ticks_ext_(uintptr_t *gr, const char *dir, const char *stl, int, int);
 /// Set the ticks parameters
 void MGL_EXPORT mgl_set_ticks(HMGL gr, char dir, double d, int ns, double org);
 void MGL_EXPORT mgl_set_ticks_(uintptr_t *gr, char *dir, mreal *d, int *ns, mreal *org, int);
-/// Set ticks text (\n separated). Use "" to disable this feature.
+/// Set the ticks parameters and specify ticks factor string
+void MGL_EXPORT mgl_set_ticks_fact(HMGL gr, char dir, double d, int ns, double org, const char *fact);
+void MGL_EXPORT mgl_set_ticks_factw(HMGL gr, char dir, double d, int ns, double org, const wchar_t *fact);
+void MGL_EXPORT mgl_set_ticks_fact_(uintptr_t *gr, char *dir, double *d, int *ns, double *org, const char *fact,int,int);
+
+/// Set manual ticks text (\n separated). Use "" to disable this feature.
 void MGL_EXPORT mgl_set_ticks_str(HMGL gr, char dir, const char *lbl, int add);
 void MGL_EXPORT mgl_set_ticks_str_(uintptr_t *gr, const char *dir, const char *lbl, int *add,int,int);
 void MGL_EXPORT mgl_set_ticks_wcs(HMGL gr, char dir, const wchar_t *lbl, int add);
-/// Set ticks position and text (\n separated). Use "" to disable this feature.
+/// Set manual ticks position and text (\n separated). Use "" to disable this feature.
 void MGL_EXPORT mgl_set_ticks_val(HMGL gr, char dir, HCDT val, const char *lbl, int add);
 void MGL_EXPORT mgl_set_ticks_val_(uintptr_t *gr, const char *dir, uintptr_t *val, const char *lbl, int *add,int,int);
 void MGL_EXPORT mgl_set_ticks_valw(HMGL gr, char dir, HCDT val, const wchar_t *lbl, int add);
+/// Add manual tick at given position. Use "" to disable this feature.
+void MGL_EXPORT mgl_add_tick(HMGL gr, char dir, double val, const char *lbl);
+void MGL_EXPORT mgl_add_tick_(uintptr_t *gr, const char *dir, mreal *val, const char *lbl,int,int);
+void MGL_EXPORT mgl_add_tickw(HMGL gr, char dir, double val, const wchar_t *lbl);
 /// Tune ticks
 void MGL_EXPORT mgl_tune_ticks(HMGL gr, int tune, double fact_pos);
 void MGL_EXPORT mgl_tune_ticks_(uintptr_t *gr, int *tune, mreal *fact_pos);
@@ -213,12 +228,15 @@ MGL_EXPORT const unsigned char *mgl_get_rgb_(uintptr_t *gr);
 /// Get RGBA values of current bitmap
 MGL_EXPORT const unsigned char *mgl_get_rgba(HMGL gr);
 MGL_EXPORT const unsigned char *mgl_get_rgba_(uintptr_t *gr);
+/// Get RGB values of current bitmap
+MGL_EXPORT const unsigned char *mgl_get_background(HMGL gr);
+MGL_EXPORT const unsigned char *mgl_get_background_(uintptr_t *gr);
 /// Set object/subplot id
 void MGL_EXPORT mgl_set_obj_id(HMGL gr, int id);
 void MGL_EXPORT mgl_set_obj_id_(uintptr_t *gr, int *id);
 /// Get object id
-int MGL_EXPORT mgl_get_obj_id(HMGL gr, int x, int y);
-int MGL_EXPORT mgl_get_obj_id_(uintptr_t *gr, int *x, int *y);
+int MGL_EXPORT_PURE mgl_get_obj_id(HMGL gr, int x, int y);
+int MGL_EXPORT_PURE mgl_get_obj_id_(uintptr_t *gr, int *x, int *y);
 /// Get subplot id
 int MGL_EXPORT mgl_get_spl_id(HMGL gr, int x, int y);
 int MGL_EXPORT mgl_get_spl_id_(uintptr_t *gr, int *x, int *y);
@@ -235,8 +253,8 @@ void MGL_EXPORT mgl_calc_xyz_(uintptr_t *gr, int *xs, int *ys, mreal *x, mreal *
 void MGL_EXPORT mgl_calc_scr(HMGL gr, double x, double y, double z, int *xs, int *ys);
 void MGL_EXPORT mgl_calc_scr_(uintptr_t *gr, mreal *x, mreal *y, mreal *z, int *xs, int *ys);
 /// Check if {xs,ys} is close to active point with accuracy d, and return its position or -1
-long MGL_EXPORT mgl_is_active(HMGL gr, int xs, int ys, int d);
-long MGL_EXPORT mgl_is_active_(uintptr_t *gr, int *xs, int *ys, int *d);
+long MGL_EXPORT_PURE mgl_is_active(HMGL gr, int xs, int ys, int d);
+long MGL_EXPORT_PURE mgl_is_active_(uintptr_t *gr, int *xs, int *ys, int *d);
 
 /// Create new frame.
 int MGL_EXPORT mgl_new_frame(HMGL gr);
@@ -262,6 +280,9 @@ void MGL_EXPORT mgl_show_frame_(uintptr_t *gr, int *i);
 /// Delete primitives for i-th frame (work if MGL_VECT_FRAME is set on)
 void MGL_EXPORT mgl_del_frame(HMGL gr, int i);
 void MGL_EXPORT mgl_del_frame_(uintptr_t *gr, int *i);
+/// Clear list of primitives for current drawing
+void MGL_EXPORT mgl_clear_frame(HMGL gr);
+void MGL_EXPORT mgl_clear_frame_(uintptr_t *gr);
 
 /// Set the transparency type (0 - usual, 1 - glass, 2 - lamp)
 void MGL_EXPORT mgl_set_transp_type(HMGL gr, int kind);
@@ -299,12 +320,21 @@ void MGL_EXPORT mgl_mat_push_(uintptr_t *gr);
 /// Clear up the frame
 void MGL_EXPORT mgl_clf(HMGL gr);
 void MGL_EXPORT mgl_clf_(uintptr_t *gr);
+/// Clear up the frame but keep fog settings
+void MGL_EXPORT mgl_clf_nfog(HMGL gr);
+void MGL_EXPORT mgl_clf_nfog_(uintptr_t *gr);
 /// Clear up the frame and fill background by specified color
 void MGL_EXPORT mgl_clf_rgb(HMGL gr, double r, double g, double b);
 void MGL_EXPORT mgl_clf_rgb_(uintptr_t *gr, mreal *r, mreal *g, mreal *b);
 /// Clear up the frame and fill background by specified color
 void MGL_EXPORT mgl_clf_chr(HMGL gr, char col);
 void MGL_EXPORT mgl_clf_chr_(uintptr_t *gr, const char *col, int);
+/// Clear up the frame and fill background by specified color with manual transparency
+void MGL_EXPORT mgl_clf_str(HMGL gr, const char *col);
+void MGL_EXPORT mgl_clf_str_(uintptr_t *gr, const char *col, int);
+/// Load background image
+void MGL_EXPORT mgl_load_background(HMGL gr, const char *fname, double alpha);
+void MGL_EXPORT mgl_load_background_(uintptr_t *gr, const char *fname, mreal *alpha, int);
 
 /// Put further plotting in some region of whole frame.
 void MGL_EXPORT mgl_subplot(HMGL gr, int nx,int ny,int m,const char *style);
@@ -349,7 +379,10 @@ void MGL_EXPORT mgl_rotate_vector(HMGL gr, double Tet,double x,double y,double z
 void MGL_EXPORT mgl_rotate_vector_(uintptr_t *gr, mreal *Tet, mreal *x, mreal *y, mreal *z);
 /// Set perspective (in range [0,1)) for plot. Set to zero for switching off.
 void MGL_EXPORT mgl_perspective(HMGL gr, double val);
-void MGL_EXPORT mgl_perspective_(uintptr_t *gr, double val);
+void MGL_EXPORT mgl_perspective_(uintptr_t *gr, mreal *val);
+/// Ask to set perspective (in range [0,1)) for plot. Set to zero for switching off.
+void MGL_EXPORT mgl_ask_perspective(HMGL gr, double val);
+void MGL_EXPORT mgl_ask_perspective_(uintptr_t *gr, mreal *val);
 /// Set angle of view independently from Rotate().
 void MGL_EXPORT mgl_view(HMGL gr, double TetX,double TetZ,double TetY);
 void MGL_EXPORT mgl_view_(uintptr_t *gr, mreal *TetX, mreal *TetZ, mreal *TetY);
@@ -358,16 +391,20 @@ void MGL_EXPORT mgl_zoom(HMGL gr, double x1, double y1, double x2, double y2);
 void MGL_EXPORT mgl_zoom_(uintptr_t *gr, mreal *x1, mreal *y1, mreal *x2, mreal *y2);
 
 //-----------------------------------------------------------------------------
+#if MGL_HAVE_PTHREAD
 void MGL_EXPORT mgl_draw_thr(void *);
+#endif
 /// Callback function for mouse click
 void MGL_EXPORT mgl_set_click_func(HMGL gr, void (*func)(void *p));
 
+/// Set callback functions for drawing and data reloading
+void MGL_EXPORT mgl_wnd_set_func(HMGL gr, int (*draw)(HMGL gr, void *p), void *par, void (*reload)(void *p));
 /// Set delay for animation in seconds
 void MGL_EXPORT mgl_wnd_set_delay(HMGL gr, double dt);
 void MGL_EXPORT mgl_wnd_set_delay_(uintptr_t *gr, mreal *dt);
 /// Get delay for animation in seconds
-double MGL_EXPORT mgl_wnd_get_delay(HMGL gr);
-double MGL_EXPORT mgl_wnd_get_delay_(uintptr_t *gr);
+double MGL_EXPORT_PURE mgl_wnd_get_delay(HMGL gr);
+double MGL_EXPORT_PURE mgl_wnd_get_delay_(uintptr_t *gr);
 /// Set window properties
 void MGL_EXPORT mgl_setup_window(HMGL gr, int clf_upd, int showpos);
 void MGL_EXPORT mgl_setup_window_(uintptr_t *gr, int *clf_upd, int *showpos);
@@ -429,9 +466,16 @@ uintptr_t MGL_EXPORT mgl_parser_add_var_(uintptr_t* p, const char *name, int);
 HMDT MGL_EXPORT mgl_parser_add_varw(HMPR p, const wchar_t *name);
 /// Find variable with given name or return NULL if no one
 /// NOTE !!! You must not delete obtained data arrays !!!
-HMDT MGL_EXPORT mgl_parser_find_var(HMPR p, const char *name);
-uintptr_t MGL_EXPORT mgl_parser_find_var_(uintptr_t* p, const char *name, int);
-HMDT MGL_EXPORT mgl_parser_find_varw(HMPR p, const wchar_t *name);
+MGL_EXPORT_PURE mglDataA *mgl_parser_find_var(HMPR p, const char *name);
+uintptr_t MGL_EXPORT_PURE mgl_parser_find_var_(uintptr_t* p, const char *name, int);
+MGL_EXPORT_PURE mglDataA *mgl_parser_find_varw(HMPR p, const wchar_t *name);
+/// Get variable with given id
+/// NOTE !!! You must not delete obtained data arrays !!!
+MGL_EXPORT_PURE mglDataA *mgl_parser_get_var(HMPR p, unsigned long id);
+uintptr_t MGL_EXPORT_PURE mgl_parser_get_var_(uintptr_t* p, unsigned long *id);
+/// Get number of variables
+long MGL_EXPORT_PURE mgl_parser_num_var(HMPR p);
+long MGL_EXPORT_PURE mgl_parser_num_var_(uintptr_t* p);
 
 /// Delete variable with name
 void MGL_EXPORT mgl_parser_del_var(HMPR p, const char *name);
@@ -440,6 +484,10 @@ void MGL_EXPORT mgl_parser_del_varw(HMPR p, const wchar_t *name);
 /// Delete all data variables
 void MGL_EXPORT mgl_parser_del_all(HMPR p);
 void MGL_EXPORT mgl_parser_del_all_(uintptr_t *p);
+
+/// Load new commands from external dynamic Library (must have "const mglCommand *mgl_cmd_extra" variable)
+void MGL_EXPORT mgl_parser_load(HMPR pr, const char *dll_name);
+void MGL_EXPORT mgl_parser_load_(uintptr_t *pr, const char *dll_name,int);
 
 /// Parse and draw single line of the MGL script
 int MGL_EXPORT mgl_parse_line(HMGL gr, HMPR p, const char *str, int pos);
@@ -461,6 +509,9 @@ void MGL_EXPORT mgl_parser_allow_setsize_(uintptr_t* p, int *a);
 /// Allow reading/saving files
 void MGL_EXPORT mgl_parser_allow_file_io(HMPR p, int a);
 void MGL_EXPORT mgl_parser_allow_file_io_(uintptr_t* p, int *a);
+/// Allow loading commands from external libraries
+void MGL_EXPORT mgl_parser_allow_dll_call(HMPR p, int a);
+void MGL_EXPORT mgl_parser_allow_dll_call_(uintptr_t* p, int *a);
 /// Set flag to stop script parsing
 void MGL_EXPORT mgl_parser_stop(HMPR p);
 void MGL_EXPORT mgl_parser_stop_(uintptr_t* p);
@@ -469,16 +520,16 @@ void MGL_EXPORT mgl_parser_stop_(uintptr_t* p);
 ///		3 - setup, 4 - data handle, 5 - data create, 6 - subplot, 7 - program
 ///		8 - 1d plot, 9 - 2d plot, 10 - 3d plot, 11 - dd plot, 12 - vector plot
 ///		13 - axis, 14 - primitives, 15 - axis setup, 16 - text/legend, 17 - data transform
-int MGL_EXPORT mgl_parser_cmd_type(HMPR pr, const char *name);
-int MGL_EXPORT mgl_parser_cmd_type_(uintptr_t* p, const char *name, int);
+int MGL_EXPORT_PURE mgl_parser_cmd_type(HMPR pr, const char *name);
+int MGL_EXPORT_PURE mgl_parser_cmd_type_(uintptr_t* p, const char *name, int);
 /// Return description of MGL command
-MGL_EXPORT const char *mgl_parser_cmd_desc(HMPR pr, const char *name);
+MGL_EXPORT_PURE const char *mgl_parser_cmd_desc(HMPR pr, const char *name);
 /// Return string of command format (command name and its argument[s])
-MGL_EXPORT const char *mgl_parser_cmd_frmt(HMPR pr, const char *name);
+MGL_EXPORT_PURE const char *mgl_parser_cmd_frmt(HMPR pr, const char *name);
 /// Get name of command with nmber n
-MGL_EXPORT const char *mgl_parser_cmd_name(HMPR pr, long id);
+MGL_EXPORT_PURE const char *mgl_parser_cmd_name(HMPR pr, long id);
 /// Get number of defined commands
-long MGL_EXPORT mgl_parser_cmd_num(HMPR pr);
+long MGL_EXPORT_PURE mgl_parser_cmd_num(HMPR pr);
 
 /// Return result of formula evaluation
 HMDT MGL_EXPORT mgl_parser_calc(HMPR pr, const char *formula);

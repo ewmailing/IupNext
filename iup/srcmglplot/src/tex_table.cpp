@@ -20,6 +20,7 @@
 #include "mgl2/font.h"
 
 /// Table of LaTeX symbols and its UTF8 codes. This array MUST BE sorted!!!
+MGL_EXPORT long mgl_tex_num=1881-24;
 MGL_EXPORT mglTeXsymb mgl_tex_symb[] = {
 	{0x23, L"#"},
 	{0x25, L"%"},
@@ -349,6 +350,8 @@ MGL_EXPORT mglTeXsymb mgl_tex_symb[] = {
 	{0x2130, L"calE"},
 	{0x2131, L"calF"},
 	{0x210b, L"calH"},
+	{0x2110, L"calI"},
+	{0x2112, L"calL"},
 	{0x2133, L"calM"},
 	{0x211b, L"calR"},
 	{0x2229, L"cap"},

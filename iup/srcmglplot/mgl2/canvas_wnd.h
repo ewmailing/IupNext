@@ -33,7 +33,7 @@ public:
 	mglCanvasWnd();
 	virtual ~mglCanvasWnd();
 
-	void SetSize(int w,int h);
+	void SetSize(int w,int h,bool clf=true);
 	void EndFrame();
 	void SetFrame(long i);
 	void DelFrame(long i);
@@ -45,7 +45,8 @@ public:
 	inline mglPoint GetMousePos() const	{	return LastMousePos;}
 	inline void SetMousePos(mglPoint p)	{	LastMousePos=p;	}
 	inline void Setup(bool clf_upd=true, bool showpos=false)
-	{	set(showpos,MGL_SHOW_POS);	set(clf_upd,MGL_CLF_ON_UPD);	}
+	{	set(showpos,MGL_SHOW_POS);	set(clf_upd,MGL_CLF_ON_UPD);
+		if(!clf_upd)	ResetFrames();	}
 
 	virtual void ToggleAlpha()=0;	///< Switch on/off transparency (do not overwrite user settings)
 	virtual void ToggleLight()=0;	///< Switch on/off lighting (do not overwrite user settings)

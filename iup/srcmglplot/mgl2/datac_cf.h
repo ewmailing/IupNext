@@ -43,10 +43,10 @@ void MGL_EXPORT mgl_srnd(long seed);
 /// Get random number
 double MGL_EXPORT mgl_rnd();
 /// Get integer power of x
-dual MGL_EXPORT mgl_ipowc(dual x,int n);
-dual MGL_EXPORT mgl_ipowc_(dual *x,int *n);
+mdual MGL_EXPORT_CONST mgl_ipowc(dual x,int n);
+mdual MGL_EXPORT_PURE mgl_ipowc_(dual *x,int *n);
 /// Get exp(i*a)
-dual MGL_EXPORT mgl_expi(dual a);
+mdual MGL_EXPORT_CONST mgl_expi(dual a);
 
 /// Create HMDT object
 HADT MGL_EXPORT mgl_create_datac();
@@ -87,14 +87,14 @@ void MGL_EXPORT mgl_datac_set_matrix(HADT dat, gsl_matrix *m);
 void MGL_EXPORT mgl_datac_set_value(HADT dat, dual v, long i, long j, long k);
 void MGL_EXPORT mgl_datac_set_value_(uintptr_t *d, dual *v, int *i, int *j, int *k);
 /// Get value of data element [i,j,k]
-dual MGL_EXPORT mgl_datac_get_value(HCDT dat, long i, long j, long k);
-dual MGL_EXPORT mgl_datac_get_value_(uintptr_t *d, int *i, int *j, int *k);
+mdual MGL_EXPORT mgl_datac_get_value(HCDT dat, long i, long j, long k);
+mdual MGL_EXPORT mgl_datac_get_value_(uintptr_t *d, int *i, int *j, int *k);
 /// Allocate memory and scanf the data from the string
 void MGL_EXPORT mgl_datac_set_values(HADT dat, const char *val, long nx, long ny, long nz);
 void MGL_EXPORT mgl_datac_set_values_(uintptr_t *d, const char *val, int *nx, int *ny, int *nz, int l);
 
 /// Returns pointer to internal data array
-MGL_EXPORT dual *mgl_datac_data(HADT dat);
+MGL_EXPORT_PURE dual *mgl_datac_data(HADT dat);
 /// Returns pointer to data element [i,j,k]
 MGL_EXPORT dual *mgl_datac_value(HADT dat, long i,long j,long k);
 
@@ -137,6 +137,38 @@ void MGL_EXPORT mgl_datac_create_(uintptr_t *dat, int *nx,int *ny,int *nz);
 /// Transpose dimensions of the data (generalization of Transpose)
 void MGL_EXPORT mgl_datac_transpose(HADT dat, const char *dim);
 void MGL_EXPORT mgl_datac_transpose_(uintptr_t *dat, const char *dim,int);
+
+/// Get sub-array of the data with given fixed indexes
+HADT MGL_EXPORT mgl_datac_subdata(HCDT dat, long xx,long yy,long zz);
+uintptr_t MGL_EXPORT mgl_datac_subdata_(uintptr_t *dat, int *xx,int *yy,int *zz);
+/// Get sub-array of the data with given fixed indexes (like indirect access)
+HADT MGL_EXPORT mgl_datac_subdata_ext(HCDT dat, HCDT xx, HCDT yy, HCDT zz);
+uintptr_t MGL_EXPORT mgl_datac_subdata_ext_(uintptr_t *dat, uintptr_t *xx,uintptr_t *yy,uintptr_t *zz);
+/// Get column (or slice) of the data filled by formulas of named columns
+HADT MGL_EXPORT mgl_datac_column(HCDT dat, const char *eq);
+uintptr_t MGL_EXPORT mgl_datac_column_(uintptr_t *dat, const char *eq,int l);
+/// Get trace of the data array
+HADT MGL_EXPORT mgl_datac_trace(HCDT d);
+uintptr_t MGL_EXPORT mgl_datac_trace_(uintptr_t *d);
+/// Resize the data to new sizes
+HADT MGL_EXPORT mgl_datac_resize(HCDT dat, long mx,long my,long mz);
+uintptr_t MGL_EXPORT mgl_datac_resize_(uintptr_t *dat, int *mx,int *my,int *mz);
+/// Resize the data to new sizes of box [x1,x2]*[y1,y2]*[z1,z2]
+HADT MGL_EXPORT mgl_datac_resize_box(HCDT dat, long mx,long my,long mz,mreal x1,mreal x2,mreal y1,mreal y2,mreal z1,mreal z2);
+uintptr_t MGL_EXPORT mgl_datac_resize_box_(uintptr_t *dat, int *mx,int *my,int *mz,mreal *x1,mreal *x2,mreal *y1,mreal *y2,mreal *z1,mreal *z2);
+/// Get momentum (1D-array) of data along direction 'dir'. String looks like "x1" for median in x-direction, "x2" for width in x-dir and so on.
+HADT MGL_EXPORT mgl_datac_momentum(HCDT dat, char dir, const char *how);
+uintptr_t MGL_EXPORT mgl_datac_momentum_(uintptr_t *dat, char *dir, const char *how, int,int);
+/// Get array which values is result of interpolation this for coordinates from other arrays
+HADT MGL_EXPORT mgl_datac_evaluate(HCDT dat, HCDT idat, HCDT jdat, HCDT kdat, int norm);
+uintptr_t MGL_EXPORT mgl_datac_evaluate_(uintptr_t *dat, uintptr_t *idat, uintptr_t *jdat, uintptr_t *kdat, int *norm);
+/// Get array which is result of summation in given direction or directions
+HADT MGL_EXPORT mgl_datac_sum(HCDT dat, const char *dir);
+uintptr_t MGL_EXPORT mgl_datac_sum_(uintptr_t *dat, const char *dir,int);
+/// Get the data which is direct multiplication (like, d[i,j] = this[i]*a[j] and so on)
+HADT MGL_EXPORT mgl_datac_combine(HCDT dat1, HCDT dat2);
+uintptr_t MGL_EXPORT mgl_datac_combine_(uintptr_t *dat1, uintptr_t *dat2);
+
 /// Set names for columns (slices)
 void MGL_EXPORT mgl_datac_set_id(HADT d, const char *id);
 void MGL_EXPORT mgl_datac_set_id_(uintptr_t *dat, const char *id,int l);
@@ -227,18 +259,23 @@ HMDT MGL_EXPORT mgl_datac_arg(HCDT dat);
 uintptr_t MGL_EXPORT mgl_datac_arg_(uintptr_t *dat);
 
 /// Interpolate by linear function the data to given point x=[0...nx-1], y=[0...ny-1], z=[0...nz-1]
-dual MGL_EXPORT mgl_datac_linear(HCDT d, mreal x,mreal y,mreal z);
-dual MGL_EXPORT mgl_datac_linear_(uintptr_t *d, mreal *x,mreal *y,mreal *z);
+mdual MGL_EXPORT_PURE mgl_datac_linear(HCDT d, mreal x,mreal y,mreal z);
+mdual MGL_EXPORT_PURE mgl_datac_linear_(uintptr_t *d, mreal *x,mreal *y,mreal *z);
 /// Interpolate by linear function the data and return its derivatives at given point x=[0...nx-1], y=[0...ny-1], z=[0...nz-1]
-dual MGL_EXPORT mgl_datac_linear_ext(HCDT d, mreal x,mreal y,mreal z, dual *dx,dual *dy,dual *dz);
-dual MGL_EXPORT mgl_datac_linear_ext_(uintptr_t *d, mreal *x,mreal *y,mreal *z, dual *dx,dual *dy,dual *dz);
+mdual MGL_EXPORT_PURE mgl_datac_linear_ext(HCDT d, mreal x,mreal y,mreal z, dual *dx,dual *dy,dual *dz);
+mdual MGL_EXPORT_PURE mgl_datac_linear_ext_(uintptr_t *d, mreal *x,mreal *y,mreal *z, dual *dx,dual *dy,dual *dz);
 /// Interpolate by cubic spline the data to given point x=[0...nx-1], y=[0...ny-1], z=[0...nz-1]
-dual MGL_EXPORT mgl_datac_spline(HCDT dat, mreal x,mreal y,mreal z);
-dual MGL_EXPORT mgl_datac_spline_(uintptr_t *dat, mreal *x,mreal *y,mreal *z);
+mdual MGL_EXPORT_PURE mgl_datac_spline(HCDT dat, mreal x,mreal y,mreal z);
+mdual MGL_EXPORT_PURE mgl_datac_spline_(uintptr_t *dat, mreal *x,mreal *y,mreal *z);
 /// Interpolate by cubic spline the data and return its derivatives at given point x=[0...nx-1], y=[0...ny-1], z=[0...nz-1]
-dual MGL_EXPORT mgl_datac_spline_ext(HCDT dat, mreal x,mreal y,mreal z, dual *dx,dual *dy,dual *dz);
-dual MGL_EXPORT mgl_datac_spline_ext_(uintptr_t *dat, mreal *x,mreal *y,mreal *z, dual *dx,dual *dy,dual *dz);
-
+mdual MGL_EXPORT_PURE mgl_datac_spline_ext(HCDT dat, mreal x,mreal y,mreal z, dual *dx,dual *dy,dual *dz);
+mdual MGL_EXPORT_PURE mgl_datac_spline_ext_(uintptr_t *dat, mreal *x,mreal *y,mreal *z, dual *dx,dual *dy,dual *dz);
+/// Prepare coefficients for global spline interpolation
+HADT MGL_EXPORT mgl_gsplinec_init(HCDT x, HCDT v);
+uintptr_t MGL_EXPORT mgl_gspline_init_(uintptr_t *x, uintptr_t *v);
+/// Evaluate global spline (and its derivatives d1, d2 if not NULL) using prepared coefficients \a coef
+mdual MGL_EXPORT mgl_gsplinec(HCDT coef, mreal dx, dual *d1, dual *d2);
+mdual MGL_EXPORT mgl_gsplinec_(uintptr_t *c, mreal *dx, dual *d1, dual *d2);
 //-----------------------------------------------------------------------------
 /// Create HAEX object for expression evaluating
 HAEX MGL_EXPORT mgl_create_cexpr(const char *expr);
@@ -247,10 +284,10 @@ uintptr_t MGL_EXPORT mgl_create_cexpr_(const char *expr, int);
 void MGL_EXPORT mgl_delete_cexpr(HAEX ex);
 void MGL_EXPORT mgl_delete_cexpr_(uintptr_t *ex);
 /// Return value of expression for given x,y,z variables
-dual MGL_EXPORT mgl_cexpr_eval(HAEX ex, dual x, dual y,dual z);
-dual MGL_EXPORT mgl_cexpr_eval_(uintptr_t *ex, dual *x, dual *y, dual *z);
+mdual MGL_EXPORT_PURE mgl_cexpr_eval(HAEX ex, dual x, dual y,dual z);
+mdual MGL_EXPORT mgl_cexpr_eval_(uintptr_t *ex, dual *x, dual *y, dual *z);
 /// Return value of expression for given variables
-dual MGL_EXPORT mgl_cexpr_eval_v(HAEX ex, dual *vars);
+mdual MGL_EXPORT mgl_cexpr_eval_v(HAEX ex, dual *vars);
 
 #ifdef __cplusplus
 }

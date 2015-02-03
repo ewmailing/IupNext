@@ -41,10 +41,10 @@ void mglCanvasWnd::ResetFrames()
 	mglCanvas::ResetFrames();
 }
 //-----------------------------------------------------------------------------
-void mglCanvasWnd::SetSize(int w,int h)
+void mglCanvasWnd::SetSize(int w,int h,bool)
 {
 	if(DrawFunc)	ResetFrames();
-	mglCanvas::SetSize(w,h);
+	mglCanvas::SetSize(w,h,false);
 //	if(Wnd)	Wnd->size(w,h);
 }
 //-----------------------------------------------------------------------------
@@ -85,7 +85,7 @@ void mglCanvasWnd::SetDrawFunc(int (*draw)(mglBase *gr, void *p), void *par, voi
 {
 	ResetFrames();
 	if(get(MGL_CLF_ON_UPD))	DefaultPlotParam();
-	setlocale(LC_NUMERIC, "C");
+	const std::string loc = setlocale(LC_NUMERIC, NULL);	setlocale(LC_NUMERIC, "C");
 	// use frames for quickly redrawing while adding/changing primitives
 	if(mgl_is_frames(this))	NewFrame();
 
@@ -96,7 +96,7 @@ void mglCanvasWnd::SetDrawFunc(int (*draw)(mglBase *gr, void *p), void *par, voi
 
 	if(mgl_is_frames(this))	EndFrame();
 	if(n>=0)	SetCurFig(0);
-	setlocale(LC_NUMERIC, "");
+	setlocale(LC_NUMERIC, loc.c_str());
 }
 //-----------------------------------------------------------------------------
 const unsigned char *mglCanvasWnd::GetBits()
@@ -114,19 +114,21 @@ void mglCanvasWnd::ReLoad()
 		LoadFunc(FuncPar);
 		// update number of slides
 		ResetFrames();
-		setlocale(LC_NUMERIC, "C");
+		const std::string loc = setlocale(LC_NUMERIC, NULL);	setlocale(LC_NUMERIC, "C");
 		// use frames for quickly redrawing while adding/changing primitives
 		if(mgl_is_frames(this))	NewFrame();
-		
+
 		int n = DrawFunc ? DrawFunc(this,FuncPar) : 0;
 		if(n<NumFig && n>=0)	NumFig = n;
-		
+
 		if(mgl_is_frames(this))	EndFrame();
-		setlocale(LC_NUMERIC, "");
+		setlocale(LC_NUMERIC, loc.c_str());
 		Update();
 	}
 }
 //-----------------------------------------------------------------------------
+void MGL_EXPORT mgl_wnd_set_func(HMGL gr, int (*draw)(HMGL gr, void *p), void *par, void (*reload)(void *p))
+{	mglCanvasWnd *g = dynamic_cast<mglCanvasWnd *>(gr);	if(g)	g->SetDrawFunc(draw, par, reload);	}
 void MGL_EXPORT mgl_wnd_toggle_alpha(HMGL gr)
 {	mglCanvasWnd *g = dynamic_cast<mglCanvasWnd *>(gr);	if(g)	g->ToggleAlpha();	}
 void MGL_EXPORT mgl_wnd_toggle_light(HMGL gr)
@@ -213,11 +215,11 @@ void MGL_EXPORT mgl_reload_class(void *p)	// so stupid way to save mglDraw class
 void MGL_EXPORT mgl_click_class(void *p)	// so stupid way to save mglDraw class inheritance :(
 {	mglWindow *w = (mglWindow *)p;	if(w && w->dr)	w->dr->Click();	}*/
 int MGL_EXPORT mgl_draw_class(HMGL gr, void *p)
-{	mglGraph g(gr);	mglDraw *dr = (mglDraw *)p;	return dr->Draw(&g);	}
+{	mglGraph g(gr);	mglDraw *dr = (mglDraw *)p;	return dr?dr->Draw(&g):0;	}
 void MGL_EXPORT mgl_reload_class(void *p)
-{	mglDraw *dr = (mglDraw *)p;	dr->Reload();	}
+{	mglDraw *dr = (mglDraw *)p;	if(dr)	dr->Reload();	}
 void MGL_EXPORT mgl_click_class(void *p)
-{	mglDraw *dr = (mglDraw *)p;	dr->Click();		}
+{	mglDraw *dr = (mglDraw *)p;	if(dr)	dr->Click();		}
 //-----------------------------------------------------------------------------
 typedef int (*draw_func)(mglGraph *gr);
 int MGL_EXPORT mgl_draw_graph(HMGL gr, void *p)
@@ -227,21 +229,18 @@ int MGL_EXPORT mgl_draw_graph(HMGL gr, void *p)
 	return func ? func(&g) : 0;
 }
 //-----------------------------------------------------------------------------
+#if MGL_HAVE_PTHREAD
 MGL_NO_EXPORT void *mgl_draw_calc(void *p)
 {
-#if MGL_HAVE_PTHREAD
-	((mglDraw *)p)->Calc();
-#endif
-	return 0;
+	((mglDraw *)p)->Calc();	return 0;
 }
 //-----------------------------------------------------------------------------
 void MGL_EXPORT mgl_draw_thr(void *p)
 {
-#if MGL_HAVE_PTHREAD
 	mglDraw *d = (mglDraw *)p;
 	if(!d || d->running)	return;
 	pthread_create(&(d->thr),0,mgl_draw_calc,d);
 	pthread_detach(d->thr);
-#endif
 }
+#endif
 //-----------------------------------------------------------------------------

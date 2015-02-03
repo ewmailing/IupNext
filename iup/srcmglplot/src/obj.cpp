@@ -315,26 +315,26 @@ struct ObjGroup {
   void writeLines() {
     for(std::map<size_t, std::deque<ObjLine> >::const_iterator pm = lines.begin(); pm != lines.end(); pm++)
     {
-      fprintf(fp,"usemtl Material%"PRIuS"\n", pm->first);
+      fprintf(fp,"usemtl Material%" PRIuS "\n", pm->first);
       for(std::deque<ObjLine>::const_iterator pl = pm->second.begin(); pl != pm->second.end(); pl++)
-        fprintf(fp,"l %"PRIuS" %"PRIuS"\n", pl->p1, pl->p2);
+        fprintf(fp,"l %" PRIuS " %" PRIuS "\n", pl->p1, pl->p2);
       }
   }
   void writePoints() {
     for(std::map<size_t, std::deque<size_t> >::const_iterator pm = points.begin(); pm != points.end(); pm++)
     {
-      fprintf(fp,"usemtl Material%"PRIuS"\n", pm->first);
+      fprintf(fp,"usemtl Material%" PRIuS "\n", pm->first);
       for(std::deque<size_t>::const_iterator pp = pm->second.begin(); pp != pm->second.end(); pp++)
-        fprintf(fp,"p %"PRIuS"\n", *pp);
+        fprintf(fp,"p %" PRIuS "\n", *pp);
     }
   }
   void writeTriangles() {
     for(std::deque<ObjTriangle>::const_iterator pt = triangles.begin(); pt != triangles.end(); pt++)
-      fprintf(fp,"f %"PRIuS" %"PRIuS" %"PRIuS"\n", pt->p1, pt->p2, pt->p3);
+      fprintf(fp,"f %" PRIuS " %" PRIuS " %" PRIuS "\n", pt->p1, pt->p2, pt->p3);
   }
   void writeTexturedTriangles() {
     for(std::deque<ObjTriangle>::const_iterator pt = triangles.begin(); pt != triangles.end(); pt++)
-      fprintf(fp,"f %"PRIuS"/%"PRIuS" %"PRIuS"/%"PRIuS" %"PRIuS"/%"PRIuS"\n", pt->p1,pt->t1, pt->p2,pt->t2, pt->p3,pt->t3);
+      fprintf(fp,"f %" PRIuS "/%" PRIuS " %" PRIuS "/%" PRIuS " %" PRIuS "/%" PRIuS "\n", pt->p1,pt->t1, pt->p2,pt->t2, pt->p3,pt->t3);
   }
 };
 
@@ -371,7 +371,7 @@ struct ObjMaterials {
 		{
 			const size_t color_index = materialmap.size();
 			materialmap.insert(std::make_pair(color,color_index));
-      fprintf(fp,"newmtl Material%"PRIuS"\n", color_index);
+      fprintf(fp,"newmtl Material%" PRIuS "\n", color_index);
       fprintf(fp,"Ka 0.1 0.1 0.1\n");
       fprintf(fp,"Kd %g %g %g\n", color.r, color.g, color.b);
       fprintf(fp,"Ks 0.0 0.0 0.0\n");
@@ -391,16 +391,12 @@ struct ObjMaterials {
   }
 };
 
-
-static size_t power_of_two(size_t input)
+size_t MGL_LOCAL_CONST power_of_two(size_t input)
 {
 	size_t value = 1;
-	while ( value < input ) {
-		value <<= 1;
-	}
+	while ( value < input )	value <<= 1;
 	return value;
 }
-
 
 void MGL_EXPORT mgl_write_obj(HMGL gr, const char *fname,const char *descr, int use_png)
 {
@@ -416,7 +412,7 @@ void MGL_EXPORT mgl_write_obj(HMGL gr, const char *fname,const char *descr, int 
 		for(i=0;i<size_t(gr->GetPrmNum());i++)	// collect data for groups
 		// it is rather expensive (extra 4b per primitive) but need for export to 3D
 		{
-			m = gr->GetPrm(i).id-mmin;
+			m = gr->GetPrm(i,false).id-mmin;
 			if(m>=0 && m<mmax-mmin+1)	gr->Grp[ng[m]].p.push_back(i);
 		}
 		delete []ng;
@@ -509,7 +505,7 @@ void MGL_EXPORT mgl_write_obj(HMGL gr, const char *fname,const char *descr, int 
     ObjGroup grp(fp, vertexcoords);
 		for(j=0;j<p.size();j++)
 		{
-			const mglPrim &q = gr->GetPrm(p[j]);
+			const mglPrim &q = gr->GetPrm(p[j],false);
 
       register long n1=q.n1,n2=q.n2,n3=q.n3,n4=q.n4;
       switch(q.type)
@@ -945,7 +941,7 @@ void MGL_EXPORT mgl_write_obj(HMGL gr, const char *fname,const char *descr, int 
 
     if (!grp.triangles.empty()) {
       if (grp.samecolor) {
-        fprintf(fp,"usemtl Material%"PRIuS"\n", materials.addColor(grp.commoncolor));
+        fprintf(fp,"usemtl Material%" PRIuS "\n", materials.addColor(grp.commoncolor));
         grp.writeTriangles();
       } else {
         fprintf(fp,"usemtl Material\n");

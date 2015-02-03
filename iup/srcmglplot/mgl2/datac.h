@@ -1,5 +1,5 @@
 /***************************************************************************
- * data.h is part of Math Graphic Library
+ * datac.h is part of Math Graphic Library
  * Copyright (C) 2007-2014 Alexey Balakin <mathgl.abalakin@gmail.ru>       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,11 +30,11 @@
 #define mgl3 	mreal(3)
 #define mgl4 	mreal(4)
 //-----------------------------------------------------------------------------
-/// Class for working with data array
+/// Class for working with complex data array
 class MGL_EXPORT mglDataC : public mglDataA
 {
 public:
-
+using mglDataA::Momentum;
 	long nx;		///< number of points in 1st dimensions ('x' dimension)
 	long ny;		///< number of points in 2nd dimensions ('y' dimension)
 	long nz;		///< number of points in 3d dimensions ('z' dimension)
@@ -42,35 +42,49 @@ public:
 	std::string id;	///< column (or slice) names
 	bool link;		///< use external data (i.e. don't free it)
 
-	/// Initiate by other mglData variable
-	inline mglDataC(const mglDataC &d)	{	a=0;	mgl_datac_set(this,&d);		}	// NOTE: must be constructor for mglDataC& to exclude copy one
-	inline mglDataC(const mglDataA *d)	{	a=0;	mgl_datac_set(this, d);		}
-	inline mglDataC(bool, mglDataC *d)	// NOTE: Variable d will be deleted!!!
+	/// Initiate by other mglDataC variable
+	mglDataC(const mglDataC &d)	{	a=0;	mgl_datac_set(this,&d);		}	// NOTE: must be constructor for mglDataC& to exclude copy one
+	mglDataC(const mglDataA &d)	{	a=0;	mgl_datac_set(this,&d);		}
+#if MGL_HAVE_RVAL
+	mglDataC(mglDataC &&d):nx(d.nx),ny(d.ny),nz(d.nz),a(d.a),id(d.id),link(d.link)
+	{	s=d.s;	temp=d.temp;	func=d.func;	o=d.o;	d.a=0;	d.func=0;	}
+#endif
+	mglDataC(const mglDataA &re, const mglDataA &im)	{	a=0;	mgl_datac_set_ri(this,&re,&im);	}
+	mglDataC(HCDT d)	{	a=0;	mgl_datac_set(this, d);		}
+	mglDataC(HCDT re, HCDT im)	{	a=0;	mgl_datac_set_ri(this, re, im);		}
+	mglDataC(bool, mglDataC *d)	// NOTE: Variable d will be deleted!!!
 	{	if(d)
 		{	nx=d->nx;	ny=d->ny;	nz=d->nz;	a=d->a;	d->a=0;
+			temp=d->temp;	func=d->func;	o=d->o;	s=d->s;
 			id=d->id;	link=d->link;	delete d;	}
 		else	{	a=0;	Create(1);	}	}
 	/// Initiate by flat array
-	inline mglDataC(int size, const dual *d)	{	a=0;	Set(d,size);	}
-	inline mglDataC(int rows, int cols, const dual *d)	{	a=0;	Set(d,cols,rows);	}
-	inline mglDataC(int size, const double *d)	{	a=0;	Set(d,size);	}
-	inline mglDataC(int rows, int cols, const double *d)	{	a=0;	Set(d,cols,rows);	}
-	inline mglDataC(int size, const float *d)	{	a=0;	Set(d,size);	}
-	inline mglDataC(int rows, int cols, const float *d)	{	a=0;	Set(d,cols,rows);	}
+	mglDataC(int size, const dual *d)	{	a=0;	Set(d,size);	}
+	mglDataC(int rows, int cols, const dual *d)	{	a=0;	Set(d,cols,rows);	}
+	mglDataC(int size, const double *d)	{	a=0;	Set(d,size);	}
+	mglDataC(int rows, int cols, const double *d)	{	a=0;	Set(d,cols,rows);	}
+	mglDataC(int size, const float *d)	{	a=0;	Set(d,size);	}
+	mglDataC(int rows, int cols, const float *d)	{	a=0;	Set(d,cols,rows);	}
+	mglDataC(const dual *d, int size)	{	a=0;	Set(d,size);	}
+	mglDataC(const dual *d, int rows, int cols)	{	a=0;	Set(d,cols,rows);	}
+	mglDataC(const double *d, int size)	{	a=0;	Set(d,size);	}
+	mglDataC(const double *d, int rows, int cols)	{	a=0;	Set(d,cols,rows);	}
+	mglDataC(const float *d, int size)	{	a=0;	Set(d,size);	}
+	mglDataC(const float *d, int rows, int cols)	{	a=0;	Set(d,cols,rows);	}
 	/// Read data from file
-	inline mglDataC(const char *fname)			{	a=0;	Read(fname);	}
+	mglDataC(const char *fname)			{	a=0;	Read(fname);	}
 	/// Allocate the memory for data array and initialize it zero
-	inline mglDataC(long xx=1,long yy=1,long zz=1)	{	a=0;	Create(xx,yy,zz);	}
+	mglDataC(long xx=1,long yy=1,long zz=1)	{	a=0;	Create(xx,yy,zz);	}
 	/// Delete the array
 	virtual ~mglDataC()	{	if(!link && a)	delete []a;	}
-	inline dual GetVal(long i, long j=0, long k=0)
+	inline dual GetVal(long i, long j=0, long k=0) const
 	{	return mgl_datac_get_value(this,i,j,k);}
 	inline void SetVal(dual f, long i, long j=0, long k=0)
 	{	mgl_datac_set_value(this,f,i,j,k);	}
 	/// Get sizes
-	inline long GetNx() const	{	return nx;	}
-	inline long GetNy() const	{	return ny;	}
-	inline long GetNz() const	{	return nz;	}
+	long GetNx() const	{	return nx;	}
+	long GetNy() const	{	return ny;	}
+	long GetNz() const	{	return nz;	}
 
 	/// Link external data array (don't delete it at exit)
 	inline void Link(dual *A, long NX, long NY=1, long NZ=1)
@@ -159,8 +173,8 @@ public:
 	inline void Fill(mglBase *gr, const char *eq, const mglDataA &vdat, const mglDataA &wdat,const char *opt="")
 	{	mgl_datac_fill_eq(gr,this,eq,&vdat,&wdat,opt);	}
 	/// Equidistantly fill the data to range [x1,x2] in direction dir
-	inline void Fill(dual x1,dual x2=NaN,char dir='x')
-	{	return mgl_datac_fill(this,x1,x2,dir);	}
+	inline void Fill(dual x1,dual x2=mglNaN,char dir='x')
+	{	mgl_datac_fill(this,x1,x2,dir);	}
 
 		/// Put value to data element(s)
 	inline void Put(dual val, long i=-1, long j=-1, long k=-1)
@@ -182,7 +196,7 @@ public:
 	inline bool Read(const char *fname,long mx,long my=1,long mz=1)
 	{	return mgl_datac_read_dim(this,fname,mx,my,mz);	}
 	/// Save whole data array (for ns=-1) or only ns-th slice to text file
-	inline void Save(const char *fname,long ns=-1) const
+	void Save(const char *fname,long ns=-1) const
 	{	mgl_datac_save(this,fname,ns);	}
 	/// Read data from tab-separated text files with auto determining size which filenames are result of sprintf(fname,templ,t) where t=from:step:to
 	inline bool ReadRange(const char *templ, double from, double to, double step=1, bool as_slice=false)
@@ -193,19 +207,13 @@ public:
 	/// Read data from text file with size specified at beginning of the file
 	inline bool ReadMat(const char *fname, long dim=2)
 	{	return mgl_datac_read_mat(this,fname,dim);	}
-	/// Export data array (for ns=-1) or only ns-th slice to PNG file according color scheme
-	inline void Export(const char *fname,const char *scheme,mreal v1=0,mreal v2=0,long ns=-1) const
-	{	mgl_data_export(this,fname,scheme,v1,v2,ns);	}
 
 		/// Read data array from HDF file (parse HDF4 and HDF5 files)
 	inline int ReadHDF(const char *fname,const char *data)
 	{	return mgl_datac_read_hdf(this,fname,data);	}
 	/// Save data to HDF file
-	inline void SaveHDF(const char *fname,const char *data,bool rewrite=false) const
+	void SaveHDF(const char *fname,const char *data,bool rewrite=false) const
 	{	mgl_datac_save_hdf(this,fname,data,rewrite);	}
-	/// Put HDF data names into buf as '\t' separated.
-	inline static int DatasHDF(const char *fname, char *buf, long size)
-	{	return mgl_datas_hdf(fname,buf,size);	}
 
 	/// Get real part of data values
 	inline mglData Real() const
@@ -219,49 +227,41 @@ public:
 	/// Get argument of data values
 	inline mglData Arg() const
 	{	return mglData(true,mgl_datac_arg(this));	}
-	
+
 	/// Get column (or slice) of the data filled by formulas of named columns
-	inline mglData Column(const char *eq) const
-	{	return mglData(true,mgl_data_column(this,eq));	}
+	inline mglDataC Column(const char *eq) const
+	{	return mglDataC(true,mgl_datac_column(this,eq));	}
 	/// Get momentum (1D-array) of data along direction 'dir'. String looks like "x1" for median in x-direction, "x2" for width in x-dir and so on.
-	inline mglData Momentum(char dir, const char *how) const
-	{	return mglData(true,mgl_data_momentum(this,dir,how));	}
+	inline mglDataC Momentum(char dir, const char *how) const
+	{	return mglDataC(true,mgl_datac_momentum(this,dir,how));	}
 	/// Get sub-array of the data with given fixed indexes
-	inline mglData SubData(long xx,long yy=-1,long zz=-1) const
-	{	return mglData(true,mgl_data_subdata(this,xx,yy,zz));	}
-	inline mglData SubData(const mglDataA &xx, const mglDataA &yy, const mglDataA &zz) const
-	{	return mglData(true,mgl_data_subdata_ext(this,&xx,&yy,&zz));	}
+	inline mglDataC SubData(long xx,long yy=-1,long zz=-1) const
+	{	return mglDataC(true,mgl_datac_subdata(this,xx,yy,zz));	}
+	inline mglDataC SubData(const mglDataA &xx, const mglDataA &yy, const mglDataA &zz) const
+	{	return mglDataC(true,mgl_datac_subdata_ext(this,&xx,&yy,&zz));	}
+	inline mglDataC SubData(const mglDataA &xx, const mglDataA &yy) const
+	{	return mglDataC(true,mgl_datac_subdata_ext(this,&xx,&yy,0));	}
+	inline mglDataC SubData(const mglDataA &xx) const
+	{	return mglDataC(true,mgl_datac_subdata_ext(this,&xx,0,0));	}
 	/// Get trace of the data array
-	inline mglData Trace() const
-	{	return mglData(true,mgl_data_trace(this));	}
-	/// Create n-th points distribution of this data values in range [v1, v2]
-	inline mglData Hist(long n,mreal v1=0,mreal v2=1, long nsub=0) const
-	{	return mglData(true,mgl_data_hist(this,n,v1,v2,nsub));	}
-	/// Create n-th points distribution of this data values in range [v1, v2] with weight w
-	inline mglData Hist(const mglDataA &w, long n,mreal v1=0,mreal v2=1, long nsub=0) const
-	{	return mglData(true,mgl_data_hist_w(this,&w,n,v1,v2,nsub));	}
+	inline mglDataC Trace() const
+	{	return mglDataC(true,mgl_datac_trace(this));	}
 	/// Get array which is result of summation in given direction or directions
-	inline mglData Sum(const char *dir) const
-	{	return mglData(true,mgl_data_sum(this,dir));	}
-	/// Get array which is result of maximal values in given direction or directions
-	inline mglData Max(const char *dir) const
-	{	return mglData(true,mgl_data_max_dir(this,dir));	}
-	/// Get array which is result of minimal values in given direction or directions
-	inline mglData Min(const char *dir) const
-	{	return mglData(true,mgl_data_min_dir(this,dir));	}
+	inline mglDataC Sum(const char *dir) const
+	{	return mglDataC(true,mgl_datac_sum(this,dir));	}
 	/// Get the data which is direct multiplication (like, d[i,j] = this[i]*a[j] and so on)
-	inline mglData Combine(const mglDataA &dat) const
-	{	return mglData(true,mgl_data_combine(this,&dat));	}
+	inline mglDataC Combine(const mglDataA &dat) const
+	{	return mglDataC(true,mgl_datac_combine(this,&dat));	}
 	/// Resize the data to new size of box [x1,x2]*[y1,y2]*[z1,z2]
-	inline mglData Resize(long mx,long my=1,long mz=1, mreal x1=0,mreal x2=1, mreal y1=0,mreal y2=1, mreal z1=0,mreal z2=1) const
-	{	return mglData(true,mgl_data_resize_box(this,mx,my,mz,x1,x2,y1,y2,z1,z2));	}
+	inline mglDataC Resize(long mx,long my=1,long mz=1, mreal x1=0,mreal x2=1, mreal y1=0,mreal y2=1, mreal z1=0,mreal z2=1) const
+	{	return mglDataC(true,mgl_datac_resize_box(this,mx,my,mz,x1,x2,y1,y2,z1,z2));	}
 	/// Get array which values is result of interpolation this for coordinates from other arrays
-	inline mglData Evaluate(const mglData &idat, bool norm=true) const
-	{	return mglData(true,mgl_data_evaluate(this,&idat,0,0,norm));	}
-	inline mglData Evaluate(const mglData &idat, const mglData &jdat, bool norm=true) const
-	{	return mglData(true,mgl_data_evaluate(this,&idat,&jdat,0,norm));	}
-	inline mglData Evaluate(const mglData &idat, const mglData &jdat, const mglData &kdat, bool norm=true) const
-	{	return mglData(true,mgl_data_evaluate(this,&idat,&jdat,&kdat,norm));	}
+	inline mglDataC Evaluate(const mglData &idat, bool norm=true) const
+	{	return mglDataC(true,mgl_datac_evaluate(this,&idat,0,0,norm));	}
+	inline mglDataC Evaluate(const mglData &idat, const mglData &jdat, bool norm=true) const
+	{	return mglDataC(true,mgl_datac_evaluate(this,&idat,&jdat,0,norm));	}
+	inline mglDataC Evaluate(const mglData &idat, const mglData &jdat, const mglData &kdat, bool norm=true) const
+	{	return mglDataC(true,mgl_datac_evaluate(this,&idat,&jdat,&kdat,norm));	}
 
 	/// Find correlation with another data arrays
 	inline mglDataC Correl(const mglData &dat, const char *dir) const
@@ -269,6 +269,19 @@ public:
 	/// Find auto correlation function
 	inline mglDataC AutoCorrel(const char *dir) const
 	{	return mglDataC(true,mgl_datac_correl(this,this,dir));	}
+
+	/// Create n-th points distribution of this data values in range [v1, v2]
+	inline mglData Hist(long n,mreal v1=0,mreal v2=1, long nsub=0) const
+	{	return mglData(true,mgl_data_hist(this,n,v1,v2,nsub));	}
+	/// Create n-th points distribution of this data values in range [v1, v2] with weight w
+	inline mglData Hist(const mglDataA &w, long n,mreal v1=0,mreal v2=1, long nsub=0) const
+	{	return mglData(true,mgl_data_hist_w(this,&w,n,v1,v2,nsub));	}
+	/// Get array which is result of maximal values in given direction or directions
+	inline mglData Max(const char *dir) const
+	{	return mglData(true,mgl_data_max_dir(this,dir));	}
+	/// Get array which is result of minimal values in given direction or directions
+	inline mglData Min(const char *dir) const
+	{	return mglData(true,mgl_data_min_dir(this,dir));	}
 
 	/// Cumulative summation the data in given direction or directions
 	inline void CumSum(const char *dir)	{	mgl_datac_cumsum(this,dir);	}
@@ -332,66 +345,50 @@ public:
 	{	return mglData(true,mgl_data_solve(this, val, dir, 0, norm));	}
 	inline mglData Solve(mreal val, char dir, const mglData &i0, bool norm=true) const
 	{	return mglData(true,mgl_data_solve(this, val, dir, &i0, norm));	}
-	
-	/// Print information about the data (sizes and momentum) to string
-	inline const char *PrintInfo() const	{	return mgl_data_info(this);	}
-	/// Print information about the data (sizes and momentum) to FILE (for example, stdout)
-	inline void PrintInfo(FILE *fp) const
-	{	if(fp)	{	fprintf(fp,"%s",mgl_data_info(this));	fflush(fp);	}	}
-	/// Get maximal value of the data
-	inline mreal Maximal() const	{	return mgl_data_max(this);	}
-	/// Get minimal value of the data
-	inline mreal Minimal() const	{	return mgl_data_min(this);	}
-	/// Get maximal value of the data and its position
-	inline mreal Maximal(long &i,long &j,long &k) const
-	{	return mgl_data_max_int(this,&i,&j,&k);	}
-	/// Get minimal value of the data and its position
-	inline mreal Minimal(long &i,long &j,long &k) const
-	{	return mgl_data_min_int(this,&i,&j,&k);	}
-	/// Get maximal value of the data and its approximated position
-	inline mreal Maximal(mreal &x,mreal &y,mreal &z) const
-	{	return mgl_data_max_real(this,&x,&y,&z);	}
-	/// Get minimal value of the data and its approximated position
-	inline mreal Minimal(mreal &x,mreal &y,mreal &z) const
-	{	return mgl_data_min_real(this,&x,&y,&z);	}
 
-	/// Copy data from other mglData variable
-	inline mglDataC &operator=(const mglData &d)
-	{	Set(&d);	return *this;	}
-	/// Copy data from other mglDataC variable
-	inline mglDataC &operator=(const mglDataC &d)
-	{	if(this!=&d)	Set(d.a,d.nx,d.ny,d.nz);	return *this;	}
+	/// Copy data from other mglDataA variable
+	inline const mglDataA &operator=(const mglDataA &d)
+	{	if(this!=&d)	Set(&d);	return d;	}
+	inline const mglDataC &operator=(const mglDataC &d)
+	{	if(this!=&d)	Set(&d);	return d;	}
 	inline dual operator=(dual val)
+	{	for(long i=0;i<nx*ny*nz;i++)	a[i]=val;	return val;	}
+	inline dual operator=(mreal val)
 	{	for(long i=0;i<nx*ny*nz;i++)	a[i]=val;	return val;	}
 #ifndef SWIG
 	/// Direct access to the data cell
 	inline dual &operator[](long i)	{	return a[i];	}
 #endif
 
-	/// Get the value in given cell of the data without border checking
-	inline mreal v(long i,long j=0,long k=0) const
-#ifdef DEBUG
-	{	if(i<0 || j<0 || k<0 || i>=nx || j>=ny || k>=nz)	printf("Wrong index in mglData");
-		return abs(a[i+nx*(j+ny*k)]);	}
+
+#ifndef DEBUG
+	/// Get the value in given cell of the data
+	mreal v(long i,long j=0,long k=0) const	{	return abs(a[i+nx*(j+ny*k)]);	}
+	/// Set the value in given cell of the data
+	void set_v(mreal val, long i,long j=0,long k=0)	{	a[i+nx*(j+ny*k)]=val;	}
 #else
-	{	return abs(a[i+nx*(j+ny*k)]);	}
+	/// Get the value in given cell of the data with border checking
+	mreal v(long i,long j=0,long k=0) const	{	return mgl_abs(mgl_datac_get_value(this,i,j,k));	}
+	/// Set the value in given cell of the data
+	void set_v(mreal val, long i,long j=0,long k=0)	{	mgl_datac_set_value(this,val,i,j,k);	}
 #endif
-	inline mreal vthr(long i) const {	return abs(a[i]);	}
+	mreal vthr(long i) const {	return abs(a[i]);	}
 	// add for speeding up !!!
-	inline mreal dvx(long i,long j=0,long k=0) const
+	mreal dvx(long i,long j=0,long k=0) const
 	{   register long i0=i+nx*(j+ny*k);
 		return i>0? abs(i<nx-1? (a[i0+1]-a[i0-1])/mgl2:a[i0]-a[i0-1]) : abs(a[i0+1]-a[i0]);	}
-	inline mreal dvy(long i,long j=0,long k=0) const
+	mreal dvy(long i,long j=0,long k=0) const
 	{   register long i0=i+nx*(j+ny*k);
-	return j>0? abs(j<ny-1? (a[i0+nx]-a[i0-nx])/mgl2:a[i0]-a[i0-nx]) : abs(a[i0+nx]-a[i0]);}
-	inline mreal dvz(long i,long j=0,long k=0) const
+		return j>0? abs(j<ny-1? (a[i0+nx]-a[i0-nx])/mgl2:a[i0]-a[i0-nx]) : abs(a[i0+nx]-a[i0]);}
+	mreal dvz(long i,long j=0,long k=0) const
 	{   register long i0=i+nx*(j+ny*k), n=nx*ny;
-	return k>0? abs(k<nz-1? (a[i0+n]-a[i0-n])/mgl2:a[i0]-a[i0-n]) : abs(a[i0+n]-a[i0]);	}
+		return k>0? abs(k<nz-1? (a[i0+n]-a[i0-n])/mgl2:a[i0]-a[i0-n]) : abs(a[i0+n]-a[i0]);	}
 };
 //-----------------------------------------------------------------------------
 #ifndef SWIG
-dual mglLinearC(const dual *a, long nx, long ny, long nz, mreal x, mreal y, mreal z);
-dual mglSpline3C(const dual *a, long nx, long ny, long nz, mreal x, mreal y, mreal z,dual *dx=0, dual *dy=0, dual *dz=0);
+dual MGL_EXPORT_PURE mglLinearC(const dual *a, long nx, long ny, long nz, mreal x, mreal y, mreal z);
+dual MGL_EXPORT_PURE mglSpline3C(const dual *a, long nx, long ny, long nz, mreal x, mreal y, mreal z,dual *dx=0, dual *dy=0, dual *dz=0);
+dual MGL_EXPORT_PURE mglSpline3Cs(const dual *a, long nx, long ny, long nz, mreal x, mreal y, mreal z);
 #endif
 //-----------------------------------------------------------------------------
 /// Saves result of PDE solving (|u|^2) for "Hamiltonian" ham with initial conditions ini
@@ -408,14 +405,23 @@ inline mglDataC mglQO3dc(const char *ham, const mglDataA &ini_re, const mglDataA
 inline mglDataC mglQO3dc(const char *ham, const mglDataA &ini_re, const mglDataA &ini_im, const mglDataA &ray, mglData &xx, mglData &yy, mglData &zz, mreal r=1, mreal k0=100)
 {	return mglDataC(true, mgl_qo3d_solve_c(ham, &ini_re, &ini_im, &ray, r, k0, &xx, &yy, &zz));	}
 //-----------------------------------------------------------------------------
+/// Prepare coefficients for global spline interpolation
+inline mglDataC mglGSplineCInit(const mglDataA &xdat, const mglDataA &ydat)
+{	return mglDataC(true,mgl_gsplinec_init(&xdat, &ydat));	}
+/// Evaluate global spline (and its derivatives d1, d2 if not NULL) using prepared coefficients \a coef
+inline dual mglGSplineC(const mglDataA &coef, mreal dx, dual *d1=0, dual *d2=0)
+{	return mgl_gsplinec(&coef, dx, d1,d2);	}
+//-----------------------------------------------------------------------------
 #define _DN_(a)	((mglDataC *)*(a))
 #define _DC_		((mglDataC *)*d)
 //-----------------------------------------------------------------------------
 #ifndef SWIG
-/// Wrapper class expression evaluating
+/// Wrapper class for complex expression evaluating
 class MGL_EXPORT mglExprC
 {
 	HAEX ex;
+	mglExprC(const mglExprC &){}	// copying is not allowed
+	const mglExprC &operator=(const mglExprC &t){return t;}	// copying is not allowed
 public:
 	mglExprC(const char *expr)		{	ex = mgl_create_cexpr(expr);	}
 	~mglExprC()	{	mgl_delete_cexpr(ex);	}

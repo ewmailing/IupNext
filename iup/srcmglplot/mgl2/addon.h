@@ -40,16 +40,16 @@ void MGL_EXPORT mgl_fft_freq(double *freq,long nn);
 /// Remove double spaces from the string
 void MGL_EXPORT mgl_strcls(char *str);
 /// Get position of substring or return -1 if not found
-int MGL_EXPORT mgl_strpos(const char *str,char *fnd);
+long MGL_EXPORT_PURE mgl_strpos(const char *str,char *fnd);
 /// Get position of symbol or return -1 if not found
-int MGL_EXPORT mgl_chrpos(const char *str,char fnd);
+long MGL_EXPORT_PURE mgl_chrpos(const char *str,char fnd);
 
 /// Get uncommented string from file (NOTE: it is not thread safe!!!)
 MGL_EXPORT char *mgl_fgetstr(FILE *fp);
 /// Get parameters from uncommented strings of file (NOTE: it is not thread safe!!!)
 void MGL_EXPORT mgl_fgetpar(FILE *fp, const char *str, ...);
 /// Check if symbol denote true
-int MGL_EXPORT mgl_istrue(char ch);
+int MGL_EXPORT_CONST mgl_istrue(char ch);
 /// Print test message
 void MGL_EXPORT mgl_test(const char *str, ...);
 /// Print info message

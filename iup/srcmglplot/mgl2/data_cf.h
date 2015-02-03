@@ -46,8 +46,8 @@ void MGL_EXPORT mgl_srnd_(int *seed);
 double MGL_EXPORT mgl_rnd();
 double MGL_EXPORT mgl_rnd_();
 /// Get integer power of x
-double MGL_EXPORT mgl_ipow(double x,int n);
-double MGL_EXPORT mgl_ipow_(mreal *x,int *n);
+double MGL_EXPORT_CONST mgl_ipow(double x,int n);
+double MGL_EXPORT_PURE mgl_ipow_(mreal *x,int *n);
 /// Get number of seconds since 1970 for given string
 double MGL_EXPORT mgl_get_time(const char *time, const char *fmt);
 double MGL_EXPORT mgl_get_time_(const char *time, const char *fmt,int,int);
@@ -64,8 +64,6 @@ uintptr_t MGL_EXPORT mgl_create_data_file_(const char *fname, int len);
 /// Delete HMDT object
 void MGL_EXPORT mgl_delete_data(HMDT dat);
 void MGL_EXPORT mgl_delete_data_(uintptr_t *dat);
-/// Get information about the data (sizes and momentum) to string
-MGL_EXPORT const char *mgl_data_info(HCDT dat);
 
 /// Rearange data dimensions
 void MGL_EXPORT mgl_data_rearrange(HMDT dat, long mx,long my,long mz);
@@ -113,11 +111,6 @@ void MGL_EXPORT mgl_data_set_values_(uintptr_t *d, const char *val, int *nx, int
 /// Read data array from HDF file (parse HDF4 and HDF5 files)
 int MGL_EXPORT mgl_data_read_hdf(HMDT d,const char *fname,const char *data);
 int MGL_EXPORT mgl_data_read_hdf_(uintptr_t *d, const char *fname, const char *data,int l,int n);
-/// Save data to HDF file
-void MGL_EXPORT mgl_data_save_hdf(HCDT d,const char *fname,const char *data,int rewrite);
-void MGL_EXPORT mgl_data_save_hdf_(uintptr_t *d, const char *fname, const char *data, int *rewrite,int l,int n);
-/// Put HDF data names into buf as '\t' separated.
-int MGL_EXPORT mgl_datas_hdf(const char *fname, char *buf, long size);
 /// Read data from tab-separated text file with auto determining size
 int MGL_EXPORT mgl_data_read(HMDT dat, const char *fname);
 int MGL_EXPORT mgl_data_read_(uintptr_t *d, const char *fname,int l);
@@ -133,12 +126,6 @@ int MGL_EXPORT mgl_data_read_range_(uintptr_t *d, const char *fname, mreal *n1, 
 /// Read data from tab-separated text files with auto determining size which filenames are satisfied to template (like "t_*.dat")
 int MGL_EXPORT mgl_data_read_all(HMDT dat, const char *templ, int as_slice);
 int MGL_EXPORT mgl_data_read_all_(uintptr_t *d, const char *fname, int *as_slice,int l);
-/// Save whole data array (for ns=-1) or only ns-th slice to text file
-void MGL_EXPORT mgl_data_save(HCDT dat, const char *fname,long ns);
-void MGL_EXPORT mgl_data_save_(uintptr_t *dat, const char *fname,int *ns,int);
-/// Export data array (for ns=-1) or only ns-th slice to PNG file according color scheme
-void MGL_EXPORT mgl_data_export(HCDT dat, const char *fname, const char *scheme,mreal v1,mreal v2,long ns);
-void MGL_EXPORT mgl_data_export_(uintptr_t *dat, const char *fname, const char *scheme,mreal *v1,mreal *v2,int *ns,int,int);
 /// Import data array from PNG file according color scheme
 void MGL_EXPORT mgl_data_import(HMDT dat, const char *fname, const char *scheme,mreal v1,mreal v2);
 void MGL_EXPORT mgl_data_import_(uintptr_t *dat, const char *fname, const char *scheme,mreal *v1,mreal *v2,int,int);
@@ -173,6 +160,9 @@ void MGL_EXPORT mgl_data_fill_(uintptr_t *dat, mreal *x1,mreal *x2,const char *d
 /// Modify the data by specified formula assuming x,y,z in range [r1,r2]
 void MGL_EXPORT mgl_data_fill_eq(HMGL gr, HMDT dat, const char *eq, HCDT vdat, HCDT wdat,const char *opt);
 void MGL_EXPORT mgl_data_fill_eq_(uintptr_t *gr, uintptr_t *dat, const char *eq, uintptr_t *vdat, uintptr_t *wdat,const char *opt, int, int);
+/// Fill dat by interpolated values of vdat parametrically depended on xdat for x in range [x1,x2] using global spline
+void MGL_EXPORT mgl_data_refill_gs(HMDT dat, HCDT xdat, HCDT vdat, mreal x1, mreal x2, long sl);
+void MGL_EXPORT mgl_data_refill_gs_(uintptr_t *dat, uintptr_t *xdat, uintptr_t *vdat, mreal *x1, mreal *x2, long *sl);
 /// Fill dat by interpolated values of vdat parametrically depended on xdat for x in range [x1,x2]
 void MGL_EXPORT mgl_data_refill_x(HMDT dat, HCDT xdat, HCDT vdat, mreal x1, mreal x2, long sl);
 void MGL_EXPORT mgl_data_refill_x_(uintptr_t *dat, uintptr_t *xdat, uintptr_t *vdat, mreal *x1, mreal *x2, long *sl);
@@ -207,22 +197,10 @@ void MGL_EXPORT mgl_data_modify_vw_(uintptr_t *dat, const char *eq, uintptr_t *v
 void MGL_EXPORT mgl_data_squeeze(HMDT dat, long rx,long ry,long rz,long smooth);
 void MGL_EXPORT mgl_data_squeeze_(uintptr_t *dat, int *rx,int *ry,int *rz,int *smooth);
 
-/// Get maximal value of the data
-mreal MGL_EXPORT mgl_data_max(HCDT dat);
-mreal MGL_EXPORT mgl_data_max_(uintptr_t *dat);
-/// Get maximal value of the data which is less than 0
-mreal MGL_EXPORT mgl_data_neg_max(HCDT dat);
-mreal MGL_EXPORT mgl_data_neg_max_(uintptr_t *dat);
-/// Get minimal value of the data
-mreal MGL_EXPORT mgl_data_min(HCDT dat);
-mreal MGL_EXPORT mgl_data_min_(uintptr_t *dat);
-/// Get minimal value of the data which is larger than 0
-mreal MGL_EXPORT mgl_data_pos_min(HCDT dat);
-mreal MGL_EXPORT mgl_data_pos_min_(uintptr_t *dat);
 /// Returns pointer to data element [i,j,k]
 MGL_EXPORT mreal *mgl_data_value(HMDT dat, long i,long j,long k);
 /// Returns pointer to internal data array
-MGL_EXPORT mreal *mgl_data_data(HMDT dat);
+MGL_EXPORT_PURE mreal *mgl_data_data(HMDT dat);
 
 /// Gets the x-size of the data.
 long MGL_EXPORT mgl_data_get_nx(HCDT d);
@@ -233,34 +211,6 @@ long MGL_EXPORT mgl_data_get_ny_(uintptr_t *d);
 /// Gets the z-size of the data.
 long MGL_EXPORT mgl_data_get_nz(HCDT d);
 long MGL_EXPORT mgl_data_get_nz_(uintptr_t *d);
-
-/// Find position (after specified in i,j,k) of first nonzero value of formula
-mreal MGL_EXPORT mgl_data_first(HCDT dat, const char *cond, long *i, long *j, long *k);
-mreal MGL_EXPORT mgl_data_first_(uintptr_t *dat, const char *cond, int *i, int *j, int *k, int);
-/// Find position (before specified in i,j,k) of last nonzero value of formula
-mreal MGL_EXPORT mgl_data_last(HCDT dat, const char *cond, long *i, long *j, long *k);
-mreal MGL_EXPORT mgl_data_last_(uintptr_t *dat, const char *cond, int *i, int *j, int *k, int);
-/// Find position of first in direction 'dir' nonzero value of formula
-long MGL_EXPORT mgl_data_find(HCDT dat, const char *cond, char dir, long i, long j, long k);
-int MGL_EXPORT mgl_data_find_(uintptr_t *dat, const char *cond, char *dir, int *i, int *j, int *k, int,int);
-/// Find if any nonzero value of formula
-int MGL_EXPORT mgl_data_find_any(HCDT dat, const char *cond);
-int MGL_EXPORT mgl_data_find_any_(uintptr_t *dat, const char *cond, int);
-/// Get maximal value of the data and its position
-mreal MGL_EXPORT mgl_data_max_int(HCDT dat, long *i, long *j, long *k);
-mreal MGL_EXPORT mgl_data_max_int_(uintptr_t *dat, int *i, int *j, int *k);
-/// Get maximal value of the data and its approximated position
-mreal MGL_EXPORT mgl_data_max_real(HCDT dat, mreal *x, mreal *y, mreal *z);
-mreal MGL_EXPORT mgl_data_max_real_(uintptr_t *dat, mreal *x, mreal *y, mreal *z);
-/// Get minimal value of the data and its position
-mreal MGL_EXPORT mgl_data_min_int(HCDT dat, long *i, long *j, long *k);
-mreal MGL_EXPORT mgl_data_min_int_(uintptr_t *dat, int *i, int *j, int *k);
-/// Get minimal value of the data and its approximated position
-mreal MGL_EXPORT mgl_data_min_real(HCDT dat, mreal *x, mreal *y, mreal *z);
-mreal MGL_EXPORT mgl_data_min_real_(uintptr_t *dat, mreal *x, mreal *y, mreal *z);
-/// Get "energy and find 4 momenta of data: median, width, skewness, kurtosis
-mreal MGL_EXPORT mgl_data_momentum_val(HCDT d, char dir, mreal *m, mreal *w, mreal *s, mreal *k);
-mreal MGL_EXPORT mgl_data_momentum_val_(uintptr_t *dat, char *dir, mreal *m, mreal *w, mreal *s, mreal *k,int);
 
 /// Get the data which is direct multiplication (like, d[i,j] = this[i]*a[j] and so on)
 HMDT MGL_EXPORT mgl_data_combine(HCDT dat1, HCDT dat2);
@@ -346,20 +296,26 @@ void MGL_EXPORT mgl_fft(double *x, long s, long n, const void *wt, void *ws, int
 void MGL_EXPORT mgl_clear_fft();
 
 /// Interpolate by cubic spline the data to given point x=[0...nx-1], y=[0...ny-1], z=[0...nz-1]
-mreal MGL_EXPORT mgl_data_spline(HCDT dat, mreal x,mreal y,mreal z);
-mreal MGL_EXPORT mgl_data_spline_(uintptr_t *dat, mreal *x,mreal *y,mreal *z);
+mreal MGL_EXPORT_PURE mgl_data_spline(HCDT dat, mreal x,mreal y,mreal z);
+mreal MGL_EXPORT_PURE mgl_data_spline_(uintptr_t *dat, mreal *x,mreal *y,mreal *z);
 /// Interpolate by linear function the data to given point x=[0...nx-1], y=[0...ny-1], z=[0...nz-1]
-mreal MGL_EXPORT mgl_data_linear(HCDT dat, mreal x,mreal y,mreal z);
-mreal MGL_EXPORT mgl_data_linear_(uintptr_t *dat, mreal *x,mreal *y,mreal *z);
+mreal MGL_EXPORT_PURE mgl_data_linear(HCDT dat, mreal x,mreal y,mreal z);
+mreal MGL_EXPORT_PURE mgl_data_linear_(uintptr_t *dat, mreal *x,mreal *y,mreal *z);
 /// Interpolate by cubic spline the data and return its derivatives at given point x=[0...nx-1], y=[0...ny-1], z=[0...nz-1]
-mreal MGL_EXPORT mgl_data_spline_ext(HCDT dat, mreal x,mreal y,mreal z, mreal *dx,mreal *dy,mreal *dz);
-mreal MGL_EXPORT mgl_data_spline_ext_(uintptr_t *dat, mreal *x,mreal *y,mreal *z, mreal *dx,mreal *dy,mreal *dz);
+mreal MGL_EXPORT_PURE mgl_data_spline_ext(HCDT dat, mreal x,mreal y,mreal z, mreal *dx,mreal *dy,mreal *dz);
+mreal MGL_EXPORT_PURE mgl_data_spline_ext_(uintptr_t *dat, mreal *x,mreal *y,mreal *z, mreal *dx,mreal *dy,mreal *dz);
+/// Prepare coefficients for global spline interpolation
+HMDT MGL_EXPORT mgl_gspline_init(HCDT x, HCDT v);
+uintptr_t MGL_EXPORT mgl_gspline_init_(uintptr_t *x, uintptr_t *v);
+/// Evaluate global spline (and its derivatives d1, d2 if not NULL) using prepared coefficients \a coef
+mreal MGL_EXPORT mgl_gspline(HCDT coef, mreal dx, mreal *d1, mreal *d2);
+mreal MGL_EXPORT mgl_gspline_(uintptr_t *c, mreal *dx, mreal *d1, mreal *d2);
 /// Interpolate by linear function the data and return its derivatives at given point x=[0...nx-1], y=[0...ny-1], z=[0...nz-1]
-mreal MGL_EXPORT mgl_data_linear_ext(HCDT dat, mreal x,mreal y,mreal z, mreal *dx,mreal *dy,mreal *dz);
-mreal MGL_EXPORT mgl_data_linear_ext_(uintptr_t *dat, mreal *x,mreal *y,mreal *z, mreal *dx,mreal *dy,mreal *dz);
+mreal MGL_EXPORT_PURE mgl_data_linear_ext(HCDT dat, mreal x,mreal y,mreal z, mreal *dx,mreal *dy,mreal *dz);
+mreal MGL_EXPORT_PURE mgl_data_linear_ext_(uintptr_t *dat, mreal *x,mreal *y,mreal *z, mreal *dx,mreal *dy,mreal *dz);
 /// Return an approximated x-value (root) when dat(x) = val
-mreal MGL_EXPORT mgl_data_solve_1d(HCDT dat, mreal val, int spl, long i0);
-mreal MGL_EXPORT mgl_data_solve_1d_(uintptr_t *dat, mreal *val, int *spl, int *i0);
+mreal MGL_EXPORT_PURE mgl_data_solve_1d(HCDT dat, mreal val, int spl, long i0);
+mreal MGL_EXPORT_PURE mgl_data_solve_1d_(uintptr_t *dat, mreal *val, int *spl, int *i0);
 /// Return an approximated value (root) when dat(x) = val
 HMDT MGL_EXPORT mgl_data_solve(HCDT dat, mreal val, char dir, HCDT i0, int norm);
 uintptr_t MGL_EXPORT mgl_data_solve_(uintptr_t *dat, mreal *val, const char *dir, uintptr_t *i0, int *norm,int);
@@ -375,13 +331,13 @@ HMDT MGL_EXPORT mgl_data_resize_box(HCDT dat, long mx,long my,long mz,mreal x1,m
 uintptr_t MGL_EXPORT mgl_data_resize_box_(uintptr_t *dat, int *mx,int *my,int *mz,mreal *x1,mreal *x2,mreal *y1,mreal *y2,mreal *z1,mreal *z2);
 /// Create n-th points distribution of this data values in range [v1, v2]
 HMDT MGL_EXPORT mgl_data_hist(HCDT dat, long n, mreal v1, mreal v2, long nsub);
-uintptr_t MGL_EXPORT mgl_data_momentum_(uintptr_t *dat, char *dir, const char *how, int,int);
+uintptr_t MGL_EXPORT mgl_data_hist_(uintptr_t *dat, int *n, mreal *v1, mreal *v2, int *nsub);
 /// Create n-th points distribution of this data values in range [v1, v2] with weight w
 HMDT MGL_EXPORT mgl_data_hist_w(HCDT dat, HCDT weight, long n, mreal v1, mreal v2, long nsub);
-uintptr_t MGL_EXPORT mgl_data_hist_(uintptr_t *dat, int *n, mreal *v1, mreal *v2, int *nsub);
+uintptr_t MGL_EXPORT mgl_data_hist_w_(uintptr_t *dat, uintptr_t *weight, int *n, mreal *v1, mreal *v2, int *nsub);
 /// Get momentum (1D-array) of data along direction 'dir'. String looks like "x1" for median in x-direction, "x2" for width in x-dir and so on.
 HMDT MGL_EXPORT mgl_data_momentum(HCDT dat, char dir, const char *how);
-uintptr_t MGL_EXPORT mgl_data_hist_w_(uintptr_t *dat, uintptr_t *weight, int *n, mreal *v1, mreal *v2, int *nsub);
+uintptr_t MGL_EXPORT mgl_data_momentum_(uintptr_t *dat, char *dir, const char *how, int,int);
 /// Get array which values is result of interpolation this for coordinates from other arrays
 HMDT MGL_EXPORT mgl_data_evaluate(HCDT dat, HCDT idat, HCDT jdat, HCDT kdat, int norm);
 uintptr_t MGL_EXPORT mgl_data_evaluate_(uintptr_t *dat, uintptr_t *idat, uintptr_t *jdat, uintptr_t *kdat, int *norm);
@@ -460,18 +416,18 @@ uintptr_t MGL_EXPORT mgl_create_expr_(const char *expr, int);
 void MGL_EXPORT mgl_delete_expr(HMEX ex);
 void MGL_EXPORT mgl_delete_expr_(uintptr_t *ex);
 /// Return value of expression for given x,y,z variables
-double MGL_EXPORT mgl_expr_eval(HMEX ex, double x, double y,double z);
+double MGL_EXPORT_PURE mgl_expr_eval(HMEX ex, double x, double y,double z);
 double MGL_EXPORT mgl_expr_eval_(uintptr_t *ex, mreal *x, mreal *y, mreal *z);
 /// Return value of expression for given variables
 double MGL_EXPORT mgl_expr_eval_v(HMEX ex, mreal *vars);
 /// Return value of expression differentiation over variable dir for given x,y,z variables
-double MGL_EXPORT mgl_expr_diff(HMEX ex, char dir, double x, double y,double z);
+double MGL_EXPORT_PURE mgl_expr_diff(HMEX ex, char dir, double x, double y,double z);
 double MGL_EXPORT mgl_expr_diff_(uintptr_t *ex, const char *dir, mreal *x, mreal *y, mreal *z, int);
 /// Return value of expression differentiation over variable dir for given variables
 double MGL_EXPORT mgl_expr_diff_v(HMEX ex, char dir, mreal *vars);
-
+//-----------------------------------------------------------------------------
 #ifdef __cplusplus
 }
 #endif
-//-----------------------------------------------------------------------------
 #endif
+//-----------------------------------------------------------------------------

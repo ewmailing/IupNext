@@ -25,24 +25,41 @@
 extern "C" {
 #endif
 
+/// Check if MathGL version is valid (return 0) or not (return 1)
+int MGL_EXPORT mgl_check_version(const char *ver);
+int MGL_EXPORT mgl_check_version_(const char *ver, int);
+/// Suppress printing warnings to stderr
+void MGL_EXPORT mgl_suppress_warn(int on);
+void MGL_EXPORT mgl_suppress_warn_(int *on);
 /// Get last warning code
-int MGL_EXPORT mgl_get_warn(HMGL gr);
-int MGL_EXPORT mgl_get_warn_(uintptr_t *gr);
+int MGL_EXPORT_PURE mgl_get_warn(HMGL gr);
+int MGL_EXPORT_PURE mgl_get_warn_(uintptr_t *gr);
 /// Set warning code ant fill message
 void MGL_EXPORT mgl_set_warn(HMGL gr, int code, const char *text);
 void MGL_EXPORT mgl_set_warn_(uintptr_t *gr, int *code, const char *text,int);
-/// Set buffer for warning messages
-MGL_EXPORT const char *mgl_get_mess(HMGL gr);
+/// Get text of warning message(s)
+MGL_EXPORT_PURE const char *mgl_get_mess(HMGL gr);
+int MGL_EXPORT mgl_get_mess_(uintptr_t *gr, char *out, int len);
 
 /// Set name of plot for saving filename
 void MGL_EXPORT mgl_set_plotid(HMGL gr, const char *id);
 void MGL_EXPORT mgl_set_plotid_(uintptr_t *gr, const char *id,int);
 /// Get name of plot for saving filename
-MGL_EXPORT const char *mgl_get_plotid(HMGL gr);
+MGL_EXPORT_PURE const char *mgl_get_plotid(HMGL gr);
+int MGL_EXPORT mgl_get_plotid_(uintptr_t *gr, char *out, int len);
+
+/// Ask to stop drawing
+void MGL_EXPORT mgl_ask_stop(HMGL gr, int stop);
+void MGL_EXPORT mgl_ask_stop_(uintptr_t *gr, int *stop);
+/// Check if plot termination is asked
+int MGL_EXPORT mgl_need_stop(HMGL gr);
+int MGL_EXPORT mgl_need_stop_(uintptr_t *gr);
+/// Set callback function for event processing
+void MGL_EXPORT mgl_set_event_func(HMGL gr, void (*func)(void *), void *par);
 
 /// Get plot quality
-int MGL_EXPORT mgl_get_quality(HMGL gr);
-int MGL_EXPORT mgl_get_quality_(uintptr_t *gr);
+int MGL_EXPORT_PURE mgl_get_quality(HMGL gr);
+int MGL_EXPORT_PURE mgl_get_quality_(uintptr_t *gr);
 /// Set plot quality
 void MGL_EXPORT mgl_set_quality(HMGL gr, int qual);
 void MGL_EXPORT mgl_set_quality_(uintptr_t *gr, int *qual);
@@ -50,18 +67,18 @@ void MGL_EXPORT mgl_set_quality_(uintptr_t *gr, int *qual);
 void MGL_EXPORT mgl_set_draw_reg(HMGL gr, long nx, long ny, long m);
 void MGL_EXPORT mgl_set_draw_reg_(uintptr_t *gr, int *nx, int *ny, int *m);
 
-/// Is frames
-int MGL_EXPORT mgl_is_frames(HMGL gr);
+/// Check if support of frames is enabled (i.e. MGL_VECT_FRAME is set and Quality&MGL_DRAW_LMEM==0)
+int MGL_EXPORT_PURE mgl_is_frames(HMGL gr);
 /// Get bit-value flag of HMGL state (for advanced users only)
-int MGL_EXPORT mgl_get_flag(HMGL gr, uint32_t flag);
-int MGL_EXPORT mgl_get_flag_(uintptr_t *gr, unsigned long *flag);
+int MGL_EXPORT_PURE mgl_get_flag(HMGL gr, uint32_t flag);
+int MGL_EXPORT_PURE mgl_get_flag_(uintptr_t *gr, unsigned long *flag);
 /// Set bit-value flag of HMGL state (for advanced users only)
 void MGL_EXPORT mgl_set_flag(HMGL gr, int val, uint32_t flag);
 void MGL_EXPORT mgl_set_flag_(uintptr_t *gr, int *val, unsigned long *flag);
 /// Change counter of HMGL uses (for advanced users only). Non-zero counter prevent automatic object removing.
 long MGL_EXPORT mgl_use_graph(HMGL gr, int inc);
 long MGL_EXPORT mgl_use_graph_(uintptr_t *gr, int *inc);
-void MGL_EXPORT mgl_set_rdc_acc(HMGL gr, int reduce);	// TODO
+void MGL_EXPORT mgl_set_rdc_acc(HMGL gr, int reduce);
 void MGL_EXPORT mgl_set_rdc_acc_(uintptr_t *gr, int *reduce);
 
 /// Start group of objects
@@ -160,8 +177,8 @@ void MGL_EXPORT mgl_set_func_(uintptr_t *gr, const char *EqX, const char *EqY, c
 void MGL_EXPORT mgl_set_coor(HMGL gr, int how);
 void MGL_EXPORT mgl_set_coor_(uintptr_t *gr, int *how);
 /// Set to draw Ternary axis (triangle like axis, grid and so on)
-void MGL_EXPORT mgl_set_ternary(HMGL gr, int enable);
-void MGL_EXPORT mgl_set_ternary_(uintptr_t *gr, int *enable);
+void MGL_EXPORT mgl_set_ternary(HMGL gr, int kind);
+void MGL_EXPORT mgl_set_ternary_(uintptr_t *gr, int *kind);
 
 /// Set to use or not tick labels rotation
 void MGL_EXPORT mgl_set_tick_rotate(HMGL gr, int enable);

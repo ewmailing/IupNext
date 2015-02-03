@@ -26,40 +26,49 @@ struct GifFileType;
 /// Structure for drawing axis and ticks
 struct MGL_EXPORT mglAxis
 {
-	mglAxis()	{	dv=ds=d=v0=v1=v2=o=sh=0;	ns=f=ch=0;	pos = 't';	inv=false;	}
-	mglAxis(const mglAxis &aa)
-	{	dv=aa.dv;	ds=aa.ds;	d=aa.d;		dir=aa.dir;	sh=aa.sh;
-		v0=aa.v0;	v1=aa.v1;	v2=aa.v2;	o=aa.o;		pos=aa.pos;
-		a = aa.a;	b = aa.b;	org=aa.org;	txt=aa.txt;	inv=aa.inv;
-		ns=aa.ns;	f=aa.f;		ch=aa.ch;	t=aa.t;	}
+	mglAxis() : dv(0),ds(0),d(0),ns(0),	v0(0),v1(0),v2(0),o(NAN),	f(0),	ch(0),	pos('t'),sh(0),inv(false)	{}
+	mglAxis(const mglAxis &aa) : dv(aa.dv),ds(aa.ds),d(aa.d),ns(aa.ns),	t(aa.t),fact(aa.fact),stl(aa.stl),	dir(aa.dir),a(aa.a),b(aa.b),org(aa.org), v0(aa.v0),v1(aa.v1),v2(aa.v2),o(aa.o),	f(aa.f),txt(aa.txt),	ch(aa.ch),	pos(aa.pos),sh(aa.sh),inv(aa.inv)	{}
+#if MGL_HAVE_RVAL
+	mglAxis(mglAxis &&aa) : dv(aa.dv),ds(aa.ds),d(aa.d),ns(aa.ns),	t(aa.t),fact(aa.fact),stl(aa.stl),	dir(aa.dir),a(aa.a),b(aa.b),org(aa.org), v0(aa.v0),v1(aa.v1),v2(aa.v2),o(aa.o),	f(aa.f),txt(aa.txt),	ch(aa.ch),	pos(aa.pos),sh(aa.sh),inv(aa.inv)	{}
+#endif
 	inline void AddLabel(const wchar_t *lbl, mreal v)
 	{	txt.push_back(mglText(lbl,"",v));	}
 	inline void AddLabel(const std::wstring &lbl, mreal v)
 	{	txt.push_back(mglText(lbl,v));	}
+	inline void Clear()
+	{	dv=ds=d=v0=v1=v2=sh=0;	o=NAN;	ns=f=0;	pos = 't';	inv=false;
+		fact.clear();	stl.clear();	t.clear();	txt.clear();	}
 
-	mreal dv,ds;		///< Actual step for ticks and subticks.
-	mreal d;			///< Step for axis ticks (if positive) or its number (if negative).
+	mreal dv,ds;	///< Actual step for ticks and subticks.
+	mreal d;		///< Step for axis ticks (if positive) or its number (if negative).
 	int ns;			///< Number of axis subticks.
 	std::wstring t;	///< Tick template (set "" to use default one ("%.2g" in simplest case))
+	std::wstring fact;	///< Factor which should be placed after number (like L"\pi")
+	std::string stl;	///< Tick styles (default is ""=>"3m")
 	mglPoint dir;	///< Axis direction
 	mglPoint a,b;	///< Directions of over axis
 	mglPoint org;
 	mreal v0;		///< Center of axis cross section
 	mreal v1;		///< Minimal axis range.
 	mreal v2;		///< Maximal axis range.
-	mreal o;			///< Point of starting ticks numbering (if NAN then Org is used).
+	mreal o;		///< Point of starting ticks numbering (if NAN then Org is used).
 	int f;			///< Flag 0x1 - time, 0x2 - manual, 0x4 - fixed dv
 	std::vector<mglText> txt;	///< Axis labels
 	char ch;		///< Character of axis (like 'x','y','z','c')
 	char pos;		///< Text position ('t' by default, or 'T' for opposite)
 	mreal sh;		///< Extra shift of ticks and axis labels
 	bool inv;		///< Inverse automatic origin position
+	mreal angl;		///< Manual for ticks rotation (if not NAN)
 };
 //-----------------------------------------------------------------------------
 /// Structure for light source
 struct MGL_EXPORT mglLight
 {
-	mglLight()	{	n=false;	a=b=0;	}
+	mglLight():n(false),a(0),b(0)	{}
+	mglLight(const mglLight &aa) : n(aa.n),d(aa.d),r(aa.r),q(aa.q),p(aa.p),a(aa.a),b(aa.b),c(aa.c)	{}
+#if MGL_HAVE_RVAL
+	mglLight(mglLight &&aa) : n(aa.n),d(aa.d),r(aa.r),q(aa.q),p(aa.p),a(aa.a),b(aa.b),c(aa.c)	{}
+#endif
 	bool n;			///< Availability of light sources
 	mglPoint d;		///< Direction of light sources
 	mglPoint r;		///< Position of light sources (NAN for infinity)
@@ -74,6 +83,13 @@ class mglCanvas;
 /// Structure for light source
 struct MGL_EXPORT mglDrawReg
 {
+	mglDrawReg() {}
+	mglDrawReg(const mglDrawReg &aa) : PDef(aa.PDef),angle(aa.angle),ObjId(aa.ObjId),PenWidth(aa.PenWidth),pPos(aa.pPos) ,x1(aa.x1),x2(aa.x2),y1(aa.y1),y2(aa.y2)	{}
+#if MGL_HAVE_RVAL
+	mglDrawReg(mglDrawReg &&aa) : PDef(aa.PDef),angle(aa.angle),ObjId(aa.ObjId),PenWidth(aa.PenWidth),pPos(aa.pPos) ,x1(aa.x1),x2(aa.x2),y1(aa.y1),y2(aa.y2)	{}
+#endif
+	inline const mglDrawReg &operator=(const mglDrawReg &aa)
+	{	memcpy(this,&aa,sizeof(mglDrawReg));	return aa;	}
 	union
 	{
 		uint64_t PDef;
@@ -89,11 +105,18 @@ struct MGL_EXPORT mglDrawReg
 /// Structure contains everything for drawing
 struct MGL_EXPORT mglDrawDat
 {
-	std::vector<mglPnt>  Pnt;	///< Internal points
-	std::vector<mglPrim> Prm;	///< Primitives (lines, triangles and so on) -- need for export
+	mglDrawDat() {}
+	mglDrawDat(const mglDrawDat &aa) : Pnt(aa.Pnt),Prm(aa.Prm),Ptx(aa.Ptx),Glf(aa.Glf),Txt(aa.Txt)	{}
+#if MGL_HAVE_RVAL
+	mglDrawDat(mglDrawDat &&aa) : Pnt(aa.Pnt),Prm(aa.Prm),Ptx(aa.Ptx),Glf(aa.Glf),Txt(aa.Txt)	{}
+#endif
+	inline const mglDrawDat&operator=(const mglDrawDat &aa)
+	{	Pnt=aa.Pnt;	Prm=aa.Prm;	Ptx=aa.Ptx;	Glf=aa.Glf;	Txt=aa.Txt;	return aa;	}
+	mglStack<mglPnt>  Pnt;	///< Internal points
+	mglStack<mglPrim> Prm;	///< Primitives (lines, triangles and so on) -- need for export
 	std::vector<mglText> Ptx;	///< Text labels for mglPrim
 	std::vector<mglGlyph> Glf;	///< Glyphs data
-	std::vector<mglTexture> Txt;	///< Pointer to textures
+	mglStack<mglTexture> Txt;	///< Pointer to textures
 };
 //-----------------------------------------------------------------------------
 union mglRGBA	{	uint32_t c; unsigned char r[4];	};
@@ -133,6 +156,7 @@ using mglBase::Light;
 	inline void Pop()	{	B = stack.back(); stack.pop_back();	}
 	/// Clear up the frame
 	virtual void Clf(mglColor back=NC);
+	virtual void Clf(const char *col);
 
 	/// Put further plotting in cell of stick rotated on angles tet, phi
 	void StickPlot(int num, int i, mreal tet, mreal phi);
@@ -149,18 +173,21 @@ using mglBase::Light;
 	/// Rotate a further plotting.
 	void Rotate(mreal TetX,mreal TetZ,mreal TetY=0);
 	/// Rotate a further plotting around vector {x,y,z}.
-	void RotateN(mreal Tet,mreal x,mreal y,mreal z)	;
-	/// Set perspective (in range [0,1)) for plot. Set to zero for switching off.
-	void Perspective(mreal a)	{	Bp.pf = fabs(a);	}
+	void RotateN(mreal Tet,mreal x,mreal y,mreal z);
+	/// Set perspective (in range [0,1)) for plot. Set to zero for switching off. Return the current perspective.
+	void Perspective(mreal a, bool req=true)
+	{	if(req)	persp = Bp.pf = a;	else	Bp.pf = persp?persp:fabs(a);	}
 
 	/// Set size of frame in pixels. Normally this function is called internaly.
-	virtual void SetSize(int w,int h);
+	virtual void SetSize(int w,int h,bool clf=true);
 	/// Get ratio (mreal width)/(mreal height).
-	mreal GetRatio() const;
+	mreal GetRatio() const MGL_FUNC_PURE;
 	/// Get bitmap data prepared for saving to file
 	virtual unsigned char **GetRGBLines(long &w, long &h, unsigned char *&f, bool alpha=false);
 	/// Get RGB bitmap of current state image.
 	virtual const unsigned char *GetBits();
+	/// Get RGBA bitmap of background image.
+	const unsigned char *GetBackground()	{	return GB;	};
 	/// Get RGBA bitmap of current state image.
 	const unsigned char *GetRGBA()	{	Finish();	return G4;	}
 	/// Get width of the image
@@ -170,11 +197,18 @@ using mglBase::Light;
 	/// Combine plots from 2 canvases. Result will be saved into this.
 	void Combine(const mglCanvas *gr);
 
+	/// Rasterize current plot and set it as background image
+	void Rasterize();
+	/// Load image for background from file
+	void LoadBackground(const char *fname, double alpha=1);
+	/// Fill background image by specified color
+	void FillBackground(const mglColor &cc);
+
 	inline mreal GetDelay() const	{	return Delay;	}
 	inline void SetDelay(mreal d)	{	Delay=d;	}
 
 	/// Calculate 3D coordinate {x,y,z} for screen point {xs,ys}
-	mglPoint CalcXYZ(int xs, int ys, bool real=false) const;
+	mglPoint CalcXYZ(int xs, int ys, bool real=false) const MGL_FUNC_PURE;
 	/// Calculate screen point {xs,ys} for 3D coordinate {x,y,z}
 	void CalcScr(mglPoint p, int *xs, int *ys) const;
 	mglPoint CalcScr(mglPoint p) const;
@@ -183,7 +217,7 @@ using mglBase::Light;
 	/// Get object id
 	inline int GetObjId(long xs,long ys) const	{	return OI[xs+Width*ys];	}
 	/// Get subplot id
-	int GetSplId(long xs,long ys) const;
+	int GetSplId(long xs,long ys) const MGL_FUNC_PURE;
 	/// Check if there is active point or primitive (n=-1)
 	int IsActive(int xs, int ys,int &n);
 
@@ -203,6 +237,8 @@ using mglBase::Light;
 	virtual void SetFrame(long i);
 	/// Add drawing data from i-th frame to the current drawing
 	void ShowFrame(long i);
+	/// Clear list of primitives for current drawing
+	void ClearFrame();
 
 	/// Start write frames to cinema using GIF format
 	void StartGIF(const char *fname, int ms=100);
@@ -237,15 +273,19 @@ using mglBase::Light;
 	void SetTicksVal(char dir, const wchar_t *lbl, bool add=false);
 	void SetTicksVal(char dir, HCDT v, const wchar_t *lbl, bool add=false);
 	void SetTicksVal(char dir, HCDT v, const wchar_t **lbl, bool add=false);
+		/// Add manual tick at given position. Use "" to disable this feature.
+	void AddTick(char dir, double val, const char *lbl);
+	void AddTick(char dir, double val, const wchar_t *lbl);
+
 	/// Set templates for ticks
 	void SetTickTempl(char dir, const wchar_t *t);
 	void SetTickTempl(char dir, const char *t);
 	/// Set time templates for ticks
 	void SetTickTime(char dir, mreal d=0, const char *t="");
 	/// Set the ticks parameters
-	void SetTicks(char dir, mreal d=0, int ns=0, mreal org=NAN);
+	void SetTicks(char dir, mreal d=0, int ns=0, mreal org=NAN, const wchar_t *lbl=0);
 	/// Auto adjust ticks
-	void AdjustTicks(const char *dir="xyzc", bool force=false);
+	void AdjustTicks(const char *dir="xyzc", bool force=false, std::string stl="");
 	/// Tune ticks
 	inline void SetTuneTicks(int tune, mreal pos=1.15)
 	{	TuneTicks = tune;	FactorPos = pos;	}
@@ -305,14 +345,15 @@ using mglBase::Light;
 	void pnt_fast(long x,long y,mreal z,const unsigned char c[4], int obj_id);
 	/// preparing primitives for 2d export or bitmap drawing (0 default, 1 for 2d vector, 2 for 3d vector)
 	void PreparePrim(int fast);
-	inline uint32_t GetPntCol(long i)	{	return pnt_col[i];	}
-	inline uint32_t GetPrmCol(long i)	{	return prm_col[i];	}
+	inline uint32_t GetPntCol(long i) const	{	return pnt_col[i];	}
+	inline uint32_t GetPrmCol(long i, bool sort=true) const	{	return GetColor(GetPrm(i, sort));	}
 
 protected:
 	mreal Delay;		///< Delay for animation in seconds
 	// NOTE: Z should be float for reducing space and for compatibility reasons
 	unsigned char *G4;	///< Final picture in RGBA format. Prepared in Finish().
 	unsigned char *G;	///< Final picture in RGB format. Prepared in Finish().
+	unsigned char *GB;	///< Background picture in RGBA format.
 	std::vector<mglDrawDat> DrwDat;	///< Set of ALL drawing data for each frames
 
 	int LegendMarks;	///< Number of marks in the Legend
@@ -342,9 +383,9 @@ protected:
 	/// Prepare labels for ticks
 	void LabelTicks(mglAxis &aa);
 	/// Draw axis
-	void DrawAxis(mglAxis &aa, bool text=true, char arr=0,const char *stl="",const char *opt="");
+	void DrawAxis(mglAxis &aa, bool text=true, char arr=0,const char *stl="",mreal angl=NAN);
 	/// Draw axis grid lines
-	void DrawGrid(mglAxis &aa);
+	void DrawGrid(mglAxis &aa, bool at_tick=false);
 	/// Update axis ranges
 	inline void UpdateAxis()
 	{	ax.v0=Org.x;	ay.v0=Org.y;	az.v0=Org.z;	ac.v0=Org.c;
@@ -359,11 +400,11 @@ protected:
 	/// Push drawing data (for frames only). NOTE: can be VERY large
 	long PushDrwDat();
 	/// Retur color for primitive depending lighting
-	uint32_t GetColor(const mglPrim &p);
+	uint32_t GetColor(const mglPrim &p) const MGL_FUNC_PURE;
 
-	mreal GetOrgX(char dir, bool inv=false) const;	///< Get Org.x (parse NAN value)
-	mreal GetOrgY(char dir, bool inv=false) const;	///< Get Org.y (parse NAN value)
-	mreal GetOrgZ(char dir, bool inv=false) const;	///< Get Org.z (parse NAN value)
+	mreal GetOrgX(char dir, bool inv=false) const MGL_FUNC_PURE;	///< Get Org.x (parse NAN value)
+	mreal GetOrgY(char dir, bool inv=false) const MGL_FUNC_PURE;	///< Get Org.y (parse NAN value)
+	mreal GetOrgZ(char dir, bool inv=false) const MGL_FUNC_PURE;	///< Get Org.z (parse NAN value)
 
 	void mark_plot(long p, char type, mreal size=1);
 	void arrow_plot(long p1, long p2, char st);
@@ -386,11 +427,10 @@ protected:
 	bool IsSame(const mglPrim &pr,mreal wp,mglColor cp,int st);
 
 	// restore normalized coordinates from screen ones
-	mglPoint RestorePnt(mglPoint ps, bool norm=false) const;
+	mglPoint RestorePnt(mglPoint ps, bool norm=false) const MGL_FUNC_PURE;
 
 	// functions for multi-threading
 	void pxl_pntcol(long id, long n, const void *);
-	void pxl_prmcol(long id, long n, const void *);
 	void pxl_combine(long id, long n, const void *);
 	void pxl_memcpy(long id, long n, const void *);
 	void pxl_backgr(long id, long n, const void *);
@@ -405,7 +445,10 @@ protected:
 	void PutDrawReg(mglDrawReg *d, const mglCanvas *gr);
 
 private:
-	std::vector<uint32_t> pnt_col, prm_col;
+    mglCanvas(const mglCanvas &){}	// copying is not allowed
+	const mglCanvas &operator=(const mglCanvas &t){return t;}	// copying is not allowed
+
+	uint32_t *pnt_col;
 //	mreal _tetx,_tety,_tetz;		// extra angles
 	std::vector<mglMatrix> stack;	///< stack for transformation matrices
 	GifFileType *gif;
@@ -422,11 +465,11 @@ private:
 	char GetLabelPos(mreal c, long kk, mglAxis &aa);
 	/// Draw tick
 	void tick_draw(mglPoint o, mglPoint d1, mglPoint d2, int f);
-	mreal FindOptOrg(char dir, int ind) const;
+	mreal FindOptOrg(char dir, int ind) const MGL_FUNC_PURE;
 	/// Transform mreal color and alpha to bits format
-	unsigned char* col2int(const mglPnt &p, unsigned char *r, int obj_id);
+	unsigned char* col2int(const mglPnt &p, unsigned char *r, int obj_id) const;
 	/// Combine colors in 2 plane.
-	void combine(unsigned char *c1, const unsigned char *c2);
+	void combine(unsigned char *c1, const unsigned char *c2) const;
 	/// Fast drawing of line between 2 points
 	void fast_draw(const mglPnt &p1, const mglPnt &p2, const mglDrawReg *d);
 

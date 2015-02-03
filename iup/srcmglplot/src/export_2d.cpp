@@ -30,29 +30,29 @@
 #define _Gr_	((mglCanvas *)(gr))
 void mgl_printf(void *fp, bool gz, const char *str, ...);
 //-----------------------------------------------------------------------------
-MGL_NO_EXPORT const char *mgl_get_dash(unsigned short d, mreal w)
+MGL_NO_EXPORT const char *mgl_get_dash(unsigned short d, mreal w,char dlm)
 {
 	static char b[32];
 	static std::string s;
 	if(d==0xffff)	return "";
-	int f=0, p=d&1, n=p?0:1, i, j;
+	int f=0, p=d&1, n=p?0:1;
 	s = p ? "" : "0";
-	for(i=0;i<16;i++)
+	for(int i=0;i<16;i++)
 	{
-		j = i;//15-i;
+		int j = i;//15-i;
 		if(((d>>j)&1) == p)	f++;
 		else
 		{
-			snprintf(b,32," %g",f*w);	s += b;
+			snprintf(b,32," %g%c",f*w,dlm);	b[31]=0;	s += b;
 			p = (d>>j)&1;	f = 1;	n++;
 		}
 	}
-	snprintf(b,32," %g",f*w);	s += b;
-	s += n%2 ? "" : " 0";
+	snprintf(b,32,"%g",f*w);	b[31]=0;	s += b;
+	s += (n%2) ? "" : " 0";
 	return s.c_str();
 }
 //-----------------------------------------------------------------------------
-bool MGL_NO_EXPORT mgl_is_same(HMGL gr, long i, mreal wp,uint32_t cp, int st)
+bool MGL_LOCAL_PURE mgl_is_same(HMGL gr, long i, mreal wp,uint32_t cp, int st)
 {
 	const mglPrim &pr=_Gr_->GetPrm(i);
 	if(abs(pr.type)!=1)	return false;
@@ -153,11 +153,10 @@ void MGL_NO_EXPORT put_desc(HMGL gr, void *fp, bool gz, const char *pre, const c
 		const mglGlyph &g = gr->GetGlf(q.n4);
 		int nl=g.nl;
 		const short *ln=g.line;
-		long ik,ii;
 		bool np=true;
-		if(ln && nl>0)	for(ik=0;ik<nl;ik++)
+		if(ln && nl>0)	for(long ik=0;ik<nl;ik++)
 		{
-			ii = 2*ik;
+			long ii = 2*ik;
 			if(ln[ii]==0x3fff && ln[ii+1]==0x3fff)	// line breakthrough
 			{	mgl_printf(fp, gz, "%s",ln3);	np=true;	continue;	}
 			else if(np)	mgl_printf(fp, gz, ln1,ln[ii],ln[ii+1]);
@@ -181,8 +180,24 @@ void MGL_EXPORT mgl_write_eps(HMGL gr, const char *fname,const char *descr)
 	if(!strcmp(fname,"-"))	fp = stdout;		// allow to write in stdout
 	else		fp = gz ? (void*)gzopen(fname,"wt") : (void*)fopen(fname,"wt");
 	if(!fp)		{	gr->SetWarn(mglWarnOpen,fname);	return;	}
-	setlocale(LC_NUMERIC, "C");
-	mgl_printf(fp, gz, "%%!PS-Adobe-3.0 EPSF-3.0\n%%%%BoundingBox: 0 0 %d %d\n", _Gr_->GetWidth(), _Gr_->GetHeight());
+	int w = _Gr_->GetWidth(), h = _Gr_->GetHeight();
+
+	if(gz)
+	{
+		unsigned len = strlen(fname), pos=0;
+		char *buf = new char[len+4];
+		memcpy(buf,fname,len);
+		if(buf[len-3]=='.')	pos = len-2;
+		else if(buf[len-2]=='.')	pos = len-1;
+		else	{	buf[len-1]='.';	pos = len;	}
+		if(pos)	{	buf[pos]=buf[pos+1]='b';	buf[pos+2]=0;	}
+		FILE *fb = fopen(buf,"w");
+		fprintf(fb, "%%%%BoundingBox: 0 0 %d %d\n", w, h);
+		fclose(fb);	delete []buf;
+	}
+	
+	const std::string loc = setlocale(LC_NUMERIC, NULL);	setlocale(LC_NUMERIC, "C");
+	mgl_printf(fp, gz, "%%!PS-Adobe-3.0 EPSF-3.0\n%%%%BoundingBox: 0 0 %d %d\n", w, h);
 	mgl_printf(fp, gz, "%%%%Created by MathGL library\n%%%%Title: %s\n",descr ? descr : fname);
 	mgl_printf(fp, gz, "%%%%CreationDate: %s\n",ctime(&now));
 	mgl_printf(fp, gz, "/lw {setlinewidth} def\n/rgb {setrgbcolor} def\n");
@@ -240,6 +255,25 @@ void MGL_EXPORT mgl_write_eps(HMGL gr, const char *fname,const char *descr)
 	//	if(m_C)	mgl_printf(fp, gz, "/m_C {m_c m_o} def\n");
 	mgl_printf(fp, gz, "\n");
 
+	// Write background image first
+	const unsigned char *img = mgl_get_background(gr);
+	bool same = true;
+	unsigned char white[3]={255,255,255};
+#pragma omp parallel for
+	for(long i=0;i<w*h;i++)	if(memcmp(img,img+4*i,3))	same=false;
+	if(!same)
+	{
+		mgl_printf(fp, gz, "%d %d 8 [1 0 0 1 0 0] {<", w,h,1+w*h/40);
+		for(long j=h-1;j>=0;j--)	for(long i=0;i<w;i++)
+		{
+			if((i+w*(h-j-1))%40==0 && i+j>0)	mgl_printf(fp, gz, "\n");
+			mgl_printf(fp, gz, "%02x%02x%02x",img[4*(i+w*j)],img[4*(i+w*j)+1],img[4*(i+w*j)+2]);
+		}
+		mgl_printf(fp, gz, "\n>} false 3 colorimage\n\n");
+	}
+	else if(memcmp(img,white,3))
+		mgl_printf(fp, gz, "np 0 0 mt 0 %d ll %d %d ll %d 0 ll cp %g %g %g rgb fill\n", h, w, h, w, img[0]/255., img[1]/255., img[2]/255.);
+
 	// write definition for all glyphs
 	put_desc(gr,fp,gz,"/%c%c_%04x { np\n", "\t%d %d mt ", "%d %d ll ", "cp\n", "} def\n");
 	// write primitives
@@ -254,13 +288,14 @@ void MGL_EXPORT mgl_write_eps(HMGL gr, const char *fname,const char *descr)
 		if(q.type<0)	continue;	// q.n1>=0 always
 		cp.c = _Gr_->GetPrmCol(i);
 		const mglPnt p1 = gr->GetPnt(q.n1);
-		if(q.type>1)	snprintf(str,256,"%.2g %.2g %.2g rgb ", cp.r[0]/255.,cp.r[1]/255.,cp.r[2]/255.);
+		if(q.type>1)
+		{	snprintf(str,256,"%.2g %.2g %.2g rgb ", cp.r[0]/255.,cp.r[1]/255.,cp.r[2]/255.);	str[255]=0;	}
 
 		if(q.type==0)	// mark
 		{
 			mreal x0 = p1.x,y0 = p1.y;
 			snprintf(str,256,"%.2g lw %.2g %.2g %.2g rgb ", 50*q.s*q.w>1?50*q.s*q.w:1, cp.r[0]/255.,cp.r[1]/255.,cp.r[2]/255.);
-			wp=1;	// NOTE: this may renew line style if a mark inside!
+			str[255]=0;	wp=1;	// NOTE: this may renew line style if a mark inside!
 			if(q.s!=qs_old)
 			{
 				mgl_printf(fp, gz, "/ss {%g} def\n",q.s);
@@ -307,9 +342,9 @@ void MGL_EXPORT mgl_write_eps(HMGL gr, const char *fname,const char *descr)
 		else if(q.type==1)	// line
 		{
 			snprintf(str,256,"%.2g lw %.2g %.2g %.2g rgb ", q.w>1 ? q.w:1., cp.r[0]/255.,cp.r[1]/255.,cp.r[2]/255.);
-			wp = q.w>1  ? q.w:1;	st = q.n3;
+			str[255]=0;	wp = q.w>1  ? q.w:1;	st = q.n3;
 			put_line(gr,fp,gz,i,wp,cp.c,st, "np %g %g mt ", "%g %g ll ", false, 1);
-			const char *sd = mgl_get_dash(q.n3,q.w);
+			const char *sd = mgl_get_dash(q.n3,q.w,' ');
 			if(sd && sd[0])	mgl_printf(fp, gz, "%s [%s] %g sd dr\n",str,sd,q.w*q.s);
 			else			mgl_printf(fp, gz, "%s d0 dr\n",str);
 		}
@@ -341,7 +376,7 @@ void MGL_EXPORT mgl_write_eps(HMGL gr, const char *fname,const char *descr)
 	}
 	mgl_printf(fp, gz, "\nshowpage\n%%%%EOF\n");
 	if(strcmp(fname,"-"))	{	if(gz)	gzclose((gzFile)fp);	else	fclose((FILE *)fp);	}
-	setlocale(LC_NUMERIC, "");
+	setlocale(LC_NUMERIC, loc.c_str());
 }
 void MGL_EXPORT mgl_write_eps_(uintptr_t *gr, const char *fname,const char *descr,int l,int n)
 {	char *s=new char[l+1];	memcpy(s,fname,l);	s[l]=0;
@@ -356,22 +391,47 @@ void MGL_EXPORT mgl_write_svg(HMGL gr, const char *fname,const char *descr)
 	time_t now;	time(&now);
 
 	bool gz = fname[strlen(fname)-1]=='z';
-	long hh = _Gr_->GetHeight();
+	long hh = _Gr_->GetHeight(), ww = _Gr_->GetWidth();
 	void *fp;
 	if(!strcmp(fname,"-"))	fp = stdout;		// allow to write in stdout
 	else		fp = gz ? (void*)gzopen(fname,"wt") : (void*)fopen(fname,"wt");
 	if(!fp)		{	gr->SetWarn(mglWarnOpen,fname);	return;	}
-	setlocale(LC_NUMERIC, "C");
+	const std::string loc = setlocale(LC_NUMERIC, NULL);	setlocale(LC_NUMERIC, "C");
 	mgl_printf(fp, gz, "<?xml version=\"1.0\" standalone=\"no\"?>\n");
 	mgl_printf(fp, gz, "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20000303 Stylable//EN\" \"http://www.w3.org/TR/2000/03/WD-SVG-20000303/DTD/svg-20000303-stylable.dtd\">\n");
-	mgl_printf(fp, gz, "<svg width=\"%d\" height=\"%d\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n", _Gr_->GetWidth(), hh);
+	mgl_printf(fp, gz, "<svg width=\"%d\" height=\"%d\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n", ww, hh);
 
 	mgl_printf(fp, gz, "<!--Created by MathGL library-->\n");
 	mgl_printf(fp, gz, "<!--Title: %s-->\n<!--CreationDate: %s-->\n\n",descr?descr:fname,ctime(&now));
 
 	// write definition for all glyphs
-	put_desc(gr,fp,gz,"<symbol id=\"%c%c_%04x\"><path d=\"", "\tM %d %d ",
-			 "L %d %d ", "Z\n", "\"/></symbol>\n");
+	put_desc(gr,fp,gz,"<defs><g id=\"%c%c_%04x\"><path d=\"", "\tM %d %d ",
+			 "L %d %d ", "Z\n", "\"/></g></defs>\n");
+
+
+	// Write background image first
+	const unsigned char *img = mgl_get_background(gr);
+	bool same = true;
+	unsigned char white[3]={255,255,255};
+#pragma omp parallel for
+	for(long i=0;i<ww*hh;i++)	if(memcmp(img,img+4*i,3))	same=false;
+	if(!same)
+	{	// TODO write as <image width="100" height="100" xlink:href="data:image/png;base64,...">
+/*		mgl_printf(fp, gz, "%d %d 8 [1 0 0 1 0 0] {<", ww,hh,1+ww*hh/40);
+		for(long j=hh-1;j>=0;j--)	for(long i=0;i<ww;i++)
+		{
+			if((i+ww*(hh-j-1))%40==0 && i+j>0)	mgl_printf(fp, gz, "\n");
+			mgl_printf(fp, gz, "%02x%02x%02x",img[4*(i+ww*j)],img[4*(i+ww*j)+1],img[4*(i+ww*j)+2]);
+		}
+		mgl_printf(fp, gz, "\n>} false 3 colorimage\n\n");*/
+	}
+	else if(memcmp(img,white,3))
+	{
+		mgl_printf(fp, gz, "<g fill=\"#%02x%02x%02x\" opacity=\"%g\">\n", img[0], img[1], img[2], img[3]/255.);
+		mgl_printf(fp, gz, "<path d=\"M 0 0 L 0 %ld L %ld %ld L %ld 0 Z\"/> </g>\n", hh, ww, hh, ww);
+	}
+
+
 	// currentColor -> inherit ???
 	mgl_printf(fp, gz, "<g fill=\"none\" stroke=\"none\" stroke-width=\"0.5\">\n");
 	// write primitives
@@ -449,7 +509,7 @@ void MGL_EXPORT mgl_write_svg(HMGL gr, const char *fname,const char *descr)
 			mgl_printf(fp,gz,"<g stroke=\"#%02x%02x%02x\"",int(cp.r[0]),int(cp.r[1]),int(cp.r[2]));
 			if(q.n3)
 			{
-				mgl_printf(fp, gz, " stroke-dasharray=\"%s\"", mgl_get_dash(q.n3,q.w));
+				mgl_printf(fp, gz, " stroke-dasharray=\"%s\"", mgl_get_dash(q.n3,q.w,','));
 				mgl_printf(fp, gz, " stroke-dashoffset=\"%g\"", q.s*q.w);
 			}
 			if(q.w>1)	mgl_printf(fp, gz, " stroke-width=\"%g\"", q.w);
@@ -501,7 +561,7 @@ void MGL_EXPORT mgl_write_svg(HMGL gr, const char *fname,const char *descr)
 	{	mglPrim &q=gr->GetPrm(i);	if(q.type==-1)	q.type = 1;	}
 	mgl_printf(fp, gz, "</g></svg>");
 	if(strcmp(fname,"-"))	{	if(gz)	gzclose((gzFile)fp);	else	fclose((FILE *)fp);	}
-	setlocale(LC_NUMERIC, "");
+	setlocale(LC_NUMERIC, loc.c_str());
 }
 void MGL_EXPORT mgl_write_svg_(uintptr_t *gr, const char *fname,const char *descr,int l,int n)
 {	char *s=new char[l+1];	memcpy(s,fname,l);	s[l]=0;
@@ -515,7 +575,7 @@ void MGL_EXPORT mgl_write_tex(HMGL gr, const char *fname,const char *descr)
 
 	FILE *fp = fopen(fname,"wt");
 	if(!fp)		{	gr->SetWarn(mglWarnOpen,fname);	return;	}
-	setlocale(LC_NUMERIC, "C");
+	const std::string loc = setlocale(LC_NUMERIC, NULL);	setlocale(LC_NUMERIC, "C");
 	fprintf(fp, "%% Created by MathGL library\n%% Title: %s\n\n",descr?descr:fname);
 	// provide marks
 	fprintf(fp, "\\providecommand{\\mglp}[4]{\\draw[#3] (#1-#4, #2) -- (#1+#4,#2) (#1,#2-#4) -- (#1,#2+#4);}\n");
@@ -551,7 +611,7 @@ void MGL_EXPORT mgl_write_tex(HMGL gr, const char *fname,const char *descr)
 		const mglPrim &q = gr->GetPrm(i);
 		if(q.type<0)	continue;	// q.n1>=0 always
 		cp.c = _Gr_->GetPrmCol(i);
-		snprintf(cname,128,"color={rgb,255:red,%d;green,%d;blue,%d}",cp.r[0],cp.r[1],cp.r[2]);
+		snprintf(cname,128,"color={rgb,255:red,%d;green,%d;blue,%d}",cp.r[0],cp.r[1],cp.r[2]);	cname[127]=0;
 
 		const mglPnt p1=gr->GetPnt(q.n1);
 		mreal x=p1.x/100,y=p1.y/100,s=q.s/100;
@@ -638,7 +698,7 @@ void MGL_EXPORT mgl_write_tex(HMGL gr, const char *fname,const char *descr)
 	for(long i=0;i<gr->GetPrmNum();i++)
 	{	mglPrim &q=gr->GetPrm(i);	if(q.type==-1)	q.type = 1;	}
 	fclose(fp);
-	setlocale(LC_NUMERIC, "");
+	setlocale(LC_NUMERIC, loc.c_str());
 
 	// provide main file for viewing figure
 	fp=fopen("mglmain.tex","wt");
