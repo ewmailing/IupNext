@@ -67,9 +67,10 @@ SRCSCINTILLA = src/AutoComplete.cxx src/CallTip.cxx src/Catalogue.cxx src/CellBu
                src/ContractionState.cxx src/Decoration.cxx src/Document.cxx src/Editor.cxx src/ExternalLexer.cxx \
                src/Indicator.cxx src/KeyMap.cxx src/LineMarker.cxx src/PerLine.cxx src/PositionCache.cxx \
                src/RESearch.cxx src/RunStyles.cxx src/ScintillaBase.cxx src/Selection.cxx src/Style.cxx \
-               src/UniConversion.cxx src/ViewStyle.cxx src/XPM.cxx src/CaseConvert.cxx src/CaseFolder.cxx
+               src/UniConversion.cxx src/ViewStyle.cxx src/XPM.cxx src/CaseConvert.cxx src/CaseFolder.cxx \
+               src/editmodel.cxx src/editview.cxx src/marginview.cxx
 
-SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers/LexAPDL.cxx lexers/LexAsm.cxx \
+SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers/LexAPDL.cxx \
 				lexers/LexAsn1.cxx lexers/LexASY.cxx lexers/LexAU3.cxx lexers/LexAVE.cxx lexers/LexAVS.cxx \
 				lexers/LexBaan.cxx lexers/LexBash.cxx lexers/LexBasic.cxx lexers/LexBullant.cxx lexers/LexCaml.cxx \
 				lexers/LexCLW.cxx lexers/LexCmake.cxx lexers/LexCOBOL.cxx lexers/LexCoffeeScript.cxx \
@@ -90,7 +91,8 @@ SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers
 				lexers/LexTCL.cxx lexers/LexTCMD.cxx lexers/LexTeX.cxx lexers/LexTxt2tags.cxx lexers/LexVB.cxx \
 				lexers/LexVerilog.cxx lexers/LexVHDL.cxx lexers/LexVisualProlog.cxx lexers/LexYAML.cxx \
         lexers/LexKVIrc.cxx lexers/LexLaTeX.cxx lexers/LexSTTXT.cxx lexers/LexRust.cxx \
-        lexers/LexDMAP.cxx lexers/LexDMIS.cxx
+        lexers/LexDMAP.cxx lexers/LexDMIS.cxx lexers/lexbibtex.cxx lexers/lexhex.cxx lexers/LexAsm.cxx \
+        lexers/lexregistry.cxx
 				
 SRCSCINTILLA += lexlib/Accessor.cxx lexlib/CharacterSet.cxx lexlib/LexerBase.cxx lexlib/LexerModule.cxx \
                 lexlib/LexerNoExceptions.cxx lexlib/LexerSimple.cxx lexlib/PropSetSimple.cxx \

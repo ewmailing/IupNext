@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <ctype.h>
 
+#include <stdexcept>
 #include <string>
 #include <vector>
 #include <map>
@@ -50,6 +51,9 @@
 #include "Document.h"
 #include "Selection.h"
 #include "PositionCache.h"
+#include "EditModel.h"
+#include "MarginView.h"
+#include "EditView.h"
 #include "Editor.h"
 #include "AutoComplete.h"
 #include "ScintillaBase.h"
@@ -73,7 +77,7 @@ void ScintillaBase::Finalise() {
 	popup.Destroy();
 }
 
-void ScintillaBase::AddCharUTF(char *s, unsigned int len, bool treatAsDBCS) {
+void ScintillaBase::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 	bool isFillUp = ac.Active() && ac.IsFillUpChar(*s);
 	if (!isFillUp) {
 		Editor::AddCharUTF(s, len, treatAsDBCS);
@@ -445,12 +449,12 @@ void ScintillaBase::CallTipShow(Point pt, const char *defn) {
 	PRectangle rcClient = GetClientRectangle();
 	int offset = vs.lineHeight + static_cast<int>(rc.Height());
 	// adjust so it displays above the text.
-	if (rc.bottom > rcClient.bottom) {
+	if (rc.bottom > rcClient.bottom && rc.Height() < rcClient.Height()) {
 		rc.top -= offset;
 		rc.bottom -= offset;
 	}
 	// adjust so it displays below the text.
-	if (rc.top < rcClient.top) {
+	if (rc.top < rcClient.top && rc.Height() < rcClient.Height()) {
 		rc.top += offset;
 		rc.bottom += offset;
 	}

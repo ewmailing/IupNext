@@ -406,6 +406,24 @@
     <ClCompile Include="..\srcscintilla\lexers\LexDMIS.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
+    <ClCompile Include="..\srcscintilla\lexers\LexHex.cxx">
+      <Filter>Scintilla\Lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\lexers\LexRegistry.cxx">
+      <Filter>Scintilla\Lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\lexers\LexBibTeX.cxx">
+      <Filter>Scintilla\Lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\src\EditView.cxx">
+      <Filter>Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\src\MarginView.cxx">
+      <Filter>Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\src\EditModel.cxx">
+      <Filter>Scintilla</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\src\Indicator.h">
@@ -545,6 +563,15 @@
     </ClInclude>
     <ClInclude Include="..\srcscintilla\lexlib\LexAccessor.h">
       <Filter>Scintilla\Lexers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcscintilla\src\EditModel.h">
+      <Filter>Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcscintilla\src\EditView.h">
+      <Filter>Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcscintilla\src\MarginView.h">
+      <Filter>Scintilla</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
