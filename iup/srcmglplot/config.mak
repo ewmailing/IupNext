@@ -21,7 +21,7 @@ LIBS := iup iupgl $(LIBS)
 SRCMGLPLOT = addon.cpp complex.cpp data_gr.cpp evalp.cpp fit.cpp pde.cpp vect.cpp \
              axis.cpp complex_io.cpp data_io.cpp exec.cpp font.cpp pixel.cpp volume.cpp \
              base.cpp cont.cpp data_png.cpp export.cpp obj.cpp plot.cpp window.cpp \
-             base_cf.cpp crust.cpp def_font.cpp export_2d.cpp opengl.cpp prim.cpp \
+             base_cf.cpp crust.cpp export_2d.cpp opengl.cpp prim.cpp \
              canvas.cpp data.cpp eval.cpp export_3d.cpp other.cpp surf.cpp \
              canvas_cf.cpp data_ex.cpp evalc.cpp fft.cpp parser.cpp tex_table.cpp \
              complex_ex.cpp s_hull/s_hull_pro.cpp
