@@ -16,12 +16,17 @@ USE_MACOS_OPENGL = Yes
 INCLUDES = ../srclua5
 DEF_FILE = ctrl/iupluagl.def
 
+ifdef USE_LUA53
+  LUASFX = 53
+  DEFINES += LUA_COMPAT_MODULE
+else
 ifdef USE_LUA52
   LUASFX = 52
   DEFINES += LUA_COMPAT_MODULE
 else
   USE_LUA51 = Yes
   LUASFX = 51
+endif
 endif
 
 LIBNAME := $(LIBNAME)$(LUASFX)

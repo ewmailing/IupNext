@@ -24,8 +24,8 @@ static int cfMaskRemove (lua_State *L)
 static int cfMaskMatRemove(lua_State *L)
 {
   iupmaskMatRemove(iuplua_checkihandle(L,1),
-                   luaL_checkint(L,2),
-                   luaL_checkint(L,3));
+                   luaL_checkinteger(L,2),
+                   luaL_checkinteger(L,3));
   return 0;
 }
 
@@ -33,8 +33,8 @@ static int cfMaskSet (lua_State *L)
 {
   iupmaskSet(iuplua_checkihandle(L,1),
              (char*)luaL_checkstring(L,2),
-             luaL_checkint(L,3),
-             luaL_checkint(L,4));
+             luaL_checkinteger(L,3),
+             luaL_checkinteger(L,4));
   return 0;
 }
 
@@ -42,26 +42,26 @@ static int cfMaskMatSet(lua_State *L)
 {
   iupmaskMatSet(iuplua_checkihandle(L,1),
                 (char*)luaL_checkstring(L,2),
-                luaL_checkint(L,3),
-                luaL_checkint(L,4),
-                luaL_checkint(L,5),
-                luaL_checkint(L,6));
+                luaL_checkinteger(L,3),
+                luaL_checkinteger(L,4),
+                luaL_checkinteger(L,5),
+                luaL_checkinteger(L,6));
   return 0;
 }
 
 static int cfMaskSetInt(lua_State *L)
 {
   iupmaskSetInt(iuplua_checkihandle(L,1),
-                luaL_checkint(L,2),
-                luaL_checkint(L,3),
-                luaL_checkint(L,4));
+                luaL_checkinteger(L,2),
+                luaL_checkinteger(L,3),
+                luaL_checkinteger(L,4));
   return 0;
 }
 
 static int cfMaskSetFloat(lua_State *L)
 {
   iupmaskSetFloat(iuplua_checkihandle(L,1),
-                  luaL_checkint(L,2),
+                  luaL_checkinteger(L,2),
                   (float)luaL_checknumber(L,3),
                   (float)luaL_checknumber(L,4));
   return 0;
@@ -70,22 +70,22 @@ static int cfMaskSetFloat(lua_State *L)
 static int cfMaskMatSetInt (lua_State *L)
 {
   iupmaskMatSetInt(iuplua_checkihandle(L,1),
-                   luaL_checkint(L,2),
-                   luaL_checkint(L,3),
-                   luaL_checkint(L,4),
-                   luaL_checkint(L,5),
-                   luaL_checkint(L,6));
+                   luaL_checkinteger(L,2),
+                   luaL_checkinteger(L,3),
+                   luaL_checkinteger(L,4),
+                   luaL_checkinteger(L,5),
+                   luaL_checkinteger(L,6));
   return 0;
 }
 
 static int cfMaskMatSetFloat (lua_State *L)
 {
   iupmaskMatSetFloat(iuplua_checkihandle(L,1),
-                     luaL_checkint(L,2),
+                     luaL_checkinteger(L,2),
                      (float)luaL_checknumber(L,3),
                      (float)luaL_checknumber(L,4),
-                     luaL_checkint(L,5),
-                     luaL_checkint(L,6));
+                     luaL_checkinteger(L,5),
+                     luaL_checkinteger(L,6));
   return 0;
 }
 
@@ -98,8 +98,8 @@ static int cfMaskCheck (lua_State *L)
 static int cfMaskMatCheck (lua_State *L)
 {
   iupmaskMatCheck(iuplua_checkihandle(L,1),
-                  luaL_checkint(L,2),
-                  luaL_checkint(L,3));
+                  luaL_checkinteger(L,2),
+                  luaL_checkinteger(L,3));
   return 0;
 }
 

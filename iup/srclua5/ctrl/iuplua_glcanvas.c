@@ -50,7 +50,7 @@ static int GLSwapBuffers(lua_State *L)
 static int GLPalette(lua_State *L)
 {
    Ihandle *self = iuplua_checkihandle(L,1);
-   int index = luaL_checkint(L,2);
+   int index = luaL_checkinteger(L,2);
    float r = (float)luaL_checknumber(L,3);
    float g = (float)luaL_checknumber(L,4);
    float b = (float)luaL_checknumber(L,5);
@@ -61,16 +61,16 @@ static int GLPalette(lua_State *L)
 static int GLUseFont(lua_State *L)
 {
    Ihandle *self = iuplua_checkihandle(L,1);
-   int first = luaL_checkint(L,2);
-   int count = luaL_checkint(L,3);
-   int list_base = luaL_checkint(L,4);
+   int first = luaL_checkinteger(L,2);
+   int count = luaL_checkinteger(L,3);
+   int list_base = luaL_checkinteger(L,4);
    IupGLUseFont(self, first, count, list_base);
    return 0;
 }
 
 static int GLWait(lua_State *L)
 {
-   IupGLWait(luaL_checkint(L,1));
+   IupGLWait(luaL_checkinteger(L,1));
    return 0;
 }
 

@@ -77,7 +77,7 @@ static int pplot_predraw_cb(Ihandle *self, cdCanvas* cnv)
 static int PlotBegin(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPPlotBegin(ih, luaL_checkint(L,2));
+  IupPPlotBegin(ih, luaL_checkinteger(L,2));
   return 0;
 }
 
@@ -106,24 +106,24 @@ static int PlotEnd(lua_State *L)
 static int PlotInsertStr(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPPlotInsertStr(ih, luaL_checkint(L,2), luaL_checkint(L,3), luaL_checkstring(L,4), (float)luaL_checknumber(L,5));
+  IupPPlotInsertStr(ih, luaL_checkinteger(L,2), luaL_checkinteger(L,3), luaL_checkstring(L,4), (float)luaL_checknumber(L,5));
   return 0;
 }
 
 static int PlotInsert(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPPlotInsert(ih, luaL_checkint(L,2), luaL_checkint(L,3), (float)luaL_checknumber(L,4), (float)luaL_checknumber(L,5));
+  IupPPlotInsert(ih, luaL_checkinteger(L,2), luaL_checkinteger(L,3), (float)luaL_checknumber(L,4), (float)luaL_checknumber(L,5));
   return 0;
 }
 
 static int PlotInsertPoints(lua_State *L)
 {
   float *px, *py;
-  int count = luaL_checkint(L, 6);
+  int count = luaL_checkinteger(L, 6);
   px = iuplua_checkfloat_array(L, 4, count);
   py = iuplua_checkfloat_array(L, 5, count);
-  IupPPlotInsertPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  IupPPlotInsertPoints(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), luaL_checkinteger(L,3), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -133,10 +133,10 @@ static int PlotInsertStrPoints(lua_State *L)
 {
   float *py;
   char* *px;
-  int count = luaL_checkint(L, 6);
+  int count = luaL_checkinteger(L, 6);
   px = iuplua_checkstring_array(L, 4, count);
   py = iuplua_checkfloat_array(L, 5, count);
-  IupPPlotInsertStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  IupPPlotInsertStrPoints(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), luaL_checkinteger(L,3), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -145,10 +145,10 @@ static int PlotInsertStrPoints(lua_State *L)
 static int PlotAddPoints(lua_State *L)
 {
   float *px, *py;
-  int count = luaL_checkint(L, 5);
+  int count = luaL_checkinteger(L, 5);
   px = iuplua_checkfloat_array(L, 3, count);
   py = iuplua_checkfloat_array(L, 4, count);
-  IupPPlotAddPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  IupPPlotAddPoints(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -158,10 +158,10 @@ static int PlotAddStrPoints(lua_State *L)
 {
   float *py;
   char* *px;
-  int count = luaL_checkint(L, 5);
+  int count = luaL_checkinteger(L, 5);
   px = iuplua_checkstring_array(L, 3, count);
   py = iuplua_checkfloat_array(L, 4, count);
-  IupPPlotAddStrPoints(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  IupPPlotAddStrPoints(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -171,7 +171,7 @@ static int PPlotGetSample(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
   float x, y;
-  IupPPlotGetSample(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), &x, &y);
+  IupPPlotGetSample(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &x, &y);
   lua_pushnumber(L, x);
   lua_pushnumber(L, y);
   return 2;
@@ -182,7 +182,7 @@ static int PPlotGetSampleStr(lua_State *L)
   Ihandle *ih = iuplua_checkihandle(L, 1);
   float y;
   const char* x;
-  IupPPlotGetSampleStr(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), &x, &y);
+  IupPPlotGetSampleStr(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &x, &y);
   lua_pushstring(L, x);
   lua_pushnumber(L, y);
   return 2;

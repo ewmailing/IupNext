@@ -15,12 +15,17 @@ INCLUDES = ../srclua5
 LIBS = iupweb
 DEF_FILE = ctrl/iupluaweb.def
 
+ifdef USE_LUA53
+  LUASFX = 53
+  DEFINES += LUA_COMPAT_MODULE
+else
 ifdef USE_LUA52
   LUASFX = 52
   DEFINES += LUA_COMPAT_MODULE
 else
   USE_LUA51 = Yes
   LUASFX = 51
+endif
 endif
 
 LIBNAME := $(LIBNAME)$(LUASFX)

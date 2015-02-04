@@ -18,12 +18,17 @@ DEFINES = CD_NO_OLD_INTERFACE
 SRC = iuplua_cd.c
 DEF_FILE = iupluacd.def
 
+ifdef USE_LUA53
+  LUASFX = 53
+  DEFINES += LUA_COMPAT_MODULE
+else
 ifdef USE_LUA52
   LUASFX = 52
   DEFINES += LUA_COMPAT_MODULE
 else
   USE_LUA51 = Yes
   LUASFX = 51
+endif
 endif
 
 LIBNAME := $(LIBNAME)$(LUASFX)

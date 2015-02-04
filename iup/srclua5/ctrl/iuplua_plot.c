@@ -165,7 +165,7 @@ static int plot_predraw_cb(Ihandle *self, cdCanvas* cnv)
 static int PlotBegin(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPlotBegin(ih, luaL_checkint(L,2));
+  IupPlotBegin(ih, luaL_checkinteger(L,2));
   return 0;
 }
 
@@ -201,7 +201,7 @@ static int PlotEnd(lua_State *L)
 static int PlotLoadData(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  int ret = IupPlotLoadData(ih, luaL_checkstring(L, 2), luaL_checkint(L, 3));
+  int ret = IupPlotLoadData(ih, luaL_checkstring(L, 2), luaL_checkinteger(L, 3));
   lua_pushinteger(L, ret);
   return 1;
 }
@@ -209,7 +209,7 @@ static int PlotLoadData(lua_State *L)
 static int PlotSetFormula(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  int ret = IupPlotSetFormula(ih, luaL_checkint(L, 2), luaL_checkstring(L, 3), luaL_optstring(L, 4, NULL));
+  int ret = IupPlotSetFormula(ih, luaL_checkinteger(L, 2), luaL_checkstring(L, 3), luaL_optstring(L, 4, NULL));
   lua_pushinteger(L, ret);
   return 1;
 }
@@ -233,31 +233,31 @@ static int PlotFindSample(lua_State *L)
 static int PlotInsert(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  IupPlotInsert(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), luaL_checknumber(L, 4), luaL_checknumber(L, 5));
+  IupPlotInsert(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), luaL_checknumber(L, 4), luaL_checknumber(L, 5));
   return 0;
 }
 
 static int PlotInsertStr(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupPlotInsertStr(ih, luaL_checkint(L,2), luaL_checkint(L,3), luaL_checkstring(L,4), luaL_checknumber(L,5));
+  IupPlotInsertStr(ih, luaL_checkinteger(L,2), luaL_checkinteger(L,3), luaL_checkstring(L,4), luaL_checknumber(L,5));
   return 0;
 }
 
 static int PlotInsertSegment(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  IupPlotInsertSegment(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), luaL_checknumber(L, 4), luaL_checknumber(L, 5));
+  IupPlotInsertSegment(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), luaL_checknumber(L, 4), luaL_checknumber(L, 5));
   return 0;
 }
 
 static int PlotInsertSamples(lua_State *L)
 {
   double *px, *py;
-  int count = luaL_checkint(L, 6);
+  int count = luaL_checkinteger(L, 6);
   px = iuplua_checkdouble_array(L, 4, count);
   py = iuplua_checkdouble_array(L, 5, count);
-  IupPlotInsertSamples(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  IupPlotInsertSamples(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), luaL_checkinteger(L,3), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -267,10 +267,10 @@ static int PlotInsertStrSamples(lua_State *L)
 {
   double *py;
   char* *px;
-  int count = luaL_checkint(L, 6);
+  int count = luaL_checkinteger(L, 6);
   px = iuplua_checkstring_array(L, 4, count);
   py = iuplua_checkdouble_array(L, 5, count);
-  IupPlotInsertStrSamples(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  IupPlotInsertStrSamples(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), luaL_checkinteger(L,3), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -279,10 +279,10 @@ static int PlotInsertStrSamples(lua_State *L)
 static int PlotAddSamples(lua_State *L)
 {
   double *px, *py;
-  int count = luaL_checkint(L, 5);
+  int count = luaL_checkinteger(L, 5);
   px = iuplua_checkdouble_array(L, 3, count);
   py = iuplua_checkdouble_array(L, 4, count);
-  IupPlotAddSamples(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  IupPlotAddSamples(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -292,10 +292,10 @@ static int PlotAddStrSamples(lua_State *L)
 {
   double *py;
   char* *px;
-  int count = luaL_checkint(L, 5);
+  int count = luaL_checkinteger(L, 5);
   px = iuplua_checkstring_array(L, 3, count);
   py = iuplua_checkdouble_array(L, 4, count);
-  IupPlotAddStrSamples(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  IupPlotAddStrSamples(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -305,7 +305,7 @@ static int PlotGetSample(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
   double x, y;
-  IupPlotGetSample(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), &x, &y);
+  IupPlotGetSample(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &x, &y);
   lua_pushnumber(L, x);
   lua_pushnumber(L, y);
   return 2;
@@ -316,7 +316,7 @@ static int PlotGetSampleStr(lua_State *L)
   Ihandle *ih = iuplua_checkihandle(L, 1);
   double y;
   const char* x;
-  IupPlotGetSampleStr(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), &x, &y);
+  IupPlotGetSampleStr(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &x, &y);
   lua_pushstring(L, x);
   lua_pushnumber(L, y);
   return 2;
@@ -325,7 +325,7 @@ static int PlotGetSampleStr(lua_State *L)
 static int PlotGetSampleSelection(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  int selected = IupPlotGetSampleSelection(ih, luaL_checkint(L, 2), luaL_checkint(L, 3));
+  int selected = IupPlotGetSampleSelection(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3));
   lua_pushboolean(L, selected);
   return 1;
 }
@@ -333,21 +333,21 @@ static int PlotGetSampleSelection(lua_State *L)
 static int PlotSetSample(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  IupPlotSetSample(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), luaL_checknumber(L, 4), luaL_checknumber(L, 5));
+  IupPlotSetSample(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), luaL_checknumber(L, 4), luaL_checknumber(L, 5));
   return 0;
 }
 
 static int PlotSetSampleStr(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  IupPlotSetSampleStr(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), luaL_checkstring(L, 4), luaL_checknumber(L, 5));
+  IupPlotSetSampleStr(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), luaL_checkstring(L, 4), luaL_checknumber(L, 5));
   return 0;
 }
 
 static int PlotSetSampleSelection(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  IupPlotSetSampleSelection(ih, luaL_checkint(L, 2), luaL_checkint(L, 3), luaL_checkint(L, 4));
+  IupPlotSetSampleSelection(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), luaL_checkinteger(L, 4));
   return 0;
 }
 

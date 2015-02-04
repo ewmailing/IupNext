@@ -19,7 +19,7 @@
 static int PlotBegin(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  IupMglPlotBegin(ih, luaL_checkint(L,2));
+  IupMglPlotBegin(ih, luaL_checkinteger(L,2));
   return 0;
 }
 
@@ -56,10 +56,10 @@ static int PlotInsert1D(lua_State *L)
 {
   double *py;
   char* *px;
-  int count = luaL_checkint(L, 6);
+  int count = luaL_checkinteger(L, 6);
   px = iuplua_checkstring_array(L, 4, count);
   py = iuplua_checkdouble_array(L, 5, count);
-  IupMglPlotInsert1D(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  IupMglPlotInsert1D(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), luaL_checkinteger(L,3), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -68,10 +68,10 @@ static int PlotInsert1D(lua_State *L)
 static int PlotInsert2D(lua_State *L)
 {
   double *px, *py;
-  int count = luaL_checkint(L, 6);
+  int count = luaL_checkinteger(L, 6);
   px = iuplua_checkdouble_array(L, 4, count);
   py = iuplua_checkdouble_array(L, 5, count);
-  IupMglPlotInsert2D(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, count);
+  IupMglPlotInsert2D(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), luaL_checkinteger(L,3), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -80,11 +80,11 @@ static int PlotInsert2D(lua_State *L)
 static int PlotInsert3D(lua_State *L)
 {
   double *px, *py, *pz;
-  int count = luaL_checkint(L, 7);
+  int count = luaL_checkinteger(L, 7);
   px = iuplua_checkdouble_array(L, 4, count);
   py = iuplua_checkdouble_array(L, 5, count);
   pz = iuplua_checkdouble_array(L, 6, count);
-  IupMglPlotInsert3D(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkint(L,3), px, py, pz, count);
+  IupMglPlotInsert3D(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), luaL_checkinteger(L,3), px, py, pz, count);
   free(px);
   free(py);
   free(pz);
@@ -95,10 +95,10 @@ static int PlotSet1D(lua_State *L)
 {
   double *py;
   char* *px;
-  int count = luaL_checkint(L, 5);
+  int count = luaL_checkinteger(L, 5);
   px = iuplua_checkstring_array(L, 3, count);
   py = iuplua_checkdouble_array(L, 4, count);
-  IupMglPlotSet1D(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  IupMglPlotSet1D(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -107,10 +107,10 @@ static int PlotSet1D(lua_State *L)
 static int PlotSet2D(lua_State *L)
 {
   double *px, *py;
-  int count = luaL_checkint(L, 5);
+  int count = luaL_checkinteger(L, 5);
   px = iuplua_checkdouble_array(L, 3, count);
   py = iuplua_checkdouble_array(L, 4, count);
-  IupMglPlotSet2D(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, count);
+  IupMglPlotSet2D(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), px, py, count);
   free(px);
   free(py);
   return 0;
@@ -119,11 +119,11 @@ static int PlotSet2D(lua_State *L)
 static int PlotSet3D(lua_State *L)
 {
   double *px, *py, *pz;
-  int count = luaL_checkint(L, 6);
+  int count = luaL_checkinteger(L, 6);
   px = iuplua_checkdouble_array(L, 3, count);
   py = iuplua_checkdouble_array(L, 4, count);
   pz = iuplua_checkdouble_array(L, 5, count);
-  IupMglPlotSet3D(iuplua_checkihandle(L,1), luaL_checkint(L,2), px, py, pz, count);
+  IupMglPlotSet3D(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), px, py, pz, count);
   free(px);
   free(py);
   free(pz);
@@ -132,29 +132,29 @@ static int PlotSet3D(lua_State *L)
 
 static int PlotSetFormula(lua_State *L)
 {
-  IupMglPlotSetFormula(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkstring(L,3), luaL_checkstring(L,4), luaL_checkstring(L,5), luaL_checkint(L,6));
+  IupMglPlotSetFormula(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), luaL_checkstring(L,3), luaL_checkstring(L,4), luaL_checkstring(L,5), luaL_checkinteger(L,6));
   return 0;
 }
 
 static int PlotLoadData(lua_State *L)
 {
-  IupMglPlotLoadData(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkstring(L,3), luaL_checkint(L,4), luaL_checkint(L,5), luaL_checkint(L,6));
+  IupMglPlotLoadData(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), luaL_checkstring(L,3), luaL_checkinteger(L,4), luaL_checkinteger(L,5), luaL_checkinteger(L,6));
   return 0;
 }
 
 static int PlotSetFromFormula(lua_State *L)
 {
-  IupMglPlotSetFromFormula(iuplua_checkihandle(L,1), luaL_checkint(L,2), luaL_checkstring(L,3), luaL_checkint(L,4), luaL_checkint(L,5), luaL_checkint(L,6));
+  IupMglPlotSetFromFormula(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), luaL_checkstring(L,3), luaL_checkinteger(L,4), luaL_checkinteger(L,5), luaL_checkinteger(L,6));
   return 0;
 }
 
 static int PlotSetData(lua_State *L)
 {
-  int count_x = luaL_checkint(L,4), 
-      count_y = luaL_checkint(L,5), 
-      count_z = luaL_checkint(L,6);
+  int count_x = luaL_checkinteger(L,4), 
+      count_y = luaL_checkinteger(L,5), 
+      count_z = luaL_checkinteger(L,6);
   double* data = iuplua_checkdouble_array(L, 3, count_x*count_y*count_z);
-  IupMglPlotSetData(iuplua_checkihandle(L,1), luaL_checkint(L,2), data, count_x, count_y, count_z);
+  IupMglPlotSetData(iuplua_checkihandle(L,1), luaL_checkinteger(L,2), data, count_x, count_y, count_z);
   free(data);
   return 0;
 }
@@ -173,7 +173,7 @@ static int PlotTransformTo(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   double x, y, z;
-  IupMglPlotTransformTo(ih, luaL_checkint(L,2), luaL_checkint(L,3), &x, &y, &z);
+  IupMglPlotTransformTo(ih, luaL_checkinteger(L,2), luaL_checkinteger(L,3), &x, &y, &z);
   lua_pushnumber(L, x);
   lua_pushnumber(L, y);
   lua_pushnumber(L, z);
@@ -183,7 +183,7 @@ static int PlotTransformTo(lua_State *L)
 static int PlotNewDataSet(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  int ret = IupMglPlotNewDataSet(ih, luaL_checkint(L,2));
+  int ret = IupMglPlotNewDataSet(ih, luaL_checkinteger(L,2));
   lua_pushinteger(L, ret);
   return 1;
 }
@@ -205,7 +205,7 @@ static int PlotPaintTo(lua_State *L)
   else
     luaL_argerror(L, 2, "invalid format");
 
-  IupMglPlotPaintTo(ih, format, luaL_checkint(L,3), luaL_checkint(L,4), luaL_checknumber(L,5), data);
+  IupMglPlotPaintTo(ih, format, luaL_checkinteger(L,3), luaL_checkinteger(L,4), luaL_checknumber(L,5), data);
   return 0;
 }
 

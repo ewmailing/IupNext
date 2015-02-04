@@ -17,12 +17,17 @@ INCLUDES = ../src gl ../srclua5
 LIBS = iupglcontrols iuplua$(LUASFX)
 DEF_FILE = gl/iupluaglcontrols.def
 
+ifdef USE_LUA53
+  LUASFX = 53
+  DEFINES += LUA_COMPAT_MODULE
+else
 ifdef USE_LUA52
   LUASFX = 52
   DEFINES += LUA_COMPAT_MODULE
 else
   USE_LUA51 = Yes
   LUASFX = 51
+endif
 endif
 
 LIBNAME := $(LIBNAME)$(LUASFX)

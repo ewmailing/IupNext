@@ -87,10 +87,10 @@ static int luamatrix_pushvalue(lua_State *L, const char* value, int only_number)
 static int formula_range(lua_State *L)
 {
   Ihandle *ih;
-  int lin1 = luaL_checkint(L, 1);
-  int col1 = luaL_checkint(L, 2);
-  int lin2 = luaL_checkint(L, 3);
-  int col2 = luaL_checkint(L, 4);
+  int lin1 = luaL_checkinteger(L, 1);
+  int col1 = luaL_checkinteger(L, 2);
+  int lin2 = luaL_checkinteger(L, 3);
+  int col2 = luaL_checkinteger(L, 4);
   int only_number = 0;
   int lin, col, count;
 
@@ -121,8 +121,8 @@ static int formula_cell(lua_State *L)
   Ihandle *ih;
   char* value;
 
-  int lin = luaL_checkint(L, 1);
-  int col = luaL_checkint(L, 2);
+  int lin = luaL_checkinteger(L, 1);
+  int col = luaL_checkinteger(L, 2);
 
   lua_getglobal(L, "matrix");
   ih = (Ihandle*)lua_touserdata(L, -1);
@@ -344,7 +344,7 @@ void IupMatrixSetDynamic(Ihandle* ih, const char* init)
 static int MatrixSetFormula(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  IupMatrixSetFormula(ih, luaL_checkint(L, 2), luaL_checkstring(L, 3), luaL_optstring(L, 4, NULL));
+  IupMatrixSetFormula(ih, luaL_checkinteger(L, 2), luaL_checkstring(L, 3), luaL_optstring(L, 4, NULL));
   return 0;
 }
 
@@ -421,8 +421,8 @@ static int MatGetAttribute(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   const char *name = luaL_checkstring(L,2);
-  int lin = luaL_checkint(L,3);
-  int col = luaL_checkint(L,4);
+  int lin = luaL_checkinteger(L,3);
+  int col = luaL_checkinteger(L,4);
   const char *value = IupGetAttributeId2(ih, name, lin, col);
   if (!value || iupATTRIB_ISINTERNAL(name))
     lua_pushnil(L);
@@ -445,8 +445,8 @@ static int MatStoreAttribute(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   const char *a = luaL_checkstring(L,2);
-  int lin = luaL_checkint(L,3);
-  int col = luaL_checkint(L,4);
+  int lin = luaL_checkinteger(L,3);
+  int col = luaL_checkinteger(L,4);
 
   if (lua_isnil(L,5)) 
     IupSetAttributeId2(ih,a,lin, col,NULL);
@@ -474,10 +474,10 @@ static IFniis iMatrixOriginalMotion_CB = NULL;
 static int MatButtonCB(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  int p0 = luaL_checkint(L, 2);
-  int p1 = luaL_checkint(L, 3);
-  int p2 = luaL_checkint(L, 4);
-  int p3 = luaL_checkint(L, 5);
+  int p0 = luaL_checkinteger(L, 2);
+  int p1 = luaL_checkinteger(L, 3);
+  int p2 = luaL_checkinteger(L, 4);
+  int p3 = luaL_checkinteger(L, 5);
   const char* p4 = luaL_checkstring(L, 6);
   int ret = iMatrixOriginalButton_CB(ih, p0, p1, p2, p3, (char*)p4);
   lua_pushinteger(L, ret);
@@ -487,8 +487,8 @@ static int MatButtonCB(lua_State *L)
 static int MatMotionCB(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  int p0 = luaL_checkint(L, 2);
-  int p1 = luaL_checkint(L, 3);
+  int p0 = luaL_checkinteger(L, 2);
+  int p1 = luaL_checkinteger(L, 3);
   const char* p2 = luaL_checkstring(L, 4);
   int ret = iMatrixOriginalMotion_CB(ih, p0, p1, (char*)p2);
   lua_pushinteger(L, ret);
@@ -498,8 +498,8 @@ static int MatMotionCB(lua_State *L)
 static int MatKeyPressCB(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  int p0 = luaL_checkint(L, 2);
-  int p1 = luaL_checkint(L, 3);
+  int p0 = luaL_checkinteger(L, 2);
+  int p1 = luaL_checkinteger(L, 3);
   int ret = iMatrixOriginalKeyPress_CB(ih, p0, p1);
   lua_pushinteger(L, ret);
   return 1;

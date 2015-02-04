@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.11
+VERSION = 4.12
 
 
 #---------------------------------#
@@ -265,6 +265,9 @@ ifdef DBG
 endif
 
 ifdef LUAMOD_DIR
+  ifdef USE_LUA53
+    LUAMODSFX = 53
+  endif
   ifdef USE_LUA52
     LUAMODSFX = 52
   endif
@@ -925,6 +928,7 @@ IM    ?= $(TECTOOLS_HOME)/im
 LUA   ?= $(TECTOOLS_HOME)/lua
 LUA51 ?= $(TECTOOLS_HOME)/lua5.1
 LUA52 ?= $(TECTOOLS_HOME)/lua52
+LUA53 ?= $(TECTOOLS_HOME)/lua53
 
 
 #---------------------------------#
@@ -974,6 +978,14 @@ ifdef USE_LUA52
   LIBLUASUFX := 52
   override USE_LUA = Yes
   LUA := $(LUA52)
+  NO_LUALIB := Yes
+endif
+
+ifdef USE_LUA53
+  LUA_SUFFIX ?= 53
+  LIBLUASUFX := 53
+  override USE_LUA = Yes
+  LUA := $(LUA53)
   NO_LUALIB := Yes
 endif
 

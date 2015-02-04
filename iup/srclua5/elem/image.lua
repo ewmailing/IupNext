@@ -60,8 +60,8 @@ static int Image (lua_State * L)
   }
   else
   {
-    w = luaL_checkint(L, 1);
-    h = luaL_checkint(L, 2);
+    w = luaL_checkinteger(L, 1);
+    h = luaL_checkinteger(L, 2);
     pixels = iuplua_checkuchar_array(L, 3, w*h);
     ih = IupImage(w, h, pixels);
     free(pixels);

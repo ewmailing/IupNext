@@ -305,12 +305,25 @@ function iup.protectedcall(f, msg)
     return
   else  
     table.remove(ret, 1)
-    return unpack(ret)   --must replace this by table.unpack when 5.1 is not supported
+    if (table.unpack) then
+      return table.unpack(ret)
+    else
+      return unpack(ret)
+    end
   end
 end
 
-function iup.dostring(s) return iup.protectedcall(loadstring(s)) end
-function iup.dofile(f) return iup.protectedcall(loadfile(f)) end
+function iup.dostring(s) 
+  if (loadstring) then
+    return iup.protectedcall(loadstring(s)) 
+  else
+    return iup.protectedcall(load(s)) 
+  end
+end
+
+function iup.dofile(f) 
+  return iup.protectedcall(loadfile(f)) 
+end
 
 function iup.RGB(r, g, b)
   return string.format("%d %d %d", 255*r, 255*g, 255*b)
