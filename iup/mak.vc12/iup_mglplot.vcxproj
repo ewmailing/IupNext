@@ -133,7 +133,6 @@
     <ClCompile Include="..\srcmglplot\src\data_gr.cpp" />
     <ClCompile Include="..\srcmglplot\src\data_io.cpp" />
     <ClCompile Include="..\srcmglplot\src\data_png.cpp" />
-    <ClCompile Include="..\srcmglplot\src\def_font.cpp" />
     <ClCompile Include="..\srcmglplot\src\eval.cpp" />
     <ClCompile Include="..\srcmglplot\src\evalc.cpp" />
     <ClCompile Include="..\srcmglplot\src\evalp.cpp" />

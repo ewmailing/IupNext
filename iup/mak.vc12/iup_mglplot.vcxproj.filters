@@ -155,9 +155,6 @@
     <ClCompile Include="..\srcmglplot\src\data_png.cpp">
       <Filter>mgl</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcmglplot\src\def_font.cpp">
-      <Filter>mgl</Filter>
-    </ClCompile>
     <ClCompile Include="..\srcmglplot\src\eval.cpp">
       <Filter>mgl</Filter>
     </ClCompile>
