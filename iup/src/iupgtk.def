@@ -157,6 +157,8 @@ IupGetParam
 IupGetParamv
 iupGetParamType
 iupGetParamCount
+IupParamf
+IupParamBox
 IupNormalizer
 IupNormalizerv
 IupGetClassType
