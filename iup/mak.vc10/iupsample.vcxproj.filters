@@ -219,16 +219,16 @@
     <ClCompile Include="..\html\examples\C\list3.c">
       <Filter>C</Filter>
     </ClCompile>
-    <ClCompile Include="..\html\examples\C\treednd.c">
-      <Filter>C</Filter>
-    </ClCompile>
-    <ClCompile Include="..\html\examples\C\backgroundbox.c">
+    <ClCompile Include="..\html\examples\C\dialogtaskbar.c">
       <Filter>C</Filter>
     </ClCompile>
     <ClCompile Include="..\html\examples\C\detachbox.c">
       <Filter>C</Filter>
     </ClCompile>
-    <ClCompile Include="..\html\examples\C\dialogtaskbar.c">
+    <ClCompile Include="..\html\examples\C\backgroundbox.c">
+      <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\C\mgllabel.c">
       <Filter>C</Filter>
     </ClCompile>
   </ItemGroup>

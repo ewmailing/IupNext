@@ -75,7 +75,7 @@
       <AdditionalDependencies>iup.lib;comctl32.lib;iupcontrols.lib;iup_pplot.lib;iuplua_pplot3.lib;iupgl.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iupluagl3.lib;iupim.lib;iupluaim3.lib;iupluacontrols3.lib;lua.lib;lualib.lib;iuplua3.lib;opengl32.lib;glu32.lib;im.lib;cdlua3.lib;iupluacd3.lib;imlua3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)iuplua3.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\im\lib;..\..\cd\lib;..\lib;..\..\lua\lib\vc10;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\im\lib;..\..\cd\lib;..\lib;..\..\lua\lib\vc12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>
@@ -97,7 +97,7 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TEC_64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0416</Culture>
     </ResourceCompile>
     <Link>
@@ -105,7 +105,7 @@
       <AdditionalDependencies>iup.lib;comctl32.lib;iupcontrols.lib;iup_pplot.lib;iuplua_pplot3.lib;iupgl.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iupluagl3.lib;iupim.lib;iupluaim3.lib;iupluacontrols3.lib;lua.lib;lualib.lib;iuplua3.lib;opengl32.lib;glu32.lib;im.lib;cdlua3.lib;iupluacd3.lib;imlua3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)iuplua3.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\im\lib;..\..\cd\lib;..\lib;..\..\lua\lib\vc10;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\im\lib\x64;..\..\cd\lib\x64;..\lib\x64;..\..\lua\lib\vc12_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>

@@ -90,11 +90,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_tuioclient.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_tuioclient.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iupluatuio.def" />
-    <None Include="..\srclua5\tuioclient.lua" />
+    <None Include="..\srclua5\ctrl\iupluatuio.def" />
+    <None Include="..\srclua5\ctrl\tuioclient.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iupluatuio.h" />

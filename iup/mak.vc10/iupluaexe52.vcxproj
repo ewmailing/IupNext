@@ -71,10 +71,10 @@
       <Culture>0x0416</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>iup.lib;comctl32.lib;iupcontrols.lib;iupimglib.lib;iup_pplot.lib;iupgl.lib;cd.lib;iupcd.lib;freetype6.lib;zlib1.lib;cdcontextplus.lib;lua52.lib;iuplua52.lib;iupluaim52.lib;iupluaimglib52.lib;iupluagl52.lib;iupluacontrols52.lib;iuplua_pplot52.lib;iupim.lib;opengl32.lib;glu32.lib;gdiplus.lib;im.lib;cdlua52.lib;iupluacd52.lib;imlua52.lib;imlua_process52.lib;cdluaim52.lib;im_process.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>iup.lib;comctl32.lib;iupcontrols.lib;iupmatrixex.lib;iupimglib.lib;iup_plot.lib;iupgl.lib;cd.lib;iupcd.lib;freetype6.lib;zlib1.lib;cdcontextplus.lib;lua52.lib;iuplua52.lib;iupluaim52.lib;iupluaimglib52.lib;iupluagl52.lib;iupluacontrols52.lib;iupluamatrixex52.lib;iuplua_plot52.lib;iupim.lib;opengl32.lib;glu32.lib;gdiplus.lib;im.lib;cdlua52.lib;iupluacd52.lib;imlua52.lib;imlua_process52.lib;cdluaim52.lib;im_process.lib;cdgl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)iuplua52.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\im\lib;..\..\cd\lib;..\lib;..\..\lua52\lib\vc10;..\..\luagl\lib\static;..\..\lfs\lib\vc10;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\im\lib;..\..\cd\lib;..\lib;..\..\lua52\lib\vc12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>
@@ -83,7 +83,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\include;..\srclua5;..\srcconsole\lh;..\..\lua52\include;..\..\cd\include;..\..\im\include;..\..\luagl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUPLUA_IMGLIB;USE_STATIC;IUPLUA_USELH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUPLUA_IMGLIB;USE_STATIC;IUPLUA_USELH;USE_LUAGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
@@ -96,14 +96,14 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TEC_64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0416</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>iup.lib;comctl32.lib;iupcontrols.lib;iupimglib.lib;iup_pplot.lib;iupgl.lib;cd.lib;iupcd.lib;freetype6.lib;zlib1.lib;cdcontextplus.lib;lua52.lib;iuplua52.lib;iupluaim52.lib;iupluaimglib52.lib;iupluagl52.lib;iupluacontrols52.lib;iuplua_pplot52.lib;iupim.lib;opengl32.lib;glu32.lib;gdiplus.lib;im.lib;cdlua52.lib;iupluacd52.lib;imlua52.lib;imlua_process52.lib;cdluaim52.lib;im_process.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>iup.lib;comctl32.lib;iupcontrols.lib;iupmatrixex.lib;iupglcontrols.lib;iupimglib.lib;iup_plot.lib;iupgl.lib;cd.lib;iupcd.lib;freetype6.lib;zlib1.lib;cdcontextplus.lib;lua52.lib;iuplua52.lib;iupluaim52.lib;iupluaimglib52.lib;iupluagl52.lib;luagl_base52.lib;iupluacontrols52.lib;iupluamatrixex52.lib;iupluaglcontrols52.lib;iuplua_plot52.lib;iupim.lib;opengl32.lib;glu32.lib;gdiplus.lib;im.lib;cdlua52.lib;iupluacd52.lib;imlua52.lib;imlua_process52.lib;cdluaim52.lib;im_process.lib;luagl52.lib;ftgl.lib;cdgl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)iuplua52.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\im\lib;..\..\cd\lib;..\lib;..\..\lua52\lib\vc10;..\..\luagl\lib\static;..\..\lfs\lib\vc10;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\im\lib\x64;..\..\cd\lib\x64;..\lib\x64;..\..\lua52\lib\vc12_64;..\..\luagl\lib\vc12_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>

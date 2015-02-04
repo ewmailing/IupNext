@@ -90,12 +90,12 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_matrixex.c" />
-    <ClCompile Include="..\srclua5\iuplua_matrixex_aux.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_matrixex.c" />
+    <ClCompile Include="..\srclua5\ctrl\iuplua_matrixex_aux.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iupluamatrixex.def" />
-    <None Include="..\srclua5\matrixex.lua" />
+    <None Include="..\srclua5\ctrl\iupluamatrixex.def" />
+    <None Include="..\srclua5\ctrl\matrixex.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iupluamatrixex.h" />

@@ -130,6 +130,9 @@
     <ClInclude Include="..\srctuio\oscpack\osc\OscTypes.h" />
     <ClInclude Include="..\include\iuptuio.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\srctuio\iuptuio.def" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

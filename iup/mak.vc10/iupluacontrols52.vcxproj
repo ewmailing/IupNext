@@ -90,19 +90,19 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_cells.c" />
-    <ClCompile Include="..\srclua5\il_colorbar.c" />
-    <ClCompile Include="..\srclua5\il_colorbrowser.c" />
-    <ClCompile Include="..\srclua5\il_dial.c" />
-    <ClCompile Include="..\srclua5\il_gauge.c" />
-    <ClCompile Include="..\srclua5\il_matrixlist.c" />
-    <ClCompile Include="..\srclua5\iuplua_mask.c" />
-    <ClCompile Include="..\srclua5\il_matrix.c" />
-    <ClCompile Include="..\srclua5\iuplua_matrix_aux.c" />
-    <ClCompile Include="..\srclua5\iuplua_controls.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_cells.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_colorbar.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_colorbrowser.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_dial.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_gauge.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_matrixlist.c" />
+    <ClCompile Include="..\srclua5\ctrl\iuplua_mask.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_matrix.c" />
+    <ClCompile Include="..\srclua5\ctrl\iuplua_matrix_aux.c" />
+    <ClCompile Include="..\srclua5\ctrl\iuplua_controls.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iupluacontrols.def" />
+    <None Include="..\srclua5\ctrl\iupluacontrols.def" />
     <None Include="..\srclua5\cells.lua" />
     <None Include="..\srclua5\colorbar.lua" />
     <None Include="..\srclua5\colorbrowser.lua" />
@@ -112,10 +112,8 @@
     <None Include="..\srclua5\matrixlist.lua" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\srclua5\il_controls.h" />
+    <ClInclude Include="..\srclua5\ctrl\il_controls.h" />
     <ClInclude Include="..\include\iupluacontrols.h" />
-    <ClInclude Include="..\srclua5\luagetparam.h" />
-    <ClInclude Include="..\srclua5\luamask.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -241,11 +241,17 @@
     <ClCompile Include="..\src\iup_progressdlg.c">
       <Filter>src_controls</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\iup_detachbox.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\iup_backgroundbox.c">
       <Filter>src_controls</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\iup_detachbox.c">
-      <Filter>src_controls</Filter>
+    <ClCompile Include="..\src\iup_linefile.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\iup_config.c">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -339,9 +345,6 @@
     <ClInclude Include="..\include\iupkey.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\iupspin.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\iup_box.h">
       <Filter>inc_controls</Filter>
     </ClInclude>
@@ -398,6 +401,12 @@
     </ClInclude>
     <ClInclude Include="..\src\iup_normalizer.h">
       <Filter>inc_controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\iup_linefile.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\iup_config.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

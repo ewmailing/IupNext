@@ -51,9 +51,6 @@
     <ClInclude Include="..\include\iupval.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\srccontrols\iup_cdutil.h">
-      <Filter>inc</Filter>
-    </ClInclude>
     <ClInclude Include="..\srccontrols\iup_controls.h">
       <Filter>inc</Filter>
     </ClInclude>
@@ -146,7 +143,6 @@
     <ClCompile Include="..\srccontrols\matrix\iupmatrix.c">
       <Filter>matrix</Filter>
     </ClCompile>
-    <ClCompile Include="..\srccontrols\iup_cdutil.c" />
     <ClCompile Include="..\srccontrols\iup_cells.c" />
     <ClCompile Include="..\srccontrols\iup_colorbar.c" />
     <ClCompile Include="..\srccontrols\iup_controls.c" />

@@ -65,7 +65,8 @@
     <ClCompile Include="..\test\zbox.c" />
     <ClCompile Include="..\test\link.c" />
     <ClCompile Include="..\test\gridbox.c" />
-    <ClCompile Include="..\test\progressdlg.c" />
     <ClCompile Include="..\test\expander.c" />
+    <ClCompile Include="..\test\progressdlg.c" />
+    <ClCompile Include="..\test\plot.c" />
   </ItemGroup>
 </Project>

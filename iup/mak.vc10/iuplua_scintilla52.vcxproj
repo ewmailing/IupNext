@@ -90,11 +90,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_scintilla.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_scintilla.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iuplua_scintilla.def" />
-    <None Include="..\srclua5\scintilla.lua" />
+    <None Include="..\srclua5\ctrl\iuplua_scintilla.def" />
+    <None Include="..\srclua5\ctrl\scintilla.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iuplua_scintilla.h" />

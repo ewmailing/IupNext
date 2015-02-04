@@ -90,12 +90,14 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\srclua5\il_mglplot.c" />
-    <ClCompile Include="..\srclua5\iuplua_mglplot.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_mgllabel.c" />
+    <ClCompile Include="..\srclua5\ctrl\il_mglplot.c" />
+    <ClCompile Include="..\srclua5\ctrl\iuplua_mglplot.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\srclua5\iuplua_mglplot.def" />
-    <None Include="..\srclua5\mglplot.lua" />
+    <None Include="..\srclua5\ctrl\iuplua_mglplot.def" />
+    <None Include="..\srclua5\ctrl\mgllabel.lua" />
+    <None Include="..\srclua5\ctrl\mglplot.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iuplua_mglplot.h" />
