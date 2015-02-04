@@ -40,7 +40,6 @@
 #include "iup_plot.h"
 #include "iuplua_plot.h"
 #include <cd.h>
-#include <cdgdiplus.h>
 #include <cdlua.h>
 #include <cdluaiup.h>
 #endif
@@ -60,6 +59,12 @@
 
 #ifdef IUPLUA_TUIO
 #include "iupluatuio.h"
+#endif
+#ifdef IUPLUA_WEB
+#include "iupluaweb.h"
+#endif
+#ifdef IUPLUA_SCINTILLA
+#include "iuplua_scintilla.h"
 #endif
 
 #endif
@@ -271,16 +276,11 @@ static int dostring (lua_State *L, const char *s, const char *name) {
 
 static int dolibrary (lua_State *L, const char *name) {
   int status;
-  lua_pushglobaltable(L);
-  lua_getfield(L, -1, "require");
+  lua_getglobal(L, "require");
   lua_pushstring(L, name);
-  status = docall(L, 1, 1);
-  if (status == LUA_OK) {
-    lua_setfield(L, -2, name);  /* global[name] = require return */
-    lua_pop(L, 1);  /* remove global table */
-  }
-  else
-    lua_remove(L, -2);  /* remove global table (below error msg.) */
+  status = docall(L, 1, 1);  /* call 'require(name)' */
+  if (status == LUA_OK)
+    lua_setglobal(L, name);  /* global[name] = require return */
   return report(L, status);
 }
 
@@ -290,7 +290,6 @@ static const char *get_prompt (lua_State *L, int firstline) {
   lua_getglobal(L, firstline ? "_PROMPT" : "_PROMPT2");
   p = lua_tostring(L, -1);
   if (p == NULL) p = (firstline ? LUA_PROMPT : LUA_PROMPT2);
-  lua_pop(L, 1);  /* remove global */
   return p;
 }
 
@@ -316,7 +315,9 @@ static int pushline (lua_State *L, int firstline) {
   char *b = buffer;
   size_t l;
   const char *prmt = get_prompt(L, firstline);
-  if (lua_readline(L, b, prmt) == 0)
+  int readstatus = lua_readline(L, b, prmt);
+  lua_pop(L, 1);  /* remove result from 'get_prompt' */
+  if (readstatus == 0)
     return 0;  /* no input */
   l = strlen(b);
   if (l > 0 && b[l-1] == '\n')  /* line ends with newline? */
@@ -507,6 +508,12 @@ static void iuplua_openlibs (lua_State *L) {
 #ifdef IUPLUA_TUIO
   iuptuiolua_open(L);
 #endif
+#ifdef IUPLUA_WEB
+  iupweblua_open(L);
+#endif
+#ifdef IUPLUA_SCINTILLA
+  iup_scintillalua_open(L);
+#endif
 
 /* luaopen_lfs(L); */
 
@@ -523,6 +530,7 @@ static void iuplua_openlibs (lua_State *L) {
   iup_plotlua_open(L);
   cdlua_open(L);
   cdluaiup_open(L);
+  cdInitContextPlus();
 #endif
 #ifndef IUPLUA_NO_IM
   iupimlua_open(L);

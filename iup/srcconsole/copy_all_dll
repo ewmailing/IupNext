@@ -41,8 +41,15 @@ Copy_DLLs()
   #Remove Lua5.X from Lua5.Y folder
   if [ $LUA_SFX == 5.1 ]; then
     rm -f ../bin/$SYS/Lua$LUA_SFX/*52.dll
-  else
+    rm -f ../bin/$SYS/Lua$LUA_SFX/*53.dll
+  fi
+  if [ $LUA_SFX == 52 ]; then
     rm -f ../bin/$SYS/Lua$LUA_SFX/*51.dll
+    rm -f ../bin/$SYS/Lua$LUA_SFX/*53.dll
+  fi
+  if [ $LUA_SFX == 53 ]; then
+    rm -f ../bin/$SYS/Lua$LUA_SFX/*51.dll
+    rm -f ../bin/$SYS/Lua$LUA_SFX/*52.dll
   fi
 
   #Move the executable to the respective folder  
@@ -53,6 +60,9 @@ Copy_DLLs dll10 Win32 5.1
 Copy_DLLs dll10 Win64 5.1
 Copy_DLLs dll10 Win32 52
 Copy_DLLs dll10 Win64 52
+#Copy_DLLs dll10 Win32 53
+#Copy_DLLs dll10 Win64 53
 
 Copy_DLLs cygw17 cygw17 5.1
 Copy_DLLs cygw17 cygw17 52
+#Copy_DLLs cygw17 cygw17 53

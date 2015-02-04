@@ -11,11 +11,15 @@ LINKER = $(CPPC)
 NO_LUAOBJECT = Yes
 USE_BIN2C_LUA = Yes
 
+ifdef USE_LUA53
+  LUASFX = 53
+else
 ifdef USE_LUA52
   LUASFX = 52
 else
   USE_LUA51 = Yes
   LUASFX = 5.1
+endif
 endif
 
 APPNAME := $(APPNAME)$(LUASFX)

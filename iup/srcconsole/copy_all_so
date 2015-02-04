@@ -26,8 +26,15 @@ Copy_SOs()
   #Remove Lua5.X from Lua5.Y folder
   if [ $LUA_SFX == 5.1 ]; then
     rm -f ../bin/$PLAT/Lua$LUA_SFX/*52.$EXT 
-  else
+    rm -f ../bin/$PLAT/Lua$LUA_SFX/*53.$EXT 
+  fi
+  if [ $LUA_SFX == 52 ]; then
     rm -f ../bin/$PLAT/Lua$LUA_SFX/*51.$EXT 
+    rm -f ../bin/$PLAT/Lua$LUA_SFX/*53.$EXT 
+  fi
+  if [ $LUA_SFX == 53 ]; then
+    rm -f ../bin/$PLAT/Lua$LUA_SFX/*51.$EXT 
+    rm -f ../bin/$PLAT/Lua$LUA_SFX/*52.$EXT 
   fi
   
   #Move the executable to the respective folder  
@@ -40,8 +47,10 @@ for plat in Linux32 Linux32_64 Linux35_64 Linux313_64
 do
   Copy_SOs $plat 5.1 so
   Copy_SOs $plat 52 so
+#  Copy_SOs $plat 53 so
   if [ $plat == MacOS107 ]; then
     Copy_SOs $plat 5.1 dylib
     Copy_SOs $plat 52 dylib
+#    Copy_SOs $plat 53 dylib
   fi
 done
