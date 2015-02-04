@@ -102,8 +102,6 @@ move /y ..\lib\gcc4\libiupstub.a ..\lib\dllg4
 goto fim
 
 :all_dll
-call make_uname dll8 %2 %3 %4 %5 %6
-call make_uname dll8_64 %2 %3 %4 %5 %6
 call make_uname dll9 %2 %3 %4 %5 %6
 call make_uname dll9_64 %2 %3 %4 %5 %6
 call make_uname dll10 %2 %3 %4 %5 %6
@@ -112,7 +110,6 @@ call make_uname dll11 %2 %3 %4 %5 %6
 call make_uname dll11_64 %2 %3 %4 %5 %6
 call make_uname dll12 %2 %3 %4 %5 %6
 call make_uname dll12_64 %2 %3 %4 %5 %6
-call make_uname dllg4 %2 %3 %4 %5 %6
 call make_uname dllw4 %2 %3 %4 %5 %6
 call make_uname dllw4_64 %2 %3 %4 %5 %6
 goto fim
@@ -125,8 +122,6 @@ call make_uname dll10_64 %2 %3 %4 %5 %6
 goto fim
 
 :all_vc_dll
-call make_uname dll8 %2 %3 %4 %5 %6
-call make_uname dll8_64 %2 %3 %4 %5 %6
 call make_uname dll9 %2 %3 %4 %5 %6
 call make_uname dll9_64 %2 %3 %4 %5 %6
 call make_uname dll10 %2 %3 %4 %5 %6
@@ -138,7 +133,6 @@ call make_uname dll12_64 %2 %3 %4 %5 %6
 goto fim
 
 :all_gcc_dll
-call make_uname dllg4 %2 %3 %4 %5 %6
 call make_uname dllw4 %2 %3 %4 %5 %6
 call make_uname dllw4_64 %2 %3 %4 %5 %6
 goto fim
