@@ -512,7 +512,7 @@ public:
       mAutoPos(true), mPosX(0), mPosY(0) {}
   ~iupPlotTitle() { SetText(NULL); }
 
-  void SetText(const char* inValue) { if (mText) free(mText); if (inValue) mText = iupStrDup(inValue); }
+  void SetText(const char* inValue) { if (mText) free(mText); mText = iupStrDup(inValue); }
   const char* GetText() const { return mText; }
 
   long mColor;
