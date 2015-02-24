@@ -133,6 +133,12 @@ static int text_cb(Ihandle* ih, int c, char *after)
   return IUP_DEFAULT;
 }
 
+static int tips_cb(Ihandle* ih, int x, int y)
+{
+  printf("TIPS_CB(%d, %d\n", x, y);
+  return IUP_DEFAULT;
+}
+
 static int removenode(void)
 {
   Ihandle* tree = IupGetHandle("tree");
@@ -543,6 +549,7 @@ static void init_tree(void)
   //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
   IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
   IupSetCallback(tree, "TOGGLEVALUE_CB", (Icallback)togglevalue_cb);
+  IupSetCallback(tree, "TIPS_CB", (Icallback)tips_cb);
 
   IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
 
