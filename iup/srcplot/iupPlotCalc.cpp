@@ -149,13 +149,13 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
           {
             int theYTickNumberHeight;
             mAxisY.GetTickNumberSize(canvas, NULL, &theYTickNumberHeight);
-            mMargin.mBottom += theYTickNumberHeight / 2;
+            mMargin.mTop += theYTickNumberHeight / 2;
           }
           else
           {
             int theYTickNumberWidth;
             mAxisY.GetTickNumberSize(canvas, &theYTickNumberWidth, NULL);
-            mMargin.mBottom += theYTickNumberWidth / 2;
+            mMargin.mTop += theYTickNumberWidth / 2;
           }
         }
       }
