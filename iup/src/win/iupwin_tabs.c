@@ -356,20 +356,18 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
 
   bmp_array_data = iupArrayGetData(bmp_array);
 
+  /* must use this info, since image can be a driver image loaded from resources */
+  iupdrvImageGetInfo(bmp, &width, &height, &bpp);
+
   image_list = (HIMAGELIST)SendMessage(ih->handle, TCM_GETIMAGELIST, 0, 0);
   if (!image_list)
   {
-    UINT flags = ILC_COLOR32|ILC_MASK;
-
-    /* must use this info, since image can be a driver image loaded from resources */
-    iupdrvImageGetInfo(bmp, &width, &height, &bpp);
+    UINT flags = ILC_COLOR32 | (bpp == 8 ? ILC_MASK : 0);
 
     /* create the image list if does not exist */
     image_list = ImageList_Create(width, height, flags, 0, 50);
     SendMessage(ih->handle, TCM_SETIMAGELIST, 0, (LPARAM)image_list);
   }
-  else
-    iupdrvImageGetInfo(bmp, &width, &height, &bpp);
 
   /* check if that bitmap is already added to the list,
      but we can not compare with the actual bitmap at the list since it is a copy */
