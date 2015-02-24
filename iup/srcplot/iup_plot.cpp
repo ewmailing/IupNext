@@ -1455,6 +1455,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
         {
           ih->data->current_plot->mTitle.mPosX = ih->data->last_pos_x + (x - ih->data->last_click_x);
           ih->data->current_plot->mTitle.mPosY = ih->data->last_pos_y - (y - ih->data->last_click_y);
+          ih->data->current_plot->mRedraw = true;
 
           iPlotRedrawInteract(ih);
           return IUP_DEFAULT;
@@ -1464,6 +1465,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
         {
           ih->data->current_plot->mLegend.mPos.mX = ih->data->last_pos_x + (x - ih->data->last_click_x);
           ih->data->current_plot->mLegend.mPos.mY = ih->data->last_pos_y - (y - ih->data->last_click_y);
+          ih->data->current_plot->mRedraw = true;
 
           iPlotRedrawInteract(ih);
           return IUP_DEFAULT;
@@ -2472,7 +2474,7 @@ static Iclass* iPlotNewClass(void)
     IupSetLanguageString("IUP_ZOOMINAC", "Mais Zoom\t+");
     IupSetLanguageString("IUP_ZOOMOUTAC", "Menos Zoom\t-");
     IupSetLanguageString("IUP_RESETZOOMAC", "Reiniciar Zoom\t.");
-    IupSetLanguageString("IUP_SHOWHIDELEGEND", "Mostra/Esconde Legends");
+    IupSetLanguageString("IUP_SHOWHIDELEGEND", "Mostra/Esconde Legenda");
     IupSetLanguageString("IUP_SHOWHIDEGRID", "Mostra/Esconde Grade");
 
     IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Fórmula Inválida.");
