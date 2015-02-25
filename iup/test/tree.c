@@ -573,7 +573,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "INDENTATION",   "40");
 //  IupSetAttribute(tree, "CANFOCUS", "NO");
   IupSetAttribute(tree, "TIP", "Tree Tip");
-  IupSetAttribute(tree, "INFOTIP", "No");
+//  IupSetAttribute(tree, "INFOTIP", "No");
   //  IupSetAttribute(tree, "TIPBGCOLOR", "255 128 128");
 //  IupSetAttribute(tree, "TIPFGCOLOR", "0 92 255");
 
