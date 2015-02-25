@@ -135,7 +135,7 @@ static int text_cb(Ihandle* ih, int c, char *after)
 
 static int tips_cb(Ihandle* ih, int x, int y)
 {
-  printf("TIPS_CB(%d, %d\n", x, y);
+  printf("TIPS_CB(%d, %d)\n", x, y);
   return IUP_DEFAULT;
 }
 
@@ -573,7 +573,8 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "INDENTATION",   "40");
 //  IupSetAttribute(tree, "CANFOCUS", "NO");
   IupSetAttribute(tree, "TIP", "Tree Tip");
-//  IupSetAttribute(tree, "TIPBGCOLOR", "255 128 128");
+  IupSetAttribute(tree, "INFOTIP", "No");
+  //  IupSetAttribute(tree, "TIPBGCOLOR", "255 128 128");
 //  IupSetAttribute(tree, "TIPFGCOLOR", "0 92 255");
 
   // Windows Only  
