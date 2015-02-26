@@ -2063,6 +2063,18 @@ static int iLayoutContextMenuMap_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
+static int iLayoutContextMenuRefreshChildren_CB(Ihandle* menu)
+{
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+
+  IupRefreshChildren(layoutdlg->dialog);
+
+  /* redraw canvas */
+  IupUpdate(IupGetBrother(layoutdlg->tree));
+
+  return IUP_DEFAULT;
+}
+
 static void iLayoutSaveAttributes(Ihandle* ih)
 {
   IupSaveClassAttributes(ih);
@@ -2253,6 +2265,7 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* ih, Ihandle* d
     IupSetCallbacks(IupItem("Properties...", NULL), "ACTION", iLayoutContextMenuProperties_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Map", NULL), can_map ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuMap_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Unmap", NULL), can_unmap? "ACTIVE=Yes": "ACTIVE=No"), "ACTION", iLayoutContextMenuUnmap_CB, NULL),
+    IupSetCallbacks(IupItem("Refresh Children", NULL), "ACTION", iLayoutContextMenuRefreshChildren_CB, NULL),
     IupSeparator(),
     IupSetCallbacks(IupSetAttributes(IupItem("Blink", NULL), can_blink ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuBlink_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Set Focus", NULL), can_focus ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuSetFocus_CB, NULL),
