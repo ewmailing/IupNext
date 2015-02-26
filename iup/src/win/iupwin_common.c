@@ -109,13 +109,13 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 
 void iupdrvRedrawNow(Ihandle *ih)
 {
-  /* REDRAW Now */
+  /* REDRAW Now - IupRedraw */
   RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_UPDATENOW);
 }
 
 void iupdrvPostRedraw(Ihandle *ih)
 {
-  /* Post a REDRAW */
+  /* Post a REDRAW - IupUpdate */
   /* can NOT use RDW_NOCHILDREN because IupList has internal children that needs to be redraw */
   RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT);  
 }
