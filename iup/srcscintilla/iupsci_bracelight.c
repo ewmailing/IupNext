@@ -120,7 +120,7 @@ void iupScintillaRegisterBraceLight(Iclass* ic)
   /* unused until we support Indicators */
 /*  iupClassRegisterAttribute(ic, "BRACEHLINDICATOR", NULL, iScintillaSetBraceHighlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);  */
 /*  iupClassRegisterAttribute(ic, "BRACEBLINDICATOR", NULL, iScintillaSetBraceBadlightIndicatorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);   */
-/*  iupClassRegisterAttribute(ic, "USEBRACEHLINDICATOR", iScintillaGetUseBraceHLIndicatorAttrib, iScintillaSetUseBraceHLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  */
-/*  iupClassRegisterAttribute(ic, "USEBRACEBLINDICATOR", iScintillaGetUseBraceBLIndicatorAttrib, iScintillaSetUseBraceBLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);  */
+/*  iupClassRegisterAttribute(ic, "USEBRACEHLINDICATOR", iScintillaGetUseBraceHLIndicatorAttrib, iScintillaSetUseBraceHLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);  */
+/*  iupClassRegisterAttribute(ic, "USEBRACEBLINDICATOR", iScintillaGetUseBraceBLIndicatorAttrib, iScintillaSetUseBraceBLIndicatorAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);  */
   iupClassRegisterAttributeId(ic, "BRACEMATCH", iScintillaGetBraceMatchAttribId, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 }

@@ -477,7 +477,7 @@ void iupScintillaRegisterStyle(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iScintillaSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iScintillaSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_DEFAULT);  
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iScintillaSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_NOT_MAPPED);  /* usually black */    
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iScintillaSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_DEFAULT);  /* usually black */
 
   iupClassRegisterAttribute(ic,   "STYLERESET", NULL, iScintillaSetResetDefaultStyleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "STYLECLEARALL", NULL, iScintillaSetClearAllStyleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
