@@ -7,7 +7,9 @@ local ctrl = {
   subdir = "elem",
   creation = "I",
   funcname = "BackgroundBox",
-  callback = {}
+  callback = {
+    action = "ff",
+    }
 }
 
 function ctrl.createElement(class, param)
