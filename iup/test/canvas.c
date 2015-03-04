@@ -332,10 +332,12 @@ void CanvasTest(void)
 
   box = IupVbox(NULL);
   IupSetAttribute(box, "MARGIN", "5x5");
+//  IupSetAttribute(box, "CMARGIN", "30x30");
 
   canvas = IupCanvas(NULL);
   IupAppend(box, canvas);
   IupSetAttribute(canvas, "RASTERSIZE", "300x200");
+  IupSetAttribute(canvas, "EXPAND", "NO");
   IupSetAttribute(canvas, "TIP", "Canvas Tip");
   IupSetAttribute(canvas, "SCROLLBAR", "HORIZONTAL");
   //IupSetAttribute(canvas, "BGCOLOR", "0 255 0");
@@ -391,7 +393,7 @@ printf("IupMap\n");
   IupMap(dlg);
 printf("IupShow\n");
   IupShow(dlg);
-  IupSetAttribute(canvas, "RASTERSIZE", NULL);  /* release the minimum limitation */
+//  IupSetAttribute(canvas, "RASTERSIZE", NULL);  /* release the minimum limitation */
 }
 
 #ifndef BIG_TEST

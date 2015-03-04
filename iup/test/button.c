@@ -185,7 +185,7 @@ static int action_cb(Ihandle *ih)
 {
   static int count = 1;
   printf("ACTION(%s) - %d\n", get_name(ih), count); count++;
-  show_menu(ih);
+  //show_menu(ih);
   return IUP_DEFAULT;
 }
 
@@ -339,7 +339,8 @@ void ButtonTest(void)
   IupSetAttribute(button, "RASTERSIZE", "30x30");
   IupSetAttribute(button, "BGCOLOR", "255 128 92");
   IupSetAttribute(button, "NAME", "color");
-//  IupSetAttribute(button, "FLAT", "Yes");
+//  IupSetAttribute(button, "EXPAND", "HORIZONTAL");
+  //  IupSetAttribute(button, "FLAT", "Yes");
   set_callbacks(button);
   IupAppend(box1, button);
 
