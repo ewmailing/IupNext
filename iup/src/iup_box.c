@@ -21,23 +21,6 @@
 #include "iup_normalizer.h"
 
 
-static int iBoxCreateMethod(Ihandle* ih, void** params)
-{
-  ih->data = iupALLOCCTRLDATA();
-
-  if (params)
-  {
-    Ihandle** iparams = (Ihandle**)params;
-    while (*iparams) 
-    {
-      IupAppend(ih, *iparams);
-      iparams++;
-    }
-  }
-
-  return IUP_NOERROR;
-}
-
 static char* iBoxGetClientSizeAttrib(Ihandle* ih)
 {
   int width = ih->currentwidth;
@@ -170,9 +153,44 @@ static char* iBoxGetMarginAttrib(Ihandle* ih)
   return iupStrReturnIntInt(ih->data->margin_x, ih->data->margin_y, 'x');
 }
 
+static int iBoxUpdateAttribFromFont(Ihandle* ih)
+{
+  char* value = iupAttribGet(ih, "CMARGIN");
+  if (!value)
+    value = iupAttribGet(ih, "NCMARGIN");
+  if (value)
+    iBoxSetCMarginAttrib(ih, value);
+
+  value = iupAttribGet(ih, "CGAP");
+  if (!value)
+    value = iupAttribGet(ih, "NCGAP");
+  if (value)
+    iBoxSetCGapAttrib(ih, value);
+
+  return 0;
+}
+
 
 /******************************************************************************/
 
+static int iBoxCreateMethod(Ihandle* ih, void** params)
+{
+  ih->data = iupALLOCCTRLDATA();
+
+  if (params)
+  {
+    Ihandle** iparams = (Ihandle**)params;
+    while (*iparams)
+    {
+      IupAppend(ih, *iparams);
+      iparams++;
+    }
+  }
+
+  IupSetCallback(ih, "UPDATEATTRIBFROMFONT", iBoxUpdateAttribFromFont);
+
+  return IUP_NOERROR;
+}
 
 Iclass* iupBoxNewClassBase(void)
 {

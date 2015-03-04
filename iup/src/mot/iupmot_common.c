@@ -102,14 +102,13 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
   Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
-  /* avoid abort in X */
-  if (ih->currentwidth == 0) ih->currentwidth = 1;
-  if (ih->currentheight == 0) ih->currentheight = 1;
-
-  XtVaSetValues(widget,
-    XmNwidth, (XtArgVal)ih->currentwidth,
-    XmNheight, (XtArgVal)ih->currentheight,
-    NULL);
+  if (ih->currentwidth > 0 && ih->currentheight > 0)
+  {
+    XtVaSetValues(widget,
+                  XmNwidth, (XtArgVal)ih->currentwidth,
+                  XmNheight, (XtArgVal)ih->currentheight,
+                  NULL);
+  }
 
   iupmotSetPosition(widget, ih->x, ih->y);
 }

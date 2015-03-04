@@ -61,7 +61,7 @@ static int iHboxSetSizeAttrib(Ihandle* ih, const char* value)
       ih->userwidth = iupWIDTH2RASTER(s, charwidth);
     }
   }
-  return 1;
+  return 1;  /* always save in the hash table, so when FONT is changed SIZE can be updated */
 }
 
 static int iHboxSetAlignmentAttrib(Ihandle* ih, const char* value)

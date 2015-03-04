@@ -78,7 +78,7 @@ void iupBaseSetPosition(Ihandle* ih, int x, int y);
 
 /* Updates the SIZE attribute if defined. 
    Called only from iupdrvSetStandardFontAttrib. */
-void iupBaseUpdateSizeFromFont(Ihandle* ih);
+void iupBaseUpdateAttribFromFont(Ihandle* ih);
 
 
 /** \defgroup iclassbasemethod Base Class Methods

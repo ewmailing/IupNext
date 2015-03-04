@@ -24,6 +24,7 @@
 #include "iup_dialog.h"
 #include "iup_drvinfo.h"
 #include "iup_drv.h"
+#include "iup_assert.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
@@ -103,8 +104,9 @@ void iupdrvReparent(Ihandle* ih)
 
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
-  SetWindowPos(ih->handle, NULL, ih->x, ih->y, ih->currentwidth, ih->currentheight,
-               SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOOWNERZORDER);
+  if (ih->currentwidth > 0 && ih->currentheight > 0)
+    SetWindowPos(ih->handle, NULL, ih->x, ih->y, ih->currentwidth, ih->currentheight,
+                 SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOOWNERZORDER);
 }
 
 void iupdrvRedrawNow(Ihandle *ih)

@@ -63,7 +63,7 @@ static int iVboxSetSizeAttrib(Ihandle* ih, const char* value)
       ih->userwidth = 0;
     }
   }
-  return 1;
+  return 1;  /* always save in the hash table, so when FONT is changed SIZE can be updated */
 }
 
 static int iVboxSetAlignmentAttrib(Ihandle* ih, const char* value)

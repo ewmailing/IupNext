@@ -320,7 +320,7 @@ static int iGridBoxSetCMarginAttrib(Ihandle* ih, const char* value)
     ih->data->margin_x = iupWIDTH2RASTER(cmargin_x, charwidth);
   if (cmargin_y!=-1)
     ih->data->margin_y = iupHEIGHT2RASTER(cmargin_y, charheight);
-  return 0;
+  return 1;
 }
 
 static char* iGridBoxGetCMarginAttrib(Ihandle* ih)
@@ -458,6 +458,29 @@ static char* iGridBoxGetAlignmentColAttrib(Ihandle* ih)
 {
   char* align2str[3] = {"ALEFT", "ACENTER", "ARIGHT"};
   return iupStrReturnStr(align2str[ih->data->alignment_col]);
+}
+
+static int iGridBoxUpdateAttribFromFont(Ihandle* ih)
+{
+  char* value = iupAttribGet(ih, "CMARGIN");
+  if (!value)
+    value = iupAttribGet(ih, "NCMARGIN");
+  if (value)
+    iGridBoxSetCMarginAttrib(ih, value);
+
+  value = iupAttribGet(ih, "CGAPLIN");
+  if (!value)
+    value = iupAttribGet(ih, "NCGAPLIN");
+  if (value)
+    iGridBoxSetCGapLinAttrib(ih, value);
+
+  value = iupAttribGet(ih, "CGAPCOL");
+  if (!value)
+    value = iupAttribGet(ih, "NCGAPCOL");
+  if (value)
+    iGridBoxSetCGapColAttrib(ih, value);
+
+  return IUP_DEFAULT;
 }
 
 
@@ -939,6 +962,8 @@ static int iGridBoxCreateMethod(Ihandle* ih, void** params)
   }
 
   ih->data->num_div = -1; /* default is auto */
+
+  IupSetCallback(ih, "UPDATEATTRIBFROMFONT", iGridBoxUpdateAttribFromFont);
 
   return IUP_NOERROR;
 }

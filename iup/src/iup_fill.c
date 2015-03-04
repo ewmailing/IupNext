@@ -140,7 +140,7 @@ static int iFillSetSizeAttrib(Ihandle* ih, const char* value)
     }
   }
   iupAttribSet(ih, "RASTERSIZE", NULL);
-  return 1;
+  return 1;  /* always save in the hash table, so when FONT is changed SIZE can be updated */
 }
 
 static char* iFillGetExpandAttrib(Ihandle* ih)

@@ -25,6 +25,7 @@
 #include "iup_key.h"
 #include "iup_image.h"
 #include "iup_drv.h"
+#include "iup_assert.h"
 
 #include "iupgtk_drv.h"
 
@@ -159,7 +160,9 @@ void iupgtkAddToParent(Ihandle* ih)
 void iupgtkSetPosSize(GtkContainer* parent, GtkWidget* widget, int x, int y, int width, int height)
 {
   iupgtkNativeContainerMove((GtkWidget*)parent, widget, x, y);
-  gtk_widget_set_size_request(widget, width, height);
+
+  if (width > 0 && height > 0)
+    gtk_widget_set_size_request(widget, width, height);
 }
 
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)

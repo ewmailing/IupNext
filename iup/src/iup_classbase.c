@@ -31,7 +31,7 @@ void iupBaseCallValueChangedCb(Ihandle* ih)
 
 int iupBaseTypeVoidMapMethod(Ihandle* ih)
 {
-  ih->handle = (InativeHandle*)-1; /* fake value just to indicate that it is already mapped */
+  ih->handle = (InativeHandle*)-1;  /* fake value just to indicate that it is already mapped */
   return IUP_NOERROR;
 }
 
@@ -40,13 +40,17 @@ char* iupBaseGetWidAttrib(Ihandle *ih)
   return (char*)ih->handle;
 }
 
-void iupBaseUpdateSizeFromFont(Ihandle* ih)
+void iupBaseUpdateAttribFromFont(Ihandle* ih)
 {
   char* value = iupAttribGet(ih, "SIZE");
-  if (!value)
-    return;
+  if (value)
+    iupBaseSetSizeAttrib(ih, value);
 
-  iupBaseSetSizeAttrib(ih, value);
+  {
+    Icallback cb = IupGetCallback(ih, "UPDATEATTRIBFROMFONT");
+    if (cb)
+      cb(ih);
+  }
 }
 
 int iupBaseSetSizeAttrib(Ihandle* ih, const char* value)
