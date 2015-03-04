@@ -1150,7 +1150,7 @@ static char* gtkTextGetOverwriteAttrib(Ihandle* ih)
 {
   if (!ih->data->is_multiline)
     return NULL;
-  return iupStrReturnBoolean(gtk_text_view_get_overwrite(GTK_TEXT_VIEW(ih->handle))); 
+  return iupStrReturnChecked(gtk_text_view_get_overwrite(GTK_TEXT_VIEW(ih->handle)));
 }
 
 void* iupdrvTextAddFormatTagStartBulk(Ihandle* ih)
