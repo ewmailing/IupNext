@@ -578,6 +578,8 @@ void iupMatrixEditCreate(Ihandle* ih)
 {
   /******** EDIT *************/
   ih->data->texth = IupText(NULL);
+  ih->data->texth->currentwidth = 20;  /* just to avoid initial size 0x0 */
+  ih->data->texth->currentheight = 10;
   iupChildTreeAppend(ih, ih->data->texth);
 
   IupSetCallback(ih->data->texth, "ACTION",       (Icallback)iMatrixEditTextAction_CB);
@@ -590,6 +592,8 @@ void iupMatrixEditCreate(Ihandle* ih)
 
   /******** DROPDOWN *************/
   ih->data->droph = IupList(NULL);
+  ih->data->droph->currentwidth = 20;  /* just to avoid initial size 0x0 */
+  ih->data->droph->currentheight = 10;
   iupChildTreeAppend(ih, ih->data->droph);
 
   if (IupGetGlobal("MOTIFVERSION"))

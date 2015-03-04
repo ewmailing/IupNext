@@ -793,7 +793,7 @@ static int iMatrixSetSizeAttrib(Ihandle* ih, int pos, const char* value)
   (void)value;
   ih->data->need_calcsize = 1;
   IupUpdate(ih);  /* post a redraw */
-  return 1;
+  return 1;  /* always save in the hash table, so when FONT is changed SIZE can be updated */
 }
 
 static char* iMatrixGetWidthAttrib(Ihandle* ih, int col)
