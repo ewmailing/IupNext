@@ -34,6 +34,11 @@ static int k_any(Ihandle *ih, int c)
 //  printf("K_ANY(key: %d)\n", c);
   if (c == K_cS)
     return IUP_IGNORE;
+  if (c == K_cO)
+  {
+    IupSetAttribute(ih, "OVERWRITE", "ON");
+    return IUP_IGNORE;
+  }
   return IUP_CONTINUE;
 }
 
@@ -174,6 +179,7 @@ void ScintillaTest(void)
   //IupSetAttribute(sci, "SCROLLBAR", "NO");
 //  IupSetAttribute(sci, "BORDER", "NO");
   IupSetAttribute(sci, "EXPAND", "Yes");
+//  IupSetAttribute(sci, "OVERWRITE", "ON");
 
   IupSetCallback(sci, "MARGINCLICK_CB", (Icallback)marginclick_cb);
   IupSetCallback(sci, "HOTSPOTCLICK_CB", (Icallback)hotspotclick_cb);

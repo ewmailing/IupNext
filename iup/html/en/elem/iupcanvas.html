@@ -349,8 +349,29 @@ are supported.</p>
   
 <p>The mouse cursor position can be programmatically controlled using the global attribute
   <a href="../attrib/iup_globals.html#cursorpos">CURSORPOS</a>.</p>
-
-
+<p>When the canvas is displayed for the first time, the callback call order is 
+always:</p>
+<pre>MAP_CB()
+RESIZE_CB()
+ACTION()</pre>
+<p>When the canvas is resized the ACTION callback is always called after the 
+RESIZE_CB callback.</p>
+<h3>Using with the CD library</h3>
+<p>When using the <a href="http://www.tecgraf.puc-rio.br/cd/" target="_blank">CD</a> 
+library to draw in a IupCanvas, you can use the callbacks to manage the canvas. 
+The simplest way is to do:</p>
+<pre>MAP_CB   - calls cdCreateCanvas
+UNMAP_CB - calls cdKillCanvas
+RESIZE_CB - recalculate the drawing size, update the scrollbars if any.
+            Calling cdCanvasActivate and cdCanvasGetSize returns the same values as
+            given by the callback parameters
+ACTION - calls cdCanvasActivate 
+         then use CD primitives to draw the scene, 
+         finally calls cdCanvasFlush if using double buffer
+SCROLL_CB - when using scrollbars, 
+            if this callback is defined the canvas must be manually redrawn.
+            In other words, if this callback is not defined 
+            the canvas is automatically redrawn.</pre>
 <h3><a name="Examples">Examples</a></h3>
 
 <p><a href="../../examples/">Browse for Example Files</a></p>

@@ -9,7 +9,7 @@
 <body>
 
 <h2>RESIZE_CB</h2>
-<p>Action generated when the element size is 
+<p>Action generated when the canvas or dialog size is 
   changed.</p>
 <h3>Callback</h3>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>width</strong>, int <strong>height</strong>); [in C]
@@ -23,7 +23,7 @@ decorations (client size)<br>
 <strong>height</strong>: the height of the internal element size in pixels not 
 considering the decorations (client size)</p>
 <h3>Notes</h3>
-<p>This action is also generated when 
+<p>For the dialog, this action is also generated when 
   the dialog is mapped, after the map and before the show.</p>
 <p>When XAUTOHIDE=Yes or YAUTOHIDE=Yes, if the canvas scrollbar is hidden/shown after changing the DX or DY 
 attributes from inside the callback, the size of the drawing area will 
