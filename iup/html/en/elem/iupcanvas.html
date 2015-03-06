@@ -360,16 +360,17 @@ RESIZE_CB callback.</p>
 <p>When using the <a href="http://www.tecgraf.puc-rio.br/cd/" target="_blank">CD</a> 
 library to draw in a IupCanvas, you can use the callbacks to manage the canvas. 
 The simplest way is to do:</p>
-<pre>MAP_CB   - calls cdCreateCanvas
-UNMAP_CB - calls cdKillCanvas
-RESIZE_CB - recalculate the drawing size, update the scrollbars if any.
-            Calling cdCanvasActivate and cdCanvasGetSize returns the same values as
-            given by the callback parameters
-ACTION - calls cdCanvasActivate 
+<pre>MAP_CB   - calls <strong>cdCreateCanvas</strong>  (current size is not available yet)
+UNMAP_CB - calls <strong>cdKillCanvas</strong>
+RESIZE_CB - Calling <strong>cdCanvasActivate</strong> and <strong>cdCanvasGetSize</strong> returns the same values as
+            given by the callback parameters.
+            Recalculate the drawing size, update the scrollbars if any.
+ACTION - calls <strong>cdCanvasActivate</strong> 
          then use CD primitives to draw the scene, 
-         finally calls cdCanvasFlush if using double buffer
+         finally calls <strong>cdCanvasFlush</strong> if using double buffer
 SCROLL_CB - when using scrollbars, 
-            if this callback is defined the canvas must be manually redrawn.
+            if this callback is defined the canvas must be manually redrawn,
+            call yourself the action callback or call <strong>IupUpdate</strong>.
             In other words, if this callback is not defined 
             the canvas is automatically redrawn.</pre>
 <h3><a name="Examples">Examples</a></h3>

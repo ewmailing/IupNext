@@ -111,11 +111,11 @@ static int gtkProgressBarMapMethod(Ihandle* ih)
     gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(ih->handle), GTK_PROGRESS_BOTTOM_TO_TOP);
 #endif
 
-    if (ih->currentheight < ih->currentwidth)
+    if (ih->userheight < ih->userwidth)
     {
-      int tmp = ih->currentheight;
-      ih->currentheight = ih->currentwidth;
-      ih->currentwidth = tmp;
+      int tmp = ih->userheight;
+      ih->userheight = ih->userwidth;
+      ih->userwidth = tmp;
     }
   }
   else

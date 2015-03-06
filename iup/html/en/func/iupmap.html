@@ -16,7 +16,7 @@
 <h2>IupMap</h2>
 <p>Creates (<b>maps</b>) the native interface objects 
   corresponding to the given IUP interface elements. </p>
-<p>It will also create the native element of all the children in the element's tree.</p>
+<p>It will also called recursively to create the native element of all the children in the element's tree.</p>
 <p>The element must be already <b>attached</b> to a mapped container, except the 
 dialog. A child can only be mapped if its parent is already mapped.</p>
 <p>This function is automatically called before 
@@ -32,13 +32,13 @@ or <strong>ih</strong>:map() [in Lua]</pre>
 <p><b>ih</b>: Identifier of an interface element.</p>
 <p><span class="style1">Returns:</span> IUP_NOERROR if successful. If the element was already mapped returns IUP_NOERROR. If the native creation failed returns IUP_ERROR.</p>
 <h3>Notes</h3>
-<p>If the element is a dialog then the abstract layout will be updated even if the element is already mapped. If the 
+<p>If the element is a dialog then the abstract layout will be updated even if the 
+dialog is already mapped. If the 
   dialog is visible the elements will be immediately repositioned. Calling
 <strong>IupMap</strong> for an already mapped dialog is the same as only calling
 <strong>IupRefresh</strong> for the dialog.</p>
 <p>Calling
-<strong>IupMap</strong> for an already mapped element does nothing, except for 
-the dialog.</p>
+<strong>IupMap</strong> for an already mapped element that is not a dialog does nothing.</p>
 <p>If you add new elements to an already mapped dialog you must call
   <b>IupMap</b> for that elements. And then call <b>IupRefresh</b> to update the dialog layout.</p>
 <p>If the WID attribute of an element is NULL, it means the element was not already mapped. 
@@ -48,10 +48,12 @@ this case their WID is a fake value (void*)(-1).</p>
   <b>IupMap</b> when the value of the WID attribute must be known, i.e. the native element 
 must exist, before a dialog is made visible.</p>
 <p>The
-  MAP_CB callback is called after the native element is created and the dialog layout updated 
-(if a dialog), so it can 
+  MAP_CB callback is called at the end of the <strong>IupMap</strong> function, 
+after all processing, so it can 
   also be used to create other things that depend on
-  the WID attribute.</p>
+  the WID attribute. But notice that for non dialog elements it will be called 
+before the dialog layout has been updated, so the element current size will 
+still be 0x0 (since 3.14).</p>
 <h3>See Also</h3>
 <p><a href="iupappend.html">IupAppend</a>, <a href="iupdetach.html">IupDetach</a>, <a href="iupunmap.html">IupUnmap</a>,
 <a href="iupcreate.html">IupCreate</a>, <a href="iupdestroy.html">IupDestroy</a>, <a href="iupshowxy.html">IupShowXY</a>, <a href="iupshow.html">IupShow</a>,

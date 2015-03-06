@@ -2245,7 +2245,7 @@ static int iPlotMapMethod(Ihandle* ih)
   {
     IupGLMakeCurrent(ih);
     double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-    ih->data->cd_canvas = cdCreateCanvasf(CD_GL, "%dx%d %g", ih->currentwidth, ih->currentheight, res);
+    ih->data->cd_canvas = cdCreateCanvasf(CD_GL, "10x10 %g", res);
   }
   else if (ih->data->graphics_mode == IUP_PLOT_IMAGERGB)
     ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFERRGB, ih);

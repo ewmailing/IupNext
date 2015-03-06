@@ -58,12 +58,17 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (04/Mar/2015)</h3>
+<h3>SVN (06/Mar/2015)</h3>
 
 <ul>
 
 	<li><span class="hist_new">New:</span> INFOTIP attribute for <strong>IupTree</strong> 
 	on Windows.</li>
+	<li><strong><span class="hist_changed">Changed:</span></strong> 
+	<strong>IupMap</strong> will now call <strong>IupRefresh</strong> when 
+	mapping the dialog after all other processing. This affects the MAP_CB 
+	callback of the children, that it will be called before the layout is 
+	updated, so the children current size will still be 0x0 during MAP_CB.</li>
 
 	<li><span class="hist_fixed">Fixed:</span> visual feedback when 
 	interactively moving

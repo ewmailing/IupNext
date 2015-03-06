@@ -117,11 +117,11 @@ static int winProgressBarMapMethod(Ihandle* ih)
   {
     dwStyle |= PBS_VERTICAL;
 
-    if (ih->currentheight < ih->currentwidth)
+    if (ih->userheight < ih->userwidth)
     {
-      int tmp = ih->currentheight;
-      ih->currentheight = ih->currentwidth;
-      ih->currentwidth = tmp;
+      int tmp = ih->userheight;
+      ih->userheight = ih->userwidth;
+      ih->userwidth = tmp;
     }
   }
 

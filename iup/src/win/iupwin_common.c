@@ -923,8 +923,8 @@ HWND iupwinCreateWindowEx(HWND hParent, LPCTSTR lpClassName, DWORD dwExStyle, DW
     dwStyle,                      /* window style */
     0,                            /* x-position */
     0,                            /* y-position */
-    CW_USEDEFAULT,                /* default width to avoid 0 */
-    CW_USEDEFAULT,                /* default height to avoid 0 */
+    10,                           /* horizontal size - set this to avoid initial size problems */
+    10,                           /* vertical size */
     hParent,                      /* window parent */
     (HMENU)serial,                /* child identifier */
     iupwin_hinstance,             /* instance of app. */

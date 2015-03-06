@@ -11,7 +11,9 @@
 <h2>MAP_CB</h2>
 <p>Called right after an element is mapped 
   and its attributes updated in <a href="../func/iupmap.html">IupMap</a>.</p>
-<p>When the element is a dialog, it is called after the layout is updated.</p>
+<p>When the element is a dialog, it is called after the layout is updated. For 
+all other elements is called before the layout is updated, so the element 
+current size will still be 0x0 during MAP_CB (since 3.14).</p>
 <h3>Callback</h3>
 <pre>int function(Ihandle *<b>ih</b>); [in C]
 <strong>elem</strong>:map_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
