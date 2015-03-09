@@ -18,9 +18,11 @@
 	an element has FLOATING=YES then its size and position will be ignored by the 
 	layout processing in <strong>IupVbox</strong>, <strong>IupHbox</strong> and
 <strong>IupZbox</strong>. But the element size and position will still be 
-updated in the native system allowing the usage of <strong>
-<a href="iup_size.html">SIZE</a></strong>/<strong><a href="iup_rastersize.html">RASTERSIZE</a></strong> 
-	and <strong><a href="iup_position.html">POSITION</a></strong> to manually position and size the element.</p>
+updated in the native system allowing the usage of 
+<a href="iup_size.html">SIZE</a>/<a href="iup_rastersize.html">RASTERSIZE</a> 
+	and <a href="iup_position.html">POSITION</a> to manually position and size the element. 
+And must ensure that the element will be on top of other using
+<a href="iup_zorder.html">ZORDER</a>, if there is overlap.</p>
 <p>This is useful when you do not want that an invisible element to be computed 
 in the box size.</p>
 <p>If the value IGNORE is used then it will behave as YES, but also it will not 
