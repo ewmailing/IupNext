@@ -735,66 +735,7 @@ wb_usr.tree =
           }
         },
         {
-          name= {en= "Construction"},
-          folder=
-          {
-            {
-              name= {nl= "IupCreate"},
-              link= "func/iupcreate.html"
-            },
-            {
-              name= {nl= "IupDestroy"},
-              link= "func/iupdestroy.html"
-            },
-            {
-              name= {nl= "IupMap"},
-              link= "func/iupmap.html"
-            },
-            {
-              name= {nl= "IupUnmap"},
-              link= "func/iupunmap.html"
-            },
-            { link= "", name= {en= "" } },
-            {
-              name= {nl= "IupGetAllClasses"},
-              link= "func/iupgetallclasses.html"
-            },
-            {
-              name= {nl= "IupGetClassName"},
-              link= "func/iupgetclassname.html"
-            },
-            {
-              name= {nl= "IupGetClassType"},
-              link= "func/iupgetclasstype.html"
-            },
-            {
-              name= {nl= "IupClassMatch"},
-              link= "func/iupclassmatch.html"
-            },
-            {
-              name= {nl= "IupGetClassAttributes"},
-              link= "func/iupgetclassattributes.html"
-            },
-            {
-              name= {nl= "IupGetClassCallbacks"},
-              link= "func/iupgetclasscallbacks.html"
-            },
-            {
-              name= {nl= "IupSaveClassAttributes"},
-              link= "func/iupsaveclassattributes.html"
-            },
-            {
-              name= {nl= "IupCopyClassAttributes"},
-              link= "func/iupcopyclassattributes.html"
-            },
-            {
-              name= {nl= "IupSetClassDefaultAttribute"},
-              link= "func/iupsetclassdefaultattribute.html"
-            },
-          }
-        },
-        {
-          name= {en= "Composition"},
+          name= {en= "Controls"},
           folder=
           {
             {
@@ -855,6 +796,65 @@ wb_usr.tree =
               name= {nl= "IupSplit"},
               link= "elem/iupsplit.html"
             }
+          }
+        },
+        {
+          name= {en= "Construction"},
+          folder=
+          {
+            {
+              name= {nl= "IupCreate"},
+              link= "func/iupcreate.html"
+            },
+            {
+              name= {nl= "IupDestroy"},
+              link= "func/iupdestroy.html"
+            },
+            {
+              name= {nl= "IupMap"},
+              link= "func/iupmap.html"
+            },
+            {
+              name= {nl= "IupUnmap"},
+              link= "func/iupunmap.html"
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "IupGetAllClasses"},
+              link= "func/iupgetallclasses.html"
+            },
+            {
+              name= {nl= "IupGetClassName"},
+              link= "func/iupgetclassname.html"
+            },
+            {
+              name= {nl= "IupGetClassType"},
+              link= "func/iupgetclasstype.html"
+            },
+            {
+              name= {nl= "IupClassMatch"},
+              link= "func/iupclassmatch.html"
+            },
+            {
+              name= {nl= "IupGetClassAttributes"},
+              link= "func/iupgetclassattributes.html"
+            },
+            {
+              name= {nl= "IupGetClassCallbacks"},
+              link= "func/iupgetclasscallbacks.html"
+            },
+            {
+              name= {nl= "IupSaveClassAttributes"},
+              link= "func/iupsaveclassattributes.html"
+            },
+            {
+              name= {nl= "IupCopyClassAttributes"},
+              link= "func/iupcopyclassattributes.html"
+            },
+            {
+              name= {nl= "IupSetClassDefaultAttribute"},
+              link= "func/iupsetclassdefaultattribute.html"
+            },
           }
         },
         {
