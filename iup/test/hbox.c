@@ -88,14 +88,14 @@ void HboxTest(void)
   );
 
   IupSetAttribute(dlg, "TITLE", "IupHbox Test"); /* Sets dlg's title */
-  IupSetAttribute(dlg, "MARGIN", "10x10");
-  IupSetAttribute(dlg, "GAP", "10");
-  IupSetAttribute(fr1, "MARGIN", "0x0");   /* avoid attribute propagation */
-  IupSetAttribute(fr2, "MARGIN", "0x0");
-  IupSetAttribute(fr3, "MARGIN", "0x0");
-  IupSetAttribute(fr1, "GAP", "0");
-  IupSetAttribute(fr2, "GAP", "0");
-  IupSetAttribute(fr3, "GAP", "0");
+  IupSetAttribute(dlg, "NMARGIN", "10x10");
+  IupSetAttribute(dlg, "NGAP", "10");
+//  IupSetAttribute(fr1, "MARGIN", "0x0");   /* avoid attribute propagation */
+//  IupSetAttribute(fr2, "MARGIN", "0x0");
+//  IupSetAttribute(fr3, "MARGIN", "0x0");
+//  IupSetAttribute(fr1, "GAP", "0");
+//  IupSetAttribute(fr2, "GAP", "0");
+//  IupSetAttribute(fr3, "GAP", "0");
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER); /* Shows dlg in the center of the screen */
 }

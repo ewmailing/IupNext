@@ -100,7 +100,7 @@ static int dropfiles_cb(Ihandle *ih, const char* filename, int num, int x, int y
 
 static int resize_cb(Ihandle *ih, int w, int h)
 {
-  printf("RESIZE_CB(%s, %d, %d) RASTERSIZE=%s\n", IupGetAttribute(ih, "TESTTITLE"), w, h, IupGetAttribute(ih, "RASTERSIZE"));
+  printf("RESIZE_CB(%s, %d, %d) RASTERSIZE=%s CLIENTSIZE=%s\n", IupGetAttribute(ih, "TESTTITLE"), w, h, IupGetAttribute(ih, "RASTERSIZE"), IupGetAttribute(ih, "CLIENTSIZE"));
   return IUP_DEFAULT;
 }
 
