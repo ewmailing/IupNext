@@ -25,10 +25,201 @@
 #include "iup_image.h"
 
 
-#define IEXPAND_BUTTON_SIZE 16
-#define IEXPAND_HANDLE_SIZE 20
-#define IEXPAND_SPACING   3
-#define IEXPAND_BACK_MARGIN  2
+static Ihandle* load_image_arrowup_highlight(void)
+{
+  unsigned char imgdata[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 175, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 211, 116, 116, 116, 255, 0, 0, 0, 211, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 195, 116, 116, 116, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 195, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 171, 116, 116, 116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 171, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 159, 116, 116, 116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 0, 0, 0, 143, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  Ihandle* image = IupImageRGBA(15, 15, imgdata);
+  return image;
+}
+
+static Ihandle* load_image_arrowdown_highlight(void)
+{
+  unsigned char imgdata[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 116, 116, 116, 255, 0, 0, 0, 143, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 159, 116, 116, 116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 171, 116, 116, 116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 171, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 195, 116, 116, 116, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 195, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 211, 116, 116, 116, 255, 0, 0, 0, 211, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 175, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0 };
+
+  Ihandle* image = IupImageRGBA(15, 15, imgdata);
+  return image;
+}
+
+static Ihandle* load_image_arrowleft_highlight(void)
+{
+  unsigned char imgdata[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 159, 116, 116, 116, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 171, 116, 116, 116, 255, 116, 116, 116, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 195, 116, 116, 116, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 211, 116, 116, 116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 175, 116, 116, 116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 211, 116, 116, 116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 195, 116, 116, 116, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 171, 116, 116, 116, 255, 116, 116, 116, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 159, 116, 116, 116, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  Ihandle* image = IupImageRGBA(15, 15, imgdata);
+  return image;
+}
+
+static Ihandle* load_image_arrowright_highlight(void)
+{
+  unsigned char imgdata[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 116, 116, 116, 255, 0, 0, 0, 159, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 116, 116, 116, 255, 116, 116, 116, 255, 0, 0, 0, 171, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 116, 116, 116, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 195, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 116, 116, 116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 211, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 116, 116, 116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 175, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 116, 116, 116, 255, 255, 255, 255, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 211, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 116, 116, 116, 255, 255, 255, 255, 255, 116, 116, 116, 255, 0, 0, 0, 195, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 116, 116, 116, 255, 116, 116, 116, 255, 0, 0, 0, 171, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 116, 116, 116, 255, 0, 0, 0, 159, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0 };
+
+  Ihandle* image = IupImageRGBA(15, 15, imgdata);
+  return image;
+}
+
+static Ihandle* load_image_arrowup(void)
+{
+  unsigned char imgdata[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 175, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 211, 0, 0, 0, 255, 0, 0, 0, 211, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 195, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 195, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 171, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 171, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 159, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  Ihandle* image = IupImageRGBA(15, 15, imgdata);
+  return image;
+}
+
+static Ihandle* load_image_arrowleft(void)
+{
+  unsigned char imgdata[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 159, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 171, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 195, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 211, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 175, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 211, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 195, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 171, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 159, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  Ihandle* image = IupImageRGBA(15, 15, imgdata);
+  return image;
+}
+
+static Ihandle* load_image_arrowright(void)
+{
+  unsigned char imgdata[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 159, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 171, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 195, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 211, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 175, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 211, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 195, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 171, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 159, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  Ihandle* image = IupImageRGBA(15, 15, imgdata);
+  return image;
+}
+
+static Ihandle* load_image_arrowdown(void)
+{
+  unsigned char imgdata[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 143, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 159, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 171, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 171, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 195, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 195, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 211, 0, 0, 0, 255, 0, 0, 0, 211, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 175, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  Ihandle* image = IupImageRGBA(15, 15, imgdata);
+  return image;
+}
+
+static void iExpanderLoadImages(void)
+{
+  IupSetHandle("IupArrowUp", load_image_arrowup());
+  IupSetHandle("IupArrowLeft", load_image_arrowleft());
+  IupSetHandle("IupArrowRight", load_image_arrowright());
+  IupSetHandle("IupArrowDown", load_image_arrowdown());
+  IupSetHandle("IupArrowUpHighlight", load_image_arrowup_highlight());
+  IupSetHandle("IupArrowDownHighlight", load_image_arrowdown_highlight());
+  IupSetHandle("IupArrowLeftHighlight", load_image_arrowleft_highlight());
+  IupSetHandle("IupArrowRightHighlight", load_image_arrowright_highlight());
+}
 
 enum { IEXPANDER_LEFT, IEXPANDER_RIGHT, IEXPANDER_TOP, IEXPANDER_BOTTOM };
 enum { IEXPANDER_CLOSE, IEXPANDER_OPEN, IEXPANDER_OPEN_FLOAT };
@@ -38,19 +229,102 @@ struct _IcontrolData
   /* attributes */
   int position;
   int state;
-  int barSize;
+  int bar_size;
+  int extra_buttons;
+  int auto_show;
 
-  int highlight,
-      extra_buttons,
-      extra_buttons_state[4],
-      auto_show;
+  /* aux */
+  int highlight;
   Ihandle* timer;
 };
 
 
+static void iExpanderUpdateStateImage(Ihandle* ih)
+{
+  /* expander -> bar -> box -> (expand_button, ...) */
+  Ihandle* box = ih->firstchild->firstchild;
+  Ihandle* expand_button = box->firstchild;
+
+  char* image = iupAttribGetStr(ih, "IMAGE");
+  if (image)
+  {
+    if (ih->data->state != IEXPANDER_CLOSE)
+    {
+      char* imopen = iupAttribGetStr(ih, "IMAGEOPEN");
+      if (imopen) image = imopen;
+
+      if (ih->data->highlight)
+      {
+        char* imhighlight = iupAttribGetStr(ih, "IMAGEOPENHIGHLIGHT");
+        if (imhighlight) image = imhighlight;
+      }
+    }
+    else
+    {
+      if (ih->data->highlight)
+      {
+        char* imhighlight = iupAttribGetStr(ih, "IMAGEHIGHLIGHT");
+        if (imhighlight) image = imhighlight;
+      }
+    }
+
+    IupSetAttribute(expand_button, "IMAGE", image);
+  }
+  else
+  {
+    char* title;
+
+    /* the arrow points in the direction of the action */
+
+    switch (ih->data->position)
+    {
+    case IEXPANDER_LEFT:
+      if (ih->data->state == IEXPANDER_CLOSE)
+        image = "IupArrowRight";
+      else
+        image = "IupArrowLeft";
+      break;
+    case IEXPANDER_RIGHT:
+      if (ih->data->state == IEXPANDER_CLOSE)
+        image = "IupArrowLeft";
+      else
+        image = "IupArrowRight";
+      break;
+    case IEXPANDER_BOTTOM:
+      if (ih->data->state == IEXPANDER_CLOSE)
+        image = "IupArrowUp";
+      else
+        image = "IupArrowDown";
+      break;
+    default: /* IEXPANDER_TOP */
+      title = iupAttribGetStr(ih, "TITLE");
+      if (title)
+      {
+        if (ih->data->state == IEXPANDER_CLOSE)
+          image = "IupArrowRight";
+        else
+          image = "IupArrowDown";
+      }
+      else
+      {
+        if (ih->data->state == IEXPANDER_CLOSE)
+          image = "IupArrowDown";
+        else
+          image = "IupArrowUp";
+      }
+      break;
+    }
+
+    if (ih->data->highlight)
+      IupSetfAttribute(expand_button, "IMAGE", "%sHighlight", image);
+    else
+      IupSetAttribute(expand_button, "IMAGE", image);
+  }
+}
+
 static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int state)
 {
-  Ihandle *child = ih->firstchild->brother;
+  Ihandle* child = ih->firstchild->brother;
 
   if (callcb)
   {
@@ -64,8 +338,7 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int st
   }
 
   ih->data->state = state;
-
-  IupUpdate(ih->firstchild);
+  iExpanderUpdateStateImage(ih);
 
   if (child)
   {
@@ -89,379 +362,168 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int st
 static int iExpanderGetBarSize(Ihandle* ih)
 {
   int bar_size;
-  if (ih->data->barSize == -1)
+  if (ih->data->bar_size == -1)
   {
-    iupdrvFontGetCharSize(ih, NULL, &bar_size); 
+    Ihandle* box = ih->firstchild->firstchild;
 
-    if (bar_size < IEXPAND_HANDLE_SIZE)
-      bar_size = IEXPAND_HANDLE_SIZE;
+    iupBaseComputeNaturalSize(box);
 
-    if (ih->data->position == IEXPANDER_TOP)
-    {
-      char* title = iupAttribGetStr(ih, "TITLE");
-      char* image = iupAttribGetStr(ih, "IMAGE");
-      if (image)
-      {
-        int image_h = 0;
-        iupImageGetInfo(image, NULL, &image_h, NULL);
-        bar_size = iupMAX(bar_size, image_h);
-      }
-
-      if (title || image || ih->data->extra_buttons != 0)
-        bar_size += 2 * IEXPAND_BACK_MARGIN;
-    }
+    if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
+      bar_size = box->naturalwidth;
+    else
+      bar_size = box->naturalheight;
   }
   else
-    bar_size = ih->data->barSize;
+    bar_size = ih->data->bar_size;
 
   return bar_size;
 }
 
-/*****************************************************************************\
-|* Callbacks of canvas bar                                                   *|
-\*****************************************************************************/
-
-static void iExpanderDrawTriangle(IdrawCanvas *dc, int x, int y, unsigned char r, unsigned char g, unsigned char b, int dir)
+static void iExpanderUpdateTitle(Ihandle* ih)
 {
-  int points[6];
-
-  /* fix for smooth triangle */
-  int delta = (IEXPAND_HANDLE_SIZE - 2*IEXPAND_SPACING)/2;
-
-  switch(dir)
+  Ihandle* box = ih->firstchild->firstchild;
+  Ihandle* expand_button = box->firstchild;
+  Ihandle* label = expand_button->brother;
+  char* title = iupAttribGetStr(ih, "TITLE");
+  if (title)
   {
-  case IEXPANDER_LEFT:  /* arrow points left */
-    x += IEXPAND_SPACING;  /* fix center */
-    points[0] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - delta;
-    points[1] = y + IEXPAND_SPACING;
-    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - delta;
-    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
-    points[4] = x + IEXPAND_SPACING;
-    points[5] = y + IEXPAND_HANDLE_SIZE/2;
-    break;
-  case IEXPANDER_TOP:    /* arrow points top */
-    y += IEXPAND_SPACING;  /* fix center */
-    points[0] = x + IEXPAND_SPACING;
-    points[1] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - (delta-1);
-    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
-    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - (delta-1);
-    points[4] = x + IEXPAND_HANDLE_SIZE/2;
-    points[5] = y + IEXPAND_SPACING;
-    break;
-  case IEXPANDER_RIGHT:  /* arrow points right */
-    x += IEXPAND_SPACING;  /* fix center */
-    points[0] = x + IEXPAND_SPACING;
-    points[1] = y + IEXPAND_SPACING;
-    points[2] = x + IEXPAND_SPACING;
-    points[3] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
-    points[4] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - delta;
-    points[5] = y + IEXPAND_HANDLE_SIZE/2;
-    break;
-  case IEXPANDER_BOTTOM:  /* arrow points bottom */
-    y += IEXPAND_SPACING;  /* fix center */
-    points[0] = x + IEXPAND_SPACING;
-    points[1] = y + IEXPAND_SPACING;
-    points[2] = x + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING;
-    points[3] = y + IEXPAND_SPACING;
-    points[4] = x + IEXPAND_HANDLE_SIZE/2;
-    points[5] = y + IEXPAND_HANDLE_SIZE - IEXPAND_SPACING - (delta-1);
-
-    /* fix for simmetry */
-    iupDrawLine(dc, x+IEXPAND_SPACING, y+IEXPAND_SPACING, x+IEXPAND_HANDLE_SIZE-IEXPAND_SPACING, y+IEXPAND_SPACING, r, g, b, IUP_DRAW_STROKE);
-    break;
-  }
-
-  iupDrawPolygon(dc, points, 3, r, g, b, IUP_DRAW_FILL);
-}
-
-static void iExpanderDrawSmallTriangle(IdrawCanvas *dc, int x, int y, unsigned char r, unsigned char g, unsigned char b, int dir)
-{
-  int points[6];
-  int size = IEXPAND_HANDLE_SIZE-2;
-  int space = IEXPAND_SPACING+1;
-
-  /* fix for smooth triangle */
-  int delta = (size - 2*space)/2;
-
-  switch(dir)
-  {
-  case IEXPANDER_RIGHT:  /* arrow points right */
-    x += space-1;  /* fix center */
-    y += 1;
-    points[0] = x + space;
-    points[1] = y + space;
-    points[2] = x + space;
-    points[3] = y + size - space;
-    points[4] = x + size - space - delta;
-    points[5] = y + size/2;
-    break;
-  case IEXPANDER_BOTTOM:  /* arrow points bottom */
-    y += space;  /* fix center */
-    points[0] = x + space;
-    points[1] = y + space;
-    points[2] = x + size - space;
-    points[3] = y + space;
-    points[4] = x + size/2;
-    points[5] = y + size - space - (delta-1);
-
-    /* fix for simmetry */
-    iupDrawLine(dc, x+space, y+space, x+size-space, y+space, r, g, b, IUP_DRAW_STROKE);
-    break;
-  }
-
-  iupDrawPolygon(dc, points, 3, r, g, b, IUP_DRAW_FILL);
-}
-
-static void iExpanderDrawArrow(IdrawCanvas *dc, int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b, int dir)
-{
-  unsigned char sr, sg, sb;
-
-  sr = (r+bg_r)/2;
-  sg = (g+bg_g)/2;
-  sb = (b+bg_b)/2;
-
-  /* to smooth the arrow border */
-  switch(dir)
-  {
-  case IEXPANDER_LEFT:  /* arrow points left */
-    iExpanderDrawTriangle(dc, x-1, y, sr, sg, sb, dir);
-    break;
-  case IEXPANDER_TOP:    /* arrow points top */
-    iExpanderDrawTriangle(dc, x, y-1, sr, sg, sb, dir);
-    break;
-  case IEXPANDER_RIGHT:  /* arrow points right */
-    iExpanderDrawTriangle(dc, x+1, y, sr, sg, sb, dir);
-    break;
-  case IEXPANDER_BOTTOM:  /* arrow points bottom */
-    iExpanderDrawTriangle(dc, x, y+1, sr, sg, sb, dir);
-    break;
-  }
-
-  iExpanderDrawTriangle(dc, x, y, r, g, b, dir);
-}
-
-static void iExpanderDrawSmallArrow(IdrawCanvas *dc, unsigned char r, unsigned char g, unsigned char b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b, int dir, int y_offset)
-{
-  unsigned char sr, sg, sb;
-
-  sr = (r+bg_r)/2;
-  sg = (g+bg_g)/2;
-  sb = (b+bg_b)/2;
-
-  /* to smooth the arrow border */
-  switch(dir)
-  {
-  case IEXPANDER_RIGHT:  /* arrow points right */
-    iExpanderDrawSmallTriangle(dc, 2 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, sr, sg, sb, dir);
-    iExpanderDrawSmallTriangle(dc, 1 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, r, g, b, dir);
-    break;
-  case IEXPANDER_BOTTOM:  /* arrow points bottom */
-    iExpanderDrawSmallTriangle(dc, 0 + IEXPAND_BACK_MARGIN, 1 + IEXPAND_BACK_MARGIN + y_offset, sr, sg, sb, dir);
-    iExpanderDrawSmallTriangle(dc, 0 + IEXPAND_BACK_MARGIN, 0 + IEXPAND_BACK_MARGIN + y_offset, r, g, b, dir);
-    break;
-  }
-}
-
-static void iExpanderAddHighlight(unsigned char *r, unsigned char *g, unsigned char *b)
-{
-  int i = (*r+*g+*b)/3;
-  if (i < 128)
-  {
-    *r = (*r+255)/2;
-    *g = (*g+255)/2;
-    *b = (*b+255)/2;
+    IupSetAttribute(box, "MARGIN", "0x1");
+    IupSetAttribute(box, "GAP", "1");
+    IupSetStrAttribute(label, "VISIBLE", "Yes");
+    IupSetStrAttribute(label, "TITLE", title);
+    IupSetAttribute(expand_button, "EXPAND", "NO");
   }
   else
   {
-    *r = (*r+0)/2;
-    *g = (*g+0)/2;
-    *b = (*b+0)/2;
+    IupSetAttribute(box, "MARGIN", "2x2");
+    IupSetAttribute(box, "GAP", "0");
+    IupSetStrAttribute(label, "VISIBLE", "No");
+    IupSetStrAttribute(label, "TITLE", NULL);
+    IupSetAttribute(expand_button, "EXPAND", "HORIZONTAL");
   }
+
+  if (ih->handle)
+    iExpanderUpdateStateImage(ih);
 }
 
-static void iExpanderDrawExtraButton(Ihandle* ih, IdrawCanvas *dc, int button, int x, int y, int height)
+static void iExpanderUpdateExtraButtonImage(Ihandle* ih, Ihandle* extra_button, int pressed)
 {
+  int button = iupAttribGetInt(extra_button, "EXTRABUTTON_NUMBER");
   char* image = iupAttribGetId(ih, "IMAGEEXTRA", button);
-  int active = IupGetInt(ih, "ACTIVE");
-  int img_width = 0, img_height = 0;
-
   if (!image)
     return;
 
-  if (ih->data->extra_buttons_state[button] == 1)
+  if (pressed)
   {
     char* impress = iupAttribGetId(ih, "IMAGEEXTRAPRESS", button);
     if (impress) image = impress;
   }
-  else if (ih->data->extra_buttons_state[button] == -1)
+  else if (ih->data->highlight)
   {
     char* imhighlight = iupAttribGetId(ih, "IMAGEEXTRAHIGHLIGHT", button);
     if (imhighlight) image = imhighlight;
   }
 
-  iupImageGetInfo(image, NULL, &img_height, NULL);
-  if (height > img_height)
-    y += (height - img_height) / 2;
-
-  iupDrawImage(dc, image, !active, x, y, &img_width, &img_height);
+  IupSetStrAttribute(extra_button, "IMAGE", image);
 }
 
-static int iExpanderAction_CB(Ihandle* bar)
+static int iExpanderExtraButtonButton_CB(Ihandle* extra_button, int button, int pressed, int x, int y, char* status);
+static int iExpanderExtraButtonEnterWindow_cb(Ihandle* extra_button);
+static int iExpanderExtraButtonLeaveWindow_cb(Ihandle* extra_button);
+
+static void iExpanderAddExtraButton(Ihandle* ih, Ihandle* extra_box, int number)
 {
-  Ihandle *ih = bar->parent;
-  IdrawCanvas *dc = iupDrawCreateCanvas(bar);
-  unsigned char r=0, g=0, b=0;
-  unsigned char bg_r=0, bg_g=0, bg_b=0;
-  int draw_bgcolor = 1;
-  char* title = iupAttribGetStr(ih, "TITLE");
-  char* image = iupAttribGetStr(ih, "IMAGE");
-  char* bgcolor = iupAttribGetStr(ih, "BACKCOLOR");
-  if (!bgcolor)
+  Ihandle* extra_button = IupLabel(NULL);
+  IupSetInt(extra_button, "EXTRABUTTON_NUMBER", number);
+  IupSetCallback(extra_button, "BUTTON_CB", (Icallback)iExpanderExtraButtonButton_CB);
+  IupSetCallback(extra_button, "ENTERWINDOW_CB", (Icallback)iExpanderExtraButtonEnterWindow_cb);
+  IupSetCallback(extra_button, "LEAVEWINDOW_CB", (Icallback)iExpanderExtraButtonLeaveWindow_cb);
+
+  iExpanderUpdateExtraButtonImage(ih, extra_button, 0);
+
+  IupAppend(extra_box, extra_button);
+}
+
+static void iExpanderUpdateExtraButtons(Ihandle* ih)
+{
+  Ihandle* box = ih->firstchild->firstchild;
+  Ihandle* extra_box = box->firstchild->brother->brother;  /* (expand_button, label, extra_box) */
+
+  if (extra_box)
+    IupDestroy(extra_box);
+
+  if (ih->data->extra_buttons)
   {
-    bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
-    draw_bgcolor = 0;
+    extra_box = IupHbox(NULL);
+    IupSetAttribute(box, "MARGIN", "0x0");
+    IupSetAttribute(box, "GAP", "2");
+    IupAppend(box, extra_box);
+
+    iExpanderAddExtraButton(ih, extra_box, ih->data->extra_buttons);
+    if (ih->data->extra_buttons > 1)
+      iExpanderAddExtraButton(ih, extra_box, ih->data->extra_buttons-1);
+    if (ih->data->extra_buttons > 2)
+      iExpanderAddExtraButton(ih, extra_box, ih->data->extra_buttons-2);
   }
-  
-  iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
-  iupStrToRGB(IupGetAttribute(ih, "FORECOLOR"), &r, &g, &b);
+}
 
-  iupDrawParentBackground(dc);
+static int iExpanderExpandButtonButton_CB(Ihandle* expand_button, int button, int pressed, int x, int y, char* status);
+static int iExpanderExpandButtonEnterWindow_cb(Ihandle* expand_button);
+static int iExpanderExpandButtonLeaveWindow_cb(Ihandle* expand_button);
 
-  if (draw_bgcolor)
-    iupDrawRectangle(dc, IEXPAND_BACK_MARGIN, IEXPAND_BACK_MARGIN, bar->currentwidth - IEXPAND_BACK_MARGIN, bar->currentheight - IEXPAND_BACK_MARGIN, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
+static void iExpanderUpdateBox(Ihandle* ih)
+{
+  Ihandle* bar = ih->firstchild;
+  Ihandle* box, *expand_button;
 
-  if (ih->data->position == IEXPANDER_TOP && (title || image || ih->data->extra_buttons!=0))
+  if (bar->firstchild)
+    IupDestroy(bar->firstchild);
+
+  expand_button = IupLabel(NULL);
+  IupSetAttribute(expand_button, "ALIGNMENT", "ACENTER:ACENTER");
+  IupSetCallback(expand_button, "BUTTON_CB", (Icallback)iExpanderExpandButtonButton_CB);
+  IupSetCallback(expand_button, "ENTERWINDOW_CB", (Icallback)iExpanderExpandButtonEnterWindow_cb);
+  IupSetCallback(expand_button, "LEAVEWINDOW_CB", (Icallback)iExpanderExpandButtonLeaveWindow_cb);
+
+  if (ih->data->position == IEXPANDER_TOP)
   {
-    /* left align image/handler+title */
-    int txt_offset = IEXPAND_HANDLE_SIZE;
-
-    if (image)
-    {
-      int active = IupGetInt(ih, "ACTIVE");
-      int img_width = 0, img_height = 0;
-      int y_offset = 0;
-
-      if (ih->data->state != IEXPANDER_CLOSE)
-      {
-        char* imopen = iupAttribGetStr(ih, "IMAGEOPEN");
-        if (imopen) image = imopen;
-
-        if (ih->data->highlight)
-        {
-          char* imhighlight = iupAttribGetStr(ih, "IMAGEOPENHIGHLIGHT");
-          if (imhighlight) image = imhighlight;
-        }
-      }
-      else if (ih->data->highlight)
-      {
-        char* imhighlight = iupAttribGetStr(ih, "IMAGEHIGHLIGHT");
-        if (imhighlight) image = imhighlight;
-      }
-
-      iupImageGetInfo(image, NULL, &img_height, NULL);
-      if (bar->currentheight > img_height)
-        y_offset = (bar->currentheight - img_height) / 2;
-
-      iupDrawImage(dc, image, !active, IEXPAND_BACK_MARGIN, y_offset, &img_width, &img_height);
-
-      txt_offset = iupMAX(txt_offset, img_width);
-    }
-    else
-    {
-      int y_offset = 0;
-      if (bar->currentheight > IEXPAND_HANDLE_SIZE + 2 * IEXPAND_BACK_MARGIN)
-        y_offset = (bar->currentheight - IEXPAND_HANDLE_SIZE - 2 * IEXPAND_BACK_MARGIN) / 2;
-
-      if (ih->data->highlight)
-        iExpanderAddHighlight(&r, &g, &b);
-
-      if (ih->data->state == IEXPANDER_CLOSE)
-        iExpanderDrawSmallArrow(dc, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT, y_offset);
-      else
-        iExpanderDrawSmallArrow(dc, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM, y_offset);
-    }
-
-    if (title)
-    {
-      /* left align everything */
-      int len, charheight;
-      iupStrNextLine(title, &len);  /* get the length of the first line */
-      iupdrvFontGetCharSize(ih, NULL, &charheight);
-      iupDrawText(dc, title, len, txt_offset + IEXPAND_SPACING, (bar->currentheight - charheight) / 2, r, g, b, IupGetAttribute(ih, "FONT"));
-    }
-
-    if (ih->data->extra_buttons != 0)
-    {
-      /* right align extra buttons */
-      int y = IEXPAND_SPACING + IEXPAND_BACK_MARGIN,
-        height = bar->currentheight - 2 * (IEXPAND_SPACING + IEXPAND_BACK_MARGIN);
-
-      iExpanderDrawExtraButton(ih, dc, 1, bar->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height);
-
-      if (ih->data->extra_buttons > 1)
-        iExpanderDrawExtraButton(ih, dc, 2, bar->currentwidth - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height);
-
-      if (ih->data->extra_buttons == 3)
-        iExpanderDrawExtraButton(ih, dc, 3, bar->currentwidth - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN, y, height);
-    }
+    box = IupHbox(expand_button, IupLabel(NULL), NULL);
+  }
+  else if (ih->data->position == IEXPANDER_BOTTOM)
+  {
+    box = IupHbox(expand_button, NULL);
+    IupSetAttribute(expand_button, "EXPAND", "HORIZONTAL");
   }
   else
   {
-    /* center align the handler */
-    int x, y;
-
-    if (ih->data->highlight)
-      iExpanderAddHighlight(&r, &g, &b);
-
-    switch(ih->data->position)
-    {
-    case IEXPANDER_LEFT:
-      x = 0;
-      y = (bar->currentheight - IEXPAND_HANDLE_SIZE)/2;
-      if (ih->data->state == IEXPANDER_CLOSE)
-        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT);
-      else
-        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_LEFT);
-      break;
-    case IEXPANDER_TOP:
-      x = (bar->currentwidth - IEXPAND_HANDLE_SIZE)/2;
-      y = 0;
-      if (ih->data->state == IEXPANDER_CLOSE)
-        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM);
-      else
-        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_TOP);
-      break;
-    case IEXPANDER_RIGHT:
-      x = 0;
-      y = (bar->currentheight - IEXPAND_HANDLE_SIZE)/2;
-      if (ih->data->state == IEXPANDER_CLOSE)
-        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_LEFT);
-      else
-        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_RIGHT);
-      break;
-    case IEXPANDER_BOTTOM:
-      x = (bar->currentwidth - IEXPAND_HANDLE_SIZE)/2;
-      y = 0;
-      if (ih->data->state == IEXPANDER_CLOSE)
-        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_TOP);
-      else
-        iExpanderDrawArrow(dc, x, y, r, g, b, bg_r, bg_g, bg_b, IEXPANDER_BOTTOM);
-      break;
-    }
+    box = IupVbox(expand_button, NULL);
+    IupSetAttribute(expand_button, "EXPAND", "VERTICAL");
   }
 
-  iupDrawFlush(dc);
+  IupSetAttribute(box, "MARGIN", "2x2");
+  IupSetAttribute(box, "GAP", "0");
+  IupSetAttribute(box, "ALIGNMENT", "ACENTER");
 
-  iupDrawKillCanvas(dc);
+  IupAppend(bar, box);
 
-  return IUP_DEFAULT;
+  if (ih->data->position == IEXPANDER_TOP)
+    iExpanderUpdateTitle(ih);
+
+  iExpanderUpdateStateImage(ih);
 }
+
+
+/*****************************************************************************\
+|* Internal Callbacks                                                        *|
+\*****************************************************************************/
+
 
 static int iExpanderGlobalMotion_cb(int x, int y)
 {
   int child_x, child_y;
   Ihandle* ih = (Ihandle*)IupGetGlobal("_IUP_EXPANDER_GLOBAL");
-  Ihandle *child = ih->firstchild->brother;
+  Ihandle* bar = ih->firstchild;
+  Ihandle* child = bar->brother;
 
   if (ih->data->state != IEXPANDER_OPEN_FLOAT)
   {
@@ -473,9 +535,9 @@ static int iExpanderGlobalMotion_cb(int x, int y)
   }
 
   child_x = 0, child_y = 0;
-  iupdrvClientToScreen(ih->firstchild, &child_x, &child_y);
-  if (x > child_x && x < child_x+ih->firstchild->currentwidth &&
-      y > child_y && y < child_y+ih->firstchild->currentheight)
+  iupdrvClientToScreen(bar, &child_x, &child_y);
+  if (x > child_x && x < child_x + bar->currentwidth &&
+      y > child_y && y < child_y + bar->currentheight)
     return IUP_DEFAULT;  /* ignore if inside the bar */
 
   child_x = 0, child_y = 0;
@@ -484,6 +546,7 @@ static int iExpanderGlobalMotion_cb(int x, int y)
       y < child_y || y > child_y+child->currentheight)
   {
     iExpanderOpenCloseChild(ih, 0, 1, IEXPANDER_CLOSE);
+
     IupSetGlobal("_IUP_EXPANDER_GLOBAL", NULL);
     IupSetFunction("GLOBALMOTION_CB", IupGetFunction("_IUP_OLD_GLOBALMOTION_CB"));
     IupSetFunction("_IUP_OLD_GLOBALMOTION_CB", NULL);
@@ -496,7 +559,7 @@ static int iExpanderGlobalMotion_cb(int x, int y)
 static int iExpanderTimer_cb(Ihandle* timer)
 {
   Ihandle* ih = (Ihandle*)iupAttribGet(timer, "_IUP_EXPANDER");
-  Ihandle *child = ih->firstchild->brother;
+  Ihandle* child = ih->firstchild->brother;
 
   /* run timer just once each time */
   IupSetAttribute(timer, "RUN", "No");
@@ -515,19 +578,16 @@ static int iExpanderTimer_cb(Ihandle* timer)
   return IUP_DEFAULT;
 }
 
-static int iExpanderLeaveWindow_cb(Ihandle* bar)
+static int iExpanderExpandButtonLeaveWindow_cb(Ihandle* expand_button)
 {
-  Ihandle* ih = bar->parent;
+  /* expander -> bar -> box -> (expand_button, ...) */
+  Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(expand_button)));
+
   if (ih->data->highlight)
   {
     ih->data->highlight = 0;
 
-    if (ih->data->extra_buttons_state[1] != 0) ih->data->extra_buttons_state[1] = 0;
-    if (ih->data->extra_buttons_state[2] != 0) ih->data->extra_buttons_state[2] = 0;
-    if (ih->data->extra_buttons_state[3] != 0) ih->data->extra_buttons_state[3] = 0;
-
-    /* redraw bar */
-    IupUpdate(ih->firstchild);
+    iExpanderUpdateStateImage(ih);
 
     if (ih->data->auto_show)
     {
@@ -538,157 +598,92 @@ static int iExpanderLeaveWindow_cb(Ihandle* bar)
   return IUP_DEFAULT;
 }
 
-static int iExpanderEnterWindow_cb(Ihandle* bar)
+static int iExpanderExpandButtonEnterWindow_cb(Ihandle* expand_button)
 {
-  Ihandle* ih = bar->parent;
+  /* expander -> bar -> box -> (expand_button, ...) */
+  Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(expand_button)));
+
   if (!ih->data->highlight)
   {
+    Ihandle* child = ih->firstchild->brother;
+
     ih->data->highlight = 1;
 
-    /* redraw bar */
-    IupUpdate(ih->firstchild);
+    iExpanderUpdateStateImage(ih);
 
     if (ih->data->auto_show &&
-        ih->firstchild->brother &&
+        child &&
         ih->data->state == IEXPANDER_CLOSE)
       IupSetAttribute(ih->data->timer, "RUN", "Yes");
   }
   return IUP_DEFAULT;
 }
 
-static int iExpanderMotion_CB(Ihandle* bar, int x, int y, char* status)
+static int iExpanderExpandButtonButton_CB(Ihandle* expand_button, int button, int pressed, int x, int y, char* status)
 {
-  Ihandle* ih = bar->parent;
-
-  /* called only when EXTRABUTTONS is used */
-
-  if (ih->data->position != IEXPANDER_TOP)
-    return IUP_DEFAULT;
-
-  if (y >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && y <= bar->currentheight - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
+  if (button == IUP_BUTTON1 && pressed)
   {
-    int old_state[4];
-    old_state[1] = ih->data->extra_buttons_state[1];
-    old_state[2] = ih->data->extra_buttons_state[2];
-    old_state[3] = ih->data->extra_buttons_state[3];
+    /* expander -> bar -> box -> (expand_button, ...) */
+    Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(expand_button)));
 
-    if ((x >= bar->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-      (x < bar->currentwidth - IEXPAND_SPACING - IEXPAND_BACK_MARGIN))
+    if (ih->data->auto_show)
     {
-      if (ih->data->extra_buttons_state[1] == 0)
-        ih->data->extra_buttons_state[1] = -1;  /* highlight if not pressed */
-    }
-    else
-    {
-      if (ih->data->extra_buttons_state[1] != 0)
-        ih->data->extra_buttons_state[1] = 0;
+      if (IupGetInt(ih->data->timer, "RUN"))
+        IupSetAttribute(ih->data->timer, "RUN", "No");
     }
 
-    if (ih->data->extra_buttons > 1)
-    {
-      if ((x >= bar->currentwidth - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-        (x < bar->currentwidth - (IEXPAND_BUTTON_SIZE + 2 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
-      {
-        if (ih->data->extra_buttons_state[2] == 0)
-          ih->data->extra_buttons_state[2] = -1;  /* highlight if not pressed */
-      }
-      else
-      {
-        if (ih->data->extra_buttons_state[2] != 0)
-          ih->data->extra_buttons_state[2] = 0;
-      }
-    }
-
-    if (ih->data->extra_buttons == 3)
-    {
-      if ((x >= bar->currentwidth - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-          (x < bar->currentwidth - (2 * IEXPAND_BUTTON_SIZE + 3 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
-      {
-        if (ih->data->extra_buttons_state[3] == 0)
-          ih->data->extra_buttons_state[3] = -1;  /* highlight if not pressed */
-      }
-      else
-      {
-        if (ih->data->extra_buttons_state[3] != 0)
-          ih->data->extra_buttons_state[3] = 0;
-      }
-    }
-
-    if (old_state[1] != ih->data->extra_buttons_state[1] ||
-        old_state[2] != ih->data->extra_buttons_state[2] ||
-        old_state[3] != ih->data->extra_buttons_state[3])
-      IupUpdate(bar);
+    iExpanderOpenCloseChild(ih, 1, 1, ih->data->state == IEXPANDER_OPEN ? IEXPANDER_CLOSE : IEXPANDER_OPEN);
   }
 
+  (void)x;
+  (void)y;
   (void)status;
   return IUP_DEFAULT;
 }
 
-static int iExpanderCallExtraButtonCb(Ihandle* ih, int button, int pressed)
+static int iExpanderExtraButtonLeaveWindow_cb(Ihandle* extra_button)
 {
-  int old_state = ih->data->extra_buttons_state[button];
-  ih->data->extra_buttons_state[button] = pressed;
+  /* expander -> bar -> box -> (expand_button, label, extra_box(extra_button)) */
+  Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(IupGetParent(extra_button))));
 
-  /* redraw only if state changed */
-  if (old_state != ih->data->extra_buttons_state[button])
-    IupUpdate(ih->firstchild);
-
-  if (!pressed)
-    pressed = pressed;
-
-  /* if pressed always call,
-     if not pressed, call only if was pressed */
-  if (pressed || old_state==1)
+  if (ih->data->highlight)
   {
-    IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
-    if (cb)
-      cb(ih, button, pressed);
-  }
+    ih->data->highlight = 0;
 
+    iExpanderUpdateExtraButtonImage(ih, extra_button, 0);
+  }
   return IUP_DEFAULT;
 }
 
-static int iExpanderButton_CB(Ihandle* bar, int button, int pressed, int x, int y, char* status)
+static int iExpanderExtraButtonEnterWindow_cb(Ihandle* extra_button)
 {
-  Ihandle* ih = bar->parent;
+  /* expander -> bar -> box -> (expand_button, label, extra_box(extra_button)) */
+  Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(IupGetParent(extra_button))));
 
-  if (button != IUP_BUTTON1)
-    return IUP_DEFAULT;
-
-  if (ih->data->auto_show && ih->firstchild)
+  if (!ih->data->highlight)
   {
-    if (IupGetInt(ih->data->timer, "RUN"))
-      IupSetAttribute(ih->data->timer, "RUN", "No");
+    ih->data->highlight = 1;
+
+    iExpanderUpdateExtraButtonImage(ih, extra_button, 0);
   }
+  return IUP_DEFAULT;
+}
 
-  if (ih->data->position == IEXPANDER_TOP && ih->data->extra_buttons != 0)
+static int iExpanderExtraButtonButton_CB(Ihandle* extra_button, int button, int pressed, int x, int y, char* status)
+{
+  if (button == IUP_BUTTON1)
   {
-    if (y >= IEXPAND_SPACING + IEXPAND_BACK_MARGIN && y <= bar->currentheight - IEXPAND_SPACING - IEXPAND_BACK_MARGIN)
+    /* expander -> bar -> box -> (expand_button, label, extra_box(extra_button)) */
+    Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(IupGetParent(extra_button))));
+
+    IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
+    if (cb)
     {
-      if ((x >= bar->currentwidth - (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-          (x < bar->currentwidth - IEXPAND_SPACING - IEXPAND_BACK_MARGIN))
-        return iExpanderCallExtraButtonCb(ih, 1, pressed);
-
-      if (ih->data->extra_buttons > 1)
-      {
-        if ((x >= bar->currentwidth - 2 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-            (x < bar->currentwidth - (IEXPAND_BUTTON_SIZE + 2 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
-          return iExpanderCallExtraButtonCb(ih, 2, pressed);
-      }
-
-      if (ih->data->extra_buttons == 3)
-      {
-        if ((x >= bar->currentwidth - 3 * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING) - IEXPAND_BACK_MARGIN) &&
-            (x < bar->currentwidth - (2 * IEXPAND_BUTTON_SIZE + 3 * IEXPAND_SPACING) - IEXPAND_BACK_MARGIN))
-          return iExpanderCallExtraButtonCb(ih, 3, pressed);
-      }
+      button = IupGetInt(extra_button, "EXTRABUTTON_NUMBER");
+      cb(ih, button, pressed);
     }
-  }
 
-  if (pressed)
-  {
-    /* Update the state: OPEN ==> collapsed, CLOSE ==> expanded */
-     iExpanderOpenCloseChild(ih, 1, 1, ih->data->state==IEXPANDER_OPEN? IEXPANDER_CLOSE: IEXPANDER_OPEN);
+    iExpanderUpdateExtraButtonImage(ih, extra_button, pressed);
   }
 
   (void)x;
@@ -721,6 +716,9 @@ static char* iExpanderGetClientSizeAttrib(Ihandle* ih)
 
 static int iExpanderSetPositionAttrib(Ihandle* ih, const char* value)
 {
+  if (ih->handle)
+    return 0; /* can be changed only before map */
+
   if (iupStrEqualNoCase(value, "LEFT"))
     ih->data->position = IEXPANDER_LEFT;
   else if (iupStrEqualNoCase(value, "RIGHT"))
@@ -730,15 +728,29 @@ static int iExpanderSetPositionAttrib(Ihandle* ih, const char* value)
   else  /* Default = TOP */
     ih->data->position = IEXPANDER_TOP;
 
+  iExpanderUpdateBox(ih);
+
   return 0;  /* do not store value in hash table */
+}
+
+static char* iExpanderGetPositionAttrib(Ihandle* ih)
+{
+  if (ih->data->position == IEXPANDER_LEFT)
+    return "LEFT";
+  else if (ih->data->position == IEXPANDER_RIGHT)
+    return "RIGHT";
+  else if (ih->data->position == IEXPANDER_BOTTOM)
+    return "BOTTOM";
+  else  /* Default = TOP */
+    return "TOP";
 }
 
 static int iExpanderSetBarSizeAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
-    ih->data->barSize = -1;
+    ih->data->bar_size = -1;
   else
-    iupStrToInt(value, &ih->data->barSize);  /* must manually update layout */
+    iupStrToInt(value, &ih->data->bar_size);  /* must manually update layout */
   return 0; /* do not store value in hash table */
 }
 
@@ -746,13 +758,6 @@ static char* iExpanderGetBarSizeAttrib(Ihandle* ih)
 {
   int bar_size = iExpanderGetBarSize(ih);
   return iupStrReturnInt(bar_size);
-}
-
-static int iExpanderPostRedrawSetAttrib(Ihandle* ih, const char* value)
-{
-  (void)value;
-  IupUpdate(ih->firstchild);
-  return 1;  /* store value in hash table */
 }
 
 static int iExpanderSetStateAttrib(Ihandle* ih, const char* value)
@@ -777,6 +782,152 @@ static char* iExpanderGetStateAttrib(Ihandle* ih)
     return "OPEN";
   else
     return "CLOSE";
+}
+
+static int iExpanderSetForeColorAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle* bar = ih->firstchild;
+  IupSetStrAttribute(bar, "FGCOLOR", value);
+  return 1;
+}
+
+static int iExpanderSetBackColorAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle* bar = ih->firstchild;
+  IupSetStrAttribute(bar, "BGCOLOR", value);
+  return 1;
+}
+
+static int iExpanderSetImageAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->state == IEXPANDER_CLOSE)
+  {
+    Ihandle* box = ih->firstchild->firstchild;
+    Ihandle* expand_button = box->firstchild;
+    IupSetStrAttribute(expand_button, "IMAGE", value);
+  }
+  return 1;
+}
+
+static int iExpanderSetImageOpenAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->state != IEXPANDER_CLOSE)
+  {
+    Ihandle* box = ih->firstchild->firstchild;
+    Ihandle* expand_button = box->firstchild;
+    IupSetStrAttribute(expand_button, "IMAGE", value);
+  }
+  return 1;
+}
+
+static int iExpanderSetImageExtra(Ihandle* ih, const char* value, int button)
+{
+  if (ih->data->extra_buttons > button - 1)
+  {
+    Ihandle* box = ih->firstchild->firstchild;
+    Ihandle* extra_box = box->firstchild->brother->brother;  /* (expand_button, label, extra_box) */
+
+    if (extra_box)
+    {
+      Ihandle* extra_button = IupGetChild(extra_box, ih->data->extra_buttons - button);
+      iupAttribSetStrId(ih, "IMAGEEXTRA", button, value);
+      iExpanderUpdateExtraButtonImage(ih, extra_button, 0);
+    }
+  }
+
+  return 1;
+}
+
+static int iExpanderSetImageExtraPress(Ihandle* ih, const char* value, int button)
+{
+  if (ih->data->extra_buttons > button - 1)
+  {
+    Ihandle* box = ih->firstchild->firstchild;
+    Ihandle* extra_box = box->firstchild->brother->brother;  /* (expand_button, label, extra_box) */
+
+    if (extra_box)
+    {
+      Ihandle* extra_button = IupGetChild(extra_box, ih->data->extra_buttons - button);
+      iupAttribSetStrId(ih, "IMAGEEXTRAPRESS", button, value);
+      iExpanderUpdateExtraButtonImage(ih, extra_button, 0);
+    }
+  }
+
+  return 1;
+}
+
+static int iExpanderSetImageExtraHighlight(Ihandle* ih, const char* value, int button)
+{
+  if (ih->data->extra_buttons > button - 1)
+  {
+    Ihandle* box = ih->firstchild->firstchild;
+    Ihandle* extra_box = box->firstchild->brother->brother;  /* (expand_button, label, extra_box) */
+
+    if (extra_box)
+    {
+      Ihandle* extra_button = IupGetChild(extra_box, ih->data->extra_buttons - button);
+      iupAttribSetStrId(ih, "IMAGEEXTRAHIGHLIGHT", button, value);
+      iExpanderUpdateExtraButtonImage(ih, extra_button, 0);
+    }
+  }
+
+  return 1;
+}
+
+static int iExpanderSetImageExtra1Attrib(Ihandle* ih, const char* value)
+{
+  return iExpanderSetImageExtra(ih, value, 1);
+}
+
+static int iExpanderSetImageExtraPress1Attrib(Ihandle* ih, const char* value)
+{
+  return iExpanderSetImageExtraPress(ih, value, 1);
+}
+
+static int iExpanderSetImageExtraHighlight1Attrib(Ihandle* ih, const char* value)
+{
+  return iExpanderSetImageExtraHighlight(ih, value, 1);
+}
+
+static int iExpanderSetImageExtra2Attrib(Ihandle* ih, const char* value)
+{
+  return iExpanderSetImageExtra(ih, value, 2);
+}
+
+static int iExpanderSetImageExtraPress2Attrib(Ihandle* ih, const char* value)
+{
+  return iExpanderSetImageExtraPress(ih, value, 2);
+}
+
+static int iExpanderSetImageExtraHighlight2Attrib(Ihandle* ih, const char* value)
+{
+  return iExpanderSetImageExtraHighlight(ih, value, 2);
+}
+
+static int iExpanderSetImageExtra3Attrib(Ihandle* ih, const char* value)
+{
+  return iExpanderSetImageExtra(ih, value, 3);
+}
+
+static int iExpanderSetImageExtraPress3Attrib(Ihandle* ih, const char* value)
+{
+  return iExpanderSetImageExtraPress(ih, value, 3);
+}
+
+static int iExpanderSetImageExtraHighlight3Attrib(Ihandle* ih, const char* value)
+{
+  return iExpanderSetImageExtraHighlight(ih, value, 3);
+}
+
+static int iExpanderSetTitleAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->position == IEXPANDER_TOP)
+  {
+    iupAttribSetStr(ih, "TITLE", value);
+    iExpanderUpdateTitle(ih);
+  }
+
+  return 1;
 }
 
 static int iExpanderSetAutoShowAttrib(Ihandle* ih, const char* value)
@@ -807,6 +958,9 @@ static char* iExpanderGetAutoShowAttrib(Ihandle* ih)
 
 static int iExpanderSetExtraButtonsAttrib(Ihandle* ih, const char* value)
 {
+  if (ih->handle)
+    return 0; /* can be changed only before map */
+
   if (!value)
     ih->data->extra_buttons = 0;
   else
@@ -816,10 +970,10 @@ static int iExpanderSetExtraButtonsAttrib(Ihandle* ih, const char* value)
       ih->data->extra_buttons = 0;
     else if (ih->data->extra_buttons > 3)
       ih->data->extra_buttons = 3;
-
-    if (ih->data->extra_buttons != 0)
-      IupSetCallback(ih->firstchild, "MOTION_CB", (Icallback)iExpanderMotion_CB);
   }
+
+  iExpanderUpdateExtraButtons(ih);
+
   return 0; /* do not store value in hash table */
 }
 
@@ -838,47 +992,23 @@ static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
 {
   int child_expand = 0,
       natural_w, natural_h;
-  Ihandle *child = ih->firstchild->brother;
+  Ihandle* bar = ih->firstchild;
+  Ihandle* child = bar->brother;
+  Ihandle* box = bar->firstchild;
   int bar_size = iExpanderGetBarSize(ih);
+
+  iupBaseComputeNaturalSize(box);
 
   /* bar */
   if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
   {
     natural_w = bar_size;
-    natural_h = IEXPAND_HANDLE_SIZE;
+    natural_h = box->naturalheight;
   }
   else
   {
-    natural_w = IEXPAND_HANDLE_SIZE;
+    natural_w = box->naturalwidth;
     natural_h = bar_size;
-
-    if (ih->data->position == IEXPANDER_TOP)
-    {
-      /* if IMAGE is defined assume that will cover all the canvas area */
-      char* value = iupAttribGetStr(ih, "IMAGE");
-      if (value)
-      {
-        int image_w = 0;
-        iupImageGetInfo(value, &image_w, NULL, NULL);
-        natural_w = iupMAX(natural_w, image_w);
-      }
-
-      /* if TITLE and IMAGE are both defined then 
-         IMAGE is only the handle */
-
-      value = iupAttribGetStr(ih, "TITLE");
-      if (value)
-      {
-        int title_size = 0;
-        iupdrvFontGetMultiLineStringSize(ih, value, &title_size, NULL);
-        natural_w += title_size + IEXPAND_SPACING;
-      }
-
-      if (ih->data->extra_buttons != 0)
-        natural_w += ih->data->extra_buttons * (IEXPAND_BUTTON_SIZE + IEXPAND_SPACING);
-
-      natural_w += 2 * IEXPAND_BACK_MARGIN;
-    }
   }
 
   if (child)
@@ -917,16 +1047,17 @@ static void iExpanderComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
 
 static void iExpanderSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  Ihandle *child = ih->firstchild->brother;
+  Ihandle* bar = ih->firstchild;
+  Ihandle* child = bar->brother;
+  Ihandle* box = bar->firstchild;
   int width = ih->currentwidth;
   int height = ih->currentheight;
   int bar_size = iExpanderGetBarSize(ih);
 
   if (ih->data->position == IEXPANDER_LEFT || ih->data->position == IEXPANDER_RIGHT)
   {
-    /* bar */
-    ih->firstchild->currentwidth  = bar_size;
-    ih->firstchild->currentheight = ih->currentheight;
+    bar->currentwidth = bar_size;
+    bar->currentheight = ih->currentheight;
 
     if (ih->currentwidth < bar_size)
       ih->currentwidth = bar_size;
@@ -935,15 +1066,16 @@ static void iExpanderSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   }
   else /* IEXPANDER_TOP OR IEXPANDER_BOTTOM */
   {
-    /* bar */
-    ih->firstchild->currentwidth  = ih->currentwidth;
-    ih->firstchild->currentheight = bar_size;
+    bar->currentwidth = ih->currentwidth;
+    bar->currentheight = bar_size;
 
     if (ih->currentheight < bar_size)
       ih->currentheight = bar_size;
 
     height = ih->currentheight - bar_size;
   }
+
+  iupBaseSetCurrentSize(box, bar->currentwidth, bar->currentheight, shrink);
 
   if (child)
   {
@@ -956,22 +1088,23 @@ static void iExpanderSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
 static void iExpanderSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  Ihandle *child = ih->firstchild->brother;
+  Ihandle* bar = ih->firstchild;
+  Ihandle* child = bar->brother;
   int bar_size = iExpanderGetBarSize(ih);
 
   /* always position bar */
   if (ih->data->position == IEXPANDER_LEFT)
   {
-    iupBaseSetPosition(ih->firstchild, x, y);
+    iupBaseSetPosition(bar, x, y);
     x += bar_size;
   }
   else if (ih->data->position == IEXPANDER_RIGHT)
-    iupBaseSetPosition(ih->firstchild, x + ih->currentwidth - bar_size, y);
+    iupBaseSetPosition(bar, x + ih->currentwidth - bar_size, y);
   else if (ih->data->position == IEXPANDER_BOTTOM)
-    iupBaseSetPosition(ih->firstchild, x, y + ih->currentheight - bar_size);
+    iupBaseSetPosition(bar, x, y + ih->currentheight - bar_size);
   else /* IEXPANDER_TOP */
   {
-    iupBaseSetPosition(ih->firstchild, x, y);
+    iupBaseSetPosition(bar, x, y);
     y += bar_size;
   }
 
@@ -1005,21 +1138,16 @@ static int iExpanderCreateMethod(Ihandle* ih, void** params)
 
   ih->data->position = IEXPANDER_TOP;
   ih->data->state = IEXPANDER_OPEN;
-  ih->data->barSize = -1;
+  ih->data->bar_size = -1;
 
-  bar = IupCanvas(NULL);
+  bar = IupBackgroundBox(NULL);
   iupChildTreeAppend(ih, bar);  /* bar will always be the firstchild */
   bar->flags |= IUP_INTERNAL;
 
+  iExpanderUpdateBox(ih);
+
   IupSetAttribute(bar, "CANFOCUS", "NO");
   IupSetAttribute(bar, "BORDER", "NO");
-  IupSetAttribute(bar, "EXPAND", "NO");
-
-  /* Setting callbacks */
-  IupSetCallback(bar, "BUTTON_CB", (Icallback) iExpanderButton_CB);
-  IupSetCallback(bar, "ACTION",    (Icallback) iExpanderAction_CB);
-  IupSetCallback(bar, "ENTERWINDOW_CB", (Icallback)iExpanderEnterWindow_cb);
-  IupSetCallback(bar, "LEAVEWINDOW_CB", (Icallback)iExpanderLeaveWindow_cb);
 
   if (params)
   {
@@ -1072,29 +1200,32 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* IupExpander only */
-  iupClassRegisterAttribute(ic, "BARPOSITION", NULL, iExpanderSetPositionAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BARPOSITION", iExpanderGetPositionAttrib, iExpanderSetPositionAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BARSIZE", iExpanderGetBarSizeAttrib, iExpanderSetBarSizeAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATE", iExpanderGetStateAttrib, iExpanderSetStateAttrib, IUPAF_SAMEASSYSTEM, "OPEN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, iExpanderPostRedrawSetAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TITLE", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, iExpanderSetForeColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, iExpanderSetBackColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, iExpanderSetTitleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AUTOSHOW", iExpanderGetAutoShowAttrib, iExpanderSetAutoShowAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRABUTTONS", iExpanderGetExtraButtonsAttrib, iExpanderSetExtraButtonsAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEOPEN", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEOPENHIGHLIGHT", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, iExpanderSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEOPEN", NULL, iExpanderSetImageOpenAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEOPENHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "IMAGEEXTRA1", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS1", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT1", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRA2", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS2", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT2", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRA3", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS3", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT3", NULL, iExpanderPostRedrawSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRA1", NULL, iExpanderSetImageExtra1Attrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS1", NULL, iExpanderSetImageExtraPress1Attrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT1", NULL, iExpanderSetImageExtraHighlight1Attrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRA2", NULL, iExpanderSetImageExtra2Attrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS2", NULL, iExpanderSetImageExtraPress2Attrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT2", NULL, iExpanderSetImageExtraHighlight2Attrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRA3", NULL, iExpanderSetImageExtra3Attrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS3", NULL, iExpanderSetImageExtraPress3Attrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT3", NULL, iExpanderSetImageExtraHighlight3Attrib, NULL, NULL, IUPAF_NO_INHERIT);
+
+  if (!IupGetHandle("IupArrowUp") || !IupGetHandle("IupArrowDown"))
+    iExpanderLoadImages();
 
   return ic;
 }

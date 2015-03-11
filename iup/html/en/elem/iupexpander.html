@@ -33,7 +33,8 @@
 <p>Creates a void container that can interactively show or hide its child.</p>
 
   <p>
-  It does not have a native representation, but it contains also a <strong>IupCanvas</strong> to implement 
+  It does not have a native representation, but it contains also several 
+  elements to implement 
 	the bar handler.</p>
 
 <h3><a name="Creation">Creation</a></h3>
@@ -174,9 +175,15 @@ not the same as BUTTON_CB)<br><strong>pressed</strong>:
 </blockquote>
     
 <h3><a name="Notes">Notes</a></h3>
-<p>The <strong>IupCanvas</strong> bar handler is always the first child of the 
+<p>The bar handler elements are inside a <strong>IupBackgroundBox</strong> that is always the first child of the 
 expander. It can be obtained using <strong>IupGetChild</strong> or <strong>
-IupGetNextChild</strong>.</p>
+IupGetNextChild</strong>. Inside that box there is <strong>IupHbox</strong> or a
+<strong>IupVbox</strong>, depending on BARPOSITION, that contains the 
+interactive elements. All buttons are in fact <strong>IupLabel</strong> to avoid 
+the <strong>IupButton</strong> margins and highlight effects. When 
+BARPOSITION=TOP, the expand/collapse button is followed by the title label, then 
+by a <strong>IupHbox</strong> containing the 3 or less extra buttons. (since 
+3.14)</p>
 <p>The container can be created with no elements and be dynamic filled using
   <a href="../func/iupappend.html">IupAppend</a> or
 <a href="../func/iupinsert.html">IupInsert</a>.</p>

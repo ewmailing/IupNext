@@ -497,6 +497,7 @@ void ExpanderTest(void)
 //  IupSetAttributeHandle(_frm_3, "IMAGEOPEN", image_open);
 //  IupSetAttribute(_frm_3, "IMAGE", "img1");
   IupSetCallback(_frm_3, "ACTION", (Icallback)expand_cb);
+  IupSetAttribute(_frm_3, "EXTRABUTTONS", "3");
   IupSetCallback(_frm_3, "EXTRABUTTON_CB", (Icallback)extrabutton_cb);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRA1", image_close);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRAPRESS1", image_open);
@@ -507,7 +508,6 @@ void ExpanderTest(void)
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRA3", image_close);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRAPRESS3", image_open);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRAHIGHLIGHT3", image_high);
-  IupSetAttribute(_frm_3, "EXTRABUTTONS", "3");
 
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");

@@ -69,6 +69,10 @@ version 3.x.</p>
 	mapping the dialog after all other processing. This affects the MAP_CB 
 	callback of the children, that it will be called before the layout is 
 	updated, so the children current size will still be 0x0 during MAP_CB.</li>
+	<li><strong><span class="hist_changed">Changed:</span></strong> 
+	<strong>IupExpander</strong> internally remodeled to use other IUP elements 
+	to compose its handler area. The controls can be acessed by IupGetChild* and 
+	then reconfigured if necessary.</li>
 
 	<li><span class="hist_fixed">Fixed:</span> visual feedback when 
 	interactively moving
