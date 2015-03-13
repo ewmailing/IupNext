@@ -487,7 +487,10 @@ static void iExpanderUpdateBox(Ihandle* ih)
 
   if (ih->data->position == IEXPANDER_TOP)
   {
-    box = IupHbox(expand_button, IupLabel(NULL), NULL);
+    Ihandle* title_label = IupLabel(NULL);
+    IupSetAttribute(title_label, "EXPAND", "HORIZONTAL");
+
+    box = IupHbox(expand_button, title_label, NULL);
   }
   else if (ih->data->position == IEXPANDER_BOTTOM)
   {
@@ -1075,6 +1078,9 @@ static void iExpanderSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     height = ih->currentheight - bar_size;
   }
 
+  /* force the box size to be the same size of the bar */
+  box->naturalwidth = bar->currentwidth;
+  box->naturalheight = bar->currentheight;
   iupBaseSetCurrentSize(box, bar->currentwidth, bar->currentheight, shrink);
 
   if (child)

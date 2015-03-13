@@ -482,7 +482,7 @@ void ExpanderTest(void)
   _frm_3 = IupExpander(
     IupVbox(
       set_callbacks(IupSetAttributes(IupToggle("Toggle Text", NULL), "VALUE=ON, TIP=\"Toggle TIP\"")),
-      set_callbacks(IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1,IMPRESS=img2")),
+      set_callbacks(IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1,IMPRESS=img2,XXEXPAND=HORIZONTAL")),
       set_callbacks(IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1")),
       IupSetAttributes(IupFrame(IupRadio(IupVbox(
         set_callbacks(IupToggle("Toggle Text", NULL)), 
@@ -492,7 +492,7 @@ void ExpanderTest(void)
   IupSetAttribute(_frm_3,"TITLE","IupExpander");
   IupSetAttribute(_frm_3,"FORECOLOR","255 255 255");
   IupSetAttribute(_frm_3,"BACKCOLOR","50 100 150");
-//  IupSetAttribute(_frm_3, "BARSIZE", "50");
+  IupSetAttribute(_frm_3, "BARSIZE", "50");
 //  IupSetAttributeHandle(_frm_3, "IMAGE", image_close);
 //  IupSetAttributeHandle(_frm_3, "IMAGEOPEN", image_open);
 //  IupSetAttribute(_frm_3, "IMAGE", "img1");
