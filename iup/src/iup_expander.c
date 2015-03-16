@@ -232,12 +232,63 @@ struct _IcontrolData
   int bar_size;
   int extra_buttons;
   int auto_show;
+  int title_expand;
 
   /* aux */
-  int highlight;
   Ihandle* timer;
 };
 
+static void iExpanderUpdateTitleState(Ihandle* ih)
+{
+  /* expander -> bar -> box -> (expand_button, title_label, ...) */
+  Ihandle* box = ih->firstchild->firstchild;
+  Ihandle* title_label = box->firstchild->brother;
+
+  /* called only when TITLEEXPAND=Yes */
+
+  char* titleimage = iupAttribGet(ih, "TITLEIMAGE");
+  if (titleimage)
+  {
+    if (ih->data->state != IEXPANDER_CLOSE)
+    {
+      char* imopen = iupAttribGetStr(ih, "TITLEIMAGEOPEN");
+      if (imopen) titleimage = imopen;
+
+      if (iupAttribGet(title_label, "HIGHLIGHT"))
+      {
+        char* imhighlight = iupAttribGetStr(ih, "TITLEIMAGEOPENHIGHLIGHT");
+        if (imhighlight) titleimage = imhighlight;
+      }
+    }
+    else
+    {
+      if (iupAttribGet(title_label, "HIGHLIGHT"))
+      {
+        char* imhighlight = iupAttribGetStr(ih, "TITLEIMAGEHIGHLIGHT");
+        if (imhighlight) titleimage = imhighlight;
+      }
+    }
+
+    IupSetStrAttribute(title_label, "IMAGE", titleimage);
+  }
+  else
+  {
+    char* color = iupAttribGetStr(ih, "FORECOLOR");
+
+    if (iupAttribGet(title_label, "HIGHLIGHT"))
+    {
+      char* highcolor = iupAttribGet(ih, "HIGHCOLOR");
+      if (highcolor) color = highcolor;
+    }
+    else if (ih->data->state != IEXPANDER_CLOSE)
+    {
+      char* opencolor = iupAttribGet(ih, "OPENCOLOR");
+      if (opencolor) color = opencolor;
+    }
+
+    IupSetStrAttribute(title_label, "FGCOLOR", color);
+  }
+}
 
 static void iExpanderUpdateStateImage(Ihandle* ih)
 {
@@ -253,7 +304,7 @@ static void iExpanderUpdateStateImage(Ihandle* ih)
       char* imopen = iupAttribGetStr(ih, "IMAGEOPEN");
       if (imopen) image = imopen;
 
-      if (ih->data->highlight)
+      if (iupAttribGet(expand_button, "HIGHLIGHT"))
       {
         char* imhighlight = iupAttribGetStr(ih, "IMAGEOPENHIGHLIGHT");
         if (imhighlight) image = imhighlight;
@@ -261,7 +312,7 @@ static void iExpanderUpdateStateImage(Ihandle* ih)
     }
     else
     {
-      if (ih->data->highlight)
+      if (iupAttribGet(expand_button, "HIGHLIGHT"))
       {
         char* imhighlight = iupAttribGetStr(ih, "IMAGEHIGHLIGHT");
         if (imhighlight) image = imhighlight;
@@ -272,8 +323,6 @@ static void iExpanderUpdateStateImage(Ihandle* ih)
   }
   else
   {
-    char* title;
-
     /* the arrow points in the direction of the action */
 
     switch (ih->data->position)
@@ -297,8 +346,7 @@ static void iExpanderUpdateStateImage(Ihandle* ih)
         image = "IupArrowDown";
       break;
     default: /* IEXPANDER_TOP */
-      title = iupAttribGetStr(ih, "TITLE");
-      if (title)
+      if (iupAttribGet(ih, "TITLE") || iupAttribGet(ih, "TITLEIMAGE"))
       {
         if (ih->data->state == IEXPANDER_CLOSE)
           image = "IupArrowRight";
@@ -315,7 +363,7 @@ static void iExpanderUpdateStateImage(Ihandle* ih)
       break;
     }
 
-    if (ih->data->highlight)
+    if (iupAttribGet(expand_button, "HIGHLIGHT"))
       IupSetfAttribute(expand_button, "IMAGE", "%sHighlight", image);
     else
       IupSetAttribute(expand_button, "IMAGE", image);
@@ -338,7 +386,10 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int st
   }
 
   ih->data->state = state;
+
   iExpanderUpdateStateImage(ih);
+  if (ih->data->position == IEXPANDER_TOP)
+    iExpanderUpdateTitleState(ih);
 
   if (child)
   {
@@ -384,13 +435,15 @@ static void iExpanderUpdateTitle(Ihandle* ih)
   Ihandle* box = ih->firstchild->firstchild;
   Ihandle* expand_button = box->firstchild;
   Ihandle* label = expand_button->brother;
-  char* title = iupAttribGetStr(ih, "TITLE");
-  if (title)
+  char* title = iupAttribGet(ih, "TITLE");
+  char* titleimage = iupAttribGet(ih, "TITLEIMAGE");
+  if (title || titleimage)
   {
     IupSetAttribute(box, "MARGIN", "0x1");
     IupSetAttribute(box, "GAP", "1");
     IupSetStrAttribute(label, "VISIBLE", "Yes");
     IupSetStrAttribute(label, "TITLE", title);
+    IupSetStrAttribute(label, "IMAGE", titleimage);
     IupSetAttribute(expand_button, "EXPAND", "NO");
   }
   else
@@ -398,12 +451,15 @@ static void iExpanderUpdateTitle(Ihandle* ih)
     IupSetAttribute(box, "MARGIN", "2x2");
     IupSetAttribute(box, "GAP", "0");
     IupSetStrAttribute(label, "VISIBLE", "No");
-    IupSetStrAttribute(label, "TITLE", NULL);
+    IupSetAttribute(label, "TITLE", NULL);
+    IupSetAttribute(label, "IMAGE", NULL);
     IupSetAttribute(expand_button, "EXPAND", "HORIZONTAL");
   }
 
-  if (ih->handle)
-    iExpanderUpdateStateImage(ih);
+  iExpanderUpdateStateImage(ih);
+
+  if (ih->data->position == IEXPANDER_TOP)
+    iExpanderUpdateTitleState(ih);
 }
 
 static void iExpanderUpdateExtraButtonImage(Ihandle* ih, Ihandle* extra_button, int pressed)
@@ -418,7 +474,7 @@ static void iExpanderUpdateExtraButtonImage(Ihandle* ih, Ihandle* extra_button, 
     char* impress = iupAttribGetId(ih, "IMAGEEXTRAPRESS", button);
     if (impress) image = impress;
   }
-  else if (ih->data->highlight)
+  else if (iupAttribGet(extra_button, "HIGHLIGHT"))
   {
     char* imhighlight = iupAttribGetId(ih, "IMAGEEXTRAHIGHLIGHT", button);
     if (imhighlight) image = imhighlight;
@@ -467,6 +523,10 @@ static void iExpanderUpdateExtraButtons(Ihandle* ih)
   }
 }
 
+static int iExpanderTitleButton_CB(Ihandle* title_label, int button, int pressed, int x, int y, char* status);
+static int iExpanderTitleEnterWindow_cb(Ihandle* title_label);
+static int iExpanderTitleLeaveWindow_cb(Ihandle* title_label);
+
 static int iExpanderExpandButtonButton_CB(Ihandle* expand_button, int button, int pressed, int x, int y, char* status);
 static int iExpanderExpandButtonEnterWindow_cb(Ihandle* expand_button);
 static int iExpanderExpandButtonLeaveWindow_cb(Ihandle* expand_button);
@@ -489,6 +549,9 @@ static void iExpanderUpdateBox(Ihandle* ih)
   {
     Ihandle* title_label = IupLabel(NULL);
     IupSetAttribute(title_label, "EXPAND", "HORIZONTAL");
+    IupSetCallback(title_label, "BUTTON_CB", (Icallback)iExpanderTitleButton_CB);
+    IupSetCallback(title_label, "ENTERWINDOW_CB", (Icallback)iExpanderTitleEnterWindow_cb);
+    IupSetCallback(title_label, "LEAVEWINDOW_CB", (Icallback)iExpanderTitleLeaveWindow_cb);
 
     box = IupHbox(expand_button, title_label, NULL);
   }
@@ -586,9 +649,9 @@ static int iExpanderExpandButtonLeaveWindow_cb(Ihandle* expand_button)
   /* expander -> bar -> box -> (expand_button, ...) */
   Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(expand_button)));
 
-  if (ih->data->highlight)
+  if (iupAttribGet(expand_button, "HIGHLIGHT"))
   {
-    ih->data->highlight = 0;
+    iupAttribSet(expand_button, "HIGHLIGHT", NULL);
 
     iExpanderUpdateStateImage(ih);
 
@@ -606,11 +669,11 @@ static int iExpanderExpandButtonEnterWindow_cb(Ihandle* expand_button)
   /* expander -> bar -> box -> (expand_button, ...) */
   Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(expand_button)));
 
-  if (!ih->data->highlight)
+  if (!iupAttribGet(expand_button, "HIGHLIGHT"))
   {
     Ihandle* child = ih->firstchild->brother;
 
-    ih->data->highlight = 1;
+    iupAttribSet(expand_button, "HIGHLIGHT", "1");
 
     iExpanderUpdateStateImage(ih);
 
@@ -644,14 +707,59 @@ static int iExpanderExpandButtonButton_CB(Ihandle* expand_button, int button, in
   return IUP_DEFAULT;
 }
 
+static int iExpanderTitleLeaveWindow_cb(Ihandle* title_label)
+{
+  /* expander -> bar -> box -> (expand_button, title_label, ...) */
+  Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(title_label)));
+
+  if (ih->data->title_expand && iupAttribGet(title_label, "HIGHLIGHT"))
+  {
+    iupAttribSet(title_label, "HIGHLIGHT", NULL);
+    iExpanderUpdateTitleState(ih);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iExpanderTitleEnterWindow_cb(Ihandle* title_label)
+{
+  /* expander -> bar -> box -> (expand_button, title_label, ...) */
+  Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(title_label)));
+
+  if (ih->data->title_expand && !iupAttribGet(title_label, "HIGHLIGHT"))
+  {
+    iupAttribSet(title_label, "HIGHLIGHT", "1");
+    iExpanderUpdateTitleState(ih);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iExpanderTitleButton_CB(Ihandle* title_label, int button, int pressed, int x, int y, char* status)
+{
+  if (button == IUP_BUTTON1 && pressed)
+  {
+    /* expander -> bar -> box -> (expand_button, title_label, ...) */
+    Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(title_label)));
+
+    if (ih->data->title_expand)
+    {
+      iExpanderOpenCloseChild(ih, 1, 1, ih->data->state == IEXPANDER_OPEN ? IEXPANDER_CLOSE : IEXPANDER_OPEN);
+    }
+  }
+
+  (void)x;
+  (void)y;
+  (void)status;
+  return IUP_DEFAULT;
+}
+
 static int iExpanderExtraButtonLeaveWindow_cb(Ihandle* extra_button)
 {
   /* expander -> bar -> box -> (expand_button, label, extra_box(extra_button)) */
   Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(IupGetParent(extra_button))));
 
-  if (ih->data->highlight)
+  if (iupAttribGet(extra_button, "HIGHLIGHT"))
   {
-    ih->data->highlight = 0;
+    iupAttribSet(extra_button, "HIGHLIGHT", NULL);
 
     iExpanderUpdateExtraButtonImage(ih, extra_button, 0);
   }
@@ -663,9 +771,9 @@ static int iExpanderExtraButtonEnterWindow_cb(Ihandle* extra_button)
   /* expander -> bar -> box -> (expand_button, label, extra_box(extra_button)) */
   Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(IupGetParent(extra_button))));
 
-  if (!ih->data->highlight)
+  if (!iupAttribGet(extra_button, "HIGHLIGHT"))
   {
-    ih->data->highlight = 1;
+    iupAttribSet(extra_button, "HIGHLIGHT", "1");
 
     iExpanderUpdateExtraButtonImage(ih, extra_button, 0);
   }
@@ -789,8 +897,42 @@ static char* iExpanderGetStateAttrib(Ihandle* ih)
 
 static int iExpanderSetForeColorAttrib(Ihandle* ih, const char* value)
 {
-  Ihandle* bar = ih->firstchild;
-  IupSetStrAttribute(bar, "FGCOLOR", value);
+  if (ih->data->position == IEXPANDER_TOP)
+  {
+    if (ih->data->title_expand)
+    {
+      iupAttribSetStr(ih, "FGCOLOR", value);
+      iExpanderUpdateTitleState(ih);
+    }
+    else 
+    {
+      /* expander -> bar -> box -> (expand_button, title_label, ...) */
+      Ihandle* box = ih->firstchild->firstchild;
+      Ihandle* title_label = box->firstchild->brother;
+      IupSetStrAttribute(title_label, "FGCOLOR", value);
+    }
+  }
+
+  return 1;
+}
+
+static int iExpanderSetOpenColorAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->position == IEXPANDER_TOP)
+  {
+    iupAttribSetStr(ih, "OPENCOLOR", value);
+    iExpanderUpdateTitleState(ih);
+  }
+  return 1;
+}
+
+static int iExpanderSetHighColorAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->position == IEXPANDER_TOP)
+  {
+    iupAttribSetStr(ih, "HIGHCOLOR", value);
+    iExpanderUpdateTitleState(ih);
+  }
   return 1;
 }
 
@@ -927,6 +1069,30 @@ static int iExpanderSetTitleAttrib(Ihandle* ih, const char* value)
   if (ih->data->position == IEXPANDER_TOP)
   {
     iupAttribSetStr(ih, "TITLE", value);
+    iupAttribSet(ih, "TITLEIMAGE", NULL);
+    iExpanderUpdateTitle(ih);
+  }
+
+  return 1;
+}
+
+static int iExpanderSetTitleImageAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->position == IEXPANDER_TOP)
+  {
+    iupAttribSetStr(ih, "TITLEIMAGE", value);
+    iupAttribSet(ih, "TITLE", NULL);
+    iExpanderUpdateTitle(ih);
+  }
+
+  return 1;
+}
+
+static int iExpanderSetTitleImageOpenAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->position == IEXPANDER_TOP)
+  {
+    iupAttribSetStr(ih, "TITLEIMAGEOPEN", value);
     iExpanderUpdateTitle(ih);
   }
 
@@ -957,6 +1123,17 @@ static int iExpanderSetAutoShowAttrib(Ihandle* ih, const char* value)
 static char* iExpanderGetAutoShowAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean(ih->data->auto_show);
+}
+
+static int iExpanderSetTitleExpandAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->title_expand = iupStrBoolean(value);
+  return 0; /* do not store value in hash table */
+}
+
+static char* iExpanderGetTitleExpandAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->title_expand);
 }
 
 static int iExpanderSetExtraButtonsAttrib(Ihandle* ih, const char* value)
@@ -1210,9 +1387,16 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "BARSIZE", iExpanderGetBarSizeAttrib, iExpanderSetBarSizeAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATE", iExpanderGetStateAttrib, iExpanderSetStateAttrib, IUPAF_SAMEASSYSTEM, "OPEN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORECOLOR", NULL, iExpanderSetForeColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, iExpanderSetHighColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OPENCOLOR", NULL, iExpanderSetOpenColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, iExpanderSetBackColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLE", NULL, iExpanderSetTitleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AUTOSHOW", iExpanderGetAutoShowAttrib, iExpanderSetAutoShowAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEIMAGE", NULL, iExpanderSetTitleImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEIMAGEOPEN", NULL, iExpanderSetTitleImageOpenAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEIMAGEOPENHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLEEXPAND", iExpanderGetTitleExpandAttrib, iExpanderSetTitleExpandAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AUTOSHOW", iExpanderGetAutoShowAttrib, iExpanderSetAutoShowAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRABUTTONS", iExpanderGetExtraButtonsAttrib, iExpanderSetExtraButtonsAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, iExpanderSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);

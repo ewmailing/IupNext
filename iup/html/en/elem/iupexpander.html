@@ -67,12 +67,14 @@ position.
 Possible values are &quot;TOP&quot;, 
 &quot;BOTTOM&quot;, &quot;LEFT&quot; or &quot;RIGHT&quot;. Default: &quot;TOP&quot;.</p>
 <p><strong>BARSIZE</strong> (<font SIZE="3">non inheritable</font>): controls 
-the size of the bar handler. Default: the height of a text line plus 5 pixels.</p>
+the size of the bar handler. Default: the height or width that fits all its 
+internal elements according to BARPOSITION.</p>
 
 
 <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable</font>): 
 the default value is &quot;YES&quot;.</p>
-<p><strong>EXTRABUTTONS</strong> (<font SIZE="3">non inheritable</font>): sets 
+<p><strong>EXTRABUTTONS</strong> (<font SIZE="3">non inheritable</font>) 
+(creation only): sets 
 the number of extra image buttons at right when BARPOSITION=TOP. The maximum 
 number of buttons is 3. See the EXTRABUTTON_CB callback. Default: 0. (since 
 3.11)</p>
@@ -81,18 +83,21 @@ id can be 1, 2 or 3. 1 is the rightmost button, and count from right to left.<br
 for the button when pressed.<br>
 <strong>IMAGEEXTRAHIGHLIGHTid</strong>: image name for the button used when mouse is over the 
 button area.</p>
-<p class="info">All images must be 16x16, or smaller but the occupied size will 
-still be 16x16.</p>
 
 
   <p><strong>FORECOLOR</strong> (<font SIZE="3">non inheritable</font>): title 
   text color. Default: the 
 	global attribute DLGFGCOLOR. (since 3.9)</p>
+<p><strong>OPENCOLOR</strong> (<font SIZE="3">non inheritable</font>): title 
+text color when STATE=OPEN. Defaults to the FORECOLOR if not defined. (since 
+3.14)</p>
+<p><strong>HIGHCOLOR</strong> (<font SIZE="3">non inheritable</font>): title 
+text color when highlighted. Works only when TITLEEXPAND=Yes. Defaults to the 
+FORECOLOR if not defined. (since 3.14)</p>
 <p><strong>IMAGE</strong> (<font SIZE="3">non inheritable</font>):
 <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">
-image name to </span>replace the arrow by an image STATE=CLOSE. Works only when 
-BARPOSITION=TOP. The minimum horizontal space reserved for the handler is 20 
-pixels. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
+image name to </span>replace the arrow image by a custom image when STATE=CLOSE. Works only when 
+BARPOSITION=TOP. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
 (since 3.11)</p>
@@ -105,8 +110,21 @@ the container elements. Possible values: &quot;OPEN&quot; (expanded) or &quot;CL
 OPEN. Setting this attribute will automatically change the layout of the entire 
 dialog so the child can be recomposed.</p>
 <p><strong>TITLE</strong> (<font SIZE="3">non inheritable</font>): title text, 
-shown in the bar handler near the expand/collapse button. Shown only when 
+shown in the bar handler near the expand/collapse button. When set it will reset 
+TITLEIMAGE. Shown only when 
 BARPOSITION=TOP.</p>
+
+<p><strong>TITLEIMAGE</strong> (<font SIZE="3">non inheritable</font>): title 
+image, 
+shown in the bar handler near the expand/collapse button. When set it will reset 
+TITLE (image and text title are mutually exclusive). Shown only when 
+BARPOSITION=TOP. (since 3.14)</p>
+<p class="info"><strong>TITLEIMAGEOPEN</strong>: image name used when STATE=OPEN.<br>
+<strong>TITLEIMAGEHIGHLIGHT</strong>: image name used when mouse is over the 
+title image and STATE=CLOSE.<br><strong>TITLEIMAGEOPENHIGHLIGHT</strong>: image name used 
+when mouse is over the title image and STATE=OPEN.</p>
+<p><strong>TITLEEXPAND</strong> (<font SIZE="3">non inheritable</font>): enable 
+the expand/collapse action also at the tile. (since 3.14)</p>
 
   <p><b>WID</b> (read-only): returns -1 if mapped.</p>
 
@@ -181,7 +199,7 @@ IupGetNextChild</strong>. Inside that box there is <strong>IupHbox</strong> or a
 <strong>IupVbox</strong>, depending on BARPOSITION, that contains the 
 interactive elements. All buttons are in fact <strong>IupLabel</strong> to avoid 
 the <strong>IupButton</strong> margins and highlight effects. When 
-BARPOSITION=TOP, the expand/collapse button is followed by the title label, then 
+BARPOSITION=TOP, the expand/collapse button is followed by a title label, then 
 by a <strong>IupHbox</strong> containing the 3 or less extra buttons. (since 
 3.14)</p>
 <p>The container can be created with no elements and be dynamic filled using

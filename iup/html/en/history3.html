@@ -64,6 +64,11 @@ version 3.x.</p>
 
 	<li><span class="hist_new">New:</span> INFOTIP attribute for <strong>IupTree</strong> 
 	on Windows.</li>
+	<li><span class="hist_new">New:</span> OPENCOLOR and HIGHCOLOR attributes 
+	for <strong>IupExpander</strong> to change the title text color in different 
+	situations. New TITLEIMAGE<strong>*</strong> attributes to use a title image 
+	instead of a text. New <strong>TITLEEXPAND</strong> attribute to enable 
+	expand/contract action in the title.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	<strong>IupMap</strong> will now call <strong>IupRefresh</strong> when 
 	mapping the dialog after all other processing. This affects the MAP_CB 
@@ -71,8 +76,9 @@ version 3.x.</p>
 	updated, so the children current size will still be 0x0 during MAP_CB.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	<strong>IupExpander</strong> internally remodeled to use other IUP elements 
-	to compose its handler area. The controls can be acessed by IupGetChild* and 
-	then reconfigured if necessary.</li>
+	to compose its handler area. The controls can be accessed by IupGetChild* and 
+	then reconfigured if necessary. There are no size limitations for images 
+	anymore. Extra buttons are now creation-only. </li>
 
 	<li><span class="hist_fixed">Fixed:</span> visual feedback when 
 	interactively moving
