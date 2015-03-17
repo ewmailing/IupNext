@@ -441,13 +441,13 @@ void ExpanderTest(void)
   image_open = IupImage(16, 16, img_minus);
   image_highopen = IupImage(16, 16, img_minus);
   IupSetAttribute(image_open, "0", "BGCOLOR");
-  IupSetAttribute(image_open, "1", "192 192 192");
+  IupSetAttribute(image_open, "1", "255 255 255");
   IupSetAttribute(image_close, "0", "BGCOLOR");
-  IupSetAttribute(image_close, "1", "192 192 192");
+  IupSetAttribute(image_close, "1", "255 255 255");
   IupSetAttribute(image_high, "0", "BGCOLOR");
-  IupSetAttribute(image_high, "1", "255 255 255");
+  IupSetAttribute(image_high, "1", "192 192 192");
   IupSetAttribute(image_highopen, "0", "BGCOLOR");
-  IupSetAttribute(image_highopen, "1", "255 255 255");
+  IupSetAttribute(image_highopen, "1", "192 192 192");
 
   mnu = IupMenu(
     IupSubmenu("IupSubmenu 1", IupMenu(
@@ -495,16 +495,15 @@ void ExpanderTest(void)
       NULL));
   IupSetAttribute(_frm_3,"TITLE","IupExpander");
   IupSetAttribute(_frm_3,"FORECOLOR","255 255 255");
-  IupSetAttribute(_frm_3,"BACKCOLOR","50 100 150");
+  IupSetAttribute(_frm_3,"BACKCOLOR","100 150 250");
 //  IupSetAttribute(_frm_3, "BARSIZE", "50");
-//  IupSetAttribute(_frm_3, "TITLEEXPAND", "Yes");
-//  IupSetAttribute(_frm_3, "HIGHCOLOR", "192 192 192");
-//  IupSetAttribute(_frm_3, "OPENCOLOR", "0 0 192");
-//   IupSetAttributeHandle(_frm_3, "TITLEIMAGE", image_close);
-//   IupSetAttributeHandle(_frm_3, "TITLEIMAGEOPEN", image_open);
-   //IupSetAttributeHandle(_frm_3, "TITLEIMAGEHIGHLIGHT", image_high);
-   //IupSetAttributeHandle(_frm_3, "TITLEIMAGEOPENHIGHLIGHT", image_highopen);
-
+    IupSetAttribute(_frm_3, "TITLEEXPAND", "Yes");
+    IupSetAttribute(_frm_3, "HIGHCOLOR", "192 192 192");
+  //  IupSetAttribute(_frm_3, "OPENCOLOR", "0 0 192");
+  //   IupSetAttributeHandle(_frm_3, "TITLEIMAGE", image_close);
+  //   IupSetAttributeHandle(_frm_3, "TITLEIMAGEOPEN", image_open);
+  //IupSetAttributeHandle(_frm_3, "TITLEIMAGEHIGHLIGHT", image_high);
+  //IupSetAttributeHandle(_frm_3, "TITLEIMAGEOPENHIGHLIGHT", image_highopen);
 //  IupSetAttributeHandle(_frm_3, "IMAGE", image_close);
 //  IupSetAttributeHandle(_frm_3, "IMAGEOPEN", image_open);
 //  IupSetAttribute(_frm_3, "IMAGE", "img1");
@@ -520,6 +519,22 @@ void ExpanderTest(void)
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRA3", image_close);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRAPRESS3", image_open);
   IupSetAttributeHandle(_frm_3, "IMAGEEXTRAHIGHLIGHT3", image_high);
+
+  if (0)
+  {
+    Ihandle* hbox = IupGetChild(IupGetChild(_frm_3, 0), 0);
+    Ihandle* expand_button = IupGetChild(hbox, 0);
+    Ihandle* title_label = IupGetChild(hbox, 1);
+    Ihandle* extra_button1 = IupGetChild(IupGetChild(hbox, 2), 0);
+    IupSetAttribute(hbox, "MARGIN", "0x0");
+    IupSetAttribute(hbox, "GAP", "0");
+    hbox = IupGetChild(hbox, 2);
+    IupSetAttribute(hbox, "MARGIN", "0x0");
+    IupSetAttribute(hbox, "GAP", "0");
+    IupSetAttribute(expand_button, "EXPAND", "VERTICAL");
+    IupSetAttribute(title_label, "EXPAND", "Yes");
+    IupSetAttribute(extra_button1, "EXPAND", "VERTICAL");
+  }
 
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");
