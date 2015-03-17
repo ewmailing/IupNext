@@ -1331,6 +1331,7 @@ static int iExpanderCreateMethod(Ihandle* ih, void** params)
 
   IupSetAttribute(bar, "CANFOCUS", "NO");
   IupSetAttribute(bar, "BORDER", "NO");
+  IupSetAttribute(bar, "EXPAND", "YES");
 
   if (params)
   {
