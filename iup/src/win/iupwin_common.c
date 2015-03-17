@@ -156,7 +156,7 @@ void iupwinTrackMouseHover(Ihandle* ih)
 {
   TRACKMOUSEEVENT mouse;
   mouse.cbSize = sizeof(TRACKMOUSEEVENT);
-  mouse.dwFlags = TME_HOVER;
+  mouse.dwFlags = TME_HOVER | TME_LEAVE;
   mouse.hwndTrack = ih->handle;
   mouse.dwHoverTime = 10;
   TrackMouseEvent(&mouse);
@@ -264,10 +264,6 @@ int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
   case WM_MOUSEHOVER:
     {
       Icallback enter_cb = IupGetCallback(ih, "ENTERWINDOW_CB");
-
-      /* must be called so WM_MOUSELEAVE will be called */
-      iupwinTrackMouseLeave(ih);
-
       if (enter_cb)
         enter_cb(ih);
       break;
@@ -276,7 +272,7 @@ int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
     {
       if (!iupAttribGet(ih, "_IUPWIN_ENTERWIN"))
       {
-        /* must be called so WM_MOUSEHOVER will be called */
+        /* must be called so WM_MOUSEHOVER and WM_MOUSELEAVE will be called */
         iupwinTrackMouseHover(ih);
 
         iupAttribSet(ih, "_IUPWIN_ENTERWIN", "1");
