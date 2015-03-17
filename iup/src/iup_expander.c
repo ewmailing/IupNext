@@ -439,21 +439,29 @@ static void iExpanderUpdateTitle(Ihandle* ih)
   char* titleimage = iupAttribGet(ih, "TITLEIMAGE");
   if (title || titleimage)
   {
-    IupSetAttribute(box, "MARGIN", "0x1");
-    IupSetAttribute(box, "GAP", "1");
+    if (!ih->handle) /* only update these before map*/
+    {
+      IupSetAttribute(box, "MARGIN", "0x1");
+      IupSetAttribute(box, "GAP", "1");
+      IupSetAttribute(expand_button, "EXPAND", "NO");
+    }
+
     IupSetStrAttribute(label, "VISIBLE", "Yes");
     IupSetStrAttribute(label, "TITLE", title);
     IupSetStrAttribute(label, "IMAGE", titleimage);
-    IupSetAttribute(expand_button, "EXPAND", "NO");
   }
   else
   {
-    IupSetAttribute(box, "MARGIN", "2x2");
-    IupSetAttribute(box, "GAP", "0");
+    if (!ih->handle) /* only update these before map*/
+    {
+      IupSetAttribute(box, "MARGIN", "2x2");
+      IupSetAttribute(box, "GAP", "0");
+      IupSetAttribute(expand_button, "EXPAND", "HORIZONTAL");
+    }
+
     IupSetStrAttribute(label, "VISIBLE", "No");
     IupSetAttribute(label, "TITLE", NULL);
     IupSetAttribute(label, "IMAGE", NULL);
-    IupSetAttribute(expand_button, "EXPAND", "HORIZONTAL");
   }
 
   iExpanderUpdateStateImage(ih);
