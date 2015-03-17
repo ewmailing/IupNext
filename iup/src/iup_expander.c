@@ -1387,10 +1387,10 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "BARPOSITION", iExpanderGetPositionAttrib, iExpanderSetPositionAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BARSIZE", iExpanderGetBarSizeAttrib, iExpanderSetBarSizeAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATE", iExpanderGetStateAttrib, iExpanderSetStateAttrib, IUPAF_SAMEASSYSTEM, "OPEN", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, iExpanderSetForeColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, iExpanderSetHighColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OPENCOLOR", NULL, iExpanderSetOpenColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, iExpanderSetBackColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, iExpanderSetForeColorAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, iExpanderSetHighColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OPENCOLOR", NULL, iExpanderSetOpenColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, iExpanderSetBackColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLE", NULL, iExpanderSetTitleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEIMAGE", NULL, iExpanderSetTitleImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEIMAGEOPEN", NULL, iExpanderSetTitleImageOpenAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -1400,20 +1400,20 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "AUTOSHOW", iExpanderGetAutoShowAttrib, iExpanderSetAutoShowAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRABUTTONS", iExpanderGetExtraButtonsAttrib, iExpanderSetExtraButtonsAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "IMAGE", NULL, iExpanderSetImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEOPEN", NULL, iExpanderSetImageOpenAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEOPENHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGE", NULL, iExpanderSetImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEOPEN", NULL, iExpanderSetImageOpenAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEOPENHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "IMAGEEXTRA1", NULL, iExpanderSetImageExtra1Attrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS1", NULL, iExpanderSetImageExtraPress1Attrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT1", NULL, iExpanderSetImageExtraHighlight1Attrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRA2", NULL, iExpanderSetImageExtra2Attrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS2", NULL, iExpanderSetImageExtraPress2Attrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT2", NULL, iExpanderSetImageExtraHighlight2Attrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRA3", NULL, iExpanderSetImageExtra3Attrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS3", NULL, iExpanderSetImageExtraPress3Attrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT3", NULL, iExpanderSetImageExtraHighlight3Attrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRA1", NULL, iExpanderSetImageExtra1Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS1", NULL, iExpanderSetImageExtraPress1Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT1", NULL, iExpanderSetImageExtraHighlight1Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRA2", NULL, iExpanderSetImageExtra2Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS2", NULL, iExpanderSetImageExtraPress2Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT2", NULL, iExpanderSetImageExtraHighlight2Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRA3", NULL, iExpanderSetImageExtra3Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS3", NULL, iExpanderSetImageExtraPress3Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT3", NULL, iExpanderSetImageExtraHighlight3Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   if (!IupGetHandle("IupArrowUp") || !IupGetHandle("IupArrowDown"))
     iExpanderLoadImages();
