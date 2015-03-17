@@ -938,7 +938,7 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       {
         if (high_p != p)
         {
-          /* must be called so WM_MOUSELEAVE can also be called */
+          /* must be called so WM_MOUSELEAVE will be called */
           iupwinTrackMouseLeave(ih);
 
           iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", p);

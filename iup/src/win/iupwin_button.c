@@ -618,7 +618,9 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     {
       if (!iupAttribGet(ih, "_IUPWINBUT_ENTERWIN"))
       {
-        /* must be called so WM_MOUSELEAVE can also be called */
+        /* this will not affect the process in iupwinBaseMsgProc*/
+
+        /* must be called so WM_MOUSELEAVE will be called */
         iupwinTrackMouseLeave(ih);
 
         iupAttribSet(ih, "_IUPWINBUT_ENTERWIN", "1");

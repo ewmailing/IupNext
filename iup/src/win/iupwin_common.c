@@ -148,38 +148,33 @@ void iupwinTrackMouseLeave(Ihandle* ih)
   mouse.cbSize = sizeof(TRACKMOUSEEVENT);
   mouse.dwFlags = TME_LEAVE;
   mouse.hwndTrack = ih->handle;
-  mouse.dwHoverTime = HOVER_DEFAULT;  /* unused */
+  mouse.dwHoverTime = 0;
   TrackMouseEvent(&mouse);
 }
 
-static void winCallEnterLeaveWindow(Ihandle *ih, int enter)
+void iupwinTrackMouseHover(Ihandle* ih)
 {
-  Icallback enter_cb = IupGetCallback(ih, "ENTERWINDOW_CB");
-  Icallback leave_cb = IupGetCallback(ih, "LEAVEWINDOW_CB");
+  TRACKMOUSEEVENT mouse;
+  mouse.cbSize = sizeof(TRACKMOUSEEVENT);
+  mouse.dwFlags = TME_HOVER;
+  mouse.hwndTrack = ih->handle;
+  mouse.dwHoverTime = 10;
+  TrackMouseEvent(&mouse);
+}
 
-  if (!enter_cb && !leave_cb)
-    return;
+static Ihandle* iupwinGetTrackMouseLeave(void)
+{
+  Ihandle* ih = NULL;
 
-  if (enter)
-  {
-    if (!iupAttribGetInt(ih, "_IUPWIN_ENTERWIN"))
-    {
-      /* must be called so WM_MOUSELEAVE can also be called */
-      iupwinTrackMouseLeave(ih);
+  TRACKMOUSEEVENT mouse;
+  mouse.cbSize = sizeof(TRACKMOUSEEVENT);
+  mouse.dwFlags = TME_QUERY | TME_LEAVE;
+  TrackMouseEvent(&mouse);
 
-      iupAttribSet(ih, "_IUPWIN_ENTERWIN", "1");
+  if (mouse.hwndTrack)
+    ih = iupwinHandleGet(mouse.hwndTrack);
 
-      if (enter_cb)
-        enter_cb(ih);
-    }
-  }
-  else 
-  {
-    iupAttribSet(ih, "_IUPWIN_ENTERWIN", NULL);
-
-    if (leave_cb)
-      leave_cb(ih);
-  }
+  return ih;
 }
 
 void iupwinMergeStyle(Ihandle* ih, DWORD old_mask, DWORD value)
@@ -257,11 +252,37 @@ int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
       break;
     }
   case WM_MOUSELEAVE:
-    winCallEnterLeaveWindow(ih, 0);
-    break;
+    {
+      Icallback leave_cb = IupGetCallback(ih, "LEAVEWINDOW_CB");
+
+      iupAttribSet(ih, "_IUPWIN_ENTERWIN", NULL);
+
+      if (leave_cb)
+        leave_cb(ih);
+      break;
+    }
+  case WM_MOUSEHOVER:
+    {
+      Icallback enter_cb = IupGetCallback(ih, "ENTERWINDOW_CB");
+
+      /* must be called so WM_MOUSELEAVE will be called */
+      iupwinTrackMouseLeave(ih);
+
+      if (enter_cb)
+        enter_cb(ih);
+      break;
+    }
   case WM_MOUSEMOVE:
-    winCallEnterLeaveWindow(ih, 1);
-    break;
+    {
+      if (!iupAttribGet(ih, "_IUPWIN_ENTERWIN"))
+      {
+        /* must be called so WM_MOUSEHOVER will be called */
+        iupwinTrackMouseHover(ih);
+
+        iupAttribSet(ih, "_IUPWIN_ENTERWIN", "1");
+      }
+      break;
+    }
   case WM_KEYDOWN:
   case WM_SYSKEYDOWN:
     if (!iupwinKeyEvent(ih, (int)wp, 1))
