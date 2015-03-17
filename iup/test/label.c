@@ -88,9 +88,15 @@ static int enter_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-static int enter1_cb(Ihandle *ih)
+static int leavewindow_cb(Ihandle *ih)
 {
-  printf("EnterWindow_cb\n");
+  printf("LEAVEWINDOW_CB(%s)\n", IupGetAttribute(ih, "TITLE"));
+  return IUP_DEFAULT;
+}
+
+static int enterwindow_cb(Ihandle *ih)
+{
+  printf("ENTERWINDOW_CB(%s)\n", IupGetAttribute(ih, "TITLE"));
   return IUP_DEFAULT;
 }
 
@@ -114,10 +120,14 @@ void LabelTest(void)
   IupSetAttribute(label, "PADDING", "0x0");
   IupSetAttribute(label, "TIP", "Text Label");
   IupAppend(box1, label);
+//  IupSetCallback(label, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
+//  IupSetCallback(label, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   label = IupLabel(NULL);
   IupSetAttribute(label, "SEPARATOR", "HORIZONTAL");
   IupAppend(box1, label);
+//  IupSetCallback(label, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
+//  IupSetCallback(label, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   label = IupLabel(NULL);
   IupSetAttribute(label, "TITLE", "Text &Label\nSecond Line");
@@ -128,6 +138,8 @@ void LabelTest(void)
 //  IupSetAttribute(label, "ELLIPSIS", "YES");
   IupSetAttribute(label, "ALIGNMENT", "ALEFT:ATOP");
   IupAppend(box1, label);
+//  IupSetCallback(label, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
+//  IupSetCallback(label, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   label = IupLabel(NULL);
   IupSetAttribute(label, "TITLE", "Text\nSecond Line");
@@ -138,20 +150,24 @@ void LabelTest(void)
 //  IupSetAttribute(label, "FONTSTYLE", "Italic");
 //  IupSetAttribute(label, "FONTSTYLE", "Bold");
   IupAppend(box1, label);
+//  IupSetCallback(label, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
+//  IupSetCallback(label, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   label = IupLabel(NULL);
   IupSetAttribute(label, "TITLE", "Text\n<b>Second Line</b>");
   IupSetAttribute(label, "RASTERSIZE", "150x70");
   IupSetAttribute(label, "ALIGNMENT", "ARIGHT:ABOTTOM");
   IupSetAttribute(label, "MARKUP", "YES");
-  IupSetCallback(label, "ENTERWINDOW_CB", enter1_cb);
+//  IupSetCallback(label, "ENTERWINDOW_CB", enter1_cb);
   IupAppend(box1, label);
+//  IupSetCallback(label, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
+//  IupSetCallback(label, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   box2 = IupVbox(NULL);
   IupSetAttribute(box2, "MARGIN", "5x5");
   IupSetAttribute(box2, "GAP", "5");
   IupSetAttribute(box2, "BGCOLOR", "75 150 170");
-  IupSetAttribute(box2, "PADDING", "5x5");
+//  IupSetAttribute(box2, "PADDING", "5x5");
 
   image1 = IupImage(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_8);
   IupSetAttribute(image1, "0", "BGCOLOR");
