@@ -114,6 +114,7 @@ elems[] =
   { "Image",        code_image,        check_image,       0  },    
   { "ImageRGB",     code_image,        check_imagergb,    0  },    
   { "ImageRGBA",    code_image,        check_imagergba,   0  },    
+  { "Timer",        code_empty,        check_empty,       0  },
   { "User",         code_empty,        check_empty,       0  },
   { "Button",       code_string2,      check_string_cb,   0  },
   { "Canvas",       code_string,       check_cb,          0  },
