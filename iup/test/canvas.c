@@ -324,11 +324,11 @@ void CanvasTest(void)
   //IupSetAttribute(image, "2", "128 0 0"); 
   //IupSetAttribute(image, "HOTSPOT", "21:10");
 
-  image = IupImage(15,15, matrx_img_cur_excel);
-  IupSetAttribute (image, "0", "BGCOLOR"); 
-  IupSetAttribute (image, "1", "0 0 0"); 
-  IupSetAttribute (image, "2", "255 255 255"); 
-  IupSetAttribute (image, "HOTSPOT", "7:7");
+  //image = IupImage(15,15, matrx_img_cur_excel);
+  //IupSetAttribute (image, "0", "BGCOLOR"); 
+  //IupSetAttribute (image, "1", "0 0 0"); 
+  //IupSetAttribute (image, "2", "255 255 255"); 
+  //IupSetAttribute (image, "HOTSPOT", "7:7");
 
   box = IupVbox(NULL);
   IupSetAttribute(box, "MARGIN", "5x5");

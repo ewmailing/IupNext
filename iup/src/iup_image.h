@@ -27,7 +27,7 @@ void* iupImageGetCursor(const char* name);
 void* iupImageGetImage(const char* name, Ihandle* parent, int make_inactive);
 void iupImageGetInfo(const char* name, int *w, int *h, int *bpp);
 void iupImageUpdateParent(Ihandle *parent);
-void iupImageClearCache(Ihandle* ih, void* handle);
+void iupImageClearFromCache(Ihandle* ih, void* handle);
 
 typedef struct _iupColor { 
   unsigned char r, g, b, a; 

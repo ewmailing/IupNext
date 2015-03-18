@@ -439,15 +439,15 @@ void ExpanderTest(void)
   image_close = IupImage(16, 16, img_plus);
   image_high = IupImage(16, 16, img_plus);
   image_open = IupImage(16, 16, img_minus);
-  image_highopen = IupImage(16, 16, img_minus);
+  //image_highopen = IupImage(16, 16, img_minus);
   IupSetAttribute(image_open, "0", "BGCOLOR");
   IupSetAttribute(image_open, "1", "255 255 255");
   IupSetAttribute(image_close, "0", "BGCOLOR");
   IupSetAttribute(image_close, "1", "255 255 255");
   IupSetAttribute(image_high, "0", "BGCOLOR");
   IupSetAttribute(image_high, "1", "192 192 192");
-  IupSetAttribute(image_highopen, "0", "BGCOLOR");
-  IupSetAttribute(image_highopen, "1", "192 192 192");
+  //IupSetAttribute(image_highopen, "0", "BGCOLOR");
+  //IupSetAttribute(image_highopen, "1", "192 192 192");
 
   mnu = IupMenu(
     IupSubmenu("IupSubmenu 1", IupMenu(

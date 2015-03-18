@@ -124,10 +124,10 @@ unsigned char* iupGLImageGetData(Ihandle* ih, int active)
 {
   void* data;
 
-  const char *cache_name = "_IUPIMAGE_IMAGE";
+  const char *cache_name = "_IUPIMAGE_BUFFER";
   int make_inactive = !active && iupAttribGetInt(ih, "MAKEINACTIVE");
   if (make_inactive)
-    cache_name = "_IUPIMAGE_IMAGE_INACTIVE";
+    cache_name = "_IUPIMAGE_BUFFER_INACTIVE";
 
   /* Check for an already created native image */
   data = (void*)iupAttribGet(ih, cache_name);

@@ -1080,7 +1080,7 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height, C
   HIMAGELIST image_list = (HIMAGELIST)SendMessage(ih->handle, TCM_GETIMAGELIST, 0, 0);
   int imgW = 0, imgH = 0, txtW = 0, txtH = 0, 
     bpp, style = 0, x = 0, y = 0, border = 4;
-  char *str = NULL;
+  char *str = NULL, *value = NULL;
   int high_p, press_p;
 
   tci.mask = TCIF_TEXT | TCIF_IMAGE;
@@ -1090,7 +1090,8 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height, C
   
   if (title[0])
   {
-    str = iupStrProcessMnemonic(iupwinStrFromSystem(title), NULL, 0);   /* remove & */
+    value = iupwinStrFromSystem(title);
+    str = iupStrProcessMnemonic(value, NULL, 0);   /* remove & */
     iupdrvFontGetMultiLineStringSize(ih, str, &txtW, &txtH);
   }
 
@@ -1109,7 +1110,10 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height, C
   else
     hBitmapClose = iupImageGetImage("IMGCLOSE", ih, 0);
   if (!hBitmapClose)
+  {
+    if (str && str != value) free(str);
     return;
+  }
 
   iupdrvImageGetInfo(hBitmapClose, NULL, NULL, &bpp);
   if (bpp == 8)
@@ -1189,6 +1193,8 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height, C
 
   if (hCloseMask)
     DeleteObject(hCloseMask);
+
+  if (str && str != value) free(str);
 }
 
 static void winTabsDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)

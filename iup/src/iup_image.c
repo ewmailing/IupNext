@@ -520,7 +520,7 @@ static char* iImageGetHeightAttrib(Ihandle *ih)
   return iupStrReturnInt(ih->currentheight);
 }
 
-void iupImageClearCache(Ihandle* ih, void* handle)
+void iupImageClearFromCache(Ihandle* ih, void* handle)
 {
   char *name;
   void* cur_handle;
@@ -542,7 +542,7 @@ void iupImageClearCache(Ihandle* ih, void* handle)
   }
 }
 
-static void iImageUnMapMethod(Ihandle* ih)
+static void iImageClearCache(Ihandle* ih)
 {
   char *name;
   void* handle;
@@ -568,7 +568,7 @@ static void iImageUnMapMethod(Ihandle* ih)
     iupAttribSet(ih, "_IUPIMAGE_CURSOR", NULL);
   }
 
-  /* the remaining images are all IUPIMAGE_IMAGE(*)  */
+  /* the remaining native images are all IUPIMAGE_IMAGE(*) - depends on BGCOLOR/INACTIVE/etc  */
   name = iupTableFirst(ih->attrib);
   while (name)
   {
@@ -585,18 +585,18 @@ static void iImageUnMapMethod(Ihandle* ih)
     name = iupTableNext(ih->attrib);
   }
 
-  /* additional image buffer when an IupImage is converted to a CD image */
-  handle = iupAttribGet(ih, "_IUPIMAGE_CDIMAGE");
+  /* additional image buffer when an IupImage is converted to one (CD, OpenGL, etc) */
+  handle = iupAttribGet(ih, "_IUPIMAGE_BUFFER");
   if (handle)
   {
-    iupAttribSet(ih, "_IUPIMAGE_CDIMAGE", NULL);
+    iupAttribSet(ih, "_IUPIMAGE_BUFFER", NULL);
     free(handle);
   }
 
-  handle = iupAttribGet(ih, "_IUPIMAGE_CDIMAGE_INACTIVE");
+  handle = iupAttribGet(ih, "_IUPIMAGE_BUFFER_INACTIVE");
   if (handle)
   {
-    iupAttribSet(ih, "_IUPIMAGE_CDIMAGE_INACTIVE", NULL);
+    iupAttribSet(ih, "_IUPIMAGE_BUFFER_INACTIVE", NULL);
     free(handle);
   }
 }
@@ -670,6 +670,7 @@ static int iImageRGBACreateMethod(Ihandle* ih, void** params)
 static void iImageDestroyMethod(Ihandle* ih)
 {
   char* stock_name;
+
   unsigned char* imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   if (imgdata)
   {
@@ -680,6 +681,8 @@ static void iImageDestroyMethod(Ihandle* ih)
   stock_name = iupAttribGet(ih, "_IUPSTOCK_LOAD");
   if (stock_name)
     iImageStockUnload(stock_name);
+
+  iImageClearCache(ih);
 }
 
 /******************************************************************************/
@@ -726,20 +729,18 @@ static Iclass* iImageNewClassBase(char* name)
 
   /* Class functions */
   ic->Destroy = iImageDestroyMethod;
-  ic->Map = iupBaseTypeVoidMapMethod;
-  ic->UnMap = iImageUnMapMethod;
 
   /* Attribute functions */
   iupClassRegisterAttribute(ic, "WID", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "WIDTH", iImageGetWidthAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HEIGHT", iImageGetHeightAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "BPP",      NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CHANNELS", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BPP",      NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHANNELS", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "HOTSPOT", NULL, NULL, "0:0", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HOTSPOT", NULL, NULL, "0:0", NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

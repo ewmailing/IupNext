@@ -3963,12 +3963,16 @@ int IupMglPlotEnd(Ihandle* ih)
   int ds_index = IupMglPlotNewDataSet(ih, dim);
   if (dim==1)
   {
+    int j;
     char** names = NULL;
     if (inNames)
       names = (char**)iupArrayGetData(inNames);
     double* x = (double*)iupArrayGetData(inXData);
     int count = iupArrayCount(inXData);
     IupMglPlotSet1D(ih, ds_index, (const char**)names, x, count);
+
+    for (j = 0; j<count; j++)
+      free(names[j]);
   }
   else if (dim==2)
   {
@@ -4884,6 +4888,8 @@ static void iMglPlotDestroyMethod(Ihandle* ih)
   /* PLOT End for the current stream */
   for(i = 0; i < ih->data->dataSetCount; i++)
     iMglPlotRemoveDataSet(&ih->data->dataSet[i]);
+
+  free(ih->data->dataSet);
 
   delete ih->data->mgl;
 }
