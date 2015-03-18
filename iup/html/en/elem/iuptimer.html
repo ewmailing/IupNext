@@ -20,7 +20,7 @@
 <h2>IupTimer</h2>
 
   <p>
-  Creates a timer which periodicaly invokes a callback when the time is up. Each timer should be destroyed using
+  Creates a timer which periodically invokes a callback when the time is up. Each timer should be destroyed using
   <a href="../func/iupdestroy.html">IupDestroy</a>.</p>
 
 <h3><a name="Creation">Creation</a></h3>
@@ -51,7 +51,8 @@ timer() [in LED]</pre>
 <h3><a name="Callbacks">Callbacks</a></h3>
 
 <p><strong>ACTION_CB</strong>: 
-  Called when the time is up.</p>
+  Called every time the defined time interval is reached. To stop the callback 
+from being called simply stop de timer with RUN=NO.</p>
   
     <pre>int function(Ihandle *<strong>ih)</strong>; [in C]
 <strong>elem</strong>:action_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
