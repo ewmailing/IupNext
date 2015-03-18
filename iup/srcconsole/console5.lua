@@ -234,4 +234,6 @@ end
 iup_console.dlgMain:destroy()
 iup_console.dlgAbout:destroy()
 
+if (im) then im.Close() end
+if (cd) then cd.Close() end
 iup.Close()

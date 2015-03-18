@@ -3,6 +3,11 @@
 ** See Copyright Notice in lua.h
 */
 
+#if 0
+/* To check for memory leaks */
+#define VLD_MAX_DATA_DUMP 80
+#include <vld.h>
+#endif
 
 #include <signal.h>
 #include <stdio.h>
