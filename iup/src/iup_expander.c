@@ -660,8 +660,14 @@ static int iExpanderExpandButtonLeaveWindow_cb(Ihandle* expand_button)
   if (iupAttribGet(expand_button, "HIGHLIGHT"))
   {
     iupAttribSet(expand_button, "HIGHLIGHT", NULL);
-
     iExpanderUpdateStateImage(ih);
+
+    if (ih->data->title_expand)
+    {
+      Ihandle* title_label = expand_button->brother;
+      iupAttribSet(title_label, "HIGHLIGHT", NULL);
+      iExpanderUpdateTitleState(ih);
+    }
 
     if (ih->data->auto_show)
     {
@@ -682,8 +688,14 @@ static int iExpanderExpandButtonEnterWindow_cb(Ihandle* expand_button)
     Ihandle* child = ih->firstchild->brother;
 
     iupAttribSet(expand_button, "HIGHLIGHT", "1");
-
     iExpanderUpdateStateImage(ih);
+
+    if (ih->data->title_expand)
+    {
+      Ihandle* title_label = expand_button->brother;
+      iupAttribSet(title_label, "HIGHLIGHT", "1");
+      iExpanderUpdateTitleState(ih);
+    }
 
     if (ih->data->auto_show &&
         child &&
@@ -722,6 +734,10 @@ static int iExpanderTitleLeaveWindow_cb(Ihandle* title_label)
 
   if (ih->data->title_expand && iupAttribGet(title_label, "HIGHLIGHT"))
   {
+    Ihandle* expand_button = IupGetChild(IupGetParent(title_label), 0);
+    iupAttribSet(expand_button, "HIGHLIGHT", NULL);
+    iExpanderUpdateStateImage(ih);
+
     iupAttribSet(title_label, "HIGHLIGHT", NULL);
     iExpanderUpdateTitleState(ih);
   }
@@ -735,6 +751,10 @@ static int iExpanderTitleEnterWindow_cb(Ihandle* title_label)
 
   if (ih->data->title_expand && !iupAttribGet(title_label, "HIGHLIGHT"))
   {
+    Ihandle* expand_button = IupGetChild(IupGetParent(title_label), 0);
+    iupAttribSet(expand_button, "HIGHLIGHT", "1");
+    iExpanderUpdateStateImage(ih);
+
     iupAttribSet(title_label, "HIGHLIGHT", "1");
     iExpanderUpdateTitleState(ih);
   }
@@ -768,7 +788,6 @@ static int iExpanderExtraButtonLeaveWindow_cb(Ihandle* extra_button)
   if (iupAttribGet(extra_button, "HIGHLIGHT"))
   {
     iupAttribSet(extra_button, "HIGHLIGHT", NULL);
-
     iExpanderUpdateExtraButtonImage(ih, extra_button, 0);
   }
   return IUP_DEFAULT;
@@ -782,7 +801,6 @@ static int iExpanderExtraButtonEnterWindow_cb(Ihandle* extra_button)
   if (!iupAttribGet(extra_button, "HIGHLIGHT"))
   {
     iupAttribSet(extra_button, "HIGHLIGHT", "1");
-
     iExpanderUpdateExtraButtonImage(ih, extra_button, 0);
   }
   return IUP_DEFAULT;
