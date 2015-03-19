@@ -69,5 +69,6 @@
     <ClCompile Include="..\test\progressdlg.c" />
     <ClCompile Include="..\test\canvas_scrollbar2.c" />
     <ClCompile Include="..\test\canvas_scrollbar3.c" />
+    <ClCompile Include="..\test\plot.c" />
   </ItemGroup>
 </Project>
