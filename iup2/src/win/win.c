@@ -26,7 +26,7 @@
 #include "winhook.h"
 #include "winver.h"
 
-#include "iupextra.h"
+#include "iup_extra.h"
 
 
 /************************************************************************
@@ -35,6 +35,7 @@
 
 static int win_globalmouse = 0;
 static int win_nvisiblewin = 0;  /* number of visible windows */
+static int win_main_loop = 0;
 static IFidle win_idle_cb = NULL;
 static int (*s_get_external_dlg_count_func) ()                = NULL; // added by fabraham. used on IUP3wrapper mechanism.
 static int (*s_external_idle_func) ()                         = NULL; // added by fabraham. used on IUP3wrapper mechanism.
@@ -393,7 +394,15 @@ void IupSetExternalModalDialogLeaveFunc (void (*func)(int popup_level)) // added
 
 void IupFlush(void)
 {
-  while(winLoopStep(WIN_NOWAIT) == WIN_MSG);
+  tMsgResult result;
+  while((result = winLoopStep(WIN_NOWAIT)) == WIN_MSG);
+
+  if (result == WIN_CLOSE)
+  {
+    /* re post the quit message if still inside MainLoop */
+    if (win_main_loop>0)
+      IupExitLoop();
+  }
 }
 
 int IupLoopStep(void)
@@ -418,9 +427,16 @@ int IupLoopStepWait(void) // added by fabraham. used on IUP3wrapper mechanism.
   return winLoopStep(WIN_WAIT);
 }
 
+int IupMainLoopLevel(void)
+{
+  return win_main_loop;
+}
+
 int IupMainLoop (void)
 {
+  win_main_loop++;
   while (winLoopStep(WIN_WAIT) != WIN_CLOSE);
+  win_main_loop--;
   return IUP_NOERROR;
 }
 
