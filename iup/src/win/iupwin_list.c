@@ -406,11 +406,19 @@ static char* winListGetValueAttrib(Ihandle* ih)
 {
   if (ih->data->has_editbox)
   {
-    TCHAR* value = iupwinGetWindowText(ih->handle);
-    if (value)
-      return iupStrReturnStr(iupwinStrFromSystem(value));
+    if (iupAttribGet(ih, "_IUPWIN_GETFROMLIST"))
+    {
+      int pos = SendMessage(ih->handle, WIN_GETCURSEL(ih), 0, 0);
+      return iupStrReturnStr(winListGetText(ih, pos));
+    }
     else
-      return "";
+    {
+      TCHAR* value = iupwinGetWindowText(ih->handle);
+      if (value)
+        return iupStrReturnStr(iupwinStrFromSystem(value));
+      else
+        return "";
+    }
   }
   else 
   {
@@ -1192,7 +1200,14 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
           iupListSingleCallActionCb(ih, cb, pos);
         }
 
+        /* the textbox is not updated yet, so prepare to return correct VALUE during callback */
+        if (ih->data->has_editbox) 
+          iupAttribSet(ih, "_IUPWIN_GETFROMLIST", "1");
+
         iupBaseCallValueChangedCb(ih);
+
+        if (ih->data->has_editbox)
+          iupAttribSet(ih, "_IUPWIN_GETFROMLIST", NULL);
         break;
       }
     }
@@ -1283,6 +1298,29 @@ static int winListCallEditCb(Ihandle* ih, HWND cbedit, char* insert_value, int r
 static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   int ret = 0;
+
+  if (ih->data->is_dropdown)
+  {
+    switch (msg)
+    {
+    case WM_KEYDOWN:
+    case WM_SYSKEYDOWN:
+    case WM_SYSKEYUP:
+    case WM_KEYUP:
+      {
+        int wincode = (int)wp;
+        if (wincode == VK_ESCAPE || wincode == VK_RETURN)
+        {
+          int dropped = SendMessage(ih->handle, CB_GETDROPPEDSTATE, 0, 0);
+          if (dropped)
+          {
+            if (wincode == VK_RETURN) SendMessage(ih->handle, CB_SHOWDROPDOWN, FALSE, 0);
+            return 0;  /* do not call base procedure to allow internal key processing */
+          }
+        }
+      }
+    }
+  }
 
   if (msg==WM_KEYDOWN) /* process K_ANY before text callbacks */
   {
@@ -1532,6 +1570,29 @@ static LRESULT CALLBACK winListComboListWndProc(HWND hwnd, UINT msg, WPARAM wp, 
 
 static int winListMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
+
+  if (ih->data->is_dropdown)
+  {
+    switch (msg)
+    {
+    case WM_KEYDOWN:
+    case WM_SYSKEYDOWN:
+    case WM_SYSKEYUP:
+    case WM_KEYUP:
+      {
+        int wincode = (int)wp;
+        if (wincode == VK_ESCAPE || wincode == VK_RETURN)
+        {
+          int dropped = SendMessage(ih->handle, CB_GETDROPPEDSTATE, 0, 0);
+          if (dropped)
+          {
+            return 0;  /* do not call base procedure to allow internal key processing */
+          }
+        }
+      }
+    }
+  }
+
   if (!ih->data->is_dropdown && !ih->data->has_editbox)
   {
     switch (msg)
