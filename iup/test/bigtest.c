@@ -11,6 +11,8 @@ export G_SLICE=always-malloc
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <locale.h>
+
 #include "iup.h"
 #include "iupcontrols.h"
 #include "iupkey.h"
@@ -190,7 +192,8 @@ int main(int argc, char* argv[])
 
 //  IupSetGlobal("UTF8MODE", "Yes");
 //  IupSetGlobal("LANGUAGE", "PORTUGUESE");
-//  IupSetGlobal("DEFAULTDECIMALSYMBOL", ",");
+//  IupSetGlobal("DEFAULTDECIMALSYMBOL", ".");
+  //  setlocale(LC_NUMERIC, "C");
 
   dlg = IupDialog(IupVbox(list = IupList(NULL), NULL));
   IupSetAttribute(dlg, "MARGIN", "10x10");
