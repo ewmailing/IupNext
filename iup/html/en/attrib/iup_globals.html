@@ -58,6 +58,10 @@ Default: &quot;NO&quot;. </p>
 <p>By default IUP uses strings in the current locale (See
 <a href="iup_font.html#Encoding">FONT</a> attribute). To use UTF-8 strings set 
 this attribute to Yes. Default: NO.</p>
+<h3><strong>UTF8MODE_FILE</strong> [Windows Only]</h3>
+<p>By default IUP uses file names in the current locale, even when UTF8MODE=Yes. To use UTF-8 
+file names set 
+this attribute to Yes. Default: NO.</p>
 <h3><a name="DEFAULTPRECISION">DEFAULTPRECISION</a><span class="style2"> (since 3.11.2)</span></h3>
 <p>The default number of decimal places used in floating point output by some 
 controls (<strong>IupMatrixEx</strong> and <strong>
@@ -68,10 +72,6 @@ IupGetParam</strong>). Local attributes may overwrite the default. Default: 2.</
 output by some controls (<strong>IupMatrixEx,</strong> <strong>
 IupGetParam</strong> and <strong>IupPlot</strong>). Can be &quot;.&quot; or &quot;,&quot; only. 
 Default uses the one defined by the system locale.</p>
-<h3><strong>UTF8MODE_FILE</strong> [Windows Only]</h3>
-<p>By default IUP uses file names in the current locale, even when UTF8MODE=Yes. To use UTF-8 
-file names set 
-this attribute to Yes. Default: NO.</p>
 <h3>SHOWMENUIMAGES [GTK Only] <span class="style2">(since 3.5)</span></h3>
 <p>Force the display of images in menus. Default: Yes</p>
 <h3>GLOBALMENU [GTK Only] <span class="style2">(since 3.6)</span></h3>
