@@ -59,22 +59,22 @@ int iupSetFontAttrib(Ihandle* ih, const char* value);
 /** Parse the font format description.
  * Returns a non zero value if successful.
  * \ingroup drvfont */
-int iupGetFontInfo(const char* standardfont, char *fontface, int *size, int *is_bold, int *is_italic, int *is_underline, int *is_strikeout);
+int iupGetFontInfo(const char* standardfont, char* typeface, int *size, int *is_bold, int *is_italic, int *is_underline, int *is_strikeout);
 
 /** Parse the Pango font format description.
  * Returns a non zero value if successful.
  * \ingroup drvfont */
-int iupFontParsePango(const char *value, char *fontface, int *size, int *bold, int *italic, int *underline, int *strikeout);
+int iupFontParsePango(const char *value, char* typeface, int *size, int *bold, int *italic, int *underline, int *strikeout);
 
 /** Parse the old IUP Windows font format description.
  * Returns a non zero value if successful.
  * \ingroup drvfont */
-int iupFontParseWin(const char *value, char *fontface, int *size, int *bold, int *italic, int *underline, int *strikeout);
+int iupFontParseWin(const char *value, char* typeface, int *size, int *bold, int *italic, int *underline, int *strikeout);
 
 /** Parse the X-Windows font format description.
  * Returns a non zero value if successful.
  * \ingroup drvfont */
-int iupFontParseX(const char *value, char *fontface, int *size, int *bold, int *italic, int *underline, int *strikeout);
+int iupFontParseX(const char *value, char *typeface, int *size, int *bold, int *italic, int *underline, int *strikeout);
 
 
 /** Changes the FONT style only.
@@ -116,9 +116,9 @@ char* iupGetDefaultFontFaceGlobalAttrib(void);
 void iupUpdateStandardFontAttrib(Ihandle* ih);
 
 /* Used to map foreign names into native names */
-const char* iupFontGetWinName(const char* name);
-const char* iupFontGetXName(const char* name);
-const char* iupFontGetPangoName(const char* name);
+const char* iupFontGetWinName(const char* typeface);
+const char* iupFontGetXName(const char* typeface);
+const char* iupFontGetPangoName(const char* typeface);
 
 
 

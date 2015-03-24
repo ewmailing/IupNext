@@ -386,6 +386,8 @@ void ButtonTest(void)
   button = IupButton(NULL, NULL);
   IupSetAttribute(button, "TITLE", "Images");
   IupSetAttributeHandle(button, "IMAGE", load_image_FileSave());
+  IupSetAttribute(button, "FONT", "MS Sans Serif:8");
+  
   //IupSetAttribute(button, "IMAGE", "TECGRAF_BITMAP");
   IupAppend(box2, button);
 
