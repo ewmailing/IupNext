@@ -30,9 +30,9 @@
 
 
 /* Exported to IupMatrixEx */
-char* iupMatrixExGetCellValue(Ihandle* ih, int lin, int col, int convert)
+char* iupMatrixExGetCellValue(Ihandle* ih, int lin, int col, int display)
 {
-  if (convert)
+  if (display)
     return iupMatrixGetValueDisplay(ih, lin, col);  /* Display value */
   else
     return iupMatrixGetValue(ih, lin, col);  /* Internal value (Maximum Precision) */

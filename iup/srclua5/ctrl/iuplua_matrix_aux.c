@@ -84,6 +84,20 @@ static int luamatrix_pushvalue(lua_State *L, const char* value, int only_number)
   return 1;
 }
 
+static char* get_cell_value_safe(lua_State *L, Ihandle* ih, int lin, int col)
+{
+  char* value;
+
+  if (iupAttribGetId2(ih, "_IUP_GETCELL", lin, col))
+    luaL_error(L, "recursion detected for cell(%d,%d)", lin, col);
+
+  iupAttribSetStrId2(ih, "_IUP_GETCELL", lin, col, "1");
+  value = IupGetAttributeId2(ih, "CELL", lin, col);  /* display value */
+  iupAttribSetId2(ih, "_IUP_GETCELL", lin, col, NULL);
+
+  return value;
+}
+
 static int formula_range(lua_State *L)
 {
   Ihandle *ih;
@@ -106,7 +120,7 @@ static int formula_range(lua_State *L)
   {
     for (col = col1; col <= col2; col++)
     {
-      char* value = IupGetAttributeId2(ih, "", lin, col);
+      char* value = get_cell_value_safe(L, ih, lin, col);
 
       if (luamatrix_pushvalue(L, value, only_number))
         count++;
@@ -127,7 +141,7 @@ static int formula_cell(lua_State *L)
   lua_getglobal(L, "matrix");
   ih = (Ihandle*)lua_touserdata(L, -1);
 
-  value = IupGetAttributeId2(ih, "", lin, col);
+  value = get_cell_value_safe(L, ih, lin, col);
   return luamatrix_pushvalue(L, value, 0);
 }
 
@@ -137,9 +151,8 @@ static int formula_ifelse(lua_State *L)
   return 1;
 }
 
-static void iMatrixShowFormulaError(Ihandle* ih, lua_State *L)
+static void iMatrixShowFormulaError(Ihandle* ih, lua_State *L, const char* str_message)
 {
-  const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
   const char* error = lua_tostring(L, -1);
   char msg[1024];
   sprintf(msg, "%s\n  Lua error: %s", str_message, error);
@@ -231,7 +244,8 @@ void IupMatrixSetFormula(Ihandle* ih, int col, const char* formula, const char* 
 
   if (!iMatrixLoadFormula(L, formula))
   {
-    iMatrixShowFormulaError(ih, L);
+    const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
+    iMatrixShowFormulaError(ih, L, str_message);
     lua_close(L);
     return;
   }
@@ -242,7 +256,8 @@ void IupMatrixSetFormula(Ihandle* ih, int col, const char* formula, const char* 
   {
     if (!iMatrixExecFormula(L, lin, col))
     {
-      iMatrixShowFormulaError(ih, L);
+      const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
+      iMatrixShowFormulaError(ih, L, str_message);
       lua_close(L);
       return;
     }
@@ -282,12 +297,14 @@ static char* iMatrixDynamicTranslateValue_CB(Ihandle* ih, int lin, int col, char
     if (!iMatrixLoadFormula(L, value + 1))
     {
       const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
+      iMatrixShowFormulaError(ih, L, str_message);
       return (char*)str_message;
     }
 
     if (!iMatrixExecFormula(L, lin, col))
     {
       const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
+      iMatrixShowFormulaError(ih, L, str_message);
       return (char*)str_message;
     }
 
@@ -344,7 +361,7 @@ void IupMatrixSetDynamic(Ihandle* ih, const char* init)
 static int MatrixSetFormula(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  IupMatrixSetFormula(ih, luaL_checkinteger(L, 2), luaL_checkstring(L, 3), luaL_optstring(L, 4, NULL));
+  IupMatrixSetFormula(ih, (int)luaL_checkinteger(L, 2), luaL_checkstring(L, 3), luaL_optstring(L, 4, NULL));
   return 0;
 }
 

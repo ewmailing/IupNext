@@ -217,6 +217,9 @@ updated or consulted instead of the matrix cell. When retrieved inside the
 EDITION_CB callback when mode is 0, then the return value is the new value 
   that will be updated in the cell. </p>
 <hr class="style3">
+<p><strong><a name="CELL">CELL</a><i>L</i>:<i>C</i></strong> 
+(read-only): Returns the displayed cell value. Returns NULL if the cell does not 
+exists, or it is not visible, or the element is not mapped. (since 3.14)</p>
 <p><strong><a name="CELLBGCOLOR">CELLBGCOLOR</a><i>L</i>:<i>C</i></strong> 
 (read-only): Returns the actual cell background color, including mark and active 
 state modifications. Returns NULL if the cell does not 

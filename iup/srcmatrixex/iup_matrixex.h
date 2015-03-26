@@ -65,7 +65,7 @@ void iupMatrixExRegisterFind(Iclass* ic);
 void iupMatrixExRegisterSort(Iclass* ic);
 
 /* Implemented in IupMatrix */
-char* iupMatrixExGetCellValue(Ihandle* ih, int lin, int col, int convert);
+char* iupMatrixExGetCellValue(Ihandle* ih, int lin, int col, int display);
 void  iupMatrixExSetCellValue(Ihandle* ih, int lin, int col, const char* value);  /* NO numeric conversion */
 
 
