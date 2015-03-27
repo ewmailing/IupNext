@@ -56,7 +56,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>comctl32.lib;ole32.lib;iup.lib;iupcontrols.lib;cd.lib;freetype6.lib;iupcd.lib;iupgl.lib;opengl32.lib;glu32.lib;iupimglib.lib;im.lib;iupim.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;ole32.lib;iup.lib;iupcontrols.lib;cd.lib;freetype6.lib;iupcd.lib;iupgl.lib;opengl32.lib;glu32.lib;iupimglib.lib;im.lib;iupim.lib;zlib1.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\im\lib;..\..\cd\lib;..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>

@@ -155,7 +155,9 @@ int main(int argc, char* argv[])
   IupSetCallback(dlg, "CLOSE_CB", close_cb);
 
   IupSetCallback(list, "ACTION", (Icallback)list_cb);
-  IupSetAttribute(list, "VISIBLELINES", "15");
+//  IupSetAttribute(list, "VISIBLELINES", "15");
+  IupSetAttribute(list, "RASTERSIZE", "100x200");
+
   IupSetAttribute(list, "EXPAND", "YES");
 
   for (i=0; i<count; i++)

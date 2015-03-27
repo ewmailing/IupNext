@@ -14,6 +14,12 @@
 #include "idrv.h"
 #include "win.h"
 
+
+#ifndef SM_CXPADDEDBORDER
+#define SM_CXPADDEDBORDER     92
+#endif
+
+
 /************************************************************************
  *
  *  Funcoes do driver para consulta 
@@ -125,7 +131,10 @@ int iupwinDialogDecorX(Ihandle* n)
      decor = 2*GetSystemMetrics(SM_CXFIXEDFRAME);
    else if (iupCheck(n,IUP_BORDER))
       decor = 2*GetSystemMetrics(SM_CXBORDER);
-   					 
+
+   if (!no_titlebar && decor)
+     decor += GetSystemMetrics(SM_CXPADDEDBORDER);
+
    return decor;
 }
 
@@ -211,6 +220,8 @@ int iupwinDialogDecorY(Ihandle* n)
        decor += GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
      else
        decor += GetSystemMetrics(SM_CYCAPTION); /* janela normal */
+
+     decor += GetSystemMetrics(SM_CXPADDEDBORDER);
    }
    
    if (iupCheck(n,IUP_RESIZE))
