@@ -27,8 +27,10 @@ static int cancel_cb(Ihandle* ih)
   {
     if (IupGetInt(ih, "COUNT")<IupGetInt(ih, "TOTALCOUNT")/2)
     {
-      IupSetAttribute(ih, "STATE", "UNDEFINED");
-      return IUP_CONTINUE;
+//      IupSetAttribute(ih, "STATE", "UNDEFINED");
+  //    return IUP_CONTINUE;
+      IupExitLoop();
+      return IUP_DEFAULT;
     }
     else
     {
