@@ -111,6 +111,18 @@ void iupdrvGetCharSize (Ihandle* n, int *w, int *h)
 	if (h) *h = tm.tmHeight;
 }
 
+static int winDialogGetWindowDecorX(Ihandle* n)
+{
+  int decor = 0;
+
+  WINDOWINFO wi;
+  wi.cbSize = sizeof(WINDOWINFO);
+  GetWindowInfo(n->handle, &wi);
+
+  decor += 2 * wi.cxWindowBorders;
+  return decor;
+}
+
 int iupwinDialogDecorX(Ihandle* n)
 {
    int decor = 0;
@@ -119,6 +131,9 @@ int iupwinDialogDecorX(Ihandle* n)
    assert(n);
    if(n == NULL)
      return 0;
+
+   if (n->handle)
+     return winDialogGetWindowDecorX(n);
 
    no_titlebar = !iupCheck(n, IUP_MAXBOX)  && 
               !iupCheck(n, IUP_MINBOX)  &&
@@ -198,6 +213,40 @@ int iupwinDialogDecorTop(Ihandle* n)
    return decor;
 }
 
+static int winDialogGetWindowDecorY(Ihandle* n)
+{
+  int decor = 0;
+
+  WINDOWINFO wi;
+  wi.cbSize = sizeof(WINDOWINFO);
+  GetWindowInfo(n->handle, &wi);
+
+  decor += 2 * wi.cyWindowBorders;
+
+  if (wi.rcClient.bottom == wi.rcClient.top ||
+      wi.rcClient.top > wi.rcWindow.bottom ||
+      wi.rcClient.bottom > wi.rcWindow.bottom)
+  {
+    if (wi.dwStyle & WS_CAPTION)
+    {
+      if (wi.dwExStyle & WS_EX_TOOLWINDOW)
+        decor += GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
+      else
+        decor += GetSystemMetrics(SM_CYCAPTION);   /* normal window */
+    }
+  }
+  else
+  {
+    /* caption = window height - borderes - client height - menu */
+    decor += (wi.rcWindow.bottom - wi.rcWindow.top) - 2 * wi.cyWindowBorders - (wi.rcClient.bottom - wi.rcClient.top);
+
+    if (IupGetAttribute(n, IUP_MENU) != NULL)
+      decor -= GetSystemMetrics(SM_CYMENU);
+  }
+
+  return decor;
+}
+
 int iupwinDialogDecorY(Ihandle* n)
 {
    int decor = 0;
@@ -207,6 +256,9 @@ int iupwinDialogDecorY(Ihandle* n)
    assert(n);
    if(n == NULL)
      return 0;
+
+   if (n->handle)
+     return winDialogGetWindowDecorY(n);
 
    no_titlebar = !iupCheck(n, IUP_MAXBOX)  && 
                  !iupCheck(n, IUP_MINBOX)  &&
