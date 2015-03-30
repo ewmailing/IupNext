@@ -577,25 +577,38 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
 
   if (result)
   {
-    char* dir = iupStrFileGetPath(iupwinStrFromSystemFilename(openfilename.lpstrFile));
-    iupAttribSetStr(ih, "DIRECTORY", dir);
-    free(dir);
-
     if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
     {
       int i = 0;
+
+      dir = iupwinStrFromSystemFilename(openfilename.lpstrFile);  /* already contains the directly */
+      iupAttribSetStr(ih, "DIRECTORY", dir);
 
       /* If there is more than one file, replace terminator by the separator */
       if (openfilename.lpstrFile[openfilename.nFileOffset-1] == 0 && 
           openfilename.nFileOffset>0) 
       {
-        while (openfilename.lpstrFile[i] != 0 || openfilename.lpstrFile[i+1] != 0)
+        int count = 0;
+
+        /* first the path */
+        iupAttribSetStrId(ih, "MULTIVALUE", count, dir);
+        count++;
+
+        while (openfilename.lpstrFile[i] != 0 || openfilename.lpstrFile[i + 1] != 0)
         {
-          if (openfilename.lpstrFile[i]==0)
+          if (openfilename.lpstrFile[i] == 0)
+          {
+            iupAttribSetStrId(ih, "MULTIVALUE", count, iupwinStrFromSystemFilename(openfilename.lpstrFile + i + 1));
+            count++;
+
             openfilename.lpstrFile[i] = TEXT('|');
+          }
+
           i++;
         }
-        openfilename.lpstrFile[i] = TEXT('|');
+
+        iupAttribSetInt(ih, "MULTIVALUECOUNT", count);
+        openfilename.lpstrFile[i] = TEXT('|');  /* one last at the end */
       }
 
       iupAttribSet(ih, "STATUS", "0");
@@ -603,6 +616,10 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
     }
     else
     {
+      dir = iupStrFileGetPath(iupwinStrFromSystemFilename(openfilename.lpstrFile));
+      iupAttribSetStr(ih, "DIRECTORY", dir);
+      free(dir);
+
       if (winIsFile(openfilename.lpstrFile))  /* check if file exists */
       {
         iupAttribSet(ih, "FILEEXIST", "YES");

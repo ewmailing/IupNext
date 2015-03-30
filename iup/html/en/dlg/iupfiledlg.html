@@ -115,8 +115,6 @@ For example:</p>
     
 <pre>&quot;/tecgraf/iup/test|a.txt|b.txt|c.txt|&quot; or
 &quot;/tecgraf/iup/test/a.txt&quot; (only one file is selected)</pre>
-<p class="info">In Windows the maximum size allowed  for file name returned is 
-65Kb. </p>
   
   <p><strong>NOCHANGEDIR</strong>:&nbsp;
   Indicates if the current working directory 
@@ -173,10 +171,16 @@ For example:</p>
   <p><strong><a href="../attrib/iup_title.html">TITLE</a></strong>:
   Dialog's title.</p>
   
-  <p><strong>VALUE</strong> (read-only):
-  Name of the selected file(s), or NULL if no file was selected. If FILE is not 
-  defined this is used as the initial value. In Windows there is a limit of 32Kb 
-  for this string. </p>
+  <p><strong>VALUE</strong> (read-only): Name of the selected file(s), or NULL 
+  if no file was selected. If FILE is not defined this is used as the initial 
+  value. When MULTIPLEFILES=Yes it contains the path and several file names 
+  separated by the '|' character.</p>
+<p><strong>MULTIVALUECOUNT</strong>(read-only): number of returned values when MULTIPLEFILES=Yes. 
+It includes the path. (Since 3.14)</p>
+<p><strong>MULTIVALUE</strong><em><strong>id</strong></em> (read-only): the same 
+sequence returned in VALUE when MULTIPLEFILES=Yes but split in several 
+attributes. VALUE0 contains the path (same as DIRECTORY), and VALUE1,VALUE2,... 
+contains each file name without the path. (Since 3.14)</p>
   
 
 <h3><a name="Callbacks">Callbacks</a></h3>

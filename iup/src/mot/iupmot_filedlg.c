@@ -152,7 +152,7 @@ static void motFileDlgCBclose(Widget w, XtPointer client_data, XtPointer call_da
 
 static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList)
 {
-  int *pos, sel_count, dir_len;
+  int *pos, sel_count, dir_len, count = 0;
   int i, len, cur_len;
   char *filename, *all_names;
   Iarray* names_array;
@@ -172,6 +172,9 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
   dir_len = cur_len;
   cur_len++; /* skip separator */
 
+  iupAttribSetStrId(ih, "MULTIVALUE", count, dir);
+  count++;
+
   for (i = 0; i<sel_count; i++)
   {
     filename = iupmotGetXmString(items[pos[i]-1]);  /* XmListGetSelectedPos starts at 1 */
@@ -183,11 +186,17 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
       all_names = iupArrayAdd(names_array, len+1);
       memcpy(all_names+cur_len, filename+dir_len, len);
       all_names[cur_len+len] = '|';
+
+      iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
+      count++;
+
       XtFree(filename);
     }
   }
 
   XtFree((char*)pos);
+
+  iupAttribSetInt(ih, "MULTIVALUECOUNT", count);
 
   cur_len = iupArrayCount(names_array);
   all_names = iupArrayInc(names_array);

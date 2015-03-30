@@ -279,7 +279,6 @@ static void new_font(void)
 
 static void new_file(char* dialogtype, int preview)
 {
-  char* v;
   Ihandle *dlg = IupFileDlg(); 
 
   IupSetAttribute(dlg, "PARENTDIALOG", "_MAIN_DIALOG_TEST_");
@@ -298,7 +297,7 @@ static void new_file(char* dialogtype, int preview)
 //    IupSetAttribute(dlg, "FILTER", "*.bmp;*.jpg"); 
 //    IupSetAttribute(dlg, "EXTFILTER", "TEXT|*.txt|");
 //    IupSetAttribute(dlg, "EXTFILTER", "BMP FILES|*.bmp|JPEG FILES|*.jpg|");
-    IupSetAttribute(dlg, "EXTFILTER", "IMAGEFILES|*.bmp;*.jpg|TEXT|*.txt|");
+    IupSetAttribute(dlg, "EXTFILTER", "All Files|*.*|Image Files|*.bmp;*.jpg|Text Files|*.txt|");
   }
   IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
   IupSetAttribute(dlg, "FILE", "test.bmp");
@@ -307,9 +306,9 @@ static void new_file(char* dialogtype, int preview)
 //  IupSetAttributes(dlg, "FILE = \"test.bmp\", DIRECTORY = \"/tecgraf/iup\"");   // OK
 //  IupSetAttributes(dlg, "FILE = \"test.bmp\", DIRECTORY = \"\\tecgraf\\iup\"");  // OK
 //  IupSetAttribute(dlg, "NOCHANGEDIR", "NO");
-//  IupSetAttribute(dlg, "MULTIPLEFILES", "YES");
+  if (strcmp(dialogtype, "OPEN") == 0) IupSetAttribute(dlg, "MULTIPLEFILES", "YES");
 //  IupSetAttribute(dlg, "RASTERSIZE", "800x600");
-  IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
+//  IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
 
   if (preview)
   {
@@ -331,14 +330,22 @@ static void new_file(char* dialogtype, int preview)
   {
     case 1: 
       printf("OK\n");
-      printf("  New file - VALUE(%s)\n", v = IupGetAttribute(dlg, "VALUE")); 
-      printf("  DIRECTORY(%s)\n", v = IupGetAttribute(dlg, "DIRECTORY")); 
+      printf("  New file - VALUE(%s)\n", IupGetAttribute(dlg, "VALUE")); 
+      printf("  DIRECTORY(%s)\n", IupGetAttribute(dlg, "DIRECTORY")); 
       break; 
     case 0 : 
       printf("OK\n");
-      printf("  File exists - VALUE(%s)\n", v = IupGetAttribute(dlg, "VALUE"));
-      printf("  DIRECTORY(%s)\n", v = IupGetAttribute(dlg, "DIRECTORY")); 
-      break; 
+      printf("  File exists - VALUE(%s)\n", IupGetAttribute(dlg, "VALUE"));
+      printf("  DIRECTORY(%s)\n", IupGetAttribute(dlg, "DIRECTORY")); 
+
+      if (IupGetInt(dlg, "MULTIPLEFILES"))
+      {
+        int i, count = IupGetInt(dlg, "MULTIVALUECOUNT");
+        printf("  MULTIVALUECOUNT(%d)\n", count);
+        for (i = 0; i < count; i++)
+          printf("  MULTIVALUE%d = %s\n", i, IupGetAttributeId(dlg, "MULTIVALUE", i));
+      }
+      break;
     case -1 : 
       printf("CANCEL\n");
       break; 

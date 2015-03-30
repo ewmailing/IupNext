@@ -58,7 +58,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (26/Mar/2015)</h3>
+<h3>SVN (30/Mar/2015)</h3>
 
 <ul>
 
@@ -71,6 +71,8 @@ version 3.x.</p>
 	expand/contract action in the title.</li>
 	<li><span class="hist_new">New:</span> CELL attribute in <strong>IupMatrix</strong> 
 	to return the displayed value.</li>
+	<li><span class="hist_new">New:</span> MULTIVALUECOUNT and MULTIVALUE<em>id</em> 
+	attributes for <strong>IupFileDlg</strong> when MULTIPLEFILES=Yes.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	<strong>IupMap</strong> will now call <strong>IupRefresh</strong> when 
 	mapping the dialog after all other processing. This affects the MAP_CB 
@@ -125,6 +127,9 @@ version 3.x.</p>
 	<strong>cell</strong> functions inside formulas when reference another cell 
 	that also uses formulas in <strong>IupMatrix</strong>. Recurrence in <strong>
 	range</strong> and <strong>cell</strong> functions. </li>
+	<li><strong><span class="hist_fixed">Fixed:</span></strong> DIRECTORY 
+	attribute return value when MULTIPLEFILES=Yes in <strong>IupFileDlg</strong> 
+	on Windows and GTK.</li>
 
 </ul>
 

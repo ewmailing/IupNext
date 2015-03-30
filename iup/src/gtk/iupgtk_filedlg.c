@@ -63,7 +63,7 @@ static char* gtkFileDlgGetNextStr(char* str)
 
 static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
 {
-  int len, cur_len, dir_len = -1;
+  int len, cur_len, dir_len = -1, count = 0;
   char *filename, *all_names;
   Iarray* names_array = iupArrayCreate(1024, 1);  /* just set an initial size, but count is 0 */
 
@@ -82,9 +82,12 @@ static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
       cur_len = iupArrayCount(names_array);
       all_names = iupArrayAdd(names_array, dir_len+1);
       memcpy(all_names+cur_len, filename, dir_len);
-      all_names[cur_len+dir_len] = '0';
-      iupAttribSetStr(ih, "DIRECTORY", all_names);
-      all_names[cur_len+dir_len] = '|';
+      all_names[cur_len+dir_len] = 0;
+      iupAttribSetStr(ih, "DIRECTORY", iupgtkStrConvertFromFilename(all_names));
+      all_names[cur_len + dir_len] = '|';
+
+      iupAttribSetStrId(ih, "MULTIVALUE", count, iupAttribGet(ih, "DIRECTORY"));
+      count++;
 
       dir_len++; /* skip separator */
     }
@@ -95,9 +98,14 @@ static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
     memcpy(all_names+cur_len, filename+dir_len, len);
     all_names[cur_len+len] = '|';
 
+    iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
+    count++;
+
     g_free(filename);
     list = list->next;
   }
+
+  iupAttribSetInt(ih, "MULTIVALUECOUNT", count);
 
   cur_len = iupArrayCount(names_array);
   all_names = iupArrayInc(names_array);
