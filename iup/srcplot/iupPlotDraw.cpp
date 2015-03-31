@@ -510,7 +510,7 @@ void iupPlot::DrawTitle(cdCanvas* canvas) const
 
 void iupPlot::DrawBackground(cdCanvas* canvas) const
 {
-  cdCanvasSetForeground(canvas, mBackColor);
+  cdCanvasSetForeground(canvas, mBack.mColor);
   cdCanvasBox(canvas, 0, mViewport.mWidth - 1, 0, mViewport.mHeight - 1);
 }
 
@@ -523,13 +523,13 @@ void iupPlot::DrawInactive(cdCanvas* canvas) const
 
 void iupPlot::DrawBackgroundImage(cdCanvas* canvas) const
 {
-  Ihandle* image = IupGetHandle(mBackImage);
+  Ihandle* image = IupGetHandle(mBack.GetImage());
   if (image)
   {
-    double theScreenMinX = mAxisX.mTrafo->Transform(mBackImageMinX);
-    double theScreenMinY = mAxisY.mTrafo->Transform(mBackImageMinY);
-    double theScreenMaxX = mAxisX.mTrafo->Transform(mBackImageMaxX);
-    double theScreenMaxY = mAxisY.mTrafo->Transform(mBackImageMaxY);
+    double theScreenMinX = mAxisX.mTrafo->Transform(mBack.mImageMinX);
+    double theScreenMinY = mAxisY.mTrafo->Transform(mBack.mImageMinY);
+    double theScreenMaxX = mAxisX.mTrafo->Transform(mBack.mImageMaxX);
+    double theScreenMaxY = mAxisY.mTrafo->Transform(mBack.mImageMaxY);
 
     double theScreenW = theScreenMaxX - theScreenMinX + 1;
     double theScreenH = theScreenMaxY - theScreenMinY + 1;
@@ -539,7 +539,7 @@ void iupPlot::DrawBackgroundImage(cdCanvas* canvas) const
     int theW = iupPlotRound(theScreenW);
     int theH = iupPlotRound(theScreenH);
 
-    cdIupDrawImage(canvas, image, theX, theY, theW, theH, 0, mBackColor);
+    cdIupDrawImage(canvas, image, theX, theY, theW, theH, 0, mBack.mColor);
   }
 }
 

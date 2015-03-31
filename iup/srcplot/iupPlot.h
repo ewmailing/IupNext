@@ -47,7 +47,7 @@ inline double iupPlotExp(double inFloat, double inBase)
 class iupPlotRect 
 {
 public:
-  iupPlotRect() :mX(0), mY(0), mWidth(0), mHeight(0){}
+  iupPlotRect() :mX(0), mY(0), mWidth(0), mHeight(0) {}
   iupPlotRect(int inX, int inY, int inWidth, int inHeight)
     : mX(inX), mY(inY), mWidth(inWidth), mHeight(inHeight) {}
 
@@ -60,7 +60,7 @@ public:
 class iupPlotMargin 
 {
 public:
-  iupPlotMargin() :mLeft(0), mRight(0), mTop(0), mBottom(0){}
+  iupPlotMargin() :mLeft(0), mRight(0), mTop(0), mBottom(0) {}
   iupPlotMargin(int inLeft, int inRight, int inTop, int inBottom)
     : mLeft(inLeft), mRight(inRight), mTop(inTop), mBottom(inBottom) {}
 
@@ -371,7 +371,8 @@ public:
       mMaxDecades(-1), mLogBase(10), mLabelCentered(false), mHasZoom(false),
       mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1),
       mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize), 
-      mTrafo(NULL), mTickIter(NULL), mDefaultFontStyle(inDefaultFontStyle) 
+      mTrafo(NULL), mTickIter(NULL), mDefaultFontStyle(inDefaultFontStyle),
+      mAutoScaleEqual(false)
     { strcpy(mTipFormatString, "%.2f"); }
   ~iupPlotAxis() { SetLabel(NULL); }
 
@@ -401,6 +402,7 @@ public:
   double mMax;
   bool mAutoScaleMin;
   bool mAutoScaleMax;
+  bool mAutoScaleEqual;
   bool mReverse;
   bool mCrossOrigin;
   bool mShowArrow;
@@ -510,7 +512,7 @@ public:
   iupPlotTitle() 
     : mColor(CD_BLACK), mText(NULL), mFontSize(0), mFontStyle(-1), 
       mAutoPos(true), mPosX(0), mPosY(0) {}
-  ~iupPlotTitle() { SetText(NULL); }
+  ~iupPlotTitle() { if (mText) free(mText); }
 
   void SetText(const char* inValue) { if (mText) free(mText); mText = iupStrDup(inValue); }
   const char* GetText() const { return mText; }
@@ -523,6 +525,28 @@ public:
 
 protected:
   char* mText;
+};
+
+class iupPlotBackground
+{
+public:
+  iupPlotBackground()
+    : mColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mImage(NULL) {}
+  ~iupPlotBackground() { if (mImage) free(mImage); }
+
+  void SetImage(const char* inValue) { if (mImage) free(mImage); mImage = iupStrDup(inValue); }
+  const char* GetImage() const { return mImage; }
+
+  iupPlotMargin mMargin, 
+                mMarginAuto;
+  long mColor;
+  double mImageMinX, 
+         mImageMaxX, 
+         mImageMinY, 
+         mImageMaxY;
+
+protected:
+  char* mImage;
 };
 
 #define IUP_PLOT_MAX_DS 20
@@ -538,6 +562,7 @@ public:
   Ihandle* ih;
   bool mRedraw;
   iupPlotRect mViewport;
+  bool mViewportSquare;
   int mDefaultFontSize;
   int mDefaultFontStyle;
 
@@ -601,10 +626,7 @@ public:
 
   /*********************************/
 
-  iupPlotMargin mMargin, mMarginAuto;
-  long mBackColor;
-  char* mBackImage;
-  double mBackImageMinX, mBackImageMaxX, mBackImageMinY, mBackImageMaxY;
+  iupPlotBackground mBack;
   iupPlotGrid mGrid;
   iupPlotGrid mGridMinor;
   iupPlotAxis mAxisX;

@@ -75,7 +75,7 @@ static int predraw_cb(Ihandle* ih, cdCanvas* cnv)
 static void InitPlots(void)
 {
   int theI;
-  double x, y, theFac;
+  double x, y, theFac, Mult;
 
   /************************************************************************/
   /* PLOT 0 - MakeExamplePlot1 */
@@ -97,6 +97,10 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
 //  IupSetAttribute(plot[0], "ACTIVE", "No");
 
+//  IupSetAttribute(plot[0], "AXS_AUTOSCALEEQUAL", "Yes");
+//  Mult = 80;
+//  IupSetAttribute(plot[0], "VIEWPORTSQUARE", "Yes");
+
   if (0)
   {
     Ihandle* image = IupLoadImage("../test/corsega.tif");
@@ -115,7 +119,7 @@ static void InitPlots(void)
   for (theI=-100; theI<=100; theI++) 
   {
     x = (theI+50);
-    y = theFac*theI*theI*theI;
+    y = Mult*theFac*theI*theI*theI;
     IupPlotAdd(plot[0], x, y);
   }
   IupPlotEnd(plot[0]);
@@ -128,7 +132,7 @@ static void InitPlots(void)
   for (theI=-100; theI<0; theI++) 
   {
     x = theI;
-    y = -theFac*theI;
+    y = -Mult * theFac*theI;
     IupPlotAdd(plot[0], x, y);
   }
 
@@ -139,7 +143,7 @@ static void InitPlots(void)
     for (theI=0; theI<=100; theI++) 
     {
       x = theI;
-      y = -theFac*theI;
+      y = -Mult * theFac*theI;
       px[theI] = x;
       py[theI] = y;
       count++;
@@ -154,7 +158,7 @@ static void InitPlots(void)
   for (theI=-100; theI<=100; theI++) 
   {
     x = (0.01*theI*theI-30);
-    y = 0.01*theI;
+    y = 0.01 * Mult * theI;
     IupPlotAdd(plot[0], x, y);
   }
   IupPlotEnd(plot[0]);

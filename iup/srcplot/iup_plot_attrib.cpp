@@ -77,7 +77,7 @@ static char* iupStrReturnColor(long color)
   return iupStrReturnRGBA(r, g, b, a);
 }
 
-static int iupStrToColor(const char* str, long *color)
+int iupStrToColor(const char* str, long *color)
 {
   unsigned char r, g, b, a;
   if (iupStrToRGBA(str, &r, &g, &b, &a))
@@ -311,15 +311,14 @@ static char* iPlotGetLegendPosAttrib(Ihandle* ih)
 
 static int iPlotSetBackImageAttrib(Ihandle* ih, const char* value)
 {
-  if (ih->data->current_plot->mBackImage) free(ih->data->current_plot->mBackImage);
-  ih->data->current_plot->mBackImage = iupStrDup(value);
+  ih->data->current_plot->mBack.SetImage(value);
   ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
 static char* iPlotGetBackImageAttrib(Ihandle* ih)
 {
-  return ih->data->current_plot->mBackImage;
+  return (char*)(ih->data->current_plot->mBack.GetImage());
 }
 
 static int iPlotSetLegendPosXYAttrib(Ihandle* ih, const char* value)
@@ -346,7 +345,7 @@ static int iPlotSetBackImageXMinAttrib(Ihandle* ih, const char* value)
   double xx;
   if (iupStrToDouble(value, &xx))
   {
-    ih->data->current_plot->mBackImageMinX = xx;
+    ih->data->current_plot->mBack.mImageMinX = xx;
     ih->data->current_plot->mRedraw = true;
   }
   return 0;
@@ -357,7 +356,7 @@ static int iPlotSetBackImageYMinAttrib(Ihandle* ih, const char* value)
   double xx;
   if (iupStrToDouble(value, &xx))
   {
-    ih->data->current_plot->mBackImageMinY = xx;
+    ih->data->current_plot->mBack.mImageMinY = xx;
     ih->data->current_plot->mRedraw = true;
   }
   return 0;
@@ -365,12 +364,12 @@ static int iPlotSetBackImageYMinAttrib(Ihandle* ih, const char* value)
 
 static char* iPlotGetBackImageXMinAttrib(Ihandle* ih)
 {
-  return iupStrReturnDouble(ih->data->current_plot->mBackImageMinX);
+  return iupStrReturnDouble(ih->data->current_plot->mBack.mImageMinX);
 }
 
 static char* iPlotGetBackImageYMinAttrib(Ihandle* ih)
 {
-  return iupStrReturnDouble(ih->data->current_plot->mBackImageMinY);
+  return iupStrReturnDouble(ih->data->current_plot->mBack.mImageMinY);
 }
 
 static int iPlotSetBackImageXMaxAttrib(Ihandle* ih, const char* value)
@@ -378,7 +377,7 @@ static int iPlotSetBackImageXMaxAttrib(Ihandle* ih, const char* value)
   double xx;
   if (iupStrToDouble(value, &xx))
   {
-    ih->data->current_plot->mBackImageMaxX = xx;
+    ih->data->current_plot->mBack.mImageMaxX = xx;
     ih->data->current_plot->mRedraw = true;
   }
   return 0;
@@ -389,7 +388,7 @@ static int iPlotSetBackImageYMaxAttrib(Ihandle* ih, const char* value)
   double xx;
   if (iupStrToDouble(value, &xx))
   {
-    ih->data->current_plot->mBackImageMaxY = xx;
+    ih->data->current_plot->mBack.mImageMaxY = xx;
     ih->data->current_plot->mRedraw = true;
   }
   return 0;
@@ -397,24 +396,24 @@ static int iPlotSetBackImageYMaxAttrib(Ihandle* ih, const char* value)
 
 static char* iPlotGetBackImageXMaxAttrib(Ihandle* ih)
 {
-  return iupStrReturnDouble(ih->data->current_plot->mBackImageMaxX);
+  return iupStrReturnDouble(ih->data->current_plot->mBack.mImageMaxX);
 }
 
 static char* iPlotGetBackImageYMaxAttrib(Ihandle* ih)
 {
-  return iupStrReturnDouble(ih->data->current_plot->mBackImageMaxY);
+  return iupStrReturnDouble(ih->data->current_plot->mBack.mImageMaxY);
 }
 
 static int iPlotSetBackColorAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->current_plot->mBackColor = iPlotGetColor(ih, value, "BGCOLOR");
+  ih->data->current_plot->mBack.mColor = iPlotGetColor(ih, value, "BGCOLOR");
   ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
 static char* iPlotGetBackColorAttrib(Ihandle* ih)
 {
-  return iupStrReturnColor(ih->data->current_plot->mBackColor);
+  return iupStrReturnColor(ih->data->current_plot->mBack.mColor);
 }
 
 static int iPlotSetBGColorAttrib(Ihandle* ih, const char* value)
@@ -426,7 +425,7 @@ static int iPlotSetBGColorAttrib(Ihandle* ih, const char* value)
     for (int p = 0; p<ih->data->plot_list_count; p++)
     {
       ih->data->plot_list[p]->mLegend.mBoxBackColor = color;
-      ih->data->plot_list[p]->mBackColor = color;
+      ih->data->plot_list[p]->mBack.mColor = color;
 
       ih->data->plot_list[p]->mRedraw = true;
     }
@@ -614,53 +613,53 @@ static char* iPlotGetLegendFontSizeAttrib(Ihandle* ih)
 
 static int iPlotSetMarginLeftAutoAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->current_plot->mMarginAuto.mLeft = iupStrBoolean(value);
+  ih->data->current_plot->mBack.mMarginAuto.mLeft = iupStrBoolean(value);
   return 0;
 }
 
 static int iPlotSetMarginRightAutoAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->current_plot->mMarginAuto.mRight = iupStrBoolean(value);
+  ih->data->current_plot->mBack.mMarginAuto.mRight = iupStrBoolean(value);
   return 0;
 }
 
 static int iPlotSetMarginTopAutoAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->current_plot->mMarginAuto.mTop = iupStrBoolean(value);
+  ih->data->current_plot->mBack.mMarginAuto.mTop = iupStrBoolean(value);
   return 0;
 }
 
 static int iPlotSetMarginBottomAutoAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->current_plot->mMarginAuto.mBottom = iupStrBoolean(value);
+  ih->data->current_plot->mBack.mMarginAuto.mBottom = iupStrBoolean(value);
   return 0;
 }
 
 static char* iPlotGetMarginLeftAutoAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean(ih->data->current_plot->mMarginAuto.mLeft);
+  return iupStrReturnBoolean(ih->data->current_plot->mBack.mMarginAuto.mLeft);
 }
 
 static char* iPlotGetMarginRightAutoAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean(ih->data->current_plot->mMarginAuto.mRight);
+  return iupStrReturnBoolean(ih->data->current_plot->mBack.mMarginAuto.mRight);
 }
 
 static char* iPlotGetMarginTopAutoAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean(ih->data->current_plot->mMarginAuto.mTop);
+  return iupStrReturnBoolean(ih->data->current_plot->mBack.mMarginAuto.mTop);
 }
 
 static char* iPlotGetMarginBottomAutoAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean(ih->data->current_plot->mMarginAuto.mBottom);
+  return iupStrReturnBoolean(ih->data->current_plot->mBack.mMarginAuto.mBottom);
 }
 
 static int iPlotSetMarginLeftAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "AUTO"))
   {
-    ih->data->current_plot->mMarginAuto.mLeft = 1;
+    ih->data->current_plot->mBack.mMarginAuto.mLeft = 1;
     ih->data->current_plot->mRedraw = true;
   }
   else
@@ -668,8 +667,8 @@ static int iPlotSetMarginLeftAttrib(Ihandle* ih, const char* value)
     int ii;
     if (iupStrToInt(value, &ii))
     {
-      ih->data->current_plot->mMarginAuto.mLeft = 0;
-      ih->data->current_plot->mMargin.mLeft = ii;
+      ih->data->current_plot->mBack.mMarginAuto.mLeft = 0;
+      ih->data->current_plot->mBack.mMargin.mLeft = ii;
       ih->data->current_plot->mRedraw = true;
     }
   }
@@ -680,7 +679,7 @@ static int iPlotSetMarginRightAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "AUTO"))
   {
-    ih->data->current_plot->mMarginAuto.mRight = 1;
+    ih->data->current_plot->mBack.mMarginAuto.mRight = 1;
     ih->data->current_plot->mRedraw = true;
   }
   else
@@ -688,8 +687,8 @@ static int iPlotSetMarginRightAttrib(Ihandle* ih, const char* value)
     int ii;
     if (iupStrToInt(value, &ii))
     {
-      ih->data->current_plot->mMarginAuto.mRight = 0;
-      ih->data->current_plot->mMargin.mRight = ii;
+      ih->data->current_plot->mBack.mMarginAuto.mRight = 0;
+      ih->data->current_plot->mBack.mMargin.mRight = ii;
       ih->data->current_plot->mRedraw = true;
     }
   }
@@ -700,7 +699,7 @@ static int iPlotSetMarginTopAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "AUTO"))
   {
-    ih->data->current_plot->mMarginAuto.mTop = 1;
+    ih->data->current_plot->mBack.mMarginAuto.mTop = 1;
     ih->data->current_plot->mRedraw = true;
   }
   else
@@ -708,8 +707,8 @@ static int iPlotSetMarginTopAttrib(Ihandle* ih, const char* value)
     int ii;
     if (iupStrToInt(value, &ii))
     {
-      ih->data->current_plot->mMarginAuto.mTop = 0;
-      ih->data->current_plot->mMargin.mTop = ii;
+      ih->data->current_plot->mBack.mMarginAuto.mTop = 0;
+      ih->data->current_plot->mBack.mMargin.mTop = ii;
       ih->data->current_plot->mRedraw = true;
     }
   }
@@ -720,7 +719,7 @@ static int iPlotSetMarginBottomAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "AUTO"))
   {
-    ih->data->current_plot->mMarginAuto.mBottom = 1;
+    ih->data->current_plot->mBack.mMarginAuto.mBottom = 1;
     ih->data->current_plot->mRedraw = true;
   }
   else
@@ -728,8 +727,8 @@ static int iPlotSetMarginBottomAttrib(Ihandle* ih, const char* value)
     int ii;
     if (iupStrToInt(value, &ii))
     {
-      ih->data->current_plot->mMarginAuto.mBottom = 0;
-      ih->data->current_plot->mMargin.mBottom = ii;
+      ih->data->current_plot->mBack.mMarginAuto.mBottom = 0;
+      ih->data->current_plot->mBack.mMargin.mBottom = ii;
       ih->data->current_plot->mRedraw = true;
     }
   }
@@ -738,22 +737,22 @@ static int iPlotSetMarginBottomAttrib(Ihandle* ih, const char* value)
 
 static char* iPlotGetMarginLeftAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(ih->data->current_plot->mMargin.mLeft);
+  return iupStrReturnInt(ih->data->current_plot->mBack.mMargin.mLeft);
 }
 
 static char* iPlotGetMarginRightAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(ih->data->current_plot->mMargin.mRight);
+  return iupStrReturnInt(ih->data->current_plot->mBack.mMargin.mRight);
 }
 
 static char* iPlotGetMarginTopAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(ih->data->current_plot->mMargin.mTop);
+  return iupStrReturnInt(ih->data->current_plot->mBack.mMargin.mTop);
 }
 
 static char* iPlotGetMarginBottomAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(ih->data->current_plot->mMargin.mBottom);
+  return iupStrReturnInt(ih->data->current_plot->mBack.mMargin.mBottom);
 }
 
 static int iPlotSetGridAttrib(Ihandle* ih, const char* value)
@@ -1811,6 +1810,67 @@ static char* iPlotGetAxisYLineWidthAttrib(Ihandle* ih)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
   return iupStrReturnInt(axis->mLineWidth);
+}
+
+static int iPlotSetViewportSquareAttrib(Ihandle* ih, const char* value)
+{
+  iupPlotResetZoom(ih, 0);
+
+  ih->data->current_plot->mViewportSquare = iupStrBoolean(value)? true: false;
+
+  if (ih->data->current_plot->mViewportSquare)
+    ih->data->clear = 1;
+  else
+  {
+    ih->data->clear = 0;
+
+    for (int i = 0; i < ih->data->plot_list_count; i++)
+    {
+      if (ih->data->plot_list[i]->mViewportSquare)
+      {
+        ih->data->clear = 1;
+        break;
+      }
+    }
+  }
+
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
+
+static char* iPlotGetViewportSquareAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->current_plot->mViewportSquare);
+}
+
+static int iPlotSetAxisAutoScaleEqualAttrib(Ihandle* ih, const char* value)
+{
+  iupPlotAxis* axisX = &ih->data->current_plot->mAxisX;
+  iupPlotAxis* axisY = &ih->data->current_plot->mAxisY;
+
+  iupPlotResetZoom(ih, 0);
+
+  if (iupStrBoolean(value))
+  {
+    axisX->mAutoScaleEqual = true;
+    axisY->mAutoScaleEqual = true;
+  }
+  else
+  {
+    axisX->mAutoScaleEqual = false;
+    axisY->mAutoScaleEqual = false;
+  }
+
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
+
+static char* iPlotGetAxisAutoScaleEqualAttrib(Ihandle* ih)
+{
+  iupPlotAxis* axisX = &ih->data->current_plot->mAxisX;
+  iupPlotAxis* axisY = &ih->data->current_plot->mAxisY;
+
+  return iupStrReturnBoolean(axisX->mAutoScaleEqual && axisY->mAutoScaleEqual);
 }
 
 static int iPlotSetAxisXAutoMinAttrib(Ihandle* ih, const char* value)
@@ -2963,6 +3023,9 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "DS_REMOVE", NULL, iPlotSetDSRemoveAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_COUNT", iPlotGetDSCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_USERDATA", iPlotGetDSUserDataAttrib, iPlotSetDSUserDataAttrib, NULL, NULL, IUPAF_NO_STRING | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "VIEWPORTSQUARE", iPlotGetViewportSquareAttrib, iPlotSetViewportSquareAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_AUTOSCALEEQUAL", iPlotGetAxisAutoScaleEqualAttrib, iPlotSetAxisAutoScaleEqualAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "AXS_X", iPlotGetAxisXAttrib, iPlotSetAxisXAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_Y", iPlotGetAxisYAttrib, iPlotSetAxisYAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

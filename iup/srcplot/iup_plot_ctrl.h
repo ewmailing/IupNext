@@ -20,6 +20,7 @@ struct _IcontrolData
   int numcol;
   int sync_view;
   int read_only;
+  int clear;
 
   cdCanvas* cd_canvas;
   int graphics_mode;
@@ -48,5 +49,6 @@ void iupPlotResetZoom(Ihandle *ih, int redraw);
 void iupPlotSetPlotCurrent(Ihandle* ih, int p);
 void iupPlotShowMenuContext(Ihandle* ih, int screen_x, int screen_y, int x, int y);
 
+int iupStrToColor(const char* str, long *color);
 
 #endif

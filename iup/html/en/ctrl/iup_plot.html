@@ -379,6 +379,8 @@ interactive zoom or pan, the other plots are zoomed or panned accordingly. </p>
 sample. Default: "%s (%s, %s)". First parameter is DS_NAME, then X and Y 
 sample values converted to strings using <a href="#AXS_XTIPFORMAT">AXS_XTIPFORMAT</a> and AXS_YTIPFORMAT 
 accordingly. (since 3.13)</p>
+<p><strong>VIEWPORTSQUARE</strong>: force the plot area to be a square. (since 
+3.14)</p>
 <hr class="auto-style4">
 <p class="info">All color attributes accept and 
 extra component for alpha. The default alpha is always 255 (opaque). </p>
@@ -539,6 +541,9 @@ dataset.</p>
 <p><strong>DS_USERDATA</strong>: user data associated with the dataset. (since 
 3.13)</p>
 <h4>Axis Configuration&nbsp; </h4>
+<p><b>AXS_AUTOSCALEEQUAL</b>: force the auto scale to use a single minimum and 
+maximum values for X and Y. Auto scale must be enabled for all limits 
+(AXS_*AUTO*=Yes). (since 3.14)</p>
 <p><b>AXS_X, AXS_Y</b>: enable or disable the axis display. Can be YES or NO. 
 Default: YES.</p>
 <p><b>AXS_XCOLOR, AXS_YCOLOR</b>: axis, ticks and label color. Default: FGCOLOR.</p>

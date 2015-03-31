@@ -720,26 +720,44 @@ void iupPlotAxis::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) con
 
 iupPlot::iupPlot(Ihandle* _ih, int inDefaultFontStyle, int inDefaultFontSize)
   :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mCrossHairH(false),
-  mBackColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mGrid(true), mGridMinor(false),
-  mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle), mBackImage(NULL),
+  mGrid(true), mGridMinor(false), mViewportSquare(false),
+  mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle), 
   mAxisX(inDefaultFontStyle, inDefaultFontSize), mAxisY(inDefaultFontStyle, inDefaultFontSize)
 {
 }
 
 iupPlot::~iupPlot()
 {
-  if (mBackImage)
-    free(mBackImage);
-
   RemoveAllDataSets();
 }
 
 void iupPlot::SetViewport(int x, int y, int w, int h)
 {
-  mViewport.mX = x;
-  mViewport.mY = y;
-  mViewport.mWidth = w;
-  mViewport.mHeight = h;
+  if (mViewportSquare && w != h)
+  {
+    if (w > h)
+    {
+      mViewport.mX = x + (w - h) / 2;
+      mViewport.mY = y;
+      mViewport.mWidth = h;
+      mViewport.mHeight = h;
+    }
+    else
+    {
+      mViewport.mX = x;
+      mViewport.mY = y + (h - w) / 2;
+      mViewport.mWidth = w;
+      mViewport.mHeight = w;
+    }
+  }
+  else
+  {
+    mViewport.mX = x;
+    mViewport.mY = y;
+    mViewport.mWidth = w;
+    mViewport.mHeight = h;
+  }
+
   mRedraw = true;
 }
 
@@ -1039,7 +1057,7 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   cdCanvasClip(canvas, CD_CLIPAREA);
 
-  // Clip the drawing area to the plot viewport
+  // Draw the background, axis and grid restricted only by the viewport
   cdCanvasClipArea(canvas, 0, mViewport.mWidth - 1, 0, mViewport.mHeight - 1);
 
   // draw entire plot viewport
@@ -1070,10 +1088,10 @@ bool iupPlot::Render(cdCanvas* canvas)
   CalculateMargins(canvas);
 
   iupPlotRect theDatasetArea;
-  theDatasetArea.mX = mMargin.mLeft;
-  theDatasetArea.mY = mMargin.mBottom;
-  theDatasetArea.mWidth = mViewport.mWidth - mMargin.mLeft - mMargin.mRight;
-  theDatasetArea.mHeight = mViewport.mHeight - mMargin.mTop - mMargin.mBottom;
+  theDatasetArea.mX = mBack.mMargin.mLeft;
+  theDatasetArea.mY = mBack.mMargin.mBottom;
+  theDatasetArea.mWidth = mViewport.mWidth - mBack.mMargin.mLeft - mBack.mMargin.mRight;
+  theDatasetArea.mHeight = mViewport.mHeight - mBack.mMargin.mTop - mBack.mMargin.mBottom;
 
   if (!CalculateTickSpacing(theDatasetArea, canvas))
     return false;
@@ -1088,7 +1106,7 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (pre_cb)
     pre_cb(ih, canvas);
 
-  if (mBackImage)
+  if (mBack.GetImage())
     DrawBackgroundImage(canvas);
 
   if (!mGrid.DrawX(mAxisX.mTickIter, mAxisX.mTrafo, theDatasetArea, canvas))
@@ -1112,7 +1130,7 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (mBox.mShow)
     mBox.Draw(theDatasetArea, canvas);
 
-  // clip to the dataset area
+  // draw the datasets, legend, crosshair and selection restricted to the dataset area
   cdCanvasClipArea(canvas, theDatasetArea.mX, theDatasetArea.mX + theDatasetArea.mWidth - 1, theDatasetArea.mY, theDatasetArea.mY + theDatasetArea.mHeight - 1);
 
   IFniiddi drawsample_cb = (IFniiddi)IupGetCallback(ih, "DRAWSAMPLE_CB");
@@ -1162,7 +1180,7 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (!DrawLegend(theDatasetArea, canvas, mLegend.mPos))
     return false;
 
-  // Clip the drawing area to the viewport
+  // Draw title restricted only by the viewport
   cdCanvasClipArea(canvas, 0, mViewport.mWidth - 1, 0, mViewport.mHeight - 1);
 
   DrawTitle(canvas);
