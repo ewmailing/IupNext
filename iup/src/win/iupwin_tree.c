@@ -331,7 +331,7 @@ static int winTreeIsNodeSelected(Ihandle* ih, HTREEITEM hItem)
 
 static void winTreeSelectNode(Ihandle* ih, HTREEITEM hItem, int select)
 {
-  TV_ITEM item;
+  TVITEM item;
   item.mask = TVIF_STATE | TVIF_HANDLE;
   item.stateMask = TVIS_SELECTED;
   item.hItem = hItem;
@@ -477,6 +477,7 @@ static Iarray* winTreeGetSelectedArrayId(Ihandle* ih)
 /* Insert the copied item in a new location. Returns the new item. */
 static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM hParent, HTREEITEM hPosition, int is_copy)
 {
+  HTREEITEM new_hItem;
   TVITEM item; 
   TVINSERTSTRUCT tvins;
   TCHAR title[255];
@@ -502,7 +503,16 @@ static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM hParent
 
   /* Add the new node */
   ih->data->node_count++;
-  return (HTREEITEM)SendMessage(ih->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+
+  new_hItem = (HTREEITEM)SendMessage(ih->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+
+  /* state is not preserved during insertitem, so force it here */
+  item.hItem = new_hItem;
+  item.mask = TVIF_HANDLE | TVIF_STATE;
+  item.stateMask = TVIS_STATEIMAGEMASK;
+  SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
+
+  return new_hItem;
 }
 
 static void winTreeCopyChildren(Ihandle* ih, HTREEITEM hItemSrc, HTREEITEM hItemDst, int is_copy)
@@ -697,12 +707,12 @@ static void winTreeSetToggleState(Ihandle* ih, HTREEITEM hItem, int state)
 {
   TVITEM item;
 
-  item.mask = TVIF_STATE;
+  item.mask = TVIF_STATE | TVIF_HANDLE;
   item.hItem = hItem;
   item.stateMask = TVIS_STATEIMAGEMASK;
   item.state = INDEXTOSTATEIMAGEMASK(state);
 
-  SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(TV_ITEM *)&item);
+  SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)&item);
 }
 
 static void winTreeSetToggleVisible(Ihandle* ih, HTREEITEM hItem, int visible)
@@ -710,12 +720,12 @@ static void winTreeSetToggleVisible(Ihandle* ih, HTREEITEM hItem, int visible)
   TVITEM item;
   int empty_image = ih->data->show_toggle==2? 4: 3;
 
-  item.mask = TVIF_STATE;
+  item.mask = TVIF_STATE | TVIF_HANDLE;
   item.hItem = hItem;
   item.stateMask = TVIS_STATEIMAGEMASK;
   item.state = visible? INDEXTOSTATEIMAGEMASK(1): INDEXTOSTATEIMAGEMASK(empty_image);
 
-  SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(TV_ITEM *)&item);
+  SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)&item);
 }
 
 static int winTreeGetToggleVisible(Ihandle* ih, HTREEITEM hItem)
@@ -1186,7 +1196,7 @@ static int winTreeSetTitleFontAttrib(Ihandle* ih, int id, const char* value)
     itemData->hFont = iupwinGetHFont(value);
     if (itemData->hFont)
     {
-      TV_ITEM item;
+      TVITEM item;
       TCHAR title[255];
 
       winTreeGetTitle(ih, hItem, title);
@@ -2770,6 +2780,7 @@ static int winTreeConvertXYToPos(Ihandle* ih, int x, int y)
 
 static HTREEITEM winTreeDragDropCopyItem(Ihandle* src, Ihandle* dst, HTREEITEM hItem, HTREEITEM hParent, HTREEITEM hPosition)
 {
+  HTREEITEM new_hItem;
   TVITEM item; 
   TVINSERTSTRUCT tvins;
   TCHAR title[255];
@@ -2793,7 +2804,13 @@ static HTREEITEM winTreeDragDropCopyItem(Ihandle* src, Ihandle* dst, HTREEITEM h
 
   /* Add the new node */
   dst->data->node_count++;
-  return (HTREEITEM)SendMessage(dst->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+  new_hItem = (HTREEITEM)SendMessage(dst->handle, TVM_INSERTITEM, 0, (LPARAM)(LPTVINSERTSTRUCT)&tvins);
+
+  /* state is not preserved during insertitem, so force it here */
+  item.hItem = new_hItem;
+  item.mask = TVIF_HANDLE | TVIF_STATE;
+  item.stateMask = TVIS_STATEIMAGEMASK;
+  SendMessage(dst->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
 }
 
 static void winTreeDragDropCopyChildren(Ihandle* src, Ihandle* dst, HTREEITEM hItemSrc, HTREEITEM hItemDst)
