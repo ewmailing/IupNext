@@ -377,6 +377,7 @@ static void iExpanderAnimateChild(Ihandle* ih, Ihandle* child)
   int i, width, height, final_height, closing = 0;
   clock_t start, end, time;
   int num_frames = iupAttribGetInt(ih, "NUMFRAMES");
+  int frame_time = iupAttribGetInt(ih, "FRAMETIME");
 
   /* IMPORTANT: child must be a native container or this will not work. */
 
@@ -421,8 +422,8 @@ static void iExpanderAnimateChild(Ihandle* ih, Ihandle* child)
 
     end = clock();
     time = (end - start) / (i + 1);
-    time = time < 10 ? 10 : time;  /* minimum is 10 ms */
-    iupdrvSleep(time);
+    if (frame_time - time > 0)
+      iupdrvSleep(frame_time - time);
   }
 
   iupAttribSetStr(child, "MAXSIZE", iupAttribGet(child, "OLD_MAXSIZE"));
@@ -1519,6 +1520,7 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "EXTRABUTTONS", iExpanderGetExtraButtonsAttrib, iExpanderSetExtraButtonsAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANIMATION", iExpanderGetAnimationAttrib, iExpanderSetAnimationAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMFRAMES", NULL, NULL, IUPAF_SAMEASSYSTEM, "10", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRAMETIME", NULL, NULL, IUPAF_SAMEASSYSTEM, "10", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, iExpanderSetImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
