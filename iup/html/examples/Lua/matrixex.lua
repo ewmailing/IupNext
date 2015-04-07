@@ -24,7 +24,7 @@ mat:setcell(1,1,"5.6")
 mat:setcell(2,1,"2.2")
 mat:setcell(3,1,"7.2")
 mat:setcell(1,2,"4.6")
-mat:setcell(2,2,"1.3")
+--mat:setcell(2,2,"1.3")
 mat:setcell(3,2,"1.4")
 dlg = iup.dialog{iup.vbox{mat; margin="10x10"}}
 
@@ -35,7 +35,11 @@ dlg = iup.dialog{iup.vbox{mat; margin="10x10"}}
 
 --iup.MatrixSetFormula(mat, 3, "cell(lin, 1) + cell(lin, 2)")
 
+mat.cellnames = "Yes"
 mat:setcell(1,3,"=3+3")
+mat:setcell(2,2,"=1.3 + cell(2,3)")
+--mat:setcell(3,2,"=1.3 + L2C3")
+mat:setcell(3,2,"=1.3 + C2")
 mat:setcell(2,3,"=sin(pi/4)")
 iup.MatrixSetDynamic(mat)
 

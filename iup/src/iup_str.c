@@ -243,13 +243,14 @@ void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_str)
   }
 }
 
-char* iupStrDupUntil(char **str, char c)
+char* iupStrDupUntil(const char **str, char c)
 {
-  char *p_str,*new_str;
+  const char *p_str;
+  char *new_str;
   if (!str || str[0]==0)
     return NULL;
 
-  p_str=strchr(*str,c);
+  p_str = strchr(*str,c);
   if (!p_str) 
     return NULL;
   else

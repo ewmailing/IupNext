@@ -331,6 +331,12 @@ special operations:</p>
        test <strong>and</strong> value_true <strong>or</strong> value_false
        (but value_true can not be <strong>false</strong>)
        See <a href="http://lua-users.org/wiki/TernaryOperatorhttp://lua-users.org/wiki/TernaryOperator" target="_blank">http://lua-users.org/wiki/TernaryOperator</a></pre>
+<p>If the attribute CELLNAMES is set to Yes (default NO) then it will enabled 
+cell names to be used instead of &quot;cell(lin, col)&quot;. There are two notations 
+available at the same time: the &quot;L123C123&quot; notation where L and C are fixed and 
+123s are the line and columns numbers; and the &quot;ABC123&quot; notation where 123 
+denotes the line number and ABC denotes the column number just like in Microsoft 
+Excel.</p>
 <p>Some formula examples:</p>
 <pre>&quot;cos(pi*<strong>lin</strong>/4)&quot;
 &quot;cell(<strong>lin</strong>, 1) + cell(<strong>lin</strong>, 2)&quot;
@@ -355,9 +361,9 @@ once (can be NULL), at the function call. The callback <span class="auto-style1"
 <strong>FORMULAINIT_CB</strong>(Ihandle* 
 ih, lua_State *L);</span>&quot; can also be used to initialize the Lua state, at 
 the function call. All Lua standard libraries are pre-loaded.</p>
-<p>This Lua state is saved for processing during the TRANSLATEVALUE_CB callback. 
-If called again the previous state will be destroyed and a new one will be 
-created.</p>
+<p>This Lua state is initialize at the function call and saved for processing during the TRANSLATEVALUE_CB callback. 
+If IupMatrixSetDynamic is called again then the previous state will be destroyed and a new one will be 
+created. This state is automatically destroyed when the control is destroyed.</p>
 <p>This function is available in the &quot;iupluacontrols&quot; library but it does not 
 requires an active Lua context, because it uses a temporary Lua context. If 
 called from Lua it will also be independent from the application's Lua context. 

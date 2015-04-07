@@ -4,6 +4,8 @@
  * See Copyright Notice in "iup.h"
  */
 
+#include <memory.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -159,6 +161,118 @@ static void iMatrixShowFormulaError(Ihandle* ih, lua_State *L, const char* str_m
   iupShowError(IupGetDialog(ih), msg);
 }
 
+static void register_math_global(lua_State *L)
+{
+  const char* register_global =
+    "function openpackage(ns)\n"
+    "  for n, v in pairs(ns) do _G[n] = v end\n"
+    "end\n"
+    "openpackage(math)\n";
+
+  luaL_dostring(L, register_global);
+}
+
+#define iup_isupper(_c) (_c>='A' && _c<='Z')
+
+static int get_global_name(const char* key, size_t len, int *lin, int *col)
+{
+  int i;
+
+  if (len < 2)
+    return 0;
+
+  if (key[0] == 'L' && iup_isdigit(key[1]) && len > 3)
+  {
+    i = 2;
+    while (iup_isdigit(key[i]) && i < len) 
+      i++;
+
+    if (key[i] == 'C' && iup_isdigit(key[i+1]))
+    {
+      int start_col = i+1;
+      i += 2;
+
+      while (iup_isdigit(key[i]) && i < len)
+        i++;
+
+      if (i == len) /* found L123C123 notation */
+      {
+        char str_lin[50];
+        int str_lin_len = start_col-2;
+        if (str_lin_len > 50)
+          return 0;
+
+        memcpy(str_lin, key + 1, str_lin_len);
+        str_lin[str_lin_len] = 0;
+        iupStrToInt(str_lin, lin);
+
+        iupStrToInt(key + start_col, col);
+        return 1;
+      }
+    }
+  }
+
+  if (iup_isupper(key[0]) && len > 1)
+  {
+    i = 1;
+    while (iup_isupper(key[i]) && i < len)
+      i++;
+
+    if (iup_isdigit(key[i]))
+    {
+      int start_lin = i;
+      i++;
+
+      while (iup_isdigit(key[i]) && i < len)
+        i++;
+
+      if (i == len) /* found ABC123 (col|lin) notation (same as Excel) */
+      {
+        *col = 0;
+        i = 0;
+        while (i < start_lin)
+        {
+          (*col) = 26 * (*col) + (key[i] - 'A' + 1);
+          i++;
+        }
+
+        iupStrToInt(key + start_lin, lin);
+        return 1;
+      }
+    }
+  }
+
+  return 0;
+}
+
+static int global_index(lua_State *L)
+{
+  size_t len;
+  const char* key = lua_tolstring(L, 2, &len);
+  int lin, col;
+
+  if (get_global_name(key, len, &lin, &col))
+  {
+    Ihandle *ih;
+    char* value;
+
+    lua_getglobal(L, "matrix");
+    ih = (Ihandle*)lua_touserdata(L, -1);
+
+    value = get_cell_value_safe(L, ih, lin, col);
+    luamatrix_pushvalue(L, value, 0);
+  }
+  else 
+  {
+    /* get raw method */
+    lua_getmetatable(L, 1);
+    lua_pushvalue(L, 2);
+    lua_rawget(L, -2);
+  }
+
+  return 1;
+}
+
 static lua_State* iMatrixInitFormula(Ihandle* ih, const char* init)
 {
   lua_State *L;
@@ -171,7 +285,7 @@ static lua_State* iMatrixInitFormula(Ihandle* ih, const char* init)
   /* must be an IupMatrix */
   if (ih->iclass->nativetype != IUP_TYPECANVAS ||
       !IupClassMatch(ih, "matrix"))
-      return NULL;
+    return NULL;
 
   L = (lua_State*)iupAttribGet(ih, "_IUPMATRIXEX_LUASTATE");
   if (L)
@@ -180,13 +294,12 @@ static lua_State* iMatrixInitFormula(Ihandle* ih, const char* init)
   L = luaL_newstate();
   luaL_openlibs(L);
 
+  register_math_global(L);
+
+  if (iupAttribGetBoolean(ih, "CELLNAMES"))
   {
-    const char* register_global =
-      "function openpackage(ns)\n"
-      "  for n, v in pairs(ns) do _G[n] = v end\n"
-      "end\n"
-      "openpackage(math)\n";
-    luaL_dostring(L, register_global);
+    lua_register(L, "global_index", global_index);
+    luaL_dostring(L, "setmetatable(_G, {__index=global_index})");
   }
 
   lua_register(L, "sum", math_sum);

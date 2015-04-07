@@ -94,7 +94,7 @@ char* iupStrDup(const char* str);
 /** Returns a new string containing a copy of the string up to the character.
  * The string is then incremented to after the position of the character.
  * \ingroup str */
-char *iupStrDupUntil(char **str, char c);
+char *iupStrDupUntil(const char **str, char c);
 
 /** Copy the string to the buffer, but limited to the max_size of the buffer.
  * buffer is always properly ended.
