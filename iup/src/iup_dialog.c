@@ -324,11 +324,19 @@ static void iDialogSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
 static void iDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  (void)x;
-  (void)y;
+  if (ih->firstchild)
+  {
+    char* offset = iupAttribGet(ih, "CHILDOFFSET");
 
-  /* Child coordinates are relative to client left-top corner. */
-  iupBaseSetPosition(ih->firstchild, 0, 0);
+    /* Native container, position is reset */
+    x = 0;
+    y = 0;
+
+    if (offset) iupStrToIntInt(offset, &x, &y, 'x');
+
+    /* Child coordinates are relative to client left-top corner. */
+    iupBaseSetPosition(ih->firstchild, x, y);
+  }
 }
 
 static void iDialogAfterShow(Ihandle* ih)
@@ -861,6 +869,9 @@ Iclass* iupDialogNewClass(void)
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  /* Native Container */
+  iupClassRegisterAttribute(ic, "CHILDOFFSET", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);

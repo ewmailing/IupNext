@@ -30,12 +30,25 @@ static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
 {
   if (ih->firstchild)
   {
+    int x, y;
+
+    char* offset = iupAttribGet(ih, "CHILDOFFSET");
+
+    /* Native container, position is reset */
+    x = 0;
+    y = 0;
+
+    if (offset) iupStrToIntInt(offset, &x, &y, 'x');
+
     if (IupGetInt(ih, "DX") > IupGetInt(ih, "XMAX")-iupdrvGetScrollbarSize())
       posx = 0;
     if (IupGetInt(ih, "DY") > IupGetInt(ih, "YMAX")-iupdrvGetScrollbarSize())
       posy = 0;
 
-    iupBaseSetPosition(ih->firstchild, -(int)posx, -(int)posy);
+    x -= (int)posx;
+    y -= (int)posy;
+
+    iupBaseSetPosition(ih->firstchild, x, y);
     iupLayoutUpdate(ih->firstchild);
   }
   (void)op;
@@ -184,10 +197,21 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 static void iScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   if (ih->firstchild)
-    iupBaseSetPosition(ih->firstchild, -IupGetInt(ih, "POSX"), -IupGetInt(ih, "POSY"));
+  {
+    char* offset = iupAttribGet(ih, "CHILDOFFSET");
 
-  (void)x;  /* Native container, position is reset */
-  (void)y;
+    /* Native container, position is reset */
+    x = 0;
+    y = 0;
+
+    if (offset) iupStrToIntInt(offset, &x, &y, 'x');
+
+    x -= IupGetInt(ih, "POSX");
+    y -= IupGetInt(ih, "POSY");
+
+    /* Child coordinates are relative to client left-top corner. */
+    iupBaseSetPosition(ih->firstchild, x, y);
+  }
 }
 
 static int iScrollBoxCreateMethod(Ihandle* ih, void** params)
@@ -234,6 +258,9 @@ Iclass* iupScrollBoxNewClass(void)
     iupClassRegisterGetAttribute(ic, "DRAWSIZE", &drawsize_get, NULL, NULL, NULL, NULL);
     iupClassRegisterAttribute(ic, "CLIENTSIZE", drawsize_get, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   }
+
+  /* Native Container */
+  iupClassRegisterAttribute(ic, "CHILDOFFSET", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* replace IupCanvas behavior */
   iupClassRegisterReplaceAttribFunc(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL);

@@ -482,11 +482,16 @@ static void iTabsSetChildrenPositionMethod(Ihandle* ih, int x, int y)
   /* In all systems, each tab is a native window covering the client area.
      Child coordinates are relative to client left-top corner of the tab page. */
   Ihandle* child;
-  for (child = ih->firstchild; child; child = child->brother)
-    iupBaseSetPosition(child, 0, 0);
+  char* offset = iupAttribGet(ih, "CHILDOFFSET");
 
-  (void)x;  /* Native container, position is reset */
-  (void)y;
+  /* Native container, position is reset */
+  x = 0;
+  y = 0;
+
+  if (offset) iupStrToIntInt(offset, &x, &y, 'x');
+
+  for (child = ih->firstchild; child; child = child->brother)
+    iupBaseSetPosition(child, x, y);
 }
 
 static void* iTabsGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
@@ -564,6 +569,9 @@ Iclass* iupTabsNewClass(void)
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iTabsGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", iTabsGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  /* Native Container */
+  iupClassRegisterAttribute(ic, "CHILDOFFSET", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupdrvTabsInitClass(ic);
 

@@ -162,7 +162,7 @@ void iupLayoutUpdate(Ihandle* ih)
 
 void iupLayoutCompute(Ihandle* ih)
 {
-  /* called only for the dialog */
+  /* usually called only for the dialog */
 
   int shrink = iupAttribGetBoolean(ih, "SHRINK");
 

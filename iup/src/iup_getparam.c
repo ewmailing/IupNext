@@ -1058,6 +1058,7 @@ Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count)
   iupAttribSet(param_box, "BUTTON2", (char*)button_2);
   iupAttribSet(param_box, "BUTTON3", (char*)button_3);
 
+  /* trick to update the label and text sizes */
   iupLayoutCompute(param_box);
 
   iParamBoxNormalizeSize(params, count);

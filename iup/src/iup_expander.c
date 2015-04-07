@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -233,9 +234,10 @@ struct _IcontrolData
   int extra_buttons;
   int auto_show;
   int title_expand;
+  int animation;
 
   /* aux */
-  Ihandle* timer;
+  Ihandle* auto_show_timer;
 };
 
 static void iExpanderUpdateTitleState(Ihandle* ih)
@@ -370,6 +372,69 @@ static void iExpanderUpdateStateImage(Ihandle* ih)
   }
 }
 
+static void iExpanderAnimateChild(Ihandle* ih, Ihandle* child)
+{
+  int i, width, height, final_height, closing = 0;
+  clock_t start, end, time;
+  int num_frames = iupAttribGetInt(ih, "NUMFRAMES");
+
+  /* IMPORTANT: child must be a native container or this will not work. */
+
+  if (ih->data->state != IEXPANDER_CLOSE)
+  {
+    /* was closed */
+    IupSetAttribute(child, "VISIBLE", "YES");
+
+    /* calculate the layout but do not update */
+    iupLayoutCompute(IupGetDialog(ih));
+  }
+  else
+  {
+    /* was open */
+
+    /* pretend it is still open */
+    ih->data->state = IEXPANDER_OPEN;
+    closing = 1;
+  }
+
+  final_height = child->currentheight;
+  width = child->currentwidth;
+
+  iupAttribSetStr(child, "OLD_MAXSIZE", iupAttribGet(child, "MAXSIZE"));
+
+  start = clock();
+
+  for (i = 0; i < num_frames; i++)
+  {
+    if (closing)
+      height = (final_height*(num_frames - i)) / num_frames;
+    else
+      height = (final_height*(i + 1)) / num_frames;
+
+    IupSetfAttribute(child, "MAXSIZE", "%dx%d", width, height);
+
+    if (ih->data->animation == 2)
+      IupSetfAttribute(child, "CHILDOFFSET", "0x%d", height - final_height);
+
+    IupRefresh(ih);
+    IupFlush();
+
+    end = clock();
+    time = (end - start) / (i + 1);
+    time = time < 10 ? 10 : time;  /* minimum is 10 ms */
+    iupdrvSleep(time);
+  }
+
+  iupAttribSetStr(child, "MAXSIZE", iupAttribGet(child, "OLD_MAXSIZE"));
+
+  if (closing)
+  {
+    ih->data->state = IEXPANDER_CLOSE;
+    IupSetAttribute(child, "VISIBLE", "NO");
+    IupRefresh(ih);
+  }
+}
+
 static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int state)
 {
   Ihandle* child = ih->firstchild->brother;
@@ -393,13 +458,18 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int st
 
   if (child)
   {
-    if (ih->data->state == IEXPANDER_CLOSE)
-      IupSetAttribute(child, "VISIBLE", "NO");
+    if (refresh && ih->data->animation && ih->data->position == IEXPANDER_TOP)
+      iExpanderAnimateChild(ih, child);
     else
-      IupSetAttribute(child, "VISIBLE", "YES");
+    {
+      if (ih->data->state == IEXPANDER_CLOSE)
+        IupSetAttribute(child, "VISIBLE", "NO");
+      else
+        IupSetAttribute(child, "VISIBLE", "YES");
 
-    if (refresh)
-      IupRefresh(child); /* this will recompute the layout of the hole dialog */
+      if (refresh)
+        IupRefresh(child); /* this will recompute the layout of the hole dialog */
+    }
   }
 
   if (callcb)
@@ -671,8 +741,8 @@ static int iExpanderExpandButtonLeaveWindow_cb(Ihandle* expand_button)
 
     if (ih->data->auto_show)
     {
-      if (IupGetInt(ih->data->timer, "RUN"))
-        IupSetAttribute(ih->data->timer, "RUN", "No");
+      if (IupGetInt(ih->data->auto_show_timer, "RUN"))
+        IupSetAttribute(ih->data->auto_show_timer, "RUN", "No");
     }
   }
   return IUP_DEFAULT;
@@ -700,7 +770,7 @@ static int iExpanderExpandButtonEnterWindow_cb(Ihandle* expand_button)
     if (ih->data->auto_show &&
         child &&
         ih->data->state == IEXPANDER_CLOSE)
-      IupSetAttribute(ih->data->timer, "RUN", "Yes");
+      IupSetAttribute(ih->data->auto_show_timer, "RUN", "Yes");
   }
   return IUP_DEFAULT;
 }
@@ -714,8 +784,8 @@ static int iExpanderExpandButtonButton_CB(Ihandle* expand_button, int button, in
 
     if (ih->data->auto_show)
     {
-      if (IupGetInt(ih->data->timer, "RUN"))
-        IupSetAttribute(ih->data->timer, "RUN", "No");
+      if (IupGetInt(ih->data->auto_show_timer, "RUN"))
+        IupSetAttribute(ih->data->auto_show_timer, "RUN", "No");
     }
 
     iExpanderOpenCloseChild(ih, 1, 1, ih->data->state == IEXPANDER_OPEN ? IEXPANDER_CLOSE : IEXPANDER_OPEN);
@@ -927,7 +997,7 @@ static int iExpanderSetForeColorAttrib(Ihandle* ih, const char* value)
   {
     if (ih->data->title_expand)
     {
-      iupAttribSetStr(ih, "FGCOLOR", value);
+      iupAttribSetStr(ih, "FORECOLOR", value);
       iExpanderUpdateTitleState(ih);
     }
     else 
@@ -1130,18 +1200,18 @@ static int iExpanderSetAutoShowAttrib(Ihandle* ih, const char* value)
   ih->data->auto_show = iupStrBoolean(value);
   if (ih->data->auto_show)
   {
-    if (!ih->data->timer)
+    if (!ih->data->auto_show_timer)
     {
-      ih->data->timer = IupTimer();
-      IupSetAttribute(ih->data->timer, "TIME", "1000");  /* 1 second */
-      IupSetCallback(ih->data->timer, "ACTION_CB", iExpanderTimer_cb);
-      iupAttribSet(ih->data->timer, "_IUP_EXPANDER", (char*)ih);  /* 1 second */
+      ih->data->auto_show_timer = IupTimer();
+      IupSetAttribute(ih->data->auto_show_timer, "TIME", "1000");  /* 1 second */
+      IupSetCallback(ih->data->auto_show_timer, "ACTION_CB", iExpanderTimer_cb);
+      iupAttribSet(ih->data->auto_show_timer, "_IUP_EXPANDER", (char*)ih);  /* 1 second */
     }
   }
   else
   {
-    if (ih->data->timer)
-      IupSetAttribute(ih->data->timer, "RUN", "NO");
+    if (ih->data->auto_show_timer)
+      IupSetAttribute(ih->data->auto_show_timer, "RUN", "NO");
   }
   return 0; /* do not store value in hash table */
 }
@@ -1149,6 +1219,28 @@ static int iExpanderSetAutoShowAttrib(Ihandle* ih, const char* value)
 static char* iExpanderGetAutoShowAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean(ih->data->auto_show);
+}
+
+static int iExpanderSetAnimationAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "SLIDE"))
+    ih->data->animation = 2;
+  else if (iupStrEqualNoCase(value, "CURTAIN"))
+    ih->data->animation = 1;
+  else
+    ih->data->animation = 0;
+
+  return 0; /* do not store value in hash table */
+}
+
+static char* iExpanderGetAnimationAttrib(Ihandle* ih)
+{
+  if (ih->data->animation == 2)
+    return "SLIDE";
+  else if (ih->data->animation)
+    return "CURTAIN";
+  else
+    return "NO";
 }
 
 static int iExpanderSetTitleExpandAttrib(Ihandle* ih, const char* value)
@@ -1371,8 +1463,8 @@ static int iExpanderCreateMethod(Ihandle* ih, void** params)
 
 static void iExpanderDestroyMethod(Ihandle* ih)
 {
-  if (ih->data->timer)
-    IupDestroy(ih->data->timer);
+  if (ih->data->auto_show_timer)
+    IupDestroy(ih->data->auto_show_timer);
 }
 
 Iclass* iupExpanderNewClass(void)
@@ -1425,6 +1517,8 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "TITLEEXPAND", iExpanderGetTitleExpandAttrib, iExpanderSetTitleExpandAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AUTOSHOW", iExpanderGetAutoShowAttrib, iExpanderSetAutoShowAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRABUTTONS", iExpanderGetExtraButtonsAttrib, iExpanderSetExtraButtonsAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ANIMATION", iExpanderGetAnimationAttrib, iExpanderSetAnimationAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMFRAMES", NULL, NULL, IUPAF_SAMEASSYSTEM, "10", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, iExpanderSetImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

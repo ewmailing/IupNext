@@ -483,7 +483,7 @@ void ExpanderTest(void)
   IupSetAttribute(_frm_2,"TITLE","IupLabel");
 
 //  _frm_3 = IupFrame(
-  _frm_3 = IupExpander(
+  _frm_3 = IupExpander(IupSetAttributes(IupBackgroundBox(
     IupVbox(
       set_callbacks(IupSetAttributes(IupToggle("Toggle Text", NULL), "VALUE=ON, TIP=\"Toggle TIP\"")),
       set_callbacks(IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1,IMPRESS=img2,XXEXPAND=HORIZONTAL,SIZE=XX100x")),
@@ -492,11 +492,12 @@ void ExpanderTest(void)
         set_callbacks(IupToggle("Toggle Text", NULL)), 
         set_callbacks(IupToggle("Toggle Text", NULL)), 
         NULL))), "TITLE=IupRadio"),
-      NULL));
+        NULL)), "BGCOLOR=\"255 255 255\""));
   IupSetAttribute(_frm_3,"TITLE","IupExpander");
   IupSetAttribute(_frm_3,"FORECOLOR","255 255 255");
   IupSetAttribute(_frm_3,"BACKCOLOR","100 150 250");
-//  IupSetAttribute(_frm_3, "BARSIZE", "50");
+  IupSetAttribute(_frm_3, "ANIMATION", "SLIDE");
+  //  IupSetAttribute(_frm_3, "BARSIZE", "50");
     IupSetAttribute(_frm_3, "TITLEEXPAND", "Yes");
     IupSetAttribute(_frm_3, "HIGHCOLOR", "192 192 192");
   //  IupSetAttribute(_frm_3, "OPENCOLOR", "0 0 192");
@@ -587,11 +588,11 @@ void ExpanderTest(void)
   IupSetAttribute(_frm_5,"TITLE","IupList");
 
   _hbox_1 = IupHbox(
-    _frm_1,
-    _frm_2,
+//    _frm_1,
+//    _frm_2,
     _frm_3,
-    _frm_4,
-    _frm_5,
+//    _frm_4,
+//    _frm_5,
     NULL);
 
   val = IupVal(NULL);

@@ -54,6 +54,12 @@ and the <a href="../sample_results_bgcolor_indiv.html">children BGCOLOR</a>. </u
 only): Shows a resize border around the dialog. Default: &quot;YES&quot;. BORDER=NO is 
 useful only when RESIZE=NO, MAXBOX=NO, MINBOX=NO, MENUBOX=NO and TITLE=NULL, if 
 any of these are defined there will be always some border.</p>
+<p><strong>CHILDOFFSET</strong>: Allow to specify a position offset for the 
+child. Available for native containers only. It will not affect the natural 
+size, and allows to position controls outside the client area. Format &quot;<em>dx</em>x<em>dy</em>&quot;,
+  where <em>dx</em> and <em>dy</em> are integer values corresponding to the horizontal and vertical 
+offsets, respectively, in pixels. Default: 0x0. (since 3.14)</p>
+
 <p><a href="../attrib/iup_cursor.html">CURSOR</a> (<font SIZE="3">non 
 inheritable</font>): Defines a cursor for the dialog.</p>
 

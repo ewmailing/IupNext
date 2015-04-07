@@ -79,8 +79,8 @@ static void iBackgroundBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   if (ih->firstchild)
   {
     int border = iBackgroundBoxGetBorder(ih);
-    int width = (ih->currentwidth  > border ? ih->currentwidth-border : 0);
-    int height = (ih->currentheight > border ? ih->currentheight-border : 0);
+    int width  = (ih->currentwidth  > border ? ih->currentwidth  - border : 0);
+    int height = (ih->currentheight > border ? ih->currentheight - border : 0);
     iupBaseSetCurrentSize(ih->firstchild, width, height, shrink);
   }
 }
@@ -88,10 +88,17 @@ static void iBackgroundBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 static void iBackgroundBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   if (ih->firstchild)
-    iupBaseSetPosition(ih->firstchild, 0, 0);
+  {
+    char* offset = iupAttribGet(ih, "CHILDOFFSET");
 
-  (void)x;  /* Native container, position is reset */
-  (void)y;
+    /* Native container, position is reset */
+    x = 0;
+    y = 0;
+
+    if (offset) iupStrToIntInt(offset, &x, &y, 'x');
+
+    iupBaseSetPosition(ih->firstchild, x, y);
+  }
 }
 
 static int iBackgroundBoxCreateMethod(Ihandle* ih, void** params)
@@ -133,6 +140,9 @@ Iclass* iupBackgroundBoxNewClass(void)
     iupClassRegisterGetAttribute(ic, "DRAWSIZE", &drawsize_get, NULL, NULL, NULL, NULL);
     iupClassRegisterAttribute(ic, "CLIENTSIZE", drawsize_get, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   }
+
+  /* Native Container */
+  iupClassRegisterAttribute(ic, "CHILDOFFSET", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* replace IupCanvas behavior */
   iupClassRegisterAttribute(ic, "BGCOLOR", iBackgroundBoxGetBgColorAttrib, iBackgroundBoxSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE | IUPAF_DEFAULT);

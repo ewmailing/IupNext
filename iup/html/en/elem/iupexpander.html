@@ -52,8 +52,18 @@ expander(<strong>child</strong>) [in LED]</pre>
 
 
 <p><strong>AUTOSHOW</strong> (<font SIZE="3">non inheritable</font>): enables 
-the automatic show of the child when mouse is over the handler more than 1 
+the automatic show of the child when mouse is over the handler for more than 1 
 second. Default: No. See <a href="#Notes">Notes</a> bellow.</p>
+<p><strong>ANIMATION</strong> (<font SIZE="3">non inheritable</font>): enable 
+animation during open/close. Works only for BARPOSITION=TOP and does not works 
+for AUTOSHOW. Also the child must be a native container like IupTabs, IupFrame, 
+	IupDialog, IupBackgroundBox, IupScrollBox or it will not work accordantly. 
+Values can be SLIDE (child controls slide down), CURTAIN (child controls appears 
+as if a curtain is being pulled) or NO. Default: NO. ((since 3.14)</p>
+<p class="info">The attribute <strong>NUMFRAMES</strong> can be used to control 
+the number of frames used for the animation. The time between frames is roughly 
+10ms. The default value is 10 frames. With the default configuration the total 
+time is about 400ms.</p>
 
 
 <p>
@@ -124,7 +134,7 @@ BARPOSITION=TOP. (since 3.14)</p>
 title image and STATE=CLOSE.<br><strong>TITLEIMAGEOPENHIGHLIGHT</strong>: image name used 
 when mouse is over the title image and STATE=OPEN.</p>
 <p><strong>TITLEEXPAND</strong> (<font SIZE="3">non inheritable</font>): enable 
-the expand/collapse action also at the tile. (since 3.14)</p>
+the expand/collapse action also at the tile. Default: NO. (since 3.14)</p>
 
   <p><b>WID</b> (read-only): returns -1 if mapped.</p>
 

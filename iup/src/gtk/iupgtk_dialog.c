@@ -427,13 +427,22 @@ static gboolean gtkDialogChildDestroyEvent(GtkWidget *widget, Ihandle *ih)
    the menu that it is inside the dialog. */
 static void gtkDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  int menu_h = gtkDialogGetMenuSize(ih);
+  if (ih->firstchild)
+  {
+    char* offset = iupAttribGet(ih, "CHILDOFFSET");
 
-  /* Child coordinates are relative to client left-top corner. */
-  iupBaseSetPosition(ih->firstchild, 0, menu_h);
+    /* Native container, position is reset */
+    x = 0;
+    y = 0;
 
-  (void)x;  /* Native container, position is reset */
-  (void)y;
+    if (offset) iupStrToIntInt(offset, &x, &y, 'x');
+
+    y += gtkDialogGetMenuSize(ih);
+
+    /* Child coordinates are relative to client left-top corner. */
+    if (ih->firstchild)
+      iupBaseSetPosition(ih->firstchild, x, y);
+  }
 }
 
 static void* gtkDialogGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
