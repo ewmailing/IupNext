@@ -90,12 +90,12 @@ static char* get_cell_value_safe(lua_State *L, Ihandle* ih, int lin, int col)
 {
   char* value;
 
-  if (iupAttribGetId2(ih, "_IUP_GETCELL", lin, col))
+  if (iupAttribGetId2(ih, "_IUPMATRIX_GETCELL", lin, col))
     luaL_error(L, "recursion detected for cell(%d,%d)", lin, col);
 
-  iupAttribSetStrId2(ih, "_IUP_GETCELL", lin, col, "1");
+  iupAttribSetStrId2(ih, "_IUPMATRIX_GETCELL", lin, col, "1");
   value = IupGetAttributeId2(ih, "CELL", lin, col);  /* display value */
-  iupAttribSetId2(ih, "_IUP_GETCELL", lin, col, NULL);
+  iupAttribSetId2(ih, "_IUPMATRIX_GETCELL", lin, col, NULL);
 
   return value;
 }
@@ -287,7 +287,7 @@ static lua_State* iMatrixInitFormula(Ihandle* ih, const char* init)
       !IupClassMatch(ih, "matrix"))
     return NULL;
 
-  L = (lua_State*)iupAttribGet(ih, "_IUPMATRIXEX_LUASTATE");
+  L = (lua_State*)iupAttribGet(ih, "_IUPMATRIX_LUASTATE");
   if (L)
     lua_close(L);
 
@@ -405,7 +405,7 @@ static char* iMatrixDynamicTranslateValue_CB(Ihandle* ih, int lin, int col, char
 {
   if (value && value[0] == '=' && !IupGetInt(ih, "EDITING"))
   {
-    lua_State* L = (lua_State*)iupAttribGet(ih, "_IUPMATRIXEX_LUASTATE");
+    lua_State* L = (lua_State*)iupAttribGet(ih, "_IUPMATRIX_LUASTATE");
 
     if (!iMatrixLoadFormula(L, value + 1))
     {
@@ -444,8 +444,8 @@ static char* iMatrixDynamicTranslateValue_CB(Ihandle* ih, int lin, int col, char
 static int iMatrixDynamicLDestroy_CB(Ihandle* ih)
 {
   Icallback cb = IupGetCallback(ih, "OLD_LDESTROY_CB");
-  lua_State* L = (lua_State*)iupAttribGet(ih, "_IUPMATRIXEX_LUASTATE");
-  iupAttribSet(ih, "_IUPMATRIXEX_LUASTATE", NULL);
+  lua_State* L = (lua_State*)iupAttribGet(ih, "_IUPMATRIX_LUASTATE");
+  iupAttribSet(ih, "_IUPMATRIX_LUASTATE", NULL);
   IupSetCallback(ih, "TRANSLATEVALUE_CB", NULL);
   lua_close(L);
   if (cb)
@@ -461,7 +461,7 @@ void IupMatrixSetDynamic(Ihandle* ih, const char* init)
   if (!L)
     return;
 
-  iupAttribSet(ih, "_IUPMATRIXEX_LUASTATE", (char*)L);
+  iupAttribSet(ih, "_IUPMATRIX_LUASTATE", (char*)L);
 
   cb = IupGetCallback(ih, "LDESTROY_CB");
   if (cb)
