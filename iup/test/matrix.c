@@ -105,6 +105,7 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "NUMLIN", "8"); 
 //  IupSetAttribute(mat, "NUMCOL", "5"); 
 //  IupSetAttribute(mat, "ACTIVE", "NO");
+  IupSetAttribute(mat, "EDITHIDEONFOCUS", "NO");
 
   IupSetAttribute(mat, "0:0", "Inflation");
   IupSetAttribute(mat, "1:0", "Medicine\nPharma");

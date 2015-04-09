@@ -103,7 +103,9 @@ struct _IcontrolData
   Ihandle* texth;   /* Text handle                    */
   Ihandle* droph;   /* Dropdown handle                */
   Ihandle* datah;   /* Current active edition element, may be equal to texth or droph */
-  int editing;
+  int editing,
+    edit_hide_onfocus, edit_lin, edit_col,
+    edit_hidden_byfocus;  /* Used by MatrixList */
 
   cdCanvas* cd_canvas;
 

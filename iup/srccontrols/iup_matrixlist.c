@@ -1065,7 +1065,7 @@ static int iMatrixListEdition_CB(Ihandle *ih, int lin, int col, int mode, int up
     if (!IupGetInt(ih, "SHOWDELETE"))
     {
       /* turn off drawing, but prepare for delete */
-      if (update && iupAttribGet(ih, "EDITIONHIDEFOCUS"))
+      if (update && ih->data->edit_hidden_byfocus)
         iupAttribSetInt(ih, "_IUPMTXLIST_DELETE", (int)clock());
 
       IupSetAttributeId(ih, "LINEDELETE", lin, NULL);

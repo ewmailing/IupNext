@@ -106,6 +106,9 @@ void iupMatrixColResFinish(Ihandle* ih, int x)
   iupAttribSetIntId(ih, "RASTERWIDTH", ih->data->colres_drag_col, width-IMAT_PADDING_W-IMAT_FRAME_W);
   iupAttribSetId(ih, "WIDTH", ih->data->colres_drag_col, NULL);
 
+  if (!ih->data->edit_hide_onfocus && ih->data->editing)
+      iupMatrixEditUpdatePos(ih);
+
   ih->data->need_calcsize = 1;
   iupMatrixDraw(ih, 0);
 

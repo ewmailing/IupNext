@@ -15,6 +15,9 @@ extern "C" {
 int   iupMatrixEditIsVisible(Ihandle *ih);
 int   iupMatrixEditShow     (Ihandle* ih);
 void  iupMatrixEditHide     (Ihandle* ih);
+int   iupMatrixEditConfirm  (Ihandle* ih);
+void  iupMatrixEditAbort    (Ihandle* ih);
+void  iupMatrixEditUpdatePos(Ihandle* ih);
 char* iupMatrixEditGetValue (Ihandle* ih);
 void  iupMatrixEditCreate   (Ihandle* ih);
 

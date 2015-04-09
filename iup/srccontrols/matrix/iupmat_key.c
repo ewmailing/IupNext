@@ -166,10 +166,24 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
 
     case K_F2:
     case K_SP:
-    case K_CR:
     case K_sCR:
       if (iupMatrixEditShow(ih))
         return IUP_IGNORE; /* do not redraw */
+      break;
+
+    case K_CR:
+      if (!ih->data->edit_hide_onfocus && ih->data->editing)
+        iupMatrixEditConfirm(ih);
+      else
+      {
+        if (iupMatrixEditShow(ih))
+          return IUP_IGNORE; /* do not redraw */
+      }
+      break;
+
+    case K_ESC:
+      if (!ih->data->edit_hide_onfocus && ih->data->editing)
+        iupMatrixEditAbort(ih);
       break;
 
     case K_sDEL:

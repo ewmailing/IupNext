@@ -881,9 +881,9 @@ int iupMatrixGetCellFromXY(Ihandle* ih, int x, int y, int* l, int* c)
   return 1;
 }
 
-static void iMatrixGetCellDim(int index, int* offset, int* size, ImatLinColData *p)
+static int iMatrixGetCellDim(int index, int* offset, int* size, ImatLinColData *p)
 {
-  int i;
+  int i, visible = 1;
 
   *offset = 0;
   if (index < p->num_noscroll)
@@ -899,19 +899,27 @@ static void iMatrixGetCellDim(int index, int* offset, int* size, ImatLinColData 
     for(i = p->first; i < index; i++)
     {
       *offset += p->dt[i].size;
+
       if (i == p->first)
         *offset -= p->first_offset;  /* add only when index greater than first */
     }
+
+    if (index < p->first)
+      visible = 0;
   }
 
   *size = p->dt[index].size - 1;
   if (index == p->first)
     *size -= p->first_offset;
+
+  return visible;
 }
 
-void iupMatrixGetVisibleCellDim(Ihandle* ih, int lin, int col, int* x, int* y, int* w, int* h)
+int iupMatrixGetVisibleCellDim(Ihandle* ih, int lin, int col, int* x, int* y, int* w, int* h)
 {
-  iMatrixGetCellDim(col, x, w, &(ih->data->columns));
-  iMatrixGetCellDim(lin, y, h, &(ih->data->lines));
+  int visible = 1;
+  visible &= iMatrixGetCellDim(col, x, w, &(ih->data->columns));
+  visible &= iMatrixGetCellDim(lin, y, h, &(ih->data->lines));
+  return visible;
 }
 

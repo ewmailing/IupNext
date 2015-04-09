@@ -360,6 +360,20 @@ static char* iMatrixGetMarkMultipleAttrib(Ihandle* ih)
   return iupStrReturnBoolean (ih->data->mark_multiple); 
 }
 
+static int iMatrixSetEditHideOnFocusAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->edit_hide_onfocus = 1;
+  else
+    ih->data->edit_hide_onfocus = 0;
+  return 0;
+}
+
+static char* iMatrixGetEditHideOnFocusAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->edit_hide_onfocus);
+}
+
 static int iMatrixSetEditModeAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
@@ -1297,11 +1311,8 @@ static char* iMatrixGetMaskDataAttrib(Ihandle* ih)
 
 static int iMatrixSetActiveAttrib(Ihandle* ih, const char* value)
 {
-  if (!iupStrBoolean(value))
-  {
-    if (ih->data->editing || iupMatrixEditIsVisible(ih))  /* redundant check, left for historical reasons */
+  if (!iupStrBoolean(value) && ih->data->editing)
       iupMatrixEditHide(ih);
-  }
 
   iupBaseSetActiveAttrib(ih, value);
   iupMatrixDraw(ih, 1);
@@ -1310,11 +1321,8 @@ static int iMatrixSetActiveAttrib(Ihandle* ih, const char* value)
 
 static int iMatrixSetVisibleAttrib(Ihandle* ih, const char* value)
 {
-  if (!iupStrBoolean(value))
-  {
-    if (ih->data->editing || iupMatrixEditIsVisible(ih))  /* redundant check, left for historical reasons */
-      iupMatrixEditHide(ih);
-  }
+  if (!iupStrBoolean(value) && ih->data->editing)
+    iupMatrixEditHide(ih);
 
   return iupBaseSetVisibleAttrib(ih, value);
 }
@@ -1435,6 +1443,7 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   ih->data->mark_col1 = -1;
   ih->data->mark_lin2 = -1;
   ih->data->mark_col2 = -1;
+  ih->data->edit_hide_onfocus = 1;
 
   return IUP_NOERROR;
 }
@@ -1772,6 +1781,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "SELECTION", iMatrixGetSelectionAttrib, iMatrixSetSelectionAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MULTILINE", iMatrixGetMultilineAttrib, iMatrixSetMultilineAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MASK", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EDITHIDEONFOCUS", iMatrixGetEditHideOnFocusAttrib, iMatrixSetEditHideOnFocusAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "USETITLESIZE", iMatrixGetUseTitleSizeAttrib, iMatrixSetUseTitleSizeAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
