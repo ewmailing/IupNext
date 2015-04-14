@@ -466,9 +466,10 @@ void SampleTest(void)
   _list_2 = IupList( NULL);
   IupSetAttribute(_list_2,"DROPDOWN","YES");
 //  IupSetAttribute(_list_2,"EXPAND","YES");
-  IupSetAttribute(_list_2,"VALUE","2");
+  IupSetAttribute(_list_2, "VISIBLECOLUMNS", "5");
+  IupSetAttribute(_list_2, "VALUE", "2");
   IupSetAttribute(_list_2,"1","Item 1 Text");
-  IupSetAttribute(_list_2,"2","Item 2 Text");
+  IupSetAttribute(_list_2,"2","Item 2 Text - Very Large Item");
   IupSetAttribute(_list_2,"3","Item 3 Text");
   IupSetAttribute(_list_2,"TIP","List 2");
 
