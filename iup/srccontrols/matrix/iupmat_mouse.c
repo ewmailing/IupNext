@@ -37,7 +37,16 @@
 
 static void iMatrixMouseCallMoveCb(Ihandle* ih, int lin, int col)
 {
-  IFnii cb = (IFnii)IupGetCallback(ih, "MOUSEMOVE_CB");
+  IFnii cb;
+
+  if (!ih->data->edit_hide_onfocus && ih->data->editing)
+  {
+    cb = (IFnii)IupGetCallback(ih, "EDITMOUSEMOVE_CB");
+    if (cb)
+      cb(ih, lin, col);
+  }
+
+  cb = (IFnii)IupGetCallback(ih, "MOUSEMOVE_CB");
   if (cb)
     cb(ih, lin, col);
 }
@@ -46,6 +55,17 @@ static int iMatrixMouseCallClickCb(Ihandle* ih, int press, int lin, int col, cha
 {
   IFniis cb;
 
+  if (!ih->data->edit_hide_onfocus && ih->data->editing)
+  {
+    if (press)
+      cb = (IFniis)IupGetCallback(ih, "EDITCLICK_CB");
+    else
+      cb = (IFniis)IupGetCallback(ih, "EDITRELEASE_CB");
+
+    if (cb)
+      cb(ih, lin, col, r);
+  }
+
   if (press)
     cb = (IFniis)IupGetCallback(ih, "CLICK_CB");
   else
@@ -53,7 +73,7 @@ static int iMatrixMouseCallClickCb(Ihandle* ih, int press, int lin, int col, cha
 
   if (cb)
     return cb(ih, lin, col, r);
-                       
+
   return IUP_DEFAULT;
 }
 
@@ -176,7 +196,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
       }
       else
       {
-        /* only process marks if at titles */
+        /* only process marks here if at titles */
         if (ih->data->mark_mode != IMAT_MARK_NO)
           iupMatrixMarkBlockBegin(ih, ctrl, lin, col);
       }

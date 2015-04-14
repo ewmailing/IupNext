@@ -287,7 +287,7 @@ static lua_State* iMatrixInitFormula(Ihandle* ih, const char* init)
       !IupClassMatch(ih, "matrix"))
     return NULL;
 
-  L = (lua_State*)iupAttribGet(ih, "_IUPMATRIX_LUASTATE");
+  L = (lua_State*)iupAttribGet(ih, "_IUPMATRIX_LUASTATE");  /* Used only by SetDynamic */
   if (L)
     lua_close(L);
 

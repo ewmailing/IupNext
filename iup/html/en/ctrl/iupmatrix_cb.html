@@ -46,7 +46,11 @@ cell does not have a value and the key pressed is not a character.</p>
     processing, or the identifier of the key to be treated by the matrix.</p>
 <p><strong><a name="CLICK_CB">CLICK_CB</a></strong>:
   Action generated when any mouse button is 
-  pressed over a cell. This callback is always called after other callbacks.</p>
+  pressed over a cell. This callback is always called after other callbacks. 
+When
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
+EDITHIDEONFOCUS=NO and editing is on going the callback EDITCLICK_CB with the 
+same parameters will also be called right before this one (since 3.14).</span></p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]
 <strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
@@ -67,7 +71,11 @@ the event.<br>
 </p>
 <p><strong><a name="RELEASE_CB">RELEASE_CB</a></strong>:
   Action generated when any mouse button is 
-  released over a cell. This callback is always called after other callbacks.</p>
+  released over a cell. This callback is always called after other callbacks. 
+When
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
+EDITHIDEONFOCUS=NO and editing is on going the callback EDITRELEASE_CB with the 
+same parameters will also be called right before this one (since 3.14).</span></p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]
 <strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
@@ -115,7 +123,10 @@ attribute CELL_EDITED will be set to Yes during the callback (since 3.13).</p>
 
 <p><strong><a name="MOUSEMOVE_CB">MOUSEMOVE_CB</a></strong>:
   Action generated to notify the application 
-  that the mouse has moved over the matrix.&nbsp;</p>
+  that the mouse has moved over the matrix.&nbsp;When
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
+EDITHIDEONFOCUS=NO and editing is on going the callback EDITMOUSEMOVE_CB with 
+the same parameters will also be called right before this one (since 3.14).</span></p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
 <strong>elem</strong>:mousemove_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 

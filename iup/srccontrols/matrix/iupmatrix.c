@@ -1669,6 +1669,9 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterCallback(ic, "COLRESIZE_CB", "i");
   iupClassRegisterCallback(ic, "TOGGLEVALUE_CB", "iii");
   iupClassRegisterCallback(ic, "RESIZEMATRIX_CB", "ii");
+  iupClassRegisterCallback(ic, "EDITCLICK_CB", "iis");
+  iupClassRegisterCallback(ic, "EDITRELEASE_CB", "iis");
+  iupClassRegisterCallback(ic, "EDITMOUSEMOVE_CB", "ii");
   /* --- Drawing --- */
   iupClassRegisterCallback(ic, "BGCOLOR_CB", "iiIII");
   iupClassRegisterCallback(ic, "FGCOLOR_CB", "iiIII");
