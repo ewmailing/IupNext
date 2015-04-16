@@ -26,7 +26,7 @@
 #include "iupmat_def.h"
 #include "iupmat_colres.h"
 #include "iupmat_draw.h"
-
+#include "iupmat_edit.h"
 
 #define IMAT_COLRES_TOL       3
 
