@@ -611,6 +611,9 @@ static void iuplua_openlibs (lua_State *L) {
   lua_setglobal(L, "_COPYRIGHT");  /* set global _COPYRIGHT */
 
 #ifdef USE_STATIC
+  /* disable require */
+  dostring(L, "function require() end ", "static_require");
+
   /* iuplua initialization */
   iuplua_open(L);
 
