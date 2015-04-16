@@ -824,13 +824,19 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
     {
     case K_cT: 
       if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
-        iMatrixExSelectAll(ih); 
-      return IUP_CONTINUE;
-    case K_cA: 
+      {
+        iMatrixExSelectAll(ih);
+        return IUP_IGNORE;
+      }
+      break;
+    case K_cA:
       if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
-        iMatrixExSelectAll(ih); 
-      return IUP_CONTINUE;
-    case K_cV: 
+      {
+        iMatrixExSelectAll(ih);
+        return IUP_IGNORE;
+      }
+      break;
+    case K_cV:
       IupSetAttribute(ih, "PASTE", "FOCUS");
       iMatrixListShowLastError(ih);
       return IUP_IGNORE;
@@ -848,13 +854,19 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
       return IUP_IGNORE;
     case K_cR: 
       if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+      {
         IupSetAttribute(ih, "REDO", NULL);  /* 1 level */
-      return IUP_IGNORE;
-    case K_cY: 
+        return IUP_IGNORE;
+      }
+      break;
+    case K_cY:
       if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
+      {
         IupSetAttribute(ih, "REDO", NULL);  /* 1 level */
-      return IUP_IGNORE;
-    case K_cU: 
+        return IUP_IGNORE;
+      }
+      break;
+    case K_cU:
       {
         iMatrixExItemUndoList_CB(ih);
         return IUP_IGNORE;
@@ -898,7 +910,7 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
         iupMatrixExFindShowDialog(matex_data);
         return IUP_IGNORE;
       }
-      return IUP_CONTINUE;
+      break;
     case K_cF: 
       if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
       {
@@ -906,8 +918,8 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
         iupMatrixExFindShowDialog(matex_data);
         return IUP_IGNORE;
       }
-      return IUP_CONTINUE;
-    case K_mF3: 
+      break;
+    case K_mF3:
       {
         ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
         iupMatrixExFindShowDialog(matex_data);
@@ -921,9 +933,12 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
     case K_ESC: 
       {
         ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-        if (matex_data->find_dlg)
+        if (matex_data->find_dlg && IupGetInt(matex_data->find_dlg, "VISIBLE"))
+        {
           IupHide(matex_data->find_dlg);
-        return IUP_CONTINUE;
+          return IUP_IGNORE;
+        }
+        break;
       }
     }
   }
