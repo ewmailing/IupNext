@@ -174,7 +174,7 @@ static void register_math_global(lua_State *L)
 
 #define iup_isupper(_c) (_c>='A' && _c<='Z')
 
-static int get_global_name(const char* key, size_t len, int *lin, int *col)
+static int matrix_get_global_name(const char* key, size_t len, int *lin, int *col)
 {
   int i;
 
@@ -212,6 +212,16 @@ static int get_global_name(const char* key, size_t len, int *lin, int *col)
     }
   }
 
+  return 0;
+}
+
+static int excel_get_global_name(const char* key, size_t len, int *lin, int *col)
+{
+  int i;
+
+  if (len < 2)
+    return 0;
+
   if (iup_isupper(key[0]) && len > 1)
   {
     i = 1;
@@ -245,13 +255,13 @@ static int get_global_name(const char* key, size_t len, int *lin, int *col)
   return 0;
 }
 
-static int global_index(lua_State *L)
+static int matrix_global_index(lua_State *L)
 {
   size_t len;
   const char* key = lua_tolstring(L, 2, &len);
   int lin, col;
 
-  if (get_global_name(key, len, &lin, &col))
+  if (matrix_get_global_name(key, len, &lin, &col))
   {
     Ihandle *ih;
     char* value;
@@ -273,10 +283,39 @@ static int global_index(lua_State *L)
   return 1;
 }
 
+static int excel_global_index(lua_State *L)
+{
+  size_t len;
+  const char* key = lua_tolstring(L, 2, &len);
+  int lin, col;
+
+  if (excel_get_global_name(key, len, &lin, &col))
+  {
+    Ihandle *ih;
+    char* value;
+
+    lua_getglobal(L, "matrix");
+    ih = (Ihandle*)lua_touserdata(L, -1);
+
+    value = get_cell_value_safe(L, ih, lin, col);
+    luamatrix_pushvalue(L, value, 0);
+  }
+  else
+  {
+    /* get raw method */
+    lua_getmetatable(L, 1);
+    lua_pushvalue(L, 2);
+    lua_rawget(L, -2);
+  }
+
+  return 1;
+}
+
 static lua_State* iMatrixInitFormula(Ihandle* ih, const char* init)
 {
   lua_State *L;
   IFnL init_cb;
+  char* cell_names;
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -296,9 +335,15 @@ static lua_State* iMatrixInitFormula(Ihandle* ih, const char* init)
 
   register_math_global(L);
 
-  if (iupAttribGetBoolean(ih, "CELLNAMES"))
+  cell_names = iupAttribGet(ih, "CELLNAMES");
+  if (iupStrEqualNoCase(cell_names, "EXCEL"))
   {
-    lua_register(L, "global_index", global_index);
+    lua_register(L, "global_index", excel_global_index);
+    luaL_dostring(L, "setmetatable(_G, {__index=global_index})");
+  }
+  else if (iupStrEqualNoCase(cell_names, "MATRIX"))
+  {
+    lua_register(L, "global_index", matrix_global_index);
     luaL_dostring(L, "setmetatable(_G, {__index=global_index})");
   }
 
@@ -441,6 +486,120 @@ static char* iMatrixDynamicTranslateValue_CB(Ihandle* ih, int lin, int col, char
   return value;
 }
 
+/* Samples: 
+      A = 1
+      Z = 26
+      BC = 55
+      AD = 30
+*/
+static void iMatrixDynamicColName(char* col_name, int col)
+{
+  int n = 1;
+  int cc = col;
+  while (cc > 26)
+  {
+    cc /= 26;
+    n++;
+  }
+
+  col_name[n] = 0;
+
+  while (n)
+  {
+    int rem = col % 26;
+    int c = rem + 'A' - 1;
+    col_name[n-1] = (char)c;
+    col /= 26;
+    n--;
+  }
+}
+
+static void iMatrixDynamicInsertCellReference(Ihandle* ih, int lin, int col)
+{
+  char* old_value = iupAttribGet(ih, "_IUPMATRIX_EDITVALUE");
+  if (old_value)
+  {
+    char* cell_names;
+    char* old_caret = iupAttribGet(ih, "_IUPMATRIX_EDITCARET");
+
+    IupSetStrAttribute(ih, "VALUE", old_value);
+    IupSetStrAttribute(ih, "CARET", old_caret);
+
+    cell_names = iupAttribGet(ih, "CELLNAMES");
+    if (iupStrEqualNoCase(cell_names, "EXCEL"))
+    {
+      char col_name[30];
+      iMatrixDynamicColName(col_name, col);
+      IupSetfAttribute(ih, "INSERT", "%s%d", col_name, lin);
+    }
+    else if (iupStrEqualNoCase(cell_names, "MATRIX"))
+      IupSetfAttribute(ih, "INSERT", "L%dC%d", lin, col);
+    else
+      IupSetfAttribute(ih, "INSERT", "cell(%d,%d)", lin, col);
+  }
+}
+
+static void iMatrixDynamicInsertRange(Ihandle* ih, int start_lin, int start_col, int lin, int col)
+{
+  char* old_value = iupAttribGet(ih, "_IUPMATRIX_EDITVALUE");
+  if (old_value)
+  {
+    char* old_caret = iupAttribGet(ih, "_IUPMATRIX_EDITCARET");
+
+    IupSetStrAttribute(ih, "VALUE", old_value);
+    IupSetStrAttribute(ih, "CARET", old_caret);
+    IupSetfAttribute(ih, "INSERT", "range(%d,%d,%d,%d)", start_lin, start_col, lin, col);
+  }
+}
+
+static int iMatrixDynamicEditKillFocus_CB(Ihandle* ih)
+{
+  char* value = IupGetAttribute(ih, "VALUE");  /* edited value */
+  char* caret = IupGetAttribute(ih, "CARET");
+  iupAttribSetStr(ih, "_IUPMATRIX_EDITVALUE", value);
+  iupAttribSetStr(ih, "_IUPMATRIX_EDITCARET", caret);
+  return IUP_DEFAULT;
+}
+
+static int iMatrixDynamicEditClick_CB(Ihandle* ih, int lin, int col, char* status)
+{
+  if (iup_isbutton1(status)) // && EDIT==TEXT
+  {
+    char* value = IupGetAttribute(ih, "VALUE");  /* edited value */
+    if (value && value[0] == '=')
+    {
+      iMatrixDynamicInsertCellReference(ih, lin, col);
+      iupAttribSetStrf(ih, "_IUPMATRIX_EDITINSERT", "%d:%d", lin, col);
+    }
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iMatrixDynamicEditRelease_CB(Ihandle* ih, int lin, int col, char* status)
+{
+  (void)lin;
+  (void)col;
+  (void)status;
+
+  if (iupAttribGet(ih, "_IUPMATRIX_EDITINSERT"))
+    iupAttribSet(ih, "_IUPMATRIX_EDITINSERT", NULL);
+
+  return IUP_DEFAULT;
+}
+
+static int iMatrixDynamicEditMouseMove_CB(Ihandle* ih, int lin, int col)
+{
+  char* value = iupAttribGet(ih, "_IUPMATRIX_EDITINSERT");
+  if (value)
+  {
+    int start_lin, start_col;
+    iupStrToIntInt(value, &start_lin, &start_col, ':');
+    iMatrixDynamicInsertRange(ih, start_lin, start_col, lin, col);
+  }
+  return IUP_DEFAULT;
+}
+
 static int iMatrixDynamicLDestroy_CB(Ihandle* ih)
 {
   Icallback cb = IupGetCallback(ih, "OLD_LDESTROY_CB");
@@ -469,6 +628,10 @@ void IupMatrixSetDynamic(Ihandle* ih, const char* init)
   IupSetCallback(ih, "LDESTROY_CB", iMatrixDynamicLDestroy_CB);
 
   IupSetCallback(ih, "TRANSLATEVALUE_CB", (Icallback)iMatrixDynamicTranslateValue_CB);
+  IupSetCallback(ih, "EDITCLICK_CB", (Icallback)iMatrixDynamicEditClick_CB);
+  IupSetCallback(ih, "EDITRELEASE_CB", (Icallback)iMatrixDynamicEditRelease_CB);
+  IupSetCallback(ih, "EDITMOUSEMOVE_CB", (Icallback)iMatrixDynamicEditMouseMove_CB);
+  IupSetCallback(ih, "EDITKILLFOCUS_CB", (Icallback)iMatrixDynamicEditKillFocus_CB);
 }
 
 static int MatrixSetFormula(lua_State *L)
@@ -551,8 +714,8 @@ static int MatGetAttribute(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   const char *name = luaL_checkstring(L,2);
-  int lin = luaL_checkinteger(L,3);
-  int col = luaL_checkinteger(L,4);
+  int lin = (int)luaL_checkinteger(L,3);
+  int col = (int)luaL_checkinteger(L, 4);
   const char *value = IupGetAttributeId2(ih, name, lin, col);
   if (!value || iupATTRIB_ISINTERNAL(name))
     lua_pushnil(L);

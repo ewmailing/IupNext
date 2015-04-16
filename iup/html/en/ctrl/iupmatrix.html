@@ -332,11 +332,12 @@ special operations:</p>
        test <strong>and</strong> value_true <strong>or</strong> value_false
        (but value_true can not be <strong>false</strong>)
        See <a href="http://lua-users.org/wiki/TernaryOperatorhttp://lua-users.org/wiki/TernaryOperator" target="_blank">http://lua-users.org/wiki/TernaryOperator</a></pre>
-<p>If the attribute CELLNAMES is set to Yes (default NO) then it will enabled 
-cell names to be used instead of &quot;cell(lin, col)&quot;. There are two notations 
-available at the same time: the &quot;L123C123&quot; notation where L and C are fixed and 
-123s are the line and columns numbers; and the &quot;ABC123&quot; notation where 123 
+<p>If the attribute CELLNAMES is set to &quot;Excel&quot; or &quot;Matrix&quot; (default &quot;No&quot;) then it will enable 
+cell names to be used as alternative for &quot;cell(lin, col)&quot;. There are two notations 
+available: the Matrix &quot;L123C123&quot; notation where L and C are fixed and 
+123s are the line and columns numbers; and the Excel &quot;ABC123&quot; notation where 123 
 denotes the line number and ABC denotes the column number just like in Microsoft 
+Excel. (since 3.14) Obs: there is not support for cell range like &quot;A1:B2&quot; in 
 Excel.</p>
 <p>Some formula examples:</p>
 <pre>&quot;cos(pi*<strong>lin</strong>/4)&quot;
@@ -370,6 +371,13 @@ requires an active Lua context, because it uses a temporary Lua context. If
 called from Lua it will also be independent from the application's Lua context. 
 To use it in C/C++ you must link also with Lua and iuplua even when not using 
 theses libraries directly.</p>
+<p>If the cell has a formula, i.e. starts with the equal sign, and the attribute 
+EDITHIDEONFOCUS is NO, then during editing the user can click on another cell to 
+insert a reference to its value in the format &quot;cell(lin,col)&quot;. If CELLNAMES is 
+enabled then the respective cell name will be used instead of the &quot;cell&quot; 
+function call. Selecting a range of cells it will insert a 
+&quot;range(lin1,col1,lin2,col2)&quot; call instead (there is no special notation for a 
+range). (since 3.14)</p>
 <h3><a name="Notes">Notes</a></h3>
 <h4>Storage</h4>
 <p>Before mapped to the native system, all attributes are stored in the hash 

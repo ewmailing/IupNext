@@ -246,6 +246,12 @@ static int iMatrixSetCaretAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+static int iMatrixSetInsertAttrib(Ihandle* ih, const char* value)
+{
+  IupStoreAttribute(ih->data->texth, "INSERT", value);
+  return 1;
+}
+
 static char* iMatrixGetCaretAttrib(Ihandle* ih)
 {
   return IupGetAttribute(ih->data->texth, "CARET");
@@ -372,6 +378,14 @@ static int iMatrixSetEditHideOnFocusAttrib(Ihandle* ih, const char* value)
 static char* iMatrixGetEditHideOnFocusAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean(ih->data->edit_hide_onfocus);
+}
+
+static char* iMatrixGetEditCellAttrib(Ihandle* ih)
+{
+  if (ih->data->editing)
+    return iupStrReturnIntInt(ih->data->edit_lin, ih->data->edit_col, ':');
+  else
+    return NULL;
 }
 
 static int iMatrixSetEditModeAttrib(Ihandle* ih, const char* value)
@@ -1781,10 +1795,12 @@ Iclass* iupMatrixNewClass(void)
 
   /* IupMatrix Attributes - EDITION */
   iupClassRegisterAttribute(ic, "CARET", iMatrixGetCaretAttrib, iMatrixSetCaretAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTION", iMatrixGetSelectionAttrib, iMatrixSetSelectionAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERT", NULL, iMatrixSetInsertAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTION", iMatrixGetSelectionAttrib, iMatrixSetSelectionAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MULTILINE", iMatrixGetMultilineAttrib, iMatrixSetMultilineAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MASK", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITHIDEONFOCUS", iMatrixGetEditHideOnFocusAttrib, iMatrixSetEditHideOnFocusAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EDITCELL", iMatrixGetEditCellAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "USETITLESIZE", iMatrixGetUseTitleSizeAttrib, iMatrixSetUseTitleSizeAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

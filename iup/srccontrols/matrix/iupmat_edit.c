@@ -232,13 +232,13 @@ static int iMatrixEditCallDropdownCb(Ihandle* ih, int lin, int col)
   return 0;
 }
 
-static int iMatrixEditDropDownAction_CB(Ihandle* ih, char* t, int i, int v)
+static int iMatrixEditDropDownAction_CB(Ihandle* ih_list, char* t, int i, int v)
 {
-  Ihandle* ih_matrix = ih->parent;
+  Ihandle* ih_matrix = ih_list->parent;
   IFniinsii cb = (IFniinsii)IupGetCallback(ih_matrix, "DROPSELECT_CB");
   if(cb)
   {
-    int ret = cb(ih_matrix, ih_matrix->data->edit_lin, ih_matrix->data->edit_col, ih, t, i, v);
+    int ret = cb(ih_matrix, ih_matrix->data->edit_lin, ih_matrix->data->edit_col, ih_list, t, i, v);
 
     /* If the user returns IUP_CONTINUE in a dropselect_cb 
     the value is accepted and the matrix leaves edition mode. */
@@ -272,22 +272,22 @@ static void iMatrixEditChooseElement(Ihandle* ih)
   }
 }
 
-static int iMatrixEditDropDown_CB(Ihandle* ih, int state)
+static int iMatrixEditDropDown_CB(Ihandle* ih_list, int state)
 {
   /* In Motif if DROPDOWN=YES then when the dropdown button is clicked 
      the list looses its focus and when the dropped list is closed 
      the list regain the focus, also when that happen if the list looses its focus 
      to another control the kill focus callback is not called. */
-  Ihandle* ih_matrix = ih->parent;
+  Ihandle* ih_matrix = ih_list->parent;
   if (state == 1)
     iupAttribSet(ih_matrix, "_IUPMAT_DROPDOWN", "1");
 
   return IUP_DEFAULT;
 }
 
-static int iMatrixEditKillFocus_CB(Ihandle* ih)
+static int iMatrixEditKillFocus_CB(Ihandle* ih_edit)
 {
-  Ihandle* ih_matrix = ih->parent;
+  Ihandle* ih_matrix = ih_edit->parent;
 
   if (IupGetGlobal("MOTIFVERSION"))
   {
@@ -303,11 +303,17 @@ static int iMatrixEditKillFocus_CB(Ihandle* ih)
   if (iupAttribGet(ih_matrix, "_IUPMAT_IGNOREFOCUS"))
     return IUP_DEFAULT;
 
-  if (ih->data->edit_hide_onfocus)
+  if (ih_matrix->data->edit_hide_onfocus)
   {
-    ih->data->edit_hidden_byfocus = 1;
+    ih_matrix->data->edit_hidden_byfocus = 1;
     iupMatrixEditHide(ih_matrix);
-    ih->data->edit_hidden_byfocus = 0;
+    ih_matrix->data->edit_hidden_byfocus = 0;
+  }
+  else
+  {
+    IFn cb = (IFn)IupGetCallback(ih_matrix, "EDITKILLFOCUS_CB");
+    if (cb)
+      cb(ih_matrix);
   }
 
   return IUP_DEFAULT;
@@ -422,9 +428,9 @@ int iupMatrixEditShow(Ihandle* ih)
   return 1;
 }
 
-static int iMatrixEditTextAction_CB(Ihandle* ih, int c, char* after)
+static int iMatrixEditTextAction_CB(Ihandle* ih_text, int c, char* after)
 {
-  Ihandle* ih_matrix = ih->parent;
+  Ihandle* ih_matrix = ih_text->parent;
   IFniiiis cb = (IFniiiis) IupGetCallback(ih_matrix, "ACTION_CB");
   if (cb && iup_isprint(c)) /* only for keys that ARE ASCii characters */
   {
@@ -440,14 +446,14 @@ static int iMatrixEditTextAction_CB(Ihandle* ih, int c, char* after)
   return IUP_DEFAULT;
 }
 
-static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
+static int iMatrixEditTextKeyAny_CB(Ihandle* ih_text, int c)
 {
-  Ihandle* ih_matrix = ih->parent;
+  Ihandle* ih_matrix = ih_text->parent;
   IFniiiis cb = (IFniiiis) IupGetCallback(ih_matrix, "ACTION_CB");
   if (cb && !iup_isprint(c)) /* only for keys that are NOT ASCii characters */
   {
     int oldc = c;
-    c = cb(ih_matrix, c, ih_matrix->data->edit_lin, ih_matrix->data->edit_col, 1, IupGetAttribute(ih, "VALUE"));
+    c = cb(ih_matrix, c, ih_matrix->data->edit_lin, ih_matrix->data->edit_col, 1, IupGetAttribute(ih_text, "VALUE"));
     if(c == IUP_IGNORE || c == IUP_CLOSE || c == IUP_CONTINUE)
       return c;
     else if(c == IUP_DEFAULT)
@@ -467,7 +473,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
       }
       break;
     case K_UP:
-      if (!IupGetInt(ih, "MULTILINE") || IupGetInt(ih, "CARET") == 1)  /* if Multiline CARET will be "L,C" */
+      if (!IupGetInt(ih_text, "MULTILINE") || IupGetInt(ih_text, "CARET") == 1)  /* if Multiline CARET will be "L,C" */
       {
         /* if at the first line of the text */
         if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
@@ -479,11 +485,11 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
       break;
     case K_DOWN:
       { 
-        char* value = IupGetAttribute(ih, "VALUE");
+        char* value = IupGetAttribute(ih_text, "VALUE");
         if (value)
         {
           /* if at the last line of the text */
-          if (!IupGetInt(ih, "MULTILINE") || iupStrLineCount(value) == IupGetInt(ih, "CARET"))  /* if Multiline CARET will be "L,C" */
+          if (!IupGetInt(ih_text, "MULTILINE") || iupStrLineCount(value) == IupGetInt(ih_text, "CARET"))  /* if Multiline CARET will be "L,C" */
           {
             if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
             {
@@ -495,7 +501,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
       }
       break;
     case K_LEFT:
-      if (IupGetInt(ih, "CARETPOS") == 0)
+      if (IupGetInt(ih_text, "CARETPOS") == 0)
       {
         /* if at the first character */
         if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
@@ -507,11 +513,11 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
       break;
     case K_RIGHT:
       { 
-        char* value = IupGetAttribute(ih, "VALUE");
+        char* value = IupGetAttribute(ih_text, "VALUE");
         if (value)
         {
           /* if at the last character */
-          if (IupGetInt(ih, "COUNT") == IupGetInt(ih, "CARETPOS"))
+          if (IupGetInt(ih_text, "COUNT") == IupGetInt(ih_text, "CARETPOS"))
           {
             if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
             {
@@ -528,7 +534,7 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
     case K_CR:
       if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
       {
-        if (iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Win32") && IupGetInt(ih, "MULTILINE"))
+        if (iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Win32") && IupGetInt(ih_text, "MULTILINE"))
         {
           /* work around for Windows when using Multiline */
           iupAttribSet(ih_matrix, "_IUPMAT_IGNORE_SHOW", "1");
@@ -547,9 +553,9 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih, int c)
   return IUP_CONTINUE;
 }
 
-static int iMatrixEditDropDownKeyAny_CB(Ihandle* ih, int c)
+static int iMatrixEditDropDownKeyAny_CB(Ihandle* ih_list, int c)
 {
-  Ihandle* ih_matrix = ih->parent;
+  Ihandle* ih_matrix = ih_list->parent;
   IFniiiis cb = (IFniiiis)IupGetCallback(ih_matrix, "ACTION_CB");
   if (cb)
   {

@@ -243,7 +243,7 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r
         return IUP_DEFAULT;  /* Resize of the width a of a column was started */
 
       if (lin!=-1 && col!=-1)
-        iMatrixMouseLeftPress(ih, lin, col, isshift(r), iscontrol(r), isdouble(r), x, y);
+        iMatrixMouseLeftPress(ih, lin, col, iup_isshift(r), iup_iscontrol(r), iup_isdouble(r), x, y);
     }
     else
     {

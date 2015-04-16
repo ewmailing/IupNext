@@ -35,7 +35,10 @@ dlg = iup.dialog{iup.vbox{mat; margin="10x10"}}
 
 --iup.MatrixSetFormula(mat, 3, "cell(lin, 1) + cell(lin, 2)")
 
-mat.cellnames = "Yes"
+mat.cellnames = "Excel"
+--mat.cellnames = "Matrix"
+mat.edithideonfocus = "NO"
+
 mat:setcell(1,3,"=3+3")
 mat:setcell(2,2,"=1.3 + cell(2,3)")
 --mat:setcell(3,2,"=1.3 + L2C3")

@@ -219,7 +219,10 @@ FOCUS_CELL attribute, and then using them to access the &quot;L:C&quot; attribut
 But when updated or retrieved during cell editing, the edit control will be 
 updated or consulted instead of the matrix cell. When retrieved inside the 
 EDITION_CB callback when mode is 0, then the return value is the new value 
-  that will be updated in the cell. </p>
+  that will be updated in the cell.</p>
+<p><strong>EDITCELL </strong>(read-only): returns the current cell being edited 
+(&quot;L:C&quot;), or NULL if none. Can also be used during interaction while editing is 
+being performed and EDITHIDEONFOCUS=NO. (since 3.14)</p>
 <hr class="style3">
 <p><strong><a name="CELL">CELL</a><i>L</i>:<i>C</i></strong> 
 (read-only): Returns the displayed cell value. Returns NULL if the cell does not 
