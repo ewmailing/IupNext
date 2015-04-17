@@ -77,9 +77,9 @@ static int iMatrixMouseCallClickCb(Ihandle* ih, int press, int lin, int col, cha
   return IUP_DEFAULT;
 }
 
-static void iMatrixMouseEdit(Ihandle* ih)
+static void iMatrixMouseEdit(Ihandle* ih, int x, int y)
 {
-  if (iupMatrixEditShow(ih))
+  if (iupMatrixEditShowXY(ih, x, y))
   {
     if (ih->data->datah == ih->data->droph)
       IupSetAttribute(ih->data->datah, "SHOWDROPDOWN", "YES");
@@ -184,7 +184,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
 
         ret = iMatrixIsDropArea(ih, lin, col, x, y);
         if (ret==1)
-          iMatrixMouseEdit(ih);
+          iMatrixMouseEdit(ih, x, y);
         else if (ret==-1)
         {
           IFniii togglevalue_cb = (IFniii)IupGetCallback(ih, "TOGGLEVALUE_CB");
@@ -251,7 +251,7 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r
         iupMatrixColResFinish(ih, x);
 
       if (ih->data->dclick)  /* when releasing the button from a double click */
-        iMatrixMouseEdit(ih);
+        iMatrixMouseEdit(ih, x, y);
     }
   }
   else

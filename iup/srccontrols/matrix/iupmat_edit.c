@@ -350,6 +350,11 @@ void iupMatrixEditUpdatePos(Ihandle* ih)
 
 int iupMatrixEditShow(Ihandle* ih)
 {
+  return iupMatrixEditShowXY(ih, 0, 0);
+}
+
+int iupMatrixEditShowXY(Ihandle* ih, int x, int y)
+{
   char* mask;
 
   /* work around for Windows when using Multiline */
@@ -424,6 +429,23 @@ int iupMatrixEditShow(Ihandle* ih)
   IupSetAttribute(ih->data->datah, "ACTIVE",  "YES");
   IupSetAttribute(ih->data->datah, "VISIBLE", "YES");
   IupSetFocus(ih->data->datah);
+
+  if (ih->data->datah == ih->data->texth)
+  {
+    if (iupAttribGetBoolean(ih, "EDITALIGN"))
+      IupSetStrAttribute(ih->data->datah, "ALIGNMENT", IupGetAttributeId(ih, "ALIGNMENT", ih->data->edit_col));
+
+    if (x || y)
+    {
+      int pos;
+
+      x -= ih->data->datah->x;
+      y -= ih->data->datah->y;
+
+      pos = IupConvertXYToPos(ih->data->datah, x, y);
+      IupSetInt(ih->data->datah, "CARETPOS", pos);
+    }
+  }
 
   return 1;
 }
