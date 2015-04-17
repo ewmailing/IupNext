@@ -20,37 +20,11 @@
 
 <h2>IupMatrix Attributes<span class="style1"> (all non inheritable, with 
 exceptions)</span></h2>
-<h3>General Attributes</h3>
+<h3><a name="General_Attributes">General Attributes</a></h3>
 <p><strong><a name="CURSOR">CURSOR</a></strong>:
   Default cursor used by the matrix. The 
   default cursor is a symbol that looks like a cross. If you need to refer to this default cursor, use the name 
 &quot;IupMatrixCrossCursor&quot;.</p>
-<p><strong><a name="EDIT_MODE">EDIT_MODE</a></strong>:
-  When set to YES, programmatically puts the 
-  current cell in edition mode, allowing the user to modify its value. When consulted informs if the 
-editing control is visible (text or dropdown). Possible values: &quot;YES&quot; or &quot;NO&quot;.</p>
-<p><strong>EDITING</strong> (read-only): returns Yes if the editing process is 
-active for text or dropdown. It is set to Yes after EDITION_CB, after 
-MENUDROP_CB,&nbsp; before DROP_CB and before the editing control is made 
-visible. Set to NO when editing is about to end, after EDITION_CB and after the 
-value has been updated, but before the editing control is made invisible. (since 
-3.13)</p>
-<p><strong>EDITALIGN</strong>: sets the column alignment as the text box 
-alignment used to edit a cell value. Default: No. (since 3.14)</p>
-<p><strong>EDITHIDEONFOCUS</strong>: when editing a cell if text box loses its 
-focus, then editing ends. Default: Yes. When set to NO editing will continue and 
-the matrix can be scrolled, also when pressing Esc or Enter if the focus is at 
-the matrix it has the same effect as if pressed at the text box. (since 3.14)</p>
-<p><strong><a name="EDITNEXT">EDITNEXT</a></strong>: controls how the next cell after editing is 
-chosen. Can be LIN, COL, LINCR, COLCR. Default: LIN. (since 3.4)</p>
-<p class="info">LIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - go to the next line, if at 
-last line then go to the next column at the same line;<br>
-LINCR&nbsp; - go to the next line, if at last line then go to the next column at 
-the first line;<br>
-COL&nbsp;&nbsp;&nbsp;&nbsp; - go to the next column, if at last column then go 
-to the next line at the same column;<br>
-COLCR - go to the next column, if at last column then go to the next line at the 
-first column;<br>NONE&nbsp;&nbsp; - stay in the same cell. (since 3.6)</p>
 <p><strong><a name="FOCUS_CELL">FOCUS_CELL</a></strong>:
   Defines the current cell. Two numbers in the &quot;<strong><em>L</em></strong>:<strong><em>C</em></strong>&quot; format, 
     &nbsp;(<strong><em>L</em></strong>&gt;0 and <strong><em>C</em></strong>&gt;0, a title cell can NOT be the current cell). Default: &quot;1:1&quot;.</p>
@@ -59,10 +33,6 @@ first column;<br>NONE&nbsp;&nbsp; - stay in the same cell. (since 3.6)</p>
 <p><strong><a name="HIDDENTEXTMARKS">HIDDENTEXTMARKS</a></strong>: when text is greater than cell space, it is 
 normally cropped, but when set to YES a &quot;...&quot; mark will be added at the crop 
 point to indicate that there is more text not visible. Default: NO. (since 3.1)</p>
-<p><strong>LIMITEXPAND</strong>: limit expansion to the maximum size that shows 
-all cells. This will set the MAXSIZE attribute to match the natural size of the 
-matrix when all cells are visible. When the scrollbars have *AUTOHIDE=Yes, the 
-maximum size will not include the scrollbars (since 3.9). (since 3.5) </p>
 <p><strong><a name="ORIGIN">ORIGIN</a></strong>: Scroll the visible area to the 
 given cell. Returns the cell at the upper left corner. To scroll to a line or a 
 column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*:<strong><em>C</em></strong>&quot; (where
@@ -76,16 +46,8 @@ changing this attribute must change also ORIGIN right after. (since 3.5)</p>
 VALUE_EDIT_CB will not be called anymore. The L:C attribute will still be able 
 to change the cell value. (since 3.0)</p>
 
-<p><strong><a name="RESIZEMATRIX">RESIZEMATRIX</a></strong>:
-  Defines if the width of a column can be 
-  interactively changed. When this is possible, the user can change the size of a column by dragging the column title 
-  right border. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
-    &quot;NO&quot; (does not allow interactive width change).</p>
 <p><strong>SHOWFILLVALUE</strong>: enable the display of the numeric percentage 
 in the cell when TYPE* is FILL. Default: NO. (since 3.9)</p>
-<p><strong><a name="USETITLESIZE">USETITLESIZE</a>:</strong> Use the title size 
-to define the cell size if necessary. See WIDTHn and HEIGHTn. Default: NO. 
-(since 3.0)</p>
 
   
   
@@ -106,7 +68,7 @@ MAXSIZE</a>,
     <a href="../attrib/iup_zorder.html">ZORDER</a>, <a href="../attrib/iup_visible.html">VISIBLE</a>: 
 also accepted.&nbsp;</p>
 
-<h3>Cell Attributes (no redraw)</h3>
+<h3><a name="Cell_Attributes">Cell Attributes</a> (no redraw)</h3>
 <p>(These attributes are only updated in the display when you set the
 <a href="#REDRAW">REDRAW</a> attribute.)</p>
 <p><i><strong><a name="L:C">L</a></strong></i><a name="L:C"><strong>:<i>C</i></strong></a>:
@@ -222,9 +184,6 @@ But when updated or retrieved during cell editing, the edit control will be
 updated or consulted instead of the matrix cell. When retrieved inside the 
 EDITION_CB callback when mode is 0, then the return value is the new value 
   that will be updated in the cell.</p>
-<p><strong>EDITCELL </strong>(read-only): returns the current cell being edited 
-(&quot;L:C&quot;), or NULL if none. Can also be used during interaction while editing is 
-being performed and EDITHIDEONFOCUS=NO. (since 3.14)</p>
 <hr class="style3">
 <p><strong><a name="CELL">CELL</a><i>L</i>:<i>C</i></strong> 
 (read-only): Returns the displayed cell value. Returns NULL if the cell does not 
@@ -249,7 +208,7 @@ computed size in pixels, in the format &quot;WxH&quot; or &quot;%dx%d&quot; in C
 element is not mapped. It will only return a valid result if the cell has 
 already been displayed. They are similar to the parameters of the DRAW_CB 
 callback but they do NOT include the decorations. (since 3.5)</p>
-<h3>Column Attributes (no redraw)</h3>
+<h3><a name="Column_Attributes">Column Attributes</a> (no redraw)</h3>
 <p><a name="ALIGNMENTn"><strong>ALIGNMENT</strong><em><strong>C</strong></em></a> :
   Alignment of the cells in column 
   C (C &gt;= 0). 
@@ -265,7 +224,24 @@ with the &quot;<strong>ALIGNMENTLIN0</strong>&quot; attribute (since 3.9).</p>
   C (C &gt;= 0) 
   title. Possible values: &quot;UP&quot;, &quot;DOWN&quot; 
   and &quot;NO&quot;. Default: NO.</p>
-<h3>Column Size Attributes</h3>
+<h3><a name="Size_Attributes">Size Attributes</a></h3>
+<p><strong>LIMITEXPAND</strong>: limit expansion to the maximum size that shows 
+all cells. This will set the MAXSIZE attribute to match the natural size of the 
+matrix when all cells are visible. When the scrollbars have *AUTOHIDE=Yes, the 
+maximum size will not include the scrollbars (since 3.9). (since 3.5) </p>
+
+<p><strong><a name="RESIZEMATRIX">RESIZEMATRIX</a></strong>:
+  Defines if the width of a column can be 
+  interactively changed. When this is possible, the user can change the size of a column by dragging the column title 
+  right border. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
+    &quot;NO&quot; (does not allow interactive width change).</p>
+<p><strong><a name="USETITLESIZE">USETITLESIZE</a>:</strong> Use the title size 
+to define the cell size if necessary. See WIDTHn and HEIGHTn. Default: NO. 
+(since 3.0)</p>
+
+  
+  
+<h3><a name="Column_Size_Attributes">Column Size Attributes</a></h3>
 <p>For all columns if WIDTHn is not defined, then RASTERWIDTHn is used. If also 
 not defined, then depending on the circumstances a logic is used to find the 
 column width.</p>
@@ -286,7 +262,7 @@ occupied by the frame lines. The returned value is the actual computed size.</p>
 <p><strong><a name="WIDTHDEF">WIDTHDEF</a></strong>:
   Default column width in SIZE units. Not used for the title column. Default: 
 80 (width corresponding to 20 characters).</p>
-<h3>Line Size Attributes</h3>
+<h3><a name="Line_Size_Attributes">Line Size Attributes</a></h3>
 <p>For all lines if HEIGHTn is not defined, then RASTERHEIGHTn is used. If also 
 not defined, then depending on the circumstances a logic is used to find the 
 line height.</p>
@@ -306,7 +282,7 @@ occupied by the frame lines. The returned value is the actual computed size.</p>
 8 (height corresponding to 1 line).</p>
 <p><strong><a name="RASTERHEIGHTn">RASTERHEIGHTn</a></strong>: Same as HEIGHTn but in pixels. 
 Has lower priority than HEIGHTn. The returned value is the actual computed size.</p>
-<h3>Number of Cells Attributes</h3>
+<h3><a name="Number_of_Cells_Attributes">Number of Cells Attributes</a></h3>
 <p>When lines or columns are added or removed the existing cell, line and column 
 attributes are preserved, except custom application attributes.</p>
 <p><strong><a name="ADDCOL">ADDCOL</a></strong> (write-only):
@@ -382,7 +358,7 @@ NUMLIN_VISIBLE attribute behavior nor Natural size computation. It will always
 use the first lines of the matrix. The cells appearance will be the same of 
 ordinary cells, and they can also receive the focus and be edited.&nbsp; Must be 
 less than the total number of lines. (since 3.5)</p>
-<h3>Mark Attributes</h3>
+<h3><a name="Mark_Attributes">Mark Attributes</a></h3>
 <p><strong>MARK<a name="MARKAREA">AREA</a></strong>:
   Defines if the area to be <strong>interactively</strong> 
   marked by the user must be continuous or not, valid only if MARKMULTIPLE=YES. Possible values: &quot;CONTINUOUS&quot; or &quot;NOT_CONTINUOUS&quot;. Default: &quot;CONTINUOUS&quot;.</p>
@@ -416,7 +392,7 @@ MULTIPLE and AREA are NOT considered when setting MARKED or MARKL:C.</p>
   MARKMODE can be <strong>interactively</strong> 
   marked. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
     &quot;NO&quot;.</p>
-<h3>Action Attributes</h3>
+<h3><a name="Action_Attributes">Action Attributes</a></h3>
 <p>
 <strong>CLEARATTRIB</strong> (write-only):
   Clear all cell attributes if ALL, all attributes except titles if CONTENTS, 
@@ -510,7 +486,42 @@ given cell visible. To scroll to a line or a
 column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*:<strong><em>C</em></strong>&quot; (where
 <em><strong>L</strong></em>&gt;0 and <strong><em>C</em></strong>&gt;0). (since 
 3.0)</p>
-<h3>Text Editing Attributes</h3>
+<h3><a name="Editing_Attributes">Editing Attributes</a></h3>
+<p><strong><a name="EDIT_MODE">EDIT_MODE</a></strong>:
+  When set to YES, programmatically puts the 
+  current cell in edition mode, allowing the user to modify its value. When consulted informs if the 
+editing control is visible (text or dropdown). Possible values: &quot;YES&quot; or &quot;NO&quot;.</p>
+<p><strong>EDITALIGN</strong>: sets the column alignment as the text box 
+alignment used to edit a cell value. Default: No. (since 3.14)</p>
+<p><strong>EDITCELL </strong>(read-only): returns the current cell being edited 
+(&quot;L:C&quot;), or NULL if none. Can also be used during interaction while editing is 
+being performed and EDITHIDEONFOCUS=NO. (since 3.14)</p>
+<p><strong>EDITHIDEONFOCUS</strong>: when editing a cell if text box loses its 
+focus, then editing ends. Default: Yes. When set to NO editing will continue and 
+the matrix can be scrolled, also when pressing Esc or Enter if the focus is at 
+the matrix it has the same effect as if pressed at the text box. (since 3.14)</p>
+<p><strong>EDITING</strong> (read-only): returns Yes if the editing process is 
+active for text or dropdown. It is set to Yes after EDITION_CB, after 
+MENUDROP_CB,&nbsp; before DROP_CB and before the editing control is made 
+visible. Set to NO when editing is about to end, after EDITION_CB and after the 
+value has been updated, but before the editing control is made invisible. (since 
+3.13)</p>
+<p><strong><a name="EDITNEXT">EDITNEXT</a></strong>: controls how the next cell after editing is 
+chosen. Can be LIN, COL, LINCR, COLCR. Default: LIN. (since 3.4)</p>
+<p class="info">LIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - go to the next line, if at 
+last line then go to the next column at the same line;<br>
+LINCR&nbsp; - go to the next line, if at last line then go to the next column at 
+the first line;<br>
+COL&nbsp;&nbsp;&nbsp;&nbsp; - go to the next column, if at last column then go 
+to the next line at the same column;<br>
+COLCR - go to the next column, if at last column then go to the next line at the 
+first column;<br>NONE&nbsp;&nbsp; - stay in the same cell. (since 3.6)</p>
+<p><strong>EDITTEXT</strong> (read-only): returns Yes if the editing is being 
+done by a text box. (since 3.14)</p>
+<p><strong>EDITVALUE</strong> (read-only): returns Yes if the display cell value 
+being consulted will be used for a text box initial value. Useful for being 
+consulted inside the translate and numeric callbacks. (since 3.14)</p>
+<h3><a name="Text_Editing_Attributes">Text Editing Attributes</a></h3>
 <p><b><a name="CARET">CARET</a></b>:
   Allows specifying and verifying the caret 
   position of the text box in edition mode.</p>
@@ -525,7 +536,7 @@ multiple lines.&nbsp;Use Shift+Enter to add lines. Enter will end the editing.</
   Allows specifying and verifying selection 
   interval 
   of the text box in edition mode.</p>
-<h3>Canvas Attributes<span class="style1"> (inheritable)</span></h3>
+<h3><a name="Canvas_Attributes">Canvas Attributes</a><span class="style1"> (inheritable)</span></h3>
 <p><b><a name="BORDER">BORDER</a></b>: Changed to NO.</p>
 <p><b><a name="SCROLLBAR">SCROLLBAR</a></b>:
   Changed to YES.</p>

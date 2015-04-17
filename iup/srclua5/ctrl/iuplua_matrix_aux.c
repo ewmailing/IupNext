@@ -448,7 +448,7 @@ void IupMatrixSetFormula(Ihandle* ih, int col, const char* formula, const char* 
 
 static char* iMatrixDynamicTranslateValue_CB(Ihandle* ih, int lin, int col, char* value)
 {
-  if (value && value[0] == '=' && !IupGetInt(ih, "EDITING"))
+  if (value && value[0] == '=' && !iupAttribGet(ih, "EDITVALUE"))
   {
     lua_State* L = (lua_State*)iupAttribGet(ih, "_IUPMATRIX_LUASTATE");
 
@@ -554,16 +554,20 @@ static void iMatrixDynamicInsertRange(Ihandle* ih, int start_lin, int start_col,
 
 static int iMatrixDynamicEditKillFocus_CB(Ihandle* ih)
 {
-  char* value = IupGetAttribute(ih, "VALUE");  /* edited value */
-  char* caret = IupGetAttribute(ih, "CARET");
-  iupAttribSetStr(ih, "_IUPMATRIX_EDITVALUE", value);
-  iupAttribSetStr(ih, "_IUPMATRIX_EDITCARET", caret);
+  if (IupGetInt(ih, "EDITTEXT"))
+  {
+    char* value = IupGetAttribute(ih, "VALUE");  /* edited value */
+    char* caret = IupGetAttribute(ih, "CARET");
+    iupAttribSetStr(ih, "_IUPMATRIX_EDITVALUE", value);
+    iupAttribSetStr(ih, "_IUPMATRIX_EDITCARET", caret);
+  }
+
   return IUP_DEFAULT;
 }
 
 static int iMatrixDynamicEditClick_CB(Ihandle* ih, int lin, int col, char* status)
 {
-  if (iup_isbutton1(status)) // && EDIT==TEXT
+  if (iup_isbutton1(status) && IupGetInt(ih, "EDITTEXT"))
   {
     char* value = IupGetAttribute(ih, "VALUE");  /* edited value */
     if (value && value[0] == '=')

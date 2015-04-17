@@ -388,6 +388,14 @@ static char* iMatrixGetEditCellAttrib(Ihandle* ih)
     return NULL;
 }
 
+static char* iMatrixGetEditTextAttrib(Ihandle* ih)
+{
+  if (ih->data->editing)
+    return iupStrReturnBoolean(ih->data->datah == ih->data->texth);
+  else
+    return NULL;
+}
+
 static int iMatrixSetEditModeAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
@@ -1379,7 +1387,14 @@ static int iMatrixResize_CB(Ihandle* ih)
   cdCanvasGetSize(ih->data->cd_canvas, &ih->data->w, &ih->data->h, NULL, NULL);
 
   if (old_w != ih->data->w || old_h != ih->data->h)
-    iupMatrixEditHide(ih);
+  {
+    if (ih->data->edit_hide_onfocus)
+    {
+      ih->data->edit_hidden_byfocus = 1;
+      iupMatrixEditHide(ih);
+      ih->data->edit_hidden_byfocus = 0;
+    }
+  }
 
   ih->data->need_calcsize = 1;
 
@@ -1801,6 +1816,8 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId(ic, "MASK", NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITHIDEONFOCUS", iMatrixGetEditHideOnFocusAttrib, iMatrixSetEditHideOnFocusAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITCELL", iMatrixGetEditCellAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EDITTEXT", iMatrixGetEditTextAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EDITVALUE", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "USETITLESIZE", iMatrixGetUseTitleSizeAttrib, iMatrixSetUseTitleSizeAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

@@ -135,20 +135,20 @@ static int iMatrixMenuItemAction(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static void iMatrixEditInitMenu(Ihandle* menu)
+static void iMatrixEditInitMenu(Ihandle* ih_menu)
 {
   char *value;
   int i = 1;
-  int v = IupGetInt(menu, "VALUE");
+  int v = IupGetInt(ih_menu, "VALUE");
 
   do 
   {
-    value = IupGetAttributeId(menu, "", i);
+    value = IupGetAttributeId(ih_menu, "", i);
     if (value)
     {
       Ihandle* item = IupItem(value, NULL);
 
-      char* img = IupGetAttributeId(menu, "IMAGE", i);
+      char* img = IupGetAttributeId(ih_menu, "IMAGE", i);
       if (img)
         IupSetAttribute(item, "IMAGE", img);
 
@@ -157,7 +157,7 @@ static void iMatrixEditInitMenu(Ihandle* menu)
       if (v == i)   /* if v==0 no mark will be shown */
         IupSetAttribute(item, "VALUE", "On");
 
-      IupAppend(menu, item);
+      IupAppend(ih_menu, item);
     }
     i++;
   } while (value);
@@ -168,32 +168,32 @@ static int iMatrixEditCallMenuDropCb(Ihandle* ih, int lin, int col)
   IFnnii cb = (IFnnii)IupGetCallback(ih, "MENUDROP_CB");
   if(cb)
   {
-    Ihandle* menu = IupMenu(NULL);
+    Ihandle* ih_menu = IupMenu(NULL);
     int ret;
     char* value = iupMatrixGetValueDisplay(ih, lin, col);
     if (!value) value = "";
 
-    iupAttribSet(menu, "PREVIOUSVALUE", value);
-    iupAttribSet(menu, "_IUP_MATRIX", (char*)ih);
+    iupAttribSet(ih_menu, "PREVIOUSVALUE", value);
+    iupAttribSet(ih_menu, "_IUP_MATRIX", (char*)ih);
 
-    ret = cb(ih, menu, lin, col);
+    ret = cb(ih, ih_menu, lin, col);
     if (ret == IUP_DEFAULT)
     {
       int x, y, w, h;
 
-      ih->data->datah = menu;
+      ih->data->datah = ih_menu;
 
-      /* process menu to create items and set common callback */
-      iMatrixEditInitMenu(menu);
+      /* create items and set common callback */
+      iMatrixEditInitMenu(ih_menu);
 
-      /* calc menu position */
+      /* calc position */
       iupMatrixGetVisibleCellDim(ih, lin, col, &x, &y, &w, &h);
 
       x += IupGetInt(ih, "X");
       y += IupGetInt(ih, "Y");
 
-      IupPopup(menu, x, y+h);
-      IupDestroy(menu);
+      IupPopup(ih_menu, x, y+h);
+      IupDestroy(ih_menu);
 
       /* restore a valid handle */
       ih->data->datah = ih->data->texth;
@@ -201,7 +201,7 @@ static int iMatrixEditCallMenuDropCb(Ihandle* ih, int lin, int col)
       return 1;
     }
 
-    IupDestroy(menu);
+    IupDestroy(ih_menu);
   }
 
   return 0;
@@ -265,7 +265,9 @@ static void iMatrixEditChooseElement(Ihandle* ih)
 
     /* dropdown values are set by the user in DROP_CB.
     text value is set here from cell contents. */
+    iupAttribSet(ih, "EDITVALUE", "Yes");
     value = iupMatrixGetValueDisplay(ih, ih->data->edit_lin, ih->data->edit_col);
+    iupAttribSet(ih, "EDITVALUE", NULL);
     if (!value) value = "";
     IupStoreAttribute(ih->data->texth, "VALUE", value);
     IupStoreAttribute(ih->data->texth, "PREVIOUSVALUE", value);
@@ -342,6 +344,12 @@ void iupMatrixEditUpdatePos(Ihandle* ih)
 
   ih->data->datah->currentwidth = w;
   ih->data->datah->currentheight = h;
+
+  if (iupAttribGetBoolean(ih, "EDITFITSIZE"))
+  {
+
+  }
+
   iupClassObjectLayoutUpdate(ih->data->datah);
 
   if (visible && !ih->data->edit_hide_onfocus)
@@ -507,17 +515,13 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih_text, int c)
       break;
     case K_DOWN:
       { 
-        char* value = IupGetAttribute(ih_text, "VALUE");
-        if (value)
+        /* if at the last line of the text */
+        if (!IupGetInt(ih_text, "MULTILINE") || IupGetInt(ih_text, "LINECOUNT") == IupGetInt(ih_text, "CARET"))  /* if Multiline CARET will be "L,C" */
         {
-          /* if at the last line of the text */
-          if (!IupGetInt(ih_text, "MULTILINE") || iupStrLineCount(value) == IupGetInt(ih_text, "CARET"))  /* if Multiline CARET will be "L,C" */
+          if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
           {
-            if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
-            {
-              iupMatrixProcessKeyPress(ih_matrix, c);  
-              return IUP_IGNORE;
-            }
+            iupMatrixProcessKeyPress(ih_matrix, c);  
+            return IUP_IGNORE;
           }
         }
       }
@@ -535,17 +539,13 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih_text, int c)
       break;
     case K_RIGHT:
       { 
-        char* value = IupGetAttribute(ih_text, "VALUE");
-        if (value)
+        /* if at the last character */
+        if (IupGetInt(ih_text, "COUNT") == IupGetInt(ih_text, "CARETPOS"))
         {
-          /* if at the last character */
-          if (IupGetInt(ih_text, "COUNT") == IupGetInt(ih_text, "CARETPOS"))
+          if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
           {
-            if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
-            {
-              iupMatrixProcessKeyPress(ih_matrix, c);  
-              return IUP_IGNORE;
-            }
+            iupMatrixProcessKeyPress(ih_matrix, c);  
+            return IUP_IGNORE;
           }
         }
       }
