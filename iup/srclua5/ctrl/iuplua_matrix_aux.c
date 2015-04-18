@@ -153,7 +153,7 @@ static int formula_ifelse(lua_State *L)
   return 1;
 }
 
-static void iMatrixShowFormulaError(Ihandle* ih, lua_State *L, const char* str_message)
+static void show_formula_error(lua_State *L, Ihandle* ih, const char* str_message)
 {
   const char* error = lua_tostring(L, -1);
   char msg[1024];
@@ -403,7 +403,7 @@ void IupMatrixSetFormula(Ihandle* ih, int col, const char* formula, const char* 
   if (!iMatrixLoadFormula(L, formula))
   {
     const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
-    iMatrixShowFormulaError(ih, L, str_message);
+    show_formula_error(L, ih, str_message);
     lua_close(L);
     return;
   }
@@ -415,7 +415,7 @@ void IupMatrixSetFormula(Ihandle* ih, int col, const char* formula, const char* 
     if (!iMatrixExecFormula(L, lin, col))
     {
       const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
-      iMatrixShowFormulaError(ih, L, str_message);
+      show_formula_error(L, ih, str_message);
       lua_close(L);
       return;
     }
@@ -455,14 +455,14 @@ static char* iMatrixDynamicTranslateValue_CB(Ihandle* ih, int lin, int col, char
     if (!iMatrixLoadFormula(L, value + 1))
     {
       const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
-      iMatrixShowFormulaError(ih, L, str_message);
+      show_formula_error(L, ih, str_message);
       return (char*)str_message;
     }
 
     if (!iMatrixExecFormula(L, lin, col))
     {
       const char* str_message = IupGetLanguageString("IUP_ERRORINVALIDFORMULA");
-      iMatrixShowFormulaError(ih, L, str_message);
+      show_formula_error(L, ih, str_message);
       return (char*)str_message;
     }
 
