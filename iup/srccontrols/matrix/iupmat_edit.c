@@ -19,6 +19,7 @@
 #include "iup_str.h"
 #include "iup_stdcontrols.h"
 #include "iup_childtree.h"
+#include "iup_drvfont.h"
 
 #include "iupmat_def.h"
 #include "iupmat_scroll.h"
@@ -337,7 +338,7 @@ void iupMatrixEditUpdatePos(Ihandle* ih)
   int w, h, x, y, visible;
   visible = iupMatrixGetVisibleCellDim(ih, ih->data->edit_lin, ih->data->edit_col, &x, &y, &w, &h);
   if (!visible && !ih->data->edit_hide_onfocus)
-      IupSetAttribute(ih->data->datah, "VISIBLE", "NO");
+    IupSetAttribute(ih->data->datah, "VISIBLE", "NO");
 
   ih->data->datah->x = x;
   ih->data->datah->y = y;
@@ -345,9 +346,24 @@ void iupMatrixEditUpdatePos(Ihandle* ih)
   ih->data->datah->currentwidth = w;
   ih->data->datah->currentheight = h;
 
-  if (iupAttribGetBoolean(ih, "EDITFITSIZE"))
+  if (ih->data->datah==ih->data->texth && iupAttribGetBoolean(ih, "EDITFITVALUE"))
   {
+    char* value = IupGetAttribute(ih->data->texth, "VALUE");
+    int value_w, value_h;
 
+    value_w = iupdrvFontGetStringWidth(ih->data->texth, value);
+    iupdrvFontGetCharSize(ih->data->texth, NULL, &value_h);
+
+    if (iupAttribGetBoolean(ih->data->texth, "BORDER"))
+    {
+      value_w += 2*4;
+      value_h += 2*4;
+    }
+
+    if (value_w > ih->data->datah->currentwidth)
+      ih->data->datah->currentwidth = value_w;
+    if (value_h > ih->data->datah->currentheight)
+      ih->data->datah->currentheight = value_h;
   }
 
   iupClassObjectLayoutUpdate(ih->data->datah);
