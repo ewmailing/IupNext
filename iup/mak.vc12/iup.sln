@@ -192,6 +192,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuplua_plot51", "iuplua_plo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuplua_plot52", "iuplua_plot52.vcxproj", "{17863004-0512-4F26-91C9-73C04BF3E56A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuplua51gtk3_exe", "iupluaexe51gtk3.vcxproj", "{C063C5F8-3688-4EC3-B7CC-78D58533B6BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -452,6 +454,10 @@ Global
 		{17863004-0512-4F26-91C9-73C04BF3E56A}.Debug|Win32.Build.0 = Debug|Win32
 		{17863004-0512-4F26-91C9-73C04BF3E56A}.Debug|x64.ActiveCfg = Debug|x64
 		{17863004-0512-4F26-91C9-73C04BF3E56A}.Debug|x64.Build.0 = Debug|x64
+		{C063C5F8-3688-4EC3-B7CC-78D58533B6BC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C063C5F8-3688-4EC3-B7CC-78D58533B6BC}.Debug|Win32.Build.0 = Debug|Win32
+		{C063C5F8-3688-4EC3-B7CC-78D58533B6BC}.Debug|x64.ActiveCfg = Debug|x64
+		{C063C5F8-3688-4EC3-B7CC-78D58533B6BC}.Debug|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -511,6 +517,7 @@ Global
 		{C146018B-9ADC-A745-A7E4-532192649FCA} = {F234B940-EF8E-4662-BAE2-163E1BCA9D03}
 		{8B2E140D-E759-441F-B2BC-B9FE61CDF741} = {1CBEAA34-BA34-497D-A775-B9AF6F905696}
 		{17863004-0512-4F26-91C9-73C04BF3E56A} = {45DB1456-2D45-4B32-A623-3B2E2C8DED46}
+		{C063C5F8-3688-4EC3-B7CC-78D58533B6BC} = {B24D8E0A-2EB5-4C49-A146-C0AABEF81788}
 	EndGlobalSection
 	GlobalSection(DevPartner) = postSolution
 	EndGlobalSection

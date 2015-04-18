@@ -74,14 +74,14 @@ static GtkWidget* iup_gtk_fixed_new(void)
 #endif
 
 /* WARNING: in GTK there are many controls that are not native windows, 
-   so it GdkWindow will NOT return a native window exclusive of that control,
+   so theirs GdkWindow will NOT return a native window exclusive of that control,
    in fact it can return a base native window shared by many controls.
    IupCanvas is a special case that uses an exclusive native window. */
 
 /* GTK only has absolute positioning using a native container,
    so all elements returned by iupChildTreeGetNativeParentHandle should be a native container. 
    If not looks in the native parent. */
-static GtkWidget* gtkGetNativeContainer(Ihandle* ih)
+static GtkWidget* gtkGetParentNativeContainer(Ihandle* ih)
 {
   GtkWidget* widget = iupChildTreeGetNativeParentHandle(ih);
   while (widget && !GTK_IS_FIXED(widget))
@@ -137,7 +137,7 @@ void iupdrvActivate(Ihandle* ih)
 void iupdrvReparent(Ihandle* ih)
 {
   GtkWidget* old_parent;
-  GtkWidget* new_parent = gtkGetNativeContainer(ih);
+  GtkWidget* new_parent = gtkGetParentNativeContainer(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");  /* here is used as the native child because is the outermost component of the elemement */
   if (!widget) widget = ih->handle;
   old_parent = gtk_widget_get_parent(widget);
@@ -150,7 +150,7 @@ void iupdrvReparent(Ihandle* ih)
 
 void iupgtkAddToParent(Ihandle* ih)
 {
-  GtkWidget* parent = gtkGetNativeContainer(ih);
+  GtkWidget* parent = gtkGetParentNativeContainer(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT"); /* here is used as the native child because is the outermost component of the elemement */
   if (!widget) widget = ih->handle;
 
@@ -167,7 +167,7 @@ void iupgtkSetPosSize(GtkContainer* parent, GtkWidget* widget, int x, int y, int
 
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
-  GtkWidget* parent = gtkGetNativeContainer(ih);
+  GtkWidget* parent = gtkGetParentNativeContainer(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
