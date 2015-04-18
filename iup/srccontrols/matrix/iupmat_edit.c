@@ -116,22 +116,22 @@ void iupMatrixEditAbort(Ihandle* ih)
   iMatrixEditFinish(ih, 1, 0, 0); /* setfocus + NO update + NO accept_ignore */
 }
 
-static int iMatrixMenuItemAction(Ihandle* ih)
+static int iMatrixMenuItemAction_CB(Ihandle* ih_item)
 {
-  Ihandle* ih_menu = ih->parent;
-  Ihandle* ih_matrix = (Ihandle*)iupAttribGet(ih_menu, "_IUP_MATRIX");
-  char* t = IupGetAttribute(ih, "TITLE"); 
-  IFniinsii cb = (IFniinsii)IupGetCallback(ih_matrix, "DROPSELECT_CB");
+  Ihandle* ih_menu = ih_item->parent;
+  Ihandle* ih = (Ihandle*)iupAttribGet(ih_menu, "_IUP_MATRIX");
+  char* title = IupGetAttribute(ih_item, "TITLE");
+  IFniinsii cb = (IFniinsii)IupGetCallback(ih, "DROPSELECT_CB");
   if(cb)
   {
-    int i = IupGetChildPos(ih_menu, ih) + 1;
-    cb(ih_matrix, ih->data->edit_lin, ih->data->edit_col, ih_menu, t, i, 1);
+    int i = IupGetChildPos(ih_menu, ih_item) + 1;
+    cb(ih, ih->data->edit_lin, ih->data->edit_col, ih_menu, title, i, 1);
   }
 
-  IupStoreAttribute(ih_menu, "VALUE", t);
+  IupStoreAttribute(ih_menu, "VALUE", title);
 
-  iMatrixEditCallEditionCbUpdateValue(ih_matrix, 0, 1);  /* always update, similar to iupMatrixEditConfirm */
-  iupMatrixDrawUpdate(ih_matrix);
+  iMatrixEditCallEditionCbUpdateValue(ih, 0, 1);  /* always update, similar to iupMatrixEditConfirm */
+  iupMatrixDrawUpdate(ih);
 
   return IUP_DEFAULT;
 }
@@ -153,7 +153,7 @@ static void iMatrixEditInitMenu(Ihandle* ih_menu)
       if (img)
         IupSetAttribute(item, "IMAGE", img);
 
-      IupSetCallback(item, "ACTION", (Icallback)iMatrixMenuItemAction);
+      IupSetCallback(item, "ACTION", (Icallback)iMatrixMenuItemAction_CB);
 
       if (v == i)   /* if v==0 no mark will be shown */
         IupSetAttribute(item, "VALUE", "On");
@@ -235,18 +235,18 @@ static int iMatrixEditCallDropdownCb(Ihandle* ih, int lin, int col)
 
 static int iMatrixEditDropDownAction_CB(Ihandle* ih_list, char* t, int i, int v)
 {
-  Ihandle* ih_matrix = ih_list->parent;
-  IFniinsii cb = (IFniinsii)IupGetCallback(ih_matrix, "DROPSELECT_CB");
+  Ihandle* ih = ih_list->parent;
+  IFniinsii cb = (IFniinsii)IupGetCallback(ih, "DROPSELECT_CB");
   if(cb)
   {
-    int ret = cb(ih_matrix, ih_matrix->data->edit_lin, ih_matrix->data->edit_col, ih_list, t, i, v);
+    int ret = cb(ih, ih->data->edit_lin, ih->data->edit_col, ih_list, t, i, v);
 
     /* If the user returns IUP_CONTINUE in a dropselect_cb 
     the value is accepted and the matrix leaves edition mode. */
     if (ret == IUP_CONTINUE)
     {
-      if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
-        iupMatrixDrawUpdate(ih_matrix);
+      if (iupMatrixEditConfirm(ih) == IUP_DEFAULT)
+        iupMatrixDrawUpdate(ih);
     }
   }
 
@@ -281,42 +281,42 @@ static int iMatrixEditDropDown_CB(Ihandle* ih_list, int state)
      the list looses its focus and when the dropped list is closed 
      the list regain the focus, also when that happen if the list looses its focus 
      to another control the kill focus callback is not called. */
-  Ihandle* ih_matrix = ih_list->parent;
+  Ihandle* ih = ih_list->parent;
   if (state == 1)
-    iupAttribSet(ih_matrix, "_IUPMAT_DROPDOWN", "1");
+    iupAttribSet(ih, "_IUPMAT_DROPDOWN", "1");
 
   return IUP_DEFAULT;
 }
 
 static int iMatrixEditKillFocus_CB(Ihandle* ih_edit)
 {
-  Ihandle* ih_matrix = ih_edit->parent;
+  Ihandle* ih = ih_edit->parent;
 
   if (IupGetGlobal("MOTIFVERSION"))
   {
-    if (iupAttribGet(ih_matrix, "_IUPMAT_DROPDOWN") ||  /* from iMatrixEditDropDown_CB, in Motif */
-        iupAttribGet(ih_matrix, "_IUPMAT_DOUBLECLICK"))  /* from iMatrixMouseLeftPress, in Motif */
+    if (iupAttribGet(ih, "_IUPMAT_DROPDOWN") ||  /* from iMatrixEditDropDown_CB, in Motif */
+        iupAttribGet(ih, "_IUPMAT_DOUBLECLICK"))  /* from iMatrixMouseLeftPress, in Motif */
     {
-      iupAttribSet(ih_matrix, "_IUPMAT_DOUBLECLICK", NULL);
-      iupAttribSet(ih_matrix, "_IUPMAT_DROPDOWN", NULL);
+      iupAttribSet(ih, "_IUPMAT_DOUBLECLICK", NULL);
+      iupAttribSet(ih, "_IUPMAT_DROPDOWN", NULL);
       return IUP_DEFAULT;
     }
   }
 
-  if (iupAttribGet(ih_matrix, "_IUPMAT_IGNOREFOCUS"))
+  if (iupAttribGet(ih, "_IUPMAT_IGNOREFOCUS"))
     return IUP_DEFAULT;
 
-  if (ih_matrix->data->edit_hide_onfocus)
+  if (ih->data->edit_hide_onfocus)
   {
-    ih_matrix->data->edit_hidden_byfocus = 1;
-    iupMatrixEditHide(ih_matrix);
-    ih_matrix->data->edit_hidden_byfocus = 0;
+    ih->data->edit_hidden_byfocus = 1;
+    iupMatrixEditHide(ih);
+    ih->data->edit_hidden_byfocus = 0;
   }
   else
   {
-    IFn cb = (IFn)IupGetCallback(ih_matrix, "EDITKILLFOCUS_CB");
+    IFn cb = (IFn)IupGetCallback(ih, "EDITKILLFOCUS_CB");
     if (cb)
-      cb(ih_matrix);
+      cb(ih);
   }
 
   return IUP_DEFAULT;
@@ -476,12 +476,41 @@ int iupMatrixEditShowXY(Ihandle* ih, int x, int y)
 
 static int iMatrixEditTextAction_CB(Ihandle* ih_text, int c, char* after)
 {
-  Ihandle* ih_matrix = ih_text->parent;
-  IFniiiis cb = (IFniiiis) IupGetCallback(ih_matrix, "ACTION_CB");
+  Ihandle* ih = ih_text->parent;
+  IFniiiis cb = (IFniiiis) IupGetCallback(ih, "ACTION_CB");
+
+  if (iupAttribGetBoolean(ih, "EDITFITVALUE"))
+  {
+    int value_w, value_h, resize = 0;
+
+    value_w = iupdrvFontGetStringWidth(ih_text, after);
+    iupdrvFontGetCharSize(ih_text, NULL, &value_h);
+
+    if (iupAttribGetBoolean(ih_text, "BORDER"))
+    {
+      value_w += 2 * 4;
+      value_h += 2 * 4;
+    }
+
+    if (value_w > ih_text->currentwidth)
+    {
+      ih_text->currentwidth = value_w;
+      resize = 1;
+    }
+    if (value_h > ih_text->currentheight)
+    {
+      ih_text->currentheight = value_h;
+      resize = 1;
+    }
+
+    if (resize)
+      iupClassObjectLayoutUpdate(ih_text);
+  }
+
   if (cb && iup_isprint(c)) /* only for keys that ARE ASCii characters */
   {
     int oldc = c;
-    c = cb(ih_matrix, c, ih_matrix->data->edit_lin, ih_matrix->data->edit_col, 1, after);
+    c = cb(ih, c, ih->data->edit_lin, ih->data->edit_col, 1, after);
     if (c == IUP_IGNORE || c == IUP_CLOSE || c == IUP_CONTINUE)
       return c;
     else if(c == IUP_DEFAULT)
@@ -494,12 +523,12 @@ static int iMatrixEditTextAction_CB(Ihandle* ih_text, int c, char* after)
 
 static int iMatrixEditTextKeyAny_CB(Ihandle* ih_text, int c)
 {
-  Ihandle* ih_matrix = ih_text->parent;
-  IFniiiis cb = (IFniiiis) IupGetCallback(ih_matrix, "ACTION_CB");
+  Ihandle* ih = ih_text->parent;
+  IFniiiis cb = (IFniiiis) IupGetCallback(ih, "ACTION_CB");
   if (cb && !iup_isprint(c)) /* only for keys that are NOT ASCii characters */
   {
     int oldc = c;
-    c = cb(ih_matrix, c, ih_matrix->data->edit_lin, ih_matrix->data->edit_col, 1, IupGetAttribute(ih_text, "VALUE"));
+    c = cb(ih, c, ih->data->edit_lin, ih->data->edit_col, 1, IupGetAttribute(ih_text, "VALUE"));
     if(c == IUP_IGNORE || c == IUP_CLOSE || c == IUP_CONTINUE)
       return c;
     else if(c == IUP_DEFAULT)
@@ -512,9 +541,9 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih_text, int c)
     case K_cDOWN:
     case K_cLEFT:
     case K_cRIGHT:     
-      if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
+      if (iupMatrixEditConfirm(ih) == IUP_DEFAULT)
       {
-        iupMatrixProcessKeyPress(ih_matrix, c);  
+        iupMatrixProcessKeyPress(ih, c);  
         return IUP_IGNORE;
       }
       break;
@@ -522,9 +551,9 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih_text, int c)
       if (!IupGetInt(ih_text, "MULTILINE") || IupGetInt(ih_text, "CARET") == 1)  /* if Multiline CARET will be "L,C" */
       {
         /* if at the first line of the text */
-        if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
+        if (iupMatrixEditConfirm(ih) == IUP_DEFAULT)
         {
-          iupMatrixProcessKeyPress(ih_matrix, c);  
+          iupMatrixProcessKeyPress(ih, c);  
           return IUP_IGNORE;
         }
       }
@@ -534,9 +563,9 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih_text, int c)
         /* if at the last line of the text */
         if (!IupGetInt(ih_text, "MULTILINE") || IupGetInt(ih_text, "LINECOUNT") == IupGetInt(ih_text, "CARET"))  /* if Multiline CARET will be "L,C" */
         {
-          if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
+          if (iupMatrixEditConfirm(ih) == IUP_DEFAULT)
           {
-            iupMatrixProcessKeyPress(ih_matrix, c);  
+            iupMatrixProcessKeyPress(ih, c);  
             return IUP_IGNORE;
           }
         }
@@ -546,9 +575,9 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih_text, int c)
       if (IupGetInt(ih_text, "CARETPOS") == 0)
       {
         /* if at the first character */
-        if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
+        if (iupMatrixEditConfirm(ih) == IUP_DEFAULT)
         {
-          iupMatrixProcessKeyPress(ih_matrix, c);  
+          iupMatrixProcessKeyPress(ih, c);  
           return IUP_IGNORE;
         }
       }
@@ -558,32 +587,32 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih_text, int c)
         /* if at the last character */
         if (IupGetInt(ih_text, "COUNT") == IupGetInt(ih_text, "CARETPOS"))
         {
-          if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
+          if (iupMatrixEditConfirm(ih) == IUP_DEFAULT)
           {
-            iupMatrixProcessKeyPress(ih_matrix, c);  
+            iupMatrixProcessKeyPress(ih, c);  
             return IUP_IGNORE;
           }
         }
       }
       break;
     case K_ESC:
-      iupMatrixEditAbort(ih_matrix);
+      iupMatrixEditAbort(ih);
       return IUP_IGNORE;  /* always ignore to avoid the defaultesc behavior from here */
     case K_CR:
-      if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
+      if (iupMatrixEditConfirm(ih) == IUP_DEFAULT)
       {
         if (iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Win32") && IupGetInt(ih_text, "MULTILINE"))
         {
           /* work around for Windows when using Multiline */
-          iupAttribSet(ih_matrix, "_IUPMAT_IGNORE_SHOW", "1");
+          iupAttribSet(ih, "_IUPMAT_IGNORE_SHOW", "1");
         }
 
-        if (iupMatrixAuxCallLeaveCellCb(ih_matrix) != IUP_IGNORE)
+        if (iupMatrixAuxCallLeaveCellCb(ih) != IUP_IGNORE)
         {
-          iupMATRIX_ScrollKeyCr(ih_matrix);
-          iupMatrixAuxCallEnterCellCb(ih_matrix);
+          iupMATRIX_ScrollKeyCr(ih);
+          iupMatrixAuxCallEnterCellCb(ih);
         }
-        iupMatrixDrawUpdate(ih_matrix);
+        iupMatrixDrawUpdate(ih);
       }
       return IUP_IGNORE;  /* always ignore to avoid the defaultenter behavior from here */
   }
@@ -593,12 +622,12 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih_text, int c)
 
 static int iMatrixEditDropDownKeyAny_CB(Ihandle* ih_list, int c)
 {
-  Ihandle* ih_matrix = ih_list->parent;
-  IFniiiis cb = (IFniiiis)IupGetCallback(ih_matrix, "ACTION_CB");
+  Ihandle* ih = ih_list->parent;
+  IFniiiis cb = (IFniiiis)IupGetCallback(ih, "ACTION_CB");
   if (cb)
   {
     int oldc = c;
-    c = cb(ih_matrix, c, ih_matrix->data->edit_lin, ih_matrix->data->edit_col, 1, "");
+    c = cb(ih, c, ih->data->edit_lin, ih->data->edit_col, 1, "");
     if (c == IUP_IGNORE || c == IUP_CLOSE  || c == IUP_CONTINUE)
       return c;
     else if(c == IUP_DEFAULT)
@@ -608,19 +637,19 @@ static int iMatrixEditDropDownKeyAny_CB(Ihandle* ih_list, int c)
   switch (c)
   {
     case K_CR:
-      if (iupMatrixEditConfirm(ih_matrix) == IUP_DEFAULT)
+      if (iupMatrixEditConfirm(ih) == IUP_DEFAULT)
       {
-        if (iupMatrixAuxCallLeaveCellCb(ih_matrix) != IUP_IGNORE)
+        if (iupMatrixAuxCallLeaveCellCb(ih) != IUP_IGNORE)
         {
-          iupMATRIX_ScrollKeyCr(ih_matrix);
-          iupMatrixAuxCallEnterCellCb(ih_matrix);
+          iupMATRIX_ScrollKeyCr(ih);
+          iupMatrixAuxCallEnterCellCb(ih);
         }
-        iupMatrixDrawUpdate(ih_matrix);
+        iupMatrixDrawUpdate(ih);
         return IUP_IGNORE;
       }
       break;
     case K_ESC:
-      iupMatrixEditAbort(ih_matrix);
+      iupMatrixEditAbort(ih);
       return IUP_IGNORE;
   }
 
