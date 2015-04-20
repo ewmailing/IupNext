@@ -1186,6 +1186,9 @@ void iupMatrixDrawUpdate(Ihandle* ih)
 
   if (ih->data->has_focus)
     iMatrixDrawFocus(ih);
+
+  if (!ih->data->edit_hide_onfocus && ih->data->editing)
+    IupUpdate(ih->data->datah);
 }
 
 int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
