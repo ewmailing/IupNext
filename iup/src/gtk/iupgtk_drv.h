@@ -36,11 +36,9 @@ GdkWindow* iupgtkGetWindow(GtkWidget *widget);
 void iupgtkWindowGetPointer(GdkWindow *window, int *x, int *y, GdkModifierType *mask);
 int iupgtkIsVisible(GtkWidget* widget);
 
-GtkWidget* iupgtkNativeContainerNew(void);
+GtkWidget* iupgtkNativeContainerNew(int has_window);
 void iupgtkNativeContainerAdd(GtkWidget* container, GtkWidget* widget);
 void iupgtkNativeContainerMove(GtkWidget* container, GtkWidget* widget, int x, int y);
-void iupgtkNativeContainerSetHasWindow(GtkWidget* container, int has_window);
-
 
 /* str */
 void  iupgtkStrRelease(void);

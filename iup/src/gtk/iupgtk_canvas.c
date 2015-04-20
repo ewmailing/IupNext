@@ -676,7 +676,9 @@ static int gtkCanvasMapMethod(Ihandle* ih)
     iupgtkPushVisualAndColormap(visual, (void*)iupAttribGet(ih, "COLORMAP"));
 #endif
 
-  ih->handle = iupgtkNativeContainerNew();  /* canvas is also a container */
+  /* canvas is also a container */
+  /* use a window to be a full native containter */
+  ih->handle = iupgtkNativeContainerNew(1);  
 
 #if !GTK_CHECK_VERSION(3, 0, 0)
   if (visual)
@@ -686,14 +688,12 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   if (!ih->handle)
       return IUP_ERROR;
 
-  /* CD will NOT work properly without this, must use always the CD-GDK driver */
-  iupgtkNativeContainerSetHasWindow(ih->handle, TRUE);  
-
-  sb_win = iupgtkNativeContainerNew();
+  sb_win = iupgtkNativeContainerNew(0);
   if (!sb_win)
     return IUP_ERROR;
 
   iupgtkNativeContainerAdd(sb_win, ih->handle);
+
   gtk_widget_show(sb_win);
 
   iupAttribSet(ih, "_IUP_EXTRAPARENT", (char*)sb_win);

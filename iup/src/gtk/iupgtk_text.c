@@ -1594,7 +1594,7 @@ static int gtkTextMapMethod(Ihandle* ih)
 
     if (!ih->handle)
       return IUP_ERROR;
-    
+
     /* formatting is never supported when MULTILINE=NO */
     ih->data->has_formatting = 0;
 

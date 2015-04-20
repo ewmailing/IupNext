@@ -54,9 +54,12 @@ static void iup_gtk_fixed_class_init (iupGtkFixedClass *_class)
   widget_class->get_preferred_height = iup_gtk_fixed_get_preferred_size;
 }
 
+static int iupGtkFixedWindow = 0;
+
 static void iup_gtk_fixed_init (iupGtkFixed *fixed)
 {
-  (void)fixed;
+  if (iupGtkFixedWindow)
+    gtk_widget_set_has_window(GTK_WIDGET(fixed), TRUE);
 }
 
 static void iup_gtk_fixed_get_preferred_size (GtkWidget *widget, gint *minimum, gint *natural)
@@ -73,29 +76,29 @@ static GtkWidget* iup_gtk_fixed_new(void)
 }
 #endif
 
-/* WARNING: in GTK there are many controls that are not native windows, 
-   so theirs GdkWindow will NOT return a native window exclusive of that control,
-   in fact it can return a base native window shared by many controls.
-   IupCanvas is a special case that uses an exclusive native window. */
-
-/* GTK only has absolute positioning using a native container,
-   so all elements returned by iupChildTreeGetNativeParentHandle should be a native container. 
-   If not looks in the native parent. */
-static GtkWidget* gtkGetParentNativeContainer(Ihandle* ih)
+/* WARNING: in GTK there are many controls that are not native windows,
+so theirs GdkWindow will NOT return a native window exclusive of that control,
+in fact it can return a base native window shared by many controls.
+IupCanvas is a special case that uses an exclusive native window. */
+GtkWidget* iupgtkNativeContainerNew(int has_window)
 {
-  GtkWidget* widget = iupChildTreeGetNativeParentHandle(ih);
-  while (widget && !GTK_IS_FIXED(widget))
-    widget = gtk_widget_get_parent(widget);
-  return widget;
-}
+  GtkWidget* widget;
 
-GtkWidget* iupgtkNativeContainerNew(void)
-{
 #if GTK_CHECK_VERSION(3, 0, 0)
-  return iup_gtk_fixed_new();
+  iupGtkFixedWindow = has_window;
+  widget = iup_gtk_fixed_new();
+  iupGtkFixedWindow = 0;
 #else
-  return gtk_fixed_new();
+  widget = gtk_fixed_new();
 #endif
+
+#if GTK_CHECK_VERSION(2, 18, 0)
+  gtk_widget_set_has_window(widget, has_window);
+#else
+  gtk_fixed_set_has_window(GTK_FIXED(widget), has_window);
+#endif
+
+  return widget;
 }
 
 void iupgtkNativeContainerAdd(GtkWidget* container, GtkWidget* widget)
@@ -108,13 +111,15 @@ void iupgtkNativeContainerMove(GtkWidget* container, GtkWidget* widget, int x, i
   gtk_fixed_move(GTK_FIXED(container), widget, x, y);
 }
 
-void iupgtkNativeContainerSetHasWindow(GtkWidget* container, int has_window)
+/* GTK only has absolute positioning using a native container,
+so all elements returned by iupChildTreeGetNativeParentHandle should be a native container.
+If not looks in the native parent. */
+static GtkWidget* gtkGetNativeParent(Ihandle* ih)
 {
-#if GTK_CHECK_VERSION(2, 18, 0)
-  gtk_widget_set_has_window(container, has_window);
-#else
-  gtk_fixed_set_has_window(GTK_FIXED(container), has_window);
-#endif
+  GtkWidget* widget = iupChildTreeGetNativeParentHandle(ih);
+  while (widget && !GTK_IS_FIXED(widget))
+    widget = gtk_widget_get_parent(widget);
+  return widget;
 }
 
 const char* iupgtkGetWidgetClassName(GtkWidget* widget)
@@ -137,7 +142,7 @@ void iupdrvActivate(Ihandle* ih)
 void iupdrvReparent(Ihandle* ih)
 {
   GtkWidget* old_parent;
-  GtkWidget* new_parent = gtkGetParentNativeContainer(ih);
+  GtkWidget* new_parent = gtkGetNativeParent(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");  /* here is used as the native child because is the outermost component of the elemement */
   if (!widget) widget = ih->handle;
   old_parent = gtk_widget_get_parent(widget);
@@ -150,7 +155,7 @@ void iupdrvReparent(Ihandle* ih)
 
 void iupgtkAddToParent(Ihandle* ih)
 {
-  GtkWidget* parent = gtkGetParentNativeContainer(ih);
+  GtkWidget* parent = gtkGetNativeParent(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT"); /* here is used as the native child because is the outermost component of the elemement */
   if (!widget) widget = ih->handle;
 
@@ -167,7 +172,7 @@ void iupgtkSetPosSize(GtkContainer* parent, GtkWidget* widget, int x, int y, int
 
 void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
-  GtkWidget* parent = gtkGetParentNativeContainer(ih);
+  GtkWidget* parent = gtkGetNativeParent(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
 
