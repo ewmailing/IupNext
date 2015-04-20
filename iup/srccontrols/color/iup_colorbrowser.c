@@ -144,7 +144,18 @@ static void iColorBrowserRenderImageHue(Ihandle* ih)
     active = 0;
 
   if (ih->data->has_focus)
-    cdIupDrawFocusRect(ih->data->cd_canvas, 0, 0, ih->data->w-1, ih->data->h-1);
+  {
+    /* can use XOR here because it is an IMAGERGB canvas */
+    int old_linestyle = cdCanvasLineStyle(ih->data->cd_canvas, CD_DOTTED);
+    int old_foreground = cdCanvasForeground(ih->data->cd_canvas, CD_WHITE);
+    int old_writemode = cdCanvasWriteMode(ih->data->cd_canvas, CD_XOR);
+
+    cdCanvasRect(ih->data->cd_canvas, 0, ih->data->w - 1, 0, ih->data->h - 1);
+
+    cdCanvasWriteMode(ih->data->cd_canvas, old_writemode);
+    cdCanvasForeground(ih->data->cd_canvas, old_foreground);
+    cdCanvasLineStyle(ih->data->cd_canvas, old_linestyle);
+  }
 
   red = cdRedImage(ih->data->cd_canvas);
   green = cdGreenImage(ih->data->cd_canvas);

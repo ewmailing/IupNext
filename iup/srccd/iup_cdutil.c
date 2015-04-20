@@ -119,19 +119,6 @@ void cdIupDrawHorizSunkenMark(cdCanvas *canvas, int x1, int x2, int y, long ligh
   cdCanvasLine(canvas, x1, y, x2, y);
 }
 
-void cdIupDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2)
-{
-  int old_linestyle = cdCanvasLineStyle(canvas, CD_DOTTED);
-  int old_foreground = cdCanvasForeground(canvas, CD_WHITE);
-  int old_writemode = cdCanvasWriteMode(canvas, CD_XOR);
-
-  cdCanvasRect(canvas, x1, x2, y1, y2);
-
-  cdCanvasWriteMode(canvas, old_writemode);
-  cdCanvasForeground(canvas, old_foreground);
-  cdCanvasLineStyle(canvas, old_linestyle);
-}
-
 
 /************************************************************************/
 
