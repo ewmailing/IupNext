@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.12
+VERSION = 4.13
 
 
 #---------------------------------#
@@ -19,7 +19,7 @@ build: tecmake
 # System Variables Definitions
 
 ifndef TEC_UNAME
-  # Base Defintions
+  # Base Definitions
   TEC_SYSNAME:=$(shell uname -s)
   TEC_SYSVERSION:=$(shell uname -r|cut -f1 -d.)
   TEC_SYSMINOR:=$(shell uname -r|cut -f2 -d.)
@@ -96,24 +96,28 @@ ifndef TEC_UNAME
     endif
   endif
 
-  # Linux and PowerPC
   ifeq ($(TEC_SYSNAME), Linux)
+      # Linux and PowerPC
     ifeq ($(TEC_SYSARCH), ppc)
       TEC_UNAME:=$(TEC_UNAME)ppc
     endif
-  endif
 
-  # 64-bits Linux
-  ifeq ($(TEC_SYSNAME), Linux)
+    # 64-bits Linux
     ifeq ($(TEC_SYSARCH), x64)
       BUILD_64=Yes
       TEC_UNAME:=$(TEC_UNAME)_64
     endif
 
+    # Itanium Linux
     ifeq ($(TEC_SYSARCH), ia64)
       BUILD_64=Yes
       TEC_UNAME:=$(TEC_UNAME)_ia64
     endif
+    
+    # Linux Distribution
+    TEC_DISTNAME=$(shell lsb_release -is)
+    TEC_DISTVERSION=$(shell lsb_release -rs|cut -f1 -d.)
+    TEC_DIST:=$(TEC_DISTNAME)$(TEC_DISTVERSION)
   endif
 
   # 64-bits FreeBSD
@@ -242,6 +246,9 @@ endif
 
 ifndef NO_GTK_DEFAULT
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
+    GTK_DEFAULT = Yes
+  endif
+  ifneq ($(findstring CentOS, $(TEC_UNAME)), )
     GTK_DEFAULT = Yes
   endif
   ifneq ($(findstring Linux, $(TEC_UNAME)), )
@@ -531,6 +538,27 @@ ifeq "$(TEC_SYSNAME)" "Haiku"
 endif
 
 ifneq ($(findstring Linux, $(TEC_UNAME)), )
+  UNIX_LINUX = Yes
+  ifdef BUILD_64
+    ifeq ($(TEC_SYSARCH), ia64)
+      STDFLAGS += -fPIC
+      X11_LIB := /usr/X11R6/lib
+    else
+      STDFLAGS += -m64 -fPIC
+      X11_LIB := /usr/X11R6/lib64
+    endif
+  else
+    X11_LIB := /usr/X11R6/lib
+  endif
+  X11_INC := /usr/X11R6/include
+  MOTIFGL_LIB :=
+  ifdef USE_OPENMP
+    STDFLAGS += -fopenmp
+    LIBS += gomp
+  endif
+endif
+
+ifneq ($(findstring CentOS, $(TEC_UNAME)), )
   UNIX_LINUX = Yes
   ifdef BUILD_64
     ifeq ($(TEC_SYSARCH), ia64)
@@ -1055,7 +1083,7 @@ ifdef LINK_FREETYPE
   FREETYPE = freetype
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
     # To be compatible with the existing DLLs of cygwin
-    FREETYPE = freetype-6
+    #FREETYPE = freetype-6
   endif
   
   ifndef NO_ZLIB
