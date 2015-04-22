@@ -865,6 +865,7 @@ void iupPlot::RemoveAllDataSets()
   {
     delete mDataSetList[ds];
   }
+  mDataSetListCount = 0;
 }
 
 bool iupPlot::FindDataSetSample(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const
