@@ -1171,9 +1171,7 @@ void iupluaapi_open(lua_State * L)
     {NULL, NULL},
   };
 
-  /* "iup" table is at the top of the stack */
+  /* "iup" table is already at the top of the stack */
   luaL_register(L, NULL, funcs);
 }
 
-
-Ihandle*  IupGetChild     (Ihandle* ih, int pos);
