@@ -29,6 +29,9 @@
 .style8 {
 	color: #FF0000;
 }
+  .auto-style1 {
+	background-color: #FFFFFF;
+}
   </style>
 </head>
 
@@ -72,7 +75,7 @@
 	<li><strong><span class="style6">Important:</span></strong> Interactive 
 	Dialog Editor</li>
 
-	<li><strong><span class="style6">Important:</span></strong> A tutorial section in the 
+	<li><strong><span class="style6">Important:</span></strong> a tutorial section in the 
 	documentation. One big Controls Demo just like GTK, wxWidgets and Qt have. 
 	Code snippets collection.</li>
 	<li><strong><span class="style6">Important:</span></strong> RPM, Debian and 
@@ -81,7 +84,7 @@
 	<li><strong><span class="style6">Important:</span> IupGLCanvas</strong> in 
 	MACOS X using native OpenGL support.</li>
 
-	<li><strong><span class="style6">Important:</span> </strong>A MacOS X native driver using Carbon or Cocoa.</li>
+	<li><strong><span class="style6">Important:</span> </strong>a MacOS X native driver using Carbon or Cocoa.</li>
 
   <li><strong><span class="style6">Important:</span> </strong>Lua script editor and interactive debugger</li>
 
@@ -168,11 +171,33 @@
 
 </ul>
 
+<h3>Lua Binding</h3>
+
+<ul>
+
+	<li><span class="style5"><strong><span class="style6">Important:</span> </strong></span>
+	create a base library for exported functions. All other libraries will be 
+	pure Lua modules only.</li>
+	<li><span class="style5"><strong><span class="style6">Important:</span></strong> 
+	remove/compensate <strong>luaL_register</strong> dependency to avoid 
+	LUA_COMPAT_MODULE definition.</span></li>
+	<li>
+	<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="style5"><strong><span class="style6">Important:</span></strong> 
+	r</span>emove the standard &quot;lib&quot; prefix f<span class="auto-style1">rom pure 
+	modules </span>dynamic libraries names in UNIX. </span></li>
+	<li>
+	<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
+	<span class="Apple-converted-space"><span class="style5"><strong><span class="style6">Important:</span></strong> 
+	r</span></span>emove the Lua version number suffix from all libraries.</span></li>
+
+</ul>
+
 <h3>IupMatrixEx</h3>
 
 <ul>
 
-	<li><span class="style5"><strong><span class="style6">Important:</span> </strong></span>Drag&amp;drop of 
+	<li><span class="style5"><strong><span class="style6">Important:</span> </strong></span>
+	drag&amp;drop of 
 	columns, i.e. interactive change of column position.</li>
 
 </ul>
@@ -223,9 +248,11 @@
 
 <h3>IupMglPlot</h3>
 <ul>
-	<li class="style3"><span class="style5"><strong><span class="style6">Important:</span> </strong>Text render quality is lower than in 
+	<li class="style3"><span class="style5"><strong><span class="style6">Important:</span> 
+	t</strong>ext render quality is lower than in 
 	<strong>IupPlot</strong>.</span></li>
-	<li><span class="style5"><strong><span class="style6">Important:</span> </strong></span>Add UTF-8 mode using MathGL Unicode support.</li>
+	<li><span class="style5"><strong><span class="style6">Important:</span> </strong>
+	a</span>dd UTF-8 mode using MathGL Unicode support.</li>
 	<li>Compile MathGL using OpenMP support.</li>
 	<li>Logarithm scale is not working properly.</li>
 	<li>Automatic ticks computation needs to be improved.</li>
