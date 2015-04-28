@@ -6,7 +6,7 @@
 
 #define lua_c
 
-#include "lprefix.h"
+#include "lprefix53.h"
 
 
 #include <signal.h>

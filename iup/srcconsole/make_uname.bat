@@ -1,10 +1,10 @@
 @echo off  
 
-if "%1"==""       goto iupexe32
-if "%1"=="vc10"   goto iupexe32
+if "%1"==""        goto iupexe32
+if "%1"=="vc10"    goto iupexe32
 if "%1"=="vc10_64" goto iupexe64
 if "%1"=="cygw17"  goto iupexecygw
-if "%1"=="all"  goto iupexeall
+if "%1"=="all"     goto iupexeall
 goto end
 
 REM Must use dll* so USE_* will use the correct TEC_UNAME

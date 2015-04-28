@@ -23,7 +23,7 @@ endif
 endif
 
 APPNAME := $(APPNAME)$(LUASFX)
-SRC = iup_lua$(LIBLUASUFX).c
+SRC = iup_lua$(LIBLUASFX).c
 
 ifdef NO_LUAOBJECT
   DEFINES += IUPLUA_USELH
@@ -32,7 +32,7 @@ ifdef NO_LUAOBJECT
 else
   DEFINES += IUPLUA_USELOH
   USE_LOH_SUBDIR = Yes
-  LOHDIR = loh$(LIBLUASUFX)
+  LOHDIR = loh$(LIBLUASFX)
 endif
 
 ifdef GTK_DEFAULT
@@ -91,18 +91,18 @@ ifdef ALL_STATIC
     USE_CDLUA = Yes
     USE_IUPCONTROLS = Yes
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      LIBS += iuplua_plot$(LIBLUASUFX) iup_plot cdgl
-      LIBS += iupluamatrixex$(LIBLUASUFX) iupmatrixex
+      LIBS += iuplua_plot$(LIBLUASFX) iup_plot cdgl
+      LIBS += iupluamatrixex$(LIBLUASFX) iupmatrixex
     else
-      SLIB += $(IUP_LIB)/libiuplua_plot$(LIBLUASUFX).a $(IUP_LIB)/libiup_plot.a $(CD_LIB)/libcdgl.a
-      SLIB += $(IUP_LIB)/libiupluamatrixex$(LIBLUASUFX).a $(IUP_LIB)/libiupmatrixex.a
+      SLIB += $(IUP_LIB)/libiuplua_plot$(LIBLUASFX).a $(IUP_LIB)/libiup_plot.a $(CD_LIB)/libcdgl.a
+      SLIB += $(IUP_LIB)/libiupluamatrixex$(LIBLUASFX).a $(IUP_LIB)/libiupmatrixex.a
     endif
       
     ifndef IUPLUA_NO_IM
       ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-        LIBS += cdluaim$(LIBLUASUFX)
+        LIBS += cdluaim$(LIBLUASFX)
       else
-        SLIB += $(CD_LIB)/libcdluaim$(LIBLUASUFX).a
+        SLIB += $(CD_LIB)/libcdluaim$(LIBLUASFX).a
       endif
     endif
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
@@ -123,9 +123,9 @@ ifdef ALL_STATIC
     USE_IMLUA = Yes
     
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      LIBS += imlua_process$(LIBLUASUFX) iupluaim$(LIBLUASUFX) im_process iupim
+      LIBS += imlua_process$(LIBLUASFX) iupluaim$(LIBLUASFX) im_process iupim
     else
-      SLIB += $(IM_LIB)/libimlua_process$(LIBLUASUFX).a $(IUP_LIB)/libiupluaim$(LIBLUASUFX).a $(IM_LIB)/libim_process.a $(IUP_LIB)/libiupim.a
+      SLIB += $(IM_LIB)/libimlua_process$(LIBLUASFX).a $(IUP_LIB)/libiupluaim$(LIBLUASFX).a $(IM_LIB)/libim_process.a $(IUP_LIB)/libiupim.a
     endif
     
   else
@@ -136,9 +136,9 @@ ifdef ALL_STATIC
   ifdef IUPLUA_IMGLIB
     DEFINES += IUPLUA_IMGLIB
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      LIBS += iupluaimglib$(LIBLUASUFX) iupimglib
+      LIBS += iupluaimglib$(LIBLUASFX) iupimglib
     else
-      SLIB += $(IUP_LIB)/libiupluaimglib$(LIBLUASUFX).a $(IUP_LIB)/libiupimglib.a
+      SLIB += $(IUP_LIB)/libiupluaimglib$(LIBLUASFX).a $(IUP_LIB)/libiupimglib.a
     endif
   endif
   
@@ -146,10 +146,10 @@ ifdef ALL_STATIC
   ifdef IUPLUA_TUIO
     DEFINES += IUPLUA_TUIO
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      LIBS += iupluatuio$(LIBLUASUFX) iuptuio
+      LIBS += iupluatuio$(LIBLUASFX) iuptuio
       LIBS += ws2_32 winmm
     else
-      SLIB += $(IUP_LIB)/libiupluatuio$(LIBLUASUFX).a $(IUP_LIB)/libiuptuio.a
+      SLIB += $(IUP_LIB)/libiupluatuio$(LIBLUASFX).a $(IUP_LIB)/libiuptuio.a
     endif
   endif
 else
