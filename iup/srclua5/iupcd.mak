@@ -12,7 +12,6 @@ USE_CDLUA = YES
 USE_IUP3 = YES
 
 INCLUDES = ../include
-LIBS = iuplua$(LIBLUASUFX)
 LDIR = ../lib/$(TEC_UNAME)
 DEFINES = CD_NO_OLD_INTERFACE
 SRC = iuplua_cd.c
@@ -32,6 +31,7 @@ endif
 endif
 
 LIBNAME := $(LIBNAME)$(LUASFX)
+LIBS = iuplua$(LUASFX)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   LIBS:=
