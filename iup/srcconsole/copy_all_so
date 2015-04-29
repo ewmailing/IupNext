@@ -16,15 +16,12 @@ Copy_SOs()
   cp -f ../lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/cd/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/im/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_TEC/lua$LUA_SFX/bin/$PLAT/lua$LUA_SFX ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_EXTRA/luagl/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_EXTRA/lfs/lib$LUA_SFX/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  
-  #Remove Lua3 files if any
-  rm -f ../bin/$PLAT/Lua$LUA_SFX/*3.$EXT 
+  cp -f $BASE_TEC/lua$LUA_SFX/bin/$PLAT/lua5* ../bin/$PLAT/Lua$LUA_SFX
+  cp -f $BASE_EXTRA/luagl/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+  cp -f $BASE_EXTRA/lfs/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   
   #Remove Lua5.X from Lua5.Y folder
-  if [ $LUA_SFX == 5.1 ]; then
+  if [ $LUA_SFX == 51 ]; then
     rm -f ../bin/$PLAT/Lua$LUA_SFX/*52.$EXT 
     rm -f ../bin/$PLAT/Lua$LUA_SFX/*53.$EXT 
   fi
@@ -45,12 +42,12 @@ Copy_SOs()
 
 for plat in Linux26g4_64 Linux32 Linux32_64 Linux35_64 Linux313_64 SunOS511x86
 do
-  Copy_SOs $plat 5.1 so
+  Copy_SOs $plat 51 so
   Copy_SOs $plat 52 so
-#  Copy_SOs $plat 53 so
+  Copy_SOs $plat 53 so
   if [ $plat == MacOS107 ]; then
-    Copy_SOs $plat 5.1 dylib
+    Copy_SOs $plat 51 dylib
     Copy_SOs $plat 52 dylib
-#    Copy_SOs $plat 53 dylib
+    Copy_SOs $plat 53 dylib
   fi
 done

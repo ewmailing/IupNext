@@ -24,7 +24,7 @@ ifdef USE_LUA52
   LUASFX = 52
 else
   USE_LUA51 = Yes
-  LUASFX = 5.1
+  LUASFX = 51
 endif
 endif
 
