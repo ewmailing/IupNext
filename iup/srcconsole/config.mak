@@ -13,6 +13,12 @@ USE_BIN2C_LUA = Yes
 
 ifdef USE_LUA53
   LUASFX = 53
+  
+  ifneq ($(findstring SunOS, $(TEC_UNAME)), )
+    ifneq ($(findstring x86, $(TEC_UNAME)), )
+      FLAGS = -std=gnu99
+    endif
+  endif
 else
 ifdef USE_LUA52
   LUASFX = 52
