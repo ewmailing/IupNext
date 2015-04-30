@@ -77,7 +77,11 @@ static GtkLabel* gtkButtonGetLabel(Ihandle* ih)
   {
     /* when both is set, button contains an GtkAlignment, 
        that contains a GtkBox, that contains a label and an image */
+#if GTK_CHECK_VERSION(3, 14, 0)
+    GtkContainer *container = (GtkContainer*)gtk_bin_get_child((GtkBin*)ih->handle);
+#else
     GtkContainer *container = (GtkContainer*)gtk_bin_get_child((GtkBin*)gtk_bin_get_child((GtkBin*)ih->handle));
+#endif
     GtkLabel* label = NULL;
     gtk_container_foreach(container, gtkButtonChildrenCb, &label);
     return label;
@@ -164,10 +168,17 @@ static int gtkButtonSetPaddingAttrib(Ihandle* ih, const char* value)
     }
     else
     {
+#if GTK_CHECK_VERSION(3, 14, 0)
+      g_object_set(G_OBJECT(ih->handle), "margin-bottom", ih->data->vert_padding, NULL);
+      g_object_set(G_OBJECT(ih->handle), "margin-top", ih->data->vert_padding, NULL);
+      g_object_set(G_OBJECT(ih->handle), "margin-left", ih->data->horiz_padding, NULL);
+      g_object_set(G_OBJECT(ih->handle), "margin-right", ih->data->horiz_padding, NULL);
+#else
       GtkAlignment* alignment = (GtkAlignment*)gtk_bin_get_child((GtkBin*)ih->handle);
       if (GTK_IS_ALIGNMENT(alignment))
         gtk_alignment_set_padding(alignment, ih->data->vert_padding, ih->data->vert_padding, 
                                              ih->data->horiz_padding, ih->data->horiz_padding);
+#endif
     }
     return 0;
   }
