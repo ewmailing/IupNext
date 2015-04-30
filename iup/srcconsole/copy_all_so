@@ -40,7 +40,7 @@ Copy_SOs()
 
 # Linux26g4 Linux26g4_64co MacOS107
 
-for plat in Linux26g4_64 Linux32 Linux32_64 Linux35_64 Linux313_64 SunOS511x86
+for plat in Linux26g4_64 Linux32 Linux32_64 Linux35_64 Linux313_64 Linux319_64 SunOS511x86 
 do
   Copy_SOs $plat 51 so
   Copy_SOs $plat 52 so
