@@ -264,17 +264,32 @@ ifdef DBG
   endif
 endif
 
+# Suffix for Lua modules
+ifdef USE_LUA
+  LIBLUASFX := 3
+endif
+ifdef USE_LUA4
+  LIBLUASFX := 4
+endif
+ifdef USE_LUA5
+  LIBLUASFX := 5
+endif
+ifdef USE_LUA50
+  LIBLUASFX := 5
+endif
+ifdef USE_LUA51
+  LIBLUASFX := 51
+endif
+ifdef USE_LUA52
+  LIBLUASFX := 52
+endif
+ifdef USE_LUA53
+  LIBLUASFX := 53
+endif
+
+# Subfolder for Lua Modules
 ifdef LUAMOD_DIR
-  ifdef USE_LUA53
-    LUAMODSFX = 53
-  endif
-  ifdef USE_LUA52
-    LUAMODSFX = 52
-  endif
-  ifdef USE_LUA51
-    LUAMODSFX = 51
-  endif
-  TEC_UNAME_DIR := $(TEC_UNAME_DIR)/Lua$(LUAMODSFX)
+  TEC_UNAME_DIR := $(TEC_UNAME_DIR)/Lua$(LIBLUASFX)
 endif
 
 OBJDIR := $(OBJROOT)/$(TEC_UNAME_DIR)
@@ -940,26 +955,22 @@ LUA53 ?= $(TECTOOLS_HOME)/lua53
 
 ifdef USE_LUA
   LUA_SUFFIX ?=
-  LIBLUASUFX := 3
 endif
 
 ifdef USE_LUA4
   LUA_SUFFIX ?= 4
-  LIBLUASUFX := 4
   override USE_LUA = Yes
   LUA := $(LUA4)
 endif
 
 ifdef USE_LUA5
   LUA_SUFFIX ?= 5
-  LIBLUASUFX := 5
   override USE_LUA = Yes
   LUA := $(LUA5)
 endif
 
 ifdef USE_LUA50
   LUA_SUFFIX ?= 50
-  LIBLUASUFX := 5
   override USE_LUA = Yes
   LUA := $(LUA50)
   NO_LUALIB := Yes
@@ -967,7 +978,6 @@ endif
 
 ifdef USE_LUA51
   LUA_SUFFIX ?= 5.1
-  LIBLUASUFX := 51
   override USE_LUA = Yes
   LUA := $(LUA51)
   NO_LUALIB := Yes
@@ -975,7 +985,6 @@ endif
 
 ifdef USE_LUA52
   LUA_SUFFIX ?= 52
-  LIBLUASUFX := 52
   override USE_LUA = Yes
   LUA := $(LUA52)
   NO_LUALIB := Yes
@@ -983,7 +992,6 @@ endif
 
 ifdef USE_LUA53
   LUA_SUFFIX ?= 53
-  LIBLUASUFX := 53
   override USE_LUA = Yes
   LUA := $(LUA53)
   NO_LUALIB := Yes
@@ -1028,7 +1036,7 @@ ifdef USE_IUPCONTROLS
   override USE_CD = Yes
   override USE_IUP = Yes
   ifdef USE_IUPLUA
-    LIBS += iupluacontrols$(LIBLUASUFX)
+    LIBS += iupluacontrols$(LIBLUASFX)
     override USE_CDLUA = Yes
   endif
   LIBS += iupcontrols
@@ -1038,30 +1046,30 @@ ifdef USE_IUPGLCONTROLS
   override USE_OPENGL = Yes
   override USE_IUP = Yes
   ifdef USE_IUPLUA
-    LIBS += iupluaglcontrols$(LIBLUASUFX)
+    LIBS += iupluaglcontrols$(LIBLUASFX)
   endif
   LIBS += iupglcontrols ftgl
 endif
 
 ifdef USE_IMLUA
   override USE_IM = Yes
-  LIBS += imlua$(LIBLUASUFX)
+  LIBS += imlua$(LIBLUASFX)
 endif
 
 ifdef USE_CDLUA
   override USE_CD = Yes
-  LIBS += cdlua$(LIBLUASUFX)
+  LIBS += cdlua$(LIBLUASFX)
 endif
 
 ifdef USE_IUPLUA
   override USE_IUP = Yes
   ifdef USE_CD
-    LIBS += iupluacd$(LIBLUASUFX)
+    LIBS += iupluacd$(LIBLUASFX)
   endif
   ifdef USE_OPENGL
-    LIBS += iupluagl$(LIBLUASUFX)
+    LIBS += iupluagl$(LIBLUASFX)
   endif
-  LIBS += iuplua$(LIBLUASUFX)
+  LIBS += iuplua$(LIBLUASFX)
 endif
 
 ifdef USE_LUA
