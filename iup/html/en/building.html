@@ -22,22 +22,30 @@ already installed, the development versions are usually not. The packages
 described here are for Ubuntu, but you will be able to identify them for other 
 systems as well.</p>
 <p>To build Lua you will need:</p>
-			<pre>libreadline5-dev</pre>
+			<pre>libreadline-dev</pre>
 		<p>To build IM you will need:</p>
 			<pre>g++</pre>
 		<p>To build CD you will need:</p>
 <pre>libfreetype6-dev
-libx11-dev
-libxpm-dev
-libxmu-dev
+libgl1-mesa-dev and libglu1-mesa-dev (for the ftgl library used by CD_GL)
+libgtk2.0-dev (for the GDK driver)
+or
+libgtk3.0-dev (for the GTK driver)
+  libx11-dev (for the X11 driver, OPTIONAL)
+  libxpm-dev (&quot;)
+  libxmu-dev (&quot;) 
   libxft-dev (for the XRender driver, OPTIONAL)
-libgtk2.0-dev (for the GDK driver)</pre>
+</pre>
 
 <p>To build IUP you will need:</p>
-<pre>libgtk2.0-dev (for the GTK driver) [already installed for CD]
+<pre>libgtk2.0-dev (for the GTK driver) 
+or
+libgtk3.0-dev (for the GTK driver) 
   libmotif-dev and x11proto-print-dev (for the Motif driver, OPTIONAL)
 libgl1-mesa-dev and libglu1-mesa-dev (for the IupGLCanvas)
-libwebkitgtk-dev (for the IupWebBrowser)</pre>
+libwebkitgtk-dev (for the IupWebBrowser)
+or
+libwebkitgtk3.0-dev (for the IupWebBrowser)</pre>
 <p>To install them you can use the Synaptic Package Manager and select the 
 packages, or can use the command line and type:</p>
 <pre>sudo apt-get install package_name</pre>
