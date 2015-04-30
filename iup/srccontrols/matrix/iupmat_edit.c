@@ -400,12 +400,12 @@ int iupMatrixEditShowXY(Ihandle* ih, int x, int y)
     iupMatrixEditHide(ih);
   }
 
+  ih->data->edit_lin = ih->data->lines.focus_cell;
+  ih->data->edit_col = ih->data->columns.focus_cell;
+
   /* notify application */
   if (iMatrixEditCallEditionCbUpdateValue(ih, 1, 0) == IUP_IGNORE)  /* only place where mode=1 */
     return 0;
-
-  ih->data->edit_lin = ih->data->lines.focus_cell;
-  ih->data->edit_col = ih->data->columns.focus_cell;
 
   if (iMatrixEditCallMenuDropCb(ih, ih->data->edit_lin, ih->data->edit_col))
     return 0;
