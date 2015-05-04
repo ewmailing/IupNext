@@ -75,7 +75,7 @@ static int predraw_cb(Ihandle* ih, cdCanvas* cnv)
 static void InitPlots(void)
 {
   int theI;
-  double x, y, theFac, Mult;
+  double x, y, theFac, Mult = 1;
 
   /************************************************************************/
   /* PLOT 0 - MakeExamplePlot1 */
