@@ -789,7 +789,7 @@ void PEditInteractionIup::HandleCursorKey (const PlotDataSelection *inPlotDataSe
 
 bool PEditInteractionIup::EditNotify(int inIndex, int inSampleIndex, float inX, float inY, float *inNewX, float *inNewY)
 {
-  IFniiffff cb = (IFniiffff)IupGetCallback(_ih, "EDIT_CB");
+  IFniiffFF cb = (IFniiffFF)IupGetCallback(_ih, "EDIT_CB");
   if (cb)
   {
     if (inIndex == -1)

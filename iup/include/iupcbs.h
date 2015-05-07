@@ -57,7 +57,7 @@ typedef int (*IFniiff)(Ihandle*, int, int, float, float); /* delete_cb (pplot) *
 typedef int (*IFniiffi)(Ihandle*, int, int, float, float, int); /* select_cb (pplot) */
 typedef int (*IFniidd)(Ihandle*, int, int, double, double); /* delete_cb */
 typedef int (*IFniiddi)(Ihandle*, int, int, double, double, int); /* select_cb */
-typedef int (*IFniiffff)(Ihandle*, int, int, float, float, float*, float*); /* edit_cb */
+typedef int (*IFniiffFF)(Ihandle*, int, int, float, float, float*, float*); /* edit_cb */
 typedef int (*IFniiffs)(Ihandle*, int, int, float, float, char*);  /* plotbutton_cb (pplot) */
 typedef int (*IFniidds)(Ihandle*, int, int, double, double, char*);  /* plotbutton_cb */
 typedef int (*IFndds)(Ihandle*, double, double, char*);    /* plotmotion_cb */
@@ -67,6 +67,6 @@ typedef char* (*sIFni)(Ihandle*, int);  /* cell_cb */
 typedef char* (*sIFniis)(Ihandle*, int, int, char*);  /* translatevalue_cb */
 
 typedef double (*dIFnii)(Ihandle*, int, int);  /* numericgetvalue_cb */
-typedef void   (*IFniid)(Ihandle*, int, int, double);  /* numericsetvalue_cb */
+typedef int    (*IFniid)(Ihandle*, int, int, double);  /* numericsetvalue_cb */
 
 #endif
