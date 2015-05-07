@@ -26,7 +26,7 @@ local ctrl = {
     colresize_cb = "n",
     scrolltop_cb = "nn",
     fgcolor_cb = "nn",  -- fake definitions to be replaced by matrixfuncs module
-    bgcolor_cb = "nn",
+    bgcolor_cb = "nn",  -- fake definitions to be replaced by matrixfuncs module
     font_cb = {"nn", ret = "s"}, -- ret is return type
     type_cb = {"nn", ret = "s"}, -- ret is return type
     value_cb = {"nn", ret = "s"}, -- ret is return type

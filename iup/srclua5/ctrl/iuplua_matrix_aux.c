@@ -665,7 +665,7 @@ static int matrix_draw_cb(Ihandle *self, int p0, int p1, int p2, int p3, int p4,
   return iuplua_call(L, 7);
 }
 
-static int matrix_color_cb(Ihandle *self, int p0, int p1, unsigned int *p2, unsigned int *p3, unsigned int *p4, const char* name)
+static int matrix_color_cb(Ihandle *self, int p0, int p1, int *p2, int *p3, int *p4, const char* name)
 {
   int status;
   lua_State *L = iuplua_call_start(self, name);
@@ -696,20 +696,20 @@ static int matrix_color_cb(Ihandle *self, int p0, int p1, unsigned int *p2, unsi
       return IUP_IGNORE;
     }
 
-    *p2 = (unsigned int)lua_tointeger(L, -4);  /* R */
-    *p3 = (unsigned int)lua_tointeger(L, -3);  /* G */
-    *p4 = (unsigned int)lua_tointeger(L, -2);  /* B */
+    *p2 = (int)lua_tointeger(L, -4);  /* R */
+    *p3 = (int)lua_tointeger(L, -3);  /* G */
+    *p4 = (int)lua_tointeger(L, -2);  /* B */
     lua_settop(L, top);  /* remove the results */
     return IUP_DEFAULT;  
   }
 }
 
-static int matrix_bgcolor_cb(Ihandle *self, int p0, int p1, unsigned int *p2, unsigned int *p3, unsigned int *p4)
+static int matrix_bgcolor_cb(Ihandle *self, int p0, int p1, int *p2, int *p3, int *p4)
 {
   return matrix_color_cb(self, p0, p1, p2, p3, p4, "bgcolor_cb");
 }
 
-static int matrix_fgcolor_cb(Ihandle *self, int p0, int p1, unsigned int *p2, unsigned int *p3, unsigned int *p4)
+static int matrix_fgcolor_cb(Ihandle *self, int p0, int p1, int *p2, int *p3, int *p4)
 {
   return matrix_color_cb(self, p0, p1, p2, p3, p4, "fgcolor_cb");
 }

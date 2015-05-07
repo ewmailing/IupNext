@@ -174,7 +174,7 @@ the event.<br>
 <p><a name="BGCOLOR_CB"><strong>BGCOLOR_CB</strong></a> -
   Action generated to retrieve the background 
   color of a cell when it needs to be redrawn. </p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, unsigned int <strong>*red</strong>, unsigned int <strong>*green</strong>, unsigned int <strong>*blue</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>*red</strong>, int <strong>*green</strong>, int <strong>*blue</strong>); [in C]
 <strong>elem</strong>:bgcolor_cb(<strong>lin, col</strong>: number) -&gt; (<strong>red, green, blue, ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
@@ -188,7 +188,7 @@ the event.<br>
 <p><a name="FGCOLOR_CB"><strong>FGCOLOR_CB</strong></a> -
   Action generated to retrieve the foreground 
   color of a cell when it needs to be redrawn. </p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, unsigned int <strong>*red</strong>, unsigned int <strong>*green</strong>, unsigned int <strong>*blue</strong>); [in C]
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>*red</strong>, int <strong>*green</strong>, int <strong>*blue</strong>); [in C]
 <strong>elem</strong>:fgcolor_cb(<strong>lin, col</strong>: number) -&gt; (<strong>red, green, blue, ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
