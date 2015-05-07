@@ -17,14 +17,14 @@ iup.RegisterWidget = iupDoNothing
 -- TODO: This is different from iupClassRegisterCallback, 
 --       should be changed to use the same standard
 c_types = {
-  c = "unsigned char ",    -- should be b
-  n = "int",               -- should be i
+  c = "unsigned char ",    
+  n = "int",               
   f = "float",
   d = "double",
   s = "char *",
-  i = "Ihandle *",         -- should be h
-  v = "Ihandle **",        -- should be g
-  o = "void*",             -- should be v
+  i = "Ihandle *",         
+  v = "Ihandle **",        
+  o = "void*",             
 }
 
 -- Adjust the callbacks table

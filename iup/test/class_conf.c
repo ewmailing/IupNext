@@ -74,7 +74,8 @@ static char* getCallbackReturn(const char* format)
   case 'f': fstr = "float"; break;
   case 'd': fstr = "double"; break;
   case 's': fstr = "char*"; break;
-  case 'C': fstr = "void*"; break;
+  case 'V': fstr = "void*"; break;
+  case 'C': fstr = "struct _cdCanvas*"; break;
   case 'n': fstr = "Ihandle*"; break;
   }
 
@@ -113,7 +114,8 @@ static char* getCallbackParameters(const char* format)
       case 'f': fstr = "float"; break;
       case 'd': fstr = "double"; break;
       case 's': fstr = "char*"; break;
-      case 'C': fstr = "void*"; break;
+      case 'V': fstr = "void*"; break;
+      case 'C': fstr = "struct _cdCanvas*"; break;
       case 'n': fstr = "Ihandle*"; break;
       }
 

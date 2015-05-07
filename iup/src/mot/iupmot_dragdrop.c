@@ -59,12 +59,12 @@ void iupmotDisableDragSource(Widget w)
 static void motDropTransferProc(Widget dropTransfer, Ihandle* ih, Atom *selType, Atom *typeAtom,
                                 XtPointer targetData, unsigned long *length, int format)
 {
-  IFnsCiii cbDropData;
+  IFnsViii cbDropData;
 
   if(!targetData || !(*length))
     return;
 
-  cbDropData = (IFnsCiii)IupGetCallback(ih, "DROPDATA_CB");
+  cbDropData = (IFnsViii)IupGetCallback(ih, "DROPDATA_CB");
   if(cbDropData)
   {
     /* TODO should we check for incompatible targets here? */
@@ -195,7 +195,7 @@ static Boolean motDragConvertProc(Widget dragContext, Atom *selection, Atom *tar
 {
   Atom atomMotifDrop = XInternAtom(iupmot_display, "_MOTIF_DROP", False);
   Ihandle *ih = NULL;
-  IFnsCi cbDragData;
+  IFnsVi cbDragData;
   IFns cbDragDataSize;
 
   /* check if we are dealing with a drop */
@@ -204,7 +204,7 @@ static Boolean motDragConvertProc(Widget dragContext, Atom *selection, Atom *tar
 
   XtVaGetValues(dragContext, XmNclientData, &ih, NULL);
 
-  cbDragData = (IFnsCi)IupGetCallback(ih, "DRAGDATA_CB");
+  cbDragData = (IFnsVi)IupGetCallback(ih, "DRAGDATA_CB");
   cbDragDataSize = (IFns)IupGetCallback(ih, "DRAGDATASIZE_CB");
   if(cbDragData && cbDragDataSize)
   {
@@ -452,9 +452,9 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
 
   iupClassRegisterCallback(ic, "DRAGBEGIN_CB", "ii");
   iupClassRegisterCallback(ic, "DRAGDATASIZE_CB", "s");
-  iupClassRegisterCallback(ic, "DRAGDATA_CB", "sCi");
+  iupClassRegisterCallback(ic, "DRAGDATA_CB", "sVi");
   iupClassRegisterCallback(ic, "DRAGEND_CB", "i");
-  iupClassRegisterCallback(ic, "DROPDATA_CB", "sCiii");
+  iupClassRegisterCallback(ic, "DROPDATA_CB", "sViii");
   iupClassRegisterCallback(ic, "DROPMOTION_CB", "iis");
 
   iupClassRegisterAttribute(ic, "DRAGTYPES",  NULL, motSetDragTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

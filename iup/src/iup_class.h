@@ -344,11 +344,12 @@ void iupClassRegisterReplaceAttribFlags(Iclass* ic, const char* name, int _flags
  * It can have none, one or more of the following. \n
  * - "c" = (unsigned char) - byte
  * - "i" = (int) - integer
- * - "I" = (int*) - array of integer
+ * - "I" = (int*) - array of integers or pointer to integer
  * - "f" = (float) - real
  * - "d" = (double) - real
  * - "s" = (char*) - string 
- * - "C" = (void*) - generic pointer 
+ * - "V" = (void*) - generic pointer 
+ * - "C" = (struct _cdCanvas*) - cdCanvas* structure, used along with the CD library
  * - "n" = (Ihandle*) - element handle
  * The default return value for all callbacks is "i" (int), 
  * but a different return value can be specified using one of the above parameters, 

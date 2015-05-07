@@ -28,7 +28,7 @@
 static void gtkDragDataReceived(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y,
                             GtkSelectionData *seldata, guint info, guint time, Ihandle *ih)
 {
-  IFnsCiii cbDropData = (IFnsCiii)IupGetCallback(ih, "DROPDATA_CB");
+  IFnsViii cbDropData = (IFnsViii)IupGetCallback(ih, "DROPDATA_CB");
   void* targetData = NULL;
   char* type;
   int size, format;
@@ -71,7 +71,7 @@ static void gtkDragDataReceived(GtkWidget *widget, GdkDragContext *drag_context,
 
 static void gtkDragDataGet(GtkWidget *widget, GdkDragContext *drag_context, GtkSelectionData *seldata, guint info, guint time, Ihandle* ih)
 {
-  IFnsCi cbDragData = (IFnsCi)IupGetCallback(ih, "DRAGDATA_CB");
+  IFnsVi cbDragData = (IFnsVi)IupGetCallback(ih, "DRAGDATA_CB");
   IFns cbDragDataSize = (IFns)IupGetCallback(ih, "DRAGDATASIZE_CB");
   if(cbDragData && cbDragDataSize)
   {

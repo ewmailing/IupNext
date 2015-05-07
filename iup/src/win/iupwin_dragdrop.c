@@ -391,7 +391,7 @@ static void winGetClipboardFormatName(CLIPFORMAT cf, TCHAR* name, int len);
 static HRESULT STDMETHODCALLTYPE IwinDataObject_GetData(IwinDataObject* pThis, LPFORMATETC pFormatEtc, LPSTGMEDIUM pStgMedium)
 {
   IFns cbDragDataSize;
-  IFnsCi cbDragData;
+  IFnsVi cbDragData;
   int size;
   void *pData;
   TCHAR type[256];
@@ -417,7 +417,7 @@ static HRESULT STDMETHODCALLTYPE IwinDataObject_GetData(IwinDataObject* pThis, L
   pData = GlobalLock(pStgMedium->hGlobal);
 
   /* fill data */
-  cbDragData = (IFnsCi)IupGetCallback(pThis->ih, "DRAGDATA_CB");
+  cbDragData = (IFnsVi)IupGetCallback(pThis->ih, "DRAGDATA_CB");
   cbDragData(pThis->ih, iupwinStrFromSystem(type), pData, size);
 
   GlobalUnlock(pStgMedium->hGlobal);
@@ -690,7 +690,7 @@ static HRESULT STDMETHODCALLTYPE IwinDropTarget_DragLeave(IwinDropTarget* pThis)
 
 static void winCallDropDataCB(Ihandle* ih, CLIPFORMAT cf, HGLOBAL hData, int x, int y)
 {
-  IFnsCiii cbDropData = (IFnsCiii)IupGetCallback((Ihandle*)ih, "DROPDATA_CB");
+  IFnsViii cbDropData = (IFnsViii)IupGetCallback((Ihandle*)ih, "DROPDATA_CB");
   if(cbDropData)
   {
     void* targetData = NULL;
@@ -868,7 +868,7 @@ static int winRegisterProcessDrag(Ihandle *ih)
   CLIPFORMAT *cfList;
   DWORD dwEffect = 0, dwOKEffect;
   IFns cbDragDataSize = (IFns)IupGetCallback(ih, "DRAGDATASIZE_CB");
-  IFnsCi cbDragData = (IFnsCi)IupGetCallback(ih, "DRAGDATA_CB");
+  IFnsVi cbDragData = (IFnsVi)IupGetCallback(ih, "DRAGDATA_CB");
 
   if (!dragList || !cbDragDataSize || !cbDragData)
     return -1;
