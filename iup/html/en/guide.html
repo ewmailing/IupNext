@@ -336,6 +336,51 @@ int ShowCB(Ihandle *self, int mode)
 <p>This is just one possibility on how to write a wrapper class around IUP 
 functions. Some users contributed with C++ wrappers, see next on <strong>
 Contributions</strong>.</p>
+<p>To help the creation of callbacks as methods in C++ Classes we provide (since 
+3.15) a header file called &quot;iup_class_cbs.hpp&quot; that has some macros for that 
+usage. There are 3 macros that need to be called:</p>
+<pre>IUP_CLASS_INITCALLBACK - to register the object as a callback receiver (called only once)
+IUP_CLASS_SETCALLBACK - to associate the callback for a given element
+IUP_CLASS_DECLARECALLBACK_IFn* - to declare the callback as a member function 
+                                (defined as the typedefs in &quot;iupcbs.h&quot; for all callbacks)</pre>
+<p>This allows an application to define callbacks as methods of any class it is 
+using in the application. The method will have exactly the same definition as 
+the callback. And it will not be a static method, so there will be no need to 
+access a pointer to the this object. Here is an example:</p>
+<pre>class SampleClass
+{
+  int sample_count;
+
+public:
+  SampleClass()
+  {
+    sample_count = 0;
+
+    Ihandle* button = IupButton("Test", NULL);
+    // 2) Associate the callback with the button
+    <strong>IUP_CLASS_SETCALLBACK</strong>(button, "ACTION", ButtonAction);
+
+    Ihandle* dialog = IupDialog(button);
+    // 1) Register this object as a callback receiver (only once)
+    <strong>IUP_CLASS_INITCALLBACK</strong>(dialog, SampleClass);
+
+    IupShow(dialog);
+  };
+
+protected:
+  // 3) Declare the callback as a member function
+  <strong>IUP_CLASS_DECLARECALLBACK_IFn</strong>(SampleClass, ButtonAction);
+};
+
+// 4) Define the callback as a member function
+int SampleClass::ButtonAction(Ihandle*)
+{
+  sample_count++;
+
+  IupExitLoop();
+  return IUP_DEFAULT;
+}
+</pre>
 <h3><a name="contrib">Contributions</a></h3>
 <p>All the contributions use the same license terms of the IUP license.</p>
 <h4 class="style6">

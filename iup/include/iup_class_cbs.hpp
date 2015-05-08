@@ -433,30 +433,36 @@ class IUP_CLASS_DUMMY
   IUP_CLASS_DECLARECALLBACK_IFnsViii(IUP_CLASS_DUMMY, IFnsViii);
 };
 
-class dummy_sample
+class SampleClass
 {
+  int sample_count;
+  
 public:
-  dummy_sample()
+  SampleClass()
   {
+    sample_count = 0;
+    
     Ihandle* button = IupButton("Test", NULL);
     // 2) Associate the callback with the button
     IUP_CLASS_SETCALLBACK(button, "ACTION", ButtonAction);
 
     Ihandle* dialog = IupDialog(button);
     // 1) Register this object as a callback receiver (only once)
-    IUP_CLASS_INITCALLBACK(dialog, dummy_sample);
+    IUP_CLASS_INITCALLBACK(dialog, SampleClass);
 
     IupShow(dialog);
   };
 
 protected:
   // 3) Declare the callback as a member function
-  IUP_CLASS_DECLARECALLBACK_IFn(dummy_sample, ButtonAction);
+  IUP_CLASS_DECLARECALLBACK_IFn(SampleClass, ButtonAction);
 };
 
 // 4) Define the callback as a member function
-int dummy_sample::ButtonAction(Ihandle*)
+int SampleClass::ButtonAction(Ihandle*)
 {
+  sample_count++;
+  
   IupExitLoop();
   return IUP_DEFAULT;
 }
