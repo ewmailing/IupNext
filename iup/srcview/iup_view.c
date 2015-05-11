@@ -191,7 +191,7 @@ static char* StrUpper(const char* sstr)
 
 static char* getfolder(void)
 {
-  static char folder[1024];
+  static char folder[10240];
   Ihandle *filedlg = IupFileDlg(); 
  
   IupSetAttribute(filedlg, "DIALOGTYPE", "DIR");
@@ -231,7 +231,7 @@ static int saveallimages_cb(void)
 
     if (is_image(type))
     {
-      char file_name[1024] = "";
+      char file_name[10240] = "";
 
       /* save only loaded images */
       char* file_title = IupGetAttribute(elem, "_FILE_TITLE");
@@ -354,7 +354,7 @@ static char* mainGetFileTitle(const char* file_name)
 
 static int saveallimagesone_cb(void)
 {
-  char file_name[1024] = "*.";
+  char file_name[10240] = "*.";
   char *names[MAX_NAMES];
   int i, n = 0, num_names = IupGetAllNames(names, MAX_NAMES); 
   FILE* packfile = NULL;
@@ -444,7 +444,7 @@ static int saveimage_cb(Ihandle* self)
 
     if (is_image(type))
     {
-      char file_name[1024];
+      char file_name[10240];
 
       char* imgtype = getfileformat(1);
       if (!imgtype)
@@ -700,9 +700,27 @@ static int loadimagelib_cb(Ihandle* self)
   return IUP_DEFAULT;
 }
 
+static int loadbuffer_cb(Ihandle* self)
+{
+  char buffer[10240] = "";
+  if (IupGetText("LED", buffer))
+  {
+    char* error;
+
+    mainUpdateInternals();
+
+    error = IupLoadBuffer(buffer);
+    if (error)
+      IupMessage("Error", error);
+    else
+      mainUpdateList(self, "<Buffer>");
+  }
+  return IUP_DEFAULT;
+}
+
 static int loadled_cb(Ihandle* self)
 {
-  char file_name[1024] = "./*.led";
+  char file_name[10240] = "./*.led";
   int ret = IupGetFile(file_name);
   if (ret == 0)
   {
@@ -859,9 +877,10 @@ static Ihandle* mainDialog(void)
 
   menu = IupMenu(
     IupSubmenu("File", IupMenu(
+      IupSetCallbacks(IupItem("Load Buffer...", NULL), "ACTION", (Icallback)loadbuffer_cb, NULL),
       IupSetCallbacks(IupItem("Load Led...", NULL), "ACTION", (Icallback)loadled_cb, NULL),
-      IupSetCallbacks(IupItem("Load Image Lib", NULL), "ACTION", (Icallback)loadimagelib_cb, NULL),
       IupSeparator(),
+      IupSetCallbacks(IupItem("Load Image Lib", NULL), "ACTION", (Icallback)loadimagelib_cb, NULL),
 #ifdef USE_IM
       IupSetCallbacks(IupItem("Import Image(s)...", NULL), "ACTION", (Icallback)loadimage_cb, NULL),
 #endif
