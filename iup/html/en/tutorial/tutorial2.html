@@ -1,0 +1,378 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title></title>
+	<meta name="generator" content="LibreOffice 4.2.6.3 (Linux)">
+	<meta name="created" content="0;0">
+	<meta name="changed" content="20150417;155510225713943">
+	<meta http-equiv="Content-Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="../../style.css">
+	<style type="text/css">
+.auto-style1 {
+	text-align: center;
+}
+	.auto-style2 {
+		border-style: solid;
+		border-width: 1px;
+	}
+	.auto-style3 {
+		background-color: #CCCCCC;
+	}
+	.auto-style4 {
+		border-style: solid;
+		border-width: 1px;
+		padding: 1px 4px;
+		background-color: #CCCCCC;
+	}
+	</style>
+</head>
+<body>
+
+<div id="navigation">
+<ul>
+    <li><a href="tutorial.html">Index</a></li>
+    <li><a href="tutorial1.html">Previous</a></li>
+    <li><a href="tutorial3.html">Next</a></li>
+</ul>
+</div>
+
+<h2>2. Hello World</h2>
+
+<h3>2.1 <a name="Initialization">Initialization</a></h3>
+
+<p>The code bellow will show how to open an IUP environment and display a simple message. Each line of code will be explained after the code.</p>
+
+<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example1.c"><span class="auto-style3">example1.c</span></a></span>
+
+#include &lt;stdlib.h&gt;
+#include &lt;iup.h&gt;
+
+int main(int argc, char **argv)
+{
+  <a href="../func/iupopen.html">IupOpen</a>(&amp;argc, &amp;argv);
+  <a href="../dlg/iupmessage.html">IupMessage</a>("Hello World Example", "Hello World from IUP.");
+  <a href="../func/iupclose.html">IupClose</a>();
+  return EXIT_SUCCESS;
+}
+</pre>
+
+<p class="auto-style1"><span class="auto-style2"><img alt="" height="153" src="example1.png" width="230"></span></p>
+<p>At the first line we see a include of the C standard library
+that is needed by almost all C programs. Next there is a include for
+the main iup library that is all we need for our first example. Next line is a 
+standard main function declaration. Before running any of IUP's functions, the function
+<strong>IupOpen</strong> must be called to initialize the toolkit. The next line creates and
+display a message to the user using <strong>IupMessage</strong> function. This function
+receives to parameters: title and message. Title will be displayed at
+the top of the message window and message is the message by itself that
+will be displayed to the user. Following, we have a <strong>IupClose</strong> function 
+call. After running the last IUP function, <strong>IupClose</strong> must be run so that 
+the toolkit can free internal memory and close the interface system.
+Finally the program returns exiting with success. </p>
+
+
+<h3>2.2 <a name="Compiling_Linking">Compiling</a> and Linking</h3>
+
+<p>Compiling and Linking a program that uses IUP (as any other third party 
+library that is not installed on the system) demands that you specify where the 
+<strong>include</strong> files and the <strong>libraries</strong> are installed. You also need to 
+link with the iup library. To do that in a single command line for our first example do:
+</p>
+
+<pre>gcc -I/tecgraf/iup/include -L/tecgraf/iup/lib -liup -o example1 example1.c</pre>
+
+<p> For programs containing several modules is better to build a makefile (See 
+here how to build one: <a href="http://mrbook.org/blog/tutorials/make/">makefile tutorial</a>). 
+There are also many different IDEs (Integrated Development Environments) in Linux 
+and in Windows that can help you develop an application. They all need the same 
+basic settings to be configured. We also have guides available for the most 
+popular IDEs:</p>
+<ul>
+	<li><a href="../ide_guide/cppbx.html">Borland C++ BuilderX</a></li>
+	<li><a href="../ide_guide/codeblocks.html">Code Blocks</a></li>
+	<li><a href="../ide_guide/dev-cpp.html">Dev-C++</a> </li>
+	<li><a href="../ide_guide/eclipse.html">Eclipse for C++</a></li>
+	<li><a href="../ide_guide/msvc.html">Microsoft Visual C++</a> (Visual Studio 2003)</li>
+	<li><a href="../ide_guide/msvc8.html">Microsoft Visual C++</a> (Visual Studio 2005)</li>
+	<li><a href="../ide_guide/owc.html">Open Watcom</a></li>
+</ul>
+<p> If you want more details on libraries dependencies for static linking you 
+can check the <a href="../guide.html#apl">Building Applications Guide</a>. </p>
+
+<h3>2.3 <a name="Dialog">Creating a Dialog</a></h3>
+
+<p>Let's change your first example a little bit to add your own dialog.
+</p>
+
+<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example2.c"><span class="auto-style3">example2.c</span></a></span>
+
+#include &lt;stdlib.h&gt;
+#include &lt;iup.h&gt;
+
+int main(int argc, char **argv)
+{
+  Ihandle *dlg, *label;
+
+  IupOpen(&amp;argc, &amp;argv);
+
+  label =  IupLabel("Hello!");
+  dlg = IupDialog(IupVbox(label, NULL));
+  IupSetAttribute(dlg, "TITLE", "Hello from IUP Tutorial!");
+
+  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+</pre>
+
+<p class="auto-style1"><span class="auto-style2"><img height="45" src="example2.png" width="252"></span></p>
+<p>Note that we have added a new line where we declare Ihandles for iup 
+elements. We created two different ihandles. One called dlg for our 
+main dialog and another called label that will hold a label with a hello
+message. Next new line creates a iup label control and 
+associates it with the label Ihandle that was previously declared. It's 
+only argument is the text that will be displayed inside the label. 
+Then we reach the line where we create our main dialog almost the same way 
+we created the button. The difference goes on the parameter passed to IupDialog function. 
+It receives another function that will create a composition control called 
+IupVbox. A IupVbox is a control that aligns all controls passed to it vertically. 
+In this example, we are passing just one control (our label) and a NULL to sign 
+that we are done with our list of elements. Next line presents the way IUP 
+changes each control attributes. By calling the function IupSetAttribute the 
+programmer will inform which control has the attribute that needs to be changed, 
+which attribute is that and the new value that the attribute will assume. In our
+sample, we are changing the main dialog's title to ``Hello from IUP Tutorial''. 
+Next function call IupShowXY tells IUP that we need the main dialog displayed at 
+the center of the screen horizontally and vertically. Following comes one of the 
+most important function calls in our program: IupMainLoop. This function tells 
+iup to wait for events. Otherwise, the program would go on, end and terminate 
+without dealing with any event. Go on, comment this line, recompile your code
+and execute your program. You will see the main dialog blink in the screen and 
+the program end just after it. It will be a valuable exercise.</p>
+
+<p>From the most simple hello world to the most complex IUP application 
+will have this peace of code somewhere. </p>
+
+<h3>2.4 <a name="Interaction">Adding Interaction</a></h3>
+
+<p>In the previous section we saw how to build a basic IUP application using a piece of
+code that we will reuse every time we need to build IUP applications. In this section 
+we will add a interaction to our application using a button and a callback. 
+</p>
+
+<pre>
+#include &lt;stdlib.h&gt;
+#include &lt;iup.h&gt;
+
+int btn_exit_cb( Ihandle *self )
+{
+  IupMessage("Hello World Example", "Hello from IUP.");
+  /* Exits the main loop */
+  return IUP_CLOSE;
+} 
+
+int main(int argc, char **argv)
+{
+  Ihandle *dlg, *button, *vbox;
+
+  IupOpen(&amp;argc, &amp;argv);
+  button = IupButton("Close", "button");
+  vbox = IupVbox(
+    button,
+    NULL
+  );    
+  dlg = IupDialog(vbox);
+  IupSetAttribute(dlg, "TITLE", "Hello from IUP Tutorial!");
+
+  /* Registers callbacks */
+  IupSetCallback( button, "ACTION", (Icallback) btn_exit_cb );
+
+  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+</code></pre>
+
+<p>After the usual includes we find a few new lines. These lines
+contain a regular function called btn_exit_cb that will, as we will
+see, be registered as our button callback. This function does nothing
+special except showing the hello message we saw in first example and closing 
+the application returning code IUP_CLOSE. 
+</p>
+
+<p>Note that we added a new handle that will handle our vbox in a clear way. 
+Following is our button declaration. The second string will hold the name of 
+the action generated when the button is pressed. Next lines are our vbox that 
+now is using a variable to store all our elements. That variable is passed as 
+a parameter to IupDialog function. 
+</p>
+
+<p>As said before, callbacks are special functions, defined by the programmer and 
+called by IUP when a event need to be threated. To create a callback, the programmer 
+should declare a common function, and put inside its body anything that he wants the 
+application to do when the event occur. After that, it is necessary to inform IUP 
+that new function is in fact a callback. That is done calling the function 
+IupSetCallback. This function will inform IUP that our regular function btn_exit_cb is 
+in fact a callback that needs to be executed when our button is pressed. The
+first parameter is our button ihandle, followed by the attribute name
+of the callback and for the name of the function to be executed
+casted as Icallback. The name of the callbacks available can be found
+at each control documentation. It always write in upper letters. 
+</p>
+
+<p>When executed the application's dialog will show up and when the user press the button 
+it display a hello message and will close the applciation. Seems no big dial, but with 
+this small sample of code we have covered the process of creating a IUP application, 
+declare elements and callbacks and also handle an event. From now on, we will see more from 
+IUP controls and how to improve our application using different kinds of controls.
+</p>
+
+<h3>2.5 <a name="Layout">Improving the Layout</a></h3>
+
+<p>Until now we just positioned our controls inside a vbox that, as told, align all controls
+inside it vertically. This is just a small sample of IUP's layout concept. IUP implements an 
+abstract layout, in which the positioning of controls is done relatively instead of 
+absolutely. For such, composition elements are necessary for composing the interface elements. 
+They are boxes and fillings invisible to the user, but that play an important part. When a 
+dialog size changes, these containers expand or retract to adjust the positioning of the controls 
+to the new situation allowing the dialog to addapt even if the resolution of the screen changes.
+That would come in hand if you port your application to another system with a lower resolution
+for example. Main composition elements are vertical boxes (vbox), horizontal boxes (hbox) 
+and filling (fill) among others. There is also a depth box (zbox) in which layers of elements can 
+be created for the same dialog, and the elements in each layer are only visible when that given 
+layer is active.
+</p>
+
+<p>To be more clear in the way abstract layout works, lets modify our example adding another button
+to it </p>
+
+<pre>
+#include &lt;stdlib.h&gt;
+#include &lt;iup.h&gt;
+
+int btn_msg_cb( Ihandle *self )
+{
+  IupMessage("Hello World Example", "Hello from IUP.");
+  /* Returns to main loop */
+  return IUP_DEFAULT;
+}
+
+int btn_exit_cb( Ihandle *self )
+{
+  /* Exits the main loop */
+  return IUP_CLOSE;
+}
+
+int main(int argc, char **argv)
+{
+  Ihandle *dlg, *button_msg, *button_exit, *vbox;
+
+  IupOpen(&amp;argc, &amp;argv);
+  button_msg = IupButton("Message", "button");
+  button_exit = IupButton("Close", "button");
+  vbox = IupVbox(
+    button_msg,
+	button_exit,
+    NULL
+  );
+  dlg = IupDialog(vbox);
+  IupSetAttribute(dlg, "TITLE", "Hello from IUP Tutorial!");
+
+  /* Registers callbacks */
+  IupSetCallback( button_msg, "ACTION", (Icallback) btn_msg_cb );
+  IupSetCallback( button_exit, "ACTION", (Icallback) btn_exit_cb );
+
+  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+</pre>
+
+<p>Note that this time we splitted our callback into two different callbacks. btn_msg_cb is responsible 
+to send a message to the user when the button_msg is pressed. btn_exit_cb now only closes the application.
+Also, there is a new button_msg declaration and this new button appers inside our vbox as the top element.
+That means it will be displayed above button_exit. If we added a new callback and a new button it will be
+necessary to set this callback with a new call to IupSetCallback. And that's all, our example now has two
+different buttons doing two different actions and disposed vertically one above it other. A interesting 
+exercise would be change the code above to use a hbox to see what happens.</p>
+
+<p>Now that you understand the basics of abstract layout, let us present two attributes available to both
+vboxes and hboxes. They are: GAP and MARGIN.</p>
+
+<p>GAP defines an space in pixels between every element inside a box. If you are using a vbox, it will be
+a vertical space, if you are using a hbox, it will be a horizontal space. This attribute is very usefull
+to keep your elements alligned. The default value for GAP is 0 (wich means no GAP).<p>MARGIN defines a margin in pixels. Its value has the format "widthxheight", where width and height are integer values corresponding to the horizontal and vertical margins, respectively. Default: "0x0" (no margin).</p>
+
+<p>Go on, try our exemple now using GAP and MARGIN, experience with different values to see how it behaves.</p>
+
+<pre>
+#include &lt;stdlib.h&gt;
+#include &lt;iup.h&gt;
+
+int btn_msg_cb( Ihandle *self )
+{
+  IupMessage("Hello World Example", "Hello from IUP.");
+  /* Returns to main loop */
+  return IUP_DEFAULT;
+}
+
+int btn_exit_cb( Ihandle *self )
+{
+  /* Exits the main loop */
+  return IUP_CLOSE;
+}
+
+int main(int argc, char **argv)
+{
+  Ihandle *dlg, *button_msg, *button_exit, *vbox;
+
+  IupOpen(&amp;argc, &amp;argv);
+  button_msg = IupButton("Message", "button");
+  button_exit = IupButton("Close", "button");
+  vbox = IupVbox(
+    button_msg,
+    button_exit,
+    NULL
+  );
+  IupSetAttribute(vbox, "GAP", "5");
+  IupSetAttribute(vbox, "MARGIN", "10x10");
+
+  dlg = IupDialog(vbox);
+  IupSetAttribute(dlg, "TITLE", "Hello from IUP Tutorial!");
+
+  /* Registers callbacks */
+  IupSetCallback( button_msg, "ACTION", (Icallback) btn_msg_cb );
+  IupSetCallback( button_exit, "ACTION", (Icallback) btn_exit_cb );
+
+  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+</pre>
+
+<table cellpadding="0" cellspacing="0" style="width: 100%">
+	<tr>
+		<td align="left" class="tutorial_bottom"><a href="tutorial1.html">Previous</a></td>
+		<td align="center" class="tutorial_bottom"><a href="tutorial.html">Index</a></td>
+		<td align="right" class="tutorial_bottom"><a href="tutorial3.html">Next</a></td>
+	</tr>
+</table>
+
+</body>
+</html>

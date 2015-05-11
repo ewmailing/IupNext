@@ -1,0 +1,329 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title></title>
+	<meta name="generator" content="LibreOffice 4.2.6.3 (Linux)">
+	<meta name="created" content="0;0">
+	<meta name="changed" content="20150417;155510225713943">
+	<meta http-equiv="Content-Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<div id="navigation">
+<ul>
+    <li><a href="tutorial.html">Index</a></li>
+    <li><a href="tutorial2.html">Previous</a></li>
+    <li><a href="tutorial4.html">Next</a></li>
+</ul>
+</div>
+
+<h2>3. Simple Notepad</h2>
+<h3>3.1 <a name="Main_Dialog">Main Dialog</a></h3>
+
+<p>Since now we saw two different controls: labels and buttons. Labels show something to the user but
+doesn't allow any kind of interaction. Buttons allow the user to press trigging an event. But no one 
+of this allow the user to insert any data into our application. To do that we will use a new control 
+called IupText. IupText creates a editable text field and has a lot of different atributes available.
+We will be interested in one in particular for now: MULTILINE. MULTILINE turns the IupText into an 
+editable text field that supports many lines which is mandatory to build a simple notepad.</p>
+
+<p>Our starting code for the simple notepad should as following...</p>
+
+<pre>
+#include &lt;stdlib.h&gt;
+#include &lt;iup.h&gt;
+
+int main(int argc, char **argv)
+{
+  Ihandle *dlg, *multitext, *vbox;
+
+  IupOpen(&amp;argc, &amp;argv);
+  multitext = IupText(NULL);
+  vbox = IupVbox(
+    multitext,
+    NULL
+  );
+  IupSetAttribute(multitext, "MULTILINE", "YES");
+  IupSetAttribute(multitext, "EXPAND", "YES");
+
+  dlg = IupDialog(vbox);
+  IupSetAttribute(dlg, "TITLE", "Simple Notepad");
+
+  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+</pre>
+
+<p>The previous code doesn't show exciting news except by the IupText declaration and the call to IupSetAttribute
+to set the IupText as a MULTILINE. The default value is "NO", try to comment this line and see what happens. 
+With a few lines of code we build an application where the user can type a huge text. But, if you type a huge 
+text, you probably would like to save it and unfortunally our applications offers no such feature. We will
+handle this in the next sections.</p>
+
+<h3>3.2 <a name="Adding_a_Menu">Adding a Menu</a></h3>
+
+<p>Almost all applications offer a menu where the user can save, edit and do a lot of other stuff with his data.
+Iup also offers this resource to the applications. Menus are divided into four different interface elements: IupItem, 
+IupMenu, IupSeparator, IupSubmenu.</p>
+
+<p>IupItem creates an single item of the menu interface element. When selected, it generates an action.</p>
+
+<p>IupMenu creates the menu element by itself. An IupMenu should be composed by any of the other 3 types of 
+manu interface elements: IupItem, IupSubmenu and IupSeparator. Any other interface element defined inside a 
+menu will be an error.</p>
+
+<p>IupSeparator creates a line between two menu items. Its used normally to divide and arrange different categories
+of menu itens.</p>
+
+<p>IupSubmenu creates a menu item that, when selected, opens another menu.</p>
+
+<p>Let's add a menu with a few itens in our example</p>
+
+<pre>
+#include &lt;stdlib.h&gt;
+#include &lt;iup.h&gt;
+
+int exit_cb(void)
+{
+  return IUP_CLOSE;
+}
+
+int main(int argc, char **argv)
+{
+  Ihandle *dlg, *multitext, *vbox;
+  Ihandle *file_menu, *item_exit, *item_open, *item_save;
+  Ihandle *sub1_menu, *menu;
+
+  IupOpen(&amp;argc, &amp;argv);
+  multitext = IupText(NULL);
+  IupSetAttribute(multitext, "MULTILINE", "YES");
+  IupSetAttribute(multitext, "EXPAND", "YES");
+
+  item_open = IupItem ("Open", NULL);
+  item_save = IupItem ("Save", NULL);
+  item_exit = IupItem ("Exit", NULL);
+  IupSetCallback(item_exit, "ACTION", (Icallback)exit_cb);
+
+  file_menu = IupMenu(item_open,
+					  item_save,
+					  IupSeparator(),
+					  item_exit,
+                	  NULL);
+
+  sub1_menu = IupSubmenu("File", file_menu);
+
+  menu = IupMenu(sub1_menu, NULL);
+
+  vbox = IupVbox(
+    multitext,
+    NULL
+  );
+
+  dlg = IupDialog(vbox);
+  IupSetAttribute("main_menu", menu);
+  IupSetAttribute(dlg, "MENU", "main_menu");
+  IupSetAttribute(dlg, "TITLE", "Simple Notepad");
+  IupSetAttribute(dlg, "SIZE", "QUARTERxQUARTER");
+
+  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+</pre>
+
+<p>Now our example has a few menu element handlers and declarations. Also, we changed our exit callback to be called
+when the item_exit menu item is pressed. The next line shows the composition of an IupMenu called file_menu. Note that
+the menu items are passed in order of appearence meaning item_open will appear above item_save and so on. There is also
+an IupSeparator dividing our file menu in two parts, the first one takes items that deal direct with files like open and
+save and the other ones takes the exit item. It's not mandatory to have a IupSeparator in your menu. It's is used just to
+keep things more organized. Next line is a little trick. We created a submenu to store all our items. Why not use file_menu
+directly? We could, but it would be used as main menu and will ending up being the only menu available in our application.
+It's a good pratice to separate menus in submenus and then pass this submenus as itens of the main menu. Doing so, a 
+application could have a file menu, a search menu, a help menu and others as items of the main menu as you can see in the 
+main menu declaration on the next line. At least, once we have done building the main menu, we must set it as the MENU 
+attribute of the main dialog.<p>You should have notice that exit menu works fine as we set a exit callback to it but, open and save doesn't work.
+That's because we didn't set any callback for then. Those callbacks will use another IUP feature that is subject of
+our next section.<h3>3.3 <a name="Using_Pre-defined_Dialogs">Using Pre-defined Dialogs</a></h3>
+
+<p>In the previous section we added a file open and a file save menu itens, but they had no callbacks associated. 
+That's because we will use new IUP resorces to deal with file handling. These 
+resource are called Pre-defined Dialogs.<p>Some dialogs are commonly found in a lot of different applications like file handling dialogs, font change dialog
+color picking dialog, etc. 
+It would be annoying have to build the same dialog again every time we need handle a file, change a color or a font.
+So, IUP provides pre-builded dialogs with all necessary controls to deal with most of this common tasks.<p>We will update our last example to handle file handling and to make use of other of these IUP Pre-defined Dialogs.<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;iup.h&gt;
+
+int open_cb(void)
+{
+  Ihandle *filedlg;
+  filedlg = IupFileDlg();
+  IupSetAttributes(filedlg, "DIALOGTYPE = OPEN, TITLE = \"File Open\"");
+  IupSetAttributes(filedlg, "FILTER = \"*.txt\", FILTERINFO = \"Text Files\"");
+  if (IupGetInt(filedlg, "STATUS") != -1)
+  {
+  	printf("Open file %s\n", IupGetAttribute(filedlg, "VALUE")); 
+  }
+  else
+  	printf("CANCEL\n");
+	
+  IupDestroy(filedlg);
+}
+
+int save_cb(void)
+{
+  Ihandle *filedlg; 
+  filedlg = IupFileDlg(); 
+ 
+  IupSetAttributes(filedlg, "DIALOGTYPE = SAVE, TITLE = \"File Save\"");
+  IupSetAttributes(filedlg, "FILTER = \"*.txt\", FILTERINFO = \"Text Files\"");
+
+  IupPopup(filedlg, IUP_CENTER, IUP_CENTER); 
+
+  switch(IupGetInt(filedlg, "STATUS"))
+  {
+    case 1: 
+      IupMessage("New file",IupGetAttribute(filedlg, "VALUE")); 
+      break; 
+
+    case 0 : 
+      IupMessage("File already exists",IupGetAttribute(filedlg, "VALUE"));
+      break; 
+
+    case -1 : 
+      IupMessage("IupFileDlg","Operation Canceled");
+      return 1;
+      break; 
+  }
+
+  IupDestroy(filedlg);
+}
+
+int font_cb(void)
+{
+	Ihandle* fontdlg = IupFontDlg();
+	IupSetAttribute(fontdlg, "COLOR", "128 0 255");
+	IupSetAttribute(fontdlg, "VALUE", "Times New Roman, Bold 20");
+	IupSetAttribute(fontdlg, "TITLE", "IupFontDlg Test");
+
+	IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
+
+	if (IupGetInt(fontdlg, "STATUS"))
+	{
+  		printf("OK\n");
+  		printf("  VALUE(%s)\n", IupGetAttribute(dlg, "VALUE"));
+  		printf("  COLOR(%s)\n", IupGetAttribute(dlg, "COLOR"));
+	}
+	else
+  		printf("CANCEL\n");
+
+	IupDestroy(dlg);
+}
+
+int exit_cb(void)
+{
+  return IUP_CLOSE;
+}
+
+int main(int argc, char **argv)
+{
+  Ihandle *dlg, *multitext, *vbox;
+  Ihandle *file_menu, *item_exit, *item_open, *item_save;
+  Ihandle *edit_menu, *item_edit;
+  Ihandle *format_menu, *item_font;
+  Ihandle *help_menu, *item_about;
+
+  Ihandle *sub_menu_file, *sub_menu_edit, *sub_menu_format, *sub_menu_help, *menu;
+
+  IupOpen(&amp;argc, &amp;argv);
+  multitext = IupText(NULL);
+  IupSetAttribute(multitext, "MULTILINE", "YES");
+  IupSetAttribute(multitext, "EXPAND", "YES");
+
+  item_open = IupItem ("Open", NULL);
+  item_save = IupItem ("Save", NULL);
+  item_exit = IupItem ("Exit", NULL);
+
+  item_font = IupItem ("Font", NULL);
+
+  item_about = IupItem ("About", NULL);
+
+  IupSetCallback(item_exit, "ACTION", (Icallback)exit_cb);
+  IupSetCallback(item_open, "ACTION", (Icallback)open_cb);
+  IupSetCallback(item_save, "ACTION", (Icallback)save_cb);
+
+  IupSetCallback(item_font, "ACTION", (Icallback)font_cb);
+
+  file_menu = IupMenu(item_open,
+                      item_save,
+                      IupSeparator(),
+                      item_exit,
+                      NULL);
+
+  edit_menu = IupMenu(item_edit,
+                      NULL);
+
+  format_menu = IupMenu(item_font,
+                      NULL);
+
+  help_menu = IupMenu(item_about,
+                      NULL);
+
+  sub_menu_file = IupSubmenu("File", file_menu);
+  sub_menu_edit = IupSubmenu("Edit", edit_menu);
+  sub_menu_format = IupSubmenu("Format", format_menu);
+  sub_menu_help = IupSubmenu("Help", help_menu);
+
+  menu = IupMenu(sub_menu_file, sub_menu_edit, sub_menu_format, sub_menu_help, NULL);
+
+  vbox = IupVbox(
+    multitext,
+    NULL
+  );
+
+  dlg = IupDialog(vbox);
+  IupSetHandle("main_menu", menu);
+  IupSetAttribute(dlg, "MENU", "main_menu");
+  IupSetAttribute(dlg, "TITLE", "Simple Notepad");
+  IupSetAttribute(dlg, "SIZE", "QUARTERxQUARTER");
+
+  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+  IupMainLoop();
+
+  IupClose();
+
+  return EXIT_SUCCESS;
+}
+</pre> 
+
+<p>File/Edit/Format/Help sem fazer quase nada algumas callbacks apenas<br>(sem 
+impressão, sem undo, sem find)<br>Format / Font apenas<br>Help/About<br>(ver 
+Notepad) 
+</p>
+<p>IupFileDlg<br>About (IupMessageDlg)<br>IupFontDlg</p>
+<h3>3.4 <a name="Custom_Dialogs">Custom Dialogs</a></h3>
+<p>Find/Replace/Go To</p>
+<h3>3.5 <a name="Toolbar_Statusbar">Adding a Toolbar and a Statusbar</a></h3>
+<p>IupImageLib (Open Save Find ... ) button com image<br>IupLabel bottom. 
+CARET_CB callback no IupText para mostrar posição no texto.</p>
+<h3>3.6 Defining <a name="Hot_Keys">Hot Keys</a></h3>
+<p>Ctrl+O, ...</p>
+<table cellpadding="0" cellspacing="0" style="width: 100%">
+	<tr>
+		<td align="left" class="tutorial_bottom"><a href="tutorial2.html">Previous</a></td>
+		<td align="center" class="tutorial_bottom"><a href="tutorial.html">Index</a></td>
+		<td align="right" class="tutorial_bottom"><a href="tutorial4.html">Next</a></td>
+	</tr>
+</table>
+</body>
+</html>
