@@ -678,6 +678,7 @@ void iupMatrixEditCreate(Ihandle* ih)
   IupSetAttribute(ih->data->texth, "VALUE",  "");
   IupSetAttribute(ih->data->texth, "VISIBLE", "NO");
   IupSetAttribute(ih->data->texth, "ACTIVE",  "NO");
+  IupSetAttribute(ih->data->texth, "FLOATING", "IGNORE");
 
 
   /******** DROPDOWN *************/
@@ -696,4 +697,5 @@ void iupMatrixEditCreate(Ihandle* ih)
   IupSetAttribute(ih->data->droph, "MULTIPLE", "NO");
   IupSetAttribute(ih->data->droph, "VISIBLE", "NO");
   IupSetAttribute(ih->data->droph, "ACTIVE",  "NO");
+  IupSetAttribute(ih->data->droph, "FLOATING", "IGNORE");
 }
