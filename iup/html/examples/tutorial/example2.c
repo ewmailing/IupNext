@@ -7,15 +7,14 @@ int main(int argc, char **argv)
 
   IupOpen(&argc, &argv);
 
-  label =  IupLabel("Hello!");
+  label =  IupLabel("Hello world from IUP.");
   dlg = IupDialog(IupVbox(label, NULL));
-  IupSetAttribute(dlg, "TITLE", "Hello from IUP Tutorial!");
+  IupSetAttribute(dlg, "TITLE", "Hello World 2");
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 
   IupMainLoop();
 
   IupClose();
-
   return EXIT_SUCCESS;
 }

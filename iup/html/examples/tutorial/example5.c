@@ -3,7 +3,6 @@
 
 int btn_msg_cb( Ihandle *self )
 {
-  IupMessage("Hello World Example", "Hello from IUP.");
   /* Returns to main loop */
   return IUP_DEFAULT;
 }
@@ -16,30 +15,31 @@ int btn_exit_cb( Ihandle *self )
 
 int main(int argc, char **argv)
 {
-  Ihandle *dlg, *button_msg, *button_exit, *vbox;
+  Ihandle *dlg, *button, *label, *vbox;
 
   IupOpen(&argc, &argv);
-  button_msg = IupButton("Message", "button");
-  button_exit = IupButton("Close", "button");
+  
+  label =  IupLabel("Hello world from IUP.");
+  button = IupButton("OK", NULL);
   vbox = IupVbox(
-    button_msg,
-    button_exit,
+    label,
+    button,
     NULL
   );
-  IupSetAttribute(vbox, "GAP", "5");
+  IupSetAttribute(vbox, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(vbox, "GAP", "10");
   IupSetAttribute(vbox, "MARGIN", "10x10");
-
+  
   dlg = IupDialog(vbox);
-  IupSetAttribute(dlg, "TITLE", "Hello from IUP Tutorial!");
+  IupSetAttribute(dlg, "TITLE", "Hello World 5");
 
   /* Registers callbacks */
-  IupSetCallback( button_msg, "ACTION", (Icallback) btn_msg_cb );
-  IupSetCallback( button_exit, "ACTION", (Icallback) btn_exit_cb );
+  IupSetCallback(button, "ACTION", (Icallback) btn_exit_cb);
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+
   IupMainLoop();
 
   IupClose();
-
   return EXIT_SUCCESS;
 }

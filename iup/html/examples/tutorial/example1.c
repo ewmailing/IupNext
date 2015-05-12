@@ -4,7 +4,9 @@
 int main(int argc, char **argv)
 {
 	IupOpen(&argc, &argv);
-	IupMessage("Hello World Example", "Hello World from IUP.");
+  
+	IupMessage("Hello World 1", "Hello world from IUP.");
+  
 	IupClose();
 	return EXIT_SUCCESS;
 }

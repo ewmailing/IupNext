@@ -8,6 +8,15 @@
 	<meta name="changed" content="20150417;155510225713943">
 	<meta http-equiv="Content-Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="../../style.css">
+	<style type="text/css">
+.auto-style1 {
+	text-align: center;
+}
+.auto-style2 {
+	border-style: solid;
+	border-width: 1px;
+}
+</style>
 </head>
 <body>
 
@@ -25,13 +34,14 @@
 <p>Since now we saw two different controls: labels and buttons. Labels show something to the user but
 doesn't allow any kind of interaction. Buttons allow the user to press trigging an event. But no one 
 of this allow the user to insert any data into our application. To do that we will use a new control 
-called IupText. IupText creates a editable text field and has a lot of different atributes available.
-We will be interested in one in particular for now: MULTILINE. MULTILINE turns the IupText into an 
+called <A href="../elem/iuptext.html"><strong>IupText</strong></a>. It creates a editable text field and has a lot of different 
+attributes available.
+We will be interested in one in particular for now: MULTILINE. MULTILINE turns the <A href="../elem/iuptext.html"><strong>IupText</strong></a> into an 
 editable text field that supports many lines which is mandatory to build a simple notepad.</p>
 
 <p>Our starting code for the simple notepad should as following...</p>
 
-<pre>
+<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example6.c"><span class="auto-style3">example6.c</span></a></span>
 #include &lt;stdlib.h&gt;
 #include &lt;iup.h&gt;
 
@@ -59,9 +69,10 @@ int main(int argc, char **argv)
   return EXIT_SUCCESS;
 }
 </pre>
+<p class="auto-style1"><span class="auto-style2"><img alt="" height="262" src="example6.png" width="453"></span></p>
 
-<p>The previous code doesn't show exciting news except by the IupText declaration and the call to IupSetAttribute
-to set the IupText as a MULTILINE. The default value is "NO", try to comment this line and see what happens. 
+<p>The previous code doesn't show exciting news except by the <A href="../elem/iuptext.html"><strong>IupText</strong></a> declaration and the call to <A href="../func/iupsetattribute.html"><strong>IupSetAttribute</strong></a>
+to set the <A href="../elem/iuptext.html"><strong>IupText</strong></a> as a MULTILINE. The default value is "NO", try to comment this line and see what happens. 
 With a few lines of code we build an application where the user can type a huge text. But, if you type a huge 
 text, you probably would like to save it and unfortunally our applications offers no such feature. We will
 handle this in the next sections.</p>
@@ -69,23 +80,23 @@ handle this in the next sections.</p>
 <h3>3.2 <a name="Adding_a_Menu">Adding a Menu</a></h3>
 
 <p>Almost all applications offer a menu where the user can save, edit and do a lot of other stuff with his data.
-Iup also offers this resource to the applications. Menus are divided into four different interface elements: IupItem, 
-IupMenu, IupSeparator, IupSubmenu.</p>
+IUP also offers this resource to the applications. Menus are divided into four different interface elements: <A href="../elem/iupitem.html"><strong>IupItem</strong></a>, 
+<A href="../elem/iupmenu.html"><strong>IupMenu</strong></a>, <A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a>, <A href="../elem/iupsubmenu.html"><strong>IupSubmenu</strong></a>.</p>
 
-<p>IupItem creates an single item of the menu interface element. When selected, it generates an action.</p>
+<p><A href="../elem/iupitem.html"><strong>IupItem</strong></a> creates an single item of the menu interface element. When selected, it generates an action.</p>
 
-<p>IupMenu creates the menu element by itself. An IupMenu should be composed by any of the other 3 types of 
-manu interface elements: IupItem, IupSubmenu and IupSeparator. Any other interface element defined inside a 
+<p><A href="../elem/iupmenu.html"><strong>IupMenu</strong></a> creates the menu element by itself. An <A href="../elem/iupmenu.html"><strong>IupMenu</strong></a> should be composed by any of the other 3 types of 
+manu interface elements: <A href="../elem/iupitem.html"><strong>IupItem</strong></a>, <A href="../elem/iupsubmenu.html"><strong>IupSubmenu</strong></a> and <A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a>. Any other interface element defined inside a 
 menu will be an error.</p>
 
-<p>IupSeparator creates a line between two menu items. Its used normally to divide and arrange different categories
+<p><A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a> creates a line between two menu items. Its used normally to divide and arrange different categories
 of menu itens.</p>
 
-<p>IupSubmenu creates a menu item that, when selected, opens another menu.</p>
+<p><A href="../elem/iupsubmenu.html"><strong>IupSubmenu</strong></a> creates a menu item that, when selected, opens another menu.</p>
 
 <p>Let's add a menu with a few itens in our example</p>
 
-<pre>
+<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example7.c"><span class="auto-style3">example7.c</span></a></span>
 #include &lt;stdlib.h&gt;
 #include &lt;iup.h&gt;
 
@@ -139,12 +150,13 @@ int main(int argc, char **argv)
   return EXIT_SUCCESS;
 }
 </pre>
+<p class="auto-style1"><span class="auto-style2"><img alt="" height="262" src="example7.png" width="453"></span></p>
 
 <p>Now our example has a few menu element handlers and declarations. Also, we changed our exit callback to be called
-when the item_exit menu item is pressed. The next line shows the composition of an IupMenu called file_menu. Note that
+when the item_exit menu item is pressed. The next line shows the composition of an <A href="../elem/iupmenu.html"><strong>IupMenu</strong></a> called file_menu. Note that
 the menu items are passed in order of appearence meaning item_open will appear above item_save and so on. There is also
-an IupSeparator dividing our file menu in two parts, the first one takes items that deal direct with files like open and
-save and the other ones takes the exit item. It's not mandatory to have a IupSeparator in your menu. It's is used just to
+an <A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a> dividing our file menu in two parts, the first one takes items that deal direct with files like open and
+save and the other ones takes the exit item. It's not mandatory to have a <A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a> in your menu. It's is used just to
 keep things more organized. Next line is a little trick. We created a submenu to store all our items. Why not use file_menu
 directly? We could, but it would be used as main menu and will ending up being the only menu available in our application.
 It's a good pratice to separate menus in submenus and then pass this submenus as itens of the main menu. Doing so, a 
@@ -159,7 +171,9 @@ That's because we will use new IUP resorces to deal with file handling. These
 resource are called Pre-defined Dialogs.<p>Some dialogs are commonly found in a lot of different applications like file handling dialogs, font change dialog
 color picking dialog, etc. 
 It would be annoying have to build the same dialog again every time we need handle a file, change a color or a font.
-So, IUP provides pre-builded dialogs with all necessary controls to deal with most of this common tasks.<p>We will update our last example to handle file handling and to make use of other of these IUP Pre-defined Dialogs.<pre>
+So, IUP provides pre-builded dialogs with all necessary controls to deal with most of this common tasks.<p>We will update our last example to handle file handling and to make use of other of these IUP Pre-defined Dialogs.
+
+<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example8.c"><span class="auto-style3">example8.c</span></a></span>
 #include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;iup.h&gt;
@@ -304,7 +318,8 @@ int main(int argc, char **argv)
 
   return EXIT_SUCCESS;
 }
-</pre> 
+</pre>
+<p class="auto-style1"><span class="auto-style2"><img alt="" height="262" src="example8.png" width="444"></span></p>
 
 <p>File/Edit/Format/Help sem fazer quase nada algumas callbacks apenas<br>(sem 
 impressão, sem undo, sem find)<br>Format / Font apenas<br>Help/About<br>(ver 
