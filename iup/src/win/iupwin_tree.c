@@ -2811,6 +2811,8 @@ static HTREEITEM winTreeDragDropCopyItem(Ihandle* src, Ihandle* dst, HTREEITEM h
   item.mask = TVIF_HANDLE | TVIF_STATE;
   item.stateMask = TVIS_STATEIMAGEMASK;
   SendMessage(dst->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
+
+  return new_hItem;
 }
 
 static void winTreeDragDropCopyChildren(Ihandle* src, Ihandle* dst, HTREEITEM hItemSrc, HTREEITEM hItemDst)
