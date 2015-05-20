@@ -1072,6 +1072,9 @@ ifdef USE_CD
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
     LIBS += fontconfig
   endif
+  ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+    LIBS += fontconfig
+  endif
     
   LINK_FREETYPE = Yes
 

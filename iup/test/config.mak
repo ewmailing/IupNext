@@ -101,8 +101,12 @@ else
   SLIB += $(CD_LIB)/libcdgl.a $(CD_LIB)/libftgl.a \
           $(IUP_LIB)/libiupglcontrols.a 
   ifneq ($(findstring CYGW, $(TEC_SYSNAME)), )
-    LIBS += iconv fontconfig
+    LIBS += fontconfig iconv 
   endif  
+  ifneq ($(findstring MacOS, $(TEC_SYSNAME)), )
+    INCLUDES += $(X11_INC)
+    LIBS += fontconfig iconv
+  endif
   ifdef USE_MOTIF
     LIBS += fontconfig
   endif  
