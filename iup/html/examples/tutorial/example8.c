@@ -2,6 +2,49 @@
 #include <stdlib.h>
 #include <iup.h>
 
+/* global variable - to be used inside the menu callbacks */
+Ihandle* multitext = NULL;
+
+char* read_file(const char* filename)
+{
+  int size;
+  char* str;
+  FILE* file = fopen(filename, "rb");
+  if (!file) 
+  {
+    IupMessagef("Error", "Can't open file: %s", filename);
+    return NULL;
+  }
+
+  /* calculate file size */
+  fseek(file, 0, SEEK_END);
+  size = ftell(file);
+  fseek(file, 0, SEEK_SET);
+
+  /* allocate memory for the file contents + nul terminator */
+  str = malloc(size + 1);
+  /* read all data at once */
+  fread(str, size, 1, file);
+  /* set the nul terminator */
+  str[size] = 0;
+
+  fclose(file);
+  return str;
+}
+
+void write_file(const char* filename, const char* str, int count)
+{
+  FILE* file = fopen(filename, "w");
+  if (!file) 
+  {
+    IupMessagef("Error", "Can't open file: %s", filename);
+    return;
+  }
+
+  fwrite(str, 1, count, file);
+  fclose(file);
+}
+
 int open_cb(void)
 {
   Ihandle *filedlg = IupFileDlg();
@@ -12,7 +55,15 @@ int open_cb(void)
   IupPopup(filedlg, IUP_CENTER, IUP_CENTER);
 
   if (IupGetInt(filedlg, "STATUS") != -1)
-    IupMessage("Open file", IupGetAttribute(filedlg, "VALUE"));
+  {
+    char* filename = IupGetAttribute(filedlg, "VALUE");
+    char* str = read_file(filename);
+    if (str)
+    {
+      IupSetStrAttribute(multitext, "VALUE", str);
+      free(str);
+    }
+  }
 
   IupDestroy(filedlg);
   return IUP_DEFAULT;
@@ -27,8 +78,13 @@ int save_cb(void)
 
   IupPopup(filedlg, IUP_CENTER, IUP_CENTER);
 
-  if (IupGetInt(filedlg, "STATUS") == 1)
-    IupMessage("Save file", IupGetAttribute(filedlg, "VALUE"));
+  if (IupGetInt(filedlg, "STATUS") != -1)
+  {
+    char* filename = IupGetAttribute(filedlg, "VALUE");
+    char* str = IupGetAttribute(multitext, "VALUE");
+    int count = IupGetInt(multitext, "COUNT");
+    write_file(filename, str, count);
+  }
 
   IupDestroy(filedlg);
   return IUP_DEFAULT;
@@ -37,15 +93,25 @@ int save_cb(void)
 int font_cb(void)
 {
   Ihandle* fontdlg = IupFontDlg();
-  IupSetAttribute(fontdlg, "VALUE", "Times New Roman, Bold 20");
+  char* font = IupGetAttribute(multitext, "FONT");
+  IupSetStrAttribute(fontdlg, "VALUE", font);
   IupSetAttribute(fontdlg, "TITLE", "IupFontDlg Test");
 
   IupPopup(fontdlg, IUP_CENTER, IUP_CENTER);
 
-  if (IupGetInt(fontdlg, "STATUS"))
-    IupMessage("Selected Font", IupGetAttribute(fontdlg, "VALUE"));
+  if (IupGetInt(fontdlg, "STATUS") == 1)
+  {
+    char* font = IupGetAttribute(fontdlg, "VALUE");
+    IupSetStrAttribute(multitext, "FONT", font);
+  }
 
   IupDestroy(fontdlg);
+  return IUP_DEFAULT;
+}
+
+int about_cb(void) 
+{
+  IupMessage("About", "   IUP Tutorial\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
   return IUP_DEFAULT;
 }
 
@@ -56,7 +122,7 @@ int exit_cb(void)
 
 int main(int argc, char **argv)
 {
-  Ihandle *dlg, *multitext, *vbox;
+  Ihandle *dlg, *vbox;
   Ihandle *file_menu, *item_exit, *item_open, *item_save;
   Ihandle *format_menu, *item_font;
   Ihandle *help_menu, *item_about;
@@ -78,6 +144,7 @@ int main(int argc, char **argv)
   IupSetCallback(item_open, "ACTION", (Icallback)open_cb);
   IupSetCallback(item_save, "ACTION", (Icallback)save_cb);
   IupSetCallback(item_font, "ACTION", (Icallback)font_cb);
+  IupSetCallback(item_about, "ACTION", (Icallback)about_cb);
 
   file_menu = IupMenu(item_open,
     item_save,

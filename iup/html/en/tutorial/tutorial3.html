@@ -81,7 +81,8 @@ to set the <A href="../elem/iuptext.html"><strong>IupText</strong></a> as a MULT
 <p>Notice that the <a href="../attrib/iup_size.html">SIZE</a> attribute of the dialog was also set. Because the <A href="../elem/iuptext.html"><strong>IupText</strong></a> 
 is a control that does not fit its size to its contents we have to set an 
 initial size for the dialog, or else the result would be a very small dialog. 
-The SIZE attribute will also work as a minimum size, so we reset the USERSIZE 
+We use a simple size specification that is a quarter of the screen size in both 
+dimensions. The SIZE attribute will also work as a minimum size, so we reset the USERSIZE 
 attribute after the dialog is show to avoid this limitation. Experiment to 
 comment this line and check how the dialog interactive resize behaves.</p>
 <p>With a few lines of code we build an application where the user can type a huge text. But, if you type a huge 
@@ -227,7 +228,7 @@ int save_cb(void)
 
   <strong>IupPopup</strong>(filedlg, IUP_CENTER, IUP_CENTER);
 
-  if (<strong>IupGetInt</strong>(filedlg, "STATUS") == 1)
+  if (<strong>IupGetInt</strong>(filedlg, "STATUS") != -1)
     <strong>IupMessage</strong>("Save file", <strong>IupGetAttribute</strong>(filedlg, "VALUE"));
 
   <strong>IupDestroy</strong>(filedlg);
@@ -242,7 +243,7 @@ int font_cb(void)
 
   <strong>IupPopup</strong>(fontdlg, IUP_CENTER, IUP_CENTER);
 
-  if (<strong>IupGetInt</strong>(fontdlg, "STATUS"))
+  if (<strong>IupGetInt</strong>(fontdlg, "STATUS") == 1)
     <strong>IupMessage</strong>("Selected Font", <strong>IupGetAttribute</strong>(fontdlg, "VALUE"));
 
   <strong>IupDestroy</strong>(fontdlg);
@@ -323,38 +324,36 @@ int main(int argc, char **argv)
 <p> Now we have interesting new functions. First, let&#39;s take a look at the new callback called open_cb. This callback
 will handle the file opening when the user clicks the Open menu item. For this we will used a IUP predefined dialog called
 <A href="../dlg/iupfiledlg.html"><strong>IupFileDlg</strong></a>. This dialog is a standard file handling dialog with all 
-features that we need and will save a lot of work. Inside the callback we have the Ihandle declaration that will hold our file, 
-a file pointer ifp, and a string (char *) that will store the name of the file that user wants to open. Then we create our 
-<A href="../dlg/iupfiledlg.html"><strong>IupFileDlg</strong></a>, set it to be an open dialog with atribute DIALOGTYPE and its 
-title to be "File Open". Also we set FILTER atribute to *.txt and FILTERINFO to "Text Files" because we want our application to 
+features that we need to select a file from the file system, and it will save a 
+lot of work. Inside the callback we create our 
+<A href="../dlg/iupfiledlg.html"><strong>IupFileDlg</strong></a>, and set it to be an 
+&quot;open&quot; dialog with attribute DIALOGTYPE. Also we set FILTER atribute to *.txt and FILTERINFO to "Text Files" because we want our application to 
 handle just text files.</p>
 
 <p> Now the program calls <A href="../dlg/iuppopup.html"><strong>IupPopup</strong></a> which is a function similar to 
-<A href="../dlg/iupfiledlg.html"><strong>IupShow</strong></a> that we saw in the begining of this tutorial, but restricts user 
-interaction only to the specified element. It is equivalent of creating a Modal  dialog is some toolkits. Its arguments are our 
+<A href="../dlg/iupfiledlg.html"><strong>IupShow</strong></a>, but restricts the user 
+interaction only to the specified dialog. It is equivalent of creating a Modal  dialog is some toolkits. Its arguments are our 
 file dialog Ihandle followed by x and y coordinates that we defined as the center of the screen with IUP_CENTER.<p>Then we have a conditional test where we get the value of filedlg STATUS with <A href="../func/iupgetattribute.html"><strong>IupGetInt</strong></a>. 
-Why not use <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a> instaed? That's because it returns 
-attributes as strings and in this case we need to compare the value if a integer, so as we already know that STATUS is a integer, 
-we can use <A href="../func/iupgetattribute.html"><strong>IupGetInt</strong></a><p>Once our file dialog return a valid status, we are able to recover the name of the selected file using <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a>
-to retrieve its VALUE. We then use a hand of C code to read the file, display a <A href="../dlg/iupmessage.html"><strong>IupMessage</strong></a> 
-if we could not open it, or, if everything went well, read the entire content of the file, copying it to string and set this 
-string as the VALUE of our multitext. We are done. Close the file, free the string and call <A href="../func/iupdestroy.html"><strong>IupDestroy</strong></a>
-to remove filedlg from memory because we will not need it anymore.<p>Next is another callback that saves the content of the file into an arquive. There is not much different from open, except that
-this time will read the file content and store it as multitext VALUE attribute.<p>Now comes the font_cb callback that, as you may already guessed, will call a predefined dialog to perform changes in the font
-displayed. To do that we call <A href="../dlg/iupfiledlg.html"><strong>IupFontDlg</strong></a> and recover two attributes from it
-VALUE and COLOR. The first will give us the font choosed to be set as the new font and the second will set the text color in multitext.</p>
+Why not use <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a> 
+instead? That's because <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a> returns 
+attributes as strings, but we know that STATUS is an integer so we can simplify 
+our status check using <A href="../func/iupgetattribute.html"><strong>IupGetInt</strong></a>.<p>Once our file dialog return a valid status, we are able to recover the name of the selected file using <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a>
+to retrieve the VALUE attribute. We then use <A href="../dlg/iupmessage.html">
+<strong>IupMessage</strong></a> 
+to show the selected file name. We are done. Simply call <A href="../func/iupdestroy.html"><strong>IupDestroy</strong></a>
+to remove filedlg from memory because we will not need it anymore.<p>Next there is another callback that 
+will select a file name for saving the content of a file. It is not much 
+different from open by setting DIALOGTYPE to SAVE, so this time it will select a 
+file name that can be a new file.<p>Now comes the font_cb callback that, as you may already guessed, will call a predefined dialog to 
+select a font. To do that we use <A href="../dlg/iupfiledlg.html"><strong>IupFontDlg</strong></a> 
+instead of 
+<A href="../dlg/iupfiledlg.html"><strong>IupFileDlg</strong></a>.</p>
 
-<p>Following we will find two callbacks that will handle copy and paste from Edit menu. Both are very short callbacks and use a resource 
-called <A href="../elem/iupclipboard.html"><strong>IupClipboard</strong></a> which creates an element that allows access to the clipboard. 
-Each clipboard should be destroyed using IupDestroy. You can use only one for the entire application because it does not store any data inside. 
-Or you can simply create and destroy every time you need to copy or paste. In this example we have choosed to create and destroy. copy_cb
-sets the attribute TEXT from clipboard to store the content of attribute SELECTEDTEXT from our multitext. Paste does the oposite. Retrives
-the clipboard TEXT attribute and stores it in multitext VALUE
-
-<p>Next callback is about_cb that does nothing special, just call an <A href="../dlg/iupfiledlg.html"><strong>IupMessage</strong></a> to 
-display some text to the user.<p> Following lines doesn't show anything new, except by the new callbacks 
-registration calls. Congratulations, if everything went well
-, will learned how to build dialogs, menus, use callbacks and built a brand new text editor using IUP. But what happens if the dialog that 
+<p>Next callback is about_cb that does nothing special, just call 
+<A href="../dlg/iupfiledlg.html"><strong>IupMessage</strong></a> to 
+display some text to the user.<p> Following lines doesn't show anything new, except 
+for the new callbacks registration. </p>
+<p> Finally we now have a brand new text editor using IUP. But what happens if the dialog that 
 your application needs is not provided by IUP as a predefined dialog? That will be the subject of our next section.</p>
 
 <h3>3.4 <a name="Custom_Dialogs">Custom Dialogs</a></h3>
@@ -777,10 +776,19 @@ usefull anymore. Destroy it to save memory.</p>
 <p> Replace and Go To custom dialogs will work in the same way. If you understood how to create find custom dialog
 you should be able to build both dialogs with no difficult.</p>   
 
-<h3>3.5 <a name="Toolbar_Statusbar">Adding a Toolbar and a Statusbar</a></h3>
+<h3>3.5 <a name="Clipboard">Clipboard</a> Support</h3>
+
+<p>Following we will find two callbacks that will handle copy and paste from Edit menu. Both are very short callbacks and use a resource 
+called <A href="../elem/iupclipboard.html"><strong>IupClipboard</strong></a> which creates an element that allows access to the clipboard. 
+Each clipboard should be destroyed using IupDestroy. You can use only one for the entire application because it does not store any data inside. 
+Or you can simply create and destroy every time you need to copy or paste. In this example we have choosed to create and destroy. copy_cb
+sets the attribute TEXT from clipboard to store the content of attribute SELECTEDTEXT from our multitext. Paste does the oposite. Retrives
+the clipboard TEXT attribute and stores it in multitext VALUE
+
+<h3>3.6 <a name="Toolbar_Statusbar">Adding a Toolbar and a Statusbar</a></h3>
 <p>IupImageLib (Open Save Find ... ) button com image<br>IupLabel bottom. 
 CARET_CB callback no IupText para mostrar posição no texto.</p>
-<h3>3.6 Defining <a name="Hot_Keys">Hot Keys</a></h3>
+<h3>3.7 Defining <a name="Hot_Keys">Hot Keys</a></h3>
 <p>Ctrl+O, ...</p>
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>
