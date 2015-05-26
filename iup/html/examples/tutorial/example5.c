@@ -24,8 +24,7 @@ int main(int argc, char **argv)
   vbox = IupVbox(
     label,
     button,
-    NULL
-  );
+    NULL);
   IupSetAttribute(vbox, "ALIGNMENT", "ACENTER");
   IupSetAttribute(vbox, "GAP", "10");
   IupSetAttribute(vbox, "MARGIN", "10x10");

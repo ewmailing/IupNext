@@ -31,15 +31,17 @@
 <h2>3. Simple Notepad</h2>
 <h3>3.1 <a name="Main_Dialog">Main Dialog</a></h3>
 
-<p>Since now we saw two different controls: labels and buttons. Labels show something to the user but
-doesn't allow any kind of interaction. Buttons allow the user to press trigging an event. But no one 
-of this allow the user to insert any data into our application. To do that we will use a new control 
-called <A href="../elem/iuptext.html"><strong>IupText</strong></a>. It creates a editable text field and has a lot of different 
+<p>Since now we saw two different controls: labels and buttons. Labels can show 
+text or images to the user but
+are not designed for interaction. Buttons allow the user to trigger an event by 
+pressing a mouse button. But none 
+allow the user to insert any data into our application. To do that we will use a new control 
+called <A href="../elem/iuptext.html"><strong>IupText</strong></a>. It creates an editable text field and has a lot of different 
 attributes available.
 We will be interested in one in particular for now: MULTILINE. MULTILINE turns the <A href="../elem/iuptext.html"><strong>IupText</strong></a> into an 
 editable text field that supports many lines which is mandatory to build a simple notepad.</p>
 
-<p>Our starting code for the simple notepad should as following...</p>
+<p>Our starting code for the simple notepad should be as following...</p>
 
 <pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example6.c"><span class="auto-style3">example6.c</span></a></span>
 #include &lt;stdlib.h&gt;
@@ -49,52 +51,66 @@ int main(int argc, char **argv)
 {
   Ihandle *dlg, *multitext, *vbox;
 
-  IupOpen(&amp;argc, &amp;argv);
-  multitext = IupText(NULL);
+  <strong>IupOpen</strong>(&amp;argc, &amp;argv);
+
+  multitext = <strong>IupText</strong>(NULL);
   vbox = IupVbox(
     multitext,
-    NULL
-  );
-  IupSetAttribute(multitext, "MULTILINE", "YES");
-  IupSetAttribute(multitext, "EXPAND", "YES");
+    NULL);
+  <strong>IupSetAttribute</strong>(multitext, "MULTILINE", "YES");
+  <strong>IupSetAttribute</strong>(multitext, "EXPAND", "YES");
 
-  dlg = IupDialog(vbox);
-  IupSetAttribute(dlg, "TITLE", "Simple Notepad");
+  dlg = <strong>IupDialog</strong>(vbox);
+  <strong>IupSetAttribute</strong>(dlg, "TITLE", "Simple Notepad");
+  <strong>IupSetAttribute</strong>(dlg, "SIZE", "QUARTERxQUARTER");
 
-  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
-  IupMainLoop();
+  <strong>IupShowXY</strong>(dlg, IUP_CENTER, IUP_CENTER);
+  <strong>IupSetAttribute</strong>(dlg, "USERSIZE", NULL);
 
-  IupClose();
+  <strong>IupMainLoop</strong>();
 
+  <strong>IupClose</strong>();
   return EXIT_SUCCESS;
 }
 </pre>
-<p class="auto-style1"><span class="auto-style2"><img alt="" height="262" src="example6.png" width="453"></span></p>
+<p class="auto-style1"><img alt="" src="example6.png"></p>
 
 <p>The previous code doesn't show exciting news except by the <A href="../elem/iuptext.html"><strong>IupText</strong></a> declaration and the call to <A href="../func/iupsetattribute.html"><strong>IupSetAttribute</strong></a>
 to set the <A href="../elem/iuptext.html"><strong>IupText</strong></a> as a MULTILINE. The default value is "NO", try to comment this line and see what happens. 
-With a few lines of code we build an application where the user can type a huge text. But, if you type a huge 
-text, you probably would like to save it and unfortunally our applications offers no such feature. We will
+</p>
+<p>Notice that the <a href="../attrib/iup_size.html">SIZE</a> attribute of the dialog was also set. Because the <A href="../elem/iuptext.html"><strong>IupText</strong></a> 
+is a control that does not fit its size to its contents we have to set an 
+initial size for the dialog, or else the result would be a very small dialog. 
+The SIZE attribute will also work as a minimum size, so we reset the USERSIZE 
+attribute after the dialog is show to avoid this limitation. Experiment to 
+comment this line and check how the dialog interactive resize behaves.</p>
+<p>With a few lines of code we build an application where the user can type a huge text. But, if you type a huge 
+text, you probably would like to save it and unfortunately our applications offers no such feature. We will
 handle this in the next sections.</p>
 
 <h3>3.2 <a name="Adding_a_Menu">Adding a Menu</a></h3>
 
-<p>Almost all applications offer a menu where the user can save, edit and do a lot of other stuff with his data.
+<p>Almost all applications offer a menu where the user can load files, save 
+files, use the clipboard and do a lot of other stuff with his data.
 IUP also offers this resource to the applications. Menus are divided into four different interface elements: <A href="../elem/iupitem.html"><strong>IupItem</strong></a>, 
 <A href="../elem/iupmenu.html"><strong>IupMenu</strong></a>, <A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a>, <A href="../elem/iupsubmenu.html"><strong>IupSubmenu</strong></a>.</p>
 
 <p><A href="../elem/iupitem.html"><strong>IupItem</strong></a> creates an single item of the menu interface element. When selected, it generates an action.</p>
 
-<p><A href="../elem/iupmenu.html"><strong>IupMenu</strong></a> creates the menu element by itself. An <A href="../elem/iupmenu.html"><strong>IupMenu</strong></a> should be composed by any of the other 3 types of 
-manu interface elements: <A href="../elem/iupitem.html"><strong>IupItem</strong></a>, <A href="../elem/iupsubmenu.html"><strong>IupSubmenu</strong></a> and <A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a>. Any other interface element defined inside a 
+<p><A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a> creates an 
+horizontal line that will appear between two menu items. Its used normally to divide and arrange different 
+groups
+of menu items.</p>
+
+<p><A href="../elem/iupsubmenu.html"><strong>IupSubmenu</strong></a> creates an item that, when selected, opens another menu.</p>
+
+<p><A href="../elem/iupmenu.html"><strong>IupMenu</strong></a> creates the menu element by itself 
+as a list of elements. An <A href="../elem/iupmenu.html"><strong>IupMenu</strong></a> 
+can include any number of the other 3 types of menu interface elements: <A href="../elem/iupitem.html"><strong>IupItem</strong></a>, <A href="../elem/iupsubmenu.html"><strong>IupSubmenu</strong></a> and <A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a>. Any other 
+type of interface element inserted in a 
 menu will be an error.</p>
 
-<p><A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a> creates a line between two menu items. Its used normally to divide and arrange different categories
-of menu itens.</p>
-
-<p><A href="../elem/iupsubmenu.html"><strong>IupSubmenu</strong></a> creates a menu item that, when selected, opens another menu.</p>
-
-<p>Let's add a menu with a few itens in our example</p>
+<p>Let's add a menu with a few items in our example<span lang="pt-br">:</span></p>
 
 <pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example7.c"><span class="auto-style3">example7.c</span></a></span>
 #include &lt;stdlib.h&gt;
@@ -111,137 +127,126 @@ int main(int argc, char **argv)
   Ihandle *file_menu, *item_exit, *item_open, *item_save;
   Ihandle *sub1_menu, *menu;
 
-  IupOpen(&amp;argc, &amp;argv);
-  multitext = IupText(NULL);
-  IupSetAttribute(multitext, "MULTILINE", "YES");
-  IupSetAttribute(multitext, "EXPAND", "YES");
+  <strong>IupOpen</strong>(&amp;argc, &amp;argv);
 
-  item_open = IupItem ("Open", NULL);
-  item_save = IupItem ("Save", NULL);
-  item_exit = IupItem ("Exit", NULL);
-  IupSetCallback(item_exit, "ACTION", (Icallback)exit_cb);
+  multitext = <strong>IupText</strong>(NULL);
+  <strong>IupSetAttribute</strong>(multitext, "MULTILINE", "YES");
+  <strong>IupSetAttribute</strong>(multitext, "EXPAND", "YES");
 
-  file_menu = IupMenu(item_open,
-					  item_save,
-					  IupSeparator(),
-					  item_exit,
-                	  NULL);
+  item_open = <strong>IupItem</strong> ("Open", NULL);
+  item_save = <strong>IupItem</strong> ("Save", NULL);
+  item_exit = <strong>IupItem</strong> ("Exit", NULL);
+  <strong>IupSetCallback</strong>(item_exit, "ACTION", (Icallback)exit_cb);
 
-  sub1_menu = IupSubmenu("File", file_menu);
+  file_menu = <strong>IupMenu</strong>(item_open,
+    item_save,
+    <strong>IupSeparator</strong>(),
+    item_exit,
+    NULL);
 
-  menu = IupMenu(sub1_menu, NULL);
+  sub1_menu = <strong>IupSubmenu</strong>("File", file_menu);
 
-  vbox = IupVbox(
+  menu = <strong>IupMenu</strong>(sub1_menu, NULL);
+
+  vbox = <strong>IupVbox</strong>(
     multitext,
-    NULL
-  );
+    NULL);
 
-  dlg = IupDialog(vbox);
-  IupSetAttribute("main_menu", menu);
-  IupSetAttribute(dlg, "MENU", "main_menu");
-  IupSetAttribute(dlg, "TITLE", "Simple Notepad");
-  IupSetAttribute(dlg, "SIZE", "QUARTERxQUARTER");
+  dlg = <strong>IupDialog</strong>(vbox);
+  <strong>IupSetAttributeHandle</strong>(dlg, "MENU", menu);
+  <strong>IupSetAttribute</strong>(dlg, "TITLE", "Simple Notepad");
+  <strong>IupSetAttribute</strong>(dlg, "SIZE", "QUARTERxQUARTER");
 
-  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
-  IupMainLoop();
+  <strong>IupShowXY</strong>(dlg, IUP_CENTER, IUP_CENTER);
+  <strong>IupSetAttribute</strong>(dlg, "USERSIZE", NULL);
 
-  IupClose();
+  <strong>IupMainLoop</strong>();
 
+  <strong>IupClose</strong>();
   return EXIT_SUCCESS;
 }
 </pre>
-<p class="auto-style1"><span class="auto-style2"><img alt="" height="262" src="example7.png" width="453"></span></p>
+<p class="auto-style1"><img alt="" src="example7.png"></p>
 
-<p>Now our example has a few menu element handlers and declarations. Also, we changed our exit callback to be called
-when the item_exit menu item is pressed. The next line shows the composition of an <A href="../elem/iupmenu.html"><strong>IupMenu</strong></a> called file_menu. Note that
-the menu items are passed in order of appearence meaning item_open will appear above item_save and so on. There is also
+<p>Now our example has a few menu element handlers and declarations. Also, we 
+also used our exit callback to be called
+when the item_exit menu item is selected. The next line shows the composition of an <A href="../elem/iupmenu.html"><strong>IupMenu</strong></a> called file_menu. Note that
+the menu items are passed in order of appearance meaning item_open will appear above item_save and so on. There is also
 an <A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a> dividing our file menu in two parts, the first one takes items that deal direct with files like open and
-save and the other ones takes the exit item. It's not mandatory to have a <A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a> in your menu. It's is used just to
+save and the other one takes the exit item. It's not mandatory to have an <A href="../elem/iupseparator.html"><strong>IupSeparator</strong></a> in your menu. It's is used just to
 keep things more organized. Next line is a little trick. We created a submenu to store all our items. Why not use file_menu
 directly? We could, but it would be used as main menu and will ending up being the only menu available in our application.
-It's a good pratice to separate menus in submenus and then pass this submenus as itens of the main menu. Doing so, a 
+It's a good practice to separate menus in submenus and then pass this submenus as 
+items of the main menu. Doing so, an 
 application could have a file menu, a search menu, a help menu and others as items of the main menu as you can see in the 
-main menu declaration on the next line. At least, once we have done building the main menu, we must set it as the MENU 
-attribute of the main dialog.<p>You should have notice that exit menu works fine as we set a exit callback to it but, open and save doesn't work.
-That's because we didn't set any callback for then. Those callbacks will use another IUP feature that is subject of
+main menu declaration on the next line.<p>At last, once we have done building the main menu, we must set the MENU 
+attribute of the main dialog as the menu we just created. But since it is not a 
+string nor a number, we must use a different function to do this association, 
+that is called <a href="../func/iupsetattributehandle.html"><strong>
+IupSetAttributeHandle</strong></a>.<p>You should have notice that the exit menu 
+item works fine as we set the <em>Exit</em> menu item action callback, but <em>Open</em> and 
+<em>Save</em> still doesn't work.
+That's because we didn't set any callback for them. Those callbacks will use another IUP feature that is subject of
 our next section.<h3>3.3 <a name="Using_Pre-defined_Dialogs">Using Pre-defined Dialogs</a></h3>
 
-<p>In the previous section we added a file open and a file save menu itens, but they had no callbacks associated. 
-That's because we will use new IUP resorces to deal with file handling. These 
-resource are called Pre-defined Dialogs.<p>Some dialogs are commonly found in a lot of different applications like file handling dialogs, font change dialog
-color picking dialog, etc. 
-It would be annoying have to build the same dialog again every time we need handle a file, change a color or a font.
-So, IUP provides pre-builded dialogs with all necessary controls to deal with most of this common tasks.<p>We will update our last example to handle file handling and to make use of other of these IUP Pre-defined Dialogs.
-
-<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example8.c"><span class="auto-style3">example8.c</span></a></span>
-#include &lt;stdio.h&gt;
+<p>In the previous section we added a file open and a file save menu items, but they had no callbacks associated. 
+That's because we will use new IUP resources to deal with file handling. These 
+resources are called Pre-defined Dialogs.<p>Some dialogs are commonly found in a lot of different applications like file 
+selection dialogs, font selection dialogs,
+color selection dialogs, etc. 
+It would be annoying to have to build the same dialog again every time we need 
+to select a file, or to select a color or a font.
+So, IUP provides pre-defined dialogs with all necessary controls to deal with these common tasks.<p>
+We will update our last example to handle file handling and to make use of other 
+of these IUP pre-defined dialogs<span lang="pt-br">:</span><pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example8.c"><span class="auto-style3">example8.c</span></a></span>
 #include &lt;stdlib.h&gt;
 #include &lt;iup.h&gt;
 
 int open_cb(void)
 {
-  Ihandle *filedlg;
-  filedlg = IupFileDlg();
-  IupSetAttributes(filedlg, "DIALOGTYPE = OPEN, TITLE = \"File Open\"");
-  IupSetAttributes(filedlg, "FILTER = \"*.txt\", FILTERINFO = \"Text Files\"");
+  Ihandle *filedlg = <strong>IupFileDlg</strong>();
+  <strong>IupSetAttribute</strong>(filedlg, "DIALOGTYPE", "OPEN");
+  <strong>IupSetAttribute</strong>(filedlg, "FILTER", "*.txt");
+  <strong>IupSetAttribute</strong>(filedlg, "FILTERINFO", "Text Files");
+
+  <strong>IupPopup</strong>(filedlg, IUP_CENTER, IUP_CENTER);
+
   if (IupGetInt(filedlg, "STATUS") != -1)
-  {
-  	printf("Open file %s\n", IupGetAttribute(filedlg, "VALUE")); 
-  }
-  else
-  	printf("CANCEL\n");
-	
-  IupDestroy(filedlg);
+    <strong>IupMessage</strong>("Open file", IupGetAttribute(filedlg, "VALUE"));
+
+  <strong>IupDestroy</strong>(filedlg);
+  return IUP_DEFAULT;
 }
 
 int save_cb(void)
 {
-  Ihandle *filedlg; 
-  filedlg = IupFileDlg(); 
- 
-  IupSetAttributes(filedlg, "DIALOGTYPE = SAVE, TITLE = \"File Save\"");
-  IupSetAttributes(filedlg, "FILTER = \"*.txt\", FILTERINFO = \"Text Files\"");
+  Ihandle *filedlg = <strong>IupFileDlg</strong>();
+  <strong>IupSetAttribute</strong>(filedlg, "DIALOGTYPE", "SAVE");
+  <strong>IupSetAttribute</strong>(filedlg, "FILTER", "*.txt");
+  <strong>IupSetAttribute</strong>(filedlg, "FILTERINFO", "Text Files");
 
-  IupPopup(filedlg, IUP_CENTER, IUP_CENTER); 
+  <strong>IupPopup</strong>(filedlg, IUP_CENTER, IUP_CENTER);
 
-  switch(IupGetInt(filedlg, "STATUS"))
-  {
-    case 1: 
-      IupMessage("New file",IupGetAttribute(filedlg, "VALUE")); 
-      break; 
+  if (<strong>IupGetInt</strong>(filedlg, "STATUS") == 1)
+    <strong>IupMessage</strong>("Save file", <strong>IupGetAttribute</strong>(filedlg, "VALUE"));
 
-    case 0 : 
-      IupMessage("File already exists",IupGetAttribute(filedlg, "VALUE"));
-      break; 
-
-    case -1 : 
-      IupMessage("IupFileDlg","Operation Canceled");
-      return 1;
-      break; 
-  }
-
-  IupDestroy(filedlg);
+  <strong>IupDestroy</strong>(filedlg);
+  return IUP_DEFAULT;
 }
 
 int font_cb(void)
 {
-	Ihandle* fontdlg = IupFontDlg();
-	IupSetAttribute(fontdlg, "COLOR", "128 0 255");
-	IupSetAttribute(fontdlg, "VALUE", "Times New Roman, Bold 20");
-	IupSetAttribute(fontdlg, "TITLE", "IupFontDlg Test");
+  Ihandle* fontdlg = <strong>IupFontDlg</strong>();
+  <strong>IupSetAttribute</strong>(fontdlg, "VALUE", "Times New Roman, Bold 20");
+  <strong>IupSetAttribute</strong>(fontdlg, "TITLE", "IupFontDlg Test");
 
-	IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
+  <strong>IupPopup</strong>(fontdlg, IUP_CENTER, IUP_CENTER);
 
-	if (IupGetInt(fontdlg, "STATUS"))
-	{
-  		printf("OK\n");
-  		printf("  VALUE(%s)\n", IupGetAttribute(dlg, "VALUE"));
-  		printf("  COLOR(%s)\n", IupGetAttribute(dlg, "COLOR"));
-	}
-	else
-  		printf("CANCEL\n");
+  if (<strong>IupGetInt</strong>(fontdlg, "STATUS"))
+    <strong>IupMessage</strong>("Selected Font", <strong>IupGetAttribute</strong>(fontdlg, "VALUE"));
 
-	IupDestroy(dlg);
+  <strong>IupDestroy</strong>(fontdlg);
+  return IUP_DEFAULT;
 }
 
 int exit_cb(void)
@@ -253,81 +258,525 @@ int main(int argc, char **argv)
 {
   Ihandle *dlg, *multitext, *vbox;
   Ihandle *file_menu, *item_exit, *item_open, *item_save;
-  Ihandle *edit_menu, *item_edit;
   Ihandle *format_menu, *item_font;
   Ihandle *help_menu, *item_about;
+  Ihandle *sub_menu_file, *sub_menu_format, *sub_menu_help, *menu;
 
-  Ihandle *sub_menu_file, *sub_menu_edit, *sub_menu_format, *sub_menu_help, *menu;
+  <strong>IupOpen</strong>(&argc, &argv);
 
-  IupOpen(&amp;argc, &amp;argv);
-  multitext = IupText(NULL);
-  IupSetAttribute(multitext, "MULTILINE", "YES");
-  IupSetAttribute(multitext, "EXPAND", "YES");
+  multitext = <strong>IupText</strong>(NULL);
+  <strong>IupSetAttribute</strong>(multitext, "MULTILINE", "YES");
+  <strong>IupSetAttribute</strong>(multitext, "EXPAND", "YES");
 
-  item_open = IupItem ("Open", NULL);
-  item_save = IupItem ("Save", NULL);
-  item_exit = IupItem ("Exit", NULL);
+  item_open = <strong>IupItem</strong>("Open...", NULL);
+  item_save = <strong>IupItem</strong>("Save...", NULL);
+  item_exit = <strong>IupItem</strong>("Exit", NULL);
+  item_font = <strong>IupItem</strong>("Font...", NULL);
+  item_about = <strong>IupItem</strong>("About...", NULL);
 
-  item_font = IupItem ("Font", NULL);
+  <strong>IupSetCallback</strong>(item_exit, "ACTION", (Icallback)exit_cb);
+  <strong>IupSetCallback</strong>(item_open, "ACTION", (Icallback)open_cb);
+  <strong>IupSetCallback</strong>(item_save, "ACTION", (Icallback)save_cb);
+  <strong>IupSetCallback</strong>(item_font, "ACTION", (Icallback)font_cb);
 
-  item_about = IupItem ("About", NULL);
+  file_menu = <strong>IupMenu</strong>(item_open,
+    item_save,
+    <strong>IupSeparator</strong>(),
+    item_exit,
+    NULL);
+  format_menu = <strong>IupMenu</strong>(item_font,
+    NULL);
+  help_menu = <strong>IupMenu</strong>(item_about,
+    NULL);
 
-  IupSetCallback(item_exit, "ACTION", (Icallback)exit_cb);
-  IupSetCallback(item_open, "ACTION", (Icallback)open_cb);
-  IupSetCallback(item_save, "ACTION", (Icallback)save_cb);
+  sub_menu_file = <strong>IupSubmenu</strong>("File", file_menu);
+  sub_menu_format = <strong>IupSubmenu</strong>("Format", format_menu);
+  sub_menu_help = <strong>IupSubmenu</strong>("Help", help_menu);
 
-  IupSetCallback(item_font, "ACTION", (Icallback)font_cb);
+  menu = <strong>IupMenu</strong>(
+    sub_menu_file, 
+    sub_menu_format, 
+    sub_menu_help, 
+    NULL);
 
-  file_menu = IupMenu(item_open,
-                      item_save,
-                      IupSeparator(),
-                      item_exit,
-                      NULL);
-
-  edit_menu = IupMenu(item_edit,
-                      NULL);
-
-  format_menu = IupMenu(item_font,
-                      NULL);
-
-  help_menu = IupMenu(item_about,
-                      NULL);
-
-  sub_menu_file = IupSubmenu("File", file_menu);
-  sub_menu_edit = IupSubmenu("Edit", edit_menu);
-  sub_menu_format = IupSubmenu("Format", format_menu);
-  sub_menu_help = IupSubmenu("Help", help_menu);
-
-  menu = IupMenu(sub_menu_file, sub_menu_edit, sub_menu_format, sub_menu_help, NULL);
-
-  vbox = IupVbox(
+  vbox = <strong>IupVbox</strong>(
     multitext,
-    NULL
-  );
+    NULL);
 
-  dlg = IupDialog(vbox);
-  IupSetHandle("main_menu", menu);
-  IupSetAttribute(dlg, "MENU", "main_menu");
-  IupSetAttribute(dlg, "TITLE", "Simple Notepad");
-  IupSetAttribute(dlg, "SIZE", "QUARTERxQUARTER");
+  dlg = <strong>IupDialog</strong>(vbox);
+  <strong>IupSetAttributeHandle</strong>(dlg, "MENU", menu);
+  <strong>IupSetAttribute</strong>(dlg, "TITLE", "Simple Notepad");
+  <strong>IupSetAttribute</strong>(dlg, "SIZE", "QUARTERxQUARTER");
 
-  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
-  IupMainLoop();
+  <strong>IupShowXY</strong>(dlg, IUP_CENTER, IUP_CENTER);
+  <strong>IupSetAttribute</strong>(dlg, "USERSIZE", NULL);
 
-  IupClose();
+  <strong>IupMainLoop</strong>();
 
+  <strong>IupClose</strong>();
   return EXIT_SUCCESS;
 }
-</pre>
-<p class="auto-style1"><span class="auto-style2"><img alt="" height="262" src="example8.png" width="444"></span></p>
 
-<p>File/Edit/Format/Help sem fazer quase nada algumas callbacks apenas<br>(sem 
-impressão, sem undo, sem find)<br>Format / Font apenas<br>Help/About<br>(ver 
-Notepad) 
-</p>
-<p>IupFileDlg<br>About (IupMessageDlg)<br>IupFontDlg</p>
+</pre>
+<p class="auto-style1"><img alt="" src="example8.png"></p>
+
+<p> Now we have interesting new functions. First, let&#39;s take a look at the new callback called open_cb. This callback
+will handle the file opening when the user clicks the Open menu item. For this we will used a IUP predefined dialog called
+<A href="../dlg/iupfiledlg.html"><strong>IupFileDlg</strong></a>. This dialog is a standard file handling dialog with all 
+features that we need and will save a lot of work. Inside the callback we have the Ihandle declaration that will hold our file, 
+a file pointer ifp, and a string (char *) that will store the name of the file that user wants to open. Then we create our 
+<A href="../dlg/iupfiledlg.html"><strong>IupFileDlg</strong></a>, set it to be an open dialog with atribute DIALOGTYPE and its 
+title to be "File Open". Also we set FILTER atribute to *.txt and FILTERINFO to "Text Files" because we want our application to 
+handle just text files.</p>
+
+<p> Now the program calls <A href="../dlg/iuppopup.html"><strong>IupPopup</strong></a> which is a function similar to 
+<A href="../dlg/iupfiledlg.html"><strong>IupShow</strong></a> that we saw in the begining of this tutorial, but restricts user 
+interaction only to the specified element. It is equivalent of creating a Modal  dialog is some toolkits. Its arguments are our 
+file dialog Ihandle followed by x and y coordinates that we defined as the center of the screen with IUP_CENTER.<p>Then we have a conditional test where we get the value of filedlg STATUS with <A href="../func/iupgetattribute.html"><strong>IupGetInt</strong></a>. 
+Why not use <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a> instaed? That's because it returns 
+attributes as strings and in this case we need to compare the value if a integer, so as we already know that STATUS is a integer, 
+we can use <A href="../func/iupgetattribute.html"><strong>IupGetInt</strong></a><p>Once our file dialog return a valid status, we are able to recover the name of the selected file using <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a>
+to retrieve its VALUE. We then use a hand of C code to read the file, display a <A href="../dlg/iupmessage.html"><strong>IupMessage</strong></a> 
+if we could not open it, or, if everything went well, read the entire content of the file, copying it to string and set this 
+string as the VALUE of our multitext. We are done. Close the file, free the string and call <A href="../func/iupdestroy.html"><strong>IupDestroy</strong></a>
+to remove filedlg from memory because we will not need it anymore.<p>Next is another callback that saves the content of the file into an arquive. There is not much different from open, except that
+this time will read the file content and store it as multitext VALUE attribute.<p>Now comes the font_cb callback that, as you may already guessed, will call a predefined dialog to perform changes in the font
+displayed. To do that we call <A href="../dlg/iupfiledlg.html"><strong>IupFontDlg</strong></a> and recover two attributes from it
+VALUE and COLOR. The first will give us the font choosed to be set as the new font and the second will set the text color in multitext.</p>
+
+<p>Following we will find two callbacks that will handle copy and paste from Edit menu. Both are very short callbacks and use a resource 
+called <A href="../elem/iupclipboard.html"><strong>IupClipboard</strong></a> which creates an element that allows access to the clipboard. 
+Each clipboard should be destroyed using IupDestroy. You can use only one for the entire application because it does not store any data inside. 
+Or you can simply create and destroy every time you need to copy or paste. In this example we have choosed to create and destroy. copy_cb
+sets the attribute TEXT from clipboard to store the content of attribute SELECTEDTEXT from our multitext. Paste does the oposite. Retrives
+the clipboard TEXT attribute and stores it in multitext VALUE
+
+<p>Next callback is about_cb that does nothing special, just call an <A href="../dlg/iupfiledlg.html"><strong>IupMessage</strong></a> to 
+display some text to the user.<p> Following lines doesn't show anything new, except by the new callbacks 
+registration calls. Congratulations, if everything went well
+, will learned how to build dialogs, menus, use callbacks and built a brand new text editor using IUP. But what happens if the dialog that 
+your application needs is not provided by IUP as a predefined dialog? That will be the subject of our next section.</p>
+
 <h3>3.4 <a name="Custom_Dialogs">Custom Dialogs</a></h3>
-<p>Find/Replace/Go To</p>
+
+<p> We saw in the previous section that IUP provides predefined dialogs that are 
+common to most applications and that using this dialogs will
+save a lot of developing time. But if the dialog that your application needs is not one of IUP's predefined dialogs, it's time to build your
+own dialog. Good news is that you already made this when your were building your main dialog. The tricky part here is just how to handle more
+then one dialog.<p> For this we will add a few items to our menu: Find, Replace and Go To. Find will search the multitext 
+contents looking for a string and highlight
+it when found. Replace will change all occurrences of a string in multitext 
+contents by a new string.<p> Code will look like this: </p>
+
+<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example9.c"><span class="auto-style3">example9.c</span></a></span>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;iup.h&gt;
+#include "auxEX9.h"
+
+int goto_bt_cb (void) {
+	Ihandle *multitext = IupGetHandle("multitext");
+	char *value = IupGetAttribute(multitext, "VALUE");
+	Ihandle *gototext = IupGetHandle("gototext");
+	int linetarget = IupGetInt(gototext, "VALUE");
+	return IUP_DEFAULT;
+}
+
+int goto_cb(void) {
+	Ihandle *gotodlg;
+    Ihandle *goto_bt = IupButton("Go To", 0);
+    Ihandle *gototxt = IupText(NULL);
+    IupSetHandle("gototxt", gototxt);
+
+    Ihandle *hbox = IupHbox(
+        gototxt,
+        goto_bt,
+        NULL
+    );
+    IupSetAttribute(hbox, "MARGIN", "10x10");
+    IupSetAttribute(hbox, "GAP", "5");
+
+    IupSetAttribute(hbox, "SIZE", "30");
+
+    gotodlg = IupDialog(hbox);
+    IupSetHandle("gotodlg", gotodlg);
+    IupSetAttribute(gotodlg, "TITLE", "Go To");
+
+    IupSetCallback(goto_bt, "ACTION", (Icallback)goto_bt_cb);
+    IupPopup(gotodlg, IUP_CENTER, IUP_CENTER);
+
+	return IUP_DEFAULT;
+}
+
+int replace_bt_cb (void) {
+	Ihandle *multitext = IupGetHandle("multitext");
+    Ihandle *findtxt = IupGetHandle("findtxt");
+    Ihandle *replacetxt = IupGetHandle("replacetxt");
+    Ihandle *replacedlg = IupGetHandle("replacedlg");
+    char *findstr = IupGetAttribute(findtxt, "VALUE");
+    char *replacestr = IupGetAttribute(replacetxt, "VALUE");
+    char *value = IupGetAttribute(multitext, "VALUE");
+
+    IupSetAttribute(multitext, "VALUE", str_replace(value, findstr, replacestr));
+    IupDestroy(replacedlg);
+	return IUP_DEFAULT;	 
+}
+
+int replace_cb(void) {
+	Ihandle *replacedlg;
+    Ihandle *replace_bt = IupButton("Replace", 0);
+	Ihandle *findtxt = IupText(NULL);
+	IupSetHandle("findtxt", findtxt);
+    Ihandle *replacetxt = IupText(NULL);
+    IupSetHandle("replacetxt", replacetxt);
+    Ihandle *hbox = IupHbox(
+		IupVbox(
+			IupLabel("Find:"),
+			findtxt,
+			NULL
+		),
+		IupVbox(
+			IupLabel("Replace:"),
+        	replacetxt,
+			NULL
+		),
+        replace_bt,
+        NULL
+    );
+    IupSetAttribute(hbox, "MARGIN", "10x10");
+    IupSetAttribute(hbox, "GAP", "5");
+
+    IupSetAttribute(hbox, "SIZE", "30");
+
+    replacedlg = IupDialog(hbox);
+    IupSetHandle("replacedlg", replacedlg);
+    IupSetAttribute(replacedlg, "TITLE", "Replace");
+
+    IupSetCallback(replace_bt, "ACTION", (Icallback)replace_bt_cb);
+    IupPopup(replacedlg, IUP_CENTER, IUP_CENTER);
+
+	return IUP_DEFAULT;
+}
+
+int find_bt_cb(void)
+{
+
+	Ihandle *multitext = IupGetHandle("multitext");
+	Ihandle *findtxt = IupGetHandle("findtxt");
+	Ihandle *finddlg = IupGetHandle("finddlg");
+	char *findstr = IupGetAttribute(findtxt, "VALUE");
+    char *value = IupGetAttribute(multitext, "VALUE");
+
+    char indexpos[sizeof(value)];
+    char selection[sizeof(findstr)];
+	str_find(value, findstr, indexpos, selection);
+    if (indexpos != NULL) {
+        IupSetAttribute(multitext, "CARETPOS", indexpos);
+        IupSetAttribute(multitext, "SELECTIONPOS", selection);
+    }
+    else {
+        char* msg;
+        sprintf(msg, "Could not find %s in text.\n", findstr);
+        IupMessage("Warning", msg);
+    }
+    IupDestroy(finddlg);
+}
+
+int find_cb(void)
+{
+	Ihandle *finddlg;
+	Ihandle *find_bt = IupButton("Find", 0);
+	Ihandle *findtxt = IupText(NULL);
+	IupSetHandle("findtxt", findtxt);
+	Ihandle *hbox = IupHbox(
+		findtxt,
+		find_bt,
+		NULL
+	);
+	IupSetAttribute(hbox, "MARGIN", "10x10");
+	IupSetAttribute(hbox, "GAP", "5");
+
+	IupSetAttribute(hbox, "SIZE", "30");
+
+	finddlg = IupDialog(hbox);
+  	IupSetHandle("finddlg", finddlg);
+  	IupSetAttribute(finddlg, "TITLE", "Find");
+
+  	IupSetCallback(find_bt, "ACTION", (Icallback)find_bt_cb);
+	IupPopup(finddlg, IUP_CENTER, IUP_CENTER);
+		
+	return IUP_DEFAULT;
+}
+
+int open_cb(void)
+{
+	Ihandle *multitext = IupGetHandle("multitext");
+	Ihandle *filedlg;
+  	FILE *ifp;
+  	char * filename;
+  
+  	filedlg = IupFileDlg();
+  	IupSetAttributes(filedlg, "DIALOGTYPE = OPEN, TITLE = \"File Open\"");
+  	IupSetAttributes(filedlg, "FILTER = \"*.txt\", FILTERINFO = \"Text Files\"");
+  
+  	IupPopup(filedlg, IUP_CENTER, IUP_CENTER); 
+
+  	if (IupGetInt(filedlg, "STATUS") != -1)
+  	{
+    	filename = IupGetAttribute(filedlg, "VALUE");
+		ifp = fopen(filename, "rb");
+		if (ifp == NULL) {
+			char errmsg[80];
+			sprintf(errmsg, "Can't open input file %s.", filename);
+  			IupMessage("Error", errmsg);
+  			exit(1);
+		}
+		fseek(ifp, 0, SEEK_END);
+		long fsize = ftell(ifp);
+		rewind(ifp);
+		char *string = malloc(fsize + 1);
+		fread(string, fsize, 1, ifp);
+		IupSetAttribute(multitext, "VALUE", string);
+		fclose(ifp);
+		free(string);
+  	}
+  	else
+    	printf("CANCEL\n");
+
+  	IupDestroy(filedlg);
+	return IUP_DEFAULT;
+}
+
+/* Esta função gera uma sujeira no final do arquivo */
+int save_cb(void)
+{
+	Ihandle *multitext = IupGetHandle("multitext");
+	Ihandle *filedlg;
+	FILE *f;
+	char * filename;
+	filedlg = IupFileDlg();
+	char *value;
+
+	IupSetAttributes(filedlg, "DIALOGTYPE = SAVE, TITLE = \"File Save\"");
+	IupSetAttributes(filedlg, "FILTER = \"*.txt\", FILTERINFO = \"Text Files\"");
+
+	IupPopup(filedlg, IUP_CENTER, IUP_CENTER);
+	
+	filename = IupGetAttribute(filedlg, "VALUE");
+  	f = fopen(filename, "w");
+  	if (f == NULL) {
+  		char errmsg[80];
+        sprintf(errmsg, "Can't open output file %s.", filename);
+        IupMessage("Error", errmsg);
+        exit(1);
+  	}
+
+  	switch(IupGetInt(filedlg, "STATUS"))
+  	{
+    
+    	case -1 :
+      		IupMessage("IupFileDlg","Operation Canceled");
+      		return 1;
+      		break;
+    	default:
+			value = IupGetAttribute(multitext, "VALUE");
+			printf("%s\n", value);
+			fwrite(value , 1 , strlen(value) , f );
+      		IupMessage ("Save file", "File saved successfully.");
+  	}
+	fclose(f);
+
+	IupDestroy(filedlg);
+	return IUP_DEFAULT;
+}
+
+int font_cb(void)
+{
+	Ihandle *multitext = IupGetHandle("multitext");
+	Ihandle *fontdlg = IupFontDlg();
+    IupSetAttribute(fontdlg, "COLOR", "128 0 255");
+    IupSetAttribute(fontdlg, "VALUE", "Times New Roman, Bold 20");
+    IupSetAttribute(fontdlg, "TITLE", "IupFontDlg Test");
+
+    IupPopup(fontdlg, IUP_CURRENT, IUP_CURRENT);
+
+    if (IupGetInt(fontdlg, "STATUS"))
+    {
+		/* A opção color só funciona no Windows. Retirar a opção color implica em exibir
+		para o usuário um diálogo onde uma parte (effects) não funciona, porém deixa-la implica
+		em a cor ser alterada no linux sem que o usuário tenha optado por faze-lo  */
+		IupSetAttribute(multitext, "FONT", IupGetAttribute(fontdlg, "VALUE"));
+		IupSetAttribute(multitext, "FGCOLOR", IupGetAttribute(fontdlg, "COLOR"));
+    }
+    else
+			printf("CANCEL\n");
+	IupDestroy(fontdlg);
+	return IUP_DEFAULT;
+}
+
+int copy_cb(void) {
+	Ihandle *multitext = IupGetHandle("multitext");
+	Ihandle *clipboard = IupClipboard();
+ 	IupSetAttribute(clipboard, "TEXT", IupGetAttribute(multitext, "SELECTEDTEXT"));
+ 	IupDestroy(clipboard);
+	return IUP_DEFAULT;
+}
+
+int paste_cb(void) {
+	/* Paste não funciona. Problema no linux? */
+	Ihandle *multitext = IupGetHandle("multitext");
+ 	Ihandle *clipboard = IupClipboard();
+	IupSetAttribute(multitext, "VALUE", IupGetAttribute(clipboard, "TEXT"));
+ 	IupDestroy(clipboard);
+	return IUP_DEFAULT;
+}
+
+int about_cb(void) {
+	IupMessage ("About", "Example 8 was develop to teach the user how to deal with menus and callbacks.\n\n Autors:\n\n Gustavo Lyrio \n Antônio Scuri\n");
+	return IUP_DEFAULT;
+}
+
+int exit_cb(void)
+{
+	return IUP_CLOSE;
+}
+
+int main(int argc, char **argv)
+{
+  	Ihandle *dlg, *vbox;
+ 	Ihandle *file_menu, *item_exit, *item_open, *item_save;
+  	Ihandle *edit_menu, *item_copy, *item_paste, *item_find, *item_replace, *item_goto;
+  	Ihandle *format_menu, *item_font;
+  	Ihandle *help_menu, *item_about;
+
+  	Ihandle *sub_menu_file, *sub_menu_edit, *sub_menu_format, *sub_menu_help, *menu;
+
+  	IupOpen(&argc, &argv);
+	Ihandle *multitext = IupText(NULL);
+  	IupSetHandle("multitext", multitext);
+  	IupSetAttribute(multitext, "MULTILINE", "YES");
+  	IupSetAttribute(multitext, "EXPAND", "YES");
+
+  	item_open = IupItem ("Open", NULL);
+  	item_save = IupItem ("Save", NULL);
+  	item_exit = IupItem ("Exit", NULL);
+
+  	item_copy = IupItem ("Copy", NULL);
+  	item_paste = IupItem ("Paste", NULL);
+  	item_find = IupItem ("Find", NULL);
+  	item_replace = IupItem ("Replace", NULL);
+  	item_goto = IupItem ("Go To", NULL);
+
+  	item_font = IupItem ("Font", NULL);
+
+  	item_about = IupItem ("About", NULL);
+
+  	IupSetCallback(item_exit, "ACTION", (Icallback)exit_cb);
+  	IupSetCallback(item_open, "ACTION", (Icallback)open_cb);
+  	IupSetCallback(item_save, "ACTION", (Icallback)save_cb);
+
+  	IupSetCallback(item_copy, "ACTION", (Icallback)copy_cb);
+  	IupSetCallback(item_paste, "ACTION", (Icallback)paste_cb);
+  	IupSetCallback(item_find, "ACTION", (Icallback)find_cb);
+  	IupSetCallback(item_replace, "ACTION", (Icallback)replace_cb);
+  	IupSetCallback(item_goto, "ACTION", (Icallback)goto_cb);
+
+  	IupSetCallback(item_about, "ACTION", (Icallback)about_cb);
+
+  	IupSetCallback(item_font, "ACTION", (Icallback)font_cb);
+
+  	file_menu = IupMenu(item_open,
+    	                item_save,
+            	        IupSeparator(),
+        	            item_exit,
+                      	NULL);
+
+	edit_menu = IupMenu(item_copy,
+		      			item_paste,
+		      			item_find,
+		      			item_replace,
+		      			item_goto,
+    	                NULL);
+
+  	format_menu = IupMenu(item_font,
+    	                  NULL);
+
+  	help_menu = IupMenu(item_about,
+    	                NULL);
+
+  	sub_menu_file = IupSubmenu("File", file_menu);
+  	sub_menu_edit = IupSubmenu("Edit", edit_menu);
+  	sub_menu_format = IupSubmenu("Format", format_menu);
+  	sub_menu_help = IupSubmenu("Help", help_menu);
+
+  	menu = IupMenu(sub_menu_file, sub_menu_edit, sub_menu_format, sub_menu_help, NULL);
+
+  	vbox = IupVbox(
+    	multitext,
+    	NULL
+  	);
+
+  	dlg = IupDialog(vbox);
+  	IupSetHandle("main_menu", menu);
+  	IupSetAttribute(dlg, "MENU", "main_menu");
+  	IupSetAttribute(dlg, "TITLE", "Simple Notepad");
+  	IupSetAttribute(dlg, "SIZE", "QUARTERxQUARTER");
+
+  	IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+  	IupMainLoop();
+
+  	IupClose();
+
+  	return EXIT_SUCCESS;
+}
+</pre>
+
+<p> First change is the include of file auxEX9.h. This file is a header file that implement Find
+and Replace in C that are not object of this tutorial. If you want to understand what is behind
+the implementation of Find and Replace, you can find the file here <a href="../../examples/tutorial/auxEX9.c"><span class="auto-style3">auxEX9.c</span></a>.</p>
+
+<p> Then you will see find_cb. This, as you may already know, is the callback that will be called
+when user chooses Find in the edit menu. As IUP does not offer a predefined Find dialog, this 
+callback will take care of building a custom dialog to present to user IUP controls that allow him
+to Find a string inside the text displayed at our multitext element. To achive this goal find_cb
+creates a Ihandle called finddlg that in a short time will hold our new dialog and creates two
+IUP controls: find_bt and findtxt. find_bt is a button that will start the process of look for 
+a user defined string inside our multitext. findtxt is the text field that will get this string
+from the user. The next line is a call for <A href="../func/iupsethandle.html"><strong>IupSetHandle</strong></a>.
+This function associates a IUP control with a handle name. This may look strange right now, but will
+make sense soon. Following lines does not differ much from what we did before to create our main dialog.
+except by the last lines. We called <A href="../func/iupsetcallback.html"><strong>IupSetCallback</strong></a>  
+to associate another callback called find_bt_cb to our find_bt. Since now we just built our find dialog and
+as it contains a button that will start the string finding process, we need to write and associate it to a new 
+callback. Following is the call to <A href="../func/iuppopup.html"><strong>IupPopup</strong></a>. This
+function is very similiar to the already know <A href="../func/iupshow.html"><strong>IupShow</strong></a>
+but it displays the dialog as modal. That means the user interaction will be restricted to this dialog
+while it exists. It receives the dialog to be displayed followed by horizontal and vertical positions.</p>
+
+<p> Now that we have built our find dialog, its time to build the callback find_bt_cb that will effective
+do the job of find our string inside our multitext. First thing you may notice in it should be a few calls 
+to the new function <A href="../func/iupgethandle.html"><strong>IupGetHandle</strong></a>.
+This function recovers an iup control handle by its name if it was set using 
+<A href="../func/iupsethandle.html"><strong>IupSetHandle</strong></a> before (remember?). This is usefull 
+to allow access to other IUP elements that are not created in this callback. In this case, we recovered access 
+to our multitext, to findtxt and to our new dialog finddlg. In the next to lines we grab the values of our
+multitext (which means all text inside it) and of the findtxt and store it into strings. Then we create
+two strings to store the index where the ocurrence of our find string starts and to store the selection string
+to highlight our string. We reach then a call to str_find that is a C function that, for this tutorial, will be
+seen as doing the "magic" of find the string and returning its index inside indexpos and the selection value 
+inside selection. If you want to understand "the magic" please refer to <a href="../../examples/tutorial/auxEX9.c">
+<span class="auto-style3">auxEX9.c</span></a> because explain C its not the propouse of this tutorial. If str_find
+returns an indexpos is because it found a occurence of our string inside our multitext. Then we position the
+cursor at its start setting our multitext's attribute CARETPOS to this and highlight it setting SELECTIONPOS to
+the selection string that came from str_find as well. Its important to say that SELECTIONPOS format is "pos1:pos2"
+were pos1 is where the selection starts and pos2 is where the selection ends. But if, the string that we are 
+looking for, is not inside the multitext, we warn the user. All done. We did our job and our custom dialog is not
+usefull anymore. Destroy it to save memory.</p>
+
+<p> Replace and Go To custom dialogs will work in the same way. If you understood how to create find custom dialog
+you should be able to build both dialogs with no difficult.</p>   
+
 <h3>3.5 <a name="Toolbar_Statusbar">Adding a Toolbar and a Statusbar</a></h3>
 <p>IupImageLib (Open Save Find ... ) button com image<br>IupLabel bottom. 
 CARET_CB callback no IupText para mostrar posição no texto.</p>

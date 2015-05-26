@@ -17,8 +17,7 @@ int main(int argc, char **argv)
   button = IupButton("OK", NULL);
   vbox = IupVbox(
     button,
-    NULL
-  );
+    NULL);
   dlg = IupDialog(vbox);
   IupSetAttribute(dlg, "TITLE", "Hello World 3");
 

@@ -24,8 +24,7 @@ int main(int argc, char **argv)
   vbox = IupVbox(
     label,
     button,
-    NULL
-  );
+    NULL);
   dlg = IupDialog(vbox);
   IupSetAttribute(dlg, "TITLE", "Hello World 4");
 

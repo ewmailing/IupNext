@@ -13,6 +13,7 @@ int main(int argc, char **argv)
   Ihandle *sub1_menu, *menu;
 
   IupOpen(&argc, &argv);
+
   multitext = IupText(NULL);
   IupSetAttribute(multitext, "MULTILINE", "YES");
   IupSetAttribute(multitext, "EXPAND", "YES");
@@ -22,11 +23,12 @@ int main(int argc, char **argv)
   item_exit = IupItem ("Exit", NULL);
   IupSetCallback(item_exit, "ACTION", (Icallback)exit_cb);
 
-  file_menu = IupMenu(item_open,
-                                          item_save,
-                                          IupSeparator(),
-                                          item_exit,
-                          NULL);
+  file_menu = IupMenu(
+    item_open,
+    item_save,
+    IupSeparator(),
+    item_exit,
+    NULL);
 
   sub1_menu = IupSubmenu("File", file_menu);
 
@@ -34,19 +36,18 @@ int main(int argc, char **argv)
 
   vbox = IupVbox(
     multitext,
-    NULL
-  );
+    NULL);
 
   dlg = IupDialog(vbox);
-  IupSetHandle("main_menu", menu);
-  IupSetAttribute(dlg, "MENU", "main_menu");
+  IupSetAttributeHandle(dlg, "MENU", menu);
   IupSetAttribute(dlg, "TITLE", "Simple Notepad");
   IupSetAttribute(dlg, "SIZE", "QUARTERxQUARTER");
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+  IupSetAttribute(dlg, "USERSIZE", NULL);
+
   IupMainLoop();
 
   IupClose();
-
   return EXIT_SUCCESS;
 }
