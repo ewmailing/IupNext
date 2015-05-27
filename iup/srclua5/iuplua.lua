@@ -177,7 +177,7 @@ function iup.RegisterHandle(handle, typename)
 
     local class = iup[string.upper(typename)]
     if not class then
-      class = WIDGET
+      class = iup.WIDGET
     end
 
     local object = { parent=class, handle=handle }
