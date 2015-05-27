@@ -74,7 +74,7 @@ static int motLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
   if (ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)
   {
     unsigned char align;
-    char value1[30]="", value2[30]="";
+    char value1[30], value2[30];
 
     iupStrToStrStr(value, value1, value2, ':');   /* value2 is ignored, NOT supported in Motif */
 

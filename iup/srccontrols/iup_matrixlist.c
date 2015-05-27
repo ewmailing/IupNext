@@ -502,7 +502,7 @@ static char* iMatrixListGetColumnOrderAttrib(Ihandle *ih)
 static int iMatrixListSetColumnOrderAttrib(Ihandle *ih, const char* value)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
-  char value1[30]="", value2[30]="", value3[30]="";
+  char value1[30], value2[30], value3[30];
   int ret;
 
   /* valid only before map */
@@ -541,7 +541,8 @@ static int iMatrixListSetColumnOrderAttrib(Ihandle *ih, const char* value)
     return 0;
   }
   
-  ret = iupStrToStrStr(value2, value2, value3, ':');
+  strcpy(value1, value2);
+  ret = iupStrToStrStr(value1, value2, value3, ':');
   if (ret == 0)
     return 0;
 

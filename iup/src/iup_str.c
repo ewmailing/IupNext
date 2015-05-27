@@ -736,11 +736,13 @@ int iupStrToDoubleDouble(const char *str, double *f1, double *f2, char sep)
 
 int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
 {
-  if (!str) return 0;
+  if (!str) 
+    return 0;
 
   if (iup_tolower(*str) == sep) /* no first value */
   {
     str++; /* skip separator */
+    str1[0] = 0;
     strcpy(str2, str);
     return 1;
   }
@@ -751,12 +753,14 @@ int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
     if (!p_str)   /* no separator means no second value */
     {        
       strcpy(str1, str);
+      str2[0] = 0;
       return 1;
     }
     else if (*str==0)    /* separator exists, but second value empty, also means no second value */
     {        
       strcpy(str1, p_str);
       free(p_str);
+      str2[0] = 0;
       return 1;
     }
     else

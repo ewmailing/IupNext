@@ -202,7 +202,7 @@ static int gtkToggleSetAlignmentAttrib(Ihandle* ih, const char* value)
 {
   GtkButton* button = (GtkButton*)ih->handle;
   float xalign, yalign;
-  char value1[30]="", value2[30]="";
+  char value1[30], value2[30];
 
   if (ih->data->type == IUP_TOGGLE_TEXT)
     return 0;

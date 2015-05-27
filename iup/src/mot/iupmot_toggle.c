@@ -151,7 +151,7 @@ static int motToggleSetTitleAttrib(Ihandle* ih, const char* value)
 static int motToggleSetAlignmentAttrib(Ihandle* ih, const char* value)
 {
   unsigned char align;
-  char value1[30]="", value2[30]="";
+  char value1[30], value2[30];
 
   if (ih->data->type == IUP_TOGGLE_TEXT)
     return 0;

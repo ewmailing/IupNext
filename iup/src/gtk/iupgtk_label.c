@@ -102,7 +102,7 @@ static int gtkLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
     GtkMisc* misc = (GtkMisc*)ih->handle;
     PangoAlignment alignment;
     float xalign, yalign;
-    char value1[30]="", value2[30]="";
+    char value1[30], value2[30];
 
     iupStrToStrStr(value, value1, value2, ':');
 

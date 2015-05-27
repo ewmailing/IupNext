@@ -122,7 +122,7 @@ static void winToggleUpdateImage(Ihandle* ih, int active, int check)
 
 static void winToggleGetAlignment(Ihandle* ih, int *horiz_alignment, int *vert_alignment)
 {
-  char value1[30]="", value2[30]="";
+  char value1[30], value2[30];
 
   iupStrToStrStr(iupAttribGetStr(ih, "ALIGNMENT"), value1, value2, ':');
 

@@ -50,7 +50,7 @@ static int motButtonSetTitleAttrib(Ihandle* ih, const char* value)
 static int motButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
 {
   unsigned char align;
-  char value1[30]="", value2[30]="";
+  char value1[30], value2[30];
 
   iupStrToStrStr(value, value1, value2, ':');   /* value2 is ignored, NOT supported in Motif */
 

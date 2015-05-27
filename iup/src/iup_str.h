@@ -276,7 +276,7 @@ int iupStrToDoubleDouble(const char *str, double *f1, double *f2, char sep);
 /** Extract two strings from the string.
  * separated by the given character (usually 'x' or ':').
  * Returns the number of converted values.
- * Values not extracted are not changed.
+ * Values not extracted are set to empty strings.
  * \ingroup str */
 int iupStrToStrStr(const char *str, char *str1, char *str2, char sep);
 

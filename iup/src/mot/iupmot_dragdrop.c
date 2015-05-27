@@ -303,17 +303,18 @@ static Atom* motCreateTargetList(const char *value, int *count)
   int count_alloc = 10;
   Atom *targetlist = (Atom*)XtMalloc(sizeof(Atom) * count_alloc);
   char valueCopy[256];
-  char valueTemp[256];
+  char valueTemp1[256];
+  char valueTemp2[256];
 
   *count = 0;
 
   strcpy(valueCopy, value);
-  while(iupStrToStrStr(valueCopy, valueTemp, valueCopy, ',') > 0)
+  while (iupStrToStrStr(valueCopy, valueTemp1, valueTemp2, ',') > 0)
   {
-    targetlist[*count] = XInternAtom(iupmot_display, (char*)valueTemp, False);
+    targetlist[*count] = XInternAtom(iupmot_display, (char*)valueTemp1, False);
     (*count)++;
 
-    if(iupStrEqualNoCase(valueCopy, valueTemp))
+    if (iupStrEqualNoCase(valueTemp2, valueTemp1))
       break;
 
     if (*count == count_alloc)
@@ -321,6 +322,8 @@ static Atom* motCreateTargetList(const char *value, int *count)
       count_alloc += 10;
       targetlist = (Atom*)XtRealloc((char*)targetlist, sizeof(Atom) * count_alloc);
     }
+
+    strcpy(valueCopy, valueTemp2);
   }
 
   if (*count == 0)

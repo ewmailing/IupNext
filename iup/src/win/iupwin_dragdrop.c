@@ -944,18 +944,21 @@ static Iarray* winCreateTypesList(const char* value)
   Iarray *newList = iupArrayCreate(10, sizeof(char*));
   char** newListData;
   char valueCopy[256];
-  char valueTemp[256];
+  char valueTemp1[256];
+  char valueTemp2[256];
   int i = 0;
 
   strcpy(valueCopy, value);
-  while(iupStrToStrStr(valueCopy, valueTemp, valueCopy, ',') > 0)
+  while (iupStrToStrStr(valueCopy, valueTemp1, valueTemp2, ',') > 0)
   {
     newListData = (char**)iupArrayInc(newList);
-    newListData[i] = iupStrDup(valueTemp);
+    newListData[i] = iupStrDup(valueTemp1);
     i++;
 
-    if(iupStrEqualNoCase(valueCopy, valueTemp))
+    if (iupStrEqualNoCase(valueTemp2, valueTemp1))
       break;
+
+    strcpy(valueCopy, valueTemp2);
   }
 
   if (i == 0)

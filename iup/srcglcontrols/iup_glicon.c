@@ -88,7 +88,7 @@ static int iGLIconGetImagePosition(const char* value)
 
 static void iGLIconGetAlignment(const char* value, int *horiz_alignment, int *vert_alignment)
 {
-  char value1[30] = "", value2[30] = "";
+  char value1[30], value2[30];
 
   if (!value)
   {

@@ -430,7 +430,7 @@ static int winButtonSetActiveAttrib(Ihandle* ih, const char* value)
 
 static int winButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
 {
-  char value1[30]="", value2[30]="";
+  char value1[30], value2[30];
 
   iupStrToStrStr(value, value1, value2, ':');
 

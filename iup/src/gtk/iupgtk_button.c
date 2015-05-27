@@ -110,7 +110,7 @@ static int gtkButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
   GtkButton* button = (GtkButton*)ih->handle;
   PangoAlignment alignment;
   float xalign, yalign;
-  char value1[30]="", value2[30]="";
+  char value1[30], value2[30];
 
   if (iupAttribGet(ih, "_IUPGTK_EVENTBOX"))
     return 0;
