@@ -38,6 +38,7 @@ dlg = iup.dialog{iup.vbox{mat; margin="10x10"}}
 mat.cellnames = "Excel"
 --mat.cellnames = "Matrix"
 mat.edithideonfocus = "NO"
+mat.editfitvalue = "yes"
 
 mat:setcell(1,3,"=3+3")
 mat:setcell(2,2,"=1.3 + cell(2,3)")
