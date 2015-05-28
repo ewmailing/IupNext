@@ -146,7 +146,8 @@ int main(int argc, char **argv)
   IupSetCallback(item_font, "ACTION", (Icallback)font_cb);
   IupSetCallback(item_about, "ACTION", (Icallback)about_cb);
 
-  file_menu = IupMenu(item_open,
+  file_menu = IupMenu(
+    item_open,
     item_save,
     IupSeparator(),
     item_exit,
