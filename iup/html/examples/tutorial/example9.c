@@ -7,6 +7,7 @@
 
 /********************************** Utilities *****************************************/
 
+
 int str_compare(const char *l, const char *r, int casesensitive)
 {
   if (!l || !r)
@@ -109,7 +110,9 @@ void write_file(const char* filename, const char* str, int count)
   fclose(file);
 }
 
+
 /********************************** Callbacks *****************************************/
+
 
 int item_open_action_cb(Ihandle* item_open)
 {
@@ -355,6 +358,10 @@ int item_about_action_cb(void)
   IupMessage("About", "   IUP Tutorial\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
   return IUP_DEFAULT;
 }
+
+
+/********************************** Main *****************************************/
+
 
 int main(int argc, char **argv)
 {
