@@ -152,9 +152,11 @@ int main(int argc, char **argv)
     IupSeparator(),
     item_exit,
     NULL);
-  format_menu = IupMenu(item_font,
+  format_menu = IupMenu(
+    item_font,
     NULL);
-  help_menu = IupMenu(item_about,
+  help_menu = IupMenu(
+    item_about,
     NULL);
 
   sub_menu_file = IupSubmenu("File", file_menu);

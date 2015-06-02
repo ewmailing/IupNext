@@ -1,76 +1,72 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include <iup.h>
 
-int str_goto(char *orig, int line) 
+
+/********************************** Utilities *****************************************/
+
+int str_compare(const char *l, const char *r, int casesensitive)
 {
-  int currline = 1;
-  int c = 0;
-  for (c = 0; c < strlen(orig); c++) 
+  if (!l || !r)
+    return 0;
+
+  while (*l && *r)
   {
-    if (currline == line)
-      return c;
-    else if (orig[c] == '\n')
-      currline++;
+    int diff;
+    char l_char = *l,
+      r_char = *r;
+
+    /* compute the difference of both characters */
+    if (casesensitive)
+      diff = l_char - r_char;
+    else
+      diff = tolower((int)l_char) - tolower((int)r_char);
+
+    /* if they differ we have a result */
+    if (diff != 0)
+      return 0;
+
+    /* otherwise process the next characters */
+    ++l;
+    ++r;
   }
+
+  /* check also for terminator */
+  if (*l == *r)
+    return 1;
+
+  if (*r == 0)
+    return 1;  /* if second string is at terminator, then it is partially equal */
+
+  return 0;
+}
+
+int str_find(const char *str, const char *str_to_find, int casesensitive)
+{
+  int i, str_len, str_to_find_len, count;
+
+  if (!str || str[0] == 0 || !str_to_find || str_to_find[0] == 0)
+    return -1;
+
+  str_len = (int)strlen(str);
+  str_to_find_len = (int)strlen(str_to_find);
+  count = str_len - str_to_find_len;
+  if (count < 0)
+    return -1;
+
+  count++;
+
+  for (i = 0; i<count; i++)
+  {
+    if (str_compare(str, str_to_find, casesensitive))
+      return i;
+
+    str++;
+  }
+
   return -1;
-}
-
-void str_find(char *orig, char *find, char *start, char *sel) 
-{
-  char *p_str = strstr(orig, find);
-  if (p_str != NULL) 
-  {
-    int index = (int)(p_str - orig);
-    snprintf(start, sizeof(orig), "%d", index);
-    sprintf(sel, "%d:%d", index, index + (int)strlen(find));
-  }
-}
-
-// You must free the result if result is non-NULL.
-char *str_replace(char *orig, char *rep, char *with) 
-{
-  char *result; // the return string
-  char *ins;    // the next insert point
-  char *tmp;    // varies
-  int len_rep;  // length of rep
-  int len_with; // length of with
-  int len_front; // distance between rep and end of last rep
-  int count;    // number of replacements
-
-  if (!orig)
-    return NULL;
-  if (!rep)
-    rep = "";
-  len_rep = strlen(rep);
-  if (!with)
-    with = "";
-  len_with = strlen(with);
-
-  ins = orig;
-  for (count = 0; tmp = strstr(ins, rep); ++count) 
-  {
-    ins = tmp + len_rep;
-  }
-  // first time through the loop, all the variable are set correctly
-  // from here on,
-  //    tmp points to the end of the result string
-  //    ins points to the next occurrence of rep in orig
-  //    orig points to the remainder of orig after "end of rep"
-  tmp = result = malloc(strlen(orig) + (len_with - len_rep) * count + 1);
-
-  if (!result)
-    return NULL;
-
-  while (count--) {
-    ins = strstr(orig, rep);
-    len_front = ins - orig;
-    tmp = strncpy(tmp, orig, len_front) + len_front;
-    tmp = strcpy(tmp, with) + len_with;
-    orig += len_front + len_rep; // move to next "end of rep"
-  }
-  strcpy(tmp, orig);
-  return result;
 }
 
 char* read_file(const char* filename)
@@ -78,7 +74,7 @@ char* read_file(const char* filename)
   int size;
   char* str;
   FILE* file = fopen(filename, "rb");
-  if (!file) 
+  if (!file)
   {
     IupMessagef("Error", "Can't open file: %s", filename);
     return NULL;
@@ -103,7 +99,7 @@ char* read_file(const char* filename)
 void write_file(const char* filename, const char* str, int count)
 {
   FILE* file = fopen(filename, "w");
-  if (!file) 
+  if (!file)
   {
     IupMessagef("Error", "Can't open file: %s", filename);
     return;
@@ -113,6 +109,8 @@ void write_file(const char* filename, const char* str, int count)
   fclose(file);
 }
 
+/********************************** Callbacks *****************************************/
+
 int item_open_action_cb(Ihandle* item_open)
 {
   Ihandle* multitext = IupGetDialogChild(item_open, "MULTITEXT");
@@ -120,8 +118,9 @@ int item_open_action_cb(Ihandle* item_open)
   IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
   IupSetAttribute(filedlg, "FILTER", "*.txt");
   IupSetAttribute(filedlg, "FILTERINFO", "Text Files");
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_open));
 
-  IupPopup(filedlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
@@ -145,8 +144,9 @@ int item_save_action_cb(Ihandle* item_save)
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
   IupSetAttribute(filedlg, "FILTER", "*.txt");
   IupSetAttribute(filedlg, "FILTERINFO", "Text Files");
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_save));
 
-  IupPopup(filedlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
@@ -160,156 +160,173 @@ int item_save_action_cb(Ihandle* item_save)
   return IUP_DEFAULT;
 }
 
-int goto_bt_cb (void) 
+int item_exit_action_cb(void)
 {
-    Ihandle *gotodlg = IupGetHandle("gotodlg");
-	Ihandle *multitext = IupGetHandle("multitext");
-	char *value = IupGetAttribute(multitext, "VALUE");
-	Ihandle *gototxt = IupGetHandle("gototxt");
-	int linetarget = IupGetInt(gototxt, "VALUE");
-	int line = 0;
-	char indexpos[sizeof(value)];
-	line = str_goto(value, linetarget);
-	if (line == -1) {
-    	IupDestroy(gotodlg);
-		IupMessage("Error", "No such line.");
-		return IUP_ERROR;
-	}
-	sprintf(indexpos, "%d", line); 
-	IupSetAttribute(multitext, "CARETPOS", indexpos);
-    IupDestroy(gotodlg);
-	return IUP_DEFAULT;
+  return IUP_CLOSE;
 }
 
-int goto_cb(void) 
+int goto_ok_action_cb(Ihandle* bt_ok)
 {
-	Ihandle *gotodlg;
-    Ihandle *goto_bt = IupButton("Go To", 0);
-    Ihandle *gototxt = IupText(NULL);
-    IupSetHandle("gototxt", gototxt);
+  int line_count = IupGetInt(bt_ok, "TEXT_LINECOUNT");
+  Ihandle* txt = IupGetDialogChild(bt_ok, "LINE_TEXT");
+  int line = IupGetInt(txt, "VALUE");
+  if (line < 1 || line >= line_count)
+  {
+    IupMessage("Error", "Invalid line number.");
+    return IUP_DEFAULT;
+  }
 
-    Ihandle *hbox = IupHbox(
-        gototxt,
-        goto_bt,
-        NULL
-    );
-    IupSetAttribute(hbox, "MARGIN", "10x10");
-    IupSetAttribute(hbox, "GAP", "5");
-
-    IupSetAttribute(hbox, "SIZE", "30");
-
-    gotodlg = IupDialog(hbox);
-    IupSetHandle("gotodlg", gotodlg);
-    IupSetAttribute(gotodlg, "TITLE", "Go To");
-
-    IupSetCallback(goto_bt, "ACTION", (Icallback)goto_bt_cb);
-    IupPopup(gotodlg, IUP_CENTER, IUP_CENTER);
-
-	return IUP_DEFAULT;
+  IupSetAttribute(IupGetDialog(bt_ok), "STATUS", "1");
+  return IUP_CLOSE;
 }
 
-int replace_bt_cb (void) 
+int goto_cancel_action_cb(Ihandle* bt_ok)
 {
-	Ihandle *multitext = IupGetHandle("multitext");
-    Ihandle *findtxt = IupGetHandle("findtxt");
-    Ihandle *replacetxt = IupGetHandle("replacetxt");
-    Ihandle *replacedlg = IupGetHandle("replacedlg");
-    char *findstr = IupGetAttribute(findtxt, "VALUE");
-    char *replacestr = IupGetAttribute(replacetxt, "VALUE");
-    char *value = IupGetAttribute(multitext, "VALUE");
-	
-
-    IupSetAttribute(multitext, "VALUE", str_replace(value, findstr, replacestr));
-    IupDestroy(replacedlg);
-	return IUP_DEFAULT;	 
+  IupSetAttribute(IupGetDialog(bt_ok), "STATUS", "0");
+  return IUP_CLOSE;
 }
 
-int replace_cb(void) 
+int item_goto_action_cb(Ihandle* item_goto)
 {
-  Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
-  Ihandle *replacedlg;
-    Ihandle *replace_bt = IupButton("Replace", 0);
-	Ihandle *findtxt = IupText(NULL);
-	IupSetHandle("findtxt", findtxt);
-    Ihandle *replacetxt = IupText(NULL);
-    IupSetHandle("replacetxt", replacetxt);
-    Ihandle *hbox = IupHbox(
-		IupVbox(
-			IupLabel("Find:"),
-			findtxt,
-			NULL
-		),
-		IupVbox(
-			IupLabel("Replace:"),
-        	replacetxt,
-			NULL
-		),
-        replace_bt,
-        NULL
-    );
-    IupSetAttribute(hbox, "MARGIN", "10x10");
-    IupSetAttribute(hbox, "GAP", "5");
+  Ihandle* multitext = IupGetDialogChild(item_goto, "MULTITEXT");
+  Ihandle *dlg, *box, *bt_ok, *bt_cancel, *txt, *lbl;
 
-    IupSetAttribute(hbox, "SIZE", "30");
+  int line_count = IupGetInt(multitext, "LINECOUNT");
 
-    replacedlg = IupDialog(hbox);
-    IupSetHandle("replacedlg", replacedlg);
-    IupSetAttribute(replacedlg, "TITLE", "Replace");
+  lbl = IupLabel(NULL);
+  IupSetfAttribute(lbl, "TITLE", "Line Number [1-%d]:", line_count);
+  txt = IupText(NULL);
+  IupSetAttribute(txt, "MASK", IUP_MASK_UINT);  /* unsigned integer number */
+  IupSetAttribute(txt, "NAME", "LINE_TEXT");
+  IupSetAttribute(txt, "VISIBLECOLUMNS", "20");
+  bt_ok = IupButton("OK", NULL);
+  IupSetInt(bt_ok, "TEXT_LINECOUNT", line_count);
+  IupSetAttribute(bt_ok, "PADDING", "10x2");
+  IupSetCallback(bt_ok, "ACTION", (Icallback)goto_ok_action_cb);
+  bt_cancel = IupButton("Cancel", NULL);
+  IupSetCallback(bt_cancel, "ACTION", (Icallback)goto_cancel_action_cb);
+  IupSetAttribute(bt_cancel, "PADDING", "10x2");
 
-    IupSetCallback(replace_bt, "ACTION", (Icallback)replace_bt_cb);
-    IupPopup(replacedlg, IUP_CENTER, IUP_CENTER);
+  box = IupVbox(
+    lbl,
+    txt,
+    IupSetAttributes(IupHbox(
+      IupFill(),
+      bt_ok,
+      bt_cancel,
+      NULL), "NORMALIZESIZE=HORIZONTAL"),
+    NULL);
+  IupSetAttribute(box, "MARGIN", "10x10");
+  IupSetAttribute(box, "GAP", "5");
 
-	return IUP_DEFAULT;
+  dlg = IupDialog(box);
+  IupSetAttribute(dlg, "TITLE", "Go To Line");
+  IupSetAttribute(dlg, "DIALOGFRAME", "Yes");
+  IupSetAttributeHandle(dlg, "DEFAULTENTER", bt_ok);
+  IupSetAttributeHandle(dlg, "DEFAULTESC", bt_cancel);
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(item_goto));
+
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  if (IupGetInt(dlg, "STATUS") == 1)
+  {
+    int line = IupGetInt(txt, "VALUE");
+    int pos;
+    IupTextConvertLinColToPos(multitext, line, 0, &pos);
+    IupSetInt(multitext, "CARETPOS", pos);
+    IupSetInt(multitext, "SCROLLTOPOS", pos);
+  }
+
+  IupDestroy(dlg);
+
+  return IUP_DEFAULT;
 }
 
-int find_bt_cb(void)
+int find_action_cb(Ihandle* bt_find)
 {
-  Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
-  Ihandle *findtxt = IupGetHandle("findtxt");
-	Ihandle *finddlg = IupGetHandle("finddlg");
-	char *findstr = IupGetAttribute(findtxt, "VALUE");
-    char *value = IupGetAttribute(multitext, "VALUE");
+  Ihandle* multitext = (Ihandle*)IupGetAttribute(bt_find, "MULTITEXT");
+  char* str = IupGetAttribute(multitext, "VALUE");
 
-    char indexpos[sizeof(value)];
-    char selection[sizeof(findstr)];
-	str_find(value, findstr, indexpos, selection);
-    if (indexpos != NULL) {
-        IupSetAttribute(multitext, "CARETPOS", indexpos);
-        IupSetAttribute(multitext, "SELECTIONPOS", selection);
-    }
-    else {
-        char* msg;
-        sprintf(msg, "Could not find %s in text.\n", findstr);
-        IupMessage("Warning", msg);
-    }
-    IupDestroy(finddlg);
+  Ihandle* txt = IupGetDialogChild(bt_find, "FIND_TEXT");
+  char* str_to_find = IupGetAttribute(txt, "VALUE");
+
+  Ihandle* tgl_case = IupGetDialogChild(bt_find, "FIND_CASE");
+  int casesensitive = IupGetInt(tgl_case, "VALUE");
+
+  int pos = str_find(str, str_to_find, casesensitive);
+  if (pos >= 0)
+  {
+    int lin, col;
+    IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
+    IupSetInt(multitext, "CARETPOS", pos);
+    IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos, pos + strlen(str_to_find));
+    IupTextConvertLinColToPos(multitext, lin, 0, &pos);  /* position at col=0, just scroll lines */
+    IupSetInt(multitext, "SCROLLTOPOS", pos);
+    IupSetFocus(multitext);
+  }
+  else
+    IupMessage("Warning", "Text not found.");
+
+  return IUP_DEFAULT;
 }
 
-int find_cb(void)
+int find_close_action_cb(Ihandle* bt_close)
 {
-  Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
-  Ihandle *finddlg;
-	Ihandle *find_bt = IupButton("Find", 0);
-	Ihandle *findtxt = IupText(NULL);
-	IupSetHandle("findtxt", findtxt);
-	Ihandle *hbox = IupHbox(
-		findtxt,
-		find_bt,
-		NULL
-	);
-	IupSetAttribute(hbox, "MARGIN", "10x10");
-	IupSetAttribute(hbox, "GAP", "5");
+  IupHide(IupGetDialog(bt_close));
+  return IUP_DEFAULT;
+}
 
-	IupSetAttribute(hbox, "SIZE", "30");
+int item_find_action_cb(Ihandle* item_find)
+{
+  Ihandle* dlg = (Ihandle*)IupGetAttribute(item_find, "FIND_DIALOG");
+  if (!dlg)
+  {
+    Ihandle* multitext = IupGetDialogChild(item_find, "MULTITEXT");
+    Ihandle *box, *bt_find, *bt_close, *txt, *tgl_case;
 
-	finddlg = IupDialog(hbox);
-  	IupSetHandle("finddlg", finddlg);
-  	IupSetAttribute(finddlg, "TITLE", "Find");
+    txt = IupText(NULL);
+    IupSetAttribute(txt, "NAME", "FIND_TEXT");
+    IupSetAttribute(txt, "VISIBLECOLUMNS", "20");
+    tgl_case = IupToggle("Case Sensitive", NULL);
+    IupSetAttribute(tgl_case, "NAME", "FIND_CASE");
+    bt_find = IupButton("Find", NULL);
+    IupSetAttribute(bt_find, "PADDING", "10x2");
+    IupSetCallback(bt_find, "ACTION", (Icallback)find_action_cb);
+    bt_close = IupButton("Close", NULL);
+    IupSetCallback(bt_close, "ACTION", (Icallback)find_close_action_cb);
+    IupSetAttribute(bt_close, "PADDING", "10x2");
 
-  	IupSetCallback(find_bt, "ACTION", (Icallback)find_bt_cb);
-	IupPopup(finddlg, IUP_CENTER, IUP_CENTER);
-		
-	return IUP_DEFAULT;
+    box = IupVbox(
+      IupLabel("Find What:"),
+      txt,
+      tgl_case,
+      IupSetAttributes(IupHbox(
+        IupFill(),
+        bt_find,
+        bt_close,
+        NULL), "NORMALIZESIZE=HORIZONTAL"),
+      NULL);
+    IupSetAttribute(box, "MARGIN", "10x10");
+    IupSetAttribute(box, "GAP", "5");
+
+    dlg = IupDialog(box);
+    IupSetAttribute(dlg, "TITLE", "Find");
+    IupSetAttribute(dlg, "DIALOGFRAME", "Yes");
+    IupSetAttributeHandle(dlg, "DEFAULTENTER", bt_find);
+    IupSetAttributeHandle(dlg, "DEFAULTESC", bt_close);
+    IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(item_find));
+
+    /* Save the multiline to acess it from the callbacks */
+    IupSetAttribute(dlg, "MULTITEXT", (char*)multitext);
+
+    /* Save the dialog to reuse it */
+    IupSetAttribute(item_find, "FIND_DIALOG", (char*)dlg);
+  }
+
+  /* centerparent first time, next time reuse the last position */
+  IupShowXY(dlg, IUP_CURRENT, IUP_CURRENT);
+
+  return IUP_DEFAULT;
 }
 
 int item_font_action_cb(Ihandle* item_font)
@@ -319,8 +336,9 @@ int item_font_action_cb(Ihandle* item_font)
   char* font = IupGetAttribute(multitext, "FONT");
   IupSetStrAttribute(fontdlg, "VALUE", font);
   IupSetAttribute(fontdlg, "TITLE", "IupFontDlg Test");
+  IupSetAttributeHandle(fontdlg, "PARENTDIALOG", IupGetDialog(item_font));
 
-  IupPopup(fontdlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(fontdlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (IupGetInt(fontdlg, "STATUS") == 1)
   {
@@ -332,22 +350,17 @@ int item_font_action_cb(Ihandle* item_font)
   return IUP_DEFAULT;
 }
 
-int about_cb(void) 
+int item_about_action_cb(void)
 {
   IupMessage("About", "   IUP Tutorial\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
   return IUP_DEFAULT;
-}
-
-int exit_cb(void)
-{
-  return IUP_CLOSE;
 }
 
 int main(int argc, char **argv)
 {
   Ihandle *dlg, *vbox, *multitext, *menu;
   Ihandle *sub_menu_file, *file_menu, *item_exit, *item_open, *item_save;
-  Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_replace, *item_goto;
+  Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_goto;
   Ihandle *sub_menu_format, *format_menu, *item_font;
   Ihandle *sub_menu_help, *help_menu, *item_about;
 
@@ -361,20 +374,18 @@ int main(int argc, char **argv)
   item_open = IupItem("Open...", NULL);
   item_save = IupItem("Save...", NULL);
   item_exit = IupItem("Exit", NULL);
-  item_find = IupItem ("Find..", NULL);
-  item_replace = IupItem ("Replace..", NULL);
-  item_goto = IupItem ("Go To...", NULL);
+  item_find = IupItem("Find..", NULL);
+  item_goto = IupItem("Go To...", NULL);
   item_font = IupItem("Font...", NULL);
   item_about = IupItem("About...", NULL);
 
-  IupSetCallback(item_open, "ACTION", (Icallback)open_cb);
-  IupSetCallback(item_save, "ACTION", (Icallback)save_cb);
-  IupSetCallback(item_exit, "ACTION", (Icallback)exit_cb);
-  IupSetCallback(item_find, "ACTION", (Icallback)find_cb);
-  IupSetCallback(item_replace, "ACTION", (Icallback)replace_cb);
-  IupSetCallback(item_goto, "ACTION", (Icallback)goto_cb);
+  IupSetCallback(item_open, "ACTION", (Icallback)item_open_action_cb);
+  IupSetCallback(item_save, "ACTION", (Icallback)item_save_action_cb);
+  IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
+  IupSetCallback(item_find, "ACTION", (Icallback)item_find_action_cb);
+  IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
   IupSetCallback(item_font, "ACTION", (Icallback)item_font_action_cb);
-  IupSetCallback(item_about, "ACTION", (Icallback)about_cb);
+  IupSetCallback(item_about, "ACTION", (Icallback)item_about_action_cb);
 
   file_menu = IupMenu(
     item_open,
@@ -382,28 +393,28 @@ int main(int argc, char **argv)
     IupSeparator(),
     item_exit,
     NULL);
-	edit_menu = IupMenu(
+  edit_menu = IupMenu(
     item_find,
-    item_replace,
     item_goto,
     NULL);
-  format_menu = IupMenu(item_font,
+  format_menu = IupMenu(
+    item_font,
     NULL);
-  help_menu = IupMenu(item_about,
+  help_menu = IupMenu(
+    item_about,
     NULL);
 
   sub_menu_file = IupSubmenu("File", file_menu);
-	sub_menu_edit = IupSubmenu("Edit", edit_menu);
+  sub_menu_edit = IupSubmenu("Edit", edit_menu);
   sub_menu_format = IupSubmenu("Format", format_menu);
   sub_menu_help = IupSubmenu("Help", help_menu);
 
   menu = IupMenu(
-    sub_menu_file, 
-    sub_menu_edit, 
-    sub_menu_format, 
-    sub_menu_help, 
+    sub_menu_file,
+    sub_menu_edit,
+    sub_menu_format,
+    sub_menu_help,
     NULL);
-	IupSetAttribute(menu, "_APP_MULTITEXT", (char*)multitext);
 
   vbox = IupVbox(
     multitext,
@@ -412,9 +423,12 @@ int main(int argc, char **argv)
   dlg = IupDialog(vbox);
   IupSetAttributeHandle(dlg, "MENU", menu);
   IupSetAttribute(dlg, "TITLE", "Simple Notepad");
-  IupSetAttribute(dlg, "SIZE", "QUARTERxQUARTER");
+  IupSetAttribute(dlg, "SIZE", "HALFxHALF");
 
-  IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
+  /* parent for pre-defined dialogs in closed funtions (IupMessage) */
+  IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
+
+  IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   IupSetAttribute(dlg, "USERSIZE", NULL);
 
   IupMainLoop();

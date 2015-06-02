@@ -231,7 +231,7 @@ will handle the file opening when the user clicks the Open menu item. For this w
 features that we need to select a file from the file system, and it will save a 
 lot of work. Inside the callback we create our 
 <A href="../dlg/iupfiledlg.html"><strong>IupFileDlg</strong></a>, and set it to be an 
-&quot;open&quot; dialog with attribute DIALOGTYPE. Also we set FILTER atribute to *.txt and FILTERINFO to "Text Files" because we want our application to 
+&quot;open&quot; dialog with attribute DIALOGTYPE. Also we set FILTER attribute to *.txt and FILTERINFO to "Text Files" because we want our application to 
 handle just text files.</p>
 
 <p> Now the program calls <A href="../dlg/iuppopup.html"><strong>IupPopup</strong></a> which is a function similar to 
@@ -243,8 +243,15 @@ instead? That's because <A href="../func/iupgetattribute.html"><strong>IupGetAtt
 attributes as strings, but we know that STATUS is an integer so we can simplify 
 our status check using <A href="../func/iupgetattribute.html"><strong>IupGetInt</strong></a>.<p>Once our file dialog return a valid status, we are able to recover the name of the selected file using <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a> 
 to retrieve the VALUE attribute. Then we read the file using a simple function 
-and set its contents to the multitext control using the its VALUE attribute. Now 
-we are done. 
+and fill its contents to the multitext control using the 
+<a href="../func/iupsetattribute.html"><strong>IupSetStrAttribute</strong></a> 
+function to set its VALUE attribute. We can not use the
+<a href="../func/iupsetattribute.html"><strong>IupSetAttribute</strong></a> 
+function because our C string returned by <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a> 
+is a dynamically allocated pointer, <a href="../func/iupsetattribute.html">
+<strong>IupSetStrAttribute</strong></a> will make sure the string is duplicated 
+internally and not dependent on the given pointer.<p>Now 
+we are done at this dialog. 
 Simply call <A href="../func/iupdestroy.html"><strong>IupDestroy</strong></a>
 to remove filedlg from memory because we will not need it anymore.<p>Next there is another callback that 
 will select a file name for saving the content of a file. It is not much 
