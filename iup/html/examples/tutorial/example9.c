@@ -245,27 +245,37 @@ int item_goto_action_cb(Ihandle* item_goto)
   return IUP_DEFAULT;
 }
 
-int find_action_cb(Ihandle* bt_find)
+int find_next_action_cb(Ihandle* bt_next)
 {
-  Ihandle* multitext = (Ihandle*)IupGetAttribute(bt_find, "MULTITEXT");
+  Ihandle* multitext = (Ihandle*)IupGetAttribute(bt_next, "MULTITEXT");
   char* str = IupGetAttribute(multitext, "VALUE");
+  int find_pos = IupGetInt(multitext, "FIND_POS");
 
-  Ihandle* txt = IupGetDialogChild(bt_find, "FIND_TEXT");
+  Ihandle* txt = IupGetDialogChild(bt_next, "FIND_TEXT");
   char* str_to_find = IupGetAttribute(txt, "VALUE");
 
-  Ihandle* tgl_case = IupGetDialogChild(bt_find, "FIND_CASE");
+  Ihandle* tgl_case = IupGetDialogChild(bt_next, "FIND_CASE");
   int casesensitive = IupGetInt(tgl_case, "VALUE");
 
-  int pos = str_find(str, str_to_find, casesensitive);
+  int pos = str_find(str + find_pos, str_to_find, casesensitive);
+  if (pos >= 0)
+    pos += find_pos;
+  else if (find_pos > 0)
+    pos = str_find(str, str_to_find, casesensitive);  /* try again from the start */
+
   if (pos >= 0)
   {
-    int lin, col;
+    int lin, col, 
+      end_pos = pos + strlen(str_to_find);
+
+    IupSetInt(multitext, "FIND_POS", end_pos);
+
+    IupSetFocus(multitext);
+    IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos, end_pos);
+
     IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
-    IupSetInt(multitext, "CARETPOS", pos);
-    IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos, pos + strlen(str_to_find));
     IupTextConvertLinColToPos(multitext, lin, 0, &pos);  /* position at col=0, just scroll lines */
     IupSetInt(multitext, "SCROLLTOPOS", pos);
-    IupSetFocus(multitext);
   }
   else
     IupMessage("Warning", "Text not found.");
@@ -285,16 +295,16 @@ int item_find_action_cb(Ihandle* item_find)
   if (!dlg)
   {
     Ihandle* multitext = IupGetDialogChild(item_find, "MULTITEXT");
-    Ihandle *box, *bt_find, *bt_close, *txt, *tgl_case;
+    Ihandle *box, *bt_next, *bt_close, *txt, *tgl_case;
 
     txt = IupText(NULL);
     IupSetAttribute(txt, "NAME", "FIND_TEXT");
     IupSetAttribute(txt, "VISIBLECOLUMNS", "20");
     tgl_case = IupToggle("Case Sensitive", NULL);
     IupSetAttribute(tgl_case, "NAME", "FIND_CASE");
-    bt_find = IupButton("Find", NULL);
-    IupSetAttribute(bt_find, "PADDING", "10x2");
-    IupSetCallback(bt_find, "ACTION", (Icallback)find_action_cb);
+    bt_next = IupButton("Find Next", NULL);
+    IupSetAttribute(bt_next, "PADDING", "10x2");
+    IupSetCallback(bt_next, "ACTION", (Icallback)find_next_action_cb);
     bt_close = IupButton("Close", NULL);
     IupSetCallback(bt_close, "ACTION", (Icallback)find_close_action_cb);
     IupSetAttribute(bt_close, "PADDING", "10x2");
@@ -305,7 +315,7 @@ int item_find_action_cb(Ihandle* item_find)
       tgl_case,
       IupSetAttributes(IupHbox(
         IupFill(),
-        bt_find,
+        bt_next,
         bt_close,
         NULL), "NORMALIZESIZE=HORIZONTAL"),
       NULL);
@@ -315,7 +325,7 @@ int item_find_action_cb(Ihandle* item_find)
     dlg = IupDialog(box);
     IupSetAttribute(dlg, "TITLE", "Find");
     IupSetAttribute(dlg, "DIALOGFRAME", "Yes");
-    IupSetAttributeHandle(dlg, "DEFAULTENTER", bt_find);
+    IupSetAttributeHandle(dlg, "DEFAULTENTER", bt_next);
     IupSetAttributeHandle(dlg, "DEFAULTESC", bt_close);
     IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(item_find));
 
