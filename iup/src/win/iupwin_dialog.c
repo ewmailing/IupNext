@@ -218,13 +218,14 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
 int iupdrvDialogSetPlacement(Ihandle* ih)
 {
   char* placement;
+  int no_activate;
 
   ih->data->cmd_show = SW_SHOWNORMAL;
   ih->data->show_state = IUP_SHOW;
 
   if (iupAttribGetBoolean(ih, "FULLSCREEN"))
     return 1;
-  
+
   placement = iupAttribGet(ih, "PLACEMENT");
   if (!placement)
   {
@@ -233,14 +234,26 @@ int iupdrvDialogSetPlacement(Ihandle* ih)
     return 0;
   }
 
+  no_activate = iupAttribGetBoolean(ih, "SHOWNOACTIVATE");
+  if (no_activate)
+    ih->data->cmd_show = SW_SHOWNOACTIVATE;
+
   if (iupStrEqualNoCase(placement, "MAXIMIZED"))
   {
-    ih->data->cmd_show = SW_SHOWMAXIMIZED;
+    if (no_activate)
+      ih->data->cmd_show = SW_MAXIMIZE;
+    else
+      ih->data->cmd_show = SW_SHOWMAXIMIZED;
     ih->data->show_state = IUP_MAXIMIZE;
   }
   else if (iupStrEqualNoCase(placement, "MINIMIZED"))
   {
-    ih->data->cmd_show = SW_SHOWMINIMIZED;
+    if (no_activate)
+      ih->data->cmd_show = SW_SHOWMINNOACTIVE;
+    else if (iupAttribGetBoolean(ih, "SHOWMINIMIZENEXT"))
+      ih->data->cmd_show = SW_MINIMIZE;
+    else
+      ih->data->cmd_show = SW_SHOWMINIMIZED;
     ih->data->show_state = IUP_MINIMIZE;
   }
   else if (iupStrEqualNoCase(placement, "FULL"))
@@ -1302,6 +1315,11 @@ static char* winDialogGetMaximizedAttrib(Ihandle *ih)
   return iupStrReturnBoolean(IsZoomed(ih->handle));
 }
 
+static char* winDialogGetMinimizedAttrib(Ihandle *ih)
+{
+  return iupStrReturnBoolean(IsIconic(ih->handle));
+}
+
 static void winDialogTrayMessage(HWND hWnd, DWORD dwMessage, HICON hIcon, const char* value)
 {
   NOTIFYICONDATA tnd;
@@ -1650,6 +1668,9 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "LAYERALPHA", NULL, winDialogSetOpacityAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BRINGFRONT", NULL, winDialogSetBringFrontAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MAXIMIZED", winDialogGetMaximizedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MINIMIZED", winDialogGetMinimizedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWNOACTIVATE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "SHOWMINIMIZENEXT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
 
   iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
 
