@@ -64,6 +64,9 @@ version 3.x.</p>
 
 	<li><span class="hist_new">New:</span> &quot;iup_class_cbs.hpp&quot; header with 
 	macros to help creation of callbacks as methods in C++.</li>
+	<li><strong><span class="hist_changed">Changed:</span></strong> 
+	the DESTROY_CB callback to be called before the LDESTROY_CB callback, so it&nbsp; 
+	can be processed also in Language bindings.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span> </strong>invalid lin,col 
 	at EDITION_CB when mode=1 in <strong>IupMatrix</strong>.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span> </strong>layout update to

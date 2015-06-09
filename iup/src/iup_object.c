@@ -158,10 +158,10 @@ void IupDestroy(Ihandle *ih)
   if (ih->iclass->nativetype == IUP_TYPEDIALOG)
     IupHide(ih);
 
-  cb = IupGetCallback(ih, "LDESTROY_CB");  /* for language bindings */
+  cb = IupGetCallback(ih, "DESTROY_CB");
   if (cb) cb(ih);
 
-  cb = IupGetCallback(ih, "DESTROY_CB");
+  cb = IupGetCallback(ih, "LDESTROY_CB");  /* for language bindings */
   if (cb) cb(ih);
 
   /* Destroy all its children.
