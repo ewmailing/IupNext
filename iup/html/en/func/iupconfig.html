@@ -55,11 +55,11 @@ construction</p>
 <p>The filename (with path) can be set using a regular attribute called 
 APP_FILENAME. </p>
 <p>But the most interesting is to let the filename to be dynamically constructed 
-using the APP_NAME attribute. In this case APP_FILENAME must no be defined. The 
+using the APP_NAME attribute. In this case APP_FILENAME must <strong>not</strong> be defined. The 
 file name creation will depend on the system and on its usage.</p>
 <p>There are two defined usages. First, for a <strong>User Configuration File,</strong> 
 it will be stored on the user Home folder. Second, as an <strong>Application 
-Configuration File,</strong> it will stored in the same folder as the 
+Configuration File,</strong> it will be stored in the same folder of the 
 executable.</p>
 <p>The <strong>User Configuration File </strong>is the most common usage. In 
 UNIX, the filename will be &quot;&lt;HOME&gt;/.&lt;APP_NAME&gt;&quot;, where &quot;&lt;HOME&gt;&quot; is replaced by 
@@ -68,15 +68,18 @@ APP_NAME attribute value. In Windows, the filename will be
 &quot;&lt;HOMEDRIVE&gt;&lt;HOMEPATH&gt;\&lt;APP_NAME&gt;.cfg&quot;, where HOMEDRIVE and HOMEPATH are also 
 obtained from environment variables.</p>
 <p>The <strong>Application Configuration File</strong> is defined by setting the 
-attribute APP_CONFIG to Yes. In this case the attribute APP_PATH must also be 
+attribute APP_CONFIG to Yes (default is No). In this case the attribute APP_PATH must also be 
 set. In UNIX, the filename will be &quot;&lt;APP_PATH&gt;.&lt;APP_NAME&gt;&quot;,&nbsp; and in Windows 
 will be &quot;&lt;APP_PATH&gt;&lt;APP_NAME&gt;.cfg&quot;. Notice that the attribute APP_PATH must 
 contains a folder separator &quot;/&quot; at the end.</p>
 <p>After the functions are called the attribute FILENAME is set reflecting the 
 constructed filename.</p>
-
-<h3>
-Variables</h3>
+<p>So usually at start up, an application will do:</p>
+<pre>Ihandle* config = <strong>IupConfig</strong>();
+<strong>IupSetAttribute</strong>(config, "APP_NAME", "MyAppName");
+<strong>IupConfigLoad</strong>(config);
+</pre>
+<h3>Variables</h3>
 
 <pre>void <strong>IupConfigSetVariableStr</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, const char* <strong>value</strong>);
 void <strong>IupConfigSetVariableStrId</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>, const char* <strong>value</strong>);
