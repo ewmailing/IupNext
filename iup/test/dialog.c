@@ -232,6 +232,9 @@ static int k_any(Ihandle *ih, int c)
   case K_h:
     IupHide(ih);
     break;
+  case K_d:
+    IupDestroy(IupGetHandle("_MAIN_DIALOG_TEST_"));
+    break;
   }
   return IUP_DEFAULT;
 }
