@@ -177,11 +177,11 @@ iupPlotDataSet::~iupPlotDataSet()
 {
   SetName(NULL);
 
-  delete[] mDataX;
-  delete[] mDataY;
-  delete[] mSelection;
+  delete mDataX;
+  delete mDataY;
+  delete mSelection;
   if (mSegment)
-    delete[] mSegment;
+    delete mSegment;
 }
 
 bool iupPlotDataSet::FindSample(double inX, double inY, double tolX, double tolY,

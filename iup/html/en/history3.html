@@ -75,7 +75,9 @@ version 3.x.</p>
 	<li><strong><span class="hist_fixed">Fixed:</span> </strong>layout update to
 	<strong>IupMatrix</strong> internal children.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span> </strong>drag&amp;drop of 
-	tree nodes in <strong>IupTree</strong> on Windows. Thanks to Nodir T.</li>
+	tree nodes in <strong>IupTree</strong> on Windows. (Thanks to Nodir T.)</li>
+	<li><strong><span class="hist_fixed">Fixed:</span> IupPlot</strong> destroy 
+	(affected MingW). (Thanks to Ducan G.)</li>
 
 </ul>
 
@@ -131,10 +133,10 @@ version 3.x.</p>
 	<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
 	the title or the legend box in <strong>IupPlot</strong>.</span></li>
 	<li><span class="hist_fixed">Fixed:</span> transparency for images in
-	<strong>IupTabs</strong> on Windows. Thanks to Nodir Temirkhodjaev.</li>
+	<strong>IupTabs</strong> on Windows. (Thanks to Nodir T.)</li>
 	<li><strong><span class="hist_fixed">Fixed:</span> </strong>
     COPYDATA_CB callback for Unicode support in <strong>IupDialog</strong> on 
-	Windows. Thanks to Nodir Temirkhodjaev.</li>
+	Windows. (Thanks to Nodir T.)</li>
 	<li><strong><span class="hist_fixed">Fixed:</span> </strong>
     setting TITLE attribute to NULL in <strong>IupPlot.</strong></li>
 	<li><strong><span class="hist_fixed">Fixed:</span> </strong>automatic margin 
@@ -359,7 +361,7 @@ version 3.x.</p>
 	IupGLControls</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> BGCOLOR_CB and FGCOLOR_CB 
 	callbacks of <strong>IupMatrix</strong> in Lua when an invalid number of 
-	arguments is returned. Thanks to Alex <span>Metelka.</span></li>
+	arguments is returned. (Thanks to Alex <span>M.)</span></li>
 	<li><span class="hist_fixed">Fixed:</span> parsing of non-numeric values in
 	<strong>IupMatrixEx</strong> when column has numeric values.</li>
 	<li><span class="hist_fixed">Fixed:</span> pressed feedback in <strong>
@@ -416,7 +418,7 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> missing iup.<strong>ImageFromImImage</strong> 
 	in Lua.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupImageFromImImage</strong> 
-	when flipping bottom-top to top-bottom. Thanks to Jeremiah Nomakeo.</li>
+	when flipping bottom-top to top-bottom. (Thanks to Jeremiah N.)</li>
 	<li><span class="hist_fixed">Fixed:</span> support for global menu in recent 
 	Ubuntu systems.</li>
 	<li><span class="hist_fixed">Fixed:</span> Font support in <strong>
@@ -582,11 +584,11 @@ version 3.x.</p>
 	<li><span class="hist_new">New:</span> AUTOCSELECTION_CB, AUTOCCANCELLED_CB 
 	and AUTOCCHARDELETED_CB callbacks in <strong>IupScintilla</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> key names in IupLua when 
-	modifiers are used. Thanks to kmx.</li>
+	modifiers are used. (Thanks to kmx)</li>
 	<li><span class="hist_fixed">Fixed:</span> text with computation in UTF-8 on 
-	Windows. Thanks to kmx.</li>
+	Windows. (Thanks to kmx)</li>
 	<li><span class="hist_fixed">Fixed:</span> 3 state check box size in <strong>
-	IupTree</strong> on Windows when using Classic Style. Thanks to kmx.</li>
+	IupTree</strong> on Windows when using Classic Style. (Thanks to kmx)</li>
 	<li><span class="hist_fixed">Fixed:</span> IUP_MOUSEPOS on Windows when the 
 	taskbar is at the top, or left of the screen.</li>
 	<li><span class="hist_fixed">Fixed:</span> TABTITLE return value after tabs 
@@ -1079,7 +1081,7 @@ version 3.x.</p>
 	<li><span class="hist_fixed">Fixed:</span> invalid memory access in CURSOR 
 	attribute when name is too large.</li>
 	<li><span class="hist_fixed">Fixed:</span> BGCOLOR_CB and FGCOLOR_CB 
-	callbacks in Lua, where not properly cleaning the stack. Thanks to zcs.</li>
+	callbacks in Lua, where not properly cleaning the stack. (Thanks to zcs)</li>
 	<li><span class="hist_fixed">Fixed:</span> missing ih:<strong>destroy</strong>() 
 	method in Lua for some elements.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid memory access in X and Y 
@@ -1401,7 +1403,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	format tags. The SELECTION and SELECTIONPOS attributes of the format tag 
 	will NOT change the <strong>IupText</strong> attributes anymore. 
 	Contribution of the Indentation library that adds syntax highlighting to a 
-	Lua code text. Thanks to Nicolas Noble.</li>
+	Lua code text. (Thanks to Nicolas N.)</li>
 	<li><span class="hist_changed">Changed:</span>
     removed FINDUSERDATA attribute from <strong>IupTree</strong>, use <strong>
 	IupTreeGetId</strong> always.</li>
@@ -1442,8 +1444,8 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	IupTree</strong> on Windows when MARKMODE=SINGLE, was not changing the focus 
 	node.</li>
 	<li><span class="hist_fixed">Fixed:</span> line end converting when 
-	FORMATTING=Yes in <strong>IupText</strong> on Windows. Thanks to Nicolas 
-	Noble.</li>
+	FORMATTING=Yes in <strong>IupText</strong> on Windows. (Thanks to Nicolas 
+	N.)</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupMessageDlg</strong> 
 	modality on Windows, when PARENTDLG is not specified then it will be modal 
 	relative to all application dialogs.</li>
@@ -1496,7 +1498,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
     some Lua parameters that use &quot;number&quot; to &quot;integer&quot;.</li>
 	<li><span class="hist_changed">Changed:</span>
     replaced old &quot;arg&quot; usage for &quot;...&quot; to improve better compatibility with 
-	LuaJIT. Thanks to J.-F. Cap.</li>
+	LuaJIT. (Thanks to J.-F. Cap.)</li>
 	<li><span class="hist_changed">Changed:</span>
     <strong>IupSaveClassAttributes</strong> to not save values that are equal to 
 	the default values.</li>
@@ -1565,7 +1567,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	its default is Yes. The first node now can be deleted and can have other 
 	nodes at depth=0. New DELNODE=ALL value that remove all nodes.</li>
 	<li><span class="hist_new">New:</span> native driver for MacOSX under 
-	construction. Help needed! Thanks to Heesob Park.</li>
+	construction. Help needed! (Thanks to Heesob P.)</li>
 
 	<li><span class="hist_changed">Changed:</span>
     INSERTITEMn attribute in <strong>IupList</strong> now allows to add an item 
@@ -1718,7 +1720,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_new">New:</span> functions <strong>
 	iup.TreeSetNodeAttributes</strong>, <strong>iup.TreeSetAncestorsAttributes</strong> 
 	and <strong>iup.TreeSetDescentsAttributes</strong> for IupTree in Lua. 
-	(Thanks to Tomas Gorham)</li>
+	(Thanks to Tomas G.)</li>
 	<li><span class="hist_changed">Changed:</span>
     <strong>iup.TreeSetValue</strong> renamed to <strong>iup.TreeAddNodes</strong>. 
 	Old name also works.</li>
@@ -1807,7 +1809,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_fixed">Fixed:</span> invalid redraw of some controls 
 	when dialog is resized on Windows.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid memory access for 
-	SYSTEMVERSION global attribute in Linux. Thanks to David Given.</li>
+	SYSTEMVERSION global attribute in Linux. (Thanks to David G.)</li>
 	<li><span class="hist_fixed">Fixed:</span> missing convertion to UTF-8 in
 	<strong>IupButton</strong> when handling TITLE at map in the GTK driver.</li>
 	<li><span class="hist_fixed">Fixed:</span> image branch update when branch 
@@ -1815,8 +1817,8 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_fixed">Fixed:</span> SHOWRENAME_CB callback when 
 	renaming is started clicking twice in <strong>IupTree</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid limit check in VALUE 
-	attribute of <strong>IupList</strong> in the GTK driver. Thanks to Paul 
-	Gregory.</li>
+	attribute of <strong>IupList</strong> in the GTK driver. (Thanks to Paul 
+	G.)</li>
 	<li><span class="hist_fixed">Fixed:</span> invalid memory access when 
 	setting VALUE to NULL in <strong>IupTree</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> ACTION callback called when an 
@@ -2043,7 +2045,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	auxiliary functions <strong>IupTextConvertLinColToPos</strong> and <strong>
 	IupTextConvertPosToLinCol</strong> for <strong>IupText</strong>.</li>
 	<li><span class="hist_new">New:</span>
-	basic tutorial for IupLua. (Thanks to Steve Donovan)</li>
+	basic tutorial for IupLua. (Thanks to Steve D.)</li>
 	<li><span class="hist_new">New:</span>
 	<strong>IupTree</strong> now uses native controls and was moved to the 
 	standard controls. The old implementation is not available. Images for nodes 
@@ -2071,7 +2073,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_changed">Changed:</span>
     In IupLua the Lua function <strong>iup.TreeSetValue</strong> now also 
 	accepts node decoration in the initialization table and can add a subtree to 
-	any node. (Thanks to Tomas Gorham)</li>
+	any node. (Thanks to Tomas G.)</li>
 	<li><span class="hist_changed">Changed:</span>
     In IupLua attributes that are pointers to Ihandle are now returned as 
 	ihandle instead of userdata.</li>
@@ -2089,19 +2091,19 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	GTK for <strong>IupCanvas</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> IupLua initialization when 
 	retrieving the argc/argv arguments for <strong>IupOpen</strong>. (Thanks to 
-	Ross Berteig)</li>
+	Ross B.)</li>
 	<li><span class="hist_fixed">Fixed:</span> Arg initialization for all 
 	controls on Motif driver.</li>
 	<li><span class="hist_fixed">Fixed:</span> update of the POSX and POSY 
 	attributes for the <strong>IupCanvas</strong>.</li>
 	<li><span class="hist_fixed">Fixed:</span> FONT size round when converting 
-	from pixels to points on Windows. (Thanks to Devin Smith)</li>
+	from pixels to points on Windows. (Thanks to Devin S.)</li>
 	<li><span class="hist_fixed">Fixed:</span> button disappearing after mouse 
 	over on Windows XP.</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupMatrix</strong> when 
 	NUMCOL/NUMLIN were less than NUMCOL_VISIBLE/NUMLIN_VISIBLE. Also fixed when 
 	NUMCOL/NUMLIN were 0 and changed to 1, and when removed 1. CURSOR attribute 
-	when RESIZEMATRIX=Yes. (Thanks to Jeremy Cowgar)</li>
+	when RESIZEMATRIX=Yes. (Thanks to Jeremy C.)</li>
 	<li><span class="hist_fixed">Fixed:</span> action callback return value in 
 	Lua for the <strong>IupGetParam</strong> dialog. (Thanks to Zhiwei)</li>
 	<li><span class="hist_fixed">Fixed:</span> EXPAND attribute for <strong>
@@ -2135,13 +2137,13 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	<li><span class="hist_changed">Changed:</span>
     the <strong>IupOleControl</strong> in Lua will not automatically initialize 
 	LuaCOM anymore. The application must manually call &quot;elem:CreateLuaCOM()&quot;. 
-	The previous initialization was incorrect (thanks to Ross Berteig).</li>
+	The previous initialization was incorrect (thanks to Ross B.).</li>
 	<li><span class="hist_changed">Changed:</span>
     the declaration of function <strong>IupGetClassAttributes</strong> to use 
 	the class name instead of a control handle.</li>
 
   <li><span class="hist_fixed">Fixed: </span>Fixed button, toggle and list sizes 
-	for GTK driver when using the Hildon Framework. Thanks to Otfried Cheong.</li>
+	for GTK driver when using the Hildon Framework. (Thanks to Otfried C.)</li>
 	<li><span class="hist_fixed">Fixed:</span> some IupLua dynamic libraries in 
 	Linux where incorrectly linking with Motif (libiuplua + pplot, cd, controls, 
 	gl, im and imglib + 51.so)</li>
@@ -2154,7 +2156,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
 	value in Lua for
 	<strong>IupListDialog</strong> when type=2.</li>
 	<li><span class="hist_fixed">Fixed:</span> the return value for <strong>
-	IupGetText</strong> when the user canceled. (Thanks to Xu Wang)</li>
+	IupGetText</strong> when the user canceled. (Thanks to Xu W.)</li>
 	<li><span class="hist_fixed">Fixed:</span> <strong>IupGetClassAttributes</strong> 
 	and
 	<strong>IupGetAllAttributes</strong>
@@ -2229,7 +2231,7 @@ concatenate the attribute name with the id. The <strong>IupMat*Attribute</strong
   <li><span class="hist_new">New:</span>
 	support for the HILDON framework that runs on top of GTK on the <a target="_blank" href="http://www.maemo.org">
 	Maemo</a>
-	platform used by the Nokia Internet Tablets. Thanks to Otfried Cheong.</li>
+	platform used by the Nokia Internet Tablets. (Thanks to Otfried C.)</li>
 
   <li><span class="hist_changed">Changed:</span>
 	all dialogs, and all elements that have names, are now automatically 
