@@ -12,6 +12,9 @@
 .auto-style1 {
 	background-color: #FFFFFF;
 }
+.auto-style2 {
+	color: #FF0000;
+}
 </style>
 </head>
 <body>
@@ -22,7 +25,9 @@
 Modal dialog is some toolkits.</p>
 <p>If another dialog is shown after <b>IupPopup</b> using <b>IupShow</b>, then its interaction will not be inhibited. Every 
 <b>IupPopup</b> 
-  call creates a new popup level that inhibits all previous dialogs interactions, but does not disable new ones. 
+  call creates a new popup level that inhibits all previous dialogs interactions, but does not disable new ones 
+(even if they were disabled by the Popup, calling <strong>IupShow</strong> will 
+re-enable the dialog because it will change its popup level). 
   IMPORTANT: The popup levels must be closed in the reverse order they were created or unpredictable results will occur.</p>
 <p>For a dialog this function will only return the control 
   to the application after a callback returns IUP_CLOSE, <b>IupExitLoop</b> is 
@@ -30,7 +35,7 @@ called,
   or when the popup dialog is hidden, for example using <b>IupHide</b>. 
   For a menu it returns automatically after a menu item is selected. IMPORTANT:
   If a menu item callback returns IUP_CLOSE, 
-  it will ends the current popup level dialog. </p>
+  it will also ends the current popup level dialog. </p>
 <h3>
 Parameters/Return</h3>
 <pre>int IupPopup(Ihandle *<strong>ih</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
@@ -83,8 +88,8 @@ main screen.
   IUP_INVALID if not a dialog or menu.&nbsp; If there was an error returns
   IUP_ERROR..</p>
 <h3>Notes</h3>
-<p>Will call <b>IupMap</b> for the element.</p>
-<p><strong>x</strong> and <strong>y</strong> values are the same as returned 
+<p>It will call <b>IupMap</b> for the element.</p>
+<p>The <strong>x</strong> and <strong>y</strong> values are the same as returned 
 by the <a href="../attrib/iup_screenposition.html">SCREENPOSITION</a> attribute.</p>
 <p>
 <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
@@ -98,11 +103,13 @@ replaced by IUP_CENTER.</p>
 <p>When IUP_CURRENT is used at the first time the dialog is shown then it will 
 be replaced by IUP_CENTERPARENT.</p>
 <p>The main screen size does not include additional monitors.</p>
-<p><b>IupPopup</b> works just like <b>IupShow</b> and <b>IupShowXY</b>, but it inhibits interaction with other dialogs and interrupts the processing until 
-  IUP_CLOSE is returned in a callback or the dialog is hidden. Although it 
+<p><b>IupPopup</b> works just like <b>IupShow</b> and <b>IupShowXY</b>, but it inhibits interaction with other dialogs 
+that are visible and interrupts the processing until 
+  IUP_CLOSE is returned in a callback, <strong>IupExitLoop</strong> is called, or the 
+popup dialog is hidden. Although it 
   interrupts the processing, it does not destroy the dialog when it ends. To destroy the dialog, 
   <b>IupDestroy</b> must be called.</p>
-<p>IMPORTANT: Calling <b>IupPopup</b> for an already visible dialog will only update its position 
+<p><span class="auto-style2"><strong>IMPORTANT</strong></span>: Calling <b>IupPopup</b> for an already visible dialog will only update its position 
   and/or size on screen, will NOT change its modal state and will NOT interrupt processing.</p>
 <p>In GTK and Motif the inactive dialogs will still be able to move, resize and change their Z-order. Although their 
   contents will be inactive, keyboard will be disabled, and they can not be closed from the close box.</p>

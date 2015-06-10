@@ -339,13 +339,27 @@ static void iDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
   }
 }
 
+static void iDialogAfterHide(Ihandle* ih)
+{
+  IFni show_cb;
+
+  /* process all pending messages, make sure the dialog is hidden */
+  IupFlush();
+
+  show_cb = (IFni)IupGetCallback(ih, "SHOW_CB");
+  if (show_cb && show_cb(ih, ih->data->show_state) == IUP_CLOSE)
+  {
+    IupExitLoop();
+  }
+}
+
 static void iDialogAfterShow(Ihandle* ih)
 {
   Ihandle* old_focus;
   IFni show_cb;
   int show_state;
 
-  /* process all pending messages */
+  /* process all pending messages, make sure the dialog is visible */
   IupFlush();
 
   old_focus = IupGetFocus();
@@ -391,6 +405,19 @@ char* iupDialogGetChildIdStr(Ihandle* ih)
   return iupStrReturnStrf("iup-%s-%d", ih->iclass->name, dialog->data->child_id);
 }
 
+static void iDialogListCheckLastVisible()
+{
+  if (iupDlgListVisibleCount() <= 0)
+  {
+    /* if this is the last window visible,
+    exit message loop except when LOCKLOOP==YES */
+    if (!iupStrBoolean(IupGetGlobal("LOCKLOOP")))
+    {
+      IupExitLoop();
+    }
+  }
+}
+
 int iupDialogPopup(Ihandle* ih, int x, int y)
 {
   int was_visible;
@@ -430,7 +457,7 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
   ih->data->first_show = 1;
 
   /* actually show the window */
-  /* test if placement turn the dialog visible */
+  /* test if placement already turned the dialog visible */
   if (!iupdrvDialogIsVisible(ih))
     iupdrvDialogSetVisible(ih, 1);
 
@@ -448,8 +475,10 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
   if (iupObjectCheck(ih))
   {
     iDialogUnSetModal(ih);
-    IupHide(ih); 
+    iupDialogHide(ih);
   }
+  else
+    iDialogListCheckLastVisible();
 
   return IUP_NOERROR;
 }
@@ -531,17 +560,11 @@ void iupDialogHide(Ihandle* ih)
 
   /* decrement visible count */
   iupDlgListVisibleDec();
-
-  if (iupDlgListVisibleCount() <= 0)
-  {
-    /* if this is the last window visible, 
-       exit message loop except when LOCKLOOP==YES */
-    if (!iupStrBoolean(IupGetGlobal("LOCKLOOP")))
-      IupExitLoop();
-  }
     
-  /* flush, then process show_cb and startfocus */
-  iDialogAfterShow(ih);
+  /* process flush and process show_cb */
+  iDialogAfterHide(ih);
+
+  iDialogListCheckLastVisible();
 }
 
 

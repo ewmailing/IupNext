@@ -86,6 +86,12 @@ static int show_cb(Ihandle *ih, int state)
   return IUP_DEFAULT;
 }
 
+static int destroy_cb(Ihandle *ih)
+{
+  printf("DESTROY_CB(%s)\n", IupGetAttribute(ih, "TESTTITLE"));
+  return IUP_DEFAULT;
+}
+
 static int map_cb(Ihandle *ih)
 {
   printf("MAP_CB(%s)\n", IupGetAttribute(ih, "TESTTITLE"));
@@ -348,7 +354,8 @@ static void new_dialog(int test, char* tip)
     IupSetCallback(dlg, "CLOSE_CB",     (Icallback)close_cb);
 
   IupSetCallback(dlg, "SHOW_CB",      (Icallback)show_cb);
-  IupSetCallback(dlg, "MAP_CB",       (Icallback)map_cb);
+  IupSetCallback(dlg, "DESTROY_CB", (Icallback)destroy_cb);
+  IupSetCallback(dlg, "MAP_CB", (Icallback)map_cb);
   IupSetCallback(dlg, "K_ANY",        (Icallback)k_any);
   IupSetCallback(dlg, "GETFOCUS_CB",  (Icallback)getfocus_cb); 
   IupSetCallback(dlg, "KILLFOCUS_CB", (Icallback)killfocus_cb);
