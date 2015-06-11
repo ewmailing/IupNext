@@ -7,29 +7,8 @@
 	<meta name="created" content="0;0">
 	<meta name="changed" content="20150417;155510225713943">
 	<meta http-equiv="Content-Language" content="en-us">
-    <link rel="stylesheet" type="text/css" href="../../style.css">
-	<style type="text/css">
-.auto-style1 {
-	text-align: center;
-}
-.auto-style2 {
-	border-style: solid;
-	border-width: 1px;
-}
- iframe {
-   background-color: #CEE7FF;
-   border: 1px solid #62A0FF;
-   padding: 10px;
-   font-family: 'Monotype.com', "Courier New", Courier, monospace;
-   font-size: 90%;
-   line-height: 125%;
-   margin-left: 3em;
-   margin-right: 3em;
-   margin-top: 1em;
-   width: 90%; 
-   height: 30em; 
- }
-</style>
+  <link rel="stylesheet" type="text/css" href="../../style.css">
+  <link rel="stylesheet" type="text/css" href="tutorial.css">
 </head>
 <body>
 
@@ -56,8 +35,9 @@ editable text field that supports many lines which is mandatory to build a simpl
 
 <p>Our starting code for the simple notepad should be as following...</p>
 
-<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example6.c"><span class="auto-style3">example6.c</span></a></span>
-#include &lt;stdlib.h&gt;
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_1.c">example3_1.c</a></p>
+
+<pre class="example">#include &lt;stdlib.h&gt;
 #include &lt;iup.h&gt;
 
 int main(int argc, char **argv)
@@ -86,7 +66,7 @@ int main(int argc, char **argv)
   return EXIT_SUCCESS;
 }
 </pre>
-<p class="auto-style1"><img alt="" src="example6.png"></p>
+<p class="example_image"><img alt="" src="example3_1.png"></p>
 
 <p>The previous code doesn't show exciting news except by the <A href="../elem/iuptext.html"><strong>IupText</strong></a> declaration and the call to <A href="../func/iupsetattribute.html"><strong>IupSetAttribute</strong></a>
 to set the <A href="../elem/iuptext.html"><strong>IupText</strong></a> as a MULTILINE. The default value is "NO", try to comment this line and see what happens. 
@@ -126,8 +106,9 @@ menu will be an error.</p>
 
 <p>Let's add a menu with a few items in our example<span lang="pt-br">:</span></p>
 
-<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example7.c"><span class="auto-style3">example7.c</span></a></span>
-#include &lt;stdlib.h&gt;
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_2.c">example3_2.c</a></p>
+
+<pre class="example">#include &lt;stdlib.h&gt;
 #include &lt;iup.h&gt;
 
 int exit_cb(void)
@@ -180,7 +161,7 @@ int main(int argc, char **argv)
   return EXIT_SUCCESS;
 }
 </pre>
-<p class="auto-style1"><img alt="" src="example7.png"></p>
+<p class="example_image"><img alt="" src="example3_2.png"></p>
 
 <p>Now our example has a few menu element handlers and declarations. Also, we 
 also used our exit callback to be called
@@ -213,12 +194,12 @@ to select a file, or to select a color or a font.
 So, IUP provides pre-defined dialogs with all necessary controls to deal with these common tasks.<p>
 We will update our last example to handle file input/output, and to make use of these IUP pre-defined dialogs<span lang="pt-br">:</span>
 
-<p class="info" style="line-height: 100%; margin-bottom: 0">Download source from: <a href="../../examples/tutorial/example8.c">example8.c</a></p>
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_3.c">example3_3.c</a></p>
 
-<iframe src="../../examples/tutorial/example8.c" name="example8" title="Example 8" marginheight="0" marginwidth="0" style="float: middle">
+<iframe src="../../examples/tutorial/example3_3.c" name="example3_3" title="Example 8" marginheight="0" marginwidth="0">
 </iframe>
 
-<p class="auto-style1"><img alt="" src="example8.png"></p>
+<p class="example_image"><img alt="" src="example3_3.png"></p>
 
 <p> We will need to access the multitext control from inside the menu callbacks. 
 There are many ways to do that, the simplest is to declare it as a global 
@@ -276,64 +257,123 @@ your application needs is not provided by IUP as a predefined dialog? That will 
 
 <h3>3.4 <a name="Custom_Dialogs">Custom Dialogs</a></h3>
 
-<p> We saw in the previous section that IUP provides predefined dialogs that are 
-common to most applications and using this dialogs will
-save a lot of developing time. But if the dialog that your application needs is not one of IUP's predefined dialogs, it's time to build your
-own dialog. The good news is that you already made this when your were building your main dialog. The tricky part here is just how to handle more
-then one dialog.<p> For this we will add a few items to our menu: Find, Replace and Go To. Find will search the multitext 
-contents looking for a string and highlight
-it when found. Replace will change all occurrences of a string in multitext 
-contents by a new string.<p> Code will look like this: </p>
+<p>We saw in the previous section that IUP provides predefined dialogs that are 
+common to most applications and using this dialogs will save a lot of developing 
+time. But if the dialog your application needs is not one of IUP's predefined 
+dialogs, it's time to build your own dialog. The good news is that you already 
+made this when building your main dialog. The tricky part here is just how to 
+handle more then one dialog at the same time. </p>
+<p>For this we will add two items to our menu: Find and Go To. Find will search 
+the multitext contents looking for a string and highlight it when found. It will 
+search for this string many times and also will be case sensitive. Go To will 
+send the cursor to a specific line in the text.</p>
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_4.c">example3_4.c</a></p>
 
-<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example9.c"><span class="auto-style3">example9.c</span></a></span></pre>
-
-<iframe src="../../examples/tutorial/example9.c" name="example9" title="Example 9" marginheight="0" marginwidth="0" style="float: middle">
+<iframe src="../../examples/tutorial/example3_4.c" name="example3_4" title="Example 9" marginheight="0" marginwidth="0">
 </iframe>
+<p class="example_image"><img alt="" src="example3_4.png"></p>
 
-<p> First change is the include of file auxEX9.h. This file is a header file that implement Find
-and Replace in C that are not object of this tutorial. If you want to understand what is behind
-the implementation of Find and Replace, you can find the file here <a href="../../examples/tutorial/auxEX9.c"><span class="auto-style3">auxEX9.c</span></a>.</p>
-
-<p> Then you will see find_cb. This, as you may already know, is the callback that will be called
-when user chooses Find in the edit menu. As IUP does not offer a predefined Find dialog, this 
-callback will take care of building a custom dialog to present to user IUP controls that allow him
-to Find a string inside the text displayed at our multitext element. To achive this goal find_cb
-creates a Ihandle called finddlg that in a short time will hold our new dialog and creates two
-IUP controls: find_bt and findtxt. find_bt is a button that will start the process of look for 
-a user defined string inside our multitext. findtxt is the text field that will get this string
-from the user. The next line is a call for <A href="../func/iupsethandle.html"><strong>IupSetHandle</strong></a>.
-This function associates a IUP control with a handle name. This may look strange right now, but will
-make sense soon. Following lines does not differ much from what we did before to create our main dialog.
-except by the last lines. We called <A href="../func/iupsetcallback.html"><strong>IupSetCallback</strong></a>  
-to associate another callback called find_bt_cb to our find_bt. Since now we just built our find dialog and
-as it contains a button that will start the string finding process, we need to write and associate it to a new 
-callback. Following is the call to <A href="../func/iuppopup.html"><strong>IupPopup</strong></a>. This
-function is very similiar to the already know <A href="../func/iupshow.html"><strong>IupShow</strong></a>
-but it displays the dialog as modal. That means the user interaction will be restricted to this dialog
-while it exists. It receives the dialog to be displayed followed by horizontal and vertical positions.</p>
-
-<p> Now that we have built our find dialog, its time to build the callback find_bt_cb that will effective
-do the job of find our string inside our multitext. First thing you may notice in it should be a few calls 
-to the new function <A href="../func/iupgethandle.html"><strong>IupGetHandle</strong></a>.
-This function recovers an iup control handle by its name if it was set using 
-<A href="../func/iupsethandle.html"><strong>IupSetHandle</strong></a> before (remember?). This is usefull 
-to allow access to other IUP elements that are not created in this callback. In this case, we recovered access 
-to our multitext, to findtxt and to our new dialog finddlg. In the next to lines we grab the values of our
-multitext (which means all text inside it) and of the findtxt and store it into strings. Then we create
-two strings to store the index where the ocurrence of our find string starts and to store the selection string
-to highlight our string. We reach then a call to str_find that is a C function that, for this tutorial, will be
-seen as doing the "magic" of find the string and returning its index inside indexpos and the selection value 
-inside selection. If you want to understand "the magic" please refer to <a href="../../examples/tutorial/auxEX9.c">
-<span class="auto-style3">auxEX9.c</span></a> because explain C its not the propouse of this tutorial. If str_find
-returns an indexpos is because it found a occurence of our string inside our multitext. Then we position the
-cursor at its start setting our multitext's attribute CARETPOS to this and highlight it setting SELECTIONPOS to
-the selection string that came from str_find as well. Its important to say that SELECTIONPOS format is "pos1:pos2"
-were pos1 is where the selection starts and pos2 is where the selection ends. But if, the string that we are 
-looking for, is not inside the multitext, we warn the user. All done. We did our job and our custom dialog is not
-usefull anymore. Destroy it to save memory.</p>
-
-<p> Replace and Go To custom dialogs will work in the same way. If you understood how to create find custom dialog
-you should be able to build both dialogs with no difficult.</p>   
+<p>First change is the inclusion of two C functions (str_compare and str_find) 
+that will be used to implement Find and are not object of this tutorial. If you 
+want to understand what is inside this functions take a closer look into the 
+code.</p>
+<p>Allow me to make a jump in our code and please refer now to 
+item_find_action_cb. This callback, despite been almost at the end of the code, 
+is responsible do build our custom dialog. In this dialog we will use some 
+elements that we already saw in previous sessions: a text field to receive the 
+string that the user wants to find, a button to find the next occurence of this 
+string, a button to close our find custom dialog, and two new IUP elements:
+<a href="../elem/iuptoggle.html"><strong>IupToggle</strong></a> and
+<a href="../elem/iupfill.html"><strong>IupFill</strong></a>.</p>
+<p><a href="../elem/iuptoggle.html"><strong>IupToggle</strong></a> is a 
+two-state (on/off) button that, when selected, execute a callback. Toggles are 
+normally used to set flags. In this case, we used it to allow the user to decide 
+if he wants the search to be case sensitive or not.</p>
+<p><a href="../elem/iupfill.html"><strong>IupFill</strong></a> is a very 
+peculiar element. It is, as the name says, used to fill blank spaces inside our 
+dialog. Or, in other words, to position and align IUP elements. Best way to 
+understand IupFill is to think in it as a coil. If you put a
+<a href="../elem/iupfill.html"><strong>IupFill</strong></a>, inside a
+<a href="../elem/iuphbox.html"><strong>IupHbox</strong></a>, between to elements 
+it will expand pushing one to the left and the other to the right. Or if you put 
+it, in a <a href="../elem/iupvbox.html"><strong>IupVbox</strong></a>, above a 
+element, it will push the element all the way down. IupFill also has a SIZE 
+attribute. This will fix how much space will be taken. With experience we will 
+find the correct way to define SIZES for <a href="../elem/iupfill.html"><strong>
+IupFill</strong></a> and for other elements as well. In our case,
+<a href="../elem/iupfill.html"><strong>IupFill</strong></a> is been used to push 
+button next and button close to the right size of our hbox. We also have some 
+callback associations as we have new elements and new callbacks.</p>
+<p>Note that our new custom dialog has a lot of new parameters set. DIALOGFRAME 
+will remove minbox, maxbox and resize from the corner of the dialog. 
+DEFAULTENTER is defining press ENTER will do the same effect of pressing the 
+button next_bt. DEFAULTESC works the same way for button close_bt and ESC key. 
+Next the attribute PARENTALDIALOG is setting the dialog that holds item_find 
+(our main dialog) as the parent of our new dialog using
+<a href="../func/iupgetdialog.html"><strong>IupGetDialog</strong></a> which 
+returns the handle of the dialog that contains the element passed as parameter. 
+This will allow us to set the find dialog position at the center of the parent 
+dialog. Imagine if the user dragged our application a little to the right 
+because he wants to see another application while using ours. If we popup the 
+file dialog using IUP_CENTER the dialog will appear, at the center of the 
+screen, blocking the users view. This would be annoying. Using IUP_PARENTCENTER 
+or IUP_CURRENT garantees that the dialog will popup at the center of its parent 
+dialog and not blocking user's view.</p>
+<p>In the next two lines we are using a resource that IUP offers called create 
+new attributes. Each IUP element can hold as many attributes as you want. If 
+your element demands an attribute that is not on the manual, you can just set it 
+as we are doing here. We created a new attribute called MULTITEXT in our custom 
+dialog to store the multitext content and make it available to other callbacks. 
+Also, we created another new attribute called FIND_DIALOG in element find_item 
+so we can be able to reuse this dialog.</p>
+<p>Next we show our dialog using <a href="../func/iupshow.html"><strong>IupShow</strong></a> 
+and passing IUP_CURRENT to it. This will center the dialog acording to its 
+parent (main dialog as we defined above) in the first time and reuse the last 
+position in the next time.</p>
+<p>Now that we have built our find dialog, its time to build the callbacks that 
+will effectivelly do the job of find our string inside our multitext. First 
+thing you may notice in it should be a few calls </p>
+<p>Let's turn our attention to callback ind_next_action_cb now. This callback 
+is responsible to find the next occurence of our string inside the multiline and 
+has a lot new function calls. We made a call to
+<a href="../func/iupgetdialogchild.html"><strong>IupGetDialogChild</strong></a>. 
+This function returns the identifier of the child element that has the NAME 
+attribute equals to the given value on the same dialog hierarchy. It's used to 
+retreive the multitext handle. Despite more complicated, retriving handles this 
+way, avoid to make then global variables. As next new thing is a call to
+<a href="../func/iupsetfocus.html"><strong>IupSetFocus</strong></a>. When we 
+poped up our find dialog we removed the focus from our multiline turning it to 
+the new dialog. This function is restoring the focus to the multiline when a 
+string is found. Next we find two calls to
+<a href="../func/iuptextconvertpostolincol.html"><strong>
+IupTextConvertPosToLinCol</strong></a> and
+<a href="../func/iuptextconvertlincoltopos.html"><strong>
+IupTextConvertLinColToPos</strong></a>. They are here just to our knowledge as 
+we need only the position value stored in pos variable. First one receives a 
+position in a <a href="../elem/iuptext.html"><strong>IupText</strong></a> and 
+returns it in terms of line and collumn. Second one does the oposite.</p>
+<p>Beside next_bt, find dialog also has close_bt and it also demands a callback. 
+Find_close_action_cb closes the find custom dialog. In this callback we made a 
+call to <a href="../func/iuphide.html"><strong>IupHide</strong></a>. Once a 
+dialog is hidden, remain in memory, so that you can show them again. To destroy 
+dialogs, the <a href="../func/iupdestroy.html"><strong>IupDestroy</strong></a> 
+function must be called.</p>
+<p>As you may have notice we changed the way to name callbacks. Use names that 
+detail what the callback does and what item calls the callback is a good pratice. 
+We will start do do this now because our code is starting to get huge and work 
+with simple names may lead to confusion. So, open_cb now is called 
+item_open_action_cb and it receives a parameter that is the item_open ihandle. 
+The other previous callbacks will follow the same line of item_open_action_cb.</p>
+<p>Also there are some new callbacks like goto_ok_action_cb, 
+goto_cancel_action_cb, item_goto_action_cb, item_find_action_cb, that will 
+handle events for Find and Go To. There are no new function calls in this 
+callbacks except by the calls to <a href="../func/iupgetdialog.html"><strong>
+IupGetDialog</strong></a></p>
+<p>which returns the handle of the dialog that contains the element passed as 
+parameter.</p>
+<p>Go To custom dialog will work in the same way. If you understood how to 
+create find custom dialog you should be able to build Go To dialogs with no 
+difficult.</p>
 
 <h3>3.5 <a name="Clipboard">Clipboard</a> Support</h3>
 
@@ -345,15 +385,158 @@ sets the attribute TEXT from clipboard to store the content of attribute SELECTE
 the clipboard TEXT attribute and stores it in multitext VALUE
 
 <h3>3.6 <a name="Toolbar_Statusbar">Adding a Toolbar and a Statusbar</a></h3>
-<p>IupImageLib (Open Save Find ... ) button com image<br>IupLabel bottom. 
-CARET_CB callback no IupText para mostrar posição no texto.</p>
+<p>Now that we already saw how to use predefined dialogs or how to build our own 
+dialogs, lets see how to implement two other resources present in many other 
+applications: toolbars and status bars.</p>
+<p>Toolbars are a set of buttons, usually positioned, side by side, in dialogs 
+top, just bellow the menu. To build our toolbar we will use the attribute IMAGE 
+of <a href="../elem/iupbutton.html"><strong>IupButton</strong></a>. As in 
+predefined dialogs, IUP also offers a serie of predefined images to be used with 
+buttons. This images are part of a additional library called
+<a href="../iupimagelib.html"><strong>IupImageLib</strong></a>. To use this 
+library you should call <strong>IupImageLibOpen</strong> just after
+<a href="../func/iupopen.html"><strong>IupOpen</strong>.</p>
+</a>
+<p>Statusbars normally appear in bottom of main dialog and show some information 
+about what is happening inside the application. To build our statusbar we will 
+use a set of <a href="../elem/iuplabel.html"><strong>IupLabel</strong></a> 
+controls arranged side by side. In our statusbar we will be displaying the 
+cursor's current position in the text and to achive this we will use a IupText 
+callback called CARET_CB that is called every time the cursor changes it's 
+position. The code will be like this:</p>
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_5.c">example3_5.c</a></p>
+
+<iframe src="../../examples/tutorial/example3_5.c" name="example3_5" title="Example 10" marginheight="0" marginwidth="0">
+</iframe>
+
+<br>
+<p>First change, as told above, is the inclusion of multitext_caret_cb to our 
+callbacks. In this callback we will make use of the parameter received by the 
+callback. First we retrieve the handle of <a href="../elem/iuplabel.html">
+<strong>IupLabel</strong></a> called lbl_curpos using
+<a href="../func/iupgetdialogchild.html"><strong>IupGetDialogChild</strong></a> 
+passing the handle ih which came as a parameter of our callback. Next, we build 
+a string using lin and col parameters where the callback returns the cursor line 
+and collumn. Finally we set the label's TITLE as the string we just build. All 
+set. The callback is called every time the cursor moves inside the multitext and 
+display in the label its line and collumn.</p>
+<p>From this new callback we will jump to main function where the next change 
+appears. Just after IupOpen you will find a call to
+<a href="../iupimagelib.html"><strong>IupImageLib</strong></a>. This function 
+will load the image library that will be used in our toolbar.</p>
+<p>A few lines after we will find our lbl_curpos declaration. This label will 
+play the role of our status bar. Following we will see some button declarations 
+(btn_open, btn_save and btn_find) and some calls to
+<a href="../func/iupsetattribute.html"><strong>IupSetAttribute</strong></a> 
+setting each buttons image. The images names can be found at
+<a href="../iupimagelib.html"><strong>IupImageLib</strong></a>. Then we notice 
+that our toolbar is nothing more then a <a href="../elem/iuphbox.html"><strong>
+IupHbox</strong></a> containing those buttons. Note, a few lines after, that we 
+set for the buttons the same callbacks set for the items. This is desireble 
+because the buttons do exactly the samething as the itens just representing a 
+short way to call open, save or find.</p>
+<p>Final change will be the inclusion of toolbar_hb and lbl_curpos in the vbox 
+that already had our multiline. Toolbar cames first because its a vbox and we 
+want it above the multiline. lbl_curpos goes after because we want it bellow the 
+multiline. That's all. Our application now has both a toolbar and a status bar. 
+In the next section we will improve it even more adding hot keys to our menus.</p>
 <h3>3.7 Defining <a name="Hot_Keys">Hot Keys</a></h3>
-<p>Ctrl+O, ...</p>
+<p>Applications that has menus always present hotkeys to its users. IUP also 
+offers this resource. To define a hotkey you should use
+<a href="../elem/iupdialog.html"><strong>IupDialog</strong></a>'s callback
+<a href="../call/iup_k_any.html"><strong>K_ANY</strong></a>. This is a callback 
+common to a lot of iup elements and is called when a keyboard event occur. IUP 
+also offers a sugar sintaxe that allow you to call a specific callback for the 
+key combination you want to deal with. For example: you want to open a file if 
+user press Ctrl+O you just set a callback called K_cO.
+<a href="../attrib/key.html"><strong>Keyboard Codes</strong></a> shows a 
+complete table with all keyboard codes available in IUP.</p>
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_6.c">example3_6.c</a></p>
+
+<iframe src="../../examples/tutorial/example3_6.c" name="example3_6" title="Example 11" marginheight="0" marginwidth="0">
+</iframe>
+
+<p>This example has not changed much. We just add "\tCtr+?" to each menu item 
+that has a hotkey. Character "\t" will take care of shift our hotkey to the 
+right and the rest of the string just tells the user which key combinations to 
+press. Note that "?" should replaced by the key you want.</p>
+<p>A few lines after we did a few calls to IupSetCallback passing callback names 
+using IUP sugar sintaxe mentioned above to deal with key pressed events. And we 
+are done. Thatś all we need to change to include hotkeys in our application.</p>
+<p>During this chapter we went from a 25 lines of code application that did 
+almost nothing to a usefull notepad with file read and write, text search, line 
+counting and other resources. In the next chapter we will see how to draw in the 
+screen and build a paint like application. </p>
+
 <h3>3.8 <a name="Recent_Config">Recent Files Menu and Configuration File</a> </h3>
-<p>IupConfig (te mando código para o recent)</p>
+<p>Many text editors offer a menu item that holds a list of recent files. We are 
+going to use a IUP resource called <a href="../func/iupconfig.html"><strong>
+IupConfig</strong></a> to implement this list and also store other configuration 
+variables. IupConfig implements a group of functions to load, store and save 
+application configuration variables. For example, the list of Recent Files, the 
+last position and size of a dialog, last used parameters in dialogs, etc. Each 
+variable has a key name, a value and a group that it belongs to.</p>
+<p>Its important to remember that using <a href="../func/iupconfig.html">
+<strong>IupConfig</strong></a> demands the inclusion of header file iup_config.h.</p>
+
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example12.c">example12.c</a></p>
+
+<iframe src="../../examples/tutorial/example12.c" name="example12" title="Example 12" marginheight="0" marginwidth="0">
+</iframe>
+
+<p>Note that in this new example we have included the iup_config.h header as 
+advised above. We are going to start this analysis from our main function. After 
+creating a handle for our config called config_db, we called
+<a href="../func/iupconfig.html"><strong>IupConfig</strong></a> and had set the 
+attribute APP_NAME. This attribute defines the name of our configuration file. 
+In UNIX, the filename will be "<HOME>/.
+<APP_NAME>", where "<HOME>" is replaced by the "HOME" environment variable 
+contents, and <APP_NAME> replaced by the APP_NAME attribute value. In Windows, 
+the filename will be "<HOMEDRIVE><HOMEPATH>\<APP_NAME>.cfg", where HOMEDRIVE and 
+HOMEPATH are also obtained from environment variables. We also had set a new 
+attribute called NAME to make possible to recover the config_db handle in 
+callbacks exactly as we made with our multitext before. </p>
+<p>Following, a few lines bellow, we have created recent_menu that will hold our 
+recent_item inside our file_menu. You will see that it works as any other menu 
+creation except by the fact we will not create the recent_item. It will be 
+provided by a function that we will see soon. We positioned our recent_menu just 
+bellow open and save itens and above the <a href="../elem/iupseparator.html">
+<strong>IupSeparator</strong></a>.</p>
+<p>Then comes a call to IupConfigLoad that will load our config file when the 
+application starts followed by a call to IupConfigRecentInit. This function is 
+resposible to create the recent_item and insert it at the menu passed as a 
+parameter. As we passed our recent_menu, recent_item will be displayed at its 
+position. The other parameters this function receives, despite the config_db by 
+itself, are a callback item_recent_cb that will be called when the user selects 
+a file in the recent list and the number of files what will be stored in the 
+list. In our example we choosed to store 10 files.</p>
+<p>Next line shows a call to IupConfigDialogShow that replaces IupShow when 
+using a IupConfig. This functions store and manage the position and size of a 
+dialog. So when the application is run again the dialog can be show at its last 
+position and size. Use the function IupConfigDialogShow to show the dialog 
+adjusting its size and position.</p>
+<p>Function IupConfigDialogClosed is used to save the last dialog position and 
+size when the dialog is about to be closed, usually inside the dialog CLOSE_CB 
+callback. Please refer to item_exit_action_cb to find this inclusion on our 
+code.</p>
+<p>Just before we close our application its necessary to call IupConfigSave to 
+save our configuration file. And now that it is saved we can destroy it.</p>
+<p>That's all for the main function which turns our attention to the callbacks. 
+Let's start with our brand new item_recent_cb. This callback, as said before, is 
+responsible to handle the event of click in a recent file of our list. Inside 
+it, we recover our multitext and use it to recover our IupConfig config_db. Once 
+we recovered it, we get the file name stored in the TITLE attribute of 
+item_recent and open it the same way we do in item_open_cb.</p>
+<p>Also note that both item_open_cb and item_save_cb should change the recent 
+files list. So a call to IupConfigRecentUpdate is necessary to mantain our 
+recent files list updated.</p>
+<p>That's all for chapter three. If you reached this lines you should be able to 
+build a notepad like application using a lot of IUP's resources. In our next 
+chapter we will introduce another Tecgraf library used to draw primitives over a 
+canvas element.</p>
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>
-		<td align="left" class="tutorial_bottom"><a href="tutorial2.html">Previous</a></td>
+		<td align="left" class="tutorial_bottom"><a href="tutorial2.html">Previous/a></td>
 		<td align="center" class="tutorial_bottom"><a href="tutorial.html">Index</a></td>
 		<td align="right" class="tutorial_bottom"><a href="tutorial4.html">Next</a></td>
 	</tr>

@@ -8,21 +8,7 @@
 	<meta name="changed" content="20150417;155510225713943">
 	<meta http-equiv="Content-Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="../../style.css">
-	<style type="text/css">
-.auto-style1 {
-	text-align: center;
-}
-	.auto-style2 {
-		border-style: solid;
-		border-width: 1px;
-	}
-	.auto-style3 {
-		background-color: #CCCCCC;
-	}
-	.auto-style4 {
-	border-width: 0px;
-}
-	</style>
+  <link rel="stylesheet" type="text/css" href="tutorial.css">
 </head>
 <body>
 
@@ -40,9 +26,8 @@
 
 <p>The code bellow will shows how to open an IUP environment and displays a simple message. Each line of code is explained after the code.</p>
 
-<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example1.c"><span class="auto-style3">example1.c</span></a></span>
-
-#include &lt;stdlib.h&gt;
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example2_1.c">example2_1.c</a></p>
+<pre class="example">#include &lt;stdlib.h&gt;
 #include &lt;iup.h&gt;
 
 int main(int argc, char **argv)
@@ -56,7 +41,7 @@ int main(int argc, char **argv)
 }
 </pre>
 
-<p class="auto-style1"><img alt="" src="example1.png"></p>
+<p class="example_image"><img alt="" src="example2_1.png"></p>
 <p>In the first line, we see an include of the C standard library,
 which is needed by almost all C programs. Next there is an include for
 the main IUP library, which is all we need for our first example. Next line is a 
@@ -79,7 +64,7 @@ library that is not installed on the system) demands that you specify where the
 link with the iup library. In order to do that in a single command line for our first example is as follows:
 </p>
 
-<pre>gcc -I/tecgraf/iup/include -L/tecgraf/iup/lib -liup -o example1 example1.c</pre>
+<pre class="example">gcc -I/tecgraf/iup/include -L/tecgraf/iup/lib -liup -o example2_1 example2_1.c</pre>
 
 <p> For programs containing several modules we suggest building a makefile (See 
 here how to build one: <a href="http://mrbook.org/blog/tutorials/make/">makefile tutorial</a>). 
@@ -104,9 +89,8 @@ can check the <a href="../guide.html#apl">Building Applications Guide</a>. </p>
 <p>Let's change the first example a little bit to add our own dialog.
 </p>
 
-<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example2.c"><span class="auto-style3">example2.c</span></a></span>
-
-#include &lt;stdlib.h&gt;
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example2_2.c">example2_2.c</a></p>
+<pre class="example">#include &lt;stdlib.h&gt;
 #include &lt;iup.h&gt;
 
 int main(int argc, char **argv)
@@ -128,7 +112,7 @@ int main(int argc, char **argv)
 }
 </pre>
 
-<p class="auto-style1"><img src="example2.png"></p>
+<p class="example_image"><img src="example2_2.png"></p>
 <p>Note that we have added a new line in which we declare Ihandles* variables for 
 IUP 
 elements. We also have created two different variables. One called <strong>dlg</strong> for our 
@@ -164,9 +148,8 @@ without any custom interaction with the dialog. In this section,
 we will add interaction to our application using a button. 
 </p>
 
-<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example3.c"><span class="auto-style3">example3.c</span></a></span>
-
-#include &lt;stdlib.h&gt;
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example2_3.c">example2_3.c</a></p>
+<pre class="example">#include &lt;stdlib.h&gt;
 #include &lt;iup.h&gt;
 
 int btn_exit_cb( Ihandle *self )
@@ -200,7 +183,7 @@ int main(int argc, char **argv)
   return EXIT_SUCCESS;
 }
 </pre>
-<p class="auto-style1"><img src="example3.png"></p>
+<p class="example_image"><img src="example2_3.png"></p>
 
 <p>After the usual includes, we find some new lines. These lines
 contain a regular function called btn_exit_cb that will be registered as our button callback, as will be seen next. This function does nothing
@@ -257,9 +240,8 @@ layer is active.
 a label
 to it.</p>
 
-<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example4.c"><span class="auto-style3">example4.c</span></a></span>
-
-#include &lt;stdlib.h&gt;
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example2_4.c">example2_4.c</a></p>
+<pre class="example">#include &lt;stdlib.h&gt;
 #include &lt;iup.h&gt;
 
 int btn_exit_cb( Ihandle *self )
@@ -294,7 +276,7 @@ int main(int argc, char **argv)
   return EXIT_SUCCESS;
 }
 </pre>
-<p class="auto-style1"><img src="example4.png"></p>
+<p class="example_image"><img src="example2_4.png"></p>
 
 <p>Note that there is a new <strong>label</strong> declaration and this new element 
 appears inside our vbox as the top element.
@@ -319,9 +301,8 @@ Its default value is "0x0" (means no margin).</p>
 
 <p>Let's see how our layout responds to these three attributes.</p>
 
-<pre><span class="auto-style2"><span class="auto-style3">Download source from: </span><a href="../../examples/tutorial/example5.c"><span class="auto-style3">example5.c</span></a></span>
-
-#include &lt;stdlib.h&gt;
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example2_5.c">example2_5.c</a></p>
+<pre class="example">#include &lt;stdlib.h&gt;
 #include &lt;iup.h&gt;
 
 int btn_exit_cb( Ihandle *self )
@@ -360,14 +341,14 @@ int main(int argc, char **argv)
   return EXIT_SUCCESS;
 }
 </pre>
-<p class="auto-style1"><img src="example5.png"></p>
+<p class="example_image"><img src="example2_5.png"></p>
 <p>After creating the vbox, we have added three lines that set those attributes to 
 values different than the default values. The result is much pleasanter to see. 
 Although it is still not quite as the first example, which uses a pre-defined 
 dialog. Can you figure out which attributes we need to set in order to obtain a more 
 closer appearance?</p>
-<p class="auto-style1"><a href="../../examples/tutorial/example5a.c">
-<img class="auto-style4" height="169" src="example5a.png" width="214"></a></p>
+<p class="example_image"><a href="../../examples/tutorial/example2_5a.c">
+<img src="example2_5a.png"></a></p>
 
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>
