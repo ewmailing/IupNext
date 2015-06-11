@@ -9,7 +9,7 @@ int exit_cb(void)
 int main(int argc, char **argv)
 {
   Ihandle *dlg, *multitext, *vbox;
-  Ihandle *file_menu, *item_exit, *item_open, *item_save;
+  Ihandle *file_menu, *item_exit, *item_open, *item_saveas;
   Ihandle *sub1_menu, *menu;
 
   IupOpen(&argc, &argv);
@@ -18,14 +18,14 @@ int main(int argc, char **argv)
   IupSetAttribute(multitext, "MULTILINE", "YES");
   IupSetAttribute(multitext, "EXPAND", "YES");
 
-  item_open = IupItem ("Open", NULL);
-  item_save = IupItem ("Save", NULL);
-  item_exit = IupItem ("Exit", NULL);
+  item_open = IupItem("Open", NULL);
+  item_saveas = IupItem("Save As", NULL);
+  item_exit = IupItem("Exit", NULL);
   IupSetCallback(item_exit, "ACTION", (Icallback)exit_cb);
 
   file_menu = IupMenu(
     item_open,
-    item_save,
+    item_saveas,
     IupSeparator(),
     item_exit,
     NULL);

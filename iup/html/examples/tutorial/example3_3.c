@@ -69,7 +69,7 @@ int open_cb(void)
   return IUP_DEFAULT;
 }
 
-int save_cb(void)
+int saveas_cb(void)
 {
   Ihandle *filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
@@ -123,7 +123,7 @@ int exit_cb(void)
 int main(int argc, char **argv)
 {
   Ihandle *dlg, *vbox;
-  Ihandle *file_menu, *item_exit, *item_open, *item_save;
+  Ihandle *file_menu, *item_exit, *item_open, *item_saveas;
   Ihandle *format_menu, *item_font;
   Ihandle *help_menu, *item_about;
   Ihandle *sub_menu_file, *sub_menu_format, *sub_menu_help, *menu;
@@ -135,20 +135,20 @@ int main(int argc, char **argv)
   IupSetAttribute(multitext, "EXPAND", "YES");
 
   item_open = IupItem("Open...", NULL);
-  item_save = IupItem("Save...", NULL);
+  item_saveas = IupItem("Save As...", NULL);
   item_exit = IupItem("Exit", NULL);
   item_font = IupItem("Font...", NULL);
   item_about = IupItem("About...", NULL);
 
   IupSetCallback(item_exit, "ACTION", (Icallback)exit_cb);
   IupSetCallback(item_open, "ACTION", (Icallback)open_cb);
-  IupSetCallback(item_save, "ACTION", (Icallback)save_cb);
+  IupSetCallback(item_saveas, "ACTION", (Icallback)saveas_cb);
   IupSetCallback(item_font, "ACTION", (Icallback)font_cb);
   IupSetCallback(item_about, "ACTION", (Icallback)about_cb);
 
   file_menu = IupMenu(
     item_open,
-    item_save,
+    item_saveas,
     IupSeparator(),
     item_exit,
     NULL);

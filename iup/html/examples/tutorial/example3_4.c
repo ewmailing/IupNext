@@ -140,14 +140,14 @@ int item_open_action_cb(Ihandle* item_open)
   return IUP_DEFAULT;
 }
 
-int item_save_action_cb(Ihandle* item_save)
+int item_save_action_cb(Ihandle* item_saveas)
 {
-  Ihandle* multitext = IupGetDialogChild(item_save, "MULTITEXT");
+  Ihandle* multitext = IupGetDialogChild(item_saveas, "MULTITEXT");
   Ihandle *filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
   IupSetAttribute(filedlg, "FILTER", "*.txt");
   IupSetAttribute(filedlg, "FILTERINFO", "Text Files");
-  IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_save));
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_saveas));
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
@@ -266,7 +266,7 @@ int find_next_action_cb(Ihandle* bt_next)
   if (pos >= 0)
   {
     int lin, col, 
-      end_pos = pos + strlen(str_to_find);
+      end_pos = pos + (int)strlen(str_to_find);
 
     IupSetInt(multitext, "FIND_POS", end_pos);
 
@@ -376,7 +376,7 @@ int item_about_action_cb(void)
 int main(int argc, char **argv)
 {
   Ihandle *dlg, *vbox, *multitext, *menu;
-  Ihandle *sub_menu_file, *file_menu, *item_exit, *item_open, *item_save;
+  Ihandle *sub_menu_file, *file_menu, *item_exit, *item_open, *item_saveas;
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_goto;
   Ihandle *sub_menu_format, *format_menu, *item_font;
   Ihandle *sub_menu_help, *help_menu, *item_about;
@@ -389,7 +389,7 @@ int main(int argc, char **argv)
   IupSetAttribute(multitext, "NAME", "MULTITEXT");
 
   item_open = IupItem("Open...", NULL);
-  item_save = IupItem("Save...", NULL);
+  item_saveas = IupItem("Save As...", NULL);
   item_exit = IupItem("Exit", NULL);
   item_find = IupItem("Find..", NULL);
   item_goto = IupItem("Go To...", NULL);
@@ -397,7 +397,7 @@ int main(int argc, char **argv)
   item_about = IupItem("About...", NULL);
 
   IupSetCallback(item_open, "ACTION", (Icallback)item_open_action_cb);
-  IupSetCallback(item_save, "ACTION", (Icallback)item_save_action_cb);
+  IupSetCallback(item_saveas, "ACTION", (Icallback)item_save_action_cb);
   IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
   IupSetCallback(item_find, "ACTION", (Icallback)item_find_action_cb);
   IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
@@ -406,7 +406,7 @@ int main(int argc, char **argv)
 
   file_menu = IupMenu(
     item_open,
-    item_save,
+    item_saveas,
     IupSeparator(),
     item_exit,
     NULL);
