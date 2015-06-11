@@ -375,16 +375,7 @@ parameter.</p>
 create find custom dialog you should be able to build Go To dialogs with no 
 difficult.</p>
 
-<h3>3.5 <a name="Clipboard">Clipboard</a> Support</h3>
-
-<p>Following we will find two callbacks that will handle copy and paste from Edit menu. Both are very short callbacks and use a resource 
-called <A href="../elem/iupclipboard.html"><strong>IupClipboard</strong></a> which creates an element that allows access to the clipboard. 
-Each clipboard should be destroyed using IupDestroy. You can use only one for the entire application because it does not store any data inside. 
-Or you can simply create and destroy every time you need to copy or paste. In this example we have choosed to create and destroy. copy_cb
-sets the attribute TEXT from clipboard to store the content of attribute SELECTEDTEXT from our multitext. Paste does the oposite. Retrives
-the clipboard TEXT attribute and stores it in multitext VALUE
-
-<h3>3.6 <a name="Toolbar_Statusbar">Adding a Toolbar and a Statusbar</a></h3>
+<h3>3.5 <a name="Toolbar_Statusbar">Adding a Toolbar and a Statusbar</a></h3>
 <p>Now that we already saw how to use predefined dialogs or how to build our own 
 dialogs, lets see how to implement two other resources present in many other 
 applications: toolbars and status bars.</p>
@@ -440,7 +431,7 @@ that already had our multiline. Toolbar cames first because its a vbox and we
 want it above the multiline. lbl_curpos goes after because we want it bellow the 
 multiline. That's all. Our application now has both a toolbar and a status bar. 
 In the next section we will improve it even more adding hot keys to our menus.</p>
-<h3>3.7 Defining <a name="Hot_Keys">Hot Keys</a></h3>
+<h3>3.6 Defining <a name="Hot_Keys">Hot Keys</a></h3>
 <p>Applications that has menus always present hotkeys to its users. IUP also 
 offers this resource. To define a hotkey you should use
 <a href="../elem/iupdialog.html"><strong>IupDialog</strong></a>'s callback
@@ -468,7 +459,7 @@ almost nothing to a usefull notepad with file read and write, text search, line
 counting and other resources. In the next chapter we will see how to draw in the 
 screen and build a paint like application. </p>
 
-<h3>3.8 <a name="Recent_Config">Recent Files Menu and Configuration File</a> </h3>
+<h3>3.7 <a name="Recent_Config">Recent Files Menu and Configuration File</a> </h3>
 <p>Many text editors offer a menu item that holds a list of recent files. We are 
 going to use a IUP resource called <a href="../func/iupconfig.html"><strong>
 IupConfig</strong></a> to implement this list and also store other configuration 
@@ -479,9 +470,9 @@ variable has a key name, a value and a group that it belongs to.</p>
 <p>Its important to remember that using <a href="../func/iupconfig.html">
 <strong>IupConfig</strong></a> demands the inclusion of header file iup_config.h.</p>
 
-<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example12.c">example12.c</a></p>
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_7.c">example3_7.c</a></p>
 
-<iframe src="../../examples/tutorial/example12.c" name="example12" title="Example 12" marginheight="0" marginwidth="0">
+<iframe src="../../examples/tutorial/example3_7.c" name="example3_7" title="Example 12" marginheight="0" marginwidth="0">
 </iframe>
 
 <p>Note that in this new example we have included the iup_config.h header as 
@@ -530,6 +521,16 @@ item_recent and open it the same way we do in item_open_cb.</p>
 <p>Also note that both item_open_cb and item_save_cb should change the recent 
 files list. So a call to IupConfigRecentUpdate is necessary to mantain our 
 recent files list updated.</p>
+
+<h3>3.8 <a name="Clipboard">Clipboard</a> Support, File Drag&amp;Drop, Command Line</h3>
+
+<p>Following we will find two callbacks that will handle copy and paste from Edit menu. Both are very short callbacks and use a resource 
+called <A href="../elem/iupclipboard.html"><strong>IupClipboard</strong></a> which creates an element that allows access to the clipboard. 
+Each clipboard should be destroyed using IupDestroy. You can use only one for the entire application because it does not store any data inside. 
+Or you can simply create and destroy every time you need to copy or paste. In this example we have choosed to create and destroy. copy_cb
+sets the attribute TEXT from clipboard to store the content of attribute SELECTEDTEXT from our multitext. Paste does the oposite. Retrives
+the clipboard TEXT attribute and stores it in multitext VALUE
+
 <p>That's all for chapter three. If you reached this lines you should be able to 
 build a notepad like application using a lot of IUP's resources. In our next 
 chapter we will introduce another Tecgraf library used to draw primitives over a 
