@@ -196,6 +196,7 @@ int item_exit_action_cb(Ihandle* item_exit)
   Ihandle* config = (Ihandle*)IupGetAttribute(dlg, "CONFIG");
   IupConfigDialogClosed(config, dlg, "MainWindow");
   IupConfigSave(config);
+  IupDestroy(config);
   return IUP_CLOSE;
 }
 

@@ -474,23 +474,26 @@ variable has a key name, a value and a group that it belongs to.</p>
 
 <p>Note that in this new example we have included the iup_config.h header as 
 advised above. We are going to start this analysis from our main function. After 
-creating a handle for our config called config_db, we called
-<a href="../func/iupconfig.html"><strong>IupConfig</strong></a> and had set the 
+creating a handle for our config by calling
+<a href="../func/iupconfig.html"><strong>IupConfig</strong></a>, we set the 
 attribute APP_NAME. This attribute defines the name of our configuration file. 
-In UNIX, the filename will be "<HOME>/.
-<APP_NAME>", where "<HOME>" is replaced by the "HOME" environment variable 
-contents, and <APP_NAME> replaced by the APP_NAME attribute value. In Windows, 
-the filename will be "<HOMEDRIVE><HOMEPATH>\<APP_NAME>.cfg", where HOMEDRIVE and 
-HOMEPATH are also obtained from environment variables. We also had set a new 
-attribute called NAME to make possible to recover the config_db handle in 
-callbacks exactly as we made with our multitext before. </p>
-<p>Following, a few lines bellow, we have created recent_menu that will hold our 
-recent_item inside our file_menu. You will see that it works as any other menu 
-creation except by the fact we will not create the recent_item. It will be 
-provided by a function that we will see soon. We positioned our recent_menu just 
-bellow open and save itens and above the <a href="../elem/iupseparator.html">
+In UNIX, the filename will be "<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">&lt;HOME&gt;/.&lt;APP_NAME&gt;</span>", where "<HOME><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">&lt;HOME&gt;</span>" is replaced by the "HOME" environment variable 
+contents, and <APP_NAME> 
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
+&lt;APP_NAME&gt; </span>replaced by the APP_NAME attribute value. In Windows, 
+the filename will be "<HOMEDRIVE><HOMEPATH><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">&lt;HOMEDRIVE&gt;&lt;HOMEPATH&gt;\&lt;APP_NAME&gt;.cfg</span>", 
+where HOMEDRIVE and HOMEPATH are also obtained from environment variables. </p>
+<p>Then comes a call to <strong>IupConfigLoad</strong> that will load our config 
+file at startup. This function combined with the <strong>IupConfigSave</strong> 
+function, that we will see later, will allow our configuration variables to be 
+persistent between different application executions. </p>
+<p>Following, a few lines bellow, we create the recent_menu that will hold our 
+recent items inside. You will see that it works as any other menu creation 
+except by the fact we will not add any menu items. They will be 
+provided by a function that we will see soon. We positioned our recent_menu above the 
+item_exit menu item and bellow the <a href="../elem/iupseparator.html">
 <strong>IupSeparator</strong></a>.</p>
-<p>Then comes a call to IupConfigLoad that will load our config file when the 
+<p>After the multitext element is also when the 
 application starts followed by a call to IupConfigRecentInit. This function is 
 resposible to create the recent_item and insert it at the menu passed as a 
 parameter. As we passed our recent_menu, recent_item will be displayed at its 
