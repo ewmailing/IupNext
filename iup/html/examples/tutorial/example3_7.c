@@ -113,28 +113,25 @@ void write_file(const char* filename, const char* str, int count)
 
 
 /********************************** Callbacks *****************************************/
+
+
 int item_recent_cb(Ihandle* item_recent)
 {
-  Ihandle* multitext = IupGetDialogChild(item_recent, "MULTITEXT");
-  Ihandle* config_db = (Ihandle*)IupGetAttribute(multitext, "CONFIGDB");
-  char* filename = IupGetAttribute(item_recent, "TITLE");	
-  //DocumentCreateFromFileName(filename);
-  IupConfigRecentUpdate(config_db, filename);
-    char* str = read_file(filename);
-    if (str)
-    {
-      IupSetStrAttribute(multitext, "VALUE", str);
-      free(str);
-    }
+  char* filename = IupGetAttribute(item_recent, "TITLE");
+  char* str = read_file(filename);
+  if (str)
+  {
+    Ihandle* multitext = IupGetDialogChild(item_recent, "MULTITEXT");
+    IupSetStrAttribute(multitext, "VALUE", str);
+    free(str);
+  }
   return IUP_DEFAULT;
 }
 
-int multitext_caret_cb (Ihandle *ih, int lin, int col, int pos)
+int multitext_caret_cb(Ihandle *ih, int lin, int col)
 {
-  char curpos[100];
-  Ihandle *lbl_curpos = IupGetDialogChild(ih, "lbl_curpos");
-  sprintf(curpos, "%dx%d", lin, col);
-  IupSetAttribute ( lbl_curpos, "TITLE", curpos );
+  Ihandle *lbl_statusbar = IupGetDialogChild(ih, "STATUSBAR");
+  IupSetfAttribute(lbl_statusbar, "TITLE", "Lin %d, Col %d", lin, col);
   return IUP_DEFAULT;
 }
 
@@ -142,7 +139,6 @@ int item_open_action_cb(Ihandle* item_open)
 {
   Ihandle* multitext = IupGetDialogChild(item_open, "MULTITEXT");
   Ihandle *filedlg = IupFileDlg();
-  Ihandle* config_db = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
   IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
   IupSetAttribute(filedlg, "FILTER", "*.txt");
   IupSetAttribute(filedlg, "FILTERINFO", "Text Files");
@@ -153,10 +149,12 @@ int item_open_action_cb(Ihandle* item_open)
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
     char* filename = IupGetAttribute(filedlg, "VALUE");
-	IupConfigRecentUpdate(config_db, filename);
     char* str = read_file(filename);
     if (str)
     {
+      Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
+      IupConfigRecentUpdate(config, filename);
+
       IupSetStrAttribute(multitext, "VALUE", str);
       free(str);
     }
@@ -166,10 +164,9 @@ int item_open_action_cb(Ihandle* item_open)
   return IUP_DEFAULT;
 }
 
-int item_save_action_cb(Ihandle* item_saveas)
+int item_saveas_action_cb(Ihandle* item_saveas)
 {
   Ihandle* multitext = IupGetDialogChild(item_saveas, "MULTITEXT");
-  Ihandle* config_db = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
   Ihandle *filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
   IupSetAttribute(filedlg, "FILTER", "*.txt");
@@ -180,11 +177,13 @@ int item_save_action_cb(Ihandle* item_saveas)
 
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
+    Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
     char* filename = IupGetAttribute(filedlg, "VALUE");
-	IupConfigRecentUpdate(config_db, filename);
     char* str = IupGetAttribute(multitext, "VALUE");
     int count = IupGetInt(multitext, "COUNT");
     write_file(filename, str, count);
+
+    IupConfigRecentUpdate(config, filename);
   }
 
   IupDestroy(filedlg);
@@ -193,10 +192,10 @@ int item_save_action_cb(Ihandle* item_saveas)
 
 int item_exit_action_cb(Ihandle* item_exit)
 {
-  Ihandle* multitext = IupGetDialogChild(item_exit, "MULTITEXT");
   Ihandle* dlg = IupGetDialog(item_exit);
-  Ihandle* config_db = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
-  IupConfigDialogClosed(config_db, dlg, "MainWindow");
+  Ihandle* config = (Ihandle*)IupGetAttribute(dlg, "CONFIG");
+  IupConfigDialogClosed(config, dlg, "MainWindow");
+  IupConfigSave(config);
   return IUP_CLOSE;
 }
 
@@ -298,7 +297,7 @@ int find_next_action_cb(Ihandle* bt_next)
   if (pos >= 0)
   {
     int lin, col, 
-      end_pos = pos + strlen(str_to_find);
+      end_pos = pos + (int)strlen(str_to_find);
 
     IupSetInt(multitext, "FIND_POS", end_pos);
 
@@ -377,22 +376,21 @@ int item_find_action_cb(Ihandle* item_find)
 int item_font_action_cb(Ihandle* item_font)
 {
   Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
-  Ihandle* config_db = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
   Ihandle* fontdlg = IupFontDlg();
-  //char* font = IupGetAttribute(multitext, "FONT");
-  const char* font = IupConfigGetVariableStr(config_db, "MainWindow", "Font");
+  char* font = IupGetAttribute(multitext, "FONT");
   IupSetStrAttribute(fontdlg, "VALUE", font);
   IupSetAttribute(fontdlg, "TITLE", "IupFontDlg Test");
   IupSetAttributeHandle(fontdlg, "PARENTDIALOG", IupGetDialog(item_font));
-
 
   IupPopup(fontdlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (IupGetInt(fontdlg, "STATUS") == 1)
   {
+    Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
     char* font = IupGetAttribute(fontdlg, "VALUE");
     IupSetStrAttribute(multitext, "FONT", font);
-    IupConfigSetVariableStr(config_db, "MainWindow", "Font", font);
+
+    IupConfigSetVariableStr(config, "MainWindow", "Font", font);
   }
 
   IupDestroy(fontdlg);
@@ -413,74 +411,83 @@ int main(int argc, char **argv)
 {
   Ihandle *dlg, *vbox, *multitext, *menu;
   Ihandle *sub_menu_file, *file_menu, *item_exit, *item_open, *item_saveas, *btn_open, *btn_save;
-  Ihandle *sub_menu_recent, *recent_menu, *item_recent;
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_goto, *btn_find;
   Ihandle *sub_menu_format, *format_menu, *item_font;
   Ihandle *sub_menu_help, *help_menu, *item_about;
-  Ihandle *lbl_curpos, *toolbar_hb;
-  Ihandle *config_db;
+  Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
+  Ihandle *config;
+  const char* font;
 
   IupOpen(&argc, &argv);
   IupImageLibOpen();
 
-  config_db = IupConfig();
-  IupSetAttribute(config_db, "APP_NAME", "example12");
-  IupSetAttribute(config_db, "NAME", "CONFIG");
-
+  config = IupConfig();
+  IupSetAttribute(config, "APP_NAME", "simple_notepad");
+  IupConfigLoad(config);
 
   multitext = IupText(NULL);
   IupSetAttribute(multitext, "MULTILINE", "YES");
   IupSetAttribute(multitext, "EXPAND", "YES");
   IupSetAttribute(multitext, "NAME", "MULTITEXT");
 
+  font = IupConfigGetVariableStr(config, "MainWindow", "Font");
+  if (font)
+    IupSetStrAttribute(multitext, "FONT", font);
 
-  lbl_curpos = IupLabel("line,collumn");
-  IupSetAttribute(lbl_curpos, "NAME", "lbl_curpos");  
+  lbl_statusbar = IupLabel("Lin 1, Col 1");
+  IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");  
+  IupSetAttribute(lbl_statusbar, "EXPAND", "HORIZONTAL");
+  IupSetAttribute(lbl_statusbar, "PADDING", "10x5");
 
-  item_open = IupItem("Open...\tCtrl+O", NULL);
-  btn_open = IupButton ( "Open", "btn_open");
-  IupSetAttribute( btn_open, "IMAGE", "IUP_FileOpen" );
-  
-  item_saveas = IupItem("Save As...\tCtrl+S", NULL);
-  btn_save = IupButton ( "Save", "btn_save");
-  IupSetAttribute( btn_save, "IMAGE", "IUP_FileSave" );
+  item_open = IupItem("&Open...\tCtrl+O", NULL);
+  btn_open = IupButton(NULL, NULL);
+  IupSetAttribute(btn_open, "IMAGE", "IUP_FileOpen");
+  IupSetAttribute(btn_open, "FLAT", "Yes");
 
-  item_exit = IupItem("Exit", NULL);
+  item_saveas = IupItem("Save &As...\tCtrl+S", NULL);
+  btn_save = IupButton(NULL, NULL);
+  IupSetAttribute(btn_save, "IMAGE", "IUP_FileSave");
+  IupSetAttribute(btn_save, "FLAT", "Yes");
 
-  item_find = IupItem("Find...\tCtrl+F", NULL);
-  btn_find = IupButton ( "Find", "btn_find");
-  IupSetAttribute( btn_find, "IMAGE", "IUP_EditFind" );
-  
+  item_exit = IupItem("E&xit", NULL);
+
+  item_find = IupItem("&Find...\tCtrl+F", NULL);
+  btn_find = IupButton(NULL, NULL);
+  IupSetAttribute(btn_find, "IMAGE", "IUP_EditFind");
+  IupSetAttribute(btn_find, "FLAT", "Yes");
+
   toolbar_hb = IupHbox(
     btn_open,
     btn_save,
+    IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
     btn_find,
     NULL);
+  IupSetAttribute(toolbar_hb, "MARGIN", "5x5");
+  IupSetAttribute(toolbar_hb, "GAP", "2");
 
-  item_goto = IupItem("Go To...\tCtrl+I", NULL);
-  item_font = IupItem("Font...", NULL);
-  item_about = IupItem("About...", NULL);
+  item_goto = IupItem("&Go To...\tCtrl+G", NULL);
+  item_font = IupItem("&Font...", NULL);
+  item_about = IupItem("&About...", NULL);
 
   IupSetCallback(item_open, "ACTION", (Icallback)item_open_action_cb);
-  IupSetCallback( btn_open, "BUTTON_CB", (Icallback)item_open_action_cb);
-  IupSetCallback(item_saveas, "ACTION", (Icallback)item_save_action_cb);
-  IupSetCallback( btn_save, "BUTTON_CB", (Icallback)item_save_action_cb);
+  IupSetCallback(btn_open, "BUTTON_CB", (Icallback)item_open_action_cb);
+  IupSetCallback(item_saveas, "ACTION", (Icallback)item_saveas_action_cb);
+  IupSetCallback(btn_save, "BUTTON_CB", (Icallback)item_saveas_action_cb);
   IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
   IupSetCallback(item_find, "ACTION", (Icallback)item_find_action_cb);
-  IupSetCallback( btn_find, "BUTTON_CB", (Icallback)item_find_action_cb);  
+  IupSetCallback(btn_find, "BUTTON_CB", (Icallback)item_find_action_cb);  
   IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
   IupSetCallback(item_font, "ACTION", (Icallback)item_font_action_cb);
   IupSetCallback(item_about, "ACTION", (Icallback)item_about_action_cb);
   IupSetCallback(multitext, "CARET_CB", (Icallback)multitext_caret_cb);
 
   recent_menu = IupMenu(NULL);
-  sub_menu_recent = IupSubmenu("Recent", recent_menu);
 
   file_menu = IupMenu(
     item_open,
     item_saveas,
-    sub_menu_recent,
     IupSeparator(),
+    IupSubmenu("Recent &Files", recent_menu),
     item_exit,
     NULL);
   edit_menu = IupMenu(
@@ -494,10 +501,10 @@ int main(int argc, char **argv)
     item_about,
     NULL);
 
-  sub_menu_file = IupSubmenu("File", file_menu);
-  sub_menu_edit = IupSubmenu("Edit", edit_menu);
-  sub_menu_format = IupSubmenu("Format", format_menu);
-  sub_menu_help = IupSubmenu("Help", help_menu);
+  sub_menu_file = IupSubmenu("&File", file_menu);
+  sub_menu_edit = IupSubmenu("&Edit", edit_menu);
+  sub_menu_format = IupSubmenu("F&ormat", format_menu);
+  sub_menu_help = IupSubmenu("&Help", help_menu);
 
   menu = IupMenu(
     sub_menu_file,
@@ -509,34 +516,32 @@ int main(int argc, char **argv)
   vbox = IupVbox(
     toolbar_hb,
     multitext,
-    lbl_curpos,
+    lbl_statusbar,
     NULL);
 
   dlg = IupDialog(vbox);
   IupSetAttributeHandle(dlg, "MENU", menu);
   IupSetAttribute(dlg, "TITLE", "Simple Notepad");
   IupSetAttribute(dlg, "SIZE", "HALFxHALF");
+  IupSetCallback(dlg, "CLOSECB", (Icallback)item_exit_action_cb);
+
+  IupSetAttribute(dlg, "CONFIG", (char*)config);
 
   /* parent for pre-defined dialogs in closed funtions (IupMessage) */
   IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
 
-  IupSetCallback( dlg, "K_cO", (Icallback)item_open_action_cb);
-  IupSetCallback( dlg, "K_cS", (Icallback)item_save_action_cb);
-  IupSetCallback( dlg, "K_cF", (Icallback)item_find_action_cb);
-  IupSetCallback( dlg, "K_cI", (Icallback)item_goto_action_cb);
+  IupSetCallback(dlg, "K_cO", (Icallback)item_open_action_cb);
+  IupSetCallback(dlg, "K_cS", (Icallback)item_saveas_action_cb);
+  IupSetCallback(dlg, "K_cF", (Icallback)item_find_action_cb);
+  IupSetCallback(dlg, "K_cG", (Icallback)item_goto_action_cb);
 
+  IupConfigRecentInit(config, recent_menu, item_recent_cb, 10);
 
-  IupConfigLoad(config_db);
-  IupConfigRecentInit(config_db, recent_menu, item_recent_cb, 10);
-
-  IupConfigDialogShow(config_db, dlg, "MainWindow");
-  //IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+  IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   IupSetAttribute(dlg, "USERSIZE", NULL);
 
   IupMainLoop();
 
-  IupConfigSave(config_db);
-  IupDestroy(config_db);
   IupClose();
   return EXIT_SUCCESS;
 }

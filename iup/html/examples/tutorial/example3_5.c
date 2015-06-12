@@ -112,13 +112,13 @@ void write_file(const char* filename, const char* str, int count)
 
 
 /********************************** Callbacks *****************************************/
+
+
 int multitext_caret_cb (Ihandle *ih, int lin, int col, int pos)
 {
-	char curpos[100];
-	Ihandle *lbl_curpos = IupGetDialogChild(ih, "lbl_curpos");
-	sprintf(curpos, "%dx%d", lin, col);
-	IupSetAttribute ( lbl_curpos, "TITLE", curpos );
-	return IUP_DEFAULT;
+  Ihandle *lbl_statusbar = IupGetDialogChild(ih, "STATUSBAR");
+  IupSetfAttribute(lbl_statusbar, "TITLE", "Lin %d, Col %d", lin, col);
+  return IUP_DEFAULT;
 }
 
 int item_open_action_cb(Ihandle* item_open)
@@ -147,7 +147,7 @@ int item_open_action_cb(Ihandle* item_open)
   return IUP_DEFAULT;
 }
 
-int item_save_action_cb(Ihandle* item_saveas)
+int item_saveas_action_cb(Ihandle* item_saveas)
 {
   Ihandle* multitext = IupGetDialogChild(item_saveas, "MULTITEXT");
   Ihandle *filedlg = IupFileDlg();
@@ -273,7 +273,7 @@ int find_next_action_cb(Ihandle* bt_next)
   if (pos >= 0)
   {
     int lin, col, 
-      end_pos = pos + strlen(str_to_find);
+      end_pos = pos + (int)strlen(str_to_find);
 
     IupSetInt(multitext, "FIND_POS", end_pos);
 
@@ -387,7 +387,7 @@ int main(int argc, char **argv)
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_goto, *btn_find;
   Ihandle *sub_menu_format, *format_menu, *item_font;
   Ihandle *sub_menu_help, *help_menu, *item_about;
-  Ihandle *lbl_curpos, *toolbar_hb;
+  Ihandle *lbl_statusbar, *toolbar_hb;
 
   IupOpen(&argc, &argv);
   IupImageLibOpen();
@@ -397,40 +397,48 @@ int main(int argc, char **argv)
   IupSetAttribute(multitext, "EXPAND", "YES");
   IupSetAttribute(multitext, "NAME", "MULTITEXT");
 
-  lbl_curpos = IupLabel("line,collumn");
-  IupSetAttribute(lbl_curpos, "NAME", "lbl_curpos");  
+  lbl_statusbar = IupLabel("Lin 1, Col 1");
+  IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");  
+  IupSetAttribute(lbl_statusbar, "EXPAND", "HORIZONTAL");
+  IupSetAttribute(lbl_statusbar, "PADDING", "10x5");
 
   item_open = IupItem("Open...", NULL);
-  btn_open = IupButton ( "Open", "btn_open");
-  IupSetAttribute( btn_open, "IMAGE", "IUP_FileOpen" );
-  
+  btn_open = IupButton(NULL, NULL);
+  IupSetAttribute(btn_open, "IMAGE", "IUP_FileOpen");
+  IupSetAttribute(btn_open, "FLAT", "Yes");
+
   item_saveas = IupItem("Save As...", NULL);
-  btn_save = IupButton ( "Save", "btn_save");
-  IupSetAttribute( btn_save, "IMAGE", "IUP_FileSave" );
-  
+  btn_save = IupButton(NULL, NULL);
+  IupSetAttribute(btn_save, "IMAGE", "IUP_FileSave");
+  IupSetAttribute(btn_save, "FLAT", "Yes");
+
   item_exit = IupItem("Exit", NULL);
 
   item_find = IupItem("Find...", NULL);
-  btn_find = IupButton ( "Find", "btn_find");
-  IupSetAttribute( btn_find, "IMAGE", "IUP_EditFind" );
-  
+  btn_find = IupButton(NULL, NULL);
+  IupSetAttribute(btn_find, "IMAGE", "IUP_EditFind");
+  IupSetAttribute(btn_find, "FLAT", "Yes");
+
   toolbar_hb = IupHbox(
     btn_open,
     btn_save,
+    IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
     btn_find,
     NULL);
+  IupSetAttribute(toolbar_hb, "MARGIN", "5x5");
+  IupSetAttribute(toolbar_hb, "GAP", "2");
 
   item_goto = IupItem("Go To...", NULL);
   item_font = IupItem("Font...", NULL);
   item_about = IupItem("About...", NULL);
 
   IupSetCallback(item_open, "ACTION", (Icallback)item_open_action_cb);
-  IupSetCallback( btn_open, "BUTTON_CB", (Icallback)item_open_action_cb);
-  IupSetCallback(item_saveas, "ACTION", (Icallback)item_save_action_cb);
-  IupSetCallback( btn_save, "BUTTON_CB", (Icallback)item_save_action_cb);
+  IupSetCallback(btn_open, "BUTTON_CB", (Icallback)item_open_action_cb);
+  IupSetCallback(item_saveas, "ACTION", (Icallback)item_saveas_action_cb);
+  IupSetCallback(btn_save, "BUTTON_CB", (Icallback)item_saveas_action_cb);
   IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
   IupSetCallback(item_find, "ACTION", (Icallback)item_find_action_cb);
-  IupSetCallback( btn_find, "BUTTON_CB", (Icallback)item_find_action_cb);  
+  IupSetCallback(btn_find, "BUTTON_CB", (Icallback)item_find_action_cb);  
   IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
   IupSetCallback(item_font, "ACTION", (Icallback)item_font_action_cb);
   IupSetCallback(item_about, "ACTION", (Icallback)item_about_action_cb);
@@ -468,7 +476,7 @@ int main(int argc, char **argv)
   vbox = IupVbox(
     toolbar_hb,
     multitext,
-    lbl_curpos,
+    lbl_statusbar,
     NULL);
 
   dlg = IupDialog(vbox);

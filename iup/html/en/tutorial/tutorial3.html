@@ -33,7 +33,7 @@ attributes available.
 We will be interested in one in particular for now: MULTILINE. MULTILINE turns the <A href="../elem/iuptext.html"><strong>IupText</strong></a> into an 
 editable text field that supports many lines which is mandatory to build a simple notepad.</p>
 
-<p>Our starting code for the simple notepad should be as following...</p>
+<p>Our starting code for the simple notepad should be as following.</p>
 
 <p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_1.c">example3_1.c</a></p>
 
@@ -104,7 +104,7 @@ can include any number of the other 3 types of menu interface elements: <A href=
 type of interface element inserted in a 
 menu will be an error.</p>
 
-<p>Let's add a menu with a few items in our example<span lang="pt-br">:</span></p>
+<p>Let's add a menu with a few items in our example.</p>
 
 <p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_2.c">example3_2.c</a></p>
 
@@ -192,13 +192,11 @@ color selection dialogs, etc.
 It would be annoying to have to build the same dialog again every time we need 
 to select a file, or to select a color or a font.
 So, IUP provides pre-defined dialogs with all necessary controls to deal with these common tasks.<p>
-We will update our last example to handle file input/output, and to make use of these IUP pre-defined dialogs<span lang="pt-br">:</span>
+We will update our last example to handle file input/output, and to make use of these IUP pre-defined dialogs.
 
 <p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_3.c">example3_3.c</a></p>
-
-<iframe src="../../examples/tutorial/example3_3.c" name="example3_3" title="Example 8" marginheight="0" marginwidth="0">
+<iframe src="../../examples/tutorial/example3_3.c" name="example3_3" title="Example 3.3" marginheight="0" marginwidth="0">
 </iframe>
-
 <p class="example_image"><img alt="" src="example3_3.png"></p>
 
 <p> We will need to access the multitext control from inside the menu callbacks. 
@@ -268,9 +266,9 @@ handle more then one dialog at the same time. </p>
 the multitext contents looking for a string and highlight it when found. It will 
 search for this string many times and the search can also be case sensitive. Go To will 
 position the caret to a specific line in the text.</p>
-<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_4.c">example3_4.c</a></p>
 
-<iframe src="../../examples/tutorial/example3_4.c" name="example3_4" title="Example 9" marginheight="0" marginwidth="0">
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_4.c">example3_4.c</a></p>
+<iframe src="../../examples/tutorial/example3_4.c" name="example3_4" title="Example 3.4" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_4.png"></p>
 
@@ -282,7 +280,7 @@ code.</p>
 previous example code. We did that to illustrate the importance of function 
 nomenclature in a larger project, so that several callbacks can be easily 
 associated with their respective control. For instance, open_cb became 
-item_open_action_cb, saveas_cb became item_save_action_cb, and so on.</p>
+item_open_action_cb, saveas_cb became item_saveas_action_cb, and so on.</p>
 <p>Allow me to make a jump in our code and please refer now to 
 the item_find_action_cb function. This callback, despite been almost at the end of the code, 
 is responsible to build one of our custom dialogs. In this dialog we will use some 
@@ -367,87 +365,93 @@ create the Find dialog you should be able to build the Go To dialogs.</p>
 <p>Now that we already saw how to use predefined dialogs or how to build our own 
 dialogs, lets see how to implement two other resources present in many other 
 applications: toolbars and status bars.</p>
-<p>Toolbars are a set of buttons, usually positioned, side by side, in dialogs 
-top, just bellow the menu. To build our toolbar we will use the attribute IMAGE 
+<p>Toolbars are a set of buttons, usually positioned, side by side, in the top 
+of the dialog, just bellow the menu. To build our toolbar we will use the attribute IMAGE 
 of <a href="../elem/iupbutton.html"><strong>IupButton</strong></a>. As in 
-predefined dialogs, IUP also offers a serie of predefined images to be used with 
+predefined dialogs, IUP also offers a series of predefined images to be used with 
 buttons. This images are part of a additional library called
 <a href="../iupimagelib.html"><strong>IupImageLib</strong></a>. To use this 
-library you should call <strong>IupImageLibOpen</strong> just after
+library you should call <strong>IupImageLibOpen</strong> right after
 <a href="../func/iupopen.html"><strong>IupOpen</strong>.</p>
 </a>
-<p>Statusbars normally appear in bottom of main dialog and show some information 
+<p>Statusbars normally appear in the bottom of the dialog and usually show some information 
 about what is happening inside the application. To build our statusbar we will 
 use a set of <a href="../elem/iuplabel.html"><strong>IupLabel</strong></a> 
 controls arranged side by side. In our statusbar we will be displaying the 
-cursor's current position in the text and to achive this we will use a IupText 
-callback called CARET_CB that is called every time the cursor changes it's 
-position. The code will be like this:</p>
+caret position in the text and to achieve this we will use the IupText callback 
+called CARET_CB that is called every time the caret position is changed. </p>
+
 <p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_5.c">example3_5.c</a></p>
-
-<iframe src="../../examples/tutorial/example3_5.c" name="example3_5" title="Example 10" marginheight="0" marginwidth="0">
+<iframe src="../../examples/tutorial/example3_5.c" name="example3_5" title="Example 3.5" marginheight="0" marginwidth="0">
 </iframe>
+<p class="example_image"><img alt="" src="example3_5.png"></p>
 
-<br>
-<p>First change, as told above, is the inclusion of multitext_caret_cb to our 
+<p>The first change, as told above, is the inclusion of multitext_caret_cb to our 
 callbacks. In this callback we will make use of the parameter received by the 
 callback. First we retrieve the handle of <a href="../elem/iuplabel.html">
-<strong>IupLabel</strong></a> called lbl_curpos using
+<strong>IupLabel</strong></a> called lbl_statusbar using
 <a href="../func/iupgetdialogchild.html"><strong>IupGetDialogChild</strong></a> 
-passing the handle ih which came as a parameter of our callback. Next, we build 
-a string using lin and col parameters where the callback returns the cursor line 
-and collumn. Finally we set the label's TITLE as the string we just build. All 
-set. The callback is called every time the cursor moves inside the multitext and 
-display in the label its line and collumn.</p>
+passing the handle ih which came as a parameter of our callback. Next, we set 
+the label's TITLE by building 
+a string using lin and col parameters where the callback provides the caret line 
+and column position. </p>
 <p>From this new callback we will jump to main function where the next change 
-appears. Just after IupOpen you will find a call to
-<a href="../iupimagelib.html"><strong>IupImageLib</strong></a>. This function 
-will load the image library that will be used in our toolbar.</p>
-<p>A few lines after we will find our lbl_curpos declaration. This label will 
-play the role of our status bar. Following we will see some button declarations 
+appears. Just after IupOpen you will find a call to <a href="../iupimglib.html"><strong>IupImageLibOpen</strong></a>. This function 
+will load the image library, so we can use its images in our toolbar.</p>
+<p>A few lines after we will find our lbl_statusbar declaration. This label will 
+play the role of our status bar. It needs the EXPAND attribute set to HORIZONTAL 
+so it will occupy all the horizontal space inside the vbox. Following we will see some button declarations 
 (btn_open, btn_save and btn_find) and some calls to
 <a href="../func/iupsetattribute.html"><strong>IupSetAttribute</strong></a> 
 setting each buttons image. The images names can be found at
-<a href="../iupimagelib.html"><strong>IupImageLib</strong></a>. Then we notice 
-that our toolbar is nothing more then a <a href="../elem/iuphbox.html"><strong>
+the
+<a href="../iupimagelib.html"><strong>IupImageLib</strong></a> documentation. Then we notice 
+that our toolbar is nothing more than a <a href="../elem/iuphbox.html"><strong>
 IupHbox</strong></a> containing those buttons. Note, a few lines after, that we 
-set for the buttons the same callbacks set for the items. This is desireble 
-because the buttons do exactly the samething as the itens just representing a 
-short way to call open, save or find.</p>
-<p>Final change will be the inclusion of toolbar_hb and lbl_curpos in the vbox 
-that already had our multiline. Toolbar cames first because its a vbox and we 
-want it above the multiline. lbl_curpos goes after because we want it bellow the 
+set the buttons callbacks to the same callbacks set for the respective menu items. This is 
+feasible 
+because the buttons do exactly the same thing as the items just representing a 
+short way to call open, save or find. We also set the FLAT attribute for the 
+buttons so their border is removed and they will look like toolbar buttons.</p>
+<p>The final change will be the inclusion of toolbar_hb and lbl_statusbar in the vbox 
+that already had our multiline. The toolbar comes first because its a vbox and we 
+want it above the multiline. lbl_statusbar goes after because we want it bellow the 
 multiline. That's all. Our application now has both a toolbar and a status bar. 
 In the next section we will improve it even more adding hot keys to our menus.</p>
 <h3>3.6 Defining <a name="Hot_Keys">Hot Keys</a></h3>
 <p>Applications that has menus always present hotkeys to its users. IUP also 
-offers this resource. To define a hotkey you should use
+offers this resource. To define a hotkey you could use
 <a href="../elem/iupdialog.html"><strong>IupDialog</strong></a>'s callback
 <a href="../call/iup_k_any.html"><strong>K_ANY</strong></a>. This is a callback 
-common to a lot of iup elements and is called when a keyboard event occur. IUP 
-also offers a sugar sintaxe that allow you to call a specific callback for the 
-key combination you want to deal with. For example: you want to open a file if 
-user press Ctrl+O you just set a callback called K_cO.
+common to a lot of IUP elements and is called when a keyboard event occur. IUP 
+also offers a simple way that allow you to define a specific callback for the 
+key combination you want to deal with. For example if you want to show the file 
+Open selection dialog when the user presses Ctrl+O then you just set a callback called 
+"K_cO".
 <a href="../attrib/key.html"><strong>Keyboard Codes</strong></a> shows a 
 complete table with all keyboard codes available in IUP.</p>
-<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_6.c">example3_6.c</a></p>
 
-<iframe src="../../examples/tutorial/example3_6.c" name="example3_6" title="Example 11" marginheight="0" marginwidth="0">
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_6.c">example3_6.c</a></p>
+<iframe src="../../examples/tutorial/example3_6.c" name="example3_6" title="Example 3.6" marginheight="0" marginwidth="0">
 </iframe>
+<p class="example_image"><img alt="" src="example3_6.png"></p>
 
 <p>This example has not changed much. We just add "\tCtr+?" to each menu item 
-that has a hotkey. Character "\t" will take care of shift our hotkey to the 
+that has a hotkey. Character "\t" will take care of aligining our hotkey text to the 
 right and the rest of the string just tells the user which key combinations to 
 press. Note that "?" should replaced by the key you want.</p>
-<p>A few lines after we did a few calls to IupSetCallback passing callback names 
-using IUP sugar sintaxe mentioned above to deal with key pressed events. And we 
-are done. Thatś all we need to change to include hotkeys in our application.</p>
-<p>During this chapter we went from a 25 lines of code application that did 
-almost nothing to a usefull notepad with file read and write, text search, line 
-counting and other resources. In the next chapter we will see how to draw in the 
-screen and build a paint like application. </p>
+<p>A few lines after we did a few calls to IupSetCallback using key combinations 
+as callback names mentioned above to deal with key pressed events. That's all we need to change to include hotkeys in our application.</p>
+<p>Since we are improving the user keyboard experience, there is another feature 
+that we can use to aid users. Using the ampersand (&amp;) character in the menu item 
+text we define a key that can activate the menu item. The next character 
+following the ampersand will be the key. The main menu is reached using the 
+Alt+key combination, for instance Alt+F will activate the File menu, once the 
+menu is opened, use the 'O' key to activate the file Open menu item. Another 
+example is the Alt+F then 'X' key combination to exit the application, many 
+applications have this key combination enabled.</p>
 
-<h3>3.7 <a name="Recent_Config">Recent Files Menu and Configuration File</a> </h3>
+<h3>3.7 <a name="Recent_Config">Recent Files Menu and a Configuration File</a> </h3>
 <p>Many text editors offer a menu item that holds a list of recent files. We are 
 going to use a IUP resource called <a href="../func/iupconfig.html"><strong>
 IupConfig</strong></a> to implement this list and also store other configuration 
@@ -459,9 +463,9 @@ variable has a key name, a value and a group that it belongs to.</p>
 <strong>IupConfig</strong></a> demands the inclusion of header file iup_config.h.</p>
 
 <p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_7.c">example3_7.c</a></p>
-
-<iframe src="../../examples/tutorial/example3_7.c" name="example3_7" title="Example 12" marginheight="0" marginwidth="0">
+<iframe src="../../examples/tutorial/example3_7.c" name="example3_7" title="Example 3.7" marginheight="0" marginwidth="0">
 </iframe>
+<p class="example_image"><img alt="" src="example3_7.png"></p>
 
 <p>Note that in this new example we have included the iup_config.h header as 
 advised above. We are going to start this analysis from our main function. After 
@@ -523,6 +527,10 @@ the clipboard TEXT attribute and stores it in multitext VALUE
 build a notepad like application using a lot of IUP's resources. In our next 
 chapter we will introduce another Tecgraf library used to draw primitives over a 
 canvas element.</p>
+<p>During this chapter we went from a 25 lines of code application that did 
+almost nothing to a usefull notepad with file read and write, text search, line 
+counting and other resources. In the next chapter we will see how to draw in the 
+screen and build a paint like application. </p>
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>
 		<td align="left" class="tutorial_bottom"><a href="tutorial2.html">Previous/a></td>

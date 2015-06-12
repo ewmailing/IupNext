@@ -140,7 +140,7 @@ int item_open_action_cb(Ihandle* item_open)
   return IUP_DEFAULT;
 }
 
-int item_save_action_cb(Ihandle* item_saveas)
+int item_saveas_action_cb(Ihandle* item_saveas)
 {
   Ihandle* multitext = IupGetDialogChild(item_saveas, "MULTITEXT");
   Ihandle *filedlg = IupFileDlg();
@@ -397,7 +397,7 @@ int main(int argc, char **argv)
   item_about = IupItem("About...", NULL);
 
   IupSetCallback(item_open, "ACTION", (Icallback)item_open_action_cb);
-  IupSetCallback(item_saveas, "ACTION", (Icallback)item_save_action_cb);
+  IupSetCallback(item_saveas, "ACTION", (Icallback)item_saveas_action_cb);
   IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
   IupSetCallback(item_find, "ACTION", (Icallback)item_find_action_cb);
   IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
