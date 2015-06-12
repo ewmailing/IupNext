@@ -234,7 +234,8 @@ is a dynamically allocated pointer, <a href="../func/iupsetattribute.html">
 internally and not dependent on the given pointer.<p>Now 
 we are done at this dialog. 
 Simply call <A href="../func/iupdestroy.html"><strong>IupDestroy</strong></a>
-to remove filedlg from memory because we will not need it anymore.<p>Next there is another callback that 
+to remove filedlg from memory because we will not need it anymore.<p>Next there is another callback, 
+saveas_cb, that 
 will select a file name for saving the content of a file. It is not much 
 different from open by setting DIALOGTYPE to SAVE, so this time it will select a 
 file name that can be a new file, and we are going to save the multitext 
@@ -257,123 +258,110 @@ your application needs is not provided by IUP as a predefined dialog? That will 
 
 <h3>3.4 <a name="Custom_Dialogs">Custom Dialogs</a></h3>
 
-<p>We saw in the previous section that IUP provides predefined dialogs that are 
-common to most applications and using this dialogs will save a lot of developing 
+<p>We saw in the previous section that IUP provides predefined dialogs that can 
+be used by the applications to save a lot of developing 
 time. But if the dialog your application needs is not one of IUP's predefined 
-dialogs, it's time to build your own dialog. The good news is that you already 
+dialogs, then it's time to build your own dialog. The good news is that you already 
 made this when building your main dialog. The tricky part here is just how to 
 handle more then one dialog at the same time. </p>
-<p>For this we will add two items to our menu: Find and Go To. Find will search 
+<p>For this we will add two new items to our Edit menu: Find and Go To. Find will search 
 the multitext contents looking for a string and highlight it when found. It will 
-search for this string many times and also will be case sensitive. Go To will 
-send the cursor to a specific line in the text.</p>
+search for this string many times and the search can also be case sensitive. Go To will 
+position the caret to a specific line in the text.</p>
 <p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_4.c">example3_4.c</a></p>
 
 <iframe src="../../examples/tutorial/example3_4.c" name="example3_4" title="Example 9" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_4.png"></p>
 
-<p>First change is the inclusion of two C functions (str_compare and str_find) 
+<p>First change is the inclusion of two utility functions (str_compare and str_find) 
 that will be used to implement Find and are not object of this tutorial. If you 
-want to understand what is inside this functions take a closer look into the 
+want to understand what is inside these functions take a closer look into the 
 code.</p>
+<p>Then you will notice that several functions had their names changed from the 
+previous example code. We did that to illustrate the importance of function 
+nomenclature in a larger project, so that several callbacks can be easily 
+associated with their respective control. For instance, open_cb became 
+item_open_action_cb, saveas_cb became item_save_action_cb, and so on.</p>
 <p>Allow me to make a jump in our code and please refer now to 
-item_find_action_cb. This callback, despite been almost at the end of the code, 
-is responsible do build our custom dialog. In this dialog we will use some 
+the item_find_action_cb function. This callback, despite been almost at the end of the code, 
+is responsible to build one of our custom dialogs. In this dialog we will use some 
 elements that we already saw in previous sessions: a text field to receive the 
-string that the user wants to find, a button to find the next occurence of this 
-string, a button to close our find custom dialog, and two new IUP elements:
+string that the user wants to find, a button to find the next occurrence of this 
+string, a button to close our find dialog, and two new IUP elements:
 <a href="../elem/iuptoggle.html"><strong>IupToggle</strong></a> and
 <a href="../elem/iupfill.html"><strong>IupFill</strong></a>.</p>
 <p><a href="../elem/iuptoggle.html"><strong>IupToggle</strong></a> is a 
 two-state (on/off) button that, when selected, execute a callback. Toggles are 
 normally used to set flags. In this case, we used it to allow the user to decide 
-if he wants the search to be case sensitive or not.</p>
+if the search will be case sensitive or not.</p>
 <p><a href="../elem/iupfill.html"><strong>IupFill</strong></a> is a very 
 peculiar element. It is, as the name says, used to fill blank spaces inside our 
-dialog. Or, in other words, to position and align IUP elements. Best way to 
-understand IupFill is to think in it as a coil. If you put a
+dialog. Or, in other words, to position and align IUP elements. The best way to 
+understand IupFill is to think in it as a coil spring. If you put a
 <a href="../elem/iupfill.html"><strong>IupFill</strong></a>, inside a
 <a href="../elem/iuphbox.html"><strong>IupHbox</strong></a>, between to elements 
 it will expand pushing one to the left and the other to the right. Or if you put 
 it, in a <a href="../elem/iupvbox.html"><strong>IupVbox</strong></a>, above a 
-element, it will push the element all the way down. IupFill also has a SIZE 
-attribute. This will fix how much space will be taken. With experience we will 
+element, it will push the element all the way down. But IupFill also has a SIZE 
+attribute, that can be used to control how much space will be taken. With experience we will 
 find the correct way to define SIZES for <a href="../elem/iupfill.html"><strong>
 IupFill</strong></a> and for other elements as well. In our case,
 <a href="../elem/iupfill.html"><strong>IupFill</strong></a> is been used to push 
-button next and button close to the right size of our hbox. We also have some 
-callback associations as we have new elements and new callbacks.</p>
-<p>Note that our new custom dialog has a lot of new parameters set. DIALOGFRAME 
-will remove minbox, maxbox and resize from the corner of the dialog. 
-DEFAULTENTER is defining press ENTER will do the same effect of pressing the 
-button next_bt. DEFAULTESC works the same way for button close_bt and ESC key. 
+button Find Next and button Close to the right inside our hbox.</p>
+<p>Note that our new dialog has a lot of new parameters set. DIALOGFRAME 
+will remove minbox, maxbox and resize from the corner of the dialog, this will 
+provide a reduced functionality and an standard dialog box appearance. 
+DEFAULTENTER defines a button to be activated when the users presses ENTER, in 
+this case it will have the same effect of pressing the next_bt button. 
+DEFAULTESC works the same way for the ESC key activating the close_bt button. 
 Next the attribute PARENTALDIALOG is setting the dialog that holds item_find 
-(our main dialog) as the parent of our new dialog using
+(our main dialog) as the parent of our new dialog, by using
 <a href="../func/iupgetdialog.html"><strong>IupGetDialog</strong></a> which 
 returns the handle of the dialog that contains the element passed as parameter. 
-This will allow us to set the find dialog position at the center of the parent 
-dialog. Imagine if the user dragged our application a little to the right 
-because he wants to see another application while using ours. If we popup the 
-file dialog using IUP_CENTER the dialog will appear, at the center of the 
-screen, blocking the users view. This would be annoying. Using IUP_PARENTCENTER 
-or IUP_CURRENT garantees that the dialog will popup at the center of its parent 
-dialog and not blocking user's view.</p>
-<p>In the next two lines we are using a resource that IUP offers called create 
-new attributes. Each IUP element can hold as many attributes as you want. If 
-your element demands an attribute that is not on the manual, you can just set it 
-as we are doing here. We created a new attribute called MULTITEXT in our custom 
-dialog to store the multitext content and make it available to other callbacks. 
-Also, we created another new attribute called FIND_DIALOG in element find_item 
-so we can be able to reuse this dialog.</p>
-<p>Next we show our dialog using <a href="../func/iupshow.html"><strong>IupShow</strong></a> 
-and passing IUP_CURRENT to it. This will center the dialog acording to its 
+This will maintain the Find dialog always on top of the main dialog even if we 
+change the focus to the main dialog. It will also allow us to set the find 
+dialog position at the center of the parent dialog.</p>
+<p>In the next two lines we use custom attributes to store application pointers. 
+Each IUP element can hold as many custom attributes as you want. If your 
+application needs to store some information to be retrieved later, you can just 
+set it as we are doing here. We created a new attribute called MULTITEXT in the dialog to store the multitext element pointer and make it available to other callbacks. 
+Doing this we avoid the global attribute used in the previous example. Also, we created another new attribute called FIND_DIALOG in 
+the element find_item 
+so we will able to reuse this dialog. For all the times this function is called 
+the dialog is not created again, it is created only once.</p>
+<p>Next we show our dialog using <a href="../func/iupshowxy.html"><strong>IupShowXY</strong></a> 
+and pass IUP_CURRENT to it. This will center the dialog according to its 
 parent (main dialog as we defined above) in the first time and reuse the last 
-position in the next time.</p>
-<p>Now that we have built our find dialog, its time to build the callbacks that 
-will effectivelly do the job of find our string inside our multitext. First 
-thing you may notice in it should be a few calls </p>
-<p>Let's turn our attention to callback ind_next_action_cb now. This callback 
-is responsible to find the next occurence of our string inside the multiline and 
+position in the next time since the dialog will not be destroyed when closed.</p>
+<p>Now that we have built the Find dialog, its time to write the callbacks that 
+will effectively do the job to find the string inside our multitext. </p>
+<p>Let's turn our attention to the find_next_action_cb callback. This callback 
+is responsible to find the next occurrence of our string inside the multiline and 
 has a lot new function calls. We made a call to
 <a href="../func/iupgetdialogchild.html"><strong>IupGetDialogChild</strong></a>. 
 This function returns the identifier of the child element that has the NAME 
-attribute equals to the given value on the same dialog hierarchy. It's used to 
-retreive the multitext handle. Despite more complicated, retriving handles this 
-way, avoid to make then global variables. As next new thing is a call to
+attribute in the same dialog hierarchy. We use it to retrieve the multitext 
+handle. This is a more elegant form to retrieve handles instead of using a 
+custom attribute or making a global variable, but it works only for the same 
+dialog. The we retrieve the text to be found and the case sensitive flag from 
+the respective controls. The search is performed and if the result is positive 
+we will save the last found position in a custom attribute, and a call to
 <a href="../func/iupsetfocus.html"><strong>IupSetFocus</strong></a>. When we 
-poped up our find dialog we removed the focus from our multiline turning it to 
-the new dialog. This function is restoring the focus to the multiline when a 
-string is found. Next we find two calls to
+showed our Find dialog we moved the focus from our multiline to the new dialog. 
+This function is restoring the focus to the multitext. We then selects the text 
+on the multitext. Next we find two calls to
 <a href="../func/iuptextconvertpostolincol.html"><strong>
 IupTextConvertPosToLinCol</strong></a> and
 <a href="../func/iuptextconvertlincoltopos.html"><strong>
-IupTextConvertLinColToPos</strong></a>. They are here just to our knowledge as 
-we need only the position value stored in pos variable. First one receives a 
-position in a <a href="../elem/iuptext.html"><strong>IupText</strong></a> and 
-returns it in terms of line and collumn. Second one does the oposite.</p>
+IupTextConvertLinColToPos</strong></a>. They are used to compute the position we 
+use to scroll the multitext so the selection becomes visible.</p>
 <p>Beside next_bt, find dialog also has close_bt and it also demands a callback. 
-Find_close_action_cb closes the find custom dialog. In this callback we made a 
-call to <a href="../func/iuphide.html"><strong>IupHide</strong></a>. Once a 
-dialog is hidden, remain in memory, so that you can show them again. To destroy 
-dialogs, the <a href="../func/iupdestroy.html"><strong>IupDestroy</strong></a> 
-function must be called.</p>
-<p>As you may have notice we changed the way to name callbacks. Use names that 
-detail what the callback does and what item calls the callback is a good pratice. 
-We will start do do this now because our code is starting to get huge and work 
-with simple names may lead to confusion. So, open_cb now is called 
-item_open_action_cb and it receives a parameter that is the item_open ihandle. 
-The other previous callbacks will follow the same line of item_open_action_cb.</p>
-<p>Also there are some new callbacks like goto_ok_action_cb, 
-goto_cancel_action_cb, item_goto_action_cb, item_find_action_cb, that will 
-handle events for Find and Go To. There are no new function calls in this 
-callbacks except by the calls to <a href="../func/iupgetdialog.html"><strong>
-IupGetDialog</strong></a></p>
-<p>which returns the handle of the dialog that contains the element passed as 
-parameter.</p>
-<p>Go To custom dialog will work in the same way. If you understood how to 
-create find custom dialog you should be able to build Go To dialogs with no 
-difficult.</p>
+Find_close_action_cb closes the Find dialog. In this callback we made a 
+call to <a href="../func/iuphide.html"><strong>IupHide</strong></a>. When a 
+dialog is hidden, it is not destroyed, so you can show it again.</p>
+<p>The Go To dialog will work in the same way. If you understood how to 
+create the Find dialog you should be able to build the Go To dialogs.</p>
 
 <h3>3.5 <a name="Toolbar_Statusbar">Adding a Toolbar and a Statusbar</a></h3>
 <p>Now that we already saw how to use predefined dialogs or how to build our own 
@@ -518,7 +506,7 @@ responsible to handle the event of click in a recent file of our list. Inside
 it, we recover our multitext and use it to recover our IupConfig config_db. Once 
 we recovered it, we get the file name stored in the TITLE attribute of 
 item_recent and open it the same way we do in item_open_cb.</p>
-<p>Also note that both item_open_cb and item_save_cb should change the recent 
+<p>Also note that both item_open_cb and item_saveas_cb should change the recent 
 files list. So a call to IupConfigRecentUpdate is necessary to mantain our 
 recent files list updated.</p>
 
