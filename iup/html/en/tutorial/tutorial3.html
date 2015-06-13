@@ -522,25 +522,36 @@ item_recent and open it the same way we do in item_open_cb.</p>
 files list. So a call to IupConfigRecentUpdate is necessary to mantain our 
 recent files list updated.</p>
 
-<h3>3.8 <a name="Clipboard">Clipboard</a> Support, File Drag&amp;Drop, Command Line</h3>
+<h3>3.8 <a name="Clipboard">Clipboard</a> Support</h3>
 
 <p>Following we will find two callbacks that will handle copy and paste from Edit menu. Both are very short callbacks and use a resource 
 called <A href="../elem/iupclipboard.html"><strong>IupClipboard</strong></a> which creates an element that allows access to the clipboard. 
-Each clipboard should be destroyed using IupDestroy. You can use only one for the entire application because it does not store any data inside. 
-Or you can simply create and destroy every time you need to copy or paste. In this example we have choosed to create and destroy. copy_cb
-sets the attribute TEXT from clipboard to store the content of attribute SELECTEDTEXT from our multitext. Paste does the oposite. Retrives
-the clipboard TEXT attribute and stores it in multitext VALUE
+Each clipboard should be destroyed using IupDestroy. You can use only one for 
+the entire application because it does not store any data inside. Or you can 
+simply create and destroy every time you need to copy or paste, that's what we 
+did in our notepad. <span class="auto-style1">The copy_cb callback
+sets the attribute TEXT of the clipboard element to store the content of attribute SELECTEDTEXT from our multitext.</span> Paste does the 
+opposite, retrieves
+the clipboard TEXT attribute and stores it in the multitext using the VALUE 
+attribute.<p class="auto-style1"><strong>Falta</strong>: Cut, Copy, 
+Paste, Del, Select All, Find Next menu item (F3), 
+
+<h3>3.9 <a name="More_File_Management">More File Management</a> (Drag&amp;Drop, Command Line, 
+...)</h3>
 
 <p class="auto-style1"><strong>Falta</strong>: File New, File Save, Exit save 
-check, File name no TITLE, Find Next menu item (F3), Select All, Cut, Copy, 
-Paste, Del, DROPFILES_CB, argv[1]<p>That's all for chapter three. If you reached this lines you should be able to 
-build a notepad like application using a lot of IUP's resources. In our next 
+check, File name no TITLE, DROPFILES_CB, argv[1]<h3>3.10
+<a name="Final_Considerations">Final Considerations</a></h3>
+
+<p>That's all for chapter three. If you reached this lines you should be able to 
+build a simple but fully featured Notepad application using lots of IUP 
+resources. </p>
+<p>During this chapter we went from 30 lines of code to 600 lines. Just for our 
+simple notepad with file read and write, text search, line counting and other 
+resources. </p>
+<p>In our next 
 chapter we will introduce another Tecgraf library used to draw primitives over a 
-canvas element.</p>
-<p>During this chapter we went from a 25 lines of code application that did 
-almost nothing to a usefull notepad with file read and write, text search, line 
-counting and other resources. In the next chapter we will see how to draw in the 
-screen and build a paint like application. </p>
+canvas element to build a Paint application.</p>
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>
 		<td align="left" class="tutorial_bottom"><a href="tutorial2.html">Previous/a></td>
