@@ -493,9 +493,8 @@ except by the fact we will not add any menu items. They will be
 provided by a function that we will see soon. We positioned our recent_menu above the 
 item_exit menu item and bellow the <a href="../elem/iupseparator.html">
 <strong>IupSeparator</strong></a>.</p>
-<p>After the multitext element is also when the 
-application starts followed by a call to IupConfigRecentInit. This function is 
-resposible to create the recent_item and insert it at the menu passed as a 
+<p>After the menu is created there is call to <strong>IupConfigRecentInit</strong>. This function is 
+responsible to create the recent_item and insert it at the menu passed as a 
 parameter. As we passed our recent_menu, recent_item will be displayed at its 
 position. The other parameters this function receives, despite the config_db by 
 itself, are a callback item_recent_cb that will be called when the user selects 
