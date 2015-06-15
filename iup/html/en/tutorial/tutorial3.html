@@ -13,6 +13,9 @@
 .auto-style1 {
 	color: #FF0000;
 }
+.auto-style2 {
+	color: #000000;
+}
 </style>
 </head>
 <body>
@@ -494,32 +497,31 @@ provided by a function that we will see soon. We positioned our recent_menu abov
 item_exit menu item and bellow the <a href="../elem/iupseparator.html">
 <strong>IupSeparator</strong></a>.</p>
 <p>After the menu is created there is call to <strong>IupConfigRecentInit</strong>. This function is 
-responsible to create the recent_item and insert it at the menu passed as a 
-parameter. As we passed our recent_menu, recent_item will be displayed at its 
-position. The other parameters this function receives, despite the config_db by 
-itself, are a callback item_recent_cb that will be called when the user selects 
-a file in the recent list and the number of files what will be stored in the 
-list. In our example we choosed to store 10 files.</p>
-<p>Next line shows a call to IupConfigDialogShow that replaces IupShow when 
-using a IupConfig. This functions store and manage the position and size of a 
-dialog. So when the application is run again the dialog can be show at its last 
-position and size. Use the function IupConfigDialogShow to show the dialog 
-adjusting its size and position.</p>
-<p>Function IupConfigDialogClosed is used to save the last dialog position and 
-size when the dialog is about to be closed, usually inside the dialog CLOSE_CB 
-callback. Please refer to item_exit_action_cb to find this inclusion on our 
-code.</p>
-<p>Just before we close our application its necessary to call IupConfigSave to 
-save our configuration file. And now that it is saved we can destroy it.</p>
-<p>That's all for the main function which turns our attention to the callbacks. 
-Let's start with our brand new item_recent_cb. This callback, as said before, is 
-responsible to handle the event of click in a recent file of our list. Inside 
-it, we recover our multitext and use it to recover our IupConfig config_db. Once 
-we recovered it, we get the file name stored in the TITLE attribute of 
-item_recent and open it the same way we do in item_open_cb.</p>
-<p>Also note that both item_open_cb and item_saveas_cb should change the recent 
-files list. So a call to IupConfigRecentUpdate is necessary to mantain our 
+responsible to initialize the recent_menu items from the configuration file 
+entries. The item_recent_cb callback will be called when the user selects 
+a file in the recent list. And the function also defines the number of recent files what will be 
+stored and displayed. In our example we choose to store 10 files. Also note that both item_open_cb and item_saveas_cb should change the recent 
+files list. So a call to <strong>IupConfigRecentUpdate</strong> is necessary to 
+maintain our 
 recent files list updated.</p>
+<p>Next line shows a call to <strong>IupConfigDialogShow</strong> that replaces 
+<strong>IupShow/IupShowXY</strong>. This function will also show the dialog but 
+it will try to use the last 
+position and size stored in the configuration file. It can be used for any 
+application dialog, just use different names for each dialog.</p>
+<p>The function <strong>IupConfigDialogClosed</strong> is used to save the last dialog position and 
+size when the dialog is about to be closed, usually inside the dialog CLOSE_CB 
+callback or when the dialog is programmatically hidden. The CLOSE_CB callback is called when the user clicks on the dialog close button, usually a 
+'X' at the top right corner of the dialog. Here our dialog is closed by the item_exit_action_cb 
+callback, so we decided to also use this function as the CLOSE_CB callback and to call <strong>IupConfigDialogClosed</strong>. 
+Finally, since this callback also exists the application we use it to call
+<strong>IupConfigSave</strong> that will 
+save our configuration file, and now that it is saved we can destroy its handle 
+using <strong>IupDestroy</strong>.</p>
+<p>That's all for the main function so let's turn our attention to the item_recent_cb callback. This callback, as said before, is 
+responsible for handling the selection of a recent file at the menu_recent. Inside 
+it, we recover our config handle from a custom attribute in the dialog, then we get the file name 
+from the TITLE attribute of item_recent and open it the same way we do in item_open_cb.</p>
 
 <h3>3.8 <a name="Clipboard">Clipboard</a> Support</h3>
 
@@ -528,19 +530,33 @@ called <A href="../elem/iupclipboard.html"><strong>IupClipboard</strong></a> whi
 Each clipboard should be destroyed using IupDestroy. You can use only one for 
 the entire application because it does not store any data inside. Or you can 
 simply create and destroy every time you need to copy or paste, that's what we 
-did in our notepad. <span class="auto-style1">The copy_cb callback
-sets the attribute TEXT of the clipboard element to store the content of attribute SELECTEDTEXT from our multitext.</span> Paste does the 
+did in our notepad.<span class="auto-style2"> The copy_cb callback
+retrieves the SELECTEDTEXT attribute from our multitext and sets the TEXT 
+attribute of the clipboard element to store the text selection in the clipboard. P</span>aste does the 
 opposite, retrieves
 the clipboard TEXT attribute and stores it in the multitext using the VALUE 
 attribute.<p class="auto-style1"><strong>Falta</strong>: Cut, Copy, 
-Paste, Del, Select All, Find Next menu item (F3), 
+Paste, Del, Select All, Usar MENUOPEN_CB para habilitar/desabilitar Paste, Find Next menu item (F3), 
+
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_8.c">example3_8.c</a></p>
+<iframe src="../../examples/tutorial/example3_8.c" name="example3_8" title="Example 3.8" marginheight="0" marginwidth="0">
+</iframe>
+<p class="example_image"><img alt="" src="example3_8.png"></p>
 
 <h3>3.9 <a name="More_File_Management">More File Management</a> (Drag&amp;Drop, Command Line, 
 ...)</h3>
 
-<p class="auto-style1"><strong>Falta</strong>: File New, File Save, Exit save 
-check, File name no TITLE, DROPFILES_CB, argv[1]<h3>3.10
-<a name="Final_Considerations">Final Considerations</a></h3>
+<p class="auto-style1"><strong>Falta</strong>: Aproveitar o gancho da 
+MENUOPEN_CB para acrescentar open/exit/new save check, ai acrescentar File New, File Save 
+(não mostra dialogo, botão passa usar essa callback), e de quebra File name no TITLE, DROPFILES_CB, argv[1]. 
+Usar VALUE_CHANGED_CB para verificar se o arquivo lido ou novo, foi modificado.
+
+<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_9.c">example3_9.c</a></p>
+<iframe src="../../examples/tutorial/example3_9.c" name="example3_9" title="Example 3.9" marginheight="0" marginwidth="0">
+</iframe>
+<p class="example_image"><img alt="" src="example3_9.png"></p>
+
+<h3>3.10<a name="Final_Considerations">Final Considerations</a></h3>
 
 <p>That's all for chapter three. If you reached this lines you should be able to 
 build a simple but fully featured Notepad application using lots of IUP 
