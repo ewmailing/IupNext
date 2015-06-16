@@ -433,12 +433,12 @@ int main(int argc, char **argv)
   item_about = IupItem("About...", NULL);
 
   IupSetCallback(item_open, "ACTION", (Icallback)item_open_action_cb);
-  IupSetCallback(btn_open, "ACTION_CB", (Icallback)item_open_action_cb);
+  IupSetCallback(btn_open, "ACTION", (Icallback)item_open_action_cb);
   IupSetCallback(item_saveas, "ACTION", (Icallback)item_saveas_action_cb);
-  IupSetCallback(btn_save, "ACTION_CB", (Icallback)item_saveas_action_cb);
+  IupSetCallback(btn_save, "ACTION", (Icallback)item_saveas_action_cb);
   IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
   IupSetCallback(item_find, "ACTION", (Icallback)item_find_action_cb);
-  IupSetCallback(btn_find, "ACTION_CB", (Icallback)item_find_action_cb);  
+  IupSetCallback(btn_find, "ACTION", (Icallback)item_find_action_cb);  
   IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
   IupSetCallback(item_font, "ACTION", (Icallback)item_font_action_cb);
   IupSetCallback(item_about, "ACTION", (Icallback)item_about_action_cb);
