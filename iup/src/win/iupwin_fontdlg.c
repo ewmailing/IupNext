@@ -21,7 +21,15 @@
 #include "iupwin_str.h"
 
 
+#ifndef CF_NOSCRIPTSEL
+#define CF_NOSCRIPTSEL             0x00800000L
+#endif
+
 #define IUP_FONTFAMILYCOMBOBOX        0x0470
+#define IUP_FONTCOLORLTEXT            0x0443
+#define IUP_FONTCOLORCOMBOBOX         0x0473
+#define IUP_FONTSCRIPTLTEXT           0x0446
+#define IUP_FONTSCRIPTCOMBOBOX        0x0474
 
 static UINT_PTR winFontDlgHookProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -44,6 +52,23 @@ static UINT_PTR winFontDlgHookProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM 
 
     hWndItem = GetDlgItem(hWnd, IUP_FONTFAMILYCOMBOBOX);
     SetFocus(hWndItem);
+
+    if (!iupAttribGetBoolean(ih, "SHOWCOLOR"))
+    {
+      hWndItem = GetDlgItem(hWnd, IUP_FONTCOLORLTEXT);
+      if (hWndItem)
+        ShowWindow(hWndItem, SW_HIDE);
+      hWndItem = GetDlgItem(hWnd, IUP_FONTCOLORCOMBOBOX);
+      if (hWndItem)
+        ShowWindow(hWndItem, SW_HIDE);
+    }
+
+    hWndItem = GetDlgItem(hWnd, IUP_FONTSCRIPTLTEXT);
+    if (hWndItem)
+      ShowWindow(hWndItem, SW_HIDE);
+    hWndItem = GetDlgItem(hWnd, IUP_FONTSCRIPTCOMBOBOX);
+    if (hWndItem)
+      ShowWindow(hWndItem, SW_HIDE);
   }
   return 0;
 }
@@ -101,10 +126,10 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   
   choosefont.hwndOwner = parent;
   choosefont.lpLogFont = &logfont;
-  choosefont.Flags = CF_SCREENFONTS | CF_EFFECTS | CF_INITTOLOGFONTSTRUCT;
+  choosefont.Flags = CF_SCREENFONTS | CF_EFFECTS | CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL;
   choosefont.lCustData = (LPARAM)ih;
 
-  if (!iupwinIsWin8OrNew() || iupAttribGetBoolean(ih, "WIN8_FONT_HOOK"))
+ /* if (!iupwinIsWin8OrNew() || iupAttribGetBoolean(ih, "WIN8_FONT_HOOK")) -- apparently not necessary */
   {
     choosefont.lpfnHook = (LPCFHOOKPROC)winFontDlgHookProc;
     choosefont.Flags |= CF_ENABLEHOOK;
@@ -170,4 +195,5 @@ void iupdrvFontDlgInitClass(Iclass* ic)
 
   /* IupFontDialog Windows Only */
   iupClassRegisterAttribute(ic, "COLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }
