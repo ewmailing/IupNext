@@ -449,7 +449,7 @@ static int gtkSubmenuSetImageAttrib(Ihandle* ih, const char* value)
     return 0;
 }
 
-static int motSubmenuMapMethod(Ihandle* ih)
+static int gtkSubmenuMapMethod(Ihandle* ih)
 {
   int pos;
 
@@ -482,7 +482,7 @@ static int motSubmenuMapMethod(Ihandle* ih)
 void iupdrvSubmenuInitClass(Iclass* ic)
 {
   /* Driver Dependent Class functions */
-  ic->Map = motSubmenuMapMethod;
+  ic->Map = gtkSubmenuMapMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;
 
   /* Common */
