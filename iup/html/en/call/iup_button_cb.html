@@ -61,6 +61,11 @@ returned the action is ignored (this is system dependent).</p>
 behavior use the 
 ACTION 
   callback of the <b>IupButton</b>.</p>
+<p>For a single click the callback is called twice, one for pressed=1 and one 
+for pressed=0. Only after both calls the ACTION callback is called. In Windows, 
+if a dialog is shown or popup in any situation there could be unpredictable 
+results because the native system still has processing to be done even after the 
+callback is called.</p>
 <p>A double click is preceded by two single clicks, one for pressed=1 and one 
 for pressed=0, and followed by a press=0, all three without the double click 
 flag set. In GTK, it is preceded by an additional two single clicks sequence. 
