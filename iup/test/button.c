@@ -254,7 +254,7 @@ static int active_cb(Ihandle *ih)
 static void set_callbacks(Ihandle* button)
 {
   IupSetCallback(button, "ACTION",       action_cb);
-//  IupSetCallback(button, "BUTTON_CB",    (Icallback)button_cb);
+  IupSetCallback(button, "BUTTON_CB",    (Icallback)button_cb);
 
   //IupSetCallback(button, "K_ANY",        (Icallback)k_any);
   IupSetCallback(button, "HELP_CB",      (Icallback)help_cb);
@@ -262,7 +262,7 @@ static void set_callbacks(Ihandle* button)
 //  IupSetCallback(button, "GETFOCUS_CB",  (Icallback)getfocus_cb); 
 //  IupSetCallback(button, "KILLFOCUS_CB", (Icallback)killfocus_cb);
   IupSetCallback(button, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
-//  IupSetCallback(button, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+  IupSetCallback(button, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 }
 
 static int show_cb(Ihandle *ih, int state)
