@@ -27,7 +27,7 @@
 <h3>Control Class Implementation</h3>
 <p>The function that creates the class will (1) initialize a base class, then (2) fill its configuration parameters, 
   (3) set the class methods, (4) register the callbacks and (5) register the attributes. For example:</p>
-<pre>Iclass* iupXxxGetClass(void)
+<pre>Iclass* iupXxxNewClass(void)
 {
   /* (1) - initialize the class */
   <a href="../doxygen/structIclass__.html">Iclass</a>* ic = <a href="../doxygen/group__iclass.html">iupClassNew</a>(NULL); 
@@ -37,7 +37,8 @@
   ic-&gt;format = &quot;&quot;; /* no creation parameters */
   ic-&gt;nativetype = IUP_TYPECONTROL;
   ic-&gt;childtype = IUP_CHILDNONE;
-  ic-&gt;interactive = 1;
+  ic-&gt;is_interactive = 1;
+  ic-&gt;has_attrib_id = 0;
 
   /* (3) - class methods */
   ic-&gt;New = iupXxxGetClass;
@@ -56,6 +57,7 @@
   iupClassRegisterCallback(ic, &quot;ENTERWINDOW_CB&quot;, &quot;&quot;);
   iupClassRegisterCallback(ic, &quot;LEAVEWINDOW_CB&quot;, &quot;&quot;);
   iupClassRegisterCallback(ic, &quot;K_ANY&quot;, &quot;i&quot;); 
+  ...
 
   /* (5) - attributes */
 
@@ -72,6 +74,7 @@
 
   /* only the default value. */
   iupClassRegisterAttribute(ic, &quot;BORDER&quot;, NULL, NULL, &quot;YES&quot;, IUP_NOT_MAPPED, 0); 
+  ...
 
   return ic;
 }</pre>
