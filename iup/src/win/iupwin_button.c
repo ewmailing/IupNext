@@ -561,6 +561,9 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     {
       /* Process BUTTON_CB */
       iupwinButtonUp(ih, msg, wp, lp);
+      
+      if (!iupObjectCheck(ih))
+        break;
 
       if (msg==WM_LBUTTONUP)
       {
@@ -581,7 +584,7 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
 
       if (!iupwinIsVistaOrNew() && iupObjectCheck(ih))
       {
-        /* TIPs desapear forever after a button click in XP,
+        /* TIPs disappear forever after a button click in XP,
            so we force an update. */
         char* tip = iupAttribGet(ih, "TIP");
         if (tip)
