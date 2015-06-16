@@ -152,7 +152,7 @@ void iupwinTrackMouseLeave(Ihandle* ih)
   TrackMouseEvent(&mouse);
 }
 
-void iupwinTrackMouseHover(Ihandle* ih)
+static void winTrackMouseHoverLeave(Ihandle* ih)
 {
   TRACKMOUSEEVENT mouse;
   mouse.cbSize = sizeof(TRACKMOUSEEVENT);
@@ -160,21 +160,6 @@ void iupwinTrackMouseHover(Ihandle* ih)
   mouse.hwndTrack = ih->handle;
   mouse.dwHoverTime = 10;
   TrackMouseEvent(&mouse);
-}
-
-static Ihandle* iupwinGetTrackMouseLeave(void)
-{
-  Ihandle* ih = NULL;
-
-  TRACKMOUSEEVENT mouse;
-  mouse.cbSize = sizeof(TRACKMOUSEEVENT);
-  mouse.dwFlags = TME_QUERY | TME_LEAVE;
-  TrackMouseEvent(&mouse);
-
-  if (mouse.hwndTrack)
-    ih = iupwinHandleGet(mouse.hwndTrack);
-
-  return ih;
 }
 
 void iupwinMergeStyle(Ihandle* ih, DWORD old_mask, DWORD value)
@@ -254,11 +239,10 @@ int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
   case WM_MOUSELEAVE:
     {
       Icallback leave_cb = IupGetCallback(ih, "LEAVEWINDOW_CB");
-
-      iupAttribSet(ih, "_IUPWIN_ENTERWIN", NULL);
-
       if (leave_cb)
         leave_cb(ih);
+
+      iupAttribSet(ih, "_IUPWIN_ENTERWIN", NULL);  /* enable tracking again */
       break;
     }
   case WM_MOUSEHOVER:
@@ -270,12 +254,19 @@ int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
     }
   case WM_MOUSEMOVE:
     {
+      /* set tracking only once, but only until track message is processed. */
       if (!iupAttribGet(ih, "_IUPWIN_ENTERWIN"))
       {
-        /* must be called so WM_MOUSEHOVER and WM_MOUSELEAVE will be called */
-        iupwinTrackMouseHover(ih);
+        /* set tracking only if enter or leave callbacks are defined */
+        Icallback enter_cb = IupGetCallback(ih, "ENTERWINDOW_CB");
+        Icallback leave_cb = IupGetCallback(ih, "LEAVEWINDOW_CB");
+        if (enter_cb || leave_cb)
+        {
+          /* must be called so WM_MOUSEHOVER and WM_MOUSELEAVE will be called */
+          winTrackMouseHoverLeave(ih);
 
-        iupAttribSet(ih, "_IUPWIN_ENTERWIN", "1");
+          iupAttribSet(ih, "_IUPWIN_ENTERWIN", "1");
+        }
       }
       break;
     }
