@@ -46,7 +46,7 @@ clipboard() [in LED]</pre>
 
 <p><strong>ADDFORMAT</strong> (write-only): register a custom format for 
 clipboard data given its name. The registration remains valid even after the 
-element is destroyed. (since 3.7)</p>
+element is destroyed. A new format must be added before used. (since 3.7)</p>
 
 
 <p><strong>EMFAVAILABLE</strong> (read-only) [Windows Only]: informs if there is a 
@@ -65,8 +65,7 @@ When retrieved FORMATDATASIZE will be set and available after data is retrieved.
 the FORMATDATA attribute processing. (since 3.7)</p>
 
 
-  <p><strong>IMAGE</strong> (write-only): name of an image to copy (set) or 
-	paste (get), to or from the clipboard. If set to NULL clears the clipboard 
+  <p><strong>IMAGE</strong> (write-only): name of an image to copy to the clipboard. If set to NULL clears the clipboard 
   data. (GTK 2.6)</p>
 <p><strong>IMAGEAVAILABLE</strong> (read-only): informs if there is an image 
 available at the clipboard. (GTK 2.6)</p>
