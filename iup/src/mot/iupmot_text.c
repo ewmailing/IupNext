@@ -928,7 +928,7 @@ static void motTextKeyPressEvent(Widget w, Ihandle *ih, XKeyEvent *evt, Boolean 
   if (*cont == False)
     return;
 
-  if (evt->state & ControlMask && !(state & Mod1Mask || state & Mod5Mask))   /* Ctrl but NOT Alt */
+  if (evt->state & ControlMask && !(evt->state & Mod1Mask || evt->state & Mod5Mask))   /* Ctrl but NOT Alt */
   {
     KeySym motcode = iupmotKeycodeToKeysym(evt);
     if (motcode == XK_c || motcode == XK_x || motcode == XK_v || motcode == XK_a)

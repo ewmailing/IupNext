@@ -274,12 +274,14 @@ void ToggleTest(void)
     IupVbox(
       toggle1, 
       toggle2, 
-      toggle3, 
+      //IupSetAttributes(IupBackgroundBox(toggle3), "BGCOLOR=\"255 0 0\""), 
+      toggle3,
       toggle7, 
       toggle9, 
       NULL), 
     IupFrame(IupRadio(IupVbox(
-      toggle4, 
+      //IupSetAttributes(IupBackgroundBox(toggle4), "BGCOLOR=\"255 0 0\""),
+      toggle4,
       toggle5, 
       toggle6, 
       toggle8, 

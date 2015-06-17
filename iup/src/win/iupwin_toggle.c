@@ -30,12 +30,18 @@
 
 
 
-void iupdrvToggleAddCheckBox(int *x, int *y)
+void iupdrvToggleAddCheckBox(int *x, int *y, const char* str)
 {
-  (*x) += 16+8;
-  if (!iupwin_comctl32ver6)
-    (*x) += 4;
+  (*x) += 16;
   if ((*y) < 16) (*y) = 16; /* minimum height */
+
+  if (str && str[0]) /* add spacing between check box and text */
+  {
+    (*x) += 8;
+
+    if (!iupwin_comctl32ver6)
+      (*x) += 4;
+  }
 }
 
 static int winToggleGetCheck(Ihandle* ih)

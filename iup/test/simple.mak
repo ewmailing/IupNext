@@ -21,5 +21,4 @@ USE_STATIC = Yes
 IUP = ..
 
 #USE_CD = Yes
-#SRC += sample.c
-SRC += canvas.c
+SRC += toggle.c

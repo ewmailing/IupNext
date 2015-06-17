@@ -30,11 +30,15 @@
 #include "iupmot_color.h"
 
 
-void iupdrvToggleAddCheckBox(int *x, int *y)
+void iupdrvToggleAddCheckBox(int *x, int *y, const char* str)
 {
-  (*x) += 15+6+3;
-  if ((*y) < 15+6) (*y) = 12+6; /* minimum height */
-  (*y) += 6;
+  /* has margins too */
+  (*x) += 3+15+3;
+  if ((*y) < 3+15+3) (*y) = 3+15+3; /* minimum height */
+  else (*y) += 3+3;
+
+  if (str && str[0]) /* add spacing between check box and text */
+    (*x) += 4;
 }
 
 
