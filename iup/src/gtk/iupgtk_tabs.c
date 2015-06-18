@@ -184,20 +184,22 @@ static int gtkTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
 
 static int gtkTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
 {
+  GtkWidget* tab_image;
   Ihandle* child = IupGetChild(ih, pos);
   if (child)
     iupAttribSetStr(child, "TABIMAGE", value);
 
-  if (value)
+  tab_image = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABIMAGE");
+  if (tab_image)
   {
-    Ihandle* child = IupGetChild(ih, pos);
-    GtkWidget* tab_image = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABIMAGE");
-    if (tab_image)
+    if (value)
     {
       GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0);
       if (pixbuf)
         gtk_image_set_from_pixbuf((GtkImage*)tab_image, pixbuf);
     }
+    else
+      gtk_image_set_from_pixbuf((GtkImage*)tab_image, NULL);
   }
   return 1;
 }

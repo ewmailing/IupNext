@@ -302,20 +302,22 @@ static int motTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
 
 static int motTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
 {
+  Widget tab_button;
   Ihandle* child = IupGetChild(ih, pos);
   if (child)
     iupAttribSetStr(child, "TABIMAGE", value);
 
-  if (value)
+  tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
+  if (tab_button)
   {
-    Ihandle* child = IupGetChild(ih, pos);
-    Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
-    if (tab_button)
+    if (value)
     {
       Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
       if (pixmap)
         XtVaSetValues(tab_button, XmNlabelPixmap, pixmap, NULL);
     }
+    else
+      XtVaSetValues(tab_button, XmNlabelPixmap, NULL, NULL);
   }
   return 1;
 }

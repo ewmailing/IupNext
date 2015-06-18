@@ -672,23 +672,25 @@ static int winTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
 
 static int winTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
 {
+  int p;
   Ihandle* child = IupGetChild(ih, pos);
   if (child)
     iupAttribSetStr(child, "TABIMAGE", value);
 
-  if (value)
+  p = winTabsPosFixToWin(ih, pos);
+  if (p >= 0)
   {
-    int p = winTabsPosFixToWin(ih, pos);
-    if (p >= 0)
-    {
-      TCITEM tie;
+    TCITEM tie;
 
-      tie.mask = TCIF_IMAGE;
+    tie.mask = TCIF_IMAGE;
+    if (value)
       tie.iImage = winTabsGetImageIndex(ih, value);
+    else
+      tie.iImage = -1;
 
-      SendMessage(ih->handle, TCM_SETITEM, p, (LPARAM)&tie);
-    }
+    SendMessage(ih->handle, TCM_SETITEM, p, (LPARAM)&tie);
   }
+
   return 1;
 }
 
