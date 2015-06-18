@@ -543,8 +543,9 @@ selecting all the text inside the multitext.
 OPEN_CB callback. It will set the cut, paste, copy and delete items as active or inactive depending on some conditions. First 
 it is
 necessary to obtain the handles of these items. We use the NAME attribute of each item 
-and the <strong>IupGetDialogChild</strong> function for this propose, just like 
-we did before for the multitext. Then we test if there is text available in the clipboard calling  <A href="../func/iupdestroy.html">
+and the <strong><a href="../func/iupgetdialogchild.html">IupGetDialogChild</a></strong> function for this propose, just like 
+we did before for the multitext. Then we test if there is text available in the clipboard calling
+<a href="../func/iupgetattributes.html">
 <strong>IupGetInt</strong></a>(clipboard, "TEXTAVAILABLE"). Its a short way to test a boolean return value without having to compare strings 
 with "YES" or "NO". So, if it returns 0 means there is no text in the clipboard, or in other words, there is nothing to paste. Item paste then
 should be disable setting ACTIVE to "NO". Otherwise, the user should be able to paste and we should set ACTIVE to "YES". The other items follow 
