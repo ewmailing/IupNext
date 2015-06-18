@@ -13,9 +13,6 @@
 .auto-style1 {
 	color: #FF0000;
 }
-.auto-style2 {
-	color: #000000;
-}
 </style>
 </head>
 <body>
@@ -343,7 +340,7 @@ position in the next time since the dialog will not be destroyed when closed.</p
 <p>Now that we have built the Find dialog, its time to write the callbacks that 
 will effectively do the job to find the string inside our multitext. </p>
 <p>Let's turn our attention to the find_next_action_cb callback. This callback 
-is responsible to find the next occurrence of our string inside the multiline and 
+is responsible to find the next occurrence of our string inside the multitext and 
 has a lot new function calls. We made a call to
 <a href="../func/iupgetdialogchild.html"><strong>IupGetDialogChild</strong></a>. 
 This function returns the identifier of the child element that has the NAME 
@@ -354,7 +351,7 @@ dialog. The we retrieve the text to be found and the case sensitive flag from
 the respective controls. The search is performed and if the result is positive 
 we will save the last found position in a custom attribute, and a call to
 <a href="../func/iupsetfocus.html"><strong>IupSetFocus</strong></a>. When we 
-showed our Find dialog we moved the focus from our multiline to the new dialog. 
+showed our Find dialog we moved the focus from our multitext to the new dialog. 
 This function is restoring the focus to the multitext. We then selects the text 
 on the multitext. Next we find two calls to
 <a href="../func/iuptextconvertpostolincol.html"><strong>
@@ -422,9 +419,9 @@ because the buttons do exactly the same thing as the items just representing a
 short way to call open, save or find. We also set the FLAT attribute for the 
 buttons so their border is removed and they will look like toolbar buttons.</p>
 <p>The final change will be the inclusion of toolbar_hb and lbl_statusbar in the vbox 
-that already had our multiline. The toolbar comes first because its a vbox and we 
-want it above the multiline. lbl_statusbar goes after because we want it bellow the 
-multiline. That's all. Our application now has both a toolbar and a status bar. 
+that already had our multitext. The toolbar comes first because its a vbox and we 
+want it above the multitext. lbl_statusbar goes after because we want it bellow the 
+multitext. That's all. Our application now has both a toolbar and a status bar. 
 In the next section we will improve it even more adding hot keys to our menus.</p>
 <h3>3.6 Defining <a name="Hot_Keys">Hot Keys</a></h3>
 <p>Applications that has menus always present hotkeys to its users. IUP also 
@@ -525,18 +522,34 @@ from the TITLE attribute of item_recent and open it the same way we do in item_o
 
 <h3>3.8 <a name="Clipboard">Clipboard</a> Support</h3>
 
-<p>Following we will find two callbacks that will handle copy and paste from Edit menu. Both are very short callbacks and use a resource 
-called <A href="../elem/iupclipboard.html"><strong>IupClipboard</strong></a> which creates an element that allows access to the clipboard. 
-Each clipboard should be destroyed using IupDestroy. You can use only one for 
-the entire application because it does not store any data inside. Or you can 
-simply create and destroy every time you need to copy or paste, that's what we 
-did in our notepad.<span class="auto-style2"> The copy_cb callback
-retrieves the SELECTEDTEXT attribute from our multitext and sets the TEXT 
-attribute of the clipboard element to store the text selection in the clipboard. P</span>aste does the 
-opposite, retrieves
-the clipboard TEXT attribute and stores it in the multitext using the VALUE 
-attribute.<p class="auto-style1"><strong>Falta</strong>: Cut, Copy, 
-Paste, Del, Select All, Usar MENUOPEN_CB para habilitar/desabilitar Paste, Find Next menu item (F3), 
+<p>Following we will find some callbacks that handle copy, cut, paste, delete and select all 
+of new items added to the Edit menu and a callback to
+manage activation and deactivation of these items. All are very short callbacks.</p>
+
+<p>item_copy_action_cb, item_paste_action_cb and item_cut_action_cb use a resource called <A href="../elem/iupclipboard.html">
+<strong>IupClipboard</strong></a> which creates an element that allows access to the clipboard. Each <A href="../elem/iupclipboard.html">
+<strong>IupClipboard</strong></a> should be destroyed using <A href="../func/iupdestroy.html"><strong>IupDestroy</strong></a>. You can use 
+only one for the entire application because it does not store any data inside, or you can simply create and destroy every time you need to 
+copy or paste, that's how we did in our notepad. The item_copy_action_cb callback retrieves the SELECTEDTEXT attribute from our multitext 
+and sets the clipboard TEXT attribute to copy the text selection. item_paste_action_cb retrieves the clipboard TEXT attribute and insert 
+it (paste) in the multitext, where the cursor is positioned, using the INSERT attribute. item_cut_action_cb is almost the same code as copy except 
+by the fact that it sets attribute SELECTEDTEXT to "" removing the selected text from the 
+multitext. item_delete_action_cb does the same as 
+cut, but without using the clipboard. item_select_all_cb just set the attribute SELECTION to ALL 
+selecting all the text inside the multitext.
+</p>
+
+<p>Another callback was created to deal with the initialization of our new menu items. edit_menu_open_cb is associated to the edit_menu 
+OPEN_CB callback. It will set the cut, paste, copy and delete items as active or inactive depending on some conditions. First 
+it is
+necessary to obtain the handles of these items. We use the NAME attribute of each item 
+and the <strong>IupGetDialogChild</strong> function for this propose, just like 
+we did before for the multitext. Then we test if there is text available in the clipboard calling  <A href="../func/iupdestroy.html">
+<strong>IupGetInt</strong></a>(clipboard, "TEXTAVAILABLE"). Its a short way to test a boolean return value without having to compare strings 
+with "YES" or "NO". So, if it returns 0 means there is no text in the clipboard, or in other words, there is nothing to paste. Item paste then
+should be disable setting ACTIVE to "NO". Otherwise, the user should be able to paste and we should set ACTIVE to "YES". The other items follow 
+the same idea but this time checking the content of the attribute SELECTEDTEXT. If there is nothing selected, disable cut, copy and delete 
+items. Otherwise, enable all items.</p>
 
 <p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_8.c">example3_8.c</a></p>
 <iframe src="../../examples/tutorial/example3_8.c" name="example3_8" title="Example 3.8" marginheight="0" marginwidth="0">
