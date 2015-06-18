@@ -263,7 +263,7 @@ void ToggleTest(void)
   IupSetAttribute(toggle8, "NAME", "8");
 //  IupSetAttribute(toggle4, "FGCOLOR", "0 0 255");         
   IupSetAttribute(toggle5, "BGCOLOR", "255 0 0");         
-  IupSetAttribute(toggle8, "FONT",    "COURIER_BOLD_14"); 
+  IupSetAttribute(toggle8, "FONT",    "Courier, Bold 14"); 
   IupSetAttribute(toggle9, "3STATE",  "YES");             
   IupSetAttribute(toggle6, "TIP", "Toggle Tip");
   IupSetAttribute(toggle7, "RIGHTBUTTON", "YES");
