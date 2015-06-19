@@ -45,6 +45,7 @@ IUP = ../../..
 #SRC = message.c
 #SRC = multiline1.c
 #SRC = multiline2.c
+SRC = matrixlist.c
 #SRC = progressbar.c
 #SRC = radio.c
 #SRC = sample.c
@@ -76,8 +77,8 @@ IUP = ../../..
 
 #LIBS = cdcontextplus gdiplus
 
-USE_OPENGL = Yes
-SRC = glcanvas.c
+#USE_OPENGL = Yes
+#SRC = glcanvas.c
 
 #IUPWEB_SAMPLE=Yes
 ifdef IUPWEB_SAMPLE

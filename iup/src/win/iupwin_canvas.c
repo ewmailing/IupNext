@@ -93,13 +93,11 @@ static int winCanvasSetDXAttrib(Ihandle* ih, const char *value)
       winCanvasSetScrollInfo(ih->handle, IUP_SB_MIN, IUP_SB_MAX, iposx, ipagex, SB_HORZ);
       if (iupAttribGetInt(ih, "XHIDDEN"))
         ShowScrollBar(ih->handle, SB_HORZ, TRUE);
-
-      /* update position because it could be corrected */
-      iupCanvasCalcScrollRealPos(xmin, xmax, &posx, 
-                                 IUP_SB_MIN, IUP_SB_MAX, ipagex, &iposx);
-
       iupAttribSet(ih, "XHIDDEN", "NO");
 
+      /* update position because it could have being changed */
+      iupCanvasCalcScrollRealPos(xmin, xmax, &posx, 
+                                 IUP_SB_MIN, IUP_SB_MAX, ipagex, &iposx);
       ih->data->posx = (float)posx;
     }
   }
@@ -146,15 +144,14 @@ static int winCanvasSetDYAttrib(Ihandle* ih, const char *value)
       EnableScrollBar(ih->handle, SB_VERT, ESB_ENABLE_BOTH);
 
       winCanvasSetScrollInfo(ih->handle, IUP_SB_MIN, IUP_SB_MAX, iposy, ipagey, SB_VERT);
+
       if (iupAttribGetInt(ih, "YHIDDEN"))
         ShowScrollBar(ih->handle, SB_VERT, TRUE);
-
-      /* update position because it could be corrected */
-      iupCanvasCalcScrollRealPos(ymin, ymax, &posy, 
-                                 IUP_SB_MIN, IUP_SB_MAX, ipagey, &iposy);
-
       iupAttribSet(ih, "YHIDDEN", "NO");
 
+      /* update position because it could have being changed */
+      iupCanvasCalcScrollRealPos(ymin, ymax, &posy,
+                                 IUP_SB_MIN, IUP_SB_MAX, ipagey, &iposy);
       ih->data->posy = (float)posy;
     }
   }
@@ -432,6 +429,15 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     }
   case WM_SIZE:
     {
+      if (ih->data->sb & IUP_SB_HORIZ && 
+          iupAttribGetBoolean(ih, "XAUTOHIDE") && 
+          !iupAttribGetInt(ih, "XHIDDEN"))
+        ShowScrollBar(ih->handle, SB_HORZ, TRUE);  /* force show during resize */
+      if (ih->data->sb & IUP_SB_VERT && 
+          iupAttribGetBoolean(ih, "YAUTOHIDE") &&
+          !iupAttribGetInt(ih, "YHIDDEN"))
+        ShowScrollBar(ih->handle, SB_VERT, TRUE);    /* force show during resize */
+
       IFnii cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
       if (cb && !(ih->data->inside_resize))
       {
