@@ -429,6 +429,8 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     }
   case WM_SIZE:
     {
+      IFnii cb;
+
       if (ih->data->sb & IUP_SB_HORIZ && 
           iupAttribGetBoolean(ih, "XAUTOHIDE") && 
           !iupAttribGetInt(ih, "XHIDDEN"))
@@ -438,7 +440,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
           !iupAttribGetInt(ih, "YHIDDEN"))
         ShowScrollBar(ih->handle, SB_VERT, TRUE);    /* force show during resize */
 
-      IFnii cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
+      cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
       if (cb && !(ih->data->inside_resize))
       {
         /* w=LOWORD (lp), h=HIWORD(lp) can not be used because an invalid size 
