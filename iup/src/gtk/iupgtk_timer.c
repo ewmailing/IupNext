@@ -28,8 +28,15 @@ static gboolean gtkTimerProc(gpointer data)
     return FALSE;
 
   cb = IupGetCallback(ih, "ACTION_CB");
-  if (cb && cb(ih)==IUP_CLOSE)
-    IupExitLoop();
+  if (cb)
+  {
+    long long end = g_get_monotonic_time();
+    long long start = iupTimerGetLongLong(ih, "STARTCOUNT");
+    iupAttribSetInt(ih, "TIMEDELAY", (int)(end - start));
+
+    if (cb(ih) == IUP_CLOSE)
+      IupExitLoop();
+  }
 
   return TRUE;
 }
@@ -43,7 +50,14 @@ void iupdrvTimerRun(Ihandle *ih)
   
   time_ms = iupAttribGetInt(ih, "TIME");
   if (time_ms > 0)
+  {
+    long long start;
+
     ih->serial = g_timeout_add(time_ms, gtkTimerProc, (gpointer)ih);
+
+    start = (long long)g_get_monotonic_time();
+    iupAttribSetStrf(ih, "STARTCOUNT", "%lld", start);
+  }
 }
 
 void iupdrvTimerStop(Ihandle* ih)

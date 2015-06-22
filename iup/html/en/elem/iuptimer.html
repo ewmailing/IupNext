@@ -52,7 +52,9 @@ timer() [in LED]</pre>
 
 <p><strong>ACTION_CB</strong>: 
   Called every time the defined time interval is reached. To stop the callback 
-from being called simply stop de timer with RUN=NO.</p>
+from being called simply stop de timer with RUN=NO. Inside the callback the 
+attribute TIMEDELAY returns the time delayed since the timer was started (since 
+3.15).</p>
   
     <pre>int function(Ihandle *<strong>ih)</strong>; [in C]
 <strong>elem</strong>:action_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
