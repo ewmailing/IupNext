@@ -238,6 +238,7 @@ struct _IcontrolData
 
   /* aux */
   Ihandle* auto_show_timer;
+  Ihandle* animate_timer;
 };
 
 static void iExpanderUpdateTitleState(Ihandle* ih)
@@ -372,11 +373,51 @@ static void iExpanderUpdateStateImage(Ihandle* ih)
   }
 }
 
+static int iExpanderAnimateTimer_CB(Ihandle* ih_timer)
+{
+  Ihandle* ih = (Ihandle*)iupAttribGet(ih_timer, "_IUP_EXPANDER");
+  Ihandle* child = (Ihandle*)iupAttribGet(ih_timer, "_IUP_CHILD");
+  int final_height = IupGetInt(ih_timer, "_IUP_FINAL_HEIGHT");
+  int closing = IupGetInt(ih_timer, "_IUP_CLOSING");
+  int width = IupGetInt(ih_timer, "_IUP_WIDTH");
+  int frame_time = iupAttribGetInt(ih, "FRAMETIME");
+  int num_frames = iupAttribGetInt(ih, "NUMFRAMES");
+  int time_delay = iupAttribGetInt(ih_timer, "TIMEDELAY");
+  int height;
+  int current_frame = time_delay / frame_time;
+
+  if (closing)
+    height = (final_height*(num_frames - current_frame)) / num_frames;
+  else
+    height = (final_height*(current_frame + 1)) / num_frames;
+
+  IupSetfAttribute(child, "MAXSIZE", "%dx%d", width, height);
+
+  if (ih->data->animation == 2)
+    IupSetfAttribute(child, "CHILDOFFSET", "0x%d", height - final_height);
+
+  IupRefresh(ih);
+
+  if (current_frame == num_frames - 1)
+  {
+    iupAttribSetStr(child, "MAXSIZE", iupAttribGet(child, "OLD_MAXSIZE"));
+
+    if (closing)
+    {
+      ih->data->state = IEXPANDER_CLOSE;
+      IupSetAttribute(child, "VISIBLE", "NO");
+      IupRefresh(ih);
+    }
+
+    IupSetAttribute(ih_timer, "RUN", "NO");
+  }
+
+  return IUP_DEFAULT;
+}
+
 static void iExpanderAnimateChild(Ihandle* ih, Ihandle* child)
 {
-  int i, width, height, final_height, closing = 0;
-  clock_t start, end, time;
-  int num_frames = iupAttribGetInt(ih, "NUMFRAMES");
+  int width, final_height, closing = 0;
   int frame_time = iupAttribGetInt(ih, "FRAMETIME");
 
   /* IMPORTANT: child must be a native container or this will not work. */
@@ -403,37 +444,20 @@ static void iExpanderAnimateChild(Ihandle* ih, Ihandle* child)
 
   iupAttribSetStr(child, "OLD_MAXSIZE", iupAttribGet(child, "MAXSIZE"));
 
-  start = clock();
-
-  for (i = 0; i < num_frames; i++)
+  if (!ih->data->animate_timer)
   {
-    if (closing)
-      height = (final_height*(num_frames - i)) / num_frames;
-    else
-      height = (final_height*(i + 1)) / num_frames;
-
-    IupSetfAttribute(child, "MAXSIZE", "%dx%d", width, height);
-
-    if (ih->data->animation == 2)
-      IupSetfAttribute(child, "CHILDOFFSET", "0x%d", height - final_height);
-
-    IupRefresh(ih);
-    IupFlush();
-
-    end = clock();
-    time = (end - start) / (i + 1);
-    if (frame_time - time > 0)
-      iupdrvSleep(frame_time - time);
+    ih->data->animate_timer = IupTimer();
+    IupSetCallback(ih->data->animate_timer, "ACTION_CB", (Icallback)iExpanderAnimateTimer_CB);
+    iupAttribSet(ih->data->animate_timer, "_IUP_EXPANDER", (char*)ih);
   }
 
-  iupAttribSetStr(child, "MAXSIZE", iupAttribGet(child, "OLD_MAXSIZE"));
+  IupSetInt(ih->data->animate_timer, "_IUP_FINAL_HEIGHT", final_height);
+  IupSetInt(ih->data->animate_timer, "_IUP_CLOSING", closing);
+  IupSetInt(ih->data->animate_timer, "_IUP_WIDTH", width);
+  iupAttribSet(ih->data->animate_timer, "_IUP_CHILD", (char*)child);
 
-  if (closing)
-  {
-    ih->data->state = IEXPANDER_CLOSE;
-    IupSetAttribute(child, "VISIBLE", "NO");
-    IupRefresh(ih);
-  }
+  IupSetInt(ih->data->animate_timer, "TIME", frame_time);
+  IupSetAttribute(ih->data->animate_timer, "RUN", "YES");
 }
 
 static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int state)
@@ -701,13 +725,13 @@ static int iExpanderGlobalMotion_cb(int x, int y)
   return IUP_DEFAULT;
 }
 
-static int iExpanderTimer_cb(Ihandle* timer)
+static int iExpanderTimer_cb(Ihandle* ih_timer)
 {
-  Ihandle* ih = (Ihandle*)iupAttribGet(timer, "_IUP_EXPANDER");
+  Ihandle* ih = (Ihandle*)iupAttribGet(ih_timer, "_IUP_EXPANDER");
   Ihandle* child = ih->firstchild->brother;
 
   /* run timer just once each time */
-  IupSetAttribute(timer, "RUN", "No");
+  IupSetAttribute(ih_timer, "RUN", "No");
 
   /* just show child on top,
      that's why child must be a native container when using autoshow. */
@@ -1466,6 +1490,8 @@ static void iExpanderDestroyMethod(Ihandle* ih)
 {
   if (ih->data->auto_show_timer)
     IupDestroy(ih->data->auto_show_timer);
+  if (ih->data->animate_timer)
+    IupDestroy(ih->data->animate_timer);
 }
 
 Iclass* iupExpanderNewClass(void)
@@ -1520,7 +1546,7 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "EXTRABUTTONS", iExpanderGetExtraButtonsAttrib, iExpanderSetExtraButtonsAttrib, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANIMATION", iExpanderGetAnimationAttrib, iExpanderSetAnimationAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMFRAMES", NULL, NULL, IUPAF_SAMEASSYSTEM, "10", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FRAMETIME", NULL, NULL, IUPAF_SAMEASSYSTEM, "10", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRAMETIME", NULL, NULL, IUPAF_SAMEASSYSTEM, "30", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, iExpanderSetImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
