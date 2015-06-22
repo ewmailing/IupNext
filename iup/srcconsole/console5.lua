@@ -21,10 +21,10 @@ function iup_console.print_version_info()
   str = iup_console.concat(str, "  System Version: " .. iup.GetGlobal("SYSTEMVERSION"))
 
   local mot = iup.GetGlobal("MOTIFVERSION")
-  if (mot) then str = iup_console.concat(str, "  Motif Version: ", mot) end
+  if (mot) then str = iup_console.concat(str, "  Motif Version: " .. mot) end
   
   local gtk = iup.GetGlobal("GTKVERSION")
-  if (gtk) then str = iup_console.concat(str, "  GTK Version: ", gtk) end
+  if (gtk) then str = iup_console.concat(str, "  GTK Version: " .. gtk) end
 
   str = iup_console.concat(str, "  Screen Size: " .. iup.GetGlobal("SCREENSIZE"))
   str = iup_console.concat(str, "  Screen Depth: " .. iup.GetGlobal("SCREENDEPTH"))
