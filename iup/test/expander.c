@@ -650,6 +650,7 @@ void ExpanderTest(void)
   IupSetAttribute(_vbox_1,"GAP","5");
 
   dlg = IupDialog(_vbox_1);
+  //dlg = IupDialog(IupScrollBox(_vbox_1));
   IupSetHandle("dlg",dlg);
   IupSetAttribute(dlg,"MENU","mnu");
   IupSetAttribute(dlg,"TITLE","IupDialog Title");
