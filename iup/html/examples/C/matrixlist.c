@@ -43,6 +43,7 @@ int main(int argc, char **argv)
 //  IupSetAttribute(mlist, "ACTIVE", "NO");
 //  IupSetAttribute(mlist, "FOCUSCOLOR", "BGCOLOR");
   IupSetAttribute(mlist, "SHOWDELETE", "Yes");
+//  IupSetAttribute(mlist, "EXPAND", "Yes");
 
   IupSetAttribute(mlist, "EDITABLE", "Yes");
   IupSetCallback(mlist,"LISTCLICK_CB",(Icallback)listclick_cb);

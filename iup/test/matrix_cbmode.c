@@ -151,6 +151,8 @@ void MatrixCbModeTest(void)
 
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupMatrix Simple Test");
+//  IupSetAttribute(dlg, "SIZE", "HALFxHALF");
+
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 }
 
