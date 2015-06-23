@@ -382,7 +382,7 @@ static int iExpanderAnimateTimer_CB(Ihandle* ih_timer)
   int width = IupGetInt(ih_timer, "_IUP_WIDTH");
   int frame_time = iupAttribGetInt(ih, "FRAMETIME");
   int num_frames = iupAttribGetInt(ih, "NUMFRAMES");
-  int time_delay = iupAttribGetInt(ih_timer, "TIMEDELAY");
+  int time_delay = iupAttribGetInt(ih_timer, "ELAPSEDTIME");
   int height;
   int current_frame = time_delay / frame_time;
 

@@ -41,7 +41,7 @@ static void motTimerProc(XtPointer client_data, XtIntervalId *id)
   {
     long long end = (long long)clock();
     long long start = iupTimerGetLongLong(ih, "STARTCOUNT");
-    iupAttribSetInt(ih, "TIMEDELAY", (int)(end - start));
+    iupAttribSetInt(ih, "ELAPSEDTIME", (int)(end - start));
 
     if (cb(ih) == IUP_CLOSE)
       IupExitLoop();

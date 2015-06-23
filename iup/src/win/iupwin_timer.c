@@ -51,7 +51,7 @@ static VOID CALLBACK winTimerFunc(HWND hwnd, UINT msg, UINT_PTR wid, DWORD time)
   {
     long long end = winTimerGetTickCount();
     long long start = iupTimerGetLongLong(ih, "STARTCOUNT");
-    iupAttribSetInt(ih, "TIMEDELAY", (int)(end - start));
+    iupAttribSetInt(ih, "ELAPSEDTIME", (int)(end - start));
 
     if (cb(ih) == IUP_CLOSE)
       IupExitLoop();
