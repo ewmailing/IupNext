@@ -525,7 +525,7 @@ static void iMatrixFitColumns(Ihandle* ih, int width)
       *empty_columns, empty_num=0, visible_num, empty_col_visible = 0;
 
   /* get only from the hash table or the default value, do NOT get from the actual number of visible columns */
-  visible_num = iupAttribGetInt(ih, "NUMCOL_VISIBLE")+1;  /* include the title column */
+  visible_num = iupAttribGetInt(ih, "NUMCOL_VISIBLE") + 1;  /* include the title column */
 
   empty_columns = malloc(ih->data->columns.num*sizeof(int));
 
@@ -578,7 +578,7 @@ static void iMatrixFitColumns(Ihandle* ih, int width)
 static int iMatrixSetFitToSizeAttrib(Ihandle* ih, const char* value)
 {
   int w, h;
-  int sb_w = 0, sb_h = 0;
+  int sb_w = 0, sb_h = 0, border = 0;
 
   if (!ih->handle)
     ih->data->canvas.sb = iupBaseGetScrollbar(ih);
@@ -593,16 +593,19 @@ static int iMatrixSetFitToSizeAttrib(Ihandle* ih, const char* value)
       sb_w += sb_size;  /* sb vertical affects horizontal size */
   }
 
+  if (iupAttribGetBoolean(ih, "BORDER"))
+    border = 1;
+
   IupGetIntInt(ih, "RASTERSIZE", &w, &h);
 
   if (iupStrEqualNoCase(value, "LINES"))
-    iMatrixFitLines(ih, h-sb_h);
+    iMatrixFitLines(ih, h - sb_h - 2 * border);
   else if (iupStrEqualNoCase(value, "COLUMNS"))
-    iMatrixFitColumns(ih, w-sb_w);
+    iMatrixFitColumns(ih, w - sb_w - 2 * border);
   else
   {
-    iMatrixFitLines(ih, h-sb_h);
-    iMatrixFitColumns(ih, w-sb_w);
+    iMatrixFitLines(ih, h - sb_h - 2 * border);
+    iMatrixFitColumns(ih, w - sb_w - 2 * border);
   }
 
   ih->data->need_calcsize = 1;
@@ -1513,13 +1516,14 @@ static void iMatrixUnMapMethod(Ihandle* ih)
 
 static int iMatrixGetNaturalWidth(Ihandle* ih, int *full_width)
 {
-  int width = 0, num, col;
+  int width = 0, visible_num, col;
 
-  num = iupAttribGetInt(ih, "NUMCOL_VISIBLE")+1;  /* add the title column */
+  /* get only from the hash table or the default value, do NOT get from the actual number of visible columns */
+  visible_num = iupAttribGetInt(ih, "NUMCOL_VISIBLE") + 1;  /* include the title column */
 
   if (iupAttribGetInt(ih, "NUMCOL_VISIBLE_LAST"))
   {
-    int start = ih->data->columns.num - (num-1); 
+    int start = ih->data->columns.num - (visible_num - 1);
     if (start<1) start=1;  /* title is computed apart */
 
     width += iupMatrixGetColumnWidth(ih, 0, 1); /* always compute title */
@@ -1536,13 +1540,13 @@ static int iMatrixGetNaturalWidth(Ihandle* ih, int *full_width)
   }
   else
   {
-    for(col = 0; col < num; col++)  /* num can be > numcol */
+    for (col = 0; col < visible_num; col++)  /* visible_num can be > numcol */
       width += iupMatrixGetColumnWidth(ih, col, 1);
 
     if (ih->data->limit_expand)
     {
       *full_width = width;
-      for(col = num; col < ih->data->columns.num; col++)
+      for (col = visible_num; col < ih->data->columns.num; col++)
         (*full_width) += iupMatrixGetColumnWidth(ih, col, 1);
     }
   }
@@ -1552,13 +1556,13 @@ static int iMatrixGetNaturalWidth(Ihandle* ih, int *full_width)
 
 static int iMatrixGetNaturalHeight(Ihandle* ih, int *full_height)
 {
-  int height = 0, num, lin;
+  int height = 0, visible_num, lin;
 
-  num = iupAttribGetInt(ih, "NUMLIN_VISIBLE")+1;  /* add the title line */
+  visible_num = iupAttribGetInt(ih, "NUMLIN_VISIBLE") + 1;  /* add the title line */
 
   if (iupAttribGetInt(ih, "NUMLIN_VISIBLE_LAST"))
   {
-    int start = ih->data->lines.num - (num-1);   
+    int start = ih->data->lines.num - (visible_num - 1);
     if (start<1) start=1;  /* title is computed apart */
 
     height += iupMatrixGetLineHeight(ih, 0, 1);  /* always compute title */
@@ -1575,13 +1579,13 @@ static int iMatrixGetNaturalHeight(Ihandle* ih, int *full_height)
   }
   else
   {
-    for(lin = 0; lin < num; lin++)  /* num can be > numlin */
+    for (lin = 0; lin < visible_num; lin++)  /* visible_num can be > numlin */
       height += iupMatrixGetLineHeight(ih, lin, 1);
 
     if (ih->data->limit_expand)
     {
       *full_height = height;
-      for(lin = num; lin < ih->data->lines.num; lin++)
+      for (lin = visible_num; lin < ih->data->lines.num; lin++)
         (*full_height) += iupMatrixGetLineHeight(ih, lin, 1);
     }
   }
