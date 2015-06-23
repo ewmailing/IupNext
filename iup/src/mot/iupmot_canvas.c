@@ -305,8 +305,8 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
 
       motCanvasSetScrollInfo(sb_horiz, IUP_SB_MIN, IUP_SB_MAX, iposx, ipagex, ilinex);
 
-      /* update position because it could be corrected */
-      iupCanvasCalcScrollRealPos(xmin, xmax, &posx, 
+      /* update position because it could have being changed */
+      iupCanvasCalcScrollRealPos(xmin, xmax, &posx,
                                  IUP_SB_MIN, IUP_SB_MAX, ipagex, &iposx);
 
       iupAttribSet(ih, "XHIDDEN", "NO");
@@ -409,8 +409,8 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
 
       motCanvasSetScrollInfo(sb_vert, IUP_SB_MIN, IUP_SB_MAX, iposy, ipagey, iliney);
 
-      /* update position because it could be corrected */
-      iupCanvasCalcScrollRealPos(ymin, ymax, &posy, 
+      /* update position because it could have being changed */
+      iupCanvasCalcScrollRealPos(ymin, ymax, &posy,
                                  IUP_SB_MIN, IUP_SB_MAX, ipagey, &iposy);
 
       iupAttribSet(ih, "YHIDDEN", "NO");
