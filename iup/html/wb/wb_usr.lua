@@ -294,6 +294,25 @@ wb_usr.tree =
         },
       }
     },
+    {
+      name= {en= "Tutorial"},
+      link= "tutorial/tutorial.html",
+      folder=
+      {
+        {
+          name= {en= "1. Introduction"},
+          link= "tutorial/tutorial1.html",
+        },
+        {
+          name= {en= "2. Hello World"},
+          link= "tutorial/tutorial2.html",
+        },
+        {
+          name= {en= "3. Simple Notepad"},
+          link= "tutorial/tutorial3.html",
+        },
+      }
+    },
     { link= "", name= {en= "" } },
     {
       name= {en= "System"},
