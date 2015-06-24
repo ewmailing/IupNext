@@ -4,11 +4,16 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>Control Creation Guide</title>
 <link rel="stylesheet" type="text/css" href="../style.css">
+<style type="text/css">
+.auto-style1 {
+	font-size: large;
+}
+</style>
 </head>
 <body>
 
 <center>
-<h2>Control Creation Guide (since 3.0)</h2>
+<h2>Custom Controls <span class="auto-style1">(since 3.0)</span></h2>
 </center>
 <h3>Introduction</h3>
 <p>All the IUP controls use the same internal API to implement their functionalities. 
@@ -16,6 +21,7 @@
 <p>Each control, needs to export only one function that register the control so it can be used by IupCreate and other 
   functions. Actually another utility function is exported to simplify the creation of the control.</p>
 <p>Internally the control must implement the methods of the IUP class, and create functions that handle attributes.</p>
+<p>See the <a href="../doxygen/index.html">Internal SDK</a> for more details.</p>
 <h3>Control Class Registration</h3>
 <p>The new control must export function to register the control. This function is quite simple and it is just a call 
   to <a href="../doxygen/group__register.html">iupRegisterClass</a>. For example:</p>

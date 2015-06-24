@@ -287,7 +287,11 @@ wb_usr.tree =
               link= "iuplua_adv.html"
             }
           }
-        }
+        },
+        {
+          name= {nl= "Custom Controls"},
+          link= "cpi.html"
+        },
       }
     },
     { link= "", name= {en= "" } },
@@ -561,7 +565,7 @@ wb_usr.tree =
       }
     },
     {
-      name= {en= "Events"},
+      name= {en= "Events and Callbacks"},
       link= "call.html",
       folder=
       {
@@ -703,7 +707,7 @@ wb_usr.tree =
       }
     },
     {
-      name= {en= "Layout"},
+      name= {en= "Layout Composition"},
       link= "layout.html",
       folder=
       {
@@ -1701,10 +1705,6 @@ wb_usr.tree =
           link= "../doxygen/group__cpi.html",
           folder=
           {
-            {
-              name= {nl= "Guide"},
-              link= "cpi.html"
-            },
             {
               name= {nl= "Ihandle Object"},
               link= "../doxygen/group__object.html"
