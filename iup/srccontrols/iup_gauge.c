@@ -351,7 +351,7 @@ static int iGaugeCreateMethod(Ihandle* ih, void **params)
   /* change the IupCanvas default values */
   iupAttribSet(ih, "BORDER", "NO");
   IupSetAttribute(ih, "SIZE", IGAUGE_DEFAULTSIZE);
-  ih->expand = IUP_EXPAND_NONE;
+  IupSetAttribute(ih, "EXPAND", "NO");
 
   /* default values */
   iupAttribSet(ih, "FGCOLOR", IGAUGE_DEFAULTCOLOR);

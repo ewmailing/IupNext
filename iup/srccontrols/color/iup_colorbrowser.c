@@ -783,7 +783,7 @@ static int iColorBrowserCreateMethod(Ihandle* ih, void **params)
   /* change the IupCanvas default values */
   IupSetfAttribute(ih, "RASTERSIZE", "%dx%d", ICB_DEFAULTSIZE, ICB_DEFAULTSIZE);
   iupAttribSet(ih, "BORDER", "NO");
-  ih->expand = IUP_EXPAND_NONE;
+  IupSetAttribute(ih, "EXPAND", "NO");
 
   /* IupCanvas callbacks */
   IupSetCallback(ih, "ACTION",      (Icallback)iColorBrowserRedraw_CB);

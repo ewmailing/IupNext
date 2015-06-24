@@ -1360,7 +1360,7 @@ static int iMatrixListCreateMethod(Ihandle* ih, void **params)
   iMatrixListInitSize(ih, mtxList);
 
   /* change the IupCanvas default values */
-  IupSetAttribute(ih, "EXPAND", "NO");      /* Disable the expand option */
+  IupSetAttribute(ih, "EXPAND", "NO");
 
   /* Change the IupMatrix default values */
   iupAttribSet(ih, "HIDEFOCUS", "YES");  /* Hide the matrix focus feedback, but cell focus will still be processed internally */

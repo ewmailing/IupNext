@@ -786,7 +786,7 @@ static int iDialCreateMethod(Ihandle* ih, void **params)
 
   /* change the IupCanvas default values */
   iupAttribSet(ih, "BORDER", "NO");
-  ih->expand = IUP_EXPAND_NONE;
+  IupSetAttribute(ih, "EXPAND", "NO");
 
   /* default values */
   iDialSetOrientationAttrib(ih, orientation);
