@@ -150,9 +150,9 @@ static void iGLButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
     /* add to the label natural size */
     *w += 2 * border_width;
     *h += 2 * border_width;
-
-    (void)children_expand; /* unset if not a container */
   }
+
+  (void)children_expand; /* unset if not a container */
 }
 
 

@@ -30,7 +30,7 @@ Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle);
 /* from IupGLButton implementation */
 void iupGLButtonDraw(Ihandle* ih);
 
-static void iGLToggleCheckDraw(Ihandle* ih)
+static void iGLToggleDrawCheckMark(Ihandle* ih)
 {
   char *image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
@@ -110,9 +110,9 @@ static void iGLToggleCheckDraw(Ihandle* ih)
 
 static int iGLToggleACTION(Ihandle* ih)
 {
-  int check = iupAttribGetInt(ih, "CHECKMARK");
-  if (check)
-    iGLToggleCheckDraw(ih);
+  int checkmark = iupAttribGetInt(ih, "CHECKMARK");
+  if (checkmark)
+    iGLToggleDrawCheckMark(ih);
   else
     iupGLButtonDraw(ih);
 
