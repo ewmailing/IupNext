@@ -448,9 +448,10 @@ static int winButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
   else /* "ACENTER" */
     ih->data->vert_alignment = IUP_ALIGN_ACENTER;
 
-  iupdrvRedrawNow(ih);
+  if (ih->handle)
+    iupdrvRedrawNow(ih);
 
-  return 1;
+  return 0;
 }
 
 static char* winButtonGetAlignmentAttrib(Ihandle *ih)
@@ -763,7 +764,7 @@ void iupdrvButtonInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TITLE", NULL, winButtonSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
   /* IupButton only */
-  iupClassRegisterAttribute(ic, "ALIGNMENT", winButtonGetAlignmentAttrib, winButtonSetAlignmentAttrib, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", winButtonGetAlignmentAttrib, winButtonSetAlignmentAttrib, "ACENTER:ACENTER", NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGE", NULL, winButtonSetImageAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMINACTIVE", NULL, winButtonSetImInactiveAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMPRESS", NULL, winButtonSetImPressAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
