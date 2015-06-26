@@ -29,6 +29,10 @@ function matrix:value_edit_cb(l, c, newvalue)
   data[l][c] = newvalue
 end
 
+function matrix:edition_cb(l, c, mode, update)
+  print l, c, mode, update
+end
+
 dlg=iup.dialog{matrix; title="IupMatrix in Callback Mode" }
 dlg:show()
 

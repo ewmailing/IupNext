@@ -99,6 +99,7 @@
     <ClCompile Include="..\src\iup_detachbox.c" />
     <ClCompile Include="..\src\iup_dlglist.c" />
     <ClCompile Include="..\src\iup_expander.c" />
+    <ClCompile Include="..\src\iup_flatbutton.c" />
     <ClCompile Include="..\src\iup_focus.c" />
     <ClCompile Include="..\src\iup_font.c" />
     <ClCompile Include="..\src\iup_func.c" />

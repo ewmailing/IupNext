@@ -233,6 +233,7 @@ Ihandle*  IupTabs       (Ihandle* child, ...);
 Ihandle*  IupTabsv      (Ihandle* *children);
 Ihandle*  IupTree       (void);
 Ihandle*  IupLink       (const char* url, const char* title);
+Ihandle*  IupFlatButton (const char* title);
 
 /* Old controls, use SPIN attribute of IupText */
 Ihandle*  IupSpin       (void);

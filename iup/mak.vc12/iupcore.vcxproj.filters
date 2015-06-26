@@ -253,6 +253,9 @@
     <ClCompile Include="..\src\iup_config.c">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\iup_flatbutton.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\iup_array.h">

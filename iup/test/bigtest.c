@@ -25,6 +25,7 @@ void CanvasTest(void);
 void CanvasCDDBufferTest(void);
 void CanvasCDSimpleTest(void);
 void DialogTest(void);
+void FlatButtonTest(void);
 void FrameTest(void);
 void TabsTest(void);
 void SysInfoTest(void);
@@ -111,7 +112,8 @@ static TestItems test_list[] = {
   {"Dial", DialTest},
   {"Dialog", DialogTest},
   {"Expander", ExpanderTest},
-  {"Frame", FrameTest},
+  { "FlatButton", FlatButtonTest },
+  { "Frame", FrameTest },
 #ifdef USE_OPENGL
   {"GLCanvas", GLCanvasTest},
   {"GLCanvasCube", GLCanvasCubeTest},

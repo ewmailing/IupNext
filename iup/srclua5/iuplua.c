@@ -1155,6 +1155,7 @@ int iuplua_open(lua_State * L)
   iuptreelua_open(L);
   iupclipboardlua_open(L);
   iupprogressdlglua_open(L);
+  iupflatbuttonlua_open(L);
 
   return 0; /* nothing in stack */
 }

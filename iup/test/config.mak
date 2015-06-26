@@ -48,6 +48,7 @@ SRC += canvas.c
 SRC += frame.c
 SRC += idle.c
 SRC += button.c
+SRC += flatbutton.c
 SRC += toggle.c
 SRC += vbox.c
 SRC += hbox.c
