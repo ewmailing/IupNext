@@ -7,6 +7,25 @@
 
 
 /********************************** Utilities *****************************************/
+
+
+const char* str_filetitle(const char *file_name)
+{
+  /* Start at the last character */
+  int len = (int)strlen(file_name);
+  int offset = len - 1;
+  while (offset != 0)
+  {
+    if (file_name[offset] == '\\' || file_name[offset] == '/')
+    {
+      offset++;
+      break;
+    }
+    offset--;
+  }
+  return file_name + offset;
+}
+
 int str_compare(const char *l, const char *r, int casesensitive)
 {
   if (!l || !r)
@@ -109,34 +128,67 @@ void write_file(const char* filename, const char* str, int count)
   fclose(file);
 }
 
-
-/********************************** Callbacks *****************************************/
-int dlg_dropfiles_cb(Ihandle *dlg, const char* filename, int num, int x, int y)
+void new_file(Ihandle* ih)
 {
+  Ihandle* dlg = IupGetDialog(ih);
   Ihandle* multitext = IupGetDialogChild(dlg, "MULTITEXT");
-  if (IupGetInt(multitext, "DIRTY"))
-  {
-    switch (IupAlarm ("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
-    {
-      case 1:
-        item_save_action_cb(dlg);
-        break;
-      case 3:
-        return IUP_DEFAULT;
-        break;
-      case 2:
-        break;
-    }
-  }
+
+  IupSetAttribute(dlg, "TITLE", "Untitled - Simple Notepad");
+  IupSetAttribute(multitext, "FILENAME", NULL);
+  IupSetAttribute(multitext, "DIRTY", "NO");
+  IupSetAttribute(multitext, "VALUE", "");
+}
+
+void open_file(Ihandle* ih, const char* filename)
+{
   char* str = read_file(filename);
   if (str)
   {
-    IupSetAttribute(dlg, "TITLE", filename);
+    Ihandle* dlg = IupGetDialog(ih);
+    Ihandle* multitext = IupGetDialogChild(dlg, "MULTITEXT");
+    Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
+
+    IupSetfAttribute(dlg, "TITLE", "%s - Simple Notepad", str_filetitle(filename));
     IupSetStrAttribute(multitext, "FILENAME", filename);
-    IupSetStrAttribute(multitext, "VALUE", str);
     IupSetAttribute(multitext, "DIRTY", "NO");
+    IupSetStrAttribute(multitext, "VALUE", str);
+    IupConfigRecentUpdate(config, filename);
+
     free(str);
   }
+}
+
+int item_save_action_cb(Ihandle* ih);
+
+int save_check(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+  if (IupGetInt(multitext, "DIRTY"))
+  {
+    switch (IupAlarm("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
+    {
+    case 1:  /* save the changes and continue */
+      item_save_action_cb(ih);
+      break;
+    case 2:  /* ignore the changes and continue */
+      break;
+    case 3:  /* cancel */
+      return 0;  
+    }
+  }
+  return 1;
+}
+
+
+/********************************** Callbacks *****************************************/
+
+
+int dropfiles_cb(Ihandle* ih, const char* filename)
+{
+  if (!save_check(ih))
+    return IUP_DEFAULT;
+
+  open_file(ih, filename);
   return IUP_DEFAULT;
 }
 
@@ -149,19 +201,12 @@ int multitext_valuechanged_cb(Ihandle* multitext)
 int file_menu_open_cb(Ihandle* ih)
 {
   Ihandle *item_save = IupGetDialogChild(ih, "ITEM_SAVE");
-  Ihandle *item_saveas = IupGetDialogChild(ih, "ITEM_SAVEAS");
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
 
   if (IupGetInt(multitext, "DIRTY"))
-  {
     IupSetAttribute(item_save, "ACTIVE", "YES");
-    IupSetAttribute(item_saveas, "ACTIVE", "YES");
-  }
   else
-  {
     IupSetAttribute(item_save, "ACTIVE", "NO");
-    IupSetAttribute(item_saveas, "ACTIVE", "NO");
-  }
   return IUP_DEFAULT;
 }
 
@@ -199,33 +244,13 @@ int edit_menu_open_cb(Ihandle* ih)
 
 int item_recent_cb(Ihandle* item_recent)
 {
-  Ihandle* multitext = IupGetDialogChild(item_recent, "MULTITEXT");
-  Ihandle* dlg = IupGetDialog(item_recent);
-  if (IupGetInt(multitext, "DIRTY"))
-  {
-    switch (IupAlarm ("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
-    {
-      case 1:
-        item_save_action_cb(item_recent);
-        break;
-      case 3:
-        return IUP_DEFAULT;
-		break;
-      case 2:
-       break;
-    }
-  }
+  char* filename;
 
-  char* filename = IupGetAttribute(item_recent, "TITLE");
-  char* str = read_file(filename);
-  if (str)
-  {
-    IupSetAttribute(dlg, "TITLE", filename);
-    IupSetStrAttribute(multitext, "FILENAME", filename);
-    IupSetStrAttribute(multitext, "VALUE", str);
-    IupSetAttribute(multitext, "DIRTY", "NO");
-    free(str);
-  }
+  if (!save_check(item_recent)) 
+    return IUP_DEFAULT;
+
+  filename = IupGetAttribute(item_recent, "TITLE");
+  open_file(item_recent, filename);
   return IUP_DEFAULT;
 }
 
@@ -239,79 +264,35 @@ int multitext_caret_cb(Ihandle *ih, int lin, int col)
 int item_new_action_cb(Ihandle* item_new)
 {
   Ihandle* multitext = IupGetDialogChild(item_new, "MULTITEXT");
-  if (IupGetInt(multitext, "DIRTY"))
-  {
-    switch (IupAlarm ("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
-    {
-      case 1:
-        item_save_action_cb(item_new);
-        break;
-      case 2:
-  	    IupSetStrAttribute(multitext, "VALUE", "");
-        break;
-      default:
-        break;
-    }
-  }
+
+  if (!save_check(item_new))
+    return IUP_DEFAULT;
+
+  new_file(item_new);
   return IUP_DEFAULT;
 }
 
 int item_open_action_cb(Ihandle* item_open)
 {
-  Ihandle* multitext = IupGetDialogChild(item_open, "MULTITEXT");
-  Ihandle *filedlg = IupFileDlg();
+  Ihandle *filedlg;
+
+  if (!save_check(item_open))
+    return IUP_DEFAULT;
+
+  filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
   IupSetAttribute(filedlg, "FILTER", "*.txt");
   IupSetAttribute(filedlg, "FILTERINFO", "Text Files");
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_open));
-  Ihandle* dlg = IupGetDialog(item_open);
 
-  if (IupGetInt(multitext, "DIRTY"))
-  {
-    switch (IupAlarm ("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
-    {
-      case 1:
-        item_save_action_cb(item_open);
-		break;
-	  case 3:
-		return IUP_DEFAULT;
-        break;
-	  case 2:
-		break;
-    }
-  }
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
     char* filename = IupGetAttribute(filedlg, "VALUE");
-    char* str = read_file(filename);
-    if (str)
-    {
-      Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
-      IupConfigRecentUpdate(config, filename);
-      IupSetStrAttribute(multitext, "VALUE", str);
-      IupSetStrAttribute(multitext, "FILENAME", filename);
-      IupSetAttribute(multitext, "DIRTY", "NO");
-      IupSetAttribute(dlg, "TITLE", filename);
-      free(str);
-    }
+    open_file(item_open, filename);
   }
-  IupDestroy(filedlg);
-  return IUP_DEFAULT;
-}
 
-int item_save_action_cb(Ihandle* item_save)
-{
-  Ihandle* multitext = IupGetDialogChild(item_save, "MULTITEXT");
-  char* filename = IupGetAttribute(multitext, "FILENAME");
-  if (!filename)
-    item_saveas_action_cb(item_save);
-  else 
-  {
-    char* str = IupGetAttribute(multitext, "VALUE");
-    int count = IupGetInt(multitext, "COUNT");
-    write_file(filename, str, count);
-  }
+  IupDestroy(filedlg);
   return IUP_DEFAULT;
 }
 
@@ -341,26 +322,29 @@ int item_saveas_action_cb(Ihandle* item_saveas)
   return IUP_DEFAULT;
 }
 
+int item_save_action_cb(Ihandle* item_save)
+{
+  Ihandle* multitext = IupGetDialogChild(item_save, "MULTITEXT");
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  if (!filename)
+    item_saveas_action_cb(item_save);
+  else
+  {
+    char* str = IupGetAttribute(multitext, "VALUE");
+    int count = IupGetInt(multitext, "COUNT");
+    write_file(filename, str, count);
+  }
+  return IUP_DEFAULT;
+}
+
 int item_exit_action_cb(Ihandle* item_exit)
 {
   Ihandle* dlg = IupGetDialog(item_exit);
   Ihandle* config = (Ihandle*)IupGetAttribute(dlg, "CONFIG");
-  Ihandle* multitext = IupGetDialogChild(item_exit, "MULTITEXT");
 
-   if (IupGetInt(multitext, "DIRTY"))
-  {
-    switch (IupAlarm ("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
-    {
-      case 1:
-        item_save_action_cb(item_exit);
-        break;
-      case 3:
-        return IUP_DEFAULT;
-        break;
-      case 2:
-        break;
-    }
-  }
+  if (!save_check(item_exit))
+    return IUP_DEFAULT;
+
   IupConfigDialogClosed(config, dlg, "MainWindow");
   IupConfigSave(config);
   IupDestroy(config);
@@ -392,7 +376,6 @@ int item_goto_action_cb(Ihandle* item_goto)
 {
   Ihandle* multitext = IupGetDialogChild(item_goto, "MULTITEXT");
   Ihandle *dlg, *box, *bt_ok, *bt_cancel, *txt, *lbl;
-
   int line_count = IupGetInt(multitext, "LINECOUNT");
 
   lbl = IupLabel(NULL);
@@ -620,8 +603,9 @@ int item_about_action_cb(void)
 int main(int argc, char **argv)
 {
   Ihandle *dlg, *vbox, *multitext, *menu;
-  Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *btn_new, *btn_open, *btn_save;
-  Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_goto, *btn_find, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
+  Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas;
+  Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_goto, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
+  Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_format, *format_menu, *item_font;
   Ihandle *sub_menu_help, *help_menu, *item_about;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
@@ -650,18 +634,21 @@ int main(int argc, char **argv)
   IupSetAttribute(lbl_statusbar, "EXPAND", "HORIZONTAL");
   IupSetAttribute(lbl_statusbar, "PADDING", "10x5");
 
-  item_new = IupItem("New", NULL);
+  item_new = IupItem("New\tCtrl+N", NULL);
+  IupSetAttribute(item_new, "IMAGE", "IUP_FileNew");
   btn_new = IupButton(NULL, NULL);
   IupSetAttribute(btn_new, "IMAGE", "IUP_FileNew");
   IupSetAttribute(btn_new, "FLAT", "Yes");
 
   item_open = IupItem("&Open...\tCtrl+O", NULL);
+  IupSetAttribute(item_open, "IMAGE", "IUP_FileOpen");
   btn_open = IupButton(NULL, NULL);
   IupSetAttribute(btn_open, "IMAGE", "IUP_FileOpen");
   IupSetAttribute(btn_open, "FLAT", "Yes");
 
   item_save = IupItem("Save\tCtrl+S", NULL);
   IupSetAttribute(item_save, "NAME", "ITEM_SAVE");
+  IupSetAttribute(item_save, "IMAGE", "IUP_FileSave");
   btn_save = IupButton(NULL, NULL);
   IupSetAttribute(btn_save, "IMAGE", "IUP_FileSave");
   IupSetAttribute(btn_save, "FLAT", "Yes");
@@ -672,24 +659,43 @@ int main(int argc, char **argv)
   item_exit = IupItem("E&xit", NULL);
 
   item_find = IupItem("&Find...\tCtrl+F", NULL);
+  IupSetAttribute(item_find, "IMAGE", "IUP_EditFind");
   btn_find = IupButton(NULL, NULL);
   IupSetAttribute(btn_find, "IMAGE", "IUP_EditFind");
   IupSetAttribute(btn_find, "FLAT", "Yes");
 
-  item_copy = IupItem ("Copy\tCtrl+C", NULL);
+  item_cut = IupItem("Cut\tCtrl+X", NULL);
+  IupSetAttribute(item_cut, "NAME", "ITEM_CUT");
+  IupSetAttribute(item_cut, "IMAGE", "IUP_EditCut");
+  item_copy = IupItem("Copy\tCtrl+C", NULL);
   IupSetAttribute(item_copy, "NAME", "ITEM_COPY");  
-  item_paste = IupItem ("Paste\tCtrl+V", NULL);
+  IupSetAttribute(item_copy, "IMAGE", "IUP_EditCopy");
+  item_paste = IupItem("Paste\tCtrl+V", NULL);
   IupSetAttribute(item_paste, "NAME", "ITEM_PASTE");
-  item_cut = IupItem ("Cut\tCtrl+X", NULL);
-  IupSetAttribute(item_cut, "NAME", "ITEM_CUT");  
-  item_delete = IupItem ("Delete\tDel", NULL);
-  IupSetAttribute(item_delete, "NAME", "ITEM_DELETE");  
-  item_select_all = IupItem ("Select All\tCtrl+A", NULL);
+  IupSetAttribute(item_paste, "IMAGE", "IUP_EditPaste");
+  item_delete = IupItem("Delete\tDel", NULL);
+  IupSetAttribute(item_delete, "IMAGE", "IUP_EditErase");  
+  IupSetAttribute(item_delete, "NAME", "ITEM_DELETE");
+  item_select_all = IupItem("Select All\tCtrl+A", NULL);
+
+  btn_cut = IupButton(NULL, NULL);
+  IupSetAttribute(btn_cut, "IMAGE", "IUP_EditCut");
+  IupSetAttribute(btn_cut, "FLAT", "Yes");
+  btn_copy = IupButton(NULL, NULL);
+  IupSetAttribute(btn_copy, "IMAGE", "IUP_EditCopy");
+  IupSetAttribute(btn_copy, "FLAT", "Yes");
+  btn_paste = IupButton(NULL, NULL);
+  IupSetAttribute(btn_paste, "IMAGE", "IUP_EditPaste");
+  IupSetAttribute(btn_paste, "FLAT", "Yes");
 
   toolbar_hb = IupHbox(
-	btn_new,
+    btn_new,
     btn_open,
     btn_save,
+    IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
+    btn_cut,
+    btn_copy,
+    btn_paste,
     IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
     btn_find,
     NULL);
@@ -770,11 +776,10 @@ int main(int argc, char **argv)
 
   dlg = IupDialog(vbox);
   IupSetAttributeHandle(dlg, "MENU", menu);
-  IupSetAttribute(dlg, "TITLE", "Simple Notepad");
   IupSetAttribute(dlg, "SIZE", "HALFxHALF");
   IupSetCallback(dlg, "CLOSECB", (Icallback)item_exit_action_cb);
-  IupSetCallback(dlg, "DROPFILES_CB", (Icallback)dlg_dropfiles_cb);
-  IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dlg_dropfiles_cb);
+  IupSetCallback(dlg, "DROPFILES_CB", (Icallback)dropfiles_cb);
+  IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
   IupSetCallback(file_menu, "OPEN_CB", (Icallback)file_menu_open_cb);
   IupSetCallback(edit_menu, "OPEN_CB", (Icallback)edit_menu_open_cb);
 
@@ -783,15 +788,25 @@ int main(int argc, char **argv)
   /* parent for pre-defined dialogs in closed funtions (IupMessage) */
   IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
 
+  IupSetCallback(dlg, "K_cN", (Icallback)item_new_action_cb);
   IupSetCallback(dlg, "K_cO", (Icallback)item_open_action_cb);
   IupSetCallback(dlg, "K_cS", (Icallback)item_saveas_action_cb);
   IupSetCallback(dlg, "K_cF", (Icallback)item_find_action_cb);
   IupSetCallback(dlg, "K_cG", (Icallback)item_goto_action_cb);
-
+  
   IupConfigRecentInit(config, recent_menu, item_recent_cb, 10);
 
   IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
-  IupSetAttribute(dlg, "USERSIZE", NULL);
+  IupSetAttribute(dlg, "USERSIZE", NULL);  /* remove minimum size restriction */
+
+  new_file(dlg);
+
+  /* open a file from the command line (allow file association in Windows) */
+  if (argc > 1 && argv[1])
+  {
+    const char* filename = argv[1];
+    open_file(dlg, filename);
+  }
 
   IupMainLoop();
 
