@@ -200,13 +200,21 @@ int multitext_valuechanged_cb(Ihandle* multitext)
 
 int file_menu_open_cb(Ihandle* ih)
 {
-  Ihandle *item_save = IupGetDialogChild(ih, "ITEM_SAVE");
+  Ihandle* item_revert = IupGetDialogChild(ih, "ITEM_REVERT");
+  Ihandle* item_save = IupGetDialogChild(ih, "ITEM_SAVE");
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  int dirty = IupGetInt(multitext, "DIRTY");
 
-  if (IupGetInt(multitext, "DIRTY"))
+  if (dirty)
     IupSetAttribute(item_save, "ACTIVE", "YES");
   else
     IupSetAttribute(item_save, "ACTIVE", "NO");
+
+  if (dirty && filename)
+    IupSetAttribute(item_revert, "ACTIVE", "YES");
+  else
+    IupSetAttribute(item_revert, "ACTIVE", "NO");
   return IUP_DEFAULT;
 }
 
@@ -263,8 +271,6 @@ int multitext_caret_cb(Ihandle *ih, int lin, int col)
 
 int item_new_action_cb(Ihandle* item_new)
 {
-  Ihandle* multitext = IupGetDialogChild(item_new, "MULTITEXT");
-
   if (!save_check(item_new))
     return IUP_DEFAULT;
 
@@ -337,13 +343,21 @@ int item_save_action_cb(Ihandle* item_save)
   return IUP_DEFAULT;
 }
 
+int item_revert_action_cb(Ihandle* item_revert)
+{
+  Ihandle* multitext = IupGetDialogChild(item_revert, "MULTITEXT");
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  open_file(item_revert, filename);
+  return IUP_DEFAULT;
+}
+
 int item_exit_action_cb(Ihandle* item_exit)
 {
   Ihandle* dlg = IupGetDialog(item_exit);
   Ihandle* config = (Ihandle*)IupGetAttribute(dlg, "CONFIG");
 
   if (!save_check(item_exit))
-    return IUP_DEFAULT;
+    return IUP_IGNORE;  /* to abort the CLOSE_CB callback */
 
   IupConfigDialogClosed(config, dlg, "MainWindow");
   IupConfigSave(config);
@@ -603,7 +617,7 @@ int item_about_action_cb(void)
 int main(int argc, char **argv)
 {
   Ihandle *dlg, *vbox, *multitext, *menu;
-  Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas;
+  Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_goto, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
   Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_format, *format_menu, *item_font;
@@ -620,73 +634,98 @@ int main(int argc, char **argv)
   IupConfigLoad(config);
 
   multitext = IupText(NULL);
-  IupSetAttribute(multitext, "MULTILINE", "YES");
-  IupSetAttribute(multitext, "EXPAND", "YES");
-  IupSetAttribute(multitext, "NAME", "MULTITEXT");
-  IupSetAttribute(multitext, "DIRTY", "NO");
+    IupSetAttribute(multitext, "MULTILINE", "YES");
+    IupSetAttribute(multitext, "EXPAND", "YES");
+    IupSetAttribute(multitext, "NAME", "MULTITEXT");
+    IupSetAttribute(multitext, "DIRTY", "NO");
+    IupSetCallback(multitext, "CARET_CB", (Icallback)multitext_caret_cb);
+    IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
+    IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
 
   font = IupConfigGetVariableStr(config, "MainWindow", "Font");
   if (font)
     IupSetStrAttribute(multitext, "FONT", font);
 
   lbl_statusbar = IupLabel("Lin 1, Col 1");
-  IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");  
-  IupSetAttribute(lbl_statusbar, "EXPAND", "HORIZONTAL");
-  IupSetAttribute(lbl_statusbar, "PADDING", "10x5");
+    IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");  
+    IupSetAttribute(lbl_statusbar, "EXPAND", "HORIZONTAL");
+    IupSetAttribute(lbl_statusbar, "PADDING", "10x5");
 
   item_new = IupItem("New\tCtrl+N", NULL);
-  IupSetAttribute(item_new, "IMAGE", "IUP_FileNew");
+    IupSetAttribute(item_new, "IMAGE", "IUP_FileNew");
+    IupSetCallback(item_new, "ACTION", (Icallback)item_new_action_cb);
   btn_new = IupButton(NULL, NULL);
-  IupSetAttribute(btn_new, "IMAGE", "IUP_FileNew");
-  IupSetAttribute(btn_new, "FLAT", "Yes");
+    IupSetAttribute(btn_new, "IMAGE", "IUP_FileNew");
+    IupSetAttribute(btn_new, "FLAT", "Yes");
+    IupSetCallback(btn_new, "ACTION", (Icallback)item_new_action_cb);
 
   item_open = IupItem("&Open...\tCtrl+O", NULL);
-  IupSetAttribute(item_open, "IMAGE", "IUP_FileOpen");
+    IupSetAttribute(item_open, "IMAGE", "IUP_FileOpen");
+    IupSetCallback(item_open, "ACTION", (Icallback)item_open_action_cb);
   btn_open = IupButton(NULL, NULL);
-  IupSetAttribute(btn_open, "IMAGE", "IUP_FileOpen");
-  IupSetAttribute(btn_open, "FLAT", "Yes");
+    IupSetAttribute(btn_open, "IMAGE", "IUP_FileOpen");
+    IupSetAttribute(btn_open, "FLAT", "Yes");
+    IupSetCallback(btn_open, "ACTION", (Icallback)item_open_action_cb);
 
   item_save = IupItem("Save\tCtrl+S", NULL);
-  IupSetAttribute(item_save, "NAME", "ITEM_SAVE");
-  IupSetAttribute(item_save, "IMAGE", "IUP_FileSave");
+    IupSetAttribute(item_save, "NAME", "ITEM_SAVE");
+    IupSetAttribute(item_save, "IMAGE", "IUP_FileSave");
+    IupSetCallback(item_save, "ACTION", (Icallback)item_save_action_cb);
   btn_save = IupButton(NULL, NULL);
-  IupSetAttribute(btn_save, "IMAGE", "IUP_FileSave");
-  IupSetAttribute(btn_save, "FLAT", "Yes");
+    IupSetAttribute(btn_save, "IMAGE", "IUP_FileSave");
+    IupSetAttribute(btn_save, "FLAT", "Yes");
+    IupSetCallback(btn_save, "ACTION", (Icallback)item_save_action_cb);
 
   item_saveas = IupItem("Save &As...", NULL);
-  IupSetAttribute(item_saveas, "NAME", "ITEM_SAVEAS");
+    IupSetAttribute(item_saveas, "NAME", "ITEM_SAVEAS");
+    IupSetCallback(item_saveas, "ACTION", (Icallback)item_saveas_action_cb);
 
+  item_revert = IupItem("Revert", NULL);
+    IupSetAttribute(item_revert, "NAME", "ITEM_REVERT");
+    IupSetCallback(item_revert, "ACTION", (Icallback)item_revert_action_cb);
+    
   item_exit = IupItem("E&xit", NULL);
+    IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
 
   item_find = IupItem("&Find...\tCtrl+F", NULL);
-  IupSetAttribute(item_find, "IMAGE", "IUP_EditFind");
+    IupSetAttribute(item_find, "IMAGE", "IUP_EditFind");
+    IupSetCallback(item_find, "ACTION", (Icallback)item_find_action_cb);
   btn_find = IupButton(NULL, NULL);
-  IupSetAttribute(btn_find, "IMAGE", "IUP_EditFind");
-  IupSetAttribute(btn_find, "FLAT", "Yes");
+    IupSetAttribute(btn_find, "IMAGE", "IUP_EditFind");
+    IupSetAttribute(btn_find, "FLAT", "Yes");
+    IupSetCallback(btn_find, "ACTION", (Icallback)item_find_action_cb);
 
   item_cut = IupItem("Cut\tCtrl+X", NULL);
-  IupSetAttribute(item_cut, "NAME", "ITEM_CUT");
-  IupSetAttribute(item_cut, "IMAGE", "IUP_EditCut");
+    IupSetAttribute(item_cut, "NAME", "ITEM_CUT");
+    IupSetAttribute(item_cut, "IMAGE", "IUP_EditCut");
+    IupSetCallback(item_cut, "ACTION", (Icallback)item_cut_action_cb);
   item_copy = IupItem("Copy\tCtrl+C", NULL);
-  IupSetAttribute(item_copy, "NAME", "ITEM_COPY");  
-  IupSetAttribute(item_copy, "IMAGE", "IUP_EditCopy");
+    IupSetAttribute(item_copy, "NAME", "ITEM_COPY");  
+    IupSetAttribute(item_copy, "IMAGE", "IUP_EditCopy");
+    IupSetCallback(item_copy, "ACTION", (Icallback)item_copy_action_cb);
   item_paste = IupItem("Paste\tCtrl+V", NULL);
-  IupSetAttribute(item_paste, "NAME", "ITEM_PASTE");
-  IupSetAttribute(item_paste, "IMAGE", "IUP_EditPaste");
+    IupSetAttribute(item_paste, "NAME", "ITEM_PASTE");
+    IupSetAttribute(item_paste, "IMAGE", "IUP_EditPaste");
+    IupSetCallback(item_paste, "ACTION", (Icallback)item_paste_action_cb);
   item_delete = IupItem("Delete\tDel", NULL);
-  IupSetAttribute(item_delete, "IMAGE", "IUP_EditErase");  
-  IupSetAttribute(item_delete, "NAME", "ITEM_DELETE");
+    IupSetAttribute(item_delete, "IMAGE", "IUP_EditErase");  
+    IupSetAttribute(item_delete, "NAME", "ITEM_DELETE");
+    IupSetCallback(item_delete, "ACTION", (Icallback)item_delete_action_cb);
   item_select_all = IupItem("Select All\tCtrl+A", NULL);
+    IupSetCallback(item_select_all, "ACTION", (Icallback)item_select_all_action_cb);
 
   btn_cut = IupButton(NULL, NULL);
-  IupSetAttribute(btn_cut, "IMAGE", "IUP_EditCut");
-  IupSetAttribute(btn_cut, "FLAT", "Yes");
+    IupSetAttribute(btn_cut, "IMAGE", "IUP_EditCut");
+    IupSetAttribute(btn_cut, "FLAT", "Yes");
+    IupSetCallback(btn_cut, "ACTION", (Icallback)item_cut_action_cb);
   btn_copy = IupButton(NULL, NULL);
-  IupSetAttribute(btn_copy, "IMAGE", "IUP_EditCopy");
-  IupSetAttribute(btn_copy, "FLAT", "Yes");
+    IupSetAttribute(btn_copy, "IMAGE", "IUP_EditCopy");
+    IupSetAttribute(btn_copy, "FLAT", "Yes");
+    IupSetCallback(btn_copy, "ACTION", (Icallback)item_copy_action_cb);
   btn_paste = IupButton(NULL, NULL);
-  IupSetAttribute(btn_paste, "IMAGE", "IUP_EditPaste");
-  IupSetAttribute(btn_paste, "FLAT", "Yes");
+    IupSetAttribute(btn_paste, "IMAGE", "IUP_EditPaste");
+    IupSetAttribute(btn_paste, "FLAT", "Yes");
+    IupSetCallback(btn_paste, "ACTION", (Icallback)item_paste_action_cb);
 
   toolbar_hb = IupHbox(
     btn_new,
@@ -703,29 +742,11 @@ int main(int argc, char **argv)
   IupSetAttribute(toolbar_hb, "GAP", "2");
 
   item_goto = IupItem("&Go To...\tCtrl+G", NULL);
+    IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
   item_font = IupItem("&Font...", NULL);
+    IupSetCallback(item_font, "ACTION", (Icallback)item_font_action_cb);
   item_about = IupItem("&About...", NULL);
-
-  IupSetCallback(item_new, "ACTION", (Icallback)item_new_action_cb);
-  IupSetCallback(btn_new, "ACTION", (Icallback)item_new_action_cb);
-  IupSetCallback(item_open, "ACTION", (Icallback)item_open_action_cb);
-  IupSetCallback(btn_open, "ACTION", (Icallback)item_open_action_cb);
-  IupSetCallback(item_save, "ACTION", (Icallback)item_save_action_cb);
-  IupSetCallback(item_saveas, "ACTION", (Icallback)item_saveas_action_cb);
-  IupSetCallback(btn_save, "ACTION", (Icallback)item_save_action_cb);
-  IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
-  IupSetCallback(item_find, "ACTION", (Icallback)item_find_action_cb);
-  IupSetCallback(btn_find, "ACTION", (Icallback)item_find_action_cb);  
-  IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
-  IupSetCallback(item_font, "ACTION", (Icallback)item_font_action_cb);
-  IupSetCallback(item_about, "ACTION", (Icallback)item_about_action_cb);
-  IupSetCallback(multitext, "CARET_CB", (Icallback)multitext_caret_cb);
-  IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
-  IupSetCallback(item_copy, "ACTION", (Icallback)item_copy_action_cb);
-  IupSetCallback(item_paste, "ACTION", (Icallback)item_paste_action_cb);
-  IupSetCallback(item_cut, "ACTION", (Icallback)item_cut_action_cb);
-  IupSetCallback(item_delete, "ACTION", (Icallback)item_delete_action_cb);
-  IupSetCallback(item_select_all, "ACTION", (Icallback)item_select_all_action_cb);
+    IupSetCallback(item_about, "ACTION", (Icallback)item_about_action_cb);
 
   recent_menu = IupMenu(NULL);
 
@@ -734,6 +755,7 @@ int main(int argc, char **argv)
     item_open,
     item_save,
     item_saveas,
+    item_revert,
     IupSeparator(),
     IupSubmenu("Recent &Files", recent_menu),
     item_exit,
@@ -756,6 +778,9 @@ int main(int argc, char **argv)
     item_about,
     NULL);
 
+  IupSetCallback(file_menu, "OPEN_CB", (Icallback)file_menu_open_cb);
+  IupSetCallback(edit_menu, "OPEN_CB", (Icallback)edit_menu_open_cb);
+
   sub_menu_file = IupSubmenu("&File", file_menu);
   sub_menu_edit = IupSubmenu("&Edit", edit_menu);
   sub_menu_format = IupSubmenu("F&ormat", format_menu);
@@ -777,11 +802,8 @@ int main(int argc, char **argv)
   dlg = IupDialog(vbox);
   IupSetAttributeHandle(dlg, "MENU", menu);
   IupSetAttribute(dlg, "SIZE", "HALFxHALF");
-  IupSetCallback(dlg, "CLOSECB", (Icallback)item_exit_action_cb);
+  IupSetCallback(dlg, "CLOSE_CB", (Icallback)item_exit_action_cb);
   IupSetCallback(dlg, "DROPFILES_CB", (Icallback)dropfiles_cb);
-  IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
-  IupSetCallback(file_menu, "OPEN_CB", (Icallback)file_menu_open_cb);
-  IupSetCallback(edit_menu, "OPEN_CB", (Icallback)edit_menu_open_cb);
 
   IupSetAttribute(dlg, "CONFIG", (char*)config);
 
