@@ -565,7 +565,8 @@ MENUOPEN_CB para acrescentar open/exit/new save check, ai acrescentar File New, 
 (não mostra dialogo, botão passa usar essa callback), e de quebra File name no TITLE, DROPFILES_CB, argv[1]. 
 Usar VALUE_CHANGED_CB para verificar se o arquivo lido ou novo, foi modificado.
 
-<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_9.c">example3_9.c</a></p>
+<p class="auto-style1"><strong>Falta</strong>: complementar item 3.10 com 
+detalhes da implementação<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_9.c">example3_9.c</a></p>
 <iframe src="../../examples/tutorial/example3_9.c" name="example3_9" title="Example 3.9" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_9.png"></p>
@@ -579,7 +580,9 @@ that we use the FLOATING attribute along with the VISIBLE attribute so they will
 be hidden and its space will be used by the multitext.</p>
 <p>To implement that feature we added a new submenu called "View" at the main 
 menu with two new items. One for controlling the Toolbar visibility and another 
-for controlling the Statusbar visibility.</p>
+for controlling the Statusbar visibility. And we use the IupConfig to store this 
+selection to be persistent between different application executions. </p>
+<p class="auto-style1">Faltam detalhes da implementação</p>
 
 <p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_10.c">example3_10.c</a></p>
 <iframe src="../../examples/tutorial/example3_10.c" name="example3_10" title="Example 3.10" marginheight="0" marginwidth="0">
@@ -590,15 +593,10 @@ for controlling the Statusbar visibility.</p>
 <p>One additional feature that our text editor can have is an external help. IUP 
 shows an external help by simply calling the <a href="../func/iuphelp.html">
 IupHelp</a> function. It will show an internet browser in the given page so the 
-application can display some documentation to the user. In our example it is 
-just a menu item with a call to the <strong>IupHelp</strong> function that shows 
-a very simple page. In Windows, that function is even more flexible allowing to 
-open any kind of document provided that it is associated with an aplication.</p>
-<p>The interesting part is that in the item_help_action_cb callback we use a 
-custom attribute called APP_PATH to retrieve where that page is located in the 
-system, and that custom attribute is defined using the "arg[0]" parameter from 
-the command line in the main function. It is simply the path where the 
-executable is.</p>
+application can display some documentation to the user. In our example, it is 
+just a menu item that activates the item_help_action_cb callback which calls the <strong>IupHelp</strong> function. 
+This function shows the IUP website, but it can also show a local HTML file. In Windows, that function is even more flexible allowing to 
+open any kind of document provided that it is associated with an application.</p>
 
 <p class="example_title">Example Source Code: <a href="../../examples/tutorial/example3_11.c">example3_11.c</a></p>
 <iframe src="../../examples/tutorial/example3_11.c" name="example3_11" title="Example 3.11" marginheight="0" marginwidth="0">
