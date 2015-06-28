@@ -348,7 +348,6 @@ int item_font_action_cb(Ihandle* item_font)
   Ihandle* fontdlg = IupFontDlg();
   char* font = IupGetAttribute(multitext, "FONT");
   IupSetStrAttribute(fontdlg, "VALUE", font);
-  IupSetAttribute(fontdlg, "TITLE", "IupFontDlg Test");
   IupSetAttributeHandle(fontdlg, "PARENTDIALOG", IupGetDialog(item_font));
 
   IupPopup(fontdlg, IUP_CENTERPARENT, IUP_CENTERPARENT);

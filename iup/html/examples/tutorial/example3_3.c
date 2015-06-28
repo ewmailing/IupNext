@@ -95,8 +95,6 @@ int font_cb(void)
   Ihandle* fontdlg = IupFontDlg();
   char* font = IupGetAttribute(multitext, "FONT");
   IupSetStrAttribute(fontdlg, "VALUE", font);
-  IupSetAttribute(fontdlg, "TITLE", "IupFontDlg Test");
-
   IupPopup(fontdlg, IUP_CENTER, IUP_CENTER);
 
   if (IupGetInt(fontdlg, "STATUS") == 1)

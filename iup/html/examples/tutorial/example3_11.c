@@ -538,6 +538,48 @@ int item_find_action_cb(Ihandle* item_find)
   return IUP_DEFAULT;
 }
 
+void toggle_visibility(Ihandle* item, Ihandle* ih)
+{
+  if (IupGetInt(item, "VALUE"))
+  {
+    IupSetAttribute(ih, "FLOATING", "YES");
+    IupSetAttribute(ih, "VISIBLE", "NO");
+    IupSetAttribute(item, "VALUE", "OFF");
+  }
+  else
+  {
+    IupSetAttribute(ih, "FLOATING", "NO");
+    IupSetAttribute(ih, "VISIBLE", "YES");
+    IupSetAttribute(item, "VALUE", "ON");
+  }
+
+  IupRefresh(ih);  /* refresh the dialog layout */
+}
+
+int item_toolbar_action_cb(Ihandle* item_toolbar)
+{
+  Ihandle* multitext = IupGetDialogChild(item_toolbar, "MULTITEXT");
+  Ihandle* toolbar = IupGetChild(IupGetParent(multitext), 0);
+  Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
+
+  toggle_visibility(item_toolbar, toolbar);
+
+  IupConfigSetVariableStr(config, "MainWindow", "Toolbar", IupGetAttribute(item_toolbar, "VALUE"));
+  return IUP_DEFAULT;
+}
+
+int item_statusbar_action_cb(Ihandle* item_statusbar)
+{
+  Ihandle* multitext = IupGetDialogChild(item_statusbar, "MULTITEXT");
+  Ihandle* statusbar = IupGetBrother(multitext);
+  Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
+
+  toggle_visibility(item_statusbar, statusbar);
+
+  IupConfigSetVariableStr(config, "MainWindow", "Statusbar", IupGetAttribute(item_statusbar, "VALUE"));
+  return IUP_DEFAULT;
+}
+
 int item_font_action_cb(Ihandle* item_font)
 {
   Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
@@ -603,6 +645,12 @@ int item_select_all_action_cb(Ihandle* item_select_all)
   return IUP_DEFAULT;
 }
 
+int item_help_action_cb(void)
+{
+  IupHelp("http://www.tecgraf.puc-rio.br/iup");
+  return IUP_DEFAULT;
+}
+
 int item_about_action_cb(void)
 {
   IupMessage("About", "   Simple Notepad\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
@@ -620,7 +668,8 @@ int main(int argc, char **argv)
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_goto, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
   Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_format, *format_menu, *item_font;
-  Ihandle *sub_menu_help, *help_menu, *item_about;
+  Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
+  Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
   Ihandle *config;
   const char* font;
@@ -740,10 +789,36 @@ int main(int argc, char **argv)
   IupSetAttribute(toolbar_hb, "MARGIN", "5x5");
   IupSetAttribute(toolbar_hb, "GAP", "2");
 
+  item_toolbar = IupItem("&Toobar...", NULL);
+  IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
+  IupSetAttribute(item_toolbar, "VALUE", "ON");
+  item_statusbar = IupItem("&Statusbar...", NULL);
+  IupSetCallback(item_statusbar, "ACTION", (Icallback)item_statusbar_action_cb);
+  IupSetAttribute(item_statusbar, "VALUE", "ON");
+
+  if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))
+  {
+    IupSetAttribute(item_toolbar, "VALUE", "OFF");
+
+    IupSetAttribute(toolbar_hb, "FLOATING", "YES");
+    IupSetAttribute(toolbar_hb, "VISIBLE", "NO");
+  }
+
+  if (!IupConfigGetVariableIntDef(config, "MainWindow", "Statusbar", 1))
+  {
+    IupSetAttribute(item_statusbar, "VALUE", "OFF");
+
+    IupSetAttribute(lbl_statusbar, "FLOATING", "YES");
+    IupSetAttribute(lbl_statusbar, "VISIBLE", "NO");
+  }
+
   item_goto = IupItem("&Go To...\tCtrl+G", NULL);
     IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
+
   item_font = IupItem("&Font...", NULL);
     IupSetCallback(item_font, "ACTION", (Icallback)item_font_action_cb);
+  item_help = IupItem("&Help...", NULL);
+    IupSetCallback(item_help, "ACTION", (Icallback)item_help_action_cb);
   item_about = IupItem("&About...", NULL);
     IupSetCallback(item_about, "ACTION", (Icallback)item_about_action_cb);
 
@@ -773,7 +848,12 @@ int main(int argc, char **argv)
   format_menu = IupMenu(
     item_font,
     NULL);
+  view_menu = IupMenu(
+    item_toolbar,
+    item_statusbar,
+    NULL);
   help_menu = IupMenu(
+    item_help,
     item_about,
     NULL);
 
@@ -783,12 +863,14 @@ int main(int argc, char **argv)
   sub_menu_file = IupSubmenu("&File", file_menu);
   sub_menu_edit = IupSubmenu("&Edit", edit_menu);
   sub_menu_format = IupSubmenu("F&ormat", format_menu);
+  sub_menu_view = IupSubmenu("&View", view_menu);
   sub_menu_help = IupSubmenu("&Help", help_menu);
 
   menu = IupMenu(
     sub_menu_file,
     sub_menu_edit,
     sub_menu_format,
+    sub_menu_view,
     sub_menu_help,
     NULL);
 
