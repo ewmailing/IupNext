@@ -482,6 +482,9 @@ int find_next_action_cb(Ihandle* ih)
     if (!str_to_find || str_to_find[0] == 0)
       return IUP_DEFAULT;
 
+    if (find_pos == -1)
+      find_pos = 0;
+
     str = IupGetAttribute(multitext, "VALUE");
 
     pos = str_find(str + find_pos, str_to_find, casesensitive);
@@ -499,13 +502,40 @@ int find_next_action_cb(Ihandle* ih)
 
       IupSetFocus(multitext);
       IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos, end_pos);
+      IupSetfAttribute(multitext, "FIND_SELECTION", "%d:%d", pos, end_pos);
 
       IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
       IupTextConvertLinColToPos(multitext, lin, 0, &pos);  /* position at col=0, just scroll lines */
       IupSetInt(multitext, "SCROLLTOPOS", pos);
     }
     else
+    {
+      IupSetInt(multitext, "FIND_POS", -1);
       IupMessage("Warning", "Text not found.");
+    }
+  }
+
+  return IUP_DEFAULT;
+}
+
+int find_replace_action_cb(Ihandle* bt_replace)
+{
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(bt_replace, "FIND_DIALOG");
+  Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "MULTITEXT");
+  int find_pos = IupGetInt(multitext, "FIND_POS");
+  char* selectionpos = IupGetAttribute(multitext, "SELECTIONPOS");
+  char* find_selection = IupGetAttribute(multitext, "FIND_SELECTION");
+
+  if (find_pos == -1 || !selectionpos || !find_selection || strcmp(selectionpos, find_selection) != 0)
+    find_next_action_cb(bt_replace);
+  else
+  {
+    Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
+    char* str_to_replace = IupGetAttribute(replace_txt, "VALUE");
+    IupSetAttribute(multitext, "SELECTEDTEXT", str_to_replace);
+
+    /* then find next */
+    find_next_action_cb(bt_replace);
   }
 
   return IUP_DEFAULT;
@@ -517,6 +547,92 @@ int find_close_action_cb(Ihandle* bt_close)
   return IUP_DEFAULT;
 }
 
+void set_find_replace_visibility(Ihandle* find_dlg, int show_replace)
+{
+  Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
+  Ihandle* replace_lbl = IupGetDialogChild(find_dlg, "REPLACE_LABEL");
+  Ihandle* replace_bt = IupGetDialogChild(find_dlg, "REPLACE_BUTTON");
+
+  if (show_replace)
+  {
+    IupSetAttribute(replace_txt, "VISIBLE", "Yes");
+    IupSetAttribute(replace_lbl, "VISIBLE", "Yes");
+    IupSetAttribute(replace_bt, "VISIBLE", "Yes");
+    IupSetAttribute(replace_txt, "FLOATING", "No");
+    IupSetAttribute(replace_lbl, "FLOATING", "No");
+    IupSetAttribute(replace_bt, "FLOATING", "No");
+  }
+  else
+  {
+    IupSetAttribute(replace_txt, "FLOATING", "Yes");
+    IupSetAttribute(replace_lbl, "FLOATING", "Yes");
+    IupSetAttribute(replace_bt, "FLOATING", "Yes");
+    IupSetAttribute(replace_txt, "VISIBLE", "No");
+    IupSetAttribute(replace_lbl, "VISIBLE", "No");
+    IupSetAttribute(replace_bt, "VISIBLE", "No");
+  }
+
+  IupSetAttribute(IupGetDialog(replace_txt), "SIZE", NULL);  /* force a dialog resize */
+  IupRefresh(replace_txt);
+}
+
+Ihandle* create_find_dialog(Ihandle *multitext)
+{
+  Ihandle *box, *bt_next, *bt_close, *txt, *tgl_case, *find_dlg;
+  Ihandle* txt_replace, *bt_replace;
+
+  txt = IupText(NULL);
+  IupSetAttribute(txt, "NAME", "FIND_TEXT");
+  IupSetAttribute(txt, "VISIBLECOLUMNS", "20");
+  txt_replace = IupText(NULL);
+  IupSetAttribute(txt_replace, "NAME", "REPLACE_TEXT");
+  IupSetAttribute(txt_replace, "VISIBLECOLUMNS", "20");
+  tgl_case = IupToggle("Case Sensitive", NULL);
+  IupSetAttribute(tgl_case, "NAME", "FIND_CASE");
+  bt_next = IupButton("Find Next", NULL);
+  IupSetAttribute(bt_next, "PADDING", "10x2");
+  IupSetCallback(bt_next, "ACTION", (Icallback)find_next_action_cb);
+  bt_replace = IupButton("Replace", NULL);
+  IupSetAttribute(bt_replace, "PADDING", "10x2");
+  IupSetCallback(bt_replace, "ACTION", (Icallback)find_replace_action_cb);
+  IupSetAttribute(bt_replace, "NAME", "REPLACE_BUTTON");
+  bt_close = IupButton("Close", NULL);
+  IupSetCallback(bt_close, "ACTION", (Icallback)find_close_action_cb);
+  IupSetAttribute(bt_close, "PADDING", "10x2");
+
+  box = IupVbox(
+    IupLabel("Find What:"),
+    txt,
+    IupSetAttributes(IupLabel("Replace with:"), "NAME=REPLACE_LABEL"),
+    txt_replace,
+    tgl_case,
+    IupSetAttributes(IupHbox(
+      IupFill(),
+      bt_next,
+      bt_replace,
+      bt_close,
+      NULL), "NORMALIZESIZE=HORIZONTAL"),
+    NULL);
+  IupSetAttribute(box, "MARGIN", "10x10");
+  IupSetAttribute(box, "GAP", "5");
+
+  find_dlg = IupDialog(box);
+  IupSetAttribute(find_dlg, "TITLE", "Find");
+  IupSetAttribute(find_dlg, "DIALOGFRAME", "Yes");
+  IupSetAttributeHandle(find_dlg, "DEFAULTENTER", bt_next);
+  IupSetAttributeHandle(find_dlg, "DEFAULTESC", bt_close);
+  IupSetAttributeHandle(find_dlg, "PARENTDIALOG", IupGetDialog(multitext));
+
+  /* Save the multiline to access it from the callbacks */
+  IupSetAttribute(find_dlg, "MULTITEXT", (char*)multitext);
+
+  /* Save the dialog to reuse it */
+  IupSetAttribute(find_dlg, "FIND_DIALOG", (char*)find_dlg);  /* from itself */
+  IupSetAttribute(IupGetDialog(multitext), "FIND_DIALOG", (char*)find_dlg); /* from the main dialog */
+
+  return find_dlg;
+}
+
 int item_find_action_cb(Ihandle* item_find)
 {
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(item_find, "FIND_DIALOG");
@@ -524,48 +640,9 @@ int item_find_action_cb(Ihandle* item_find)
   char* str;
 
   if (!find_dlg)
-  {
-    Ihandle *box, *bt_next, *bt_close, *txt, *tgl_case;
+    find_dlg = create_find_dialog(multitext);
 
-    txt = IupText(NULL);
-    IupSetAttribute(txt, "NAME", "FIND_TEXT");
-    IupSetAttribute(txt, "VISIBLECOLUMNS", "20");
-    tgl_case = IupToggle("Case Sensitive", NULL);
-    IupSetAttribute(tgl_case, "NAME", "FIND_CASE");
-    bt_next = IupButton("Find Next", NULL);
-    IupSetAttribute(bt_next, "PADDING", "10x2");
-    IupSetCallback(bt_next, "ACTION", (Icallback)find_next_action_cb);
-    bt_close = IupButton("Close", NULL);
-    IupSetCallback(bt_close, "ACTION", (Icallback)find_close_action_cb);
-    IupSetAttribute(bt_close, "PADDING", "10x2");
-
-    box = IupVbox(
-      IupLabel("Find What:"),
-      txt,
-      tgl_case,
-      IupSetAttributes(IupHbox(
-        IupFill(),
-        bt_next,
-        bt_close,
-        NULL), "NORMALIZESIZE=HORIZONTAL"),
-      NULL);
-    IupSetAttribute(box, "MARGIN", "10x10");
-    IupSetAttribute(box, "GAP", "5");
-
-    find_dlg = IupDialog(box);
-    IupSetAttribute(find_dlg, "TITLE", "Find");
-    IupSetAttribute(find_dlg, "DIALOGFRAME", "Yes");
-    IupSetAttributeHandle(find_dlg, "DEFAULTENTER", bt_next);
-    IupSetAttributeHandle(find_dlg, "DEFAULTESC", bt_close);
-    IupSetAttributeHandle(find_dlg, "PARENTDIALOG", IupGetDialog(item_find));
-
-    /* Save the multiline to access it from the callbacks */
-    IupSetAttribute(find_dlg, "MULTITEXT", (char*)multitext);
-
-    /* Save the dialog to reuse it */
-    IupSetAttribute(find_dlg, "FIND_DIALOG", (char*)find_dlg);  /* from itself */
-    IupSetAttribute(IupGetDialog(item_find), "FIND_DIALOG", (char*)find_dlg); /* from the main dialog */
-  }
+  set_find_replace_visibility(find_dlg, 0);
 
   /* centerparent first time, next time reuse the last position */
   IupShowXY(find_dlg, IUP_CURRENT, IUP_CURRENT);
@@ -575,6 +652,52 @@ int item_find_action_cb(Ihandle* item_find)
   {
     Ihandle* txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
     IupSetStrAttribute(txt, "VALUE", str);
+  }
+
+  return IUP_DEFAULT;
+}
+
+int item_replace_action_cb(Ihandle* item_replace)
+{
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(item_replace, "FIND_DIALOG");
+  Ihandle* multitext = IupGetDialogChild(item_replace, "MULTITEXT");
+  char* str;
+
+  if (!find_dlg)
+    find_dlg = create_find_dialog(multitext);
+
+  set_find_replace_visibility(find_dlg, 1);
+
+  /* centerparent first time, next time reuse the last position */
+  IupShowXY(find_dlg, IUP_CURRENT, IUP_CURRENT);
+
+  str = IupGetAttribute(multitext, "SELECTEDTEXT");
+  if (str && str[0] != 0)
+  {
+    Ihandle* txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
+    IupSetStrAttribute(txt, "VALUE", str);
+  }
+
+  return IUP_DEFAULT;
+}
+
+int selection_find_next_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  char* str = IupGetAttribute(multitext, "SELECTEDTEXT");
+  if (str && str[0] != 0)
+  {
+    Ihandle* txt;
+    Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih, "FIND_DIALOG");
+
+    if (!find_dlg)
+      find_dlg = create_find_dialog(multitext);
+
+    txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
+    IupSetStrAttribute(txt, "VALUE", str);
+
+    find_next_action_cb(ih);
   }
 
   return IUP_DEFAULT;
@@ -709,7 +832,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_find_next, *item_goto, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
   Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
-  Ihandle *sub_menu_format, *format_menu, *item_font;
+  Ihandle *sub_menu_format, *format_menu, *item_font, *item_replace;
   Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
@@ -775,6 +898,8 @@ Ihandle* create_main_dialog(Ihandle *config)
   item_find_next = IupItem("Find &Next\tF3", NULL);
   IupSetAttribute(item_find_next, "NAME", "ITEM_FINDNEXT");
   IupSetCallback(item_find_next, "ACTION", (Icallback)find_next_action_cb);
+  item_replace = IupItem("&Replace...\tCtrl+H", NULL);
+  IupSetCallback(item_replace, "ACTION", (Icallback)item_replace_action_cb);
   btn_find = IupButton(NULL, NULL);
   IupSetAttribute(btn_find, "IMAGE", "IUP_EditFind");
   IupSetAttribute(btn_find, "FLAT", "Yes");
@@ -854,6 +979,13 @@ Ihandle* create_main_dialog(Ihandle *config)
 
   item_font = IupItem("&Font...", NULL);
   IupSetCallback(item_font, "ACTION", (Icallback)item_font_action_cb);
+
+  if (IupConfigGetVariableInt(config, "MainWindow", "Wordwrap"))
+  {
+    IupSetAttribute(item_statusbar, "VALUE", "ON");
+    IupSetAttribute(multitext, "WORDWRAP", "Yes");
+  }
+
   item_help = IupItem("&Help...", NULL);
   IupSetCallback(item_help, "ACTION", (Icallback)item_help_action_cb);
   item_about = IupItem("&About...", NULL);
@@ -879,6 +1011,7 @@ Ihandle* create_main_dialog(Ihandle *config)
     IupSeparator(),
     item_find,
     item_find_next,
+    item_replace,
     item_goto,
     IupSeparator(),
     item_select_all,
@@ -935,6 +1068,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(dlg, "K_cF", (Icallback)item_find_action_cb);
   IupSetCallback(dlg, "K_cG", (Icallback)item_goto_action_cb);
   IupSetCallback(dlg, "K_F3", (Icallback)find_next_action_cb);
+  IupSetCallback(dlg, "K_cF3", (Icallback)selection_find_next_action_cb);
   IupSetCallback(dlg, "K_cV", (Icallback)item_paste_action_cb);  /* replace system processing */
   
   IupConfigRecentInit(config, recent_menu, item_recent_cb, 10);
@@ -974,3 +1108,16 @@ int main(int argc, char **argv)
   IupClose();
   return EXIT_SUCCESS;
 }
+
+/* If instead of using IupText we use IupScintilla, then we can add:
+   - more find/replace options
+   - zoom
+   - show white spaces
+   - margins
+   - word wrap
+   - tab size
+   - auto replace tabs by spaces
+   - undo & redo
+   - markers
+   and much more.
+ */
