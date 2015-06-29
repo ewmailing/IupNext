@@ -483,7 +483,7 @@ int main(int argc, char **argv)
   IupSetAttribute(dlg, "TITLE", "Simple Notepad");
   IupSetAttribute(dlg, "SIZE", "HALFxHALF");
 
-  /* parent for pre-defined dialogs in closed funtions (IupMessage) */
+  /* parent for pre-defined dialogs in closed functions (IupMessage) */
   IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
 
   IupSetCallback(dlg, "K_cO", (Icallback)item_open_action_cb);

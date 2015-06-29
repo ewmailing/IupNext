@@ -559,7 +559,7 @@ int item_find_action_cb(Ihandle* item_find)
     IupSetAttributeHandle(find_dlg, "DEFAULTESC", bt_close);
     IupSetAttributeHandle(find_dlg, "PARENTDIALOG", IupGetDialog(item_find));
 
-    /* Save the multiline to acess it from the callbacks */
+    /* Save the multiline to access it from the callbacks */
     IupSetAttribute(find_dlg, "MULTITEXT", (char*)multitext);
 
     /* Save the dialog to reuse it */
@@ -660,7 +660,7 @@ int item_paste_action_cb(Ihandle* item_paste)
   Ihandle *clipboard = IupClipboard();
   IupSetAttribute(multitext, "INSERT", IupGetAttribute(clipboard, "TEXT"));
   IupDestroy(clipboard);
-  return IUP_DEFAULT;
+  return IUP_IGNORE;  /* avoid system processing for hot keys, to correctly parse line feed */
 }
 
 int item_cut_action_cb(Ihandle* item_cut) 
@@ -926,7 +926,7 @@ Ihandle* create_main_dialog(Ihandle *config)
 
   IupSetAttribute(dlg, "CONFIG", (char*)config);
 
-  /* parent for pre-defined dialogs in closed funtions (IupMessage) */
+  /* parent for pre-defined dialogs in closed functions (IupMessage and IupAlarm) */
   IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
 
   IupSetCallback(dlg, "K_cN", (Icallback)item_new_action_cb);
@@ -935,7 +935,8 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(dlg, "K_cF", (Icallback)item_find_action_cb);
   IupSetCallback(dlg, "K_cG", (Icallback)item_goto_action_cb);
   IupSetCallback(dlg, "K_F3", (Icallback)find_next_action_cb);
-
+  IupSetCallback(dlg, "K_cV", (Icallback)item_paste_action_cb);  /* replace system processing */
+  
   IupConfigRecentInit(config, recent_menu, item_recent_cb, 10);
 
   return dlg;

@@ -879,7 +879,7 @@ int main(int argc, char **argv)
 
   IupSetAttribute(dlg, "CONFIG", (char*)config);
 
-  /* parent for pre-defined dialogs in closed funtions (IupMessage) */
+  /* parent for pre-defined dialogs in closed functions (IupMessage) */
   IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
 
   IupSetCallback(dlg, "K_cN", (Icallback)item_new_action_cb);
