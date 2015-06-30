@@ -339,7 +339,7 @@ void FlatButtonTest(void)
 
   button = IupFlatButton(NULL);
   IupSetAttribute(button, "RASTERSIZE", "30x30");
-  IupSetAttribute(button, "BGCOLOR", "255 128 92");
+  IupSetAttribute(button, "FGCOLOR", "255 128 92");
   IupSetAttribute(button, "NAME", "color");
 //  IupSetAttribute(button, "EXPAND", "HORIZONTAL");
   //  IupSetAttribute(button, "FLAT", "Yes");

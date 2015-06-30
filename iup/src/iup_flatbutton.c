@@ -73,7 +73,7 @@ static void iFlatButtonDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin,
   } 
 }
 
-static void iFlatButtonDrawBackground(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* color)
+static void iFlatButtonDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* color, char* bgcolor, int active)
 {
   unsigned char r = 0, g = 0, b = 0;
 
@@ -84,6 +84,12 @@ static void iFlatButtonDrawBackground(IdrawCanvas* dc, int xmin, int xmax, int y
   if (ymin > ymax) { int _t = ymin; ymin = ymax; ymax = _t; }
 
   iupStrToRGB(color, &r, &g, &b);
+  if (!active)
+  {
+    unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
+    iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
+    iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+  }
 
   iupDrawRectangle(dc, xmin, ymin, xmax, ymax, r, g, b, IUP_DRAW_FILL);
 }
@@ -347,9 +353,9 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   if (bgimage)
     iFlatButtonDrawImage(ih, dc, border_width, border_width, "BACKIMAGE", bgimage, active);
   else
-    iFlatButtonDrawBackground(dc, border_width, ih->currentwidth - 1 - border_width,
-                                  border_width, ih->currentheight - 1 - border_width,
-                                  bgcolor);
+    iFlatButtonDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
+                           border_width, ih->currentheight - 1 - border_width,
+                           bgcolor, NULL, 1);  /* always active */
 
   iFlatButtonDrawIcon(ih, dc, border_width, border_width,
                               ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
@@ -357,6 +363,18 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
 
   if (fgimage)
     iFlatButtonDrawImage(ih, dc, border_width, border_width, "FRONTIMAGE", fgimage, active);
+  else if (!image && !title)
+  {
+    int space = border_width + 2;
+    iFlatButtonDrawBorder(dc, space, ih->currentwidth - 1 - space,
+                              space, ih->currentheight - 1 - space,
+                              1, "0 0 0", bgcolor, active);
+    space++;
+    iFlatButtonDrawBox(dc, space, ih->currentwidth - 1 - space,
+                           space, ih->currentheight - 1 - space,
+                           fgcolor, bgcolor, active);
+  }
+
 
   if (selected && !old_pressed && (bgimage || image))
     ih->data->pressed = 0;
