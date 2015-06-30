@@ -73,7 +73,7 @@ static void iFlatButtonDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin,
   } 
 }
 
-static void iFlatButtonDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* color)
+static void iFlatButtonDrawBackground(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* color)
 {
   unsigned char r = 0, g = 0, b = 0;
 
@@ -347,9 +347,9 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   if (bgimage)
     iFlatButtonDrawImage(ih, dc, border_width, border_width, "BACKIMAGE", bgimage, active);
   else
-    iFlatButtonDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
-                           border_width, ih->currentheight - 1 - border_width,
-                           bgcolor);
+    iFlatButtonDrawBackground(dc, border_width, ih->currentwidth - 1 - border_width,
+                                  border_width, ih->currentheight - 1 - border_width,
+                                  bgcolor);
 
   iFlatButtonDrawIcon(ih, dc, border_width, border_width,
                               ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
