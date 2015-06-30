@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-O -g
+CFLAGS=-O -g -Wall
 LIBS=-liupimglib -liup
 INCS=-I../../../iup/include
 LDIR=-L../../../iup/lib/$TEC_UNAME
