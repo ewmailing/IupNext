@@ -640,13 +640,48 @@ void iupDrawResetClip(IdrawCanvas* dc)
 
 void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font)
 {
+  int num_line;
   HFONT hOldFont, hFont = (HFONT)iupwinGetHFont(font);
   SetTextColor(dc->hBitmapDC, RGB(r, g, b));
   hOldFont = SelectObject(dc->hBitmapDC, hFont);
 
+  num_line = iupStrLineCount(text);
+
+  if (num_line == 1)
   {
     TCHAR* wtext = iupwinStrToSystemLen(text, &len);
     TextOut(dc->hBitmapDC, x, y, wtext, len);
+  }
+  else
+  {
+    int i, line_height, len;
+    const char *p, *q;
+    TCHAR* wtext;
+    TEXTMETRIC tm;
+
+    GetTextMetrics(dc->hBitmapDC, &tm);
+    line_height = tm.tmHeight;
+
+    p = text;
+    for (i = 0; i < num_line; i++)
+    {
+      q = strchr(p, '\n');
+      if (q) 
+        len = (int)(q - p);  /* Cut the string to contain only one line */
+      else 
+        len = (int)strlen(p);  /* use the remaining characters */
+
+      /* Draw the line */
+      wtext = iupwinStrToSystemLen(p, &len);
+      TextOut(dc->hBitmapDC, x, y, wtext, len);
+
+      /* Advance the string */
+      if (q) 
+        p = q + 1;
+
+      /* Advance a line */
+      y += line_height;
+    }
   }
 
   SelectObject(dc->hBitmapDC, hOldFont);

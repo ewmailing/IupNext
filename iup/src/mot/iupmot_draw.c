@@ -211,10 +211,42 @@ void iupDrawResetClip(IdrawCanvas* dc)
 
 void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font)
 {
+  int num_line;
   XFontStruct* xfont = (XFontStruct*)iupmotGetFontStruct(font);
   XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(r, g, b));
   XSetFont(iupmot_display, dc->pixmap_gc, xfont->fid);
-  XDrawString(iupmot_display, dc->pixmap, dc->pixmap_gc, x, y+xfont->ascent, text, len);
+
+  num_line = iupStrLineCount(text);
+
+  if (num_line == 1)
+    XDrawString(iupmot_display, dc->pixmap, dc->pixmap_gc, x, y+xfont->ascent, text, len);
+  else
+  {
+    int i, line_height, len;
+    const char *p, *q;
+
+    line_height = xfont->ascent + xfont->descent;
+
+    p = text;
+    for (i = 0; i < num_line; i++)
+    {
+      q = strchr(p, '\n');
+      if (q)
+        len = (int)(q - p);  /* Cut the string to contain only one line */
+      else
+        len = (int)strlen(p);  /* use the remaining characters */
+
+      /* Draw the line */
+      XDrawString(iupmot_display, dc->pixmap, dc->pixmap_gc, x, y + xfont->ascent, p, len);
+
+      /* Advance the string */
+      if (q)
+        p = q + 1;
+
+      /* Advance a line */
+      y += line_height;
+    }
+  }
 }
 
 void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y, int *img_w, int *img_h)
