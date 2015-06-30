@@ -38,7 +38,7 @@ static void gtkCanvasUpdateChildLayout(Ihandle *ih, int flush)
   int sb_vert_width=0, sb_horiz_height=0;
   int width = ih->currentwidth;
   int height = ih->currentheight;
-  int border = iupAttribGetInt(ih, "BORDERWIDTH");
+  int border = iupAttribGetInt(ih, "_IUPGTK_BORDER");
 
   if (sb_vert && iupgtkIsVisible(sb_vert))
     sb_vert_width = iupdrvGetScrollbarSize();
@@ -739,7 +739,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
 
   if (iupAttribGetBoolean(ih, "BORDER"))
   {
-    iupAttribSetInt(ih, "BORDERWIDTH", 1);
+    iupAttribSetInt(ih, "_IUPGTK_BORDER", 1);
 #if GTK_CHECK_VERSION(3, 0, 0)
     g_signal_connect(G_OBJECT(sb_win), "draw", G_CALLBACK(gtkCanvasBorderDraw), NULL);
 #else

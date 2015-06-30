@@ -148,6 +148,7 @@
     <ClCompile Include="..\test\dial.c" />
     <ClCompile Include="..\test\dialog.c" />
     <ClCompile Include="..\test\expander.c" />
+    <ClCompile Include="..\test\flatbutton.c" />
     <ClCompile Include="..\test\frame.c" />
     <ClCompile Include="..\test\gauge.c" />
     <ClCompile Include="..\test\getcolor.c" />

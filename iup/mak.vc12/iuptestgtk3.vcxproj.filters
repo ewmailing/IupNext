@@ -68,5 +68,6 @@
     <ClCompile Include="..\test\expander.c" />
     <ClCompile Include="..\test\progressdlg.c" />
     <ClCompile Include="..\test\plot.c" />
+    <ClCompile Include="..\test\flatbutton.c" />
   </ItemGroup>
 </Project>
