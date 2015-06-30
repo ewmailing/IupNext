@@ -311,6 +311,9 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
 
   iupDrawParentBackground(dc);
 
+  if (!bgcolor)
+    bgcolor = bgcolor;
+
   if (ih->data->pressed || selected)
   {
     char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
@@ -698,11 +701,7 @@ Iclass* iupFlatButtonNewClass(void)
   /* Overwrite Visual */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iFlatButtonSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
-  /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iFlatButtonGetBgColorAttrib, iFlatButtonSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE|IUPAF_DEFAULT);
-
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */  
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   /* IupButton only */
@@ -715,7 +714,8 @@ Iclass* iupFlatButtonNewClass(void)
 
   iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERWIDTH", iFlatButtonGetBorderWidthAttrib, iFlatButtonSetBorderWidthAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_DEFAULT);  /* inheritable */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
+  iupClassRegisterAttribute(ic, "BGCOLOR", iFlatButtonGetBgColorAttrib, iFlatButtonSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE | IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "PSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "150 200 235", IUPAF_DEFAULT);  /* inheritable */
 

@@ -13,6 +13,9 @@
     <Filter Include="LED\src">
       <UniqueIdentifier>{7060e4a2-2a79-400f-9be0-ac812b981b3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tutorial">
+      <UniqueIdentifier>{74eb8fe2-adf3-4e2d-801e-0a023425674e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\html\examples\C\alarm.c">
@@ -230,6 +233,60 @@
     </ClCompile>
     <ClCompile Include="..\html\examples\C\mgllabel.c">
       <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\simple_notepad.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example3_7.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example3_8.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example3_9.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example3_10.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example3_11.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example2_1.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example2_2.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example2_3.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example2_4.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example2_5.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example2_5a.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example3_1.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example3_2.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example3_3.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example3_4.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example3_5.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example3_6.c">
+      <Filter>Tutorial</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

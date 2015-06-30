@@ -59,7 +59,7 @@ void iupGlobalSetDefaultColorAttrib(const char* name, int r, int g, int b)
   if (!iupGlobalDefaultColorChanged(name))
   {
     char value[50];
-    sprintf(value, "%3d %3d %3d", r, g, b);
+    sprintf(value, "%d %d %d", r, g, b);
     iupTableSet(iglobal_table, name, (void*)value, IUPTABLE_STRING);
   }
 }
