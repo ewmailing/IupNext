@@ -69,7 +69,10 @@ ifndef TEC_UNAME
   ifeq ($(TEC_SYSARCH), amd64)
     TEC_SYSARCH:=x64
   endif
-
+  ifeq ($(TEC_SYSARCH), armv7l)
+    TEC_SYSARCH:=arm
+  endif
+  
   # Compose
   TEC_SYSRELEASE:=$(TEC_SYSVERSION).$(TEC_SYSMINOR)
   TEC_UNAME:=$(TEC_SYSNAME)$(TEC_SYSVERSION)$(TEC_SYSMINOR)
@@ -114,10 +117,23 @@ ifndef TEC_UNAME
       TEC_UNAME:=$(TEC_UNAME)_ia64
     endif
     
+    # arm Linux (Raspberry Pi)
+    ifeq ($(TEC_SYSARCH), arm)
+      TEC_UNAME:=$(TEC_UNAME)_arm
+    endif    
+    
     # Linux Distribution
     TEC_DISTNAME=$(shell lsb_release -is)
     TEC_DISTVERSION=$(shell lsb_release -rs|cut -f1 -d.)
     TEC_DIST:=$(TEC_DISTNAME)$(TEC_DISTVERSION)
+    
+    # arm Linux (Raspberry Pi)
+    ifeq ($(TEC_SYSARCH), arm)
+	    # Raspbian GNU/Linux 7 (wheezy)
+      TEC_DISTNAME=Raspbian
+      TEC_DISTVERSION=7
+      TEC_DIST:=$(TEC_DISTNAME)$(TEC_DISTVERSION)
+    endif    
   endif
 
   # 64-bits FreeBSD
@@ -1255,6 +1271,7 @@ ifdef USE_GTK
       
       # Add also support for newer instalations
       STDINCS += $(GTK)/lib/x86_64-linux-gnu/glib-2.0/include
+      STDINCS += $(GTK)/lib/arm-linux-gnueabihf/glib-2.0/include
       ifndef USE_GTK3
         STDINCS += $(GTK)/lib/x86_64-linux-gnu/gtk-2.0/include
       endif
@@ -1274,6 +1291,7 @@ ifdef USE_GTK
         STDINCS += $(GTK)/lib/i386-linux-gnu/glib-2.0/include
         ifndef USE_GTK3
           STDINCS += $(GTK)/lib/i386-linux-gnu/gtk-2.0/include
+          STDINCS += $(GTK)/lib/arm-linux-gnueabihf/gtk-2.0/include
         endif
       endif
     endif
