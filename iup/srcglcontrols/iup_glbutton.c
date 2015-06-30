@@ -63,7 +63,9 @@ void iupGLButtonDraw(Ihandle* ih)
   if (draw_border)
   {
     char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
-    iupGLDrawRect(ih, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bwidth, bordercolor, active, 0);
+    iupGLDrawRect(ih, 0, ih->currentwidth - 1, 
+                      0, ih->currentheight - 1, 
+                      bwidth, bordercolor, active, 0);
   }
 
   /* draw background */
@@ -84,6 +86,17 @@ void iupGLButtonDraw(Ihandle* ih)
     iupGLDrawImageZoom(ih, border_width, ih->currentwidth - 1 - border_width,
                            border_width, ih->currentheight - 1 - border_width,
                            "FRONTIMAGE", fgimage, active);
+  else if (!image && !title)
+  {
+    int space = border_width + 2;
+    iupGLDrawRect(ih, space, ih->currentwidth - 1 - space,
+                      space, ih->currentheight - 1 - space,
+                      1, "0 0 0", active, 0);
+    space++;
+    iupGLDrawBox(ih, space, ih->currentwidth - 1 - space,
+                     space, ih->currentheight - 1 - space,
+                     fgcolor, active);
+  }
 
   if (selected && !pressed && (bgimage || image))
     iupAttribSet(ih, "PRESSED", NULL);
