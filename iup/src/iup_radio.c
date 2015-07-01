@@ -48,13 +48,22 @@ static int iRadioFindToggleChild(Ihandle* ih, Ihandle* ih_toggle)
   return 0;
 }
 
+static int iRadioChildIsToggle(Ihandle* child)
+{
+  if (IupClassMatch(child, "toggle") || 
+      IupClassMatch(child, "gltoggle") ||
+      (IupClassMatch(child, "flatbutton") && iupAttribGetBoolean(child, "TOGGLE")))
+    return 1;
+  else
+    return 0;
+}
+
 static Ihandle* iRadioGetToggleChildOn(Ihandle* ih)
 {
   Ihandle* child;
 
   /* found child that is a toggle and it is ON */
-  if ((IupClassMatch(ih, "toggle") || IupClassMatch(ih, "gltoggle")) &&   
-      IupGetInt(ih, "VALUE"))
+  if (iRadioChildIsToggle(ih) && IupGetInt(ih, "VALUE"))
     return ih;
 
   for (child = ih->firstchild; child; child = child->brother)
@@ -76,7 +85,7 @@ static int iRadioSetValueHandleAttrib(Ihandle* ih, const char* value)
   if (!iupObjectCheck(ih_toggle))
     return 0;
 
-  if (!IupClassMatch(ih_toggle, "toggle") && !IupClassMatch(ih_toggle, "gltoggle"))
+  if (!iRadioChildIsToggle(ih_toggle))
     return 0;
 
   if (iRadioFindToggleChild(ih->firstchild, ih_toggle))

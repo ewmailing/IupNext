@@ -22,9 +22,13 @@
 
 #include "iupgtk_drv.h"
 
-/* This was build for GTK3, but works also for GTK2 */
+/* This was build for GTK3 only */
+#if !GTK_CHECK_VERSION(3, 0, 0)
+#error This module is for GTK 3.x only
+#endif
 
-struct _IdrawCanvas{
+struct _IdrawCanvas
+{
   Ihandle* ih;
   int w, h;
 
@@ -41,12 +45,8 @@ IdrawCanvas* iupDrawCreateCanvas(Ihandle* ih)
   dc->window = iupgtkGetWindow(ih->handle);
   dc->cr = gdk_cairo_create(dc->window);
 
-#if GTK_CHECK_VERSION(2, 24, 0)
   dc->w = gdk_window_get_width(dc->window);
   dc->h = gdk_window_get_height(dc->window);
-#else
-  gdk_drawable_get_size(dc->window, &dc->w, &dc->h);
-#endif
 
   surface = cairo_surface_create_similar(cairo_get_target(dc->cr), CAIRO_CONTENT_COLOR_ALPHA, dc->w, dc->h);
   dc->image_cr = cairo_create(surface);
@@ -65,14 +65,8 @@ void iupDrawKillCanvas(IdrawCanvas* dc)
 
 void iupDrawUpdateSize(IdrawCanvas* dc)
 {
-  int w, h;
-
-#if GTK_CHECK_VERSION(2, 24, 0)
-  w = gdk_window_get_width(dc->window);
-  h = gdk_window_get_height(dc->window);
-#else
-  gdk_drawable_get_size(dc->window, &w, &h);
-#endif
+  int w = gdk_window_get_width(dc->window);
+  int h = gdk_window_get_height(dc->window);
 
   if (w != dc->w || h != dc->h)
   {
@@ -312,11 +306,6 @@ void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
 
 void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
 {
-#if GTK_CHECK_VERSION(3, 0, 0)
   GtkStyleContext* context = gtk_widget_get_style_context(dc->ih->handle);
   gtk_render_focus(context, dc->image_cr, x, y, w, h);
-#else
-  GtkStyle *style = gtk_widget_get_style(dc->ih->handle);
-  gtk_paint_focus(style, dc->window, GTK_STATE_NORMAL, NULL, NULL, NULL, x, y, w, h);
-#endif
 }

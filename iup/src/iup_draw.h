@@ -90,7 +90,7 @@ void iupDrawResetClip(IdrawCanvas* dc);
  * \ingroup draw */
 void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h);
 
-/** Draws a focus rectangle directly on main canvas.
+/** Draws a focus rectangle.
  * \ingroup draw */
 void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h);
 

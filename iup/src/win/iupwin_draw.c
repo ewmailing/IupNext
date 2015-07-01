@@ -721,5 +721,5 @@ void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
   rect.right = x+w;  
   rect.bottom = y+h;
 
-  DrawFocusRect(dc->hDC, &rect);
+  DrawFocusRect(dc->hBitmapDC, &rect);
 }

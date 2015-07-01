@@ -275,5 +275,5 @@ void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
 
 void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
 {
-  XmeDrawHighlight(iupmot_display, dc->wnd, dc->gc, x, y, w, h, 1);
+  XmeDrawHighlight(iupmot_display, dc->pixmap, dc->pixmap_gc, x, y, w, h, 1);
 }

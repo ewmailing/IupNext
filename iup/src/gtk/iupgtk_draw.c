@@ -30,6 +30,9 @@ struct _IdrawCanvas{
   GdkDrawable* wnd;
   GdkPixmap* pixmap;
   GdkGC *gc, *pixmap_gc;
+
+  int draw_focus, 
+    focus_x, focus_y, focus_w, focus_h;
 };
 
 IdrawCanvas* iupDrawCreateCanvas(Ihandle* ih)
@@ -75,9 +78,17 @@ void iupDrawUpdateSize(IdrawCanvas* dc)
   }
 }
 
+void iupdrvDrawFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h);
+
 void iupDrawFlush(IdrawCanvas* dc)
 {
   gdk_draw_drawable(dc->wnd, dc->gc, dc->pixmap, 0, 0, 0, 0, dc->w, dc->h);
+
+  if (dc->draw_focus)
+  {
+    iupdrvDrawFocusRect(dc->ih, NULL, dc->focus_x, dc->focus_y, dc->focus_w, dc->focus_h);
+    dc->draw_focus = 0;
+  }
 }
 
 void iupDrawGetSize(IdrawCanvas* dc, int *w, int *h)
@@ -220,6 +231,9 @@ void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
 
 void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
 {
-  GtkStyle *style = gtk_widget_get_style(dc->ih->handle);
-  gtk_paint_focus(style, dc->wnd, GTK_STATE_NORMAL, NULL, NULL, NULL, x, y, w, h);
+  dc->draw_focus = 1;  /* draw focus on the next flush */
+  dc->focus_x = x;
+  dc->focus_y = y;
+  dc->focus_w = w;
+  dc->focus_h = h;
 }

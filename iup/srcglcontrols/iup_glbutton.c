@@ -112,6 +112,7 @@ static int iGLButtonBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y
 {
   if (button == IUP_BUTTON1)
   {
+    /* "PRESSED" was already updated */
     iupGLSubCanvasRedraw(ih);
 
     if (!pressed)

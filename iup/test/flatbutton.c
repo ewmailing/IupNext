@@ -261,8 +261,8 @@ static void set_callbacks(Ihandle* button)
   //IupSetCallback(button, "K_ANY",        (Icallback)k_any);
   IupSetCallback(button, "HELP_CB",      (Icallback)help_cb);
 
-//  IupSetCallback(button, "GETFOCUS_CB",  (Icallback)getfocus_cb); 
-//  IupSetCallback(button, "KILLFOCUS_CB", (Icallback)killfocus_cb);
+  //IupSetCallback(button, "GETFOCUS_CB",  (Icallback)getfocus_cb); 
+  //IupSetCallback(button, "KILLFOCUS_CB", (Icallback)killfocus_cb);
   IupSetCallback(button, "FLAT_ENTERWINDOW_CB", (Icallback)enterwindow_cb);
   IupSetCallback(button, "FLAT_LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 }
@@ -284,6 +284,7 @@ void FlatButtonTest(void)
 {
   Ihandle *dlg, *button, *label, *image1, *image1i, *image1p, *image2, *image3, 
           *box1, *box2;
+  int toggle = 0;
 
   /* IupImageLibOpen(); */
 
@@ -300,9 +301,9 @@ void FlatButtonTest(void)
 
   button = IupFlatButton(NULL);
   if (IupGetInt(NULL, "UTF8MODE"))
-    IupSetAttribute(button, "TITLE", "&Text && Test(Γ§Γ£ΓµΓ΅Γ³Γ©)");
+    IupSetAttribute(button, "TITLE", "Test(Γ§Γ£ΓµΓ΅Γ³Γ©)");
   else
-    IupSetAttribute(button, "TITLE", "&Text && Test(ηγυασι)");
+    IupSetAttribute(button, "TITLE", "Test[ηγυασι]");
   IupSetAttribute(button, "TIP", "Button & Tip");
   //IupSetAttribute(button, "PADDING", "15x15");
   //IupSetAttribute(button, "BGCOLOR", "128 128 255");
@@ -314,6 +315,7 @@ void FlatButtonTest(void)
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT:ATOP");
   IupSetAttribute(button, "NAME", "button1");
   IupSetAttribute(button, "CANFOCUS", "NO");
+  if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box1, button);
 
@@ -322,8 +324,8 @@ void FlatButtonTest(void)
   IupSetAttribute(button, "RASTERSIZE", "200x100");
   IupSetAttribute(button, "ALIGNMENT", "ACENTER:ACENTER");
   IupSetAttribute(button, "FONT", "Helvetica, Underline 14");
-  IupSetAttribute(button, "FLAT", "YES");
   IupSetAttribute(button, "NAME", "button2");
+  if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box1, button);
 
@@ -334,6 +336,7 @@ void FlatButtonTest(void)
   IupSetAttribute(button, "MARKUP", "YES");
   IupSetAttribute(button, "NAME", "button3");
   IupSetAttribute(button, "CANFOCUS", "NO");
+  if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box1, button);
 
@@ -341,8 +344,8 @@ void FlatButtonTest(void)
   IupSetAttribute(button, "RASTERSIZE", "30x30");
   IupSetAttribute(button, "FGCOLOR", "255 128 92");
   IupSetAttribute(button, "NAME", "color");
-//  IupSetAttribute(button, "EXPAND", "HORIZONTAL");
-  //  IupSetAttribute(button, "FLAT", "Yes");
+  if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
+  //  IupSetAttribute(button, "EXPAND", "HORIZONTAL");
   set_callbacks(button);
   IupAppend(box1, button);
 
@@ -406,7 +409,7 @@ void FlatButtonTest(void)
   IupSetAttribute(button, "TIP", "Image Label");
   IupSetAttribute(button, "NAME", "button4");
   IupSetAttribute(button, "PADDING", "5x5");
-  IupSetAttribute(button, "FLAT", "Yes");
+  if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box2, button);
 
@@ -417,11 +420,11 @@ void FlatButtonTest(void)
 //  IupSetAttribute(button, "SPACING", "30");
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
-//  IupSetAttribute(button, "FLAT", "YES");
 //  IupSetAttributeHandle(button, "IMAGEPRESS", image2);
   IupSetAttribute(button, "CANFOCUS", "NO");
 //  IupSetAttribute(button, "RASTERSIZE", "15x15");
   IupSetAttribute(button, "NAME", "button5");
+  if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box2, button);
 
@@ -431,6 +434,7 @@ void FlatButtonTest(void)
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
 //  IupSetAttribute(button, "ALIGNMENT", "ARIGHT");
   IupSetAttribute(button, "NAME", "button6");
+  if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box2, button);
 
@@ -438,6 +442,7 @@ void FlatButtonTest(void)
   IupSetAttribute(label, "SEPARATOR", "VERTICAL");
   IupSetHandle("seplabel", label);
 
+  //dlg = IupDialog(IupHbox(IupRadio(box1), label, IupRadio(box2), NULL));
   dlg = IupDialog(IupHbox(box1, label, box2, NULL));
   IupSetAttribute(dlg, "TITLE", "IupFlatButton Test");
 //  IupSetAttribute(box1, "BGCOLOR", "128 0 0");
@@ -445,21 +450,10 @@ void FlatButtonTest(void)
 //  IupSetAttribute(dlg, "BACKGROUND", "255 128 128");
 //  IupSetAttributeHandle(dlg, "BACKGROUND", image2);
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
-//  IupSetAttribute(dlg, "SAVEUNDER", "NO");
 
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 
-//  IupSetGlobal("CLIENTAREAANIMATION", "No");
-//  IupSetGlobal("HOTTRACKING", "No");
-
   IupShow(dlg);
-
-//  IupSetAttribute(dlg, "PARENTDIALOG", "BIGTEST");
-//  IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
-  //  IupShowXY(dlg,IUP_LEFT,IUP_TOP);
-//  IupShowXY(dlg, IUP_RIGHT, IUP_BOTTOM);
-//  IupShowXY(dlg, IUP_RIGHT, IUP_CENTER);
-//  IupShowXY(dlg,0,0);
 }
 
 #ifndef BIG_TEST

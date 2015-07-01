@@ -171,6 +171,7 @@ static int iGLToggleBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y
       }
     }
 
+    /* "PRESSED" was already updated */
     iupGLSubCanvasRedraw(ih);
 
     if (!pressed)
