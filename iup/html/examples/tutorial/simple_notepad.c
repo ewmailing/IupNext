@@ -1119,5 +1119,6 @@ int main(int argc, char **argv)
    - auto replace tabs by spaces
    - undo & redo
    - markers
+   - line numbers
    and much more.
  */
