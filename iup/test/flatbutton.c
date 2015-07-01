@@ -286,7 +286,7 @@ void FlatButtonTest(void)
           *box1, *box2;
   int toggle = 0;
 
-  /* IupImageLibOpen(); */
+  IupImageLibOpen();
 
   box1 = IupVbox(NULL);
   IupSetAttribute(box1, "MARGIN", "5x5");
@@ -399,11 +399,11 @@ void FlatButtonTest(void)
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT:ATOP");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
 //  IupSetAttribute(button, "IMAGEPOSITION", "BOTTOM");
-//  IupSetAttribute(button, "PADDING", "5x5");
-//  IupSetAttribute(button, "TITLE", "Text1");
+  IupSetAttribute(button, "PADDING", "5x5");
+  IupSetAttribute(button, "TITLE", "Text");
 //  IupSetAttribute(button, "FONT", "Helvetica, 14");
-//  IupSetAttribute(button, "IMAGE", "IUP_Tecgraf");
-  IupSetAttributeHandle(button, "IMAGE", image1);
+  IupSetAttribute(button, "IMAGE", "IUP_Tecgraf");
+//  IupSetAttributeHandle(button, "IMAGE", image1);
 //  IupSetAttributeHandle(button, "IMAGEINACTIVE", image1i);
 //  IupSetAttributeHandle(button, "IMAGEPRESS", image1p);
   IupSetAttribute(button, "TIP", "Image Label");
