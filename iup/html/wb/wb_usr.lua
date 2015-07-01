@@ -1233,6 +1233,10 @@ wb_usr.tree =
               }
             },
             {
+              name= {nl= "IupFlatButton"},
+              link= "elem/iupflatbutton.html"
+            },
+            {
               name= {nl= "IupFrame"},
               link= "elem/iupframe.html"
             },
