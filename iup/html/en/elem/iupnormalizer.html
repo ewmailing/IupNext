@@ -26,9 +26,10 @@
 <h2>IupNormalizer <span class="style1">(since 3.0)</span></h2>
 
 <p>It is a void container that does not affects the dialog layout. It act by normalizing all 
-child controls so their natural size to be the biggest natural size among 
+controls in a list so their natural size to be the biggest natural size among 
 them. All natural width will be set to the biggest width, and all natural height 
-will be set to the biggest height according to is value. The child controls must 
+will be set to the biggest height according to is value. The controls of the 
+list must 
 be inside a valid container in the dialog. </p>
 
 <h3><a name="Creation">Creation</a></h3>
@@ -59,10 +60,10 @@ directly.</p>
 control to the normalizer. The value passed must be a 
 handle of an element.</p>
 
-<h3>Attributes (at Children)</h3>
+<h3>Attributes (at Controls)</h3>
 
 <p><strong>NORMALIZERGROUP</strong> (<font SIZE="3">non inheritable</font>)
-	<strong>(at children only)</strong>: name of a normalizer 
+	<strong>(at controls only)</strong>: name of a normalizer 
 element to 
 automatically add the control. If an element with that name does not exists 
 then one is created. In Lua you can also use the element reference directly.</p>
@@ -74,7 +75,8 @@ so add it to the hierarchy before the elements you want to normalize or its norm
 not used.</p>
 <p>The elements do NOT need to be children of the same parent, do NOT need to be 
 mapped, and do NOT need to be in a complete hierarchy of a dialog.</p>
-<p>The elements are NOT children of the normalizer. To 
+<p>The elements are NOT children of the normalizer, so <strong>IupAppend</strong>,
+<strong>IupInsert</strong> and <strong>IupDetach</strong> can not be used. To 
 remove or add other elements, the normalizer must be destroyed and created a new 
 one.</p>
 <p>Notice that the NORMALIZERGROUP attribute can simplify a lot the process of 

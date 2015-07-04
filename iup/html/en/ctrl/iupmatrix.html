@@ -190,8 +190,8 @@ concatenate the attribute name with the id.</p>
 <strong>elem</strong>[&quot;bgcolor30:10&quot;] = v</pre>
 <hr>
 <pre>void <b>IupMatrixSetFormula</b>(Ihandle* <b>ih</b>, int <strong>col</strong>, const char* <strong>formula</strong>, const char* <strong>init</strong>); [in C]
-<b>iup.MatrixSetFormula</b>(<b>ih</b>: ihandle, <strong>col</strong>: number, <strong>formula</strong>: string [<strong>init</strong>: string]) [in Lua]
-<strong>ih</strong>:setformula(<strong>col</strong>: number, <strong>formula</strong>: string) [in Lua]</pre>
+<b>iup.MatrixSetFormula</b>(<b>ih</b>: ihandle, <strong>col</strong>: number, <strong>formula</strong>: string, [<strong>init</strong>: string]) [in Lua]
+<strong>ih</strong>:setformula(<strong>col</strong>: number, <strong>formula</strong>: string, [<strong>init</strong>: string]) [in Lua]</pre>
 <p>Fill the contents of the given column using the formula (since 3.13). The 
 formula is executed for each line within the column. Internally uses
 <a href="http://www.lua.org" target="_blank">Lua</a> to parse the formula.
@@ -266,7 +266,8 @@ Excel.</p>
 
 <hr>
 <pre>void <b>IupMatrixSetDynamic</b>(Ihandle* <b>ih</b>, const char* <strong>init</strong>); [in C]
-<b>iup.MatrixSetDynamic</b>(<b>ih</b>: ihandle, [<strong>init</strong>: string]) [in Lua]</pre>
+<b>iup.MatrixSetDynamic</b>(<b>ih</b>: ihandle, [<strong>init</strong>: string]) [in Lua]
+<b>ih.</b>setdynamic([<strong>init</strong>: string]) [in Lua]</pre>
 <p>Enable dynamic cell values using formulas (since 3.13). It uses the 
 TRANSLATEVALUE_CB callback to process strings just before the value is 
 displayed, if the string starts with a equal sign (&quot;=&quot;) then it is interpreted 
