@@ -21,8 +21,8 @@ local ctrl = {
   include = "iupcontrols.h",
 }
 
-function ctrl.redraw(handle)
-   handle.repaint = "YES"
+function ctrl.redraw(ih)
+   ih.repaint = "YES"
 end
 
 function ctrl.createElement(class, param)
@@ -30,4 +30,4 @@ function ctrl.createElement(class, param)
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

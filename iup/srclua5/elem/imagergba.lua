@@ -11,8 +11,8 @@ local ctrl = {
   createfunc = [[ 
 static int ImageRGBA(lua_State *L)
 {
-  int w = luaL_checkinteger(L, 1);
-  int h = luaL_checkinteger(L, 2);
+  int w = (int)luaL_checkinteger(L, 1);
+  int h = (int)luaL_checkinteger(L, 2);
   unsigned char *pixels = iuplua_checkuchar_array(L, 3, w*h*4);
   Ihandle *ih = IupImageRGBA(w, h, pixels);
   iuplua_plugstate(L, ih);
@@ -29,4 +29,4 @@ function ctrl.createElement(class, param)
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

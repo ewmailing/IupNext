@@ -5,7 +5,7 @@ local ctrl = {
   nick = "glframe",
   funcname = "GLFrame",
   include = "iupglcontrols.h",
-  parent = iup.WIDGET,
+  parent = iup.BOX,
   subdir = "gl",
   creation = "I",
   callback = {
@@ -13,8 +13,8 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, param)
-   return iup.GLFrame(param[1])
+   return iup.GLFrame()
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

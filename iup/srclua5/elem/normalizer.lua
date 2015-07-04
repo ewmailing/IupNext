@@ -10,15 +10,16 @@ local ctrl = {
   callback = {}
 }
 
-function ctrl.setAttributes(object, param)
-  local handle = rawget(object, "handle")
+-- mimics the iup.BOX.setAttributes, but without using iup.Append
+function ctrl.setAttributes(widget, param)
+  local ih = widget.ihandle
   local n = #param
   for i = 1, n do
-    if iup.GetClass(param[i]) == "iup handle" then 
-      object.handle.addcontrol = param[i]
+    if iup.GetClass(param[i]) == "iupHandle" then 
+      ih.addcontrol = param[i]
     end
   end
-  iup.WIDGET.setAttributes(object, param)
+  iup.WIDGET.setAttributes(widget, param)
 end
 
 function ctrl.createElement(class, param)
@@ -26,4 +27,4 @@ function ctrl.createElement(class, param)
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

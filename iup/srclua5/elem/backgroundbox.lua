@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "backgroundbox",
-  parent = iup.WIDGET,
+  parent = iup.BOX,
   subdir = "elem",
   creation = "I",
   funcname = "BackgroundBox",
@@ -13,8 +13,8 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, param)
-   return iup.BackgroundBox(param[1])
+   return iup.BackgroundBox()
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

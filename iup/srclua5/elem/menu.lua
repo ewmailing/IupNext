@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "menu",
-  parent = iup.BOX,  -- iup.Append will be automatically called after createElement
+  parent = iup.BOX,
   subdir = "elem",
   creation = "-",
   callback = {
@@ -12,12 +12,8 @@ local ctrl = {
   }
 }
 
-function ctrl.popup(handle, x, y)
-  iup.Popup(handle, x, y)
-end
-
-function ctrl.append(handle, elem)
-  iup.Append(handle, elem)
+function ctrl.popup(ih, x, y)
+  iup.Popup(ih, x, y)
 end
 
 function ctrl.getargs(menu_param)
@@ -36,7 +32,7 @@ function ctrl.createElement(class, param)
   for i=1,n do
     local menu_param = param[i]
     if type(menu_param) == "table" then 
-      -- replace param[i], so it will be used by iup.Append after createElement
+      -- replace param[i], so it will be used by iup.Append after createElement in setAttributes
       -- other elements already created can also be used
       if type(menu_param[1]) == "nil" then
         param[i] = iup.separator{}
@@ -57,9 +53,5 @@ function ctrl.createElement(class, param)
   return iup.Menu()
 end
 
-function ctrl.showxy(handle, x, y)
-  return iup.ShowXY(handle, x, y)
-end
-
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

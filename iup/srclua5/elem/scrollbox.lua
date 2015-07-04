@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "scrollbox",
-  parent = iup.WIDGET,
+  parent = iup.BOX,
   subdir = "elem",
   creation = "I",
   funcname = "ScrollBox",
@@ -11,8 +11,8 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, param)
-   return iup.ScrollBox(param[1])
+   return iup.ScrollBox()
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

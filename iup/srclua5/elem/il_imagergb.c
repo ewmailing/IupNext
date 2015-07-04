@@ -15,8 +15,8 @@
  
 static int ImageRGB(lua_State *L)
 {
-  int w = luaL_checkinteger(L, 1);
-  int h = luaL_checkinteger(L, 2);
+  int w = (int)luaL_checkinteger(L, 1);
+  int h = (int)luaL_checkinteger(L, 2);
   unsigned char *pixels = iuplua_checkuchar_array(L, 3, w*h*3);
   Ihandle *ih = IupImageRGB(w, h, pixels);
   iuplua_plugstate(L, ih);

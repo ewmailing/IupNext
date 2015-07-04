@@ -33,16 +33,16 @@ function ctrl.createElement(class, param)
   return iup.OleControl(param[1])
 end
 
-function ctrl.CreateLuaCOM(handle)
+function ctrl.CreateLuaCOM(ih)
   -- if luacom is loaded, use it to access methods and properties
   -- of the control
   if luacom then
-    local punk = handle.iunknown
+    local punk = ih.iunknown
     if punk then
-      handle.com = luacom.CreateLuaCOM(luacom.ImportIUnknown(punk))
+      ih.com = luacom.CreateLuaCOM(luacom.ImportIUnknown(punk))
     end     
   end
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

@@ -21,11 +21,11 @@
 
 static int GetNativeHandleImage(lua_State *L)
 {
-  void* handle;
+  void* native_handle;
   imImage* im_image;
   luaL_checktype (L, 1, LUA_TLIGHTUSERDATA);
-  handle = lua_touserdata(L, 1);
-  im_image = IupGetNativeHandleImage(handle);
+  native_handle = lua_touserdata(L, 1);
+  im_image = IupGetNativeHandleImage(native_handle);
   imlua_pushimage(L, im_image);
   return 1;
 }
@@ -33,8 +33,8 @@ static int GetNativeHandleImage(lua_State *L)
 static int GetImageNativeHandle(lua_State *L)
 {
   imImage* im_image = imlua_checkimage(L, 1);
-  void* handle = IupGetImageNativeHandle(im_image);
-  lua_pushlightuserdata(L, handle);
+  void* native_handle = IupGetImageNativeHandle(im_image);
+  lua_pushlightuserdata(L, native_handle);
   return 1;
 }
 

@@ -677,7 +677,7 @@ static int matrix_color_cb(Ihandle *self, int p0, int p1, int *p2, int *p3, int 
   lua_pushinteger(L, p1);
 
   /* similar to iuplua_call */
-  status = iuplua_call_raw(L, 2 + 2, LUA_MULTRET);   /* 2 args + 2 args(errormsg, handle), variable number of returns */
+  status = iuplua_call_raw(L, 2 + 2, LUA_MULTRET);   /* 2 args + 2 args(errormsg, ih), variable number of returns */
 
   if (status != LUA_OK)
     return IUP_DEFAULT;

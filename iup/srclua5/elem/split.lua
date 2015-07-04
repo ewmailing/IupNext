@@ -3,15 +3,15 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "split",
-  parent = iup.WIDGET,
+  parent = iup.BOX,
   subdir = "elem",
   creation = "II",
   callback = {}
 }
 
 function ctrl.createElement(class, param)
-   return iup.Split(param[1], param[2])
+   return iup.Split()
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

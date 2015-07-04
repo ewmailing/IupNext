@@ -32,4 +32,4 @@ function ctrl.createElement(class, param)
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

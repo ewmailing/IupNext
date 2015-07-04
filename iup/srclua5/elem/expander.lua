@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "expander",
-  parent = iup.WIDGET,
+  parent = iup.BOX,
   subdir = "elem",
   creation = "I",
   callback = {
@@ -14,8 +14,8 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, param)
-  return iup.Expander(param[1])
+  return iup.Expander()
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

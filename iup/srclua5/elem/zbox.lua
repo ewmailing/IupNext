@@ -9,16 +9,18 @@ local ctrl = {
   callback = {}
 }
 
-function ctrl.append (handle, elem)
-  iup.SetHandleName(elem)
-  iup.Append(handle, elem)
+function ctrl.append(ih, child)
+  -- automatically add names
+  iup.SetHandleName(child)
+  iup.Append(ih, child)
 end
 
-function ctrl.SetChildrenNames(obj)
-  if obj then
+function ctrl.SetChildrenNames(param)
+  if param then
     local i = 1
-    while obj[i] do
-      iup.SetHandleName(obj[i])
+    while param[i] do
+      -- automatically add names
+      iup.SetHandleName(param[i])
       i = i+1
     end
   end
@@ -30,4 +32,4 @@ function ctrl.createElement(class, param)
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

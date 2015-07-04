@@ -60,6 +60,7 @@ int iupbackgroundboxlua_open(lua_State * L);
 int iupflatbuttonlua_open(lua_State * L);
 
 void iupgetparamlua_open (lua_State * L);
+void iupconfiglua_open(lua_State * L);
 
 int iupluaScanf(lua_State *L);
 void iupluaapi_open(lua_State * L);
@@ -159,7 +160,7 @@ double* iuplua_checkdouble_array(lua_State *L, int pos, int count);
  If count is 0, table size is used. Else table size must match count. */
 unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int count);
 
-/** Returns an array of ihandle stored in a Lua table.
+/** Returns an array of Ihandle* stored in a Lua table.
  If count is 0, table size is used. Else table size must match count. */
 Ihandle** iuplua_checkihandle_array(lua_State *L, int pos, int count);
 

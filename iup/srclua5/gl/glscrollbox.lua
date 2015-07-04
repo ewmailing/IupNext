@@ -5,7 +5,7 @@ local ctrl = {
   nick = "glscrollbox",
   funcname = "GLScrollBox",
   include = "iupglcontrols.h",
-  parent = iup.WIDGET,
+  parent = iup.BOX,
   subdir = "gl",
   creation = "I",
   callback = {
@@ -13,8 +13,8 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, param)
-   return iup.GLScrollBox(param[1])
+   return iup.GLScrollBox()
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

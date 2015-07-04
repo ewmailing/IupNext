@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "dialog",
-  parent = iup.WIDGET,
+  parent = iup.BOX,
   subdir = "elem",
   creation = "I",
   callback = {
@@ -26,16 +26,16 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, param)
-   return iup.Dialog(param[1])
+   return iup.Dialog()
 end
 
-function ctrl.popup(handle, x, y)
-  iup.Popup(handle,x,y)
+function ctrl.popup(ih, x, y)
+  iup.Popup(ih,x,y)
 end
 
-function ctrl.showxy(handle, x, y)
-  return iup.ShowXY(handle, x, y)
+function ctrl.showxy(ih, x, y)
+  return iup.ShowXY(ih, x, y)
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

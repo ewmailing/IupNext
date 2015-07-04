@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------------
 local ctrl = {
   nick = "detachbox",
-  parent = iup.WIDGET,
+  parent = iup.BOX,
   subdir = "elem",
   creation = "I",
   funcname = "DetachBox",
@@ -13,8 +13,8 @@ local ctrl = {
 }
 
 function ctrl.createElement(class, param)
-  return iup.DetachBox(param[1])
+  return iup.DetachBox()
 end
 
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")

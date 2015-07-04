@@ -34,7 +34,7 @@ static int pplot_edit_cb(Ihandle *self, int p0, int p1, float p2, float p3, floa
   lua_pushnumber(L, p3);
 
   /* similar to iuplua_call */
-  status = iuplua_call_raw(L, 4 + 2, LUA_MULTRET);  /* 4 args + 2 args(errormsg, handle), variable number of returns */
+  status = iuplua_call_raw(L, 4 + 2, LUA_MULTRET);  /* 4 args + 2 args(errormsg, ih), variable number of returns */
 
   if (status != LUA_OK)
     return IUP_DEFAULT;

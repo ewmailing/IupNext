@@ -12,8 +12,8 @@ local ctrl = {
   funcname = "FileDlg"
 } 
 
-function ctrl.popup(handle, x, y)
-  iup.Popup(handle,x,y)
+function ctrl.popup(ih, x, y)
+  iup.Popup(ih,x,y)
 end
 
 function ctrl.createElement(class, param)
@@ -21,5 +21,5 @@ function ctrl.createElement(class, param)
 end
    
 iup.RegisterWidget(ctrl)
-iup.SetClass(ctrl, "iup widget")
+iup.SetClass(ctrl, "iupWidget")
 

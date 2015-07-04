@@ -20,8 +20,8 @@
 
 /* global table */
 static const char* iup_globaltable = "iup";
-static const char* iup_handle = "iup handle";
-static const char* iup_handle_expected = "iup handle expected";
+static const char* iup_handle = "iupHandle";
+static const char* iup_handle_expected = "IUP handle expected";
 
 const char* iuplua_getglobaltable(void)
 {
@@ -38,27 +38,39 @@ const char* iuplua_getglobaltable(void)
 
 /* report, traceback and docall were adapted from "lua.c" */
 
-static void error_message(lua_State *L, const char *msg, const char* traceback)
+static void show_error(const char* msg, const char* traceback)
 {
-  lua_getglobal(L, iup_globaltable);
-  lua_pushstring(L, "_ERRORMESSAGE");
-  lua_gettable(L, -2);
-  lua_remove(L, -2);  /* remove global table from stack */
+  Ihandle *multi_text, *dlg;
 
-  if(lua_isnil(L, -1))
-  {
-    /* Panic mode */
-    if (traceback != NULL)
-      fprintf(stderr, "%s\n%s\n", msg, traceback);
-    else
-      fprintf(stderr, "%s\n", msg);
-    fflush(stderr);
-    return;
-  }
+  multi_text = IupMultiLine(NULL);
+  IupSetAttribute(multi_text, "EXPAND", "YES");
+  IupSetAttribute(multi_text, "READONLY", "YES");
+  IupSetAttribute(multi_text, "FONT", "Courier, 12");
+  IupSetAttribute(multi_text, "VISIBLELINES", "10");
+  IupSetAttribute(multi_text, "VISIBLECOLUMNS", "50");
 
-  lua_pushstring(L, msg);
-  lua_pushstring(L, traceback);
-  lua_call(L, 2, 0);  /* iup._ERRORMESSAGE(msg, traceback) */
+  if (traceback != NULL)
+    IupSetfAttribute(multi_text, "VALUE", "%s\n%s\n", msg, traceback);
+  else
+    IupSetStrAttribute(multi_text, "VALUE", msg);
+
+  dlg = IupDialog(multi_text);
+
+  IupSetAttribute(dlg, "TITLE", "Lua Error");
+  IupSetAttribute(dlg, "MINBOX", "NO");
+  IupSetAttribute(dlg, "MAXBOX", "NO");
+  IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  IupDestroy(dlg);
+}
+
+static int error_message(lua_State *L)
+{
+  show_error(lua_tostring(L, 1), luaL_optstring(L, 2, NULL));
+  return 0;
 }
 
 static int report (lua_State *L, int status, int concat_traceback)
@@ -81,7 +93,7 @@ static int report (lua_State *L, int status, int concat_traceback)
     else {
       traceback = lua_tostring(L, -1);
     }
-    error_message(L, msg, traceback);
+    show_error(msg, traceback);
     lua_pop(L, 2);  /* remove msg and traceback from stack */
   }
   return status;
@@ -176,9 +188,9 @@ int iuplua_dofile(lua_State *L, const char *filename)
   return report(L, status, 1);
 }
 
-int iuplua_dostring(lua_State *L, const char *s, const char *name)
+int iuplua_dostring(lua_State *L, const char *s, int len, const char *name)
 {
-  int status = luaL_loadbuffer(L, s, strlen(s), name);
+  int status = luaL_loadbuffer(L, s, len, name);
   if (status == LUA_OK)
     status = docall(L, 0, 0);
   return report(L, status, 1);
@@ -189,7 +201,7 @@ int iuplua_dostring(lua_State *L, const char *s, const char *name)
 
 Ihandle *iuplua_checkihandleornil(lua_State *L, int pos)
 {
-  if (lua_isnil(L, pos))
+  if (lua_isnoneornil(L, pos))
     return NULL;
   else
     return iuplua_checkihandle(L, pos);
@@ -199,7 +211,7 @@ Ihandle *iuplua_checkihandle(lua_State *L, int pos)
 {
   lua_getmetatable(L, pos);   /* t2 = metatable(stack(pos)) */
   lua_pushstring(L, iup_handle);
-  lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iup handle"] */
+  lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iupHandle"] */
   if (lua_rawequal(L, -2, -1))   /* check (t2==t)? */
   {
     lua_pop (L, 2);
@@ -251,7 +263,7 @@ void iuplua_pushihandle(lua_State *L, Ihandle *ih)
       iuplua_pushihandle_raw(L, ih);
 
       lua_pushstring(L, iup_handle);
-      lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iup handle"] */
+      lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iupHandle"] */
       lua_setmetatable(L, -2);    /* metatable(ih) = t */
     }
   } 
@@ -268,15 +280,15 @@ static int il_destroy_cb(Ihandle* ih)
     lua_State *L = iuplua_getstate(ih);
     int ref = atoi(sref);
 
-    /* removes the ihandle reference in the lua table */
-    /* object.handle = nil */
+    /* removes the Ihandle* reference from the lua object */
+    /* widget.ihandle = nil */
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);  /* push object */
-    lua_pushstring(L, "handle");
+    lua_pushstring(L, "ihandle");
     lua_pushnil(L);
     lua_settable(L, -3);
     lua_pop(L,1);
 
-    /* removes the association of the ihandle with the lua table */
+    /* removes the association of the Ihandle* with the lua object */
     luaL_unref(L, LUA_REGISTRYINDEX, ref);  /* this is the complement of SetWidget */
     IupSetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", NULL);
 
@@ -458,7 +470,7 @@ lua_State* iuplua_call_start(Ihandle *ih, const char* name)
 {
   lua_State *L = iuplua_getstate(ih);
 
-  /* prepare to call iup.CallMethod(name, handle, ...) */
+  /* prepare to call iup.CallMethod(name, ih, ...) */
   lua_getglobal(L, iup_globaltable);
   lua_pushstring(L,"CallMethod");
   lua_gettable(L, -2);
@@ -503,7 +515,7 @@ int iuplua_call(lua_State* L, int nargs)
 
 int iuplua_call_global(lua_State* L, int nargs)
 {
-  return iuplua_call(L, nargs-1); /* remove the handle from the parameter count */
+  return iuplua_call(L, nargs-1); /* remove the ih from the parameter count */
 }
 
 char* iuplua_call_ret_s(lua_State *L, int nargs)
@@ -556,7 +568,7 @@ void iuplua_register_cb(lua_State *L, const char* name, lua_CFunction func, cons
   lua_call(L, 3, 0);  /* iup.RegisterCallback(name, func, type) */
 }
 
-/* iup.SetCallback(handle, name, c_func, lua_func) */
+/* iup.SetCallback(ih, name, c_func, lua_func) */
 static int SetCallback(lua_State *L)
 {
   Icallback c_func;
@@ -606,8 +618,8 @@ static int SetFunction(lua_State *L)
 
 /* iup.NewClass(class_name) 
   Calls:
-    iup.NewClass("iup handle")
-    iup.NewClass("iup widget")
+    iup.NewClass("iupHandle") -- this is an Ihandle* with enhancements
+    iup.NewClass("iupWidget") -- this is a Lua object for control construction, see iup.WIDGET and iup.BOX
 */
 static int NewClass(lua_State *L)
 {
@@ -621,8 +633,8 @@ static int NewClass(lua_State *L)
 
 /* iup.SetClass(t, class_name) 
   Calls:
-    iup.SetClass(handle, "iup handle")  --Used only in iup.RegisterHandle and WIDGET.constructor
-    iup.SetClass(object, "iup widget")  --Used whenever a new control class is created.
+    iup.SetClass(ih, "iupHandle")  --Used only in iup.RegisterHandle and WIDGET.constructor
+    iup.SetClass(widget, "iupWidget")  --Used whenever a new control class is created.
 */
 static int SetClass(lua_State *L)
 {
@@ -655,7 +667,7 @@ static int GetClass(lua_State *L)
 
 /* iup.SetMethod(class_name, method, function)
    For ex:
-     iup.SetMethod("iup handle", "__index", ihandle_gettable)
+     iup.SetMethod("iupHandle", "__index", ihandle_gettable)
 */
 static int SetMethod(lua_State *L)
 {
@@ -694,14 +706,14 @@ static int ihandle_compare(lua_State *L)
 }
 
              /*************************************/
-             /*       table <-> ihandle           */
+             /*       widget <-> Ihandle*         */
 
-/* local object = iup.GetWidget(handle) */
+/* local widget = iup.GetWidget(ih) */
 static int GetWidget(lua_State *L)
 {
-  /* Pushes a table that is associanted with an ihandle */
-  /* Used by the "__index" metamethod of the iup handle */
-  Ihandle * ih = iuplua_checkihandle(L,1);
+  /* Pushes a Lua object that is associanted with an Ihandle* */
+  /* Used by the "__index" metamethod of the iupHandle */
+  Ihandle * ih = iuplua_checkihandle(L, 1);
   char* sref = IupGetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF");
   if (!sref)
     lua_pushnil(L);
@@ -710,13 +722,13 @@ static int GetWidget(lua_State *L)
   return 1;
 }
 
-/* iup.SetWidget(handle, object) */
+/* iup.SetWidget(ih, widget) */
 static int SetWidget(lua_State *L)
 {
-  /* Saves the object table reference as an attribute, 
-     i.e. associates a table with the ihandle.
-     Used by the "iup widget" constructor and by RegisterHandle */
-  Ihandle * ih = iuplua_checkihandle(L,1);
+  /* Saves the Lua object reference as an attribute, 
+     i.e. associates a Lua object with the Ihandle*.
+     Used by the "iupWidget" constructor and by RegisterHandle */
+  Ihandle * ih = iuplua_checkihandle(L, 1);
   char* sref = IupGetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF");
   if (!sref)
   {
@@ -1050,7 +1062,8 @@ int iuplua_open(lua_State * L)
     {"SetFunction", SetFunction},
     {"ihandle_compare", ihandle_compare},
     {"ihandle_tostring", ihandle_tostring},
-    {NULL, NULL},
+    { "_ERRORMESSAGE", error_message },
+    { NULL, NULL },
   };
 
   if (!il_open(L))
@@ -1156,6 +1169,7 @@ int iuplua_open(lua_State * L)
   iupclipboardlua_open(L);
   iupprogressdlglua_open(L);
   iupflatbuttonlua_open(L);
+  iupconfiglua_open(L);
 
   return 0; /* nothing in stack */
 }

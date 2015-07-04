@@ -103,9 +103,9 @@ static int cfMaskMatCheck (lua_State *L)
   return 0;
 }
 
-static int match_cb (Ihandle *handle)
+static int match_cb (Ihandle* ih)
 {
-  lua_State *L = iuplua_call_start(handle, "match_cb");
+  lua_State *L = iuplua_call_start(ih, "match_cb");
   return iuplua_call(L, 0);
 }
 
