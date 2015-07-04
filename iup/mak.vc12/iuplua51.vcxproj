@@ -143,6 +143,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level4</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\srclua5\iuplua_api.c" />
+    <ClCompile Include="..\srclua5\iuplua_config.c" />
     <ClCompile Include="..\srclua5\iuplua_getcolor.c" />
     <ClCompile Include="..\srclua5\iuplua_getparam.c" />
     <ClCompile Include="..\srclua5\iuplua_scanf.c" />

@@ -175,6 +175,9 @@
     <ClCompile Include="..\srclua5\elem\il_flatbutton.c">
       <Filter>Source Files\controls</Filter>
     </ClCompile>
+    <ClCompile Include="..\srclua5\iuplua_config.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\srclua5\iuplua.def">
