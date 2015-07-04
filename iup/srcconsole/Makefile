@@ -8,7 +8,4 @@ endif
 do_all: iuplua5
  
 iuplua5:
-	@$(TECMAKE_CMD) USE_LUA51=Yes
-	@$(TECMAKE_CMD) USE_LUA52=Yes
-	@$(TECMAKE_CMD) USE_LUA53=Yes
-
+	@$(TECMAKE_CMD)

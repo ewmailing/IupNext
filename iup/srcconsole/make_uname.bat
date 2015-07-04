@@ -10,21 +10,15 @@ goto end
 REM Must use dll* so USE_* will use the correct TEC_UNAME
 
 :iupexe32
-call tecmake dll10 "USE_LUA51=Yes" relink %2 %3 %4 %5 %6 %7
-call tecmake dll10 "USE_LUA52=Yes" relink %2 %3 %4 %5 %6 %7
-call tecmake dll10 "USE_LUA53=Yes" relink %2 %3 %4 %5 %6 %7
+call tecmake dll10 relink %2 %3 %4 %5 %6 %7
 goto end
 
 :iupexe64
-call tecmake dll10_64 "USE_LUA51=Yes" relink %2 %3 %4 %5 %6 %7
-call tecmake dll10_64 "USE_LUA52=Yes" relink %2 %3 %4 %5 %6 %7
-call tecmake dll10_64 "USE_LUA53=Yes" relink %2 %3 %4 %5 %6 %7
+call tecmake dll10_64 relink %2 %3 %4 %5 %6 %7
 goto end
 
 :iupexecygw
-call tecmake cygw17 "USE_LUA51=Yes" relink %2 %3 %4 %5 %6 %7
-call tecmake cygw17 "USE_LUA52=Yes" relink %2 %3 %4 %5 %6 %7
-call tecmake cygw17 "USE_LUA53=Yes" relink %2 %3 %4 %5 %6 %7
+call tecmake cygw17 relink %2 %3 %4 %5 %6 %7
 goto end
 
 :iupexeall
