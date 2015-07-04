@@ -237,7 +237,7 @@ Iclass* iupScrollBoxNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name   = "scrollbox";
-  ic->format = "h";   /* one ihandle */
+  ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype  = IUP_CHILDMANY+1;  /* 1 child */
   ic->is_interactive = 1;

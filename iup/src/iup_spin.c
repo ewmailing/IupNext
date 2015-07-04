@@ -350,7 +350,7 @@ Iclass* iupSpinboxNewClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "spinbox";
-  ic->format = "h"; /* one Ihandle */
+  ic->format = "h"; /* one Ihandle* */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDMANY+2;  /* spin+child */
   ic->is_interactive = 0;
