@@ -94,11 +94,8 @@ static int GetAttributeData (lua_State *L)
   return 1;
 }
 
-static int GetAttribute (lua_State *L)
+static void iuplua_pushvalue(lua_State *L, Ihandle *ih, const char* name, const char* value)
 {
-  Ihandle *ih = iuplua_checkihandle(L,1);
-  const char *name = luaL_checkstring(L,2);
-  const char *value = IupGetAttribute(ih, name);
   if (!value || iupATTRIB_ISINTERNAL(name))
     lua_pushnil(L);
   else
@@ -110,9 +107,17 @@ static int GetAttribute (lua_State *L)
       else
         lua_pushlightuserdata(L, (void*)value);
     }
-    else
-      lua_pushstring(L,value);
+    else /* if (!lua_stringtonumber(L, value)) -- TODO: is this worth it? valid since Lua 5.3 */
+      lua_pushstring(L, value);
   }
+}
+
+static int GetAttribute (lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L,1);
+  const char *name = luaL_checkstring(L,2);
+  const char *value = IupGetAttribute(ih, name);
+  iuplua_pushvalue(L, ih, name, value);
   return 1;
 }
 
@@ -120,22 +125,9 @@ static int GetAttributeId(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   const char *name = luaL_checkstring(L,2);
-  int id = luaL_checkinteger(L,3);
+  int id = (int)luaL_checkinteger(L,3);
   const char *value = IupGetAttributeId(ih, name, id);
-  if (!value || iupATTRIB_ISINTERNAL(name))
-    lua_pushnil(L);
-  else
-  {
-    if (iupAttribIsNotString(ih, name))
-    {
-      if (iupAttribIsIhandle(ih, name))
-        iuplua_pushihandle(L, (Ihandle*)value);
-      else
-        lua_pushlightuserdata(L, (void*)value);
-    }
-    else
-      lua_pushstring(L,value);
-  }
+  iuplua_pushvalue(L, ih, name, value);
   return 1;
 }
 
@@ -143,23 +135,10 @@ static int GetAttributeId2(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   const char *name = luaL_checkstring(L,2);
-  int lin = luaL_checkinteger(L,3);
-  int col = luaL_checkinteger(L,4);
+  int lin = (int)luaL_checkinteger(L,3);
+  int col = (int)luaL_checkinteger(L,4);
   const char *value = IupGetAttributeId2(ih, name, lin, col);
-  if (!value || iupATTRIB_ISINTERNAL(name))
-    lua_pushnil(L);
-  else
-  {
-    if (iupAttribIsNotString(ih, name))
-    {
-      if (iupAttribIsIhandle(ih, name))
-        iuplua_pushihandle(L, (Ihandle*)value);
-      else
-        lua_pushlightuserdata(L, (void*)value);
-    }
-    else
-      lua_pushstring(L,value);
-  }
+  iuplua_pushvalue(L, ih, name, value);
   return 1;
 }
 
@@ -519,8 +498,8 @@ static int Alarm(lua_State *L)
 
 static int ListDialog(lua_State *L)
 {
-  int type = luaL_checkinteger(L,1);
-  int size = luaL_checkinteger(L,3);
+  int type = (int)luaL_checkinteger(L,1);
+  int size = (int)luaL_checkinteger(L,3);
   char** list = iuplua_checkstring_array(L, 4, size);
   int* marks = lua_isnoneornil(L, 8)? NULL: iuplua_checkint_array(L,8,0);
   int i, ret;
@@ -533,9 +512,9 @@ static int ListDialog(lua_State *L)
   ret = IupListDialog(type, luaL_checkstring(L, 2), 
                             size, 
                             list, 
-                            luaL_checkinteger(L, 5), 
-                            luaL_checkinteger(L, 6), 
-                            luaL_checkinteger(L, 7), 
+                            (int)luaL_checkinteger(L, 5), 
+                            (int)luaL_checkinteger(L, 6),
+                            (int)luaL_checkinteger(L, 7),
                             marks);
 
   if (marks && type==2 && ret!=-1)
@@ -589,85 +568,85 @@ static int PreviousField(lua_State *L)
 static int Popup(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  int x = luaL_optinteger(L,2, IUP_CURRENT);
-  int y = luaL_optinteger(L,3, IUP_CURRENT);
+  int x = (int)luaL_optinteger(L, 2, IUP_CURRENT);
+  int y = (int)luaL_optinteger(L, 3, IUP_CURRENT);
   lua_pushinteger(L,IupPopup(ih,x,y));
   return 1;
 }
 
 static int cf_isprint(lua_State *L)
 {
-  int value = luaL_checkinteger(L, 1);
+  int value = (int)luaL_checkinteger(L, 1);
   lua_pushinteger(L, iup_isprint(value));
   return 1;
 }
 
 static int cf_isxkey(lua_State *L)
 {
-  int value = luaL_checkinteger(L, 1);
+  int value = (int)luaL_checkinteger(L, 1);
   lua_pushboolean(L, iup_isXkey(value));
   return 1;
 }
 
 static int cf_isShiftXkey(lua_State *L)
 {
-  int value = luaL_checkinteger(L, 1);
+  int value = (int)luaL_checkinteger(L, 1);
   lua_pushboolean(L, iup_isShiftXkey(value));
   return 1;
 }
 
 static int cf_isCtrlXkey(lua_State *L)
 {
-  int value = luaL_checkinteger(L, 1);
+  int value = (int)luaL_checkinteger(L, 1);
   lua_pushboolean(L, iup_isCtrlXkey(value));
   return 1;
 }
 
 static int cf_isAltXkey(lua_State *L)
 {
-  int value = luaL_checkinteger(L, 1);
+  int value = (int)luaL_checkinteger(L, 1);
   lua_pushboolean(L, iup_isAltXkey(value));
   return 1;
 }
 
 static int cf_isSysXkey(lua_State *L)
 {
-  int value = luaL_checkinteger(L, 1);
+  int value = (int)luaL_checkinteger(L, 1);
   lua_pushboolean(L, iup_isSysXkey(value));
   return 1;
 }
 
 static int cf_XkeyShift(lua_State *L)
 {
-  int value = luaL_checkinteger(L, 1);
+  int value = (int)luaL_checkinteger(L, 1);
   lua_pushinteger(L, iup_XkeyShift(value));
   return 1;
 }
 
 static int cf_XkeyCtrl(lua_State *L)
 {
-  int value = luaL_checkinteger(L, 1);
+  int value = (int)luaL_checkinteger(L, 1);
   lua_pushinteger(L, iup_XkeyCtrl(value));
   return 1;
 }
 
 static int cf_XkeyAlt(lua_State *L)
 {
-  int value = luaL_checkinteger(L, 1);
+  int value = (int)luaL_checkinteger(L, 1);
   lua_pushinteger(L, iup_XkeyAlt(value));
   return 1;
 }
 
 static int cf_XkeySys(lua_State *L)
 {
-  int value = luaL_checkinteger(L, 1);
+  int value = (int)luaL_checkinteger(L, 1);
   lua_pushinteger(L, iup_XkeySys(value));
   return 1;
 }
 
 static int cf_XkeyBase(lua_State *L)
 {
-  int value = luaL_checkinteger(L, 1);
+  int value = (int)luaL_checkinteger(L, 1);
   lua_pushinteger(L, iup_XkeyBase(value));
   return 1;
 }
@@ -768,7 +747,7 @@ static int GetNextChild(lua_State *L)
 static int GetChild(lua_State *L)
 {
   Ihandle* ih = iuplua_checkihandle(L,1);
-  int pos = luaL_checkinteger(L,2);
+  int pos = (int)luaL_checkinteger(L,2);
   Ihandle* child = IupGetChild(ih, pos);
   iuplua_pushihandle(L, child);
   return 1;
@@ -814,14 +793,14 @@ static int ElementPropertiesDialog(lua_State *L)
 
 static int ConvertXYToPos(lua_State *L)
 {
-  lua_pushinteger(L, IupConvertXYToPos(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3)));
+  lua_pushinteger(L, IupConvertXYToPos(iuplua_checkihandle(L, 1), (int)luaL_checkinteger(L, 2), (int)luaL_checkinteger(L, 3)));
   return 1;
 }
 
 static int TextConvertLinColToPos(lua_State *L)
 {
   int pos;
-  IupTextConvertLinColToPos(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), &pos);
+  IupTextConvertLinColToPos(iuplua_checkihandle(L, 1), (int)luaL_checkinteger(L, 2), (int)luaL_checkinteger(L, 3), &pos);
   lua_pushinteger(L, pos);
   return 1;
 }
@@ -829,7 +808,7 @@ static int TextConvertLinColToPos(lua_State *L)
 static int TextConvertPosToLinCol(lua_State *L)
 {
   int lin, col;
-  IupTextConvertPosToLinCol(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2), &lin, &col);
+  IupTextConvertPosToLinCol(iuplua_checkihandle(L, 1), (int)luaL_checkinteger(L, 2), &lin, &col);
   lua_pushinteger(L, lin);
   lua_pushinteger(L, col);
   return 2;
@@ -934,15 +913,15 @@ static int UpdateChildren (lua_State *L)
 
 static int Redraw(lua_State *L)
 {
-  IupRedraw(iuplua_checkihandle(L,1), luaL_checkinteger(L, 2));
+  IupRedraw(iuplua_checkihandle(L, 1), (int)luaL_checkinteger(L, 2));
   return 0;
 }
 
 static int ShowXY(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
-  int x = luaL_optinteger(L,2, IUP_CURRENT);
-  int y = luaL_optinteger(L,3, IUP_CURRENT);
+  int x = (int)luaL_optinteger(L, 2, IUP_CURRENT);
+  int y = (int)luaL_optinteger(L, 3, IUP_CURRENT);
   lua_pushinteger(L, IupShowXY(ih,x,y));
   return 1;
 }
@@ -983,7 +962,7 @@ static int StoreAttributeId(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   const char *a = luaL_checkstring(L,2);
-  int id = luaL_checkinteger(L,3);
+  int id = (int)luaL_checkinteger(L,3);
 
   if (lua_isnil(L,4)) 
     IupSetAttributeId(ih,a,id,NULL);
@@ -1008,8 +987,8 @@ static int StoreAttributeId2(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
   const char *a = luaL_checkstring(L,2);
-  int lin = luaL_checkinteger(L,3);
-  int col = luaL_checkinteger(L,4);
+  int lin = (int)luaL_checkinteger(L,3);
+  int col = (int)luaL_checkinteger(L,4);
 
   if (lua_isnil(L,5)) 
     IupSetAttributeId2(ih,a,lin,col,NULL);

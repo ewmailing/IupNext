@@ -30,12 +30,12 @@
 <h3>
 Parameters/Return</h3>
 
-<pre>char *IupGetAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>); [in C]<br>iup.GetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string) -&gt; <strong>value</strong>: string [in Lua]
+<pre>char *IupGetAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>); [in C]<br>iup.GetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string) -&gt; <strong>value</strong>: string, ihandle or userdata [in Lua]
 
-char *IupGetAttributeId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>); [in C]<br>iup.GetAttributeId(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>id</strong>: number) -&gt; <strong>value</strong>: string [in Lua]
+char *IupGetAttributeId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>); [in C]<br>iup.GetAttributeId(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>id</strong>: number) -&gt; <strong>value</strong>: string, ihandle or userdata [in Lua]
 
 char* IupGetAttributeId2(Ihandle* ih, const char* name, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-iup.GetAttributeId2(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>lin</strong>, <strong>col</strong>: number) -&gt; <strong>value</strong>: string [in Lua] </pre>
+iup.GetAttributeId2(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>lin</strong>, <strong>col</strong>: number) -&gt; <strong>value</strong>: string, ihandle or userdata [in Lua] </pre>
 
 <p><b>ih</b>: Identifier of the interface element. If
   NULL will retrieve from the global environment.<br>

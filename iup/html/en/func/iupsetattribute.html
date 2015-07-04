@@ -33,14 +33,14 @@ section.</p>
 Parameters/Return</h3>
 
 <pre>void IupSetAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, const char *<strong>value</strong>); [in C]
-void IupSetStrAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, const char *<strong>value</strong>); [in C]<br>iup.SetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>value</strong>: string) [in Lua] 
+void IupSetStrAttribute(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, const char *<strong>value</strong>); [in C]<br>iup.SetAttribute(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>value</strong>: any) [in Lua] 
 
 void IupSetAttributeId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>, const char *<strong>value</strong>); [in C]
-void IupSetStrAttributeId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>, const char *<strong>value</strong>); [in C]<br>iup.SetAttributeId(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>id</strong>: number, <strong>value</strong>: string) [in Lua] 
+void IupSetStrAttributeId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>, const char *<strong>value</strong>); [in C]<br>iup.SetAttributeId(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>id</strong>: number, <strong>value</strong>: any) [in Lua] 
 
 void IupSetAttributeId2(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>, const char* <strong>value</strong>); [in C]
 void IupSetStrAttributeId2(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>, const char* <strong>value</strong>); [in C]
-iup.SetAttributeId2(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>lin, col</strong>: number, <strong>value</strong>: string) [in Lua]</pre>
+iup.SetAttributeId2(<strong>ih</strong>: ihandle, <strong>name</strong>: string, <strong>lin, col</strong>: number, <strong>value</strong>: any) [in Lua]</pre>
 
 <p><b>ih</b>: Identifier of the interface element. If
   NULL will set in the global environment.<br>

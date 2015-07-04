@@ -112,8 +112,11 @@ local ihandle_gettable = function(ih, index)
       return widget[index]
     elseif type(value)== "number" or type(value) == "string" then
       local ih = iup.GetHandle(value)
-      if ih then return ih
-      else return value end
+      if ih then 
+        return ih
+      else 
+        return value 
+      end
     else
       return value 
     end

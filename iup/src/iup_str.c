@@ -588,6 +588,9 @@ int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned c
   return 1;
 }
 
+/* TODO: are strtod/atof and strtol/atoi faster/better than sscanf? 
+         must handle the 0 return value. */
+
 int iupStrToInt(const char *str, int *i)
 {
   if (!str) return 0;
