@@ -188,7 +188,15 @@ int iuplua_dofile(lua_State *L, const char *filename)
   return report(L, status, 1);
 }
 
-int iuplua_dostring(lua_State *L, const char *s, int len, const char *name)
+int iuplua_dostring(lua_State *L, const char *s, const char *name)
+{
+  int status = luaL_loadbuffer(L, s, (int)strlen(s), name);
+  if (status == LUA_OK)
+    status = docall(L, 0, 0);
+  return report(L, status, 1);
+}
+
+int iuplua_dobuffer(lua_State *L, const char *s, int len, const char *name)
 {
   int status = luaL_loadbuffer(L, s, len, name);
   if (status == LUA_OK)
@@ -633,8 +641,8 @@ static int NewClass(lua_State *L)
 
 /* iup.SetClass(t, class_name) 
   Calls:
-    iup.SetClass(ih, "iupHandle")  --Used only in iup.RegisterHandle and WIDGET.constructor
-    iup.SetClass(widget, "iupWidget")  --Used whenever a new control class is created.
+    iup.SetClass(ih, "iupHandle")  --Called only in iup.RegisterHandle and WIDGET.constructor
+    iup.SetClass(widget, "iupWidget")  --Called whenever a new control class is created.
 */
 static int SetClass(lua_State *L)
 {

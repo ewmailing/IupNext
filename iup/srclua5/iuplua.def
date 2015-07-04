@@ -13,6 +13,7 @@ EXPORTS
   iuplua_pushihandle_raw
   iuplua_dofile
   iuplua_dostring
+  iuplua_dobuffer
   iupkey_open
   iuplua_opencall_internal
   luaopen_iuplua

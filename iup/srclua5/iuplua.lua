@@ -74,6 +74,7 @@ end
 
 ------------------------------------------------------------------------------
 -- this is a Lua table for control construction, see iup.WIDGET and iup.BOX
+-- not used by applications
 
 -- implements class inheritance for iupWidget
 local widget_gettable = function(widget, index)

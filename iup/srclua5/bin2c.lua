@@ -58,7 +58,7 @@ static const unsigned char B1[]={
 
 };
 
- iuplua_dostring(L,(const char*)B1,sizeof(B1),%q);
+ iuplua_dobuffer(L,(const char*)B1,sizeof(B1),%q);
 }
 ]=])
 
