@@ -53,4 +53,4 @@ $(GC) : elem/il_%.c : elem/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
 SRC = iuplua.c iuplua_api.c iuplua_tree_aux.c iuplua_scanf.c \
-      iuplua_getparam.c iuplua_getcolor.c $(GC)
+      iuplua_getparam.c iuplua_getcolor.c iuplua_config.c $(GC)
