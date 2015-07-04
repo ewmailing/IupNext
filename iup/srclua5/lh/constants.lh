@@ -164,5 +164,5 @@ static const unsigned char B1[]={
  46, 71, 69, 84, 80, 65, 82, 65, 77, 95, 66, 85, 84, 84, 79, 78, 51, 10,
 };
 
- iuplua_dostring(L,(const char*)B1,sizeof(B1),"");
+ iuplua_dobuffer(L,(const char*)B1,sizeof(B1),"");
 }
