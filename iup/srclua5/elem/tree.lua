@@ -30,6 +30,7 @@ function iup.TreeSetNodeAttributes(ih, id, attrs)
     ih[attr..id] = val
   end
 end
+ctrl.SetNodeAttributes = iup.TreeSetNodeAttributes
 
 function iup.TreeSetAncestorsAttributes(ih, ini, attrs)
   ini = ih["parent"..ini]
@@ -42,18 +43,20 @@ function iup.TreeSetAncestorsAttributes(ih, ini, attrs)
     iup.TreeSetNodeAttributes(ih, stack[i], attrs)
   end
 end
+ctrl.SetAncestorsAttributes = iup.TreeSetAncestorsAttributes
 
-function iup.TreeSetDescentsAttributes(ih, ini, attrs)
+function iup.TreeSetDescendantsAttributes(ih, ini, attrs)
   local id = ini
   for i = 1, ih["childcount"..ini] do
     id = id+1
     iup.TreeSetNodeAttributes(ih, id, attrs)
     if ih["kind"..id] == "BRANCH" then
-      id = iup.TreeSetDescentsAttributes(ih, id, attrs)
+      id = iup.TreeSetDescendantsAttributes(ih, id, attrs)
     end
   end
   return id
 end
+ctrl.SetDescendantsAttributes = iup.TreeSetDescendantsAttributes
 
 function iup.TreeSetAttributeHandle(ih, name, value)
    if iup.GetClass(value) == "iupHandle" then value = iup.SetHandleName(value) end
@@ -107,6 +110,12 @@ function iup.TreeAddNodes(ih, t, id)
   iup.TreeAddNodesRec(ih, t, id)
   if (id == 0) then iup.TreeSetState(ih, t, 0) end
 end
+ctrl.AddNodes = iup.TreeAddNodes
+
+-- defined in C
+ctrl.GetId = iup.TreeGetId
+ctrl.GetUserId = iup.TreeGetUserId
+ctrl.SetUserId = iup.TreeSetUserId
 
 -- backward compatibility
 iup.TreeSetValue = iup.TreeAddNodes

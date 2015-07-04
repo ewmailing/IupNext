@@ -111,7 +111,7 @@ also accepted.&nbsp;</p>
 <p><strong>DRAW_CB</strong><tt>:</tt> called when a specific cell needs to be 
 redrawn.</p>
 <pre>int function(Ihandle* <b>ih</b>, int <b>line</b>, int <b>column</b>, int <b>xmin</b>, int <b>xmax</b>, int <b>ymin</b>, int <b>ymax</b>, cdCanvas* <strong>canvas</strong>);  [in C]<strong>
-elem</strong>:draw_cb(<b>line</b>, <b>column</b>, <b>xmin</b>, <b>xmax</b>, <b>ymin</b>, <b>ymax</b>: number, <strong>canvas</strong>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+ih</strong>:draw_cb(<b>line</b>, <b>column</b>, <b>xmin</b>, <b>xmax</b>, <b>ymin</b>, <b>ymax</b>: number, <strong>canvas</strong>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
@@ -149,7 +149,7 @@ Default is 1 (no span).</p>
   selected with the left mouse button, and if existent the secondary is
   selected with the right mouse button.</p>
 <pre>int function(Ihandle* <b>ih</b>, int <b>button</b>, int <b>pressed</b>, int <b>line</b>, int <b>column</b>, int <b>x</b>, int <b>y</b>, char* <b>status</b>);  [in C]<strong>
-elem</strong>:mouseclick_cb(<strong>button, pressed, line, column, x, y</strong>: number, <b>string: </b>status) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+ih</strong>:mouseclick_cb(<strong>button, pressed, line, column, x, y</strong>: number, <b>string: </b>status) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info">Same as the <a href="../call/iup_button_cb.html">BUTTON_CB</a> 
 IupCanvas callback with two additional parameters:</p>
 <p class="info"><strong>line</strong>, <strong>column</strong>:

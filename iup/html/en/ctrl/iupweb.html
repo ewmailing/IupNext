@@ -111,7 +111,7 @@ also accepted.</p>
 successfully completed. <span>Can be called multiple times when a frame set 
 loads its frames, or when a page loads also other pages.</span></p>
 <pre>int function(Ihandle* <b>ih</b>, char* <b>url</b>);  [in C]<strong>
-elem</strong>:completed_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+ih</strong>:completed_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
@@ -119,7 +119,7 @@ elem</strong>:completed_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in 
 
 <p><strong>ERROR_CB</strong><tt>:</tt> action generated when page load fail.</p>
 <pre>int function(Ihandle* <b>ih</b>, char* <b>url</b>);  [in C]<strong>
-elem</strong>:error_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+ih</strong>:error_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
@@ -130,7 +130,7 @@ requests a navigation to another page. It is called before navigation occurs<spa
 Can be called multiple times when a frame set loads its frames, or when a page 
 loads also other pages.</span></p>
 <pre>int function(Ihandle* <b>ih</b>, char* <b>url</b>);  [in C]<strong>
-elem</strong>:navigate_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+ih</strong>:navigate_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
@@ -141,7 +141,7 @@ elem</strong>:navigate_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in L
 <p><strong>NEWWINDOW_CB</strong><tt>:</tt> action generated when the browser 
 requests a new window.</p>
 <pre>int function(Ihandle* <b>ih</b>, char* <b>url</b>);  [in C]<strong>
-elem</strong>:newwindow_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+ih</strong>:newwindow_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>

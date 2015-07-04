@@ -52,13 +52,9 @@ function ctrl.getcell(ih, l, c)
   return iup.GetAttributeId2(ih,"",l,c)
 end
 
-function ctrl.setformula(ih, col, formula, init)
-  iup.MatrixSetFormula(ih, col, formula, init)
-end
-
-function ctrl.setdynamic(ih, init)
-  iup.MatrixSetDynamic(ih, init)
-end
+-- Defined in C
+ctrl.SetFormula = iup.MatrixSetFormula
+ctrl.SetDynamic = iup.MatrixSetDynamic
 
 iup.RegisterWidget(ctrl)
 iup.SetClass(ctrl, "iupWidget")

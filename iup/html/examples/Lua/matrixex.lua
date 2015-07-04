@@ -34,6 +34,7 @@ dlg = iup.dialog{iup.vbox{mat; margin="10x10"}}
 --mat.redraw = "Yes"
 
 --iup.MatrixSetFormula(mat, 3, "cell(lin, 1) + cell(lin, 2)")
+--mat:SetFormula(, 3, "cell(lin, 1) + cell(lin, 2)")
 
 mat.cellnames = "Excel"
 --mat.cellnames = "Matrix"
@@ -45,7 +46,8 @@ mat:setcell(2,2,"=1.3 + cell(2,3)")
 --mat:setcell(3,2,"=1.3 + L2C3")
 mat:setcell(3,2,"=1.3 + C2")
 mat:setcell(2,3,"=sin(pi/4)")
-iup.MatrixSetDynamic(mat)
+--iup.MatrixSetDynamic(mat)
+mat:SetDynamic()
 
 dlg:showxy(iup.CENTER, iup.CENTER)
 

@@ -180,18 +180,12 @@ void iuplua_treefuncs_open (lua_State *L)
   iuplua_register_cb(L, "MULTIUNSELECTION_CB", (lua_CFunction)tree_multiunselection_cb, NULL);
   iuplua_register_cb(L, "NODEREMOVED_CB", (lua_CFunction)tree_noderemoved_cb, NULL);
 
-/* In Lua 5:
-  TreeSetTableId = TreeSetUserId
-  TreeGetTable   = TreeGetUserId
-  TreeGetTableId = TreeGetId
-*/
-
-  /* Userdata <-> id */
+  /* Table/Userdata <-> id */
   iuplua_register(L, TreeGetId, "TreeGetId");
   iuplua_register(L, TreeGetUserId, "TreeGetUserId");
   iuplua_register(L, TreeSetUserId, "TreeSetUserId");
 
-  /* Table <-> id */
+  /* OLD names for backward compatibility */
   iuplua_register(L, TreeGetId, "TreeGetTableId");
   iuplua_register(L, TreeGetUserId, "TreeGetTable");
   iuplua_register(L, TreeSetUserId, "TreeSetTableId");

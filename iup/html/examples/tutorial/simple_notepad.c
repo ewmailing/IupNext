@@ -1121,4 +1121,8 @@ int main(int argc, char **argv)
    - markers
    - line numbers
    and much more.
+   Hot keys for:
+   - match braces
+   - to lower case
+   - to upper case
  */

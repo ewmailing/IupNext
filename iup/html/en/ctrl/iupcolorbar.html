@@ -122,7 +122,7 @@ the cell is always redrawn.</p>
   selected with the left mouse button, and if existent the secondary is
   selected with the right mouse button.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>cell</strong>, int <strong>type</strong>);  [in C]<strong>
-elem</strong>:select_cb(<strong>cell, type</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+ih</strong>:select_cb(<strong>cell, type</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
@@ -135,7 +135,7 @@ default
 <p><strong>SWITCH_CB</strong><tt>:</tt> called when the user double clicks the preview area outside the preview 
   cells to switch the primary and secondary selections. It is only called if SHOW_SECONDARY=YES<b>.</b></p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>prim_cell</strong>, int <strong>sec_cell</strong>);  [in C]<strong>
-elem</strong>:switch_cb(<b>prim_cell</b>, <b>sec_cell</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+ih</strong>:switch_cb(<b>prim_cell</b>, <b>sec_cell</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>

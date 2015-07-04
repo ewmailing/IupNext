@@ -40,7 +40,7 @@ a &quot;renamed&quot; action.
 </p>
 <h3><a name="Creation">Creation</a></h3>
 <div>
-  <pre>Ihandle* IupTree(<strong>void</strong>); [in C] 
+  <pre>Ihandle* IupTree(void); [in C] 
 iup.tree{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 tree() [in LED]</pre>
 </div>
@@ -299,14 +299,15 @@ simple K_ANY callback:</p>
   return IUP_CONTINUE;
 }</pre>
 <h3><a name="Extra_Functions">Extra Functions</a></h3>
-<p>IupTree has functions that allow associating a pointer (or a user defined id) to 
+<p><strong>IupTree</strong> has functions that allow associating a pointer (or a user defined id) to 
   a node. In order to do that, you provide the id of the node and the pointer (userid); even 
   if the node's id changes later on, the userid will still be associated with the given node. In IupLua, instead of a 
   pointer the same functions are defined for table and userdata. These functions 
 use the <strong>USERDATAid</strong> attribute.</p>
 <hr>
 <pre>int IupTreeSetUserId(Ihandle *<strong>ih</strong>, int <strong>id</strong>, void *<strong>userid</strong>); [in C]
-iup.TreeSetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number, <strong>userid: </strong>userdata/table) [in Lua]</pre>
+iup.TreeSetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number, <strong>userid: </strong>userdata/table) [in Lua]
+or <strong>ih</strong>:SetUserId(<strong>id: </strong>number, <strong>userid: </strong>userdata/table) [in Lua]</pre>
 <p><strong>ih</strong>: Identifier of the interface element. <br>
 <strong>id</strong>:
       Node identifier. <br>
@@ -323,6 +324,7 @@ userid remains the same.</p>
 the additional feature of storing the Lua object in the registry.</p>
 <pre>void* IupTreeGetUserId(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
 iup.TreeGetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number) -&gt; (<b>ret:</b> userdata/table) [in Lua]
+or <strong>ih</strong>:GetUserId(<strong>id: </strong>number) -&gt; (<b>ret:</b> userdata/table) [in Lua]
 </pre>
 <p><strong>ih</strong>: Identifier of the interface element. <br>
 <strong>id</strong>:
@@ -334,6 +336,7 @@ have been called for the node with the given id.</p>
 the Lua object is retrieved from the REGISTRY.</p>
 <pre>int IupTreeGetId(Ihandle *<strong>ih</strong>, void *<strong>userid</strong>); [in C] 
 iup.TreeGetId(<strong>ih: </strong>ihandle, <strong>userid: </strong>userdata/table) -&gt; (<b>ret:</b> number) [in Lua]
+or <strong>ih</strong>:GetId(<strong>userid: </strong>userdata/table) -&gt; (<b>ret:</b> number) [in Lua]
 </pre>
 <p><strong>ih</strong>: Identifier of the interface element. <br>
 <strong>userid</strong>:
@@ -346,7 +349,8 @@ the same userid.</p>
 
 
 
-<pre>iup.<a name="TreeAddNodes">TreeAddNodes</a>(<strong>ih: </strong>ihandle, <strong>tree: </strong>table, [<strong>id</strong>: number]) [in Lua]</pre>
+<pre>iup.<a name="TreeAddNodes">TreeAddNodes</a>(<strong>ih: </strong>ihandle, <strong>tree: </strong>table, [<strong>id</strong>: number]) [in Lua]
+or <strong>ih:</strong><a name="TreeAddNodes0">AddNodes</a>(<strong>tree: </strong>table, [<strong>id</strong>: number]) [in Lua]</pre>
 <p><strong>ih</strong>: Identifier of the interface element.<br>
 <strong>tree</strong>: table of nodes.<br>
 <strong>id</strong>: optional existing node. The default is the first (0).</p>
@@ -393,17 +397,15 @@ iup.TreeSetUserId</strong>. (since 3.0)</p>
 
 
 
-<pre>iup.TreeSetNodeAttributes(<strong>ih: </strong>ihandle, <strong>id</strong>: number, <strong>attrs: </strong>table) [in Lua]</pre>
+<pre>iup.TreeSetNodeAttributes(<strong>ih: </strong>ihandle, <strong>id</strong>: number, <strong>attrs: </strong>table) [in Lua]
+or <strong>ih:</strong>SetNodeAttributes(<strong>id</strong>: number, <strong>attrs: </strong>table) [in Lua]</pre>
 <p><strong>ih</strong>: Identifier of the interface element.<br>
 <strong>id</strong>: existing node.<br>
 <strong>tree</strong>: table of attributes.</p>
 <p>Sets a group of attributes stored in a table in the form attrs = {name = 
 value, ...}.</p>
-<font SIZE="3">
-
-
-
-<pre>iup.TreeSetAncestorsAttributes(<strong>ih: </strong>ihandle, <strong>id</strong>: number, <strong>attrs: </strong>table) [in Lua]</pre>
+<pre>iup.TreeSetAncestorsAttributes(<strong>ih: </strong>ihandle, <strong>id</strong>: number, <strong>attrs: </strong>table) [in Lua]
+or <strong>ih:</strong>SetAncestorsAttributes(<strong>id</strong>: number, <strong>attrs: </strong>table) [in Lua]</pre>
 <p><strong>ih</strong>: Identifier of the interface element.<br>
 <strong>id</strong>: existing node.<br>
 <strong>tree</strong>: table of attributes.</p>
@@ -412,11 +414,12 @@ given node (not including the node).</p>
 
 
 
-<pre>iup.TreeSetDescentsAttributes(<strong>ih: </strong>ihandle, <strong>id</strong>: number, <strong>attrs: </strong>table) [in Lua]</pre>
+<pre>iup.TreeSetDescendantsAttributes(<strong>ih: </strong>ihandle, <strong>id</strong>: number, <strong>attrs: </strong>table) [in Lua]
+or <strong>ih:</strong>SetDescendantsAttributes(<strong>id</strong>: number, <strong>attrs: </strong>table) [in Lua]</pre>
 <p><strong>ih</strong>: Identifier of the interface element.<br>
 <strong>id</strong>: existing node.<br>
 <strong>tree</strong>: table of attributes.</p>
-<p>Calls <strong>iup.TreeSetNodeAttributes</strong> for all descendents of the 
+<p>Calls <strong>iup.TreeSetNodeAttributes</strong> for all descendants of the 
 given node (not including the node).</p>
 </font>
 <h3>Utility Functions </h3>

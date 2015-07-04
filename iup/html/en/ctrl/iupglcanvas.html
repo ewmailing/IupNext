@@ -157,25 +157,30 @@ respective documentations for more information. ERROR attribute will be set to
 &quot;Failed to set new current context.&quot; if the call failed. It will reset 
 ERROR to NULL if successful.</p>
 <pre>void <b>IupGLMakeCurrent</b>(Ihandle* <b>ih</b>); [in C]
-<b>iup.GLMakeCurrent</b>(<b>ih</b>: ihandle) [in Lua]</pre>
+<b>iup.GLMakeCurrent</b>(<b>ih</b>: ihandle) [in Lua]
+or <b>ih:MakeCurrent</b>() [in Lua]</pre>
 <p>Activates the given canvas as the current OpenGL context. All subsequent OpenGL commands are directed to 
     such canvas.</p>
 <pre>int <b>IupGLIsCurrent</b>(Ihandle* <b>ih</b>); [in C]
-<b>iup.GLIsCurrent</b>(<b>ih</b>: ihandle) -&gt; status: boolean [in Lua]</pre>
+<b>iup.GLIsCurrent</b>(<b>ih</b>: ihandle) -&gt; status: boolean [in Lua]
+or <b>ih:IsCurrent</b>() -&gt; status: boolean [in Lua]</pre>
 <p>Returns a non zero value if the given canvas is the current OpenGL context.</p>
 <pre>void <b>IupGLSwapBuffers</b>(Ihandle* <b>ih</b>); [in C]
-<b>iup.GLSwapBuffers</b>(<b>ih</b>: ihandle) [in Lua]</pre>
+<b>iup.GLSwapBuffers</b>(<b>ih</b>: ihandle) [in Lua]
+or <b>ih:SwapBuffers</b>() [in Lua]</pre>
 <p>Makes the BACK buffer visible. This function is necessary when a double buffer is used.</p>
 <pre>void <b>IupGLPalette</b>(Ihandle* <b>ih</b>, int <b>index</b>, float <b>r</b>, float <b>g</b>, float <b>b</b>); [in C]
-<b>iup.GLPalette</b>(<b>ih</b>: ihandle, <b>index</b>, <b>r</b>, <b>g</b>, <b>b</b>: number) [in Lua]</pre>
+<b>iup.GLPalette</b>(<b>ih</b>: ihandle, <b>index</b>, <b>r</b>, <b>g</b>, <b>b</b>: number) [in Lua]
+or <b>ih:Palette</b>(<b>index</b>, <b>r</b>, <b>g</b>, <b>b</b>: number) [in Lua]</pre>
 <p>Defines a color in the color palette. This 
     function is necessary when INDEX color is used.</p>
 <pre>void <strong>IupGLUseFont</strong>(Ihandle* <strong>ih</strong>, int <strong>first</strong>, int <strong>count</strong>, int <strong>list_base</strong>); [in C]
-iup.<strong>GLUseFont</strong>(<strong>ih</strong>:ihandle, <strong>first</strong>, <strong>count</strong>, <strong>list_base</strong>: number) [in Lua]</pre>
+<strong>iup</strong>.<strong>GLUseFont</strong>(<strong>ih</strong>:ihandle, <strong>first</strong>, <strong>count</strong>, <strong>list_base</strong>: number) [in Lua]
+or <strong>ih:UseFont</strong>(<strong>first</strong>, <strong>count</strong>, <strong>list_base</strong>: number) [in Lua]</pre>
 <p>Creates a bitmap display list from the current FONT attribute. See the 
 documentation of the wglUseFontBitmaps and glXUseXFont functions. (since 3.0)</p>
 <pre>void <strong>IupGLWait</strong>(int <strong>gl</strong>) [in C]
-iup.<strong>GLWait</strong>(<strong>gl</strong>: number) [in Lua]</pre>
+<strong>iup</strong>.<strong>GLWait</strong>(<strong>gl</strong>: number) [in Lua]</pre>
 <p>If gl is non zero it will call glFinish or glXWaitGL, else will call GdiFlush 
 or glXWaitX. (since 3.0)</p>
 

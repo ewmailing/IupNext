@@ -33,9 +33,9 @@ function ctrl.getcell(ih, l, c)
   return iup.GetAttributeId2(ih,"",l,c)
 end
 
-function ctrl.setformula(ih, col, formula)
-  iup.MatrixSetFormula(ih, col, formula)
-end
+-- Defined in C
+ctrl.SetFormula = iup.MatrixSetFormula
+ctrl.SetDynamic = iup.MatrixSetDynamic
 
 iup.RegisterWidget(ctrl)
 iup.SetClass(ctrl, "iupWidget")

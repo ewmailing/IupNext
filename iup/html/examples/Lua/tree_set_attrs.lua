@@ -76,11 +76,14 @@ local nodes = {
 		},
 	},
 }
-tree = iup.tree{
+
+local tree = iup.tree{
 	map_cb = function(self)
-		iup.TreeAddNodes(self, nodes)
+		--iup.TreeAddNodes(self, nodes)
+		self:AddNodes(nodes)
 	end,
 }
+
 local no = iup.text{}
 local attrs = iup.text{
 	value = "{ color = '255 0 0', }",
@@ -89,46 +92,46 @@ local attrs = iup.text{
 		return loadstring("return "..self.value)()
 	end,
 }
+
 dlg = iup.dialog{
 	iup.vbox{
 		tree,
 		iup.hbox{
-			iup.fill{},
 			iup.label{ title = "Node:", },
 			no,
-			iup.fill{},
 			iup.label{ title = "Attributes:", },
 			attrs,
-			iup.fill{},
 		},
 		iup.hbox{
-			iup.fill{},
 			iup.button{
 				title = "Ancestors",
 				action = function()
-					iup.TreeSetAncestorsAttributes(tree, no.value, attrs:getvalue())
+					--iup.TreeSetAncestorsAttributes(tree, no.value, attrs:getvalue())
+					tree:SetAncestorsAttributes(no.value, attrs:getvalue())
 				end,
 			},
-			iup.fill{},
 			iup.button{
-				title = "Descendents",
+				title = "Descendants",
 				action = function()
-					iup.TreeSetDescentsAttributes(tree, no.value, attrs:getvalue())
+					--iup.TreeSetDescendantsAttributes(tree, no.value, attrs:getvalue())
+					tree:SetDescendantsAttributes(no.value, attrs:getvalue())
 				end,
 			},
-			iup.fill{},
 			iup.button{
 				title = "All",
 				action = function()
 					for node = 0, tree.count-1 do
-						iup.TreeSetNodeAttributes(tree, node, attrs:getvalue())
+						--iup.TreeSetNodeAttributes(tree, node, attrs:getvalue())
+						tree:SetNodeAttributes(node, attrs:getvalue())
 					end
 				end,
 			},
-			iup.fill{},
 		},
+    gap = 5,
+    margin = "10x10",
 	},
 }
+
 dlg:show()
 tree.value = 15
 no.value = 15
