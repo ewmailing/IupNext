@@ -216,7 +216,7 @@ Iclass* iupGLScrollBoxNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("glsubcanvas"));
 
   ic->name   = "glscrollbox";
-  ic->format = "h";   /* one ihandle */
+  ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype  = IUP_CHILDMANY+1;  /* 1 child */
   ic->is_interactive = 0;

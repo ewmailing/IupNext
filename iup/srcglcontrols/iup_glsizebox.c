@@ -329,7 +329,7 @@ Iclass* iupGLSizeBoxNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("glsubcanvas"));
 
   ic->name   = "glsizebox";
-  ic->format = "h";   /* one ihandle */
+  ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype  = IUP_CHILDMANY+1;  /* one child */
   ic->is_interactive = 0;
