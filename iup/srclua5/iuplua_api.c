@@ -934,78 +934,62 @@ static int ResetAttribute(lua_State *L)
   return 0;
 }
 
-static int StoreAttribute(lua_State *L)
+static const char* iuplua_checkvalue(lua_State *L, int pos, int *store)
 {
-  Ihandle *ih = iuplua_checkihandle(L,1);
-  const char *a = luaL_checkstring(L,2);
-
-  if (lua_isnil(L,3)) 
-    IupSetAttribute(ih,a,NULL);
-  else 
+  *store = 0;
+  if (lua_isnil(L, pos))
+    return NULL;
+  else
   {
-    const char *v;
-    if(lua_isuserdata(L,3)) 
+    if (lua_isuserdata(L, pos))
+      return (const char*)lua_touserdata(L, pos);
+    else
     {
-      v = lua_touserdata(L,3);
-      IupSetAttribute(ih,a,v);
-    }
-    else 
-    {
-      v = luaL_checkstring(L,3);
-      IupStoreAttribute(ih,a,v);
+      *store = 1;
+      return luaL_checkstring(L, pos);
     }
   }
+}
+
+static int StoreAttribute(lua_State *L)
+{
+  int store;
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  const char *a = luaL_checkstring(L,2);
+  const char* v = iuplua_checkvalue(L, 3, &store);
+  if (store) 
+    IupStoreAttribute(ih, a, v);
+  else 
+    IupSetAttribute(ih,a,v);
   return 0;
 }
 
 static int StoreAttributeId(lua_State *L)
 {
+  int store;
   Ihandle *ih = iuplua_checkihandle(L,1);
   const char *a = luaL_checkstring(L,2);
   int id = (int)luaL_checkinteger(L,3);
-
-  if (lua_isnil(L,4)) 
-    IupSetAttributeId(ih,a,id,NULL);
-  else 
-  {
-    const char *v;
-    if(lua_isuserdata(L,4)) 
-    {
-      v = lua_touserdata(L,4);
-      IupSetAttributeId(ih,a,id,v);
-    }
-    else 
-    {
-      v = luaL_checkstring(L,4);
-      IupStoreAttributeId(ih,a,id,v);
-    }
-  }
+  const char* v = iuplua_checkvalue(L, 4, &store);
+  if (store)
+    IupStoreAttributeId(ih, a, id, v);
+  else
+    IupSetAttributeId(ih, a, id, v);
   return 0;
 }
 
 static int StoreAttributeId2(lua_State *L)
 {
-  Ihandle *ih = iuplua_checkihandle(L,1);
+  int store;
+  Ihandle *ih = iuplua_checkihandle(L, 1);
   const char *a = luaL_checkstring(L,2);
   int lin = (int)luaL_checkinteger(L,3);
   int col = (int)luaL_checkinteger(L,4);
-
-  if (lua_isnil(L,5)) 
-    IupSetAttributeId2(ih,a,lin,col,NULL);
-  else 
-  {
-    const char *v;
-    if(lua_isuserdata(L,5)) 
-    {
-      v = lua_touserdata(L,5);
-      IupSetAttributeId2(ih,a,lin,col,v);
-    }
-    else 
-    {
-      v = luaL_checkstring(L,5);
-      IupStoreAttributeId2(ih,a,lin,col,v);
-    }
-  }
+  const char* v = iuplua_checkvalue(L, 5, &store);
+  if (store)
+    IupStoreAttributeId2(ih, a, lin, col, v);
+  else
+    IupSetAttributeId2(ih, a, lin, col, v);
   return 0;
 }
 
