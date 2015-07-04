@@ -104,8 +104,8 @@ int    <strong>IupConfigGetVariableInt</strong>(Ihandle* <strong>ih</strong>, co
 int    <strong>IupConfigGetVariableIntId</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>);
 double <strong>IupConfigGetVariableDouble</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>);
 double <strong>IupConfigGetVariableDoubleId</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>);
-<strong>iup.ConfigGetVariable</strong>(<strong>ih</strong>: ihandle, <strong>group</strong>, <strong>key: </strong>string) -&gt; (<strong>value</strong>: string or number) [in Lua]
-<strong>iup.ConfigGetVariable</strong>(<strong>ih</strong>: ihandle, <strong>group</strong>, <strong>key: </strong>string, <strong>id</strong>: number) -&gt; (<strong>value</strong>: string or number) [in Lua]
+<strong>iup.ConfigGetVariable</strong>(<strong>ih</strong>: ihandle, <strong>group</strong>, <strong>key: </strong>string) -&gt; (<strong>value</strong>: string) [in Lua]
+<strong>iup.ConfigGetVariable</strong>(<strong>ih</strong>: ihandle, <strong>group</strong>, <strong>key: </strong>string, <strong>id</strong>: number) -&gt; (<strong>value</strong>: string) [in Lua]
 
 const char* <strong>IupConfigGetVariableStrDef</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, const char* <strong>def</strong>);  [in C]
 const char* <strong>IupConfigGetVariableStrIdDef</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>, const char* <strong>def</strong>);
@@ -113,8 +113,8 @@ int    <strong>IupConfigGetVariableIntDef</strong>(Ihandle* <strong>ih</strong>,
 int    <strong>IupConfigGetVariableIntIdDef</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>, int <strong>def</strong>);
 double <strong>IupConfigGetVariableDoubleDef</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, double <strong>def</strong>);
 double <strong>IupConfigGetVariableDoubleIdDef</strong>(Ihandle* <strong>ih</strong>, const char* <strong>group</strong>, const char* <strong>key</strong>, int <strong>id</strong>, double <strong>def</strong>);
-<strong>iup.ConfigGetVariableDef</strong>(<strong>ih</strong>: ihandle, <strong>group</strong>, <strong>key: </strong>string, <strong>def</strong>: string or number) -&gt; (<strong>value</strong>: string or number) [in Lua]
-<strong>iup.ConfigGetVariableDef</strong>(<strong>ih</strong>: ihandle, <strong>group</strong>, <strong>key: </strong>string, <strong>id</strong>: number, <strong>def</strong>: string or number) -&gt; (<strong>value</strong>: string or number) [in Lua]
+<strong>iup.ConfigGetVariableDef</strong>(<strong>ih</strong>: ihandle, <strong>group</strong>, <strong>key: </strong>string, <strong>def</strong>: string or number) -&gt; (<strong>value</strong>: string) [in Lua]
+<strong>iup.ConfigGetVariableDef</strong>(<strong>ih</strong>: ihandle, <strong>group</strong>, <strong>key: </strong>string, <strong>id</strong>: number, <strong>def</strong>: string or number) -&gt; (<strong>value</strong>: string) [in Lua]
 </pre>
 
 <p><b>ih</b>: Identifier of the configuration database<br><strong>group</strong>: 
@@ -129,8 +129,7 @@ the variable</p>
 <p><span class="style1">Returns:</span> the variable value or NULL (or 0 for 
 integer and double) if 
   the variable is not set or does not exist. When the variable may not exist you 
-can use the functions with <strong>def</strong> to use a default value. In Lua 
-returns integer, number or string types according to value contents.</p>
+can use the functions with <strong>def</strong> to use a default value. </p>
 
 
 <p>These functions are very similar to the <strong>IupSetAttribute</strong> and
