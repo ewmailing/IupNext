@@ -20,8 +20,8 @@
 <p>A group of functions to load, store and save application configuration 
 variables. For example, the list of Recent Files, the last position and size of a 
 dialog, last used parameters in dialogs, etc.</p>
-<p>To use the functions in C/C++ you must include the &quot;iup_config.h&quot; header. The 
-functions are NOT available in LED, nor in Lua.</p>
+<p>To use the functions in C/C++ you must include the &quot;iup_config.h&quot; 
+header. The functions are NOT available in LED.</p>
 <p>Each variable has a key name, a value and a group that it belongs to. The 
 file is based on a simple configuration file like &quot;.ini&quot; or &quot;.cfg&quot;. Each ground 
 can has more than one key, but all keys in the same group must have different 
@@ -41,11 +41,12 @@ functions and after they where changed store them using the <strong>
 IupConfigSetVariable</strong>* functions.</p>
 <h3>
 Creation</h3>
-<pre>Ihandle* IupConfig(void); [in C]</pre>
+<pre>Ihandle* IupConfig(void); [in C]
+iup.Config() [in Lua]</pre>
 <p>Returns a new database where the variables will be stored.</p>
 <h3>File Storage</h3>
-<pre>int <strong>IupConfigLoad</strong>(Ihandle* <strong>ih</strong>);
-int <strong>IupConfigSave</strong>(Ihandle* <strong>ih</strong>);</pre>
+<pre>int <strong>IupConfigLoad</strong>(Ihandle* <strong>ih</strong>); [in C]
+int <strong>IupConfigSave</strong>(Ihandle* <strong>ih</strong>); [in C]</pre>
 
 <p><b>ih</b>: Identifier of the configuration database</p>
 <p><span class="style1">Returns:</span> an error code. 0= no error; -1=error 

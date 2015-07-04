@@ -24,6 +24,8 @@ static int config_recent_cb(Ihandle *self)
 }
 
 void IupConfigRecentInit(Ihandle* ih, Ihandle* menu, Icallback recent_cb, int max_recent);
+int IupConfigLoad(Ihandle* ih);
+int IupConfigSave(Ihandle* ih);
 
 static int ConfigRecentUpdate(lua_State *L)
 {
