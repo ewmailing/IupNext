@@ -55,7 +55,7 @@
 
 <h3><a name="Creation">Creation</a></h3>
 
-<pre>Ihandle* IupText(const char *<strong>action</strong>); [in C]<br>iup.text{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]<br>text(<strong>action</strong>) [in LED]</pre>
+<pre>Ihandle* IupText(const char *<strong>action</strong>); [in C]<br>iup.text{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]<br>text(<strong>action</strong>) [in LED]</pre>
 
   
 <p><b>
@@ -364,7 +364,7 @@ the clipboard.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>c</strong>, char *<strong>new_value</strong>); [in C]<br><strong>elem</strong>:action(<strong>c</strong>: number, <strong>new_value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>c</strong>, char *<strong>new_value</strong>); [in C]<br><strong>ih</strong>:action(<strong>c</strong>: number, <strong>new_value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -399,7 +399,7 @@ the clipboard.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>pos</strong>); [in C]<br><strong>elem</strong>:caret_cb(<strong>lin</strong>, <b>col, pos</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>pos</strong>); [in C]<br><strong>ih</strong>:caret_cb(<strong>lin</strong>, <b>col, pos</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -433,7 +433,7 @@ The VALUE attribute can be changed during this callback only if SPINAUTO=NO. (si
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>); [in C]<br><strong>elem</strong>:spin_cb(<b>pos</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>); [in C]<br><strong>ih</strong>:spin_cb(<b>pos</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -449,7 +449,7 @@ The VALUE attribute can be changed during this callback only if SPINAUTO=NO. (si
 <p><strong>VALUECHANGED_CB</strong>:
   Called after the value was interactively changed by the user. (since 3.0)</p>
 
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:

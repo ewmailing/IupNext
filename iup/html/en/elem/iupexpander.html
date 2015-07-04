@@ -40,7 +40,7 @@
 <h3><a name="Creation">Creation</a></h3>
 
 <pre>Ihandle* IupExpander(Ihandle*<strong> child</strong>); [in C]
-iup.expander{<strong>child</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.expander{<strong>child</strong>: ihandle} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 expander(<strong>child</strong>) [in LED]</pre>
   <p><strong>child</strong>: Identifier of an interface element. It can be NULL 
   (nil in Lua), not optional in LED.</p>
@@ -165,7 +165,7 @@ also accepted.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:action() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>ih</strong>:action() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -178,7 +178,7 @@ also accepted.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, int <strong>state</strong>); [in C]<br><strong>elem</strong>:openclose<span class="style3">_</span>cb(<strong>state</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>state</strong>); [in C]<br><strong>ih</strong>:openclose<span class="style3">_</span>cb(<strong>state</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -192,7 +192,7 @@ ignored.</p>
   Action generated when any mouse button is 
   pressed or released. (since 3.11)</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>button</strong>, int <strong>pressed</strong>); [in C]
-<strong>elem</strong>:extrabutton_cb(<strong>button</strong>, <strong>pressed</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:extrabutton_cb(<strong>button</strong>, <strong>pressed</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <blockquote>
 <p><strong>ih</strong>:
   identifies the element that activated the 

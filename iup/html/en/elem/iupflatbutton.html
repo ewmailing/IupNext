@@ -62,7 +62,7 @@ the checkmark).</p>
 <h3><a name="Creation">Creation</a></h3>
 
 
-<pre>Ihandle* IupFlatButton(const char *<strong>title</strong>); [in C]<br>iup.flatbutton{[title = <strong>title</strong>: string]} -&gt; <strong>elem</strong>: ihandle [in Lua]<br>flatbutton(<strong>title</strong>) [in LED]</pre>
+<pre>Ihandle* IupFlatButton(const char *<strong>title</strong>); [in C]<br>iup.flatbutton{[title = <strong>title</strong>: string]} -&gt; <strong>ih</strong>: ihandle [in Lua]<br>flatbutton(<strong>title</strong>) [in LED]</pre>
 
   
 <p><b>
@@ -263,7 +263,7 @@ IUP_IGNORE the internal callbacks are not processed.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:action() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>ih</strong>:action() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -277,7 +277,7 @@ IUP_IGNORE the internal callbacks are not processed.</p>
 changed by the user. Called only when TOGGLE=Yes. Called after the ACTION 
 callback, but under the same context.</p>
 
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:

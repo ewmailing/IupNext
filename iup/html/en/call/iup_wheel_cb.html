@@ -14,7 +14,7 @@
   direction by some lines, the SCROLL_CB callback if defined will be called with the IUP_SBDRAGV operation.</p>
 <h3>Callback</h3>
 <pre>int function(Ihandle *<strong>ih</strong>, float <b>delta</b>, int <strong>x</strong>, int <strong>y</strong>, char *<strong>status</strong>); [in C]
-<strong>elem</strong>:wheel_cb(<strong>delta, x</strong>, <strong>y</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:wheel_cb(<strong>delta, x</strong>, <strong>y</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><strong>ih</strong>:
   identifier of the element that activated the event.<br>
 <b>delta</b>: the amount the wheel was rotated in notches.<br>

@@ -59,7 +59,7 @@
 
 <h3><a name="Creation">Creation</a></h3>
 
-<pre>Ihandle* IupList(const char *<strong>action</strong>); [in C]<br>iup.list{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]<br>list(<strong>action</strong>) [in LED]</pre>
+<pre>Ihandle* IupList(const char *<strong>action</strong>); [in C]<br>iup.list{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]<br>list(<strong>action</strong>) [in LED]</pre>
 
   
 <p><b>
@@ -389,7 +389,7 @@ state=0 value.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>pos</strong>); [in C]<br><strong>elem</strong>:caret_cb(<strong>lin</strong>, <b>col, pos</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>pos</strong>); [in C]<br><strong>ih</strong>:caret_cb(<strong>lin</strong>, <b>col, pos</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -428,7 +428,7 @@ Called only when DROPDOWN=NO. (since 3.0)</p>
   an internal drag and drop is executed. Only active if <strong>SHOWDRAGDROP=YES.</strong> 
 (since 3.7)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <b>drag_id</b>, int <b>drop_id</b>, int <b>isshift</b>, int <b>iscontrol</b>); [in C] 
-<strong>elem</strong>:dragdrop_cb(<b>drag_id</b>, <b>drop_id</b>, <b>isshift</b>, <b>iscontrol</b><strong>:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:dragdrop_cb(<b>drag_id</b>, <b>drop_id</b>, <b>isshift</b>, <b>iscontrol</b><strong>:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
 <strong>drag_id</strong>:
@@ -476,7 +476,7 @@ Called only when DROPDOWN=YES. (since 3.0)</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <b>c</b>, char *<strong>new_value</strong>); [in C]<br><strong>elem</strong>:edit_cb(<b>c</b>: number, <strong>new_value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <b>c</b>, char *<strong>new_value</strong>); [in C]<br><strong>ih</strong>:edit_cb(<b>c</b>: number, <strong>new_value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -542,7 +542,7 @@ ensure proper 'x' values.</p>
   Called after the value was interactively changed by the user. Called when the 
 selection is changed or when the text is edited. (since 3.0)</p>
 
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:

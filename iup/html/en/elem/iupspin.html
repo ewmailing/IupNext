@@ -35,7 +35,7 @@ used with any element.</p>
 contains two <strong>IupButton</strong>.</p>
 <div>
   <pre>Ihandle* IupSpin(void); [in C]
-iup.spin{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.spin{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 spin() [in LED]</pre>
 </div>
   <p>
@@ -46,7 +46,7 @@ spin() [in LED]</pre>
 contains a <strong>IupSpin</strong>.</p>
 <div>
   <pre>Ihandle* IupSpinbox(Ihandle* <b>child</b>); [in C]
-iup.spinbox{<b>child: </b>ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.spinbox{<b>child: </b>ihandle} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 spinbox(<strong>child</strong>)  [in LED]</pre>
 </div>
   <p>
@@ -63,7 +63,7 @@ key will set a factor of 2, holding Ctrl a
   factor of 10, and both a factor of 100.</p>
 <div align="left">
   <pre>int function(Ihandle *ih, int <strong>inc</strong>); [in C]
-<strong>elem</strong>:spin_cb(<strong>inc</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:spin_cb(<strong>inc</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 </div>
 
 <h3><a name="Notes">Notes</a></h3>

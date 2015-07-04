@@ -19,7 +19,7 @@
   combination of keys. It may be called more than once for the same node with 
 the same status.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id, int </strong>status) [in C]
-<strong>elem</strong>:selection_cb(<strong>id, status:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:selection_cb(<strong>id, status:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
 <strong>id</strong>:
@@ -33,7 +33,7 @@ range. The range is always completely included, independent if some nodes were a
 marked. That single operation also guaranties that all other nodes outside the 
 range are already not selected. Called only if MARKMODE=MULTIPLE.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int* <strong>ids, int </strong>n) [in C]
-<strong>elem</strong>:multiselection_cb(<strong>ids: </strong>table<strong>, n:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:multiselection_cb(<strong>ids: </strong>table<strong>, n:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
 <strong>ids</strong>:
@@ -47,7 +47,7 @@ not defined the SELECTION_CB with status=0 will be called for all nodes in the
 range. The range is not necessarily continuous. Called only if MARKMODE=MULTIPLE. 
 (Since 3.1)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int* <strong>ids, int </strong>n) [in C]
-<strong>elem</strong>:multiunselection_cb(<strong>ids: </strong>table<strong>, n:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:multiunselection_cb(<strong>ids: </strong>table<strong>, n:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
 <strong>ids</strong>:
@@ -58,7 +58,7 @@ the event. <br>
   Action generated when a branch is expanded. 
   This action occurs when the user clicks the &quot;+&quot; sign on the left of the branch, or when double clicks the branch, or hits Enter on a collapsed branch.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>) [in C] 
-<strong>elem</strong>:branchopen_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:branchopen_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
 <strong>id</strong>:
@@ -72,7 +72,7 @@ the event. <br>
   the branch, or hits Enter on an expanded branch.
   </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C]
-<strong>elem</strong>:branchclose_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:branchclose_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
 <strong>id</strong>:
@@ -84,7 +84,7 @@ the event. <br>
   leaf, or hits Enter on a leaf.
   </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
-<strong>elem</strong>:executeleaf_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:executeleaf_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
 <strong>id</strong>:
@@ -128,7 +128,7 @@ title
   Action generated when 
   an internal drag &amp; drop is executed. Only active if <strong>SHOWDRAGDROP=YES.</strong></p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <b>drag_id</b>, int <b>drop_id</b>, int <b>isshift</b>, int <b>iscontrol</b>); [in C] 
-<strong>elem</strong>:dragdrop_cb(<b>drag_id</b>, <b>drop_id</b>, <b>isshift</b>, <b>iscontrol</b><strong>:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:dragdrop_cb(<b>drag_id</b>, <b>drop_id</b>, <b>isshift</b>, <b>iscontrol</b><strong>:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
 <strong>drag_id</strong>:
@@ -154,7 +154,7 @@ consulted during the callback. Not called when the tree is unmapped. It is
 useful to remove memory allocated for the 
 userdata. (since 3.0)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, void* <strong>userdata</strong>); [in C] 
-<strong>elem</strong>:noderemoved_cb(<strong>userid</strong>: userdata/table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:noderemoved_cb(<strong>userid</strong>: userdata/table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
 <strong>userdata/userid</strong>: USERDATA attribute in C, or userid object in 
@@ -165,7 +165,7 @@ Lua.</p>
 <p><strong>RIGHTCLICK_CB</strong>: Action generated when the right mouse button 
 is pressed over a node.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
-<strong>elem</strong>:rightclick_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:rightclick_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. <br>
 <strong>id</strong>:

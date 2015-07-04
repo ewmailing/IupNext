@@ -30,10 +30,10 @@
 Ihandle* IupImageRGB(int <strong>width</strong>, int <strong>height</strong>, const unsigned char *<strong>pixels</strong>); [in C]
 Ihandle* IupImageRGBA(int <strong>width</strong>, int <strong>height</strong>, const unsigned char *<strong>pixels</strong>); [in C]
 
-iup.image{<b>line0</b>: table, <b>line1</b>: table, ...; colors = <b>colors</b>: table} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
-iup.image{width = <strong>width</strong>: number, height = <strong>height</strong>: number, pixels = <strong>pixels</strong>: table, colors = <b>colors</b>: table} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
-iup.imagergb {width = <strong>width</strong>: number, height = <strong>height</strong>: number, pixels = <strong>pixels</strong>: table} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
-iup.imagergba{width = <strong>width</strong>: number, height = <strong>height</strong>: number, pixels = <strong>pixels</strong>: table} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.image{<b>line0</b>: table, <b>line1</b>: table, ...; colors = <b>colors</b>: table} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
+iup.image{width = <strong>width</strong>: number, height = <strong>height</strong>: number, pixels = <strong>pixels</strong>: table, colors = <b>colors</b>: table} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
+iup.imagergb {width = <strong>width</strong>: number, height = <strong>height</strong>: number, pixels = <strong>pixels</strong>: table} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
+iup.imagergba{width = <strong>width</strong>: number, height = <strong>height</strong>: number, pixels = <strong>pixels</strong>: table} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 
 image(<strong>width</strong>, <strong>height</strong>, <strong>pixel0</strong>, <strong>pixel1</strong>, ...) [in LED]
 imagergb(<strong>width</strong>, <strong>height</strong>, <strong>pixel0</strong>, <strong>pixel1</strong>, ...) [in LED]

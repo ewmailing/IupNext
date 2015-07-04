@@ -45,7 +45,7 @@
 
 <h3><a name="Creation">Creation</a></h3>
 
-<pre>Ihandle* IupCanvas(const char *<strong>action</strong>); [in C]<br>iup.canvas{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]<br>canvas(<strong>action</strong>) [in LED]</pre>
+<pre>Ihandle* IupCanvas(const char *<strong>action</strong>); [in C]<br>iup.canvas{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]<br>canvas(<strong>action</strong>) [in LED]</pre>
 
   
 <p><b>
@@ -207,7 +207,7 @@ canvas needs to be redrawn.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, float <strong>posx</strong>, float <strong>posy</strong>); [in C]<br><strong>elem</strong>:action(<b>posx, posy</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, float <strong>posx</strong>, float <strong>posy</strong>); [in C]<br><strong>ih</strong>:action(<b>posx, posy</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -277,7 +277,7 @@ older GTK versions.</p>
   when a touch event occurred. Multiple touch events will trigger several calls. 
 Must set TOUCH=Yes to receive this event. (Since 3.3)</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>id</strong>, int <strong>x</strong>, int <strong>y</strong>, char* <strong>state</strong>); [in C]
-<strong>elem</strong>:touch_cb(<strong>id</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> state</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:touch_cb(<strong>id</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> state</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifies the element that activated the 
 event.<br>
 <strong>id</strong>: identifies the touch point.
@@ -290,7 +290,7 @@ point is a &quot;primary&quot; point then &quot;-PRIMARY&quot; is appended to th
 <p><strong>MULTITOUCH_CB</strong> [Windows 7 Only]: Action generated when 
 multiple touch events occurred. Must set TOUCH=Yes to receive this event. (Since 3.3)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>count</strong>, int* <strong>pid</strong>, int* <strong>px</strong>, int* <strong>py</strong>, int* <strong>pstate</strong>) [in C]
-<strong>elem</strong>:multitouch_cb(<strong>count:</strong> number<strong>, pid, px, py, pstate: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:multitouch_cb(<strong>count:</strong> number<strong>, pid, px, py, pstate: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>count</strong>: Number of touch points in the array.<br>

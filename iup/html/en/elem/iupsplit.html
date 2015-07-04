@@ -35,7 +35,7 @@ direction, but when one is expanded the other is contracted.</p>
 <h3><a name="Creation">Creation</a></h3>
 
 <pre>Ihandle* IupSplit(Ihandle*<strong> child1</strong>, Ihandle*<strong> child2</strong>); [in C]
-iup.split{<strong>child1</strong>, <strong>child2</strong>: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.split{<strong>child1</strong>, <strong>child2</strong>: ihandle} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 split(<strong>child1</strong>, <strong>child2</strong>) [in LED]</pre>
   <p><strong>child1</strong>: Identifier of an interface element that will be at 
   left or top. It can be NULL (nil in Lua), not optional in LED.<br>
@@ -104,7 +104,7 @@ also accepted.</p>
 <p><strong>VALUECHANGED_CB</strong>:
   Called after the value was interactively changed by the user. (since 3.12)</p>
 
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:

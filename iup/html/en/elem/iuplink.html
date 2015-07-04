@@ -34,7 +34,7 @@
 <h3><a name="Creation">Creation</a></h3>
 
 <pre>Ihandle* IupLink(const char *<strong>url</strong>, const <strong>char</strong> * title); [in C]
-iup.link{[url = <strong>url</strong>: string], [title = <strong>title</strong>: string]} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.link{[url = <strong>url</strong>: string], [title = <strong>title</strong>: string]} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 link(<strong>url</strong>, <strong>title</strong>) [in LED]</pre>
 <p><strong>url</strong>: the destination address of the link. Can be any text. 
 If <strong>IupHelp</strong> is used should be a valid URL. It can be NULL. It 
@@ -67,7 +67,7 @@ default value is "YES".</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, char *<strong>url</strong>); [in C]<br><strong>elem</strong>:action(<strong>url</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, char *<strong>url</strong>); [in C]<br><strong>ih</strong>:action(<strong>url</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:

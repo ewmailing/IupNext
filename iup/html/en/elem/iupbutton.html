@@ -53,7 +53,7 @@
 <h3><a name="Creation">Creation</a></h3>
 
 
-<pre>Ihandle* IupButton(const char *<strong>title</strong>, const char *<strong>action</strong>); [in C]<br>iup.button{[title = <strong>title</strong>: string]} -&gt; <strong>elem</strong>: ihandle [in Lua]<br>button(<strong>title</strong>, <strong>action</strong>) [in LED]</pre>
+<pre>Ihandle* IupButton(const char *<strong>title</strong>, const char *<strong>action</strong>); [in C]<br>iup.button{[title = <strong>title</strong>: string]} -&gt; <strong>ih</strong>: ihandle [in Lua]<br>button(<strong>title</strong>, <strong>action</strong>) [in LED]</pre>
 
   
 <p><b>
@@ -193,7 +193,7 @@ also accepted.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:action() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>ih</strong>:action() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
