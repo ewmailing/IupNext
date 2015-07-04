@@ -34,7 +34,7 @@ in the
 <h3><a name="Creation">Creation</a></h3>
 
 <pre>Ihandle* IupColorbar(void); [in C]
-iup.colorbar{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.colorbar{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 colorbar() [in LED] </pre>
 <p>
   <u>Returns:</u> the identifier of the 
@@ -98,7 +98,7 @@ also accepted.&nbsp;</p>
 <p><strong>CELL_CB</strong><tt>:</tt> called when the user double clicks a color cell to change its value. 
 </p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>cell</strong>); [in C]
-<strong>elem</strong>:cell_cb(<strong>cell</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
+<strong>ih</strong>:cell_cb(<strong>cell</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
@@ -110,7 +110,7 @@ By default
 <p><strong>EXTENDED_CB</strong><tt>:</tt> called when the user right click a cell with the Shift key pressed. It 
   is independent of the SHOW_SECONDARY attribute.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>cell</strong>);  [in C]
-<strong>elem</strong>:extended_cb(<strong>cell</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:extended_cb(<strong>cell</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>

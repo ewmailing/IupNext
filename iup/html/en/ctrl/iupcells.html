@@ -40,7 +40,7 @@ in the
 <h3><a name="Creation">Creation</a></h3>
 
 <pre>Ihandle* IupCells(void); [in C]
-iup.cells{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.cells{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 cells() [in LED] </pre>
 <p>
   <u>Returns:</u> the identifier of the 
@@ -127,7 +127,7 @@ attribute IUP_CLIPPED is set (the
 <p><strong>HEIGHT_CB</strong><tt>:</tt> called when the controls needs to know a (eventually new) line 
   height.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <b>line</b>);  [in C]
-<strong>elem</strong>:height_cb(<strong>line</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:height_cb(<strong>line</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
@@ -137,7 +137,7 @@ pixels). Default is 30 pixels.</p>
 <p><strong>HSPAN_CB</strong><tt>:</tt> called when the control needs to know if a cell should be 
   horizontally spanned.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <b>line</b>, int <b>column</b>);  [in C]
-<strong>elem</strong>:hspan_cb(<strong>line, column</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:hspan_cb(<strong>line, column</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
@@ -159,7 +159,7 @@ IupCanvas callback with two additional parameters:</p>
 <p><strong>MOUSEMOTION_CB</strong><tt>:</tt> 
   called when the mouse moves over the control.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <b>line</b>, int <b>column</b>, int <strong>x</strong>, int <strong>y</strong>, char *<strong>r</strong>); [in C]
-<strong>elem</strong>:mousemotion_cb(<strong>x</strong>, <strong>y</strong>: number, <strong>r</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:mousemotion_cb(<strong>x</strong>, <strong>y</strong>: number, <strong>r</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info">Same as the <a href="../call/iup_motion_cb.html">MOTION_CB</a> 
 IupCanvas callback with two additional parameters:</p>
 <p class="info"><strong>line</strong>, <strong>column</strong>:
@@ -168,7 +168,7 @@ IupCanvas callback with two additional parameters:</p>
 </p>
 <p><strong>NCOLS_CB</strong><tt>:</tt> called when then controls needs to know its number of columns.</p>
 <pre>int function(Ihandle* <b>ih</b>);  [in C]
-<strong>elem</strong>:ncols_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:ncols_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.</p>
@@ -176,7 +176,7 @@ IupCanvas callback with two additional parameters:</p>
 Default is 10 columns.</p>
 <p><strong>NLINES_CB</strong><tt>:</tt> called when then controls needs to know its number of lines.</p>
 <pre>int function(Ihandle* <b>ih</b>);  [in C]
-<strong>elem</strong>:nlines_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:nlines_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.</p>
@@ -185,7 +185,7 @@ Default is 10 lines.</p>
 <p><strong>SCROLLING_CB</strong><tt>:</tt> called when the scrollbars are 
 activated.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <b>line</b>, int <b>column</b>);  [in C]
-<strong>elem</strong>:scrolling_cb(<strong>line, column</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:scrolling_cb(<strong>line, column</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
@@ -195,7 +195,7 @@ the cell is always redrawn.</p>
   <p><strong>VSPAN_CB</strong><tt>:</tt> called when the control needs to know if a cell should be 
   vertically spanned.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <b>line</b>, int <b>column</b>);  [in C]
-<strong>elem</strong>:vspan_cb(<strong>line, column</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:vspan_cb(<strong>line, column</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
@@ -206,7 +206,7 @@ Default is 1 (no span).</p>
 the column 
   width</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <b>column</b>);  [in C]
-<strong>elem</strong>:width_cb(<strong>column</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:width_cb(<strong>column</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>

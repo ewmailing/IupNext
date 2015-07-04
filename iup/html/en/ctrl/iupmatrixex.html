@@ -112,7 +112,7 @@ Lua control
 
 <h3><a name="Creation">Creation</a></h3>
 
-<pre>Ihandle* IupMatrixEx(void); [in C]<br>iup.matrixex{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]<br>matrixex(<strong>action</strong>) [in LED]</pre>
+<pre>Ihandle* IupMatrixEx(void); [in C]<br>iup.matrixex{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]<br>matrixex(<strong>action</strong>) [in LED]</pre>
 
   
 <p>
@@ -480,7 +480,7 @@ matrix contents as a result of an operation such as paste or copy. </p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, int <strong>status</strong>, int <strong>count</strong>, char* <strong>name</strong>); [in C]<br><strong>elem</strong>:busy_cb(<strong>status</strong>,<strong>count</strong>: number, <strong>name</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>status</strong>, int <strong>count</strong>, char* <strong>name</strong>); [in C]<br><strong>ih</strong>:busy_cb(<strong>status</strong>,<strong>count</strong>: number, <strong>name</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -502,7 +502,7 @@ called if the cell value is NULL in normal mode, or the
 is NULL in callback mode, and the column has <strong>NUMERICQUANTITY<em>id </em>
 </strong>defined. Not called for lin=0.</p>
 <pre>double function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:numericgetvalue_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:numericgetvalue_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
     identifier of the element that activated the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
@@ -515,7 +515,7 @@ called if the column has <strong>NUMERICQUANTITY<em>id </em>
 as string in normal mode and&nbsp; <a href="iupmatrix_cb.html#VALUE_EDIT_CB">
 VALUE_EDIT_CB</a> will not be called in callback mode.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, double <strong>value</strong>); [in C]
-<strong>elem</strong>:numericsetvalue_cb(<strong>lin, col</strong>, <strong>value</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:numericsetvalue_cb(<strong>lin, col</strong>, <strong>value</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
@@ -526,7 +526,7 @@ can add or removed items from the menu. Only shown if MENUCONTEXT=Yes.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, Ihandle*<strong> menu</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]<br><strong>elem</strong>:menucontext_cb(<strong>menu: </strong>ihandle, <strong>lin</strong>,<strong> col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle*<strong> menu</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]<br><strong>ih</strong>:menucontext_cb(<strong>menu: </strong>ihandle, <strong>lin</strong>,<strong> col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -552,7 +552,7 @@ attributes to receive the new data.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, int <strong>num_lin</strong>, int <strong>num_col</strong>); [in C]<br><strong>elem</strong>:pastesize_cb(<strong>num_lin</strong>,<strong> num_col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>num_lin</strong>, int <strong>num_col</strong>); [in C]<br><strong>ih</strong>:pastesize_cb(<strong>num_lin</strong>,<strong> num_col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -573,7 +573,7 @@ when sorting data in a column to compare two cell values.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, int <strong>col</strong>, int <strong>lin1</strong>, int <strong>lin2</strong>); [in C]<br><strong>elem</strong>:sortcolumncompare_cb(<strong>col,lin1,lin</strong>2: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>col</strong>, int <strong>lin1</strong>, int <strong>lin2</strong>); [in C]<br><strong>ih</strong>:sortcolumncompare_cb(<strong>col,lin1,lin</strong>2: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:

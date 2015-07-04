@@ -21,7 +21,7 @@
   Action generated when a keyboard event 
   occurs.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>key</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>edition</strong>, char* <strong>value</strong>); [in C]
-<strong>elem</strong>:action_cb(<strong>key, lin, col</strong>, <strong>edition</strong>: number<strong>, value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:action_cb(<strong>key, lin, col</strong>, <strong>edition</strong>: number<strong>, value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>key</strong>:
@@ -52,7 +52,7 @@ When
 EDITHIDEONFOCUS=NO and editing is on going the callback EDITCLICK_CB with the 
 same parameters will also be called right before this one (since 3.14).</span></p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]
-<strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>: Coordinates of the cell where the 
@@ -64,7 +64,7 @@ the moment the event is generated. The same macros used for
 <p><strong><a name="COLRESIZE_CB">COLRESIZE_CB</a></strong>:
   Action generated when a column is interactively resized. (Since 3.9)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:colresize_cb(<strong>col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:colresize_cb(<strong>col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>col</strong>: Column that had its size changed.<br>
@@ -77,7 +77,7 @@ When
 EDITHIDEONFOCUS=NO and editing is on going the callback EDITRELEASE_CB with the 
 same parameters will also be called right before this one (since 3.14).</span></p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]
-<strong>elem</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>: Coordinates of the cell where the 
@@ -90,7 +90,7 @@ the moment the event is generated. The same macros used for
   Action generated after the element size has been updated but before the cells 
 have been actually refreshed. (Since 3.10.1)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>width</strong>, int <strong>height</strong>); [in C]
-<strong>elem</strong>:resizematrix_cb(<strong>width</strong>, <strong>height</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:resizematrix_cb(<strong>width</strong>, <strong>height</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br>
@@ -103,7 +103,7 @@ considering the BORDER size (client size)</p>
   Action generated when a toggle button is 
   pressed. (Since 3.9)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, i<span class="style2">nt</span> <strong>status</strong>); [in C]
-<strong>elem</strong>:togglevalue_cb(<strong>lin, col, status</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:togglevalue_cb(<strong>lin, col, status</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>: Coordinates of the cell where the 
@@ -114,7 +114,7 @@ changed by the user or after a group of values where programmatically changed in
 a single operation (since 3.9). When it was interactively changed the temporary 
 attribute CELL_EDITED will be set to Yes during the callback (since 3.13).</p>
 
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -128,7 +128,7 @@ attribute CELL_EDITED will be set to Yes during the callback (since 3.13).</p>
 EDITHIDEONFOCUS=NO and editing is on going the callback EDITMOUSEMOVE_CB with 
 the same parameters will also be called right before this one (since 3.14).</span></p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:mousemove_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:mousemove_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -140,7 +140,7 @@ the event.<br>
 Also called when focus is changed because lines or columns were added or removed 
 (since 3.9).</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:enteritem_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:enteritem_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -149,7 +149,7 @@ the event.<br>
   Action generated when a cell is no longer 
   the current cell. Also called when the matrix is losing focus.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:leaveitem_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:leaveitem_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -164,7 +164,7 @@ the event.<br>
   is scrolled with the scrollbars or with the keyboard. Can be used together with the 
 ORIGIN and ORIGINOFFSET attributes to synchronize the movement of two or more matrices.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:scrolltop_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:scrolltop_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -175,7 +175,7 @@ the event.<br>
   Action generated to retrieve the background 
   color of a cell when it needs to be redrawn. </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>*red</strong>, int <strong>*green</strong>, int <strong>*blue</strong>); [in C]
-<strong>elem</strong>:bgcolor_cb(<strong>lin, col</strong>: number) -&gt; (<strong>red, green, blue, ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:bgcolor_cb(<strong>lin, col</strong>: number) -&gt; (<strong>red, green, blue, ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
@@ -189,7 +189,7 @@ the event.<br>
   Action generated to retrieve the foreground 
   color of a cell when it needs to be redrawn. </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>*red</strong>, int <strong>*green</strong>, int <strong>*blue</strong>); [in C]
-<strong>elem</strong>:fgcolor_cb(<strong>lin, col</strong>: number) -&gt; (<strong>red, green, blue, ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:fgcolor_cb(<strong>lin, col</strong>: number) -&gt; (<strong>red, green, blue, ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -206,7 +206,7 @@ the event.<br>
   Action generated to retrieve the font of a 
   cell. Called both for common cells and for line and column titles. (since 3.0)</p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:font_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
+<strong>ih</strong>:font_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
@@ -217,7 +217,7 @@ font. </p>
   Action generated to retrieve the type of a 
   cell value. Called both for common cells and for line and column titles. (since 3.9)</p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:type_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
+<strong>ih</strong>:type_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
@@ -232,7 +232,7 @@ the event.<br>
 callback is called after the cell background has been filled with the background 
 color. The focus feedback area is not included in the decoration size.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>x1</strong>, int <strong>x2</strong>, int <strong>y1</strong>, int <strong>y2</strong>, cdCanvas* <strong>cnv</strong>); [in C]
-<strong>elem</strong>:draw_cb(<strong>lin, col, x1, x2, y1, y2</strong>: number, <strong>cnv</strong>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:draw_cb(<strong>lin, col, x1, x2, y1, y2</strong>: number, <strong>cnv</strong>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -251,7 +251,7 @@ If the callback is defined and return IUP_DEFAULT for a cell, to show the
 dropdown/popup menu the user can simply do a single click in the drop feedback 
 area of that cell. (Toggle support since 3.9)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:dropcheck_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:dropcheck_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -264,7 +264,7 @@ nothing.</p>
   cell during display and size computation. Called both for common cells and for line and column titles. 
 (since 3.13)</p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>value</strong>); [in C]
-<strong>elem</strong>:translatevalue_cb(<strong>lin, col</strong>: number, <strong>value</strong>: string) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
+<strong>ih</strong>:translatevalue_cb(<strong>lin, col</strong>: number, <strong>value</strong>: string) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
@@ -281,7 +281,7 @@ the event.<br>
   list to be shown). You should also set the lists current value (&quot;VALUE&quot;), the default is always &quot;1&quot;. The previously cell value can be verified from the given
   drop Ihandle via the &quot;PREVIOUSVALUE&quot; attribute.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, Ihandle *<strong>drop</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:drop_cb(<strong>drop: </strong>ihandle, <strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:drop_cb(<strong>drop: </strong>ihandle, <strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>drop</strong>:
@@ -303,7 +303,7 @@ attribute that will add a mark to the menu item with the same number. If IMAGEid
 is set then an IMAGE attribute will be set at the correspondent menu item. The previously cell value can be verified from the given
   drop Ihandle via the &quot;PREVIOUSVALUE&quot; attribute. (since 3.6)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, Ihandle *<strong>drop</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:drop_cb(<strong>drop: </strong>ihandle, <strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:drop_cb(<strong>drop: </strong>ihandle, <strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>drop</strong>:
@@ -318,7 +318,7 @@ the event.<br>
 else the item is selected and editing remains. For the popup menu the returned 
 value is ignored.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, Ihandle *<strong>drop</strong>, char *<strong>t</strong>, int <strong>i, </strong>int <strong>v</strong>); [in C]
-<strong>elem</strong>:dropselect_cb(<strong>lin, col</strong>: number, <strong>drop: </strong>ihandle,<strong> t</strong>: string, <strong>i, v</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua] </pre>
+<strong>ih</strong>:dropselect_cb(<strong>lin, col</strong>: number, <strong>drop: </strong>ihandle,<strong> t</strong>: string, <strong>i, v</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua] </pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
@@ -336,7 +336,7 @@ the popup menu.</p>
   Action generated when the current cell 
   enters or leaves the edition mode. Not called if READONLY=YES.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>mode, </strong>int <strong>update</strong>);  [in C]
-<strong>elem</strong>:edition_cb(<strong>lin, col</strong>, <strong>mode, update</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:edition_cb(<strong>lin, col</strong>, <strong>mode, update</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
@@ -378,7 +378,7 @@ check all the new values after they where changed.</p>
   Action generated to retrieve the value of a 
   cell. Called both for common cells and for line and column titles.</p>
 <pre>char* function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:value_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
+<strong>ih</strong>:value_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: string) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
@@ -394,7 +394,7 @@ internally stored, so to refuse the new value simply reset the cell to the
 desired value. When it was interactively changed the temporary attribute 
 CELL_EDITED will be set to Yes during the callback (since 3.13).</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>newval</strong>); [in C]
-<strong>elem</strong>:value_edit_cb(<strong>lin, col</strong>: number<strong>, newval</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:value_edit_cb(<strong>lin, col</strong>: number<strong>, newval</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
@@ -407,7 +407,7 @@ not defined when the matrix is mapped it will be read-only.</p>
   Action generated to retrieve the selection 
   state of a cell. Called only for common cells, only when MARKMODE=CELL and only in callback mode.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>elem</strong>:mark_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:mark_cb(<strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>:
@@ -420,7 +420,7 @@ the event.<br>
   that the selection state of a cell was changed. Since it is a notification, it cannot refuse the mark modification.
   Called only for common cells, only when MARKMODE=CELL and only in callback mode.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <b>marked</b>); [in C]
-<strong>elem</strong>:markedit_cb(<strong>lin, col, </strong><b>marked</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:markedit_cb(<strong>lin, col, </strong><b>marked</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>:

@@ -48,7 +48,7 @@ and the program must be linked to the lua control
 <h3><a name="Creation">Creation</a></h3>
 
 <pre>Ihandle* IupOleControl(const char* <strong>ProgID</strong>); [in C]
-iup.olecontrol{<b>ProgID</b>: string} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.olecontrol{<b>ProgID</b>: string} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 olecontrol(<b>ProgID</b>) [in LED]
 </pre>
 <b>
@@ -112,11 +112,11 @@ MAXSIZE</a>,
 <a href="../call/iup_enterwindow_cb.html">ENTERWINDOW_CB</a>,
   <a href="../call/iup_leavewindow_cb.html">LEAVEWINDOW_CB</a>.</p>
 <h3>Additional Methods in Lua</h3>
-<pre><strong>elem</strong>:CreateLuaCOM()</pre>
+<pre><strong>ih</strong>:CreateLuaCOM()</pre>
 <p>If LuaCOM is loaded and the IUNKNOWN is valid then set:</p>
 <font SIZE="3">
 <blockquote>
-	<pre><strong>elem</strong>.com = luacom.CreateLuaCOM(luacom.ImportIUnknown(<strong>elem</strong>.iunknown))</pre>
+	<pre><strong>ih</strong>.com = luacom.CreateLuaCOM(luacom.ImportIUnknown(<strong>ih</strong>.iunknown))</pre>
 </blockquote>
 </font>
 <h3><a name="Notes">Notes</a></h3>

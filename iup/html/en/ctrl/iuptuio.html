@@ -41,7 +41,7 @@ and the program must be linked to the respective Lua control
 <h3><a name="Creation">Creation</a></h3>
 
 <pre>Ihandle* IupTuioClient(int <strong>port</strong>); [in C]
-iup.tuioclient{<b>[port</b>: number]} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.tuioclient{<b>[port</b>: number]} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 tuioclient(port) [in LED]
 </pre>
 <b>
@@ -69,7 +69,7 @@ IupCanvas</strong> that will be used to receive the events.</p>
   Action generated 
   when a touch event occurred. Multiple touch events will trigger several calls.</p>
 <pre>int function(Ihandle* <strong>ih</strong>, int <strong>id</strong>, int <strong>x</strong>, int <strong>y</strong>, char* <strong>state</strong>); [in C]
-<strong>elem</strong>:touch_cb(<strong>id</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> state</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:touch_cb(<strong>id</strong>, <strong>x</strong>,<strong> y</strong>: number,<strong> state</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifies the element that activated the event. 
 If TARGETCANVAS is not defined then it is the <strong>IupTuioClient</strong> 
 control.<br>
@@ -83,7 +83,7 @@ point is a &quot;primary&quot; point then &quot;-PRIMARY&quot; is appended to th
 <p><strong>MULTITOUCH_CB</strong>: Action generated when multiple touch events 
 occurred.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>count</strong>, int* <strong>pid</strong>, int* <strong>px</strong>, int* <strong>py</strong>, int* <strong>pstate</strong>) [in C]
-<strong>elem</strong>:multitouch_cb(<strong>count:</strong> number<strong>, pid, px, py, pstate: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:multitouch_cb(<strong>count:</strong> number<strong>, pid, px, py, pstate: </strong>table) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event. If TARGETCANVAS is not defined then it is the <strong>IupTuioClient</strong> 
 control.<br>

@@ -35,7 +35,7 @@ the usage by the programmer and by the user should be very similar.</p>
 <h3><a name="Creation">Creation</a></h3>
 <div>
   <pre>Ihandle* IupMatrixList(void); [in C]
-iup.matrixlist{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.matrixlist{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 matrixlist() [in LED]</pre>
 </div>
 <p>Returns the identifier of the created 
@@ -208,7 +208,7 @@ changed by the user (mark/unmark).</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>imagevalue</strong>); [in C]<br><b>elem</b>:imagevaluechanged_cb(<b>lin, imagevalue</b>: number) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>imagevalue</strong>); [in C]<br><strong>ih</strong>:imagevaluechanged_cb(<b>lin, imagevalue</b>: number) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -226,7 +226,7 @@ IMAGEUNCHECK.</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, int <strong>item</strong>, int <strong>state</strong>); [in C]<br><b>elem</b>:listaction_cb(<strong>item</strong><b>, </b><strong>state</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>item</strong>, int <strong>state</strong>); [in C]<br><strong>ih</strong>:listaction_cb(<strong>item</strong><b>, </b><strong>state</strong>: number) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -242,7 +242,7 @@ item.</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]<br><b>elem</b>:listclick_cb(<strong>lin, col</strong>: number, <b>status</b>: string) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]<br><strong>ih</strong>:listclick_cb(<strong>lin, col</strong>: number, <b>status</b>: string) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -264,7 +264,7 @@ It is called before the default processing.</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>x1</strong>, int <strong>x2</strong>, int <strong>y1</strong>, int <strong>y2</strong>, cdCanvas* <strong>cnv</strong>); [in C]<br><b>elem</b>:listdraw_cb(<b>text</b>: string, <strong>item</strong><b>, </b><strong>state</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>x1</strong>, int <strong>x2</strong>, int <strong>y1</strong>, int <strong>y2</strong>, cdCanvas* <strong>cnv</strong>); [in C]<br><strong>ih</strong>:listdraw_cb(<b>text</b>: string, <strong>item</strong><b>, </b><strong>state</strong>: number) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -287,7 +287,7 @@ enters or leaves the edition mode. Called before the default processing.</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>mode</strong>, int <strong>update</strong>); [in C]<br><b>elem</b>:listedition_cb(<strong>lin, col, mode, update</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>mode</strong>, int <strong>update</strong>); [in C]<br><strong>ih</strong>:listedition_cb(<strong>lin, col, mode, update</strong>: number) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -309,7 +309,7 @@ the list.</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>); [in C]<br><b>elem</b>:listinsert_cb(<strong>lin</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>); [in C]<br><strong>ih</strong>:listinsert_cb(<strong>lin</strong>: number) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -326,7 +326,7 @@ over a item.</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]<br><b>elem</b>:listrelease_cb(<strong>lin, col</strong>: number, <b>status</b>: string) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]<br><strong>ih</strong>:listrelease_cb(<strong>lin, col</strong>: number, <b>status</b>: string) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -347,7 +347,7 @@ processing return IUP_IGNORE.</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>); [in C]<br><b>elem</b>:listremove_cb(<strong>lin</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>lin</strong>); [in C]<br><strong>ih</strong>:listremove_cb(<strong>lin</strong>: number) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 

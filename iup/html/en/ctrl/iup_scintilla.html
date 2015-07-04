@@ -95,7 +95,7 @@ Lua control
 
 <h3><a name="Creation">Creation</a></h3>
 
-<pre>Ihandle* IupScintilla(void); [in C]<br>iup.scintilla{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]<br>scintilla(<strong>action</strong>) [in LED]</pre>
+<pre>Ihandle* IupScintilla(void); [in C]<br>iup.scintilla{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]<br>scintilla(<strong>action</strong>) [in LED]</pre>
 
   
 <p>
@@ -754,7 +754,7 @@ the clipboard.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>insert</strong>, int <strong>pos</strong>, int <strong>length</strong>, char* <strong>text</strong> ); [in C]<br><strong>elem</strong>:action(<strong>insert</strong>: boolean, <strong>pos</strong>, <strong>length</strong>: number, <strong>text</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>insert</strong>, int <strong>pos</strong>, int <strong>length</strong>, char* <strong>text</strong> ); [in C]<br><strong>ih</strong>:action(<strong>insert</strong>: boolean, <strong>pos</strong>, <strong>length</strong>: number, <strong>text</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -778,7 +778,7 @@ AUTOCCANCEL</strong>&nbsp;attribute&nbsp;before returning from the callback. (si
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>, char* <strong>text</strong> ); [in C]<br><strong>elem</strong>:autocselection_cb(<strong>pos</strong>: number, <strong>text</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>, char* <strong>text</strong> ); [in C]<br><strong>ih</strong>:autocselection_cb(<strong>pos</strong>: number, <strong>text</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -794,7 +794,7 @@ completed.<br>
 <p><strong>AUTOCCANCELLED_CB</strong>: Called after the user has cancelled 
 an&nbsp;auto-completion list. (since 3.10.1)</p>
 
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:autoccancelled_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:autoccancelled_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -806,7 +806,7 @@ an&nbsp;auto-completion list. (since 3.10.1)</p>
 <p><strong>AUTOCCHARDELETED_CB</strong>: Called after the user deleted a 
 character while auto-completion list was active. (since 3.10.1)</p>
 
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:autocchardeleted_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:autocchardeleted_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -828,7 +828,7 @@ character while auto-completion list was active. (since 3.10.1)</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>pos</strong>); [in C]<br><strong>elem</strong>:caret_cb(<strong>lin</strong>, <b>col, pos</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>pos</strong>); [in C]<br><strong>ih</strong>:caret_cb(<strong>lin</strong>, <b>col, pos</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -854,7 +854,7 @@ clicks on text that is in a style with the hotspot attribute set</span>.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>status</strong>); [in C]<br><strong>elem</strong>:hotspotclick_cb(<strong>pos</strong>, <b>lin</b>, <strong>col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>, int <strong>lin</strong>, int <strong>col</strong>, char* <strong>status</strong>); [in C]<br><strong>ih</strong>:hotspotclick_cb(<strong>pos</strong>, <b>lin</b>, <strong>col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -878,7 +878,7 @@ marked as sensitive.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>margin</strong>, int <strong>lin</strong>, char* <strong>status</strong>); [in C]<br><strong>elem</strong>:marginclick_cb(<strong>margin</strong>, <b>lin</b>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>margin</strong>, int <strong>lin</strong>, char* <strong>status</strong>); [in C]<br><strong>ih</strong>:marginclick_cb(<strong>margin</strong>, <b>lin</b>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -911,7 +911,7 @@ save point use the <a href="#SAVEDSTATE">SAVEDSTATE</a> attribute.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>status</strong>); [in C]<br><strong>elem</strong>:savepoint_cb(<strong>status</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>status</strong>); [in C]<br><strong>ih</strong>:savepoint_cb(<strong>status</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -925,7 +925,7 @@ save point use the <a href="#SAVEDSTATE">SAVEDSTATE</a> attribute.</p>
 <p><strong>VALUECHANGED_CB</strong>:
   Called after the value was interactively changed by the user.</p>
 
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
@@ -942,7 +942,7 @@ pixels.</p>
 
   
     
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>zoomInPoints</strong>); [in C]<br><strong>elem</strong>:zoom_cb(<strong>zoomInPoints</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>zoomInPoints</strong>); [in C]<br><strong>ih</strong>:zoom_cb(<strong>zoomInPoints</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:

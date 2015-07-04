@@ -119,7 +119,7 @@ coordinate.</p>
 <h3><a name="Creation">Creation</a></h3>
 <div>
   <pre>Ihandle* IupPPlot(void); [in C]
-iup.pplot{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.pplot{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 pplot() [in LED]</pre>
 </div>
 <p>This function returns the identifier of the 
@@ -374,7 +374,7 @@ dataset.
     If multiple points are selected it is called once for each selected point.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, float <strong>x</strong>, float <strong>y</strong>); [in C]
-<strong>elem</strong>:delete_cb(<b>index, sample_index, x, y</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:delete_cb(<b>index, sample_index, x, y</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br><strong>index</strong>: index of the dataset<br>
@@ -389,8 +389,8 @@ dataset.
 will begin or end. But they are called only if DELETE_CB is also defined.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>); [in C]
-<strong>elem</strong>:deletebegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
-<strong>elem</strong>:deleteend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:deletebegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
+<strong>ih</strong>:deleteend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.</p>
@@ -405,7 +405,7 @@ will begin or end. But they are called only if DELETE_CB is also defined.</p>
 It is called only if the selection state of the sample is about to be changed.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, float <strong>x</strong>, float <strong>y, </strong>int <strong>select</strong>); [in C]
-<strong>elem</strong>:select_cb(<b>index, sample_index, x, y, select</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:select_cb(<b>index, sample_index, x, y, select</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br><strong>index</strong>: index of the dataset<br>
@@ -423,8 +423,8 @@ operation will begin or end. But they are called only if SELECT_CB is also
 defined.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>); [in C]
-<strong>elem</strong>:selectbegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
-<strong>elem</strong>:selectend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:selectbegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
+<strong>ih</strong>:selectend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.</p>
@@ -439,7 +439,7 @@ defined.</p>
 It is called only if the selection state of the sample is about to be changed.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>index</b>, int <b>sample_index</b>, float <strong>x</strong>, float <strong>y, </strong>float <strong>*new_x</strong>, float <strong>*new_y</strong>); [in C]
-<strong>elem</strong>:edit_cb(<b>index, sample_index, x, y, </b><strong>new_x, new_y</strong>: number) -&gt; (<strong>new_x, new_y, ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:edit_cb(<b>index, sample_index, x, y, </b><strong>new_x, new_y</strong>: number) -&gt; (<strong>new_x, new_y, ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br><strong>index</strong>: index of the dataset<br>
@@ -458,8 +458,8 @@ operation will begin or end. But they are called only if EDIT_CB is also
 defined.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>); [in C]
-<strong>elem</strong>:editbegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
-<strong>elem</strong>:editend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:editbegin_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
+<strong>ih</strong>:editend_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.</p>
@@ -490,8 +490,8 @@ but Postdraw is clipped to the dataset area. To position elements in plot units,
 use the <b>IupPPlotTransform</b> function.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, cdCanvas* <strong>cnv</strong>); [in C]
-<strong>elem</strong>:predraw_cb(<b>cnv</b>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]
-<strong>elem</strong>:postdraw_cb(<b>cnv</b>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:predraw_cb(<b>cnv</b>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]
+<strong>ih</strong>:postdraw_cb(<b>cnv</b>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<strong><br>cnv</strong>: the internal CD canvas where the draw operation 

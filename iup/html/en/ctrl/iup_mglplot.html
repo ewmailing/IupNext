@@ -144,7 +144,7 @@ commands. Multiline text is accepted. </p>
 <h3><a name="Creation">Creation</a></h3>
 <div>
   <pre>Ihandle* IupMglPlot(void); [in C]
-iup.mglplot{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.mglplot{} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 mglplot() [in LED]</pre>
 </div>
 <p>This function returns the identifier of the 
@@ -601,8 +601,8 @@ be used to draw additional information in the plot. Use only the IupMglPlotDraw*
 functions. For display output OpenGL primitives can also be used.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>); [in C]
-<strong>elem</strong>:predraw_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
-<strong>elem</strong>:postdraw_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:predraw_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
+<strong>ih</strong>:postdraw_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.</p>

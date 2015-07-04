@@ -29,7 +29,7 @@ in the
 <h3><a name="Creation">Creation</a></h3>
 
 <pre>Ihandle* IupDial(const char *<strong>orientation</strong>); [in C]
-iup.dial{<strong>orientation</strong>: string} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+iup.dial{<strong>orientation</strong>: string} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 dial(<strong>orientation</strong>) [in LED] </pre>
 <p><strong>orientation</strong>: optional dial orientation, can be NULL. See ORIENTATION attribute.</p>
 <p>
@@ -83,7 +83,7 @@ also accepted.&nbsp;</p>
   button over the dial. The angle here is always zero, except for the circular dial.</p>
 <div align="left">
   <pre>int function(Ihandle *<strong>ih</strong>, double <strong>angle</strong>)
-<strong>elem</strong>:button_press_cb(<strong>angle</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:button_press_cb(<strong>angle</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 </div>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -94,7 +94,7 @@ also accepted.&nbsp;</p>
   button after pressing it over the dial.</p>
 <div align="left">
   <pre>int function(Ihandle *<strong>ih</strong>, double <strong>angle</strong>)
-<strong>elem</strong>:button_release_cb(<strong>angle</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:button_release_cb(<strong>angle</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 </div>
 <div align="left">
     <p class="info"><strong>ih</strong>:
@@ -111,7 +111,7 @@ also accepted.&nbsp;</p>
   The angle the dial rotated since it was initialized is passed as a parameter.</p>
 <div align="left">
   <pre>int function(Ihandle *<strong>ih</strong>, double <strong>angle</strong>); [in C]
-<strong>elem</strong>:mousemove_cb(<strong>angle</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:mousemove_cb(<strong>angle</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 </div>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -126,7 +126,7 @@ whenever a <strong>BUTTON_PRESS_CB</strong>, a <strong>BUTTON_RELEASE_CB</strong
 or a<strong> MOUSEMOVE_CB</strong> would also be called, but if defined those 
 callbacks will not be called. (since 3.0)</p>
 
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
