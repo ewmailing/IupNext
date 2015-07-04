@@ -28,16 +28,6 @@ const char* iuplua_getglobaltable(void)
   return iup_globaltable;
 }
 
-/*****************************************************************************
-* Auxiliary functions                                                       *
-****************************************************************************/
-
-
-             /*************************************/
-             /* iuplua_dostring and iuplua_dofile */
-
-/* report, traceback and docall were adapted from "lua.c" */
-
 static void show_error(const char* msg, const char* traceback)
 {
   Ihandle *multi_text, *dlg;
@@ -73,6 +63,9 @@ static int error_message(lua_State *L)
   return 0;
 }
 
+/**********************************************************/
+/* report, traceback and docall were adapted from "lua.c" */
+
 static int report (lua_State *L, int status, int concat_traceback)
 {
   /* if there was an erro, and there is an error message on the stack */
@@ -81,16 +74,19 @@ static int report (lua_State *L, int status, int concat_traceback)
     const char *msg = lua_tostring(L, -2);
 
     const char *traceback;
-    if (msg == NULL) {
+    if (msg == NULL) 
+    {
       msg = "(error with no message)";
       traceback = NULL;
     }
-    else if (concat_traceback) {
+    else if (concat_traceback) 
+    {
       lua_concat(L, 2);
       msg = lua_tostring(L, -1);
       traceback = NULL;
     }
-    else {
+    else 
+    {
       traceback = lua_tostring(L, -1);
     }
     show_error(msg, traceback);
@@ -102,12 +98,14 @@ static int report (lua_State *L, int status, int concat_traceback)
 static int traceback (lua_State *L) 
 {
   lua_getglobal(L, "debug");
-  if (!lua_istable(L, -1)) {
+  if (!lua_istable(L, -1)) 
+  {
     lua_pop(L, 1);
     return 1;
   }
   lua_getfield(L, -1, "traceback");
-  if (!lua_isfunction(L, -1)) {
+  if (!lua_isfunction(L, -1)) 
+  {
     lua_pop(L, 2);
     return 1;
   }
@@ -134,6 +132,7 @@ static int docall (lua_State *L, int narg, int nret)
   lua_insert(L, base);  /* put it under chunk and args */
   status = lua_pcall(L, narg, nret, base);
   lua_remove(L, base);  /* remove traceback function */
+
   if (status != LUA_OK) 
   {
     /* force a complete garbage collection in case of errors */
@@ -161,6 +160,9 @@ static int docall (lua_State *L, int narg, int nret)
   }
   return status;
 }
+
+             /*************************************/
+             /*              Utilities            */
 
 int iuplua_dofile(lua_State *L, const char *filename)
 {
@@ -203,9 +205,6 @@ int iuplua_dobuffer(lua_State *L, const char *s, int len, const char *name)
     status = docall(L, 0, 0);
   return report(L, status, 1);
 }
-
-             /*************************************/
-             /*              Utilities        */
 
 Ihandle *iuplua_checkihandleornil(lua_State *L, int pos)
 {
