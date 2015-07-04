@@ -224,7 +224,6 @@ if IndentationLib then
 end
 
 -- Displays the Main Dialog
-
 iup_console.dlgMain:show()
 
 if (iup.MainLoopLevel()==0) then
