@@ -25,7 +25,7 @@ Echo Finishing...
 move wb_%lng%.hhp wb
 move wb_tree_%lng%.hhc wb
 move download.old download
-move /y *.chm download
+move /y *.chm wb
 cd wb
 Echo .
 
