@@ -20,7 +20,8 @@
 static int Config(lua_State *L)
 {
   Ihandle* ih = IupConfig();
-  iuplua_pushihandle(L, ih);
+  iuplua_plugstate(L, ih);
+  iuplua_pushihandle_raw(L, ih);
   return 1;
 }
 
@@ -127,9 +128,9 @@ static int ConfigGetVariableIdDef(lua_State *L)
   return 1;
 }
 
-static int config_recent_cb(Ihandle *self)
+static int config_recent_cb(Ihandle* ih)
 {
-  lua_State *L = iuplua_call_start(self, "recent_cb");
+  lua_State *L = iuplua_call_start(ih, "recent_cb");
   return iuplua_call(L, 0);
 }
 
@@ -190,4 +191,14 @@ void iupconfiglua_open(lua_State * L)
 
   iuplua_register(L, ConfigDialogShow, "ConfigDialogShow");
   iuplua_register(L, ConfigDialogClosed, "ConfigDialogClosed");
+
+#ifdef IUPLUA_USELOH        
+#include "iup_config.loh"
+#else
+#ifdef IUPLUA_USELH
+#include "iup_config.lh"
+#else
+  iuplua_dofile(L, "iup_config.lua");
+#endif
+#endif
 }

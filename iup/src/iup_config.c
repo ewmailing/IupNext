@@ -9,7 +9,9 @@
 #include <string.h>
 
 #include <iup.h>
+#include <iupcbs.h>
 
+#include "iup_object.h"
 #include "iup_config.h"
 #include "iup_linefile.h"
 #include "iup_str.h"
@@ -341,12 +343,25 @@ double IupConfigGetVariableDoubleId(Ihandle* ih, const char* group, const char* 
 /******************************************************************/
 
 
+static int iConfigItemRecent_CB(Ihandle* ih_item)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "_IUP_CONFIG");
+  Icallback recent_cb = IupGetCallback(ih, "RECENT_CB");
+  if (recent_cb)
+  {
+    IupSetStrAttribute(ih, "TITLE", IupGetAttribute(ih_item, "TITLE"));
+    ih->parent = ih_item;
+    recent_cb(ih);
+    ih->parent = NULL;
+  }
+  return IUP_DEFAULT;
+}
+
 static void iConfigBuildRecent(Ihandle* ih)
 {
   /* add the new items, reusing old ones */
   int max_recent = IupGetInt(ih, "RECENTMAX");
   Ihandle* menu = (Ihandle*)IupGetAttribute(ih, "RECENTMENU");
-  Icallback recent_cb = IupGetCallback(ih, "RECENT_CB");
 
   int mapped = IupGetAttribute(menu, "WID") != NULL ? 1 : 0;
   const char* value;
@@ -361,7 +376,9 @@ static void iConfigBuildRecent(Ihandle* ih)
         IupSetStrAttribute(item, "TITLE", value);
       else
       {
-        item = IupSetCallbacks(IupItem(value, NULL), "ACTION", recent_cb, NULL);
+        item = IupItem(value, NULL);
+        IupSetAttribute(item, "_IUP_CONFIG", (char*)ih);
+        IupSetCallback(item, "ACTION", iConfigItemRecent_CB);
         IupAppend(menu, item);
         if (mapped) IupMap(item);
       }

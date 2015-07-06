@@ -47,7 +47,7 @@ CTRLUA = button.lua canvas.lua dialog.lua colordlg.lua clipboard.lua \
 GC := $(addsuffix .c, $(basename $(CTRLUA)))
 GC := $(addprefix elem/il_, $(GC))
 
-SRCLUA = iuplua.lua constants.lua $(CTRLUA)
+SRCLUA = iuplua.lua constants.lua iup_config.lua $(CTRLUA)
 
 $(GC) : elem/il_%.c : elem/%.lua generator.lua
 	$(LUABIN) generator.lua $<

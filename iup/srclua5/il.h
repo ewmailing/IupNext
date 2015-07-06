@@ -136,7 +136,7 @@ void iuplua_register_cb(lua_State *L, const char* name, lua_CFunction func, cons
             /*     Functions                     */
 
 /** Pushes a raw Ihandle into the stack (an userdata).
- * Used by the control creation functions.
+ * Used ONLY by the control creation functions.
  */
 void iuplua_pushihandle_raw(lua_State *L, Ihandle *h);
 
