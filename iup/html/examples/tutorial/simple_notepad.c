@@ -572,7 +572,7 @@ void set_find_replace_visibility(Ihandle* find_dlg, int show_replace)
     IupSetAttribute(replace_bt, "VISIBLE", "No");
   }
 
-  IupSetAttribute(IupGetDialog(replace_txt), "SIZE", NULL);  /* force a dialog resize */
+  IupSetAttribute(IupGetDialog(replace_txt), "SIZE", NULL);  /* force a dialog resize on the IupRefresh */
   IupRefresh(replace_txt);
 }
 
@@ -806,6 +806,7 @@ int item_delete_action_cb(Ihandle* item_delete)
 int item_select_all_action_cb(Ihandle* item_select_all) 
 {
   Ihandle* multitext = IupGetDialogChild(item_select_all, "MULTITEXT");
+  IupSetFocus(multitext);
   IupSetAttribute(multitext, "SELECTION", "ALL");
   return IUP_DEFAULT;
 }
