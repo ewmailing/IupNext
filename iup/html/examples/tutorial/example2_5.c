@@ -1,12 +1,6 @@
 #include <stdlib.h>
 #include <iup.h>
 
-int btn_msg_cb( Ihandle *self )
-{
-  /* Returns to main loop */
-  return IUP_DEFAULT;
-}
-
 int btn_exit_cb( Ihandle *self )
 {
   /* Exits the main loop */
