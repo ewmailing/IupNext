@@ -70,7 +70,7 @@ function writeTitleFile()
   wb_title = string.gsub(wb_title, "WB_COPYRIGHT_LINK", wb_usr.copyright_link)
   wb_title = string.gsub(wb_title, "WB_COPYRIGHT_NAME", wb_usr.copyright_name)
   wb_title = string.gsub(wb_title, "WB_CONTACT", wb_usr.contact)
-  wb_title = string.gsub(wb_title, "WB_SSEARCH_TITLE", lngMessages.search[lngIndex])
+--  wb_title = string.gsub(wb_title, "WB_SSEARCH_TITLE", lngMessages.search[lngIndex])
   wb_title = string.gsub(wb_title, "WB_GSEARCH_TITLE", lngMessages.google[lngIndex])
   
   if (lngCount > 1) then
@@ -338,7 +338,7 @@ function writeGoogleCSEFile()
   file:close()
 end
               
-function writeSearchFile()
+function writeSSearchFile()
   print("Writing \"../ssSearch"..lngSuffix..".html\".")
   
   local file = io.open("../ssSearch"..lngSuffix..".html", "w")
@@ -358,7 +358,7 @@ function writeSearchFile()
   file:close()
 end
               
-function writeSearchIndexFile()
+function writeSSearchIndexFile()
   print("Writing \"../wb_search"..lngSuffix..".txt\".")
   
   local file = io.open("../wb_search"..lngSuffix..".txt", "w")
@@ -405,8 +405,8 @@ for name, elem in pairs(wb_usr.messages) do
   writeTitleFile()
   writeBarFile()
   writeTreeFile()
-  writeSearchFile()            
-  writeSearchIndexFile()
+  --writeSSearchFile()            
+  --writeSSearchIndexFile()
   if (wb_usr.google_id) then
     writeGoogleCSEFile()
   else
