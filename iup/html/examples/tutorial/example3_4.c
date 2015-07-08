@@ -199,7 +199,7 @@ int item_goto_action_cb(Ihandle* item_goto)
   lbl = IupLabel(NULL);
   IupSetfAttribute(lbl, "TITLE", "Line Number [1-%d]:", line_count);
   txt = IupText(NULL);
-  IupSetAttribute(txt, "MASK", IUP_MASK_UINT);  /* unsigned integer number */
+  IupSetAttribute(txt, "MASK", IUP_MASK_UINT);  /* unsigned integer numbers only */
   IupSetAttribute(txt, "NAME", "LINE_TEXT");
   IupSetAttribute(txt, "VISIBLECOLUMNS", "20");
   bt_ok = IupButton("OK", NULL);

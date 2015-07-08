@@ -12,7 +12,7 @@ function item_exit:action()
 	return iup.CLOSE
 end
 file_menu = iup.menu{item_open,item_save,iup.separator{},item_exit}
-sub1_menu = iup.submenu{file_menu;title = "File"}
+sub1_menu = iup.submenu{file_menu, title = "File"}
 menu = iup.menu{sub1_menu}
 
 vbox = iup.vbox{
@@ -20,7 +20,7 @@ vbox = iup.vbox{
 }
 
 dlg = iup.dialog{
-	vbox;
+	vbox,
 	title = "Simple Notepad",
 	size = "QUARTERxQUARTER",
 	menu = menu

@@ -10,7 +10,7 @@ button = iup.button{title = "OK", padding = "30x2"}
 
 vbox = iup.vbox{
 	label,
-	button;
+	button,
 	alignment = "ARIGHT",
 	gap = "10",
 	margin = "10x10"

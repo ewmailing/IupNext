@@ -9,7 +9,7 @@ vbox = iup.vbox{
 }
 
 dlg = iup.dialog{
-	vbox;
+	vbox,
 	title = "Simple Notepad",
 	size = "QUARTERxQUARTER"
 }
