@@ -31,22 +31,13 @@ function show_example(id, file){
 
 <p>The code bellow will shows how to open an IUP environment and displays a simple message. Each line of code is explained after the code.</p>
 
-<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example2_1.c">example2_1.c</a></p>
-<pre class="example">#include &lt;stdlib.h&gt;
-#include &lt;iup.h&gt;
-
-int main(int argc, char **argv)
-{
-  <strong>IupOpen</strong>(&amp;argc, &amp;argv);
-
-  <strong>IupMessage</strong>("Hello World 1", "Hello world from IUP.");
-
-  <strong>IupClose</strong>();
-  return EXIT_SUCCESS;
-}
-</pre>
-
+<p class="example_title">Example Source Code 
+<span class="example_button">[in C] <a href="javascript:show_example('2_1', 'example2_1.c')">example2_1.c</a> <a href="../../examples/tutorial/example2_1.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('2_1', 'example2_1.lua')">example2_1.lua</a> <a href="../../examples/tutorial/example2_1.lua"><img alt="" src="download.png"></a></span></p>
+<iframe src="../../examples/tutorial/example2_1.c" id="2_1" name="example2_1" marginheight="0" marginwidth="0" style="height: 15em">
+</iframe>
 <p class="example_image"><img alt="" src="example2_1.png"></p>
+
 <p>In the first line, we see an include of the C standard library,
 which is needed by almost all C programs. Next there is an include for
 the main IUP library, which is all we need for our first example. Next line is a 
@@ -94,30 +85,13 @@ can check the <a href="../guide.html#apl">Building Applications Guide</a>. </p>
 <p>Let's change the first example a little bit to add our own dialog.
 </p>
 
-<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example2_2.c">example2_2.c</a></p>
-<pre class="example">#include &lt;stdlib.h&gt;
-#include &lt;iup.h&gt;
-
-int main(int argc, char **argv)
-{
-  Ihandle *dlg, *label;
-
-  <strong>IupOpen</strong>(&amp;argc, &amp;argv);
-
-  label =  <strong>IupLabel</strong>("Hello world from IUP.");
-  dlg = <strong>IupDialog</strong>(<strong>IupVbox</strong>(label, NULL));
-  <strong>IupSetAttribute</strong>(dlg, "TITLE", "Hello World 2");
-
-  <strong>IupShowXY</strong>(dlg, IUP_CENTER, IUP_CENTER);
-
-  <strong>IupMainLoop</strong>();
-
-  <strong>IupClose</strong>();
-  return EXIT_SUCCESS;
-}
-</pre>
-
+<p class="example_title">Example Source Code 
+<span class="example_button">[in C] <a href="javascript:show_example('2_2', 'example2_2.c')">example2_2.c</a> <a href="../../examples/tutorial/example2_2.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('2_2', 'example2_2.lua')">example2_2.lua</a> <a href="../../examples/tutorial/example2_2.lua"><img alt="" src="download.png"></a></span></p>
+<iframe src="../../examples/tutorial/example2_2.c" id="2_2" name="example2_2" marginheight="0" marginwidth="0" style="height: 23em">
+</iframe>
 <p class="example_image"><img src="example2_2.png"></p>
+
 <p>Note that we have added a new line in which we declare Ihandles* variables for 
 IUP 
 elements. We also have created two different variables. One called <strong>dlg</strong> for our 
@@ -153,41 +127,11 @@ without any custom interaction with the dialog. In this section,
 we will add interaction to our application using a button. 
 </p>
 
-<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example2_3.c">example2_3.c</a></p>
-<pre class="example">#include &lt;stdlib.h&gt;
-#include &lt;iup.h&gt;
-
-int btn_exit_cb( Ihandle *self )
-{
-  <strong>IupMessage</strong>("Hello World Message", "Hello world from IUP.");
-  /* Exits the main loop */
-  return IUP_CLOSE;
-} 
-
-int main(int argc, char **argv)
-{
-  Ihandle *dlg, *button, *vbox;
-
-  <strong>IupOpen</strong>(&amp;argc, &amp;argv);
-
-  button = <strong>IupButton</strong>("OK", NULL);
-  vbox = <strong>IupVbox</strong>(
-    button,
-    NULL);    
-  dlg = <strong>IupDialog</strong>(vbox);
-  <strong>IupSetAttribute</strong>(dlg, "TITLE", "Hello World 3");
-
-  /* Registers callbacks */
-  <strong>IupSetCallback</strong>(button, "ACTION", (Icallback)btn_exit_cb);
-
-  <strong>IupShowXY</strong>(dlg, IUP_CENTER, IUP_CENTER);
-
-  <strong>IupMainLoop</strong>();
-
-  <strong>IupClose</strong>();
-  return EXIT_SUCCESS;
-}
-</pre>
+<p class="example_title">Example Source Code 
+<span class="example_button">[in C] <a href="javascript:show_example('2_3', 'example2_3.c')">example2_3.c</a> <a href="../../examples/tutorial/example2_3.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('2_3', 'example2_3.lua')">example2_3.lua</a> <a href="../../examples/tutorial/example2_3.lua"><img alt="" src="download.png"></a></span></p>
+<iframe src="../../examples/tutorial/example2_3.c" id="2_3" name="example2_3" marginheight="0" marginwidth="0" style="height: 36em">
+</iframe>
 <p class="example_image"><img src="example2_3.png"></p>
 
 <p>After the usual includes, we find some new lines. These lines
@@ -245,42 +189,11 @@ layer is active.
 a label
 to it.</p>
 
-<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example2_4.c">example2_4.c</a></p>
-<pre class="example">#include &lt;stdlib.h&gt;
-#include &lt;iup.h&gt;
-
-int btn_exit_cb( Ihandle *self )
-{
-  /* Exits the main loop */
-  return IUP_CLOSE;
-}
-
-int main(int argc, char **argv)
-{
-  Ihandle *dlg, *button, *label, *vbox;
-
-  <strong>IupOpen</strong>(&amp;argc, &amp;argv);
-
-  label =  <strong>IupLabel</strong>("Hello world from IUP.");
-  button = <strong>IupButton</strong>("OK", NULL);
-  vbox = <strong>IupVbox</strong>(
-    label,
-    button,
-    NULL);
-  dlg = <strong>IupDialog</strong>(vbox);
-  <strong>IupSetAttribute</strong>(dlg, "TITLE", "Hello World 4");
-
-  /* Registers callbacks */
-  <strong>IupSetCallback</strong>(button, "ACTION", (Icallback)btn_exit_cb);
-
-  <strong>IupShowXY</strong>(dlg, IUP_CENTER, IUP_CENTER);
-
-  <strong>IupMainLoop</strong>();
-
-  <strong>IupClose</strong>();
-  return EXIT_SUCCESS;
-}
-</pre>
+<p class="example_title">Example Source Code 
+<span class="example_button">[in C] <a href="javascript:show_example('2_4', 'example2_4.c')">example2_4.c</a> <a href="../../examples/tutorial/example2_4.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('2_4', 'example2_4.lua')">example2_4.lua</a> <a href="../../examples/tutorial/example2_4.lua"><img alt="" src="download.png"></a></span></p>
+<iframe src="../../examples/tutorial/example2_4.c" id="2_4" name="example2_4" marginheight="0" marginwidth="0" style="height: 37em">
+</iframe>
 <p class="example_image"><img src="example2_4.png"></p>
 
 <p>Note that there is a new <strong>label</strong> declaration and this new element 
@@ -306,47 +219,13 @@ Its default value is "0x0" (means no margin).</p>
 
 <p>Let's see how our layout responds to these three attributes.</p>
 
-<p class="example_title">Example Source Code: <a href="../../examples/tutorial/example2_5.c">example2_5.c</a></p>
-<pre class="example">#include &lt;stdlib.h&gt;
-#include &lt;iup.h&gt;
-
-int btn_exit_cb( Ihandle *self )
-{
-  /* Exits the main loop */
-  return IUP_CLOSE;
-}
-
-int main(int argc, char **argv)
-{
-  Ihandle *dlg, *button, *label, *vbox;
-
-  <strong>IupOpen</strong>(&amp;argc, &amp;argv);
-
-  label =  <strong>IupLabel</strong>("Hello world from IUP.");
-  button = <strong>IupButton</strong>("OK", NULL);
-  vbox = <strong>IupVbox</strong>(
-    label,
-    button,
-    NULL);
-  <strong>IupSetAttribute</strong>(vbox, "ALIGNMENT", "ACENTER");
-  <strong>IupSetAttribute</strong>(vbox, "GAP", "10");
-  <strong>IupSetAttribute</strong>(vbox, "MARGIN", "10x10");
-
-  dlg = <strong>IupDialog</strong>(vbox);
-  <strong>IupSetAttribute</strong>(dlg, "TITLE", "Hello World 4");
-
-  /* Registers callbacks */
-  <strong>IupSetCallback</strong>(button, "ACTION", (Icallback)btn_exit_cb);
-
-  <strong>IupShowXY</strong>(dlg, IUP_CENTER, IUP_CENTER);
-
-  <strong>IupMainLoop</strong>();
-
-  <strong>IupClose</strong>();
-  return EXIT_SUCCESS;
-}
-</pre>
+<p class="example_title">Example Source Code 
+<span class="example_button">[in C] <a href="javascript:show_example('2_5', 'example2_5.c')">example2_5.c</a> <a href="../../examples/tutorial/example2_5.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('2_5', 'example2_5.lua')">example2_5.lua</a> <a href="../../examples/tutorial/example2_5.lua"><img alt="" src="download.png"></a></span></p>
+<iframe src="../../examples/tutorial/example2_5.c" id="2_5" name="example2_5" marginheight="0" marginwidth="0">
+</iframe>
 <p class="example_image"><img src="example2_5.png"></p>
+
 <p>After creating the vbox, we have added three lines that set those attributes to 
 values different than the default values. The result is much pleasanter to see. 
 Although it is still not quite as the first example, which uses a pre-defined 
