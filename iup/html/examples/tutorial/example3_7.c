@@ -115,13 +115,13 @@ void write_file(const char* filename, const char* str, int count)
 /********************************** Callbacks *****************************************/
 
 
-int item_recent_cb(Ihandle* item_recent)
+int config_recent_cb(Ihandle* ih)
 {
-  char* filename = IupGetAttribute(item_recent, "TITLE");
+  char* filename = IupGetAttribute(ih, "TITLE");
   char* str = read_file(filename);
   if (str)
   {
-    Ihandle* multitext = IupGetDialogChild(item_recent, "MULTITEXT");
+    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
     IupSetStrAttribute(multitext, "VALUE", str);
     free(str);
   }
@@ -535,7 +535,7 @@ int main(int argc, char **argv)
   IupSetCallback(dlg, "K_cF", (Icallback)item_find_action_cb);
   IupSetCallback(dlg, "K_cG", (Icallback)item_goto_action_cb);
 
-  IupConfigRecentInit(config, recent_menu, item_recent_cb, 10);
+  IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
 
   IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   IupSetAttribute(dlg, "USERSIZE", NULL);

@@ -250,15 +250,15 @@ int edit_menu_open_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_recent_cb(Ihandle* item_recent)
+int config_recent_cb(Ihandle* ih)
 {
   char* filename;
 
-  if (!save_check(item_recent)) 
+  if (!save_check(ih)) 
     return IUP_DEFAULT;
 
-  filename = IupGetAttribute(item_recent, "TITLE");
-  open_file(item_recent, filename);
+  filename = IupGetAttribute(ih, "TITLE");
+  open_file(ih, filename);
   return IUP_DEFAULT;
 }
 
@@ -897,7 +897,7 @@ int main(int argc, char **argv)
   IupSetCallback(dlg, "K_cF", (Icallback)item_find_action_cb);
   IupSetCallback(dlg, "K_cG", (Icallback)item_goto_action_cb);
   
-  IupConfigRecentInit(config, recent_menu, item_recent_cb, 10);
+  IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
 
   IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   IupSetAttribute(dlg, "USERSIZE", NULL);  /* remove minimum size restriction */

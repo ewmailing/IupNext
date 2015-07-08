@@ -510,7 +510,7 @@ function create_main_dialog()
     end
     config:DialogClosed(dlg, "MainWindow")
     config:Save()
-    config:Destroy()
+    config:destroy()
     return iup.CLOSE
   end
 

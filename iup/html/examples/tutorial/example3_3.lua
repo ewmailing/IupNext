@@ -15,18 +15,24 @@ function item_open:action()
   local filedlg = iup.filedlg{
     dialogtype = "OPEN", 
     filter = "*.txt", 
-    filterinfo = "Text Files"
+    filterinfo = "Text Files",
     }
 
   filedlg:popup(iup.CENTER, iup.CENTER)
 
-  if (filedlg.status ~= "-1") then
+  if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
-    ifile = io.open(filename, "r")
-    str = ifile:read("*a")
-    ifile:close()
-    if (str) then
-      multitext.value = str
+    local ifile = io.open(filename, "r")
+    if (ifile) then
+      local str = ifile:read("*a")
+      ifile:close()
+      if (str) then
+        multitext.value = str
+      else
+        iup.Message("Error", "Fail when reading from file: " .. filename)
+      end
+    else
+      iup.Message("Error", "Can't open file: " .. filename)
     end
   end
   filedlg:destroy()
@@ -36,15 +42,22 @@ function item_saveas:action()
   local filedlg = iup.filedlg{
     dialogtype = "SAVE", 
     filter = "*.txt", 
-    filterinfo = "Text Files"
+    filterinfo = "Text Files",
     }
 
   filedlg:popup(iup.CENTER, iup.CENTER)
 
-  if (filedlg.status ~= "-1") then
-    local ifile = io.open(filedlg.value, "w")
-    ifile:write(multitext.value)
-    ifile:close()
+  if (tonumber(filedlg.status) ~= -1) then
+    local filename = filedlg.value
+    local ifile = io.open(filename, "w")
+    if (ifile) then
+      if (not ifile:write(multitext.value)) then
+        iup.Message("Error", "Fail when writing to file: " .. filename)
+      end
+      ifile:close()
+    else
+      iup.Message("Error", "Can't open file: " .. filename)
+    end
   end
   filedlg:destroy()
 end
@@ -55,7 +68,7 @@ function item_font:action()
 
   fontdlg:popup(iup.CENTER, iup.CENTER)
 
-  if ((fontdlg.status) == "1") then
+  if (tonumber(fontdlg.status) == 1) then
     multitext.font = fontdlg.value
   end
 

@@ -265,15 +265,15 @@ int edit_menu_open_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_recent_cb(Ihandle* item_recent)
+int config_recent_cb(Ihandle* ih)
 {
   char* filename;
 
-  if (!save_check(item_recent)) 
+  if (!save_check(ih)) 
     return IUP_DEFAULT;
 
-  filename = IupGetAttribute(item_recent, "TITLE");
-  open_file(item_recent, filename);
+  filename = IupGetAttribute(ih, "TITLE");
+  open_file(ih, filename);
   return IUP_DEFAULT;
 }
 
@@ -1072,7 +1072,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(dlg, "K_cF3", (Icallback)selection_find_next_action_cb);
   IupSetCallback(dlg, "K_cV", (Icallback)item_paste_action_cb);  /* replace system processing */
   
-  IupConfigRecentInit(config, recent_menu, item_recent_cb, 10);
+  IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
 
   return dlg;
 }
