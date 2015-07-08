@@ -16,7 +16,7 @@ multitext = iup.text{
 	expand = "YES"
 }
 
-function multitext:caret_cb(lin, col, pos)
+function multitext:caret_cb(lin, col)
   lbl_statusbar.title = "Lin "..lin..", Col "..col
 end
 
@@ -281,6 +281,7 @@ dlg = iup.dialog{
 	menu = menu
 }
 
+-- parent for pre-defined dialogs in closed functions (IupMessage)
 iup.SetGlobal("PARENTDIALOG", iup.SetHandleName(dlg))
 
 dlg:showxy(iup.CENTER,iup.CENTER)

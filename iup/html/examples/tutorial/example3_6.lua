@@ -1,4 +1,5 @@
 require("iuplua")
+require("iupluaimglib")
 
 function str_find(str, str_to_find, casesensitive, start)
   if (not casesensitive) then
@@ -8,18 +9,24 @@ function str_find(str, str_to_find, casesensitive, start)
   return string.find(str, str_to_find, start)
 end
 
+lbl_statusbar = iup.label{title = "Lin 1, Col 1", expand = "HORIZONTAL", padding = "10x5"}
+
 multitext = iup.text{
 	multiline = "YES",
 	expand = "YES"
 }
 
-item_open = iup.item{title="Open..."}
-item_saveas = iup.item{title="Save As..."}
-item_font = iup.item{title="Font..."}
-item_about = iup.item{title="About..."}
-item_find = iup.item{title="Find..."}
-item_goto = iup.item{title="Go To..."}
-item_exit = iup.item{title="Exit"}
+function multitext:caret_cb(lin, col)
+  lbl_statusbar.title = "Lin "..lin..", Col "..col
+end
+
+item_open = iup.item{title = "&Open...\tCtrl+O"}
+item_saveas = iup.item{title="Save &As...\tCtrl+S"}
+item_font = iup.item{title="&Font..."}
+item_about = iup.item{title="&About..."}
+item_find = iup.item{title="&Find...\tCtrl+F"}
+item_goto = iup.item{title="&Go To..."}
+item_exit = iup.item{title="E&xit"}
 
 function item_open:action()
   local filedlg = iup.filedlg{
@@ -224,14 +231,47 @@ file_menu = iup.menu{item_open,item_saveas,iup.separator{},item_exit}
 edit_menu = iup.menu{item_find, item_goto}
 format_menu = iup.menu{item_font}
 help_menu = iup.menu{item_about}
-sub_menu_file = iup.submenu{file_menu, title = "File"}
-sub_menu_edit = iup.submenu{edit_menu, title = "Edit"}
-sub_menu_format = iup.submenu{format_menu, title = "Format"}
-sub_menu_help = iup.submenu{help_menu, title = "Help"}
-menu = iup.menu{sub_menu_file, sub_menu_edit, sub_menu_format, sub_menu_help}
+sub_menu_file = iup.submenu{file_menu, title = "&File"}
+sub_menu_edit = iup.submenu{edit_menu, title = "&Edit"}
+sub_menu_format = iup.submenu{format_menu, title = "F&ormat"}
+sub_menu_help = iup.submenu{help_menu, title = "&Help"}
+
+menu = iup.menu{
+  sub_menu_file, 
+  sub_menu_edit, 
+  sub_menu_format, 
+  sub_menu_help,
+  }
+
+btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes"}
+btn_save = iup.button{image = "IUP_FileSave", flat = "Yes"}
+btn_find = iup.button{image = "IUP_EditFind", flat = "Yes"}
+
+toolbar_hb = iup.hbox{
+  btn_open,
+  btn_save,
+  iup.label{separator="VERTICAL"},
+  btn_find,
+  margin = "5x5",
+  gap = 2;
+  }
+
+function btn_open:action()
+  item_open:action()
+end
+
+function btn_save:action()
+  item_saveas:action()
+end
+
+function btn_find:action()
+  item_find:action()
+end
 
 vbox = iup.vbox{
-	multitext
+  toolbar_hb,
+	multitext,
+  lbl_statusbar,
 }
 
 dlg = iup.dialog{
@@ -240,6 +280,18 @@ dlg = iup.dialog{
 	size = "HALFxHALF",
 	menu = menu
 }
+
+function dlg:k_any(c)
+  if (c == iup.K_cO) then
+    item_open:action()
+  elseif (c == iup.K_cS) then
+    item_saveas:action()
+  elseif (c == iup.K_cF) then
+    item_find:action()
+  elseif (c == iup.K_cG) then
+    item_goto:action()
+  end
+end
 
 -- parent for pre-defined dialogs in closed functions (IupMessage)
 iup.SetGlobal("PARENTDIALOG", iup.SetHandleName(dlg))

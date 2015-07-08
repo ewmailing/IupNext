@@ -114,7 +114,7 @@ void write_file(const char* filename, const char* str, int count)
 /********************************** Callbacks *****************************************/
 
 
-int multitext_caret_cb (Ihandle *ih, int lin, int col, int pos)
+int multitext_caret_cb (Ihandle *ih, int lin, int col)
 {
   Ihandle *lbl_statusbar = IupGetDialogChild(ih, "STATUSBAR");
   IupSetfAttribute(lbl_statusbar, "TITLE", "Lin %d, Col %d", lin, col);
