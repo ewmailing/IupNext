@@ -93,6 +93,9 @@ char* read_file(const char* filename)
   /* set the nul terminator */
   str[size] = 0;
 
+  if (ferror(file))
+    IupMessagef("Error", "Fail when reading from file: %s", filename);
+
   fclose(file);
   return str;
 }
@@ -107,6 +110,10 @@ void write_file(const char* filename, const char* str, int count)
   }
 
   fwrite(str, 1, count, file);
+
+  if (ferror(file))
+    IupMessagef("Error", "Fail when writing to file: %s", filename);
+
   fclose(file);
 }
 

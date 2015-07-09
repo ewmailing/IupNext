@@ -111,21 +111,29 @@ char* read_file(const char* filename)
   /* set the nul terminator */
   str[size] = 0;
 
+  if (ferror(file))
+    IupMessagef("Error", "Fail when reading from file: %s", filename);
+
   fclose(file);
   return str;
 }
 
-void write_file(const char* filename, const char* str, int count)
+int write_file(const char* filename, const char* str, int count)
 {
   FILE* file = fopen(filename, "w");
   if (!file)
   {
     IupMessagef("Error", "Can't open file: %s", filename);
-    return;
+    return 0;
   }
 
   fwrite(str, 1, count, file);
+
+  if (ferror(file))
+    IupMessagef("Error", "Fail when writing to file: %s", filename);
+
   fclose(file);
+  return 1;
 }
 
 void new_file(Ihandle* ih)
@@ -151,14 +159,39 @@ void open_file(Ihandle* ih, const char* filename)
     IupSetfAttribute(dlg, "TITLE", "%s - Simple Notepad", str_filetitle(filename));
     IupSetStrAttribute(multitext, "FILENAME", filename);
     IupSetAttribute(multitext, "DIRTY", "NO");
+    
     IupSetStrAttribute(multitext, "VALUE", str);
+
     IupConfigRecentUpdate(config, filename);
 
     free(str);
   }
 }
 
-int item_save_action_cb(Ihandle* ih);
+void save_file(Ihandle* multitext)
+{
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  char* str = IupGetAttribute(multitext, "VALUE");
+  int count = IupGetInt(multitext, "COUNT");
+  if (write_file(filename, str, count))
+    IupSetAttribute(multitext, "DIRTY", "NO");
+}
+
+void saveas_file(Ihandle* multitext, const char* filename)
+{
+  char* str = IupGetAttribute(multitext, "VALUE");
+  int count = IupGetInt(multitext, "COUNT");
+  if (write_file(filename, str, count))
+  {
+    Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
+  
+    IupSetfAttribute(IupGetDialog(multitext), "TITLE", "%s - Simple Notepad", str_filetitle(filename));
+    IupSetStrAttribute(multitext, "FILENAME", filename);
+    IupSetAttribute(multitext, "DIRTY", "NO");
+
+    IupConfigRecentUpdate(config, filename);
+  }
+}
 
 int save_check(Ihandle* ih)
 {
@@ -168,7 +201,7 @@ int save_check(Ihandle* ih)
     switch (IupAlarm("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
     {
     case 1:  /* save the changes and continue */
-      item_save_action_cb(ih);
+      save_file(multitext);
       break;
     case 2:  /* ignore the changes and continue */
       break;
@@ -185,10 +218,9 @@ int save_check(Ihandle* ih)
 
 int dropfiles_cb(Ihandle* ih, const char* filename)
 {
-  if (!save_check(ih))
-    return IUP_DEFAULT;
+  if (save_check(ih))
+    open_file(ih, filename);
 
-  open_file(ih, filename);
   return IUP_DEFAULT;
 }
 
@@ -267,13 +299,11 @@ int edit_menu_open_cb(Ihandle* ih)
 
 int config_recent_cb(Ihandle* ih)
 {
-  char* filename;
-
-  if (!save_check(ih)) 
-    return IUP_DEFAULT;
-
-  filename = IupGetAttribute(ih, "TITLE");
-  open_file(ih, filename);
+  if (save_check(ih))
+  {
+    char* filename = IupGetAttribute(ih, "TITLE");
+    open_file(ih, filename);
+  }
   return IUP_DEFAULT;
 }
 
@@ -286,10 +316,9 @@ int multitext_caret_cb(Ihandle *ih, int lin, int col)
 
 int item_new_action_cb(Ihandle* item_new)
 {
-  if (!save_check(item_new))
-    return IUP_DEFAULT;
+  if (save_check(item_new))
+    new_file(item_new);
 
-  new_file(item_new);
   return IUP_DEFAULT;
 }
 
@@ -324,19 +353,16 @@ int item_saveas_action_cb(Ihandle* item_saveas)
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
   IupSetAttribute(filedlg, "FILTER", "*.txt");
   IupSetAttribute(filedlg, "FILTERINFO", "Text Files");
+  IupSetStrAttribute(filedlg, "FILE", IupGetAttribute(multitext, "FILENAME"));
+
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_saveas));
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
-    Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
     char* filename = IupGetAttribute(filedlg, "VALUE");
-    char* str = IupGetAttribute(multitext, "VALUE");
-    int count = IupGetInt(multitext, "COUNT");
-    write_file(filename, str, count);
-
-    IupConfigRecentUpdate(config, filename);
+    saveas_file(multitext, filename);
   }
 
   IupDestroy(filedlg);
@@ -354,11 +380,7 @@ int item_save_action_cb(Ihandle* item_save)
     /* test again because in can be called using the hot key */
     int dirty = IupGetInt(multitext, "DIRTY");
     if (dirty)
-    {
-      char* str = IupGetAttribute(multitext, "VALUE");
-      int count = IupGetInt(multitext, "COUNT");
-      write_file(filename, str, count);
-    }
+      save_file(multitext);
   }
   return IUP_DEFAULT;
 }

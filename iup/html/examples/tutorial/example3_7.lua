@@ -9,6 +9,38 @@ function str_find(str, str_to_find, casesensitive, start)
   return string.find(str, str_to_find, start)
 end
 
+function read_file(filename)
+  local ifile = io.open(filename, "r")
+  if (not ifile) then
+    iup.Message("Error", "Can't open file: " .. filename)
+    return nil
+  end
+  
+  local str = ifile:read("*a")
+  if (not str) then
+    iup.Message("Error", "Fail when reading from file: " .. filename)
+    return nil
+  end
+  
+  ifile:close()
+  return str
+end
+
+function write_file(filename, str)
+  local ifile = io.open(filename, "w")
+  if (not ifile) then
+    iup.Message("Error", "Can't open file: " .. filename)
+    return false
+  end
+  
+  if (not ifile:write(str)) then
+    iup.Message("Error", "Fail when writing to file: " .. filename)
+  end
+  
+  ifile:close()
+  return true
+end
+
 config = iup.config{}
 config.app_name = "simple_notepad"
 config:Load()
@@ -16,8 +48,8 @@ config:Load()
 lbl_statusbar = iup.label{title = "Lin 1, Col 1", expand = "HORIZONTAL", padding = "10x5"}
 
 multitext = iup.text{
-	multiline = "YES",
-	expand = "YES"
+  multiline = "YES",
+  expand = "YES"
 }
 
 font = config:GetVariable("MainWindow", "Font")
@@ -35,17 +67,9 @@ item_exit = iup.item{title="E&xit"}
 
 function config:recent_cb()
   local filename = self.title
-  local ifile = io.open(filename, "r")
-  if (ifile) then
-    local str = ifile:read("*a")
-    ifile:close()
-    if (str) then
-      multitext.value = str
-    else
-      iup.Message("Error", "Fail when reading from file: " .. filename)
-    end
-  else
-    iup.Message("Error", "Can't open file: " .. filename)
+  local str = read_file(filename)
+  if (str) then
+    multitext.value = str
   end
 end
 
@@ -65,18 +89,10 @@ function item_open:action()
 
   if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
-    local ifile = io.open(filename, "r")
-    if (ifile) then
-      local str = ifile:read("*a")
-      ifile:close()
-      if (str) then
-        config:RecentUpdate(filename)
-        multitext.value = str
-      else
-        iup.Message("Error", "Fail when reading from file: " .. filename)
-      end
-    else
-      iup.Message("Error", "Can't open file: " .. filename)
+    local str = read_file(filename)
+    if (str) then
+      config:RecentUpdate(filename)
+      multitext.value = str
     end
   end
   filedlg:destroy()
@@ -94,15 +110,8 @@ function item_saveas:action()
 
   if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
-    local ifile = io.open(filename, "w")
-    if (ifile) then
-      if (not ifile:write(multitext.value)) then
-        iup.Message("Error", "Fail when writing to file: " .. filename)
-      end
-      ifile:close()
+    if (write_file(filename, multitext.value)) then
       config:RecentUpdate(filename)
-    else
-      iup.Message("Error", "Can't open file: " .. filename)
     end
   end
   filedlg:destroy()
@@ -112,7 +121,7 @@ function item_exit:action()
   config:DialogClosed(iup.GetDialog(self), "MainWindow")
   config:Save()
   config:destroy()
-	return iup.CLOSE
+  return iup.CLOSE
 end
 
 function item_goto:action()
@@ -311,15 +320,15 @@ toolbar_hb = iup.hbox{
 
 vbox = iup.vbox{
   toolbar_hb,
-	multitext,
+  multitext,
   lbl_statusbar,
 }
 
 dlg = iup.dialog{
-	vbox,
-	title = "Simple Notepad",
-	size = "HALFxHALF",
-	menu = menu,
+  vbox,
+  title = "Simple Notepad",
+  size = "HALFxHALF",
+  menu = menu,
   close_cb = item_exit.action,
 }
 

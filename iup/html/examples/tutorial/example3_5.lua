@@ -9,11 +9,42 @@ function str_find(str, str_to_find, casesensitive, start)
   return string.find(str, str_to_find, start)
 end
 
+function read_file(filename)
+  local ifile = io.open(filename, "r")
+  if (not ifile) then
+    iup.Message("Error", "Can't open file: " .. filename)
+    return nil
+  end
+  
+  local str = ifile:read("*a")
+  if (not str) then
+    iup.Message("Error", "Fail when reading from file: " .. filename)
+    return nil
+  end
+  
+  ifile:close()
+  return str
+end
+
+function write_file(filename, str)
+  local ifile = io.open(filename, "w")
+  if (not ifile) then
+    iup.Message("Error", "Can't open file: " .. filename)
+    return
+  end
+  
+  if (not ifile:write(str)) then
+    iup.Message("Error", "Fail when writing to file: " .. filename)
+  end
+  
+  ifile:close()
+end
+
 lbl_statusbar = iup.label{title = "Lin 1, Col 1", expand = "HORIZONTAL", padding = "10x5"}
 
 multitext = iup.text{
-	multiline = "YES",
-	expand = "YES"
+  multiline = "YES",
+  expand = "YES"
 }
 
 item_open = iup.item{title="Open..."}
@@ -40,17 +71,9 @@ function item_open:action()
 
   if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
-    local ifile = io.open(filename, "r")
-    if (ifile) then
-      local str = ifile:read("*a")
-      ifile:close()
-      if (str) then
-        multitext.value = str
-      else
-        iup.Message("Error", "Fail when reading from file: " .. filename)
-      end
-    else
-      iup.Message("Error", "Can't open file: " .. filename)
+    local str = read_file(filename)
+    if (str) then
+      multitext.value = str
     end
   end
   filedlg:destroy()
@@ -68,21 +91,13 @@ function item_saveas:action()
 
   if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
-    local ifile = io.open(filename, "w")
-    if (ifile) then
-      if (not ifile:write(multitext.value)) then
-        iup.Message("Error", "Fail when writing to file: " .. filename)
-      end
-      ifile:close()
-    else
-      iup.Message("Error", "Can't open file: " .. filename)
-    end
+    write_file(filename, multitext.value)
   end
   filedlg:destroy()
 end
 
 function item_exit:action()
-	return iup.CLOSE
+  return iup.CLOSE
 end
 
 function item_goto:action()
@@ -271,15 +286,15 @@ toolbar_hb = iup.hbox{
 
 vbox = iup.vbox{
   toolbar_hb,
-	multitext,
+  multitext,
   lbl_statusbar,
 }
 
 dlg = iup.dialog{
-	vbox,
-	title = "Simple Notepad",
-	size = "HALFxHALF",
-	menu = menu
+  vbox,
+  title = "Simple Notepad",
+  size = "HALFxHALF",
+  menu = menu
 }
 
 -- parent for pre-defined dialogs in closed functions (IupMessage)

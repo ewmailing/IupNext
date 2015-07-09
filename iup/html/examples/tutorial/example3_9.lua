@@ -9,6 +9,15 @@ function str_find(str, str_to_find, casesensitive, start)
   return string.find(str, str_to_find, start)
 end
 
+function str_filetitle(filename)
+  local filename = string.gsub(filename, "\\", "/")
+  filename = string.reverse(filename)
+  final = string.find(filename, '/')
+  filename = string.sub(filename, 1, final-1)
+  filename = string.reverse(filename)
+  return filename
+end
+
 function read_file(filename)
   local ifile = io.open(filename, "r")
   if (not ifile) then
@@ -41,6 +50,67 @@ function write_file(filename, str)
   return true
 end
 
+function new_file(ih)
+  local dlg = iup.GetDialog(ih)
+  local multitext = dlg.multitext
+  
+  dlg.title = "Untitled - Simple Notepad"
+  multitext.filename = nil
+  multitext.dirty = nil
+  multitext.value = ""
+end
+
+function open_file(ih, filename)
+  local str = read_file(filename)
+  if (str) then
+    local dlg = iup.GetDialog(ih)
+    local multitext = dlg.multitext
+    local config = multitext.config
+  
+    dlg.title = str_filetitle(filename).." - Simple Notepad"
+    multitext.filename = filename
+    multitext.dirty = nil
+    multitext.value = str
+    
+    config:RecentUpdate(filename)
+  end
+end
+
+function save_file(multitext)
+  if (write_file(multitext.filename, multitext.value)) then
+    multitext.dirty = nil
+  end
+end
+
+function saveas_file(multitext, filename)
+  if (write_file(filename, multitext.value)) then
+    local dlg = iup.GetDialog(multitext)
+    local config = multitext.config
+    
+    dlg.title = str_filetitle(filename).." - Simple Notepad"
+    multitext.filename = filename
+    multitext.dirty = nil
+    
+    config:RecentUpdate(filename)
+  end
+end
+
+function save_check(ih)
+  local dlg = iup.GetDialog(ih)
+  local multitext = dlg.multitext
+  
+  if (multitext.dirty) then
+    local resp = iup.Alarm("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel")
+    if resp == 1 then -- save the changes and continue
+      save_file(multitext)
+    elseif resp == 3 then  -- cancel
+      return false
+    else  -- ignore the changes and continue
+    end
+  end
+  return true
+end
+
 config = iup.config{}
 config.app_name = "simple_notepad"
 config:Load()
@@ -49,32 +119,46 @@ lbl_statusbar = iup.label{title = "Lin 1, Col 1", expand = "HORIZONTAL", padding
 
 multitext = iup.text{
   multiline = "YES",
-  expand = "YES"
+  expand = "YES",
+  config = config,
+  dirty = nil,
 }
-
+ 
 font = config:GetVariable("MainWindow", "Font")
 if (font) then
   multitext.font = font
 end
 
-item_open = iup.item{title = "&Open...\tCtrl+O"}
-item_saveas = iup.item{title="Save &As...\tCtrl+S"}
+item_new = iup.item{title = "&New...\tCtrl+N", image = "IUP_FileNew"}
+item_open = iup.item{title = "&Open...\tCtrl+O", image = "IUP_FileOpen"}
+item_save = iup.item{title="Save\tCtrl+S"}
+item_saveas = iup.item{title="Save &As...", image = "IUP_FileSave"}
 item_font = iup.item{title="&Font..."}
 item_about = iup.item{title="&About..."}
-item_find = iup.item{title="&Find...\tCtrl+F"}
+item_find = iup.item{title="&Find...\tCtrl+F", image = "IUP_EditFind"}
 item_goto = iup.item{title="&Go To..."}
-item_copy = iup.item{title="Copy\tCtrl+C"}
-item_paste = iup.item{title="Paste\tCtrl+V"}
-item_cut = iup.item{title="Cut\tCtrl+X"}
-item_delete = iup.item{title="Delete\tDel"}
+item_copy = iup.item{title="Copy\tCtrl+C", image = "IUP_EditCopy"}
+item_paste = iup.item{title="Paste\tCtrl+V", image = "IUP_EditPaste"}
+item_cut = iup.item{title="Cut\tCtrl+X", image = "IUP_EditCut"}
+item_delete = iup.item{title="Delete\tDel", image = "IUP_EditErase"}
 item_select_all = iup.item{title="Select All\tCtrl+A"}
+item_revert = iup.item{title="Revert"}
 item_exit = iup.item{title="E&xit"}
 
+function multitext:dropfiles_cb(filename)
+  if (save_check(self)) then
+    open_file(self, filename)
+  end
+end
+
+function multitext:valuechanged_cb()
+  self.dirty = "YES"
+end
+
 function config:recent_cb()
-  local filename = self.title
-  local str = read_file(filename)
-  if (str) then
-    multitext.value = str
+  if (save_check(self)) then
+    local filename = self.title
+    open_file(self, filename)
   end
 end
 
@@ -82,23 +166,29 @@ function multitext:caret_cb(lin, col)
   lbl_statusbar.title = "Lin "..lin..", Col "..col
 end
 
+function item_new:action()
+  if save_check(self) then
+    new_file(self)
+  end
+end
+
 function item_open:action()
+  if not save_check(self) then
+    return
+  end
+  
   local filedlg = iup.filedlg{
     dialogtype = "OPEN", 
     filter = "*.txt", 
     filterinfo = "Text Files", 
     pareintaldialog=iup.GetDialog(self)
     }
-
+    
   filedlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
-
+  
   if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
-    local str = read_file(filename)
-    if (str) then
-      config:RecentUpdate(filename)
-      multitext.value = str
-    end
+    open_file(self, filename)
   end
   
   filedlg:destroy()
@@ -110,21 +200,36 @@ function item_saveas:action()
     filter = "*.txt", 
     filterinfo = "Text Files", 
     parentaldialog = iup.GetDialog(self),
+    file = multitext.filename,
     }
 
   filedlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
 
   if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
-    if (write_file(filename, multitext.value)) then
-      config:RecentUpdate(filename)
-    end
+    saveas_file(multitext, filename)    
   end
   
   filedlg:destroy()
 end
 
+function item_save:action()
+  if (not multitext.filename) then
+    item_saveas:action()
+  else
+    save_file(multitext)
+  end
+end
+
+function item_revert:action()
+  open_file(self, multitext.filename)
+end
+
 function item_exit:action()
+  if not save_check(self) then
+    return iup.IGNORE;  -- to abort the CLOSE_CB callback
+  end
+  
   config:DialogClosed(iup.GetDialog(self), "MainWindow")
   config:Save()
   config:destroy()
@@ -317,12 +422,28 @@ end
 recent_menu = iup.menu{}
 
 file_menu = iup.menu{
+  item_new,
   item_open,
+  item_save,
   item_saveas,
+  item_revert,
   iup.separator{},
   iup.submenu{title="Recent &Files", recent_menu},
   item_exit
   }
+
+function file_menu:open_cb()
+  if (multitext.dirty) then
+    item_save.active = "YES"
+  else
+    item_save.active = "NO"
+  end
+  if (multitext.dirty and multitext.filename) then
+    item_revert.active = "YES"
+  else
+    item_revert.active = "NO"
+  end
+end
 
 edit_menu = iup.menu{
     item_cut,
@@ -374,12 +495,20 @@ menu = iup.menu{
   }
 
 btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes", action = item_open.action }
-btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_saveas.action}
+btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_save.action}
 btn_find = iup.button{image = "IUP_EditFind", flat = "Yes", action = item_find.action}
+btn_cut = iup.button{image = "IUP_EditCut", flat = "Yes", action = item_cut.action}
+btn_copy = iup.button{image =  "IUP_EditCopy", flat = "Yes", action = item_copy.action}
+btn_paste = iup.button{image = "IUP_EditPaste", flat = "Yes", action = item_paste.action}
 
 toolbar_hb = iup.hbox{
+  btn_new,
   btn_open,
   btn_save,
+  iup.label{separator="VERTICAL"},
+  btn_cut,
+  btn_copy,
+  btn_paste,
   iup.label{separator="VERTICAL"},
   btn_find, 
   margin = "5x5",
@@ -398,13 +527,17 @@ dlg = iup.dialog{
   size = "HALFxHALF",
   menu = menu,
   close_cb = item_exit.action,
+  multitext = multitext,
+  dropfiles_cb = multitext.dropfiles_cb,
 }
 
 function dlg:k_any(c)
-  if (c == iup.K_cO) then
+  if (c == iup.K_cN) then
+    item_new:action()
+  elseif (c == iup.K_cO) then
     item_open:action()
   elseif (c == iup.K_cS) then
-    item_saveas:action()
+    item_save:action()
   elseif (c == iup.K_cF) then
     item_find:action()
   elseif (c == iup.K_cG) then
@@ -419,6 +552,15 @@ iup.SetGlobal("PARENTDIALOG", iup.SetHandleName(dlg))
 
 dlg:showxy(iup.CENTER,iup.CENTER)
 dlg.usersize = nil
+
+-- initialize the current file
+new_file(dlg)
+
+-- open a file from the command line (allow file association in Windows)
+if (arg and arg[1]) then
+  filename = arg[1]
+  open_file(dlg, filename)
+end
 
 -- to be able to run this script inside another context
 if (iup.MainLoopLevel()==0) then

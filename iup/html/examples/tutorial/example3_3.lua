@@ -1,5 +1,36 @@
 require("iuplua")
 
+function read_file(filename)
+  local ifile = io.open(filename, "r")
+  if (not ifile) then
+    iup.Message("Error", "Can't open file: " .. filename)
+    return nil
+  end
+  
+  local str = ifile:read("*a")
+  if (not str) then
+    iup.Message("Error", "Fail when reading from file: " .. filename)
+    return nil
+  end
+  
+  ifile:close()
+  return str
+end
+
+function write_file(filename, str)
+  local ifile = io.open(filename, "w")
+  if (not ifile) then
+    iup.Message("Error", "Can't open file: " .. filename)
+    return
+  end
+  
+  if (not ifile:write(str)) then
+    iup.Message("Error", "Fail when writing to file: " .. filename)
+  end
+  
+  ifile:close()
+end
+
 multitext = iup.text{
 	multiline = "YES",
 	expand = "YES"
@@ -22,17 +53,9 @@ function item_open:action()
 
   if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
-    local ifile = io.open(filename, "r")
-    if (ifile) then
-      local str = ifile:read("*a")
-      ifile:close()
-      if (str) then
-        multitext.value = str
-      else
-        iup.Message("Error", "Fail when reading from file: " .. filename)
-      end
-    else
-      iup.Message("Error", "Can't open file: " .. filename)
+    local str = read_file(filename)
+    if (str) then
+      multitext.value = str
     end
   end
   filedlg:destroy()
@@ -49,15 +72,7 @@ function item_saveas:action()
 
   if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
-    local ifile = io.open(filename, "w")
-    if (ifile) then
-      if (not ifile:write(multitext.value)) then
-        iup.Message("Error", "Fail when writing to file: " .. filename)
-      end
-      ifile:close()
-    else
-      iup.Message("Error", "Can't open file: " .. filename)
-    end
+    write_file(filename, multitext.value)
   end
   filedlg:destroy()
 end

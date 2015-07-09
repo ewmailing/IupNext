@@ -94,21 +94,29 @@ char* read_file(const char* filename)
   /* set the nul terminator */
   str[size] = 0;
 
+  if (ferror(file))
+    IupMessagef("Error", "Fail when reading from file: %s", filename);
+
   fclose(file);
   return str;
 }
 
-void write_file(const char* filename, const char* str, int count)
+int write_file(const char* filename, const char* str, int count)
 {
   FILE* file = fopen(filename, "w");
   if (!file)
   {
     IupMessagef("Error", "Can't open file: %s", filename);
-    return;
+    return 0;
   }
 
   fwrite(str, 1, count, file);
+
+  if (ferror(file))
+    IupMessagef("Error", "Fail when writing to file: %s", filename);
+
   fclose(file);
+  return 1;
 }
 
 
@@ -181,9 +189,8 @@ int item_saveas_action_cb(Ihandle* item_saveas)
     char* filename = IupGetAttribute(filedlg, "VALUE");
     char* str = IupGetAttribute(multitext, "VALUE");
     int count = IupGetInt(multitext, "COUNT");
-    write_file(filename, str, count);
-
-    IupConfigRecentUpdate(config, filename);
+    if (write_file(filename, str, count))
+      IupConfigRecentUpdate(config, filename);
   }
 
   IupDestroy(filedlg);
