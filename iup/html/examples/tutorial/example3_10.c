@@ -211,6 +211,24 @@ int save_check(Ihandle* ih)
   return 1;
 }
 
+void toggle_visibility(Ihandle* item, Ihandle* ih)
+{
+  if (IupGetInt(item, "VALUE"))
+  {
+    IupSetAttribute(ih, "FLOATING", "YES");
+    IupSetAttribute(ih, "VISIBLE", "NO");
+    IupSetAttribute(item, "VALUE", "OFF");
+  }
+  else
+  {
+    IupSetAttribute(ih, "FLOATING", "NO");
+    IupSetAttribute(ih, "VISIBLE", "YES");
+    IupSetAttribute(item, "VALUE", "ON");
+  }
+
+  IupRefresh(ih);  /* refresh the dialog layout */
+}
+
 
 /********************************** Callbacks *****************************************/
 
@@ -558,71 +576,6 @@ int item_find_action_cb(Ihandle* item_find)
   return IUP_DEFAULT;
 }
 
-void toggle_visibility(Ihandle* item, Ihandle* ih)
-{
-  if (IupGetInt(item, "VALUE"))
-  {
-    IupSetAttribute(ih, "FLOATING", "YES");
-    IupSetAttribute(ih, "VISIBLE", "NO");
-    IupSetAttribute(item, "VALUE", "OFF");
-  }
-  else
-  {
-    IupSetAttribute(ih, "FLOATING", "NO");
-    IupSetAttribute(ih, "VISIBLE", "YES");
-    IupSetAttribute(item, "VALUE", "ON");
-  }
-
-  IupRefresh(ih);  /* refresh the dialog layout */
-}
-
-int item_toolbar_action_cb(Ihandle* item_toolbar)
-{
-  Ihandle* multitext = IupGetDialogChild(item_toolbar, "MULTITEXT");
-  Ihandle* toolbar = IupGetChild(IupGetParent(multitext), 0);
-  Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
-
-  toggle_visibility(item_toolbar, toolbar);
-
-  IupConfigSetVariableStr(config, "MainWindow", "Toolbar", IupGetAttribute(item_toolbar, "VALUE"));
-  return IUP_DEFAULT;
-}
-
-int item_statusbar_action_cb(Ihandle* item_statusbar)
-{
-  Ihandle* multitext = IupGetDialogChild(item_statusbar, "MULTITEXT");
-  Ihandle* statusbar = IupGetBrother(multitext);
-  Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
-
-  toggle_visibility(item_statusbar, statusbar);
-
-  IupConfigSetVariableStr(config, "MainWindow", "Statusbar", IupGetAttribute(item_statusbar, "VALUE"));
-  return IUP_DEFAULT;
-}
-
-int item_font_action_cb(Ihandle* item_font)
-{
-  Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
-  Ihandle* fontdlg = IupFontDlg();
-  char* font = IupGetAttribute(multitext, "FONT");
-  IupSetStrAttribute(fontdlg, "VALUE", font);
-  IupSetAttributeHandle(fontdlg, "PARENTDIALOG", IupGetDialog(item_font));
-
-  IupPopup(fontdlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
-
-  if (IupGetInt(fontdlg, "STATUS") == 1)
-  {
-    Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
-    char* font = IupGetAttribute(fontdlg, "VALUE");
-    IupSetStrAttribute(multitext, "FONT", font);
-
-    IupConfigSetVariableStr(config, "MainWindow", "Font", font);
-  }
-
-  IupDestroy(fontdlg);
-  return IUP_DEFAULT;
-}
-
 int item_copy_action_cb(Ihandle* item_copy) 
 {
   Ihandle* multitext = IupGetDialogChild(item_copy, "MULTITEXT");
@@ -662,6 +615,53 @@ int item_select_all_action_cb(Ihandle* item_select_all)
 {
   Ihandle* multitext = IupGetDialogChild(item_select_all, "MULTITEXT");
   IupSetAttribute(multitext, "SELECTION", "ALL");
+  return IUP_DEFAULT;
+}
+
+int item_font_action_cb(Ihandle* item_font)
+{
+  Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
+  Ihandle* fontdlg = IupFontDlg();
+  char* font = IupGetAttribute(multitext, "FONT");
+  IupSetStrAttribute(fontdlg, "VALUE", font);
+  IupSetAttributeHandle(fontdlg, "PARENTDIALOG", IupGetDialog(item_font));
+
+  IupPopup(fontdlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  if (IupGetInt(fontdlg, "STATUS") == 1)
+  {
+    Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
+    char* font = IupGetAttribute(fontdlg, "VALUE");
+    IupSetStrAttribute(multitext, "FONT", font);
+
+    IupConfigSetVariableStr(config, "MainWindow", "Font", font);
+  }
+
+  IupDestroy(fontdlg);
+  return IUP_DEFAULT;
+}
+
+int item_toolbar_action_cb(Ihandle* item_toolbar)
+{
+  Ihandle* multitext = IupGetDialogChild(item_toolbar, "MULTITEXT");
+  Ihandle* toolbar = IupGetChild(IupGetParent(multitext), 0);
+  Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
+
+  toggle_visibility(item_toolbar, toolbar);
+
+  IupConfigSetVariableStr(config, "MainWindow", "Toolbar", IupGetAttribute(item_toolbar, "VALUE"));
+  return IUP_DEFAULT;
+}
+
+int item_statusbar_action_cb(Ihandle* item_statusbar)
+{
+  Ihandle* multitext = IupGetDialogChild(item_statusbar, "MULTITEXT");
+  Ihandle* statusbar = IupGetBrother(multitext);
+  Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
+
+  toggle_visibility(item_statusbar, statusbar);
+
+  IupConfigSetVariableStr(config, "MainWindow", "Statusbar", IupGetAttribute(item_statusbar, "VALUE"));
   return IUP_DEFAULT;
 }
 

@@ -1,6 +1,10 @@
 require("iuplua")
 require("iupluaimglib")
 
+
+--********************************** Utilities *****************************************
+
+
 function str_find(str, str_to_find, casesensitive, start)
   if (not casesensitive) then
     return str_find(string.lower(str), string.lower(str_to_find), true, start)
@@ -111,6 +115,23 @@ function save_check(ih)
   return true
 end
 
+function toggle_visibility(item, bar)
+  if (item.value == "ON") then
+    bar.floating = "YES"
+    bar.visible = "NO"
+    item.value = "OFF"
+  else
+    bar.floating = "NO"
+    bar.visible = "YES"
+    item.value = "ON"
+  end
+  iup.Refresh(bar)  -- refresh the dialog layout
+end
+
+
+--********************************** Main (Part 1/2) *****************************************
+
+
 config = iup.config{}
 config.app_name = "simple_notepad"
 config:Load()
@@ -153,6 +174,10 @@ if (show_statusbar == "OFF") then
   lbl_statusbar.floating = "YES"
   lbl_statusbar.visible = "NO"
 end
+
+
+--********************************** Callbacks *****************************************
+
 
 function multitext:dropfiles_cb(filename)
   if (save_check(self)) then
@@ -383,20 +408,6 @@ function item_find:action()
   find_dlg:showxy(iup.CURRENT, iup.CURRENT)
 end
 
-function item_font:action()
-  local font = multitext.font
-  local fontdlg = iup.fontdlg{value = font, parentdialog=iup.GetDialog(self)}
-
-  fontdlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
-
-  if (tonumber(fontdlg.status) == 1) then
-    multitext.font = fontdlg.value
-    config:SetVariable("MainWindow", "Font", fontdlg.value)
-  end
-
-  fontdlg:destroy()
-end
-
 function item_copy:action()
   local clipboard = iup.clipboard{text = multitext.selectedtext}
   clipboard:destroy()
@@ -424,17 +435,18 @@ function item_select_all:action()
   multitext.selection = "ALL"
 end
 
-function toggle_visibility(item, bar)
-  if (item.value == "ON") then
-    bar.floating = "YES"
-    bar.visible = "NO"
-    item.value = "OFF"
-  else
-    bar.floating = "NO"
-    bar.visible = "YES"
-    item.value = "ON"
+function item_font:action()
+  local font = multitext.font
+  local fontdlg = iup.fontdlg{value = font, parentdialog=iup.GetDialog(self)}
+
+  fontdlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
+
+  if (tonumber(fontdlg.status) == 1) then
+    multitext.font = fontdlg.value
+    config:SetVariable("MainWindow", "Font", fontdlg.value)
   end
-  iup.Refresh(bar)  -- refresh the dialog layout
+
+  fontdlg:destroy()
 end
 
 function item_toolbar:action()
@@ -450,6 +462,10 @@ end
 function item_about:action()
   iup.Message("About", "   Simple Notepad\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri")
 end
+
+
+--********************************** Main (Part 2/2) *****************************************
+
 
 recent_menu = iup.menu{}
 

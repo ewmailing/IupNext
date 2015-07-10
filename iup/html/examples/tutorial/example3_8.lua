@@ -1,6 +1,10 @@
 require("iuplua")
 require("iupluaimglib")
 
+
+--********************************** Utilities *****************************************
+
+
 function str_find(str, str_to_find, casesensitive, start)
   if (not casesensitive) then
     return str_find(string.lower(str), string.lower(str_to_find), true, start)
@@ -41,6 +45,10 @@ function write_file(filename, str)
   return true
 end
 
+
+--********************************** Main (Part 1/2) *****************************************
+
+
 config = iup.config{}
 config.app_name = "simple_notepad"
 config:Load()
@@ -69,6 +77,10 @@ item_cut = iup.item{title="Cut\tCtrl+X"}
 item_delete = iup.item{title="Delete\tDel"}
 item_select_all = iup.item{title="Select All\tCtrl+A"}
 item_exit = iup.item{title="E&xit"}
+
+
+--********************************** Callbacks *****************************************
+
 
 function config:recent_cb()
   local filename = self.title
@@ -269,20 +281,6 @@ function item_find:action()
   find_dlg:showxy(iup.CURRENT, iup.CURRENT)
 end
 
-function item_font:action()
-  local font = multitext.font
-  local fontdlg = iup.fontdlg{value = font, parentdialog=iup.GetDialog(self)}
-
-  fontdlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
-
-  if (tonumber(fontdlg.status) == 1) then
-    multitext.font = fontdlg.value
-    config:SetVariable("MainWindow", "Font", fontdlg.value)
-  end
-
-  fontdlg:destroy()
-end
-
 function item_copy:action()
   local clipboard = iup.clipboard{text = multitext.selectedtext}
   clipboard:destroy()
@@ -310,9 +308,27 @@ function item_select_all:action()
   multitext.selection = "ALL"
 end
 
+function item_font:action()
+  local font = multitext.font
+  local fontdlg = iup.fontdlg{value = font, parentdialog=iup.GetDialog(self)}
+
+  fontdlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
+
+  if (tonumber(fontdlg.status) == 1) then
+    multitext.font = fontdlg.value
+    config:SetVariable("MainWindow", "Font", fontdlg.value)
+  end
+
+  fontdlg:destroy()
+end
+
 function item_about:action()
   iup.Message("About", "   Simple Notepad\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri")
 end
+
+
+--********************************** Main (Part 2/2) *****************************************
+
 
 recent_menu = iup.menu{}
 

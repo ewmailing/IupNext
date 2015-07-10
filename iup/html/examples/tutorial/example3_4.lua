@@ -1,5 +1,9 @@
 require("iuplua")
 
+
+--********************************** Utilities *****************************************
+
+
 function str_find(str, str_to_find, casesensitive, start)
   if (not casesensitive) then
     return str_find(string.lower(str), string.lower(str_to_find), true, start)
@@ -39,6 +43,10 @@ function write_file(filename, str)
   ifile:close()
 end
 
+
+--********************************** Main (Part 1/2) *****************************************
+
+
 multitext = iup.text{
   multiline = "YES",
   expand = "YES"
@@ -51,6 +59,10 @@ item_about = iup.item{title="About..."}
 item_find = iup.item{title="Find..."}
 item_goto = iup.item{title="Go To..."}
 item_exit = iup.item{title="Exit"}
+
+
+--********************************** Callbacks *****************************************
+
 
 function item_open:action()
   local filedlg = iup.filedlg{
@@ -247,6 +259,10 @@ end
 function item_about:action()
   iup.Message("About", "   Simple Notepad\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri")
 end
+
+
+--********************************** Main (Part 2/2) *****************************************
+
 
 file_menu = iup.menu{item_open,item_saveas,iup.separator{},item_exit}
 edit_menu = iup.menu{item_find, item_goto}

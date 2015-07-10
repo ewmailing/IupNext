@@ -412,29 +412,6 @@ int item_find_action_cb(Ihandle* item_find)
   return IUP_DEFAULT;
 }
 
-int item_font_action_cb(Ihandle* item_font)
-{
-  Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
-  Ihandle* fontdlg = IupFontDlg();
-  char* font = IupGetAttribute(multitext, "FONT");
-  IupSetStrAttribute(fontdlg, "VALUE", font);
-  IupSetAttributeHandle(fontdlg, "PARENTDIALOG", IupGetDialog(item_font));
-
-  IupPopup(fontdlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
-
-  if (IupGetInt(fontdlg, "STATUS") == 1)
-  {
-    Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
-    char* font = IupGetAttribute(fontdlg, "VALUE");
-    IupSetStrAttribute(multitext, "FONT", font);
-
-    IupConfigSetVariableStr(config, "MainWindow", "Font", font);
-  }
-
-  IupDestroy(fontdlg);
-  return IUP_DEFAULT;
-}
-
 int item_copy_action_cb(Ihandle* item_copy) 
 {
   Ihandle* multitext = IupGetDialogChild(item_copy, "MULTITEXT");
@@ -474,6 +451,29 @@ int item_select_all_action_cb(Ihandle* item_select_all)
 {
   Ihandle* multitext = IupGetDialogChild(item_select_all, "MULTITEXT");
   IupSetAttribute(multitext, "SELECTION", "ALL");
+  return IUP_DEFAULT;
+}
+
+int item_font_action_cb(Ihandle* item_font)
+{
+  Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
+  Ihandle* fontdlg = IupFontDlg();
+  char* font = IupGetAttribute(multitext, "FONT");
+  IupSetStrAttribute(fontdlg, "VALUE", font);
+  IupSetAttributeHandle(fontdlg, "PARENTDIALOG", IupGetDialog(item_font));
+
+  IupPopup(fontdlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  if (IupGetInt(fontdlg, "STATUS") == 1)
+  {
+    Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
+    char* font = IupGetAttribute(fontdlg, "VALUE");
+    IupSetStrAttribute(multitext, "FONT", font);
+
+    IupConfigSetVariableStr(config, "MainWindow", "Font", font);
+  }
+
+  IupDestroy(fontdlg);
   return IUP_DEFAULT;
 }
 

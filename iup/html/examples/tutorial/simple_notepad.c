@@ -1003,12 +1003,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   item_font = IupItem("&Font...", NULL);
   IupSetCallback(item_font, "ACTION", (Icallback)item_font_action_cb);
 
-  if (IupConfigGetVariableInt(config, "MainWindow", "Wordwrap"))
-  {
-    IupSetAttribute(item_statusbar, "VALUE", "ON");
-    IupSetAttribute(multitext, "WORDWRAP", "Yes");
-  }
-
   item_help = IupItem("&Help...", NULL);
   IupSetCallback(item_help, "ACTION", (Icallback)item_help_action_cb);
   item_about = IupItem("&About...", NULL);

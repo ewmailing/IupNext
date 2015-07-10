@@ -1,6 +1,10 @@
 require("iuplua")
 require("iupluaimglib")
 
+
+--********************************** Utilities *****************************************
+
+
 function str_find(str, str_to_find, casesensitive, start)
   if (not casesensitive) then
     return str_find(string.lower(str), string.lower(str_to_find), true, start)
@@ -111,6 +115,10 @@ function save_check(ih)
   return true
 end
 
+
+--********************************** Main (Part 1/2) *****************************************
+
+
 config = iup.config{}
 config.app_name = "simple_notepad"
 config:Load()
@@ -144,6 +152,10 @@ item_delete = iup.item{title="Delete\tDel", image = "IUP_EditErase"}
 item_select_all = iup.item{title="Select All\tCtrl+A"}
 item_revert = iup.item{title="Revert"}
 item_exit = iup.item{title="E&xit"}
+
+
+--********************************** Callbacks *****************************************
+
 
 function multitext:dropfiles_cb(filename)
   if (save_check(self)) then
@@ -374,20 +386,6 @@ function item_find:action()
   find_dlg:showxy(iup.CURRENT, iup.CURRENT)
 end
 
-function item_font:action()
-  local font = multitext.font
-  local fontdlg = iup.fontdlg{value = font, parentdialog=iup.GetDialog(self)}
-
-  fontdlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
-
-  if (tonumber(fontdlg.status) == 1) then
-    multitext.font = fontdlg.value
-    config:SetVariable("MainWindow", "Font", fontdlg.value)
-  end
-
-  fontdlg:destroy()
-end
-
 function item_copy:action()
   local clipboard = iup.clipboard{text = multitext.selectedtext}
   clipboard:destroy()
@@ -415,9 +413,27 @@ function item_select_all:action()
   multitext.selection = "ALL"
 end
 
+function item_font:action()
+  local font = multitext.font
+  local fontdlg = iup.fontdlg{value = font, parentdialog=iup.GetDialog(self)}
+
+  fontdlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
+
+  if (tonumber(fontdlg.status) == 1) then
+    multitext.font = fontdlg.value
+    config:SetVariable("MainWindow", "Font", fontdlg.value)
+  end
+
+  fontdlg:destroy()
+end
+
 function item_about:action()
   iup.Message("About", "   Simple Notepad\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri")
 end
+
+
+--********************************** Main (Part 2/2) *****************************************
+
 
 recent_menu = iup.menu{}
 

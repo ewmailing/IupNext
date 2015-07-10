@@ -1,6 +1,10 @@
 require("iuplua")
 require("iupluaimglib")
 
+
+--********************************** Utilities *****************************************
+
+
 function str_find(str, str_to_find, casesensitive, start)
   if (not casesensitive) then
     return str_find(string.lower(str), string.lower(str_to_find), true, start)
@@ -41,6 +45,10 @@ function write_file(filename, str)
   return true
 end
 
+
+--********************************** Main (Part 1/2) *****************************************
+
+
 config = iup.config{}
 config.app_name = "simple_notepad"
 config:Load()
@@ -64,6 +72,10 @@ item_about = iup.item{title="&About..."}
 item_find = iup.item{title="&Find...\tCtrl+F"}
 item_goto = iup.item{title="&Go To..."}
 item_exit = iup.item{title="E&xit"}
+
+
+--********************************** Callbacks *****************************************
+
 
 function config:recent_cb()
   local filename = self.title
@@ -279,6 +291,9 @@ end
 function item_about:action()
   iup.Message("About", "   Simple Notepad\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri")
 end
+
+
+--********************************** Main (Part 2/2) *****************************************
 
 
 recent_menu = iup.menu{}

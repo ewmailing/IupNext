@@ -1,6 +1,10 @@
 require("iuplua")
 require("iupluaimglib")
 
+
+--********************************** Utilities *****************************************
+
+
 function str_find(str, str_to_find, casesensitive, start)
   if (not casesensitive) then
     return str_find(string.lower(str), string.lower(str_to_find), true, start)
@@ -40,6 +44,10 @@ function write_file(filename, str)
   ifile:close()
 end
 
+
+--********************************** Main (Part 1/2) *****************************************
+
+
 lbl_statusbar = iup.label{title = "Lin 1, Col 1", expand = "HORIZONTAL", padding = "10x5"}
 
 multitext = iup.text{
@@ -54,6 +62,10 @@ item_about = iup.item{title="About..."}
 item_find = iup.item{title="Find..."}
 item_goto = iup.item{title="Go To..."}
 item_exit = iup.item{title="Exit"}
+
+
+--********************************** Callbacks *****************************************
+
 
 function multitext:caret_cb(lin, col)
   lbl_statusbar.title = "Lin "..lin..", Col "..col
@@ -254,6 +266,10 @@ end
 function item_about:action()
   iup.Message("About", "   Simple Notepad\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri")
 end
+
+
+--********************************** Main (Part 2/2) *****************************************
+
 
 file_menu = iup.menu{item_open,item_saveas,iup.separator{},item_exit}
 edit_menu = iup.menu{item_find, item_goto}
