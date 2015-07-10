@@ -214,6 +214,20 @@ Ihandle *iuplua_checkihandleornil(lua_State *L, int pos)
     return iuplua_checkihandle(L, pos);
 }
 
+int iuplua_isihandle(lua_State *L, int pos)
+{
+  lua_getmetatable(L, pos);   /* t2 = metatable(stack(pos)) */
+  lua_pushstring(L, iup_handle);
+  lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iupHandle"] */
+  if (lua_rawequal(L, -2, -1))   /* check (t2==t)? */
+  {
+    lua_pop(L, 2);
+    return 1;
+  }
+  else
+    return 0;
+}
+
 Ihandle *iuplua_checkihandle(lua_State *L, int pos)
 {
   lua_getmetatable(L, pos);   /* t2 = metatable(stack(pos)) */
