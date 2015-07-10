@@ -367,8 +367,8 @@ function item_find_next:action()
   if (find_dlg) then
     local find_pos = find_dlg.find_pos
 
-    local find_text = find_dlg.find_text
-    local str_to_find = find_text.value
+    local find_txt = find_dlg.find_txt
+    local str_to_find = find_txt.value
 
     local find_case = find_dlg.find_case
     local casesensitive = (find_case.value == "ON")
@@ -401,7 +401,7 @@ function item_find_next:action()
       multitext.scrolltopos = pos
     else
       find_dlg.find_pos = -1
-      iup.Message("Warning", "Text not found.")
+      iup.Message("Warning", "Text not found: "..str_to_find)
     end
   end
 end
@@ -432,41 +432,7 @@ function create_find_dialog()
   end
 
   function bt_find_next:action()
-    local find_pos = find_dlg.find_pos
-    local str_to_find = find_txt.value
-
-    local casesensitive = (find_case.value == "ON")
-
-    -- test again, because it can be called from the hot key
-    if (not str_to_find) then
-      return
-    end
-    if (not find_pos) or (find_pos == -1) then
-      find_pos = 0
-    end
-
-    local str = multitext.value
-
-    local pos, end_pos = str_find(str, str_to_find, casesensitive, find_pos)
-
-    if (not pos) then
-      local pos, end_pos = str_find(str, str_to_find, casesensitive)  -- try again from the start
-    end
-
-    if (pos) and (pos >= 0) then
-      pos = pos - 1
-      find_dlg.find_pos = end_pos
-
-      iup.SetFocus(multitext)
-      multitext.selectionpos = pos..":"..end_pos
-
-      local lin, col = iup.TextConvertPosToLinCol(multitext, pos)
-      local pos = iup.TextConvertLinColToPos(multitext, lin, 0)  -- position at col=0, just scroll lines
-      multitext.scrolltopos = pos
-    else
-      find_dlg.find_pos = -1
-      iup.Message("Warning", "Text not found.")
-    end
+      item_find_next:action()
   end
 
   function bt_find_close:action()
@@ -490,7 +456,7 @@ function create_find_dialog()
     gap = "5"
   }
 
-  find_dlg = iup.dialog{
+  find_dlg = iup.dialog{  -- create as global, not local
     box, 
     title = "Find", 
     dialogframe = "Yes", 
@@ -498,7 +464,8 @@ function create_find_dialog()
     defaultesc = bt_close,
     parentdialog = iup.GetDialog(multitext),
 
-    find_text = find_text,
+    find_txt = find_txt,
+    find_case = find_case,
     replace_txt = replace_txt,
     replace_bt = replace_bt, 
     replace_lbl = replace_lbl,
@@ -508,7 +475,6 @@ function create_find_dialog()
 end
 
 function item_find:action()
-
   if (not find_dlg) then
     find_dlg = create_find_dialog()  -- create as global, not local
   end
@@ -519,8 +485,8 @@ function item_find:action()
 
   local str = multitext.selectedtext
   if (str and str:len()~=0) then
-    local find_text = find_dlg.find_text
-    find_text.value = str
+    local find_txt = find_dlg.find_txt
+    find_txt.value = str
   end
 end
 
@@ -535,8 +501,8 @@ function item_replace:action()
 
   local str = multitext.selectedtext
   if (str and str:len()~=0) then
-    local find_text = find_dlg.find_text
-    find_text.value = str
+    local find_txt = find_dlg.find_txt
+    find_txt.value = str
   end
 end
 
