@@ -514,6 +514,7 @@ int find_next_action_cb(Ihandle* bt_next)
   else
     IupMessage("Warning", "Text not found.");
 
+
   return IUP_DEFAULT;
 }
 
