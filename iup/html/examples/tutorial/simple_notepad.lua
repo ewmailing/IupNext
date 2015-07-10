@@ -7,126 +7,435 @@ require("iupluaimglib")
 
 function str_find(str, str_to_find, casesensitive, start)
   if (not casesensitive) then
-    return str_find(string.lower(str), string.lower(str_to_find), start)
+    return str_find(string.lower(str), string.lower(str_to_find), true, start)
   end
 
   return string.find(str, str_to_find, start)
 end
 
+function str_filetitle(filename)
+  local filename = string.gsub(filename, "\\", "/")
+  filename = string.reverse(filename)
+  final = string.find(filename, '/')
+  filename = string.sub(filename, 1, final-1)
+  filename = string.reverse(filename)
+  return filename
+end
+
+function read_file(filename)
+  local ifile = io.open(filename, "r")
+  if (not ifile) then
+    iup.Message("Error", "Can't open file: " .. filename)
+    return nil
+  end
+  
+  local str = ifile:read("*a")
+  if (not str) then
+    iup.Message("Error", "Fail when reading from file: " .. filename)
+    return nil
+  end
+  
+  ifile:close()
+  return str
+end
+
+function write_file(filename, str)
+  local ifile = io.open(filename, "w")
+  if (not ifile) then
+    iup.Message("Error", "Can't open file: " .. filename)
+    return false
+  end
+  
+  if (not ifile:write(str)) then
+    iup.Message("Error", "Fail when writing to file: " .. filename)
+  end
+  
+  ifile:close()
+  return true
+end
+
 function new_file(ih)
   local dlg = iup.GetDialog(ih)
-  local multitext = iup.GetDialogChild(dlg, "MULTITEXT")
-
+  local multitext = dlg.multitext
+  
   dlg.title = "Untitled - Simple Notepad"
   multitext.filename = nil
-  multitext.dirty = "NO"
+  multitext.dirty = nil
   multitext.value = ""
 end
 
 function open_file(ih, filename)
-  local ifile = io.open(filename, "r")
-  local str = ifile:read("*a")
+  local str = read_file(filename)
   if (str) then
     local dlg = iup.GetDialog(ih)
-    local multitext = iup.GetDialogChild(dlg, "MULTITEXT")
-    local config = multitext.CONFIG
-    dlg.title = filename.." - Simple Notepad"
+    local multitext = dlg.multitext
+    local config = multitext.config
+  
+    dlg.title = str_filetitle(filename).." - Simple Notepad"
     multitext.filename = filename
-    multitext.dirty = "NO"
+    multitext.dirty = nil
     multitext.value = str
+    
     config:RecentUpdate(filename)
   end
-  ifile:close()
+end
+
+function save_file(multitext)
+  if (write_file(multitext.filename, multitext.value)) then
+    multitext.dirty = nil
+  end
+end
+
+function saveas_file(multitext, filename)
+  if (write_file(filename, multitext.value)) then
+    local dlg = iup.GetDialog(multitext)
+    local config = multitext.config
+    
+    dlg.title = str_filetitle(filename).." - Simple Notepad"
+    multitext.filename = filename
+    multitext.dirty = nil
+    
+    config:RecentUpdate(filename)
+  end
 end
 
 function save_check(ih)
-  local multitext = iup.GetDialogChild(ih, "MULTITEXT")
-  if (multitext.dirty == "YES") then
+  local dlg = iup.GetDialog(ih)
+  local multitext = dlg.multitext
+  
+  if (multitext.dirty) then
     local resp = iup.Alarm("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel")
     if resp == 1 then -- save the changes and continue
-      item_save:action()
+      save_file(multitext)
     elseif resp == 3 then  -- cancel
-      return 0
+      return false
     else  -- ignore the changes and continue
     end
   end
-  return 1
+  return true
+end
+
+function set_bar_visibility(item, bar)
+  if (item.value == "ON") then
+    bar.floating = "YES"
+    bar.visible = "NO"
+    item.value = "OFF"
+  else
+    bar.floating = "NO"
+    bar.visible = "YES"
+    item.value = "ON"
+  end
+  iup.Refresh(bar)  -- refresh the dialog layout
+end
+
+function set_find_replace_visibility(find_dlg, show_replace)
+  local replace_txt = find_dlg.replace_txt
+  local replace_lbl = find_dlg.replace_lbl
+  local replace_bt = find_dlg.replace_bt
+
+  if (show_replace) then
+    replace_txt.visible = "Yes"
+    replace_lbl.visible = "Yes"
+    replace_bt.visible = "Yes"
+    replace_txt.floating = "No"
+    replace_lbl.floating = "No"
+    replace_bt.floating  = "No"
+
+    find_dlg.title = "Replace"
+  else
+    replace_txt.floating = "Yes"
+    replace_lbl.floating = "Yes"
+    replace_bt.floating = "Yes"
+    replace_txt.visible = "No"
+    replace_lbl.visible = "No"
+    replace_bt.visible = "No"
+
+    find_dlg.title = "Find"
+  end
+
+  find_dlg.size = nil  -- force a dialog resize on the iup.Refresh
+  iup.Refresh(find_dlg)
 end
 
 
---********************************** Callbacks *****************************************--
+--********************************** Main (Part 1/2) *****************************************
 
+
+config = iup.config{}
+config.app_name = "simple_notepad"
+config:Load()
+
+lbl_statusbar = iup.label{title = "Lin 1, Col 1", expand = "HORIZONTAL", padding = "10x5"}
+
+multitext = iup.text{
+  multiline = "YES",
+  expand = "YES",
+  config = config,
+  dirty = nil,
+}
+ 
+font = config:GetVariable("MainWindow", "Font")
+if (font) then
+  multitext.font = font
+end
+
+item_new = iup.item{title = "&New...\tCtrl+N", image = "IUP_FileNew"}
+item_open = iup.item{title = "&Open...\tCtrl+O", image = "IUP_FileOpen"}
+item_save = iup.item{title="Save\tCtrl+S"}
+item_saveas = iup.item{title="Save &As...", image = "IUP_FileSave"}
+item_font = iup.item{title="&Font..."}
+item_about = iup.item{title="&About..."}
+item_find = iup.item{title="&Find...\tCtrl+F", image = "IUP_EditFind"}
+item_find_next = iup.item{title = "Find &Next\tF3"}
+item_replace = iup.item{title = "&Replace...\tCtrl+H"}
+item_goto = iup.item{title="&Go To..."}
+item_copy = iup.item{title="Copy\tCtrl+C", image = "IUP_EditCopy"}
+item_paste = iup.item{title="Paste\tCtrl+V", image = "IUP_EditPaste"}
+item_cut = iup.item{title="Cut\tCtrl+X", image = "IUP_EditCut"}
+item_delete = iup.item{title="Delete\tDel", image = "IUP_EditErase"}
+item_select_all = iup.item{title="Select All\tCtrl+A"}
+item_revert = iup.item{title="Revert"}
+item_exit = iup.item{title="E&xit"}
+item_toolbar = iup.item{title="&Toobar...", value="ON"}
+item_statusbar = iup.item{title="&Statusbar...", value="ON"}
+item_help = iup.item{title="&Help..."}
+
+show_statusbar = config:GetVariableDef("MainWindow", "Statusbar", "ON")
+if (show_statusbar == "OFF") then
+  item_statusbar.value = "OFF"
+  lbl_statusbar.floating = "YES"
+  lbl_statusbar.visible = "NO"
+end
+
+
+--********************************** Callbacks *****************************************
+
+
+function multitext:dropfiles_cb(filename)
+  if (save_check(self)) then
+    open_file(self, filename)
+  end
+end
+
+function multitext:valuechanged_cb()
+  self.dirty = "YES"
+end
+
+function config:recent_cb()
+  if (save_check(self)) then
+    local filename = self.title
+    open_file(self, filename)
+  end
+end
+
+function multitext:caret_cb(lin, col)
+  lbl_statusbar.title = "Lin "..lin..", Col "..col
+end
+
+function item_new:action()
+  if save_check(self) then
+    new_file(self)
+  end
+end
+
+function item_open:action()
+  if not save_check(self) then
+    return
+  end
+  
+  local filedlg = iup.filedlg{
+    dialogtype = "OPEN", 
+    filter = "*.txt", 
+    filterinfo = "Text Files", 
+    pareintaldialog=iup.GetDialog(self)
+    }
+    
+  filedlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
+  
+  if (tonumber(filedlg.status) ~= -1) then
+    local filename = filedlg.value
+    open_file(self, filename)
+  end
+  
+  filedlg:destroy()
+end
+
+function item_saveas:action()
+  local filedlg = iup.filedlg{
+    dialogtype = "SAVE", 
+    filter = "*.txt", 
+    filterinfo = "Text Files", 
+    parentaldialog = iup.GetDialog(self),
+    file = multitext.filename,
+    }
+
+  filedlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
+
+  if (tonumber(filedlg.status) ~= -1) then
+    local filename = filedlg.value
+    saveas_file(multitext, filename)    
+  end
+  
+  filedlg:destroy()
+end
+
+function item_save:action()
+  if (not multitext.filename) then
+    item_saveas:action()
+  else
+    -- test again because in can be called using the hot key
+    if (multitext.dirty) then
+      save_file(multitext)
+    end
+  end
+end
+
+function item_revert:action()
+  open_file(self, multitext.filename)
+end
+
+function item_exit:action()
+  if not save_check(self) then
+    return iup.IGNORE;  -- to abort the CLOSE_CB callback
+  end
+  
+  config:DialogClosed(iup.GetDialog(self), "MainWindow")
+  config:Save()
+  config:destroy()
+  return iup.CLOSE
+end
 
 function item_goto:action()
-  local multitext = iup.GetDialogChild(item_goto, "MULTITEXT")
   local line_count = multitext.linecount
-
   local lbl_goto = iup.label{title = "Line Number [1-"..line_count.."]:"}
-  local txt_goto = iup.text{mask = iup.MASK_UINT, name = "LINE_TEXT", visiblecolumns = 20} --unsigned integer number
-  local bt_goto_ok = iup.button{title = "OK", text_linecount = line_count, padding = "10x2", action = goto_ok_action}
-  local bt_goto_cancel = iup.button{title = "Cancel", padding = "10x2", action = goto_cancel_action}
+  local txt_goto = iup.text{mask = iup.MASK_UINT, visiblecolumns = 20} --unsigned integer numbers only
 
+  local bt_goto_ok = iup.button{title = "OK", text_linecount = 0, padding = "10x2"} 
+  bt_goto_ok.text_linecount = line_count
   function bt_goto_ok:action()
     local line_count = tonumber(self.text_linecount)
-    local txt = iup.GetDialogChild(self, "LINE_TEXT")
-    local line = tonumber(txt.value)
+    local line = tonumber(txt_goto.value)
     if (line < 1 or line >= line_count) then
       iup.Message("Error", "Invalid line number.")
+      return
     end
-    local goto_dlg = iup.GetDialog(self)
-    goto_dlg.status =  "1"
+    goto_dlg.status = 1
     return iup.CLOSE
   end
 
+  local bt_goto_cancel = iup.button{title = "Cancel", padding = "10x2"}
   function bt_goto_cancel:action()
-    local goto_dlg = iup.GetDialog(self)
-    goto_dlg.status =  "0"
+    goto_dlg.status = 0
     return iup.CLOSE
   end
 
-  box = iup.vbox{
+  local box = iup.vbox{
     lbl_goto,
     txt_goto,
     iup.hbox{
       iup.fill{},
       bt_goto_ok,
-      bt_goto_cancel, 
-      normalizesize="HORIZONTAL",
-    }, 
+      bt_goto_cancel,
+      normalizesize="HORIZONTAL", 
+    },
     margin = "10x10", 
     gap = "5",
   }
-  local dlg = iup.dialog{
-    box, 
+  local goto_dlg = iup.dialog{
+    box,
     title = "Go To Line", 
     dialogframe = "Yes", 
     defaultenter = bt_goto_ok, 
     defaultesc = bt_goto_cancel,
-    parentdialog = iup.GetDialog(self),
+    parentdialog = iup.GetDialog(self)
   }
 
-  dlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
+  goto_dlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
 
-  if (dlg.status == 1) then
+  if (tonumber(goto_dlg.status) == 1) then
     local line = txt_goto.value
     local pos = iup.TextConvertLinColToPos(multitext, line, 0)
     multitext.caretpos = pos
     multitext.scrolltopos = pos
   end
 
-  dlg:destroy()
+  goto_dlg:destroy()
 end
 
 function item_find_next:action()
-  local find_dlg = self.find_dialog
+  -- test, because it can be called from the hot key
   if (find_dlg) then
-    local multitext = find_dlg.multitext
-    local find_pos = multitext.find_pos
-    local txt = iup.GetDialogChild(find_dlg, "FIND_TEXT")
-    local str_to_find = txt.value
+    local find_pos = find_dlg.find_pos
 
-    local tgl_case = iup.GetDialogChild(find_dlg, "FIND_CASE")
-    local casesensitive = tgl_case.value
+    local find_text = find_dlg.find_text
+    local str_to_find = find_text.value
+
+    local find_case = find_dlg.find_case
+    local casesensitive = (find_case.value == "ON")
+
+    -- test again, because it can be called from the hot key
+    if (not str_to_find) then
+      return
+    end
+
+    if (not find_pos) or (find_pos == -1) then
+      find_pos = 0
+    end
+
+    local str = multitext.value
+
+    local pos, end_pos = str_find(str, str_to_find, casesensitive, find_pos)
+
+    if (not pos) then
+      local pos, end_pos = str_find(str, str_to_find, casesensitive)  -- try again from the start
+    end
+
+    if (pos) and (pos >= 0) then
+      pos = pos - 1
+      find_dlg.find_pos = end_pos
+      multitext.selectionpos = pos..":"..end_pos
+      multitext.find_selection = pos..":"..end_pos
+
+      local lin, col = iup.TextConvertPosToLinCol(multitext, pos)
+      local pos = iup.TextConvertLinColToPos(multitext, lin, 0)  -- position at col=0, just scroll lines 
+      multitext.scrolltopos = pos
+    else
+      find_dlg.find_pos = -1
+      iup.Message("Warning", "Text not found.")
+    end
+  end
+end
+
+function create_find_dialog()
+  local find_txt = iup.text{visiblecolumns = "20"}
+  local find_case = iup.toggle{title = "Case Sensitive"}
+  local bt_find_next = iup.button{title = "Find Next", padding = "10x2"}
+  local bt_find_close = iup.button{title = "Close", padding = "10x2"}
+  local replace_txt = iup.text{visiblecolumns = "20"}
+  local replace_bt = iup.button{title = "Replace", padding = "10x2", action = find_replace_action_cb}
+  local replace_lbl = iup.label{title = "Replace with:"}
+
+  function replace_bt:action()
+    local find_pos = find_dlg.find_pos
+    local selectionpos = multitext.selectionpos
+    local find_selection = multitext.find_selection
+
+    if (find_pos == -1 or not (selectionpos) or not (find_selection) or (selectionpos ~= find_selection)) then
+      item_find_next:action()
+    else
+      local str_to_replace = replace_txt.value
+      multitext.selectedtext = str_to_replace
+
+      -- then find next
+      item_find_next:action()
+    end
+  end
+
+  function bt_find_next:action()
+    local find_pos = find_dlg.find_pos
+    local str_to_find = find_txt.value
+
+    local casesensitive = (find_case.value == "ON")
 
     -- test again, because it can be called from the hot key
     if (not str_to_find) then
@@ -146,68 +455,17 @@ function item_find_next:action()
 
     if (pos) and (pos >= 0) then
       pos = pos - 1
-      multitext.find_pos = end_pos
+      find_dlg.find_pos = end_pos
+
+      iup.SetFocus(multitext)
       multitext.selectionpos = pos..":"..end_pos
-      multitext.find_selection = pos..":"..end_pos
 
       local lin, col = iup.TextConvertPosToLinCol(multitext, pos)
-      local pos = iup.TextConvertLinColToPos(multitext, lin, 0)  -- position at col=0, just scroll lines 
+      local pos = iup.TextConvertLinColToPos(multitext, lin, 0)  -- position at col=0, just scroll lines
       multitext.scrolltopos = pos
     else
-      multitext.find_pos = -1
+      find_dlg.find_pos = -1
       iup.Message("Warning", "Text not found.")
-    end
-  end
-end
-
-function set_find_replace_visibility(find_dlg, show_replace)
-  local replace_txt = iup.GetDialogChild(find_dlg, "REPLACE_TEXT")
-  local  replace_lbl = iup.GetDialogChild(find_dlg, "REPLACE_LABEL")
-  local replace_bt = iup.GetDialogChild(find_dlg, "REPLACE_BUTTON")
-
-  if (show_replace) then
-    replace_txt.visible = "Yes"
-    replace_lbl.visible = "Yes"
-    replace_bt.visible = "Yes"
-    replace_txt.floating = "No"
-    replace_lbl.floating = "No"
-    replace_bt.floating  = "No"
-  else
-    replace_txt.floating = "Yes"
-    replace_lbl.floating = "Yes"
-    replace_bt.floating = "Yes"
-    replace_txt.visible = "No"
-    replace_lbl.visible = "No"
-    replace_bt.visible = "No"
-  end
-
-  iup.SetAttribute(iup.GetDialog(replace_txt), "SIZE", nil)  -- force a dialog resize
-  iup.Refresh(replace_txt)
-end
-
-function create_find_dialog()
-  local txt_find = iup.text{name = "FIND_TEXT", visiblecolumns = "20"}
-  local txt_find_replace = iup.text{name = "REPLACE_TEXT", visiblecolumns = "20"}
-  local tgl_find_case = iup.toggle{title = "Case Sensitive", name = "FIND_CASE"}
-  local bt_find_next = iup.button{title = "Find Next", padding = "10x2", action = find_next_action_cb}
-  local bt_find_replace = iup.button{title = "Replace", padding = "10x2", action = find_replace_action_cb, name = "REPLACE_BUTTON"}
-  local bt_find_close = iup.button{title = "Close", action = find_close_action_cb, padding = "10x2"}
-
-  function bt_find_replace:action()
-    local find_dlg = self.find_dialog
-    local find_pos = multitext.find_pos
-    local selectionpos = multitext.selectionpos
-    local find_selection = multitext.find_selection
-
-    if (find_pos == -1 or not (selectionpos) or not (find_selection) or (selectionpos ~= find_selection)) then
-      item_find_next:action()
-    else
-      local replace_txt = iup.GetDialogChild(find_dlg, "REPLACE_TEXT")
-      local str_to_replace = replace_txt.value
-      multitext.selectedtext = str_to_replace
-
-      -- then find next
-      item_find_next:action()
     end
   end
 
@@ -217,14 +475,14 @@ function create_find_dialog()
 
   local box = iup.vbox{
     iup.label{title = "Find What:"},
-    txt_find,
-    iup.label{title = "Replace with:", name="REPLACE_LABEL"},
-    txt_find_replace,
-    tgl_find_case,
+    find_txt,
+    replace_lbl,
+    replace_txt,
+    find_case,
     iup.hbox{
       iup.fill{},
       bt_find_next,
-      bt_find_replace,
+      replace_bt,
       bt_find_close,
       normalizesize="HORIZONTAL"
     },
@@ -232,167 +490,119 @@ function create_find_dialog()
     gap = "5"
   }
 
-  local find_dlg = iup.dialog{
+  find_dlg = iup.dialog{
     box, 
     title = "Find", 
     dialogframe = "Yes", 
     defaultenter = bt_next, 
     defaultesc = bt_close,
-    parentdialog = iup.GetDialog(multitext)
+    parentdialog = iup.GetDialog(multitext),
+
+    find_text = find_text,
+    replace_txt = replace_txt,
+    replace_bt = replace_bt, 
+    replace_lbl = replace_lbl,
     }
-
-  -- Save the multiline to access it from the callbacks
-  find_dlg.multitext = multitext
-
-  -- Save the dialog to reuse it 
-  find_dlg.find_dialog = find_dlg  -- from itself
-  iup.SetAttribute(iup.GetDialog(multitext), "FIND_DIALOG", find_dlg) -- from the main dialog */
 
   return find_dlg
 end
 
 function item_find:action()
-  local find_dlg = self.find_dialog
-  local multitext = iup.GetDialogChild(self, "MULTITEXT")
 
   if (not find_dlg) then
-    find_dlg = create_find_dialog()
+    find_dlg = create_find_dialog()  -- create as global, not local
   end
-  set_find_replace_visibility(find_dlg, 0)
-
-  -- centerparent first time, next time reuse the last position
-  find_dlg:showxy(find_dlg, iup.CURRENT, iup.CURRENT)
-
-  local str = multitext.selectedtext
-  if (str) then
-    txt = iup.GetDialogChild(find_dlg, "FIND_TEXT")
-    txt.value = str
-  end
-end
-
-function btn_find:action()
-  item_find:action()
-end
-
-function item_replace:action()
-  local find_dlg = self.find_dialog
-  local multitext = iup.GetDialogChild(self, "MULTITEXT")
-  if (not find_dlg) then
-    find_dlg = create_find_dialog()
-  end
-  set_find_replace_visibility(1)
+  set_find_replace_visibility(find_dlg, false)
 
   -- centerparent first time, next time reuse the last position
   find_dlg:showxy(iup.CURRENT, iup.CURRENT)
 
   local str = multitext.selectedtext
-  if (str) then
-    local txt = iup.GetDialogChild(find_dlg, "FIND_TEXT")
-    txt.value = str
+  if (str and str:len()~=0) then
+    local find_text = find_dlg.find_text
+    find_text.value = str
   end
 end
 
-function selection_find_next:action()
-  local multitext = iup.GetDialogChild(self, "MULTITEXT")
+function item_replace:action()
+  if (not find_dlg) then
+    find_dlg = create_find_dialog()  -- create as global, not local
+  end
+  set_find_replace_visibility(find_dlg, true)
+
+  -- centerparent first time, next time reuse the last position
+  find_dlg:showxy(iup.CURRENT, iup.CURRENT)
+
   local str = multitext.selectedtext
-  if (str) then
+  if (str and str:len()~=0) then
+    local find_text = find_dlg.find_text
+    find_text.value = str
+  end
+end
+
+function selection_find_next()
+  local str = multitext.selectedtext
+  if (str and str:len()~=0) then
     if (not find_dlg) then
-      local find_dlg = create_find_dialog()
+      find_dlg = create_find_dialog()  -- create as global, not local
     end
-    local txt = iup.GetDialogChild(find_dlg, "FIND_TEXT")
-    txt.value = str
-    find_next_action_cb()
+
+    local find_txt = find_dlg.find_txt
+    find_txt.value = str
+
+    item_find_next:action()
   end
-end
-
-function toggle_visibility(item, bar)
-  if (item.value == "ON") then
-    bar.floating = "YES"
-    bar.visible = "NO"
-    item.value = "OFF"
-  else
-    bar.floating = "NO"
-    bar.visible = "YES"
-    item.value = "ON"
-  end
-  iup.Refresh(bar)  -- refresh the dialog layout
-end
-
-function item_toolbar:action()
-  local multitext = iup.GetDialogChild(self, "MULTITEXT")
-  local toolbar = iup.GetChild(iup.GetParent(multitext), 0)
-  local config = multitext.config
-
-  toggle_visibility(self, toolbar_hb)
-  config:SetVariableStr("MainWindow", "Toolbar", item_toolbar.value)
-end
-
-function item_statusbar:action()
-  local multitext = iup.GetDialogChild(self, "MULTITEXT")
-  local statusbar = iup.GetChild(iup.GetParent(multitext), 0)
-  local config = multitext.config
-  toggle_visibility(self, lbl_statusbar)
-  config:SetVariableStr("MainWindow", "Statusbar", item_statusbar.value)
-end
-
-function item_font:action()
-  local multitext = iup.GetDialogChild(self, "MULTITEXT")
-  local font = multitext.font
-  local fontdlg = iup.fontdlg{value = font, parentdialog = iup.GetDialog(self)}
-
-  fontdilg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
-
-  if ((fontdlg.status) == "1") then
-    local config = multitext.config
-    multitext.font = fontdlg.value
-    config:SetVariableStr("MainWindow", "Font", font)
-  end
-
-  fontdlg:destroy()
 end
 
 function item_copy:action()
-  local multitext = iup.GetDialogChild(self, "MULTITEXT")
   local clipboard = iup.clipboard{text = multitext.selectedtext}
   clipboard:destroy()
 end
 
-function btn_copy:action()
-  item_copy:action()
-end
-
 function item_paste:action()
-  local multitext = iup.GetDialogChild(self, "MULTITEXT")
   local clipboard = iup.clipboard{}
   multitext.insert = clipboard.text
   clipboard:destroy()
   return iup.IGNORE  -- avoid system processing for hot keys, to correctly parse line feed
 end
 
-function btn_paste:action()
-  return item_paste:action()
-end
-
 function item_cut:action()
-  local multitext = iup.GetDialogChild(self, "MULTITEXT")
   local clipboard = iup.clipboard{text = multitext.selectedtext}
   multitext.selectedtext = ""
   clipboard:destroy()
 end
 
-function btn_cut:action()
-  return item_cut:action()
-end
-
 function item_delete:action()
-  local multitext = iup.GetDialogChild(self, "MULTITEXT")
   multitext.selectedtext = ""
 end
 
 function item_select_all:action()
-  local multitext = iup.GetDialogChild(self, "MULTITEXT")
   iup.SetFocus(multitext)
   multitext.selection = "ALL"
+end
+
+function item_font:action()
+  local font = multitext.font
+  local fontdlg = iup.fontdlg{value = font, parentdialog=iup.GetDialog(self)}
+
+  fontdlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
+
+  if (tonumber(fontdlg.status) == 1) then
+    multitext.font = fontdlg.value
+    config:SetVariable("MainWindow", "Font", fontdlg.value)
+  end
+
+  fontdlg:destroy()
+end
+
+function item_toolbar:action()
+  set_bar_visibility(self, toolbar_hb)
+  config:SetVariable("MainWindow", "Toolbar", item_toolbar.value)
+end
+
+function item_statusbar:action()
+  set_bar_visibility(self, lbl_statusbar)
+  config:SetVariable("MainWindow", "Statusbar", item_statusbar.value)
 end
 
 function item_help:action()
@@ -404,177 +614,36 @@ function item_about:action()
 end
 
 
-function create_main_dialog()
-  local multitext = iup.text{
-    multiline="YES", 
-    expand="YES", 
-    name="multitext", 
-    dirty="NO"
-    }
-  function multitext:dropfiles_cb(filename)
-    if (save_check(self)) then
-  	  open_file(self, filename)
-    end
+--********************************** Main (Part 2/2) *****************************************
+
+
+recent_menu = iup.menu{}
+
+file_menu = iup.menu{
+  item_new,
+  item_open,
+  item_save,
+  item_saveas,
+  item_revert,
+  iup.separator{},
+  iup.submenu{title="Recent &Files", recent_menu},
+  item_exit
+  }
+
+function file_menu:open_cb()
+  if (multitext.dirty) then
+    item_save.active = "YES"
+  else
+    item_save.active = "NO"
   end
-  function multitext:valuechanged_cb()
-    self.dirty = "YES"
+  if (multitext.dirty and multitext.filename) then
+    item_revert.active = "YES"
+  else
+    item_revert.active = "NO"
   end
-  function multitext:caret_cb(lin, col, pos)
-    lbl_statusbar.title = "Lin "..lin..", Col "..col
-  end
+end
 
-  local lbl_statusbar = iup.label{title = "Lin 1, Col 1", name = "STATUSBAR", expand = "HORIZONTAL", padding = "10x5"}
-
-  local item_new = iup.item{title = "New\tCtrl+N", image = "IUP_FileNew"}
-  function item_new:action()
-    if save_check(self) then
-  	  new_file()
-    end
-  end
-
-  local btn_new = iup.button{image = "IUP_FileNew", flat = "Yes"}
-  function btn_new:action()
-    item_new:action()
-  end
-
-  local item_open = iup.item{title = "&Open...\tCtrl+O", image = "IUP_FileOpen"}
-  function item_open:action()
-    local multitext = iup.GetDialogChild(self, "MULTITEXT")
-    if save_check(self) then
-      local filedlg = iup.filedlg{dialogtype = "OPEN", filter = "*.txt", filterinfo = "Text Files", parentidialog = iup.GetDialog(self)}
-      filedlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
-      if (filedlg.status ~= "-1") then
-        multitext.dirty = false
-        open_file(filedlg.value)
-      end
-      filedlg:destroy()
-    end
-  end
-
-  local btn_open = iup.button{imagem = "IUP_FileOpen", flat = "Yes"}
-  function btn_open:action()
-    item_open:action()
-  end
-
-  local item_save = iup.item{title = "Save\tCtrl+S", name = "ITEM_SAVE", image = "IUP_FileSave"}
-  function item_save:action()
-    local multitext = iup.GetDialogChild(self, "MULTITEXT")
-    if (not multitext.filename) then
-      item_saveas:action()
-    else
-      -- test again because in can be called using the hot key
-      if (multitext.dirty) then
-        local ifile = io.open(multitext.filename, "w")
-        ifile:write(multitext.value)
-        ifile:close()
-        multitext.dirty = "NO"
-      end
-    end
-  end
-
-  local btn_save = iup.button{image = "IUP_FileSave", flat = "Yes"}
-  function btn_save:action()
-    item_save:action()
-  end
-
-  local item_saveas = iup.item{title = "Save &As...", name = "ITEM_SAVEAS"}
-  function item_saveas:action()
-    local multitext = iup.GetDialogChild(self, "MULTITEXT")
-    local filedlg = iup.filedlg{dialogtype = "SAVE", filter = "*.txt", filterinfo = "Text Files", parentdialog = iup.GetDialog(self)}
-
-    filedlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
-
-    if (filedlg.status ~= "-1") then
-      local ifile = io.open(filedlg.value, "w")
-      local config = multitext.config
-      ifile:write(multitext.value)
-      ifile:close()
-      config:RecentUpdate(filedlg.value)
-      multitext.dirty = "NO"
-    end
-    filedlg:destroy()
-  end
-
-  local item_revert = iup.item{title = "Revert", name = "ITEM_REVERT"}
-  function item_revert:action()
-    open_file(multitext.filename)
-  end
-
-  local item_exit = iup.item{title = "E&xit"}
-  function item_exit:action()
-    local dlg = iup.GetDialog(self)
-    local config = dlg.config
-
-    if (not save_check(self)) then
-      return iup.IGNORE  -- to abort the CLOSE_CB callback
-    end
-    config:DialogClosed(dlg, "MainWindow")
-    config:Save()
-    config:destroy()
-    return iup.CLOSE
-  end
-
-  local item_find = iup.item{title = "&Find...\tCtrl+F", image = "IUP_EditFind"}
-  local item_find_next = iup.item{title = "Find &Next\tF3", name = "ITEM_FINDNEXT"}
-  local btn_find = iup.button{image = "IUP_EditFind", flat = "Yes"}
-  local item_cut = iup.item{title = "Cut\tCtrl+X", name = "ITEM_CUT", image = "IUP_EditCut"}
-  local item_copy = iup.item{title = "Copy\tCtrl+C", name = "ITEM_CUT", image = "IUP_EditCopy"}
-  local item_paste = iup.item{title = "Paste\tCtrl+V", name = "ITEM_PASTE", image = "IUP_EditPaste"}
-  local item_delete = iup.item{title = "Delete\tDel", image = "IUP_EditErase", name = "ITEM_DELETE"}
-  local item_select_all = iup.item{title = "Select All\tCtrl+A"}
-
-  local btn_cut = iup.button{image = "IUP_EditCut", flat = "Yes"}
-  local btn_copy = iup.button{image =  "IUP_EditCopy", flat = "Yes"}
-  local btn_paste = iup.button{image = "IUP_EditPaste", flat = "Yes"}
-
-  local toolbar_hb = iup.hbox{
-    btn_new,
-    btn_open,
-    btn_save,
-    iup.label{separator="VERTICAL"},
-    btn_cut,
-    btn_copy,
-    btn_paste,
-    iup.label{separator="VERTICAL"},
-    btn_find}
-
-  local item_toolbar = iup.item{title="&Toobar..."}
-  local item_statusbar = iup.item{title="&Statusbar..."}
-  local item_goto = iup.item{title="&Go To...\tCtrl+G"}
-  local item_font = iup.item{title="&Font..."}
-  local item_help = iup.item{title="&Help..."}
-  local item_about = iup.item{title="&About..."}
-
-  local recent_menu = iup.menu{}
-
-  local file_menu = iup.menu{
-    item_new,
-    item_open,
-    item_save,
-    item_saveas,
-    item_revert,
-    iup.separator{},
-    iup.submenu{title="Recent &Files", recent_menu},
-    item_exit
-    }
-
-  function file_menu:open_cb()
-    --local item_revert = iup.GetDialogChild(self, "ITEM_REVERT")
-    --local item_save = iup.GetDialogChild(self, "ITEM_SAVE")
-    --local multitext = iup.GetDialogChild(self, "MULTITEXT")
-    if (multitext.dirty) then
-      item_save.active = "YES"
-    else
-      item_save.active = "NO"
-    end
-    if (multitext.dirty and multitext.filename) then
-      item_revert.active = "YES"
-    else
-      item_revert.active = "NO"
-    end
-  end
-
-  local edit_menu = iup.menu{
+edit_menu = iup.menu{
     item_cut,
     item_copy,
     item_paste,
@@ -588,129 +657,138 @@ function create_main_dialog()
     item_select_all
     }
 
-  function edit_menu:open_cb()
-    local find_dlg = self.find_dialog
-    local item_paste = iup.GetDialogChild(self, "ITEM_PASTE")
-    local item_cut = iup.GetDialogChild(self, "ITEM_CUT")
-    local item_delete = iup.GetDialogChild(self, "ITEM_DELETE")
-    local item_copy = iup.GetDialogChild(self, "ITEM_COPY")
-    local item_find_next = iup.GetDialogChild(self, "ITEM_FINDNEXT")
-    local multitext = iup.GetDialogChild(self, "MULTITEXT")
-    local clipboard = iup.clipboard{}
+function edit_menu:open_cb()
+  local clipboard = iup.clipboard{}
+  if (not clipboard.textavailable) then
+    item_paste.active = "NO"
+  else
+    item_paste.active = "YES"
+  end
+  clipboard:destroy()
 
-    if (not clipboard.textavailable) then
-      item_paste.active = "NO"
-    else
-      item_paste.active = "YES"
-    end
+  if (not multitext.selectedtext) then
+    item_cut.active = "NO"
+    item_delete.active = "NO"
+    item_copy.active = "NO"
+  else
+    item_cut.active = "YES"
+    item_delete.active = "YES"
+    item_copy.active = "YES"
+  end
 
-    if (not multitext.selectedtext) then
-      item_cut.active = "NO"
-      item_delete.active = "NO"
-      item_copy.active = "NO"
-    else
-      item_cut.active = "YES"
-      item_delete.active = "YES"
-      item_copy.active = "YES"
-    end
-
-    if (find_dlg) then
-      local txt = iup.GetDialogChild(find_dlg, "FIND_TEXT")
-      if (txt) and (txt.value ~= "") then
-        item_find_next.active = "YES"
-      else
-        item_find_next.active = "NO"
-      end
+  if (find_dlg) then
+    local find_txt = find_dlg.find_txt
+    if (find_txt) and (find_txt.value ~= "") then
+      item_find_next.active = "YES"
     else
       item_find_next.active = "NO"
     end
-
-    clipboard:destroy()
-  end
-
-  local format_menu = iup.menu{
-    item_font}
-  local view_menu = iup.menu{
-    item_toolbar,
-    item_statusbar}
-  local help_menu = iup.menu{
-    item_help,
-    item_about}
-
-  local sub_menu_file = iup.submenu{title = "&File", file_menu}
-  local sub_menu_edit = iup.submenu{title = "&Edit", edit_menu}
-  local sub_menu_format = iup.submenu{title = "F&ormat", format_menu}
-  local sub_menu_view = iup.submenu{title = "&View", view_menu}
-  local sub_menu_help = iup.submenu{title = "&Help", help_menu}
-
-  local menu = iup.menu{
-    sub_menu_file,
-    sub_menu_edit,
-    sub_menu_format,
-    sub_menu_view,
-    sub_menu_help}
-
-  local vbox = iup.vbox{
-    toolbar_hb,
-    multitext,
-    lbl_statusbar}
-
-  local dlg = iup.dialog{
-    vbox, menu=menu}
-
-  function dlg:dropfiles_cb(filename)
-    if (save_check(self)) then
-  	  open_file(self, filename)
-    end
-  end
-  function dlg:k_any(c)
-    if (c == iup.K_cN) then
-      item_new:action()
-    elseif (c == iup.K_cO) then
-      item_open:action()
-    elseif (c == iup.K_cS) then
-      item_save:action()
-    elseif (c == iup.K_cF) then
-      item_find:action()
-    elseif (c == iup.K_cG) then
-      item_goto:action()
-    elseif (c == iup.K_F3) then
-      find_next_action_cb()
-    elseif (c == iup.K_cF3) then
-      selection_find_next_action_cb()
-    elseif (c == iup.K_cV) then
-      item_paste:action()
-    end
-    return iup.DEFAULT
-  end
-
-  return dlg
-end
-
-config = iup.config{}
-config.app_name = "simple_notepad"
-config:Load()
-
-function config:recent_cb()
-  if save_check(self) then
-    open_file(item_recent.title)
+  else
+    item_find_next.active = "NO"
   end
 end
 
-local dlg = create_main_dialog()
+format_menu = iup.menu{item_font}
+view_menu = iup.menu{item_toolbar, item_statusbar}
+help_menu = iup.menu{item_help, item_about}
 
-dlg:showrxy(iup.CENTERPARENT, iup.CENTERPARENT)
-dlg.usersize = nil -- remove minimum size restriction
+sub_menu_file = iup.submenu{file_menu, title = "&File"}
+sub_menu_edit = iup.submenu{edit_menu, title = "&Edit"}
+sub_menu_format = iup.submenu{format_menu, title = "F&ormat"}
+sub_menu_view = iup.submenu{title = "&View", view_menu}
+sub_menu_help = iup.submenu{help_menu, title = "&Help"}
+
+menu = iup.menu{
+  sub_menu_file, 
+  sub_menu_edit, 
+  sub_menu_format, 
+  sub_menu_view, 
+  sub_menu_help,
+  }
+
+btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes", action = item_open.action }
+btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_save.action}
+btn_find = iup.button{image = "IUP_EditFind", flat = "Yes", action = item_find.action}
+btn_cut = iup.button{image = "IUP_EditCut", flat = "Yes", action = item_cut.action}
+btn_copy = iup.button{image =  "IUP_EditCopy", flat = "Yes", action = item_copy.action}
+btn_paste = iup.button{image = "IUP_EditPaste", flat = "Yes", action = item_paste.action}
+
+toolbar_hb = iup.hbox{
+  btn_new,
+  btn_open,
+  btn_save,
+  iup.label{separator="VERTICAL"},
+  btn_cut,
+  btn_copy,
+  btn_paste,
+  iup.label{separator="VERTICAL"},
+  btn_find, 
+  margin = "5x5",
+  gap = 2,
+}
+
+show_toolbar = config:GetVariableDef("MainWindow", "Toolbar", "ON")
+if (show_toolbar == "OFF") then
+  item_toolbar.value = "OFF"
+  toolbar_hb.floating = "YES"
+  toolbar_hb.visible = "NO"
+end
+
+vbox = iup.vbox{
+  toolbar_hb,
+  multitext,
+  lbl_statusbar,
+}
+
+dlg = iup.dialog{
+  vbox,
+  title = "Simple Notepad",
+  size = "HALFxHALF",
+  menu = menu,
+  close_cb = item_exit.action,
+  multitext = multitext,
+  dropfiles_cb = multitext.dropfiles_cb,
+}
+
+function dlg:k_any(c)
+  if (c == iup.K_cN) then
+    item_new:action()
+  elseif (c == iup.K_cO) then
+    item_open:action()
+  elseif (c == iup.K_cS) then
+    item_save:action()
+  elseif (c == iup.K_cF) then
+    item_find:action()
+  elseif (c == iup.K_cG) then
+    item_goto:action()
+  elseif (c == iup.K_F3) then
+    item_find_next:action()
+  elseif (c == iup.K_cF3) then
+    selection_find_next()
+  elseif (c == iup.K_cV) then
+    item_paste:action()  
+    return iup.IGNORE -- replace system processing
+  end
+end
+
+config:RecentInit(recent_menu, 10)
+
+-- parent for pre-defined dialogs in closed functions (IupMessage and IupAlarm)
+iup.SetGlobal("PARENTDIALOG", iup.SetHandleName(dlg))
+
+dlg:showxy(iup.CENTER,iup.CENTER)
+dlg.usersize = nil
 
 -- initialize the current file
 new_file(dlg)
 
 -- open a file from the command line (allow file association in Windows)
-if (argc > 1 and argv[1]) then
-  filename = argv[1]
-  open_file(filename)
+if (arg and arg[1]) then
+  filename = arg[1]
+  open_file(dlg, filename)
 end
 
+-- to be able to run this script inside another context
 if (iup.MainLoopLevel()==0) then
   iup.MainLoop()
   iup.Close()

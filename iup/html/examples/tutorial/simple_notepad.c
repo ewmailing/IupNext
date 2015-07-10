@@ -211,7 +211,7 @@ int save_check(Ihandle* ih)
   return 1;
 }
 
-void toggle_visibility(Ihandle* item, Ihandle* ih)
+void set_bar_visibility(Ihandle* item, Ihandle* ih)
 {
   if (IupGetInt(item, "VALUE"))
   {
@@ -227,6 +227,39 @@ void toggle_visibility(Ihandle* item, Ihandle* ih)
   }
 
   IupRefresh(ih);  /* refresh the dialog layout */
+}
+
+void set_find_replace_visibility(Ihandle* find_dlg, int show_replace)
+{
+  Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
+  Ihandle* replace_lbl = IupGetDialogChild(find_dlg, "REPLACE_LABEL");
+  Ihandle* replace_bt = IupGetDialogChild(find_dlg, "REPLACE_BUTTON");
+
+  if (show_replace)
+  {
+    IupSetAttribute(replace_txt, "VISIBLE", "Yes");
+    IupSetAttribute(replace_lbl, "VISIBLE", "Yes");
+    IupSetAttribute(replace_bt, "VISIBLE", "Yes");
+    IupSetAttribute(replace_txt, "FLOATING", "No");
+    IupSetAttribute(replace_lbl, "FLOATING", "No");
+    IupSetAttribute(replace_bt, "FLOATING", "No");
+
+    IupSetAttribute(find_dlg, "TITLE", "Replace");
+  }
+  else
+  {
+    IupSetAttribute(replace_txt, "FLOATING", "Yes");
+    IupSetAttribute(replace_lbl, "FLOATING", "Yes");
+    IupSetAttribute(replace_bt, "FLOATING", "Yes");
+    IupSetAttribute(replace_txt, "VISIBLE", "No");
+    IupSetAttribute(replace_lbl, "VISIBLE", "No");
+    IupSetAttribute(replace_bt, "VISIBLE", "No");
+
+    IupSetAttribute(find_dlg, "TITLE", "Find");
+  }
+
+  IupSetAttribute(find_dlg, "SIZE", NULL);  /* force a dialog resize on the IupRefresh */
+  IupRefresh(find_dlg);
 }
 
 
@@ -585,35 +618,6 @@ int find_close_action_cb(Ihandle* bt_close)
   return IUP_DEFAULT;
 }
 
-void set_find_replace_visibility(Ihandle* find_dlg, int show_replace)
-{
-  Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
-  Ihandle* replace_lbl = IupGetDialogChild(find_dlg, "REPLACE_LABEL");
-  Ihandle* replace_bt = IupGetDialogChild(find_dlg, "REPLACE_BUTTON");
-
-  if (show_replace)
-  {
-    IupSetAttribute(replace_txt, "VISIBLE", "Yes");
-    IupSetAttribute(replace_lbl, "VISIBLE", "Yes");
-    IupSetAttribute(replace_bt, "VISIBLE", "Yes");
-    IupSetAttribute(replace_txt, "FLOATING", "No");
-    IupSetAttribute(replace_lbl, "FLOATING", "No");
-    IupSetAttribute(replace_bt, "FLOATING", "No");
-  }
-  else
-  {
-    IupSetAttribute(replace_txt, "FLOATING", "Yes");
-    IupSetAttribute(replace_lbl, "FLOATING", "Yes");
-    IupSetAttribute(replace_bt, "FLOATING", "Yes");
-    IupSetAttribute(replace_txt, "VISIBLE", "No");
-    IupSetAttribute(replace_lbl, "VISIBLE", "No");
-    IupSetAttribute(replace_bt, "VISIBLE", "No");
-  }
-
-  IupSetAttribute(IupGetDialog(replace_txt), "SIZE", NULL);  /* force a dialog resize on the IupRefresh */
-  IupRefresh(replace_txt);
-}
-
 Ihandle* create_find_dialog(Ihandle *multitext)
 {
   Ihandle *box, *bt_next, *bt_close, *txt, *tgl_case, *find_dlg;
@@ -813,7 +817,7 @@ int item_toolbar_action_cb(Ihandle* item_toolbar)
   Ihandle* toolbar = IupGetChild(IupGetParent(multitext), 0);
   Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
 
-  toggle_visibility(item_toolbar, toolbar);
+  set_bar_visibility(item_toolbar, toolbar);
 
   IupConfigSetVariableStr(config, "MainWindow", "Toolbar", IupGetAttribute(item_toolbar, "VALUE"));
   return IUP_DEFAULT;
@@ -825,7 +829,7 @@ int item_statusbar_action_cb(Ihandle* item_statusbar)
   Ihandle* statusbar = IupGetBrother(multitext);
   Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
 
-  toggle_visibility(item_statusbar, statusbar);
+  set_bar_visibility(item_statusbar, statusbar);
 
   IupConfigSetVariableStr(config, "MainWindow", "Statusbar", IupGetAttribute(item_statusbar, "VALUE"));
   return IUP_DEFAULT;
