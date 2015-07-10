@@ -499,7 +499,7 @@ items. Otherwise, you can enable all items.</p>
 <p> In this section, we will see a little more of file management. The example will show you how to handle drag and drop support, command line support, and how to check if the file needs to be saved before taking another action.</p>
 
 <p> First we will find some new auxiliary functions called <strong>str_filetitle</strong>, <strong>new_file</strong>, 
-<strong>open_file</strong>and <strong>save_check</strong>. 
+<strong>open_file</strong>, <strong>save_file</strong>, <strong>saveas_file</strong> and <strong>save_check</strong>. 
 </p>
 
 <p><strong>str_filetitle</strong> will be used to append the name of the file 
@@ -510,24 +510,20 @@ way we did with FILENAME) to check if the multitext has changed and has not been
 Every time the multitext text is changed, the callback 
 VALUECHANGED_CB, named multitext_valuechanged_cb, is called to set DIRTY as "YES". This attribute will allow us to identify if the content of 
 the multitext has changed and needs to be saved. <strong>open_file</strong> reads the file and sets almost the same attributes as 
-<strong>new_file</strong>, except by the fact that it uses <strong>str_filetitle</strong> to set application title with the filename, and it also sets 
-the file content into multitext VALUE attribute. Notice that, like <strong>new_file</strong>, it also sets DIRTY to "NO". 
-Since we have just opened the 
-file, it doesn't need to be saved. Finally, <strong>save_check</strong> uses the DIRTY attribute to check if the file needs to be saved. 
-We used <a href="../func/iupgetattributes.html">
+<strong>new_file</strong>, except by the fact that it uses <strong>str_filetitle</strong> to set application title with the filename, and it 
+also sets the file content into multitext VALUE attribute. Notice that, like <strong>new_file</strong>, it also sets DIRTY to "NO". 
+Since we have just opened the file, it doesn't need to be saved. Also, <strong>open_file</strong> calls 
+<a href="../func/iupconfig.h"><strong>IupConfigRecentUpdate</strong></a> to include the file we just opened in the recent files list. 
+<strong>save_file </strong>calls write_file to save the current file and sets the DIRTY attribute to "NO" while <strong>saveas_file</strong> 
+does the same but replacing the current opened file for the new edited one updating the recent list with the new file. Finally, 
+<strong>save_check</strong> uses the DIRTY attribute to check if the file needs to be saved. We used <a href="../func/iupgetattributes.html">
 <strong>IupGetInt</strong></a> to automatically convert DIRTY from "YES" or "NO" to 1 or 0. If it's 1, we then call a predefined dialog called
-<a href="../dlg/iupalarm.html"><strong>IupAlarm</strong></a> to
-warn the user that the multitext content has changed, and it is not saved. If the user chooses button 1 - "YES", it will call our item_save_action_cb 
-to save the file. If the user chooses button 2 ("No") <strong>save_check</strong> 
-will returns 1 without saving and continue with the application operation, but 
-if user chooses button 3 ("Cancel") <strong>save_check</strong> will return 0 
-meaning that no further action should be taken.</p>
+<a href="../dlg/iupalarm.html"><strong>IupAlarm</strong></a> to warn the user that the multitext content has changed, and it is not saved. 
+If the user chooses button 1 - "YES", it will call our item_save_action_cb to save the file. If the user chooses button 2 ("No") 
+<strong>save_check</strong> will returns 1 without saving and continue with the application operation, but if user chooses button 3 ("Cancel")
+<strong>save_check</strong> will return 0 meaning that no further action should be taken.</p>
 
-<p> You should have noticed the item_save_action_cb function declaration just before the <strong>save_check</strong>. This is necessary to 
-avoid a warning, since <strong>save_check</strong> is using item_save_action_cb inside its code, although this function still does not exist in the
-code. It will appear a few lines bellow.</p> 
-
-<p> We then reach the callbacks section, this time with a lot of new callbacks. First is <strong>dropfiles_cb</strong> that will handle
+<p> We then reach the callbacks section. This time we added several new callbacks. First is <strong>dropfiles_cb</strong> that will handle
 what happens when a file is dropped inside the application. It is a very simple callback, it simply checks if the current multitext needs to
 be saved with <strong>save_check</strong>, and it calls <strong>open_file</strong> to open the file that came as a parameter. What is 
 important here is to notice that we associated this callback with two different DROPFILE_CB. One for the multitext and one for the main 
@@ -535,27 +531,29 @@ dialog. The reason is that the user may drop the file in any place inside the di
 , except by the multiline. So, if we want the file to be opened, when it is dropped inside the multiline, it's necessary to set 
 the multitext DROPFILE_CB callback as well.</p>
 
-<p> The next one is a multitext_valuechanged_cb that, as we mentioned before, is called when the text inside multiline changes, while it sets the 
-DIRTY attribute as "YES". It is set to the multitext VALUECHANGED_CB in main function.<p> Next comes file_menu_open_cb, which is a function called when the user clicks on the file menu, 
-but before it is displayed to the user. We will use it to enable or disable the save and 
-the revert items, depending on the DIRTY attribute value.</p>
+<p> The next one is a multitext_valuechanged_cb that, as we mentioned before, is called when the 
+user changes the text inside multiline. It simply sets 
+the DIRTY attribute as "YES". It is set as the multitext VALUECHANGED_CB 
+callback in main function.
 
-<p> We have also changed item_recent_cb, which now checks if the current multiline content needs to be saved and which calls our new function 
-<strong>open_file</strong>. Another new callback is item_new_action_cb that does 
-exactly the same, but calls <strong>new_file</strong> instead.
-item_open_action_cb has also been changed to use <strong>save_check</strong> and <strong>open_file</strong>, as well as item_exit_action_cb. 
-</p>
+<p> Next comes file_menu_open_cb, which is a function called when the user clicks on the file menu, but before it is displayed to the user. 
+We will use it to enable or disable the save and the revert items, depending on the DIRTY attribute value.</p>
 
-<p> Two more callbacks were created: item_save_action_cb and item_revert_action_cb. item_save_action_cb saves 
-the text in a file using the current filename we stored in the FILENAME 
-attribute, without displaying the save as dialog. If there is no current filename, it calls item_saveas_action_cb, so the user can choose a file.
-item_revert_action_cb reopens the current file, discarding any changes made to the multiline content.</p>
+<p> We have also changed config_recent_cb, that now checks if the current multiline content needs to be saved and calls our new 
+function <strong>open_file</strong>. Another new callback is item_new_action_cb that does the same, but calls <strong>new_file</strong> 
+instead. item_open_action_cb has also been changed to use <strong>save_check</strong> and <strong>open_file</strong>, as well as 
+item_exit_action_cb.
 
-<p> In the main function, we have new menu items: item_new, item_save, and item_revert. Also we have new buttons: btn_cut, *btn_copy, *btn_paste, and *btn_new. 
-Multiline has two new callbacks: VALUECHANGED_CB and DROPFILES_CB. And we made a call to <strong>new_file</strong> to 
-initialize the application state, as a 
-new file has just been created. Finally, in the next line, we use argc and argv to check if the user tried to open a file from 
-the command line, if so, we call <strong>open_file</strong>.</p> 
+<p> Two more callbacks were created: item_save_action_cb and item_revert_action_cb. item_save_action_cb saves the text in a file using the 
+current filename we stored in the FILENAME attribute, without displaying the save as dialog. If there is no current filename, it calls 
+item_saveas_action_cb, so the user can choose a file. item_revert_action_cb reopens the current file, discarding any changes made to the 
+multiline content.</p>
+
+<p> In the main function, we have new menu items: item_new, item_save, and item_revert. Also we have new buttons: btn_cut, *btn_copy, i
+*btn_paste, and *btn_new. Multiline has the new DIRTY attribute and two new callbacks: VALUECHANGED_CB and DROPFILES_CB. And we 
+made a call to <strong>new_file</strong> to initialize the application state, as a new file has just been created. Also the callbacks where
+rearranged to appear next to its items to made the code more clear. Finally, in the next line, 
+we use argc and argv to check if the user tried to open a file from the command line, if so, we call <strong>open_file</strong>.</p> 
 
 <p> That's all for file handling. Let's proceed to the next section, where we will work with IUP dynamic layout.</p>
 
@@ -622,7 +620,7 @@ This function shows the IUP website, but it can also show a local HTML file. In 
 <p>That's all for chapter three. If you reached this lines, you are able to 
 build a simple, but fully featured Notepad application using lots of IUP 
 resources. </p>
-<p>During this chapter we went from 30 lines of code to 1100 lines. Only for our 
+<p>During this chapter we went from 30 lines of code to 1100 lines (800 in Lua). Only for our 
 simple notepad with file read and write, clipboard access, text search, and other 
 features. </p>
 
