@@ -27,6 +27,7 @@ int iupkey_open(lua_State *L);  /* does nothing, kept for backward compatibility
 int iuplua_close(lua_State * L);
 
 /* utilities */
+int iuplua_isihandle(lua_State *L, int pos);
 Ihandle* iuplua_checkihandle(lua_State *L, int pos);
 void iuplua_pushihandle(lua_State *L, Ihandle *n);
 int iuplua_dofile(lua_State *L, const char *filename);
