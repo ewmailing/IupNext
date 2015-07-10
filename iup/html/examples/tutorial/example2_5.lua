@@ -1,23 +1,23 @@
 require("iuplua")
 
 function btn_exit_cb(self)
-	-- Exits the main loop
-	return iup.CLOSE	
+  -- Exits the main loop
+  return iup.CLOSE  
 end
 
 label = iup.label{title = "Hello world from IUP."}
 button = iup.button{title = "OK"}
 
 vbox = iup.vbox{
-	label,
-	button,
-	alignment = "acenter",
-	gap = "10",
-	margin = "10x10"
+  label,
+  button,
+  alignment = "acenter",
+  gap = "10",
+  margin = "10x10"
 }
 dlg = iup.dialog{
-	vbox,
-	title = "Hello World 5"
+  vbox,
+  title = "Hello World 5"
 }
 button.action = btn_exit_cb
 

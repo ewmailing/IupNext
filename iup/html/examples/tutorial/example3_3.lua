@@ -32,8 +32,8 @@ function write_file(filename, str)
 end
 
 multitext = iup.text{
-	multiline = "YES",
-	expand = "YES"
+  multiline = "YES",
+  expand = "YES"
 }
 
 item_open = iup.item{title="Open..."}
@@ -95,7 +95,7 @@ function item_about:action()
 end
 
 function item_exit:action()
-	return iup.CLOSE
+  return iup.CLOSE
 end
 
 file_menu = iup.menu{item_open,item_saveas,iup.separator{},item_exit}
@@ -112,14 +112,14 @@ menu = iup.menu{
   }
 
 vbox = iup.vbox{
-	multitext
+  multitext
 }
 
 dlg = iup.dialog{
-	vbox,
-	title = "Simple Notepad",
-	size = "QUARTERxQUARTER",
-	menu = menu
+  vbox,
+  title = "Simple Notepad",
+  size = "QUARTERxQUARTER",
+  menu = menu
 }
 
 dlg:showxy(iup.CENTER,iup.CENTER)

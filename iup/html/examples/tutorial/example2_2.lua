@@ -2,8 +2,8 @@ require("iuplua")
 
 label = iup.label{title = "Hello world from IUP."}
 dlg = iup.dialog{
-	iup.vbox{label},
-	title = "Hello World 2",
+  iup.vbox{label},
+  title = "Hello World 2",
 }
 
 dlg:showxy(iup.CENTER,iup.CENTER)

@@ -1,17 +1,17 @@
 require("iuplua")
 
 multitext = iup.text{
-	multiline = "YES",
-	expand = "YES"
+  multiline = "YES",
+  expand = "YES"
 }
 vbox = iup.vbox{
-	multitext
+  multitext
 }
 
 dlg = iup.dialog{
-	vbox,
-	title = "Simple Notepad",
-	size = "QUARTERxQUARTER"
+  vbox,
+  title = "Simple Notepad",
+  size = "QUARTERxQUARTER"
 }
 
 dlg:showxy(iup.CENTER,iup.CENTER)
