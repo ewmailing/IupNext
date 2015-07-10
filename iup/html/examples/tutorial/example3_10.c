@@ -614,6 +614,7 @@ int item_delete_action_cb(Ihandle* item_delete)
 int item_select_all_action_cb(Ihandle* item_select_all) 
 {
   Ihandle* multitext = IupGetDialogChild(item_select_all, "MULTITEXT");
+  IupSetFocus(multitext);
   IupSetAttribute(multitext, "SELECTION", "ALL");
   return IUP_DEFAULT;
 }

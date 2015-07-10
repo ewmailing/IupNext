@@ -159,7 +159,6 @@ void open_file(Ihandle* ih, const char* filename)
     IupSetfAttribute(dlg, "TITLE", "%s - Simple Notepad", str_filetitle(filename));
     IupSetStrAttribute(multitext, "FILENAME", filename);
     IupSetAttribute(multitext, "DIRTY", "NO");
-    
     IupSetStrAttribute(multitext, "VALUE", str);
 
     IupConfigRecentUpdate(config, filename);

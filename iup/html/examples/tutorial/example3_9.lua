@@ -468,7 +468,6 @@ edit_menu = iup.menu{
     item_delete,
     iup.separator{},
     item_find,
-    item_replace,
     item_goto,
     iup.separator{},
     item_select_all

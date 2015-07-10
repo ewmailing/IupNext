@@ -515,6 +515,8 @@ int find_next_action_cb(Ihandle* bt_next)
     IupMessage("Warning", "Text not found.");
 
 
+
+
   return IUP_DEFAULT;
 }
 
@@ -531,6 +533,7 @@ int item_find_action_cb(Ihandle* item_find)
   {
     Ihandle* multitext = IupGetDialogChild(item_find, "MULTITEXT");
     Ihandle *box, *bt_next, *bt_close, *txt, *tgl_case;
+
 
     txt = IupText(NULL);
     IupSetAttribute(txt, "NAME", "FIND_TEXT");
@@ -615,6 +618,7 @@ int item_delete_action_cb(Ihandle* item_delete)
 int item_select_all_action_cb(Ihandle* item_select_all) 
 {
   Ihandle* multitext = IupGetDialogChild(item_select_all, "MULTITEXT");
+  IupSetFocus(multitext);
   IupSetAttribute(multitext, "SELECTION", "ALL");
   return IUP_DEFAULT;
 }
