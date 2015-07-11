@@ -614,8 +614,7 @@ config:RecentInit(recent_menu, 10)
 -- parent for pre-defined dialogs in closed functions (IupMessage)
 iup.SetGlobal("PARENTDIALOG", iup.SetHandleName(dlg))
 
-dlg:showxy(iup.CENTER,iup.CENTER)
-dlg.usersize = nil
+config:DialogShow(dlg, "MainWindow")
 
 -- initialize the current file
 new_file(dlg)

@@ -548,8 +548,7 @@ int main(int argc, char **argv)
 
   IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
 
-  IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
-  IupSetAttribute(dlg, "USERSIZE", NULL);
+  IupConfigDialogShow(config, dlg, "MainWindow");
 
   IupMainLoop();
 

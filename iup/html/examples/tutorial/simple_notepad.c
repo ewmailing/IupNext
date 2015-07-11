@@ -1133,9 +1133,8 @@ int main(int argc, char **argv)
 
   dlg = create_main_dialog(config);
 
-  /* show the dialog */
-  IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
-  IupSetAttribute(dlg, "USERSIZE", NULL);  /* remove minimum size restriction */
+  /* show the dialog at the last position, with the last size */
+  IupConfigDialogShow(config, dlg, "MainWindow");
 
   /* initialize the current file */
   new_file(dlg);

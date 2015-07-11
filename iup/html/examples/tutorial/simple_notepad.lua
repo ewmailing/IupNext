@@ -753,9 +753,8 @@ if (show_toolbar == "OFF") then
   toolbar_hb.visible = "NO"
 end
 
--- show the dialog
-dlg:showxy(iup.CENTER,iup.CENTER)
-dlg.usersize = nil
+-- show the dialog at the last position, with the last size
+config:DialogShow(dlg, "MainWindow")
 
 -- initialize the current file
 new_file(dlg)
