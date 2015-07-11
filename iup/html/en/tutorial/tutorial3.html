@@ -577,7 +577,7 @@ menu, with two new items. One for controlling the Toolbar visibility, and anothe
 for controlling the Statusbar visibility. And we use the IupConfig to store this 
 selection to be persistent between different application executions. </p>
 
-<p> The first change is the inclusion of the function toggle_visibility that handles the
+<p> The first change is the inclusion of the function toggle_bar_visibility that handles the
 changes in visibility in our toolbar and statusbar. 
 When an item in View menu is pressed, if it was checked or, in other words, the bar 
 is visible, 
@@ -588,7 +588,7 @@ call to <strong><a href="../func/iuprefresh.html">IupRefresh</a></strong> to
 recompute the dialog layout.</p>
 
 <p> Next two new callbacks appear: item_toolbar_action_cb and item_statusbar_action_cb. Both
-callbacks are responsible for calling toggle_visibility and calling IupConfigSetVariableStr to store
+callbacks are responsible for calling toggle_bar_visibility and calling IupConfigSetVariableStr to store
 the item status.</p>
 
 <p> The next change will appear only in main function, and it will be the declaration of our new View
@@ -607,7 +607,8 @@ shows an external help by simply calling the <a href="../func/iuphelp.html">
 IupHelp</a> function. It will show an Internet browser in the given page, so the 
 application can display some documentation to the user. In our example, it is 
 just a menu item that activates the item_help_action_cb callback that calls the <strong>IupHelp</strong> function. 
-This function shows the IUP website, but it can also show a local HTML file. In Windows, that function is even more flexible allowing openning any kind of document provided that it is associated with an application.</p>
+This function shows the IUP website, but it can also show a local HTML file. In Windows, that function is even more flexible allowing 
+opening any kind of document provided that it is associated with an application.</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a href="javascript:show_example('3_11', 'example3_11.c')">example3_11.c</a> <a href="../../examples/tutorial/example3_11.c">
