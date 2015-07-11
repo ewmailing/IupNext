@@ -517,7 +517,8 @@ function create_find_dialog()
   end
 
   function bt_find_close:action()
-    iup.Hide(iup.GetDialog(self))  -- do not destroy, just hide
+    config:DialogClosed(find_dlg, "FindDialog")
+    find_dlg:hide()  -- do not destroy, just hide
   end
 
   local box = iup.vbox{
@@ -544,6 +545,7 @@ function create_find_dialog()
     defaultenter = bt_next, 
     defaultesc = bt_close,
     parentdialog = iup.GetDialog(multitext),
+    close_cb = bt_find_close_action,
 
     find_txt = find_txt,
     find_case = find_case,
@@ -561,8 +563,7 @@ function item_find:action()
   end
   set_find_replace_visibility(find_dlg, false)
 
-  -- centerparent first time, next time reuse the last position
-  find_dlg:showxy(iup.CURRENT, iup.CURRENT)
+  config:DialogShow(find_dlg, "FindDialog")
 
   local str = multitext.selectedtext
   if (str and str:len()~=0) then
@@ -577,8 +578,7 @@ function item_replace:action()
   end
   set_find_replace_visibility(find_dlg, true)
 
-  -- centerparent first time, next time reuse the last position
-  find_dlg:showxy(iup.CURRENT, iup.CURRENT)
+  config:DialogShow(find_dlg, "FindDialog")
 
   local str = multitext.selectedtext
   if (str and str:len()~=0) then

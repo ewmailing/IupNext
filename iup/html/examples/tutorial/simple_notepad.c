@@ -612,7 +612,11 @@ int find_replace_action_cb(Ihandle* bt_replace)
 
 int find_close_action_cb(Ihandle* bt_close)
 {
-  IupHide(IupGetDialog(bt_close));  /* do not destroy, just hide */
+  Ihandle* find_dlg = IupGetDialog(bt_close);
+  Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "MULTITEXT");
+  Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
+  IupConfigDialogClosed(config, find_dlg, "FindDialog");
+  IupHide(find_dlg);  /* do not destroy, just hide */
   return IUP_DEFAULT;
 }
 
@@ -662,6 +666,7 @@ Ihandle* create_find_dialog(Ihandle *multitext)
   IupSetAttributeHandle(find_dlg, "DEFAULTENTER", bt_next);
   IupSetAttributeHandle(find_dlg, "DEFAULTESC", bt_close);
   IupSetAttributeHandle(find_dlg, "PARENTDIALOG", IupGetDialog(multitext));
+  IupSetCallback(find_dlg, "CLOSE_CB", (Icallback)find_close_action_cb);
 
   /* Save the multiline to access it from the callbacks */
   IupSetAttribute(find_dlg, "MULTITEXT", (char*)multitext);
@@ -677,6 +682,7 @@ int item_find_action_cb(Ihandle* item_find)
 {
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(item_find, "FIND_DIALOG");
   Ihandle* multitext = IupGetDialogChild(item_find, "MULTITEXT");
+  Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
   char* str;
 
   if (!find_dlg)
@@ -684,8 +690,7 @@ int item_find_action_cb(Ihandle* item_find)
 
   set_find_replace_visibility(find_dlg, 0);
 
-  /* centerparent first time, next time reuse the last position */
-  IupShowXY(find_dlg, IUP_CURRENT, IUP_CURRENT);
+  IupConfigDialogShow(config, find_dlg, "FindDialog");
 
   str = IupGetAttribute(multitext, "SELECTEDTEXT");
   if (str && str[0] != 0)
@@ -701,6 +706,7 @@ int item_replace_action_cb(Ihandle* item_replace)
 {
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(item_replace, "FIND_DIALOG");
   Ihandle* multitext = IupGetDialogChild(item_replace, "MULTITEXT");
+  Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
   char* str;
 
   if (!find_dlg)
@@ -708,8 +714,7 @@ int item_replace_action_cb(Ihandle* item_replace)
 
   set_find_replace_visibility(find_dlg, 1);
 
-  /* centerparent first time, next time reuse the last position */
-  IupShowXY(find_dlg, IUP_CURRENT, IUP_CURRENT);
+  IupConfigDialogShow(config, find_dlg, "FindDialog");
 
   str = IupGetAttribute(multitext, "SELECTEDTEXT");
   if (str && str[0] != 0)
