@@ -349,7 +349,9 @@ set the buttons callbacks to the same callbacks set for the respective menu item
 feasible 
 because the buttons do exactly the same thing as the items representing a 
 short cut to call open, save or find. We also set the FLAT attribute for the 
-buttons so their border is removed, and they will look like toolbar buttons.</p>
+buttons so their border is removed, and they will look like toolbar buttons. We 
+set the CANFOCUS attribute to No for the buttons so they will not receive the 
+keyboard focus as toolbar buttons behave.&nbsp; </p>
 <p>The final change will be the inclusion of toolbar_hb and lbl_statusbar in the vbox 
 that already had our multitext. The toolbar comes first because it is a vbox and we 
 want it above the multitext. lbl_statusbar goes after because we want it bellow the 
@@ -376,7 +378,7 @@ complete table with all keyboard codes available in IUP.</p>
 <p class="example_image"><img alt="" src="example3_6.png"></p>
 
 <p>This example didn't change much. We just added "\tCtr+?" to each menu item 
-that has a hotkey. Character "\t" will take care of aligining our hotkey text to the 
+that has a hotkey. Character "\t" will take care of aligning our hotkey text to the 
 right, and the rest of the string will tell the user which key combinations to 
 press. Note that "?" should be replaced by the key you want.</p>
 <p>A few lines after, we did a few calls to IupSetCallback using key combinations 
@@ -389,6 +391,8 @@ Alt+key combination, for instance Alt+F will activate the File menu. Once the
 menu is opened, use the 'O' key to activate the file Open menu item. Another 
 example is the Alt+F then 'X' key combination to exit the application; many 
 applications have this key combination enabled.</p>
+<p>Finally we add the TIP attribute for the toolbar buttons so they will also 
+show the key combination that activate its feature.</p>
 
 <h3>3.7 <a name="Recent_Config">Recent Files Menu and a Configuration File</a> </h3>
 <p>Many text editors offer a menu item that holds a list of recent files. We will use an IUP resource called <a href="../func/iupconfig.html"><strong>
