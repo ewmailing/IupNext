@@ -140,8 +140,9 @@ will handle the file opening when the user clicks on the Open menu item. For thi
 features that we need to select a file from the file system, and it will also save a 
 lot of work. Inside the callback we create our 
 <A href="../dlg/iupfiledlg.html"><strong>IupFileDlg</strong></a>, and set it to be an 
-&quot;open&quot; dialog with attribute DIALOGTYPE. Also we set FILTER attribute to *.txt and FILTERINFO to "Text Files", since we want our application to 
-handle just text files.</p>
+&quot;open&quot; dialog with attribute DIALOGTYPE. Also we set EXTFILTER attribute to 
+"Text Files|*.txt|All Files|*.*|", since we want our application to 
+handle text files but we leave the option for listing other files.</p>
 
 <p> Now the program calls <A href="../dlg/iuppopup.html"><strong>IupPopup</strong></a>, which is a function similar to 
 <A href="../dlg/iupfiledlg.html"><strong>IupShow</strong></a>, but it restricts the user 
