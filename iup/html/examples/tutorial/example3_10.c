@@ -211,7 +211,7 @@ int save_check(Ihandle* ih)
   return 1;
 }
 
-void toggle_visibility(Ihandle* item, Ihandle* ih)
+void toggle_bar_visibility(Ihandle* item, Ihandle* ih)
 {
   if (IupGetInt(item, "VALUE"))
   {
@@ -646,7 +646,7 @@ int item_toolbar_action_cb(Ihandle* item_toolbar)
   Ihandle* toolbar = IupGetChild(IupGetParent(multitext), 0);
   Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
 
-  toggle_visibility(item_toolbar, toolbar);
+  toggle_bar_visibility(item_toolbar, toolbar);
 
   IupConfigSetVariableStr(config, "MainWindow", "Toolbar", IupGetAttribute(item_toolbar, "VALUE"));
   return IUP_DEFAULT;
@@ -658,7 +658,7 @@ int item_statusbar_action_cb(Ihandle* item_statusbar)
   Ihandle* statusbar = IupGetBrother(multitext);
   Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
 
-  toggle_visibility(item_statusbar, statusbar);
+  toggle_bar_visibility(item_statusbar, statusbar);
 
   IupConfigSetVariableStr(config, "MainWindow", "Statusbar", IupGetAttribute(item_statusbar, "VALUE"));
   return IUP_DEFAULT;
@@ -719,6 +719,8 @@ int main(int argc, char **argv)
     IupSetAttribute(btn_new, "IMAGE", "IUP_FileNew");
     IupSetAttribute(btn_new, "FLAT", "Yes");
     IupSetCallback(btn_new, "ACTION", (Icallback)item_new_action_cb);
+    IupSetAttribute(btn_new, "TIP", "New (Ctrl+N)");
+    IupSetAttribute(btn_new, "CANFOCUS", "No");
 
   item_open = IupItem("&Open...\tCtrl+O", NULL);
     IupSetAttribute(item_open, "IMAGE", "IUP_FileOpen");
@@ -727,6 +729,8 @@ int main(int argc, char **argv)
     IupSetAttribute(btn_open, "IMAGE", "IUP_FileOpen");
     IupSetAttribute(btn_open, "FLAT", "Yes");
     IupSetCallback(btn_open, "ACTION", (Icallback)item_open_action_cb);
+    IupSetAttribute(btn_open, "TIP", "Open (Ctrl+O)");
+    IupSetAttribute(btn_open, "CANFOCUS", "No");
 
   item_save = IupItem("Save\tCtrl+S", NULL);
     IupSetAttribute(item_save, "NAME", "ITEM_SAVE");
@@ -736,6 +740,8 @@ int main(int argc, char **argv)
     IupSetAttribute(btn_save, "IMAGE", "IUP_FileSave");
     IupSetAttribute(btn_save, "FLAT", "Yes");
     IupSetCallback(btn_save, "ACTION", (Icallback)item_save_action_cb);
+    IupSetAttribute(btn_save, "TIP", "Save (Ctrl+S)");
+    IupSetAttribute(btn_save, "CANFOCUS", "No");
 
   item_saveas = IupItem("Save &As...", NULL);
     IupSetAttribute(item_saveas, "NAME", "ITEM_SAVEAS");
@@ -755,6 +761,8 @@ int main(int argc, char **argv)
     IupSetAttribute(btn_find, "IMAGE", "IUP_EditFind");
     IupSetAttribute(btn_find, "FLAT", "Yes");
     IupSetCallback(btn_find, "ACTION", (Icallback)item_find_action_cb);
+    IupSetAttribute(btn_find, "TIP", "Find (Ctrl+F)");
+    IupSetAttribute(btn_find, "CANFOCUS", "No");
 
   item_cut = IupItem("Cut\tCtrl+X", NULL);
     IupSetAttribute(item_cut, "NAME", "ITEM_CUT");

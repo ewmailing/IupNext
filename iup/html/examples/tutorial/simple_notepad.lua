@@ -115,7 +115,7 @@ function save_check(ih)
   return true
 end
 
-function set_bar_visibility(item, bar)
+function toggle_bar_visibility(item, bar)
   if (item.value == "ON") then
     bar.floating = "YES"
     bar.visible = "NO"
@@ -160,6 +160,7 @@ end
 
 --********************************** Main (Part 1/2) *****************************************
 
+-- create all the elements that will have callbacks in Lua prior to callbacks definition
 
 config = iup.config{}
 config.app_name = "simple_notepad"
@@ -173,39 +174,72 @@ multitext = iup.text{
   config = config,
   dirty = nil,
 }
- 
-font = config:GetVariable("MainWindow", "Font")
-if (font) then
-  multitext.font = font
-end
 
 item_new = iup.item{title = "&New...\tCtrl+N", image = "IUP_FileNew"}
 item_open = iup.item{title = "&Open...\tCtrl+O", image = "IUP_FileOpen"}
-item_save = iup.item{title="Save\tCtrl+S"}
+item_save = iup.item{title="&Save\tCtrl+S"}
 item_saveas = iup.item{title="Save &As...", image = "IUP_FileSave"}
-item_font = iup.item{title="&Font..."}
-item_about = iup.item{title="&About..."}
+item_revert = iup.item{title="&Revert"}
+item_exit = iup.item{title="E&xit"}
 item_find = iup.item{title="&Find...\tCtrl+F", image = "IUP_EditFind"}
 item_find_next = iup.item{title = "Find &Next\tF3"}
 item_replace = iup.item{title = "&Replace...\tCtrl+H"}
-item_goto = iup.item{title="&Go To..."}
-item_copy = iup.item{title="Copy\tCtrl+C", image = "IUP_EditCopy"}
-item_paste = iup.item{title="Paste\tCtrl+V", image = "IUP_EditPaste"}
-item_cut = iup.item{title="Cut\tCtrl+X", image = "IUP_EditCut"}
-item_delete = iup.item{title="Delete\tDel", image = "IUP_EditErase"}
-item_select_all = iup.item{title="Select All\tCtrl+A"}
-item_revert = iup.item{title="Revert"}
-item_exit = iup.item{title="E&xit"}
+item_copy = iup.item{title="&Copy\tCtrl+C", image = "IUP_EditCopy"}
+item_paste = iup.item{title="&Paste\tCtrl+V", image = "IUP_EditPaste"}
+item_cut = iup.item{title="Cu&t\tCtrl+X", image = "IUP_EditCut"}
+item_delete = iup.item{title="&Delete\tDel", image = "IUP_EditErase"}
+item_select_all = iup.item{title="Select &All\tCtrl+A"}
+item_goto = iup.item{title="&Go To...\tCtrl+G"}
+item_font = iup.item{title="&Font..."}
 item_toolbar = iup.item{title="&Toobar...", value="ON"}
 item_statusbar = iup.item{title="&Statusbar...", value="ON"}
 item_help = iup.item{title="&Help..."}
+item_about = iup.item{title="&About..."}
 
-show_statusbar = config:GetVariableDef("MainWindow", "Statusbar", "ON")
-if (show_statusbar == "OFF") then
-  item_statusbar.value = "OFF"
-  lbl_statusbar.floating = "YES"
-  lbl_statusbar.visible = "NO"
-end
+recent_menu = iup.menu{}
+
+file_menu = iup.menu{
+  item_new,
+  item_open,
+  item_save,
+  item_saveas,
+  item_revert,
+  iup.separator{},
+  iup.submenu{title="Recent &Files", recent_menu},
+  item_exit
+  }
+
+edit_menu = iup.menu{
+    item_cut,
+    item_copy,
+    item_paste,
+    item_delete,
+    iup.separator{},
+    item_find,
+    item_find_next,
+    item_replace,
+    item_goto,
+    iup.separator{},
+    item_select_all
+    }
+
+format_menu = iup.menu{item_font}
+view_menu = iup.menu{item_toolbar, item_statusbar}
+help_menu = iup.menu{item_help, item_about}
+
+sub_menu_file = iup.submenu{file_menu, title = "&File"}
+sub_menu_edit = iup.submenu{edit_menu, title = "&Edit"}
+sub_menu_format = iup.submenu{format_menu, title = "F&ormat"}
+sub_menu_view = iup.submenu{title = "&View", view_menu}
+sub_menu_help = iup.submenu{help_menu, title = "&Help"}
+
+menu = iup.menu{
+  sub_menu_file, 
+  sub_menu_edit, 
+  sub_menu_format, 
+  sub_menu_view, 
+  sub_menu_help,
+  }
 
 
 --********************************** Callbacks *****************************************
@@ -219,6 +253,50 @@ end
 
 function multitext:valuechanged_cb()
   self.dirty = "YES"
+end
+
+function file_menu:open_cb()
+  if (multitext.dirty) then
+    item_save.active = "YES"
+  else
+    item_save.active = "NO"
+  end
+  if (multitext.dirty and multitext.filename) then
+    item_revert.active = "YES"
+  else
+    item_revert.active = "NO"
+  end
+end
+
+function edit_menu:open_cb()
+  local clipboard = iup.clipboard{}
+  if (not clipboard.textavailable) then
+    item_paste.active = "NO"
+  else
+    item_paste.active = "YES"
+  end
+  clipboard:destroy()
+
+  if (not multitext.selectedtext) then
+    item_cut.active = "NO"
+    item_delete.active = "NO"
+    item_copy.active = "NO"
+  else
+    item_cut.active = "YES"
+    item_delete.active = "YES"
+    item_copy.active = "YES"
+  end
+
+  if (find_dlg) then
+    local find_txt = find_dlg.find_txt
+    if (find_txt) and (find_txt.value ~= "") then
+      item_find_next.active = "YES"
+    else
+      item_find_next.active = "NO"
+    end
+  else
+    item_find_next.active = "NO"
+  end
 end
 
 function config:recent_cb()
@@ -565,12 +643,12 @@ function item_font:action()
 end
 
 function item_toolbar:action()
-  set_bar_visibility(self, toolbar_hb)
+  toggle_bar_visibility(self, toolbar_hb)
   config:SetVariable("MainWindow", "Toolbar", item_toolbar.value)
 end
 
 function item_statusbar:action()
-  set_bar_visibility(self, lbl_statusbar)
+  toggle_bar_visibility(self, lbl_statusbar)
   config:SetVariable("MainWindow", "Statusbar", item_statusbar.value)
 end
 
@@ -586,101 +664,13 @@ end
 --********************************** Main (Part 2/2) *****************************************
 
 
-recent_menu = iup.menu{}
-
-file_menu = iup.menu{
-  item_new,
-  item_open,
-  item_save,
-  item_saveas,
-  item_revert,
-  iup.separator{},
-  iup.submenu{title="Recent &Files", recent_menu},
-  item_exit
-  }
-
-function file_menu:open_cb()
-  if (multitext.dirty) then
-    item_save.active = "YES"
-  else
-    item_save.active = "NO"
-  end
-  if (multitext.dirty and multitext.filename) then
-    item_revert.active = "YES"
-  else
-    item_revert.active = "NO"
-  end
-end
-
-edit_menu = iup.menu{
-    item_cut,
-    item_copy,
-    item_paste,
-    item_delete,
-    iup.separator{},
-    item_find,
-    item_find_next,
-    item_replace,
-    item_goto,
-    iup.separator{},
-    item_select_all
-    }
-
-function edit_menu:open_cb()
-  local clipboard = iup.clipboard{}
-  if (not clipboard.textavailable) then
-    item_paste.active = "NO"
-  else
-    item_paste.active = "YES"
-  end
-  clipboard:destroy()
-
-  if (not multitext.selectedtext) then
-    item_cut.active = "NO"
-    item_delete.active = "NO"
-    item_copy.active = "NO"
-  else
-    item_cut.active = "YES"
-    item_delete.active = "YES"
-    item_copy.active = "YES"
-  end
-
-  if (find_dlg) then
-    local find_txt = find_dlg.find_txt
-    if (find_txt) and (find_txt.value ~= "") then
-      item_find_next.active = "YES"
-    else
-      item_find_next.active = "NO"
-    end
-  else
-    item_find_next.active = "NO"
-  end
-end
-
-format_menu = iup.menu{item_font}
-view_menu = iup.menu{item_toolbar, item_statusbar}
-help_menu = iup.menu{item_help, item_about}
-
-sub_menu_file = iup.submenu{file_menu, title = "&File"}
-sub_menu_edit = iup.submenu{edit_menu, title = "&Edit"}
-sub_menu_format = iup.submenu{format_menu, title = "F&ormat"}
-sub_menu_view = iup.submenu{title = "&View", view_menu}
-sub_menu_help = iup.submenu{help_menu, title = "&Help"}
-
-menu = iup.menu{
-  sub_menu_file, 
-  sub_menu_edit, 
-  sub_menu_format, 
-  sub_menu_view, 
-  sub_menu_help,
-  }
-
-btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes", action = item_open.action }
-btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_save.action}
-btn_find = iup.button{image = "IUP_EditFind", flat = "Yes", action = item_find.action}
-btn_cut = iup.button{image = "IUP_EditCut", flat = "Yes", action = item_cut.action}
-btn_copy = iup.button{image =  "IUP_EditCopy", flat = "Yes", action = item_copy.action}
-btn_paste = iup.button{image = "IUP_EditPaste", flat = "Yes", action = item_paste.action}
+btn_new = iup.button{image = "IUP_FileNew", flat = "Yes", action = item_new.action, canfocus="No", tip = "New (Ctrl+N)"}
+btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes", action = item_open.action, canfocus="No", tip = "Open (Ctrl+O)"}
+btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_save.action, canfocus="No", tip = "Save (Ctrl+S)"}
+btn_find = iup.button{image = "IUP_EditFind", flat = "Yes", action = item_find.action, canfocus="No", tip = "Find (Ctrl+F)"}
+btn_cut = iup.button{image = "IUP_EditCut", flat = "Yes", action = item_cut.action, canfocus="No", tip = "Cut (Ctrl+X)"}
+btn_copy = iup.button{image =  "IUP_EditCopy", flat = "Yes", action = item_copy.action, canfocus="No", tip = "Copy (Ctrl+C)"}
+btn_paste = iup.button{image = "IUP_EditPaste", flat = "Yes", action = item_paste.action, canfocus="No", tip = "Paste (Ctrl+V)"}
 
 toolbar_hb = iup.hbox{
   btn_new,
@@ -695,13 +685,6 @@ toolbar_hb = iup.hbox{
   margin = "5x5",
   gap = 2,
 }
-
-show_toolbar = config:GetVariableDef("MainWindow", "Toolbar", "ON")
-if (show_toolbar == "OFF") then
-  item_toolbar.value = "OFF"
-  toolbar_hb.floating = "YES"
-  toolbar_hb.visible = "NO"
-end
 
 vbox = iup.vbox{
   toolbar_hb,
@@ -728,6 +711,9 @@ function dlg:k_any(c)
     item_save:action()
   elseif (c == iup.K_cF) then
     item_find:action()
+  elseif (c == iup.K_cH) then
+    item_replace:action()
+    return iup.IGNORE -- replace system processing
   elseif (c == iup.K_cG) then
     item_goto:action()
   elseif (c == iup.K_F3) then
@@ -738,13 +724,36 @@ function dlg:k_any(c)
     item_paste:action()  
     return iup.IGNORE -- replace system processing
   end
+  -- Ctrl+C, Ctrl+X, Ctrl+A, Del, already implemented inside IupText
 end
-
-config:RecentInit(recent_menu, 10)
 
 -- parent for pre-defined dialogs in closed functions (IupMessage and IupAlarm)
 iup.SetGlobal("PARENTDIALOG", iup.SetHandleName(dlg))
 
+-- Initialize variables from the configuration file
+
+config:RecentInit(recent_menu, 10)
+ 
+font = config:GetVariable("MainWindow", "Font")
+if (font) then
+  multitext.font = font
+end
+
+show_statusbar = config:GetVariableDef("MainWindow", "Statusbar", "ON")
+if (show_statusbar == "OFF") then
+  item_statusbar.value = "OFF"
+  lbl_statusbar.floating = "YES"
+  lbl_statusbar.visible = "NO"
+end
+
+show_toolbar = config:GetVariableDef("MainWindow", "Toolbar", "ON")
+if (show_toolbar == "OFF") then
+  item_toolbar.value = "OFF"
+  toolbar_hb.floating = "YES"
+  toolbar_hb.visible = "NO"
+end
+
+-- show the dialog
 dlg:showxy(iup.CENTER,iup.CENTER)
 dlg.usersize = nil
 

@@ -115,7 +115,7 @@ function save_check(ih)
   return true
 end
 
-function toggle_visibility(item, bar)
+function toggle_bar_visibility(item, bar)
   if (item.value == "ON") then
     bar.floating = "YES"
     bar.visible = "NO"
@@ -152,18 +152,18 @@ end
 
 item_new = iup.item{title = "&New...\tCtrl+N", image = "IUP_FileNew"}
 item_open = iup.item{title = "&Open...\tCtrl+O", image = "IUP_FileOpen"}
-item_save = iup.item{title="Save\tCtrl+S"}
+item_save = iup.item{title="&Save\tCtrl+S"}
 item_saveas = iup.item{title="Save &As...", image = "IUP_FileSave"}
 item_font = iup.item{title="&Font..."}
 item_about = iup.item{title="&About..."}
 item_find = iup.item{title="&Find...\tCtrl+F", image = "IUP_EditFind"}
 item_goto = iup.item{title="&Go To..."}
-item_copy = iup.item{title="Copy\tCtrl+C", image = "IUP_EditCopy"}
-item_paste = iup.item{title="Paste\tCtrl+V", image = "IUP_EditPaste"}
-item_cut = iup.item{title="Cut\tCtrl+X", image = "IUP_EditCut"}
-item_delete = iup.item{title="Delete\tDel", image = "IUP_EditErase"}
-item_select_all = iup.item{title="Select All\tCtrl+A"}
-item_revert = iup.item{title="Revert"}
+item_copy = iup.item{title="&Copy\tCtrl+C", image = "IUP_EditCopy"}
+item_paste = iup.item{title="&Paste\tCtrl+V", image = "IUP_EditPaste"}
+item_cut = iup.item{title="Cu&t\tCtrl+X", image = "IUP_EditCut"}
+item_delete = iup.item{title="&Delete\tDel", image = "IUP_EditErase"}
+item_select_all = iup.item{title="Select &All\tCtrl+A"}
+item_revert = iup.item{title="&Revert"}
 item_exit = iup.item{title="E&xit"}
 item_toolbar = iup.item{title="&Toobar...", value="ON"}
 item_statusbar = iup.item{title="&Statusbar...", value="ON"}
@@ -451,12 +451,12 @@ function item_font:action()
 end
 
 function item_toolbar:action()
-  toggle_visibility(self, toolbar_hb)
+  toggle_bar_visibility(self, toolbar_hb)
   config:SetVariable("MainWindow", "Toolbar", item_toolbar.value)
 end
 
 function item_statusbar:action()
-  toggle_visibility(self, lbl_statusbar)
+  toggle_bar_visibility(self, lbl_statusbar)
   config:SetVariable("MainWindow", "Statusbar", item_statusbar.value)
 end
 
@@ -550,12 +550,13 @@ menu = iup.menu{
   sub_menu_help,
   }
 
-btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes", action = item_open.action }
-btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_save.action}
-btn_find = iup.button{image = "IUP_EditFind", flat = "Yes", action = item_find.action}
-btn_cut = iup.button{image = "IUP_EditCut", flat = "Yes", action = item_cut.action}
-btn_copy = iup.button{image =  "IUP_EditCopy", flat = "Yes", action = item_copy.action}
-btn_paste = iup.button{image = "IUP_EditPaste", flat = "Yes", action = item_paste.action}
+btn_new = iup.button{image = "IUP_FileNew", flat = "Yes", action = item_new.action, canfocus="No", tip = "New (Ctrl+N)"}
+btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes", action = item_open.action, canfocus="No", tip = "Open (Ctrl+O)"}
+btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_save.action, canfocus="No", tip = "Save (Ctrl+S)"}
+btn_find = iup.button{image = "IUP_EditFind", flat = "Yes", action = item_find.action, canfocus="No", tip = "Find (Ctrl+F)"}
+btn_cut = iup.button{image = "IUP_EditCut", flat = "Yes", action = item_cut.action, canfocus="No", tip = "Cut (Ctrl+X)"}
+btn_copy = iup.button{image =  "IUP_EditCopy", flat = "Yes", action = item_copy.action, canfocus="No", tip = "Copy (Ctrl+C)"}
+btn_paste = iup.button{image = "IUP_EditPaste", flat = "Yes", action = item_paste.action, canfocus="No", tip = "Paste (Ctrl+V)"}
 
 toolbar_hb = iup.hbox{
   btn_new,

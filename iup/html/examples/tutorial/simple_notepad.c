@@ -211,7 +211,7 @@ int save_check(Ihandle* ih)
   return 1;
 }
 
-void set_bar_visibility(Ihandle* item, Ihandle* ih)
+void toggle_bar_visibility(Ihandle* item, Ihandle* ih)
 {
   if (IupGetInt(item, "VALUE"))
   {
@@ -718,7 +718,8 @@ int item_replace_action_cb(Ihandle* item_replace)
     IupSetStrAttribute(txt, "VALUE", str);
   }
 
-  return IUP_DEFAULT;
+  return IUP_IGNORE;  /* replace system processing for the hot key */
+  //return IUP_DEFAULT;
 }
 
 int selection_find_next_action_cb(Ihandle* ih)
@@ -758,7 +759,7 @@ int item_paste_action_cb(Ihandle* item_paste)
   Ihandle *clipboard = IupClipboard();
   IupSetAttribute(multitext, "INSERT", IupGetAttribute(clipboard, "TEXT"));
   IupDestroy(clipboard);
-  return IUP_IGNORE;  /* avoid system processing for hot keys, to correctly parse line feed */
+  return IUP_IGNORE;  /* replace system processing for the hot key, to correctly parse line feed */
 }
 
 int item_cut_action_cb(Ihandle* item_cut) 
@@ -815,7 +816,7 @@ int item_toolbar_action_cb(Ihandle* item_toolbar)
   Ihandle* toolbar = IupGetChild(IupGetParent(multitext), 0);
   Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
 
-  set_bar_visibility(item_toolbar, toolbar);
+  toggle_bar_visibility(item_toolbar, toolbar);
 
   IupConfigSetVariableStr(config, "MainWindow", "Toolbar", IupGetAttribute(item_toolbar, "VALUE"));
   return IUP_DEFAULT;
@@ -827,7 +828,7 @@ int item_statusbar_action_cb(Ihandle* item_statusbar)
   Ihandle* statusbar = IupGetBrother(multitext);
   Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
 
-  set_bar_visibility(item_statusbar, statusbar);
+  toggle_bar_visibility(item_statusbar, statusbar);
 
   IupConfigSetVariableStr(config, "MainWindow", "Statusbar", IupGetAttribute(item_statusbar, "VALUE"));
   return IUP_DEFAULT;
@@ -870,22 +871,20 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
   IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
 
-  font = IupConfigGetVariableStr(config, "MainWindow", "Font");
-  if (font)
-    IupSetStrAttribute(multitext, "FONT", font);
-
   lbl_statusbar = IupLabel("Lin 1, Col 1");
   IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");
   IupSetAttribute(lbl_statusbar, "EXPAND", "HORIZONTAL");
   IupSetAttribute(lbl_statusbar, "PADDING", "10x5");
 
-  item_new = IupItem("New\tCtrl+N", NULL);
+  item_new = IupItem("&New\tCtrl+N", NULL);
   IupSetAttribute(item_new, "IMAGE", "IUP_FileNew");
   IupSetCallback(item_new, "ACTION", (Icallback)item_new_action_cb);
   btn_new = IupButton(NULL, NULL);
   IupSetAttribute(btn_new, "IMAGE", "IUP_FileNew");
   IupSetAttribute(btn_new, "FLAT", "Yes");
   IupSetCallback(btn_new, "ACTION", (Icallback)item_new_action_cb);
+  IupSetAttribute(btn_new, "TIP", "New (Ctrl+N)");
+  IupSetAttribute(btn_new, "CANFOCUS", "No");
 
   item_open = IupItem("&Open...\tCtrl+O", NULL);
   IupSetAttribute(item_open, "IMAGE", "IUP_FileOpen");
@@ -894,8 +893,10 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(btn_open, "IMAGE", "IUP_FileOpen");
   IupSetAttribute(btn_open, "FLAT", "Yes");
   IupSetCallback(btn_open, "ACTION", (Icallback)item_open_action_cb);
+  IupSetAttribute(btn_open, "TIP", "Open (Ctrl+O)");
+  IupSetAttribute(btn_open, "CANFOCUS", "No");
 
-  item_save = IupItem("Save\tCtrl+S", NULL);
+  item_save = IupItem("&Save\tCtrl+S", NULL);
   IupSetAttribute(item_save, "NAME", "ITEM_SAVE");
   IupSetAttribute(item_save, "IMAGE", "IUP_FileSave");
   IupSetCallback(item_save, "ACTION", (Icallback)item_save_action_cb);
@@ -903,12 +904,14 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(btn_save, "IMAGE", "IUP_FileSave");
   IupSetAttribute(btn_save, "FLAT", "Yes");
   IupSetCallback(btn_save, "ACTION", (Icallback)item_save_action_cb);
+  IupSetAttribute(btn_save, "TIP", "Save (Ctrl+S)");
+  IupSetAttribute(btn_save, "CANFOCUS", "No");
 
   item_saveas = IupItem("Save &As...", NULL);
   IupSetAttribute(item_saveas, "NAME", "ITEM_SAVEAS");
   IupSetCallback(item_saveas, "ACTION", (Icallback)item_saveas_action_cb);
 
-  item_revert = IupItem("Revert", NULL);
+  item_revert = IupItem("&Revert", NULL);
   IupSetAttribute(item_revert, "NAME", "ITEM_REVERT");
   IupSetCallback(item_revert, "ACTION", (Icallback)item_revert_action_cb);
 
@@ -918,93 +921,78 @@ Ihandle* create_main_dialog(Ihandle *config)
   item_find = IupItem("&Find...\tCtrl+F", NULL);
   IupSetAttribute(item_find, "IMAGE", "IUP_EditFind");
   IupSetCallback(item_find, "ACTION", (Icallback)item_find_action_cb);
-  item_find_next = IupItem("Find &Next\tF3", NULL);
-  IupSetAttribute(item_find_next, "NAME", "ITEM_FINDNEXT");
-  IupSetCallback(item_find_next, "ACTION", (Icallback)find_next_action_cb);
-  item_replace = IupItem("&Replace...\tCtrl+H", NULL);
-  IupSetCallback(item_replace, "ACTION", (Icallback)item_replace_action_cb);
   btn_find = IupButton(NULL, NULL);
   IupSetAttribute(btn_find, "IMAGE", "IUP_EditFind");
   IupSetAttribute(btn_find, "FLAT", "Yes");
   IupSetCallback(btn_find, "ACTION", (Icallback)item_find_action_cb);
+  IupSetAttribute(btn_find, "TIP", "Find (Ctrl+F)");
+  IupSetAttribute(btn_find, "CANFOCUS", "No");
 
-  item_cut = IupItem("Cut\tCtrl+X", NULL);
+  item_find_next = IupItem("Find &Next\tF3", NULL);
+  IupSetAttribute(item_find_next, "NAME", "ITEM_FINDNEXT");
+  IupSetCallback(item_find_next, "ACTION", (Icallback)find_next_action_cb);
+
+  item_replace = IupItem("&Replace...\tCtrl+H", NULL);
+  IupSetCallback(item_replace, "ACTION", (Icallback)item_replace_action_cb);
+
+  item_cut = IupItem("Cu&t\tCtrl+X", NULL);
   IupSetAttribute(item_cut, "NAME", "ITEM_CUT");
   IupSetAttribute(item_cut, "IMAGE", "IUP_EditCut");
   IupSetCallback(item_cut, "ACTION", (Icallback)item_cut_action_cb);
-  item_copy = IupItem("Copy\tCtrl+C", NULL);
-  IupSetAttribute(item_copy, "NAME", "ITEM_COPY");
-  IupSetAttribute(item_copy, "IMAGE", "IUP_EditCopy");
-  IupSetCallback(item_copy, "ACTION", (Icallback)item_copy_action_cb);
-  item_paste = IupItem("Paste\tCtrl+V", NULL);
-  IupSetAttribute(item_paste, "NAME", "ITEM_PASTE");
-  IupSetAttribute(item_paste, "IMAGE", "IUP_EditPaste");
-  IupSetCallback(item_paste, "ACTION", (Icallback)item_paste_action_cb);
-  item_delete = IupItem("Delete\tDel", NULL);
-  IupSetAttribute(item_delete, "IMAGE", "IUP_EditErase");
-  IupSetAttribute(item_delete, "NAME", "ITEM_DELETE");
-  IupSetCallback(item_delete, "ACTION", (Icallback)item_delete_action_cb);
-  item_select_all = IupItem("Select All\tCtrl+A", NULL);
-  IupSetCallback(item_select_all, "ACTION", (Icallback)item_select_all_action_cb);
-
   btn_cut = IupButton(NULL, NULL);
   IupSetAttribute(btn_cut, "IMAGE", "IUP_EditCut");
   IupSetAttribute(btn_cut, "FLAT", "Yes");
   IupSetCallback(btn_cut, "ACTION", (Icallback)item_cut_action_cb);
+  IupSetAttribute(btn_cut, "TIP", "Cut (Ctrl+X)");
+  IupSetAttribute(btn_cut, "CANFOCUS", "No");
+
+  item_copy = IupItem("&Copy\tCtrl+C", NULL);
+  IupSetAttribute(item_copy, "NAME", "ITEM_COPY");
+  IupSetAttribute(item_copy, "IMAGE", "IUP_EditCopy");
+  IupSetCallback(item_copy, "ACTION", (Icallback)item_copy_action_cb);
   btn_copy = IupButton(NULL, NULL);
   IupSetAttribute(btn_copy, "IMAGE", "IUP_EditCopy");
   IupSetAttribute(btn_copy, "FLAT", "Yes");
   IupSetCallback(btn_copy, "ACTION", (Icallback)item_copy_action_cb);
+  IupSetAttribute(btn_copy, "TIP", "Copy (Ctrl+C)");
+  IupSetAttribute(btn_copy, "CANFOCUS", "No");
+
+  item_paste = IupItem("&Paste\tCtrl+V", NULL);
+  IupSetAttribute(item_paste, "NAME", "ITEM_PASTE");
+  IupSetAttribute(item_paste, "IMAGE", "IUP_EditPaste");
+  IupSetCallback(item_paste, "ACTION", (Icallback)item_paste_action_cb);
   btn_paste = IupButton(NULL, NULL);
   IupSetAttribute(btn_paste, "IMAGE", "IUP_EditPaste");
   IupSetAttribute(btn_paste, "FLAT", "Yes");
   IupSetCallback(btn_paste, "ACTION", (Icallback)item_paste_action_cb);
+  IupSetAttribute(btn_paste, "TIP", "Paste (Ctrl+V)");
+  IupSetAttribute(btn_paste, "CANFOCUS", "No");
 
-  toolbar_hb = IupHbox(
-    btn_new,
-    btn_open,
-    btn_save,
-    IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
-    btn_cut,
-    btn_copy,
-    btn_paste,
-    IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
-    btn_find,
-    NULL);
-  IupSetAttribute(toolbar_hb, "MARGIN", "5x5");
-  IupSetAttribute(toolbar_hb, "GAP", "2");
+  item_delete = IupItem("&Delete\tDel", NULL);
+  IupSetAttribute(item_delete, "IMAGE", "IUP_EditErase");
+  IupSetAttribute(item_delete, "NAME", "ITEM_DELETE");
+  IupSetCallback(item_delete, "ACTION", (Icallback)item_delete_action_cb);
+
+  item_select_all = IupItem("Select &All\tCtrl+A", NULL);
+  IupSetCallback(item_select_all, "ACTION", (Icallback)item_select_all_action_cb);
+
+  item_goto = IupItem("&Go To...\tCtrl+G", NULL);
+  IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
 
   item_toolbar = IupItem("&Toobar...", NULL);
   IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
   IupSetAttribute(item_toolbar, "VALUE", "ON");
+
   item_statusbar = IupItem("&Statusbar...", NULL);
   IupSetCallback(item_statusbar, "ACTION", (Icallback)item_statusbar_action_cb);
   IupSetAttribute(item_statusbar, "VALUE", "ON");
-
-  if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))
-  {
-    IupSetAttribute(item_toolbar, "VALUE", "OFF");
-
-    IupSetAttribute(toolbar_hb, "FLOATING", "YES");
-    IupSetAttribute(toolbar_hb, "VISIBLE", "NO");
-  }
-
-  if (!IupConfigGetVariableIntDef(config, "MainWindow", "Statusbar", 1))
-  {
-    IupSetAttribute(item_statusbar, "VALUE", "OFF");
-
-    IupSetAttribute(lbl_statusbar, "FLOATING", "YES");
-    IupSetAttribute(lbl_statusbar, "VISIBLE", "NO");
-  }
-
-  item_goto = IupItem("&Go To...\tCtrl+G", NULL);
-  IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
 
   item_font = IupItem("&Font...", NULL);
   IupSetCallback(item_font, "ACTION", (Icallback)item_font_action_cb);
 
   item_help = IupItem("&Help...", NULL);
   IupSetCallback(item_help, "ACTION", (Icallback)item_help_action_cb);
+
   item_about = IupItem("&About...", NULL);
   IupSetCallback(item_about, "ACTION", (Icallback)item_about_action_cb);
 
@@ -1062,6 +1050,20 @@ Ihandle* create_main_dialog(Ihandle *config)
     sub_menu_help,
     NULL);
 
+  toolbar_hb = IupHbox(
+    btn_new,
+    btn_open,
+    btn_save,
+    IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
+    btn_cut,
+    btn_copy,
+    btn_paste,
+    IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
+    btn_find,
+    NULL);
+  IupSetAttribute(toolbar_hb, "MARGIN", "5x5");
+  IupSetAttribute(toolbar_hb, "GAP", "2");
+
   vbox = IupVbox(
     toolbar_hb,
     multitext,
@@ -1074,21 +1076,45 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(dlg, "CLOSE_CB", (Icallback)item_exit_action_cb);
   IupSetCallback(dlg, "DROPFILES_CB", (Icallback)dropfiles_cb);
 
-  IupSetAttribute(dlg, "CONFIG", (char*)config);
-
-  /* parent for pre-defined dialogs in closed functions (IupMessage and IupAlarm) */
-  IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
-
   IupSetCallback(dlg, "K_cN", (Icallback)item_new_action_cb);
   IupSetCallback(dlg, "K_cO", (Icallback)item_open_action_cb);
   IupSetCallback(dlg, "K_cS", (Icallback)item_save_action_cb);
   IupSetCallback(dlg, "K_cF", (Icallback)item_find_action_cb);
+  IupSetCallback(dlg, "K_cH", (Icallback)item_replace_action_cb);  /* replace system processing */
   IupSetCallback(dlg, "K_cG", (Icallback)item_goto_action_cb);
   IupSetCallback(dlg, "K_F3", (Icallback)find_next_action_cb);
   IupSetCallback(dlg, "K_cF3", (Icallback)selection_find_next_action_cb);
   IupSetCallback(dlg, "K_cV", (Icallback)item_paste_action_cb);  /* replace system processing */
-  
+  /* Ctrl+C, Ctrl+X, Ctrl+A, Del, already implemented inside IupText */
+
+  /* parent for pre-defined dialogs in closed functions (IupMessage and IupAlarm) */
+  IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
+
+  /* Initialize variables from the configuration file */
+
   IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
+
+  font = IupConfigGetVariableStr(config, "MainWindow", "Font");
+  if (font)
+    IupSetStrAttribute(multitext, "FONT", font);
+
+  if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))
+  {
+    IupSetAttribute(item_toolbar, "VALUE", "OFF");
+
+    IupSetAttribute(toolbar_hb, "FLOATING", "YES");
+    IupSetAttribute(toolbar_hb, "VISIBLE", "NO");
+  }
+
+  if (!IupConfigGetVariableIntDef(config, "MainWindow", "Statusbar", 1))
+  {
+    IupSetAttribute(item_statusbar, "VALUE", "OFF");
+
+    IupSetAttribute(lbl_statusbar, "FLOATING", "YES");
+    IupSetAttribute(lbl_statusbar, "VISIBLE", "NO");
+  }
+
+  IupSetAttribute(dlg, "CONFIG", (char*)config);
 
   return dlg;
 }
@@ -1107,6 +1133,7 @@ int main(int argc, char **argv)
 
   dlg = create_main_dialog(config);
 
+  /* show the dialog */
   IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   IupSetAttribute(dlg, "USERSIZE", NULL);  /* remove minimum size restriction */
 

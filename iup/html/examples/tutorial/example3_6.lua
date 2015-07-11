@@ -288,9 +288,9 @@ menu = iup.menu{
   sub_menu_help,
   }
 
-btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes", action = item_open.action }
-btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_saveas.action}
-btn_find = iup.button{image = "IUP_EditFind", flat = "Yes", action = item_find.action}
+btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes", action = item_open.action, canfocus="No", tip = "Open (Ctrl+O)"}
+btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_save.action, canfocus="No", tip = "Save (Ctrl+S)"}
+btn_find = iup.button{image = "IUP_EditFind", flat = "Yes", action = item_find.action, canfocus="No", tip = "Find (Ctrl+F)"}
 
 toolbar_hb = iup.hbox{
   btn_open,

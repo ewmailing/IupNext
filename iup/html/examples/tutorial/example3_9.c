@@ -676,6 +676,8 @@ int main(int argc, char **argv)
     IupSetAttribute(btn_new, "IMAGE", "IUP_FileNew");
     IupSetAttribute(btn_new, "FLAT", "Yes");
     IupSetCallback(btn_new, "ACTION", (Icallback)item_new_action_cb);
+    IupSetAttribute(btn_new, "TIP", "New (Ctrl+N)");
+    IupSetAttribute(btn_new, "CANFOCUS", "No");
 
   item_open = IupItem("&Open...\tCtrl+O", NULL);
     IupSetAttribute(item_open, "IMAGE", "IUP_FileOpen");
@@ -684,6 +686,8 @@ int main(int argc, char **argv)
     IupSetAttribute(btn_open, "IMAGE", "IUP_FileOpen");
     IupSetAttribute(btn_open, "FLAT", "Yes");
     IupSetCallback(btn_open, "ACTION", (Icallback)item_open_action_cb);
+    IupSetAttribute(btn_open, "TIP", "Open (Ctrl+O)");
+    IupSetAttribute(btn_open, "CANFOCUS", "No");
 
   item_save = IupItem("Save\tCtrl+S", NULL);
     IupSetAttribute(item_save, "NAME", "ITEM_SAVE");
@@ -693,6 +697,8 @@ int main(int argc, char **argv)
     IupSetAttribute(btn_save, "IMAGE", "IUP_FileSave");
     IupSetAttribute(btn_save, "FLAT", "Yes");
     IupSetCallback(btn_save, "ACTION", (Icallback)item_save_action_cb);
+    IupSetAttribute(btn_save, "TIP", "Save (Ctrl+S)");
+    IupSetAttribute(btn_save, "CANFOCUS", "No");
 
   item_saveas = IupItem("Save &As...", NULL);
     IupSetAttribute(item_saveas, "NAME", "ITEM_SAVEAS");
@@ -712,6 +718,8 @@ int main(int argc, char **argv)
     IupSetAttribute(btn_find, "IMAGE", "IUP_EditFind");
     IupSetAttribute(btn_find, "FLAT", "Yes");
     IupSetCallback(btn_find, "ACTION", (Icallback)item_find_action_cb);
+    IupSetAttribute(btn_find, "TIP", "Find (Ctrl+F)");
+    IupSetAttribute(btn_find, "CANFOCUS", "No");
 
   item_cut = IupItem("Cut\tCtrl+X", NULL);
     IupSetAttribute(item_cut, "NAME", "ITEM_CUT");
@@ -736,14 +744,20 @@ int main(int argc, char **argv)
     IupSetAttribute(btn_cut, "IMAGE", "IUP_EditCut");
     IupSetAttribute(btn_cut, "FLAT", "Yes");
     IupSetCallback(btn_cut, "ACTION", (Icallback)item_cut_action_cb);
+    IupSetAttribute(btn_cut, "TIP", "Cut (Ctrl+X)");
+    IupSetAttribute(btn_cut, "CANFOCUS", "No");
   btn_copy = IupButton(NULL, NULL);
     IupSetAttribute(btn_copy, "IMAGE", "IUP_EditCopy");
     IupSetAttribute(btn_copy, "FLAT", "Yes");
     IupSetCallback(btn_copy, "ACTION", (Icallback)item_copy_action_cb);
+    IupSetAttribute(btn_copy, "TIP", "Copy (Ctrl+C)");
+    IupSetAttribute(btn_copy, "CANFOCUS", "No");
   btn_paste = IupButton(NULL, NULL);
     IupSetAttribute(btn_paste, "IMAGE", "IUP_EditPaste");
     IupSetAttribute(btn_paste, "FLAT", "Yes");
     IupSetCallback(btn_paste, "ACTION", (Icallback)item_paste_action_cb);
+    IupSetAttribute(btn_paste, "TIP", "Paste (Ctrl+V)");
+    IupSetAttribute(btn_paste, "CANFOCUS", "No");
 
   toolbar_hb = IupHbox(
     btn_new,

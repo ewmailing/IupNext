@@ -71,11 +71,11 @@ item_font = iup.item{title="&Font..."}
 item_about = iup.item{title="&About..."}
 item_find = iup.item{title="&Find...\tCtrl+F"}
 item_goto = iup.item{title="&Go To..."}
-item_copy = iup.item{title="Copy\tCtrl+C"}
-item_paste = iup.item{title="Paste\tCtrl+V"}
-item_cut = iup.item{title="Cut\tCtrl+X"}
-item_delete = iup.item{title="Delete\tDel"}
-item_select_all = iup.item{title="Select All\tCtrl+A"}
+item_copy = iup.item{title="&Copy\tCtrl+C"}
+item_paste = iup.item{title="&Paste\tCtrl+V"}
+item_cut = iup.item{title="Cu&t\tCtrl+X"}
+item_delete = iup.item{title="&Delete\tDel"}
+item_select_all = iup.item{title="Select &All\tCtrl+A"}
 item_exit = iup.item{title="E&xit"}
 
 
@@ -388,9 +388,9 @@ menu = iup.menu{
   sub_menu_help,
   }
 
-btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes", action = item_open.action }
-btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_saveas.action}
-btn_find = iup.button{image = "IUP_EditFind", flat = "Yes", action = item_find.action}
+btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes", action = item_open.action, canfocus="No", tip = "Open (Ctrl+O)"}
+btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_save.action, canfocus="No", tip = "Save (Ctrl+S)"}
+btn_find = iup.button{image = "IUP_EditFind", flat = "Yes", action = item_find.action, canfocus="No", tip = "Find (Ctrl+F)"}
 
 toolbar_hb = iup.hbox{
   btn_open,

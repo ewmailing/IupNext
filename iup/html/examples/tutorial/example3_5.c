@@ -410,11 +410,13 @@ int main(int argc, char **argv)
   btn_open = IupButton(NULL, NULL);
   IupSetAttribute(btn_open, "IMAGE", "IUP_FileOpen");
   IupSetAttribute(btn_open, "FLAT", "Yes");
+  IupSetAttribute(btn_open, "CANFOCUS", "No");
 
   item_saveas = IupItem("Save As...", NULL);
   btn_save = IupButton(NULL, NULL);
   IupSetAttribute(btn_save, "IMAGE", "IUP_FileSave");
   IupSetAttribute(btn_save, "FLAT", "Yes");
+  IupSetAttribute(btn_save, "CANFOCUS", "No");
 
   item_exit = IupItem("Exit", NULL);
 
@@ -422,6 +424,7 @@ int main(int argc, char **argv)
   btn_find = IupButton(NULL, NULL);
   IupSetAttribute(btn_find, "IMAGE", "IUP_EditFind");
   IupSetAttribute(btn_find, "FLAT", "Yes");
+  IupSetAttribute(btn_find, "CANFOCUS", "No");
 
   toolbar_hb = IupHbox(
     btn_open,
