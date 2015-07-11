@@ -216,33 +216,40 @@ Ihandle *iuplua_checkihandleornil(lua_State *L, int pos)
 
 int iuplua_isihandle(lua_State *L, int pos)
 {
-  lua_getmetatable(L, pos);   /* t2 = metatable(stack(pos)) */
-  lua_pushstring(L, iup_handle);
-  lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iupHandle"] */
-  if (lua_rawequal(L, -2, -1))   /* check (t2==t)? */
+  int ret = 0;
+  if (lua_getmetatable(L, pos))   /* t2 = metatable(stack(pos)) */
   {
-    lua_pop(L, 2);
-    return 1;
+    lua_pushstring(L, iup_handle);
+    lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iupHandle"] */
+
+    if (lua_rawequal(L, -2, -1))   /* check (t2==t)? */
+      ret = 1;
+
+    lua_pop(L, 2);   /* Pop registry["iuphandle"] and the metatable */
   }
-  else
-    return 0;
+
+  return ret;
 }
 
-Ihandle *iuplua_checkihandle(lua_State *L, int pos)
+Ihandle* iuplua_checkihandle(lua_State *L, int pos)
 {
-  lua_getmetatable(L, pos);   /* t2 = metatable(stack(pos)) */
-  lua_pushstring(L, iup_handle);
-  lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iupHandle"] */
-  if (lua_rawequal(L, -2, -1))   /* check (t2==t)? */
+  Ihandle* ih = NULL;
+
+  if (lua_getmetatable(L, pos))   /* t2 = metatable(stack(pos)) */
   {
-    lua_pop (L, 2);
-    return *(Ihandle**)lua_touserdata(L, pos);
-  } 
-  else 
-  {
-    luaL_argerror(L, pos, iup_handle_expected);
-    return NULL;
+    lua_pushstring(L, iup_handle);
+    lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iupHandle"] */
+
+    if (lua_rawequal(L, -2, -1))   /* check (t2==t)? */
+      ih = *(Ihandle**)lua_touserdata(L, pos);
+
+    lua_pop(L, 2);   /* Pop registry["iuphandle"] and the metatable */
   }
+
+  if (!ih)
+    luaL_argerror(L, pos, iup_handle_expected);
+
+  return ih;
 }
 
 void iuplua_pushihandle_raw(lua_State *L, Ihandle *ih)
