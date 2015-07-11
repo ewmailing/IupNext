@@ -488,8 +488,8 @@ int find_next_action_cb(Ihandle* bt_next)
   Ihandle* txt = IupGetDialogChild(bt_next, "FIND_TEXT");
   char* str_to_find = IupGetAttribute(txt, "VALUE");
 
-  Ihandle* tgl_case = IupGetDialogChild(bt_next, "FIND_CASE");
-  int casesensitive = IupGetInt(tgl_case, "VALUE");
+  Ihandle* find_case = IupGetDialogChild(bt_next, "FIND_CASE");
+  int casesensitive = IupGetInt(find_case, "VALUE");
 
   int pos = str_find(str + find_pos, str_to_find, casesensitive);
   if (pos >= 0)
@@ -532,14 +532,14 @@ int item_find_action_cb(Ihandle* item_find)
   if (!dlg)
   {
     Ihandle* multitext = IupGetDialogChild(item_find, "MULTITEXT");
-    Ihandle *box, *bt_next, *bt_close, *txt, *tgl_case;
+    Ihandle *box, *bt_next, *bt_close, *txt, *find_case;
 
 
     txt = IupText(NULL);
     IupSetAttribute(txt, "NAME", "FIND_TEXT");
     IupSetAttribute(txt, "VISIBLECOLUMNS", "20");
-    tgl_case = IupToggle("Case Sensitive", NULL);
-    IupSetAttribute(tgl_case, "NAME", "FIND_CASE");
+    find_case = IupToggle("Case Sensitive", NULL);
+    IupSetAttribute(find_case, "NAME", "FIND_CASE");
     bt_next = IupButton("Find Next", NULL);
     IupSetAttribute(bt_next, "PADDING", "10x2");
     IupSetCallback(bt_next, "ACTION", (Icallback)find_next_action_cb);
@@ -550,7 +550,7 @@ int item_find_action_cb(Ihandle* item_find)
     box = IupVbox(
       IupLabel("Find What:"),
       txt,
-      tgl_case,
+      find_case,
       IupSetAttributes(IupHbox(
         IupFill(),
         bt_next,

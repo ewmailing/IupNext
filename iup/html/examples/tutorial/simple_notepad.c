@@ -480,7 +480,7 @@ int goto_cancel_action_cb(Ihandle* bt_ok)
 int item_goto_action_cb(Ihandle* item_goto)
 {
   Ihandle* multitext = IupGetDialogChild(item_goto, "MULTITEXT");
-  Ihandle *dlg, *box, *bt_ok, *bt_cancel, *txt, *lbl;
+  Ihandle *goto_dlg, *box, *bt_ok, *bt_cancel, *txt, *lbl;
   int line_count = IupGetInt(multitext, "LINECOUNT");
 
   lbl = IupLabel(NULL);
@@ -509,16 +509,16 @@ int item_goto_action_cb(Ihandle* item_goto)
   IupSetAttribute(box, "MARGIN", "10x10");
   IupSetAttribute(box, "GAP", "5");
 
-  dlg = IupDialog(box);
-  IupSetAttribute(dlg, "TITLE", "Go To Line");
-  IupSetAttribute(dlg, "DIALOGFRAME", "Yes");
-  IupSetAttributeHandle(dlg, "DEFAULTENTER", bt_ok);
-  IupSetAttributeHandle(dlg, "DEFAULTESC", bt_cancel);
-  IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(item_goto));
+  goto_dlg = IupDialog(box);
+  IupSetAttribute(goto_dlg, "TITLE", "Go To Line");
+  IupSetAttribute(goto_dlg, "DIALOGFRAME", "Yes");
+  IupSetAttributeHandle(goto_dlg, "DEFAULTENTER", bt_ok);
+  IupSetAttributeHandle(goto_dlg, "DEFAULTESC", bt_cancel);
+  IupSetAttributeHandle(goto_dlg, "PARENTDIALOG", IupGetDialog(item_goto));
 
-  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+  IupPopup(goto_dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
-  if (IupGetInt(dlg, "STATUS") == 1)
+  if (IupGetInt(goto_dlg, "STATUS") == 1)
   {
     int line = IupGetInt(txt, "VALUE");
     int pos;
@@ -527,7 +527,7 @@ int item_goto_action_cb(Ihandle* item_goto)
     IupSetInt(multitext, "SCROLLTOPOS", pos);
   }
 
-  IupDestroy(dlg);
+  IupDestroy(goto_dlg);
 
   return IUP_DEFAULT;
 }
@@ -546,8 +546,8 @@ int find_next_action_cb(Ihandle* ih)
     Ihandle* txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
     char* str_to_find = IupGetAttribute(txt, "VALUE");
 
-    Ihandle* tgl_case = IupGetDialogChild(find_dlg, "FIND_CASE");
-    int casesensitive = IupGetInt(tgl_case, "VALUE");
+    Ihandle* find_case = IupGetDialogChild(find_dlg, "FIND_CASE");
+    int casesensitive = IupGetInt(find_case, "VALUE");
 
     /* test again, because it can be called from the hot key */
     if (!str_to_find || str_to_find[0] == 0)
@@ -620,7 +620,7 @@ int find_close_action_cb(Ihandle* bt_close)
 
 Ihandle* create_find_dialog(Ihandle *multitext)
 {
-  Ihandle *box, *bt_next, *bt_close, *txt, *tgl_case, *find_dlg;
+  Ihandle *box, *bt_next, *bt_close, *txt, *find_case, *find_dlg;
   Ihandle* txt_replace, *bt_replace;
 
   txt = IupText(NULL);
@@ -629,8 +629,8 @@ Ihandle* create_find_dialog(Ihandle *multitext)
   txt_replace = IupText(NULL);
   IupSetAttribute(txt_replace, "NAME", "REPLACE_TEXT");
   IupSetAttribute(txt_replace, "VISIBLECOLUMNS", "20");
-  tgl_case = IupToggle("Case Sensitive", NULL);
-  IupSetAttribute(tgl_case, "NAME", "FIND_CASE");
+  find_case = IupToggle("Case Sensitive", NULL);
+  IupSetAttribute(find_case, "NAME", "FIND_CASE");
   bt_next = IupButton("Find Next", NULL);
   IupSetAttribute(bt_next, "PADDING", "10x2");
   IupSetCallback(bt_next, "ACTION", (Icallback)find_next_action_cb);
@@ -647,7 +647,7 @@ Ihandle* create_find_dialog(Ihandle *multitext)
     txt,
     IupSetAttributes(IupLabel("Replace with:"), "NAME=REPLACE_LABEL"),
     txt_replace,
-    tgl_case,
+    find_case,
     IupSetAttributes(IupHbox(
       IupFill(),
       bt_next,

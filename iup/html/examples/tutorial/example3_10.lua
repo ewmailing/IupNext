@@ -10,7 +10,7 @@ function str_find(str, str_to_find, casesensitive, start)
     return str_find(string.lower(str), string.lower(str_to_find), true, start)
   end
 
-  return string.find(str, str_to_find, start)
+  return string.find(str, str_to_find, start, true)
 end
 
 function str_filetitle(filename)
@@ -330,36 +330,36 @@ end
 function item_find:action()
   local find_dlg = self.find_dialog
   if (not find_dlg) then
-    local txt_find = iup.text{visiblecolumns = "20"}
-    local tgl_find_case = iup.toggle{title = "Case Sensitive"}
+    local find_txt = iup.text{visiblecolumns = "20"}
+    local find_case = iup.toggle{title = "Case Sensitive"}
     local bt_find_next = iup.button{title = "Find Next", padding = "10x2"}
     local bt_find_close = iup.button{title = "Close", padding = "10x2"}
 
     function bt_find_next:action()
-      local find_pos = multitext.find_pos
-      local str_to_find = txt_find.value
+      local find_pos = tonumber(find_dlg.find_pos)
+      local str_to_find = find_txt.value
 
-      local casesensitive = tgl_find_case.value
+      local casesensitive = (find_case.value == "ON")
 
       -- test again, because it can be called from the hot key
-      if (not str_to_find) then
+      if (not str_to_find or str_to_find:len()==0) then
         return
       end
-      if (not find_pos) or (find_pos == -1) then
-        find_pos = 0
+
+      if (not find_pos) then
+        find_pos = 1
       end
 
       local str = multitext.value
 
       local pos, end_pos = str_find(str, str_to_find, casesensitive, find_pos)
-
       if (not pos) then
-        local pos, end_pos = str_find(str, str_to_find, casesensitive)  -- try again from the start
+        pos, end_pos = str_find(str, str_to_find, casesensitive, 1)  -- try again from the start
       end
 
-      if (pos) and (pos >= 0) then
+      if (pos) and (pos > 0) then
         pos = pos - 1
-        multitext.find_pos = end_pos
+        find_dlg.find_pos = end_pos
 
         iup.SetFocus(multitext)
         multitext.selectionpos = pos..":"..end_pos
@@ -368,7 +368,7 @@ function item_find:action()
         local pos = iup.TextConvertLinColToPos(multitext, lin, 0)  -- position at col=0, just scroll lines
         multitext.scrolltopos = pos
       else
-        multitext.find_pos = -1
+        find_dlg.find_pos = nil
         iup.Message("Warning", "Text not found.")
       end
     end
@@ -379,8 +379,8 @@ function item_find:action()
 
     box = iup.vbox{
       iup.label{title = "Find What:"},
-      txt_find,
-      tgl_find_case,
+      find_txt,
+      find_case,
       iup.hbox{
         iup.fill{},
         bt_find_next,

@@ -10,7 +10,7 @@ function str_find(str, str_to_find, casesensitive, start)
     return str_find(string.lower(str), string.lower(str_to_find), true, start)
   end
 
-  return string.find(str, str_to_find, start)
+  return string.find(str, str_to_find, start, true)
 end
 
 function str_filetitle(filename)
@@ -365,7 +365,7 @@ end
 function item_find_next:action()
   -- test, because it can be called from the hot key
   if (find_dlg) then
-    local find_pos = find_dlg.find_pos
+    local find_pos = tonumber(find_dlg.find_pos)
 
     local find_txt = find_dlg.find_txt
     local str_to_find = find_txt.value
@@ -374,25 +374,26 @@ function item_find_next:action()
     local casesensitive = (find_case.value == "ON")
 
     -- test again, because it can be called from the hot key
-    if (not str_to_find) then
+    if (not str_to_find or str_to_find:len()==0) then
       return
     end
 
-    if (not find_pos) or (find_pos == -1) then
-      find_pos = 0
+    if (not find_pos) then
+      find_pos = 1
     end
 
     local str = multitext.value
 
     local pos, end_pos = str_find(str, str_to_find, casesensitive, find_pos)
-
     if (not pos) then
-      local pos, end_pos = str_find(str, str_to_find, casesensitive)  -- try again from the start
+      pos, end_pos = str_find(str, str_to_find, casesensitive, 1)  -- try again from the start
     end
 
-    if (pos) and (pos >= 0) then
+    if (pos) and (pos > 0) then
       pos = pos - 1
       find_dlg.find_pos = end_pos
+
+      iup.SetFocus(multitext)
       multitext.selectionpos = pos..":"..end_pos
       multitext.find_selection = pos..":"..end_pos
 
@@ -400,7 +401,7 @@ function item_find_next:action()
       local pos = iup.TextConvertLinColToPos(multitext, lin, 0)  -- position at col=0, just scroll lines 
       multitext.scrolltopos = pos
     else
-      find_dlg.find_pos = -1
+      find_dlg.find_pos = nil
       iup.Message("Warning", "Text not found: "..str_to_find)
     end
   end
@@ -416,11 +417,11 @@ function create_find_dialog()
   local replace_lbl = iup.label{title = "Replace with:"}
 
   function replace_bt:action()
-    local find_pos = find_dlg.find_pos
+    local find_pos = tonumber(find_dlg.find_pos)
     local selectionpos = multitext.selectionpos
     local find_selection = multitext.find_selection
 
-    if (find_pos == -1 or not (selectionpos) or not (find_selection) or (selectionpos ~= find_selection)) then
+    if (not find_pos or not selectionpos or not find_selection or (selectionpos ~= find_selection)) then
       item_find_next:action()
     else
       local str_to_replace = replace_txt.value
