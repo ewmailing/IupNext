@@ -56,8 +56,7 @@ int open_cb(void)
 {
   Ihandle *filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
-  IupSetAttribute(filedlg, "FILTER", "*.txt");
-  IupSetAttribute(filedlg, "FILTERINFO", "Text Files");
+  IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
 
   IupPopup(filedlg, IUP_CENTER, IUP_CENTER);
 
@@ -80,8 +79,7 @@ int saveas_cb(void)
 {
   Ihandle *filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
-  IupSetAttribute(filedlg, "FILTER", "*.txt");
-  IupSetAttribute(filedlg, "FILTERINFO", "Text Files");
+  IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
 
   IupPopup(filedlg, IUP_CENTER, IUP_CENTER);
 

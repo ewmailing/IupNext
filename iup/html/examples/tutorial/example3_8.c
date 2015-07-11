@@ -179,8 +179,7 @@ int item_open_action_cb(Ihandle* item_open)
   Ihandle* multitext = IupGetDialogChild(item_open, "MULTITEXT");
   Ihandle *filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
-  IupSetAttribute(filedlg, "FILTER", "*.txt");
-  IupSetAttribute(filedlg, "FILTERINFO", "Text Files");
+  IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_open));
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
@@ -208,8 +207,7 @@ int item_saveas_action_cb(Ihandle* item_saveas)
   Ihandle* multitext = IupGetDialogChild(item_saveas, "MULTITEXT");
   Ihandle *filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
-  IupSetAttribute(filedlg, "FILTER", "*.txt");
-  IupSetAttribute(filedlg, "FILTERINFO", "Text Files");
+  IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_saveas));
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);

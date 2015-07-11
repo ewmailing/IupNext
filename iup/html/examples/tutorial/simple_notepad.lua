@@ -245,6 +245,7 @@ function item_open:action()
   
   local filedlg = iup.filedlg{
     dialogtype = "OPEN", 
+    extfilter="Text Files|*.txt|All Files|*.*|",
     filter = "*.txt", 
     filterinfo = "Text Files", 
     pareintaldialog=iup.GetDialog(self)
@@ -263,6 +264,7 @@ end
 function item_saveas:action()
   local filedlg = iup.filedlg{
     dialogtype = "SAVE", 
+    extfilter="Text Files|*.txt|All Files|*.*|",
     filter = "*.txt", 
     filterinfo = "Text Files", 
     parentaldialog = iup.GetDialog(self),
