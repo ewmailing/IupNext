@@ -189,10 +189,22 @@ the dialog to manage the size and position<br>
   <strong>name</strong>: a name for this dialog</p>
 <p>These functions store and manage the position and size of a dialog. So when 
 the application is run again the dialog can be show at its last position and 
-size. Use the function <strong>IupConfigDialogShow</strong> to show the dialog 
+last size. Use the function <strong>IupConfigDialogShow</strong> to show the dialog 
 adjusting its size and position. And use the function <strong>IupConfigDialogClosed</strong> 
 to save the last dialog position and size when the dialog is about to be closed, 
 usually inside the dialog CLOSE_CB callback.</p>
+<p> <strong>IupConfigDialogShow</strong> does no adjustments if the dialog is 
+already visible, just call <strong>IupShow</strong>. If the dialog was closed 
+maximized it will be shown maximized. The default size, at the first time ever 
+the dialog is shown, is maximized. The dialog size is set only if RESIZE=Yes. 
+(since 3.16)</p>
+<p>The position is saved in the variables &quot;X&quot; and &quot;Y&quot; of the given group name. 
+The size is saved in the variables &quot;Width&quot; and &quot;Height&quot; of the given group name. </p>
+<p>If your dialog is resizable and you want to avoid the last size usage because 
+you changed the dialog layout, then reset the &quot;Width&quot; and &quot;Height&quot; variables 
+before calling <strong>IupConfigDialogShow</strong>.</p>
+<p>To avoid the dialog size to be maximized, set the variable &quot;Maximized&quot; to 0 
+before calling <strong>IupConfigDialogShow</strong>. (since 3.16)</p>
 <h3>See Also</h3>
 <p> <a href="iupdestroy.html">IupDestroy</a>, <a href="iupsetattribute.html">
 IupSetAttribute</a>, <a href="iupgetattribute.html">IupGetAttribute</a> </p>

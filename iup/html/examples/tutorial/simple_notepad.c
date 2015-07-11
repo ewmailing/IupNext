@@ -724,7 +724,6 @@ int item_replace_action_cb(Ihandle* item_replace)
   }
 
   return IUP_IGNORE;  /* replace system processing for the hot key */
-  //return IUP_DEFAULT;
 }
 
 int selection_find_next_action_cb(Ihandle* ih)
