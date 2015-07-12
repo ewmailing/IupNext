@@ -28,7 +28,14 @@ function show_example(id, file){
 <h2>4. Simple Paint</h2>
 <h3>4.1 <a name="Loading_and_Saving_Images">Loading and Saving Images</a></h3>
 
-<p>XXX</p>
+<p>novo exemplo criado a partir do simple_notepad.c <br>substituimos IupText por 
+IupCanvas<br>removemos Edit/Cut,Del,Find/Replace/GoTo/SelectAll e Format/Font<br>
+como vamos desenhar em uma imagem precisamos de uma estrutura para isso<br>
+usamos a IM, apresenta a lib, descreve em linhas gerais<br>implementamos 
+read_file e write file usando funções da IM<br>File/New usa o diálogo 
+predefinido IupGetParam para obter w e h<br>copy e paste são ajustados para 
+trabalhar com imagens, mas usam a imagem toda e não uma seleção da mesma<br>o 
+desenho da imagem ainda não é implementado, vamos introduzi-lo a seguir</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a href="javascript:show_example('4_1', 'example4_1.c')">example4_1.c</a> <a href="../../examples/tutorial/example4_1.c">
