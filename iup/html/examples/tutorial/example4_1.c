@@ -13,21 +13,77 @@
 /********************************** Utilities *****************************************/
 
 
-const char* str_filetitle(const char *file_name)
+const char* str_filetitle(const char *filename)
 {
   /* Start at the last character */
-  int len = (int)strlen(file_name);
+  int len = (int)strlen(filename);
   int offset = len - 1;
   while (offset != 0)
   {
-    if (file_name[offset] == '\\' || file_name[offset] == '/')
+    if (filename[offset] == '\\' || filename[offset] == '/')
     {
       offset++;
       break;
     }
     offset--;
   }
-  return file_name + offset;
+  return filename + offset;
+}
+
+const char* str_fileext(const char *filename)
+{
+  /* Start at the last character */
+  int len = (int)strlen(filename);
+  int offset = len - 1;
+  while (offset != 0)
+  {
+    if (filename[offset] == '\\' || filename[offset] == '/')
+      break;
+
+    if (filename[offset] == '.')
+    {
+      offset++;
+      return filename + offset;
+    }
+    offset--;
+  }
+  return NULL;
+}
+
+int str_compare(const char *l, const char *r, int casesensitive)
+{
+  if (!l || !r)
+    return 0;
+
+  while (*l && *r)
+  {
+    int diff;
+    char l_char = *l,
+      r_char = *r;
+
+    /* compute the difference of both characters */
+    if (casesensitive)
+      diff = l_char - r_char;
+    else
+      diff = tolower((int)l_char) - tolower((int)r_char);
+
+    /* if they differ we have a result */
+    if (diff != 0)
+      return 0;
+
+    /* otherwise process the next characters */
+    ++l;
+    ++r;
+  }
+
+  /* check also for terminator */
+  if (*l == *r)
+    return 1;
+
+  if (*r == 0)
+    return 1;  /* if second string is at terminator, then it is partially equal */
+
+  return 0;
 }
 
 void show_error(const char* message, int error)
@@ -167,9 +223,29 @@ void save_file(Ihandle* canvas)
     IupSetAttribute(canvas, "DIRTY", "NO");
 }
 
+void set_file_format(imImage* image, const char* filename)
+{
+  const char* ext = str_fileext(filename);
+  const char* format = "JPEG";
+  if (str_compare(ext, "jpg", 0) || str_compare(ext, "jpeg", 0))
+    format = "JPEG";
+  else if (str_compare(ext, "bmp", 0))
+    format = "BMP";
+  else if (str_compare(ext, "png", 0))
+    format = "PNG";
+  else if (str_compare(ext, "tga", 0))
+    format = "TGA";
+  else if (str_compare(ext, "tif", 0) || str_compare(ext, "tiff", 0))
+    format = "TIFF";
+  imImageSetAttribString(image, "FileFormat", format);
+}
+
 void saveas_file(Ihandle* canvas, const char* filename)
 {
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+
+  set_file_format(image, filename);
+
   if (write_file(filename, image))
   {
     Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");

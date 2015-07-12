@@ -4,10 +4,18 @@ require("iupluaimglib")
 
 --********************************** Utilities *****************************************
 
+function str_nocase(s)
+  s = string.gsub(s, "%a", function (c)
+      return string.format("[%s%s]", string.lower(c),
+                                     string.upper(c))
+    end)
+  return s
+end
 
 function str_find(str, str_to_find, casesensitive, start)
   if (not casesensitive) then
-    return str_find(string.lower(str), string.lower(str_to_find), true, start)
+    str_to_find = str_nocase(str_to_find)
+    return string.find(str, str_to_find, start)
   end
 
   return string.find(str, str_to_find, start, true)

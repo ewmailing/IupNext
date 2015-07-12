@@ -9,21 +9,21 @@
 /********************************** Utilities *****************************************/
 
 
-const char* str_filetitle(const char *file_name)
+const char* str_filetitle(const char *filename)
 {
   /* Start at the last character */
-  int len = (int)strlen(file_name);
+  int len = (int)strlen(filename);
   int offset = len - 1;
   while (offset != 0)
   {
-    if (file_name[offset] == '\\' || file_name[offset] == '/')
+    if (filename[offset] == '\\' || filename[offset] == '/')
     {
       offset++;
       break;
     }
     offset--;
   }
-  return file_name + offset;
+  return filename + offset;
 }
 
 int str_compare(const char *l, const char *r, int casesensitive)
