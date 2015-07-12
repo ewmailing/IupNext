@@ -1,24 +1,23 @@
 require("iuplua")
 require("iupluaimglib")
+require("imlua")
+require("iupluaim")
 
 
 --********************************** Utilities *****************************************
 
+function str_splitfilename(filename)
+  return string.match(filename, "(.-)([^\\/]-%.?([^%.\\/]*))$")
+end
 
 function str_fileext(filename)
-  local path, title, ext = string.match(str, "(.-)([^\\/]-%.?([^%.\\/]*))$")
+  local path, title, ext = str_splitfilename(filename)
   return ext
 end
 
 function str_filetitle(filename)
-  local path, title, ext = string.match(str, "(.-)([^\\/]-%.?([^%.\\/]*))$")
+  local path, title, ext = str_splitfilename(filename)
   return title
---  local filename = string.gsub(filename, "\\", "/")
---  filename = string.reverse(filename)
---  final = string.find(filename, '/')
---  filename = string.sub(filename, 1, final-1)
---  filename = string.reverse(filename)
---  return filename
 end
 
 function show_error(message, is_error)
@@ -39,7 +38,7 @@ function show_error(message, is_error)
 end
 
 function read_file(filename)
-  local err, image = im.FileImageLoadBitmap(filename, 0)
+  local image, err = im.FileImageLoadBitmap(filename, 0)
   if (err) then
     show_error(im.ErrorStr(err), true)
   else
@@ -57,8 +56,8 @@ end
 
 function write_file(filename, image)
   local format = image:GetAttribString("FileFormat")
-  local err = imFileImageSave(filename, format, image)
-  if (err) then
+  local err = im.FileImageSave(filename, format, image)
+  if (err ~= im.ERR_NONE) then
     show_error(im.ErrorStr(err), true)
     return false
   end

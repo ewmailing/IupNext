@@ -21,13 +21,13 @@ function str_find(str, str_to_find, casesensitive, start)
   return string.find(str, str_to_find, start, true)
 end
 
+function str_splitfilename(filename)
+  return string.match(filename, "(.-)([^\\/]-%.?([^%.\\/]*))$")
+end
+
 function str_filetitle(filename)
-  local filename = string.gsub(filename, "\\", "/")
-  filename = string.reverse(filename)
-  final = string.find(filename, '/')
-  filename = string.sub(filename, 1, final-1)
-  filename = string.reverse(filename)
-  return filename
+  local path, title, ext = str_splitfilename(filename)
+  return title
 end
 
 function read_file(filename)
