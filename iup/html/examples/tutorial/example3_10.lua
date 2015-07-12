@@ -261,7 +261,7 @@ end
 
 function item_exit:action()
   if not save_check(self) then
-    return iup.IGNORE;  -- to abort the CLOSE_CB callback
+    return iup.IGNORE  -- to abort the CLOSE_CB callback
   end
   
   config:DialogClosed(iup.GetDialog(self), "MainWindow")

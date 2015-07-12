@@ -4,47 +4,34 @@ require("iupluaimglib")
 
 --********************************** Utilities *****************************************
 
-function str_nocase(s)
-  s = string.gsub(s, "%a", function (c)
-      return string.format("[%s%s]", string.lower(c),
-                                     string.upper(c))
-    end)
-  return s
-end
 
-function str_find(str, str_to_find, casesensitive, start)
-  if (not casesensitive) then
-    str_to_find = str_nocase(str_to_find)
-    return string.find(str, str_to_find, start)
-  end
-
-  return string.find(str, str_to_find, start, true)
+function str_fileext(filename)
+  local path, title, ext = string.match(str, "(.-)([^\\/]-%.?([^%.\\/]*))$")
+  return ext
 end
 
 function str_filetitle(filename)
-  local filename = string.gsub(filename, "\\", "/")
-  filename = string.reverse(filename)
-  final = string.find(filename, '/')
-  filename = string.sub(filename, 1, final-1)
-  filename = string.reverse(filename)
-  return filename
+  local path, title, ext = string.match(str, "(.-)([^\\/]-%.?([^%.\\/]*))$")
+  return title
+
+--  local filename = string.gsub(filename, "\\", "/")
+--  filename = string.reverse(filename)
+--  final = string.find(filename, '/')
+--  filename = string.sub(filename, 1, final-1)
+--  filename = string.reverse(filename)
+--  return filename
 end
 
 function read_file(filename)
-  local ifile = io.open(filename, "r")
-  if (not ifile) then
-    iup.Message("Error", "Can't open file: " .. filename)
-    return nil
-  end
-  
-  local str = ifile:read("*a")
-  if (not str) then
-    iup.Message("Error", "Fail when reading from file: " .. filename)
-    return nil
-  end
-  
-  ifile:close()
-  return str
+
+    if (image:ColorSpace() ~= im.RGB) then
+      local new_image = im.ImageCreateBased(image, nil, nil, im.RGB, nil)        
+
+      im.ConvertColorSpace(image, new_image)
+      image:Destroy()
+
+      image = new_image
+    end
 end
 
 function write_file(filename, str)
@@ -73,16 +60,24 @@ function new_file(ih)
 end
 
 function open_file(ih, filename)
-  local str = read_file(filename)
-  if (str) then
+  local image = read_file(filename)
+  if (image) then
     local dlg = iup.GetDialog(ih)
     local canvas = dlg.canvas
     local config = canvas.config
+    local old_image = canvas.image
   
     dlg.title = str_filetitle(filename).." - Simple Paint"
     canvas.filename = filename
     canvas.dirty = nil
     canvas.value = str
+    canvas.image = image
+
+    iup.Update(canvas)
+
+    if (old_image) then
+      old_image:Destroy()
+    end
     
     config:RecentUpdate(filename)
   end
@@ -94,8 +89,30 @@ function save_file(canvas)
   end
 end
 
+function set_file_format(image, filename)
+  local ext = str_fileext(filename)
+  ext:lower()
+  local format = "JPEG"
+  if (ext == "jpg" or ext == "jpeg") then
+    format = "JPEG"
+  elseif (ext == "bmp") then
+    format = "BMP"
+  elseif (ext == "png") then
+    format = "PNG"
+  elseif (ext == "tga") then
+    format = "TGA"
+  elseif (ext == "tif" or ext == "tiff") then
+    format = "TIFF"
+  end
+  image:SetAttribString("FileFormat", format)
+end
+
 function saveas_file(canvas, filename)
-  if (write_file(filename, canvas.value)) then
+  local image = canvas.image
+
+  set_file_format(image, filename)
+
+  if (write_file(filename, image)) then
     local dlg = iup.GetDialog(canvas)
     local config = canvas.config
     
@@ -240,8 +257,8 @@ end
 
 function item_new:action()
   if save_check(self) then
-    local width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
-    local height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
+    local width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640)
+    local height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480)
 
     ret, width, height = iup.GetParam("New Image", mil, "Width: %i[1,]\nHeight: %i[1,]\n", width, height)
     if (ret) then
@@ -316,7 +333,7 @@ function item_exit:action()
   local image = canvas.image
 
   if not save_check(self) then
-    return iup.IGNORE;  -- to abort the CLOSE_CB callback
+    return iup.IGNORE  -- to abort the CLOSE_CB callback
   end
 
   if (image) then
