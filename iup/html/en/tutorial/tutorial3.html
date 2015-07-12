@@ -103,24 +103,29 @@ directly? We could, but it would be used as main menu and would end up being the
 It's a good practice to separate menus in submenus and then pass these submenus as 
 items of the main menu. By doing so, an 
 application could have a file menu, a search menu, a help menu, and others as items of the main menu, as you can see in the 
-main menu declaration on the next line.<p>At last, once we are done building the main menu, we must set the MENU 
+main menu declaration on the next line.</p>
+<p>At last, once we are done building the main menu, we must set the MENU 
 attribute of the main dialog as the menu we have just created. But since it is neither a 
 string nor a number, we must use a different function to do this association, which is called <a href="../func/iupsetattributehandle.html"><strong>
-IupSetAttributeHandle</strong></a>.<p>You should notice that the exit menu 
+IupSetAttributeHandle</strong></a>.</p>
+<p>You should notice that the exit menu 
 item works fine, as we set the <em>Exit</em> menu item action callback, but <em>Open</em> and 
 <em>Save</em> still don't work.
 That's because we didn't set any callback for them. Those callbacks will use another IUP feature, which is the subject of
-our next section.<h3>3.3 <a name="Using_Pre-defined_Dialogs">Using Pre-defined Dialogs</a></h3>
+our next section.</p>
+
+<h3>3.3 <a name="Using_Pre-defined_Dialogs">Using Pre-defined Dialogs</a></h3>
 
 <p>In the previous section, we added a file open and a file save menu items, but they had no callbacks associated. 
 That's because we will use new IUP resources to deal with file handling. These 
-resources are called Pre-defined Dialogs.<p>Some dialogs are commonly found in a lot of different applications like file 
+resources are called Pre-defined Dialogs.</p><p>Some dialogs are commonly found in a lot of different applications like file 
 selection dialogs, font selection dialogs,
 color selection dialogs, etc. 
 It would be annoying to have to build the same dialog again every time we need 
 to select a file, or to select a color or a font.
-So, IUP provides pre-defined dialogs with all the necessary controls to deal with these common tasks.<p>
-We will update our last example to handle file input/output and to make use of these IUP pre-defined dialogs.
+So, IUP provides pre-defined dialogs with all the necessary controls to deal with these common tasks.</p>
+<p>
+We will update our last example to handle file input/output and to make use of these IUP pre-defined dialogs.</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a href="javascript:show_example('3_3', 'example3_3.c')">example3_3.c</a> <a href="../../examples/tutorial/example3_3.c">
@@ -147,11 +152,13 @@ handle text files but we leave the option for listing other files.</p>
 <p> Now the program calls <A href="../dlg/iuppopup.html"><strong>IupPopup</strong></a>, which is a function similar to 
 <A href="../dlg/iupfiledlg.html"><strong>IupShow</strong></a>, but it restricts the user 
 interaction only in the specified dialog. It is the equivalent of creating a Modal dialog in some toolkits. Its arguments are our 
-file dialog Ihandle followed by x and y coordinates that we defined as the center of the screen with IUP_CENTER.<p>Then we have a conditional test in which we get the value of filedlg STATUS with <A href="../func/iupgetattribute.html"><strong>IupGetInt</strong></a>. 
+file dialog Ihandle followed by x and y coordinates that we defined as the center of the screen with IUP_CENTER.</p>
+<p>Then we have a conditional test in which we get the value of filedlg STATUS with <A href="../func/iupgetattribute.html"><strong>IupGetInt</strong></a>. 
 Why not use <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a> 
 instead? That's because <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a> returns 
 attributes as strings, but we know that STATUS is an integer so we can simplify 
-our status check using <A href="../func/iupgetattribute.html"><strong>IupGetInt</strong></a>.<p>Once our file dialog returns a valid status, we are able to recover the name of the selected file using <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a> 
+our status check using <A href="../func/iupgetattribute.html"><strong>IupGetInt</strong></a>.</p>
+<p>Once our file dialog returns a valid status, we are able to recover the name of the selected file using <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a> 
 to retrieve the VALUE attribute. Then we read the file using a simple function 
 and fill in its contents on the multitext control by using the 
 <a href="../func/iupsetattribute.html"><strong>IupSetStrAttribute</strong></a> 
@@ -160,17 +167,20 @@ function to set its VALUE attribute. We can not use the
 function, because our C string returned by <A href="../func/iupgetattribute.html"><strong>IupGetAttribute</strong></a> 
 is a dynamically allocated pointer. Therefore <a href="../func/iupsetattribute.html">
 <strong>IupSetStrAttribute</strong></a> will make sure that the string is duplicated 
-internally and not dependent on the given pointer.<p>Now 
+internally and not dependent on the given pointer.</p>
+<p>Now 
 we are done with this dialog. 
 You can simply call <A href="../func/iupdestroy.html"><strong>IupDestroy</strong></a>
-to remove filedlg from memory, because we will not need it anymore.<p>Next there is another callback, 
+to remove filedlg from memory, because we will not need it anymore.</p>
+<p>Next there is another callback, 
 saveas_cb, which 
 will select a file name for saving the content of a file. It is very similar to open_cb, 
 but DIALOGTYPE is set to SAVE, so this time it will select a 
 file name for saving. In this case the filename can be also for a new file, if 
 an existing file then the user will be notified of overwriting so it can cancel 
 and start over. After selecting the filename we are going to save the multitext 
-contents to the file.<p>Now comes the font_cb callback that, as you may have already guessed, will call a predefined dialog to 
+contents to the file.</p>
+<p>Now comes the font_cb callback that, as you may have already guessed, will call a predefined dialog to 
 select a font. To do that, we use <A href="../dlg/iupfiledlg.html"><strong>IupFontDlg</strong></a> 
 instead of 
 <A href="../dlg/iupfiledlg.html"><strong>IupFileDlg</strong></a>. To set the 
@@ -178,7 +188,8 @@ font, just change the FONT attribute in the multitext control.</p>
 
 <p> The next callback is about_cb, which does nothing special, just calls 
 <A href="../dlg/iupfiledlg.html"><strong>IupMessage</strong></a> to 
-display a text to the user.<p> The following lines don't show anything new, except 
+display a text to the user.</p>
+<p> The following lines don't show anything new, except 
 for the new callbacks registration. But notice that we added &quot;...&quot; to the text 
 of the menu items in which a dialog is open. This is not mandatory, but is 
 highly recommended by common
