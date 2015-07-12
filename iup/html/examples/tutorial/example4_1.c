@@ -86,13 +86,13 @@ int str_compare(const char *l, const char *r, int casesensitive)
   return 0;
 }
 
-void show_error(const char* message, int error)
+void show_error(const char* message, int is_error)
 {
   Ihandle* dlg = IupMessageDlg();
   IupSetStrAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttribute(dlg, "DIALOGTYPE", error? "ERROR": "WARNING");
+  IupSetAttribute(dlg, "DIALOGTYPE", is_error ? "ERROR" : "WARNING");
   IupSetAttribute(dlg, "BUTTONS", "OK");
-  IupSetStrAttribute(dlg, "TITLE", error? "Error": "Warning");
+  IupSetStrAttribute(dlg, "TITLE", is_error ? "Error" : "Warning");
   IupSetStrAttribute(dlg, "VALUE", message);
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   IupDestroy(dlg);

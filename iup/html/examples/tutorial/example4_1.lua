@@ -13,7 +13,6 @@ end
 function str_filetitle(filename)
   local path, title, ext = string.match(str, "(.-)([^\\/]-%.?([^%.\\/]*))$")
   return title
-
 --  local filename = string.gsub(filename, "\\", "/")
 --  filename = string.reverse(filename)
 --  final = string.find(filename, '/')
@@ -22,8 +21,28 @@ function str_filetitle(filename)
 --  return filename
 end
 
-function read_file(filename)
+function show_error(message, is_error)
+  local dlg = iup.messagedlg{
+    parentdialog = iup.GetGlobal("PARENTDIALOG"),
+    buttons = "OK",
+    value = message,
+  }
+  if (is_error) then
+    dlg.dialogtype = "ERROR"
+    dlg.title = "Error"
+  else
+    dlg.dialogtype = "WARNING"
+    dlg.title = "Warning"
+  end
+  dlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
+  dlg:destroy()
+end
 
+function read_file(filename)
+  local err, image = im.FileImageLoadBitmap(filename, 0)
+  if (err) then
+    show_error(im.ErrorStr(err), true)
+  else
     if (image:ColorSpace() ~= im.RGB) then
       local new_image = im.ImageCreateBased(image, nil, nil, im.RGB, nil)        
 
@@ -32,31 +51,49 @@ function read_file(filename)
 
       image = new_image
     end
+  end
+  return image
 end
 
-function write_file(filename, str)
-  local ifile = io.open(filename, "w")
-  if (not ifile) then
-    iup.Message("Error", "Can't open file: " .. filename)
+function write_file(filename, image)
+  local format = image:GetAttribString("FileFormat")
+  local err = imFileImageSave(filename, format, image)
+  if (err) then
+    show_error(im.ErrorStr(err), true)
     return false
   end
-  
-  if (not ifile:write(str)) then
-    iup.Message("Error", "Fail when writing to file: " .. filename)
-  end
-  
-  ifile:close()
   return true
 end
 
-function new_file(ih)
+function new_file(ih, image)
   local dlg = iup.GetDialog(ih)
   local canvas = dlg.canvas
+  local old_image = canvas.image
   
   dlg.title = "Untitled - Simple Paint"
   canvas.filename = nil
   canvas.dirty = nil
-  canvas.value = ""
+  canvas.image = image
+
+  iup.Update(canvas)
+
+  if (old_image) then
+    old_image:Destroy()
+  end
+end
+
+function check_new_file(dlg)
+  local canvas = dlg.canvas
+  local image = canvas.image
+  if (not image) then
+    local config = canvas.config
+    local width = config:GetVariableDef("NewImage", "Width", 640)
+    local height = config:GetVariableDef("NewImage", "Height", 480)
+
+    local image = im.ImageCreate(width, height, im.RGB, im.BYTE)
+
+    new_file(dlg, image)
+  end
 end
 
 function open_file(ih, filename)
@@ -70,7 +107,6 @@ function open_file(ih, filename)
     dlg.title = str_filetitle(filename).." - Simple Paint"
     canvas.filename = filename
     canvas.dirty = nil
-    canvas.value = str
     canvas.image = image
 
     iup.Update(canvas)
@@ -84,7 +120,7 @@ function open_file(ih, filename)
 end
 
 function save_file(canvas)
-  if (write_file(canvas.filename, canvas.value)) then
+  if (write_file(canvas.filename, canvas.image)) then
     canvas.dirty = nil
   end
 end
@@ -275,7 +311,7 @@ end
 function select_file(parent_dlg, is_open)
   local filedlg = iup.filedlg{
     extfilter="Image Files|*.bmp;*.jpg;*.png;*.tif;*.tga|All Files|*.*|",
-    parentdialog = iup.GetDialog(self),
+    parentdialog = parent_dlg,
     directory = config:GetVariable("MainWindow", "LastDirectory"),
     }
     
@@ -291,7 +327,7 @@ function select_file(parent_dlg, is_open)
   if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
     if (is_open) then
-      open_file(self, filename)
+      open_file(parent_dlg, filename)
     else
       saveas_file(canvas, filename)    
     end
@@ -477,9 +513,6 @@ end
 
 -- show the dialog at the last position, with the last size
 config:DialogShow(dlg, "MainWindow")
-
--- initialize the current file
-new_file(dlg)
 
 -- open a file from the command line (allow file association in Windows)
 if (arg and arg[1]) then
