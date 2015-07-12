@@ -77,7 +77,7 @@ function item_open:action()
     dialogtype = "OPEN", 
     filter = "*.txt", 
     filterinfo = "Text Files", 
-    pareintaldialog=iup.GetDialog(self)
+    parentdialog=iup.GetDialog(self)
     }
 
   filedlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
@@ -97,7 +97,7 @@ function item_saveas:action()
     dialogtype = "SAVE", 
     filter = "*.txt", 
     filterinfo = "Text Files", 
-    parentaldialog=iup.GetDialog(self)
+    parentdialog=iup.GetDialog(self)
     }
 
   filedlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)

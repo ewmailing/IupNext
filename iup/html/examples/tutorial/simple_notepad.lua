@@ -332,9 +332,7 @@ function item_open:action()
   local filedlg = iup.filedlg{
     dialogtype = "OPEN", 
     extfilter="Text Files|*.txt|All Files|*.*|",
-    filter = "*.txt", 
-    filterinfo = "Text Files", 
-    pareintaldialog=iup.GetDialog(self),
+    parentdialog=iup.GetDialog(self),
     directory = config:GetVariable("MainWindow", "LastDirectory"),
     }
     
@@ -354,9 +352,7 @@ function item_saveas:action()
   local filedlg = iup.filedlg{
     dialogtype = "SAVE", 
     extfilter="Text Files|*.txt|All Files|*.*|",
-    filter = "*.txt", 
-    filterinfo = "Text Files", 
-    parentaldialog = iup.GetDialog(self),
+    parentdialog = iup.GetDialog(self),
     file = multitext.filename,
     directory = config:GetVariable("MainWindow", "LastDirectory"),
     }

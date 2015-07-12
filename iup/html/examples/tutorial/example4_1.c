@@ -375,14 +375,14 @@ int item_new_action_cb(Ihandle* item_new)
   return IUP_DEFAULT;
 }
 
-int select_file(Ihandle* parent_dlg, int open)
+int select_file(Ihandle* parent_dlg, int is_open)
 {
   Ihandle* config = (Ihandle*)IupGetAttribute(parent_dlg, "CONFIG");
   Ihandle* canvas = IupGetDialogChild(parent_dlg, "CANVAS");
   const char* dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
 
   Ihandle* filedlg = IupFileDlg();
-  if (open)
+  if (is_open)
     IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
   else
   {
@@ -397,7 +397,7 @@ int select_file(Ihandle* parent_dlg, int open)
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
     char* filename = IupGetAttribute(filedlg, "VALUE");
-    if (open)
+    if (is_open)
       open_file(parent_dlg, filename);
     else
       saveas_file(canvas, filename);
@@ -563,8 +563,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
 
   canvas = IupCanvas(NULL);
-  IupSetAttribute(canvas, "MULTILINE", "YES");
-  IupSetAttribute(canvas, "EXPAND", "YES");
   IupSetAttribute(canvas, "NAME", "CANVAS");
   IupSetAttribute(canvas, "DIRTY", "NO");
 /* TODO: IupSetCallback(canvas, "ACTION", (Icallback)canvas_action_cb); */
@@ -668,7 +666,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   edit_menu = IupMenu(
     item_copy,
     item_paste,
-    IupSeparator(),
     NULL);
   view_menu = IupMenu(
     item_toolbar,
@@ -775,7 +772,7 @@ int main(int argc, char **argv)
     open_file(dlg, filename);
   }
 
-  /* initialize the current file, if not loaded */
+  /* initialize the current file, if not already loaded */
   check_new_file(dlg);
 
   IupMainLoop();
