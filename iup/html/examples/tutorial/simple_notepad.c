@@ -375,20 +375,29 @@ int item_new_action_cb(Ihandle* item_new)
 int item_open_action_cb(Ihandle* item_open)
 {
   Ihandle *filedlg;
+  Ihandle* config;
+  const char* dir;
 
   if (!save_check(item_open))
     return IUP_DEFAULT;
+
+  config = (Ihandle*)IupGetAttribute(item_open, "CONFIG");
+  dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
 
   filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
   IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_open));
+  IupSetStrAttribute(filedlg, "DIRECTORY", dir);
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
     char* filename = IupGetAttribute(filedlg, "VALUE");
     open_file(item_open, filename);
+
+    dir = IupGetAttribute(filedlg, "DIRECTORY");
+    IupConfigSetVariableStr(config, "MainWindow", "LastDirectory", dir);
   }
 
   IupDestroy(filedlg);
@@ -398,11 +407,14 @@ int item_open_action_cb(Ihandle* item_open)
 int item_saveas_action_cb(Ihandle* item_saveas)
 {
   Ihandle* multitext = IupGetDialogChild(item_saveas, "MULTITEXT");
+  Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
+  const char* dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
   Ihandle *filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
   IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_saveas));
   IupSetStrAttribute(filedlg, "FILE", IupGetAttribute(multitext, "FILENAME"));
+  IupSetStrAttribute(filedlg, "DIRECTORY", dir);
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
@@ -410,6 +422,9 @@ int item_saveas_action_cb(Ihandle* item_saveas)
   {
     char* filename = IupGetAttribute(filedlg, "VALUE");
     saveas_file(multitext, filename);
+
+    dir = IupGetAttribute(filedlg, "DIRECTORY");
+    IupConfigSetVariableStr(config, "MainWindow", "LastDirectory", dir);
   }
 
   IupDestroy(filedlg);

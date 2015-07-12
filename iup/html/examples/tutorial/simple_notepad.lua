@@ -326,7 +326,8 @@ function item_open:action()
     extfilter="Text Files|*.txt|All Files|*.*|",
     filter = "*.txt", 
     filterinfo = "Text Files", 
-    pareintaldialog=iup.GetDialog(self)
+    pareintaldialog=iup.GetDialog(self),
+    directory = config:GetVariable("MainWindow", "LastDirectory"),
     }
     
   filedlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
@@ -334,6 +335,8 @@ function item_open:action()
   if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
     open_file(self, filename)
+
+    config:SetVariable("MainWindow", "LastDirectory", filedlg.directory)
   end
   
   filedlg:destroy()
@@ -347,6 +350,7 @@ function item_saveas:action()
     filterinfo = "Text Files", 
     parentaldialog = iup.GetDialog(self),
     file = multitext.filename,
+    directory = config:GetVariable("MainWindow", "LastDirectory"),
     }
 
   filedlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
@@ -354,6 +358,8 @@ function item_saveas:action()
   if (tonumber(filedlg.status) ~= -1) then
     local filename = filedlg.value
     saveas_file(multitext, filename)    
+
+    config:SetVariable("MainWindow", "LastDirectory", filedlg.directory)
   end
   
   filedlg:destroy()

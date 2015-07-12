@@ -30,30 +30,42 @@ const char* str_filetitle(const char *file_name)
   return file_name + offset;
 }
 
-static void show_file_error(int error)
+void show_error(const char* message, int error)
+{
+  Ihandle* dlg = IupMessageDlg();
+  IupSetStrAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttribute(dlg, "DIALOGTYPE", error? "ERROR": "WARNING");
+  IupSetAttribute(dlg, "BUTTONS", "OK");
+  IupSetStrAttribute(dlg, "TITLE", error? "Error": "Warning");
+  IupSetStrAttribute(dlg, "VALUE", message);
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+  IupDestroy(dlg);
+}
+
+void show_file_error(int error)
 {
   switch (error)
   {
   case IM_ERR_OPEN:
-    IupMessage("File Error", "Error Opening File.");
+    show_error("Error Opening File.",  1);
     break;
   case IM_ERR_MEM:
-    IupMessage("File Error", "Insuficient memory.");
+    show_error("Insuficient memory.",  1);
     break;
   case IM_ERR_ACCESS:
-    IupMessage("File Error", "Error Accessing File.");
+    show_error("Error Accessing File.",  1);
     break;
   case IM_ERR_DATA:
-    IupMessage("File Error", "Image type not Suported.");
+    show_error("Image type not Suported.",  1);
     break;
   case IM_ERR_FORMAT:
-    IupMessage("File Error", "Invalid Format.");
+    show_error("Invalid Format.",  1);
     break;
   case IM_ERR_COMPRESS:
-    IupMessage("File Error", "Invalid or unsupported compression.");
+    show_error("Invalid or unsupported compression.",  1);
     break;
   default:
-    IupMessage("File Error", "Unknown Error.");
+    show_error("Unknown Error.",  1);
   }
 }
 
@@ -287,48 +299,52 @@ int item_new_action_cb(Ihandle* item_new)
   return IUP_DEFAULT;
 }
 
-int item_open_action_cb(Ihandle* item_open)
+int select_file(Ihandle* parent_dlg, int open)
 {
-  Ihandle *filedlg;
+  Ihandle* config = (Ihandle*)IupGetAttribute(parent_dlg, "CONFIG");
+  Ihandle* canvas = IupGetDialogChild(parent_dlg, "CANVAS");
+  const char* dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
 
-  if (!save_check(item_open))
-    return IUP_DEFAULT;
-
-  filedlg = IupFileDlg();
-  IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
+  Ihandle* filedlg = IupFileDlg();
+  if (open)
+    IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
+  else
+  {
+    IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
+    IupSetStrAttribute(filedlg, "FILE", IupGetAttribute(canvas, "FILENAME"));
+  }
   IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
-  IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_open));
+  IupSetStrAttribute(filedlg, "DIRECTORY", dir);
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", parent_dlg);
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
     char* filename = IupGetAttribute(filedlg, "VALUE");
-    open_file(item_open, filename);
+    if (open)
+      open_file(parent_dlg, filename);
+    else
+      saveas_file(canvas, filename);
+
+    dir = IupGetAttribute(filedlg, "DIRECTORY");
+    IupConfigSetVariableStr(config, "MainWindow", "LastDirectory", dir);
   }
 
   IupDestroy(filedlg);
   return IUP_DEFAULT;
 }
 
+int item_open_action_cb(Ihandle* item_open)
+{
+  if (!save_check(item_open))
+    return IUP_DEFAULT;
+
+  return select_file(IupGetDialog(item_open), 1);
+}
+
 int item_saveas_action_cb(Ihandle* item_saveas)
 {
-  Ihandle* canvas = IupGetDialogChild(item_saveas, "CANVAS");
-  Ihandle *filedlg = IupFileDlg();
-  IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
-  IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
-  IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_saveas));
-  IupSetStrAttribute(filedlg, "FILE", IupGetAttribute(canvas, "FILENAME"));
-
-  IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
-
-  if (IupGetInt(filedlg, "STATUS") != -1)
-  {
-    char* filename = IupGetAttribute(filedlg, "VALUE");
-    saveas_file(canvas, filename);
-  }
-
-  IupDestroy(filedlg);
-  return IUP_DEFAULT;
+  return select_file(IupGetDialog(item_saveas), 0);
 }
 
 int item_save_action_cb(Ihandle* item_save)
