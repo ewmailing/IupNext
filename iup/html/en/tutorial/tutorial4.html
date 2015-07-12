@@ -48,7 +48,12 @@ desenho da imagem ainda não é implementado, vamos introduzi-lo a seguir</p>
 
 <h3>4.2 <a name="Drawing_with_OpenGL">Drawing with OpenGL</a></h3>
 
-<p>XXX</p>
+<p>IUP não possui funções para desenho gráfico, precisamos de uma biblioteca 
+externa<br>escolhemos OpenGL por sua portabilidade, desempenho e padronização<br>
+assim precisamos mudar IupCanvas por IupGLCanvas<br>na função de desenho 
+introduzimos IupGLMakeCurrent e IupGLSwapBuffers <br>depois descrevemos 
+configuração do canvas OpenGL, desenho do fundo e desenho da imagem<br>novo menu 
+para modificar a cor de fundo usando diálogo pré-definido IupColorDlg</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a href="javascript:show_example('4_2', 'example4_2.c')">example4_2.c</a> <a href="../../examples/tutorial/example4_2.c">
@@ -56,6 +61,31 @@ desenho da imagem ainda não é implementado, vamos introduzi-lo a seguir</p>
 <iframe src="../../examples/tutorial/example4_2.c" id="4_2" name="example4_2" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example4_2.png"></p>
+
+<p>XXX</p>
+
+<h3>4.3 <a name="Drawing_with_CD">Drawing with CD</a></h3>
+
+<p>XXX</p>
+
+<p class="example_title">Example Source Code 
+<span class="example_button">[in C] <a href="javascript:show_example('4_3', 'example4_3.c')">example4_3.c</a> <a href="../../examples/tutorial/example4_3.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('4_3', 'example4_3.lua')">example4_3.lua</a> <a href="../../examples/tutorial/example4_3.lua"><img alt="" src="download.png"></a></span></p>
+<iframe src="../../examples/tutorial/example4_3.c" id="4_3" name="example4_3" marginheight="0" marginwidth="0">
+</iframe>
+<p class="example_image"><img alt="" src="example4_3.png"></p>
+
+<p>XXX</p>
+
+<h3>4.4 <a name="Print_and_Zoom">Print and Zoom</a></h3>
+
+<p>XXX</p>
+
+<h3>4.5 <a name="Canvas_Interaction">Canvas Interaction and a ToolBox</a></h3>
+
+<p>XXX</p>
+
+<h3>4.6 <a name="Image_Processing">Image Processing and Progress Display</a></h3>
 
 <p>XXX</p>
 
