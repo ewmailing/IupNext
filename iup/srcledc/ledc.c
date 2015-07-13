@@ -118,6 +118,7 @@ elems[] =
   { "User",         code_empty,        check_empty,       0  },
   { "Button",       code_string2,      check_string_cb,   0  },
   { "Canvas",       code_string,       check_cb,          0  },
+  { "FlatButton",   code_string,       check_string,      0  },
   { "Dialog",       code_elem,         check_elem,        0  },
   { "Fill",         code_empty,        check_empty,       0  },
   { "FileDlg",      code_empty,        check_empty,       0  },
