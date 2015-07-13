@@ -1,9 +1,14 @@
+#ifdef WIN32            
+#include <windows.h>    /* necessary because of the Microsoft OpenGL headers dependency */
+#endif
+#include <GL/gl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <iup.h>
 #include <iup_config.h>
+#include <iupgl.h>
 #include <im.h>
 #include <im_image.h>
 #include <im_convert.h>
@@ -141,6 +146,9 @@ imImage* read_file(const char* filename)
 
       image = new_image;
     }
+
+    /* create OpenGL compatible data */
+    imImageGetOpenGLData(image, NULL);
   }
   return image;
 }
@@ -298,6 +306,45 @@ void toggle_bar_visibility(Ihandle* item, Ihandle* ih)
 
 /********************************** Callbacks *****************************************/
 
+
+int canvas_action_cb(Ihandle* canvas)
+{
+  int x, y, canvas_width, canvas_height;
+  void* gldata;
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  if (!image)
+    return IUP_DEFAULT;
+
+  IupGetIntInt(canvas, "DRAWSIZE", &canvas_width, &canvas_height);
+
+  IupGLMakeCurrent(canvas);
+
+  /* OpenGL configuration */
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);           /* image data alignment is 1 */
+
+  glViewport(0, 0, canvas_width, canvas_height);
+
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(0, canvas_width, 0, canvas_height, -1, 1);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  /* draw the background */
+  glClearColor(1, 1, 1, 1);
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  /* draw the image at the center of the canvas */
+  x = (canvas_width - image->width) / 2;
+  y = (canvas_height - image->height) / 2;
+  gldata = (void*)imImageGetAttribute(image, "GLDATA", NULL, NULL);
+  glRasterPos2i(x, y);  /* this will not work for negative values, OpenGL limitation */
+  glDrawPixels(image->width, image->height, GL_RGB, GL_UNSIGNED_BYTE, gldata);  /* no zoom support, must use texture */
+
+  IupGLSwapBuffers(canvas);
+  return IUP_DEFAULT;
+}
 
 int dropfiles_cb(Ihandle* ih, const char* filename)
 {
@@ -502,6 +549,9 @@ int item_paste_action_cb(Ihandle* item_paste)
       image = new_image;
     }
 
+    /* create OpenGL compatible data */
+    imImageGetOpenGLData(image, NULL);
+
     imImageSetAttribString(image, "FileFormat", "JPEG");
 
     IupSetAttribute(canvas, "DIRTY", "Yes");
@@ -514,7 +564,7 @@ int item_paste_action_cb(Ihandle* item_paste)
     if (old_image)
       imImageDestroy(old_image);
   }
-  return IUP_IGNORE;  /* replace system processing for the hot key, to correctly parse line feed */
+  return IUP_DEFAULT;
 }
 
 int item_toolbar_action_cb(Ihandle* item_toolbar)
@@ -567,10 +617,11 @@ Ihandle* create_main_dialog(Ihandle *config)
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
 
-  canvas = IupCanvas(NULL);
+  canvas = IupGLCanvas(NULL);
   IupSetAttribute(canvas, "NAME", "CANVAS");
   IupSetAttribute(canvas, "DIRTY", "NO");
-/* TODO: IupSetCallback(canvas, "ACTION", (Icallback)canvas_action_cb); */
+  IupSetAttribute(canvas, "BUFFER", "DOUBLE");
+  IupSetCallback(canvas, "ACTION", (Icallback)canvas_action_cb);
   IupSetCallback(canvas, "DROPFILES_CB", (Icallback)dropfiles_cb);
 
   lbl_statusbar = IupLabel("(0, 0) = [0   0   0]");
@@ -759,6 +810,7 @@ int main(int argc, char **argv)
   Ihandle *config;
 
   IupOpen(&argc, &argv);
+  IupGLCanvasOpen();
   IupImageLibOpen();
 
   config = IupConfig();
