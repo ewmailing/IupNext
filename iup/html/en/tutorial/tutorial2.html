@@ -46,19 +46,24 @@ call. After running the last IUP function, <A href="../func/iupclose.html"><stro
 the toolkit can free internal memory and close the interface system.
 Finally the program returns to exit with success. </p>
 
-<p>In Lua: The Lua sintaxe is very different from C. In Lua there is no need for includes because I/O, string manipulation and other libraries
-are already included in Lua. Otherwise, in Lua is necessary to require some packages. Those require calls replace the Open functions called in
-C. So, <A href="../func/iupopen.html"><strong>IupOpen</strong></a> becomes require "iuplua" and is done at the top of the code. This will inform Lua that the program described in the next lines
-makes use of the package iuplua. Other important change from C to Lua is the way that IUP functions are called. The IUP syntax in Lua uses the
-prefix "iup." informing Lua to search for the function inside iuplua package. So, in this example we have: iup.Message instead of <A href="../func/iupmessage.html"><strong>IupMessage</strong></a> 
+<p>In Lua instead of <strong>includes</strong> it is necessary to <strong>require</strong> 
+the packages we use. The require call replace the <A href="../func/iupopen.html"><strong>IupOpen</strong></a> function 
+called in C. So <A href="../func/iupopen.html"><strong>IupOpen</strong></a> becomes 
+<strong>require"iuplua"</strong> and like the includes it is done at the top of the code. This will inform Lua that the program described in the next lines
+makes use of the package iuplua. Other important change from C to Lua is the way that IUP functions are called. The IUP 
+calls in Lua uses the
+prefix "iup." instead of "Iup" informing Lua to search for the function inside iuplua package. So, in this example we have: iup.Message instead of <A href="../func/iupmessage.html"><strong>IupMessage</strong></a> 
 and iup.Close instead of <A href="../func/iupclose.html"><strong>IupClose</strong></a>. Another important aspect of using IUP with Lua is the fact that Lua is a interpreted language and a Lua program execute from the first line to the last one. So, there is no need to create a main 
-function. We just call the iup.Message after the package inclusion. Yet, in Lua example you will find a call to 
-<A href="../func/iupmainlooplevel.html"><strong>iup.MainLoopLevel</strong></a> and to 
-<A href="../func/iupmainloop.html"><strong>iup.MainLoop</strong></a>. <A href="../func/iupmainloop.html"><strong>iup.MainLoop</strong></a> 
-keeps the program opened waiting for IUP events while <A href="../func/iupmainlooplevel.html"><strong>iup.MainLoopLevel</strong></a> checks if <A href="../func/iupmainloop.html"><strong>iup.MainLoop</strong></a> is already called avoiding it to be called many times.</p>
+function. We just call the iup.Message after the package inclusion. Yet, in the Lua 
+version of our example you will find a call to 
+<A href="../func/iupmainlooplevel.html"><strong>iup.MainLoopLevel</strong></a>. 
+It will check if <A href="../func/iupmainloop.html"><strong>iup.MainLoop</strong></a> 
+was already called to avoid calling it again. This is useful only if your script 
+could be executed from inside another context, for regular applications there is 
+no need for calling it. </p>
 
 
-<h3>2.2 <a name="Compiling_Linking">Compiling</a> and Linking</h3>
+<h4>2.1.1 <a name="Compiling_Linking">Compiling</a> and Linking</h4>
 
 <p>Compiling and Linking a program that uses IUP (as any other third party 
 library that is not installed on the system) demands that you specify where the 
@@ -86,7 +91,7 @@ popular IDEs:</p>
 <p> If you want more details on libraries dependencies for static linking, you 
 can check the <a href="../guide.html#apl">Building Applications Guide</a>. </p>
 
-<h3>2.3 <a name="Dialog">Creating a Dialog</a></h3>
+<h3>2.2 <a name="Dialog">Creating a Dialog</a></h3>
 
 <p>Let's change the first example a little bit to add our own dialog.
 </p>
@@ -126,10 +131,17 @@ the program ends just after it. It will be a valuable exercise.</p>
 <p>From the most simple hello world to the most complex IUP application, all 
 will have this same code structure. </p>
 
-<p>In Lua: In this example we have IUP controls declared in Lua just after the iuplua package require. Syntax for declaring controls in Lua
-uses the prefix "iup." follwed by the control name in lower case. So, <A href="../elem/iuplabel.html"><strong>iup.MainLoop</strong></a> turns into iup.label, <A href="../elem/iupdialog.html"><strong>IupDialog</strong></a> into iup.dialog and <A href="../elem/iupvbox.html"><strong>IupVbox</strong></a> into iup.vbox. All attributes can be defined during the control creation. There is no need to use <A href="../func/iupsetattribute.html"><strong>IupSetAttribute</strong></a>. In Lua a control is also a table where the fields are the control' attributes. Also there is a line with "dlg:showxy". This is the way to refer to a callback in Lua. In this case we are calling main dialog's showxy callback.</p>
+<p>In Lua we created the controls just after the iuplua package require. The 
+controls construction have a different form in Lua, where the constructor name 
+is all lower and its parameters are inside a table. Although you can, there is no need to use
+<A href="../func/iupsetattribute.html"><strong>iup.SetAttribute</strong></a>. In Lua a control is also a table where the fields are the control attributes 
+and callbacks. In the example all attributes were defined during the control creation, 
+but we could also do label.title or dlg.title after calling the constructor. In 
+Lua some functions also have a syntax sugar, so instead of using "iup.ShowXY(dlg, 
+iup.CENTER,iup.CENTER)" we can write "dlg::showxy(iup.CENTER,iup.CENTER)" but 
+both are exactly the same call.</p>
 
-<h3>2.4 <a name="Interaction">Adding Interaction</a></h3>
+<h3>2.3 <a name="Interaction">Adding Interaction</a></h3>
 
 <p>In the previous section, we saw how to build a basic IUP application, but 
 without any custom interaction with the dialog. In this section, 
@@ -178,13 +190,11 @@ declare elements and callbacks, and also handle an event. From now on, we are go
 IUP controls and how to improve our application using different kinds of controls.
 </p>
 
-<p>In Lua: In this example we created a function called btn_exit_cb. This function will be our button callback. The parameter self received
-works as the ihandle in C and refers to the button that will have this callback associated. So, self.title for example, returns the attribute
-title of the control associated with this callback. This association is done by the line button.action = btn_exit_cb replacing the call to
-<A href="../func/iupsetcallback.html"><strong>IupSetCallback</strong></a> in C. Another way to associate a callback is to do button:exit_cb(self) but for use this syntax, the button element must exist before the callback creation. Lua interprets code from the begining to the end of 
-the file remember?</p>
+<p>In Lua we set the button action callback just like we set an attribute. So, 
+there is no call to
+<A href="../func/iupsetcallback.html"><strong>IupSetCallback</strong></a>. </p>
 
-<h3>2.5 <a name="Layout">Improving the Layout</a></h3>
+<h3>2.4 <a name="Adding_Layout_Elements">Adding Layout Elements</a></h3>
 
 <p> Up until now we have just positioned our controls inside a vbox which, as told, aligns all controls
 inside it vertically. This is just a small sample of the IUP's layout concept. IUP implements an 
@@ -217,6 +227,13 @@ That means it will be displayed above <strong>button</strong>, and that's all. O
 different elements and is disposed vertically one above the other. An interesting 
 exercise would be to change the code above and use an hbox to see what happens.</p>
 
+<p>In Lua we used a simpler way to associate a callback, using a Lua syntax 
+sugar "button:exit_cb()". But to use this syntax, the button element must exist 
+before the callback declaration, so we also moved its code to after the button 
+construction.</p>
+
+<h3>2.5 <a name="Improving_the_Layout">Improving the Layout</a></h3>
+
 <p>Now that you understand the basics of abstract layout, let us present three attributes available to both vboxes and hboxes. They are: 
 ALIGNMENT, GAP and MARGIN.</p>
 <p>ALIGNMENT defines the horizontal or vertical alignment of elements inside the 
@@ -234,7 +251,7 @@ Its default value is "0x0" (means no margin).</p>
 
 <p>Let's see how our layout responds to these three attributes.</p>
 
-<p>In Lua: Note that Lua version has almost no changes. We just add a line with the label creation and inserted it into the vbox a little furder.</p>
+<p>Notice that the Lua version of our example has only a few changes. We just add a line with the label creation and inserted it into the vbox a little further.</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a target="example2_5" href="../../examples/tutorial/example2_5.c">example2_5.c</a> <a href="../../examples/tutorial/example2_5.c">
@@ -250,9 +267,6 @@ dialog. Can you figure out which attributes we need to set in order to obtain a 
 closer appearance?</p>
 <p class="example_image"><a href="../../examples/tutorial/example2_5a.c">
 <img src="example2_5a.png"></a></p>
-
-<p>In Lua: Our vbox has now three new attributes declared inside the vbox creation. We could also have used syntax vbox.alignment, vbox.gap 
-and vbox.margin to replace <A href="../func/iupsetattribute.html"><strong>IupSetAttribute</strong></a> in C. </p>
 
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>

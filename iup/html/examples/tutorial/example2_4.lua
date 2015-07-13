@@ -1,12 +1,12 @@
 require("iuplua")
 
-function btn_exit_cb(self)
+label = iup.label{title = "Hello world from IUP."}
+button = iup.button{title = "OK"}
+
+function button:action()
   -- Exits the main loop
   return iup.CLOSE  
 end
-
-label = iup.label{title = "Hello world from IUP."}
-button = iup.button{title = "OK"}
 
 vbox = iup.vbox{label,button}
 dlg = iup.dialog{

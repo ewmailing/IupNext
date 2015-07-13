@@ -6,14 +6,13 @@ function btn_exit_cb(self)
   return iup.CLOSE  
 end
 
-button = iup.button{title = "OK"}
+button = iup.button{title = "OK", action = btn_exit_cb}
 
 vbox = iup.vbox{button}
 dlg = iup.dialog{
   vbox,
   title = "Hello World 3"
 }
-button.action = btn_exit_cb
 
 dlg:showxy(iup.CENTER,iup.CENTER)
 

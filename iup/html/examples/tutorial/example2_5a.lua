@@ -1,12 +1,12 @@
 require("iuplua")
 
-function btn_exit_cb(self)
+label = iup.label{title = "Hello world from IUP.", padding = "10x20"}
+button = iup.button{title = "OK", padding = "30x2"}
+
+function button:action()
   -- Exits the main loop
   return iup.CLOSE  
 end
-
-label = iup.label{title = "Hello world from IUP.", padding = "10x20"}
-button = iup.button{title = "OK", padding = "30x2"}
 
 vbox = iup.vbox{
   label,
