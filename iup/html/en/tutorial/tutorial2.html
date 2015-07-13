@@ -9,11 +9,6 @@
 	<meta http-equiv="Content-Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="../../style.css">
   <link rel="stylesheet" type="text/css" href="tutorial.css">
-<script LANGUAGE="JavaScript">
-function show_example(id, file){
-    document.getElementById(id).src = "../../examples/tutorial/"+file;
-}
-</script>
 </head>
 <body>
 
@@ -32,8 +27,8 @@ function show_example(id, file){
 <p>The code bellow will shows how to open an IUP environment and displays a simple message. Each line of code is explained after the code.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('2_1', 'example2_1.c')">example2_1.c</a> <a href="../../examples/tutorial/example2_1.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('2_1', 'example2_1.lua')">example2_1.lua</a> <a href="../../examples/tutorial/example2_1.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example2_1" href="../../examples/tutorial/example2_1.c">example2_1.c</a> <a href="../../examples/tutorial/example2_1.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example2_1" href="../../examples/tutorial/example2_1.lua">example2_1.lua</a> <a href="../../examples/tutorial/example2_1.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example2_1.c" id="2_1" name="example2_1" marginheight="0" marginwidth="0" style="height: 15em">
 </iframe>
 <p class="example_image"><img alt="" src="example2_1.png"></p>
@@ -50,6 +45,17 @@ will be displayed to the user. Following, we have a <A href="../func/iupclose.ht
 call. After running the last IUP function, <A href="../func/iupclose.html"><strong>IupClose</strong></a> must be run so that 
 the toolkit can free internal memory and close the interface system.
 Finally the program returns to exit with success. </p>
+
+<p>In Lua: The Lua sintaxe is very different from C. In Lua there is no need for includes because I/O, string manipulation and other libraries
+are already included in Lua. Otherwise, in Lua is necessary to require some packages. Those require calls replace the Open functions called in
+C. So, <A href="../func/iupopen.html"><strong>IupOpen</strong></a> becomes require "iuplua" and is done at the top of the code. This will inform Lua that the program described in the next lines
+makes use of the package iuplua. Other important change from C to Lua is the way that IUP functions are called. The IUP syntax in Lua uses the
+prefix "iup." informing Lua to search for the function inside iuplua package. So, in this example we have: iup.Message instead of <A href="../func/iupmessage.html"><strong>IupMessage</strong></a> 
+and iup.Close instead of <A href="../func/iupclose.html"><strong>IupClose</strong></a>. Another important aspect of using IUP with Lua is the fact that Lua is a interpreted language and a Lua program execute from the first line to the last one. So, there is no need to create a main 
+function. We just call the iup.Message after the package inclusion. Yet, in Lua example you will find a call to 
+<A href="../func/iupmainlooplevel.html"><strong>iup.MainLoopLevel</strong></a> and to 
+<A href="../func/iupmainloop.html"><strong>iup.MainLoop</strong></a>. <A href="../func/iupmainloop.html"><strong>iup.MainLoop</strong></a> 
+keeps the program opened waiting for IUP events while <A href="../func/iupmainlooplevel.html"><strong>iup.MainLoopLevel</strong></a> checks if <A href="../func/iupmainloop.html"><strong>iup.MainLoop</strong></a> is already called avoiding it to be called many times.</p>
 
 
 <h3>2.2 <a name="Compiling_Linking">Compiling</a> and Linking</h3>
@@ -86,8 +92,8 @@ can check the <a href="../guide.html#apl">Building Applications Guide</a>. </p>
 </p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('2_2', 'example2_2.c')">example2_2.c</a> <a href="../../examples/tutorial/example2_2.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('2_2', 'example2_2.lua')">example2_2.lua</a> <a href="../../examples/tutorial/example2_2.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example2_2" href="../../examples/tutorial/example2_2.c">example2_2.c</a> <a href="../../examples/tutorial/example2_2.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example2_2" href="../../examples/tutorial/example2_2.lua">example2_2.lua</a> <a href="../../examples/tutorial/example2_2.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example2_2.c" id="2_2" name="example2_2" marginheight="0" marginwidth="0" style="height: 23em">
 </iframe>
 <p class="example_image"><img src="example2_2.png"></p>
@@ -120,6 +126,9 @@ the program ends just after it. It will be a valuable exercise.</p>
 <p>From the most simple hello world to the most complex IUP application, all 
 will have this same code structure. </p>
 
+<p>In Lua: In this example we have IUP controls declared in Lua just after the iuplua package require. Syntax for declaring controls in Lua
+uses the prefix "iup." follwed by the control name in lower case. So, <A href="../elem/iuplabel.html"><strong>iup.MainLoop</strong></a> turns into iup.label, <A href="../elem/iupdialog.html"><strong>IupDialog</strong></a> into iup.dialog and <A href="../elem/iupvbox.html"><strong>IupVbox</strong></a> into iup.vbox. All attributes can be defined during the control creation. There is no need to use <A href="../func/iupsetattribute.html"><strong>IupSetAttribute</strong></a>. In Lua a control is also a table where the fields are the control' attributes. Also there is a line with "dlg:showxy". This is the way to refer to a callback in Lua. In this case we are calling main dialog's showxy callback.</p>
+
 <h3>2.4 <a name="Interaction">Adding Interaction</a></h3>
 
 <p>In the previous section, we saw how to build a basic IUP application, but 
@@ -128,8 +137,8 @@ we will add interaction to our application using a button.
 </p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('2_3', 'example2_3.c')">example2_3.c</a> <a href="../../examples/tutorial/example2_3.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('2_3', 'example2_3.lua')">example2_3.lua</a> <a href="../../examples/tutorial/example2_3.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example2_3" href="../../examples/tutorial/example2_3.c">example2_3.c</a> <a href="../../examples/tutorial/example2_3.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example2_3" href="../../examples/tutorial/example2_3.lua">example2_3.lua</a> <a href="../../examples/tutorial/example2_3.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example2_3.c" id="2_3" name="example2_3" marginheight="0" marginwidth="0" style="height: 36em">
 </iframe>
 <p class="example_image"><img src="example2_3.png"></p>
@@ -169,6 +178,12 @@ declare elements and callbacks, and also handle an event. From now on, we are go
 IUP controls and how to improve our application using different kinds of controls.
 </p>
 
+<p>In Lua: In this example we created a function called btn_exit_cb. This function will be our button callback. The parameter self received
+works as the ihandle in C and refers to the button that will have this callback associated. So, self.title for example, returns the attribute
+title of the control associated with this callback. This association is done by the line button.action = btn_exit_cb replacing the call to
+<A href="../func/iupsetcallback.html"><strong>IupSetCallback</strong></a> in C. Another way to associate a callback is to do button:exit_cb(self) but for use this syntax, the button element must exist before the callback creation. Lua interprets code from the begining to the end of 
+the file remember?</p>
+
 <h3>2.5 <a name="Layout">Improving the Layout</a></h3>
 
 <p> Up until now we have just positioned our controls inside a vbox which, as told, aligns all controls
@@ -190,8 +205,8 @@ a label
 to it.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('2_4', 'example2_4.c')">example2_4.c</a> <a href="../../examples/tutorial/example2_4.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('2_4', 'example2_4.lua')">example2_4.lua</a> <a href="../../examples/tutorial/example2_4.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example2_4" href="../../examples/tutorial/example2_4.c">example2_4.c</a> <a href="../../examples/tutorial/example2_4.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example2_4" href="../../examples/tutorial/example2_4.lua">example2_4.lua</a> <a href="../../examples/tutorial/example2_4.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example2_4.c" id="2_4" name="example2_4" marginheight="0" marginwidth="0" style="height: 37em">
 </iframe>
 <p class="example_image"><img src="example2_4.png"></p>
@@ -219,9 +234,11 @@ Its default value is "0x0" (means no margin).</p>
 
 <p>Let's see how our layout responds to these three attributes.</p>
 
+<p>In Lua: Note that Lua version has almost no changes. We just add a line with the label creation and inserted it into the vbox a little furder.</p>
+
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('2_5', 'example2_5.c')">example2_5.c</a> <a href="../../examples/tutorial/example2_5.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('2_5', 'example2_5.lua')">example2_5.lua</a> <a href="../../examples/tutorial/example2_5.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example2_5" href="../../examples/tutorial/example2_5.c">example2_5.c</a> <a href="../../examples/tutorial/example2_5.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example2_5" href="../../examples/tutorial/example2_5.lua">example2_5.lua</a> <a href="../../examples/tutorial/example2_5.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example2_5.c" id="2_5" name="example2_5" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img src="example2_5.png"></p>
@@ -233,6 +250,9 @@ dialog. Can you figure out which attributes we need to set in order to obtain a 
 closer appearance?</p>
 <p class="example_image"><a href="../../examples/tutorial/example2_5a.c">
 <img src="example2_5a.png"></a></p>
+
+<p>In Lua: Our vbox has now three new attributes declared inside the vbox creation. We could also have used syntax vbox.alignment, vbox.gap 
+and vbox.margin to replace <A href="../func/iupsetattribute.html"><strong>IupSetAttribute</strong></a> in C. </p>
 
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>

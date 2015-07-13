@@ -9,11 +9,6 @@
 	<meta http-equiv="Content-Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="../../style.css">
   <link rel="stylesheet" type="text/css" href="tutorial.css">
-<script LANGUAGE="JavaScript">
-function show_example(id, file){
-    document.getElementById(id).src = "../../examples/tutorial/"+file;
-}
-</script>
 	</head>
 <body>
 
@@ -41,8 +36,8 @@ editable text field that supports many lines, which is mandatory to build a simp
 <p>Our starting code for the simple notepad should be as follows.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('3_1', 'example3_1.c')">example3_1.c</a> <a href="../../examples/tutorial/example3_1.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('3_1', 'example3_1.lua')">example3_1.lua</a> <a href="../../examples/tutorial/example3_1.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a href="../../examples/tutorial/example3_1.c" target="example3_1">example3_1.c</a> <a href="../../examples/tutorial/example3_1.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="../../examples/tutorial/example3_1.lua" target="example3_1">example3_1.lua</a> <a href="../../examples/tutorial/example3_1.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example3_1.c" id="3_1" name="example3_1" marginheight="0" marginwidth="0" style="height: 31em">
 </iframe>
 <p class="example_image"><img alt="" src="example3_1.png"></p>
@@ -86,8 +81,8 @@ menu will be an error.</p>
 <p>Let's add a menu with a few items in our example.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('3_2', 'example3_2.c')">example3_2.c</a> <a href="../../examples/tutorial/example3_2.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('3_2', 'example3_2.lua')">example3_2.lua</a> <a href="../../examples/tutorial/example3_2.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example3_2" href="../../examples/tutorial/example3_2.c">example3_2.c</a> <a href="../../examples/tutorial/example3_2.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example3_2" href="../../examples/tutorial/example3_2.lua">example3_2.lua</a> <a href="../../examples/tutorial/example3_2.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example3_2.c" id="3_2" name="example3_2" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_2.png"></p>
@@ -128,8 +123,8 @@ So, IUP provides pre-defined dialogs with all the necessary controls to deal wit
 We will update our last example to handle file input/output and to make use of these IUP pre-defined dialogs.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('3_3', 'example3_3.c')">example3_3.c</a> <a href="../../examples/tutorial/example3_3.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('3_3', 'example3_3.lua')">example3_3.lua</a> <a href="../../examples/tutorial/example3_3.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example3_3" href="../../examples/tutorial/example3_3.c">example3_3.c</a> <a href="../../examples/tutorial/example3_3.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example3_3" href="../../examples/tutorial/example3_3.lua">example3_3.lua</a> <a href="../../examples/tutorial/example3_3.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example3_3.c" name="example3_3" id="3_3" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_3.png"></p>
@@ -212,8 +207,8 @@ search for this string many times, and the search can also be case sensitive. Go
 position the caret to a specific line in the text.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('3_4', 'example3_4.c')">example3_4.c</a> <a href="../../examples/tutorial/example3_4.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('3_4', 'example3_4.lua')">example3_4.lua</a> <a href="../../examples/tutorial/example3_4.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example3_4" href="../../examples/tutorial/example3_4.c">example3_4.c</a> <a href="../../examples/tutorial/example3_4.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example3_4" href="../../examples/tutorial/example3_4.lua">example3_4.lua</a> <a href="../../examples/tutorial/example3_4.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example3_4.c" name="example3_4" id="3_4" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_4.png"></p>
@@ -328,8 +323,8 @@ caret position in the text, and to achieve this, we will use a IupText callback
 called CARET_CB, which is called every time the caret position is changed. </p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('3_5', 'example3_5.c')">example3_5.c</a> <a href="../../examples/tutorial/example3_5.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('3_5', 'example3_5.lua')">example3_5.lua</a> <a href="../../examples/tutorial/example3_5.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example3_5" href="../../examples/tutorial/example3_5.c">example3_5.c</a> <a href="../../examples/tutorial/example3_5.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example3_5" href="../../examples/tutorial/example3_5.lua">example3_5.lua</a> <a href="../../examples/tutorial/example3_5.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example3_5.c" name="example3_5" id="3_5" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_5.png"></p>
@@ -382,8 +377,8 @@ Open selection dialog when the user presses Ctrl+O, you just have to set a callb
 complete table with all keyboard codes available in IUP.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('3_6', 'example3_6.c')">example3_6.c</a> <a href="../../examples/tutorial/example3_6.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('3_6', 'example3_6.lua')">example3_6.lua</a> <a href="../../examples/tutorial/example3_6.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example3_6" href="../../examples/tutorial/example3_6.c">example3_6.c</a> <a href="../../examples/tutorial/example3_6.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example3_6" href="../../examples/tutorial/example3_6.lua">example3_6.lua</a> <a href="../../examples/tutorial/example3_6.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example3_6.c" name="example3_6" id="3_6" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_6.png"></p>
@@ -416,8 +411,8 @@ variable has a key name, a value and a group that it belongs to.</p>
 <strong>IupConfig</strong></a> demands the inclusion of header file iup_config.h.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('3_7', 'example3_7.c')">example3_7.c</a> <a href="../../examples/tutorial/example3_7.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('3_7', 'example3_7.lua')">example3_7.lua</a> <a href="../../examples/tutorial/example3_7.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example3_7" href="../../examples/tutorial/example3_7.c">example3_7.c</a> <a href="../../examples/tutorial/example3_7.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example3_7" href="../../examples/tutorial/example3_7.lua">example3_7.lua</a> <a href="../../examples/tutorial/example3_7.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example3_7.c" name="example3_7" id="3_7" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_7.png"></p>
@@ -503,8 +498,8 @@ the same idea, but this time checking the content of the attribute SELECTEDTEXT.
 items. Otherwise, you can enable all items.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('3_8', 'example3_8.c')">example3_8.c</a> <a href="../../examples/tutorial/example3_8.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('3_8', 'example3_8.lua')">example3_8.lua</a> <a href="../../examples/tutorial/example3_8.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example3_8" href="../../examples/tutorial/example3_8.c">example3_8.c</a> <a href="../../examples/tutorial/example3_8.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example3_8" href="../../examples/tutorial/example3_8.lua">example3_8.lua</a> <a href="../../examples/tutorial/example3_8.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example3_8.c" name="example3_8" id="3_8" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_8.png"></p>
@@ -574,8 +569,8 @@ we use argc and argv to check if the user tried to open a file from the command 
 <p> That's all for file handling. Let's proceed to the next section, where we will work with IUP dynamic layout.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('3_9', 'example3_9.c')">example3_9.c</a> <a href="../../examples/tutorial/example3_9.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('3_9', 'example3_9.lua')">example3_9.lua</a> <a href="../../examples/tutorial/example3_9.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example3_9" href="../../examples/tutorial/example3_9.c">example3_9.c</a> <a href="../../examples/tutorial/example3_9.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example3_9" href="../../examples/tutorial/example3_9.lua">example3_9.lua</a> <a href="../../examples/tutorial/example3_9.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example3_9.c" name="example3_9" id="3_9" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_9.png"></p>
@@ -610,8 +605,8 @@ the item status.</p>
 submenu and its items, and the new callbacks associations.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('3_10', 'example3_10.c')">example3_10.c</a> <a href="../../examples/tutorial/example3_10.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('3_10', 'example3_10.lua')">example3_10.lua</a> <a href="../../examples/tutorial/example3_10.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example3_10" href="../../examples/tutorial/example3_10.c">example3_10.c</a> <a href="../../examples/tutorial/example3_10.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example3_10" href="../../examples/tutorial/example3_10.lua">example3_10.lua</a> <a href="../../examples/tutorial/example3_10.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example3_10.c" name="example3_10" id="3_10" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_10.png"></p>
@@ -626,8 +621,8 @@ This function shows the IUP website, but it can also show a local HTML file. In 
 opening any kind of document provided that it is associated with an application.</p>
 
 <p class="example_title">Example Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('3_11', 'example3_11.c')">example3_11.c</a> <a href="../../examples/tutorial/example3_11.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('3_11', 'example3_11.lua')">example3_11.lua</a> <a href="../../examples/tutorial/example3_11.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="example3_11" href="../../examples/tutorial/example3_11.c">example3_11.c</a> <a href="../../examples/tutorial/example3_11.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example3_11" href="../../examples/tutorial/example3_11.lua">example3_11.lua</a> <a href="../../examples/tutorial/example3_11.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/example3_11.c" name="example3_11" id="3_11" marginheight="0" marginwidth="0">
 </iframe>
 <p class="example_image"><img alt="" src="example3_11.png"></p>
@@ -647,8 +642,8 @@ comments. Any contribution to this code is welcome. Please, send us your
 comments and suggestions.</p>
 
 <p class="example_title">Simple Notepad Source Code 
-<span class="example_button">[in C] <a href="javascript:show_example('simple_notepad', 'simple_notepad.c')">simple_notepad.c</a> <a href="../../examples/tutorial/simple_notepad.c">
-<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a href="javascript:show_example('simple_notepad', 'simple_notepad.lua')">simple_notepad.lua</a> <a href="../../examples/tutorial/simple_notepad.lua"><img alt="" src="download.png"></a></span></p>
+<span class="example_button">[in C] <a target="simple_notepad" href="../../examples/tutorial/simple_notepad.c">simple_notepad.c</a> <a href="../../examples/tutorial/simple_notepad.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="simple_notepad" href="../../examples/tutorial/simple_notepad.lua">simple_notepad.lua</a> <a href="../../examples/tutorial/simple_notepad.lua"><img alt="" src="download.png"></a></span></p>
 <iframe src="../../examples/tutorial/simple_notepad.c" name="simple_notepad" id="simple_notepad" marginheight="0" marginwidth="0">
 </iframe>
 
