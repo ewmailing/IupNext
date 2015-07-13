@@ -306,10 +306,84 @@ wb_usr.tree =
         {
           name= {en= "2. Hello World"},
           link= "tutorial/tutorial2.html",
+          folder=
+          {
+            {
+              name= {en= "2.1 Initialization"},
+              link= "tutorial/tutorial2.html#Initialization",
+            },
+            {
+              name= {en= "2.2 Creating a Dialog"},
+              link= "tutorial/tutorial2.html#Dialog",
+            },
+            {
+              name= {en= "2.3 Adding Interaction"},
+              link= "tutorial/tutorial2.html#Interaction",
+            },
+            {
+              name= {en= "2.4 Adding Layout Elements"},
+              link= "tutorial/tutorial2.html#Adding_Layout_Elements",
+            },
+            {
+              name= {en= "2.5 Improving the Layout"},
+              link= "tutorial/tutorial2.html#Improving_the_Layout",
+            },
+          },
         },
         {
           name= {en= "3. Simple Notepad"},
           link= "tutorial/tutorial3.html",
+          folder=
+          {
+            {
+              name= {en= "3.1 Main Dialog"},
+              link= "tutorial/tutorial3.html#Main_Dialog",
+            },
+            {
+              name= {en= "3.2 Adding a Menu"},
+              link= "tutorial/tutorial3.html#Adding_a_Menu",
+            },
+            {
+              name= {en= "3.3 Using Pre-defined Dialogs"},
+              link= "tutorial/tutorial3.html#Using_Pre_Dialogs",
+            },
+            {
+              name= {en= "3.4 Custom Dialogs"},
+              link= "tutorial/tutorial3.html#Custom_Dialogs",
+            },
+            {
+              name= {en= "3.5 Adding a Toolbar and a Statusbar"},
+              link= "tutorial/tutorial3.html#Toolbar_Statusbar",
+            },
+            {
+              name= {en= "3.6 Defining Hot Keys"},
+              link= "tutorial/tutorial3.html#Hot_Keys",
+            },
+            {
+              name= {en= "3.7 Recent Files Menu and a Configuration File"},
+              link= "tutorial/tutorial3.html#Recent_Config",
+            },
+            {
+              name= {en= "3.8 Clipboard Support"},
+              link= "tutorial/tutorial3.html#Clipboard",
+            },
+            {
+              name= {en= "3.9 More File Management"},
+              link= "tutorial/tutorial3.html#More_File_Management",
+            },
+            {
+              name= {en= "3.10 Dynamic Layout"},
+              link= "tutorial/tutorial3.html#Dynamic_Layout",
+            },
+            {
+              name= {en= "3.11 External Help"},
+              link= "tutorial/tutorial3.html#External_Help",
+            },
+            {
+              name= {en= "3.12 Final Considerations"},
+              link= "tutorial/tutorial3.html#Final_Considerations",
+            },
+          },
         },
       }
     },

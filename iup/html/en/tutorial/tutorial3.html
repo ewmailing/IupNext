@@ -109,7 +109,7 @@ item works fine, as we set the <em>Exit</em> menu item action callback, but <em>
 That's because we didn't set any callback for them. Those callbacks will use another IUP feature, which is the subject of
 our next section.</p>
 
-<h3>3.3 <a name="Using_Pre-defined_Dialogs">Using Pre-defined Dialogs</a></h3>
+<h3>3.3 <a name="Using_Pre_Dialogs">Using Pre-defined Dialogs</a></h3>
 
 <p>In the previous section, we added a file open and a file save menu items, but they had no callbacks associated. 
 That's because we will use new IUP resources to deal with file handling. These 
@@ -302,10 +302,10 @@ dialog is hidden, it is not destroyed, so you can show it again.</p>
 <p>The Go To dialog will work in the same way. If you have understood how to 
 create the Find dialog, you should be able to build the Go To dialogs.</p>
 
-<h3>3.5 <a name="Toolbar_Statusbar">Adding a Toolbar and a Status bar</a></h3>
+<h3>3.5 <a name="Toolbar_Statusbar">Adding a Toolbar and a Statusbar</a></h3>
 <p>Now that we saw how to use predefined dialogs or how to build our own 
 dialogs, lets see how to implement two other resources present in many other 
-applications: toolbars and status bars.</p>
+applications: toolbars and statusbars.</p>
 <p>Toolbars are a set of buttons, usually positioned side by side in the top 
 of the dialog, just bellow the menu. To build our toolbar, we will use the attribute IMAGE 
 of <a href="../elem/iupbutton.html"><strong>IupButton</strong></a>. As in 
@@ -315,10 +315,10 @@ buttons. These images are part of an additional library called
 library, call <strong>IupImageLibOpen</strong> right after
 <a href="../func/iupopen.html"><strong>IupOpen</strong>.</a></p>
 
-<p>Status bars normally appear on the bottom of the dialog and usually show some information 
+<p>Statusbars normally appear on the bottom of the dialog and usually show some information 
 about what is happening inside the application. To build our statusbar, we will 
 use a set of <a href="../elem/iuplabel.html"><strong>IupLabel</strong></a> 
-controls arranged side by side. In our status bar, we will be displaying the 
+controls arranged side by side. In our statusbar, we will be displaying the 
 caret position in the text, and to achieve this, we will use a IupText callback 
 called CARET_CB, which is called every time the caret position is changed. </p>
 
@@ -342,7 +342,7 @@ and column position. </p>
 appears. Just after IupOpen, you will find a call to <a href="../iupimglib.html"><strong>IupImageLibOpen</strong></a>. This function 
 will load the image library, so we can use its images in our toolbar.</p>
 <p>A few lines after, we will find our lbl_statusbar declaration. This label will 
-play the role of our status bar. It needs the EXPAND attribute set to HORIZONTAL, 
+play the role of our statusbar. It needs the EXPAND attribute set to HORIZONTAL, 
 so it will occupy all the horizontal space inside the vbox. Following we will see some button declarations 
 (btn_open, btn_save and btn_find) and some calls to
 <a href="../func/iupsetattribute.html"><strong>IupSetAttribute</strong></a> 
@@ -361,7 +361,7 @@ keyboard focus as toolbar buttons behave.&nbsp; </p>
 <p>The final change will be the inclusion of toolbar_hb and lbl_statusbar in the vbox 
 that already had our multitext. The toolbar comes first because it is a vbox and we 
 want it above the multitext. lbl_statusbar goes after because we want it bellow the 
-multitext. That's all. Our application now has both a toolbar and a status bar. 
+multitext. That's all. Our application now has both a toolbar and a statusbar. 
 In the next section, we will improve it even more by adding hot keys to our menus.</p>
 <h3>3.6 Defining <a name="Hot_Keys">Hot Keys</a></h3>
 <p>Applications that have menus always present hotkeys to its users. IUP also 
@@ -599,7 +599,7 @@ recompute the dialog layout.</p>
 
 <p> Next two new callbacks appear: item_toolbar_action_cb and item_statusbar_action_cb. Both
 callbacks are responsible for calling toggle_bar_visibility and calling IupConfigSetVariableStr to store
-the item status.</p>
+the item state.</p>
 
 <p> The next change will appear only in main function, and it will be the declaration of our new View
 submenu and its items, and the new callbacks associations.</p>
