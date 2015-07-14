@@ -311,9 +311,8 @@ int canvas_action_cb(Ihandle* canvas)
 {
   int x, y, canvas_width, canvas_height;
   void* gldata;
-  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  if (!image)
-    return IUP_DEFAULT;
+  unsigned char r, g, b;
+  imImage* image;
 
   IupGetIntInt(canvas, "DRAWSIZE", &canvas_width, &canvas_height);
 
@@ -332,15 +331,20 @@ int canvas_action_cb(Ihandle* canvas)
   glLoadIdentity();
 
   /* draw the background */
-  glClearColor(1, 1, 1, 1);
+  IupGetRGB(canvas, "BACKGROUND", &r, &g, &b);
+  glClearColor(r / 255.f, g / 255.f, b / 255.f, 1);
   glClear(GL_COLOR_BUFFER_BIT);
 
   /* draw the image at the center of the canvas */
-  x = (canvas_width - image->width) / 2;
-  y = (canvas_height - image->height) / 2;
-  gldata = (void*)imImageGetAttribute(image, "GLDATA", NULL, NULL);
-  glRasterPos2i(x, y);  /* this will not work for negative values, OpenGL limitation */
-  glDrawPixels(image->width, image->height, GL_RGB, GL_UNSIGNED_BYTE, gldata);  /* no zoom support, must use texture */
+  image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  if (image)
+  {
+    x = (canvas_width - image->width) / 2;
+    y = (canvas_height - image->height) / 2;
+    gldata = (void*)imImageGetAttribute(image, "GLDATA", NULL, NULL);
+    glRasterPos2i(x, y);  /* this will not work for negative values, OpenGL limitation */
+    glDrawPixels(image->width, image->height, GL_RGB, GL_UNSIGNED_BYTE, gldata);  /* no zoom support, must use texture */
+  }
 
   IupGLSwapBuffers(canvas);
   return IUP_DEFAULT;
@@ -567,6 +571,31 @@ int item_paste_action_cb(Ihandle* item_paste)
   return IUP_DEFAULT;
 }
 
+int item_background_action_cb(Ihandle* item_background)
+{
+  Ihandle* canvas = IupGetDialogChild(item_background, "CANVAS");
+  Ihandle* colordlg = IupColorDlg();
+  char* background = IupGetAttribute(canvas, "BACKGROUND");
+  IupSetStrAttribute(colordlg, "VALUE", background);
+  IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(item_background));
+
+  IupPopup(colordlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  if (IupGetInt(colordlg, "STATUS") == 1)
+  {
+    Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
+    background = IupGetAttribute(colordlg, "VALUE");
+    IupSetStrAttribute(canvas, "BACKGROUND", background);
+
+    IupUpdate(canvas);
+
+    IupConfigSetVariableStr(config, "MainWindow", "Background", background);
+  }
+
+  IupDestroy(colordlg);
+  return IUP_DEFAULT;
+}
+
 int item_toolbar_action_cb(Ihandle* item_toolbar)
 {
   Ihandle* canvas = IupGetDialogChild(item_toolbar, "CANVAS");
@@ -615,7 +644,8 @@ Ihandle* create_main_dialog(Ihandle *config)
   Ihandle *btn_copy, *btn_paste, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
-  Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
+  Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu, *item_background;
+  const char* background;
 
   canvas = IupGLCanvas(NULL);
   IupSetAttribute(canvas, "NAME", "CANVAS");
@@ -693,6 +723,9 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(btn_paste, "TIP", "Paste (Ctrl+V)");
   IupSetAttribute(btn_paste, "CANFOCUS", "No");
 
+  item_background = IupItem("&Background...", NULL);
+  IupSetCallback(item_background, "ACTION", (Icallback)item_background_action_cb);
+
   item_toolbar = IupItem("&Toobar...", NULL);
   IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
   IupSetAttribute(item_toolbar, "VALUE", "ON");
@@ -724,6 +757,8 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_paste,
     NULL);
   view_menu = IupMenu(
+    item_background,
+    IupSeparator(),
     item_toolbar,
     item_statusbar,
     NULL);
@@ -782,6 +817,10 @@ Ihandle* create_main_dialog(Ihandle *config)
   /* Initialize variables from the configuration file */
 
   IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
+
+  background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
+  if (background)
+    IupSetStrAttribute(canvas, "BACKGROUND", background);
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))
   {

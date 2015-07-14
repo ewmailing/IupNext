@@ -291,6 +291,9 @@
     <ClCompile Include="..\html\examples\tutorial\example4_1.c">
       <Filter>Tutorial</Filter>
     </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example4_2.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua">

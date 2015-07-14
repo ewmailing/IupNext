@@ -819,7 +819,7 @@ int item_font_action_cb(Ihandle* item_font)
   if (IupGetInt(fontdlg, "STATUS") == 1)
   {
     Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
-    char* font = IupGetAttribute(fontdlg, "VALUE");
+    font = IupGetAttribute(fontdlg, "VALUE");
     IupSetStrAttribute(multitext, "FONT", font);
 
     IupConfigSetVariableStr(config, "MainWindow", "Font", font);

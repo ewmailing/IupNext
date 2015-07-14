@@ -359,7 +359,7 @@ int item_font_action_cb(Ihandle* item_font)
 
   if (IupGetInt(fontdlg, "STATUS") == 1)
   {
-    char* font = IupGetAttribute(fontdlg, "VALUE");
+    font = IupGetAttribute(fontdlg, "VALUE");
     IupSetStrAttribute(multitext, "FONT", font);
   }
 
