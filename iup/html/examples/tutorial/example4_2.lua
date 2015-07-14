@@ -2,6 +2,7 @@ require("iuplua")
 require("iupluaimglib")
 require("imlua")
 require("iupluaim")
+require("iupluagl")
 require("luagl")
 
 
