@@ -138,6 +138,8 @@ imImage* read_file(const char* filename)
     show_file_error(error);
   else
   {
+    /* we are going to support only RGB images with no alpha */
+    imImageRemoveAlpha(image);
     if (image->color_space != IM_RGB)
     {
       imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
@@ -177,6 +179,9 @@ void new_file(Ihandle* ih, imImage* image)
 
   IupSetAttribute(canvas, "IMAGE", (char*)image);
 
+  /* create OpenGL compatible data */
+  imImageGetOpenGLData(image, NULL);
+
   IupUpdate(canvas);
 
   if (old_image)
@@ -194,9 +199,6 @@ void check_new_file(Ihandle* dlg)
     int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
 
     image = imImageCreate(width, height, IM_RGB, IM_BYTE);
-
-    /* create OpenGL compatible data */
-    imImageGetOpenGLData(image, NULL);
 
     new_file(dlg, image);
   }
@@ -549,6 +551,8 @@ int item_paste_action_cb(Ihandle* item_paste)
       return IUP_DEFAULT;
     }
 
+    /* we are going to support only RGB images with no alpha */
+    imImageRemoveAlpha(image);
     if (image->color_space != IM_RGB)
     {
       imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);

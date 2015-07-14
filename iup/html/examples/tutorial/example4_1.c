@@ -133,6 +133,8 @@ imImage* read_file(const char* filename)
     show_file_error(error);
   else
   {
+    /* we are going to support only RGB images with no alpha */
+    imImageRemoveAlpha(image);
     if (image->color_space != IM_RGB)
     {
       imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
@@ -493,6 +495,8 @@ int item_paste_action_cb(Ihandle* item_paste)
       return IUP_DEFAULT;
     }
 
+    /* we are going to support only RGB images with no alpha */
+    imImageRemoveAlpha(image);
     if (image->color_space != IM_RGB)
     {
       imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);

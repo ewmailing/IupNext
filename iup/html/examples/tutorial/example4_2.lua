@@ -44,6 +44,8 @@ function read_file(filename)
   if (err) then
     show_error(im.ErrorStr(err), true)
   else
+    -- we are going to support only RGB images with no alpha
+    image:RemoveAlpha()
     if (image:ColorSpace() ~= im.RGB) then
       local new_image = im.ImageCreateBased(image, nil, nil, im.RGB, nil)        
 
@@ -446,6 +448,8 @@ function item_paste:action()
 
     local image = iup.GetNativeHandleImage(clipboard.nativeimage)
 
+    -- we are going to support only RGB images with no alpha
+    image:RemoveAlpha()
     if (image:ColorSpace() ~= im.RGB) then
       local new_image = im.ImageCreateBased(image, nil, nil, im.RGB, nil)        
 
