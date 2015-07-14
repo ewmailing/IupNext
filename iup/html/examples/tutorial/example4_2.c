@@ -311,8 +311,10 @@ int canvas_action_cb(Ihandle* canvas)
 {
   int x, y, canvas_width, canvas_height;
   void* gldata;
-  unsigned char r, g, b;
+  unsigned int ri, gi, bi;
   imImage* image;
+  Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
+  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
 
   IupGetIntInt(canvas, "DRAWSIZE", &canvas_width, &canvas_height);
 
@@ -331,8 +333,8 @@ int canvas_action_cb(Ihandle* canvas)
   glLoadIdentity();
 
   /* draw the background */
-  IupGetRGB(canvas, "BACKGROUND", &r, &g, &b);
-  glClearColor(r / 255.f, g / 255.f, b / 255.f, 1);
+  sscanf(background, "%u %u %u", &ri, &gi, &bi);
+  glClearColor(ri / 255.f, gi / 255.f, bi / 255.f, 1);
   glClear(GL_COLOR_BUFFER_BIT);
 
   /* draw the image at the center of the canvas */
@@ -574,8 +576,9 @@ int item_paste_action_cb(Ihandle* item_paste)
 int item_background_action_cb(Ihandle* item_background)
 {
   Ihandle* canvas = IupGetDialogChild(item_background, "CANVAS");
+  Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
   Ihandle* colordlg = IupColorDlg();
-  char* background = IupGetAttribute(canvas, "BACKGROUND");
+  const char* background = IupConfigGetVariableStr(config, "MainWindow", "Background");
   IupSetStrAttribute(colordlg, "VALUE", background);
   IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(item_background));
 
@@ -583,13 +586,10 @@ int item_background_action_cb(Ihandle* item_background)
 
   if (IupGetInt(colordlg, "STATUS") == 1)
   {
-    Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
     background = IupGetAttribute(colordlg, "VALUE");
-    IupSetStrAttribute(canvas, "BACKGROUND", background);
+    IupConfigSetVariableStr(config, "MainWindow", "Background", background);
 
     IupUpdate(canvas);
-
-    IupConfigSetVariableStr(config, "MainWindow", "Background", background);
   }
 
   IupDestroy(colordlg);
@@ -645,7 +645,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu, *item_background;
-  const char* background;
 
   canvas = IupGLCanvas(NULL);
   IupSetAttribute(canvas, "NAME", "CANVAS");
@@ -817,10 +816,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   /* Initialize variables from the configuration file */
 
   IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
-
-  background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
-  if (background)
-    IupSetStrAttribute(canvas, "BACKGROUND", background);
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))
   {

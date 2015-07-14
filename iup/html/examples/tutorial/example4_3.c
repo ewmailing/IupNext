@@ -309,17 +309,19 @@ void toggle_bar_visibility(Ihandle* item, Ihandle* ih)
 int canvas_action_cb(Ihandle* canvas)
 {
   int x, y, canvas_width, canvas_height;
-  unsigned char r, g, b;
+  unsigned int ri, gi, bi;
   imImage* image;
   cdCanvas* cd_canvas = (cdCanvas*)IupGetAttribute(canvas, "cdCanvas");
+  Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
+  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
 
   IupGetIntInt(canvas, "DRAWSIZE", &canvas_width, &canvas_height);
 
   cdCanvasActivate(cd_canvas);
 
   /* draw the background */
-  IupGetRGB(canvas, "BACKGROUND", &r, &g, &b);
-  cdCanvasBackground(cd_canvas, cdEncodeColor(r, g, b));
+  sscanf(background, "%u %u %u", &ri, &gi, &bi);
+  cdCanvasBackground(cd_canvas, cdEncodeColor((unsigned char)ri, (unsigned char)gi, (unsigned char)bi));
   cdCanvasClear(cd_canvas);
 
   /* draw the image at the center of the canvas */
@@ -498,33 +500,93 @@ int item_revert_action_cb(Ihandle* item_revert)
   return IUP_DEFAULT;
 }
 
+int item_pagesetup_action_cb(Ihandle* item_pagesetup)
+{
+  Ihandle* canvas = IupGetDialogChild(item_pagesetup, "CANVAS");
+  Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
+  int margin_width = IupConfigGetVariableIntDef(config, "Print", "MarginWidth", 20);
+  int margin_height = IupConfigGetVariableIntDef(config, "Print", "MarginHeight", 20);
+
+  if (IupGetParam("Page Setup", NULL, NULL, "Margin Width (mm): %i[1,]\nMargin Height (mm): %i[1,]\n", &margin_width, &margin_height, NULL))
+  {
+    IupConfigSetVariableInt(config, "Print", "MarginWidth", margin_width);
+    IupConfigSetVariableInt(config, "Print", "MarginHeight", margin_height);
+  }
+
+  return IUP_DEFAULT;
+}
+
+void view_fit_rect(int canvas_width, int canvas_height, int image_width, int image_height, int *view_width, int *view_height)
+{
+  double rView, rImage;
+  int correct = 0;
+
+  *view_width = canvas_width;
+  *view_height = canvas_height;
+
+  rView = ((double)canvas_height) / canvas_width;
+  rImage = ((double)image_height) / image_width;
+
+  if ((rView <= 1 && rImage <= 1) || (rView >= 1 && rImage >= 1)) /* view and image are horizontal rectangles */
+  {
+    if (rView > rImage)
+      correct = 2;
+    else
+      correct = 1;
+  }
+  else if (rView < 1 && rImage > 1) /* view is a horizontal rectangle and image is a vertical rectangle */
+    correct = 1;
+  else if (rView > 1 && rImage < 1) /* view is a vertical rectangle and image is a horizontal rectangle */
+    correct = 2;
+
+  if (correct == 1)
+    *view_width = (int)(canvas_height / rImage);
+  else if (correct == 2)
+    *view_height = (int)(canvas_width * rImage);
+}
+
 int item_print_action_cb(Ihandle* item_print)
 {
   Ihandle* canvas = IupGetDialogChild(item_print, "CANVAS");
-  int x, y, canvas_width, canvas_height;
-  unsigned char r, g, b;
+  unsigned int ri, gi, bi;
   imImage* image;
   char* title = IupGetAttribute(IupGetDialog(item_print), "TITLE");
+  Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
+  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
 
   cdCanvas* cd_canvas = cdCreateCanvasf(CD_PRINTER, "%s -d", title);
   if (!cd_canvas)
     return IUP_DEFAULT;
 
-  cdCanvasGetSize(cd_canvas, &canvas_width, &canvas_height, NULL, NULL);
-
   /* draw the background */
-  IupGetRGB(canvas, "BACKGROUND", &r, &g, &b);
-  cdCanvasBackground(cd_canvas, cdEncodeColor(r, g, b));
+  sscanf(background, "%u %u %u", &ri, &gi, &bi);
+  cdCanvasBackground(cd_canvas, cdEncodeColor((unsigned char)ri, (unsigned char)gi, (unsigned char)bi));
   cdCanvasClear(cd_canvas);
 
   /* draw the image at the center of the canvas */
   image = (imImage*)IupGetAttribute(canvas, "IMAGE");
   if (image)
   {
-    x = (canvas_width - image->width) / 2;
-    y = (canvas_height - image->height) / 2;
+    int x, y, canvas_width, canvas_height, view_width, view_height;
+    double canvas_width_mm, canvas_height_mm;
+    Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
+    int margin_width = IupConfigGetVariableIntDef(config, "Print", "MarginWidth", 20);
+    int margin_height = IupConfigGetVariableIntDef(config, "Print", "MarginHeight", 20);
 
-    imcdCanvasPutImage(cd_canvas, image, x, y, image->width, image->height, 0, 0, 0, 0);
+    cdCanvasGetSize(cd_canvas, &canvas_width, &canvas_height, &canvas_width_mm, &canvas_height_mm);
+
+    /* convert to pixels */
+    margin_width = (int)((margin_width * canvas_width) / canvas_width_mm);
+    margin_height = (int)((margin_height * canvas_height) / canvas_height_mm);
+
+    view_fit_rect(canvas_width - 2 * margin_width, canvas_height - 2 * margin_height, 
+                  image->width, image->height, 
+                  &view_width, &view_height);
+
+    x = (canvas_width - view_width) / 2;
+    y = (canvas_height - view_height) / 2;
+
+    imcdCanvasPutImage(cd_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
   }
 
   cdKillCanvas(cd_canvas);
@@ -607,8 +669,9 @@ int item_paste_action_cb(Ihandle* item_paste)
 int item_background_action_cb(Ihandle* item_background)
 {
   Ihandle* canvas = IupGetDialogChild(item_background, "CANVAS");
+  Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
   Ihandle* colordlg = IupColorDlg();
-  char* background = IupGetAttribute(canvas, "BACKGROUND");
+  const char* background = IupConfigGetVariableStr(config, "MainWindow", "Background");
   IupSetStrAttribute(colordlg, "VALUE", background);
   IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(item_background));
 
@@ -616,13 +679,10 @@ int item_background_action_cb(Ihandle* item_background)
 
   if (IupGetInt(colordlg, "STATUS") == 1)
   {
-    Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
     background = IupGetAttribute(colordlg, "VALUE");
-    IupSetStrAttribute(canvas, "BACKGROUND", background);
+    IupConfigSetVariableStr(config, "MainWindow", "Background", background);
 
     IupUpdate(canvas);
-
-    IupConfigSetVariableStr(config, "MainWindow", "Background", background);
   }
 
   IupDestroy(colordlg);
@@ -673,12 +733,11 @@ Ihandle* create_main_dialog(Ihandle *config)
 {
   Ihandle *dlg, *vbox, *canvas, *menu;
   Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
-  Ihandle *sub_menu_edit, *edit_menu, *item_copy, *item_paste, *item_print;
+  Ihandle *sub_menu_edit, *edit_menu, *item_copy, *item_paste, *item_print, *item_pagesetup;
   Ihandle *btn_copy, *btn_paste, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu, *item_background;
-  const char* background;
 
   canvas = IupCanvas(NULL);
   IupSetAttribute(canvas, "NAME", "CANVAS");
@@ -731,6 +790,9 @@ Ihandle* create_main_dialog(Ihandle *config)
   item_revert = IupItem("&Revert", NULL);
   IupSetAttribute(item_revert, "NAME", "ITEM_REVERT");
   IupSetCallback(item_revert, "ACTION", (Icallback)item_revert_action_cb);
+
+  item_pagesetup = IupItem("Page Set&up...", NULL);
+  IupSetCallback(item_pagesetup, "ACTION", (Icallback)item_pagesetup_action_cb);
 
   item_print = IupItem("&Print...\tCtrl+P", NULL);
   IupSetCallback(item_print, "ACTION", (Icallback)item_print_action_cb);
@@ -786,6 +848,7 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_saveas,
     item_revert,
     IupSeparator(),
+    item_pagesetup,
     item_print,
     IupSeparator(),
     IupSubmenu("Recent &Files", recent_menu),
@@ -858,10 +921,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   /* Initialize variables from the configuration file */
 
   IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
-
-  background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
-  if (background)
-    IupSetStrAttribute(canvas, "BACKGROUND", background);
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))
   {
