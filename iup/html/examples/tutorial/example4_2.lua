@@ -80,6 +80,10 @@ function new_file(ih, image)
   canvas.dirty = nil
   canvas.image = image
 
+  -- create OpenGL compatible data
+  local gldata = image:GetOpenGLData()
+  canvas.gldata = gldata
+
   iup.Update(canvas)
 
   if (old_image) then
@@ -96,10 +100,6 @@ function check_new_file(dlg)
     local height = config:GetVariableDef("NewImage", "Height", 480)
 
     local image = im.ImageCreate(width, height, im.RGB, im.BYTE)
-
-    -- create OpenGL compatible data
-    local gldata = image:GetOpenGLData()
-    canvas.gldata = gldata
 
     new_file(dlg, image)
   end
@@ -347,14 +347,14 @@ function item_new:action()
     local width = config:GetVariableDef("NewImage", "Width", 640)
     local height = config:GetVariableDef("NewImage", "Height", 480)
 
-    ret, width, height = iup.GetParam("New Image", nil, "Width: %i[1,]\nHeight: %i[1,]\n", width, height)
+    local ret, new_width, new_height = iup.GetParam("New Image", nil, "Width: %i[1,]\nHeight: %i[1,]\n", width, height)
     if (ret) then
-      local image = im.ImageCreate(width, height, im.RGB, im.BYTE)
+      local new_image = im.ImageCreate(new_width, new_height, im.RGB, im.BYTE)
 
-      config:SetVariable("NewImage", "Width", width)
-      config:SetVariable("NewImage", "Height", height)
+      config:SetVariable("NewImage", "Width", new_width)
+      config:SetVariable("NewImage", "Height", new_height)
 
-      new_file(item_new, image)
+      new_file(item_new, new_image)
     end
   end
 end
