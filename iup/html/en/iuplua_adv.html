@@ -35,7 +35,7 @@ int <strong>iuplua_dobuffer</strong>(lua_State *L, const char *string, int len, 
 <p>These functions mimics the implementation in the standalone interpreter for Lua 5, that displays the error message 
   followed by the stack.</p>
 <p>If <strong>iuplua_dofile</strong> fail to open the given file, then it will 
-preppend the contents of the environment variable IUPLUA_DIR to the file name 
+prepend the contents of the environment variable IUPLUA_DIR to the file name 
 and tries to open it again. (Since 3.2)</p>
 <p>If the these functions are used the errors will be reported through the &quot;iup._ERRORMESSAGE(msg)&quot; function. By 
   default _ERRORMESSAGE is defined to show a dialog with the error message.</p>
@@ -59,7 +59,8 @@ construction using elements as parameters, along with some utilities like &quot;
   The handle knows its class because it is stored in its &quot;parent&quot; member.</p>
 <p>Since the controls creation is done by the &quot;iup.&lt;control&gt;&quot; function, the application does not use the WIDGET class 
   directly. All the time the application only uses the handle.</p>
-<p>So for example the <strong>IupLabel</strong>:</p>
+<p>So, for example the <strong>IupLabel </strong>constructor<strong> </strong>
+works like this:</p>
 <pre>iup.label <b>calls</b> iup.LABEL:constructor
 <b>since</b> iup.LABEL.parent = iup.WIDGET <b>and</b><span style="background-color: #CEE7FF"> </span>iup.LABEL:constructor <b>is not implemented</b>
 it<b> calls</b><span style="background-color: #CEE7FF"> </span>iup.WIDGET:constructor  
