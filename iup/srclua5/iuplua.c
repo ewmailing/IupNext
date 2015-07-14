@@ -206,6 +206,18 @@ int iuplua_dobuffer(lua_State *L, const char *s, int len, const char *name)
   return report(L, status, 1);
 }
 
+static int il_dofile(lua_State *L)
+{
+  const char* filename = luaL_checkstring(L, 1);
+  return iuplua_dofile(L, filename);
+}
+
+static int il_dostring(lua_State *L)
+{
+  const char* str = luaL_checkstring(L, 1);
+  return iuplua_dostring(L, str, "iup.dostring");
+}
+
 Ihandle *iuplua_checkihandleornil(lua_State *L, int pos)
 {
   if (lua_isnoneornil(L, pos))
@@ -605,10 +617,7 @@ static int SetCallback(lua_State *L)
   const char* name = luaL_checkstring(L, 2);
 
   if (!lua_iscfunction(L, 3))
-  {
-    lua_pushstring(L, "invalid function when set callback");
-    lua_error(L);
-  }
+    luaL_argerror(L, 3, "invalid function when set callback");
   c_func = (Icallback)lua_tocfunction(L, 3);
 
   if (lua_isnil(L, 4))  /* lua_func is only used here to remove the callback */
@@ -1091,6 +1100,8 @@ int iuplua_open(lua_State * L)
     {"ihandle_compare", ihandle_compare},
     {"ihandle_tostring", ihandle_tostring},
     { "_ERRORMESSAGE", error_message },
+    { "dostring", il_dostring },
+    { "dofile", il_dofile },
     { NULL, NULL },
   };
 
