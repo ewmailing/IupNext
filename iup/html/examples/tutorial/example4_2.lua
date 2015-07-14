@@ -344,10 +344,10 @@ end
 
 function item_new:action()
   if save_check(self) then
-    local width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640)
-    local height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480)
+    local width = config:GetVariableDef("NewImage", "Width", 640)
+    local height = config:GetVariableDef("NewImage", "Height", 480)
 
-    ret, width, height = iup.GetParam("New Image", mil, "Width: %i[1,]\nHeight: %i[1,]\n", width, height)
+    ret, width, height = iup.GetParam("New Image", nil, "Width: %i[1,]\nHeight: %i[1,]\n", width, height)
     if (ret) then
       local image = im.ImageCreate(width, height, im.RGB, im.BYTE)
 
