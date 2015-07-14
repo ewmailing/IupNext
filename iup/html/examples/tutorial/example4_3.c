@@ -6,6 +6,7 @@
 #include <iup_config.h>
 #include <iupgl.h>
 #include <cd.h>
+#include <cdprint.h>
 #include <cdiup.h>
 #include <im.h>
 #include <im_image.h>
@@ -497,6 +498,39 @@ int item_revert_action_cb(Ihandle* item_revert)
   return IUP_DEFAULT;
 }
 
+int item_print_action_cb(Ihandle* item_print)
+{
+  Ihandle* canvas = IupGetDialogChild(item_print, "CANVAS");
+  int x, y, canvas_width, canvas_height;
+  unsigned char r, g, b;
+  imImage* image;
+  char* title = IupGetAttribute(IupGetDialog(item_print), "TITLE");
+
+  cdCanvas* cd_canvas = cdCreateCanvasf(CD_PRINTER, "%s -d", title);
+  if (!cd_canvas)
+    return IUP_DEFAULT;
+
+  cdCanvasGetSize(cd_canvas, &canvas_width, &canvas_height, NULL, NULL);
+
+  /* draw the background */
+  IupGetRGB(canvas, "BACKGROUND", &r, &g, &b);
+  cdCanvasBackground(cd_canvas, cdEncodeColor(r, g, b));
+  cdCanvasClear(cd_canvas);
+
+  /* draw the image at the center of the canvas */
+  image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  if (image)
+  {
+    x = (canvas_width - image->width) / 2;
+    y = (canvas_height - image->height) / 2;
+
+    imcdCanvasPutImage(cd_canvas, image, x, y, image->width, image->height, 0, 0, 0, 0);
+  }
+
+  cdKillCanvas(cd_canvas);
+  return IUP_DEFAULT;
+}
+
 int item_exit_action_cb(Ihandle* item_exit)
 {
   Ihandle* dlg = IupGetDialog(item_exit);
@@ -639,7 +673,7 @@ Ihandle* create_main_dialog(Ihandle *config)
 {
   Ihandle *dlg, *vbox, *canvas, *menu;
   Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
-  Ihandle *sub_menu_edit, *edit_menu, *item_copy, *item_paste;
+  Ihandle *sub_menu_edit, *edit_menu, *item_copy, *item_paste, *item_print;
   Ihandle *btn_copy, *btn_paste, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
@@ -698,6 +732,9 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(item_revert, "NAME", "ITEM_REVERT");
   IupSetCallback(item_revert, "ACTION", (Icallback)item_revert_action_cb);
 
+  item_print = IupItem("&Print...\tCtrl+P", NULL);
+  IupSetCallback(item_print, "ACTION", (Icallback)item_print_action_cb);
+
   item_exit = IupItem("E&xit", NULL);
   IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
 
@@ -749,7 +786,10 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_saveas,
     item_revert,
     IupSeparator(),
+    item_print,
+    IupSeparator(),
     IupSubmenu("Recent &Files", recent_menu),
+    IupSeparator(),
     item_exit,
     NULL);
   edit_menu = IupMenu(
@@ -810,6 +850,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(dlg, "K_cS", (Icallback)item_save_action_cb);
   IupSetCallback(dlg, "K_cV", (Icallback)item_paste_action_cb);
   IupSetCallback(dlg, "K_cC", (Icallback)item_copy_action_cb);
+  IupSetCallback(dlg, "K_cP", (Icallback)item_print_action_cb);
 
   /* parent for pre-defined dialogs in closed functions (IupMessage and IupAlarm) */
   IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);

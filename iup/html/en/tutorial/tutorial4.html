@@ -26,7 +26,7 @@
 <p>escrever em Portugues<br>novo exemplo criado a partir do simple_notepad.c <br>substituimos IupText por 
 IupCanvas<br>removemos Edit/Cut,Del,Find/Replace/GoTo/SelectAll e Format/Font<br>
 como vamos desenhar em uma imagem precisamos de uma estrutura para isso<br>
-usamos a IM, apresenta a lib, descreve em linhas gerais<br>implementamos 
+usamos a IM, apresenta a lib, descreve em linhas gerais<br>includes e libs da IM<br>implementamos 
 read_file e write file usando funções da IM<br>File/New usa o diálogo 
 predefinido IupGetParam para obter w e h<br>copy e paste são ajustados para 
 trabalhar com imagens, mas usam a imagem toda e não uma seleção da mesma<br>o 
@@ -45,7 +45,7 @@ desenho da imagem ainda não é implementado, vamos introduzi-lo a seguir</p>
 
 <p>IUP não possui funções para desenho gráfico, precisamos de uma biblioteca 
 externa<br>escolhemos OpenGL por sua portabilidade, desempenho e padronização<br>
-includes de OpenGL<br>
+includes e libs de OpenGL<br>
 assim precisamos mudar IupCanvas por IupGLCanvas, BUFFER=DOUBLE, ACTION<br>na função de desenho 
 introduzimos IupGLMakeCurrent e IupGLSwapBuffers <br>depois descrevemos 
 configuração do canvas OpenGL, desenho do fundo e desenho da imagem<br>
@@ -68,11 +68,11 @@ suporte para impressão, nem saída para metafile, e não tem suporte para texto
 com alta qualidade. Assim, muitas aplicações vão precisar de outras opções. Por 
 isso criamos a biblioteca CD. Esta biblioteca pode ser encontrada no site: XXXX. 
 E foi projetada para funcionar em conjunto com o IUP e diversas situações. Para 
-usar...<br>includes do CD<br>
+usar...<br>includes e libs do CD<br>
 voltamos para IupCanvas<br>novas callbacks de MAP_CB (cdCreateCanvas) e UNMAP_CB 
 (cdKillCanvas)<br>na função de desenho 
 introduzimos cdCanvasActivate e cdCanvasFlush<br>depois descrevemos desenho do fundo e desenho da imagem 
-usando CD</p>
+usando CD<br>novo menu para imprimir a imagem</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a target="example4_3" href="../../examples/tutorial/example4_3.c">example4_3.c</a> <a href="../../examples/tutorial/example4_3.c">
