@@ -514,7 +514,7 @@ int item_paste_action_cb(Ihandle* item_paste)
     if (old_image)
       imImageDestroy(old_image);
   }
-  return IUP_IGNORE;  /* replace system processing for the hot key, to correctly parse line feed */
+  return IUP_DEFAULT;
 }
 
 int item_toolbar_action_cb(Ihandle* item_toolbar)

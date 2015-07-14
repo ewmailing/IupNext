@@ -671,7 +671,7 @@ int item_background_action_cb(Ihandle* item_background)
   Ihandle* canvas = IupGetDialogChild(item_background, "CANVAS");
   Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
   Ihandle* colordlg = IupColorDlg();
-  const char* background = IupConfigGetVariableStr(config, "MainWindow", "Background");
+  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
   IupSetStrAttribute(colordlg, "VALUE", background);
   IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(item_background));
 

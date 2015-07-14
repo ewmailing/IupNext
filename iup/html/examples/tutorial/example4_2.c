@@ -195,6 +195,9 @@ void check_new_file(Ihandle* dlg)
 
     image = imImageCreate(width, height, IM_RGB, IM_BYTE);
 
+    /* create OpenGL compatible data */
+    imImageGetOpenGLData(image, NULL);
+
     new_file(dlg, image);
   }
 }
@@ -578,7 +581,7 @@ int item_background_action_cb(Ihandle* item_background)
   Ihandle* canvas = IupGetDialogChild(item_background, "CANVAS");
   Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
   Ihandle* colordlg = IupColorDlg();
-  const char* background = IupConfigGetVariableStr(config, "MainWindow", "Background");
+  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
   IupSetStrAttribute(colordlg, "VALUE", background);
   IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(item_background));
 

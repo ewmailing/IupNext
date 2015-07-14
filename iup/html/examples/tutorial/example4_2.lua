@@ -2,6 +2,7 @@ require("iuplua")
 require("iupluaimglib")
 require("imlua")
 require("iupluaim")
+require("luagl")
 
 
 --********************************** Utilities *****************************************
@@ -50,6 +51,10 @@ function read_file(filename)
 
       image = new_image
     end
+
+    -- create OpenGL compatible data
+    local gldata = image:GetOpenGLData()
+    canvas.gldata = gldata
   end
   return image
 end
@@ -90,6 +95,10 @@ function check_new_file(dlg)
     local height = config:GetVariableDef("NewImage", "Height", 480)
 
     local image = im.ImageCreate(width, height, im.RGB, im.BYTE)
+
+    -- create OpenGL compatible data
+    local gldata = image:GetOpenGLData()
+    canvas.gldata = gldata
 
     new_file(dlg, image)
   end
@@ -199,9 +208,10 @@ config:Load()
 
 lbl_statusbar = iup.label{title = "(0, 0) = [0   0   0]", expand = "HORIZONTAL", padding = "10x5"}
 
-canvas = iup.canvas{
+canvas = iup.glcanvas{
   config = config,
   dirty = nil,
+  buffer = "DOUBLE",
 }
 
 item_new = iup.item{title = "&New...\tCtrl+N", image = "IUP_FileNew"}
@@ -212,6 +222,7 @@ item_revert = iup.item{title="&Revert"}
 item_exit = iup.item{title="E&xit"}
 item_copy = iup.item{title="&Copy\tCtrl+C", image = "IUP_EditCopy"}
 item_paste = iup.item{title="&Paste\tCtrl+V", image = "IUP_EditPaste"}
+item_background = iup.item{title="&Background..."}
 item_toolbar = iup.item{title="&Toobar...", value="ON"}
 item_statusbar = iup.item{title="&Statusbar...", value="ON"}
 item_help = iup.item{title="&Help..."}
@@ -235,7 +246,12 @@ edit_menu = iup.menu{
   item_paste,
   }
 
-view_menu = iup.menu{item_toolbar, item_statusbar}
+view_menu = iup.menu{
+  item_background,
+  iup.separator{},
+  item_toolbar, 
+  item_statusbar, 
+  }
 help_menu = iup.menu{item_help, item_about}
 
 sub_menu_file = iup.submenu{file_menu, title = "&File"}
@@ -253,6 +269,41 @@ menu = iup.menu{
 
 --********************************** Callbacks *****************************************
 
+
+function canvas:action()
+  local image = canvas.image
+  local canvas_width, canvas_height = string.match(canvas.drawsize,"(%d*)x(%d*)")
+
+  canvas:MakeCurrent()
+
+  -- OpenGL configuration
+  gl.PixelStore(gl.UNPACK_ALIGNMENT, 1)           -- image data alignment is 1
+
+  gl.Viewport(0, 0, canvas_width, canvas_height)
+
+  gl.MatrixMode(gl.PROJECTION)
+  gl.LoadIdentity()
+  gl.Ortho(0, canvas_width, 0, canvas_height, -1, 1)
+
+  gl.MatrixMode(gl.MODELVIEW)
+  gl.LoadIdentity()
+
+  -- draw the background 
+  local background = config:GetVariableDef("MainWindow", "Background", "255 255 255")
+  local r, g, b = string.match(background, "(%d*) (%d*) (%d*)")
+  gl.ClearColor(r / 255, g / 255, b / 255, 1)
+  gl.Clear(gl.COLOR_BUFFER_BIT)
+
+  -- draw the image at the center of the canvas 
+  if (image) then
+    local x = (canvas_width - image:Width()) / 2
+    local y = (canvas_height - image:Height()) / 2
+    gl.RasterPos(x, y)  -- this will not work for negative values, an OpenGL limitation 
+    gl.DrawPixelsRaw(image:Width(), image:Height(), gl.RGB, gl.UNSIGNED_BYTE, canvas.gldata)  -- no zoom support, must use texture
+  end
+
+  canvas:SwapBuffers()
+end
 
 function canvas:dropfiles_cb(filename)
   if (save_check(self)) then
@@ -403,6 +454,10 @@ function item_paste:action()
       image = new_image
     end
 
+    -- create OpenGL compatible data
+    local gldata = image:GetOpenGLData()
+    canvas.gldata = gldata
+
     image:SetAttribString("FileFormat", "JPEG")
 
     canvas.dirty = "Yes"
@@ -418,6 +473,24 @@ function item_paste:action()
 
     clipboard:destroy()
   end
+end
+
+function item_background:action()
+  local colordlg = iup.colordlg{}
+  local background = config:GetVariableDef("MainWindow", "Background", "255 255 255")
+  colordlg.value = background
+  colordlg.parentdialog = iup.GetDialog(self)
+
+  colordlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
+
+  if (tonumber(colordlg.status) == 1) then
+    background = colordlg.value
+    config:SetVariable("MainWindow", "Background", background)
+
+    iup.Update(canvas)
+  end
+
+  colordlg:destroy()
 end
 
 function item_toolbar:action()

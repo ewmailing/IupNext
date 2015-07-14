@@ -218,18 +218,18 @@ file_menu = iup.menu{
   }
 
 edit_menu = iup.menu{
-    item_cut,
-    item_copy,
-    item_paste,
-    item_delete,
-    iup.separator{},
-    item_find,
-    item_find_next,
-    item_replace,
-    item_goto,
-    iup.separator{},
-    item_select_all
-    }
+  item_cut,
+  item_copy,
+  item_paste,
+  item_delete,
+  iup.separator{},
+  item_find,
+  item_find_next,
+  item_replace,
+  item_goto,
+  iup.separator{},
+  item_select_all
+  }
 
 format_menu = iup.menu{item_font}
 view_menu = iup.menu{item_toolbar, item_statusbar}
