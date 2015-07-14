@@ -28,9 +28,21 @@ const char* iuplua_getglobaltable(void)
   return iup_globaltable;
 }
 
-static void show_error(const char* msg, const char* traceback)
+static int show_error_ok_action(Ihandle* ih)
 {
-  Ihandle *multi_text, *dlg;
+  (void)ih;
+  return IUP_CLOSE;
+}
+
+static int il_error_message(lua_State *L)
+{
+  Ihandle *multi_text, *button, *box, *dlg;
+
+  const char* msg = lua_tostring(L, 1);
+
+  button = IupButton("OK", NULL);
+  IupSetAttribute(button, "PADDING", "5x3");
+  IupSetCallback(button, "ACTION", show_error_ok_action);
 
   multi_text = IupMultiLine(NULL);
   IupSetAttribute(multi_text, "EXPAND", "YES");
@@ -38,91 +50,97 @@ static void show_error(const char* msg, const char* traceback)
   IupSetAttribute(multi_text, "FONT", "Courier, 12");
   IupSetAttribute(multi_text, "VISIBLELINES", "10");
   IupSetAttribute(multi_text, "VISIBLECOLUMNS", "50");
+  IupSetStrAttribute(multi_text, "VALUE", msg);
 
-  if (traceback != NULL)
-    IupSetfAttribute(multi_text, "VALUE", "%s\n%s\n", msg, traceback);
-  else
-    IupSetStrAttribute(multi_text, "VALUE", msg);
+  box = IupVbox(multi_text, button, NULL);
+  IupSetAttribute(box, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(box, "MARGIN", "5x5");
+  IupSetAttribute(box, "GAP", "5");
 
-  dlg = IupDialog(multi_text);
+  dlg = IupDialog(box);
 
   IupSetAttribute(dlg, "TITLE", "Lua Error");
   IupSetAttribute(dlg, "MINBOX", "NO");
   IupSetAttribute(dlg, "MAXBOX", "NO");
   IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+  IupSetAttributeHandle(dlg, "DEFAULTESC", button);
+  IupSetAttributeHandle(dlg, "DEFAULTENTER", button);
+  IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   IupDestroy(dlg);
-}
-
-static int error_message(lua_State *L)
-{
-  show_error(lua_tostring(L, 1), luaL_optstring(L, 2, NULL));
   return 0;
 }
+
+static void show_error(lua_State *L, const char *msg)
+{
+  lua_getglobal(L, iup_globaltable);
+  lua_pushstring(L, "_ERRORMESSAGE");
+  lua_gettable(L, -2);
+  lua_remove(L, -2);  /* remove global table from stack */
+
+  if (lua_isnil(L, -1))
+  {
+    /* Panic mode */
+    fprintf(stderr, "%s\n", msg);
+    fflush(stderr);
+    return;
+  }
+
+  lua_pushstring(L, msg);
+  lua_call(L, 1, 0);  /* iup._ERRORMESSAGE(msg) */
+}
+
 
 /**********************************************************/
 /* report, traceback and docall were adapted from "lua.c" */
 
-static int report (lua_State *L, int status, int concat_traceback)
+static int report (lua_State *L, int status)
 {
   /* if there was an erro, and there is an error message on the stack */
   if (status != LUA_OK && !lua_isnil(L, -1)) 
   {
-    const char *msg = lua_tostring(L, -2);
-
-    const char *traceback;
-    if (msg == NULL) 
-    {
-      msg = "(error with no message)";
-      traceback = NULL;
-    }
-    else if (concat_traceback) 
-    {
-      lua_concat(L, 2);
-      msg = lua_tostring(L, -1);
-      traceback = NULL;
-    }
-    else 
-    {
-      traceback = lua_tostring(L, -1);
-    }
-    show_error(msg, traceback);
-    lua_pop(L, 2);  /* remove msg and traceback from stack */
+    const char *msg = lua_tostring(L, -1);
+    if (msg == NULL) msg = "(error with no message)";
+    show_error(L, msg);
+    lua_pop(L, 1);  /* remove message */
   }
   return status;
 }
 
-static int traceback (lua_State *L) 
-{
-  lua_getglobal(L, "debug");
-  if (!lua_istable(L, -1)) 
-  {
+#if LUA_VERSION_NUM	> 501
+static int traceback(lua_State *L) {
+  const char *msg = lua_tostring(L, 1);
+  if (msg)
+    luaL_traceback(L, L, msg, 1);
+  else if (!lua_isnoneornil(L, 1)) {  /* is there an error object? */
+    if (!luaL_callmeta(L, 1, "__tostring"))  /* try its 'tostring' metamethod */
+      lua_pushliteral(L, "(no error message)");
+  }
+  return 1;
+}
+#else
+static int traceback(lua_State *L) {
+  if (!lua_isstring(L, 1))  /* 'message' not a string? */
+    return 1;  /* keep it intact */
+  lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+  if (!lua_istable(L, -1)) {
     lua_pop(L, 1);
     return 1;
   }
   lua_getfield(L, -1, "traceback");
-  if (!lua_isfunction(L, -1)) 
-  {
+  if (!lua_isfunction(L, -1)) {
     lua_pop(L, 2);
     return 1;
   }
-
-  lua_remove(L, 2);
-  lua_pushliteral(L, "");
-  lua_pushinteger(L, 2);  /* skip this function */
+  lua_pushvalue(L, 1);  /* pass error message */
+  lua_pushinteger(L, 2);  /* skip this function and traceback */
   lua_call(L, 2, 1);  /* call debug.traceback */
-
-  lua_getglobal(L, iup_globaltable); /* store traceback in <globaltable>._LASTTRACEBACK */
-  lua_pushstring(L, "_LASTTRACEBACK");
-  lua_pushvalue(L, -3);
-  lua_settable(L, -3);
-
-  lua_pop(L, 2);  /* remove global table and <globaltable>._LASTTRACEBACK from stack */
   return 1;
 }
+#endif
 
 static int docall (lua_State *L, int narg, int nret) 
 {
@@ -132,32 +150,8 @@ static int docall (lua_State *L, int narg, int nret)
   lua_insert(L, base);  /* put it under chunk and args */
   status = lua_pcall(L, narg, nret, base);
   lua_remove(L, base);  /* remove traceback function */
-
-  if (status != LUA_OK) 
-  {
-    /* force a complete garbage collection in case of errors */
-    lua_gc(L, LUA_GCCOLLECT, 0);
-
-    /* put _LASTTRACEBACK at stack position 2 */
-    lua_getglobal(L, iup_globaltable);
-    lua_pushliteral(L, "_LASTTRACEBACK");
-    lua_gettable(L, -2);
-    lua_remove(L, -2);  /* remove global table from stack */
-
-    if (!lua_isstring(L, -1)) 
-    {
-      lua_pop(L, 1);
-      lua_pushliteral(L, "");
-
-      /* set _LASTTRACEBACK as nil */
-      lua_getglobal(L, iup_globaltable);
-      lua_pushliteral(L, "_LASTTRACEBACK");
-      lua_pushnil(L);
-      lua_settable(L, -3);
-
-      lua_pop(L, 1);  /* remove global table from stack */
-    }
-  }
+  /* force a complete garbage collection in case of errors */
+  if (status != 0) lua_gc(L, LUA_GCCOLLECT, 0);
   return status;
 }
 
@@ -187,7 +181,7 @@ int iuplua_dofile(lua_State *L, const char *filename)
       }
     }
   }
-  return report(L, status, 1);
+  return report(L, status);
 }
 
 int iuplua_dostring(lua_State *L, const char *s, const char *name)
@@ -195,7 +189,7 @@ int iuplua_dostring(lua_State *L, const char *s, const char *name)
   int status = luaL_loadbuffer(L, s, (int)strlen(s), name);
   if (status == LUA_OK)
     status = docall(L, 0, 0);
-  return report(L, status, 1);
+  return report(L, status);
 }
 
 int iuplua_dobuffer(lua_State *L, const char *s, int len, const char *name)
@@ -203,7 +197,7 @@ int iuplua_dobuffer(lua_State *L, const char *s, int len, const char *name)
   int status = luaL_loadbuffer(L, s, len, name);
   if (status == LUA_OK)
     status = docall(L, 0, 0);
-  return report(L, status, 1);
+  return report(L, status);
 }
 
 static int il_dofile(lua_State *L)
@@ -541,7 +535,7 @@ static lua_State* iuplua_call_global_start(const char* name)
 int iuplua_call(lua_State* L, int nargs)
 {
   int status = docall(L, nargs + 2, 1);  /* always 1 result */
-  report(L, status, 0);
+  report(L, status);
 
   if (status != LUA_OK)
     return IUP_DEFAULT;
@@ -561,7 +555,7 @@ int iuplua_call_global(lua_State* L, int nargs)
 char* iuplua_call_ret_s(lua_State *L, int nargs)
 {
   int status = docall(L, nargs + 2, 1);  /* always 1 result */
-  report(L, status, 0);
+  report(L, status);
 
   if (status != LUA_OK)
     return NULL;
@@ -576,7 +570,7 @@ char* iuplua_call_ret_s(lua_State *L, int nargs)
 double iuplua_call_ret_d(lua_State *L, int nargs)
 {
   int status = docall(L, nargs + 2, 1);  /* always 1 result */
-  report(L, status, 0);
+  report(L, status);
 
   if (status != LUA_OK)
     return 0;
@@ -591,7 +585,7 @@ double iuplua_call_ret_d(lua_State *L, int nargs)
 int iuplua_call_raw(lua_State* L, int nargs, int nresults)
 {
   int status = docall(L, nargs, nresults);  /* always n results, or LUA_MULTRET */
-  report(L, status, 0);
+  report(L, status);
   return status;
 }
 
@@ -1099,9 +1093,9 @@ int iuplua_open(lua_State * L)
     {"SetFunction", SetFunction},
     {"ihandle_compare", ihandle_compare},
     {"ihandle_tostring", ihandle_tostring},
-    { "_ERRORMESSAGE", error_message },
-    { "dostring", il_dostring },
-    { "dofile", il_dofile },
+    {"_ERRORMESSAGE", il_error_message},
+    {"dostring", il_dostring},
+    {"dofile", il_dofile},
     { NULL, NULL },
   };
 
