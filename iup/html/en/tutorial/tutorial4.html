@@ -23,7 +23,7 @@
 <h2>4. Simple Paint</h2>
 <h3>4.1 <a name="Loading_and_Saving_Images">Loading and Saving Images</a></h3>
 
-<p>novo exemplo criado a partir do simple_notepad.c <br>substituimos IupText por 
+<p>escrever em Portugues<br>novo exemplo criado a partir do simple_notepad.c <br>substituimos IupText por 
 IupCanvas<br>removemos Edit/Cut,Del,Find/Replace/GoTo/SelectAll e Format/Font<br>
 como vamos desenhar em uma imagem precisamos de uma estrutura para isso<br>
 usamos a IM, apresenta a lib, descreve em linhas gerais<br>implementamos 
@@ -45,9 +45,11 @@ desenho da imagem ainda não é implementado, vamos introduzi-lo a seguir</p>
 
 <p>IUP não possui funções para desenho gráfico, precisamos de uma biblioteca 
 externa<br>escolhemos OpenGL por sua portabilidade, desempenho e padronização<br>
-assim precisamos mudar IupCanvas por IupGLCanvas<br>na função de desenho 
+includes de OpenGL<br>
+assim precisamos mudar IupCanvas por IupGLCanvas, BUFFER=DOUBLE, ACTION<br>na função de desenho 
 introduzimos IupGLMakeCurrent e IupGLSwapBuffers <br>depois descrevemos 
-configuração do canvas OpenGL, desenho do fundo e desenho da imagem<br>novo menu 
+configuração do canvas OpenGL, desenho do fundo e desenho da imagem<br>
+limitações da glDrawPixels<br>novo menu 
 para modificar a cor de fundo usando diálogo pré-definido IupColorDlg</p>
 
 <p class="example_title">Example Source Code 
@@ -61,7 +63,16 @@ para modificar a cor de fundo usando diálogo pré-definido IupColorDlg</p>
 
 <h3>4.3 <a name="Drawing_with_CD">Drawing with CD</a></h3>
 
-<p>XXX</p>
+<p>OpenGL, embora tenha um desempenho excelente, tem algumas limitações. Não tem 
+suporte para impressão, nem saída para metafile, e não tem suporte para texto 
+com alta qualidade. Assim, muitas aplicações vão precisar de outras opções. Por 
+isso criamos a biblioteca CD. Esta biblioteca pode ser encontrada no site: XXXX. 
+E foi projetada para funcionar em conjunto com o IUP e diversas situações. Para 
+usar...<br>includes do CD<br>
+voltamos para IupCanvas<br>novas callbacks de MAP_CB (cdCreateCanvas) e UNMAP_CB 
+(cdKillCanvas)<br>na função de desenho 
+introduzimos cdCanvasActivate e cdCanvasFlush<br>depois descrevemos desenho do fundo e desenho da imagem 
+usando CD</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a target="example4_3" href="../../examples/tutorial/example4_3.c">example4_3.c</a> <a href="../../examples/tutorial/example4_3.c">

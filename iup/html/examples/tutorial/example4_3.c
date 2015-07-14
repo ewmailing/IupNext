@@ -649,7 +649,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   canvas = IupCanvas(NULL);
   IupSetAttribute(canvas, "NAME", "CANVAS");
   IupSetAttribute(canvas, "DIRTY", "NO");
-  IupSetAttribute(canvas, "BUFFER", "DOUBLE");
   IupSetCallback(canvas, "ACTION", (Icallback)canvas_action_cb);
   IupSetCallback(canvas, "DROPFILES_CB", (Icallback)dropfiles_cb);
   IupSetCallback(canvas, "MAP_CB", (Icallback)canvas_map_cb);
