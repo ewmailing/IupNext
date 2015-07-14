@@ -23,14 +23,55 @@
 <h2>4. Simple Paint</h2>
 <h3>4.1 <a name="Loading_and_Saving_Images">Loading and Saving Images</a></h3>
 
-<p>escrever em Portugues<br>novo exemplo criado a partir do simple_notepad.c <br>substituimos IupText por 
-IupCanvas<br>removemos Edit/Cut,Del,Find/Replace/GoTo/SelectAll e Format/Font<br>
-como vamos desenhar em uma imagem precisamos de uma estrutura para isso<br>
-usamos a IM, apresenta a lib, descreve em linhas gerais<br>includes e libs da IM<br>implementamos 
-read_file e write file usando funções da IM<br>File/New usa o diálogo 
-predefinido IupGetParam para obter w e h<br>copy e paste são ajustados para 
-trabalhar com imagens, mas usam a imagem toda e não uma seleção da mesma<br>o 
-desenho da imagem ainda não é implementado, vamos introduzi-lo a seguir</p>
+<p>No capítulo anterior vimos como construir um simples bloco de notas usando o 
+IUP. Neste capítulo vamos modificar o código apresentado anteriormente e 
+construir uma aplicação para desenho 2D. Para isso substituiremos o controle 
+IupText (nosso multitext) por um IupCanvas. Um IupCanvas é um elemento de 
+interface que é uma tela - uma área de desenho para a aplicação.</p>
+<p>Neste exemplo faremos uso de uma nova biblioteca chamada IM. A IM é uma 
+biblioteca de manipulação de imagens digitais. Seu objetivo principal é fornecer 
+uma API simples e captação de imagens para aplicações científicas. Para isso 
+fazem-se necessários alguns novos includes: "im.h" que é o header principal da IM, 
+"im_image.h" que trata da criação, carregamento, manipulação de atributos e 
+armazenamento de imagens, "im_convert.h" que lida com a conversão entre diferentes 
+tipos de imagem e "iup_im.h" que permite o carregamento e armazenamento de imagens 
+através do iup.</p>
+<p>Adicionamos também algumas funções como str_fileext, que obtem a extensão do 
+arquivo passado como parametro, show_error que cria e exibe na&nbsp;tela uma mensagem 
+de erro e show_file_error que usa show_error para informar ao usuário que tipo 
+de erro ocorreu na abertura de um arquivo de imagem. Ainda temos set_file_format que 
+determina em qual formato a imagem deve ser salva baseando-se na extensão do 
+arquivo selecionado, e select_file que seleciona um arquivo para leitura ou 
+salvamento. As funções referentes a 
+manipulação de texto e alguns itens do menu Edit como Cut, Del, Find, Replace, Go To, Select All e 
+do menu Format foram removidos pois seu uso nesta aplicação não faria 
+sentido.</p>
+<p>As funções read_file e write_file passam a usar funções da IM assim como os 
+itens de copy e paste do menu Edit que foram ajustados para trabalhar com 
+toda a imagem ao invés de uma seleção da mesma. Em read_file 
+temos uma chamada a imFileImageLoadBitmap que carrega uma imagem Bitmap de um 
+arquivo em uma estrutura imImage. Caso haja erro na abertura do arquivo a função 
+show_file_error é chamada. Em caso de sucesso, testa-se então se a imagem 
+carregada é do tipo RGB. Se não, será necessário converte-la para RGB pois vamos 
+precisar desenhar sobre ela posteriormente e para isso usaremos apenas imagens 
+RGB. Por fim, a função retorna a imagem 
+carregada. Já write_file utiliza a função imImageGetAttribString para&nbsp; 
+obter o formato do arquivo de imagem e salva utilizando este o mesmo através da função imFileImageSave. A callback referente ao item Copy 
+agora obtem o canvas e a imagem de trabalho e seta o atributo NATIVEIMAGE do 
+IupClipBoard para o handle da imagem obtido pela função IupGetImageNativeHandle. 
+Já a callback de paste verifica se a imagem atual precisa ser salva, obtem o 
+canvas e a imagem exibida atualmente, obtem também a imagem salva no 
+IupClipBoard através do atributo NATIVEIMAGE, seta o atributo FileFormat desta 
+imagem para RGB usando imImageSetAttribString, seta também uma série de 
+atributos do canvas inclusive o atributo IMAGE para a nova imagem, atualiza o 
+mesmo com IupUpdate e, caso necessário, destroi a imagem antiga.</p>
+<p>Neste exemplo apresentamos também um novo diálogo pré-definido chamado IupGetParam, 
+que é usado no menu File/New para obter as dimensões de largura e altura da nova 
+imagem. Após obter do usuário esses dados é chamada a função imImageCreate que 
+cria uma nova imagem, com a largura e altura obtidas, e do tipo RGB conforme 
+explicado acima.</p>
+<p>Note que o desenho da imagem não será implementado neste primeiro exemplo 
+sendo objeto do próximo item deste tutorial.</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a target="example4_1" href="../../examples/tutorial/example4_1.c">example4_1.c</a> <a href="../../examples/tutorial/example4_1.c">
