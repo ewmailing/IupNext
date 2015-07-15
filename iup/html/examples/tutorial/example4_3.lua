@@ -413,101 +413,84 @@ function item_revert:action()
   open_file(self, canvas.filename)
 end
 
-x = [[
-int item_pagesetup_action_cb(Ihandle* item_pagesetup)
-{
-  Ihandle* canvas = IupGetDialogChild(item_pagesetup, "CANVAS");
-  Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
-  int margin_width = IupConfigGetVariableIntDef(config, "Print", "MarginWidth", 20);
-  int margin_height = IupConfigGetVariableIntDef(config, "Print", "MarginHeight", 20);
+function item_pagesetup:action()
+  local width = config:GetVariableDef("Print", "MarginWidth", 20)
+  local height = config:GetVariableDef("Print", "MarginHeight", 20)
 
-  if (IupGetParam("Page Setup", NULL, NULL, "Margin Width (mm): %i[1,]\nMargin Height (mm): %i[1,]\n", &margin_width, &margin_height, NULL))
-  {
-    IupConfigSetVariableInt(config, "Print", "MarginWidth", margin_width);
-    IupConfigSetVariableInt(config, "Print", "MarginHeight", margin_height);
-  }
+  local ret, new_width, new_height = iup.GetParam("Page Setup", nil, "nMargin Width (mm): %i[1,]\nnMargin Height (mm): %i[1,]\n", width, height)
+  if (ret) then
+    config:SetVariable("Print", "MarginWidth", new_width)
+    config:SetVariable("Print", "MarginHeight", new_height)
+  end
+end
 
-  return IUP_DEFAULT;
-}
+function view_fit_rect(canvas_width, canvas_height, image_width, image_height)
+  local correct = 0
 
-void view_fit_rect(int canvas_width, int canvas_height, int image_width, int image_height, int *view_width, int *view_height)
-{
-  double rView, rImage;
-  int correct = 0;
+  local view_width = canvas_width
+  local view_height = canvas_height
 
-  *view_width = canvas_width;
-  *view_height = canvas_height;
+  local rView = canvas_height / canvas_width
+  local rImage = image_height / image_width
 
-  rView = ((double)canvas_height) / canvas_width;
-  rImage = ((double)image_height) / image_width;
-
-  if ((rView <= 1 && rImage <= 1) || (rView >= 1 && rImage >= 1)) /* view and image are horizontal rectangles */
-  {
-    if (rView > rImage)
-      correct = 2;
+  if ((rView <= 1 and rImage <= 1) or (rView >= 1 and rImage >= 1)) then -- view and image are horizontal rectangles 
+    if (rView > rImage) then
+      correct = 2
     else
-      correct = 1;
-  }
-  else if (rView < 1 && rImage > 1) /* view is a horizontal rectangle and image is a vertical rectangle */
-    correct = 1;
-  else if (rView > 1 && rImage < 1) /* view is a vertical rectangle and image is a horizontal rectangle */
-    correct = 2;
+      correct = 1
+    end
+  elseif (rView < 1 and rImage > 1) then -- view is a horizontal rectangle and image is a vertical rectangle
+    correct = 1
+  elseif (rView > 1 and rImage < 1) then -- view is a vertical rectangle and image is a horizontal rectangle
+    correct = 2
+  end
 
-  if (correct == 1)
-    *view_width = (int)(canvas_height / rImage);
-  else if (correct == 2)
-    *view_height = (int)(canvas_width * rImage);
-}
+  if (correct == 1) then
+    view_width = canvas_height / rImage
+  elseif (correct == 2) then
+    view_height = canvas_width * rImage
+  end
+  
+  return view_width, view_height
+end
 
-int item_print_action_cb(Ihandle* item_print)
-{
-  Ihandle* canvas = IupGetDialogChild(item_print, "CANVAS");
-  unsigned int ri, gi, bi;
-  imImage* image;
-  char* title = IupGetAttribute(IupGetDialog(item_print), "TITLE");
-  Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
-  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
+function item_print:action()
+  local title = dlg.title
+  local cd_canvas = cd.CreateCanvas(cd.PRINTER, title.." -d")
+  if (not cd_canvas) then
+    return
+  end
 
-  cdCanvas* cd_canvas = cdCreateCanvasf(CD_PRINTER, "%s -d", title);
-  if (!cd_canvas)
-    return IUP_DEFAULT;
+  -- draw the background 
+  local background = config:GetVariableDef("MainWindow", "Background", "255 255 255")
+  local r, g, b = string.match(background, "(%d*) (%d*) (%d*)")
+  cd_canvas:Background(cd.EncodeColor(r, g, b))
+  cd_canvas:Clear()
 
-  /* draw the background */
-  sscanf(background, "%u %u %u", &ri, &gi, &bi);
-  cdCanvasBackground(cd_canvas, cdEncodeColor((unsigned char)ri, (unsigned char)gi, (unsigned char)bi));
-  cdCanvasClear(cd_canvas);
+  -- draw the image at the center of the canvas
+  local image = canvas.image
+  if (image) then
+    local margin_width = config:GetVariableDef("Print", "MarginWidth", 20)
+    local margin_height = config:GetVariableDef("Print", "MarginHeight", 20)
 
-  /* draw the image at the center of the canvas */
-  image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  if (image)
-  {
-    int x, y, canvas_width, canvas_height, view_width, view_height;
-    double canvas_width_mm, canvas_height_mm;
-    Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
-    int margin_width = IupConfigGetVariableIntDef(config, "Print", "MarginWidth", 20);
-    int margin_height = IupConfigGetVariableIntDef(config, "Print", "MarginHeight", 20);
+    local canvas_width, canvas_height, canvas_width_mm, canvas_height_mm = cd_canvas:GetSize()
 
-    cdCanvasGetSize(cd_canvas, &canvas_width, &canvas_height, &canvas_width_mm, &canvas_height_mm);
+    -- convert to pixels
+    margin_width = (margin_width * canvas_width) / canvas_width_mm
+    margin_height = (margin_height * canvas_height) / canvas_height_mm
 
-    /* convert to pixels */
-    margin_width = (int)((margin_width * canvas_width) / canvas_width_mm);
-    margin_height = (int)((margin_height * canvas_height) / canvas_height_mm);
+    local view_width, view_height = view_fit_rect(
+       canvas_width - 2 * margin_width, canvas_height - 2 * margin_height, 
+       image:Width(), image:Height())
 
-    view_fit_rect(canvas_width - 2 * margin_width, canvas_height - 2 * margin_height, 
-                  image->width, image->height, 
-                  &view_width, &view_height);
+    local x = (canvas_width - view_width) / 2
+    local y = (canvas_height - view_height) / 2
 
-    x = (canvas_width - view_width) / 2;
-    y = (canvas_height - view_height) / 2;
+    image:cdCanvasPutImageRect(cd_canvas, x, y, view_width, view_height, 0, 0, 0, 0)
+  end
 
-    imcdCanvasPutImage(cd_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
-  }
-
-  cdKillCanvas(cd_canvas);
-  return IUP_DEFAULT;
-}
-
-]]
+  cd_canvas:Kill()
+end
 
 function item_exit:action()
   local image = canvas.image
