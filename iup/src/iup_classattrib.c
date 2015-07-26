@@ -44,6 +44,8 @@ int iupClassIsGlobalDefault(const char* name, int colors)
     return 1;
   if (iupStrEqual(name, "TXTFGCOLOR"))
     return 1;
+  if (iupStrEqual(name, "TXTHLCOLOR"))
+    return 1;
   if (iupStrEqual(name, "LINKFGCOLOR"))
     return 1;
   if (iupStrEqual(name, "MENUBGCOLOR"))

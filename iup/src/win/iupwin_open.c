@@ -115,6 +115,7 @@ int iupdrvOpen(int *argc, char ***argv)
   winSetGlobalColor(COLOR_BTNTEXT, "DLGFGCOLOR");
   winSetGlobalColor(COLOR_WINDOW,     "TXTBGCOLOR");
   winSetGlobalColor(COLOR_WINDOWTEXT, "TXTFGCOLOR");
+  winSetGlobalColor(COLOR_HIGHLIGHT,  "TXTHLCOLOR");
   winSetGlobalColor(COLOR_HOTLIGHT, "LINKFGCOLOR");
   /* only in Windows */
   winSetGlobalColor(COLOR_MENU, "MENUBGCOLOR");

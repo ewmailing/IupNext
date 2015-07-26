@@ -1585,6 +1585,7 @@ static int motListMapMethod(Ihandle* ih)
   {
     iupmotSetGlobalColorAttrib(ih->handle, XmNbackground, "TXTBGCOLOR");
     iupmotSetGlobalColorAttrib(ih->handle, XmNforeground, "TXTFGCOLOR");
+    iupmotSetGlobalColorAttrib(ih->handle, XmNhighlightColor, "TXTHLCOLOR");
     IupSetGlobal("_IUP_RESET_TXTCOLORS", NULL);
   }
 
