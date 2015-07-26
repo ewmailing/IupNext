@@ -385,6 +385,37 @@ wb_usr.tree =
             },
           },
         },
+        {
+          name= {en= "4. Simple Paint"},
+          link= "tutorial/tutorial4.html",
+          folder=
+          {
+            {
+              name= {en= "4.1 Loading and Saving Images"},
+              link= "tutorial/tutorial4.html#Loading_and_Saving_Images",
+            },
+            {
+              name= {en= "4.2 Drawing with OpenGL"},
+              link= "tutorial/tutorial4.html#Drawing_with_OpenGL",
+            },
+            {
+              name= {en= "4.3 Drawing with CD and Printing"},
+              link= "tutorial/tutorial4.html#Drawing_with_CD",
+            },
+            {
+              name= {en= "4.4 Interactive Zoom and Scrollbars"},
+              link= "tutorial/tutorial4.html#Interactive_Zoom",
+            },
+            {
+              name= {en= "4.5 Canvas Interaction and a ToolBox"},
+              link= "tutorial/tutorial4.html#Canvas_Interaction",
+            },
+            {
+              name= {en= "4.6 Image Processing and Final Considerations"},
+              link= "tutorial/tutorial4.html#Image_Processing",
+            },
+          },
+        },
       }
     },
     { link= "", name= {en= "" } },

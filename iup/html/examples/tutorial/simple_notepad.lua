@@ -199,8 +199,8 @@ item_delete = iup.item{title="&Delete\tDel", image = "IUP_EditErase"}
 item_select_all = iup.item{title="Select &All\tCtrl+A"}
 item_goto = iup.item{title="&Go To...\tCtrl+G"}
 item_font = iup.item{title="&Font..."}
-item_toolbar = iup.item{title="&Toobar...", value="ON"}
-item_statusbar = iup.item{title="&Statusbar...", value="ON"}
+item_toolbar = iup.item{title="&Toobar", value="ON"}
+item_statusbar = iup.item{title="&Statusbar", value="ON"}
 item_help = iup.item{title="&Help..."}
 item_about = iup.item{title="&About..."}
 

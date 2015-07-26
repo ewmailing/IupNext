@@ -297,6 +297,15 @@
     <ClCompile Include="..\html\examples\tutorial\example4_3.c">
       <Filter>Tutorial</Filter>
     </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example4_4.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\example4_5.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\simple_paint.c">
+      <Filter>Tutorial</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua">

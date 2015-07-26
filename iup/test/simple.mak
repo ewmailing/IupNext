@@ -21,4 +21,4 @@ USE_STATIC = Yes
 IUP = ..
 
 #USE_CD = Yes
-SRC += flatbutton.c
+SRC += tree.c

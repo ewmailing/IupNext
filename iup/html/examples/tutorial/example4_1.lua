@@ -199,7 +199,7 @@ config = iup.config{}
 config.app_name = "simple_paint"
 config:Load()
 
-lbl_statusbar = iup.label{title = "(0, 0) = [0   0   0]", expand = "HORIZONTAL", padding = "10x5"}
+statusbar = iup.label{title = "(0, 0) = [0   0   0]", expand = "HORIZONTAL", padding = "10x5"}
 
 canvas = iup.canvas{
   config = config,
@@ -214,8 +214,8 @@ item_revert = iup.item{title="&Revert"}
 item_exit = iup.item{title="E&xit"}
 item_copy = iup.item{title="&Copy\tCtrl+C", image = "IUP_EditCopy"}
 item_paste = iup.item{title="&Paste\tCtrl+V", image = "IUP_EditPaste"}
-item_toolbar = iup.item{title="&Toobar...", value="ON"}
-item_statusbar = iup.item{title="&Statusbar...", value="ON"}
+item_toolbar = iup.item{title="&Toobar", value="ON"}
+item_statusbar = iup.item{title="&Statusbar", value="ON"}
 item_help = iup.item{title="&Help..."}
 item_about = iup.item{title="&About..."}
 
@@ -425,12 +425,12 @@ function item_paste:action()
 end
 
 function item_toolbar:action()
-  toggle_bar_visibility(self, toolbar_hb)
+  toggle_bar_visibility(self, toolbar)
   config:SetVariable("MainWindow", "Toolbar", item_toolbar.value)
 end
 
 function item_statusbar:action()
-  toggle_bar_visibility(self, lbl_statusbar)
+  toggle_bar_visibility(self, statusbar)
   config:SetVariable("MainWindow", "Statusbar", item_statusbar.value)
 end
 
@@ -452,7 +452,7 @@ btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_save.a
 btn_copy = iup.button{image =  "IUP_EditCopy", flat = "Yes", action = item_copy.action, canfocus="No", tip = "Copy (Ctrl+C)"}
 btn_paste = iup.button{image = "IUP_EditPaste", flat = "Yes", action = item_paste.action, canfocus="No", tip = "Paste (Ctrl+V)"}
 
-toolbar_hb = iup.hbox{
+toolbar = iup.hbox{
   btn_new,
   btn_open,
   btn_save,
@@ -464,9 +464,9 @@ toolbar_hb = iup.hbox{
 }
 
 vbox = iup.vbox{
-  toolbar_hb,
+  toolbar,
   canvas,
-  lbl_statusbar,
+  statusbar,
 }
 
 dlg = iup.dialog{
@@ -503,15 +503,15 @@ config:RecentInit(recent_menu, 10)
 show_statusbar = config:GetVariableDef("MainWindow", "Statusbar", "ON")
 if (show_statusbar == "OFF") then
   item_statusbar.value = "OFF"
-  lbl_statusbar.floating = "YES"
-  lbl_statusbar.visible = "NO"
+  statusbar.floating = "YES"
+  statusbar.visible = "NO"
 end
 
 show_toolbar = config:GetVariableDef("MainWindow", "Toolbar", "ON")
 if (show_toolbar == "OFF") then
   item_toolbar.value = "OFF"
-  toolbar_hb.floating = "YES"
-  toolbar_hb.visible = "NO"
+  toolbar.floating = "YES"
+  toolbar.visible = "NO"
 end
 
 -- show the dialog at the last position, with the last size

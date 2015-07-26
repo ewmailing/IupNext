@@ -334,6 +334,7 @@ void TextTest(void)
 //  IupSetAttribute(mltline, "ALIGNMENT", "ACENTER");
 //  IupSetAttribute(mltline, "CANFOCUS", "NO");
 //  IupSetAttribute(mltline, "SCROLLBAR", "NO");
+//  IupSetAttribute(mltline, "NOHIDESEL", "Yes");
 
   /* Turns on multiline expand and text horizontal expand */
   IupSetAttribute(mltline, "SIZE", "80x40");

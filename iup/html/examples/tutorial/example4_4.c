@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 #include <iup.h>
 #include <iup_config.h>
 #include <iupgl.h>
@@ -135,19 +136,6 @@ imImage* read_file(const char* filename)
   imImage* image = imFileImageLoadBitmap(filename, 0, &error);
   if (error) 
     show_file_error(error);
-  else
-  {
-    /* we are going to support only RGB images with no alpha */
-    imImageRemoveAlpha(image);
-    if (image->color_space != IM_RGB)
-    {
-      imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
-      imConvertColorSpace(image, new_image);
-      imImageDestroy(image);
-
-      image = new_image;
-    }
-  }
   return image;
 }
 
@@ -163,22 +151,133 @@ int write_file(const char* filename, const imImage* image)
   return 1;
 }
 
-void new_file(Ihandle* ih, imImage* image)
+/* extracted from the SCROLLBAR attribute documentation */
+void scrollbar_update(Ihandle* ih, int view_width, int view_height)
 {
-  Ihandle* dlg = IupGetDialog(ih);
-  Ihandle* canvas = IupGetDialogChild(dlg, "CANVAS");
+  /* view_width and view_height is the virtual space size */
+  /* here we assume XMIN=0, XMAX=1, YMIN=0, YMAX=1 */
+  int elem_width, elem_height;
+  int canvas_width, canvas_height;
+  int scrollbar_size = IupGetInt(NULL, "SCROLLBARSIZE");
+  int border = IupGetInt(ih, "BORDER");
+
+  IupGetIntInt(ih, "RASTERSIZE", &elem_width, &elem_height);
+
+  /* if view is greater than canvas in one direction,
+  then it has scrollbars,
+  but this affects the opposite direction */
+  elem_width -= 2 * border;  /* remove BORDER (always size=1) */
+  elem_height -= 2 * border;
+  canvas_width = elem_width;
+  canvas_height = elem_height;
+  if (view_width > elem_width)  /* check for horizontal scrollbar */
+    canvas_height -= scrollbar_size;  /* affect vertical size */
+  if (view_height > elem_height)
+    canvas_width -= scrollbar_size;
+  if (view_width <= elem_width && view_width > canvas_width)  /* check if still has horizontal scrollbar */
+    canvas_height -= scrollbar_size;
+  if (view_height <= elem_height && view_height > canvas_height)
+    canvas_width -= scrollbar_size;
+  if (canvas_width < 0) canvas_width = 0;
+  if (canvas_height < 0) canvas_height = 0;
+
+  IupSetFloat(ih, "DX", (float)canvas_width / (float)view_width);
+  IupSetFloat(ih, "DY", (float)canvas_height / (float)view_height);
+}
+
+void scroll_calc_center(Ihandle* canvas, float *x, float *y)
+{
+  *x = IupGetFloat(canvas, "POSX") + IupGetFloat(canvas, "DX") / 2.0f;
+  *y = IupGetFloat(canvas, "POSY") + IupGetFloat(canvas, "DY") / 2.0f;
+}
+
+void scroll_center(Ihandle* canvas, float old_center_x, float old_center_y)
+{
+  /* always update the scroll position
+     keeping it proportional to the old position
+     relative to the center of the canvas. */
+
+  float dx = IupGetFloat(canvas, "DX");
+  float dy = IupGetFloat(canvas, "DY");
+
+  float posx = old_center_x - dx / 2.0f;
+  float posy = old_center_y - dy / 2.0f;
+
+  if (posx < 0) posx = 0;
+  if (posx > 1 - dx) posx = 1 - dx;
+
+  if (posy < 0) posy = 0;
+  if (posy > 1 - dy) posy = 1 - dy;
+
+  IupSetFloat(canvas, "POSX", posx);
+  IupSetFloat(canvas, "POSY", posy);
+}
+
+void zoom_update(Ihandle* ih, double zoom_index)
+{
+  Ihandle* zoom_lbl = IupGetDialogChild(ih, "ZOOMLABEL");
+  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  double zoom_factor = pow(2, zoom_index);
+  IupSetStrf(zoom_lbl, "TITLE", "%.0f%%", floor(zoom_factor * 100));
+  if (image)
+  {
+    float old_center_x, old_center_y;
+    int view_width = (int)(zoom_factor * image->width);
+    int view_height = (int)(zoom_factor * image->height);
+
+    scroll_calc_center(canvas, &old_center_x, &old_center_y);
+
+    scrollbar_update(canvas, view_width, view_height);
+
+    scroll_center(canvas, old_center_x, old_center_y);
+  }
+  IupUpdate(canvas);
+}
+
+void set_new_image(Ihandle* canvas, imImage* image, const char* filename, int dirty)
+{
   imImage* old_image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  Ihandle* size_lbl = IupGetDialogChild(canvas, "SIZELABEL");
+  Ihandle* zoom_val = IupGetDialogChild(canvas, "ZOOMVAL");
 
-  IupSetAttribute(dlg, "TITLE", "Untitled - Simple Paint");
-  IupSetAttribute(canvas, "FILENAME", NULL);
-  IupSetAttribute(canvas, "DIRTY", "NO");
+  if (filename)
+  {
+    IupSetStrAttribute(canvas, "FILENAME", filename);
+    IupSetfAttribute(IupGetDialog(canvas), "TITLE", "%s - Simple Paint", str_filetitle(filename));
+  }
+  else
+  {
+    IupSetAttribute(canvas, "FILENAME", NULL);
+    IupSetAttribute(IupGetDialog(canvas), "TITLE", "Untitled - Simple Paint");
+  }
 
+  /* we are going to support only RGB images with no alpha */
+  imImageRemoveAlpha(image);
+  if (image->color_space != IM_RGB)
+  {
+    imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
+    imConvertColorSpace(image, new_image);
+    imImageDestroy(image);
+
+    image = new_image;
+  }
+
+  /* default file format */
+  const char* format = imImageGetAttribString(image, "FileFormat");
+  if (!format)
+    imImageSetAttribString(image, "FileFormat", "JPEG");
+    
+  IupSetAttribute(canvas, "DIRTY", dirty? "Yes": "No");
   IupSetAttribute(canvas, "IMAGE", (char*)image);
 
-  IupUpdate(canvas);
+  IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", image->width, image->height);
 
   if (old_image)
     imImageDestroy(old_image);
+
+  IupSetDouble(zoom_val, "VALUE", 0);
+  zoom_update(canvas, 0);
 }
 
 void check_new_file(Ihandle* dlg)
@@ -193,7 +292,7 @@ void check_new_file(Ihandle* dlg)
 
     image = imImageCreate(width, height, IM_RGB, IM_BYTE);
 
-    new_file(dlg, image);
+    set_new_image(canvas, image, NULL, 0);
   }
 }
 
@@ -202,20 +301,10 @@ void open_file(Ihandle* ih, const char* filename)
   imImage* image = read_file(filename);
   if (image)
   {
-    Ihandle* dlg = IupGetDialog(ih);
-    Ihandle* canvas = IupGetDialogChild(dlg, "CANVAS");
+    Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
     Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
-    imImage* old_image = (imImage*)IupGetAttribute(canvas, "IMAGE");
 
-    IupSetfAttribute(dlg, "TITLE", "%s - Simple Paint", str_filetitle(filename));
-    IupSetStrAttribute(canvas, "FILENAME", filename);
-    IupSetAttribute(canvas, "DIRTY", "NO");
-    IupSetAttribute(canvas, "IMAGE", (char*)image);
-
-    IupUpdate(canvas);
-
-    if (old_image)
-      imImageDestroy(old_image);
+    set_new_image(canvas, image, filename, 0);
 
     IupConfigRecentUpdate(config, filename);
   }
@@ -301,6 +390,54 @@ void toggle_bar_visibility(Ihandle* item, Ihandle* ih)
   IupRefresh(ih);  /* refresh the dialog layout */
 }
 
+int select_file(Ihandle* parent_dlg, int is_open)
+{
+  Ihandle* config = (Ihandle*)IupGetAttribute(parent_dlg, "CONFIG");
+  Ihandle* canvas = IupGetDialogChild(parent_dlg, "CANVAS");
+  const char* dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
+
+  Ihandle* filedlg = IupFileDlg();
+  if (is_open)
+    IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
+  else
+  {
+    IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
+    IupSetStrAttribute(filedlg, "FILE", IupGetAttribute(canvas, "FILENAME"));
+  }
+  IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
+  IupSetStrAttribute(filedlg, "DIRECTORY", dir);
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", parent_dlg);
+
+  IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+  if (IupGetInt(filedlg, "STATUS") != -1)
+  {
+    char* filename = IupGetAttribute(filedlg, "VALUE");
+    if (is_open)
+      open_file(parent_dlg, filename);
+    else
+      saveas_file(canvas, filename);
+
+    dir = IupGetAttribute(filedlg, "DIRECTORY");
+    IupConfigSetVariableStr(config, "MainWindow", "LastDirectory", dir);
+  }
+
+  IupDestroy(filedlg);
+  return IUP_DEFAULT;
+}
+
+void view_fit_rect(int canvas_width, int canvas_height, int image_width, int image_height, int *view_width, int *view_height)
+{
+  *view_width = canvas_width;
+  *view_height = (canvas_width * image_height) / image_width;
+
+  if (*view_height > canvas_height)
+  {
+    *view_height = canvas_height;
+    *view_width = (canvas_height * image_width) / image_height;
+  }
+}
+
+
 
 /********************************** Callbacks *****************************************/
 
@@ -327,10 +464,38 @@ int canvas_action_cb(Ihandle* canvas)
   image = (imImage*)IupGetAttribute(canvas, "IMAGE");
   if (image)
   {
-    x = (canvas_width - image->width) / 2;
-    y = (canvas_height - image->height) / 2;
+    int view_width, view_height;
+    Ihandle* zoom_val = IupGetDialogChild(canvas, "ZOOMVAL");
+    double zoom_index = IupGetDouble(zoom_val, "VALUE");
+    double zoom_factor = pow(2, zoom_index);
 
-    imcdCanvasPutImage(cd_canvas, image, x, y, image->width, image->height, 0, 0, 0, 0);
+    float posy = IupGetFloat(canvas, "POSY");
+    float posx = IupGetFloat(canvas, "POSX");
+
+    view_width = (int)(zoom_factor * image->width);
+    view_height = (int)(zoom_factor * image->height);
+
+    if (canvas_width < view_width)
+      x = (int)floor(-posx*view_width);
+    else
+      x = (canvas_width - view_width) / 2;
+
+    if (canvas_height < view_height)
+    {
+      /* posy is top-bottom, CD is bottom-top.
+         invert posy reference (YMAX-DY - POSY) */
+      float dy = IupGetFloat(canvas, "DY");
+      posy = 1.0f - dy - posy;
+      y = (int)floor(-posy*view_height);
+    }
+    else
+      y = (canvas_height - view_height) / 2;
+
+    /* black line around the image */
+    cdCanvasForeground(cd_canvas, CD_BLACK);
+    cdCanvasRect(cd_canvas, x - 1, x + view_width, y - 1, y + view_height);
+
+    imcdCanvasPutImage(cd_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
   }
 
   cdCanvasFlush(cd_canvas);
@@ -348,6 +513,88 @@ int canvas_unmap_cb(Ihandle* canvas)
 {
   cdCanvas* cd_canvas = (cdCanvas*)IupGetAttribute(canvas, "cdCanvas");
   cdKillCanvas(cd_canvas);
+  return IUP_DEFAULT;
+}
+
+int zoomout_action_cb(Ihandle* ih)
+{
+  Ihandle* zoom_val = IupGetDialogChild(ih, "ZOOMVAL");
+  double zoom_index = IupGetDouble(zoom_val, "VALUE");
+  zoom_index--;
+  if (zoom_index < -6)
+    zoom_index = -6;
+  IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
+
+  zoom_update(ih, zoom_index);
+  return IUP_DEFAULT;
+}
+
+int zoomin_action_cb(Ihandle* ih)
+{
+  Ihandle* zoom_val = IupGetDialogChild(ih, "ZOOMVAL");
+  double zoom_index = IupGetDouble(zoom_val, "VALUE");
+  zoom_index++;
+  if (zoom_index > 6)
+    zoom_index = 6;
+  IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
+
+  zoom_update(ih, zoom_index);
+  return IUP_DEFAULT;
+}
+
+int actualsize_action_cb(Ihandle* ih)
+{
+  Ihandle* zoom_val = IupGetDialogChild(ih, "ZOOMVAL");
+  IupSetDouble(zoom_val, "VALUE", 0);
+  zoom_update(ih, 0);
+  return IUP_DEFAULT;
+}
+
+int canvas_resize_cb(Ihandle* canvas)
+{
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  if (image)
+  {
+    Ihandle* zoom_val = IupGetDialogChild(canvas, "ZOOMVAL");
+    double zoom_index = IupGetDouble(zoom_val, "VALUE");
+    double zoom_factor = pow(2, zoom_index);
+    float old_center_x, old_center_y;
+
+    int view_width = (int)(zoom_factor * image->width);
+    int view_height = (int)(zoom_factor * image->height);
+
+    scroll_calc_center(canvas, &old_center_x, &old_center_y);
+
+    scrollbar_update(canvas, view_width, view_height);
+
+    scroll_center(canvas, old_center_x, old_center_y);
+  }
+  return IUP_DEFAULT;
+}
+
+int canvas_wheel_cb(Ihandle* canvas, float delta)
+{
+  if (IupGetInt(NULL, "CONTROLKEY"))
+  {
+    if (delta < 0)
+      zoomout_action_cb(canvas);
+    else
+      zoomin_action_cb(canvas);
+  }
+  else
+  {
+    float posy = IupGetFloat(canvas, "POSY");
+    posy -= delta * IupGetFloat(canvas, "DY") / 10.0f;
+    IupSetFloat(canvas, "POSY", posy);
+    IupUpdate(canvas);
+  }
+  return IUP_DEFAULT;
+}
+
+int zoom_valuechanged_cb(Ihandle* val)
+{
+  double zoom_index = IupGetDouble(val, "VALUE");
+  zoom_update(val, zoom_index);
   return IUP_DEFAULT;
 }
 
@@ -420,45 +667,10 @@ int item_new_action_cb(Ihandle* item_new)
       IupConfigSetVariableInt(config, "NewImage", "Width", width);
       IupConfigSetVariableInt(config, "NewImage", "Height", height);
 
-      new_file(item_new, image);
+      set_new_image(canvas, image, NULL, 0);
     }
   }
 
-  return IUP_DEFAULT;
-}
-
-int select_file(Ihandle* parent_dlg, int is_open)
-{
-  Ihandle* config = (Ihandle*)IupGetAttribute(parent_dlg, "CONFIG");
-  Ihandle* canvas = IupGetDialogChild(parent_dlg, "CANVAS");
-  const char* dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
-
-  Ihandle* filedlg = IupFileDlg();
-  if (is_open)
-    IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
-  else
-  {
-    IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
-    IupSetStrAttribute(filedlg, "FILE", IupGetAttribute(canvas, "FILENAME"));
-  }
-  IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
-  IupSetStrAttribute(filedlg, "DIRECTORY", dir);
-  IupSetAttributeHandle(filedlg, "PARENTDIALOG", parent_dlg);
-
-  IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
-  if (IupGetInt(filedlg, "STATUS") != -1)
-  {
-    char* filename = IupGetAttribute(filedlg, "VALUE");
-    if (is_open)
-      open_file(parent_dlg, filename);
-    else
-      saveas_file(canvas, filename);
-
-    dir = IupGetAttribute(filedlg, "DIRECTORY");
-    IupConfigSetVariableStr(config, "MainWindow", "LastDirectory", dir);
-  }
-
-  IupDestroy(filedlg);
   return IUP_DEFAULT;
 }
 
@@ -513,18 +725,6 @@ int item_pagesetup_action_cb(Ihandle* item_pagesetup)
   }
 
   return IUP_DEFAULT;
-}
-
-void view_fit_rect(int canvas_width, int canvas_height, int image_width, int image_height, int *view_width, int *view_height)
-{
-  *view_width = canvas_width;
-  *view_height = (canvas_width * image_height) / image_width;
-
-  if (*view_height > canvas_height)
-  {
-    *view_height = canvas_height;
-    *view_width = (canvas_height * image_width) / image_height;
-  }
 }
 
 int item_print_action_cb(Ihandle* item_print)
@@ -609,7 +809,6 @@ int item_paste_action_cb(Ihandle* item_paste)
   if (save_check(item_paste))
   {
     Ihandle* canvas = IupGetDialogChild(item_paste, "CANVAS");
-    imImage* old_image = (imImage*)IupGetAttribute(canvas, "IMAGE");
 
     Ihandle *clipboard = IupClipboard();
     imImage* image = IupGetNativeHandleImage(IupGetAttribute(clipboard, "NATIVEIMAGE"));
@@ -621,28 +820,7 @@ int item_paste_action_cb(Ihandle* item_paste)
       return IUP_DEFAULT;
     }
 
-    /* we are going to support only RGB images with no alpha */
-    imImageRemoveAlpha(image);
-    if (image->color_space != IM_RGB)
-    {
-      imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
-      imConvertColorSpace(image, new_image);
-      imImageDestroy(image);
-
-      image = new_image;
-    }
-
-    imImageSetAttribString(image, "FileFormat", "JPEG");
-
-    IupSetAttribute(canvas, "DIRTY", "Yes");
-    IupSetAttribute(canvas, "IMAGE", (char*)image);
-    IupSetAttribute(canvas, "FILENAME", NULL);
-    IupSetAttribute(IupGetDialog(canvas), "TITLE", "Untitled - Simple Paint");
-
-    IupUpdate(canvas);
-
-    if (old_image)
-      imImageDestroy(old_image);
+    set_new_image(canvas, image, NULL, 1);  /* set dirty */
   }
   return IUP_DEFAULT;
 }
@@ -718,20 +896,34 @@ Ihandle* create_main_dialog(Ihandle *config)
   Ihandle *btn_copy, *btn_paste, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
+  Ihandle *item_zoomin, *item_zoomout, *item_actualsize;
   Ihandle *statusbar, *toolbar, *recent_menu, *item_background;
 
   canvas = IupCanvas(NULL);
   IupSetAttribute(canvas, "NAME", "CANVAS");
-  IupSetAttribute(canvas, "DIRTY", "NO");
+  IupSetAttribute(canvas, "SCROLLBAR", "Yes");
+  IupSetAttribute(canvas, "DIRTY", "NO");  /* custom attribute */
+  IupSetAttribute(canvas, "ZOOMFACTOR", "1");  /* custom attribute */
   IupSetCallback(canvas, "ACTION", (Icallback)canvas_action_cb);
   IupSetCallback(canvas, "DROPFILES_CB", (Icallback)dropfiles_cb);
   IupSetCallback(canvas, "MAP_CB", (Icallback)canvas_map_cb);
   IupSetCallback(canvas, "UNMAP_CB", (Icallback)canvas_unmap_cb);
+  IupSetCallback(canvas, "WHEEL_CB", (Icallback)canvas_wheel_cb);
+  IupSetCallback(canvas, "RESIZE_CB", (Icallback)canvas_resize_cb);
 
-  statusbar = IupLabel("(0, 0) = [0   0   0]");
+  statusbar = IupHbox(
+    IupSetAttributes(IupLabel("(0, 0) = 0   0   0"), "EXPAND=HORIZONTAL, PADDING=10x5"),
+    IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
+    IupSetAttributes(IupLabel("0 x 0"), "SIZE=70x, PADDING=10x5, NAME=SIZELABEL, ALIGNMENT=ACENTER"),
+    IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
+    IupSetAttributes(IupLabel("100%"), "SIZE=30x, PADDING=10x5, NAME=ZOOMLABEL, ALIGNMENT=ARIGHT"),
+    IupSetCallbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=IUP_ZoomOut, FLAT=Yes, TIP=\"Zoom Out (Ctrl+-)\""), "ACTION", zoomout_action_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupVal(NULL), "VALUE=0, MIN=-6, MAX=6, RASTERSIZE=150x25, NAME=ZOOMVAL"), "VALUECHANGED_CB", zoom_valuechanged_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=IUP_ZoomIn, FLAT=Yes, TIP=\"Zoom In (Ctrl++)\""), "ACTION", zoomin_action_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=IUP_ZoomActualSize, FLAT=Yes, TIP=\"Actual Size (Ctrl+0)\""), "ACTION", actualsize_action_cb, NULL),
+    NULL);
   IupSetAttribute(statusbar, "NAME", "STATUSBAR");
-  IupSetAttribute(statusbar, "EXPAND", "HORIZONTAL");
-  IupSetAttribute(statusbar, "PADDING", "10x5");
+  IupSetAttribute(statusbar, "ALIGNMENT", "ACENTER");
 
   item_new = IupItem("&New\tCtrl+N", NULL);
   IupSetAttribute(item_new, "IMAGE", "IUP_FileNew");
@@ -803,6 +995,18 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(btn_paste, "TIP", "Paste (Ctrl+V)");
   IupSetAttribute(btn_paste, "CANFOCUS", "No");
 
+  item_zoomin = IupItem("Zoom &In\tCtrl++", NULL);
+  IupSetAttribute(item_zoomin, "IMAGE", "IUP_ZoomIn");
+  IupSetCallback(item_zoomin, "ACTION", (Icallback)zoomin_action_cb);
+
+  item_zoomout = IupItem("Zoom &Out\tCtrl+-", NULL);
+  IupSetAttribute(item_zoomout, "IMAGE", "IUP_ZoomOut");
+  IupSetCallback(item_zoomout, "ACTION", (Icallback)zoomout_action_cb);
+
+  item_actualsize = IupItem("&Actual Size\tCtrl+0", NULL);
+  IupSetAttribute(item_actualsize, "IMAGE", "IUP_ZoomActualSize");
+  IupSetCallback(item_actualsize, "ACTION", (Icallback)actualsize_action_cb);
+
   item_background = IupItem("&Background...", NULL);
   IupSetCallback(item_background, "ACTION", (Icallback)item_background_action_cb);
 
@@ -841,6 +1045,10 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_paste,
     NULL);
   view_menu = IupMenu(
+    item_zoomin, 
+    item_zoomout, 
+    item_actualsize,
+    IupSeparator(),
     item_background,
     IupSeparator(),
     item_toolbar,
@@ -877,6 +1085,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(toolbar, "MARGIN", "5x5");
   IupSetAttribute(toolbar, "GAP", "2");
 
+
   vbox = IupVbox(
     toolbar,
     canvas,
@@ -895,6 +1104,10 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(dlg, "K_cV", (Icallback)item_paste_action_cb);
   IupSetCallback(dlg, "K_cC", (Icallback)item_copy_action_cb);
   IupSetCallback(dlg, "K_cP", (Icallback)item_print_action_cb);
+  IupSetCallback(dlg, "K_cMinus", (Icallback)zoomout_action_cb);
+  IupSetCallback(dlg, "K_cPlus", (Icallback)zoomin_action_cb);
+  IupSetCallback(dlg, "K_cEqual", (Icallback)zoomin_action_cb);
+  IupSetCallback(dlg, "K_c0", (Icallback)actualsize_action_cb);
 
   /* parent for pre-defined dialogs in closed functions (IupMessage and IupAlarm) */
   IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);

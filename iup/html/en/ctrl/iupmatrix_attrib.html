@@ -33,6 +33,12 @@ exceptions)</span></h2>
 <p><strong><a name="HIDDENTEXTMARKS">HIDDENTEXTMARKS</a></strong>: when text is greater than cell space, it is 
 normally cropped, but when set to YES a &quot;...&quot; mark will be added at the crop 
 point to indicate that there is more text not visible. Default: NO. (since 3.1)</p>
+<p><strong>HLCOLOR</strong> (<font size="3">non inheritable</font>): the overlay 
+color for the selected cells. Default: TXTHLCOLOR global attribute. If set to &quot;&quot; 
+will only use the attenuation process. The color is composited using 
+HLCOLORALPHA attribute as alpha value (default is 128). (since 3.16)</p>
+
+  
 <p><strong><a name="ORIGIN">ORIGIN</a></strong>: Scroll the visible area to the 
 given cell. Returns the cell at the upper left corner. To scroll to a line or a 
 column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*:<strong><em>C</em></strong>&quot; (where

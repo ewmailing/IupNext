@@ -6,7 +6,6 @@
 static int detached_cb(Ihandle *ih, Ihandle* new_parent, int x, int y)
 {
   IupSetAttribute(new_parent, "TITLE", "New Dialog");
-  IupSetAttribute(new_parent, "MARGIN", "10x10");
 
   IupSetAttribute(IupGetHandle("restore"), "ACTIVE", "YES");
   IupSetAttribute(IupGetHandle("detach"), "ACTIVE", "NO");
@@ -26,7 +25,6 @@ static int btn_restore_cb(Ihandle *bt)
   Ihandle *dlg = IupGetDialog(dbox);
   Ihandle *old_parent = (Ihandle*)IupGetAttribute(dbox, "OLDPARENT_HANDLE");
   Ihandle *ref_child = (Ihandle*)IupGetAttribute(dbox, "OLDBROTHER_HANDLE");
-
   IupReparent(dbox, old_parent, ref_child);
   IupRefresh(old_parent);
   IupDestroy(dlg);
@@ -71,6 +69,7 @@ int main(int argc, char **argv)
   dbox = IupDetachBox(hbox);
   IupSetAttribute(dbox, "ORIENTATION", "VERTICAL");
   //IupSetAttribute(dbox, "SHOWGRIP", "NO");
+  //IupSetAttribute(dbox, "BARSIZE", "0");
   //IupSetAttribute(dbox, "COLOR", "255 0 0");
   IupSetCallback(dbox, "DETACHED_CB", (Icallback)detached_cb);
   IupSetHandle("dbox", dbox);

@@ -58,13 +58,39 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (11/Jul/2015)</h3>
+<h3>SVN (25/Jul/2015)</h3>
 
 <ul>
 
+	<li><strong><span class="hist_new">New:</span> </strong>NOHIDESEL attribute 
+	for <strong>IupText</strong> on Windows. The default is Yes so it changed 
+	the default behavior of the control that was hiding the selection when loses 
+	focus, now by default the selection is always visible just like the <strong>
+	IupList</strong> and the <strong>IupTree</strong>.</li>
+	<li><strong><span class="hist_new">New:</span> </strong>TXTHLCOLOR global 
+	attribute.</li>
+	<li><strong><span class="hist_new">New:</span> </strong>HLCOLOR attribute 
+	for <strong>IupTree</strong> on Windows and Motif (background of selected 
+	nodes). The selection color now will not change when the control loses its 
+	focus on Windows.</li>
+	<li><strong><span class="hist_changed">Changed:</span></strong> 
+	HLCOLOR attribute that defines an overlay color for the selected cells in
+	<strong>IupMatrix</strong>. The default is the TXTHLCOLOR global 
+	attribute.</li>
 	<li><strong><span class="hist_fixed">Fixed:</span> </strong><strong>IupConfigDialogShow</strong> 
 	behavior when dialog is not resizable. It will also do no adjustments if the 
 	dialog is already visible. Better control of the maximize of the first time.</li>
+	<li><strong><span class="hist_fixed">Fixed:</span> </strong>error report in 
+	Lua to always include the traceback.</li>
+	<li><strong><span class="hist_fixed">Fixed:</span> </strong>inactive button 
+	being activated by mnemonic.</li>
+	<li><strong><span class="hist_fixed">Fixed:</span> </strong>CURSORPOS global 
+	attribute set when Taskbar is at left or top in Windows.</li>
+	<li><strong><span class="hist_fixed">Fixed:</span> </strong>RESTORE 
+	attribute in <strong>IupDeatchBox</strong> when old brother is not a child 
+	of old parent anymore. Added the possibility of using a different parent 
+	with value. Improved the initial new dialog size to use the current size of 
+	the child.</li>
 
 </ul>
 <h3><a href="http://sourceforge.net/projects/iup/files/3.15/">Version 3.15</a> (06/Jul/2015)</h3>

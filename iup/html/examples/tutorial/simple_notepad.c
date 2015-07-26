@@ -998,11 +998,11 @@ Ihandle* create_main_dialog(Ihandle *config)
   item_goto = IupItem("&Go To...\tCtrl+G", NULL);
   IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
 
-  item_toolbar = IupItem("&Toobar...", NULL);
+  item_toolbar = IupItem("&Toobar", NULL);
   IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
   IupSetAttribute(item_toolbar, "VALUE", "ON");
 
-  item_statusbar = IupItem("&Statusbar...", NULL);
+  item_statusbar = IupItem("&Statusbar", NULL);
   IupSetCallback(item_statusbar, "ACTION", (Icallback)item_statusbar_action_cb);
   IupSetAttribute(item_statusbar, "VALUE", "ON");
 

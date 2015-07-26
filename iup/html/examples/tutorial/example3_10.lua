@@ -165,8 +165,8 @@ item_delete = iup.item{title="&Delete\tDel", image = "IUP_EditErase"}
 item_select_all = iup.item{title="Select &All\tCtrl+A"}
 item_revert = iup.item{title="&Revert"}
 item_exit = iup.item{title="E&xit"}
-item_toolbar = iup.item{title="&Toobar...", value="ON"}
-item_statusbar = iup.item{title="&Statusbar...", value="ON"}
+item_toolbar = iup.item{title="&Toobar", value="ON"}
+item_statusbar = iup.item{title="&Statusbar", value="ON"}
 
 show_statusbar = config:GetVariableDef("MainWindow", "Statusbar", "ON")
 if (show_statusbar == "OFF") then

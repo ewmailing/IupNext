@@ -651,7 +651,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   Ihandle *btn_copy, *btn_paste, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
-  Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu, *item_background;
+  Ihandle *statusbar, *toolbar, *recent_menu, *item_background;
 
   canvas = IupGLCanvas(NULL);
   IupSetAttribute(canvas, "NAME", "CANVAS");
@@ -660,10 +660,10 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(canvas, "ACTION", (Icallback)canvas_action_cb);
   IupSetCallback(canvas, "DROPFILES_CB", (Icallback)dropfiles_cb);
 
-  lbl_statusbar = IupLabel("(0, 0) = [0   0   0]");
-  IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");
-  IupSetAttribute(lbl_statusbar, "EXPAND", "HORIZONTAL");
-  IupSetAttribute(lbl_statusbar, "PADDING", "10x5");
+  statusbar = IupLabel("(0, 0) = [0   0   0]");
+  IupSetAttribute(statusbar, "NAME", "STATUSBAR");
+  IupSetAttribute(statusbar, "EXPAND", "HORIZONTAL");
+  IupSetAttribute(statusbar, "PADDING", "10x5");
 
   item_new = IupItem("&New\tCtrl+N", NULL);
   IupSetAttribute(item_new, "IMAGE", "IUP_FileNew");
@@ -732,11 +732,11 @@ Ihandle* create_main_dialog(Ihandle *config)
   item_background = IupItem("&Background...", NULL);
   IupSetCallback(item_background, "ACTION", (Icallback)item_background_action_cb);
 
-  item_toolbar = IupItem("&Toobar...", NULL);
+  item_toolbar = IupItem("&Toobar", NULL);
   IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
   IupSetAttribute(item_toolbar, "VALUE", "ON");
 
-  item_statusbar = IupItem("&Statusbar...", NULL);
+  item_statusbar = IupItem("&Statusbar", NULL);
   IupSetCallback(item_statusbar, "ACTION", (Icallback)item_statusbar_action_cb);
   IupSetAttribute(item_statusbar, "VALUE", "ON");
 
@@ -788,7 +788,7 @@ Ihandle* create_main_dialog(Ihandle *config)
     sub_menu_help,
     NULL);
 
-  toolbar_hb = IupHbox(
+  toolbar = IupHbox(
     btn_new,
     btn_open,
     btn_save,
@@ -796,13 +796,13 @@ Ihandle* create_main_dialog(Ihandle *config)
     btn_copy,
     btn_paste,
     NULL);
-  IupSetAttribute(toolbar_hb, "MARGIN", "5x5");
-  IupSetAttribute(toolbar_hb, "GAP", "2");
+  IupSetAttribute(toolbar, "MARGIN", "5x5");
+  IupSetAttribute(toolbar, "GAP", "2");
 
   vbox = IupVbox(
-    toolbar_hb,
+    toolbar,
     canvas,
-    lbl_statusbar,
+    statusbar,
     NULL);
 
   dlg = IupDialog(vbox);
@@ -828,16 +828,16 @@ Ihandle* create_main_dialog(Ihandle *config)
   {
     IupSetAttribute(item_toolbar, "VALUE", "OFF");
 
-    IupSetAttribute(toolbar_hb, "FLOATING", "YES");
-    IupSetAttribute(toolbar_hb, "VISIBLE", "NO");
+    IupSetAttribute(toolbar, "FLOATING", "YES");
+    IupSetAttribute(toolbar, "VISIBLE", "NO");
   }
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "Statusbar", 1))
   {
     IupSetAttribute(item_statusbar, "VALUE", "OFF");
 
-    IupSetAttribute(lbl_statusbar, "FLOATING", "YES");
-    IupSetAttribute(lbl_statusbar, "VISIBLE", "NO");
+    IupSetAttribute(statusbar, "FLOATING", "YES");
+    IupSetAttribute(statusbar, "VISIBLE", "NO");
   }
 
   IupSetAttribute(dlg, "CONFIG", (char*)config);

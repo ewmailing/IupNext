@@ -49,7 +49,8 @@ detachbox(<strong>child</strong>) [in LED]</pre>
 
 
 <p><strong>BARSIZE</strong> (<font SIZE="3">non inheritable</font>): controls 
-the size of the bar handler. Default: 10.</p>
+the size of the bar handler. To completely hide the bar set BARSIZE to 0 (since 
+3.16). Default: 10.</p>
 <p><strong>COLOR</strong>: Changes the color of the
   bar grip affordance. The value should be given in &quot;R G B&quot; color style. 
 Default: &quot;160 160 160&quot;. When SHOWGRIP = NO, this attribute sets the 
@@ -70,13 +71,24 @@ the previous reference child of the detached element. Only valid after the
 element was detached. See <a href="../func/iupreparent.html">IupReparent</a> for 
 a reference child definition.</p>
 <p><strong>DETACH</strong> (write-only): detach the box by creating a new dialog 
-and placing the box as the child of the new dialog. The callback is called but 
-its return value is ignored.</p>
+and placing the detachbox as the child of the new dialog. The DETACHED_CB callback is called, 
+use it to configure the new dialog. The handler is hidden, the USERSIZE of the 
+detachbox is set to the CURRENTSIZE of the child, and the PARENTDIALOG of the 
+new dialog is set to old dialog. To re-parent the child we need to map the 
+dialog before doing it, so to force a dialog resize its size is reset before its 
+is shown, to control the dialog size use the child size. The new dialog is show 
+at the current cursor position, and the USERSIZE of the detachbox is reset. </p>
 <p><strong>RESTORE</strong> (write-only): restore the box to its previous place 
-and destroys the new dialog. Value is ignored.</p>
+(parent and brother) and destroys the new dialog. Value can be NULL or can be 
+the name of a new parent when the control will be appended. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+associate an Ihandle* to a name (since 3.16). The handler is shown (if restored 
+to inside a zbox, the application must update the zbox child visibility 
+manually).</p>
 
   <p><strong>SHOWGRIP</strong> (<font SIZE="3">non inheritable</font>): Shows the 
-bar grip affordance. Default: YES. When set to NO, the BARSIZE is set to 5.</p>
+bar grip affordance. Default: YES. When set to NO, the BARSIZE is set to 5 (if 
+  greater than 5). To completely hide the bar set BARSIZE to 0 (since 3.16).</p>
 
   <p><b>WID</b> (read-only): returns -1 if mapped.</p>
 
@@ -103,8 +115,7 @@ also accepted.</p>
 <strong>ih</strong>:detached_cb(<strong>new_parent: </strong>ihandle, <strong>x, y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br><strong>new_parent</strong>: identifier of the future parent of 
-the box. It is a new <a href="../dlg/iupdialog.html">IupDialog</a> without any 
-attributes, except that PARENTDIALOG is set to be the current parent.<br>
+the box. At this point only the PARENTDIALOG attribute was set.<br>
 <strong>x, y</strong>: dropped position.</p>
 <p class="info"><u>Returns</u>: IUP_IGNORE will be processed, in order to cancel 
 the detach action.</p>

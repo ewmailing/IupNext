@@ -22,56 +22,93 @@
 
 <h2>4. Simple Paint</h2>
 <h3>4.1 <a name="Loading_and_Saving_Images">Loading and Saving Images</a></h3>
+<p>
+No capítulo anterior vimos como construir um simples bloco de notas usando o
+IUP. Neste capítulo vamos modificar o código apresentado anteriormente e
+construir uma aplicação que desenha sobre uma imagem. Para isso precisamos 
+de uma estrutura que represente uma imagem e algumas funções que nos permitam 
+ler e salvar imagens em formatos conhecidos. Faremos então uso de uma nova 
+biblioteca chamada IM. A IM é uma biblioteca de manipulação de imagens digitais. 
+Seu objetivo principal é fornecer uma API simples e captação de imagens para 
+aplicações científicas. Para usar a IM em nossa aplicação fazem-se necessários
+alguns novos includes: "im.h" que é o header principal da IM,
+"im_image.h" que trata da criação, carregamento, manipulação de atributos e
+armazenamento de imagens, "im_convert.h" que lida com a conversão entre diferentes
+tipos de imagem e "iup_im.h" que permite o carregamento e armazenamento de imagens
+através do IUP. Assim como fizemos no tópico 
+<a href="http://webserver2.tecgraf.puc-rio.br/iup/en/tutorial/tutorial2.html#Compiling_Linking">2.1.1</a>
+para lincar as bibliotecas do IUP, será necessário também modificar a linquedição do 
+projeto para incluir a biblioteca da IM (-lim) e utilizar um compilador C++ mesmo que o código
+seja C. Mais detalhes na sessão 
+<a href="http://webserver2.tecgraf.puc-rio.br/im/en/guide.html#buildapp">Build Applications</a>
+do <a href="http://webserver2.tecgraf.puc-rio.br/im">Manual da IM</a>. Em Lua,
+basta incluir dois novos requires: imlua e iupluaim.
+</p>
 
-<p>No capítulo anterior vimos como construir um simples bloco de notas usando o 
-IUP. Neste capítulo vamos modificar o código apresentado anteriormente e 
-construir uma aplicação para desenho 2D. Para isso substituiremos o controle 
-IupText (nosso multitext) por um IupCanvas. Um IupCanvas é um elemento de 
-interface que é uma tela - uma área de desenho para a aplicação.</p>
-<p>Neste exemplo faremos uso de uma nova biblioteca chamada IM. A IM é uma 
-biblioteca de manipulação de imagens digitais. Seu objetivo principal é fornecer 
-uma API simples e captação de imagens para aplicações científicas. Para isso 
-fazem-se necessários alguns novos includes: "im.h" que é o header principal da IM, 
-"im_image.h" que trata da criação, carregamento, manipulação de atributos e 
-armazenamento de imagens, "im_convert.h" que lida com a conversão entre diferentes 
-tipos de imagem e "iup_im.h" que permite o carregamento e armazenamento de imagens 
-através do iup.</p>
-<p>Adicionamos também algumas funções como str_fileext, que obtem a extensão do 
-arquivo passado como parametro, show_error que cria e exibe na&nbsp;tela uma mensagem 
-de erro e show_file_error que usa show_error para informar ao usuário que tipo 
-de erro ocorreu na abertura de um arquivo de imagem. Ainda temos set_file_format que 
-determina em qual formato a imagem deve ser salva baseando-se na extensão do 
-arquivo selecionado, e select_file que seleciona um arquivo para leitura ou 
-salvamento. As funções referentes a 
-manipulação de texto e alguns itens do menu Edit como Cut, Del, Find, Replace, Go To, Select All e 
-do menu Format foram removidos pois seu uso nesta aplicação não faria 
+<p>Adicionamos também algumas funções como str_fileext, que obtem a extensão do
+arquivo passado como parametro, show_error que cria e exibe na&nbsp;tela uma mensagem
+de erro e show_file_error que usa show_error para informar ao usuário que tipo
+de erro ocorreu na abertura de um arquivo de imagem. Ainda temos set_file_format que
+determina em qual formato a imagem deve ser salva baseando-se na extensão do
+arquivo selecionado, e select_file que seleciona um arquivo para leitura ou
+salvamento. As funções referentes a
+manipulação de texto e alguns itens do menu Edit como Cut, Del, Find, Replace, Go To, Select All e
+do menu Format foram removidos pois seu uso nesta aplicação não faria
 sentido.</p>
-<p>As funções read_file e write_file passam a usar funções da IM assim como os 
-itens de copy e paste do menu Edit que foram ajustados para trabalhar com 
-toda a imagem ao invés de uma seleção da mesma. Em read_file 
-temos uma chamada a imFileImageLoadBitmap que carrega uma imagem Bitmap de um 
-arquivo em uma estrutura imImage. Caso haja erro na abertura do arquivo a função 
-show_file_error é chamada. Em caso de sucesso, testa-se então se a imagem 
-carregada é do tipo RGB. Se não, será necessário converte-la para RGB pois vamos 
-precisar desenhar sobre ela posteriormente e para isso usaremos apenas imagens 
-RGB. Por fim, a função retorna a imagem 
-carregada. Já write_file utiliza a função imImageGetAttribString para&nbsp; 
-obter o formato do arquivo de imagem e salva utilizando este o mesmo através da função imFileImageSave. A callback referente ao item Copy 
-agora obtem o canvas e a imagem de trabalho e seta o atributo NATIVEIMAGE do 
-IupClipBoard para o handle da imagem obtido pela função IupGetImageNativeHandle. 
-Já a callback de paste verifica se a imagem atual precisa ser salva, obtem o 
-canvas e a imagem exibida atualmente, obtem também a imagem salva no 
-IupClipBoard através do atributo NATIVEIMAGE, seta o atributo FileFormat desta 
-imagem para RGB usando imImageSetAttribString, seta também uma série de 
-atributos do canvas inclusive o atributo IMAGE para a nova imagem, atualiza o 
-mesmo com IupUpdate e, caso necessário, destroi a imagem antiga.</p>
-<p>Neste exemplo apresentamos também um novo diálogo pré-definido chamado IupGetParam, 
+
+<p>
+As funções read_file e write_file passam a usar funções da IM assim como os itens de copy e paste 
+do menu Edit. As funções da IM imFileImageLoadBitmap e imFileImageSave são encarregadas de ler e 
+salvar uma imagem de e para um arquivo, usando a estrutura imImage. Repare que na leitura além do 
+tratamento de erro é necessário um teste para converter a imagem para o tipo RGB caso esta não 
+o seja. Isso ocorre porque a IM trabalha com diversos formatos de imagem e, neste momento, para 
+fins de simplificação, vamos adotar o formato RGB. Na escrita utilizamos o mesmo formato de 
+arquivo da leitura, esse formato é obtido de um atributo da própria imagem usando a função
+<strong>imImageGetAttribString</strong>.</p>
+
+<p>
+Nas funções que criam uma imagem nova, guardamos a imagem atual usando um atributo IMAGE do canvas,
+atribuimos a esse atributo a nova imagem e depois destruimos a imagem anterior para liberar a 
+memória ocupada por ela. A função set_file_format foi criada para tratar o formato em que deve 
+ser salva a nova imagem. Normalmente usamos o mesmo formato da imagem original. O formato JPEG foi 
+definido como default por ser mais popular.</p>
+
+<p>Outra modificação ocorreu no uso do clipboard. O acesso é feito como no Simple Notepad, mas utilizando 
+o atributo NATIVEIMAGE para fazer copy e paste de imagens. Esse atributo requer um formato específico, 
+para isso usamos as funções do IUP chamadas <strong>IupGetImageNativeHandle</strong> que geram esse formato a partir de 
+uma imImage e vice versa. Logo depois que a imagem é lida de um arquivo ou colada do clipboard precisamos 
+redesenhar o canvas, para isso chamamos a função IupUpdate que se encarregará de chamar a callback de redesenho.
+Note também que a imagem presente no clipboard pode ser de qualquer tipo pois não necessariamente foi copiada
+desta aplicação. Como nossa aplicação trabalha apenas com RGB pode ser necessário remover o canal alpha usando
+imImageRemoveAlpha e converter o formato usando <strong>imConvertColorSpace</strong>.
+</p>
+
+<p> Ainda, ao salvarmos um arquivo novo, além do nome do novo arquivo, precisamos selecionar um formato de imagem 
+que será definido pela extensão do arquivo. A função set_file_format foi criada para recuperar esta extensão determinar 
+o formato em que deve ser salva a nova imagem. O formato JPEG foi definido como default por ser mais popular.</p>
+
+<p>Outra novidade interessante foi a criação de uma função select_file que determina que tipo de diálogo de tratamento
+de arquivo deve ser aberto. Como os diálogos de abertura de arquivo e salvamento de arquivo são muito parecidos
+encapsulamos a criação deles em uma única função.</p>
+
+<p>Neste exemplo apresentamos também um novo diálogo pré-definido chamado
+<strong>IupGetParam</strong>, 
 que é usado no menu File/New para obter as dimensões de largura e altura da nova 
 imagem. Após obter do usuário esses dados é chamada a função imImageCreate que 
 cria uma nova imagem, com a largura e altura obtidas, e do tipo RGB conforme 
 explicado acima.</p>
+
 <p>Note que o desenho da imagem não será implementado neste primeiro exemplo 
 sendo objeto do próximo item deste tutorial.</p>
+
+<p>Em Lua, como mencionado anteriormente, os includes são substituidos pelos requires de imlua e iupluaim. Assim como 
+ocorre com o IUP, a IM também é um pacote em Lua. Suas funções são acessadas pelo prefixo "im." seguido do nome da
+função sem o im presente no C. Por exemplo: temos im.FileImageLoadBitmap ao invés de imFileImageLoadBitmap. As funções 
+que, em C, recebem uma imagem como parametro (imRemoveAlpha, imImageDestroy, etc) em Lua são funções da própria
+imagem e chamadas utilizando ":" (image:RemoveAlpha, image:Destroy, etc) dispensando a passagem da imagem como parametro. 
+Apesar de Lua contar com garbage collection é uma boa prática chamar image:Destroy para liberar a memória alocada para as 
+imagens também em Lua pois em aplicações grandes que trabalham com diversas imagens o consumo de memória pode tornar-se um 
+problema.</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a target="example4_1" href="../../examples/tutorial/example4_1.c">example4_1.c</a> <a href="../../examples/tutorial/example4_1.c">
@@ -80,18 +117,52 @@ sendo objeto do próximo item deste tutorial.</p>
 </iframe>
 <p class="example_image"><img alt="" src="example4_1.png"></p>
 
-<p>XXX</p>
-
 <h3>4.2 <a name="Drawing_with_OpenGL">Drawing with OpenGL</a></h3>
 
-<p>IUP não possui funções para desenho gráfico, precisamos de uma biblioteca 
-externa<br>escolhemos OpenGL por sua portabilidade, desempenho e padronização<br>
-includes e libs de OpenGL<br>
-assim precisamos mudar IupCanvas por IupGLCanvas, BUFFER=DOUBLE, ACTION<br>na função de desenho 
-introduzimos IupGLMakeCurrent e IupGLSwapBuffers <br>depois descrevemos 
-configuração do canvas OpenGL, desenho do fundo e desenho da imagem<br>
-limitações da glDrawPixels<br>novo menu 
-para modificar a cor de fundo usando diálogo pré-definido IupColorDlg</p>
+<p>Como vimos no início deste tutorial o IUP é um toolkit para criação de interface com o usuário. Apesar de ter entre os seus controles
+um canvas, não possui funções para desenho gráfico. Para isso será necessário incluir uma biblioteca externa. Dentre algumas opções 
+escolhemos, para este exemplo, OpenGL por sua portabilidade, desempenho e padronização.</p>
+
+<p> Para utilizar OpenGL com o IUP, além dos includes GL/gl.h, windows.h (no caso de estar usando windows) e iupgl.h será necessário incluir
+algumas bibliotecas em nosso processo de linquedição. No windows usa-se opengl32.lib. No Linux deve-se incluir -lGL antes das libs do X. 
+O canvas IUP que trabalha com OpenGL também é um controle adicional chamado
+<strong>IupGLCanvas</strong>. É necessário incluir uma chamada a <strong>IupGLCanvasOpen</strong> 
+após <strong>IupOpen</strong> para que este controle esteja disponível.</p>
+
+<p> No código foram incluidas chamadas a <strong>imImageGetOpenGLData</strong> em read_file e em new_file para converter a imagem lida/criada em um formato
+compatível com o OpenGL. Foi criada também a callback de action do canvas. Essa callback é executada sempre que o canvas precisa ser
+redesenhado. Nela informamos que nosso GLcanvas é o canvas corrente usando
+<strong>IupGLMakeCurrent</strong>, inicializamos o OpenGL setando o alinhamento da
+imagem para 1 e ajustamos a transformação de coordenadas de OpenGL que por default é entre 0 e 1 para ser entre 0 e o tamanho do canvas
+ficando com uma relação de 1 para 1 em pixels. Limpamos o canvas com a cor de fundo usando
+<strong>glClearColor</strong> e <strong>glClear</strong>. Em seguida obtemos através
+do atributo GLDATA os dados da imagem no formato OpenGL que precisam ser desenhados. Então desenhamos a imagem no centro do canvas com 
+<strong>glDrawPixels</strong>. Note que as funções <strong>glRasterPos2i</strong> 
+e 
+<strong>glDrawPixels </strong>não admitem valores fora da tela, assim devido a essa limitação do OpenGL, a imagem a ser exibida 
+precisa ser menor que o canvas ou não será desenhada. Essa limitação pode ser 
+contornada usando o suporte a texturas do OpenGL. Mas seu uso implicam em um 
+conhecimento que está fora do escopo desse tutorial.</p>
+<p>
+
+Em nosso exemplo estamos trabalhando com double buffer pois setamos o atributo BUFFER para
+DOUBLE na função main quando criamos o canvas, isso implica em que o desenho será 
+feito fora da tela, em um buffer separado. Quando terminamos de chamar as 
+funções de desenho, mostramos o resultado exibindo esse buffer para o 
+usuário. Para mostrar o resultado chamamos a função <strong>IupGLSwapBuffers</strong>.
+</p>
+
+<p> Neste exemplo usamos outro diálogo predefinido do IUP chamado <strong>IupColorDlg</strong>. O 
+<strong>IupColorDlg</strong> é exibido após a seleção do novo item background
+no menu View. É um diálogo para seleção de cor e em nosso exemplo modifica a cor de fundo do canvas.</p> 
+
+<p>Em Lua, para usarmos as funções de OpenGl usamos o LuaGL. Para isso basta 
+também fazer o require do pacote "luagl". Para usar o <strong>IupGLCanvas</strong> 
+deve-se também fazer require do "iupluagl". A funções do LuaGL 
+seguem o padrão de pacotes Lua, e usam o prefixo "gl.", por exemplo "gl.Func" ao invés 
+de "glFunc" em C.&nbsp;
+</p>
+
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a target="example4_2" href="../../examples/tutorial/example4_2.c">example4_2.c</a> <a href="../../examples/tutorial/example4_2.c">
@@ -100,20 +171,53 @@ para modificar a cor de fundo usando diálogo pré-definido IupColorDlg</p>
 </iframe>
 <p class="example_image"><img alt="" src="example4_2.png"></p>
 
-<p>XXX</p>
+<h3>4.3 <a name="Drawing_with_CD">Drawing with CD</a> and Printing</h3>
 
-<h3>4.3 <a name="Drawing_with_CD">Drawing with CD</a></h3>
+<p>Neste capítulo apresentaremos uma alternativa ao uso da biblioteca OpenGL. Embora tenha um desempenho excelente, a biblioteca OpenGL tem algumas limitações. Não há suporte para impressão, nem há saída para metafile, e também não apresenta suporte para texto com alta qualidade. 
+Assim, muitas aplicações vão precisar de outras opções. Para atender a essas e outras necessidades, criamos a biblioteca CD - Canvas Draw. 
+Esta biblioteca pode ser encontrada no site: <a href="www.tecgraf.puc-rio.br/cd">www.tecgraf.puc-rio.br/cd</a> 
+e foi projetada para funcionar 
+em conjunto com o IUP.</p> 
 
-<p>OpenGL, embora tenha um desempenho excelente, tem algumas limitações. Não tem 
-suporte para impressão, nem saída para metafile, e não tem suporte para texto 
-com alta qualidade. Assim, muitas aplicações vão precisar de outras opções. Por 
-isso criamos a biblioteca CD. Esta biblioteca pode ser encontrada no site: XXXX. 
-E foi projetada para funcionar em conjunto com o IUP e diversas situações. Para 
-usar...<br>includes e libs do CD<br>
-voltamos para IupCanvas<br>novas callbacks de MAP_CB (cdCreateCanvas) e UNMAP_CB 
-(cdKillCanvas)<br>na função de desenho 
-introduzimos cdCanvasActivate e cdCanvasFlush<br>depois descrevemos desenho do fundo e desenho da imagem 
-usando CD<br>novo menu para imprimir a imagem</p>
+<p>
+Para usa-la é preciso incluir na linquedição as bibliotecas: "cd" e "iupcd". Os includes que precisam constar no código são: 
+"cd.h" e "cdiup.h".
+</p>
+
+<p>
+Como estamos substituindo o OpenGL pelo CD voltamos a trabalhar com o controle
+<strong>IupCanvas</strong> no lugar de <strong>IupGLCanvas</strong>. Podemos retirar também as libs e includes do OpenGL adicionadas no capítulo anterior.</p>
+
+<p> No código, as chamadas as funções OpenGL não são mais necessárias. IupGLMakeCurrent foi substituida por cdCanvasActivate, glClearColor por
+cdCanvasBackground, glClear por cdCanvasClear, e IupGLSwapBuffers por cdCanvasFlush.</p>
+
+<p>
+Foram incluidas duas novas callbacks, de MAP_CB e UNMAP_CB. A callback MAP_CB chamada canvas_map_cb é responsável por criar o canvas CD usando
+<strong>cdCreateCanvas</strong>. 
+Isso é necessário porque a criação do canvas CD precisa que o canvas IUP já 
+esteja mapeado no sistema nativo. Um dos parametros que esta função recebe é CD_IUPDBUFFER. Ele é responsável por informar
+ao CD que deve trabalhar em Double Buffer assim como vinhamos trabalhando em OpenGL. Note que há dois tipos de canvas em uso agora. O controle
+<strong>IupCanvas</strong> e o canvas da biblioteca CD, por isso, nesta callback também é feita a associação 
+entre esses dois canvas atráves de uma chamada a 
+<strong>IupSetAttribute</strong>. A callback UNMAP_CB chamada canvas_unmap_cb obtem o canvas CD associado ao controle IupCanvas e o destroi com a chamada a 
+<strong>cdKillCanvas</strong>. A callback responsável por desenhar a imagem no canvas continua sendo a canvas_action_cb a diferença reside no fato de que além 
+de substituir as chamas OpenGL conforme mencionado acima, várias delas foram removidas e substituidas apenas por
+<strong>imcdCanvasPutImage</strong>. Esta 
+única chamada desenha uma imagem IM em um canvas CD.</p>
+
+<p>
+Aproveitando que o CD possui suporte a impressão, adicionamos mais alguns 
+recursos ao Simple Paint.
+Outras callbacks novas são item_pagesetup_action_cb que é responsável por obter do usuário, usando IupGetParam, a largura e altura 
+da margem da
+página de impressão, view_fit_rect que ajusta a tela para que toda a imagem seja exibida e  item_print_action_cb que exibe 
+o diálogo de impressão.</p>
+
+<p> Temos também dois novos itens de menu: item_pagesetup e item_print; que chamam as callbacks de mesmo nome. O item print foi asociado a hotkey CTRL+P.</p> 
+
+<p>Em Lua são necessários os requires "cdlua" e "iupluacd". Podemos remover os requires "luagl" e "iupluagl" usados no exemplo anterior. As
+chamadas as funções do CD em Lua usam o prefixo "cd." como em cd.CreateCanvas ao invés de cdCreateCanvas e etc. Note que a função imcdCanvasPutImage usa o prefixo "im." pois pertence a biblioteca IM.
+</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a target="example4_3" href="../../examples/tutorial/example4_3.c">example4_3.c</a> <a href="../../examples/tutorial/example4_3.c">
@@ -122,19 +226,206 @@ usando CD<br>novo menu para imprimir a imagem</p>
 </iframe>
 <p class="example_image"><img alt="" src="example4_3.png"></p>
 
-<p>XXX</p>
+<h3>4.4 <a name="Interactive_Zoom">Interactive Zoom</a> and Scrollbars</h3>
 
-<h3>4.4 <a name="Print_and_Zoom">Print and Zoom</a></h3>
+<p>Nesta sessão vamos adicionar um zoom interativo à nossa aplicação. Para isso precisamos desenhar a imagem com um tamanho maior ou menor que o tamanho real da 
+mesma. Esse fator de ampliação precisa ser modificado interativamente pelo usuário por diversos caminhos.</p> 
 
-<p>XXX</p>
+<p>Além disso, se a imagem for maior do que o canvas que temos para desenha-la precisamos de um mecanismo que nos permita mover a região visível da mesma. 
+Esse mecanismo são as scrollbars. Pra habilitar as scrollbars setamos o atributo SCROLLBAR=Yes do IupCanvas. Mas temos que configurá-las a cada vez que o fator
+de ampliação for modificado ou quando a janela da aplicação mudar de tamanho. Assim, precisamos implementar a callback de resize_cb do canvas, para 
+que chame a função scrollbar_update que calcula os parametros da scrollbar.</p>
+
+<p>Para mudar o fator de ampliação, criamos alguns mecanismos também adicionando alguns controles 
+à statusbar. Um <a href="../../../../../elem/iupval.html"><strong>IupVal
+</strong></a> que permite selecionar um valor em um dado intervalo, e 3 botões responsáveis pelas operações de zoom in, zoom out e retorno ao 
+tamanho original. As mesmas ações dos botões podem ser feitas pelo menu View usando os itens item_zoomin, item_zoomout e item_actualsize. Criamos também 
+hot keys que acionam esses botões, CTRL+ para zoom in, CTRL- zoom out e CTRL0 para retornar ao tamanho original. E por fim, adicionamos também a callback de 
+whell_cb do canvas que é acionada quando a rodinha do mouse é acionada, na mesma usamos o parametro 
+delta para modificar o fator de zoom. Voce pode encontrar
+a criação desses controles novos na função create_main_dialog, aonde usamos uma forma abreviada para criar uma hierarchia de controles usando IupSetCallbacks e 
+IupSetAttributes em conjunto, num resultado que se assemelha a criação de 
+controles em Lua. O fator de zoom é modificado linearmente mas seu efeito é de uma potencia de 2, assim os controles modificam o que chamamos de 
+zoom_index entre os limites -6 e 6, e o fator de zoom é calculado fazendo pow(2, zoom_index) o que resulta em um intervalo de zoom de 1% a 6400%. Para usar a
+função pow é necessário o include de math.h.</p>
+
+<p>A função scrollbar_update faz uma conta bem complicada, que é descrita no manual do IUP na documentação do atributo 
+<a href="../../../../../attrib/iup_scrollbar.html"><strong>
+SCROLLBAR</strong></a>. Ela é necessária por causa do atributo AUTOHIDE que esconde automaticamente a scrollbar. Note que nesta função obtivemos o tamanho em 
+pixels do canvas através do atributo RASTERSIZE e retiramos 2 pixels. Isso ocorre pois o 
+IupCanvas tem o atributo BORDER setado com "YES" por default, assim é 
+necessário retirar 1 pixel (tamanho da borda) para a borda esquerda e outro para a borda direita. O mesmo ocorre para as bordas superior e inferior. 
+Configuramos apenas os parametros DX e DY da scroolbar para serem equivalente a 
+área visivel do com o fator de zoom aplicado. Os parametros de XMIN, YMIN e 
+XMAX,YMAX deixamos com os valores default de 0 e 1 respectivamente. Os atributos 
+de POSX e POSY informam o deslocamento que a imagem desenhada com zoom precisa 
+ter para se movimentar de acordo com a scrollbar. Como POSX e POSY são entre 0 e 
+1 esse deslocamento em pixels é obtido multiplicando-se o valor dos atributos 
+pelo tamanho total da imagem em zoom (view_with e view_height).&nbsp; A função scrollbar_update 
+trabalha em conjunto com duas novas funções. A scroll_calc_center e a scroll_center, 
+necessárias para que quando a 
+scrollbar seja atualizada a imagem mostrada se mantenha na mesma posição na tela.</p>
+<p>Uma vez que 
+modificamos o fator de ampliação, precisamos desenhar a imagem, para isso na callback de action do canvas vamos acrescentar uma conta para obter a posição e o 
+tamanho da imagem ao ser desenhada no canvas. Essa conta obtem o fator de zoom, redimensiona a região visível multiplicando por este fator e reposiciona a 
+imagem no canvas. </p>
+
+<p>Aproveitando, que estamos modificando a action adicionamos também uma borda ao redor da imagem usando cdCanvasRect, pois ao incluir zoom e scroll, muitas vezes 
+a borda da imagem fica difícil de ser localizada, especialmente se for parecida com a cor de fundo. Assim, é comum incluir uma borda ao redor da imagem para marcar 
+o fim da mesma.</p>
+<p>Notamos também que no exemplo 4_4 poderiamos melhorar o controle de estado da aplicação quando uma imagem nova é criada. Para isso criamos a 
+função set_new_image, que substituiu partes do código em New, Open e Paste. Nessa função encapsulamos a modificação no título do dialogo a partir do nome do 
+arquivo, a verificação se a imagem é RGB descrita no tópico 4.3, verificamos se há um formato específico para a nova imagem se de devemos assumir o formato 
+default, setamos o valor de DIRTY, e por fim reiniciamos o fator de zoom para a visualização normal em 100%.</p>
+
+<p>Em Lua como a biblioteca matemática já está inclusa no interpretador padrão não há necessidade de nenhum novo require. Além da diferença de sintaxe entre
+as linguagens não há qualquer mudança em particular na versão em Lua.</p>
+
+<p class="example_title">Example Source Code 
+<span class="example_button">[in C] <a target="example4_4" href="../../examples/tutorial/example4_4.c">example4_4.c</a> <a href="../../examples/tutorial/example4_4.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example4_4" href="../../examples/tutorial/example4_4.lua">example4_4.lua</a> <a href="../../examples/tutorial/example4_4.lua"><img alt="" src="download.png"></a></span></p>
+<iframe src="../../examples/tutorial/example4_4.c" id="4_4" name="example4_4" marginheight="0" marginwidth="0">
+</iframe>
+<p class="example_image"><img alt="" src="example4_4.png"></p>
 
 <h3>4.5 <a name="Canvas_Interaction">Canvas Interaction and a ToolBox</a></h3>
 
-<p>XXX</p>
+<p>So now we are going to implement a more complex form of interaction with the 
+canvas. We want to have control over the actions of the cursor when moved or 
+clicked over the <strong>IupCanvas</strong>. For that we need two new callbacks: 
+MOTION_CB and BUTTON_CB. Inside these callbacks there will be all the logic 
+behind the interactions we want to implement for a Paint application. But in 
+order to do that we need first to define which type of interaction we want.</p>
+<p>In a Paint application the interaction is usually defined by a toolbox where 
+the user chooses a tool to interact with the canvas. The toolbox is a dialog 
+with some special characteristics. In our example code this is done by the 
+create_toolbox function. We are going to reduce the default font size, and we 
+are going to use the TOOLBOX attribute, since we want a dialog with a small foot 
+print on screen. The first thing to notice on its internal controls is the use 
+of an <strong>IupRadio</strong>. All the <strong>IupToggle</strong> inside the 
+radio hierarchy will be mutually exclusive, so when a tool is selected all the 
+others are not selected. We put all the toggles inside a <strong>IupGridBox</strong> 
+so they will be automatically aligned in a rectangular grid with 2 columns. And 
+we are going to need custom images for the tools since they are not available at 
+the <strong>IupImageLib</strong>.</p>
+<p>We created those images in a very popular application called Paint.NET. It 
+allowed us to save the RGBA files in the PNG format, then we used the
+<a href="../executables.html">IupView</a> application to convert the files to C 
+source code so we were able to compile them directly inside our application. 
+Another possibility would be to use the <strong>IupLoadImage</strong>, but then 
+our example will have to be able to locate the image files during run time. All 
+the images were processed and its code is pasted at the beginning of the example 
+source code.</p>
+<p>After the tools we added a few other controls to support some tools options. 
+Not all tools use all options, so a future enhance to the example would be to 
+hide and show each option accordingly to the selected tool. But for now we are 
+going to leave all the tools options visible all the time. You will see that the 
+tools use controls and features we already described in previous examples. So 
+let's focus on the tools themselves.</p>
+<p>The current tool is saved in a custom attribute called TOOLINDEX. We will 
+also use this approach to save the tools options values, such as TOOLWIDTH, 
+TOOLCOLOR, TOOLSTYLE, TOOLFILLTOL and TOOLFONT. This will make the use of these 
+values a lot easier.</p>
+<p>We created 10 tools that will use 4 different types of interaction. (1<sup>st</sup> 
+type) Pointer will use click+drag to also scroll the image that is larger than 
+the visible canvas. (2<sup>nd</sup> type) Color Picker and Fill Color will just 
+need a click on the canvas. (3<sup>rd</sup>) Pencil will directly draw over the 
+image using a click+drag approach. (4<sup>th</sup>) All the shapes (Line, Rect, 
+Box, Ellipse, Oval and Text) will use click+drag to set flags that activates an 
+overlay process in the canvas_action_cb callback, so the tool feedback can be 
+done over the image. When it is done, the final drawing is rendered over the 
+image itself when the button is released. So there were changes to 
+canvas_action_cb, new implementations in canvas_button_cb and in 
+canvas_motion_cb, all working together to implement each interaction.</p>
+<p>All these interactions are done while the mouse is pressed over the canvas or 
+when it is simply clicked (pressed+released). There is another type of 
+interaction that uses the concept of a graphical object over the image. For 
+example, instead of only drawing the feedback while the mouse is pressed, the 
+result creates a graphical object that can be lately modified and manipulated. 
+Just like a selection area in other Paint applications. This implies in a data 
+structure to store the object, and another for the list of created objects. When 
+the mouse is moved near the object, handlers are shown so the user can click and 
+interact with the graphical object. This technique can be use to create a Simple 
+Draw application (like Corel Draw™), instead of a Simple Paint. Where we will be 
+manipulating vector data instead of raster data, and loading/saving formats like 
+WMF/EMF, SVN, PDF, CGM, DXF, and so on (all supported by the CD library by the 
+way). In terms of user interface features a Simple Draw is most like the same of 
+a Simple Paint application.</p>
+<p>The first thing we had to do to implement the interactions was to get that calculation in the canvas_action_cb to obtain the position and size of the image on screen and 
+transform it into a function that we called view_zoom_rect. We are going to need 
+those parameter to convert the coordinates received by the callbacks into 
+coordinates inside the actual image. So in all mouse callbacks, after calling 
+view_zoom_rect we invert the Y axis, because y is top-bottom oriented in IUP, 
+but bottom-top oriented in CD and IM. Then we check if the resulting coordinates 
+are inside the image on screen and convert them to the actual image coordinates 
+using view_zoom_offset. So now (x,y) are inside the image range 
+(0,0)-(image_width-1,image_height-1). In other words we converted screen 
+coordinates into image coordinates.</p>
+<p>To actually draw on the image after the interaction we used the CD_IMAGERGB 
+driver pointing to the image data. So we can draw using CD primitives but using 
+the image as the canvas medium. In this way the code becomes very simple an easy 
+to understand. But for text to work properly we must not forget to set the new 
+CD canvas resolution to the same resolution of the screen, so we will obtain a 
+result with the same size in pixels.</p>
+<p>For the Fill Color tool we had to implement a flood fill algorithm. We used a 
+very simple 4 neighbors stack based flood fill. So it is also very didactic. 
+There are several optimizations possible, can you point any?</p>
+<p>We also used the canvas_motion_cb callback to update the current pixel color 
+on the Statusbar. This will be done independently of the current selected tool.</p>
+<p>For better integration of the main dialog with the toolbox dialog we move the 
+toolbox dialog every time the main dialog is also moved. The MOVE_CB callback of 
+the main dialog is implemented and it will simply offset the toolbox dialog by 
+the same offset the main dialog was moved.</p>
+<p>As we are adding layers to the image visualization, we also added a zoom grid 
+feature. It will display a grid over the image when the zoom factor is greater 
+than 200% to help the user to identify pixel boundaries. </p>
 
-<h3>4.6 <a name="Image_Processing">Image Processing and Progress Display</a></h3>
+<p class="example_title">Example Source Code 
+<span class="example_button">[in C] <a target="example4_5" href="../../examples/tutorial/example4_5.c">example4_5.c</a> <a href="../../examples/tutorial/example4_5.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="example4_5" href="../../examples/tutorial/example4_5.lua">example4_5.lua</a> <a href="../../examples/tutorial/example4_5.lua"><img alt="" src="download.png"></a></span></p>
+<iframe src="../../examples/tutorial/example4_5.c" id="4_5" name="example4_5" marginheight="0" marginwidth="0">
+</iframe>
+<p class="example_image"><img alt="" src="example4_5.png"></p>
 
-<p>XXX</p>
+<h3>4.6 <a name="Image_Processing">Image Processing and Final C</a>onsiderations</h3>
+
+<p>In our final code for this chapter we are going to add a few image processing 
+functions provided by the IM library. We added a new sub menu to the main menu 
+called "Image", and there we added items for Resize, Mirror, Flip, Rotate, 
+Negative, and Brightness and Contrast. Although all these operations are 
+interesting, we would like you to take a look at the Brightness and Contrast 
+operation. We used a <strong>IupGetParam</strong> dialog as before, but this 
+time we implemented the PARAM_CB dialog callback that allow us to interactively 
+update the image while changing the operation parameters in the dialog. So 
+helping the user to find the best combination for those parameters for the 
+desired result. For this to work we are going to temporarily replace the current 
+image with the processed image, and simply update the canvas. The result is very 
+effective. IM has lots of other image processing operations that we will let you 
+to explore.</p>
+<p>And we are done for this chapter. We went from 800 lines, almost all based on 
+our previous example, to 2500 lines. Implementing a fully featured Paint 
+application using IUP and CD resources. Which include loading and saving of 
+image files, drawing and printing of images, zoom and scroll support, and the 
+most important, how to interact with a canvas and its drawing in several ways.</p>
+<p>Still there are always possible enhancements such as using the IM Video 
+Capture features to obtain an image from a camera, Undo/Redo support using a 
+stack of images, transparency using an alpha component in color, area 
+selection...</p>
+
+<p class="example_title">Example Source Code 
+<span class="example_button">[in C] <a target="simple_paint" href="../../examples/tutorial/simple_paint.c">simple_paint.c</a> <a href="../../examples/tutorial/simple_paint.c">
+<img alt="" src="download.png"></a></span> <span class="example_button">[in Lua] <a target="simple_paint" href="../../examples/tutorial/simple_paint.lua">simple_paint.lua</a> <a href="../../examples/tutorial/simple_paint.lua"><img alt="" src="download.png"></a></span></p>
+<iframe src="../../examples/tutorial/simple_paint.c" id="4_3" name="simple_paint" marginheight="0" marginwidth="0">
+</iframe>
+<p class="example_image"><img alt="" src="simple_paint.png"></p>
+
+<p>In our next chapter we will introduce some of the additional controls 
+available in IUP. Specifically <strong>IupMatrix</strong> and <strong>IupPlot</strong> 
+that will allow us to create a data analysis application.</p>
+<hr>
+<p><strong>Note</strong>: both images used for the screen shots are Copyright © 
+Antonio Scuri, and distributed under the Creative Common License.</p>
+
 
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>

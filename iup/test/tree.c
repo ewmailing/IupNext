@@ -576,6 +576,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "INFOTIP", "No");
   //  IupSetAttribute(tree, "TIPBGCOLOR", "255 128 128");
 //  IupSetAttribute(tree, "TIPFGCOLOR", "0 92 255");
+//  IupSetAttribute(tree, "HLCOLOR", "240 116 64");
 
   // Windows Only  
 //  IupSetAttribute(tree, "TIPBALLOON", "YES");
@@ -628,7 +629,6 @@ void TreeTest(void)
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
-  IupControlsOpen();
 
   TreeTest();
 

@@ -43,18 +43,18 @@ void TextSpinTest(void)
 //  IupSetAttribute(text, "EXPAND", "HORIZONTAL");
 
   IupSetAttribute(text, "SPIN", "YES");
-//  IupSetAttribute(text, "SPINMIN", "10");
-//  IupSetAttribute(text, "SPINMAX", "60");
-//  IupSetAttribute(text, "SPININC", "5");
+  IupSetAttribute(text, "SPINMIN", "5");
+  IupSetAttribute(text, "SPINMAX", "50");
+  IupSetAttribute(text, "SPININC", "10");
 //  IupSetAttribute(text, "SPINWRAP", "YES");
 //  IupSetAttribute(text, "SPINALIGN", "LEFT");
-//  IupSetAttribute(text, "SPINVALUE", "25");
+  IupSetAttribute(text, "SPINVALUE", "13");
 //  IupSetAttribute(text, "SPINAUTO", "NO");
   IupSetAttribute(text, "NAME", "spin");
 
-  IupSetCallback(text, "SPIN_CB", (Icallback)spin_cb);
-  IupSetCallback(text, "ACTION", (Icallback)action_cb);
-  IupSetCallback(text, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
+//  IupSetCallback(text, "SPIN_CB", (Icallback)spin_cb);
+//  IupSetCallback(text, "ACTION", (Icallback)action_cb);
+//  IupSetCallback(text, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
 
   dlg = IupDialog(IupVbox(text, IupButton("SPINVALUE", "setspinvalue"), NULL));
   IupSetAttribute(dlg, "GAP", "20");
