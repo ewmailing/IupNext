@@ -1142,7 +1142,7 @@ static int motTreeSetMarkedNodesAttrib(Ihandle* ih, const char* value)
   if (ih->data->mark_mode==ITREE_MARK_SINGLE || !value)
     return 0;
 
-  count = strlen(value);
+  count = (int)strlen(value);
   if (count > ih->data->node_count)
     count = ih->data->node_count;
 
@@ -1568,6 +1568,15 @@ static int motTreeSetFgColorAttrib(Ihandle* ih, const char* value)
   Pixel color = iupmotColorGetPixelStr(value);
   if (color != (Pixel)-1)
     XtVaSetValues(ih->handle, XmNforeground, color, NULL);
+
+  return 1;
+}
+
+static int motTreeSetHlColorAttrib(Ihandle* ih, const char* value)
+{
+  Pixel color = iupmotColorGetPixelStr(value);
+  if (color != (Pixel)-1)
+    XtVaSetValues(ih->handle, XmNselectColor, color, NULL);
 
   return 1;
 }
@@ -2801,6 +2810,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motTreeSetBgColorAttrib, "TXTBGCOLOR", NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, motTreeSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "HLCOLOR", NULL, motTreeSetHlColorAttrib, IUPAF_SAMEASSYSTEM, "TXTHLCOLOR", IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "EXPANDALL", NULL, motTreeSetExpandAllAttrib, NULL, NULL, IUPAF_WRITEONLY||IUPAF_NO_INHERIT);

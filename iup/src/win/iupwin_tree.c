@@ -1410,6 +1410,14 @@ static int winTreeSetFgColorAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int winTreeSetHlColorAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->handle)
+    iupdrvPostRedraw(ih);
+  (void)value;
+  return 1;
+}
+
 static int winTreeSetTipAttrib(Ihandle* ih, const char* value)
 {
   if (iupAttribGetBoolean(ih, "INFOTIP"))
@@ -2715,8 +2723,11 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       if (!itemData)
         return 0;
 
-      if (GetFocus()==ih->handle && (customdraw->nmcd.uItemState & CDIS_SELECTED))
+      if (customdraw->nmcd.uItemState & CDIS_SELECTED)
+      {
+        iupwinGetColor(iupAttribGetStr(ih, "HLCOLOR"), &customdraw->clrTextBk);
         customdraw->clrText = winTreeInvertColor(itemData->color);
+      }
       else
         customdraw->clrText = itemData->color;
 
@@ -3035,7 +3046,8 @@ void iupdrvTreeInitClass(Iclass* ic)
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", winTreeGetBgColorAttrib, winTreeSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NO_SAVE|IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winTreeSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "AUTOREDRAW", NULL, iupwinSetAutoRedrawAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HLCOLOR", NULL, winTreeSetHlColorAttrib, IUPAF_SAMEASSYSTEM, "TXTHLCOLOR", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AUTOREDRAW", NULL, iupwinSetAutoRedrawAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   /* Redefined */
   iupClassRegisterAttribute(ic, "TIP", NULL, winTreeSetTipAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

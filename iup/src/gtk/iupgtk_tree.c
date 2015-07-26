@@ -1281,7 +1281,7 @@ static int gtkTreeSetMarkedNodesAttrib(Ihandle* ih, const char* value)
   if (ih->data->mark_mode==ITREE_MARK_SINGLE || !value)
     return 0;
 
-  count = strlen(value);
+  count = (int)strlen(value);
   if (count > ih->data->node_count)
     count = ih->data->node_count;
 
