@@ -411,6 +411,13 @@ most important, how to interact with a canvas and its drawing in several ways.</
 Capture features to obtain an image from a camera, Undo/Redo support using a 
 stack of images, transparency using an alpha component in color, area 
 selection...</p>
+<p>The toolbox is also an interface element that can have several approaches. 
+Instead of jut hiding it we could use <strong>IupDetachBox</strong> to insert it 
+on the main dialog at the left side of the canvas, so it can has 3 states: 
+hidden, floating as a dialog, and attached just like the toolbar. And when 
+attached there is also another possibility, we could use an <strong>IupExpander</strong> 
+so we can dynamically show and hide its contents leaving a direct affordance in 
+the dialog to do that.</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C] <a target="simple_paint" href="../../examples/tutorial/simple_paint.c">simple_paint.c</a> <a href="../../examples/tutorial/simple_paint.c">
