@@ -1068,6 +1068,7 @@ int canvas_action_cb(Ihandle* canvas)
     cdCanvasRect(cd_canvas, x - 1, x + view_width, y - 1, y + view_height);
 
     cdCanvasSetAttribute(cd_canvas, "ANTIALIAS", "0");
+    cdCanvasSetAttribute(cd_canvas, "IMGINTERP", "NEAREST");
     imcdCanvasPutImage(cd_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
     cdCanvasSetAttribute(cd_canvas, "ANTIALIAS", "1");
 

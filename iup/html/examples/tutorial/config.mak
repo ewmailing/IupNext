@@ -23,7 +23,7 @@ USE_IM = Yes
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iupimglib im_process iupim
 else
-  SLIB += $(IUP)/lib/$(TEC_UNAME)d/libiupim.a $(IUP)/lib/$(TEC_UNAME)d/libiupimglib.a $(IM)/lib/$(TEC_UNAME)d/libim_process.a
+  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupim.a $(IUP)/lib/$(TEC_UNAME)/libiupimglib.a $(IM)/lib/$(TEC_UNAME)/libim_process.a
 endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
