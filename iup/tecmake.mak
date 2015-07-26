@@ -1289,6 +1289,7 @@ ifdef USE_GTK
         
         # Add also support for newer instalations
         STDINCS += $(GTK)/lib/i386-linux-gnu/glib-2.0/include
+        STDINCS += $(GTK)/lib/arm-linux-gnueabihf/glib-2.0/include
         ifndef USE_GTK3
           STDINCS += $(GTK)/lib/i386-linux-gnu/gtk-2.0/include
           STDINCS += $(GTK)/lib/arm-linux-gnueabihf/gtk-2.0/include
