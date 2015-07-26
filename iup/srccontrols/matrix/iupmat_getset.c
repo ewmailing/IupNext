@@ -493,11 +493,7 @@ void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
   }
 
   if (marked)
-  {
-    *r = IMAT_ATENUATION(*r);
-    *g = IMAT_ATENUATION(*g);
-    *b = IMAT_ATENUATION(*b);
-  }
+    iupMatrixAddMarkedAttenuation(ih, r, g, b);
 
   if (!active)
   {
@@ -513,11 +509,7 @@ void iupMatrixGetTypeRGB(Ihandle* ih, const char* color, unsigned char *r, unsig
   iupStrToRGB(color, r, g, b);
 
   if (marked)
-  {
-    *r = IMAT_ATENUATION(*r);
-    *g = IMAT_ATENUATION(*g);
-    *b = IMAT_ATENUATION(*b);
-  }
+    iupMatrixAddMarkedAttenuation(ih, r, g, b);
 
   if (!active)
   {
@@ -566,11 +558,7 @@ void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
   }
 
   if (marked)
-  {
-    *r = IMAT_ATENUATION(*r);
-    *g = IMAT_ATENUATION(*g);
-    *b = IMAT_ATENUATION(*b);
-  }
+    iupMatrixAddMarkedAttenuation(ih, r, g, b);
 
   if (!active)
   {

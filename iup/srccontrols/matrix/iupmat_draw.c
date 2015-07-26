@@ -379,14 +379,6 @@ static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int
   return 1;
 }
 
-void iupMatrixDrawSetDropFeedbackArea(int *x1, int *y1, int *x2, int *y2)
-{
-  *x2 -= IMAT_PADDING_W/2 + IMAT_FRAME_W/2;
-  *x1  = *x2 - IMAT_DROPBOX_W; 
-  *y1 += IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
-  *y2 -= IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
-}
-
 static void iMatrixDrawDropFeedback(Ihandle* ih, int x2, int y1, int y2, int active, long framecolor)
 {
   int xh2, yh2, x1;
@@ -413,14 +405,6 @@ static void iMatrixDrawDropFeedback(Ihandle* ih, int x2, int y1, int y2, int act
   cdCanvasEnd(ih->data->cd_canvas);
 }
 
-void iupMatrixDrawSetToggleArea(int *x1, int *y1, int *x2, int *y2)
-{
-  *x2 -= IMAT_PADDING_W + IMAT_FRAME_W/2;
-  *x1  = *x2 - IMAT_TOGGLE_SIZE; 
-  *y1  = (*y2 + *y1 - IMAT_TOGGLE_SIZE)/2;
-  *y2  = *y1 + IMAT_TOGGLE_SIZE; 
-}
-
 static void iMatrixDrawToggle(Ihandle* ih, int x2, int y1, int y2, int lin, int col, int marked, int active)
 {
   int x1;
@@ -434,9 +418,7 @@ static void iMatrixDrawToggle(Ihandle* ih, int x2, int y1, int y2, int lin, int 
   {
     unsigned char bg_r, bg_g, bg_b;
     cdDecodeColor(bgcolor, &bg_r, &bg_g, &bg_b);
-    bg_r = IMAT_ATENUATION(bg_r);
-    bg_g = IMAT_ATENUATION(bg_g);
-    bg_b = IMAT_ATENUATION(bg_b);
+    iupMatrixAddMarkedAttenuation(ih, &bg_r, &bg_g, &bg_b);
     bgcolor = cdEncodeColor(bg_r, bg_g, bg_b);
   }
   cdCanvasForeground(ih->data->cd_canvas, bgcolor);
@@ -817,8 +799,43 @@ static void iMatrixDrawFocus(Ihandle* ih)
 /* Exported functions                                                     */
 /**************************************************************************/
 
+/* Color attenuation factor in a marked cell, 20% darker */
+#define IMAT_ATENUATION(_x)    ((unsigned char)(((_x)*8)/10))
 
-/* Draw the line titles, visible, between lin and lastlin, include it. 
+void iupMatrixAddMarkedAttenuation(Ihandle* ih, unsigned char *r, unsigned char *g, unsigned char *b)
+{
+  char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
+  unsigned char hl_r, hl_g, hl_b;
+  if (iupStrToRGB(hlcolor, &hl_r, &hl_g, &hl_b))
+  {
+    unsigned char a = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
+    *r = iupALPHABLEND(*r, hl_r, a);
+    *g = iupALPHABLEND(*g, hl_g, a);
+    *b = iupALPHABLEND(*b, hl_b, a);
+  }
+
+  *r = IMAT_ATENUATION(*r);
+  *g = IMAT_ATENUATION(*g);
+  *b = IMAT_ATENUATION(*b);
+}
+
+void iupMatrixDrawSetDropFeedbackArea(int *x1, int *y1, int *x2, int *y2)
+{
+  *x2 -= IMAT_PADDING_W / 2 + IMAT_FRAME_W / 2;
+  *x1 = *x2 - IMAT_DROPBOX_W;
+  *y1 += IMAT_PADDING_H / 2 + IMAT_FRAME_H / 2;
+  *y2 -= IMAT_PADDING_H / 2 + IMAT_FRAME_H / 2;
+}
+
+void iupMatrixDrawSetToggleArea(int *x1, int *y1, int *x2, int *y2)
+{
+  *x2 -= IMAT_PADDING_W + IMAT_FRAME_W / 2;
+  *x1 = *x2 - IMAT_TOGGLE_SIZE;
+  *y1 = (*y2 + *y1 - IMAT_TOGGLE_SIZE) / 2;
+  *y2 = *y1 + IMAT_TOGGLE_SIZE;
+}
+
+/* Draw the line titles, visible, between lin and lastlin, include it.
    Line titles marked will be draw with the appropriate feedback.
    -> lin1 - First line to have its title drawn
    -> lin2 - Last line to have its title drawn */
