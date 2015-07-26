@@ -356,6 +356,12 @@ int iupKeyCallKeyPressCb(Ihandle *ih, int code, int press)
   return IUP_DEFAULT;
 }
 
+static void iupKeyActivate(Ihandle* ih)
+{
+  if (ih->handle && iupdrvIsActive(ih))
+    iupdrvActivate(ih);
+}
+
 int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
 {
   /* this is called after K_ANY is processed, 
@@ -388,6 +394,7 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
   else if (code == K_UP || code == K_DOWN)
   {
     int is_button = (IupClassMatch(ih, "button") || 
+                     IupClassMatch(ih, "flatbutton") ||
                      IupClassMatch(ih, "toggle"));
     if (is_button)
     {
@@ -401,8 +408,8 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
   else if (code==K_ESC)
   {
     Ihandle* bt = IupGetAttributeHandle(IupGetDialog(ih), "DEFAULTESC");
-    if (iupObjectCheck(bt) && IupClassMatch(bt, "button"))
-      iupdrvActivate(bt);
+    if (iupObjectCheck(bt) && (IupClassMatch(bt, "button") || IupClassMatch(bt, "glbutton")))
+      iupKeyActivate(bt);
     return 1;
   }
   else if (code==K_CR || code==K_cCR)
@@ -411,8 +418,8 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
     if ((code==K_CR && !is_multiline) || (code==K_cCR && is_multiline))
     {
       Ihandle* bt = IupGetAttributeHandle(IupGetDialog(ih), "DEFAULTENTER");
-      if (iupObjectCheck(bt) && IupClassMatch(bt, "button"))
-        iupdrvActivate(bt);
+      if (iupObjectCheck(bt) && (IupClassMatch(bt, "button") || IupClassMatch(bt, "flatbutton")))
+        iupKeyActivate(bt);
       return 1;
     }
   }
@@ -439,16 +446,18 @@ int iupKeyProcessMnemonic(Ihandle* ih, int code)
       Ihandle* ih_next = iupFocusNextInteractive(ih_mnemonic);
       if (ih_next)
       {
-        if (IupClassMatch(ih_next, "button") || IupClassMatch(ih_next, "toggle"))
-          iupdrvActivate(ih_next);
+        if (IupClassMatch(ih_next, "button") || 
+            IupClassMatch(ih_next, "flatbutton") ||
+            IupClassMatch(ih_next, "toggle"))
+          iupKeyActivate(ih_next);
         else
           IupSetFocus(ih_next);
       }
     }
     else if (IupClassMatch(ih_mnemonic, "tabs"))
       IupSetAttribute(ih_mnemonic, "VALUEPOS", IupGetAttribute(ih_mnemonic, attrib));
-    else if (ih_mnemonic->handle)  /* button or toggle */
-      iupdrvActivate(ih_mnemonic);
+    else /* button or toggle */
+      iupKeyActivate(ih_mnemonic);
 
     return 1;
   }
