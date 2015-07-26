@@ -100,6 +100,7 @@ int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 void iupwinTrackMouseLeave(Ihandle* ih);
+void iupwinRefreshCursor(Ihandle* ih);
 
 int iupwinListDND(Ihandle *ih, UINT uNotification, POINT pt);
 

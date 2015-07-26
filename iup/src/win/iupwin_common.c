@@ -783,13 +783,18 @@ HCURSOR iupwinGetCursor(Ihandle* ih, const char* name)
   return cur;
 }
 
+void iupwinRefreshCursor(Ihandle* ih)
+{
+  SendMessage(ih->handle, WM_SETCURSOR, (WPARAM)ih->handle, MAKELPARAM(HTCLIENT, WM_MOUSEMOVE));
+}
+
 int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
 {
   /* Cursor can be NULL in Windows. */
   HCURSOR hCur = iupwinGetCursor(ih, value);
   iupAttribSet(ih, "_IUPWIN_HCURSOR", (char*)hCur);  /* To be used in WM_SETCURSOR */
   /* refresh the cursor */
-  SendMessage(ih->handle, WM_SETCURSOR, (WPARAM)ih->handle, MAKELPARAM(1,WM_MOUSEMOVE));
+  iupwinRefreshCursor(ih);
   return 1;
 }
 
@@ -1037,6 +1042,7 @@ void iupdrvSendKey(int key, int press)
 
 void iupdrvWarpPointer(int x, int y)
 {
+  iupdrvAddScreenOffset(&x, &y, 1);
   SetCursorPos(x, y);
 }
 

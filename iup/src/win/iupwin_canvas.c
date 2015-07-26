@@ -514,7 +514,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       if (iupwinButtonDown(ih, msg, wp, lp))
       {
         /* refresh the cursor, it could have been changed in BUTTON_CB */
-        SendMessage(ih->handle, WM_SETCURSOR, (WPARAM)ih->handle, MAKELPARAM(1,WM_MOUSEMOVE));
+        iupwinRefreshCursor(ih);
       }
 
       if (msg==WM_XBUTTONDOWN || msg==WM_XBUTTONDBLCLK)
@@ -528,7 +528,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       if (iupwinMouseMove(ih, msg, wp, lp))
       {
         /* refresh the cursor, it could have been changed in MOTION_CB */
-        SendMessage(ih->handle, WM_SETCURSOR, (WPARAM)ih->handle, MAKELPARAM(1,WM_MOUSEMOVE));
+        iupwinRefreshCursor(ih);
       }
 
       break; /* let iupwinBaseMsgProc process enter/leavewin */
@@ -543,7 +543,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       if (iupwinButtonUp(ih, msg, wp, lp))
       {
         /* refresh the cursor, it could have been changed in BUTTON_CB */
-        SendMessage(ih->handle, WM_SETCURSOR, (WPARAM)ih->handle, MAKELPARAM(1,WM_MOUSEMOVE));
+        iupwinRefreshCursor(ih);
       }
 
       *result = 0;
