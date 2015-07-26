@@ -1588,7 +1588,7 @@ static int gtkTextMapMethod(Ihandle* ih)
   else
   {
     if (iupAttribGetBoolean(ih, "SPIN"))
-      ih->handle = gtk_spin_button_new_with_range(0, 100, 1);  /* It inherits from GtkEntry */
+      ih->handle = gtk_spin_button_new_with_range((double)iupAttribGetInt(ih, "SPINMIN"), (double)iupAttribGetInt(ih, "SPINMAX"), (double)iupAttribGetInt(ih, "SPININC"));  /* It inherits from GtkEntry */
     else
       ih->handle = gtk_entry_new();
 
