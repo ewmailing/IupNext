@@ -70,3 +70,14 @@ example3_8: example3_8.o
 	$(CC) $(CFLAGS) -o example3_8 example3_8.o $(LIBS) $(LDIR)
 example3_8.o: example3_8.c
 	$(CC) -c example3_8.c $(INCS)
+
+
+
+ifeq ($(OS), Windows_NT)
+  TECMAKE_CMD = $(MAKE) --no-print-directory -f ../../../tecmakewin.mak TEC_UNAME=$(TEC_UNAME)
+else
+  TECMAKE_CMD = $(MAKE) --no-print-directory -f ../../../tecmake.mak
+endif
+
+simple_paint:
+	@$(TECMAKE_CMD) 

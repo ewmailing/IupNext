@@ -10,11 +10,15 @@
 #include <cdprint.h>
 #include <cdiup.h>
 #include <cdirgb.h>
+#include <cdgl.h>
 #include <im.h>
 #include <im_image.h>
 #include <im_convert.h>
 #include <im_process.h>
 #include <iupim.h>
+
+//#define USE_OPENGL 1
+//#define USE_CONTEXTPLUS 1
 
 
 /********************************** Images *****************************************/
@@ -980,6 +984,53 @@ void tool_get_text(Ihandle* toolbox)
   IupDestroy(dlg);
 }
 
+void tool_draw_pencil(Ihandle* toolbox, imImage* image, int start_x, int start_y, int end_x, int end_y)
+{
+  double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
+  unsigned char** data = (unsigned char**)image->data;
+  unsigned char r, g, b;
+
+  int line_width = IupGetInt(toolbox, "TOOLWIDTH");
+  IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+
+  /* do not use line style here */
+  cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
+  cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
+  cdCanvasLineWidth(cd_canvas, line_width);
+  cdCanvasLine(cd_canvas, start_x, start_y, end_x, end_y);
+  cdKillCanvas(cd_canvas);
+}
+
+void tool_draw_overlay(Ihandle* toolbox, cdCanvas* cd_canvas, int start_x, int start_y, int end_x, int end_y)
+{
+  int tool_index = IupGetInt(toolbox, "TOOLINDEX");
+  int line_width = IupGetInt(toolbox, "TOOLWIDTH");
+  int line_style = IupGetInt(toolbox, "TOOLSTYLE") - 1;
+  unsigned char r, g, b;
+  IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+
+  cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
+  cdCanvasLineWidth(cd_canvas, line_width);
+  if (line_width == 1)
+    cdCanvasLineStyle(cd_canvas, line_style);
+
+  if (tool_index == 3)  /* Line */
+    cdCanvasLine(cd_canvas, start_x, start_y, end_x, end_y);
+  else if (tool_index == 4)  /* Rect */
+    cdCanvasRect(cd_canvas, start_x, end_x, start_y, end_y);
+  else if (tool_index == 5)  /* Box */
+    cdCanvasBox(cd_canvas, start_x, end_x, start_y, end_y);
+  else if (tool_index == 6)  /* Ellipse */
+    cdCanvasArc(cd_canvas, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
+  else if (tool_index == 7)  /* Oval */
+    cdCanvasSector(cd_canvas, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
+  else if (tool_index == 8)  /* Text */
+  {
+    cdCanvasTextAlignment(cd_canvas, CD_SOUTH_WEST);
+    cdCanvasNativeFont(cd_canvas, IupGetAttribute(toolbox, "TOOLFONT"));
+    cdCanvasText(cd_canvas, end_x, end_y, IupGetAttribute(toolbox, "TOOLTEXT"));
+  }
+}
 
 
 /********************************** Callbacks *****************************************/
@@ -993,6 +1044,9 @@ int canvas_action_cb(Ihandle* canvas)
   Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
   const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "208 208 208");
 
+#ifdef USE_OPENGL
+  IupGLMakeCurrent(canvas);
+#endif
   cdCanvasActivate(cd_canvas);
 
   /* draw the background */
@@ -1013,7 +1067,9 @@ int canvas_action_cb(Ihandle* canvas)
     cdCanvasLineStyle(cd_canvas, CD_CONTINUOUS);
     cdCanvasRect(cd_canvas, x - 1, x + view_width, y - 1, y + view_height);
 
+    cdCanvasSetAttribute(cd_canvas, "ANTIALIAS", "0");
     imcdCanvasPutImage(cd_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
+    cdCanvasSetAttribute(cd_canvas, "ANTIALIAS", "1");
 
     if (IupConfigGetVariableInt(config, "MainWindow", "ZoomGrid"))
     {
@@ -1046,47 +1102,42 @@ int canvas_action_cb(Ihandle* canvas)
       int start_y = IupGetInt(canvas, "START_Y");
       int end_x = IupGetInt(canvas, "END_X");
       int end_y = IupGetInt(canvas, "END_Y");
-      int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-      int line_style = IupGetInt(toolbox, "TOOLSTYLE") - 1;
-      unsigned char r, g, b;
-      IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
 
       cdCanvasTransformTranslate(cd_canvas, x, y);
       cdCanvasTransformScale(cd_canvas, (double)view_width / (double)image->width, view_height / (double)image->height);
 
-      cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
-      cdCanvasLineWidth(cd_canvas, line_width);
-      if (line_width == 1)
-        cdCanvasLineStyle(cd_canvas, line_style);
-
-      if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "LINE") == 0)
-        cdCanvasLine(cd_canvas, start_x, start_y, end_x, end_y);
-      else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "RECT") == 0)
-        cdCanvasRect(cd_canvas, start_x, end_x, start_y, end_y);
-      else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "BOX") == 0)
-        cdCanvasBox(cd_canvas, start_x, end_x, start_y, end_y);
-      else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "ELLIPSE") == 0)
-        cdCanvasArc(cd_canvas, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
-      else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "OVAL") == 0)
-        cdCanvasSector(cd_canvas, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
-      else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "TEXT") == 0)
-      {
-        cdCanvasTextAlignment(cd_canvas, CD_SOUTH_WEST);
-        cdCanvasNativeFont(cd_canvas, IupGetAttribute(toolbox, "TOOLFONT"));
-        cdCanvasText(cd_canvas, end_x, end_y, IupGetAttribute(toolbox, "TOOLTEXT"));
-      }
+      tool_draw_overlay(toolbox, cd_canvas, start_x, start_y, end_x, end_y);
 
       cdCanvasTransform(cd_canvas, NULL);
     }
   }
 
   cdCanvasFlush(cd_canvas);
+
+#ifdef USE_OPENGL
+  IupGLSwapBuffers(canvas);
+#endif
   return IUP_DEFAULT;
 }
 
 int canvas_map_cb(Ihandle* canvas)
 {
-  cdCanvas* cd_canvas = cdCreateCanvas(CD_IUPDBUFFER, canvas);
+  cdCanvas* cd_canvas;
+
+#ifdef USE_OPENGL
+  double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
+  IupGLMakeCurrent(canvas);
+  cd_canvas = cdCreateCanvasf(CD_GL, "10x10 %g", res);
+#else
+#ifdef USE_CONTEXTPLUS
+  cdUseContextPlus(1);
+#endif
+  cd_canvas = cdCreateCanvas(CD_IUPDBUFFER, canvas);
+#ifdef USE_CONTEXTPLUS
+  cdUseContextPlus(0);
+#endif
+#endif
+
   IupSetAttribute(canvas, "cdCanvas", (char*)cd_canvas);
   return IUP_DEFAULT;
 }
@@ -1151,6 +1202,18 @@ int canvas_resize_cb(Ihandle* canvas)
 
     scroll_center(canvas, old_center_x, old_center_y);
   }
+
+#ifdef USE_OPENGL
+  {
+    int canvas_width, canvas_height;
+    double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
+    cdCanvas* cd_canvas = (cdCanvas*)IupGetAttribute(canvas, "cdCanvas");
+    IupGetIntInt(canvas, "DRAWSIZE", &canvas_width, &canvas_height);
+
+    IupGLMakeCurrent(canvas);
+    cdCanvasSetfAttribute(cd_canvas, "SIZE", "%dx%d %g", canvas_width, canvas_height, res);
+  }
+#endif
   return IUP_DEFAULT;
 }
 
@@ -1224,19 +1287,8 @@ int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int y)
           {
             int start_x = IupGetInt(canvas, "START_X");
             int start_y = IupGetInt(canvas, "START_Y");
-            double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-            unsigned char** data = (unsigned char**)image->data;
-            unsigned char r, g, b;
 
-            int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-            IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
-
-            /* do not use line style here */
-            cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
-            cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
-            cdCanvasLineWidth(cd_canvas, line_width);
-            cdCanvasLine(cd_canvas, start_x, start_y, x, y);
-            cdKillCanvas(cd_canvas);
+            tool_draw_pencil(toolbox, image, start_x, start_y, x, y);
 
             IupSetAttribute(canvas, "DIRTY", "Yes");
 
@@ -1251,36 +1303,12 @@ int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int y)
             {
               int start_x = IupGetInt(canvas, "START_X");
               int start_y = IupGetInt(canvas, "START_Y");
-              int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-              int line_style = IupGetInt(toolbox, "TOOLSTYLE") - 1;
               double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
               unsigned char** data = (unsigned char**)image->data;
-              unsigned char r, g, b;
-
-              IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
-
+  
               cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
-              cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
-              cdCanvasLineWidth(cd_canvas, line_width);
-              if (line_width == 1)
-                cdCanvasLineStyle(cd_canvas, line_style);
 
-              if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "LINE") == 0)
-                cdCanvasLine(cd_canvas, start_x, start_y, x, y);
-              else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "RECT") == 0)
-                  cdCanvasRect(cd_canvas, start_x, x, start_y, y);
-              else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "BOX") == 0)
-                cdCanvasBox(cd_canvas, start_x, x, start_y, y);
-              else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "ELLIPSE") == 0)
-                cdCanvasArc(cd_canvas, (x + start_x) / 2, (y + start_y) / 2, abs(x - start_x), abs(y - start_y), 0, 360);
-              else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "OVAL") == 0)
-                cdCanvasSector(cd_canvas, (x + start_x) / 2, (y + start_y) / 2, abs(x - start_x), abs(y - start_y), 0, 360);
-              else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "TEXT") == 0)
-              {
-                cdCanvasTextAlignment(cd_canvas, CD_SOUTH_WEST);
-                cdCanvasNativeFont(cd_canvas, IupGetAttribute(toolbox, "TOOLFONT"));
-                cdCanvasText(cd_canvas, x, y, IupGetAttribute(toolbox, "TOOLTEXT"));
-              }
+              tool_draw_overlay(toolbox, cd_canvas, start_x, start_y, x, y);
 
               cdKillCanvas(cd_canvas);
 
@@ -1370,17 +1398,8 @@ int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
         {
           int start_x = IupGetInt(canvas, "START_X");
           int start_y = IupGetInt(canvas, "START_Y");
-          double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
 
-          int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-          IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
-
-          /* do not use line style here */
-          cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
-          cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
-          cdCanvasLineWidth(cd_canvas, line_width);
-          cdCanvasLine(cd_canvas, start_x, start_y, x, y);
-          cdKillCanvas(cd_canvas);
+          tool_draw_pencil(toolbox, image, start_x, start_y, x, y);
 
           IupSetAttribute(canvas, "DIRTY", "Yes");
 
@@ -1391,10 +1410,9 @@ int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
         }
         else if (tool_index >= 3 && tool_index <= 8)  /* Shapes */
         {
-          const char* shapes[] = { "LINE", "RECT", "BOX", "ELLIPSE", "OVAL", "TEXT" };
           IupSetInt(canvas, "END_X", x);
           IupSetInt(canvas, "END_Y", y);
-          IupSetAttribute(canvas, "OVERLAY", shapes[tool_index - 3]);
+          IupSetAttribute(canvas, "OVERLAY", "Yes");
           IupUpdate(canvas);
         }
       }
@@ -2439,7 +2457,12 @@ Ihandle* create_main_dialog(Ihandle *config)
 {
   Ihandle *dlg, *vbox, *canvas;
 
+#ifdef USE_OPENGL
+  canvas = IupGLCanvas(NULL);
+  IupSetAttribute(canvas, "BUFFER", "DOUBLE");
+#else
   canvas = IupCanvas(NULL);
+#endif
   IupSetAttribute(canvas, "NAME", "CANVAS");
   IupSetAttribute(canvas, "SCROLLBAR", "Yes");
   IupSetAttribute(canvas, "DIRTY", "NO");  /* custom attribute */
@@ -2491,6 +2514,12 @@ int main(int argc, char **argv)
 
   IupOpen(&argc, &argv);
   IupImageLibOpen();
+#ifdef USE_OPENGL
+  IupGLCanvasOpen();
+#endif
+#ifdef USE_CONTEXTPLUS
+  cdInitContextPlus();
+#endif
 
   config = IupConfig();
   IupSetAttribute(config, "APP_NAME", "simple_paint");
