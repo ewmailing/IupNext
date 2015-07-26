@@ -11,7 +11,6 @@
 #include "iupPlot.h"
 
 #include "iup_plot.h"
-#include "iupgl.h"
 
 #include "iup_class.h"
 #include "iup_register.h"
@@ -239,8 +238,6 @@ static int iPlotSetRedrawAttrib(Ihandle* ih, const char* value)
 
   if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
   {
-    IupGLMakeCurrent(ih);
-
     // in OpenGL mode must:
     flush = 1;  // always flush
     only_current = 0;  // redraw all plots

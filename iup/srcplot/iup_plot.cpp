@@ -966,6 +966,9 @@ void iupPlotSetPlotCurrent(Ihandle* ih, int p)
 
 void iupPlotRedraw(Ihandle* ih, int flush, int only_current, int reset_redraw)
 {
+  if (flush && ih->data->graphics_mode == IUP_PLOT_OPENGL)
+    IupGLMakeCurrent(ih);
+
   cdCanvasActivate(ih->data->cd_canvas);
 
   if (ih->data->clear)
@@ -1018,8 +1021,6 @@ static int iPlotAction_CB(Ihandle* ih)
 
   if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
   {
-    IupGLMakeCurrent(ih);
-
     // in OpenGL mode must:
     flush = 1;  // always flush
     only_current = 0;  // redraw all plots
