@@ -18,7 +18,7 @@
 #include <iupim.h>
 
 //#define USE_OPENGL 1
-#define USE_CONTEXTPLUS 1
+//#define USE_CONTEXTPLUS 1
 
 
 /********************************** Images *****************************************/
