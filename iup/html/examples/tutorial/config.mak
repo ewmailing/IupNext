@@ -20,10 +20,14 @@ USE_IM = Yes
 #LIBS = cdcontextplus gdiplus
 #USE_OPENGL = Yes
 
+ifdef DBG_DIR
+  SFX=d
+endif
+
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iupimglib im_process iupim
 else
-  SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupim.a $(IUP)/lib/$(TEC_UNAME)/libiupimglib.a $(IM)/lib/$(TEC_UNAME)/libim_process.a
+  SLIB += $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupim.a $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupimglib.a $(IM)/lib/$(TEC_UNAME)$(SFX)/libim_process.a
 endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )

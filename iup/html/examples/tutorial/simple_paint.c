@@ -1067,10 +1067,8 @@ int canvas_action_cb(Ihandle* canvas)
     cdCanvasLineStyle(cd_canvas, CD_CONTINUOUS);
     cdCanvasRect(cd_canvas, x - 1, x + view_width, y - 1, y + view_height);
 
-    cdCanvasSetAttribute(cd_canvas, "ANTIALIAS", "0");
-    cdCanvasSetAttribute(cd_canvas, "IMGINTERP", "NEAREST");
+    cdCanvasSetAttribute(cd_canvas, "IMGINTERP", "NEAREST");  /* affects only drivers that have this attribute */
     imcdCanvasPutImage(cd_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
-    cdCanvasSetAttribute(cd_canvas, "ANTIALIAS", "1");
 
     if (IupConfigGetVariableInt(config, "MainWindow", "ZoomGrid"))
     {
@@ -1104,8 +1102,13 @@ int canvas_action_cb(Ihandle* canvas)
       int end_x = IupGetInt(canvas, "END_X");
       int end_y = IupGetInt(canvas, "END_Y");
 
-      cdCanvasTransformTranslate(cd_canvas, x, y);
-      cdCanvasTransformScale(cd_canvas, (double)view_width / (double)image->width, view_height / (double)image->height);
+      double scale_x = (double)view_width / (double)image->width;
+      double scale_y = (double)view_height / (double)image->height;
+
+      /* offset and scale drawing in screen to macth the image */
+      /* also draw at the center of the pixel when zoom in */
+      cdCanvasTransformTranslate(cd_canvas, x + scale_x / 2, y + scale_y/2);
+      cdCanvasTransformScale(cd_canvas, scale_x, scale_y);
 
       tool_draw_overlay(toolbox, cd_canvas, start_x, start_y, end_x, end_y);
 
