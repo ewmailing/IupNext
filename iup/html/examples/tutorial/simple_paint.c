@@ -1768,7 +1768,8 @@ int item_about_action_cb(void)
 int toolbox_close_cb(Ihandle* toolbox)
 {
   Ihandle* config = (Ihandle*)IupGetAttribute(toolbox, "CONFIG");
-  Ihandle* item_toolbox = (Ihandle*)IupGetAttribute(toolbox, "TOOLBOXMENU");
+  Ihandle* canvas = (Ihandle*)IupGetAttribute(toolbox, "CANVAS");
+  Ihandle* item_toolbox = IupGetDialogChild(canvas, "TOOLBOXMENU");
 
   IupConfigDialogClosed(config, toolbox, "Toolbox");
 
@@ -2166,23 +2167,24 @@ Ihandle* create_main_menu(Ihandle *config)
 
   item_zoomgrid = IupItem("&Zoom Grid", NULL);
   IupSetCallback(item_zoomgrid, "ACTION", (Icallback)item_zoomgrid_action_cb);
-  IupSetAttribute(item_zoomgrid, "VALUE", "ON");
   IupSetAttribute(item_zoomgrid, "NAME", "ZOOMGRID");
+  IupSetAttribute(item_zoomgrid, "VALUE", "ON");  /* default is ON */
 
   item_background = IupItem("&Background...", NULL);
   IupSetCallback(item_background, "ACTION", (Icallback)item_background_action_cb);
 
   item_toolbar = IupItem("&Toobar", NULL);
   IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
-  IupSetAttribute(item_toolbar, "VALUE", "ON");
+  IupSetAttribute(item_toolbar, "VALUE", "ON");   /* default is ON */
 
   item_toolbox = IupItem("&Toobox", NULL);
   IupSetCallback(item_toolbox, "ACTION", (Icallback)item_toolbox_action_cb);
   IupSetAttribute(item_toolbox, "NAME", "TOOLBOXMENU");
+  IupSetAttribute(item_toolbox, "VALUE", "ON");   /* default is ON */
 
   item_statusbar = IupItem("&Statusbar", NULL);
   IupSetCallback(item_statusbar, "ACTION", (Icallback)item_statusbar_action_cb);
-  IupSetAttribute(item_statusbar, "VALUE", "ON");
+  IupSetAttribute(item_statusbar, "VALUE", "ON");  /* default is ON */
 
   item_help = IupItem("&Help...", NULL);
   IupSetCallback(item_help, "ACTION", (Icallback)item_help_action_cb);
@@ -2260,10 +2262,13 @@ Ihandle* create_main_menu(Ihandle *config)
   IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "ZoomGrid", 1))
-    IupSetAttribute(item_toolbar, "VALUE", "OFF");
+    IupSetAttribute(item_zoomgrid, "VALUE", "OFF");
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))
     IupSetAttribute(item_toolbar, "VALUE", "OFF");
+
+  if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbox", 1))
+    IupSetAttribute(item_toolbox, "VALUE", "OFF");
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "Statusbar", 1))
     IupSetAttribute(item_statusbar, "VALUE", "OFF");
@@ -2348,7 +2353,6 @@ Ihandle* create_toolbar(Ihandle *config)
 void create_toolbox(Ihandle* parent_dlg, Ihandle *config)
 {
   Ihandle *toolbox, *gbox, *vbox;
-  Ihandle* item_toolbox = IupGetDialogChild(parent_dlg, "TOOLBOXMENU");
   Ihandle* canvas = IupGetDialogChild(parent_dlg, "CANVAS");
 
   IupSetHandle("PaintPointer", load_image_Pointer());
@@ -2412,7 +2416,6 @@ void create_toolbox(Ihandle* parent_dlg, Ihandle *config)
   IupSetStrAttribute(toolbox, "TOOLFONT", IupGetAttribute(parent_dlg, "FONT"));
 
   IupSetAttribute(toolbox, "CONFIG", (char*)config);
-  IupSetAttribute(toolbox, "TOOLBOXMENU", (char*)item_toolbox);
   IupSetAttribute(toolbox, "CANVAS", (char*)canvas);
 
   IupSetAttribute(parent_dlg, "TOOLBOX", (char*)toolbox);
@@ -2431,7 +2434,6 @@ void create_toolbox(Ihandle* parent_dlg, Ihandle *config)
       IupConfigSetVariableInt(config, "Toolbox", "Y", y);
     }
 
-    IupSetAttribute(item_toolbox, "VALUE", "ON");
     IupConfigDialogShow(config, toolbox, "Toolbox");
   }
 }
