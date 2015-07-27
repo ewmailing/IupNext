@@ -545,7 +545,7 @@ typedef struct _xyStack
 
 xyStack* xy_stack_push(xyStack* q, int x, int y)
 {
-  xyStack* new_q = malloc(sizeof(xyStack));
+  xyStack* new_q = (xyStack*)malloc(sizeof(xyStack));
   new_q->x = x;
   new_q->y = y;
   new_q->next = q;
