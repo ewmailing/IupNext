@@ -18,7 +18,7 @@
 #include <iupim.h>
 
 //#define USE_OPENGL 1
-//#define USE_CONTEXTPLUS 1
+#define USE_CONTEXTPLUS 1
 
 
 /********************************** Images *****************************************/
@@ -1067,6 +1067,9 @@ int canvas_action_cb(Ihandle* canvas)
     cdCanvasLineStyle(cd_canvas, CD_CONTINUOUS);
     cdCanvasRect(cd_canvas, x - 1, x + view_width, y - 1, y + view_height);
 
+    /* Some CD drivers have interpolation options for image zoom */
+    /* we force NEAREST so we can see the pixel boundary in zoom in */
+    /* an alternative would be to set BILINEAR when zoom out */
     cdCanvasSetAttribute(cd_canvas, "IMGINTERP", "NEAREST");  /* affects only drivers that have this attribute */
     imcdCanvasPutImage(cd_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
 
@@ -1106,8 +1109,13 @@ int canvas_action_cb(Ihandle* canvas)
       double scale_y = (double)view_height / (double)image->height;
 
       /* offset and scale drawing in screen to macth the image */
-      /* also draw at the center of the pixel when zoom in */
-      cdCanvasTransformTranslate(cd_canvas, x + scale_x / 2, y + scale_y/2);
+      if (scale_x > 1 || scale_y > 1)
+      {
+        /* also draw at the center of the pixel when zoom in */
+        cdCanvasTransformTranslate(cd_canvas, x + scale_x / 2, y + scale_y / 2);
+      }
+      else
+        cdCanvasTransformTranslate(cd_canvas, x, y);
       cdCanvasTransformScale(cd_canvas, scale_x, scale_y);
 
       tool_draw_overlay(toolbox, cd_canvas, start_x, start_y, end_x, end_y);
