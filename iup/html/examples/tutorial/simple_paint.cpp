@@ -702,12 +702,78 @@ public:
   void SaveFile();
 };
 
+class SimplePaint;
+
+class SimplePaintToolbox
+{
+public:
+  enum Tool {
+    TOOL_POINTER, TOOL_COLORPICKER,
+    TOOL_PENCIL, TOOL_LINE,
+    TOOL_RECT, TOOL_BOX,
+    TOOL_ELLIPSE, TOOL_OVAL,
+    TOOL_TEXT, TOOL_FILLCOLOR
+  };
+
+private:
+  Ihandle *toolbox;
+
+  Tool tool_index;
+
+  struct
+  {
+    long color;
+    int line_width;
+    int line_style;
+    double fill_tol;
+  } options;
+
+  SimplePaint* paint;
+
+public:
+  SimplePaintToolbox(SimplePaint* _paint)
+    :paint(_paint)
+  {
+  }
+
+  Tool ToolIndex();
+
+  long Color() { return options.color; }
+  int LineWidth() { return options.line_width; }
+  int LineStyle() { return options.line_style; }
+  double FillTol() { return options.fill_tol; }
+  const char* Font() { return IupGetAttribute(toolbox, "TOOLFONT"); }
+  const char* Text() { return IupGetAttribute(toolbox, "TOOLTEXT"); }
+
+  void SetColor(long new_color);
+
+  void MoveDialog(int dx, int dy);
+  bool HideDialog();
+  void ShowDialog();
+  void CreateDialog();
+
+  void ToolGetText();
+
+protected:
+
+  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, CloseCallback);
+  IUP_CLASS_DECLARECALLBACK_IFni(SimplePaintToolbox, ToolActionCallback);
+  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, ToolColorActionCallback);
+  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, ToolWidthValueChangedCallback);
+  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, ToolStyleValueChangedCallback);
+  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, ToolFontActionCallback);
+  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, ToolFillTolValueChangedCallback);
+};
+
 class SimplePaint
 {
-  Ihandle *dlg, *config, *canvas, *toolbox;
+  Ihandle *dlg, *config, *canvas;
+
+  friend class SimplePaintToolbox;
 
   cdCanvas* cd_canvas;
   SimplePaintFile file;
+  SimplePaintToolbox toolbox;
 
   struct 
   {
@@ -716,8 +782,6 @@ class SimplePaint
     int end_x, end_y;
     int start_cursor_x, start_cursor_y;
   } interact;
-
-  friend class SimplePaintToolbox;
 
 public:
   SimplePaint();
@@ -793,25 +857,6 @@ protected:
   IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, ZoomValueChangedCallback);
 };
 
-class SimplePaintToolbox
-{
-  Ihandle *toolbox;
-
-  SimplePaint* paint;
-
-public:
-  SimplePaintToolbox(SimplePaint* paint);
-
-protected:
-
-  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, CloseCallback);
-  IUP_CLASS_DECLARECALLBACK_IFni(SimplePaintToolbox, ToolActionCallback);
-  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, ToolColorActionCallback);
-  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, ToolWidthValueChangedCallback);
-  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, ToolStyleValueChangedCallback);
-  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, ToolFontActionCallback);
-  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaintToolbox, ToolFillTolValueChangedCallback);
-};
 
 
 /*********************************** SimplePaintFile Utilities Methods **************************************/
@@ -1142,52 +1187,17 @@ double SimplePaint::ViewZoomRect(int *_x, int *_y, int *_view_width, int *_view_
   return zoom_factor;
 }
 
-int tool_get_text_enterCallback(void)
-{
-  return IUP_CLOSE;
-}
-
-void tool_get_text(Ihandle* toolbox)
-{
-  Ihandle *text, *dlg;
-
-  char* value = IupGetAttribute(toolbox, "TOOLTEXT");
-  char* font = IupGetAttribute(toolbox, "TOOLFONT");
-
-  text = IupText(NULL);
-  IupSetAttribute(text, "EXPAND", "YES");
-  IupSetStrAttribute(text, "VALUE", value);
-  IupSetStrAttribute(text, "FONT", font);
-  IupSetAttribute(text, "VISIBLECOLUMNS", "20");
-
-  dlg = IupDialog(text);
-
-  IupSetStrAttribute(dlg, "TITLE", "Enter Text:");
-  IupSetAttribute(dlg, "MINBOX", "NO");
-  IupSetAttribute(dlg, "MAXBOX", "NO");
-  IupSetCallback(dlg, "K_CR", (Icallback)tool_get_text_enterCallback);
-  IupSetAttributeHandle(dlg, "PARENTDIALOG", toolbox);
-
-  IupPopup(dlg, IUP_MOUSEPOS, IUP_MOUSEPOS);
-
-  value = IupGetAttribute(text, "VALUE");
-  IupSetStrAttribute(toolbox, "TOOLTEXT", value);
-
-  IupDestroy(dlg);
-}
-
 void SimplePaint::DrawPencil(int start_x, int start_y, int end_x, int end_y)
 {
   double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
   unsigned char** data = (unsigned char**)file.image->data;
-  unsigned char r, g, b;
 
-  int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-  IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+  int line_width = toolbox.LineWidth();
+  long color = toolbox.Color();
 
   /* do not use line style here */
   cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", file.image->width, file.image->height, data[0], data[1], data[2], res);
-  cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
+  cdCanvasForeground(cd_canvas, color);
   cdCanvasLineWidth(cd_canvas, line_width);
   cdCanvasLine(cd_canvas, start_x, start_y, end_x, end_y);
   cdKillCanvas(cd_canvas);
@@ -1195,32 +1205,31 @@ void SimplePaint::DrawPencil(int start_x, int start_y, int end_x, int end_y)
 
 void SimplePaint::DrawToolOverlay(cdCanvas* cnv, int start_x, int start_y, int end_x, int end_y)
 {
-  int tool_index = IupGetInt(toolbox, "TOOLINDEX");
-  int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-  int line_style = IupGetInt(toolbox, "TOOLSTYLE") - 1;
-  unsigned char r, g, b;
-  IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+  SimplePaintToolbox::Tool tool_index = toolbox.ToolIndex();
+  int line_width = toolbox.LineWidth();
+  int line_style = toolbox.LineStyle();
+  long color = toolbox.Color();
 
-  cdCanvasForeground(cnv, cdEncodeColor(r, g, b));
+  cdCanvasForeground(cnv, color);
   cdCanvasLineWidth(cnv, line_width);
   if (line_width == 1)
     cdCanvasLineStyle(cnv, line_style);
 
-  if (tool_index == 3)  /* Line */
+  if (tool_index == SimplePaintToolbox::TOOL_LINE)
     cdCanvasLine(cnv, start_x, start_y, end_x, end_y);
-  else if (tool_index == 4)  /* Rect */
+  else if (tool_index == SimplePaintToolbox::TOOL_RECT)
     cdCanvasRect(cnv, start_x, end_x, start_y, end_y);
-  else if (tool_index == 5)  /* Box */
+  else if (tool_index == SimplePaintToolbox::TOOL_BOX)
     cdCanvasBox(cnv, start_x, end_x, start_y, end_y);
-  else if (tool_index == 6)  /* Ellipse */
+  else if (tool_index == SimplePaintToolbox::TOOL_ELLIPSE)
     cdCanvasArc(cnv, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
-  else if (tool_index == 7)  /* Oval */
+  else if (tool_index == SimplePaintToolbox::TOOL_OVAL)
     cdCanvasSector(cnv, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
-  else if (tool_index == 8)  /* Text */
+  else if (tool_index == SimplePaintToolbox::TOOL_TEXT)
   {
     cdCanvasTextAlignment(cnv, CD_SOUTH_WEST);
-    cdCanvasNativeFont(cnv, IupGetAttribute(toolbox, "TOOLFONT"));
-    cdCanvasText(cnv, end_x, end_y, IupGetAttribute(toolbox, "TOOLTEXT"));
+    cdCanvasNativeFont(cnv, toolbox.Font());
+    cdCanvasText(cnv, end_x, end_y, toolbox.Text());
   }
 }
 
@@ -1414,11 +1423,10 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
         }
         else
         {
-          int tool_index = IupGetInt(toolbox, "TOOLINDEX");
+          SimplePaintToolbox::Tool tool_index = toolbox.ToolIndex();
 
-          if (tool_index == 1)  /* Color Picker */
+          if (tool_index == SimplePaintToolbox::TOOL_COLORPICKER)
           {
-            Ihandle* color = IupGetDialogChild(toolbox, "COLOR");
             unsigned char** data = (unsigned char**)file.image->data;
             unsigned char r, g, b;
             int offset;
@@ -1428,10 +1436,9 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
             g = data[1][offset];
             b = data[2][offset];
 
-            IupSetRGB(color, "BGCOLOR", r, g, b);
-            IupSetRGB(toolbox, "TOOLCOLOR", r, g, b);
+            toolbox.SetColor(cdEncodeColor(r, g, b));
           }
-          else if (tool_index == 2)  /* Pencil */
+          else if (tool_index == SimplePaintToolbox::TOOL_PENCIL)
           {
             DrawPencil(interact.start_x, interact.start_y, x, y);
 
@@ -1442,7 +1449,7 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
             interact.start_x = x;
             interact.start_y = y;
           }
-          else if (tool_index >= 3 && tool_index <= 8)  /* Shapes */
+          else if (tool_index >= SimplePaintToolbox::TOOL_LINE && tool_index <= SimplePaintToolbox::TOOL_TEXT)  /* All Shapes */
           {
             if (interact.overlay)
             {
@@ -1461,13 +1468,12 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
               IupUpdate(canvas);
             }
           }
-          else if (tool_index == 9)  /* Fill Color */
+          else if (tool_index == SimplePaintToolbox::TOOL_FILLCOLOR)
           {
-            double tol_percent = IupGetDouble(toolbox, "TOOLFILLTOL");
-            unsigned char r, g, b;
-            IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+            double tol_percent = toolbox.FillTol();
+            long color = toolbox.Color();
 
-            image_flood_fill(file.image, x, y, cdEncodeColor(r, g, b), tol_percent);
+            image_flood_fill(file.image, x, y, color, tol_percent);
             file.dirty = true;
 
             IupUpdate(canvas);
@@ -1478,9 +1484,9 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
       {
         if (!pressed)
         {
-          int tool_index = IupGetInt(toolbox, "TOOLINDEX");
-          if (tool_index == 8)  /* Text */
-            tool_get_text(toolbox);
+          SimplePaintToolbox::Tool tool_index = toolbox.ToolIndex();
+          if (tool_index == SimplePaintToolbox::TOOL_TEXT)
+            toolbox.ToolGetText();
         }
       }
     }
@@ -1520,9 +1526,9 @@ int SimplePaint::CanvasMotionCallback(Ihandle* canvas, int x, int y, char *statu
 
       if (iup_isbutton1(status)) /* button1 is pressed */
       {
-        int tool_index = IupGetInt(toolbox, "TOOLINDEX");
+        SimplePaintToolbox::Tool tool_index = toolbox.ToolIndex();
 
-        if (tool_index == 0)  /* Pointer */
+        if (tool_index == SimplePaintToolbox::TOOL_POINTER)
         {
           int canvas_width = IupGetInt(canvas, "DRAWSIZE");
 
@@ -1531,7 +1537,7 @@ int SimplePaint::CanvasMotionCallback(Ihandle* canvas, int x, int y, char *statu
           interact.start_cursor_x = cursor_x;
           interact.start_cursor_y = cursor_y;
         }
-        else if (tool_index == 2)  /* Pencil */
+        else if (tool_index == SimplePaintToolbox::TOOL_PENCIL)
         {
           DrawPencil(interact.start_x, interact.start_y, x, y);
 
@@ -1542,7 +1548,7 @@ int SimplePaint::CanvasMotionCallback(Ihandle* canvas, int x, int y, char *statu
           interact.start_x = x;
           interact.start_y = y;
         }
-        else if (tool_index >= 3 && tool_index <= 8)  /* Shapes */
+        else if (tool_index >= SimplePaintToolbox::TOOL_LINE && tool_index <= SimplePaintToolbox::TOOL_TEXT)  /* All Shapes */
         {
           interact.end_x = x;
           interact.end_y = y;
@@ -1620,16 +1626,7 @@ int SimplePaint::DialogMoveCallback(Ihandle* dlg, int x, int y)
   if (old_x == x && old_y == y)
     return IUP_DEFAULT;
 
-  if (IupGetInt(toolbox, "VISIBLE"))
-  {
-    int tb_x = IupGetInt(toolbox, "X");
-    int tb_y = IupGetInt(toolbox, "Y");
-
-    tb_x += x - old_x;
-    tb_y += y - old_y;
-
-    IupShowXY(toolbox, tb_x, tb_y);
-  }
+  toolbox.MoveDialog(x - old_x, y - old_y);
 
   IupSetInt(dlg, "_OLD_X", x);
   IupSetInt(dlg, "_OLD_Y", y);
@@ -1753,11 +1750,7 @@ int SimplePaint::ItemExitActionCallback(Ihandle*)
   if (!file.SaveCheck())
     return IUP_IGNORE;  /* to abort the CLOSE_CB callback normal processing */
 
-  if (IupGetInt(toolbox, "VISIBLE"))
-  {
-    IupConfigDialogClosed(config, toolbox, "Toolbox");
-    IupHide(toolbox);
-  }
+  toolbox.HideDialog();
 
   if (file.image)
     imImageDestroy(file.image);
@@ -1879,16 +1872,12 @@ int SimplePaint::ItemToolbarActionCallback(Ihandle* item_toolbar)
 
 int SimplePaint::ItemToolboxActionCallback(Ihandle* item_toolbox)
 {
-  if (IupGetInt(toolbox, "VISIBLE"))
-  {
+  if (toolbox.HideDialog())
     IupSetAttribute(item_toolbox, "VALUE", "OFF");
-    IupConfigDialogClosed(config, toolbox, "Toolbox");
-    IupHide(toolbox);
-  }
   else
   {
     IupSetAttribute(item_toolbox, "VALUE", "ON");
-    IupConfigDialogShow(config, toolbox, "Toolbox");
+    toolbox.ShowDialog();
   }
 
   IupConfigSetVariableStr(config, "MainWindow", "Toolbox", IupGetAttribute(item_toolbox, "VALUE"));
@@ -2128,22 +2117,92 @@ int SimplePaintToolbox::CloseCallback(Ihandle*)
   return IUP_DEFAULT;
 }
 
+void SimplePaintToolbox::MoveDialog(int dx, int dy)
+{
+  if (IupGetInt(toolbox, "VISIBLE"))
+  {
+    int tb_x = IupGetInt(toolbox, "X");
+    int tb_y = IupGetInt(toolbox, "Y");
+
+    tb_x += dx;
+    tb_y += dy;
+
+    IupShowXY(toolbox, tb_x, tb_y);
+  }
+}
+
+bool SimplePaintToolbox::HideDialog()
+{
+  if (IupGetInt(toolbox, "VISIBLE"))
+  {
+    IupConfigDialogClosed(paint->config, toolbox, "Toolbox");
+    IupHide(toolbox);
+    return true;
+  }
+  return false;
+}
+
+void SimplePaintToolbox::ShowDialog()
+{
+  IupConfigDialogShow(paint->config, toolbox, "Toolbox");
+}
+
+void SimplePaintToolbox::SetColor(long new_color)
+{
+  Ihandle* color = IupGetDialogChild(toolbox, "COLOR");
+  IupSetRGB(color, "BGCOLOR", cdRed(new_color), cdGreen(new_color), cdBlue(new_color));
+  options.color = new_color;
+}
+
 int SimplePaintToolbox::ToolActionCallback(Ihandle* ih, int state)
 {
   if (state == 1)
   {
-    int tool_index = IupGetInt(ih, "TOOLINDEX");
-    IupSetInt(IupGetDialog(ih), "TOOLINDEX", tool_index);
+    tool_index = (Tool)IupGetInt(ih, "TOOLINDEX");
 
-    if (tool_index == 0)
+    if (tool_index == TOOL_POINTER)
       IupSetAttribute(paint->canvas, "CURSOR", "ARROW");
     else
       IupSetAttribute(paint->canvas, "CURSOR", "CROSS");
 
-    if (tool_index == 8)
-      tool_get_text(IupGetDialog(ih));
+    if (tool_index == TOOL_TEXT)
+      ToolGetText();
   }
   return IUP_DEFAULT;
+}
+
+static int tool_get_text_enter_cb(void)
+{
+  return IUP_CLOSE;
+}
+
+void SimplePaintToolbox::ToolGetText()
+{
+  Ihandle *text, *dlg;
+
+  char* value = IupGetAttribute(toolbox, "TOOLTEXT");
+  char* font = IupGetAttribute(toolbox, "TOOLFONT");
+
+  text = IupText(NULL);
+  IupSetAttribute(text, "EXPAND", "YES");
+  IupSetStrAttribute(text, "VALUE", value);
+  IupSetStrAttribute(text, "FONT", font);
+  IupSetAttribute(text, "VISIBLECOLUMNS", "20");
+
+  dlg = IupDialog(text);
+
+  IupSetStrAttribute(dlg, "TITLE", "Enter Text:");
+  IupSetAttribute(dlg, "MINBOX", "NO");
+  IupSetAttribute(dlg, "MAXBOX", "NO");
+  IupSetCallback(dlg, "K_CR", (Icallback)tool_get_text_enter_cb);
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", toolbox);
+
+  IupPopup(dlg, IUP_MOUSEPOS, IUP_MOUSEPOS);
+
+  value = IupGetAttribute(text, "VALUE");
+  IupSetStrAttribute(toolbox, "TOOLTEXT", value);
+
+  IupDestroy(dlg);
 }
 
 int SimplePaintToolbox::ToolColorActionCallback(Ihandle* ih)
@@ -2158,9 +2217,11 @@ int SimplePaintToolbox::ToolColorActionCallback(Ihandle* ih)
   if (IupGetInt(colordlg, "STATUS") == 1)
   {
     color = IupGetAttribute(colordlg, "VALUE");
+    IupSetStrAttribute(ih, "BGCOLOR", color);   
 
-    IupSetStrAttribute(ih, "BGCOLOR", color);           
-    IupSetStrAttribute(toolbox, "TOOLCOLOR", color);
+    unsigned char r, g, b;
+    IupGetRGB(ih, "BGCOLOR", &r, &g, &b);
+    options.color = cdEncodeColor(r, g, b);
 
     IupUpdate(paint->canvas);
   }
@@ -2171,15 +2232,13 @@ int SimplePaintToolbox::ToolColorActionCallback(Ihandle* ih)
 
 int SimplePaintToolbox::ToolWidthValueChangedCallback(Ihandle* ih)
 {
-  char* value = IupGetAttribute(ih, "VALUE");
-  IupSetStrAttribute(IupGetDialog(ih), "TOOLWIDTH", value);
+  options.line_width = IupGetInt(ih, "VALUE");
   return IUP_DEFAULT;
 }
 
 int SimplePaintToolbox::ToolStyleValueChangedCallback(Ihandle* ih)
 {
-  char* value = IupGetAttribute(ih, "VALUE");
-  IupSetStrAttribute(IupGetDialog(ih), "TOOLSTYLE", value);
+  options.line_style = IupGetInt(ih, "VALUE") - 1;
   return IUP_DEFAULT;
 }
 
@@ -2204,9 +2263,8 @@ int SimplePaintToolbox::ToolFontActionCallback(Ihandle* ih)
 int SimplePaintToolbox::ToolFillTolValueChangedCallback(Ihandle* ih)
 {
   Ihandle* filltol_label = IupGetDialogChild(toolbox, "FILLTOLLABEL");
-  double value = IupGetDouble(ih, "VALUE");
-  IupSetStrf(filltol_label, "TITLE", "Tol.: %.0f%%", value);
-  IupSetDouble(IupGetDialog(ih), "TOOLFILLTOL", value);
+  options.fill_tol = IupGetDouble(ih, "VALUE");
+  IupSetStrf(filltol_label, "TITLE", "Tol.: %.0f%%", options.fill_tol);
   return IUP_DEFAULT;
 }
 
@@ -2462,7 +2520,7 @@ Ihandle* SimplePaint::CreateToolbar()
   return toolbar;
 }
 
-SimplePaintToolbox::SimplePaintToolbox(SimplePaint* paint)
+void SimplePaintToolbox::CreateDialog()
 {
   Ihandle *toolbox, *gbox, *vbox;
 
@@ -2520,13 +2578,11 @@ SimplePaintToolbox::SimplePaintToolbox(SimplePaint* paint)
   IUP_CLASS_SETCALLBACK(toolbox, "CLOSE_CB", CloseCallback);
   IupSetAttributeHandle(toolbox, "PARENTDIALOG", paint->dlg);
 
-  IupSetAttribute(toolbox, "TOOLCOLOR", "0 0 0");
-  IupSetAttribute(toolbox, "TOOLWIDTH", "1");
-  IupSetAttribute(toolbox, "TOOLSTYLE", "1");
-  IupSetAttribute(toolbox, "TOOLFILLTOL", "50");
+  options.color = CD_BLACK;
+  options.line_width = 1;
+  options.line_style = 0;
+  options.fill_tol = 50;
   IupSetStrAttribute(toolbox, "TOOLFONT", IupGetAttribute(paint->dlg, "FONT"));
-
-  paint->toolbox = toolbox;
 
   /* Initialize variables from the configuration file */
 
@@ -2625,7 +2681,7 @@ void SimplePaint::CreateMainDialog()
 }
 
 SimplePaint::SimplePaint()
-  :cd_canvas(NULL)
+  :cd_canvas(NULL), toolbox(this)
 {
   interact.overlay = false;
 
@@ -2641,7 +2697,7 @@ SimplePaint::SimplePaint()
   IupConfigDialogShow(config, dlg, "MainWindow");
 
   /* create and show the toolbox */
-  new SimplePaintToolbox(this);
+  toolbox.CreateDialog();
 }
 
 int main(int argc, char **argv)
