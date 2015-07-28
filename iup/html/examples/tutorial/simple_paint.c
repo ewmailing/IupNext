@@ -426,7 +426,7 @@ int write_file(const char* filename, const imImage* image)
 }
 
 /* extracted from the SCROLLBAR attribute documentation */
-void scrollbar_update(Ihandle* ih, int view_width, int view_height)
+void scroll_update(Ihandle* ih, int view_width, int view_height)
 {
   /* view_width and view_height is the virtual space size */
   /* here we assume XMIN=0, XMAX=1, YMIN=0, YMAX=1 */
@@ -459,7 +459,7 @@ void scrollbar_update(Ihandle* ih, int view_width, int view_height)
   IupSetFloat(ih, "DY", (float)canvas_height / (float)view_height);
 }
 
-void scroll_calc_center(Ihandle* canvas, float *x, float *y)
+void ih(Ihandle* canvas, float *x, float *y)
 {
   *x = IupGetFloat(canvas, "POSX") + IupGetFloat(canvas, "DX") / 2.0f;
   *y = IupGetFloat(canvas, "POSY") + IupGetFloat(canvas, "DY") / 2.0f;
@@ -530,7 +530,7 @@ void zoom_update(Ihandle* ih, double zoom_index)
 
     scroll_calc_center(canvas, &old_center_x, &old_center_y);
 
-    scrollbar_update(canvas, view_width, view_height);
+    scroll_update(canvas, view_width, view_height);
 
     scroll_center(canvas, old_center_x, old_center_y);
   }
@@ -1210,7 +1210,7 @@ int canvas_resize_cb(Ihandle* canvas)
 
     scroll_calc_center(canvas, &old_center_x, &old_center_y);
 
-    scrollbar_update(canvas, view_width, view_height);
+    scroll_update(canvas, view_width, view_height);
 
     scroll_center(canvas, old_center_x, old_center_y);
   }
@@ -2480,7 +2480,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(canvas, "NAME", "CANVAS");
   IupSetAttribute(canvas, "SCROLLBAR", "Yes");
   IupSetAttribute(canvas, "DIRTY", "NO");  /* custom attribute */
-  IupSetAttribute(canvas, "ZOOMFACTOR", "1");  /* custom attribute */
   IupSetCallback(canvas, "ACTION", (Icallback)canvas_action_cb);
   IupSetCallback(canvas, "DROPFILES_CB", (Icallback)dropfiles_cb);
   IupSetCallback(canvas, "MAP_CB", (Icallback)canvas_map_cb);

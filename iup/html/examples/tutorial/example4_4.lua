@@ -58,7 +58,7 @@ function write_file(filename, image)
 end
 
 -- extracted from the SCROLLBAR attribute documentation 
-function scrollbar_update(ih, view_width, view_height)
+function scroll_update(ih, view_width, view_height)
   -- view_width and view_height is the virtual space size 
   -- here we assume XMIN=0, XMAX=1, YMIN=0, YMAX=1 
   local scrollbar_size = tonumber(iup.GetGlobal("SCROLLBARSIZE"))
@@ -95,19 +95,19 @@ function scrollbar_update(ih, view_width, view_height)
   ih.dy = canvas_height / view_height
 end
 
-function scroll_calc_center(canvas)
-  local x = tonumber(canvas.posx) + tonumber(canvas.dx) / 2
-  local y = tonumber(canvas.posy) + tonumber(canvas.dy) / 2
+function scroll_calc_center(ih)
+  local x = tonumber(ih.posx) + tonumber(ih.dx) / 2
+  local y = tonumber(ih.posy) + tonumber(ih.dy) / 2
   return x, y
 end
 
-function scroll_center(canvas, old_center_x, old_center_y)
+function scroll_center(ih, old_center_x, old_center_y)
   -- always update the scroll position
   -- keeping it proportional to the old position
-  -- relative to the center of the canvas. 
+  -- relative to the center of the ih. 
 
-  local dx = tonumber(canvas.dx)
-  local dy = tonumber(canvas.dy)
+  local dx = tonumber(ih.dx)
+  local dy = tonumber(ih.dy)
 
   local posx = old_center_x - dx / 2
   local posy = old_center_y - dy / 2
@@ -118,8 +118,8 @@ function scroll_center(canvas, old_center_x, old_center_y)
   if (posy < 0) then posy = 0 end
   if (posy > 1 - dy) then posy = 1 - dy end
 
-  canvas.posx = posx
-  canvas.posy = posy
+  ih.posx = posx
+  ih.posy = posy
 end
 
 function zoom_update(ih, zoom_index)
@@ -137,7 +137,7 @@ function zoom_update(ih, zoom_index)
 
     local old_center_x, old_center_y = scroll_calc_center(canvas)
 
-    scrollbar_update(canvas, view_width, view_height)
+    scroll_update(canvas, view_width, view_height)
 
     scroll_center(canvas, old_center_x, old_center_y)
   end
@@ -340,7 +340,6 @@ canvas = iup.canvas{
   scrollbar = "Yes",
   config = config,  -- custom attribute
   dirty = nil, -- custom attribute
-  zoomfactor = 1,  -- custom attribute
   dx = 0,
   dy = 0,
 }
@@ -529,7 +528,7 @@ function canvas:resize_cb()
 
     local old_center_x, old_center_y = scroll_calc_center(canvas)
 
-    scrollbar_update(canvas, view_width, view_height)
+    scroll_update(canvas, view_width, view_height)
 
     scroll_center(canvas, old_center_x, old_center_y)
   end
