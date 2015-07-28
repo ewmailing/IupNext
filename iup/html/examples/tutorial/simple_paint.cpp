@@ -732,11 +732,15 @@ private:
 
 public:
   SimplePaintToolbox(SimplePaint* _paint)
-    :paint(_paint)
+    :paint(_paint), toolbox(NULL), tool_index(TOOL_POINTER)
   {
+    options.color = CD_BLACK;
+    options.line_width = 1;
+    options.line_style = 0;
+    options.fill_tol = 50;
   }
 
-  Tool ToolIndex();
+  Tool ToolIndex() { return tool_index; }
 
   long Color() { return options.color; }
   int LineWidth() { return options.line_width; }
@@ -2119,6 +2123,9 @@ int SimplePaintToolbox::CloseCallback(Ihandle*)
 
 void SimplePaintToolbox::MoveDialog(int dx, int dy)
 {
+  if (!toolbox)
+    return;
+
   if (IupGetInt(toolbox, "VISIBLE"))
   {
     int tb_x = IupGetInt(toolbox, "X");
@@ -2578,10 +2585,6 @@ void SimplePaintToolbox::CreateDialog()
   IUP_CLASS_SETCALLBACK(toolbox, "CLOSE_CB", CloseCallback);
   IupSetAttributeHandle(toolbox, "PARENTDIALOG", paint->dlg);
 
-  options.color = CD_BLACK;
-  options.line_width = 1;
-  options.line_style = 0;
-  options.fill_tol = 50;
   IupSetStrAttribute(toolbox, "TOOLFONT", IupGetAttribute(paint->dlg, "FONT"));
 
   /* Initialize variables from the configuration file */
