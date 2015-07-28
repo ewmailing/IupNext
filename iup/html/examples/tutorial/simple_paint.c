@@ -459,7 +459,7 @@ void scroll_update(Ihandle* ih, int view_width, int view_height)
   IupSetFloat(ih, "DY", (float)canvas_height / (float)view_height);
 }
 
-void ih(Ihandle* canvas, float *x, float *y)
+void scroll_calc_center(Ihandle* canvas, float *x, float *y)
 {
   *x = IupGetFloat(canvas, "POSX") + IupGetFloat(canvas, "DX") / 2.0f;
   *y = IupGetFloat(canvas, "POSY") + IupGetFloat(canvas, "DY") / 2.0f;
