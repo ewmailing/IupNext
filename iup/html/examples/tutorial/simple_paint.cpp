@@ -407,27 +407,6 @@ void show_file_error(int error)
   }
 }
 
-imImage* read_file(const char* filename)
-{
-  int error;
-  imImage* image = imFileImageLoadBitmap(filename, 0, &error);
-  if (error) 
-    show_file_error(error);
-  return image;
-}
-
-int write_file(const char* filename, const imImage* image)
-{
-  const char* format = imImageGetAttribString(image, "FileFormat");
-  int error = imFileImageSave(filename, format, image);
-  if (error)
-  {
-    show_file_error(error);
-    return 0;
-  }
-  return 1;
-}
-
 /* extracted from the SCROLLBAR attribute documentation */
 void scroll_update(Ihandle* ih, int view_width, int view_height)
 {
@@ -652,23 +631,6 @@ void image_fill_white(imImage* image)
   }
 }
 
-void set_file_format(imImage* image, const char* filename)
-{
-  const char* ext = str_fileext(filename);
-  const char* format = "JPEG";
-  if (str_compare(ext, "jpg", 0) || str_compare(ext, "jpeg", 0))
-    format = "JPEG";
-  else if (str_compare(ext, "bmp", 0))
-    format = "BMP";
-  else if (str_compare(ext, "png", 0))
-    format = "PNG";
-  else if (str_compare(ext, "tga", 0))
-    format = "TGA";
-  else if (str_compare(ext, "tif", 0) || str_compare(ext, "tiff", 0))
-    format = "TIFF";
-  imImageSetAttribString(image, "FileFormat", format);
-}
-
 void view_fit_rect(int canvas_width, int canvas_height, int image_width, int image_height, int *view_width, int *view_height)
 {
   *view_width = canvas_width;
@@ -699,13 +661,30 @@ void view_zoom_offset(int view_x, int view_y, int image_width, int image_height,
 /*********************************** Classes **************************************/
 
 
+class SimplePaintFile
+{
+public:
+  imImage* image;
+  bool dirty;
+
+  imImage* Read(const char* filename);
+  int Write(const char* filename);
+  void SetFormat(const char* filename);
+};
+
 class SimplePaint
 {
   Ihandle *dlg, *config, *canvas, *toolbox;
 
   cdCanvas* cd_canvas;
-  imImage* image;
-  bool dirty;
+  SimplePaintFile file;
+
+  struct {
+    bool overlay;
+    int start_x, start_y;
+    int end_x, end_y;
+    int start_cursor_x, start_cursor_y;
+  } interact;
 
   friend class SimplePaintToolbox;
 
@@ -722,6 +701,15 @@ protected:
   Ihandle* CreateStatusbar();
   Ihandle* CreateToolbar();
   Ihandle* CreateMainMenu();
+
+  const char* GetFilename()
+  {
+    return IupGetAttribute(canvas, "FILENAME");  /* custom attribute */
+  }
+  void SetFilename(const char* filename)
+  {
+    IupSetStrAttribute(canvas, "FILENAME", filename);  /* custom attribute */
+  }
 
   void DrawToolOverlay(cdCanvas* cnv, int start_x, int start_y, int end_x, int end_y);
   void DrawPencil(int start_x, int start_y, int end_x, int end_y);
@@ -810,16 +798,54 @@ protected:
 /*********************************** Utilities Methods **************************************/
 
 
+imImage* SimplePaintFile::Read(const char* filename)
+{
+  int error;
+  imImage* image = imFileImageLoadBitmap(filename, 0, &error);
+  if (error)
+    show_file_error(error);
+  return image;
+}
+
+int SimplePaintFile::Write(const char* filename)
+{
+  const char* format = imImageGetAttribString(image, "FileFormat");
+  int error = imFileImageSave(filename, format, image);
+  if (error)
+  {
+    show_file_error(error);
+    return 0;
+  }
+  return 1;
+}
+
+void SimplePaintFile::SetFormat(const char* filename)
+{
+  const char* ext = str_fileext(filename);
+  const char* format = "JPEG";
+  if (str_compare(ext, "jpg", 0) || str_compare(ext, "jpeg", 0))
+    format = "JPEG";
+  else if (str_compare(ext, "bmp", 0))
+    format = "BMP";
+  else if (str_compare(ext, "png", 0))
+    format = "PNG";
+  else if (str_compare(ext, "tga", 0))
+    format = "TGA";
+  else if (str_compare(ext, "tif", 0) || str_compare(ext, "tiff", 0))
+    format = "TIFF";
+  imImageSetAttribString(image, "FileFormat", format);
+}
+
 void SimplePaint::ZoomUpdate(double zoom_index)
 {
   Ihandle* zoom_lbl = IupGetDialogChild(dlg, "ZOOMLABEL");
   double zoom_factor = pow(2, zoom_index);
   IupSetStrf(zoom_lbl, "TITLE", "%.0f%%", floor(zoom_factor * 100));
-  if (image)
+  if (file.image)
   {
     float old_center_x, old_center_y;
-    int view_width = (int)(zoom_factor * image->width);
-    int view_height = (int)(zoom_factor * image->height);
+    int view_width = (int)(zoom_factor * file.image->width);
+    int view_height = (int)(zoom_factor * file.image->height);
 
     scroll_calc_center(canvas, &old_center_x, &old_center_y);
 
@@ -832,10 +858,10 @@ void SimplePaint::ZoomUpdate(double zoom_index)
 
 void SimplePaint::UpdateImage(imImage* new_image, bool update_size)
 {
-  imImage* old_image = image;
+  imImage* old_image = file.image;
 
-  dirty = true;
-  image = new_image;
+  file.dirty = true;
+  file.image = new_image;
 
   if (old_image)
     imImageDestroy(old_image);
@@ -845,29 +871,25 @@ void SimplePaint::UpdateImage(imImage* new_image, bool update_size)
     Ihandle* size_lbl = IupGetDialogChild(dlg, "SIZELABEL");
     Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
     double zoom_index = IupGetDouble(zoom_val, "VALUE");
-    IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", image->width, image->height);
+    IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", file.image->width, file.image->height);
     ZoomUpdate(zoom_index);
   }
   else
     IupUpdate(canvas);
 }
 
-void SimplePaint::SetNewImage(imImage* new_image, const char* filename, bool new_dirty)
+void SimplePaint::SetNewImage(imImage* new_image, const char* filename, bool dirty)
 {
-  imImage* old_image = image;
+  imImage* old_image = file.image;
   Ihandle* size_lbl = IupGetDialogChild(dlg, "SIZELABEL");
   Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
 
   if (filename)
-  {
-    IupSetStrAttribute(canvas, "FILENAME", filename);
     IupSetfAttribute(IupGetDialog(canvas), "TITLE", "%s - Simple Paint", str_filetitle(filename));
-  }
   else
-  {
-    IupSetAttribute(canvas, "FILENAME", NULL);
     IupSetAttribute(IupGetDialog(canvas), "TITLE", "Untitled - Simple Paint");
-  }
+
+  SetFilename(filename);
 
   /* we are going to support only RGB images with no alpha */
   imImageRemoveAlpha(new_image);
@@ -885,8 +907,8 @@ void SimplePaint::SetNewImage(imImage* new_image, const char* filename, bool new
   if (!format)
     imImageSetAttribString(new_image, "FileFormat", "JPEG");
 
-  dirty = new_dirty;
-  image = new_image;
+  file.dirty = dirty;
+  file.image = new_image;
 
   IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", new_image->width, new_image->height);
 
@@ -899,7 +921,7 @@ void SimplePaint::SetNewImage(imImage* new_image, const char* filename, bool new
 
 void SimplePaint::CheckNewFile()
 {
-  if (!image)
+  if (!file.image)
   {
     int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
     int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
@@ -913,7 +935,7 @@ void SimplePaint::CheckNewFile()
 
 void SimplePaint::OpenFile(const char* filename)
 {
-  imImage* new_image = read_file(filename);
+  imImage* new_image = file.Read(filename);
   if (new_image)
   {
     SetNewImage(new_image, filename, false);
@@ -924,20 +946,21 @@ void SimplePaint::OpenFile(const char* filename)
 
 void SimplePaint::SaveFile()
 {
-  char* filename = IupGetAttribute(canvas, "FILENAME");
-  if (write_file(filename, image))
-    dirty = false;
+  const char* filename = GetFilename();
+  if (file.Write(filename))
+    file.dirty = false;
 }
 
 void SimplePaint::SaveAsFile(const char* filename)
 {
-  set_file_format(image, filename);
+  file.SetFormat(filename);
 
-  if (write_file(filename, image))
+  if (file.Write(filename))
   {
     IupSetfAttribute(IupGetDialog(canvas), "TITLE", "%s - Simple Paint", str_filetitle(filename));
-    IupSetStrAttribute(canvas, "FILENAME", filename);
-    dirty = false;
+
+    SetFilename(filename);
+    file.dirty = false;
 
     IupConfigRecentUpdate(config, filename);
   }
@@ -945,7 +968,7 @@ void SimplePaint::SaveAsFile(const char* filename)
 
 bool SimplePaint::SaveCheck()
 {
-  if (dirty)
+  if (file.dirty)
   {
     switch (IupAlarm("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
     {
@@ -989,7 +1012,7 @@ void SimplePaint::SelectFile(bool is_open)
   else
   {
     IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
-    IupSetStrAttribute(filedlg, "FILE", IupGetAttribute(canvas, "FILENAME"));
+    IupSetStrAttribute(filedlg, "FILE", GetFilename());
   }
   IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
@@ -1024,8 +1047,8 @@ double SimplePaint::ViewZoomRect(int *_x, int *_y, int *_view_width, int *_view_
 
   IupGetIntInt(canvas, "DRAWSIZE", &canvas_width, &canvas_height);
 
-  view_width = (int)(zoom_factor * image->width);
-  view_height = (int)(zoom_factor * image->height);
+  view_width = (int)(zoom_factor * file.image->width);
+  view_height = (int)(zoom_factor * file.image->height);
 
   if (canvas_width < view_width)
     x = (int)floor(-posx*view_width);
@@ -1088,14 +1111,14 @@ void tool_get_text(Ihandle* toolbox)
 void SimplePaint::DrawPencil(int start_x, int start_y, int end_x, int end_y)
 {
   double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-  unsigned char** data = (unsigned char**)image->data;
+  unsigned char** data = (unsigned char**)file.image->data;
   unsigned char r, g, b;
 
   int line_width = IupGetInt(toolbox, "TOOLWIDTH");
   IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
 
   /* do not use line style here */
-  cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
+  cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", file.image->width, file.image->height, data[0], data[1], data[2], res);
   cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
   cdCanvasLineWidth(cd_canvas, line_width);
   cdCanvasLine(cd_canvas, start_x, start_y, end_x, end_y);
@@ -1137,7 +1160,7 @@ void SimplePaint::DrawToolOverlay(cdCanvas* cnv, int start_x, int start_y, int e
 /********************************** Callbacks Methods *****************************************/
 
 
-int SimplePaint::CanvasActionCallback(Ihandle* canvas)
+int SimplePaint::CanvasActionCallback(Ihandle*)
 {
   unsigned int ri, gi, bi;
   const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "208 208 208");
@@ -1153,7 +1176,7 @@ int SimplePaint::CanvasActionCallback(Ihandle* canvas)
   cdCanvasClear(cd_canvas);
 
   /* draw the image at the center of the canvas */
-  if (image)
+  if (file.image)
   {
     int x, y, view_width, view_height;
     ViewZoomRect(&x, &y, &view_width, &view_height);
@@ -1168,7 +1191,7 @@ int SimplePaint::CanvasActionCallback(Ihandle* canvas)
     /* we force NEAREST so we can see the pixel boundary in zoom in */
     /* an alternative would be to set BILINEAR when zoom out */
     cdCanvasSetAttribute(cd_canvas, "IMGINTERP", "NEAREST");  /* affects only drivers that have this attribute */
-    imcdCanvasPutImage(cd_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
+    imcdCanvasPutImage(cd_canvas, file.image, x, y, view_width, view_height, 0, 0, 0, 0);
 
     if (IupConfigGetVariableInt(config, "MainWindow", "ZoomGrid"))
     {
@@ -1181,12 +1204,12 @@ int SimplePaint::CanvasActionCallback(Ihandle* canvas)
 
         cdCanvasForeground(cd_canvas, CD_GRAY);
 
-        for (ix = 0; ix < image->width; ix++)
+        for (ix = 0; ix < file.image->width; ix++)
         {
           int gx = (int)(ix * zoom_factor);
           cdCanvasLine(cd_canvas, gx + x, y, gx + x, y + view_height);
         }
-        for (iy = 0; iy < image->height; iy++)
+        for (iy = 0; iy < file.image->height; iy++)
         {
           int gy = (int)(iy * zoom_factor);
           cdCanvasLine(cd_canvas, x, gy + y, x + view_width, gy + y);
@@ -1194,27 +1217,19 @@ int SimplePaint::CanvasActionCallback(Ihandle* canvas)
       }
     }
 
-    if (IupGetAttribute(canvas, "OVERLAY"))
+    if (interact.overlay)
     {
-      int start_x = IupGetInt(canvas, "START_X");
-      int start_y = IupGetInt(canvas, "START_Y");
-      int end_x = IupGetInt(canvas, "END_X");
-      int end_y = IupGetInt(canvas, "END_Y");
-
-      double scale_x = (double)view_width / (double)image->width;
-      double scale_y = (double)view_height / (double)image->height;
+      double scale_x = (double)view_width / (double)file.image->width;
+      double scale_y = (double)view_height / (double)file.image->height;
 
       /* offset and scale drawing in screen to match the image */
       if (scale_x > 1 || scale_y > 1)
-      {
-        /* also draw at the center of the pixel when zoom in */
-        cdCanvasTransformTranslate(cd_canvas, x + scale_x / 2, y + scale_y / 2);
-      }
+        cdCanvasTransformTranslate(cd_canvas, x + scale_x / 2, y + scale_y / 2);  /* also draw at the center of the pixel when zoom in */
       else
         cdCanvasTransformTranslate(cd_canvas, x, y);
       cdCanvasTransformScale(cd_canvas, scale_x, scale_y);
 
-      DrawToolOverlay(cd_canvas, start_x, start_y, end_x, end_y);
+      DrawToolOverlay(cd_canvas, interact.start_x, interact.start_y, interact.end_x, interact.end_y);
 
       cdCanvasTransform(cd_canvas, NULL);
     }
@@ -1288,15 +1303,15 @@ int SimplePaint::ItemActualsizeActionCallback(Ihandle*)
 
 int SimplePaint::CanvasResizeCallback(Ihandle* canvas)
 {
-  if (image)
+  if (file.image)
   {
     Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
     double zoom_index = IupGetDouble(zoom_val, "VALUE");
     double zoom_factor = pow(2, zoom_index);
     float old_center_x, old_center_y;
 
-    int view_width = (int)(zoom_factor * image->width);
-    int view_height = (int)(zoom_factor * image->height);
+    int view_width = (int)(zoom_factor * file.image->width);
+    int view_height = (int)(zoom_factor * file.image->height);
 
     scroll_calc_center(canvas, &old_center_x, &old_center_y);
 
@@ -1339,7 +1354,7 @@ int SimplePaint::CanvasWheelCallback(Ihandle* canvas, float delta, int, int, cha
 
 int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, int x, int y)
 {
-  if (image)
+  if (file.image)
   {
     int cursor_x = x, cursor_y = y;
     int view_x, view_y, view_width, view_height;
@@ -1352,16 +1367,16 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
     /* inside image area */
     if (x > view_x && y > view_y && x < view_x + view_width && y < view_y + view_height)
     {
-      view_zoom_offset(view_x, view_y, image->width, image->height, zoom_factor, &x, &y);
+      view_zoom_offset(view_x, view_y, file.image->width, file.image->height, zoom_factor, &x, &y);
 
       if (button == IUP_BUTTON1)
       {
         if (pressed)
         {
-          IupSetInt(canvas, "START_X", x);
-          IupSetInt(canvas, "START_Y", y);
-          IupSetInt(canvas, "START_CURSOR_X", cursor_x);
-          IupSetInt(canvas, "START_CURSOR_Y", cursor_y);
+          interact.start_x = x;
+          interact.start_y = y;
+          interact.start_cursor_x = cursor_x;
+          interact.start_cursor_y = cursor_y;
         }
         else
         {
@@ -1370,11 +1385,11 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
           if (tool_index == 1)  /* Color Picker */
           {
             Ihandle* color = IupGetDialogChild(toolbox, "COLOR");
-            unsigned char** data = (unsigned char**)image->data;
+            unsigned char** data = (unsigned char**)file.image->data;
             unsigned char r, g, b;
             int offset;
 
-            offset = y * image->width + x;
+            offset = y * file.image->width + x;
             r = data[0][offset];
             g = data[1][offset];
             b = data[2][offset];
@@ -1384,35 +1399,30 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
           }
           else if (tool_index == 2)  /* Pencil */
           {
-            int start_x = IupGetInt(canvas, "START_X");
-            int start_y = IupGetInt(canvas, "START_Y");
+            DrawPencil(interact.start_x, interact.start_y, x, y);
 
-            DrawPencil(start_x, start_y, x, y);
-
-            dirty = true;
+            file.dirty = true;
 
             IupUpdate(canvas);
 
-            IupSetInt(canvas, "START_X", x);
-            IupSetInt(canvas, "START_Y", y);
+            interact.start_x = x;
+            interact.start_y = y;
           }
           else if (tool_index >= 3 && tool_index <= 8)  /* Shapes */
           {
-            if (IupGetAttribute(canvas, "OVERLAY"))
+            if (interact.overlay)
             {
-              int start_x = IupGetInt(canvas, "START_X");
-              int start_y = IupGetInt(canvas, "START_Y");
               double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-              unsigned char** data = (unsigned char**)image->data;
+              unsigned char** data = (unsigned char**)file.image->data;
   
-              cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
+              cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", file.image->width, file.image->height, data[0], data[1], data[2], res);
 
-              DrawToolOverlay(cd_canvas, start_x, start_y, x, y);
+              DrawToolOverlay(cd_canvas, interact.start_x, interact.start_y, x, y);
 
               cdKillCanvas(cd_canvas);
 
-              IupSetAttribute(canvas, "OVERLAY", NULL);
-              dirty = true;
+              interact.overlay = false;
+              file.dirty = true;
 
               IupUpdate(canvas);
             }
@@ -1423,8 +1433,8 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
             unsigned char r, g, b;
             IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
 
-            image_flood_fill(image, x, y, cdEncodeColor(r, g, b), tol_percent);
-            dirty = true;
+            image_flood_fill(file.image, x, y, cdEncodeColor(r, g, b), tol_percent);
+            file.dirty = true;
 
             IupUpdate(canvas);
           }
@@ -1447,7 +1457,7 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
 
 int SimplePaint::CanvasMotionCallback(Ihandle* canvas, int x, int y, char *status)
 {
-  if (image)
+  if (file.image)
   {
     int cursor_x = x, cursor_y = y;
     int view_x, view_y, view_width, view_height;
@@ -1461,13 +1471,13 @@ int SimplePaint::CanvasMotionCallback(Ihandle* canvas, int x, int y, char *statu
     if (x > view_x && y > view_y && x < view_x + view_width && y < view_y + view_height)
     {
       Ihandle* status_lbl = IupGetDialogChild(dlg, "STATUSLABEL");
-      unsigned char** data = (unsigned char**)image->data;
+      unsigned char** data = (unsigned char**)file.image->data;
       unsigned char r, g, b;
       int offset;
 
-      view_zoom_offset(view_x, view_y, image->width, image->height, zoom_factor, &x, &y);
+      view_zoom_offset(view_x, view_y, file.image->width, file.image->height, zoom_factor, &x, &y);
 
-      offset = y * image->width + x; 
+      offset = y * file.image->width + x; 
       r = data[0][offset];
       g = data[1][offset];
       b = data[2][offset];
@@ -1480,35 +1490,29 @@ int SimplePaint::CanvasMotionCallback(Ihandle* canvas, int x, int y, char *statu
 
         if (tool_index == 0)  /* Pointer */
         {
-          int start_cursor_x = IupGetInt(canvas, "START_CURSOR_X");
-          int start_cursor_y = IupGetInt(canvas, "START_CURSOR_Y");
-
           int canvas_width = IupGetInt(canvas, "DRAWSIZE");
 
-          scroll_move(canvas, canvas_width, canvas_height, cursor_x - start_cursor_x, cursor_y - start_cursor_y, view_width, view_height);
+          scroll_move(canvas, canvas_width, canvas_height, cursor_x - interact.start_cursor_x, cursor_y - interact.start_cursor_y, view_width, view_height);
 
-          IupSetInt(canvas, "START_CURSOR_X", cursor_x);
-          IupSetInt(canvas, "START_CURSOR_Y", cursor_y);
+          interact.start_cursor_x = cursor_x;
+          interact.start_cursor_y = cursor_y;
         }
         else if (tool_index == 2)  /* Pencil */
         {
-          int start_x = IupGetInt(canvas, "START_X");
-          int start_y = IupGetInt(canvas, "START_Y");
+          DrawPencil(interact.start_x, interact.start_y, x, y);
 
-          DrawPencil(start_x, start_y, x, y);
-
-          dirty = true;
+          file.dirty = true;
 
           IupUpdate(canvas);
 
-          IupSetInt(canvas, "START_X", x);
-          IupSetInt(canvas, "START_Y", y);
+          interact.start_x = x;
+          interact.start_y = y;
         }
         else if (tool_index >= 3 && tool_index <= 8)  /* Shapes */
         {
-          IupSetInt(canvas, "END_X", x);
-          IupSetInt(canvas, "END_Y", y);
-          IupSetAttribute(canvas, "OVERLAY", "Yes");
+          interact.end_x = x;
+          interact.end_y = y;
+          interact.overlay = true;
           IupUpdate(canvas);
         }
       }
@@ -1537,13 +1541,13 @@ int SimplePaint::FileMenuOpenCallback(Ihandle*)
 {
   Ihandle* item_revert = IupGetDialogChild(dlg, "ITEM_REVERT");
   Ihandle* item_save = IupGetDialogChild(dlg, "ITEM_SAVE");
-  char* filename = IupGetAttribute(canvas, "FILENAME");
-  if (dirty)
+  const char* filename = GetFilename();
+  if (file.dirty)
     IupSetAttribute(item_save, "ACTIVE", "YES");
   else
     IupSetAttribute(item_save, "ACTIVE", "NO");
 
-  if (dirty && filename)
+  if (file.dirty && filename)
     IupSetAttribute(item_revert, "ACTIVE", "YES");
   else
     IupSetAttribute(item_revert, "ACTIVE", "NO");
@@ -1614,13 +1618,13 @@ int SimplePaint::ItemSaveasActionCallback(Ihandle*)
 
 int SimplePaint::ItemSaveActionCallback(Ihandle* item_save)
 {
-  char* filename = IupGetAttribute(canvas, "FILENAME");
+  const char* filename = GetFilename();
   if (!filename)
     ItemSaveasActionCallback(item_save);
   else   
   {
     /* test again because in can be called using the hot key */
-    if (dirty)
+    if (file.dirty)
       SaveFile();
   }
   return IUP_DEFAULT;
@@ -1628,7 +1632,7 @@ int SimplePaint::ItemSaveActionCallback(Ihandle* item_save)
 
 int SimplePaint::ItemRevertActionCallback(Ihandle*)
 {
-  char* filename = IupGetAttribute(canvas, "FILENAME");
+  const char* filename = GetFilename();
   OpenFile(filename);
   return IUP_DEFAULT;
 }
@@ -1658,7 +1662,7 @@ int SimplePaint::ItemPrintActionCallback(Ihandle* item_print)
   /* do NOT draw the background, use the paper color */
 
   /* draw the image at the center of the canvas */
-  if (image)
+  if (file.image)
   {
     int x, y, canvas_width, canvas_height, view_width, view_height;
     double canvas_width_mm, canvas_height_mm;
@@ -1672,13 +1676,13 @@ int SimplePaint::ItemPrintActionCallback(Ihandle* item_print)
     margin_height = (int)((margin_height * canvas_height) / canvas_height_mm);
 
     view_fit_rect(canvas_width - 2 * margin_width, canvas_height - 2 * margin_height, 
-                  image->width, image->height, 
+                  file.image->width, file.image->height, 
                   &view_width, &view_height);
 
     x = (canvas_width - view_width) / 2;
     y = (canvas_height - view_height) / 2;
 
-    imcdCanvasPutImage(print_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
+    imcdCanvasPutImage(print_canvas, file.image, x, y, view_width, view_height, 0, 0, 0, 0);
   }
 
   cdKillCanvas(print_canvas);
@@ -1696,8 +1700,8 @@ int SimplePaint::ItemExitActionCallback(Ihandle*)
     IupHide(toolbox);
   }
 
-  if (image)
-    imImageDestroy(image);
+  if (file.image)
+    imImageDestroy(file.image);
 
   IupConfigDialogClosed(config, dlg, "MainWindow");
   IupConfigSave(config);
@@ -1708,7 +1712,7 @@ int SimplePaint::ItemExitActionCallback(Ihandle*)
 int SimplePaint::ItemCopyActionCallback(Ihandle*)
 {
   Ihandle *clipboard = IupClipboard();
-  IupSetAttribute(clipboard, "NATIVEIMAGE", (char*)IupGetImageNativeHandle(image));
+  IupSetAttribute(clipboard, "NATIVEIMAGE", (char*)IupGetImageNativeHandle(file.image));
   IupDestroy(clipboard);
   return IUP_DEFAULT;
 }
@@ -1727,7 +1731,7 @@ int SimplePaint::ItemPasteActionCallback(Ihandle*)
       return IUP_DEFAULT;
     }
 
-    SetNewImage(new_image, NULL, true);  /* set dirty */
+    SetNewImage(new_image, NULL, true);  /* set file.dirty */
   }
   return IUP_DEFAULT;
 }
@@ -1938,8 +1942,8 @@ int SimplePaint::DialogMoveCallback(Ihandle* dlg, int x, int y)
 
 int SimplePaint::ItemResizeActionCallback(Ihandle*)
 {
-  int height = image->height, 
-      width = image->width;
+  int height = file.image->height, 
+      width = file.image->width;
   int quality = IupConfigGetVariableIntDef(config, "Image", "ResizeQuality", 1);  /* medium default */
 
   if (!IupGetParam("Resize", NULL, NULL, 
@@ -1951,7 +1955,7 @@ int SimplePaint::ItemResizeActionCallback(Ihandle*)
 
   IupConfigSetVariableInt(config, "Image", "ResizeQuality", quality);
 
-  imImage* new_image = imImageCreateBased(image, width, height, -1, -1);
+  imImage* new_image = imImageCreateBased(file.image, width, height, -1, -1);
   if (!new_image)
   {
     show_file_error(IM_ERR_MEM);
@@ -1961,7 +1965,7 @@ int SimplePaint::ItemResizeActionCallback(Ihandle*)
   if (quality == 2)
     quality = 3; /* interpolation order can be 0, 1, and 3 */
 
-  imProcessResize(image, new_image, quality);
+  imProcessResize(file.image, new_image, quality);
 
   UpdateImage(new_image, true);   /* update size */
 
@@ -1970,14 +1974,14 @@ int SimplePaint::ItemResizeActionCallback(Ihandle*)
 
 int SimplePaint::ItemMirrorActionCallback(Ihandle*)
 {
-  imImage* new_image = imImageClone(image);
+  imImage* new_image = imImageClone(file.image);
   if (!new_image)
   {
     show_file_error(IM_ERR_MEM);
     return IUP_DEFAULT;
   }
 
-  imProcessMirror(image, new_image);
+  imProcessMirror(file.image, new_image);
 
   UpdateImage(new_image, false);
 
@@ -1986,14 +1990,14 @@ int SimplePaint::ItemMirrorActionCallback(Ihandle*)
 
 int SimplePaint::ItemFlipActionCallback(Ihandle*)
 {
-  imImage* new_image = imImageClone(image);
+  imImage* new_image = imImageClone(file.image);
   if (!new_image)
   {
     show_file_error(IM_ERR_MEM);
     return IUP_DEFAULT;
   }
 
-  imProcessFlip(image, new_image);
+  imProcessFlip(file.image, new_image);
 
   UpdateImage(new_image, false);
 
@@ -2002,14 +2006,14 @@ int SimplePaint::ItemFlipActionCallback(Ihandle*)
 
 int SimplePaint::ItemRotate180ActionCallback(Ihandle*)
 {
-  imImage* new_image = imImageClone(image);
+  imImage* new_image = imImageClone(file.image);
   if (!new_image)
   {
     show_file_error(IM_ERR_MEM);
     return IUP_DEFAULT;
   }
 
-  imProcessRotate180(image, new_image);
+  imProcessRotate180(file.image, new_image);
 
   UpdateImage(new_image, false);
 
@@ -2018,14 +2022,14 @@ int SimplePaint::ItemRotate180ActionCallback(Ihandle*)
 
 int SimplePaint::ItemRotate90cwActionCallback(Ihandle*)
 {
-  imImage* new_image = imImageCreateBased(image, image->height, image->width, -1, -1);
+  imImage* new_image = imImageCreateBased(file.image, file.image->height, file.image->width, -1, -1);
   if (!new_image)
   {
     show_file_error(IM_ERR_MEM);
     return IUP_DEFAULT;
   }
 
-  imProcessRotate90(image, new_image, 1);
+  imProcessRotate90(file.image, new_image, 1);
 
   UpdateImage(new_image, true);   /* update size */
 
@@ -2034,14 +2038,14 @@ int SimplePaint::ItemRotate90cwActionCallback(Ihandle*)
 
 int SimplePaint::ItemRotate90ccwActionCallback(Ihandle*)
 {
-  imImage* new_image = imImageCreateBased(image, image->height, image->width, -1, -1);
+  imImage* new_image = imImageCreateBased(file.image, file.image->height, file.image->width, -1, -1);
   if (!new_image)
   {
     show_file_error(IM_ERR_MEM);
     return IUP_DEFAULT;
   }
 
-  imProcessRotate90(image, new_image, -1);
+  imProcessRotate90(file.image, new_image, -1);
 
   UpdateImage(new_image, true);   /* update size */
 
@@ -2050,14 +2054,14 @@ int SimplePaint::ItemRotate90ccwActionCallback(Ihandle*)
 
 int SimplePaint::ItemNegativeActionCallback(Ihandle*)
 {
-  imImage* new_image = imImageClone(image);
+  imImage* new_image = imImageClone(file.image);
   if (!new_image)
   {
     show_file_error(IM_ERR_MEM);
     return IUP_DEFAULT;
   }
 
-  imProcessNegative(image, new_image);
+  imProcessNegative(file.image, new_image);
 
   UpdateImage(new_image, false);
 
@@ -2073,6 +2077,7 @@ static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data
     float param[2] = { 0, 0 };
     imImage* image = (imImage*)IupGetAttribute(canvas, "ORIGINAL_IMAGE");
     imImage* new_image = (imImage*)IupGetAttribute(canvas, "NEW_IMAGE");
+    SimplePaintFile* file = (SimplePaintFile*)IupGetAttribute(canvas, "IMAGE_FILE");
     Ihandle* brightness_shift_param = (Ihandle*)IupGetAttribute(dialog, "PARAM0");
     Ihandle* contrast_factor_param = (Ihandle*)IupGetAttribute(dialog, "PARAM1");
     param[0] = IupGetFloat(brightness_shift_param, "VALUE");
@@ -2080,17 +2085,18 @@ static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data
 
     imProcessToneGamut(image, new_image, IM_GAMUT_BRIGHTCONT, param);
 
-    //TODO
-    IupSetAttribute(canvas, "IMAGE", (char*)new_image);
+    file->image = new_image;
     IupUpdate(canvas);
   }
   else if (param_index != IUP_GETPARAM_INIT)
   {
     /* restore original configuration */
+    SimplePaintFile* file = (SimplePaintFile*)IupGetAttribute(canvas, "IMAGE_FILE");
     imImage* image = (imImage*)IupGetAttribute(canvas, "ORIGINAL_IMAGE");
-    IupSetAttribute(canvas, "IMAGE", (char*)image);
+    file->image = image;
     IupSetAttribute(canvas, "ORIGINAL_IMAGE", NULL);
     IupSetAttribute(canvas, "NEW_IMAGE", NULL);
+    IupSetAttribute(canvas, "IMAGE_FILE", NULL);
 
     if (param_index == IUP_GETPARAM_BUTTON2)  /* cancel */
       IupUpdate(canvas);
@@ -2101,15 +2107,16 @@ static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data
 
 int SimplePaint::ItemBrightcontActionCallback(Ihandle*)
 {
-  imImage* new_image = imImageClone(image);
+  imImage* new_image = imImageClone(file.image);
   if (!new_image)
   {
     show_file_error(IM_ERR_MEM);
     return IUP_DEFAULT;
   }
 
-  IupSetAttribute(canvas, "ORIGINAL_IMAGE", (char*)image);
+  IupSetAttribute(canvas, "ORIGINAL_IMAGE", (char*)file.image);
   IupSetAttribute(canvas, "NEW_IMAGE", (char*)new_image);
+  IupSetAttribute(canvas, "IMAGE_FILE", (char*)&file);
 
   float param[2] = { 0, 0 };
 
@@ -2122,7 +2129,7 @@ int SimplePaint::ItemBrightcontActionCallback(Ihandle*)
 	  return IUP_DEFAULT;
   }
 
-  imProcessToneGamut(image, new_image, IM_GAMUT_BRIGHTCONT, param);
+  imProcessToneGamut(file.image, new_image, IM_GAMUT_BRIGHTCONT, param);
 
   UpdateImage(new_image, false);
 
@@ -2544,8 +2551,12 @@ void SimplePaint::CreateMainDialog()
 }
 
 SimplePaint::SimplePaint()
-  :dirty(false), image(NULL), cd_canvas(NULL)
+  :cd_canvas(NULL)
 {
+  file.image = NULL;
+  file.dirty = false;
+  interact.overlay = false;
+
   config = IupConfig();
   IupSetAttribute(config, "APP_NAME", "simple_paint");
   IupConfigLoad(config);
