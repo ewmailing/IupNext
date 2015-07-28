@@ -686,15 +686,20 @@ public:
 
   void SetFilename(const char* new_filename)
   {
-    if (filename)
-      delete [] filename;
-
+    if (filename) delete [] filename;
     filename = str_duplicate(new_filename);
   }
 
-  imImage* Read(const char* filename);
-  int Write(const char* filename);
-  void SetFormat(const char* filename);
+  imImage* Read(const char* new_filename);
+  bool Write(const char* new_filename);
+  void SetFormat(const char* new_filename);
+
+  bool New(int width, int height);
+  void New(imImage* new_image);
+  bool Open(const char* new_filename);
+  bool SaveAsFile(const char* new_filename);
+  bool SaveCheck();
+  void SaveFile();
 };
 
 class SimplePaint
@@ -704,7 +709,8 @@ class SimplePaint
   cdCanvas* cd_canvas;
   SimplePaintFile file;
 
-  struct {
+  struct 
+  {
     bool overlay;
     int start_x, start_y;
     int end_x, end_y;
@@ -731,17 +737,14 @@ protected:
   void DrawPencil(int start_x, int start_y, int end_x, int end_y);
 
   void SelectFile(bool is_open);
-  bool SaveCheck();
-  void SaveFile();
-  void SaveAsFile(const char* filename);
 
-  void SetNewImage(imImage* new_image, const char* filename, bool dirty);
+  void UpdateFile(const char* filename);
   void UpdateImage(imImage* new_image, bool update_size);
-
-  void ZoomUpdate(double zoom_index);
-  double ViewZoomRect(int *_x, int *_y, int *_view_width, int *_view_height);
+  void UpdateZoom(double zoom_index);
 
   void ToggleBarVisibility(Ihandle* item, Ihandle* bar);
+
+  double ViewZoomRect(int *_x, int *_y, int *_view_width, int *_view_height);
 
   IUP_CLASS_DECLARECALLBACK_IFnii(SimplePaint, DialogMoveCallback);
   IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, ConfigRecentCallback);
@@ -814,30 +817,30 @@ protected:
 /*********************************** SimplePaintFile Utilities Methods **************************************/
 
 
-imImage* SimplePaintFile::Read(const char* filename)
+imImage* SimplePaintFile::Read(const char* new_filename)
 {
   int error;
-  imImage* image = imFileImageLoadBitmap(filename, 0, &error);
+  imImage* image = imFileImageLoadBitmap(new_filename, 0, &error);
   if (error)
     show_file_error(error);
   return image;
 }
 
-int SimplePaintFile::Write(const char* filename)
+bool SimplePaintFile::Write(const char* new_filename)
 {
   const char* format = imImageGetAttribString(image, "FileFormat");
-  int error = imFileImageSave(filename, format, image);
+  int error = imFileImageSave(new_filename, format, image);
   if (error)
   {
     show_file_error(error);
-    return 0;
+    return false;
   }
-  return 1;
+  return true;
 }
 
-void SimplePaintFile::SetFormat(const char* filename)
+void SimplePaintFile::SetFormat(const char* new_filename)
 {
-  const char* ext = str_fileext(filename);
+  const char* ext = str_fileext(new_filename);
   const char* format = "JPEG";
   if (str_compare(ext, "jpg", 0) || str_compare(ext, "jpeg", 0))
     format = "JPEG";
@@ -852,11 +855,118 @@ void SimplePaintFile::SetFormat(const char* filename)
   imImageSetAttribString(image, "FileFormat", format);
 }
 
+bool SimplePaintFile::SaveCheck()
+{
+  if (dirty)
+  {
+    switch (IupAlarm("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
+    {
+    case 1:  /* save the changes and continue */
+      SaveFile();
+      break;
+    case 2:  /* ignore the changes and continue */
+      break;
+    case 3:  /* cancel */
+      return false;
+    }
+  }
+  return true;
+}
+
+void SimplePaintFile::SaveFile()
+{
+  if (Write(filename))
+    dirty = false;
+}
+
+bool SimplePaintFile::SaveAsFile(const char* new_filename)
+{
+  SetFormat(new_filename);
+
+  if (Write(new_filename))
+  {
+    SetFilename(new_filename);
+    dirty = false;
+
+    return true;
+  }
+
+  return false;
+}
+
+bool SimplePaintFile::New(int width, int height)
+{
+  imImage* new_image = imImageCreate(width, height, IM_RGB, IM_BYTE);
+  if (!new_image)
+  {
+    show_file_error(IM_ERR_MEM);
+    return false;
+  }
+
+  /* new image default contents */
+  image_fill_white(new_image);
+
+  /* default file format */
+  imImageSetAttribString(new_image, "FileFormat", "JPEG");
+
+  /* remove previous one if any */
+  if (image)
+    imImageDestroy(image);
+
+  /* set properties */
+  SetFilename(NULL);
+  dirty = false;
+  image = new_image;
+
+  return true;
+}
+
+void SimplePaintFile::New(imImage* new_image)
+{
+  /* we are going to support only RGB images with no alpha */
+  imImageRemoveAlpha(new_image);
+  if (new_image->color_space != IM_RGB)
+  {
+    imImage* rgb_image = imImageCreateBased(new_image, -1, -1, IM_RGB, -1);
+    imConvertColorSpace(new_image, rgb_image);
+    imImageDestroy(new_image);
+
+    new_image = rgb_image;
+  }
+
+  /* default file format */
+  const char* format = imImageGetAttribString(new_image, "FileFormat");
+  if (!format)
+    imImageSetAttribString(new_image, "FileFormat", "JPEG");
+
+  /* set properties (leave filename as it is) */
+  dirty = true;
+  image = new_image;
+}
+
+bool SimplePaintFile::Open(const char* new_filename)
+{
+  imImage* new_image = Read(new_filename);
+  if (new_image)
+  {
+    New(new_image);
+
+    /* set properties */
+    dirty = false;
+    SetFilename(filename);
+
+    return true;
+  }
+
+  return false;
+}
+
+
 
 /*********************************** SimplePaint Utilities Methods **************************************/
 
 
-void SimplePaint::ZoomUpdate(double zoom_index)
+void SimplePaint::UpdateZoom(double zoom_index)
 {
   Ihandle* zoom_lbl = IupGetDialogChild(dlg, "ZOOMLABEL");
   double zoom_factor = pow(2, zoom_index);
@@ -892,15 +1002,14 @@ void SimplePaint::UpdateImage(imImage* new_image, bool update_size)
     Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
     double zoom_index = IupGetDouble(zoom_val, "VALUE");
     IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", file.image->width, file.image->height);
-    ZoomUpdate(zoom_index);
+    UpdateZoom(zoom_index);
   }
   else
     IupUpdate(canvas);
 }
 
-void SimplePaint::SetNewImage(imImage* new_image, const char* filename, bool dirty)
+void SimplePaint::UpdateFile(const char* filename)
 {
-  imImage* old_image = file.image;
   Ihandle* size_lbl = IupGetDialogChild(dlg, "SIZELABEL");
   Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
 
@@ -909,34 +1018,10 @@ void SimplePaint::SetNewImage(imImage* new_image, const char* filename, bool dir
   else
     IupSetAttribute(IupGetDialog(canvas), "TITLE", "Untitled - Simple Paint");
 
-  file.SetFilename(filename);
-
-  /* we are going to support only RGB images with no alpha */
-  imImageRemoveAlpha(new_image);
-  if (new_image->color_space != IM_RGB)
-  {
-    imImage* rgb_image = imImageCreateBased(new_image, -1, -1, IM_RGB, -1);
-    imConvertColorSpace(new_image, rgb_image);
-    imImageDestroy(new_image);
-
-    new_image = rgb_image;
-  }
-
-  /* default file format */
-  const char* format = imImageGetAttribString(new_image, "FileFormat");
-  if (!format)
-    imImageSetAttribString(new_image, "FileFormat", "JPEG");
-
-  file.dirty = dirty;
-  file.image = new_image;
-
-  IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", new_image->width, new_image->height);
-
-  if (old_image)
-    imImageDestroy(old_image);
+  IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", file.image->width, file.image->height);
 
   IupSetDouble(zoom_val, "VALUE", 0);
-  ZoomUpdate(0);
+  UpdateZoom(0);
 }
 
 void SimplePaint::CheckNewFile()
@@ -946,62 +1031,19 @@ void SimplePaint::CheckNewFile()
     int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
     int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
 
-    imImage* new_image = imImageCreate(width, height, IM_RGB, IM_BYTE);
-    image_fill_white(new_image);
-
-    SetNewImage(new_image, NULL, false);
+    if (file.New(width, height))
+      UpdateFile(NULL);
   }
 }
 
 void SimplePaint::OpenFile(const char* filename)
 {
-  imImage* new_image = file.Read(filename);
-  if (new_image)
+  if (file.Open(filename))
   {
-    SetNewImage(new_image, filename, false);
+    UpdateFile(filename);
 
     IupConfigRecentUpdate(config, filename);
   }
-}
-
-void SimplePaint::SaveFile()
-{
-  const char* filename = file.filename;
-  if (file.Write(filename))
-    file.dirty = false;
-}
-
-void SimplePaint::SaveAsFile(const char* filename)
-{
-  file.SetFormat(filename);
-
-  if (file.Write(filename))
-  {
-    IupSetfAttribute(IupGetDialog(canvas), "TITLE", "%s - Simple Paint", str_filetitle(filename));
-
-    file.SetFilename(filename);
-    file.dirty = false;
-
-    IupConfigRecentUpdate(config, filename);
-  }
-}
-
-bool SimplePaint::SaveCheck()
-{
-  if (file.dirty)
-  {
-    switch (IupAlarm("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
-    {
-    case 1:  /* save the changes and continue */
-      SaveFile();
-      break;
-    case 2:  /* ignore the changes and continue */
-      break;
-    case 3:  /* cancel */
-      return false;  
-    }
-  }
-  return true;
 }
 
 void SimplePaint::ToggleBarVisibility(Ihandle* item, Ihandle* bar)
@@ -1045,7 +1087,13 @@ void SimplePaint::SelectFile(bool is_open)
     if (is_open)
       OpenFile(filename);
     else
-      SaveAsFile(filename);
+    {
+      if (file.SaveAsFile(filename))
+      {
+        IupSetfAttribute(IupGetDialog(canvas), "TITLE", "%s - Simple Paint", str_filetitle(filename));
+        IupConfigRecentUpdate(config, filename);
+      }
+    }
 
     dir = IupGetAttribute(filedlg, "DIRECTORY");
     IupConfigSetVariableStr(config, "MainWindow", "LastDirectory", dir);
@@ -1511,13 +1559,13 @@ int SimplePaint::CanvasMotionCallback(Ihandle* canvas, int x, int y, char *statu
 int SimplePaint::ZoomValueChangedCallback(Ihandle* val)
 {
   double zoom_index = IupGetDouble(val, "VALUE");
-  ZoomUpdate(zoom_index);
+  UpdateZoom(zoom_index);
   return IUP_DEFAULT;
 }
 
 int SimplePaint::DropfilesCallback(Ihandle*, char* filename)
 {
-  if (SaveCheck())
+  if (file.SaveCheck())
     OpenFile(filename);
 
   return IUP_DEFAULT;
@@ -1525,15 +1573,14 @@ int SimplePaint::DropfilesCallback(Ihandle*, char* filename)
 
 int SimplePaint::FileMenuOpenCallback(Ihandle*)
 {
-  Ihandle* item_revert = IupGetDialogChild(dlg, "ITEM_REVERT");
   Ihandle* item_save = IupGetDialogChild(dlg, "ITEM_SAVE");
-  const char* filename = file.filename;
   if (file.dirty)
     IupSetAttribute(item_save, "ACTIVE", "YES");
   else
     IupSetAttribute(item_save, "ACTIVE", "NO");
 
-  if (file.dirty && filename)
+  Ihandle* item_revert = IupGetDialogChild(dlg, "ITEM_REVERT");
+  if (file.dirty && file.filename)
     IupSetAttribute(item_revert, "ACTIVE", "YES");
   else
     IupSetAttribute(item_revert, "ACTIVE", "NO");
@@ -1557,7 +1604,7 @@ int SimplePaint::EditMenuOpenCallback(Ihandle*)
 
 int SimplePaint::ConfigRecentCallback(Ihandle* ih)
 {
-  if (SaveCheck())
+  if (file.SaveCheck())
   {
     char* filename = IupGetAttribute(ih, "TITLE");
     OpenFile(filename);
@@ -1596,20 +1643,19 @@ int SimplePaint::DialogMoveCallback(Ihandle* dlg, int x, int y)
 
 int SimplePaint::ItemNewActionCallback(Ihandle*)
 {
-  if (SaveCheck())
+  if (file.SaveCheck())
   {
     int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
     int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
 
     if (IupGetParam("New Image", NULL, NULL, "Width: %i[1,]\nHeight: %i[1,]\n", &width, &height, NULL))
     {
-      imImage* new_image = imImageCreate(width, height, IM_RGB, IM_BYTE);
-      image_fill_white(new_image);
-
       IupConfigSetVariableInt(config, "NewImage", "Width", width);
       IupConfigSetVariableInt(config, "NewImage", "Height", height);
 
-      SetNewImage(new_image, NULL, false);
+      file.New(width, height);
+
+      UpdateFile(NULL);
     }
   }
 
@@ -1618,7 +1664,7 @@ int SimplePaint::ItemNewActionCallback(Ihandle*)
 
 int SimplePaint::ItemOpenActionCallback(Ihandle*)
 {
-  if (!SaveCheck())
+  if (!file.SaveCheck())
     return IUP_DEFAULT;
 
   SelectFile(true);
@@ -1633,22 +1679,20 @@ int SimplePaint::ItemSaveasActionCallback(Ihandle*)
 
 int SimplePaint::ItemSaveActionCallback(Ihandle* item_save)
 {
-  const char* filename = file.filename;
-  if (!filename)
+  if (!file.filename)
     ItemSaveasActionCallback(item_save);
   else   
   {
     /* test again because in can be called using the hot key */
     if (file.dirty)
-      SaveFile();
+      file.SaveFile();
   }
   return IUP_DEFAULT;
 }
 
 int SimplePaint::ItemRevertActionCallback(Ihandle*)
 {
-  const char* filename = file.filename;
-  OpenFile(filename);
+  OpenFile(file.filename);
   return IUP_DEFAULT;
 }
 
@@ -1706,7 +1750,7 @@ int SimplePaint::ItemPrintActionCallback(Ihandle* item_print)
 
 int SimplePaint::ItemExitActionCallback(Ihandle*)
 {
-  if (!SaveCheck())
+  if (!file.SaveCheck())
     return IUP_IGNORE;  /* to abort the CLOSE_CB callback normal processing */
 
   if (IupGetInt(toolbox, "VISIBLE"))
@@ -1734,7 +1778,7 @@ int SimplePaint::ItemCopyActionCallback(Ihandle*)
 
 int SimplePaint::ItemPasteActionCallback(Ihandle*)
 {
-  if (SaveCheck())
+  if (file.SaveCheck())
   {
     Ihandle *clipboard = IupClipboard();
     imImage* new_image = IupGetNativeHandleImage(IupGetAttribute(clipboard, "NATIVEIMAGE"));
@@ -1746,7 +1790,9 @@ int SimplePaint::ItemPasteActionCallback(Ihandle*)
       return IUP_DEFAULT;
     }
 
-    SetNewImage(new_image, NULL, true);  /* set file.dirty */
+    file.New(new_image);
+
+    UpdateFile(NULL);
   }
   return IUP_DEFAULT;
 }
@@ -1781,7 +1827,7 @@ int SimplePaint::ItemZoomoutActionCallback(Ihandle*)
     zoom_index = -6;
   IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
 
-  ZoomUpdate(zoom_index);
+  UpdateZoom(zoom_index);
   return IUP_DEFAULT;
 }
 
@@ -1794,7 +1840,7 @@ int SimplePaint::ItemZoominActionCallback(Ihandle*)
     zoom_index = 6;
   IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
 
-  ZoomUpdate(zoom_index);
+  UpdateZoom(zoom_index);
   return IUP_DEFAULT;
 }
 
@@ -1802,7 +1848,7 @@ int SimplePaint::ItemActualsizeActionCallback(Ihandle*)
 {
   Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
   IupSetDouble(zoom_val, "VALUE", 0);
-  ZoomUpdate(0);
+  UpdateZoom(0);
   return IUP_DEFAULT;
 }
 
