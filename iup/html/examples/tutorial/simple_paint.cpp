@@ -686,8 +686,11 @@ public:
 
   void SetFilename(const char* new_filename)
   {
-    if (filename) delete [] filename;
-    filename = str_duplicate(new_filename);
+    if (filename != new_filename)
+    {
+      if (filename) delete[] filename;
+      filename = str_duplicate(new_filename);
+    }
   }
 
   imImage* Read(const char* new_filename);
@@ -806,7 +809,7 @@ protected:
 
   void SelectFile(bool is_open);
 
-  void UpdateFile(const char* filename);
+  void UpdateFile();
   void UpdateImage(imImage* new_image, bool update_size);
   void UpdateZoom(double zoom_index);
 
@@ -1002,7 +1005,7 @@ bool SimplePaintFile::Open(const char* new_filename)
 
     /* set properties */
     dirty = false;
-    SetFilename(filename);
+    SetFilename(new_filename);
 
     return true;
   }
@@ -1057,15 +1060,15 @@ void SimplePaint::UpdateImage(imImage* new_image, bool update_size)
     IupUpdate(canvas);
 }
 
-void SimplePaint::UpdateFile(const char* filename)
+void SimplePaint::UpdateFile()
 {
   Ihandle* size_lbl = IupGetDialogChild(dlg, "SIZELABEL");
   Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
 
-  if (filename)
-    IupSetfAttribute(IupGetDialog(canvas), "TITLE", "%s - Simple Paint", str_filetitle(filename));
+  if (file.filename)
+    IupSetfAttribute(dlg, "TITLE", "%s - Simple Paint", str_filetitle(file.filename));
   else
-    IupSetAttribute(IupGetDialog(canvas), "TITLE", "Untitled - Simple Paint");
+    IupSetAttribute(dlg, "TITLE", "Untitled - Simple Paint");
 
   IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", file.image->width, file.image->height);
 
@@ -1081,7 +1084,7 @@ void SimplePaint::CheckNewFile()
     int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
 
     if (file.New(width, height))
-      UpdateFile(NULL);
+      UpdateFile();
   }
 }
 
@@ -1089,7 +1092,7 @@ void SimplePaint::OpenFile(const char* filename)
 {
   if (file.Open(filename))
   {
-    UpdateFile(filename);
+    UpdateFile();
 
     IupConfigRecentUpdate(config, filename);
   }
@@ -1139,7 +1142,7 @@ void SimplePaint::SelectFile(bool is_open)
     {
       if (file.SaveAsFile(filename))
       {
-        IupSetfAttribute(IupGetDialog(canvas), "TITLE", "%s - Simple Paint", str_filetitle(filename));
+        IupSetfAttribute(dlg, "TITLE", "%s - Simple Paint", str_filetitle(filename));
         IupConfigRecentUpdate(config, filename);
       }
     }
@@ -1656,7 +1659,7 @@ int SimplePaint::ItemNewActionCallback(Ihandle*)
 
       file.New(width, height);
 
-      UpdateFile(NULL);
+      UpdateFile();
     }
   }
 
@@ -1713,7 +1716,7 @@ int SimplePaint::ItemPagesetupActionCallback(Ihandle*)
 
 int SimplePaint::ItemPrintActionCallback(Ihandle* item_print)
 {
-  char* title = IupGetAttribute(IupGetDialog(item_print), "TITLE");
+  char* title = IupGetAttribute(dlg, "TITLE");
 
   cdCanvas* print_canvas = cdCreateCanvasf(CD_PRINTER, "%s -d", title);
   if (!print_canvas)
@@ -1768,6 +1771,7 @@ int SimplePaint::ItemExitActionCallback(Ihandle*)
 int SimplePaint::ItemCopyActionCallback(Ihandle*)
 {
   Ihandle *clipboard = IupClipboard();
+  IupSetAttribute(clipboard, "NATIVEIMAGE", NULL); /* clear clipboard first */
   IupSetAttribute(clipboard, "NATIVEIMAGE", (char*)IupGetImageNativeHandle(file.image));
   IupDestroy(clipboard);
   return IUP_DEFAULT;
@@ -1789,7 +1793,7 @@ int SimplePaint::ItemPasteActionCallback(Ihandle*)
 
     file.New(new_image);
 
-    UpdateFile(NULL);
+    UpdateFile();
   }
   return IUP_DEFAULT;
 }
@@ -2252,7 +2256,7 @@ int SimplePaintToolbox::ToolStyleValueChangedCallback(Ihandle* ih)
 int SimplePaintToolbox::ToolFontActionCallback(Ihandle* ih)
 {
   Ihandle* font_dlg = IupFontDlg();
-  IupSetAttributeHandle(font_dlg, "PARENTDIALOG", IupGetDialog(ih));
+  IupSetAttributeHandle(font_dlg, "PARENTDIALOG", toolbox);
   char* font = IupGetAttribute(ih, "TOOLFONT");
   IupSetStrAttribute(font_dlg, "VALUE", font);
 
@@ -2261,7 +2265,7 @@ int SimplePaintToolbox::ToolFontActionCallback(Ihandle* ih)
   if (IupGetInt(font_dlg, "STATUS") == 1)
   {
     font = IupGetAttribute(font_dlg, "VALUE");
-    IupSetStrAttribute(IupGetDialog(ih), "TOOLFONT", font);
+    IupSetStrAttribute(toolbox, "TOOLFONT", font);
   }
   IupDestroy(font_dlg);
   return IUP_DEFAULT;
@@ -2529,7 +2533,7 @@ Ihandle* SimplePaint::CreateToolbar()
 
 void SimplePaintToolbox::CreateDialog()
 {
-  Ihandle *toolbox, *gbox, *vbox;
+  Ihandle *gbox, *vbox;
 
   IupSetHandle("PaintPointer", load_image_Pointer());
   IupSetHandle("PaintColorPicker", load_image_PaintColorPicker());
