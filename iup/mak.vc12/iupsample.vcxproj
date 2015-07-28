@@ -594,6 +594,29 @@ cd.lib
     <None Include="..\html\examples\LED\val.led" />
     <None Include="..\html\examples\LED\vbox.led" />
     <None Include="..\html\examples\LED\zbox.led" />
+    <None Include="..\html\examples\tutorial\example2_1.lua" />
+    <None Include="..\html\examples\tutorial\example2_2.lua" />
+    <None Include="..\html\examples\tutorial\example2_3.lua" />
+    <None Include="..\html\examples\tutorial\example2_4.lua" />
+    <None Include="..\html\examples\tutorial\example2_5.lua" />
+    <None Include="..\html\examples\tutorial\example2_5a.lua" />
+    <None Include="..\html\examples\tutorial\example3_1.lua" />
+    <None Include="..\html\examples\tutorial\example3_10.lua" />
+    <None Include="..\html\examples\tutorial\example3_11.lua" />
+    <None Include="..\html\examples\tutorial\example3_2.lua" />
+    <None Include="..\html\examples\tutorial\example3_3.lua" />
+    <None Include="..\html\examples\tutorial\example3_4.lua" />
+    <None Include="..\html\examples\tutorial\example3_5.lua" />
+    <None Include="..\html\examples\tutorial\example3_6.lua" />
+    <None Include="..\html\examples\tutorial\example3_7.lua" />
+    <None Include="..\html\examples\tutorial\example3_8.lua" />
+    <None Include="..\html\examples\tutorial\example3_9.lua" />
+    <None Include="..\html\examples\tutorial\example4_1.lua" />
+    <None Include="..\html\examples\tutorial\example4_2.lua" />
+    <None Include="..\html\examples\tutorial\example4_3.lua" />
+    <None Include="..\html\examples\tutorial\example4_4.lua" />
+    <None Include="..\html\examples\tutorial\example4_5.lua" />
+    <None Include="..\html\examples\tutorial\simple_notepad.lua" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\test\iuptest.rc" />
