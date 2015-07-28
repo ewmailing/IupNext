@@ -295,6 +295,17 @@ Ihandle* load_image_PaintText(void)
 /********************************** Utilities *****************************************/
 
 
+char* str_duplicate(const char* str)
+{
+  if (!str)
+    return NULL;
+
+  int size = (int)strlen(str);
+  char* new_str = new char[size+1];
+  memcpy(new_str, str, size + 1);
+  return new_str;
+}
+
 const char* str_filetitle(const char *filename)
 {
   /* Start at the last character */
@@ -666,6 +677,20 @@ class SimplePaintFile
 public:
   imImage* image;
   bool dirty;
+  char* filename;
+
+  SimplePaintFile()
+    :image(NULL), dirty(false), filename(NULL)
+  {
+  }
+
+  void SetFilename(const char* new_filename)
+  {
+    if (filename)
+      delete [] filename;
+
+    filename = str_duplicate(new_filename);
+  }
 
   imImage* Read(const char* filename);
   int Write(const char* filename);
@@ -701,15 +726,6 @@ protected:
   Ihandle* CreateStatusbar();
   Ihandle* CreateToolbar();
   Ihandle* CreateMainMenu();
-
-  const char* GetFilename()
-  {
-    return IupGetAttribute(canvas, "FILENAME");  /* custom attribute */
-  }
-  void SetFilename(const char* filename)
-  {
-    IupSetStrAttribute(canvas, "FILENAME", filename);  /* custom attribute */
-  }
 
   void DrawToolOverlay(cdCanvas* cnv, int start_x, int start_y, int end_x, int end_y);
   void DrawPencil(int start_x, int start_y, int end_x, int end_y);
@@ -795,7 +811,7 @@ protected:
 };
 
 
-/*********************************** Utilities Methods **************************************/
+/*********************************** SimplePaintFile Utilities Methods **************************************/
 
 
 imImage* SimplePaintFile::Read(const char* filename)
@@ -835,6 +851,10 @@ void SimplePaintFile::SetFormat(const char* filename)
     format = "TIFF";
   imImageSetAttribString(image, "FileFormat", format);
 }
+
+
+/*********************************** SimplePaint Utilities Methods **************************************/
+
 
 void SimplePaint::ZoomUpdate(double zoom_index)
 {
@@ -889,7 +909,7 @@ void SimplePaint::SetNewImage(imImage* new_image, const char* filename, bool dir
   else
     IupSetAttribute(IupGetDialog(canvas), "TITLE", "Untitled - Simple Paint");
 
-  SetFilename(filename);
+  file.SetFilename(filename);
 
   /* we are going to support only RGB images with no alpha */
   imImageRemoveAlpha(new_image);
@@ -946,7 +966,7 @@ void SimplePaint::OpenFile(const char* filename)
 
 void SimplePaint::SaveFile()
 {
-  const char* filename = GetFilename();
+  const char* filename = file.filename;
   if (file.Write(filename))
     file.dirty = false;
 }
@@ -959,7 +979,7 @@ void SimplePaint::SaveAsFile(const char* filename)
   {
     IupSetfAttribute(IupGetDialog(canvas), "TITLE", "%s - Simple Paint", str_filetitle(filename));
 
-    SetFilename(filename);
+    file.SetFilename(filename);
     file.dirty = false;
 
     IupConfigRecentUpdate(config, filename);
@@ -1012,7 +1032,7 @@ void SimplePaint::SelectFile(bool is_open)
   else
   {
     IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
-    IupSetStrAttribute(filedlg, "FILE", GetFilename());
+    IupSetStrAttribute(filedlg, "FILE", file.filename);
   }
   IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
@@ -1267,40 +1287,6 @@ int SimplePaint::CanvasUnmapCallback(Ihandle*)
   return IUP_DEFAULT;
 }
 
-int SimplePaint::ItemZoomoutActionCallback(Ihandle*)
-{
-  Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
-  double zoom_index = IupGetDouble(zoom_val, "VALUE");
-  zoom_index--;
-  if (zoom_index < -6)
-    zoom_index = -6;
-  IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
-
-  ZoomUpdate(zoom_index);
-  return IUP_DEFAULT;
-}
-
-int SimplePaint::ItemZoominActionCallback(Ihandle*)
-{
-  Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
-  double zoom_index = IupGetDouble(zoom_val, "VALUE");
-  zoom_index++;
-  if (zoom_index > 6)
-    zoom_index = 6;
-  IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
-
-  ZoomUpdate(zoom_index);
-  return IUP_DEFAULT;
-}
-
-int SimplePaint::ItemActualsizeActionCallback(Ihandle*)
-{
-  Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
-  IupSetDouble(zoom_val, "VALUE", 0);
-  ZoomUpdate(0);
-  return IUP_DEFAULT;
-}
-
 int SimplePaint::CanvasResizeCallback(Ihandle* canvas)
 {
   if (file.image)
@@ -1541,7 +1527,7 @@ int SimplePaint::FileMenuOpenCallback(Ihandle*)
 {
   Ihandle* item_revert = IupGetDialogChild(dlg, "ITEM_REVERT");
   Ihandle* item_save = IupGetDialogChild(dlg, "ITEM_SAVE");
-  const char* filename = GetFilename();
+  const char* filename = file.filename;
   if (file.dirty)
     IupSetAttribute(item_save, "ACTIVE", "YES");
   else
@@ -1578,6 +1564,35 @@ int SimplePaint::ConfigRecentCallback(Ihandle* ih)
   }
   return IUP_DEFAULT;
 }
+
+int SimplePaint::DialogMoveCallback(Ihandle* dlg, int x, int y)
+{
+  int old_x = IupGetInt(dlg, "_OLD_X");
+  int old_y = IupGetInt(dlg, "_OLD_Y");
+
+  if (old_x == x && old_y == y)
+    return IUP_DEFAULT;
+
+  if (IupGetInt(toolbox, "VISIBLE"))
+  {
+    int tb_x = IupGetInt(toolbox, "X");
+    int tb_y = IupGetInt(toolbox, "Y");
+
+    tb_x += x - old_x;
+    tb_y += y - old_y;
+
+    IupShowXY(toolbox, tb_x, tb_y);
+  }
+
+  IupSetInt(dlg, "_OLD_X", x);
+  IupSetInt(dlg, "_OLD_Y", y);
+
+  return IUP_DEFAULT;
+}
+
+
+/********************************* SimplePaint Menu Item Callbacks Methods **************************/
+
 
 int SimplePaint::ItemNewActionCallback(Ihandle*)
 {
@@ -1618,7 +1633,7 @@ int SimplePaint::ItemSaveasActionCallback(Ihandle*)
 
 int SimplePaint::ItemSaveActionCallback(Ihandle* item_save)
 {
-  const char* filename = GetFilename();
+  const char* filename = file.filename;
   if (!filename)
     ItemSaveasActionCallback(item_save);
   else   
@@ -1632,7 +1647,7 @@ int SimplePaint::ItemSaveActionCallback(Ihandle* item_save)
 
 int SimplePaint::ItemRevertActionCallback(Ihandle*)
 {
-  const char* filename = GetFilename();
+  const char* filename = file.filename;
   OpenFile(filename);
   return IUP_DEFAULT;
 }
@@ -1757,6 +1772,40 @@ int SimplePaint::ItemBackgroundActionCallback(Ihandle*)
   return IUP_DEFAULT;
 }
 
+int SimplePaint::ItemZoomoutActionCallback(Ihandle*)
+{
+  Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
+  double zoom_index = IupGetDouble(zoom_val, "VALUE");
+  zoom_index--;
+  if (zoom_index < -6)
+    zoom_index = -6;
+  IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
+
+  ZoomUpdate(zoom_index);
+  return IUP_DEFAULT;
+}
+
+int SimplePaint::ItemZoominActionCallback(Ihandle*)
+{
+  Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
+  double zoom_index = IupGetDouble(zoom_val, "VALUE");
+  zoom_index++;
+  if (zoom_index > 6)
+    zoom_index = 6;
+  IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
+
+  ZoomUpdate(zoom_index);
+  return IUP_DEFAULT;
+}
+
+int SimplePaint::ItemActualsizeActionCallback(Ihandle*)
+{
+  Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
+  IupSetDouble(zoom_val, "VALUE", 0);
+  ZoomUpdate(0);
+  return IUP_DEFAULT;
+}
+
 int SimplePaint::ItemZoomgridActionCallback(Ihandle*)
 {
   Ihandle* item_zoomgrid = IupGetDialogChild(dlg, "ZOOMGRID");
@@ -1810,147 +1859,17 @@ int SimplePaint::ItemStatusbarActionCallback(Ihandle* item_statusbar)
   return IUP_DEFAULT;
 }
 
-int SimplePaint::ItemHelpActionCallback(Ihandle*)
-{
-  IupHelp("http://www.tecgraf.puc-rio.br/iup");
-  return IUP_DEFAULT;
-}
-
-int SimplePaint::ItemAboutActionCallback(Ihandle*)
-{
-  IupMessage("About", "   Simple Paint\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
-  return IUP_DEFAULT;
-}
-
-int SimplePaintToolbox::CloseCallback(Ihandle*)
-{
-  Ihandle* item_toolbox = IupGetDialogChild(paint->dlg, "TOOLBOXMENU");
-
-  IupConfigDialogClosed(paint->config, toolbox, "Toolbox");
-
-  IupSetAttribute(item_toolbox, "VALUE", "OFF");
-  IupConfigSetVariableStr(paint->config, "MainWindow", "Toolbox", "OFF");
-  return IUP_DEFAULT;
-}
-
-int SimplePaintToolbox::ToolActionCallback(Ihandle* ih, int state)
-{
-  if (state == 1)
-  {
-    int tool_index = IupGetInt(ih, "TOOLINDEX");
-    IupSetInt(IupGetDialog(ih), "TOOLINDEX", tool_index);
-
-    if (tool_index == 0)
-      IupSetAttribute(paint->canvas, "CURSOR", "ARROW");
-    else
-      IupSetAttribute(paint->canvas, "CURSOR", "CROSS");
-
-    if (tool_index == 8)
-      tool_get_text(IupGetDialog(ih));
-  }
-  return IUP_DEFAULT;
-}
-
-int SimplePaintToolbox::ToolColorActionCallback(Ihandle* ih)
-{
-  Ihandle* colordlg = IupColorDlg();
-  const char* color = IupGetAttribute(ih, "BGCOLOR");
-  IupSetStrAttribute(colordlg, "VALUE", color);
-  IupSetAttributeHandle(colordlg, "PARENTDIALOG", toolbox);
-
-  IupPopup(colordlg, IUP_CENTER, IUP_CENTER);
-
-  if (IupGetInt(colordlg, "STATUS") == 1)
-  {
-    color = IupGetAttribute(colordlg, "VALUE");
-
-    IupSetStrAttribute(ih, "BGCOLOR", color);           
-    IupSetStrAttribute(toolbox, "TOOLCOLOR", color);
-
-    IupUpdate(paint->canvas);
-  }
-
-  IupDestroy(colordlg);
-  return IUP_DEFAULT;
-}
-
-int SimplePaintToolbox::ToolWidthValueChangedCallback(Ihandle* ih)
-{
-  char* value = IupGetAttribute(ih, "VALUE");
-  IupSetStrAttribute(IupGetDialog(ih), "TOOLWIDTH", value);
-  return IUP_DEFAULT;
-}
-
-int SimplePaintToolbox::ToolStyleValueChangedCallback(Ihandle* ih)
-{
-  char* value = IupGetAttribute(ih, "VALUE");
-  IupSetStrAttribute(IupGetDialog(ih), "TOOLSTYLE", value);
-  return IUP_DEFAULT;
-}
-
-int SimplePaintToolbox::ToolFontActionCallback(Ihandle* ih)
-{
-  Ihandle* font_dlg = IupFontDlg();
-  IupSetAttributeHandle(font_dlg, "PARENTDIALOG", IupGetDialog(ih));
-  char* font = IupGetAttribute(ih, "TOOLFONT");
-  IupSetStrAttribute(font_dlg, "VALUE", font);
-
-  IupPopup(font_dlg, IUP_CENTER, IUP_CENTER);
-
-  if (IupGetInt(font_dlg, "STATUS") == 1)
-  {
-    font = IupGetAttribute(font_dlg, "VALUE");
-    IupSetStrAttribute(IupGetDialog(ih), "TOOLFONT", font);
-  }
-  IupDestroy(font_dlg);
-  return IUP_DEFAULT;
-}
-
-int SimplePaintToolbox::ToolFillTolValueChangedCallback(Ihandle* ih)
-{
-  Ihandle* filltol_label = IupGetDialogChild(toolbox, "FILLTOLLABEL");
-  double value = IupGetDouble(ih, "VALUE");
-  IupSetStrf(filltol_label, "TITLE", "Tol.: %.0f%%", value);
-  IupSetDouble(IupGetDialog(ih), "TOOLFILLTOL", value);
-  return IUP_DEFAULT;
-}
-
-int SimplePaint::DialogMoveCallback(Ihandle* dlg, int x, int y)
-{
-  int old_x = IupGetInt(dlg, "_OLD_X");
-  int old_y = IupGetInt(dlg, "_OLD_Y");
-
-  if (old_x == x && old_y == y)
-    return IUP_DEFAULT;
-  
-  if (IupGetInt(toolbox, "VISIBLE"))
-  {
-    int tb_x = IupGetInt(toolbox, "X");
-    int tb_y = IupGetInt(toolbox, "Y");
-
-    tb_x += x - old_x;
-    tb_y += y - old_y;
-
-    IupShowXY(toolbox, tb_x, tb_y);
-  }
-
-  IupSetInt(dlg, "_OLD_X", x);
-  IupSetInt(dlg, "_OLD_Y", y);
-
-  return IUP_DEFAULT;
-}
-
 int SimplePaint::ItemResizeActionCallback(Ihandle*)
 {
-  int height = file.image->height, 
-      width = file.image->width;
+  int height = file.image->height,
+    width = file.image->width;
   int quality = IupConfigGetVariableIntDef(config, "Image", "ResizeQuality", 1);  /* medium default */
 
-  if (!IupGetParam("Resize", NULL, NULL, 
-                   "Width: %i[1,]\n"
-                   "Height: %i[1,]\n"
-                   "Quality: %l|low|medium|high|\n",
-                   &width, &height, &quality, NULL))
+  if (!IupGetParam("Resize", NULL, NULL,
+    "Width: %i[1,]\n"
+    "Height: %i[1,]\n"
+    "Quality: %l|low|medium|high|\n",
+    &width, &height, &quality, NULL))
     return IUP_DEFAULT;
 
   IupConfigSetVariableInt(config, "Image", "ResizeQuality", quality);
@@ -2126,13 +2045,122 @@ int SimplePaint::ItemBrightcontActionCallback(Ihandle*)
                    &param[0], &param[1], NULL))
   {
     imImageDestroy(new_image);
-	  return IUP_DEFAULT;
+    return IUP_DEFAULT;
   }
 
   imProcessToneGamut(file.image, new_image, IM_GAMUT_BRIGHTCONT, param);
 
   UpdateImage(new_image, false);
 
+  return IUP_DEFAULT;
+}
+
+int SimplePaint::ItemHelpActionCallback(Ihandle*)
+{
+  IupHelp("http://www.tecgraf.puc-rio.br/iup");
+  return IUP_DEFAULT;
+}
+
+int SimplePaint::ItemAboutActionCallback(Ihandle*)
+{
+  IupMessage("About", "   Simple Paint\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
+  return IUP_DEFAULT;
+}
+
+
+/************************************* SimplePaintToolbox Callbacks Methods ****************************************/
+
+
+int SimplePaintToolbox::CloseCallback(Ihandle*)
+{
+  Ihandle* item_toolbox = IupGetDialogChild(paint->dlg, "TOOLBOXMENU");
+
+  IupConfigDialogClosed(paint->config, toolbox, "Toolbox");
+
+  IupSetAttribute(item_toolbox, "VALUE", "OFF");
+  IupConfigSetVariableStr(paint->config, "MainWindow", "Toolbox", "OFF");
+  return IUP_DEFAULT;
+}
+
+int SimplePaintToolbox::ToolActionCallback(Ihandle* ih, int state)
+{
+  if (state == 1)
+  {
+    int tool_index = IupGetInt(ih, "TOOLINDEX");
+    IupSetInt(IupGetDialog(ih), "TOOLINDEX", tool_index);
+
+    if (tool_index == 0)
+      IupSetAttribute(paint->canvas, "CURSOR", "ARROW");
+    else
+      IupSetAttribute(paint->canvas, "CURSOR", "CROSS");
+
+    if (tool_index == 8)
+      tool_get_text(IupGetDialog(ih));
+  }
+  return IUP_DEFAULT;
+}
+
+int SimplePaintToolbox::ToolColorActionCallback(Ihandle* ih)
+{
+  Ihandle* colordlg = IupColorDlg();
+  const char* color = IupGetAttribute(ih, "BGCOLOR");
+  IupSetStrAttribute(colordlg, "VALUE", color);
+  IupSetAttributeHandle(colordlg, "PARENTDIALOG", toolbox);
+
+  IupPopup(colordlg, IUP_CENTER, IUP_CENTER);
+
+  if (IupGetInt(colordlg, "STATUS") == 1)
+  {
+    color = IupGetAttribute(colordlg, "VALUE");
+
+    IupSetStrAttribute(ih, "BGCOLOR", color);           
+    IupSetStrAttribute(toolbox, "TOOLCOLOR", color);
+
+    IupUpdate(paint->canvas);
+  }
+
+  IupDestroy(colordlg);
+  return IUP_DEFAULT;
+}
+
+int SimplePaintToolbox::ToolWidthValueChangedCallback(Ihandle* ih)
+{
+  char* value = IupGetAttribute(ih, "VALUE");
+  IupSetStrAttribute(IupGetDialog(ih), "TOOLWIDTH", value);
+  return IUP_DEFAULT;
+}
+
+int SimplePaintToolbox::ToolStyleValueChangedCallback(Ihandle* ih)
+{
+  char* value = IupGetAttribute(ih, "VALUE");
+  IupSetStrAttribute(IupGetDialog(ih), "TOOLSTYLE", value);
+  return IUP_DEFAULT;
+}
+
+int SimplePaintToolbox::ToolFontActionCallback(Ihandle* ih)
+{
+  Ihandle* font_dlg = IupFontDlg();
+  IupSetAttributeHandle(font_dlg, "PARENTDIALOG", IupGetDialog(ih));
+  char* font = IupGetAttribute(ih, "TOOLFONT");
+  IupSetStrAttribute(font_dlg, "VALUE", font);
+
+  IupPopup(font_dlg, IUP_CENTER, IUP_CENTER);
+
+  if (IupGetInt(font_dlg, "STATUS") == 1)
+  {
+    font = IupGetAttribute(font_dlg, "VALUE");
+    IupSetStrAttribute(IupGetDialog(ih), "TOOLFONT", font);
+  }
+  IupDestroy(font_dlg);
+  return IUP_DEFAULT;
+}
+
+int SimplePaintToolbox::ToolFillTolValueChangedCallback(Ihandle* ih)
+{
+  Ihandle* filltol_label = IupGetDialogChild(toolbox, "FILLTOLLABEL");
+  double value = IupGetDouble(ih, "VALUE");
+  IupSetStrf(filltol_label, "TITLE", "Tol.: %.0f%%", value);
+  IupSetDouble(IupGetDialog(ih), "TOOLFILLTOL", value);
   return IUP_DEFAULT;
 }
 
@@ -2553,8 +2581,6 @@ void SimplePaint::CreateMainDialog()
 SimplePaint::SimplePaint()
   :cd_canvas(NULL)
 {
-  file.image = NULL;
-  file.dirty = false;
   interact.overlay = false;
 
   config = IupConfig();
