@@ -110,13 +110,13 @@ void show_file_error(int error)
     show_error("Error Opening File.",  1);
     break;
   case IM_ERR_MEM:
-    show_error("Insuficient memory.",  1);
+    show_error("Insufficient memory.",  1);
     break;
   case IM_ERR_ACCESS:
     show_error("Error Accessing File.",  1);
     break;
   case IM_ERR_DATA:
-    show_error("Image type not Suported.",  1);
+    show_error("Image type not Supported.",  1);
     break;
   case IM_ERR_FORMAT:
     show_error("Invalid Format.",  1);

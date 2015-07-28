@@ -385,13 +385,13 @@ void show_file_error(int error)
     show_error("Error Opening File.",  1);
     break;
   case IM_ERR_MEM:
-    show_error("Insuficient memory.",  1);
+    show_error("Insufficient memory.",  1);
     break;
   case IM_ERR_ACCESS:
     show_error("Error Accessing File.",  1);
     break;
   case IM_ERR_DATA:
-    show_error("Image type not Suported.",  1);
+    show_error("Image type not Supported.",  1);
     break;
   case IM_ERR_FORMAT:
     show_error("Invalid Format.",  1);
@@ -1799,7 +1799,6 @@ int tool_action_cb(Ihandle* ih, int state)
 
 int toolcolor_action_cb(Ihandle* ih)
 {
-  Ihandle* canvas = (Ihandle*)IupGetAttribute(ih, "CANVAS");
   Ihandle* colordlg = IupColorDlg();
   const char* color = IupGetAttribute(ih, "BGCOLOR");
   IupSetStrAttribute(colordlg, "VALUE", color);
@@ -1813,8 +1812,6 @@ int toolcolor_action_cb(Ihandle* ih)
 
     IupSetStrAttribute(ih, "BGCOLOR", color);           
     IupSetStrAttribute(IupGetDialog(ih), "TOOLCOLOR", color);
-
-    IupUpdate(canvas);
   }
 
   IupDestroy(colordlg);
