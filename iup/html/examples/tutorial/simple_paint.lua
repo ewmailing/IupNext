@@ -964,15 +964,15 @@ view_menu = iup.menu
   
 image_menu = iup.menu
 {
-  iup.item{title = "&Resize...", action = item_resize_action_cb},
-  iup.item{title = "&Mirror", action = item_mirror_action_cb},
-  iup.item{title = "&Flip", action = item_flip_action_cb},
-  iup.item{title = "&Rotate 180º", action = item_rotate180_action_cb},
-  iup.item{title = "&Rotate +90º (clock-wise)", action = item_rotate90cw_action_cb},
-  iup.item{title = "&Rotate -90º (counter-clock)", action = item_rotate90ccw_action_cb},
+  iup.item{title = "&Resize..."},
+  iup.item{title = "&Mirror"},
+  iup.item{title = "&Flip"},
+  iup.item{title = "&Rotate 180º"},
+  iup.item{title = "&Rotate +90º (clock-wise)"},
+  iup.item{title = "&Rotate -90º (counter-clock)"},
   iup.separator{},
-  iup.item{title = "&Negative", action = item_negative_action_cb},
-  iup.item{title = "&Brightness and Contrast...", action = item_brightcont_action_cb},
+  iup.item{title = "&Negative"},
+  iup.item{title = "&Brightness and Contrast..."},
 }
   
 help_menu = iup.menu{item_help, item_about}
@@ -1536,43 +1536,32 @@ function item_statusbar:action()
   config:SetVariable("MainWindow", "Statusbar", item_statusbar.value)
 end
 
-xxx = [[
-int item_resize_action_cb(Ihandle* ih)
-{
-  Ihandle* config = (Ihandle*)IupGetAttribute(ih, "CONFIG");
-  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
-  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  imImage* new_image;
-  int height = image->height, 
-      width = image->width;
-  int quality = IupConfigGetVariableIntDef(config, "Image", "ResizeQuality", 1);  /* medium default */
+item_resize = image_menu[1]
+function item_resize:action()
+  local image = canvas.image
+  local quality = config:GetVariableDef("Image", "ResizeQuality", 1)  -- medium default
+  local width = image:Width()
+  local height = image:Height()
 
-  if (!IupGetParam("Resize", NULL, NULL, 
-                   "Width: %i[1,]\n"
-                   "Height: %i[1,]\n"
-                   "Quality: %l|low|medium|high|\n",
-                   &width, &height, &quality, NULL))
-    return IUP_DEFAULT;
+  local ret, new_width, new_height = iup.GetParam("Resize", nil, "Width: %i[1,]\nHeight: %i[1,]\nQuality: %l|low|medium|high|\n", width, height, quality)
+  if (ret) then
+    local new_image = im.ImageCreateBased(image, new_width, new_height, nil, nil)
+    if (not new_image) then
+      show_file_error(im.ERR_MEM)
+      return 
+    end
 
-  IupConfigSetVariableInt(config, "Image", "ResizeQuality", quality);
+    config:SetVariable("Image", "ResizeQuality", quality)
 
-  new_image = imImageCreateBased(image, width, height, -1, -1);
-  if (!new_image)
-  {
-    show_file_error(IM_ERR_MEM);
-    return IUP_DEFAULT;
-  }
+    if (quality == 2) then
+      quality = 3 -- interpolation order can be 0, 1, and 3
+    end
 
-  if (quality == 2)
-    quality = 3; /* interpolation order can be 0, 1, and 3 */
+    im.ProcessResize(image, new_image, quality)
 
-  imProcessResize(image, new_image, quality);
-
-  update_image(canvas, new_image, true);   /* update size */
-
-  return IUP_DEFAULT;
-}
-]]
+    update_image(canvas, new_image, true)   -- update size
+  end
+end
 
 item_mirror = image_menu[2]
 function item_mirror:action()
