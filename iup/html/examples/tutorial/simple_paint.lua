@@ -1,4 +1,5 @@
 require("imlua")
+require("imlua_process")
 require("iuplua")
 require("iupluaimglib")
 require("iupluaim")
@@ -581,6 +582,27 @@ function image_fill_white(image)
   end
 end
 
+function update_image(canvas, image, update_size)
+  local old_image = canvas.image
+
+  canvas.dirty = dirty
+  canvas.image = image
+
+  if (old_image) then
+    old_image:Destroy()
+  end
+
+  if (update_size) then
+    local size_lbl = iup.GetDialogChild(canvas, "SIZELABEL")
+    local zoom_val = iup.GetDialogChild(canvas, "ZOOMVAL")
+    local zoom_index = zoom_val.value
+    size_lbl.title = image:Width().." x "..image:Height().." px"
+    zoom_update(canvas, zoom_index)
+  else
+    iup.Update(canvas)
+  end
+end
+
 function set_new_image(canvas, image, filename, dirty)
   local dlg = iup.GetDialog(canvas)
   local old_image = canvas.image
@@ -819,6 +841,50 @@ function tool_get_text()
   iup.Destroy(dlg)
 end
 
+function tool_draw_pencil(toolbox, image, start_x, start_y, x, y)
+  local res = tonumber(iup.GetGlobal("SCREENDPI")) / 25.4
+
+  local line_width = tonumber(toolbox.toolwidth)
+  r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
+  
+  -- do not use line style here */
+  local rgb_canvas = image:cdCreateCanvas()
+  image:SetAttribString("ResolutionUnit", "PDI")
+  image:SetAttribReal("XResolution", im.FLOAT, res)
+  image:SetAttribReal("YResolution", im.FLOAT, res)
+  rgb_canvas:Foreground(cd.EncodeColor(r, g, b))
+  rgb_canvas:LineWidth(line_width)
+  rgb_canvas:Line(start_x, start_y, x, y)
+  rgb_canvas:Kill()
+end
+
+function tool_draw_overlay(toolbox, cnv, start_x, start_y, end_x, end_y)
+  local r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
+  local line_width = toolbox.toolwidth
+  local line_style = toolbox.toolstyle - 1
+  
+  cnv:Foreground(cd.EncodeColor(r, g, b))
+  cnv:LineWidth(line_width)
+  if (line_width == 1) then
+    cnv:LineStyle(line_style)
+  end
+  
+  if (canvas.overlay == "LINE") then
+    cnv:Line(start_x, start_y, end_x, end_y)
+  elseif (canvas.overlay == "RECT") then
+    cnv:Rect(start_x, end_x, start_y, end_y)
+  elseif (canvas.overlay == "BOX") then
+    cnv:Box(start_x, end_x, start_y, end_y)
+  elseif (canvas.overlay == "ELLIPSE") then
+    cnv:Arc((end_x + start_x) / 2, (end_y + start_y) / 2, math.abs(end_x - start_x), math.abs(end_y - start_y), 0, 360)
+  elseif (canvas.overlay == "OVAL") then
+    cnv:Sector((end_x + start_x) / 2, (end_y + start_y) / 2, math.abs(end_x - start_x), math.abs(end_y - start_y), 0, 360)
+  elseif (canvas.overlay == "TEXT") then
+    cnv:TextAlignment(cd.SOUTH_WEST)
+    cnv:NativeFont(toolbox.toolfont)
+    cnv:Text(end_x, end_y, toolbox.tooltext)
+  end
+end
 
 
 --********************************** Main (Part 1/2) *****************************************
@@ -851,18 +917,17 @@ item_background = iup.item{title="&Background..."}
 item_zoomin = iup.item{title="Zoom &In\tCtrl++", image = "IUP_ZoomIn"}
 item_zoomout = iup.item{title="Zoom &Out\tCtrl+-", image = "IUP_ZoomOut"}
 item_actualsize = iup.item{title="&Actual Size\tCtrl+0", image = "IUP_ZoomActualSize"}
+item_zoomgrid = iup.item{title = "&Zoom Grid", value = "ON"}
 item_toolbar = iup.item{title="&Toobar", value="ON"}
+item_toolbox = iup.item{title = "&Toobox", value = "ON"}
 item_statusbar = iup.item{title="&Statusbar", value="ON"}
 item_help = iup.item{title="&Help..."}
 item_about = iup.item{title="&About..."}
 
-item_zoomgrid = iup.item{title = "&Zoom Grid", action = item_zoomgrid_action_cb, VALUE = "ON", name = "ZOOMGRID"}
-item_toolbox = iup.item{title = "&Toobox", action = item_toolbox_action_cb, name = "TOOLBOXMENU"}
-
-
 recent_menu = iup.menu{}
 
-file_menu = iup.menu{
+file_menu = iup.menu
+{
   item_new,
   item_open,
   item_save,
@@ -874,15 +939,17 @@ file_menu = iup.menu{
   iup.separator{},
   iup.submenu{title="Recent &Files", recent_menu},
   iup.separator{},
-  item_exit
-  }
+  item_exit,
+}
 
-edit_menu = iup.menu{
+edit_menu = iup.menu
+{
   item_copy,
   item_paste,
-  }
+}
 
-view_menu = iup.menu{
+view_menu = iup.menu
+{
   item_zoomin, 
   item_zoomout, 
   item_actualsize,
@@ -893,18 +960,34 @@ view_menu = iup.menu{
   item_toolbar, 
   item_toolbox,
   item_statusbar, 
-  }
+}
+  
+image_menu = iup.menu
+{
+  iup.item{title = "&Resize...", action = item_resize_action_cb},
+  iup.item{title = "&Mirror", action = item_mirror_action_cb},
+  iup.item{title = "&Flip", action = item_flip_action_cb},
+  iup.item{title = "&Rotate 180º", action = item_rotate180_action_cb},
+  iup.item{title = "&Rotate +90º (clock-wise)", action = item_rotate90cw_action_cb},
+  iup.item{title = "&Rotate -90º (counter-clock)", action = item_rotate90ccw_action_cb},
+  iup.separator{},
+  iup.item{title = "&Negative", action = item_negative_action_cb},
+  iup.item{title = "&Brightness and Contrast...", action = item_brightcont_action_cb},
+}
+  
 help_menu = iup.menu{item_help, item_about}
 
-sub_menu_file = iup.submenu{file_menu, title = "&File"}
-sub_menu_edit = iup.submenu{edit_menu, title = "&Edit"}
-sub_menu_view = iup.submenu{title = "&View", view_menu}
-sub_menu_help = iup.submenu{help_menu, title = "&Help"}
+sub_menu_file  = iup.submenu{file_menu,  title = "&File"}
+sub_menu_edit  = iup.submenu{edit_menu,  title = "&Edit"}
+sub_menu_view  = iup.submenu{view_menu,  title = "&View"}
+sub_menu_image = iup.submenu{image_menu, title = "&Image"}
+sub_menu_help  = iup.submenu{help_menu,  title = "&Help"}
 
 menu = iup.menu{
   sub_menu_file, 
   sub_menu_edit, 
   sub_menu_view, 
+  sub_menu_image,
   sub_menu_help,
   }
 
@@ -939,8 +1022,8 @@ function canvas:action()
     image:cdCanvasPutImageRect(cd_canvas, x, y, view_width, view_height, 0, 0, 0, 0)
     
     if (config:GetVariable("MainWindow", "ZoomGrid") == "ON") then
-      zoom_val = iup.GetDialogChild(canvas, "ZOOMVAL")
-      zoom_index = tonumber(zoom_val.value)
+      local zoom_val = iup.GetDialogChild(canvas, "ZOOMVAL")
+      local zoom_index = tonumber(zoom_val.value)
       if (zoom_index > 1) then
         local ix, iy
         local zoom_factor = math.pow(2, zoom_index)
@@ -961,33 +1044,21 @@ function canvas:action()
       local start_y = tonumber(canvas.start_y)
       local end_x = tonumber(canvas.end_x)
       local end_y = tonumber(canvas.end_y)
-      local line_width = tonumber(toolbox.toolwidth)
-      local line_style = tonumber(toolbox.toolstyle - 1)
-      local r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
-      
-      cd_canvas:TransformTranslate(x, y)
-      cd_canvas:TransformScale(view_width / image:Width(), view_height / image:Height())
 
-      cd_canvas:Foreground(cd.EncodeColor(r, g, b))
-      cd_canvas:LineWidth(line_width)
-      if (line_width == 1) then
-        cd_canvas:LineStyle(line_style)
-    end
-      if (canvas.overlay == "LINE") then
-        cd_canvas:Line(start_x, start_y, end_x, end_y)
-      elseif (canvas.overlay == "RECT") then
-        cd_canvas:Rect(start_x, end_x, start_y, end_y)
-      elseif (canvas.overlay == "BOX") then
-        cd_canvas:Box(start_x, end_x, start_y, end_y)
-      elseif (canvas.overlay == "ELLIPSE") then
-        cd_canvas:Arc((end_x + start_x) / 2, (end_y + start_y) / 2, math.abs(end_x - start_x), math.abs(end_y - start_y), 0, 360)
-      elseif (canvas.overlay == "OVAL") then
-        cd_canvas:Sector((end_x + start_x) / 2, (end_y + start_y) / 2, math.abs(end_x - start_x), math.abs(end_y - start_y), 0, 360)
-      elseif (canvas.overlay == "TEXT") then
-        cd_canvas:TextAlignment(cd.SOUTH_WEST)
-        cd_canvas:NativeFont(toolbox.toolfont)
-        cd_canvas:Text(end_x, end_y, toolbox.tooltext)
+      local scale_x = view_width / image:Width()
+      local scale_y = view_height / image:Height()
+      
+      -- offset and scale drawing in screen to macth the image
+      if (scale_x > 1 or scale_y > 1) then
+        -- also draw at the center of the pixel when zoom in
+        cd_canvas:TransformTranslate(x + scale_x / 2, y + scale_y / 2)
+      else
+        cd_canvas:TransformTranslate(x, y)
       end
+      cd_canvas:TransformScale(scale_x, scale_y)
+
+      tool_draw_overlay(toolbox, cd_canvas, start_x, start_y, end_x, end_y)
+      
       cd_canvas:Transform(nil)
     end
   end
@@ -1117,19 +1188,8 @@ function canvas:button_cb(button, pressed, x, y)
           elseif (tool_index == 2) then -- Pencil
             local start_x = canvas.start_x
             local start_y = canvas.start_y
-            local res = tonumber(iup.GetGlobal("SCREENDPI")) / 25.4
-            local r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
-            local line_width = toolbox.toolwidth
-              
-            -- do not use line style here */
-            local cd_canvas = image:cdCreateCanvas()
-            image:SetAttribString("ResolutionUnit", "PDI")
-            image:SetAttribReal("XResolution", im.FLOAT, res)
-            image:SetAttribReal("YResolution", im.FLOAT, res)
-            cd_canvas:Foreground(cd.EncodeColor(r, g, b))
-            cd_canvas:LineWidth(line_width)
-            cd_canvas:Line(start_x, start_y, x, y)
-            cd_canvas:Kill()
+            
+            tool_draw_pencil(toolbox, image, start_x, start_y, x, y)            
   
             canvas.dirty = "Yes"
             iup.Update(canvas)
@@ -1140,37 +1200,18 @@ function canvas:button_cb(button, pressed, x, y)
             if (canvas.overlay) then
               local start_x = canvas.start_x
               local start_y = canvas.start_y
-              local line_width = toolbox.toolwidth
-              local line_style = toolbox.toolstyle - 1
               local res = tonumber(iup.GetGlobal("SCREENDPI")) / 25.4
-              local r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
-              
-              local cd_canvas = image:cdCreateCanvas()
-              image:SetAttribString("ResolutionUnit", "PDI")
+
+              -- not a good solution, but necessary for text drawing in the same scale as the screen
+              -- TODO: must create an alternative way to set the resolution
+              image:SetAttribString("ResolutionUnit", "DPI")
               image:SetAttribReal("XResolution", im.FLOAT, res)
               image:SetAttribReal("YResolution", im.FLOAT, res)
-              cd_canvas:Foreground(cd.EncodeColor(r, g, b))
-              cd_canvas:LineWidth(line_width)
-              if (line_width == 1) then
-                cd_canvas:LineStyle(line_style)
-              end
-              if (canvas.overlay == "LINE") then
-                cd_canvas:Line(start_x, start_y, x, y)
-              elseif (canvas.overlay == "RECT") then
-                cd_canvas:Rect(start_x, x, start_y, y)
-              elseif (canvas.overlay == "BOX") then
-                cd_canvas:Box(start_x, x, start_y, y)
-              elseif (canvas.overlay == "ELLIPSE") then
-                cd_canvas:Arc((x + start_x) / 2, (y + start_y) / 2, math.abs(x - start_x), math.abs(y - start_y), 0, 360)
-              elseif (canvas.overlay == "OVAL") then
-                cd_canvas:Sector((x + start_x) / 2, (y + start_y) / 2, math.abs(x - start_x), math.abs(y - start_y), 0, 360)
-              elseif (canvas.overlay == "TEXT") then
-                cd_canvas:TextAlignment(cd.SOUTH_WEST)
-                cd_canvas:NativeFont(toolbox.toolfont)
-                cd_canvas:Text(x, y, toolbox.tooltext)
-              end
-  
-              cd_canvas:Kill()
+              local rgb_canvas = image:cdCreateCanvas()
+              
+              tool_draw_overlay(toolbox, rgb_canvas, start_x, start_y, x, y)
+              
+              rgb_canvas:Kill()
   
               canvas.overlay = nil
               canvas.dirty = "Yes"
@@ -1249,23 +1290,10 @@ function canvas:motion_cb(x, y, status)
         elseif (tool_index == 2) then -- Pencil */
           local start_x = self.start_x
           local start_y = self.start_y
-          local res = tonumber(iup.GetGlobal("SCREENDPI")) / 25.4
-
-          local line_width = tonumber(toolbox.toolwidth)
-          r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
           
-          -- do not use line style here */
-          local cd_canvas = image:cdCreateCanvas()
-          image:SetAttribString("ResolutionUnit", "PDI")
-          image:SetAttribReal("XResolution", im.FLOAT, res)
-          image:SetAttribReal("YResolution", im.FLOAT, res)
-          cd_canvas:Foreground(cd.EncodeColor(r, g, b))
-          cd_canvas:LineWidth(line_width)
-          cd_canvas:Line(start_x, start_y, x, y)
-          cd_canvas:Kill()
+          tool_draw_pencil(toolbox, image, start_x, start_y, x, y)
 
           self.dirty = "Yes"
-
           iup.Update(canvas)
 
           self.start_x = tonumber(x)
@@ -1776,13 +1804,15 @@ config:DialogShow(dlg, "MainWindow")
 
 local show_toolbox = config:GetVariableDef("MainWindow", "Toolbox", "ON")
 if (show_toolbox == "ON") then
-    -- configure the very first time to be aligned with the main window
-    if (not config:GetVariable("Toolbox", "X")) then
-      config:SetVariable("Toolbox", "X", canvas.x)
-      config:SetVariable("Toolbox", "Y", canvas.y)
-    end
-    item_toolbox.value = "ON"
-    config:DialogShow(toolbox, "Toolbox")
+  -- configure the very first time to be aligned with the main window
+  if (not config:GetVariable("Toolbox", "X")) then
+    config:SetVariable("Toolbox", "X", canvas.x)
+    config:SetVariable("Toolbox", "Y", canvas.y)
+  end
+  
+  config:DialogShow(toolbox, "Toolbox")
+else
+  item_toolbox.value = "OFF"
 end
 
 -- open a file from the command line (allow file association in Windows)

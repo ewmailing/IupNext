@@ -459,20 +459,20 @@ void scroll_update(Ihandle* ih, int view_width, int view_height)
   IupSetFloat(ih, "DY", (float)canvas_height / (float)view_height);
 }
 
-void scroll_calc_center(Ihandle* canvas, float *x, float *y)
+void scroll_calc_center(Ihandle* ih, float *x, float *y)
 {
-  *x = IupGetFloat(canvas, "POSX") + IupGetFloat(canvas, "DX") / 2.0f;
-  *y = IupGetFloat(canvas, "POSY") + IupGetFloat(canvas, "DY") / 2.0f;
+  *x = IupGetFloat(ih, "POSX") + IupGetFloat(ih, "DX") / 2.0f;
+  *y = IupGetFloat(ih, "POSY") + IupGetFloat(ih, "DY") / 2.0f;
 }
 
-void scroll_center(Ihandle* canvas, float old_center_x, float old_center_y)
+void scroll_center(Ihandle* ih, float old_center_x, float old_center_y)
 {
   /* always update the scroll position
      keeping it proportional to the old position
-     relative to the center of the canvas. */
+     relative to the center of the ih. */
 
-  float dx = IupGetFloat(canvas, "DX");
-  float dy = IupGetFloat(canvas, "DY");
+  float dx = IupGetFloat(ih, "DX");
+  float dy = IupGetFloat(ih, "DY");
 
   float posx = old_center_x - dx / 2.0f;
   float posy = old_center_y - dy / 2.0f;
@@ -483,11 +483,11 @@ void scroll_center(Ihandle* canvas, float old_center_x, float old_center_y)
   if (posy < 0) posy = 0;
   if (posy > 1 - dy) posy = 1 - dy;
 
-  IupSetFloat(canvas, "POSX", posx);
-  IupSetFloat(canvas, "POSY", posy);
+  IupSetFloat(ih, "POSX", posx);
+  IupSetFloat(ih, "POSY", posy);
 }
 
-void scroll_move(Ihandle* canvas, int canvas_width, int canvas_height, int move_x, int move_y, int view_width, int view_height)
+void scroll_move(Ihandle* ih, int canvas_width, int canvas_height, int move_x, int move_y, int view_width, int view_height)
 {
   float posy = 0;
   float posx = 0;
@@ -497,21 +497,21 @@ void scroll_move(Ihandle* canvas, int canvas_width, int canvas_height, int move_
 
   if (canvas_height < view_height)
   {
-    posy = IupGetFloat(canvas, "POSY");
+    posy = IupGetFloat(ih, "POSY");
     posy -= (float)move_y / (float)view_height;
   }
 
   if (canvas_width < view_width)
   {
-    posx = IupGetFloat(canvas, "POSX");
+    posx = IupGetFloat(ih, "POSX");
     posx -= (float)move_x / (float)view_width;
   }
 
   if (posx != 0 || posy != 0)
   {
-    IupSetFloat(canvas, "POSX", posx);
-    IupSetFloat(canvas, "POSY", posy);
-    IupUpdate(canvas);
+    IupSetFloat(ih, "POSX", posx);
+    IupSetFloat(ih, "POSY", posy);
+    IupUpdate(ih);
   }
 }
 
@@ -989,16 +989,17 @@ void tool_draw_pencil(Ihandle* toolbox, imImage* image, int start_x, int start_y
   double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
   unsigned char** data = (unsigned char**)image->data;
   unsigned char r, g, b;
-
+  cdCanvas* rgb_canvas;
+  
   int line_width = IupGetInt(toolbox, "TOOLWIDTH");
   IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
 
   /* do not use line style here */
-  cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
-  cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
-  cdCanvasLineWidth(cd_canvas, line_width);
-  cdCanvasLine(cd_canvas, start_x, start_y, end_x, end_y);
-  cdKillCanvas(cd_canvas);
+  rgb_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
+  cdCanvasForeground(rgb_canvas, cdEncodeColor(r, g, b));
+  cdCanvasLineWidth(rgb_canvas, line_width);
+  cdCanvasLine(rgb_canvas, start_x, start_y, end_x, end_y);
+  cdKillCanvas(rgb_canvas);
 }
 
 void tool_draw_overlay(Ihandle* toolbox, cdCanvas* cd_canvas, int start_x, int start_y, int end_x, int end_y)
@@ -1318,11 +1319,11 @@ int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int y)
               double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
               unsigned char** data = (unsigned char**)image->data;
   
-              cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
+              cdCanvas* rgb_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
 
-              tool_draw_overlay(toolbox, cd_canvas, start_x, start_y, x, y);
+              tool_draw_overlay(toolbox, rgb_canvas, start_x, start_y, x, y);
 
-              cdKillCanvas(cd_canvas);
+              cdKillCanvas(rgb_canvas);
 
               IupSetAttribute(canvas, "OVERLAY", NULL);
               IupSetAttribute(canvas, "DIRTY", "Yes");
@@ -1577,8 +1578,8 @@ int item_print_action_cb(Ihandle* item_print)
   imImage* image;
   char* title = IupGetAttribute(IupGetDialog(item_print), "TITLE");
 
-  cdCanvas* cd_canvas = cdCreateCanvasf(CD_PRINTER, "%s -d", title);
-  if (!cd_canvas)
+  cdCanvas* print_canvas = cdCreateCanvasf(CD_PRINTER, "%s -d", title);
+  if (!print_canvas)
     return IUP_DEFAULT;
 
   /* do NOT draw the background, use the paper color */
@@ -1593,7 +1594,7 @@ int item_print_action_cb(Ihandle* item_print)
     int margin_width = IupConfigGetVariableIntDef(config, "Print", "MarginWidth", 20);
     int margin_height = IupConfigGetVariableIntDef(config, "Print", "MarginHeight", 20);
 
-    cdCanvasGetSize(cd_canvas, &canvas_width, &canvas_height, &canvas_width_mm, &canvas_height_mm);
+    cdCanvasGetSize(print_canvas, &canvas_width, &canvas_height, &canvas_width_mm, &canvas_height_mm);
 
     /* convert to pixels */
     margin_width = (int)((margin_width * canvas_width) / canvas_width_mm);
@@ -1606,10 +1607,10 @@ int item_print_action_cb(Ihandle* item_print)
     x = (canvas_width - view_width) / 2;
     y = (canvas_height - view_height) / 2;
 
-    imcdCanvasPutImage(cd_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
+    imcdCanvasPutImage(print_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
   }
 
-  cdKillCanvas(cd_canvas);
+  cdKillCanvas(print_canvas);
   return IUP_DEFAULT;
 }
 

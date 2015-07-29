@@ -959,6 +959,8 @@ void tool_get_text(Ihandle* toolbox)
 
 
 
+
+
 /********************************** Callbacks *****************************************/
 
 
@@ -1030,6 +1032,7 @@ int canvas_action_cb(Ihandle* canvas)
 
       cdCanvasTransformTranslate(cd_canvas, view_x, view_y);
       cdCanvasTransformScale(cd_canvas, (double)view_width / (double)image->width, view_height / (double)image->height);
+
 
       cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
       cdCanvasLineWidth(cd_canvas, line_width);
@@ -1745,7 +1748,6 @@ int tool_action_cb(Ihandle* ih, int state)
 
 int toolcolor_action_cb(Ihandle* ih)
 {
-  Ihandle* canvas = (Ihandle*)IupGetAttribute(ih, "CANVAS");
   Ihandle* colordlg = IupColorDlg();
   const char* color = IupGetAttribute(ih, "BGCOLOR");
   IupSetStrAttribute(colordlg, "VALUE", color);
@@ -1759,8 +1761,6 @@ int toolcolor_action_cb(Ihandle* ih)
 
     IupSetStrAttribute(ih, "BGCOLOR", color);           
     IupSetStrAttribute(IupGetDialog(ih), "TOOLCOLOR", color);
-
-    IupUpdate(canvas);
   }
 
   IupDestroy(colordlg);
@@ -1834,6 +1834,7 @@ int main_dlg_move_cb(Ihandle* dlg, int x, int y)
 
   return IUP_DEFAULT;
 }
+
 
 
 /********************************** Main *****************************************/
@@ -1984,7 +1985,7 @@ Ihandle* create_main_menu(Ihandle *config)
   IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "ZoomGrid", 1))
-    IupSetAttribute(item_toolbar, "VALUE", "OFF");
+    IupSetAttribute(item_zoomgrid, "VALUE", "OFF");
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))
     IupSetAttribute(item_toolbar, "VALUE", "OFF");

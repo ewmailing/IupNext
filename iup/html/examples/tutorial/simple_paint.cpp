@@ -1218,11 +1218,11 @@ void SimplePaint::DrawPencil(int start_x, int start_y, int end_x, int end_y)
   long color = toolbox.Color();
 
   /* do not use line style here */
-  cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", file.GetImage()->width, file.GetImage()->height, data[0], data[1], data[2], res);
-  cdCanvasForeground(cd_canvas, color);
-  cdCanvasLineWidth(cd_canvas, line_width);
-  cdCanvasLine(cd_canvas, start_x, start_y, end_x, end_y);
-  cdKillCanvas(cd_canvas);
+  cdCanvas* rgb_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", file.GetImage()->width, file.GetImage()->height, data[0], data[1], data[2], res);
+  cdCanvasForeground(rgb_canvas, color);
+  cdCanvasLineWidth(rgb_canvas, line_width);
+  cdCanvasLine(rgb_canvas, start_x, start_y, end_x, end_y);
+  cdKillCanvas(rgb_canvas);
 }
 
 void SimplePaint::DrawToolOverlay(cdCanvas* cnv, int start_x, int start_y, int end_x, int end_y)
@@ -1478,11 +1478,11 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
               double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
               unsigned char** data = (unsigned char**)file.GetImage()->data;
   
-              cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", file.GetImage()->width, file.GetImage()->height, data[0], data[1], data[2], res);
+              cdCanvas* rgb_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", file.GetImage()->width, file.GetImage()->height, data[0], data[1], data[2], res);
 
-              DrawToolOverlay(cd_canvas, interact.start_x, interact.start_y, x, y);
+              DrawToolOverlay(rgb_canvas, interact.start_x, interact.start_y, x, y);
 
-              cdKillCanvas(cd_canvas);
+              cdKillCanvas(rgb_canvas);
 
               interact.overlay = false;
               file.dirty = true;
