@@ -65,7 +65,7 @@ end
 function write_file(filename, image)
   local format = image:GetAttribString("FileFormat")
   local err = im.FileImageSave(filename, format, image)
-  if (err ~= im.ERR_NONE) then
+  if (err and err ~= im.ERR_NONE) then
     show_error(im.ErrorStr(err), true)
     return false
   end
@@ -329,7 +329,7 @@ end
 
 function edit_menu:open_cb()
   local clipboard = iup.clipboard{}
-  if (not clipboard.textavailable) then
+  if (clipboard.imageavailable == "NO") then
     item_paste.active = "NO"
   else
     item_paste.active = "YES"
@@ -437,7 +437,8 @@ end
 
 function item_copy:action()
   local clipboard = iup.clipboard{}
-  clipboard.nativeimage = iup.GetImageNativeHandle(canvas.image)
+  -- must use iup.SetAttribute because it is an userdata
+  iup.SetAttribute(clipboard, "NATIVEIMAGE", iup.GetImageNativeHandle(canvas.image))
   clipboard:destroy()
 end
 
