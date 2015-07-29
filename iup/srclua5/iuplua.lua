@@ -101,9 +101,9 @@ iup.SetMethod("iupWidget", "__index", widget_gettable)
 local ihandle_gettable = function(ih, index)
   local INDEX = string.upper(index)
   if (iup.callbacks[INDEX]) then 
-   local widget = iup.GetWidget(ih)
-   if (not widget or type(widget)~="table") then error("invalid IUP handle") end
-   return widget[index]
+    local widget = iup.GetWidget(ih)
+    if (not widget or type(widget)~="table") then error("invalid IUP handle") end
+    return widget[index]
   else
     local value = iup.GetAttribute(ih, INDEX)
     if (not value) then
@@ -146,10 +146,10 @@ local ihandle_settable = function(ih, index, value)
       iup.SetAttribute(ih, INDEX, value)
       widget[index] = nil -- if there was something in Lua remove it
     else
-      widget[index] = value -- store also in Lua
+      widget[index] = value -- store only in Lua
     end
   else
-    widget[index] = value -- store also in Lua
+    widget[index] = value -- store only in Lua
   end
 end
 
