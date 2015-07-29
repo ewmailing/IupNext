@@ -585,7 +585,7 @@ end
 function update_image(canvas, image, update_size)
   local old_image = canvas.image
 
-  canvas.dirty = dirty
+  canvas.dirty = "Yes"
   canvas.image = image
 
   if (old_image) then
@@ -1568,7 +1568,7 @@ int item_resize_action_cb(Ihandle* ih)
 
   imProcessResize(image, new_image, quality);
 
-  update_image(canvas, new_image, 1);   /* update size */
+  update_image(canvas, new_image, true);   /* update size */
 
   return IUP_DEFAULT;
 }
@@ -1585,7 +1585,7 @@ function item_mirror:action()
 
   im.ProcessMirror(image, new_image)
 
-  update_image(canvas, new_image, 0)
+  update_image(canvas, new_image, false)
 end
 
 item_flip = image_menu[3]
@@ -1599,82 +1599,66 @@ function item_flip:action()
 
   im.ProcessFlip(image, new_image)
 
-  update_image(canvas, new_image, 0)
+  update_image(canvas, new_image, false)
+end
+
+item_rotate180 = image_menu[4]
+function item_rotate180:action()
+  local image = canvas.image
+  local new_image = image:Clone()
+  if (not new_image) then
+    show_file_error(im.ERR_MEM)
+    return 
+  end
+
+  im.ProcessRotate180(image, new_image)
+
+  update_image(canvas, new_image, false)
+end
+
+item_rotate90cw = image_menu[5]
+function item_rotate90cw:action()
+  local image = canvas.image
+  local new_image = im.ImageCreateBased(image, image:Height(), image:Width(), nil, nil)
+  if (not new_image) then
+    show_file_error(im.ERR_MEM)
+    return 
+  end
+
+  im.ProcessRotate90(image, new_image, 1)
+
+  update_image(canvas, new_image, true)  -- update size
+end
+
+item_rotate90ccw = image_menu[6]
+function item_rotate90ccw:action()
+  local image = canvas.image
+  local new_image = im.ImageCreateBased(image, image:Height(), image:Width(), nil, nil)
+  if (not new_image) then
+    show_file_error(im.ERR_MEM)
+    return 
+  end
+
+  im.ProcessRotate90(image, new_image, -1)
+
+  update_image(canvas, new_image, true)  -- update size
+end
+
+item_negative = image_menu[8] -- skip separator
+function item_negative:action()
+  local image = canvas.image
+  local new_image = image:Clone()
+  if (not new_image) then
+    show_file_error(im.ERR_MEM)
+    return 
+  end
+
+  im.ProcessNegative(image, new_image)
+
+  update_image(canvas, new_image, false)
 end
 
 yyy = [[
-
-int item_rotate180_action_cb(Ihandle* ih)
-{
-  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
-  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  imImage* new_image = imImageClone(image);
-  if (!new_image)
-  {
-    show_file_error(IM_ERR_MEM);
-    return IUP_DEFAULT;
-  }
-
-  imProcessRotate180(image, new_image);
-
-  update_image(canvas, new_image, 0);
-
-  return IUP_DEFAULT;
-}
-
-int item_rotate90cw_action_cb(Ihandle* ih)
-{
-  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
-  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  imImage* new_image = imImageCreateBased(image, image->height, image->width, -1, -1);
-  if (!new_image)
-  {
-    show_file_error(IM_ERR_MEM);
-    return IUP_DEFAULT;
-  }
-
-  imProcessRotate90(image, new_image, 1);
-
-  update_image(canvas, new_image, 1);   /* update size */
-
-  return IUP_DEFAULT;
-}
-
-int item_rotate90ccw_action_cb(Ihandle* ih)
-{
-  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
-  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  imImage* new_image = imImageCreateBased(image, image->height, image->width, -1, -1);
-  if (!new_image)
-  {
-    show_file_error(IM_ERR_MEM);
-    return IUP_DEFAULT;
-  }
-
-  imProcessRotate90(image, new_image, -1);
-
-  update_image(canvas, new_image, 1);   /* update size */
-
-  return IUP_DEFAULT;
-}
-
-int item_negative_action_cb(Ihandle* ih)
-{
-  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
-  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  imImage* new_image = imImageClone(image);
-  if (!new_image)
-  {
-    show_file_error(IM_ERR_MEM);
-    return IUP_DEFAULT;
-  }
-
-  imProcessNegative(image, new_image);
-
-  update_image(canvas, new_image, 0);
-
-  return IUP_DEFAULT;
-}
 
 static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data)
 {
@@ -1736,7 +1720,7 @@ int item_brightcont_action_cb(Ihandle* ih)
 
   imProcessToneGamut(image, new_image, IM_GAMUT_BRIGHTCONT, param);
 
-  update_image(canvas, new_image, 0);
+  update_image(canvas, new_image, false);
 
   return IUP_DEFAULT;
 }
