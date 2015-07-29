@@ -1536,6 +1536,212 @@ function item_statusbar:action()
   config:SetVariable("MainWindow", "Statusbar", item_statusbar.value)
 end
 
+xxx = [[
+int item_resize_action_cb(Ihandle* ih)
+{
+  Ihandle* config = (Ihandle*)IupGetAttribute(ih, "CONFIG");
+  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  imImage* new_image;
+  int height = image->height, 
+      width = image->width;
+  int quality = IupConfigGetVariableIntDef(config, "Image", "ResizeQuality", 1);  /* medium default */
+
+  if (!IupGetParam("Resize", NULL, NULL, 
+                   "Width: %i[1,]\n"
+                   "Height: %i[1,]\n"
+                   "Quality: %l|low|medium|high|\n",
+                   &width, &height, &quality, NULL))
+    return IUP_DEFAULT;
+
+  IupConfigSetVariableInt(config, "Image", "ResizeQuality", quality);
+
+  new_image = imImageCreateBased(image, width, height, -1, -1);
+  if (!new_image)
+  {
+    show_file_error(IM_ERR_MEM);
+    return IUP_DEFAULT;
+  }
+
+  if (quality == 2)
+    quality = 3; /* interpolation order can be 0, 1, and 3 */
+
+  imProcessResize(image, new_image, quality);
+
+  update_image(canvas, new_image, 1);   /* update size */
+
+  return IUP_DEFAULT;
+}
+]]
+
+item_mirror = image_menu[2]
+function item_mirror:action()
+  local image = canvas.image
+  local new_image = image:Clone()
+  if (not new_image) then
+    show_file_error(im.ERR_MEM)
+    return 
+  end
+
+  im.ProcessMirror(image, new_image)
+
+  update_image(canvas, new_image, 0)
+end
+
+item_flip = image_menu[3]
+function item_flip:action()
+  local image = canvas.image
+  local new_image = image:Clone()
+  if (not new_image) then
+    show_file_error(im.ERR_MEM)
+    return 
+  end
+
+  im.ProcessFlip(image, new_image)
+
+  update_image(canvas, new_image, 0)
+end
+
+yyy = [[
+
+int item_rotate180_action_cb(Ihandle* ih)
+{
+  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  imImage* new_image = imImageClone(image);
+  if (!new_image)
+  {
+    show_file_error(IM_ERR_MEM);
+    return IUP_DEFAULT;
+  }
+
+  imProcessRotate180(image, new_image);
+
+  update_image(canvas, new_image, 0);
+
+  return IUP_DEFAULT;
+}
+
+int item_rotate90cw_action_cb(Ihandle* ih)
+{
+  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  imImage* new_image = imImageCreateBased(image, image->height, image->width, -1, -1);
+  if (!new_image)
+  {
+    show_file_error(IM_ERR_MEM);
+    return IUP_DEFAULT;
+  }
+
+  imProcessRotate90(image, new_image, 1);
+
+  update_image(canvas, new_image, 1);   /* update size */
+
+  return IUP_DEFAULT;
+}
+
+int item_rotate90ccw_action_cb(Ihandle* ih)
+{
+  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  imImage* new_image = imImageCreateBased(image, image->height, image->width, -1, -1);
+  if (!new_image)
+  {
+    show_file_error(IM_ERR_MEM);
+    return IUP_DEFAULT;
+  }
+
+  imProcessRotate90(image, new_image, -1);
+
+  update_image(canvas, new_image, 1);   /* update size */
+
+  return IUP_DEFAULT;
+}
+
+int item_negative_action_cb(Ihandle* ih)
+{
+  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  imImage* new_image = imImageClone(image);
+  if (!new_image)
+  {
+    show_file_error(IM_ERR_MEM);
+    return IUP_DEFAULT;
+  }
+
+  imProcessNegative(image, new_image);
+
+  update_image(canvas, new_image, 0);
+
+  return IUP_DEFAULT;
+}
+
+static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data)
+{
+  Ihandle* canvas = (Ihandle*)user_data;
+
+  if (param_index == 0 || param_index == 1)
+  {
+    float param[2] = { 0, 0 };
+    imImage* image = (imImage*)IupGetAttribute(canvas, "ORIGINAL_IMAGE");
+    imImage* new_image = (imImage*)IupGetAttribute(canvas, "NEW_IMAGE");
+    Ihandle* brightness_shift_param = (Ihandle*)IupGetAttribute(dialog, "PARAM0");
+    Ihandle* contrast_factor_param = (Ihandle*)IupGetAttribute(dialog, "PARAM1");
+    param[0] = IupGetFloat(brightness_shift_param, "VALUE");
+    param[1] = IupGetFloat(contrast_factor_param, "VALUE");
+
+    imProcessToneGamut(image, new_image, IM_GAMUT_BRIGHTCONT, param);
+
+    IupSetAttribute(canvas, "IMAGE", (char*)new_image);
+    IupUpdate(canvas);
+  }
+  else if (param_index != IUP_GETPARAM_INIT)
+  {
+    /* restore original configuration */
+    imImage* image = (imImage*)IupGetAttribute(canvas, "ORIGINAL_IMAGE");
+    IupSetAttribute(canvas, "IMAGE", (char*)image);
+    IupSetAttribute(canvas, "ORIGINAL_IMAGE", NULL);
+    IupSetAttribute(canvas, "NEW_IMAGE", NULL);
+
+    if (param_index == IUP_GETPARAM_BUTTON2)  /* cancel */
+      IupUpdate(canvas);
+  }
+
+  return 1;
+}
+
+int item_brightcont_action_cb(Ihandle* ih)
+{
+  float param[2] = { 0, 0 };
+  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  imImage* new_image = imImageClone(image);
+  if (!new_image)
+  {
+    show_file_error(IM_ERR_MEM);
+    return IUP_DEFAULT;
+  }
+
+  IupSetAttribute(canvas, "ORIGINAL_IMAGE", (char*)image);
+  IupSetAttribute(canvas, "NEW_IMAGE", (char*)new_image);
+
+  if (!IupGetParam("Brightness and Contrast", brightcont_param_cb, canvas,
+                   "Brightness Shift: %r[-100,100]\n"
+                   "Contrast Factor: %r[-100,100]\n",
+                   &param[0], &param[1], NULL))
+  {
+    imImageDestroy(new_image);
+	  return IUP_DEFAULT;
+  }
+
+  imProcessToneGamut(image, new_image, IM_GAMUT_BRIGHTCONT, param);
+
+  update_image(canvas, new_image, 0);
+
+  return IUP_DEFAULT;
+}
+]]
+
 function item_help:action()
   iup.Help("http://www.tecgraf.puc-rio.br/iup")
 end
