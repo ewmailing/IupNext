@@ -163,7 +163,7 @@ iup_console.mnuMain = iup.menu
   {
     iup.menu
     {
-      iup.item{title="Exit", action="return iup.CLOSE"}
+      iup.item{title="Exit", action="iup.ExitLoop()"}
     }; title="File"
   },
   iup.submenu{iup.menu
@@ -181,7 +181,7 @@ iup_console.dlgMain = iup.dialog{iup_console.vbxConsole,
                                  dragdrop = "YES",
                                  defaultenter=iup_console.butExecute,
                                  startfocus=iup_console.mlCode,
-                                 close_cb = "return iup.CLOSE"}
+                                 close_cb = "iup.ExitLoop()"}
 
 function iup_console.dlgMain:dropfiles_cb(filename, num, x, y)
   if (num == 0) then
@@ -213,7 +213,7 @@ iup_console.dlgAbout = iup.dialog
           }
       },
       iup.fill{size="5"},
-      iup.button{title="OK", action="return iup.CLOSE", size="50X20"}
+      iup.button{title="OK", action="iup.ExitLoop()", size="50X20"}
       ;margin="10x10", alignment="ACENTER"
    }
    ;maxbox="NO", minbox="NO", resize="NO", title="About"
