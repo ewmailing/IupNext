@@ -681,7 +681,7 @@ public:
   bool dirty;  /* leave it public */
 
   SimplePaintFile()
-    :image(NULL), dirty(false), filename(NULL)
+    :filename(NULL), image(NULL), dirty(false)
   {
   }
 
@@ -730,8 +730,7 @@ private:
 
 public:
   SimplePaintToolbox()
-    :toolbox(NULL), tool_index(TOOL_POINTER), 
-     paint_canvas(NULL), config(NULL)
+    :toolbox(NULL), config(NULL), paint_canvas(NULL), tool_index(TOOL_POINTER)
   {
     options.color = CD_BLACK;
     options.line_width = 1;
@@ -1290,7 +1289,7 @@ int SimplePaint::CanvasActionCallback(Ihandle*)
     /* Some CD drivers have interpolation options for image zoom */
     /* we force NEAREST so we can see the pixel boundary in zoom in */
     /* an alternative would be to set BILINEAR when zoom out */
-    cdCanvasSetAttribute(cd_canvas, "IMGINTERP", "NEAREST");  /* affects only drivers that have this attribute */
+    cdCanvasSetAttribute(cd_canvas, "IMGINTERP", (char*)"NEAREST");  /* affects only drivers that have this attribute */
     imcdCanvasPutImage(cd_canvas, file.GetImage(), x, y, view_width, view_height, 0, 0, 0, 0);
 
     if (IupConfigGetVariableInt(config, "MainWindow", "ZoomGrid"))
