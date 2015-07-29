@@ -564,7 +564,10 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       iupwinButtonUp(ih, msg, wp, lp);
       
       if (!iupObjectCheck(ih))
-        break;
+      {
+        *result = 0;
+        return 1;
+      }
 
       if (msg==WM_LBUTTONUP)
       {
