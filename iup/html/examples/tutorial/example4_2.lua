@@ -437,7 +437,7 @@ end
 
 function item_copy:action()
   local clipboard = iup.clipboard{}
-  clipboard.nativeimage = iup.GetImageNativeHandle(image)
+  clipboard.nativeimage = iup.GetImageNativeHandle(canvas.image)
   clipboard:destroy()
 end
 

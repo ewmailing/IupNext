@@ -4,6 +4,7 @@ require("iupluaimglib")
 require("iupluaim")
 require("cdlua")
 require("iupluacd")
+require("cdluaim")
 
 
 --********************************** Images *****************************************
@@ -369,6 +370,8 @@ function scroll_update(ih, view_width, view_height)
   end
 
   local elem_width, elem_height = string.match(ih.rastersize, "(%d*)x(%d*)")
+  elem_width = tonumber(elem_width)
+  elem_height = tonumber(elem_height)
 
   -- if view is greater than canvas in one direction,
   -- then it has scrollbars,
@@ -423,33 +426,29 @@ function scroll_center(ih, old_center_x, old_center_y)
   ih.posy = posy
 end
 
-void scroll_move(Ihandle* canvas, int canvas_width, int canvas_height, int move_x, int move_y, int view_width, int view_height)
-{
-  float posy = 0;
-  float posx = 0;
+function scroll_move(ih, canvas_width, canvas_height, move_x, move_y, view_width, view_height)
+  local posy = 0
+  local posx = 0
 
-  if (move_x == 0 && move_y == 0)
-    return;
+  if (move_x == 0 and move_y == 0) then
+    return
+  end
+  if (canvas_height < view_height) then
+    posy = tonumber(ih.posy)
+    posy = posy - (move_y/view_height)
+  end
 
-  if (canvas_height < view_height)
-  {
-    posy = IupGetFloat(canvas, "POSY");
-    posy -= (float)move_y / (float)view_height;
-  }
+  if (canvas_width < view_width) then
+    posx = tonumber(ih.posx)
+    posx = posx - (move_x/view_width)
+  end
 
-  if (canvas_width < view_width)
-  {
-    posx = IupGetFloat(canvas, "POSX");
-    posx -= (float)move_x / (float)view_width;
-  }
-
-  if (posx != 0 || posy != 0)
-  {
-    IupSetFloat(canvas, "POSX", posx);
-    IupSetFloat(canvas, "POSY", posy);
-    IupUpdate(canvas);
-  }
-}
+  if (posx ~= 0 or posy ~= 0) then
+    ih.posx = posx
+    ih.posy = posy
+    iup.Update(ih)
+  end
+end
 
 function zoom_update(ih, zoom_index)
   local zoom_lbl = iup.GetDialogChild(ih, "ZOOMLABEL")
@@ -473,139 +472,114 @@ function zoom_update(ih, zoom_index)
   iup.Update(canvas)
 end
 
-typedef struct _xyStack
-{
-  int x, y;
-  struct _xyStack* next;
-} xyStack;
+function xy_stack_push(q, x, y)
+ local new_q = {}
+ new_q.x = x
+ new_q.y = y
+ new_q.next = q
+ return new_q
+end
 
-xyStack* xy_stack_push(xyStack* q, int x, int y)
-{
-  xyStack* new_q = malloc(sizeof(xyStack));
-  new_q->x = x;
-  new_q->y = y;
-  new_q->next = q;
-  return new_q;
-}
+function xy_stack_pop(q)
+  local next_q = q.next
+  return next_q
+end
 
-xyStack* xy_stack_pop(xyStack* q)
-{
-  xyStack* next_q = q->next;
-  free(q);
-  return next_q;
-}
-
-int color_is_similar(long color1, long color2, int tol)
-{
-  int diff_r = cdRed(color1) - cdRed(color2);
-  int diff_g = cdGreen(color1) - cdGreen(color2);
-  int diff_b = cdBlue(color1) - cdBlue(color2);
-  int sqr_dist = diff_r*diff_r + diff_g*diff_g + diff_b*diff_b;
-  /* max value = 255*255*3 = 195075 */
-  /* sqrt(195075)=441 */
-  if (sqr_dist < tol)
-    return 1;
+function color_is_similar(color1, color2, tol)
+  local diff_r = cd.Red(color1) - cd.Red(color2)
+  local diff_g = cd.Green(color1) - cd.Green(color2)
+  local diff_b = cd.Blue(color1) - cd.Blue(color2)
+  local sqr_dist = diff_r*diff_r + diff_g*diff_g + diff_b*diff_b
+  -- max value = 255*255*3 = 195075
+  -- sqrt(195075)=441
+  if (sqr_dist < tol) then
+    return true
   else
-    return 0;
-}
+    return false
+  end
+end
 
-void image_flood_fill(imImage* image, int start_x, int start_y, long replace_color, double tol_percent)
-{
-  unsigned char** data = (unsigned char**)image->data;
-  unsigned char *r = data[0], *g = data[1], *b = data[2];
-  int offset, tol, cur_x, cur_y;
-  long target_color, color;
-  xyStack* q = NULL;
+function image_flood_fill(image, start_x, start_y, replace_color, tol_percent)
+  local r = image[0]
+  local g = image[1]
+  local b = image[2]
+  local color
 
-  offset = start_y * image->width + start_x;
-  target_color = cdEncodeColor(r[offset], g[offset], b[offset]);
+  local target_color = cd.EncodeColor(r[start_y][start_x], g[start_y][start_x], b[start_y][start_x])
+  
+  if (target_color == replace_color) then
+    return
+  end
+  local tol = math.floor((441 * tol_percent) / 100)
+  tol = tol*tol  -- this is too high
+  tol = tol / 50 -- empirical reduce. TODO: What is the best formula?
 
-  if (target_color == replace_color)
-    return;
+  -- very simple 4 neighbors stack based flood fill
 
-  tol = (int)(441 * tol_percent) / 100;
-  tol = tol*tol;  /* this is too high */
-  tol = tol / 50;  /* empirical reduce. TODO: What is the best formula? */
+  -- a color in the xy_stack is always similar to the target color,
+  -- and it was already replaced
+  local q = xy_stack_push(nil, start_x, start_y)
+  r[start_y][start_x], g[start_y][start_x], b[start_y][start_x] = cd.DecodeColor(replace_color)
+  
+  while (q) do
+    local cur_x = q.x
+    local cur_y = q.y
+    q = xy_stack_pop(q)
+    
+    -- right 
+    if (cur_x < image:Width() - 1) then
+      color = cd.EncodeColor(r[cur_y][cur_x+1], g[cur_y][cur_x+1], b[cur_y][cur_x+1])
+      if (color ~= replace_color and color_is_similar(color, target_color, tol)) then
+        q = xy_stack_push(q, cur_x+1, cur_y)
+        r[cur_y][cur_x+1], g[cur_y][cur_x+1], b[cur_y][cur_x+1] = cd.DecodeColor(replace_color)
+      end
+    end
 
-  /* very simple 4 neighbors stack based flood fill */
+    -- left 
+    if (cur_x > 0) then
+      color = cd.EncodeColor(r[cur_y][cur_x-1], g[cur_y][cur_x-1], b[cur_y][cur_x-1])
+      if (color ~= replace_color and color_is_similar(color, target_color, tol)) then
+        q = xy_stack_push(q, cur_x-1, cur_y)
+        r[cur_y][cur_x-1], g[cur_y][cur_x-1], b[cur_y][cur_x-1] = cd.DecodeColor(replace_color)
+      end
+    end
 
-  /* a color in the xy_stack is always similar to the target color,
-  and it was already replaced */
-  q = xy_stack_push(q, start_x, start_y);
-  cdDecodeColor(replace_color, r + offset, g + offset, b + offset);
+    -- top
+    if (cur_y < image:Height() - 1) then
+      color = cd.EncodeColor(r[cur_y+1][cur_x], g[cur_y+1][cur_x], b[cur_y+1][cur_x])
+      if (color ~= replace_color and color_is_similar(color, target_color, tol)) then
+        q = xy_stack_push(q, cur_x, cur_y+1)
+        r[cur_y+1][cur_x], g[cur_y+1][cur_x], b[cur_y+1][cur_x] = cd.DecodeColor(replace_color)
+      end
+    end
 
-  while (q)
-  {
-    cur_x = q->x;
-    cur_y = q->y;
-    q = xy_stack_pop(q);
+    -- bottom
+    if (cur_y > 0) then
+      color = cd.EncodeColor(r[cur_y-1][cur_x], g[cur_y-1][cur_x], b[cur_y-1][cur_x])
+      if (color ~= replace_color and color_is_similar(color, target_color, tol)) then
+        q = xy_stack_push(q, cur_x, cur_y-1)
+        r[cur_y-1][cur_x], g[cur_y-1][cur_x], b[cur_y-1][cur_x] = cd.DecodeColor(replace_color)
+      end
+    end
+  end
+end
 
-    /* right */
-    if (cur_x < image->width - 1)
-    {
-      offset = cur_y * image->width + cur_x+1;
-      color = cdEncodeColor(r[offset], g[offset], b[offset]);
-      if (color != replace_color && color_is_similar(color, target_color, tol))
-      {
-        q = xy_stack_push(q, cur_x+1, cur_y);
-        cdDecodeColor(replace_color, r + offset, g + offset, b + offset);
-      }
-    }
-
-    /* left */
-    if (cur_x > 0)
-    {
-      offset = cur_y * image->width + cur_x-1;
-      color = cdEncodeColor(r[offset], g[offset], b[offset]);
-      if (color != replace_color && color_is_similar(color, target_color, tol))
-      {
-        q = xy_stack_push(q, cur_x-1, cur_y);
-        cdDecodeColor(replace_color, r + offset, g + offset, b + offset);
-      }
-    }
-
-    /* top */
-    if (cur_y < image->height - 1)
-    {
-      offset = (cur_y+1) * image->width + cur_x;
-      color = cdEncodeColor(r[offset], g[offset], b[offset]);
-      if (color != replace_color && color_is_similar(color, target_color, tol))
-      {
-        q = xy_stack_push(q, cur_x, cur_y+1);
-        cdDecodeColor(replace_color, r + offset, g + offset, b + offset);
-      }
-    }
-
-    /* bottom */
-    if (cur_y > 0)
-    {
-      offset = (cur_y-1) * image->width + cur_x;
-      color = cdEncodeColor(r[offset], g[offset], b[offset]);
-      if (color != replace_color && color_is_similar(color, target_color, tol))
-      {
-        q = xy_stack_push(q, cur_x, cur_y-1);
-        cdDecodeColor(replace_color, r + offset, g + offset, b + offset);
-      }
-    }
-  }
-}
-
-void image_fill_white(imImage* image)
-{
-  unsigned char** data = (unsigned char**)image->data;
-  int x, y, offset;
-
-  for (y = 0; y < image->height; y++)
-  {
-    for (x = 0; x < image->width; x++)
-    {
-      offset = y * image->width + x;
-      data[0][offset] = 255;
-      data[1][offset] = 255;
-      data[2][offset] = 255;
-    }
-  }
-}
+function image_fill_white(image)
+  local x, y
+  local r = image[0]
+  local g = image[1]
+  local b = image[2]
+  for y = 0, image:Height()-1 do
+    local r_line = r[y]
+    local g_line = g[y]
+    local b_line = b[y]
+    for x = 0, image:Width()-1 do
+      r_line[x] = 255
+      g_line[x] = 255
+      b_line[x] = 255
+    end
+  end
+end
 
 function set_new_image(canvas, image, filename, dirty)
   local dlg = iup.GetDialog(canvas)
@@ -660,7 +634,8 @@ function check_new_file(dlg)
     local height = config:GetVariableDef("NewImage", "Height", 480)
 
     local image = im.ImageCreate(width, height, im.RGB, im.BYTE)
-
+    image_fill_white(image)
+    
     set_new_image(canvas, image, nil, nil)
   end
 end
@@ -800,9 +775,11 @@ function view_zoom_rect(ih, image_width, image_height)
   local posx = tonumber(ih.posx)
   
   local canvas_width, canvas_height = string.match(ih.drawsize,"(%d*)x(%d*)")
+  canvas_width = tonumber(canvas_width)
+  canvas_height = tonumber(canvas_height)
 
-  local view_width = math.floor(zoom_factor * image:Width())
-  local view_height = math.floor(zoom_factor * image:Height())
+  local view_width = math.floor(zoom_factor * image_width)
+  local view_height = math.floor(zoom_factor * image_height)
 
   if (canvas_width < view_width) then
     x = math.floor(-posx * view_width)
@@ -823,39 +800,24 @@ function view_zoom_rect(ih, image_width, image_height)
   return zoom_factor, x, y, view_width, view_height
 end
 
-int tool_get_text_enter_cb(void)
-{
-  return IUP_CLOSE;
-}
+function tool_get_text_enter_cb()
+  return iup.CLOSE
+end
 
-void tool_get_text(Ihandle* toolbox)
-{
-  Ihandle *text, *dlg;
+function tool_get_text()
+  local text, dlg
+  
+  text = iup.text{expand = "YES", value = toolbox.tooltext, font = toolbox.toolfont, visiblecolumns = 20}
 
-  char* value = IupGetAttribute(toolbox, "TOOLTEXT");
-  char* font = IupGetAttribute(toolbox, "TOOLFONT");
+  dlg = iup.dialog{text, title = "Enter Text:", minbox = "NO", maxbox = "NO"}
+  dlg.parentdialog = toolbox
 
-  text = IupText(NULL);
-  IupSetAttribute(text, "EXPAND", "YES");
-  IupSetStrAttribute(text, "VALUE", value);
-  IupSetStrAttribute(text, "FONT", font);
-  IupSetAttribute(text, "VISIBLECOLUMNS", "20");
+  iup.Popup(dlg, iup.MOUSEPOS, iup.MOUSEPOS)
 
-  dlg = IupDialog(text);
+  toolbox.tooltext = text.value
 
-  IupSetStrAttribute(dlg, "TITLE", "Enter Text:");
-  IupSetAttribute(dlg, "MINBOX", "NO");
-  IupSetAttribute(dlg, "MAXBOX", "NO");
-  IupSetCallback(dlg, "K_CR", (Icallback)tool_get_text_enter_cb);
-  IupSetAttributeHandle(dlg, "PARENTDIALOG", toolbox);
-
-  IupPopup(dlg, IUP_MOUSEPOS, IUP_MOUSEPOS);
-
-  value = IupGetAttribute(text, "VALUE");
-  IupSetStrAttribute(toolbox, "TOOLTEXT", value);
-
-  IupDestroy(dlg);
-}
+  iup.Destroy(dlg)
+end
 
 
 
@@ -869,10 +831,10 @@ config:Load()
 
 canvas = iup.canvas{
   scrollbar = "Yes",
-  config = config,  -- custom attribute
   dirty = nil, -- custom attribute
   dx = 0,
   dy = 0,
+  config = config,
 }
 
 item_new = iup.item{title = "&New...\tCtrl+N", image = "IUP_FileNew"}
@@ -894,13 +856,8 @@ item_statusbar = iup.item{title="&Statusbar", value="ON"}
 item_help = iup.item{title="&Help..."}
 item_about = iup.item{title="&About..."}
 
-  item_zoomgrid = IupItem("&Zoom Grid", NULL);
-  IupSetCallback(item_zoomgrid, "ACTION", (Icallback)item_zoomgrid_action_cb);
-  IupSetAttribute(item_zoomgrid, "VALUE", "ON");
-  IupSetAttribute(item_zoomgrid, "NAME", "ZOOMGRID");
-  item_toolbox = IupItem("&Toobox", NULL);
-  IupSetCallback(item_toolbox, "ACTION", (Icallback)item_toolbox_action_cb);
-  IupSetAttribute(item_toolbox, "NAME", "TOOLBOXMENU");
+item_zoomgrid = iup.item{title = "&Zoom Grid", action = item_zoomgrid_action_cb, VALUE = "ON", name = "ZOOMGRID"}
+item_toolbox = iup.item{title = "&Toobox", action = item_toolbox_action_cb, name = "TOOLBOXMENU"}
 
 
 recent_menu = iup.menu{}
@@ -981,72 +938,59 @@ function canvas:action()
 
     image:cdCanvasPutImageRect(cd_canvas, x, y, view_width, view_height, 0, 0, 0, 0)
     
-    if (IupConfigGetVariableInt(config, "MainWindow", "ZoomGrid"))
-    {
-      Ihandle* zoom_val = IupGetDialogChild(canvas, "ZOOMVAL");
-      double zoom_index = IupGetDouble(zoom_val, "VALUE");
-      if (zoom_index > 1)
-      {
-        int ix, iy;
-        double zoom_factor = pow(2, zoom_index);
+    if (config:GetVariable("MainWindow", "ZoomGrid") == "ON") then
+      zoom_val = iup.GetDialogChild(canvas, "ZOOMVAL")
+      zoom_index = tonumber(zoom_val.value)
+      if (zoom_index > 1) then
+        local ix, iy
+        local zoom_factor = math.pow(2, zoom_index)
+        cd_canvas:Foreground(cd.GRAY)
+        for ix = 0, image:Width()-1 do
+          local gx = math.floor(ix * zoom_factor)
+          cd_canvas:Line(gx + x, y, gx + x, y + view_height)
+        end
+        for iy = 0, image:Height()-1 do
+          local gy = math.floor(iy * zoom_factor)
+          cd_canvas:Line(x, gy + y, x + view_width, gy + y)
+        end
+      end
+    end
 
-        cdCanvasForeground(cd_canvas, CD_GRAY);
+    if (canvas.overlay) then
+      local start_x = tonumber(canvas.start_x)
+      local start_y = tonumber(canvas.start_y)
+      local end_x = tonumber(canvas.end_x)
+      local end_y = tonumber(canvas.end_y)
+      local line_width = tonumber(toolbox.toolwidth)
+      local line_style = tonumber(toolbox.toolstyle - 1)
+      local r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
+      
+      cd_canvas:TransformTranslate(x, y)
+      cd_canvas:TransformScale(view_width / image:Width(), view_height / image:Height())
 
-        for (ix = 0; ix < image->width; ix++)
-        {
-          int gx = (int)(ix * zoom_factor);
-          cdCanvasLine(cd_canvas, gx + x, y, gx + x, y + view_height);
-        }
-        for (iy = 0; iy < image->height; iy++)
-        {
-          int gy = (int)(iy * zoom_factor);
-          cdCanvasLine(cd_canvas, x, gy + y, x + view_width, gy + y);
-        }
-      }
-    }
-
-    if (IupGetAttribute(canvas, "OVERLAY"))
-    {
-      Ihandle* toolbox = (Ihandle*)IupGetAttribute(canvas, "TOOLBOX");
-      int start_x = IupGetInt(canvas, "START_X");
-      int start_y = IupGetInt(canvas, "START_Y");
-      int end_x = IupGetInt(canvas, "END_X");
-      int end_y = IupGetInt(canvas, "END_Y");
-      int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-      int line_style = IupGetInt(toolbox, "TOOLSTYLE") - 1;
-      unsigned char r, g, b;
-      IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
-
-      cdCanvasTransformTranslate(cd_canvas, x, y);
-      cdCanvasTransformScale(cd_canvas, (double)view_width / (double)image->width, view_height / (double)image->height);
-
-      cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
-      cdCanvasLineWidth(cd_canvas, line_width);
-      if (line_width == 1)
-        cdCanvasLineStyle(cd_canvas, line_style);
-
-      if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "LINE") == 0)
-        cdCanvasLine(cd_canvas, start_x, start_y, end_x, end_y);
-      else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "RECT") == 0)
-        cdCanvasRect(cd_canvas, start_x, end_x, start_y, end_y);
-      else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "BOX") == 0)
-        cdCanvasBox(cd_canvas, start_x, end_x, start_y, end_y);
-      else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "ELLIPSE") == 0)
-        cdCanvasArc(cd_canvas, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
-      else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "OVAL") == 0)
-        cdCanvasSector(cd_canvas, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
-      else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "TEXT") == 0)
-      {
-        cdCanvasTextAlignment(cd_canvas, CD_SOUTH_WEST);
-        cdCanvasNativeFont(cd_canvas, IupGetAttribute(toolbox, "TOOLFONT"));
-        cdCanvasText(cd_canvas, end_x, end_y, IupGetAttribute(toolbox, "TOOLTEXT"));
-      }
-
-      cdCanvasTransform(cd_canvas, NULL);
-    }
-    
+      cd_canvas:Foreground(cd.EncodeColor(r, g, b))
+      cd_canvas:LineWidth(line_width)
+      if (line_width == 1) then
+        cd_canvas:LineStyle(line_style)
+    end
+      if (canvas.overlay == "LINE") then
+        cd_canvas:Line(start_x, start_y, end_x, end_y)
+      elseif (canvas.overlay == "RECT") then
+        cd_canvas:Rect(start_x, end_x, start_y, end_y)
+      elseif (canvas.overlay == "BOX") then
+        cd_canvas:Box(start_x, end_x, start_y, end_y)
+      elseif (canvas.overlay == "ELLIPSE") then
+        cd_canvas:Arc((end_x + start_x) / 2, (end_y + start_y) / 2, math.abs(end_x - start_x), math.abs(end_y - start_y), 0, 360)
+      elseif (canvas.overlay == "OVAL") then
+        cd_canvas:Sector((end_x + start_x) / 2, (end_y + start_y) / 2, math.abs(end_x - start_x), math.abs(end_y - start_y), 0, 360)
+      elseif (canvas.overlay == "TEXT") then
+        cd_canvas:TextAlignment(cd.SOUTH_WEST)
+        cd_canvas:NativeFont(toolbox.toolfont)
+        cd_canvas:Text(end_x, end_y, toolbox.tooltext)
+      end
+      cd_canvas:Transform(nil)
+    end
   end
-
   cd_canvas:Flush()
 end
 
@@ -1131,254 +1075,212 @@ function canvas:wheel_cb(delta)
   end
 end
 
-int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int y)
-{
-  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  if (image)
-  {
-    int cursor_x = x, cursor_y = y;
-    int view_x, view_y, view_width, view_height;
-    double zoom_factor = view_zoom_rect(canvas, image->width, image->height, &view_x, &view_y, &view_width, &view_height);
+function canvas:button_cb(button, pressed, x, y)
+  local image = self.image
+  if (image) then
+    local cursor_x, cursor_y = x, y
+    local zoom_factor, view_x, view_y, view_width, view_height = view_zoom_rect(canvas, image:Width(), image:Height())
 
-    /* y is top-down in IUP */
-    int canvas_height = IupGetInt2(canvas, "DRAWSIZE");
-    y = canvas_height - y - 1;
+    -- y is top-down in IUP
+    local canvas_width, canvas_height = string.match(canvas.drawsize,"(%d*)x(%d*)") 
+    canvas_height = tonumber(canvas_height)
+    y = canvas_height - y - 1
 
-    /* inside image area */
-    if (x > view_x && y > view_y && x < view_x + view_width && y < view_y + view_height)
-    {
-      x -= view_x;
-      y -= view_y;
+    -- inside image area
+    if (x > view_x and y > view_y and x < view_x + view_width and y < view_y + view_height) then
+      x = x - view_x
+      y = y - view_y
 
-      x = (int)(x / zoom_factor);
-      y = (int)(y / zoom_factor);
+      x = math.floor(x / zoom_factor)
+      y = math.floor(y / zoom_factor)
 
-      if (x < 0) x = 0;
-      if (y < 0) y = 0;
-      if (x > image->width - 1) x = image->width - 1;
-      if (y > image->height - 1) y = image->height - 1;
+      if (x < 0) then x = 0 end
+      if (y < 0) then y = 0 end
+      if (x > image:Width() - 1) then x = image:Width() - 1 end
+      if (y > image:Height() - 1) then y = image:Height() - 1 end
 
-      if (button == IUP_BUTTON1)
-      {
-        if (pressed)
-        {
-          IupSetInt(canvas, "START_X", x);
-          IupSetInt(canvas, "START_Y", y);
-          IupSetInt(canvas, "START_CURSOR_X", cursor_x);
-          IupSetInt(canvas, "START_CURSOR_Y", cursor_y);
-        }
+      if (button == iup.BUTTON1) then
+        if (pressed == 1) then
+          canvas.start_x = x
+          canvas.start_y = y
+          canvas.start_cursor_x = cursor_x
+          canvas.start_cursor_y = cursor_y
         else
-        {
-          Ihandle* toolbox = (Ihandle*)IupGetAttribute(canvas, "TOOLBOX");
-          int tool_index = IupGetInt(toolbox, "TOOLINDEX");
+          local tool_index = tonumber(toolbox.toolindex)
+          if (tool_index == 1) then -- Color Picker 
+            local color = toolbox.color
+            r = image[0][y][x]
+            g = image[1][y][x]
+            b = image[2][y][x]
+            color.bgcolor = r.." "..g.." "..b
+            toolbox.toolcolor = r.." "..g.." "..b
+          elseif (tool_index == 2) then -- Pencil
+            local start_x = canvas.start_x
+            local start_y = canvas.start_y
+            local res = tonumber(iup.GetGlobal("SCREENDPI")) / 25.4
+            local r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
+            local line_width = toolbox.toolwidth
+              
+            -- do not use line style here */
+            local cd_canvas = image:cdCreateCanvas()
+            image:SetAttribString("ResolutionUnit", "PDI")
+            image:SetAttribReal("XResolution", im.FLOAT, res)
+            image:SetAttribReal("YResolution", im.FLOAT, res)
+            cd_canvas:Foreground(cd.EncodeColor(r, g, b))
+            cd_canvas:LineWidth(line_width)
+            cd_canvas:Line(start_x, start_y, x, y)
+            cd_canvas:Kill()
+  
+            canvas.dirty = "Yes"
+            iup.Update(canvas)
+  
+            canvas.start_x = x
+            canvas.start_y = y
+          elseif (tool_index >= 3 and tool_index <= 8) then -- Shapes
+            if (canvas.overlay) then
+              local start_x = canvas.start_x
+              local start_y = canvas.start_y
+              local line_width = toolbox.toolwidth
+              local line_style = toolbox.toolstyle - 1
+              local res = tonumber(iup.GetGlobal("SCREENDPI")) / 25.4
+              local r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
+              
+              local cd_canvas = image:cdCreateCanvas()
+              image:SetAttribString("ResolutionUnit", "PDI")
+              image:SetAttribReal("XResolution", im.FLOAT, res)
+              image:SetAttribReal("YResolution", im.FLOAT, res)
+              cd_canvas:Foreground(cd.EncodeColor(r, g, b))
+              cd_canvas:LineWidth(line_width)
+              if (line_width == 1) then
+                cd_canvas:LineStyle(line_style)
+              end
+              if (canvas.overlay == "LINE") then
+                cd_canvas:Line(start_x, start_y, x, y)
+              elseif (canvas.overlay == "RECT") then
+                cd_canvas:Rect(start_x, x, start_y, y)
+              elseif (canvas.overlay == "BOX") then
+                cd_canvas:Box(start_x, x, start_y, y)
+              elseif (canvas.overlay == "ELLIPSE") then
+                cd_canvas:Arc((x + start_x) / 2, (y + start_y) / 2, math.abs(x - start_x), math.abs(y - start_y), 0, 360)
+              elseif (canvas.overlay == "OVAL") then
+                cd_canvas:Sector((x + start_x) / 2, (y + start_y) / 2, math.abs(x - start_x), math.abs(y - start_y), 0, 360)
+              elseif (canvas.overlay == "TEXT") then
+                cd_canvas:TextAlignment(cd.SOUTH_WEST)
+                cd_canvas:NativeFont(toolbox.toolfont)
+                cd_canvas:Text(x, y, toolbox.tooltext)
+              end
+  
+              cd_canvas:Kill()
+  
+              canvas.overlay = nil
+              canvas.dirty = "Yes"
+  
+              iup.Update(canvas)
+            end
+          elseif (tool_index == 9) then -- Fill Color
+            local tol_percent = toolbox.toolfilltol
+            local r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
+            image_flood_fill(image, x, y, cd.EncodeColor(r, g, b), tol_percent)
+            canvas.dirty = "Yes"
+  
+            iup.Update(canvas)
+          end
+        end
+      elseif (button == iup.BUTTON3) then
+        if (pressed == 0) then
+          local tool_index = tonumber(toolbox.toolindex)
+          if (tool_index == 8) then -- Text
+            tool_get_text()
+          end
+        end
+      end
+    end
+  end
+  return iup.DEFAULT
+end
 
-          if (tool_index == 1)  /* Color Picker */
-          {
-            Ihandle* color = IupGetDialogChild(toolbox, "COLOR");
-            unsigned char** data = (unsigned char**)image->data;
-            unsigned char r, g, b;
-            int offset;
+function canvas:motion_cb(x, y, status)
+  local image = self.image
+  if (image) then
+    local cursor_x, cursor_y = x, y
+    local zoom_factor, view_x, view_y, view_width, view_height = view_zoom_rect(canvas, image:Width(), image:Height())
 
-            offset = y * image->width + x;
-            r = data[0][offset];
-            g = data[1][offset];
-            b = data[2][offset];
+    -- y is top-down in IUP
+    local canvas_width, canvas_height = string.match(canvas.drawsize,"(%d*)x(%d*)")
+    canvas_height = tonumber(canvas_height)
+    y = canvas_height - y - 1
 
-            IupSetRGB(color, "BGCOLOR", r, g, b);
-            IupSetRGB(toolbox, "TOOLCOLOR", r, g, b);
-          }
-          else if (tool_index == 2)  /* Pencil */
-          {
-            int start_x = IupGetInt(canvas, "START_X");
-            int start_y = IupGetInt(canvas, "START_Y");
-            double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-            unsigned char** data = (unsigned char**)image->data;
-            unsigned char r, g, b;
+    -- inside image area 
+    if (x > view_x and y > view_y and x < view_x + view_width and y < view_y + view_height) then
+      local status_lbl = iup.GetDialogChild(self, "STATUSLABEL")
 
-            int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-            IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+      x = x - view_x
+      y = y - view_y
 
-            /* do not use line style here */
-            cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
-            cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
-            cdCanvasLineWidth(cd_canvas, line_width);
-            cdCanvasLine(cd_canvas, start_x, start_y, x, y);
-            cdKillCanvas(cd_canvas);
+      x = math.floor(x / zoom_factor)
+      y = math.floor(y / zoom_factor)
 
-            IupSetAttribute(canvas, "DIRTY", "Yes");
+      if (x < 0) then x = 0 end
+      if (y < 0) then y = 0 end
+      if (x > image:Width() - 1) then x = image:Width() - 1 end
+      if (y > image:Height() - 1) then y = image:Height() - 1 end
 
-            IupUpdate(canvas);
+      local r = image[0][y][x]
+      local g = image[1][y][x]
+      local b = image[2][y][x]
+      
+      status_lbl.title = "("..x..", "..y..") = "..r.." "..g.." "..b
 
-            IupSetInt(canvas, "START_X", x);
-            IupSetInt(canvas, "START_Y", y);
-          }
-          else if (tool_index >= 3 && tool_index <= 8)  /* Shapes */
-          {
-            if (IupGetAttribute(canvas, "OVERLAY"))
-            {
-              int start_x = IupGetInt(canvas, "START_X");
-              int start_y = IupGetInt(canvas, "START_Y");
-              int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-              int line_style = IupGetInt(toolbox, "TOOLSTYLE") - 1;
-              double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-              unsigned char** data = (unsigned char**)image->data;
-              unsigned char r, g, b;
+      if (iup.isbutton1(status)) then -- button1 is pressed
+        local tool_index = tonumber(toolbox.toolindex)
+        
+        if (tool_index == 0) then -- Pointer 
+          local start_cursor_x = tonumber(canvas.start_cursor_x)
+          local start_cursor_y = tonumber(canvas.start_cursor_y)
 
-              IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+          local canvas_width, canvas_height = string.match(self.drawsize,"(%d*)x(%d*)")
+          canvas_width = tonumber(canvas_width)
+          canvas_height = tonumber(canvas_height)
 
-              cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
-              cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
-              cdCanvasLineWidth(cd_canvas, line_width);
-              if (line_width == 1)
-                cdCanvasLineStyle(cd_canvas, line_style);
+          scroll_move(canvas, canvas_width, canvas_height, cursor_x - start_cursor_x, cursor_y - start_cursor_y, view_width, view_height)
 
-              if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "LINE") == 0)
-                cdCanvasLine(cd_canvas, start_x, start_y, x, y);
-              else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "RECT") == 0)
-                  cdCanvasRect(cd_canvas, start_x, x, start_y, y);
-              else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "BOX") == 0)
-                cdCanvasBox(cd_canvas, start_x, x, start_y, y);
-              else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "ELLIPSE") == 0)
-                cdCanvasArc(cd_canvas, (x + start_x) / 2, (y + start_y) / 2, abs(x - start_x), abs(y - start_y), 0, 360);
-              else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "OVAL") == 0)
-                cdCanvasSector(cd_canvas, (x + start_x) / 2, (y + start_y) / 2, abs(x - start_x), abs(y - start_y), 0, 360);
-              else if (strcmp(IupGetAttribute(canvas, "OVERLAY"), "TEXT") == 0)
-              {
-                cdCanvasTextAlignment(cd_canvas, CD_SOUTH_WEST);
-                cdCanvasNativeFont(cd_canvas, IupGetAttribute(toolbox, "TOOLFONT"));
-                cdCanvasText(cd_canvas, x, y, IupGetAttribute(toolbox, "TOOLTEXT"));
-              }
+          self.start_cursor_x = cursor_x
+          self.start_cursor_y = cursor_y
+        elseif (tool_index == 2) then -- Pencil */
+          local start_x = self.start_x
+          local start_y = self.start_y
+          local res = tonumber(iup.GetGlobal("SCREENDPI")) / 25.4
 
-              cdKillCanvas(cd_canvas);
+          local line_width = tonumber(toolbox.toolwidth)
+          r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
+          
+          -- do not use line style here */
+          local cd_canvas = image:cdCreateCanvas()
+          image:SetAttribString("ResolutionUnit", "PDI")
+          image:SetAttribReal("XResolution", im.FLOAT, res)
+          image:SetAttribReal("YResolution", im.FLOAT, res)
+          cd_canvas:Foreground(cd.EncodeColor(r, g, b))
+          cd_canvas:LineWidth(line_width)
+          cd_canvas:Line(start_x, start_y, x, y)
+          cd_canvas:Kill()
 
-              IupSetAttribute(canvas, "OVERLAY", NULL);
-              IupSetAttribute(canvas, "DIRTY", "Yes");
+          self.dirty = "Yes"
 
-              IupUpdate(canvas);
-            }
-          }
-          else if (tool_index == 9)  /* Fill Color */
-          {
-            double tol_percent = IupGetDouble(toolbox, "TOOLFILLTOL");
-            unsigned char r, g, b;
-            IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+          iup.Update(canvas)
 
-            image_flood_fill(image, x, y, cdEncodeColor(r, g, b), tol_percent);
-            IupSetAttribute(canvas, "DIRTY", "Yes");
-
-            IupUpdate(canvas);
-          }
-        }
-      }
-      else if (button == IUP_BUTTON3)
-      {
-        if (!pressed)
-        {
-          Ihandle* toolbox = (Ihandle*)IupGetAttribute(canvas, "TOOLBOX");
-          int tool_index = IupGetInt(toolbox, "TOOLINDEX");
-          if (tool_index == 8)  /* Text */
-            tool_get_text(toolbox);
-        }
-      }
-    }
-  }
-
-  return IUP_DEFAULT;
-}
-
-int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
-{
-  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  if (image)
-  {
-    int cursor_x = x, cursor_y = y;
-    int view_x, view_y, view_width, view_height;
-    double zoom_factor = view_zoom_rect(canvas, image->width, image->height, &view_x, &view_y, &view_width, &view_height);
-
-    /* y is top-down in IUP */
-    int canvas_height = IupGetInt2(canvas, "DRAWSIZE");
-    y = canvas_height - y - 1;
-
-    /* inside image area */
-    if (x > view_x && y > view_y && x < view_x + view_width && y < view_y + view_height)
-    {
-      Ihandle* status_lbl = IupGetDialogChild(canvas, "STATUSLABEL");
-      unsigned char** data = (unsigned char**)image->data;
-      unsigned char r, g, b;
-      int offset;
-
-      x -= view_x;
-      y -= view_y;
-
-      x = (int)(x / zoom_factor);
-      y = (int)(y / zoom_factor);
-
-      if (x < 0) x = 0;
-      if (y < 0) y = 0;
-      if (x > image->width - 1) x = image->width - 1;
-      if (y > image->height - 1) y = image->height - 1;
-
-      offset = y * image->width + x; 
-      r = data[0][offset];
-      g = data[1][offset];
-      b = data[2][offset];
-
-      IupSetStrf(status_lbl, "TITLE", "(%4d, %4d) = %3d %3d %3d", x, y, (int)r, (int)g, (int)b);
-
-      if (iup_isbutton1(status)) /* button1 is pressed */
-      {
-        Ihandle* toolbox = (Ihandle*)IupGetAttribute(canvas, "TOOLBOX");
-        int tool_index = IupGetInt(toolbox, "TOOLINDEX");
-
-        if (tool_index == 0)  /* Pointer */
-        {
-          int start_cursor_x = IupGetInt(canvas, "START_CURSOR_X");
-          int start_cursor_y = IupGetInt(canvas, "START_CURSOR_Y");
-
-          int canvas_width = IupGetInt(canvas, "DRAWSIZE");
-
-          scroll_move(canvas, canvas_width, canvas_height, cursor_x - start_cursor_x, cursor_y - start_cursor_y, view_width, view_height);
-
-          IupSetInt(canvas, "START_CURSOR_X", cursor_x);
-          IupSetInt(canvas, "START_CURSOR_Y", cursor_y);
-        }
-        else if (tool_index == 2)  /* Pencil */
-        {
-          int start_x = IupGetInt(canvas, "START_X");
-          int start_y = IupGetInt(canvas, "START_Y");
-          double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-
-          int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-          IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
-
-          /* do not use line style here */
-          cdCanvas* cd_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", image->width, image->height, data[0], data[1], data[2], res);
-          cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
-          cdCanvasLineWidth(cd_canvas, line_width);
-          cdCanvasLine(cd_canvas, start_x, start_y, x, y);
-          cdKillCanvas(cd_canvas);
-
-          IupSetAttribute(canvas, "DIRTY", "Yes");
-
-          IupUpdate(canvas);
-
-          IupSetInt(canvas, "START_X", x);
-          IupSetInt(canvas, "START_Y", y);
-        }
-        else if (tool_index >= 3 && tool_index <= 8)  /* Shapes */
-        {
-          const char* shapes[] = { "LINE", "RECT", "BOX", "ELLIPSE", "OVAL", "TEXT" };
-          IupSetInt(canvas, "END_X", x);
-          IupSetInt(canvas, "END_Y", y);
-          IupSetAttribute(canvas, "OVERLAY", shapes[tool_index - 3]);
-          IupUpdate(canvas);
-        }
-      }
-    }
-  }
-
-  return IUP_DEFAULT;
-}
+          self.start_x = tonumber(x)
+          self.start_y = tonumber(y)          
+        elseif (tool_index >= 3 and tool_index <= 8) then -- Shapes
+          local shapes = {"LINE", "RECT", "BOX", "ELLIPSE", "OVAL", "TEXT"}
+          self.end_x = tonumber(x)
+          self.end_y = tonumber(y)
+          self.overlay = shapes[tool_index - 2]
+          iup.Update(self)
+        end
+      end
+    end
+  end
+end
 
 function zoom_valuechanged_cb(val)
   local zoom_index = tonumber(val.value)
@@ -1428,7 +1330,6 @@ function item_new:action()
 
     local ret, new_width, new_height = iup.GetParam("New Image", nil, "Width: %i[1,]\nHeight: %i[1,]\n", width, height)
     if (ret) then
-      local canvas = dlg.canvas
       local new_image = im.ImageCreate(new_width, new_height, im.RGB, im.BYTE)
 
       config:SetVariable("NewImage", "Width", new_width)
@@ -1535,7 +1436,7 @@ end
 
 function item_copy:action()
   local clipboard = iup.clipboard{}
-  clipboard.nativeimage = iup.GetImageNativeHandle(image)
+  clipboard.nativeimage = iup.GetImageNativeHandle(canvas.image)
   clipboard:destroy()
 end
 
@@ -1572,48 +1473,33 @@ function item_background:action()
   colordlg:destroy()
 end
 
-int item_zoomgrid_action_cb(Ihandle* ih)
-{
-  Ihandle* item_zoomgrid = IupGetDialogChild(ih, "ZOOMGRID");
-  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
-  Ihandle* config = (Ihandle*)IupGetAttribute(ih, "CONFIG");
-
-  if (IupGetInt(item_zoomgrid, "VALUE"))
-    IupSetAttribute(item_zoomgrid, "VALUE", "OFF");
+function item_zoomgrid:action()
+  if (self.value == "ON") then
+    self.value = "OFF"
   else
-    IupSetAttribute(item_zoomgrid, "VALUE", "ON");
+    self.value = "ON"
+  end
+  config:SetVariable("MainWindow", "ZoomGrid", self.value)
 
-  IupConfigSetVariableStr(config, "MainWindow", "ZoomGrid", IupGetAttribute(item_zoomgrid, "VALUE"));
-
-  IupUpdate(canvas);
-  return IUP_DEFAULT;
-}
+  iup.Update(canvas)
+end
 
 function item_toolbar:action()
   toggle_bar_visibility(self, toolbar)
   config:SetVariable("MainWindow", "Toolbar", item_toolbar.value)
 end
 
-int item_toolbox_action_cb(Ihandle* item_toolbox)
-{
-  Ihandle* toolbox = (Ihandle*)IupGetAttribute(item_toolbox, "TOOLBOX");
-  Ihandle* config = (Ihandle*)IupGetAttribute(item_toolbox, "CONFIG");
-
-  if (IupGetInt(toolbox, "VISIBLE"))
-  {
-    IupSetAttribute(item_toolbox, "VALUE", "OFF");
-    IupConfigDialogClosed(config, toolbox, "Toolbox");
-    IupHide(toolbox);
-  }
+function item_toolbox:action()
+  if (toolbox.visible == "YES") then
+    self.value = "OFF"
+    config:DialogClosed(toolbox, "Toolbox")
+    iup.Hide(toolbox)
   else
-  {
-    IupSetAttribute(item_toolbox, "VALUE", "ON");
-    IupConfigDialogShow(config, toolbox, "Toolbox");
-  }
-
-  IupConfigSetVariableStr(config, "MainWindow", "Toolbox", IupGetAttribute(item_toolbox, "VALUE"));
-  return IUP_DEFAULT;
-}
+    self.value = "ON"
+    config:DialogShow(toolbox, "Toolbox")
+  end
+  config:SetVariable("MainWindow", "Toolbox", self.value)
+end
 
 function item_statusbar:action()
   toggle_bar_visibility(self, statusbar)
@@ -1628,236 +1514,139 @@ function item_about:action()
   iup.Message("About", "   Simple Paint\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri")
 end
 
-int toolbox_close_cb(Ihandle* toolbox)
-{
-  Ihandle* config = (Ihandle*)IupGetAttribute(toolbox, "CONFIG");
-  Ihandle* item_toolbox = (Ihandle*)IupGetAttribute(toolbox, "TOOLBOXMENU");
+function tool_action_cb(ih, state)
+  if (state == 1) then
+    local tool_index = tonumber(ih.toolindex)
+    toolbox.toolindex = tool_index
 
-  IupConfigDialogClosed(config, toolbox, "Toolbox");
-
-  IupSetAttribute(item_toolbox, "VALUE", "OFF");
-  IupConfigSetVariableStr(config, "MainWindow", "Toolbox", "OFF");
-  return IUP_DEFAULT;
-}
-
-int tool_action_cb(Ihandle* ih, int state)
-{
-  if (state == 1)
-  {
-    Ihandle* canvas = (Ihandle*)IupGetAttribute(ih, "CANVAS");
-    int tool_index = IupGetInt(ih, "TOOLINDEX");
-    IupSetInt(IupGetDialog(ih), "TOOLINDEX", tool_index);
-
-    if (tool_index == 0)
-      IupSetAttribute(canvas, "CURSOR", "ARROW");
+    if (tool_index == 0) then
+      canvas.cursor = "ARROW"
     else
-      IupSetAttribute(canvas, "CURSOR", "CROSS");
+      canvas.cursor = "CROSS"
+    end
+    if (tool_index == 8) then
+      tool_get_text()
+    end  
+  end
+end
 
-    if (tool_index == 8)
-      tool_get_text(IupGetDialog(ih));
-  }
-  return IUP_DEFAULT;
-}
+function toolcolor_action_cb(self)
+  local colordlg = iup.colordlg{}
+  local color = self.bgcolor
+  colordlg.value = color
+  colordlg.parentdialog = iup.GetDialog(self)
 
-int toolcolor_action_cb(Ihandle* ih)
-{
-  Ihandle* canvas = (Ihandle*)IupGetAttribute(ih, "CANVAS");
-  Ihandle* colordlg = IupColorDlg();
-  const char* color = IupGetAttribute(ih, "BGCOLOR");
-  IupSetStrAttribute(colordlg, "VALUE", color);
-  IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(ih));
+  colordlg:popup(iup.CENTER, iup.CENTER)
 
-  IupPopup(colordlg, IUP_CENTER, IUP_CENTER);
+  if (tonumber(colordlg.status) == 1) then
+    color = colordlg.value
+    self.bgcolor = color
+    toolbox.toolcolor = color    
 
-  if (IupGetInt(colordlg, "STATUS") == 1)
-  {
-    color = IupGetAttribute(colordlg, "VALUE");
+    iup.Update(canvas)
+  end
 
-    IupSetStrAttribute(ih, "BGCOLOR", color);           
-    IupSetStrAttribute(IupGetDialog(ih), "TOOLCOLOR", color);
+  colordlg:destroy()
+end
 
-    IupUpdate(canvas);
-  }
+function toolwidth_valuechanged_cb(self)
+  local value = self.value
+  iup.SetAttribute(iup.GetDialog(self), "TOOLWIDTH", value)
+end
 
-  IupDestroy(colordlg);
-  return IUP_DEFAULT;
-}
+function toolstyle_valuechanged_cb(self)
+  local value = self.value
+  iup.SetAttribute(iup.GetDialog(self), "TOOLSTYLE", value)
+end
 
-int toolwidth_valuechanged_cb(Ihandle* ih)
-{
-  char* value = IupGetAttribute(ih, "VALUE");
-  IupSetStrAttribute(IupGetDialog(ih), "TOOLWIDTH", value);
-  return IUP_DEFAULT;
-}
+function toolfont_action_cb(self)
+  local font_dlg = iup.FontDlg()
+  font_dlg.parentdialog = iup.GetDialog(self)
+  local font = self.toolfont
+  font_dlg.value = font
 
-int toolstyle_valuechanged_cb(Ihandle* ih)
-{
-  char* value = IupGetAttribute(ih, "VALUE");
-  IupSetStrAttribute(IupGetDialog(ih), "TOOLSTYLE", value);
-  return IUP_DEFAULT;
-}
+  font_dlg:Popup(iup.CENTER, iup.CENTER)
 
-int toolfont_action_cb(Ihandle* ih)
-{
-  Ihandle* font_dlg = IupFontDlg();
-  IupSetAttributeHandle(font_dlg, "PARENTDIALOG", IupGetDialog(ih));
-  char* font = IupGetAttribute(ih, "TOOLFONT");
-  IupSetStrAttribute(font_dlg, "VALUE", font);
+  if (font_dlg.status == 1) then
+    font = font_dlg.value
+    iup.SetAttribute(iup.GetDialog(self), "TOOLFONT", font)
+  end
+  fond_dlg:destroy()
+end
 
-  IupPopup(font_dlg, IUP_CENTER, IUP_CENTER);
-
-  if (IupGetInt(font_dlg, "STATUS") == 1)
-  {
-    font = IupGetAttribute(font_dlg, "VALUE");
-    IupSetStrAttribute(IupGetDialog(ih), "TOOLFONT", font);
-  }
-  IupDestroy(font_dlg);
-  return IUP_DEFAULT;
-}
-
-int toolfilltol_valuechanged_cb(Ihandle* ih)
-{
-  Ihandle* filltol_label = IupGetDialogChild(ih, "FILLTOLLABEL");
-  double value = IupGetDouble(ih, "VALUE");
-  IupSetStrf(filltol_label, "TITLE", "Tol.: %.0f%%", value);
-  IupSetDouble(IupGetDialog(ih), "TOOLFILLTOL", value);
-  return IUP_DEFAULT;
-}
-
-int main_dlg_move_cb(Ihandle* dlg, int x, int y)
-{
-  Ihandle* toolbox = (Ihandle*)IupGetAttribute(dlg, "TOOLBOX");
-
-  int old_x = IupGetInt(dlg, "_OLD_X");
-  int old_y = IupGetInt(dlg, "_OLD_Y");
-
-  if (old_x == x && old_y == y)
-    return IUP_DEFAULT;
-  
-  if (IupGetInt(toolbox, "VISIBLE"))
-  {
-    int tb_x = IupGetInt(toolbox, "X");
-    int tb_y = IupGetInt(toolbox, "Y");
-
-    tb_x += x - old_x;
-    tb_y += y - old_y;
-
-    IupShowXY(toolbox, tb_x, tb_y);
-  }
-
-  IupSetInt(dlg, "_OLD_X", x);
-  IupSetInt(dlg, "_OLD_Y", y);
-
-  return IUP_DEFAULT;
-}
+function toolfilltol_valuechanged_cb(self)
+  local filltol_label = iup.GetDialogChild(self, "FILLTOLLABEL")
+  local value = self.value
+  filltol_label.title = "Tol.: "..value.."%"  
+  toolbox.toolfilltol = value
+end
 
 
 --********************************** Main (Part 2/2) *****************************************
 
-void create_toolbox(Ihandle* parent_dlg, Ihandle *config)
-{
-  Ihandle *toolbox, *gbox, *vbox;
-  Ihandle* item_toolbox = IupGetDialogChild(parent_dlg, "TOOLBOXMENU");
-  Ihandle* canvas = IupGetDialogChild(parent_dlg, "CANVAS");
 
-  IupSetHandle("PaintPointer", load_image_Pointer());
-  IupSetHandle("PaintColorPicker", load_image_PaintColorPicker());
-  IupSetHandle("PaintPencil", load_image_PaintPencil());
-  IupSetHandle("PaintLine", load_image_PaintLine());
-  IupSetHandle("PaintEllipse", load_image_PaintEllipse());
-  IupSetHandle("PaintRect", load_image_PaintRect());
-  IupSetHandle("PaintOval", load_image_PaintOval());
-  IupSetHandle("PaintBox", load_image_PaintBox());
-  IupSetHandle("PaintFill", load_image_PaintFill());
-  IupSetHandle("PaintText", load_image_PaintText());
-
-  gbox = IupGridBox(
-    IupSetCallbacks(IupSetAttributes(IupToggle(NULL, NULL), "TOOLINDEX=0, IMAGE=PaintPointer, VALUE=ON, FLAT=Yes, TIP=\"Pointer\""), "ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupToggle(NULL, NULL), "TOOLINDEX=1, IMAGE=PaintColorPicker, FLAT=Yes, TIP=\"Color Picker\""), "ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupToggle(NULL, NULL), "TOOLINDEX=2, IMAGE=PaintPencil, FLAT=Yes, TIP=\"Pencil\""), "ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupToggle(NULL, NULL), "TOOLINDEX=3, IMAGE=PaintLine, FLAT=Yes, TIP=\"Line\""), "ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupToggle(NULL, NULL), "TOOLINDEX=4, IMAGE=PaintRect, FLAT=Yes, TIP=\"Hollow Rectangle\""), "ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupToggle(NULL, NULL), "TOOLINDEX=5, IMAGE=PaintBox, FLAT=Yes, TIP=\"Box (Filled Rectangle)\""), "ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupToggle(NULL, NULL), "TOOLINDEX=6, IMAGE=PaintEllipse, FLAT=Yes, TIP=\"Hollow Ellipse\""), "ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupToggle(NULL, NULL), "TOOLINDEX=7, IMAGE=PaintOval, FLAT=Yes, TIP=\"Oval (Filled Ellipse)\""), "ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupToggle(NULL, NULL), "TOOLINDEX=8, IMAGE=PaintText, FLAT=Yes, TIP=\"Text\""), "ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupToggle(NULL, NULL), "TOOLINDEX=9, IMAGE=PaintFill, FLAT=Yes, TIP=\"Fill Color\""), "ACTION", (Icallback)tool_action_cb, NULL),
-    NULL);
-  IupSetAttribute(gbox, "GAPCOL", "2");
-  IupSetAttribute(gbox, "GAPLIN", "2");
-  IupSetAttribute(gbox, "MARGIN", "5x10");
-  IupSetAttribute(gbox, "NUMDIV", "2");
-
-  vbox = IupVbox(
-    IupRadio(gbox),
-    IupFrame(IupSetAttributes(IupVbox(
-      IupSetAttributes(IupLabel("Color:"), "EXPAND=HORIZONTAL"),
-      IupSetCallbacks(IupSetAttributes(IupButton(NULL, NULL), "NAME=COLOR, BGCOLOR=\"0 0 0\", RASTERSIZE=28x21"), "ACTION", toolcolor_action_cb, NULL),
-      IupSetAttributes(IupLabel("Width:"), "EXPAND=HORIZONTAL"),
-      IupSetCallbacks(IupSetAttributes(IupText(NULL), "SPIN=Yes, SPINMIN=1, RASTERSIZE=48x"), "VALUECHANGED_CB", toolwidth_valuechanged_cb, NULL),
-      IupSetAttributes(IupLabel("Style:"), "EXPAND=HORIZONTAL"),
-      IupSetCallbacks(IupSetAttributes(IupList(NULL), "DROPDOWN=Yes, VALUE=1, 1=\"____\", 2=\"----\", 3=\"....\", 4=\"-.-.\", 5=\"-..-..\""), "VALUECHANGED_CB", toolstyle_valuechanged_cb, NULL),
-      IupSetAttributes(IupLabel("Tol.: 50%"), "EXPAND=HORIZONTAL, NAME=FILLTOLLABEL"),
-      IupSetCallbacks(IupSetAttributes(IupVal(NULL), "NAME=FILLTOL, RASTERSIZE=60x30, VALUE=50, MAX=100"), "VALUECHANGED_CB", toolfilltol_valuechanged_cb, NULL),
-      IupSetAttributes(IupLabel("Font:"), "EXPAND=HORIZONTAL"),
-      IupSetCallbacks(IupSetAttributes(IupButton("F", NULL), "NAME=FONT, RASTERSIZE=21x21, FONT=\"Times, Bold Italic 11\""), "ACTION", toolfont_action_cb, NULL),
-      NULL), "MARGIN=3x2, GAP=2, ALIGNMENT=ACENTER")),
-    NULL);
-  IupSetAttribute(vbox, "NMARGIN", "2x2");
-  IupSetAttribute(vbox, "ALIGNMENT", "ACENTER");
-
-  toolbox = IupDialog(vbox);
-  IupSetAttribute(toolbox, "DIALOGFRAME", "Yes");
-  IupSetAttribute(toolbox, "TITLE", "Tools");
-  IupSetAttribute(toolbox, "FONTSIZE", "8");
-  IupSetAttribute(toolbox, "TOOLBOX", "Yes");
-  IupSetCallback(toolbox, "CLOSE_CB", (Icallback)toolbox_close_cb);
-  IupSetAttributeHandle(toolbox, "PARENTDIALOG", parent_dlg);
-
-  IupSetAttribute(toolbox, "TOOLCOLOR", "0 0 0");
-  IupSetAttribute(toolbox, "TOOLWIDTH", "1");
-  IupSetAttribute(toolbox, "TOOLSTYLE", "1");
-  IupSetAttribute(toolbox, "TOOLFILLTOL", "50");
-  IupSetStrAttribute(toolbox, "TOOLFONT", IupGetAttribute(parent_dlg, "FONT"));
-
-  IupSetAttribute(toolbox, "CONFIG", (char*)config);
-  IupSetAttribute(toolbox, "TOOLBOXMENU", (char*)item_toolbox);
-  IupSetAttribute(toolbox, "CANVAS", (char*)canvas);
-
-  IupSetAttribute(parent_dlg, "TOOLBOX", (char*)toolbox);
-
-  /* Initialize variables from the configuration file */
-
-  if (IupConfigGetVariableIntDef(config, "MainWindow", "Toolbox", 1))
-  {
-    /* configure the very first time to be aligned with the main window */
-    if (!IupConfigGetVariableStr(config, "Toolbox", "X"))
-    {
-      Ihandle* canvas = IupGetDialogChild(parent_dlg, "CANVAS");
-      int x = IupGetInt(canvas, "X");
-      int y = IupGetInt(canvas, "Y");
-      IupConfigSetVariableInt(config, "Toolbox", "X", x);
-      IupConfigSetVariableInt(config, "Toolbox", "Y", y);
-    }
-
-    IupSetAttribute(item_toolbox, "VALUE", "ON");
-    IupConfigDialogShow(config, toolbox, "Toolbox");
-  }
+-- toolbox
+gbox = iup.gridbox{
+  iup.toggle{toolindex=0, image=load_image_PaintPointer(), value="ON", flat="Yes", tip="Pointer", action = tool_action_cb},
+  iup.toggle{toolindex=1, image=load_image_PaintColorPicker(), flat="Yes", tip="Color Picker", action = tool_action_cb},
+  iup.toggle{toolindex=2, image=load_image_PaintPencil(), flat="Yes", tip="Pencil", action = tool_action_cb},
+  iup.toggle{toolindex=3, image=load_image_PaintLine(), flat="Yes", tip="Line", action = tool_action_cb},
+  iup.toggle{toolindex=4, image=load_image_PaintRect(), flat="Yes", tip="Hollow Rectangle", action = tool_action_cb},
+  iup.toggle{toolindex=5, image=load_image_PaintBox(), flat="Yes", tip="Box (Filled Rectangle)", action = tool_action_cb},
+  iup.toggle{toolindex=6, image=load_image_PaintEllipse(), flat="Yes", tip="Hollow Ellipse", action = tool_action_cb},
+  iup.toggle{toolindex=7, image=load_image_PaintOval(), flat="Yes", tip="Oval (Filled Ellipse)", action = tool_action_cb},
+  iup.toggle{toolindex=8, image=load_image_PaintText(), flat="Yes", tip="Text", action = tool_action_cb},    
+  iup.toggle{toolindex=9, image=load_image_PaintFill(), flat="Yes", tip="Fill Color", action = tool_action_cb},
+  gapcol = 2,
+  gaplin = 2,
+  margin = "5x10",
+  numdiv = 2
 }
 
+vbox = iup.vbox{
+  iup.radio{gbox},
+  iup.frame{
+    iup.vbox{
+      iup.label{title = "Color:", expand="HORIZONTAL"},
+      iup.button{name="COLOR", bgcolor="0 0 0", rastersize="28x21", action = toolcolor_action_cb},
+      iup.label{title="Width:", expand="HORIZONTAL"},
+      iup.text{SPIN="Yes", spinmin=1, rastersize="48x", valuechanged_cb = toolwidth_valuechanged_cb},
+      iup.label{title="Style:", expand="HORIZONTAL"},
+      iup.list{"____", "----", "....", "-.-.", "-..-..", dropdown="Yes", value=1, valuechanged_cb = toolstyle_valuechanged_cb},
+      iup.label{title = "Tol.: 50%", expand="HORIZONTAL", name="FILLTOLLABEL"},
+      iup.val{name="FILLTOL", rastersize="60x30", value=50, max=100, valuechanged_cb = toolfilltol_valuechanged_cb},
+      iup.label{title="Font:", expand="HORIZONTAL"},
+      iup.button{title = "F", name="FONT", rastersize="21x21", font="Times, Bold Italic 11", action = toolfont_action_cb},
+      margin="3x2", 
+      gap=2, 
+      alignment="ACENTER"
+    }
+  }, 
+  nmargin = "2x2",
+  aligment = "ACENTER"
+}
 
+toolbox = iup.dialog{
+  vbox,
+  dialogframe = "Yes",
+  title = "Tools",
+  fontsize = 8,
+  toolbox = "Yes",
+  -- custom attributes
+  toolcolor = "0 0 0",
+  toolwidth = 1,
+  toolstyle = 1,
+  toolfilltol = 50,
+  toolindex = 0,
+}
+
+--toolbar
 btn_new = iup.button{image = "IUP_FileNew", flat = "Yes", action = item_new.action, canfocus="No", tip = "New (Ctrl+N)"}
 btn_open = iup.button{image = "IUP_FileOpen", flat = "Yes", action = item_open.action, canfocus="No", tip = "Open (Ctrl+O)"}
 btn_save = iup.button{image = "IUP_FileSave", flat = "Yes", action = item_save.action, canfocus="No", tip = "Save (Ctrl+S)"}
 btn_copy = iup.button{image =  "IUP_EditCopy", flat = "Yes", action = item_copy.action, canfocus="No", tip = "Copy (Ctrl+C)"}
 btn_paste = iup.button{image = "IUP_EditPaste", flat = "Yes", action = item_paste.action, canfocus="No", tip = "Paste (Ctrl+V)"}
-
-  btn_zoomgrid = IupButton(NULL, NULL);
-  IupSetAttribute(btn_zoomgrid, "IMAGE", "PaintZoomGrid");
-  IupSetAttribute(btn_zoomgrid, "FLAT", "Yes");
-  IupSetCallback(btn_zoomgrid, "ACTION", (Icallback)item_zoomgrid_action_cb);
-  IupSetAttribute(btn_zoomgrid, "TIP", "Zoom Grid");
-  IupSetAttribute(btn_paste, "CANFOCUS", "No");
+btn_zoomgrid = iup.button{image = load_image_PaintZoomGrid(), flat = "Yes", action = item_zoomgrid.action, canfocus="No", tip = "Zoom Grid"}
 
 toolbar = iup.hbox{
   btn_new,
@@ -1867,13 +1656,20 @@ toolbar = iup.hbox{
   btn_copy,
   btn_paste,
   iup.label{separator="VERTICAL"},
-  margin = "5x5",
   btn_zoomgrid,
+  margin = "5x5",
   gap = 2,
 }
 
+function toolbox:close_cb()
+  config:DialogClosed(self, "Toolbox")
+  item_toolbox.value = "OFF"
+  config:SetVariableStr("MainWindow", "Toolbox", "OFF")
+end
+
+--statusbar
 statusbar = iup.hbox{
-  iup.label{title = "(0, 0) = 0   0   0", expand="HORIZONTAL", padding="10x5"},
+  iup.label{title = "(0, 0) = 0   0   0", expand="HORIZONTAL", padding="10x5", name="STATUSLABEL"},
   iup.label{separator="VERTICAL"},
   iup.label{title = "0 x 0", size="70x", padding="10x5", name="SIZELABEL", alignment="ACENTER"},
   iup.label{SEPARATOR="VERTICAL"},
@@ -1888,7 +1684,7 @@ statusbar = iup.hbox{
 vbox = iup.vbox{
   toolbar,
   canvas,
-  statusbar,
+  statusbar
 }
 
 dlg = iup.dialog{
@@ -1900,6 +1696,30 @@ dlg = iup.dialog{
   canvas = canvas,
   dropfiles_cb = canvas.dropfiles_cb,
 }
+
+-- must be set after dlg was created
+toolbox.parentdialog = dlg
+toolbox.toolfont = dlg.font
+
+function dlg:move_cb(x, y)
+  local old_x = tonumber(self._old_x)
+  local old_y = tonumber(self._old_y)
+  if (old_x == x and old_y == y) then
+    return
+  end
+  if (toolbox.visible == "YES") then
+    local tb_x = tonumber(toolbox.x)
+    local tb_y = tonumber(toolbox.y)
+
+    tb_x = tb_x + x - old_x
+    tb_y = tb_y + y - old_y
+
+    toolbox:showxy(tb_x, tb_y)
+  end
+
+  self._old_x = x
+  self._old_y = y
+end
 
 function dlg:k_any(c)
   if (c == iup.K_cN) then
@@ -1944,24 +1764,19 @@ if (show_toolbar == "OFF") then
   toolbar.visible = "NO"
 end
 
-local show_toolbox = config:GetVariableDef("MainWindow", "Toolbox", "ON")
-if (show_toolbox == "OFF") then
-    /* configure the very first time to be aligned with the main window */
-    if (!IupConfigGetVariableStr(config, "Toolbox", "X"))
-    {
-      Ihandle* canvas = IupGetDialogChild(parent_dlg, "CANVAS");
-      int x = IupGetInt(canvas, "X");
-      int y = IupGetInt(canvas, "Y");
-      IupConfigSetVariableInt(config, "Toolbox", "X", x);
-      IupConfigSetVariableInt(config, "Toolbox", "Y", y);
-    }
-
-    IupSetAttribute(item_toolbox, "VALUE", "ON");
-    IupConfigDialogShow(config, toolbox, "Toolbox");
-end
-
 -- show the dialog at the last position, with the last size
 config:DialogShow(dlg, "MainWindow")
+
+local show_toolbox = config:GetVariableDef("MainWindow", "Toolbox", "ON")
+if (show_toolbox == "ON") then
+    -- configure the very first time to be aligned with the main window
+    if (not config:GetVariable("Toolbox", "X")) then
+      config:SetVariable("Toolbox", "X", canvas.x)
+      config:SetVariable("Toolbox", "Y", canvas.y)
+    end
+    item_toolbox.value = "ON"
+    config:DialogShow(toolbox, "Toolbox")
+end
 
 -- open a file from the command line (allow file association in Windows)
 if (arg and arg[1]) then
