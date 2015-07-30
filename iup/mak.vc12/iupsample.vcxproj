@@ -518,7 +518,14 @@ cd.lib
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\html\examples\tutorial\simple_paint.cpp" />
+    <ClCompile Include="..\html\examples\tutorial\simple_paint1.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_file.cpp" />
+    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_main.cpp" />
+    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_toolbox.cpp" />
+    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua" />
@@ -646,6 +653,12 @@ cd.lib
       <Project>{5a42028b-912c-aab9-d3e1-12df9264a5fd}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint.h" />
+    <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_file.h" />
+    <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_toolbox.h" />
+    <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
