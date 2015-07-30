@@ -1659,42 +1659,34 @@ function item_negative:action()
   update_image(canvas, new_image, false)
 end
 
-yyy = [[
+function brightcont_param_cb(dialog, param_index)
+  if (param_index == 0 or param_index == 1) then
+    local image = canvas.original_image
+    local new_image = canvas.new_image
+    local brightness_shift_param = iup.GetParamParam(dialog, 0)
+    local contrast_factor_param = iup.GetParamParam(dialog, 1)
 
-static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data)
-{
-  Ihandle* canvas = (Ihandle*)user_data;
+    param = { 0, 0 }
+    param[1] = tonumber(brightness_shift_param.value)
+    param[2] = tonumber(contrast_factor_param.value)
 
-  if (param_index == 0 || param_index == 1)
-  {
-    float param[2] = { 0, 0 };
-    imImage* image = (imImage*)IupGetAttribute(canvas, "ORIGINAL_IMAGE");
-    imImage* new_image = (imImage*)IupGetAttribute(canvas, "NEW_IMAGE");
-    Ihandle* brightness_shift_param = (Ihandle*)IupGetAttribute(dialog, "PARAM0");
-    Ihandle* contrast_factor_param = (Ihandle*)IupGetAttribute(dialog, "PARAM1");
-    param[0] = IupGetFloat(brightness_shift_param, "VALUE");
-    param[1] = IupGetFloat(contrast_factor_param, "VALUE");
+    im.ProcessToneGamut(image, new_image, im.GAMUT_BRIGHTCONT, param)
 
-    imProcessToneGamut(image, new_image, IM_GAMUT_BRIGHTCONT, param);
+    canvas.image = canvas.new_image
+    iup.Update(canvas)
+  elseif (param_index ~= iup.GETPARAM_INIT) then
+    -- restore original configuration
+    canvas.image = canvas.original_image
+    canvas.original_image = nil
+    canvas.new_image = nil
 
-    IupSetAttribute(canvas, "IMAGE", (char*)new_image);
-    IupUpdate(canvas);
-  }
-  else if (param_index != IUP_GETPARAM_INIT)
-  {
-    /* restore original configuration */
-    imImage* image = (imImage*)IupGetAttribute(canvas, "ORIGINAL_IMAGE");
-    IupSetAttribute(canvas, "IMAGE", (char*)image);
-    IupSetAttribute(canvas, "ORIGINAL_IMAGE", NULL);
-    IupSetAttribute(canvas, "NEW_IMAGE", NULL);
+    if (param_index == iup.GETPARAM_BUTTON2) then  -- cancel
+      iup.Update(canvas)
+    end
+  end
 
-    if (param_index == IUP_GETPARAM_BUTTON2)  /* cancel */
-      IupUpdate(canvas);
-  }
-
-  return 1;
-}
-]]
+  return 1
+end
 
 item_brightcont = image_menu[9]
 function item_brightcont:action()
@@ -1707,8 +1699,8 @@ function item_brightcont:action()
 
   local param = { 0, 0 }
 
-  --IupSetAttribute(canvas, "ORIGINAL_IMAGE", (char*)image);
-  --IupSetAttribute(canvas, "NEW_IMAGE", (char*)new_image);
+  canvas.original_image = image
+  canvas.new_image = new_image
 
   ret, param[1], param[2] = iup.GetParam("Brightness and Contrast", brightcont_param_cb, "Brightness Shift: %r[-100,100]\nContrast Factor: %r[-100,100]\n", param[1], param[2])
   if (not ret) then

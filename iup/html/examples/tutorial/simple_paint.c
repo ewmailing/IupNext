@@ -20,6 +20,17 @@
 //#define USE_OPENGL 1
 //#define USE_CONTEXTPLUS 1
 
+#if _MSC_VER < 1800 /* vc12 (2013) */
+#define DEFINE_ROUND
+#endif
+
+#ifdef DEFINE_ROUND
+double round(double x)
+{
+  return (int)(x>0? x+0.5: x-0.5);
+}
+#endif
+
 
 /********************************** Images *****************************************/
 
@@ -698,6 +709,7 @@ void set_new_image(Ihandle* canvas, imImage* image, const char* filename, int di
   imImage* old_image = (imImage*)IupGetAttribute(canvas, "IMAGE");
   Ihandle* size_lbl = IupGetDialogChild(canvas, "SIZELABEL");
   Ihandle* zoom_val = IupGetDialogChild(canvas, "ZOOMVAL");
+  const char* format;
 
   if (filename)
   {
@@ -722,7 +734,7 @@ void set_new_image(Ihandle* canvas, imImage* image, const char* filename, int di
   }
 
   /* default file format */
-  const char* format = imImageGetAttribString(image, "FileFormat");
+  format = imImageGetAttribString(image, "FileFormat");
   if (!format)
     imImageSetAttribString(image, "FileFormat", "JPEG");
 
@@ -752,7 +764,7 @@ void check_new_file(Ihandle* dlg)
     if (!image)
     {
       show_file_error(IM_ERR_MEM);
-      return IUP_DEFAULT;
+      return;
     }
 
     image_fill_white(image);
@@ -1848,8 +1860,8 @@ int toolstyle_valuechanged_cb(Ihandle* ih)
 int toolfont_action_cb(Ihandle* ih)
 {
   Ihandle* font_dlg = IupFontDlg();
-  IupSetAttributeHandle(font_dlg, "PARENTDIALOG", IupGetDialog(ih));
   char* font = IupGetAttribute(ih, "TOOLFONT");
+  IupSetAttributeHandle(font_dlg, "PARENTDIALOG", IupGetDialog(ih));
   IupSetStrAttribute(font_dlg, "VALUE", font);
 
   IupPopup(font_dlg, IUP_CENTER, IUP_CENTER);

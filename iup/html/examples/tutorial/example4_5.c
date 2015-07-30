@@ -15,6 +15,17 @@
 #include <im_convert.h>
 #include <iupim.h>
 
+#if _MSC_VER < 1800 /* vc12 (2013) */
+#define DEFINE_ROUND
+#endif
+
+#ifdef DEFINE_ROUND
+double round(double x)
+{
+  return (int)(x>0 ? x + 0.5 : x - 0.5);
+}
+#endif
+
 
 /********************************** Images *****************************************/
 
@@ -1784,8 +1795,8 @@ int toolstyle_valuechanged_cb(Ihandle* ih)
 int toolfont_action_cb(Ihandle* ih)
 {
   Ihandle* font_dlg = IupFontDlg();
-  IupSetAttributeHandle(font_dlg, "PARENTDIALOG", IupGetDialog(ih));
   char* font = IupGetAttribute(ih, "TOOLFONT");
+  IupSetAttributeHandle(font_dlg, "PARENTDIALOG", IupGetDialog(ih));
   IupSetStrAttribute(font_dlg, "VALUE", font);
 
   IupPopup(font_dlg, IUP_CENTER, IUP_CENTER);

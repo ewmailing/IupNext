@@ -23,6 +23,17 @@
 //#define USE_OPENGL 1
 //#define USE_CONTEXTPLUS 1
 
+#if _MSC_VER < 1800 /* vc12 (2013) */
+#define DEFINE_ROUND
+#endif
+
+#ifdef DEFINE_ROUND
+double round(double x)
+{
+  return (int)(x>0 ? x + 0.5 : x - 0.5);
+}
+#endif
+
 
 /********************************** Images *****************************************/
 
