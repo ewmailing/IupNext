@@ -13,7 +13,7 @@ item_open = iup.item {title = "Open"}
 item_close = iup.item {title = "Close"}
 item_pagesetup = iup.item {title = "Page Setup"}
 item_print = iup.item {title = "Print"}
-item_exit = iup.item {title = "Exit", action="return iup.CLOSE"}
+item_exit = iup.item {title = "Exit", action="iup.ExitLoop()"}
 
 -- Creates file menus
 menu_file = iup.menu {item_new, item_open, item_close, iup.separator{}, item_pagesetup, item_print, iup.separator{}, item_exit }

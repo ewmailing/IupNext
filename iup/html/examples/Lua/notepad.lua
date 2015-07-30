@@ -122,7 +122,7 @@ notepad.mnuMain = iup.menu
   {
     iup.menu
     {
-      iup.item{title="Exit", action="return iup.CLOSE"}
+      iup.item{title="Exit", action="iup.ExitLoop()"}
     }, title="&File"
   },
 --  iup.submenu{iup.menu
