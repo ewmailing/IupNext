@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <IUP>D:\tecgraf\iup</IUP>
+    <CD>d:\tecgraf\cd</CD>
+    <IM>d:\tecgraf\im</IM>
+    <LUA51>d:\tecgraf\lua51</LUA51>
+    <LUA52>d:\tecgraf\lua52</LUA52>
+    <LUA53>d:\tecgraf\lua53</LUA53>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_PropertySheetDisplayName>Tecgraf vc12 Properties</_PropertySheetDisplayName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(IUP)\include;$(IM)\include;$(CD)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>comctl32.lib;iup.lib;cd.lib;iupcd.lib;im.lib;freetype6.lib;zlib1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(IM)\lib\vc12;$(IUP)\lib\vc12;$(CD)\lib\vc12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="IUP">
+      <Value>$(IUP)</Value>
+    </BuildMacro>
+    <BuildMacro Include="CD">
+      <Value>$(CD)</Value>
+    </BuildMacro>
+    <BuildMacro Include="IM">
+      <Value>$(IM)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LUA51">
+      <Value>$(LUA51)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LUA52">
+      <Value>$(LUA52)</Value>
+    </BuildMacro>
+    <BuildMacro Include="LUA53">
+      <Value>$(LUA53)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
