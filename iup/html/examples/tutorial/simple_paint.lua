@@ -342,10 +342,14 @@ function show_error(message, is_error)
   dlg:destroy()
 end
 
+function show_file_error(err)
+  show_error(im.ErrorStr(err), true)
+end
+
 function read_file(filename)
   local image, err = im.FileImageLoadBitmap(filename, 0)
   if (err) then
-    show_error(im.ErrorStr(err), true)
+    show_file_error(err)
   end
   return image
 end
@@ -354,7 +358,7 @@ function write_file(filename, image)
   local format = image:GetAttribString("FileFormat")
   local err = im.FileImageSave(filename, format, image)
   if (err and err ~= im.ERR_NONE) then
-    show_error(im.ErrorStr(err), true)
+    show_file_error(err)
     return false
   end
   return true
@@ -655,7 +659,7 @@ function check_new_file(dlg)
     local height = config:GetVariableDef("NewImage", "Height", 480)
 
     local image = im.ImageCreate(width, height, im.RGB, im.BYTE)
-    if (not new_image) then
+    if (not image) then
       show_file_error(im.ERR_MEM)
       return 
     end
@@ -1485,7 +1489,7 @@ function item_paste:action()
     clipboard:destroy()
 
     if (not image) then
-      show_error("Invalid Clipboard Data", 1)
+      show_error("Invalid Clipboard Data", true)
       return
     end
 
@@ -1690,38 +1694,32 @@ static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data
 
   return 1;
 }
-
-int item_brightcont_action_cb(Ihandle* ih)
-{
-  float param[2] = { 0, 0 };
-  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
-  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  imImage* new_image = imImageClone(image);
-  if (!new_image)
-  {
-    show_file_error(IM_ERR_MEM);
-    return IUP_DEFAULT;
-  }
-
-  IupSetAttribute(canvas, "ORIGINAL_IMAGE", (char*)image);
-  IupSetAttribute(canvas, "NEW_IMAGE", (char*)new_image);
-
-  if (!IupGetParam("Brightness and Contrast", brightcont_param_cb, canvas,
-                   "Brightness Shift: %r[-100,100]\n"
-                   "Contrast Factor: %r[-100,100]\n",
-                   &param[0], &param[1], NULL))
-  {
-    imImageDestroy(new_image);
-	  return IUP_DEFAULT;
-  }
-
-  imProcessToneGamut(image, new_image, IM_GAMUT_BRIGHTCONT, param);
-
-  update_image(canvas, new_image, false);
-
-  return IUP_DEFAULT;
-}
 ]]
+
+item_brightcont = image_menu[9]
+function item_brightcont:action()
+  local image = canvas.image
+  local new_image = image:Clone()
+  if (not new_image) then
+    show_file_error(im.ERR_MEM)
+    return 
+  end
+
+  local param = { 0, 0 }
+
+  --IupSetAttribute(canvas, "ORIGINAL_IMAGE", (char*)image);
+  --IupSetAttribute(canvas, "NEW_IMAGE", (char*)new_image);
+
+  ret, param[1], param[2] = iup.GetParam("Brightness and Contrast", brightcont_param_cb, "Brightness Shift: %r[-100,100]\nContrast Factor: %r[-100,100]\n", param[1], param[2])
+  if (not ret) then
+    new_image:Destroy()
+	  return
+  end
+
+  im.ProcessToneGamut(image, new_image, im.GAMUT_BRIGHTCONT, param)
+
+  update_image(canvas, new_image, false)
+end
 
 function item_help:action()
   iup.Help("http://www.tecgraf.puc-rio.br/iup")
