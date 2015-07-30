@@ -621,7 +621,6 @@ function set_new_image(canvas, image, filename, dirty)
   image:RemoveAlpha()
   if (image:ColorSpace() ~= im.RGB) then
     local new_image = im.ImageCreateBased(image, nil, nil, im.RGB, nil)        
-
     im.ConvertColorSpace(image, new_image)
     image:Destroy()
 
@@ -656,6 +655,11 @@ function check_new_file(dlg)
     local height = config:GetVariableDef("NewImage", "Height", 480)
 
     local image = im.ImageCreate(width, height, im.RGB, im.BYTE)
+    if (not new_image) then
+      show_file_error(im.ERR_MEM)
+      return 
+    end
+
     image_fill_white(image)
     
     set_new_image(canvas, image, nil, nil)
@@ -1359,6 +1363,10 @@ function item_new:action()
     local ret, new_width, new_height = iup.GetParam("New Image", nil, "Width: %i[1,]\nHeight: %i[1,]\n", width, height)
     if (ret) then
       local new_image = im.ImageCreate(new_width, new_height, im.RGB, im.BYTE)
+      if (not new_image) then
+        show_file_error(im.ERR_MEM)
+        return 
+      end
 
       config:SetVariable("NewImage", "Width", new_width)
       config:SetVariable("NewImage", "Height", new_height)

@@ -749,6 +749,12 @@ void check_new_file(Ihandle* dlg)
     int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
 
     image = imImageCreate(width, height, IM_RGB, IM_BYTE);
+    if (!image)
+    {
+      show_file_error(IM_ERR_MEM);
+      return IUP_DEFAULT;
+    }
+
     image_fill_white(image);
 
     set_new_image(canvas, image, NULL, 0);
@@ -1507,6 +1513,12 @@ int item_new_action_cb(Ihandle* item_new)
     if (IupGetParam("New Image", NULL, NULL, "Width: %i[1,]\nHeight: %i[1,]\n", &width, &height, NULL))
     {
       imImage* image = imImageCreate(width, height, IM_RGB, IM_BYTE);
+      if (!image)
+      {
+        show_file_error(IM_ERR_MEM);
+        return IUP_DEFAULT;
+      }
+
       image_fill_white(image);
 
       IupConfigSetVariableInt(config, "NewImage", "Width", width);
