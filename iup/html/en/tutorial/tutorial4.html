@@ -44,9 +44,9 @@ In the functions that create a new image, we keep the current image using an IMA
 
 <p> Yet, as we save a new file, besides the name of the new file, we need to select an image format that will be defined by the file extension. The set_file_format function was created to recover this extension and establish the format in which the new image must be saved. The JPEG format was defined as default, since it is the most popular one. </p>
 
-<p>Another interesting novelty was the creation of a select_file function that establishes what type of file dialogue treatment must be opened. Since dialogues for open file and file saving are very similar, we encapsulated their creation in one single function.</p>
+<p>Another interesting novelty was the creation of a select_file function that establishes what type of file dialog treatment must be opened. Since dialogs for open file and file saving are very similar, we encapsulated their creation in one single function.</p>
 
-<p>In this example, we also present a new pre-defined dialogue called
+<p>In this example, we also present a new pre-defined dialog called
 <strong>IupGetParam</strong>, which is used in the File/New to obtain the height and width dimensions of the new image. After this data is obtained from the user, the imImageCreate function is called, which creates a new image, with the height and width previously obtained, and of the RGB type, as explained above.</p>
 
 <p>Note that the image drawing is not implemented in this first example, and therefore it will be the object of this tutorial’s next item.</p>
@@ -64,7 +64,8 @@ In the functions that create a new image, we keep the current image using an IMA
 
 <p>As we saw in the beginning of this tutorial, the IUP is a toolkit for the creation of interface with the user. Although having among its controls a canvas, it does not have functions for graphics. For that it will be necessary to include an external library. Among a few options, we choose for this example the OpenGL for its portability, performance and standardization.</p>
 
-<p> In order to use OpenGL with IUP, besides the GL/gl.h, windows.h (in case you are using windows) and iupgl.h includes, we will need to include some libraries in our linkedition process. In Windows, opengl32.lib is used, while in Linux the -lGL must be included before the libs of X. The IUP canvas that works with OpenGL is also an additional control called 
+<p> In order to use OpenGL with IUP, besides the GL/gl.h, windows.h (in case you are using windows) and iupgl.h includes, we will need to 
+link with some libraries too. In Windows, opengl32.lib is used, while in Linux the -lGL must be included. The IUP canvas that works with OpenGL is also an additional control called 
 <strong>IupGLCanvas</strong>. A call to <strong>IupGLCanvasOpen</strong> must be included after
 <strong>IupOpen</strong> so that this control is available.</p>
 
@@ -76,8 +77,8 @@ and <strong>glDrawPixels </strong> functions do not concede values outside the s
 
 <p>In our example, we are working with double buffer, since we set the BUFFER attribute to DOUBLE in the main function when we created the canvas. This entails that the drawing will be made outside the screen, on a separate buffer. When we finish calling the drawing functions, we show the result by displaying this buffer to the user. To show the result, we call the <strong>IupGLSwapBuffers</strong> function.</p>
 
-<p> In this example, we use another IUP pre-defined dialogue called <strong>IupColorDlg</strong>. The 
-<strong>IupColorDlg</strong> is displayed after the selection of a new background item in View menu. It is a dialogue for color selection, and in our example, it changes the canvas background color.</p> 
+<p> In this example, we use another IUP pre-defined dialog called <strong>IupColorDlg</strong>. The 
+<strong>IupColorDlg</strong> is displayed after the selection of a new background item in View menu. It is a dialog for color selection, and in our example, it changes the canvas background color.</p> 
 
 <p>In Lua, to use the OpenGl functions, we use the LuaGL. For this, you only need to require the "luagl" package. To use the <strong>IupGLCanvas</strong> 
 you should also require the "iupluagl". The LuaGL functions follow the Lua standard packages and use the "gl." prefix, for example: "gl.Func" instead of "glFunc" in C.&nbsp;</p>
@@ -92,9 +93,11 @@ you should also require the "iupluagl". The LuaGL functions follow the Lua stand
 
 <h3>4.3 <a name="Drawing_with_CD">Drawing with CD</a> and Printing</h3>
 
-<p>In this chapter, we present an alternative to OpenGL library use. Although having an excellent performance, the OpenGL library has some limitations. There is no support for printing, no metafile exit, and it also does not provide support to high quality text. Therefore, many applications need other options. To attend to this other needs, we created a CD library – Canvas Draw. You can find this library on: <a href="www.tecgraf.puc-rio.br/cd">www.tecgraf.puc-rio.br/cd</a>, and it was designed to function together with IUP.</p> 
+<p>In this chapter, we present an alternative to OpenGL library use. Although having an excellent performance, the OpenGL library has some limitations. There is no support for printing, no metafile 
+output, and it also does not provide support to high quality text. Therefore, many applications need other options. To attend to this other needs, we created 
+the CD library – Canvas Draw. You can find this library on: <a href="www.tecgraf.puc-rio.br/cd">www.tecgraf.puc-rio.br/cd</a>, and it was designed to function together with IUP.</p> 
 
-<p>To use it, you need to include the "cd" and "iupcd" libraries on the linkedition. The "cd.h" and "cdiup.h" includes must appear in the code.</p>
+<p>To use it, you need to link with the "cd" and "iupcd" libraries. The "cd.h" and "cdiup.h" includes must appear in the code.</p>
 
 <p>Since we are replacing the OpenGL for CD, we once again work with 
 <strong>IupCanvas</strong> control instead of <strong>IupGLCanvas</strong>. We can also remove the libs and OpenGL includes added in the previous chapter.</p>
@@ -106,7 +109,7 @@ The new MAP_CB e UNMAP_CB callbacks were included. The MAP_CB callback called ca
 This is necessary, because to create the CD canvas, the IUP canvas must be mapped beforehand on the native system. One of the parameters that this function receives is the CD_IUPDBUFFER. This informs the CD that it must work on Double Buffer, the same way we have been doing in Open GL. Note that there are now two types of canvas in use - the<strong>IupCanvas</strong> control and the CD library canvas.  Thus in this callback it is also done an association between these two canvas through a call to 
 <strong>IupSetAttribute</strong>. The UNMAP_CB callback named canvas_unmap_cb retrieves the CD canvas associated to IupCanvas control and destroys it by calling <strong>cdKillCanvas</strong>. The callback responsible for drawing the image on canvas continues to be the canvas_action_cb, the difference is that besides having replaced the OpenGL calls as mentioned before, several of them were removed and replaced for only <strong>imcdCanvasPutImage</strong>. This single call draws an IM image on a CD canvas.</p>
 
-<p>Taking advantage that the CD supports printing, we added a few resources to Simple Paint. Other new callbacks are: item_pagesetup_action_cb which is responsible for obtaining from the user, through IupGetParam, the height and width of the margin of print preview page; view_fit_rect which adjusts the screen to display the entire image; and item_print_action_cb which shows the printing dialogue. </p>
+<p>Taking advantage that the CD supports printing, we added a few resources to Simple Paint. Other new callbacks are: item_pagesetup_action_cb which is responsible for obtaining from the user, through IupGetParam, the height and width of the margin of print preview page; view_fit_rect which adjusts the screen to display the entire image; and item_print_action_cb which shows the printing dialog. </p>
 
 <p> We also have two new menu items: item_pagesetup e item_print, which call the callbacks with the same name. The print item was associated to a CTRL+P hotkey.</p> 
 
@@ -135,7 +138,7 @@ SCROLLBAR</strong></a> attribute documentation. This is necessary because of the
 
 <p>Since we had been modifying the action, we also added an edge around the image using cdCanvasRect. We did this because when we include the zoom and scroll, it is usually difficult to locate the image, especially if it looks like the background color. Therefore it is common to include an edge around the image to mark the end of it.</p>
 
-<p>We noticed that in example 4_4, we could improve the application state of control when a new image is created. For that, we created the set_new_image function that replaces parts of the code in New, Open and Paste. In this function, we encapsulated the change in the dialogue title from the file name, and we verified if the image is RGB as described in topic 4.3. We also verified if there is a precise format for the new image, and if we should adopt the default format. Furthermore, we set the DIRTY value, and finally restarted the zoom factor to normal visualization in a 100%.</p>
+<p>We noticed that in example 4_4, we could improve the application state of control when a new image is created. For that, we created the set_new_image function that replaces parts of the code in New, Open and Paste. In this function, we encapsulated the change in the dialog title from the file name, and we verified if the image is RGB as described in topic 4.3. We also verified if there is a precise format for the new image, and if we should adopt the default format. Furthermore, we set the DIRTY value, and finally restarted the zoom factor to normal visualization in a 100%.</p>
 
 <p>In Lua, since the mathematical library is already included in the standard parser, there is no need for a new require. Besides the syntax difference among the languages, there is no particular change in the Lua version.</p>
 
