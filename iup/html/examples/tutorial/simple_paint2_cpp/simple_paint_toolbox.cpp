@@ -253,7 +253,6 @@ static Ihandle* load_image_PaintText(void)
 
 int SimplePaintToolbox::CloseCallback(Ihandle*)
 {
-  Ihandle* item_toolbox = IupGetDialogChild(paint_canvas, "TOOLBOXMENU");
   IupSetAttribute(item_toolbox, "VALUE", "OFF");
 
   IupConfigDialogClosed(config, toolbox, "Toolbox");
@@ -307,12 +306,6 @@ int SimplePaintToolbox::ToolActionCallback(Ihandle* ih, int state)
   if (state == 1)
   {
     tool_index = (Tool)IupGetInt(ih, "TOOLINDEX");
-
-    if (tool_index == TOOL_POINTER)
-      IupSetAttribute(paint_canvas, "CURSOR", "ARROW");
-    else
-      IupSetAttribute(paint_canvas, "CURSOR", "CROSS");
-
     if (tool_index == TOOL_TEXT)
       ToolGetText();
   }
@@ -475,7 +468,7 @@ void SimplePaintToolbox::CreateDialog(Ihandle* canvas, Ihandle* main_config)
   IupSetStrAttribute(toolbox, "TOOLFONT", IupGetAttribute(canvas, "FONT"));
 
   config = main_config;
-  paint_canvas = canvas;
+  item_toolbox = IupGetDialogChild(canvas, "TOOLBOXMENU");
 
   /* Initialize variables from the configuration file */
 

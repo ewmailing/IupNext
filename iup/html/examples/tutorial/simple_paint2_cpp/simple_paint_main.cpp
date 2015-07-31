@@ -3,6 +3,7 @@
 #include "simple_paint_util.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 
 #include <im_process.h>
@@ -25,7 +26,7 @@
 #endif
 
 #ifdef DEFINE_ROUND
-double round(double x)
+static double round(double x)
 {
   return (int)(x>0 ? x + 0.5 : x - 0.5);
 }
@@ -543,6 +544,20 @@ int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, 
 
 int SimplePaint::CanvasMotionCallback(Ihandle* canvas, int x, int y, char *status)
 {
+  SimplePaintToolbox::Tool tool_index = toolbox.ToolIndex();
+  if (tool_index == SimplePaintToolbox::TOOL_POINTER)
+  {
+    char* cursor = IupGetAttribute(canvas, "CURSOR");
+    if (strcmp(cursor, "ARROW") != 0)
+      IupSetAttribute(canvas, "CURSOR", "ARROW");
+  }
+  else
+  {
+    char* cursor = IupGetAttribute(canvas, "CURSOR");
+    if (strcmp(cursor, "CROSS") != 0)
+      IupSetAttribute(canvas, "CURSOR", "CROSS");
+  }
+
   if (file.GetImage())
   {
     int cursor_x = x, cursor_y = y;
@@ -572,8 +587,6 @@ int SimplePaint::CanvasMotionCallback(Ihandle* canvas, int x, int y, char *statu
 
       if (iup_isbutton1(status)) /* button1 is pressed */
       {
-        SimplePaintToolbox::Tool tool_index = toolbox.ToolIndex();
-
         if (tool_index == SimplePaintToolbox::TOOL_POINTER)
         {
           int canvas_width = IupGetInt(canvas, "DRAWSIZE");

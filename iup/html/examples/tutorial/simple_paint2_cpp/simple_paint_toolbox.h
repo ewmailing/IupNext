@@ -23,7 +23,7 @@ public:
   };
 
 private:
-  Ihandle *toolbox, *config, *paint_canvas;
+  Ihandle *toolbox, *config, *item_toolbox;
 
   Tool tool_index;
 
@@ -37,7 +37,7 @@ private:
 
 public:
   SimplePaintToolbox()
-    :toolbox(NULL), config(NULL), paint_canvas(NULL), tool_index(TOOL_POINTER)
+    :toolbox(NULL), config(NULL), item_toolbox(NULL), tool_index(TOOL_POINTER)
   {
     options.color = CD_BLACK;
     options.line_width = 1;
