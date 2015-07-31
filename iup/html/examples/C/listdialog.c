@@ -46,7 +46,7 @@ int main(int argc, char **argv)
       }
     }
     
-    if(strcmp(selection,""))
+    if (selection[0] != 0)
       IupMessagef("Options selected",selection);	  
     else
       IupMessage("IupListDialog","No option selected");

@@ -103,7 +103,7 @@ int btn_on_off_cb(Ihandle *self)
   btn_image = IupGetHandle( "btn_image" );
   
   /* If the button with with image is active...*/
-  if(!strcmp( IupGetAttribute( btn_image, "ACTIVE" ), "YES" ) )
+  if (IupGetInt( btn_image, "ACTIVE" ))
   {
     /* Deactivates the button with image */
     IupSetAttribute( btn_image, "ACTIVE","NO" );
