@@ -23,6 +23,7 @@ class SimplePaintCanvas
   struct
   {
     bool overlay;
+    bool start;
     int start_x, start_y;
     int end_x, end_y;
     int start_cursor_x, start_cursor_y;
@@ -34,6 +35,8 @@ public:
     :canvas(0), cd_canvas(0), file(0), toolbox(0),
      background(cdEncodeColor(208, 208, 208)), show_zoomgrid(true)
   {
+    interact.overlay = false;
+    interact.start = false;
   }
   
   Ihandle* CreateCanvas(SimplePaintFile* ref_file, SimplePaintToolbox* ref_toolbox);

@@ -496,27 +496,32 @@ int SimplePaintCanvas::CanvasButtonCallback(Ihandle* canvas, int button, int pre
       {
         if (pressed)
         {
+          interact.start = true;
           interact.start_x = x;
           interact.start_y = y;
           interact.start_cursor_x = cursor_x;
           interact.start_cursor_y = cursor_y;
         }
-        else
+        else if (interact.start)
         {
           SimplePaintToolbox::Tool tool_index = toolbox->ToolIndex();
 
           if (tool_index == SimplePaintToolbox::TOOL_COLORPICKER)
           {
-            unsigned char** data = (unsigned char**)file->GetImage()->data;
-            unsigned char r, g, b;
-            int offset;
+            // must click and release on the same pixel
+            if (interact.start_x == x && interact.start_y == y)
+            {
+              unsigned char** data = (unsigned char**)file->GetImage()->data;
+              unsigned char r, g, b;
+              int offset;
 
-            offset = y * file->GetImage()->width + x;
-            r = data[0][offset];
-            g = data[1][offset];
-            b = data[2][offset];
+              offset = y * file->GetImage()->width + x;
+              r = data[0][offset];
+              g = data[1][offset];
+              b = data[2][offset];
 
-            toolbox->SetColor(cdEncodeColor(r, g, b));
+              toolbox->SetColor(cdEncodeColor(r, g, b));
+            }
           }
           else if (tool_index == SimplePaintToolbox::TOOL_PENCIL)
           {
@@ -550,18 +555,25 @@ int SimplePaintCanvas::CanvasButtonCallback(Ihandle* canvas, int button, int pre
           }
           else if (tool_index == SimplePaintToolbox::TOOL_FILLCOLOR)
           {
-            double tol_percent = toolbox->FillTol();
-            long color = toolbox->Color();
+            // must click and release on the same pixel
+            if (interact.start_x == x && interact.start_y == y)
+            {
+              double tol_percent = toolbox->FillTol();
+              long color = toolbox->Color();
 
-            image_flood_fill(file->GetImage(), x, y, color, tol_percent);
-            file->dirty = true;
+              image_flood_fill(file->GetImage(), x, y, color, tol_percent);
+              file->dirty = true;
 
-            IupUpdate(canvas);
+              IupUpdate(canvas);
+            }
           }
+
+          interact.start = false;
         }
       }
-      else if (button == IUP_BUTTON3)
+      else if (button == IUP_BUTTON3)  /* right click */
       {
+        // attention: can not use start_* here because they are initialized only for button1
         if (!pressed)
         {
           SimplePaintToolbox::Tool tool_index = toolbox->ToolIndex();
@@ -618,7 +630,7 @@ int SimplePaintCanvas::CanvasMotionCallback(Ihandle* canvas, int x, int y, char 
 
       IupSetStrf(status_lbl, "TITLE", "(%4d, %4d) = %3d %3d %3d", x, y, (int)r, (int)g, (int)b);
 
-      if (iup_isbutton1(status)) /* button1 is pressed */
+      if (iup_isbutton1(status) && interact.start) /* button1 is pressed */
       {
         if (tool_index == SimplePaintToolbox::TOOL_POINTER)
         {
@@ -656,8 +668,6 @@ int SimplePaintCanvas::CanvasMotionCallback(Ihandle* canvas, int x, int y, char 
 
 Ihandle* SimplePaintCanvas::CreateCanvas(SimplePaintFile* ref_file, SimplePaintToolbox* ref_toolbox)
 {
-  interact.overlay = false;
-
   file = ref_file;
   toolbox = ref_toolbox;
 
