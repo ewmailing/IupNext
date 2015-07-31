@@ -319,7 +319,7 @@ int canvas_action_cb(Ihandle* canvas)
   unsigned int ri, gi, bi;
   imImage* image;
   Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
-  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
+  const char* background = IupConfigGetVariableStrDef(config, "Canvas", "Background", "255 255 255");
 
   IupGetIntInt(canvas, "DRAWSIZE", &canvas_width, &canvas_height);
 
@@ -585,7 +585,7 @@ int item_background_action_cb(Ihandle* item_background)
   Ihandle* canvas = IupGetDialogChild(item_background, "CANVAS");
   Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
   Ihandle* colordlg = IupColorDlg();
-  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
+  const char* background = IupConfigGetVariableStrDef(config, "Canvas", "Background", "255 255 255");
   IupSetStrAttribute(colordlg, "VALUE", background);
   IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(item_background));
 
@@ -594,7 +594,7 @@ int item_background_action_cb(Ihandle* item_background)
   if (IupGetInt(colordlg, "STATUS") == 1)
   {
     background = IupGetAttribute(colordlg, "VALUE");
-    IupConfigSetVariableStr(config, "MainWindow", "Background", background);
+    IupConfigSetVariableStr(config, "Canvas", "Background", background);
 
     IupUpdate(canvas);
   }

@@ -3,7 +3,6 @@
 #ifndef SIMPLE_PAINT_FILE_H
 #define SIMPLE_PAINT_FILE_H
 
-#include <stdlib.h>
 #include <im.h>
 #include <im_image.h>
 
@@ -17,7 +16,7 @@ public:
   bool dirty;  /* leave it public */
 
   SimplePaintFile()
-    :filename(NULL), image(NULL), dirty(false)
+    :filename(0), image(0), dirty(false)
   {
   }
 

@@ -138,7 +138,7 @@ bool SimplePaintFile::New(int width, int height)
   SetImage(new_image);
 
   /* set properties */
-  SetFilename(NULL);
+  SetFilename(0);
   dirty = false;
 
   return true;

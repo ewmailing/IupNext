@@ -923,7 +923,7 @@ function canvas:action()
   cd_canvas:Activate()
 
   -- draw the background 
-  local background = config:GetVariableDef("MainWindow", "Background", "208 208 208")
+  local background = config:GetVariableDef("Canvas", "Background", "208 208 208")
   local r, g, b = string.match(background, "(%d*) (%d*) (%d*)")
   cd_canvas:Background(cd.EncodeColor(r, g, b))
   cd_canvas:Clear()
@@ -938,7 +938,7 @@ function canvas:action()
 
     image:cdCanvasPutImageRect(cd_canvas, x, y, view_width, view_height, 0, 0, 0, 0)
     
-    if (config:GetVariable("MainWindow", "ZoomGrid") == "ON") then
+    if (config:GetVariable("Canvas", "ZoomGrid") == "ON") then
       zoom_val = iup.GetDialogChild(canvas, "ZOOMVAL")
       zoom_index = tonumber(zoom_val.value)
       if (zoom_index > 1) then
@@ -1459,7 +1459,7 @@ end
 
 function item_background:action()
   local colordlg = iup.colordlg{}
-  local background = config:GetVariableDef("MainWindow", "Background", "255 255 255")
+  local background = config:GetVariableDef("Canvas", "Background", "255 255 255")
   colordlg.value = background
   colordlg.parentdialog = iup.GetDialog(self)
 
@@ -1467,7 +1467,7 @@ function item_background:action()
 
   if (tonumber(colordlg.status) == 1) then
     background = colordlg.value
-    config:SetVariable("MainWindow", "Background", background)
+    config:SetVariable("Canvas", "Background", background)
 
     iup.Update(canvas)
   end
@@ -1481,7 +1481,7 @@ function item_zoomgrid:action()
   else
     self.value = "ON"
   end
-  config:SetVariable("MainWindow", "ZoomGrid", self.value)
+  config:SetVariable("Canvas", "ZoomGrid", self.value)
 
   iup.Update(canvas)
 end
@@ -1752,7 +1752,7 @@ iup.SetGlobal("PARENTDIALOG", iup.SetHandleName(dlg))
 
 config:RecentInit(recent_menu, 10)
 
-local show_zoomgrid = config:GetVariableDef("MainWindow", "ZoomGrid", "ON")
+local show_zoomgrid = config:GetVariableDef("Canvas", "ZoomGrid", "ON")
 if (show_zoomgrid == "OFF") then
   item_zoomgrid.value = "OFF"
 end

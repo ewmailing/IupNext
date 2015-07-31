@@ -1273,7 +1273,7 @@ void SimplePaint::DrawToolOverlay(cdCanvas* cnv, int start_x, int start_y, int e
 int SimplePaint::CanvasActionCallback(Ihandle*)
 {
   unsigned int ri, gi, bi;
-  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "208 208 208");
+  const char* background = IupConfigGetVariableStrDef(config, "Canvas", "Background", "208 208 208");
 
 #ifdef USE_OPENGL
   IupGLMakeCurrent(canvas);
@@ -1303,7 +1303,7 @@ int SimplePaint::CanvasActionCallback(Ihandle*)
     cdCanvasSetAttribute(cd_canvas, "IMGINTERP", (char*)"NEAREST");  /* affects only drivers that have this attribute */
     imcdCanvasPutImage(cd_canvas, file.GetImage(), x, y, view_width, view_height, 0, 0, 0, 0);
 
-    if (IupConfigGetVariableInt(config, "MainWindow", "ZoomGrid"))
+    if (IupConfigGetVariableInt(config, "Canvas", "ZoomGrid"))
     {
       Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
       double zoom_index = IupGetDouble(zoom_val, "VALUE");
@@ -1826,7 +1826,7 @@ int SimplePaint::ItemPasteActionCallback(Ihandle*)
 int SimplePaint::ItemBackgroundActionCallback(Ihandle*)
 {
   Ihandle* colordlg = IupColorDlg();
-  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
+  const char* background = IupConfigGetVariableStrDef(config, "Canvas", "Background", "255 255 255");
   IupSetStrAttribute(colordlg, "VALUE", background);
   IupSetAttributeHandle(colordlg, "PARENTDIALOG", dlg);
 
@@ -1835,7 +1835,7 @@ int SimplePaint::ItemBackgroundActionCallback(Ihandle*)
   if (IupGetInt(colordlg, "STATUS") == 1)
   {
     background = IupGetAttribute(colordlg, "VALUE");
-    IupConfigSetVariableStr(config, "MainWindow", "Background", background);
+    IupConfigSetVariableStr(config, "Canvas", "Background", background);
 
     IupUpdate(canvas);
   }
@@ -1887,7 +1887,7 @@ int SimplePaint::ItemZoomgridActionCallback(Ihandle*)
   else
     IupSetAttribute(item_zoomgrid, "VALUE", "ON");
 
-  IupConfigSetVariableStr(config, "MainWindow", "ZoomGrid", IupGetAttribute(item_zoomgrid, "VALUE"));
+  IupConfigSetVariableStr(config, "Canvas", "ZoomGrid", IupGetAttribute(item_zoomgrid, "VALUE"));
 
   IupUpdate(canvas);
   return IUP_DEFAULT;
@@ -2470,7 +2470,7 @@ Ihandle* SimplePaint::CreateMainMenu()
 
   IupConfigRecentInit(config, recent_menu, CB_ConfigRecentCallback, 10);
 
-  if (!IupConfigGetVariableIntDef(config, "MainWindow", "ZoomGrid", 1))
+  if (!IupConfigGetVariableIntDef(config, "Canvas", "ZoomGrid", 1))
     IupSetAttribute(item_zoomgrid, "VALUE", "OFF");
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))

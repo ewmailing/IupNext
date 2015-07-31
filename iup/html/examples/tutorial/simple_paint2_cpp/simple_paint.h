@@ -3,26 +3,16 @@
 #ifndef SIMPLE_PAINT_H
 #define SIMPLE_PAINT_H
 
-#include "simple_paint_file.h"
-#include "simple_paint_toolbox.h"
-
+#include "simple_paint_canvas.h"
 
 
 class SimplePaint
 {
-  Ihandle *dlg, *config, *canvas;
+  Ihandle *dlg, *config;
 
-  cdCanvas* cd_canvas;
   SimplePaintFile file;
   SimplePaintToolbox toolbox;
-
-  struct 
-  {
-    bool overlay;
-    int start_x, start_y;
-    int end_x, end_y;
-    int start_cursor_x, start_cursor_y;
-  } interact;
+  SimplePaintCanvas canvas;
 
 public:
 
@@ -34,23 +24,17 @@ public:
 
 protected:
 
-  void CreateMainDialog();
+  void CreateMainDialog(Ihandle* iup_canvas);
   Ihandle* CreateStatusbar();
   Ihandle* CreateToolbar();
   Ihandle* CreateMainMenu();
-
-  void DrawToolOverlay(cdCanvas* cnv, int start_x, int start_y, int end_x, int end_y);
-  void DrawPencil(int start_x, int start_y, int end_x, int end_y);
 
   void SelectFile(bool is_open);
 
   void UpdateFile();
   void UpdateImage(imImage* new_image, bool update_size = false);
-  void UpdateZoom(double zoom_index);
 
   void ToggleBarVisibility(Ihandle* item, Ihandle* bar);
-
-  double ViewZoomRect(int *_x, int *_y, int *_view_width, int *_view_height);
 
   IUP_CLASS_DECLARECALLBACK_IFnii(SimplePaint, DialogMoveCallback);
   IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, ConfigRecentCallback);
@@ -87,14 +71,7 @@ protected:
 
   IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, FileMenuOpenCallback);
   IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, EditMenuOpenCallback);
-
-  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, CanvasActionCallback);
-  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, CanvasMapCallback);
-  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, CanvasUnmapCallback);
-  IUP_CLASS_DECLARECALLBACK_IFnfiis(SimplePaint, CanvasWheelCallback);
-  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, CanvasResizeCallback);
-  IUP_CLASS_DECLARECALLBACK_IFniis(SimplePaint, CanvasMotionCallback);
-  IUP_CLASS_DECLARECALLBACK_IFniiii(SimplePaint, CanvasButtonCallback);
+  IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, ViewMenuOpenCallback);
 
   IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, ZoomValueChangedCallback);
 };

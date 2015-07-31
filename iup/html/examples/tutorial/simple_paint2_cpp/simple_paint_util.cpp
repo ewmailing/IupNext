@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include <iup.h>
 #include <cd.h>
 
 
@@ -91,6 +92,10 @@ int str_compare(const char *l, const char *r, int casesensitive)
   return 0;
 }
 
+
+/********************************************************************/
+
+
 void show_error(const char* message, int is_error)
 {
   Ihandle* dlg = IupMessageDlg();
@@ -130,95 +135,9 @@ void show_file_error(int error)
   }
 }
 
-/* extracted from the SCROLLBAR attribute documentation */
-void scroll_update(Ihandle* ih, int view_width, int view_height)
-{
-  /* view_width and view_height is the virtual space size */
-  /* here we assume XMIN=0, XMAX=1, YMIN=0, YMAX=1 */
-  int elem_width, elem_height;
-  int canvas_width, canvas_height;
-  int scrollbar_size = IupGetInt(NULL, "SCROLLBARSIZE");
-  int border = IupGetInt(ih, "BORDER");
 
-  IupGetIntInt(ih, "RASTERSIZE", &elem_width, &elem_height);
+/***********************************************************/
 
-  /* if view is greater than canvas in one direction,
-  then it has scrollbars,
-  but this affects the opposite direction */
-  elem_width -= 2 * border;  /* remove BORDER (always size=1) */
-  elem_height -= 2 * border;
-  canvas_width = elem_width;
-  canvas_height = elem_height;
-  if (view_width > elem_width)  /* check for horizontal scrollbar */
-    canvas_height -= scrollbar_size;  /* affect vertical size */
-  if (view_height > elem_height)
-    canvas_width -= scrollbar_size;
-  if (view_width <= elem_width && view_width > canvas_width)  /* check if still has horizontal scrollbar */
-    canvas_height -= scrollbar_size;
-  if (view_height <= elem_height && view_height > canvas_height)
-    canvas_width -= scrollbar_size;
-  if (canvas_width < 0) canvas_width = 0;
-  if (canvas_height < 0) canvas_height = 0;
-
-  IupSetFloat(ih, "DX", (float)canvas_width / (float)view_width);
-  IupSetFloat(ih, "DY", (float)canvas_height / (float)view_height);
-}
-
-void scroll_calc_center(Ihandle* ih, float *x, float *y)
-{
-  *x = IupGetFloat(ih, "POSX") + IupGetFloat(ih, "DX") / 2.0f;
-  *y = IupGetFloat(ih, "POSY") + IupGetFloat(ih, "DY") / 2.0f;
-}
-
-void scroll_center(Ihandle* ih, float old_center_x, float old_center_y)
-{
-  /* always update the scroll position
-     keeping it proportional to the old position
-     relative to the center of the ih. */
-
-  float dx = IupGetFloat(ih, "DX");
-  float dy = IupGetFloat(ih, "DY");
-
-  float posx = old_center_x - dx / 2.0f;
-  float posy = old_center_y - dy / 2.0f;
-
-  if (posx < 0) posx = 0;
-  if (posx > 1 - dx) posx = 1 - dx;
-
-  if (posy < 0) posy = 0;
-  if (posy > 1 - dy) posy = 1 - dy;
-
-  IupSetFloat(ih, "POSX", posx);
-  IupSetFloat(ih, "POSY", posy);
-}
-
-void scroll_move(Ihandle* ih, int canvas_width, int canvas_height, int move_x, int move_y, int view_width, int view_height)
-{
-  float posy = 0;
-  float posx = 0;
-
-  if (move_x == 0 && move_y == 0)
-    return;
-
-  if (canvas_height < view_height)
-  {
-    posy = IupGetFloat(ih, "POSY");
-    posy -= (float)move_y / (float)view_height;
-  }
-
-  if (canvas_width < view_width)
-  {
-    posx = IupGetFloat(ih, "POSX");
-    posx -= (float)move_x / (float)view_width;
-  }
-
-  if (posx != 0 || posy != 0)
-  {
-    IupSetFloat(ih, "POSX", posx);
-    IupSetFloat(ih, "POSY", posy);
-    IupUpdate(ih);
-  }
-}
 
 struct xyStack
 {
@@ -337,28 +256,3 @@ void image_flood_fill(const imImage* image, int start_x, int start_y, long repla
   }
 }
 
-void view_fit_rect(int canvas_width, int canvas_height, int image_width, int image_height, int *view_width, int *view_height)
-{
-  *view_width = canvas_width;
-  *view_height = (canvas_width * image_height) / image_width;
-
-  if (*view_height > canvas_height)
-  {
-    *view_height = canvas_height;
-    *view_width = (canvas_height * image_width) / image_height;
-  }
-}
-
-void view_zoom_offset(int view_x, int view_y, int image_width, int image_height, double zoom_factor, int *x, int *y)
-{
-  *x -= view_x;
-  *y -= view_y;
-
-  *x = (int)(*x / zoom_factor);
-  *y = (int)(*y / zoom_factor);
-
-  if (*x < 0) *x = 0;
-  if (*y < 0) *y = 0;
-  if (*x > image_width - 1) *x = image_width - 1;
-  if (*y > image_height - 1) *y = image_height - 1;
-}

@@ -1061,7 +1061,7 @@ int canvas_action_cb(Ihandle* canvas)
   imImage* image;
   cdCanvas* cd_canvas = (cdCanvas*)IupGetAttribute(canvas, "cdCanvas");
   Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
-  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "208 208 208");
+  const char* background = IupConfigGetVariableStrDef(config, "Canvas", "Background", "208 208 208");
 
 #ifdef USE_OPENGL
   IupGLMakeCurrent(canvas);
@@ -1092,7 +1092,7 @@ int canvas_action_cb(Ihandle* canvas)
     cdCanvasSetAttribute(cd_canvas, "IMGINTERP", "NEAREST");  /* affects only drivers that have this attribute */
     imcdCanvasPutImage(cd_canvas, image, x, y, view_width, view_height, 0, 0, 0, 0);
 
-    if (IupConfigGetVariableInt(config, "MainWindow", "ZoomGrid"))
+    if (IupConfigGetVariableInt(config, "Canvas", "ZoomGrid"))
     {
       Ihandle* zoom_val = IupGetDialogChild(canvas, "ZOOMVAL");
       double zoom_index = IupGetDouble(zoom_val, "VALUE");
@@ -1700,7 +1700,7 @@ int item_background_action_cb(Ihandle* item_background)
   Ihandle* canvas = IupGetDialogChild(item_background, "CANVAS");
   Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
   Ihandle* colordlg = IupColorDlg();
-  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
+  const char* background = IupConfigGetVariableStrDef(config, "Canvas", "Background", "255 255 255");
   IupSetStrAttribute(colordlg, "VALUE", background);
   IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(item_background));
 
@@ -1709,7 +1709,7 @@ int item_background_action_cb(Ihandle* item_background)
   if (IupGetInt(colordlg, "STATUS") == 1)
   {
     background = IupGetAttribute(colordlg, "VALUE");
-    IupConfigSetVariableStr(config, "MainWindow", "Background", background);
+    IupConfigSetVariableStr(config, "Canvas", "Background", background);
 
     IupUpdate(canvas);
   }
@@ -1729,7 +1729,7 @@ int item_zoomgrid_action_cb(Ihandle* ih)
   else
     IupSetAttribute(item_zoomgrid, "VALUE", "ON");
 
-  IupConfigSetVariableStr(config, "MainWindow", "ZoomGrid", IupGetAttribute(item_zoomgrid, "VALUE"));
+  IupConfigSetVariableStr(config, "Canvas", "ZoomGrid", IupGetAttribute(item_zoomgrid, "VALUE"));
 
   IupUpdate(canvas);
   return IUP_DEFAULT;
@@ -2283,7 +2283,7 @@ Ihandle* create_main_menu(Ihandle *config)
 
   IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
 
-  if (!IupConfigGetVariableIntDef(config, "MainWindow", "ZoomGrid", 1))
+  if (!IupConfigGetVariableIntDef(config, "Canvas", "ZoomGrid", 1))
     IupSetAttribute(item_zoomgrid, "VALUE", "OFF");
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))

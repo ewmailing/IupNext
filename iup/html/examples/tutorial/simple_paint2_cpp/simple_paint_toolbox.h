@@ -3,9 +3,7 @@
 #ifndef SIMPLE_PAINT_TOOLBOX_H
 #define SIMPLE_PAINT_TOOLBOX_H
 
-#include <stdlib.h>
 #include <iup.h>
-#include <cd.h>
 
 #include <iup_class_cbs.hpp>
 
@@ -23,7 +21,7 @@ public:
   };
 
 private:
-  Ihandle *toolbox, *config, *item_toolbox;
+  Ihandle *toolbox, *config;
 
   Tool tool_index;
 
@@ -37,9 +35,9 @@ private:
 
 public:
   SimplePaintToolbox()
-    :toolbox(NULL), config(NULL), item_toolbox(NULL), tool_index(TOOL_POINTER)
+    :toolbox(0), config(0), tool_index(TOOL_POINTER)
   {
-    options.color = CD_BLACK;
+    options.color = 0;  // black
     options.line_width = 1;
     options.line_style = 0;
     options.fill_tol = 50;
@@ -56,10 +54,13 @@ public:
 
   void SetColor(long new_color);
 
+  void CreateDialog(Ihandle* parent_dlg, Ihandle* config);
+
   void MoveDialog(int dx, int dy);
-  bool HideDialog();
+
+  void HideDialog();
   void ShowDialog();
-  void CreateDialog(Ihandle* canvas, Ihandle* config);
+  bool Visible() const { return IupGetInt(toolbox, "VISIBLE")? true: false; }
 
   void ToolGetText();
 

@@ -1,6 +1,8 @@
 
 #include "simple_paint_toolbox.h"
 
+#include <stdlib.h>
+#include <cd.h>
 #include <iup_config.h>
 
 
@@ -253,11 +255,7 @@ static Ihandle* load_image_PaintText(void)
 
 int SimplePaintToolbox::CloseCallback(Ihandle*)
 {
-  IupSetAttribute(item_toolbox, "VALUE", "OFF");
-
   IupConfigDialogClosed(config, toolbox, "Toolbox");
-
-  IupConfigSetVariableStr(config, "MainWindow", "Toolbox", "OFF");
   return IUP_DEFAULT;
 }
 
@@ -278,15 +276,10 @@ void SimplePaintToolbox::MoveDialog(int dx, int dy)
   }
 }
 
-bool SimplePaintToolbox::HideDialog()
+void SimplePaintToolbox::HideDialog()
 {
-  if (IupGetInt(toolbox, "VISIBLE"))
-  {
-    IupConfigDialogClosed(config, toolbox, "Toolbox");
-    IupHide(toolbox);
-    return true;
-  }
-  return false;
+  IupConfigDialogClosed(config, toolbox, "Toolbox");
+  IupHide(toolbox);
 }
 
 void SimplePaintToolbox::ShowDialog()
@@ -407,7 +400,7 @@ int SimplePaintToolbox::ToolFillTolValueChangedCallback(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-void SimplePaintToolbox::CreateDialog(Ihandle* canvas, Ihandle* main_config)
+void SimplePaintToolbox::CreateDialog(Ihandle* parent_dlg, Ihandle* main_config)
 {
   Ihandle *gbox, *vbox;
 
@@ -463,28 +456,11 @@ void SimplePaintToolbox::CreateDialog(Ihandle* canvas, Ihandle* main_config)
   IupSetAttribute(toolbox, "FONTSIZE", "8");
   IupSetAttribute(toolbox, "TOOLBOX", "Yes");
   IUP_CLASS_SETCALLBACK(toolbox, "CLOSE_CB", CloseCallback);
-  IupSetAttributeHandle(toolbox, "PARENTDIALOG", IupGetDialog(canvas));
+  IupSetAttributeHandle(toolbox, "PARENTDIALOG", parent_dlg);
 
-  IupSetStrAttribute(toolbox, "TOOLFONT", IupGetAttribute(canvas, "FONT"));
+  IupSetStrAttribute(toolbox, "TOOLFONT", IupGetAttribute(parent_dlg, "FONT"));
 
   config = main_config;
-  item_toolbox = IupGetDialogChild(canvas, "TOOLBOXMENU");
-
-  /* Initialize variables from the configuration file */
-
-  if (IupConfigGetVariableIntDef(config, "MainWindow", "Toolbox", 1))
-  {
-    /* configure the very first time to be aligned with the main window */
-    if (!IupConfigGetVariableStr(config, "Toolbox", "X"))
-    {
-      int x = IupGetInt(canvas, "X");
-      int y = IupGetInt(canvas, "Y");
-      IupConfigSetVariableInt(config, "Toolbox", "X", x);
-      IupConfigSetVariableInt(config, "Toolbox", "Y", y);
-    }
-
-    IupConfigDialogShow(config, toolbox, "Toolbox");
-  }
 
   IUP_CLASS_INITCALLBACK(toolbox, SimplePaintToolbox);
 }

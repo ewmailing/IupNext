@@ -3,34 +3,12 @@
 #include "simple_paint_util.h"
 
 #include <stdio.h>
-#include <string.h>
-#include <math.h>
+#include <stdlib.h>
 
 #include <im_process.h>
-#include <cdirgb.h>
-#include <cdiup.h>
-#include <cdprint.h>
 #include <iup_config.h>
 #include <iupim.h>
 
-//#define USE_OPENGL 1
-//#define USE_CONTEXTPLUS 1
-
-#ifdef USE_OPENGL
-#include <iupgl.h>
-#include <cdgl.h>
-#endif
-
-#if _MSC_VER < 1800 /* vc12 (2013) */
-#define DEFINE_ROUND
-#endif
-
-#ifdef DEFINE_ROUND
-static double round(double x)
-{
-  return (int)(x>0 ? x + 0.5 : x - 0.5);
-}
-#endif
 
 
 /********************************** Images *****************************************/
@@ -63,27 +41,7 @@ static Ihandle* load_image_PaintZoomGrid(void)
 
 /*********************************** Utilities Methods **************************************/
 
-
-void SimplePaint::UpdateZoom(double zoom_index)
-{
-  Ihandle* zoom_lbl = IupGetDialogChild(dlg, "ZOOMLABEL");
-  double zoom_factor = pow(2, zoom_index);
-  IupSetStrf(zoom_lbl, "TITLE", "%.0f%%", floor(zoom_factor * 100));
-  if (file.GetImage())
-  {
-    float old_center_x, old_center_y;
-    int view_width = (int)(zoom_factor * file.GetImage()->width);
-    int view_height = (int)(zoom_factor * file.GetImage()->height);
-
-    scroll_calc_center(canvas, &old_center_x, &old_center_y);
-
-    scroll_update(canvas, view_width, view_height);
-
-    scroll_center(canvas, old_center_x, old_center_y);
-  }
-  IupUpdate(canvas);
-}
-
+                        
 void SimplePaint::UpdateImage(imImage* new_image, bool update_size)
 {
   file.SetImage(new_image);
@@ -91,19 +49,17 @@ void SimplePaint::UpdateImage(imImage* new_image, bool update_size)
   if (update_size)
   {
     Ihandle* size_lbl = IupGetDialogChild(dlg, "SIZELABEL");
-    Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
-    double zoom_index = IupGetDouble(zoom_val, "VALUE");
     IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", file.GetImage()->width, file.GetImage()->height);
-    UpdateZoom(zoom_index);
+
+    canvas.ScrollUpdate();
   }
   else
-    IupUpdate(canvas);
+    canvas.Update();
 }
 
 void SimplePaint::UpdateFile()
 {
   Ihandle* size_lbl = IupGetDialogChild(dlg, "SIZELABEL");
-  Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
 
   if (file.GetFilename())
     IupSetfAttribute(dlg, "TITLE", "%s - Simple Paint", str_filetitle(file.GetFilename()));
@@ -112,8 +68,8 @@ void SimplePaint::UpdateFile()
 
   IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", file.GetImage()->width, file.GetImage()->height);
 
-  IupSetDouble(zoom_val, "VALUE", 0);
-  UpdateZoom(0);
+  /* reset zoom to 100% */
+  canvas.SetZoom(0);
 }
 
 void SimplePaint::CheckNewFile()
@@ -140,7 +96,7 @@ void SimplePaint::OpenFile(const char* filename)
 
 void SimplePaint::ToggleBarVisibility(Ihandle* item, Ihandle* bar)
 {
-  if (IupGetInt(item, "VALUE"))
+  if (IupGetInt(bar, "VISIBLE"))
   {
     IupSetAttribute(bar, "FLOATING", "YES");
     IupSetAttribute(bar, "VISIBLE", "NO");
@@ -194,437 +150,14 @@ void SimplePaint::SelectFile(bool is_open)
   IupDestroy(filedlg);
 }
 
-double SimplePaint::ViewZoomRect(int *_x, int *_y, int *_view_width, int *_view_height)
-{
-  int x, y, canvas_width, canvas_height;
-  int view_width, view_height;
-  Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
-  double zoom_index = IupGetDouble(zoom_val, "VALUE");
-  double zoom_factor = pow(2, zoom_index);
-
-  float posy = IupGetFloat(canvas, "POSY");
-  float posx = IupGetFloat(canvas, "POSX");
-
-  IupGetIntInt(canvas, "DRAWSIZE", &canvas_width, &canvas_height);
-
-  view_width = (int)(zoom_factor * file.GetImage()->width);
-  view_height = (int)(zoom_factor * file.GetImage()->height);
-
-  if (canvas_width < view_width)
-    x = (int)floor(-posx*view_width);
-  else
-    x = (canvas_width - view_width) / 2;
-
-  if (canvas_height < view_height)
-  {
-    /* posy is top-bottom, CD is bottom-top.
-    invert posy reference (YMAX-DY - POSY) */
-    float dy = IupGetFloat(canvas, "DY");
-    posy = 1.0f - dy - posy;
-    y = (int)floor(-posy*view_height);
-  }
-  else
-    y = (canvas_height - view_height) / 2;
-
-  *_x = x;
-  *_y = y;
-  *_view_width = view_width;
-  *_view_height = view_height;
-
-  return zoom_factor;
-}
-
-void SimplePaint::DrawPencil(int start_x, int start_y, int end_x, int end_y)
-{
-  double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-  unsigned char** data = (unsigned char**)file.GetImage()->data;
-
-  int line_width = toolbox.LineWidth();
-  long color = toolbox.Color();
-
-  /* do not use line style here */
-  cdCanvas* rgb_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", file.GetImage()->width, file.GetImage()->height, data[0], data[1], data[2], res);
-  cdCanvasForeground(rgb_canvas, color);
-  cdCanvasLineWidth(rgb_canvas, line_width);
-  cdCanvasLine(rgb_canvas, start_x, start_y, end_x, end_y);
-  cdKillCanvas(rgb_canvas);
-}
-
-void SimplePaint::DrawToolOverlay(cdCanvas* cnv, int start_x, int start_y, int end_x, int end_y)
-{
-  SimplePaintToolbox::Tool tool_index = toolbox.ToolIndex();
-  int line_width = toolbox.LineWidth();
-  int line_style = toolbox.LineStyle();
-  long color = toolbox.Color();
-
-  cdCanvasForeground(cnv, color);
-  cdCanvasLineWidth(cnv, line_width);
-  if (line_width == 1)
-    cdCanvasLineStyle(cnv, line_style);
-
-  if (tool_index == SimplePaintToolbox::TOOL_LINE)
-    cdCanvasLine(cnv, start_x, start_y, end_x, end_y);
-  else if (tool_index == SimplePaintToolbox::TOOL_RECT)
-    cdCanvasRect(cnv, start_x, end_x, start_y, end_y);
-  else if (tool_index == SimplePaintToolbox::TOOL_BOX)
-    cdCanvasBox(cnv, start_x, end_x, start_y, end_y);
-  else if (tool_index == SimplePaintToolbox::TOOL_ELLIPSE)
-    cdCanvasArc(cnv, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
-  else if (tool_index == SimplePaintToolbox::TOOL_OVAL)
-    cdCanvasSector(cnv, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
-  else if (tool_index == SimplePaintToolbox::TOOL_TEXT)
-  {
-    cdCanvasTextAlignment(cnv, CD_SOUTH_WEST);
-    cdCanvasNativeFont(cnv, toolbox.Font());
-    cdCanvasText(cnv, end_x, end_y, toolbox.Text());
-  }
-}
-
 
 /********************************** Callbacks Methods *****************************************/
 
 
-int SimplePaint::CanvasActionCallback(Ihandle*)
-{
-  unsigned int ri, gi, bi;
-  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "208 208 208");
-
-#ifdef USE_OPENGL
-  IupGLMakeCurrent(canvas);
-#endif
-  cdCanvasActivate(cd_canvas);
-
-  /* draw the background */
-  sscanf(background, "%u %u %u", &ri, &gi, &bi);
-  cdCanvasBackground(cd_canvas, cdEncodeColor((unsigned char)ri, (unsigned char)gi, (unsigned char)bi));
-  cdCanvasClear(cd_canvas);
-
-  /* draw the image at the center of the canvas */
-  if (file.GetImage())
-  {
-    int x, y, view_width, view_height;
-    ViewZoomRect(&x, &y, &view_width, &view_height);
-
-    /* black line around the image */
-    cdCanvasForeground(cd_canvas, CD_BLACK);
-    cdCanvasLineWidth(cd_canvas, 1);
-    cdCanvasLineStyle(cd_canvas, CD_CONTINUOUS);
-    cdCanvasRect(cd_canvas, x - 1, x + view_width, y - 1, y + view_height);
-
-    /* Some CD drivers have interpolation options for image zoom */
-    /* we force NEAREST so we can see the pixel boundary in zoom in */
-    /* an alternative would be to set BILINEAR when zoom out */
-    cdCanvasSetAttribute(cd_canvas, "IMGINTERP", (char*)"NEAREST");  /* affects only drivers that have this attribute */
-    imcdCanvasPutImage(cd_canvas, file.GetImage(), x, y, view_width, view_height, 0, 0, 0, 0);
-
-    if (IupConfigGetVariableInt(config, "MainWindow", "ZoomGrid"))
-    {
-      Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
-      double zoom_index = IupGetDouble(zoom_val, "VALUE");
-      if (zoom_index > 1)
-      {
-        int ix, iy;
-        double zoom_factor = pow(2, zoom_index);
-
-        cdCanvasForeground(cd_canvas, CD_GRAY);
-
-        for (ix = 0; ix < file.GetImage()->width; ix++)
-        {
-          int gx = (int)(ix * zoom_factor);
-          cdCanvasLine(cd_canvas, gx + x, y, gx + x, y + view_height);
-        }
-        for (iy = 0; iy < file.GetImage()->height; iy++)
-        {
-          int gy = (int)(iy * zoom_factor);
-          cdCanvasLine(cd_canvas, x, gy + y, x + view_width, gy + y);
-        }
-      }
-    }
-
-    if (interact.overlay)
-    {
-      double scale_x = (double)view_width / (double)file.GetImage()->width;
-      double scale_y = (double)view_height / (double)file.GetImage()->height;
-
-      /* offset and scale drawing in screen to match the image */
-      if (scale_x > 1 || scale_y > 1)
-        cdCanvasTransformTranslate(cd_canvas, x + scale_x / 2, y + scale_y / 2);  /* also draw at the center of the pixel when zoom in */
-      else
-        cdCanvasTransformTranslate(cd_canvas, x, y);
-      cdCanvasTransformScale(cd_canvas, scale_x, scale_y);
-
-      DrawToolOverlay(cd_canvas, interact.start_x, interact.start_y, interact.end_x, interact.end_y);
-
-      cdCanvasTransform(cd_canvas, NULL);
-    }
-  }
-
-  cdCanvasFlush(cd_canvas);
-
-#ifdef USE_OPENGL
-  IupGLSwapBuffers(canvas);
-#endif
-  return IUP_DEFAULT;
-}
-
-int SimplePaint::CanvasMapCallback(Ihandle* canvas)
-{
-#ifdef USE_OPENGL
-  double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-  IupGLMakeCurrent(canvas);
-  cd_canvas = cdCreateCanvasf(CD_GL, "10x10 %g", res);
-#else
-#ifdef USE_CONTEXTPLUS
-  cdUseContextPlus(1);
-#endif
-  cd_canvas = cdCreateCanvas(CD_IUPDBUFFER, canvas);
-#ifdef USE_CONTEXTPLUS
-  cdUseContextPlus(0);
-#endif
-#endif
-  return IUP_DEFAULT;
-}
-
-int SimplePaint::CanvasUnmapCallback(Ihandle*)
-{
-  cdKillCanvas(cd_canvas);
-  return IUP_DEFAULT;
-}
-
-int SimplePaint::CanvasResizeCallback(Ihandle* canvas)
-{
-  if (file.GetImage())
-  {
-    Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
-    double zoom_index = IupGetDouble(zoom_val, "VALUE");
-    double zoom_factor = pow(2, zoom_index);
-    float old_center_x, old_center_y;
-
-    int view_width = (int)(zoom_factor * file.GetImage()->width);
-    int view_height = (int)(zoom_factor * file.GetImage()->height);
-
-    scroll_calc_center(canvas, &old_center_x, &old_center_y);
-
-    scroll_update(canvas, view_width, view_height);
-
-    scroll_center(canvas, old_center_x, old_center_y);
-  }
-
-#ifdef USE_OPENGL
-  {
-    int canvas_width, canvas_height;
-    double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-    IupGetIntInt(canvas, "DRAWSIZE", &canvas_width, &canvas_height);
-
-    IupGLMakeCurrent(canvas);
-    cdCanvasSetfAttribute(cd_canvas, "SIZE", "%dx%d %g", canvas_width, canvas_height, res);
-  }
-#endif
-  return IUP_DEFAULT;
-}
-
-int SimplePaint::CanvasWheelCallback(Ihandle* canvas, float delta, int, int, char*)
-{
-  if (IupGetInt(NULL, "CONTROLKEY"))
-  {
-    if (delta < 0)
-      ItemZoomoutActionCallback(canvas);
-    else
-      ItemZoominActionCallback(canvas);
-  }
-  else
-  {
-    float posy = IupGetFloat(canvas, "POSY");
-    posy -= delta * IupGetFloat(canvas, "DY") / 10.0f;
-    IupSetFloat(canvas, "POSY", posy);
-    IupUpdate(canvas);
-  }
-  return IUP_DEFAULT;
-}
-
-int SimplePaint::CanvasButtonCallback(Ihandle* canvas, int button, int pressed, int x, int y)
-{
-  if (file.GetImage())
-  {
-    int cursor_x = x, cursor_y = y;
-    int view_x, view_y, view_width, view_height;
-    double zoom_factor = ViewZoomRect(&view_x, &view_y, &view_width, &view_height);
-
-    /* y is top-down in IUP */
-    int canvas_height = IupGetInt2(canvas, "DRAWSIZE");
-    y = canvas_height - y - 1;
-
-    /* inside image area */
-    if (x > view_x && y > view_y && x < view_x + view_width && y < view_y + view_height)
-    {
-      view_zoom_offset(view_x, view_y, file.GetImage()->width, file.GetImage()->height, zoom_factor, &x, &y);
-
-      if (button == IUP_BUTTON1)
-      {
-        if (pressed)
-        {
-          interact.start_x = x;
-          interact.start_y = y;
-          interact.start_cursor_x = cursor_x;
-          interact.start_cursor_y = cursor_y;
-        }
-        else
-        {
-          SimplePaintToolbox::Tool tool_index = toolbox.ToolIndex();
-
-          if (tool_index == SimplePaintToolbox::TOOL_COLORPICKER)
-          {
-            unsigned char** data = (unsigned char**)file.GetImage()->data;
-            unsigned char r, g, b;
-            int offset;
-
-            offset = y * file.GetImage()->width + x;
-            r = data[0][offset];
-            g = data[1][offset];
-            b = data[2][offset];
-
-            toolbox.SetColor(cdEncodeColor(r, g, b));
-          }
-          else if (tool_index == SimplePaintToolbox::TOOL_PENCIL)
-          {
-            DrawPencil(interact.start_x, interact.start_y, x, y);
-
-            file.dirty = true;
-
-            IupUpdate(canvas);
-
-            interact.start_x = x;
-            interact.start_y = y;
-          }
-          else if (tool_index >= SimplePaintToolbox::TOOL_LINE && tool_index <= SimplePaintToolbox::TOOL_TEXT)  /* All Shapes */
-          {
-            if (interact.overlay)
-            {
-              double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-              unsigned char** data = (unsigned char**)file.GetImage()->data;
-  
-              cdCanvas* rgb_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", file.GetImage()->width, file.GetImage()->height, data[0], data[1], data[2], res);
-
-              DrawToolOverlay(rgb_canvas, interact.start_x, interact.start_y, x, y);
-
-              cdKillCanvas(rgb_canvas);
-
-              interact.overlay = false;
-              file.dirty = true;
-
-              IupUpdate(canvas);
-            }
-          }
-          else if (tool_index == SimplePaintToolbox::TOOL_FILLCOLOR)
-          {
-            double tol_percent = toolbox.FillTol();
-            long color = toolbox.Color();
-
-            image_flood_fill(file.GetImage(), x, y, color, tol_percent);
-            file.dirty = true;
-
-            IupUpdate(canvas);
-          }
-        }
-      }
-      else if (button == IUP_BUTTON3)
-      {
-        if (!pressed)
-        {
-          SimplePaintToolbox::Tool tool_index = toolbox.ToolIndex();
-          if (tool_index == SimplePaintToolbox::TOOL_TEXT)
-            toolbox.ToolGetText();
-        }
-      }
-    }
-  }
-
-  return IUP_DEFAULT;
-}
-
-int SimplePaint::CanvasMotionCallback(Ihandle* canvas, int x, int y, char *status)
-{
-  SimplePaintToolbox::Tool tool_index = toolbox.ToolIndex();
-  if (tool_index == SimplePaintToolbox::TOOL_POINTER)
-  {
-    char* cursor = IupGetAttribute(canvas, "CURSOR");
-    if (strcmp(cursor, "ARROW") != 0)
-      IupSetAttribute(canvas, "CURSOR", "ARROW");
-  }
-  else
-  {
-    char* cursor = IupGetAttribute(canvas, "CURSOR");
-    if (strcmp(cursor, "CROSS") != 0)
-      IupSetAttribute(canvas, "CURSOR", "CROSS");
-  }
-
-  if (file.GetImage())
-  {
-    int cursor_x = x, cursor_y = y;
-    int view_x, view_y, view_width, view_height;
-    double zoom_factor = ViewZoomRect(&view_x, &view_y, &view_width, &view_height);
-
-    /* y is top-down in IUP */
-    int canvas_height = IupGetInt2(canvas, "DRAWSIZE");
-    y = canvas_height - y - 1;
-
-    /* inside image area */
-    if (x > view_x && y > view_y && x < view_x + view_width && y < view_y + view_height)
-    {
-      Ihandle* status_lbl = IupGetDialogChild(dlg, "STATUSLABEL");
-      unsigned char** data = (unsigned char**)file.GetImage()->data;
-      unsigned char r, g, b;
-      int offset;
-
-      view_zoom_offset(view_x, view_y, file.GetImage()->width, file.GetImage()->height, zoom_factor, &x, &y);
-
-      offset = y * file.GetImage()->width + x; 
-      r = data[0][offset];
-      g = data[1][offset];
-      b = data[2][offset];
-
-      IupSetStrf(status_lbl, "TITLE", "(%4d, %4d) = %3d %3d %3d", x, y, (int)r, (int)g, (int)b);
-
-      if (iup_isbutton1(status)) /* button1 is pressed */
-      {
-        if (tool_index == SimplePaintToolbox::TOOL_POINTER)
-        {
-          int canvas_width = IupGetInt(canvas, "DRAWSIZE");
-
-          scroll_move(canvas, canvas_width, canvas_height, cursor_x - interact.start_cursor_x, cursor_y - interact.start_cursor_y, view_width, view_height);
-
-          interact.start_cursor_x = cursor_x;
-          interact.start_cursor_y = cursor_y;
-        }
-        else if (tool_index == SimplePaintToolbox::TOOL_PENCIL)
-        {
-          DrawPencil(interact.start_x, interact.start_y, x, y);
-
-          file.dirty = true;
-
-          IupUpdate(canvas);
-
-          interact.start_x = x;
-          interact.start_y = y;
-        }
-        else if (tool_index >= SimplePaintToolbox::TOOL_LINE && tool_index <= SimplePaintToolbox::TOOL_TEXT)  /* All Shapes */
-        {
-          interact.end_x = x;
-          interact.end_y = y;
-          interact.overlay = true;
-          IupUpdate(canvas);
-        }
-      }
-    }
-  }
-
-  return IUP_DEFAULT;
-}
-
 int SimplePaint::ZoomValueChangedCallback(Ihandle* val)
 {
   double zoom_index = IupGetDouble(val, "VALUE");
-  UpdateZoom(zoom_index);
+  canvas.SetZoom(zoom_index);
   return IUP_DEFAULT;
 }
 
@@ -664,6 +197,37 @@ int SimplePaint::EditMenuOpenCallback(Ihandle*)
     IupSetAttribute(item_paste, "ACTIVE", "YES");
 
   IupDestroy(clipboard);
+  return IUP_DEFAULT;
+}
+
+int SimplePaint::ViewMenuOpenCallback(Ihandle*)
+{
+  Ihandle* item_zoomgrid = IupGetDialogChild(dlg, "ITEM_ZOOMGRID");
+  if (canvas.GetZoomGrid())
+    IupSetAttribute(item_zoomgrid, "VALUE", "ON");
+  else
+    IupSetAttribute(item_zoomgrid, "VALUE", "OFF");
+
+  Ihandle* item_toolbox = IupGetDialogChild(dlg, "ITEM_TOOLBOX");
+  if (toolbox.Visible())
+    IupSetAttribute(item_toolbox, "VALUE", "ON");
+  else
+    IupSetAttribute(item_toolbox, "VALUE", "OFF");
+
+  Ihandle* item_toolbar = IupGetDialogChild(dlg, "ITEM_TOOLBAR");
+  Ihandle* toolbar = IupGetDialogChild(dlg, "TOOLBAR");
+  if (IupGetInt(toolbar, "VISIBLE"))
+    IupSetAttribute(item_toolbar, "VALUE", "ON");
+  else
+    IupSetAttribute(item_toolbar, "VALUE", "OFF");
+
+  Ihandle* item_statusbar = IupGetDialogChild(dlg, "ITEM_STATUSBAR");
+  Ihandle* statusbar = IupGetDialogChild(dlg, "STATUSBAR");
+  if (IupGetInt(statusbar, "VISIBLE"))
+    IupSetAttribute(item_statusbar, "VALUE", "ON");
+  else
+    IupSetAttribute(item_statusbar, "VALUE", "OFF");
+
   return IUP_DEFAULT;
 }
 
@@ -769,38 +333,9 @@ int SimplePaint::ItemPagesetupActionCallback(Ihandle*)
 int SimplePaint::ItemPrintActionCallback(Ihandle*)
 {
   char* title = IupGetAttribute(dlg, "TITLE");
-
-  cdCanvas* print_canvas = cdCreateCanvasf(CD_PRINTER, "%s -d", title);
-  if (!print_canvas)
-    return IUP_DEFAULT;
-
-  /* do NOT draw the background, use the paper color */
-
-  /* draw the image at the center of the canvas */
-  if (file.GetImage())
-  {
-    int x, y, canvas_width, canvas_height, view_width, view_height;
-    double canvas_width_mm, canvas_height_mm;
-    int margin_width = IupConfigGetVariableIntDef(config, "Print", "MarginWidth", 20);
-    int margin_height = IupConfigGetVariableIntDef(config, "Print", "MarginHeight", 20);
-
-    cdCanvasGetSize(print_canvas, &canvas_width, &canvas_height, &canvas_width_mm, &canvas_height_mm);
-
-    /* convert to pixels */
-    margin_width = (int)((margin_width * canvas_width) / canvas_width_mm);
-    margin_height = (int)((margin_height * canvas_height) / canvas_height_mm);
-
-    view_fit_rect(canvas_width - 2 * margin_width, canvas_height - 2 * margin_height, 
-                  file.GetImage()->width, file.GetImage()->height, 
-                  &view_width, &view_height);
-
-    x = (canvas_width - view_width) / 2;
-    y = (canvas_height - view_height) / 2;
-
-    imcdCanvasPutImage(print_canvas, file.GetImage(), x, y, view_width, view_height, 0, 0, 0, 0);
-  }
-
-  cdKillCanvas(print_canvas);
+  int margin_width = IupConfigGetVariableIntDef(config, "Print", "MarginWidth", 20);
+  int margin_height = IupConfigGetVariableIntDef(config, "Print", "MarginHeight", 20);
+  canvas.Print(title, margin_width, margin_height);
   return IUP_DEFAULT;
 }
 
@@ -809,7 +344,9 @@ int SimplePaint::ItemExitActionCallback(Ihandle*)
   if (!file.SaveCheck())
     return IUP_IGNORE;  /* to abort the CLOSE_CB callback normal processing */
 
-  toolbox.HideDialog();
+  IupConfigSetVariableStr(config, "MainWindow", "Toolbox", toolbox.Visible() ? "ON" : "OFF");
+  if (toolbox.Visible())
+    toolbox.HideDialog();  /* manually hide it before the main dialog, because it is a child dialog */
 
   file.Close();
 
@@ -852,18 +389,20 @@ int SimplePaint::ItemPasteActionCallback(Ihandle*)
 int SimplePaint::ItemBackgroundActionCallback(Ihandle*)
 {
   Ihandle* colordlg = IupColorDlg();
-  const char* background = IupConfigGetVariableStrDef(config, "MainWindow", "Background", "255 255 255");
-  IupSetStrAttribute(colordlg, "VALUE", background);
+  long background = canvas.GetBackground();
+  IupSetRGB(colordlg, "VALUE", cdRed(background), cdGreen(background), cdBlue(background));
   IupSetAttributeHandle(colordlg, "PARENTDIALOG", dlg);
 
   IupPopup(colordlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (IupGetInt(colordlg, "STATUS") == 1)
   {
-    background = IupGetAttribute(colordlg, "VALUE");
-    IupConfigSetVariableStr(config, "MainWindow", "Background", background);
+    const char* background_str = IupGetAttribute(colordlg, "VALUE");
+    IupConfigSetVariableStr(config, "Canvas", "Background", background_str);
 
-    IupUpdate(canvas);
+    unsigned int ri, gi, bi;
+    sscanf(background_str, "%u %u %u", &ri, &gi, &bi);
+    canvas.SetBackground(cdEncodeColor((unsigned char)ri, (unsigned char)gi, (unsigned char)bi));
   }
 
   IupDestroy(colordlg);
@@ -872,56 +411,34 @@ int SimplePaint::ItemBackgroundActionCallback(Ihandle*)
 
 int SimplePaint::ItemZoomoutActionCallback(Ihandle*)
 {
-  Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
-  double zoom_index = IupGetDouble(zoom_val, "VALUE");
-  zoom_index--;
-  if (zoom_index < -6)
-    zoom_index = -6;
-  IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
-
-  UpdateZoom(zoom_index);
+  canvas.ZoomOut();
   return IUP_DEFAULT;
 }
 
 int SimplePaint::ItemZoominActionCallback(Ihandle*)
 {
-  Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
-  double zoom_index = IupGetDouble(zoom_val, "VALUE");
-  zoom_index++;
-  if (zoom_index > 6)
-    zoom_index = 6;
-  IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
-
-  UpdateZoom(zoom_index);
+  canvas.ZoomIn();
   return IUP_DEFAULT;
 }
 
 int SimplePaint::ItemActualsizeActionCallback(Ihandle*)
 {
-  Ihandle* zoom_val = IupGetDialogChild(dlg, "ZOOMVAL");
-  IupSetDouble(zoom_val, "VALUE", 0);
-  UpdateZoom(0);
+  canvas.SetZoom(0);
   return IUP_DEFAULT;
 }
 
 int SimplePaint::ItemZoomgridActionCallback(Ihandle*)
 {
-  Ihandle* item_zoomgrid = IupGetDialogChild(dlg, "ZOOMGRID");
+  canvas.SetZoomGrid(canvas.GetZoomGrid()? true: false);
 
-  if (IupGetInt(item_zoomgrid, "VALUE"))
-    IupSetAttribute(item_zoomgrid, "VALUE", "OFF");
-  else
-    IupSetAttribute(item_zoomgrid, "VALUE", "ON");
+  IupConfigSetVariableStr(config, "Canvas", "ZoomGrid", canvas.GetZoomGrid()? "ON": "OFF");
 
-  IupConfigSetVariableStr(config, "MainWindow", "ZoomGrid", IupGetAttribute(item_zoomgrid, "VALUE"));
-
-  IupUpdate(canvas);
   return IUP_DEFAULT;
 }
 
 int SimplePaint::ItemToolbarActionCallback(Ihandle* item_toolbar)
 {
-  Ihandle* toolbar = IupGetDialogChild(item_toolbar, "TOOLBAR");
+  Ihandle* toolbar = IupGetDialogChild(dlg, "TOOLBAR");
 
   ToggleBarVisibility(item_toolbar, toolbar);
 
@@ -929,23 +446,18 @@ int SimplePaint::ItemToolbarActionCallback(Ihandle* item_toolbar)
   return IUP_DEFAULT;
 }
 
-int SimplePaint::ItemToolboxActionCallback(Ihandle* item_toolbox)
+int SimplePaint::ItemToolboxActionCallback(Ihandle*)
 {
-  if (toolbox.HideDialog())
-    IupSetAttribute(item_toolbox, "VALUE", "OFF");
+  if (toolbox.Visible())
+    toolbox.HideDialog();
   else
-  {
-    IupSetAttribute(item_toolbox, "VALUE", "ON");
     toolbox.ShowDialog();
-  }
-
-  IupConfigSetVariableStr(config, "MainWindow", "Toolbox", IupGetAttribute(item_toolbox, "VALUE"));
   return IUP_DEFAULT;
 }
 
 int SimplePaint::ItemStatusbarActionCallback(Ihandle* item_statusbar)
 {
-  Ihandle* statusbar = IupGetDialogChild(item_statusbar, "STATUSBAR");
+  Ihandle* statusbar = IupGetDialogChild(dlg, "STATUSBAR");
 
   ToggleBarVisibility(item_statusbar, statusbar);
 
@@ -1083,16 +595,18 @@ int SimplePaint::ItemNegativeActionCallback(Ihandle*)
 
 static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data)
 {
-  Ihandle* canvas = (Ihandle*)user_data;
+  Ihandle* dlg = (Ihandle*)user_data;
 
   if (param_index == 0 || param_index == 1)
   {
-    float param[2] = { 0, 0 };
-    imImage* image = (imImage*)IupGetAttribute(canvas, "ORIGINAL_IMAGE");
-    imImage* new_image = (imImage*)IupGetAttribute(canvas, "NEW_IMAGE");
-    SimplePaintFile* file = (SimplePaintFile*)IupGetAttribute(canvas, "IMAGE_FILE");
+    imImage* image = (imImage*)IupGetAttribute(dlg, "ORIGINAL_IMAGE");
+    imImage* new_image = (imImage*)IupGetAttribute(dlg, "NEW_IMAGE");
+    SimplePaintFile* file = (SimplePaintFile*)IupGetAttribute(dlg, "PAINT_FILE");
+    SimplePaintCanvas* canvas = (SimplePaintCanvas*)IupGetAttribute(dlg, "PAINT_CANVAS");
     Ihandle* brightness_shift_param = (Ihandle*)IupGetAttribute(dialog, "PARAM0");
     Ihandle* contrast_factor_param = (Ihandle*)IupGetAttribute(dialog, "PARAM1");
+
+    float param[2] = { 0, 0 };
     param[0] = IupGetFloat(brightness_shift_param, "VALUE");
     param[1] = IupGetFloat(contrast_factor_param, "VALUE");
 
@@ -1100,22 +614,24 @@ static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data
 
     file->SetImage(new_image, false);
 
-    IupUpdate(canvas);
+    canvas->Update();
   }
   else if (param_index != IUP_GETPARAM_INIT)
   {
     /* restore original configuration */
-    SimplePaintFile* file = (SimplePaintFile*)IupGetAttribute(canvas, "IMAGE_FILE");
-    imImage* image = (imImage*)IupGetAttribute(canvas, "ORIGINAL_IMAGE");
+    SimplePaintFile* file = (SimplePaintFile*)IupGetAttribute(dlg, "PAINT_FILE");
+    SimplePaintCanvas* canvas = (SimplePaintCanvas*)IupGetAttribute(dlg, "PAINT_CANVAS");
+    imImage* image = (imImage*)IupGetAttribute(dlg, "ORIGINAL_IMAGE");
 
     file->SetImage(image, false);
 
-    IupSetAttribute(canvas, "ORIGINAL_IMAGE", NULL);
-    IupSetAttribute(canvas, "NEW_IMAGE", NULL);
-    IupSetAttribute(canvas, "IMAGE_FILE", NULL);
+    IupSetAttribute(dlg, "ORIGINAL_IMAGE", NULL);
+    IupSetAttribute(dlg, "NEW_IMAGE", NULL);
+    IupSetAttribute(dlg, "PAINT_FILE", NULL);
+    IupSetAttribute(dlg, "PAINT_CANVAS", NULL);
 
     if (param_index == IUP_GETPARAM_BUTTON2)  /* cancel */
-      IupUpdate(canvas);
+      canvas->Update();
   }
 
   return 1;
@@ -1130,13 +646,14 @@ int SimplePaint::ItemBrightcontActionCallback(Ihandle*)
     return IUP_DEFAULT;
   }
 
-  IupSetAttribute(canvas, "ORIGINAL_IMAGE", (char*)file.GetImage());
-  IupSetAttribute(canvas, "NEW_IMAGE", (char*)new_image);
-  IupSetAttribute(canvas, "IMAGE_FILE", (char*)&file);
+  IupSetAttribute(dlg, "ORIGINAL_IMAGE", (char*)file.GetImage());
+  IupSetAttribute(dlg, "NEW_IMAGE", (char*)new_image);
+  IupSetAttribute(dlg, "PAINT_FILE", (char*)&file);
+  IupSetAttribute(dlg, "PAINT_CANVAS", (char*)&canvas);
 
   float param[2] = { 0, 0 };
 
-  if (!IupGetParam("Brightness and Contrast", brightcont_param_cb, canvas,
+  if (!IupGetParam("Brightness and Contrast", brightcont_param_cb, dlg,
                    "Brightness Shift: %r[-100,100]\n"
                    "Contrast Factor: %r[-100,100]\n",
                    &param[0], &param[1], NULL))
@@ -1235,7 +752,7 @@ Ihandle* SimplePaint::CreateMainMenu()
 
   item_zoomgrid = IupItem("&Zoom Grid", NULL);
   IUP_CLASS_SETCALLBACK(item_zoomgrid, "ACTION", ItemZoomgridActionCallback);
-  IupSetAttribute(item_zoomgrid, "NAME", "ZOOMGRID");
+  IupSetAttribute(item_zoomgrid, "NAME", "ITEM_ZOOMGRID");
   IupSetAttribute(item_zoomgrid, "VALUE", "ON");  /* default is ON */
 
   item_background = IupItem("&Background...", NULL);
@@ -1243,15 +760,17 @@ Ihandle* SimplePaint::CreateMainMenu()
 
   item_toolbar = IupItem("&Toobar", NULL);
   IUP_CLASS_SETCALLBACK(item_toolbar, "ACTION", ItemToolbarActionCallback);
+  IupSetAttribute(item_toolbar, "NAME", "ITEM_TOOLBAR");
   IupSetAttribute(item_toolbar, "VALUE", "ON");   /* default is ON */
 
   item_toolbox = IupItem("&Toobox", NULL);
   IUP_CLASS_SETCALLBACK(item_toolbox, "ACTION", ItemToolboxActionCallback);
-  IupSetAttribute(item_toolbox, "NAME", "TOOLBOXMENU");
+  IupSetAttribute(item_toolbox, "NAME", "ITEM_TOOLBOX");
   IupSetAttribute(item_toolbox, "VALUE", "ON");   /* default is ON */
 
   item_statusbar = IupItem("&Statusbar", NULL);
   IUP_CLASS_SETCALLBACK(item_statusbar, "ACTION", ItemStatusbarActionCallback);
+  IupSetAttribute(item_statusbar, "NAME", "ITEM_STATUSBAR");
   IupSetAttribute(item_statusbar, "VALUE", "ON");  /* default is ON */
 
   item_help = IupItem("&Help...", NULL);
@@ -1310,6 +829,7 @@ Ihandle* SimplePaint::CreateMainMenu()
   
   IUP_CLASS_SETCALLBACK(file_menu, "OPEN_CB", FileMenuOpenCallback);
   IUP_CLASS_SETCALLBACK(edit_menu, "OPEN_CB", EditMenuOpenCallback);
+  IUP_CLASS_SETCALLBACK(view_menu, "OPEN_CB", ViewMenuOpenCallback);
 
   sub_menu_file = IupSubmenu("&File", file_menu);
   sub_menu_edit = IupSubmenu("&Edit", edit_menu);
@@ -1325,21 +845,7 @@ Ihandle* SimplePaint::CreateMainMenu()
     sub_menu_help,
     NULL);
 
-  /* Initialize variables from the configuration file */
-
   IupConfigRecentInit(config, recent_menu, CB_ConfigRecentCallback, 10);
-
-  if (!IupConfigGetVariableIntDef(config, "MainWindow", "ZoomGrid", 1))
-    IupSetAttribute(item_zoomgrid, "VALUE", "OFF");
-
-  if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))
-    IupSetAttribute(item_toolbar, "VALUE", "OFF");
-
-  if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbox", 1))
-    IupSetAttribute(item_toolbox, "VALUE", "OFF");
-
-  if (!IupConfigGetVariableIntDef(config, "MainWindow", "Statusbar", 1))
-    IupSetAttribute(item_statusbar, "VALUE", "OFF");
 
   return menu;
 }
@@ -1447,29 +953,13 @@ Ihandle* SimplePaint::CreateStatusbar()
   return statusbar;
 }
 
-void SimplePaint::CreateMainDialog()
+void SimplePaint::CreateMainDialog(Ihandle* iup_canvas)
 {
   Ihandle *vbox;
 
-#ifdef USE_OPENGL
-  canvas = IupGLCanvas(NULL);
-  IupSetAttribute(canvas, "BUFFER", "DOUBLE");
-#else
-  canvas = IupCanvas(NULL);
-#endif
-  IupSetAttribute(canvas, "SCROLLBAR", "Yes");
-  IUP_CLASS_SETCALLBACK(canvas, "ACTION", CanvasActionCallback);
-  IUP_CLASS_SETCALLBACK(canvas, "MAP_CB", CanvasMapCallback);
-  IUP_CLASS_SETCALLBACK(canvas, "UNMAP_CB", CanvasUnmapCallback);
-  IUP_CLASS_SETCALLBACK(canvas, "WHEEL_CB", CanvasWheelCallback);
-  IUP_CLASS_SETCALLBACK(canvas, "RESIZE_CB", CanvasResizeCallback);
-  IUP_CLASS_SETCALLBACK(canvas, "MOTION_CB", CanvasMotionCallback);
-  IUP_CLASS_SETCALLBACK(canvas, "BUTTON_CB", CanvasButtonCallback);
-  IUP_CLASS_SETCALLBACK(canvas, "DROPFILES_CB", DropfilesCallback);
-
   vbox = IupVbox(
     CreateToolbar(),
-    canvas,
+    iup_canvas,
     CreateStatusbar(),
     NULL);
 
@@ -1496,35 +986,63 @@ void SimplePaint::CreateMainDialog()
 }
 
 SimplePaint::SimplePaint()
-  :cd_canvas(NULL), toolbox()
+  :dlg(NULL), config(NULL), file(), toolbox(), canvas()
 {
-  interact.overlay = false;
 
+  /***************  Config ***********/
   config = IupConfig();
   IupSetAttribute(config, "APP_NAME", "simple_paint");
   IupConfigLoad(config);
 
-  CreateMainDialog();
+
+  /***************  Canvas ***********/
+  Ihandle* iup_canvas = canvas.CreateCanvas(&file, &toolbox);
+
+  /* Initialize variables from the configuration file */
+  const char* background_str = IupConfigGetVariableStr(config, "Canvas", "Background");
+  if (background_str)
+  {
+    unsigned int ri, gi, bi;
+    sscanf(background_str, "%u %u %u", &ri, &gi, &bi);
+    canvas.SetBackground(cdEncodeColor((unsigned char)ri, (unsigned char)gi, (unsigned char)bi));
+  }
+
+  if (!IupConfigGetVariableIntDef(config, "Canvas", "ZoomGrid", 1))
+    canvas.SetZoomGrid(false);
+
+
+  /***************  Dialog ***********/
+  CreateMainDialog(iup_canvas);
 
   IUP_CLASS_INITCALLBACK(dlg, SimplePaint);
 
   /* show the dialog at the last position, with the last size */
   IupConfigDialogShow(config, dlg, "MainWindow");
 
-  /* create and show the toolbox */
-  toolbox.CreateDialog(canvas, config);
+
+  /***************  Toolbox ***********/
+  toolbox.CreateDialog(iup_canvas, config);
+
+  /* Initialize variables from the configuration file */
+  if (IupConfigGetVariableIntDef(config, "MainWindow", "Toolbox", 1))
+  {
+    /* configure the very first time to be aligned with the canvas top left corner */
+    if (!IupConfigGetVariableStr(config, "Toolbox", "X"))
+    {
+      int x = IupGetInt(iup_canvas, "X");
+      int y = IupGetInt(iup_canvas, "Y");
+      IupConfigSetVariableInt(config, "Toolbox", "X", x);
+      IupConfigSetVariableInt(config, "Toolbox", "Y", y);
+    }
+
+    toolbox.ShowDialog();
+  }
 }
 
 int main(int argc, char **argv)
 {
   IupOpen(&argc, &argv);
   IupImageLibOpen();
-#ifdef USE_OPENGL
-  IupGLCanvasOpen();
-#endif
-#ifdef USE_CONTEXTPLUS
-  cdInitContextPlus();
-#endif
 
   SimplePaint app;
 

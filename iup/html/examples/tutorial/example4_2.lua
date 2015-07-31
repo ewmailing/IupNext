@@ -292,7 +292,7 @@ function canvas:action()
   gl.LoadIdentity()
 
   -- draw the background 
-  local background = config:GetVariableDef("MainWindow", "Background", "255 255 255")
+  local background = config:GetVariableDef("Canvas", "Background", "255 255 255")
   local r, g, b = string.match(background, "(%d*) (%d*) (%d*)")
   gl.ClearColor(r / 255, g / 255, b / 255, 1)
   gl.Clear(gl.COLOR_BUFFER_BIT)
@@ -483,7 +483,7 @@ end
 
 function item_background:action()
   local colordlg = iup.colordlg{}
-  local background = config:GetVariableDef("MainWindow", "Background", "255 255 255")
+  local background = config:GetVariableDef("Canvas", "Background", "255 255 255")
   colordlg.value = background
   colordlg.parentdialog = iup.GetDialog(self)
 
@@ -491,7 +491,7 @@ function item_background:action()
 
   if (tonumber(colordlg.status) == 1) then
     background = colordlg.value
-    config:SetVariable("MainWindow", "Background", background)
+    config:SetVariable("Canvas", "Background", background)
 
     iup.Update(canvas)
   end
