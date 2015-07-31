@@ -24,10 +24,16 @@
 <h3>4.1 <a name="Loading_and_Saving_Images">Loading and Saving Images</a></h3>
 <p>
 In the previous chapter, we saw how to build a simple notepad using IUP. In this chapter, we will modify the code presented 
-in the previous chapter and build an application that draws on an image. To do so, we need a structure that represents an image and a few functions that allow us to read and save images in known formats. Therefore we will make use of a library called IM. The IM is a digital images manipulation library. Its main goal is to provide a simple API
+in the previous chapter and build an application that draws on an image, most 
+like simple paint programs. To do so, we need a structure that represents an image and a few functions that allow us to read and save images in known formats. Therefore we will make use of a library called IM. 
+</p>
+<p>
+IM is a digital images manipulation library. Its main goal is to provide a simple API
 <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
 and abstraction of</span> imaging for scientific applications. In order to use&nbsp; 
-IM in our application, some new includes a are needed: "im.h" which is the main header of IM; "im_image.h" which deals with creation, loading, attribute manipulation and images storage; "im_convert.h" which deals with the conversion among different types of images; and "iup_im.h" which allows the loading and images storing through IUP. Similar to what we did in topic 
+IM in our application, some new includes a are needed: "im.h" which is the main header of IM; "im_image.h" which deals with creation, loading, attribute manipulation and images storage; "im_convert.h" which deals with the conversion among different types of images; and "iup_im.h" 
+which allows the loading and images storing through IUP. Similar to what we did 
+in section 
 <a href="http://webserver2.tecgraf.puc-rio.br/iup/en/tutorial/tutorial2.html#Compiling_Linking">2.1.1</a>
 to link IUP’s libraries, we will also need to modify the project’s link to include 
 the IM (-lim) library and use a C++ linker, even with C code (because internally 
@@ -82,7 +88,8 @@ package. Its functions are retrieved by the "im." prefix followed by the name of
 <h3>4.2 <a name="Drawing_with_OpenGL">Drawing with OpenGL</a></h3>
 
 <p>As we saw in the beginning of this tutorial, that IUP is a toolkit for the creation of interface with the user. Although having among its controls a canvas, it does not have functions for 
-drawing on it. For that it will be necessary to include an external library. Among a few options, we choose for this example the OpenGL for its portability, performance and standardization.</p>
+drawing on it. For that it will be necessary to include an external library. Among a few options, we choose for this example the OpenGL 
+library for its portability, performance and standardization.</p>
 
 <p> In order to use OpenGL with IUP, besides the GL/gl.h, windows.h (in case you are using windows) and iupgl.h includes, we will need to 
 link with some libraries too. In Windows, opengl32.lib is used, while in Linux the -lGL must be included. The IUP canvas that works with OpenGL is also an additional control called 
@@ -116,14 +123,15 @@ you should also require the "iupluagl". The LuaGL functions follow the Lua stand
 
 <h3>4.3 <a name="Drawing_with_CD">Drawing with CD</a> and Printing</h3>
 
-<p>In this chapter, we present an alternative to the OpenGL library. Although having an excellent performance, the OpenGL library has some limitations. There is no support for printing, no metafile 
+<p>In this section, we present an alternative to the OpenGL library. Although having an excellent performance, the OpenGL library has some limitations. There is no support for printing, no metafile 
 output, and it also does not provide support to high quality text. Therefore, many applications need other options. To attend to this other needs, we created 
 the CD library – Canvas Draw. You can find this library on: <a href="www.tecgraf.puc-rio.br/cd">www.tecgraf.puc-rio.br/cd</a>, and it was designed to function together with IUP.</p> 
 
 <p>To use it, you need to link with the "cd" and "iupcd" libraries. The "cd.h" and "cdiup.h" includes must appear in the code.</p>
 
 <p>Since we are replacing the OpenGL for the CD, we once again work with the 
-<strong>IupCanvas</strong> control instead of <strong>IupGLCanvas</strong>. We can also remove the libs and OpenGL includes added in the previous chapter.</p>
+<strong>IupCanvas</strong> control instead of <strong>IupGLCanvas</strong>. We can also remove the libs and OpenGL includes added in the previous 
+section.</p>
 
 <p> In the code, the OpenGL functions calls are no longer needed. <strong>IupGLMakeCurrent</strong> was replaced by 
 <strong>cdCanvasActivate</strong>, <strong>glClearColor</strong> by <strong>cdCanvasBackground</strong>, 
@@ -189,7 +197,8 @@ the canvas, we add a new calculation to obtain the position and size of the imag
 borders, especially if it looks like the background color. Therefore it is common to include an edge around the image to mark the end of it.</p>
 
 <p>We noticed that in example 4_4, we could improve the application state of control when a new image is created. For that, we created the 
-<strong>set_new_image</strong> function that replaces parts of the code in New, Open and Paste. In this function, we encapsulated the change in the dialog title from the file name, and we verified if the image is RGB as described in topic 4.3. We also verified if there is a 
+<strong>set_new_image</strong> function that replaces parts of the code in New, Open and Paste. In this function, we encapsulated the change in the dialog title from the file name, and we verified if the image is RGB as described in 
+section 4.3. We also verified if there is a 
 file format for the new image, and if we should adopt the default format. 
 Furthermore, we set the DIRTY value, and finally restarted the zoom factor to 
 normal visualization at 100%.</p>
