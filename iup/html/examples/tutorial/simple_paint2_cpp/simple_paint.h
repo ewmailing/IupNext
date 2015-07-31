@@ -37,8 +37,9 @@ protected:
   void ToggleBarVisibility(Ihandle* item, Ihandle* bar);
 
   IUP_CLASS_DECLARECALLBACK_IFnii(SimplePaint, DialogMoveCallback);
+  IUP_CLASS_DECLARECALLBACK_IFns(SimplePaint, DialogDropfilesCallback);
+
   IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, ConfigRecentCallback);
-  IUP_CLASS_DECLARECALLBACK_IFns(SimplePaint, DropfilesCallback);
 
   IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, ItemNewActionCallback);
   IUP_CLASS_DECLARECALLBACK_IFn(SimplePaint, ItemOpenActionCallback);

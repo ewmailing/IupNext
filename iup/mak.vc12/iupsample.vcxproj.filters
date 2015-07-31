@@ -330,6 +330,9 @@
     <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_main.cpp">
       <Filter>Tutorial\CPP 2</Filter>
     </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_canvas.cpp">
+      <Filter>Tutorial\CPP 2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua">
@@ -635,6 +638,9 @@
       <Filter>Tutorial\CPP 2</Filter>
     </ClInclude>
     <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_file.h">
+      <Filter>Tutorial\CPP 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_canvas.h">
       <Filter>Tutorial\CPP 2</Filter>
     </ClInclude>
   </ItemGroup>

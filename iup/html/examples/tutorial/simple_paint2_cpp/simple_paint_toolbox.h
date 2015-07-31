@@ -39,8 +39,8 @@ public:
   {
     options.color = 0;  // black
     options.line_width = 1;
-    options.line_style = 0;
-    options.fill_tol = 50;
+    options.line_style = 0;  // continuous
+    options.fill_tol = 50; // 50%
   }
 
   Tool ToolIndex() const { return tool_index; }

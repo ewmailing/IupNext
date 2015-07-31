@@ -53,8 +53,8 @@ void SimplePaint::UpdateImage(imImage* new_image, bool update_size)
 
     canvas.ScrollUpdate();
   }
-  else
-    canvas.Update();
+
+  canvas.Update();
 }
 
 void SimplePaint::UpdateFile()
@@ -161,7 +161,7 @@ int SimplePaint::ZoomValueChangedCallback(Ihandle* val)
   return IUP_DEFAULT;
 }
 
-int SimplePaint::DropfilesCallback(Ihandle*, char* filename)
+int SimplePaint::DialogDropfilesCallback(Ihandle*, char* filename)
 {
   if (file.SaveCheck())
     OpenFile(filename);
@@ -429,7 +429,7 @@ int SimplePaint::ItemActualsizeActionCallback(Ihandle*)
 
 int SimplePaint::ItemZoomgridActionCallback(Ihandle*)
 {
-  canvas.SetZoomGrid(canvas.GetZoomGrid()? true: false);
+  canvas.SetZoomGrid(canvas.GetZoomGrid()? false: true);
 
   IupConfigSetVariableStr(config, "Canvas", "ZoomGrid", canvas.GetZoomGrid()? "ON": "OFF");
 
@@ -967,7 +967,7 @@ void SimplePaint::CreateMainDialog(Ihandle* iup_canvas)
   IupSetAttributeHandle(dlg, "MENU", CreateMainMenu());
   IupSetAttribute(dlg, "SIZE", "HALFxHALF");
   IUP_CLASS_SETCALLBACK(dlg, "CLOSE_CB", ItemExitActionCallback);
-  IUP_CLASS_SETCALLBACK(dlg, "DROPFILES_CB", DropfilesCallback);
+  IUP_CLASS_SETCALLBACK(dlg, "DROPFILES_CB", DialogDropfilesCallback);
   IUP_CLASS_SETCALLBACK(dlg, "MOVE_CB", DialogMoveCallback);
 
   IUP_CLASS_SETCALLBACK(dlg, "K_cN", ItemNewActionCallback);
