@@ -152,7 +152,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>../../iup/etc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(IUP)/etc</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -178,16 +178,18 @@
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>../../iup/etc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(IUP)/etc</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ResourceCompile Include="../../iup/etc/iup.rc">
+    <ResourceCompile Include="$(IUP)/etc/iup.rc">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TEC_64</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TEC_64</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="simple_paint.cpp" />
+    <ClCompile Include="simple_paint_canvas.cpp" />
     <ClCompile Include="simple_paint_file.cpp" />
     <ClCompile Include="simple_paint_main.cpp" />
     <ClCompile Include="simple_paint_toolbox.cpp" />
@@ -195,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simple_paint.h" />
+    <ClInclude Include="simple_paint_canvas.h" />
     <ClInclude Include="simple_paint_file.h" />
     <ClInclude Include="simple_paint_toolbox.h" />
     <ClInclude Include="simple_paint_util.h" />
