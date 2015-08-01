@@ -555,7 +555,7 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
     if (hChild)
     {
       Ihandle* child = iupwinHandleGet(hChild);
-      if (child)
+      if (child && IupClassMatch(child, "canvas"))
         SendMessage(child->handle, WM_MOUSEWHEEL, wp, lp);
     }
     break;
