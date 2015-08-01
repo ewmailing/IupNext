@@ -522,6 +522,7 @@ cd.lib
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint.cpp" />
     <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_canvas.cpp" />
     <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_file.cpp" />
     <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_main.cpp" />

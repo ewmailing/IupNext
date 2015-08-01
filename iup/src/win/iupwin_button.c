@@ -230,7 +230,7 @@ static void winButtonDrawImageText(Ihandle* ih, HDC hDC, int rect_width, int rec
   }
 
   if (ih->data->horiz_alignment == IUP_ALIGN_ACENTER)
-    style |= DT_CENTER;  /* let DrawText do the internal horizontal alignment, usefull for multiple lines */
+    style |= DT_CENTER;  /* let DrawText do the internal horizontal alignment, useful for multiple lines */
   else if (ih->data->horiz_alignment == IUP_ALIGN_ARIGHT)
     style |= DT_RIGHT;
 
@@ -295,7 +295,7 @@ static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
     y = winButtonCalcAlignPosY(ih->data->vert_alignment, rect_height, height, ypad, shift);
 
     if (ih->data->horiz_alignment == IUP_ALIGN_ACENTER)
-      style |= DT_CENTER;  /* let DrawText do the internal horizontal alignment, usefull for multiple lines */
+      style |= DT_CENTER;  /* let DrawText do the internal horizontal alignment, useful for multiple lines */
     else if (ih->data->horiz_alignment == IUP_ALIGN_ARIGHT)
       style |= DT_RIGHT;
 

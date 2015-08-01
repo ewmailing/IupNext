@@ -333,6 +333,9 @@
     <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_canvas.cpp">
       <Filter>Tutorial\CPP 2</Filter>
     </ClCompile>
+    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint.cpp">
+      <Filter>Tutorial\CPP 2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua">

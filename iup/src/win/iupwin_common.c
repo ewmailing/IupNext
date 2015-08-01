@@ -447,7 +447,7 @@ static int winCheckParent(Ihandle* child, Ihandle* ih)
 int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   /* All messages here are sent to the parent Window, 
-     but they are usefull for child controls.  */
+     but they are useful for child controls.  */
 
   switch (msg)
   {
@@ -544,6 +544,22 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
 
       break;
     }
+  case WM_MOUSEWHEEL:
+  {
+    HWND hChild;
+    POINT p;
+    p.x = LOWORD(lp); p.y = HIWORD(lp);
+    ScreenToClient(ih->handle, &p);
+
+    hChild = ChildWindowFromPointEx(ih->handle, p, CWP_SKIPDISABLED|CWP_SKIPINVISIBLE|CWP_SKIPTRANSPARENT);
+    if (hChild)
+    {
+      Ihandle* child = iupwinHandleGet(hChild);
+      if (child)
+        SendMessage(child->handle, WM_MOUSEWHEEL, wp, lp);
+    }
+    break;
+  }
   default:
     {
       /* sent to the list parent */
