@@ -233,6 +233,7 @@ void iupGLDrawSmallDisc(Ihandle* ih, int cx, int cy, int rd, const char* color, 
 void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const char* color, int active)
 {
   unsigned char r = 0, g = 0, b = 0, a = 255;
+  int smooth;
 
   if (!color || xmin == xmax || ymin == ymax)
     return;
@@ -247,12 +248,16 @@ void iupGLDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, const cha
   ymin = ih->currentheight - 1 - ymin;
   ymax = ih->currentheight - 1 - ymax;
 
+  /* must disable polygon smooth or fill may get diagonal lines */
+  smooth = glIsEnabled(GL_POLYGON_SMOOTH);
+  if (smooth) glDisable(GL_POLYGON_SMOOTH);
   glBegin(GL_QUADS);
   glVertex2i(xmin, ymin);
   glVertex2i(xmax, ymin);
   glVertex2i(xmax, ymax);
   glVertex2i(xmin, ymax);
   glEnd();
+  if (smooth) glEnable(GL_POLYGON_SMOOTH);
 }
 
 void iupGLDrawPolygon(Ihandle* ih, const int* points, int count, const char* color, int active)
