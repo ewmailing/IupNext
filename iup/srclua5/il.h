@@ -68,32 +68,32 @@ void iupluaapi_open(lua_State * L);
 
             /*     Registration    */
 
-/** Gets the global enviroment "iup".
-    Used by secondary iuplua modules.
- */
+/** Gets the global environment iup.
+    Used by secondary iuplua modules. */
 void iuplua_get_env(lua_State *L);
 
 /** Returns true if IupOpen was called from inside the IupLua initialization function (iuplua_open).
- * All the other C intialization functions are called from the respective IupLua initialization functions.
- */
+ * All the other C initialization functions are called from the respective IupLua initialization functions. */
 int iuplua_opencall_internal(lua_State *L);
 
-/** Register a function.
- */
+/** Register a function. */
 void iuplua_register(lua_State *L, lua_CFunction func, const char* name);
 
-/** Register a string.
- */
+/** Register a string. */
 void iuplua_regstring(lua_State *L, const char* str, const char* name);
 
-/** Returns the global table name */
-const char* iuplua_getglobaltable(void);
+/* Register a library. */
+void iuplua_register_lib(lua_State *L, const luaL_Reg* funcs);
+
+/* Register several functions. */
+void iuplua_register_funcs(lua_State *L, const luaL_Reg* funcs);
+
 
 
           /*              Callbacks             */
 
 /** Stores the Lua State inside the IUP element,
- * so it can be retreived from inside a callback.
+ * so it can be retrieved from inside a callback.
  * Used in the creation of the element.
  */
 void iuplua_plugstate(lua_State *L, Ihandle *ih);

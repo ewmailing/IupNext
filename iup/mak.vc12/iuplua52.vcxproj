@@ -103,6 +103,7 @@
     <ClCompile Include="..\srclua5\elem\il_expander.c" />
     <ClCompile Include="..\srclua5\elem\il_filedlg.c" />
     <ClCompile Include="..\srclua5\elem\il_fill.c" />
+    <ClCompile Include="..\srclua5\elem\il_flatbutton.c" />
     <ClCompile Include="..\srclua5\elem\il_fontdlg.c" />
     <ClCompile Include="..\srclua5\elem\il_frame.c" />
     <ClCompile Include="..\srclua5\elem\il_gridbox.c" />
@@ -142,6 +143,7 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level4</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\srclua5\iuplua_api.c" />
+    <ClCompile Include="..\srclua5\iuplua_config.c" />
     <ClCompile Include="..\srclua5\iuplua_getcolor.c" />
     <ClCompile Include="..\srclua5\iuplua_getparam.c" />
     <ClCompile Include="..\srclua5\iuplua_scanf.c" />

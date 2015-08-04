@@ -1134,7 +1134,7 @@ void iupluaapi_open(lua_State * L)
     {NULL, NULL},
   };
 
-  /* "iup" table is already at the top of the stack */
-  luaL_register(L, NULL, funcs);
+  /* iup table is already at the top of the stack */
+  iuplua_register_funcs(L, funcs);
 }
 

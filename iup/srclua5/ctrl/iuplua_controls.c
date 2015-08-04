@@ -5,7 +5,7 @@
  */
  
 #include <lua.h>
-#include <lualib.h>
+#include <lauxlib.h>
 
 #include "iup.h"
 #include "iupcontrols.h"
