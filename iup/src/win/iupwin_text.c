@@ -2055,7 +2055,7 @@ static int winTextMapMethod(Ihandle* ih)
 
     if (iupAttribGetBoolean(ih, "WORDWRAP"))
     {
-      ih->data->sb &= ~IUP_SB_HORIZ;  /* must remove the horizontal scroolbar
+      ih->data->sb &= ~IUP_SB_HORIZ;  /* must remove the horizontal scrollbar
                                          and do not specify ES_AUTOHSCROLL, 
                                          the control automatically wraps words */
     }

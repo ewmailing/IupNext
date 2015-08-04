@@ -818,7 +818,7 @@ static int gtkTextSetScrollToAttrib(Ihandle* ih, const char* value)
     int pos = 1;
     iupStrToInt(value, &pos);
     if (pos < 1) pos = 1;
-    pos--;  /* return to GTK referece */
+    pos--;  /* return to GTK reference */
     gtk_editable_set_position(GTK_EDITABLE(ih->handle), pos);
   }
 
@@ -1550,7 +1550,7 @@ static int gtkTextMapMethod(Ihandle* ih)
     if (iupAttribGetBoolean(ih, "WORDWRAP"))
     {
       wordwrap = 1;
-      ih->data->sb &= ~IUP_SB_HORIZ;  /* must remove the horizontal scroolbar */
+      ih->data->sb &= ~IUP_SB_HORIZ;  /* must remove the horizontal scrollbar */
     }
 
     if (iupAttribGetBoolean(ih, "BORDER"))
@@ -1598,7 +1598,7 @@ static int gtkTextMapMethod(Ihandle* ih)
     /* formatting is never supported when MULTILINE=NO */
     ih->data->has_formatting = 0;
 
-    gtk_entry_set_has_frame((GtkEntry*)ih->handle, IupGetInt(ih, "BORDER"));
+    gtk_entry_set_has_frame((GtkEntry*)ih->handle, iupAttribGetBoolean(ih, "BORDER"));
     gtk_entry_set_width_chars((GtkEntry*)ih->handle, 1);  /* minimum size */
 
     if (iupAttribGetBoolean(ih, "PASSWORD"))

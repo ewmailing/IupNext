@@ -1024,7 +1024,7 @@ static int motTextMapMethod(Ihandle* ih)
     if (iupAttribGetBoolean(ih, "WORDWRAP"))
     {
       wordwrap = 1;
-      ih->data->sb &= ~IUP_SB_HORIZ;  /* must remove the horizontal scroolbar */
+      ih->data->sb &= ~IUP_SB_HORIZ;  /* must remove the horizontal scrollbar */
     }
 
     /******************************/

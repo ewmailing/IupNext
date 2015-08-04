@@ -443,7 +443,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       if (cb && !(ih->data->inside_resize))
       {
         /* w=LOWORD (lp), h=HIWORD(lp) can not be used because an invalid size 
-           at the first time of WM_SIZE with scroolbars. */
+           at the first time of WM_SIZE with scrollbars. */
         int w, h;
         RECT rect;
         GetClientRect(ih->handle, &rect);
