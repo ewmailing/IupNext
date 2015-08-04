@@ -92,6 +92,13 @@ also accepted.&nbsp;</p>
   column titles.</p>
 <p class="info">These are valid only in normal mode.</p>
 <p>
+<strong>ALIGN<i>L</i>:<i>C</i></strong>:
+  Alignment of the cell value in line 
+  L and column 
+  C.&nbsp;Values are in the format: &quot;linalign:colalign&quot;, where linalign can be 
+&quot;ATOP&quot;, &quot;ACENTER&quot; or &quot;ABOTTOM&quot;, and colalign can be &quot;ALEFT&quot;, &quot;ACENTER&quot; or 
+&quot;ARIGHT&quot;. Default will use ALIGNMENT* and LINEALIGMENT*. (Since 3.16)</p>
+<p>
 <strong>TYPE<i>L</i>:<i>C</i></strong>:
   Type of the cell value in line 
   L and column 
@@ -109,7 +116,8 @@ cell value is interpreted as percentage and a rectangle showing the percentage
 in the FGCOLOR is drawn like in <strong>IupGauge</strong> and <strong>
 IupProgressBar</strong>. When type is IMAGE the cell value is interpreted as an 
 image name, and if an image exist with that name is drawn (the name can NOT be 
-of a Windows resource or GTK stock image). Default: TEXT. (Since 3.9)</p>
+of a Windows resource or GTK stock image). Only TEXT and IMAGE are affected by 
+alignment attributes. Default: TEXT. (Since 3.9)</p>
 <p><b><a name="BGCOLOR">BGCOLOR</a></b>:
   Background color of the matrix. (inheritable)<br>
 <strong>BGCOLOR*:<i>C</i></strong>:
@@ -214,16 +222,19 @@ computed size in pixels, in the format &quot;WxH&quot; or &quot;%dx%d&quot; in C
 element is not mapped. It will only return a valid result if the cell has 
 already been displayed. They are similar to the parameters of the DRAW_CB 
 callback but they do NOT include the decorations. (since 3.5)</p>
-<h3><a name="Column_Attributes">Column Attributes</a> (no redraw)</h3>
+<h3><a name="Column_Attributes">Column/Line Only Attributes</a> (no redraw)</h3>
 <p><a name="ALIGNMENTn"><strong>ALIGNMENT</strong><em><strong>C</strong></em></a> :
-  Alignment of the cells in column 
-  C (C &gt;= 0). 
-  Possible values: &quot;ALEFT&quot;, &quot;ACENTER&quot; or &quot;ARIGHT&quot;. Default: 
-    &quot;ALEFT&quot; for n=0 and &quot;ACENTER&quot; for n&gt;0 for lines that 
-greater than 0. Before checking the default value it will check the &quot;<strong>ALIGNMENT</strong>&quot; 
+  Horizontal alignment of the cells in column 
+  C (C &gt;= 0) for lines that greater than 0. 
+  Can be: &quot;ALEFT&quot;, &quot;ACENTER&quot; or &quot;ARIGHT&quot;. Default: 
+    &quot;ALEFT&quot; for C=0 and &quot;ACENTER&quot; for C&gt;0. Before checking the default value it will check the &quot;<strong>ALIGNMENT</strong>&quot; 
 attribute value. If the text do not fit in the cell then the alignment is 
-changed to ALEFT. The default for line 0 is &quot;ACENTER&quot; but this can be controlled 
-with the &quot;<strong>ALIGNMENTLIN0</strong>&quot; attribute (since 3.9).</p>
+changed to ALEFT.</p>
+<p><strong>ALIGNMENTLIN0: </strong>Horizontal alignment of all the cells in line 
+0. Default is &quot;ACENTER&quot;. (since 3.9)</p>
+<p><strong>LINEALIGNMENT<em>L</em></strong>: Vertical alignment of the cells in 
+line L (L &gt;= 0) for all columns. Can be: &quot;ATOP&quot;, &quot;ACENTER&quot; or &quot;ABOTTOM&quot;. Default 
+is &quot;ACENTER&quot;. (since 3.16)</p>
 <p><a name="SORTSIGNn"><strong>SORTSIGN</strong></a><a name="ALIGNMENTn0"><em><strong>C</strong></em></a> : Shows a sort sign (up or 
   down arrow) in the
   column 

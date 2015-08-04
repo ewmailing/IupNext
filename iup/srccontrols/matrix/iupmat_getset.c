@@ -196,7 +196,7 @@ char* iupMatrixGetValue(Ihandle* ih, int lin, int col)
     dIFnii getvalue_cb = (dIFnii)IupGetCallback(ih, "NUMERICGETVALUE_CB");
     if (getvalue_cb)
     {
-      /* no formating and no convertion here */
+      /* no formatting and no conversion here */
       double number = getvalue_cb(ih, lin, col);
       sprintf(ih->data->numeric_buffer_get, IUP_DOUBLE2STR, number);  /* maximum precision */
       return ih->data->numeric_buffer_get;

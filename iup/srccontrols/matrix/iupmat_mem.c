@@ -159,7 +159,7 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
 
   if (num>old_num) /* ADD */
   {
-    diff_num = num-old_num;      /* size of the openned space */
+    diff_num = num-old_num;      /* size of the opened space */
     shift_num = old_num-base;    /* size of the data to be moved (base maximum is old_num) */
     end = base+diff_num;
 
@@ -276,9 +276,9 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
   if (num>old_num) /* ADD */
   {
     /*   even if (old_num-base)>(num-old_num) memmove will correctly copy the memory */
-    /* then clear the openned space starting at base */
+    /* then clear the opened space starting at base */
 
-    diff_num = num-old_num;     /* size of the openned space */
+    diff_num = num-old_num;     /* size of the opened space */
     shift_num = old_num-base;   /* size of the data to be moved (base maximum is old_num) */
     end = base+diff_num;
 
@@ -293,7 +293,7 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
         memmove(ih->data->numeric_columns+end, ih->data->numeric_columns+base, shift_num*sizeof(ImatNumericData));
     }
 
-    /* then clear the openned space starting at base */
+    /* then clear the opened space starting at base */
     if (!ih->data->callback_mode)
       for (lin = 0; lin < ih->data->lines.num_alloc; lin++)   /* all lines, diff_num columns */
         memset(ih->data->cells[lin]+base, 0, diff_num*sizeof(ImatCell));

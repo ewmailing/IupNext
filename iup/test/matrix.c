@@ -145,8 +145,11 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "FONT3:3", "Helvetica, 24");
   //IupSetAttribute(mat, "FONT2:*", "Courier, 14");
   //IupSetAttribute(mat, "FONT*:3", "Times, Bold 14");
-  //IupSetAttribute(mat, "ALIGNMENT2", "ARIGHT");
-//  IupSetAttribute(mat, "ACTIVE", "NO");
+//  IupSetAttribute(mat, "ALIGNMENT1", "ALEFT");
+//  IupSetAttribute(mat, "ALIGNMENT3", "ARIGHT");
+//  IupSetAttribute(mat, "ALIGN2:1", ":ARIGHT");
+//  IupSetAttribute(mat, "LINEALIGNMENT1", "ATOP");
+  //  IupSetAttribute(mat, "ACTIVE", "NO");
 //  IupSetAttribute(mat, "EXPAND", "NO");
 //  IupSetAttribute(mat, "ALIGNMENT", "ALEFT");
 
