@@ -272,7 +272,7 @@ static int iMatrixSetMultilineAttrib(Ihandle* ih, const char* value)
 {
   IupStoreAttribute(ih->data->texth, "MULTILINE", value);
   if (iupStrBoolean(value))
-    IupSetAttribute(ih->data->texth, "SCROLLBAR", "NO");
+    IupSetAttribute(ih->data->texth, "SCROLLBAR", "VERTICAL");
   return 1;
 }
 

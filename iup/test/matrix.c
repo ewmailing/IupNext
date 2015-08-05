@@ -131,7 +131,7 @@ static Ihandle* create_matrix(void)
 //  IupSetAttributeId(mat, "WIDTH", 2, "190");
   IupSetAttribute(mat,"SORTSIGN2","DOWN");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
-//  IupSetAttribute(mat,"MULTILINE", "YES");
+  IupSetAttribute(mat,"MULTILINE", "YES");
   IupSetAttribute(mat,"RESIZEMATRIX", "YES");
 //  IupSetAttribute(mat,"HIDDENTEXTMARKS", "YES");
 //  IupSetAttribute(mat,"USETITLESIZE", "YES");
