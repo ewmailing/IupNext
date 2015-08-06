@@ -442,7 +442,7 @@ public:
   {
     sample_count = 0;
     
-    Ihandle* button = IupButton("Test", NULL);
+    Ihandle* button = IupButton("Inc", NULL);
     // 2) Associate the callback with the button
     IUP_CLASS_SETCALLBACK(button, "ACTION", ButtonAction);
 
@@ -462,8 +462,6 @@ protected:
 int SampleClass::ButtonAction(Ihandle*)
 {
   sample_count++;
-  
-  IupExitLoop();
   return IUP_DEFAULT;
 }
 
