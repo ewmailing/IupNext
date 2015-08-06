@@ -74,7 +74,7 @@ static int motButtonSetImageAttrib(Ihandle* ih, const char* value)
     if (!iupAttribGet(ih, "IMINACTIVE"))
     {
       /* if not active and IMINACTIVE is not defined 
-         then automaticaly create one based on IMAGE */
+         then automatically create one based on IMAGE */
       iupmotSetPixmap(ih, value, XmNlabelInsensitivePixmap, 1); /* make_inactive */
     }
     return 1;

@@ -103,7 +103,7 @@ static int motLabelSetImageAttrib(Ihandle* ih, const char* value)
       if (!iupAttribGet(ih, "IMINACTIVE"))
       {
         /* if not active and IMINACTIVE is not defined 
-           then automaticaly create one based on IMAGE */
+           then automatically create one based on IMAGE */
         iupmotSetPixmap(ih, value, XmNlabelInsensitivePixmap, 1); /* make_inactive */
       }
     }
@@ -131,7 +131,7 @@ static int motLabelSetActiveAttrib(Ihandle* ih, const char* value)
   {
     if (!iupAttribGet(ih, "IMINACTIVE"))
     {
-      /* if not defined then automaticaly create one based on IMAGE */
+      /* if not defined then automatically create one based on IMAGE */
       char* name = iupAttribGet(ih, "IMAGE");
       iupmotSetPixmap(ih, name, XmNlabelInsensitivePixmap, 1); /* make_inactive */
     }

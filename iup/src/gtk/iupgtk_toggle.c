@@ -55,9 +55,11 @@ static GtkWidget* gtk_button_get_image(GtkButton *button)
 
 void iupdrvToggleAddCheckBox(int *x, int *y, const char* str)
 {
+  int check_box = IUP_TOGGLE_BOX;
+
   /* has margins too */
-  (*x) += 2+IUP_TOGGLE_BOX+2;
-  if ((*y) < 2+IUP_TOGGLE_BOX+2) (*y) = 2+IUP_TOGGLE_BOX+2; /* minimum height */
+  (*x) += 2 + check_box + 2;
+  if ((*y) < 2 + check_box + 2) (*y) = 2 + check_box + 2; /* minimum height */
   else (*y) += 2+2;
 
   if (str && str[0]) /* add spacing between check box and text */
@@ -105,7 +107,7 @@ static void gtkToggleUpdateImage(Ihandle* ih, int active, int check)
       gtkToggleSetPixbuf(ih, name, 0);
     else
     {
-      /* if not defined then automaticaly create one based on IMAGE */
+      /* if not defined then automatically create one based on IMAGE */
       name = iupAttribGet(ih, "IMAGE");
       gtkToggleSetPixbuf(ih, name, 1); /* make_inactive */
     }
@@ -120,7 +122,7 @@ static void gtkToggleUpdateImage(Ihandle* ih, int active, int check)
         gtkToggleSetPixbuf(ih, name, 0);
       else
       {
-        /* if not defined then automaticaly create one based on IMAGE */
+        /* if not defined then automatically create one based on IMAGE */
         name = iupAttribGet(ih, "IMAGE");
         gtkToggleSetPixbuf(ih, name, 0);
       }

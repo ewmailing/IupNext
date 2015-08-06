@@ -184,7 +184,7 @@ static int gtkLabelSetImageAttrib(Ihandle* ih, const char* value)
       if (!iupAttribGet(ih, "IMINACTIVE"))
       {
         /* if not active and IMINACTIVE is not defined 
-           then automaticaly create one based on IMAGE */
+           then automatically create one based on IMAGE */
         gtkLabelSetPixbuf(ih, value, 1); /* make_inactive */
       }
     }
@@ -204,7 +204,7 @@ static int gtkLabelSetImInactiveAttrib(Ihandle* ih, const char* value)
         gtkLabelSetPixbuf(ih, value, 0);
       else
       {
-        /* if not defined then automaticaly create one based on IMAGE */
+        /* if not defined then automatically create one based on IMAGE */
         char* name = iupAttribGet(ih, "IMAGE");
         gtkLabelSetPixbuf(ih, name, 1); /* make_inactive */
       }
@@ -227,7 +227,7 @@ static int gtkLabelSetActiveAttrib(Ihandle* ih, const char* value)
         gtkLabelSetPixbuf(ih, name, 0);
       else
       {
-        /* if not defined then automaticaly create one based on IMAGE */
+        /* if not defined then automatically create one based on IMAGE */
         name = iupAttribGet(ih, "IMAGE");
         gtkLabelSetPixbuf(ih, name, 1); /* make_inactive */
       }

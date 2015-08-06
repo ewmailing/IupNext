@@ -39,6 +39,11 @@
 #define SM_CXPADDEDBORDER     92
 #endif
 
+#ifndef WM_DPICHANGED
+#define WM_DPICHANGED       0x02E0
+#endif
+
+
 #define IUPWIN_TRAY_NOTIFICATION 102
 
 static int WM_HELPMSG;
@@ -158,7 +163,7 @@ static void winDialogGetWindowDecor(Ihandle* ih, int *border, int *caption, int 
   }
   else
   {
-    /* caption = window height - borderes - client height - menu */
+    /* caption = window height - borders - client height - menu */
     *caption = (wi.rcWindow.bottom-wi.rcWindow.top) - 2*wi.cyWindowBorders - (wi.rcClient.bottom-wi.rcClient.top) - menu; 
   }
 }
@@ -605,8 +610,13 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
       /* WM_DESTROY is NOT received by IupDialogs                                         */
       /* Except when they are children of other IupDialogs and the parent is destroyed.   */
       /* So we have to destroy the child dialog.                                          */
-      /* The application is responsable for destroying the children before this happen.   */
+      /* The application is responsible for destroying the children before this happen.   */
       IupDestroy(ih);
+      break;
+    }
+  case WM_DPICHANGED:
+    {
+      IupRefresh(ih);
       break;
     }
   }
@@ -917,7 +927,7 @@ static int winDialogMapMethod(Ihandle* ih)
 
   if (iupAttribGetBoolean(ih, "CONTROL") && native_parent) 
   {
-    /* TODO: this were used by LuaCom to create embeded controls, 
+    /* TODO: this were used by LuaCom to create embedded controls, 
        don't know if it is still working */
     dwStyle = WS_CHILD | WS_TABSTOP | WS_CLIPCHILDREN;
     classname = TEXT("IupDialogControl");
@@ -1594,7 +1604,7 @@ static int winDialogSetFullScreenAttrib(Ihandle* ih, const char* value)
       if (visible)
         ShowWindow(ih->handle, SW_SHOW);
 
-      /* remove auxiliar attributes */
+      /* remove auxiliary attributes */
       iupAttribSet(ih, "_IUPWIN_FS_MAXBOX", NULL);
       iupAttribSet(ih, "_IUPWIN_FS_MINBOX", NULL);
       iupAttribSet(ih, "_IUPWIN_FS_MENUBOX",NULL);

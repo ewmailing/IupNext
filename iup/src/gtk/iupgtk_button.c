@@ -268,7 +268,7 @@ static int gtkButtonSetImageAttrib(Ihandle* ih, const char* value)
       if (!iupAttribGet(ih, "IMINACTIVE"))
       {
         /* if not active and IMINACTIVE is not defined 
-           then automaticaly create one based on IMAGE */
+           then automatically create one based on IMAGE */
         gtkButtonSetPixbuf(ih, value, 1); /* make_inactive */
       }
     }
@@ -288,7 +288,7 @@ static int gtkButtonSetImInactiveAttrib(Ihandle* ih, const char* value)
         gtkButtonSetPixbuf(ih, value, 0);
       else
       {
-        /* if not defined then automaticaly create one based on IMAGE */
+        /* if not defined then automatically create one based on IMAGE */
         char* name = iupAttribGet(ih, "IMAGE");
         gtkButtonSetPixbuf(ih, name, 1); /* make_inactive */
       }
@@ -311,7 +311,7 @@ static int gtkButtonSetActiveAttrib(Ihandle* ih, const char* value)
         gtkButtonSetPixbuf(ih, name, 0);
       else
       {
-        /* if not defined then automaticaly create one based on IMAGE */
+        /* if not defined then automatically create one based on IMAGE */
         name = iupAttribGet(ih, "IMAGE");
         gtkButtonSetPixbuf(ih, name, 1); /* make_inactive */
       }

@@ -32,9 +32,11 @@
 
 void iupdrvToggleAddCheckBox(int *x, int *y, const char* str)
 {
+  int check_box = 15;  /* See XmNindicatorSize */
+
   /* has margins too */
-  (*x) += 3+15+3;
-  if ((*y) < 3+15+3) (*y) = 3+15+3; /* minimum height */
+  (*x) += 3 + check_box + 3;
+  if ((*y) < 3 + check_box + 3) (*y) = 3 + check_box + 3; /* minimum height */
   else (*y) += 3+3;
 
   if (str && str[0]) /* add spacing between check box and text */
@@ -182,7 +184,7 @@ static int motToggleSetImageAttrib(Ihandle* ih, const char* value)
     if (!iupAttribGet(ih, "IMINACTIVE"))
     {
       /* if not active and IMINACTIVE is not defined 
-         then automaticaly create one based on IMAGE */
+         then automatically create one based on IMAGE */
       iupmotSetPixmap(ih, value, XmNlabelInsensitivePixmap, 1); /* make_inactive */
     }
     return 1;
