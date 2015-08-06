@@ -32,13 +32,13 @@ void SysInfoTest(void)
 
   printf("  Screen Depth: %s\n", IupGetGlobal("SCREENDEPTH"));
   printf("  Screen Size: %s\n", IupGetGlobal("SCREENSIZE"));
+  printf("  Screen DPI: %s\n", IupGetGlobal("SCREENDPI"));
   printf("  Full Screen Size: %s\n", IupGetGlobal("FULLSIZE"));
   if (!motif)
   {
     printf("  Virtual Screen: %s\n", IupGetGlobal("VIRTUALSCREEN"));
     printf("  Monitors Info: %s\n", IupGetGlobal("MONITORSINFO"));
   }
-  printf("  True Color Canvas: %s\n\n", IupGetGlobal("TRUECOLORCANVAS"));
 
   printf("  Computer Name: %s\n", IupGetGlobal("COMPUTERNAME"));
   printf("  User Name: %s\n", IupGetGlobal("USERNAME"));
