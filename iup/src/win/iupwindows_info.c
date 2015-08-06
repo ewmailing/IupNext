@@ -134,10 +134,14 @@ char *iupdrvGetSystemName(void)
     if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2)
       return "Win8";
 
-    /* IMPORTANT: this will work only if the Manifest has been changed 
-       to include Windows 8.1 support. Otherwise GetVersionEx will report 6.2 */
-    if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 2)
+    /* IMPORTANT: starting here will work only if the Manifest has been changed 
+       to include Windows 8+ support. Otherwise GetVersionEx will report 6.2 */
+
+    if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3)
       return "Win81";
+
+    if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0)
+      return "Win10";
   }
 
   return "Windows";
