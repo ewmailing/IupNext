@@ -37,8 +37,13 @@ file in the &quot;iup/etc&quot; folder already contains the necessary changes to
 the application DPI aware.</p>
 <p>Text will look better if a high DPI setting is used. For standard monitors 
 (1280x1024) you can use 120 DPI (125%), for FullHD (1920x1080) can use 144 DPI 
-(150%), and for 4k (3840x2160) can use 192 DPI (200%).</p>
-<p>We recommend using 24x24 images for toolbar buttons when the SCREENDPI 
+(150%), and for 4k (3840x2160) can use 192 DPI (200%). To be able to respond to 
+these resolution changes the application should avoid using sizes in pixels 
+(like: RASTERSIZE, GAP, MARGIN) use character sizes instead (like: SIZE, CGAP, 
+CMARGIN). </p>
+<p>But there is a problem with the images. Usually applications use 16x16 images 
+for toolbar buttons, in a 4k resolution this looks very small, so ideally the 
+application should have at least 3 sets of buttons: 16x16, 24x24 and 32x32. We recommend using 24x24 images for toolbar buttons when the SCREENDPI 
 (global attribute) is greater than 120 DPI (&gt; 125%), and 32x32 when greater than 
 144 DPI (&gt; 150%). </p>
 <h4>UTF-8</h4>
