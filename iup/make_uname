@@ -78,6 +78,6 @@ cd srcconsole
 #./make_uname USE_LUA53=Yes $1 $2 $3 $4 $5 $6 $7 $8
 cd ..
 
-cd test
+cd html/examples/tests
 ./make_uname $1 $2 $3 $4 $5 $6 $7 $8
-cd ..
+cd ../../..
