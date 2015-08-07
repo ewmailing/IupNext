@@ -42,491 +42,126 @@ are NOT registered using <b>IupSetHandle</b>, they will be automatically loaded
 when associated with a control.</p>
 <h3>Bitmap Group</h3>
     <p>These bitmaps are 16x16-8bpp (Motif) and 16x16-32bpp (Win32 and GTK) 
-	pixels size images that can be used in Buttons, usually inside toolbars.</p>
+	pixels size images that can be used in Buttons, usually inside toolbars. But 
+	in GTK some control of the size can be done using GTKICONSIZE global 
+	attribute that accept values: &quot;MENU&quot; (16x16), &quot;BUTTON&quot; (20x20), 
+	&quot;SMALLTOOLBAR&quot; (18x18), &quot;LARGETOOLBAR&quot; (24x24), &quot;DND&quot; (32x32), and &quot;DIALOG&quot; 
+	(48x48).</p>
   <table align="center">
     <tr>
       <th bgcolor="#C0C0C0">Name</th>
       <th bgcolor="#C0C0C0">Image<br>(Motif)</th>
-      <th bgcolor="#C0C0C0">Image<br>(Win32)</th>
+      <th bgcolor="#C0C0C0">Image<br>(Windows)</th>
       <th bgcolor="#C0C0C0">Image<br>(GTK)</th>
+      <th bgcolor="#C0C0C0">Image<br>(Windows*)</th>
     </tr>
     <tr>
       <td>&quot;IUP_ActionCancel&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ActionCancel8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ActionCancel.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-cancel.png" width="20" height="20"></td>
-    </tr>
+      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ActionCancel8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ActionCancel.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-cancel.png" width="20" height="20"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ActionCancel.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ActionOk&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ActionOk8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ActionOk.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-apply.png" width="20" height="20"></td>
-    </tr>
+      <td>&quot;IUP_ActionOk&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ActionOk8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ActionOk.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-apply.png" width="20" height="20"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ActionOk.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ArrowDown&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ArrowDown8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ArrowDown.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-go-down.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ArrowDown&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ArrowDown8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ArrowDown.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-go-down.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ArrowDown.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ArrowLeft&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ArrowLeft8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ArrowLeft.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-go-back-ltr.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ArrowLeft&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ArrowLeft8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ArrowLeft.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-go-back-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ArrowLeft.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ArrowRight&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ArrowRight8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ArrowRight.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-go-forward-ltr.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ArrowRight&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ArrowRight8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ArrowRight.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-go-forward-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ArrowRight.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ArrowUp&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ArrowUp8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ArrowUp.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-go-up.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ArrowUp&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ArrowUp8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ArrowUp.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-go-up.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ArrowUp.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditCopy&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/EditCopy8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/EditCopy.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-copy.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_EditCopy&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditCopy8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditCopy.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-copy.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditCopy.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditCut&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/EditCut8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/EditCut.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-cut.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_EditCut&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditCut8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditCut.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-cut.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditCut.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditErase&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/EditErase8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/EditErase.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-delete.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_EditErase&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditErase8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditErase.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-delete.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditErase.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditFind&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/EditFind8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/EditFind.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-find.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_EditFind&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditFind8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditFind.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-find.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditFind.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditPaste&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/EditPaste8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/EditPaste.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-paste.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_EditPaste&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditPaste8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditPaste.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-paste.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditPaste.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditRedo&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/EditRedo8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/EditRedo.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-redo-ltr.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_EditRedo&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditRedo8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditRedo.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-redo-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditRedo.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditUndo&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/EditUndo8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/EditUndo.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-undo-ltr.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_EditUndo&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditUndo8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditUndo.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-undo-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditUndo.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileClose&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/FileClose8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/FileClose.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/iupgtk-close.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_FileClose&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileClose8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileClose.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-close.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileClose.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileCloseAll&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/FileCloseAll8.gif" width="17" height="17"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/FileCloseAll.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/iupgtk-close-all.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_FileCloseAll&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileCloseAll8.gif" width="17" height="17"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileCloseAll.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-close-all.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileCloseAll.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileNew&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/FileNew8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/FileNew.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-new.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_FileNew&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileNew8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileNew.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-new.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileNew.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileOpen&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/FileOpen8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/FileOpen.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-open.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_FileOpen&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileOpen8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileOpen.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-open.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileOpen.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileProperties&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/FileProperties8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/FileProperties.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-properties.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_FileProperties&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileProperties8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileProperties.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-properties.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileProperties.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileSave&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/FileSave8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/FileSave.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-save.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_FileSave&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileSave8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileSave.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-save.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileSave.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileSaveAll&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/FileSaveAll8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/FileSaveAll.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/iupgtk-save-all.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_FileSaveAll&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileSaveAll8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileSaveAll.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-save-all.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileSaveAll.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileText&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/FileText8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/FileText.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/iupgtk-text.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_FileText&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileText8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileText.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-text.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileText.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FontBold&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/FontBold8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/FontBold.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-bold.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_FontBold&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FontBold8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FontBold.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-bold.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FontBold.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FontDialog&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/FontDialog8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/FontDialog.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-font.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_FontDialog&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FontDialog8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FontDialog.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-font.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FontDialog.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FontItalic&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/FontItalic8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/FontItalic.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-italic.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_FontItalic&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FontItalic8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FontItalic.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-italic.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FontItalic.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaForward&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MediaForward8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MediaForward.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-media-forward-ltr.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MediaForward&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaForward8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaForward.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-forward-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaForward.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaGotoBegin&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MediaGotoBegin8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MediaGotoBegin.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-media-previous-ltr.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MediaGotoBegin&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaGotoBegin8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaGotoBegin.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-previous-ltr.png" width="16" height="32"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaGotoBegin.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaGoToEnd&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MediaGoToEnd8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MediaGoToEnd.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-media-next-ltr.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MediaGoToEnd&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaGoToEnd8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaGoToEnd.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-next-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaGoToEnd.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaPause&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MediaPause8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MediaPause.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-media-pause.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MediaPause&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaPause8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaPause.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-pause.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaPause.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaPlay&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MediaPlay8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MediaPlay.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-media-play-ltr.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MediaPlay&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaPlay8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaPlay.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-play-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaPlay.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaRecord&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MediaRecord8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MediaRecord.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-media-record.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MediaRecord&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaRecord8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaRecord.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-record.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaRecord.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaReverse&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MediaReverse8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MediaReverse.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-media-play-rtl.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MediaReverse&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaReverse8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaReverse.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-play-rtl.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaReverse.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaRewind&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MediaRewind8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MediaRewind.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-media-rewind-ltr.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MediaRewind&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaRewind8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaRewind.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-rewind-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaRewind.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaStop&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MediaStop8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MediaStop.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-media-stop.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MediaStop&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaStop8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaStop.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-stop.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaStop.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MessageError&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MessageError8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MessageError.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-stop.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MessageError&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MessageError8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MessageError.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-stop.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MessageError.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MessageHelp&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MessageHelp8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MessageHelp.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-help.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MessageHelp&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MessageHelp8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MessageHelp.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-help.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MessageHelp.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MessageInfo&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/MessageInfo8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/MessageInfo.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-info.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_MessageInfo&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MessageInfo8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MessageInfo.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-info.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MessageInfo.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_NavigateHome&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/NavigateHome8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/NavigateHome.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-home.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_NavigateHome&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/NavigateHome8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/NavigateHome.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-home.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/NavigateHome.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_NavigateRefresh&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/NavigateRefresh8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/NavigateRefresh.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-refresh.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_NavigateRefresh&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/NavigateRefresh8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/NavigateRefresh.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-refresh.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/NavigateRefresh.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_Print&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/Print8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/Print.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-print.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_Print&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/Print8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/Print.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-print.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/Print.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_PrintPreview&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/PrintPreview8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/PrintPreview.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-print-preview.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_PrintPreview&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/PrintPreview8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/PrintPreview.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-print-preview.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/PrintPreview.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ToolsColor&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ToolsColor8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ToolsColor.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-select-color.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ToolsColor&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ToolsColor8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ToolsColor.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-select-color.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ToolsColor.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ToolsSettings&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ToolsSettings8.gif" width="20" height="20"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ToolsSettings.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-preferences.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ToolsSettings&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ToolsSettings8.gif" width="20" height="20"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ToolsSettings.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-preferences.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ToolsSettings.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ToolsSortAscend&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ToolsSortAscend8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ToolsSortAscend.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-sort-ascending.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ToolsSortAscend&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ToolsSortAscend8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ToolsSortAscend.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-sort-ascending.png" width="16" height="32"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ToolsSortAscend.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ToolsSortDescend&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ToolsSortDescend8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ToolsSortDescend.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-sort-descending.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ToolsSortDescend&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ToolsSortDescend8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ToolsSortDescend.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-sort-descending.png" width="16" height="32"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ToolsSortDescend.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ViewFullScreen&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ViewFullScreen8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ViewFullScreen.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-fullscreen.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ViewFullScreen&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ViewFullScreen8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ViewFullScreen.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-fullscreen.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ViewFullScreen.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_Webcam&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Icons8/webcam.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Icons/webcam.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Icons/webcam.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_Webcam&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Icons8/webcam.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Icons/webcam.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Icons/webcam.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Icons/webcam.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_WindowsCascade&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/WindowsCascade8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/WindowsCascade.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/iupgtk-cascade.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_WindowsCascade&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/WindowsCascade8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/WindowsCascade.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-cascade.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/WindowsCascade.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_WindowsTile&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/WindowsTile8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/WindowsTile.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/iupgtk-tile.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_WindowsTile&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/WindowsTile8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/WindowsTile.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-tile.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/WindowsTile.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_Zoom&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/Zoom8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/Zoom.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/iupgtk-zoom.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_Zoom&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/Zoom8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/Zoom.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-zoom.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/Zoom.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ZoomActualSize&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ZoomActualSize8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ZoomActualSize.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-100.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ZoomActualSize&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ZoomActualSize8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ZoomActualSize.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-100.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ZoomActualSize.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ZoomIn&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ZoomIn8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ZoomIn.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-in.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ZoomIn&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ZoomIn8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ZoomIn.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-in.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ZoomIn.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ZoomOut&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ZoomOut8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ZoomOut.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-out.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ZoomOut&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ZoomOut8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ZoomOut.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-out.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ZoomOut.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ZoomSelection&quot;</td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps8/ZoomSelection8.gif" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Bitmaps/ZoomSelection.png" width="16" height="16"></td>
-      <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-fit.png" width="16" height="16"></td>
-    </tr>
+      <td>&quot;IUP_ZoomSelection&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ZoomSelection8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ZoomSelection.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-fit.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ZoomSelection.png" width="32" height="32"></td>    </tr>
     </table>
 
 <h3>Icon Group</h3>
