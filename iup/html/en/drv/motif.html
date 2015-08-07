@@ -95,10 +95,6 @@ Motif driver.</p>
 <p>When a warning about XtAddCallback appears during the application initialization, and it aborts, this usually means 
   that you are using a Motif with a different version than the Motif used to build IUP. Reinstall Motif or rebuild IUP 
   using your Motif.</p>
-<h4>Some Control Sizes are wrong (IUP 2.x only)</h4>
-<p>Sometimes the control initialization is incomplete and its size is miscalculated. To solve this call IupMap(dialog) 
-  and set the dialog size to NULL &quot;IupSetAttribute(dlg, IUP_SIZE, NULL);&quot; before calling IupShow. 
-This will fix the sizes.</p>
 
 <h4><font SIZE="3">Indigo Magic look in Sgi</font></h4>
 <font SIZE="3">

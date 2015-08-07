@@ -1631,11 +1631,7 @@ wb_usr.tree =
               link= "elem/iupimage.html"
             },
             {
-              name= {nl= "IupImageLib (2.x)"},
-              link= "iupimglib2.html"
-            },
-            {
-              name= {nl= "IupImageLib (3.0)"},
+              name= {nl= "IupImageLib"},
               link= "iupimglib.html"
             },
             {

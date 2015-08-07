@@ -51,10 +51,11 @@
 </head>
 <body>
 
-<h2>FONT<span class="style9"> (since 3.0)</span></h2>
-<p>Character font of the text shown in the element. See <a href="iup_font2.html">
-FONT</a> definition up to IUP 2.x. Although it is an inheritable attribute, it 
-is defined only on elements that have a native representation.</p>
+<h2>FONT</h2>
+<p>Character font of the text shown in the element. Although it is an inheritable attribute, it 
+is defined only on elements that have a native representation, but other 
+elements are affected because it affects the <a href="iup_size.html">SIZE</a> 
+attribute.</p>
 <h3>Value</h3>
 <p>Font description containing typeface, style and size. Default: the global 
 attribute DEFAULTFONT.</p>
@@ -71,10 +72,6 @@ by the common format, they are supported only by the GTK driver. Unsupported
 values are simply ignored. The names must be in the same case describe here.</p>
 <p><u>Font size</u> is in points (1/72 inch) or in pixels (using negative 
 values).</p>
-<p>The old <a href="iup_font2.html#Font_Names">Font Names</a> are still 
-supported. The old Windows <a href="iup_font2.html">
-FONT</a> format is still 
-supported in the Windows driver.</p>
 <p>Returned values will be the same value when changing the attribute, except 
 for the old font names that will be converted to the new common format 
 definition.</p>
