@@ -11,6 +11,7 @@ USE_STATIC = Yes
 
 #APPTYPE = console
 IUP = ../../../..
+PROJDIR = ../../..
 #DBG = Yes
 OPT=Yes
 

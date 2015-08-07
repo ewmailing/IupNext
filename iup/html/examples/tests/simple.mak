@@ -18,7 +18,9 @@ INCLUDES = ../include
 
 USE_IUP3 = Yes
 USE_STATIC = Yes
-IUP = ..
+
+IUP = ../../..
+PROJDIR = ../../..
 
 #USE_CD = Yes
 SRC += tree.c
