@@ -21,8 +21,7 @@
 <body>
 
 <h2>IupImageLib (since 3.0)</h2>
-<p>A library of pre-defined images for buttons and labels. See <a href="iupimglib2.html">
-IupImageLib</a> up to IUP 2.x.</p>
+<p>A library of pre-defined images for buttons and labels.</p>
 <h3>Initialization</h3>
 <p>To generate an application that uses this function, the program must be 
 linked to the functions library (<strong>iupimglib</strong>.lib on Windows and 
@@ -41,7 +40,7 @@ automatically called.</p>
 are NOT registered using <b>IupSetHandle</b>, they will be automatically loaded 
 when associated with a control.</p>
 <h3>Bitmap Group</h3>
-    <p>These bitmaps are 16x16-8bpp (Motif) and 16x16-32bpp (Win32 and GTK) 
+    <p>These bitmaps are 16x16-8bpp (Motif) and 16x16-32bpp (Windows and GTK) 
 	pixels size images that can be used in Buttons, usually inside toolbars. But 
 	in GTK some control of the size can be done using GTKICONSIZE global 
 	attribute that accept values: &quot;MENU&quot; (16x16), &quot;BUTTON&quot; (20x20), 
@@ -53,118 +52,119 @@ when associated with a control.</p>
       <th bgcolor="#C0C0C0">Image<br>(Motif)</th>
       <th bgcolor="#C0C0C0">Image<br>(Windows)</th>
       <th bgcolor="#C0C0C0">Image<br>(GTK)</th>
-      <th bgcolor="#C0C0C0">Image<br>(Windows*)</th>
+      <th bgcolor="#C0C0C0">Image<br>(Windows)</th>
     </tr>
     <tr>
-      <td>&quot;IUP_ActionCancel&quot;</td>
-      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ActionCancel8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ActionCancel.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-cancel.png" width="20" height="20"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ActionCancel.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ActionCancel&quot;</td>    <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ActionCancel8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ActionCancel.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-cancel.png" width="20" height="20"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ActionCancel.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ActionOk&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ActionOk8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ActionOk.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-apply.png" width="20" height="20"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ActionOk.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ActionOk&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ActionOk8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ActionOk.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-apply.png" width="20" height="20"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ActionOk.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ArrowDown&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ArrowDown8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ArrowDown.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-go-down.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ArrowDown.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ArrowDown&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ArrowDown8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ArrowDown.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-go-down.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ArrowDown.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ArrowLeft&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ArrowLeft8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ArrowLeft.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-go-back-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ArrowLeft.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ArrowLeft&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ArrowLeft8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ArrowLeft.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-go-back-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ArrowLeft.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ArrowRight&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ArrowRight8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ArrowRight.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-go-forward-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ArrowRight.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ArrowRight&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ArrowRight8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ArrowRight.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-go-forward-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ArrowRight.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ArrowUp&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ArrowUp8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ArrowUp.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-go-up.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ArrowUp.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ArrowUp&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ArrowUp8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ArrowUp.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-go-up.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ArrowUp.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditCopy&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditCopy8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditCopy.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-copy.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditCopy.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_EditCopy&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/EditCopy8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/EditCopy.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-copy.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/EditCopy.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditCut&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditCut8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditCut.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-cut.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditCut.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_EditCut&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/EditCut8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/EditCut.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-cut.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/EditCut.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditErase&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditErase8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditErase.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-delete.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditErase.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_EditErase&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/EditErase8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/EditErase.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-delete.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/EditErase.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditFind&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditFind8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditFind.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-find.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditFind.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_EditFind&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/EditFind8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/EditFind.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-find.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/EditFind.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditPaste&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditPaste8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditPaste.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-paste.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditPaste.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_EditPaste&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/EditPaste8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/EditPaste.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-paste.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/EditPaste.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditRedo&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditRedo8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditRedo.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-redo-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditRedo.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_EditRedo&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/EditRedo8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/EditRedo.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-redo-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/EditRedo.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_EditUndo&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/EditUndo8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/EditUndo.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-undo-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/EditUndo.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_EditUndo&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/EditUndo8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/EditUndo.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-undo-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/EditUndo.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileClose&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileClose8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileClose.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-close.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileClose.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FileClose&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileClose8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/FileClose.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/iupgtk-close.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileClose.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileCloseAll&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileCloseAll8.gif" width="17" height="17"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileCloseAll.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-close-all.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileCloseAll.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FileCloseAll&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileCloseAll8.gif" width="17" height="17"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/FileCloseAll.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/iupgtk-close-all.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileCloseAll.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileNew&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileNew8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileNew.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-new.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileNew.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FileNew&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileNew8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/FileNew.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-new.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileNew.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileOpen&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileOpen8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileOpen.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-open.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileOpen.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FileOpen&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileOpen8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/FileOpen.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-open.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileOpen.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileProperties&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileProperties8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileProperties.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-properties.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileProperties.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FileProperties&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileProperties8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/FileProperties.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-properties.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileProperties.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileSave&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileSave8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileSave.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-save.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileSave.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FileSave&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileSave8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/FileSave.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-save.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileSave.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileSaveAll&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileSaveAll8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileSaveAll.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-save-all.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileSaveAll.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FileSaveAll&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileSaveAll8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/FileSaveAll.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/iupgtk-save-all.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileSaveAll.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileText&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FileText8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FileText.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-text.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FileText.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FileText&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileText8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/FileText.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/iupgtk-text.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileText.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FontBold&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FontBold8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FontBold.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-bold.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FontBold.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FontBold&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FontBold8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/FontBold.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-bold.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FontBold.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FontDialog&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FontDialog8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FontDialog.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-font.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FontDialog.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FontDialog&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FontDialog8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/FontDialog.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-font.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FontDialog.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FontItalic&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/FontItalic8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/FontItalic.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-italic.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/FontItalic.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FontItalic&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FontItalic8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/FontItalic.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-italic.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FontItalic.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaForward&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaForward8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaForward.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-forward-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaForward.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MediaForward&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MediaForward8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MediaForward.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-media-forward-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MediaForward.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaGotoBegin&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaGotoBegin8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaGotoBegin.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-previous-ltr.png" width="16" height="32"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaGotoBegin.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MediaGotoBegin&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MediaGotoBegin8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MediaGotoBegin.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-media-previous-ltr.png" width="16" height="32"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MediaGotoBegin.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaGoToEnd&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaGoToEnd8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaGoToEnd.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-next-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaGoToEnd.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MediaGoToEnd&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MediaGoToEnd8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MediaGoToEnd.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-media-next-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MediaGoToEnd.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaPause&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaPause8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaPause.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-pause.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaPause.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MediaPause&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MediaPause8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MediaPause.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-media-pause.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MediaPause.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaPlay&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaPlay8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaPlay.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-play-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaPlay.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MediaPlay&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MediaPlay8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MediaPlay.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-media-play-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MediaPlay.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaRecord&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaRecord8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaRecord.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-record.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaRecord.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MediaRecord&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MediaRecord8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MediaRecord.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-media-record.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MediaRecord.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaReverse&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaReverse8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaReverse.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-play-rtl.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaReverse.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MediaReverse&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MediaReverse8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MediaReverse.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-media-play-rtl.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MediaReverse.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaRewind&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaRewind8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaRewind.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-rewind-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaRewind.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MediaRewind&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MediaRewind8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MediaRewind.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-media-rewind-ltr.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MediaRewind.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MediaStop&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MediaStop8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MediaStop.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-media-stop.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MediaStop.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MediaStop&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MediaStop8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MediaStop.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-media-stop.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MediaStop.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MessageError&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MessageError8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MessageError.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-stop.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MessageError.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MessageError&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MessageError8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MessageError.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-stop.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MessageError.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MessageHelp&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MessageHelp8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MessageHelp.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-help.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MessageHelp.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MessageHelp&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MessageHelp8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MessageHelp.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-help.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MessageHelp.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_MessageInfo&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/MessageInfo8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/MessageInfo.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-info.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/MessageInfo.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_MessageInfo&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MessageInfo8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/MessageInfo.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-info.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MessageInfo.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_NavigateHome&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/NavigateHome8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/NavigateHome.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-home.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/NavigateHome.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_NavigateHome&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/NavigateHome8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/NavigateHome.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-home.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/NavigateHome.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_NavigateRefresh&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/NavigateRefresh8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/NavigateRefresh.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-refresh.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/NavigateRefresh.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_NavigateRefresh&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/NavigateRefresh8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/NavigateRefresh.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-refresh.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/NavigateRefresh.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_Print&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/Print8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/Print.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-print.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/Print.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_Print&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/Print8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/Print.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-print.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/Print.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_PrintPreview&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/PrintPreview8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/PrintPreview.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-print-preview.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/PrintPreview.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_PrintPreview&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/PrintPreview8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/PrintPreview.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-print-preview.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/PrintPreview.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ToolsColor&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ToolsColor8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ToolsColor.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-select-color.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ToolsColor.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ToolsColor&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ToolsColor8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ToolsColor.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-select-color.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ToolsColor.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ToolsSettings&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ToolsSettings8.gif" width="20" height="20"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ToolsSettings.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-preferences.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ToolsSettings.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ToolsSettings&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ToolsSettings8.gif" width="20" height="20"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ToolsSettings.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-preferences.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ToolsSettings.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ToolsSortAscend&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ToolsSortAscend8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ToolsSortAscend.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-sort-ascending.png" width="16" height="32"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ToolsSortAscend.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ToolsSortAscend&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ToolsSortAscend8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ToolsSortAscend.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-sort-ascending.png" width="16" height="32"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ToolsSortAscend.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ToolsSortDescend&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ToolsSortDescend8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ToolsSortDescend.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-sort-descending.png" width="16" height="32"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ToolsSortDescend.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ToolsSortDescend&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ToolsSortDescend8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ToolsSortDescend.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-sort-descending.png" width="16" height="32"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ToolsSortDescend.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ViewFullScreen&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ViewFullScreen8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ViewFullScreen.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-fullscreen.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ViewFullScreen.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ViewFullScreen&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ViewFullScreen8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ViewFullScreen.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-fullscreen.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ViewFullScreen.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_Webcam&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Icons8/webcam.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Icons/webcam.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Icons/webcam.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Icons/webcam.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_Webcam&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/DeviceWebcam.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/DeviceWebcam.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/iupgtk-webcam.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/DeviceWebcam.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_WindowsCascade&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/WindowsCascade8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/WindowsCascade.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-cascade.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/WindowsCascade.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_WindowClose&quot;</td>      <td bgcolor="#FFAA80" align="center">      ----</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/WindowClose.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-close.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/WindowClose.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_WindowsTile&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/WindowsTile8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/WindowsTile.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-tile.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/WindowsTile.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_WindowsCascade&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/WindowsCascade8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/WindowsCascade.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/iupgtk-cascade.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/WindowsCascade.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_Zoom&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/Zoom8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/Zoom.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/iupgtk-zoom.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/Zoom.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_WindowsTile&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/WindowsTile8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/WindowsTile.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/iupgtk-tile.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/WindowsTile.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ZoomActualSize&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ZoomActualSize8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ZoomActualSize.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-100.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ZoomActualSize.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_Zoom&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/Zoom8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/Zoom.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/iupgtk-zoom.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/Zoom.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ZoomIn&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ZoomIn8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ZoomIn.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-in.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ZoomIn.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ZoomActualSize&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ZoomActualSize8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ZoomActualSize.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-zoom-100.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ZoomActualSize.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ZoomOut&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ZoomOut8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ZoomOut.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-out.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ZoomOut.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ZoomIn&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ZoomIn8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ZoomIn.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-zoom-in.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ZoomIn.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_ZoomSelection&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps8/ZoomSelection8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps/ZoomSelection.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BitmapsGtk/gtk-zoom-fit.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/Bitmaps32/ZoomSelection.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_ZoomOut&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ZoomOut8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ZoomOut.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-zoom-out.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ZoomOut.png" width="32" height="32"></td>    </tr>
+    <tr>
+      <td>&quot;IUP_ZoomSelection&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ZoomSelection8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_16x16/ZoomSelection.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_16x16/gtk-zoom-fit.png" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ZoomSelection.png" width="32" height="32"></td>    </tr>
     </table>
 
-<h3>Icon Group</h3>
+<h3>Logo Group 32x32</h3>
     <p>These icons are 32x32-32bpp pixels size (or just 32 pixels height) images that 
 	can be used in Labels, usually inside toolbars.</p>
 <table align="center">
@@ -178,22 +178,22 @@ when associated with a control.</p>
     <tr>
       <td class="style2">&quot;IUP_Tecgraf&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Icons/Tecgraf.png" width="32" height="32"></td>
+      <img border="0" src="imglib/Logos/32x32/Tecgraf.png" width="32" height="32"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_PUC-Rio&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Icons/PUC-Rio.png" width="32" height="32"></td>
+      <img border="0" src="imglib/Logos/32x32/PUC-Rio.png" width="32" height="32"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_BR&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Icons/BR.png" width="32" height="32"></td>
+      <img border="0" src="imglib/Logos/32x32/BR.png" width="32" height="32"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_Lua&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Icons/Lua.png" width="32" height="32"></td>
+      <img border="0" src="imglib/Logos/32x32/Lua.png" width="32" height="32"></td>
     </tr>
   </table>
     
@@ -207,12 +207,12 @@ when associated with a control.</p>
     <tr>
       <td>&quot;IUP_TecgrafPUC-Rio&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Icons/TecgrafPUC-Rio.png" width="138" height="32"></td>
+      <img border="0" src="imglib/Logos/32x32/TecgrafPUC-Rio.png" width="138" height="32"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_Petrobras&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Icons/Petrobras.png" width="158" height="32"></td>
+      <img border="0" src="imglib/Logos/32x32/Petrobras.png" width="128" height="32"></td>
     </tr>
   </table>
    
@@ -220,7 +220,7 @@ when associated with a control.</p>
   </tr>
 </table>
 
-<h3>Logo Group <span class="style3">(NOT included in the pre-compiled library, 
+<h3>Logo Group 48x48<span class="style3"> (NOT included in the pre-compiled library, 
 since 3.3)
   </span></h3>
     <p>These logos are 48x48-32bpp pixels size (or just 48 pixels height) images that 
@@ -234,24 +234,24 @@ since 3.3)
       <th bgcolor="#C0C0C0">Image<br>(Generic)</th>
     </tr>
     <tr>
-      <td class="style2">&quot;IUP_LogoTecgraf&quot;</td>
+      <td class="style2">&quot;IUP_Tecgraf&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoTecgraf.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Logos/48x48/Tecgraf.png" width="48" height="48"></td>
     </tr>
     <tr>
-      <td class="style2">&quot;IUP_LogoPUC-Rio&quot;</td>
+      <td class="style2">&quot;IUP_PUC-Rio&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoPUC-Rio.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Logos/48x48/PUC-Rio.png" width="48" height="48"></td>
     </tr>
     <tr>
-      <td class="style2">&quot;IUP_LogoBR&quot;</td>
+      <td class="style2">&quot;IUP_BR&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoBR.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Logos/48x48/BR.png" width="48" height="48"></td>
     </tr>
     <tr>
-      <td class="style2">&quot;IUP_LogoLua&quot;</td>
+      <td class="style2">&quot;IUP_Lua&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoLua.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Logos/48x48/Lua.png" width="48" height="48"></td>
     </tr>
   </table>
     </td>
@@ -262,14 +262,14 @@ since 3.3)
       <th bgcolor="#C0C0C0">Image<br>(Generic)</th>
     </tr>
     <tr>
-      <td class="style2">&quot;IUP_LogoTecgrafPUC-Rio&quot;</td>
+      <td class="style2">&quot;IUP_TecgrafPUC-Rio&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoTecgrafPUC-Rio.png" width="208" height="48"></td>
+      <img border="0" src="imglib/Logos/48x48/TecgrafPUC-Rio.png" width="208" height="48"></td>
     </tr>
     <tr>
-      <td class="style2">&quot;IUP_LogoPetrobras&quot;</td>
+      <td class="style2">&quot;IUP_Petrobras&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoPetrobras.png" width="236" height="48"></td>
+      <img border="0" src="imglib/Logos/48x48/Petrobras.png" width="192" height="48"></td>
     </tr>
   </table>
   
@@ -277,8 +277,7 @@ since 3.3)
   </tr>
 </table>
  
-<h3>Other<span class="style3">
-    (NOT included in the pre-compiled library, since 3.3)
+<h3>Icon Group 48x48<span class="style3"> (NOT included in the pre-compiled library, since 3.3)
   </span></h3>
  
 <p>Here are other images available in the IUP stock library, commonly used by 
@@ -290,43 +289,43 @@ the respective systems. All images are 48x48-32bpp pixels size.</p>
   <table>
     <tr>
       <th bgcolor="#C0C0C0">Name</th>
-      <th bgcolor="#C0C0C0">Image<br>(Win32)</th>
+      <th bgcolor="#C0C0C0">Image<br>(Windows)</th>
       <th bgcolor="#C0C0C0">Image<br>(GTK)</th>
     </tr>
     <tr>
-      <td class="style2">&quot;IUP_LogoMessageSecurity&quot;</td>
+      <td class="style2">&quot;IUP_IconMessageSecurity&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoMessageSecurity.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/IconMessageSecurity.png" width="48" height="48"></td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/LogosGtk/gtk-dialog-authentication.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/GTK_48x48/gtk-dialog-authentication.png" width="48" height="48"></td>
     </tr>
     <tr>
-      <td class="style2">&quot;IUP_LogoMessageWarning&quot;</td>
+      <td class="style2">&quot;IUP_IconMessageWarning&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoMessageWarning.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/IconMessageWarning.png" width="48" height="48"></td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/LogosGtk/gtk-dialog-warning.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/GTK_48x48/gtk-dialog-warning.png" width="48" height="48"></td>
     </tr>
     <tr>
-      <td class="style2">&quot;IUP_LogoMessageInfo&quot;</td>
+      <td class="style2">&quot;IUP_IconMessageInfo&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoMessageInfo.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/IconMessageInfo.png" width="48" height="48"></td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/LogosGtk/gtk-dialog-info.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/GTK_48x48/gtk-dialog-info.png" width="48" height="48"></td>
     </tr>
     <tr>
-      <td class="style2">&quot;IUP_LogoMessageError&quot;</td>
+      <td class="style2">&quot;IUP_IconMessageError&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoMessageError.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/IconMessageError.png" width="48" height="48"></td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/LogosGtk/gtk-dialog-error.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/GTK_48x48/gtk-dialog-error.png" width="48" height="48"></td>
     </tr>
     <tr>
-      <td class="style2">&quot;IUP_LogoMessageHelp&quot;</td>
+      <td class="style2">&quot;IUP_IconMessageHelp&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/LogoMessageHelp.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/IconMessageHelp.png" width="48" height="48"></td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/LogosGtk/gtk-dialog-question.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/GTK_48x48/gtk-dialog-question.png" width="48" height="48"></td>
     </tr>
   </table>
     
@@ -335,69 +334,125 @@ the respective systems. All images are 48x48-32bpp pixels size.</p>
   <table>
     <tr>
       <th bgcolor="#C0C0C0">Name</th>
-      <th bgcolor="#C0C0C0">Image<br>(Win32)</th>
+      <th bgcolor="#C0C0C0">Image<br>(Windows)</th>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DeviceCamera&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DeviceCamera.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DeviceCamera.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DeviceCD&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DeviceCD.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DeviceCD.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DeviceCellPhone&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DeviceCellPhone.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DeviceCellPhone.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DeviceComputer&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DeviceComputer.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DeviceComputer.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DeviceFax&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DeviceFax.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DeviceFax.png" width="48" height="48"></td>
+    </tr>
+    <tr>
+      <td class="style2">&quot;IUP_DeviceHardDrive&quot;</td>
+      <td bgcolor="#FFAA80" align="center">
+      <img border="0" src="imglib/Icons/Windows_48x48/DeviceHardDrive.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DeviceMP3&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DeviceMP3.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DeviceMP3.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DeviceNetwork&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DeviceNetwork.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DeviceNetwork.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DevicePDA&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DevicePDA.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DevicePDA.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DevicePrinter&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DevicePrinter.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DevicePrinter.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DeviceScanner&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DeviceScanner.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DeviceScanner.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DeviceSound&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DeviceSound.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DeviceSound.png" width="48" height="48"></td>
     </tr>
     <tr>
       <td class="style2">&quot;IUP_DeviceVideo&quot;</td>
       <td bgcolor="#FFAA80" align="center">
-      <img border="0" src="imglib/Logos/DeviceVideo.png" width="48" height="48"></td>
+      <img border="0" src="imglib/Icons/Windows_48x48/DeviceVideo.png" width="48" height="48"></td>
     </tr>
   </table>
+    
+    </td>
+  </tr>
+</table>
+
+<h3>Icon Group 32x32<span class="style3"> (NOT included in the pre-compiled library) 
+(since 3.15)
+  </span></h3>
+ 
+<p>Here are other images available in the IUP stock library, commonly used in Windows. All images are 32x32-32bpp pixels size.</p>
+ 
+<table align="center">
+  <tr>
+    <td align="center" class="style1">
+  <table>
+    <tr>
+      <th bgcolor="#C0C0C0">Image<br>(Windows)</th>
+    </tr>
+    <tr>
+      <td bgcolor="#FFAA80" align="center">
+      <img height="32" src="imglib/Icons/Windows_32x32/AttachFile.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Book.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/BusinessCard.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Calendar.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Charts.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Checkmark.png" width="32"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#FFAA80" align="center">
+      <img height="32" src="imglib/Icons/Windows_32x32/Clipboard.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Clock.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/ColorPicker.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/DeviceComputer.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/DeviceVideo.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Engine.png" width="32"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#FFAA80" align="center">
+      <img height="32" src="imglib/Icons/Windows_32x32/Envelope.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Erase.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/FillColor.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Filter.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Flag.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Function.png" width="32"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#FFAA80" align="center">
+      <img height="32" src="imglib/Icons/Windows_32x32/Globe.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Gridlines.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Hand.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/image.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Key.png" width="32"> <img height="22" src="imglib/Icons/Windows_32x32/ListCollapsed.png" width="22"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#FFAA80" align="center">
+      <img height="22" src="imglib/Icons/Windows_32x32/ListExpanded.png" width="22"> <img height="32" src="imglib/Icons/Windows_32x32/Lock.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Map.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Microphone.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Music.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Notebook.png" width="32"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#FFAA80" align="center">
+      <img height="32" src="imglib/Icons/Windows_32x32/Notepad.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/PageMargins.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Ruler.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Screen.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Script.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Settings.png" width="32"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#FFAA80" align="center">
+      <img height="32" src="imglib/Icons/Windows_32x32/Speaker.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/StopWatch.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Table.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/ToolsHammer.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/ToolsPencil.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/Users.png" width="32"></td>
+    </tr>
+    <tr>
+      <td bgcolor="#FFAA80" align="center">
+      <img height="32" src="imglib/Icons/Windows_32x32/Video.png" width="32"></td>
+    </tr>
+    </table>
     
     </td>
   </tr>
@@ -417,14 +472,22 @@ mso-fareast-language:PT-BR;mso-bidi-language:AR-SA">USE_IUP_IMGLIB_LARGE during
 compilation, for example: &quot;make USE_IUP_IMGLIB_LARGE=1&quot;.</span></p>
 <p>Not available in AIX.</p>
 
-<p>All &quot;Win32&quot; images copyright Microsoft and were extracted from the Visual 
-Studio 2005 Image Library. Their use <b>must</b> be used consistently with their 
-description in the Visual Studio 2005 Image Library, and so consistently with 
-the IUP name. These files are available with Microsoft Visual Studio 2005 for 
-redistribution under the Visual Studio 2005 license.</p>
+<p>All &quot;Windows&quot; images copyright Microsoft and were extracted from the Visual 
+Studio 2013 Image Library. Their use <b>must</b> be used consistently with their 
+description in the Visual Studio Image Library, and so consistently with 
+the IUP name. These files are available for free on the link:
+<a href="http://www.microsoft.com/en-us/download/details.aspx?id=35825" target="_blank">
+Visual Studio Image Library</a>. You can find a copy of the license terms here: 
+&quot;<a href="imglib/Visual%20Studio%202013%20Image%20Library%20EULA.docx">Visual 
+Studio 2013 Image Library EULA.docx</a>&quot;. The most important statement on this 
+document is: &quot;Media Elements. You may copy and use images in the Image Library 
+provided with the software and identified for such use in documents and projects 
+that you create.&quot; </p>
 <p>GTK stock images are released under the GTK license.</p>   
 <p>PUC-Rio, Tecgraf/PUC-Rio, Petrobras and Lua images are copyright of the 
-respective companies or owners.</p>
+respective companies or owners. The Petrobras logo images follow the
+<a href="https://marca.petrobras.com.br/portal/marca/pt_br/identidade-visual/regras-de-uso-da-marca-4.htm" target="_blank">
+company established rules</a>.</p>
 <p>Lua image graphic design by A. Nakonechnyj. Copyright © 1998. All rights 
 reserved.</p>
 
