@@ -23,7 +23,7 @@ void iupImglibIconsWin48x48Open(void)
   iupImageStockSet("IUP_DeviceCD", load_image_DeviceCD, 0);
   iupImageStockSet("IUP_DeviceCellPhone", load_image_DeviceCellPhone, 0);
   iupImageStockSet("IUP_DeviceComputer", load_image_DeviceComputer, 0);
-//  iupImageStockSet("IUP_DeviceHardDrive", load_image_DeviceHardDrive, 0);
+  iupImageStockSet("IUP_DeviceHardDrive", load_image_DeviceHardDrive, 0);
   iupImageStockSet("IUP_DeviceFax", load_image_DeviceFax, 0);
   iupImageStockSet("IUP_DeviceMP3", load_image_DeviceMP3, 0);
   iupImageStockSet("IUP_DeviceNetwork", load_image_DeviceNetwork, 0);
