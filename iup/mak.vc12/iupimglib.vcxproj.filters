@@ -22,9 +22,6 @@
     <ClInclude Include="..\srcimglib\iup_imglib_logos48x48.h">
       <Filter>inc</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcimglib\iup_imglib_basegtk16x16.h">
-      <Filter>inc</Filter>
-    </ClInclude>
     <ClInclude Include="..\srcimglib\iup_imglib_basewin16x16.h">
       <Filter>inc</Filter>
     </ClInclude>
@@ -43,12 +40,12 @@
     <ClInclude Include="..\srcimglib\iup_imglib_basewin32x32.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="..\srcimglib\iup_imglib_basegtk16x16.h">
+      <Filter>inc2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\srcimglib\iup_image_library.c" />
-    <ClCompile Include="..\srcimglib\iup_imglib_basegtk16x16.c">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\srcimglib\iup_imglib_basewin16x16.c">
       <Filter>src</Filter>
     </ClCompile>
@@ -72,6 +69,9 @@
     </ClCompile>
     <ClCompile Include="..\srcimglib\iup_imglib_basewin32x32.c">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcimglib\iup_imglib_basegtk16x16.c">
+      <Filter>src2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

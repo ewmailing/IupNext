@@ -11,13 +11,20 @@ ifdef USE_IUP_IMGLIB_LARGE
   DEFINES += IUP_IMGLIB_LARGE
 endif
 
-SRC = iup_image_library.c iup_imglib_basegtk16x16.c iup_imglib_logos48x48.c iup_imglib_logos32x32.c
+SRC = iup_image_library.c 
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  SRC += iup_imglib_basewin16x16.c iup_imglib_basewin32x32.c iup_imglib_iconswin48x48.c
+  SRC += iup_imglib_basewin16x16.c iup_imglib_basewin32x32.c
+  SRC += iup_imglib_logos48x48.c iup_imglib_logos32x32.c
+  SRC += iup_imglib_iconswin48x48.c
 else
-  # Used only by the Motif driver, but must include for all Posix because it is only one lib */
-  SRC += iup_imglib_basemot16x16_8bpp.c iup_imglib_logos48x48_8bpp.c iup_imglib_logos32x32_8bpp.c
+  ifdef GTK_DEFAULT
+    SRC += iup_imglib_basegtk16x16.c 
+    SRC += iup_imglib_logos48x48.c iup_imglib_logos32x32.c
+  else
+    SRC += iup_imglib_basemot16x16_8bpp.c
+    SRC +=  iup_imglib_logos48x48_8bpp.c iup_imglib_logos32x32_8bpp.c
+  endif
 endif
 
 LIBS = iup

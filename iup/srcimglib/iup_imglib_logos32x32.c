@@ -7,8 +7,6 @@
 #include <stdlib.h>
 
 #include "iup.h"
-
-#include "iup_str.h"
 #include "iup_image.h"
 
 #include "iup_imglib.h"
