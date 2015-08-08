@@ -40,6 +40,9 @@
     <ClInclude Include="..\srcimglib\iup_imglib_basemot16x16_8bpp.h">
       <Filter>inc2</Filter>
     </ClInclude>
+    <ClInclude Include="..\srcimglib\iup_imglib_basewin32x32.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\srcimglib\iup_image_library.c" />
