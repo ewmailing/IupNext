@@ -75,7 +75,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\include;..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUP_IMGLIB_LARGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -98,26 +98,23 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\srcimglib\iup_imglib_bitmaps.h" />
-    <ClInclude Include="..\srcimglib\iup_imglib_bitmaps8.h" />
-    <ClInclude Include="..\srcimglib\iup_imglib_bitmapsgtk.h" />
-    <ClInclude Include="..\srcimglib\iup_imglib_icons.h" />
-    <ClInclude Include="..\srcimglib\iup_imglib_icons8.h" />
-    <ClInclude Include="..\srcimglib\iup_imglib_logos.h" />
-    <ClInclude Include="..\srcimglib\iup_imglib_logos8.h" />
-    <ClInclude Include="..\srcimglib\iup_imglib_logosw32.h" />
     <ClInclude Include="..\srcimglib\iup_imglib.h" />
+    <ClInclude Include="..\srcimglib\iup_imglib_basegtk16x16.h" />
+    <ClInclude Include="..\srcimglib\iup_imglib_basemot16x16_8bpp.h" />
+    <ClInclude Include="..\srcimglib\iup_imglib_basewin16x16.h" />
+    <ClInclude Include="..\srcimglib\iup_imglib_iconswin48x48.h" />
+    <ClInclude Include="..\srcimglib\iup_imglib_logos32x32.h" />
+    <ClInclude Include="..\srcimglib\iup_imglib_logos32x32_8bpp.h" />
+    <ClInclude Include="..\srcimglib\iup_imglib_logos48x48.h" />
+    <ClInclude Include="..\srcimglib\iup_imglib_logos48x48_8bpp.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\srcimglib\iup_imglib_bitmaps.c" />
-    <ClCompile Include="..\srcimglib\iup_imglib_bitmaps8.c" />
-    <ClCompile Include="..\srcimglib\iup_imglib_bitmapsgtk.c" />
-    <ClCompile Include="..\srcimglib\iup_imglib_icons.c" />
-    <ClCompile Include="..\srcimglib\iup_imglib_icons8.c" />
-    <ClCompile Include="..\srcimglib\iup_imglib_logos.c" />
-    <ClCompile Include="..\srcimglib\iup_imglib_logos8.c" />
-    <ClCompile Include="..\srcimglib\iup_imglib_logosw32.c" />
     <ClCompile Include="..\srcimglib\iup_image_library.c" />
+    <ClCompile Include="..\srcimglib\iup_imglib_basegtk16x16.c" />
+    <ClCompile Include="..\srcimglib\iup_imglib_basewin16x16.c" />
+    <ClCompile Include="..\srcimglib\iup_imglib_iconswin48x48.c" />
+    <ClCompile Include="..\srcimglib\iup_imglib_logos32x32.c" />
+    <ClCompile Include="..\srcimglib\iup_imglib_logos48x48.c" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\srcimglib\iupimglib.def" />
