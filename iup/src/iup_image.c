@@ -1048,7 +1048,7 @@ int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const ch
     ret = SaveImageLED(NULL, ih, name, packfile);
   else if (iupStrEqualNoCase(format, "LUA"))
     ret = SaveImageLua(NULL, ih, name, packfile);
-  else if (iupStrEqualNoCase(format, "C") || iupStrEqualNoCase(format, "H"))
+  else if (iupStrEqualNoCase(format, "C"))
     ret = SaveImageC(NULL, ih, name, packfile);
   return ret;
 }
@@ -1066,7 +1066,7 @@ int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, c
     ret = SaveImageLED(file_name, ih, name, NULL);
   else if (iupStrEqualNoCase(format, "LUA"))
     ret = SaveImageLua(file_name, ih, name, NULL);
-  else if (iupStrEqualNoCase(format, "C") || iupStrEqualNoCase(format, "H"))
+  else if (iupStrEqualNoCase(format, "C"))
     ret = SaveImageC(file_name, ih, name, NULL);
   return ret;
 }

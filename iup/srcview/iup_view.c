@@ -159,34 +159,26 @@ static int showallimages_cb(void)
 
 static char* getfileformat(int all)
 {
-#define NUM_FORMATS 8
+#define NUM_FORMATS 7
   int ret, count = NUM_FORMATS; 	
   static char *options[NUM_FORMATS] = {
-    "led",
-    "lua",
-    "c",
-    "h",
-    "ico",
-    "bmp",
-    "gif",
-    "png"
+    "LED",
+    "LUA",
+    "C",
+    "ICO",
+    "BMP",
+    "GIF",
+    "PNG"
   };
 
   if (!all)
-    count = 4;
+    count = 3;
 
-  ret = IupListDialog(1,"File Format",count,options,1,10,count+1,NULL);
+  ret = IupListDialog(1,"File Format",count,options,1,9,count+1,NULL);
   if (ret == -1)
     return NULL;
   else
     return options[ret];
-}
-
-static char* StrUpper(const char* sstr)
-{
-  static char buf[10];
-  iupStrUpper(buf, sstr);
-  return buf;
 }
 
 static char* getfolder(void)
@@ -208,6 +200,13 @@ static char* getfolder(void)
 
   IupDestroy(filedlg);
   return NULL;
+}
+
+static char* StrLower(const char* sstr)
+{
+  static char buf[10];
+  iupStrLower(buf, sstr);
+  return buf;
 }
 
 static int saveallimages_cb(void)
@@ -244,12 +243,12 @@ static int saveallimages_cb(void)
       strcat(file_name, "_");
       strcat(file_name, names[i]);
       strcat(file_name, ".");
-      strcat(file_name, imgtype);
+      strcat(file_name, StrLower(imgtype));
 
       if (!IupSaveImageAsText(elem, file_name, imgtype, names[i]))
       {
 #ifdef USE_IM
-        if (!IupSaveImage(elem, file_name, StrUpper(imgtype)))
+        if (!IupSaveImage(elem, file_name, imgtype))
         {
           char* err_msg = IupGetGlobal("IUPIM_LASTERROR");
           if (err_msg)
@@ -284,7 +283,7 @@ static int GetSaveAsFile(char* file, const char* imgtype)
   gf = IupFileDlg();
   IupSetAttribute(gf, "DIALOGTYPE", "SAVE");
   IupSetfAttribute(gf, "TITLE", "Save %s File", imgtype);
-  IupSetfAttribute(gf, "FILTER", "*.%s", imgtype);
+  IupSetfAttribute(gf, "FILTER", "*.%s", StrLower(imgtype));
   IupSetAttribute(gf, "FILE", file);
   IupPopup(gf, IUP_CENTER, IUP_CENTER);
 
@@ -406,7 +405,7 @@ static int saveallimagesone_cb(void)
 
   if (packfile)
   {
-    if (iupStrEqualNoCase(imgtype, "c"))  /* only for C files */
+    if (iupStrEqualNoCase(imgtype, "C"))  /* only for C files */
     {
       char* title = mainGetFileTitle(file_name);
       fprintf(packfile, "void load_all_images_%s(void)\n{\n", title);
@@ -450,13 +449,13 @@ static int saveimage_cb(Ihandle* self)
       if (!imgtype)
         return IUP_DEFAULT;
 
-      sprintf(file_name, "%s.%s", name, imgtype);
+      sprintf(file_name, "%s.%s", name, StrLower(imgtype));
       if (GetSaveAsFile(file_name, imgtype) != -1)
       {
         if (!IupSaveImageAsText(elem, file_name, imgtype, name))
         {
 #ifdef USE_IM
-          if (!IupSaveImage(elem, file_name, StrUpper(imgtype)))
+          if (!IupSaveImage(elem, file_name, imgtype))
           {
             char* err_msg = IupGetGlobal("IUPIM_LASTERROR");
             if (err_msg)
