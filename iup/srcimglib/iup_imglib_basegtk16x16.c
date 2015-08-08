@@ -14,9 +14,9 @@
 #include "iup_imglib.h"
 
 /* source code, included only here */
-#include "iup_imglib_bitmapsgtk.h"
+#include "iup_imglib_basegtk16x16.h"
 
-void iupImglibBaseLibOpen(void)
+void iupImglibBaseLibGtk16x16Open(void)
 {
   iupImageStockSet("IUP_ActionCancel", 0, "gtk-cancel");
   iupImageStockSet("IUP_ActionOk", 0, "gtk-apply");

@@ -11,13 +11,13 @@ ifdef USE_IUP_IMGLIB_LARGE
   DEFINES += IUP_IMGLIB_LARGE
 endif
 
-SRC = iup_image_library.c iup_imglib_bitmapsgtk.c iup_imglib_icons.c iup_imglib_logos.c
+SRC = iup_image_library.c iup_imglib_basegtk16x16.c iup_imglib_logos48x48.c iup_imglib_logos32x32.c
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  SRC += iup_imglib_bitmaps.c iup_imglib_logosw32.c
+  SRC += iup_imglib_basewin16x16.c iup_imglib_logosw32.c
 else
   # Used only by the Motif driver, but must include for all Posix because it is only one lib */
-  SRC += iup_imglib_bitmaps8.c iup_imglib_icons8.c iup_imglib_logos8.c
+  SRC += iup_imglib_basemot16x16_8bpp.c iup_imglib_logos48x48_8bpp.c iup_imglib_logos32x32_8bpp.c
 endif
 
 LIBS = iup

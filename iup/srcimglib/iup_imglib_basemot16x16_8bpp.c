@@ -16,7 +16,7 @@
 /* source code, included only here */
 #include "iup_imglib_basemot16x16_8bpp.h"
 
-void iupImglibBaseLibOpen(void)
+void iupImglibBaseLibMot16x16Open(void)
 {
   iupImageStockSet("IUP_ActionCancel", load_image_ActionCancel8, 0);
   iupImageStockSet("IUP_ActionOk", load_image_ActionOk8, 0);

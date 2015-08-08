@@ -14,9 +14,9 @@
 #include "iup_imglib.h"
 
 /* source code, included only here */
-#include "iup_imglib_icons.h"
+#include "iup_imglib_logos32x32.h"
 
-void iupImglibIconsOpen(void)
+void iupImglibLogos32x32Open(void)
 {
   iupImageStockSet("IUP_Tecgraf", load_image_Tecgraf, 0);
   iupImageStockSet("IUP_PUC-Rio", load_image_PUC_Rio, 0);

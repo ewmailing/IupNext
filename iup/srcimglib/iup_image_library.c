@@ -39,46 +39,43 @@ void IupImageLibOpen(void)
 
 #ifndef WIN32
   if (motif)
-    iupImglibBitmaps8Open();
+    iupImglibBaseLibMot16x16Open();
 #endif
 
 #ifdef WIN32
   if (win32)
-    iupImglibBitmapsOpen();
+    iupImglibBaseLibWin16x16Open();
 #endif  
 
   if (gtk)
-    iupImglibBitmapsGtkOpen();
+    iupImglibBaseLibGtk16x16Open();
 
   /***************** Icons *****************/
 
 #ifndef WIN32
   if (motif)
-    iupImglibIcons8Open();
+    iupImglibLogosMot32x32Open();
   else
 #endif
-    iupImglibIconsOpen();
+    iupImglibLogos32x32Open();
 
   /***************** Logos *****************/
 
 #ifdef IUP_IMGLIB_LARGE
 #ifndef WIN32
   if (motif)
-    iupImglibLogos8Open();
+    iupImglibLogosMot48x48Open();
   else
 #endif
-    iupImglibLogosOpen();
+    iupImglibLogos48x48Open();
 
 #ifdef WIN32
   if (win32)
-  {
-    iupImglibLogosWin32Open();
-    iupImglibLogosWin32MsgOpen();
-  }
+    iupImglibIconsWin48x48Open();
 #endif  
 
   if (gtk)
-    iupImglibLogosGtkOpen();
+    iupImglibIconsGtk48x48Open();
 #endif  
 #endif  
 }

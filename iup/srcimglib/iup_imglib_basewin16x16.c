@@ -16,7 +16,7 @@
 /* source code, included only here */
 #include "iup_imglib_basewin16x16.h"
 
-void iupImglibBaseLibOpen(void)
+void iupImglibBaseLibWin16x16Open(void)
 {
   iupImageStockSet("IUP_ActionCancel", load_image_ActionCancel, 0);
   iupImageStockSet("IUP_ActionOk", load_image_ActionOk, 0);

@@ -1246,7 +1246,7 @@ static Ihandle* load_image_MediaGoToBegin(void)
   return image;
 }
 
-static Ihandle* load_image_DeviceWebcam(void)
+static Ihandle* load_image_Webcam(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 139, 139, 139, 46, 82, 82, 82, 129, 80, 80, 80, 166, 65, 65, 65, 140, 107, 107, 107, 102, 165, 165, 165, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

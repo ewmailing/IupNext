@@ -15,9 +15,9 @@
 
 #ifdef IUP_IMGLIB_LARGE
 /* source code, included only here */
-#include "iup_imglib_logos8.h"
+#include "iup_imglib_logos48x48_8bpp.h"
 
-void iupImglibLogos8Open(void)
+void iupImglibLogosMot48x48Open(void)
 {
   iupImageStockSet("IUP_LogoTecgraf", load_image_LogoTecgraf8, 0);
   iupImageStockSet("IUP_LogoPUC-Rio", load_image_LogoPUC_Rio8, 0);
