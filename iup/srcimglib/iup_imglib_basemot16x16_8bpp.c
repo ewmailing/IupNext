@@ -14,9 +14,9 @@
 #include "iup_imglib.h"
 
 /* source code, included only here */
-#include "iup_imglib_bitmaps8.h"
+#include "iup_imglib_basemot16x16_8bpp.h"
 
-void iupImglibBitmaps8Open(void)
+void iupImglibBaseLibOpen(void)
 {
   iupImageStockSet("IUP_ActionCancel", load_image_ActionCancel8, 0);
   iupImageStockSet("IUP_ActionOk", load_image_ActionOk8, 0);
@@ -63,6 +63,7 @@ void iupImglibBitmaps8Open(void)
   iupImageStockSet("IUP_ToolsSortAscend", load_image_ToolsSortAscend8, 0);
   iupImageStockSet("IUP_ToolsSortDescend", load_image_ToolsSortDescend8, 0);
   iupImageStockSet("IUP_ViewFullScreen", load_image_ViewFullScreen8, 0);
+  iupImageStockSet("IUP_Webcam", load_image_Webcam8, 0);
   iupImageStockSet("IUP_WindowsCascade", load_image_WindowsCascade8, 0);
   iupImageStockSet("IUP_WindowsTile", load_image_WindowsTile8, 0);
   iupImageStockSet("IUP_Zoom", load_image_Zoom8, 0);

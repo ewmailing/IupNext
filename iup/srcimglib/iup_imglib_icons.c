@@ -18,8 +18,6 @@
 
 void iupImglibIconsOpen(void)
 {
-  iupImageStockSet("IUP_Webcam", load_image_Webcam, 0);
-
   iupImageStockSet("IUP_Tecgraf", load_image_Tecgraf, 0);
   iupImageStockSet("IUP_PUC-Rio", load_image_PUC_Rio, 0);
   iupImageStockSet("IUP_BR", load_image_BR, 0);

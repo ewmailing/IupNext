@@ -16,7 +16,7 @@
 /* source code, included only here */
 #include "iup_imglib_bitmapsgtk.h"
 
-void iupImglibBitmapsGtkOpen(void)
+void iupImglibBaseLibOpen(void)
 {
   iupImageStockSet("IUP_ActionCancel", 0, "gtk-cancel");
   iupImageStockSet("IUP_ActionOk", 0, "gtk-apply");
@@ -63,6 +63,7 @@ void iupImglibBitmapsGtkOpen(void)
   iupImageStockSet("IUP_ToolsSortAscend", 0, "gtk-sort-ascending");
   iupImageStockSet("IUP_ToolsSortDescend", 0, "gtk-sort-descending");
   iupImageStockSet("IUP_ViewFullScreen", 0, "gtk-fullscreen");
+  iupImageStockSet("IUP_Webcam", load_image_iupgtk_webcam, 0);
   iupImageStockSet("IUP_WindowsCascade", load_image_iupgtk_cascade, 0);
   iupImageStockSet("IUP_WindowsTile", load_image_iupgtk_tile, 0);
   iupImageStockSet("IUP_Zoom", load_image_iupgtk_zoom, 0);
