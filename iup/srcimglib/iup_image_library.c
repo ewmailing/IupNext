@@ -44,12 +44,10 @@ void IupImageLibOpen(void)
 
 #ifdef WIN32
   if (win32)
+  {
     iupImglibBaseLibWin16x16Open();
-
-#ifdef IUP_IMGLIB_LARGE
-  if (win32)
     iupImglibBaseLibWin32x32Open();
-#endif
+  }
 #endif  
 
   if (gtk)
