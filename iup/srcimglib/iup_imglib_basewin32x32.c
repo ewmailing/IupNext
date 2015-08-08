@@ -13,10 +13,11 @@
 
 #include "iup_imglib.h"
 
+#ifdef IUP_IMGLIB_LARGE
 /* source code, included only here */
-#include "iup_imglib_basewin16x16.h"
+#include "iup_imglib_basewin32x32.h"
 
-void iupImglibBaseLibWin16x16Open(void)
+void iupImglibBaseLibWin32x32Open(void)
 {
   iupImageStockSet("IUP_ActionCancel", load_image_ActionCancel, 0);
   iupImageStockSet("IUP_ActionOk", load_image_ActionOk, 0);
@@ -72,3 +73,5 @@ void iupImglibBaseLibWin16x16Open(void)
   iupImageStockSet("IUP_ZoomOut", load_image_ZoomOut, 0);
   iupImageStockSet("IUP_ZoomSelection", load_image_ZoomSelection, 0);
 }
+
+#endif

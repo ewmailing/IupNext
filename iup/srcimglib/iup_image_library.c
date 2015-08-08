@@ -35,7 +35,7 @@ void IupImageLibOpen(void)
 
   IupSetGlobal("_IUP_IMAGELIB_OPEN", "1");
 
-  /**************** Bitmaps *****************/
+  /**************** BaseLib *****************/
 
 #ifndef WIN32
   if (motif)
@@ -45,12 +45,17 @@ void IupImageLibOpen(void)
 #ifdef WIN32
   if (win32)
     iupImglibBaseLibWin16x16Open();
+
+#ifdef IUP_IMGLIB_LARGE
+  if (win32)
+    iupImglibBaseLibWin32x32Open();
+#endif
 #endif  
 
   if (gtk)
     iupImglibBaseLibGtk16x16Open();
 
-  /***************** Icons *****************/
+  /***************** Logos *****************/
 
 #ifndef WIN32
   if (motif)
@@ -58,8 +63,6 @@ void IupImageLibOpen(void)
   else
 #endif
     iupImglibLogos32x32Open();
-
-  /***************** Logos *****************/
 
 #ifdef IUP_IMGLIB_LARGE
 #ifndef WIN32
@@ -69,6 +72,8 @@ void IupImageLibOpen(void)
 #endif
     iupImglibLogos48x48Open();
 
+  /***************** Icons *****************/
+
 #ifdef WIN32
   if (win32)
     iupImglibIconsWin48x48Open();
@@ -77,6 +82,7 @@ void IupImageLibOpen(void)
   if (gtk)
     iupImglibIconsGtk48x48Open();
 #endif  
+
 #endif  
 }
  

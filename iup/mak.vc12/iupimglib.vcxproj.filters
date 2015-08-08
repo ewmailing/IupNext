@@ -67,6 +67,9 @@
     <ClCompile Include="..\srcimglib\iup_imglib_logos48x48_8bpp.c">
       <Filter>src2</Filter>
     </ClCompile>
+    <ClCompile Include="..\srcimglib\iup_imglib_basewin32x32.c">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\srcimglib\iupimglib.def" />

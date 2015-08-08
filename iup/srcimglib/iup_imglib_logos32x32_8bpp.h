@@ -1,5 +1,5 @@
 
-static Ihandle* load_image_IUP_Lua8(void)
+static Ihandle* load_image_Lua8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -297,7 +297,7 @@ static Ihandle* load_image_IUP_Lua8(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_TecgrafPUC_Rio8(void)
+static Ihandle* load_image_TecgrafPUC_Rio8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -596,7 +596,7 @@ static Ihandle* load_image_IUP_TecgrafPUC_Rio8(void)
 }
 
 
-static Ihandle* load_image_IUP_PUC_Rio8(void)
+static Ihandle* load_image_PUC_Rio8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 246, 242, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -894,7 +894,7 @@ static Ihandle* load_image_IUP_PUC_Rio8(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_Tecgraf8(void)
+static Ihandle* load_image_Tecgraf8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -1192,7 +1192,7 @@ static Ihandle* load_image_IUP_Tecgraf8(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_Petrobras8(void)
+static Ihandle* load_image_Petrobras8(void)
 {
   unsigned char imgdata[] = {
     73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73,
@@ -1490,7 +1490,7 @@ static Ihandle* load_image_IUP_Petrobras8(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_BR8(void)
+static Ihandle* load_image_BR8(void)
 {
   unsigned char imgdata[] = {
     110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110, 110,

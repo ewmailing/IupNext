@@ -1,4 +1,4 @@
-static Ihandle* load_image_IUP_FileSave(void)
+static Ihandle* load_image_FileSave(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -22,7 +22,7 @@ static Ihandle* load_image_IUP_FileSave(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_NavigateHome(void)
+static Ihandle* load_image_NavigateHome(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -46,7 +46,7 @@ static Ihandle* load_image_IUP_NavigateHome(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MessageHelp(void)
+static Ihandle* load_image_MessageHelp(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 207, 218, 240, 182, 209, 220, 241, 255, 208, 219, 239, 255, 209, 219, 239, 255, 209, 220, 239, 255, 208, 219, 241, 255, 194, 205, 226, 158, 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -70,7 +70,7 @@ static Ihandle* load_image_IUP_MessageHelp(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MediaStop(void)
+static Ihandle* load_image_MediaStop(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -94,7 +94,7 @@ static Ihandle* load_image_IUP_MediaStop(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_FontItalic(void)
+static Ihandle* load_image_FontItalic(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -118,7 +118,7 @@ static Ihandle* load_image_IUP_FontItalic(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_FontDialog(void)
+static Ihandle* load_image_FontDialog(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -142,7 +142,7 @@ static Ihandle* load_image_IUP_FontDialog(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_FileText(void)
+static Ihandle* load_image_FileText(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -166,7 +166,7 @@ static Ihandle* load_image_IUP_FileText(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_PrintPreview(void)
+static Ihandle* load_image_PrintPreview(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -190,7 +190,7 @@ static Ihandle* load_image_IUP_PrintPreview(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_Zoom(void)
+static Ihandle* load_image_Zoom(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 146, 158, 176, 4, 217, 222, 227, 75, 182, 192, 203, 154, 151, 164, 182, 195, 136, 151, 170, 217, 116, 132, 154, 229, 124, 141, 163, 190, 160, 178, 213, 78, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -214,7 +214,7 @@ static Ihandle* load_image_IUP_Zoom(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ZoomSelection(void)
+static Ihandle* load_image_ZoomSelection(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -238,7 +238,7 @@ static Ihandle* load_image_IUP_ZoomSelection(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ZoomOut(void)
+static Ihandle* load_image_ZoomOut(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 127, 127, 191, 4, 217, 220, 227, 75, 182, 192, 203, 154, 150, 163, 181, 195, 136, 150, 170, 217, 115, 132, 153, 229, 123, 140, 162, 190, 160, 176, 212, 78, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -262,7 +262,7 @@ static Ihandle* load_image_IUP_ZoomOut(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_EditCut(void)
+static Ihandle* load_image_EditCut(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 4, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -286,7 +286,7 @@ static Ihandle* load_image_IUP_EditCut(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_FileProperties(void)
+static Ihandle* load_image_FileProperties(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -310,7 +310,7 @@ static Ihandle* load_image_IUP_FileProperties(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ArrowUp(void)
+static Ihandle* load_image_ArrowUp(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -334,7 +334,7 @@ static Ihandle* load_image_IUP_ArrowUp(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ArrowDown(void)
+static Ihandle* load_image_ArrowDown(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -358,7 +358,7 @@ static Ihandle* load_image_IUP_ArrowDown(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ViewFullScreen(void)
+static Ihandle* load_image_ViewFullScreen(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -382,7 +382,7 @@ static Ihandle* load_image_IUP_ViewFullScreen(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MediaGoToEnd(void)
+static Ihandle* load_image_MediaGoToEnd(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 96, 140, 228, 6, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -406,7 +406,7 @@ static Ihandle* load_image_IUP_MediaGoToEnd(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ArrowLeft(void)
+static Ihandle* load_image_ArrowLeft(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -430,7 +430,7 @@ static Ihandle* load_image_IUP_ArrowLeft(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ActionCancel(void)
+static Ihandle* load_image_ActionCancel(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 236, 206, 209, 109, 238, 209, 210, 255, 222, 157, 161, 255, 217, 135, 138, 255, 215, 132, 136, 255, 209, 122, 128, 255, 210, 140, 146, 255, 231, 196, 199, 255, 236, 206, 209, 109, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -454,7 +454,7 @@ static Ihandle* load_image_IUP_ActionCancel(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_Print(void)
+static Ihandle* load_image_Print(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -478,7 +478,7 @@ static Ihandle* load_image_IUP_Print(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MediaPause(void)
+static Ihandle* load_image_MediaPause(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -502,7 +502,7 @@ static Ihandle* load_image_IUP_MediaPause(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_FileClose(void)
+static Ihandle* load_image_FileClose(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -526,7 +526,7 @@ static Ihandle* load_image_IUP_FileClose(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ToolsSortAscend(void)
+static Ihandle* load_image_ToolsSortAscend(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 79, 123, 202, 24, 72, 112, 191, 245, 58, 96, 163, 22, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 0, 0, 0, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -550,7 +550,7 @@ static Ihandle* load_image_IUP_ToolsSortAscend(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MediaReverse(void)
+static Ihandle* load_image_MediaReverse(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -574,7 +574,7 @@ static Ihandle* load_image_IUP_MediaReverse(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_EditUndo(void)
+static Ihandle* load_image_EditUndo(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -598,7 +598,7 @@ static Ihandle* load_image_IUP_EditUndo(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ToolsSettings(void)
+static Ihandle* load_image_ToolsSettings(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 132, 132, 191, 48, 0, 0, 0, 4, 132, 132, 191, 128, 132, 132, 191, 255, 119, 119, 171, 125, 0, 0, 0, 10, 132, 132, 191, 48, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -622,7 +622,7 @@ static Ihandle* load_image_IUP_ToolsSettings(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_FileSaveAll(void)
+static Ihandle* load_image_FileSaveAll(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -646,7 +646,7 @@ static Ihandle* load_image_IUP_FileSaveAll(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MessageInfo(void)
+static Ihandle* load_image_MessageInfo(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -670,7 +670,7 @@ static Ihandle* load_image_IUP_MessageInfo(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ZoomActualSize(void)
+static Ihandle* load_image_ZoomActualSize(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -694,7 +694,7 @@ static Ihandle* load_image_IUP_ZoomActualSize(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_WindowsCascade(void)
+static Ihandle* load_image_WindowsCascade(void)
 {
   unsigned char imgdata[] = {
     148, 159, 197, 255, 140, 155, 170, 255, 121, 144, 177, 255, 90, 121, 193, 255, 79, 112, 174, 255, 71, 99, 170, 255, 62, 88, 153, 255, 59, 88, 152, 255, 60, 90, 154, 255, 59, 78, 122, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -718,7 +718,7 @@ static Ihandle* load_image_IUP_WindowsCascade(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_EditCopy(void)
+static Ihandle* load_image_EditCopy(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -742,7 +742,7 @@ static Ihandle* load_image_IUP_EditCopy(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_FileOpen(void)
+static Ihandle* load_image_FileOpen(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -766,7 +766,7 @@ static Ihandle* load_image_IUP_FileOpen(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_FileNew(void)
+static Ihandle* load_image_FileNew(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 103, 248, 255, 255, 84, 216, 255, 155, 0, 255, 255, 211, 0, 255, 255, 254, 79, 223, 255, 255, 88, 250, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -790,7 +790,7 @@ static Ihandle* load_image_IUP_FileNew(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MediaRecord(void)
+static Ihandle* load_image_MediaRecord(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -814,7 +814,7 @@ static Ihandle* load_image_IUP_MediaRecord(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ActionOk(void)
+static Ihandle* load_image_ActionOk(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 220, 233, 218, 174, 146, 193, 139, 255, 107, 173, 96, 255, 107, 179, 96, 255, 114, 186, 102, 255, 114, 185, 103, 255, 104, 175, 92, 255, 99, 164, 89, 255, 148, 192, 142, 255, 220, 233, 218, 174, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -838,7 +838,7 @@ static Ihandle* load_image_IUP_ActionOk(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MessageError(void)
+static Ihandle* load_image_MessageError(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 248, 11, 11, 13, 248, 25, 24, 72, 250, 52, 51, 148, 254, 82, 82, 188, 251, 56, 56, 163, 252, 22, 22, 93, 201, 7, 6, 30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -862,7 +862,7 @@ static Ihandle* load_image_IUP_MessageError(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_EditPaste(void)
+static Ihandle* load_image_EditPaste(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -886,7 +886,7 @@ static Ihandle* load_image_IUP_EditPaste(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_FileCloseAll(void)
+static Ihandle* load_image_FileCloseAll(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 0, 0, 0, 0, 76, 103, 147, 255, 133, 148, 164, 67, 129, 145, 166, 255, 120, 137, 161, 255, 135, 149, 170, 255, 123, 140, 160, 124, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -910,7 +910,7 @@ static Ihandle* load_image_IUP_FileCloseAll(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MediaRewind(void)
+static Ihandle* load_image_MediaRewind(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0,
@@ -934,7 +934,7 @@ static Ihandle* load_image_IUP_MediaRewind(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ZoomIn(void)
+static Ihandle* load_image_ZoomIn(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 127, 127, 191, 4, 217, 220, 227, 75, 182, 192, 203, 154, 150, 163, 181, 195, 136, 150, 170, 217, 115, 132, 153, 229, 123, 140, 162, 190, 160, 176, 212, 78, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -958,7 +958,7 @@ static Ihandle* load_image_IUP_ZoomIn(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ArrowRight(void)
+static Ihandle* load_image_ArrowRight(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -982,7 +982,7 @@ static Ihandle* load_image_IUP_ArrowRight(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_EditFind(void)
+static Ihandle* load_image_EditFind(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -1006,7 +1006,7 @@ static Ihandle* load_image_IUP_EditFind(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MediaForward(void)
+static Ihandle* load_image_MediaForward(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 96, 140, 228, 3, 0, 0, 0, 0, 0, 0, 0, 0, 96, 140, 228, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1030,7 +1030,7 @@ static Ihandle* load_image_IUP_MediaForward(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_WindowsTile(void)
+static Ihandle* load_image_WindowsTile(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1054,7 +1054,7 @@ static Ihandle* load_image_IUP_WindowsTile(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_FontBold(void)
+static Ihandle* load_image_FontBold(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -1078,7 +1078,7 @@ static Ihandle* load_image_IUP_FontBold(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_EditErase(void)
+static Ihandle* load_image_EditErase(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 74, 73, 73, 48, 72, 74, 73, 188, 72, 73, 73, 66, 74, 74, 73, 2, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -1102,7 +1102,7 @@ static Ihandle* load_image_IUP_EditErase(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ToolsColor(void)
+static Ihandle* load_image_ToolsColor(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -1126,7 +1126,7 @@ static Ihandle* load_image_IUP_ToolsColor(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_ToolsSortDescend(void)
+static Ihandle* load_image_ToolsSortDescend(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1150,7 +1150,7 @@ static Ihandle* load_image_IUP_ToolsSortDescend(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MediaPlay(void)
+static Ihandle* load_image_MediaPlay(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 96, 140, 228, 3, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -1174,7 +1174,7 @@ static Ihandle* load_image_IUP_MediaPlay(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_NavigateRefresh(void)
+static Ihandle* load_image_NavigateRefresh(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -1198,7 +1198,7 @@ static Ihandle* load_image_IUP_NavigateRefresh(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_EditRedo(void)
+static Ihandle* load_image_EditRedo(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -1222,7 +1222,7 @@ static Ihandle* load_image_IUP_EditRedo(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_MediaGoToBegin(void)
+static Ihandle* load_image_MediaGoToBegin(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 96, 140, 228, 3, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -1246,7 +1246,7 @@ static Ihandle* load_image_IUP_MediaGoToBegin(void)
   return image;
 }
 
-static Ihandle* load_image_IUP_Webcam(void)
+static Ihandle* load_image_Webcam(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 139, 139, 139, 46, 82, 82, 82, 129, 80, 80, 80, 166, 65, 65, 65, 140, 107, 107, 107, 102, 165, 165, 165, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

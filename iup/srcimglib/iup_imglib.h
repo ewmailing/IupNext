@@ -7,6 +7,7 @@ extern "C" {
 
 #ifdef WIN32
 void iupImglibBaseLibWin16x16Open(void);     /* Used only by the Win32 driver */
+void iupImglibBaseLibWin32x32Open(void);
 #endif
 #ifndef WIN32
 void iupImglibBaseLibMot16x16Open(void);    /* Used only by the Motif driver */
