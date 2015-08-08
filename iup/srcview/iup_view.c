@@ -313,7 +313,7 @@ static void replaceDot(char* file_name)
 
 static char* strdup_free(const char* str, char* str_ptr)
 {
-  int len = strlen(str);
+  int len = (int)strlen(str);
   char* tmp = malloc(len+1);
   memcpy(tmp, str, len+1);
   free(str_ptr);
@@ -322,7 +322,7 @@ static char* strdup_free(const char* str, char* str_ptr)
 
 static char* mainGetFileTitle(const char* file_name)
 {
-  int i, last = 1, len = strlen(file_name);
+  int i, last = 1, len = (int)strlen(file_name);
   char* file_title = malloc(len+1);
   char* dot, *ft_str = file_title;
 
@@ -748,8 +748,8 @@ static char* ParseFile(const char* dir, const char* FileName, int *offset)
     return NULL;
 
   {
-    int size = file - FileName + 1;
-    int dir_size = strlen(dir);
+    int size = (int)(file - FileName) + 1;
+    int dir_size = (int)strlen(dir);
     char* file_name = malloc(size+dir_size+1);
     memcpy(file_name, dir, dir_size);
     file_name[dir_size] = '\\';
@@ -770,7 +770,7 @@ static char* ParseDir(const char* FileName, int *offset)
     return NULL;
 
   {
-    int size = file - FileName + 1;
+    int size = (int)(file - FileName) + 1;
     char* dir = malloc(size);
     memcpy(dir, FileName, size-1);
     dir[size-1] = 0;
