@@ -1,4 +1,4 @@
-static Ihandle* load_image_Zoom8(void)
+static Ihandle* load_image_IUP_Zoom8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -280,7 +280,7 @@ static Ihandle* load_image_Zoom8(void)
   return image;
 }
 
-static Ihandle* load_image_EditCut8(void)
+static Ihandle* load_image_IUP_EditCut8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -562,7 +562,7 @@ static Ihandle* load_image_EditCut8(void)
   return image;
 }
 
-static Ihandle* load_image_EditErase8(void)
+static Ihandle* load_image_IUP_EditErase8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -844,7 +844,7 @@ static Ihandle* load_image_EditErase8(void)
   return image;
 }
 
-static Ihandle* load_image_ArrowUp8(void)
+static Ihandle* load_image_IUP_ArrowUp8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -1126,7 +1126,7 @@ static Ihandle* load_image_ArrowUp8(void)
   return image;
 }
 
-static Ihandle* load_image_MediaGoToBegin8(void)
+static Ihandle* load_image_IUP_MediaGoToBegin8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -1408,7 +1408,7 @@ static Ihandle* load_image_MediaGoToBegin8(void)
   return image;
 }
 
-static Ihandle* load_image_MessageError8(void)
+static Ihandle* load_image_IUP_MessageError8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 1, 1, 1, 1, 1, 255, 255, 255, 255, 255, 255,
@@ -1690,7 +1690,7 @@ static Ihandle* load_image_MessageError8(void)
   return image;
 }
 
-static Ihandle* load_image_ZoomIn8(void)
+static Ihandle* load_image_IUP_ZoomIn8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -1972,7 +1972,7 @@ static Ihandle* load_image_ZoomIn8(void)
   return image;
 }
 
-static Ihandle* load_image_FontItalic8(void)
+static Ihandle* load_image_IUP_FontItalic8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -2254,7 +2254,7 @@ static Ihandle* load_image_FontItalic8(void)
   return image;
 }
 
-static Ihandle* load_image_FileNew8(void)
+static Ihandle* load_image_IUP_FileNew8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -2536,7 +2536,7 @@ static Ihandle* load_image_FileNew8(void)
   return image;
 }
 
-static Ihandle* load_image_FileCloseAll8(void)
+static Ihandle* load_image_IUP_FileCloseAll8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -2819,7 +2819,7 @@ static Ihandle* load_image_FileCloseAll8(void)
   return image;
 }
 
-static Ihandle* load_image_EditFind8(void)
+static Ihandle* load_image_IUP_EditFind8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -3101,7 +3101,7 @@ static Ihandle* load_image_EditFind8(void)
   return image;
 }
 
-static Ihandle* load_image_ToolsSettings8(void)
+static Ihandle* load_image_IUP_ToolsSettings8(void)
 {
   unsigned char imgdata[] = {
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
@@ -3139,7 +3139,7 @@ static Ihandle* load_image_ToolsSettings8(void)
   return image;
 }
 
-static Ihandle* load_image_ToolsSortAscend8(void)
+static Ihandle* load_image_IUP_ToolsSortAscend8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 2, 255, 255, 255, 255, 255, 255, 255, 1, 255, 255, 255,
@@ -3421,7 +3421,7 @@ static Ihandle* load_image_ToolsSortAscend8(void)
   return image;
 }
 
-static Ihandle* load_image_EditUndo8(void)
+static Ihandle* load_image_IUP_EditUndo8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -3703,7 +3703,7 @@ static Ihandle* load_image_EditUndo8(void)
   return image;
 }
 
-static Ihandle* load_image_ZoomSelection8(void)
+static Ihandle* load_image_IUP_ZoomSelection8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -3985,7 +3985,7 @@ static Ihandle* load_image_ZoomSelection8(void)
   return image;
 }
 
-static Ihandle* load_image_MediaRecord8(void)
+static Ihandle* load_image_IUP_MediaRecord8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -4267,7 +4267,7 @@ static Ihandle* load_image_MediaRecord8(void)
   return image;
 }
 
-static Ihandle* load_image_EditCopy8(void)
+static Ihandle* load_image_IUP_EditCopy8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -4549,7 +4549,7 @@ static Ihandle* load_image_EditCopy8(void)
   return image;
 }
 
-static Ihandle* load_image_MediaGoToEnd8(void)
+static Ihandle* load_image_IUP_MediaGoToEnd8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -4831,7 +4831,7 @@ static Ihandle* load_image_MediaGoToEnd8(void)
   return image;
 }
 
-static Ihandle* load_image_EditPaste8(void)
+static Ihandle* load_image_IUP_EditPaste8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -5113,7 +5113,7 @@ static Ihandle* load_image_EditPaste8(void)
   return image;
 }
 
-static Ihandle* load_image_ZoomActualSize8(void)
+static Ihandle* load_image_IUP_ZoomActualSize8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -5395,7 +5395,7 @@ static Ihandle* load_image_ZoomActualSize8(void)
   return image;
 }
 
-static Ihandle* load_image_MediaStop8(void)
+static Ihandle* load_image_IUP_MediaStop8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -5677,7 +5677,7 @@ static Ihandle* load_image_MediaStop8(void)
   return image;
 }
 
-static Ihandle* load_image_WindowsCascade8(void)
+static Ihandle* load_image_IUP_WindowsCascade8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -5959,7 +5959,7 @@ static Ihandle* load_image_WindowsCascade8(void)
   return image;
 }
 
-static Ihandle* load_image_ZoomOut8(void)
+static Ihandle* load_image_IUP_ZoomOut8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -6241,7 +6241,7 @@ static Ihandle* load_image_ZoomOut8(void)
   return image;
 }
 
-static Ihandle* load_image_MediaPause8(void)
+static Ihandle* load_image_IUP_MediaPause8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -6523,7 +6523,7 @@ static Ihandle* load_image_MediaPause8(void)
   return image;
 }
 
-static Ihandle* load_image_NavigateRefresh8(void)
+static Ihandle* load_image_IUP_NavigateRefresh8(void)
 {
   unsigned char imgdata[] = {
     255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255,
@@ -6805,7 +6805,7 @@ static Ihandle* load_image_NavigateRefresh8(void)
   return image;
 }
 
-static Ihandle* load_image_ActionCancel8(void)
+static Ihandle* load_image_IUP_ActionCancel8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -7087,7 +7087,7 @@ static Ihandle* load_image_ActionCancel8(void)
   return image;
 }
 
-static Ihandle* load_image_FileSave8(void)
+static Ihandle* load_image_IUP_FileSave8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -7369,7 +7369,7 @@ static Ihandle* load_image_FileSave8(void)
   return image;
 }
 
-static Ihandle* load_image_EditRedo8(void)
+static Ihandle* load_image_IUP_EditRedo8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -7651,7 +7651,7 @@ static Ihandle* load_image_EditRedo8(void)
   return image;
 }
 
-static Ihandle* load_image_FontDialog8(void)
+static Ihandle* load_image_IUP_FontDialog8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -7933,7 +7933,7 @@ static Ihandle* load_image_FontDialog8(void)
   return image;
 }
 
-static Ihandle* load_image_FileSaveAll8(void)
+static Ihandle* load_image_IUP_FileSaveAll8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -8215,7 +8215,7 @@ static Ihandle* load_image_FileSaveAll8(void)
   return image;
 }
 
-static Ihandle* load_image_MessageHelp8(void)
+static Ihandle* load_image_IUP_MessageHelp8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -8497,7 +8497,7 @@ static Ihandle* load_image_MessageHelp8(void)
   return image;
 }
 
-static Ihandle* load_image_FontBold8(void)
+static Ihandle* load_image_IUP_FontBold8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -8779,7 +8779,7 @@ static Ihandle* load_image_FontBold8(void)
   return image;
 }
 
-static Ihandle* load_image_ActionOk8(void)
+static Ihandle* load_image_IUP_ActionOk8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -9061,7 +9061,7 @@ static Ihandle* load_image_ActionOk8(void)
   return image;
 }
 
-static Ihandle* load_image_FileOpen8(void)
+static Ihandle* load_image_IUP_FileOpen8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 255, 255, 255,
@@ -9343,7 +9343,7 @@ static Ihandle* load_image_FileOpen8(void)
   return image;
 }
 
-static Ihandle* load_image_FileText8(void)
+static Ihandle* load_image_IUP_FileText8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -9625,7 +9625,7 @@ static Ihandle* load_image_FileText8(void)
   return image;
 }
 
-static Ihandle* load_image_ArrowDown8(void)
+static Ihandle* load_image_IUP_ArrowDown8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255,
@@ -9907,7 +9907,7 @@ static Ihandle* load_image_ArrowDown8(void)
   return image;
 }
 
-static Ihandle* load_image_FileClose8(void)
+static Ihandle* load_image_IUP_FileClose8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 255,
@@ -10189,7 +10189,7 @@ static Ihandle* load_image_FileClose8(void)
   return image;
 }
 
-static Ihandle* load_image_NavigateHome8(void)
+static Ihandle* load_image_IUP_NavigateHome8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -10471,7 +10471,7 @@ static Ihandle* load_image_NavigateHome8(void)
   return image;
 }
 
-static Ihandle* load_image_MediaForward8(void)
+static Ihandle* load_image_IUP_MediaForward8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -10753,7 +10753,7 @@ static Ihandle* load_image_MediaForward8(void)
   return image;
 }
 
-static Ihandle* load_image_MessageInfo8(void)
+static Ihandle* load_image_IUP_MessageInfo8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 1, 1, 1, 1, 1, 255, 255, 255, 255, 255, 255,
@@ -11035,7 +11035,7 @@ static Ihandle* load_image_MessageInfo8(void)
   return image;
 }
 
-static Ihandle* load_image_ViewFullScreen8(void)
+static Ihandle* load_image_IUP_ViewFullScreen8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -11317,7 +11317,7 @@ static Ihandle* load_image_ViewFullScreen8(void)
   return image;
 }
 
-static Ihandle* load_image_ArrowLeft8(void)
+static Ihandle* load_image_IUP_ArrowLeft8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 255, 255, 255,
@@ -11599,7 +11599,7 @@ static Ihandle* load_image_ArrowLeft8(void)
   return image;
 }
 
-static Ihandle* load_image_MediaRewind8(void)
+static Ihandle* load_image_IUP_MediaRewind8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -11881,7 +11881,7 @@ static Ihandle* load_image_MediaRewind8(void)
   return image;
 }
 
-static Ihandle* load_image_ArrowRight8(void)
+static Ihandle* load_image_IUP_ArrowRight8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -12163,7 +12163,7 @@ static Ihandle* load_image_ArrowRight8(void)
   return image;
 }
 
-static Ihandle* load_image_MediaReverse8(void)
+static Ihandle* load_image_IUP_MediaReverse8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -12445,7 +12445,7 @@ static Ihandle* load_image_MediaReverse8(void)
   return image;
 }
 
-static Ihandle* load_image_Print8(void)
+static Ihandle* load_image_IUP_Print8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -12727,7 +12727,7 @@ static Ihandle* load_image_Print8(void)
   return image;
 }
 
-static Ihandle* load_image_FileProperties8(void)
+static Ihandle* load_image_IUP_FileProperties8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -13009,7 +13009,7 @@ static Ihandle* load_image_FileProperties8(void)
   return image;
 }
 
-static Ihandle* load_image_ToolsSortDescend8(void)
+static Ihandle* load_image_IUP_ToolsSortDescend8(void)
 {
   unsigned char imgdata[] = {
     255, 3, 3, 3, 3, 3, 3, 255, 255, 255, 255, 255, 1, 255, 255, 255,
@@ -13291,7 +13291,7 @@ static Ihandle* load_image_ToolsSortDescend8(void)
   return image;
 }
 
-static Ihandle* load_image_ToolsColor8(void)
+static Ihandle* load_image_IUP_ToolsColor8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -13573,7 +13573,7 @@ static Ihandle* load_image_ToolsColor8(void)
   return image;
 }
 
-static Ihandle* load_image_MediaPlay8(void)
+static Ihandle* load_image_IUP_MediaPlay8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -13855,7 +13855,7 @@ static Ihandle* load_image_MediaPlay8(void)
   return image;
 }
 
-static Ihandle* load_image_PrintPreview8(void)
+static Ihandle* load_image_IUP_PrintPreview8(void)
 {
   unsigned char imgdata[] = {
     255, 1, 1, 1, 1, 1, 1, 1, 1, 1, 255, 255, 255, 255, 255, 255,
@@ -14137,7 +14137,7 @@ static Ihandle* load_image_PrintPreview8(void)
   return image;
 }
 
-static Ihandle* load_image_WindowsTile8(void)
+static Ihandle* load_image_IUP_WindowsTile8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -14419,7 +14419,7 @@ static Ihandle* load_image_WindowsTile8(void)
   return image;
 }
 
-static Ihandle* load_image_Webcam8(void)
+static Ihandle* load_image_IUP_Webcam8(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 255, 255, 255, 57, 47, 49, 57, 255, 255, 255, 255, 255, 255,
