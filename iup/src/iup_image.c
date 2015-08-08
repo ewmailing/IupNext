@@ -769,6 +769,85 @@ Iclass* iupImageRGBANewClass(void)
   return ic;
 }
 
+#if 0
+/*****************************************************/
+/* This strategy generates libraries that are bigger */
+/*****************************************************/
+static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE* packfile)
+{
+  int y, x, width, height, channels, linesize;
+  unsigned char* data;
+  FILE* file;
+
+  if (packfile)
+    file = packfile;
+  else
+    file = fopen(file_name, "wb");
+
+  if (!file)
+    return 0;
+
+  width = IupGetInt(ih, "WIDTH");
+  height = IupGetInt(ih, "HEIGHT");
+  channels = IupGetInt(ih, "CHANNELS");
+  linesize = width*channels;
+
+  data = (unsigned char*)IupGetAttribute(ih, "WID");
+
+  if (fprintf(file, "static Ihandle* load_image_%s(void)\n", name)<0)
+  {
+    if (!packfile)
+      fclose(file);
+    return 0;
+  }
+
+  fprintf(file, "{\n");
+
+  if (channels == 1)
+  {
+    int c;
+    char* color;
+
+    fprintf(file, "  Ihandle* image = IupImage(%d, %d, NULL);\n\n", width, height);
+
+    for (c = 0; c < 256; c++)
+    {
+      color = IupGetAttributeId(ih, "", c);
+      if (!color)
+        break;
+
+      fprintf(file, "  IupSetAttribute(image, \"%d\", \"%s\");\n", c, color);
+    }
+
+    fprintf(file, "\n");
+  }
+  else if (channels == 3)
+    fprintf(file, "  Ihandle* image = IupImageRGB(%d, %d, NULL);\n", width, height);
+  else /* channels == 4 */
+    fprintf(file, "  Ihandle* image = IupImageRGBA(%d, %d, NULL);\n", width, height);
+
+  fprintf(file, "  unsigned char* d = (unsigned char*)IupGetAttribute(image, \"WID\");\n");
+
+  for (y = 0; y < height; y++)
+  {
+    fprintf(file, "    ");
+
+    for (x = 0; x < linesize; x++)
+      fprintf(file, "*d++ = %d; ", (int)(*data++));
+
+    fprintf(file, "\n");
+  }
+
+  fprintf(file, "  return image;\n");
+  fprintf(file, "}\n\n");
+
+  if (!packfile)
+    fclose(file);
+
+  return 1;
+}
+#endif
+
 static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE* packfile)
 {
   int y, x, width, height, channels, linesize;
