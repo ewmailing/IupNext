@@ -7,6 +7,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{60a1aeb3-2ab7-4d2b-ae45-bcc3e7c4d1c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src2">
+      <UniqueIdentifier>{0b81e1ae-4721-4cd3-8c2e-879a080624fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcimglib\iup_imglib.h" />
@@ -51,6 +54,15 @@
     </ClCompile>
     <ClCompile Include="..\srcimglib\iup_imglib_logos48x48.c">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcimglib\iup_imglib_basemot16x16_8bpp.c">
+      <Filter>src2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcimglib\iup_imglib_logos32x32_8bpp.c">
+      <Filter>src2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcimglib\iup_imglib_logos48x48_8bpp.c">
+      <Filter>src2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
