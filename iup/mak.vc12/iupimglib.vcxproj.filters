@@ -10,25 +10,19 @@
     <Filter Include="src2">
       <UniqueIdentifier>{0b81e1ae-4721-4cd3-8c2e-879a080624fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="inc2">
+      <UniqueIdentifier>{f675c847-5439-4a52-ab7e-9b3d534737a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcimglib\iup_imglib.h" />
     <ClInclude Include="..\srcimglib\iup_imglib_logos32x32.h">
       <Filter>inc</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcimglib\iup_imglib_logos32x32_8bpp.h">
-      <Filter>inc</Filter>
-    </ClInclude>
     <ClInclude Include="..\srcimglib\iup_imglib_logos48x48.h">
       <Filter>inc</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcimglib\iup_imglib_logos48x48_8bpp.h">
-      <Filter>inc</Filter>
-    </ClInclude>
     <ClInclude Include="..\srcimglib\iup_imglib_basegtk16x16.h">
-      <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srcimglib\iup_imglib_basemot16x16_8bpp.h">
       <Filter>inc</Filter>
     </ClInclude>
     <ClInclude Include="..\srcimglib\iup_imglib_basewin16x16.h">
@@ -36,6 +30,15 @@
     </ClInclude>
     <ClInclude Include="..\srcimglib\iup_imglib_iconswin48x48.h">
       <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcimglib\iup_imglib_logos48x48_8bpp.h">
+      <Filter>inc2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcimglib\iup_imglib_logos32x32_8bpp.h">
+      <Filter>inc2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srcimglib\iup_imglib_basemot16x16_8bpp.h">
+      <Filter>inc2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
