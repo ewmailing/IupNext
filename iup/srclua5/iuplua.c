@@ -216,6 +216,7 @@ int iuplua_isihandle(lua_State *L, int pos)
   int ret = 0;
   if (lua_getmetatable(L, pos))   /* t2 = metatable(stack(pos)) */
   {
+    /* TODO: luaL_getmetatable(L, "iupHandle"); */
     lua_pushstring(L, "iupHandle");
     lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iupHandle"] */
 
@@ -230,10 +231,25 @@ int iuplua_isihandle(lua_State *L, int pos)
 
 Ihandle* iuplua_checkihandle(lua_State *L, int pos)
 {
+  Ihandle* *ih = (Ihandle**)luaL_checkudata(L, pos, "iupHandle");
+
+  if (!(*ih))
+    luaL_argerror(L, pos, "destroyed iupHandle");
+
+  if (!iupObjectCheck(*ih))
+    luaL_argerror(L, pos, "invalid Lua object, destroyed iupHandle in C but not in Lua");
+
+  return *ih;
+}
+
+#if 0
+Ihandle* iuplua_checkihandle_OLD(lua_State *L, int pos)
+{
   Ihandle* ih = NULL;
 
   if (lua_getmetatable(L, pos))   /* t2 = metatable(stack(pos)) */
   {
+    /* TODO: luaL_getmetatable(L, "iupHandle"); */
     lua_pushstring(L, "iupHandle");
     lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iupHandle"] */
 
@@ -244,10 +260,14 @@ Ihandle* iuplua_checkihandle(lua_State *L, int pos)
   }
 
   if (!ih)
-    luaL_argerror(L, pos, "iupHandle expected");
+  {
+    const char *msg = lua_pushfstring(L, "iupHandle expected, got %s", luaL_typename(L, pos));
+    luaL_argerror(L, pos, msg);
+  }
 
   return ih;
 }
+#endif
 
 void iuplua_pushihandle_raw(lua_State *L, Ihandle *ih)
 {
@@ -287,8 +307,10 @@ void iuplua_pushihandle(lua_State *L, Ihandle *ih)
       /* already created in Lua */
       iuplua_pushihandle_raw(L, ih);
 
+      /* TODO: luaL_getmetatable(L, "iupHandle"); */
       lua_pushstring(L, "iupHandle");
       lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry["iupHandle"] */
+
       lua_setmetatable(L, -2);    /* metatable(ih) = t */
     }
   } 
@@ -602,7 +624,7 @@ static int SetCallback(lua_State *L)
   const char* name = luaL_checkstring(L, 2);
 
   if (!lua_iscfunction(L, 3))
-    luaL_argerror(L, 3, "invalid function when set callback");
+    luaL_argerror(L, 3, "Invalid function when set callback.");
   c_func = (Icallback)lua_tocfunction(L, 3);
 
   if (lua_isnil(L, 4))  /* lua_func is only used here to remove the callback */
@@ -663,7 +685,7 @@ static int SetClass(lua_State *L)
   lua_gettable(L, LUA_REGISTRYINDEX);  /* t2 = registry[class_name] */
   if (lua_isnil(L, -1))
   {
-    lua_pushstring(L, "invalid class name");
+    lua_pushstring(L, "Invalid class name.");
     lua_error(L);
   }
   lua_setmetatable(L, -2);  /* metatable(t) = t2 */
@@ -697,7 +719,7 @@ static int SetMethod(lua_State *L)
   lua_gettable(L, LUA_REGISTRYINDEX);  /* t = registry[class_name] */
   if (lua_isnil(L, -1)) 
   {
-    lua_pushstring(L, "invalid class name");
+    lua_pushstring(L, "Invalid class name.");
     lua_error(L);
   }
   lua_pushvalue(L, -3); /* push method */
@@ -733,7 +755,7 @@ static int ihandle_compare(lua_State *L)
 /* local widget = iup.GetWidget(ih) */
 static int GetWidget(lua_State *L)
 {
-  /* Pushes a Lua object that is associanted with an Ihandle* */
+  /* Pushes a Lua object that is associated with an Ihandle* */
   /* Used by the "__index" metamethod of the iupHandle */
   Ihandle * ih = iuplua_checkihandle(L, 1);
   char* sref = IupGetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF");
