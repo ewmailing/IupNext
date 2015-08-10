@@ -177,7 +177,7 @@ end
 function iup.RegisterWidget(ctrl) -- called by all the controls initialization functions
   iup[ctrl.nick] = function(param)
     if (not ctrl.constructor) then 
-      error("IUP contructor missing for:" .. ctrl.nick) 
+      error("IUP constructor missing for:" .. ctrl.nick) 
     end
     return ctrl:constructor(param)
   end
