@@ -264,6 +264,10 @@ static int iGLToggleMapMethod(Ihandle* ih)
       /* this is the first toggle in the radio, and then set it with VALUE=ON */
       iupAttribSet(ih, "VALUE", "ON");
     }
+
+    /* make sure it has at least one name */
+    if (!iupAttribGetHandleName(ih))
+      iupAttribSetHandleName(ih);
   }
   return IUP_NOERROR;
 }

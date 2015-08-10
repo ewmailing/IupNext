@@ -252,10 +252,14 @@ supported.</p>
 <p>Toggles are activated using the Space key.</p>
 
   
-<p>To build a set of mutual exclusive toggles, insert them in a <strong>IupRadio</strong>
+<p>To build a set of mutual exclusive toggles, insert them in an <strong>IupRadio</strong>
 container. They must be inserted before creation, and their behavior
 can not be changed. If you need to dynamically remove toggles that
-belongs to a radio in Windows, then put the radio inside a <strong>IupFrame</strong> that has a title.</p>
+belongs to a radio in Windows, then put the radio inside an <strong>IupFrame</strong> that has a title.</p>
+
+<p>A toggle that is a child of an <strong>IupRadio</strong> automatically receives a name when 
+its is mapped into the native system. 
+(since 3.16)</p>
 
 
 <h3><a name="Examples">Examples</a></h3>

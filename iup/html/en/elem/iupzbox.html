@@ -116,6 +116,15 @@ also accepted.</p>
   <a href="../func/iupappend.html">IupAppend</a> or
 <a href="../func/iupinsert.html">IupInsert</a>.</p>
 
+<p>Its children automatically receives a name when the child is appended or 
+inserted into the tabs. 
+(since 3.16) </p>
+<p>The ZBOX relies on the VISIBLE attribute. If a child that is hidden by the 
+zbox has its VISIBLE attribute changed then it can be made visible regardless of 
+the zbox configuration. For the zbox behave as a <strong>IupTabs</strong> use 
+native containers as immediate children of the zbox, like <strong>IupScrollBox</strong>,
+<strong>IupTabs</strong>, <strong>IupFrame</strong> or <strong>IupBackgroundBox</strong>.</p>
+
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <h3><a name="SeeAlso">See Also</a></h3>

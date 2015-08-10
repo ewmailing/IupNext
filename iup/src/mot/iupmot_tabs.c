@@ -409,7 +409,7 @@ static void motTabsConfigureNotify(Widget w, XEvent *evt, String* s, Cardinal *c
      Since Notebook pages are not resized until they are moved into the visible area,
      we must update the children position and size when a tab page is resize. 
      Since tab pages are not hidden, they are moved outside the visible area,
-     a resize occours every time a tab is activated.
+     a resize occurs every time a tab is activated.
   */
   Ihandle *child;
   (void)s;
@@ -428,7 +428,8 @@ static void motTabsConfigureNotify(Widget w, XEvent *evt, String* s, Cardinal *c
 
 static void motTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 {
-  if (IupGetName(child) == NULL)
+  /* make sure it has at least one name */
+  if (!iupAttribGetHandleName(child))
     iupAttribSetHandleName(child);
 
   if (ih->handle)

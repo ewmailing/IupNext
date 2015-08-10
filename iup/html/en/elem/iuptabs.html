@@ -31,7 +31,7 @@
 <h2>IupTabs<span class="style1"> (since 3.0)</span></h2>
 <p>Creates a native container for composing elements in hidden layers with only 
 one layer visible (just like <strong><a href="iupzbox.html">IupZbox</a></strong>), 
-but its visibility can be interactively controled. The interaction is done in a line of tabs 
+but its visibility can be interactively controlled. The interaction is done in a line of tabs 
 with titles and arranged 
 according to the tab type. Also known as Notebook in native systems. </p>
 <h3><a name="Creation">Creation</a></h3>
@@ -238,9 +238,10 @@ supported.</p>
 <p>The ENTERWINDOW_CB and LEAVEWINDOW_CB callbacks are called only when the 
 mouse enter or leaves the tabs buttons area.</p>
 
-<p>The Tabs children, differently from a <strong><a href="iupzbox.html">IupZbox</a></strong>, automatically receives a name if 
-does not already have one when it is appended to the tabs in the native system. 
-Also <strong>IupTabs</strong> does NOT depends on the VISIBLE attribute.</p>
+<p>Its children automatically receives a name when the child is appended or 
+inserted into the tabs. 
+</p>
+<p>Differently from <strong>IupZbox</strong>, <strong>IupTabs</strong> does NOT depends on the VISIBLE attribute.</p>
 <p>In GTK, when the tabs buttons are scrolled, the active tab is also changed.</p>
 <p>When you change the active tab the focus is usually not changed. If you want 
 to control the focus behavior call 

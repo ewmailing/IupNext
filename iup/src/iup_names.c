@@ -18,6 +18,9 @@
 #include "iup_str.h"
 
 
+/* An Ihandle* may have many different handle names. 
+   Do not confuse with the NAME attribute. */
+
 static Itable *inames_strtable = NULL;   /* table indexed by name containing Ihandle* address */
 
 void iupNamesInit(void)
@@ -62,14 +65,17 @@ void iupNamesDestroyHandles(void)
 
   ih_array = (Ihandle**)malloc(count * sizeof(Ihandle*));
 
-  /* store the names before updating so we can remove elements in the loop */
+  /* store the handles before updating so we can remove elements in the loop */
   name = iupTableFirst(inames_strtable);
   while (name)
   {
     ih = (Ihandle*)iupTableGetCurr(inames_strtable);
     if (iupObjectCheck(ih))   /* here must be a handle */
     {
+      /* only need to destroy the top parent handle */
       ih = iNameGetTopParent(ih);
+
+      /* check if already in the array */
       if (iNameCheckArray(ih_array, i, ih))
       {
         ih_array[i] = ih;
@@ -91,9 +97,12 @@ void iupNamesDestroyHandles(void)
 
 void iupRemoveNames(Ihandle* ih)
 {
+  /* called from IupDestroy */
   char *name;
 
-  /* clear the cache */
+  /* ih here is an Ihandle* */
+
+  /* clear the cache (only the last handle name set) */
   name = iupAttribGet(ih, "_IUP_LASTHANDLENAME");
   if (name)
     iupTableRemove(inames_strtable, name);
@@ -103,9 +112,11 @@ void iupRemoveNames(Ihandle* ih)
   if (name)
     iupTableRemove(inames_strtable, name);
 
+  /* clear also the NAME attribute */
   iupBaseSetNameAttrib(ih, NULL);
 
-  /* Do NOT search for other names */
+  /* Do NOT search for other names, this would implying in checking in all store names.
+     So, some names may have left invalid on the handle names database. */
 }
 
 Ihandle *IupGetHandle(const char *name)
@@ -123,6 +134,10 @@ Ihandle* IupSetHandle(const char *name, Ihandle *ih)
   if (!name)
     return NULL;
 
+  /* ih here can be also an user pointer, not just an Ihandle* */
+
+  /* we do not check if the handle already has names, it may has many different names */
+
   old_ih = iupTableGet(inames_strtable, name);
 
   if (ih != NULL)
@@ -139,10 +154,51 @@ Ihandle* IupSetHandle(const char *name, Ihandle *ih)
 
     /* clear the name from the cache if it is a valid handle */
     if (iupObjectCheck(old_ih))
-      iupAttribSet(old_ih, "_IUP_LASTHANDLENAME", NULL);
+    {
+      char* last_name = iupAttribGet(ih, "_IUP_LASTHANDLENAME");
+      if (last_name && iupStrEqual(last_name, name))
+        iupAttribSet(old_ih, "_IUP_LASTHANDLENAME", NULL);
+    }
   }
 
   return old_ih;
+}
+
+char* IupGetName(Ihandle* ih)
+{
+  char *name;
+  if (!ih) /* no iupASSERT needed here */
+    return NULL;
+
+  /* ih here can be also an user pointer, not just an Ihandle* */
+
+  if (iupObjectCheck(ih))
+  {
+    /* if ih is an Ihandle* */
+
+    /* check the cache first */
+    name = iupAttribGet(ih, "_IUP_LASTHANDLENAME");
+    if (name)
+      return name;
+
+    /* check for an internal name */
+    name = iupAttribGetHandleName(ih);
+    if (name)
+      return name;
+  }
+
+  /* search for a name */
+  name = iupTableFirst(inames_strtable);
+  while (name)
+  {
+    /* return the first one found */
+    if ((Ihandle*)iupTableGetCurr(inames_strtable) == ih)
+      return name;
+
+    name = iupTableNext(inames_strtable);
+  }
+
+  return NULL;
 }
 
 int IupGetAllNames(char** names, int n)
@@ -208,34 +264,3 @@ int IupGetAllDialogs(char** names, int n)
   return i;
 }
 
-char* IupGetName(Ihandle* ih)
-{
-  char *name;
-  if (!ih) /* no iupASSERT needed here */
-    return NULL;
-
-  if (iupObjectCheck(ih))
-  {
-    /* check the cache first, but must be a handle */
-    name = iupAttribGet(ih, "_IUP_LASTHANDLENAME");
-    if (name)
-      return name;
-  }
-
-  /* check for an internal name */
-  name = iupAttribGetHandleName(ih);
-  if (name)
-    return name;
-                               
-  /* search for the name */
-  name = iupTableFirst(inames_strtable);
-  while (name)
-  {
-    if ((Ihandle*)iupTableGetCurr(inames_strtable) == ih)
-      return name;
-
-    name = iupTableNext(inames_strtable);
-  }
-
-  return NULL;
-}

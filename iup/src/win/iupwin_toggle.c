@@ -682,7 +682,7 @@ static int winToggleMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   if (radio)
-    ih->data->radio = 1;
+    ih->data->is_radio = 1;
 
   value = iupAttribGet(ih, "IMAGE");
   if (value)
@@ -708,7 +708,7 @@ static int winToggleMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "CANFOCUS"))
     dwStyle |= WS_TABSTOP;
 
-  if (radio)
+  if (ih->data->is_radio)
   {
     if (!ownerdraw)
       dwStyle |= BS_RADIOBUTTON;
@@ -718,6 +718,10 @@ static int winToggleMapMethod(Ihandle* ih)
       /* this is the first toggle in the radio, and then set it with VALUE=ON */
       iupAttribSet(ih, "VALUE","ON");
     }
+
+    /* make sure it has at least one name */
+    if (!iupAttribGetHandleName(ih))
+      iupAttribSetHandleName(ih);
   }
   else if (!ownerdraw)
   {

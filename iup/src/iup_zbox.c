@@ -50,6 +50,10 @@ static int iZboxCreateMethod(Ihandle* ih, void** params)
 
 static void iZboxChildAddedMethod(Ihandle* ih, Ihandle* child)
 {
+  /* make sure it has at least one name */
+  if (!iupAttribGetHandleName(child))
+    iupAttribSetHandleName(child);
+
   if (!ih->data->value_handle)
   {
     IupSetAttribute(child, "VISIBLE", IupGetAttribute(ih, "VISIBLE"));
@@ -205,7 +209,7 @@ static char* iZboxGetValueAttrib(Ihandle* ih)
 
   for (pos=0, child = ih->firstchild; child; child = child->brother, pos++)
   {
-    if (child == ih->data->value_handle) /* found child, just cheking */
+    if (child == ih->data->value_handle) /* found child, just checking */
       return IupGetName(ih->data->value_handle);
   }
 

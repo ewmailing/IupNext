@@ -334,7 +334,8 @@ static void gtkTabsCloseButtonClicked(GtkButton *widget, Ihandle* child)
 /* ------------------------------------------------------------------------- */
 static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 {
-  if (IupGetName(child) == NULL)
+  /* make sure it has at least one name */
+  if (!iupAttribGetHandleName(child))
     iupAttribSetHandleName(child);
 
   if (ih->handle)

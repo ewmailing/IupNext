@@ -23,7 +23,7 @@
 
 static char* iToggleGetRadioAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean (ih->data->radio); 
+  return iupStrReturnBoolean(ih->data->is_radio);
 }
 
 static int iToggleSetFlatAttrib(Ihandle* ih, const char* value)

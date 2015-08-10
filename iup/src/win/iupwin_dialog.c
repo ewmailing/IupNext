@@ -871,7 +871,8 @@ static int winDialogMapMethod(Ihandle* ih)
     else if (has_border)
       dwStyle |= WS_BORDER;
 
-    if (!IupGetName(ih))
+    /* make sure it has at least one name */
+    if (!iupAttribGetHandleName(ih))
       iupAttribSetHandleName(ih);
   }
   else

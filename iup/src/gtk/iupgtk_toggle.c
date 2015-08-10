@@ -463,7 +463,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   if (radio)
-    ih->data->radio = 1;
+    ih->data->is_radio = 1;
 
   value = iupAttribGet(ih, "IMAGE");
   if (value)
@@ -471,7 +471,7 @@ static int gtkToggleMapMethod(Ihandle* ih)
   else
     ih->data->type = IUP_TOGGLE_TEXT;
 
-  if (radio)
+  if (ih->data->is_radio)
   {
     GtkRadioButton* last_tg = (GtkRadioButton*)iupAttribGet(radio, "_IUPGTK_LASTRADIOBUTTON");
     if (last_tg)
@@ -479,6 +479,10 @@ static int gtkToggleMapMethod(Ihandle* ih)
     else
       ih->handle = gtk_radio_button_new(NULL);
     iupAttribSet(radio, "_IUPGTK_LASTRADIOBUTTON", (char*)ih->handle);
+
+    /* make sure it has at least one name */
+    if (!iupAttribGetHandleName(ih))
+      iupAttribSetHandleName(ih);
   }
   else
   {

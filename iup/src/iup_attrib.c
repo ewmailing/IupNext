@@ -94,9 +94,9 @@ char* IupGetAttributes(Ihandle *ih)
         value = sb;
       }
 
-      strcat(buffer, name);  size -= strlen(name);
+      strcat(buffer, name);  size -= (int)strlen(name);
       strcat(buffer,"=\"");  size--;
-      strcat(buffer, value);  size -= strlen(value);
+      strcat(buffer, value);  size -= (int)strlen(value);
       strcat(buffer,"\"");  size--;
     }
 
@@ -222,7 +222,7 @@ void iupAttribUpdate(Ihandle* ih)
       iAttribNotifyChildren(ih, name, value);
 
     if (store == 0)
-      iupTableRemove(ih->attrib, name); /* remove from the table acording to the class SetAttribute */
+      iupTableRemove(ih->attrib, name); /* remove from the table according to the class SetAttribute */
   }
 
   free(name_array);
@@ -823,11 +823,12 @@ void IupSetAttributeHandle(Ihandle* ih, const char* name, Ihandle* ih_named)
   if (!ih_named)
     return;
 
-  handle_name = IupGetName(ih_named);
+  /* make sure it has at least one name */
+  handle_name = iupAttribGetHandleName(ih_named);
   if (!handle_name)
   {
     iupAttribSetHandleName(ih_named);
-    handle_name = IupGetName(ih_named);
+    handle_name = iupAttribGetHandleName(ih_named);
   }
 
   IupStoreAttribute(ih, name, handle_name);
