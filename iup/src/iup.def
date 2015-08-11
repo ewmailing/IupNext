@@ -453,6 +453,7 @@ iupAttribSetStrf
 iupAttribSet
 iupAttribSetInt
 iupAttribSetHandleName
+iupAttribGetHandleName
 iupAttribSetFloat
 iupAttribSetFloatId
 iupAttribSetFloatId2

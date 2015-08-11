@@ -10,6 +10,7 @@
 
 #include "iup.h"
 #include "iup_str.h"
+#include "iup_object.h"
 
 #include <lua.h>
 #include <lauxlib.h>
