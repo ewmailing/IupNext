@@ -40,8 +40,12 @@ automatically called.</p>
 are NOT registered using <b>IupSetHandle</b>, they will be automatically loaded 
 when associated with a control.</p>
 <h3>Base Library Group</h3>
-    <p>These bitmaps are 16x16-8bpp (Motif) and 16x16-32bpp (Windows and GTK) 
-	pixels size images that can be used in Buttons, usually inside toolbars. But 
+    <p>These bitmaps are 16x16-8bpp (Motif) and 32x32-32bpp (Windows) 
+	pixels size images that can be used in Buttons, usually inside toolbars. GTK 
+	has several image sizes available: 16x16, 20x20, 18x18, 24x24, 32x32, and 
+	48x48. GTK images displayed here are just a sample, they actually depends on 
+	the current GTK theme used by the system.</p>
+<p>&nbsp;(. But 
 	in GTK some control of the size can be done using GTKICONSIZE global 
 	attribute that accept values: &quot;MENU&quot; (16x16), &quot;BUTTON&quot; (20x20), 
 	&quot;SMALLTOOLBAR&quot; (18x18), &quot;LARGETOOLBAR&quot; (24x24), &quot;DND&quot; (32x32), and &quot;DIALOG&quot; 
@@ -80,9 +84,7 @@ when associated with a control.</p>
     <tr>
       <td>&quot;IUP_EditUndo&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/EditUndo8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-undo-ltr.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/EditUndo.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_FileClose&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileClose8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/iupgtk-close.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileClose.png" width="32" height="32"></td>    </tr>
-    <tr>
-      <td>&quot;IUP_FileCloseAll&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileCloseAll8.gif" width="17" height="17"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/iupgtk-close-all.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileCloseAll.png" width="32" height="32"></td>    </tr>
+      <td>&quot;IUP_FileClose&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileClose8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-directory.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileClose.png" width="32" height="32"></td>    </tr>
     <tr>
       <td>&quot;IUP_FileNew&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileNew8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-new.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileNew.png" width="32" height="32"></td>    </tr>
     <tr>
@@ -91,16 +93,6 @@ when associated with a control.</p>
       <td>&quot;IUP_FileProperties&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileProperties8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-properties.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileProperties.png" width="32" height="32"></td>    </tr>
     <tr>
       <td>&quot;IUP_FileSave&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileSave8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-save.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileSave.png" width="32" height="32"></td>    </tr>
-    <tr>
-      <td>&quot;IUP_FileSaveAll&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileSaveAll8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/iupgtk-save-all.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileSaveAll.png" width="32" height="32"></td>    </tr>
-    <tr>
-      <td>&quot;IUP_FileText&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FileText8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/iupgtk-text.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FileText.png" width="32" height="32"></td>    </tr>
-    <tr>
-      <td>&quot;IUP_FontBold&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FontBold8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-bold.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FontBold.png" width="32" height="32"></td>    </tr>
-    <tr>
-      <td>&quot;IUP_FontDialog&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FontDialog8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-font.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FontDialog.png" width="32" height="32"></td>    </tr>
-    <tr>
-      <td>&quot;IUP_FontItalic&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/FontItalic8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-italic.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/FontItalic.png" width="32" height="32"></td>    </tr>
     <tr>
       <td>&quot;IUP_MediaForward&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/MediaForward8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-media-forward-ltr.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/MediaForward.png" width="32" height="32"></td>    </tr>
     <tr>
@@ -144,14 +136,6 @@ when associated with a control.</p>
     <tr>
       <td>&quot;IUP_ViewFullScreen&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ViewFullScreen8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-fullscreen.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ViewFullScreen.png" width="32" height="32"></td>    </tr>
     <tr>
-      <td>&quot;IUP_Webcam&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/Webcam.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/iupgtk-webcam.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/Webcam.png" width="32" height="32"></td>    </tr>
-    <tr>
-      <td>&quot;IUP_WindowsCascade&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/WindowsCascade8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/iupgtk-cascade.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/WindowsCascade.png" width="32" height="32"></td>    </tr>
-    <tr>
-      <td>&quot;IUP_WindowsTile&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/WindowsTile8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/iupgtk-tile.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/WindowsTile.png" width="32" height="32"></td>    </tr>
-    <tr>
-      <td>&quot;IUP_Zoom&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/Zoom8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/iupgtk-zoom.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/Zoom.png" width="32" height="32"></td>    </tr>
-    <tr>
       <td>&quot;IUP_ZoomActualSize&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ZoomActualSize8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-zoom-100.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ZoomActualSize.png" width="32" height="32"></td>    </tr>
     <tr>
       <td>&quot;IUP_ZoomIn&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ZoomIn8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-zoom-in.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ZoomIn.png" width="32" height="32"></td>    </tr>
@@ -161,6 +145,8 @@ when associated with a control.</p>
       <td>&quot;IUP_ZoomSelection&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ZoomSelection8.gif" width="16" height="16"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK_24x24/gtk-zoom-fit.png" width="24" height="24"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ZoomSelection.png" width="32" height="32"></td>    </tr>
     </table>
 
+<p>The following images were removed from the pre-compiled library (since 3.16): &quot;IUP_FileCloseAll&quot;, &quot;IUP_FileSaveAll&quot;, &quot;IUP_FileText&quot;, &quot;IUP_FontBold&quot;, &quot;IUP_FontDialog&quot;, &quot;IUP_FontItalic&quot;, &quot;IUP_WindowsCascade&quot;, &quot;IUP_WindowsTile&quot;, &quot;IUP_Zoom&quot;. 
+Although their C source code is still available.</p>
 <h3>Logo Group 32x32</h3>
     <p>These images are 32x32-32bpp pixels size (or just 32 pixels height) images that 
 	can be used in Labels, usually inside toolbars.</p>
@@ -447,7 +433,7 @@ the respective systems. All images are 48x48-32bpp pixels size.</p>
     </tr>
     <tr>
       <td bgcolor="#FFAA80" align="center">
-      <img height="32" src="imglib/Icons/Windows_32x32/Video.png" width="32"></td>
+      <img height="32" src="imglib/Icons/Windows_32x32/Video.png" width="32"> <img height="32" src="imglib/Icons/Windows_32x32/DeviceWebcam.png" width="32">  <img height="32" src="imglib/Icons/Windows_32x32/DeviceMonitor.png" width="32"></td>
     </tr>
     </table>
     
@@ -456,6 +442,10 @@ the respective systems. All images are 48x48-32bpp pixels size.</p>
 </table>
 
 <h3><a name="Notes">Notes</a></h3>
+
+<p>All images are available as PNG files in the &quot;iup/html/en/imglib/*&quot;
+<a href="imglib">folder</a>. Except for the GTK images that are only sample 
+images.</p>
 
 <p>Use the <a href="executables.html">IupView</a> application to export PNG 
 images to C, LED or Lua.</p>
