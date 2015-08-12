@@ -1,3 +1,4 @@
+#ifdef IUP_IMGLIB_LARGE
 static Ihandle* load_image_LogoTecgraf(void)
 {
   unsigned char imgdata[] = {
@@ -333,3 +334,4 @@ static Ihandle* load_image_LogoPetrobras(void)
   Ihandle* image = IupImageRGB(192, 48, imgdata);
   return image;
 }
+#endif

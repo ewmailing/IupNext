@@ -14,7 +14,6 @@
 
 void IupImageLibOpen(void)
 {
-#ifndef IUP_IMGLIB_DUMMY
   if (IupGetGlobal("_IUP_IMAGELIB_OPEN"))
     return;
 
@@ -23,7 +22,7 @@ void IupImageLibOpen(void)
   /**************** BaseLib *****************/
 
 #if defined(WIN32)
-  iupImglibBaseLibWin16x16Open();
+  /* iupImglibBaseLibWin16x16Open(); */
   iupImglibBaseLibWin32x32Open();
 #elif defined(MOTIF)
   iupImglibBaseLibMot16x16Open();
@@ -39,8 +38,6 @@ void IupImageLibOpen(void)
   iupImglibLogos32x32Open();
 #endif
 
-#ifdef IUP_IMGLIB_LARGE
-
 #if defined(MOTIF)
     iupImglibLogosMot48x48Open();
 #else
@@ -55,8 +52,4 @@ void IupImageLibOpen(void)
 #else
   iupImglibIconsGtk48x48Open();
 #endif  
-
-#endif  /* IUP_IMGLIB_LARGE */
-
-#endif  /*  IUP_IMGLIB_DUMMY  */
 }

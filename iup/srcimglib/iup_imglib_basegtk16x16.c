@@ -18,10 +18,6 @@ void iupImglibBaseLibGtk16x16Open(void)
 {
   iupImageStockSet("IUP_ActionCancel", 0, "gtk-cancel");
   iupImageStockSet("IUP_ActionOk", 0, "gtk-apply");
-  iupImageStockSet("IUP_ArrowDown", 0, "gtk-go-down");
-  iupImageStockSet("IUP_ArrowLeft", 0, "gtk-go-back-ltr");
-  iupImageStockSet("IUP_ArrowRight", 0, "gtk-go-forward-ltr");  
-  iupImageStockSet("IUP_ArrowUp", 0, "gtk-go-up");       
   iupImageStockSet("IUP_EditCopy", 0, "gtk-copy");
   iupImageStockSet("IUP_EditCut", 0, "gtk-cut");
   iupImageStockSet("IUP_EditErase", 0, "gtk-delete");
@@ -29,17 +25,11 @@ void iupImglibBaseLibGtk16x16Open(void)
   iupImageStockSet("IUP_EditPaste", 0, "gtk-paste");
   iupImageStockSet("IUP_EditRedo", 0, "gtk-redo-ltr");
   iupImageStockSet("IUP_EditUndo", 0, "gtk-undo-ltr");
-  iupImageStockSet("IUP_FileClose", load_image_iupgtk_close, 0);
-  iupImageStockSet("IUP_FileCloseAll", load_image_iupgtk_close_all, 0);
   iupImageStockSet("IUP_FileNew", 0, "gtk-new");
   iupImageStockSet("IUP_FileOpen", 0, "gtk-open");
+  iupImageStockSet("IUP_FileClose", 0, "gtk-directory");
   iupImageStockSet("IUP_FileProperties", 0, "gtk-properties");
   iupImageStockSet("IUP_FileSave", 0, "gtk-save");
-  iupImageStockSet("IUP_FileSaveAll", load_image_iupgtk_save_all, 0);
-  iupImageStockSet("IUP_FileText", load_image_iupgtk_text, 0);
-  iupImageStockSet("IUP_FontBold", 0, "gtk-bold");
-  iupImageStockSet("IUP_FontDialog", 0, "gtk-font");
-  iupImageStockSet("IUP_FontItalic", 0, "gtk-italic");
   iupImageStockSet("IUP_MediaForward", 0, "gtk-media-forward-ltr");
   iupImageStockSet("IUP_MediaGotoBegin", 0, "gtk-media-previous-ltr");
   iupImageStockSet("IUP_MediaGoToEnd", 0, "gtk-media-next-ltr");
@@ -61,12 +51,27 @@ void iupImglibBaseLibGtk16x16Open(void)
   iupImageStockSet("IUP_ToolsSortAscend", 0, "gtk-sort-ascending");
   iupImageStockSet("IUP_ToolsSortDescend", 0, "gtk-sort-descending");
   iupImageStockSet("IUP_ViewFullScreen", 0, "gtk-fullscreen");
-  iupImageStockSet("IUP_Webcam", load_image_iupgtk_webcam, 0);
-  iupImageStockSet("IUP_WindowsCascade", load_image_iupgtk_cascade, 0);
-  iupImageStockSet("IUP_WindowsTile", load_image_iupgtk_tile, 0);
-  iupImageStockSet("IUP_Zoom", load_image_iupgtk_zoom, 0);
   iupImageStockSet("IUP_ZoomActualSize", 0, "gtk-zoom-100");
   iupImageStockSet("IUP_ZoomIn", 0, "gtk-zoom-in");
   iupImageStockSet("IUP_ZoomOut", 0, "gtk-zoom-out");
   iupImageStockSet("IUP_ZoomSelection", 0, "gtk-zoom-fit");
+
+#ifdef IUP_IMGLIB_OLD
+  iupImageStockSet("IUP_FileSaveAll", load_image_iupgtk_save_all, 0);
+  iupImageStockSet("IUP_FileCloseAll", load_image_iupgtk_close_all, 0);
+  iupImageStockSet("IUP_FileText", load_image_iupgtk_text, 0);
+  iupImageStockSet("IUP_WindowsCascade", load_image_iupgtk_cascade, 0);
+  iupImageStockSet("IUP_WindowsTile", load_image_iupgtk_tile, 0);
+  iupImageStockSet("IUP_Zoom", load_image_iupgtk_zoom, 0);
+
+  iupImageStockSet("IUP_Webcam", load_image_iupgtk_webcam, 0);
+
+  iupImageStockSet("IUP_ArrowDown", 0, "gtk-go-down");
+  iupImageStockSet("IUP_ArrowLeft", 0, "gtk-go-back-ltr");
+  iupImageStockSet("IUP_ArrowRight", 0, "gtk-go-forward-ltr");
+  iupImageStockSet("IUP_ArrowUp", 0, "gtk-go-up");
+  iupImageStockSet("IUP_FontBold", 0, "gtk-bold");
+  iupImageStockSet("IUP_FontDialog", 0, "gtk-font");
+  iupImageStockSet("IUP_FontItalic", 0, "gtk-italic");
+#endif
 }

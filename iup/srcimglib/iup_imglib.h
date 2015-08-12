@@ -22,14 +22,12 @@ void iupImglibLogosMot48x48Open(void);      /* Used only by the Motif driver */
 
 void iupImglibLogos32x32Open(void);
 
-#ifdef IUP_IMGLIB_LARGE
 void iupImglibLogos48x48Open(void);
 void iupImglibIconsGtk48x48Open(void);
 
 #ifdef WIN32
 void iupImglibIconsWin48x48Open(void);
 #endif
-#endif  
 
 #ifdef __cplusplus
 }
