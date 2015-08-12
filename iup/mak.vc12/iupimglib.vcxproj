@@ -131,8 +131,15 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\srcimglib\iup_imglib_basewin16x16.c" />
+    <ClCompile Include="..\srcimglib\iup_imglib_basewin16x16.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\srcimglib\iup_imglib_basewin32x32.c" />
+    <ClCompile Include="..\srcimglib\iup_imglib_iconsgtk48x48.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\srcimglib\iup_imglib_iconswin48x48.c" />
     <ClCompile Include="..\srcimglib\iup_imglib_logos32x32.c" />
     <ClCompile Include="..\srcimglib\iup_imglib_logos32x32_8bpp.c">

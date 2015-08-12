@@ -46,9 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\srcimglib\iup_image_library.c" />
-    <ClCompile Include="..\srcimglib\iup_imglib_basewin16x16.c">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\srcimglib\iup_imglib_iconswin48x48.c">
       <Filter>src</Filter>
     </ClCompile>
@@ -71,6 +68,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\srcimglib\iup_imglib_basegtk16x16.c">
+      <Filter>src2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcimglib\iup_imglib_basewin16x16.c">
+      <Filter>src2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcimglib\iup_imglib_iconsgtk48x48.c">
       <Filter>src2</Filter>
     </ClCompile>
   </ItemGroup>
