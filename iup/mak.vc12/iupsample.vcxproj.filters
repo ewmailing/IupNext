@@ -628,9 +628,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\test\iuptest.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_toolbox.h">
       <Filter>Tutorial\CPP 2</Filter>
     </ClInclude>
@@ -646,5 +643,10 @@
     <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_canvas.h">
       <Filter>Tutorial\CPP 2</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\html\examples\tests\iuptest.rc">
+      <Filter>Tutorial</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

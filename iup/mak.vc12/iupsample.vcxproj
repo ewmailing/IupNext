@@ -628,9 +628,6 @@ cd.lib
     <None Include="..\html\examples\tutorial\simple_notepad.lua" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\test\iuptest.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="iupcontrols.vcxproj">
       <Project>{5eefe977-c56d-462f-bdee-12a5452eb8cc}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -662,6 +659,9 @@ cd.lib
     <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_file.h" />
     <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_toolbox.h" />
     <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\html\examples\tests\iuptest.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

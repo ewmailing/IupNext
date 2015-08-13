@@ -78,7 +78,7 @@ static void iDataResize(int src_width, int src_height, unsigned char *src_map, i
   free(T);
 }
 
-static void IupImageResize(Ihandle* ih, int width, int height)
+static void iupImageResize(Ihandle* ih, int width, int height)
 {
   unsigned char* imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   int channels = iupAttribGetInt(ih, "CHANNELS");
@@ -141,7 +141,7 @@ void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char
 
 int iupImageStockGetSize(void)
 {
-  char* stock_size = IupGetGlobal("STOCKSIZE");
+  char* stock_size = IupGetGlobal("IMAGESTOCKSIZE");
   if (stock_size)
   {
     int size = 16;
@@ -182,18 +182,21 @@ static void iImageStockGet(const char* name, Ihandle* *ih, const char* *native_n
         *native_name = istock->native_name;
     else if (istock->func)
     {
-      int stock_size;
+      int stock_size, bpp;
 
       istock->image = istock->func();
       *ih = istock->image;
 
       stock_size = iupImageStockGetSize();
-      if (istock->image->currentheight != stock_size)
+      bpp = IupGetInt(istock->image, "BPP");
+
+      if (istock->image->currentheight != stock_size && bpp > 8)
       {
         int new_width = stock_size;
         if (istock->image->currentwidth != istock->image->currentheight)
           new_width = (stock_size * istock->image->currentwidth) / istock->image->currentheight;
-        IupImageResize(istock->image, new_width, stock_size);
+
+        iupImageResize(istock->image, new_width, stock_size);
       }
     }
   }
@@ -401,6 +404,62 @@ void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char
 /**************************************************************************************************/
 
 
+static Ihandle* iImageGetImageFromName(const char* name)
+{
+  Ihandle* ih = IupGetHandle(name);
+
+  if (ih)
+  {
+    int bpp = IupGetInt(ih, "BPP");
+    char* autoscale = iupAttribGet(ih, "AUTOSCALE");
+    if (!autoscale) autoscale = IupGetGlobal("IMAGEAUTOSCALE");
+    if (autoscale && bpp > 8 && !iupAttribGet(ih, "SCALED"))
+    {
+      float scale = 0;
+
+      if (iupStrEqualNoCase(autoscale, "DPI"))
+      {
+        int dpi = (int)(iupdrvGetScreenDpi() + 0.6);
+
+        if (dpi <= 96)
+          scale = 1.0f;
+        else if (dpi <= 144)
+          scale = 1.5f;
+        else if (dpi <= 192)
+          scale = 2.0f;
+        else
+          scale = 3.0f;
+      }
+      else
+        iupStrToFloat(autoscale, &scale);
+
+      if (scale)
+      {
+        char* hotspot = iupAttribGet(ih, "HOTSPOT");
+
+        int new_width = iupRound(scale*ih->currentwidth);
+        int new_height = iupRound(scale*ih->currentheight);
+
+        iupImageResize(ih, new_width, new_height);
+        iupAttribSet(ih, "SCALED", "1");
+
+        if (hotspot)
+        {
+          int x = 0, y = 0;
+          iupStrToIntInt(hotspot, &x, &y, ':');
+
+          x = iupRound(scale*x);
+          y = iupRound(scale*y);
+
+          iupAttribSetStrf(ih, "HOTSPOT", "%d:%d", x, y);
+        }
+      }
+    }
+  }
+
+  return ih;
+}
+
 void* iupImageGetMask(const char* name)
 {
   void* mask;
@@ -409,8 +468,7 @@ void* iupImageGetMask(const char* name)
   if (!name)
     return NULL;
 
-  /* get handle from name */
-  ih = IupGetHandle(name);
+  ih = iImageGetImageFromName(name);
   if (!ih)
     return NULL;
   
@@ -436,8 +494,7 @@ void* iupImageGetIcon(const char* name)
   if (!name)
     return NULL;
 
-  /* get handle from name */
-  ih = IupGetHandle(name);
+  ih = iImageGetImageFromName(name);
   if (!ih)
   {
     /* Check in the system resources. */
@@ -470,8 +527,7 @@ void* iupImageGetCursor(const char* name)
   if (!name)
     return NULL;
 
-  /* get handle from name */
-  ih = IupGetHandle(name);
+  ih = iImageGetImageFromName(name);
   if (!ih)
   {
     /* Check in the system resources. */
@@ -504,8 +560,7 @@ void iupImageGetInfo(const char* name, int *w, int *h, int *bpp)
   if (!name)
     return;
 
-  /* get handle from name */
-  ih = IupGetHandle(name);
+  ih = iImageGetImageFromName(name);
   if (!ih)
   {
     const char* native_name = NULL;
@@ -550,8 +605,7 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
   if (!name)
     return NULL;
 
-  /* get handle from name */
-  ih = IupGetHandle(name);
+  ih = iImageGetImageFromName(name);
   if (!ih)
   {
     const char* native_name = NULL;
@@ -750,7 +804,7 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
   ih->currentwidth = width;
   ih->currentheight = height;
 
-  channels = 1;
+  channels = 1;  /* bpp == 8 */
   if (bpp == 24)
     channels = 3;
   else if (bpp == 32)

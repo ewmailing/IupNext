@@ -436,15 +436,15 @@ void SimplePaintToolbox::CreateDialog(Ihandle* parent_dlg, Ihandle* main_config)
     IupRadio(gbox),
     IupFrame(IupSetAttributes(IupVbox(
       IupSetAttributes(IupLabel("Color:"), "EXPAND=HORIZONTAL"),
-      IupSetCallbacks(IupSetAttributes(IupButton(NULL, NULL), "NAME=COLOR, BGCOLOR=\"0 0 0\", RASTERSIZE=28x21"), "ACTION", CB_ToolColorActionCallback, NULL),
+      IupSetCallbacks(IupSetAttributes(IupButton(NULL, NULL), "NAME=COLOR, BGCOLOR=\"0 0 0\", SIZE=20x10"), "ACTION", CB_ToolColorActionCallback, NULL),
       IupSetAttributes(IupLabel("Width:"), "EXPAND=HORIZONTAL"),
-      IupSetCallbacks(IupSetAttributes(IupText(NULL), "SPIN=Yes, SPINMIN=1, RASTERSIZE=48x"), "VALUECHANGED_CB", CB_ToolWidthValueChangedCallback, NULL),
+      IupSetCallbacks(IupSetAttributes(IupText(NULL), "SPIN=Yes, SPINMIN=1, SIZE=24x10"), "VALUECHANGED_CB", CB_ToolWidthValueChangedCallback, NULL),
       IupSetAttributes(IupLabel("Style:"), "EXPAND=HORIZONTAL"),
       IupSetCallbacks(IupSetAttributes(IupList(NULL), "DROPDOWN=Yes, VALUE=1, 1=\"____\", 2=\"----\", 3=\"....\", 4=\"-.-.\", 5=\"-..-..\""), "VALUECHANGED_CB", CB_ToolStyleValueChangedCallback, NULL),
       IupSetAttributes(IupLabel("Tol.: 50%"), "EXPAND=HORIZONTAL, NAME=FILLTOLLABEL"),
-      IupSetCallbacks(IupSetAttributes(IupVal(NULL), "NAME=FILLTOL, RASTERSIZE=60x30, VALUE=50, MAX=100"), "VALUECHANGED_CB", CB_ToolFillTolValueChangedCallback, NULL),
+      IupSetCallbacks(IupSetAttributes(IupVal(NULL), "NAME=FILLTOL, SIZE=40x10, VALUE=50, MAX=100"), "VALUECHANGED_CB", CB_ToolFillTolValueChangedCallback, NULL),
       IupSetAttributes(IupLabel("Font:"), "EXPAND=HORIZONTAL"),
-      IupSetCallbacks(IupSetAttributes(IupButton("F", NULL), "NAME=FONT, RASTERSIZE=21x21, FONT=\"Times, Bold Italic 11\""), "ACTION", CB_ToolFontActionCallback, NULL),
+      IupSetCallbacks(IupSetAttributes(IupButton("F", NULL), "NAME=FONT, PADDING=5x2, FONT=\"Times, Bold Italic 11\""), "ACTION", CB_ToolFontActionCallback, NULL),
       NULL), "MARGIN=3x2, GAP=2, ALIGNMENT=ACENTER")),
     NULL);
   IupSetAttribute(vbox, "NMARGIN", "2x2");

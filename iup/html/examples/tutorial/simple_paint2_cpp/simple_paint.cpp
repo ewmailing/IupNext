@@ -935,7 +935,7 @@ Ihandle* SimplePaint::CreateStatusbar()
     IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
     IupSetAttributes(IupLabel("100%"), "SIZE=30x, PADDING=10x5, NAME=ZOOMLABEL, ALIGNMENT=ARIGHT"),
     IupSetCallbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=IUP_ZoomOut, FLAT=Yes, TIP=\"Zoom Out (Ctrl+-)\", CANFOCUS=No"), "ACTION", CB_ItemZoomoutActionCallback, NULL),
-    IupSetCallbacks(IupSetAttributes(IupVal(NULL), "VALUE=0, MIN=-6, MAX=6, RASTERSIZE=150x25, NAME=ZOOMVAL, CANFOCUS=No"), "VALUECHANGED_CB", CB_ZoomValueChangedCallback, NULL),
+    IupSetCallbacks(IupSetAttributes(IupVal(NULL), "VALUE=0, MIN=-6, MAX=6, SIZE=50x10, NAME=ZOOMVAL, CANFOCUS=No"), "VALUECHANGED_CB", CB_ZoomValueChangedCallback, NULL),
     IupSetCallbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=IUP_ZoomIn, FLAT=Yes, TIP=\"Zoom In (Ctrl++)\", CANFOCUS=No"), "ACTION", CB_ItemZoominActionCallback, NULL),
     IupSetCallbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=IUP_ZoomActualSize, FLAT=Yes, TIP=\"Actual Size (Ctrl+0)\", CANFOCUS=No"), "ACTION", CB_ItemActualsizeActionCallback, NULL),
     NULL);

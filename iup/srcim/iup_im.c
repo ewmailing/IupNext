@@ -38,13 +38,13 @@ static void iSaveErrorMsg(int error)
       msg = "Error Opening Image File.";
       break;
     case IM_ERR_MEM:
-      msg = "Insuficient memory.";
+      msg = "Insufficient memory.";
       break;
     case IM_ERR_ACCESS:
       msg = "Error Accessing Image File.";
       break;
     case IM_ERR_DATA:
-      msg = "Image type not Suported.";
+      msg = "Image type not Supported.";
       break;
     case IM_ERR_FORMAT:
       msg = "Invalid Image File Format.";

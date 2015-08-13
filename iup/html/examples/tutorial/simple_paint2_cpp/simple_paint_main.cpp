@@ -11,6 +11,8 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);
   IupImageLibOpen();
 
+  IupSetGlobal("IMAGEAUTOSCALE", "DPI");
+
   SimplePaint app;
 
   /* open a file from the command line (allow file association in Windows) */
