@@ -21,7 +21,7 @@
 </ul>
 </div>
 
-<h2>5. Object Oriented Simple Paint</h2>
+<h2>5. Advanced Topics</h2>
 <h3>5.1 <a name="Encapsulation">C++ Encapsulation</a></h3>
 <p>As you recall from chapter 4, our Simple Paint source code now has 2500 
 lines. It is a lot to process, specially if you are looking for bugs, or 
@@ -116,7 +116,7 @@ the encapsulation occurs. </p>
 <iframe src="../../examples/tutorial/simple_paint1.cpp" id="5_1" name="example5_1" marginheight="0" marginwidth="0" style="height: 31em">
 </iframe>
 
-<h3>5.2 <a name="Modularization">Modularization</a></h3>
+<h3>5.2 C++ <a name="Modularization">Modularization</a></h3>
 <p>In the previous section we purposely left all classes in the same file so you 
 will be able to compare it with the C source code. But now is the time to split 
 the code in several modules, one for each class. So instead of a 2500 
@@ -142,8 +142,23 @@ we said is the essential tool for our paint interface. So it is a natural
 candidate for separate class we called <strong>SimplePaintCanvas</strong>. It 
 will hide the canvas from the main dialog, and encapsulate all its features, 
 mainly interaction and zoom control. It is called &quot;simple_paint_canvas.cpp/h&quot;.</p>
-<p>Now it is not just easier to find the part of the code we want to fix or 
-change, but it is </p>
+<p>Now it is not just easier to find the part of the code you want to change, 
+but it helps to reduce the interference in other modules of what you have just 
+changed.</p>
+<p>But notice that our modularization is still not perfect. Inside <strong>SimplePaintCanvas</strong> 
+there are some references to controls that are located in the Statusbar. </p>
+<p>The next stage will be to use Dynamic Dispatch, or in C++, virtual methods 
+and inheritance to implement classes for the interactive tools to make it easier 
+to add new tools.</p>
+<p>Also our classes are instantiated just one time. What about adding support 
+for editing multiple image files simultaneously, but instead of using the old 
+Windows MDI concept to use a <strong>IupTabs</strong> to alternate between the 
+files. </p>
+<p>In Lua the changes would be very similar, using tables to isolate the code of 
+each module.</p>
+<p>So there plenty of possibilities for improving our object oriented modeling. 
+If you implement some of them, please let us know and share your code so we can 
+add it to the tutorial.</p>
 
 
 <p class="example_title">Example Source Code (Implementation) [C++]
@@ -183,6 +198,11 @@ change, but it is </p>
 </p>
 <iframe src="../../examples/tutorial/simple_paint2_cpp/simple_paint.h" id="5_2_h" name="simple_paint2_h" marginheight="0" marginwidth="0" style="height: 31em">
 </iframe>
+
+<br>
+
+<h3>5.3 <a name="High_Resolution_Display">High Resolution Display</a> </h3>
+<p>XXX</p>
 
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>
