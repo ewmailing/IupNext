@@ -78,6 +78,17 @@ Default uses the one defined by the system locale.</p>
 <p>Flag indicating that GTK is using a global menu instead of a per window menu. 
 See more information at the <a href="../drv/gtk.html">GTK driver</a> 
 documentation.</p>
+<h3><b>IMAGEAUTOSCALE <span class="style2">(since 3.16)</span></b></h3>
+<p>Automatically scale all images, except stock images, by a given real factor. 
+If &quot;DPI&quot; value is used the factor will be automatically calculated from the 
+screen resolution: if res &lt;= 96 DPI then factor = 1, if 144 DPI factor = 1.5, if 
+192 DPI factor = 2, else factor = 3. Only images with BPP &gt; 8 are scaled. </p>
+<h3>IMAGESTOCKSIZE <b><span class="style2">(since 3.16)</span></b></h3>
+<p>Force a size for stock images by controlling the image height. If that image 
+size is not available the stock image is resized to match the given size. By 
+default the size will be automatically calculated from the screen resolution: if 
+res &lt;= 96 DPI then size = 16, if 144 DPI size = 24, if 192 DPI size = 32, else 
+size = 48. Only images with BPP &gt; 8 are scaled. </p>
 <h3>IUPLUA_THREADED<span class="style2"> (since 3.6)</span></h3>
 <p>If defined allow IUP to be used inside coroutines in Lua.</p>
 <h3><strong>SINGLEINSTANCE</strong> [Windows Only]<span class="style2"> (since 3.2)</span></h3>

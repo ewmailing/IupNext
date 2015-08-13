@@ -91,7 +91,13 @@ imagergba(<strong>width</strong>, <strong>height</strong>, <strong>pixel0</stron
   
   </blockquote>
   
-  <p><b>BGCOLOR</b>: The color used for transparency. If not defined uses the 
+  <p><b>AUTOSCALE</b>: automatically scale the image by a given real factor. If 
+  &quot;DPI&quot; value is used the factor will be automatically calculated from the 
+  screen resolution: if res &lt;= 96 DPI then factor = 1, if 144 DPI factor = 1.5, 
+  if 192 DPI factor = 2, else factor = 3. If not defined the global attribute 
+  IMAGEAUTOSCALE will be used if defined. Only images with BPP &gt; 8 are scaled. 
+  (since 3.16)</p>
+<p><b>BGCOLOR</b>: The color used for transparency. If not defined uses the 
 	BGCOLOR of the control that contains the image.</p>
 
   <p><b>BPP </b>(read-only): returns the number of bits per pixel in the image. 
