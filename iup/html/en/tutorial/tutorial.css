@@ -21,6 +21,24 @@
   font-weight: bold;
 }
 
+.example_title2 {
+  border-style: solid solid hidden solid;
+  border-width: 1px;
+  border-color: #62A0FF;
+  overflow: visible;
+  padding: 10px;
+  margin-left: 3em;
+  line-height: 100%;
+  margin-top: 0em;
+  margin-bottom: 0em;
+  margin-right: 3em;
+  background-color: #CEE7FF;
+  width: 90%;
+  font-size: 90%;
+  font-weight: bold;
+  text-align: right;
+}
+
 .example_button {
 	border-style: solid solid solid solid;
 	border-width: 1px;

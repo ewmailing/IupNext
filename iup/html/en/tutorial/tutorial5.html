@@ -119,12 +119,70 @@ the encapsulation occurs. </p>
 <h3>5.2 <a name="Modularization">Modularization</a></h3>
 <p>In the previous section we purposely left all classes in the same file so you 
 will be able to compare it with the C source code. But now is the time to split 
-the code in several modules, one for each class. So instead of a giant 2500 
+the code in several modules, one for each class. So instead of a 2500 
 lines file, we now reduce to 1000 lines for the main file (where the main dialog 
 is) and the rest distributed in the other files.</p>
 
 <p>But we actually were able to create a total of 6 modules! 3 modules for the 
-classes we already described, and 3 new modules.</p>
+classes we already described, and 3 new modules. The 3 modules we already expect 
+are: &quot;simple_paint.cpp/h&quot; (<strong>SimplePaint</strong> class), &quot;simple_paint_toolbox.cpp/h&quot; 
+(<strong>SimplePaintToolbox</strong>&nbsp; class) and &quot;simple_paint_file.cpp/h&quot; 
+(<strong>SimplePaintFile</strong> class). </p>
+<p>The first new module is a very simple one, called &quot;simple_paint_main.cpp&quot;. It 
+contains only the &quot;<strong>main</strong>&quot; function necessary for the application 
+starting point. </p>
+<p>The second new module is to store the utility functions that are not related 
+to any specific classes. It is called &quot;simple_paint_util.cpp/h&quot;.</p>
+<p>And the third module is a new class that we identified mixed up with our
+<strong>SimplePaint</strong> class. Inside the main dialog we have a very 
+important control that does the most important interface task that is to show 
+the image and do the direct interaction defined by the toolbox. As you can guess 
+now is the <strong>IupCanvas</strong>. It has several speciall callbacks and as 
+we said is the essential tool for our paint interface. So it is a natural 
+candidate for separate class we called <strong>SimplePaintCanvas</strong>. It 
+will hide the canvas from the main dialog, and encapsulate all its features, 
+mainly interaction and zoom control. It is called &quot;simple_paint_canvas.cpp/h&quot;.</p>
+<p>Now it is not just easier to find the part of the code we want to fix or 
+change, but it is </p>
+
+
+<p class="example_title">Example Source Code (Implementation) [C++]
+<span class="example_button">
+<a target="simple_paint2_cpp" href="../../examples/tutorial/simple_paint2_cpp/simple_paint.cpp">simple_paint.cpp</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint.cpp"><img alt="" src="download.png"></a></span> 
+<span class="example_button">
+<a target="simple_paint2_cpp" href="../../examples/tutorial/simple_paint2_cpp/simple_paint_canvas.cpp">simple_paint_canvas.cpp</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint_canvas.cpp"><img alt="" src="download.png"></a></span>
+</p>
+<p class="example_title2">
+<span class="example_button">
+<a target="simple_paint2_cpp" href="../../examples/tutorial/simple_paint2_cpp/simple_paint_toolbox.cpp">simple_paint_toolbox.cpp</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint_toolbox.cpp"><img alt="" src="download.png"></a></span>
+<span class="example_button">
+<a target="simple_paint2_cpp" href="../../examples/tutorial/simple_paint2_cpp/simple_paint_file.cpp">simple_paint_file.cpp</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint_file.cpp"><img alt="" src="download.png"></a></span>
+<span class="example_button">
+<a target="simple_paint2_cpp" href="../../examples/tutorial/simple_paint2_cpp/simple_paint_util.cpp">simple_paint_util.cpp</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint_util.cpp"><img alt="" src="download.png"></a></span> 
+</p>
+<p class="example_title2">
+<span class="example_button">
+<a target="simple_paint2_cpp" href="../../examples/tutorial/simple_paint2_cpp/simple_paint_main.cpp">simple_paint_main.cpp</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint_main.cpp"><img alt="" src="download.png"></a></span> 
+</p>
+<iframe src="../../examples/tutorial/simple_paint2_cpp/simple_paint.cpp" id="5_2_cpp" name="simple_paint2_cpp" marginheight="0" marginwidth="0" style="height: 31em">
+</iframe>
+
+<p class="example_title">Example Source Code (Declaration)
+[C++] <span class="example_button">
+<a target="simple_paint2_h" href="../../examples/tutorial/simple_paint2_cpp/simple_paint.h">simple_paint.h</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint.h"><img alt="" src="download.png"></a></span> 
+<span class="example_button">
+<a target="simple_paint2_h" href="../../examples/tutorial/simple_paint2_cpp/simple_paint_canvas.h">simple_paint_canvas.h</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint_canvas.h"><img alt="" src="download.png"></a></span>
+</p>
+<p class="example_title2">
+<span class="example_button">
+<a target="simple_paint2_h" href="../../examples/tutorial/simple_paint2_cpp/simple_paint_toolbox.h">simple_paint_toolbox.h</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint_toolbox.h"><img alt="" src="download.png"></a></span>
+<span class="example_button">
+<a target="simple_paint2_h" href="../../examples/tutorial/simple_paint2_cpp/simple_paint_file.h">simple_paint_file.h</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint_file.h"><img alt="" src="download.png"></a></span>
+<span class="example_button">
+<a target="simple_paint2_h" href="../../examples/tutorial/simple_paint2_cpp/simple_paint_util.h">simple_paint_util.h</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint_util.h"><img alt="" src="download.png"></a></span> 
+</p>
+<iframe src="../../examples/tutorial/simple_paint2_cpp/simple_paint.h" id="5_2_h" name="simple_paint2_h" marginheight="0" marginwidth="0" style="height: 31em">
+</iframe>
 
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>
@@ -133,5 +191,6 @@ classes we already described, and 3 new modules.</p>
 		<td align="right" class="tutorial_bottom"><a href="tutorial6.html">Next</a></td>
 	</tr>
 </table>
+
 </body>
 </html>
