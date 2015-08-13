@@ -17,6 +17,7 @@
 #include "iup_image.h"
 #include "iup_assert.h"
 #include "iup_stdcontrols.h"
+#include "iup_drvinfo.h"
 
 
 static void iDataResize(int src_width, int src_height, unsigned char *src_map, int dst_width, int dst_height, unsigned char *dst_map, int depth)
@@ -138,6 +139,38 @@ void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char
   iupTableSet(istock_table, name, (void*)istock, IUPTABLE_POINTER);
 }
 
+int iupImageStockGetSize(void)
+{
+  char* stock_size = IupGetGlobal("STOCKSIZE");
+  if (stock_size)
+  {
+    int size = 16;
+    iupStrToInt(stock_size, &size);
+
+    if (size <= 16) 
+      return 16;
+    else if (size <= 24) 
+      return 24;
+    else if (size <= 32)
+      return 32;
+    else
+      return 48;
+  }
+  else
+  {
+    int dpi = (int)(iupdrvGetScreenDpi() + 0.6);
+
+    if (dpi <= 96)
+      return 16;
+    else if (dpi <= 144)
+      return 24;
+    else if (dpi <= 192)
+      return 32;
+    else 
+      return 48;
+  }
+}
+
 static void iImageStockGet(const char* name, Ihandle* *ih, const char* *native_name)
 {
   IimageStock* istock = (IimageStock*)iupTableGet(istock_table, name);
@@ -149,30 +182,19 @@ static void iImageStockGet(const char* name, Ihandle* *ih, const char* *native_n
         *native_name = istock->native_name;
     else if (istock->func)
     {
-      char* stock_size;
+      int stock_size;
 
       istock->image = istock->func();
       *ih = istock->image;
 
-      stock_size = IupGetGlobal("STOCKSIZE");
-      if (stock_size)
+      stock_size = iupImageStockGetSize();
+      if (istock->image->currentheight != stock_size)
       {
-        int size = 16;
-        iupStrToInt(stock_size, &size);
-        if (size <= 16) size = 16;
-        else if (size <= 24) size = 24;
-        else if (size <= 32) size = 32;
-        else size = 48;
-
-        if (istock->image->currentheight != size)
-        {
-          int new_width = size;
-          if (istock->image->currentwidth != istock->image->currentheight)
-            new_width = (size * istock->image->currentwidth) / istock->image->currentheight;
-          IupImageResize(istock->image, new_width, size);
-        }
+        int new_width = stock_size;
+        if (istock->image->currentwidth != istock->image->currentheight)
+          new_width = (stock_size * istock->image->currentwidth) / istock->image->currentheight;
+        IupImageResize(istock->image, new_width, stock_size);
       }
-
     }
   }
 }

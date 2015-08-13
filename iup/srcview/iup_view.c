@@ -1064,8 +1064,6 @@ int main (int argc, char **argv)
     IupControlsOpen();
     IupImageLibOpen();
 
-    //IupSetGlobal("GTKICONSIZE", "DIALOG");
-
     mainUpdateInternals();
 
     main_dialog = mainDialog();

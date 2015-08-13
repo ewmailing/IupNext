@@ -47,10 +47,11 @@ when associated with a control.</p>
 	pixels size, they actually depends on the current GTK theme used by the 
 	system.</p>
 <p>In Windows and GTK, to force a specific height for the images use the 
-STOCKSIZE global attribute, it can have the following values 16, 24, 32 and 48. 
-In GTK if the system does not provides the image in that size it will be 
-automatically resized. In Windows if the image is not 32x32 then it will be 
-automatically resized. </p>
+STOCKSIZE global attribute (since 3.16), it can have the following values 16, 
+24, 32 and 48. In GTK if the system does not provides the image in that size it 
+will be automatically resized from an existing size. In Windows if the image is 
+not 32x32 then it will be automatically resized. The default size depends on the 
+screen resolution: 96 DPI = 16, 144 DPI = 24, 192 DPI = 32, 288 DPI = 48.</p>
   <table align="center">
     <tr>
       <th bgcolor="#C0C0C0">Name</th>

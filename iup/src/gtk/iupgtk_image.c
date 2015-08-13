@@ -416,42 +416,19 @@ static GdkPixbuf *gtkImageLoadFactoryIcon(const char* name, int render_icon_size
 
   return pixbuf;
 }
-#endif /* GTK < 3.10 */
 
-static void gtkImageGetStockSize(const char* stock_size, int *theme_size, GtkIconSize *render_icon_size)
+static GtkIconSize gtkImageGetRenderIconSize(int stock_size)
 {
-  iupStrToInt(stock_size, theme_size);
-  if (*theme_size <= 16)
-  {
-    *theme_size = 16;
-    *render_icon_size = GTK_ICON_SIZE_MENU;
-  }
-  else if (*theme_size <= 20)
-  {
-    *theme_size = 20;
-    *render_icon_size = GTK_ICON_SIZE_BUTTON;
-  }
-  else if (*theme_size <= 18)
-  {
-    *theme_size = 18;
-    *render_icon_size = GTK_ICON_SIZE_SMALL_TOOLBAR;
-  }
-  else if (*theme_size <= 24)
-  {
-    *theme_size = 24;
-    *render_icon_size = GTK_ICON_SIZE_LARGE_TOOLBAR;
-  }
-  else if (*theme_size <= 32)
-  {
-    *theme_size = 32;
-    *render_icon_size = GTK_ICON_SIZE_DND;
-  }
+  if (stock_size <= 16)
+    return GTK_ICON_SIZE_MENU;
+  else if (stock_size <= 24)
+    return GTK_ICON_SIZE_LARGE_TOOLBAR;
+  else if (stock_size <= 32)
+    return GTK_ICON_SIZE_DND;
   else
-  {
-    *theme_size = 48;
-    *render_icon_size = GTK_ICON_SIZE_DIALOG;
-  }
+    return GTK_ICON_SIZE_DIALOG;
 }
+#endif /* GTK < 3.10 */
 
 void* iupdrvImageLoad(const char* name, int type)
 {
@@ -463,24 +440,19 @@ void* iupdrvImageLoad(const char* name, int type)
 #endif
   else
   {
-    int theme_size = 16;
-    GtkIconSize render_icon_size = GTK_ICON_SIZE_MENU;
+    int stock_size = 16;
+    GTK_ICON_SIZE_MENU;
     GdkPixbuf *pixbuf = NULL;
     GtkIconTheme* icon_theme;
 
-    char* stock_size = IupGetGlobal("STOCKSIZE");
-    if (stock_size)
-      gtkImageGetStockSize(stock_size, &theme_size, &render_icon_size);
+    stock_size = iupImageStockGetSize();
 
     /* approach for older GTK version */
     icon_theme = gtk_icon_theme_get_default();
     if (icon_theme)
     {
       GError *error = NULL;
-      pixbuf = gtk_icon_theme_load_icon(icon_theme, name,
-                                        theme_size, /* size */
-                                        0,  /* flags */
-                                        &error);
+      pixbuf = gtk_icon_theme_load_icon(icon_theme, name, stock_size, 0, &error);
       if (error)
         g_error_free(error);
     }
@@ -488,7 +460,10 @@ void* iupdrvImageLoad(const char* name, int type)
     /* approach for newer GTK version but less than 3.10 */
 #if !GTK_CHECK_VERSION(3, 10, 0)
     if (!pixbuf)
+    {
+      GtkIconSize render_icon_size = gtkImageGetRenderIconSize(stock_size);
       pixbuf = gtkImageLoadFactoryIcon(name, render_icon_size);
+    }
 #endif
 
     if (!pixbuf)
