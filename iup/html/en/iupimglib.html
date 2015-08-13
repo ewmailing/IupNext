@@ -42,14 +42,15 @@ when associated with a control.</p>
 <h3>Base Library Group</h3>
     <p>These bitmaps are 16x16-8bpp (Motif) and 32x32-32bpp (Windows) 
 	pixels size images that can be used in Buttons, usually inside toolbars. GTK 
-	has several image sizes available: 16x16, 20x20, 18x18, 24x24, 32x32, and 
-	48x48. GTK images displayed here are just a sample, they actually depends on 
-	the current GTK theme used by the system.</p>
-<p>&nbsp;(. But 
-	in GTK some control of the size can be done using GTKICONSIZE global 
-	attribute that accept values: &quot;MENU&quot; (16x16), &quot;BUTTON&quot; (20x20), 
-	&quot;SMALLTOOLBAR&quot; (18x18), &quot;LARGETOOLBAR&quot; (24x24), &quot;DND&quot; (32x32), and &quot;DIALOG&quot; 
-	(48x48).</p>
+	has several image sizes available: 16x16, 18x18, 20x20, 24x24, 32x32, and 
+	48x48. GTK images displayed here are just a sample with the 24x24-32bpp 
+	pixels size, they actually depends on the current GTK theme used by the 
+	system.</p>
+<p>In Windows and GTK, to force a specific height for the images use the 
+STOCKSIZE global attribute, it can have the following values 16, 24, 32 and 48. 
+In GTK if the system does not provides the image in that size it will be 
+automatically resized. In Windows if the image is not 32x32 then it will be 
+automatically resized. </p>
   <table align="center">
     <tr>
       <th bgcolor="#C0C0C0">Name</th>
@@ -391,7 +392,7 @@ the respective systems. All images are 48x48-32bpp pixels size.</p>
 </table>
 
 <h3>Icon Group 32x32<span class="style3"> (NOT available as C source code) 
-(since 3.15)
+(since 3.16)
   </span></h3>
  
 <p>Here are other images available in the IUP stock library, commonly used in Windows. All images are 32x32-32bpp pixels size.</p>

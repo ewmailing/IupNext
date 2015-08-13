@@ -418,34 +418,35 @@ static GdkPixbuf *gtkImageLoadFactoryIcon(const char* name, int render_icon_size
 }
 #endif /* GTK < 3.10 */
 
-static void gtkImageGetIconSize(const char* gtk_icon_size, int *theme_size, GtkIconSize *render_icon_size)
+static void gtkImageGetStockSize(const char* stock_size, int *theme_size, GtkIconSize *render_icon_size)
 {
-  if (iupStrEqualNoCase(gtk_icon_size, "MENU"))
+  iupStrToInt(stock_size, theme_size);
+  if (*theme_size <= 16)
   {
     *theme_size = 16;
     *render_icon_size = GTK_ICON_SIZE_MENU;
   }
-  else if (iupStrEqualNoCase(gtk_icon_size, "BUTTON"))
+  else if (*theme_size <= 20)
   {
     *theme_size = 20;
     *render_icon_size = GTK_ICON_SIZE_BUTTON;
   }
-  else if (iupStrEqualNoCase(gtk_icon_size, "SMALLTOOLBAR"))
+  else if (*theme_size <= 18)
   {
     *theme_size = 18;
     *render_icon_size = GTK_ICON_SIZE_SMALL_TOOLBAR;
   }
-  else if (iupStrEqualNoCase(gtk_icon_size, "LARGETOOLBAR"))
+  else if (*theme_size <= 24)
   {
     *theme_size = 24;
     *render_icon_size = GTK_ICON_SIZE_LARGE_TOOLBAR;
   }
-  else if (iupStrEqualNoCase(gtk_icon_size, "DND"))
+  else if (*theme_size <= 32)
   {
     *theme_size = 32;
     *render_icon_size = GTK_ICON_SIZE_DND;
   }
-  else if (iupStrEqualNoCase(gtk_icon_size, "DIALOG"))
+  else
   {
     *theme_size = 48;
     *render_icon_size = GTK_ICON_SIZE_DIALOG;
@@ -467,9 +468,9 @@ void* iupdrvImageLoad(const char* name, int type)
     GdkPixbuf *pixbuf = NULL;
     GtkIconTheme* icon_theme;
 
-    char* gtk_icon_size = IupGetGlobal("GTKICONSIZE");
-    if (gtk_icon_size)
-      gtkImageGetIconSize(gtk_icon_size, &theme_size, &render_icon_size);
+    char* stock_size = IupGetGlobal("STOCKSIZE");
+    if (stock_size)
+      gtkImageGetStockSize(stock_size, &theme_size, &render_icon_size);
 
     /* approach for older GTK version */
     icon_theme = gtk_icon_theme_get_default();

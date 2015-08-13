@@ -19,6 +19,80 @@
 #include "iup_stdcontrols.h"
 
 
+static void iDataResize(int src_width, int src_height, unsigned char *src_map, int dst_width, int dst_height, unsigned char *dst_map, int depth)
+{
+  /* Do bilinear interpolation */
+
+  unsigned char *line_mapl, *line_maph;
+  double t, u, src_x, src_y, factor;
+  int xl, yl, xh, yh, x, y;
+  unsigned char *fhh, *fll, *fhl, *flh;
+
+  int *XL = (int*)malloc(dst_width * sizeof(int));
+  double *T = (double*)malloc(dst_width * sizeof(double));
+
+  factor = (double)(src_width - 1) / (double)(dst_width - 1);
+  for (x = 0; x < dst_width; x++)
+  {
+    src_x = x * factor;
+    xl = (int)(src_x);
+    T[x] = src_x - xl;
+    XL[x] = xl;
+  }
+
+  factor = (double)(src_height - 1) / (double)(dst_height - 1);
+
+  for (y = 0; y < dst_height; y++)
+  {
+    src_y = y * factor;
+    yl = (int)(src_y);
+    yh = (yl == src_height - 1) ? yl : yl + 1;
+    u = src_y - yl;
+
+    line_mapl = src_map + yl * src_width * depth;
+    line_maph = src_map + yh * src_width * depth;
+
+    for (x = 0; x < dst_width; x++)
+    {
+      xl = XL[x];
+      xh = (xl == src_width - 1) ? xl : xl + 1;
+      t = T[x];
+
+      fll = line_mapl + xl * depth;
+      fhl = line_mapl + xh * depth;
+      flh = line_maph + xl * depth;
+      fhh = line_maph + xh * depth;
+
+      dst_map[0] = (unsigned char)(u * t * (fhh[0] - flh[0] - fhl[0] + fll[0]) + t * (fhl[0] - fll[0]) + u * (flh[0] - fll[0]) + fll[0]);
+      dst_map[1] = (unsigned char)(u * t * (fhh[1] - flh[1] - fhl[1] + fll[1]) + t * (fhl[1] - fll[1]) + u * (flh[1] - fll[1]) + fll[1]);
+      dst_map[2] = (unsigned char)(u * t * (fhh[2] - flh[2] - fhl[2] + fll[2]) + t * (fhl[2] - fll[2]) + u * (flh[2] - fll[2]) + fll[2]);
+      if (depth == 4)
+        dst_map[3] = (unsigned char)(u * t * (fhh[3] - flh[3] - fhl[3] + fll[3]) + t * (fhl[3] - fll[3]) + u * (flh[3] - fll[3]) + fll[3]);
+
+      dst_map += depth;
+    }
+  }
+
+  free(XL);
+  free(T);
+}
+
+static void IupImageResize(Ihandle* ih, int width, int height)
+{
+  unsigned char* imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
+  int channels = iupAttribGetInt(ih, "CHANNELS");
+  int count = width*height*channels;
+  unsigned char* new_imgdata = (unsigned char *)malloc(count);
+
+  iDataResize(ih->currentwidth, ih->currentheight, imgdata, width, height, new_imgdata, channels);
+
+  ih->currentwidth = width;
+  ih->currentheight = height;
+
+  free(imgdata);
+  iupAttribSet(ih, "WID", (char*)new_imgdata);
+}
+
 typedef struct _IimageStock
 {
   iupImageStockCreateFunc func;
@@ -75,8 +149,30 @@ static void iImageStockGet(const char* name, Ihandle* *ih, const char* *native_n
         *native_name = istock->native_name;
     else if (istock->func)
     {
+      char* stock_size;
+
       istock->image = istock->func();
       *ih = istock->image;
+
+      stock_size = IupGetGlobal("STOCKSIZE");
+      if (stock_size)
+      {
+        int size = 16;
+        iupStrToInt(stock_size, &size);
+        if (size <= 16) size = 16;
+        else if (size <= 24) size = 24;
+        else if (size <= 32) size = 32;
+        else size = 48;
+
+        if (istock->image->currentheight != size)
+        {
+          int new_width = size;
+          if (istock->image->currentwidth != istock->image->currentheight)
+            new_width = (size * istock->image->currentwidth) / istock->image->currentheight;
+          IupImageResize(istock->image, new_width, size);
+        }
+      }
+
     }
   }
 }
@@ -90,6 +186,7 @@ static void iImageStockUnload(const char* name)
 
 static void iImageStockLoad(const char *name)
 {
+  /* Used only in iupImageStockLoadAll */
   const char* native_name = NULL;
   Ihandle* ih = NULL;
   iImageStockGet(name, &ih, &native_name);
@@ -116,13 +213,22 @@ static void iImageStockLoad(const char *name)
   }
 }
 
+static int iImageStockExtended(const char* name)
+{
+  int len = (int)strlen(name);
+  if (len > 2 && iup_isdigit(name[len - 1]) && iup_isdigit(name[len - 2]))
+    return 1;
+  return 0;
+}
+
 void iupImageStockLoadAll(void)
 {
   /* Used only in IupView */
   char* name = iupTableFirst(istock_table);
   while (name)
   {
-    iImageStockLoad(name);
+    if (!iImageStockExtended(name))
+      iImageStockLoad(name);
     name = iupTableNext(istock_table);
   }
 }
