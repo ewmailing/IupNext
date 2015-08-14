@@ -7,10 +7,12 @@
 #include <im_image.h>
 
 
-char* str_duplicate(const char* str);
+char* str_duplicate(const char* str);  /* must be deleted */
+int str_compare(const char *l, const char *r, int casesensitive);
+
 const char* str_filetitle(const char *filename);
 const char* str_fileext(const char *filename);
-int str_compare(const char *l, const char *r, int casesensitive);
+char* str_filepath(const char *filename);  /* must be deleted */
 
 void show_error(const char* message, int is_error);
 void show_file_error(int error);

@@ -19,6 +19,29 @@ char* str_duplicate(const char* str)
   return new_str;
 }
 
+char* str_filepath(const char *filename)
+{
+  /* Start at the last character */
+  int len = (int)strlen(filename);
+  int offset = len - 1;
+  while (offset != 0)
+  {
+    if (filename[offset] == '\\' || filename[offset] == '/')
+      break;
+
+    offset--;
+  }
+
+  if (offset == 0)
+    return NULL;
+  else
+  {
+    char* file_path = str_duplicate(filename);
+    file_path[offset] = 0;
+    return file_path;
+  }
+}
+
 const char* str_filetitle(const char *filename)
 {
   /* Start at the last character */

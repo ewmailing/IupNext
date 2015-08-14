@@ -526,6 +526,7 @@ cd.lib
     <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_canvas.cpp" />
     <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_file.cpp" />
     <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_main.cpp" />
+    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_splash.cpp" />
     <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_toolbox.cpp" />
     <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_util.cpp" />
   </ItemGroup>
