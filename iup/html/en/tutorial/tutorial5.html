@@ -213,7 +213,7 @@ popular are the 20&quot; Full-HD wide screen monitors (16x9 at the same height a
 standard 4:3 monitor) with 1920x1080 pixels and a resolution of about 96 DPI. 
 Finally we got to the 4K wide screen monitors with 3840x2160 pixels. Even for a 
 24&quot; wide screen monitor, the resolution 3840x2160 pixels is 186 DPI. It is a lot 
-more then 96 DPI. For instance 16x16 pixels icons are very tiny. Here is an 
+more than 96 DPI. For instance 16x16 pixels icons are very tiny. Here is an 
 example using a browser page as reference:</p>
 
 <p class="example_image"><img alt="" src="example5_3a.png" class="auto-style2"></p>
@@ -223,7 +223,7 @@ layout using a larger font, and to include image sets for button when in high
 resolution. Usually this not occurs. IUP will automatically take care of the 
 layout (considering that the application used SIZE, CMARGIN and CGAP, instead of 
 RASTERSIZE, MARGIN and GAP), but images are commonly provided in one size only, 
-our SimplePaint is no different. To compensate that Microsoft used a strategy in 
+our <strong>SimplePaint</strong> is no different. To compensate that Microsoft used a strategy in 
 Windows that will do a low level resize of the application, so it can improve 
 its readability in sacrifice of its resolution. So this is how our SimplePaint 
 looks like with the resize strategy:</p>
@@ -236,17 +236,17 @@ monitor, not using the available resolution. Notice that even the menu text is
 blurred. To avoid that we added a few lines 
 to the Manifest file, declaring that we are a <strong>dpiAware</strong> 
 application. So this was how we obtained the previous screen shoot with the 
-small icons. Now that we know how to avoid Microsoft resize strategy it is time 
+small icons. Now that we know how to avoid the Microsoft resize strategy it is time 
 to improve our application readability by our own.</p>
 <p>We used in SimplePaint two sets of images, one from the <strong>IupImageLib</strong> 
-stock images, and one created for <strong>SimplePaint</strong> which are only 
+stock images, and one created just for <strong>SimplePaint</strong> which are only 
 16x16 pixels. We actually don't have to worry about the stock images, because 
-since IUP 3.16 they are automatically resized accordingly the screen resolution. 
-To obtain the first screen shot, we also had to disable this feature. But the 
-toolbox images only have 16x16 pixels. The solution would be to add new images 
+since IUP 3.16 they are automatically resized accordingly the screen resolution 
+(to obtain the first screen shot, we also had to disable this feature). But the 
+SimplePaint toolbox images only have 16x16 pixels. The solution would be to add new images 
 with at 32x32 pixels that can be used in place of the 16x16 if the resolution is 
-very high, for instance the global attribute SCREENDPI being greater than 150 
-DPI. But IUP also provides an automatic resize for images only using the same 
+very high, for instance by checking the global attribute SCREENDPI being greater than 150 
+DPI and selecting 16x16 or 32x32 images. But IUP also provides an automatic resize for images using the same 
 strategy that Microsoft does for the whole application. To do that we set the 
 IMAGEAUTOSCALE global attribute to the &quot;DPI&quot; value. So all the images will be 
 scaled accordingly. The result is the following:</p>
