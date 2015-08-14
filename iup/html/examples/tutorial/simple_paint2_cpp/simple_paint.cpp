@@ -41,7 +41,7 @@ static Ihandle* load_image_PaintZoomGrid(void)
 
 /*********************************** Utilities Methods **************************************/
 
-                        
+                     
 void SimplePaint::UpdateImage(imImage* new_image, bool update_size)
 {
   file.SetImage(new_image);
@@ -172,13 +172,13 @@ int SimplePaint::DialogDropfilesCallback(Ihandle*, char* filename)
 int SimplePaint::FileMenuOpenCallback(Ihandle*)
 {
   Ihandle* item_save = IupGetDialogChild(dlg, "ITEM_SAVE");
-  if (file.dirty)
+  if (file.GetImageChanged())
     IupSetAttribute(item_save, "ACTIVE", "YES");
   else
     IupSetAttribute(item_save, "ACTIVE", "NO");
 
   Ihandle* item_revert = IupGetDialogChild(dlg, "ITEM_REVERT");
-  if (file.dirty && file.GetFilename())
+  if (file.GetImageChanged() && file.GetFilename())
     IupSetAttribute(item_revert, "ACTIVE", "YES");
   else
     IupSetAttribute(item_revert, "ACTIVE", "NO");
@@ -304,7 +304,7 @@ int SimplePaint::ItemSaveActionCallback(Ihandle* item_save)
   else   
   {
     /* test again because in can be called using the hot key */
-    if (file.dirty)
+    if (file.GetImageChanged())
       file.SaveFile();
   }
   return IUP_DEFAULT;

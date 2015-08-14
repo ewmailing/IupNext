@@ -527,8 +527,7 @@ int SimplePaintCanvas::CanvasButtonCallback(Ihandle* canvas, int button, int pre
           {
             DrawPencil(interact.start_x, interact.start_y, x, y);
 
-            file->dirty = true;
-
+            file->SetImageChanged();
             IupUpdate(canvas);
 
             interact.start_x = x;
@@ -548,8 +547,8 @@ int SimplePaintCanvas::CanvasButtonCallback(Ihandle* canvas, int button, int pre
               cdKillCanvas(rgb_canvas);
 
               interact.overlay = false;
-              file->dirty = true;
 
+              file->SetImageChanged();
               IupUpdate(canvas);
             }
           }
@@ -562,8 +561,8 @@ int SimplePaintCanvas::CanvasButtonCallback(Ihandle* canvas, int button, int pre
               long color = toolbox->Color();
 
               image_flood_fill(file->GetImage(), x, y, color, tol_percent);
-              file->dirty = true;
 
+              file->SetImageChanged();
               IupUpdate(canvas);
             }
           }
@@ -645,8 +644,7 @@ int SimplePaintCanvas::CanvasMotionCallback(Ihandle* canvas, int x, int y, char 
         {
           DrawPencil(interact.start_x, interact.start_y, x, y);
 
-          file->dirty = true;
-
+          file->SetImageChanged();
           IupUpdate(canvas);
 
           interact.start_x = x;
@@ -657,6 +655,7 @@ int SimplePaintCanvas::CanvasMotionCallback(Ihandle* canvas, int x, int y, char 
           interact.end_x = x;
           interact.end_y = y;
           interact.overlay = true;
+
           IupUpdate(canvas);
         }
       }

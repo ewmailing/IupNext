@@ -11,9 +11,9 @@ class SimplePaintFile
 {
   char* filename;
   imImage* image;
+  bool dirty;
 
 public:
-  bool dirty;  /* leave it public */
 
   SimplePaintFile()
     :filename(0), image(0), dirty(false)
@@ -25,6 +25,9 @@ public:
 
   void SetImage(imImage* new_image, bool release = true);
   const imImage* GetImage() const { return image; }
+
+  void SetImageChanged() { dirty = true; }
+  bool GetImageChanged() const { return dirty; }
 
   imImage* Read(const char* new_filename) const;
   bool Write(const char* new_filename) const;
