@@ -420,20 +420,24 @@ static Ihandle* iImageGetImageFromName(const char* name)
       if (iupStrEqualNoCase(autoscale, "DPI"))
       {
         int dpi = (int)(iupdrvGetScreenDpi() + 0.6);
+        int images_dpi = IupGetInt(NULL, "IMAGESDPI");
+        if (images_dpi == 0) images_dpi = 96;
 
         if (dpi <= 96)
-          scale = 1.0f;
+          dpi = 96;
         else if (dpi <= 144)
-          scale = 1.5f;
+          dpi = 144;
         else if (dpi <= 192)
-          scale = 2.0f;
+          dpi = 192;
         else
-          scale = 3.0f;
+          dpi = 288;
+
+        scale = (float)dpi / (float)images_dpi;
       }
       else
         iupStrToFloat(autoscale, &scale);
 
-      if (scale)
+      if (scale > 0 && (scale < 0.99f || scale > 1.01))
       {
         char* hotspot = iupAttribGet(ih, "HOTSPOT");
 

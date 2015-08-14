@@ -12,6 +12,7 @@ int main(int argc, char **argv)
   IupImageLibOpen();
 
   IupSetGlobal("IMAGEAUTOSCALE", "DPI");
+  IupSetGlobal("IMAGESDPI", "96");
 
   SimplePaint app;
 
