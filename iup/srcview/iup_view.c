@@ -18,6 +18,9 @@
 #include "iup_object.h"
 
 
+/* #define STOCK_TEST "24" */
+
+
 #define MAX_NAMES 5000
 
 #ifdef USE_IM
@@ -75,7 +78,7 @@ static int is_image(const char* type)
     return 0;
 }
 
-static int showallimages_cb(void)
+static int showallimages_cb(Ihandle* ih)
 {
   Ihandle *dialog, *box, *files, *tabs, *toggle, *label;
   Ihandle* params[500];
@@ -102,7 +105,12 @@ static int showallimages_cb(void)
         tbox = IupVbox(NULL);
         IupSetAttribute(files, file_title, (char*)tbox);
         IupSetAttribute(tbox, "TABTITLE", file_title);
+#ifdef STOCK_TEST
+        params[n] = IupBackgroundBox(tbox);
+        IupSetStrAttribute(params[n], "BGCOLOR", IupGetAttribute(IupGetDialog(ih), "BGCOLOR"));
+#else
         params[n] = tbox;
+#endif
         n++;
       }
 
@@ -116,6 +124,9 @@ static int showallimages_cb(void)
       }
 
       button = IupButton("", NULL);
+#ifdef STOCK_TEST
+      IupSetAttribute(button, "FLAT", "Yes");
+#endif
       IupSetAttribute(button, "IMAGE", names[i]);
       IupSetfAttribute(button, "_INFO", "%s [%d,%d]", names[i], IupGetInt(elem, "WIDTH"), IupGetInt(elem, "HEIGHT"));
       IupSetCallback(button, "ACTION", (Icallback)imagebutton_cb);
@@ -1063,6 +1074,10 @@ int main (int argc, char **argv)
 #endif  
     IupControlsOpen();
     IupImageLibOpen();
+
+#ifdef STOCK_TEST
+    IupSetGlobal("IMAGESTOCKSIZE", STOCK_TEST);
+#endif
 
     mainUpdateInternals();
 

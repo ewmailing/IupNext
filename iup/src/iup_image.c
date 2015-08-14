@@ -32,7 +32,7 @@ static void iDataResize(int src_width, int src_height, unsigned char *src_map, i
   int *XL = (int*)malloc(dst_width * sizeof(int));
   double *T = (double*)malloc(dst_width * sizeof(double));
 
-  factor = (double)(src_width - 1) / (double)(dst_width - 1);
+  factor = (double)src_width / (double)dst_width;
   for (x = 0; x < dst_width; x++)
   {
     src_x = x * factor;
@@ -41,7 +41,7 @@ static void iDataResize(int src_width, int src_height, unsigned char *src_map, i
     XL[x] = xl;
   }
 
-  factor = (double)(src_height - 1) / (double)(dst_height - 1);
+  factor = (double)src_height / (double)dst_height;
 
   for (y = 0; y < dst_height; y++)
   {
