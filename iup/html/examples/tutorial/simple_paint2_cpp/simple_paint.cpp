@@ -1021,7 +1021,7 @@ SimplePaint::SimplePaint()
 
 
   /***************  Toolbox ***********/
-  toolbox.CreateDialog(iup_canvas, config);
+  toolbox.CreateDialog(dlg, config);
 
   /* Initialize variables from the configuration file */
   if (IupConfigGetVariableIntDef(config, "MainWindow", "Toolbox", 1))

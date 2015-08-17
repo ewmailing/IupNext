@@ -453,7 +453,6 @@ void SimplePaintToolbox::CreateDialog(Ihandle* parent_dlg, Ihandle* main_config)
   toolbox = IupDialog(vbox);
   IupSetAttribute(toolbox, "DIALOGFRAME", "Yes");
   IupSetAttribute(toolbox, "TITLE", "Tools");
-  IupSetAttribute(toolbox, "FONTSIZE", "8");
   IupSetAttribute(toolbox, "TOOLBOX", "Yes");
   IUP_CLASS_SETCALLBACK(toolbox, "CLOSE_CB", CloseCallback);
   IupSetAttributeHandle(toolbox, "PARENTDIALOG", parent_dlg);

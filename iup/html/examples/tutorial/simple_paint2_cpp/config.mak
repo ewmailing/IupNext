@@ -11,12 +11,13 @@ USE_STATIC = Yes
 
 #APPTYPE = console
 IUP = ../../../..
-PROJDIR = ../../..
+PROJDIR = ../../../..
 #DBG = Yes
 OPT=Yes
 
 SRC = simple_paint_file.cpp simple_paint_main.cpp simple_paint_toolbox.cpp \
-      simple_paint_util.cpp simple_paint.cpp simple_paint_canvas.cpp 
+      simple_paint_util.cpp simple_paint.cpp simple_paint_canvas.cpp \
+      simple_paint_splash.cpp
 
 #USE_CONTEXTPLUS = Yes
 #USE_OPENGL = Yes

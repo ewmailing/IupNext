@@ -30,23 +30,17 @@ void IupShowSplashDlg(const char* image)
 {
   Ihandle *dlg, *timer;
 
-#if _OLD_
   Ihandle* lbl = IupLabel(NULL);
-  IupSetAttribute(lbl, "IMAGE", image);
+  IupSetStrAttribute(lbl, "IMAGE", image);
 
   dlg = IupDialog(lbl);
-  IupSetAttribute(dlg, "BGCOLOR", "255 255 255");
-#else
-  dlg = IupDialog(NULL);
-  IupSetAttribute(dlg, "RASTERSIZE", "256x256");
-  IupSetAttribute(dlg, "BORDER", "NO");
-#endif
 
   IupSetAttribute(dlg,"RESIZE", "NO");
   IupSetAttribute(dlg,"MINBOX", "NO");
   IupSetAttribute(dlg,"MAXBOX", "NO");
   IupSetAttribute(dlg,"MENUBOX", "NO");
   IupSetAttribute(dlg,"TOPMOST", "YES");
+  IupSetStrAttribute(dlg, "OPACITYIMAGE", image);
 
   /* show the splash for 1 second without other windows,
      then start to show the main window. */
@@ -58,15 +52,7 @@ void IupShowSplashDlg(const char* image)
   IupSetAttribute(timer, "_FIRST_STAGE", "YES");
   IupSetAttribute(timer, "RUN", "YES");
 
-#ifndef WIN32  // Set before map in GTK
-  IupSetAttribute(dlg, "OPACITYIMAGE", image);
-#endif
-
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
-
-#ifdef WIN32   // Set after show in Windows
-  IupSetAttribute(dlg, "OPACITYIMAGE", image);
-#endif
 
   while(IupGetAttribute(timer, "_FIRST_STAGE"))
     IupLoopStep();
@@ -90,6 +76,7 @@ void SimplePaintSplash(const char* argv0)
     if (up_file_path)
     {
       sprintf(filename, "%s/%s", up_file_path, "TecgrafLogo.png");
+
       image = IupLoadImage(filename);
       delete up_file_path;
     }

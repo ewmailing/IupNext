@@ -17,16 +17,15 @@
 #include <cdgl.h>
 #endif
 
-#if _MSC_VER < 1800 /* vc12 (2013) */
-#define DEFINE_ROUND
-#endif
-
-#ifdef DEFINE_ROUND
-static double round(double x)
+static double iround(double x)
 {
   return (int)(x>0 ? x + 0.5 : x - 0.5);
 }
-#endif
+
+static int iabs(int x)
+{
+  return x<0? -x: x;
+}
 
 
 /*********************************** Utilities **************************************/
@@ -158,7 +157,7 @@ void SimplePaintCanvas::ZoomIn()
   zoom_index++;
   if (zoom_index > 6)
     zoom_index = 6;
-  IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
+  IupSetDouble(zoom_val, "VALUE", iround(zoom_index));  /* fixed increments when using buttons */
 
   UpdateZoom(zoom_index);
 }
@@ -170,7 +169,7 @@ void SimplePaintCanvas::ZoomOut()
   zoom_index--;
   if (zoom_index < -6)
     zoom_index = -6;
-  IupSetDouble(zoom_val, "VALUE", round(zoom_index));  /* fixed increments when using buttons */
+  IupSetDouble(zoom_val, "VALUE", iround(zoom_index));  /* fixed increments when using buttons */
 
   UpdateZoom(zoom_index);
 }
@@ -270,9 +269,9 @@ void SimplePaintCanvas::DrawToolOverlay(cdCanvas* cnv, int start_x, int start_y,
   else if (tool_index == SimplePaintToolbox::TOOL_BOX)
     cdCanvasBox(cnv, start_x, end_x, start_y, end_y);
   else if (tool_index == SimplePaintToolbox::TOOL_ELLIPSE)
-    cdCanvasArc(cnv, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
+    cdCanvasArc(cnv, (end_x + start_x) / 2, (end_y + start_y) / 2, iabs(end_x - start_x), iabs(end_y - start_y), 0, 360);
   else if (tool_index == SimplePaintToolbox::TOOL_OVAL)
-    cdCanvasSector(cnv, (end_x + start_x) / 2, (end_y + start_y) / 2, abs(end_x - start_x), abs(end_y - start_y), 0, 360);
+    cdCanvasSector(cnv, (end_x + start_x) / 2, (end_y + start_y) / 2, iabs(end_x - start_x), iabs(end_y - start_y), 0, 360);
   else if (tool_index == SimplePaintToolbox::TOOL_TEXT)
   {
     cdCanvasTextAlignment(cnv, CD_SOUTH_WEST);
