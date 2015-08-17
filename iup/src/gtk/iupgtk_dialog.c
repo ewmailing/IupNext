@@ -830,15 +830,18 @@ static int gtkDialogSetOpacityImageAttrib(Ihandle *ih, const char *value)
     {
       cairo_region_t *shape;
 
+#if GTK_CHECK_VERSION(3, 10, 0)
+      cairo_surface_t* surface = gdk_cairo_surface_create_from_pixbuf(pixbuf, 0, window);
+#else
       int width = gdk_pixbuf_get_width(pixbuf);
       int height = gdk_pixbuf_get_height(pixbuf);
       cairo_surface_t* surface = gdk_window_create_similar_surface(window, CAIRO_CONTENT_COLOR_ALPHA, width, height);
-
       cairo_t* cr = cairo_create(surface);
       gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
       //cairo_rectangle(cr, 0, 0, width, height);
       cairo_paint(cr);
       cairo_destroy(cr);
+#endif
 
       shape = gdk_cairo_region_create_from_surface(surface);
       cairo_surface_destroy(surface);
@@ -847,10 +850,13 @@ static int gtkDialogSetOpacityImageAttrib(Ihandle *ih, const char *value)
       cairo_region_destroy(shape);
     }
 #else
-    GdkPixmap* mask;
-    gdk_pixbuf_render_pixmap_and_mask(pixbuf, &mask, NULL, 255);
-    gtk_widget_shape_combine_mask(ih->handle, mask, 0, 0);
-    g_object_unref(mask);
+    GdkBitmap* mask = NULL;
+    gdk_pixbuf_render_pixmap_and_mask(pixbuf, NULL, &mask, 255);
+    if (mask) 
+    {
+      gtk_widget_shape_combine_mask(ih->handle, mask, 0, 0);
+      g_object_unref(mask);
+    }
 #endif
     return 1;
   }

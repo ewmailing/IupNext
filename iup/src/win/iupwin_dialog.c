@@ -921,6 +921,9 @@ static int winDialogMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "DIALOGFRAME") && native_parent)
     dwExStyle |= WS_EX_DLGMODALFRAME;  /* this will hide the MENUBOX but not the close button */
 
+  if (iupAttribGet(ih, "OPACITY") || iupAttribGet(ih, "OPACITYIMAGE"))
+    dwExStyle |= WS_EX_LAYERED;
+
   iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 
   if (iupAttribGetBoolean(ih, "HELPBUTTON"))
@@ -1163,60 +1166,9 @@ static char* winDialogGetMdiNextAttrib(Ihandle *ih)
   return NULL;
 }
 
-static void winDialogSetLayered(Ihandle *ih, int enable)
-{
-  DWORD dwExStyle = GetWindowLong(ih->handle, GWL_EXSTYLE);
-  if (!enable)
-  {
-    if (dwExStyle & WS_EX_LAYERED)
-    {
-      dwExStyle &= ~WS_EX_LAYERED;   /* remove the style */
-      SetWindowLong(ih->handle, GWL_EXSTYLE, dwExStyle);
-      RedrawWindow(ih->handle, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN); /* invalidate everything and all children */
-    }
-    return;
-  }
-
-  if (!(dwExStyle & WS_EX_LAYERED))
-  {
-    dwExStyle |= WS_EX_LAYERED;   /* add the style */
-    SetWindowLong(ih->handle, GWL_EXSTYLE, dwExStyle);
-  }
-}
-
-#ifdef _OLD_CODE
-  {
-    typedef BOOL(WINAPI*winSetLayeredWindowAttributes)(
-      HWND hwnd,
-      COLORREF crKey,
-      BYTE bAlpha,
-      DWORD dwFlags);
-
-    static winSetLayeredWindowAttributes mySetLayeredWindowAttributes = NULL;
-    if (!mySetLayeredWindowAttributes)
-    {
-      HMODULE hinstDll = LoadLibrary(TEXT("user32.dll"));
-      if (hinstDll)
-        mySetLayeredWindowAttributes = (winSetLayeredWindowAttributes)GetProcAddress(hinstDll, "SetLayeredWindowAttributes");
-    }
-
-    if (mySetLayeredWindowAttributes)
-      mySetLayeredWindowAttributes(ih->handle, 0, (BYTE)opacity, LWA_ALPHA);
-  }
-#endif
-
 static int winDialogSetOpacityAttrib(Ihandle *ih, const char *value)
 {
   int opacity;
-
-  if (!value)
-  {
-    winDialogSetLayered(ih, 0);
-    return 0;
-  }
-  else
-    winDialogSetLayered(ih, 1);
-
   if (!iupStrToInt(value, &opacity))
     return 0;
 
@@ -1227,17 +1179,7 @@ static int winDialogSetOpacityAttrib(Ihandle *ih, const char *value)
 
 static int winDialogSetOpacityImageAttrib(Ihandle *ih, const char *value)
 {
-  HBITMAP hBitmap;
-
-  if (!value)
-  {
-    winDialogSetLayered(ih, 0);
-    return 0;
-  }
-  else
-    winDialogSetLayered(ih, 1);
-
-  hBitmap = (HBITMAP)iupImageGetImage(value, ih, 0);
+  HBITMAP hBitmap = (HBITMAP)iupImageGetImage(value, ih, 0);
   if (!hBitmap)
     return 0;
   else

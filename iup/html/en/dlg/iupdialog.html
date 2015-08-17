@@ -235,11 +235,14 @@ the dialog is the active window (the window with focus). Can be Yes or No.
 (since 3.4)</p>
 <p><strong>OPACITY</strong> [Windows and GTK Only]: sets the dialog transparency 
 alpha value. Valid values range from 0 (completely transparent) to 255 (opaque). 
-In Windows set to NULL to remove the LAYERED style bit. (GTK 2.12)</p>
+In Windows must be set before map so the native window would be properly 
+initialized when mapped (since 3.16). (GTK 2.12)</p>
 
 <p><strong>OPACITYIMAGE</strong> [Windows and GTK Only]: sets a transparent 
-image as the dialog shape so it is possible to create a non rectangle window. In Windows set to NULL to remove the LAYERED style bit. 
-In Windows must be set after <strong>IupShow</strong>. (GTK 2.12) 
+image as the dialog shape so it is possible to create a non rectangle window. In 
+Windows must be set before map so the native window would be properly 
+initialized when mapped (since 3.16). In GTK the shape works only as a bitmap 
+mask, to view a color image must also use a label. (GTK 2.12) 
 (since 3.12)</p>
 
 <p><strong>TOPMOST</strong> [Windows and GTK Only]:&nbsp; puts the dialog always 

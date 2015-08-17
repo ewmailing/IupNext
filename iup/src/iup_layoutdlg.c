@@ -2705,6 +2705,7 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
   IupSetCallback(dlg, "CLOSE_CB", iLayoutDialogClose_CB);
   iupAttribSet(dlg, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
   IupSetAttributeHandle(dlg, "MENU", menu);
+  iupAttribSet(dlg, "OPACITY", "255");
 
   iupAttribSet(dlg,"DESTROYWHENCLOSED", "Yes");
 
