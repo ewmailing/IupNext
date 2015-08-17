@@ -151,7 +151,7 @@ elem</strong>:swapbuffers_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pr
   identifier of the element that activated the 
   event.</p>
 
-<h3>Auxiliary Functions</h3>
+<h3><a name="Auxiliary_Functions">Auxiliary Functions</a></h3>
 <p>These are auxiliary functions based on the WGL and XGL extensions. Check the 
 respective documentations for more information. ERROR attribute will be set to 
 &quot;Failed to set new current context.&quot; if the call failed. It will reset 
@@ -160,7 +160,8 @@ ERROR to NULL if successful.</p>
 <b>iup.GLMakeCurrent</b>(<b>ih</b>: ihandle) [in Lua]
 or <b>ih:MakeCurrent</b>() [in Lua]</pre>
 <p>Activates the given canvas as the current OpenGL context. All subsequent OpenGL commands are directed to 
-    such canvas.</p>
+    such canvas. The first call will set the global attributes GL_VERSION, 
+GL_VENDOR and GL_RENDERER (since 3.16).</p>
 <pre>int <b>IupGLIsCurrent</b>(Ihandle* <b>ih</b>); [in C]
 <b>iup.GLIsCurrent</b>(<b>ih</b>: ihandle) -&gt; status: boolean [in Lua]
 or <b>ih:IsCurrent</b>() -&gt; status: boolean [in Lua]</pre>

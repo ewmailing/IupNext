@@ -499,6 +499,13 @@ void IupGLMakeCurrent(Ihandle* ih)
   {
     iupAttribSet(ih, "ERROR", NULL);
     iupAttribSet(ih, "LASTERROR", NULL);
+
+    if (!IupGetGlobal("GL_VERSION"))
+    {
+      IupSetStrGlobal("GL_VENDOR", (char*)glGetString(GL_VENDOR));
+      IupSetStrGlobal("GL_RENDERER", (char*)glGetString(GL_RENDERER));
+      IupSetStrGlobal("GL_VERSION", (char*)glGetString(GL_VERSION));
+    }
   }
 }
 

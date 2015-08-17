@@ -26,7 +26,7 @@ static int SplashTimer_CB(Ihandle* timer)
   return IUP_DEFAULT;
 }
 
-void IupShowSplashDlg(const char* image)
+static void SplashShowDlg(const char* image)
 {
   Ihandle *dlg, *timer;
 
@@ -60,6 +60,8 @@ void IupShowSplashDlg(const char* image)
 
 void SimplePaintSplash(const char* argv0)
 {
+  /* Look for the image file on the same folder of the executable 
+     or in the folder above. */
   char* file_path = str_filepath(argv0);
   char filename[10240];
   Ihandle* image;
@@ -88,6 +90,6 @@ void SimplePaintSplash(const char* argv0)
   {                                
     IupSetAttribute(image, "AUTOSCALE", "1");
     IupSetHandle("SPLASH", image);
-    IupShowSplashDlg("SPLASH");
+    SplashShowDlg("SPLASH");
   }
 }

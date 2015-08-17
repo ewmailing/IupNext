@@ -8,6 +8,8 @@
 #include <im_process.h>
 #include <iup_config.h>
 #include <iupim.h>
+#include <im_lib.h>
+#include <cd.h>
 
 
 
@@ -677,9 +679,92 @@ int SimplePaint::ItemHelpActionCallback(Ihandle*)
   return IUP_DEFAULT;
 }
 
-int SimplePaint::ItemAboutActionCallback(Ihandle*)
+static int bt_ok_action_cb(Ihandle*)
 {
-  IupMessage("About", "   Simple Paint\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
+  return IUP_CLOSE;
+}
+
+static int bt_sysinfo_action_cb(Ihandle*)
+{
+  char sysinfo[10240];
+  int o = 0;
+
+  o += sprintf(sysinfo+o, "-------  System Information  -------\n\n");
+
+  o += sprintf(sysinfo+o, "IUP %s %s\n\n", IupVersion(), IUP_COPYRIGHT);
+
+  o += sprintf(sysinfo+o, "  System: %s\n", IupGetGlobal("SYSTEM"));
+  o += sprintf(sysinfo+o, "  System Version: %s\n", IupGetGlobal("SYSTEMVERSION"));
+
+  char* motif = IupGetGlobal("MOTIFVERSION");
+  if (motif)
+    o += sprintf(sysinfo+o, "  Motif Version: %s\n", motif);
+
+  char* gtk = IupGetGlobal("GTKVERSION");
+  if (gtk)
+    o += sprintf(sysinfo+o, "  GTK Version: %s\n", gtk);
+
+  o += sprintf(sysinfo+o, "\n  Screen Size: %s\n", IupGetGlobal("SCREENSIZE"));
+  o += sprintf(sysinfo+o, "  Screen Depth: %s\n", IupGetGlobal("SCREENDEPTH"));
+
+  char* opengl = IupGetGlobal("GL_VERSION");
+  if (opengl)
+  {
+    o += sprintf(sysinfo+o, "\n  OpenGL Version: %s\n", opengl);
+    o += sprintf(sysinfo+o, "  OpenGL Vendor: %s\n", IupGetGlobal("GL_VENDOR"));
+    o += sprintf(sysinfo+o, "  OpenGL Renderer: %s\n", IupGetGlobal("GL_RENDERER"));
+  }
+
+  o += sprintf(sysinfo+o, "\nIM %s %s\n", imVersion(), IM_COPYRIGHT);
+  o += sprintf(sysinfo+o, "\nCD %s %s\n", cdVersion(), CD_COPYRIGHT);
+
+  IupGetText("System Information", sysinfo);
+  return IUP_DEFAULT;
+}
+
+int SimplePaint::ItemAboutActionCallback(Ihandle* ih)
+{
+  Ihandle *bt_ok, *vbox, *dlg_about, *lbl, *bt_sysinfo, *txt;
+
+  lbl = IupLabel(NULL);
+  IupSetAttribute(lbl, "IMAGE", "SPLASH");
+
+  bt_ok = IupButton("OK", NULL);
+  IupSetAttribute(bt_ok, "PADDING", "6X3");
+  IupSetCallback(bt_ok, "ACTION", bt_ok_action_cb);
+
+  bt_sysinfo = IupButton("SysInfo", NULL);
+  IupSetAttribute(bt_sysinfo, "PADDING", "6X3");
+  IupSetCallback(bt_sysinfo, "ACTION", bt_sysinfo_action_cb);
+
+  vbox = IupVbox(
+    lbl,
+    IupSetAttributes(IupLabel("Simple Paint 1.0"), "FONT=\"Helvetica, Bold 14\""),
+    IupLabel("Copyright © 1995-2015 Tecgraf/PUC-Rio"),
+    txt = IupSetAttributes(IupText(NULL), "READONLY=Yes, BORDER=NO, VALUE=\"iup@tecgraf.puc-rio.br\", VISIBLECOLUMNS=12, ALIGNMENT=ACENTER"),
+    IupSetAttributes(IupLabel(NULL), "SEPARATOR=Horizontal"),
+    IupSetAttributes(IupHbox(bt_sysinfo, IupFill(), bt_ok, NULL), "MARGIN=10x10"),
+    NULL);
+
+  IupSetAttribute(vbox, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(vbox, "MARGIN", "5x5");
+  IupSetAttribute(vbox, "GAP", "5");
+  IupSetAttribute(vbox, "FONT", "Helvetica, 12");
+
+  dlg_about = IupDialog(vbox);
+  IupSetAttribute(dlg_about, "TITLE", "About");
+  IupSetAttribute(dlg_about, "RESIZE", "NO");
+  IupSetAttribute(dlg_about, "MINBOX", "NO");
+  IupSetAttribute(dlg_about, "MAXBOX", "NO");
+  IupSetAttribute(dlg_about, "MENUBOX", "NO");
+  IupSetAttributeHandle(dlg_about, "DEFAULTENTER", bt_ok);
+  IupSetAttributeHandle(dlg_about, "DEFAULTESC", bt_ok);
+  IupSetAttributeHandle(dlg_about, "PARENTDIALOG", IupGetDialog(ih));
+
+  IupSetStrAttribute(txt, "BGCOLOR", IupGetAttribute(dlg_about, "BGCOLOR"));
+
+  IupPopup(dlg_about, IUP_CENTERPARENT, IUP_CENTERPARENT);
+  IupDestroy(dlg_about);
   return IUP_DEFAULT;
 }
 
