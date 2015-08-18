@@ -255,7 +255,38 @@ scaled accordingly. The result is the following:</p>
 
 <p>Now we have the best of both worlds, high resolution with normal readability. </p>
 <h3>5.4 <a name="Splash_Screen">Splash Screen</a> , About and System Information</h3>
-<p>XXXX</p>
+<p>Sometimes the application take a long time to start up, maybe it has many 
+things to initialize for instance. One common approach to distract the user 
+while this initialization occurs is to use a Splash screen. It is a dialog shown 
+while the application initializes that usually has a decorative purpose only. So 
+many companies use it to show the application logo and/or the company logo as a 
+marketing strategy. Although we can use a normal dialog to do that, this dialog 
+will have no decorations and no controls inside. We are going to use a single 
+image as contents, and a trick to show it with a transparent background. The 
+trick is the OPACITYIMAGE attribute of the <strong>IupDialog</strong>, it will 
+use the transparency of the image to create a mask for the dialog shape, so the 
+dialog will be shown with a non rectangular area, on top of what's on the 
+background. </p>
+<p>But we would like that to take two moments, first when the logo is shown 
+alone, and a second moment when the logo is shown with our application on the 
+background, while it initializes. To control the timing we use an <strong>
+IupTimer</strong> set initially for 1 second, then hold the execution, and 
+inside the timer callback restart the timer for another second but now letting 
+the application initializes normally. The splash dialog will be automatically 
+destroyed at the end of the second moment.</p>
+<p>The image we chose is the Tecgraf logo with 317x317 pixel. It is a large 
+image to convert it to a C source code and embed into the application executable 
+just for the splash screen. So we are going to load it from its file during run 
+time. We could directly use IM functions to do it, and use CD to draw it, but we 
+don't need much control over the drawing this time, so a simpler way is to use 
+the <strong>IupLoadImage</strong> utility function that loads a file and returns 
+an <strong>IupImage</strong> ready for IUP controls. The problem is that we now 
+have to distribute our application with the logo file, and in run time locate 
+that file for loading. There are many strategies to do that, we decided that our 
+logo will be located in the same folder of the executable or in the parent 
+folder, so we use the <strong>main</strong> function argument &quot;<strong>argv</strong>[0]&quot; 
+that contains the executable file name. From it we extract the path where it is 
+located so we can concatenate with the logo file name.</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C++] <a target="example5_4" href="../../examples/tutorial/simple_paint2_cpp/simple_paint_splash.cpp">simple_paint_splash.cpp</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint_splash.cpp">

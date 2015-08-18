@@ -88,7 +88,7 @@ void SimplePaintSplash(const char* argv0)
 
   if (image)
   {                                
-    IupSetAttribute(image, "AUTOSCALE", "1");
+    IupSetAttribute(image, "AUTOSCALE", "1");  /* do not autoscale the splash image */
     IupSetHandle("SPLASH", image);
     SplashShowDlg("SPLASH");
   }
