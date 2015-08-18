@@ -338,7 +338,7 @@ IM 3.9.1 Copyright (C) 1994-2015 Tecgraf/PUC-Rio.
 CD 5.8.2 Copyright (C) 1994-2015 Tecgraf/PUC-Rio.</pre>
 <h3>5.5 <a name="Dynamic_Libraries">Dynamic Libraries</a> </h3>
 <p>Now it is time to distribute our application. There are many installation 
-creation tools like
+creation tools for Windows like
 <a href="https://msdn.microsoft.com/pt-br/library/windows/desktop/dd408114(v=vs.85).aspx" target="_blank">
 Microsoft Windows Installer</a> (Free - defines the MSI package format),
 <a href="http://www.flexerasoftware.com/producer/products/software-installation/installshield-software-installer/" target="_blank">
@@ -348,10 +348,14 @@ Installer</a> (Free - own package format),
 <a href="http://www.jrsoftware.org/isinfo.php" target="_blank">Inno Setup</a> 
 (Free - own package format), and
 <a href="http://wixtoolset.org/" target="_blank">WiX toolset</a> (Free - can 
-produce MSI packages). Here is a comparison on <strong>StackOverflow</strong>:
+produce MSI packages). Here is a simple comparison on <strong>StackOverflow</strong>:
 <a href="http://stackoverflow.com/questions/137657/free-install-wizard-software" target="_blank">
-Free Install Wizard Software</a>.</p>
-<p>But before that we need to define which files we will distribute. </p>
+Free Install Wizard Software</a>. In Linux it is very common to distribute only 
+the source code, but this becomes more complex when it involves libraries that 
+are not installed on the system, like IUP, CD and IM. To build distribution 
+packages for Linux search for rpm and deb package formats on the Web.</p>
+<p>But before creating and installer we need to define which files we will 
+distribute. </p>
 <p>When using static libraries to link our application, we simplify the 
 deployment because everything is packed in a single file. But in link time we 
 have to know all dependencies of all libraries we are using, and still this does 
@@ -375,7 +379,9 @@ plus in Linux: gtk-x11-2.0 gdk-x11-2.0 gdk_pixbuf-2.0 pango-1.0 pangox-1.0 gobje
 <p>The executable takes longer to link and all exported functions of all static 
 libraries must not have a single function with the same name. And they all must 
 use the same C Run Time Library when compiled, mixing different run times can 
-have unpredictable results and usually linker errors.<br></p>
+have unpredictable results and usually linker errors.</p>
+<p>On the other hand, when using dynamic libraries things get more simpler when 
+developing and careful when distributing.<br></p>
 
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>
