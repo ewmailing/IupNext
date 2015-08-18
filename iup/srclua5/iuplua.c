@@ -26,11 +26,11 @@ static int show_error_ok_action(Ihandle* ih)
   return IUP_CLOSE;
 }
 
-static int il_error_message(lua_State *L)
+void iuplua_show_error_message(const char *pname, const char* msg)
 {
   Ihandle *multi_text, *button, *box, *dlg;
 
-  const char* msg = lua_tostring(L, 1);
+  if (!pname) pname = "Lua Error!";
 
   button = IupButton("OK", NULL);
   IupSetAttribute(button, "PADDING", "5x3");
@@ -51,7 +51,7 @@ static int il_error_message(lua_State *L)
 
   dlg = IupDialog(box);
 
-  IupSetAttribute(dlg, "TITLE", "Lua Error");
+  IupSetStrAttribute(dlg, "TITLE", pname);
   IupSetAttribute(dlg, "MINBOX", "NO");
   IupSetAttribute(dlg, "MAXBOX", "NO");
   IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
@@ -63,6 +63,12 @@ static int il_error_message(lua_State *L)
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   IupDestroy(dlg);
+}
+
+static int il_error_message(lua_State *L)
+{
+  const char* msg = lua_tostring(L, 1);
+  iuplua_show_error_message(NULL, msg);
   return 0;
 }
 
@@ -76,8 +82,7 @@ static void show_error(lua_State *L, const char *msg)
   if (lua_isnil(L, -1))
   {
     /* Panic mode */
-    fprintf(stderr, "%s\n", msg);
-    fflush(stderr);
+    iuplua_show_error_message(NULL, msg);
     return;
   }
 

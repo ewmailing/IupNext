@@ -161,9 +161,13 @@ ifdef ALL_STATIC
 else
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     # Dinamically link in Windows, when not debugging
-    # Must call "tecmake dll8" so USE_* will use the correct TEC_UNAME
+    # Must call "tecmake dll10" so USE_* will use the correct TEC_UNAME
     USE_DLL = Yes
     GEN_MANIFEST = No
+    
+    IUP := ..
+    USE_IUPLUA = Yes
+    USE_IUP3 = Yes
   else
     # In UNIX Lua is always statically linked, late binding is used.
     USE_STATIC = Yes

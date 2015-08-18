@@ -31,4 +31,5 @@ EXPORTS
   iuplua_register_cb
   iuplua_register_lib
   iuplua_register_funcs
+  iuplua_show_error_message
   

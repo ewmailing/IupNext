@@ -20,9 +20,10 @@
 #include "lualib.h"
 
 /******************* IUP *********************/
-#ifdef USE_STATIC
 #include "iup.h"
 #include "iuplua.h"
+
+#ifdef USE_STATIC
 
 #ifndef IUPLUA_NO_GL
 #include "iupgl.h"
@@ -206,8 +207,11 @@ static void print_usage (const char *badoption) {
 ** (if present)
 */
 static void l_message (const char *pname, const char *msg) {
-  if (pname) lua_writestringerror("%s: ", pname);
-  lua_writestringerror("%s\n", msg);
+  /******************* IUP *********************/
+  iuplua_show_error_message(pname, msg);
+  /* if (pname) lua_writestringerror("%s: ", pname); */
+  /* lua_writestringerror("%s\n", msg); */
+  /******************* IUP *********************/
 }
 
 
@@ -610,12 +614,12 @@ static void iuplua_openlibs (lua_State *L) {
   lua_pushliteral(L, LUA_COPYRIGHT);
   lua_setglobal(L, "_COPYRIGHT");  /* set global _COPYRIGHT */
 
+  /* iuplua initialization */
+  iuplua_open(L);
+
 #ifdef USE_STATIC
   /* disable require */
   dostring(L, "function require() end ", "static_require");
-
-  /* iuplua initialization */
-  iuplua_open(L);
 
 #ifdef IUPLUA_IMGLIB
   luaopen_iupluaimglib(L);
@@ -732,7 +736,11 @@ static int pmain (lua_State *L) {
 
 int main (int argc, char **argv) {
   int status, result;
-  lua_State *L = luaL_newstate();  /* create state */
+  lua_State *L;
+  /******************* IUP *********************/
+  IupOpen(&argc, &argv);
+  /******************* IUP *********************/
+  L = luaL_newstate();  /* create state */
   if (L == NULL) {
     l_message(argv[0], "cannot create state: not enough memory");
     return EXIT_FAILURE;
@@ -744,6 +752,9 @@ int main (int argc, char **argv) {
   result = lua_toboolean(L, -1);  /* get result */
   report(L, status);
   lua_close(L);
+  /******************* IUP *********************/
+  IupClose();
+  /******************* IUP *********************/
   return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
