@@ -351,7 +351,31 @@ Installer</a> (Free - own package format),
 produce MSI packages). Here is a comparison on <strong>StackOverflow</strong>:
 <a href="http://stackoverflow.com/questions/137657/free-install-wizard-software" target="_blank">
 Free Install Wizard Software</a>.</p>
-<p>But before that we need to define which files we will distribute. <br></p>
+<p>But before that we need to define which files we will distribute. </p>
+<p>When using static libraries to link our application, we simplify the 
+deployment because everything is packed in a single file. But in link time we 
+have to know all dependencies of all libraries we are using, and still this does 
+not guaranties that some library will have an external dependecy. Use know we 
+use 3 libraries IUP, CD and IM. The main IM library (<strong>im</strong>) 
+depends on the Zlib library (<strong>zlib1</strong>), and must not forget the IM 
+Image Processing library (<strong>im_processes</strong> ) that contains the 
+functions we use in section 4.6. The CD main library (<strong>cd</strong>) 
+depends on the FreeType library (<strong>freetype6</strong>) which in turn 
+depends also on the Zlib library, finally the CD main library in Windows depends 
+on the GDI (<strong>gdi32</strong>) and in Linux depends on the GDK and Cairo 
+libraries. The main IUP library depends on GTK in Linux and USER (<strong>user32</strong>), 
+Common Dialogs (<strong>comdlg32</strong>) and Common Controls (<strong>comctl32</strong>). 
+To use IUP and CD together we need also the CD_IUP library (<strong>iupcd</strong>). 
+To use IUP and IM together we need the IupIM Utilities library (<strong>iupim</strong>). 
+And the Iup Image Library (iupimglib) for the stock images. So our actual link 
+list will include:</p>
+<pre>iupimglib iupcd iup cd freetype6 im_process im zlib
+plus in Windows: comctl32 comdl32 user32
+plus in Linux: gtk-x11-2.0 gdk-x11-2.0 gdk_pixbuf-2.0 pango-1.0 pangox-1.0 gobject-2.0 gmodule-2.0 glib-2.0</pre>
+<p>The executable takes longer to link and all exported functions of all static 
+libraries must not have a single function with the same name. And they all must 
+use the same C Run Time Library when compiled, mixing different run times can 
+have unpredictable results and usually linker errors.<br></p>
 
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>
