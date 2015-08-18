@@ -165,7 +165,7 @@ following examples if you are using the pre-compiled binaries.</p>
 <h3>Installation (System Directory)</h3>
 
 <p>After building you can copy the libraries files to the system directory. If you are inside 
-the main directory, to install the run time libraries you can type, for example:</p>
+the main directory, to install the dynamic libraries you can type, for example:</p>
 <pre>sudo cp -f im/lib/Linux26g4/*.so /usr/lib               [script version: <a href="../download/install">install</a> ]
 sudo cp -f cd/lib/Linux26g4/*.so /usr/lib
 sudo cp -f iup/lib/Linux26g4/*.so /usr/lib
@@ -189,8 +189,9 @@ specify the libraries directory with -L. Development files are only necessary if
 you are going to compile an application or library in C/C++ that uses there 
 libraries. To just run Lua scripts they are not necessary.</p>
 <h4>Installation (Build Directory) [Alternative]</h4>
-<p>If you <strong>don't</strong> want to copy the run time libraries to your system 
-directory, you can use them from build directory. You will need to add the run time 
+<p>If you <strong>don't</strong> want to copy the dynamic libraries to your system 
+directory, you can use them from build directory. You will need to add the 
+dynamic 
 libraries folders to 
 the LD_LIBRARY_PATH (DYLD_LIBRARY_PATH in MacOSX), for example:</p>
 <pre>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/xxxx/im/lib/Linux26g4:/xxxx/cd/lib/Linux26g4:/xxxx/iup/lib/Linux26g4

@@ -356,11 +356,11 @@ are not installed on the system, like IUP, CD and IM. To build distribution
 packages for Linux search for rpm and deb package formats on the Web.</p>
 <p>But before creating and installer we need to define which files we will 
 distribute. </p>
-<p>When using static libraries to link our application, we simplify the 
-deployment because everything is packed in a single file. But in link time we 
-have to know all dependencies of all libraries we are using, and still this does 
-not guaranties that some library will have an external dependecy. Use know we 
-use 3 libraries IUP, CD and IM. The main IM library (<strong>im</strong>) 
+<p>When using <strong>static libraries</strong> to link our application, we 
+simplify the deployment because everything is packed in a single file. But in 
+link time we have to know all dependencies of all libraries we are using, and 
+still this does not guaranties that some library will have an external dependecy. 
+Use know we use 3 libraries IUP, CD and IM. The main IM library (<strong>im</strong>) 
 depends on the Zlib library (<strong>zlib1</strong>), and must not forget the IM 
 Image Processing library (<strong>im_processes</strong> ) that contains the 
 functions we use in section 4.6. The CD main library (<strong>cd</strong>) 
@@ -370,8 +370,8 @@ on the GDI (<strong>gdi32</strong>) and in Linux depends on the GDK and Cairo
 libraries. The main IUP library depends on GTK in Linux and USER (<strong>user32</strong>), 
 Common Dialogs (<strong>comdlg32</strong>) and Common Controls (<strong>comctl32</strong>). 
 To use IUP and CD together we need also the CD_IUP library (<strong>iupcd</strong>). 
-To use IUP and IM together we need the IupIM Utilities library (<strong>iupim</strong>). 
-And the Iup Image Library (iupimglib) for the stock images. So our actual link 
+To use IUP and IM together we need the IUP-IM Utilities library (<strong>iupim</strong>). 
+And the IUP Image Library (iupimglib) for the stock images. So our actual link 
 list will include:</p>
 <pre>iupimglib iupcd iup cd freetype6 im_process im zlib
 plus in Windows: comctl32 comdl32 user32
@@ -380,8 +380,36 @@ plus in Linux: gtk-x11-2.0 gdk-x11-2.0 gdk_pixbuf-2.0 pango-1.0 pangox-1.0 gobje
 libraries must not have a single function with the same name. And they all must 
 use the same C Run Time Library when compiled, mixing different run times can 
 have unpredictable results and usually linker errors.</p>
-<p>On the other hand, when using dynamic libraries things get more simpler when 
-developing and careful when distributing.<br></p>
+<p>On the other hand, when using <strong>dynamic libraries</strong> things get 
+more simpler when developing and carefully when distributing. This time we do 
+not have to know all the dependencies, only the direct dependencies used by our 
+own code. So when linking we will specify only the following libraries:</p>
+<pre>iupimglib iupcd iup cd im_process im</pre>
+<p>The executable will link much faster and there will be much less room for 
+conflicts. If you keep the memory allocation and release isolated by each 
+library, meaning what allocated in IUP is released by IUP, what's allocated in 
+CD is released by CD, and so on, then there will be no C Run Time library memory 
+problems, even when using libraries that were linked with different Run Time 
+libraries (standard structures like FILE* are also non interchangeable). But now 
+we have to include all those libraries and their dependencies in the 
+distribution package. The fist time you build the distribution package is 
+problematic because you have to make sure that you get everything you will need 
+in a foreign system. In Windows a very useful application in the
+<a href="http://www.dependencywalker.com/" target="_blank">Dependency Walker</a> 
+(Free). It will list all the DLLs linked to the application and their respective 
+dependencies (don't forget to include the C Run Time DLL too, usually 
+&quot;msvcrXX.dll&quot;). In Linux you can use the &quot;ldd&quot; application and in MacOSX the &quot;otool&quot; 
+application for that purpose, but they are more limited.</p>
+<p>In Windows, when running an application that depends on DLL is quite simple, 
+if you copy the DLLs to the same folder of the application the system will 
+automatically locate the DLLs. There is no need to change the PATH or to copy 
+the DLLs to the Windows/System folder. In Linux, if you do not copy the .so 
+files to the system folder then you need to at least set an environment variable 
+called LD_LIBRARY_PATH (DYLD_LIBRARY_PATH in MacOSX) to include the folder were 
+the dynamic libraries are. For example:</p>
+<pre>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/tecgraf/simple_paint</pre>
+<p>&nbsp;So we actually moved the problems from one place to another, although 
+it is still more interesting to work with dynamic libraries. <br></p>
 
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>
