@@ -739,7 +739,7 @@ int SimplePaint::ItemAboutActionCallback(Ihandle* ih)
 
   vbox = IupVbox(
     lbl,
-    IupSetAttributes(IupLabel("Simple Paint 1.0"), "FONT=\"Helvetica, Bold 14\""),
+    IupSetAttributes(IupLabel("Simple Paint 1.2"), "FONT=\"Helvetica, Bold 14\""),
     IupLabel("Copyright © 1995-2015 Tecgraf/PUC-Rio"),
     txt = IupSetAttributes(IupText(NULL), "READONLY=Yes, BORDER=NO, VALUE=\"iup@tecgraf.puc-rio.br\", VISIBLECOLUMNS=12, ALIGNMENT=ACENTER"),
     IupSetAttributes(IupLabel(NULL), "SEPARATOR=Horizontal"),

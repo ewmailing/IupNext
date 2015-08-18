@@ -296,11 +296,31 @@ located so we can concatenate with the logo file name.</p>
 
 <p class="example_image"><img alt="" src="example5_4a.png"></p>
 
-<p>XXXX</p>
+<p>So now that we have a handsome logo, why not to improve our About dialog too? 
+The About dialog also has an important job to show the application version. 
+Until now we didn't have a version number, but our <strong>SimplePaint</strong> 
+is getting more complex every day, so we must be able to know which version we 
+are running. If we count from the start, in chapter 4 we should have reached 
+version 1.0. In chapter 5 we moved to C++ but didn't actually added new 
+features, so it was version 1.1. So for our splash screen commemorative edition 
+we will simply define it as version 1.2.</p>
+<p>We also added some company information and a contact e-mail. In the 
+screenshot bellow the sharp eye will notice a caret in front of the e-mail text. 
+That's because it is not an <strong>IupLabel</strong>. It is an <strong>IupText</strong> 
+without borders and with the same background of the dialog. We use it instead of 
+a label so the user can select the text and copy to the clipboard to paste it 
+somewhere else. Another option would be to use the <strong>IupLink</strong> 
+element with the text &quot;<a href="mailto:iup@tecgraf.puc-rio.br">mailto:iup@tecgraf.puc-rio.br</a>&quot;, 
+this will invoke the system e-mail application when clicked.</p>
+<p>Finally there is also a button for System Information that shows a 
+pre-defined dialog called <strong>IupGetText</strong> with textual information 
+about the current system that can also be copied to the clipboard for use in 
+error report for instance. Notice that all the system information were obtained 
+from IUP global attributes.</p>
 
 <p class="example_image"><img alt="" src="example5_4b.png"></p>
 
-<p>XXXX</p>
+<p>Here is a sample of the System Information text:</p>
 
 <pre>-------  System Information  -------
 
