@@ -286,7 +286,8 @@ that file for loading. There are many strategies to do that, we decided that our
 logo will be located in the same folder of the executable or in the parent 
 folder, so we use the <strong>main</strong> function argument &quot;<strong>argv</strong>[0]&quot; 
 that contains the executable file name. From it we extract the path where it is 
-located so we can concatenate with the logo file name.</p>
+located so we can concatenate with the logo file name. If the file is not found 
+the splash is simply not shown.</p>
 
 <p class="example_title">Example Source Code 
 <span class="example_button">[in C++] <a target="example5_4" href="../../examples/tutorial/simple_paint2_cpp/simple_paint_splash.cpp">simple_paint_splash.cpp</a> <a href="../../examples/tutorial/simple_paint2_cpp/simple_paint_splash.cpp">
@@ -336,7 +337,21 @@ IM 3.9.1 Copyright (C) 1994-2015 Tecgraf/PUC-Rio.
 
 CD 5.8.2 Copyright (C) 1994-2015 Tecgraf/PUC-Rio.</pre>
 <h3>5.5 <a name="Dynamic_Libraries">Dynamic Libraries</a> </h3>
-<p>xxxx<br></p>
+<p>Now it is time to distribute our application. There are many installation 
+creation tools like
+<a href="https://msdn.microsoft.com/pt-br/library/windows/desktop/dd408114(v=vs.85).aspx" target="_blank">
+Microsoft Windows Installer</a> (Free - defines the MSI package format),
+<a href="http://www.flexerasoftware.com/producer/products/software-installation/installshield-software-installer/" target="_blank">
+Install Shield</a> (Commercial),
+<a href="http://nsis.sourceforge.net/Main_Page" target="_blank">Nullsoft NSIS 
+Installer</a> (Free - own package format),
+<a href="http://www.jrsoftware.org/isinfo.php" target="_blank">Inno Setup</a> 
+(Free - own package format), and
+<a href="http://wixtoolset.org/" target="_blank">WiX toolset</a> (Free - can 
+produce MSI packages). Here is a comparison on <strong>StackOverflow</strong>:
+<a href="http://stackoverflow.com/questions/137657/free-install-wizard-software" target="_blank">
+Free Install Wizard Software</a>.</p>
+<p>But before that we need to define which files we will distribute. <br></p>
 
 <table cellpadding="0" cellspacing="0" style="width: 100%">
 	<tr>
