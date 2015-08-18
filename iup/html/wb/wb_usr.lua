@@ -416,6 +416,33 @@ wb_usr.tree =
             },
           },
         },
+        {
+          name= {en= "5. Advanced Topics"},
+          link= "tutorial/tutorial5.html",
+          folder=
+          {
+            {
+              name= {en= "5.1 C++ Encapsulation"},
+              link= "tutorial/tutorial5.html#Encapsulation",
+            },
+            {
+              name= {en= "5.2 C++ Modularization"},
+              link= "tutorial/tutorial5.html#Modularization",
+            },
+            {
+              name= {en= "5.3 High Resolution Display"},
+              link= "tutorial/tutorial5.html#High_Resolution_Display",
+            },
+            {
+              name= {en= "5.4 Splash Screen, About and SysInfo"},
+              link= "tutorial/tutorial5.html#Splash_Screen",
+            },
+            {
+              name= {en= "5.5 Dynamic Libraries"},
+              link= "tutorial/tutorial5.html#Dynamic_Libraries",
+            },
+          },
+        },
       }
     },
     { link= "", name= {en= "" } },
