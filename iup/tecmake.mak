@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.13
+VERSION = 4.14
 
 
 #---------------------------------#
@@ -284,6 +284,9 @@ ifndef NO_GTK_DEFAULT
 endif
 
 ifdef GTK_DEFAULT
+  ifneq ($(findstring Linux4, $(TEC_UNAME)), )
+    USE_GTK3 = Yes
+  endif
   ifneq ($(findstring Linux31, $(TEC_UNAME)), )
     USE_GTK3 = Yes
   endif
@@ -312,6 +315,8 @@ LUAPRE = $(TECMAKE_HOME)/luapre.lua
 
 #---------------------------------#
 # User Configuration File
+# Everything before this point can be overwritten
+# in the configuration file
 
 MAKENAME = config.mak
 
@@ -409,7 +414,7 @@ TEC_UNAME_LIB_DIR ?= $(TEC_UNAME)
 
 ifdef DBG
   ifdef DBG_LIB_DIR
-    TEC_UNAME_LIB_DIR := $(TEC_UNAME_DIR)d
+    TEC_UNAME_LIB_DIR := $(TEC_UNAME_LIB_DIR)d
   endif
   ifdef DBG_DIR
     TEC_UNAME_DIR := $(TEC_UNAME_DIR)d
@@ -418,34 +423,32 @@ endif
 
 # Suffix for Lua modules
 ifdef USE_LUA
-  LIBLUASFX := 3
+  LIBLUA_SFX := 3
 endif
 ifdef USE_LUA4
-  LIBLUASFX := 4
+  LIBLUA_SFX := 4
 endif
 ifdef USE_LUA5
-  LIBLUASFX := 5
+  LIBLUA_SFX := 5
 endif
 ifdef USE_LUA50
-  LIBLUASFX := 5
+  LIBLUA_SFX := 5
 endif
 ifdef USE_LUA51
-  LIBLUASFX := 51
+  LIBLUA_SFX := 51
 endif
 ifdef USE_LUA52
-  LIBLUASFX := 52
+  LIBLUA_SFX := 52
 endif
 ifdef USE_LUA53
-  LIBLUASFX := 53
+  LIBLUA_SFX := 53
 endif
+
+TEC_UNAME_LIBLUA_DIR ?= $(TEC_UNAME_LIB_DIR)/Lua$(LIBLUA_SFX)
 
 # Subfolder for Lua Modules
 ifdef LUAMOD_DIR
-  ifdef LUAMOD_LIB_DIR
-    TEC_UNAME_LIB_DIR := $(TEC_UNAME_LIB_DIR)/Lua$(LIBLUASFX)
-  else
-    TEC_UNAME_DIR := $(TEC_UNAME_DIR)/Lua$(LIBLUASFX)
-  endif
+  TEC_UNAME_DIR := $(TEC_UNAME_DIR)/Lua$(LIBLUA_SFX)
 endif
 
 OBJDIR := $(OBJROOT)/$(TEC_UNAME_DIR)
@@ -761,57 +764,61 @@ LUA53 ?= $(TECTOOLS_HOME)/lua53
 # Library path order is reversed
 
 ifdef USE_LUA
-  LUA_SUFFIX ?=
-  LIBLUASFX := 3
+  LUA_SFX :=
+  LIBLUA_SFX := 3
 endif
 
 ifdef USE_LUA4
-  LUA_SUFFIX ?= 4
-  LIBLUASFX := 4
+  LUA_SFX := 4
+  LIBLUA_SFX := 4
   override USE_LUA = Yes
   LUA := $(LUA4)
 endif
 
 ifdef USE_LUA5
-  LUA_SUFFIX ?= 5
-  LIBLUASFX := 5
+  LUA_SFX := 5
+  LIBLUA_SFX := 5
   override USE_LUA = Yes
   LUA := $(LUA5)
 endif
 
 ifdef USE_LUA50
-  LUA_SUFFIX ?= 50
-  LIBLUASFX := 5
+  LUA_SFX := 50
+  LIBLUA_SFX := 5
   override USE_LUA = Yes
   LUA := $(LUA50)
   NO_LUALIB := Yes
 endif
 
 ifdef USE_LUA51
-  LUA_SUFFIX ?= 5.1
-  LIBLUASFX := 51
+  LUA_SFX := 5.1
+  LIBLUA_SFX := 51
   override USE_LUA = Yes
   LUA := $(LUA51)
   NO_LUALIB := Yes
 endif
 
 ifdef USE_LUA52
-  LUA_SUFFIX ?= 52
-  LIBLUASFX := 52
+  LUA_SFX := 52
+  LIBLUA_SFX := 52
   override USE_LUA = Yes
   LUA := $(LUA52)
   NO_LUALIB := Yes
 endif
 
 ifdef USE_LUA53
-  LUA_SUFFIX ?= 53
-  LIBLUASFX := 53
+  LUA_SFX := 53
+  LIBLUA_SFX := 53
   override USE_LUA = Yes
   LUA := $(LUA53)
   NO_LUALIB := Yes
   ifneq ($(findstring CentOS5, $(TEC_DIST)), )
     DEFINES += LUA_C89_NUMBERS
   endif
+endif
+
+ifdef LUA_SUFFIX
+  LUA_SFX := $(LUA_SUFFIX)
 endif
 
 ifdef USE_IUP
@@ -853,9 +860,9 @@ ifdef USE_IUPCONTROLS
   
   ifdef USE_IUPLUA
     ifdef USE_STATIC
-      SLIB += $(IUP_LIB)/libiupluacontrols$(LIBLUASFX).a
+      SLIB += $(IUP_LIB)/libiupluacontrols$(LIBLUA_SFX).a
     else
-      LIBS += iupluacontrols$(LIBLUASFX)
+      LIBS += iupluacontrols$(LIBLUA_SFX)
     endif
     override USE_CDLUA = Yes
   endif
@@ -875,9 +882,9 @@ ifdef USE_IUPGLCONTROLS
   
   ifdef USE_IUPLUA
     ifdef USE_STATIC
-      SLIB += $(IUP_LIB)/libiupluaglcontrols$(LIBLUASFX).a
+      SLIB += $(IUP_LIB)/libiupluaglcontrols$(LIBLUA_SFX).a
     else
-      LIBS += iupluaglcontrols$(LIBLUASFX)
+      LIBS += iupluaglcontrols$(LIBLUA_SFX)
     endif
   endif
   
@@ -890,64 +897,67 @@ endif
 
 ifdef USE_IMLUA
   override USE_IM = Yes
-  IM_LIB ?= $(IM)/lib/$(TEC_UNAME_LIB_DIR)
+  IMLUA_LIB ?= $(IM)/lib/$(TEC_UNAME_LIBLUA_DIR)
   ifdef USE_STATIC
-    SLIB += $(IM_LIB)/libimlua$(LIBLUASFX).a
+    SLIB += $(IMLUA_LIB)/libimlua$(LIBLUA_SFX).a
   else
-    LIBS += imlua$(LIBLUASFX)
+    LIBS += imlua$(LIBLUA_SFX)
+    LDIR += $(IMLUA_LIB)
   endif
 endif
 
 ifdef USE_CDLUA
   override USE_CD = Yes
-  CD_LIB ?= $(CD)/lib/$(TEC_UNAME_LIB_DIR)
+  CDLUA_LIB ?= $(CD)/lib/$(TEC_UNAME_LIBLUA_DIR)
   ifdef USE_STATIC
-    SLIB += $(CD_LIB)/libcdlua$(LIBLUASFX).a
+    SLIB += $(CDLUA_LIB)/libcdlua$(LIBLUA_SFX).a
   else
-    LIBS += cdlua$(LIBLUASFX)
+    LIBS += cdlua$(LIBLUA_SFX)
+    LDIR += $(CDLUA_LIB)
   endif
 endif
 
 ifdef USE_IUPLUA
   override USE_IUP = Yes
-  IUP_LIB ?= $(IUP)/lib/$(TEC_UNAME_LIB_DIR)
+  IUPLUA_LIB ?= $(IUP)/lib/$(TEC_UNAME_LIBLUA_DIR)
   
   ifdef USE_STATIC
     ifdef USE_CD
-      SLIB += $(IUP_LIB)/libiupluacd$(LIBLUASFX).a
+      SLIB += $(IUPLUA_LIB)/libiupluacd$(LIBLUA_SFX).a
     endif
     ifdef USE_OPENGL
-      SLIB += $(IUP_LIB)/libiupluagl$(LIBLUASFX).a
+      SLIB += $(IUPLUA_LIB)/libiupluagl$(LIBLUA_SFX).a
     endif
-    SLIB += $(IUP_LIB)/libiuplua$(LIBLUASFX).a
+    SLIB += $(IUPLUA_LIB)/libiuplua$(LIBLUA_SFX).a
   else
     ifdef USE_CD
-      LIBS += iupluacd$(LIBLUASFX)
+      LIBS += iupluacd$(LIBLUA_SFX)
     endif
     ifdef USE_OPENGL
-      LIBS += iupluagl$(LIBLUASFX)
+      LIBS += iupluagl$(LIBLUA_SFX)
     endif
-    LIBS += iuplua$(LIBLUASFX)
+    LIBS += iuplua$(LIBLUA_SFX)
+    LDIR += $(IUPLUA_LIB)
   endif
 endif
 
 ifdef USE_LUA
-  LUA_LIB ?= $(LUA)/lib/$(TEC_UNAME_LIB_DIR)
+  LUA_LIB ?= $(LUA)/lib/$(TEC_UNAME_DIR)
   ifdef USE_STATIC
     ifndef NO_LUALIB
-      SLIB += $(LUA_LIB)/liblualib$(LUA_SUFFIX).a
+      SLIB += $(LUA_LIB)/liblualib$(LUA_SFX).a
     endif
-    SLIB += $(LUA_LIB)/liblua$(LUA_SUFFIX).a
+    SLIB += $(LUA_LIB)/liblua$(LUA_SFX).a
   else
     ifndef NO_LUALIB
-      LIBS += lualib$(LUA_SUFFIX)
+      LIBS += lualib$(LUA_SFX)
     endif
     ifndef NO_LUALINK
-        LIBS += lua$(LUA_SUFFIX)
+        LIBS += lua$(LUA_SFX)
         LDIR += $(LUA_LIB)
     else
       ifneq ($(findstring cygw, $(TEC_UNAME)), )
-        LIBS += lua$(LUA_SUFFIX)
+        LIBS += lua$(LUA_SFX)
         LDIR += $(LUA_LIB)
       endif
     endif
@@ -958,12 +968,12 @@ ifdef USE_LUA
 
   LUA_BIN ?= $(LUA)/bin/$(TEC_UNAME)
   ifdef USE_BIN2C_LUA
-    BIN2C := $(LUA_BIN)/lua$(LUA_SUFFIX) $(BIN2C_PATH)bin2c.lua
+    BIN2C := $(LUA_BIN)/lua$(LUA_SFX) $(BIN2C_PATH)bin2c.lua
   else
-    BIN2C := $(LUA_BIN)/bin2c$(LUA_SUFFIX)
+    BIN2C := $(LUA_BIN)/bin2c$(LUA_SFX)
   endif
-  LUAC   := $(LUA_BIN)/luac$(LUA_SUFFIX)
-  LUABIN := $(LUA_BIN)/lua$(LUA_SUFFIX)
+  LUAC   := $(LUA_BIN)/luac$(LUA_SFX)
+  LUABIN := $(LUA_BIN)/lua$(LUA_SFX)
 endif
 
 ifdef USE_IUP
@@ -1083,6 +1093,9 @@ ifdef USE_CD
     LIBS += fontconfig
   endif
   ifneq ($(findstring Linux3, $(TEC_UNAME)), )
+    LIBS += fontconfig
+  endif
+  ifneq ($(findstring Linux4, $(TEC_UNAME)), )
     LIBS += fontconfig
   endif
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
