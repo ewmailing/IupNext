@@ -737,12 +737,15 @@ static int pmain (lua_State *L) {
 int main (int argc, char **argv) {
   int status, result;
   lua_State *L;
-  /******************* IUP *********************/
-  IupOpen(&argc, &argv);
-  /******************* IUP *********************/
   L = luaL_newstate();  /* create state */
   if (L == NULL) {
+    /******************* IUP *********************/
+    IupOpen(&argc, &argv);
+    /******************* IUP *********************/
     l_message(argv[0], "cannot create state: not enough memory");
+    /******************* IUP *********************/
+    IupClose();
+    /******************* IUP *********************/
     return EXIT_FAILURE;
   }
   lua_pushcfunction(L, &pmain);  /* to call 'pmain' in protected mode */
@@ -752,9 +755,6 @@ int main (int argc, char **argv) {
   result = lua_toboolean(L, -1);  /* get result */
   report(L, status);
   lua_close(L);
-  /******************* IUP *********************/
-  IupClose();
-  /******************* IUP *********************/
   return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
