@@ -13,7 +13,6 @@ SRC = iup_glcontrols.c iup_glcanvasbox.c iup_glsubcanvas.c iup_gllabel.c \
 LIBS = iupgl iup ftgl
 LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
 USE_OPENGL = Yes
-USE_MACOS_OPENGL = Yes
 
 DEFINES = FTGL_LIBRARY_STATIC
 ifneq ($(findstring dll, $(TEC_UNAME)), )
@@ -29,10 +28,6 @@ endif
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   INCLUDES += $(X11_INC)
-  ifdef USE_MACOS_OPENGL
-    LFLAGS = -framework OpenGL
-    USE_OPENGL :=
-  endif
   ifneq ($(TEC_SYSMINOR), 4)
     BUILD_DYLIB=Yes
   endif

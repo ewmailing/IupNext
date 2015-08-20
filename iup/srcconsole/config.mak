@@ -7,6 +7,8 @@ OPT = YES
 NO_SCRIPTS = Yes
 # IM and IupPlot uses C++
 LINKER = $(CPPC)
+# To use a subfolder with the Lua version for binaries
+LUAMOD_DIR = Yes
 
 NO_LUAOBJECT = Yes
 USE_BIN2C_LUA = Yes

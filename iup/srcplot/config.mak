@@ -4,7 +4,6 @@ OPT = YES
 
 USE_CD = Yes
 USE_OPENGL = Yes
-USE_MACOS_OPENGL = Yes
 
 ifdef DBG
   DEFINES += IUP_ASSERT
@@ -28,10 +27,6 @@ SRC = iup_plot.cpp  iupPlotCalc.cpp iupPlot.cpp iupPlotDraw.cpp iupPlotTick.cpp 
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   INCLUDES += $(X11_INC)
-  ifdef USE_MACOS_OPENGL
-    LFLAGS = -framework OpenGL
-    USE_OPENGL :=
-  endif
   ifneq ($(TEC_SYSMINOR), 4)
     BUILD_DYLIB=Yes
   endif

@@ -5,13 +5,14 @@ IUP := ..
 
 OPT = YES
 NO_LUAOBJECT = Yes
+# To not link with the Lua dynamic library in UNIX
 NO_LUALINK = Yes
+# To use a subfolder with the Lua version for binaries
+LUAMOD_DIR = Yes
 USE_BIN2C_LUA = Yes
 
-# Can not use USE_IUPLUA because Tecmake will include "iupluagl5X" in linker
 USE_IUP3 = Yes
-USE_OPENGL = Yes
-USE_MACOS_OPENGL = Yes
+USE_IUPLUA = Yes
 
 INCLUDES = ../src gl ../srclua5
 LIBS = iupglcontrols iuplua$(LUASFX)
@@ -19,11 +20,9 @@ DEF_FILE = gl/iupluaglcontrols.def
 
 ifdef USE_LUA53
   LUASFX = 53
-  DEFINES += LUA_COMPAT_MODULE
 else
 ifdef USE_LUA52
   LUASFX = 52
-  DEFINES += LUA_COMPAT_MODULE
 else
   USE_LUA51 = Yes
   LUASFX = 51
@@ -56,8 +55,4 @@ SRC := gl/iuplua_glcontrols.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   LIBS:=iupglcontrols
-  ifdef USE_MACOS_OPENGL
-    LFLAGS = -framework OpenGL
-    USE_OPENGL :=
-  endif
 endif
