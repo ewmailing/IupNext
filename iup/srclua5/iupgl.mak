@@ -40,7 +40,7 @@ else
 endif
 
 SRCLUA = glcanvas.lua
-LIBS = iuplua$(LUASFX)
+LIBS = iupgl iuplua$(LUASFX)
 
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
 GC := $(addprefix ctrl/il_, $(GC))
