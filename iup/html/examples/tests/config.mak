@@ -142,7 +142,7 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
 else
   SLIB += $(IUP_LIB)/libiup_pplot.a
   SLIB += $(IUP_LIB)/libiup_plot.a
-#  SLIB += $(CD_LIB)/libcdcontextplus.a
+  SLIB += $(CD_LIB)/libcdcontextplus.a
 #  SLIB += $(CD_LIB)/libcdpdflib.a
 endif
 

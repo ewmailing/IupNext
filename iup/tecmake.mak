@@ -862,7 +862,7 @@ ifdef USE_IUPCONTROLS
   
   ifdef USE_IUPLUA
     ifdef USE_STATIC
-      SLIB += $(IUP_LIB)/libiupluacontrols$(LIBLUA_SFX).a
+      SLIB += $(IUPLUA_LIB)/libiupluacontrols$(LIBLUA_SFX).a
     else
       LIBS += iupluacontrols$(LIBLUA_SFX)
     endif
@@ -884,7 +884,7 @@ ifdef USE_IUPGLCONTROLS
   
   ifdef USE_IUPLUA
     ifdef USE_STATIC
-      SLIB += $(IUP_LIB)/libiupluaglcontrols$(LIBLUA_SFX).a
+      SLIB += $(IUPLUA_LIB)/libiupluaglcontrols$(LIBLUA_SFX).a
     else
       LIBS += iupluaglcontrols$(LIBLUA_SFX)
     endif
@@ -952,7 +952,7 @@ ifdef USE_IUPLUA
 endif
 
 ifdef USE_LUA
-  LUA_LIB ?= $(LUA)/lib/$(TEC_UNAME_DIR)
+  LUA_LIB ?= $(LUA)/lib/$(TEC_UNAME)
   ifdef USE_STATIC
     ifndef NO_LUALIB
       SLIB += $(LUA_LIB)/liblualib$(LUA_SFX).a

@@ -99,18 +99,18 @@ ifdef ALL_STATIC
     USE_CDLUA = Yes
     USE_IUPCONTROLS = Yes
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      LIBS += iuplua_plot$(LUASFX) iup_plot cdgl
+      LIBS += iuplua_plot$(LUASFX) iup_plot cdgl cdcontextplus
       LIBS += iupluamatrixex$(LUASFX) iupmatrixex
     else
-      SLIB += $(IUP_LIB)/libiuplua_plot$(LUASFX).a $(IUP_LIB)/libiup_plot.a $(CD_LIB)/libcdgl.a
-      SLIB += $(IUP_LIB)/libiupluamatrixex$(LUASFX).a $(IUP_LIB)/libiupmatrixex.a
+      SLIB += $(IUP_LIB)/Lua$(LUASFX)/libiuplua_plot$(LUASFX).a $(IUP_LIB)/libiup_plot.a $(CD_LIB)/libcdgl.a $(CD_LIB)/libcdcontextplus.a
+      SLIB += $(IUP_LIB)/Lua$(LUASFX)/libiupluamatrixex$(LUASFX).a $(IUP_LIB)/libiupmatrixex.a
     endif
       
     ifndef IUPLUA_NO_IM
       ifneq ($(findstring Win, $(TEC_SYSNAME)), )
         LIBS += cdluaim$(LUASFX)
       else
-        SLIB += $(CD_LIB)/libcdluaim$(LUASFX).a
+        SLIB += $(CD_LIB)/Lua$(LUASFX)/libcdluaim$(LUASFX).a
       endif
     endif
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
@@ -133,7 +133,7 @@ ifdef ALL_STATIC
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
       LIBS += imlua_process$(LUASFX) iupluaim$(LUASFX) im_process iupim
     else
-      SLIB += $(IM_LIB)/libimlua_process$(LUASFX).a $(IUP_LIB)/libiupluaim$(LUASFX).a $(IM_LIB)/libim_process.a $(IUP_LIB)/libiupim.a
+      SLIB += $(IM_LIB)/Lua$(LUASFX)/libimlua_process$(LUASFX).a $(IUP_LIB)/Lua$(LUASFX)/libiupluaim$(LUASFX).a $(IM_LIB)/libim_process.a $(IUP_LIB)/libiupim.a
     endif
     
   else
@@ -146,7 +146,7 @@ ifdef ALL_STATIC
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
       LIBS += iupluaimglib$(LUASFX) iupimglib
     else
-      SLIB += $(IUP_LIB)/libiupluaimglib$(LUASFX).a $(IUP_LIB)/libiupimglib.a
+      SLIB += $(IUP_LIB)/Lua$(LUASFX)/libiupluaimglib$(LUASFX).a $(IUP_LIB)/libiupimglib.a
     endif
   endif
   
@@ -157,7 +157,7 @@ ifdef ALL_STATIC
       LIBS += iupluatuio$(LUASFX) iuptuio
       LIBS += ws2_32 winmm
     else
-      SLIB += $(IUP_LIB)/libiupluatuio$(LUASFX).a $(IUP_LIB)/libiuptuio.a
+      SLIB += $(IUP_LIB)/Lua$(LUASFX)/libiupluatuio$(LUASFX).a $(IUP_LIB)/libiuptuio.a
     endif
   endif
 else

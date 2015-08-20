@@ -16,10 +16,7 @@ endif
 
 INCLUDES = ../include ../src ../srccd
 LDIR = ../lib/$(TEC_UNAME)  
-LIBS = iup iupgl iupcd cdgl 
-ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += cdcontextplus
-endif
+LIBS = iup iupgl iupcd cdgl cdcontextplus
 
 DEFINES = CD_NO_OLD_INTERFACE
 

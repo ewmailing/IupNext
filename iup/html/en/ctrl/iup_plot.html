@@ -49,16 +49,16 @@ This control eliminates all the limitations and issues we have with the PPlot
 library. But we reused several <a href="http://pplot.sourceforge.net/">PPlot</a> 
 source code parts, so we would like to thank the author Pier Philipsen for 
 making it with a with a very flexible BSD License. We also would like to thank 
-Marian Trifon for the first IupPPlot implementation which part was reused here. 
+Marian Trifon for the first IupPPlot implementation which part was also reused here. 
 See "<a href="#Differences">Differences from IupPPlot</a>" bellow.</p>
 <h3>Initialization and Usage</h3>
 <p>The <b>IupPlotOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The &quot;iup_plot.h&quot; file must also be included in the source code. The program must be linked to the controls 
   library (iup_plot), with the main CD library, with the 
 <a href="http://www.tecgraf.puc-rio.br/cd/en/drv/gl.html" target="_blank">cdgl</a> 
-library (and 
+library, with the 
 <a href="http://www.tecgraf.puc-rio.br/cd/en/drv/gdiplus.html" target="_blank">cdcontextplus</a> 
-library in Windows), and with the <a href="iupglcanvas.html">iupgl</a> library.</p>
+library, and with the <a href="iupglcanvas.html">iupgl</a> library.</p>
 <p>To make the control available in Lua use require&quot;iuplua_plot&quot; or manually 
 call the initialization function in C, 
 <b>iupplotlua_open</b>, after calling <b>iuplua_open</b>.
