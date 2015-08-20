@@ -10,6 +10,9 @@ end
 function iup_console.print_version_info()
   iup_console.clear()
   local str = ""
+  
+  str = iup_console.concat(str, _COPYRIGHT)
+  
   if (im) then str = iup_console.concat(str, "IM " .. im._VERSION .. "  " .. im._COPYRIGHT) end
 
   if (cd) then str = iup_console.concat(str, "CD " .. cd._VERSION .. "  " .. cd._COPYRIGHT) end
