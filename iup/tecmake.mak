@@ -715,10 +715,12 @@ ifneq ($(findstring MacOS, $(TEC_UNAME)), )
     STDLDFLAGS := -bundle -undefined dynamic_lookup
   endif
   ifdef USE_OPENGL
+    LFLAGS = -framework OpenGL
+    
     ifeq ($(TEC_SYSMINOR), 5)
       #Darwin9 Only - OpenGL bug fix for Fink, when the message bellow appears
       #   ld: cycle in dylib re-exports with /usr/X11R6/lib/libGL.dylib
-      LFLAGS += -dylib_file /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib
+      #LFLAGS += -dylib_file /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib
     endif
   endif
   ifdef USE_OPENMP
@@ -923,18 +925,26 @@ ifdef USE_IUPLUA
   
   ifdef USE_STATIC
     ifdef USE_CD
-      SLIB += $(IUPLUA_LIB)/libiupluacd$(LIBLUA_SFX).a
+      ifeq ($(findstring iupluacd, $(LIBNAME)), )
+        SLIB += $(IUPLUA_LIB)/libiupluacd$(LIBLUA_SFX).a
+      endif
     endif
     ifdef USE_OPENGL
-      SLIB += $(IUPLUA_LIB)/libiupluagl$(LIBLUA_SFX).a
+      ifeq ($(findstring iupluagl, $(LIBNAME)), )
+        SLIB += $(IUPLUA_LIB)/libiupluagl$(LIBLUA_SFX).a
+      endif
     endif
     SLIB += $(IUPLUA_LIB)/libiuplua$(LIBLUA_SFX).a
   else
     ifdef USE_CD
-      LIBS += iupluacd$(LIBLUA_SFX)
+      ifeq ($(findstring iupluacd, $(LIBNAME)), )
+        LIBS += iupluacd$(LIBLUA_SFX)
+      endif
     endif
     ifdef USE_OPENGL
-      LIBS += iupluagl$(LIBLUA_SFX)
+      ifeq ($(findstring iupluagl, $(LIBNAME)), )
+        LIBS += iupluagl$(LIBLUA_SFX)
+      endif
     endif
     LIBS += iuplua$(LIBLUA_SFX)
     LDIR += $(IUPLUA_LIB)

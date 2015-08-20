@@ -1080,10 +1080,14 @@ endif
 ifdef USE_IUPLUA
   override USE_IUP = Yes
   ifdef USE_CD
-    LIBS += iupluacd$(LIBLUA_SFX)
+    ifeq ($(findstring iupluacd, $(LIBNAME)), )
+      LIBS += iupluacd$(LIBLUA_SFX)
+    endif
   endif
   ifdef USE_OPENGL
-    LIBS += iupluagl$(LIBLUA_SFX)
+    ifeq ($(findstring iupluagl, $(LIBNAME)), )
+      LIBS += iupluagl$(LIBLUA_SFX)
+    endif
   endif
   LIBS += iuplua$(LIBLUA_SFX)
   IUPLUA_LIB ?= $(IUP)/lib/$(TEC_UNAME_LIBLUA_DIR)
