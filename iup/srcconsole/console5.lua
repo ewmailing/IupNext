@@ -11,11 +11,7 @@ function iup_console.print_version_info()
   iup_console.clear()
   local str = ""
   
-  if (_VERSION == "Lua 5.1") then
-    str = iup_console.concat(str, _VERSION .. "  " .. im._COPYRIGHT) 
-  else
-    str = iup_console.concat(str, _COPYRIGHT)
-  end
+  str = iup_console.concat(str, _COPYRIGHT) -- Only available in IupLuaConsole
   
   if (im) then str = iup_console.concat(str, "IM " .. im._VERSION .. "  " .. im._COPYRIGHT) end
 

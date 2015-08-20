@@ -409,7 +409,7 @@ int luaopen_iupluaimglib(lua_State* L);
 #endif
 
 static void iuplua_openlibs (lua_State *L) {
-  lua_pushliteral(L, LUA_COPYRIGHT);
+  lua_pushliteral(L, LUA_RELEASE"  "LUA_COPYRIGHT);
   lua_setglobal(L, "_COPYRIGHT");  /* set global _COPYRIGHT */
 
   /* iuplua initialization */
