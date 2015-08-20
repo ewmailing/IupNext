@@ -77,7 +77,7 @@
     <Link>
       <AdditionalDependencies>gdiplus.lib;cdcontextplus.lib;comctl32.lib;ole32.lib;opengl32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupglcontrols.lib;iupimglib.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iup_pplot.lib;iup_plot.lib;iup_mglplot.lib;vld.lib;cdgl.lib;ftgl.lib;iupim.lib;im.lib;im_process.lib;iupmatrixex.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\lib;..\..\cd\lib;..\..\im\lib;D:\LNG\vld\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib\Debug;..\..\cd\lib\Debug;..\..\im\lib\Debug;D:\LNG\vld\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -114,7 +114,7 @@
     <Link>
       <AdditionalDependencies>gdiplus.lib;cdcontextplus.lib;comctl32.lib;ole32.lib;opengl32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupglcontrols.lib;iupimglib.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iup_pplot.lib;iup_plot.lib;iup_mglplot.lib;cdgl.lib;ftgl.lib;iupim.lib;im.lib;im_process.lib;iupmatrixex.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\lib\x64;..\..\cd\lib\x64;..\..\im\lib\x64;d:\lng\vld\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib\Debug_64;..\..\cd\lib\Debug_64;..\..\im\lib\Debug_64;d:\lng\vld\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>

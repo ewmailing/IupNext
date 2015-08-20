@@ -75,7 +75,7 @@
       <AdditionalDependencies>iupgtk.lib;comctl32.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gdk_pixbuf-2.0.lib;pangocairo-1.0.lib;pango-1.0.lib;cairo.lib;pangowin32-1.0.lib;gobject-2.0.lib;gmodule-2.0.lib;glib-2.0.lib;iupcontrols.lib;iupimglib.lib;iup_pplot.lib;iupgl.lib;cdgdk.lib;cdcairo.lib;iupcd.lib;freetype6.lib;zlib1.lib;lua$(LUA_SUFFIX).lib;iuplua$(LUASFX).lib;iupluaim$(LUASFX).lib;iupluaimglib$(LUASFX).lib;iupluagl$(LUASFX).lib;iupluacontrols$(LUASFX).lib;iuplua_pplot$(LUASFX).lib;iupim.lib;opengl32.lib;glu32.lib;gdiplus.lib;im.lib;cdlua$(LUASFX).lib;iupluacd$(LUASFX).lib;imlua$(LUASFX).lib;imlua_process$(LUASFX).lib;cdluaim$(LUASFX).lib;im_process.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)iuplua$(LUASFX)gtk.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\im\lib;d:\lng\gtk2\lib;..\..\..\cd\lib;..\..\lib;..\..\..\lua$(LUA_SUFFIX)\lib\vc12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\im\lib\Debug;d:\lng\gtk2\lib;..\..\..\cd\lib\Debug;..\..\lib\Debug;..\..\..\lua$(LUA_SUFFIX)\lib\vc12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>
@@ -104,7 +104,7 @@
       <AdditionalDependencies>iupgtk.lib;comctl32.lib;gtk-win32-2.0.lib;gdk-win32-2.0.lib;gdk_pixbuf-2.0.lib;pangocairo-1.0.lib;pango-1.0.lib;cairo.lib;pangowin32-1.0.lib;gobject-2.0.lib;gmodule-2.0.lib;glib-2.0.lib;iupcontrols.lib;iupimglib.lib;iup_pplot.lib;iupgl.lib;cdgdk.lib;cdcairo.lib;iupcd.lib;freetype6.lib;zlib1.lib;lua$(LUA_SUFFIX).lib;iuplua$(LUASFX).lib;iupluaim$(LUASFX).lib;iupluaimglib$(LUASFX).lib;iupluagl$(LUASFX).lib;iupluacontrols$(LUASFX).lib;iuplua_pplot$(LUASFX).lib;iupim.lib;opengl32.lib;glu32.lib;gdiplus.lib;im.lib;cdlua$(LUASFX).lib;iupluacd$(LUASFX).lib;imlua$(LUASFX).lib;imlua_process$(LUASFX).lib;cdluaim$(LUASFX).lib;im_process.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)iuplua$(LUASFX)gtk.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\im\lib\x64;d:\lng\gtk2_x64\lib;..\..\..\cd\lib\x64;..\..\lib;..\..\..\lua$(LUA_SUFFIX)\lib\vc12_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\im\lib\Debug_64;d:\lng\gtk2_x64\lib;..\..\..\cd\lib\Debug_64;..\..\lib\Debug;..\..\..\lua$(LUA_SUFFIX)\lib\vc12_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>
