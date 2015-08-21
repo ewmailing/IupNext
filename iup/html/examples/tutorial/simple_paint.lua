@@ -856,10 +856,8 @@ function tool_draw_pencil(toolbox, image, start_x, start_y, x, y)
   r, g, b = string.match(toolbox.toolcolor, "(%d*) (%d*) (%d*)")
   
   -- do not use line style here */
-  local rgb_canvas = image:cdCreateCanvas()
-  image:SetAttribString("ResolutionUnit", "PDI")
-  image:SetAttribReal("XResolution", im.FLOAT, res)
-  image:SetAttribReal("YResolution", im.FLOAT, res)
+  local rgb_canvas = cd.CreateCanvas(cd.IMIMAGE, image)
+  rgb_canvas:SetAttribute("RESOLUTION", res)
   rgb_canvas:Foreground(cd.EncodeColor(r, g, b))
   rgb_canvas:LineWidth(line_width)
   rgb_canvas:Line(start_x, start_y, x, y)
@@ -1027,7 +1025,7 @@ function canvas:action()
     cd_canvas:Foreground(cd.BLACK)
     cd_canvas:Rect(x - 1, x + view_width, y - 1, y + view_height)
 
-    image:cdCanvasPutImageRect(cd_canvas, x, y, view_width, view_height, 0, 0, 0, 0)
+    cd_canvas:PutImImage(image, x, y, view_width, view_height)
     
     if (config:GetVariable("MainWindow", "ZoomGrid") == "ON") then
       local zoom_val = iup.GetDialogChild(canvas, "ZOOMVAL")
@@ -1210,12 +1208,8 @@ function canvas:button_cb(button, pressed, x, y)
               local start_y = canvas.start_y
               local res = tonumber(iup.GetGlobal("SCREENDPI")) / 25.4
 
-              -- not a good solution, but necessary for text drawing in the same scale as the screen
-              -- TODO: must create an alternative way to set the resolution
-              image:SetAttribString("ResolutionUnit", "DPI")
-              image:SetAttribReal("XResolution", im.FLOAT, res)
-              image:SetAttribReal("YResolution", im.FLOAT, res)
-              local rgb_canvas = image:cdCreateCanvas()
+              local rgb_canvas = cd.CreateCanvas(cd.IMIMAGE, image)
+              rgb_canvas:SetAttribute("RESOLUTION", res)
               
               tool_draw_overlay(toolbox, rgb_canvas, start_x, start_y, x, y)
               
@@ -1420,8 +1414,8 @@ end
 
 function item_print:action()
   local title = dlg.title
-  local cd_canvas = cd.CreateCanvas(cd.PRINTER, title.." -d")
-  if (not cd_canvas) then
+  local print_canvas = cd.CreateCanvas(cd.PRINTER, title.." -d")
+  if (not print_canvas) then
     return
   end
 
@@ -1433,7 +1427,7 @@ function item_print:action()
     local margin_width = config:GetVariableDef("Print", "MarginWidth", 20)
     local margin_height = config:GetVariableDef("Print", "MarginHeight", 20)
 
-    local canvas_width, canvas_height, canvas_width_mm, canvas_height_mm = cd_canvas:GetSize()
+    local canvas_width, canvas_height, canvas_width_mm, canvas_height_mm = print_canvas:GetSize()
 
     -- convert to pixels
     margin_width = math.floor((margin_width * canvas_width) / canvas_width_mm)
@@ -1446,10 +1440,10 @@ function item_print:action()
     local x = (canvas_width - view_width) / 2
     local y = (canvas_height - view_height) / 2
 
-    image:cdCanvasPutImageRect(cd_canvas, x, y, view_width, view_height, 0, 0, 0, 0)
+    print_canvas:PutImImage(image, x, y, view_width, view_height)
   end
 
-  cd_canvas:Kill()
+  print_canvas:Kill()
 end
 
 function item_exit:action()

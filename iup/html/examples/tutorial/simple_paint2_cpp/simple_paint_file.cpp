@@ -4,6 +4,7 @@
 
 #include <iup.h>
 #include <im_convert.h>
+#include <im_process.h>
 
 
 void SimplePaintFile::Close()
@@ -105,19 +106,13 @@ bool SimplePaintFile::SaveAsFile(const char* new_filename)
 
 static void image_fill_white(imImage* image)
 {
-  unsigned char** data = (unsigned char**)image->data;
-  int x, y, offset;
+  float color[3];
 
-  for (y = 0; y < image->height; y++)
-  {
-    for (x = 0; x < image->width; x++)
-    {
-      offset = y * image->width + x;
-      data[0][offset] = 255;
-      data[1][offset] = 255;
-      data[2][offset] = 255;
-    }
-  }
+  color[0] = 255;
+  color[1] = 255;
+  color[2] = 255;
+
+  imProcessRenderConstant(image, color);
 }
 
 bool SimplePaintFile::New(int width, int height)

@@ -17,6 +17,6 @@ char* str_filepath(const char *filename);  /* must be deleted */
 void show_error(const char* message, int is_error);
 void show_file_error(int error);
 
-void image_flood_fill(const imImage* image, int start_x, int start_y, long replace_color, double tol_percent);
+void image_flood_fill(imImage* image, int start_x, int start_y, long replace_color, double tol_percent);
 
 #endif

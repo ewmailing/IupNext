@@ -8,6 +8,8 @@
 #include <cdirgb.h>
 #include <cdiup.h>
 #include <cdprint.h>
+#include <cdim.h>
+
 
 //#define USE_OPENGL 1
 //#define USE_CONTEXTPLUS 1
@@ -237,13 +239,13 @@ double SimplePaintCanvas::ViewZoomRect(int *_x, int *_y, int *_view_width, int *
 void SimplePaintCanvas::DrawPencil(int start_x, int start_y, int end_x, int end_y)
 {
   double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-  unsigned char** data = (unsigned char**)file->GetImage()->data;
 
   int line_width = toolbox->LineWidth();
   long color = toolbox->Color();
 
   /* do not use line style here */
-  cdCanvas* rgb_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", file->GetImage()->width, file->GetImage()->height, data[0], data[1], data[2], res);
+  cdCanvas* rgb_canvas = cdCreateCanvas(CD_IMIMAGE, (imImage*)file->GetImage());
+  cdCanvasSetfAttribute(rgb_canvas, "RESOLUTION", "%g", res);
   cdCanvasForeground(rgb_canvas, color);
   cdCanvasLineWidth(rgb_canvas, line_width);
   cdCanvasLine(rgb_canvas, start_x, start_y, end_x, end_y);
@@ -324,7 +326,7 @@ void SimplePaintCanvas::Print(const char* title, int margin_width, int margin_he
     x = (canvas_width - view_width) / 2;
     y = (canvas_height - view_height) / 2;
 
-    imcdCanvasPutImage(print_canvas, file->GetImage(), x, y, view_width, view_height, 0, 0, 0, 0);
+    cdCanvasPutImImage(print_canvas, file->GetImage(), x, y, view_width, view_height);
   }
 
   cdKillCanvas(print_canvas);
@@ -361,7 +363,7 @@ int SimplePaintCanvas::CanvasActionCallback(Ihandle*)
     /* we force NEAREST so we can see the pixel boundary in zoom in */
     /* an alternative would be to set BILINEAR when zoom out */
     cdCanvasSetAttribute(cd_canvas, "IMGINTERP", (char*)"NEAREST");  /* affects only drivers that have this attribute */
-    imcdCanvasPutImage(cd_canvas, file->GetImage(), x, y, view_width, view_height, 0, 0, 0, 0);
+    cdCanvasPutImImage(cd_canvas, file->GetImage(), x, y, view_width, view_height);
 
     if (show_zoomgrid)
     {
@@ -537,9 +539,9 @@ int SimplePaintCanvas::CanvasButtonCallback(Ihandle* canvas, int button, int pre
             if (interact.overlay)
             {
               double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-              unsigned char** data = (unsigned char**)file->GetImage()->data;
   
-              cdCanvas* rgb_canvas = cdCreateCanvasf(CD_IMAGERGB, "%dx%d %p %p %p -r%g", file->GetImage()->width, file->GetImage()->height, data[0], data[1], data[2], res);
+              cdCanvas* rgb_canvas = cdCreateCanvas(CD_IMIMAGE, (imImage*)file->GetImage());
+              cdCanvasSetfAttribute(rgb_canvas, "RESOLUTION", "%g", res);
 
               DrawToolOverlay(rgb_canvas, interact.start_x, interact.start_y, x, y);
 
@@ -559,7 +561,7 @@ int SimplePaintCanvas::CanvasButtonCallback(Ihandle* canvas, int button, int pre
               double tol_percent = toolbox->FillTol();
               long color = toolbox->Color();
 
-              image_flood_fill(file->GetImage(), x, y, color, tol_percent);
+              image_flood_fill((imImage*)file->GetImage(), x, y, color, tol_percent);
 
               file->SetImageChanged();
               IupUpdate(canvas);
