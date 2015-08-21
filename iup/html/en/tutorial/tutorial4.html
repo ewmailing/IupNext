@@ -310,7 +310,14 @@ helping the user to find the best combination for those parameters for the
 desired result. For this to work we are going to temporarily replace the current 
 image with the processed image, and simply update the canvas. The result is very 
 effective. IM has lots of other image processing operations that we will let you 
-to explore.</p>
+to explore, to use them we need to link with the <strong>im_process</strong> 
+library too. This will also allow us to replace the flood fill and fill with 
+white routines by <strong>imProcess</strong> versions.</p>
+<p>Since we are adding utilities libraries, let's also include the <strong>cdim</strong> 
+library that will allow us to replace the CD_IMAGERGB driver by the CD_IMIMAGE 
+driver, and the <strong>imcdCanvasPutImage</strong> macro by the <strong>
+cdCanvasPutImImage</strong> function. Providing a more elegant code for our 
+final version. </p>
 <p>And we are done for this chapter. We went from 800 lines, almost all based on 
 our previous example, to 2500 lines. Implementing a fully featured Paint 
 application using IUP and CD resources. Which include loading and saving of 
