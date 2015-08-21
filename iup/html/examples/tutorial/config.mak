@@ -27,13 +27,10 @@ ifdef DBG_DIR
 endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += iupimglib im_process iupim
-  ifdef USE_CONTEXTPLUS
-    DEFINES = USE_CONTEXTPLUS
-    LIBS += cdcontextplus gdiplus
-  endif
+  LIBS += iupimglib im_process iupim cdim
 else
-  SLIB += $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupim.a \
+  SLIB += $(IUP)/lib/$(TEC_UNAME)$(SFX)/libcdim.a \
+          $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupim.a \
           $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupimglib.a \
           $(IM)/lib/$(TEC_UNAME)$(SFX)/libim_process.a
 endif
@@ -41,6 +38,14 @@ endif
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   INCLUDES += ../../../etc/
   SRC += ../../../etc/iup.rc
+endif
+
+ifdef USE_CONTEXTPLUS
+  DEFINES = USE_CONTEXTPLUS
+  LIBS += cdcontextplus
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    LIBS += gdiplus
+  endif
 endif
 
 ifdef USE_OPENGL
