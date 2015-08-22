@@ -371,8 +371,7 @@ public:
       mMaxDecades(-1), mLogBase(10), mLabelCentered(false), mHasZoom(false),
       mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1),
       mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize), 
-      mTrafo(NULL), mTickIter(NULL), mDefaultFontStyle(inDefaultFontStyle),
-      mAutoScaleEqual(false)
+      mTrafo(NULL), mTickIter(NULL), mDefaultFontStyle(inDefaultFontStyle)
     { strcpy(mTipFormatString, "%.2f"); }
   ~iupPlotAxis() { SetLabel(NULL); }
 
@@ -402,7 +401,6 @@ public:
   double mMax;
   bool mAutoScaleMin;
   bool mAutoScaleMax;
-  bool mAutoScaleEqual;
   bool mReverse;
   bool mCrossOrigin;
   bool mShowArrow;
@@ -563,6 +561,7 @@ public:
   bool mRedraw;
   iupPlotRect mViewport;
   bool mViewportSquare;
+  bool mScaleEqual;
   int mDefaultFontSize;
   int mDefaultFontStyle;
 

@@ -563,14 +563,17 @@ void iupPlotAxis::InitZoom()
 {
   if (!mHasZoom)
   {
-    mHasZoom = true;
-    mAutoScaleMin = false;
-    mAutoScaleMax = false;
-
+    // Save NoZoom state values
     mNoZoomMin = mMin;
     mNoZoomMax = mMax;
     mNoZoomAutoScaleMin = mAutoScaleMin;
     mNoZoomAutoScaleMax = mAutoScaleMax;
+
+    mHasZoom = true;
+
+    // disable AutoScale
+    mAutoScaleMin = false;
+    mAutoScaleMax = false;
   }
 }
 
@@ -580,6 +583,7 @@ bool iupPlotAxis::ResetZoom()
   {
     mHasZoom = false;
 
+    // Restore NoZoom state values
     mMin = mNoZoomMin;
     mMax = mNoZoomMax;
     mAutoScaleMin = mNoZoomAutoScaleMin;
@@ -720,7 +724,7 @@ void iupPlotAxis::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) con
 
 iupPlot::iupPlot(Ihandle* _ih, int inDefaultFontStyle, int inDefaultFontSize)
   :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mCrossHairH(false),
-  mGrid(true), mGridMinor(false), mViewportSquare(false),
+  mGrid(true), mGridMinor(false), mViewportSquare(false), mScaleEqual(false),
   mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle), 
   mAxisX(inDefaultFontStyle, inDefaultFontSize), mAxisY(inDefaultFontStyle, inDefaultFontSize)
 {

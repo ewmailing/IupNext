@@ -411,9 +411,7 @@ bool iupPlot::CalculateAxisRange()
       return false;
   }
 
-  if (mAxisX.mAutoScaleEqual && mAxisY.mAutoScaleEqual &&
-      mAxisX.mAutoScaleMin && mAxisX.mAutoScaleMax &&
-      mAxisY.mAutoScaleMin && mAxisY.mAutoScaleMax)
+  if (mScaleEqual)
   {
     double theMin = mAxisY.mMin;
     if (mAxisX.mMin < theMin)

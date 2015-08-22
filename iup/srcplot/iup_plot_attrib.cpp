@@ -1840,34 +1840,19 @@ static char* iPlotGetViewportSquareAttrib(Ihandle* ih)
   return iupStrReturnBoolean(ih->data->current_plot->mViewportSquare);
 }
 
-static int iPlotSetAxisAutoScaleEqualAttrib(Ihandle* ih, const char* value)
+static int iPlotSetAxisScaleEqualAttrib(Ihandle* ih, const char* value)
 {
-  iupPlotAxis* axisX = &ih->data->current_plot->mAxisX;
-  iupPlotAxis* axisY = &ih->data->current_plot->mAxisY;
-
   iupPlotResetZoom(ih, 0);
 
-  if (iupStrBoolean(value))
-  {
-    axisX->mAutoScaleEqual = true;
-    axisY->mAutoScaleEqual = true;
-  }
-  else
-  {
-    axisX->mAutoScaleEqual = false;
-    axisY->mAutoScaleEqual = false;
-  }
+  ih->data->current_plot->mScaleEqual = iupStrBoolean(value)? true: false;
 
   ih->data->current_plot->mRedraw = true;
   return 0;
 }
 
-static char* iPlotGetAxisAutoScaleEqualAttrib(Ihandle* ih)
+static char* iPlotGetAxisScaleEqualAttrib(Ihandle* ih)
 {
-  iupPlotAxis* axisX = &ih->data->current_plot->mAxisX;
-  iupPlotAxis* axisY = &ih->data->current_plot->mAxisY;
-
-  return iupStrReturnBoolean(axisX->mAutoScaleEqual && axisY->mAutoScaleEqual);
+  return iupStrReturnBoolean(ih->data->current_plot->mScaleEqual);
 }
 
 static int iPlotSetAxisXAutoMinAttrib(Ihandle* ih, const char* value)
@@ -3022,7 +3007,8 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "DS_USERDATA", iPlotGetDSUserDataAttrib, iPlotSetDSUserDataAttrib, NULL, NULL, IUPAF_NO_STRING | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "VIEWPORTSQUARE", iPlotGetViewportSquareAttrib, iPlotSetViewportSquareAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AXS_AUTOSCALEEQUAL", iPlotGetAxisAutoScaleEqualAttrib, iPlotSetAxisAutoScaleEqualAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_SCALEEQUAL", iPlotGetAxisScaleEqualAttrib, iPlotSetAxisScaleEqualAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "AXS_AUTOSCALEEQUAL", iPlotGetAxisScaleEqualAttrib, iPlotSetAxisScaleEqualAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "AXS_X", iPlotGetAxisXAttrib, iPlotSetAxisXAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_Y", iPlotGetAxisYAttrib, iPlotSetAxisYAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
