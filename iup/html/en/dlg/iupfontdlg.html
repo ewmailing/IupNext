@@ -35,7 +35,7 @@ fontdlg() [in LED]</pre>
 
 <h3><a name="Attributes">Attributes</a></h3>
 <p><b>PREVIEWTEXT</b> [GTK and Motif only]: the text shown in the preview area. If not 
-defined the system will provide a default text.</p>
+defined, the system will provide a default text.</p>
 <p><b>COLOR</b> [Windows Only]: The initial color value and the returned 
 selected value if the user pressed the Ok button. In Windows the Choose Font 
 dialog allows the user to select a color from a pre-defined list of colors. 
@@ -48,8 +48,8 @@ Since IUP 3.15 must set SHOWCOLOR=Yes to enable this option.</p>
 pressed the Cancel button.</p>
 <p><a href="../attrib/iup_title.html">TITLE</a>:
   Dialog title.</p>
-<p><strong>VALUE</strong>: The initial font value and the returned selected 
-value if the user pressed the Ok button. Has the same format of the
+<p><strong>VALUE</strong>: The initial font value and the selected 
+value returned if the user pressed the Ok button. Has the same format as the
 <a href="../attrib/iup_font.html">FONT</a> attribute.</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 <p><a href="../call/iup_help_cb.html">HELP_CB</a>: Action generated when the 
