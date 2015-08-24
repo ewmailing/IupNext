@@ -413,18 +413,39 @@ bool iupPlot::CalculateAxisRange()
 
   if (mScaleEqual)
   {
-    double theMin = mAxisY.mMin;
-    if (mAxisX.mMin < theMin)
-      theMin = mAxisX.mMin;
+    if (mAxisY.HasZoom() || mAxisX.HasZoom())
+    {
+      if (mAxisY.mMax - mAxisY.mMin != mAxisX.mMax - mAxisX.mMin)
+      {
+        double theLength;
 
-    double theMax = mAxisY.mMax;
-    if (mAxisX.mMax > theMax)
-      theMax = mAxisX.mMax;
+        if (mAxisY.mMax - mAxisY.mMin > mAxisX.mMax - mAxisX.mMin)
+        {
+          theLength = mAxisY.mMax - mAxisY.mMin;
+          mAxisX.mMax = mAxisX.mMin + theLength;
+        }
+        else
+        {
+          theLength = mAxisX.mMax - mAxisX.mMin;
+          mAxisY.mMax = mAxisY.mMin + theLength;
+        }
+      }
+    }
+    else
+    {
+      double theMin = mAxisY.mMin;
+      if (mAxisX.mMin < theMin)
+        theMin = mAxisX.mMin;
 
-    mAxisX.mMin = theMin;
-    mAxisY.mMin = theMin;
-    mAxisX.mMax = theMax;
-    mAxisY.mMax = theMax;
+      double theMax = mAxisY.mMax;
+      if (mAxisX.mMax > theMax)
+        theMax = mAxisX.mMax;
+
+      mAxisX.mMin = theMin;
+      mAxisY.mMin = theMin;
+      mAxisX.mMax = theMax;
+      mAxisY.mMax = theMax;
+    }
   }
 
   return true;

@@ -739,6 +739,7 @@ void iupPlot::SetViewport(int x, int y, int w, int h)
 {
   if (mViewportSquare && w != h)
   {
+    /* take the smallest length */
     if (w > h)
     {
       mViewport.mX = x + (w - h) / 2;
