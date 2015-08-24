@@ -118,6 +118,16 @@ attribute for the CONTROL returned Ihandle*.</p>
     Identifier of the 
     dialog. <br>
 <strong>param_index</strong>: parameter to be retrieved.</p>
+<p>In Lua, to retrieve a parameter control you must use the following function:</p>
+<pre>iup.GetParamControl(<strong>param: </strong>ihandle)-&gt; (<strong>control</strong>: ihandle) [in Lua] (since 3.16)</pre>
+<p><strong>param</strong>:
+    Identifier of the 
+    parameter. </p>
+<p>In Lua, to retrieve a parameter auxiliary control you must use the following function:</p>
+<pre>iup.GetParamAuxControl(<strong>param: </strong>ihandle)-&gt; (<strong>control</strong>: ihandle) [in Lua] (since 3.16)</pre>
+<p><strong>param</strong>:
+    Identifier of the 
+    parameter. &nbsp;</p>
 <h3><a name="Notes">Notes</a></h3>
 <p>The format string must have the following 
   format, notice the &quot;\n&quot; at the end</p>

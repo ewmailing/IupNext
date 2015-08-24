@@ -58,7 +58,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (22/Aug/2015)</h3>
+<h3>SVN (24/Aug/2015)</h3>
 
 <ul>
 
@@ -81,6 +81,9 @@ version 3.x.</p>
 	<li><strong><span class="hist_new">New:</span> </strong>global attributes 
 	GL_VERSION, GL_VENDOR and GL_RENDERER, available only after the first call 
 	to <strong>IupGLMakeCurrent</strong>.</li>
+	<li><strong><span class="hist_new">New:</span> </strong>iup.<strong>GetParamControl</strong> 
+	and iup.<strong>GetParamAuxControl</strong> utility functions in Lua for
+	<strong>IupGetParam</strong> parameters.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	HLCOLOR attribute that defines an overlay color for the selected cells in
 	<strong>IupMatrix</strong>. The default is the TXTHLCOLOR global 

@@ -201,6 +201,26 @@ static int GetParamParam(lua_State *L)
   return 1;
 }
 
+static int GetParamControl(lua_State *L)
+{
+  Ihandle *param = iuplua_checkihandle(L, 1);
+  Ihandle* control = (Ihandle*)IupGetAttribute(param, "CONTROL");
+  if (!iuplua_getstate(control))
+    iuplua_plugstate(L, control);
+  iuplua_pushihandle(L, control);
+  return 1;
+}
+
+static int GetParamAuxControl(lua_State *L)
+{
+  Ihandle *param = iuplua_checkihandle(L, 1);
+  Ihandle* control = (Ihandle*)IupGetAttribute(param, "AUXCONTROL");
+  if (!iuplua_getstate(control))
+    iuplua_plugstate(L, control);
+  iuplua_pushihandle(L, control);
+  return 1;
+}
+
 static int Param(lua_State *L)
 {
   Ihandle* param = IupParamf(luaL_checkstring(L, 1));
@@ -224,6 +244,9 @@ void iupgetparamlua_open(lua_State * L)
 {
   iuplua_register(L, GetParam, "GetParam");
   iuplua_register(L, GetParamParam, "GetParamParam");
+  iuplua_register(L, GetParamControl, "GetParamControl");
+  iuplua_register(L, GetParamAuxControl, "GetParamAuxControl");
+
   iuplua_register(L, Param, "Paramf");
   iuplua_register(L, ParamBox, "ParamBox");
 }
