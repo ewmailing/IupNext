@@ -649,10 +649,17 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
     }
     else
     {
+      char *visiblecolumns;
+
       ctrl = IupText(NULL);
       IupSetAttribute(ctrl, "VISIBLECOLUMNS", "8");
-      IupSetAttribute(ctrl, "EXPAND", "HORIZONTAL");
       IupAppend(box, ctrl);
+
+      visiblecolumns = iupAttribGet(param, "VISIBLECOLUMNS");
+      if (visiblecolumns)
+        IupSetStrAttribute(ctrl, "VISIBLECOLUMNS", visiblecolumns);
+      else
+        IupSetAttribute(ctrl, "EXPAND", "HORIZONTAL");
     }
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
     IupStoreAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
@@ -858,6 +865,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
       else
       {
         char* step;
+
         aux = IupVal("HORIZONTAL");
         IupStoreAttribute(aux, "MIN", iupAttribGet(param, "MIN"));
         IupStoreAttribute(aux, "MAX", iupAttribGet(param, "MAX"));
