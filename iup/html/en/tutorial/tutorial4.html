@@ -31,7 +31,7 @@ IM in our application, some new includes a are needed: "im.h" which is the main 
 which allows the loading and images storing through IUP. Similar to what we did 
 in section 
 <a href="http://webserver2.tecgraf.puc-rio.br/iup/en/tutorial/tutorial2.html#Compiling_Linking">2.1.1</a>
-to link IUP’s libraries, we will also need to modify the project’s link to include 
+to link IUP's libraries, we will also need to modify the project's link to include 
 the IM (-lim) library and use a C++ linker, even with C code (because internally 
 IM uses C++). More details in section  
 <a href="http://webserver2.tecgraf.puc-rio.br/im/en/guide.html#buildapp">Build Applications</a>
@@ -69,7 +69,7 @@ In the functions that create a new image, we keep the current image using an IMA
 <strong>IupGetParam</strong>, which is used in the File/New to obtain the height and width dimensions of the new image. After this data is obtained from the user, the 
 <strong>imImageCreate</strong> function is called, which creates a new image, with the height and width previously obtained, and of the RGB type, as explained above.</p>
 
-<p>Note that the image drawing is not implemented in this first example, and therefore it will be the object of this tutorial’s next item.</p>
+<p>Note that the image drawing is not implemented in this first example, and therefore it will be the object of this tutorial's next item.</p>
 
 <p>In Lua, as mentioned before, the includes are replaced by the imlua and iupluaim requires. As with the IUP, IM is also a Lua 
 package. Its functions are retrieved by the "im." prefix followed by the name of the function without the im present in C. For example: we have im.FileImageLoadBitmap instead of  imFileImageLoadBitmap. The functions that in C receive an image as parameter (imRemoveAlpha, imImageDestroy, etc) in Lua are functions of the image itself and are called using ":" (image:RemoveAlpha, image:Destroy, etc), dismissing the image passing as parameter. While Lua has garbage collection, it is also a good practice to call image:Destroy to free-up the memory allocated for the images, since in large applications, which work with several images, the memory consumption could become a problem.</p>
@@ -171,7 +171,7 @@ and when the application window changes its size.  Thus, we need to implement th
 RESIZE_CB callback of the canvas, so that it calls the <strong>scrollbar_update</strong> function that calculates the scrollbar parameters.</p>
 
 <p>To change the magnification factor, we created a few mechanisms and also added some controls to the statusbar. They are: an <a href="../../../../../elem/iupval.html"><strong>IupVal
-</strong></a> which selects a value on a given interval, and three buttons that are responsible for the zoom in, zoom out, and return to original actions. The same buttons’ actions can be made through the View menu using item_zoomin, item_zoomout and item_actualsize. We also created hot keys that activate these buttons: CTRL+ (zoom in), CTRL- (zoom out) and CTRL0 to return to original size. Finally, we added a 
+</strong></a> which selects a value on a given interval, and three buttons that are responsible for the zoom in, zoom out, and return to original actions. The same buttons' actions can be made through the View menu using item_zoomin, item_zoomout and item_actualsize. We also created hot keys that activate these buttons: CTRL+ (zoom in), CTRL- (zoom out) and CTRL0 to return to original size. Finally, we added a 
 WHEEL_CB callback of the canvas, which is activated through the mouse wheel. In it we used the delta parameter to modify the zoom factor. You can find these news controls in 
 the <strong>create_main_dialog</strong> function, in which we used a shortened way to create a control hierarchy using 
 <strong>IupSetCallbacks</strong> and <strong>IupSetAttributes</strong> together. The result is similar to the creation of controls in Lua. The zoom factor is changed linearly, but its effect is of a power of 2, therefore the controls modify what we call zoom_index between -6 and 6 limits, and the 
@@ -345,7 +345,7 @@ the dialog to do that.</p>
 <p>In our next chapter we will introduce some advanced techniques for IUP 
 applications.</p>
 <hr>
-<p><strong>Note</strong>: both images used for the screen shots are Copyright © 
+<p><strong>Note</strong>: both images used for the screen shots are Copyright � 
 Antonio Scuri, and distributed under the Creative Common License.</p>
 
 

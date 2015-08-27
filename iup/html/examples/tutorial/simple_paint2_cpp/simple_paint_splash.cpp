@@ -35,6 +35,7 @@ static void SplashShowDlg(const char* image)
 
   dlg = IupDialog(lbl);
 
+  IupSetAttribute(dlg,"BORDER", "NO");
   IupSetAttribute(dlg,"RESIZE", "NO");
   IupSetAttribute(dlg,"MINBOX", "NO");
   IupSetAttribute(dlg,"MAXBOX", "NO");
