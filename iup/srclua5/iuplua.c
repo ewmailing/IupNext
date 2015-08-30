@@ -19,6 +19,16 @@
 #include "il.h"
 
 
+static int il_string_compare(lua_State *L)
+{
+  const char* str1 = luaL_checkstring(L, 1);
+  const char* str2 = luaL_checkstring(L, 2);
+  int casesensitive = (int)luaL_optinteger(L, 3, 1);
+  int utf8 = IupGetInt(NULL, "UTF8MODE");
+  int ret = iupStrCompare(str1, str2, casesensitive, utf8);
+  lua_pushinteger(L, ret);
+  return 1;
+}
 
 static int show_error_ok_action(Ihandle* ih)
 {
@@ -1148,6 +1158,8 @@ int iuplua_open(lua_State * L)
     {"_ERRORMESSAGE", il_error_message},
     {"dostring", il_dostring},
     {"dofile", il_dofile},
+    {"string_compare", il_string_compare},
+    
     { NULL, NULL },
   };
 
