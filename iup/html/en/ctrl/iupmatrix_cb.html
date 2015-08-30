@@ -77,7 +77,7 @@ When
 EDITHIDEONFOCUS=NO and editing is on going the callback EDITRELEASE_CB with the 
 same parameters will also be called right before this one (since 3.14).</span></p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, char *<strong>status</strong>); [in C]
-<strong>ih</strong>:click_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:release_cb(<strong>lin, col</strong>: number, <strong>status</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>lin</strong>, <strong>col</strong>: Coordinates of the cell where the 
