@@ -342,6 +342,8 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
     }
   }
 
+  iupAttribSetId(ih, "SORTSIGN", ih->data->last_sort_index, NULL);
+
   if (ascending)
     iupAttribSetId(ih, "SORTSIGN", col, "DOWN");
   else

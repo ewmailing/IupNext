@@ -707,8 +707,7 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
 
   /************************** View ****************************/
 
-  if (!readonly)
-    IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SORTDLG", NULL), "IMAGE=IUP_ToolsSortAscend"), "ACTION", iMatrixExItemSort_CB, NULL));
+  IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SORTDLG", NULL), "IMAGE=IUP_ToolsSortAscend"), "ACTION", iMatrixExItemSort_CB, NULL));
 
   {
     int flin, fcol;
