@@ -355,6 +355,14 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
   return 0;
 }
 
+static char* iMatrixGetSortLineIndexAttrib(Ihandle* ih, int lin)
+{
+  if (lin > 0 && lin < ih->data->lines.num && ih->data->sort_line_index)
+    return iupStrReturnInt(ih->data->sort_line_index[lin]);
+  else
+    return NULL;
+}
+
 static int iMatrixSetUndoRedoAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
@@ -388,9 +396,10 @@ void iupMatrixRegisterEx(Iclass* ic)
 
   /* IupMatrixEx Attributes - Sort Columns */
   iupClassRegisterAttributeId(ic, "SORTCOLUMN", NULL, iMatrixSetSortColumnAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SORTCOLUMNORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "ASCENDING", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SORTCOLUMNORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "ASCENDING", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SORTCOLUMNCASESENSITIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SORTCOLUMNINTERVAL", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "SORTLINEINDEX", iMatrixGetSortLineIndexAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterCallback(ic, "SORTCOLUMNCOMPARE_CB", "iii");
 
