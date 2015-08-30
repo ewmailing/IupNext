@@ -15,6 +15,7 @@
 #include "iupkey.h"
 
 #include <cd.h>
+#include <cd_old.h>
 #include <cdiup.h>
 #include <cddbuf.h>
 

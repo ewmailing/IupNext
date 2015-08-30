@@ -15,6 +15,7 @@
 #include "iupcbs.h"
 
 #include <cd.h>
+#include <cd_old.h>
 
 #include "iup_object.h"
 #include "iup_attrib.h"
