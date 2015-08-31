@@ -290,7 +290,8 @@ parameters. This includes the button box at the bottom.&nbsp; </p>
 <p>The <strong>PARAM_CB</strong> callback will receive the box handle instead of the <strong>
 IupGetParam</strong> dialog handle. Buttons 1 and 2 will still close the dialog 
 as in <strong>IupGetParam</strong> (by returning IUP_CLOSE internally), so to 
-change that behavior return 0 in the callback. </p>
+change that behavior return 0 in the callback. The <strong>USERDATA</strong> 
+attribute will hold the user data passed to the callback.</p>
 <p>The <strong>PARAMCOUNT</strong> attribute contains the number of parameters 
 not counting separators and button names.</p>
 <h3><a name="Examples">Examples</a></h3>

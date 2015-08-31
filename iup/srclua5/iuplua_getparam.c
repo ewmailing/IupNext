@@ -240,6 +240,14 @@ static int ParamBox(lua_State *L)
   return 1;
 }
 
+static int param_cb(Ihandle* self, int param_index, void* user_data)
+{
+  lua_State *L = iuplua_call_start(self, "param_cb");
+  lua_pushinteger(L, param_index);
+  lua_pushlightuserdata(L, user_data);
+  return iuplua_call(L, 2);
+}
+
 void iupgetparamlua_open(lua_State * L)
 {
   iuplua_register(L, GetParam, "GetParam");
@@ -249,4 +257,6 @@ void iupgetparamlua_open(lua_State * L)
 
   iuplua_register(L, Param, "Paramf");
   iuplua_register(L, ParamBox, "ParamBox");
+
+  iuplua_register_cb(L, "PARAM_CB", (lua_CFunction)param_cb, NULL);
 }
