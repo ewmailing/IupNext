@@ -124,6 +124,7 @@ static IstdMessage iStdMessages[] =
   {"IUP_SELECTDIR", {"Select Directory", "Selecionar Diretório", "Selecionar DiretÃ³rio", NULL}},
   {"IUP_OK", {"OK", "OK", NULL, NULL}},
   {"IUP_CANCEL", {"Cancel", "Cancelar", NULL, NULL}},
+  {"IUP_RETRY", {"Retry", "Tentar Novamente", NULL, NULL}},
   {"IUP_APPLY", {"Apply", "Aplicar", NULL, NULL}},
   {"IUP_RESET", {"Reset", "Reinicializar", NULL, NULL}},
   {"IUP_GETCOLOR", {"Color Selection", "Seleção de Cor", "SeleÃ§Ã£o de Cor", NULL}},

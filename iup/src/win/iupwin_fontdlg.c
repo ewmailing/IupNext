@@ -31,7 +31,7 @@
 #define IUP_FONTSCRIPTLTEXT           0x0446
 #define IUP_FONTSCRIPTCOMBOBOX        0x0474
 
-static UINT_PTR winFontDlgHookProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
+static UINT_PTR CALLBACK winFontDlgHookProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
   (void)wParam;
   if (uiMsg == WM_INITDIALOG)
@@ -93,9 +93,10 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
   iupAttribSetInt(ih, "_IUPDLG_Y", y);
 
+  /* if NOT set will NOT be Modal */
+  /* anyway it will be modal only relative to its parent */
   if (!parent)
-    parent = GetActiveWindow();  /* if NOT set will NOT be Modal */
-                                 /* anyway it will be modal only relative to its parent */
+    parent = GetActiveWindow();
 
   standardfont = iupAttribGet(ih, "VALUE");
   if (!standardfont)
@@ -128,12 +129,8 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   choosefont.lpLogFont = &logfont;
   choosefont.Flags = CF_SCREENFONTS | CF_EFFECTS | CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL;
   choosefont.lCustData = (LPARAM)ih;
-
- /* if (!iupwinIsWin8OrNew() || iupAttribGetBoolean(ih, "WIN8_FONT_HOOK")) -- apparently not necessary */
-  {
-    choosefont.lpfnHook = (LPCFHOOKPROC)winFontDlgHookProc;
-    choosefont.Flags |= CF_ENABLEHOOK;
-  }
+  choosefont.lpfnHook = (LPCFHOOKPROC)winFontDlgHookProc;
+  choosefont.Flags |= CF_ENABLEHOOK;
 
   if (IupGetCallback(ih, "HELP_CB"))
     choosefont.Flags |= CF_SHOWHELP;

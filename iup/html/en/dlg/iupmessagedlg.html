@@ -40,16 +40,18 @@ messagedlg() [in LED]</pre>
   created element, or NULL if an error occurs.</p>
 
 <h3><a name="Attributes">Attributes</a></h3>
-<p><strong>BUTTONDEFAULT</strong>: Number of the default button. Can be &quot;1&quot; or &quot;2&quot;. 
-  &quot;2&quot; is valid only for &quot;OKCANCEL&quot; and &quot;YESNO&quot; button configurations. 
-Default: &quot;1&quot;.</p>
-<p><strong>BUTTONRESPONSE</strong>: Number of the pressed button. Can be &quot;1&quot; or &quot;2&quot;.
+<p><strong>BUTTONDEFAULT</strong>: Number of the default button. Can be &quot;1&quot;, &quot;2&quot; 
+or &quot;3&quot;. 
+  &quot;2&quot; is valid only for &quot;RETRYCANCEL&quot;, &quot;OKCANCEL&quot; and &quot;YESNO&quot; button configurations. 
+&quot;3&quot; is valid only for &quot;YESNOCANCEL&quot;. Default: &quot;1&quot;.</p>
+<p><strong>BUTTONRESPONSE</strong>: Number of the pressed button. Can be &quot;1&quot;, &quot;2&quot; 
+or &quot;3&quot;.
   Default: &quot;1&quot;.</p>
 <p><strong>BUTTONS</strong>: Buttons 
   configuration. Can have values: 
-    &quot;OK&quot;, &quot;OKCANCEL&quot; 
-    or &quot;YESNO&quot;. Default: &quot;OK&quot;. Additionally the &quot;Help&quot; button is displayed if the
-    HELP_CB callback is defined.</p>
+    &quot;OK&quot;, &quot;OKCANCEL&quot;, &quot;RETRYCANCEL&quot;, &quot;YESNO&quot;, or 
+&quot;YESNOCANCEL&quot;. Default: &quot;OK&quot;. Additionally the &quot;Help&quot; button is displayed if the
+    HELP_CB callback is defined. (RETRYCANCEL and YESNOCANCEL since 3.16)</p>
 <p><strong>DIALOGTYPE</strong>:
   Type of dialog defines which icon will be 
   displayed besides the message text. Can have values: 

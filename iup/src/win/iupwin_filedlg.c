@@ -97,6 +97,8 @@ static void winFileDlgGetFolder(Ihandle *ih)
   TCHAR filename[MAX_PATH];
   LPITEMIDLIST selecteditem;
 
+  /* if NOT set will NOT be Modal */
+  /* anyway it will be modal only relative to its parent */
   if (!parent)
     parent = GetActiveWindow();
 
@@ -462,9 +464,10 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
     return IUP_NOERROR;
   }
 
+  /* if NOT set will NOT be Modal */
+  /* anyway it will be modal only relative to its parent */
   if (!parent)
-    parent = GetActiveWindow();  /* if NOT set will NOT be Modal */
-                                 /* anyway it will be modal only relative to its parent */
+    parent = GetActiveWindow();
 
   ZeroMemory(&openfilename, sizeof(OPENFILENAME));
   openfilename.lStructSize = sizeof(OPENFILENAME);
