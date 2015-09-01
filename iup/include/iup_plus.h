@@ -16,23 +16,17 @@
 #include "iupcontrols.h"
 #include "iupmatrixex.h"
 #include "iupgl.h"
-  #include "iupglcontrols.h"
+#include "iupglcontrols.h"
   #include "iupim.h"
 #include "iup_config.h"
   #include "iup_mglplot.h"
-  #include "iup_plot.h"
+#include "iup_plot.h"
 #include "iupole.h"
 #include "iupweb.h"
 #include "iup_scintilla.h"
 #include "iuptuio.h"
 
 
-namespace cd
-{
-  class CanvasIup;
-  class CanvasIupDoubleBuffer;
-  class CanvasIupDoubleBufferRGB;
-}
 
 
 /** \brief Name space for C++ high level API
@@ -63,15 +57,13 @@ namespace iup
   protected:
     Ihandle* ih;
 
-    friend class cd::CanvasIup;
-    friend class cd::CanvasIupDoubleBuffer;
-    friend class cd::CanvasIupDoubleBufferRGB;
-
   public:
     Handle(Ihandle* ref_ih)
     {
       ih = ref_ih;
     }
+
+    Ihandle* GetHandle() const { return ih; }
   };
   
 
@@ -167,6 +159,199 @@ namespace iup
     MatrixEx() : Handle(IupMatrixEx()) {}
 
     static void Open() { IupMatrixExOpen(); }
+  };
+  class GLControls
+  {
+  public:
+    static void Open() { IupGLControlsOpen(); }
+  };
+  class GLSubCanvas : public Handle
+  {
+  public:
+    GLSubCanvas() : Handle(IupGLSubCanvas()) {}
+  };
+  class GLSeparator : public Handle
+  {
+  public:
+    GLSeparator() : Handle(IupGLSeparator()) {}
+  };
+  class GLProgressBar : public Handle
+  {
+  public:
+    GLProgressBar() : Handle(IupGLProgressBar()) {}
+  };
+  class GLVal : public Handle
+  {
+  public:
+    GLVal() : Handle(IupGLVal()) {}
+  };
+  class GLLabel : public Handle
+  {
+  public:
+    GLLabel(const char* title = 0) : Handle(IupGLLabel(title)) {}
+  };
+  class GLButton : public Handle
+  {
+  public:
+    GLButton(const char* title = 0) : Handle(IupGLButton(title)) {}
+  };
+  class GLToggle : public Handle
+  {
+  public:
+    GLToggle(const char* title = 0) : Handle(IupGLToggle(title)) {}
+  };
+  class GLLink : public Handle
+  {
+  public:
+    GLLink(const char *url = 0, const char* title = 0) : Handle(IupGLLink(url, title)) {}
+  };
+  class GLFrame : public Handle
+  {
+  public:
+    GLFrame(Handle& child) : Handle(IupGLFrame(child.GetHandle())) {}
+    GLFrame() : Handle(IupGLFrame(0)) {}
+  };
+  class GLExpander : public Handle
+  {
+  public:
+    GLExpander(Handle& child) : Handle(IupGLExpander(child.GetHandle())) {}
+    GLExpander() : Handle(IupGLExpander(0)) {}
+  };
+  class GLScrollBox : public Handle
+  {
+  public:
+    GLScrollBox(Handle& child) : Handle(IupGLScrollBox(child.GetHandle())) {}
+    GLScrollBox() : Handle(IupGLScrollBox(0)) {}
+  };
+  class GLSizeBox : public Handle
+  {
+  public:
+    GLSizeBox(Handle& child) : Handle(IupGLSizeBox(child.GetHandle())) {}
+    GLSizeBox() : Handle(IupGLSizeBox(0)) {}
+  };
+  class GLCanvasBox : public Handle
+  {
+  public:
+    GLCanvasBox() : Handle(IupGLCanvasBox(0)) {}
+    GLCanvasBox(Handle& child) : Handle(IupGLCanvasBox(child.GetHandle(), 0)) {}
+    GLCanvasBox(Handle* child, int count) : Handle(IupGLCanvasBox(0)) 
+    {
+      for (int i = 0; i < count; i++)
+        IupAppend(ih, child[i].GetHandle());
+    }
+  };
+  class Plot : public Handle
+  {
+  public:
+    Plot() : Handle(IupPlot()) {}
+
+    static void Open() { IupPlotOpen(); }
+
+    void Begin(int strXdata)
+    {
+      IupPlotBegin(ih, strXdata);
+    }
+    void Add(double x, double y)
+    {
+      IupPlotAdd(ih, x, y);
+    }
+    void AddStr(const char* x, double y)
+    {
+      IupPlotAddStr(ih, x, y);
+    }
+    void AddSegment(double x, double y)
+    {
+      IupPlotAddSegment(ih, x, y);
+    }
+    int End(Ihandle *ih)
+    {
+      return IupPlotEnd(ih);
+    }
+
+    int LoadData(const char* filename, int strXdata)
+    {
+      return IupPlotLoadData(ih, filename, strXdata);
+    }
+
+    int SetFormula(int sample_count, const char* formula, const char* init)
+    {
+      return IupPlotSetFormula(ih, sample_count, formula, init);
+    }
+
+    void Insert(int ds_index, int sample_index, double x, double y)
+    {
+      IupPlotInsert(ih, ds_index, sample_index, x, y);
+    }
+    void InsertStr(int ds_index, int sample_index, const char* x, double y)
+    {
+      IupPlotInsertStr(ih, ds_index, sample_index, x, y);
+    }
+    void InsertSegment(int ds_index, int sample_index, double x, double y)
+    {
+      IupPlotInsertSegment(ih, ds_index, sample_index, x, y);
+    }
+
+    void InsertStrSamples(int ds_index, int sample_index, const char** x, double* y, int count)
+    {
+      IupPlotInsertStrSamples(ih, ds_index, sample_index, x, y, count);
+    }
+    void InsertSamples(int ds_index, int sample_index, double *x, double *y, int count)
+    {
+      IupPlotInsertSamples(ih, ds_index, sample_index, x, y, count);
+    }
+
+    void AddSamples(int ds_index, double *x, double *y, int count)
+    {
+      IupPlotAddSamples(ih, ds_index, x, y, count);
+    }
+    void AddStrSamples(int ds_index, const char** x, double* y, int count)
+    {
+      IupPlotAddStrSamples(ih, ds_index, x, y, count);
+    }
+
+    void GetSample(int ds_index, int sample_index, double &x, double &y)
+    {
+      IupPlotGetSample(ih, ds_index, sample_index, &x, &y);
+    }
+    void GetSampleStr(int ds_index, int sample_index, const char* &x, double &y)
+    {
+      IupPlotGetSampleStr(ih, ds_index, sample_index, &x, &y);
+    }
+    int GetSampleSelection(int ds_index, int sample_index)
+    {
+      return IupPlotGetSampleSelection(ih, ds_index, sample_index);
+    }
+    void SetSample(int ds_index, int sample_index, double x, double y)
+    {
+      IupPlotSetSample(ih, ds_index, sample_index, x, y);
+    }
+    void SetSampleStr(int ds_index, int sample_index, const char* x, double y)
+    {
+      IupPlotSetSampleStr(ih, ds_index, sample_index, x, y);
+    }
+    void SetSampleSelection(int ds_index, int sample_index, int selected)
+    {
+      IupPlotSetSampleSelection(ih, ds_index, sample_index, selected);
+    }
+
+    void Transform(double x, double y, double &cnv_x, double &cnv_y)
+    {
+      IupPlotTransform(ih, x, y, &cnv_x, &cnv_y);
+    }
+    void TransformTo(double cnv_x, double cnv_y, double &x, double &y)
+    {
+      IupPlotTransformTo(ih, cnv_x, cnv_y, &x, &y);
+    }
+
+    int FindSample(double cnv_x, double cnv_y, int &ds_index, int &sample_index)
+    {
+      return IupPlotFindSample(ih, cnv_x, cnv_y, &ds_index, &sample_index);
+    }
+
+    void PaintTo(cd::Canvas& cd_canvas)
+    {
+      IupPlotPaintTo(ih, cd_canvas.canvas);
+    }
   };
   class OleControl : public Handle
   {
@@ -314,7 +499,7 @@ namespace cd
     CanvasIup(iup::Canvas& iup_canvas)
       : Canvas()
     {
-      canvas = cdCreateCanvas(CD_IUP, iup_canvas.ih);
+      canvas = cdCreateCanvas(CD_IUP, iup_canvas.GetHandle());
     }
   };
   class CanvasIupDoubleBuffer : public Canvas
@@ -323,7 +508,7 @@ namespace cd
     CanvasIupDoubleBuffer(iup::Canvas& iup_canvas)
       : Canvas()
     {
-      canvas = cdCreateCanvas(CD_IUPDBUFFER, iup_canvas.ih);
+      canvas = cdCreateCanvas(CD_IUPDBUFFER, iup_canvas.GetHandle());
     }
   };
   class CanvasIupDoubleBufferRGB : public Canvas
@@ -332,7 +517,7 @@ namespace cd
     CanvasIupDoubleBufferRGB(iup::Canvas& iup_canvas)
       : Canvas()
     {
-      canvas = cdCreateCanvas(CD_IUPDBUFFERRGB, iup_canvas.ih);
+      canvas = cdCreateCanvas(CD_IUPDBUFFERRGB, iup_canvas.GetHandle());
     }
   };
 }
