@@ -281,6 +281,12 @@ static int iMatrixSetSortColumnAttrib(Ihandle* ih, int col, const char* value)
   sort_cb = (IFniii)IupGetCallback(ih, "SORTCOLUMNCOMPARE_CB");
   if (sort_cb)
   {
+    for (lin = lin1; lin <= lin2; lin++)
+    {
+      if (sort_line_index[lin] == 0)
+        sort_line_index[lin] = lin;
+    }
+
     iMatrixQSort_sort_cb = sort_cb;
     iMatrixQSort_ih = ih;
     iMatrixQSort_col = col;
