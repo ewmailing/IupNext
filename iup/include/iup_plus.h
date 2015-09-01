@@ -350,7 +350,7 @@ namespace iup
 
     void PaintTo(cd::Canvas& cd_canvas)
     {
-      IupPlotPaintTo(ih, cd_canvas.canvas);
+      IupPlotPaintTo(ih, cd_canvas.GetHandle());
     }
   };
   class OleControl : public Handle
