@@ -286,7 +286,7 @@ char*     IupUnMapFont     (const char *driverfont);
 
 
 /************************************************************************/
-/*                      Pre-definided dialogs                           */
+/*                      Pre-defined dialogs                           */
 /************************************************************************/
 
 Ihandle* IupFileDlg(void);

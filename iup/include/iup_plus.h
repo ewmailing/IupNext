@@ -10,7 +10,7 @@
 
 #include <cd_plus.h>
 
-#include "iup.h"
+  #include "iup.h"
 #include "iupkey.h"
 #include "iup_class_cbs.hpp"
 #include "iupcontrols.h"
@@ -18,7 +18,7 @@
 #include "iupgl.h"
   #include "iupglcontrols.h"
   #include "iupim.h"
-  #include "iup_config.h"
+#include "iup_config.h"
   #include "iup_mglplot.h"
   #include "iup_plot.h"
 #include "iupole.h"
@@ -195,6 +195,114 @@ namespace iup
     TuioClient(int port) : Handle(IupTuioClient(port)) {}
 
     static void Open() { IupTuioOpen(); }
+  };
+
+  class Config: public Handle
+  {
+  public:
+    Config(): Handle(IupConfig()) { }
+
+    int LoadConfig()
+    {
+      return IupConfigLoad(ih);
+    }
+    int SaveConfig()
+    {
+      return IupConfigSave(ih);
+    }
+
+    void SetVariableStrId(const char* group, const char* key, int id, const char* value)
+    {
+      IupConfigSetVariableStrId(ih, group, key, id, value);
+    }
+    void SetVariableIntId(const char* group, const char* key, int id, int value)
+    {
+      IupConfigSetVariableIntId(ih, group, key, id, value);
+    }
+    void SetVariableDoubleId(const char* group, const char* key, int id, double value)
+    {
+      IupConfigSetVariableDoubleId(ih, group, key, id, value);
+    }
+    void SetVariableStr(const char* group, const char* key, const char* value)
+    {
+      IupConfigSetVariableStr(ih, group, key, value);
+    }
+    void SetVariableInt(const char* group, const char* key, int value)
+    {
+      IupConfigSetVariableInt(ih, group, key, value);
+    }
+    void SetVariableDouble(const char* group, const char* key, double value)
+    {
+      IupConfigSetVariableDouble(ih, group, key, value);
+    }
+
+    char* GetVariableStr(const char* group, const char* key)
+    {
+      return (char*)IupConfigGetVariableStr(ih, group, key);
+    }
+    int GetVariableInt(const char* group, const char* key)
+    {
+      return IupConfigGetVariableInt(ih, group, key);
+    }
+    double GetVariableDouble(const char* group, const char* key)
+    {
+      return IupConfigGetVariableDouble(ih, group, key);
+    }
+    char* GetVariableStrId(const char* group, const char* key, int id)
+    {
+      return (char*)IupConfigGetVariableStrId(ih, group, key, id);
+    }
+    int GetVariableIntId(const char* group, const char* key, int id)
+    {
+      return IupConfigGetVariableIntId(ih, group, key, id);
+    }
+    double GetVariableDoubleId(const char* group, const char* key, int id)
+    {
+      return IupConfigGetVariableDoubleId(ih, group, key, id);
+    }
+
+    char* GetVariableStrDef(const char* group, const char* key, const char* def)
+    {
+      return (char*)IupConfigGetVariableStrDef(ih, group, key, def);
+    }
+    int GetVariableIntDef(const char* group, const char* key, int def)
+    {
+      return IupConfigGetVariableIntDef(ih, group, key, def);
+    }
+    double GetVariableDoubleDef(const char* group, const char* key, double def)
+    {
+      return IupConfigGetVariableDoubleDef(ih, group, key, def);
+    }
+    char* GetVariableStrIdDef(const char* group, const char* key, int id, const char* def)
+    {
+      return (char*)IupConfigGetVariableStrIdDef(ih, group, key, id, def);
+    }
+    int GetVariableIntIdDef(const char* group, const char* key, int id, int def)
+    {
+      return IupConfigGetVariableIntIdDef(ih, group, key, id, def);
+    }
+    double GetVariableDoubleIdDef(const char* group, const char* key, int id, double def)
+    {
+      return IupConfigGetVariableDoubleIdDef(ih, group, key, id, def);
+    }
+
+    void RecentInit(Ihandle* menu, Icallback recent_cb, int max_recent)
+    {
+      IupConfigRecentInit(ih, menu, recent_cb, max_recent);
+    }
+    void RecentUpdate(const char* filename)
+    {
+      IupConfigRecentUpdate(ih, filename);
+    }
+
+    void DialogShow(Ihandle* dialog, const char* name)
+    {
+      IupConfigDialogShow(ih, dialog, name);
+    }
+    void DialogClosed(Ihandle* dialog, const char* name)
+    {
+      IupConfigDialogClosed(ih, dialog, name);
+    }
   };
 }
 
