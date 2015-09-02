@@ -352,13 +352,10 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
   return 1;
 }
 
-void iupMatrixExRegisterFind(Iclass* ic)
+void iupMatrixExSetClassUpdateFind(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic, "FIND", NULL, iMatrixExSetFindAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  (void)ic;
 
-  iupClassRegisterAttribute(ic, "FINDDIRECTION", NULL, NULL, IUPAF_SAMEASSYSTEM, "RIGHTBOTTOM", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FINDMATCHCASE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FINDMATCHWHOLECELL", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 
   if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
   {
@@ -397,7 +394,7 @@ void iupMatrixExRegisterFind(Iclass* ic)
     if (IupGetInt(NULL, "UTF8MODE"))
     {
       /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
-         When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
 
       IupSetLanguageString("IUP_NOT_FOUND", "Não encontrado.");
       IupSetLanguageString("IUP_FIND_NEXT", "Localizar &Próximo");
@@ -405,4 +402,13 @@ void iupMatrixExRegisterFind(Iclass* ic)
       IupSetLanguageString("IUP_MATCH_WHOLE_CELL", "Coindidir célula inteira");
     }
   }
+}
+
+void iupMatrixExRegisterFind(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic, "FIND", NULL, iMatrixExSetFindAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "FINDDIRECTION", NULL, NULL, IUPAF_SAMEASSYSTEM, "RIGHTBOTTOM", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FINDMATCHCASE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FINDMATCHWHOLECELL", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 }

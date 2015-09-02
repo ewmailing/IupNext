@@ -18,6 +18,7 @@
 #include "iup_str.h"
 #include "iup_strmessage.h"
 #include "iup_table.h"
+#include "iup_register.h"
 
 
 static void iStrMessageRegisterInternal(int lng, int utf8mode);
@@ -103,7 +104,6 @@ typedef struct _IstdMessage
   const char* lng_str[ISRTMSG_NUM_LNG];
 } IstdMessage;
 
-static int istrmessage_lng = 0;
 
 /* When seeing this file assuming ISO8859-1 encoding, lng=1 will appear correct.
    When seeing this file assuming UTF-8 encoding, lng=2 will appear correct. */
@@ -157,11 +157,13 @@ static void iStrMessageRegisterInternal(int lng, int utf8mode)
       IupSetLanguageString(messages->name, messages->lng_str[lng]);
     messages++;
   }
-  istrmessage_lng = lng;
 }
+
 
 void iupStrMessageUpdateLanguage(const char* language)
 {
+  /* called after the global attribute is changed */
+
   int lng = 0;  /* ENGLISH */
   int utf8mode = IupGetInt(NULL, "UTF8MODE");
   if (iupStrEqualNoCase(language, "PORTUGUESE"))
@@ -171,6 +173,7 @@ void iupStrMessageUpdateLanguage(const char* language)
     else
       lng = 1;
   }
-  if (lng != istrmessage_lng)
-    iStrMessageRegisterInternal(lng, utf8mode);
+
+  iStrMessageRegisterInternal(lng, utf8mode);
+  iupRegisterUpdateClasses();
 }

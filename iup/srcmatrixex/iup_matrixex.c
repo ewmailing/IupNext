@@ -823,7 +823,7 @@ static int iMatrixExSetShowDialogAttrib(Ihandle *ih, const char* value)
     iMatrixExItemGoTo_CB(ih);
   else if (iupStrEqualNoCase(value, "SORT"))
     iMatrixExItemSort_CB(ih);
-  else if (iupStrEqualNoCase(value, "COPYCOLTO_INTERVAL"))
+  else if (!readonly && iupStrEqualNoCase(value, "COPYCOLTO_INTERVAL"))
   {
     IupSetAttribute(ih, "COPYCOLTO", "INTERVAL");
     iMatrixExItemCopyColTo_CB(ih);
@@ -1033,26 +1033,9 @@ static void iMatrixExDestroyMethod(Ihandle* ih)
   free(matex_data);
 }
 
-static void iMatrixExInitAttribCb(Iclass* ic)
+static void iMatrixExSetClassUpdate(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic, "FREEZE", NULL, iMatrixExSetFreezeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-
-  iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
-  iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
-  iupClassRegisterAttribute(ic, "MENUCONTEXT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId2(ic, "SHOWMENUCONTEXT", NULL, iMatrixSetShowMenuContextAttribId, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWDIALOG", NULL, iMatrixExSetShowDialogAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-
-  iupMatrixExRegisterClipboard(ic);
-  iupMatrixExRegisterBusy(ic);
-  iupMatrixExRegisterVisible(ic);
-  iupMatrixExRegisterExport(ic);
-  iupMatrixExRegisterCopy(ic);
-  iupMatrixExRegisterUnits(ic);
-  iupMatrixExRegisterUndo(ic);
-  iupMatrixExRegisterFind(ic);
-  iupMatrixExRegisterSort(ic);
+  (void)ic;
 
   if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
   {
@@ -1085,9 +1068,9 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_SELECTEDLINES", "Selected lines");
 
     IupSetLanguageString("IUP_VISIBILITY", "Visibility");
-    IupSetLanguageString("IUP_HIDECOLUMN", "Hide Column");  
+    IupSetLanguageString("IUP_HIDECOLUMN", "Hide Column");
     IupSetLanguageString("IUP_SHOWHIDDENCOLUMNS", "Show Hidden Columns");
-    IupSetLanguageString("IUP_HIDELINE", "Hide Line");    
+    IupSetLanguageString("IUP_HIDELINE", "Hide Line");
     IupSetLanguageString("IUP_SHOWHIDDENLINES", "Show Hidden Lines");
 
     IupSetLanguageString("IUP_COPYTOINTERVAL", "Copy To - Interval");
@@ -1142,9 +1125,9 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     IupSetLanguageString("IUP_SELECTEDLINES", "Linhas Selecionadas");
 
     IupSetLanguageString("IUP_VISIBILITY", "Visibilidade");
-    IupSetLanguageString("IUP_HIDECOLUMN", "Esconder Coluna");  
+    IupSetLanguageString("IUP_HIDECOLUMN", "Esconder Coluna");
     IupSetLanguageString("IUP_SHOWHIDDENCOLUMNS", "Mostrar Coluna Escondidas");
-    IupSetLanguageString("IUP_HIDELINE", "Esconder Linha");    
+    IupSetLanguageString("IUP_HIDELINE", "Esconder Linha");
     IupSetLanguageString("IUP_SHOWHIDDENLINES", "Mostrar Linhas Escondidas");
 
     IupSetLanguageString("IUP_UNITS", "Unidades:");
@@ -1171,7 +1154,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
     if (IupGetInt(NULL, "UTF8MODE"))
     {
       /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
-         When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
       IupSetLanguageString("IUP_SETTINGSDLG", "Definições...");
       IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de Números:");
       IupSetLanguageString("IUP_DECIMALSYMBOL", "Símbolo Decimal:");
@@ -1182,6 +1165,35 @@ static void iMatrixExInitAttribCb(Iclass* ic)
       IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inválido.");
     }
   }
+
+  iupMatrixExSetClassUpdateFind(ic);
+  iupMatrixExSetClassUpdateSort(ic);
+  iupMatrixExSetClassUpdateUndo(ic);
+}
+
+static void iMatrixExInitAttribCb(Iclass* ic)
+{
+  iupClassRegisterAttribute(ic, "FREEZE", NULL, iMatrixExSetFreezeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
+  iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
+  iupClassRegisterAttribute(ic, "MENUCONTEXT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId2(ic, "SHOWMENUCONTEXT", NULL, iMatrixSetShowMenuContextAttribId, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDIALOG", NULL, iMatrixExSetShowDialogAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLASSUPDATE", NULL, (IattribSetFunc)iMatrixExSetClassUpdate, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+
+  iMatrixExSetClassUpdate(ic);
+
+  iupMatrixExRegisterClipboard(ic);
+  iupMatrixExRegisterBusy(ic);
+  iupMatrixExRegisterVisible(ic);
+  iupMatrixExRegisterExport(ic);
+  iupMatrixExRegisterCopy(ic);
+  iupMatrixExRegisterUnits(ic);
+  iupMatrixExRegisterUndo(ic);
+  iupMatrixExRegisterFind(ic);
+  iupMatrixExRegisterSort(ic);
 }
 
 static Iclass* iMatrixExNewClass(void)

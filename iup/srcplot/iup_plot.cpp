@@ -2326,40 +2326,9 @@ static int iPlotCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
-static Iclass* iPlotNewClass(void)
+static void iPlotSetClassUpdate(Iclass* ic)
 {
-  Iclass* ic = iupClassNew(iupRegisterFindClass("glcanvas"));
-
-  ic->name = (char*)"plot";
-  ic->format = NULL;  /* none */
-  ic->nativetype = IUP_TYPECANVAS;
-  ic->childtype = IUP_CHILDNONE;
-  ic->is_interactive = 1;
-
-  /* Class functions */
-  ic->New = iPlotNewClass;
-  ic->Create  = iPlotCreateMethod;
-  ic->Destroy = iPlotDestroyMethod;
-  ic->Map     = iPlotMapMethod;
-  ic->UnMap   = iPlotUnMapMethod;
-
-  /* IupPlot Callbacks */
-  iupClassRegisterCallback(ic, "POSTDRAW_CB", "C");
-  iupClassRegisterCallback(ic, "PREDRAW_CB", "C");
-  iupClassRegisterCallback(ic, "CLICKSAMPLE_CB", "iiddi");
-  iupClassRegisterCallback(ic, "DRAWSAMPLE_CB", "iiddi");
-  iupClassRegisterCallback(ic, "PLOTMOTION_CB", "dds");
-  iupClassRegisterCallback(ic, "PLOTBUTTON_CB", "iidds");
-  iupClassRegisterCallback(ic, "DELETE_CB", "iidd");
-  iupClassRegisterCallback(ic, "DELETEBEGIN_CB", "");
-  iupClassRegisterCallback(ic, "DELETEEND_CB", "");
-  iupClassRegisterCallback(ic, "SELECT_CB", "iiddi");
-  iupClassRegisterCallback(ic, "SELECTBEGIN_CB", "");
-  iupClassRegisterCallback(ic, "SELECTEND_CB", "");
-  iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
-  iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
-
-  iupPlotRegisterAttributes(ic);
+  (void)ic;
 
   if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
   {
@@ -2377,7 +2346,7 @@ static Iclass* iPlotNewClass(void)
 
     IupSetLanguageString("IUP_PROPERTIESDLG", "Properties...");
     IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "Dataset Properties...");
-    
+
     IupSetLanguageString("IUP_NAME", "Name:");
     IupSetLanguageString("IUP_COLOR", "Color:");
     IupSetLanguageString("IUP_MODE", "Mode:");
@@ -2594,7 +2563,7 @@ static Iclass* iPlotNewClass(void)
     if (IupGetInt(NULL, "UTF8MODE"))
     {
       /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
-         When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
 
       IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Fórmula Inválida.");
       IupSetLanguageString("IUP_AREA", "Área");
@@ -2618,6 +2587,46 @@ static Iclass* iPlotNewClass(void)
       IupSetLanguageString("IUP_ANGLE", "Ângulo:");
     }
   }
+}
+
+static Iclass* iPlotNewClass(void)
+{
+  Iclass* ic = iupClassNew(iupRegisterFindClass("glcanvas"));
+
+  ic->name = (char*)"plot";
+  ic->format = NULL;  /* none */
+  ic->nativetype = IUP_TYPECANVAS;
+  ic->childtype = IUP_CHILDNONE;
+  ic->is_interactive = 1;
+
+  /* Class functions */
+  ic->New = iPlotNewClass;
+  ic->Create  = iPlotCreateMethod;
+  ic->Destroy = iPlotDestroyMethod;
+  ic->Map     = iPlotMapMethod;
+  ic->UnMap   = iPlotUnMapMethod;
+
+  /* IupPlot Callbacks */
+  iupClassRegisterCallback(ic, "POSTDRAW_CB", "C");
+  iupClassRegisterCallback(ic, "PREDRAW_CB", "C");
+  iupClassRegisterCallback(ic, "CLICKSAMPLE_CB", "iiddi");
+  iupClassRegisterCallback(ic, "DRAWSAMPLE_CB", "iiddi");
+  iupClassRegisterCallback(ic, "PLOTMOTION_CB", "dds");
+  iupClassRegisterCallback(ic, "PLOTBUTTON_CB", "iidds");
+  iupClassRegisterCallback(ic, "DELETE_CB", "iidd");
+  iupClassRegisterCallback(ic, "DELETEBEGIN_CB", "");
+  iupClassRegisterCallback(ic, "DELETEEND_CB", "");
+  iupClassRegisterCallback(ic, "SELECT_CB", "iiddi");
+  iupClassRegisterCallback(ic, "SELECTBEGIN_CB", "");
+  iupClassRegisterCallback(ic, "SELECTEND_CB", "");
+  iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
+  iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
+
+  iupPlotRegisterAttributes(ic);
+
+  iupClassRegisterAttribute(ic, "CLASSUPDATE", NULL, (IattribSetFunc)iPlotSetClassUpdate, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+
+  iPlotSetClassUpdate(ic);
 
   return ic;
 }

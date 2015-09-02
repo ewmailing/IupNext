@@ -347,19 +347,16 @@ void iupMatrixExSortShowDialog(ImatExData* matex_data)
   IupDestroy(dlg_sort);
 }
 
-void iupMatrixExRegisterSort(Iclass* ic)
+void iupMatrixExSetClassUpdateSort(Iclass* ic)
 {
-  /* Defined in IupMatrix - Exported
-    SORTCOLUMN   (RESET, INVERT, lin1-lin2)
-    SORTCOLUMNORDER  (ASCENDING, DESCENDING)
-    SORTCOLUMNCASESENSITIVE (Yes, No) */
-  
+  (void)ic;
+
   if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
   {
     IupSetLanguageString("IUP_SORTBYCOLUMN", "Sort Lines by Column");
     IupSetLanguageString("IUP_INVERT", "Invert");
     IupSetLanguageString("IUP_SORT", "Sort");
-    
+
     IupSetLanguageString("IUP_INVERT_TIP", "Just invert the current sort. New parameters are ignored.");
 
     IupSetLanguageString("IUP_ORDER", "Order");
@@ -377,7 +374,7 @@ void iupMatrixExRegisterSort(Iclass* ic)
     IupSetLanguageString("IUP_SORTBYCOLUMN", "Classificar Linhas por Coluna");
     IupSetLanguageString("IUP_INVERT", "Inverter");
     IupSetLanguageString("IUP_SORT", "Ordenar");
-    
+
     IupSetLanguageString("IUP_INVERT_TIP", "Apenas inverte a ordenaÁ„o corrente. Novos par‚metros s„o ignorados.");
 
     IupSetLanguageString("IUP_ORDER", "Ordem");
@@ -393,13 +390,21 @@ void iupMatrixExRegisterSort(Iclass* ic)
     if (IupGetInt(NULL, "UTF8MODE"))
     {
       /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
-         When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
 
       IupSetLanguageString("IUP_INVERT_TIP", "Apenas inverte a ordena√ß√£o corrente. Novos par√¢metros s√£o ignorados.");
       IupSetLanguageString("IUP_CASESENSITIVE", "Diferenciar mai√∫sculas e min√∫sculas");
       IupSetLanguageString("IUP_LASTLINE", "√öltima Linha");
     }
   }
+}
+
+void iupMatrixExRegisterSort(Iclass* ic)
+{
+  /* Defined in IupMatrix - Exported
+    SORTCOLUMN   (RESET, INVERT, lin1-lin2)
+    SORTCOLUMNORDER  (ASCENDING, DESCENDING)
+    SORTCOLUMNCASESENSITIVE (Yes, No) */
 
   (void)ic;
 }

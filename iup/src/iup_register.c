@@ -73,6 +73,17 @@ void iupRegisterClass(Iclass* ic)
   iupTableSet(iregister_table, ic->name, (void*)ic, IUPTABLE_POINTER);
 }
 
+void iupRegisterUpdateClasses(void)
+{
+  char* name = iupTableFirst(iregister_table);
+  while (name)
+  {
+    Iclass* ic = (Iclass*)iupTableGetCurr(iregister_table);
+    iupClassUpdate(ic);
+    name = iupTableNext(iregister_table);
+  }
+}
+
 
 /***************************************************************/
 
