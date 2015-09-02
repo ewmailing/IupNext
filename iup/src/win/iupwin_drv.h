@@ -147,6 +147,13 @@ int iupwinGetScreenRes(void);
    should not conflict with any other command identifiers. */
 #define IUP_MDI_FIRSTCHILD 100000000
 
+#ifndef GET_X_LPARAM
+/* Do not use the LOWORD or HIWORD for coordinates, because of
+   incorrect results on systems with multiple monitors */
+#define GET_X_LPARAM(lp) ((int)(short)LOWORD(lp))
+#define GET_Y_LPARAM(lp) ((int)(short)HIWORD(lp))
+#endif
+
 
 #ifdef __cplusplus
 }

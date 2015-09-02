@@ -292,6 +292,7 @@ void iupClassRelease(Iclass* ic)
 
 int iupClassMatch(Iclass* ic, const char* classname)
 {
+  /* check for all classes in the hierarchy */
   while (ic)
   {
     if (iupStrEqualNoCase(ic->name, classname))

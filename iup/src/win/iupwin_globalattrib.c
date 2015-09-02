@@ -149,7 +149,7 @@ static LRESULT CALLBACK winHookGetMessageProc(int hcode, WPARAM gm_wp, LPARAM gm
 
         iupwinButtonKeySetStatus(LOWORD(wp), status, 0);
         
-        cb((float)delta/120.0f, LOWORD(lp), HIWORD(lp), status);
+        cb((float)delta / 120.0f, GET_X_LPARAM(lp), GET_Y_LPARAM(lp), status);
       }
       break;
     }

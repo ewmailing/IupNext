@@ -931,8 +931,8 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       TCHITTESTINFO ht;
       int p, high_p, press_p;
 
-      ht.pt.x = (int)(short)LOWORD(lp);
-      ht.pt.y = (int)(short)HIWORD(lp);
+      ht.pt.x = GET_X_LPARAM(lp);
+      ht.pt.y = GET_Y_LPARAM(lp);
       p = (int)SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
 
       high_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEHIGH");
@@ -970,8 +970,8 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       TCHITTESTINFO ht;
       int p;
 
-      ht.pt.x = (int)(short)LOWORD(lp);
-      ht.pt.y = (int)(short)HIWORD(lp);
+      ht.pt.x = GET_X_LPARAM(lp);
+      ht.pt.y = GET_Y_LPARAM(lp);
       p = (int)SendMessage(ih->handle, TCM_HITTEST, 0, (LPARAM)&ht);
 
       if (p >= 0 && winTabsIsInsideCloseButton(ih, p))

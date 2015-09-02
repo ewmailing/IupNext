@@ -2423,7 +2423,7 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
 
     if(ih->data->show_toggle)
     {
-      HTREEITEM hItem = winTreeHitTestToggle(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+      HTREEITEM hItem = winTreeHitTestToggle(ih, GET_X_LPARAM(lp), GET_Y_LPARAM(lp));
       if (hItem)
       {
         if (winTreeGetToggleVisible(ih, hItem))
@@ -2443,7 +2443,7 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       if (iupAttribGetBoolean(ih, "CANFOCUS"))
         SetFocus(ih->handle);
 
-      if (winTreeMouseMultiSelect(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp)))
+      if (winTreeMouseMultiSelect(ih, GET_X_LPARAM(lp), GET_Y_LPARAM(lp)))
       {
         *result = 0; /* abort the normal processing if we process multiple selection */
         return 1;
@@ -2451,7 +2451,7 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     }
     break;
   case WM_RBUTTONDOWN:
-    winTreeCallRightClickCb(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+    winTreeCallRightClickCb(ih, GET_X_LPARAM(lp), GET_Y_LPARAM(lp));
     *result = 0;
     return 1;  /* must abort the normal behavior, because it is weird and just causes trouble */
   case WM_MBUTTONDOWN:
@@ -2466,7 +2466,7 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
 
     if(ih->data->show_toggle && msg==WM_LBUTTONDBLCLK)
     {
-      HTREEITEM hItem = winTreeHitTestToggle(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+      HTREEITEM hItem = winTreeHitTestToggle(ih, GET_X_LPARAM(lp), GET_Y_LPARAM(lp));
       if (hItem)
       {
         if (winTreeGetToggleVisible(ih, hItem))
@@ -2485,14 +2485,14 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     if (ih->data->show_dragdrop && (wp & MK_LBUTTON))
     {
       if (!iupAttribGet(ih, "_IUPTREE_DRAGITEM"))
-        winTreeDragBegin(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+        winTreeDragBegin(ih, GET_X_LPARAM(lp), GET_Y_LPARAM(lp));
       else 
-        winTreeDragMove(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+        winTreeDragMove(ih, GET_X_LPARAM(lp), GET_Y_LPARAM(lp));
     }
     else if (iupAttribGet(ih, "_IUPTREE_EXTENDSELECT"))
     {
       if (wp & MK_LBUTTON)
-        winTreeExtendSelect(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
+        winTreeExtendSelect(ih, GET_X_LPARAM(lp), GET_Y_LPARAM(lp));
       else
         iupAttribSet(ih, "_IUPTREE_EXTENDSELECT", NULL);
     }

@@ -475,7 +475,9 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       {
         char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
         POINT p; 
-        p.x = LOWORD(lp); p.y = HIWORD(lp);
+        p.x = GET_X_LPARAM(lp);   
+        p.y = GET_Y_LPARAM(lp);   
+
         ScreenToClient(ih->handle, &p);
 
         iupwinButtonKeySetStatus(LOWORD(wp), status, 0);

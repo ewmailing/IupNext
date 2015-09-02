@@ -548,14 +548,14 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
   {
     HWND hChild;
     POINT p;
-    p.x = LOWORD(lp); p.y = HIWORD(lp);
+    p.x = GET_X_LPARAM(lp); p.y = GET_Y_LPARAM(lp);
     ScreenToClient(ih->handle, &p);
 
     hChild = ChildWindowFromPointEx(ih->handle, p, CWP_SKIPDISABLED|CWP_SKIPINVISIBLE|CWP_SKIPTRANSPARENT);
     if (hChild)
     {
       Ihandle* child = iupwinHandleGet(hChild);
-      if (child && IupClassMatch(child, "canvas"))
+      if (child && IupClassMatch(child, "canvas"))  /* will check of all canvas based control classes */
         SendMessage(child->handle, WM_MOUSEWHEEL, wp, lp);
     }
     break;
@@ -864,7 +864,7 @@ int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
       b = IUP_BUTTON5;
   }
 
-  ret = cb(ih, b, 1, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp), status);
+  ret = cb(ih, b, 1, GET_X_LPARAM(lp), GET_Y_LPARAM(lp), status);
   if (ret == IUP_CLOSE)
     IupExitLoop();
   else if (ret == IUP_IGNORE)
@@ -913,7 +913,7 @@ int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
     }
   }
 
-  ret = cb(ih, b, 0, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp), status);
+  ret = cb(ih, b, 0, GET_X_LPARAM(lp), GET_Y_LPARAM(lp), status);
   if (ret == IUP_CLOSE)
     IupExitLoop();
   else if (ret == IUP_IGNORE)
@@ -929,7 +929,7 @@ int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
   {
     char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
     iupwinButtonKeySetStatus(LOWORD(wp), status, 0);
-    cb(ih, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp), status);
+    cb(ih, GET_X_LPARAM(lp), GET_Y_LPARAM(lp), status);
     return 1;
   }
   (void)msg;
