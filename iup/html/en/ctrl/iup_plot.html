@@ -553,7 +553,8 @@ it is used as the new default. If all defaults are in use then black is used "0 
 <p><strong>DS_COUNT</strong>: returns the number of samples of the current 
 dataset.</p>
 <p><b>DS_MODE</b>: drawing mode of the current dataset. Can be: "LINE", "MARK", "MARKLINE", 
-"BAR" or "AREA". Default: "LINE".</p>
+"BAR" or "AREA". Default: "LINE". When BAR mode is set <b>AXS_XDISCRETE</b> is 
+also set.</p>
 <p><b>DS_LINESTYLE</b>: line style of the current dataset. Can be: &quot;CONTINUOUS&quot;, 
 &quot;DASHED&quot;, &quot;DOTTED&quot;, &quot;DASH_DOT&quot;, &quot;DASH_DOT_DOT&quot;. Default is &quot;CONTINUOUS&quot;.</p>
 <p><b>DS_LINEWIDTH</b>: line width of the current dataset. Default: 1.</p>
@@ -572,6 +573,8 @@ does not need that automatic scaling is enabled (since 3.16).</p>
 <p><b>AXS_X, AXS_Y</b>: enable or disable the axis display. Can be YES or NO. 
 Default: YES.</p>
 <p><b>AXS_XCOLOR, AXS_YCOLOR</b>: axis, ticks and label color. Default: FGCOLOR.</p>
+<p><b>AXS_XDISCRETE, AXS_YDISCRETE</b>: shift axis position by -0.5 to better 
+display discrete data in BAR mode. Default: NO. (since 3.16)</p>
 <p><b>AXS_XLINEWIDTH, AXS_YLINEWIDTH</b>: line width of the axis and ticks. Default: 1.</p>
 <p><b>AXS_XMAX, AXS_XMIN, AXS_YMAX, AXS_YMIN</b>: minimum and maximum displayed 
 values of the respective axis. Automatically calculated values when AUTOMIN or 
