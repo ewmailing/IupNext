@@ -785,6 +785,54 @@ static int iMatrixSetShowMenuContextAttribId(Ihandle *ih, int lin, int col, cons
   return 0;
 }
 
+static int iMatrixExSetShowDialogAttrib(Ihandle *ih, const char* value)
+{
+  int readonly = IupGetInt(ih, "READONLY");
+
+  IupSetStrAttribute(ih, "MENUCONTEXT_CELL", IupGetAttribute(ih, "FOCUS_CELL"));
+
+  if (iupStrEqual(value, "SETTINGS"))
+    iMatrixExItemSettings_CB(ih);
+  else if (iupStrEqual(value, "EXPORT_TXT"))
+  {
+    IupSetAttribute(ih, "FILEFORMAT", "TXT");
+    iMatrixExItemExport_CB(ih);
+    IupSetAttribute(ih, "FILEFORMAT", NULL);
+  }
+  else if (iupStrEqual(value, "EXPORT_LATEX"))
+  {
+    IupSetAttribute(ih, "FILEFORMAT", "LaTeX");
+    iMatrixExItemExport_CB(ih);
+    IupSetAttribute(ih, "FILEFORMAT", NULL);
+  }
+  else if (iupStrEqual(value, "EXPORT_HTML"))
+  {
+    IupSetAttribute(ih, "FILEFORMAT", "HTML");
+    iMatrixExItemExport_CB(ih);
+    IupSetAttribute(ih, "FILEFORMAT", NULL);
+  }
+  else if (!readonly && iupStrEqual(value, "IMPORT_TXT"))
+    iMatrixExItemImport_CB(ih);
+  else if (!readonly && iupStrEqual(value, "UNDOLIST"))
+    iMatrixExItemUndoList_CB(ih);
+  else if (iupStrEqual(value, "FIND"))
+    iMatrixExItemFind_CB(ih);
+  else if (iupStrEqual(value, "GOTO"))
+    iMatrixExItemGoTo_CB(ih);
+  else if (iupStrEqual(value, "SORT"))
+    iMatrixExItemSort_CB(ih);
+  else if (iupStrEqual(value, "COPYCOLTO_INTERVAL"))
+  {
+    IupSetAttribute(ih, "COPYCOLTO", "INTERVAL");
+    iMatrixExItemCopyColTo_CB(ih);
+    IupSetAttribute(ih, "COPYCOLTO", NULL);
+  }
+
+  IupSetAttribute(ih, "MENUCONTEXT_CELL", NULL);
+
+  return 0;
+}
+
 static IFniiiis iMatrixOriginalButton_CB = NULL;
 
 static int iMatrixExButton_CB(Ihandle* ih, int b, int press, int x, int y, char* r)
@@ -991,6 +1039,7 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
   iupClassRegisterAttribute(ic, "MENUCONTEXT", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId2(ic, "SHOWMENUCONTEXT", NULL, iMatrixSetShowMenuContextAttribId, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDIALOG", NULL, iMatrixExSetShowDialogAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   iupMatrixExRegisterClipboard(ic);
   iupMatrixExRegisterBusy(ic);

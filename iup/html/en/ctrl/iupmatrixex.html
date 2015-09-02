@@ -333,6 +333,11 @@ format &quot;x:y&quot;. (since 3.12)</p>
 <p>
 <strong>SHOWMENUCONTEXT</strong> (write-only): show the context menu in the 
 given cel. Value has the &quot;<em>L</em>:<em>C</em>&quot; format.</p>
+<p>
+<strong>SHOWDIALOG</strong> (write-only): show the dialog used in the context 
+menus. Can be: SETTINGS, EXPORT_TXT, EXPORT_LATEX, EXPORT_HTML, IMPORT_TXT, 
+UNDOLIST, FIND, GOTO, SORT and COPYCOLTO_INTERVAL. Some dialog are not show if 
+the matrix is read-only.(since 3.16)</p>
 <h4>Copy Cells</h4>
 <p><strong>COPYCOLTO<em>L:C</em></strong> (write-only): copies the value of the 
 given cell to a specified range of cells in the same column. Value can be &quot;ALL&quot; 
@@ -608,16 +613,16 @@ Export
 	LaTeX...     =&gt; ( &quot; )
 	Html...      =&gt; ( &quot; )
 Import
-	Txt...       =&gt; Shows a file selection dialog and loads the cells from a file.
+	Txt...       =&gt; Shows a file selection dialog and loads the cells from a file.(not <strong>read-only</strong>)
 ----------------
-Undo                =&gt; Undo 1 level
-Redo                =&gt; R<span class="style13">e</span>do 1 level
-Undo List...        =&gt; Show the Undo Dialog
+Undo                =&gt; Undo 1 level (not <strong>read-only</strong>)
+Redo                =&gt; R<span class="style13">e</span>do 1 level (not <strong>read-only</strong>)
+Undo List...        =&gt; Show the Undo Dialog (not <strong>read-only</strong>)
 ----------------
-Cut                 =&gt; Copy + Clear Cell Values
+Cut                 =&gt; Copy + Clear Cell Values (not <strong>read-only</strong>)
 Copy                =&gt; Copy to Clipboard (marked cells)
-Paste               =&gt; Paste from Clipboard (start at focus cell)
-Erase               =&gt; Clear Cell Values
+Paste               =&gt; Paste from Clipboard (start at focus cell) (not <strong>read-only</strong>)
+Erase               =&gt; Clear Cell Values (not <strong>read-only</strong>)
 Select All          =&gt; Select All Cells
 ----------------
 Find...             =&gt; Show the Find Dialog
@@ -632,7 +637,7 @@ Visibility
 	Show Hidden Lines
 Column Units... / Column Decimals...   =&gt; Show Column Units Dialog or Column Decimals Dialog
 ----------------
-Copy To (Same Column)    Copy cell value to other lines in the same column
+Copy To (Same Column)    Copy cell value to other lines in the same column (not <strong>read-only</strong>)
 	All Lines       =&gt; Copy To All Lines
 	Here to Top     =&gt; Copy From the Current Cell to L=0
 	Here to Bottom  =&gt; Copy From the Current Cell to L=NUMLIN
