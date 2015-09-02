@@ -787,8 +787,10 @@ static int iMatrixSetShowMenuContextAttribId(Ihandle *ih, int lin, int col, cons
 
 static int iMatrixExSetShowDialogAttrib(Ihandle *ih, const char* value)
 {
+  ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
   int readonly = IupGetInt(ih, "READONLY");
 
+  IupSetAttribute(ih, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
   IupSetStrAttribute(ih, "MENUCONTEXT_CELL", IupGetAttribute(ih, "FOCUS_CELL"));
 
   if (iupStrEqualNoCase(value, "SETTINGS"))
@@ -829,6 +831,7 @@ static int iMatrixExSetShowDialogAttrib(Ihandle *ih, const char* value)
   }
 
   IupSetAttribute(ih, "MENUCONTEXT_CELL", NULL);
+  IupSetAttribute(ih, "MATRIX_EX_DATA", NULL);
 
   return 0;
 }
