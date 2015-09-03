@@ -6,7 +6,9 @@
 
 #define lua_c
 
-#include "lprefix53.h"
+/******************* IUP *********************/
+/* #include "lprefix.h" */
+/******************* IUP *********************/
 
 
 #include <signal.h>
@@ -670,15 +672,15 @@ static void iuplua_openlibs (lua_State *L) {
 static void iuplua_input (lua_State *L) 
 {
 #ifdef IUPLUA_USELOH
-#include "indent.loh"
+  /* #include "indent.loh" */
 #include "console5.loh"
 #else
 #ifdef IUPLUA_USELH
-#include "indent.lh"
+  /* #include "indent.lh" */
 #include "console5.lh"
 #else
-  luaL_dofile(L, "indent.lua");
-  luaL_dofile(L, "console5.lua");
+  /*  iuplua_dofile(L, "indent.lua"); */
+  iuplua_dofile(L, "console5.lua");
 #endif
 #endif
 }
@@ -723,14 +725,14 @@ static int pmain (lua_State *L) {
   if (args & has_i)  /* -i option? */
     doREPL(L);  /* do read-eval-print loop */
   else if (script == argc && !(args & (has_e | has_v))) {  /* no arguments? */
-    if (lua_stdin_is_tty()) {  /* running in interactive mode? */
-      print_version();
 /******************* IUP *********************/
+/*    if (lua_stdin_is_tty()) {  */ /* running in interactive mode? */
+/*    print_version(); */
 /*      doREPL(L); */ /* do read-eval-print loop */
       iuplua_input(L);
+/*    } */
+/*    else dofile(L, NULL);  */ /* executes stdin as a file */
 /******************* IUP *********************/
-    }
-    else dofile(L, NULL);  /* executes stdin as a file */
   }
   lua_pushboolean(L, 1);  /* signal no errors */
   return 1;

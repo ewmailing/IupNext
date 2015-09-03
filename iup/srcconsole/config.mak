@@ -1,6 +1,6 @@
 PROJNAME = iup
 APPNAME := iuplua
-APPTYPE = console
+APPTYPE = windows
 
 STRIP = 
 OPT = YES      
@@ -55,7 +55,8 @@ else
   endif
 endif
 
-SRCLUA = console5.lua indent.lua
+SRCLUA = console5.lua 
+#SRCLUA += indent.lua
 
 ifdef DBG
   ALL_STATIC=Yes
@@ -186,6 +187,7 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   #Comment the following line to build under MingW
   SLIB += setargv.obj
   SRC += iuplua5.rc
+  INCLUDES = ../etc
 endif
 
 ifneq ($(findstring cygw, $(TEC_UNAME)), )

@@ -558,15 +558,15 @@ static void iuplua_openlibs (lua_State *L) {
 static void iuplua_input (lua_State *L) 
 {
 #ifdef IUPLUA_USELOH
-#include "indent.loh"
+  /* #include "indent.loh" */
 #include "console5.loh"
 #else
 #ifdef IUPLUA_USELH
-#include "indent.lh"
+  /* #include "indent.lh" */
 #include "console5.lh"
 #else
-  luaL_dofile(L, "indent.lua");
-  luaL_dofile(L, "console5.lua");
+  /*  iuplua_dofile(L, "indent.lua"); */
+  iuplua_dofile(L, "console5.lua");
 #endif
 #endif
 }
@@ -606,14 +606,14 @@ static int pmain (lua_State *L) {
   if (args[has_i])  /* -i option? */
     dotty(L);
   else if (script == 0 && !args[has_e] && !args[has_v]) {  /* no arguments? */
-    if (lua_stdin_is_tty()) {
-      print_version();
 /******************* IUP *********************/
-/*    dotty(L);                              */
+/*    if (lua_stdin_is_tty()) { */
+/*    print_version(); */
+/*    dotty(L); */
       iuplua_input(L);
+/*    } */
+/*    else dofile(L, NULL);  */ /* executes stdin as a file */
 /******************* IUP *********************/
-    }
-    else dofile(L, NULL);  /* executes stdin as a file */
   }
   lua_pushboolean(L, 1);  /* signal no errors */
   return 1;
