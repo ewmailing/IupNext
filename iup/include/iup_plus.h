@@ -10,7 +10,7 @@
 
 #include <cd_plus.h>
 
-  #include "iup.h"
+#include "iup.h"
 #include "iupkey.h"
 #include "iup_class_cbs.hpp"
 #include "iupcontrols.h"
@@ -28,40 +28,11 @@
 
 
 #if 0
-int       IupOpen(int *argc, char ***argv);
-void      IupClose(void);
-void      IupImageLibOpen(void);
-
-int       IupMainLoop(void);
-int       IupLoopStep(void);
-int       IupLoopStepWait(void);
-int       IupMainLoopLevel(void);
-void      IupFlush(void);
-void      IupExitLoop(void);
-
-int       IupRecordInput(const char* filename, int mode);
-int       IupPlayInput(const char* filename);
-
 void      IupUpdate(Ihandle* ih);
 void      IupUpdateChildren(Ihandle* ih);
 void      IupRedraw(Ihandle* ih, int children);
 void      IupRefresh(Ihandle* ih);
 void      IupRefreshChildren(Ihandle* ih);
-
-int       IupHelp(const char* url);
-char*     IupLoad(const char *filename);
-char*     IupLoadBuffer(const char *buffer);
-
-char*     IupVersion(void);
-char*     IupVersionDate(void);
-int       IupVersionNumber(void);
-
-void      IupSetLanguage(const char *lng);
-char*     IupGetLanguage(void);
-void      IupSetLanguageString(const char* name, const char* str);
-void      IupStoreLanguageString(const char* name, const char* str);
-char*     IupGetLanguageString(const char* name);
-void      IupSetLanguagePack(Ihandle* ih);
 
 void      IupDestroy(Ihandle* ih);
 void      IupDetach(Ihandle* child);
@@ -86,9 +57,6 @@ void      IupUnmap(Ihandle *ih);
 
 void      IupResetAttribute(Ihandle *ih, const char* name);
 int       IupGetAllAttributes(Ihandle* ih, char** names, int n);
-Ihandle*  IupSetAtt(const char* handle_name, Ihandle* ih, const char* name, ...);
-Ihandle*  IupSetAttributes(Ihandle* ih, const char *str);
-char*     IupGetAttributes(Ihandle* ih);
 
 void      IupSetAttribute(Ihandle* ih, const char* name, const char* value);
 void      IupSetStrAttribute(Ihandle* ih, const char* name, const char* value);
@@ -134,12 +102,7 @@ float  IupGetFloatId2(Ihandle* ih, const char* name, int lin, int col);
 double IupGetDoubleId2(Ihandle* ih, const char* name, int lin, int col);
 void   IupGetRGBId2(Ihandle *ih, const char* name, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b);
 
-void      IupSetGlobal(const char* name, const char* value);
-void      IupSetStrGlobal(const char* name, const char* value);
-char*     IupGetGlobal(const char* name);
-
 Ihandle*  IupSetFocus(Ihandle* ih);
-Ihandle*  IupGetFocus(void);
 Ihandle*  IupPreviousField(Ihandle* ih);
 Ihandle*  IupNextField(Ihandle* ih);
 
@@ -147,13 +110,6 @@ Icallback IupGetCallback(Ihandle* ih, const char *name);
 Icallback IupSetCallback(Ihandle* ih, const char *name, Icallback func);
 Ihandle*  IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...);
 
-Icallback IupGetFunction(const char *name);
-Icallback IupSetFunction(const char *name, Icallback func);
-
-Ihandle*  IupGetHandle(const char *name);
-Ihandle*  IupSetHandle(const char *name, Ihandle* ih);
-int       IupGetAllNames(char** names, int n);
-int       IupGetAllDialogs(char** names, int n);
 char*     IupGetName(Ihandle* ih);
 
 void      IupSetAttributeHandle(Ihandle* ih, const char* name, Ihandle* ih_named);
@@ -161,13 +117,19 @@ Ihandle*  IupGetAttributeHandle(Ihandle* ih, const char* name);
 
 char*     IupGetClassName(Ihandle* ih);
 char*     IupGetClassType(Ihandle* ih);
-int       IupGetAllClasses(char** names, int n);
-int       IupGetClassAttributes(const char* classname, char** names, int n);
-int       IupGetClassCallbacks(const char* classname, char** names, int n);
 void      IupSaveClassAttributes(Ihandle* ih);
 void      IupCopyClassAttributes(Ihandle* src_ih, Ihandle* dst_ih);
-void      IupSetClassDefaultAttribute(const char* classname, const char *name, const char* value);
 int       IupClassMatch(Ihandle* ih, const char* classname);
+
+===============================================================================
+
+Ihandle*  IupGetFocus(void);
+Ihandle*  IupGetHandle(const char *name);
+Ihandle*  IupSetHandle(const char *name, Ihandle* ih);
+int       IupGetAllNames(char** names, int n);
+int       IupGetAllDialogs(char** names, int n);
+
+===============================================================================
 
 Ihandle*  IupCreate(const char *classname);
 Ihandle*  IupCreatev(const char *classname, void* *params);
@@ -230,6 +192,14 @@ Ihandle*  IupFlatButton(const char* title);
 Ihandle*  IupSpin(void);
 Ihandle*  IupSpinbox(Ihandle* child);
 
+Ihandle* IupFileDlg(void);
+Ihandle* IupMessageDlg(void);
+Ihandle* IupColorDlg(void);
+Ihandle* IupFontDlg(void);
+Ihandle* IupProgressDlg(void);
+
+===============================================================================
+
 int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name);
 
 void  IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
@@ -241,22 +211,6 @@ int   IupTreeSetUserId(Ihandle* ih, int id, void* userid);
 void* IupTreeGetUserId(Ihandle* ih, int id);
 int   IupTreeGetId(Ihandle* ih, void *userid);
 void  IupTreeSetAttributeHandle(Ihandle* ih, const char* name, int id, Ihandle* ih_named);
-
-Ihandle* IupFileDlg(void);
-Ihandle* IupMessageDlg(void);
-Ihandle* IupColorDlg(void);
-Ihandle* IupFontDlg(void);
-Ihandle* IupProgressDlg(void);
-
-int  IupGetFile(char *arq);
-void IupMessage(const char *title, const char *msg);
-void IupMessagef(const char *title, const char *format, ...);
-int  IupAlarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3);
-int  IupScanf(const char *format, ...);
-int  IupListDialog(int type, const char *title, int size, const char** list,
-                   int op, int max_col, int max_lin, int* marks);
-int  IupGetText(const char* title, char* text);
-int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
 
 typedef int(*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);
 int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format, ...);
@@ -290,17 +244,145 @@ namespace iup
     return IupVersionNumber();
   }
 
+  inline int Open(int &argc, char **&argv)
+  {
+    return IupOpen(&argc, &argv);
+  }
+  inline void Close()
+  {
+    IupClose();
+  }
+  inline void ImageLibOpen()
+  {
+    IupImageLibOpen();
+  }
+
+  inline int MainLoop()
+  {
+    return IupMainLoop();
+  }
+  inline int LoopStep()
+  {
+    return IupLoopStep();
+  }
+  inline int LoopStepWait()
+  {
+    return IupLoopStepWait();
+  }
+  inline int MainLoopLevel()
+  {
+    return IupMainLoopLevel();
+  }
+  inline void Flush()
+  {
+    IupFlush();
+  }
+  inline void ExitLoop()
+  {
+    IupExitLoop();
+  }
+
+  inline int RecordInput(const char* filename, int mode)
+  {
+    return IupRecordInput(filename, mode);
+  }
+  inline int  PlayInput(const char* filename)
+  {
+    return IupPlayInput(filename);
+  }
+
+  inline int Help(const char* url)
+  {
+    return IupHelp(url);
+  }
+  inline const char* Load(const char *filename)
+  {
+    return IupLoad(filename);
+  }
+  inline const char* LoadBuffer(const char *buffer)
+  {
+    return IupLoadBuffer(buffer);
+  }
+
+  inline void SetLanguage(const char *lng)
+  {
+    IupSetLanguage(lng);
+  }
+  inline const char* GetLanguage()
+  {
+    return IupGetLanguage();
+  }
+  inline void SetLanguageString(const char* name, const char* str)
+  {
+    IupSetLanguageString(name, str);
+  }
+  inline void StoreLanguageString(const char* name, const char* str)
+  {
+    IupStoreLanguageString(name, str);
+  }
+  inline const char* GetLanguageString(const char* name)
+  {
+    return IupGetLanguageString(name);
+  }
+
+  inline int GetAllClasses(char** names, int n)
+  {
+    return IupGetAllClasses(names, n);
+  }
+  inline int GetClassAttributes(const char* classname, char** names, int n)
+  {
+    return IupGetClassAttributes(classname, names, n);
+  }
+  inline int GetClassCallbacks(const char* classname, char** names, int n)
+  {
+    return IupGetClassCallbacks(classname, names, n);
+  }
+  inline void SetClassDefaultAttribute(const char* classname, const char *name, const char* value)
+  {
+    IupSetClassDefaultAttribute(classname, name, value);
+  }
+
+  inline void SetGlobal(const char* name, const char* value)
+  {
+    IupSetGlobal(name, value);
+  }
+  inline void SetStringGlobal(const char* name, const char* value)
+  {
+    IupSetStrGlobal(name, value);
+  }
+  inline char* GetGlobal(const char* name)
+  {
+    return IupGetGlobal(name);
+  }
+
+
+  int  IupGetFile(char *arq);
+  void IupMessage(const char *title, const char *msg);
+  void IupMessagef(const char *title, const char *format, ...);
+  int  IupAlarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3);
+  int  IupScanf(const char *format, ...);
+  int  IupListDialog(int type, const char *title, int size, const char** list, int op, int max_col, int max_lin, int* marks);
+  int  IupGetText(const char* title, char* text);
+  int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
+
+
 
   class Handle
   {
   protected:
     Ihandle* ih;
 
+    /* forbidden */
+    Handle() { ih = 0; };
+
   public:
     Handle(Ihandle* ref_ih)
     {
       ih = ref_ih;
     }
+    // There is no destructor because all iup::Handle are just a reference to the Ihandle*,
+    // since several IUP elements are automatically destroyed when the dialog is destroyed
+    // So, to force an element to be destructed call the Destroy method
 
     Ihandle* GetHandle() const { return ih; }
 
@@ -312,9 +394,21 @@ namespace iup
     {
       return (void*)IupGetAttribute(ih, name);
     }
+    void SetInteger(const char* name, int value)
+    {
+      IupSetInt(ih, name, value);
+    }
+    int GetInteger(const char* name)
+    {
+      return IupGetInt(ih, name);
+    }
 
   };
   
+  inline void  SetLanguagePack(const Handle& handle)
+  {
+    IupSetLanguagePack(handle.GetHandle());
+  }
 
   class Image : public Handle
   {
