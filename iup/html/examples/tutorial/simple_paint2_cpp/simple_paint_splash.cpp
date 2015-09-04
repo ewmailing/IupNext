@@ -12,9 +12,10 @@ static int SplashTimer_CB(Ihandle* timer)
   if (IupGetAttribute(timer, "_FIRST_STAGE"))
   {
     IupSetAttribute(timer, "RUN", "NO");
-    IupSetAttribute(timer,"TIME", "1000");
-    IupSetAttribute(timer, "RUN", "YES");
     IupSetAttribute(timer, "_FIRST_STAGE", NULL);
+
+    IupSetAttribute(timer, "TIME", "500");
+    IupSetAttribute(timer, "RUN", "YES");
   }
   else
   {
@@ -40,7 +41,6 @@ static void SplashShowDlg(const char* image)
   IupSetAttribute(dlg,"MINBOX", "NO");
   IupSetAttribute(dlg,"MAXBOX", "NO");
   IupSetAttribute(dlg,"MENUBOX", "NO");
-  IupSetAttribute(dlg,"TOPMOST", "YES");
   IupSetStrAttribute(dlg, "OPACITYIMAGE", image);
 
   /* show the splash for 1 second without other windows,
@@ -51,6 +51,7 @@ static void SplashShowDlg(const char* image)
   IupSetCallback(timer, "ACTION_CB", SplashTimer_CB);
   IupSetAttribute(timer, "_DIALOG", (char*)dlg);
   IupSetAttribute(timer, "_FIRST_STAGE", "YES");
+
   IupSetAttribute(timer, "RUN", "YES");
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
