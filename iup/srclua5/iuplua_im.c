@@ -59,7 +59,6 @@ static int LoadImage(lua_State *L)
 {
   const char *filename = luaL_checkstring(L, 1);
   Ihandle* image = IupLoadImage(filename);
-  iuplua_plugstate(L, image);
   iuplua_pushihandle(L, image);
   return 1;
 }

@@ -95,6 +95,7 @@ void iuplua_register_funcs(lua_State *L, const luaL_Reg* funcs);
 /** Stores the Lua State inside the IUP element,
  * so it can be retrieved from inside a callback.
  * Used in the creation of the element.
+ * Only called before iuplua_pushihandle_raw.
  */
 void iuplua_plugstate(lua_State *L, Ihandle *ih);
 
