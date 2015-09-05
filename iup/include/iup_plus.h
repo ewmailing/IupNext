@@ -3,7 +3,7 @@
  *
  * See Copyright Notice in iup.h
  */
- 
+
 #ifndef __IUP_PLUS_H
 #define __IUP_PLUS_H
 
@@ -123,19 +123,6 @@ int       IupClassMatch(Ihandle* ih, const char* classname);
 
 ===============================================================================
 
-Ihandle*  IupGetFocus(void);
-Ihandle*  IupGetHandle(const char *name);
-Ihandle*  IupSetHandle(const char *name, Ihandle* ih);
-int       IupGetAllNames(char** names, int n);
-int       IupGetAllDialogs(char** names, int n);
-
-===============================================================================
-
-Ihandle*  IupCreate(const char *classname);
-Ihandle*  IupCreatev(const char *classname, void* *params);
-Ihandle*  IupCreatep(const char *classname, void *first, ...);
-
-Ihandle*  IupFill(void);
 Ihandle*  IupRadio(Ihandle* child);
 Ihandle*  IupVbox(Ihandle* child, ...);
 Ihandle*  IupVboxv(Ihandle* *children);
@@ -143,10 +130,8 @@ Ihandle*  IupZbox(Ihandle* child, ...);
 Ihandle*  IupZboxv(Ihandle* *children);
 Ihandle*  IupHbox(Ihandle* child, ...);
 Ihandle*  IupHboxv(Ihandle* *children);
-
 Ihandle*  IupNormalizer(Ihandle* ih_first, ...);
 Ihandle*  IupNormalizerv(Ihandle* *ih_list);
-
 Ihandle*  IupCbox(Ihandle* child, ...);
 Ihandle*  IupCboxv(Ihandle* *children);
 Ihandle*  IupSbox(Ihandle *child);
@@ -157,50 +142,17 @@ Ihandle*  IupGridBoxv(Ihandle **children);
 Ihandle*  IupExpander(Ihandle *child);
 Ihandle*  IupDetachBox(Ihandle *child);
 Ihandle*  IupBackgroundBox(Ihandle *child);
-
-Ihandle*  IupFrame(Ihandle* child);
-
-Ihandle*  IupImage(int width, int height, const unsigned char *pixmap);
-Ihandle*  IupImageRGB(int width, int height, const unsigned char *pixmap);
-Ihandle*  IupImageRGBA(int width, int height, const unsigned char *pixmap);
-
-Ihandle*  IupItem(const char* title, const char* action);
-Ihandle*  IupSubmenu(const char* title, Ihandle* child);
-Ihandle*  IupSeparator(void);
 Ihandle*  IupMenu(Ihandle* child, ...);
 Ihandle*  IupMenuv(Ihandle* *children);
-
-Ihandle*  IupButton(const char* title, const char* action);
-Ihandle*  IupCanvas(const char* action);
 Ihandle*  IupDialog(Ihandle* child);
-Ihandle*  IupUser(void);
-Ihandle*  IupLabel(const char* title);
-Ihandle*  IupList(const char* action);
-Ihandle*  IupText(const char* action);
-Ihandle*  IupMultiLine(const char* action);
-Ihandle*  IupToggle(const char* title, const char* action);
-Ihandle*  IupTimer(void);
-Ihandle*  IupClipboard(void);
-Ihandle*  IupProgressBar(void);
-Ihandle*  IupVal(const char *type);
+Ihandle*  IupFrame(Ihandle* child);
+Ihandle*  IupSubmenu(const char* title, Ihandle* child);
 Ihandle*  IupTabs(Ihandle* child, ...);
 Ihandle*  IupTabsv(Ihandle* *children);
-Ihandle*  IupTree(void);
-Ihandle*  IupLink(const char* url, const char* title);
-Ihandle*  IupFlatButton(const char* title);
-
-Ihandle*  IupSpin(void);
 Ihandle*  IupSpinbox(Ihandle* child);
-
-Ihandle* IupFileDlg(void);
-Ihandle* IupMessageDlg(void);
-Ihandle* IupColorDlg(void);
-Ihandle* IupFontDlg(void);
-Ihandle* IupProgressDlg(void);
 
 ===============================================================================
 
-int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name);
 
 void  IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
 void  IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
@@ -356,15 +308,49 @@ namespace iup
   }
 
 
-  int  IupGetFile(char *arq);
-  void IupMessage(const char *title, const char *msg);
-  void IupMessagef(const char *title, const char *format, ...);
-  int  IupAlarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3);
-  int  IupScanf(const char *format, ...);
-  int  IupListDialog(int type, const char *title, int size, const char** list, int op, int max_col, int max_lin, int* marks);
-  int  IupGetText(const char* title, char* text);
-  int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
+  inline int GetFile(char *arq)
+  {
+    return IupGetFile(arq);
+  }
+  inline void Message(const char *title, const char *msg)
+  {
+    IupMessage(title, msg);
+  }
+  //void Messagef(const char *title, const char *format, ...)
+  //{
+  //  IupMessagef(title, format, ...);
+  //}
+  inline int Alarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3)
+  {
+    return IupAlarm(title, msg, b1, b2, b3);
+  }
+  //int Scanf(const char *format, ...)
+  //{
+  //  return IupScanf(format, ...);
+  //}
+  inline int ListDialog(int type, const char *title, int size, const char** list, int op, int max_col, int max_lin, int* marks)
+  {
+    return IupListDialog(type, title, size, list, op, max_col, max_lin, marks);
+  }
+  inline int GetText(const char* title, char* text)
+  {
+    return IupGetText(title, text);
+  }
+  inline int GetColor(int x, int y, unsigned char &r, unsigned char &g, unsigned char &b)
+  {
+    return IupGetColor(x, y, &r, &g, &b);
+  }
 
+  //STL std::string com ifdef
+
+  inline int GetAllNames(char** names, int n)
+  {
+    return IupGetAllNames(names, n);
+  }
+  inline int GetAllDialogs(char** names, int n)
+  {
+    return IupGetAllDialogs(names, n);
+  }
 
 
   class Handle
@@ -404,11 +390,44 @@ namespace iup
     }
 
   };
-  
+
+  inline Handle GetFocus()
+  {
+    return Handle(IupGetFocus());
+  }
+  inline Handle GetHandle(const char *name)
+  {
+    return Handle(IupGetHandle(name));
+  }
+  inline Handle SetHandle(const char *name, const Handle& handle)
+  {
+    return Handle(IupSetHandle(name, handle.GetHandle()));
+  }
   inline void  SetLanguagePack(const Handle& handle)
   {
     IupSetLanguagePack(handle.GetHandle());
   }
+
+  class Container : public Handle
+  {
+  public:
+    Container(Ihandle* _ih) : Handle(_ih) {}
+  };
+  class Dialog : public Container
+  {
+  public:
+    Dialog(Ihandle* _ih) : Container(_ih) {}
+  };
+  class Control : public Handle
+  {
+  public:
+    Control(Ihandle* _ih) : Handle(_ih) {}
+  };
+  class MenuControl : public Handle
+  {
+  public:
+    MenuControl(Ihandle* _ih) : Handle(_ih) {}
+  };
 
   class Image : public Handle
   {
@@ -416,9 +435,13 @@ namespace iup
     Image(const char* filename) : Handle(IupLoadImage(filename)) {}
     Image(const im::Image& image) : Handle(IupImageFromImImage(image.GetHandle())) {}
 
-    int Save(const char* filename, const char* format)
+    int Save(const char* filename, const char* im_format)
     {
-      return IupSaveImage(ih, filename, format);
+      return IupSaveImage(ih, filename, im_format);
+    }
+    int SaveAsText(const char* filename, const char* iup_format, const char* name)
+    {
+      return IupSaveImageAsText(ih, filename, iup_format, name);
     }
   };
   class Clipboard : public Handle
@@ -436,16 +459,121 @@ namespace iup
       return im::Image(IupGetNativeHandleImage(GetUserData("NATIVEIMAGE")));
     }
   };
-  class Canvas : public Handle
+  class User : public Handle
   {
   public:
-    Canvas() : Handle(IupCanvas(0)) {}
+    User() : Handle(IupUser()) {}
+  };
+  class Timer : public Handle
+  {
+  public:
+    Timer() : Handle(IupTimer()) {}
+  };
+  class MenuSeparator : public MenuControl
+  {
+  public:
+    MenuSeparator() : MenuControl(IupSeparator()) {}
+  };
+  class MenuItem : public MenuControl
+  {
+  public:
+    MenuItem(const char* title = 0) : MenuControl(IupItem(title, 0)) {}
+  };
+  class Canvas : public Control
+  {
+  public:
+    Canvas() : Control(IupCanvas(0)) {}
+  };
+  class Link : public Control
+  {
+  public:
+    Link(const char* url = 0, const char* title = 0) : Control(IupLink(url, title)) {}
+  };
+  class Label : public Control
+  {
+  public:
+    Label(const char* title = 0) : Control(IupLabel(title)) {}
+  };
+  class Button : public Control
+  {
+  public:
+    Button(const char* title = 0) : Control(IupButton(title, 0)) {}
+  };
+  class FlatButton : public Control
+  {
+  public:
+    FlatButton(const char* title = 0) : Control(IupFlatButton(title)) {}
+  };
+  class Toggle : public Control
+  {
+  public:
+    Toggle(const char* title = 0) : Control(IupToggle(title, 0)) {}
+  };
+  class Fill: public Control
+  {
+  public:
+    Fill() : Control(IupFill()) {}
+  };
+  class Spin: public Control
+  {
+  public:
+    Spin() : Control(IupSpin()) {}
+  };
+  class Tree: public Control
+  {
+  public:
+    Tree() : Control(IupTree()) {}
+  };
+  class Val : public Control
+  {
+  public:
+    Val(const char* orientation = 0) : Control(IupVal(orientation)) {}
+  };
+  class ProgressBar: public Control
+  {
+  public:
+    ProgressBar() : Control(IupProgressBar()) {}
+  };
+  class List: public Control
+  {
+  public:
+    List() : Control(IupList(0)) {}
+  };
+  class Text: public Control
+  {
+  public:
+    Text() : Control(IupText(0)) {}
   };
 
-  class GLCanvas : public Handle
+  class FileDialog : public Dialog
   {
   public:
-    GLCanvas() : Handle(IupGLCanvas(0)) {}
+    FileDialog() : Dialog(IupFileDlg()) {}
+  };
+  class MessageDialog : public Dialog
+  {
+  public:
+    MessageDialog() : Dialog(IupMessageDlg()) {}
+  };
+  class ColorDialog : public Dialog
+  {
+  public:
+    ColorDialog() : Dialog(IupColorDlg()) {}
+  };
+  class FontDialog : public Dialog
+  {
+  public:
+    FontDialog() : Dialog(IupFontDlg()) {}
+  };
+  class ProgressDialog : public Dialog
+  {
+  public:
+    ProgressDialog() : Dialog(IupProgressDlg()) {}
+  };
+  class GLCanvas : public Control
+  {
+  public:
+    GLCanvas() : Control(IupGLCanvas(0)) {}
 
     static void Open() { IupGLCanvasOpen(); }
 
@@ -478,35 +606,35 @@ namespace iup
   public:
     static void Open() { IupControlsOpen(); }
   };
-  class Dial : public Handle
+  class Dial : public Control
   {
   public:
-    Dial(const char* orientation = "HORIZONTAL") : Handle(IupDial(orientation)) {}
+    Dial(const char* orientation = 0) : Control(IupDial(orientation)) {}
   };
-  class Gauge : public Handle
+  class Gauge : public Control
   {
   public:
-    Gauge() : Handle(IupGauge()) {}
+    Gauge() : Control(IupGauge()) {}
   };
-  class ColorBrowser : public Handle
+  class ColorBrowser : public Control
   {
   public:
-    ColorBrowser() : Handle(IupColorBrowser()) {}
+    ColorBrowser() : Control(IupColorBrowser()) {}
   };
-  class Cells : public Handle
+  class Cells : public Control
   {
   public:
-    Cells() : Handle(IupCells()) {}
+    Cells() : Control(IupCells()) {}
   };
-  class Colorbar : public Handle
+  class Colorbar : public Control
   {
   public:
-    Colorbar() : Handle(IupColorbar()) {}
+    Colorbar() : Control(IupColorbar()) {}
   };
-  class Matrix : public Handle
+  class Matrix : public Control
   {
   public:
-    Matrix() : Handle(IupMatrix(0)) {}
+    Matrix() : Control(IupMatrix(0)) {}
 
     void SetFormula(int col, const char* formula, const char* init = 0)
     {
@@ -517,15 +645,15 @@ namespace iup
       IupMatrixSetDynamic(ih, init);
     }
   };
-  class MatrixList : public Handle
+  class MatrixList : public Control
   {
   public:
-    MatrixList() : Handle(IupMatrixList()) {}
+    MatrixList() : Control(IupMatrixList()) {}
   };
-  class MatrixEx : public Handle
+  class MatrixEx : public Control
   {
   public:
-    MatrixEx() : Handle(IupMatrixEx()) {}
+    MatrixEx() : Control(IupMatrixEx()) {}
 
     static void Open() { IupMatrixExOpen(); }
   };
@@ -534,85 +662,85 @@ namespace iup
   public:
     static void Open() { IupGLControlsOpen(); }
   };
-  class GLSubCanvas : public Handle
+  class GLSubCanvas : public Control
   {
   public:
-    GLSubCanvas() : Handle(IupGLSubCanvas()) {}
+    GLSubCanvas() : Control(IupGLSubCanvas()) {}
   };
-  class GLSeparator : public Handle
+  class GLSeparator : public Control
   {
   public:
-    GLSeparator() : Handle(IupGLSeparator()) {}
+    GLSeparator() : Control(IupGLSeparator()) {}
   };
-  class GLProgressBar : public Handle
+  class GLProgressBar : public Control
   {
   public:
-    GLProgressBar() : Handle(IupGLProgressBar()) {}
+    GLProgressBar() : Control(IupGLProgressBar()) {}
   };
-  class GLVal : public Handle
+  class GLVal : public Control
   {
   public:
-    GLVal() : Handle(IupGLVal()) {}
+    GLVal() : Control(IupGLVal()) {}
   };
-  class GLLabel : public Handle
+  class GLLabel : public Control
   {
   public:
-    GLLabel(const char* title = 0) : Handle(IupGLLabel(title)) {}
+    GLLabel(const char* title = 0) : Control(IupGLLabel(title)) {}
   };
-  class GLButton : public Handle
+  class GLButton : public Control
   {
   public:
-    GLButton(const char* title = 0) : Handle(IupGLButton(title)) {}
+    GLButton(const char* title = 0) : Control(IupGLButton(title)) {}
   };
-  class GLToggle : public Handle
+  class GLToggle : public Control
   {
   public:
-    GLToggle(const char* title = 0) : Handle(IupGLToggle(title)) {}
+    GLToggle(const char* title = 0) : Control(IupGLToggle(title)) {}
   };
-  class GLLink : public Handle
+  class GLLink : public Control
   {
   public:
-    GLLink(const char *url = 0, const char* title = 0) : Handle(IupGLLink(url, title)) {}
+    GLLink(const char *url = 0, const char* title = 0) : Control(IupGLLink(url, title)) {}
   };
-  class GLFrame : public Handle
+  class GLFrame : public Control
   {
   public:
-    GLFrame(Handle& child) : Handle(IupGLFrame(child.GetHandle())) {}
-    GLFrame() : Handle(IupGLFrame(0)) {}
+    GLFrame(Handle& child) : Control(IupGLFrame(child.GetHandle())) {}
+    GLFrame() : Control(IupGLFrame(0)) {}
   };
-  class GLExpander : public Handle
+  class GLExpander : public Control
   {
   public:
-    GLExpander(Handle& child) : Handle(IupGLExpander(child.GetHandle())) {}
-    GLExpander() : Handle(IupGLExpander(0)) {}
+    GLExpander(Handle& child) : Control(IupGLExpander(child.GetHandle())) {}
+    GLExpander() : Control(IupGLExpander(0)) {}
   };
-  class GLScrollBox : public Handle
+  class GLScrollBox : public Control
   {
   public:
-    GLScrollBox(Handle& child) : Handle(IupGLScrollBox(child.GetHandle())) {}
-    GLScrollBox() : Handle(IupGLScrollBox(0)) {}
+    GLScrollBox(Handle& child) : Control(IupGLScrollBox(child.GetHandle())) {}
+    GLScrollBox() : Control(IupGLScrollBox(0)) {}
   };
-  class GLSizeBox : public Handle
+  class GLSizeBox : public Control
   {
   public:
-    GLSizeBox(Handle& child) : Handle(IupGLSizeBox(child.GetHandle())) {}
-    GLSizeBox() : Handle(IupGLSizeBox(0)) {}
+    GLSizeBox(Handle& child) : Control(IupGLSizeBox(child.GetHandle())) {}
+    GLSizeBox() : Control(IupGLSizeBox(0)) {}
   };
-  class GLCanvasBox : public Handle
+  class GLCanvasBox : public Container
   {
   public:
-    GLCanvasBox() : Handle(IupGLCanvasBox(0)) {}
-    GLCanvasBox(Handle& child) : Handle(IupGLCanvasBox(child.GetHandle(), 0)) {}
-    GLCanvasBox(Handle* child, int count) : Handle(IupGLCanvasBox(0)) 
+    GLCanvasBox() : Container(IupGLCanvasBox(0)) {}
+    GLCanvasBox(Handle& child) : Container(IupGLCanvasBox(child.GetHandle(), 0)) {}
+    GLCanvasBox(Handle* child, int count) : Container(IupGLCanvasBox(0))
     {
       for (int i = 0; i < count; i++)
         IupAppend(ih, child[i].GetHandle());
     }
   };
-  class Plot : public Handle
+  class Plot : public Control
   {
   public:
-    Plot() : Handle(IupPlot()) {}
+    Plot() : Control(IupPlot()) {}
 
     static void Open() { IupPlotOpen(); }
 
@@ -722,10 +850,10 @@ namespace iup
       IupPlotPaintTo(ih, cd_canvas.GetHandle());
     }
   };
-  class MglPlot : public Handle
+  class MglPlot : public Control
   {
   public:
-    MglPlot() : Handle(IupMglPlot()) {}
+    MglPlot() : Control(IupMglPlot()) {}
 
     static void Open() { IupMglPlotOpen(); }
 
@@ -830,29 +958,29 @@ namespace iup
     }
 
   };
-  class MglLabel : public Handle
+  class MglLabel : public Control
   {
   public:
-    MglLabel(const char* title) : Handle(IupMglLabel(title)) {}
+    MglLabel(const char* title) : Control(IupMglLabel(title)) {}
   };
-  class OleControl : public Handle
+  class OleControl : public Control
   {
   public:
-    OleControl(const char* progid) : Handle(IupOleControl(progid)) {}
+    OleControl(const char* progid) : Control(IupOleControl(progid)) {}
 
     static void Open() { IupOleControlOpen(); }
   };
-  class WebBrowser : public Handle
+  class WebBrowser : public Control
   {
   public:
-    WebBrowser() : Handle(IupWebBrowser()) {}
+    WebBrowser() : Control(IupWebBrowser()) {}
 
     static void Open() { IupWebBrowserOpen(); }
   };
-  class Scintilla : public Handle
+  class Scintilla : public Control
   {
   public:
-    Scintilla(): Handle(IupScintilla()) {}
+    Scintilla(): Control(IupScintilla()) {}
 
     static void Open() { IupScintillaOpen(); }
   };
