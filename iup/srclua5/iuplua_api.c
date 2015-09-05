@@ -560,7 +560,7 @@ static int NextField(lua_State *L)
 static int PreviousField(lua_State *L)
 {
   Ihandle *h1 = iuplua_checkihandle(L,1);
-  Ihandle *h2 = IupNextField(h1);
+  Ihandle *h2 = IupPreviousField(h1);
   iuplua_pushihandle(L,h2);
   return 1;
 }
@@ -1137,4 +1137,3 @@ void iupluaapi_open(lua_State * L)
   /* iup table is already at the top of the stack */
   iuplua_register_funcs(L, funcs);
 }
-
