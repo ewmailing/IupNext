@@ -723,7 +723,7 @@ void iupPlotAxis::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) con
 
 
 iupPlot::iupPlot(Ihandle* _ih, int inDefaultFontStyle, int inDefaultFontSize)
-  :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mCrossHairH(false),
+  :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mCrossHairH(false), mCrossHairV(false),
   mGrid(true), mGridMinor(false), mViewportSquare(false), mScaleEqual(false),
   mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle), 
   mAxisX(inDefaultFontStyle, inDefaultFontSize), mAxisY(inDefaultFontStyle, inDefaultFontSize)

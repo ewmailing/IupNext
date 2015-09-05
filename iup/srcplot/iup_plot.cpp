@@ -1588,13 +1588,13 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
 
   if (c == K_cH || c == K_cV)
   {
-    int CH = IUP_PLOT_CROSSHORIZ;
-    if (c == K_cV) CH = IUP_PLOT_CROSSVERT;
+    int new_show_cross_hair = IUP_PLOT_CROSSHORIZ;
+    if (c == K_cV) new_show_cross_hair = IUP_PLOT_CROSSVERT;
 
-    if (ih->data->show_cross_hair == CH)
+    if (ih->data->show_cross_hair == new_show_cross_hair)
       ih->data->show_cross_hair = IUP_PLOT_CROSSNONE;
     else
-      ih->data->show_cross_hair = CH;
+      ih->data->show_cross_hair = new_show_cross_hair;
 
     for (int p = 0; p < ih->data->plot_list_count; p++)
     {
@@ -1610,7 +1610,7 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
       }
     }
 
-    if (ih->data->show_cross_hair != IUP_PLOT_CROSSNONE)  // was shown
+    if (ih->data->show_cross_hair != IUP_PLOT_CROSSNONE)  // was shown, leave it there as reference
       iPlotRedrawInteract(ih);
 
     return IUP_DEFAULT;
