@@ -858,245 +858,6 @@ wb_usr.tree =
       }
     },
     {
-      name= {en= "Layout Composition"},
-      link= "layout.html",
-      folder=
-      {
-        {
-          name= {nl= "Guide"},
-          link= "layout_guide.html",
-          folder=
-          {
-            {
-              name= {nl= "Native Sizes"},
-              link= "layout_guide.html#native"
-            },
-            {
-              name= {nl= "IUP Sizes"},
-              link= "layout_guide.html#iup"
-            },
-            {
-              name= {nl= "Hierarchy"},
-              link= "layout_guide.html#Hierarchy"
-            },
-            {
-              name= {nl= "Display"},
-              link= "layout_guide.html#Display"
-            },
-            {
-              name= {nl= "Element Update"},
-              link= "layout_guide.html#Update"
-            }
-          }
-        },
-        {
-          name= {en= "Controls"},
-          folder=
-          {
-            {
-              name= {nl= "IupCbox"},
-              link= "elem/iupcbox.html"
-            },
-            {
-              name= {nl= "IupFill"},
-              link= "elem/iupfill.html"
-            },
-            {
-              name= {nl= "IupGridBox"},
-              link= "elem/iupgridbox.html"
-            },
-            {
-              name= {nl= "IupHbox"},
-              link= "elem/iuphbox.html"
-            },
-            {
-              name= {nl= "IupVbox"},
-              link= "elem/iupvbox.html"
-            },
-            {
-              name= {nl= "IupZbox"},
-              link= "elem/iupzbox.html"
-            },
-            { link= "", name= {en= "" } },
-            {
-              name= {nl= "IupRadio"},
-              link= "elem/iupradio.html"
-            },
-            {
-              name= {nl= "IupNormalizer"},
-              link= "elem/iupnormalizer.html"
-            },
-            { link= "", name= {en= "" } },
-            {
-              name= {nl= "IupBackgroundBox"},
-              link= "elem/iupbackgroundbox.html"
-            },
-            {
-              name= {nl= "IupDetachBox"},
-              link= "elem/iupdetachbox.html"
-            },
-            {
-              name= {nl= "IupExpander"},
-              link= "elem/iupexpander.html"
-            },
-            {
-              name= {nl= "IupSbox"},
-              link= "elem/iupsbox.html"
-            },
-            {
-              name= {nl= "IupScrollBox"},
-              link= "elem/iupscrollbox.html"
-            },
-            {
-              name= {nl= "IupSplit"},
-              link= "elem/iupsplit.html"
-            }
-          }
-        },
-        {
-          name= {en= "Construction"},
-          folder=
-          {
-            {
-              name= {nl= "IupCreate"},
-              link= "func/iupcreate.html"
-            },
-            {
-              name= {nl= "IupDestroy"},
-              link= "func/iupdestroy.html"
-            },
-            {
-              name= {nl= "IupMap"},
-              link= "func/iupmap.html"
-            },
-            {
-              name= {nl= "IupUnmap"},
-              link= "func/iupunmap.html"
-            },
-            { link= "", name= {en= "" } },
-            {
-              name= {nl= "IupGetAllClasses"},
-              link= "func/iupgetallclasses.html"
-            },
-            {
-              name= {nl= "IupGetClassName"},
-              link= "func/iupgetclassname.html"
-            },
-            {
-              name= {nl= "IupGetClassType"},
-              link= "func/iupgetclasstype.html"
-            },
-            {
-              name= {nl= "IupClassMatch"},
-              link= "func/iupclassmatch.html"
-            },
-            {
-              name= {nl= "IupGetClassAttributes"},
-              link= "func/iupgetclassattributes.html"
-            },
-            {
-              name= {nl= "IupGetClassCallbacks"},
-              link= "func/iupgetclasscallbacks.html"
-            },
-            {
-              name= {nl= "IupSaveClassAttributes"},
-              link= "func/iupsaveclassattributes.html"
-            },
-            {
-              name= {nl= "IupCopyClassAttributes"},
-              link= "func/iupcopyclassattributes.html"
-            },
-            {
-              name= {nl= "IupSetClassDefaultAttribute"},
-              link= "func/iupsetclassdefaultattribute.html"
-            },
-          }
-        },
-        {
-          name= {en= "Hierarchy"},
-          folder=
-          {
-            {
-              name= {nl= "IupAppend"},
-              link= "func/iupappend.html"
-            },
-            {
-              name= {nl= "IupDetach"},
-              link= "func/iupdetach.html"
-            },
-            {
-              name= {nl= "IupInsert"},
-              link= "func/iupinsert.html"
-            },
-            {
-              name= {nl= "IupReparent"},
-              link= "func/iupreparent.html"
-            },
-            { link= "", name= {en= "" } },
-            {
-              name= {nl= "IupGetParent"},
-              link= "func/iupgetparent.html"
-            },
-            {
-              name= {nl= "IupGetChild"},
-              link= "func/iupgetchild.html"
-            },
-            {
-              name= {nl= "IupGetChildPos"},
-              link= "func/iupgetchildpos.html"
-            },
-            {
-              name= {nl= "IupGetChildCount"},
-              link= "func/iupgetchildcount.html"
-            },
-            {
-              name= {nl= "IupGetNextChild"},
-              link= "func/iupgetnextchild.html"
-            },
-            {
-              name= {nl= "IupGetBrother"},
-              link= "func/iupgetbrother.html"
-            },
-            {
-              name= {nl= "IupGetDialog"},
-              link= "func/iupgetdialog.html"
-            },
-            {
-              name= {nl= "IupGetDialogChild"},
-              link= "func/iupgetdialogchild.html"
-            }
-          }
-        },
-        {
-          name= {en= "Utilities"},
-          folder=
-          {
-            {
-              name= {nl= "IupRefresh"},
-              link= "func/iuprefresh.html"
-            },
-            {
-              name= {nl= "IupRefreshChildren"},
-              link= "func/iuprefreshchildren.html"
-            },
-            {
-              name= {nl= "IupUpdate"},
-              link= "func/iupupdate.html"
-            },
-            {
-              name= {nl= "IupRedraw"},
-              link= "func/iupredraw.html"
-            },
-            { link= "", name= {en= "" } },
-            {
-              name= {nl= "IupConvertXYToPos"},
-              link= "func/iupconvertxytopos.html"
-            }
-          }
-        }
-      }
-    },
-    {
       name= {en= "Dialogs"},
       link= "dialogs.html",
       folder=
@@ -1255,10 +1016,177 @@ wb_usr.tree =
       }
     },
     {
+      name= {en= "Layout Composition"},
+      link= "layout.html",
+      folder=
+      {
+        {
+          name= {nl= "Guide"},
+          link= "layout_guide.html",
+          folder=
+          {
+            {
+              name= {nl= "Native Sizes"},
+              link= "layout_guide.html#native"
+            },
+            {
+              name= {nl= "IUP Sizes"},
+              link= "layout_guide.html#iup"
+            },
+            {
+              name= {nl= "Hierarchy"},
+              link= "layout_guide.html#Hierarchy"
+            },
+            {
+              name= {nl= "Display"},
+              link= "layout_guide.html#Display"
+            },
+            {
+              name= {nl= "Element Update"},
+              link= "layout_guide.html#Update"
+            }
+          }
+        },
+        {
+          name= {en= "Hierarchy"},
+          folder=
+          {
+            {
+              name= {nl= "IupAppend"},
+              link= "func/iupappend.html"
+            },
+            {
+              name= {nl= "IupDetach"},
+              link= "func/iupdetach.html"
+            },
+            {
+              name= {nl= "IupInsert"},
+              link= "func/iupinsert.html"
+            },
+            {
+              name= {nl= "IupReparent"},
+              link= "func/iupreparent.html"
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "IupGetParent"},
+              link= "func/iupgetparent.html"
+            },
+            {
+              name= {nl= "IupGetChild"},
+              link= "func/iupgetchild.html"
+            },
+            {
+              name= {nl= "IupGetChildPos"},
+              link= "func/iupgetchildpos.html"
+            },
+            {
+              name= {nl= "IupGetChildCount"},
+              link= "func/iupgetchildcount.html"
+            },
+            {
+              name= {nl= "IupGetNextChild"},
+              link= "func/iupgetnextchild.html"
+            },
+            {
+              name= {nl= "IupGetBrother"},
+              link= "func/iupgetbrother.html"
+            },
+            {
+              name= {nl= "IupGetDialog"},
+              link= "func/iupgetdialog.html"
+            },
+            {
+              name= {nl= "IupGetDialogChild"},
+              link= "func/iupgetdialogchild.html"
+            }
+          }
+        },
+        {
+          name= {en= "Management"},
+          folder=
+          {
+            {
+              name= {nl= "IupRefresh"},
+              link= "func/iuprefresh.html"
+            },
+            {
+              name= {nl= "IupRefreshChildren"},
+              link= "func/iuprefreshchildren.html"
+            },
+          }
+        },
+      }
+    },
+    {
       name= {en= "Controls"},
       link= "controls.html",
       folder=
       {
+        {
+          name= {en= "Containers"},
+          folder=
+          {
+            {
+              name= {nl= "IupCbox"},
+              link= "elem/iupcbox.html"
+            },
+            {
+              name= {nl= "IupFill"},
+              link= "elem/iupfill.html"
+            },
+            {
+              name= {nl= "IupGridBox"},
+              link= "elem/iupgridbox.html"
+            },
+            {
+              name= {nl= "IupHbox"},
+              link= "elem/iuphbox.html"
+            },
+            {
+              name= {nl= "IupVbox"},
+              link= "elem/iupvbox.html"
+            },
+            {
+              name= {nl= "IupZbox"},
+              link= "elem/iupzbox.html"
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "IupRadio"},
+              link= "elem/iupradio.html"
+            },
+            {
+              name= {nl= "IupNormalizer"},
+              link= "elem/iupnormalizer.html"
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "IupBackgroundBox"},
+              link= "elem/iupbackgroundbox.html"
+            },
+            {
+              name= {nl= "IupDetachBox"},
+              link= "elem/iupdetachbox.html"
+            },
+            {
+              name= {nl= "IupExpander"},
+              link= "elem/iupexpander.html"
+            },
+            {
+              name= {nl= "IupSbox"},
+              link= "elem/iupsbox.html"
+            },
+            {
+              name= {nl= "IupScrollBox"},
+              link= "elem/iupscrollbox.html"
+            },
+            {
+              name= {nl= "IupSplit"},
+              link= "elem/iupsplit.html"
+            }
+          }
+        },
         {
           name= {en= "Standard"},
 
@@ -1606,7 +1534,92 @@ wb_usr.tree =
               link= "ctrl/iupweb.html"
             },
           }
-        }
+        },
+        { link= "", name= {en= "" } },
+        {
+          name= {en= "Management"},
+          folder=
+          {
+            {
+              name= {nl= "IupMap"},
+              link= "func/iupmap.html"
+            },
+            {
+              name= {nl= "IupUnmap"},
+              link= "func/iupunmap.html"
+            },
+            {
+              name= {en= "Registered Classes"},
+              folder=
+              {
+                {
+                  name= {nl= "IupCreate"},
+                  link= "func/iupcreate.html"
+                },
+                {
+                  name= {nl= "IupDestroy"},
+                  link= "func/iupdestroy.html"
+                },
+                { link= "", name= {en= "" } },
+                {
+                  name= {nl= "IupGetAllClasses"},
+                  link= "func/iupgetallclasses.html"
+                },
+                {
+                  name= {nl= "IupGetClassName"},
+                  link= "func/iupgetclassname.html"
+                },
+                {
+                  name= {nl= "IupGetClassType"},
+                  link= "func/iupgetclasstype.html"
+                },
+                {
+                  name= {nl= "IupClassMatch"},
+                  link= "func/iupclassmatch.html"
+                },
+                {
+                  name= {nl= "IupGetClassAttributes"},
+                  link= "func/iupgetclassattributes.html"
+                },
+                {
+                  name= {nl= "IupGetClassCallbacks"},
+                  link= "func/iupgetclasscallbacks.html"
+                },
+                {
+                  name= {nl= "IupSaveClassAttributes"},
+                  link= "func/iupsaveclassattributes.html"
+                },
+                {
+                  name= {nl= "IupCopyClassAttributes"},
+                  link= "func/iupcopyclassattributes.html"
+                },
+                {
+                  name= {nl= "IupSetClassDefaultAttribute"},
+                  link= "func/iupsetclassdefaultattribute.html"
+                },
+              }
+            },
+            {
+              name= {en= "Utilities"},
+              folder=
+              {
+                {
+                  name= {nl= "IupUpdate"},
+                  link= "func/iupupdate.html"
+                },
+                {
+                  name= {nl= "IupRedraw"},
+                  link= "func/iupredraw.html"
+                },
+                { link= "", name= {en= "" } },
+                {
+                  name= {nl= "IupConvertXYToPos"},
+                  link= "func/iupconvertxytopos.html"
+                }
+              }
+            },
+          }
+        },
       }
     },
     {
