@@ -163,7 +163,7 @@ static void iMatrixExCopyGetDataMarkedCol(ImatExData* matex_data, Iarray* data, 
   int lin, col;
   int add_sep;
 
-  for(lin = 1; lin <= num_lin; ++lin)  /* all lines */
+  for(lin = 1; lin <= num_lin; ++lin)  /* always organize data in lines */
   {
     add_sep = 0;
 

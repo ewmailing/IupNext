@@ -245,20 +245,20 @@ static Ihandle* iMatrixExSortCreateDialog(ImatExData* matex_data)
   IupSetAttribute(options_box,"GAP","10");
 
   sort = IupButton("_@IUP_SORT", NULL);
-  IupSetAttribute(sort,"PADDING" ,"12x2");
+  IupSetAttribute(sort,"PADDING" ,IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(sort, "ACTION", (Icallback)iMatrixExSortDialogSort_CB);
 
   invert = IupButton("_@IUP_INVERT", NULL);
-  IupSetAttribute(invert,"PADDING" ,"12x2");
+  IupSetAttribute(invert,"PADDING" ,IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(invert, "ACTION", (Icallback)iMatrixExSortDialogInvert_CB);
   IupSetStrAttribute(invert,"TIP" ,"_@IUP_INVERT_TIP");
 
   reset = IupButton("_@IUP_RESET", NULL);
-  IupSetAttribute(reset,"PADDING" ,"12x2");
+  IupSetAttribute(reset,"PADDING" ,IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(reset, "ACTION", (Icallback)iMatrixExSortDialogReset_CB);
 
   close = IupButton("_@IUP_CLOSE", NULL);
-  IupSetAttribute(close,"PADDING" ,"12x2");
+  IupSetAttribute(close,"PADDING" ,IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(close, "ACTION", (Icallback)iMatrixExSortDialogClose_CB);
 
   button_box = IupHbox(
