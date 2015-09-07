@@ -294,7 +294,7 @@ the event.<br>
   Action generated before the current cell 
   enters edition mode to determine if a popup 
 menu will be shown instead of a text field or a dropdown. If this action is 
-registered the DROP_CB callback is not called, and the popup menu is shown. Like 
+registered and retunr IUP_DEFAULT the DROP_CB callback is not called, and the popup menu is shown. Like 
 DROP_CB, it is called after EDITION_CB. The values appearing as menu items in the 
 popup menu must be fulfilled in this callback, like elements are added 
   to a list (the drop parameter is the handle of the popup menu to be shown, but 
@@ -311,6 +311,8 @@ the event.<br>
     be shown to the user.<br>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the current cell.</p>
+<p class="info"><span class="style1">Returns:</span> IUP_IGNORE to not show the 
+menu for the given cell, DROP_CB will then be called.</p>
 <p><strong><a name="DROPSELECT_CB">DROPSELECT_CB</a></strong>:
   Action generated when an element in the 
   dropdown list or the popup menu is selected. For the dropdown, if returns

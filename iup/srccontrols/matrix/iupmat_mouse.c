@@ -82,6 +82,8 @@ static void iMatrixMouseEdit(Ihandle* ih, int x, int y)
 {
   if (iupMatrixEditShowXY(ih, x, y))
   {
+    iupMatrixMarkBlockReset(ih);
+
     if (ih->data->datah == ih->data->droph)
       IupSetAttribute(ih->data->datah, "SHOWDROPDOWN", "YES");
 
@@ -160,7 +162,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
   {
     if (shift && ih->data->mark_multiple && ih->data->mark_mode != IMAT_MARK_NO)
     {
-      iupMatrixMarkBlockEnd(ih, lin, col);
+      iupMatrixMarkBlockInc(ih, lin, col);
     }
     else
     {
@@ -176,7 +178,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
 
         /* process mark before EnterCell */
         if (ih->data->mark_mode != IMAT_MARK_NO)
-          iupMatrixMarkBlockBegin(ih, ctrl, lin, col);
+          iupMatrixMarkBlockSet(ih, ctrl, lin, col);
 
         iupMatrixAuxCallEnterCellCb(ih);
 
@@ -193,13 +195,15 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
           iupMatrixDrawCells(ih, lin, col, lin, col);
           if (togglevalue_cb) 
             togglevalue_cb(ih, lin, col, togglevalue);
+
+          iupMatrixMarkBlockReset(ih);
         }
       }
       else
       {
         /* only process marks here if at titles */
         if (ih->data->mark_mode != IMAT_MARK_NO)
-          iupMatrixMarkBlockBegin(ih, ctrl, lin, col);
+          iupMatrixMarkBlockSet(ih, ctrl, lin, col);
       }
     }
   }
@@ -238,7 +242,10 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int button, int press, int x, int y, ch
       iupMatrixKeyResetHomeEndCount(ih);
 
       if (iupMatrixColResStart(ih, x, y))
+      {
+        iupMatrixMarkBlockReset(ih);
         return IUP_DEFAULT;  /* Resize of the width a of a column was started */
+      }
 
       if (lin!=-1 && col!=-1)
         iMatrixMouseLeftPress(ih, lin, col, iup_isshift(status), iup_iscontrol(status), iup_isdouble(status), x, y);
@@ -291,7 +298,7 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y, char *status)
 
   has_lincol = iupMatrixGetCellFromXY(ih, x, y, &lin, &col);
 
-  if (iup_isbutton1(status) && ih->data->mark_multiple && ih->data->mark_mode != IMAT_MARK_NO)
+  if (iup_isbutton1(status) && ih->data->mark_block && ih->data->mark_multiple && ih->data->mark_mode != IMAT_MARK_NO)
   {
     if ((x < ih->data->columns.dt[0].size || x < IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.first > ih->data->columns.num_noscroll))
       iupMATRIX_ScrollLeft(ih);
@@ -305,7 +312,7 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y, char *status)
 
     if (has_lincol)
     {
-      iupMatrixMarkBlockEnd(ih, lin, col);
+      iupMatrixMarkBlockInc(ih, lin, col);
       iupMatrixDrawUpdate(ih);
 
       iMatrixMouseCallMoveCb(ih, lin, col);

@@ -256,7 +256,7 @@ static int iMatrixEditDropDownAction_CB(Ihandle* ih_list, char* t, int i, int v)
 static void iMatrixEditChooseElement(Ihandle* ih)
 {
   int drop = iMatrixEditCallDropdownCb(ih, ih->data->edit_lin, ih->data->edit_col);
-  if(drop)
+  if (drop)
     ih->data->datah = ih->data->droph;
   else
   {
