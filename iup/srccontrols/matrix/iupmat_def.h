@@ -129,8 +129,7 @@ struct _IcontrolData
   int undo_redo, show_fill_value;
 
   /* Mouse and Keyboard AUX */
-  int leftpressed;  /* left mouse button is pressed */
-  int dclick;       /* left mouse button was double clicked */
+  int button1edit;
   int homekeycount, endkeycount;  /* numbers of times that key was pressed */
 
   /* ColRes AUX */
