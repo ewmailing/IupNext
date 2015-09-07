@@ -30,21 +30,32 @@ static int il_string_compare(lua_State *L)
   return 1;
 }
 
-static int show_error_ok_action(Ihandle* ih)
+static int show_error_continue_action(Ihandle* ih)
 {
   (void)ih;
   return IUP_CLOSE;
 }
 
+static int show_error_exit_action(Ihandle* ih)
+{
+  if (ih) /* just to avoid a warning */
+    exit(EXIT_FAILURE);
+  return IUP_DEFAULT;
+}
+
 void iuplua_show_error_message(const char *pname, const char* msg)
 {
-  Ihandle *multi_text, *button, *box, *dlg;
+  Ihandle *multi_text, *button, *box, *dlg, *abort, *buttonbox;
 
   if (!pname) pname = "Lua Error!";
 
-  button = IupButton("OK", NULL);
-  IupSetAttribute(button, "PADDING", "5x3");
-  IupSetCallback(button, "ACTION", show_error_ok_action);
+  button = IupButton("Continue", NULL);
+  IupSetAttribute(button, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(button, "ACTION", show_error_continue_action);
+
+  abort = IupButton("Exit", NULL);
+  IupSetAttribute(abort, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(abort, "ACTION", show_error_exit_action);
 
   multi_text = IupMultiLine(NULL);
   IupSetAttribute(multi_text, "EXPAND", "YES");
@@ -54,10 +65,14 @@ void iuplua_show_error_message(const char *pname, const char* msg)
   IupSetAttribute(multi_text, "VISIBLECOLUMNS", "50");
   IupSetStrAttribute(multi_text, "VALUE", msg);
 
-  box = IupVbox(multi_text, button, NULL);
+  buttonbox = IupHbox(button, abort, NULL);
+  IupSetAttribute(buttonbox, "GAP", "50");
+  IupSetAttribute(IupNormalizer(button, abort, NULL), "NORMALIZE", "HORIZONTAL");
+
+  box = IupVbox(multi_text, buttonbox, NULL);
   IupSetAttribute(box, "ALIGNMENT", "ACENTER");
-  IupSetAttribute(box, "MARGIN", "5x5");
-  IupSetAttribute(box, "GAP", "5");
+  IupSetAttribute(box, "NMARGIN", "10x10");
+  IupSetAttribute(box, "GAP", "10");
 
   dlg = IupDialog(box);
 

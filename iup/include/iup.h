@@ -19,8 +19,8 @@ extern "C" {
 
 
 #define IUP_NAME "IUP - Portable User Interface"
-#define IUP_COPYRIGHT  "Copyright (C) 1994-2015 Tecgraf/PUC-Rio"
-#define IUP_DESCRIPTION	"Multi-platform toolkit for building graphical user interfaces."
+#define IUP_DESCRIPTION	"Multi-platform Toolkit for Building Graphical User Interfaces"
+#define IUP_COPYRIGHT "Copyright (C) 1994-2015 Tecgraf/PUC-Rio"
 #define IUP_VERSION "3.15"         /* bug fixes are reported only by IupVersion functions */
 #define IUP_VERSION_NUMBER 315000
 #define IUP_VERSION_DATE "2015/07/06"  /* does not include bug fix releases */
