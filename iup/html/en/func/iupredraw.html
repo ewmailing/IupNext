@@ -9,6 +9,9 @@
 .style1 {
 	font-size: large;
 }
+.auto-style1 {
+	background-color: #CEE7FF;
+}
 </style>
 </head>
 <body>
@@ -19,11 +22,11 @@
 Parameters/Return</h3>
 <div>
   <pre>void IupRedraw(Ihandle* ih, int <strong>children</strong>); [in C]
-iup.Redraw(<strong>ih</strong>: ihandle, <strong>children: </strong>boolean) [in Lua]
+iup.Redraw(<strong>ih</strong>: ihandle, <strong>children: </strong><span class="auto-style1">number</span>) [in Lua]
 </pre>
 </div>
 <p><b>ih</b>: identifier of the interface element.<br>
-<strong>children</strong>: flag to update its children.</p>
+<strong>children</strong>: flag to update its children. Can be 0 or 1.</p>
 
 <h3>See Also</h3>
 <p><a href="iupupdate.html">IupUpdate</a>&nbsp;&nbsp; </p>

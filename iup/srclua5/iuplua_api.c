@@ -577,7 +577,7 @@ static int Popup(lua_State *L)
 static int cf_isprint(lua_State *L)
 {
   int value = (int)luaL_checkinteger(L, 1);
-  lua_pushinteger(L, iup_isprint(value));
+  lua_pushboolean(L, iup_isprint(value));
   return 1;
 }
 
