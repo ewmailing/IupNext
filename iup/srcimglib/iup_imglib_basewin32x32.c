@@ -18,6 +18,10 @@ void iupImglibBaseLibWin32x32Open(void)
 {
   iupImageStockSet("IUP_ActionCancel", load_image_ActionCancel, 0);
   iupImageStockSet("IUP_ActionOk", load_image_ActionOk, 0);
+  iupImageStockSet("IUP_ArrowDown", load_image_ArrowDown, 0);
+  iupImageStockSet("IUP_ArrowLeft", load_image_ArrowLeft, 0);
+  iupImageStockSet("IUP_ArrowRight", load_image_ArrowRight, 0);
+  iupImageStockSet("IUP_ArrowUp", load_image_ArrowUp, 0);
   iupImageStockSet("IUP_EditCopy", load_image_EditCopy, 0);
   iupImageStockSet("IUP_EditCut", load_image_EditCut, 0);
   iupImageStockSet("IUP_EditErase", load_image_EditErase, 0);
@@ -62,17 +66,12 @@ void iupImglibBaseLibWin32x32Open(void)
   iupImageStockSet("IUP_FileCloseAll", load_image_FileCloseAll, 0);
   iupImageStockSet("IUP_FileSaveAll", load_image_FileSaveAll, 0);
   iupImageStockSet("IUP_FileText", load_image_FileText, 0);
-  iupImageStockSet("IUP_WindowsCascade", load_image_WindowsCascade, 0);
-  iupImageStockSet("IUP_WindowsTile", load_image_WindowsTile, 0);
-  iupImageStockSet("IUP_Zoom", load_image_Zoom, 0);
-
   iupImageStockSet("IUP_FontBold", load_image_FontBold, 0);
   iupImageStockSet("IUP_FontDialog", load_image_FontDialog, 0);
   iupImageStockSet("IUP_FontItalic", load_image_FontItalic, 0);
-  iupImageStockSet("IUP_ArrowDown", load_image_ArrowDown, 0);
-  iupImageStockSet("IUP_ArrowLeft", load_image_ArrowLeft, 0);
-  iupImageStockSet("IUP_ArrowRight", load_image_ArrowRight, 0);
-  iupImageStockSet("IUP_ArrowUp", load_image_ArrowUp, 0);
+  iupImageStockSet("IUP_WindowsCascade", load_image_WindowsCascade, 0);
+  iupImageStockSet("IUP_WindowsTile", load_image_WindowsTile, 0);
+  iupImageStockSet("IUP_Zoom", load_image_Zoom, 0);
 #endif
 }
 
