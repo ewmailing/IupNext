@@ -202,7 +202,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
       else
       {
         /* only process marks here if at titles */
-        if (ih->data->mark_mode != IMAT_MARK_NO)
+        if (ih->data->mark_mode != IMAT_MARK_NO && iupAttribGetBoolean(ih, "MARKATTITLE"))
           iupMatrixMarkBlockSet(ih, ctrl, lin, col);
       }
     }
