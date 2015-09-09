@@ -321,7 +321,7 @@ void iupMatrixExSortShowDialog(ImatExData* matex_data)
 
   ih_matrix = IupGetDialogChild(dlg_sort, "INTERVAL");
 
-  col = IupGetInt2(matex_data->ih, "FOCUS_CELL");
+  col = IupGetInt2(matex_data->ih, "FOCUSCELL");
   IupSetIntId2(ih_matrix, "", 1, 1, col);
   num_lin = IupGetInt(matex_data->ih, "NUMLIN");
   lin1 = 1;

@@ -203,14 +203,14 @@ int btn_decelerate_cb(void)
 
 int btn_show_cb(void)
 {
-  if(!IupGetInt(gauge,"SHOW_TEXT"))
+  if(!IupGetInt(gauge,"SHOWTEXT"))
   {
-    IupSetAttribute (gauge, "SHOW_TEXT", "YES");
+    IupSetAttribute (gauge, "SHOWTEXT", "YES");
     IupSetAttribute (gauge, "DASHED", "NO");
   }
   else
   {
-    IupSetAttribute (gauge, "SHOW_TEXT", "NO");
+    IupSetAttribute (gauge, "SHOWTEXT", "NO");
     IupSetAttribute (gauge, "DASHED", "YES");
   }
   

@@ -433,7 +433,7 @@ void GLCanvasCubeTest(void)
 
   pbar1 = IupGLProgressBar();
   IupSetAttribute(pbar1, "VALUE", "0.3");
-  IupSetAttribute(pbar1, "SHOW_TEXT", "Yes");
+  IupSetAttribute(pbar1, "SHOWTEXT", "Yes");
 
   //image_val = IupLoadImage("../test/slider_handler.png");
 

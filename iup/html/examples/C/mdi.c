@@ -206,7 +206,7 @@ Ihandle* createDialog (void)
   _list_2 = IupList( NULL);
   IupSetAttribute(_list_2,"DROPDOWN","YES");
   IupSetAttribute(_list_2,"EXPAND","YES");
-  IupSetAttribute(_list_2, "VISIBLE_ITEMS", "3");
+  IupSetAttribute(_list_2, "VISIBLEITEMS", "3");
 //  IupSetAttribute(_list_2, "SIZE", "50x");
   IupSetAttribute(_list_2,"VALUE","2");
   IupSetAttribute(_list_2,"1","Item 1 Text");
@@ -234,7 +234,7 @@ Ihandle* createDialog (void)
   IupSetAttribute(_list_4,"EDITBOX","YES");
   IupSetAttribute(_list_4,"DROPDOWN","YES");
   IupSetAttribute(_list_4,"EXPAND","YES");
-  IupSetAttribute(_list_4, "VISIBLE_ITEMS", "3");
+  IupSetAttribute(_list_4, "VISIBLEITEMS", "3");
 //  IupSetAttribute(_list_4, "SIZE", "50x10");
   IupSetAttribute(_list_4,"VALUE","Test Value");
   IupSetAttribute(_list_4,"1","Item 1 Text");

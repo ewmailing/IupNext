@@ -1761,8 +1761,9 @@ Iclass* iupMatrixNewClass(void)
 
   /* IupMatrix Attributes - CELL */
   iupClassRegisterAttributeId2(ic, "IDVALUE", iMatrixGetIdValueAttrib, iMatrixSetIdValueAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FOCUS_CELL", iMatrixGetFocusCellAttrib, iMatrixSetFocusCellAttrib, IUPAF_SAMEASSYSTEM, "1:1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT); /* can be NOT mapped */
-  iupClassRegisterAttribute(ic, "VALUE", iMatrixGetValueAttrib, iMatrixSetValueAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOCUSCELL", iMatrixGetFocusCellAttrib, iMatrixSetFocusCellAttrib, IUPAF_SAMEASSYSTEM, "1:1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT); /* can be NOT mapped */
+  /*OLD*/iupClassRegisterAttribute(ic, "FOCUS_CELL", iMatrixGetFocusCellAttrib, iMatrixSetFocusCellAttrib, IUPAF_SAMEASSYSTEM, "1:1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT); /* can be NOT mapped */
+  iupClassRegisterAttribute(ic, "VALUE", iMatrixGetValueAttrib, iMatrixSetValueAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId2(ic, "BGCOLOR", iMatrixGetBgColorAttrib, iMatrixSetBgColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FGCOLOR", NULL, iMatrixSetFgColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "TYPE", NULL, iMatrixSetTypeAttrib, IUPAF_NOT_MAPPED);
@@ -1813,7 +1814,7 @@ Iclass* iupMatrixNewClass(void)
   /* IupMatrix Attributes - MARK */
   iupClassRegisterAttribute(ic, "MARKED", iupMatrixGetMarkedAttrib, iupMatrixSetMarkedAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* noticed that MARKED must be mapped */
   iupClassRegisterAttributeId2(ic, "MARK", iupMatrixGetMarkAttrib, iupMatrixSetMarkAttrib, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);  /* noticed that for MARK the matrix must be mapped */
-  iupClassRegisterAttribute(ic, "MARK_MODE", iMatrixGetMarkModeAttrib, iMatrixSetMarkModeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "MARK_MODE", iMatrixGetMarkModeAttrib, iMatrixSetMarkModeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARKMODE", iMatrixGetMarkModeAttrib, iMatrixSetMarkModeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AREA", iMatrixGetMarkAreaAttrib, iMatrixSetMarkAreaAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARKAREA", iMatrixGetMarkAreaAttrib, iMatrixSetMarkAreaAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -1830,7 +1831,8 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "ORIGIN", iMatrixGetOriginAttrib, iMatrixSetOriginAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ORIGINOFFSET", iMatrixGetOriginOffsetAttrib, NULL, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOW", NULL, iMatrixSetShowAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "EDIT_MODE", iMatrixGetEditModeAttrib, iMatrixSetEditModeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+  /*OLD*/iupClassRegisterAttribute(ic, "EDIT_MODE", iMatrixGetEditModeAttrib, iMatrixSetEditModeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EDITMODE", iMatrixGetEditModeAttrib, iMatrixSetEditModeAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITING", iMatrixGetEditingAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITNEXT", iMatrixGetEditNextAttrib, iMatrixSetEditNextAttrib, IUPAF_SAMEASSYSTEM, "LIN", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iupMatrixDrawSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

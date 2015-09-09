@@ -254,7 +254,7 @@ static void set_callbacks(Ihandle* list)
 //  IupSetAttribute(list, "AUTOHIDE", "NO");
 //  IupSetAttribute(list, "SCROLLBAR", "NO");
 
-  IupSetAttribute(list, "VISIBLE_ITEMS", "20");
+  IupSetAttribute(list, "VISIBLEITEMS", "20");
 //  IupSetAttribute(list, "VISIBLECOLUMNS", "7");
   IupSetAttribute(list, "VISIBLELINES", "4");
 }

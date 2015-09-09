@@ -247,7 +247,7 @@ int main(int argc, char **argv)
 
   list_dropdown = IupList (NULL);
   IupSetAttributes (list_dropdown, "1=\"Less than US$ 1000\", 2=\"US$ 2000\", 3=\"US$ 5000\", 4=\"US$ 10000\", 5=\"US$ 20000\", 6=\"US$ 50000\", 7=\"More than US$ 100000\","
-                                   "SHOWIMAGE=YES, DROPDOWN=YES, VISIBLE_ITEMS=3");
+                                   "SHOWIMAGE=YES, DROPDOWN=YES, VISIBLEITEMS=3");
   IupSetAttributeHandle(list_dropdown, "IMAGE1", IupImageRGB(20, 20, image_data_24));
   IupSetAttributeHandle(list_dropdown, "IMAGE2", IupImageRGB(20, 20, image_data_24));
   IupSetAttributeHandle(list_dropdown, "IMAGE3", load_image_Tecgraf());

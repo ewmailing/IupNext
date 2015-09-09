@@ -25,7 +25,7 @@ exceptions)</span></h2>
   Default cursor used by the matrix. The 
   default cursor is a symbol that looks like a cross. If you need to refer to this default cursor, use the name 
 &quot;IupMatrixCrossCursor&quot;.</p>
-<p><strong><a name="FOCUS_CELL">FOCUS_CELL</a></strong>:
+<p><strong><a name="FOCUS_CELL">FOCUSCELL</a></strong>:
   Defines the current cell. Two numbers in the &quot;<strong><em>L</em></strong>:<strong><em>C</em></strong>&quot; format, 
     &nbsp;(<strong><em>L</em></strong>&gt;0 and <strong><em>C</em></strong>&gt;0, a title cell can NOT be the current cell). Default: &quot;1:1&quot;.</p>
 <p><strong><a name="HIDEFOCUS">HIDEFOCUS</a></strong>: do not show the focus mark when 
@@ -193,7 +193,7 @@ called. (Since 3.9) </p>
 <p><strong><a name="VALUE">VALUE</a></strong>:
   Allows setting or verifying the value of the 
   current cell. Is the same as obtaining the current cell line and column from 
-FOCUS_CELL attribute, and then using them to access the &quot;L:C&quot; attribute. 
+FOCUSCELL attribute, and then using them to access the &quot;L:C&quot; attribute. 
 But when updated or retrieved during cell editing, the edit control will be 
 updated or consulted instead of the matrix cell. When retrieved inside the 
 EDITION_CB callback when mode is 0, then the return value is the new value 
@@ -504,7 +504,7 @@ column, use a value such as &quot;<strong><em>L</em></strong>:*&quot; or &quot;*
 <em><strong>L</strong></em>&gt;0 and <strong><em>C</em></strong>&gt;0). (since 
 3.0)</p>
 <h3><a name="Editing_Attributes">Editing Attributes</a></h3>
-<p><strong><a name="EDIT_MODE">EDIT_MODE</a></strong>:
+<p><strong><a name="EDIT_MODE">EDITMODE</a></strong>:
   When set to YES, programmatically puts the 
   current cell in edition mode, allowing the user to modify its value. When consulted informs if the 
 editing control is visible (text or dropdown). Possible values: &quot;YES&quot; or &quot;NO&quot;.</p>

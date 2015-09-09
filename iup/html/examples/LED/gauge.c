@@ -70,15 +70,15 @@ int freia_cb(void)
 /* show button callback */
 int exibe_cb(void)
 {
-  if(IupGetAttribute(gauge,"SHOW_TEXT") == "NO")
+  if(IupGetAttribute(gauge,"SHOWTEXT") == "NO")
   {
     /* shows percentage in gauge */
-    IupSetAttribute(gauge,"SHOW_TEXT","YES");
+    IupSetAttribute(gauge,"SHOWTEXT","YES");
   }  
   else
   {
     /* does not show percentage in gauge */
-    IupSetAttribute(gauge,"SHOW_TEXT","NO");
+    IupSetAttribute(gauge,"SHOWTEXT","NO");
   }	
   return IUP_DEFAULT ;
 }

@@ -235,7 +235,7 @@ static int iMatrixExSetFind(Ihandle *ih, const char* value, int inc, int flip, i
 
   if (search_cur_cell)  /* search the current cell */
   {
-    /* the FOCUS_CELL is always visible and not a title */
+    /* the FOCUSCELL is always visible and not a title */
     if (iMatrixMatch(ih, find_value, *lin, *col, matchcase, matchwholecell, utf8))
     {
       free(find_value);
@@ -303,7 +303,7 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
   if (!value || value[0]==0)
     return 0;
 
-  IupGetIntInt(ih, "FOCUS_CELL", &lin, &col);
+  IupGetIntInt(ih, "FOCUSCELL", &lin, &col);
 
   direction = iupAttribGetStr(ih, "FINDDIRECTION");
   if (iupStrEqualNoCase(direction, "LEFTTOP"))
@@ -338,7 +338,7 @@ static int iMatrixExSetFindAttrib(Ihandle *ih, const char* value)
 
   if (iMatrixExSetFind(ih, value, inc, flip, matchcase, matchwholecell, &lin, &col, search_cur_cell))
   {
-    IupSetfAttribute(ih,"FOCUS_CELL", "%d:%d", lin, col);
+    IupSetfAttribute(ih,"FOCUSCELL", "%d:%d", lin, col);
     IupSetfAttribute(ih,"SHOW", "%d:%d", lin, col);
     IupSetAttribute(ih,"MARKED",NULL);
     IupSetAttributeId2(ih,"MARK",lin,col,"1");

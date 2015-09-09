@@ -212,10 +212,10 @@ static int btn_show1_cb(void)
 
 static int btn_show2_cb(void)
 {
-  if (!IupGetInt(gauge, "SHOW_TEXT"))
-    IupSetAttribute(gauge, "SHOW_TEXT", "YES");
+  if (!IupGetInt(gauge, "SHOWTEXT"))
+    IupSetAttribute(gauge, "SHOWTEXT", "YES");
   else
-    IupSetAttribute(gauge, "SHOW_TEXT", "NO");
+    IupSetAttribute(gauge, "SHOWTEXT", "NO");
   
   return IUP_DEFAULT;
 }

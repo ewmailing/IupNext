@@ -102,8 +102,8 @@ static int edition(Ihandle *self, int lin, int col, int mode)
   //if(lin == 1 && col == 1 && mode==0 && mdrop == 1)
   //{
   //  mdrop = 0;
-  //  IupSetAttribute(self, "EDIT_MODE", "NO");
-  //  IupSetAttribute(self, "EDIT_MODE", "YES");
+  //  IupSetAttribute(self, "EDITMODE", "NO");
+  //  IupSetAttribute(self, "EDITMODE", "YES");
   //  return IUP_IGNORE;
   //}
 

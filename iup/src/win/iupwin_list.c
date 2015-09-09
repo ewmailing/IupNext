@@ -1734,7 +1734,7 @@ static void winListLayoutUpdateMethod(Ihandle *ih)
     RECT rect;
     int charheight, calc_h, win_h, win_w, voptions;
 
-    voptions = iupAttribGetInt(ih, "VISIBLE_ITEMS");
+    voptions = iupAttribGetInt(ih, "VISIBLEITEMS");
     if (voptions <= 0)
       voptions = 1;
 
@@ -1932,7 +1932,8 @@ void iupdrvListInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "VALUE", winListGetValueAttrib, winListSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, winListSetShowDropdownAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TOPITEM", NULL, winListSetTopItemAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLE_ITEMS", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "VISIBLEITEMS", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_DEFAULT);
+  /*OLD*/iupClassRegisterAttribute(ic, "VISIBLE_ITEMS", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "DROPEXPAND", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPACING", iupListGetSpacingAttrib, winListSetSpacingAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);
 

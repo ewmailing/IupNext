@@ -33,7 +33,7 @@ void iupMatrixExGetDialogPosition(ImatExData* matex_data, int *x, int *y)
   int cx, cy, cw, ch, lin, col;
   char attrib[50];
   IupGetIntInt(matex_data->ih, "SCREENPOSITION", x, y);
-  IupGetIntInt(matex_data->ih, "FOCUS_CELL", &lin, &col);
+  IupGetIntInt(matex_data->ih, "FOCUSCELL", &lin, &col);
   IupSetfAttribute(matex_data->ih,"SHOW", "%d:%d", lin, col);
   sprintf(attrib, "CELLOFFSET%d:%d", lin, col);
   IupGetIntInt(matex_data->ih, attrib, &cx, &cy);
@@ -115,7 +115,7 @@ static int iMatrixExSetFreezeAttrib(Ihandle *ih, const char* value)
 
   if (iupStrBoolean(value))
   {
-    IupGetIntInt(ih, "FOCUS_CELL", &lin, &col);
+    IupGetIntInt(ih, "FOCUSCELL", &lin, &col);
     freeze = 1;
   }
   else
@@ -343,7 +343,7 @@ static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
   int lin, col;
 
   IupGetIntInt(ih_item, "MENUCONTEXT_CELL", &lin, &col);
-  IupSetfAttribute(matex_data->ih, "FOCUS_CELL", "%d:%d", lin, col);
+  IupSetfAttribute(matex_data->ih, "FOCUSCELL", "%d:%d", lin, col);
 
   if (iupStrEqual(value, "INTERVAL"))
   {
@@ -416,7 +416,7 @@ static int iMatrixExItemUndoList_CB(Ihandle* ih_item)
 static int iMatrixExItemFind_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
-  IupSetStrAttribute(matex_data->ih, "FOCUS_CELL", IupGetAttribute(ih_item, "MENUCONTEXT_CELL"));
+  IupSetStrAttribute(matex_data->ih, "FOCUSCELL", IupGetAttribute(ih_item, "MENUCONTEXT_CELL"));
   iupMatrixExFindShowDialog(matex_data);
   return IUP_DEFAULT;
 }
@@ -477,7 +477,7 @@ static int iMatrixExItemGoTo_CB(Ihandle* ih_item)
       int col = iMatrixExFindCol(matex_data->ih, column);
 
       IupSetfAttribute(matex_data->ih, "SHOW", "%d:%d", lin, col);
-      IupSetfAttribute(matex_data->ih, "FOCUS_CELL", "%d:%d", lin, col);
+      IupSetfAttribute(matex_data->ih, "FOCUSCELL", "%d:%d", lin, col);
 
       iupAttribSetStr(matex_data->ih, "_IUP_LAST_GOTO_LIN", line);
       iupAttribSetStr(matex_data->ih, "_IUP_LAST_GOTO_COL", column);
@@ -491,7 +491,7 @@ static int iMatrixExItemGoTo_CB(Ihandle* ih_item)
     if (IupGetParam("_@IUP_GOTO", NULL, NULL, "_@IUP_LINE%i[1,,]\n_@IUP_COLUMN%i[1,,]\n", &lin, &col, NULL))
     {
       IupSetStrf(matex_data->ih, "SHOW", "%d:%d", lin, col);
-      IupSetStrf(matex_data->ih, "FOCUS_CELL", "%d:%d", lin, col);
+      IupSetStrf(matex_data->ih, "FOCUSCELL", "%d:%d", lin, col);
 
       iupAttribSetInt(matex_data->ih, "_IUP_LAST_GOTO_LIN", lin);
       iupAttribSetInt(matex_data->ih, "_IUP_LAST_GOTO_COL", col);
@@ -504,7 +504,7 @@ static int iMatrixExItemGoTo_CB(Ihandle* ih_item)
 static int iMatrixExItemSort_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
-  IupSetStrAttribute(matex_data->ih, "FOCUS_CELL", IupGetAttribute(ih_item, "MENUCONTEXT_CELL"));
+  IupSetStrAttribute(matex_data->ih, "FOCUSCELL", IupGetAttribute(ih_item, "MENUCONTEXT_CELL"));
   iupMatrixExSortShowDialog(matex_data);
   return IUP_DEFAULT;
 }
@@ -791,7 +791,7 @@ static int iMatrixExSetShowDialogAttrib(Ihandle *ih, const char* value)
   int readonly = IupGetInt(ih, "READONLY");
 
   IupSetAttribute(ih, "MATRIX_EX_DATA", (char*)matex_data);  /* do not use "_IUP_MATEX_DATA" to enable inheritance */
-  IupSetStrAttribute(ih, "MENUCONTEXT_CELL", IupGetAttribute(ih, "FOCUS_CELL"));
+  IupSetStrAttribute(ih, "MENUCONTEXT_CELL", IupGetAttribute(ih, "FOCUSCELL"));
 
   if (iupStrEqualNoCase(value, "SETTINGS"))
     iMatrixExItemSettings_CB(ih);
