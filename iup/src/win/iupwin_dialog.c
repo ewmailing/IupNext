@@ -1441,17 +1441,14 @@ static int winDialogSetIconAttrib(Ihandle* ih, const char *value)
   }
   else
   {
-    HICON icon;
-    if (!IupGetHandle(value))
-    {
-      icon = winDialogLoadIcon(value, ICON_SMALL);
-      if (icon)
-        SendMessage(ih->handle, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)icon);
+    /* check first in the resources using size hits */
+    HICON icon = winDialogLoadIcon(value, ICON_SMALL);
+    if (icon)
+      SendMessage(ih->handle, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)icon);
 
-      icon = winDialogLoadIcon(value, ICON_BIG);
-      if (icon)
-        SendMessage(ih->handle, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)icon);
-    }
+    icon = winDialogLoadIcon(value, ICON_BIG);
+    if (icon)
+      SendMessage(ih->handle, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)icon);
     else
     {
       icon = iupImageGetIcon(value);
