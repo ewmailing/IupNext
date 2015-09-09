@@ -438,7 +438,7 @@ void* iupdrvImageLoad(const char* name, int type)
 #else
     return NULL;
 #endif
-  else
+  else /* IUPIMAGE_IMAGE or IUPIMAGE_ICON */
   {
     int stock_size = 16;
     GTK_ICON_SIZE_MENU;

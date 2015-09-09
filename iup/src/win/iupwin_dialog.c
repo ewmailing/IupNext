@@ -1423,6 +1423,7 @@ static HICON winDialogLoadIcon(const char* name, int size)
 {
   int w = (size == ICON_SMALL) ? GetSystemMetrics(SM_CXSMICON) : GetSystemMetrics(SM_CXICON);
   int h = (size == ICON_SMALL) ? GetSystemMetrics(SM_CYSMICON) : GetSystemMetrics(SM_CYICON);
+  /* same as iupdrvImageLoad but using w and h to control icon size */
   HICON hIcon = LoadImage(iupwin_hinstance, iupwinStrToSystem(name), IMAGE_ICON, w, h, 0);
   if (!hIcon && iupwin_dll_hinstance)
     hIcon = LoadImage(iupwin_dll_hinstance, iupwinStrToSystem(name), IMAGE_ICON, w, h, 0);
@@ -1430,7 +1431,6 @@ static HICON winDialogLoadIcon(const char* name, int size)
     hIcon = LoadImage(NULL, iupwinStrToSystemFilename(name), IMAGE_ICON, w, h, LR_LOADFROMFILE);
   return hIcon;
 }
-
 
 static int winDialogSetIconAttrib(Ihandle* ih, const char *value)
 {
