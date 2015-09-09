@@ -407,7 +407,6 @@ void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char
 static Ihandle* iImageGetImageFromName(const char* name)
 {
   Ihandle* ih = IupGetHandle(name);
-
   if (ih)
   {
     int bpp = IupGetInt(ih, "BPP");
@@ -501,10 +500,21 @@ void* iupImageGetIcon(const char* name)
   ih = iImageGetImageFromName(name);
   if (!ih)
   {
+    const char* native_name = NULL;
+
     /* Check in the system resources. */
     icon = iupdrvImageLoad(name, IUPIMAGE_ICON);
     if (icon) 
       return icon;
+
+    /* Check in the stock images. */
+    iImageStockGet(name, &ih, &native_name);
+    if (native_name)
+    {
+      icon = iupdrvImageLoad(native_name, IUPIMAGE_ICON);
+      if (icon)
+        return icon;
+    }
 
     return NULL;
   }
