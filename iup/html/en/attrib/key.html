@@ -14,11 +14,17 @@ key is represented by an integer value, defined in the &quot;iupkey.h&quot; file
 which should be included in the application to use the key definitions. These 
 keys are used in K_ANY and KEYPRESS_CB callbacks to inform the key that was 
 pressed in the keyboard.</p>
-<p>IUP provides definitions only for common control keys and ASCii characters. This does not affect the <strong>IupText</strong> and 
+<p>From the definition in the table, change the 
+prefix to K_s*, K_c*, K_m* and K_y* to add the respective modifier 
+(Shift, Control, Alt and Sys). Sys in Windows is the Windows key and in Mac is 
+the Apple key. Check the &quot;iupkey.h&quot; file header for all the definitions. </p>
+<p>IUP provides definitions only for common control keys and ASCii characters. 
+Other key combinations are accessed using the macros described bellow. Also the 
+global attribute &quot;MODKEYSTATE&quot; can be used to detect the combination of two or 
+more modifiers. Notice that some key combinations are never available because they are 
+restricted by the system. Notice that all of this does not affect the <strong>IupText</strong> and 
 <strong>IupMultiline</strong> 
-text input.</p>
-<p>Notice that some key combinations are not available because they are 
-restricted by the system.</p>
+text input. </p>
 <p>The <strong>iup_isprint(key)</strong> macro informs if a key can be directly 
 used as a printable character. The
 <strong>iup_isXkey(key)</strong> macro informs if a given key is an extended 
@@ -26,16 +32,12 @@ code. The <strong>iup_isShiftXkey(key)</strong> macro informs if a given key is
 an extended code using the Shift modifier, the <strong>iup_isCtrlXkey(key)</strong> 
 macro for the Ctrl modifier, the <strong>iup_isAltXkey(key)</strong> macro for 
 the Alt modifier, and the <strong>iup_isSysXkey(key)</strong> macro for the Sys 
-modifier. These macros are also available in Lua as a function with the same 
+modifier. To obtain a key code for a generic combination you can start with the 
+base key from the table and combine it repeated times using the macros <strong>
+iup_XkeyShift(key)</strong>, <strong>iup_XkeyCtrl(key)</strong>, <strong>
+iup_XkeyAlt(key)</strong> and <strong>iup_XkeySys(key)</strong>.</p>
+<p>These macros are also available in Lua as a function with the same 
 name (iup.isprint(key), iup.isXkey(key), and so on) and returning a boolean.</p>
-<p>Change the 
-definition to K_s*, K_c*, K_m* and K_y* when the respective modifier is pressed 
-(Shift, Control, Alt and Sys). Sys in Windows is the Windows key and in Mac is 
-the Apple key. Check the &quot;iupkey.h&quot; file header for all the definitions. To 
-detect the combination of two or more modifiers the global attribute 
-&quot;MODKEYSTATE&quot; can be used, but since IUP 3.9 modifiers can be combined 
-in a single key value (although there are definitions only for the old simple 
-combinations).</p>
 <p>Note: GTK in Windows does not generates the Win modifier key, the K_Print and 
 the K_Pause keys (up to GTK version 2.8.18).</p>
   <table align="center">

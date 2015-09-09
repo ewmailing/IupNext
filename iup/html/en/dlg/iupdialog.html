@@ -150,7 +150,9 @@ associate a button to a name.</p>
 <p><strong>DIALOGFRAME</strong>: Set the common decorations for modal dialogs. 
 This means RESIZE=NO, MINBOX=NO and MAXBOX=NO. In Windows, if the PARENTDIALOG 
 is defined then the MENUBOX is also removed, but the Close button remains.</p>
-<p><a href="../attrib/iup_icon.html">ICON</a>: Dialog’s icon.</p>
+<p><a href="../attrib/iup_icon.html">ICON</a>: Dialog’s icon. The Windows SDK 
+  recommends that cursors and icons should be implemented as resources rather 
+  than created at run time. </p>
 <p><strong>FULLSCREEN: </strong>Makes the dialog occupy the whole screen over 
 any system bars in the main monitor. All dialog details, such as title bar, 
 borders, maximize button, etc, are removed. Possible values: YES, NO. In Motif 
@@ -261,7 +263,9 @@ also. </font>Possible values: YES, NO. </p>
 <p><b>TRAY</b> [Windows and GTK Only]: When set to &quot;YES&quot;, displays an icon on 
 the system tray. (GTK 2.10)</p>
 <p><b>TRAYIMAGE</b> [Windows and GTK Only]: Name of a IUP image to be used as 
-the tray icon. (GTK 2.10)</p>
+the tray icon. The Windows SDK 
+  recommends that cursors and icons should be implemented as resources rather 
+  than created at run time. (GTK 2.10)</p>
 <p><b>TRAYTIP</b> [Windows and GTK Only]: Tray icon's tooltip text. (GTK 2.10)</p>
 <p><b>TRAYTIPMARKUP</b> [GTK Only]: allows the tip string to contains Pango markup 
 commands. Can be &quot;YES&quot; or &quot;NO&quot;. Default: &quot;NO&quot;. 
