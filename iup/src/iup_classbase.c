@@ -229,13 +229,15 @@ char* iupBaseGetActiveAttrib(Ihandle *ih)
 
 static int iBaseNativeParentIsActive(Ihandle* ih)
 {
-  if (!ih->parent)
+  Ihandle* parent = ih->parent;
+
+  if (!parent || parent->iclass->nativetype == IUP_TYPEDIALOG)
     return 1;
 
-  if (ih->parent->iclass->nativetype == IUP_TYPEVOID)
-    return iBaseNativeParentIsActive(ih->parent);
+  if (parent->iclass->nativetype == IUP_TYPEVOID)
+    return iBaseNativeParentIsActive(parent);
   else 
-    return iupdrvIsActive(ih->parent);
+    return iupdrvIsActive(parent);
 }
 
 int iupBaseSetActiveAttrib(Ihandle* ih, const char* value)
