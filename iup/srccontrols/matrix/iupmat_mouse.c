@@ -321,7 +321,7 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y, char *status)
   }
   else if(iupMatrixColResIsResizing(ih)) /* Make a resize in a column size */
     iupMatrixColResMove(ih, x);
-  else if (has_lincol && iMatrixIsDropArea(ih, lin, col, x, y)!=0)
+  else if (has_lincol && iMatrixIsDropArea(ih, lin, col, x, y) != 0)
     iMatrixMouseSetCursor(ih, "ARROW");
   else if (iupMatrixColResCheckChangeCursor(ih, x, y))
     iMatrixMouseSetCursor(ih, "RESIZE_W");

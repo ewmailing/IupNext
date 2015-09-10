@@ -45,6 +45,66 @@
 #define IMAT_TOGGLE_SIZE 12
 
 
+static unsigned char imatrix_dropdown_alpha[IMAT_DROPBOX_W * IMAT_DROPBOX_W] =
+{
+  000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000,
+  000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000,
+  000, 000, 000, 000, 000, 000, 000, 128, 128, 000, 000, 000, 000, 000, 000, 000,
+  000, 000, 000, 000, 000, 000, 128, 255, 255, 128, 000, 000, 000, 000, 000, 000,
+  000, 000, 000, 000, 000, 128, 255, 255, 255, 255, 128, 000, 000, 000, 000, 000,
+  000, 000, 000, 000, 128, 255, 255, 255, 255, 255, 255, 128, 000, 000, 000, 000,
+  000, 000, 000, 128, 255, 255, 255, 255, 255, 255, 255, 255, 128, 000, 000, 000,
+  000, 000, 128, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 128, 000, 000,
+  000, 128, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 128, 000,
+  000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000,
+  000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000,
+  000, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 000,
+  000, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 000,
+  000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000,
+  000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000,
+  000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000
+};
+
+static unsigned char imatrix_sortup_alpha[IMAT_DROPBOX_W * IMAT_DROPBOX_W] = 
+{
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 32, 0,
+  0, 0, 32, 239, 60, 0, 0, 0, 0, 0, 0, 0, 60, 239, 32, 0,
+  0, 0, 0, 84, 239, 60, 0, 0, 0, 0, 0, 60, 239, 84, 0, 0,
+  0, 0, 0, 0, 84, 239, 60, 0, 0, 0, 60, 239, 84, 0, 0, 0,
+  0, 0, 8, 0, 0, 84, 239, 60, 0, 60, 239, 84, 0, 0, 8, 0,
+  0, 0, 32, 32, 0, 0, 84, 239, 106, 239, 84, 0, 0, 32, 32, 0,
+  0, 0, 32, 239, 60, 0, 0, 89, 252, 89, 0, 0, 60, 239, 32, 0,
+  0, 0, 0, 84, 239, 60, 0, 0, 31, 0, 0, 60, 239, 84, 0, 0,
+  0, 0, 0, 0, 84, 239, 60, 0, 0, 0, 60, 239, 84, 0, 0, 0,
+  0, 0, 0, 0, 0, 84, 239, 60, 0, 60, 239, 84, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 84, 239, 106, 239, 84, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 89, 252, 89, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+static unsigned char imatrix_sortdown_alpha[IMAT_DROPBOX_W * IMAT_DROPBOX_W] =
+{
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 89, 252, 89, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 84, 239, 106, 239, 84, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 84, 239, 60, 0, 60, 239, 84, 0, 0, 0, 0,
+  0, 0, 0, 0, 84, 239, 60, 0, 0, 0, 60, 239, 84, 0, 0, 0,
+  0, 0, 0, 84, 239, 60, 0, 0, 31, 0, 0, 60, 239, 84, 0, 0,
+  0, 0, 32, 239, 60, 0, 0, 89, 252, 89, 0, 0, 60, 239, 32, 0,
+  0, 0, 32, 32, 0, 0, 84, 239, 106, 239, 84, 0, 0, 32, 32, 0,
+  0, 0, 8, 0, 0, 84, 239, 60, 0, 60, 239, 84, 0, 0, 8, 0,
+  0, 0, 0, 0, 84, 239, 60, 0, 0, 0, 60, 239, 84, 0, 0, 0,
+  0, 0, 0, 84, 239, 60, 0, 0, 0, 0, 0, 60, 239, 84, 0, 0,
+  0, 0, 32, 239, 60, 0, 0, 0, 0, 0, 0, 0, 60, 239, 32, 0,
+  0, 0, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 32, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+};
+
 
 /**************************************************************************/
 /*  Private functions                                                     */
@@ -385,64 +445,72 @@ static void iMatrixDrawFrameRectCell(Ihandle* ih, int lin, int col, int x1, int 
   iMatrixDrawFrameVertLineCell(ih, lin, col, x2-1, y1, transp? y2-1: y2-2, framecolor);
 }
 
-static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int active)
+static void iMatrixDrawFeedbackImage(Ihandle* ih, int x2, int y1, int y2, int lin, int col, int active, int marked, const char*name, unsigned char* alpha)
 {
-  int yc;
-  char* sort = iupAttribGetId(ih, "SORTSIGN", col);
-  if (!sort || iupStrEqualNoCase(sort, "NO"))
-    return 0;
-
-  /* Remove the space between text and cell frame */
-  x2 -= IMAT_PADDING_W/2 + IMAT_FRAME_W/2;
-
-  /* Set the color used to draw the text */
-  iMatrixDrawSetFgColor(ih, 0, col, 0, active);
-
-  yc = (int)( (y1 + y2 ) / 2.0 - .5);
-
-  cdCanvasBegin(ih->data->cd_canvas, CD_FILL);
-
-  if (iupStrEqualNoCase(sort, "DOWN"))
-  {
-    iupMATRIX_VERTEX(ih, x2 - 5, yc + 2);
-    iupMATRIX_VERTEX(ih, x2 - 1, yc - 2);
-    iupMATRIX_VERTEX(ih, x2 - 9, yc - 2);
-  }
-  else  /* UP */
-  {
-    iupMATRIX_VERTEX(ih, x2 - 1, yc + 2);
-    iupMATRIX_VERTEX(ih, x2 - 9, yc + 2);
-    iupMATRIX_VERTEX(ih, x2 - 5, yc - 2);
-  }
-
-  cdCanvasEnd(ih->data->cd_canvas);
-  return 1;
-}
-
-static void iMatrixDrawDropFeedback(Ihandle* ih, int x2, int y1, int y2, int active, long framecolor)
-{
-  int xh2, yh2, x1;
+  int x, y, x1;
+  Ihandle* image = IupGetHandle(name);
 
   /* feedback area */
   iupMatrixDrawSetDropFeedbackArea(&x1, &y1, &x2, &y2);
 
-  /* feedback background */
-  iMatrixDrawSetBgColor(ih, 0, 0, 0, active);
-  iupMATRIX_BOX(ih, x1, x2, y1, y2);
+  if (image)
+  {
+    long bgcolor;
+    int image_width = IupGetInt(image, "WIDTH");
+    int image_height = IupGetInt(image, "HEIGHT");
+    unsigned char r = 255, g = 255, b = 255;
+    iupMatrixGetBgRGB(ih, lin, col, &r, &g, &b, marked, active);
+    bgcolor = cdEncodeColor(r, g, b);
 
-  /* feedback frame */
-  cdCanvasForeground(ih->data->cd_canvas, framecolor);
-  iupMATRIX_RECT(ih, x1, x2, y1, y2);
+    y = (y2 + y1 + image_height) / 2;
+    x = (x2 + x1 - image_width) / 2;
 
-  /* feedback arrow */
-  xh2 = x2 - IMAT_DROPBOX_W/2;
-  yh2 = y2 - (y2 - y1)/2;
+    cdIupDrawImage(ih->data->cd_canvas, image, x, iupMATRIX_INVERTYAXIS(ih, y), 0, 0, !active, bgcolor);
+  }
+  else
+  {
+    static unsigned char red[IMAT_DROPBOX_W * IMAT_DROPBOX_W];
+    static unsigned char green[IMAT_DROPBOX_W * IMAT_DROPBOX_W];
+    static unsigned char blue[IMAT_DROPBOX_W * IMAT_DROPBOX_W];
+    static unsigned char last_r = 0, last_g = 0, last_b = 0;
+    static int first = 1;
 
-  cdCanvasBegin(ih->data->cd_canvas, CD_FILL);
-  iupMATRIX_VERTEX(ih, xh2, yh2 + 3);
-  iupMATRIX_VERTEX(ih, xh2 + 4, yh2 - 1);
-  iupMATRIX_VERTEX(ih, xh2 - 4, yh2 - 1);
-  cdCanvasEnd(ih->data->cd_canvas);
+    unsigned char r = 0, g = 0, b = 0;
+    iupMatrixGetFgRGB(ih, lin, col, &r, &g, &b, marked, active);
+
+    if (first || last_r != r || last_g != g || last_b != b)
+    {
+      int count = IMAT_DROPBOX_W * IMAT_DROPBOX_W;
+
+      memset(red, r, count);
+      memset(green, g, count);
+      memset(blue, b, count);
+
+      last_r = r;
+      last_g = g;
+      last_b = b;
+      first = 0;
+    }
+
+    y = (y2 + y1 + IMAT_DROPBOX_W) / 2;
+    x = (x2 + x1 - IMAT_DROPBOX_W) / 2;
+
+    cdCanvasPutImageRectRGBA(ih->data->cd_canvas, IMAT_DROPBOX_W, IMAT_DROPBOX_W, red, green, blue, alpha, x, iupMATRIX_INVERTYAXIS(ih, y), IMAT_DROPBOX_W, IMAT_DROPBOX_W, 0, 0, 0, 0);
+  }
+}
+
+static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int active)
+{
+  char* sort = iupAttribGetId(ih, "SORTSIGN", col);
+  if (!sort || iupStrEqualNoCase(sort, "NO"))
+    return 0;
+
+  if (iupStrEqualNoCase(sort, "DOWN"))
+    iMatrixDrawFeedbackImage(ih, x2, y1, y2, 0, col, active, 0, iupAttribGet(ih, "SORTIMAGEDOWN"), imatrix_sortdown_alpha);
+  else
+    iMatrixDrawFeedbackImage(ih, x2, y1, y2, 0, col, active, 0, iupAttribGet(ih, "SORTIMAGEUP"), imatrix_sortup_alpha);
+
+  return 1;
 }
 
 static void iMatrixDrawToggle(Ihandle* ih, int x2, int y1, int y2, int lin, int col, int marked, int active)
@@ -882,7 +950,7 @@ void iupMatrixAddMarkedAttenuation(Ihandle* ih, unsigned char *r, unsigned char 
 void iupMatrixDrawSetDropFeedbackArea(int *x1, int *y1, int *x2, int *y2)
 {
   *x2 -= IMAT_PADDING_W / 2 + IMAT_FRAME_W / 2;
-  *x1 = *x2 - IMAT_DROPBOX_W;
+  *x1 = *x2 - IMAT_DROPBOX_W - IMAT_PADDING_W;
   *y1 += IMAT_PADDING_H / 2 + IMAT_FRAME_H / 2;
   *y2 -= IMAT_PADDING_H / 2 + IMAT_FRAME_H / 2;
 }
@@ -1055,7 +1123,7 @@ void iupMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
       iMatrixDrawFrameRectTitle(ih, 0, col, x1, x2, y1, y2, framecolor, framehighlight);
 
       if (iMatrixDrawSortSign(ih, x2, y1, y2, col, active))
-        sort = IMAT_DROPBOX_W; /* same space is used by the sort sign */
+        sort = IMAT_DROPBOX_W + IMAT_PADDING_W; /* same space is used by the sort sign */
 
       iMatrixDrawCellValue(ih, x1, x2 - sort, y1, y2, col_alignment, lin_alignment, marked, active, 0, col, draw_cb, framecolor);
     }
@@ -1226,8 +1294,8 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
         int ret = dropcheck_cb(ih, lin, col);
         if (ret == IUP_DEFAULT)
         {
-          drop = IMAT_DROPBOX_W+IMAT_PADDING_W/2;
-          iMatrixDrawDropFeedback(ih, x2, y1, y2, active, framecolor);
+          drop = IMAT_DROPBOX_W + IMAT_PADDING_W;
+          iMatrixDrawFeedbackImage(ih, x2, y1, y2, lin, col, active, marked, iupAttribGet(ih, "DROPIMAGE"), imatrix_dropdown_alpha);
         }
         else if (ret == IUP_CONTINUE)
         {
