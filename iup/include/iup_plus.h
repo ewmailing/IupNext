@@ -27,33 +27,20 @@
 #include "iuptuio.h"
 
 
-#if 0
-void      IupUpdate(Ihandle* ih);
-void      IupUpdateChildren(Ihandle* ih);
-void      IupRedraw(Ihandle* ih, int children);
-void      IupRefresh(Ihandle* ih);
-void      IupRefreshChildren(Ihandle* ih);
+#if 0 //TODO
 
-void      IupDestroy(Ihandle* ih);
-void      IupDetach(Ihandle* child);
 Ihandle*  IupAppend(Ihandle* ih, Ihandle* child);
 Ihandle*  IupInsert(Ihandle* ih, Ihandle* ref_child, Ihandle* child);
 Ihandle*  IupGetChild(Ihandle* ih, int pos);
 int       IupGetChildPos(Ihandle* ih, Ihandle* child);
 int       IupGetChildCount(Ihandle* ih);
-Ihandle*  IupGetNextChild(Ihandle* ih, Ihandle* child);
-Ihandle*  IupGetBrother(Ihandle* ih);
-Ihandle*  IupGetParent(Ihandle* ih);
-Ihandle*  IupGetDialog(Ihandle* ih);
-Ihandle*  IupGetDialogChild(Ihandle* ih, const char* name);
-int       IupReparent(Ihandle* ih, Ihandle* new_parent, Ihandle* ref_child);
 
 int       IupPopup(Ihandle* ih, int x, int y);
 int       IupShow(Ihandle* ih);
 int       IupShowXY(Ihandle* ih, int x, int y);
 int       IupHide(Ihandle* ih);
-int       IupMap(Ihandle* ih);
-void      IupUnmap(Ihandle *ih);
+
+===============================================================================
 
 void      IupResetAttribute(Ihandle *ih, const char* name);
 int       IupGetAllAttributes(Ihandle* ih, char** names, int n);
@@ -102,24 +89,14 @@ float  IupGetFloatId2(Ihandle* ih, const char* name, int lin, int col);
 double IupGetDoubleId2(Ihandle* ih, const char* name, int lin, int col);
 void   IupGetRGBId2(Ihandle *ih, const char* name, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b);
 
-Ihandle*  IupSetFocus(Ihandle* ih);
-Ihandle*  IupPreviousField(Ihandle* ih);
-Ihandle*  IupNextField(Ihandle* ih);
+===============================================================================
 
 Icallback IupGetCallback(Ihandle* ih, const char *name);
 Icallback IupSetCallback(Ihandle* ih, const char *name, Icallback func);
 Ihandle*  IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...);
 
-char*     IupGetName(Ihandle* ih);
-
 void      IupSetAttributeHandle(Ihandle* ih, const char* name, Ihandle* ih_named);
 Ihandle*  IupGetAttributeHandle(Ihandle* ih, const char* name);
-
-char*     IupGetClassName(Ihandle* ih);
-char*     IupGetClassType(Ihandle* ih);
-void      IupSaveClassAttributes(Ihandle* ih);
-void      IupCopyClassAttributes(Ihandle* src_ih, Ihandle* dst_ih);
-int       IupClassMatch(Ihandle* ih, const char* classname);
 
 ===============================================================================
 
@@ -316,6 +293,7 @@ namespace iup
   {
     IupMessage(title, msg);
   }
+  //TODO
   //void Messagef(const char *title, const char *format, ...)
   //{
   //  IupMessagef(title, format, ...);
@@ -324,6 +302,7 @@ namespace iup
   {
     return IupAlarm(title, msg, b1, b2, b3);
   }
+  //TODO
   //int Scanf(const char *format, ...)
   //{
   //  return IupScanf(format, ...);
@@ -341,6 +320,7 @@ namespace iup
     return IupGetColor(x, y, &r, &g, &b);
   }
 
+  //TODO
   //STL std::string com ifdef
 
   inline int GetAllNames(char** names, int n)
@@ -387,6 +367,110 @@ namespace iup
     int GetInteger(const char* name)
     {
       return IupGetInt(ih, name);
+    }
+
+
+    void Update()
+    {
+      IupUpdate(ih);
+    }
+    void UpdateChildren()
+    {
+      IupUpdateChildren(ih);
+    }
+    void Redraw(bool children)
+    {
+      IupRedraw(ih, children ? 1 : 0);
+    }
+    void Refresh()
+    {
+      IupRefresh(ih);
+    }
+    void RefreshChildren()
+    {
+      IupRefreshChildren(ih);
+    }
+
+    void Destroy()
+    {
+      IupDestroy(ih);
+    }
+    void Detach(const Handle& child)
+    {
+      IupDetach(child.ih);
+    }
+
+    Handle GetNextChild(const Handle& child)
+    {
+      return Handle(IupGetNextChild(ih, child.ih));
+    }
+    Handle GetBrother()
+    {
+      return Handle(IupGetBrother(ih));
+    }
+    Handle GetParent()
+    {
+      return Handle(IupGetParent(ih));
+    }
+    Handle GetDialog()
+    {
+      return Handle(IupGetDialog(ih));
+    }
+    Handle GetDialogChild(const char* name)
+    {
+      return Handle(IupGetDialogChild(ih, name));
+    }
+    int Reparent(const Handle& new_parent, const Handle& ref_child)
+    {
+      return IupReparent(ih, new_parent.ih, ref_child.ih);
+    }
+
+    int Map()
+    {
+      return IupMap(ih);
+    }
+    void Unmap()
+    {
+      IupUnmap(ih);
+    }
+
+    Handle SetFocus()
+    {
+      return Handle(IupSetFocus(ih));
+    }
+    Handle PreviousField()
+    {
+      return Handle(IupPreviousField(ih));
+    }
+    Handle NextField()
+    {
+      return Handle(IupNextField(ih));
+    }
+
+    char* GetName()
+    {
+      return IupGetName(ih);
+    }
+
+    char* GetClassName()
+    {
+      return IupGetClassName(ih);
+    }
+    char* GetClassType()
+    {
+      return IupGetClassType(ih);
+    }
+    void SaveClassAttributes()
+    {
+      IupSaveClassAttributes(ih);
+    }
+    void CopyClassAttributesTo(const Handle& dst)
+    {
+      IupCopyClassAttributes(ih, dst.ih);
+    }
+    int ClassMatch(const char* classname)
+    {
+      return IupClassMatch(ih, classname);
     }
 
   };
