@@ -131,7 +131,7 @@ static Ihandle* create_matrix(void)
 //  IupSetAttributeId(mat, "WIDTH", 2, "190");
   IupSetAttribute(mat,"SORTSIGN2","DOWN");
 //  IupSetAttribute(mat, "WIDTHDEF", "34");
-  IupSetAttribute(mat,"MULTILINE", "YES");
+//  IupSetAttribute(mat,"MULTILINE", "YES");
   IupSetAttribute(mat,"RESIZEMATRIX", "YES");
 //  IupSetAttribute(mat,"HIDDENTEXTMARKS", "YES");
 //  IupSetAttribute(mat,"USETITLESIZE", "YES");
@@ -170,7 +170,9 @@ static Ihandle* create_matrix(void)
     IupSetAttributeHandle(mat, "4:3", image);
   }
 
-  IupSetAttribute(mat, "TOGGLEVALUE4:4", "ON");
+//  IupSetAttribute(mat, "TOGGLEVALUE4:4", "ON");
+//  IupSetAttribute(mat, "VALUE4:4", "1");
+  IupSetAttribute(mat, "TOGGLECENTERED", "Yes");
 
   IupSetAttribute(mat,"MARKMODE","CELL");
 //  IupSetAttribute(mat,"MARKMODE","LIN");

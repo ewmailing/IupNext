@@ -1779,12 +1779,18 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId2(ic, "CELL", iMatrixGetCellAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId2(ic, "TOGGLEVALUE", NULL, (IattribSetId2Func)iMatrixSetNeedRedraw, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId2(ic, "ALIGN", NULL, (IattribSetId2Func)iMatrixSetNeedRedraw, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TOGGLECENTERED", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TOGGLEMAGEON", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TOGGLEMAGEOFF", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
+
 
   /* IupMatrix Attributes - COLUMN */
   iupClassRegisterAttributeId(ic, "ALIGNMENT", iMatrixGetAlignmentAttrib, (IattribSetIdFunc)iMatrixSetNeedRedraw, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ALIGNMENTLIN0", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "ACENTER", IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "LINEALIGNMENT", NULL, (IattribSetIdFunc)iMatrixSetNeedRedraw, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "SORTSIGN", NULL, (IattribSetIdFunc)iMatrixSetNeedRedraw, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SORTIMAGEDOWN", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SORTIMAGEUP", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - SIZE */
   iupClassRegisterAttribute(ic, "COUNT", iMatrixGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

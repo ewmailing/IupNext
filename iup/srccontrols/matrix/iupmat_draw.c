@@ -9,8 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#undef CD_NO_OLD_INTERFACE
-
 #include "iup.h"
 #include "iupcbs.h"
 
@@ -41,11 +39,49 @@
 #define IMAT_ALIGN_START    1
 #define IMAT_ALIGN_END   2
 
-#define IMAT_DROPBOX_W 16
-#define IMAT_TOGGLE_SIZE 12
+#define IMAT_FEEDBACK_SIZE 16
 
+static unsigned char imatrix_toggleoff_alpha[IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE] =
+{
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 
+};
 
-static unsigned char imatrix_dropdown_alpha[IMAT_DROPBOX_W * IMAT_DROPBOX_W] =
+static unsigned char imatrix_toggleon_alpha[IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE] =
+{
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 89, 252, 89, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 84, 239, 106, 239, 84, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 84, 239, 60, 0, 60, 239, 84, 0, 0, 0, 0, 0, 255,
+  255, 0, 84, 239, 60, 0, 0, 0, 60, 239, 84, 0, 0, 0, 0, 255,
+  255, 16, 227, 60, 0, 0, 0, 0, 0, 60, 239, 84, 0, 0, 0, 255,
+  255, 0, 8, 0, 0, 0, 0, 0, 0, 0, 60, 239, 84, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 239, 84, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 227, 16, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255,
+  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255
+};
+
+static unsigned char imatrix_dropdown_alpha[IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE] =
 {
   000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000,
   000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000,
@@ -65,7 +101,7 @@ static unsigned char imatrix_dropdown_alpha[IMAT_DROPBOX_W * IMAT_DROPBOX_W] =
   000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000
 };
 
-static unsigned char imatrix_sortup_alpha[IMAT_DROPBOX_W * IMAT_DROPBOX_W] = 
+static unsigned char imatrix_sortup_alpha[IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE] = 
 {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -85,7 +121,7 @@ static unsigned char imatrix_sortup_alpha[IMAT_DROPBOX_W * IMAT_DROPBOX_W] =
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-static unsigned char imatrix_sortdown_alpha[IMAT_DROPBOX_W * IMAT_DROPBOX_W] =
+static unsigned char imatrix_sortdown_alpha[IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE] =
 {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0,
@@ -445,14 +481,10 @@ static void iMatrixDrawFrameRectCell(Ihandle* ih, int lin, int col, int x1, int 
   iMatrixDrawFrameVertLineCell(ih, lin, col, x2-1, y1, transp? y2-1: y2-2, framecolor);
 }
 
-static void iMatrixDrawFeedbackImage(Ihandle* ih, int x2, int y1, int y2, int lin, int col, int active, int marked, const char*name, unsigned char* alpha)
+static void iMatrixDrawFeedbackImage(Ihandle* ih, int x1, int x2, int y1, int y2, int lin, int col, int active, int marked, const char*name, unsigned char* alpha)
 {
-  int x, y, x1;
+  int x, y;
   Ihandle* image = IupGetHandle(name);
-
-  /* feedback area */
-  iupMatrixDrawSetDropFeedbackArea(&x1, &y1, &x2, &y2);
-
   if (image)
   {
     long bgcolor;
@@ -469,9 +501,9 @@ static void iMatrixDrawFeedbackImage(Ihandle* ih, int x2, int y1, int y2, int li
   }
   else
   {
-    static unsigned char red[IMAT_DROPBOX_W * IMAT_DROPBOX_W];
-    static unsigned char green[IMAT_DROPBOX_W * IMAT_DROPBOX_W];
-    static unsigned char blue[IMAT_DROPBOX_W * IMAT_DROPBOX_W];
+    static unsigned char red[IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE];
+    static unsigned char green[IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE];
+    static unsigned char blue[IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE];
     static unsigned char last_r = 0, last_g = 0, last_b = 0;
     static int first = 1;
 
@@ -480,7 +512,7 @@ static void iMatrixDrawFeedbackImage(Ihandle* ih, int x2, int y1, int y2, int li
 
     if (first || last_r != r || last_g != g || last_b != b)
     {
-      int count = IMAT_DROPBOX_W * IMAT_DROPBOX_W;
+      int count = IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE;
 
       memset(red, r, count);
       memset(green, g, count);
@@ -492,62 +524,62 @@ static void iMatrixDrawFeedbackImage(Ihandle* ih, int x2, int y1, int y2, int li
       first = 0;
     }
 
-    y = (y2 + y1 + IMAT_DROPBOX_W) / 2;
-    x = (x2 + x1 - IMAT_DROPBOX_W) / 2;
+    y = (y2 + y1 + IMAT_FEEDBACK_SIZE) / 2;
+    x = (x2 + x1 - IMAT_FEEDBACK_SIZE) / 2;
 
-    cdCanvasPutImageRectRGBA(ih->data->cd_canvas, IMAT_DROPBOX_W, IMAT_DROPBOX_W, red, green, blue, alpha, x, iupMATRIX_INVERTYAXIS(ih, y), IMAT_DROPBOX_W, IMAT_DROPBOX_W, 0, 0, 0, 0);
+    cdCanvasPutImageRectRGBA(ih->data->cd_canvas, IMAT_FEEDBACK_SIZE, IMAT_FEEDBACK_SIZE, red, green, blue, alpha, x, iupMATRIX_INVERTYAXIS(ih, y), IMAT_FEEDBACK_SIZE, IMAT_FEEDBACK_SIZE, 0, 0, 0, 0);
   }
 }
 
 static int iMatrixDrawSortSign(Ihandle* ih, int x2, int y1, int y2, int col, int active)
 {
+  int x1;
+
   char* sort = iupAttribGetId(ih, "SORTSIGN", col);
   if (!sort || iupStrEqualNoCase(sort, "NO"))
     return 0;
 
+  /* feedback area */
+  iupMatrixDrawSetDropFeedbackArea(&x1, &y1, &x2, &y2);
+
   if (iupStrEqualNoCase(sort, "DOWN"))
-    iMatrixDrawFeedbackImage(ih, x2, y1, y2, 0, col, active, 0, iupAttribGet(ih, "SORTIMAGEDOWN"), imatrix_sortdown_alpha);
+    iMatrixDrawFeedbackImage(ih, x1, x2, y1, y2, 0, col, active, 0, iupAttribGet(ih, "SORTIMAGEDOWN"), imatrix_sortdown_alpha);
   else
-    iMatrixDrawFeedbackImage(ih, x2, y1, y2, 0, col, active, 0, iupAttribGet(ih, "SORTIMAGEUP"), imatrix_sortup_alpha);
+    iMatrixDrawFeedbackImage(ih, x1, x2, y1, y2, 0, col, active, 0, iupAttribGet(ih, "SORTIMAGEUP"), imatrix_sortup_alpha);
 
   return 1;
 }
 
-static void iMatrixDrawToggle(Ihandle* ih, int x2, int y1, int y2, int lin, int col, int marked, int active)
+static void iMatrixDrawDropdownButton(Ihandle* ih, int x2, int y1, int y2, int lin, int col, int marked, int active)
 {
   int x1;
-  long bgcolor = ih->data->bgcolor_cd;
+
+  /* feedback area */
+  iupMatrixDrawSetDropFeedbackArea(&x1, &y1, &x2, &y2);
+
+  iMatrixDrawFeedbackImage(ih, x1, x2, y1, y2, lin, col, active, marked, iupAttribGet(ih, "DROPIMAGE"), imatrix_dropdown_alpha);
+}
+
+static void iMatrixDrawToggle(Ihandle* ih, int x1, int x2, int y1, int y2, int lin, int col, int marked, int active, int toggle_centered)
+{
+  int togglevalue = 0;
 
   /* toggle area */
-  iupMatrixDrawSetToggleArea(&x1, &y1, &x2, &y2);
+  iupMatrixDrawSetToggleFeedbackArea(toggle_centered, &x1, &y1, &x2, &y2);
 
-  /* toggle background */
-  if (marked)
+  if (toggle_centered)
   {
-    unsigned char bg_r, bg_g, bg_b;
-    cdDecodeColor(bgcolor, &bg_r, &bg_g, &bg_b);
-    iupMatrixAddMarkedAttenuation(ih, &bg_r, &bg_g, &bg_b);
-    bgcolor = cdEncodeColor(bg_r, bg_g, bg_b);
+    char* value = iupMatrixGetValueDisplay(ih, lin, col);
+    togglevalue = iupStrBoolean(value);
   }
-  cdCanvasForeground(ih->data->cd_canvas, bgcolor);
-  iupMATRIX_BOX(ih, x1, x2, y1, y2);
-
-  /* toggle frame */
-  iMatrixDrawSetFgColor(ih, lin, col, marked, active);
-  iupMATRIX_RECT(ih, x1, x2, y1, y2);
+  else
+    togglevalue = iupAttribGetIntId2(ih, "TOGGLEVALUE", lin, col);
 
   /* toggle check */
-  if (iupAttribGetIntId2(ih, "TOGGLEVALUE", lin, col))
-  {
-    int half = IMAT_TOGGLE_SIZE/2;
-    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 2, x1 + half - 2 + 6, y2 - 2 - 6);
-    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 3, x1 + half - 2 + 6, y2 - 3 - 6);
-    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 4, x1 + half - 2 + 5, y2 - 4 - 5);
-
-    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 2, x1 + half - 2 - 2, y2 - 2 - 2);
-    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 3, x1 + half - 2 - 2, y2 - 3 - 2);
-    iupMATRIX_LINE(ih, x1 + half - 2, y2 - 4, x1 + half - 2 - 1, y2 - 4 - 1);
-  }
+  if (togglevalue)
+    iMatrixDrawFeedbackImage(ih, x1, x2, y1, y2, lin, col, active, marked, iupAttribGet(ih, "TOGGLEMAGEON"), imatrix_toggleon_alpha);
+  else
+    iMatrixDrawFeedbackImage(ih, x1, x2, y1, y2, lin, col, active, marked, iupAttribGet(ih, "TOGGLEIMAGEOFF"), imatrix_toggleoff_alpha);
 }
 
 static void iMatrixDrawBackground(Ihandle* ih, int x1, int x2, int y1, int y2, int marked, int active, int lin, int col)
@@ -950,17 +982,27 @@ void iupMatrixAddMarkedAttenuation(Ihandle* ih, unsigned char *r, unsigned char 
 void iupMatrixDrawSetDropFeedbackArea(int *x1, int *y1, int *x2, int *y2)
 {
   *x2 -= IMAT_PADDING_W / 2 + IMAT_FRAME_W / 2;
-  *x1 = *x2 - IMAT_DROPBOX_W - IMAT_PADDING_W;
+  *x1 = *x2 - IMAT_FEEDBACK_SIZE - IMAT_PADDING_W / 2;
+
   *y1 += IMAT_PADDING_H / 2 + IMAT_FRAME_H / 2;
   *y2 -= IMAT_PADDING_H / 2 + IMAT_FRAME_H / 2;
 }
 
-void iupMatrixDrawSetToggleArea(int *x1, int *y1, int *x2, int *y2)
+void iupMatrixDrawSetToggleFeedbackArea(int toggle_centered, int *x1, int *y1, int *x2, int *y2)
 {
-  *x2 -= IMAT_PADDING_W + IMAT_FRAME_W / 2;
-  *x1 = *x2 - IMAT_TOGGLE_SIZE;
-  *y1 = (*y2 + *y1 - IMAT_TOGGLE_SIZE) / 2;
-  *y2 = *y1 + IMAT_TOGGLE_SIZE;
+  if (toggle_centered)
+  { 
+    *x1 = (*x2 + *x1) / 2 - IMAT_FEEDBACK_SIZE/2;
+    *x2 = *x1 + IMAT_FEEDBACK_SIZE;
+  }
+  else
+  {
+    *x2 -= IMAT_PADDING_W / 2 + IMAT_FRAME_W / 2;
+    *x1 = *x2 - IMAT_FEEDBACK_SIZE - IMAT_PADDING_W / 2;
+  }
+
+  *y1 += IMAT_PADDING_H / 2 + IMAT_FRAME_H / 2;
+  *y2 -= IMAT_PADDING_H / 2 + IMAT_FRAME_H / 2;
 }
 
 /* Draw the line titles, visible, between lin and lastlin, include it.
@@ -1123,7 +1165,7 @@ void iupMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
       iMatrixDrawFrameRectTitle(ih, 0, col, x1, x2, y1, y2, framecolor, framehighlight);
 
       if (iMatrixDrawSortSign(ih, x2, y1, y2, col, active))
-        sort = IMAT_DROPBOX_W + IMAT_PADDING_W; /* same space is used by the sort sign */
+        sort = IMAT_PADDING_W/2 + IMAT_FEEDBACK_SIZE + IMAT_PADDING_W/2; /* same space is used by the sort sign */
 
       iMatrixDrawCellValue(ih, x1, x2 - sort, y1, y2, col_alignment, lin_alignment, marked, active, 0, col, draw_cb, framecolor);
     }
@@ -1140,7 +1182,7 @@ void iupMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
    - lin2, col2 : cell coordinates that mark the right bottom corner of the area to be redrawn */
 void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 {
-  int x1, y1, x2, y2, old_x2, old_y1, old_y2;
+  int x1, y1, x2, y2, old_x2, old_y1, old_y2, toggle_centered;
   int col_alignment, lin, col, active, first_col, first_lin;
   long framecolor, emptyarea_color = -1;
   IFnii mark_cb;
@@ -1259,6 +1301,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
   dropcheck_cb = (IFnii)IupGetCallback(ih, "DROPCHECK_CB");
   draw_cb = (IFniiiiiiC)IupGetCallback(ih, "DRAW_CB");
+  toggle_centered = iupAttribGetBoolean(ih, "TOGGLECENTERED");
 
   for(col = col1; col <= col2; col++)  /* For all the columns in the region */
   {
@@ -1294,13 +1337,21 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
         int ret = dropcheck_cb(ih, lin, col);
         if (ret == IUP_DEFAULT)
         {
-          drop = IMAT_DROPBOX_W + IMAT_PADDING_W;
-          iMatrixDrawFeedbackImage(ih, x2, y1, y2, lin, col, active, marked, iupAttribGet(ih, "DROPIMAGE"), imatrix_dropdown_alpha);
+          iMatrixDrawDropdownButton(ih, x2, y1, y2, lin, col, marked, active);
+
+          drop = IMAT_PADDING_W / 2 + IMAT_FEEDBACK_SIZE + IMAT_PADDING_W / 2;
         }
         else if (ret == IUP_CONTINUE)
         {
-          drop = IMAT_TOGGLE_SIZE + IMAT_PADDING_W;
-          iMatrixDrawToggle(ih, x2, y1, y2, lin, col, marked, active);
+          iMatrixDrawToggle(ih, x1, x2, y1, y2, lin, col, marked, active, toggle_centered);
+
+          if (toggle_centered)
+          {
+            y1 = y2;
+            continue; /* do not draw the cell contents */
+          }
+
+          drop = IMAT_PADDING_W / 2 + IMAT_FEEDBACK_SIZE + IMAT_PADDING_W / 2;
         }
       }
         

@@ -113,20 +113,20 @@ static int iMatrixIsDropArea(Ihandle* ih, int lin, int col, int x, int y)
       int x1, y1, x2, y2;
 
       iupMatrixGetVisibleCellDim(ih, lin, col, &x1, &y1, &x2, &y2);
-      x2 += x1;  /* the previous function returns w and h */
+      x2 += x1;  /* iupMatrixGetVisibleCellDim returns w and h */
       y2 += y1;
 
       if (ret == IUP_DEFAULT)
         iupMatrixDrawSetDropFeedbackArea(&x1, &y1, &x2, &y2);
       else if (ret == IUP_CONTINUE)
-        iupMatrixDrawSetToggleArea(&x1, &y1, &x2, &y2);
+        iupMatrixDrawSetToggleFeedbackArea(iupAttribGetBoolean(ih, "TOGGLECENTERED"), &x1, &y1, &x2, &y2);
 
       if (x > x1 && x < x2 &&
           y > y1 && y < y2)
       {
-        if (ret == IUP_DEFAULT)
+        if (ret == IUP_DEFAULT)  /* dropdown */
           return 1;
-        else if (ret == IUP_CONTINUE)
+        else if (ret == IUP_CONTINUE)  /* toggle */
           return -1;
       }
     }
@@ -176,27 +176,38 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
         ih->data->lines.focus_cell = lin;
         ih->data->columns.focus_cell = col;
 
+        ret = iMatrixIsDropArea(ih, lin, col, x, y);
+
         /* process mark before EnterCell */
-        if (ih->data->mark_mode != IMAT_MARK_NO)
+        if (!ret && ih->data->mark_mode != IMAT_MARK_NO)
           iupMatrixMarkBlockSet(ih, ctrl, lin, col);
 
         iupMatrixAuxCallEnterCellCb(ih);
 
-        ret = iMatrixIsDropArea(ih, lin, col, x, y);
-        if (ret == 1)
+        if (ret == 1) /* dropdown */
         {
           ih->data->button1edit = 1; /* prepare for edit */
         }
-        else if (ret == -1)
+        else if (ret == -1) /* toggle */
         {
           IFniii togglevalue_cb = (IFniii)IupGetCallback(ih, "TOGGLEVALUE_CB");
-          int togglevalue = !iupAttribGetIntId2(ih, "TOGGLEVALUE", lin, col);
-          iupAttribSetIntId2(ih, "TOGGLEVALUE", lin, col, togglevalue);
+          int togglevalue;
+
+          if (iupAttribGetBoolean(ih, "TOGGLECENTERED"))
+          {
+            char* value = iupMatrixGetValueDisplay(ih, lin, col);
+            togglevalue = !iupStrBoolean(value); /* invert value */
+            iupMatrixSetValue(ih, lin, col, togglevalue ? "1" : "0", -1);
+          }
+          else
+          {
+            togglevalue = !iupAttribGetIntId2(ih, "TOGGLEVALUE", lin, col);  /* invert value */
+            iupAttribSetIntId2(ih, "TOGGLEVALUE", lin, col, togglevalue);
+          }
+
           iupMatrixDrawCells(ih, lin, col, lin, col);
           if (togglevalue_cb) 
             togglevalue_cb(ih, lin, col, togglevalue);
-
-          iupMatrixMarkBlockReset(ih);
         }
       }
       else
