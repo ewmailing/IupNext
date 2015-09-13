@@ -8,8 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#undef CD_NO_OLD_INTERFACE
-
 #include "iup.h"
 #include "iupcbs.h"
 #include "iupkey.h"
