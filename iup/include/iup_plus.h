@@ -37,7 +37,6 @@ Ihandle*  IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...);
 
 void  IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
 void  IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
-
 int   IupConvertXYToPos(Ihandle* ih, int x, int y);
 
 int   IupTreeSetUserId(Ihandle* ih, int id, void* userid);
@@ -51,8 +50,6 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
 Ihandle* IupParamf(const char* format);
 Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count);
 
-Ihandle* IupLayoutDialog(Ihandle* dialog);
-Ihandle* IupElementPropertiesDialog(Ihandle* elem);
 #endif
 
 /** \brief Name space for C++ high level API
@@ -119,6 +116,7 @@ namespace iup
   inline int GetText(const char* title, char* text) { return IupGetText(title, text); }
   inline int GetColor(int x, int y, unsigned char &r, unsigned char &g, unsigned char &b) { return IupGetColor(x, y, &r, &g, &b); }
 
+
   //TODO
   //STL std::string com ifdef
 
@@ -161,6 +159,7 @@ namespace iup
     //int       IupGetIntInt(Ihandle *ih, const char* name, int *i1, int *i2);
     //void  IupSetStrfId(Ihandle *ih, const char* name, int id, const char* format, ...);
     //void  IupSetStrfId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
+    //void     cdCanvasSetfAttribute(cdCanvas* canvas, const char* name, const char* format, ...);
 
     void SetAttributeId(const char* name, int id, const char* value) { IupSetAttributeId(ih, name, id, value); }
     char* GetAttributeId(const char* name, int id) { return IupGetAttributeId(ih, name, id); }
@@ -287,6 +286,8 @@ namespace iup
   };
 
   inline Dialog Control::GetDialog() { return Dialog(IupGetDialog(ih)); }
+  inline Dialog LayoutDialog(const Dialog& dialog) { return Dialog(IupLayoutDialog(dialog.GetHandle())); }
+  inline Dialog ElementPropertiesDialog(const Control& control) { return Dialog(IupElementPropertiesDialog(control.GetHandle())); }
   inline Container Control::GetParent() { return Container(IupGetParent(ih)); }
   inline int Control::Reparent(const Container& new_parent, const Control& ref_child) { return IupReparent(ih, new_parent.GetHandle(), ref_child.GetHandle()); }
 
