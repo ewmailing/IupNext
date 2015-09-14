@@ -29,107 +29,11 @@
 
 #if 0 //TODO
 
-Ihandle*  IupAppend(Ihandle* ih, Ihandle* child);
-Ihandle*  IupInsert(Ihandle* ih, Ihandle* ref_child, Ihandle* child);
-Ihandle*  IupGetChild(Ihandle* ih, int pos);
-int       IupGetChildPos(Ihandle* ih, Ihandle* child);
-int       IupGetChildCount(Ihandle* ih);
-
-int       IupPopup(Ihandle* ih, int x, int y);
-int       IupShow(Ihandle* ih);
-int       IupShowXY(Ihandle* ih, int x, int y);
-int       IupHide(Ihandle* ih);
-
-===============================================================================
-
-void      IupResetAttribute(Ihandle *ih, const char* name);
-int       IupGetAllAttributes(Ihandle* ih, char** names, int n);
-
-void      IupSetAttribute(Ihandle* ih, const char* name, const char* value);
-void      IupSetStrAttribute(Ihandle* ih, const char* name, const char* value);
-void      IupSetStrf(Ihandle* ih, const char* name, const char* format, ...);
-void      IupSetInt(Ihandle* ih, const char* name, int value);
-void      IupSetFloat(Ihandle* ih, const char* name, float value);
-void      IupSetDouble(Ihandle* ih, const char* name, double value);
-void      IupSetRGB(Ihandle *ih, const char* name, unsigned char r, unsigned char g, unsigned char b);
-
-char*     IupGetAttribute(Ihandle* ih, const char* name);
-int       IupGetInt(Ihandle* ih, const char* name);
-int       IupGetInt2(Ihandle* ih, const char* name);
-int       IupGetIntInt(Ihandle *ih, const char* name, int *i1, int *i2);
-float     IupGetFloat(Ihandle* ih, const char* name);
-double    IupGetDouble(Ihandle* ih, const char* name);
-void      IupGetRGB(Ihandle *ih, const char* name, unsigned char *r, unsigned char *g, unsigned char *b);
-
-void  IupSetAttributeId(Ihandle *ih, const char* name, int id, const char *value);
-void  IupSetStrAttributeId(Ihandle *ih, const char* name, int id, const char *value);
-void  IupSetStrfId(Ihandle *ih, const char* name, int id, const char* format, ...);
-void  IupSetIntId(Ihandle* ih, const char* name, int id, int value);
-void  IupSetFloatId(Ihandle* ih, const char* name, int id, float value);
-void  IupSetDoubleId(Ihandle* ih, const char* name, int id, double value);
-void  IupSetRGBId(Ihandle *ih, const char* name, int id, unsigned char r, unsigned char g, unsigned char b);
-
-char*  IupGetAttributeId(Ihandle *ih, const char* name, int id);
-int    IupGetIntId(Ihandle *ih, const char* name, int id);
-float  IupGetFloatId(Ihandle *ih, const char* name, int id);
-double IupGetDoubleId(Ihandle *ih, const char* name, int id);
-void   IupGetRGBId(Ihandle *ih, const char* name, int id, unsigned char *r, unsigned char *g, unsigned char *b);
-
-void  IupSetAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
-void  IupSetStrAttributeId2(Ihandle* ih, const char* name, int lin, int col, const char* value);
-void  IupSetStrfId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
-void  IupSetIntId2(Ihandle* ih, const char* name, int lin, int col, int value);
-void  IupSetFloatId2(Ihandle* ih, const char* name, int lin, int col, float value);
-void  IupSetDoubleId2(Ihandle* ih, const char* name, int lin, int col, double value);
-void  IupSetRGBId2(Ihandle *ih, const char* name, int lin, int col, unsigned char r, unsigned char g, unsigned char b);
-
-char*  IupGetAttributeId2(Ihandle* ih, const char* name, int lin, int col);
-int    IupGetIntId2(Ihandle* ih, const char* name, int lin, int col);
-float  IupGetFloatId2(Ihandle* ih, const char* name, int lin, int col);
-double IupGetDoubleId2(Ihandle* ih, const char* name, int lin, int col);
-void   IupGetRGBId2(Ihandle *ih, const char* name, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b);
-
-===============================================================================
-
 Icallback IupGetCallback(Ihandle* ih, const char *name);
 Icallback IupSetCallback(Ihandle* ih, const char *name, Icallback func);
 Ihandle*  IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...);
 
-void      IupSetAttributeHandle(Ihandle* ih, const char* name, Ihandle* ih_named);
-Ihandle*  IupGetAttributeHandle(Ihandle* ih, const char* name);
-
 ===============================================================================
-
-Ihandle*  IupRadio(Ihandle* child);
-Ihandle*  IupVbox(Ihandle* child, ...);
-Ihandle*  IupVboxv(Ihandle* *children);
-Ihandle*  IupZbox(Ihandle* child, ...);
-Ihandle*  IupZboxv(Ihandle* *children);
-Ihandle*  IupHbox(Ihandle* child, ...);
-Ihandle*  IupHboxv(Ihandle* *children);
-Ihandle*  IupNormalizer(Ihandle* ih_first, ...);
-Ihandle*  IupNormalizerv(Ihandle* *ih_list);
-Ihandle*  IupCbox(Ihandle* child, ...);
-Ihandle*  IupCboxv(Ihandle* *children);
-Ihandle*  IupSbox(Ihandle *child);
-Ihandle*  IupSplit(Ihandle* child1, Ihandle* child2);
-Ihandle*  IupScrollBox(Ihandle* child);
-Ihandle*  IupGridBox(Ihandle* child, ...);
-Ihandle*  IupGridBoxv(Ihandle **children);
-Ihandle*  IupExpander(Ihandle *child);
-Ihandle*  IupDetachBox(Ihandle *child);
-Ihandle*  IupBackgroundBox(Ihandle *child);
-Ihandle*  IupMenu(Ihandle* child, ...);
-Ihandle*  IupMenuv(Ihandle* *children);
-Ihandle*  IupDialog(Ihandle* child);
-Ihandle*  IupFrame(Ihandle* child);
-Ihandle*  IupSubmenu(const char* title, Ihandle* child);
-Ihandle*  IupTabs(Ihandle* child, ...);
-Ihandle*  IupTabsv(Ihandle* *children);
-Ihandle*  IupSpinbox(Ihandle* child);
-
-===============================================================================
-
 
 void  IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
 void  IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
@@ -160,177 +64,66 @@ Ihandle* IupElementPropertiesDialog(Ihandle* elem);
  */
 namespace iup
 {
-  inline char* Version()
-  {
-    return IupVersion();
-  }
-  inline char* VersionDate()
-  {
-    return IupVersionDate();
-  }
-  inline int VersionNumber()
-  {
-    return IupVersionNumber();
-  }
+  inline char* Version() { return IupVersion(); }
+  inline char* VersionDate() { return IupVersionDate(); }
+  inline int VersionNumber() { return IupVersionNumber(); }
 
-  inline int Open(int &argc, char **&argv)
-  {
-    return IupOpen(&argc, &argv);
-  }
-  inline void Close()
-  {
-    IupClose();
-  }
-  inline void ImageLibOpen()
-  {
-    IupImageLibOpen();
-  }
+  inline int Open(int &argc, char **&argv) { return IupOpen(&argc, &argv); }
+  inline void Close() { IupClose(); }
+  inline void ImageLibOpen() { IupImageLibOpen(); }
 
-  inline int MainLoop()
-  {
-    return IupMainLoop();
-  }
-  inline int LoopStep()
-  {
-    return IupLoopStep();
-  }
-  inline int LoopStepWait()
-  {
-    return IupLoopStepWait();
-  }
-  inline int MainLoopLevel()
-  {
-    return IupMainLoopLevel();
-  }
-  inline void Flush()
-  {
-    IupFlush();
-  }
-  inline void ExitLoop()
-  {
-    IupExitLoop();
-  }
+  inline int MainLoop() { return IupMainLoop(); }
+  inline int LoopStep() { return IupLoopStep(); }
+  inline int LoopStepWait() { return IupLoopStepWait(); }
+  inline int MainLoopLevel() { return IupMainLoopLevel(); }
+  inline void Flush() { IupFlush(); }
+  inline void ExitLoop() { IupExitLoop(); }
 
-  inline int RecordInput(const char* filename, int mode)
-  {
-    return IupRecordInput(filename, mode);
-  }
-  inline int  PlayInput(const char* filename)
-  {
-    return IupPlayInput(filename);
-  }
+  inline int RecordInput(const char* filename, int mode) { return IupRecordInput(filename, mode); }
+  inline int  PlayInput(const char* filename) { return IupPlayInput(filename); }
 
-  inline int Help(const char* url)
-  {
-    return IupHelp(url);
-  }
-  inline const char* Load(const char *filename)
-  {
-    return IupLoad(filename);
-  }
-  inline const char* LoadBuffer(const char *buffer)
-  {
-    return IupLoadBuffer(buffer);
-  }
+  inline int Help(const char* url) { return IupHelp(url); }
+  inline const char* Load(const char *filename) { return IupLoad(filename); }
+  inline const char* LoadBuffer(const char *buffer) { return IupLoadBuffer(buffer); }
 
-  inline void SetLanguage(const char *lng)
-  {
-    IupSetLanguage(lng);
-  }
-  inline const char* GetLanguage()
-  {
-    return IupGetLanguage();
-  }
-  inline void SetLanguageString(const char* name, const char* str)
-  {
-    IupSetLanguageString(name, str);
-  }
-  inline void StoreLanguageString(const char* name, const char* str)
-  {
-    IupStoreLanguageString(name, str);
-  }
-  inline const char* GetLanguageString(const char* name)
-  {
-    return IupGetLanguageString(name);
-  }
+  inline void SetLanguage(const char *lng) { IupSetLanguage(lng); }
+  inline const char* GetLanguage() { return IupGetLanguage(); }
+  inline void SetLanguageString(const char* name, const char* str) { IupSetLanguageString(name, str); }
+  inline void StoreLanguageString(const char* name, const char* str) { IupStoreLanguageString(name, str); }
+  inline const char* GetLanguageString(const char* name) { return IupGetLanguageString(name); }
 
-  inline int GetAllClasses(char** names, int n)
-  {
-    return IupGetAllClasses(names, n);
-  }
-  inline int GetClassAttributes(const char* classname, char** names, int n)
-  {
-    return IupGetClassAttributes(classname, names, n);
-  }
-  inline int GetClassCallbacks(const char* classname, char** names, int n)
-  {
-    return IupGetClassCallbacks(classname, names, n);
-  }
-  inline void SetClassDefaultAttribute(const char* classname, const char *name, const char* value)
-  {
-    IupSetClassDefaultAttribute(classname, name, value);
-  }
+  inline int GetAllClasses(char** names, int n) { return IupGetAllClasses(names, n); }
+  inline int GetClassAttributes(const char* classname, char** names, int n) { return IupGetClassAttributes(classname, names, n); }
+  inline int GetClassCallbacks(const char* classname, char** names, int n) { return IupGetClassCallbacks(classname, names, n); }
+  inline void SetClassDefaultAttribute(const char* classname, const char *name, const char* value) { IupSetClassDefaultAttribute(classname, name, value); }
 
-  inline void SetGlobal(const char* name, const char* value)
-  {
-    IupSetGlobal(name, value);
-  }
-  inline void SetStringGlobal(const char* name, const char* value)
-  {
-    IupSetStrGlobal(name, value);
-  }
-  inline char* GetGlobal(const char* name)
-  {
-    return IupGetGlobal(name);
-  }
+  inline void SetGlobal(const char* name, const char* value) { IupSetGlobal(name, value); }
+  inline void SetStringGlobal(const char* name, const char* value) { IupSetStrGlobal(name, value); }
+  inline char* GetGlobal(const char* name) { return IupGetGlobal(name); }
 
 
-  inline int GetFile(char *arq)
-  {
-    return IupGetFile(arq);
-  }
-  inline void Message(const char *title, const char *msg)
-  {
-    IupMessage(title, msg);
-  }
+  inline int GetFile(char *arq) { return IupGetFile(arq); }
+  inline void Message(const char *title, const char *msg) { IupMessage(title, msg); }
   //TODO
   //void Messagef(const char *title, const char *format, ...)
   //{
   //  IupMessagef(title, format, ...);
   //}
-  inline int Alarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3)
-  {
-    return IupAlarm(title, msg, b1, b2, b3);
-  }
+  inline int Alarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3) { return IupAlarm(title, msg, b1, b2, b3); }
   //TODO
   //int Scanf(const char *format, ...)
   //{
   //  return IupScanf(format, ...);
   //}
-  inline int ListDialog(int type, const char *title, int size, const char** list, int op, int max_col, int max_lin, int* marks)
-  {
-    return IupListDialog(type, title, size, list, op, max_col, max_lin, marks);
-  }
-  inline int GetText(const char* title, char* text)
-  {
-    return IupGetText(title, text);
-  }
-  inline int GetColor(int x, int y, unsigned char &r, unsigned char &g, unsigned char &b)
-  {
-    return IupGetColor(x, y, &r, &g, &b);
-  }
+  inline int ListDialog(int type, const char *title, int size, const char** list, int op, int max_col, int max_lin, int* marks) { return IupListDialog(type, title, size, list, op, max_col, max_lin, marks); }
+  inline int GetText(const char* title, char* text) { return IupGetText(title, text); }
+  inline int GetColor(int x, int y, unsigned char &r, unsigned char &g, unsigned char &b) { return IupGetColor(x, y, &r, &g, &b); }
 
   //TODO
   //STL std::string com ifdef
 
-  inline int GetAllNames(char** names, int n)
-  {
-    return IupGetAllNames(names, n);
-  }
-  inline int GetAllDialogs(char** names, int n)
-  {
-    return IupGetAllDialogs(names, n);
-  }
+  inline int GetAllNames(char** names, int n) { return IupGetAllNames(names, n); }
+  inline int GetAllDialogs(char** names, int n) { return IupGetAllDialogs(names, n); }
 
 
   class Handle
@@ -342,175 +135,171 @@ namespace iup
     Handle() { ih = 0; };
 
   public:
-    Handle(Ihandle* ref_ih)
-    {
-      ih = ref_ih;
-    }
+    Handle(Ihandle* ref_ih) { ih = ref_ih; }
     // There is no destructor because all iup::Handle are just a reference to the Ihandle*,
     // since several IUP elements are automatically destroyed when the dialog is destroyed
     // So, to force an element to be destructed call the Destroy method
 
     Ihandle* GetHandle() const { return ih; }
 
-    void SetUserData(const char* name, void* data)
-    {
-      IupSetAttribute(ih, name, (char*)data);
-    }
-    void* GetUserData(const char* name)
-    {
-      return (void*)IupGetAttribute(ih, name);
-    }
-    void SetInteger(const char* name, int value)
-    {
-      IupSetInt(ih, name, value);
-    }
-    int GetInteger(const char* name)
-    {
-      return IupGetInt(ih, name);
-    }
+    void SetAttribute(const char* name, const char* value) { IupSetAttribute(ih, name, value); }
+    char* GetAttribute(const char* name) { return IupGetAttribute(ih, name); }
+    void SetUserData(const char* name, void* data) { IupSetAttribute(ih, name, (char*)data); }
+    void* GetUserData(const char* name) { return (void*)IupGetAttribute(ih, name); }
+    void SetString(const char* name, const char* value) { IupSetStrAttribute(ih, name, value); }
+    const char* GetString(const char* name) { return IupGetAttribute(ih, name); }
+    void SetInteger(const char* name, int value) { IupSetInt(ih, name, value); }
+    int GetInteger(const char* name) { return IupGetInt(ih, name); }
+    void SetNumber(const char* name, double value) { IupSetDouble(ih, name, value); }
+    double GetNumber(const char* name) { return IupGetDouble(ih, name); }
+    void SetRGB(const char* name, unsigned char r, unsigned char g, unsigned char b) { IupSetRGB(ih, name, r, g, b); }
+    void GetRGB(const char* name, unsigned char &r, unsigned char &g, unsigned char &b) { IupGetRGB(ih, name, &r, &g, &b); }
 
+    //TODO
+    //void      IupSetStrf(Ihandle* ih, const char* name, const char* format, ...);
+    //int       IupGetInt2(Ihandle* ih, const char* name);
+    //int       IupGetIntInt(Ihandle *ih, const char* name, int *i1, int *i2);
+    //void  IupSetStrfId(Ihandle *ih, const char* name, int id, const char* format, ...);
+    //void  IupSetStrfId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
 
-    void Update()
-    {
-      IupUpdate(ih);
-    }
-    void UpdateChildren()
-    {
-      IupUpdateChildren(ih);
-    }
-    void Redraw(bool children)
-    {
-      IupRedraw(ih, children ? 1 : 0);
-    }
-    void Refresh()
-    {
-      IupRefresh(ih);
-    }
-    void RefreshChildren()
-    {
-      IupRefreshChildren(ih);
-    }
+    void SetAttributeId(const char* name, int id, const char* value) { IupSetAttributeId(ih, name, id, value); }
+    char* GetAttributeId(const char* name, int id) { return IupGetAttributeId(ih, name, id); }
+    void SetUserDataId(const char* name, int id, void* data) { IupSetAttributeId(ih, name, id, (char*)data); }
+    void* GetUserDataId(const char* name, int id) { return (void*)IupGetAttributeId(ih, name, id); }
+    void SetStringId(const char* name, int id, const char* value) { IupSetStrAttributeId(ih, name, id, value); }
+    const char* GetStringId(const char* name, int id) { return IupGetAttributeId(ih, name, id); }
+    void SetIntegerId(const char* name, int id, int value) { IupSetIntId(ih, name, id, value); }
+    int GetIntegerId(const char* name, int id) { return IupGetIntId(ih, name, id); }
+    void SetNumberId(const char* name, int id, double value) { IupSetDoubleId(ih, name, id, value); }
+    double GetNumberId(const char* name, int id) { return IupGetDoubleId(ih, name, id); }
+    void SetRGBId(const char* name, int id, unsigned char r, unsigned char g, unsigned char b) { IupSetRGBId(ih, name, id, r, g, b); }
+    void GetRGBId(const char* name, int id, unsigned char &r, unsigned char &g, unsigned char &b) { IupGetRGBId(ih, name, id, &r, &g, &b); }
 
-    void Destroy()
-    {
-      IupDestroy(ih);
-    }
-    void Detach(const Handle& child)
-    {
-      IupDetach(child.ih);
-    }
+    void SetAttributeId2(const char* name, int lin, int col, const char* value) { IupSetAttributeId2(ih, name, lin, col, value); }
+    char* GetAttributeId2(const char* name, int lin, int col) { return IupGetAttributeId2(ih, name, lin, col); }
+    void SetUserDataId2(const char* name, int lin, int col, void* data) { IupSetAttributeId2(ih, name, lin, col, (char*)data); }
+    void* GetUserDataId2(const char* name, int lin, int col) { return (void*)IupGetAttributeId2(ih, name, lin, col); }
+    void SetStringId2(const char* name, int lin, int col, const char* value) { IupSetStrAttributeId2(ih, name, lin, col, value); }
+    const char* GetStringId2(const char* name, int lin, int col) { return IupGetAttributeId2(ih, name, lin, col); }
+    void SetIntegerId2(const char* name, int lin, int col, int value) { IupSetIntId2(ih, name, lin, col, value); }
+    int GetIntegerId2(const char* name, int lin, int col) { return IupGetIntId2(ih, name, lin, col); }
+    void SetNumberId2(const char* name, int lin, int col, double value) { IupSetDoubleId2(ih, name, lin, col, value); }
+    double GetNumberId2(const char* name, int lin, int col) { return IupGetDoubleId2(ih, name, lin, col); }
+    void SetRGBId2(const char* name, int lin, int col, unsigned char r, unsigned char g, unsigned char b) { IupSetRGBId2(ih, name, lin, col, r, g, b); }
+    void GetRGBId2(const char* name, int lin, int col, unsigned char &r, unsigned char &g, unsigned char &b) { IupGetRGBId2(ih, name, lin, col, &r, &g, &b); }
 
-    Handle GetNextChild(const Handle& child)
-    {
-      return Handle(IupGetNextChild(ih, child.ih));
-    }
-    Handle GetBrother()
-    {
-      return Handle(IupGetBrother(ih));
-    }
-    Handle GetParent()
-    {
-      return Handle(IupGetParent(ih));
-    }
-    Handle GetDialog()
-    {
-      return Handle(IupGetDialog(ih));
-    }
-    Handle GetDialogChild(const char* name)
-    {
-      return Handle(IupGetDialogChild(ih, name));
-    }
-    int Reparent(const Handle& new_parent, const Handle& ref_child)
-    {
-      return IupReparent(ih, new_parent.ih, ref_child.ih);
-    }
+    void ResetAttribute(const char* name) { IupResetAttribute(ih, name); }
+    int GetAllAttributes(char** names, int n) { return IupGetAllAttributes(ih, names, n); }
+    void SetAttributeHandle(const char* name, const  Handle& handle) { IupSetAttributeHandle(ih, name, handle.GetHandle()); }
+    Handle GetAttributeHandle(const char* name) { return IupGetAttributeHandle(ih, name); }
 
-    int Map()
-    {
-      return IupMap(ih);
-    }
-    void Unmap()
-    {
-      IupUnmap(ih);
-    }
+    void Destroy() { IupDestroy(ih); }
 
-    Handle SetFocus()
-    {
-      return Handle(IupSetFocus(ih));
-    }
-    Handle PreviousField()
-    {
-      return Handle(IupPreviousField(ih));
-    }
-    Handle NextField()
-    {
-      return Handle(IupNextField(ih));
-    }
+    int Map() { return IupMap(ih); }
+    void Unmap() { IupUnmap(ih); }
 
-    char* GetName()
-    {
-      return IupGetName(ih);
-    }
+    char* GetName() { return IupGetName(ih); }
 
-    char* GetClassName()
-    {
-      return IupGetClassName(ih);
-    }
-    char* GetClassType()
-    {
-      return IupGetClassType(ih);
-    }
-    void SaveClassAttributes()
-    {
-      IupSaveClassAttributes(ih);
-    }
-    void CopyClassAttributesTo(const Handle& dst)
-    {
-      IupCopyClassAttributes(ih, dst.ih);
-    }
-    int ClassMatch(const char* classname)
-    {
-      return IupClassMatch(ih, classname);
-    }
+    char* GetClassName() { return IupGetClassName(ih); }
+    char* GetClassType() { return IupGetClassType(ih); }
+    void SaveClassAttributes() { IupSaveClassAttributes(ih); }
+    void CopyClassAttributesTo(const Handle& dst) { IupCopyClassAttributes(ih, dst.ih); }
+    int ClassMatch(const char* classname) { return IupClassMatch(ih, classname); }
 
   };
 
-  inline Handle GetFocus()
-  {
-    return Handle(IupGetFocus());
-  }
-  inline Handle GetHandle(const char *name)
-  {
-    return Handle(IupGetHandle(name));
-  }
-  inline Handle SetHandle(const char *name, const Handle& handle)
-  {
-    return Handle(IupSetHandle(name, handle.GetHandle()));
-  }
-  inline void  SetLanguagePack(const Handle& handle)
-  {
-    IupSetLanguagePack(handle.GetHandle());
-  }
+  inline Handle GetHandle(const char *name) { return Handle(IupGetHandle(name)); }
+  inline Handle SetHandle(const char *name, const Handle& handle) { return Handle(IupSetHandle(name, handle.GetHandle())); }
+  inline void  SetLanguagePack(const Handle& handle) { IupSetLanguagePack(handle.GetHandle()); }
 
-  class Container : public Handle
+  class Dialog;
+  class Container;
+
+  class Control : public Handle
   {
   public:
-    Container(Ihandle* _ih) : Handle(_ih) {}
+    Control(Ihandle* _ih) : Handle(_ih) {}
+
+    void Update() { IupUpdate(ih); }
+    void Redraw() { IupRedraw(ih, 0); }
+    void Refresh() { IupRefresh(ih); }
+
+    void Detach(const Control& child) { IupDetach(child.ih); }
+
+    Control GetBrother() { return Control(IupGetBrother(ih)); }
+    Container GetParent();
+    Dialog GetDialog();
+    Control GetDialogChild(const char* name) { return Control(IupGetDialogChild(ih, name)); }
+    int Reparent(const Container& new_parent, const Control& ref_child);
+
+    Control SetFocus() { return Control(IupSetFocus(ih)); }
+    Control PreviousField() { return Control(IupPreviousField(ih)); }
+    Control NextField() { return Control(IupNextField(ih)); }
+  };
+
+  inline Control GetFocus() { return Control(IupGetFocus()); }
+
+  class Container : public Control
+  {
+  public:
+    Container(Ihandle* _ih) : Control(_ih) {}
+    Container(Ihandle* _ih, const Control* child_array, int count) : Control(_ih) {
+      for (int i = 0; i < count; i++)
+        IupAppend(ih, child_array[i].GetHandle());
+    }
+    Container(Ihandle* _ih, const Control* child0, const Control* child1 = 0, const Control* child2 = 0, const Control* child3 = 0, const Control* child4 = 0, const Control* child5 = 0, const Control* child6 = 0, const Control* child7 = 0, const Control* child8 = 0, const Control* child9 = 0)
+      : Control(_ih) {
+      if (child0) IupAppend(ih, child0->GetHandle());
+      if (child1) IupAppend(ih, child1->GetHandle());
+      if (child2) IupAppend(ih, child2->GetHandle());
+      if (child3) IupAppend(ih, child3->GetHandle());
+      if (child4) IupAppend(ih, child4->GetHandle());
+      if (child5) IupAppend(ih, child5->GetHandle());
+      if (child6) IupAppend(ih, child6->GetHandle());
+      if (child7) IupAppend(ih, child7->GetHandle());
+      if (child8) IupAppend(ih, child8->GetHandle());
+      if (child9) IupAppend(ih, child9->GetHandle());
+    }
+
+    Control Append(const Control& child) { return IupAppend(ih, child.GetHandle()); }
+    Control Insert(const Control& ref_child, const  Control& child) { return IupInsert(ih, ref_child.GetHandle(), child.GetHandle()); }
+    Control GetChild(int pos) { return IupGetChild(ih, pos); }
+    int GetChildPos(const  Control& child) { return IupGetChildPos(ih, child.GetHandle()); }
+    int GetChildCount() { return IupGetChildCount(ih); }
+
+    Control GetFirstChild() { return Control(IupGetNextChild(ih, 0)); }
+    Control GetNextChild(const Control& ref_child) { return Control(IupGetNextChild(ih, ref_child.GetHandle())); }
+
+    void UpdateChildren() { IupUpdateChildren(ih); }
+    void RedrawChildren() { IupRedraw(ih, 1); }
+    void RefreshChildren() { IupRefreshChildren(ih); }
   };
   class Dialog : public Container
   {
   public:
     Dialog(Ihandle* _ih) : Container(_ih) {}
+    Dialog(const Control& child) : Container(IupDialog(child.GetHandle())) { }
+
+    int Popup(int x, int y) { return IupPopup(ih, x, y); }
+    int Show() { return IupShow(ih); }
+    int ShowXY(int x, int y) { return IupShowXY(ih, x, y); }
+    int Hide() { return IupHide(ih); }
   };
-  class Control : public Handle
+
+  inline Dialog Control::GetDialog() { return Dialog(IupGetDialog(ih)); }
+  inline Container Control::GetParent() { return Container(IupGetParent(ih)); }
+  inline int Control::Reparent(const Container& new_parent, const Control& ref_child) { return IupReparent(ih, new_parent.GetHandle(), ref_child.GetHandle()); }
+
+  class Menu : public Container
   {
   public:
-    Control(Ihandle* _ih) : Handle(_ih) {}
-  };
-  class MenuControl : public Handle
-  {
-  public:
-    MenuControl(Ihandle* _ih) : Handle(_ih) {}
+    Menu() : Container(IupMenu(0)) {}
+    Menu(const Control& child) : Container(IupMenu(child.GetHandle(), 0)) {}
+    Menu(const Control* child0, const Control* child1 = 0, const Control* child2 = 0, const Control* child3 = 0, const Control* child4 = 0, const Control* child5 = 0, const Control* child6 = 0, const Control* child7 = 0, const Control* child8 = 0, const Control* child9 = 0)
+      : Container(IupMenu(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
+    Menu(const Control* child_array, int count) : Container(IupMenu(0), child_array, count) {}
+
+    int Popup(int x, int y) { return IupPopup(ih, x, y); }
   };
 
   class Image : public Handle
@@ -519,29 +308,17 @@ namespace iup
     Image(const char* filename) : Handle(IupLoadImage(filename)) {}
     Image(const im::Image& image) : Handle(IupImageFromImImage(image.GetHandle())) {}
 
-    int Save(const char* filename, const char* im_format)
-    {
-      return IupSaveImage(ih, filename, im_format);
-    }
-    int SaveAsText(const char* filename, const char* iup_format, const char* name)
-    {
-      return IupSaveImageAsText(ih, filename, iup_format, name);
-    }
+    int Save(const char* filename, const char* im_format) { return IupSaveImage(ih, filename, im_format); }
+    int SaveAsText(const char* filename, const char* iup_format, const char* name) { return IupSaveImageAsText(ih, filename, iup_format, name); }
   };
   class Clipboard : public Handle
   {
   public:
     Clipboard() : Handle(IupClipboard()) {}
 
-    void SetImage(const im::Image& image)
-    {
-      SetUserData("NATIVEIMAGE", IupGetImageNativeHandle(image.GetHandle()));
-    }
+    void SetImage(const im::Image& image) { SetUserData("NATIVEIMAGE", IupGetImageNativeHandle(image.GetHandle())); }
 
-    im::Image GetImage(void)
-    {
-      return im::Image(IupGetNativeHandleImage(GetUserData("NATIVEIMAGE")));
-    }
+    im::Image GetImage(void) { return im::Image(IupGetNativeHandleImage(GetUserData("NATIVEIMAGE"))); }
   };
   class User : public Handle
   {
@@ -553,15 +330,15 @@ namespace iup
   public:
     Timer() : Handle(IupTimer()) {}
   };
-  class MenuSeparator : public MenuControl
+  class MenuSeparator : public Control
   {
   public:
-    MenuSeparator() : MenuControl(IupSeparator()) {}
+    MenuSeparator() : Control(IupSeparator()) {}
   };
-  class MenuItem : public MenuControl
+  class MenuItem : public Control
   {
   public:
-    MenuItem(const char* title = 0) : MenuControl(IupItem(title, 0)) {}
+    MenuItem(const char* title = 0) : Control(IupItem(title, 0)) {}
   };
   class Canvas : public Control
   {
@@ -628,6 +405,131 @@ namespace iup
   public:
     Text() : Control(IupText(0)) {}
   };
+  class Split : public Container
+  {
+  public:
+    Split() : Container(IupSplit(0, 0)) {}
+    Split(const Control& child) : Container(IupSplit(child.GetHandle(), 0)) {}
+    Split(const Control& child1, const Control& child2) : Container(IupSplit(child1.GetHandle(), child2.GetHandle())) {}
+  };
+  class Submenu : public Container
+  {
+  public:
+    Submenu(const char* title = 0) : Container(IupSubmenu(title, 0)) {}
+    Submenu(const char* title, const Control& child) : Container(IupSubmenu(title, child.GetHandle())) {}
+  };
+  class Radio : public Container
+  {
+  public:
+    Radio() : Container(IupRadio(0)) {}
+    Radio(const Control& child) : Container(IupRadio(child.GetHandle())) {}
+  };
+  class Sbox : public Container
+  {
+  public:
+    Sbox() : Container(IupSbox(0)) {}
+    Sbox(const Control& child) : Container(IupSbox(child.GetHandle())) {}
+  };
+  class ScrollBox : public Container
+  {
+  public:
+    ScrollBox() : Container(IupScrollBox(0)) {}
+    ScrollBox(const Control& child) : Container(IupScrollBox(child.GetHandle())) {}
+  };
+  class Expander : public Container
+  {
+  public:
+    Expander() : Container(IupExpander(0)) {}
+    Expander(const Control& child) : Container(IupExpander(child.GetHandle())) {}
+  };
+  class DetachBox : public Container
+  {
+  public:
+    DetachBox() : Container(IupDetachBox(0)) {}
+    DetachBox(const Control& child) : Container(IupDetachBox(child.GetHandle())) {}
+  };
+  class BackgroundBox : public Container
+  {
+  public:
+    BackgroundBox() : Container(IupBackgroundBox(0)) {}
+    BackgroundBox(const Control& child) : Container(IupBackgroundBox(child.GetHandle())) {}
+  };
+  class Frame : public Container
+  {
+  public:
+    Frame() : Container(IupFrame(0)) {}
+    Frame(const Control& child) : Container(IupFrame(child.GetHandle())) {}
+  };
+  class Spinbox : public Container
+  {
+  public:
+    Spinbox() : Container(IupSpinbox(0)) {}
+    Spinbox(const Control& child) : Container(IupSpinbox(child.GetHandle())) {}
+  };
+  class Vbox : public Container
+  {
+  public:
+    Vbox() : Container(IupVbox(0)) {}
+    Vbox(const Control& child) : Container(IupVbox(child.GetHandle(), 0)) {}
+    Vbox(const Control* child0, const Control* child1 = 0, const Control* child2 = 0, const Control* child3 = 0, const Control* child4 = 0, const Control* child5 = 0, const Control* child6 = 0, const Control* child7 = 0, const Control* child8 = 0, const Control* child9 = 0)
+      : Container(IupVbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
+    Vbox(const Control* child_array, int count) : Container(IupVbox(0), child_array, count) {}
+  };
+  class Hbox : public Container
+  {
+  public:
+    Hbox() : Container(IupHbox(0)) {}
+    Hbox(const Control& child) : Container(IupHbox(child.GetHandle(), 0)) {}
+    Hbox(const Control* child0, const Control* child1 = 0, const Control* child2 = 0, const Control* child3 = 0, const Control* child4 = 0, const Control* child5 = 0, const Control* child6 = 0, const Control* child7 = 0, const Control* child8 = 0, const Control* child9 = 0)
+      : Container(IupHbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
+    Hbox(const Control* child_array, int count) : Container(IupHbox(0), child_array, count) {}
+  };
+  class Zbox : public Container
+  {
+  public:
+    Zbox() : Container(IupZbox(0)) {}
+    Zbox(const Control& child) : Container(IupZbox(child.GetHandle(), 0)) {}
+    Zbox(const Control* child0, const Control* child1 = 0, const Control* child2 = 0, const Control* child3 = 0, const Control* child4 = 0, const Control* child5 = 0, const Control* child6 = 0, const Control* child7 = 0, const Control* child8 = 0, const Control* child9 = 0)
+      : Container(IupZbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
+    Zbox(const Control* child_array, int count) : Container(IupZbox(0), child_array, count) {}
+  };
+  class Cbox : public Container
+  {
+  public:
+    Cbox() : Container(IupCbox(0)) {}
+    Cbox(const Control& child) : Container(IupCbox(child.GetHandle(), 0)) {}
+    Cbox(const Control* child0, const Control* child1 = 0, const Control* child2 = 0, const Control* child3 = 0, const Control* child4 = 0, const Control* child5 = 0, const Control* child6 = 0, const Control* child7 = 0, const Control* child8 = 0, const Control* child9 = 0)
+      : Container(IupCbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
+    Cbox(const Control* child_array, int count) : Container(IupCbox(0), child_array, count) {}
+  };
+  class Tabs : public Container
+  {
+  public:
+    Tabs() : Container(IupTabs(0)) {}
+    Tabs(const Control& child) : Container(IupTabs(child.GetHandle(), 0)) {}
+    Tabs(const Control* child0, const Control* child1 = 0, const Control* child2 = 0, const Control* child3 = 0, const Control* child4 = 0, const Control* child5 = 0, const Control* child6 = 0, const Control* child7 = 0, const Control* child8 = 0, const Control* child9 = 0)
+      : Container(IupTabs(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
+    Tabs(const Control* child_array, int count) : Container(IupTabs(0), child_array, count) {}
+  };
+  class GridBox : public Container
+  {
+  public:
+    GridBox() : Container(IupGridBox(0)) {}
+    GridBox(const Control& child) : Container(IupGridBox(child.GetHandle(), 0)) {}
+    GridBox(const Control* child0, const Control* child1 = 0, const Control* child2 = 0, const Control* child3 = 0, const Control* child4 = 0, const Control* child5 = 0, const Control* child6 = 0, const Control* child7 = 0, const Control* child8 = 0, const Control* child9 = 0)
+      : Container(IupGridBox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
+    GridBox(const Control* child_array, int count) : Container(IupGridBox(0), child_array, count) {}
+  };
+  class Normalizer : public Container
+  {
+  public:
+    Normalizer() : Container(IupNormalizer(0)) {}
+    Normalizer(const Control& child) : Container(IupNormalizer(child.GetHandle(), 0)) {}
+    Normalizer(const Control* child0, const Control* child1 = 0, const Control* child2 = 0, const Control* child3 = 0, const Control* child4 = 0, const Control* child5 = 0, const Control* child6 = 0, const Control* child7 = 0, const Control* child8 = 0, const Control* child9 = 0)
+      : Container(IupNormalizer(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
+    Normalizer(const Control* child_array, int count) : Container(IupNormalizer(0), child_array, count) {}
+  };
+
 
   class FileDialog : public Dialog
   {
@@ -661,26 +563,11 @@ namespace iup
 
     static void Open() { IupGLCanvasOpen(); }
 
-    void MakeCurrent()
-    {
-      IupGLMakeCurrent(ih);
-    }
-    int IsCurrent()
-    {
-      return IupGLIsCurrent(ih);
-    }
-    void SwapBuffers()
-    {
-      IupGLSwapBuffers(ih);
-    }
-    void Palette(int index, float r, float g, float b)
-    {
-      IupGLPalette(ih, index, r, g, b);
-    }
-    void UseFont(int first, int count, int list_base)
-    {
-      IupGLUseFont(ih, first, count, list_base);
-    }
+    void MakeCurrent() { IupGLMakeCurrent(ih); }
+    int IsCurrent() { return IupGLIsCurrent(ih); }
+    void SwapBuffers() { IupGLSwapBuffers(ih); }
+    void Palette(int index, float r, float g, float b) { IupGLPalette(ih, index, r, g, b); }
+    void UseFont(int first, int count, int list_base) { IupGLUseFont(ih, first, count, list_base); }
 
     static void Wait(int gl) { IupGLWait(gl); }
   };
@@ -720,14 +607,8 @@ namespace iup
   public:
     Matrix() : Control(IupMatrix(0)) {}
 
-    void SetFormula(int col, const char* formula, const char* init = 0)
-    {
-      IupMatrixSetFormula(ih, col, formula, init);
-    }
-    void SetDynamic(Ihandle* ih, const char* init = 0)
-    {
-      IupMatrixSetDynamic(ih, init);
-    }
+    void SetFormula(int col, const char* formula, const char* init = 0) { IupMatrixSetFormula(ih, col, formula, init); }
+    void SetDynamic(Ihandle* ih, const char* init = 0) { IupMatrixSetDynamic(ih, init); }
   };
   class MatrixList : public Control
   {
@@ -786,40 +667,38 @@ namespace iup
   public:
     GLLink(const char *url = 0, const char* title = 0) : Control(IupGLLink(url, title)) {}
   };
-  class GLFrame : public Control
+  class GLFrame : public Container
   {
   public:
-    GLFrame(Handle& child) : Control(IupGLFrame(child.GetHandle())) {}
-    GLFrame() : Control(IupGLFrame(0)) {}
+    GLFrame(const Control& child) : Container(IupGLFrame(child.GetHandle())) {}
+    GLFrame() : Container(IupGLFrame(0)) {}
   };
-  class GLExpander : public Control
+  class GLExpander : public Container
   {
   public:
-    GLExpander(Handle& child) : Control(IupGLExpander(child.GetHandle())) {}
-    GLExpander() : Control(IupGLExpander(0)) {}
+    GLExpander(const Control& child) : Container(IupGLExpander(child.GetHandle())) {}
+    GLExpander() : Container(IupGLExpander(0)) {}
   };
-  class GLScrollBox : public Control
+  class GLScrollBox : public Container
   {
   public:
-    GLScrollBox(Handle& child) : Control(IupGLScrollBox(child.GetHandle())) {}
-    GLScrollBox() : Control(IupGLScrollBox(0)) {}
+    GLScrollBox(const Control& child) : Container(IupGLScrollBox(child.GetHandle())) {}
+    GLScrollBox() : Container(IupGLScrollBox(0)) {}
   };
-  class GLSizeBox : public Control
+  class GLSizeBox : public Container
   {
   public:
-    GLSizeBox(Handle& child) : Control(IupGLSizeBox(child.GetHandle())) {}
-    GLSizeBox() : Control(IupGLSizeBox(0)) {}
+    GLSizeBox(const Control& child) : Container(IupGLSizeBox(child.GetHandle())) {}
+    GLSizeBox() : Container(IupGLSizeBox(0)) {}
   };
   class GLCanvasBox : public Container
   {
   public:
     GLCanvasBox() : Container(IupGLCanvasBox(0)) {}
-    GLCanvasBox(Handle& child) : Container(IupGLCanvasBox(child.GetHandle(), 0)) {}
-    GLCanvasBox(Handle* child, int count) : Container(IupGLCanvasBox(0))
-    {
-      for (int i = 0; i < count; i++)
-        IupAppend(ih, child[i].GetHandle());
-    }
+    GLCanvasBox(const Control& child) : Container(IupGLCanvasBox(child.GetHandle(), 0)) {}
+    GLCanvasBox(const Control* child0, const Control* child1 = 0, const Control* child2 = 0, const Control* child3 = 0, const Control* child4 = 0, const Control* child5 = 0, const Control* child6 = 0, const Control* child7 = 0, const Control* child8 = 0, const Control* child9 = 0) 
+      : Container(IupGLCanvasBox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
+    GLCanvasBox(const Control* child_array, int count) : Container(IupGLCanvasBox(0), child_array, count) {}
   };
   class Plot : public Control
   {
@@ -828,111 +707,39 @@ namespace iup
 
     static void Open() { IupPlotOpen(); }
 
-    void Begin(int strXdata)
-    {
-      IupPlotBegin(ih, strXdata);
-    }
-    void Add(double x, double y)
-    {
-      IupPlotAdd(ih, x, y);
-    }
-    void AddStr(const char* x, double y)
-    {
-      IupPlotAddStr(ih, x, y);
-    }
-    void AddSegment(double x, double y)
-    {
-      IupPlotAddSegment(ih, x, y);
-    }
-    int End(Ihandle *ih)
-    {
-      return IupPlotEnd(ih);
-    }
+    void Begin(int strXdata) { IupPlotBegin(ih, strXdata); }
+    void Add(double x, double y) { IupPlotAdd(ih, x, y); }
+    void AddStr(const char* x, double y) { IupPlotAddStr(ih, x, y); }
+    void AddSegment(double x, double y) { IupPlotAddSegment(ih, x, y); }
+    int End(Ihandle *ih) { return IupPlotEnd(ih); }
 
-    int LoadData(const char* filename, int strXdata)
-    {
-      return IupPlotLoadData(ih, filename, strXdata);
-    }
+    int LoadData(const char* filename, int strXdata) { return IupPlotLoadData(ih, filename, strXdata); }
 
-    int SetFormula(int sample_count, const char* formula, const char* init)
-    {
-      return IupPlotSetFormula(ih, sample_count, formula, init);
-    }
+    int SetFormula(int sample_count, const char* formula, const char* init) { return IupPlotSetFormula(ih, sample_count, formula, init); }
 
-    void Insert(int ds_index, int sample_index, double x, double y)
-    {
-      IupPlotInsert(ih, ds_index, sample_index, x, y);
-    }
-    void InsertStr(int ds_index, int sample_index, const char* x, double y)
-    {
-      IupPlotInsertStr(ih, ds_index, sample_index, x, y);
-    }
-    void InsertSegment(int ds_index, int sample_index, double x, double y)
-    {
-      IupPlotInsertSegment(ih, ds_index, sample_index, x, y);
-    }
+    void Insert(int ds_index, int sample_index, double x, double y) { IupPlotInsert(ih, ds_index, sample_index, x, y); }
+    void InsertStr(int ds_index, int sample_index, const char* x, double y) { IupPlotInsertStr(ih, ds_index, sample_index, x, y); }
+    void InsertSegment(int ds_index, int sample_index, double x, double y) { IupPlotInsertSegment(ih, ds_index, sample_index, x, y); }
 
-    void InsertStrSamples(int ds_index, int sample_index, const char** x, double* y, int count)
-    {
-      IupPlotInsertStrSamples(ih, ds_index, sample_index, x, y, count);
-    }
-    void InsertSamples(int ds_index, int sample_index, double *x, double *y, int count)
-    {
-      IupPlotInsertSamples(ih, ds_index, sample_index, x, y, count);
-    }
+    void InsertStrSamples(int ds_index, int sample_index, const char** x, double* y, int count) { IupPlotInsertStrSamples(ih, ds_index, sample_index, x, y, count); }
+    void InsertSamples(int ds_index, int sample_index, double *x, double *y, int count) { IupPlotInsertSamples(ih, ds_index, sample_index, x, y, count); }
 
-    void AddSamples(int ds_index, double *x, double *y, int count)
-    {
-      IupPlotAddSamples(ih, ds_index, x, y, count);
-    }
-    void AddStrSamples(int ds_index, const char** x, double* y, int count)
-    {
-      IupPlotAddStrSamples(ih, ds_index, x, y, count);
-    }
+    void AddSamples(int ds_index, double *x, double *y, int count) { IupPlotAddSamples(ih, ds_index, x, y, count); }
+    void AddStrSamples(int ds_index, const char** x, double* y, int count) { IupPlotAddStrSamples(ih, ds_index, x, y, count); }
 
-    void GetSample(int ds_index, int sample_index, double &x, double &y)
-    {
-      IupPlotGetSample(ih, ds_index, sample_index, &x, &y);
-    }
-    void GetSampleStr(int ds_index, int sample_index, const char* &x, double &y)
-    {
-      IupPlotGetSampleStr(ih, ds_index, sample_index, &x, &y);
-    }
-    int GetSampleSelection(int ds_index, int sample_index)
-    {
-      return IupPlotGetSampleSelection(ih, ds_index, sample_index);
-    }
-    void SetSample(int ds_index, int sample_index, double x, double y)
-    {
-      IupPlotSetSample(ih, ds_index, sample_index, x, y);
-    }
-    void SetSampleStr(int ds_index, int sample_index, const char* x, double y)
-    {
-      IupPlotSetSampleStr(ih, ds_index, sample_index, x, y);
-    }
-    void SetSampleSelection(int ds_index, int sample_index, int selected)
-    {
-      IupPlotSetSampleSelection(ih, ds_index, sample_index, selected);
-    }
+    void GetSample(int ds_index, int sample_index, double &x, double &y) { IupPlotGetSample(ih, ds_index, sample_index, &x, &y); }
+    void GetSampleStr(int ds_index, int sample_index, const char* &x, double &y) { IupPlotGetSampleStr(ih, ds_index, sample_index, &x, &y); }
+    int GetSampleSelection(int ds_index, int sample_index) { return IupPlotGetSampleSelection(ih, ds_index, sample_index); }
+    void SetSample(int ds_index, int sample_index, double x, double y) { IupPlotSetSample(ih, ds_index, sample_index, x, y); }
+    void SetSampleStr(int ds_index, int sample_index, const char* x, double y) { IupPlotSetSampleStr(ih, ds_index, sample_index, x, y); }
+    void SetSampleSelection(int ds_index, int sample_index, int selected) { IupPlotSetSampleSelection(ih, ds_index, sample_index, selected); }
 
-    void Transform(double x, double y, double &cnv_x, double &cnv_y)
-    {
-      IupPlotTransform(ih, x, y, &cnv_x, &cnv_y);
-    }
-    void TransformTo(double cnv_x, double cnv_y, double &x, double &y)
-    {
-      IupPlotTransformTo(ih, cnv_x, cnv_y, &x, &y);
-    }
+    void Transform(double x, double y, double &cnv_x, double &cnv_y) { IupPlotTransform(ih, x, y, &cnv_x, &cnv_y); }
+    void TransformTo(double cnv_x, double cnv_y, double &x, double &y) { IupPlotTransformTo(ih, cnv_x, cnv_y, &x, &y); }
 
-    int FindSample(double cnv_x, double cnv_y, int &ds_index, int &sample_index)
-    {
-      return IupPlotFindSample(ih, cnv_x, cnv_y, &ds_index, &sample_index);
-    }
+    int FindSample(double cnv_x, double cnv_y, int &ds_index, int &sample_index) { return IupPlotFindSample(ih, cnv_x, cnv_y, &ds_index, &sample_index); }
 
-    void PaintTo(cd::Canvas& cd_canvas)
-    {
-      IupPlotPaintTo(ih, cd_canvas.GetHandle());
-    }
+    void PaintTo(cd::Canvas& cd_canvas) { IupPlotPaintTo(ih, cd_canvas.GetHandle()); }
   };
   class MglPlot : public Control
   {
@@ -941,105 +748,36 @@ namespace iup
 
     static void Open() { IupMglPlotOpen(); }
 
-    void Begin(int dim)
-    {
-      IupMglPlotBegin(ih, dim);
-    }
-    void Add1D(const char* name, double y)
-    {
-      IupMglPlotAdd1D(ih, name, y);
-    }
-    void Add2D(double x, double y)
-    {
-      IupMglPlotAdd2D(ih, x, y);
-    }
-    void Add3D(double x, double y, double z)
-    {
-      IupMglPlotAdd3D(ih, x, y, z);
-    }
-    int End()
-    {
-      return IupMglPlotEnd(ih);
-    }
+    void Begin(int dim) { IupMglPlotBegin(ih, dim); }
+    void Add1D(const char* name, double y) { IupMglPlotAdd1D(ih, name, y); }
+    void Add2D(double x, double y) { IupMglPlotAdd2D(ih, x, y); }
+    void Add3D(double x, double y, double z) { IupMglPlotAdd3D(ih, x, y, z); }
+    int End() { return IupMglPlotEnd(ih); }
 
-    int NewDataSet(int dim)
-    {
-      return IupMglPlotNewDataSet(ih, dim);
-    }
+    int NewDataSet(int dim) { return IupMglPlotNewDataSet(ih, dim); }
 
-    void Insert1D(int ds_index, int sample_index, const char** names, const double* y, int count)
-    {
-      IupMglPlotInsert1D(ih, ds_index, sample_index, names, y, count);
-    }
-    void Insert2D(int ds_index, int sample_index, const double* x, const double* y, int count)
-    {
-      IupMglPlotInsert2D(ih, ds_index, sample_index, x, y, count);
-    }
-    void Insert3D(int ds_index, int sample_index, const double* x, const double* y, const double* z, int count)
-    {
-      IupMglPlotInsert3D(ih, ds_index, sample_index, x, y, z, count);
-    }
+    void Insert1D(int ds_index, int sample_index, const char** names, const double* y, int count) { IupMglPlotInsert1D(ih, ds_index, sample_index, names, y, count); }
+    void Insert2D(int ds_index, int sample_index, const double* x, const double* y, int count) { IupMglPlotInsert2D(ih, ds_index, sample_index, x, y, count); }
+    void Insert3D(int ds_index, int sample_index, const double* x, const double* y, const double* z, int count) { IupMglPlotInsert3D(ih, ds_index, sample_index, x, y, z, count); }
 
-    void Set1D(int ds_index, const char** names, const double* y, int count)
-    {
-      IupMglPlotSet1D(ih, ds_index, names, y, count);
-    }
-    void Set2D(int ds_index, const double* x, const double* y, int count)
-    {
-      IupMglPlotSet2D(ih, ds_index, x, y, count);
-    }
-    void Set3D(int ds_index, const double* x, const double* y, const double* z, int count)
-    {
-      IupMglPlotSet3D(ih, ds_index, x, y, z, count);
-    }
-    void SetFormula(int ds_index, const char* formulaX, const char* formulaY, const char* formulaZ, int count)
-    {
-      IupMglPlotSetFormula(ih, ds_index, formulaX, formulaY, formulaZ, count);
-    }
+    void Set1D(int ds_index, const char** names, const double* y, int count) { IupMglPlotSet1D(ih, ds_index, names, y, count); }
+    void Set2D(int ds_index, const double* x, const double* y, int count) { IupMglPlotSet2D(ih, ds_index, x, y, count); }
+    void Set3D(int ds_index, const double* x, const double* y, const double* z, int count) { IupMglPlotSet3D(ih, ds_index, x, y, z, count); }
+    void SetFormula(int ds_index, const char* formulaX, const char* formulaY, const char* formulaZ, int count) { IupMglPlotSetFormula(ih, ds_index, formulaX, formulaY, formulaZ, count); }
 
-    void SetData(int ds_index, const double* data, int count_x, int count_y, int count_z)
-    {
-      IupMglPlotSetData(ih, ds_index, data, count_x, count_y, count_z);
-    }
-    void LoadData(int ds_index, const char* filename, int count_x, int count_y, int count_z)
-    {
-      IupMglPlotLoadData(ih, ds_index, filename, count_x, count_y, count_z);
-    }
-    void SetFromFormula(int ds_index, const char* formula, int count_x, int count_y, int count_z)
-    {
-      IupMglPlotSetFromFormula(ih, ds_index, formula, count_x, count_y, count_z);
-    }
+    void SetData(int ds_index, const double* data, int count_x, int count_y, int count_z) { IupMglPlotSetData(ih, ds_index, data, count_x, count_y, count_z); }
+    void LoadData(int ds_index, const char* filename, int count_x, int count_y, int count_z) { IupMglPlotLoadData(ih, ds_index, filename, count_x, count_y, count_z); }
+    void SetFromFormula(int ds_index, const char* formula, int count_x, int count_y, int count_z) { IupMglPlotSetFromFormula(ih, ds_index, formula, count_x, count_y, count_z); }
 
-    void Transform(double x, double y, double z, int &ix, int &iy)
-    {
-      IupMglPlotTransform(ih, x, y, z, &ix, &iy);
-    }
-    void TransformTo(int ix, int iy, double &x, double &y, double &z)
-    {
-      IupMglPlotTransformTo(ih, ix, iy, &x, &y, &z);
-    }
+    void Transform(double x, double y, double z, int &ix, int &iy) { IupMglPlotTransform(ih, x, y, z, &ix, &iy); }
+    void TransformTo(int ix, int iy, double &x, double &y, double &z) { IupMglPlotTransformTo(ih, ix, iy, &x, &y, &z); }
 
-    void DrawMark(double x, double y, double z)
-    {
-      IupMglPlotDrawMark(ih, x, y, z);
-    }
-    void DrawLine(double x1, double y1, double z1, double x2, double y2, double z2)
-    {
-      IupMglPlotDrawLine(ih, x1, y1, z1, x2, y2, z2);
-    }
-    void DrawText(const char* text, double x, double y, double z)
-    {
-      IupMglPlotDrawText(ih, text, x, y, z);
-    }
+    void DrawMark(double x, double y, double z) { IupMglPlotDrawMark(ih, x, y, z); }
+    void DrawLine(double x1, double y1, double z1, double x2, double y2, double z2) { IupMglPlotDrawLine(ih, x1, y1, z1, x2, y2, z2); }
+    void DrawText(const char* text, double x, double y, double z) { IupMglPlotDrawText(ih, text, x, y, z); }
 
-    void PaintTo(const char* format, int w, int h, double dpi, unsigned char* data)
-    {
-      IupMglPlotPaintTo(ih, format, w, h, dpi, (void*)data);
-    }
-    void PaintTo(const char* format, int w, int h, double dpi, const char* filename)
-    {
-      IupMglPlotPaintTo(ih, format, w, h, dpi, (void*)filename);
-    }
+    void PaintTo(const char* format, int w, int h, double dpi, unsigned char* data) { IupMglPlotPaintTo(ih, format, w, h, dpi, (void*)data); }
+    void PaintTo(const char* format, int w, int h, double dpi, const char* filename) { IupMglPlotPaintTo(ih, format, w, h, dpi, (void*)filename); }
 
   };
   class MglLabel : public Control
@@ -1081,107 +819,35 @@ namespace iup
   public:
     Config(): Handle(IupConfig()) { }
 
-    int LoadConfig()
-    {
-      return IupConfigLoad(ih);
-    }
-    int SaveConfig()
-    {
-      return IupConfigSave(ih);
-    }
+    int LoadConfig() { return IupConfigLoad(ih); }
+    int SaveConfig() { return IupConfigSave(ih); }
 
-    void SetVariableStrId(const char* group, const char* key, int id, const char* value)
-    {
-      IupConfigSetVariableStrId(ih, group, key, id, value);
-    }
-    void SetVariableIntId(const char* group, const char* key, int id, int value)
-    {
-      IupConfigSetVariableIntId(ih, group, key, id, value);
-    }
-    void SetVariableDoubleId(const char* group, const char* key, int id, double value)
-    {
-      IupConfigSetVariableDoubleId(ih, group, key, id, value);
-    }
-    void SetVariableStr(const char* group, const char* key, const char* value)
-    {
-      IupConfigSetVariableStr(ih, group, key, value);
-    }
-    void SetVariableInt(const char* group, const char* key, int value)
-    {
-      IupConfigSetVariableInt(ih, group, key, value);
-    }
-    void SetVariableDouble(const char* group, const char* key, double value)
-    {
-      IupConfigSetVariableDouble(ih, group, key, value);
-    }
+    void SetVariableStrId(const char* group, const char* key, int id, const char* value) { IupConfigSetVariableStrId(ih, group, key, id, value); }
+    void SetVariableIntId(const char* group, const char* key, int id, int value) { IupConfigSetVariableIntId(ih, group, key, id, value); }
+    void SetVariableDoubleId(const char* group, const char* key, int id, double value) { IupConfigSetVariableDoubleId(ih, group, key, id, value); }
+    void SetVariableStr(const char* group, const char* key, const char* value) { IupConfigSetVariableStr(ih, group, key, value); }
+    void SetVariableInt(const char* group, const char* key, int value) { IupConfigSetVariableInt(ih, group, key, value); }
+    void SetVariableDouble(const char* group, const char* key, double value) { IupConfigSetVariableDouble(ih, group, key, value); }
 
-    char* GetVariableStr(const char* group, const char* key)
-    {
-      return (char*)IupConfigGetVariableStr(ih, group, key);
-    }
-    int GetVariableInt(const char* group, const char* key)
-    {
-      return IupConfigGetVariableInt(ih, group, key);
-    }
-    double GetVariableDouble(const char* group, const char* key)
-    {
-      return IupConfigGetVariableDouble(ih, group, key);
-    }
-    char* GetVariableStrId(const char* group, const char* key, int id)
-    {
-      return (char*)IupConfigGetVariableStrId(ih, group, key, id);
-    }
-    int GetVariableIntId(const char* group, const char* key, int id)
-    {
-      return IupConfigGetVariableIntId(ih, group, key, id);
-    }
-    double GetVariableDoubleId(const char* group, const char* key, int id)
-    {
-      return IupConfigGetVariableDoubleId(ih, group, key, id);
-    }
+    char* GetVariableStr(const char* group, const char* key) { return (char*)IupConfigGetVariableStr(ih, group, key); }
+    int GetVariableInt(const char* group, const char* key) { return IupConfigGetVariableInt(ih, group, key); }
+    double GetVariableDouble(const char* group, const char* key) { return IupConfigGetVariableDouble(ih, group, key); }
+    char* GetVariableStrId(const char* group, const char* key, int id) { return (char*)IupConfigGetVariableStrId(ih, group, key, id); }
+    int GetVariableIntId(const char* group, const char* key, int id) { return IupConfigGetVariableIntId(ih, group, key, id); }
+    double GetVariableDoubleId(const char* group, const char* key, int id) { return IupConfigGetVariableDoubleId(ih, group, key, id); }
 
-    char* GetVariableStrDef(const char* group, const char* key, const char* def)
-    {
-      return (char*)IupConfigGetVariableStrDef(ih, group, key, def);
-    }
-    int GetVariableIntDef(const char* group, const char* key, int def)
-    {
-      return IupConfigGetVariableIntDef(ih, group, key, def);
-    }
-    double GetVariableDoubleDef(const char* group, const char* key, double def)
-    {
-      return IupConfigGetVariableDoubleDef(ih, group, key, def);
-    }
-    char* GetVariableStrIdDef(const char* group, const char* key, int id, const char* def)
-    {
-      return (char*)IupConfigGetVariableStrIdDef(ih, group, key, id, def);
-    }
-    int GetVariableIntIdDef(const char* group, const char* key, int id, int def)
-    {
-      return IupConfigGetVariableIntIdDef(ih, group, key, id, def);
-    }
-    double GetVariableDoubleIdDef(const char* group, const char* key, int id, double def)
-    {
-      return IupConfigGetVariableDoubleIdDef(ih, group, key, id, def);
-    }
+    char* GetVariableStrDef(const char* group, const char* key, const char* def) { return (char*)IupConfigGetVariableStrDef(ih, group, key, def); }
+    int GetVariableIntDef(const char* group, const char* key, int def) { return IupConfigGetVariableIntDef(ih, group, key, def); }
+    double GetVariableDoubleDef(const char* group, const char* key, double def) { return IupConfigGetVariableDoubleDef(ih, group, key, def); }
+    char* GetVariableStrIdDef(const char* group, const char* key, int id, const char* def) { return (char*)IupConfigGetVariableStrIdDef(ih, group, key, id, def); }
+    int GetVariableIntIdDef(const char* group, const char* key, int id, int def) { return IupConfigGetVariableIntIdDef(ih, group, key, id, def); }
+    double GetVariableDoubleIdDef(const char* group, const char* key, int id, double def) { return IupConfigGetVariableDoubleIdDef(ih, group, key, id, def); }
 
-    void RecentInit(Ihandle* menu, Icallback recent_cb, int max_recent)
-    {
-      IupConfigRecentInit(ih, menu, recent_cb, max_recent);
-    }
-    void RecentUpdate(const char* filename)
-    {
-      IupConfigRecentUpdate(ih, filename);
-    }
+    void RecentInit(Ihandle* menu, Icallback recent_cb, int max_recent) { IupConfigRecentInit(ih, menu, recent_cb, max_recent); }
+    void RecentUpdate(const char* filename) { IupConfigRecentUpdate(ih, filename); }
 
-    void DialogShow(Ihandle* dialog, const char* name)
-    {
-      IupConfigDialogShow(ih, dialog, name);
-    }
-    void DialogClosed(Ihandle* dialog, const char* name)
-    {
-      IupConfigDialogClosed(ih, dialog, name);
-    }
+    void DialogShow(Ihandle* dialog, const char* name) { IupConfigDialogShow(ih, dialog, name); }
+    void DialogClosed(Ihandle* dialog, const char* name) { IupConfigDialogClosed(ih, dialog, name); }
   };
 }
 
@@ -1191,28 +857,19 @@ namespace cd
   {
   public:
     CanvasIup(iup::Canvas& iup_canvas)
-      : Canvas()
-    {
-      canvas = cdCreateCanvas(CD_IUP, iup_canvas.GetHandle());
-    }
+      : Canvas() { canvas = cdCreateCanvas(CD_IUP, iup_canvas.GetHandle()); }
   };
   class CanvasIupDoubleBuffer : public Canvas
   {
   public:
     CanvasIupDoubleBuffer(iup::Canvas& iup_canvas)
-      : Canvas()
-    {
-      canvas = cdCreateCanvas(CD_IUPDBUFFER, iup_canvas.GetHandle());
-    }
+      : Canvas() { canvas = cdCreateCanvas(CD_IUPDBUFFER, iup_canvas.GetHandle()); }
   };
   class CanvasIupDoubleBufferRGB : public Canvas
   {
   public:
     CanvasIupDoubleBufferRGB(iup::Canvas& iup_canvas)
-      : Canvas()
-    {
-      canvas = cdCreateCanvas(CD_IUPDBUFFERRGB, iup_canvas.GetHandle());
-    }
+      : Canvas() { canvas = cdCreateCanvas(CD_IUPDBUFFERRGB, iup_canvas.GetHandle()); }
   };
 }
 
