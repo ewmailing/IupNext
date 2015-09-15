@@ -52,6 +52,10 @@ void TextSpinTest(void)
 //  IupSetAttribute(text, "SPINAUTO", "NO");
   IupSetAttribute(text, "NAME", "spin");
 
+//  IupSetAttribute(text, "MASK", "[+/-]?(/d+/.?/d*|/./d+)");
+//  IupSetAttribute(text, "MASK", "[+/-]?(/d+/./d/d)");
+
+  
 //  IupSetCallback(text, "SPIN_CB", (Icallback)spin_cb);
 //  IupSetCallback(text, "ACTION", (Icallback)action_cb);
 //  IupSetCallback(text, "VALUECHANGED_CB", (Icallback)valuechanged_cb);

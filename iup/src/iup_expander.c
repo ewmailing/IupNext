@@ -235,6 +235,7 @@ struct _IcontrolData
   int auto_show;
   int title_expand;
   int animation;
+  int state_refresh;
 
   /* aux */
   Ihandle* auto_show_timer;
@@ -396,7 +397,8 @@ static int iExpanderAnimateTimer_CB(Ihandle* ih_timer)
   if (ih->data->animation == 2)
     IupSetfAttribute(child, "CHILDOFFSET", "0x%d", height - final_height);
 
-  IupRefresh(ih);
+  if (ih->data->state_refresh)
+    IupRefresh(ih);
 
   if (current_frame == num_frames - 1)
   {
@@ -406,7 +408,9 @@ static int iExpanderAnimateTimer_CB(Ihandle* ih_timer)
     {
       ih->data->state = IEXPANDER_CLOSE;
       IupSetAttribute(child, "VISIBLE", "NO");
-      IupRefresh(ih);
+
+      if (ih->data->state_refresh)
+        IupRefresh(ih);
     }
 
     IupSetAttribute(ih_timer, "RUN", "NO");
@@ -492,8 +496,8 @@ static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int st
       else
         IupSetAttribute(child, "VISIBLE", "YES");
 
-      if (refresh)
-        IupRefresh(child); /* this will recompute the layout of the hole dialog */
+      if (refresh && ih->data->state_refresh)
+        IupRefresh(child); /* this will re-compute the layout of the hole dialog */
     }
   }
 
@@ -725,7 +729,7 @@ static int iExpanderGlobalMotion_cb(int x, int y)
   return IUP_DEFAULT;
 }
 
-static int iExpanderTimer_cb(Ihandle* ih_timer)
+static int iExpanderAutoShowTimer_cb(Ihandle* ih_timer)
 {
   Ihandle* ih = (Ihandle*)iupAttribGet(ih_timer, "_IUP_EXPANDER");
   Ihandle* child = ih->firstchild->brother;
@@ -1016,6 +1020,17 @@ static char* iExpanderGetStateAttrib(Ihandle* ih)
     return "CLOSE";
 }
 
+static int iExpanderSetStateRefreshAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->state_refresh = iupStrBoolean(value);
+  return 0; /* do not store value in hash table */
+}
+
+static char* iExpanderGetStateRefreshAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->state_refresh);
+}
+
 static int iExpanderSetForeColorAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->position == IEXPANDER_TOP)
@@ -1229,7 +1244,7 @@ static int iExpanderSetAutoShowAttrib(Ihandle* ih, const char* value)
     {
       ih->data->auto_show_timer = IupTimer();
       IupSetAttribute(ih->data->auto_show_timer, "TIME", "1000");  /* 1 second */
-      IupSetCallback(ih->data->auto_show_timer, "ACTION_CB", iExpanderTimer_cb);
+      IupSetCallback(ih->data->auto_show_timer, "ACTION_CB", iExpanderAutoShowTimer_cb);
       iupAttribSet(ih->data->auto_show_timer, "_IUP_EXPANDER", (char*)ih);  /* 1 second */
     }
   }
@@ -1465,6 +1480,7 @@ static int iExpanderCreateMethod(Ihandle* ih, void** params)
   ih->data->position = IEXPANDER_TOP;
   ih->data->state = IEXPANDER_OPEN;
   ih->data->bar_size = -1;
+  ih->data->state_refresh = 1;
 
   bar = IupBackgroundBox(NULL);
   iupChildTreeAppend(ih, bar);  /* bar will always be the firstchild */
@@ -1547,6 +1563,7 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "ANIMATION", iExpanderGetAnimationAttrib, iExpanderSetAnimationAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMFRAMES", NULL, NULL, IUPAF_SAMEASSYSTEM, "10", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMETIME", NULL, NULL, IUPAF_SAMEASSYSTEM, "30", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STATEREFRESH", iExpanderGetStateRefreshAttrib, iExpanderSetStateRefreshAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, iExpanderSetImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
