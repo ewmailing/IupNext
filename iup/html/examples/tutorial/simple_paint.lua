@@ -814,7 +814,7 @@ function view_zoom_rect(ih, image_width, image_height)
   if (canvas_width < view_width) then
     x = math.floor(-posx * view_width)
   else
-    x = (canvas_width - view_width) / 2
+    x = math.floor((canvas_width - view_width) / 2)
   end
 
   if (canvas_height < view_height) then
@@ -824,7 +824,7 @@ function view_zoom_rect(ih, image_width, image_height)
     posy = 1 - dy - posy
     y = math.floor(-posy * view_height)
   else
-    y = (canvas_height - view_height) / 2
+    y = math.floor((canvas_height - view_height) / 2)
   end
 
   return zoom_factor, x, y, view_width, view_height
