@@ -654,8 +654,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\html\examples\tests\iuptest.rc">
-      <Filter>Tutorial</Filter>
-    </ResourceCompile>
+    <ResourceCompile Include="..\html\examples\tests\iuptest.rc" />
   </ItemGroup>
 </Project>

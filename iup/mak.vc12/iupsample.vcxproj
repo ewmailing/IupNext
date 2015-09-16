@@ -72,6 +72,7 @@
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0416</Culture>
+      <AdditionalIncludeDirectories>../etc</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>comctl32.lib;ws2_32.lib;winmm.lib;ole32.lib;opengl32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupimglib.lib;cdim.lib;cd.lib;freetype6.lib;iupcd.lib;iup_pplot.lib;iuptuio.lib;iupim.lib;im.lib;zlib1.lib;im_process.lib;cdcontextplus.lib;gdiplus.lib;iupole.lib;iup_scintilla.lib;imm32.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -108,6 +109,7 @@
     <ResourceCompile>
       <PreprocessorDefinitions>TEC_64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0416</Culture>
+      <AdditionalIncludeDirectories>../etc</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>comctl32.lib;

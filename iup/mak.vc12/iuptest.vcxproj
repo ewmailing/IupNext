@@ -73,6 +73,7 @@
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0416</Culture>
+      <AdditionalIncludeDirectories>..\etc</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;cdcontextplus.lib;comctl32.lib;ole32.lib;opengl32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupglcontrols.lib;iupimglib.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iup_pplot.lib;iup_plot.lib;iup_mglplot.lib;vld.lib;cdgl.lib;ftgl.lib;iupim.lib;im.lib;im_process.lib;iupmatrixex.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -110,6 +111,7 @@
     <ResourceCompile>
       <PreprocessorDefinitions>TEC_64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0416</Culture>
+      <AdditionalIncludeDirectories>..\etc</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;cdcontextplus.lib;comctl32.lib;ole32.lib;opengl32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupglcontrols.lib;iupimglib.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iup_pplot.lib;iup_plot.lib;iup_mglplot.lib;cdgl.lib;ftgl.lib;iupim.lib;im.lib;im_process.lib;iupmatrixex.lib;%(AdditionalDependencies)</AdditionalDependencies>
