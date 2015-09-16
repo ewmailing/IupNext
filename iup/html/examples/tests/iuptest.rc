@@ -1,7 +1,7 @@
-/* SIZE_ICON ICON "../test/test_sizes.ico" */
-TECGRAF_ICON ICON "../etc/tecgraf.ico"
+/* SIZE_ICON ICON "test_sizes.ico" */
+TECGRAF_ICON ICON "tecgraf.ico"
 TECGRAF_BITMAP BITMAP "tecgraf.bmp"
-CURSOR_PEN CURSOR "../etc/pen.cur"
+CURSOR_PEN CURSOR "pen.cur"
 
 /* To avoid the inclusion of <winuser.h> */
 #define WS_CHILD            0x40000000L
@@ -24,8 +24,8 @@ END
 #ifndef IUP_DLL
 /* The following line will enable Windows XP Visual Styles */
 #ifdef TEC_64
-1 24 "../etc/iup64.manifest"
+1 24 "iup64.manifest"
 #else
-1 24 "../etc/iup.manifest"
+1 24 "iup.manifest"
 #endif
 #endif

@@ -165,6 +165,7 @@ endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   SRC += iuptest.rc 
+  INCLUDES += ../../../etc
 else
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
     SRC += iuptest.rc

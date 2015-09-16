@@ -22,7 +22,7 @@ goto end
 :iupexeall
 call make_uname vc10 %2 %3 %4 %5 %6 %7
 call make_uname vc10_64 %2 %3 %4 %5 %6 %7
-call make_uname cygw17 %2 %3 %4 %5 %6 %7
+REM call make_uname cygw17 %2 %3 %4 %5 %6 %7
 goto end
 
 :end

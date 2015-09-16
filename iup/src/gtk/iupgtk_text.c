@@ -1435,11 +1435,13 @@ static gboolean gtkTextButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihand
 static void gtkTextEntryDeleteText(GtkEditable *editable, int start, int end, Ihandle* ih)
 {
   IFnis cb = (IFnis)IupGetCallback(ih, "ACTION");
+  int ret;
 
   if (ih->data->disable_callbacks)
     return;
 
-  if (iupEditCallActionCb(ih, cb, NULL, start, end, ih->data->mask, ih->data->nc, 1, iupgtkStrGetUTF8Mode())==0)
+  ret = iupEditCallActionCb(ih, cb, NULL, start, end, ih->data->mask, ih->data->nc, 1, iupgtkStrGetUTF8Mode());
+  if (ret == 0)
     g_signal_stop_emission_by_name (editable, "delete_text");
 }
 
@@ -1472,6 +1474,7 @@ static void gtkTextBufferDeleteRange(GtkTextBuffer *textbuffer, GtkTextIter *sta
 {
   IFnis cb = (IFnis)IupGetCallback(ih, "ACTION");
   int start, end;
+  int ret;
 
   if (ih->data->disable_callbacks)
     return;
@@ -1479,7 +1482,8 @@ static void gtkTextBufferDeleteRange(GtkTextBuffer *textbuffer, GtkTextIter *sta
   start = gtk_text_iter_get_offset(start_iter);
   end = gtk_text_iter_get_offset(end_iter);
 
-  if (iupEditCallActionCb(ih, cb, NULL, start, end, ih->data->mask, ih->data->nc, 1, iupgtkStrGetUTF8Mode())==0)
+  ret = iupEditCallActionCb(ih, cb, NULL, start, end, ih->data->mask, ih->data->nc, 1, iupgtkStrGetUTF8Mode());
+  if (ret == 0)
     g_signal_stop_emission_by_name (textbuffer, "delete_range");
 }
 
