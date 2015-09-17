@@ -58,15 +58,16 @@ endif
 SRCLUA = console5.lua 
 #SRCLUA += indent.lua
 
+IUP := ..
+USE_IUPLUA = Yes
+USE_IUP3 = Yes
+
 ifdef DBG
   ALL_STATIC=Yes
 endif
 
 ifdef ALL_STATIC
   # Statically link everything only when debugging
-  IUP := ..
-  USE_IUPLUA = Yes
-  USE_IUP3 = Yes
   USE_STATIC = Yes
   
   ifdef DBG_DIR
@@ -167,10 +168,6 @@ else
     # Must call "tecmake dll10" so USE_* will use the correct TEC_UNAME
     USE_DLL = Yes
     GEN_MANIFEST = No
-    
-    IUP := ..
-    USE_IUPLUA = Yes
-    USE_IUP3 = Yes
   else
     # In UNIX Lua is always statically linked, late binding is used.
     USE_STATIC = Yes
