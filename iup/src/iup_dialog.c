@@ -418,42 +418,34 @@ static void iDialogListCheckLastVisible()
   }
 }
 
-int iupDialogPopup(Ihandle* ih, int x, int y)
+static int iDialogUpdateVisibility(Ihandle* ih, int *x, int *y)
 {
-  int was_visible;
-
-  int ret = iupClassObjectDlgPopup(ih, x, y);
-  if (ret != IUP_INVALID) /* IUP_INVALID means it is not implemented */
-    return ret;
-
-  ih->data->show_state = IUP_SHOW;
-
   /* save visible state before iupdrvDialogSetPlacement */
   /* because it can also show the window when changing placement. */
-  was_visible = iupdrvDialogIsVisible(ih); 
+  int was_visible = iupdrvDialogIsVisible(ih);
 
   /* Update the position and placement */
   if (!iupdrvDialogSetPlacement(ih))
   {
-    iDialogAdjustPos(ih, &x, &y);
-    iupdrvDialogSetPosition(ih, x, y);
+    iDialogAdjustPos(ih, x, y);
+    iupdrvDialogSetPosition(ih, *x, *y);
   }
 
   if (was_visible) /* already visible */
   {
     /* only re-show to raise the window */
     iupdrvDialogSetVisible(ih, 1);
-    
+
     /* flush, then process show_cb and startfocus */
     iDialogAfterShow(ih);
-    return IUP_NOERROR; 
+    return 1;
   }
 
-  if (iupAttribGetBoolean(ih, "MODAL")) /* already a popup */
-    return IUP_NOERROR; 
+  return 0;
+}
 
-  iDialogSetModal(ih);
-
+static void iDialogFirstShow(Ihandle* ih)
+{
   ih->data->first_show = 1;
 
   /* actually show the window */
@@ -463,15 +455,20 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
 
   /* increment visible count */
   iupDlgListVisibleInc();
-    
+
   /* flush, then process show_cb and startfocus */
   iDialogAfterShow(ih);
+}
+
+static void iDialogModalLoop(Ihandle* ih)
+{
+  iDialogSetModal(ih);
 
   /* interrupt processing here */
   IupMainLoop();
 
-  /* if window is still valid (IupDestroy not called), 
-     hide the dialog if still visible. */
+  /* if window is still valid (IupDestroy not called),
+  hide the dialog if still visible. */
   if (iupObjectCheck(ih))
   {
     iDialogUnSetModal(ih);
@@ -479,17 +476,39 @@ int iupDialogPopup(Ihandle* ih, int x, int y)
   }
   else
     iDialogListCheckLastVisible();
+}
+
+int iupDialogPopup(Ihandle* ih, int x, int y)
+{
+  int ret = iupClassObjectDlgPopup(ih, x, y);
+  if (ret != IUP_INVALID) /* IUP_INVALID means it is not implemented */
+    return ret;
+
+  ih->data->show_state = IUP_SHOW;
+
+  if (iDialogUpdateVisibility(ih, &x, &y))
+  {
+    if (!iupAttribGetBoolean(ih, "MODAL"))
+      iDialogModalLoop(ih);
+
+    return IUP_NOERROR;  /* if already visible, returns */
+  }
+
+  iDialogFirstShow(ih);
+
+  iDialogModalLoop(ih);
 
   return IUP_NOERROR;
 }
 
 int iupDialogShowXY(Ihandle* ih, int x, int y)
 {
-  int was_visible;
-
-  /* Calling IupShow for a visible dialog shown with IupPopup does nothing. */
-  if (iupAttribGetBoolean(ih, "MODAL")) /* already a popup */
-    return IUP_NOERROR; 
+  if (iupAttribGetBoolean(ih, "MODAL")) 
+  {
+    /* is modal, just update visibility and return */
+    iDialogUpdateVisibility(ih, &x, &y);
+    return IUP_NOERROR;
+  }
 
   if (ih->data->popup_level != 0)
   {
@@ -498,39 +517,10 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
     ih->data->popup_level = 0; /* Now it is at the current popup level */
   }
 
-  /* save visible state before iupdrvDialogSetPlacement */
-  /* because it can also show the window when changing placement. */
-  was_visible = iupdrvDialogIsVisible(ih); 
+  if (iDialogUpdateVisibility(ih, &x, &y))
+    return IUP_NOERROR;  /* if already visible, returns */
 
-  /* Update the position and placement */
-  if (!iupdrvDialogSetPlacement(ih))
-  {
-    iDialogAdjustPos(ih, &x, &y);
-    iupdrvDialogSetPosition(ih, x, y);
-  }
-
-  if (was_visible) /* already visible */
-  {
-    /* only re-show to raise the window */
-    iupdrvDialogSetVisible(ih, 1);
-    
-    /* flush, then process show_cb and startfocus */
-    iDialogAfterShow(ih);
-    return IUP_NOERROR; 
-  }
-
-  ih->data->first_show = 1;
-                          
-  /* actually show the window */
-  /* test if placement turn the dialog visible */
-  if (!iupdrvDialogIsVisible(ih))
-    iupdrvDialogSetVisible(ih, 1);
-
-  /* increment visible count */
-  iupDlgListVisibleInc();
-
-  /* flush, then process show_cb and startfocus */
-  iDialogAfterShow(ih);
+  iDialogFirstShow(ih);
 
   return IUP_NOERROR;
 }
@@ -726,7 +716,7 @@ static int iDialogSetVisibleAttrib(Ihandle* ih, const char* value)
 
 void iupDialogUpdatePosition(Ihandle* ih)
 {
-  /* This funtion is used only by pre-defined popup native dialogs */
+  /* This function is used only by pre-defined popup native dialogs */
 
   int x = iupAttribGetInt(ih, "_IUPDLG_X");
   int y = iupAttribGetInt(ih, "_IUPDLG_Y");

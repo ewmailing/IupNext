@@ -9,12 +9,6 @@
 .style1 {
 	text-decoration: underline;
 }
-.auto-style1 {
-	background-color: #FFFFFF;
-}
-.auto-style2 {
-	color: #FF0000;
-}
 </style>
 </head>
 <body>
@@ -48,12 +42,12 @@ main screen.
 <ul>
   <li>IUP_LEFT:
     Positions the element on the left corner of 
-    the screen</li>
+    the main screen</li>
   <li>IUP_CENTER:
-    Centers the element on the screen</li>
+    Centers the element on the main screen</li>
   <li>IUP_RIGHT:
     Positions the element on the right corner of 
-    the screen</li>
+    the main screen</li>
   <li>IUP_MOUSEPOS:
     Positions the element on the mouse cursor</li>
   <li>IUP_CENTERPARENT: Horizontally centralizes the dialog relative to its 
@@ -67,12 +61,12 @@ main screen.
 <ul>
   <li>IUP_TOP:
     Positions the element on the top of the 
-    screen</li>
+    main screen</li>
   <li>IUP_CENTER:
-    Vertically centers the element on the screen</li>
+    Vertically centers the element on the main screen</li>
   <li>IUP_BOTTOM:
     Positions the element on the base of the 
-    screen</li>
+    main screen</li>
   <li>IUP_MOUSEPOS:
     Positions the element on the mouse cursor</li>
   <li>IUP_CENTERPARENT: Vertically centralizes the dialog relative to its parent. 
@@ -93,29 +87,37 @@ main screen.
 by the <a href="../attrib/iup_screenposition.html">SCREENPOSITION</a> attribute.</p>
 <p>
 <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
-IUP_MOUSEPOS position is the same as if the global attribute
-<a href="../attrib/iup_globals.html#cursorpos">CURSORPOS</a> w<span class="auto-style1">as</span> 
-used to obtain x,y values.</span></p>
+IUP_MOUSEPOS position is the same as returned by the 
+<a href="../attrib/iup_globals.html#cursorpos">CURSORPOS</a> global attribute.</span></p>
 <p>See the <a href="../dlg/iupdialog.html#PLACEMENT">PLACEMENT</a> attribute for other position and show 
   options.</p>
 <p>When IUP_CENTERPARENT is used but PARENTDIALOG is not defined then it is 
 replaced by IUP_CENTER.</p>
 <p>When IUP_CURRENT is used at the first time the dialog is shown then it will 
 be replaced by IUP_CENTERPARENT.</p>
-<p>The main screen size does not include additional monitors.</p>
-<p><b>IupPopup</b> works just like <b>IupShow</b> and <b>IupShowXY</b>, but it inhibits interaction with other dialogs 
+<p>The main screen area does not include additional monitors.</p>
+<p><b>IupPopup</b> works just like <b>IupShowXY</b>, but it inhibits interaction with other dialogs 
 that are visible and interrupts the processing until 
   IUP_CLOSE is returned in a callback, <strong>IupExitLoop</strong> is called, or the 
-popup dialog is hidden. Although it 
+popup dialog is hidden. This is now a modal dialog. Although it 
   interrupts the processing, it does not destroy the dialog when it ends. To destroy the dialog, 
   <b>IupDestroy</b> must be called.</p>
-<p><span class="auto-style2"><strong>IMPORTANT</strong></span>: Calling <b>IupPopup</b> for an already visible dialog will only update its position 
-  and/or size on screen, will NOT change its modal state and will NOT interrupt processing.</p>
-<p>In GTK and Motif the inactive dialogs will still be able to move, resize and change their Z-order. Although their 
+<p>The MODAL attribute of the dialog will be changed internally to return Yes.</p>
+<p>In GTK and Motif the inactive dialogs will still be moveable, resizable and changeable their Z-order. Although their 
   contents will be inactive, keyboard will be disabled, and they can not be closed from the close box.</p>
+<p>When called for an already visible dialog (modal or not) it will update its 
+position and <a href="../dlg/iupdialog.html#PLACEMENT">PLACEMENT</a>. If the 
+already visible dialog is not modal then it will became modal and processing 
+will be interrupted as a regular <strong>IupPopup</strong> (since 3.16). If the 
+already visible dialog is modal then the function returns and it will NOT 
+interrupt processing, the dialog still will remains MODAL. In other words, 
+calling <strong>IupPopup</strong> a second time will just update the dialog 
+position and it will not interrupt processing, and calling <strong>IupPopup</strong> 
+for a dialog shown with <strong>IupShowXY</strong> will turn it a modal dialog.</p>
 <h3>See Also</h3>
 <p><a href="iupshowxy.html">IupShowXY</a>, <a href="iupshow.html">IupShow</a>,
-  <a href="iuphide.html">IupHide</a>, <a href="iupmap.html">IupMap</a></p>
+  <a href="iuphide.html">IupHide</a>, <a href="iupmap.html">IupMap</a>,
+<a href="../dlg/iupdialog.html">IupDialog</a></p>
 
 </body>
 

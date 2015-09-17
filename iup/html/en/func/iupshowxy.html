@@ -27,13 +27,13 @@ definitions can also be used:</p>
 <ul>
   <li>IUP_LEFT:
     Positions the dialog on the left corner of 
-    the screen</li>
+    the main screen</li>
   <li>IUP_CENTER:
     Horizontally centralizes the dialog on the 
-    screen</li>
+    main screen</li>
   <li>IUP_RIGHT:
     Positions the dialog on the right corner of 
-    the screen</li>
+    the main screen</li>
   <li>IUP_MOUSEPOS:
     Positions the dialog on the mouse position</li>
   <li>IUP_CENTERPARENT: Horizontally centralizes the dialog relative to its 
@@ -47,13 +47,13 @@ definitions can also be used:</p>
 <ul>
   <li>IUP_TOP:
     Positions the dialog on the top of the 
-    screen</li>
+    main screen</li>
   <li>IUP_CENTER:
     Vertically centralizes the dialog on the 
-    screen</li>
+    main screen</li>
   <li>IUP_BOTTOM:
     Positions the dialog on the base of the 
-    screen</li>
+    main screen</li>
   <li>IUP_MOUSEPOS:
     Positions the dialog on the mouse position</li>
   <li>IUP_CENTERPARENT: Vertically centralizes the dialog relative to its parent 
@@ -68,22 +68,26 @@ definitions can also be used:</p>
 <p>Will call <b>IupMap</b> for the element.</p>
 <p><strong>x</strong> and <strong>y</strong> positions are the same as returned 
 by the <a href="../attrib/iup_screenposition.html">SCREENPOSITION</a> attribute.</p>
+<p>
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
+IUP_MOUSEPOS position is the same as returned by the 
+<a href="../attrib/iup_globals.html#cursorpos">CURSORPOS</a> global attribute.</span></p>
 <p>See the <a href="../dlg/iupdialog.html#PLACEMENT">PLACEMENT</a> attribute for other position and show 
   options.</p>
 <p>When IUP_CENTERPARENT is used but PARENTDIALOG is not defined then it is 
 replaced by IUP_CENTER.</p>
 <p>When IUP_CURRENT is used at the first time the dialog is shown then it will 
 be replaced by IUP_CENTERPARENT.</p>
-<p>The main screen size does not include additional monitors.</p>
-<p>This function can be executed more than once 
-  for the same dialog. This will make the dialog be placed above all other dialogs in the application, 
-  changing its Z-order, and update its position and/or size on screen. </p>
-<p>IMPORTANT: Calling 
-<b>IupShowXY</b> for a visible 
-  dialog shown with <b>IupPopup</b> does nothing.</p>
+<p>The main screen area does not include additional monitors.</p>
+<p>When called for an already visible dialog (MODAL or not) it will update its 
+position and <a href="../dlg/iupdialog.html#PLACEMENT">PLACEMENT</a>. If the 
+already visible dialog is not modal but it was disabled by one (a call to
+<strong>IupPopup</strong> for another dialog after this one was shown) then it 
+will be now enabled for interaction.</p>
 <h3>See Also</h3>
 <p><a href="iupshow.html">IupShow</a>, <a href="iuphide.html">IupHide</a>,
-  <a href="iuppopup.html">IupPopup</a>, <a href="iupmap.html">IupMap</a></p>
+  <a href="iuppopup.html">IupPopup</a>, <a href="iupmap.html">IupMap</a>,
+<a href="../dlg/iupdialog.html">IupDialog</a></p>
 
 </body>
 

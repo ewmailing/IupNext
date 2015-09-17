@@ -194,7 +194,8 @@ decoration buttons. (since 3.0)</p>
 <p><strong>MODAL</strong> (read-only): Returns the popup state. It is &quot;YES&quot; if 
 the dialog was shown using <strong>IupPopup</strong>. It is &quot;NO&quot; if 
 <strong>IupShow</strong> was used or it is not 
-visible. (since 3.0)</p>
+visible. At the first time the dialog is shown, MODAL is not set yet when 
+SHOW_CB is called. (since 3.0)</p>
 <p><strong>NATIVEPARENT</strong> (creation only): Native handle of a dialog to 
 be used as parent. Used only if PARENTDIALOG is not defined.</p>
 <p><a href="../attrib/iup_parentdialog.html">PARENTDIALOG</a> (creation only): 
