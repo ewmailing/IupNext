@@ -29,7 +29,7 @@ endif
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iupimglib im_process iupim cdim
 else
-  SLIB += $(IUP)/lib/$(TEC_UNAME)$(SFX)/libcdim.a \
+  SLIB += $(CD)/lib/$(TEC_UNAME)$(SFX)/libcdim.a \
           $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupim.a \
           $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupimglib.a \
           $(IM)/lib/$(TEC_UNAME)$(SFX)/libim_process.a
