@@ -40,11 +40,11 @@ Copy_DLLs()
 }
 
 Copy_DLLs dll10 Win32 51
-#Copy_DLLs dll10 Win64 51
+Copy_DLLs dll10 Win64 51
 Copy_DLLs dll10 Win32 52
-#Copy_DLLs dll10 Win64 52
+Copy_DLLs dll10 Win64 52
 Copy_DLLs dll10 Win32 53
-#Copy_DLLs dll10 Win64 53
+Copy_DLLs dll10 Win64 53
 
 #Copy_DLLs cygw17 cygw17 51
 #Copy_DLLs cygw17 cygw17 52
