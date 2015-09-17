@@ -1644,11 +1644,7 @@ wb_usr.tree =
           folder=
           {
             {
-              name= {nl= "FONT (2.x)"},
-              link= "attrib/iup_font2.html"
-            },
-            {
-              name= {nl= "FONT (3.0)"},
+              name= {nl= "FONT"},
               link= "attrib/iup_font.html"
             },
             {

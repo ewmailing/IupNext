@@ -70,6 +70,10 @@ end
 function append_file(filename)
   print("  " .. filename)
   local input = io.open(filename, "r")
+  if (not input) then
+    print("File not found:\n  "..filename)
+    return
+  end
   local input_data = input:read("*a")
   
   -- extract body contents
