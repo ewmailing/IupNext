@@ -25,30 +25,28 @@
 #include "iupweb.h"
 #include "iup_scintilla.h"
 #include "iuptuio.h"
+#include <string>
 
 
 #if 0 //TODO
 
-Icallback IupGetCallback(Ihandle* ih, const char *name);
-Icallback IupSetCallback(Ihandle* ih, const char *name, Icallback func);
-Ihandle*  IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...);
+#ifdef _STRING_
+std::string
+#endif
+void cdCanvasSetfAttribute(cdCanvas* canvas, const char* name, const char* format, ...);
+void IupSetStrf(Ihandle* ih, const char* name, const char* format, ...);
+void IupSetStrfId(Ihandle *ih, const char* name, int id, const char* format, ...);
+void IupSetStrfId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
+void IupMessagef(const char *title, const char *format, ...);
 
-===============================================================================
-
-void  IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos);
-void  IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col);
-int   IupConvertXYToPos(Ihandle* ih, int x, int y);
-
-int   IupTreeSetUserId(Ihandle* ih, int id, void* userid);
-void* IupTreeGetUserId(Ihandle* ih, int id);
-int   IupTreeGetId(Ihandle* ih, void *userid);
-void  IupTreeSetAttributeHandle(Ihandle* ih, const char* name, int id, Ihandle* ih_named);
-
-typedef int(*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);
+int IupScanf(const char *format, ...);
 int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format, ...);
 int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
-Ihandle* IupParamf(const char* format);
-Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count);
+
+Icallback IupGetCallback(Ihandle* ih, const char *name);
+Icallback IupSetCallback(Ihandle* ih, const char *name, Icallback func);
+
+void IupTreeSetAttributeHandle(Ihandle* ih, const char* name, int id, Ihandle* ih_named);
 
 #endif
 
@@ -98,27 +96,12 @@ namespace iup
   inline void SetStringGlobal(const char* name, const char* value) { IupSetStrGlobal(name, value); }
   inline char* GetGlobal(const char* name) { return IupGetGlobal(name); }
 
-
   inline int GetFile(char *arq) { return IupGetFile(arq); }
   inline void Message(const char *title, const char *msg) { IupMessage(title, msg); }
-  //TODO
-  //void Messagef(const char *title, const char *format, ...)
-  //{
-  //  IupMessagef(title, format, ...);
-  //}
   inline int Alarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3) { return IupAlarm(title, msg, b1, b2, b3); }
-  //TODO
-  //int Scanf(const char *format, ...)
-  //{
-  //  return IupScanf(format, ...);
-  //}
   inline int ListDialog(int type, const char *title, int size, const char** list, int op, int max_col, int max_lin, int* marks) { return IupListDialog(type, title, size, list, op, max_col, max_lin, marks); }
   inline int GetText(const char* title, char* text) { return IupGetText(title, text); }
   inline int GetColor(int x, int y, unsigned char &r, unsigned char &g, unsigned char &b) { return IupGetColor(x, y, &r, &g, &b); }
-
-
-  //TODO
-  //STL std::string com ifdef
 
   inline int GetAllNames(char** names, int n) { return IupGetAllNames(names, n); }
   inline int GetAllDialogs(char** names, int n) { return IupGetAllDialogs(names, n); }
@@ -148,18 +131,11 @@ namespace iup
     const char* GetString(const char* name) { return IupGetAttribute(ih, name); }
     void SetInteger(const char* name, int value) { IupSetInt(ih, name, value); }
     int GetInteger(const char* name) { return IupGetInt(ih, name); }
+    void GetIntegerInteger(const char* name, int &i1, int &i2) { IupGetIntInt(ih, name, &i1, &i2); }
     void SetNumber(const char* name, double value) { IupSetDouble(ih, name, value); }
     double GetNumber(const char* name) { return IupGetDouble(ih, name); }
     void SetRGB(const char* name, unsigned char r, unsigned char g, unsigned char b) { IupSetRGB(ih, name, r, g, b); }
     void GetRGB(const char* name, unsigned char &r, unsigned char &g, unsigned char &b) { IupGetRGB(ih, name, &r, &g, &b); }
-
-    //TODO
-    //void      IupSetStrf(Ihandle* ih, const char* name, const char* format, ...);
-    //int       IupGetInt2(Ihandle* ih, const char* name);
-    //int       IupGetIntInt(Ihandle *ih, const char* name, int *i1, int *i2);
-    //void  IupSetStrfId(Ihandle *ih, const char* name, int id, const char* format, ...);
-    //void  IupSetStrfId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
-    //void     cdCanvasSetfAttribute(cdCanvas* canvas, const char* name, const char* format, ...);
 
     void SetAttributeId(const char* name, int id, const char* value) { IupSetAttributeId(ih, name, id, value); }
     char* GetAttributeId(const char* name, int id) { return IupGetAttributeId(ih, name, id); }
@@ -209,7 +185,16 @@ namespace iup
 
   inline Handle GetHandle(const char *name) { return Handle(IupGetHandle(name)); }
   inline Handle SetHandle(const char *name, const Handle& handle) { return Handle(IupSetHandle(name, handle.GetHandle())); }
-  inline void  SetLanguagePack(const Handle& handle) { IupSetLanguagePack(handle.GetHandle()); }
+  inline void SetLanguagePack(const Handle& handle) { IupSetLanguagePack(handle.GetHandle()); }
+  inline Handle Paramf(const char* format) { return Handle(IupParamf(format)); }
+  inline Handle ParamBox(const Handle& parent, const Handle* params_handle, int count) {
+    Ihandle** params = new Ihandle* [count];
+    for (int i = 0; i < count; i++)
+      params[i] = params_handle[i].GetHandle();
+    Handle handle = Handle(IupParamBox(parent.GetHandle(), params, count));
+    delete [] params;
+    return handle;
+  }
 
   class Dialog;
   class Container;
@@ -234,6 +219,10 @@ namespace iup
     Control SetFocus() { return Control(IupSetFocus(ih)); }
     Control PreviousField() { return Control(IupPreviousField(ih)); }
     Control NextField() { return Control(IupNextField(ih)); }
+    
+    void ConvertLinColToPos(int lin, int col, int &pos) { IupTextConvertLinColToPos(ih, lin, col, &pos); }
+    void ConvertPosToLinCol(int pos, int &lin, int &col) { IupTextConvertPosToLinCol(ih, pos, &lin, &col); }
+    int ConvertXYToPos(int x, int y) { return IupConvertXYToPos(ih, x, y); }
   };
 
   inline Control GetFocus() { return Control(IupGetFocus()); }
@@ -385,6 +374,10 @@ namespace iup
   {
   public:
     Tree() : Control(IupTree()) {}
+    
+    int SetUserId(int id, void* userid) { return IupTreeSetUserId(ih, id, userid); }
+    void* GetUserId(int id) { return IupTreeGetUserId(ih, id); }
+    int GetId(void *userid) { return IupTreeGetId(ih, userid); }
   };
   class Val : public Control
   {
