@@ -304,12 +304,18 @@ iup_console.dlgMain:show()
 
 iup_console.print_version_info()
 
-if (iup.MainLoopLevel()==0) then
-  iup.MainLoop()
+if (arg[1]) then
+  local filename = arg[1]
+  print("FileCommandLine:\n  "..filename)
+  iup_console.LoadFile(filename)
 end
 
-iup_console.dlgMain:destroy()
+if (iup.MainLoopLevel()==0) then
+  iup.MainLoop()
 
-if (im) then im.Close() end
-if (cd) then cd.Close() end
-iup.Close()
+  iup_console.dlgMain:destroy()
+
+  if (im) then im.Close() end
+  if (cd) then cd.Close() end
+  iup.Close()
+end

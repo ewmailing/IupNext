@@ -31,7 +31,7 @@ endif
 endif
 
 APPNAME := $(APPNAME)$(LUASFX)
-SRC = iup_lua$(LUASFX).c
+SRC = iup_lua.c
 
 ifdef NO_LUAOBJECT
   DEFINES += IUPLUA_USELH
