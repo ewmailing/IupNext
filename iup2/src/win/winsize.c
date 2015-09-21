@@ -181,6 +181,7 @@ int iupwinDialogDecorTop(Ihandle* n)
 {
    int decor = 0;
    int no_titlebar = 0;
+   int padded_border = 0;
 
    assert(n);
    if(n == NULL)
@@ -193,19 +194,29 @@ int iupwinDialogDecorTop(Ihandle* n)
 
    if (!no_titlebar)
    {
-     if(iupCheck(n, IUP_TOOLBOX) == YES &&
-        IupGetAttribute(n, IUP_PARENTDIALOG) != NULL)
+     if (iupCheck(n, IUP_TOOLBOX) == YES && IupGetAttribute(n, IUP_PARENTDIALOG) != NULL)
        decor += GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
      else
        decor += GetSystemMetrics(SM_CYCAPTION); /* janela normal */
+
+     padded_border = GetSystemMetrics(SM_CXPADDEDBORDER);
    }
 
-   if (iupCheck(n,IUP_RESIZE))
+   if (iupCheck(n, IUP_RESIZE))
+   {
      decor += GetSystemMetrics(SM_CYFRAME);
+     decor += padded_border;
+   }
    else if (!no_titlebar)
+   {
      decor += GetSystemMetrics(SM_CYFIXEDFRAME);
+     decor += padded_border;
+   }
    else if (iupCheck(n, IUP_BORDER))
+   {
      decor += GetSystemMetrics(SM_CYBORDER);
+     decor += padded_border;
+   }
 
    if (IupGetAttribute (n,IUP_MENU) != NULL)
       decor += GetSystemMetrics(SM_CYMENU);
@@ -237,11 +248,7 @@ static int winDialogGetWindowDecorY(Ihandle* n)
   }
   else
   {
-    /* caption = window height - borderes - client height - menu */
     decor += (wi.rcWindow.bottom - wi.rcWindow.top) - 2 * wi.cyWindowBorders - (wi.rcClient.bottom - wi.rcClient.top);
-
-    if (IupGetAttribute(n, IUP_MENU) != NULL)
-      decor -= GetSystemMetrics(SM_CYMENU);
   }
 
   return decor;
@@ -250,6 +257,7 @@ static int winDialogGetWindowDecorY(Ihandle* n)
 int iupwinDialogDecorY(Ihandle* n)
 {
    int decor = 0;
+   int padded_border = 0;
 
    int no_titlebar = 0;
 
@@ -267,21 +275,29 @@ int iupwinDialogDecorY(Ihandle* n)
 
    if (!no_titlebar)
    {
-     if(iupCheck(n, IUP_TOOLBOX) == YES &&
-        IupGetAttribute(n, IUP_PARENTDIALOG) != NULL)
+     if (iupCheck(n, IUP_TOOLBOX) == YES && IupGetAttribute(n, IUP_PARENTDIALOG) != NULL)
        decor += GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
      else
        decor += GetSystemMetrics(SM_CYCAPTION); /* janela normal */
 
-     decor += GetSystemMetrics(SM_CXPADDEDBORDER);
+     padded_border = GetSystemMetrics(SM_CXPADDEDBORDER);
    }
    
-   if (iupCheck(n,IUP_RESIZE))
-     decor += 2*GetSystemMetrics(SM_CYFRAME);
+   if (iupCheck(n, IUP_RESIZE))
+   {
+     decor += 2 * GetSystemMetrics(SM_CYFRAME);
+     decor += 2 * padded_border;
+   }
    else if (!no_titlebar)
-     decor += 2*GetSystemMetrics(SM_CYFIXEDFRAME);
+   {
+     decor += 2 * GetSystemMetrics(SM_CYFIXEDFRAME);
+     decor += 2 * padded_border;
+   }
    else if (iupCheck(n, IUP_BORDER))
-     decor += 2*GetSystemMetrics(SM_CYBORDER);
+   {
+     decor += 2 * GetSystemMetrics(SM_CYBORDER);
+     decor += 2 * padded_border;
+   }
 
    if (IupGetAttribute (n,IUP_MENU) != NULL)
       decor += GetSystemMetrics(SM_CYMENU);

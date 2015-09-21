@@ -28,11 +28,14 @@ USE_LH_SUBDIR = Yes
 LHDIR = lh
 
 ifdef DBG
+  USE_STATIC = Yes
+endif
+
+ifdef USE_STATIC
   # Statically link everything only when debugging
   IUP := ..
   USE_IUPLUA = Yes
   USE_IUP = Yes
-  USE_STATIC = Yes
   
   DEFINES = USE_STATIC
 
@@ -52,18 +55,18 @@ ifdef DBG
     USE_CDLUA = Yes
     USE_IUPCONTROLS = Yes
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      LIBS += iuplua_pplot$(LIBLUASUFX) iup_pplot
+      LIBS += iuplua_pplot$(LUASFX) iup_pplot
     else
       IUPLIB = $(IUP)/lib/$(TEC_UNAME)
-      SLIB += $(IUPLIB)/libiuplua_pplot$(LIBLUASUFX).a $(IUPLIB)/libiup_pplot.a
+      SLIB += $(IUPLIB)/libiuplua_pplot$(LUASFX).a $(IUPLIB)/libiup_pplot.a
     endif
       
     ifndef IUPLUA_NO_IM
       ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-        LIBS += cdluaim$(LIBLUASUFX)
+        LIBS += cdluaim$(LUASFX)
       else
         CDLIB = $(CD)/lib/$(TEC_UNAME)
-        SLIB += $(CDLIB)/libcdluaim$(LIBLUASUFX).a
+        SLIB += $(CDLIB)/libcdluaim$(LUASFX).a
       endif
     endif
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
@@ -80,11 +83,11 @@ ifdef DBG
     USE_IMLUA = Yes
     
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      LIBS += imlua_process$(LIBLUASUFX) iupluaim$(LIBLUASUFX) im_process iupim
+      LIBS += imlua_process$(LUASFX) iupluaim$(LUASFX) im_process iupim
     else
       IUPLIB = $(IUP)/lib/$(TEC_UNAME)
       IMLIB = $(IM)/lib/$(TEC_UNAME)
-      SLIB +=  $(IMLIB)/libimlua_process$(LIBLUASUFX).a $(IUPLIB)/libiupluaim$(LIBLUASUFX).a $(IMLIB)/libim_process.a $(IUPLIB)/libiupim.a
+      SLIB +=  $(IMLIB)/libimlua_process$(LUASFX).a $(IUPLIB)/libiupluaim$(LUASFX).a $(IMLIB)/libim_process.a $(IUPLIB)/libiupim.a
     endif
     
   else
@@ -95,10 +98,10 @@ ifdef DBG
   ifdef IUPLUA_IMGLIB
     DEFINES += IUPLUA_IMGLIB
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-      LIBS += iupluaimglib$(LIBLUASUFX) iupimglib
+      LIBS += iupluaimglib$(LUASFX) iupimglib
     else
       IUPLIB = $(IUP)/lib/$(TEC_UNAME)
-      SLIB += $(IUPLIB)/libiupluaimglib$(LIBLUASUFX).a $(IUPLIB)/libiupimglib.a
+      SLIB += $(IUPLIB)/libiupluaimglib$(LUASFX).a $(IUPLIB)/libiupimglib.a
     endif
   endif
 else
