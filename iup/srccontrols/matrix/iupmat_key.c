@@ -178,12 +178,16 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
       {
         if (iupMatrixEditShow(ih))
           return IUP_IGNORE; /* do not redraw */
+        else
+          return IUP_DEFAULT; /* allow the dialog to process defaultenter */
       }
       break;
 
     case K_ESC:
       if (!ih->data->edit_hide_onfocus && ih->data->editing)
         iupMatrixEditAbort(ih);
+      else
+        return IUP_DEFAULT; /* allow the dialog to process defaultesc */
       break;
 
     case K_sDEL:
