@@ -118,7 +118,7 @@
     <None Include="..\..\srcconsole\console5.lua" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\srcconsole\iup_lua$(LUASFX).c" />
+    <ClCompile Include="..\..\srcconsole\iup_lua.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\srcconsole\iuplua5.rc" />

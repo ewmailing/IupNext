@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.14
+VERSION = 4.14.1
 
 
 #---------------------------------#
@@ -513,9 +513,7 @@ ifeq "$(COMPILER)" "$(VC10)"
   NEW_VC_COMPILER = Yes
   TEC_CC = vc
   STDDEFS += -DMSVC10
-  ifdef USE_DLL
-#    GEN_MANIFEST ?= Yes
-  else
+  ifndef USE_DLL
     #there is no single thread RTL in VC10
     USE_MT = Yes
   endif
@@ -534,12 +532,9 @@ endif
 ifeq "$(COMPILER)" "$(VC11)"
   NEW_VC_COMPILER = Yes
   NEW_SDK_UM = Yes
-  UMDIR := /win8/um
   TEC_CC = vc
   STDDEFS += -DMSVC11
-  ifdef USE_DLL
-#    GEN_MANIFEST ?= Yes
-  else
+  ifndef USE_DLL
     #there is no single thread RTL in VC11
     USE_MT = Yes
   endif
@@ -550,21 +545,22 @@ ifeq "$(COMPILER)" "$(VC11)"
     PLATSDK ?= $(VC11)/WinSDK
   endif
   ifdef BUILD64
-    RESBIN := $(PLATSDK)/bin/x64
+    SDKLIBBIN := x64
   else
-    RESBIN := $(PLATSDK)/bin/x86
+    SDKLIBBIN := x86
   endif
+  RESBIN := $(PLATSDK)/bin/$(SDKLIBBIN)
+  WINSDKVERNUM := win8
+  PLATSDK_INC := $(PLATSDK)/include/shared $(PLATSDK)/include/um 
+  PLATSDK_LIB := $(PLATSDK)/lib/$(WINSDKVERNUM)/um/$(SDKLIBBIN)
 endif
 
 ifeq "$(COMPILER)" "$(VC12)"
   NEW_VC_COMPILER = Yes
   NEW_SDK_UM = Yes
-  UMDIR := /winv6.3/um
   TEC_CC = vc
   STDDEFS += -DMSVC12
-  ifdef USE_DLL
-#    GEN_MANIFEST ?= Yes
-  else
+  ifndef USE_DLL
     #there is no single thread RTL in VC12
     USE_MT = Yes
   endif
@@ -575,35 +571,42 @@ ifeq "$(COMPILER)" "$(VC12)"
     PLATSDK ?= $(VC12)/WinSDK
   endif
   ifdef BUILD64
-    RESBIN := $(PLATSDK)/bin/x64
+    SDKLIBBIN := x64
   else
-    RESBIN := $(PLATSDK)/bin/x86
+    SDKLIBBIN := x86
   endif
+  RESBIN := $(PLATSDK)/bin/$(SDKLIBBIN)
+  WINSDKVERNUM := winv6.3
+  PLATSDK_INC := $(PLATSDK)/include/shared $(PLATSDK)/include/um 
+  PLATSDK_LIB := $(PLATSDK)/lib/$(WINSDKVERNUM)/um/$(SDKLIBBIN)
 endif
 
 ifeq "$(COMPILER)" "$(VC14)"
   NEW_VC_COMPILER = Yes
   NEW_SDK_UM = Yes
-  UMDIR := /winv6.3/um
   TEC_CC = vc
   STDDEFS += -DMSVC14
-  ifdef USE_DLL
-#    GEN_MANIFEST ?= Yes
-  else
+  ifndef USE_DLL
     #there is no single thread RTL in VC14
     USE_MT = Yes
   endif
   ifdef VC14SDK
     PLATSDK ?= $(VC14SDK)
   else
-    # Not the real folder, we copied from "C:\Program Files (x86)\Windows Kits\8.1"
+    # Not the real folder, we copied from "C:\Program Files (x86)\Windows Kits\10"
     PLATSDK ?= $(VC14)/WinSDK
   endif
   ifdef BUILD64
-    RESBIN := $(PLATSDK)/bin/x64
+    SDKLIBBIN := x64
   else
-    RESBIN := $(PLATSDK)/bin/x86
+    SDKLIBBIN := x86
   endif
+  RESBIN := $(PLATSDK)/bin/$(SDKLIBBIN)
+  WINSDKVERNUM ?= 10.0.10240.0
+  WINSDKBASEINC := $(PLATSDK)/include/$(WINSDKVERNUM)
+  WINSDKBASELIB := $(PLATSDK)/lib/$(WINSDKVERNUM)
+  PLATSDK_INC := $(WINSDKBASEINC)/ucrt $(WINSDKBASEINC)/shared $(WINSDKBASEINC)/um
+  PLATSDK_LIB := $(WINSDKBASELIB)/ucrt/$(SDKLIBBIN) $(WINSDKBASELIB)/um/$(SDKLIBBIN)
 endif
 
 ifeq "$(TEC_CC)" "vc"
@@ -612,24 +615,13 @@ ifeq "$(TEC_CC)" "vc"
     MACHINE = X64
     GTK := $(GTK)_x64
     VCLIBBIN = /amd64
-    UCRTBIN := /x64
-    ifdef NEW_SDK_UM
-      SDKLIBBIN := $(UMDIR)/x64
-    else
-      SDKLIBBIN ?= /x64
-    endif
     ifdef USE_X86_CL64
       BIN = $(COMPILER)/bin/x86_amd64
     else
       BIN = $(COMPILER)/bin/amd64
     endif
   else
-    UCRTBIN := /x86
-    ifdef NEW_SDK_UM
-      SDKLIBBIN := $(UMDIR)/x86
-    else
-      VCLIBBIN =
-    endif
+    VCLIBBIN =
     MACHINE = X86
     BIN = $(COMPILER)/bin
   endif
@@ -640,21 +632,27 @@ ifeq "$(TEC_CC)" "vc"
   LINKER    = $(BIN)/link -nologo
   MT        = $(RESBIN)/mt -nologo
   RCC       = $(RESBIN)/rc -fo
-  ifdef NEW_SDK_UM
-    STDINCS = $(PLATSDK)/include/shared $(PLATSDK)/include/um $(COMPILER)/ucrt/include/10.0.10150.0/ucrt $(COMPILER)/include
-  else
-    STDINCS = $(PLATSDK)/include $(COMPILER)/include
+  ifndef NEW_SDK_UM
+    ifdef BUILD64
+      SDKLIBBIN := /x64
+    else
+      SDKLIBBIN :=
+    endif
+    PLATSDK_LIB = $(PLATSDK)/lib$(SDKLIBBIN)
+    PLATSDK_INC = $(PLATSDK)/include
   endif
+  STDINCS = $(PLATSDK_INC) $(COMPILER)/include 
   STDFLAGS  = -c -Fo$(OBJDIR)/ -W3
   STDLFLAGS =
   DEPDEFS   = -D_WIN32 -D_M_IX86 -D_STDCALL_SUPPORTED
-  STDLIBDIR = -LIBPATH:$(COMPILER)/lib$(VCLIBBIN) -LIBPATH:$(PLATSDK)/lib$(SDKLIBBIN) -LIBPATH:$(COMPILER)/ucrt/lib/10.0.10150.0/ucrt$(UCRTBIN)
+  STDLIBDIR = $(PLATSDK_LIB) $(COMPILER)/lib$(VCLIBBIN) 
   OPTFLAGS := -O2
   DEBUGFLAGS := -Z7 -Od -GZ
   ifdef USE_ATL
     STDINCS += $(COMPILER)/atlmfc/include
-    STDLIBDIR += -LIBPATH:$(COMPILER)/atlmfc/lib$(VCLIBBIN)
+    STDLIBDIR += $(COMPILER)/atlmfc/lib$(VCLIBBIN)
   endif
+  STDLIBDIR := $(addprefix -LIBPATH:, $(STDLIBDIR))
   ifdef NEW_VC_COMPILER
     DEBUGFLAGS := -Z7 -Od -RTC1
     STDDEFS += -D_CRT_SECURE_NO_DEPRECATE
