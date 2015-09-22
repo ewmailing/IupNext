@@ -1162,9 +1162,22 @@ wb_usr.tree =
             },
             { link= "", name= {en= "" } },
             {
+              name= {nl= "IupFrame"},
+              link= "elem/iupframe.html"
+            },
+            {
+              name= {nl= "IupTabs"},
+              link= "elem/iuptabs.html"
+            },
+            {
               name= {nl= "IupBackgroundBox"},
               link= "elem/iupbackgroundbox.html"
             },
+            {
+              name= {nl= "IupScrollBox"},
+              link= "elem/iupscrollbox.html"
+            },
+            { link= "", name= {en= "" } },
             {
               name= {nl= "IupDetachBox"},
               link= "elem/iupdetachbox.html"
@@ -1176,10 +1189,6 @@ wb_usr.tree =
             {
               name= {nl= "IupSbox"},
               link= "elem/iupsbox.html"
-            },
-            {
-              name= {nl= "IupScrollBox"},
-              link= "elem/iupscrollbox.html"
             },
             {
               name= {nl= "IupSplit"},
@@ -1297,10 +1306,6 @@ wb_usr.tree =
               link= "elem/iupflatbutton.html"
             },
             {
-              name= {nl= "IupFrame"},
-              link= "elem/iupframe.html"
-            },
-            {
               name= {nl= "IupLabel"},
               link= "elem/iuplabel.html"
             },
@@ -1313,20 +1318,12 @@ wb_usr.tree =
               link= "elem/iuplist.html"
             },
             {
-              name= {nl= "IupMultiLine"},
-              link= "elem/iupmultiline.html"
-            },
-            {
               name= {nl= "IupProgressBar"},
               link= "elem/iupprogressbar.html"
             },
             {
               name= {nl= "IupSpin"},
               link= "elem/iupspin.html"
-            },
-            {
-              name= {nl= "IupTabs"},
-              link= "elem/iuptabs.html"
             },
             {
               name= {nl= "IupText"},
@@ -1340,7 +1337,12 @@ wb_usr.tree =
                 {
                   name= {nl= "MASK"},
                   link= "attrib/iup_mask.html"
-                }
+                },
+                { link= "", name= {en= "" } },
+                {
+                  name= {nl= "IupMultiLine"},
+                  link= "elem/iupmultiline.html"
+                },
               }
             },
             {
