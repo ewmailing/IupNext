@@ -453,6 +453,12 @@ char* iupdrvGetGlobal(const char* name)
         return "Unknown Error";
     }
   }
+  if (iupStrEqual(name, "EXEFILENAME"))
+  {
+    TCHAR filename[10240];
+    GetModuleFileName(NULL, filename, 10240);
+    return iupStrReturnStr(iupwinStrFromSystemFilename(filename));
+  }
   if (iupStrEqual(name, "DWM_COMPOSITION"))
   {
     typedef HRESULT(STDAPICALLTYPE *PtrDwmIsCompositionEnabled)(BOOL*);
@@ -475,3 +481,4 @@ char* iupdrvGetGlobal(const char* name)
   }
   return NULL;
 }
+
