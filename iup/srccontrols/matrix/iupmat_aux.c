@@ -396,10 +396,7 @@ int iupMatrixAuxCallEditionCbLinCol(Ihandle* ih, int lin, int col, int mode, int
   if (cb)
   {
     if (lin != 0 && ih->data->sort_has_index)
-    {
-      int index = ih->data->sort_line_index[lin];
-      if (index != 0) lin = index;
-    }
+      lin = ih->data->sort_line_index[lin];
 
     return cb(ih, lin, col, mode, update);
   }

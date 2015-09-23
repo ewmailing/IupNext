@@ -119,7 +119,7 @@ struct _IcontrolData
   int need_calcsize;
   int need_redraw;
   int inside_markedit_cb;   /* avoid recursion */
-  int last_sort_index;
+  int last_sort_col;
 
   /* attributes */
   int mark_continuous, mark_mode, mark_multiple;

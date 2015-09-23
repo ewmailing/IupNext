@@ -13,8 +13,8 @@ void SysInfoTest(void)
   printf("  Driver: %s\n", IupGetGlobal("DRIVER"));
   printf("  System: %s\n", IupGetGlobal("SYSTEM"));
   printf("  System Version: %s\n", IupGetGlobal("SYSTEMVERSION"));
-  printf("  System Language: %s\n", IupGetGlobal("SYSTEMLANGUAGE"));
-  printf("  System Locale: %s\n\n", IupGetGlobal("SYSTEMLOCALE"));
+  printf("  System Language: %s (IUP Language: %s)\n", IupGetGlobal("SYSTEMLANGUAGE"), IupGetGlobal("LANGUAGE"));
+  printf("  System Locale: %s (IUP UTF-8: %s)\n\n", IupGetGlobal("SYSTEMLOCALE"), IupGetGlobal("UTF8MODE"));
 
   sysver = IupGetGlobal("MOTIFVERSION");
   if (sysver) 

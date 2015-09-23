@@ -45,6 +45,10 @@
   .auto-style1 {
 	background-color: #E1E1E1;
 }
+  .hist_fixed {
+	color: #FF0000;
+	font-weight: bold;
+}
   </style>
 </head>
 
@@ -273,7 +277,11 @@ means that numbers and text in the same value are sorted separately (for ex: A1 
 B1). Also 
 natural alphabetic order is used: 123...aA·¡...bBcC... The internal comparison 
 will work only for Latin-1 
-characters, even if UTF8MODE is Yes.<br><strong>IMPORTANT</strong>: The sort 
+characters, even if UTF8MODE is Yes.<br>Sorting is reset if <font SIZE="3">
+	<span style="color: #008000">
+		<span
+            style="color: #000000"> 
+		lines are added or removed. (since 3.17)</span></span></font><br><strong>IMPORTANT</strong>: The sort 
 will not affect the original data, only how it is displayed from the original 
 data and how it is updated to the original data. The line and cell attributes of 
 the sorted will NOT be affected. This means that colors and fonts will NOT 
@@ -298,6 +306,9 @@ interval, in the format &quot;L1,L2&quot;.</p>
 <strong>SORTLINEINDEX</strong><em>id</em> (read-only): Returns the sorted line 
 index given a line in regular order. To be used inside other callbacks. (since 
 3.16)</p>
+<p>
+<strong>LASTSORTCOLUMN</strong> (read-only): Returns the last sorted column. 
+(since 3.17)</p>
 <h4>
 Column Visibility</h4>
 <p><strong>FREEZE:</strong> freezes the scroll of columns and lines up to the 

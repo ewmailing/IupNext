@@ -171,8 +171,6 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
         for (lin = shift_num-1; lin >= 0; lin--)   /* all columns, shift_num lines */
           memmove(ih->data->cells[lin+end], ih->data->cells[lin+base], ih->data->columns.num_alloc*sizeof(ImatCell));
       memmove(ih->data->lines.dt+end, ih->data->lines.dt+base, shift_num*sizeof(ImatLinCol));
-      if (ih->data->sort_line_index)
-        memmove(ih->data->sort_line_index+end, ih->data->sort_line_index+base, shift_num*sizeof(int));
     }
 
     /* then clear the new space starting at base */
@@ -180,16 +178,9 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
       for (lin = 0; lin < diff_num; lin++)        /* all columns, diff_num lines */
         memset(ih->data->cells[lin+base], 0, ih->data->columns.num_alloc*sizeof(ImatCell));
     memset(ih->data->lines.dt+base, 0, diff_num*sizeof(ImatLinCol));
-    if (ih->data->sort_line_index)
-    {
-      memset(ih->data->sort_line_index+base, 0, diff_num*sizeof(int));
 
-      /* update indices */
-      if (ih->data->sort_has_index)
-        for(lin=1; lin<num; lin++)
-          if (ih->data->sort_line_index[lin] >= base)
-            ih->data->sort_line_index[lin] += diff_num;
-    }
+    /* reset sort indices */
+    if (ih->data->sort_has_index) ih->data->sort_has_index = 0;
   }
   else /* DEL */
   {
@@ -222,8 +213,6 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
         for (lin = 0; lin < shift_num; lin++) /* all columns, shift_num lines */
           memmove(ih->data->cells[lin+base], ih->data->cells[lin+end], ih->data->columns.num_alloc*sizeof(ImatCell));
       memmove(ih->data->lines.dt+base, ih->data->lines.dt+end, shift_num*sizeof(ImatLinCol));
-      if (ih->data->sort_line_index)
-        memmove(ih->data->sort_line_index+base, ih->data->sort_line_index+end, shift_num*sizeof(int));
     }
 
     /* then clear the remaining space starting at num */
@@ -231,16 +220,9 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
       for (lin = 0; lin < diff_num; lin++)   /* all columns, diff_num lines */
         memset(ih->data->cells[lin+num], 0, ih->data->columns.num_alloc*sizeof(ImatCell));
     memset(ih->data->lines.dt+num, 0, diff_num*sizeof(ImatLinCol));
-    if (ih->data->sort_line_index)
-    {
-      memset(ih->data->sort_line_index+num, 0, diff_num*sizeof(int));
 
-      /* update indices */
-      if (ih->data->sort_has_index)
-        for(lin=1; lin<num; lin++)
-          if (ih->data->sort_line_index[lin] >= base)
-            ih->data->sort_line_index[lin] -= diff_num;
-    }
+    /* reset sort indices */
+    if (ih->data->sort_has_index) ih->data->sort_has_index = 0;
   }
 }
 

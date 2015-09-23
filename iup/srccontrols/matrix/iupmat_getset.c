@@ -91,10 +91,7 @@ void iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int use
   if (ih->data->undo_redo) old_value = iupMatrixGetValue(ih, lin, col);
 
   if (lin != 0 && ih->data->sort_has_index)
-  {
-    int index = ih->data->sort_line_index[lin];
-    if (index != 0) lin = index;
-  }
+    lin = ih->data->sort_line_index[lin];
 
   if (ih->data->undo_redo) iupAttribSetClassObjectId2(ih, "UNDOPUSHCELL", lin, col, old_value);
 
@@ -133,10 +130,7 @@ static char* iMatrixGetValueText(Ihandle* ih, int lin, int col)
   char* value;
 
   if (lin != 0 && ih->data->sort_has_index)
-  {
-    int index = ih->data->sort_line_index[lin];
-    if (index != 0) lin = index;
-  }
+    lin = ih->data->sort_line_index[lin];
 
   if (ih->data->callback_mode)
   {
