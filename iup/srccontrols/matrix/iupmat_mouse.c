@@ -190,8 +190,13 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
         }
         else if (ret == -1) /* toggle */
         {
-          IFniii togglevalue_cb = (IFniii)IupGetCallback(ih, "TOGGLEVALUE_CB");
-          int togglevalue;
+          int togglevalue;     
+          IFniii togglevalue_cb;
+
+          if (iupAttribGetBoolean(ih, "READONLY"))
+            return;
+
+          togglevalue_cb = (IFniii)IupGetCallback(ih, "TOGGLEVALUE_CB");
 
           if (iupAttribGetBoolean(ih, "TOGGLECENTERED"))
           {

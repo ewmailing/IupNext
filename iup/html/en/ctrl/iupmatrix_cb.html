@@ -11,6 +11,9 @@
 .style2 {
 	background-color: #CEE7FF;
 }
+.auto-style1 {
+	font-size: medium;
+}
 </style>
 </head>
 <body>
@@ -99,28 +102,6 @@ have been actually refreshed. (Since 3.10.1)</p>
 BORDER size (client size)<br>
 <strong>height</strong>: the height of the internal element size in pixels not 
 considering the BORDER size (client size)</p>
-<p><strong><a name="TOGGLEVALUE_CB">TOGGLEVALUE_CB</a></strong>:
-  Action generated when a toggle button is 
-  pressed. (Since 3.9)</p>
-<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, i<span class="style2">nt</span> <strong>status</strong>); [in C]
-<strong>ih</strong>:togglevalue_cb(<strong>lin, col, status</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-<p class="info"><strong>ih</strong>: identifier of the element that activated 
-the event.<br>
-<strong>lin</strong>, <strong>col</strong>: Coordinates of the cell where the 
-mouse button was pressed.<br>
-<strong>status</strong>: Value of the toggle. Can be 1 or 0.</p>
-<p><strong>VALUECHANGED_CB</strong>: Called after the value was interactively 
-changed by the user or after a group of values where programmatically changed in 
-a single operation (since 3.9). When it was interactively changed the temporary 
-attribute CELL_EDITED will be set to Yes during the callback (since 3.13).</p>
-
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-
-    
-<p class="info"><strong>ih</strong>:
-  identifier of the element that activated the 
-  event.</p>
-
 <p><strong><a name="MOUSEMOVE_CB">MOUSEMOVE_CB</a></strong>:
   Action generated to notify the application 
   that the mouse has moved over the matrix.&nbsp;When
@@ -270,7 +251,29 @@ the event.<br>
     <strong>lin</strong>, <strong>col</strong>:
     Coordinates of the cell.<br>value: original cell value</p>
 <p class="info"><span class="style1">Returns:</span> the string to be drawn. </p>
-<h3>Editing</h3>
+<h3>Editing<span class="auto-style1"> (not called if READONLY=Yes)</span></h3>
+<p><strong><a name="TOGGLEVALUE_CB">TOGGLEVALUE_CB</a></strong>:
+  Action generated when a toggle button is 
+  pressed. (Since 3.9)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, i<span class="style2">nt</span> <strong>status</strong>); [in C]
+<strong>ih</strong>:togglevalue_cb(<strong>lin, col, status</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br>
+<strong>lin</strong>, <strong>col</strong>: Coordinates of the cell where the 
+mouse button was pressed.<br>
+<strong>status</strong>: Value of the toggle. Can be 1 or 0.</p>
+<p><strong>VALUECHANGED_CB</strong>: Called after the value was interactively 
+changed by the user or after a group of values where programmatically changed in 
+a single operation (since 3.9). When it was interactively changed the temporary 
+attribute CELL_EDITED will be set to Yes during the callback (since 3.13).</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
 <p><strong><a name="DROP_CB">DROP_CB</a></strong>:
   Action generated before the current cell 
   enters edition mode to determine if a text field or a dropdown list will be shown. It is called after 
