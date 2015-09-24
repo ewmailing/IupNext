@@ -196,6 +196,7 @@ int main(int argc, char* argv[])
 //  IupSetGlobal("LANGUAGE", "PORTUGUESE");
 //  IupSetGlobal("DEFAULTDECIMALSYMBOL", ".");
   //  setlocale(LC_NUMERIC, "C");
+//  printf("EXEFILENAME=%s\n", IupGetGlobal("EXEFILENAME"));
 
   dlg = IupDialog(IupVbox(list = IupList(NULL), NULL));
   IupSetAttribute(dlg, "MARGIN", "10x10");

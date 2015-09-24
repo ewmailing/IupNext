@@ -341,6 +341,9 @@ int iupdrvOpen(int *argc, char ***argv)
                                                       GTK_MINOR_VERSION, 
                                                       GTK_MICRO_VERSION);
 
+  if (argv && *argv && (*argv)[0] && (*argv)[0][0] != 0)
+    IupStoreGlobal("ARGV0", (*argv)[0]);
+
   gtkSetGlobalAttrib();
 
   gtkSetGlobalColors();
