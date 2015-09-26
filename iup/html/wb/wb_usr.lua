@@ -1845,6 +1845,10 @@ wb_usr.tree =
           link= "func/iupconfig.html"
         },
         {
+          name= {nl= "IupExecute"},
+          link= "func/iupexecute.html"
+        },
+        {
           name= {nl= "IupHelp"},
           link= "func/iuphelp.html"
         },
