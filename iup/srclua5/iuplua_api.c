@@ -389,6 +389,14 @@ static int Help(lua_State *L)
   return 0;
 }
 
+static int Execute(lua_State *L)
+{
+  const char *filename = luaL_checkstring(L, 1);
+  const char *parameters = luaL_optstring(L, 2, NULL);
+  IupExecute(filename, parameters);
+  return 0;
+}
+
 static int Hide(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -1048,6 +1056,7 @@ void iupluaapi_open(lua_State * L)
     {"GetLanguage", GetLanguage},
     {"GetName", GetName},
     {"Help", Help},
+    {"Execute", Execute},
     {"Hide", Hide},
     {"Load", Load},
     {"LoadBuffer", LoadBuffer},

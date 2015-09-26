@@ -52,7 +52,9 @@ void      IupRedraw        (Ihandle* ih, int children);
 void      IupRefresh       (Ihandle* ih);
 void      IupRefreshChildren(Ihandle* ih);
 
-int       IupHelp          (const char* url);
+int       IupExecute(const char *filename, const char* parameters);
+int       IupHelp(const char* url);
+
 char*     IupLoad          (const char *filename);
 char*     IupLoadBuffer    (const char *buffer);
 

@@ -37,6 +37,7 @@ IupGetLanguage
 IupGetName
 IupHbox
 IupHelp
+IupExecute
 IupImage
 IupHide
 IupItem
