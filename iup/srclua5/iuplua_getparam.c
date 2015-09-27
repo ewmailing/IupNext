@@ -53,7 +53,8 @@ static int GetParam(lua_State *L)
   const char* title = luaL_checkstring(L, 1);
   void* user_data = (void*)&gp;
   const char* format = luaL_checkstring(L, 3);
-  int param_count, param_extra, i, size, ret,
+  size_t size;
+  int param_count, param_extra, i, ret,
       line_size = 0, lua_param_start = 4, max_str;
   const char* f = format;
   const char* s;
@@ -119,8 +120,7 @@ static int GetParam(lua_State *L)
         max_str = 4096;
       else if (t == 'm')
         max_str = 10240;
-      s = luaL_checkstring(L, lua_param_start); lua_param_start++;
-      size = (int)strlen(s);
+      s = luaL_checklstring(L, lua_param_start, &size); lua_param_start++;
       if (size < max_str)
         param_data[i] = malloc(max_str);
       else

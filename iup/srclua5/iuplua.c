@@ -208,7 +208,7 @@ int iuplua_dofile(lua_State *L, const char *filename)
 
 int iuplua_dostring(lua_State *L, const char *s, const char *name)
 {
-  int status = luaL_loadbuffer(L, s, (int)strlen(s), name);
+  int status = luaL_loadbuffer(L, s, strlen(s), name);
   if (status == LUA_OK)
     status = docall(L, 0, 0);
   return report(L, status);
