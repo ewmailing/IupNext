@@ -53,9 +53,9 @@ static int GetParam(lua_State *L)
   const char* title = luaL_checkstring(L, 1);
   void* user_data = (void*)&gp;
   const char* format = luaL_checkstring(L, 3);
-  size_t size;
+  size_t size, max_str;
   int param_count, param_extra, i, ret,
-      line_size = 0, lua_param_start = 4, max_str;
+      line_size = 0, lua_param_start = 4;
   const char* f = format;
   const char* s;
   void* param_data[50];

@@ -25,7 +25,7 @@ execute the command and it will not wait for its result.</p>
 <h3>
 Parameters/Return</h3>
 <pre>int IupExecute(const char* <strong>filename</strong>, const char* <strong>parameters</strong>); [in C]
-iup.Execute(<strong>filename[, parameters]</strong>: string) [in Lua]</pre>
+iup.Execute(<strong>filename[, parameters]</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><strong>filename</strong>: name of the executable. Can contains a path.<br>
 <strong>parameters</strong>: optional parameters. Can be NULL.</p>
 <p><span class="style1">Returns:</span> 1 if successful, -1 if failed. In Windows can return -2 if file not found.</p>

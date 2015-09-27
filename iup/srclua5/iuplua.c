@@ -184,7 +184,7 @@ int iuplua_dofile(lua_State *L, const char *filename)
 {
   int status = luaL_loadfile(L, filename);
   if (status == LUA_OK)
-    status = docall(L, 0, 0);
+    status = docall(L, 0, LUA_MULTRET);
   else if (status == LUA_ERRFILE)
   {
     char *dir = getenv("IUPLUA_DIR");
@@ -199,7 +199,7 @@ int iuplua_dofile(lua_State *L, const char *filename)
         status = luaL_loadfile(L, full_name);
         free(full_name);
         if (status == LUA_OK)
-          status = docall(L, 0, 0);
+          status = docall(L, 0, LUA_MULTRET);
       }
     }
   }
@@ -210,7 +210,7 @@ int iuplua_dostring(lua_State *L, const char *s, const char *name)
 {
   int status = luaL_loadbuffer(L, s, strlen(s), name);
   if (status == LUA_OK)
-    status = docall(L, 0, 0);
+    status = docall(L, 0, LUA_MULTRET);
   return report(L, status);
 }
 
@@ -218,20 +218,37 @@ int iuplua_dobuffer(lua_State *L, const char *s, int len, const char *name)
 {
   int status = luaL_loadbuffer(L, s, len, name);
   if (status == LUA_OK)
-    status = docall(L, 0, 0);
+    status = docall(L, 0, LUA_MULTRET);
   return report(L, status);
 }
 
 static int il_dofile(lua_State *L)
 {
+  int old_top = lua_gettop(L);
   const char* filename = luaL_checkstring(L, 1);
-  return iuplua_dofile(L, filename);
+  int status = iuplua_dofile(L, filename);
+  if (status == LUA_OK)
+  {
+    int top = lua_gettop(L);
+    return top - old_top;
+  }
+  else
+    return 0;
 }
 
 static int il_dostring(lua_State *L)
 {
-  const char* str = luaL_checkstring(L, 1);
-  return iuplua_dostring(L, str, "iup.dostring");
+  int old_top = lua_gettop(L);
+  size_t size;
+  const char* str = luaL_checklstring(L, 1, &size);
+  int status = iuplua_dobuffer(L, str, (int)size, "iup.dostring");
+  if (status == LUA_OK)
+  {
+    int top = lua_gettop(L);
+    return top - old_top;
+  }
+  else
+    return 0;
 }
 
 Ihandle *iuplua_checkihandleornil(lua_State *L, int pos)

@@ -12,11 +12,11 @@
 <p>Each binding to a version of Lua uses different features of the language in order to implement IUP handles (Ihandle) 
   in Lua. Therefore, functions have been created to help exchange references between Lua and C.</p>
 <p>In C, to push an Ihandle in Lua's stack, use the function:</p>
-<pre>iuplua_pushihandle(lua_State *L, Ihandle *ih);</pre>
+<pre>void <strong>iuplua_pushihandle</strong>(lua_State *<strong>L</strong>, Ihandle *<strong>ih</strong>);</pre>
 <p>In C, to receive an Ihandle in a C function called from Lua, just use one of the following code:</p>
 <pre>Ihandle* ih = *(Ihandle**)lua_touserdata(L, pos);</pre>
 <p>or using parameter checking:</p>
-<pre>Ihandle* iuplua_checkihandle(lua_State *L, int pos);</pre>
+<pre>Ihandle* <strong>iuplua_checkihandle</strong>(lua_State *<strong>L</strong>, int <strong>pos</strong>);</pre>
 <p>In Lua, if the handle is a user data create with the above structure, but not mapped to a Lua object, use the 
   function:</p>
 <pre>iup.RegisterHandle(handle, classname)</pre>
@@ -29,17 +29,23 @@
 <h3>Error Handling</h3>
 <p>In C to improve the error report, use the following functions to 
   execute Lua code:</p>
-<pre>int <strong>iuplua_dofile</strong>(lua_State *L, const char *filename);
-int <strong>iuplua_dostring</strong>(lua_State *L, const char *string, const char *chunk_name);
-int <strong>iuplua_dobuffer</strong>(lua_State *L, const char *string, int len, const char *chunk_name); (since 3.15)</pre>
+<pre>int <strong>iuplua_dofile</strong>(lua_State *<strong>L</strong>, const char *<strong>filename</strong>);
+int <strong>iuplua_dostring</strong>(lua_State *<strong>L</strong>, const char *<strong>string</strong>, const char *<strong>chunk_name</strong>);
+int <strong>iuplua_dobuffer</strong>(lua_State *<strong>L</strong>, const char *<strong>string</strong>, int <strong>len</strong>, const char *<strong>chunk_name</strong>); (since 3.15)</pre>
 <p>These functions mimics the implementation in the standalone interpreter for Lua 5, that displays the error message 
   followed by the stack.</p>
 <p>If <strong>iuplua_dofile</strong> fail to open the given file, then it will 
 prepend the contents of the environment variable IUPLUA_DIR to the file name 
 and tries to open it again. (Since 3.2)</p>
-<p>If the these functions are used the errors will be reported through the &quot;iup._ERRORMESSAGE(msg)&quot; function. By 
+<p>If the these functions are used, the errors will be reported through the &quot;iup._ERRORMESSAGE(msg)&quot; function. By 
   default _ERRORMESSAGE is defined to show a dialog with the error message.</p>
-<p>When printing an Ihandle reference the returned string is &quot;IUP(<em>type</em>):
+<p>In Lua, you can also use:</p>
+<pre>iup<strong>.dofile</strong>(<strong>filename</strong>: string) -&gt; (values returned by the chunk)
+iup<strong>.dostring</strong>(<strong>str</strong>: string) -&gt; (values returned by the chunk)</pre>
+<p>But instead of returning the error code as in C, they return the values 
+returned by the chunk. And they will still have the same error processing as the 
+C equivalents. (since 3.17)</p>
+<p><strong>OBS</strong>: When printing an Ihandle reference the returned string is &quot;IUP(<em>type</em>):
 <em>address</em>&quot;, for example &quot;IUP(dialog): 08C55240&quot;.</p>
 <h3>The Architecture of IupLua 5</h3>
 <p>There are two important names in IupLua5: &quot;iupHandle&quot; and &quot;iupWidget&quot;. 
