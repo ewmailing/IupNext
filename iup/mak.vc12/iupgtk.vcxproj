@@ -97,6 +97,10 @@
     <ClCompile Include="..\src\gtk\iupgtk_focus.c" />
     <ClCompile Include="..\src\gtk\iupgtk_font.c" />
     <ClCompile Include="..\src\gtk\iupgtk_globalattrib.c" />
+    <ClCompile Include="..\src\gtk\iupgtk_help.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\src\gtk\iupgtk_key.c" />
     <ClCompile Include="..\src\gtk\iupgtk_loop.c" />
     <ClCompile Include="..\src\gtk\iupgtk_open.c" />
@@ -127,6 +131,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\gtk\iupmac_info.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\src\mot\iupunix_info.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
