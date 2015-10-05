@@ -14,9 +14,12 @@
 <body>
 
 <h2>IupGetName</h2>
-<p>Returns the name of an interface element, if 
+<p>Returns a name of an interface element, if 
   the element has an associated name 
-  using <strong>IupSetHandle</strong> or using LED. .</p>
+  using <strong>IupSetHandle</strong> or using LED (which calls <strong>
+IupSetHandle</strong> when parsed).</p>
+<p>Notice that a handle can have many names. <strong>IupGetName</strong> will 
+return the last name set.</p>
 <h3>
 Parameters/Return</h3>
 <pre>char* IupGetName(Ihandle* <b>ih</b>); [in C]

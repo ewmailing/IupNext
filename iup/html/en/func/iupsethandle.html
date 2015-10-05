@@ -35,11 +35,17 @@ IupSetAttribute(button, &quot;IMAGE&quot;, &quot;test_image&quot;);</pre>
 <p>that the association will be automatically made.</p>
 <hr>
 <p>In fact, any pointer can be stored and retrieved with <strong>IupSetHandle</strong> 
-and <strong>IupGetHandle</strong>.</p>
+and <strong>IupGetHandle</strong>, not only Ihandle*.</p>
 <p>Also <strong>IupSetHandle</strong> can be called several times with the same 
 pointer and different names. There is no restriction for the number of names a 
-pointer can have, but <strong>IupGetName</strong> will return only the first name 
-found.</p>
+pointer can have, but <strong>IupGetName</strong> will return only the last name 
+set.</p>
+<p>When <strong>IupSetHandle</strong> is called, <font SIZE="3">
+	<span style="color: #008000">
+		<span
+            style="color: #000000"> 
+		the control will have a HANDLENAME attribute with the last name set. 
+(since 3.17)</span></span></font></p>
 <h3>See Also</h3>
 <p><a href="iupgethandle.html">IupGetHandle</a>, <a href="iupsetattributehandle.html">IupSetAttributeHandle</a></p>
 
