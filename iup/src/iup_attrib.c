@@ -803,10 +803,9 @@ void iupAttribSetHandleName(Ihandle *ih)
 
 char* iupAttribGetHandleName(Ihandle *ih)
 {
-  char str_name[100];
-  sprintf(str_name, "_IUP_NAME(%p)", ih);
-  if (IupGetHandle(str_name)==ih)
-    return iupStrReturnStr(str_name);
+  char* name = iupAttribGet(ih, "HANDLENAME");  /* IupSetHandle was called at least once */
+  if (name)
+    return iupStrReturnStr(name);
   else
     return NULL;
 }
@@ -859,7 +858,8 @@ Ihandle* IupSetAtt(const char* handle_name, Ihandle* ih, const char* name, ...)
     attr = va_arg(arg, const char*);
   }
   va_end(arg);
-  if (handle_name) IupSetHandle(handle_name, ih);
+  if (handle_name)
+    IupSetHandle(handle_name, ih);
   return ih;
 }
 
