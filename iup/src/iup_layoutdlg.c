@@ -44,10 +44,11 @@ static char* iLayoutGetTitle(Ihandle* ih)
   if (title)
   {
     char buffer[51];
-    int len;
-    if (iupStrNextLine(title, &len)!=title ||  /* get the size of the first line */
-        len > 50)
+
+    if (iupStrLineCount(title) > 1)
     {
+      int len;
+      iupStrNextLine(title, &len); /* get the size of the first line */
       if (len > 50) len = 50;
       iupStrCopyN(buffer, len+1, title);
       title = &buffer[0];

@@ -128,7 +128,18 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
   Ihandle* param_box = (Ihandle*)iupAttribGetInherit(self, "PARAMBOX");
   Iparamcb cb = (Iparamcb)IupGetCallback(param_box, "PARAM_CB");
   Ihandle* aux = (Ihandle*)iupAttribGet(param, "AUXCONTROL");
+  int ret = IUP_DEFAULT;
   (void)c;
+
+  if (!IupGetInt(self, "MULTILINE") && (iupStrLineCount(after) > 1))
+  {
+    /* get only the first line */
+    int len;
+    iupStrNextLine(after, &len);
+    after[len] = 0;
+    IupSetStrAttribute(self, "VALUE", after);
+    ret = IUP_IGNORE;
+  }
  
   if (iupStrEqual(iupAttribGet(param, "TYPE"), "REAL"))
   {
@@ -173,7 +184,7 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
     }
   }
 
-  return IUP_DEFAULT;
+  return ret;
 }
 
 static int iParamValAction_CB(Ihandle *self)

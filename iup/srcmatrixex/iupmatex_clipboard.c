@@ -466,7 +466,7 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
 
   lin = start_lin;
   l = 0;
-  while (lin <= num_lin && l<data_num_lin)
+  while (lin <= num_lin && l<data_num_lin && *data)
   {
     if (iupMatrixExIsLineVisible(ih, lin))
     {
@@ -474,7 +474,7 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
 
       col = start_col;
       c = 0;
-      while (col <= num_col && c<data_num_col)
+      while (len && col <= num_col && c<data_num_col)
       {
         if (iupMatrixExIsColumnVisible(ih, col))
         {
@@ -557,17 +557,19 @@ static void iMatrixExPasteData(Ihandle *ih, const char* data, int lin, int col, 
   skip_lines = IupGetInt(ih, "TEXTSKIPLINES");
   if (skip_lines)
   {
-    int i, len;
-    const char *next_line;
-    for (i=0; i<skip_lines; i++)
+    int i;
+
+    for (i=0; i<skip_lines && *data; i++)
     {
-      next_line = iupStrNextLine(data, &len);
-      if (next_line==data) /* no next line */ 
-      {
-        iupAttribSet(ih, "LASTERROR", "IUP_ERRORNOTEXT");
-        return;
-      }
+      int len;
+      const char *next_line = iupStrNextLine(data, &len);
       data = (char*)next_line;
+    }
+
+    if (i != skip_lines)
+    {
+      iupAttribSet(ih, "LASTERROR", "IUP_ERRORNOTEXT");
+      return;
     }
   }
 
