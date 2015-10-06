@@ -216,6 +216,8 @@ static int iMatrixExItemExport_CB(Ihandle* ih_item)
 
     iMatrixListShowLastError(matex_data->ih);
   }
+  else
+    IupSetAttribute(matex_data->ih, "LASTFILENAME", NULL);
 
   return IUP_DEFAULT;
 }
@@ -237,6 +239,8 @@ static int iMatrixExItemImport_CB(Ihandle* ih_item)
 
     iMatrixListShowLastError(matex_data->ih);
   }
+  else
+    IupSetAttribute(matex_data->ih, "LASTFILENAME", NULL);
 
   return IUP_DEFAULT;
 }
