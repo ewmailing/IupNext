@@ -3,6 +3,7 @@ require("iuplua")
 require("iupluaimglib")
 require("iupluaim")
 require("cdlua")
+require("cdluaim")
 require("iupluacd")
 
 
@@ -285,8 +286,8 @@ function canvas:action()
 
   -- draw the image at the center of the canvas 
   if (image) then
-    local x = (canvas_width - image:Width()) / 2
-    local y = (canvas_height - image:Height()) / 2
+    local x = math.floor((canvas_width - image:Width()) / 2)
+    local y = math.floor((canvas_height - image:Height()) / 2)
     image:cdCanvasPutImageRect(cd_canvas, x, y, image:Width(), image:Height(), 0, 0, 0, 0)
   end
 
@@ -465,8 +466,8 @@ function item_print:action()
        canvas_width - 2 * margin_width, canvas_height - 2 * margin_height, 
        image:Width(), image:Height())
 
-    local x = (canvas_width - view_width) / 2
-    local y = (canvas_height - view_height) / 2
+    local x = math.floor((canvas_width - view_width) / 2)
+    local y = math.floor((canvas_height - view_height) / 2)
 
     image:cdCanvasPutImageRect(cd_canvas, x, y, view_width, view_height, 0, 0, 0, 0)
   end

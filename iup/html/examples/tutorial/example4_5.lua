@@ -3,8 +3,8 @@ require("iuplua")
 require("iupluaimglib")
 require("iupluaim")
 require("cdlua")
-require("iupluacd")
 require("cdluaim")
+require("iupluacd")
 
 
 --********************************** Images *****************************************
@@ -1403,8 +1403,8 @@ function item_print:action()
        canvas_width - 2 * margin_width, canvas_height - 2 * margin_height, 
        image:Width(), image:Height())
 
-    local x = (canvas_width - view_width) / 2
-    local y = (canvas_height - view_height) / 2
+    local x = math.floor((canvas_width - view_width) / 2)
+    local y = math.floor((canvas_height - view_height) / 2)
 
     image:cdCanvasPutImageRect(cd_canvas, x, y, view_width, view_height, 0, 0, 0, 0)
   end

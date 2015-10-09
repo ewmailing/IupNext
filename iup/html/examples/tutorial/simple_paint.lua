@@ -1437,8 +1437,8 @@ function item_print:action()
        canvas_width - 2 * margin_width, canvas_height - 2 * margin_height, 
        image:Width(), image:Height())
 
-    local x = (canvas_width - view_width) / 2
-    local y = (canvas_height - view_height) / 2
+    local x = math.floor((canvas_width - view_width) / 2)
+    local y = math.floor((canvas_height - view_height) / 2)
 
     print_canvas:PutImImage(image, x, y, view_width, view_height)
   end

@@ -3,6 +3,7 @@ require("iuplua")
 require("iupluaimglib")
 require("iupluaim")
 require("cdlua")
+require("cdluaim")
 require("iupluacd")
 
 
@@ -445,7 +446,7 @@ function canvas:action()
     if (canvas_width < view_width) then
       x = math.floor(-posx * view_width)
     else
-      x = (canvas_width - view_width) / 2
+      x = math.floor((canvas_width - view_width) / 2)
     end
 
     if (canvas_height < view_height) then
@@ -455,7 +456,7 @@ function canvas:action()
       posy = 1 - dy - posy
       y = math.floor(-posy * view_height)
     else
-      y = (canvas_height - view_height) / 2
+      y = math.floor((canvas_height - view_height) / 2)
     end
 
     -- black line around the image
@@ -675,8 +676,8 @@ function item_print:action()
        canvas_width - 2 * margin_width, canvas_height - 2 * margin_height, 
        image:Width(), image:Height())
 
-    local x = (canvas_width - view_width) / 2
-    local y = (canvas_height - view_height) / 2
+    local x = math.floor((canvas_width - view_width) / 2)
+    local y = math.floor((canvas_height - view_height) / 2)
 
     image:cdCanvasPutImageRect(cd_canvas, x, y, view_width, view_height, 0, 0, 0, 0)
   end
