@@ -594,14 +594,14 @@ static void iMatrixDrawBackground(Ihandle* ih, int x1, int x2, int y1, int y2, i
 
 static void iMatrixDrawText(Ihandle* ih, int x1, int x2, int y1, int y2, int col_alignment, int lin_alignment, int marked, int active, int lin, int col, const char* text)
 {
-  int num_line, line_height, total_height, text_alignment;
+  int num_line, line_height, text_alignment;
   int charheight, x, y, hidden_text_marks = 0;
 
   num_line = iupStrLineCount(text);
   iupdrvFontGetCharSize(ih, NULL, &charheight);
 
   line_height  = charheight;
-  total_height = (line_height + IMAT_PADDING_H/2) * num_line - IMAT_PADDING_H/2 - IMAT_FRAME_H/2;
+  /* total_height = (line_height + IMAT_PADDING_H/2) * num_line - IMAT_PADDING_H/2 - IMAT_FRAME_H/2; */
 
   if (lin==0 || ih->data->hidden_text_marks)
   {
