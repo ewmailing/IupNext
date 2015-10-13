@@ -442,11 +442,14 @@ static char* iMatrixGetCellAttrib(Ihandle* ih, unsigned char attr, int lin, int 
 
 static int iMatrixCallColorCB(Ihandle* ih, IFniiIII cb, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b)
 {
-  int ir, ig, ib, ret;
+  int ir = 0, ig = 0, ib = 0, ret;
   ret = cb(ih, lin, col, &ir, &ig, &ib);
-  *r = iupBYTECROP(ir);
-  *g = iupBYTECROP(ig);
-  *b = iupBYTECROP(ib);
+  if (ret != IUP_IGNORE)
+  {
+    *r = iupBYTECROP(ir);
+    *g = iupBYTECROP(ig);
+    *b = iupBYTECROP(ib);
+  }
   return ret;
 }
 
