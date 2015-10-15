@@ -60,7 +60,7 @@ void TextSpinTest(void)
 //  IupSetCallback(text, "ACTION", (Icallback)action_cb);
 //  IupSetCallback(text, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
 
-  dlg = IupDialog(IupVbox(text, IupButton("SPINVALUE", "setspinvalue"), NULL));
+  dlg = IupDialog(IupVbox(IupFill(), text, IupButton("SPINVALUE", "setspinvalue"), NULL));
   IupSetAttribute(dlg, "GAP", "20");
   IupSetAttribute(dlg, "MARGIN", "20x20");
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
@@ -85,3 +85,4 @@ int main(int argc, char* argv[])
   return EXIT_SUCCESS;
 }
 #endif
+

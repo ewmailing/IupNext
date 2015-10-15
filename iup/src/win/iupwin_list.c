@@ -1176,7 +1176,7 @@ static int winListWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
       {
         IFni cb = (IFni)IupGetCallback(ih, "DROPDOWN_CB");
         if (cb)
-          cb(ih, HIWORD(wp)==CBN_DROPDOWN? 1: 0);
+          cb(ih, HIWORD(wp) == CBN_DROPDOWN ? 1 : 0);
         break;
       }
     case CBN_DBLCLK:

@@ -1990,21 +1990,44 @@ static void winTextLayoutUpdateMethod(Ihandle* ih)
   HWND hSpin = (HWND)iupAttribGet(ih, "_IUPWIN_SPIN");
   if (hSpin)
   {
+    int cur_x, cur_y, cur_w, cur_h, spin_w;
+    RECT wrect;
+    POINT pt;
+    GetWindowRect(ih->handle, &wrect);
+    pt.x = wrect.left;
+    pt.y = wrect.top;
+    ScreenToClient(GetParent(ih->handle), &pt);
+
+    cur_x = pt.x;
+    cur_y = pt.y;
+    cur_w = wrect.right - wrect.left;
+    cur_h = wrect.bottom - wrect.top;
+
+    spin_w = (3 * ih->currentheight) / 4;
+
     if (iupStrEqualNoCase(iupAttribGetStr(ih, "SPINALIGN"), "LEFT"))
     {
-      SetWindowPos(ih->handle, NULL, ih->x+ih->currentheight-1, ih->y, ih->currentwidth-ih->currentheight, ih->currentheight,
-                   SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOOWNERZORDER);
+      if (cur_x != ih->x + ih->currentheight - 1 || cur_y != ih->y ||
+          cur_w != ih->currentwidth - ih->currentheight || cur_h != ih->currentheight)
+      {
+        SetWindowPos(ih->handle, NULL, ih->x + spin_w, ih->y, ih->currentwidth - spin_w, ih->currentheight,
+          SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
 
-      SetWindowPos(hSpin, NULL, ih->x, ih->y, ih->currentheight, ih->currentheight,
-                   SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOOWNERZORDER);
+        SetWindowPos(hSpin, NULL, ih->x, ih->y, spin_w, ih->currentheight,
+          SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+      }
     }
     else
     {
-      SetWindowPos(ih->handle, NULL, ih->x, ih->y, ih->currentwidth-ih->currentheight, ih->currentheight,
-                   SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOOWNERZORDER);
+      if (cur_x != ih->x || cur_y != ih->y ||
+          cur_w != ih->currentwidth - spin_w || cur_h != ih->currentheight)
+      {
+        SetWindowPos(ih->handle, NULL, ih->x, ih->y, ih->currentwidth - spin_w, ih->currentheight,
+          SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
 
-      SetWindowPos(hSpin, NULL, ih->x+ih->currentwidth-ih->currentheight-1, ih->y, ih->currentheight, ih->currentheight,
-                   SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOOWNERZORDER);
+        SetWindowPos(hSpin, NULL, ih->x + ih->currentwidth - spin_w, ih->y, spin_w, ih->currentheight,
+          SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+      }
     }
   }
   else
