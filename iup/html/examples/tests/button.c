@@ -358,7 +358,6 @@ void ButtonTest(void)
   IupSetAttribute(image1, "4", "255 255 255"); 
   IupSetAttribute(image1, "5", "0 0 0"); 
 
-#if 0
   image1i = IupImage(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_8_inactive);
   IupSetAttribute(image1i, "0", "BGCOLOR");
   IupSetAttribute(image1i, "1", "255 0 0"); 
@@ -367,7 +366,6 @@ void ButtonTest(void)
   IupSetAttribute(image1i, "4", "255 255 255"); 
   IupSetAttribute(image1i, "5", "0 0 0"); 
   IupSetHandle("image1i", image1i); /* so it will be destroyed even when not used */
-#endif
 
 #if 0
   image1p = IupImage(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_8_pressed);
@@ -399,12 +397,12 @@ void ButtonTest(void)
 //  IupSetAttribute(button, "FONT", "Helvetica, 14");
 //  IupSetAttribute(button, "IMAGE", "IUP_Tecgraf");
   IupSetAttributeHandle(button, "IMAGE", image1);
-//  IupSetAttributeHandle(button, "IMINACTIVE", image1i);
+  IupSetAttributeHandle(button, "IMINACTIVE", image1i);
 //  IupSetAttributeHandle(button, "IMPRESS", image1p);
   IupSetAttribute(button, "TIP", "Image Label");
   IupSetAttribute(button, "NAME", "button4");
   IupSetAttribute(button, "PADDING", "5x5");
-  IupSetAttribute(button, "FLAT", "Yes");
+//  IupSetAttribute(button, "FLAT", "Yes");
   set_callbacks(button);
   IupAppend(box2, button);
 
