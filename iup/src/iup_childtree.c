@@ -128,7 +128,7 @@ static int iChildTreeCheckInside(Ihandle* parent, Ihandle* child)
 
   return iChildFindRec(parent, child);
 }
-#endif
+#endif  /* IUP_ASSERT */
 
 static int iChildFind(Ihandle* parent, Ihandle* child)
 {

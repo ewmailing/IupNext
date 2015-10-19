@@ -20,6 +20,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_drv.h"
+#include "iup_childtree.h"
 
 
 /*****************************************************************************\
@@ -73,8 +74,7 @@ static int iScrollBoxButton_CB(Ihandle *ih, int but, int pressed, int x, int y, 
 
 static int iScrollBoxMotion_CB(Ihandle *ih, int x, int y, char* status)
 {
-  if (iup_isbutton1(status) &&
-      iupAttribGet(ih, "_IUP_DRAG_SB"))
+  if (iup_isbutton1(status) && iupAttribGet(ih, "_IUP_DRAG_SB"))
   {
     int start_x = iupAttribGetInt(ih, "_IUP_START_X");
     int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
@@ -82,7 +82,7 @@ static int iScrollBoxMotion_CB(Ihandle *ih, int x, int y, char* status)
     int dy = y - start_y;
     int posx = iupAttribGetInt(ih, "_IUP_START_POSX");
     int posy = iupAttribGetInt(ih, "_IUP_START_POSY");
-    IupSetInt(ih, "POSX", posx-dx);  /* drag direction is oposite to scrollbar */
+    IupSetInt(ih, "POSX", posx-dx);  /* drag direction is opposite to scrollbar */
     IupSetInt(ih, "POSY", posy-dy);
     iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
   }
@@ -94,6 +94,55 @@ static int iScrollBoxMotion_CB(Ihandle *ih, int x, int y, char* status)
 |* Methods                                                                   *|
 \*****************************************************************************/
 
+
+static int iScrollBoxGetChildPosition(Ihandle* ih, Ihandle* child, int *posx, int *posy)
+{
+  while (child->parent && child != ih)
+  {
+    *posx += child->x;
+    *posy += child->y;
+
+    child = iupChildTreeGetNativeParent(child);
+  }
+
+  if (!child->parent)
+    return 0;
+  else
+    return 1;
+}
+
+static int iScrollBoxSetScrollToChildHandleAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle* child = (Ihandle*)value;
+  if (iupObjectCheck(child))
+  {
+    int posx = 0, posy = 0;
+    if (iScrollBoxGetChildPosition(ih, child, &posx, &posy))
+    {
+      IupSetInt(ih, "POSX", posx);
+      IupSetInt(ih, "POSY", posy);
+      iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+    }
+  }
+  return 0;
+}
+
+static int iScrollBoxSetScrollToChildAttrib(Ihandle* ih, const char* value)
+{
+  return iScrollBoxSetScrollToChildHandleAttrib(ih, (char*)IupGetHandle(value));
+}
+
+static int iScrollBoxSetScrollToAttrib(Ihandle* ih, const char* value)
+{
+  int posx, posy;
+  if (iupStrToIntInt(value, &posx, &posy, ',') == 2)
+  {
+    IupSetInt(ih, "POSX", posx);
+    IupSetInt(ih, "POSY", posy);
+    iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+  }
+  return 0;
+}
 
 static void iScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
@@ -268,6 +317,11 @@ Iclass* iupScrollBoxNewClass(void)
   iupClassRegisterReplaceAttribDef(ic, "BORDER", "NO", NULL);
   iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterReplaceAttribDef(ic, "SCROLLBAR", "YES", NULL);
+
+  /* Scrollbox */
+  iupClassRegisterAttribute(ic, "SCROLLTO", NULL, iScrollBoxSetScrollToAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTOCHILD", NULL, iScrollBoxSetScrollToChildAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLTOCHILD_HANDLE", NULL, iScrollBoxSetScrollToChildHandleAttrib, NULL, NULL, IUPAF_IHANDLE | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   return ic;
 }

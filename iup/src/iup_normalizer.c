@@ -102,9 +102,12 @@ static int iNormalizerSetNormalizeAttrib(Ihandle* ih, const char* value)
 static int iNormalizerSetAddControlHandleAttrib(Ihandle* ih, const char* value)
 {
   Ihandle* ih_control = (Ihandle*)value;
-  Ihandle** ih_list = (Ihandle**)iupArrayInc(ih->data->ih_array);
-  int count = iupArrayCount(ih->data->ih_array);
-  ih_list[count-1] = ih_control;
+  if (iupObjectCheck(ih_control))
+  {
+    Ihandle** ih_list = (Ihandle**)iupArrayInc(ih->data->ih_array);
+    int count = iupArrayCount(ih->data->ih_array);
+    ih_list[count - 1] = ih_control;
+  }
   return 0;
 }
 

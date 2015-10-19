@@ -217,8 +217,11 @@ static void show_menu(Ihandle* ih)
 
 static int action1_cb(Ihandle* ih)
 {
-//  IupSetAttribute(IupGetDialog(ih), "BACKGROUND", "255 128 128");
-  show_menu(ih);
+  Ihandle* sbox = IupGetDialogChild(ih, "SCROLLBOXTEST");
+  //IupSetAttribute(sbox, "SCROLLTO", "0,200");
+  IupSetAttribute(sbox, "SCROLLTOCHILD", "CANVASSBTEST");
+  //  IupSetAttribute(IupGetDialog(ih), "BACKGROUND", "255 128 128");
+//  show_menu(ih);
   return IUP_DEFAULT;
 }
 
@@ -488,6 +491,7 @@ void ScrollBoxTest(void)
   set_callbacks(tree);
 
   _cnv_1 = IupCanvas(NULL);
+  IupSetHandle("CANVASSBTEST", _cnv_1);
   IupSetAttribute(_cnv_1,"BGCOLOR","128 255 0");
   IupSetAttribute(_cnv_1,"SCROLLBAR","YES");
 //  IupSetAttribute(_cnv_1,"EXPAND","HORIZONTAL");
@@ -513,7 +517,7 @@ void ScrollBoxTest(void)
   IupSetAttribute(_vbox_1,"GAP","5");
 
 //  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "RASTERSIZE=400x300"), NULL);
-  _vbox_2 = IupVbox(IupScrollBox(_vbox_1), NULL);
+  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "NAME=SCROLLBOXTEST"), NULL);
   IupSetAttribute(_vbox_2,"MARGIN","20x20");
 
   dlg = IupDialog(_vbox_2);
