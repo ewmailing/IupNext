@@ -484,7 +484,7 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "ADDLEAF4",     "scalenus");
   IupSetAttribute(tree, "STATE2",     "collapsed");
   IupSetAttribute(tree, "INSERTBRANCH2","parallelogram");  /* same depth as id=2, new id=6 */
-  IupSetAttribute(tree, "ADDLEAF6",     "square");
+  IupSetAttribute(tree, "ADDLEAF6",     "square very long string at tree node");
   IupSetAttribute(tree, "ADDLEAF7",     "diamond");
   IupSetAttribute(tree, "INSERTLEAF6","2D");  /* new id=9 */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
