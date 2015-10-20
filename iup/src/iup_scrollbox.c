@@ -134,12 +134,27 @@ static int iScrollBoxSetScrollToChildAttrib(Ihandle* ih, const char* value)
 
 static int iScrollBoxSetScrollToAttrib(Ihandle* ih, const char* value)
 {
-  int posx, posy;
-  if (iupStrToIntInt(value, &posx, &posy, ',') == 2)
+  if (iupStrEqualNoCase(value, "TOP"))
   {
-    IupSetInt(ih, "POSX", posx);
-    IupSetInt(ih, "POSY", posy);
+    IupSetInt(ih, "POSX", 0);
+    IupSetInt(ih, "POSY", 0);
     iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+  }
+  else if (iupStrEqualNoCase(value, "BOTTOM"))
+  {
+    IupSetInt(ih, "POSX", 0);
+    IupSetInt(ih, "POSY", IupGetInt(ih, "YMAX") - IupGetInt(ih, "DY"));
+    iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+  }
+  else
+  {
+    int posx, posy;
+    if (iupStrToIntInt(value, &posx, &posy, ',') == 2)
+    {
+      IupSetInt(ih, "POSX", posx);
+      IupSetInt(ih, "POSY", posy);
+      iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+    }
   }
   return 0;
 }

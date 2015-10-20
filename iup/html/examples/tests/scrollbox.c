@@ -219,7 +219,9 @@ static int action1_cb(Ihandle* ih)
 {
   Ihandle* sbox = IupGetDialogChild(ih, "SCROLLBOXTEST");
   //IupSetAttribute(sbox, "SCROLLTO", "0,200");
-  IupSetAttribute(sbox, "SCROLLTOCHILD", "CANVASSBTEST");
+  //IupSetAttribute(sbox, "SCROLLTO", "TOP");
+  IupSetAttribute(sbox, "SCROLLTO", "BOTTOM");
+  //  IupSetAttribute(sbox, "SCROLLTOCHILD", "CANVASSBTEST");
   //  IupSetAttribute(IupGetDialog(ih), "BACKGROUND", "255 128 128");
 //  show_menu(ih);
   return IUP_DEFAULT;
