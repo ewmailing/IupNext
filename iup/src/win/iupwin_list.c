@@ -1734,7 +1734,10 @@ static void winListLayoutUpdateMethod(Ihandle *ih)
     RECT rect;
     int charheight, calc_h, win_h, win_w, voptions;
 
-    voptions = iupAttribGetInt(ih, "VISIBLEITEMS");
+    if (iupAttribGet(ih, "VISIBLEITEMS"))
+      voptions = iupAttribGetInt(ih, "VISIBLEITEMS");
+    else
+      voptions = iupAttribGetInt(ih, "VISIBLE_ITEMS");
     if (voptions <= 0)
       voptions = 1;
 
