@@ -254,15 +254,15 @@ static int active_cb(Ihandle *ih)
 static void set_callbacks(Ihandle* button)
 {
   IupSetCallback(button, "ACTION",       action_cb);
-  IupSetCallback(button, "BUTTON_CB",    (Icallback)button_cb);
+//  IupSetCallback(button, "BUTTON_CB",    (Icallback)button_cb);
 
   //IupSetCallback(button, "K_ANY",        (Icallback)k_any);
-  IupSetCallback(button, "HELP_CB",      (Icallback)help_cb);
+//  IupSetCallback(button, "HELP_CB",      (Icallback)help_cb);
 
 //  IupSetCallback(button, "GETFOCUS_CB",  (Icallback)getfocus_cb); 
 //  IupSetCallback(button, "KILLFOCUS_CB", (Icallback)killfocus_cb);
-  IupSetCallback(button, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
-  IupSetCallback(button, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+//  IupSetCallback(button, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
+//  IupSetCallback(button, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 }
 
 static int show_cb(Ihandle *ih, int state)
@@ -311,13 +311,13 @@ void ButtonTest(void)
   IupSetAttribute(button, "ALIGNMENT", "ACENTER:ACENTER");
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT:ATOP");
   IupSetAttribute(button, "NAME", "button1");
-  IupSetAttribute(button, "CANFOCUS", "NO");
+  //IupSetAttribute(button, "CANFOCUS", "NO");
   set_callbacks(button);
   IupAppend(box1, button);
 
   button = IupButton(NULL, NULL);
-  IupSetAttribute(button, "TITLE", "Text\nSecond Line");
-  IupSetAttribute(button, "RASTERSIZE", "200x100");
+  IupSetAttribute(button, "TITLE", "Text1\nSecond Line");
+//  IupSetAttribute(button, "RASTERSIZE", "200x100");
   IupSetAttribute(button, "ALIGNMENT", "ACENTER:ACENTER");
   IupSetAttribute(button, "FONT", "Helvetica, Underline 14");
   IupSetAttribute(button, "FLAT", "YES");
@@ -326,7 +326,7 @@ void ButtonTest(void)
   IupAppend(box1, button);
 
   button = IupButton(NULL, NULL);
-  IupSetAttribute(button, "TITLE", "Text\n<b>Second Line</b>");
+  IupSetAttribute(button, "TITLE", "Text2\n<b>Second Line</b>");
   IupSetAttribute(button, "RASTERSIZE", "200x100");
   IupSetAttribute(button, "ALIGNMENT", "ARIGHT:ABOTTOM");
   IupSetAttribute(button, "MARKUP", "YES");
@@ -413,10 +413,11 @@ void ButtonTest(void)
 //  IupSetAttribute(button, "SPACING", "30");
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
-//  IupSetAttribute(button, "FLAT", "YES");
+  IupSetAttribute(button, "FLAT", "YES");
 //  IupSetAttributeHandle(button, "IMPRESS", image2);
   IupSetAttribute(button, "CANFOCUS", "NO");
-//  IupSetAttribute(button, "RASTERSIZE", "15x15");
+  IupSetAttribute(button, "PADDING", "10x10");
+  //  IupSetAttribute(button, "RASTERSIZE", "15x15");
   IupSetAttribute(button, "NAME", "button5");
   set_callbacks(button);
   IupAppend(box2, button);

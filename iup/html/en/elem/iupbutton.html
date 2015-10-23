@@ -91,11 +91,11 @@ BGCOLOR attribute is ignored if text or image is defined. Default: the global
 attribute DLGBGCOLOR. BGCOLOR is ignored when FLAT=YES because it will be used 
 the background from the native parent. </p>
 
-<p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the control. In Windows the button will respect CANFOCUS in 
-opposite to the other controls. Default: YES. (since 3.0)</p>
+<p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): enables the focus traversal of the control. In Windows the button will respect CANFOCUS 
+differently to some other controls. Default: YES. (since 3.0)</p>
 
   
-<p><b>FLAT</b> (creation only): Hides the button borders until the mouse enter the 
+<p><b>FLAT</b> (creation only): Hides the button borders until the mouse cursor enters the 
   button area. Can be YES or NO. Default: NO.</p>
 
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: the 
@@ -233,6 +233,11 @@ dependency. But after
 
   
 <p>Buttons are activated using Enter or Space keys.</p>
+<p>Buttons are not activated if the user clicks inside the button but moves the 
+cursor and releases outside the button area. Also in Windows the highlight 
+feedback when that happens is different if the button has CANFOCUS enabled or 
+not.</p>
+<p>Usually toolbar buttons have FLAT=Yes and CANFOCUS=NO.</p>
 
 
 <h3><a name="Examples">Examples</a></h3>

@@ -380,13 +380,14 @@ int iupwinCustomDrawToDrawItem(Ihandle* ih, NMHDR* msg_info, int *result, IFdraw
     DRAWITEMSTRUCT drawitem;
     drawitem.itemState = 0;
 
+    /* combination of the following flags. */
     if (customdraw->uItemState & CDIS_DISABLED)
       drawitem.itemState |= ODS_DISABLED;
-    else if (customdraw->uItemState & CDIS_SELECTED)
+    if (customdraw->uItemState & CDIS_SELECTED)
       drawitem.itemState |= ODS_SELECTED;
-    else if (customdraw->uItemState & CDIS_HOT)
+    if (customdraw->uItemState & CDIS_HOT)
       drawitem.itemState |= ODS_HOTLIGHT;
-    else if (customdraw->uItemState & CDIS_DEFAULT)
+    if (customdraw->uItemState & CDIS_DEFAULT)
       drawitem.itemState |= ODS_DEFAULT;
 
     if (customdraw->uItemState & CDIS_FOCUS)

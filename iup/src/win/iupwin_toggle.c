@@ -203,13 +203,13 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
   x += xpad;
   y += ypad;
 
-  if (itemState & ODS_SELECTED && !iupwin_comctl32ver6)
+  if (!iupwin_comctl32ver6 && itemState & ODS_SELECTED)
   {
-    if (iupAttribGet(ih, "_IUPWIN_PRESSED"))
+    if (iupAttribGet(ih, "_IUPWINTOG_PRESSED"))
     {
       x++;
       y++;
-      iupAttribSet(ih, "_IUPWIN_PRESSED", NULL);
+      iupAttribSet(ih, "_IUPWINTOG_PRESSED", NULL);
     }
   }
 
@@ -236,11 +236,11 @@ static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
   iupwinDrawParentBackground(ih, hDC, &drawitem->rcItem);
 
-  if (!iupwin_comctl32ver6)
-  {
-    if (drawitem->itemState&ODS_SELECTED)
-      iupAttribSet(ih, "_IUPWIN_PRESSED", "1");
-  }
+  if (!iupwin_comctl32ver6 && drawitem->itemState & ODS_SELECTED)
+    iupAttribSet(ih, "_IUPWINTOG_PRESSED", "1");
+
+  if (iupAttribGet(ih, "_IUPWINTOG_ENTERWIN"))
+    drawitem->itemState |= ODS_HOTLIGHT;
 
   check = winToggleGetCheck(ih);
   if (check)
@@ -250,7 +250,7 @@ static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
   if (!check && ih->data->flat)
   {
-    if (drawitem->itemState & ODS_HOTLIGHT || iupAttribGet(ih, "_IUPWINTOG_ENTERWIN"))
+    if (drawitem->itemState & ODS_HOTLIGHT)
       draw_border = 1;
     else
       draw_border = 0;

@@ -340,7 +340,8 @@ void MatrixCbsTest(void)
 
   bt = IupButton("Button", NULL);
   IupSetCallback(bt, "ACTION", bt_cb);
-  
+  IupSetAttribute(bt, "CANFOCUS", "NO");
+
   dlg = IupDialog(
 //          IupZbox(
           IupTabs(

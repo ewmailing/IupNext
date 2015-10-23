@@ -337,6 +337,9 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   if (iupAttribGet(ih, "_IUPWINBUT_SELECTED"))
     drawitem->itemState |= ODS_SELECTED;
 
+  if (iupAttribGet(ih, "_IUPWINBUT_ENTERWIN"))
+    drawitem->itemState |= ODS_HOTLIGHT;
+
   border = winButtonGetBorder();
 
   if (ih->data->type&IUP_BUTTON_IMAGE && 
@@ -349,7 +352,7 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   {
     if (iupAttribGetBoolean(ih, "FLAT"))
     {
-      if (drawitem->itemState & ODS_HOTLIGHT || iupAttribGet(ih, "_IUPWINBUT_ENTERWIN"))
+      if (drawitem->itemState & ODS_HOTLIGHT)
         draw_border = 1;
       else
         draw_border = 0;
@@ -609,29 +612,25 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     }
     break;
   case WM_MOUSELEAVE:
-    if (!iupwin_comctl32ver6 && iupAttribGetBoolean(ih, "FLAT"))
-    {
-      iupAttribSet(ih, "_IUPWINBUT_ENTERWIN", NULL);
-      iupdrvRedrawNow(ih);
-    }
-    if (iupAttribGet(ih, "_IUPWINBUT_SELECTED"))
-    {
-      iupAttribSet(ih, "_IUPWINBUT_SELECTED", NULL);
-      iupdrvRedrawNow(ih);
-    }
+    iupAttribSet(ih, "_IUPWINBUT_SELECTED", NULL);
+    iupAttribSet(ih, "_IUPWINBUT_ENTERWIN", NULL);
+    iupdrvRedrawNow(ih);
     break;
   case WM_MOUSEMOVE:
-    if (!iupwin_comctl32ver6 && iupAttribGetBoolean(ih, "FLAT"))
+    if ((!iupwin_comctl32ver6 && iupAttribGetBoolean(ih, "FLAT")) ||
+        !iupAttribGetBoolean(ih, "CANFOCUS"))
     {
       if (!iupAttribGet(ih, "_IUPWINBUT_ENTERWIN"))
       {
-        /* this will not affect the process in iupwinBaseMsgProc*/
+        if (!iupAttribGetBoolean(ih, "CANFOCUS") && LOWORD(wp) & MK_LBUTTON)
+          iupAttribSet(ih, "_IUPWINBUT_SELECTED", "1");
+
+        /* this will not affect the process in iupwinBaseMsgProc */
 
         /* must be called so WM_MOUSELEAVE will be called */
         iupwinTrackMouseLeave(ih);
 
         iupAttribSet(ih, "_IUPWINBUT_ENTERWIN", "1");
-
         iupdrvRedrawNow(ih);
       }
     }
@@ -669,21 +668,26 @@ static int winButtonWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
   case BN_DOUBLECLICKED:
   case BN_CLICKED:
     {
-      Icallback cb = IupGetCallback(ih, "ACTION");
-      if (cb)
+      /* BN_CLICKED will NOT be notified when not receiving the focus, but sometimes it does, 
+         so we added a test here also */
+      if (iupAttribGetBoolean(ih, "CANFOCUS"))
       {
-        /* to avoid double calls when pressing enter and a dialog is displayed */
-        if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION"))  
+        Icallback cb = IupGetCallback(ih, "ACTION");
+        if (cb)
         {
-          int ret;
-          iupAttribSet(ih, "_IUPBUT_INSIDE_ACTION", "1");
+          /* to avoid double calls when pressing enter and a dialog is displayed */
+          if (!iupAttribGet(ih, "_IUPBUT_INSIDE_ACTION"))  
+          {
+            int ret;
+            iupAttribSet(ih, "_IUPBUT_INSIDE_ACTION", "1");
 
-          ret = cb(ih);
-          if (ret == IUP_CLOSE)
-            IupExitLoop();
+            ret = cb(ih);
+            if (ret == IUP_CLOSE)
+              IupExitLoop();
 
-          if (ret!=IUP_IGNORE && iupObjectCheck(ih))
-            iupAttribSet(ih, "_IUPBUT_INSIDE_ACTION", NULL);
+            if (ret!=IUP_IGNORE && iupObjectCheck(ih))
+              iupAttribSet(ih, "_IUPBUT_INSIDE_ACTION", NULL);
+          }
         }
       }
     }
