@@ -2480,9 +2480,14 @@ static void gtkTreeEnableDragDrop(Ihandle* ih)
 static void gtkTreeToggleCB(Ihandle *ih, GtkTreeIter *iterItem, int check)
 {
   IFnii cbToggle = (IFnii)IupGetCallback(ih, "TOGGLEVALUE_CB");
-
   if (cbToggle)
     cbToggle(ih, gtkTreeFindNodeId(ih, iterItem), check);
+
+  if (iupAttribGetBoolean(ih, "MARKWHENTOGGLE"))
+  {
+    int id = gtkTreeFindNodeId(ih, iterItem);
+    IupSetAttributeId(ih, "MARKED", id, check? "Yes" : "No");
+  }
 }
 
 static void gtkTreeToggled(GtkCellRendererToggle *cell_renderer, gchar *path, Ihandle *ih)
@@ -2923,6 +2928,8 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttribute  (ic, "STARTING",  NULL, gtkTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARKSTART", NULL, gtkTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARKEDNODES", gtkTreeGetMarkedNodesAttrib, gtkTreeSetMarkedNodesAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "MARKWHENTOGGLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute  (ic, "VALUE", gtkTreeGetValueAttrib, gtkTreeSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 

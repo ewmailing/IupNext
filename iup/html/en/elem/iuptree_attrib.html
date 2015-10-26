@@ -226,7 +226,7 @@ updated.</p>
 returns 0 if there are any nodes, and returns -1 if there are no nodes. When 
 changed and MARKMODE=SINGLE the node is also selected. The tree is 
 always scrolled so 
-the node becomes visible. In Motif the tree will also receive the focus.Additionally accepts the values:</p>
+the node becomes visible. In Motif the tree will also receive the focus. Additionally accepts the values:</p>
 <blockquote>
 <p class="info"><span class="style3">&quot;ROOT&quot; or &quot;FIRST&quot;:
       the first node</span><br>
@@ -247,17 +247,17 @@ of nodes in the format &quot;start-end&quot; (%d-%d). Allowed only when
 MARKMODE=MULTIPLE. Also accepts the values:</p>
 <blockquote>
 <p class="info"><span class="style3">&quot;INVERTid&quot;:
-      Inverts the specified node mark state, where id is the specified node 
+      Inverts the specified node selected state, where id is the specified node 
 identifier. If id is empty or invalid, then the focus node is used as reference node. 
 </span> <br>
-&quot;BLOCK&quot;: Marks all nodes between the focus node and the initial block-marking 
+&quot;BLOCK&quot;: Selects all nodes between the focus node and the initial block-marking 
 node defined by MARKSTART<br>
 &quot;CLEARALL&quot;:
-      Unmark all nodes<br>
+      Clear the selection of all nodes<br>
 &quot;MARKALL&quot;:
-      Marks all nodes<br>
+      Selects all nodes<br>
 &quot;INVERTALL&quot;:
-      Inverts the marking of all nodes</p>
+      Inverts the selection of all nodes</p>
 </blockquote>
 <p><strong>MARKEDid</strong> (non inheritable): The selection state of the 
 specified node, where id is the specified node identifier. If id is empty or 
@@ -276,6 +276,9 @@ SINGLE or MULTIPLE. Default: SINGLE.</p>
   marking, used when MARK=BLOCK. The value must be the node identifier.
     Default:
     0 (first node).</p>
+<p><strong>MARKWHENTOGGLE</strong> (<font size="3">non inheritable</font>) [GTK 
+and Windows Only]: selects or clears the selection of a node when its toggle is 
+changed. Works only if the node has a toggle. Default: No. (Since 3.17)</p>
 <h3><a name="tree">Hierarchy</a>&nbsp; (<font size="3">non inheritable</font>)</h3>
     <p>For these attributes &quot;id&quot; is the specified node identifier. If 
 	&quot;id&quot; is 

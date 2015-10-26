@@ -781,6 +781,13 @@ static void winTreeCallToggleValueCb(Ihandle* ih, HTREEITEM hItem)
 
     cbToggle(ih, iupTreeFindNodeId(ih, hItem), check);
   }
+
+  if (iupAttribGetBoolean(ih, "MARKWHENTOGGLE"))
+  {
+    int state = (int)((SendMessage(ih->handle, TVM_GETITEMSTATE, (WPARAM)hItem, TVIS_STATEIMAGEMASK)) >> 12);
+    int id = iupTreeFindNodeId(ih, hItem);
+    IupSetAttributeId(ih, "MARKED", id, (state == 2)? "Yes": "No");
+  }
 }
 
 static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem)
@@ -3088,6 +3095,8 @@ void iupdrvTreeInitClass(Iclass* ic)
   /*OLD*/iupClassRegisterAttribute  (ic, "STARTING",  NULL, winTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARKSTART", NULL, winTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute  (ic, "MARKEDNODES", winTreeGetMarkedNodesAttrib, winTreeSetMarkedNodesAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "MARKWHENTOGGLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute  (ic, "VALUE", winTreeGetValueAttrib, winTreeSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
 
