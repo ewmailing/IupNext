@@ -594,14 +594,10 @@ static void iMatrixDrawBackground(Ihandle* ih, int x1, int x2, int y1, int y2, i
 
 static void iMatrixDrawText(Ihandle* ih, int x1, int x2, int y1, int y2, int col_alignment, int lin_alignment, int marked, int active, int lin, int col, const char* text)
 {
-  int num_line, line_height, text_alignment;
+  int text_alignment;
   int charheight, x, y, hidden_text_marks = 0;
 
-  num_line = iupStrLineCount(text);
   iupdrvFontGetCharSize(ih, NULL, &charheight);
-
-  line_height  = charheight;
-  /* total_height = (line_height + IMAT_PADDING_H/2) * num_line - IMAT_PADDING_H/2 - IMAT_FRAME_H/2; */
 
   if (lin==0 || ih->data->hidden_text_marks)
   {
@@ -1148,7 +1144,7 @@ void iupMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
   /* Draw the titles */
   for(col = col1; col <= col2; col++)
   {
-    /* If it is an hide column (size = 0), no draw the title */
+    /* If it is hidden column (size = 0), do not draw the title */
     if(ih->data->columns.dt[col].size == 0)
       continue;
 
@@ -1370,6 +1366,8 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 
 void iupMatrixDraw(Ihandle* ih, int update)
 {
+  cdCanvasActivate(ih->data->cd_canvas);
+
   if (ih->data->need_calcsize)
     iupMatrixAuxCalcSizes(ih);
 
@@ -1425,6 +1423,8 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
     if (min > max)
       return 0;
 
+    cdCanvasActivate(ih->data->cd_canvas);
+
     iupMatrixPrepareDrawData(ih);
 
     if (ih->data->need_calcsize)
@@ -1465,6 +1465,8 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
   }
   else
   {
+    cdCanvasActivate(ih->data->cd_canvas);
+
     /* Force CalcSize */
     iupMatrixAuxCalcSizes(ih);
 

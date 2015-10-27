@@ -171,6 +171,8 @@ static void iGaugeRepaint(Ihandle* ih)
   if (!ih->data->cd_canvas)
     return;
 
+  cdCanvasActivate(ih->data->cd_canvas);
+
   /* update render */
   iGaugeDrawGauge(ih);
 
