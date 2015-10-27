@@ -677,7 +677,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
 #endif
 
   /* canvas is also a container */
-  /* use a window to be a full native containter */
+  /* use a window to be a full native container */
   ih->handle = iupgtkNativeContainerNew(1);  
 
 #if !GTK_CHECK_VERSION(3, 0, 0)
