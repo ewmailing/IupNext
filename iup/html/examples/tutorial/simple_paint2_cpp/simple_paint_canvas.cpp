@@ -495,17 +495,26 @@ int SimplePaintCanvas::CanvasButtonCallback(Ihandle* canvas, int button, int pre
 
       if (button == IUP_BUTTON1)
       {
+        SimplePaintToolbox::Tool tool_index = toolbox->ToolIndex();
+
         if (pressed)
         {
           interact.start = true;
           interact.start_x = x;
           interact.start_y = y;
+          interact.end_x = x;
+          interact.end_y = y;
           interact.start_cursor_x = cursor_x;
           interact.start_cursor_y = cursor_y;
+
+          if (tool_index == SimplePaintToolbox::TOOL_TEXT)
+          {
+            interact.overlay = true;
+            IupUpdate(canvas);
+          }
         }
         else if (interact.start)
         {
-          SimplePaintToolbox::Tool tool_index = toolbox->ToolIndex();
 
           if (tool_index == SimplePaintToolbox::TOOL_COLORPICKER)
           {
