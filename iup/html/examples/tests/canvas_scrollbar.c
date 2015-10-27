@@ -179,7 +179,8 @@ void CanvasScrollbarTest(void)
   cnv = IupCanvas(NULL);
   IupSetAttribute(cnv, "RASTERSIZE", "300x200"); /* initial size */
   IupSetAttribute(cnv, "SCROLLBAR", "YES");
-//  IupSetAttribute(cnv, "EXPAND", "NO");
+  IupSetAttribute(cnv, "BORDER", "NO");
+  //  IupSetAttribute(cnv, "EXPAND", "NO");
 
   IupSetCallback(cnv, "RESIZE_CB",  (Icallback)resize_cb);
   IupSetCallback(cnv, "ACTION",  (Icallback)action);
