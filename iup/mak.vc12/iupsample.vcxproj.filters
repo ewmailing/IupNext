@@ -22,9 +22,6 @@
     <Filter Include="Tutorial\Lua">
       <UniqueIdentifier>{aba2ca37-d61c-44f2-b8ed-04e32cc77853}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tutorial\CPP2">
-      <UniqueIdentifier>{11c77c9e-c349-4e84-a583-d8bdbe49e6be}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tutorial\CPP1">
       <UniqueIdentifier>{c1f94234-878f-408a-ae05-c3bbaf8eb98a}</UniqueIdentifier>
     </Filter>
@@ -317,27 +314,6 @@
     </ClCompile>
     <ClCompile Include="..\html\examples\tutorial\simple_paint.c">
       <Filter>Tutorial\C</Filter>
-    </ClCompile>
-    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_toolbox.cpp">
-      <Filter>Tutorial\CPP2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_util.cpp">
-      <Filter>Tutorial\CPP2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_file.cpp">
-      <Filter>Tutorial\CPP2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_main.cpp">
-      <Filter>Tutorial\CPP2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_canvas.cpp">
-      <Filter>Tutorial\CPP2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint.cpp">
-      <Filter>Tutorial\CPP2</Filter>
-    </ClCompile>
-    <ClCompile Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_splash.cpp">
-      <Filter>Tutorial\CPP2</Filter>
     </ClCompile>
     <ClCompile Include="..\html\examples\tutorial\simple_paint1.cpp">
       <Filter>Tutorial\CPP1</Filter>
@@ -635,23 +611,6 @@
     <None Include="..\html\examples\tutorial\simple_paint.lua">
       <Filter>Tutorial\Lua</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_toolbox.h">
-      <Filter>Tutorial\CPP2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_util.h">
-      <Filter>Tutorial\CPP2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint.h">
-      <Filter>Tutorial\CPP2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_file.h">
-      <Filter>Tutorial\CPP2</Filter>
-    </ClInclude>
-    <ClInclude Include="..\html\examples\tutorial\simple_paint2_cpp\simple_paint_canvas.h">
-      <Filter>Tutorial\CPP2</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\html\examples\tests\iuptest.rc" />
