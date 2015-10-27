@@ -199,8 +199,8 @@ static int iScintillaSetSelectionAttrib(Ihandle* ih, const char* value)
     return 0;
   }
 
-  if (sscanf(value, "%d,%d:%d,%d", &lin_start, &col_start, &lin_end, &col_end)!=4) return 0;
-  if (lin_start<1 || col_start<1 || lin_end<1 || col_end<1) return 0;
+  if (sscanf(value, "%d,%d:%d,%d", &lin_start, &col_start, &lin_end, &col_end)!=4) 
+    return 0;
 
   anchorPos  = IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin_start, 0) + col_start;
   currentPos = IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin_end, 0)   + col_end;

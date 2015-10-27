@@ -158,9 +158,12 @@ static void set_attribs (Ihandle *sci)
     IupSetAttribute(sci, "MARGINSENSITIVE1", "YES");
   }
 
+  //IupSetAttribute(sci, "SELECTION", "0,2:1,10");
+  //printf("SELECTION=\"%s\"\n", IupGetAttribute(sci, "SELECTION"));
+
   printf("strlen=%d\n", strlen(sampleCode));
   printf("COUNT=%s\n", IupGetAttribute(sci, "COUNT"));
-  printf("VALUE=\"%s\"\n", IupGetAttribute(sci, "VALUE"));
+  //printf("VALUE=\"%s\"\n", IupGetAttribute(sci, "VALUE"));
   printf("LINECOUNT=%s\n", IupGetAttribute(sci, "LINECOUNT"));
   printf("LINEVALUE=\"%s\"\n", IupGetAttribute(sci, "LINEVALUE"));
 }
