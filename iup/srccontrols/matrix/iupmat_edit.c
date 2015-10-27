@@ -221,11 +221,6 @@ static int iMatrixEditCallDropdownCb(Ihandle* ih, int lin, int col)
     IupSetAttribute(ih->data->droph, "VALUE", "1");
 
     ret = cb(ih, ih->data->droph, lin, col);
-
-    /* check if the user set an invalid value */
-    if (IupGetInt(ih->data->droph, "VALUE") == 0)
-      IupSetAttribute(ih->data->droph, "VALUE", "1");
-
     if(ret == IUP_DEFAULT)
       return 1;
   }
