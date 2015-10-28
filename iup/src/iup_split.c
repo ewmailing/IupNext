@@ -676,7 +676,7 @@ static void iSplitComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chi
     *children_expand |= child1->expand;
   }
 
-  if (child2 && !(child1->flags & IUP_FLOATING_IGNORE))
+  if (child2 && !(child2->flags & IUP_FLOATING_IGNORE))
   {
     /* update child natural size first */
     iupBaseComputeNaturalSize(child2);
