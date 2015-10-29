@@ -91,7 +91,7 @@ their Lua binding libraries that must be linked to use the control in Lua.</p>
 Tecgraf/PUC-Rio Library Download Tips</a> 
   document, with a description of all the available binaries.</p>
 <h4>Windows</h4>
-<p>In Windows, if you statically link the application with IUP you must link also with the libraries 
+<p>For Windows, if you <strong>statically</strong> link the application with IUP you must link also with the libraries 
   <b>ole32.lib</b>
   and <b>comctl32.lib</b> (provided with the compilers). The <b>iup.rc</b> 
 resource file (or a custom version) should be included in the application's project/makefile so that 
@@ -109,9 +109,10 @@ Eclipse for C++</a>.</p>
 important as in UNIX. Always put the less dependent library at the end, for 
 example:</p>
 <pre>-liup -lgdi32 -lcomdlg32 -lcomctl32 -luuid -loleaut32 -lole32</pre>
+<p>See more information in the <a href="drv/win32.html">Windows System Driver</a>.</p>
 <h4>Motif</h4>
-<p>In Motif, IUP uses the Motif (Xm), the Xtoolkit (Xt) and the Xlib (X11) 
-libraries. To statically link an application with IUP, use the following options in the 
+<p>For Motif, IUP uses the Motif (Xm), the Xtoolkit (Xt) and the Xlib (X11) 
+libraries. To <strong>statically</strong> link an application with IUP, use the following options in the 
 linker call (in the same order): </p>
 <pre>-liup -lXm -lXmu -lXt -lX11 -lm</pre>
 <p>Though these are the minimum requirements, depending on the platform other 
@@ -137,18 +138,22 @@ require additional options: </p>
 		-L/usr/dt/lib -I/usr/dt/share/include (Motif)</td>
     </tr>
     </table>
-<h4>GTK+ (since 3.0)</h4>
-<p>In UNIX it will need the X-Windows libraries just like the Motif driver. And 
-in UNIX or in Windows it will need the &quot;iupgtk&quot; library and the following GTK+ 
-libraries:</p>
-<pre><b>gtk-win32-2.0/gtk-3 gdk-win32-2.0/gdk-3</b> gdk_pixbuf-2.0 pango-1.0 <b>pangowin32-1.0</b> gobject-2.0 gmodule-2.0 glib-2.0
-   or
-<b>gtk-x11-2.0/gtk-3 gdk-x11-2.0/gdk-3</b> gdk_pixbuf-2.0 pango-1.0 <b>pangox-1.0</b> gobject-2.0 gmodule-2.0 glib-2.0</pre>
+<p>See more information in the <a href="drv/motif.html">Motif System Driver</a>.</p>
+<h4>GTK+ (since IUP 3.0)</h4>
+<p>For GTK, IUP uses the GTK, GDK, Pango, Cairo if GTK 3, and GLib. To <strong>statically</strong> link an application with IUP, use the following options in the 
+linker call (in the same order):</p>
+<pre><b>-lgtk-x11-2.0 -lgdk-x11-2.0</b> -lgdk_pixbuf-2.0 <b>-lpangox-1.0</b> -lpango-1.0 -lgobject-2.0 -lgmodule-2.0 -lglib-2.0 -lXext -lX11 -lm  (for GTK 2)
+or
+<b>-lgtk-3 gdk-3</b> -lgdk_pixbuf-2.0 <b>-lpangocairo-1.0</b> -lpango-1.0 <strong>-lcairo</strong>   -lgobject-2.0 -lgmodule-2.0 -lglib-2.0 -lXext -lX11 -lm  (for GTK 3)</pre>
 <p>In UNIX the following INCLUDES paths are necessary:</p>
 <pre>/usr/include/atk-1.0 /usr/include/gtk-2.0 /usr/include/cairo /usr/include/pango-1.0 /usr/include/glib-2.0 
 and eventually:   /usr/lib/glib-2.0/include /usr/lib/gtk-2.0/include
              or   /usr/lib64/glib-2.0/include /usr/lib64/gtk-2.0/include</pre>
-<p>To build the driver with GTK 3.x support define USE_GTK3=Yes before calling make in the "iup/src" folder. Just the main library must be rebuilt. </p>
+<p>&nbsp;A simpler way to obtain GTK parameters for static linking is to use the
+<strong>pkg-config</strong> tool:</p>
+<pre>INCLUDES += $(shell pkg-config --cflags gtk+-2.0 gdk-2.0)
+LIBS += $(shell pkg-config --libs gtk+-2.0 gdk-2.0)</pre>
+<p>See more information in the <a href="drv/gtk.html">GTK System Driver</a>.</p>
 <h4>Multithread</h4>
 <p>User interface is usually not thread safe and IUP is not thread safe. The 
 general recommendation when you want more than one thread is to build the 
