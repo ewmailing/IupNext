@@ -316,8 +316,8 @@ void iupdrvTabsSetCurrentTab(Ihandle* ih, int pos)
   int p = winTabsPosFixToWin(ih, pos);
   if (p >= 0)
   {
-    int prev_pos = iupdrvTabsGetCurrentTab(ih);
-    HWND tab_container = winTabsGetPageWindow(ih, prev_pos);
+    int curr_pos = iupdrvTabsGetCurrentTab(ih);
+    HWND tab_container = winTabsGetPageWindow(ih, curr_pos);
     if (tab_container)
       ShowWindow(tab_container, SW_HIDE);
 
@@ -827,13 +827,13 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   {
     IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
     int prev_pos = iupdrvTabsGetCurrentTab(ih);
-    iupAttribSetInt(ih, "_IUPTABS_PREV_CHILD_POS", prev_pos);
+    iupAttribSetInt(ih, "_IUPWINTABS_PREV_CHILD_POS", prev_pos);
 
     /* save the previous handle if callback exists */
     if (cb)
     {
       Ihandle* prev_child = IupGetChild(ih, prev_pos);
-      iupAttribSet(ih, "_IUPTABS_PREV_CHILD", (char*)prev_child);
+      iupAttribSet(ih, "_IUPWINTABS_PREV_CHILD", (char*)prev_child);
     }
 
     return 0;
@@ -843,19 +843,19 @@ static int winTabsWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
   {
     IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
     int pos = iupdrvTabsGetCurrentTab(ih);
-    int prev_pos = iupAttribGetInt(ih, "_IUPTABS_PREV_CHILD_POS");
+    int prev_pos = iupAttribGetInt(ih, "_IUPWINTABS_PREV_CHILD_POS");
+
     HWND tab_container = winTabsGetPageWindow(ih, pos);
-    if (tab_container)
-      ShowWindow(tab_container, SW_SHOW);
-    tab_container = winTabsGetPageWindow(ih, prev_pos);
-    if (tab_container)
-      ShowWindow(tab_container, SW_HIDE);
+    HWND prev_tab_container = winTabsGetPageWindow(ih, prev_pos);
+
+    if (tab_container) ShowWindow(tab_container, SW_SHOW);   /* show new page, if any */
+    if (prev_tab_container) ShowWindow(prev_tab_container, SW_HIDE); /* hide previous page, if any */
 
     if (cb)
     {
       Ihandle* child = IupGetChild(ih, pos);
-      Ihandle* prev_child = (Ihandle*)iupAttribGet(ih, "_IUPTABS_PREV_CHILD");
-      iupAttribSet(ih, "_IUPTABS_PREV_CHILD", NULL);
+      Ihandle* prev_child = (Ihandle*)iupAttribGet(ih, "_IUPWINTABS_PREV_CHILD");
+      iupAttribSet(ih, "_IUPWINTABS_PREV_CHILD", NULL);
 
       /* avoid duplicate calls when a Tab is inside another Tab. */
       if (prev_child)
@@ -1279,6 +1279,7 @@ static void winTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
       int p = winTabsGetPageWindowPos(ih, tab_container);
 
       iupTabsCheckCurrentTab(ih, pos, 1);
+
       winTabsDeleteVisibleArrayItem(ih, pos);
       if (p != -1) winTabsDeleteItem(ih, p, tab_container);
 

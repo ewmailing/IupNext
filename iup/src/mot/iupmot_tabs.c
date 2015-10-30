@@ -51,11 +51,11 @@ int iupdrvTabsGetLineCountAttrib(Ihandle* ih)
 void iupdrvTabsSetCurrentTab(Ihandle* ih, int pos)
 {
   Ihandle* child = IupGetChild(ih, pos);
-  Ihandle* prev_child = IupGetChild(ih, iupdrvTabsGetCurrentTab(ih));
+  Ihandle* curr_child = IupGetChild(ih, iupdrvTabsGetCurrentTab(ih));
   Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
-  Widget prev_child_manager = (Widget)iupAttribGet(prev_child, "_IUPTAB_CONTAINER");
+  Widget curr_child_manager = (Widget)iupAttribGet(curr_child, "_IUPTAB_CONTAINER");
   XtMapWidget(child_manager);
-  if (prev_child_manager) XtUnmapWidget(prev_child_manager);
+  if (curr_child_manager) XtUnmapWidget(curr_child_manager);
 
   XtVaSetValues(ih->handle, XmNcurrentPageNumber, pos, NULL);
 }
@@ -363,20 +363,42 @@ int iupdrvTabsIsTabVisible(Ihandle* child, int pos)
 /* motTabs - Callback                                                        */
 /* ------------------------------------------------------------------------- */
 
-void motTabsPageChangedCallback(Widget w, Ihandle* ih, XmNotebookCallbackStruct *nptr)
+static void motTabsPageChangedManual(Ihandle* ih, Ihandle* prev_child, int prev_pos)
+{
+  IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
+  int pos = iupdrvTabsGetCurrentTab(ih);
+
+  Ihandle* child = IupGetChild(ih, pos);
+  Widget tab_container = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
+  if (tab_container) XtMapWidget(tab_container);  /* show new page, if any */
+
+  if (cb)
+    cb(ih, child, prev_child);
+  else
+  {
+    IFnii cb2 = (IFnii)IupGetCallback(ih, "TABCHANGEPOS_CB");
+    if (cb2)
+      cb2(ih, pos, prev_pos);
+  }
+}
+
+static void motTabsPageChangedCallback(Widget w, Ihandle* ih, XmNotebookCallbackStruct *nptr)
 {
   if (nptr->reason == XmCR_MAJOR_TAB)
   {
-    IFnnn cb;
+    IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
     Ihandle* child = IupGetChild(ih, nptr->page_number);
     Ihandle* prev_child = IupGetChild(ih, nptr->prev_page_number);
-    Widget child_manager = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
-    Widget prev_child_manager = (Widget)iupAttribGet(prev_child, "_IUPTAB_CONTAINER");
 
-    XtMapWidget(child_manager);
-    if (prev_child_manager) XtUnmapWidget(prev_child_manager);
+    Widget tab_container = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
+    Widget prev_tab_container = (Widget)iupAttribGet(prev_child, "_IUPTAB_CONTAINER");
 
-    cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
+    if (iupAttribGet(ih, "_IUPMOT_IGNORE_PAGECHANGE"))
+      return;
+
+    if (tab_container) XtMapWidget(tab_container);  /* show new page, if any */
+    if (prev_tab_container) XtUnmapWidget(prev_tab_container); /* hide previous page, if any */
+
     if (cb)
       cb(ih, child, prev_child);
     else
@@ -563,6 +585,9 @@ static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
     {
       Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
 
+      if (iupdrvTabsGetCurrentTab(ih) == pos)
+        iupAttribSet(ih, "_IUPMOT_IGNORE_PAGECHANGE", "1");
+
       iupTabsCheckCurrentTab(ih, pos, 1);
 
       XtDestroyWidget(tab_button);
@@ -574,6 +599,12 @@ static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
       iupAttribSet(child, "_IUPTAB_CONTAINER", NULL);
       iupAttribSet(child, "_IUPMOT_TABBUTTON", NULL);
       iupAttribSet(child, "_IUPMOT_TABNUMBER", NULL);
+
+      if (iupAttribGet(ih, "_IUPMOT_IGNORE_PAGECHANGE"))
+      {
+        motTabsPageChangedManual(ih, child, pos);
+        iupAttribSet(ih, "_IUPMOT_IGNORE_PAGECHANGE", NULL);
+      }
     }
   }
 }

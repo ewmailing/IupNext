@@ -259,21 +259,45 @@ static int gtkTabsSetBgColorAttrib(Ihandle* ih, const char* value)
 /* gtkTabs - Callbacks                                                       */
 /* ------------------------------------------------------------------------- */
 
+static void gtkTabsSwitchManual(Ihandle* ih, Ihandle* prev_child, int prev_pos)
+{
+  IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
+  int pos = iupdrvTabsGetCurrentTab(ih);
+
+  Ihandle* child = IupGetChild(ih, pos);
+  GtkWidget* tab_container = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
+  if (tab_container) gtk_widget_show(tab_container);   /* show new page, if any */
+
+  if (cb)
+    cb(ih, child, prev_child);
+  else
+  {
+    IFnii cb2 = (IFnii)IupGetCallback(ih, "TABCHANGEPOS_CB");
+    if (cb2)
+      cb2(ih, pos, prev_pos);
+  }
+}
+
 static void gtkTabsSwitchPage(GtkNotebook* notebook, void* page, int pos, Ihandle* ih)
 {
-  IFnnn cb;
-  Ihandle* child = IupGetChild(ih, pos);
+  IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
   int prev_pos = iupdrvTabsGetCurrentTab(ih);
+
+  Ihandle* child = IupGetChild(ih, pos);
   Ihandle* prev_child = IupGetChild(ih, prev_pos);
+
   GtkWidget* tab_container = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
   GtkWidget* prev_tab_container = (GtkWidget*)iupAttribGet(prev_child, "_IUPTAB_CONTAINER");
-  if (tab_container) gtk_widget_show(tab_container);
-  if (prev_tab_container) gtk_widget_hide(prev_tab_container);
+
+  if (iupAttribGet(ih, "_IUPGTK_IGNORE_SWITCHPAGE"))
+    return;
+
+  if (tab_container) gtk_widget_show(tab_container);   /* show new page, if any */
+  if (prev_tab_container) gtk_widget_hide(prev_tab_container);  /* hide previous page, if any */
 
   if (iupAttribGet(ih, "_IUPGTK_IGNORE_CHANGE"))
     return;
 
-  cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
   if (cb)
     cb(ih, child, prev_child);
   else
@@ -527,6 +551,9 @@ static void gtkTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
     GtkWidget* tab_page = (GtkWidget*)iupAttribGet(child, "_IUPTAB_PAGE");
     if (tab_page)
     {
+      if (iupdrvTabsGetCurrentTab(ih) == pos)
+        iupAttribSet(ih, "_IUPGTK_IGNORE_SWITCHPAGE", "1");
+
       iupTabsCheckCurrentTab(ih, pos, 1);
 
       iupAttribSet(ih, "_IUPGTK_IGNORE_CHANGE", "1");
@@ -538,6 +565,12 @@ static void gtkTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
       iupAttribSet(child, "_IUPGTK_TABLABEL", NULL);
       iupAttribSet(child, "_IUPTAB_CONTAINER", NULL);
       iupAttribSet(child, "_IUPTAB_PAGE", NULL);
+
+      if (iupAttribGet(ih, "_IUPGTK_IGNORE_SWITCHPAGE"))
+      {
+        gtkTabsSwitchManual(ih, child, pos);
+        iupAttribSet(ih, "_IUPGTK_IGNORE_SWITCHPAGE", NULL);
+      }
     }
   }
 }
