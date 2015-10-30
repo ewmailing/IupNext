@@ -284,7 +284,7 @@ static void new_file(char* dialogtype, int preview)
   IupSetAttribute(dlg, "PARENTDIALOG", "_MAIN_DIALOG_TEST_");
   IupSetAttribute(dlg, "DIALOGTYPE", dialogtype);
   IupSetAttribute(dlg, "TITLE", "IupFileDlg Test");
-  IupSetAttribute(dlg, "DIRECTORY", "/tecgraf/iup");
+  IupSetAttribute(dlg, "DIRECTORY", "d:/tecgraf/iup");
   if (strcmp(dialogtype, "DIR")!=0)
   {
 //    IupSetAttributes(dlg, "FILTER = \"*.bmp\", FILTERINFO = \"Bitmap Files\"");
@@ -305,7 +305,7 @@ static void new_file(char* dialogtype, int preview)
 //  IupSetAttributes(dlg, "FILE = \"/tecgraf/iup/test.bmp\""); // OK
 //  IupSetAttributes(dlg, "FILE = \"test.bmp\", DIRECTORY = \"/tecgraf/iup\"");   // OK
 //  IupSetAttributes(dlg, "FILE = \"test.bmp\", DIRECTORY = \"\\tecgraf\\iup\"");  // OK
-//  IupSetAttribute(dlg, "NOCHANGEDIR", "NO");
+  IupSetAttribute(dlg, "NOCHANGEDIR", "YES");
   if (strcmp(dialogtype, "OPEN") == 0) IupSetAttribute(dlg, "MULTIPLEFILES", "YES");
 //  IupSetAttribute(dlg, "RASTERSIZE", "800x600");
 //  IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
