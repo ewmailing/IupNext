@@ -31,6 +31,7 @@
 <dl>
   <dl>
 	<pre>int IupGetParam(const char* <b>title</b>, Iparamcb <b>action</b>, void* <b>user_data</b>, const char* <b>format</b>,...); [in C]
+int IupGetParamv(const char* <b>title</b>, Iparamcb <b>action</b>, void* <b>user_data</b>, const char* <b>format</b>, int <strong>param_count</strong>, int <strong>param_extra</strong>, void** <strong>param_data</strong>); [in C]
 iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: string,...) -&gt; (<strong>status</strong>: boolean, ...) [in Lua]</pre>
 	<b>
 	<p>title</b>: dialog title.<br>
@@ -39,7 +40,11 @@ iup.GetParam(<b>title</b>: string, <b>action</b>: function, <b>format</b>: strin
 	<b>user_data</b>: user pointer passed to the user callback.<br>
 	<b>format</b>: <span>string describing all the parameters, see
 	<a href="#Notes">Notes</a>.&nbsp;</span><br>
-    ...: list of variables address with initial values for the parameters.</p>
+    ...: list of variables address with initial values for the parameters.<br>
+	<strong>param_count</strong>: number of regular parameters in the array. <br>
+	<strong>param_extra</strong>: number of extra parameters in the array 
+	(separator lines and button names). <br><strong>param_data</strong>: array 
+	of variables address with initial values for the parameters.</p>
 	<p><span class="style1">Returns:</span> a <strong>status</strong> code 1 if the button 
 	1 was pressed, 0 if the button 2 was pressed or if an error occurred.</p>
 	<p>The function 
