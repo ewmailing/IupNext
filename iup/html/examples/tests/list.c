@@ -92,6 +92,16 @@ static int getvalue_cb(Ihandle *ih)
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
   IupSetAttribute(text, "VALUE", IupGetAttribute(list, "VALUE"));
+//  IupSetAttribute(list, "ACTIVE", "No");
+  return IUP_DEFAULT;
+}
+
+static int setvalue_cb(Ihandle *ih)
+{
+  Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
+  Ihandle *text = IupGetDialogChild(ih, "text");
+  IupSetAttribute(list, "VALUE", IupGetAttribute(text, "VALUE"));
+//  IupSetAttribute(list, "ACTIVE", "Yes");
   return IUP_DEFAULT;
 }
 
@@ -115,14 +125,6 @@ static int readonly_cb(Ihandle *ih)
   Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
   Ihandle *text = IupGetDialogChild(ih, "text");
   IupSetAttribute(list, "READONLY", IupGetAttribute(text, "VALUE"));
-  return IUP_DEFAULT;
-}
-
-static int setvalue_cb(Ihandle *ih)
-{
-  Ihandle *list = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "_ACTIVE_LIST");
-  Ihandle *text = IupGetDialogChild(ih, "text");
-  IupSetAttribute(list, "VALUE", IupGetAttribute(text, "VALUE"));
   return IUP_DEFAULT;
 }
 
@@ -258,6 +260,8 @@ static void set_callbacks(Ihandle* list)
 //  IupSetAttribute(list, "VISIBLECOLUMNS", "7");
   IupSetAttribute(list, "VISIBLELINES", "4");
 }
+
+//#define IupFrame IupRadio
 
 void ListTest(void)
 {

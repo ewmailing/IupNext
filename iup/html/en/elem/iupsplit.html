@@ -125,6 +125,12 @@ IupGetNextChild</strong>.</p>
 but internally is very different. While the <strong>IupSbox </strong>controls only one element and can 
 push other elements outside the dialog, the <strong>IupSplit</strong> balance its internal size and 
 never push other elements outside its boundaries.</p>
+<p>When AUTOHIDE=Yes the control will set FLOATING=IGNORE and VISIBLE=NO for the 
+child to be auto-hidden, then back to FLOATING=NO and VISIBLE=Yes when shown. So 
+if the child has several children with different combinations of VISIBLE it is 
+recommended that this child to be a native container like <strong>
+IupBackgroundBox</strong> or <strong>IupFrame,</strong> so the VISIBLE attribute 
+will be not be propagated to its children.</p>
 
 <p>The container can be created with no elements and be dynamic filled using
   <a href="../func/iupappend.html">IupAppend</a> or

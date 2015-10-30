@@ -838,7 +838,7 @@ static int gtkDialogSetOpacityImageAttrib(Ihandle *ih, const char *value)
       cairo_surface_t* surface = gdk_window_create_similar_surface(window, CAIRO_CONTENT_COLOR_ALPHA, width, height);
       cairo_t* cr = cairo_create(surface);
       gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
-      //cairo_rectangle(cr, 0, 0, width, height);
+      cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
       cairo_paint(cr);
       cairo_destroy(cr);
 #endif
@@ -908,17 +908,19 @@ static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     {
       /* TODO: this is NOT working!!!! */
       cairo_pattern_t* pattern;
-
       int width = gdk_pixbuf_get_width(pixbuf);
       int height = gdk_pixbuf_get_height(pixbuf);
 
       cairo_surface_t* surface = gdk_window_create_similar_surface(window, CAIRO_CONTENT_COLOR_ALPHA, width, height);
       cairo_t* cr = cairo_create(surface);
-      gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
-      cairo_paint (cr);
-      cairo_destroy (cr);
+      gdk_cairo_set_source_pixbuf(cr, pixbuf, 0, 0);
+      cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+      cairo_paint(cr);
+      cairo_destroy(cr);
 
       pattern = cairo_pattern_create_for_surface(surface);
+      cairo_pattern_set_extend(pattern, CAIRO_EXTEND_REPEAT);
+
       gdk_window_set_background_pattern(window, pattern);
       cairo_pattern_destroy (pattern);
 
