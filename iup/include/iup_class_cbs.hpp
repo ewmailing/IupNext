@@ -5,6 +5,10 @@
 #ifndef __IUP_CLASS_CBS_HPP
 #define __IUP_CLASS_CBS_HPP
 
+
+#define IUP_CLASS_GET_OBJECT(__ih, __class) dynamic_cast<__class*>((__class*)IupGetAttribute(__ih, #__class "->this"))
+
+
 #define IUP_CLASS_INITCALLBACK(__ih, __class)  \
   IupSetAttribute(__ih, #__class "->this", (char*)this)
 
@@ -12,11 +16,12 @@
   IupSetCallback(__ih, __name, (Icallback)CB_##__cb)
 
 
+
 #define IUP_CLASS_DECLARECALLBACK_IFn(__class, __cb)  \
        int      __cb(Ihandle* ih);         \
 static int CB_##__cb(Ihandle* ih)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih);                                  \
 }                                                           
 
@@ -24,7 +29,7 @@ static int CB_##__cb(Ihandle* ih)          \
        int      __cb(Ihandle* ih, int i1);         \
 static int CB_##__cb(Ihandle* ih, int i1)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1);                                  \
 }                                                           
 
@@ -32,7 +37,7 @@ static int CB_##__cb(Ihandle* ih, int i1)          \
        int      __cb(Ihandle* ih, int i1, int i2);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2);                                  \
 }                                                           
 
@@ -40,7 +45,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2)          \
        int      __cb(Ihandle* ih, int i1, int i2, int i3);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, i3);                                  \
 }                                                           
 
@@ -48,7 +53,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3)          \
        int      __cb(Ihandle* ih, int i1, int i2, int i3, int i4);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, i3, i4);                                  \
 }                                                           
 
@@ -56,7 +61,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4)          \
        int      __cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, i3, i4, i5);                                  \
 }                                                           
 
@@ -64,7 +69,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5)       
        int      __cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, int i6);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, int i6)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, i3, i4, i5, i6);                                  \
 }                                                           
 
@@ -72,7 +77,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, int i6
        int      __cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, int i6, struct _cdCanvas* canvas);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, int i6, struct _cdCanvas* canvas)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, i3, i4, i5, i6, canvas);             \
 }                                                           
 
@@ -80,7 +85,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, int i6
        int      __cb(Ihandle* ih, struct _cdCanvas* canvas);         \
 static int CB_##__cb(Ihandle* ih, struct _cdCanvas* canvas)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, canvas);             \
 }                                                           
 
@@ -88,7 +93,7 @@ static int CB_##__cb(Ihandle* ih, struct _cdCanvas* canvas)          \
        double      __cb(Ihandle* ih, int i1, int i2);    \
 static double CB_##__cb(Ihandle* ih, int i1, int i2)     \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2);                                     \
 }                                                           
 
@@ -96,7 +101,7 @@ static double CB_##__cb(Ihandle* ih, int i1, int i2)     \
        char*      __cb(Ihandle* ih, int i1);    \
 static char* CB_##__cb(Ihandle* ih, int i1)     \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1);                                     \
 }                                                           
 
@@ -104,7 +109,7 @@ static char* CB_##__cb(Ihandle* ih, int i1)     \
        char*      __cb(Ihandle* ih, int i1, int i2);    \
 static char* CB_##__cb(Ihandle* ih, int i1, int i2)     \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2);                                     \
 }                                                           
 
@@ -112,7 +117,7 @@ static char* CB_##__cb(Ihandle* ih, int i1, int i2)     \
        char*      __cb(Ihandle* ih, int i1, int i2, char* s);         \
 static char* CB_##__cb(Ihandle* ih, int i1, int i2, char* s)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, s);                                  \
 }                                                           
 
@@ -120,7 +125,7 @@ static char* CB_##__cb(Ihandle* ih, int i1, int i2, char* s)          \
        int      __cb(Ihandle* ih, float f1, float f2);         \
 static int CB_##__cb(Ihandle* ih, float f1, float f2)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, f1, f2);                                  \
 }                                                           
 
@@ -128,7 +133,7 @@ static int CB_##__cb(Ihandle* ih, float f1, float f2)          \
        int      __cb(Ihandle* ih, int i1, float f1, float f2);         \
 static int CB_##__cb(Ihandle* ih, int i1, float f1, float f2)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, f1, f2);                                  \
 }                                                           
 
@@ -136,7 +141,7 @@ static int CB_##__cb(Ihandle* ih, int i1, float f1, float f2)          \
        int      __cb(Ihandle* ih, float f1, int i1, int i2, char* s);         \
 static int CB_##__cb(Ihandle* ih, float f1, int i1, int i2, char* s)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, f1, i1, i2, s);                                  \
 }                                                           
 
@@ -144,7 +149,7 @@ static int CB_##__cb(Ihandle* ih, float f1, int i1, int i2, char* s)          \
        int      __cb(Ihandle* ih, int i1, int i2, float f1, float f2);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, float f1, float f2)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, f1, f2);                                  \
 }                                                           
 
@@ -152,7 +157,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, float f1, float f2)          \
        int      __cb(Ihandle* ih, int i1, int i2, float f1, float f2, int i3);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, float f1, float f2, int i3)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, f1, f2, i3);                                  \
 }                                                           
 
@@ -160,7 +165,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, float f1, float f2, int i3)   
        int      __cb(Ihandle* ih, int i1, int i2, float f1, float f2, float *f3, float *f4);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, float f1, float f2, float *f3, float *f4)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, f1, f2, f3, f4);                                  \
 }                                                           
 
@@ -168,7 +173,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, float f1, float f2, float *f3,
        int      __cb(Ihandle* ih, int i1, int i2, float f1, float f2, char* s);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, float f1, float f2, char* s)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, f1, f2, s);                                  \
 }                                                           
 
@@ -176,7 +181,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, float f1, float f2, char* s)  
        int      __cb(Ihandle* ih, double d1);         \
 static int CB_##__cb(Ihandle* ih, double d1)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, d1);                                  \
 }                                                           
 
@@ -184,7 +189,7 @@ static int CB_##__cb(Ihandle* ih, double d1)          \
        int      __cb(Ihandle* ih, double d1, double d2, char* s);         \
 static int CB_##__cb(Ihandle* ih, double d1, double d2, char* s)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, d1, d2, s);                                  \
 }                                                           
 
@@ -192,7 +197,7 @@ static int CB_##__cb(Ihandle* ih, double d1, double d2, char* s)          \
        int      __cb(Ihandle* ih, int i1, int i2, double d1);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, double d1)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, d1);                                  \
 }                                                           
 
@@ -200,7 +205,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, double d1)          \
        int      __cb(Ihandle* ih, int i1, int i2, double d1, double d2);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, double d1, double d2)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, d1, d2);                                  \
 }                                                           
 
@@ -208,7 +213,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, double d1, double d2)         
        int      __cb(Ihandle* ih, int i1, int i2, double d1, double d2, int i3);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, double d1, double d2, int i3)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, d1, d2, i3);                                  \
 }                                                           
 
@@ -216,7 +221,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, double d1, double d2, int i3) 
        int      __cb(Ihandle* ih, int i1, int i2, double d1, double d2, char* s);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, double d1, double d2, char* s)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, d1, d2, s);                                  \
 }                                                           
 
@@ -224,7 +229,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, double d1, double d2, char* s)
        int      __cb(Ihandle* ih, int i1, int i2, int *I1, int *I2, int *I3);  \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, int *I1, int *I2, int *I3)   \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, I1, I2, I3);                         \
 }                                                           
 
@@ -232,7 +237,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, int *I1, int *I2, int *I3)   \
        int      __cb(Ihandle* ih, int i1, int *I1, int *I2, int *I3, int *I4);  \
 static int CB_##__cb(Ihandle* ih, int i1, int *I1, int *I2, int *I3, int *I4)   \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, I1, I2, I3, I4);                         \
 }                                                           
 
@@ -240,7 +245,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int *I1, int *I2, int *I3, int *I4)   
        int      __cb(Ihandle* ih, int *I1, int i1);  \
 static int CB_##__cb(Ihandle* ih, int *I1, int i1)   \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, I1, i1);                         \
 }                                                           
 
@@ -248,7 +253,7 @@ static int CB_##__cb(Ihandle* ih, int *I1, int i1)   \
        int      __cb(Ihandle* ih, char c1, char c2, char c3);         \
 static int CB_##__cb(Ihandle* ih, char c1, char c2, char c3)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, c1, c2, c3);                                  \
 }                                                           
 
@@ -256,7 +261,7 @@ static int CB_##__cb(Ihandle* ih, char c1, char c2, char c3)          \
        int      __cb(Ihandle* ih, int i1, char* s);         \
 static int CB_##__cb(Ihandle* ih, int i1, char* s)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, s);                                  \
 }                                                           
 
@@ -264,7 +269,7 @@ static int CB_##__cb(Ihandle* ih, int i1, char* s)          \
        int      __cb(Ihandle* ih, int i1, int i2, char* s);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, char* s)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, s);                                  \
 }                                                           
 
@@ -272,7 +277,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, char* s)          \
        int      __cb(Ihandle* ih, int i1, int i2, int i3, char* s);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, char* s)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, i3, s);                                  \
 }                                                           
 
@@ -280,7 +285,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, char* s)          \
        int      __cb(Ihandle* ih, int i1, int i2, int i3, int i4, char* s);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, char* s)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, i3, i4, s);                                  \
 }                                                           
 
@@ -288,7 +293,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, char* s)      
        int      __cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, char* s);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, char* s)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, i3, i4, i5, s);                                  \
 }                                                           
 
@@ -296,7 +301,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, char* 
        int      __cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, int i6, char* s);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, int i6, char* s)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, i3, i4, i5, i6, s);                                  \
 }                                                           
 
@@ -304,7 +309,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, int i3, int i4, int i5, int i6
        int      __cb(Ihandle* ih, char* s1, char* s2);         \
 static int CB_##__cb(Ihandle* ih, char* s1, char* s2)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, s1, s2);                                  \
 }                                                           
 
@@ -312,7 +317,7 @@ static int CB_##__cb(Ihandle* ih, char* s1, char* s2)          \
        int      __cb(Ihandle* ih, char* s1);         \
 static int CB_##__cb(Ihandle* ih, char* s1)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, s1);                                  \
 }                                                           
 
@@ -320,7 +325,7 @@ static int CB_##__cb(Ihandle* ih, char* s1)          \
        int      __cb(Ihandle* ih, char* s1, int i1);         \
 static int CB_##__cb(Ihandle* ih, char* s1, int i1)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, s1, i1);                                  \
 }                                                           
 
@@ -328,7 +333,7 @@ static int CB_##__cb(Ihandle* ih, char* s1, int i1)          \
        int      __cb(Ihandle* ih, char* s1, int i1, int i2);         \
 static int CB_##__cb(Ihandle* ih, char* s1, int i1, int i2)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, s1, i1, i2);                                  \
 }                                                           
 
@@ -336,7 +341,7 @@ static int CB_##__cb(Ihandle* ih, char* s1, int i1, int i2)          \
        int      __cb(Ihandle* ih, char* s1, int i1, int i2, int i3);         \
 static int CB_##__cb(Ihandle* ih, char* s1, int i1, int i2, int i3)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, s1, i1, i2, i3);                                  \
 }                                                           
 
@@ -344,7 +349,7 @@ static int CB_##__cb(Ihandle* ih, char* s1, int i1, int i2, int i3)          \
        int      __cb(Ihandle* ih, Ihandle* ih1, int i1, int i2);         \
 static int CB_##__cb(Ihandle* ih, Ihandle* ih1, int i1, int i2)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, ih1, i1, i2);                                  \
 }                                                           
 
@@ -352,7 +357,7 @@ static int CB_##__cb(Ihandle* ih, Ihandle* ih1, int i1, int i2)          \
        int      __cb(Ihandle* ih, Ihandle* ih1, Ihandle *ih2);         \
 static int CB_##__cb(Ihandle* ih, Ihandle* ih1, Ihandle *ih2)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, ih1, ih2);                                  \
 }                                                           
 
@@ -360,7 +365,7 @@ static int CB_##__cb(Ihandle* ih, Ihandle* ih1, Ihandle *ih2)          \
        int      __cb(Ihandle* ih, int i1, int i2, Ihandle* ih1, char* s, int i3, int i4);         \
 static int CB_##__cb(Ihandle* ih, int i1, int i2, Ihandle* ih1, char* s, int i3, int i4)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, i1, i2, ih1, s, i3, i4);                                  \
 }                                                           
 
@@ -368,7 +373,7 @@ static int CB_##__cb(Ihandle* ih, int i1, int i2, Ihandle* ih1, char* s, int i3,
        int      __cb(Ihandle* ih, char* s1, void* V1, int i1);         \
 static int CB_##__cb(Ihandle* ih, char* s1, void* V1, int i1)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, s1, V1, i1);                                  \
 }                                                           
 
@@ -376,9 +381,11 @@ static int CB_##__cb(Ihandle* ih, char* s1, void* V1, int i1)          \
        int      __cb(Ihandle* ih, char* s1, void* V1, int i1, int i2, int i3);         \
 static int CB_##__cb(Ihandle* ih, char* s1, void* V1, int i1, int i2, int i3)          \
 {                                                                   \
-  __class* obj = (__class*)IupGetAttribute(ih, #__class "->this");  \
+  __class* obj = IUP_CLASS_GET_OBJECT(ih, __class);  \
   return obj->__cb(ih, s1, V1, i1, i2, i3);                                  \
 }                                                           
+
+
 
 /* #define IUP_CLASS_DEBUG */
 #ifdef IUP_CLASS_DEBUG
