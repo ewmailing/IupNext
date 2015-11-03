@@ -198,6 +198,7 @@ IupGetIntId2
 IupGetFloatId2
 IupGetDoubleId2
 IupSetfAttributeId2
+IupStringCompare
 IupRecordInput
 IupPlayInput
 IupGetRGB

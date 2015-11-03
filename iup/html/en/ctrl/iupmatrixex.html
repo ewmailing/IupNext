@@ -272,12 +272,13 @@ interval of the current column, id is ignored) or RESET (remove any ordering).
 The SORTSIGN<em>id</em> 
 attribute will be updated to reflect the ordering. </p>
 <p class="info">When the SORTCOLUMNCOMPARE_CB callback is NOT defined, and the column 
-in NOT numeric, then the text is sorted using an <strong>Alphanumeric Algorithm</strong>. This 
+in NOT numeric, then the text is <strong>lexicographically</strong> sorted. This 
 means that numbers and text in the same value are sorted separately (for ex: A1 A2 A11 A30 
 B1). Also 
 natural alphabetic order is used: 123...aA·¡...bBcC... The internal comparison 
 will work only for Latin-1 
-characters, even if UTF8MODE is Yes.<br>Sorting is reset if <font SIZE="3">
+characters, even if UTF8MODE is Yes. Uses the
+<a href="../func/iupstringcompare.html">IupStringCompare</a> function.<br>Sorting is reset if <font SIZE="3">
 	<span style="color: #008000">
 		<span
             style="color: #000000"> 

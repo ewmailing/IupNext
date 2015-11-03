@@ -1394,3 +1394,19 @@ int IupConvertXYToPos(Ihandle* ih, int x, int y)
 
   return -1;
 }
+
+int IupStringCompare(const char* str1, const char* str2, int casesensitive, int lexicographic)
+{
+  if (lexicographic)
+  {
+    int utf8 = IupGetInt(NULL, "UTF8MODE");
+    return iupStrCompare(str1, str2, casesensitive, utf8);
+  }
+  else
+  {
+    if (casesensitive)
+      return !iupStrEqual(str1, str2);  /* return 0 if equal */
+    else
+      return !iupStrEqualNoCase(str1, str2);  /* return 0 if equal */
+  }
+}

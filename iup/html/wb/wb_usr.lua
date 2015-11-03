@@ -574,6 +574,11 @@ wb_usr.tree =
             {
               name= {nl= "IupGetGlobal"},
               link= "func/iupgetglobal.html"
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "IupStringCompare"},
+              link= "func/iupstringcompare.html"
             }
           }
         },

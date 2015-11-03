@@ -246,6 +246,9 @@ Ihandle*  IupSpinbox    (Ihandle* child);
 /*                      Utilities                                       */
 /************************************************************************/
 
+/* String compare utility */
+int IupStringCompare(const char* str1, const char* str2, int casesensitive, int lexicographic);
+
 /* IupImage utility */
 int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name);
 

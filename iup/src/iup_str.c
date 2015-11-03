@@ -1657,3 +1657,4 @@ void iupStrPrintfDoubleLocale(char *str, const char *format, double d, const cha
 
   iStrResetLocale(old_locale);
 }
+

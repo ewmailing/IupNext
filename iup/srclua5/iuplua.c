@@ -19,13 +19,24 @@
 #include "il.h"
 
 
-static int il_string_compare(lua_State *L)
+static int il_string_compare(lua_State *L) /* OLD export - remove DEPRECATED */
 {
   const char* str1 = luaL_checkstring(L, 1);
   const char* str2 = luaL_checkstring(L, 2);
   int casesensitive = (int)luaL_optinteger(L, 3, 1);
   int utf8 = IupGetInt(NULL, "UTF8MODE");
   int ret = iupStrCompare(str1, str2, casesensitive, utf8);
+  lua_pushinteger(L, ret);
+  return 1;
+}
+
+static int StringCompare(lua_State *L)
+{
+  const char* str1 = luaL_checkstring(L, 1);
+  const char* str2 = luaL_checkstring(L, 2);
+  int casesensitive = (int)luaL_optinteger(L, 3, 0);
+  int lexicographic = (int)luaL_optinteger(L, 4, 1);
+  int ret = IupStringCompare(str1, str2, casesensitive, lexicographic);
   lua_pushinteger(L, ret);
   return 1;
 }
@@ -1191,7 +1202,8 @@ int iuplua_open(lua_State * L)
     {"dostring", il_dostring},
     {"dofile", il_dofile},
     {"string_compare", il_string_compare},
-    
+    { "StringCompare", StringCompare },
+
     { NULL, NULL },
   };
 
