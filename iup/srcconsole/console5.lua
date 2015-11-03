@@ -304,6 +304,8 @@ iup_console.dlgMain:show()
 
 iup_console.print_version_info()
 
+iup.SetGlobal("GLOBALLAYOUTDLGKEY", "Yes")
+
 if (arg[1]) then
   local filename = arg[1]
   print("FileCommandLine:\n  "..filename)

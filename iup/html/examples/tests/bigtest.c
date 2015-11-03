@@ -192,6 +192,8 @@ int main(int argc, char* argv[])
   IupOpen(&argc, &argv);
   IupControlsOpen();
 
+  IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
+
 //  IupSetGlobal("UTF8MODE", "Yes");
 //  IupSetGlobal("LANGUAGE", "PORTUGUESE");
 //  IupSetGlobal("DEFAULTDECIMALSYMBOL", ".");

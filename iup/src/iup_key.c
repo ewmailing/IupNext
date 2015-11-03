@@ -426,7 +426,8 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
   else if (iup_isCtrlXkey(code) && iup_isShiftXkey(code) && iup_isAltXkey(code) && iup_XkeyBase(code) == K_L)
   {
     /* Ctrl+Shift+Alt+L */
-    IupShow(IupLayoutDialog(IupGetDialog(ih)));
+    if (iupStrBoolean(IupGetGlobal("GLOBALLAYOUTDLGKEY")))
+      IupShow(IupLayoutDialog(IupGetDialog(ih)));
   }
 
   return 0;
