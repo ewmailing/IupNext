@@ -100,7 +100,7 @@ namespace iup
   inline void Message(const char *title, const char *msg) { IupMessage(title, msg); }
   inline int Alarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3) { return IupAlarm(title, msg, b1, b2, b3); }
   inline int ListDialog(int type, const char *title, int size, const char** list, int op, int max_col, int max_lin, int* marks) { return IupListDialog(type, title, size, list, op, max_col, max_lin, marks); }
-  inline int GetText(const char* title, char* text) { return IupGetText(title, text); }
+  inline int GetText(const char* title, char* text, int maxsize = 10240) { return IupGetText(title, text, maxsize); }
   inline int GetColor(int x, int y, unsigned char &r, unsigned char &g, unsigned char &b) { return IupGetColor(x, y, &r, &g, &b); }
 
   inline int GetAllNames(char** names, int n) { return IupGetAllNames(names, n); }

@@ -350,7 +350,7 @@ int IupGetFile(char* filename)
   return ret;
 }
 
-int IupGetText(const char* title, char* text)
+int IupGetText(const char* title, char* text, int maxsize)
 {
   Ihandle *ok, *cancel, *multi_text, *button_box, *dlg_box, *dlg;
   int bt;
@@ -405,7 +405,7 @@ int IupGetText(const char* title, char* text)
 
   bt = IupGetInt(dlg, "STATUS");
   if (bt==1)
-    iupStrCopyN(text, 10240, IupGetAttribute(multi_text, "VALUE"));
+    iupStrCopyN(text, maxsize, IupGetAttribute(multi_text, "VALUE"));
   else
     bt = 0; /* return 0 instead of -1 */
 

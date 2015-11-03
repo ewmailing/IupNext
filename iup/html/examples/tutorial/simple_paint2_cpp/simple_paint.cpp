@@ -718,7 +718,7 @@ static int bt_sysinfo_action_cb(Ihandle*)
   o += sprintf(sysinfo+o, "\nIM %s %s\n", imVersion(), IM_COPYRIGHT);
   o += sprintf(sysinfo+o, "\nCD %s %s\n", cdVersion(), CD_COPYRIGHT);
 
-  IupGetText("System Information", sysinfo);
+  IupGetText("System Information", sysinfo, 10240);
   return IUP_DEFAULT;
 }
 

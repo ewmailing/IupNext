@@ -545,15 +545,19 @@ static int ListDialog(lua_State *L)
 
 static int GetText(lua_State *L)
 {
-  char buffer[10240];
+  char* buffer;
   const char *title = luaL_checkstring(L,1);
   const char *text = luaL_checkstring(L,2);
-  iupStrCopyN(buffer, 10240, text);
-  if (IupGetText(title, buffer))
+  int maxsize = (int)luaL_optinteger(L, 3, 10240);
+  buffer = malloc(maxsize+1);
+  iupStrCopyN(buffer, maxsize, text);
+  if (IupGetText(title, buffer, maxsize))
   {
     lua_pushstring(L, buffer);
+    free(buffer);
     return 1;
   }
+  free(buffer);
   return 0;
 }
 

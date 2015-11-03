@@ -304,7 +304,7 @@ int  IupAlarm(const char *title, const char *msg, const char *b1, const char *b2
 int  IupScanf(const char *format, ...);
 int  IupListDialog(int type, const char *title, int size, const char** list,
                    int op, int max_col, int max_lin, int* marks);
-int  IupGetText(const char* title, char* text);
+int  IupGetText(const char* title, char* text, int maxsize);
 int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
 
 typedef int (*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);

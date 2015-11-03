@@ -414,5 +414,8 @@
     <ClInclude Include="..\include\iup_class_cbs.hpp">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\iup_plus.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

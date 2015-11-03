@@ -369,7 +369,7 @@ static void new_gettext(void)
   int ret;
   char text[1024] = "text first line\nsecond line";
   IupSetGlobal("PARENTDIALOG", "_MAIN_DIALOG_TEST_");
-  ret = IupGetText("IupGetText Text", text);
+  ret = IupGetText("IupGetText Text", text, 1024);
   IupSetGlobal("PARENTDIALOG", NULL);
   if (ret)
   {
