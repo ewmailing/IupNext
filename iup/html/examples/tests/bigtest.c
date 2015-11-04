@@ -193,6 +193,7 @@ int main(int argc, char* argv[])
   IupControlsOpen();
 
   IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
+  IupSetGlobal("GLOBALLAYOUTRESIZEKEY", "Yes");
 
 //  IupSetGlobal("UTF8MODE", "Yes");
 //  IupSetGlobal("LANGUAGE", "PORTUGUESE");

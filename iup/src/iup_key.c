@@ -429,6 +429,31 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
     if (iupStrBoolean(IupGetGlobal("GLOBALLAYOUTDLGKEY")))
       IupShow(IupLayoutDialog(IupGetDialog(ih)));
   }
+  else if (iup_isCtrlXkey(code) && (iup_XkeyBase(code) == K_plus || iup_XkeyBase(code) == K_minus || iup_XkeyBase(code) == K_equal))
+  {
+    /* Ctrl+'+' */
+    if (iupStrBoolean(IupGetGlobal("GLOBALLAYOUTRESIZEKEY")))
+    {
+      int new_size;
+      int size = IupGetInt(IupGetDialog(ih), "FONTSIZE");
+
+      if (iup_XkeyBase(code) == K_plus || iup_XkeyBase(code) == K_equal)
+      {
+        new_size = (size * 11) / 10; /* 10% increase */
+        if (new_size == size) new_size++;
+      }
+      else
+      {
+        new_size = (size * 9) / 10; /* 10% decrease */
+        if (new_size == size) new_size--;
+      }
+
+      IupSetInt(IupGetDialog(ih), "FONTSIZE", new_size);
+
+      IupSetAttribute(IupGetDialog(ih), "SIZE", NULL);
+      IupRefresh(ih);
+    }
+  }
 
   return 0;
 }
