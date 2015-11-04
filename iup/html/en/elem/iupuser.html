@@ -22,8 +22,12 @@
 
   <p>
   Creates a user element in IUP, which is not associated to any interface element. It is used to map an 
-  external element to a IUP element. Its use is usually done by additional elements, 
+  external element to a IUP element. Its use is usually for additional elements, 
   but you can use it to create an Ihandle* to store private attributes.</p>
+<p>
+  It is also a void container. Its children can be dynamically added using
+  <a href="../func/iupappend.html">IupAppend</a> or
+<a href="../func/iupinsert.html">IupInsert</a>.</p>
 
 <h3><a name="Creation">Creation</a></h3>
 <pre>Ihandle* IupUser(void); [in C]

@@ -31,6 +31,7 @@ int iupglcontrolslua_open(lua_State * L)
   iupgllinklua_open(L);
   iupglprogressbarlua_open(L);
   iupglseparatorlua_open(L);
+  iupglsizeboxlua_open(L);
   iupgltogglelua_open(L);
   iupglvallua_open(L); 
   iupglscrollboxlua_open(L); 

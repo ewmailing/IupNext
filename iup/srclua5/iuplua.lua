@@ -191,7 +191,11 @@ function iup.RegisterHandle(ih, typename)
   if not widget then
     local class = iup[string.upper(typename)]
     if not class then
-      class = iup.WIDGET
+      if (iup.IsContainer(ih)) then
+        class = iup.BOX
+      else
+        class = iup.WIDGET
+      end
     end
 
     local widget = { 

@@ -787,6 +787,17 @@ static int SetMethod(lua_State *L)
   return 0;
 }
 
+static int IsContainer(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  if (ih)
+  {        
+    lua_pushboolean(L, ih->iclass->childtype != IUP_CHILDNONE);
+    return 1;
+  }
+  return 0;
+}
+
 static int ihandle_tostring (lua_State *L) 
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
@@ -1193,6 +1204,7 @@ int iuplua_open(lua_State * L)
     {"NewClass", NewClass},
     {"SetClass", SetClass},
     {"GetClass", GetClass},
+    {"IsContainer", IsContainer},
     {"SetMethod", SetMethod},
     {"SetCallback", SetCallback},
     {"SetFunction", SetFunction},

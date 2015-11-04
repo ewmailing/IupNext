@@ -40,6 +40,9 @@
     <ClCompile Include="..\..\srclua5\gl\il_glscrollbox.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\srclua5\gl\il_glsizebox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\srclua5\gl\il_glcontrols.h">
@@ -87,6 +90,9 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="..\..\srclua5\gl\glscrollbox.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\..\srclua5\gl\glsizebox.lua">
       <Filter>Lua</Filter>
     </None>
   </ItemGroup>
