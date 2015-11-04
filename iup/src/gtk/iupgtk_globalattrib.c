@@ -194,6 +194,12 @@ char *iupdrvGetGlobal(const char *name)
 
     return str;
   }
+  if (iupStrEqual(name, "MONITORSCOUNT"))
+  {
+    GdkScreen *screen = gdk_screen_get_default();
+    int monitors_count = gdk_screen_get_n_monitors(screen);
+    return iupStrReturnInt(monitors_count);
+  }
   if (iupStrEqual(name, "TRUECOLORCANVAS"))
   {
     return iupStrReturnBoolean(gdk_visual_get_best_depth() > 8);

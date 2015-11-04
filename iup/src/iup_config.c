@@ -492,6 +492,25 @@ void IupConfigDialogShow(Ihandle* ih, Ihandle* dialog, const char* name)
     {
       int x = IupConfigGetVariableInt(ih, name, "X");
       int y = IupConfigGetVariableInt(ih, name, "Y");
+      int virtual_x, virtual_y, virtual_w, virtual_h;
+      int monitors_count = IupGetInt(NULL, "MONITORSCOUNT");
+      if (monitors_count > 1)
+      {
+        char* virtual_screen = IupGetGlobal("VIRTUALSCREEN");
+        sscanf(virtual_screen, "%d %d %d %d", &virtual_x, &virtual_y, &virtual_w, &virtual_h);
+      }
+      else
+      {
+        virtual_x = 0;
+        virtual_y = 0;
+        IupGetIntInt(NULL, "SCREENSIZE", &virtual_w, &virtual_h);
+      }
+
+      if (x < virtual_x) x = virtual_x;
+      if (y < virtual_y) y = virtual_y;
+      if (x > virtual_x + virtual_w) x = virtual_x;
+      if (y > virtual_y + virtual_h) y = virtual_y;
+
       IupShowXY(dialog, x, y);
       shown = 1;
     }

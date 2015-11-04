@@ -405,6 +405,11 @@ char* iupdrvGetGlobal(const char* name)
     free(monitors_rect);
     return str;
   }
+  if (iupStrEqual(name, "MONITORSCOUNT"))
+  {
+    int monitors_count = GetSystemMetrics(SM_CMONITORS);
+    return iupStrReturnInt(monitors_count);
+  }
   if (iupStrEqual(name, "TRUECOLORCANVAS"))
   {
     return iupStrReturnBoolean(iupdrvGetScreenDepth() > 8);
