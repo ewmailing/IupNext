@@ -101,10 +101,12 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
     </ClCompile>
+    <ClCompile Include="..\srcscintilla\win32\HanjaDic.cxx" />
     <ClCompile Include="..\srcscintilla\win32\PlatWin.cxx" />
     <ClCompile Include="..\srcscintilla\win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\srcscintilla\win32\HanjaDic.h" />
     <ClInclude Include="..\srcscintilla\win32\PlatWin.h" />
   </ItemGroup>
   <ItemGroup>
