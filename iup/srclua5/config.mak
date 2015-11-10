@@ -43,7 +43,8 @@ CTRLUA = button.lua canvas.lua dialog.lua colordlg.lua clipboard.lua \
        submenu.lua text.lua toggle.lua vbox.lua zbox.lua timer.lua detachbox.lua \
        sbox.lua scrollbox.lua split.lua spin.lua spinbox.lua cbox.lua \
        radio.lua val.lua tabs.lua fontdlg.lua tree.lua progressbar.lua \
-       messagedlg.lua progressdlg.lua backgroundbox.lua flatbutton.lua
+       messagedlg.lua progressdlg.lua backgroundbox.lua flatbutton.lua \
+       animatedlabel.lua
 
 GC := $(addsuffix .c, $(basename $(CTRLUA)))
 GC := $(addprefix elem/il_, $(GC))

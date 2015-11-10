@@ -140,4 +140,5 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupBackgroundBoxNewClass());
   iupRegisterClass(iupLinkNewClass());
   iupRegisterClass(iupGridBoxNewClass());
+  iupRegisterClass(iupAnimatedLabelNewClass());
 }

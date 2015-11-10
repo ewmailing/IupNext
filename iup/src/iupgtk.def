@@ -215,6 +215,7 @@ IupSetStrAttributeId2
 IupSetStrfId2
 IupSetStrGlobal
 IupFlatButton
+IupAnimatedLabel
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib

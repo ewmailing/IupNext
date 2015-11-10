@@ -93,6 +93,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\srclua5\elem\il_animatedlabel.c" />
     <ClCompile Include="..\..\srclua5\elem\il_backgroundbox.c" />
     <ClCompile Include="..\..\srclua5\elem\il_button.c" />
     <ClCompile Include="..\..\srclua5\elem\il_canvas.c" />
@@ -151,6 +152,7 @@
     <ClCompile Include="..\..\srclua5\iuplua_tree_aux.c" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\srclua5\elem\animatedlabel.lua" />
     <None Include="..\..\srclua5\elem\backgroundbox.lua" />
     <None Include="..\..\srclua5\elem\button.lua" />
     <None Include="..\..\srclua5\elem\canvas.lua" />

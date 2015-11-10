@@ -355,6 +355,11 @@ namespace iup
   public:
     FlatButton(const char* title = 0) : Control(IupFlatButton(title)) {}
   };
+  class AnimatedLabel : public Control
+  {
+  public:
+    AnimatedLabel(Ihandle* animation = 0) : Control(IupAnimatedLabel(animation)) {}
+  };
   class Toggle : public Control
   {
   public:
