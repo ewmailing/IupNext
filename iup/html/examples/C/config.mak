@@ -1,6 +1,6 @@
 PROJNAME = iup
 APPNAME = iupsample
-APPTYPE = console
+#APPTYPE = console
 
 ifdef GTK_DEFAULT
   ifdef USE_MOTIF
@@ -17,14 +17,14 @@ endif
 INCLUDES = ../include
 
 USE_IUP3 = Yes
-#USE_STATIC = Yes
+USE_STATIC = Yes
 
 IUP = ../../..
 PROJDIR = ../../..
 
 #DBG = Yes
 
-#SRC = alarm.c
+SRC = alarm.c
 #SRC = button.c
 #SRC = dialog1.c
 #SRC = dialog2.c
@@ -47,7 +47,7 @@ PROJDIR = ../../..
 #SRC = message.c
 #SRC = multiline1.c
 #SRC = multiline2.c
-SRC = matrixlist.c
+#SRC = matrixlist.c
 #SRC = progressbar.c
 #SRC = radio.c
 #SRC = sample.c
@@ -93,7 +93,7 @@ ifdef IUPWEB_SAMPLE
   endif
 endif
 
-USE_IUPCONTROLS = Yes
+#USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
 #SRC = cbox.c
 #SRC = cells_checkboard.c

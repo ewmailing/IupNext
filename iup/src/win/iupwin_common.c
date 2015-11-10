@@ -435,7 +435,7 @@ static int winCheckParent(Ihandle* child, Ihandle* ih)
     return 1;
   else
   {
-    /* TODO: this is wierd... */
+    /* TODO: this is weird... */
     HWND oldParent = (HWND)iupAttribGet(child, "_IUPWIN_REPARENT");
     if (oldParent && oldParent==ih->handle)
       return 1;

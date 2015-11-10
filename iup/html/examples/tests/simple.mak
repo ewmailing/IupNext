@@ -23,4 +23,6 @@ IUP = ../../..
 PROJDIR = ../../..
 
 #USE_CD = Yes
-SRC += tree.c
+SRC += flatbutton.c
+LIBS += iupimglib
+
