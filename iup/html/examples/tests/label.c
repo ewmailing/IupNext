@@ -219,7 +219,7 @@ void LabelTest(void)
 
   label = IupAnimatedLabel(NULL);
   IupSetAttribute(label, "ANIMATION", "IUP_CircleProgressAnimation");
-  IupSetAttribute(label, "START", NULL);
+  IupSetAttribute(label, "START", "Yes");
   IupAppend(box2, label);
 
   label = IupLabel(NULL);

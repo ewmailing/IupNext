@@ -108,6 +108,13 @@ static int iAnimatedLabelSetAnimationHandleAttrib(Ihandle* ih, const char* value
   child = IupGetChild(animation, 0);
   IupSetAttributeHandle(ih, "IMAGE", child);
 
+  value = IupGetAttribute(animation, "FRAMETIME");
+  if (value)
+  {
+    Ihandle* timer = (Ihandle*)iupAttribGet(ih, "_IUP_ANIMATEDLABEL_TIMER");
+    IupSetStrAttribute(timer, "TIME", value);
+  }
+
   return 0;
 }
 
@@ -152,17 +159,17 @@ static int iAnimatedLabelCreateMethod(Ihandle* ih, void** params)
 
   iupAttribSet(ih, "IMAGE", "ANIMATEDLABEL");  /* to make sure the label has an image, even if not defined */
 
+  timer = IupTimer();
+  IupSetCallback(timer, "ACTION_CB", (Icallback)iAnimatedLabelTimer_CB);
+  IupSetAttribute(timer, "TIME", "30");
+  iupAttribSet(timer, "_IUP_ANIMATEDLABEL", (char*)ih);
+
+  iupAttribSet(ih, "_IUP_ANIMATEDLABEL_TIMER", (char*)timer);
+
   if (params && params[0])
   {
     iAnimatedLabelSetAnimationHandleAttrib(ih, (char*)(params[0]));
   }
-
-  timer = IupTimer();
-  IupSetCallback(timer, "ACTION_CB", (Icallback)iAnimatedLabelTimer_CB);
-  IupSetAttribute(timer, "TIME", "60");
-  iupAttribSet(timer, "_IUP_ANIMATEDLABEL", (char*)ih);
-
-  iupAttribSet(ih, "_IUP_ANIMATEDLABEL_TIMER", (char*)timer);
 
   return IUP_NOERROR;
 }

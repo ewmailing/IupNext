@@ -31,6 +31,7 @@ static void create_CircleProgress_animation(void)
   }
 
   IupSetHandle("IUP_CircleProgressAnimation", animation);
+  IupSetAttribute(animation, "FRAMETIME", "83");  /* near 1s for a full turn */
 }
 
 void iupImglibCircleProgress(void)
