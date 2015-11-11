@@ -14,6 +14,9 @@
 .style2 {
 	background-color: #CEE7FF;
 }
+.auto-style1 {
+	font-size: medium;
+}
 </style>
 </head>
 <body>
@@ -53,6 +56,31 @@ iup.SaveImage(<strong>ih</strong>: ihandle<strong>, file_name, format</strong>: 
 &quot;GIF&quot;, &quot;TIFF&quot;, &quot;PNG&quot;, &quot;PNM&quot;, &quot;PCX&quot;, &quot;ICO&quot;, etc.</p>
 <p><span class="style1">Returns:</span> zero if failed. When failed the global 
 attribute &quot;IUPIM_LASTERROR&quot; is set with a message describing the error.</p>
+<h3>LoadAnimation<span class="auto-style1"> (since 3.17)</span></h3>
+<div>
+  <pre>Ihandle* IupLoadAnimation(const char* <strong>file_name</strong>); [in C]
+iup.LoadAnimation(<strong>file_name</strong>: string) -&gt; (<strong>elem</strong>: ihandle) [in Lua]</pre>
+</div>
+<p><strong>file_name</strong>: Name of the file to be loaded.</p>
+<p><span class="style1">Returns:</span> the identifier of the created animation, or 
+NULL if an error occurs. When failed the global attribute &quot;IUPIM_LASTERROR&quot; is 
+set with a message describing the error.</p>
+<p>An animation is simply an <strong>IupUser</strong> element with several
+<strong>IupImage</strong> elements as children. The total number of images can 
+be obtained using <strong>IupGetChildCount</strong>. The time between frames is 
+defined by the FRAMETIME attribute if FPS is present on the file.</p>
+<p>IM supports loading of multiple images from the same file for the following 
+formats: GIF, TIFF, AVI (additional library) and WMV&nbsp; (additional library).</p>
+<h3>LoadAnimationFrames<span class="auto-style1"> (since 3.17)</span></h3>
+<div>
+  <pre>Ihandle* IupLoadAnimationFrames(const char** <strong>file_name_list</strong>, int <strong>file_count</strong>); [in C]
+iup.LoadAnimationFrames(<strong>file_name_list</strong>: table of strings, <strong>file_count</strong>: number) -&gt; (<strong>elem</strong>: ihandle) [in Lua]</pre>
+</div>
+<p><strong>file_name_list</strong>: List of file names to be loaded.<br><strong>
+file_count</strong>: number of file names in the list.</p>
+<p><span class="style1">Returns:</span> the identifier of the created animation, or 
+NULL if an error occurs. When failed the global attribute &quot;IUPIM_LASTERROR&quot; is 
+set with a message describing the error. The FRAMETIME attribute is not set.</p>
 <h3>Native Handle to imImage</h3>
 <div>
   <pre>imImage* IupGetNativeHandleImage(void* <strong>handle</strong>); [in C]

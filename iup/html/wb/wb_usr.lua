@@ -1207,6 +1207,10 @@ wb_usr.tree =
           folder=
           {
             {
+              name= {nl= "IupAnimatedLabel"},
+              link= "elem/iupanimatedlabel.html"
+            },
+            {
               name= {nl= "IupButton"},
               link= "elem/iupbutton.html"
             },
