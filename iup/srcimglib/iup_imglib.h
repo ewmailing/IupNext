@@ -25,6 +25,8 @@ void iupImglibLogos32x32Open(void);
 void iupImglibLogos48x48Open(void);
 void iupImglibIconsGtk48x48Open(void);
 
+void iupImglibCircleProgress(void);
+
 #ifdef WIN32
 void iupImglibIconsWin48x48Open(void);
 #endif

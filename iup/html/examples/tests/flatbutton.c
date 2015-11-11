@@ -286,8 +286,6 @@ void FlatButtonTest(void)
           *box1, *box2;
   int toggle = 0;
 
-  IupImageLibOpen();
-
   box1 = IupVbox(NULL);
   IupSetAttribute(box1, "MARGIN", "5x5");
   IupSetAttribute(box1, "GAP", "5");
@@ -460,6 +458,7 @@ void FlatButtonTest(void)
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
+  IupImageLibOpen();
 
   FlatButtonTest();
 

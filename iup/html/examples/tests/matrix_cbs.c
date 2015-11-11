@@ -328,7 +328,6 @@ void MatrixCbsTest(void)
   Ihandle *dlg, *bt;
 
   IupMatrixExOpen();
-  IupImageLibOpen();
  
   IupSetFunction("removeline", (Icallback)removeline);
   IupSetFunction("addline", (Icallback)addline);
@@ -370,6 +369,7 @@ int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
   IupControlsOpen();
+  IupImageLibOpen();
 
   MatrixCbsTest();
 

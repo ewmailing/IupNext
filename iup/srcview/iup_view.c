@@ -713,7 +713,7 @@ static int loadimagelib_cb(Ihandle* self)
 static int loadbuffer_cb(Ihandle* self)
 {
   char buffer[10240] = "";
-  if (IupGetText("LED", buffer))
+  if (IupGetText("LED", buffer, 10240))
   {
     char* error;
 

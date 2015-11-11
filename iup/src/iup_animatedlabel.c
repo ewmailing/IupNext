@@ -16,15 +16,22 @@
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
+#include "iup_drv.h"
 #include "iup_image.h"
 #include "iup_stdcontrols.h"
 #include "iup_register.h"
 
 
-static int iAnimatedLabelTimer_CB(Ihandle* ih_timer)
+static int iAnimatedLabelTimer_CB(Ihandle* timer)
 {
-  Ihandle* ih = (Ihandle*)iupAttribGet(ih_timer, "_IUP_ANIMATEDLABEL");
-  Ihandle* animation = (Ihandle*)iupAttribGet(ih, "ANIMATION_HANDLE");
+  Ihandle* ih = (Ihandle*)iupAttribGet(timer, "_IUP_ANIMATEDLABEL");
+  Ihandle* animation = (Ihandle*)iupAttribGet(ih, "_IUP_ANIMATEDLABEL_ANIMATION");
+
+  if (ih->handle && !iupdrvIsVisible(ih))
+  {
+    IupSetAttribute(timer, "RUN", "NO");
+    return IUP_DEFAULT;
+  }
 
   if (animation)
   {
@@ -95,7 +102,7 @@ static int iAnimatedLabelSetAnimationHandleAttrib(Ihandle* ih, const char* value
   if (IupGetChildCount(animation) == 0)
     return 0;
 
-  iupAttribSetStr(ih, "ANIMATION_HANDLE", (char*)animation);
+  iupAttribSet(ih, "_IUP_ANIMATEDLABEL_ANIMATION", (char*)animation);
   iupAttribSet(ih, "_IUP_ANIMATEDLABEL_FRAME", "0");
 
   child = IupGetChild(animation, 0);
@@ -106,7 +113,7 @@ static int iAnimatedLabelSetAnimationHandleAttrib(Ihandle* ih, const char* value
 
 static char* iAnimatedLabelGetAnimationHandleAttrib(Ihandle* ih)
 {
-  return iupAttribGet(ih, "ANIMATION_HANDLE");
+  return iupAttribGet(ih, "_IUP_ANIMATEDLABEL_ANIMATION");
 }
 
 static int iAnimatedLabelSetAnimationAttrib(Ihandle* ih, const char* value)
@@ -120,8 +127,7 @@ static int iAnimatedLabelSetAnimationAttrib(Ihandle* ih, const char* value)
   if (!animation)
     return 0;
 
-  iAnimatedLabelSetAnimationHandleAttrib(ih, (char*)animation);
-  return 0;
+  return iAnimatedLabelSetAnimationHandleAttrib(ih, (char*)animation);
 }
 
 static char* iAnimatedLabelGetAnimationAttrib(Ihandle* ih)
@@ -153,7 +159,7 @@ static int iAnimatedLabelCreateMethod(Ihandle* ih, void** params)
 
   timer = IupTimer();
   IupSetCallback(timer, "ACTION_CB", (Icallback)iAnimatedLabelTimer_CB);
-  IupSetAttribute(timer, "TIME", "30");
+  IupSetAttribute(timer, "TIME", "60");
   iupAttribSet(timer, "_IUP_ANIMATEDLABEL", (char*)ih);
 
   iupAttribSet(ih, "_IUP_ANIMATEDLABEL_TIMER", (char*)timer);
@@ -163,7 +169,7 @@ static int iAnimatedLabelCreateMethod(Ihandle* ih, void** params)
 
 static void iAnimatedLabelDestroyMethod(Ihandle* ih)
 {
-  Ihandle* animation = (Ihandle*)iupAttribGet(ih, "ANIMATION_HANDLE");
+  Ihandle* animation = (Ihandle*)iupAttribGet(ih, "_IUP_ANIMATEDLABEL_ANIMATION");
   Ihandle* timer = (Ihandle*)iupAttribGet(ih, "_IUP_ANIMATEDLABEL_TIMER");
   
   IupDestroy(timer);
@@ -193,11 +199,11 @@ Iclass* iupAnimatedLabelNewClass(void)
 
 
   /* IupAnimatedLabel only */
-  iupClassRegisterAttribute(ic, "START", NULL, iAnimatedLabelSetStartAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "STOP", NULL, iAnimatedLabelSetStartAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RUNNING", iAnimatedLabelGetRunningAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "START", NULL, iAnimatedLabelSetStartAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STOP", NULL, iAnimatedLabelSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RUNNING", iAnimatedLabelGetRunningAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMETIME", iAnimatedLabelGetFrameTimeAttrib, iAnimatedLabelSetFrameTimeAttrib, IUPAF_SAMEASSYSTEM, "30", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FRAMECOUNT", iAnimatedLabelGetFrameCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRAMECOUNT", iAnimatedLabelGetFrameCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANIMATION", iAnimatedLabelGetAnimationAttrib, iAnimatedLabelSetAnimationAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANIMATION_HANDLE", iAnimatedLabelGetAnimationHandleAttrib, iAnimatedLabelSetAnimationHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_IHANDLE | IUPAF_NO_STRING);
   

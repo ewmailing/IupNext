@@ -191,6 +191,7 @@ int main(int argc, char* argv[])
 
   IupOpen(&argc, &argv);
   IupControlsOpen();
+  IupImageLibOpen();
 
   IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
   IupSetGlobal("GLOBALLAYOUTRESIZEKEY", "Yes");

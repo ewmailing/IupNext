@@ -202,7 +202,8 @@ int iupTextSetAddFormatTagHandleAttrib(Ihandle* ih, const char* value)
 
 int iupTextSetAddFormatTagAttrib(Ihandle* ih, const char* value)
 {
-  return iupTextSetAddFormatTagHandleAttrib(ih, (char*)IupGetHandle(value));
+  iupTextSetAddFormatTagHandleAttrib(ih, (char*)IupGetHandle(value));
+  return 1;
 }
 
 static char* iTextGetMaskDataAttrib(Ihandle* ih)

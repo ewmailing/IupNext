@@ -76,6 +76,9 @@
     <ClCompile Include="..\srcimglib\iup_imglib_iconsgtk48x48.c">
       <Filter>src2</Filter>
     </ClCompile>
+    <ClCompile Include="..\srcimglib\iup_imglib_circleprogress.c">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\srcimglib\iupimglib.def" />

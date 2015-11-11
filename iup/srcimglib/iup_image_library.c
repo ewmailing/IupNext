@@ -52,4 +52,6 @@ void IupImageLibOpen(void)
 #else
   iupImglibIconsGtk48x48Open();
 #endif  
+
+  iupImglibCircleProgress();
 }

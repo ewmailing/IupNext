@@ -11,7 +11,7 @@ ifdef USE_IUP_IMGLIB_LARGE
   DEFINES += IUP_IMGLIB_LARGE
 endif
 
-SRC = iup_image_library.c 
+SRC = iup_image_library.c iup_imglib_circleprogress.c
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   #SRC += iup_imglib_basewin16x16.c

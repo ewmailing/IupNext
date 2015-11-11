@@ -136,6 +136,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\srcimglib\iup_imglib_basewin32x32.c" />
+    <ClCompile Include="..\srcimglib\iup_imglib_circleprogress.c" />
     <ClCompile Include="..\srcimglib\iup_imglib_iconsgtk48x48.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

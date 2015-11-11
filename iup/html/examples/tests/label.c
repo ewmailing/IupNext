@@ -217,6 +217,11 @@ void LabelTest(void)
   IupSetAttribute(label, "ALIGNMENT", "ARIGHT");
   IupAppend(box2, label);
 
+  label = IupAnimatedLabel(NULL);
+  IupSetAttribute(label, "ANIMATION", "IUP_CircleProgressAnimation");
+  IupSetAttribute(label, "START", NULL);
+  IupAppend(box2, label);
+
   label = IupLabel(NULL);
   IupSetAttribute(label, "SEPARATOR", "VERTICAL");
 
@@ -235,6 +240,7 @@ void LabelTest(void)
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
+  IupImageLibOpen();
 
   LabelTest();
 
