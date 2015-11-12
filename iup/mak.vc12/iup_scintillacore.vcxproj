@@ -266,7 +266,6 @@
     <ClCompile Include="..\srcscintilla\lexers\LexNsis.cxx" />
     <ClCompile Include="..\srcscintilla\lexers\LexOpal.cxx" />
     <ClCompile Include="..\srcscintilla\lexers\LexOScript.cxx" />
-    <ClCompile Include="..\srcscintilla\lexers\LexOthers.cxx" />
     <ClCompile Include="..\srcscintilla\lexers\LexPascal.cxx" />
     <ClCompile Include="..\srcscintilla\lexers\LexPB.cxx" />
     <ClCompile Include="..\srcscintilla\lexers\LexPerl.cxx" />

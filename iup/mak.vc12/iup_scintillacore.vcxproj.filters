@@ -262,9 +262,6 @@
     <ClCompile Include="..\srcscintilla\lexers\LexOScript.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\lexers\LexOthers.cxx">
-      <Filter>Scintilla\Lexers</Filter>
-    </ClCompile>
     <ClCompile Include="..\srcscintilla\lexers\LexPascal.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
