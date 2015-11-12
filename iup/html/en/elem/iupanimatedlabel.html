@@ -8,6 +8,9 @@
 .style1 {
 	border-width: 0;
 }
+.auto-style1 {
+	font-size: large;
+}
 </style>
 </head>
 <body>
@@ -22,7 +25,7 @@
   </ul>
 </div>
 
-<h2>IupAnimatedLabel</h2>
+<h2>IupAnimatedLabel<span class="auto-style1"> (since 3.17)</span></h2>
 
   <p>
   Creates an animated label interface element, which displays an image that is 
@@ -37,9 +40,8 @@
 <pre>Ihandle* IupAnimatedLabel(Ihandle*<strong> animation</strong>); [in C]
 iup.animatedlabel{<strong>animation</strong>: ihandle} -&gt; (<strong>ih</strong>: ihandle) [in Lua]
 animatedlabel(<strong>animation</strong>) [in LED]</pre>
-  <p><b>
-  title</b>: Text to be shown on the label. It can be NULL. It will set the 
-  TITLE attribute.</p>
+  <p><strong>animation</strong>: element that contains the list of images. It 
+  can be NULL.</p>
   <p>
   <u>Returns:</u> the identifier of the 
   created element, or NULL if an error occurs.</p>
@@ -49,33 +51,53 @@ animatedlabel(<strong>animation</strong>) [in LED]</pre>
 
   <p>All <strong>IupLabel</strong> attributes. The IMAGE attribute is 
   periodically changed by a timer.</p>
-<p>Additionally it defines the following attributes.</p>
+<p>Additionally it defines the following non-inheritable attributes.</p>
   <blockquote>
     <hr>
 </blockquote>
-<p>START</p>
-<p>STOP</p>
-<p>RUNNING</p>
-<p>FRAMETIME</p>
-<p>FRAMECOUNT</p>
-<p>ANIMATION</p>
-<p>ANIMATION_HANDLE</p>
+<p><strong>START</strong> (write-only): starts the animation. The value is 
+ignored. By default the animation is stopped.</p>
+<p><strong>STOP</strong> (write-only): stops the animation. The value is 
+ignored.</p>
+<p><strong>RUNNING</strong> (read-only): return YES if the animation is running.</p>
+<p><strong>FRAMETIME</strong>: The time between each frame. If the <strong>
+IupUser</strong> element has a FRAMETIME attribute it will be used to set the
+<strong>IupAnimatedLabel</strong> FRAMETIME attribute, but it can be overwritten 
+later on.</p>
+<p><strong>FRAMECOUNT</strong> (read-only): number of frames in the animation. 
+It is simply <strong>IupGetChildCount</strong> of the given <strong>IupUser</strong> 
+element.</p>
+<p><strong>ANIMATION</strong>: the name of the element that contains the list of 
+images. The value passed must be the name of an <strong>IupUser</strong> element 
+with several <strong>IupImage</strong> as children. Use <a href="../func/iupsethandle.html">IupSetHandle</a> 
+or <a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+associate a child to a name. In Lua you can also use the element reference 
+directly. </p>
+<p><strong>ANIMATION_HANDLE</strong>: same as ANIMATION but directly using the 
+Ihandle* of the element.</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 
   
   
-<p>All <strong>IupLabel</strong> callbacks. </p>
+<p>All <strong>IupLabel</strong> callbacks. No label callbacks are used 
+internally.</p>
 
 <h3><a name="Notes">Notes</a></h3>
 
-<p>XX</p>
+<p>The <strong>IupImageLib</strong> contains a simple animation to show an 
+undetermined progress called &quot;<strong>IUP_CircleProgressAnimation</strong>&quot;.</p>
+<p>The <strong>IUP-IM</strong> functions has two functions that can create an 
+animation from image files called <strong>IupLoadAnimation</strong> and <strong>IupLoadAnimationFrames</strong>.</p>
 
 <h3><a name="Examples">Examples</a></h3>
-<p>XX</p>
+<pre> label = IupAnimatedLabel(NULL);
+IupSetAttribute(label, &quot;ANIMATION&quot;, &quot;IUP_CircleProgressAnimation&quot;);
+IupSetAttribute(label, &quot;START&quot;, &quot;Yes&quot;);</pre>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <h3><a name="SeeAlso">See Also</a></h3>
 
-<p><a href="iupimage.html">IupImage</a>, <a href="../iupim.html">Iup-IM</a>.</p>
+<p> <a href="iuplabel.html">IupLabel</a>, <a href="iupuser.html">IupUser</a>, <a href="iupimage.html">IupImage</a>, 
+<a href="../iupimglib.html">IupImageLib</a>, <a href="../iupim.html">IUP-IM</a>.</p>
 
 
 </body>
