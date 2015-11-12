@@ -38,7 +38,9 @@ int <strong>iuplua_dobuffer</strong>(lua_State *<strong>L</strong>, const char *
 prepend the contents of the environment variable IUPLUA_DIR to the file name 
 and tries to open it again. (Since 3.2)</p>
 <p>If the these functions are used, the errors will be reported through the &quot;iup._ERRORMESSAGE(msg)&quot; function. By 
-  default _ERRORMESSAGE is defined to show a dialog with the error message.</p>
+  default _ERRORMESSAGE is defined to show a dialog with the error message. The 
+global attribute &quot;LUA_ERROR_LABEL&quot; if defined will be used in a label inside the 
+dialog (since 3.17). </p>
 <p>In Lua, you can also use:</p>
 <pre>iup<strong>.dofile</strong>(<strong>filename</strong>: string) -&gt; (values returned by the chunk)
 iup<strong>.dostring</strong>(<strong>str</strong>: string) -&gt; (values returned by the chunk)</pre>

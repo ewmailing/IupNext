@@ -19,17 +19,6 @@
 #include "il.h"
 
 
-static int il_string_compare(lua_State *L) /* OLD export - remove DEPRECATED */
-{
-  const char* str1 = luaL_checkstring(L, 1);
-  const char* str2 = luaL_checkstring(L, 2);
-  int casesensitive = (int)luaL_optinteger(L, 3, 1);
-  int utf8 = IupGetInt(NULL, "UTF8MODE");
-  int ret = iupStrCompare(str1, str2, casesensitive, utf8);
-  lua_pushinteger(L, ret);
-  return 1;
-}
-
 static int StringCompare(lua_State *L)
 {
   const char* str1 = luaL_checkstring(L, 1);
@@ -54,11 +43,28 @@ static int show_error_exit_action(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int show_error_copy_action(Ihandle* ih)
+{
+  Ihandle* multi_text = IupGetDialogChild(ih, "TEXT");
+  IupSetAttribute(multi_text, "SELECTION", "ALL");
+  IupSetAttribute(multi_text, "CLIPBOARD", "COPY");
+  return IUP_DEFAULT;
+}
+
 void iuplua_show_error_message(const char *pname, const char* msg)
 {
-  Ihandle *multi_text, *button, *box, *dlg, *abort, *buttonbox;
+  Ihandle *multi_text, *lbl, *copy, *button, *box, *dlg, *abort, *buttonbox;
+  char* value = IupGetGlobal("LUA_ERROR_LABEL");
 
   if (!pname) pname = "Lua Error!";
+
+  lbl = IupLabel("Internal error.");
+  IupSetAttribute(lbl, "EXPAND", "HORIZONTAL");
+  if (value) IupSetStrAttribute(lbl, "TITLE", value);
+
+  copy = IupButton("Copy", NULL);
+  IupSetAttribute(copy, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(copy, "ACTION", show_error_copy_action);
 
   button = IupButton("Continue", NULL);
   IupSetAttribute(button, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
@@ -74,13 +80,14 @@ void iuplua_show_error_message(const char *pname, const char* msg)
   IupSetAttribute(multi_text, "FONT", "Courier, 12");
   IupSetAttribute(multi_text, "VISIBLELINES", "10");
   IupSetAttribute(multi_text, "VISIBLECOLUMNS", "50");
+  IupSetAttribute(multi_text, "NAME", "TEXT");
   IupSetStrAttribute(multi_text, "VALUE", msg);
 
-  buttonbox = IupHbox(button, abort, NULL);
+  buttonbox = IupHbox(copy, button, abort, NULL);
   IupSetAttribute(buttonbox, "GAP", "50");
   IupSetAttribute(IupNormalizer(button, abort, NULL), "NORMALIZE", "HORIZONTAL");
 
-  box = IupVbox(multi_text, buttonbox, NULL);
+  box = IupVbox(lbl, multi_text, buttonbox, NULL);
   IupSetAttribute(box, "ALIGNMENT", "ACENTER");
   IupSetAttribute(box, "NMARGIN", "10x10");
   IupSetAttribute(box, "GAP", "10");
@@ -1213,7 +1220,6 @@ int iuplua_open(lua_State * L)
     {"_ERRORMESSAGE", il_error_message},
     {"dostring", il_dostring},
     {"dofile", il_dofile},
-    {"string_compare", il_string_compare},
     { "StringCompare", StringCompare },
 
     { NULL, NULL },
