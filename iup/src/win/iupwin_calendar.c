@@ -32,8 +32,66 @@
 
 #ifndef MCS_NOSELCHANGEONNAV
 #define MCS_NOSELCHANGEONNAV 0x0100
+#define MCS_SHORTDAYSOFWEEK  0x0080
+#endif
+#ifndef MCM_GETCALENDARBORDER
+#define MCM_SETCALENDARBORDER (MCM_FIRST + 30)
+#define MCM_GETCALENDARBORDER (MCM_FIRST + 31)
 #endif
 
+static int winCalendarSetBorderAttrib(Ihandle* ih, const char* value)
+{
+  int border;
+  if (iupStrToInt(value, &border))
+    SendMessage(ih->handle, MCM_SETCALENDARBORDER, TRUE, (LPARAM)border);  /* NOT working */
+  else
+    SendMessage(ih->handle, MCM_SETCALENDARBORDER, FALSE, 0);
+  return 0; /* do not store value in hash table */
+}
+
+static char* winCalendarGetBorderAttrib(Ihandle* ih)
+{
+  int border = (int)SendMessage(ih->handle, MCM_GETCALENDARBORDER, 0, 0);
+  return iupStrReturnInt(border);
+}
+
+static int winCalendarSetBackColorAttrib(Ihandle* ih, const char* value)
+{
+  unsigned char r, g, b;
+  if (iupStrToRGB(value, &r, &g, &b))
+  {
+    COLORREF cr = RGB(r, g, b);
+    SendMessage(ih->handle, MCM_SETCOLOR, MCSC_BACKGROUND, (LPARAM)cr);  /* works only when NOT using Visual Styles */
+    SendMessage(ih->handle, MCM_SETCOLOR, MCSC_MONTHBK, (LPARAM)cr);
+    SendMessage(ih->handle, MCM_SETCOLOR, MCSC_TITLEBK, (LPARAM)cr);
+  }
+  return 0; /* do not store value in hash table */
+}
+
+static char* winCalendarGetBackColorAttrib(Ihandle* ih)
+{
+  COLORREF cr = (COLORREF)SendMessage(ih->handle, MCM_GETCOLOR, MCSC_BACKGROUND, 0);
+  return iupStrReturnStrf("%d %d %d", (int)GetRValue(cr), (int)GetGValue(cr), (int)GetBValue(cr));
+}
+
+static int winCalendarSetForeColorAttrib(Ihandle* ih, const char* value)
+{
+  unsigned char r, g, b;
+  if (iupStrToRGB(value, &r, &g, &b))
+  {
+    COLORREF cr = RGB(r, g, b);
+    SendMessage(ih->handle, MCM_SETCOLOR, MCSC_TEXT, (LPARAM)cr);  /* works only when NOT using Visual Styles */
+    SendMessage(ih->handle, MCM_SETCOLOR, MCSC_TITLETEXT, (LPARAM)cr);
+    SendMessage(ih->handle, MCM_SETCOLOR, MCSC_TRAILINGTEXT, (LPARAM)cr);
+  }
+  return 0; /* do not store value in hash table */
+}
+
+static char* winCalendarGetForeColorAttrib(Ihandle* ih)
+{
+  COLORREF cr = (COLORREF)SendMessage(ih->handle, MCM_GETCOLOR, MCSC_TEXT, 0);
+  return iupStrReturnStrf("%d %d %d", (int)GetRValue(cr), (int)GetGValue(cr), (int)GetBValue(cr));
+}
 
 static int winCalendarSetValueAttrib(Ihandle* ih, const char* value)
 {
@@ -63,9 +121,13 @@ static char* winCalendarGetValueAttrib(Ihandle* ih)
   return iupStrReturnStrf("%02d/%02d/%d", st.wDay, st.wMonth, st.wYear);
 }
 
-//MCM_SETTODAY
-//MCM_GETTODAY 
-//MCM_SETCOLOR
+static char* winCalendarGetTodayAttrib(Ihandle* ih)
+{
+  SYSTEMTIME st;
+  (void)ih;
+  GetLocalTime(&st);
+  return iupStrReturnStrf("%02d/%02d/%d", st.wDay, st.wMonth, st.wYear);
+}
 
 void iupdrvTextAddBorders(int *w, int *h);
 
@@ -111,7 +173,7 @@ static int winCalendarMapMethod(Ihandle* ih)
     return IUP_ERROR;
 
   if (iupwinIsVistaOrNew())
-    dwStyle |= MCS_NOSELCHANGEONNAV;
+    dwStyle |= MCS_NOSELCHANGEONNAV | MCS_SHORTDAYSOFWEEK;
 
   if (iupAttribGetBoolean(ih, "CANFOCUS"))
     dwStyle |= WS_TABSTOP;
@@ -161,12 +223,15 @@ Iclass* iupCalendarNewClass(void)
 
   /* IupCalendar only */
   iupClassRegisterAttribute(ic, "VALUE", winCalendarGetValueAttrib, winCalendarSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  //WEEKNUMBERS
+  iupClassRegisterAttribute(ic, "WEEKNUMBERS", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TODAY", winCalendarGetTodayAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
-//  iupClassRegisterAttribute(ic, "MIN", iValGetMinAttrib, iValSetMinAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);
-//  iupClassRegisterAttribute(ic, "TYPE", iValGetOrientationAttrib, iValSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-//  iupClassRegisterAttribute(ic, "ORIENTATION", iValGetOrientationAttrib, iValSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-//  iupClassRegisterAttribute(ic, "INVERTED", iValGetInvertedAttrib, iValSetInvertedAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  /* Works only when NOT using Visual Styles */
+  iupClassRegisterAttribute(ic, "BACKCOLOR", winCalendarGetBackColorAttrib, winCalendarSetBackColorAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR", winCalendarGetForeColorAttrib, winCalendarSetForeColorAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
+  /* NOT working */
+  iupClassRegisterAttribute(ic, "BORDER", winCalendarGetBorderAttrib, winCalendarSetBorderAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   return ic;
 }

@@ -67,6 +67,12 @@ static char* winDatePickGetValueAttrib(Ihandle* ih)
   return iupStrReturnStrf("%02d/%02d/%d", st.wDay, st.wMonth, st.wYear);
 }
 
+static int winDatePickSetFormatAttrib(Ihandle* ih, const char* value)
+{
+  SendMessage(ih->handle, DTM_SETFORMAT, 0, (LPARAM)value);
+  return 1;
+}
+
 static int winDatePickSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
   iupdrvSetStandardFontAttrib(ih, value);
@@ -74,10 +80,18 @@ static int winDatePickSetStandardFontAttrib(Ihandle* ih, const char* value)
   if (ih->handle)
   {
     HFONT hFont = (HFONT)SendMessage(ih->handle, WM_GETFONT, 0, 0);
-    SendMessage(ih->handle, DTM_SETMCFONT, (WPARAM)hFont, (LPARAM)TRUE);
+    SendMessage(ih->handle, DTM_SETMCFONT, (WPARAM)hFont, (LPARAM)TRUE); /* not working in Windows 10 (not tested in 7 or 8) - works in XP */
   }
 
   return 1;
+}
+
+static char* winDatePickGetTodayAttrib(Ihandle* ih)
+{
+  SYSTEMTIME st;
+  (void)ih;
+  GetLocalTime(&st);
+  return iupStrReturnStrf("%02d/%02d/%d", st.wDay, st.wMonth, st.wYear);
 }
 
 
@@ -97,27 +111,13 @@ static int winDatePickWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       iupAttribSetStr(ih, "_IUP_OLDVALUE", value);
     }
   }
-  else if (msg_info->code == DTN_DROPDOWN)
-  {
-    HFONT hFont = (HFONT)SendMessage(ih->handle, WM_GETFONT, 0, 0);
-    SendMessage(ih->handle, DTM_SETMCFONT, (WPARAM)hFont, (LPARAM)TRUE);
-  }
 
   (void)result;
   return 0; /* result not used */
 }
 
 
-
-
 /*********************************************************************************************/
-
-//TODAY
-//GetSystemTime(&st);
-//DTM_GETSYSTEMTIME
-//DTM_SETSYSTEMTIME
-
-//DTM_SETFORMAT 
 
 void iupdrvTextAddBorders(int *w, int *h);
 
@@ -125,7 +125,7 @@ static void winDatePickComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
 {
   (void)children_expand; /* unset if not a container */
 
-  if (ih->handle && iupwinIsVistaOrNew())
+  if (ih->handle && iupwinIsVistaOrNew() && iupwin_comctl32ver6)
   {
     SIZE size;
     SendMessage(ih->handle, DTM_GETIDEALSIZE, 0, (LPARAM)&size);
@@ -159,7 +159,14 @@ static int winDatePickMapMethod(Ihandle* ih)
   SendMessage(ih->handle, DTM_SETFORMAT, 0, (LPARAM)TEXT("dd/MMM/yyyy"));
 
   if (iupwinIsVistaOrNew())
-    SendMessage(ih->handle, DTM_SETMCSTYLE, 0, (LPARAM)(MCS_NOTODAY | MCS_NOSELCHANGEONNAV));
+  {
+    dwStyle = MCS_NOTODAY | MCS_NOSELCHANGEONNAV;
+
+    if (iupAttribGetBoolean(ih, "CALENDARWEEKNUMBERS"))
+      dwStyle |= MCS_WEEKNUMBERS;
+
+    SendMessage(ih->handle, DTM_SETMCSTYLE, 0, (LPARAM)dwStyle);
+  }
 
   return IUP_NOERROR;
 }
@@ -198,6 +205,10 @@ Iclass* iupDatePickNewClass(void)
   iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winDatePickSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
 
   iupClassRegisterAttribute(ic, "VALUE", winDatePickGetValueAttrib, winDatePickSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TODAY", winDatePickGetTodayAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMAT", NULL, winDatePickSetFormatAttrib, IUPAF_SAMEASSYSTEM, "dd/MMM/yyyy", IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "CALENDARWEEKNUMBERS", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   return ic;
 }
