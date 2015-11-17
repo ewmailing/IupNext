@@ -1585,8 +1585,11 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   IupSetCallback(dlg, "PARAM_CB", (Icallback)action);
   iupAttribSet(dlg, "USERDATA", (char*)user_data);
 
-  if (action) 
+  if (action)
+  {
+    IupMap(dlg);
     action(dlg, IUP_GETPARAM_INIT, user_data);
+  }
 
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
