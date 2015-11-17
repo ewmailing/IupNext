@@ -211,10 +211,14 @@ the respective attribute values passed to the <a href="iupfiledlg.html">
 IupFileDlg</a> control when activated. All &#39;<strong>|</strong>&#39; must exist, but you can let 
 empty values to use the default values. No mask can be set.</p>
         <p><strong>tip</strong> is a string that is displayed in a TIP for the 
-		main control of the parameter. (since 3.0)</p>
+		main control of the parameter. (since 3.0)&nbsp; </p>
 <p>The number of lines in the format string (number of '\n') will determine the number of required parameters. But separators 
   will not count as parameters. There is no maximum number of parameters (since 
 3.13).</p>
+<p>Since the <strong>tip</strong> string can not contain a '\n' because of the 
+param terminator, the '\r' character can be used to break lines in the TIP. It 
+will be internally converted to '\n' before actually setting the TIP. (since 
+3.17)</p>
 <p>A integer parameter always has a spin attached to the text to increment and 
 decrement the value. A real parameter only has a spin in a full interval is 
 defined (min and max), in this case the default step is (max-min)/20. When the 

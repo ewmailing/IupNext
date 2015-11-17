@@ -1465,7 +1465,10 @@ Ihandle* IupParamf(const char* format)
 
   tip = iParamStrGetExtra(line_ptr, '{', '}', &count);
   if (tip)
+  {
+    iupStrToUnix(tip);
     iupAttribSetStr(param, "TIP", tip);
+  }
 
   return param;
 }
