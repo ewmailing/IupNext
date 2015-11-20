@@ -188,7 +188,9 @@ used to add the attributes ALIGNMENT?, BGCOLOR?:?, FGCOLOR?:? and FONT?:? to the
 <strong>SKIPLINES</strong>: number of lines to skip at start when exporting the 
 matrix to a file, not counting the title line if any. (since 3.12)<br><strong>
 SKIPCOLUMNS</strong>: number of columns to skip at start when exporting the 
-matrix to a file, not counting the title columns if any. (since 3.12)</p>
+matrix to a file, not counting the title columns if any. (since 3.12)<br>
+<strong>EXPORTSORTED</strong>: use sorted lines order when exporting. (since 
+3.17)</p>
 <p>
 <strong>PASTE</strong> (write-only): paste data from the clipboard. Data is 
 obtained from the clipboard in TEXT format. Value is the insert position, it can 
@@ -215,7 +217,9 @@ for more details.</p>
 <p>
 <strong>PASTEFILE</strong> (write-only): paste data from a file. Value is the 
 file name to be loaded. Insert position is always &quot;0:0&quot;. See PASTE for more 
-details. LASTERROR can also be set to &quot;INVALIDFILENAME&quot; (failed to open).</p>
+details. LASTERROR can also be set to &quot;INVALIDFILENAME&quot; (failed to open). 
+The PASTEFILEAT attribute controls the insert position, can be &quot;FOCUS&quot; or a cell 
+address &quot;L:C&quot; (since 3.17). </p>
 <h4>
 Find</h4>
 <p><strong>FIND</strong>: searches for the given text in the matrix 

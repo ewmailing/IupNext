@@ -114,6 +114,10 @@ version 3.x.</p>
 	<span class="hist_new">New:</span> functions <strong>IupLoadAnimation</strong> 
 	and <strong>IupLoadAnimationFrames</strong> in IUP-IM utilities library.</font></li>
 	<li>
+<font SIZE="3">
+	<span class="hist_new">New:</span> EXPORTSORTED and PASTEFILEAT attributes 
+	for <strong>IupMatrixEx</strong>. </font></li>
+	<li>
 	<font size="3"><strong>
 	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
 	Changed:</span></strong><span class="Apple-converted-space">&nbsp;<strong>IupGetText</strong> 
@@ -132,6 +136,11 @@ version 3.x.</p>
 	Changed:</span></strong><span class="Apple-converted-space">&nbsp;Scintilla 
 	updated to version 3.6.2. </span></font>Removed KEYSUNICODE attribute from
 	<strong>IupScintilla</strong>, not supported in Scintilla anymore.</li>
+	<li>
+	<font size="3"><strong>
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	Changed:</span></strong><span class="Apple-converted-space">&nbsp;line breaks in 
+	a param tip on <strong>IupGetParam</strong> dialog using the '\r' character.</span></font></li>
 	<li>
 	<font SIZE="3">
 	<span style="color: #008000">
@@ -264,6 +273,15 @@ version 3.x.</p>
             style="color: #000000"> 
 		<span class="hist_fixed">Fixed:</span> dialog must be mapped before 
 	IUP_GETPARAM_INIT in <strong>IupGetParam</strong>.</span></span></font></li>
+	<li>
+	<font SIZE="3">
+	<span style="color: #008000">
+		<span
+            style="color: #000000"> 
+		<span class="hist_fixed">Fixed:</span> export data when value contains 
+	the separator in <strong>IupMatrixEx</strong>. Import data when value 
+	contains double quotes (&quot;) at start and end, and contents may contains the 
+	separator.</span></span></font></li>
 
 </ul>
 <h3><a href="http://sourceforge.net/projects/iup/files/3.16/">Version 3.16</a> (15/Sep/2015)</h3>
