@@ -370,7 +370,7 @@ static GdkPixbuf* gtkImageRenderPixbuf(GtkIconSet* icon_set, int render_icon_siz
 {
   GdkPixbuf* pixbuf;
 
-#if GTK_CHECK_VERSION(3, 0, 0)
+#if GTK_CHECK_VERSION(3, 9, 0)
   GtkStyleContext* style_context = gtk_style_context_new();
   pixbuf = gtk_icon_set_render_icon_pixbuf(icon_set, style_context, render_icon_size);
   g_object_unref(style_context);
