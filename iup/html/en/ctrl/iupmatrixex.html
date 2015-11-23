@@ -150,7 +150,7 @@ is being changed. Can be Yes or No. Default: No.</p>
 operation. It is reset to NULL at the start of every operation that sets its 
 value.</p>
 <h4>Import/Export a<span class="auto-style1">nd </span>Clipboard</h4>
-<p><strong>COPY</strong> (write-only): copies the selected cells to the 
+<p><strong>COPY</strong> (write-only): copies (export) the selected cells to the 
 clipboard in TEXT format. If value is ALL then all cells are copied regardless if 
 there is a selection. If value is MARKED then the
 <a href="iupmatrix_attrib.html#MARKED">MARKED</a> attribute is used to define 
@@ -166,11 +166,11 @@ non selected cells inside the region will be copied as empty spaces (' '), if
 consistent structure, in other words the selected column pattern must be 
 consistent along lines.<br>LASTERROR can be set to &quot;NOMARKED&quot; (no selected 
 cells) or &quot;MARKEDCONSISTENCY&quot; (when COPYKEEPSTRUCT=NO and inconsistent 
-selection).</p>
+selection).<br>Copied lines will follow the sort order.</p>
 <p><strong>COPYDATA</strong>: Use the same parameters of the COPY attributes but 
-will copy to an internal buffer. To retrieve the buffer get the attribute value 
+will copy (export) to an internal buffer. To retrieve the buffer get the attribute value 
 after setting it. To clear the internal buffer set it to NULL.</p>
-<p><strong>COPYFILE</strong> (write-only): copies all visible cells to a given 
+<p><strong>COPYFILE</strong> (write-only): copies (export) all visible cells to a given 
 file. Value is the file name to be saved. LASTERROR can also be set to 
 &quot;INVALIDFILENAME&quot; (failed to open). Data will be in plain text format, but the 
 file format will be defined by the <strong>FILEFORMAT</strong> attribute, can be &quot;TXT&quot; (default), 
@@ -188,11 +188,10 @@ used to add the attributes ALIGNMENT?, BGCOLOR?:?, FGCOLOR?:? and FONT?:? to the
 <strong>SKIPLINES</strong>: number of lines to skip at start when exporting the 
 matrix to a file, not counting the title line if any. (since 3.12)<br><strong>
 SKIPCOLUMNS</strong>: number of columns to skip at start when exporting the 
-matrix to a file, not counting the title columns if any. (since 3.12)<br>
-<strong>EXPORTSORTED</strong>: use sorted lines order when exporting. (since 
-3.17)</p>
+matrix to a file, not counting the title columns if any. (since 3.12)<br>Copied 
+lines will follow the sort order.</p>
 <p>
-<strong>PASTE</strong> (write-only): paste data from the clipboard. Data is 
+<strong>PASTE</strong> (write-only): paste (import) data from the clipboard. Data is 
 obtained from the clipboard in TEXT format. Value is the insert position, it can 
 be &quot;FOCUS&quot; to use the <a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a> 
 attribute, can be &quot;MARKED&quot; to use the start of the selected groups of cells 
@@ -208,14 +207,14 @@ does not exist the matrix size is not changed, and the exceeding data will be di
 EDITION_CB</a> callback will be called before the cell value is set. <strong>LASTERROR</strong> 
 can be set to &quot;NOTEXT&quot; (data is empty or NULL), &quot;INVALIDMATRIX&quot; (not a matrix 
 data). <strong>BUSY</strong> will be set to Yes during the operation. Only 
-visible cells will receive data. </p>
+visible cells will receive data. <br>Pasted lines will follow the sort order.</p>
 <p>
-<strong>PASTEDATA</strong> (write-only): paste data from a memory buffer. Value 
+<strong>PASTEDATA</strong> (write-only): paste (import) data from a memory buffer. Value 
 is the data. Insert position is obtained from the
 <a href="iupmatrix_attrib.html#FOCUS_CELL">FOCUS_CELL</a> attribute. See PASTE 
 for more details.</p>
 <p>
-<strong>PASTEFILE</strong> (write-only): paste data from a file. Value is the 
+<strong>PASTEFILE</strong> (write-only): paste (import) data from a file. Value is the 
 file name to be loaded. Insert position is always &quot;0:0&quot;. See PASTE for more 
 details. LASTERROR can also be set to &quot;INVALIDFILENAME&quot; (failed to open). 
 The PASTEFILEAT attribute controls the insert position, can be &quot;FOCUS&quot; or a cell 
@@ -288,12 +287,13 @@ characters, even if UTF8MODE is Yes. Uses the
             style="color: #000000"> 
 		lines are added or removed. (since 3.17)</span></span></font><br><strong>IMPORTANT</strong>: The sort 
 will not affect the original data, only how it is displayed from the original 
-data and how it is updated to the original data. The line and cell attributes of 
-the sorted will NOT be affected. This means that colors and fonts will NOT 
+data and how it is updated to the original data. ALSO the line and cell attributes of 
+the sorted lines will NOT be affected, this means that sizes, colors and fonts will NOT 
 follow the sort order, also means that cell address in FOCUS_CELL, MARKED, 
-ORIGIN, SHOW, HEIGHTn, and others, are all relative to the displayed cells and 
+ORIGIN, SHOW, HEIGHTn (which implies VISIBLELIN<em>n)</em>, and others, are all relative to the 
+display position data and 
 they do NOT follow the sort order. *VALUE_CB, EDITION_CB and VALUE_EDIT_CB will 
-be called with the correct index following the sort order, all other callbacks 
+be called with the correct line index following the sort order, all other callbacks 
 won't.</p>
 <p>
 <strong>SORTCOLUMNORDER</strong>: defines if the number or text comparison is in 
@@ -315,6 +315,7 @@ index given a line in regular order. To be used inside other callbacks. (since
 <strong>LASTSORTCOLUMN</strong> (read-only): Returns the last sorted column. 
 (since 3.17)</p>
 <h4>
+Line and
 Column Visibility</h4>
 <p><strong>FREEZE:</strong> freezes the scroll of columns and lines up to the 
 given cell. Can be: &quot;Yes&quot; - uses the value of the FOCUS_CELL attribute, &quot;<em>L</em>:<em>C</em>&quot; 
@@ -355,7 +356,7 @@ menus. Can be: SETTINGS, EXPORT_TXT, EXPORT_LATEX, EXPORT_HTML, IMPORT_TXT,
 UNDOLIST, FIND, GOTO, SORT and COPYCOLTO_INTERVAL. Some dialog are not show if 
 the matrix is read-only.(since 3.16)</p>
 <h4>Copy Cells</h4>
-<p><strong>COPYCOLTO<em>L:C</em></strong> (write-only): copies the value of the 
+<p><strong>COPYCOLTO<em>L:C</em></strong> (write-only): copies (duplicates) the value of the 
 given cell to a specified range of cells in the same column. Value can be &quot;ALL&quot; 
 (for all lines), TOP (for all lines before the given line), BOTTOM (for all 
 lines after the given line), MARKED (for all lines where the cell is marked), or 
