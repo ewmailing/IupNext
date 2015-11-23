@@ -62,7 +62,7 @@ static void iMatrixExStrCopyNoSepLaTeX(char* buffer, const char* str)
 static void iMatrixExCopyTXT(Ihandle *ih, FILE* file, int num_lin, int num_col, int skip_lin, int skip_col)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  int lin, col, lin;
+  int lin, col;
   int add_sep;
   char* str, sep;
 
@@ -210,7 +210,7 @@ static char* iMatrixExGetCellFormat(Ihandle *ih, int lin, int col, char* format)
 static void iMatrixExCopyHTML(Ihandle *ih, FILE* file, int num_lin, int num_col, char* buffer, int skip_lin, int skip_col)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  int lin, col, lin;
+  int lin, col;
   char* str, *caption, f[512];
 
   int add_format = iupAttribGetInt(ih, "HTMLADDFORMAT");
@@ -296,7 +296,7 @@ static int iMatrixExIsBoldLine(Ihandle* ih, int lin)
 static void iMatrixExCopyLaTeX(Ihandle *ih, FILE* file, int num_lin, int num_col, char* buffer, int skip_lin, int skip_col)
 {
   ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
-  int lin, col, lin;
+  int lin, col;
   int add_sep;
   char* str;
 
