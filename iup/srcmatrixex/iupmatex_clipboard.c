@@ -172,21 +172,14 @@ static void iMatrixExArrayAddCell(ImatExData* matex_data, Iarray* data, int lin,
 
 static void iMatrixExCopyGetDataMarkedCol(ImatExData* matex_data, Iarray* data, const char* marked, int num_lin, int num_col, char sep)
 {
-  int lin, col, sorted_lin;
+  int lin, col;
   int add_sep;
-
-  int use_sort = iupAttribGetInt(matex_data->ih, "EXPORTSORTED");
 
   for(lin = 1; lin <= num_lin; ++lin)  /* always organize data in lines */
   {
     add_sep = 0;
 
-    if (use_sort)
-      sorted_lin = IupGetIntId(matex_data->ih, "SORTLINEINDEX", lin);
-    else
-      sorted_lin = lin;
-
-    if (iupMatrixExIsLineVisible(matex_data->ih, sorted_lin))
+    if (iupMatrixExIsLineVisible(matex_data->ih, lin))
     {
       for(col = 1; col <= num_col; ++col)
       {
@@ -196,7 +189,7 @@ static void iMatrixExCopyGetDataMarkedCol(ImatExData* matex_data, Iarray* data, 
           if (add_sep)
             iMatrixExArrayAddChar(data, sep);
 
-          iMatrixExArrayAddCell(matex_data, data, sorted_lin, col, sep);
+          iMatrixExArrayAddCell(matex_data, data, lin, col, sep);
           add_sep = 1;
         }
       }
@@ -208,22 +201,15 @@ static void iMatrixExCopyGetDataMarkedCol(ImatExData* matex_data, Iarray* data, 
 
 static void iMatrixExCopyGetDataMarkedLin(ImatExData* matex_data, Iarray* data, const char* marked, int num_lin, int num_col, char sep)
 {
-  int lin, col, sorted_lin;
+  int lin, col;
   int add_sep;
-
-  int use_sort = iupAttribGetInt(matex_data->ih, "EXPORTSORTED");
 
   for(lin = 1; lin <= num_lin; ++lin)
   {
     add_sep = 0;
 
-    if (use_sort)
-      sorted_lin = IupGetIntId(matex_data->ih, "SORTLINEINDEX", lin);
-    else
-      sorted_lin = lin;
-
     /* only marked lines */
-    if (marked[sorted_lin - 1] == '1' && iupMatrixExIsLineVisible(matex_data->ih, sorted_lin))
+    if (marked[lin - 1] == '1' && iupMatrixExIsLineVisible(matex_data->ih, lin))
     {
       for(col = 1; col <= num_col; ++col)    /* all columns */
       {
@@ -232,7 +218,7 @@ static void iMatrixExCopyGetDataMarkedLin(ImatExData* matex_data, Iarray* data, 
           if (add_sep)
             iMatrixExArrayAddChar(data, sep);
 
-          iMatrixExArrayAddCell(matex_data, data, sorted_lin, col, sep);
+          iMatrixExArrayAddCell(matex_data, data, lin, col, sep);
           add_sep = 1;
         }
       }
@@ -244,33 +230,26 @@ static void iMatrixExCopyGetDataMarkedLin(ImatExData* matex_data, Iarray* data, 
 
 static void iMatrixExCopyGetDataMarkedCell(ImatExData* matex_data, Iarray* data, const char* marked, int lin1, int col1, int lin2, int col2, int num_col, int keep_struct, char sep)
 {
-  int lin, col, sorted_lin;
+  int lin, col;
   int add_sep;
-
-  int use_sort = iupAttribGetInt(matex_data->ih, "EXPORTSORTED");
 
   for(lin = lin1; lin <= lin2; ++lin)
   {
     add_sep = 0;
 
-    if (use_sort)
-      sorted_lin = IupGetIntId(matex_data->ih, "SORTLINEINDEX", lin);
-    else
-      sorted_lin = lin;
-
-    if (iupMatrixExIsLineVisible(matex_data->ih, sorted_lin))
+    if (iupMatrixExIsLineVisible(matex_data->ih, lin))
     {
       for(col = col1; col <= col2; ++col)
       {
         if (iupMatrixExIsColumnVisible(matex_data->ih, col))
         {
-          int pos = (sorted_lin - 1) * num_col + (col - 1);  /* marked array does not include titles */
+          int pos = (lin - 1) * num_col + (col - 1);  /* marked array does not include titles */
           if (marked[pos] == '1')
           {
             if (add_sep)
               iMatrixExArrayAddChar(data, sep);
 
-            iMatrixExArrayAddCell(matex_data, data, sorted_lin, col, sep);
+            iMatrixExArrayAddCell(matex_data, data, lin, col, sep);
             add_sep = 1;
           }
           else if (keep_struct)
@@ -291,21 +270,14 @@ static void iMatrixExCopyGetDataMarkedCell(ImatExData* matex_data, Iarray* data,
 
 static void iMatrixExCopyGetData(ImatExData* matex_data, Iarray* data, int lin1, int col1, int lin2, int col2, char sep)
 {
-  int lin, col, sorted_lin;
+  int lin, col;
   int add_sep;
-
-  int use_sort = iupAttribGetInt(matex_data->ih, "EXPORTSORTED");
 
   for(lin = lin1; lin <= lin2; ++lin)
   {
     add_sep = 0;
 
-    if (use_sort)
-      sorted_lin = IupGetIntId(matex_data->ih, "SORTLINEINDEX", lin);
-    else
-      sorted_lin = lin;
-
-    if (iupMatrixExIsLineVisible(matex_data->ih, sorted_lin))
+    if (iupMatrixExIsLineVisible(matex_data->ih, lin))
     {
       for(col = col1; col <= col2; ++col)
       {
@@ -314,7 +286,7 @@ static void iMatrixExCopyGetData(ImatExData* matex_data, Iarray* data, int lin1,
           if (add_sep)
             iMatrixExArrayAddChar(data, sep);
 
-          iMatrixExArrayAddCell(matex_data, data, sorted_lin, col, sep);
+          iMatrixExArrayAddCell(matex_data, data, lin, col, sep);
 
           add_sep = 1;
         }
