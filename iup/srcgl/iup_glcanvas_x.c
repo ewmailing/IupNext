@@ -44,7 +44,7 @@ typedef GLXContext (*glXCreateContextAttribsARB_PROC)(Display *dpy, GLXFBConfig 
 
 
 /* Do NOT use _IcontrolData to make inheritance easy
-   when parent class in glcanvas */
+   when parent class is glcanvas */
 typedef struct _IGlControlData
 {
   Display* display;

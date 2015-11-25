@@ -43,7 +43,7 @@ typedef HGLRC (WINAPI *wglCreateContextAttribsARB_PROC) (HDC hDC, HGLRC hShareCo
 
 
 /* Do NOT use _IcontrolData to make inheritance easy
-   when parent class in glcanvas */
+   when parent class is glcanvas */
 typedef struct _IGlControlData
 {
   HWND window;
