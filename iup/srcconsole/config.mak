@@ -110,9 +110,9 @@ ifdef ALL_STATIC
       
     ifndef IUPLUA_NO_IM
       ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-        LIBS += cdluaim$(LUASFX)
+        LIBS += cdluaim$(LUASFX) cdim$(LUASFX)
       else
-        SLIB += $(CD_LIB)/Lua$(LUASFX)/libcdluaim$(LUASFX).a
+        SLIB += $(CD_LIB)/Lua$(LUASFX)/libcdluaim$(LUASFX).a $(CD_LIB)/libcdim.a
       endif
     endif
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
