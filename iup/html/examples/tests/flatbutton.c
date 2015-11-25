@@ -413,16 +413,21 @@ void FlatButtonTest(void)
 
   button = IupFlatButton(NULL);
   IupSetAttributeHandle(button, "IMAGE", image2);
-//  IupSetAttribute(button, "TITLE", "Text2");
-//  IupSetAttribute(button, "IMAGEPOSITION", "TOP");
+
+  IupSetAttribute(button, "IMAGEPOSITION", "TOP");
+  IupSetAttribute(button, "PADDING", "15x15");
+  IupSetAttribute(button, "TOGGLE", "Yes");
+  IupSetAttribute(button, "VALUE", "OFF");
+  IupSetAttribute(button, "TITLE", "Text2");
+
 //  IupSetAttribute(button, "SPACING", "30");
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
 //  IupSetAttributeHandle(button, "IMAGEPRESS", image2);
-  IupSetAttribute(button, "CANFOCUS", "NO");
+  //IupSetAttribute(button, "CANFOCUS", "NO");
 //  IupSetAttribute(button, "RASTERSIZE", "15x15");
   IupSetAttribute(button, "NAME", "button5");
-  if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
+//  if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box2, button);
 

@@ -9,10 +9,11 @@
 
 static int param_action(Ihandle* dialog, int param_index, void* user_data)
 {                
-  switch(param_index)
+  switch (param_index)
   {
   case IUP_GETPARAM_BUTTON1:
     printf("IupGetParam - Button1 (OK)\n");
+
     break;
   case IUP_GETPARAM_INIT:
     {
@@ -20,6 +21,13 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
       IupSetfAttribute(param, "MAXSTR", "%d", 30);
 
       printf("IupGetParam - Init\n");
+
+      if (0)
+      {
+        Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", 1);
+        Ihandle* control = (Ihandle*)IupGetAttribute(param, "CONTROL");
+        IupSetAttribute(control, "SELECTION", "ALL");
+      }
       break;
     }
   case IUP_GETPARAM_BUTTON2:
