@@ -177,12 +177,22 @@ const char* iupStrNextLine(const char* str, int *len)
 
 const char* iupStrNextValue(const char* str, int str_len, int *len, char sep)
 {
+  int ignore_sep = 0;
+
   *len = 0;
 
   if (!str) return NULL;
 
-  while(*str!=0 && *str!=sep && *len<str_len) 
+  while (*str != 0 && (*str != sep || ignore_sep) && *len<str_len)
   {
+    if (*str == '\"')
+    {
+      if (ignore_sep)
+        ignore_sep = 0;
+      else
+        ignore_sep = 1;
+    }
+
     (*len)++;
     str++;
   }
@@ -1300,8 +1310,14 @@ int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
 {
   enum mode_t { STRING, NUMBER } mode=STRING;
 
-  if (!l || !r)
+  if (l == r)
     return 0;
+
+  if (!l && r)
+    return -1;
+
+  if (l && !r)
+    return 1;
 
   if (!Latin1_map)
     iStrInitLatin1_map();
