@@ -928,7 +928,7 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
     if (ih->data->show_image && max_h > *h)  /* use the highest image to compute the natural size */
       *h = max_h;
 
-    iupdrvListAddItemSpace(ih, h);  /* this independs from spacing */
+    iupdrvListAddItemSpace(ih, h);  /* this is independent from spacing */
 
     *h += 2*ih->data->spacing;  /* this will be multiplied by the number of lines */
     *w += 2*ih->data->spacing;  /* include also horizontal spacing */
