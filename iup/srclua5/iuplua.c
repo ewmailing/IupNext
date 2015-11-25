@@ -21,8 +21,8 @@
 
 static int StringCompare(lua_State *L)
 {
-  const char* str1 = luaL_checkstring(L, 1);
-  const char* str2 = luaL_checkstring(L, 2);
+  const char* str1 = luaL_optstring(L, 1, NULL);
+  const char* str2 = luaL_optstring(L, 2, NULL);
   int casesensitive = (int)luaL_optinteger(L, 3, 0);
   int lexicographic = (int)luaL_optinteger(L, 4, 1);
   int ret = IupStringCompare(str1, str2, casesensitive, lexicographic);
