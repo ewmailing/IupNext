@@ -32,6 +32,8 @@ enum{IUP_IMGPOS_LEFT, IUP_IMGPOS_RIGHT, IUP_IMGPOS_TOP, IUP_IMGPOS_BOTTOM};
 
 struct _IcontrolData 
 {
+  iupCanvas canvas;  /* from IupCanvas (must reserve it) */
+
   /* attributes */
   int horiz_padding, vert_padding;  /* button margin */
   int spacing, img_position;        /* used when both text and image are displayed */
