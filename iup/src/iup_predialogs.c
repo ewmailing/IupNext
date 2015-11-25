@@ -54,9 +54,6 @@ int IupListDialog (int type, const char *title, int size, const char** list_str,
   int i, bt;
   char *m=NULL;
 
-  if (size > 999)
-    size = 999;
-
   lst = IupList(NULL);
 
   for (i=0;i<size;i++)
