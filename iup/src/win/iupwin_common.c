@@ -375,10 +375,14 @@ LRESULT CALLBACK iupwinBaseWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
   LRESULT result = 0;
   IwinMsgProc MsgProc;
   Ihandle *ih;
+  WNDPROC oldProc;
 
   ih = iupwinHandleGet(hwnd); 
   if (!ih)
     return DefWindowProc(hwnd, msg, wp, lp);  /* should never happen */
+
+  /* retrieve the control previous procedure for subclassing */
+  oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
 
   /* check if the element defines a custom procedure */
   MsgProc = (IwinMsgProc)IupGetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB");
@@ -389,12 +393,8 @@ LRESULT CALLBACK iupwinBaseWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
   if (ret)
     return result;
-  else
-  {
-    /* retrieve the control previous procedure for subclassing */
-    WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
+  else 
     return CallWindowProc(oldProc, hwnd, msg, wp, lp);
-  }
 }
 
 static Ihandle* winContainerWmCommandGetIhandle(Ihandle *ih, WPARAM wp, LPARAM lp)
