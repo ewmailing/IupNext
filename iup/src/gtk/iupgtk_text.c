@@ -659,8 +659,14 @@ static int gtkTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
 
 static char* gtkTextGetCountAttrib(Ihandle* ih)
 {
-  GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
-  int count = gtk_text_buffer_get_char_count(buffer);
+  int count;
+  if (ih->data->is_multiline)
+  {
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ih->handle));
+    count = gtk_text_buffer_get_char_count(buffer);
+  }
+  else
+    count = gtk_entry_get_text_length(GTK_ENTRY(ih->handle));
   return iupStrReturnInt(count);
 }
 
