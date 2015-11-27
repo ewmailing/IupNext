@@ -8,12 +8,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <assert.h>
 
 #include "iup.h"
 
 #include "iup_attrib.h"
 #include "iup_str.h"
+#include "iup_assert.h"
 #include "iup_strmessage.h"
 #include "iup_layout.h"
 #include "iup_drvfont.h"
@@ -1519,7 +1519,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   Ihandle *dlg, **params;
   int i, line_size, p, count;
 
-  assert(title && format);
+  iupASSERT(title && format);
   if (!title || !format)
     return 0;
 
@@ -1532,7 +1532,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
     char* data_type;
 
     params[i] = IupParamf(format);
-    assert(params[i]);
+    iupASSERT(params[i]);
     if (!params[i])
     {
       free(params);
