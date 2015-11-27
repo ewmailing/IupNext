@@ -425,6 +425,7 @@ int iupMatrixEditShowXY(Ihandle* ih, int x, int y)
   if (mask)
   {
     IupSetAttribute(ih->data->datah, "MASKCASEI", IupGetAttributeId2(ih, "MASKCASEI", ih->data->edit_lin, ih->data->edit_col));
+    IupSetAttribute(ih->data->datah, "MASKNOEMPTY", IupGetAttributeId2(ih, "MASKNOEMPTY", ih->data->edit_lin, ih->data->edit_col));
     IupSetAttribute(ih->data->datah, "MASK", mask);
   }
   else

@@ -56,7 +56,7 @@ void iupMatrixModifyValue(Ihandle* ih, int lin, int col, const char* value)
 static char* iMatrixSetValueNumeric(Ihandle* ih, int lin, int col, const char* value, int convert)
 {
   double number;
-  int ret = iupStrToDoubleLocale(value, &number, IupGetAttribute(ih, "NUMERICDECIMALSYMBOL"));
+  int ret = iupStrToDoubleLocale(value, &number, IupGetAttribute(ih, "NUMERICDECIMALSYMBOL"));  /* this will also check for global "DEFAULTDECIMALSYMBOL" */
   if (ret)
   {
     IFniid setvalue_cb;
@@ -275,7 +275,7 @@ static char* iMatrixGetValueNumericFormatted(Ihandle* ih, int lin, int col, cons
   if (format == NULL)
     format = iupMatrixGetNumericFormatDef(ih);
 
-  iupStrPrintfDoubleLocale(ih->data->numeric_buffer_get, format, number, IupGetAttribute(ih, "NUMERICDECIMALSYMBOL"));
+  iupStrPrintfDoubleLocale(ih->data->numeric_buffer_get, format, number, IupGetAttribute(ih, "NUMERICDECIMALSYMBOL"));  /* this will also check for global "DEFAULTDECIMALSYMBOL" */
   return ih->data->numeric_buffer_get;
 }
 
