@@ -15,6 +15,9 @@
 .auto-style1 {
 	font-weight: normal;
 }
+.auto-style2 {
+	background-color: #E1E1E1;
+}
 </style>
 </head>
 <body>
@@ -76,8 +79,12 @@ validated by the current MASK use VALUEMASKED.</p>
 <h3>Auxiliary Attributes</h3>
 <h4>MASKCASEI<span class="auto-style1"> (non inheritable) </span> </h4>
 <font SIZE="3">
-<p>If YES, will turn the filter case insensitive. Default: NO<font SIZE="3">. 
-Must be set before MASK.</font></p>
+<p>If YES, will turn the filter case insensitive. Default: NO<font SIZE="3">.</font></p>
+</font>
+<h4>MASK<span class="auto-style2">NOEMPTY</span><span class="auto-style1"> (non inheritable) 
+(since 3.17)</span></h4>
+<font SIZE="3">
+<p>If YES, value can NOT be NULL or empty. Default: NO (can be empty or NULL).</p>
 </font>
 <h4>MASKDECIMALSYMBOL<span class="auto-style1"> (non inheritable) (since 3.13)</span></h4>
 <font SIZE="3">
