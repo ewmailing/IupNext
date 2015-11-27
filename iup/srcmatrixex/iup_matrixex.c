@@ -255,7 +255,7 @@ static int iMatrixExItemSettings_CB(Ihandle* ih_item)
   if (sep == ';') sep_index = 1;
   else if (sep == ' ') sep_index = 2;
 
-  decimal_symbol = IupGetAttribute(matex_data->ih, "NUMERICDECIMALSYMBOL");
+  decimal_symbol = IupGetAttribute(matex_data->ih, "NUMERICDECIMALSYMBOL");  /* this will also check for global "DEFAULTDECIMALSYMBOL" */
   if (decimal_symbol)
   {
     if (decimal_symbol[0] == ',')  /* else is '.' */
