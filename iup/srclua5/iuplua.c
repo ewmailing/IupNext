@@ -1329,6 +1329,9 @@ int iuplua_open(lua_State * L)
   iupprogressdlglua_open(L);
   iupflatbuttonlua_open(L);
   iupconfiglua_open(L);
+  iupanimatedlabellua_open(L);
+  iupcalendarlua_open(L);
+  iupdatepicklua_open(L);
 
   return 0; /* nothing in stack */
 }

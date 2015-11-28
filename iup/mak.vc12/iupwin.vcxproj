@@ -99,7 +99,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\win\iupwin_brush.c" />
+    <ClCompile Include="..\src\win\iupwin_calendar.c" />
     <ClCompile Include="..\src\win\iupwin_common.c" />
+    <ClCompile Include="..\src\win\iupwin_datepick.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\src\win\iupwin_dragdrop.c" />
     <ClCompile Include="..\src\win\iupwin_draw.c" />
     <ClCompile Include="..\src\win\iupwin_focus.c" />

@@ -87,7 +87,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\gtk\iupgtk_calendar.c" />
     <ClCompile Include="..\src\gtk\iupgtk_common.c" />
+    <ClCompile Include="..\src\gtk\iupgtk_datepick.c" />
     <ClCompile Include="..\src\gtk\iupgtk_dragdrop.c" />
     <ClCompile Include="..\src\gtk\iupgtk_draw.c" />
     <ClCompile Include="..\src\gtk\iupgtk_draw_cairo.c">
@@ -134,6 +136,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\src\iup_datepick.c" />
     <ClCompile Include="..\src\mot\iupunix_info.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

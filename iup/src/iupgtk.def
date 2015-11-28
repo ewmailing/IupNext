@@ -216,6 +216,8 @@ IupSetStrfId2
 IupSetStrGlobal
 IupFlatButton
 IupAnimatedLabel
+IupDatePick
+IupCalendar
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib

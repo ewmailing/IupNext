@@ -126,6 +126,15 @@
     <ClCompile Include="..\src\gtk\iupgtk_help.c">
       <Filter>unix</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\gtk\iupgtk_calendar.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gtk\iupgtk_datepick.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\iup_datepick.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\gtk\iupgtk_drv.h">

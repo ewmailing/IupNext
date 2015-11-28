@@ -43,6 +43,7 @@ SRC += bigtest.c
 
 SRC += tray.c
 SRC += dialog.c
+SRC += calendar.c
 SRC += predialogs.c
 SRC += timer.c
 SRC += label.c

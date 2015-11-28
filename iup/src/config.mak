@@ -83,7 +83,8 @@ ifdef USE_GTK
          gtk/iupgtk_text.c gtk/iupgtk_frame.c gtk/iupgtk_progressbar.c \
          gtk/iupgtk_tabs.c gtk/iupgtk_list.c gtk/iupgtk_tree.c \
          gtk/iupgtk_canvas.c gtk/iupgtk_image.c gtk/iupgtk_dialog.c \
-         gtk/iupgtk_common.c gtk/iupgtk_str.c gtk/iupgtk_menu.c 
+         gtk/iupgtk_common.c gtk/iupgtk_str.c gtk/iupgtk_menu.c \
+         gtk/iupgtk_calendar.c iup_datepick.c
            
   ifdef USE_GTK3
     SRC += gtk/iupgtk_draw_cairo.c
@@ -118,7 +119,8 @@ ifdef USE_MOTIF
          mot/iupmot_colordlg.c mot/iupmot_fontdlg.c mot/iupmot_filedlg.c mot/iupmot_frame.c \
          mot/iupmot_button.c mot/iupmot_toggle.c mot/iupmot_progressbar.c mot/iupmot_clipboard.c \
          mot/iupmot_text.c mot/iupmot_val.c mot/iupmot_tabs.c mot/iupmot_menu.c \
-         mot/iupmot_list.c mot/iupmot_tree.c mot/iupmot_dragdrop.c mot/iupmot_str.c
+         mot/iupmot_list.c mot/iupmot_tree.c mot/iupmot_dragdrop.c mot/iupmot_str.c \
+         mot/iupmot_calendar.c iup_datepick.c
          
   SRC += mot/iupunix_help.c mot/iupunix_info.c
   USE_X11 = Yes
@@ -133,7 +135,8 @@ else
          win/iupwin_colordlg.c win/iupwin_fontdlg.c win/iupwin_filedlg.c win/iupwin_dragdrop.c \
          win/iupwin_button.c win/iupwin_draw.c win/iupwin_toggle.c win/iupwin_clipboard.c \
          win/iupwin_progressbar.c win/iupwin_text.c win/iupwin_val.c win/iupwin_touch.c \
-         win/iupwin_tabs.c win/iupwin_menu.c win/iupwin_list.c win/iupwin_tree.c
+         win/iupwin_tabs.c win/iupwin_menu.c win/iupwin_list.c win/iupwin_tree.c \
+         win/iupwin_calendar.c win/iupwin_datepick.c
          
   SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c
 

@@ -237,6 +237,8 @@ Ihandle*  IupTree       (void);
 Ihandle*  IupLink       (const char* url, const char* title);
 Ihandle*  IupFlatButton (const char* title);
 Ihandle*  IupAnimatedLabel(Ihandle* animation);
+Ihandle*  IupDatePick   (void);
+Ihandle*  IupCalendar   (void);
 
 /* Old controls, use SPIN attribute of IupText */
 Ihandle*  IupSpin       (void);

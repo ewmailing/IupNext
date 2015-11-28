@@ -34,6 +34,8 @@
 #define MCS_NOSELCHANGEONNAV 0x0100
 #define MCS_SHORTDAYSOFWEEK  0x0080
 #endif
+
+#if NOT_WORKING
 #ifndef MCM_GETCALENDARBORDER
 #define MCM_SETCALENDARBORDER (MCM_FIRST + 30)
 #define MCM_GETCALENDARBORDER (MCM_FIRST + 31)
@@ -92,24 +94,34 @@ static char* winCalendarGetForeColorAttrib(Ihandle* ih)
   COLORREF cr = (COLORREF)SendMessage(ih->handle, MCM_GETCOLOR, MCSC_TEXT, 0);
   return iupStrReturnStrf("%d %d %d", (int)GetRValue(cr), (int)GetGValue(cr), (int)GetBValue(cr));
 }
+#endif
 
 static int winCalendarSetValueAttrib(Ihandle* ih, const char* value)
 {
-  int year, month, day;
-  if (sscanf(value, "%d/%d/%d", &day, &month, &year) == 3)
+  if (iupStrEqualNoCase(value, "TODAY"))
   {
     SYSTEMTIME st;
-
-    if (month < 1) month = 1;
-    if (month > 12) month = 12;
-    if (day < 1) day = 1;
-    if (day > 31) day = 31;
-
-    st.wYear = (WORD)year;
-    st.wMonth = (WORD)month;
-    st.wDay = (WORD)day;
-
+    GetLocalTime(&st);
     SendMessage(ih->handle, MCM_SETCURSEL, 0, (LPARAM)&st);
+  }
+  else
+  {
+    int year, month, day;
+    if (sscanf(value, "%d/%d/%d", &year, &month, &day) == 3)
+    {
+      SYSTEMTIME st;
+
+      if (month < 1) month = 1;
+      if (month > 12) month = 12;
+      if (day < 1) day = 1;
+      if (day > 31) day = 31;
+
+      st.wYear = (WORD)year;
+      st.wMonth = (WORD)month;
+      st.wDay = (WORD)day;
+
+      SendMessage(ih->handle, MCM_SETCURSEL, 0, (LPARAM)&st);
+    }
   }
   return 0; /* do not store value in hash table */
 }
@@ -118,7 +130,7 @@ static char* winCalendarGetValueAttrib(Ihandle* ih)
 {
   SYSTEMTIME st;
   SendMessage(ih->handle, MCM_GETCURSEL, 0, (LPARAM)&st);
-  return iupStrReturnStrf("%02d/%02d/%d", st.wDay, st.wMonth, st.wYear);
+  return iupStrReturnStrf("%d/%d/%d", st.wYear, st.wMonth, st.wDay);
 }
 
 static char* winCalendarGetTodayAttrib(Ihandle* ih)
@@ -126,7 +138,7 @@ static char* winCalendarGetTodayAttrib(Ihandle* ih)
   SYSTEMTIME st;
   (void)ih;
   GetLocalTime(&st);
-  return iupStrReturnStrf("%02d/%02d/%d", st.wDay, st.wMonth, st.wYear);
+  return iupStrReturnStrf("%d/%d/%d", st.wYear, st.wMonth, st.wDay);
 }
 
 void iupdrvTextAddBorders(int *w, int *h);
@@ -144,10 +156,14 @@ static void winCalendarComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
   }
   else
   {
-    iupdrvFontGetMultiLineStringSize(ih, "W8W", w, h);
+    iupdrvFontGetMultiLineStringSize(ih, "WW", w, h);
+
+    *h += 2;
 
     (*w) *= 7; /* 7 columns */
-    (*h) *= 8; /* 9 lines */
+    (*h) *= 8; /* 8 lines */
+
+    *h += 2;
 
     iupdrvTextAddBorders(w, h);
   }
@@ -222,16 +238,18 @@ Iclass* iupCalendarNewClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* IupCalendar only */
-  iupClassRegisterAttribute(ic, "VALUE", winCalendarGetValueAttrib, winCalendarSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", winCalendarGetValueAttrib, winCalendarSetValueAttrib, NULL, "TODAY", IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WEEKNUMBERS", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TODAY", winCalendarGetTodayAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TODAY", winCalendarGetTodayAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
+#if NOT_WORKING
   /* Works only when NOT using Visual Styles */
   iupClassRegisterAttribute(ic, "BACKCOLOR", winCalendarGetBackColorAttrib, winCalendarSetBackColorAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORECOLOR", winCalendarGetForeColorAttrib, winCalendarSetForeColorAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   /* NOT working */
   iupClassRegisterAttribute(ic, "BORDER", winCalendarGetBorderAttrib, winCalendarSetBorderAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+#endif
 
   return ic;
 }

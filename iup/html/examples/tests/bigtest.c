@@ -82,6 +82,7 @@ void ClipboardTest(void);
 void CharacTest(void);
 void LinkTest(void);
 void ExpanderTest(void);
+void CalendarTest(void);
 
 
 void HelpTest(void)
@@ -97,6 +98,7 @@ typedef struct _TestItems{
 
 static TestItems test_list[] = {
   {"Button", ButtonTest},
+  {"Calendar", CalendarTest},
   {"Canvas", CanvasTest},
   {"CanvasCDSimpleTest", CanvasCDSimpleTest},
   {"CanvasCDDBuffer", CanvasCDDBufferTest},

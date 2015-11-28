@@ -41,21 +41,30 @@
 
 static int winDatePickSetValueAttrib(Ihandle* ih, const char* value)
 {
-  int year, month, day;
-  if (sscanf(value, "%d/%d/%d", &day, &month, &year) == 3)
+  if (iupStrEqualNoCase(value, "TODAY"))
   {
     SYSTEMTIME st;
-
-    if (month < 1) month = 1;
-    if (month > 12) month = 12;
-    if (day < 1) day = 1;
-    if (day > 31) day = 31;
-
-    st.wYear = (WORD)year;
-    st.wMonth = (WORD)month;
-    st.wDay = (WORD)day;
-
+    GetLocalTime(&st);
     SendMessage(ih->handle, DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&st);
+  }
+  else
+  {
+    int year, month, day;
+    if (sscanf(value, "%d/%d/%d", &year, &month, &day) == 3)
+    {
+      SYSTEMTIME st;
+
+      if (month < 1) month = 1;
+      if (month > 12) month = 12;
+      if (day < 1) day = 1;
+      if (day > 31) day = 31;
+
+      st.wYear = (WORD)year;
+      st.wMonth = (WORD)month;
+      st.wDay = (WORD)day;
+
+      SendMessage(ih->handle, DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&st);
+    }
   }
   return 0; /* do not store value in hash table */
 }
@@ -64,13 +73,7 @@ static char* winDatePickGetValueAttrib(Ihandle* ih)
 {
   SYSTEMTIME st;
   SendMessage(ih->handle, DTM_GETSYSTEMTIME, 0, (LPARAM)&st);
-  return iupStrReturnStrf("%02d/%02d/%d", st.wDay, st.wMonth, st.wYear);
-}
-
-static int winDatePickSetFormatAttrib(Ihandle* ih, const char* value)
-{
-  SendMessage(ih->handle, DTM_SETFORMAT, 0, (LPARAM)value);
-  return 1;
+  return iupStrReturnStrf("%d/%d/%d", st.wYear, st.wMonth, st.wDay);
 }
 
 static int winDatePickSetStandardFontAttrib(Ihandle* ih, const char* value)
@@ -91,7 +94,59 @@ static char* winDatePickGetTodayAttrib(Ihandle* ih)
   SYSTEMTIME st;
   (void)ih;
   GetLocalTime(&st);
-  return iupStrReturnStrf("%02d/%02d/%d", st.wDay, st.wMonth, st.wYear);
+  return iupStrReturnStrf("%d/%d/%d", st.wYear, st.wMonth, st.wDay);
+}
+
+static int winDatePickSetFormatAttrib(Ihandle* ih, const char* value)
+{
+  SendMessage(ih->handle, DTM_SETFORMAT, 0, (LPARAM)iupwinStrToSystem(value));
+  return 1;
+}
+
+static int winDatePickSetOrderAttrib(Ihandle* ih, const char* value)
+{
+  int i;
+  char format[50] = "";
+  char* separator = iupAttribGetStr(ih, "SEPARATOR");
+  int zeropreced = iupAttribGetBoolean(ih, "ZEROPRECED");
+  int monthshortnames = iupAttribGetBoolean(ih, "MONTHSHORTNAMES");
+
+  if (!value || strlen(value) != 3)
+    return 0;
+
+  for (i = 0; i < 3; i++)
+  {
+    if (value[i] == 'D' || value[i] == 'd')
+    {
+      if (zeropreced)
+        strcat(format, "dd");
+      else
+        strcat(format, "d");
+    }
+    else if (value[i] == 'M' || value[i] == 'm')
+    {
+      if (monthshortnames)
+        strcat(format, "MMM");
+      else if (zeropreced)
+        strcat(format, "MM");
+      else
+        strcat(format, "M");
+    }
+    else if (value[i] == 'Y' || value[i] == 'y')
+      strcat(format, "yyyy");
+    else
+      return 0;
+
+    if (i < 2)
+    {
+      strcat(format, "'");
+      strcat(format, separator);
+      strcat(format, "'");
+    }
+
+    SendMessage(ih->handle, DTM_SETFORMAT, 0, (LPARAM)iupwinStrToSystem(format));
+  }
+  return 1;
 }
 
 
@@ -156,8 +211,6 @@ static int winDatePickMapMethod(Ihandle* ih)
   /* Process WM_NOTIFY */
   IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winDatePickWmNotify);
   
-  SendMessage(ih->handle, DTM_SETFORMAT, 0, (LPARAM)TEXT("dd/MMM/yyyy"));
-
   if (iupwinIsVistaOrNew())
   {
     dwStyle = MCS_NOTODAY | MCS_NOSELCHANGEONNAV;
@@ -205,8 +258,15 @@ Iclass* iupDatePickNewClass(void)
   iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winDatePickSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
 
   iupClassRegisterAttribute(ic, "VALUE", winDatePickGetValueAttrib, winDatePickSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TODAY", winDatePickGetTodayAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORMAT", NULL, winDatePickSetFormatAttrib, IUPAF_SAMEASSYSTEM, "dd/MMM/yyyy", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TODAY", winDatePickGetTodayAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "SEPARATOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "/", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ZEROPRECED", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ORDER", NULL, winDatePickSetOrderAttrib, "DMY", NULL, IUPAF_NO_INHERIT);
+
+  /* Windows Only */
+  iupClassRegisterAttribute(ic, "MONTHSHORTNAMES", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMAT", NULL, winDatePickSetFormatAttrib, IUPAF_SAMEASSYSTEM, "d/M/yyyy", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CALENDARWEEKNUMBERS", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 

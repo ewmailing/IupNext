@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="..\html\examples\tests\bigtest.c" />
     <ClCompile Include="..\html\examples\tests\button.c" />
+    <ClCompile Include="..\html\examples\tests\calendar.c" />
     <ClCompile Include="..\html\examples\tests\canvas.c" />
     <ClCompile Include="..\html\examples\tests\canvas_cddbuffer.c" />
     <ClCompile Include="..\html\examples\tests\canvas_cdsimple.c" />
