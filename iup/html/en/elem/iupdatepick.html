@@ -51,8 +51,60 @@ year in the calendar. Default: NO.</p>
 Windows. For more information see
 <a href="https://msdn.microsoft.com/EN-US/library/windows/desktop/bb761726(v=vs.85).aspx" target="_top">
 &quot;About Date and Time Picker Control&quot;</a> in the Windows SDK. The Windows control 
-was configured to display date only without any time options. Default: &quot;d'/'M'/'yyyy&quot;.</p>
-<p class="info">Can have the following values, but <span>other text in the 
+was configured to display date only without any time options. Default: &quot;d'/'M'/'yyyy&quot;. 
+See Noted bellow.</p>
+<p><strong>MONTHSHORTNAMES</strong> [Windows Only]: Month display will use a 
+short name instead of numbers. Must be set before ORDER. Default: NO. Names will 
+be in the language of the system.</p>
+<p><strong>ORDER</strong>: Day, month and year order. Can be any combination of 
+&quot;D&quot;, &quot;M&quot; and &quot;Y&quot; without repetition, and with all three letters. It will set the 
+FORMAT attribute in Windows. It will NOT affect the VALUE attribute order. 
+Default: &quot;DMY&quot;. </p>
+<p><strong>SEPARATOR</strong>: Separator between day, month and year. Must be 
+set before ORDER in Windows. Default: &quot;/&quot;.</p>
+<p><strong>TODAY</strong> (read-only): Returns the date corresponding to today 
+in VALUE format.</p>
+<p><strong>VALUE</strong>: the current date always in the format 
+&quot;year/month/day&quot; (&quot;%d/%d/%d&quot; in C). Can be set to &quot;TODAY&quot;. Default value is the 
+today date.</p>
+<p><strong>ZEROPRECED</strong>: Day and month numbers will be preceded by a 
+zero. Must be set before ORDER in Windows. Default: No.</p>
+<h3><a name="Callbacks">Callbacks</a></h3>
+
+  
+  
+<p><strong>VALUECHANGED_CB</strong>:
+  Called after the value was interactively changed by the user.</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
+<blockquote>
+  
+  <hr>
+</blockquote>
+
+
+<p><a href="../call/iup_map_cb.html">MAP_CB</a>,  
+<a href="../call/iup_unmap_cb.html">UNMAP_CB</a>, 
+<a href="../call/iup_destroy_cb.html">DESTROY_CB</a>, 
+<a href="../call/iup_getfocus_cb.html">GETFOCUS_CB</a>,
+  <a href="../call/iup_killfocus_cb.html">KILLFOCUS_CB</a>, 
+<a href="../call/iup_enterwindow_cb.html">ENTERWINDOW_CB</a>,
+  <a href="../call/iup_leavewindow_cb.html">LEAVEWINDOW_CB</a>, 
+<a href="../call/iup_k_any.html">K_ANY</a>,
+  <a href="../call/iup_help_cb.html">HELP_CB</a>: All common callbacks are 
+supported.&nbsp;</p>
+
+<h3><a name="Notes">Notes</a></h3>
+
+<p>In Windows, when the user navigates to other pages in the calendar the date is 
+not changed until the user actually selects a day.</p>
+<p>In Windows, FORMAT can have the following values, but <span>other text in the 
 format string must be enclosed in single quotes:</span></p>
 <p class="info">
 <table responsive="true">
@@ -145,57 +197,6 @@ format string must be enclosed in single quotes:</span></p>
 	</tr>
 </table>
 </p>
-<p><strong>MONTHSHORTNAMES</strong> [Windows Only]: Month display will use a 
-short name instead of numbers. Must be set before ORDER. Default: NO. Names will 
-be in the language of the system.</p>
-<p><strong>ORDER</strong>: Day, month and year order. Can be any combination of 
-&quot;D&quot;, &quot;M&quot; and &quot;Y&quot; without repetition, and with all three letters. It will set the 
-FORMAT attribute in Windows. It will NOT affect the VALUE attribute order. 
-Default: &quot;DMY&quot;. </p>
-<p><strong>SEPARATOR</strong>: Separator between day, month and year. Must be 
-set before ORDER in Windows. Default: &quot;/&quot;.</p>
-<p><strong>TODAY</strong> (read-only): Returns the date corresponding to today 
-in VALUE format.</p>
-<p><strong>VALUE</strong>: the current date always in the format 
-&quot;year/month/day&quot; (&quot;%d/%d/%d&quot; in C). Can be set to &quot;TODAY&quot;. Default value is the 
-today date.</p>
-<p><strong>ZEROPRECED</strong>: Day and month numbers will be preceded by a 
-zero. Must be set before ORDER in Windows. Default: No.</p>
-<h3><a name="Callbacks">Callbacks</a></h3>
-
-  
-  
-<p><strong>VALUECHANGED_CB</strong>:
-  Called after the value was interactively changed by the user.</p>
-
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-
-    
-<p class="info"><strong>ih</strong>:
-  identifier of the element that activated the 
-  event.</p>
-
-<blockquote>
-  
-  <hr>
-</blockquote>
-
-
-<p><a href="../call/iup_map_cb.html">MAP_CB</a>,  
-<a href="../call/iup_unmap_cb.html">UNMAP_CB</a>, 
-<a href="../call/iup_destroy_cb.html">DESTROY_CB</a>, 
-<a href="../call/iup_getfocus_cb.html">GETFOCUS_CB</a>,
-  <a href="../call/iup_killfocus_cb.html">KILLFOCUS_CB</a>, 
-<a href="../call/iup_enterwindow_cb.html">ENTERWINDOW_CB</a>,
-  <a href="../call/iup_leavewindow_cb.html">LEAVEWINDOW_CB</a>, 
-<a href="../call/iup_k_any.html">K_ANY</a>,
-  <a href="../call/iup_help_cb.html">HELP_CB</a>: All common callbacks are 
-supported.&nbsp;</p>
-
-<h3><a name="Notes">Notes</a></h3>
-
-<p>In Windows when the user navigates to other pages in the calendar the date is 
-not changed until the user actually selects a day.</p>
 
 <h3><a name="Examples">Examples</a></h3>
 

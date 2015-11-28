@@ -110,6 +110,7 @@ static int GetParam(lua_State *L)
       param_data[i] = malloc(sizeof(double));
       *(double*)(param_data[i]) = (double)luaL_checknumber(L, lua_param_start); lua_param_start++;
       break;
+    case 'd':
     case 'f':
     case 's':
     case 'm':
@@ -164,6 +165,7 @@ static int GetParam(lua_State *L)
       case 'r':
         lua_pushnumber(L, *(float*)(param_data[i]));
         break;
+      case 'd':
       case 'f':
       case 'n':
       case 'c':

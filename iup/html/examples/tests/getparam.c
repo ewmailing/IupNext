@@ -57,6 +57,7 @@ void GetParamTest(void)
   float preal2 = 0.5f;
   float pangle = 90;
   char pstring[100] = "string text";
+  char pdate[100] = "1970/07/11";
   char pfont[100] = "Courier, 24";
   char pcolor[100] = "255 0 128";
   int plist = 2, poptions = 1;
@@ -76,12 +77,13 @@ void GetParamTest(void)
                    "String:%s\n"
                    "Options:%o|item0|item1|item2|\n" 
                    "List:%l|item0|item1|item2|item3|item4|item5|item6|\n" 
+                   "Date:%d[MONTHSHORTNAMES=Yes,ZEROPRECED=Yes]\n"
                    "File:%f[OPEN|*.bmp;*.jpg|CURRENT|NO|NO]\n"
                    "Color:%c{Color Tip}\n"
                    "Font:%n\n"
                    "Sep3 %t\n"
                    "Multiline:%m\n",
-                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &poptions, &plist, file_name, pcolor, pfont, pstring2, NULL))
+                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &poptions, &plist, pdate, file_name, pcolor, pfont, pstring2, NULL))
     return;
   
   IupMessagef("IupGetParam",
@@ -94,11 +96,12 @@ void GetParamTest(void)
               "String: %s\n"
               "Options Index: %d\n" 
               "List Index: %d\n" 
+              "Date: %s\n"
               "FileName: %s\n"
               "Color: %s\n"
               "Font: %s\n"
               "Multiline: %s",
-              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, poptions, plist, file_name, pcolor, pfont, pstring2);
+              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, poptions, plist, pdate, file_name, pcolor, pfont, pstring2);
 }
 
 #ifndef BIG_TEST
