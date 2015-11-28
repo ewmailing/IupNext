@@ -89,7 +89,6 @@
   <ItemGroup>
     <ClCompile Include="..\src\gtk\iupgtk_calendar.c" />
     <ClCompile Include="..\src\gtk\iupgtk_common.c" />
-    <ClCompile Include="..\src\gtk\iupgtk_datepick.c" />
     <ClCompile Include="..\src\gtk\iupgtk_dragdrop.c" />
     <ClCompile Include="..\src\gtk\iupgtk_draw.c" />
     <ClCompile Include="..\src\gtk\iupgtk_draw_cairo.c">

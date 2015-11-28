@@ -429,11 +429,14 @@ static int iDatePickCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static void iDatePickDestroyMethod(Ihandle* ih)
+static void iDatePickUnMapMethod(Ihandle* ih)
 {
   Ihandle* calendar = (Ihandle*)iupAttribGet(ih, "_IUP_CALENDAR");
-  if (calendar)
+  if (iupObjectCheck(calendar))
+  {
     IupDestroy(IupGetDialog(calendar));
+    iupAttribSet(ih, "_IUP_CALENDAR", NULL);
+  }
 }
 
 Iclass* iupDatePickNewClass(void)
@@ -449,7 +452,7 @@ Iclass* iupDatePickNewClass(void)
   /* Class functions */
   ic->New = iupDatePickNewClass;
   ic->Create = iDatePickCreateMethod;
-  ic->Destroy = iDatePickDestroyMethod;
+  ic->UnMap = iDatePickUnMapMethod;
 
   /* Callbacks */
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");

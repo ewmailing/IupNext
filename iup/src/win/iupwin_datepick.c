@@ -143,9 +143,9 @@ static int winDatePickSetOrderAttrib(Ihandle* ih, const char* value)
       strcat(format, separator);
       strcat(format, "'");
     }
-
-    SendMessage(ih->handle, DTM_SETFORMAT, 0, (LPARAM)iupwinStrToSystem(format));
   }
+
+  IupSetStrAttribute(ih, "FORMAT", format);
   return 1;
 }
 
@@ -210,7 +210,7 @@ static int winDatePickMapMethod(Ihandle* ih)
 
   /* Process WM_NOTIFY */
   IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winDatePickWmNotify);
-  
+
   if (iupwinIsVistaOrNew())
   {
     dwStyle = MCS_NOTODAY | MCS_NOSELCHANGEONNAV;
@@ -220,6 +220,9 @@ static int winDatePickMapMethod(Ihandle* ih)
 
     SendMessage(ih->handle, DTM_SETMCSTYLE, 0, (LPARAM)dwStyle);
   }
+
+  if (iupAttribGet(ih, "SEPARATOR") || iupAttribGet(ih, "ZEROPRECED") || iupAttribGet(ih, "MONTHSHORTNAMES"))
+    winDatePickSetOrderAttrib(ih, "DMY");
 
   return IUP_NOERROR;
 }
@@ -262,11 +265,11 @@ Iclass* iupDatePickNewClass(void)
 
   iupClassRegisterAttribute(ic, "SEPARATOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "/", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ZEROPRECED", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ORDER", NULL, winDatePickSetOrderAttrib, "DMY", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ORDER", NULL, winDatePickSetOrderAttrib, IUPAF_SAMEASSYSTEM, "DMY", IUPAF_NO_INHERIT);
 
   /* Windows Only */
   iupClassRegisterAttribute(ic, "MONTHSHORTNAMES", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORMAT", NULL, winDatePickSetFormatAttrib, IUPAF_SAMEASSYSTEM, "d/M/yyyy", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMAT", NULL, winDatePickSetFormatAttrib, "d'/'M'/'yyyy", NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CALENDARWEEKNUMBERS", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 

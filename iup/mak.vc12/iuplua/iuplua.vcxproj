@@ -96,10 +96,12 @@
     <ClCompile Include="..\..\srclua5\elem\il_animatedlabel.c" />
     <ClCompile Include="..\..\srclua5\elem\il_backgroundbox.c" />
     <ClCompile Include="..\..\srclua5\elem\il_button.c" />
+    <ClCompile Include="..\..\srclua5\elem\il_calendar.c" />
     <ClCompile Include="..\..\srclua5\elem\il_canvas.c" />
     <ClCompile Include="..\..\srclua5\elem\il_cbox.c" />
     <ClCompile Include="..\..\srclua5\elem\il_clipboard.c" />
     <ClCompile Include="..\..\srclua5\elem\il_colordlg.c" />
+    <ClCompile Include="..\..\srclua5\elem\il_datepick.c" />
     <ClCompile Include="..\..\srclua5\elem\il_detachbox.c" />
     <ClCompile Include="..\..\srclua5\elem\il_dialog.c" />
     <ClCompile Include="..\..\srclua5\elem\il_expander.c" />
@@ -155,10 +157,12 @@
     <None Include="..\..\srclua5\elem\animatedlabel.lua" />
     <None Include="..\..\srclua5\elem\backgroundbox.lua" />
     <None Include="..\..\srclua5\elem\button.lua" />
+    <None Include="..\..\srclua5\elem\calendar.lua" />
     <None Include="..\..\srclua5\elem\canvas.lua" />
     <None Include="..\..\srclua5\elem\cbox.lua" />
     <None Include="..\..\srclua5\elem\clipboard.lua" />
     <None Include="..\..\srclua5\elem\colordlg.lua" />
+    <None Include="..\..\srclua5\elem\datepick.lua" />
     <None Include="..\..\srclua5\elem\detachbox.lua" />
     <None Include="..\..\srclua5\elem\dialog.lua" />
     <None Include="..\..\srclua5\elem\expander.lua" />

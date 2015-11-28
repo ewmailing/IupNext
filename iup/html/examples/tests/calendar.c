@@ -12,19 +12,24 @@ static int value_cb(Ihandle* ih)
 
 static int set_value(Ihandle* ih)
 {
-  IupSetAttribute(IupGetBrother(ih), "VALUE", "11/07/1970");
-  IupSetAttribute(IupGetBrother(IupGetBrother(ih)), "VALUE", "11/07/1970");
+  IupSetAttribute(IupGetBrother(ih), "VALUE", "1970/07/11");
+  IupSetAttribute(IupGetBrother(IupGetBrother(ih)), "VALUE", "1970/07/11");
   return IUP_DEFAULT;
 }
 
 void CalendarTest(void)
 {
-  Ihandle *dlg, *box;
+  Ihandle *dlg, *box, *date;
+
+  date = IupDatePick();
+//  IupSetAttribute(date, "FORMAT", "ddd', 'd' of 'MMMM' ('yy')'");
+  IupSetAttribute(date, "ZEROPRECED", "Yes");
+  IupSetAttribute(date, "MONTHSHORTNAMES", "Yes");
 
   box = IupVbox(
     IupSetCallbacks(IupButton("Set Value", NULL), "ACTION", set_value, NULL),
-    IupSetAttributes(IupSetCallbacks(IupCalendar(), "VALUECHANGED_CB", value_cb, NULL), "BACKCOLOR=\"128 0 32\", BORDER=10"),
-    IupSetAttributes(IupSetCallbacks(IupDatePick(), "VALUECHANGED_CB", value_cb, NULL), "ZEROPRECED=Yes, XMONTHSHORTNAMES=Yes"),
+    IupSetCallbacks(IupCalendar(), "VALUECHANGED_CB", value_cb, NULL),
+    IupSetCallbacks(date, "VALUECHANGED_CB", value_cb, NULL),
     NULL);
     IupSetAttribute(box, "MARGIN", "10x10");
   IupSetAttribute(box, "GAP", "10");
