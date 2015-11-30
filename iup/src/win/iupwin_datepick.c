@@ -29,6 +29,9 @@
 #include "iupwin_str.h"
 #include "iupwin_info.h"
 
+#ifndef DTM_FIRST
+#define DTM_FIRST        0x1000
+#endif
 
 #ifndef DTM_SETMCSTYLE
 #define DTM_SETMCSTYLE   (DTM_FIRST + 11)
