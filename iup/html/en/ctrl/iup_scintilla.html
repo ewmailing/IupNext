@@ -534,15 +534,14 @@ MARKERPREVIOUSid or MARKERLINEFROMHANDLE attributes.</p>
 	Default: "YES". For all systems, when SCROLLBAR is NO, the natural size will 
 always include its size even if the native system hides the scrollbar.</p>
 
-<p><strong>SCROLLTO</strong> (<font size="3">non inheritable, write only</font>): 
-Scroll the text to make the given position visible. It uses the same format and 
-reference of the <a href="#CARET">CARET</a> attribute ("lin,col&quot; starting at 0).</p>
+<p><strong>SCROLLBY</strong> (<font size="3">non inheritable, write only</font>): 
+Scroll the text by the given offsets in the format &quot;lin,col&quot;. <span>Positive lin 
+values increase the line number at the top of the screen (i.e. they move the 
+text upwards). Positive col values increase the column at the left edge of the 
+view (i.e. they move the text leftwards). </span>(since 3.17)</p>
 <p><strong>SCROLLTOCARET</strong> (<font size="3">non inheritable, write only</font>): 
 Scroll the text to make the caret position visible.</p>
 
-<p><strong>SCROLLTOPOS</strong> (<font size="3">non inheritable, write only</font>): 
-Scroll the text to make the given position visible. It uses the same format and 
-reference of the <a href="#CARETPOS">CARETPOS</a> attribute (&quot;pos&quot; starting at 0).</p>
 <p><strong>SCROLLWIDTH</strong> (<font size="3">non inheritable): controls the 
 document width in pixels. Default: 2000.</font></p>
 
