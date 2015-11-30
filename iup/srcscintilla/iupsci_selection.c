@@ -66,6 +66,62 @@ SCI_MOVESELECTEDLINESUP
 SCI_MOVESELECTEDLINESDOWN
 */
 
+static char* iScintillaGetCaretStyleAttrib(Ihandle* ih)
+{
+  int style = IupScintillaSendMessage(ih, SCI_GETCARETSTYLE, 0, 0);
+  if (style == CARETSTYLE_INVISIBLE)
+    return "INVISIBLE";
+  else if (style == CARETSTYLE_BLOCK)
+    return "BLOCK";
+  else
+    return "LINE";
+}
+
+static int iScintillaSetCaretStyleAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "INVISIBLE"))
+    IupScintillaSendMessage(ih, SCI_SETCARETSTYLE, CARETSTYLE_INVISIBLE, 0);
+  else if (iupStrEqualNoCase(value, "BLOCK"))
+    IupScintillaSendMessage(ih, SCI_SETCARETSTYLE, CARETSTYLE_BLOCK, 0);
+  else if (iupStrEqualNoCase(value, "LINE"))
+    IupScintillaSendMessage(ih, SCI_SETCARETSTYLE, CARETSTYLE_LINE, 0);
+  return 0;
+}
+
+static char* iScintillaGetCaretWidthAttrib(Ihandle* ih)
+{
+  int width = IupScintillaSendMessage(ih, SCI_GETCARETWIDTH, 0, 0);
+  return iupStrReturnInt(width);
+}
+
+static int iScintillaSetCaretWidthAttrib(Ihandle* ih, const char* value)
+{
+  int width;
+  if (iupStrToInt(value, &width))
+    IupScintillaSendMessage(ih, SCI_SETCARETWIDTH, width, 0);
+  return 0;
+}
+
+static char* iScintillaGetCaretColorAttrib(Ihandle* ih)
+{
+  unsigned char r, g, b;
+  long color = IupScintillaSendMessage(ih, SCI_GETCARETFORE, 0, 0);
+  iupScintillaDecodeColor(color, &r, &g, &b);
+  return iupStrReturnRGB(r, g, b);
+}
+
+static int iScintillaSetCaretColorAttrib(Ihandle* ih, const char* value)
+{
+  unsigned char r, g, b;
+  if (iupStrToRGB(value, &r, &g, &b))
+    IupScintillaSendMessage(ih, SCI_SETCARETFORE, iupScintillaEncodeColor(r, g, b), 0);
+  return 0;
+}
+
+
+/*******************************************************************************************/
+
+
 static char* iScintillaGetCurrentLineAttrib(Ihandle* ih)
 {
   int textLen = IupScintillaSendMessage(ih, SCI_GETCURLINE, 0, 0);
@@ -256,7 +312,11 @@ static char* iScintillaGetVisibleLinesCountAttrib(Ihandle* ih)
 
 void iupScintillaRegisterSelection(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic, "CARET", iScintillaGetCaretAttrib, iScintillaSetCaretAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETSTYLE", iScintillaGetCaretStyleAttrib, iScintillaSetCaretStyleAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETWIDTH", iScintillaGetCaretWidthAttrib, iScintillaSetCaretWidthAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETCOLOR", iScintillaGetCaretColorAttrib, iScintillaSetCaretColorAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "CARET", iScintillaGetCaretAttrib, iScintillaSetCaretAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CARETPOS", iScintillaGetCaretPosAttrib, iScintillaSetCaretPosAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_SAVE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CARETTOVIEW", NULL, iScintillaSetCaretToViewAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COUNT", iScintillaGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);

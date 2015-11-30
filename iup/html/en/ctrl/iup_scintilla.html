@@ -330,6 +330,14 @@ selection, sets the caret at pos and scrolls the view to make the caret visible,
 if necessary.</p>
 <p><strong>CARETTOVIEW</strong> (<font size="3">non inheritable, write only</font>): 
 Moves the caret to the nearest visible line.&nbsp;Any selection is lost.</p>
+<p><strong>CARETCOLOR</strong> (<font size="3">non inheritable</font>): color of 
+the caret. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>. (since 3.17)</p>
+<p><strong>CARETSTYLE</strong> (<font size="3">non inheritable</font>): style of 
+the caret. Can be LINE, BLOCK or INVISIBLE. Default: LINE. (since 3.17)</p>
+<p><strong>CARETWIDTH</strong> (<font size="3">non inheritable</font>): with of 
+the caret line. Can be 0, 1, 2 or 3 pixels. Default: 1. Works only when 
+CARETSTYLE=LINE. A size of 0 will make the caret invisible also. (since 3.17)</p>
 
   
 <p><strong>SELECTEDTEXT</strong> (<font size="3">non inheritable</font>):

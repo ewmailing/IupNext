@@ -23,6 +23,6 @@ IUP = ../../..
 PROJDIR = ../../..
 
 #USE_CD = Yes
-SRC += flatbutton.c
-LIBS += iupimglib
+#LIBS += iupimglib
+SRC += sample.c
 
