@@ -167,7 +167,8 @@ s</strong>
 (since 3.3)<br>
 <strong>t</strong> = separator 
         (shows a horizontal line separator label, in this case text can be an empty string, 
-not included in parameter count)<br>
+not included in parameter count)<br><strong>d</strong> = string, but the 
+interface uses a IupDatePick element to select a date (since 3.17)<br>
 <strong>f</strong> = string (same as <strong>s</strong>, but also show a button 
 to open a file selection dialog box)<br>
 <strong>c</strong> = string (same as <strong>s</strong>, but also show a color button 
@@ -239,6 +240,8 @@ and 512 for other strings.</p>
 <p>There is no extra parameters for the color string. The mask is automatically 
 set to capture 3 or 4 unsigned integers from 0 to 255 (R G B) or (R G B A) 
 (alpha is optional).</p>
+<p>The date extra parameters are simply IupDatePick attributes in a single 
+string for <strong>IupSetAttributes</strong> usage. (since 3.17)</p>
 <p>The dialog is resizable if it contains a string, a multiline string or a 
   number with a valuator. All the multiline strings will increase size equally in both directions.</p>
 <p>When the "s" type is used the size can be controlled using the VISIBLECOLUMNS 
@@ -261,7 +264,7 @@ IupGetParam</strong> format specification: </p>
 <p><strong>TITLE</strong>: text of the parameter, used as label.<br><strong>
 INDENT</strong>: number of indentation levels.<br>
 --------------------------------------------------------<br><strong>
-TYPE</strong>: can be BOOLEAN, LIST, OPTIONS, REAL, STRING, INTEGER, FILE, 
+TYPE</strong>: can be BOOLEAN, LIST, OPTIONS, REAL, STRING, INTEGER, DATE, FILE, 
 COLOR, SEPARATOR, BUTTONNAMES and HANDLE. And describe the type of the 
 parameter.<br><strong>DATATYPE</strong>: can be INT (int), FLOAT (float), DOUBLE 
 (double), STRING (char*), HANDLE (Ihandle*) or NONE (when buttons and separators 
