@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void SimplePaintSplash(const char* argv0);
+void SimplePaintSplash(const char* exe_filename);
 
 int main(int argc, char **argv)
 {
@@ -15,7 +15,7 @@ int main(int argc, char **argv)
   IupSetGlobal("IMAGEAUTOSCALE", "DPI");
   IupSetGlobal("IMAGESDPI", "96"); /* not necessary, this is already the default value */
 
-  SimplePaintSplash(argv[0]);
+  SimplePaintSplash(IupGetGlobal("EXEFILENAME"));
 
   SimplePaint app;
 

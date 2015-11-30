@@ -284,8 +284,9 @@ an <strong>IupImage</strong> ready for IUP controls. The problem is that we now
 have to distribute our application with the logo file, and in run time locate 
 that file for loading. There are many strategies to do that, we decided that our 
 logo will be located in the same folder of the executable or in the parent 
-folder, so we use the <strong>main</strong> function argument &quot;<strong>argv</strong>[0]&quot; 
-that contains the executable file name. From it we extract the path where it is 
+folder, so we use the global attribute &quot;EXEFILENAME&quot; 
+that contains the executable file name with full path (notice that the <strong>main</strong> function argument &quot;<strong>argv</strong>[0]&quot; 
+not always contains the full path). From it we extract the path where it is 
 located so we can concatenate with the logo file name. If the file is not found 
 the splash is simply not shown.</p>
 

@@ -60,11 +60,11 @@ static void SplashShowDlg(const char* image)
     IupLoopStep();
 }
 
-void SimplePaintSplash(const char* argv0)
+void SimplePaintSplash(const char* exe_filename)
 {
   /* Look for the image file on the same folder of the executable 
      or in the folder above. */
-  char* file_path = str_filepath(argv0);
+  char* file_path = str_filepath(exe_filename);
   char filename[10240];
   Ihandle* image;
 
