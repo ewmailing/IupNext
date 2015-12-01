@@ -421,23 +421,29 @@ int iupMatrixEditShowXY(Ihandle* ih, int x, int y)
   IupStoreAttribute(ih->data->datah, "FGCOLOR", iupMatrixGetFgColorStr(ih, ih->data->edit_lin, ih->data->edit_col));
   IupSetAttribute(ih->data->datah, "FONT", iupMatrixGetFont(ih, ih->data->edit_lin, ih->data->edit_col));
 
-  mask = IupGetAttributeId2(ih, "MASK", ih->data->edit_lin, ih->data->edit_col);
+  mask = iupMatrixGetMaskStr(ih, "MASK", ih->data->edit_lin, ih->data->edit_col);
   if (mask)
   {
-    IupSetAttribute(ih->data->datah, "MASKCASEI", IupGetAttributeId2(ih, "MASKCASEI", ih->data->edit_lin, ih->data->edit_col));
-    IupSetAttribute(ih->data->datah, "MASKNOEMPTY", IupGetAttributeId2(ih, "MASKNOEMPTY", ih->data->edit_lin, ih->data->edit_col));
+    IupSetAttribute(ih->data->datah, "MASKCASEI", iupMatrixGetMaskStr(ih, "MASKCASEI", ih->data->edit_lin, ih->data->edit_col));
+    IupSetAttribute(ih->data->datah, "MASKNOEMPTY", iupMatrixGetMaskStr(ih, "MASKNOEMPTY", ih->data->edit_lin, ih->data->edit_col));
     IupSetAttribute(ih->data->datah, "MASK", mask);
   }
   else
   {
-    mask = IupGetAttributeId2(ih, "MASKINT", ih->data->edit_lin, ih->data->edit_col);
+    mask = iupMatrixGetMaskStr(ih, "MASKINT", ih->data->edit_lin, ih->data->edit_col);
     if (mask)
+    {
+      IupSetAttribute(ih->data->datah, "MASKNOEMPTY", iupMatrixGetMaskStr(ih, "MASKNOEMPTY", ih->data->edit_lin, ih->data->edit_col));
       IupSetAttribute(ih->data->datah, "MASKINT", mask);
+    }
     else
     {
-      mask = IupGetAttributeId2(ih, "MASKFLOAT", ih->data->edit_lin, ih->data->edit_col);
+      mask = iupMatrixGetMaskStr(ih, "MASKFLOAT", ih->data->edit_lin, ih->data->edit_col);
       if (mask)
+      {
+        IupSetAttribute(ih->data->datah, "MASKNOEMPTY", iupMatrixGetMaskStr(ih, "MASKNOEMPTY", ih->data->edit_lin, ih->data->edit_col));
         IupSetAttribute(ih->data->datah, "MASKFLOAT", mask);
+      }
       else
         IupSetAttribute(ih->data->datah, "MASK", NULL);
     }

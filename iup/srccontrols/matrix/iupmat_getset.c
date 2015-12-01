@@ -565,6 +565,19 @@ void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
   }
 }
 
+char* iupMatrixGetMaskStr(Ihandle* ih, const char* name, int lin, int col)
+{
+  char* value = iupAttribGetId2(ih, name, lin, col);
+  if (!value)
+  {
+    value = iupAttribGetId2(ih, name, lin, IUP_INVALID_ID);
+    if (!value)
+      value = iupAttribGetId2(ih, name, IUP_INVALID_ID, col);
+  }
+
+  return value;
+}
+
 char* iupMatrixGetFont(Ihandle* ih, int lin, int col)
 {
   char* font = NULL;
