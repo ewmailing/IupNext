@@ -218,7 +218,8 @@ static int iMatrixEditCallDropdownCb(Ihandle* ih, int lin, int col)
     if (!value) value = "";
 
     IupStoreAttribute(ih->data->droph, "PREVIOUSVALUE", value);
-    IupSetAttribute(ih->data->droph, "VALUE", "1");
+    if (!IupGetInt(ih->data->droph, "EDITBOX"))
+      IupSetAttribute(ih->data->droph, "VALUE", "1");
 
     ret = cb(ih, ih->data->droph, lin, col);
     if(ret == IUP_DEFAULT)
@@ -661,7 +662,12 @@ static int iMatrixEditDropDownKeyAny_CB(Ihandle* ih_list, int c)
 char* iupMatrixEditGetValue(Ihandle* ih)
 {
   if (ih->data->datah == ih->data->droph)
-    return IupGetAttribute(ih->data->datah, IupGetAttribute(ih->data->droph, "VALUE"));
+  {
+    if (!IupGetInt(ih->data->droph, "EDITBOX"))
+      return IupGetAttribute(ih->data->datah, IupGetAttribute(ih->data->droph, "VALUE"));
+    else
+      return IupGetAttribute(ih->data->droph, "VALUE");
+  }
   else
     return IupGetAttribute(ih->data->datah, "VALUE");
 }
