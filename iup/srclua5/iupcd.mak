@@ -35,6 +35,7 @@ LIBNAME := $(LIBNAME)$(LUASFX)
 LIBS = iuplua$(LUASFX)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  USE_IUPLUA:=
   LIBS:=
   USE_CDLUA:=
 endif

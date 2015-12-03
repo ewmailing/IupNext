@@ -54,5 +54,6 @@ $(GC) : gl/il_%.c : gl/%.lua generator.lua
 SRC := gl/iuplua_glcontrols.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  USE_IUPLUA:=
   LIBS:=iupglcontrols
 endif

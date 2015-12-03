@@ -51,5 +51,6 @@ $(GC) : ctrl/il_%.c : ctrl/%.lua generator.lua
 SRC	= ctrl/iuplua_glcanvas.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  USE_IUPLUA:=
   LIBS:=iupgl
 endif
