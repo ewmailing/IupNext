@@ -666,7 +666,13 @@ static char* gtkTextGetCountAttrib(Ihandle* ih)
     count = gtk_text_buffer_get_char_count(buffer);
   }
   else
+  {
+#if GTK_CHECK_VERSION(2, 14, 0)
     count = gtk_entry_get_text_length(GTK_ENTRY(ih->handle));
+#else
+    count = strlen(gtk_entry_get_text(GTK_ENTRY(ih->handle)));
+#endif
+  }
   return iupStrReturnInt(count);
 }
 
