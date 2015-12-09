@@ -15,8 +15,7 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);
 
   /* Executes IupAlarm */
-  switch (IupAlarm ("IupAlarm Example",
-    "File not saved! Save it now?", "Yes", "No", "Cancel"))
+  switch (IupAlarm ("IupAlarm Example", "File not saved! Save it now?", "Yes", "No", "Cancel"))
   {
     /* Shows a message for each selected button */
     case 1:
