@@ -29,7 +29,8 @@ static int iAnimatedLabelTimer_CB(Ihandle* timer)
 
   if (ih->handle && !iupdrvIsVisible(ih))
   {
-    IupSetAttribute(timer, "RUN", "NO");
+    if (iupAttribGetBoolean(ih, "STOPWHENHIDDEN"))
+      IupSetAttribute(timer, "RUN", "NO");
     return IUP_DEFAULT;
   }
 
@@ -213,7 +214,8 @@ Iclass* iupAnimatedLabelNewClass(void)
   iupClassRegisterAttribute(ic, "FRAMECOUNT", iAnimatedLabelGetFrameCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANIMATION", iAnimatedLabelGetAnimationAttrib, iAnimatedLabelSetAnimationAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ANIMATION_HANDLE", iAnimatedLabelGetAnimationHandleAttrib, iAnimatedLabelSetAnimationHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_IHANDLE | IUPAF_NO_STRING);
-  
+  iupClassRegisterAttribute(ic, "STOPWHENHIDDEN", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
   return ic;
 }
 
