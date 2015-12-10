@@ -405,13 +405,13 @@ char* iupDialogGetChildIdStr(Ihandle* ih)
   return iupStrReturnStrf("iup-%s-%d", ih->iclass->name, dialog->data->child_id);
 }
 
-static void iDialogListCheckLastVisible()
+static void iDialogListCheckLastVisible(int was_modal)
 {
   if (iupDlgListVisibleCount() <= 0)
   {
     /* if this is the last window visible,
     exit message loop except when LOCKLOOP==YES */
-    if (!iupStrBoolean(IupGetGlobal("LOCKLOOP")))
+    if (!was_modal && !iupStrBoolean(IupGetGlobal("LOCKLOOP")))
     {
       IupExitLoop();
     }
@@ -471,11 +471,16 @@ static void iDialogModalLoop(Ihandle* ih)
   hide the dialog if still visible. */
   if (iupObjectCheck(ih))
   {
+    iupAttribSet(ih, "_IUP_WAS_MODAL", "1");
+
     iDialogUnSetModal(ih);
     iupDialogHide(ih);
+
+    if (iupObjectCheck(ih))
+      iupAttribSet(ih, "_IUP_WAS_MODAL", NULL);
   }
   else
-    iDialogListCheckLastVisible();
+    iDialogListCheckLastVisible(1);
 }
 
 int iupDialogPopup(Ihandle* ih, int x, int y)
@@ -527,6 +532,8 @@ int iupDialogShowXY(Ihandle* ih, int x, int y)
 
 void iupDialogHide(Ihandle* ih)
 {
+  int was_modal = iupAttribGet(ih, "_IUP_WAS_MODAL") != NULL;
+
   /* hidden at the system and marked hidden in IUP */
   if (!iupdrvDialogIsVisible(ih) && ih->data->show_state == IUP_HIDE) 
     return;
@@ -537,6 +544,7 @@ void iupDialogHide(Ihandle* ih)
   /* if called IupHide for a Popup window */
   if (iupAttribGetBoolean(ih, "MODAL"))
   {
+    was_modal = 1;
     iDialogUnSetModal(ih);
     IupExitLoop();
   }
@@ -554,7 +562,7 @@ void iupDialogHide(Ihandle* ih)
   /* process flush and process show_cb */
   iDialogAfterHide(ih);
 
-  iDialogListCheckLastVisible();
+  iDialogListCheckLastVisible(was_modal);
 }
 
 
