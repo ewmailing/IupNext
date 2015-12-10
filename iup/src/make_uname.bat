@@ -123,7 +123,7 @@ call make_uname dll12_64 %2 %3 %4 %5 %6
 call make_uname dll14 %2 %3 %4 %5 %6
 call make_uname dll14_64 %2 %3 %4 %5 %6
 call make_uname dllw4 %2 %3 %4 %5 %6
-REM call make_uname dllw4_64 %2 %3 %4 %5 %6
+call make_uname dllw4_64 %2 %3 %4 %5 %6
 goto fim
 
 :all_beta
@@ -144,7 +144,7 @@ goto fim
 
 :all_gcc_dll
 call make_uname dllw4 %2 %3 %4 %5 %6
-REM call make_uname dllw4_64 %2 %3 %4 %5 %6
+call make_uname dllw4_64 %2 %3 %4 %5 %6
 goto fim
 
 :fim
