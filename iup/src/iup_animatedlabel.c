@@ -168,22 +168,15 @@ static int iAnimatedLabelCreateMethod(Ihandle* ih, void** params)
   iupAttribSet(ih, "_IUP_ANIMATEDLABEL_TIMER", (char*)timer);
 
   if (params && params[0])
-  {
     iAnimatedLabelSetAnimationHandleAttrib(ih, (char*)(params[0]));
-  }
 
   return IUP_NOERROR;
 }
 
 static void iAnimatedLabelDestroyMethod(Ihandle* ih)
 {
-  Ihandle* animation = (Ihandle*)iupAttribGet(ih, "_IUP_ANIMATEDLABEL_ANIMATION");
   Ihandle* timer = (Ihandle*)iupAttribGet(ih, "_IUP_ANIMATEDLABEL_TIMER");
-  
   IupDestroy(timer);
-
-  if (animation)
-    IupDestroy(animation);
 }
 
 
