@@ -1,8 +1,8 @@
 CC=gcc
 CFLAGS=-O -g -Wall
 LIBS=-liupimglib -liup
-INCS=-I../../../iup/include
-LDIR=-L../../../iup/lib/$TEC_UNAME
+INCS=-I../../../include
+LDIR=-L../../../lib/${TEC_UNAME}
 
 all: example2_1 example2_2 example2_3 example2_4 example2_5 example3_1 example3_2 example3_3 example3_4 example3_5 example3_6 example3_7 example3_8
 

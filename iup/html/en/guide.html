@@ -145,14 +145,9 @@ linker call (in the same order):</p>
 <pre><b>-lgtk-x11-2.0 -lgdk-x11-2.0</b> -lgdk_pixbuf-2.0 <b>-lpangox-1.0</b> -lpango-1.0 -lgobject-2.0 -lgmodule-2.0 -lglib-2.0 -lXext -lX11 -lm  (for GTK 2)
 or
 <b>-lgtk-3 gdk-3</b> -lgdk_pixbuf-2.0 <b>-lpangocairo-1.0</b> -lpango-1.0 <strong>-lcairo</strong>   -lgobject-2.0 -lgmodule-2.0 -lglib-2.0 -lXext -lX11 -lm  (for GTK 3)</pre>
-<p>In UNIX the following INCLUDES paths are necessary:</p>
-<pre>/usr/include/atk-1.0 /usr/include/gtk-2.0 /usr/include/cairo /usr/include/pango-1.0 /usr/include/glib-2.0 
-and eventually:   /usr/lib/glib-2.0/include /usr/lib/gtk-2.0/include
-             or   /usr/lib64/glib-2.0/include /usr/lib64/gtk-2.0/include</pre>
 <p>&nbsp;A simpler way to obtain GTK parameters for static linking is to use the
 <strong>pkg-config</strong> tool:</p>
-<pre>INCLUDES += $(shell pkg-config --cflags gtk+-2.0 gdk-2.0)
-LIBS += $(shell pkg-config --libs gtk+-2.0 gdk-2.0)</pre>
+<pre>LIBS += $(shell pkg-config --libs gtk+-2.0 gdk-2.0)</pre>
 <p>See more information in the <a href="drv/gtk.html">GTK System Driver</a>.</p>
 <h4>Multithread</h4>
 <p>User interface is usually not thread safe and IUP is not thread safe. The 

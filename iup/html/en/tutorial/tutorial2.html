@@ -67,7 +67,7 @@ library that is not installed on the system) demands that you specify where the
 link with the iup library. In order to do that in a single command line for our first example is as follows:
 </p>
 
-<pre class="example">gcc -I/tecgraf/iup/include -L/tecgraf/iup/lib -liup -o example2_1 example2_1.c</pre>
+<pre class="example">gcc -o example2_1 example2_1.o -liupimglib -liup -L../../../lib/$TEC_UNAME</pre>
 
 <p> For programs containing several modules we suggest building a makefile (See 
 here how to build one: <a href="http://mrbook.org/blog/tutorials/make/">makefile tutorial</a>). 
