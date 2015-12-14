@@ -66,7 +66,11 @@ int luaopen_iupluaimglib(lua_State* L);
 
 static void iuplua_openlibs(lua_State *L) 
 {
+#if LUA_VERSION_NUM < 502
+  lua_pushliteral(L, LUA_RELEASE "  " LUA_COPYRIGHT);
+#else
   lua_pushliteral(L, LUA_COPYRIGHT);
+#endif
   lua_setglobal(L, "_COPYRIGHT");  /* set global _COPYRIGHT */
 
   /* iuplua initialization */
