@@ -45,6 +45,7 @@ static int gtkFontDlgPopup(Ihandle* ih, int x, int y)
   standardfont = iupAttribGet(ih, "VALUE");
   if (!standardfont)
     standardfont = IupGetGlobal("DEFAULTFONT");
+
 #if GTK_CHECK_VERSION(3, 2, 0)
   gtk_font_chooser_set_font(GTK_FONT_CHOOSER(dialog), standardfont);
 #else

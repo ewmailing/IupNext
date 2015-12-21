@@ -100,10 +100,38 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
 
   standardfont = iupAttribGet(ih, "VALUE");
   if (!standardfont)
-    standardfont = IupGetGlobal("DEFAULTFONT");
+  {
+    if (!iupGetFontInfo(IupGetGlobal("DEFAULTFONT"), typeface, &height, &is_bold, &is_italic, &is_underline, &is_strikeout))
+      return IUP_ERROR;
+  }
+  else
+  {
+    if (!iupGetFontInfo(standardfont, typeface, &height, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    {
+      char def_typeface[50] = "";
+      int def_height = 8;
+      int def_is_bold = 0,
+        def_is_italic = 0,
+        def_is_underline = 0,
+        def_is_strikeout = 0;
 
-  if (!iupGetFontInfo(standardfont, typeface, &height, &is_bold, &is_italic, &is_underline, &is_strikeout))
-    return IUP_ERROR;
+      if (!iupGetFontInfo(IupGetGlobal("DEFAULTFONT"), def_typeface, &def_height, &def_is_bold, &def_is_italic, &def_is_underline, &def_is_strikeout))
+        return IUP_ERROR;
+
+      if (typeface[0] == 0)
+        strcpy(typeface, def_typeface);
+      if (height == 0)
+        height = def_height;
+      if (is_bold == 0)
+        is_bold = def_is_bold;
+      if (is_italic == 0)
+        is_italic = def_is_italic;
+      if (is_underline == 0)
+        is_underline = def_is_underline;
+      if (is_strikeout == 0)
+        is_strikeout = def_is_strikeout;
+    }
+  }
 
   /* Map standard names to native names */
   mapped_name = iupFontGetWinName(typeface);
