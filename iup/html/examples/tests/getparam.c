@@ -69,7 +69,7 @@ void GetParamTest(void)
                    "&Boolean:%b[No,Yes]\n"
                    "&Integer:%i\n"
                    "Real 1:%r\n"
-                   "Sep1 %t\n"
+                   "%t\n"
                    "Integer:%i[0,255]\n"
                    "Real 2:%r[-1.5,1.5,0.05]\n"
                    "Sep2 %t\n"

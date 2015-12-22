@@ -561,9 +561,12 @@ static int iParamDestroy_CB(Ihandle* self)
 static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
 {
   Ihandle *box, *ctrl = NULL, *label;
+  char* title = iupAttribGet(param, "TITLE");
 
-  label = IupLabel(iupAttribGet(param, "TITLE"));
+  label = IupLabel(title);
   IupSetCallback(label, "DESTROY_CB", iParamDestroy_CB);
+  if (!title || title[0] == 0)
+    IupSetAttribute(label, "VISIBLE", "NO");
 
   if (iupStrEqual(type, "SEPARATOR"))
   {
