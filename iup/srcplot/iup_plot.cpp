@@ -827,13 +827,17 @@ static int iPlotProperties_CB(Ihandle* ih_item)
 static int iPlotDatasetProperties_CB(Ihandle* ih_item)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
-  char* ds_name = IupGetAttribute(ih_item, "DS_NAME");
+  int ds = IupGetInt(ih_item, "DS");
   char name[100];
+
+  IupSetInt(ih, "CURRENT", ds);
+
+  char* ds_name = IupGetAttribute(ih, "DS_NAME");
   strcpy(name, ds_name);
 
-  IupSetStrAttribute(ih, "CURRENT", ds_name);
-
   const char* ds_color = IupGetAttribute(ih, "DS_COLOR");
+  if (!ds_color)
+    ds_color = ds_color;
   char color[30];
   strcpy(color, ds_color);
 
@@ -861,8 +865,7 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
     "_@IUP_MARKSTYLE%l|_@IUP_PLUS|_@IUP_STAR|_@IUP_CIRCLE|_@IUP_X|_@IUP_BOX|_@IUP_DIAMOND|_@IUP_HOLLOW_CIRCLE|_@IUP_HOLLOW_BOX|_@IUP_HOLLOW_DIAMOND|\n"
     "_@IUP_MARKSIZE%i[1,,]\n";
 
-  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", NULL, NULL, format,
-    name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize, NULL))
+  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", NULL, NULL, format, name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize, NULL))
     return IUP_DEFAULT;
 
   IupSetStrAttribute(ih, "DS_NAME", name);
@@ -928,7 +931,7 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
     const char* strX;
     if (ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample, rx, ry, strX))
     {
-      IupSetStrAttribute(item, "DS_NAME", ds_name);
+      IupSetInt(item, "DS", ds);
       IupSetAttribute(item, "ACTIVE", "YES");
     }
     else
