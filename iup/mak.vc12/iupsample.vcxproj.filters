@@ -213,9 +213,6 @@
     <ClCompile Include="..\html\examples\LED\gauge.c">
       <Filter>LED\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\html\examples\LED\matrix.c">
-      <Filter>LED\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\html\examples\LED\tabs.c">
       <Filter>LED\src</Filter>
     </ClCompile>

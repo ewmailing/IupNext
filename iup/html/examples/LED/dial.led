@@ -27,19 +27,16 @@ dlg = DIALOG[TITLE="IupDial", RESIZE=NO]
   (
     HBOX[ALIGNMENT=ACENTER]
     (
-      FILL(),
       dial_v,
       lbl_v
     ),
     HBOX[ALIGNMENT=ACENTER]
     (
-      FILL(),
       dial_h,
       lbl_h
     ),
     HBOX[ALIGNMENT=ACENTER]
     (
-      FILL(),
       dial_c,
       lbl_c
     )

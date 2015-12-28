@@ -24,7 +24,7 @@ PROJDIR = ../../..
 
 #DBG = Yes
 
-SRC = alarm.c
+#SRC = alarm.c
 #SRC = button.c
 #SRC = dialog1.c
 #SRC = dialog2.c
@@ -93,9 +93,9 @@ ifdef IUPWEB_SAMPLE
   endif
 endif
 
-#USE_IUPCONTROLS = Yes
+USE_IUPCONTROLS = Yes
 #SRC = canvas3.c
-#SRC = cbox.c
+SRC = cbox.c
 #SRC = cells_checkboard.c
 #SRC = cells_degrade.c
 #SRC = cells_numbering.c

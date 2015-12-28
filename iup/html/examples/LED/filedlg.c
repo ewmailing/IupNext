@@ -9,7 +9,7 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);
   
   /* Loads LED file */
-  error = IupLoad("iupfiledlg.led");
+  error = IupLoad("filedlg.led");
   if (error)
   {
     IupMessage("LED error", error);

@@ -3,8 +3,10 @@
 
 int toggle1cb(Ihandle *self, int v)
 {
-  if(v == 1)IupMessage("Toggle 1","pressed"); 
-    else IupMessage("Toggle 1","released"); 
+  if (v == 1)
+    IupMessage("Toggle 1","pressed"); 
+  else 
+    IupMessage("Toggle 1","released"); 
 
   return IUP_DEFAULT;
 }
@@ -17,7 +19,7 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);
 
   /* Loads LED */
-  error = IupLoad("iuptoggle.led");
+  error = IupLoad("toggle.led");
   if (error)
   {
     IupMessage("LED error", error);
@@ -35,8 +37,6 @@ int main(int argc, char **argv)
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER); 
   IupMainLoop();
   IupDestroy(dlg);
-  IupDestroy(IupGetHandle ("img1")); 
-  IupDestroy(IupGetHandle ("img2")); 
   IupClose();
 
   return 0 ;

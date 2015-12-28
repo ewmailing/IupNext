@@ -7,64 +7,57 @@
 /* global variables that store handles used by the idle function */
 Ihandle *dlg=NULL;
 Ihandle *gauge=NULL;
+Ihandle *timer=NULL;
 
-/* speed with which the progress indicator advances */
-double velocidade = 0.001 ;
-
-/* idle callback */
-int idle_cb(void)
+/* timer callback */
+int time_cb(void)
 {
   char newvalue[40];
-  double value = IupGetFloat(gauge, "VALUE") ;
-  value+=velocidade ;
-  if(value < 0.0) value = 0.0 ;
-  if(value > 1.0) value = 1.0 ;
-  sprintf(newvalue, "%.7f",value) ;
-  IupSetAttribute(gauge, "VALUE", newvalue) ;
-
-  return IUP_DEFAULT ;
+  double value = IupGetFloat(gauge, "VALUE");
+  value += 0.01;
+  if(value > 1.0) value = 0;
+  sprintf(newvalue, "%.7f",value);
+  IupSetAttribute(gauge, "VALUE", newvalue);
+  return IUP_DEFAULT;
 }
 
 /* pause button callback */
 int pausa_cb(void)
 {
-  if(IupGetFunction("IDLE_ACTION") == NULL)
-  {
-    // set idle callback 
-    IupSetFunction("IDLE_ACTION", (Icallback) idle_cb);
-  }
+  if (IupGetInt(timer, "RUN"))
+    IupSetAttribute(timer, "RUN", "NO");
   else
-  {
-    // reset idle callback 
-    IupSetFunction("IDLE_ACTION", NULL);
-  }
-  return IUP_DEFAULT ;
+    IupSetAttribute(timer, "RUN", "YES");
+  return IUP_DEFAULT;
 }
 
 /* start button callback */
 int inicio_cb(void)
 {
-  IupSetAttribute(gauge, "VALUE", "0") ;
-	
-  return IUP_DEFAULT ;
+  IupSetAttribute(gauge, "VALUE", "0");
+  return IUP_DEFAULT;
 }
 
 /* accelerate button callback */
 int acelera_cb(void)
 {
-  velocidade += 0.0001 ;
-  if(velocidade > 1.0)velocidade = 1.0 ;
-
-  return IUP_DEFAULT ;
+  int time = IupGetInt(timer, "TIME");
+  time /= 2;
+  IupSetAttribute(timer, "RUN", "NO");
+  IupSetInt(timer, "TIME", time);
+  IupSetAttribute(timer, "RUN", "YES");
+  return IUP_DEFAULT;
 }
 
 /* decelerate button callback */
 int freia_cb(void)
 {
-  velocidade -= 0.0001 ;
-  if(velocidade < 0.0)velocidade = 0.0 ;
-	
-  return IUP_DEFAULT ;
+  int time = IupGetInt(timer, "TIME");
+  time *= 2;
+  IupSetAttribute(timer, "RUN", "NO");
+  IupSetInt(timer, "TIME", time);
+  IupSetAttribute(timer, "RUN", "YES");
+  return IUP_DEFAULT;
 }
 
 /* show button callback */
@@ -73,14 +66,14 @@ int exibe_cb(void)
   if (IupGetInt(gauge,"SHOWTEXT"))
   {
     /* shows percentage in gauge */
-    IupSetAttribute(gauge,"SHOWTEXT","YES");
+    IupSetAttribute(gauge,"SHOWTEXT","NO");
   }  
   else
   {
     /* does not show percentage in gauge */
-    IupSetAttribute(gauge,"SHOWTEXT","NO");
+    IupSetAttribute(gauge,"SHOWTEXT","YES");
   }	
-  return IUP_DEFAULT ;
+  return IUP_DEFAULT;
 }
 
 /* main program */
@@ -90,15 +83,19 @@ int main(int argc, char **argv)
   
   /* IUP initialization */
   IupOpen(&argc, &argv);       
-  IupControlsOpen () ;
+  IupControlsOpen ();
 
   /* loads LED */
-  error = IupLoad("iupgauge.led");
+  error = IupLoad("gauge.led");
   if (error)
   {
     IupMessage("LED error", error);
-    return 1 ;
+    return 1;
   }
+
+  timer = IupTimer();
+  IupSetCallback(timer, "ACTION_CB", time_cb);
+  IupSetAttribute(timer, "TIME", "100");
 
   dlg = IupGetHandle("dialog_name");
   gauge = IupGetHandle("gauge_name");
@@ -109,7 +106,6 @@ int main(int argc, char **argv)
   IupSetFunction( "acao_acelera", (Icallback) acelera_cb );
   IupSetFunction( "acao_freia", (Icallback) freia_cb );
   IupSetFunction( "acao_exibe", (Icallback) exibe_cb );
-  IupSetFunction( "IDLE_ACTION", (Icallback) idle_cb);
   
   /* shows dialog */
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER);
@@ -120,8 +116,8 @@ int main(int argc, char **argv)
   IupDestroy(dlg);
 
   /* ends IUP */
-  IupControlsClose() ;
+  IupControlsClose();
   IupClose();
 
-  return 0 ;
+  return 0;
 }

@@ -64,7 +64,7 @@ void main(int argc, char* argv[])
   IupOpen(&argc, &argv);
   IupControlsOpen () ;
 
-  if((error = IupLoad("iupdial.led")) != NULL)
+  if((error = IupLoad("dial.led")) != NULL)
   {
     IupMessage("%s\n", error);
     return;

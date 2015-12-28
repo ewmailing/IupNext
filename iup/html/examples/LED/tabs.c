@@ -119,7 +119,7 @@ void main(int argc, char **argv)
   IupOpen(&argc, &argv);
   IupControlsOpen() ;
 
-  if ((error = IupLoad("IupTabs.led")) != NULL)
+  if ((error = IupLoad("tabs.led")) != NULL)
   {
     IupMessage("LED error", error);
     exit(1);
