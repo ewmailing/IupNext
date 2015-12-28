@@ -81,17 +81,17 @@ void main(int argc, char* argv[])
   IupSetFunction("button_press", (Icallback) button_press);
   IupSetFunction("button_release", (Icallback) button_release);
 
-  IupSetAttribute(dial_v, ICTL_BUTTON_PRESS_CB, "button_press"); 
-  IupSetAttribute(dial_c, ICTL_BUTTON_PRESS_CB, "button_press"); 
-/*IupSetAttribute(dial_h, ICTL_BUTTON_PRESS_CB, "button_press"); This is done in LED */
+  IupSetAttribute(dial_v, "BUTTON_PRESS_CB", "button_press"); 
+  IupSetAttribute(dial_c, "BUTTON_PRESS_CB", "button_press"); 
+/*IupSetAttribute(dial_h, "BUTTON_PRESS_CB", "button_press"); This is done in LED */
 
-  IupSetAttribute(dial_v, ICTL_BUTTON_RELEASE_CB, "button_release"); 
-  IupSetAttribute(dial_h, ICTL_BUTTON_RELEASE_CB, "button_release"); 
-/*IupSetAttribute(dial_c, ICTL_BUTTON_RELEASE_CB, "button_release"); This is done in LED */
+  IupSetAttribute(dial_v, "BUTTON_RELEASE_CB", "button_release"); 
+  IupSetAttribute(dial_h, "BUTTON_RELEASE_CB", "button_release"); 
+/*IupSetAttribute(dial_c, "BUTTON_RELEASE_CB", "button_release"); This is done in LED */
 
-  IupSetAttribute(dial_c, ICTL_MOUSEMOVE_CB, "mousemove"); 
-  IupSetAttribute(dial_h, ICTL_MOUSEMOVE_CB, "mousemove"); 
-/*IupSetAttribute(dial_v, ICTL_MOUSEMOVE_CB, "mousemove"); This is done in LED */
+  IupSetAttribute(dial_c, "MOUSEMOVE_CB", "mousemove"); 
+  IupSetAttribute(dial_h, "MOUSEMOVE_CB", "mousemove"); 
+/*IupSetAttribute(dial_v, "MOUSEMOVE_CB", "mousemove"); This is done in LED */
 
   IupShowXY(dlg,IUP_CENTER,IUP_CENTER);
 

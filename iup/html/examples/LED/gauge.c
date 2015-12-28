@@ -70,7 +70,7 @@ int freia_cb(void)
 /* show button callback */
 int exibe_cb(void)
 {
-  if(IupGetAttribute(gauge,"SHOWTEXT") == "NO")
+  if (IupGetInt(gauge,"SHOWTEXT"))
   {
     /* shows percentage in gauge */
     IupSetAttribute(gauge,"SHOWTEXT","YES");
@@ -86,14 +86,15 @@ int exibe_cb(void)
 /* main program */
 int main(int argc, char **argv)
 {
-  char *error=NULL;
+  char *error;
   
   /* IUP initialization */
   IupOpen(&argc, &argv);       
   IupControlsOpen () ;
 
   /* loads LED */
-  if(error = IupLoad("iupgauge.led"))
+  error = IupLoad("iupgauge.led");
+  if (error)
   {
     IupMessage("LED error", error);
     return 1 ;

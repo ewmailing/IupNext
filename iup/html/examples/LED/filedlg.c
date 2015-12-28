@@ -3,12 +3,14 @@
 
 int main(int argc, char **argv)
 {
-  char *error=NULL;
-  Ihandle *dlg = NULL; 
+  char *error;
+  Ihandle *dlg; 
+
   IupOpen(&argc, &argv);
   
   /* Loads LED file */
-  if(error = IupLoad("iupfiledlg.led"))
+  error = IupLoad("iupfiledlg.led");
+  if (error)
   {
     IupMessage("LED error", error);
     return 1 ;

@@ -11,12 +11,14 @@ int toggle1cb(Ihandle *self, int v)
 
 int main(int argc, char **argv)
 { 
-  char *error=NULL;
-  Ihandle *dlg ;
+  char *error;
+  Ihandle *dlg;
+
   IupOpen(&argc, &argv);
 
   /* Loads LED */
-  if(error = IupLoad("iuptoggle.led"))
+  error = IupLoad("iuptoggle.led");
+  if (error)
   {
     IupMessage("LED error", error);
     return 1 ;

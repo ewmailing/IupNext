@@ -4,6 +4,7 @@ Creates several tabs, each containing diverse contents, including another IupTab
 To run this example, the C code that will include the LED code must be compiled. The LED code is in a file called “iuptabs.led”.*/
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "iup.h"
 #include "iupcontrols.h"
@@ -43,10 +44,10 @@ int tabchange_ignore_cb(Ihandle * self, Ihandle* new_tab, Ihandle* old_tab)
 int tabchange_cb(Ihandle * self, Ihandle* new_tab, Ihandle* old_tab)
 {
   IupSetAttribute(IupGetHandle("tab_atual"),
-    "VALUE",IupGetAttribute(new_tab, ICTL_TABTITLE));
+    "VALUE",IupGetAttribute(new_tab, "TABTITLE"));
 
   IupSetAttribute(IupGetHandle("tab_anterior"),
-    "VALUE",IupGetAttribute(old_tab, ICTL_TABTITLE));
+    "VALUE",IupGetAttribute(old_tab, "TABTITLE"));
   
   return IUP_DEFAULT;
 }
@@ -66,17 +67,17 @@ int tabs_em_c_cb(Ihandle* self)
    */
 
   label = IupLabel("Exemplo de Utilização de Tabs\nTab 1");
-  IupSetAttribute(label, ICTL_TABTITLE, "Primeiro Tab");
+  IupSetAttribute(label, "TABTITLE", "Primeiro Tab");
 
   button = IupButton("Tab 2", NULL);
-  IupSetAttribute(button, ICTL_TABTITLE, "Segundo Tab");
+  IupSetAttribute(button, "TABTITLE", "Segundo Tab");
 
   text = IupText("Tab 3");
-  IupSetAttribute(text, ICTL_TABTITLE, "Terceiro Tab");
+  IupSetAttribute(text, "TABTITLE", "Terceiro Tab");
 
   frame = IupFrame(IupCanvas(NULL));
   vbox = IupVbox(frame, NULL);
-  IupSetAttribute(vbox, ICTL_TABTITLE, "Quarto Tab");
+  IupSetAttribute(vbox, "TABTITLE", "Quarto Tab");
   IupSetAttribute(frame, "TITLE", "Frame");
 
   /* Creates tabs */
