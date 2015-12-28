@@ -1,7 +1,7 @@
 /*IupTabs Example using LED 
 Creates several tabs, each containing diverse contents, including another IupTabs element.
 
-To run this example, the C code that will include the LED code must be compiled. The LED code is in a file called “iuptabs.led”.*/
+To run this example, the C code that will include the LED code must be compiled. The LED code is in a file called “tabs.led”.*/
 
 #include <stdlib.h>
 #include <string.h>
