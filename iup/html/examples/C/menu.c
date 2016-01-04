@@ -46,6 +46,7 @@ int main(int argc, char **argv)
   dlg = IupDialog(IupCanvas(""));
   IupSetAttribute(dlg, "MENU", "mymenu");
   IupSetAttribute(dlg, "TITLE", "IupMenu");
+  IupSetAttribute(dlg, "SIZE", "QUARTERxQUARTER");
 
   IupShow(dlg);
   IupMainLoop();
