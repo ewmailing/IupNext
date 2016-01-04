@@ -614,7 +614,7 @@ both of them can take an extra parameter, which is the id of the node to add to.
 In this case, &quot;Whale&quot; is a child leaf of the &quot;Mammals&quot; branch, which has id 1 <em>
 at this stage</em>. This new leaf gets an id of 2, which is one more than the 
 parent. So this gives us a way to build up arbitrary trees, knowing the id at 
-each point. IUP provides a function <code>TreeSetTableId</code> which can 
+each point. IUP provides a function <strong>TreeSetUserId</strong> which can 
 associate a Lua table with a node id. We can choose to put a string value inside 
 this table, but it really can contain anything. Here is the first example, using 
 some helper functions to simplify matters:</p>
@@ -626,7 +626,7 @@ require 'iupluacontrols'
 tree = iup.tree{}
 
 function assoc (idx,value)
-    iup.TreeSetTableId(tree,idx,{value})
+    iup.TreeSetUserId(tree,idx,{value})
 end
 
 function addbranch(self,label,value)
@@ -649,7 +649,7 @@ addleaf(tree,&quot;Horse&quot;)
 addleaf(tree,&quot;Whale&quot;)
 
 function dump (tp,id)
-    local t = iup.TreeGetTable(tree,id)
+    local t = iup.TreeGetUserId(tree,id)
     -- our string data is always the first element of this table
     print(tp,id,t and t[1])
 end
@@ -669,9 +669,9 @@ f:show()
 iup.MainLoop()
 </code></pre>
 
-<p>There is a corresponding function <code>TreeGetTable</code> which accesses 
-the table associated with the node id. There is also a function <code>
-TreeGetTableId</code> which will return the id, given the <em>unique</em> table 
+<p>There is a corresponding function <strong>TreeGetUserId</strong> which accesses 
+the table associated with the node id. There is also a function <strong>
+TreeGetId</strong> which will return the id, given the <em>unique</em> table 
 associated with it. You can use this to programmatically select a tree node 
 given its data by setting the <code>value</code> attribute to the returned id.</p>
 
@@ -710,11 +710,11 @@ be associated with the tree nodes:</p>
 <pre><code>tree = iup.tree {}
 
 function set (id,value,attrib)
-    iup.TreeSetTableId(tree,id,{value,attrib})
+    iup.TreeSetUserId(tree,id,{value,attrib})
 end
 
 function get(id)
-    return iup.TreeGetTable(tree,id)
+    return iup.TreeGetUserId(tree,id)
 end
 </code></pre>
 
