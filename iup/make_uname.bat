@@ -24,5 +24,5 @@ REM set USE_LUA53=
 call make_uname_lib.bat html\examples\tests %1 %2 %3 %4 %5 %6 %7 %8 %9
 cd ..\..
 
-call make_uname_lib.bat html\examples\tutorial %1 %2 %3 %4 %5 %6 %7 %8 %9
-cd ..\..
+call make_uname_lib.bat html\examples\tutorial\simple_paint2_cpp %1 %2 %3 %4 %5 %6 %7 %8 %9
+cd ..\..\..
