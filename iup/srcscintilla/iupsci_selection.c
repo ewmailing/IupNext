@@ -304,6 +304,22 @@ static int iScintillaSetSelectionPosAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iScintillaSetFirstVisibleLineAttrib(Ihandle* ih, const char* value)
+{
+  int line = 0;
+
+  if (iupStrToInt(value, &line))
+    IupScintillaSendMessage(ih, SCI_SETFIRSTVISIBLELINE, line, 0);
+
+  return 0;
+}
+
+static char* iScintillaGetFirstVisibleLineAttrib(Ihandle* ih)
+{
+  int line = IupScintillaSendMessage(ih, SCI_GETFIRSTVISIBLELINE, 0, 0);
+  return iupStrReturnInt(line);
+}
+
 static char* iScintillaGetVisibleLinesCountAttrib(Ihandle* ih)
 {
   int count = IupScintillaSendMessage(ih, SCI_LINESONSCREEN, 0, 0);
@@ -326,4 +342,5 @@ void iupScintillaRegisterSelection(Iclass* ic)
   iupClassRegisterAttribute(ic, "SELECTION", iScintillaGetSelectionAttrib, iScintillaSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTIONPOS", iScintillaGetSelectionPosAttrib, iScintillaSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VISIBLELINESCOUNT", iScintillaGetVisibleLinesCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FIRSTVISIBLELINE", iScintillaGetFirstVisibleLineAttrib, iScintillaSetFirstVisibleLineAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
