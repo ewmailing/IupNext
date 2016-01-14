@@ -2473,13 +2473,13 @@ static int iPlotSetAxisYTickFontStyleAttrib(Ihandle* ih, const char* value)
 static char* iPlotGetAxisXTickFontStyleAttrib(Ihandle* ih)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
-  return iPlotGetPlotFontSize(ih, axis->mTick.mFontStyle);
+  return iPlotGetPlotFontStyle(ih, axis->mTick.mFontStyle);
 }
 
 static char* iPlotGetAxisYTickFontStyleAttrib(Ihandle* ih)
 {
   iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
-  return iPlotGetPlotFontSize(ih, axis->mTick.mFontStyle);
+  return iPlotGetPlotFontStyle(ih, axis->mTick.mFontStyle);
 }
 
 static int iPlotSetAxisXTickFormatAutoAttrib(Ihandle* ih, const char* value)
