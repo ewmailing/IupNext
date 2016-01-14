@@ -290,7 +290,8 @@ void ButtonTest(void)
 //  IupSetAttribute(box1, "PADDING", "15x15");
 
   button = IupButton(NULL, NULL);
-  IupSetStrAttribute(button, "TITLE", "_@IUP_OK");
+//  IupSetStrAttribute(button, "TITLE", "_@IUP_OK");
+  IupSetAttribute(button, "TITLE", "&OK");
   IupSetCallback(button, "ACTION", active_cb);
   IupAppend(box1, button);
 
