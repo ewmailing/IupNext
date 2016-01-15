@@ -38,7 +38,8 @@ static int winButtonGetBorder(void)
 
 void iupdrvButtonAddBorders(int *x, int *y)
 {
-  int border_size = winButtonGetBorder()*2;
+  /* LAYOUT_DECORATION_ESTIMATE */
+  int border_size = winButtonGetBorder() * 2;
   (*x) += border_size;
   (*y) += border_size;
 }

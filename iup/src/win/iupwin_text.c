@@ -87,7 +87,8 @@ void iupdrvTextAddSpin(int *w, int h)
 
 void iupdrvTextAddBorders(int *w, int *h)
 {
-  int border_size = 2*3;
+  /* LAYOUT_DECORATION_ESTIMATE */
+  int border_size = 2 * 3;
   (*w) += border_size;
   (*h) += border_size;
 }

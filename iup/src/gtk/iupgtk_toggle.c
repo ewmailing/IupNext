@@ -55,6 +55,7 @@ static GtkWidget* gtk_button_get_image(GtkButton *button)
 
 void iupdrvToggleAddCheckBox(int *x, int *y, const char* str)
 {
+  /* LAYOUT_DECORATION_ESTIMATE */
   int check_box = IUP_TOGGLE_BOX;
 
   /* has margins too */

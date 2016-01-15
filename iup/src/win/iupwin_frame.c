@@ -31,6 +31,7 @@
 
 void iupdrvFrameGetDecorOffset(int *x, int *y)
 {
+  /* LAYOUT_DECORATION_ESTIMATE */
   if (iupwin_comctl32ver6)
   {
     *x = 3;

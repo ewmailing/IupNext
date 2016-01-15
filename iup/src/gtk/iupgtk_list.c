@@ -58,7 +58,8 @@ void iupdrvListAddItemSpace(Ihandle* ih, int *h)
 
 void iupdrvListAddBorders(Ihandle* ih, int *x, int *y)
 {
-  int border_size = 2*5;
+  /* LAYOUT_DECORATION_ESTIMATE */
+  int border_size = 2 * 5;
   (*x) += border_size;
   (*y) += border_size;
 

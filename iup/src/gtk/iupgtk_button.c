@@ -41,13 +41,14 @@ static GtkWidget* gtk_button_get_image(GtkButton *button)
 
 void iupdrvButtonAddBorders(int *x, int *y)
 {
+  /* LAYOUT_DECORATION_ESTIMATE */
 #ifdef WIN32
   int border_size = 2*5;
 #else
 #ifdef HILDON
-  int border_size = 2*7+1; /* borders are not symetric */
+  int border_size = 2*7+1; /* borders are not symmetric */
 #else
-  int border_size = 2*5+1; /* borders are not symetric */
+  int border_size = 2*5+1; /* borders are not symmetric */
 #endif
 #endif
   (*x) += border_size;

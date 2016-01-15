@@ -29,6 +29,7 @@
 
 void iupdrvFrameGetDecorOffset(int *x, int *y)
 {
+  /* LAYOUT_DECORATION_ESTIMATE */
   *x = 2;
   *y = 2;
 }
