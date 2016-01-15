@@ -169,12 +169,13 @@ else
     USE_DLL = Yes
     GEN_MANIFEST = No
   else
-    # In UNIX Lua is always statically linked, late binding is used.
-    USE_STATIC = Yes
-    
-    # Except in Cygwin
+    LDIR += $(IUP_LIB)/Lua$(LUASFX)
     ifneq ($(findstring cygw, $(TEC_UNAME)), )
-      USE_STATIC:=
+      # Except in Cygwin
+    else
+      # In UNIX Lua is always statically linked, late binding is used.
+      NO_LUALINK = Yes
+      SLIB += $(LUA_LIB)/liblua$(LUA_SFX).a
     endif
   endif
 endif
