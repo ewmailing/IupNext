@@ -85,7 +85,7 @@ static int gtkMessageDlgPopup(Ihandle* ih, int x, int y)
                           cancel,
                           IUP_RESPONSE_2);
   }
-  if (iupStrEqualNoCase(buttons, "RETRYCANCEL"))
+  else if (iupStrEqualNoCase(buttons, "RETRYCANCEL"))
   {
     gtk_dialog_add_button(GTK_DIALOG(dialog),
                           retry,
