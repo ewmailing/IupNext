@@ -111,7 +111,7 @@ void iupdrvGetKeyState(char* key)
 char *iupdrvGetSystemName(void)
 {
   OSVERSIONINFOA osvi;
-  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOA);
   GetVersionExA(&osvi);
 
   if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
