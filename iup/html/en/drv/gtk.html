@@ -24,8 +24,8 @@ Critical features need at least version 2.8.</p>
 for SunOS10 and it is not available for Linux24.</p>
 <h3>Tips</h3>
 <h4>GTK 3.x (since 3.7)</h4>
-<p>GTK 3.x is supported. But the pre-compiled binaries, up to Linux 3.2, are still build with GTK 
-2.x. This is because GTK 3 implies in a big change for drawing applications, and 
+<p>GTK 3.x is supported. But the pre-compiled binaries, up to Linux 3.2, are still built with GTK 
+2.x. This is because GTK 3 involves a big change for drawing applications, and 
 most Tecgraf applications are heavily graphics dependent. The main change is 
 that GDK does not have drawing primitives anymore, and all drawing is performed 
 by Cairo. Cairo does not have support for XOR used by many drawing applications 
@@ -54,12 +54,12 @@ applications that dynamically load IUP will always use the &quot;iup.dll&quot;, 
 example Lua using require. To use the IUP GTK dll in Windows you must rename the 
 &quot;iupgtk.dll&quot; to &quot;iup.dll&quot;, so the GTK driver will be loaded instead of the Win32 
 driver.</p>
-<p>After installing the GTK binaries, we recommend to change the default theme 
+<p>After installing the GTK binaries, we recommend changing the default theme 
 to the &quot;MS-Windows&quot; theme. Edit the &quot;gtk\etc\gtk-2.0\gtkrc&quot; file and change its 
 contents to:</p>
 <pre>gtk-theme-name = &quot;MS-Windows&quot;</pre>
 <h4>Ubuntu Unity</h4>
-<p>Since Ubuntu version 11 there is a new desktop called&nbsp;Unity. This 
+<p>Since Ubuntu version 11, there is a new desktop called&nbsp;Unity. This 
 desktop introduces some changes that affect all applications. Two of these 
 changes directly affect IUP applications.</p>
 <p><strong>First</strong> the global menu forces all dialog menus to be displayed in the top of 
@@ -68,7 +68,7 @@ fixed since IUP version 3.6. If you don&#39;t like the global menu you can remov
 using:</p>
 <pre style="border-color: inherit; vertical-align: baseline; outline: none; font-variant: normal; orphans: 2; text-align: start; text-indent: 0px; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">sudo apt-get remove appmenu-gtk3 appmenu-gtk appmenu-qt</pre>
 <p>You can also control that using &quot;export UBUNTU_MENUPROXY=0&quot;. There are other 
-forms to control this feature see &quot;<a href="http://www.webupd8.org/2011/03/disable-appmenu-global-menu-in-ubuntu.html" target="_blank">How 
+forms to control this feature - see &quot;<a href="http://www.webupd8.org/2011/03/disable-appmenu-global-menu-in-ubuntu.html" target="_blank">How 
 to Disable the AppMenu</a>&quot;.</p>
 <p><strong>Second</strong>, the scrollbars are reduced to a very tiny line and handlers are 
 displayed only when the mouse moves over the right or bottom side of the 
