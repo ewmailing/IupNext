@@ -67,7 +67,9 @@ filedlg() [in LED]</pre>
     
   <p><strong>DIRECTORY</strong>: Initial directory. When consulted after the 
 	dialog is closed and the user pressed the OK button, it will contain the 
-	directory of the selected file.</p>
+	directory of the selected file. When set the last separator does not need to 
+  be specified, but when get the returned value will always contains the last 
+  separator.</p>
   <blockquote>
     
   <p>In Motif or GTK, if not defined, the dialog opens in the current directory. </p>
@@ -106,15 +108,8 @@ filedlg() [in LED]</pre>
     EXTFILTER to use starting at 1. It returns the selection made by the user. 
   Set only if EXTFILTER is defined.</p>
     
-  <p><strong>MULTIPLEFILES</strong>: When &quot;YES&quot;, this 
-	attribute allows the user to select multiple 
-    files when DIALOGTYPE=OPEN.&nbsp;The value returned by VALUE is to be changed the following way: the directory and 
-    the files are passed separately, in this order. The character used for separating the directory and the files is '|'. 
-    The file list ends with character '|'. When the user selects just one file, the directory and the file are not separated by '|'. 
-For example:</p>
-    
-<pre>&quot;/tecgraf/iup/test|a.txt|b.txt|c.txt|&quot; or
-&quot;/tecgraf/iup/test/a.txt&quot; (only one file is selected)</pre>
+  <p><strong>MULTIPLEFILES</strong>: Allows the user to select multiple 
+    files when DIALOGTYPE=OPEN.&nbsp;Can be &quot;Yes&quot; or &quot;No&quot;. Default &quot;No&quot;.</p>
   
   <p><strong>NOCHANGEDIR</strong>:&nbsp;
   Indicates if the current working directory 
@@ -173,13 +168,20 @@ For example:</p>
   
   <p><strong>VALUE</strong> (read-only): Name of the selected file(s), or NULL 
   if no file was selected. If FILE is not defined this is used as the initial 
-  value. When MULTIPLEFILES=Yes it contains the path and several file names 
-  separated by the '|' character.</p>
+  value. When MULTIPLEFILES=Yes it contains the path (but NOT the same value 
+  returned in DIRECTORY, it does not contains the last separator) and several file names 
+  separated by the '|' character. The file list ends with character '|'. BUT 
+  when the user selects just one file, the directory and the file are not 
+  separated by '|'. For example:</p>
+    
+<pre>&quot;/tecgraf/iup/test|a.txt|b.txt|c.txt|&quot; (MULTIPLEFILES=Yes and more than one file is selected)
+&quot;/tecgraf/iup/test/a.txt&quot; (only one file is selected)</pre>
+  
 <p><strong>MULTIVALUECOUNT</strong>(read-only): number of returned values when MULTIPLEFILES=Yes. 
-It includes the path. (Since 3.14)</p>
-<p><strong>MULTIVALUE</strong><em><strong>id</strong></em> (read-only): the same 
+It always includes the path, so if only 1 file is selected its value is 2. (Since 3.14)</p>
+<p><strong>MULTIVALUE</strong><em><strong>id</strong></em> (read-only): almost the same 
 sequence returned in VALUE when MULTIPLEFILES=Yes but split in several 
-attributes. VALUE0 contains the path (same as DIRECTORY), and VALUE1,VALUE2,... 
+attributes. VALUE0 contains the path (same value returned in DIRECTORY), and VALUE1,VALUE2,... 
 contains each file name without the path. (Since 3.14)</p>
   
 

@@ -582,19 +582,18 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   {
     if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
     {
-      int i = 0;
-
-      char* dir = iupwinStrFromSystemFilename(openfilename.lpstrFile);  /* already contains the directly */
-      iupAttribSetStr(ih, "DIRECTORY", dir);
-
       /* If there is more than one file, replace terminator by the separator */
       if (openfilename.lpstrFile[openfilename.nFileOffset-1] == 0 && 
           openfilename.nFileOffset>0) 
       {
+        int i = 0;
         int count = 0;
 
+        char* dir = iupwinStrFromSystemFilename(openfilename.lpstrFile);  /* already is the directory, but without the last separator */
+        iupAttribSetStrf(ih, "DIRECTORY", "%s//", dir);  /* add the last separator */
+
         /* first the path */
-        iupAttribSetStrId(ih, "MULTIVALUE", count, iupAttribGet(ih, "DIRECTORY"));
+        iupAttribSetStrId(ih, "MULTIVALUE", count, iupAttribGet(ih, "DIRECTORY"));  /* here count=0 always */
         count++;
 
         while (openfilename.lpstrFile[i] != 0 || openfilename.lpstrFile[i + 1] != 0)
@@ -612,6 +611,25 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
 
         iupAttribSetInt(ih, "MULTIVALUECOUNT", count);
         openfilename.lpstrFile[i] = TEXT('|');  /* one last at the end */
+
+        iupAttribSetStr(ih, "VALUE", iupwinStrFromSystemFilename(openfilename.lpstrFile));  /* here file was already modified to match the IUP format */
+      }
+      else
+      {
+        /* if there is only one file selected the returned value is different 
+           and includes just that file */
+        char* filename = iupwinStrFromSystemFilename(openfilename.lpstrFile);
+        char* dir = iupStrFileGetPath(filename);
+        int dir_len = (int)strlen(dir);
+        iupAttribSetStr(ih, "DIRECTORY", dir);
+
+        iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);
+        iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
+
+        iupAttribSetStr(ih, "VALUE", filename);  /* here value is not separated by '|' */
+
+        iupAttribSetInt(ih, "MULTIVALUECOUNT", 2);
+        free(dir);
       }
 
       iupAttribSet(ih, "STATUS", "0");
@@ -619,7 +637,8 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
     }
     else
     {
-      char* dir = iupStrFileGetPath(iupwinStrFromSystemFilename(openfilename.lpstrFile));
+      char* filename = iupwinStrFromSystemFilename(openfilename.lpstrFile);
+      char* dir = iupStrFileGetPath(filename);
       iupAttribSetStr(ih, "DIRECTORY", dir);
       free(dir);
 
@@ -633,9 +652,10 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
         iupAttribSet(ih, "FILEEXIST", "NO");
         iupAttribSet(ih, "STATUS", "1");
       }
+
+      iupAttribSetStr(ih, "VALUE", filename);
     }
 
-    iupAttribSetStr(ih, "VALUE", iupwinStrFromSystemFilename(openfilename.lpstrFile));
     iupAttribSetInt(ih, "FILTERUSED", (int)openfilename.nFilterIndex);
   }
   else

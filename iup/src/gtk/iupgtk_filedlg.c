@@ -63,57 +63,70 @@ static char* gtkFileDlgGetNextStr(char* str)
 
 static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
 {
-  int len, cur_len, dir_len = -1, count = 0;
-  char *filename, *all_names;
-  Iarray* names_array = iupArrayCreate(1024, 1);  /* just set an initial size, but count is 0 */
+  char *filename = iupgtkStrConvertFromFilename((char*)list->data);
 
-  while (list)
+  char* dir = iupStrFileGetPath(filename);
+  int dir_len = (int)strlen(dir);
+  iupAttribSetStr(ih, "DIRECTORY", dir);
+
+  /* check if just one file is selected */
+  if (!list->next)
   {
-    filename = (char*)list->data;
-    len = strlen(filename);
+    iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);
+    iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
 
-    if (dir_len == -1)
-    {
-      dir_len = len;
+    iupAttribSetStr(ih, "VALUE", filename);  /* here value is not separated by '|' */
 
-      while (dir_len && (filename[dir_len] != '/' && filename[dir_len] != '\\'))
-        dir_len--;
+    iupAttribSetInt(ih, "MULTIVALUECOUNT", 2);
 
-      cur_len = iupArrayCount(names_array);
-      all_names = iupArrayAdd(names_array, dir_len+1);
-      memcpy(all_names+cur_len, filename, dir_len);
-      all_names[cur_len+dir_len] = 0;
-      iupAttribSetStr(ih, "DIRECTORY", iupgtkStrConvertFromFilename(all_names));
-      all_names[cur_len + dir_len] = '|';
+    g_free(list->data);  /* must release also the list item */
+  }
+  else
+  {
+    Iarray* names_array = iupArrayCreate(1024, 1);  /* just set an initial size, but count is 0 */
+    char *all_names;
+    int cur_len, count = 0;
 
-      iupAttribSetStrId(ih, "MULTIVALUE", count, iupAttribGet(ih, "DIRECTORY"));
-      count++;
+    int len = dir_len;
+    if (dir[dir_len - 1] == '/' || dir[dir_len - 1] == '\\') len--;  /* remove last '/' */
 
-      dir_len++; /* skip separator */
-    }
-    len -= dir_len; /* remove directory */
+    all_names = iupArrayAdd(names_array, len + 1);
+    memcpy(all_names, dir, len);  /* does NOT includes last separator */
+    all_names[len] = '|';
 
-    cur_len = iupArrayCount(names_array);
-    all_names = iupArrayAdd(names_array, len+1);
-    memcpy(all_names+cur_len, filename+dir_len, len);
-    all_names[cur_len+len] = '|';
-
-    iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
+    iupAttribSetStrId(ih, "MULTIVALUE", count, dir);  /* here count=0 always */  /* same as directory, includes last separator */
     count++;
 
-    g_free(filename);
-    list = list->next;
+    while (list)
+    {
+      filename = iupgtkStrConvertFromFilename((char*)list->data);
+      len = (int)strlen(filename) - dir_len;
+
+      cur_len = iupArrayCount(names_array);
+
+      all_names = iupArrayAdd(names_array, len + 1);
+      memcpy(all_names + cur_len, filename + dir_len, len);
+      all_names[cur_len + len] = '|';
+
+      iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
+      count++;
+
+      g_free(list->data);  /* must release also the list item */
+      list = list->next;
+    }
+
+    iupAttribSetInt(ih, "MULTIVALUECOUNT", count);
+
+    cur_len = iupArrayCount(names_array);
+    all_names = iupArrayInc(names_array);
+    all_names[cur_len + 1] = 0;
+
+    iupAttribSetStr(ih, "VALUE", all_names);
+
+    iupArrayDestroy(names_array);
   }
 
-  iupAttribSetInt(ih, "MULTIVALUECOUNT", count);
-
-  cur_len = iupArrayCount(names_array);
-  all_names = iupArrayInc(names_array);
-  all_names[cur_len+1] = 0;
-
-  iupAttribSetStr(ih, "VALUE", iupgtkStrConvertFromFilename(all_names));
-
-  iupArrayDestroy(names_array);
+  free(dir);
 }
 
 #ifdef GTK_MAC
@@ -313,11 +326,11 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
   if (value && (value[0] == '/' || value[1] == ':'))
   {
     char* dir = iupStrFileGetPath(value);
-    int len = strlen(dir);
+    int len = (int)strlen(dir);
     iupAttribSetStr(ih, "DIRECTORY", dir);
     free(dir);
 
-    iupAttribSetStr(ih, "FILE", value+len);  /* remove DIRECTORY from FILE */
+    iupAttribSetStr(ih, "FILE", value+len);  /* remove directory from value */
   }
 
   value = iupAttribGet(ih, "DIRECTORY");
@@ -559,21 +572,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     {
       GSList* file_list = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
 
-      if (file_list->next) /* if more than one file */
-        gtkFileDlgGetMultipleFiles(ih, file_list);
-      else
-      {
-        char* filename = (char*)file_list->data;
-        iupAttribSetStr(ih, "VALUE", iupgtkStrConvertFromFilename(filename));
-        g_free(filename);
-
-        /* store the DIRECTORY */
-        {
-          char* dir = iupStrFileGetPath(iupAttribGet(ih, "VALUE"));
-          iupAttribSetStr(ih, "DIRECTORY", dir);
-          free(dir);
-        }
-      }
+      gtkFileDlgGetMultipleFiles(ih, file_list);
 
       g_slist_free(file_list);
       file_exist = 1;
@@ -586,7 +585,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       file_exist = gtkIsFile(filename);
       dir_exist = gtkIsDirectory(filename);
 
-      /* store the DIRECTORY */
+      /* store the directory */
       {
         char* dir = iupStrFileGetPath(filename);
         iupAttribSetStr(ih, "DIRECTORY", dir);
