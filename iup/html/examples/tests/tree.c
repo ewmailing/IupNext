@@ -476,7 +476,11 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "ADDLEAF",      "Other");
 #else
   /* create from top to bottom */
-  IupSetAttribute(tree, "TITLE0",         "Figures");  
+
+  if (!IupGetInt(tree, "ADDROOT"))
+    IupSetAttribute(tree, "ADDBRANCH-1", "Figures");
+  else
+    IupSetAttribute(tree, "TITLE0",      "Figures");  
   IupSetAttribute(tree, "ADDLEAF0",      "Other");     /* new id=1 */
   IupSetAttribute(tree, "ADDBRANCH1",   "triangle");  /* new id=2 */     
   IupSetAttribute(tree, "ADDLEAF2",     "equilateral");  /* ... */
@@ -493,6 +497,7 @@ static void init_tree_nodes(void)
   else
     IupSetAttribute(tree, "INSERTBRANCH10","Other (ηγυασι)");
 #endif
+
   IupSetAttribute(tree, "TOGGLEVALUE2", "ON");
   IupSetAttribute(tree, "TOGGLEVALUE6", "ON");
   //IupSetAttribute(tree, "TOGGLEVALUE9", "NOTDEF");
