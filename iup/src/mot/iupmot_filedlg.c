@@ -230,6 +230,27 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
   return 1;
 }
 
+static char* motFileCheckExt(Ihandle* ih, const char* filename)
+{
+  char* ext = iupAttribGet(ih, "EXTDEFAULT");
+  if (ext)
+  {
+    int len = (int)strlen(filename);
+    int ext_len = (int)strlen(ext);
+    if (filename[len - ext_len - 1] != '.')
+    {
+      char* new_filename = XtMalloc(len + ext_len + 1 + 1);
+      memcpy(new_filename, filename, len);
+      new_filename[len] = '.';
+      memcpy(new_filename + len + 1, ext, ext_len);
+      new_filename[len + ext_len + 1] = 0;
+      return new_filename;
+    }
+  }
+
+  return (char*)filename;
+}
+
 static void motFileDlgCallback(Widget filebox, Ihandle* ih, XmFileSelectionBoxCallbackStruct* call_data)
 {
   if (call_data->reason == XmCR_OK)
@@ -237,6 +258,7 @@ static void motFileDlgCallback(Widget filebox, Ihandle* ih, XmFileSelectionBoxCa
     int dialogtype = iupAttribGetInt(ih, "_IUPDLG_DIALOGTYPE");
     char* filename;
     XmStringGetLtoR(call_data->value, XmSTRING_DEFAULT_CHARSET, &filename);
+    filename = motFileCheckExt(ih, filename);
     iupAttribSetStr(ih, "VALUE", filename);  /* this will be replaced for multiple files */
     XtFree(filename);
 
@@ -252,7 +274,7 @@ static void motFileDlgCallback(Widget filebox, Ihandle* ih, XmFileSelectionBoxCa
     {
       Widget wList = XmFileSelectionBoxGetChild(filebox, XmDIALOG_LIST);
 
-      /* here VALUE obtained above contains exactly the directory */
+      /* here value obtained above contains exactly the directory */
       char* dir = iupAttribGet(ih, "VALUE");
       iupAttribSetStr(ih, "DIRECTORY", dir);
 
@@ -747,5 +769,6 @@ void iupdrvFileDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = motFileDlgPopup;
 
+  iupClassRegisterAttribute(ic, "EXTDEFAULT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MULTIPLEFILES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

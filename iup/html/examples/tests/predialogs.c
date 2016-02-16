@@ -308,7 +308,8 @@ static void new_file(char* dialogtype, int preview)
   IupSetAttribute(dlg, "NOCHANGEDIR", "YES");
   if (strcmp(dialogtype, "OPEN") == 0) IupSetAttribute(dlg, "MULTIPLEFILES", "YES");
 //  IupSetAttribute(dlg, "RASTERSIZE", "800x600");
-//  IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
+  IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
+  IupSetAttribute(dlg, "EXTDEFAULT", "txt");
 
   if (preview)
   {

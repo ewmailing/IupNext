@@ -525,6 +525,9 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
 
   openfilename.nMaxFile = IUP_MAX_FILENAME_SIZE;
 
+  /* only supports extensions with up to three characters, should NOT include the period */
+  openfilename.lpstrDefExt = iupwinStrToSystem(iupAttribGet(ih, "EXTDEFAULT"));
+
   initial_dir = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
   openfilename.lpstrInitialDir = iupwinStrToSystemFilename(initial_dir);
   if (openfilename.lpstrInitialDir)
@@ -678,9 +681,11 @@ void iupdrvFileDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = winFileDlgPopup;
 
+  iupClassRegisterAttribute(ic, "EXTDEFAULT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MULTIPLEFILES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
   /* IupFileDialog Windows and GTK Only */
   iupClassRegisterAttribute(ic, "EXTFILTER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTERINFO", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTERUSED", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MULTIPLEFILES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

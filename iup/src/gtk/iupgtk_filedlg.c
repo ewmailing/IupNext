@@ -230,6 +230,27 @@ static void gtkFileDlgUpdatePreview(GtkFileChooser *file_chooser, Ihandle* ih)
   gtk_file_chooser_set_preview_widget_active(file_chooser, TRUE);
 }
   
+static char* gtkFileCheckExt(Ihandle* ih, const char* filename)
+{
+  char* ext = iupAttribGet(ih, "EXTDEFAULT");
+  if (ext)
+  {
+    int len = (int)strlen(filename);
+    int ext_len = (int)strlen(ext);
+    if (filename[len - ext_len - 1] != '.')
+    {
+      char* new_filename = g_malloc(len + ext_len + 1 + 1);
+      memcpy(new_filename, filename, len);
+      new_filename[len] = '.';
+      memcpy(new_filename + len + 1, ext, ext_len);
+      new_filename[len + ext_len + 1] = 0;
+      return new_filename;
+    }
+  }
+
+  return (char*)filename;
+}
+
 static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 {
   InativeHandle* parent = iupDialogGetNativeParent(ih);
@@ -581,6 +602,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     else
     {
       char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+      filename = gtkFileCheckExt(ih, filename);
       iupAttribSetStr(ih, "VALUE", iupgtkStrConvertFromFilename(filename));
       file_exist = gtkIsFile(filename);
       dir_exist = gtkIsDirectory(filename);
@@ -642,9 +664,11 @@ void iupdrvFileDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = gtkFileDlgPopup;
 
+  iupClassRegisterAttribute(ic, "EXTDEFAULT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MULTIPLEFILES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
   /* IupFileDialog Windows and GTK Only */
   iupClassRegisterAttribute(ic, "EXTFILTER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTERINFO", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTERUSED", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MULTIPLEFILES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }
