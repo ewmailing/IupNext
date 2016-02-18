@@ -19,6 +19,21 @@ INCLUDES =  ../src ../srclua5
 LIBS = iup_plot
 DEF_FILE = ctrl/iuplua_plot.def
 
+ifdef USE_LUA_VERSION
+  USE_LUA51:=
+  USE_LUA52:=
+  USE_LUA53:=
+  ifeq ($(USE_LUA_VERSION), 53)
+    USE_LUA53:=Yes
+  endif
+  ifeq ($(USE_LUA_VERSION), 52)
+    USE_LUA52:=Yes
+  endif
+  ifeq ($(USE_LUA_VERSION), 51)
+    USE_LUA51:=Yes
+  endif
+endif
+
 ifdef USE_LUA53
   LUASFX = 53
 else
