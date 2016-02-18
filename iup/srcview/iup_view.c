@@ -19,6 +19,7 @@
 
 
 /* #define STOCK_TEST "24" */
+/* #define STOCK_TEST "48" */
 
 
 #define MAX_NAMES 5000
