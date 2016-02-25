@@ -126,6 +126,7 @@ static void drawTest(Ihandle *ih, int posx)
   RECT rect;
   int w, h;
   HWND hWnd = (HWND)IupGetAttribute(ih, "HWND");
+  HPEN oldPen;
   HDC hDC = GetDC(hWnd);
 
   IupGetIntInt(ih, "DRAWSIZE", &w, &h);
@@ -133,7 +134,7 @@ static void drawTest(Ihandle *ih, int posx)
   SetRect(&rect, 0, 0, w, h);
   FillRect(hDC, &rect, GetStockObject(WHITE_BRUSH));
 
-  SelectObject(hDC, GetStockObject(DC_PEN));
+  oldPen = SelectObject(hDC, GetStockObject(DC_PEN));
   SetDCPenColor(hDC, RGB(255, 0, 0));
 
   w = 600; /* virtual size */
@@ -142,6 +143,7 @@ static void drawTest(Ihandle *ih, int posx)
   MoveToEx(hDC, -posx, h, NULL);
   LineTo(hDC, w-posx, 0);
 
+  SelectObject(hDC, oldPen);
   ReleaseDC(hWnd, hDC);
 }
 #else
