@@ -218,6 +218,7 @@ static int k_any(Ihandle *ih, int c)
       if (count == 4) // cicle from 0 to 3
         count = 0;
 
+      printf("  PLACEMENT=%s\n", IupGetAttribute(ih, "PLACEMENT"));
       IupShow(ih);
     }
     break;
