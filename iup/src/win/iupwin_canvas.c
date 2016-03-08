@@ -590,7 +590,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   }
 
   /* can be a container */
-  if (ih->firstchild)
+  if (ih->iclass->childtype != IUP_CHILDNONE || ih->firstchild)
     return iupwinBaseContainerMsgProc(ih, msg, wp, lp, result);
   else
     return iupwinBaseMsgProc(ih, msg, wp, lp, result);
@@ -613,7 +613,7 @@ static int winCanvasMapMethod(Ihandle* ih)
       dwStyle |= WS_TABSTOP;
   }
                            
-  if (ih->firstchild) /* can be a container */
+  if (ih->iclass->childtype != IUP_CHILDNONE || ih->firstchild) /* can be a container */
     iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 
   if (iupAttribGetBoolean(ih, "BORDER"))
