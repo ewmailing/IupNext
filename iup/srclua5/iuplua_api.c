@@ -190,7 +190,7 @@ static int GetAllNames(lua_State *L)
 
 static int GetAllAttributes(lua_State *L)
 {
-  int n, i, max_n = (int)luaL_optinteger(L, 1, 0);
+  int n, i, max_n = (int)luaL_optinteger(L, 2, 0);
   char **names;
   if (!max_n) max_n = IupGetAllAttributes(iuplua_checkihandle(L,1), NULL, 0);
   names = (char **) malloc (max_n * sizeof(char *));
