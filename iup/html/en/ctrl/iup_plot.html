@@ -269,6 +269,13 @@ or <b>ih:GetSampleSelection</b>(<b>ds_index, sample_index</b>: number) -&gt; (<s
 Can be used only after the dataset is added to the plot. By default all samples 
 are not selected. Returns -1 if an error occurred.</p>
 <hr>
+<pre>double <strong>IupPlotGetSampleExtra</strong>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>); [in C]
+<b>iup.PlotGetSampleExtra</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number) -&gt; (<strong>extra</strong>: number) [in Lua]
+or <b>ih:GetSampleExtra</b>(<b>ds_index, sample_index</b>: number) -&gt; (<strong>extra</strong>: number) [in Lua]</pre>
+<p>Returns the sample extra value in a dataset at the given <strong>sample_index</strong>. 
+Can be used only after the dataset is added to the plot. By default all samples 
+have an extra of 0. Returns -1 if an error occurred. (since 3.18)</p>
+<hr>
 <pre>void <b>IupPlotSetSample</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, double <b>x</b>, double <b>y</b>); [in C]
 void <b>IupPlotSetSampleStr</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, const char* <b>x</b>, double <b>y</b>);
 <b>iup.PlotSetSample</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number) -&gt; (<b>x, y</b>: number) [in Lua]
@@ -283,6 +290,12 @@ Can be used only after the dataset is added to the plot. </p>
 or <b>ih:SetSampleSelection</b>(<b>ds_index, sample_index, <strong>selected</strong></b>: number) [in Lua]</pre>
 <p>Changes the sample selected state in a dataset at the given <strong>sample_index</strong>. 
 Can be used only after the dataset is added to the plot. </p>
+<hr>
+<pre>void <strong>IupPlotSetSampleExtra</strong>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, double <b>extra</b>); [in C]
+<b>iup.PlotSetSampleExtra</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index, <strong>extra</strong></b>: number) [in Lua]
+or <b>ih:SetSampleExtra</b>(<b>ds_index, sample_index, <strong>extra</strong></b>: number) [in Lua]</pre>
+<p>Changes the sample extra value in a dataset at the given <strong>sample_index</strong>. 
+Can be used only after the dataset is added to the plot. (since 3.18)</p>
 <hr>
 <pre>void <b>IupPlotTransform</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>, double *<b>cnv_x</b>, double *<b>cnv_y</b>); [in C]
 <b>iup.PlotTransform</b>(<b>ih</b>: ihandle, <b>x, y</b>: number) -&gt; (<b>cnv_x</b>, <b>cnv_y</b>: number) [in Lua]
@@ -554,7 +567,7 @@ it is used as the new default. If all defaults are in use then black is used "0 
 dataset.</p>
 <p><b>DS_MODE</b>: drawing mode of the current dataset. Can be: "LINE", "MARK", "MARKLINE", 
 "AREA", 
-"BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP". Default: "LINE". When BAR modes 
+"BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP", "ERRORBAR". Default: "LINE". When BAR modes 
 are set, <b>AXS_XDISCRETE</b> or <b>AXS_YDISCRETE </b> is 
 also set. (STEM to STEP since 3.18)</p>
 <p><b>DS_LINESTYLE</b>: line style of the current dataset. Can be: &quot;CONTINUOUS&quot;, 
@@ -563,7 +576,9 @@ also set. (STEM to STEP since 3.18)</p>
 <p><b>DS_MARKSTYLE</b>: mark style of the current dataset. Can be: &quot;PLUS&quot;, 
 &quot;STAR&quot;, &quot;CIRCLE&quot;, &quot;X&quot;, &quot;BOX&quot;, &quot;DIAMOND&quot;, &quot;HOLLOW_CIRCLE&quot;, &quot;HOLLOW_BOX&quot;, 
 &quot;HOLLOW_DIAMOND&quot;. Default is &quot;X&quot;.</p>
-<p><b>DS_MARKSIZE</b>: mark size of the current dataset in pixels. Default: 7.</p>
+<p><b>DS_MARKSIZE</b>: mark size of the current dataset in pixels. Default: 7. 
+If a sample extra value is set then it will ignore this value and use the sample 
+extra value as mark size, except for ERRORBAR mode (since 3.18).</p>
 <p><b>DS_REMOVE</b> (write-only): removes a sample from the current dataset given its index.</p>
 <p><strong>DS_USERDATA</strong>: user data associated with the dataset. (since 
 3.13)</p>

@@ -171,6 +171,7 @@ iupPlotDataSet::iupPlotDataSet(bool strXdata)
 
   mSelection = new iupPlotDataBool();
   mSegment = NULL;
+  mExtra = NULL;
 }
 
 iupPlotDataSet::~iupPlotDataSet()
@@ -182,6 +183,8 @@ iupPlotDataSet::~iupPlotDataSet()
   delete mSelection;
   if (mSegment)
     delete mSegment;
+  if (mExtra)
+    delete mExtra;
 }
 
 bool iupPlotDataSet::FindSample(double inX, double inY, double tolX, double tolY,
@@ -336,6 +339,8 @@ void iupPlotDataSet::AddSample(double inX, double inY)
   mSelection->AddSample(false);
   if (mSegment)
     mSegment->AddSample(false);
+  if (mExtra)
+    mExtra->AddSample(0);
 }
 
 void iupPlotDataSet::InsertSample(int inSampleIndex, double inX, double inY)
@@ -351,6 +356,8 @@ void iupPlotDataSet::InsertSample(int inSampleIndex, double inX, double inY)
   mSelection->InsertSample(inSampleIndex, false);
   if (mSegment)
     mSegment->InsertSample(inSampleIndex, false);
+  if (mExtra)
+    mExtra->InsertSample(inSampleIndex, 0);
 }
 
 void iupPlotDataSet::InitSegment()
@@ -360,6 +367,15 @@ void iupPlotDataSet::InitSegment()
   int theCount = mDataX->GetCount();
   for (int i = 0; i < theCount; i++)
     mSegment->AddSample(false);
+}
+
+void iupPlotDataSet::InitExtra()
+{
+  mExtra = new iupPlotDataReal();
+
+  int theCount = mDataX->GetCount();
+  for (int i = 0; i < theCount; i++)
+    mExtra->AddSample(0);
 }
 
 void iupPlotDataSet::AddSampleSegment(double inX, double inY, bool inSegment)
@@ -377,6 +393,8 @@ void iupPlotDataSet::AddSampleSegment(double inX, double inY, bool inSegment)
   theYData->AddSample(inY);
   mSelection->AddSample(false);
   mSegment->AddSample(inSegment);
+  if (mExtra)
+    mExtra->AddSample(0);
 }
 
 void iupPlotDataSet::InsertSampleSegment(int inSampleIndex, double inX, double inY, bool inSegment)
@@ -394,6 +412,8 @@ void iupPlotDataSet::InsertSampleSegment(int inSampleIndex, double inX, double i
   theYData->InsertSample(inSampleIndex, inY);
   mSelection->InsertSample(inSampleIndex, false);
   mSegment->InsertSample(inSampleIndex, inSegment);
+  if (mExtra)
+    mExtra->InsertSample(inSampleIndex, 0);
 }
 
 void iupPlotDataSet::AddSample(const char* inX, double inY)
@@ -407,6 +427,10 @@ void iupPlotDataSet::AddSample(const char* inX, double inY)
   theXData->AddSample(inX);
   theYData->AddSample(inY);
   mSelection->AddSample(false);
+  if (mSegment)
+    mSegment->AddSample(false);
+  if (mExtra)
+    mExtra->AddSample(0);
 }
 
 void iupPlotDataSet::InsertSample(int inSampleIndex, const char* inX, double inY)
@@ -420,6 +444,10 @@ void iupPlotDataSet::InsertSample(int inSampleIndex, const char* inX, double inY
   theXData->InsertSample(inSampleIndex, inX);
   theYData->InsertSample(inSampleIndex, inY);
   mSelection->InsertSample(inSampleIndex, false);
+  if (mSegment)
+    mSegment->InsertSample(inSampleIndex, false);
+  if (mExtra)
+    mExtra->InsertSample(inSampleIndex, 0);
 }
 
 void iupPlotDataSet::RemoveSample(int inSampleIndex)
@@ -429,6 +457,8 @@ void iupPlotDataSet::RemoveSample(int inSampleIndex)
   mSelection->RemoveSample(inSampleIndex);
   if (mSegment)
     mSegment->RemoveSample(inSampleIndex);
+  if (mExtra)
+    mExtra->RemoveSample(inSampleIndex);
 }
 
 void iupPlotDataSet::GetSample(int inSampleIndex, double *inX, double *inY)
@@ -472,6 +502,15 @@ bool iupPlotDataSet::GetSampleSelection(int inSampleIndex)
   return mSelection->GetSampleBool(inSampleIndex);
 }
 
+double iupPlotDataSet::GetSampleExtra(int inSampleIndex)
+{
+  int theCount = mDataX->GetCount();
+  if (inSampleIndex < 0 || inSampleIndex >= theCount || !mExtra)
+    return 0;
+
+  return mExtra->GetSample(inSampleIndex);
+}
+
 void iupPlotDataSet::SetSample(int inSampleIndex, double inX, double inY)
 {
   iupPlotDataReal *theXData = (iupPlotDataReal*)mDataX;
@@ -511,6 +550,18 @@ void iupPlotDataSet::SetSampleSelection(int inSampleIndex, bool inSelected)
     return;
 
   mSelection->SetSampleBool(inSampleIndex, inSelected);
+}
+
+void iupPlotDataSet::SetSampleExtra(int inSampleIndex, double inExtra)
+{
+  int theCount = mDataX->GetCount();
+  if (inSampleIndex < 0 || inSampleIndex >= theCount)
+    return;
+
+  if (!mExtra)
+    InitExtra();
+
+  mExtra->SetSample(inSampleIndex, inExtra);
 }
 
 

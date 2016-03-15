@@ -1603,6 +1603,8 @@ static int iPlotSetDSModeAttrib(Ihandle* ih, const char* value)
     dataset->mMode = IUP_PLOT_MARKLINE;
   else if (iupStrEqualNoCase(value, "STEP"))
     dataset->mMode = IUP_PLOT_STEP;
+  else if (iupStrEqualNoCase(value, "ERRORBAR"))
+    dataset->mMode = IUP_PLOT_ERRORBAR;
   else  /* LINE */
     dataset->mMode = IUP_PLOT_LINE;
 
@@ -1616,7 +1618,7 @@ static char* iPlotGetDSModeAttrib(Ihandle* ih)
       ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
       return NULL;
 
-  const char* mode_str[] = { "LINE", "MARK", "MARKLINE", "AREA", "BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP" };
+  const char* mode_str[] = { "LINE", "MARK", "MARKLINE", "AREA", "BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP", "ERRORBAR" };
 
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
   return (char*)mode_str[dataset->mMode];

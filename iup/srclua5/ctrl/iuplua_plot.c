@@ -330,6 +330,14 @@ static int PlotGetSampleSelection(lua_State *L)
   return 1;
 }
 
+static int PlotGetSampleExtra(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  double extra = IupPlotGetSampleExtra(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3));
+  lua_pushnumber(L, extra);
+  return 1;
+}
+
 static int PlotSetSample(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
@@ -348,6 +356,13 @@ static int PlotSetSampleSelection(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
   IupPlotSetSampleSelection(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), luaL_checkinteger(L, 4));
+  return 0;
+}
+
+static int PlotSetSampleExtra(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  IupPlotSetSampleExtra(ih, luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), luaL_checknumber(L, 4));
   return 0;
 }
 
@@ -401,9 +416,11 @@ void iuplua_plotfuncs_open (lua_State *L)
   iuplua_register(L, PlotGetSample, "PlotGetSample");
   iuplua_register(L, PlotGetSampleStr, "PlotGetSampleStr");
   iuplua_register(L, PlotGetSampleSelection, "PlotGetSampleSelection");
+  iuplua_register(L, PlotGetSampleExtra, "PlotGetSampleExtra");
   iuplua_register(L, PlotSetSample, "PlotSetSample");
   iuplua_register(L, PlotSetSampleStr, "PlotSetSampleStr");
   iuplua_register(L, PlotSetSampleSelection, "PlotSetSampleSelection");
+  iuplua_register(L, PlotSetSampleExtra, "PlotSetSampleExtra");
 
   iuplua_register(L, PlotTransform, "PlotTransform");
   iuplua_register(L, PlotTransformTo, "PlotTransformTo");

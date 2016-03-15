@@ -729,9 +729,11 @@ namespace iup
     void GetSample(int ds_index, int sample_index, double &x, double &y) { IupPlotGetSample(ih, ds_index, sample_index, &x, &y); }
     void GetSampleStr(int ds_index, int sample_index, const char* &x, double &y) { IupPlotGetSampleStr(ih, ds_index, sample_index, &x, &y); }
     int GetSampleSelection(int ds_index, int sample_index) { return IupPlotGetSampleSelection(ih, ds_index, sample_index); }
+    double GetSampleExtra(int ds_index, int sample_index) { return IupPlotGetSampleExtra(ih, ds_index, sample_index); }
     void SetSample(int ds_index, int sample_index, double x, double y) { IupPlotSetSample(ih, ds_index, sample_index, x, y); }
     void SetSampleStr(int ds_index, int sample_index, const char* x, double y) { IupPlotSetSampleStr(ih, ds_index, sample_index, x, y); }
     void SetSampleSelection(int ds_index, int sample_index, int selected) { IupPlotSetSampleSelection(ih, ds_index, sample_index, selected); }
+    void SetSampleExtra(int ds_index, int sample_index, double extra) { IupPlotSetSampleExtra(ih, ds_index, sample_index, extra); }
 
     void Transform(double x, double y, double &cnv_x, double &cnv_y) { IupPlotTransform(ih, x, y, &cnv_x, &cnv_y); }
     void TransformTo(double cnv_x, double cnv_y, double &x, double &y) { IupPlotTransformTo(ih, cnv_x, cnv_y, &x, &y); }

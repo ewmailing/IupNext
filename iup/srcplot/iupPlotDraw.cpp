@@ -676,7 +676,7 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRec
 /************************************************************************************/
 
 
-void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
+void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, bool inShowMark, bool inErrorBar) const
 {
   int theCount = mDataX->GetCount();
   cdCanvasBegin(canvas, CD_OPEN_LINES);
@@ -691,6 +691,22 @@ void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlo
     if (inNotify)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
+    if (inShowMark)
+    {
+      if (mExtra)
+      {
+        if (inErrorBar)
+        {
+           // TODO
+        }
+        else
+          SetSampleExtraMarkSize(inTrafoY, canvas, i);
+      }
+
+      // No problem that will be drawn before the polygon, they both should have the same color
+      cdfCanvasMark(canvas, theScreenX, theScreenY);
+    }
+
     if (mSegment && mSegment->GetSampleBool(i))
     {
       cdCanvasEnd(canvas);
@@ -701,6 +717,17 @@ void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlo
   }
 
   cdCanvasEnd(canvas);
+}
+
+void iupPlotDataSet::SetSampleExtraMarkSize(const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, int inSampleIndex) const
+{
+  double theMarkSize = mExtra->GetSample(inSampleIndex);
+  int theScreenSize = 1;
+  if (theMarkSize != 0)
+    theScreenSize = iupPlotRound(inTrafoY->Transform(theMarkSize));
+  if (theScreenSize < 1) theScreenSize = 1;
+
+  cdCanvasMarkSize(canvas, theScreenSize);
 }
 
 void iupPlotDataSet::DrawDataMark(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
@@ -716,11 +743,14 @@ void iupPlotDataSet::DrawDataMark(const iupPlotTrafoBase *inTrafoX, const iupPlo
     if (inNotify)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
+    if (mExtra)
+      SetSampleExtraMarkSize(inTrafoY, canvas, i);
+
     cdfCanvasMark(canvas, theScreenX, theScreenY);
   }
 }
 
-void iupPlotDataSet::DrawDataStem(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
+void iupPlotDataSet::DrawDataStem(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, bool inShowMark) const
 {
   int theCount = mDataX->GetCount();
   for (int i = 0; i < theCount; i++)
@@ -734,57 +764,16 @@ void iupPlotDataSet::DrawDataStem(const iupPlotTrafoBase *inTrafoX, const iupPlo
     if (inNotify)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
-    cdfCanvasLine(canvas, theScreenX, theScreenY0, theScreenX, theScreenY);
-  }
-}
-
-void iupPlotDataSet::DrawDataMarkStem(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
-{
-  int theCount = mDataX->GetCount();
-  for (int i = 0; i < theCount; i++)
-  {
-    double theX = mDataX->GetSample(i);
-    double theY = mDataY->GetSample(i);
-    double theScreenX = inTrafoX->Transform(theX);
-    double theScreenY = inTrafoY->Transform(theY);
-    double theScreenY0 = inTrafoY->Transform(0.0);
-
-    if (inNotify)
-      inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
-
-    cdfCanvasMark(canvas, theScreenX, theScreenY);
-    cdfCanvasLine(canvas, theScreenX, theScreenY0, theScreenX, theScreenY);
-  }
-}
-
-void iupPlotDataSet::DrawDataMarkLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
-{
-  int theCount = mDataX->GetCount();
-  cdCanvasBegin(canvas, CD_OPEN_LINES);
-
-  for (int i = 0; i < theCount; i++)
-  {
-    double theX = mDataX->GetSample(i);
-    double theY = mDataY->GetSample(i);
-    double theScreenX = inTrafoX->Transform(theX);
-    double theScreenY = inTrafoY->Transform(theY);
-
-    if (inNotify)
-      inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
-
-    // No worry that will be drawn before the polygon, they both have the same color
-    cdfCanvasMark(canvas, theScreenX, theScreenY);
-
-    if (mSegment && mSegment->GetSampleBool(i))
+    if (inShowMark)
     {
-      cdCanvasEnd(canvas);
-      cdCanvasBegin(canvas, CD_OPEN_LINES);
+      if (mExtra)
+        SetSampleExtraMarkSize(inTrafoY, canvas, i);
+
+      cdfCanvasMark(canvas, theScreenX, theScreenY);
     }
 
-    cdfCanvasVertex(canvas, theScreenX, theScreenY);
+    cdfCanvasLine(canvas, theScreenX, theScreenY0, theScreenX, theScreenY);
   }
-
-  cdCanvasEnd(canvas);
 }
 
 void iupPlotDataSet::DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
@@ -1000,19 +989,19 @@ void iupPlotDataSet::DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTra
   switch (mMode)
   {
   case IUP_PLOT_LINE:
-    DrawDataLine(inTrafoX, inTrafoY, canvas, inNotify);
+    DrawDataLine(inTrafoX, inTrafoY, canvas, inNotify, false, false);
     break;
   case IUP_PLOT_MARK:
     DrawDataMark(inTrafoX, inTrafoY, canvas, inNotify);
     break;
   case IUP_PLOT_STEM:
-    DrawDataStem(inTrafoX, inTrafoY, canvas, inNotify);
+    DrawDataStem(inTrafoX, inTrafoY, canvas, inNotify, false);
     break;
   case IUP_PLOT_MARKSTEM:
-    DrawDataMarkStem(inTrafoX, inTrafoY, canvas, inNotify);
+    DrawDataStem(inTrafoX, inTrafoY, canvas, inNotify, true);
     break;
   case IUP_PLOT_MARKLINE:
-    DrawDataMarkLine(inTrafoX, inTrafoY, canvas, inNotify);
+    DrawDataLine(inTrafoX, inTrafoY, canvas, inNotify, true, false);
     break;
   case IUP_PLOT_AREA:
     DrawDataArea(inTrafoX, inTrafoY, canvas, inNotify);
@@ -1025,6 +1014,9 @@ void iupPlotDataSet::DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTra
     break;
   case IUP_PLOT_MULTIBAR:
     DrawDataMultiBar(inTrafoX, inTrafoY, canvas, inNotify);
+    break;
+  case IUP_PLOT_ERRORBAR:
+    DrawDataLine(inTrafoX, inTrafoY, canvas, inNotify, true, true);
     break;
   case IUP_PLOT_STEP:
     DrawDataStep(inTrafoX, inTrafoY, canvas, inNotify);
