@@ -553,8 +553,10 @@ it is used as the new default. If all defaults are in use then black is used "0 
 <p><strong>DS_COUNT</strong>: returns the number of samples of the current 
 dataset.</p>
 <p><b>DS_MODE</b>: drawing mode of the current dataset. Can be: "LINE", "MARK", "MARKLINE", 
-"BAR" or "AREA". Default: "LINE". When BAR mode is set <b>AXS_XDISCRETE</b> is 
-also set.</p>
+"AREA", 
+"BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP". Default: "LINE". When BAR modes 
+are set, <b>AXS_XDISCRETE</b> or <b>AXS_YDISCRETE </b> is 
+also set. (STEM to STEP since 3.18)</p>
 <p><b>DS_LINESTYLE</b>: line style of the current dataset. Can be: &quot;CONTINUOUS&quot;, 
 &quot;DASHED&quot;, &quot;DOTTED&quot;, &quot;DASH_DOT&quot;, &quot;DASH_DOT_DOT&quot;. Default is &quot;CONTINUOUS&quot;.</p>
 <p><b>DS_LINEWIDTH</b>: line width of the current dataset. Default: 1.</p>
@@ -875,6 +877,14 @@ heavily changed. Zoom, Pan and Selection is now done totally different from
     <tr>
       <td><img border="0" src="images/iup_plot4.png"></td>
       <td><img border="0" src="images/iup_plot5.png"></td>
+    </tr>
+    <tr>
+      <td><img border="0" src="images/iup_plot6.png"></td>
+      <td><img border="0" src="images/iup_plot7.png"></td>
+    </tr>
+    <tr>
+      <td><img border="0" src="images/iup_plot8.png"></td>
+      <td><img border="0" src="images/iup_plot9.png"></td>
     </tr>
   </table>
   </center>

@@ -160,7 +160,7 @@ bool iupPlotDataBool::CalculateRange(double &outMin, double &outMax) const
 
 iupPlotDataSet::iupPlotDataSet(bool strXdata)
   :mColor(CD_BLACK), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mMarkStyle(CD_X), mMarkSize(7),
-   mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false)
+  mMultibarIndex(-1), mMultibarCount(0), mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false)
 {
   if (strXdata)
     mDataX = (iupPlotDataBase*)(new iupPlotDataString());
@@ -772,6 +772,32 @@ void iupPlot::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const
   if (inFontStyle == -1) inFontStyle = mDefaultFontStyle;
   if (inFontSize == 0) inFontSize = mDefaultFontSize;
   cdCanvasFont(canvas, NULL, inFontStyle, inFontSize);
+}
+
+void iupPlot::UpdateMultibarCount()
+{
+  int i, count = 0, index = 0;
+  
+  for (i = 0; i < mDataSetListCount; i++)
+  {
+    if (mDataSetList[i]->mMode == IUP_PLOT_MULTIBAR)
+      count++;
+  }
+
+  for (i = 0; i < mDataSetListCount; i++)
+  {
+    if (mDataSetList[i]->mMode == IUP_PLOT_MULTIBAR)
+    {
+      mDataSetList[i]->mMultibarCount = count;
+      mDataSetList[i]->mMultibarIndex = index;
+      index++;
+    }
+    else
+    {
+      mDataSetList[i]->mMultibarCount = 0;
+      mDataSetList[i]->mMultibarIndex = 0;
+    }
+  }
 }
 
 static long iPlotGetDefaultColor(int index)

@@ -22,10 +22,11 @@
 #include <cdiup.h>
 #include <cdpdf.h>
 
+#define PI 3.14159265
 
 #ifdef PPLOT_TEST
 
-#define MAXPLOT 6  /* room for examples */
+#define MAXPLOT 10  /* room for examples */
 
 
 static Ihandle *plot[MAXPLOT] = {NULL}; /* Plot controls */
@@ -94,7 +95,7 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[0], "AXS_YFONTSIZE", "10");
   IupSetAttribute(plot[0], "AXS_XCROSSORIGIN", "Yes");
   IupSetAttribute(plot[0], "AXS_YCROSSORIGIN", "Yes");
-  IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
+  //IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
 //  IupSetAttribute(plot[0], "ACTIVE", "No");
 
 //  IupSetAttribute(plot[0], "AXS_AUTOSCALEEQUAL", "Yes");
@@ -125,7 +126,7 @@ static void InitPlots(void)
   IupPlotEnd(plot[0]);
   IupSetAttribute(plot[0], "DS_LINEWIDTH", "3");
   IupSetAttribute(plot[0], "DS_LEGEND", "Line");
-//  IupSetAttribute(plot[0], "DS_MODE", "AREA");
+  IupSetAttribute(plot[0], "DS_MODE", "LINE");
 
   theFac = 2.0/100;
   IupPlotBegin(plot[0], 0);
@@ -300,7 +301,7 @@ static void InitPlots(void)
   IupPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARK");
   IupSetAttribute(plot[4], "DS_MARKSTYLE", "HOLLOW_CIRCLE");
-  
+
   /************************************************************************/
   /* PLOT 5 */
   IupSetAttribute(plot[5], "TITLE", "Data Selection and Editing");
@@ -310,13 +311,12 @@ static void InitPlots(void)
 #if 0
   IupPlotLoadData(plot[5], "../test/plot.dat", 0);
 #else
-  theFac = 100.0/(100*100*100);
+  theFac = 100.0 / (100 * 100 * 100);
   IupPlotBegin(plot[5], 0);
-  for (theI=-10; theI<=10; theI++) 
-  {
-    x = (0.001*theI);
-    y = (0.01+theFac*theI*theI*theI);
-    IupPlotAdd(plot[5], x, y);
+  for (theI = -10; theI <= 10; theI++) {
+	  x = (0.001*theI);
+	  y = (0.01 + theFac*theI*theI*theI);
+	  IupPlotAdd(plot[5], x, y);
   }
   IupPlotEnd(plot[5]);
 
@@ -325,10 +325,114 @@ static void InitPlots(void)
 #endif
 
   IupSetAttribute(plot[5], "DS_COLOR", "100 100 200");
-  IupSetCallback(plot[5], "DELETE_CB", (Icallback)delete_cb);
-  IupSetCallback(plot[5], "SELECT_CB", (Icallback)select_cb);
-  IupSetCallback(plot[5], "POSTDRAW_CB", (Icallback)postdraw_cb);
-  IupSetCallback(plot[5], "PREDRAW_CB", (Icallback)predraw_cb);
+  IupSetCallback(plot[5], "DELETE_CB", (Icallback) delete_cb);
+  IupSetCallback(plot[5], "SELECT_CB", (Icallback) select_cb);
+  IupSetCallback(plot[5], "POSTDRAW_CB", (Icallback) postdraw_cb);
+  IupSetCallback(plot[5], "PREDRAW_CB", (Icallback) predraw_cb);
+
+
+  /************************************************************************/
+  /* PLOT 6 */
+  IupPlotBegin(plot[6], 0);
+  for (theI=0; theI<=360; theI=theI+10) 
+  {
+    x = theI;
+    y = sin(x*PI/180.);
+    IupPlotAdd(plot[6], x, y);
+  }
+  IupPlotEnd(plot[6]);
+  IupSetAttribute(plot[6], "TITLE", "Step curve");
+  IupSetAttribute(plot[6], "DS_LINEWIDTH", "3");
+  IupSetAttribute(plot[6], "DS_LEGEND", "Line");
+  IupSetAttribute(plot[6], "DS_MODE", "STEP");
+
+  /************************************************************************/
+  /* PLOT 7 */
+  IupSetAttribute(plot[7], "TITLE", "Stem Mode");
+  //  IupSetAttribute(plot[4], "TITLEFONTSIZE", "16");
+  //  IupSetAttribute(plot[4], "MARGINTOP", "40");
+  //IupSetAttribute(plot[4], "MARGINLEFT", "45");
+  //IupSetAttribute(plot[4], "MARGINBOTTOM", "40");
+  IupSetAttribute(plot[7], "AXS_XAUTOMIN", "NO");
+  IupSetAttribute(plot[7], "AXS_XAUTOMAX", "NO");
+  IupSetAttribute(plot[7], "AXS_YAUTOMIN", "NO");
+  IupSetAttribute(plot[7], "AXS_YAUTOMAX", "NO");
+  IupSetAttribute(plot[7], "AXS_XMIN", "0");
+  IupSetAttribute(plot[7], "AXS_XMAX", "0.011");
+  IupSetAttribute(plot[7], "AXS_YMIN", "0");
+  IupSetAttribute(plot[7], "AXS_YMAX", "0.22");
+  IupSetAttribute(plot[7], "AXS_XTICKFORMAT", "%1.3f");
+  IupSetAttribute(plot[7], "LEGENDSHOW", "YES");
+  IupSetAttribute(plot[7], "LEGENDPOS", "BOTTOMRIGHT");
+
+  IupPlotBegin(plot[7], 0);
+  for (theI = 0; theI <= 10; theI++) {
+	  x = (0.0001 + theI*0.001);
+	  y = (0.2 - theFac*theI*theI);
+	  IupPlotAdd(plot[7], x, y);
+  }
+  IupPlotEnd(plot[7]);
+  IupSetAttribute(plot[7], "DS_MODE", "MARKSTEM");
+  IupSetAttribute(plot[7], "DS_MARKSTYLE", "HOLLOW_CIRCLE");
+
+  /************************************************************************/
+  /* PLOT 8 */
+  IupSetAttribute(plot[8], "TITLE", "Horizontal Bar Mode");
+  //  IupSetAttribute(plot[3], "TITLEFONTSIZE", "16");
+  //IupSetAttribute(plot[3], "MARGINTOP", "40");
+  //IupSetAttribute(plot[3], "MARGINLEFT", "30");
+  //IupSetAttribute(plot[3], "MARGINBOTTOM", "30");
+
+  {
+	  const double kLables[12] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+	  const double kData[12] = {10, 20, 30, 40, 50, 60, 70, 80, 90, 0, 10, 20};
+	  IupPlotBegin(plot[8], 0);
+	  for (theI = 0; theI<12; theI++)
+		  IupPlotAdd(plot[8], kData[theI], kLables[theI]);
+  }
+  IupPlotEnd(plot[8]);
+  IupSetAttribute(plot[8], "AXS_YAUTOMIN", "NO");
+  IupSetAttribute(plot[8], "AXS_YMIN", "0");
+  IupSetAttribute(plot[8], "DS_COLOR", "100 100 200");
+  IupSetAttribute(plot[8], "DS_MODE", "HORIZONTALBAR");
+
+  /************************************************************************/
+  /* PLOT 9 */
+  IupSetAttribute(plot[9], "TITLE", "Multi Bar Mode");
+  //  IupSetAttribute(plot[3], "TITLEFONTSIZE", "16");
+  //IupSetAttribute(plot[3], "MARGINTOP", "40");
+  //IupSetAttribute(plot[3], "MARGINLEFT", "30");
+  //IupSetAttribute(plot[3], "MARGINBOTTOM", "30");
+
+  {
+	  const char * kLables[12] = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
+	  const double kData[12] = {10, 20, 30, 40, 50, 60, 70, 80, 90, 0, 10, 20};
+	  IupPlotBegin(plot[9], 1);
+	  for (theI = 0; theI<12; theI++)
+		  IupPlotAddStr(plot[9], kLables[theI], kData[theI]);
+  }
+  IupPlotEnd(plot[9]);
+  IupSetAttribute(plot[9], "DS_MODE", "MULTIBAR");
+
+  {
+	  const char * kLables[12] = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
+	  const double kData[12] = {5, 10, 15, 20, 25, 30, 35, 40, 45, 0, 5, 10};
+	  IupPlotBegin(plot[9], 1);
+	  for (theI = 0; theI<12; theI++)
+		  IupPlotAddStr(plot[9], kLables[theI], kData[theI]);
+  }
+  IupPlotEnd(plot[9]);
+  IupSetAttribute(plot[9], "DS_MODE", "MULTIBAR");
+
+  {
+    const char * kLables[12] = { "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" };
+    const double kData[12] = { 15, 20, 15, 25, 45, 10, 5, 0, 45, 90, 115, 110 };
+    IupPlotBegin(plot[9], 1);
+    for (theI = 0; theI<12; theI++)
+      IupPlotAddStr(plot[9], kLables[theI], kData[theI]);
+  }
+  IupPlotEnd(plot[9]);
+  IupSetAttribute(plot[9], "DS_MODE", "MULTIBAR");
 }
 
 static int tabs_get_index(void)
