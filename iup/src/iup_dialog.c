@@ -39,6 +39,13 @@ InativeHandle* iupDialogGetNativeParent(Ihandle* ih)
     return (InativeHandle*)iupAttribGet(ih, "NATIVEPARENT");
 }
 
+static char* iDialogGetBorderSizeAttrib(Ihandle* ih)
+{
+  int border, caption, menu;
+  iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+  return iupStrReturnInt(border);
+}
+
 int iupDialogSetClientSizeAttrib(Ihandle* ih, const char* value)
 {
   int width = 0, height = 0;
@@ -333,6 +340,15 @@ static void iDialogSetChildrenPositionMethod(Ihandle* ih, int x, int y)
     y = 0;
 
     if (offset) iupStrToIntInt(offset, &x, &y, 'x');
+
+    if (iupAttribGetBoolean(ih, "CUSTOMFRAME"))
+    {
+      int border, caption, menu;
+      iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+
+      x += border;
+      y += border + caption + menu;
+    }
 
     /* Child coordinates are relative to client left-top corner. */
     iupBaseSetPosition(ih->firstchild, x, y);
@@ -743,8 +759,16 @@ void iupDialogGetDecorSize(Ihandle* ih, int *decorwidth, int *decorheight)
   int border, caption, menu;
   iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
 
-  *decorwidth = 2*border;
-  *decorheight = 2*border + caption + menu;
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAMEEX"))
+  {
+    *decorwidth = 0;
+    *decorheight = 0;
+  }
+  else
+  {
+    *decorwidth = 2 * border;
+    *decorheight = 2 * border + caption + menu;
+  }
 }
 
 static int iDialogSetHideTaskbarAttrib(Ihandle *ih, const char *value)
@@ -921,6 +945,7 @@ Iclass* iupDialogNewClass(void)
   iupClassRegisterAttribute(ic, "MINBOX", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BORDERSIZE", iDialogGetBorderSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   
   iupClassRegisterAttribute(ic, "DEFAULTENTER", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DEFAULTESC",   NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NO_INHERIT);

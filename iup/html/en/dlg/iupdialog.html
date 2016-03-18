@@ -55,6 +55,8 @@ working in GTK 3. </u1:p>
 only): Shows a resize border around the dialog. Default: &quot;YES&quot;. BORDER=NO is 
 useful only when RESIZE=NO, MAXBOX=NO, MINBOX=NO, MENUBOX=NO and TITLE=NULL, if 
 any of these are defined there will be always some border.</p>
+<p><strong>BORDERSIZE</strong> (<font SIZE="3">non inheritable</font>) (read 
+only): returns the border size. (since 3.18)</p>
 <p><strong>CHILDOFFSET</strong>: Allow to specify a position offset for the 
 child. Available for native containers only. It will not affect the natural 
 size, and allows to position controls outside the client area. Format &quot;<em>dx</em>x<em>dy</em>&quot;,
@@ -63,6 +65,28 @@ offsets, respectively, in pixels. Default: 0x0. (since 3.14)</p>
 
 <p><a href="../attrib/iup_cursor.html">CURSOR</a> (<font SIZE="3">non 
 inheritable</font>): Defines a cursor for the dialog.</p>
+<p>
+<font SIZE="3">
+	<strong>CUSTOMFRAME</strong> [Windows Only] (non 
+inheritable): allows the application to customize the frame elements by drawing 
+them with the CUSTOMFRAME_CB callback. Can be Yes or No. The Window client area 
+is expanded to include the whole window. (since 3.18)</font></p>
+<p><font SIZE="3">
+	<strong>CUSTOMFRAMEEX</strong> [Windows Only] (non 
+inheritable): Same as CUSTOMFRAME but used when the application use controls for 
+frame elements like caption, minimize button, maximize button, and close 
+buttons. The application is responsible for leaving space for the borders. The 
+CUSTOMFRAME_CB callback will also work. (since 3.18)</font></p>
+<p><font SIZE="3">
+	<strong>CUSTOMFRAMECAPTION</strong> [Windows Only] (non 
+inheritable): height of the caption area. If not defined it will use the system 
+size. (since 3.18)</font></p>
+<p><font SIZE="3">
+	<strong>CUSTOMFRAMECAPTIONLIMITS</strong> [Windows Only] (non 
+inheritable): limits of the caption area at left and at right. The caption area 
+is always expanded inside the limits when the dialog is resized. Format is &quot;left:right&quot; 
+or in C &quot;%d:%d&quot;. Default: &quot;0:0&quot;. This will allow the dialog to be moved by the 
+system when the user click and drag the caption area. (since 3.18)</font></p>
 
 <p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): 
 Enable or disable the drop of files. Default: NO, but if DROPFILES_CB is 
@@ -390,6 +414,23 @@ character. </p>
 
 <p><a href="../call/iup_dropfiles_cb.html">DROPFILES_CB</a> [Windows and GTK 
 Only]: Action generated when one or more files are dropped in the dialog.</p>
+<p><strong>CUSTOMFRAME_CB</strong>
+  [Windows Only]: Called when the dialog must be redraw. Although it is designed 
+for drawing the frame elements, all the dialog must be painted. Works only when 
+CUSTOMFRAME or CUSTOMFRAMEEX is defined. The dialog can be used just like an 
+IupCanvas to draw its elements, the
+<b style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
+HDC_WMPAINT</b><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">&nbsp;and
+<strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
+CLIPRECT</strong>&nbsp;attributes are defined during the callback</span></span>. 
+(since 3.18)</p>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:customframe() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+<blockquote>
+
+<p><strong>ih</strong>: identifier of the element that activated the event.</p>
+</blockquote>
+
 <p><strong>MDIACTIVATE_CB</strong>
   [Windows Only]: Called when a MDI child window is activated. Only the MDI 
 child receive this message. It is not called when the child is shown for the 

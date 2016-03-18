@@ -5,6 +5,9 @@
  */
 #include <windows.h>
 #include <commdlg.h>
+#undef NTDDI_VERSION 
+#define NTDDI_VERSION NTDDI_VISTA
+#include <uxtheme.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -147,24 +150,29 @@ static void winDialogGetWindowDecor(Ihandle* ih, int *border, int *caption, int 
 
   *border = wi.cxWindowBorders;
 
-  if (wi.rcClient.bottom == wi.rcClient.top || 
-      wi.rcClient.top > wi.rcWindow.bottom ||
-      wi.rcClient.bottom > wi.rcWindow.bottom)
+  *caption = iupAttribGetInt(ih, "CUSTOMFRAMECAPTION");
+  if (*caption == 0)
   {
-    if (wi.dwStyle & WS_CAPTION)
+    if (wi.rcClient.bottom == wi.rcClient.top ||
+        wi.rcClient.top > wi.rcWindow.bottom ||
+        wi.rcClient.bottom > wi.rcWindow.bottom ||
+        (wi.rcWindow.bottom - wi.rcWindow.top) == (wi.rcClient.bottom - wi.rcClient.top))
     {
-      if (wi.dwExStyle & WS_EX_TOOLWINDOW)
-        *caption = GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
+      if (wi.dwStyle & WS_CAPTION)
+      {
+        if (wi.dwExStyle & WS_EX_TOOLWINDOW)
+          *caption = GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
+        else
+          *caption = GetSystemMetrics(SM_CYCAPTION);   /* normal window */
+      }
       else
-        *caption = GetSystemMetrics(SM_CYCAPTION);   /* normal window */
+        *caption = 0;
     }
     else
-      *caption = 0;
-  }
-  else
-  {
-    /* caption = window height - borders - client height - menu */
-    *caption = (wi.rcWindow.bottom-wi.rcWindow.top) - 2*wi.cyWindowBorders - (wi.rcClient.bottom-wi.rcClient.top) - menu; 
+    {
+      /* caption = window height - borders - client height - menu */
+      *caption = (wi.rcWindow.bottom - wi.rcWindow.top) - 2 * wi.cyWindowBorders - (wi.rcClient.bottom - wi.rcClient.top) - menu;
+    }
   }
 }
 
@@ -190,10 +198,14 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
     *caption = 0;
     if (has_titlebar)
     {
-      if (iupAttribGetBoolean(ih, "TOOLBOX") && iupAttribGet(ih, "PARENTDIALOG"))
-        *caption = GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
-      else
-        *caption = GetSystemMetrics(SM_CYCAPTION);   /* normal window */
+      *caption = iupAttribGetInt(ih, "CUSTOMFRAMECAPTION");
+      if (*caption == 0)
+      {
+        if (iupAttribGetBoolean(ih, "TOOLBOX") && iupAttribGet(ih, "PARENTDIALOG"))
+          *caption = GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
+        else
+          *caption = GetSystemMetrics(SM_CYCAPTION);   /* normal window */
+      }
 
       padded_border = GetSystemMetrics(SM_CXPADDEDBORDER);
     }
@@ -361,6 +373,7 @@ static void winDialogResize(Ihandle* ih, int width, int height)
   IFnii cb;
 
   iupdrvDialogGetSize(ih, NULL, &(ih->currentwidth), &(ih->currentheight));
+
   cb = (IFnii)IupGetCallback(ih, "RESIZE_CB");
   if (!cb || cb(ih, width, height)!=IUP_IGNORE)  /* width and height here are for the client area */
   {
@@ -370,8 +383,170 @@ static void winDialogResize(Ihandle* ih, int width, int height)
   }
 }
 
+static void winDialogHitTestCustomFrame(Ihandle* ih, LPARAM lp, LRESULT *result)
+{
+  RECT rcWindow;
+  int x = GET_X_LPARAM(lp);
+  int y = GET_Y_LPARAM(lp);
+  int w, h;
+  int border, caption;
+  iupdrvScreenToClient(ih, &x, &y);
+
+  GetWindowRect(ih->handle, &rcWindow);
+  w = rcWindow.right - rcWindow.left - 1;
+  h = rcWindow.bottom - rcWindow.top - 1;
+
+  winDialogGetWindowDecor(ih, &border, &caption, 0);
+
+  *result = 0;
+
+  if (x >= 0 && x < border)
+  {
+    if (y >= 0 && y < border)
+      *result = HTTOPLEFT;
+    else if (y > h - border && y <= h)
+      *result = HTBOTTOMLEFT;
+    else if (y >= border && y <= h - border)
+      *result = HTLEFT;
+  }
+  else if (x > w - border && x <= w)
+  {
+    if (y >= 0 && y < border)
+      *result = HTTOPRIGHT;
+    else if (y > h - border && y <= h)
+      *result = HTBOTTOMRIGHT;
+    else if (y >= border && y <= h - border)
+      *result = HTRIGHT;
+  }
+  else if (x >= border && x <= w - border)
+  {
+    if (y >= 0 && y < border)
+      *result = HTTOP;
+    else if (y > h - border && y <= h)
+      *result = HTBOTTOM;
+    else if (y >= border && y < caption + border)
+    {
+      int caption_left = 0, caption_right = 0;
+      char* value = iupAttribGet(ih, "CUSTOMFRAMECAPTIONLIMITS");
+      if (value) iupStrToIntInt(value, &caption_left, &caption_right, ':');
+
+      if (x >= border + caption_left && x <= w - border - caption_right)
+        *result = HTCAPTION;
+    }
+    else if (y >= caption + border && y < h - border)
+      *result = HTCLIENT;
+  }
+}
+
+static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+{
+  switch (msg)
+  {
+  case WM_PAINT:
+    {
+      IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAME_CB");
+      if (cb)
+      {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(ih->handle, &ps);
+        iupAttribSet(ih, "HDC_WMPAINT", (char*)hdc);
+        iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", ps.rcPaint.left, ps.rcPaint.top, ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top);
+
+        cb(ih);
+
+        iupAttribSet(ih, "CLIPRECT", NULL);
+        iupAttribSet(ih, "HDC_WMPAINT", NULL);
+        EndPaint(ih->handle, &ps);
+
+        *result = 0;
+        return 1;
+      }
+
+      break;
+    }
+  case WM_NCCALCSIZE:
+    {
+      if (wp == TRUE)
+      {
+        *result = 0;
+        return 1;
+      }
+
+      break;
+    }
+  case WM_NCHITTEST:
+    {
+      winDialogHitTestCustomFrame(ih, lp, result);
+
+      if (*result != 0)
+        return 1;
+
+      break;
+    }
+  case WM_XBUTTONDBLCLK:
+  case WM_LBUTTONDBLCLK:
+  case WM_MBUTTONDBLCLK:
+  case WM_RBUTTONDBLCLK:
+  case WM_XBUTTONDOWN:
+  case WM_LBUTTONDOWN:
+  case WM_MBUTTONDOWN:
+  case WM_RBUTTONDOWN:
+    {
+      SetCapture(ih->handle);
+
+      if (iupwinButtonDown(ih, msg, wp, lp))
+      {
+        /* refresh the cursor, it could have been changed in BUTTON_CB */
+        iupwinRefreshCursor(ih);
+      }
+
+      if (msg==WM_XBUTTONDOWN || msg==WM_XBUTTONDBLCLK)
+        *result = 1;
+      else
+        *result = 0;
+      return 1;
+    }
+  case WM_MOUSEMOVE:
+    {
+      if (iupwinMouseMove(ih, msg, wp, lp))
+      {
+        /* refresh the cursor, it could have been changed in MOTION_CB */
+        iupwinRefreshCursor(ih);
+      }
+
+      break; /* let iupwinBaseMsgProc process enter/leavewin */
+    }
+  case WM_XBUTTONUP:
+  case WM_LBUTTONUP:
+  case WM_MBUTTONUP:
+  case WM_RBUTTONUP:
+    {
+      ReleaseCapture();
+
+      if (iupwinButtonUp(ih, msg, wp, lp))
+      {
+        /* refresh the cursor, it could have been changed in BUTTON_CB */
+        iupwinRefreshCursor(ih);
+      }
+
+      *result = 0;
+      if (msg==WM_XBUTTONUP)
+        *result = 1;
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
 static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAME") || iupAttribGetBoolean(ih, "CUSTOMFRAMEEX"))
+  {
+    if (winDialogCustomFrameProc(ih, msg, wp, lp, result))
+      return 1;
+  }
+
   if (iupwinBaseContainerMsgProc(ih, msg, wp, lp, result))
     return 1;
 
@@ -569,37 +744,49 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
     }
   case WM_ERASEBKGND:
     {
-      HBITMAP hBitmap = (HBITMAP)iupAttribGet(ih, "_IUPWIN_BACKGROUND_BITMAP");
-      if (hBitmap) 
+      IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAME_CB");
+      if (cb)
       {
-        RECT rect;
-        HDC hdc = (HDC)wp;
-
-        HBRUSH hBrush = CreatePatternBrush(hBitmap);
-        GetClientRect(ih->handle, &rect); 
-        FillRect(hdc, &rect, hBrush); 
-        DeleteObject(hBrush);
+        InvalidateRect(ih->handle, NULL, FALSE);
 
         /* return non zero value */
         *result = 1;
-        return 1; 
+        return 1;
       }
       else
       {
-        unsigned char r, g, b;
-        char* color = iupAttribGet(ih, "_IUPWIN_BACKGROUND_COLOR");
-        if (iupStrToRGB(color, &r, &g, &b))
+        HBITMAP hBitmap = (HBITMAP)iupAttribGet(ih, "_IUPWIN_BACKGROUND_BITMAP");
+        if (hBitmap)
         {
           RECT rect;
           HDC hdc = (HDC)wp;
 
-          SetDCBrushColor(hdc, RGB(r,g,b));
-          GetClientRect(ih->handle, &rect); 
-          FillRect(hdc, &rect, (HBRUSH)GetStockObject(DC_BRUSH)); 
+          HBRUSH hBrush = CreatePatternBrush(hBitmap);
+          GetClientRect(ih->handle, &rect);
+          FillRect(hdc, &rect, hBrush);
+          DeleteObject(hBrush);
 
           /* return non zero value */
           *result = 1;
           return 1;
+        }
+        else
+        {
+          unsigned char r, g, b;
+          char* color = iupAttribGet(ih, "_IUPWIN_BACKGROUND_COLOR");
+          if (iupStrToRGB(color, &r, &g, &b))
+          {
+            RECT rect;
+            HDC hdc = (HDC)wp;
+
+            SetDCBrushColor(hdc, RGB(r, g, b));
+            GetClientRect(ih->handle, &rect);
+            FillRect(hdc, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+
+            /* return non zero value */
+            *result = 1;
+            return 1;
+          }
         }
       }
       break;
@@ -1071,6 +1258,19 @@ static void winDialogLayoutUpdateMethod(Ihandle *ih)
 static char* winDialogGetClientOffsetAttrib(Ihandle *ih)
 {
   (void)ih;
+
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAME"))
+  {
+    int x, y;
+    int border, caption, menu;
+    iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+
+    x = border;
+    y = border + caption + menu;
+
+    return iupStrReturnIntInt(x, y, 'x');
+  }
+
   return "0x0";
 }
 
@@ -1078,6 +1278,18 @@ static char* winDialogGetClientSizeAttrib(Ihandle* ih)
 {
   RECT rect;
   GetClientRect(ih->handle, &rect);
+
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAME"))
+  {
+    int border, caption, menu;
+    iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+
+    rect.left += border;
+    rect.right -= border;
+    rect.bottom -= border;
+    rect.top += border + caption + menu;
+  }
+
   return iupStrReturnIntInt((int)(rect.right-rect.left), (int)(rect.bottom-rect.top), 'x');
 }
 
@@ -1582,6 +1794,7 @@ void iupdrvDialogInitClass(Iclass* ic)
 
   /* Callback Windows Only*/
   iupClassRegisterCallback(ic, "MDIACTIVATE_CB", "");
+  iupClassRegisterCallback(ic, "CUSTOMFRAME_CB", "");
 
   /* Callback Windows and GTK Only */
   iupClassRegisterCallback(ic, "TRAYCLICK_CB", "iii");
@@ -1645,6 +1858,12 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLEICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+
+  iupClassRegisterAttribute(ic, "CUSTOMFRAME", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CUSTOMFRAMEEX", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CUSTOMFRAMECAPTION", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CUSTOMFRAMECAPTIONLIMITS", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+
 
 #ifdef __ITaskbarList3_FWD_DEFINED__
   iupClassRegisterAttribute(ic, "TASKBARPROGRESS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

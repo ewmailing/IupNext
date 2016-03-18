@@ -60,6 +60,35 @@ static unsigned char pixmap_cursor [ ] =
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 } ;
 
+#ifdef WIN32
+#include <windows.h>
+
+static int customframe_cb(Ihandle *ih)
+{
+  RECT rect;
+  int w, h;
+  HPEN oldPen;
+  HDC hDC = (HDC)IupGetAttribute(ih, "HDC_WMPAINT");
+
+  IupGetIntInt(ih, "RASTERSIZE", &w, &h);
+
+  SetRect(&rect, 0, 0, w, h);
+  FillRect(hDC, &rect, GetStockObject(BLACK_BRUSH)); //WHITE_BRUSH
+
+  oldPen = SelectObject(hDC, GetStockObject(DC_PEN));
+  SetDCPenColor(hDC, RGB(255, 0, 0));
+
+  MoveToEx(hDC, 0, 0, NULL);
+  LineTo(hDC, w, h);
+  MoveToEx(hDC, 0, h, NULL);
+  LineTo(hDC, w, 0);
+
+  SelectObject(hDC, oldPen);
+
+  return IUP_DEFAULT;
+}
+#endif
+
 static int close_cb(Ihandle *ih)
 {
   printf("CLOSE_CB(%s) with IupDestroy\n", IupGetAttribute(ih, "TESTTITLE"));
@@ -201,6 +230,9 @@ static int k_any(Ihandle *ih, int c)
     break;
   case K_6:
     new_dialog(6, "FULLSCREEN");
+    break;
+  case K_7:
+    new_dialog(7, "CUSTOMFRAME");
     break;
   case K_p:
     {
@@ -412,6 +444,19 @@ static void new_dialog(int test, char* tip)
   {
     IupSetAttribute(dlg, "FULLSCREEN", "YES");
     IupShow(dlg);
+  }
+  else if (test == 7)
+  {
+#ifdef WIN32
+    IupSetAttribute(dlg, "CUSTOMFRAME", "YES");
+    IupSetAttribute(dlg, "CUSTOMFRAMECAPTIONLIMITS", "0:30");
+      //IupSetAttribute(dlg, "BGCOLOR", "255 0 255");
+    IupSetCallback(dlg, "CUSTOMFRAME_CB", customframe_cb);
+
+    IupAppend(dlg, IupSetAttributes(IupFrame(IupSetAttributes(IupLabel("Label Test"), "EXPAND=Yes")), "BGCOLOR=\"0 255 0\""));
+
+    IupShow(dlg);
+#endif
   }
 }
 

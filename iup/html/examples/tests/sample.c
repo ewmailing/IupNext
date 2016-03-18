@@ -546,15 +546,30 @@ void SampleTest(void)
             NULL),
     NULL);
   IupSetAttribute(_vbox_1,"MARGIN","5x5");
-  IupSetAttribute(_vbox_1,"GAP","5");
+  IupSetAttribute(_vbox_1, "GAP", "5");
 
   dlg = IupDialog(_vbox_1);
   IupSetHandle("dlg",dlg);
-  IupSetAttribute(dlg,"MENU","mnu");
+//  IupSetAttribute(dlg,"MENU","mnu");
   IupSetAttribute(dlg,"TITLE","IupDialog Title");
 //  IupSetAttribute(dlg,"COMPOSITED","YES");   /* Windows Only */
 //  IupSetAttribute(dlg, "OPACITY", "192");
 //  IupSetAttribute(dlg, "RESIZE", "NO");
+
+#if 0
+  {
+    Ihandle* caption_bar = IupSetAttributes(IupBackgroundBox(IupHbox(
+      IupSetAttributes(IupLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, HTTRANSPARENT=Yes"),
+      IupSetAttributes(IupButton("_", NULL), "RASTERSIZE=50, FLAT=Yes, CANFOCUS=NO, FONTSTYLE=Bold"),
+      IupSetAttributes(IupButton("Max", NULL), "RASTERSIZE=50"),
+      IupSetAttributes(IupButton(" X ", NULL), "RASTERSIZE=50"),
+      NULL)), "HTTRANSPARENT=Yes, BGCOLOR=\"100 150 255\"");
+    IupInsert(_vbox_1, NULL, caption_bar);
+
+    IupSetAttribute(dlg, "CUSTOMFRAMEEX", "YES");
+    IupSetAttribute(dlg, "CUSTOMFRAMECAPTIONLIMITS", "0:150");
+  }
+#endif
 
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
 //  IupSetAttribute(_vbox_1, "BGCOLOR", "92 92 255");
