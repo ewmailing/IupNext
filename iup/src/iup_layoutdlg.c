@@ -541,7 +541,7 @@ static void iLayoutExportDialogLua(FILE* file, Ihandle* dialog, const char* file
 static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* name, int indent_level)
 {
   int i, count, indent_count = 0;
-  char* format = ih->iclass->format;
+  const char* format = ih->iclass->format;
   char classname[100];
   char indent[300] = "";
 

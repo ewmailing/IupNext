@@ -114,11 +114,11 @@ static int iBackgroundBoxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-Iclass* iupBackgroundBoxNewClass(void)
+Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name)
 {
-  Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
+  Iclass* ic = iupClassNew(iupRegisterFindClass(base_name));
 
-  ic->name   = "backgroundbox";
+  ic->name = (char*)name;
   ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype  = IUP_CHILDMANY+1;  /* 1 child */
@@ -151,6 +151,11 @@ Iclass* iupBackgroundBoxNewClass(void)
   iupClassRegisterReplaceAttribDef  (ic, "SCROLLBAR", "NO", NULL);
 
   return ic;
+}
+
+Iclass* iupBackgroundBoxNewClass(void)
+{
+  return iupBackgroundBoxNewBaseClass("backgroundbox", "canvas");
 }
 
 Ihandle* IupBackgroundBox(Ihandle* child)

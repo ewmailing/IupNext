@@ -16,12 +16,18 @@
     <ClCompile Include="..\..\srclua5\ctrl\iuplua_glcanvas.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\srclua5\ctrl\il_glbackgroundbox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\srclua5\ctrl\iupluagl.def">
       <Filter>Source Files</Filter>
     </None>
     <None Include="..\..\srclua5\ctrl\glcanvas.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\..\srclua5\ctrl\glbackgroundbox.lua">
       <Filter>Lua</Filter>
     </None>
   </ItemGroup>

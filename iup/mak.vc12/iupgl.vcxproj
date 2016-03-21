@@ -96,6 +96,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\srcgl\iup_glcanvas.c" />
     <ClCompile Include="..\srcgl\iup_glcanvas_win.c" />
     <ClCompile Include="..\srcgl\iup_glcanvas_x.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

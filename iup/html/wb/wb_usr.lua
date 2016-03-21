@@ -1450,6 +1450,10 @@ wb_usr.tree =
               link= "ctrl/iupglcanvas.html"
             },
             {
+              name= {nl= "IupGLBackgroundBox"},
+              link= "ctrl/iupglbackgroundbox.html"
+            },
+            {
               name= {en= "IupGLControls"},
               link= "iupglcontrols.html",
               

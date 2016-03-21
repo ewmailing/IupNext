@@ -313,7 +313,7 @@ char* IupGetClassName(Ihandle *ih)
   if (!iupObjectCheck(ih))
     return NULL;
 
-  return ih->iclass->name;
+  return (char*)ih->iclass->name;
 }
 
 char* IupGetClassType(Ihandle *ih)

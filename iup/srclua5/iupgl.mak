@@ -54,7 +54,7 @@ else
   LOHDIR = loh$(LUASFX)
 endif
 
-SRCLUA = glcanvas.lua
+SRCLUA = glcanvas.lua glbackgroundbox.lua
 LIBS = iupgl iuplua$(LUASFX)
 
 GC = $(addsuffix .c, $(basename $(SRCLUA)))
