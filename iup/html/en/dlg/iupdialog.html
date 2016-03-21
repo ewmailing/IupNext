@@ -70,7 +70,10 @@ inheritable</font>): Defines a cursor for the dialog.</p>
 	<strong>CUSTOMFRAME</strong> [Windows Only] (non 
 inheritable): allows the application to customize the frame elements by drawing 
 them with the CUSTOMFRAME_CB callback. Can be Yes or No. The Window client area 
-is expanded to include the whole window. (since 3.18)</font></p>
+is expanded to include the whole window. Notice that the dialog attributes like 
+BORDER, RESIZE, MAXBOX, MINBOX and TITLE must still be defined. But maximize, 
+minimize and close buttons must be manually implemented. One drawback is that 
+menu bars will not work. (since 3.18)</font></p>
 <p><font SIZE="3">
 	<strong>CUSTOMFRAMEEX</strong> [Windows Only] (non 
 inheritable): Same as CUSTOMFRAME but used when the application use controls for 
@@ -423,7 +426,8 @@ IupCanvas to draw its elements, the
 HDC_WMPAINT</b><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">&nbsp;and
 <strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
 CLIPRECT</strong>&nbsp;attributes are defined during the callback</span></span>. 
-(since 3.18)</p>
+For mouse callbacks use the same callbacks as <strong>IupCanvas</strong>, such 
+as <a href="../call/iup_button_cb.html">BUTTON_CB</a> and <a href="../call/iup_motion_cb.html">MOTION_CB</a>. (since 3.18)</p>
 <pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:customframe() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
 <blockquote>
