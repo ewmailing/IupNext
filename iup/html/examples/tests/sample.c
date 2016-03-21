@@ -556,7 +556,7 @@ void SampleTest(void)
 //  IupSetAttribute(dlg, "OPACITY", "192");
 //  IupSetAttribute(dlg, "RESIZE", "NO");
 
-#if 0
+#if 1
   {
     Ihandle* caption_bar = IupSetAttributes(IupBackgroundBox(IupHbox(
       IupSetAttributes(IupLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, HTTRANSPARENT=Yes"),
