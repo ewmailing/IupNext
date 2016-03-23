@@ -579,6 +579,12 @@ also set. (STEM to STEP since 3.18)</p>
 <p><b>DS_MARKSIZE</b>: mark size of the current dataset in pixels. Default: 7. 
 If a sample extra value is set then it will ignore this value and use the sample 
 extra value as mark size, except for ERRORBAR mode (since 3.18).</p>
+<p><strong>DS_BAROUTLINE</strong>: draws an outline when mode is BAR, 
+HORIZONTALBAR or MULTIBAR. (since 3.18)</p>
+<p><strong>DS_BAROUTLINECOLOR</strong>: color of the outline. Default: "0 0 0". 
+(since 3.18)</p>
+<p><strong>DS_BARSPACING</strong>: blank spacing percent between bars when mode 
+is BAR, HORIZONTALBAR or MULTIBAR. Can be 0 to 100. Default: 10. (since 3.18)</p>
 <p><b>DS_REMOVE</b> (write-only): removes a sample from the current dataset given its index.</p>
 <p><strong>DS_USERDATA</strong>: user data associated with the dataset. (since 
 3.13)</p>
@@ -900,6 +906,10 @@ heavily changed. Zoom, Pan and Selection is now done totally different from
     <tr>
       <td><img border="0" src="images/iup_plot8.png"></td>
       <td><img border="0" src="images/iup_plot9.png"></td>
+    </tr>
+    <tr>
+      <td><img border="0" src="images/iup_plot10.png"></td>
+      <td></td>
     </tr>
   </table>
   </center>

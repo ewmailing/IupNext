@@ -160,7 +160,7 @@ bool iupPlotDataBool::CalculateRange(double &outMin, double &outMax) const
 
 iupPlotDataSet::iupPlotDataSet(bool strXdata)
   :mColor(CD_BLACK), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mMarkStyle(CD_X), mMarkSize(7),
-  mMultibarIndex(-1), mMultibarCount(0), mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false)
+  mMultibarIndex(-1), mMultibarCount(0), mBarOutlineColor(0), mBarShowOutline(false), mBarSpacingPercent(10), mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false)
 {
   if (strXdata)
     mDataX = (iupPlotDataBase*)(new iupPlotDataString());

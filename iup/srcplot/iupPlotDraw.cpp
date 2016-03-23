@@ -39,6 +39,11 @@ static inline void iPlotDrawRect(cdCanvas* canvas, int inX, int inY, int inW, in
   cdCanvasRect(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
 }
 
+static inline void iPlotDrawRect(cdCanvas* canvas, double inX, double inY, double inW, double inH)
+{
+  cdfCanvasRect(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
+}
+
 static inline void iPlotDrawBox(cdCanvas* canvas, double inX, double inY, double inW, double inH)
 {
   cdfCanvasBox(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
@@ -696,9 +701,7 @@ void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlo
       if (mExtra)
       {
         if (inErrorBar)
-        {
-           // TODO
-        }
+          DrawErrorBar(inTrafoY, canvas, i, theY, theScreenX);
         else
           SetSampleExtraMarkSize(inTrafoY, canvas, i);
       }
@@ -719,7 +722,20 @@ void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlo
   cdCanvasEnd(canvas);
 }
 
-void iupPlotDataSet::SetSampleExtraMarkSize(const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, int inSampleIndex) const
+void iupPlotDataSet::DrawErrorBar(const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, int index, double theY, double theScreenX) const
+{
+  double theError = mExtra->GetSample(index);
+  double theScreenErrorY1 = inTrafoY->Transform(theY - theError);
+  double theScreenErrorY2 = inTrafoY->Transform(theY + theError);
+
+  double theBarWidth = (double)mMarkSize;  /* fixed size in screen coordinates */
+
+  cdfCanvasLine(canvas, theScreenX, theScreenErrorY1, theScreenX, theScreenErrorY2);
+  cdfCanvasLine(canvas, theScreenX - theBarWidth, theScreenErrorY1, theScreenX + theBarWidth, theScreenErrorY1);
+  cdfCanvasLine(canvas, theScreenX - theBarWidth, theScreenErrorY2, theScreenX + theBarWidth, theScreenErrorY2);
+}
+
+void iupPlotDataSet::SetSampleExtraMarkSize(const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, int inSampleIndex) const 
 {
   double theMarkSize = mExtra->GetSample(inSampleIndex);
   int theScreenSize = 1;
@@ -823,8 +839,8 @@ void iupPlotDataSet::DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlot
   double theMaxX = mDataX->GetSample(theCount - 1);
   double theScreenMaxX = inTrafoX->Transform(theMaxX);
 
-  double theBarWidth = (theScreenMaxX - theScreenMinX + 1) / theCount;
-  theBarWidth *= 0.9;
+  double theBarWidth = (theScreenMaxX - theScreenMinX) / (theCount - 1);
+  theBarWidth *= 1 - (double)mBarSpacingPercent/100.0;
 
   for (int i = 0; i < theCount; i++)
   {
@@ -840,6 +856,13 @@ void iupPlotDataSet::DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlot
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
     iPlotDrawBox(canvas, theBarX, theScreenY0, theBarWidth, theBarHeight);
+
+    if (mBarShowOutline)
+    {
+      long oldColor = cdCanvasForeground(canvas, mBarOutlineColor);
+      iPlotDrawRect(canvas, theBarX, theScreenY0, theBarWidth, theBarHeight);
+      cdCanvasForeground(canvas, oldColor);
+    }
   }
 }
 
@@ -854,8 +877,8 @@ void iupPlotDataSet::DrawDataHorizontalBar(const iupPlotTrafoBase *inTrafoX, con
   double theMaxY = mDataY->GetSample(theCount - 1);
   double theScreenMaxY = inTrafoY->Transform(theMaxY);
 
-  double theBarHeight = (theScreenMaxY - theScreenMinY + 1) / theCount;
-  theBarHeight *= .9;
+  double theBarHeight = (theScreenMaxY - theScreenMinY) / (theCount - 1);
+  theBarHeight *= 1 - (double)mBarSpacingPercent / 100.0;
 
   for (int i = 0; i < theCount; i++)
   {
@@ -884,8 +907,8 @@ void iupPlotDataSet::DrawDataMultiBar(const iupPlotTrafoBase *inTrafoX, const iu
   double theMaxX = mDataX->GetSample(theCount - 1);
   double theScreenMaxX = inTrafoX->Transform(theMaxX);
 
-  double theTotalBarWidth = (theScreenMaxX - theScreenMinX + 1) / theCount;
-  theTotalBarWidth *= 0.9;
+  double theTotalBarWidth = (theScreenMaxX - theScreenMinX) / (theCount - 1);
+  theTotalBarWidth *= 1 - (double)mBarSpacingPercent / 100.0;
   double theBarWidth = theTotalBarWidth / mMultibarCount;
 
   for (int i = 0; i < theCount; i++)
