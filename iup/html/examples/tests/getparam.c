@@ -36,8 +36,11 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
   case IUP_GETPARAM_BUTTON3:
     printf("IupGetParam - Button3 (Help)\n");
     break;
+    /* read-only tests */
 //  case 1:
-//    return 0;  /* make it read-only */
+//    return 0;  
+//  case 9:
+//    return 0;
   default:
     {
       Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", param_index);

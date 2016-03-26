@@ -117,9 +117,6 @@
     <ClCompile Include="..\src\mot\iupmot_str.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mot\iupmot_datepick.c">
-      <Filter>src_controls</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\mot\iupmot_calendar.c">
       <Filter>src_controls</Filter>
     </ClCompile>
