@@ -593,7 +593,7 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
         int count = 0;
 
         char* dir = iupwinStrFromSystemFilename(openfilename.lpstrFile);  /* already is the directory, but without the last separator */
-        iupAttribSetStrf(ih, "DIRECTORY", "%s//", dir);  /* add the last separator */
+        iupAttribSetStrf(ih, "DIRECTORY", "%s\\", dir);  /* add the last separator */
 
         /* first the path */
         iupAttribSetStrId(ih, "MULTIVALUE", count, iupAttribGet(ih, "DIRECTORY"));  /* here count=0 always */

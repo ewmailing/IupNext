@@ -294,6 +294,7 @@ char* iupStrFileGetTitle(const char *file_name);
 
 /** Returns the file path of a file name.
  * Supports UNIX and Windows directory separators.
+ * The returned value includes the last separator.
  * \ingroup str */
 char* iupStrFileGetPath(const char *file_name);
 
