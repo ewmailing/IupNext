@@ -183,6 +183,7 @@ elems[] =
   { "GLExpander",   code_elem,         check_elem,        IUPGLCONTROLS_H },
   { "GLScrollBox",  code_elem,         check_elem,        IUPGLCONTROLS_H },
   { "GLSizeBox",    code_elem,         check_elem,        IUPGLCONTROLS_H },
+  { "GLBackgroundBox", code_elem,      check_elem,        IUPGL_H  },
   { "@@@",          code_iupCpi,       check_iupCpi,      0  }
 };
 #define nelems (sizeof(elems)/sizeof(elems[0]))
