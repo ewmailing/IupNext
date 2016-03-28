@@ -429,6 +429,10 @@ static int gtkButtonMapMethod(Ihandle* ih)
   {
     GtkWidget *img = gtk_image_new();
     ih->handle = gtk_event_box_new();
+    gtk_widget_add_events(ih->handle,
+                          GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK |
+                          GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_MOTION_MASK |
+                          GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
     gtk_container_add((GtkContainer*)ih->handle, img);
     gtk_widget_show(img);
     iupAttribSet(ih, "_IUPGTK_EVENTBOX", "1");
