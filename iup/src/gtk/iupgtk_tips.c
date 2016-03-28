@@ -91,11 +91,21 @@ static gboolean gtkQueryTooltip(GtkWidget *widget, gint x, gint y, gboolean keyb
 }
 #endif
 
-int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
+static GtkWidget* gtkTipGetWidget(Ihandle* ih)
 {
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget)
     widget = ih->handle;
+
+  if (iupAttribGet(ih, "_IUPGTK_EVENTBOX"))
+    widget = gtk_bin_get_child((GtkBin*)widget);
+
+  return widget;
+}
+
+int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
+{
+  GtkWidget* widget = gtkTipGetWidget(ih);
 
 #if GTK_CHECK_VERSION(2, 12, 0)
   g_signal_connect(widget, "query-tooltip", G_CALLBACK(gtkQueryTooltip), ih);
@@ -111,9 +121,7 @@ int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
 
 int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
 {
-  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-  if (!widget)
-    widget = ih->handle;
+  GtkWidget* widget = gtkTipGetWidget(ih);
   (void)value;
 
 #if GTK_CHECK_VERSION(2, 12, 0)
@@ -126,9 +134,7 @@ int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
 char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih)
 {
   GtkWindow* tip_window;
-  GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-  if (!widget)
-    widget = ih->handle;
+  GtkWidget* widget = gtkTipGetWidget(ih);
 
 #if GTK_CHECK_VERSION(2, 12, 0)
   if (!gtk_widget_get_has_tooltip(widget))
