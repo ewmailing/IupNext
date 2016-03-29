@@ -120,6 +120,8 @@ char* iupBaseGetRasterSizeAttrib(Ihandle* ih);
 char* iupBaseGetClientOffsetAttrib(Ihandle* ih);
 int iupBaseSetMaxSizeAttrib(Ihandle* ih, const char* value);
 int iupBaseSetMinSizeAttrib(Ihandle* ih, const char* value);
+char* iupBaseGetExpandAttrib(Ihandle* ih);
+int iupBaseSetExpandAttrib(Ihandle* ih, const char* value);
 
 /* visual */
 char* iupBaseGetVisibleAttrib(Ihandle* ih);
