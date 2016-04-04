@@ -306,7 +306,7 @@ attribute that will add a mark to the menu item with the same number. If IMAGEid
 is set then an IMAGE attribute will be set at the correspondent menu item. The previously cell value can be verified from the given
   drop Ihandle via the &quot;PREVIOUSVALUE&quot; attribute. (since 3.6)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, Ihandle *<strong>drop</strong>, int <strong>lin</strong>, int <strong>col</strong>); [in C]
-<strong>ih</strong>:drop_cb(<strong>drop: </strong>ihandle, <strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<strong>ih</strong>:menudrop_cb(<strong>drop: </strong>ihandle, <strong>lin, col</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
 <strong>drop</strong>:
