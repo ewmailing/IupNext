@@ -96,10 +96,6 @@ static GtkWidget* gtkTipGetWidget(Ihandle* ih)
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget)
     widget = ih->handle;
-
-  if (iupAttribGet(ih, "_IUPGTK_EVENTBOX"))
-    widget = gtk_bin_get_child((GtkBin*)widget);
-
   return widget;
 }
 

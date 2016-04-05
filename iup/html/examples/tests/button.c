@@ -366,7 +366,7 @@ void ButtonTest(void)
   IupSetAttribute(image1i, "5", "0 0 0"); 
   IupSetHandle("image1i", image1i); /* so it will be destroyed even when not used */
 
-#if 0
+#if 1
   image1p = IupImage(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_8_pressed);
   IupSetAttribute(image1p, "0", "BGCOLOR");
   IupSetAttribute(image1p, "1", "255 0 0"); 
@@ -397,8 +397,8 @@ void ButtonTest(void)
 //  IupSetAttribute(button, "IMAGE", "IUP_Tecgraf");
   IupSetAttributeHandle(button, "IMAGE", image1);
   IupSetAttributeHandle(button, "IMINACTIVE", image1i);
-//  IupSetAttributeHandle(button, "IMPRESS", image1p);
-  IupSetAttribute(button, "TIP", "Image Label");
+  IupSetAttributeHandle(button, "IMPRESS", image1p);
+  IupSetAttribute(button, "TIP", "Image Button");
   IupSetAttribute(button, "NAME", "button4");
   IupSetAttribute(button, "PADDING", "5x5");
 //  IupSetAttribute(button, "FLAT", "Yes");
