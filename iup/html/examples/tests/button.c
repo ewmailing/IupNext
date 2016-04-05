@@ -261,8 +261,8 @@ static void set_callbacks(Ihandle* button)
 
 //  IupSetCallback(button, "GETFOCUS_CB",  (Icallback)getfocus_cb); 
 //  IupSetCallback(button, "KILLFOCUS_CB", (Icallback)killfocus_cb);
-//  IupSetCallback(button, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
-//  IupSetCallback(button, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+  IupSetCallback(button, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
+  IupSetCallback(button, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 }
 
 static int show_cb(Ihandle *ih, int state)
