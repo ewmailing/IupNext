@@ -35,6 +35,9 @@ static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
 
     char* offset = iupAttribGet(ih, "CHILDOFFSET");
 
+    if ((op == IUP_SBDRAGH || op == IUP_SBDRAGV) && !iupAttribGetBoolean(ih, "LAYOUTDRAG"))
+      return IUP_DEFAULT;
+
     /* Native container, position is reset */
     x = 0;
     y = 0;
@@ -84,6 +87,7 @@ static int iScrollBoxMotion_CB(Ihandle *ih, int x, int y, char* status)
     int posy = iupAttribGetInt(ih, "_IUP_START_POSY");
     IupSetInt(ih, "POSX", posx-dx);  /* drag direction is opposite to scrollbar */
     IupSetInt(ih, "POSY", posy-dy);
+
     iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
   }
   return IUP_DEFAULT;
@@ -337,6 +341,7 @@ Iclass* iupScrollBoxNewClass(void)
   iupClassRegisterAttribute(ic, "SCROLLTO", NULL, iScrollBoxSetScrollToAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTOCHILD", NULL, iScrollBoxSetScrollToChildAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTOCHILD_HANDLE", NULL, iScrollBoxSetScrollToChildHandleAttrib, NULL, NULL, IUPAF_IHANDLE | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LAYOUTDRAG", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   return ic;
 }

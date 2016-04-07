@@ -50,7 +50,10 @@ IUP_SBDRAGH - horizontal drag</pre>
 
 <h3>Notes</h3>
 
-<p>IUP_SBDRAGH and IUP_SBDRAGV are not supported in GTK.</p>
+<p>IUP_SBDRAGH and IUP_SBDRAGV are not supported in GTK. During drag IUP_SBPOSH 
+and IUP_SBPOSV are used.</p>
+<p>In Windows, after a drag when mouse is released IUP_SBPOSH or IUP_SBPOSV are 
+called.</p>
 
 <h3>Affects</h3>
 <p><a href="../elem/iupcanvas.html">IupCanvas</a>,

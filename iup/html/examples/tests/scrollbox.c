@@ -519,7 +519,7 @@ void ScrollBoxTest(void)
   IupSetAttribute(_vbox_1,"GAP","5");
 
 //  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "RASTERSIZE=400x300"), NULL);
-  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "NAME=SCROLLBOXTEST"), NULL);
+  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "NAME=SCROLLBOXTEST, XXX_LAYOUTDRAG=NO"), NULL);
   IupSetAttribute(_vbox_2,"MARGIN","20x20");
 
   dlg = IupDialog(_vbox_2);
