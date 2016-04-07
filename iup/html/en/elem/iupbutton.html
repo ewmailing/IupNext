@@ -96,7 +96,7 @@ differently to some other controls. Default: YES. (since 3.0)</p>
 
   
 <p><b>FLAT</b> (creation only): Hides the button borders until the mouse cursor enters the 
-  button area. Can be YES or NO. Default: NO.</p>
+  button area. The border space is always there. Can be YES or NO. Default: NO.</p>
 
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Text color. Default: the 
 global attribute DLGFGCOLOR.</p>
@@ -237,6 +237,8 @@ dependency. But after
 cursor and releases outside the button area. Also in Windows the highlight 
 feedback when that happens is different if the button has CANFOCUS enabled or 
 not.</p>
+<p>Buttons always have borders, except when IMAGE and IMPRESS are both defined 
+and IMPRESSBORDER=NO. In this case in Windows TITLE can also be defined.</p>
 <p>Usually toolbar buttons have FLAT=Yes and CANFOCUS=NO.</p>
 
 

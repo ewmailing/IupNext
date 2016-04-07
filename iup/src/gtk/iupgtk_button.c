@@ -330,14 +330,14 @@ static int gtkButtonSetActiveAttrib(Ihandle* ih, const char* value)
 
 static gboolean gtkButtonEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing *evt, Ihandle *ih)
 {
-  /* Used only when FLAT=Yes */
+  /* Used when FLAT=Yes, to manage relief */
 
   iupgtkEnterLeaveEvent(widget, evt, ih);
   (void)widget;
 
   if (evt->type == GDK_ENTER_NOTIFY)
     gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NORMAL);
-  else  if (evt->type == GDK_LEAVE_NOTIFY)               
+  else  if (evt->type == GDK_LEAVE_NOTIFY)
     gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NONE);
 
   return FALSE;
@@ -408,10 +408,9 @@ static void gtkButtonLayoutUpdateMethod(Ihandle *ih)
 
 static int gtkButtonMapMethod(Ihandle* ih)
 {
-  int impress;
-  char* value;
+  int has_border = 1;
 
-  value = iupAttribGet(ih, "IMAGE");
+  char* value = iupAttribGet(ih, "IMAGE");
   if (value)
   {
     ih->data->type = IUP_BUTTON_IMAGE;
@@ -426,6 +425,9 @@ static int gtkButtonMapMethod(Ihandle* ih)
   if (ih->data->type == IUP_BUTTON_IMAGE &&
       iupAttribGet(ih, "IMPRESS") &&
       !iupAttribGetBoolean(ih, "IMPRESSBORDER"))
+    has_border = 0;
+
+  if (!has_border)
   {
     GtkWidget *img = gtk_image_new();
     ih->handle = gtk_event_box_new();
@@ -441,7 +443,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
 
   if (ih->data->type & IUP_BUTTON_IMAGE)
   {
-    if (!iupAttribGet(ih, "_IUPGTK_EVENTBOX"))
+    if (has_border)
     {
       gtk_button_set_image((GtkButton*)ih->handle, gtk_image_new());
 
@@ -492,9 +494,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
   if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     iupgtkSetCanFocus(ih->handle, 0);
 
-  value = iupAttribGet(ih, "IMPRESS");
-  impress = (ih->data->type & IUP_BUTTON_IMAGE && value)? 1: 0;
-  if (!impress && iupAttribGetBoolean(ih, "FLAT"))
+  if (has_border && iupAttribGetBoolean(ih, "FLAT"))
   {
     gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NONE);
 
@@ -503,13 +503,8 @@ static int gtkButtonMapMethod(Ihandle* ih)
   }
   else
   {
-    if (!iupAttribGet(ih, "_IUPGTK_EVENTBOX"))
-    {
-      if (impress && !iupAttribGetStr(ih, "IMPRESSBORDER"))
-        gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NONE);
-      else
-        gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NORMAL);
-    }
+    if (has_border)
+      gtk_button_set_relief((GtkButton*)ih->handle, GTK_RELIEF_NORMAL);
 
     g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
     g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);

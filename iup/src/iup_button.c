@@ -89,7 +89,8 @@ static int iButtonCreateMethod(Ihandle* ih, void** params)
 
 static void iButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
-  int natural_w = 0, 
+  int has_border = 1;
+  int natural_w = 0,
       natural_h = 0, 
       type = ih->data->type;
   (void)children_expand; /* unset if not a container */
@@ -142,10 +143,12 @@ static void iButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *ch
     if (str && str!=title) free(str);
   }
 
-  /* if IMPRESS is set, do NOT compute the borders space */
-  if (!((type == IUP_BUTTON_IMAGE) &&
-        iupAttribGet(ih, "IMPRESS") && 
-        !iupAttribGetBoolean(ih, "IMPRESSBORDER")))
+  if (ih->data->type & IUP_BUTTON_IMAGE &&
+      iupAttribGet(ih, "IMPRESS") &&
+      !iupAttribGetBoolean(ih, "IMPRESSBORDER"))
+    has_border = 0;
+
+  if (has_border)
     iupdrvButtonAddBorders(&natural_w, &natural_h);
 
   natural_w += 2*ih->data->horiz_padding;

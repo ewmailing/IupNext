@@ -117,11 +117,25 @@ int iupdrvBaseSetTipAttrib(Ihandle* ih, const char* value)
 
 int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
 {
-  GtkWidget* widget = gtkTipGetWidget(ih);
-  (void)value;
-
 #if GTK_CHECK_VERSION(2, 12, 0)
-  gtk_widget_trigger_tooltip_query(widget);
+  GtkWindow* tip_window;
+  GtkWidget* widget = gtkTipGetWidget(ih);
+
+  if (!gtk_widget_get_has_tooltip(widget))
+    return 0;
+
+  tip_window = gtk_widget_get_tooltip_window(widget);
+
+  if (tip_window && iupgtkIsVisible((GtkWidget*)tip_window))
+  {
+    if (!iupStrBoolean(value)) /* was visible, trigger to not visible */
+      gtk_widget_trigger_tooltip_query(widget);
+  }
+  else
+  {
+    if (iupStrBoolean(value)) /* was NOT visible, trigger to visible */
+      gtk_widget_trigger_tooltip_query(widget);
+  }
 #endif
 
   return 0;
@@ -129,10 +143,10 @@ int iupdrvBaseSetTipVisibleAttrib(Ihandle* ih, const char* value)
 
 char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih)
 {
+#if GTK_CHECK_VERSION(2, 12, 0)
   GtkWindow* tip_window;
   GtkWidget* widget = gtkTipGetWidget(ih);
 
-#if GTK_CHECK_VERSION(2, 12, 0)
   if (!gtk_widget_get_has_tooltip(widget))
     return NULL;
 
