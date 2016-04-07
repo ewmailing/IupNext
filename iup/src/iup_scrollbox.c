@@ -173,8 +173,16 @@ static void iScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int 
 
   /* ScrollBox size does not depends on the child size,
      its natural size must be 0 to be free of restrictions. */
-  (void)w;
-  (void)h;
+  if (ih->currentwidth == 0 && ih->currentheight == 0 && ih->firstchild)
+  {
+    *w = ih->firstchild->naturalwidth;
+    *h = ih->firstchild->naturalheight;
+  }
+  else
+  {
+    *w = 0;
+    *h = 0;
+  }
 
   /* Also set expand to its own expand so it will not depend on children */
   *children_expand = ih->expand;
@@ -342,6 +350,8 @@ Iclass* iupScrollBoxNewClass(void)
   iupClassRegisterAttribute(ic, "SCROLLTOCHILD", NULL, iScrollBoxSetScrollToChildAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTOCHILD_HANDLE", NULL, iScrollBoxSetScrollToChildHandleAttrib, NULL, NULL, IUPAF_IHANDLE | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LAYOUTDRAG", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "XXXXXXX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   return ic;
 }

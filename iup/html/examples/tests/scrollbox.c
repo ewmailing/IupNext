@@ -544,8 +544,8 @@ void ScrollBoxTest(void)
   
 //  IupSetAttribute(box, "FGCOLOR", "255 0 0");
 
-  //IupSetAttribute(dlg,"RASTERSIZE","1000x800");
-  IupSetAttribute(dlg,"RASTERSIZE","400x300");
+//  IupSetAttribute(dlg,"RASTERSIZE","1600x1000");
+  IupSetAttribute(dlg,"RASTERSIZE","600x600");
   IupSetCallback(dlg, "RESIZE_CB", (Icallback)resize_cb);
 
   IupMap(dlg);

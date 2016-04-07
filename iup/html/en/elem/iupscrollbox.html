@@ -101,8 +101,10 @@ also accepted.</p>
 <p>The box allows the application to create a virtual space for the dialog that 
 is actually larger than the visible area. The current size of the box defines 
 the visible area. The natural size of the child (and its children) defines 
-the virtual space size. So the <strong>IupScrollBox</strong> does not depend on 
-its child size or expansion, and its natural size is always 0x0.</p>
+the virtual space size. </p>
+<p>So the <strong>IupScrollBox</strong> does not depend on its child size or 
+expansion, and its natural size is always 0x0, except for the first time when it 
+expands to the child natural size (since 3.19). </p>
 <p>The user can move the box contents by dragging the background. Also the mouse 
 wheel scrolls the contents vertically.</p>
 
