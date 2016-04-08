@@ -212,6 +212,25 @@ static void iLayoutTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent
   }
 }
 
+static void iLayoutUpdateLayout(iLayoutDialog* layoutdlg)
+{
+  Ihandle* canvas = IupGetBrother(layoutdlg->tree);
+  int w = 0, h = 0;
+
+  IupRefresh(layoutdlg->dialog);
+
+  IupGetIntInt(layoutdlg->dialog, "CLIENTSIZE", &w, &h);
+  IupSetInt(canvas, "XMAX", w);
+  IupSetInt(canvas, "YMAX", h);
+
+  IupGetIntInt(canvas, "DRAWSIZE", &w, &h);
+  IupSetInt(canvas, "DX", w);
+  IupSetInt(canvas, "DY", h);
+
+  /* redraw canvas */
+  IupUpdate(canvas);
+}
+
 static void iLayoutTreeRebuild(iLayoutDialog* layoutdlg)
 {
   Ihandle* tree = layoutdlg->tree;
@@ -220,14 +239,10 @@ static void iLayoutTreeRebuild(iLayoutDialog* layoutdlg)
   layoutdlg->changed = 0;
   layoutdlg->copy = NULL;
 
-  /* make sure the dialog layout is updated */
-  IupRefresh(layoutdlg->dialog);
-
   iLayoutTreeSetNodeInfo(tree, 0, layoutdlg->dialog);
   iLayoutTreeAddChildren(tree, 0, layoutdlg->dialog);
 
-  /* redraw canvas */
-  IupUpdate(IupGetBrother(tree));
+  iLayoutUpdateLayout(layoutdlg);
 }
 
 
@@ -809,9 +824,7 @@ static int iLayoutMenuRefresh_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
-  IupRefresh(layoutdlg->dialog);
-  /* redraw canvas */
-  IupUpdate(IupGetBrother(layoutdlg->tree));
+  iLayoutUpdateLayout(layoutdlg);
   return IUP_DEFAULT;
 }
 
@@ -961,15 +974,17 @@ static void iLayoutDialogLoad(Ihandle* parent_dlg, iLayoutDialog* layoutdlg, int
     IupGetIntInt(layoutdlg->dialog, "CLIENTSIZE", &w, &h);
     if (w && h)
     {
+      int scrollbar = IupGetInt(NULL, "SCROLLBARSIZE");
       int pw = 0, ph = 0;
       int prop = IupGetInt(IupGetParent(layoutdlg->tree), "VALUE");
       int status = IupGetInt2(IupGetBrother(IupGetParent(layoutdlg->tree)), "RASTERSIZE");
       w = (w*1000)/(1000-prop);
       IupGetIntInt(parent_dlg, "CLIENTSIZE", &pw, &ph);
-      ph -= status;
+      ph -= status + scrollbar;
+      pw -= scrollbar;
       if (w > pw || h > ph)
       {
-        IupSetfAttribute(parent_dlg, "CLIENTSIZE", "%dx%d", w+10, h+status+10);
+        IupSetfAttribute(parent_dlg, "CLIENTSIZE", "%dx%d", w + scrollbar + 10, h + scrollbar + status + 10);
         IupShow(parent_dlg);
       }
     }
@@ -1252,7 +1267,7 @@ static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisib
   }
 }
 
-static void iLayoutDrawDialog(iLayoutDialog* layoutdlg, int showhidden, IdrawCanvas* dc, Ihandle* mark)
+static void iLayoutDrawDialog(iLayoutDialog* layoutdlg, int showhidden, IdrawCanvas* dc, Ihandle* mark, int posx, int posy)
 {
   int w, h;
 
@@ -1269,11 +1284,13 @@ static void iLayoutDrawDialog(iLayoutDialog* layoutdlg, int showhidden, IdrawCan
     int shownotmapped = layoutdlg->dialog->handle==NULL;  /* only show not mapped if dialog is also not mapped */
     int dlgvisible = IupGetInt(layoutdlg->dialog, "VISIBLE");
     IupGetIntInt(layoutdlg->dialog, "CLIENTOFFSET", &native_parent_x, &native_parent_y);
+    native_parent_x -= posx;
+    native_parent_y -= posy;
     iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, mark, layoutdlg->dialog->firstchild, native_parent_x, native_parent_y);
   }
 }
 
-static int iLayoutCanvas_CB(Ihandle* canvas)
+static int iLayoutCanvas_CB(Ihandle* canvas, float fposx, float fposy)
 {
   Ihandle* dlg = IupGetDialog(canvas);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
@@ -1281,7 +1298,7 @@ static int iLayoutCanvas_CB(Ihandle* canvas)
   int showhidden = IupGetInt(dlg, "SHOWHIDDEN");
   Ihandle* mark = (Ihandle*)iupAttribGet(dlg, "_IUPLAYOUT_MARK");
 
-  iLayoutDrawDialog(layoutdlg, showhidden, dc, mark);
+  iLayoutDrawDialog(layoutdlg, showhidden, dc, mark, (int)fposx, (int)fposy);
 
   iupDrawFlush(dc);
 
@@ -2016,11 +2033,7 @@ static int iLayoutContextMenuAdd_CB(Ihandle* menu)
     /* add to the tree */
     iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
-    /* make sure the dialog layout is updated */
-    IupRefresh(layoutdlg->dialog);
-
-    /* redraw canvas */
-    IupUpdate(IupGetBrother(layoutdlg->tree));
+    iLayoutUpdateLayout(layoutdlg);
   }
 
   free(class_list_str);
@@ -2055,11 +2068,7 @@ static int iLayoutContextMenuMap_CB(Ihandle* menu)
 
   iLayoutUpdateColors(layoutdlg->tree, elem);
 
-  /* make sure the dialog layout is updated */
-  IupRefresh(layoutdlg->dialog);
-
-  /* redraw canvas */
-  IupUpdate(IupGetBrother(layoutdlg->tree));
+  iLayoutUpdateLayout(layoutdlg);
 
   return IUP_DEFAULT;
 }
@@ -2101,11 +2110,7 @@ static int iLayoutContextMenuUnmap_CB(Ihandle* menu)
 
   iLayoutUpdateColors(layoutdlg->tree, elem);
 
-  /* make sure the dialog layout is updated */
-  IupRefresh(layoutdlg->dialog);
-
-  /* redraw canvas */
-  IupUpdate(IupGetBrother(layoutdlg->tree));
+  iLayoutUpdateLayout(layoutdlg);
 
   return IUP_DEFAULT;
 }
@@ -2176,11 +2181,7 @@ static int iLayoutContextMenuRemove_CB(Ihandle* menu)
 
     IupDestroy(elem);
 
-    /* make sure the dialog layout is updated */
-    IupRefresh(layoutdlg->dialog);
-
-    /* redraw canvas */
-    IupUpdate(IupGetBrother(layoutdlg->tree));
+    iLayoutUpdateLayout(layoutdlg);
   }
   return IUP_DEFAULT;
 }
@@ -2238,15 +2239,11 @@ static int iLayoutContextMenuPaste_CB(Ihandle* menu)
   /* add to the tree */
   iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
-  /* make sure the dialog layout is updated */
-  IupRefresh(layoutdlg->dialog);
+  iLayoutUpdateLayout(layoutdlg);
 
   /* since we are only moving existing nodes, 
      title, map state, and user data was not changed.
      there is no need to update the node info */
-
-  /* redraw canvas */
-  IupUpdate(IupGetBrother(layoutdlg->tree));
 
   return IUP_DEFAULT;
 }
@@ -2392,10 +2389,13 @@ static Ihandle* iLayoutFindDialogElementByPos(iLayoutDialog* layoutdlg, int x, i
       x < w && y < h)
   {
     Ihandle* elem;
+    Ihandle* canvas = IupGetBrother(layoutdlg->tree);
     int native_parent_x = 0, native_parent_y = 0;
     int shownotmapped = layoutdlg->dialog->handle==NULL;  /* only check not mapped if dialog is also not mapped */
     int dlgvisible = IupGetInt(layoutdlg->dialog, "VISIBLE");
     IupGetIntInt(layoutdlg->dialog, "CLIENTOFFSET", &native_parent_x, &native_parent_y);
+    native_parent_x -= IupGetInt(canvas, "POSX");
+    native_parent_y -= IupGetInt(canvas, "POSY");
     elem = iLayoutFindElementByPos(layoutdlg->dialog->firstchild, native_parent_x, native_parent_y, x, y, dlgvisible, shownotmapped);
     if (elem)
       return elem;
@@ -2446,6 +2446,12 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
   return IUP_DEFAULT;
 }
 
+static int iLayoutCanvasResize_CB(Ihandle* canvas, int canvas_w, int canvas_h)
+{
+  IupSetInt(canvas, "DX", canvas_w);
+  IupSetInt(canvas, "DY", canvas_h);
+  return IUP_DEFAULT;
+}
 
 /***************************************************************************
                               Layout Tree
@@ -2527,15 +2533,11 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
 
   layoutdlg->changed = 1;
 
-  /* make sure the dialog layout is updated */
-  IupRefresh(layoutdlg->dialog);
+  iLayoutUpdateLayout(layoutdlg);
 
   /* since we are only moving existing nodes, 
      title, map state, and user data was not changed.
      there is no need to update the node info */
-
-  /* redraw canvas */
-  IupUpdate(IupGetBrother(tree));
 
   (void)isshift;
   return IUP_CONTINUE;  /* the nodes of the tree will be automatically moved */
@@ -2645,8 +2647,12 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
   IupSetAttribute(layoutdlg->timer, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
 
   canvas = IupCanvas(NULL);
-  IupSetCallback(canvas, "ACTION", iLayoutCanvas_CB);
+  IupSetCallback(canvas, "ACTION", (Icallback)iLayoutCanvas_CB);
   IupSetCallback(canvas, "BUTTON_CB", (Icallback)iLayoutCanvasButton_CB);
+  IupSetCallback(canvas, "RESIZE_CB", (Icallback)iLayoutCanvasResize_CB);
+  IupSetAttribute(canvas, "SCROLLBAR", "YES");
+  IupSetAttribute(canvas, "XAUTOHIDE", "NO");
+  IupSetAttribute(canvas, "YAUTOHIDE", "NO");
 
   tree = IupTree();
   layoutdlg->tree = tree;
