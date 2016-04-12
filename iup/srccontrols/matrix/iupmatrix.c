@@ -1867,6 +1867,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "RESIZEMATRIXCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "102 102 102", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDEFOCUS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWFILLVALUE", iMatrixGetShowFillValueAttrib, iMatrixSetShowFillValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TYPECOLORINACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - MASK (DEPRECATED) */
   iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iMatrixGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

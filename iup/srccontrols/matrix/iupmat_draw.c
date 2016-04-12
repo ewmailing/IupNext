@@ -715,6 +715,9 @@ static void iMatrixDrawColor(Ihandle* ih, int x1, int x2, int y1, int y2, int ma
   y1 += IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
   y2 -= IMAT_PADDING_H/2 + IMAT_FRAME_H/2;
 
+  if (!iupAttribGetBoolean(ih, "TYPECOLORINACTIVE"))
+    active = 1; /* draw as active */
+
   /* Fill the box with the color */
   iMatrixDrawSetTypeColor(ih, color, marked, active);
   iupMATRIX_BOX(ih, x1, x2, y1, y2);
@@ -880,44 +883,6 @@ static void iMatrixDrawTitleCorner(Ihandle* ih)
 
     iMatrixDrawCellValue(ih, 0, ih->data->columns.dt[0].size, 0, ih->data->lines.dt[0].size, col_alignment, lin_alignment, 0, active, 0, 0, draw_cb, framecolor);
   }
-}
-
-static void iMatrixDrawMatrix(Ihandle* ih)
-{
-  iupMatrixPrepareDrawData(ih);
-
-  /* fill the background because there will be empty cells */
-  if ((ih->data->lines.num == 1) || (ih->data->columns.num == 1))
-  {
-    cdCanvasBackground(ih->data->cd_canvas, cdIupConvertColor(ih->data->bgcolor_parent));
-    cdCanvasClear(ih->data->cd_canvas);
-  }
-
-  /* Draw the corner between line and column titles, if necessary */
-  iMatrixDrawTitleCorner(ih);
-
-  /* If there are columns, then draw their titles */
-  if (ih->data->columns.num_noscroll>1)
-    iupMatrixDrawTitleColumns(ih, 1, ih->data->columns.num_noscroll-1);
-  iupMatrixDrawTitleColumns(ih, ih->data->columns.first, ih->data->columns.last);
-
-  /* If there are lines, then draw their titles */
-  if (ih->data->lines.num_noscroll>1)
-    iupMatrixDrawTitleLines(ih, 1, ih->data->lines.num_noscroll-1);
-  iupMatrixDrawTitleLines(ih, ih->data->lines.first, ih->data->lines.last);
-
-  /* If there are ordinary cells, then draw them */
-  if (ih->data->columns.num_noscroll>1 && ih->data->lines.num_noscroll>1)
-    iupMatrixDrawCells(ih, 1,                              1, 
-                           ih->data->lines.num_noscroll-1, ih->data->columns.num_noscroll-1);
-  if (ih->data->columns.num_noscroll>1)
-    iupMatrixDrawCells(ih, ih->data->lines.first, 1, 
-                           ih->data->lines.last,  ih->data->columns.num_noscroll-1);
-  if (ih->data->lines.num_noscroll>1)
-    iupMatrixDrawCells(ih, 1,                              ih->data->columns.first, 
-                           ih->data->lines.num_noscroll-1, ih->data->columns.last);
-  iupMatrixDrawCells(ih, ih->data->lines.first, ih->data->columns.first, 
-                         ih->data->lines.last,  ih->data->columns.last);
 }
 
 static void iMatrixDrawFocus(Ihandle* ih)
@@ -1362,6 +1327,44 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   }
 
   cdCanvasClip(ih->data->cd_canvas, CD_CLIPOFF);
+}
+
+static void iMatrixDrawMatrix(Ihandle* ih)
+{
+  iupMatrixPrepareDrawData(ih);
+
+  /* fill the background because there will be empty cells */
+  if ((ih->data->lines.num == 1) || (ih->data->columns.num == 1))
+  {
+    cdCanvasBackground(ih->data->cd_canvas, cdIupConvertColor(ih->data->bgcolor_parent));
+    cdCanvasClear(ih->data->cd_canvas);
+  }
+
+  /* Draw the corner between line and column titles, if necessary */
+  iMatrixDrawTitleCorner(ih);
+
+  /* If there are columns, then draw their titles */
+  if (ih->data->columns.num_noscroll>1)
+    iupMatrixDrawTitleColumns(ih, 1, ih->data->columns.num_noscroll - 1);
+  iupMatrixDrawTitleColumns(ih, ih->data->columns.first, ih->data->columns.last);
+
+  /* If there are lines, then draw their titles */
+  if (ih->data->lines.num_noscroll>1)
+    iupMatrixDrawTitleLines(ih, 1, ih->data->lines.num_noscroll - 1);
+  iupMatrixDrawTitleLines(ih, ih->data->lines.first, ih->data->lines.last);
+
+  /* If there are ordinary cells, then draw them */
+  if (ih->data->columns.num_noscroll>1 && ih->data->lines.num_noscroll>1)
+    iupMatrixDrawCells(ih, 1, 1,
+    ih->data->lines.num_noscroll - 1, ih->data->columns.num_noscroll - 1);
+  if (ih->data->columns.num_noscroll>1)
+    iupMatrixDrawCells(ih, ih->data->lines.first, 1,
+    ih->data->lines.last, ih->data->columns.num_noscroll - 1);
+  if (ih->data->lines.num_noscroll>1)
+    iupMatrixDrawCells(ih, 1, ih->data->columns.first,
+    ih->data->lines.num_noscroll - 1, ih->data->columns.last);
+  iupMatrixDrawCells(ih, ih->data->lines.first, ih->data->columns.first,
+                     ih->data->lines.last, ih->data->columns.last);
 }
 
 void iupMatrixDraw(Ihandle* ih, int update)

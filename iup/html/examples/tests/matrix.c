@@ -214,6 +214,9 @@ static Ihandle* create_matrix(void)
 
 //  IupSetAttribute(mat,"RASTERSIZE","x300");
 //  IupSetAttribute(mat,"FITTOSIZE","LINES");
+  
+//  IupSetAttribute(mat,"TYPECOLORINACTIVE","No");
+//  IupSetAttribute(mat, "ACTIVE", "No");
 
   /* test for custom matrix attributes */
   //{
