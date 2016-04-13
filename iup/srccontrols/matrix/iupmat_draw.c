@@ -577,7 +577,7 @@ static void iMatrixDrawToggle(Ihandle* ih, int x1, int x2, int y1, int y2, int l
 
   /* toggle check */
   if (togglevalue)
-    iMatrixDrawFeedbackImage(ih, x1, x2, y1, y2, lin, col, active, marked, iupAttribGet(ih, "TOGGLEMAGEON"), imatrix_toggleon_alpha);
+    iMatrixDrawFeedbackImage(ih, x1, x2, y1, y2, lin, col, active, marked, iupAttribGet(ih, "TOGGLEIMAGEON"), imatrix_toggleon_alpha);
   else
     iMatrixDrawFeedbackImage(ih, x1, x2, y1, y2, lin, col, active, marked, iupAttribGet(ih, "TOGGLEIMAGEOFF"), imatrix_toggleoff_alpha);
 }
