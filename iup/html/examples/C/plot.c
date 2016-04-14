@@ -23,8 +23,6 @@
 #include <cdpdf.h>
 
 
-#ifdef PPLOT_TEST
-
 #define MAXPLOT 6  /* room for examples */
 
 
@@ -747,6 +745,4 @@ int main(int argc, char* argv[])
 
   return EXIT_SUCCESS;
 }
-#endif
-
 #endif
