@@ -16,11 +16,11 @@
 #include "iup.h"
 #include "iupcontrols.h"
 #include "iup_plot.h"
-#include "iupim.h"
+//#include "iupim.h"
 
 #include <cd.h>
 #include <cdiup.h>
-#include <cdpdf.h>
+//#include <cdpdf.h>
 
 
 #define MAXPLOT 6  /* room for examples */
@@ -97,7 +97,7 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[0], "GRAPHICSMODE", "IMAGERGB");
 //  IupSetAttribute(plot[0], "ACTIVE", "No");
 
-  if (0)
+#if 0
   {
     Ihandle* image = IupLoadImage("../test/corsega.tif");
     if (image)
@@ -109,6 +109,7 @@ static void InitPlots(void)
       IupSetAttribute(plot[0], "BACKIMAGE_YMAX", "2");
     }
   }
+#endif
 
   theFac = 1.0/(100*100*100);
   IupPlotBegin(plot[0], 0);

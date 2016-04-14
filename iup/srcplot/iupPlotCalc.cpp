@@ -310,6 +310,7 @@ bool iupPlot::CalculateXRange(double &outXMin, double &outXMax)
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
     const iupPlotDataBase *theXData = mDataSetList[ds]->GetDataX();
+
     if (theXData->GetCount() == 0)
       continue;
     
