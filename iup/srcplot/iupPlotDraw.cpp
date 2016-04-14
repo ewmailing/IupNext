@@ -6,6 +6,7 @@
 
 #include "iupPlot.h"
 #include "iup_cdutil.h"
+#include "iup_image.h"
 
 
 static inline void iPlotSetLine(cdCanvas* canvas, int inLineStyle, int inLineWidth)
@@ -530,7 +531,7 @@ void iupPlot::DrawInactive(cdCanvas* canvas) const
 
 void iupPlot::DrawBackgroundImage(cdCanvas* canvas) const
 {
-  Ihandle* image = IupGetHandle(mBack.GetImage());
+  Ihandle* image = iupImageGetHandle(mBack.GetImage());
   if (image)
   {
     double theScreenMinX = mAxisX.mTrafo->Transform(mBack.mImageMinX);

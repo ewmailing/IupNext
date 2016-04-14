@@ -954,7 +954,7 @@ static int iMatrixListDrawImageCol(Ihandle *ih, ImatrixListData* mtxList, int li
     image_name = iupAttribGetStr(ih, attrib_name);  /* this will check for the default values also */
   }
 
-  image = IupGetHandle(image_name);
+  image = iupImageGetHandle(image_name);
   if (image)
   {
     int width  = IupGetInt(image, "WIDTH");

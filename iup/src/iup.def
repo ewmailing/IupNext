@@ -371,6 +371,7 @@ iupImageInitColorTable
 iupImageStockSet
 iupImageStockLoadAll
 iupImageColorMakeInactive
+iupImageGetHandle
 iupGetFontStyleAttrib
 iupGetFontSizeAttrib
 iupGetFontFaceAttrib

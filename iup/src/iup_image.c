@@ -94,6 +94,10 @@ static void iupImageResize(Ihandle* ih, int width, int height)
   iupAttribSet(ih, "WID", (char*)new_imgdata);
 }
 
+
+/**************************************************************************************************/
+
+
 typedef struct _IimageStock
 {
   iupImageStockCreateFunc func;
@@ -259,8 +263,6 @@ void iupImageStockLoadAll(void)
 }
 
 
-
-/**************************************************************************************************/
 /**************************************************************************************************/
 
 
@@ -400,7 +402,6 @@ void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char
 }
 
 
-/**************************************************************************************************/
 /**************************************************************************************************/
 
 
@@ -688,6 +689,88 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
   return handle;
 }
 
+static Ihandle* iImageGetHandleFromImage(void* handle)
+{
+  Ihandle* ih = NULL;
+  int w, h, bpp, i;
+  iupColor colors[256];
+  int colors_count = 0;
+  if (iupdrvImageGetRawInfo(handle, &w, &h, &bpp, colors, &colors_count))
+  {
+    unsigned char* imgdata;
+
+    if (bpp == 32)
+      ih = IupImageRGBA(w,h,NULL);
+    else if (bpp > 8)
+      ih = IupImageRGB(w,h,NULL);
+    else
+      ih = IupImage(w,h,NULL);
+
+    if (bpp <= 8 && colors_count)
+    {
+      for (i = 0; i < colors_count; i++)
+        IupSetRGBId(ih, "", i, colors[i].r, colors[i].g, colors[i].b);
+    }
+
+    imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
+    iupdrvImageGetData(handle, imgdata);
+
+    iupdrvImageDestroy(handle, IUPIMAGE_IMAGE);
+  }
+
+  return ih;
+}
+
+Ihandle* iupImageGetHandle(const char* name)
+{
+  Ihandle *ih;
+  const char* native_name = NULL;
+  void* handle;
+
+  if (!name)
+    return NULL;
+
+  ih = iImageGetImageFromName(name);
+  if (ih)
+    return ih;
+
+  /* Check in the system resources. */
+  handle = iupdrvImageLoad(name, IUPIMAGE_IMAGE);
+  if (handle)
+  {
+    ih = iImageGetHandleFromImage(handle);
+    if (ih)
+    {
+      IupSetHandle(name, ih);
+      return ih;
+    }
+  }
+
+  /* Check in the stock images. */
+  iImageStockGet(name, &ih, &native_name);
+  if (ih)
+  {
+    IupSetHandle(name, ih);
+    return ih;
+  }
+
+  if (native_name)
+  {
+    handle = iupdrvImageLoad(native_name, IUPIMAGE_IMAGE);
+    if (handle)
+    {
+      ih = iImageGetHandleFromImage(handle);
+      if (ih)
+      {
+        IupSetHandle(name, ih);
+        return ih;
+      }
+    }
+  }
+
+  return NULL;
+}
+
 void iupImageUpdateParent(Ihandle *ih)  /* ih here is the element that contains images */
 {
   /* Called when BGCOLOR is changed */
@@ -704,16 +787,6 @@ void iupImageUpdateParent(Ihandle *ih)  /* ih here is the element that contains 
   value = iupAttribGet(ih, "IMPRESS");
   if (value) 
     iupAttribSetClassObject(ih, "IMPRESS", value);
-}
-
-static char* iImageGetWidthAttrib(Ihandle *ih)
-{
-  return iupStrReturnInt(ih->currentwidth);
-}
-
-static char* iImageGetHeightAttrib(Ihandle *ih)
-{
-  return iupStrReturnInt(ih->currentheight);
 }
 
 void iupImageClearFromCache(Ihandle* ih, void* handle)
@@ -751,14 +824,14 @@ static void iImageClearCache(Ihandle* ih)
   }
 
   handle = iupAttribGet(ih, "_IUPIMAGE_ICON");
-  if (handle) 
+  if (handle)
   {
     iupdrvImageDestroy(handle, IUPIMAGE_ICON);
     iupAttribSet(ih, "_IUPIMAGE_ICON", NULL);
   }
 
   handle = iupAttribGet(ih, "_IUPIMAGE_CURSOR");
-  if (handle) 
+  if (handle)
   {
     iupdrvImageDestroy(handle, IUPIMAGE_CURSOR);
     iupAttribSet(ih, "_IUPIMAGE_CURSOR", NULL);
@@ -795,6 +868,20 @@ static void iImageClearCache(Ihandle* ih)
     iupAttribSet(ih, "_IUPIMAGE_BUFFER_INACTIVE", NULL);
     free(handle);
   }
+}
+
+
+/******************************************************************************/
+
+
+static char* iImageGetWidthAttrib(Ihandle *ih)
+{
+  return iupStrReturnInt(ih->currentwidth);
+}
+
+static char* iImageGetHeightAttrib(Ihandle *ih)
+{
+  return iupStrReturnInt(ih->currentheight);
 }
 
 static int iImageCreate(Ihandle* ih, void** params, int bpp)
@@ -881,7 +968,9 @@ static void iImageDestroyMethod(Ihandle* ih)
   iImageClearCache(ih);
 }
 
+
 /******************************************************************************/
+
 
 Ihandle* IupImage(int width, int height, const unsigned char *imgdata)
 {
@@ -964,6 +1053,10 @@ Iclass* iupImageRGBANewClass(void)
   ic->Create = iImageRGBACreateMethod;
   return ic;
 }
+
+
+/******************************************************************************/
+
 
 #if 0
 /*****************************************************/

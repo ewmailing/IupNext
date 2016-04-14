@@ -22,6 +22,34 @@
 #include "iupgtk_drv.h"
 
 
+void iupdrvImageGetData(void* handle, unsigned char* imgdata)
+{
+  GdkPixbuf* pixbuf = (GdkPixbuf*)handle;
+  int w, h, y, bpp;
+  guchar *pixdata, *pixline_data;
+  int rowstride, channels, planesize;
+  unsigned char *line_data;
+
+  if (!iupdrvImageGetInfo(handle, &w, &h, &bpp))
+    return;
+
+  if (bpp == 8)
+    return;
+
+  pixdata = gdk_pixbuf_get_pixels(pixbuf);
+  rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+  channels = gdk_pixbuf_get_n_channels(pixbuf);
+
+  /* planes are packed and top-bottom in this imgdata */
+  planesize = w*h;
+  for (y = 0; y<h; y++)
+  {
+    line_data = imgdata + y * planesize;
+    pixline_data = pixdata + y * rowstride;
+    memcpy(line_data, pixline_data, planesize);
+  }
+}
+
 void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
 {
   GdkPixbuf* pixbuf = (GdkPixbuf*)handle;
