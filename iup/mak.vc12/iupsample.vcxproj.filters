@@ -315,6 +315,9 @@
     <ClCompile Include="..\html\examples\tutorial\simple_paint1.cpp">
       <Filter>Tutorial\CPP1</Filter>
     </ClCompile>
+    <ClCompile Include="..\html\examples\C\plot.c">
+      <Filter>C</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua">
