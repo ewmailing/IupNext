@@ -198,6 +198,7 @@ int main(int argc, char* argv[])
   IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
   IupSetGlobal("GLOBALLAYOUTRESIZEKEY", "Yes");
 
+//  IupSetGlobal("OVERLAYSCROLLBAR", "Yes");
 //  IupSetGlobal("UTF8MODE", "Yes");
 //  IupSetGlobal("LANGUAGE", "PORTUGUESE");
 //  IupSetGlobal("DEFAULTDECIMALSYMBOL", ".");

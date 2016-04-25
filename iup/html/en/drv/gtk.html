@@ -67,6 +67,8 @@ the desktop, like in MacOSX. This affected the size of the IUP dialog, it is
 fixed since IUP version 3.6. If you don&#39;t like the global menu you can remove it 
 using:</p>
 <pre style="border-color: inherit; vertical-align: baseline; outline: none; font-variant: normal; orphans: 2; text-align: start; text-indent: 0px; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">sudo apt-get remove appmenu-gtk3 appmenu-gtk appmenu-qt</pre>
+<p style="border-color: inherit; vertical-align: baseline; outline: none; font-variant: normal; orphans: 2; text-align: start; text-indent: 0px; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp;In later Ubuntu versions you can do the command:</p>
+<pre style="border-color: inherit; vertical-align: baseline; outline: none; font-variant: normal; orphans: 2; text-align: start; text-indent: 0px; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">gsettings set com.canonical.Unity integrated-menus true </pre>
 <p>You can also control that using &quot;export UBUNTU_MENUPROXY=0&quot;. There are other 
 forms to control this feature - see &quot;<a href="http://www.webupd8.org/2011/03/disable-appmenu-global-menu-in-ubuntu.html" target="_blank">How 
 to Disable the AppMenu</a>&quot;.</p>
@@ -77,8 +79,9 @@ the new scrollbar. But in <strong>IupCanvas</strong> the SCROLL_CB callback will
 receive only the IUP_SBPOSV and IUP_SBPOSH operations codes (fixed in IUP 3.11.1).</p>
 <p>You can remove the new scrollbar at the
 <strong>Synaptic Package Manager</strong> or at the <strong>Ubuntu Software 
-Center</strong> searching for &quot;liboverlay-scrollbar&quot; and removing the installed 
-packages.</p>
+Center</strong> searching for &quot;overlay-scrollbar&quot; and removing the installed 
+packages. You can also control that using "export LIBOVERLAY_SCROLLBAR=0". In later Ubuntu versions you can do the command:</p>
+<pre>gsettings reset com.canonical.desktop.interface scrollbar-mode </pre>
 <h4>MacOSX-Quartz</h4>
 <p>The GTK driver also compiles in MacOSX with the new GTK port available at
 <a href="http://gtk-osx.sourceforge.net/">http://gtk-osx.sourceforge.net/</a> 

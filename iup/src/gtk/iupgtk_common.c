@@ -667,24 +667,26 @@ int iupdrvGetScrollbarSize(void)
 {
   static int size = 0;
 
+  if (iupStrBoolean(IupGetGlobal("OVERLAYSCROLLBAR")))
+    return 1;
+
   if (size == 0)
   {
-    GtkRequisition requisition;
-    GtkWidget* win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gint slider_width, trough_border;
+
 #if GTK_CHECK_VERSION(3, 0, 0)
     GtkWidget* sb = gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL, NULL);
 #else
     GtkWidget* sb = gtk_vscrollbar_new(NULL);
 #endif
-    gtk_container_add((GtkContainer*)win, sb);
-    gtk_widget_realize(win);
-#if GTK_CHECK_VERSION(3, 0, 0)
-    gtk_widget_get_preferred_size(sb, NULL, &requisition);
-#else
-    gtk_widget_size_request(sb, &requisition);
-#endif
-    size = requisition.width+1;
-    gtk_widget_destroy(win);
+
+    gtk_widget_style_get(sb, "slider-width", &slider_width,
+                             "trough-border", &trough_border,
+                             NULL);
+
+    size = trough_border * 2 + slider_width;
+
+    gtk_widget_destroy(sb);
   }
 
   return size;
