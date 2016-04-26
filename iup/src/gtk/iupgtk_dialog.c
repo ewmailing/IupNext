@@ -583,7 +583,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
 static void gtkDialogUnMapMethod(Ihandle* ih)
 {
   GtkWidget* inner_parent;
-#if GTK_CHECK_VERSION(2, 10, 0)
+#if GTK_CHECK_VERSION(2, 10, 0) && !GTK_CHECK_VERSION(3, 14, 0)
   GtkStatusIcon* status_icon;
 #endif
 
@@ -593,7 +593,7 @@ static void gtkDialogUnMapMethod(Ihandle* ih)
     IupDestroy(ih->data->menu);  
   }
 
-#if GTK_CHECK_VERSION(2, 10, 0)
+#if GTK_CHECK_VERSION(2, 10, 0) && !GTK_CHECK_VERSION(3, 14, 0)
   status_icon = (GtkStatusIcon*)iupAttribGet(ih, "_IUPDLG_STATUSICON");
   if (status_icon)
   {
@@ -943,7 +943,7 @@ static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-#if GTK_CHECK_VERSION(2, 10, 0)
+#if GTK_CHECK_VERSION(2, 10, 0) && !GTK_CHECK_VERSION(3, 14, 0)
 static int gtkDialogTaskDoubleClick(int button)
 {
   static int last_button = -1;
@@ -1104,7 +1104,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "OPACITY", NULL, gtkDialogSetOpacityAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPACITYIMAGE", NULL, gtkDialogSetOpacityImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 #endif
-#if GTK_CHECK_VERSION(2, 10, 0)
+#if GTK_CHECK_VERSION(2, 10, 0) && !GTK_CHECK_VERSION(3, 14, 0)
   iupClassRegisterAttribute(ic, "TRAY", NULL, gtkDialogSetTrayAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYIMAGE", NULL, gtkDialogSetTrayImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYTIP", NULL, gtkDialogSetTrayTipAttrib, NULL, NULL, IUPAF_NO_INHERIT);

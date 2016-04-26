@@ -65,11 +65,11 @@ ifdef USE_HAIKU
          haiku/iuphaiku_tips.c haiku/iuphaiku_toggle.cpp haiku/iuphaiku_tree.cpp \
          haiku/iuphaiku_val.cpp gtk/iupgtk_draw_cairo.c gtk/iupgtk_key.c
   INCLUDES += haiku
-#  DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=$(WIN32VER) WINVER=$(WIN32VER) NOTREEVIEW
+#  DEFINES += 
 else
 ifdef USE_GTK
   CHECK_GTK = Yes
-  #DEFINES += GTK_DISABLE_DEPRECATED 
+  DEFINES += GTK_DISABLE_DEPRECATED 
   ifdef USE_GTK3
     DEFINES += GDK_DISABLE_DEPRECATED GSEAL_ENABLE
   endif

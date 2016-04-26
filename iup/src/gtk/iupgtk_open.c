@@ -361,3 +361,21 @@ void iupdrvClose(void)
 {
   iupgtkStrRelease();
 }
+
+/* TODO:  (deprecated)
+
+gtk_misc_set_alignment has been deprecated since version 3.14 and should not be used in newly-written code.
+Use GtkWidget's alignment (“halign” and “valign”) and margin properties or GtkLabel's “xalign” and “yalign” properties.
+
+gtk_misc_set_padding has been deprecated since version 3.14 and should not be used in newly-written code.
+Use GtkWidget alignment and margin properties.
+
+gtk_button_set_alignment has been deprecated since version 3.14 and should not be used in newly-written code.
+Access the child widget directly if you need to control its alignment.
+
+foreground-gdk => -rgba
+background-gdk
+
+gtk_widget_reparent has been deprecated since version 3.14 and should not be used in newly-written code.
+Use gtk_container_remove() and gtk_container_add().
+*/

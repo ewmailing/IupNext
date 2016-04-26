@@ -57,10 +57,9 @@
 </ul>
 <h4>Next Versions (?)</h4>
 <ul>
-	<li>Other plot modes: STEP, STEM, CHART, BARHORIZ, MULTIBARS, ERRORBAR (<strong>IupPlot</strong>)</li>
+	<li>CHART plot mode (<strong>IupPlot</strong>)</li>
 	<li><strong>IupGLText</strong> (using a dynamically displayed IupText when editing)</li>
 	<li><strong>IupFlatTabs</strong></li>
-	<li>Val, link and spin for cells in <strong>IupMatrix</strong> </li>
 	<li>Colorbar in <strong>IupPlot</strong></li>
 	<li>Segment pick in <strong>IupPlot</strong></li>
 	<li>Merge cells support for <strong>IupMatrix</strong></li>
@@ -151,9 +150,6 @@
 
 <ul>
 
-	<li><strong><span class="style6">Important:</span> </strong>stop using 
-	deprecated functions in GTK 3.14. Must not define GTK_DISABLE_DEPRECATED in 
-	&quot;iup/src/config.mak&quot; to be able to compile IUP in Ubuntu 15. </li>
 	<li><span class="style1">Known Issue:</span> can not set focus to a child 
 	inside TABCHANGE_CB or TABCHANGEPOS_CB in <strong>IupTabs</strong>, because 
 	internally GTK will always set the focus to the first child.</li>
@@ -270,14 +266,7 @@
 
 <ul>
 
-    <li><strong>CanvasCD</strong> - an IupCanvas with a CD canvas associated.</li>
-
-	<li><strong>ProgressIndicator</strong> - a simpler version of the IupProgressBar</li>
-
-	<li><strong>Calendar</strong> <span class="style5">(Windows, GTK)</span></li>
-	<li>-----------------------------</li>
-
-	<li>DropDownButton - 
+    <li>DropDownButton - 
 	Mix between a drop down list and a button</li>
 
 	<li>Table - similar to IupMatrix but using native controls 
