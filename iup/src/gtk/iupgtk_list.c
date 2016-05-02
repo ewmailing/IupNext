@@ -463,7 +463,7 @@ static int gtkListSetValueAttrib(Ihandle* ih, const char* value)
           return 0;
         }
 
-	      len = strlen(value);
+	      len = (int)strlen(value);
         count = iupdrvListGetCount(ih);
         if (len < count) 
           count = len;
@@ -543,13 +543,19 @@ static int gtkListSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle)
   {
+    GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
+#if GTK_CHECK_VERSION(3, 4, 0)
+    g_object_set(G_OBJECT(entry), "margin-bottom", ih->data->vert_padding, NULL);
+    g_object_set(G_OBJECT(entry), "margin-top", ih->data->vert_padding, NULL);
+    g_object_set(G_OBJECT(entry), "margin-left", ih->data->horiz_padding, NULL);
+    g_object_set(G_OBJECT(entry), "margin-right", ih->data->horiz_padding, NULL);
+#else
 #if GTK_CHECK_VERSION(2, 10, 0)
-    GtkEntry* entry;
     GtkBorder border;
     border.bottom = border.top = (gint16)ih->data->vert_padding;
     border.left = border.right = (gint16)ih->data->horiz_padding;
-    entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
     gtk_entry_set_inner_border(entry, &border);
+#endif
 #endif
     return 0;
   }
@@ -821,7 +827,7 @@ static int gtkListSetAppendAttrib(Ihandle* ih, const char* value)
   if (ih->data->has_editbox)
   {
     GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
-    gint pos = strlen(gtk_entry_get_text(entry))+1;
+    gint pos = (gint)strlen(gtk_entry_get_text(entry))+1;
     iupAttribSet(ih, "_IUPGTK_DISABLE_TEXT_CB", "1"); /* disable callbacks */
     gtk_editable_insert_text(GTK_EDITABLE(entry), iupgtkStrConvertToSystem(value), -1, &pos);
     iupAttribSet(ih, "_IUPGTK_DISABLE_TEXT_CB", NULL);
@@ -1423,6 +1429,7 @@ static int gtkListMapMethod(Ihandle* ih)
 #endif
       entry = gtk_bin_get_child(GTK_BIN(ih->handle));
       iupAttribSet(ih, "_IUPGTK_ENTRY", (char*)entry);
+      iupgtkClearSizeStyleCSS(entry);
 
       g_signal_connect(G_OBJECT(entry), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
       g_signal_connect(G_OBJECT(entry), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);
@@ -1523,6 +1530,7 @@ static int gtkListMapMethod(Ihandle* ih)
       gtk_widget_show(entry);
       gtk_box_pack_start(vbox, entry, FALSE, FALSE, 0);
       iupAttribSet(ih, "_IUPGTK_ENTRY", (char*)entry);
+      iupgtkClearSizeStyleCSS(entry);
 
       gtk_widget_show((GtkWidget*)vbox);
       gtk_box_pack_end(vbox, (GtkWidget*)scrolled_window, TRUE, TRUE, 0);
@@ -1617,6 +1625,8 @@ static int gtkListMapMethod(Ihandle* ih)
     g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(iupgtkButtonEvent), ih);
     g_signal_connect(G_OBJECT(ih->handle), "button-release-event", G_CALLBACK(iupgtkButtonEvent), ih);
   }
+
+  iupgtkClearSizeStyleCSS(ih->handle);
 
   /* Enable internal drag and drop support */
   if(ih->data->show_dragdrop && !ih->data->is_dropdown && !ih->data->is_multiple)

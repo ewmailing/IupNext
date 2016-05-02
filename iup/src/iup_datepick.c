@@ -92,14 +92,12 @@ static int iDatePickCalendarKillFocus_CB(Ihandle* ih_calendar)
 static int iDatePickToggleEnterWindow_CB(Ihandle* ih_toggle)
 {
   iupAttribSet(ih_toggle, "_IUP_DATEPICK_INSIDETOGGLE", "1");
-  printf("EnterWindow_CB\n");
   return IUP_DEFAULT;
 }
 
 static int iDatePickToggleLeaveWindow_CB(Ihandle* ih_toggle)
 {
   iupAttribSet(ih_toggle, "_IUP_DATEPICK_INSIDETOGGLE", NULL);
-  printf("LeaveWindow_CB\n");
   return IUP_DEFAULT;
 }
 
@@ -326,7 +324,7 @@ static void iDatePickSetDayTextBox(Ihandle* ih, int pos)
   IupSetAttribute(txt, "MASKINT", "1:31");
   IupSetAttribute(txt, "MASKNOEMPTY", "Yes");
   IupSetAttribute(txt, "NC", "2");
-  IupSetAttribute(txt, "SIZE", "10x");
+  IupSetAttribute(txt, "SIZE", "14x");
 
   iupAttribSet(ih, "_IUP_DATE_DAY", (char*)txt);
 }
@@ -338,7 +336,7 @@ static void iDatePickSetMonthTextBox(Ihandle* ih, int pos)
   IupSetAttribute(txt, "MASKINT", "1:12");
   IupSetAttribute(txt, "MASKNOEMPTY", "Yes");
   IupSetAttribute(txt, "NC", "2");
-  IupSetAttribute(txt, "SIZE", "10x");
+  IupSetAttribute(txt, "SIZE", "14x");
 
   iupAttribSet(ih, "_IUP_DATE_MONTH", (char*)txt);
 }
@@ -349,7 +347,7 @@ static void iDatePickSetYearTextBox(Ihandle* ih, int pos)
   IupSetAttribute(txt, "MASK", IUP_MASK_UINT);
   IupSetAttribute(txt, "MASKNOEMPTY", "Yes");
   IupSetAttribute(txt, "NC", "4");
-  IupSetAttribute(txt, "SIZE", "20x");
+  IupSetAttribute(txt, "SIZE", "26x");
 
   iupAttribSet(ih, "_IUP_DATE_YEAR", (char*)txt);
 }

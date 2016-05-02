@@ -1009,11 +1009,18 @@ static int gtkTextSetPaddingAttrib(Ihandle* ih, const char* value)
     }
     else
     {
+#if GTK_CHECK_VERSION(3, 4, 0)
+      g_object_set(G_OBJECT(ih->handle), "margin-bottom", ih->data->vert_padding, NULL);
+      g_object_set(G_OBJECT(ih->handle), "margin-top", ih->data->vert_padding, NULL);
+      g_object_set(G_OBJECT(ih->handle), "margin-left", ih->data->horiz_padding, NULL);
+      g_object_set(G_OBJECT(ih->handle), "margin-right", ih->data->horiz_padding, NULL);
+#else
 #if GTK_CHECK_VERSION(2, 10, 0)
       GtkBorder border;
       border.bottom = border.top = (gint16)ih->data->vert_padding;
       border.left = border.right = (gint16)ih->data->horiz_padding;
       gtk_entry_set_inner_border(GTK_ENTRY(ih->handle), &border);
+#endif
 #endif
     }
     return 0;
@@ -1617,6 +1624,16 @@ static int gtkTextMapMethod(Ihandle* ih)
 
     gtk_entry_set_has_frame((GtkEntry*)ih->handle, iupAttribGetBoolean(ih, "BORDER"));
     gtk_entry_set_width_chars((GtkEntry*)ih->handle, 1);  /* minimum size */
+#if GTK_CHECK_VERSION(3, 14, 0)
+    if (!iupAttribGetBoolean(ih, "BORDER"))
+    {
+      GtkStyleContext *context = gtk_widget_get_style_context(ih->handle);
+      GtkCssProvider *provider = gtk_css_provider_new();
+      gtk_css_provider_load_from_data(GTK_CSS_PROVIDER(provider), "*{ border: none; }", -1, NULL);
+      gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+      g_object_unref(provider);
+    }
+#endif
 
     if (iupAttribGetBoolean(ih, "PASSWORD"))
       gtk_entry_set_visibility((GtkEntry*)ih->handle, FALSE);
@@ -1637,6 +1654,8 @@ static int gtkTextMapMethod(Ihandle* ih)
         iupAttribSet(ih, "_IUPGTK_SPIN_NOAUTO", "1");
       }
     }
+
+    iupgtkClearSizeStyleCSS(ih->handle);
   }
 
   /* add to the parent, all GTK controls must call this. */

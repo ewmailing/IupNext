@@ -434,7 +434,7 @@ void ButtonTest(void)
   IupSetAttribute(label, "SEPARATOR", "VERTICAL");
   IupSetHandle("seplabel", label);
 
-  dlg = IupDialog(IupBackgroundBox(IupHbox(box1, label, box2, NULL)));
+  dlg = IupDialog(IupHbox(box1, label, box2, NULL));
   IupSetAttribute(dlg, "TITLE", "IupButton Test");
 //  IupSetAttribute(box1, "BGCOLOR", "128 0 0");
 //  IupSetAttribute(dlg, "BGCOLOR", "0 128 0");

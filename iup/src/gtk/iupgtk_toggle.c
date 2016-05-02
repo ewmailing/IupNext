@@ -236,6 +236,7 @@ static int gtkToggleSetAlignmentAttrib(Ihandle* ih, const char* value)
     yalign = 0.5f;
 
   gtk_button_set_alignment(button, xalign, yalign);
+  /* TODO:   g_object_set(widget, "xalign", xalign, "yalign", yalign, NULL); */
 
   return 1;
 }
@@ -245,9 +246,16 @@ static int gtkToggleSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle && ih->data->type == IUP_TOGGLE_IMAGE)
   {
+#if GTK_CHECK_VERSION(3, 14, 0)
+    g_object_set(G_OBJECT(ih->handle), "margin-bottom", ih->data->vert_padding, NULL);
+    g_object_set(G_OBJECT(ih->handle), "margin-top", ih->data->vert_padding, NULL);
+    g_object_set(G_OBJECT(ih->handle), "margin-left", ih->data->horiz_padding, NULL);
+    g_object_set(G_OBJECT(ih->handle), "margin-right", ih->data->horiz_padding, NULL);
+#else
     GtkButton* button = (GtkButton*)ih->handle;
     GtkMisc* misc = (GtkMisc*)gtk_button_get_image(button);
     gtk_misc_set_padding(misc, ih->data->horiz_padding, ih->data->vert_padding);
+#endif
     return 0;
   }
   else
@@ -511,6 +519,8 @@ static int gtkToggleMapMethod(Ihandle* ih)
     gtk_button_set_image((GtkButton*)ih->handle, gtk_image_new());
     gtk_toggle_button_set_mode((GtkToggleButton*)ih->handle, FALSE);
   }
+
+  iupgtkClearSizeStyleCSS(ih->handle);
 
   /* add to the parent, all GTK controls must call this. */
   iupgtkAddToParent(ih);

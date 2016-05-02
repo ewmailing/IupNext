@@ -130,6 +130,7 @@ static int gtkLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
       yalign = 0.5f;
 
     gtk_misc_set_alignment(misc, xalign, yalign);
+/* TODO:   g_object_set(widget, "xalign", xalign, "yalign", yalign, NULL); */
 
     if (ih->data->type == IUP_LABEL_TEXT)
       pango_layout_set_alignment(gtk_label_get_layout((GtkLabel*)ih->handle), alignment);
@@ -146,8 +147,15 @@ static int gtkLabelSetPaddingAttrib(Ihandle* ih, const char* value)
 
   if (ih->handle && ih->data->type != IUP_LABEL_SEP_HORIZ && ih->data->type != IUP_LABEL_SEP_VERT)
   {
+#if GTK_CHECK_VERSION(3, 14, 0)
+    g_object_set(G_OBJECT(ih->handle), "margin-bottom", ih->data->vert_padding, NULL);
+    g_object_set(G_OBJECT(ih->handle), "margin-top", ih->data->vert_padding, NULL);
+    g_object_set(G_OBJECT(ih->handle), "margin-left", ih->data->horiz_padding, NULL);
+    g_object_set(G_OBJECT(ih->handle), "margin-right", ih->data->horiz_padding, NULL);
+#else
     GtkMisc* misc = (GtkMisc*)ih->handle;
     gtk_misc_set_padding(misc, ih->data->horiz_padding, ih->data->vert_padding);
+#endif
     return 0;
   }
   else

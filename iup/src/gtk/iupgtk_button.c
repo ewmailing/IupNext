@@ -142,6 +142,7 @@ static int gtkButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
     yalign = 0.5f;
 
   gtk_button_set_alignment(button, xalign, yalign);
+  /* TODO:   g_object_set(widget, "xalign", xalign, "yalign", yalign, NULL); */
 
   if (ih->data->type == IUP_BUTTON_TEXT)   /* text only */
   {
@@ -162,6 +163,12 @@ static int gtkButtonSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle)
   {
+#if GTK_CHECK_VERSION(3, 14, 0)
+    g_object_set(G_OBJECT(ih->handle), "margin-bottom", ih->data->vert_padding, NULL);
+    g_object_set(G_OBJECT(ih->handle), "margin-top", ih->data->vert_padding, NULL);
+    g_object_set(G_OBJECT(ih->handle), "margin-left", ih->data->horiz_padding, NULL);
+    g_object_set(G_OBJECT(ih->handle), "margin-right", ih->data->horiz_padding, NULL);
+#else
     if (ih->data->type == IUP_BUTTON_TEXT)   /* text only */
     {
       GtkMisc* misc = (GtkMisc*)gtk_bin_get_child((GtkBin*)ih->handle);
@@ -169,18 +176,12 @@ static int gtkButtonSetPaddingAttrib(Ihandle* ih, const char* value)
     }
     else
     {
-#if GTK_CHECK_VERSION(3, 14, 0)
-      g_object_set(G_OBJECT(ih->handle), "margin-bottom", ih->data->vert_padding, NULL);
-      g_object_set(G_OBJECT(ih->handle), "margin-top", ih->data->vert_padding, NULL);
-      g_object_set(G_OBJECT(ih->handle), "margin-left", ih->data->horiz_padding, NULL);
-      g_object_set(G_OBJECT(ih->handle), "margin-right", ih->data->horiz_padding, NULL);
-#else
       GtkAlignment* alignment = (GtkAlignment*)gtk_bin_get_child((GtkBin*)ih->handle);
       if (GTK_IS_ALIGNMENT(alignment))
         gtk_alignment_set_padding(alignment, ih->data->vert_padding, ih->data->vert_padding, 
                                              ih->data->horiz_padding, ih->data->horiz_padding);
-#endif
     }
+#endif
     return 0;
   }
   else
@@ -487,6 +488,9 @@ static int gtkButtonMapMethod(Ihandle* ih)
     else
       gtk_button_set_label((GtkButton*)ih->handle, iupgtkStrConvertToSystem(title));
   }
+
+  if (has_border)
+    iupgtkClearSizeStyleCSS(ih->handle);
 
   /* add to the parent, all GTK controls must call this. */
   iupgtkAddToParent(ih);

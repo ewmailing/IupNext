@@ -235,11 +235,12 @@ static void gtkUpdateGlobalColors(GtkWidget* dialog, GtkWidget* text)
 
   context = gtk_widget_get_style_context(text);
 
-  gtk_style_context_get_background_color(context, GTK_STATE_FLAG_NORMAL, &color);
-  gtkSetGlobalColorAttrib("TXTBGCOLOR", &color);
-
   gtk_style_context_get_color(context, GTK_STATE_FLAG_NORMAL, &color);
   gtkSetGlobalColorAttrib("TXTFGCOLOR", &color);
+
+  gtk_style_context_get_background_color(context, GTK_STATE_FLAG_NORMAL, &color);
+  if (color.alpha == 0) { color.red = 1; color.green = 1; color.blue = 1; }  /* TODO: workaround for GTK > 3.14 */
+  gtkSetGlobalColorAttrib("TXTBGCOLOR", &color);
 
   gtk_style_context_get_background_color(context, GTK_STATE_FLAG_SELECTED, &color);
   gtkSetGlobalColorAttrib("TXTHLCOLOR", &color);
@@ -363,15 +364,6 @@ void iupdrvClose(void)
 }
 
 /* TODO:  (deprecated)
-
-gtk_misc_set_alignment has been deprecated since version 3.14 and should not be used in newly-written code.
-Use GtkWidget's alignment (“halign” and “valign”) and margin properties or GtkLabel's “xalign” and “yalign” properties.
-
-gtk_misc_set_padding has been deprecated since version 3.14 and should not be used in newly-written code.
-Use GtkWidget alignment and margin properties.
-
-gtk_button_set_alignment has been deprecated since version 3.14 and should not be used in newly-written code.
-Access the child widget directly if you need to control its alignment.
 
 foreground-gdk => -rgba
 background-gdk
