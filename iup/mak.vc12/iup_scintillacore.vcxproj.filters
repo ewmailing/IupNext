@@ -439,6 +439,9 @@
     <ClCompile Include="..\srcscintilla\lexers\LexErlang.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
+    <ClCompile Include="..\srcscintilla\lexers\LexJSON.cxx">
+      <Filter>Scintilla\Lexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\src\Indicator.h">
