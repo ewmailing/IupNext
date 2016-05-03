@@ -78,11 +78,7 @@ static GtkLabel* gtkButtonGetLabel(Ihandle* ih)
   {
     /* when both is set, button contains an GtkAlignment, 
        that contains a GtkBox, that contains a label and an image */
-#if GTK_CHECK_VERSION(3, 14, 0)
-    GtkContainer *container = (GtkContainer*)gtk_bin_get_child((GtkBin*)ih->handle);
-#else
     GtkContainer *container = (GtkContainer*)gtk_bin_get_child((GtkBin*)gtk_bin_get_child((GtkBin*)ih->handle));
-#endif
     GtkLabel* label = NULL;
     gtk_container_foreach(container, gtkButtonChildrenCb, &label);
     return label;
@@ -450,14 +446,18 @@ static int gtkButtonMapMethod(Ihandle* ih)
 
       if (ih->data->type & IUP_BUTTON_TEXT)
       {
+#if GTK_CHECK_VERSION(3, 6, 0)
+        gtk_button_set_always_show_image((GtkButton*)ih->handle, TRUE);
+#else
         GtkSettings* settings = gtk_widget_get_settings(ih->handle);
         g_object_set(settings, "gtk-button-images", (int)TRUE, NULL);
+#endif
 
-        gtk_button_set_label((GtkButton*)ih->handle, iupgtkStrConvertToSystem(iupAttribGet(ih, "TITLE")));
-      
 #if GTK_CHECK_VERSION(2, 10, 0)
         gtk_button_set_image_position((GtkButton*)ih->handle, ih->data->img_position);  /* IUP and GTK have the same Ids */
 #endif
+
+        gtk_button_set_label((GtkButton*)ih->handle, "");
       }
     }
   }
@@ -486,7 +486,7 @@ static int gtkButtonMapMethod(Ihandle* ih)
         gtk_button_set_label((GtkButton*)ih->handle, "");
     }
     else
-      gtk_button_set_label((GtkButton*)ih->handle, iupgtkStrConvertToSystem(title));
+      gtk_button_set_label((GtkButton*)ih->handle, "");
   }
 
   if (has_border)

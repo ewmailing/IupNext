@@ -58,7 +58,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (13/Apr/2016)</h3>
+<h3>SVN (02/May/2016)</h3>
 
 <ul>
 
@@ -148,7 +148,7 @@ version 3.x.</p>
 		<span
             style="color: #000000"> 
 		<span class="hist_fixed">Fixed:</span> some of the deprecated function 
-	in GTK. Now the Makefile defines GTK_DISABLE_DEPRECATED again. Others 
+	in GTK 3.14. Now the Makefile defines GTK_DISABLE_DEPRECATED again. Others 
 	documented in &quot;iupgtk_open.c&quot;.</span></span></font></li>
 	<li>
 	<font SIZE="3">
@@ -157,7 +157,10 @@ version 3.x.</p>
             style="color: #000000"> 
 		<span class="hist_fixed">Fixed:</span> PADDING attribute, along with 
 	other internal margins in <strong>IupText</strong>, <strong>IupList</strong>,
-	<strong>IupButton</strong> and <strong>IupToggle</strong> in GTK version 3.</span></span></font></li>
+	<strong>IupButton</strong> and <strong>IupToggle</strong> for GTK version 3. 
+	BORDER in <strong>IupText</strong> for GTK version 3. TITLE and IMAGE in
+	<strong>IupButton</strong> for GTK version 3. They all affected the layout 
+	computation in IUP.</span></span></font></li>
 
 </ul>
 <h3><a href="http://sourceforge.net/projects/iup/files/3.18/">Version 3.18</a> (21/Mar/2016)</h3>
