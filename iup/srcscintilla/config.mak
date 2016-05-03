@@ -93,7 +93,7 @@ SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers
         lexers/LexKVIrc.cxx lexers/LexLaTeX.cxx lexers/LexSTTXT.cxx lexers/LexRust.cxx \
         lexers/LexDMAP.cxx lexers/LexDMIS.cxx lexers/LexBibTeX.cxx lexers/LexHex.cxx lexers/LexAsm.cxx \
         lexers/LexRegistry.cxx lexers/LexBatch.cxx lexers/LexDiff.cxx lexers/LexErrorList.cxx \
-        lexers/LexMake.cxx lexers/LexNull.cxx lexers/LexProps.cxx
+        lexers/LexMake.cxx lexers/LexNull.cxx lexers/LexProps.cxx lexers/LexJSON.cxx
 				
 SRCSCINTILLA += lexlib/Accessor.cxx lexlib/CharacterSet.cxx lexlib/LexerBase.cxx lexlib/LexerModule.cxx \
                 lexlib/LexerNoExceptions.cxx lexlib/LexerSimple.cxx lexlib/PropSetSimple.cxx \

@@ -287,7 +287,7 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 	} else if (!error) {
 		/* If there's a period, it's a floating point literal unless it's
 		 * followed by an identifier (meaning this is a method call, e.g.
-		 * `1.foo()`) or another period, in which case it's a range (e.g. 1..2) 
+		 * `1.foo()`) or another period, in which case it's a range (e.g. 1..2)
 		 */
 		n = styler.SafeGetCharAt(pos + 1, '\0');
 		if (c == '.' && !(IsIdentifierStart(n) || n == '.')) {
@@ -308,7 +308,7 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 			/* It is invalid to have no digits in the exponent. */
 			error |= !ScanDigits(styler, pos, 10);
 		}
-		
+
 		/* Scan the floating point suffix. */
 		c = styler.SafeGetCharAt(pos, '\0');
 		if (c == 'f') {
@@ -339,7 +339,7 @@ static bool IsOneCharOperator(int c) {
 	    || c == '*' || c == '/' || c == '^' || c == '%'
 	    || c == '.' || c == ':' || c == '!' || c == '<'
 	    || c == '>' || c == '=' || c == '-' || c == '&'
-	    || c == '|' || c == '$';
+	    || c == '|' || c == '$' || c == '?';
 }
 
 static bool IsTwoCharOperator(int c, int n) {
@@ -407,7 +407,18 @@ static void ScanCharacterLiteralOrLifetime(Accessor &styler, Sci_Position& pos, 
 					valid_char = ScanNumericEscape(styler, pos, 2, false);
 				} else if (n == 'u' && !ascii_only) {
 					pos += 2;
-					valid_char = ScanNumericEscape(styler, pos, 4, false);
+					if (styler.SafeGetCharAt(pos, '\0') != '{') {
+						// old-style
+						valid_char = ScanNumericEscape(styler, pos, 4, false);
+					} else {
+						int n_digits = 0;
+						while (IsADigit(styler.SafeGetCharAt(++pos, '\0'), 16) && n_digits++ < 6) {
+						}
+						if (n_digits > 0 && styler.SafeGetCharAt(pos, '\0') == '}')
+							pos++;
+						else
+							valid_char = false;
+					}
 				} else if (n == 'U' && !ascii_only) {
 					pos += 2;
 					valid_char = ScanNumericEscape(styler, pos, 8, false);
@@ -579,7 +590,18 @@ static void ResumeString(Accessor &styler, Sci_Position& pos, Sci_Position max, 
 				error = !ScanNumericEscape(styler, pos, 2, true);
 			} else if (n == 'u' && !ascii_only) {
 				pos += 2;
-				error = !ScanNumericEscape(styler, pos, 4, true);
+				if (styler.SafeGetCharAt(pos, '\0') != '{') {
+					// old-style
+					error = !ScanNumericEscape(styler, pos, 4, true);
+				} else {
+					int n_digits = 0;
+					while (IsADigit(styler.SafeGetCharAt(++pos, '\0'), 16) && n_digits++ < 6) {
+					}
+					if (n_digits > 0 && styler.SafeGetCharAt(pos, '\0') == '}')
+						pos++;
+					else
+						error = true;
+				}
 			} else if (n == 'U' && !ascii_only) {
 				pos += 2;
 				error = !ScanNumericEscape(styler, pos, 8, true);
@@ -620,7 +642,7 @@ static void ResumeRawString(Accessor &styler, Sci_Position& pos, Sci_Position ma
 		} else if (pos >= max) {
 			break;
 		} else {
-			if (ascii_only && !IsASCII((char)c)) 
+			if (ascii_only && !IsASCII((char)c))
 				break;
 			pos++;
 		}
