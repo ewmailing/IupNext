@@ -2957,9 +2957,9 @@ static int winTreeMapMethod(Ihandle* ih)
   }
 
   /* Initialize the default images */
-  ih->data->def_image_leaf = (void*)winTreeGetImageIndex(ih, "IMGLEAF");
-  ih->data->def_image_collapsed = (void*)winTreeGetImageIndex(ih, "IMGCOLLAPSED");
-  ih->data->def_image_expanded = (void*)winTreeGetImageIndex(ih, "IMGEXPANDED");
+  ih->data->def_image_leaf = (void*)winTreeGetImageIndex(ih, iupAttribGetStr(ih, "IMAGELEAF"));
+  ih->data->def_image_collapsed = (void*)winTreeGetImageIndex(ih, iupAttribGetStr(ih, "IMAGEBRANCHCOLLAPSED"));
+  ih->data->def_image_expanded = (void*)winTreeGetImageIndex(ih, iupAttribGetStr(ih, "IMAGEBRANCHEXPANDED"));
 
   if (ih->data->show_toggle)
   {

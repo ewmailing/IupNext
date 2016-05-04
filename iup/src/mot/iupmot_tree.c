@@ -2746,7 +2746,7 @@ static int motTreeMapMethod(Ihandle* ih)
   }
 
   /* Initialize the default images */
-  ih->data->def_image_leaf = iupImageGetImage("IMGLEAF", ih, 0);
+  ih->data->def_image_leaf = iupImageGetImage(iupAttribGetStr(ih, "IMAGELEAF"), ih, 0);
   if (!ih->data->def_image_leaf) 
   {
     ih->data->def_image_leaf = (void*)XmUNSPECIFIED_PIXMAP;
@@ -2754,11 +2754,11 @@ static int motTreeMapMethod(Ihandle* ih)
   }
   else
   {
-    ih->data->def_image_leaf_mask = iupImageGetMask("IMGLEAF");
+    ih->data->def_image_leaf_mask = iupImageGetMask(iupAttribGetStr(ih, "IMAGELEAF"));
     if (!ih->data->def_image_leaf_mask) ih->data->def_image_leaf_mask = (void*)XmUNSPECIFIED_PIXMAP;
   }
 
-  ih->data->def_image_collapsed = iupImageGetImage("IMGCOLLAPSED", ih, 0);
+  ih->data->def_image_collapsed = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHCOLLAPSED"), ih, 0);
   if (!ih->data->def_image_collapsed) 
   {
     ih->data->def_image_collapsed = (void*)XmUNSPECIFIED_PIXMAP;
@@ -2766,11 +2766,11 @@ static int motTreeMapMethod(Ihandle* ih)
   }
   else
   {
-    ih->data->def_image_collapsed_mask = iupImageGetMask("IMGCOLLAPSED");
+    ih->data->def_image_collapsed_mask = iupImageGetMask(iupAttribGetStr(ih, "IMAGEBRANCHCOLLAPSED"));
     if (!ih->data->def_image_collapsed_mask) ih->data->def_image_collapsed_mask = (void*)XmUNSPECIFIED_PIXMAP;
   }
 
-  ih->data->def_image_expanded = iupImageGetImage("IMGEXPANDED", ih, 0);
+  ih->data->def_image_expanded = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHEXPANDED"), ih, 0);
   if (!ih->data->def_image_expanded) 
   {
     ih->data->def_image_expanded = (void*)XmUNSPECIFIED_PIXMAP;
@@ -2778,7 +2778,7 @@ static int motTreeMapMethod(Ihandle* ih)
   }
   else
   {
-    ih->data->def_image_expanded_mask = iupImageGetMask("IMGEXPANDED");
+    ih->data->def_image_expanded_mask = iupImageGetMask(iupAttribGetStr(ih, "IMAGEBRANCHEXPANDED"));
     if (!ih->data->def_image_expanded_mask) ih->data->def_image_expanded_mask = (void*)XmUNSPECIFIED_PIXMAP;
   }
 

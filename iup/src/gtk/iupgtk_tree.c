@@ -2853,9 +2853,9 @@ static int gtkTreeMapMethod(Ihandle* ih)
   gtk_widget_realize(ih->handle);
 
   /* Initialize the default images */
-  ih->data->def_image_leaf = iupImageGetImage("IMGLEAF", ih, 0);
-  ih->data->def_image_collapsed = iupImageGetImage("IMGCOLLAPSED", ih, 0);
-  ih->data->def_image_expanded = iupImageGetImage("IMGEXPANDED", ih, 0);
+  ih->data->def_image_leaf = iupImageGetImage(iupAttribGetStr(ih, "IMAGELEAF"), ih, 0);
+  ih->data->def_image_collapsed = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHCOLLAPSED"), ih, 0);
+  ih->data->def_image_expanded = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHEXPANDED"), ih, 0);
 
   if (iupAttribGetInt(ih, "ADDROOT"))
     iupdrvTreeAddNode(ih, -1, ITREE_BRANCH, "", 0);
