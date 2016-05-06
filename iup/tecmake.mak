@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.14
+VERSION = 4.14.1
 
 
 #---------------------------------#
@@ -284,14 +284,16 @@ ifndef NO_GTK_DEFAULT
 endif
 
 ifdef GTK_DEFAULT
-  ifneq ($(findstring Linux4, $(TEC_UNAME)), )
-    USE_GTK3 = Yes
-  endif
-  ifneq ($(findstring Linux31, $(TEC_UNAME)), )
-    USE_GTK3 = Yes
-  endif
-  ifneq ($(findstring cygw, $(TEC_UNAME)), )
-    USE_GTK3 = Yes
+  ifndef USE_GTK2
+    ifneq ($(findstring Linux4, $(TEC_UNAME)), )
+      USE_GTK3 = Yes
+    endif
+    ifneq ($(findstring Linux31, $(TEC_UNAME)), )
+      USE_GTK3 = Yes
+    endif
+    ifneq ($(findstring cygw, $(TEC_UNAME)), )
+      USE_GTK3 = Yes
+    endif
   endif
 endif
 
@@ -553,6 +555,9 @@ MOTIFGL_LIB := GLw              #include <GL/GLwMDrawA.h>
 #GLUT_LIB :=
 #GLUT_INC :=
 
+# Definitions for Freetype
+FREETYPE_INC := /usr/include/freetype2
+
 # Definitions for GTK
 ifdef GTK_BASE
   GTK := $(GTK_BASE)
@@ -707,8 +712,8 @@ endif
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   UNIX_BSD = Yes
   X11_LIBS := Xp Xext X11
-  X11_LIB := /usr/X11R6/lib
-  X11_INC := /usr/X11R6/include
+  X11_LIB := /usr/X11R6/lib /usr/X11/lib
+  X11_INC := /usr/X11R6/include /usr/X11/include
   MOTIF_INC := /usr/OpenMotif/include
   MOTIF_LIB := /usr/OpenMotif/lib
   ifdef BUILD_DYLIB
@@ -720,6 +725,7 @@ ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   endif
   ifdef USE_OPENGL
     LFLAGS = -framework OpenGL
+    OPENGL_LIBS :=
     
     ifeq ($(TEC_SYSMINOR), 5)
       #Darwin9 Only - OpenGL bug fix for Fink, when the message bellow appears
@@ -1143,47 +1149,31 @@ ifdef USE_IM
   INCLUDES += $(IM_INC)
 endif
 
+ifdef USE_FREETYPE
+  LINK_FREETYPE = Yes
+  
+  INCLUDES += $(FREETYPE_INC)
+endif
+
 ifdef LINK_FREETYPE
-  FREETYPE = freetype
-  ifneq ($(findstring cygw, $(TEC_UNAME)), )
-    # To be compatible with the existing DLLs of cygwin
-    #FREETYPE = freetype-6
-  endif
+  # In Linux, always use freetype from the system (since 4.15)
   
   ifndef NO_ZLIB
     LINK_ZLIB = Yes
   endif
   
-  ifdef USE_STATIC
-    ifndef GTK_DEFAULT
-      FREETYPE_LIB = $(CD_LIB)
-      SLIB += $(FREETYPE_LIB)/lib$(FREETYPE).a
-    else
-      # If GTK is the default, 
-      # use freetype from the system even when static link
-      LIBS += $(FREETYPE)
-    endif
-  else
-    LIBS += $(FREETYPE)
-  endif
+  LIBS += freetype
+endif
+
+ifdef USE_ZLIB
+  # In Linux, always use zlib from the system (since 4.15)
+  
+  LINK_ZLIB = Yes
+  # includes are already in /usr/include
 endif
 
 ifdef LINK_ZLIB
-  ifndef ZLIB
-    ZLIB = z
-  endif
-  
-  ifdef USE_STATIC
-    ifdef USE_IM
-      ZLIB_LIB = $(IM_LIB)
-    else
-      ZLIB_LIB = $(CD_LIB)
-    endif
-    
-    SLIB += $(ZLIB_LIB)/lib$(ZLIB).a
-  else
-    LIBS += $(ZLIB)
-  endif
+  LIBS += z
 endif
 
 ifdef USE_GLUT

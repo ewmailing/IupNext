@@ -990,6 +990,9 @@ LUA   ?= $(TECTOOLS_HOME)/lua
 LUA51 ?= $(TECTOOLS_HOME)/lua5.1
 LUA52 ?= $(TECTOOLS_HOME)/lua52
 LUA53 ?= $(TECTOOLS_HOME)/lua53
+ZLIB  ?= $(TECTOOLS_HOME)/zlib
+FREETYPE ?= $(TECTOOLS_HOME)/freetype
+FTGL     ?= $(TECTOOLS_HOME)/ftgl
 
 
 #---------------------------------#
@@ -1208,15 +1211,6 @@ ifdef USE_CD
   INCLUDES += $(CD_INC)
 endif
 
-ifdef LINK_FREETYPE
-  # To be compatible with the existing DLLs of gnuwin32
-  LIBS += freetype6
-  
-  ifndef NO_ZLIB
-    LINK_ZLIB = Yes
-  endif
-endif
-
 ifdef USE_IM
   LIBS += im
   
@@ -1231,19 +1225,47 @@ ifdef USE_IM
   INCLUDES += $(IM_INC)
 endif
 
+ifdef USE_FREETYPE
+  LINK_FREETYPE = Yes
+  
+  FREETYPE_INC ?= $(FREETYPE)/include
+  INCLUDES += $(FREETYPE_INC)
+endif
+
+ifdef LINK_FREETYPE
+  # To be compatible with the existing DLLs of gnuwin32
+  LIBS += freetype6
+  
+  ifndef NO_ZLIB
+    LINK_ZLIB = Yes
+  endif
+  
+  FREETYPE_LIB ?= $(FREETYPE)/lib/$(TEC_UNAME)
+  LDIR += $(FREETYPE_LIB)
+endif
+
+ifdef USE_ZLIB
+  LINK_ZLIB = Yes
+  
+  ZLIB_INC ?= $(ZLIB)/include
+  INCLUDES += $(ZLIB_INC)
+endif
+
 ifdef LINK_ZLIB
-  ifndef ZLIB
-    ZLIB = zlib1
+  ifndef ZLIB_NAME
+    ZLIB_NAME = zlib1
     
     ifneq ($(findstring gcc, $(TEC_UNAME)), )
-      ZLIB = z
+      ZLIB_NAME = z
     endif
     ifneq ($(findstring mingw, $(TEC_UNAME)), )
-      ZLIB = z
+      ZLIB_NAME = z
     endif
   endif
+  LIBS += $(ZLIB_NAME)
 
-  LIBS += $(ZLIB)
+  ZLIB_LIB ?= $(ZLIB)/lib/$(TEC_UNAME)
+  LDIR += $(ZLIB_LIB)
 endif
 
 ifdef USE_OPENGL
