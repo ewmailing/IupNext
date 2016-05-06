@@ -2,7 +2,7 @@ PROJNAME = iup
 LIBNAME = iupglcontrols
 OPT = YES
 
-INCLUDES = ../include ../src . ./freetype
+INCLUDES = ../include ../src .
 
 SRC = iup_glcontrols.c iup_glcanvasbox.c iup_glsubcanvas.c iup_gllabel.c \
       iup_glimage.c iup_glfont.c iup_gldraw.c iup_glicon.c iup_glseparator.c \
@@ -10,8 +10,10 @@ SRC = iup_glcontrols.c iup_glcanvasbox.c iup_glsubcanvas.c iup_gllabel.c \
       iup_glval.c iup_glframe.c iup_glexpander.c iup_glscrollbars.c \
       iup_glscrollbox.c iup_glsizebox.c
 
-LIBS = iupgl iup ftgl
+LIBS = iupgl iup
 LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
+
+USE_FTGL = Yes
 USE_OPENGL = Yes
 
 DEFINES = FTGL_LIBRARY_STATIC
