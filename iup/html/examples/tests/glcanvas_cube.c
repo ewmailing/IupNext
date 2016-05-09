@@ -540,13 +540,18 @@ void GLCanvasCubeTest(void)
 
   vbox3 = IupSetAttributes(IupGLFrame(vbox3), "TITLE=Frame4");
 
+#if 0
+  canvas = IupGLCanvas(
+    NULL);
+#else
   canvas = IupGLCanvasBox(
     IupSetAttributes(gexp1, "HORIZONTALALIGN=ACENTER, VERTICALALIGN=ATOP, MOVEABLE=Yes, MOVETOTOP=Yes"),
     IupSetAttributes(gexp2, "HORIZONTALALIGN=ALEFT, VERTICALALIGN=ACENTER"),
     IupSetAttributes(gframe3, "MOVEABLE=Yes, POSITION=\"550,200\", MOVETOTOP=Yes"),
     IupSetAttributes(vbox3, "MOVEABLE=Yes, POSITION=\"250,350\""),
     NULL);
-    
+#endif
+
   IupSetAttribute(canvas, "DEPTH_SIZE", "16");
 
   image_open = IupImage(16, 16, img_open);
