@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.14.1
+VERSION = 4.15
 
 
 #---------------------------------#
@@ -766,6 +766,8 @@ LUA   ?= $(TECTOOLS_HOME)/lua
 LUA51 ?= $(TECTOOLS_HOME)/lua5.1
 LUA52 ?= $(TECTOOLS_HOME)/lua52
 LUA53 ?= $(TECTOOLS_HOME)/lua53
+FTGL  ?= $(TECTOOLS_HOME)/ftgl
+# Freetype and zlib in Linux we use from the system
 
 
 #---------------------------------#
@@ -889,6 +891,7 @@ endif
 ifdef USE_IUPGLCONTROLS
   override USE_OPENGL = Yes
   override USE_IUP = Yes
+  override LINK_FTGL = Yes
   IUP_LIB ?= $(IUP)/lib/$(TEC_UNAME_LIB_DIR)
   CD_LIB ?= $(CD)/lib/$(TEC_UNAME_LIB_DIR)
   
@@ -901,9 +904,9 @@ ifdef USE_IUPGLCONTROLS
   endif
   
   ifdef USE_STATIC
-    SLIB += $(IUP_LIB)/libiupglcontrols.a $(CD_LIB)/libftgl.a
+    SLIB += $(IUP_LIB)/libiupglcontrols.a
   else
-    LIBS += iupglcontrols ftgl
+    LIBS += iupglcontrols
   endif
 endif
 
@@ -1147,6 +1150,26 @@ ifdef USE_IM
 
   IM_INC ?= $(IM)/include
   INCLUDES += $(IM_INC)
+endif
+
+ifdef USE_FTGL
+  LINK_FTGL = Yes
+  USE_FREETYPE = Yes
+  
+  FTGL_INC ?= $(FTGL)/include
+  INCLUDES += $(FTGL_INC)
+endif
+
+ifdef LINK_FTGL
+  LINK_FREETYPE = Yes
+  
+  FTGL_LIB ?= $(FTGL)/lib/$(TEC_UNAME)
+  ifdef USE_STATIC
+    SLIB += $(FTGL_LIB)/libftgl.a
+  else
+    LIBS += ftgl
+    LDIR += $(FTGL_LIB)
+  endif
 endif
 
 ifdef USE_FREETYPE

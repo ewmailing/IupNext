@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.14.1
+VERSION = 4.15
 
 
 #---------------------------------#
@@ -1098,10 +1098,11 @@ endif
 ifdef USE_IUPGLCONTROLS
   override USE_OPENGL = Yes
   override USE_IUP = Yes
+  override LINK_FTGL = Yes
   ifdef USE_IUPLUA
     LIBS += iupluaglcontrols$(LIBLUA_SFX)
   endif
-  LIBS += iupglcontrols ftgl
+  LIBS += iupglcontrols
 endif
 
 ifdef USE_IMLUA
@@ -1223,6 +1224,22 @@ ifdef USE_IM
 
   IM_INC ?= $(IM)/include
   INCLUDES += $(IM_INC)
+endif
+
+ifdef USE_FTGL
+  LINK_FTGL = Yes
+  USE_FREETYPE = Yes
+  
+  FTGL_INC ?= $(FTGL)/include
+  INCLUDES += $(FTGL_INC)
+endif
+
+ifdef LINK_FTGL
+  LIBS += ftgl
+  LINK_FREETYPE = Yes
+  
+  FTGL_LIB ?= $(FTGL)/lib/$(TEC_UNAME)
+  LDIR += $(FTGL_LIB)
 endif
 
 ifdef USE_FREETYPE
