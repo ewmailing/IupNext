@@ -1143,6 +1143,8 @@ ifdef USE_IM
   
   ifdef USE_STATIC
     SLIB += $(IM_LIB)/libim.a
+    # In Linux, always use libpng from the system (since 4.15)
+    LIBS += libpng
   else
     LIBS += im
     LDIR += $(IM_LIB)
