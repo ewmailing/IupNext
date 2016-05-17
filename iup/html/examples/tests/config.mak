@@ -94,12 +94,13 @@ SRC += canvas_cddbuffer.c
 SRC += canvas_cdsimple.c
 
 USE_OPENGL = Yes
+USE_FTGL = Yes
 DEFINES += USE_OPENGL
 SRC += glcanvas.c
 SRC += glcanvas_cube.c
 SRC += charac.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += cdgl ftgl iupglcontrols
+  LIBS += cdgl iupglcontrols
   LDIR += $(CD)/lib/$(TEC_UNAME)
 else
   SLIB += $(CD_LIB)/libcdgl.a \
