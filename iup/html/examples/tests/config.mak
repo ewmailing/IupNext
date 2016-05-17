@@ -102,7 +102,7 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += cdgl ftgl iupglcontrols
   LDIR += $(CD)/lib/$(TEC_UNAME)
 else
-  SLIB += $(CD_LIB)/libcdgl.a $(CD_LIB)/libftgl.a \
+  SLIB += $(CD_LIB)/libcdgl.a \
           $(IUP_LIB)/libiupglcontrols.a 
   ifneq ($(findstring CYGW, $(TEC_SYSNAME)), )
     LIBS += fontconfig iconv 
