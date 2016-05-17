@@ -76,17 +76,14 @@ static int GetParam(lua_State *L)
 
     switch(t)
     {
+    case 'x':
     case 'u':
     case 't':
       f += line_size;
       i--; /* compensate next increment */
       continue; /* notice this will go to the next i */
-    case 'h':
-      param_data[i] = malloc(sizeof(Ihandle*));
-      *(Ihandle**)(param_data[i]) = iuplua_checkihandle(L, lua_param_start); lua_param_start++;
-      break;
     case 'b':
-/*  TO DO: add this code some day:
+      /*  TODO: add this code some day:
       if (lua_isboolean(L, lua_param_start))
       {
         param_data[i] = malloc(sizeof(int));
@@ -109,6 +106,10 @@ static int GetParam(lua_State *L)
     case 'R':
       param_data[i] = malloc(sizeof(double));
       *(double*)(param_data[i]) = (double)luaL_checknumber(L, lua_param_start); lua_param_start++;
+      break;
+    case 'h':
+      param_data[i] = malloc(sizeof(Ihandle*));
+      *(Ihandle**)(param_data[i]) = iuplua_checkihandle(L, lua_param_start); lua_param_start++;
       break;
     case 'd':
     case 'f':
@@ -209,39 +210,12 @@ static int GetParamHandle(lua_State *L)
   return 1;
 }
 
-static int Param(lua_State *L)
-{
-  Ihandle* param = IupParamf(luaL_checkstring(L, 1));
-  iuplua_pushihandle(L, param);
-  return 1;
-}
-
-static int ParamBox(lua_State *L)
-{
-  Ihandle* parent = iuplua_checkihandle(L, 1);
-  int count = iuplua_getn(L, 2);
-  Ihandle** params = iuplua_checkihandle_array(L, 2, count);
-  Ihandle* param_box = IupParamBox(parent, params, count);
-  iuplua_pushihandle(L, param_box);
-  return 1;
-}
-
-static int param_cb(Ihandle* self, int param_index, void* user_data)
-{
-  lua_State *L = iuplua_call_start(self, "param_cb");
-  lua_pushinteger(L, param_index);
-  lua_pushlightuserdata(L, user_data);
-  return iuplua_call(L, 2);
-}
-
 void iupgetparamlua_open(lua_State * L)
 {
   iuplua_register(L, GetParam, "GetParam");
   iuplua_register(L, GetParamParam, "GetParamParam");
   iuplua_register(L, GetParamHandle, "GetParamHandle");
 
-  iuplua_register(L, Param, "Paramf");
-  iuplua_register(L, ParamBox, "ParamBox");
-
-  iuplua_register_cb(L, "PARAM_CB", (lua_CFunction)param_cb, NULL);
+  iupparamlua_open(L);
+  iupparamboxlua_open(L);
 }

@@ -69,6 +69,7 @@ void GetParamTest(void)
   
   if (!IupGetParam("Title", param_action, 0,
                    "Bt%u[, MyCancel, Help!]\n"
+//                   "%x[NOFRAME=Yes]\n"
                    "&Boolean:%b[No,Yes]\n"
                    "&Integer:%i\n"
                    "Real 1:%r\n"

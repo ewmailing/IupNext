@@ -58,6 +58,8 @@ Iclass* iupBackgroundBoxNewClass(void);
 Iclass* iupAnimatedLabelNewClass(void);
 Iclass* iupCalendarNewClass(void);
 Iclass* iupDatePickNewClass(void);
+Iclass* iupParamBoxNewClass(void);
+Iclass* iupParamNewClass(void);
 
 Iclass* iupTimerNewClass(void);
 Iclass* iupImageNewClass(void);

@@ -316,8 +316,9 @@ int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char
 typedef int (*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);
 int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format,...);
 int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
-Ihandle* IupParamf(const char* format);
-Ihandle* IupParamBox(Ihandle* parent, Ihandle** params, int count);
+Ihandle* IupParam(const char* format);
+Ihandle*  IupParamBox(Ihandle* child, ...);
+Ihandle*  IupParamBoxv(Ihandle* *children);
 
 Ihandle* IupLayoutDialog(Ihandle* dialog);
 Ihandle* IupElementPropertiesDialog(Ihandle* elem);

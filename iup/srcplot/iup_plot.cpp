@@ -723,7 +723,7 @@ static void iPlotPropertiesAddParamBox(Ihandle* ih, Ihandle* parent, iPlotAttrib
   while (attribs[count].name)
   {
     sprintf(format, "%s%%%s%s%s\n", attribs[count].label, attribs[count].type, attribs[count].extra, attribs[count].tip);
-    params[count] = IupParamf(format);
+    params[count] = IupParam(format);
 
     if (attribs[count].name[0] != 0)
     {
@@ -741,11 +741,14 @@ static void iPlotPropertiesAddParamBox(Ihandle* ih, Ihandle* parent, iPlotAttrib
     count++;
   }
 
-  params[count] = IupParamf("%u[,,_@IUP_CLOSE]");
+  params[count] = IupParam("%u[,,_@IUP_CLOSE]");
   count++;
+  params[count] = NULL;
 
-  Ihandle* parambox = IupParamBox(parent, params, count);
+  Ihandle* parambox = IupParamBoxv(params);
   IupSetCallback(parambox, "PARAM_CB", (Icallback)iPlotPropertiesParam_CB);
+
+  IupAppend(parent, parambox);
 
   count = IupGetInt(parambox, "PARAMCOUNT");
   for (int i = 0; i < count; i++)

@@ -182,7 +182,8 @@ static int iBoxCreateMethod(Ihandle* ih, void** params)
     Ihandle** iparams = (Ihandle**)params;
     while (*iparams)
     {
-      IupAppend(ih, *iparams);
+      if (iupObjectCheck(*iparams))
+        IupAppend(ih, *iparams);
       iparams++;
     }
   }

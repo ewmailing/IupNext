@@ -58,7 +58,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (04/May/2016)</h3>
+<h3>SVN (17/May/2016)</h3>
 
 <ul>
 
@@ -100,6 +100,18 @@ version 3.x.</p>
 	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
 	Changed:</span></strong><span class="Apple-converted-space">&nbsp;Scintilla 
 	updated to version 3.6.5. </span></font></li>
+	<li>
+	<font size="3"><strong>
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	Changed:</span></strong><span class="Apple-converted-space">&nbsp;<span class="style7">[IMPORTANT 
+	INCOMPATIBILITY]</span> <strong>IupParamf</strong> renamed to <strong>
+	IupParam</strong> and <strong>IupParamBox</strong> changed its signature. 
+	They are now actual controls and cab be also used in LED and Lua as such. In 
+	Lua the constructors iup.param{} and iup.parambox{} must be used instead of 
+	the previous functions. After creating the <strong>IupParamBox</strong>, 
+	IupAppend or IupInsert must be called to insert the box in the parent child 
+	list. There are NO changes for <strong>IupGetParam</strong>, it is fully 
+	backward compatible.</span></font></li>
 
 	<li>
 	<font SIZE="3">

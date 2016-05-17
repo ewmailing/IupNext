@@ -123,6 +123,8 @@
     <ClCompile Include="..\..\srclua5\elem\il_messagedlg.c" />
     <ClCompile Include="..\..\srclua5\elem\il_multiline.c" />
     <ClCompile Include="..\..\srclua5\elem\il_normalizer.c" />
+    <ClCompile Include="..\..\srclua5\elem\il_param.c" />
+    <ClCompile Include="..\..\srclua5\elem\il_parambox.c" />
     <ClCompile Include="..\..\srclua5\elem\il_progressbar.c" />
     <ClCompile Include="..\..\srclua5\elem\il_progressdlg.c" />
     <ClCompile Include="..\..\srclua5\elem\il_radio.c" />
@@ -184,6 +186,8 @@
     <None Include="..\..\srclua5\elem\messagedlg.lua" />
     <None Include="..\..\srclua5\elem\multiline.lua" />
     <None Include="..\..\srclua5\elem\normalizer.lua" />
+    <None Include="..\..\srclua5\elem\param.lua" />
+    <None Include="..\..\srclua5\elem\parambox.lua" />
     <None Include="..\..\srclua5\elem\progressbar.lua" />
     <None Include="..\..\srclua5\elem\progressdlg.lua" />
     <None Include="..\..\srclua5\elem\radio.lua" />

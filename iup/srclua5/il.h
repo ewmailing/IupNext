@@ -64,6 +64,8 @@ int iupdatepicklua_open(lua_State * L);
 
 void iupgetparamlua_open (lua_State * L);
 void iupconfiglua_open(lua_State * L);
+int iupparamlua_open(lua_State * L);
+int iupparamboxlua_open(lua_State * L);
 
 int iupluaScanf(lua_State *L);
 void iupluaapi_open(lua_State * L);
