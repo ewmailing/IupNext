@@ -557,7 +557,6 @@ MOTIFGL_LIB := GLw              #include <GL/GLwMDrawA.h>
 
 # Definitions for Freetype
 FREETYPE_INC := /usr/include/freetype2
-LIBPNG_LDIR := /usr/lib/x86_64-linux-gnu
 
 # Definitions for GTK
 ifdef GTK_BASE
@@ -1151,7 +1150,6 @@ ifdef USE_IM
   
   # In Linux, always use libpng from the system (since 4.15)
   LIBS += png
-  LDIR += $(LIBPNG_LDIR)
 
   IM_INC ?= $(IM)/include
   INCLUDES += $(IM_INC)
