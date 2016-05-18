@@ -249,17 +249,18 @@ void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsig
   }
 }
 
-void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y, int *img_w, int *img_h)
+void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
 {
+  int img_w, img_h;
   int bpp;
   Pixmap pixmap = (Pixmap)iupImageGetImage(name, dc->ih, make_inactive);
   if (!pixmap)
     return;
 
   /* must use this info, since image can be a driver image loaded from resources */
-  iupdrvImageGetInfo((void*)pixmap, img_w, img_h, &bpp);
+  iupdrvImageGetInfo((void*)pixmap, &img_w, &img_h, &bpp);
 
-  XCopyArea(iupmot_display, pixmap, dc->pixmap, dc->pixmap_gc, 0, 0, *img_w, *img_h, x, y);
+  XCopyArea(iupmot_display, pixmap, dc->pixmap, dc->pixmap_gc, 0, 0, img_w, img_h, x, y);
 }
 
 void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)

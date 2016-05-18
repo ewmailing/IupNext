@@ -142,10 +142,9 @@ static const char* iFlatButtonGetImageName(Ihandle* ih, const char* baseattrib, 
 
 static void iFlatButtonDrawImage(Ihandle* ih, IdrawCanvas* dc, int x, int y, const char* baseattrib, const char* imagename, int active)
 {
-  int img_w, img_h;
   int make_inactive;
   const char* name = iFlatButtonGetImageName(ih, baseattrib, imagename, active, &make_inactive);
-  iupDrawImage(dc, name, make_inactive, x, y, &img_w, &img_h);
+  iupDrawImage(dc, name, make_inactive, x, y);
 }
 
 void iFlatButtonDrawText(Ihandle* ih, IdrawCanvas* dc, int x, int y, const char* str, const char* color, const char* bgcolor, int active)

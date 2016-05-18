@@ -21,6 +21,7 @@
 #include "iup_dlglist.h"
 #include "iup_assert.h"
 #include "iup_draw.h"
+#include "iup_image.h"
 #include "iup_childtree.h"
 #include "iup_drv.h"
 #include "iup_func.h"
@@ -1118,7 +1119,9 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
       char* position;
       int img_w, img_h;
 
-      iupDrawImage(dc, image, 0, x+1, y+1, &img_w, &img_h);
+      iupImageGetInfo(image, &img_w, &img_h, NULL);
+
+      iupDrawImage(dc, image, 0, x+1, y+1);
 
       position = iupAttribGetLocal(ih, "IMAGEPOSITION");  /* used only for buttons */
       if (position &&

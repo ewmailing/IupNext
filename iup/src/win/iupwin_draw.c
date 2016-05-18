@@ -688,21 +688,21 @@ void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsig
   SelectObject(dc->hBitmapDC, hOldFont);
 }
 
-void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y, int *img_w, int *img_h)
+void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
 {
-  int bpp;
+  int bpp, img_w, img_h;
   HBITMAP hMask = NULL;
   HBITMAP hBitmap = (HBITMAP)iupImageGetImage(name, dc->ih, make_inactive);
   if (!hBitmap)
     return;
 
   /* must use this info, since image can be a driver image loaded from resources */
-  iupdrvImageGetInfo(hBitmap, img_w, img_h, &bpp);
+  iupdrvImageGetInfo(hBitmap, &img_w, &img_h, &bpp);
 
   if (bpp == 8)
     hMask = iupdrvImageCreateMask(IupGetHandle(name));
 
-  iupwinDrawBitmap(dc->hBitmapDC, hBitmap, hMask, x, y, *img_w, *img_h, bpp);
+  iupwinDrawBitmap(dc->hBitmapDC, hBitmap, hMask, x, y, img_w, img_h, bpp);
 
   if (hMask)
     DeleteObject(hMask);
