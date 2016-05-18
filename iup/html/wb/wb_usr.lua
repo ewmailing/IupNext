@@ -989,7 +989,18 @@ wb_usr.tree =
             },
             {
               name= {nl= "IupGetParam"},
-              link= "dlg/iupgetparam.html"
+              link= "dlg/iupgetparam.html",
+              folder=
+              {
+                {
+                  name= {nl= "IupParam"},
+                  link= "elem/iupparam.html"
+                },
+                {
+                  name= {nl= "IupParamBox"},
+                  link= "elem/iupparambox.html"
+                },
+              }
             },
             {
               name= {nl= "IupGetText"},
