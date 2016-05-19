@@ -108,7 +108,7 @@ void iupdrvDrawParentBackground(IdrawCanvas* dc)
 static void iDrawSetLineStyle(IdrawCanvas* dc, int style)
 {
   GdkGCValues gcval;
-  if (style == IUP_DRAW_STROKE)
+  if (style == IUP_DRAW_STROKE || style == IUP_DRAW_FILL)
     gcval.line_style = GDK_LINE_SOLID;
   else
   {

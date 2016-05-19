@@ -113,7 +113,7 @@ void iupdrvDrawParentBackground(IdrawCanvas* dc)
 static void iDrawSetLineStyle(IdrawCanvas* dc, int style)
 {
   XGCValues gcval;
-  if (style == IUP_DRAW_STROKE)
+  if (style == IUP_DRAW_STROKE || style == IUP_DRAW_FILL)
     gcval.line_style = LineSolid;
   else
   {

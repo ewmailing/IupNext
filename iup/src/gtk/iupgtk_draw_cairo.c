@@ -124,7 +124,9 @@ void iupdrvDrawParentBackground(IdrawCanvas* dc)
 
 static void iDrawSetLineStyle(IdrawCanvas* dc, int style)
 {
-  if (style == IUP_DRAW_STROKE)
+  cairo_set_line_width(dc->image_cr, 1);
+
+  if (style == IUP_DRAW_STROKE || style == IUP_DRAW_FILL)
     cairo_set_dash(dc->image_cr, 0, 0, 0);
   else
   {
