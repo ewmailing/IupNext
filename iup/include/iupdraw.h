@@ -18,6 +18,9 @@ void IupDrawEnd(Ihandle* ih);
 
 /* all primitives can be called only between calls to Begin and End */
 
+/* color controlled by the attribute DRAWCOLOR */
+/* line style or fill controlled by the attribute DRAWSTYLE */
+
 void IupDrawParentBackground(Ihandle* ih);
 void IupDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2);
 void IupDrawRectangle(Ihandle* ih, int x1, int y1, int x2, int y2);
