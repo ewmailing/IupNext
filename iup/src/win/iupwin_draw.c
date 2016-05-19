@@ -27,7 +27,7 @@
 #include "iup_str.h"
 #include "iup_object.h"
 #include "iup_image.h"
-#include "iup_draw.h"
+#include "iup_drvdraw.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_info.h"
@@ -326,7 +326,7 @@ void iupwinDraw3StateButton(HWND hWnd, HDC hDC, RECT *rect)
   }
 }
 
-void iupdrvDrawFocusRect(Ihandle* ih, void* gc, int x, int y, int w, int h)
+void iupdrvPaintFocusRect(Ihandle* ih, void* gc, int x, int y, int w, int h)
 {
   HDC hDC = (HDC)gc;
   RECT rect;
@@ -423,7 +423,7 @@ struct _IdrawCanvas{
   HDC hBitmapDC, hDC;
 };
 
-IdrawCanvas* iupDrawCreateCanvas(Ihandle* ih)
+IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
 {
   IdrawCanvas* dc = calloc(1, sizeof(IdrawCanvas));
   RECT rect;
@@ -452,7 +452,7 @@ IdrawCanvas* iupDrawCreateCanvas(Ihandle* ih)
   return dc;
 }
 
-void iupDrawKillCanvas(IdrawCanvas* dc)
+void iupdrvDrawKillCanvas(IdrawCanvas* dc)
 {
   SelectObject(dc->hBitmapDC, dc->hOldBitmap);
   DeleteObject(dc->hBitmap);
@@ -463,7 +463,7 @@ void iupDrawKillCanvas(IdrawCanvas* dc)
   free(dc);
 }
 
-void iupDrawUpdateSize(IdrawCanvas* dc)
+void iupdrvDrawUpdateSize(IdrawCanvas* dc)
 {
   int w, h;
   RECT rect;
@@ -490,36 +490,46 @@ void iupDrawUpdateSize(IdrawCanvas* dc)
   }
 }
 
-void iupDrawFlush(IdrawCanvas* dc)
+void iupdrvDrawFlush(IdrawCanvas* dc)
 {
   BitBlt(dc->hDC, 0, 0, dc->w, dc->h, dc->hBitmapDC, 0, 0, SRCCOPY);
 }
 
-void iupDrawGetSize(IdrawCanvas* dc, int *w, int *h)
+void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
 {
   if (w) *w = dc->w;
   if (h) *h = dc->h;
 }
 
-void iupDrawParentBackground(IdrawCanvas* dc)
+void iupdrvDrawParentBackground(IdrawCanvas* dc)
 {
   unsigned char r=0, g=0, b=0;
   char* color = iupBaseNativeParentGetBgColorAttrib(dc->ih);
   iupStrToRGB(color, &r, &g, &b);
-  iupDrawRectangle(dc, 0, 0, dc->w-1, dc->h-1, r, g, b, IUP_DRAW_FILL);
+  iupdrvDrawRectangle(dc, 0, 0, dc->w-1, dc->h-1, r, g, b, IUP_DRAW_FILL);
 }
 
-void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
+static int iDrawGetLineStyle(int style)
+{
+  if (style == IUP_DRAW_STROKE_DASH)
+    return PS_DASH;
+  else if (style == IUP_DRAW_STROKE_DOT)
+    return PS_DOT;
+  else
+    return PS_SOLID;
+}
+
+void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
 {
   SetDCBrushColor(dc->hBitmapDC, RGB(r,g,b));
 
-  if (style==IUP_DRAW_FILL)
+  if (style == IUP_DRAW_FILL)
   {
     RECT rect;
     SetRect(&rect, x1, y1, x2+1, y2+1);
     FillRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
   }
-  else if (style==IUP_DRAW_STROKE)
+  else if (style == IUP_DRAW_STROKE)
   {
     RECT rect;
     SetRect(&rect, x1, y1, x2+1, y2+1);
@@ -528,7 +538,7 @@ void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned 
   else
   {
     POINT line_poly[5];
-    HPEN hPen = CreatePen(style==IUP_DRAW_STROKE_DASH? PS_DASH: PS_SOLID, 1, RGB(r, g, b));
+    HPEN hPen = CreatePen(iDrawGetLineStyle(style), 1, RGB(r, g, b));
     HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
     line_poly[0].x = x1;
     line_poly[0].y = y1;
@@ -546,10 +556,10 @@ void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned 
   }
 }
 
-void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
+void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
 {
   POINT line_poly[2];
-  HPEN hPen = CreatePen(style==IUP_DRAW_STROKE_DASH? PS_DASH: PS_SOLID, 1, RGB(r, g, b));
+  HPEN hPen = CreatePen(iDrawGetLineStyle(style), 1, RGB(r, g, b));
   HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
 
   line_poly[0].x = x1;
@@ -576,7 +586,7 @@ static int winDrawCalcArc(int c1, int c2, double a, int start)
   return iupROUND(off);
 }
 
-void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style)
+void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style)
 {
   int XStartArc = winDrawCalcArc(x1, x2, a1, 1);
   int XEndArc = winDrawCalcArc(x1, x2, a2, 0);
@@ -596,7 +606,7 @@ void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, doub
   }
   else
   {
-    HPEN hPen = CreatePen(style==IUP_DRAW_STROKE_DASH? PS_DASH: PS_SOLID, 1, RGB(r, g, b));
+    HPEN hPen = CreatePen(iDrawGetLineStyle(style), 1, RGB(r, g, b));
     HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
     Arc(dc->hBitmapDC, x1, y1, x2+1, y2+1, XStartArc, YStartArc, XEndArc, YEndArc);
     SelectObject(dc->hBitmapDC, hPenOld);
@@ -604,7 +614,7 @@ void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, doub
   }
 }
 
-void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style)
+void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style)
 {
   if (style==IUP_DRAW_FILL)
   {
@@ -619,7 +629,7 @@ void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, un
   }
   else
   {
-    HPEN hPen = CreatePen(style==IUP_DRAW_STROKE_DASH? PS_DASH: PS_SOLID, 1, RGB(r, g, b));
+    HPEN hPen = CreatePen(iDrawGetLineStyle(style), 1, RGB(r, g, b));
     HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
     Polyline(dc->hBitmapDC, (POINT*)points, count);
     SelectObject(dc->hBitmapDC, hPenOld);
@@ -627,19 +637,19 @@ void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, un
   }
 }
 
-void iupDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   HRGN clip_hrgn = CreateRectRgn(x1, y1, x2+1, y2+1);
   SelectClipRgn(dc->hBitmapDC, clip_hrgn);
   DeleteObject(clip_hrgn);
 }
 
-void iupDrawResetClip(IdrawCanvas* dc)
+void iupdrvDrawResetClip(IdrawCanvas* dc)
 {
   SelectClipRgn(dc->hBitmapDC, NULL);
 }
 
-void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font)
 {
   int num_line;
   HFONT hOldFont, hFont = (HFONT)iupwinGetHFont(font);
@@ -688,7 +698,7 @@ void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsig
   SelectObject(dc->hBitmapDC, hOldFont);
 }
 
-void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
 {
   int bpp, img_w, img_h;
   HBITMAP hMask = NULL;
@@ -708,12 +718,12 @@ void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, i
     DeleteObject(hMask);
 }
 
-void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
+void iupdrvDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
 {
   BitBlt(dc->hBitmapDC, x, y, w, h, dc->hBitmapDC, x, y, DSTINVERT);
 }
 
-void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
+void iupdrvDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
 {
   RECT rect;
 

@@ -692,7 +692,7 @@ int iupdrvGetScrollbarSize(void)
   return size;
 }
 
-void iupdrvDrawFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h)
+void iupdrvPaintFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)
   cairo_t* cr = (cairo_t*)_gc;

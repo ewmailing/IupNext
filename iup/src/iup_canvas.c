@@ -9,6 +9,7 @@
 
 #include "iup.h"
 #include "iupcbs.h"
+#include "iupdraw.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -19,36 +20,6 @@
 #include "iup_layout.h"
 #include "iup_canvas.h"
 
-//iupdrvFontGetMultiLineStringSize(ih, title, &txt_width, &txt_height);
-//iupImageGetInfo(imagename, &img_width, &img_height, NULL);
-#if 0
-IdrawCanvas* iupDrawCreateCanvas(Ihandle* ih);
-
-void iupDrawKillCanvas(IdrawCanvas* dc);
-void iupDrawFlush(IdrawCanvas* dc);
-
-void iupDrawParentBackground(IdrawCanvas* dc);
-
-void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style);
-
-void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style);
-
-void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style);
-
-void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style);
-
-void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font);
-
-void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y);
-
-void iupDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
-
-void iupDrawResetClip(IdrawCanvas* dc);
-
-void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h);
-
-void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h);
-#endif
 
 void iupCanvasCalcScrollIntPos(double min, double max, double page, double pos, 
                                  int imin,   int imax,  int *ipage,  int *ipos)
@@ -195,3 +166,4 @@ Iclass* iupCanvasNewClass(void)
 
   return ic;
 }
+

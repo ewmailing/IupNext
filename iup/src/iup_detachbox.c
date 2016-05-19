@@ -20,7 +20,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_childtree.h"
-#include "iup_draw.h"
+#include "iup_drvdraw.h"
 
 
 enum { IDBOX_VERT, IDBOX_HORIZ };
@@ -234,15 +234,15 @@ static int iDetachBoxK_Any_CB(Ihandle* ih, int key)
 static int iDetachBoxAction_CB(Ihandle* bar)
 {
   Ihandle* ih = bar->parent;
-  IdrawCanvas* dc = iupDrawCreateCanvas(bar);
+  IdrawCanvas* dc = iupdrvDrawCreateCanvas(bar);
 
-  iupDrawParentBackground(dc);
+  iupdrvDrawParentBackground(dc);
 
   if (ih->data->showgrip)
   {
     int i, w, h, x, y, count;
     unsigned char r = 160, g = 160, b = 160, bg_r, bg_g, bg_b;
-    iupDrawGetSize(dc, &w, &h);
+    iupdrvDrawGetSize(dc, &w, &h);
 
     iupStrToRGB(IupGetAttribute(ih, "COLOR"), &r, &g, &b);
     if (r+g+b > 3*190)
@@ -265,17 +265,17 @@ static int iDetachBoxAction_CB(Ihandle* bar)
 
     for (i = 0; i < count; i++)
     {
-      iupDrawRectangle(dc, x+1, y+1, x+2, y+2, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
-      iupDrawRectangle(dc, x, y, x+1, y+1, r, g, b, IUP_DRAW_FILL);
+      iupdrvDrawRectangle(dc, x+1, y+1, x+2, y+2, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
+      iupdrvDrawRectangle(dc, x, y, x+1, y+1, r, g, b, IUP_DRAW_FILL);
 
       if(i < count - 1)
       {
-        iupDrawRectangle(dc, x+3, y+3, x+4, y+4, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
-        iupDrawRectangle(dc, x+2, y+2, x+3, y+3, r, g, b, IUP_DRAW_FILL);
+        iupdrvDrawRectangle(dc, x+3, y+3, x+4, y+4, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
+        iupdrvDrawRectangle(dc, x+2, y+2, x+3, y+3, r, g, b, IUP_DRAW_FILL);
       }
 
-      iupDrawRectangle(dc, x+5, y+1, x+6, y+2, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
-      iupDrawRectangle(dc, x+4, y, x+5, y+1, r, g, b, IUP_DRAW_FILL);
+      iupdrvDrawRectangle(dc, x+5, y+1, x+6, y+2, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
+      iupdrvDrawRectangle(dc, x+4, y, x+5, y+1, r, g, b, IUP_DRAW_FILL);
 
       if (ih->data->orientation == IDBOX_VERT)
         y += 4;
@@ -287,7 +287,7 @@ static int iDetachBoxAction_CB(Ihandle* bar)
   {
     int w, h, x, y;
     unsigned char r = 160, g = 160, b = 160;
-    iupDrawGetSize(dc, &w, &h);
+    iupdrvDrawGetSize(dc, &w, &h);
 
     iupStrToRGB(IupGetAttribute(ih, "COLOR"), &r, &g, &b);
 
@@ -302,12 +302,12 @@ static int iDetachBoxAction_CB(Ihandle* bar)
       y = ih->data->barsize/2-1;
     }
 
-    iupDrawRectangle(dc, x, y, x+w, y+h, r, g, b, IUP_DRAW_FILL);
+    iupdrvDrawRectangle(dc, x, y, x+w, y+h, r, g, b, IUP_DRAW_FILL);
   }
   
-  iupDrawFlush(dc);
+  iupdrvDrawFlush(dc);
 
-  iupDrawKillCanvas(dc);
+  iupdrvDrawKillCanvas(dc);
 
   return IUP_DEFAULT;
 }

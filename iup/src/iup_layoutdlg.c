@@ -20,7 +20,7 @@
 #include "iup_focus.h"
 #include "iup_dlglist.h"
 #include "iup_assert.h"
-#include "iup_draw.h"
+#include "iup_drvdraw.h"
 #include "iup_image.h"
 #include "iup_childtree.h"
 #include "iup_drv.h"
@@ -1049,15 +1049,15 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
   {
     r = br, g = bg, b = bb;
     iupStrToRGB(bgcolor, &r, &g, &b);
-    iupDrawRectangle(dc, x, y, x+w-1, y+h-1, r, g, b, IUP_DRAW_FILL);
+    iupdrvDrawRectangle(dc, x, y, x+w-1, y+h-1, r, g, b, IUP_DRAW_FILL);
   }
 
   if (ih->iclass->nativetype==IUP_TYPEVOID)
-    iupDrawRectangle(dc, x, y, x+w-1, y+h-1, fvr, fvg, fvb, IUP_DRAW_STROKE_DASH);
+    iupdrvDrawRectangle(dc, x, y, x+w-1, y+h-1, fvr, fvg, fvb, IUP_DRAW_STROKE_DASH);
   else
-    iupDrawRectangle(dc, x, y, x+w-1, y+h-1, fr, fg, fb, IUP_DRAW_STROKE);
+    iupdrvDrawRectangle(dc, x, y, x+w-1, y+h-1, fr, fg, fb, IUP_DRAW_STROKE);
 
-  iupDrawSetClipRect(dc, x, y, x+w-1, y+h-1);
+  iupdrvDrawSetClipRect(dc, x, y, x+w-1, y+h-1);
 
   if (ih->iclass->childtype==IUP_CHILDNONE)
   {
@@ -1066,14 +1066,14 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
 
     if (ih->currentwidth == pw && ih->currentwidth == ih->naturalwidth)
     {
-      iupDrawLine(dc, x+1, y+1, x+w-2, y+1, fmr, fmg, fmb, IUP_DRAW_STROKE);
-      iupDrawLine(dc, x+1, y+h-2, x+w-2, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
+      iupdrvDrawLine(dc, x+1, y+1, x+w-2, y+1, fmr, fmg, fmb, IUP_DRAW_STROKE);
+      iupdrvDrawLine(dc, x+1, y+h-2, x+w-2, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
     }
 
     if (ih->currentheight == ph && ih->currentheight == ih->naturalheight)
     {
-      iupDrawLine(dc, x+1, y+1, x+1, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
-      iupDrawLine(dc, x+w-2, y+1, x+w-2, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
+      iupdrvDrawLine(dc, x+1, y+1, x+1, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
+      iupdrvDrawLine(dc, x+w-2, y+1, x+w-2, y+h-2, fmr, fmg, fmb, IUP_DRAW_STROKE);
     }
   }
   else if (ih->iclass->nativetype!=IUP_TYPEVOID)
@@ -1121,7 +1121,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
 
       iupImageGetInfo(image, &img_w, &img_h, NULL);
 
-      iupDrawImage(dc, image, 0, x+1, y+1);
+      iupdrvDrawImage(dc, image, 0, x+1, y+1);
 
       position = iupAttribGetLocal(ih, "IMAGEPOSITION");  /* used only for buttons */
       if (position &&
@@ -1155,7 +1155,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
       iupStrNextLine(title, &len);  /* get the size of the first line */
       r = fr, g = fg, b = fb;
       iupStrToRGB(iupAttribGetLocal(ih, "FGCOLOR"), &r, &g, &b);
-      iupDrawText(dc, title, len, x+1, y+1, r, g, b, IupGetAttribute(ih, "FONT"));
+      iupdrvDrawText(dc, title, len, x+1, y+1, r, g, b, IupGetAttribute(ih, "FONT"));
     }
 
     if (ih->iclass->childtype==IUP_CHILDNONE &&
@@ -1171,12 +1171,12 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
         if (iupStrEqualNoCase(iupAttribGetLocal(ih, "ORIENTATION"), "VERTICAL"))
         {
           int ph = (int)(((max-val)*(h-5))/(max-min));
-          iupDrawRectangle(dc, x+2, y+2, x+w-3, y+ph, r, g, b, IUP_DRAW_FILL);
+          iupdrvDrawRectangle(dc, x+2, y+2, x+w-3, y+ph, r, g, b, IUP_DRAW_FILL);
         }
         else
         {
           int pw = (int)(((val-min)*(w-5))/(max-min));
-          iupDrawRectangle(dc, x+2, y+2, x+pw, y+h-3, r, g, b, IUP_DRAW_FILL);
+          iupdrvDrawRectangle(dc, x+2, y+2, x+pw, y+h-3, r, g, b, IUP_DRAW_FILL);
         }
       }
       else if (IupClassMatch(ih, "val"))
@@ -1189,18 +1189,18 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
         if (iupStrEqualNoCase(iupAttribGetLocal(ih, "ORIENTATION"), "VERTICAL"))
         {
           int ph = (int)(((max-val)*(h-5))/(max-min));
-          iupDrawRectangle(dc, x+2, y+ph-1, x+w-3, y+ph+1, r, g, b, IUP_DRAW_FILL);
+          iupdrvDrawRectangle(dc, x+2, y+ph-1, x+w-3, y+ph+1, r, g, b, IUP_DRAW_FILL);
         }
         else
         {
           int pw = (int)(((val-min)*(w-5))/(max-min));
-          iupDrawRectangle(dc, x+pw-1, y+2, x+pw+1, y+h-3, r, g, b, IUP_DRAW_FILL);
+          iupdrvDrawRectangle(dc, x+pw-1, y+2, x+pw+1, y+h-3, r, g, b, IUP_DRAW_FILL);
         }
       }
     }
   }
 
-  iupDrawResetClip(dc);
+  iupdrvDrawResetClip(dc);
 
   if (marked)
   {
@@ -1211,7 +1211,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
     if (w<=0) w=1;
     if (h<=0) h=1;
 
-    iupDrawSelectRect(dc, x, y, w, h);
+    iupdrvDrawSelectRect(dc, x, y, w, h);
   }
 }
 
@@ -1274,12 +1274,12 @@ static void iLayoutDrawDialog(iLayoutDialog* layoutdlg, int showhidden, IdrawCan
 {
   int w, h;
 
-  iupDrawGetSize(dc, &w, &h);
-  iupDrawRectangle(dc, 0, 0, w-1, h-1, 255, 255, 255, IUP_DRAW_FILL);
+  iupdrvDrawGetSize(dc, &w, &h);
+  iupdrvDrawRectangle(dc, 0, 0, w-1, h-1, 255, 255, 255, IUP_DRAW_FILL);
 
   /* draw the dialog */
   IupGetIntInt(layoutdlg->dialog, "CLIENTSIZE", &w, &h);
-  iupDrawRectangle(dc, 0, 0, w-1, h-1, 0, 0, 0, IUP_DRAW_STROKE);
+  iupdrvDrawRectangle(dc, 0, 0, w-1, h-1, 0, 0, 0, IUP_DRAW_STROKE);
 
   if (layoutdlg->dialog->firstchild)
   {
@@ -1297,15 +1297,15 @@ static int iLayoutCanvas_CB(Ihandle* canvas, float fposx, float fposy)
 {
   Ihandle* dlg = IupGetDialog(canvas);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
-  IdrawCanvas* dc = iupDrawCreateCanvas(canvas);
+  IdrawCanvas* dc = iupdrvDrawCreateCanvas(canvas);
   int showhidden = IupGetInt(dlg, "SHOWHIDDEN");
   Ihandle* mark = (Ihandle*)iupAttribGet(dlg, "_IUPLAYOUT_MARK");
 
   iLayoutDrawDialog(layoutdlg, showhidden, dc, mark, (int)fposx, (int)fposy);
 
-  iupDrawFlush(dc);
+  iupdrvDrawFlush(dc);
 
-  iupDrawKillCanvas(dc);
+  iupdrvDrawKillCanvas(dc);
 
   return IUP_DEFAULT;
 }

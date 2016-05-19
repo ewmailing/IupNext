@@ -20,7 +20,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_childtree.h"
-#include "iup_draw.h"
+#include "iup_drvdraw.h"
 
 
 enum { ISPLIT_VERT, ISPLIT_HORIZ };
@@ -243,15 +243,15 @@ static int iSplitAction_CB(Ihandle* bar)
   Ihandle* ih = bar->parent;
   IdrawCanvas* dc;
 
-  dc = iupDrawCreateCanvas(bar);
+  dc = iupdrvDrawCreateCanvas(bar);
 
-  iupDrawParentBackground(dc);
+  iupdrvDrawParentBackground(dc);
 
   if (ih->data->showgrip)
   {
     int w, h, x, y;
     unsigned char r = 160, g = 160, b = 160;
-    iupDrawGetSize(dc, &w, &h);
+    iupdrvDrawGetSize(dc, &w, &h);
 
     iupStrToRGB(iupAttribGetStr(ih, "COLOR"), &r, &g, &b);
 
@@ -284,8 +284,8 @@ static int iSplitAction_CB(Ihandle* bar)
 
       for (i = 0; i < count; i++)
       {
-        iupDrawRectangle(dc, x + 1, y + 1, x + 2, y + 2, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
-        iupDrawRectangle(dc, x, y, x + 1, y + 1, r, g, b, IUP_DRAW_FILL);
+        iupdrvDrawRectangle(dc, x + 1, y + 1, x + 2, y + 2, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
+        iupdrvDrawRectangle(dc, x, y, x + 1, y + 1, r, g, b, IUP_DRAW_FILL);
         if (ih->data->orientation == ISPLIT_VERT)
           y += 5;
         else
@@ -298,15 +298,15 @@ static int iSplitAction_CB(Ihandle* bar)
       {
         x = ih->data->barsize / 2;
 
-        iupDrawLine(dc, x - 1, 0, x - 1, h - 1, r, g, b, IUP_DRAW_STROKE);
-        iupDrawLine(dc, x + 1, 0, x + 1, h - 1, r, g, b, IUP_DRAW_STROKE);
+        iupdrvDrawLine(dc, x - 1, 0, x - 1, h - 1, r, g, b, IUP_DRAW_STROKE);
+        iupdrvDrawLine(dc, x + 1, 0, x + 1, h - 1, r, g, b, IUP_DRAW_STROKE);
       }
       else
       {
         y = ih->data->barsize / 2;
 
-        iupDrawLine(dc, 0, y - 1, w - 1, y - 1, r, g, b, IUP_DRAW_STROKE);
-        iupDrawLine(dc, 0, y + 1, w - 1, y + 1, r, g, b, IUP_DRAW_STROKE);
+        iupdrvDrawLine(dc, 0, y - 1, w - 1, y - 1, r, g, b, IUP_DRAW_STROKE);
+        iupdrvDrawLine(dc, 0, y + 1, w - 1, y + 1, r, g, b, IUP_DRAW_STROKE);
       }
     }
   }
@@ -317,16 +317,16 @@ static int iSplitAction_CB(Ihandle* bar)
     {
       unsigned char r = 160, g = 160, b = 160;
       int w, h;
-      iupDrawGetSize(dc, &w, &h);
+      iupdrvDrawGetSize(dc, &w, &h);
 
       iupStrToRGB(iupAttribGetStr(ih, "COLOR"), &r, &g, &b);
-      iupDrawRectangle(dc, 0, 0, w-1, h-1, r, g, b, IUP_DRAW_FILL);
+      iupdrvDrawRectangle(dc, 0, 0, w-1, h-1, r, g, b, IUP_DRAW_FILL);
     }
   }
 
-  iupDrawFlush(dc);
+  iupdrvDrawFlush(dc);
 
-  iupDrawKillCanvas(dc);
+  iupdrvDrawKillCanvas(dc);
 
   return IUP_DEFAULT;
 }

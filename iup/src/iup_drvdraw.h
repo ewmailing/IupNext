@@ -27,71 +27,71 @@ enum{ IUP_DRAW_FILL, IUP_DRAW_STROKE, IUP_DRAW_STROKE_DASH, IUP_DRAW_STROKE_DOT 
 /** Creates a draw canvas based on an IupCanvas.
  * This will create an image for offscreen drawing.
  * \ingroup draw */
-IdrawCanvas* iupDrawCreateCanvas(Ihandle* ih);
+IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih);
 
 /** Destroys the IdrawCanvas.
  * \ingroup draw */
-void iupDrawKillCanvas(IdrawCanvas* dc);
+void iupdrvDrawKillCanvas(IdrawCanvas* dc);
 
 /** Draws the ofscreen image on the screen.
  * \ingroup draw */
-void iupDrawFlush(IdrawCanvas* dc);
+void iupdrvDrawFlush(IdrawCanvas* dc);
 
 /** Rebuild the offscreen image if the canvas size has changed.
- * Automatically done in iupDrawCreateCanvas.
+ * Automatically done in iupdrvDrawCreateCanvas.
  * \ingroup draw */
-void iupDrawUpdateSize(IdrawCanvas* dc);
+void iupdrvDrawUpdateSize(IdrawCanvas* dc);
 
 /** Returns the canvas size available for drawing.
  * \ingroup draw */
-void iupDrawGetSize(IdrawCanvas* dc, int *w, int *h);
+void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h);
 
 /** Draws the parent background.
  * \ingroup draw */
-void iupDrawParentBackground(IdrawCanvas* dc);
+void iupdrvDrawParentBackground(IdrawCanvas* dc);
 
 /** Draws a line.
  * \ingroup draw */
-void iupDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style);
+void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style);
 
 /** Draws a filled/hollow rectangle.
  * \ingroup draw */
-void iupDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style);
+void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style);
 
 /** Draws a filled/hollow arc.
  * \ingroup draw */
-void iupDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style);
+void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style);
 
 /** Draws a filled/hollow polygon.
  * points are arranged xyxyxy...
  * \ingroup draw */
-void iupDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style);
+void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style);
 
 /** Draws a text.
  * x,y is at left,top corner of the text.
  * \ingroup draw */
-void iupDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font);
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font);
 
 /** Draws an image.
  * x,y is at left,top corner of the image.
  * \ingroup draw */
-void iupDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y);
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y);
 
 /** Sets a rectangle clipping area.
  * \ingroup draw */
-void iupDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
+void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
 
 /** Removes clipping.
  * \ingroup draw */
-void iupDrawResetClip(IdrawCanvas* dc);
+void iupdrvDrawResetClip(IdrawCanvas* dc);
 
 /** Draws a selection rectangle.
  * \ingroup draw */
-void iupDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h);
+void iupdrvDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h);
 
 /** Draws a focus rectangle.
  * \ingroup draw */
-void iupDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h);
+void iupdrvDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h);
 
 
 #ifdef __cplusplus

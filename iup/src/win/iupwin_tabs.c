@@ -27,7 +27,7 @@
 #include "iup_image.h"
 #include "iup_array.h"
 #include "iup_assert.h"
-#include "iup_draw.h"
+#include "iup_drvdraw.h"
 #include "iup_childtree.h"
 
 #include "iupwin_drv.h"
@@ -1240,7 +1240,7 @@ static void winTabsDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
 
   /* If the item has the focus, draw the focus rectangle */
   if (drawitem->itemState & ODS_FOCUS)
-    iupdrvDrawFocusRect(ih, hDC, 0, 0, width, height);
+    iupdrvPaintFocusRect(ih, hDC, 0, 0, width, height);
 
   iupwinDrawDestroyBitmapDC(&bmpDC);
 }
