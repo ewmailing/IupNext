@@ -22,7 +22,7 @@ extern "C"
 struct _IdrawCanvas;
 typedef struct _IdrawCanvas IdrawCanvas;
 
-enum{IUP_DRAW_FILL, IUP_DRAW_STROKE, IUP_DRAW_STROKE_DASH};
+enum{ IUP_DRAW_FILL, IUP_DRAW_STROKE, IUP_DRAW_STROKE_DASH, IUP_DRAW_STROKE_DOT };
 
 /** Creates a draw canvas based on an IupCanvas.
  * This will create an image for offscreen drawing.
