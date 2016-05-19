@@ -192,24 +192,30 @@ static gboolean gtkFileDlgPreviewConfigureEvent(GtkWidget *widget, GdkEventConfi
 }
 
 #if GTK_CHECK_VERSION(3, 0, 0)
-static gboolean gtkFileDlgPreviewDraw(GtkWidget *widget, cairo_t *evt, Ihandle *ih)
+static gboolean gtkFileDlgPreviewDraw(GtkWidget *widget, cairo_t *cr, Ihandle *ih)
 #else
 static gboolean gtkFileDlgPreviewExposeEvent(GtkWidget *widget, GdkEventExpose *evt, Ihandle *ih)
 #endif
 {
   GtkFileChooser *file_chooser = (GtkFileChooser*)iupAttribGet(ih, "_IUPDLG_FILE_CHOOSER");
   char *filename = gtk_file_chooser_get_preview_filename(file_chooser);
+  IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+  iupAttribSet(ih, "CAIRO_CR", (char*)cr);
+#else
+  (void)evt;
+#endif
 
   /* callback here always exists */
-  IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
   if (gtkIsFile(filename))
     cb(ih, iupgtkStrConvertFromFilename(filename), "PAINT");
   else
     cb(ih, NULL, "PAINT");
 
-  g_free (filename);
+  iupAttribSet(ih, "CAIRO_CR", NULL);
+  g_free(filename);
  
-  (void)evt;
   (void)widget;
   return TRUE;  /* stop other handlers */
 }

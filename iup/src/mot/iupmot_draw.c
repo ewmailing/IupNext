@@ -51,7 +51,8 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   int depth;
 
   dc->ih = ih;
-  dc->wnd = XtWindow(ih->handle);
+  dc->wnd = (Window*)IupGetAttribute(ih, "DRAWABLE");
+
   dc->gc = XCreateGC(iupmot_display, dc->wnd, 0, NULL);
 
   motDrawGetGeometry(iupmot_display, dc->wnd, &dc->w, &dc->h, &depth);

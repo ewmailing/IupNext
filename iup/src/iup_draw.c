@@ -27,8 +27,6 @@ void IupDrawBegin(Ihandle* ih)
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
-  if (ih->iclass->nativetype != IUP_TYPECANVAS)
-    return;
 
   dc = iupdrvDrawCreateCanvas(ih);
   iupAttribSet(ih, "_IUP_DRAW_DC", (char*)dc);
@@ -49,6 +47,21 @@ void IupDrawEnd(Ihandle* ih)
   iupdrvDrawFlush(dc);
   iupdrvDrawKillCanvas(dc);
   iupAttribSet(ih, "_IUP_DRAW_DC", NULL);
+}
+
+void IupDrawGetSize(Ihandle* ih, int *w, int *h)
+{
+  IdrawCanvas* dc;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  dc = (IdrawCanvas*)iupAttribGet(ih, "_IUP_DRAW_DC");
+  if (!dc)
+    return;
+
+  iupdrvDrawGetSize(dc, w, h);
 }
 
 void IupDrawParentBackground(Ihandle* ih)

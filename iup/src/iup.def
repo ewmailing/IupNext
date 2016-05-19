@@ -234,6 +234,7 @@ IupDrawSetClipRect
 IupDrawResetClip
 IupDrawSelectRect
 IupDrawFocusRect
+IupDrawGetSize
 
 iupdrvSetVisible
 iupdrvSetStandardFontAttrib

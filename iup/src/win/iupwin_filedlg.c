@@ -372,6 +372,8 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
         IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
         TCHAR filename[IUP_MAX_FILENAME_SIZE];
         iupAttribSet(ih, "PREVIEWDC", (char*)lpDrawItem->hDC);
+        iupAttribSet(ih, "HDC_WMPAINT", (char*)lpDrawItem->hDC);
+
         if (winFileDlgGetSelectedFile(ih, hWnd, filename))
         {
           if (winIsFile(filename))
@@ -382,6 +384,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
         else
           cb(ih, NULL, "PAINT");
         iupAttribSet(ih, "PREVIEWDC", NULL);
+        iupAttribSet(ih, "HDC_WMPAINT", NULL);
       }
       break;
     }

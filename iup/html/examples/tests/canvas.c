@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "iup.h"
 #include "iupkey.h"
+#include "iupdraw.h"
 
 static unsigned char matrx_img_cur_excel[15*15] = 
   {
@@ -58,10 +59,34 @@ static unsigned char pixmap_cursor [ ] =
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 } ;
 
+#define USE_IUPDRAW
 //#define USE_GDK
-//#undef USE_GDK
 
 /* draw a rectangle that has w=600 always, white background and a red X */
+#ifdef USE_IUPDRAW
+static void drawTest(Ihandle *ih, int posx)
+{
+  int w, h;
+
+  IupDrawBegin(ih);
+
+  IupDrawGetSize(ih, &w, &h);
+
+  /* white background */
+  IupSetAttribute(ih, "DRAWCOLOR", "255 255 255");
+  IupSetAttribute(ih, "DRAWSTYLE", "FILL");
+  IupDrawRectangle(ih, 0, 0, w, h);
+
+  w = 600; /* virtual size */
+
+  /* red X */
+  IupSetAttribute(ih, "DRAWCOLOR", "255 0 0");
+  IupDrawLine(ih, -posx, 0, w - posx, h);
+  IupDrawLine(ih, -posx, h, w - posx, 0);
+
+  IupDrawEnd(ih); 
+}
+#else
 #ifdef USE_GDK
 #include <gtk/gtk.h>
 #ifdef USE_GTK3
@@ -182,6 +207,7 @@ static void drawTest(Ihandle *ih, int posx)
 
   XFreeGC(dpy, gc); 
 }
+#endif
 #endif
 #endif
 
@@ -339,7 +365,7 @@ void CanvasTest(void)
   canvas = IupCanvas(NULL);
   IupAppend(box, canvas);
   IupSetAttribute(canvas, "RASTERSIZE", "300x200");
-  IupSetAttribute(canvas, "EXPAND", "NO");
+//  IupSetAttribute(canvas, "EXPAND", "NO");
   IupSetAttribute(canvas, "TIP", "Canvas Tip");
   IupSetAttribute(canvas, "SCROLLBAR", "HORIZONTAL");
   //IupSetAttribute(canvas, "BGCOLOR", "0 255 0");

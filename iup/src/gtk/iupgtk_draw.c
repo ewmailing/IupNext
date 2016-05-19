@@ -40,7 +40,7 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   IdrawCanvas* dc = calloc(1, sizeof(IdrawCanvas));
 
   dc->ih = ih;
-  dc->wnd = iupgtkGetWindow(ih->handle);
+  dc->wnd = (GdkWindow*)IupGetAttribute(ih, "DRAWABLE");
   dc->gc = gdk_gc_new(dc->wnd);
 
   gdk_drawable_get_size(dc->wnd, &dc->w, &dc->h);

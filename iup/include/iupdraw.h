@@ -24,13 +24,15 @@ void IupDrawRectangle(Ihandle* ih, int x1, int y1, int x2, int y2);
 void IupDrawArc(Ihandle* ih, int x1, int y1, int x2, int y2, double a1, double a2);
 void IupDrawPolygon(Ihandle* ih, int* points, int count);
 void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y);
-void IupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h);
 void IupDrawImage(Ihandle* ih, const char* name, int make_inactive, int x, int y);
-void IupDrawGetImageInfo(const char* name, int *w, int *h, int *bpp);
 void IupDrawSetClipRect(Ihandle* ih, int x1, int y1, int x2, int y2);
 void IupDrawResetClip(Ihandle* ih);
 void IupDrawSelectRect(Ihandle* ih, int x, int y, int w, int h);
 void IupDrawFocusRect(Ihandle* ih, int x, int y, int w, int h);
+
+void IupDrawGetSize(Ihandle* ih, int *w, int *h);
+void IupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h);
+void IupDrawGetImageInfo(const char* name, int *w, int *h, int *bpp);
 
 
 #ifdef __cplusplus

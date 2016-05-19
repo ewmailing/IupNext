@@ -418,6 +418,7 @@ struct _IdrawCanvas{
   Ihandle* ih;
   int w, h;
 
+  HWND hWnd;
   int release_dc;
   HBITMAP hBitmap, hOldBitmap;
   HDC hBitmapDC, hDC;
@@ -430,15 +431,17 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
 
   dc->ih = ih;
 
+  dc->hWnd = (HWND)IupGetAttribute(ih, "HWND");
+
   /* valid only inside the ACTION callback of an IupCanvas */
   dc->hDC = (HDC)IupGetAttribute(ih, "HDC_WMPAINT");
   if (!dc->hDC)
   {
-    dc->hDC = GetDC(ih->handle);
+    dc->hDC = GetDC(dc->hWnd);
     dc->release_dc = 1;
   }
 
-  GetClientRect(ih->handle, &rect);
+  GetClientRect(dc->hWnd, &rect);
   dc->w = rect.right - rect.left;
   dc->h = rect.bottom - rect.top;
 
@@ -468,7 +471,7 @@ void iupdrvDrawUpdateSize(IdrawCanvas* dc)
   int w, h;
   RECT rect;
 
-  GetClientRect(dc->ih->handle, &rect);
+  GetClientRect(dc->hWnd, &rect);
   w = rect.right - rect.left;
   h = rect.bottom - rect.top;
 

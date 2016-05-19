@@ -32,8 +32,8 @@ struct _IdrawCanvas
   Ihandle* ih;
   int w, h;
 
+  GtkWidget* widget;
   int release_cr;
-  GdkWindow* window;
   cairo_t *cr, *image_cr;
 };
 
@@ -44,17 +44,18 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
 
   dc->ih = ih;
 
-  dc->window = iupgtkGetWindow(ih->handle);
+  dc->widget = (GtkWidget*)IupGetAttribute(ih, "WID");
 
   /* valid only inside the ACTION callback of an IupCanvas */
   dc->cr = (cairo_t*)IupGetAttribute(ih, "CAIRO_CR");
   if (!dc->cr)
   {
-    dc->cr = gdk_cairo_create(dc->window);
+    GdkWindow* wnd = (GdkWindow*)IupGetAttribute(ih, "DRAWABLE");
+    dc->cr = gdk_cairo_create(wnd);
     dc->release_cr = 1;
   }
-  dc->w = gtk_widget_get_allocated_width(ih->handle);
-  dc->h = gtk_widget_get_allocated_height(ih->handle);
+  dc->w = gtk_widget_get_allocated_width(dc->widget);
+  dc->h = gtk_widget_get_allocated_height(dc->widget);
 
   surface = cairo_surface_create_similar(cairo_get_target(dc->cr), CAIRO_CONTENT_COLOR_ALPHA, dc->w, dc->h);
   dc->image_cr = cairo_create(surface);
@@ -74,8 +75,8 @@ void iupdrvDrawKillCanvas(IdrawCanvas* dc)
 
 void iupdrvDrawUpdateSize(IdrawCanvas* dc)
 {
-  int w = gtk_widget_get_allocated_width(dc->ih->handle);
-  int h = gtk_widget_get_allocated_height(dc->ih->handle);
+  int w = gtk_widget_get_allocated_width(dc->widget);
+  int h = gtk_widget_get_allocated_height(dc->widget);
 
   if (w != dc->w || h != dc->h)
   {
@@ -299,6 +300,6 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
 
 void iupdrvDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
 {
-  GtkStyleContext* context = gtk_widget_get_style_context(dc->ih->handle);
+  GtkStyleContext* context = gtk_widget_get_style_context(dc->widget);
   gtk_render_focus(context, dc->image_cr, x, y, w, h);
 }

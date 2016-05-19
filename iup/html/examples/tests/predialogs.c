@@ -6,10 +6,12 @@
 #include "iupkey.h"
 #include "iupcontrols.h"
 
+#define USE_IUPDRAW
 //#define USE_GDK
-#define USE_CD
-#define USE_OPENGL
+//#define USE_CD
+//#define USE_OPENGL
 
+#ifdef USE_NATIVE
 #ifdef USE_GDK
 #include <gtk/gtk.h>
 #ifdef USE_GTK3
@@ -104,6 +106,7 @@ static void drawTest(Ihandle* ih)
 }
 #endif
 #endif
+#endif
 
 #ifdef USE_OPENGL
 #ifdef WIN32
@@ -136,8 +139,6 @@ static void drawTestGL(Ihandle* ih)
 
     IupGLSwapBuffers(glcanvas);
   }
-  else
-    drawTest(ih);
 }
 #endif
 
@@ -145,11 +146,11 @@ static void drawTestGL(Ihandle* ih)
 #include <cd.h>
 #include <cdiup.h>
 
-static void drawTestCD(Ihandle* ih)
+static void drawTest(Ihandle* ih)
 {
   cdCanvas* canvas = cdCreateCanvas(CD_IUP, ih);
-  int w = IupGetInt(ih, "PREVIEWWIDTH");
-  int h = IupGetInt(ih, "PREVIEWHEIGHT");
+
+  cdCanvasGetSize(canvas, &w, &h, NULL, NULL);
 
   cdCanvasClear(canvas);
   cdCanvasForeground(canvas, cdEncodeColor(255, 0 , 0));
@@ -157,6 +158,30 @@ static void drawTestCD(Ihandle* ih)
   cdCanvasLine(canvas, 0, 0, w-1, h-1);
   cdCanvasLine(canvas, 0, h-1, w-1, 0);
   cdKillCanvas(canvas);
+}
+#endif
+
+#ifdef USE_IUPDRAW
+#include <iupdraw.h>
+static void drawTest(Ihandle *ih)
+{
+  int w, h;
+
+  IupDrawBegin(ih);
+
+  IupDrawGetSize(ih, &w, &h);
+
+  /* white background */
+  IupSetAttribute(ih, "DRAWCOLOR", "255 255 255");
+  IupSetAttribute(ih, "DRAWSTYLE", "FILL");
+  IupDrawRectangle(ih, 0, 0, w, h);
+
+  /* red X */
+  IupSetAttribute(ih, "DRAWCOLOR", "255 0 0");
+  IupDrawLine(ih, 0, 0, w-1, h-1);
+  IupDrawLine(ih, 0, h-1, w-1, 0);
+
+  IupDrawEnd(ih);
 }
 #endif
 
@@ -183,17 +208,13 @@ static int file_cb(Ihandle* ih, const char* filename, const char* status)
     Ihandle* glcanvas = IupGetAttributeHandle(ih, "PREVIEWGLCANVAS");
 
     printf("  SIZE(%s x %s)\n", IupGetAttribute(ih, "PREVIEWWIDTH"), IupGetAttribute(ih, "PREVIEWHEIGHT"));
-#ifdef USE_CD
-    if (!glcanvas)
-      drawTestCD(ih);
-#endif
 
 #ifdef USE_OPENGL
     if (glcanvas)
       drawTestGL(ih);
-#else
-    drawTest(ih);
+    else
 #endif
+      drawTest(ih);
   }
   else if (strcmp(status, "FILTER")==0)
   {
