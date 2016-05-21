@@ -624,12 +624,20 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    /* disable automatic double buffering */
-    gtk_widget_set_double_buffered(ih->handle, FALSE);
-    gtk_widget_set_double_buffered(sb_win, FALSE);
+    /* disable automatic double buffering if not a container or an OpenGL canvas */
+    if (ih->iclass->childtype != IUP_CHILDNONE && !iupAttribGet(ih, "_IUP_GLCONTROLDATA"))
+    {
+      gtk_widget_set_double_buffered(ih->handle, TRUE);
+      gtk_widget_set_double_buffered(sb_win, TRUE);
+    }
+    else
+    {
+      gtk_widget_set_double_buffered(ih->handle, FALSE);
+      gtk_widget_set_double_buffered(sb_win, FALSE);
 #if !GTK_CHECK_VERSION(3, 0, 0)
-    gdk_window_set_back_pixmap(iupgtkGetWindow(ih->handle), NULL, FALSE);
+      gdk_window_set_back_pixmap(iupgtkGetWindow(ih->handle), NULL, FALSE);
 #endif
+    }
     iupAttribSet(ih, "_IUPGTK_NO_BGCOLOR", "1");
     return 1;
   }

@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iup.h>
+#include <iupdraw.h>
 
 //#define IUP_CONTROLS
 #ifdef IUP_CONTROLS
@@ -374,6 +375,35 @@ static Ihandle* create_matrix(void)
 }
 #endif
 
+static int drawbg_cb(Ihandle* ih)
+{
+  int w, h;
+
+  IupDrawBegin(ih);
+
+  IupDrawGetSize(ih, &w, &h);
+
+  /* white background */
+  IupSetAttribute(ih, "DRAWCOLOR", "255 255 255");
+  IupSetAttribute(ih, "DRAWSTYLE", "FILL");
+  IupDrawRectangle(ih, 0, 0, w - 1, h - 1);
+
+  /* red X */
+  IupSetAttribute(ih, "DRAWCOLOR", "255 0 0");
+  IupDrawLine(ih, 0, 0, w - 1, h - 1);
+  IupDrawLine(ih, 0, h - 1, w - 1, 0);
+
+  IupDrawEnd(ih);
+
+  return IUP_DEFAULT;
+}
+
+#define IupFrame myFrame
+Ihandle* myFrame(Ihandle* child)
+{
+  return IupVbox(child, NULL);
+}
+
 void SampleTest(void)
 {
   Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, 
@@ -547,6 +577,9 @@ void SampleTest(void)
     NULL);
   IupSetAttribute(_vbox_1,"MARGIN","5x5");
   IupSetAttribute(_vbox_1, "GAP", "5");
+
+  _vbox_1 = IupBackgroundBox(_vbox_1);
+  IupSetCallback(_vbox_1, "ACTION", drawbg_cb);
 
   dlg = IupDialog(_vbox_1);
   IupSetHandle("dlg",dlg);

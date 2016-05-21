@@ -158,7 +158,7 @@ Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name)
   ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype  = IUP_CHILDMANY+1;  /* 1 child */
-  ic->is_interactive = 0;
+  ic->is_interactive = 1;
 
   /* Class functions */
   ic->New = iupBackgroundBoxNewClass;
