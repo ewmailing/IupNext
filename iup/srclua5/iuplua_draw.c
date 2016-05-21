@@ -77,7 +77,21 @@ static int DrawText(lua_State *L)
 
 static int DrawImage(lua_State *L)
 {
-  IupDrawImage(iuplua_checkihandle(L, 1), luaL_checkstring(L, 2), (int)luaL_checkinteger(L, 3), (int)luaL_checkinteger(L, 4), (int)luaL_checkinteger(L, 5));
+  const char* name;
+  if (lua_isuserdata(L, 2))
+  {
+    Ihandle* image = iuplua_checkihandle(L, 2);
+    name = iupAttribGetHandleName(image);
+    if (!name)
+    {
+      iupAttribSetHandleName(image);
+      name = iupAttribGetHandleName(image);
+    }
+  }
+  else
+    name = luaL_checkstring(L, 2);
+
+  IupDrawImage(iuplua_checkihandle(L, 1), name, (int)luaL_checkinteger(L, 3), (int)luaL_checkinteger(L, 4), (int)luaL_checkinteger(L, 5));
   return 0;
 }
 
@@ -126,7 +140,21 @@ static int DrawGetTextSize(lua_State *L)
 static int DrawGetImageInfo(lua_State *L)
 {
   int w, h, bpp;
-  IupDrawGetImageInfo(luaL_checkstring(L, 2), &w, &h, &bpp);
+  const char* name;
+  if (lua_isuserdata(L, 1))
+  {
+    Ihandle* image = iuplua_checkihandle(L, 1);
+    name = iupAttribGetHandleName(image);
+    if (!name)
+    {
+      iupAttribSetHandleName(image);
+      name = iupAttribGetHandleName(image);
+    }
+  }
+  else
+    name = luaL_checkstring(L, 1);
+
+  IupDrawGetImageInfo(name, &w, &h, &bpp);
   lua_pushinteger(L, w);
   lua_pushinteger(L, h);
   lua_pushinteger(L, bpp);
