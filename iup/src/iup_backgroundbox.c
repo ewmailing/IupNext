@@ -139,8 +139,6 @@ static void iBackgroundBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
 static int iBackgroundBoxCreateMethod(Ihandle* ih, void** params)
 {
-  IupSetAttribute(ih, "CANFOCUS", "NO");
-
   if (params)
   {
     Ihandle** iparams = (Ihandle**)params;
@@ -185,6 +183,7 @@ Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name)
   iupClassRegisterReplaceAttribDef  (ic, "BORDER", "NO", NULL);
   iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_NO_INHERIT);
   iupClassRegisterReplaceAttribDef  (ic, "SCROLLBAR", "NO", NULL);
+  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NO_INHERIT);
 
   /* New */
   iupClassRegisterAttribute(ic, "CANVASBOX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
