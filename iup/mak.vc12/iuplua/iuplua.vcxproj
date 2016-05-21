@@ -150,6 +150,7 @@
     </ClCompile>
     <ClCompile Include="..\..\srclua5\iuplua_api.c" />
     <ClCompile Include="..\..\srclua5\iuplua_config.c" />
+    <ClCompile Include="..\..\srclua5\iuplua_draw.c" />
     <ClCompile Include="..\..\srclua5\iuplua_getcolor.c" />
     <ClCompile Include="..\..\srclua5\iuplua_getparam.c" />
     <ClCompile Include="..\..\srclua5\iuplua_scanf.c" />

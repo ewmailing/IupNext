@@ -193,6 +193,9 @@
     <ClCompile Include="..\..\srclua5\elem\il_param.c">
       <Filter>Source Files\controls</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\srclua5\iuplua_draw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\srclua5\iuplua.def">
