@@ -16,8 +16,22 @@ function cv:k_any(c)
   print("  isAltXkey(c) = ", iup.isAltXkey(c))
 end
 
-dg:showxy(iup.CENTER, iup.CENTER)
+function cv:action()
+  cv:DrawBegin()
+  local w, h = cv:DrawGetSize()
 
+  cv.drawcolor = "255 255 255"
+  cv.drawstyle = "FILL"
+  cv:DrawRectangle(0, 0, w, h)
+
+
+  cv.drawcolor = "255 0 0"
+  cv:DrawLine(0, 0, w-1, h-1)
+  cv:DrawLine(0, h-1, w-1, 0)
+  cv:DrawEnd()
+end
+
+dg:showxy(iup.CENTER, iup.CENTER)
 if (iup.MainLoopLevel()==0) then
   iup.MainLoop()
 end
