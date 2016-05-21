@@ -398,7 +398,7 @@ static int drawbg_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-#define IupFrame myFrame
+//#define IupFrame myFrame
 Ihandle* myFrame(Ihandle* child)
 {
   return IupVbox(child, NULL);
@@ -578,8 +578,8 @@ void SampleTest(void)
   IupSetAttribute(_vbox_1,"MARGIN","5x5");
   IupSetAttribute(_vbox_1, "GAP", "5");
 
-  _vbox_1 = IupBackgroundBox(_vbox_1);
-  IupSetCallback(_vbox_1, "ACTION", drawbg_cb);
+//  _vbox_1 = IupBackgroundBox(_vbox_1);
+//  IupSetCallback(_vbox_1, "ACTION", drawbg_cb);
 
   dlg = IupDialog(_vbox_1);
   IupSetHandle("dlg",dlg);
