@@ -35,24 +35,43 @@ or <a href="iupdraw.html">IupRedraw</a>.</p>
 <pre>void IupDrawBegin(Ihandle* <strong>ih</strong>); [in C]
 iup.DrawBegin<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">)</span> [in Lua]
 <strong>ih</strong>:DrawBegin() [in Lua]</pre>
-<p><br>void IupDrawEnd(Ihandle* 
-ih);<br><br>TODO: C++ binding<br><br>/* color controlled by the attribute DRAWCOLOR */<br>/* line style or 
-fill controlled by the attribute DRAWSTYLE */<br><br>void 
-IupDrawParentBackground(Ihandle* ih);<br>void IupDrawLine(Ihandle* ih, int x1, 
+<p>Initialize the drawing process.</p>
+<pre>void IupDrawEnd(Ihandle* <strong>ih</strong>); [in C]
+iup.DrawEnd<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">)</span> [in Lua]
+<strong>ih</strong>:DrawEnd() [in Lua]</pre>
+<p>Terminates the drawing process.</p>
+<h3>Primitives</h3>
+<p>The primitives color is controlled by the attribute DRAWCOLOR.
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
+Default: &quot;0 0 0&quot;.</span></p>
+<p>Rectangle, Arc and Polygon can be filled or stroked. When stroked the line 
+style can be continuous, dashed or dotted. These are controlled by the attribute 
+DRAWSTYLE. Can have values: FILL, STROKE, STROKE_DASH or STROKE_DOT. Default: 
+STROKE. The FILL value when set before DrawLine has the same effect as STROKE.</p>
+<pre>void IupDrawParentBackground(Ihandle* <strong>ih</strong>); [in C]
+iup.DrawParentBackground<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">)</span> [in Lua]
+<strong>ih</strong>:DrawParentBackground() [in Lua]</pre>
+<p>Fill the canvas with the native parent background color.</p>
+<p>void IupDrawLine(Ihandle* ih, int x1, 
 int y1, int x2, int y2);<br>void IupDrawRectangle(Ihandle* ih, int x1, int y1, 
 int x2, int y2);<br>void IupDrawArc(Ihandle* ih, int x1, int y1, int x2, int y2, 
 double a1, double a2);<br>void IupDrawPolygon(Ihandle* ih, int* points, int 
 count);<br>void IupDrawText(Ihandle* ih, const char* text, int len, int x, int 
 y);<br>void IupDrawImage(Ihandle* ih, const char* name, int make_inactive, int 
 x, int y);<br>void IupDrawSetClipRect(Ihandle* ih, int x1, int y1, int x2, int 
-y2);<br>void IupDrawResetClip(Ihandle* ih);<br>void IupDrawSelectRect(Ihandle* 
+y2);</p>
+<pre>void IupDrawResetClip(Ihandle* <strong>ih</strong>); [in C]
+iup.Draw<span class="auto-style2">ResetClip(</span><strong>ih</strong>: ihandle<span class="auto-style2">)</span> [in Lua]
+<strong>ih</strong>:DrawResetClip() [in Lua]</pre>
+<p><br>void IupDrawResetClip(Ihandle* ih);<br>void IupDrawSelectRect(Ihandle* 
 ih, int x, int y, int w, int h);<br>void IupDrawFocusRect(Ihandle* ih, int x, 
-int y, int w, int h);<br><br>void IupDrawGetSize(Ihandle* ih, int *w, int *h);<br>
+int y, int w, int h);<br></p>
+<h3>Information</h3>
+<p>void IupDrawGetSize(Ihandle* ih, int *w, int *h);<br>
 void IupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h);<br>void 
 IupDrawGetImageInfo(const char* name, int *w, int *h, int *bpp);<br></p>
 <h3>See Also</h3>
-<p> <a href="iupdestroy.html">IupDestroy</a>, <a href="iupsetattribute.html">
-IupSetAttribute</a>, <a href="iupgetattribute.html">IupGetAttribute</a> </p>
+<p> <a href="iupcanvas.html">IupCanvas</a>, <a href="iupbackgroundbox.html">IupBackgroundBox</a>, <a href="../func/iupupdate.html">IupUpdate</a>, <a href="iupdraw.html">IupRedraw</a></p>
 
 </body>
 
