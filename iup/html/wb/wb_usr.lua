@@ -1322,7 +1322,11 @@ wb_usr.tree =
                       link= "call/iup_wom_cb.html"
                     }
                   }
-                }
+                },
+                {
+                  name= {nl= "IupDraw"},
+                  link= "elem/iupdraw.html"
+                },
               }
             },
             {
