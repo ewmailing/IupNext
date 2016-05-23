@@ -60,12 +60,12 @@ function ctrl.DrawResetClip(ih)
   iup.DrawResetClip(ih)
 end
 
-function ctrl.DrawSelectRect(ih, x, y, w, h)
-  iup.DrawSelectRect(ih, x, y, w, h)
+function ctrl.DrawSelectRect(ih, x1, y1, x2, y2)
+  iup.DrawSelectRect(ih, x1, y1, x2, y2)
 end
 
-function ctrl.DrawFocusRect(ih, x, y, w, h)
-  iup.DrawFocusRect(ih, x, y, w, h)
+function ctrl.DrawFocusRect(ih, x1, y1, x2, y2)
+  iup.DrawFocusRect(ih, x1, y1, x2, y2)
 end
 
 function ctrl.DrawGetSize(ih)

@@ -256,7 +256,7 @@ void IupDrawResetClip(Ihandle* ih)
   iupdrvDrawResetClip(dc);
 }
 
-void IupDrawSelectRect(Ihandle* ih, int x, int y, int w, int h)
+void IupDrawSelectRect(Ihandle* ih, int x1, int y1, int x2, int y2)
 {
   IdrawCanvas* dc;
 
@@ -268,10 +268,10 @@ void IupDrawSelectRect(Ihandle* ih, int x, int y, int w, int h)
   if (!dc)
     return;
 
-  iupdrvDrawSelectRect(dc, x, y, w, h);
+  iupdrvDrawSelectRect(dc, x1, y1, x2, y2);
 }
 
-void IupDrawFocusRect(Ihandle* ih, int x, int y, int w, int h)
+void IupDrawFocusRect(Ihandle* ih, int x1, int y1, int x2, int y2)
 {
   IdrawCanvas* dc;
 
@@ -283,5 +283,5 @@ void IupDrawFocusRect(Ihandle* ih, int x, int y, int w, int h)
   if (!dc)
     return;
 
-  iupdrvDrawFocusRect(dc, x, y, w, h);
+  iupdrvDrawFocusRect(dc, x1, y1, x2, y2);
 }

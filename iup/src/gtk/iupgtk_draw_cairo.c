@@ -293,15 +293,15 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x
   cairo_restore (dc->image_cr);
 }
 
-void iupdrvDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
+void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   cairo_set_source_rgba(dc->image_cr, 0, 0, 1, 0.60);
-  cairo_rectangle(dc->image_cr, x, y, w, h);
+  cairo_rectangle(dc->image_cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
   cairo_fill(dc->image_cr);
 }
 
-void iupdrvDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
+void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   GtkStyleContext* context = gtk_widget_get_style_context(dc->widget);
-  gtk_render_focus(context, dc->image_cr, x, y, w, h);
+  gtk_render_focus(context, dc->image_cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }

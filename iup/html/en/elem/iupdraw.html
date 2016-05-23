@@ -40,6 +40,14 @@ iup.DrawBegin<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span
 iup.DrawEnd<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">)</span> [in Lua]
 <strong>ih</strong>:DrawEnd() [in Lua]</pre>
 <p>Terminates the drawing process.</p>
+<pre>void IupDrawSetClipRect(Ihandle* <strong>ih</strong>, int <strong>x1</strong>, int <strong>y1</strong>, int <strong>x2</strong>, int <strong>y2</strong>); [in C]
+iup.DrawSetClipRect<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number)</span> [in Lua]
+<strong>ih</strong>:DrawSetClipRect(<span class="auto-style2"><strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number</span>) [in Lua]</pre>
+<p>Defines a rectangular clipping region.</p>
+<pre>void IupDrawResetClip(Ihandle* <strong>ih</strong>); [in C]
+iup.Draw<span class="auto-style2">ResetClip(</span><strong>ih</strong>: ihandle<span class="auto-style2">)</span> [in Lua]
+<strong>ih</strong>:DrawResetClip() [in Lua]</pre>
+<p>Reset the clipping area to none.</p>
 <h3>Primitives</h3>
 <p>The primitives color is controlled by the attribute <strong>DRAWCOLOR</strong>.
 <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
@@ -65,10 +73,11 @@ iup.Draw<span class="auto-style2">Arc(</span><strong>ih</strong>: ihandle<span c
 <strong>ih</strong>:DrawArc(<span class="auto-style2"><strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number</span>) [in Lua]</pre>
 <p>Draws an arc inside a rectangle between the two angles in degrees. When 
 filled will draw a pie shape with the vertex at the center of the rectangle.</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>void IupDrawPolygon(Ihandle* ih, int* points, int 
-count);</p>
+<pre>void IupDrawPolygon(Ihandle* <strong>ih</strong>, int* <strong>points</strong>, int <strong>count</strong>); [in C]
+iup.DrawPolygon<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, points</strong>: table of number)</span> [in Lua]
+<strong>ih</strong>:DrawPolygon(<span class="auto-style2"><strong>points</strong>: table of number</span>) [in Lua]</pre>
+<p>Draws a polygon. Coordinates are stored in the array in the sequence: x1, y1, 
+x2, y2, ...</p>
 <pre>void IupDrawText(Ihandle* <strong>ih</strong>, const char* <strong>str</strong>, int <strong>len</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
 iup.Draw<span class="auto-style2">Text(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, str</strong>: string</span><span class="auto-style2">, <strong>x</strong>, <strong>y</strong>: number)</span> [in Lua]
 <strong>ih</strong>:DrawText(<span class="auto-style2"><strong>str</strong>: string, <strong>x</strong>, <strong>y</strong>: number</span>) [in Lua]</pre>
@@ -78,29 +87,22 @@ in C. Can be 0 so <strong>strlen</strong> is used internally. The coordinates
 are relative the top-left corner of the text.</p>
 <pre>void IupDrawImage(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>make_inactive</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
 iup.Draw<span class="auto-style2">Image(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, name</strong>: string or <strong>image</strong>: ihandle, <strong>make_inactive, x</strong>, <strong>y</strong>: number)</span> [in Lua]
-<strong>ih</strong>:DrawImage(<strong>name</strong><span class="auto-style2">: string, <strong>make_inactive, x</strong>, <strong>y</strong>: number</span>) [in Lua]</pre>
+<strong>ih</strong>:DrawImage(<strong>name</strong><span class="auto-style2">: string or <strong>image</strong>: ihandle, <strong>make_inactive, x</strong>, <strong>y</strong>: number</span>) [in Lua]</pre>
 <p>Draws an image given its name. The coordinates are relative the top-left 
 corner of the image. The image name follows the same behavior as the IMAGE 
 attribute used by many controls.
 <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
 Use<span class="Apple-converted-space">&nbsp;</span></span><a href="../func/iupsethandle.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupSetHandle</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">&nbsp;</span>or<span class="Apple-converted-space">&nbsp;</span></span><a href="../func/iupsetattributehandle.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupSetAttributeHandle</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">&nbsp;</span>to 
 associate an image to a name. See also<span class="Apple-converted-space">&nbsp;</span></span><a href="iupimage.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupImage</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">.<span class="Apple-converted-space">&nbsp;In 
-Lua, the name parameter can be the actual image handle.</span></span><br></p>
-<pre>void IupDrawSetClipRect(Ihandle* <strong>ih</strong>, int <strong>x1</strong>, int <strong>y1</strong>, int <strong>x2</strong>, int <strong>y2</strong>); [in C]
-iup.DrawSetClipRect<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number)</span> [in Lua]
-<strong>ih</strong>:DrawSetClipRect(<span class="auto-style2"><strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number</span>) [in Lua]</pre>
-<p>Defines a rectangular clipping region.</p>
-<pre>void IupDrawResetClip(Ihandle* <strong>ih</strong>); [in C]
-iup.Draw<span class="auto-style2">ResetClip(</span><strong>ih</strong>: ihandle<span class="auto-style2">)</span> [in Lua]
-<strong>ih</strong>:DrawResetClip() [in Lua]</pre>
-<p>Reset the clipping area to none.</p>
-<pre>void IupDrawSelectRect(Ihandle* <strong>ih</strong>, int <strong>x</strong>, int <strong>y</strong>, int <strong>w</strong>, int <strong>h</strong>); [in C]
-iup.DrawSelectRect<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>x</strong>, <strong>y</strong>, <strong>w</strong>, <strong>h</strong>: number)</span> [in Lua]
-<strong>ih</strong>:DrawSelectRect(<span class="auto-style2"><strong>x</strong>, <strong>y</strong>, <strong>w</strong>, <strong>h</strong>: number</span>) [in Lua]</pre>
+Lua, the name parameter can be the actual image handle. The make_inactive 
+parameter will draw the same image in inactive state.</span></span><br></p>
+<pre>void IupDrawSelectRect(Ihandle* <strong>ih</strong>, int <strong>x1</strong>, int <strong>y1</strong>, int <strong>x2</strong>, int <strong>y2</strong>); [in C]
+iup.DrawSelectRect<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number)</span> [in Lua]
+<strong>ih</strong>:DrawSelectRect(<span class="auto-style2"><strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number</span>) [in Lua]</pre>
 <p>Draws a selection rectangle.</p>
-<pre>void IupDrawFocusRect(Ihandle* <strong>ih</strong>, int <strong>x</strong>, int <strong>y</strong>, int <strong>w</strong>, int <strong>h</strong>); [in C]
-iup.DrawFocusRect<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>x</strong>, <strong>y</strong>, <strong>w</strong>, <strong>h</strong>: number)</span> [in Lua]
-<strong>ih</strong>:DrawFocusRect(<span class="auto-style2"><strong>x</strong>, <strong>y</strong>, <strong>w</strong>, <strong>h</strong>: number</span>) [in Lua]</pre>
+<pre>void IupDrawFocusRect(Ihandle* <strong>ih</strong>, int <strong>x1</strong>, int <strong>y1</strong>, int <strong>x2</strong>, int <strong>y2</strong>); [in C]
+iup.DrawFocusRect<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number)</span> [in Lua]
+<strong>ih</strong>:DrawFocusRect(<span class="auto-style2"><strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number</span>) [in Lua]</pre>
 <p>Draws a focus rectangle.</p>
 <h3>Information</h3>
 <pre>void IupDrawGetSize(Ihandle* <strong>ih</strong>, int *<strong>w</strong>, int *<strong>h</strong>); [in C]

@@ -32,7 +32,7 @@ struct _IdrawCanvas{
   GdkGC *gc, *pixmap_gc;
 
   int draw_focus, 
-    focus_x, focus_y, focus_w, focus_h;
+    focus_x1, focus_y1, focus_x2, focus_y2;
 };
 
 IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
@@ -86,7 +86,7 @@ void iupdrvDrawFlush(IdrawCanvas* dc)
 
   if (dc->draw_focus)
   {
-    iupdrvPaintFocusRect(dc->ih, NULL, dc->focus_x, dc->focus_y, dc->focus_w, dc->focus_h);
+    iupdrvPaintFocusRect(dc->ih, NULL, dc->focus_x1, dc->focus_y1, dc->focus_x2 - dc->focus_x1 + 1, dc->focus_y2 - dc->focus_y1 + 1);
     dc->draw_focus = 0;
   }
 }
@@ -216,21 +216,21 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x
   gdk_draw_pixbuf(dc->pixmap, dc->pixmap_gc, pixbuf, 0, 0, x, y, img_w, img_h, GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
-void iupdrvDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
+void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   GdkColor color;
   iupgdkColorSet(&color, 255, 255, 255);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
   gdk_gc_set_function(dc->pixmap_gc, GDK_XOR);
-  gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, TRUE, x, y, w, h);
+  gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
   gdk_gc_set_function(dc->pixmap_gc, GDK_COPY);
 }
 
-void iupdrvDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
+void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   dc->draw_focus = 1;  /* draw focus on the next flush */
-  dc->focus_x = x;
-  dc->focus_y = y;
-  dc->focus_w = w;
-  dc->focus_h = h;
+  dc->focus_x1 = x1;
+  dc->focus_y1 = y1;
+  dc->focus_x2 = x2;
+  dc->focus_y2 = y2;
 }

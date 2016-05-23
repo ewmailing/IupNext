@@ -87,11 +87,11 @@ void iupdrvDrawResetClip(IdrawCanvas* dc);
 
 /** Draws a selection rectangle.
  * \ingroup draw */
-void iupdrvDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h);
+void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
 
 /** Draws a focus rectangle.
  * \ingroup draw */
-void iupdrvDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h);
+void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
 
 
 #ifdef __cplusplus

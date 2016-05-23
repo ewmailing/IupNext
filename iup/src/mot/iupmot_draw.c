@@ -51,7 +51,7 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   int depth;
 
   dc->ih = ih;
-  dc->wnd = (Window*)IupGetAttribute(ih, "DRAWABLE");
+  dc->wnd = (Window)IupGetAttribute(ih, "DRAWABLE");
 
   dc->gc = XCreateGC(iupmot_display, dc->wnd, 0, NULL);
 
@@ -265,18 +265,18 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x
   XCopyArea(iupmot_display, pixmap, dc->pixmap, dc->pixmap_gc, 0, 0, img_w, img_h, x, y);
 }
 
-void iupdrvDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
+void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   XSetFunction(iupmot_display, dc->pixmap_gc, GXxor);
   XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(255, 255, 255));
-  XFillRectangle(iupmot_display, dc->pixmap, dc->pixmap_gc, x, y, w, h);
+  XFillRectangle(iupmot_display, dc->pixmap, dc->pixmap_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
   XSetFunction(iupmot_display, dc->pixmap_gc, GXcopy);
 }
 
 #include <Xm/XmP.h>
 #include <Xm/DrawP.h>
 
-void iupdrvDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
+void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
-  XmeDrawHighlight(iupmot_display, dc->pixmap, dc->pixmap_gc, x, y, w, h, 1);
+  XmeDrawHighlight(iupmot_display, dc->pixmap, dc->pixmap_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1, 1);
 }

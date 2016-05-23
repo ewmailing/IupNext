@@ -721,19 +721,19 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x
     DeleteObject(hMask);
 }
 
-void iupdrvDrawSelectRect(IdrawCanvas* dc, int x, int y, int w, int h)
+void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
-  BitBlt(dc->hBitmapDC, x, y, w, h, dc->hBitmapDC, x, y, DSTINVERT);
+  BitBlt(dc->hBitmapDC, x1, y1, x2 - x1 + 1, y2 - y1 + 1, dc->hBitmapDC, x1, y1, DSTINVERT);
 }
 
-void iupdrvDrawFocusRect(IdrawCanvas* dc, int x, int y, int w, int h)
+void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   RECT rect;
 
-  rect.left = x;  
-  rect.top = y;  
-  rect.right = x+w;  
-  rect.bottom = y+h;
+  rect.left = x1;  
+  rect.top = y1;  
+  rect.right = x2;  
+  rect.bottom = y2;
 
   DrawFocusRect(dc->hBitmapDC, &rect);
 }

@@ -1211,7 +1211,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
     if (w<=0) w=1;
     if (h<=0) h=1;
 
-    iupdrvDrawSelectRect(dc, x, y, w, h);
+    iupdrvDrawSelectRect(dc, x, y, x + w, y + h);
   }
 }
 
