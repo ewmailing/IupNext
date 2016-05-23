@@ -18,6 +18,9 @@ void IupDrawEnd(Ihandle* ih);
 
 /* all primitives can be called only between calls to Begin and End */
 
+void IupDrawSetClipRect(Ihandle* ih, int x1, int y1, int x2, int y2);
+void IupDrawResetClip(Ihandle* ih);
+
 /* color controlled by the attribute DRAWCOLOR */
 /* line style or fill controlled by the attribute DRAWSTYLE */
 
@@ -28,8 +31,6 @@ void IupDrawArc(Ihandle* ih, int x1, int y1, int x2, int y2, double a1, double a
 void IupDrawPolygon(Ihandle* ih, int* points, int count);
 void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y);
 void IupDrawImage(Ihandle* ih, const char* name, int make_inactive, int x, int y);
-void IupDrawSetClipRect(Ihandle* ih, int x1, int y1, int x2, int y2);
-void IupDrawResetClip(Ihandle* ih);
 void IupDrawSelectRect(Ihandle* ih, int x1, int y1, int x2, int y2);
 void IupDrawFocusRect(Ihandle* ih, int x1, int y1, int x2, int y2);
 

@@ -10,6 +10,7 @@
 
 #include "iup.h"
 #include "iupkey.h"
+#include "iupdraw.h"
 #include "iup_class_cbs.hpp"
 #include "iupcontrols.h"
 #include "iupmatrixex.h"
@@ -330,6 +331,23 @@ namespace iup
   {
   public:
     Canvas() : Control(IupCanvas(0)) {}
+                   
+    void DrawBegin() { IupDrawBegin(ih); }
+    void DrawEnd() { IupDrawEnd(ih); }
+    void DrawSetClipRect(int x1, int y1, int x2, int y2) { IupDrawSetClipRect(ih, x1, y1, x2, y2); }
+    void DrawResetClip() { IupDrawResetClip(ih); }
+    void DrawParentBackground() { IupDrawParentBackground(ih); }
+    void DrawLine(int x1, int y1, int x2, int y2) { IupDrawLine(ih, x1, y1, x2, y2); }
+    void DrawRectangle(int x1, int y1, int x2, int y2) { IupDrawRectangle(ih, x1, y1, x2, y2); }
+    void DrawArc(int x1, int y1, int x2, int y2, double a1, double a2) { IupDrawArc(ih, x1, y1, x2, y2, a1, a2); }
+    void DrawPolygon(int* points, int count) { IupDrawPolygon(ih, points, count); }
+    void DrawText(const char* text, int len, int x, int y) { IupDrawText(ih, text, len, x, y); }
+    void DrawImage(const char* name, int make_inactive, int x, int y) { IupDrawImage(ih, name, make_inactive, x, y); }
+    void DrawSelectRect(int x1, int y1, int x2, int y2) { IupDrawSelectRect(ih, x1, y1, x2, y2); }
+    void DrawFocusRect(int x1, int y1, int x2, int y2) { IupDrawFocusRect(ih, x1, y1, x2, y2); }
+    void DrawGetSize(int &w, int &h) { IupDrawGetSize(ih, &w, &h); }
+    void DrawGetTextSize(const char* str, int &w, int &h) { IupDrawGetTextSize(ih, str, &w, &h); }
+    void DrawGetImageInfo(const char* name, int &w, int &h, int &bpp) { IupDrawGetImageInfo(name, &w, &h, &bpp); }
   };
   class Link : public Control
   {
@@ -448,6 +466,23 @@ namespace iup
   public:
     BackgroundBox() : Container(IupBackgroundBox(0)) {}
     BackgroundBox(const Control& child) : Container(IupBackgroundBox(child.GetHandle())) {}
+
+    void DrawBegin() { IupDrawBegin(ih); }
+    void DrawEnd() { IupDrawEnd(ih); }
+    void DrawSetClipRect(int x1, int y1, int x2, int y2) { IupDrawSetClipRect(ih, x1, y1, x2, y2); }
+    void DrawResetClip() { IupDrawResetClip(ih); }
+    void DrawParentBackground() { IupDrawParentBackground(ih); }
+    void DrawLine(int x1, int y1, int x2, int y2) { IupDrawLine(ih, x1, y1, x2, y2); }
+    void DrawRectangle(int x1, int y1, int x2, int y2) { IupDrawRectangle(ih, x1, y1, x2, y2); }
+    void DrawArc(int x1, int y1, int x2, int y2, double a1, double a2) { IupDrawArc(ih, x1, y1, x2, y2, a1, a2); }
+    void DrawPolygon(int* points, int count) { IupDrawPolygon(ih, points, count); }
+    void DrawText(const char* text, int len, int x, int y) { IupDrawText(ih, text, len, x, y); }
+    void DrawImage(const char* name, int make_inactive, int x, int y) { IupDrawImage(ih, name, make_inactive, x, y); }
+    void DrawSelectRect(int x1, int y1, int x2, int y2) { IupDrawSelectRect(ih, x1, y1, x2, y2); }
+    void DrawFocusRect(int x1, int y1, int x2, int y2) { IupDrawFocusRect(ih, x1, y1, x2, y2); }
+    void DrawGetSize(int &w, int &h) { IupDrawGetSize(ih, &w, &h); }
+    void DrawGetTextSize(const char* str, int &w, int &h) { IupDrawGetTextSize(ih, str, &w, &h); }
+    void DrawGetImageInfo(const char* name, int &w, int &h, int &bpp) { IupDrawGetImageInfo(name, &w, &h, &bpp); }
   };
   class Frame : public Container
   {
@@ -573,6 +608,12 @@ namespace iup
     void UseFont(int first, int count, int list_base) { IupGLUseFont(ih, first, count, list_base); }
 
     static void Wait(int gl) { IupGLWait(gl); }
+  };
+  class GLBackgroundBox : public Container
+  {
+  public:
+    GLBackgroundBox() : Container(IupGLBackgroundBox(0)) {}
+    GLBackgroundBox(const Control& child) : Container(IupGLBackgroundBox(child.GetHandle())) {}
   };
 
   class Controls
