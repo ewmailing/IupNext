@@ -416,15 +416,6 @@ static char* iListGetScrollbarAttrib(Ihandle* ih)
   return iupStrReturnBoolean (ih->data->sb); 
 }
 
-static char* iListGetMaskDataAttrib(Ihandle* ih)
-{
-  if (!ih->data->has_editbox)
-    return NULL;
-
-  /* Used only by the OLD iupmask API */
-  return (char*)ih->data->mask;
-}
-
 static char* iListGetMaskAttrib(Ihandle* ih)
 {
   if (!ih->data->has_editbox)
@@ -1121,7 +1112,6 @@ Iclass* iupListNewClass(void)
   iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iListSetMaskFloatAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKREAL", NULL, iListSetMaskRealAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKNOEMPTY", NULL, iListSetMaskNoEmptyAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iListGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

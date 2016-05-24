@@ -24,7 +24,6 @@ int iupcontrolslua_open(lua_State * L)
 
   iupgaugelua_open(L);
   iupmatrixlua_open(L);
-  iupmasklua_open(L);
   iupdiallua_open(L);
   iupcolorbrowserlua_open(L);
   iupcellslua_open(L);

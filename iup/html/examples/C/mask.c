@@ -1,4 +1,4 @@
-/*  IupMask: Example in C 
+/*  IupText MASK: Example in C 
     Creates an IupText that accepts only numbers.
 */
 
@@ -20,7 +20,7 @@ int main(int argc, char **argv)
   IupSetAttribute(text, "EXPAND", "HORIZONTAL");
 
   dg = IupDialog(text);
-  IupSetAttribute(dg, "TITLE", "IupMask");
+  IupSetAttribute(dg, "TITLE", "IupText MASK");
 
   IupShow(dg);
   IupMainLoop();

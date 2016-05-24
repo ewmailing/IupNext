@@ -1325,15 +1325,6 @@ static char* iMatrixGetNumLinVisibleAttrib(Ihandle* ih)
   return iupStrReturnInt(ih->data->lines.last - ih->data->lines.first);
 }
 
-static char* iMatrixGetMaskDataAttrib(Ihandle* ih)
-{
-  /* Used only by the OLD iupmask API */
-  if (ih->data->editing)
-    return IupGetAttribute(ih->data->datah,"OLD_MASK_DATA");
-  else
-    return NULL;
-}
-
 static int iMatrixSetActiveAttrib(Ihandle* ih, const char* value)
 {
   if (!iupStrBoolean(value) && ih->data->editing)
@@ -1868,9 +1859,6 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "HIDEFOCUS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWFILLVALUE", iMatrixGetShowFillValueAttrib, iMatrixSetShowFillValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TYPECOLORINACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-
-  /* IupMatrix Attributes - MASK (DEPRECATED) */
-  iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iMatrixGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CLASSUPDATE", NULL, (IattribSetFunc)iMatrixSetClassUpdate, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   

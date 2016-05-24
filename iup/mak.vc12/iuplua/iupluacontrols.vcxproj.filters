@@ -28,9 +28,6 @@
     <ClCompile Include="..\..\srclua5\ctrl\il_gauge.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\srclua5\ctrl\iuplua_mask.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\srclua5\ctrl\il_matrix.c">
       <Filter>Source Files</Filter>
     </ClCompile>

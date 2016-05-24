@@ -64,7 +64,7 @@ GC := $(addprefix ctrl/il_, $(GC))
 $(GC) : ctrl/il_%.c : ctrl/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC := ctrl/iuplua_controls.c ctrl/iuplua_mask.c ctrl/iuplua_matrix_aux.c $(GC)
+SRC := ctrl/iuplua_controls.c ctrl/iuplua_matrix_aux.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   USE_IUPLUA:=

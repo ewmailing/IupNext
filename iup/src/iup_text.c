@@ -206,12 +206,6 @@ int iupTextSetAddFormatTagAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static char* iTextGetMaskDataAttrib(Ihandle* ih)
-{
-  /* Used only by the OLD iupmask API */
-  return (char*)ih->data->mask;
-}
-
 static char* iTextGetMaskAttrib(Ihandle* ih)
 {
   if (ih->data->mask)
@@ -664,7 +658,6 @@ Iclass* iupTextNewClass(void)
   iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iTextSetMaskFloatAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKREAL", NULL, iTextSetMaskRealAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKNOEMPTY", NULL, iTextSetMaskNoEmptyAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OLD_MASK_DATA", iTextGetMaskDataAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPIN", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

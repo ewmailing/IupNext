@@ -235,8 +235,6 @@ static Ihandle *create_mat(int mati)
 //  IupSetAttribute(mat,"WIDTH0","24");
 //  IupSetAttribute(mat,"HEIGHT0","8");
 
-//  iupmaskMatSet(mat, IUPMASK_FLOAT, 0, 1, 2, 1) ;
-
   return mat;
 }
 
