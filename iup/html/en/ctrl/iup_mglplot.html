@@ -151,12 +151,14 @@ mglplot() [in LED]</pre>
   created plot, or NULL if an error occurs.</p>
 <h3><a name="aux">Auxiliary Functions</a></h3>
 <pre>void <b>IupMglPlotBegin</b>(Ihandle* <b>ih</b>, int <b>dim</b>); [in C]
-<b>iup.MglPlotBegin</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]</pre>
+<b>iup.MglPlotBegin</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]
+<b>ih:Begin</b>(<b>dim</b>: number) [in Lua]</pre>
 <p>Prepares a dataset to receive samples. The dimension of the data can be 1, 2 or 3. 
 <em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>void <b>IupMglPlotAdd1D</b>(Ihandle* <b>ih</b>, const char* <b>name</b>, double <b>y</b>); [in C]
-<b>iup.MglPlotAdd1D</b>(<b>ih</b>: ihandle, <b>name</b>: string, <b>y</b>: number) [in Lua]</pre>
+<b>iup.MglPlotAdd1D</b>(<b>ih</b>: ihandle, <b>name</b>: string, <b>y</b>: number) [in Lua]
+<b>ih:Add1D</b>(<b>name</b>: string, <b>y</b>: number) [in Lua]</pre>
 <p>Adds a sample to the dataset. Can only be called if <b>IupMglPlotBegin</b> was 
 called with dim=1. <strong>name</strong> is an optional string used for tick 
 labels in the X axis, and it can be NULL (nil in Lua). Names are allowed only 
@@ -165,17 +167,20 @@ ignored, all the names are shown. The X axis data is automatically generated (0,
 <em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>void <b>IupMglPlotAdd2D</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>); [in C]
-<b>iup.MglPlotAdd2D</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>: number) [in Lua]</pre>
+<b>iup.MglPlotAdd2D</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>: number) [in Lua]
+<b>ih:Add2D</b>(<b>x</b>, <b>y</b>: number) [in Lua]</pre>
 <p>Adds a sample to the dataset. Can only be called if <b>IupMglPlotBegin</b> was 
 called with dim=2. <em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>void <b>IupMglPlotAdd3D</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>, double <b>z</b>); [in C]
-<b>iup.MglPlotAdd3D</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>, <b>z</b>: number) [in Lua]</pre>
+<b>iup.MglPlotAdd3D</b>(<b>ih</b>: ihandle, <b>x</b>, <b>y</b>, <b>z</b>: number) [in Lua]
+<b>ih:Add3D</b>(<b>x</b>, <b>y</b>, <b>z</b>: number) [in Lua]</pre>
 <p>Adds a sample to the dataset. Can only be called if <b>IupMglPlotBegin</b> was 
 called with dim=3. <em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>int <b>IupMglPlotEnd</b>(Ihandle* <b>ih</b>); [in C]
-<b>iup.MglPlotEnd</b>(<b>ih</b>: ihandle) -&gt; (<b>index</b>: number) [in Lua]</pre>
+<b>iup.MglPlotEnd</b>(<b>ih</b>: ihandle) -&gt; (<b>index</b>: number) [in Lua]
+<b>ih:End</b>() -&gt; (<b>index</b>: number) [in Lua]</pre>
 <p>Adds the dataset to the plot and returns the dataset <strong>index</strong>. 
 The dataset can be empty. Redraw is NOT 
 done until the REDRAW attribute is set. Also it will change the current dataset 
@@ -186,7 +191,8 @@ default values. Notice that DS_MODE must be set before other &quot;DS_*&quot; at
 <em><strong>Linear data only.</strong></em></p>
 <hr>
 <pre>void <b>IupMglPlotNewDataSet</b>(Ihandle* <b>ih</b>, int <b>dim</b>); [in C]
-<b>iup.MglPlotNewDataSet</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]</pre>
+<b>iup.MglPlotNewDataSet</b>(<b>ih</b>: ihandle, <b>dim</b>: number) [in Lua]
+<b>ih:NewDataSet</b>(<b>dim</b>: number) [in Lua]</pre>
 <p>Creates an empty dataset to receive samples. The dimension of the data can be 1, 2 or 3. 
 <strong>Linear data</strong> can have 1, 2 or 3 dimensions. <strong>Planar data</strong> has 2 dimensions, but use 
 dim=1. <strong>Volumetric data</strong> has 3 dimensions, but use dim=1.</p>
@@ -201,6 +207,9 @@ void <b>IupMglPlotInsert3D</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>s
 <b>iup.IupMglPlotInsert1D</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number, <b>names</b>: table of string, <b>y</b>: table of number) [in Lua]
 <b>iup.IupMglPlotInsert2D</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number, <b>x, y</b>: table of number)
 <b>iup.IupMglPlotInsert3D</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number, <b>x, y, z</b>: table of number)
+<b>ih:Insert1D</b>(<b>ds_index, sample_index</b>: number, <b>names</b>: table of string, <b>y</b>: table of number) [in Lua]
+<b>ih:Insert2D</b>(<b>ds_index, sample_index</b>: number, <b>x, y</b>: table of number)
+<b>ih:Insert3D</b>(<b>ds_index, sample_index</b>: number, <b>x, y, z</b>: table of number)
 </pre>
 <p>Inserts an array of samples in the dataset <strong>ds_index</strong> at the given <strong>sample_index</strong>. 
 Can be used only after the dataset is added to the plot. <strong>sample_index</strong> 
@@ -217,6 +226,9 @@ void <b>IupMglPlotSet3D</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, double* <b>
 <b>iup.IupMglPlotSet1D</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>names</b>: table of string, <b>y</b>: table of number) [in Lua]
 <b>iup.IupMglPlotSet2D</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>x, y</b>: table of number)
 <b>iup.IupMglPlotSet3D</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>x, y, z</b>: table of number)
+<b>ih:Set1D</b>(<b>ds_index</b>: number, <b>names</b>: table of string, <b>y</b>: table of number) [in Lua]
+<b>ih:Set2D</b>(<b>ds_index</b>: number, <b>x, y</b>: table of number)
+<b>ih:Set3D</b>(<b>ds_index</b>: number, <b>x, y, z</b>: table of number)
 </pre>
 <p>Sets an array of samples in the dataset <strong>ds_index</strong>.&nbsp; 
 Existing data is removed. Can be used only after the dataset is added to the plot. <strong>names</strong> 
@@ -228,6 +240,7 @@ configuration for the X axis is ignored, all the names are shown. Also for the 1
 <pre>
 void <strong>IupMglPlotSetFormula</strong>(Ihandle* <strong>ih</strong>, int <strong>ds_index</strong>, const char* <strong>formulaX</strong>, const char* <strong>formulaY</strong>, const char* <strong>formulaZ</strong>, int <strong>count</strong>);
 <strong>iup.MglPlotSetFormula</strong>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <strong>formulaX</strong>, <strong>formulaY</strong>, <strong>formulaZ</strong>: string, <strong>count</strong>: number);
+<b>ih:</b><strong>SetFormula</strong>(<b>ds_index</b>: number, <strong>formulaX</strong>, <strong>formulaY</strong>, <strong>formulaZ</strong>: string, <strong>count</strong>: number);
 </pre>
 <p>Same as IupMglPlotSet* but data is generated from a formula. If <strong>count</strong> 
 is 0 the current size is used.&nbsp;If 2D data then <strong>
@@ -245,6 +258,7 @@ sinh(a)   cosh(a)  tanh(a)   asinh(a) acosh(a) atanh(a)</pre>
 <hr>
 <pre>void <b>IupMglPlotSetData</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, double* <b>data</b>, int <strong>count_x</strong>, int <strong>count_y</strong>, int <strong>count_z</strong>); [in C]
 <b>iup.MglPlotSetData</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>data</b>: table of number) [in Lua]
+<b>ih:SetData</b>(<b>ds_index</b>: number, <b>data</b>: table of number) [in Lua]
 </pre>
 <p>Sets an array of samples in the dataset <strong>ds_index</strong>. 
 All previous values are removed. Can be used only after a 1D dataset is added to the plot, 
@@ -266,6 +280,7 @@ the DS_REARRANGE and DS_SPLIT attributes.</em></p>
 <hr>
 <pre>void <b>IupMglPlotLoadData</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, const char* <b>filename</b>, int <strong>count_x</strong>, int <strong>count_y</strong>, int <strong>count_z</strong>); [in C]
 <b>iup.MglPlotLoadData</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>filename</b>: string[, <strong>count_x</strong>, <strong>count_y</strong>, <strong>count_z</strong>: number]) [in Lua]
+<b>ih:LoadData</b>(<b>ds_index</b>: number, <b>filename</b>: string[, <strong>count_x</strong>, <strong>count_y</strong>, <strong>count_z</strong>: number]) [in Lua]
 </pre>
 <p>Same as <strong>IupMglPlotSetData</strong> but loads the data from a file. 
 The file must contains space (&#39; &#39;) separated numeric data in text format. The text can contains 
@@ -282,6 +297,7 @@ data using the DS_REARRANGE and DS_SPLIT attributes.</em></p>
 <hr>
 <pre>void <b>IupMglPlotSetFromFormula</b>(Ihandle *<b>ih</b>, nt <b>ds_index</b>, const char* <b>formula</b>, int <strong>count_x</strong>, int <strong>count_y</strong>, int <strong>count_z</strong>)); [in C]
 <b>iup.MglPlotSetFromFormula</b>(<b>ih</b>: ihandle, <b>ds_index</b>: number, <b>formula</b>: string[, <strong>count_x</strong>, <strong>count_y</strong>, <strong>count_z</strong>: number]) [in Lua]
+<b>ih:SetFromFormula</b>(<b>ds_index</b>: number, <b>formula</b>: string[, <strong>count_x</strong>, <strong>count_y</strong>, <strong>count_z</strong>: number]) [in Lua]
 </pre>
 <p>Same as <strong>IupMglPlotSetData</strong> but data is generated from a 
 formula. If all <strong>count_*</strong> are 0 the current size remains, and the 
@@ -302,27 +318,32 @@ You can convert planar data into linear data using the DS_REARRANGE and DS_SPLIT
 attributes.</em></p>
 <hr>
 <pre>void <b>IupMglPlotTransform</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>, double <b>z</b>, int *<b>ix</b>, int *<b>iy</b>); [in C]
-<b>iup.MglPlotTransform</b>(<b>ih</b>: ihandle, <b>x, y, z</b>: number) -&gt; (<b>ix</b>, <b>iy</b>: number) [in Lua]</pre>
+<b>iup.MglPlotTransform</b>(<b>ih</b>: ihandle, <b>x, y, z</b>: number) -&gt; (<b>ix</b>, <b>iy</b>: number) [in Lua]
+<b>ih:Transform</b>(<b>x, y, z</b>: number) -&gt; (<b>ix</b>, <b>iy</b>: number) [in Lua]</pre>
 <p>Converts coordinates from plot coordinates to pixels. It can be used only inside PREDRAW_CB 
 and POSTDRAW_CB callbacks. Output variables can be NULL if not used.</p>
 <hr>
 <pre>void <b>IupMglPlotTransformTo</b>(Ihandle* <b>ih</b>, int <b>ix</b>, int <b>iy</b>, double *<b>x</b>, double *<b>y</b>, double *<b>z</b>); [in C]
-<b>iup.MglPlotTransformTo</b>(<b>ih</b>: ihandle, <b>ix, iy</b>: number) -&gt; (<b>x</b>, <b>y</b>, <b>z</b>: number) [in Lua]</pre>
+<b>iup.MglPlotTransformTo</b>(<b>ih</b>: ihandle, <b>ix, iy</b>: number) -&gt; (<b>x</b>, <b>y</b>, <b>z</b>: number) [in Lua]
+<b>ih:TransformTo</b>(<b>ix, iy</b>: number) -&gt; (<b>x</b>, <b>y</b>, <b>z</b>: number) [in Lua]</pre>
 <p>Converts coordinates from pixels to plot coordinates. It can be used only inside PREDRAW_CB 
 and POSTDRAW_CB callbacks. Output variables can be NULL if not used.</p>
 <hr>
 <pre>void <b>IupMglPlotDrawMark</b>(Ihandle* <b>ih</b>, double <b>x</b>, double <b>y</b>, double <b>z</b>); [in C]
-<b>iup.MglDrawMark</b>(<b>ih</b>: ihandle, <b>x, y, z</b>: number) [in Lua]</pre>
+<b>iup.MglPlotDrawMark</b>(<b>ih</b>: ihandle, <b>x, y, z</b>: number) [in Lua]
+<b>ih:DrawMark</b>(<b>x, y, z</b>: number) [in Lua]</pre>
 <p>Draws a mark at given position in plot coordinates. It can be used only inside PREDRAW_CB 
 and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWMARKSTYLE and DRAWMARKSIZE can be used to control mark appearance. </p>
 <hr>
 <pre>void <b>IupMglPlotDrawLine</b>(Ihandle* <b>ih</b>, double <b>x1</b>, double <b>y1</b>, double <b>z1</b>, double <b>x2</b>, double <b>y2</b>, double <b>z2</b>); [in C]
-<b>iup.MglDrawLine</b>(<b>ih</b>: ihandle, <b>x1, y1, z1, x2, y2, z2</b>: number) [in Lua]</pre>
+<b>iup.MglPlotDrawLine</b>(<b>ih</b>: ihandle, <b>x1, y1, z1, x2, y2, z2</b>: number) [in Lua]
+<b>ih:DrawLine</b>(<b>x1, y1, z1, x2, y2, z2</b>: number) [in Lua]</pre>
 <p>Draws a line from position 1 to position 2 in plot coordinates. It can be used only inside PREDRAW_CB 
 and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWLINESTYLE and DRAWLINEWIDTH can be used to control line appearance. </p>
 <hr>
 <pre>void <b>IupMglPlotDrawText</b>(Ihandle* <b>ih</b>, const char* <b>text</b>, double <b>x</b>, double <b>y</b>, double <b>z</b>); [in C]
-<b>iup.MglDrawText</b>(<b>ih</b>: ihandle, <b>text</b>: string, <b>x, y, z</b>: number) [in Lua]</pre>
+<b>iup.MglPlotDrawText</b>(<b>ih</b>: ihandle, <b>text</b>: string, <b>x, y, z</b>: number) [in Lua]
+<b>ih:DrawText</b>(<b>text</b>: string, <b>x, y, z</b>: number) [in Lua]</pre>
 <p>Draws a text at given position in plot coordinates. It can be used only inside PREDRAW_CB 
 and POSTDRAW_CB callbacks. The attributes DRAWCOLOR, DRAWFONT, DRAWFONTSTYLE and DRAWFONTSIZE 
 (a factor) can be used to control 
@@ -331,7 +352,8 @@ be a combination of Plain (Regular), Bold, Italic (Oblique), Wired, Underline,
 Strikeout, Left, Center and Right.</p>
 <hr>
 <pre>void <b>IupMglPlotPaintTo</b>(Ihandle* <b>ih</b>, const char* <b>format</b>, int <strong>w</strong>, int <strong>h</strong>, double <strong>dpi</strong>, void* <strong>data</strong>); [in C]
-<b>iup.MglPlotPaintTo</b>(<b>ih</b>: ihandle, <b>format</b>: string, <strong>w</strong>, <strong>h</strong>, <strong>dpi</strong>:number, <strong>data</strong>: string or lightuserdata) [in Lua]</pre>
+<b>iup.MglPlotPaintTo</b>(<b>ih</b>: ihandle, <b>format</b>: string, <strong>w</strong>, <strong>h</strong>, <strong>dpi</strong>:number, <strong>data</strong>: string or lightuserdata) [in Lua]
+<b>ih:PaintTo</b>(<b>format</b>: string, <strong>w</strong>, <strong>h</strong>, <strong>dpi</strong>:number, <strong>data</strong>: string or lightuserdata) [in Lua]</pre>
 <p>Plots to a metafile or a bitmap instead of the display canvas. <strong>format</strong> will define the 
 interpretation of the <strong>data</strong> parameter. <strong>format</strong> can be: 
 &quot;EPS&quot;, &quot;SVG&quot;, &quot;RGB&quot;, 
