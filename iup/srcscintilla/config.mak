@@ -15,7 +15,7 @@ INCLUDES =  ../include ../src .
 LDIR = ../lib/$(TEC_UNAME)
 LIBS = iup
 
-DEFINES += STATIC_BUILD SCI_LEXER SCI_NAMESPACE
+DEFINES += STATIC_BUILD SCI_LEXER 
 
 # Supported only in Windows and GTK
 
