@@ -350,7 +350,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
   /* just check for the path inside FILE */
   value = iupAttribGet(ih, "FILE");
-  if (value && (value[0] == '/' || value[1] == ':'))
+  if (value && value[0] != 0 && (value[0] == '/' || value[1] == ':'))
   {
     char* dir = iupStrFileGetPath(value);
     int len = (int)strlen(dir);
