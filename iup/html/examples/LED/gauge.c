@@ -116,7 +116,6 @@ int main(int argc, char **argv)
   IupDestroy(dlg);
 
   /* ends IUP */
-  IupControlsClose();
   IupClose();
 
   return 0;

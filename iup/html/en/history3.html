@@ -116,8 +116,8 @@ version 3.x.</p>
 	<li>
 	<font size="3"><strong>
 	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
-	Changed:</span></strong><span class="Apple-converted-space">&nbsp;<span class="style7">[IMPORTANT 
-	INCOMPATIBILITY]</span> <strong>IupParamf</strong> renamed to <strong>
+	Changed:</span></strong><span class="Apple-converted-space">&nbsp;<span class="style7"><strong>[IMPORTANT 
+	INCOMPATIBILITY]</strong></span> <strong>IupParamf</strong> renamed to <strong>
 	IupParam</strong> and <strong>IupParamBox</strong> changed its signature. 
 	They are now actual controls and cab be also used in LED and Lua as such. In 
 	Lua the constructors iup.param{} and iup.parambox{} must be used instead of 
@@ -134,6 +134,26 @@ version 3.x.</p>
 		<span class="hist_fixed">Fixed:</span> VALUECHANGED_CB callback for
 	<strong>IupDatePick</strong> in Windows to allow <strong>IupGetParam</strong> 
 	to cancel the change.</span></span></font></li>
+	<li>
+	<font size="3"><strong>
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	Changed:</span></strong><span class="Apple-converted-space">&nbsp;<span class="style7"><strong>[DEPRECATED 
+	REMOVED]</strong></span> removed the following headers </span></font>iupcb.h, 
+	iupcells.h, iupdial.h, iupgc.h, iupmatrix.h, iupspin.h, iuptree.h, iupcbox.h 
+	iupcolorbar.h, iupgauge.h, iupgetparam.h, iupsbox.h, iuptabs.h and iupval.h. 
+	These headers were already empty, simply use iup.h or iupcontrols.h.</li>
+	<li>
+	<font size="3"><strong>
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	Changed:</span></strong><span class="Apple-converted-space">&nbsp;<span class="style7"><strong>[DEPRECATED 
+	REMOVED]</strong></span> removed the following functions IupGetActionName, 
+	IupMapFont, IupUnMapFont and IupControlsClose. Removed support for 
+	DEFAULT_ACTION and old font names. There are no substitutes.</span></font></li>
+	<li>
+	<font size="3"><strong>
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	Changed:</span></strong><span class="Apple-converted-space">&nbsp;<span class="style7"><strong>[DEPRECATED 
+	REMOVED]</strong></span> removed the following functions </span></font></li>
 	<li>
 	<font SIZE="3">
 	<span style="color: #008000">

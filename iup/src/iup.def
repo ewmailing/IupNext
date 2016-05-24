@@ -16,7 +16,6 @@ IupProgressDlg
 IupFill
 IupFlush
 IupFrame
-IupGetActionName
 IupGetAllDialogs
 IupGetAllNames
 IupGetAttribute
@@ -50,7 +49,6 @@ IupLoopStep
 IupLoopStepWait
 IupMainLoop
 IupMap
-IupMapFont
 IupMenu
 IupMessage
 IupMessagef
@@ -97,7 +95,6 @@ IupBackgroundBox
 IupLink
 IupText
 IupToggle
-IupUnMapFont
 IupUser
 IupVbox
 IupVersion

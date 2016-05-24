@@ -141,6 +141,5 @@ void main(int argc, char **argv)
   IupMainLoop();
 
   IupDestroy(IupGetHandle("dlg_led"));
-  IupControlsClose() ;
   IupClose();
 }

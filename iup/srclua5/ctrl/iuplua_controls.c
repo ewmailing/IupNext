@@ -34,13 +34,6 @@ int iupcontrolslua_open(lua_State * L)
   return 0;
 }
 
-int iupcontrolslua_close(lua_State * L)
-{
-  if (iuplua_opencall_internal(L))
-    IupControlsClose();
-  return 0;
-}
-
 /* obligatory to use require"iupluacontrols" */
 int luaopen_iupluacontrols(lua_State* L)
 {

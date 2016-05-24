@@ -99,6 +99,5 @@ void main(int argc, char* argv[])
 
   IupDestroy(dlg);
 
-  IupControlsClose() ;
   IupClose();  
 }

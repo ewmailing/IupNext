@@ -285,13 +285,6 @@ int   IupTreeGetInt        (Ihandle* ih, const char* name, int id);
 float IupTreeGetFloat      (Ihandle* ih, const char* name, int id);
 void  IupTreeSetfAttribute (Ihandle* ih, const char* name, int id, const char* format, ...);
 
-/* DEPRECATED callback management. It will be removed in a future version. */
-const char* IupGetActionName(void);
-
-/* DEPRECATED font names. It will be removed in a future version.  */
-char*     IupMapFont       (const char *iupfont);
-char*     IupUnMapFont     (const char *driverfont);
-
 
 /************************************************************************/
 /*                      Pre-defined dialogs                           */

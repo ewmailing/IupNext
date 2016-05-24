@@ -782,10 +782,6 @@ wb_usr.tree =
               link= "func/iupsetcallbacks.html"
             },
             {
-              name= {nl= "IupGetActionName"},
-              link= "func/iupgetactionname.html"
-            },
-            {
               name= {nl= "IupGetFunction"},
               link= "func/iupgetfunction.html"
             },
@@ -808,10 +804,6 @@ wb_usr.tree =
           name= {en= "Common"},
           folder=
           {
-            {
-              name= {nl= "DEFAULT_ACTION"},
-              link= "call/iup_default_action.html"
-            },
             {
               name= {nl= "IDLE_ACTION"},
               link= "call/iup_idle_action.html"
@@ -1684,14 +1676,6 @@ wb_usr.tree =
             {
               name= {nl= "FONT"},
               link= "attrib/iup_font.html"
-            },
-            {
-              name= {nl= "IupMapFont"},
-              link= "func/iupmapfont.html"
-            },
-            {
-              name= {nl= "IupUnMapFont"},
-              link= "func/iupunmapfont.html"
             },
           }
         },

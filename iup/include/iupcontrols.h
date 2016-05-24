@@ -13,7 +13,6 @@ extern "C" {
 
 
 int  IupControlsOpen(void);
-void IupControlsClose(void);   /* for backward compatibility only, does nothing since IUP 3. DEPRECATED. It will be removed in a future version.  */
 
 Ihandle* IupColorbar(void);
 Ihandle* IupCells(void);

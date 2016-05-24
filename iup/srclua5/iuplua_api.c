@@ -477,14 +477,6 @@ static int Unmap(lua_State *L)
   return 0;
 }
 
-static int MapFont(lua_State *L)
-{
-  const char *font = luaL_checkstring(L,1);
-  const char *nfont = IupMapFont(font);
-  lua_pushstring(L, nfont);
-  return 1;
-}
-
 static int Message(lua_State *L)
 {
   const char *title = luaL_checkstring(L,1);
@@ -1073,7 +1065,6 @@ void iupluaapi_open(lua_State * L)
     {"MainLoopLevel", MainLoopLevel},
     {"Map", Map},
     {"Unmap", Unmap},
-    {"MapFont", MapFont},
     {"Message", Message},
     {"Alarm", Alarm},  
     {"ListDialog", ListDialog},
@@ -1121,7 +1112,6 @@ void iupluaapi_open(lua_State * L)
     {"ShowXY", ShowXY},
     {"StoreAttribute", StoreAttribute},
     {"StoreGlobal", StoreGlobal},
-    {"UnMapFont", UnMapFont},
     {"Scanf", iupluaScanf},
     {"isprint", cf_isprint},
     {"isxkey", cf_isxkey},
