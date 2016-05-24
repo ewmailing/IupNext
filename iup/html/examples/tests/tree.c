@@ -74,7 +74,7 @@ static int addleaf(void)
 {
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
-  IupTreeSetAttribute(tree, "ADDLEAF", id, "");
+  IupSetAttributeId(tree, "ADDLEAF", id, "");
   return IUP_DEFAULT;
 }
 
@@ -82,7 +82,7 @@ static int insertleaf(void)
 {
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
-  IupTreeSetAttribute(tree, "INSERTLEAF", id, "");
+  IupSetAttributeId(tree, "INSERTLEAF", id, "");
   return IUP_DEFAULT;
 }
 
@@ -90,7 +90,7 @@ static int addbranch(void)
 {
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
-  IupTreeSetAttribute(tree, "ADDBRANCH", id, "");
+  IupSetAttributeId(tree, "ADDBRANCH", id, "");
   return IUP_DEFAULT;
 }
 
@@ -98,7 +98,7 @@ static int insertbranch(void)
 {
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
-  IupTreeSetAttribute(tree, "INSERTBRANCH", id, "");
+  IupSetAttributeId(tree, "INSERTBRANCH", id, "");
   return IUP_DEFAULT;
 }
 
@@ -107,13 +107,13 @@ static int togglestate(void)
   char *value;
   Ihandle* tree = IupGetHandle("tree");
   int id = IupGetInt(tree, "VALUE");
-  value = IupTreeGetAttribute(tree, "STATE", id);
+  value = IupGetAttributeId(tree, "STATE", id);
   if (value)
   {
     if (strcmp(value, "EXPANDED")==0)
-      IupTreeSetAttribute(tree, "STATE", id, "COLLAPSED");
+      IupSetAttributeId(tree, "STATE", id, "COLLAPSED");
     else
-      IupTreeSetAttribute(tree, "STATE", id, "EXPANDED");
+      IupSetAttributeId(tree, "STATE", id, "EXPANDED");
   }
   return IUP_DEFAULT;
 }

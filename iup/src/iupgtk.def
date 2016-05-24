@@ -170,13 +170,7 @@ IupConvertXYToPos
 IupTextConvertLinColToPos
 IupTextConvertPosToLinCol
 IupUpdateChildren
-IupTreeSetAttribute  
 IupTreeSetAttributeHandle
-IupTreeStoreAttribute
-IupTreeGetAttribute  
-IupTreeGetInt        
-IupTreeGetFloat 
-IupTreeSetfAttribute
 IupTree
 IupTreeGetId
 IupTreeGetUserId

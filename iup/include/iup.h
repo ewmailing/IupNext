@@ -277,14 +277,6 @@ void* IupTreeGetUserId(Ihandle* ih, int id);
 int   IupTreeGetId(Ihandle* ih, void *userid);
 void  IupTreeSetAttributeHandle(Ihandle* ih, const char* name, int id, Ihandle* ih_named);
 
-/* DEPRECATED IupTree utilities, use Iup*AttributeId functions. It will be removed in a future version.  */
-void  IupTreeSetAttribute  (Ihandle* ih, const char* name, int id, const char* value);
-void  IupTreeStoreAttribute(Ihandle* ih, const char* name, int id, const char* value);
-char* IupTreeGetAttribute  (Ihandle* ih, const char* name, int id);
-int   IupTreeGetInt        (Ihandle* ih, const char* name, int id);
-float IupTreeGetFloat      (Ihandle* ih, const char* name, int id);
-void  IupTreeSetfAttribute (Ihandle* ih, const char* name, int id, const char* format, ...);
-
 
 /************************************************************************/
 /*                      Pre-defined dialogs                           */

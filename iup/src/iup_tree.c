@@ -881,52 +881,9 @@ Iclass* iupTreeNewClass(void)
   return ic;
 }
 
-/********************************************************************************************/
-
-void IupTreeSetAttribute(Ihandle* ih, const char* a, int id, const char* v)
-{
-  IupSetAttributeId(ih, a, id, v);
-}
-
-void IupTreeStoreAttribute(Ihandle* ih, const char* a, int id, const char* v)
-{
-  IupStoreAttributeId(ih, a, id, v);
-}
-
-char* IupTreeGetAttribute(Ihandle* ih, const char* a, int id)
-{
-  return IupGetAttributeId(ih, a, id);
-}
-
-int IupTreeGetInt(Ihandle* ih, const char* a, int id)
-{
-  return IupGetIntId(ih, a, id);
-}
-
-float IupTreeGetFloat(Ihandle* ih, const char* a, int id)
-{
-  return IupGetFloatId(ih, a, id);
-}
-
-void IupTreeSetfAttribute(Ihandle* ih, const char* a, int id, const char* f, ...)
-{
-  int size;
-  char* v = iupStrGetLargeMem(&size);
-  va_list arglist;
-  va_start(arglist, f);
-  vsnprintf(v, size, f, arglist);
-  va_end(arglist);
-  IupStoreAttributeId(ih, a, id, v);
-}
-
-void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
-{
-  char attr[50];
-  sprintf(attr, "%s%d", a, id);
-  IupSetAttributeHandle(ih, attr, ih_named);
-}
 
 /************************************************************************************/
+
 
 int IupTreeSetUserId(Ihandle* ih, int id, void* userdata)
 {
@@ -962,4 +919,11 @@ void* IupTreeGetUserId(Ihandle* ih, int id)
     return ih->data->node_cache[id].userdata;
 
   return NULL;
+}
+
+void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
+{
+  char attr[50];
+  sprintf(attr, "%s%d", a, id);
+  IupSetAttributeHandle(ih, attr, ih_named);
 }
