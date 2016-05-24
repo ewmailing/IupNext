@@ -1533,10 +1533,6 @@ wb_usr.tree =
               link= "ctrl/iup_plot.html"
             },
             {
-              name= {nl= "IupPPlot"},
-              link= "ctrl/iup_pplot.html"
-            },
-            {
               name= {nl= "IupMglPlot"},
               link= "ctrl/iup_mglplot.html",
               folder=

@@ -33,7 +33,7 @@
 #define MAXPLOT 6  /* room for examples */
 
 
-static Ihandle *plot[MAXPLOT] = {NULL}; /* PPlot controls */
+static Ihandle *plot[MAXPLOT] = {NULL}; /* MglPlot controls */
 static Ihandle *dial1, *dial2,          /* dials for zooming */
         *tgg1, *tgg2,            /* auto scale on|off toggles */
         *tgg3, *tgg4,            /* grid show|hide toggles */

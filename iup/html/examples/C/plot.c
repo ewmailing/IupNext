@@ -4,7 +4,7 @@
  *               It is organised as two side-by-side panels:
  *                 - left panel for current plot control
  *                 - right panel containg tabbed plots
- *      Remark : depend on libs IUP, CD, IUP_PPLOT
+ *      Remark : depend on libs IUP, CD, IUP_PLOT
  */
 
 #include <stdio.h>

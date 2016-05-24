@@ -107,15 +107,15 @@ SRC = cbox.c
 #SRC = matrix.c
 #SRC = mdi.c
 
-#IUPPPLOT_SAMPLE=Yes
-ifdef IUPPPLOT_SAMPLE
+#IUPPLOT_SAMPLE=Yes
+ifdef IUPPLOT_SAMPLE
   USE_IUPCONTROLS = Yes
   LINKER = g++
-  SRC = pplot.cpp
+  SRC = plot.cpp
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-    LIBS += iup_pplot cdpdflib
+    LIBS += iup_plot cdpdflib
   else
-    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_pplot.a $(CD)/lib/$(TEC_UNAME)/libcdpdflib.a
+    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiup_plot.a $(CD)/lib/$(TEC_UNAME)/libcdpdflib.a
   endif
 endif
 

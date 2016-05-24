@@ -89,7 +89,7 @@ digital image. Each value is f(x,y), where x belongs to [AXS_XMIN, AXS_XMAX] and
 <p><strong>Volumetric</strong> data is a tri-dimensional array of values, that 
 represents a 3D volume. Each value is f(x,y,z), where x belongs to [AXS_XMIN, AXS_XMAX] and y to 
 [AXS_YMIN, AXS_YMAX] and z to [AXS_ZMIN, AXS_ZMAX].</p>
-<p>Linear data is the same representation accepted by <strong>IupPPlot</strong>, with 
+<p>Linear data is the same representation accepted by <strong>IupPlot</strong>, with 
 the addition that <strong>IupMglPlot</strong> has support for 3D coordinates. 
 When plotting linear 1D data the automatic range will be XMIN=0 and XMAX=count-1.</p>
 <p>Planar and volumetric data can be very memory consuming, so be careful when 
@@ -463,7 +463,7 @@ ticks. Default: Z</p>
 <h4>Grid Configuration (non inheritable)</h4>
 <p><b>GRID</b>: shows or hides the grid in both or a 
 specific axis. Can be: XYZ (YES), X, Y, Z, XY, XZ, YZ or NO. Default: NO. The 
-values HORIZONTAL (Y) and X (VERTICAL) are accepted for IupPPlot compatibility.</p>
+values HORIZONTAL (Y) and X (VERTICAL) are accepted for IupPlot compatibility.</p>
 <p><b>GRIDCOLOR</b>: grid color. Default: &quot;200 200 200&quot;.</p>
 <p><b>GRIDLINESTYLE</b>: line style of the grid. Can be: &quot;CONTINUOUS&quot;, 
 &quot;DASHED&quot;, &quot;DOTTED&quot;, &quot;DASH_DOT&quot;, &quot;DASH_DOT_DOT&quot;. Default is &quot;CONTINUOUS&quot;.</p>
@@ -539,13 +539,13 @@ YES or NO. Default: YES.</p>
 <p><b>AXS_?COLOR</b>: ticks values and label color. Default: &quot;0 0 0&quot;.</p>
 <p><b>AXS_?CROSSORIGIN</b>: same as setting AXS_?ORIGIN to 0 or NULL. Can be YES 
 or NO. Default: NO. Returns YES if AXS_?ORIGIN is 0 and returns NO if AXS_?ORIGIN 
-in NULL. Available for compatibility with IupPPlot, but the default is different.</p>
+in NULL. Available for compatibility with IupPlot, but the default is different.</p>
 <p><b>AXS_?FONTSIZE</b>: axis label font size factor. Default: 0.8. The internal MathGL factor is 1.4.</p>
 <p><b>AXS_?FONTSTYLE</b>: axis label font style.</p>
 <p><b>AXS_?LABEL</b>: text label of the&nbsp;respective axis.</p>
 <p><b>AXS_?LABELCENTERED</b>: text label position at 
 center (YES) or at top/right (NO). Default: YES. Will set/get AXS_?LABELPOSITION 
-to CENTER or MAX. Available for compatibility with IupPPlot.</p>
+to CENTER or MAX. Available for compatibility with IupPlot.</p>
 <p><b>AXS_?LABELPOSITION</b>: text label position. Can be CENTER, MAX or MIN. 
 Default: CENTER.</p>
 <p><b>AXS_?LABELROTATION</b>: enable or disable the text label rotation along 
@@ -664,10 +664,10 @@ supported.</p>
   </center>
 </div>
 
-<h3>Differences from IupPPlot</h3>
+<h3>Differences from IupPlot</h3>
 
 <p>Uses OpenGL for screen output and internal drivers for metafile output. 
-<strong>IupPPlot</strong> uses CD for screen and metafile output.</p>
+<strong>IupPlot</strong> uses CD for screen and metafile output.</p>
 <p>Selection and editing of a dataset using the DS_EDIT attribute are not 
 	implemented.</p>
 <p>All functions use double floating point. (since 3.11)</p>
@@ -690,19 +690,19 @@ of the AXS_?TICKMAJORSIZE. AXS_?TICKMAJORSPAN default value is&nbsp; -5.
 AXS_?TICKFORMAT default is internally computed according to the Min-Max 
 range.</p>
 <p>Function Mapping:</p>
-<pre>IupPPlotBegin  -&gt; IupMglPlotBegin    (IMPORTANT: parameter is the dimension 1, 2 or 3)
-IupPPlotAddStr -&gt; IupMglPlotAdd1D
-IupPPlotAdd    -&gt; IupMglPlotAdd2D
+<pre>IupPlotBegin  -&gt; IupMglPlotBegin    (IMPORTANT: parameter is the dimension 1, 2 or 3)
+IupPlotAddStr -&gt; IupMglPlotAdd1D
+IupPlotAdd    -&gt; IupMglPlotAdd2D
    (none)         IupMglPlotAdd3D
-IupPPlotEnd    -&gt; IupMglPlotEnd
+IupPlotEnd    -&gt; IupMglPlotEnd
    (none)            IupMglPlotNewDataSet
-IupPPlotInsertStr    (not mapped, use IupMglPlotInsert1D)
-IupPPlotInsert       (not mapped, use IupMglPlotInsert2D)
-IupPPlotInsertStrPoints -&gt; IupMglPlotInsert1D   (names array is optional)
-IupPPlotInsertPoints    -&gt; IupMglPlotInsert2D
+IupPlotInsertStr    (not mapped, use IupMglPlotInsert1D)
+IupPlotInsert       (not mapped, use IupMglPlotInsert2D)
+IupPlotInsertStrPoints -&gt; IupMglPlotInsert1D   (names array is optional)
+IupPlotInsertPoints    -&gt; IupMglPlotInsert2D
    (none)                  IupMglPlotInsert3D
-IupPPlotAddStrPoints    -&gt; IupMglPlotInsert1D   (insert at DS_COUNT)
-IupPPlotAddPoints       -&gt; IupMglPlotInsert2D   (insert at DS_COUNT)
+IupPlotAddStrPoints    -&gt; IupMglPlotInsert1D   (insert at DS_COUNT)
+IupPlotAddPoints       -&gt; IupMglPlotInsert2D   (insert at DS_COUNT)
    (none)                  IupMglPlotInsert3D
    (none)                  IupMglPlotSet1D
    (none)                  IupMglPlotSet2D
@@ -710,18 +710,18 @@ IupPPlotAddPoints       -&gt; IupMglPlotInsert2D   (insert at DS_COUNT)
    (none)                  IupMglPlotSetData
    (none)                  IupMglPlotLoadData
    (none)                  IupMglPlotSetFromFormula
-IupPPlotTransform       -&gt; IupMglPlotTransform  (includes z coordinate)
+IupPlotTransform       -&gt; IupMglPlotTransform  (includes z coordinate)
    (none)                  IupMglPlotTransformXYZ
    (cdCanvasMark)       -&gt; IupMglPlotDrawMark
    (cdCanvasLine)       -&gt; IupMglPlotDrawLine
    (cdCanvasText)       -&gt; IupMglPlotDrawText
-IupPPlotPaintTo         -&gt; IupMglPlotPaintTo    (parameters are different)</pre>
+IupPlotPaintTo         -&gt; IupMglPlotPaintTo    (parameters are different)</pre>
 
 <h3><a name="KnownIssues">Known Issues</a>/To Do</h3>
 <ul>
 	<li>Add UTF-8 mode using MathGL unicode support.</li>
 	<li>Compile MathGL using OpenMP support.</li>
-	<li class="style1"><strong>Text render quality is lower than in IupPPlot.</strong></li>
+	<li class="style1"><strong>Text render quality is lower than in IupPlot.</strong></li>
 	<li>Logarithm scale is not working properly.</li>
 	<li>Automatic ticks computation needs to be improved.</li>
 	<li>Text rotation when DS_SHOWVALUES=Yes is not ok. (MathGL)</li>
@@ -731,8 +731,8 @@ IupPPlotPaintTo         -&gt; IupMglPlotPaintTo    (parameters are different)</p
 
 <h3><a name="SeeAlso">See Also</a></h3>
 
-<p><a href="../elem/iupcanvas.html">IupCanvas</a>, <a href="iup_pplot.html">
-IupPPlot</a></p>
+<p><a href="../elem/iupcanvas.html">IupCanvas</a>, <a href="iup_plot.html">
+IupPlot</a></p>
 
 </body>
 

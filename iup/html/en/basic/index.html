@@ -901,7 +901,7 @@ iupx</code> utility library as <code>iupx.menu</code>.</p>
 
 <h3><a name="Plott">Plotting Data</a></h3>
 
-<p>Many kinds of numerical data are best seen as X-Y plots. <code>iup.pplot</code> 
+<p>Many kinds of numerical data are best seen as X-Y plots. <code>iup.plot</code> 
 is a control which can show several kinds of plots; you can have lines between 
 points, show them as markers, or both together. Several series (or <em>datasets</em>) 
 can be shown on a single plot, and a simple legend can be shown. The plot will 
@@ -911,23 +911,23 @@ on the plot.</p>
 
 <p>A simple plot is straightforward:</p>
 
-<pre><code>-- pplot1.lua
+<pre><code>-- plot1.lua
 require( &quot;iuplua&quot; )
 require( &quot;iupluacontrols&quot; )
-require( &quot;iuplua_pplot51&quot;  )
+require( &quot;iuplua_plot51&quot;  )
 
-plot = iup.pplot{TITLE = &quot;A simple XY Plot&quot;,
+plot = iup.plot{TITLE = &quot;A simple XY Plot&quot;,
                     MARGINBOTTOM=&quot;35&quot;,
                     MARGINLEFT=&quot;35&quot;,
                     AXS_XLABEL=&quot;X&quot;,
                     AXS_YLABEL=&quot;Y&quot;
                     }
 
-iup.PPlotBegin(plot,0)
-iup.PPlotAdd(plot,0,0)
-iup.PPlotAdd(plot,5,5)
-iup.PPlotAdd(plot,10,7)
-iup.PPlotEnd(plot)
+iup.PlotBegin(plot,0)
+iup.PlotAdd(plot,0,0)
+iup.PlotAdd(plot,5,5)
+iup.PlotAdd(plot,10,7)
+iup.PlotEnd(plot)
 
 dlg = iup.dialog{plot; title=&quot;Plot Example&quot;,size=&quot;QUARTERxQUARTER&quot;}
 
@@ -936,31 +936,31 @@ dlg:show()
 iup.MainLoop()
 </code></pre>
 
-<p>Creating a dataset involves calling <code>PPlotBegin</code>, a number of 
-calls to <code>PPlotAdd</code> to add data points, and finally a call to <code>
-PPlotEnd</code>. You can create multiple datasets (or series) using multiple 
+<p>Creating a dataset involves calling <code>PlotBegin</code>, a number of 
+calls to <code>PlotAdd</code> to add data points, and finally a call to <code>
+PlotEnd</code>. You can create multiple datasets (or series) using multiple 
 begin/end calls, and can of course use loops to add points:</p>
 
-<pre><code>iup.PPlotBegin(plot,0)
+<pre><code>iup.PlotBegin(plot,0)
 for x = -2,2,0.01 do
-    iup.PPlotAdd(plot,x,math.sin(x))
+    iup.PlotAdd(plot,x,math.sin(x))
 end
-iup.PPlotEnd(plot)
+iup.PlotEnd(plot)
 
-iup.PPlotBegin(plot,0)
+iup.PlotBegin(plot,0)
 for x = -2,2,0.01 do
-    iup.PPlotAdd(plot,x,math.cos(x))
+    iup.PlotAdd(plot,x,math.cos(x))
 end
-iup.PPlotEnd(plot)
+iup.PlotEnd(plot)
 
 plot.DS_LINEWIDTH = 3
 </code></pre>
 
-<p>A limitation of the <code>pplot</code> library is that it does not choose 
+<p>A limitation of the <code>plot</code> library is that it does not choose 
 appropriate sizes for the plot margins. So I've had to set the bottom and left 
 margins (in pixels) to properly accomodate the axes and their titles. As with 
 all IupLua attributes, you can choose to make them uppercase if you like; a full 
-list is found in the manual under Controls/Additional/IupPPlot. Some of these 
+list is found in the manual under Controls/Additional/IupPlot. Some of these 
 attributes refer to the plot as a whole, some to the <em>current dataset</em>. 
 For instance, setting <code>GRID</code> to &quot;YES&quot; will draw gridlines for both 
 axes, but if we set <code>DS_LINEWIDTH</code> to 3 after the construction of the 
@@ -991,11 +991,11 @@ convenient to be able to say:</p>
 <pre><code>plot:AddSeries({{0,1.5},{5,4.5},{10,7.6}},{DS_MODE=&quot;MARK&quot;})
 </code></pre>
 
-<p>Here is a function which wraps the <code>PPlot</code> API:</p>
+<p>Here is a function which wraps the <code>Plot</code> API:</p>
 
-<pre><code>function create_pplot (tbl)
+<pre><code>function create_plot (tbl)
     -- don't need to remember this anymore!
-    require( &quot;iuplua_pplot51&quot;  )
+    require( &quot;iuplua_plot51&quot;  )
 
     -- the defaults for these values are too small, at least on my system!
     if not tbl.MARGINLEFT then tbl.MARGINLEFT = 30 end
@@ -1007,11 +1007,11 @@ convenient to be able to say:</p>
     if tbl.AXS_XMIN then tbl.AXS_XAUTOMIN = &quot;NO&quot; end
     if tbl.AXS_XMAX then tbl.AXS_XAUTOMAX = &quot;NO&quot; end
 
-    local plot = iup.pplot(tbl)
-    plot.End = iup.PPlotEnd
-    plot.Add = iup.PPlotAdd
+    local plot = iup.plot(tbl)
+    plot.End = iup.PlotEnd
+    plot.Add = iup.PlotAdd
     function plot.Begin ()
-        return iup.PPlotBegin(plot,0)
+        return iup.PlotBegin(plot,0)
     end
 
     function plot:AddSeries(xvalues,yvalues,options)
@@ -1049,7 +1049,7 @@ convenient to be able to say:</p>
 end
 </code></pre>
 
-<p>This function creates a <code>PPlot</code> object as usual, but supplies some 
+<p>This function creates a <code>Plot</code> object as usual, but supplies some 
 more sensible defaults for the margins, makes setting things like <code>AXS_XMAX</code> 
 also set <code>AXS_XAUTOMAX</code>, and adds some new methods to the object. Of 
 these, <code>AddSeries</code> is the interesting one. It allows you to specify 
@@ -1062,7 +1062,7 @@ then less things to worry about.</p>
 <p>Given this function, we can write a little program which plots some points 
 and draws the linear least-squares fit between them:</p>
 
-<pre><code>-- simple-pplot.lua
+<pre><code>-- simple-plot.lua
 
 local xx = {0,2,5,10}
 local yy = {1,1.5,6,8}
@@ -1091,7 +1091,7 @@ local m,c = least_squares(xx,yy)
 
 function eval (x) return m*x + c end
 
-local plot = create_pplot {TITLE = &quot;Simple Data&quot;,AXS_YMIN=0,GRID=&quot;YES&quot;}
+local plot = create_plot {TITLE = &quot;Simple Data&quot;,AXS_YMIN=0,GRID=&quot;YES&quot;}
 
 -- the original data
 plot:AddSeries(xx,yy,{DS_MODE=&quot;MARK&quot;,DS_MARKSTYLE=&quot;CIRCLE&quot;})
@@ -1105,16 +1105,16 @@ plot:AddSeries({xmin,xmax},{eval(xmin),eval(xmax)})
 
 
 <p><code>create_plot</code> is so useful that I've packaged it as part of the <code>
-iupx</code> library as <code>iupx.pplot</code>. A new pseudo-attribute has been 
+iupx</code> library as <code>iupx.plot</code>. A new pseudo-attribute has been 
 introduced, <code>AXS_BOUNDS</code>, which is a table of four values <code>
 {xmin,ymin,xmax,ymax}</code>. This example shows that very different ranges can 
 happily exist on the same plot:</p>
 
-<pre><code>-- pplot5.lua
+<pre><code>-- plot5.lua
 
 require &quot;iupx&quot;
 
-plot = iupx.pplot {TITLE = &quot;Simple Data&quot;, AXS_BOUNDS={0,0,100,100}}
+plot = iupx.plot {TITLE = &quot;Simple Data&quot;, AXS_BOUNDS={0,0,100,100}}
 
 plot:AddSeries ({{0,0},{10,10},{20,30},{30,45}})
 plot:AddSeries ({{40,40},{50,55},{60,60},{70,65}})

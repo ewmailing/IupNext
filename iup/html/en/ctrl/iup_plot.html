@@ -44,13 +44,12 @@
 <p>This is an additional control that depends on the CD library. It is included 
 in the 
 <a href="../iupcontrols.html">IupControls</a> library.</p>
-<p>It completely replaces the old <a href="iup_pplot.html">IupPPlot</a> control. 
+<p>It completely replaces the old <strong>IupPPlot</strong> control. 
 This control eliminates all the limitations and issues we have with the PPlot 
 library. But we reused several <a href="http://pplot.sourceforge.net/">PPlot</a> 
 source code parts, so we would like to thank the author Pier Philipsen for 
 making it with a with a very flexible BSD License. We also would like to thank 
-Marian Trifon for the first IupPPlot implementation which part was also reused here. 
-See "<a href="#Differences">Differences from IupPPlot</a>" bellow.</p>
+Marian Trifon for the first IupPPlot implementation which part was also reused here.</p>
 <h3>Initialization and Usage</h3>
 <p>The <b>IupPlotOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The &quot;iup_plot.h&quot; file must also be included in the source code. The program must be linked to the controls 
@@ -868,20 +867,6 @@ use the <b>IupPlotTransform</b> function.</p>
   <a href="../call/iup_help_cb.html">HELP_CB</a>: All common callbacks are 
 supported.</p>
   
-<h3><a name="Differences">Differences from IupPPlot</a></h3>
-
-<p>No STL dependency. All parameters and coordinates are in double floating 
-point precision.</p>
-<p>Can draw using OpenGL. Internally will use the CD_GL driver so other CD 
-metafile drivers can be used in <b>IupPlotPaintTo</b>.</p>
-<p>All <strong>IupPPlot</strong> attributes are supported, except DS_EDIT and 
-EDIT* callbacks. Some attributes were renamed but 
-the old names are also supported.</p>
-<p>There are several new attributes and callbacks, check the documentation.</p>
-<p><span class="style1"><strong>IMPORTANT</strong></span>: interaction was 
-heavily changed. Zoom, Pan and Selection is now done totally different from
-<strong>IupPPlot</strong>. See <a href="#Interaction">Interaction</a> above.</p>
-  
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
 <div align="center">
@@ -916,7 +901,7 @@ heavily changed. Zoom, Pan and Selection is now done totally different from
 </div>
 <h3><a name="SeeAlso">See Also</a></h3>
 
-<p><a href="../elem/iupcanvas.html">IupCanvas</a>, <a href="iup_pplot.html">IupPPlot</a>, <a href="iup_mglplot.html">
+<p><a href="../elem/iupcanvas.html">IupCanvas</a>, <a href="iup_mglplot.html">
 IupMglPlot</a></p>
 
 </body>

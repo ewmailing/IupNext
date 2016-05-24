@@ -4,7 +4,7 @@
  *               It is organised as two side-by-side panels:
  *                 - left panel for current plot control
  *                 - right panel containg tabbed plots
- *      Remark : depend on libs IUP, CD, IUP_PPLOT
+ *      Remark : depend on libs IUP, CD, IUP_PLOT
  */
 
 #include <stdio.h>
@@ -24,7 +24,7 @@
 
 #define PI 3.14159265
 
-#ifdef PPLOT_TEST
+#ifdef PLOT_TEST
 
 #define MAXPLOT 11  /* room for examples */
 
