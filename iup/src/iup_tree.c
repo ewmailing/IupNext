@@ -205,10 +205,10 @@ void iupTreeUpdateImages(Ihandle *ih)
 void iupTreeSelectLastCollapsedBranch(Ihandle* ih, int *last_id)
 {
   /* if last selected item is a branch, then select its children */
-  if (iupStrEqual(IupTreeGetAttribute(ih, "KIND", *last_id), "BRANCH") && 
-      iupStrEqual(IupTreeGetAttribute(ih, "STATE", *last_id), "COLLAPSED"))
+  if (iupStrEqual(IupGetAttributeId(ih, "KIND", *last_id), "BRANCH") && 
+      iupStrEqual(IupGetAttributeId(ih, "STATE", *last_id), "COLLAPSED"))
   {
-    int childcount = IupTreeGetInt(ih, "CHILDCOUNT", *last_id);
+    int childcount = IupGetIntId(ih, "CHILDCOUNT", *last_id);
     if (childcount > 0)
     {
       int start = *last_id + 1;
