@@ -8,7 +8,7 @@
 #ifdef WIN32	// a man ask to use built-in font under Windows
 #define MGL_DEF_FONT_NAME	""
 #else
-#define MGL_DEF_FONT_NAME	"STIX"
+#define MGL_DEF_FONT_NAME	""
 #endif
 
 #if defined(_MSC_VER) || defined(__BORLANDC__)
@@ -22,12 +22,11 @@
 #define MGL_HAVE_TYPEOF	0
 #define MGL_SYS_NAN		0
 #define MGL_HAVE_PTHREAD	0
-#define MGL_HAVE_PTHR_WIDGET	1
+#define MGL_HAVE_PTHR_WIDGET	0
 #define MGL_HAVE_ATTRIBUTE	0
 #define MGL_HAVE_C99_COMPLEX	0
 #endif
 
-#define MGL_SIZEOF_LONG	4
 #define MGL_HAVE_LTDL	0
 #define MGL_HAVE_RVAL	0
 #define MGL_HAVE_ZLIB	0

@@ -48,7 +48,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\include;..\src;..\srcmglplot;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;_DEBUG;IUP_ASSERT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;_DEBUG;IUP_ASSERT;MGL_STATIC_DEFINE;MGL_SRC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -65,7 +65,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\include;..\src;..\srcmglplot;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;_DEBUG;IUP_ASSERT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_DEPRECATE;_DEBUG;IUP_ASSERT;MGL_STATIC_DEFINE;MGL_SRC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -143,6 +143,7 @@
     <ClCompile Include="..\srcmglplot\src\fft.cpp" />
     <ClCompile Include="..\srcmglplot\src\fit.cpp" />
     <ClCompile Include="..\srcmglplot\src\font.cpp" />
+    <ClCompile Include="..\srcmglplot\src\fractal.cpp" />
     <ClCompile Include="..\srcmglplot\src\obj.cpp" />
     <ClCompile Include="..\srcmglplot\src\opengl.cpp" />
     <ClCompile Include="..\srcmglplot\src\other.cpp" />

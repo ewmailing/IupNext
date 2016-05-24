@@ -240,6 +240,9 @@
     <ClCompile Include="..\srcmglplot\src\complex_ex.cpp">
       <Filter>mgl</Filter>
     </ClCompile>
+    <ClCompile Include="..\srcmglplot\src\fractal.cpp">
+      <Filter>mgl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\srcmglplot\iup_mglplot.def" />
