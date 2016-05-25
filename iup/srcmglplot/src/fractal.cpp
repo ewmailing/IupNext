@@ -96,15 +96,15 @@ HMDT MGL_EXPORT mgl_data_ifs_file(const char *fname, const char *name, long n, l
 	gzFile fp = gzopen(fname,"r");
 	if(!fp)	return 0;		// Couldn't open file file
 	char *buf = mgl_read_gz(fp);	gzclose(fp);
-	char *s = strstr(buf,name);
+	char *s = (char*)strstr(buf,name);
 	if(!s)	return 0;		// No data for fractal 'name' in the file
 
-	char *p = strchr(s,'{'), *e;
+	char *p = (char*)strchr(s,'{'), *e;
 	if(!p)	return 0;		// Wrong data format for fractal 'name' in the file
 	bool ext3d = false;
-	e = strstr(s,"(3D)");	if(e && e<p)	ext3d = true;
-	e = strstr(s,"(3d)");	if(e && e<p)	ext3d = true;
-	e = strchr(p,'}');
+	e = (char*)strstr(s,"(3D)");	if(e && e<p)	ext3d = true;
+	e = (char*)strstr(s,"(3d)");	if(e && e<p)	ext3d = true;
+	e = (char*)strchr(p,'}');
 	
 	std::vector<mreal> nums;
 	for(size_t i=0;p[i] && p+i<e;i++)

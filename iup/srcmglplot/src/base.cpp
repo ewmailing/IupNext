@@ -1310,11 +1310,11 @@ mreal mglBase::SaveState(const char *opt)
 	char *qi=mgl_strdup(opt),*q=qi, *s;
 	mgl_strtrim(q);
 	// NOTE: not consider '#' inside legend entry !!!
-	s=strchr(q,'#');	if(s)	*s=0;
+	s=(char*)strchr(q,'#');	if(s)	*s=0;
 	mreal res=NAN;
 	while(q && *q)
 	{
-		s=q;	q=strchr(s,';');
+		s=q;	q=(char*)strchr(s,';');
 		if(q)	{	*q=0;	q++;	}
 		mgl_strtrim(s);		char *a=s;
 		long n=mglFindArg(s);	if(n>0)	{	s[n]=0;		s=s+n+1;	}

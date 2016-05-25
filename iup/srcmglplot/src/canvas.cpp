@@ -922,7 +922,7 @@ void mglCanvas::Legend(const std::vector<mglText> &leg, mreal x, mreal y, const 
 	char *pA, *ff = new char[strlen(font)+3];
 	const char *fmt = strchr(font,':');
 	strcpy(ff,fmt?fmt:"");	strcat(ff,":L");	Push();
-	if((pA=strchr(ff,'A')))
+	if((pA=(char*)strchr(ff,'A')))
 	{	*pA = ' ';	InPlot(0,1,0,1,false);	iw=B1.b[0];	ih=B1.b[4];	}
 	else if(mglchr(font,'A'))
 	{	InPlot(0,1,0,1,false);	iw=B1.b[0];	ih=B1.b[4];	}
