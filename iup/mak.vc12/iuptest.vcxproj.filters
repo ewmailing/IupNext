@@ -49,7 +49,6 @@
     <ClCompile Include="..\html\examples\tests\menu.c" />
     <ClCompile Include="..\html\examples\tests\mglplot.c" />
     <ClCompile Include="..\html\examples\tests\ole.cpp" />
-    <ClCompile Include="..\html\examples\tests\pplot.c" />
     <ClCompile Include="..\html\examples\tests\predialogs.c" />
     <ClCompile Include="..\html\examples\tests\progressbar.c" />
     <ClCompile Include="..\html\examples\tests\sample.c" />
