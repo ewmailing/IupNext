@@ -77,7 +77,7 @@ void iupBaseSetCurrentSize(Ihandle* ih, int w, int h, int shrink);
 void iupBaseSetPosition(Ihandle* ih, int x, int y);
 
 /* Updates the SIZE attribute if defined. 
-   Called only from iupdrvSetStandardFontAttrib. */
+   Called only from iupdrvSetFontAttrib. */
 void iupBaseUpdateAttribFromFont(Ihandle* ih);
 
 

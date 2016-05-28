@@ -33,7 +33,7 @@ typedef struct _IglFont
 {
   char filename[10240];
   int size;
-  FTGLfont *font;
+  FTGLfont* ftgl_font;
   int charwidth, charheight;
 } IglFont;
 
@@ -400,13 +400,13 @@ static void iGLGetFontFilename(char* filename, const char *typeface, int is_bold
   strcpy(filename, typeface);
 }
 
-static int iGLFontGetFontAveWidth(FTGLfont* font);
+static int iGLFontGetFontAveWidth(FTGLfont* ftgl_font);
 
-static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *standardfont)
+static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *font)
 {
   char filename[10240];
   char typeface[50] = "";
-  FTGLfont* font;
+  FTGLfont* ftgl_font;
   int size = 8;
   int is_bold = 0,
     is_italic = 0,
@@ -422,7 +422,7 @@ static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *standar
     iupAttribSet(gl_parent, "GL_FONTLIST", (char*)gl_fonts);
   }
 
-  if (!iupGetFontInfo(standardfont, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+  if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return NULL;
 
   if (is_underline)
@@ -444,24 +444,24 @@ static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *standar
       return &fonts[i];
   }
 
-  font = ftglCreateTextureFont(filename);
-  if (!font)
+  ftgl_font = ftglCreateTextureFont(filename);
+  if (!ftgl_font)
     return NULL;
 
-  ftglSetFontFaceSize(font, size, (int)res);
+  ftglSetFontFaceSize(ftgl_font, size, (int)res);
 
   /* create room in the array */
   fonts = (IglFont*)iupArrayInc(gl_fonts);
 
   strcpy(fonts[i].filename, filename);
-  fonts[i].font = font;
+  fonts[i].ftgl_font = ftgl_font;
   fonts[i].size = size;
 
   /* NOTICE that this is different from CD,
   here we need average width,
   there is maximum width. */
-  fonts[i].charwidth = iGLFontGetFontAveWidth(font);
-  fonts[i].charheight = iupRound(ftglGetFontLineHeight(font));
+  fonts[i].charwidth = iGLFontGetFontAveWidth(ftgl_font);
+  fonts[i].charheight = iupRound(ftglGetFontLineHeight(ftgl_font));
 
   return &fonts[i];
 }
@@ -487,7 +487,7 @@ static IglFont* iGLFontGet(Ihandle *ih)
 {
   IglFont* glfont = (IglFont*)iupAttribGet(ih, "_IUP_GLFONT");
   if (!glfont)
-    glfont = iGLFontCreateNativeFont(ih, iupAttribGetStr(ih, "STANDARDFONT"));
+    glfont = iGLFontCreateNativeFont(ih, iupAttribGetStr(ih, "FONT"));
   return glfont;
 }
 
@@ -567,7 +567,7 @@ static void iGLFontConvertToUTF8(const char* str, int len)
 #endif
 }
 
-static int iGLFontGetFontAveWidth(FTGLfont* font)
+static int iGLFontGetFontAveWidth(FTGLfont* ftgl_font)
 {
   static int first = 1;
   static char sample[512] = "";
@@ -589,7 +589,7 @@ static int iGLFontGetFontAveWidth(FTGLfont* font)
     first = 0;
   }
 
-  return iupRound(ftglGetFontAdvance(font, sample) / (256.0f - 32.0f));
+  return iupRound(ftglGetFontAdvance(ftgl_font, sample) / (256.0f - 32.0f));
 }
 
 int iupGLFontGetStringWidth(Ihandle* ih, const char* str, int len)
@@ -604,7 +604,7 @@ int iupGLFontGetStringWidth(Ihandle* ih, const char* str, int len)
     return 0;
 
   iGLFontConvertToUTF8(str, len);
-  return iupRound(ftglGetFontAdvance(glfont->font, utf8_buffer));
+  return iupRound(ftglGetFontAdvance(glfont->ftgl_font, utf8_buffer));
 }
 
 void iupGLFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
@@ -646,7 +646,7 @@ void iupGLFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *
       if (len)
       {
         iGLFontConvertToUTF8(curstr, len);
-        size = iupRound(ftglGetFontAdvance(glfont->font, utf8_buffer));
+        size = iupRound(ftglGetFontAdvance(glfont->ftgl_font, utf8_buffer));
         max_w = iupMAX(max_w, size);
       }
 
@@ -658,12 +658,12 @@ void iupGLFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *
   if (h) *h = glfont->charheight * iupStrLineCount(str);
 }
 
-int iupGLFontSetStandardFontAttrib(Ihandle* ih, const char* value)
+int iupGLFontSetFontAttrib(Ihandle* ih, const char* value)
 {
   IglFont* glfont;
 
   if (!ih->handle)
-    return iupdrvSetStandardFontAttrib(ih, value);
+    return iupdrvSetFontAttrib(ih, value);
 
   glfont = iGLFontCreateNativeFont(ih, value);
   if (glfont)
@@ -714,8 +714,8 @@ void iupGLFontGetDim(Ihandle* ih, int *maxwidth, int *height, int *ascent, int *
 
   if (maxwidth) *maxwidth = glfont->charwidth;
   if (height)   *height = glfont->charheight;
-  if (ascent)   *ascent = iupRound(ftglGetFontAscender(glfont->font));
-  if (descent)  *descent = iupRound(-ftglGetFontDescender(glfont->font));
+  if (ascent)   *ascent = iupRound(ftglGetFontAscender(glfont->ftgl_font));
+  if (descent)  *descent = iupRound(-ftglGetFontDescender(glfont->ftgl_font));
 }
 
 void iupGLFontRenderString(Ihandle* ih, const char* str, int len)
@@ -731,7 +731,7 @@ void iupGLFontRenderString(Ihandle* ih, const char* str, int len)
 
   iGLFontConvertToUTF8(str, len);
   /* render always at baseline */
-  ftglRenderFont(glfont->font, utf8_buffer, FTGL_RENDER_ALL);
+  ftglRenderFont(glfont->ftgl_font, utf8_buffer, FTGL_RENDER_ALL);
 }
 
 void iupGLFontInit(void)
@@ -754,8 +754,8 @@ void iupGLFontRelease(Ihandle* gl_parent)
     IglFont* fonts = (IglFont*)iupArrayGetData(gl_fonts);
     for (i = 0; i < count; i++)
     {
-      ftglDestroyFont(fonts[i].font);
-      fonts[i].font = NULL;
+      ftglDestroyFont(fonts[i].ftgl_font);
+      fonts[i].ftgl_font = NULL;
     }
     iupArrayDestroy(gl_fonts);
     iupAttribSet(gl_parent, "GL_FONTLIST", NULL);

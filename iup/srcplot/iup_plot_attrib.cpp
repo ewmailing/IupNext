@@ -450,9 +450,9 @@ static int iPlotSetFGColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static int iPlotSetStandardFontAttrib(Ihandle* ih, const char* value)
+static int iPlotSetFontAttrib(Ihandle* ih, const char* value)
 {
-  iupdrvSetStandardFontAttrib(ih, value);
+  iupdrvSetFontAttrib(ih, value);
 
   int size = 0;
   int is_bold = 0,
@@ -3052,7 +3052,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iPlotSetBGColorAttrib, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iPlotSetFGColorAttrib, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, iPlotSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FONT", NULL, iPlotSetFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED);  /* inherited */
 
   /* IupPlot only */
 

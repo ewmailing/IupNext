@@ -79,9 +79,9 @@ static char* winDatePickGetValueAttrib(Ihandle* ih)
   return iupStrReturnStrf("%d/%d/%d", st.wYear, st.wMonth, st.wDay);
 }
 
-static int winDatePickSetStandardFontAttrib(Ihandle* ih, const char* value)
+static int winDatePickSetFontAttrib(Ihandle* ih, const char* value)
 {
-  iupdrvSetStandardFontAttrib(ih, value);
+  iupdrvSetFontAttrib(ih, value);
 
   if (ih->handle)
   {
@@ -284,7 +284,7 @@ Iclass* iupDatePickNewClass(void)
   /* Visual */
   iupBaseRegisterVisualAttrib(ic);
 
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winDatePickSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FONT", NULL, winDatePickSetFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED);  /* inherited */
 
   iupClassRegisterAttribute(ic, "VALUE", winDatePickGetValueAttrib, winDatePickSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TODAY", winDatePickGetTodayAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

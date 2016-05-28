@@ -228,7 +228,7 @@ IupDrawFocusRect
 IupDrawGetSize
 
 iupdrvSetVisible
-iupdrvSetStandardFontAttrib
+iupdrvSetFontAttrib
 iupdrvSetActive
 iupdrvScreenToClient
 iupdrvClientToScreen
@@ -356,7 +356,6 @@ iupStrToDoubleLocale
 iupSetFontStyleAttrib
 iupSetFontSizeAttrib
 iupSetFontFaceAttrib
-iupSetFontAttrib
 iupRegisterFindClass
 iupRegisterClass
 iupObjectGetParamList
@@ -383,7 +382,6 @@ iupImageGetHandle
 iupGetFontStyleAttrib
 iupGetFontSizeAttrib
 iupGetFontFaceAttrib
-iupGetFontAttrib
 iupFontParseX
 iupFontParseWin
 iupFontParsePango

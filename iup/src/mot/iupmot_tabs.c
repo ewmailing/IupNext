@@ -275,9 +275,9 @@ static int motTabsSetFgColorAttrib(Ihandle* ih, const char* value)
   return 0; 
 }
 
-static int motTabsSetStandardFontAttrib(Ihandle* ih, const char* value)
+static int motTabsSetFontAttrib(Ihandle* ih, const char* value)
 {
-  iupdrvSetStandardFontAttrib(ih, value);
+  iupdrvSetFontAttrib(ih, value);
   if (ih->handle)
     motTabsUpdatePageFont(ih);
   return 1;
@@ -694,7 +694,7 @@ void iupdrvTabsInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, motTabsSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FONT", NULL, motTabsSetFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED);  /* inherited */
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, motTabsSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);

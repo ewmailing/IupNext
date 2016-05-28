@@ -218,9 +218,9 @@ static int gtkButtonSetFgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static int gtkButtonSetStandardFontAttrib(Ihandle* ih, const char* value)
+static int gtkButtonSetFontAttrib(Ihandle* ih, const char* value)
 {
-  iupdrvSetStandardFontAttrib(ih, value);
+  iupdrvSetFontAttrib(ih, value);
 
   if (ih->handle)
   {
@@ -542,7 +542,7 @@ void iupdrvButtonInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkButtonSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FONT", NULL, gtkButtonSetFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED);  /* inherited */
 
   /* Overwrite Visual */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, gtkButtonSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);

@@ -182,9 +182,9 @@ void iupdrvListRemoveAllItems(Ihandle* ih)
 /*********************************************************************************/
 
 
-static int gtkListSetStandardFontAttrib(Ihandle* ih, const char* value)
+static int gtkListSetFontAttrib(Ihandle* ih, const char* value)
 {
-  iupdrvSetStandardFontAttrib(ih, value);
+  iupdrvSetFontAttrib(ih, value);
 
   if (ih->handle)
   {
@@ -1664,7 +1664,7 @@ void iupdrvListInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Common */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, gtkListSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FONT", NULL, gtkListSetFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED);  /* inherited */
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkListSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_DEFAULT);

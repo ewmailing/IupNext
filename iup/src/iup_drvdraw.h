@@ -14,7 +14,7 @@ extern "C"
 
 /** \defgroup draw Simple Draw API
  * \par
- * See \ref iup_draw.h
+ * See \ref iup_drvdraw.h
  * \ingroup util */
 
 

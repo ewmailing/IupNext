@@ -384,9 +384,9 @@ static int winListSetBgColorAttrib(Ihandle *ih, const char *value)
   return 1;
 }
 
-static int winListSetStandardFontAttrib(Ihandle* ih, const char* value)
+static int winListSetFontAttrib(Ihandle* ih, const char* value)
 {
-  iupdrvSetStandardFontAttrib(ih, value);
+  iupdrvSetFontAttrib(ih, value);
   if (ih->handle)
   {
     winListUpdateItemWidth(ih);
@@ -1923,7 +1923,7 @@ void iupdrvListInitClass(Iclass* ic)
 
   /* Driver Dependent Attribute functions */
 
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winListSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FONT", NULL, winListSetFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED);  /* inherited */
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winListSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NOT_MAPPED);

@@ -79,7 +79,7 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   unsigned char r, g, b;
   CHOOSEFONT choosefont;
   LOGFONT logfont;
-  char* standardfont;
+  char* font;
   int height_pixels;
   char typeface[50] = "";
   int height = 8;
@@ -98,15 +98,15 @@ static int winFontDlgPopup(Ihandle* ih, int x, int y)
   if (!parent)
     parent = GetActiveWindow();
 
-  standardfont = iupAttribGet(ih, "VALUE");
-  if (!standardfont)
+  font = iupAttribGet(ih, "VALUE");
+  if (!font)
   {
     if (!iupGetFontInfo(IupGetGlobal("DEFAULTFONT"), typeface, &height, &is_bold, &is_italic, &is_underline, &is_strikeout))
       return IUP_ERROR;
   }
   else
   {
-    if (!iupGetFontInfo(standardfont, typeface, &height, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    if (!iupGetFontInfo(font, typeface, &height, &is_bold, &is_italic, &is_underline, &is_strikeout))
     {
       char def_typeface[50] = "";
       int def_height = 8;

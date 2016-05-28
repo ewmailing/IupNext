@@ -1304,21 +1304,21 @@ static int winTextSetAlignmentAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static int winTextSetStandardFontAttrib(Ihandle* ih, const char* value)
+static int winTextSetFontAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->has_formatting && ih->handle)
   {
     if (!iupAttribGet(ih, "_IUPWIN_FONTUPDATECHECK"))
     {
       /* avoid setting the same font because this will clear the font formattags. */
-      char* cur_value = iupGetFontAttrib(ih);
+      char* cur_value = iupAttribGetStr(ih, "FONT");
       if (iupStrEqual(value, cur_value))
         return 0;
     }
     iupAttribSet(ih, "_IUPWIN_FONTUPDATECHECK", NULL);
   }
 
-  return iupdrvSetStandardFontAttrib(ih, value);
+  return iupdrvSetFontAttrib(ih, value);
 }
 
 typedef struct
@@ -1434,7 +1434,7 @@ static int winTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
   charformat.cbSize = sizeof(CHARFORMAT2);
   charformat.dwMask = CFM_DISABLED|CFM_OFFSET|CFM_PROTECTED;
 
-  winTextUpdateFontFormat(&charformat, iupGetFontAttrib(ih));
+  winTextUpdateFontFormat(&charformat, iupAttribGetStr(ih, "FONT"));
 
   if (iupwinGetColorRef(ih, "FGCOLOR", &colorref))
   {
@@ -2155,7 +2155,7 @@ static int winTextMapMethod(Ihandle* ih)
 
     /* must update FONT before updating the formattags */
     iupAttribSet(ih, "_IUPWIN_FONTUPDATECHECK", "1");
-    iupUpdateStandardFontAttrib(ih);
+    iupUpdateFontAttrib(ih);
 
     if (ih->data->formattags)
       iupTextUpdateFormatTags(ih);
@@ -2175,7 +2175,7 @@ void iupdrvTextInitClass(Iclass* ic)
 
   /* Driver Dependent Attribute functions */
 
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, winTextSetStandardFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FONT", NULL, winTextSetFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED);  /* inherited */
 
   /* Overwrite Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winTextSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_DEFAULT);  
