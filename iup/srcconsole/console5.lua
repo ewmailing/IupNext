@@ -48,6 +48,7 @@ iup_console.txtCommand = iup.text{expand="HORIZONTAL", visiblecolumns=60, font="
 iup_console.lblPosition = iup.label{title="0:0", expand="HORIZONTAL", alignment = "ARIGHT"}
 iup_console.lblFileName = iup.label{title="", expand="HORIZONTAL"}
 
+print_old = print
 function print(...)
   local param = {...}
   local str = ""
