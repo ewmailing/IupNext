@@ -14,6 +14,7 @@ EXPORTS
   IupGLExpander
   IupGLScrollBox
   IupGLSizeBox
+  IupGLText
 
   iupGLDrawText
   iupGLDrawImage

@@ -494,9 +494,12 @@ void GLCanvasCubeTest(void)
   IupSetAttribute(gtoggle4, "CHECKMARK", "Yes");
 //  IupSetAttribute(gtoggle4, "RIGHTBUTTON", "Yes");
 
+  gtext = IupGLText();
+
   vbox2 = IupVbox(
     IupRadio(IupSetAttributes(IupVbox(gtoggle3, gtoggle4, NULL), "MARGIN=0x0")),
     gtoggle5,
+    gtext,
     NULL);
 
   gsbox = IupSetAttributes(IupGLScrollBox(vbox2), "RASTERSIZE=90x90");

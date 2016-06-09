@@ -8,7 +8,7 @@ SRC = iup_glcontrols.c iup_glcanvasbox.c iup_glsubcanvas.c iup_gllabel.c \
       iup_glimage.c iup_glfont.c iup_gldraw.c iup_glicon.c iup_glseparator.c \
       iup_glbutton.c iup_gltoggle.c iup_gllink.c iup_glprogressbar.c \
       iup_glval.c iup_glframe.c iup_glexpander.c iup_glscrollbars.c \
-      iup_glscrollbox.c iup_glsizebox.c
+      iup_glscrollbox.c iup_glsizebox.c iup_gltext.c
 
 LIBS = iupgl iup
 LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)

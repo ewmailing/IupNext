@@ -112,6 +112,7 @@
     <ClCompile Include="..\srcglcontrols\iup_glseparator.c" />
     <ClCompile Include="..\srcglcontrols\iup_glsizebox.c" />
     <ClCompile Include="..\srcglcontrols\iup_glsubcanvas.c" />
+    <ClCompile Include="..\srcglcontrols\iup_gltext.c" />
     <ClCompile Include="..\srcglcontrols\iup_gltoggle.c" />
     <ClCompile Include="..\srcglcontrols\iup_glval.c" />
   </ItemGroup>
