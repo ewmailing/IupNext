@@ -496,7 +496,7 @@ void GLCanvasCubeTest(void)
 
   gtext = IupGLText();
   IupSetAttribute(gtext, "NAME", "text");
-  IupSetAttribute(gtext, "VALUE", "text");
+  IupSetAttribute(gtext, "VALUE", "text edit very long");
 
   vbox2 = IupVbox(
     IupRadio(IupSetAttributes(IupVbox(gtoggle3, gtoggle4, NULL), "MARGIN=0x0")),
