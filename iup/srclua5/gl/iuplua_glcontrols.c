@@ -35,6 +35,7 @@ int iupglcontrolslua_open(lua_State * L)
   iupgltogglelua_open(L);
   iupglvallua_open(L); 
   iupglscrollboxlua_open(L); 
+  iupgltextlua_open(L); 
 
   return 0;
 }
