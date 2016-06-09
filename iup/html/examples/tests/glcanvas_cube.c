@@ -372,7 +372,7 @@ void GLCanvasCubeTest(void)
     *pbar1, *pbar2, *glink, *gval1, *gval2, *gframe1, *gframe2,
     *gexp1, *gexp2, *image_open, *image_close, *image_high,
     *gframe3, *vbox2, *gtoggle3, *gtoggle4, *gtoggle5, *gsbox,
-    *text, *vbox3, *matrix, *image_val;
+    *text, *vbox3, *matrix, *image_val, *gtext;
 
   IupGLCanvasOpen();
   IupGLControlsOpen();
@@ -495,6 +495,8 @@ void GLCanvasCubeTest(void)
 //  IupSetAttribute(gtoggle4, "RIGHTBUTTON", "Yes");
 
   gtext = IupGLText();
+  IupSetAttribute(gtext, "NAME", "text");
+  IupSetAttribute(gtext, "VALUE", "text");
 
   vbox2 = IupVbox(
     IupRadio(IupSetAttributes(IupVbox(gtoggle3, gtoggle4, NULL), "MARGIN=0x0")),
