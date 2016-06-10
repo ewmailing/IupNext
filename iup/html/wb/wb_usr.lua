@@ -1519,6 +1519,10 @@ wb_usr.tree =
                   link= "gl/iupglsizebox.html"
                 },
                 {
+                  name= {nl= "IupGLText"},
+                  link= "gl/iupgltext.html"
+                },
+                {
                   name= {nl= "IupGLToggle"},
                   link= "gl/iupgltoggle.html"
                 },

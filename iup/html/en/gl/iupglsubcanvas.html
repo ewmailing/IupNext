@@ -58,6 +58,16 @@ glsubcanvas() [in LED]</pre>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
+  <p><b>ACTIVE</b>:
+  disables mouse interaction and highlight feedback. Also for some controls it 
+  will affect its appearance to greyed version. Possible values:
+  &quot;YES, 
+  &quot;NO&quot;. 
+  Default:
+  &quot;YES&quot;.</p>
+
+
+
 <p><strong>BGCOLOR</strong>: background color used in derived controls. Can have 
 an alpha component. Default: NULL.</p>
 <p><strong>BORDERCOLOR</strong>: color used for borders in derived controls. Can 
@@ -111,8 +121,7 @@ write-only</font>): change the order of the control inside its parent.</p>
 </blockquote>
 
 <p>
-<a href="../attrib/iup_active.html">ACTIVE</a>,
-<a href="../attrib/iup_screenposition.html">SCREENPOSITION</a>, 
+&nbsp;<a href="../attrib/iup_screenposition.html">SCREENPOSITION</a>, 
 <a href="../attrib/iup_position.html">
 POSITION</a>, <a href="../attrib/iup_minsize.html">
 MINSIZE</a>, <a href="../attrib/iup_maxsize.html">
