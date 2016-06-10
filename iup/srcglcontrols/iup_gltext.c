@@ -79,6 +79,7 @@ static int iGLTextBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, 
 
       iupClassObjectLayoutUpdate(text);
 
+      IupSetAttribute(text, "FONT", IupGetAttribute(ih, "FONT"));
       IupSetAttribute(text, "VISIBLE", "YES");
       IupSetAttribute(text, "ACTIVE", "YES");
       IupSetFocus(text);
@@ -219,7 +220,7 @@ Iclass* iupGLTextNewClass(void)
 
   /* replace default value */
   iupClassRegisterAttribute(ic, "PADDING", NULL, NULL, IUPAF_SAMEASSYSTEM, "2x2", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT:ATOP", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT:ABOTTOM", IUPAF_NO_INHERIT);
 
   return ic;
 }
