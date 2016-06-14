@@ -452,8 +452,10 @@ static void new_dialog(int test, char* tip)
     IupSetAttribute(dlg, "CUSTOMFRAMECAPTIONLIMITS", "0:30");
       //IupSetAttribute(dlg, "BGCOLOR", "255 0 255");
     IupSetCallback(dlg, "CUSTOMFRAME_CB", customframe_cb);
+//    IupSetAttribute(dlg, "MINSIZE", "1260x760"); // not does work
+//    IupSetAttribute(dlg, "RASTERSIZE", "1260x760");
 
-    IupAppend(dlg, IupSetAttributes(IupFrame(IupSetAttributes(IupLabel("Label Test"), "EXPAND=Yes")), "BGCOLOR=\"0 255 0\""));
+    IupAppend(dlg, IupSetAttributes(IupBackgroundBox(IupSetAttributes(IupLabel("Label Test"), "EXPAND=Yes")), "BGCOLOR=\"0 255 0\""));
 
     IupShow(dlg);
 #endif
