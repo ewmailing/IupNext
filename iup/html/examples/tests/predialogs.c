@@ -334,7 +334,7 @@ static void new_file(char* dialogtype, int preview)
 //  IupSetAttributes(dlg, "FILE = \"test.bmp\", DIRECTORY = \"/tecgraf/iup\"");   // OK
 //  IupSetAttributes(dlg, "FILE = \"test.bmp\", DIRECTORY = \"\\tecgraf\\iup\"");  // OK
   IupSetAttribute(dlg, "NOCHANGEDIR", "YES");
-  if (strcmp(dialogtype, "OPEN") == 0) IupSetAttribute(dlg, "MULTIPLEFILES", "YES");
+//  if (strcmp(dialogtype, "OPEN") == 0) IupSetAttribute(dlg, "MULTIPLEFILES", "YES");
 //  IupSetAttribute(dlg, "RASTERSIZE", "800x600");
   IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
   IupSetAttribute(dlg, "EXTDEFAULT", "txt");
@@ -342,6 +342,7 @@ static void new_file(char* dialogtype, int preview)
   if (preview)
   {
     IupSetAttribute(dlg, "SHOWPREVIEW", "YES");
+    IupSetAttribute(dlg, "PREVIEWATRIGHT", "Yes");
 
 #ifdef USE_OPENGL
     if (preview==2)

@@ -294,29 +294,31 @@ static UINT_PTR CALLBACK winFileDlgSimpleHook(HWND hWnd, UINT uiMsg, WPARAM wPar
 
 static void winFileDlgSetPreviewCanvasPos(HWND hWnd, HWND hWndPreview)
 {
-  int height, width, ypos, xpos;
+  int height, width, y, x;
   RECT rect, dlgrect;
-  HWND hWndFileList = GetDlgItem(GetParent(hWnd), 0x0471);       /* path combo list with edit box */
-  HWND hWndFileCombo = GetDlgItem(GetParent(hWnd), 0x047C); /* file name combo list with edit box */
+  HWND hWndFileList = GetDlgItem(GetParent(hWnd), 0x0471);       /* path combo list with edit box (cmb2) */
+  HWND hWndFileCombo = GetDlgItem(GetParent(hWnd), 0x047C); /* file name combo list with edit box (cmb13) */
+
+  /* NOTE: it could be positioned only bellow the default controls */
 
   /* GetWindowRect return screen coordinates, must convert to parent's client coordinates */
   GetWindowRect(hWnd, &dlgrect);
 
   GetWindowRect(hWndPreview, &rect);
-  ypos = rect.top - dlgrect.top;   /* keep the same vertical position, at first time this is 0 */
-  height = rect.bottom-rect.top;   /* keep the same height */
+  y = rect.top - dlgrect.top;   /* at first time this is 0, else use system positioned value (not the same as RC) */
+  height = rect.bottom - rect.top; /* keep the same height */
+
+  /* position the child window that contains the template, must have room for the preview canvas */
+  if (y) /* first time does nothing */
+    SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, (dlgrect.right - dlgrect.left), (dlgrect.bottom - dlgrect.top), SWP_NOMOVE | SWP_NOZORDER);
 
   GetWindowRect(hWndFileList, &rect);
-  xpos = rect.left - dlgrect.left;   /* horizontally align with file list at left */
+  x = rect.left - dlgrect.left;   /* horizontally align with file list at left */
 
   GetWindowRect(hWndFileCombo, &rect);
-  width = (rect.right - dlgrect.left) - xpos;  /* set size to align with file combo at right */
+  width = (rect.right - dlgrect.left) - x;  /* set size to align with file combo at right */
 
-  /* also position the child window that contains the template, must have room for the preview canvas */
-  if (ypos) /* first time does nothing */
-    SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, (rect.right - dlgrect.left), (dlgrect.bottom - dlgrect.top), SWP_NOMOVE|SWP_NOZORDER);
-
-  SetWindowPos(hWndPreview, HWND_TOP, xpos, ypos, width, height, SWP_NOZORDER);
+  SetWindowPos(hWndPreview, HWND_TOP, x, y, width, height, SWP_NOZORDER);
 }
 
 static void winFileDlgUpdatePreviewGLCanvas(Ihandle* ih)
