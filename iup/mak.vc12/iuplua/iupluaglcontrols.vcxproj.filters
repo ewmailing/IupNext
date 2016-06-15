@@ -43,6 +43,9 @@
     <ClCompile Include="..\..\srclua5\gl\il_glsizebox.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\srclua5\gl\il_gltext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\srclua5\gl\il_glcontrols.h">
@@ -93,6 +96,9 @@
       <Filter>Lua</Filter>
     </None>
     <None Include="..\..\srclua5\gl\glsizebox.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\..\srclua5\gl\gltext.lua">
       <Filter>Lua</Filter>
     </None>
   </ItemGroup>

@@ -296,8 +296,8 @@ static void winFileDlgSetPreviewCanvasPos(HWND hWnd, HWND hWndPreview)
 {
   int height, width, ypos, xpos;
   RECT rect, dlgrect;
-  HWND hWndFileList = GetDlgItem(GetParent(hWnd), 0x0471);
-  HWND hWndFileCombo = GetDlgItem(GetParent(hWnd), 0x047C);
+  HWND hWndFileList = GetDlgItem(GetParent(hWnd), 0x0471);       /* path combo list with edit box */
+  HWND hWndFileCombo = GetDlgItem(GetParent(hWnd), 0x047C); /* file name combo list with edit box */
 
   /* GetWindowRect return screen coordinates, must convert to parent's client coordinates */
   GetWindowRect(hWnd, &dlgrect);

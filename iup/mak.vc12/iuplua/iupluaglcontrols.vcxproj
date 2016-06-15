@@ -103,6 +103,7 @@
     <ClCompile Include="..\..\srclua5\gl\il_glseparator.c" />
     <ClCompile Include="..\..\srclua5\gl\il_glsizebox.c" />
     <ClCompile Include="..\..\srclua5\gl\il_glsubcanvas.c" />
+    <ClCompile Include="..\..\srclua5\gl\il_gltext.c" />
     <ClCompile Include="..\..\srclua5\gl\il_gltoggle.c" />
     <ClCompile Include="..\..\srclua5\gl\il_glval.c" />
     <ClCompile Include="..\..\srclua5\gl\iuplua_glcontrols.c" />
@@ -119,6 +120,7 @@
     <None Include="..\..\srclua5\gl\glseparator.lua" />
     <None Include="..\..\srclua5\gl\glsizebox.lua" />
     <None Include="..\..\srclua5\gl\glsubcanvas.lua" />
+    <None Include="..\..\srclua5\gl\gltext.lua" />
     <None Include="..\..\srclua5\gl\gltoggle.lua" />
     <None Include="..\..\srclua5\gl\glval.lua" />
     <None Include="..\..\srclua5\gl\iupluaglcontrols.def" />
