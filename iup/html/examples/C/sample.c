@@ -409,7 +409,7 @@ void SampleTest(void)
   IupSetAttributeHandle(tabs,"TABIMAGE1", load_image_LogoTecgraf());
   IupSetAttribute(tabs,"TABTITLE2","Tab Title 2");
   IupSetAttribute(tabs,"RASTERSIZE","300x50");
-//  IupSetAttribute(tabs,"PADDING","5x5");
+//  IupSetAttribute(tabs,"TABPADDING","5x5");
   set_callbacks(tabs);
 
   tree = IupTree();

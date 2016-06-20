@@ -543,7 +543,7 @@ void SampleTest(void)
   IupSetAttribute(tabs,"TABTITLE2","Tab Title 2");
   IupSetAttribute(tabs,"RASTERSIZE","300x50");
   IupSetAttribute(tabs,"TIP","Tabs TIP");
-//  IupSetAttribute(tabs,"PADDING","5x5");
+//  IupSetAttribute(tabs,"TABPADDING","5x5");
   set_callbacks(tabs);
 
   tree = IupTree();

@@ -74,10 +74,6 @@ inheritable</font>): Enable multiple lines of tab buttons. This will hide the
 tab scroll and fits to make all tab buttons visible. Can be &quot;YES&quot; or &quot;NO&quot;. 
 Default &quot;NO&quot;. It is always enabled when TABTYPE=LEFT or TABTYPE=RIGHT. (since 
 3.0)</p>
-  <p><b>PADDING</b> (<font SIZE="3">non 
-inheritable</font>): internal margin of the tab title. Works just like the 
-	MARGIN attribute of the IupHbox and IupVbox containers, but uses a different 
-	name to avoid inheritance problems. Default value: &quot;0x0&quot;. (since 3.0)</p>
 
 
 <p><b>SHOWCLOSE</b> [Windows and GTK Only]<strong> </strong>(<font SIZE="3">non 
@@ -111,6 +107,13 @@ Windows, it can NOT be set, it is dependent on the TABTYPE attribute, if
 TABTYPE=LEFT or TABTYPE=RIGHT then TABORIENTATION=VERTICAL, if TABTYPE=TOP or 
 TABTYPE=BOTTOM then TABORIENTATION=HORIZONTAL. (GTK 
 2.6)</p>
+  <p><b>TABPADDING</b> (<font SIZE="3">non 
+inheritable</font>): internal margin of the tab title. Works just like the 
+	MARGIN attribute of the IupHbox and IupVbox containers, but uses a different 
+	name to avoid inheritance problems. Default value: &quot;0x0&quot;. (since 3.0) 
+  (renamed in 3.19 to avoid conflict with PADDING)</p>
+
+
 <p><strong>TABVISIBLEn </strong>(<font SIZE="3">non inheritable</font>): Allows 
 to hide a tab. n starts at 0. When a tab is hidden the tabs indices are not 
 changed. Can be Yes or No. Default: Yes. (since 3.8)</p>

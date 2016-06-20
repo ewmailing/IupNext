@@ -25,7 +25,7 @@
 
 
 
-char* iupTabsGetPaddingAttrib(Ihandle* ih)
+char* iupTabsGetTabPaddingAttrib(Ihandle* ih)
 {
   return iupStrReturnIntInt(ih->data->horiz_padding, ih->data->vert_padding, 'x');
 }
