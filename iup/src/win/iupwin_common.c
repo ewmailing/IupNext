@@ -66,6 +66,11 @@ int iupwinGetScreenRes(void)
 
 void iupdrvActivate(Ihandle* ih)
 {
+  int is_toggle = IupClassMatch(ih, "toggle");
+  int is_radio = 0;
+  if (is_toggle)
+    is_radio = IupGetInt(ih, "RADIO");
+
   /* do not use BM_CLICK because it changes the focus 
      and does not animates the button press */
 
@@ -74,7 +79,8 @@ void iupdrvActivate(Ihandle* ih)
   IupFlush();
   Sleep(150);
 
-  if (IupClassMatch(ih, "toggle"))
+  /* must force a toggle change */
+  if (is_toggle && !is_radio)
     IupSetAttribute(ih, "VALUE", "TOGGLE");
 
   /* notify */
@@ -82,6 +88,10 @@ void iupdrvActivate(Ihandle* ih)
 
   /* remove highlight */
   SendMessage(ih->handle, BM_SETSTATE, FALSE, 0);
+
+  /* must force a radio change */
+  if (is_toggle && is_radio)
+    IupSetAttribute(ih, "VALUE", "TOGGLE");
 }
 
 int iupdrvGetScrollbarSize(void)
