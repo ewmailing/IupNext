@@ -3441,6 +3441,27 @@ int MGL_NO_EXPORT mgls_version(mglGraph *gr, long , mglArg *a, const char *k, co
 	else res = 1;	return res;
 }
 //-----------------------------------------------------------------------------
+int mgls_flame2d(mglGraph *, long, mglArg *a, const char *k, const char *)
+{
+	mglData *fx = dynamic_cast<mglData*>(a[0].d);
+	mglData *fy = dynamic_cast<mglData*>(a[1].d);
+	if(!fx)	return 1;
+	int res = 0;
+	if (!strcmp(k, "dddn"))	fx->Set(mglFlame2d(*(a[1].d), *(a[2].d), mgl_int(a[3].v)));
+	else if (!strcmp(k, "ddddn") && fy)
+	{
+		mglData f(mglFlame2d(*(a[2].d), *(a[3].d), mgl_int(a[4].v)));
+		fx->Set(f.SubData(0));	fy->Set(f.SubData(1));
+	}
+	else if (!strcmp(k, "dddnn"))	fx->Set(mglFlame2d(*(a[1].d), *(a[2].d), mgl_int(a[3].v), mgl_int(a[4].v)));
+	else if (!strcmp(k, "ddddnn") && fy)
+	{
+		mglData f(mglFlame2d(*(a[2].d), *(a[3].d), mgl_int(a[4].v), mgl_int(a[5].v)));
+		fx->Set(f.SubData(0));	fy->Set(f.SubData(1));
+	}
+	else res = 1;	return res;
+}
+//-----------------------------------------------------------------------------
 int mgls_ifs2d(mglGraph *, long, mglArg *a, const char *k, const char *)
 {
 	mglData *fx = dynamic_cast<mglData*>(a[0].d);
@@ -3504,7 +3525,7 @@ mglCommand mgls_base_cmd[] = {
 	{"barh","Draw horizontal bars for 1D data", "barh Ydat ['fmt' above]|Xdat Ydat ['fmt' above]", mgls_barh ,7},
 	{"bars","Draw bars for 1D data","bars Ydat ['fmt' above]|Xdat Ydat ['fmt' above]|Xdat Ydat Zdat ['fmt' above]", mgls_bars ,7},
 	{"barwidth","Set default bars width","barwidth val", mgls_barwidth ,2},
-	{"beam","Draw quasioptical beam","beam Tr G1 G2 Adat r ['sch' flag num] ", mgls_beam ,9},
+	{"beam","Draw quasi-optical beam","beam Tr G1 G2 Adat r ['sch' flag num] ", mgls_beam ,9},
 	{"belt","Draw belts","belt Zdat ['fmt']|Xdat Ydat Zdat ['fmt']", mgls_belt ,8},
 	{"bifurcation","Draw Bifurcation diagram","bifurcation dx Func ['fmt']|dx 'func' ['fmt']", mgls_bifurcation,13},
 	{"box","Draw bounding box","box ['fmt' ticks]", mgls_box ,12},
@@ -3517,7 +3538,7 @@ mglCommand mgls_base_cmd[] = {
 	{"chdir","Change current directory","chdir 'path'", mgls_chdir ,2},
 	{"circle","Draw circle","circle x y r ['fmt']|x y z r ['fmt']", mgls_circle ,13},
 	{"clean","Remove duplicate rows","clean Dat id", mgls_clean ,3},
-	{"clearlegend","Clear legend antries","clearlegend", mgls_clearlegend ,15},
+	{"clearlegend","Clear legend entries","clearlegend", mgls_clearlegend ,15},
 	{"clf","Clear picture","clf|'col'|r g b", mgls_clf ,12},
 	{"cloud","Draw cloud","cloud Adat ['fmt']|Xdat Ydat Zdat Adat ['fmt']", mgls_cloud ,9},
 	{"colorbar","Draw colorbar","colorbar ['fmt' pos]|Vdat ['fmt' pos]|'sch' pos x y [w h]|Vdat 'sch' pos x y [w h]", mgls_colorbar ,12},
@@ -3592,6 +3613,7 @@ mglCommand mgls_base_cmd[] = {
 	{"fillsample","Fill x-,k-samples for transforms","fillsample Var 'how'", mgls_fillsample ,3},
 	{"fit","Fit data to formula","fit Res A 'eq' 'var' [Ini]|Res X A 'eq' 'var' [Ini]|Res X Y A 'eq' 'var' [Ini]|Res X Y Z A 'eq' 'var' [Ini]", mgls_fit ,4},
 	{"fits","Fit data to formula","fits Res A S 'eq' 'var' [Ini]|Res X A S 'eq' 'var' [Ini]|Res X Y A S 'eq' 'var' [Ini]|Res X Y Z A S 'eq' 'var' [Ini]", mgls_fits ,4},
+	{"flame2d", "Computes the flame fractal", "flame2d F A B n [skip]|Fx Fy A B n [skip]", mgls_flame2d, 4},
 	{"flow","Draw flow threads for vector field","flow Udat Vdat ['fmt' num]|Xdat Ydat Udat Vdat ['fmt' num]|Udat Vdat Wdat ['fmt' num]|Xdat Ydat Zdat Udat Vdat ['fmt' num]|\
 	x0 y0 Udat Vdat ['fmt']|x0 y0 Xdat Ydat Udat Vdat ['fmt']|x0 y0 z0 Udat Vdat Wdat ['fmt']|x0 y0 z0 Xdat Ydat Zdat Udat Vdat Wdat ['fmt']", mgls_flow ,11},
 	{"fog","Switch on/off fog","fog val [pos]", mgls_fog ,2},
@@ -3674,7 +3696,7 @@ mglCommand mgls_base_cmd[] = {
 	{"quality","Set plot quality","quality [val]", mgls_quality ,2},
 	{"radar","Draw radar chart","radar Rdat ['fmt']", mgls_radar ,7},
 	{"ranges","Set axis ranges","ranges x1 x2 y1 y2 [z1 z2]", mgls_ranges ,14},
-	{"rasterize","Rasterize and save to background","rasterize", mgls_rasterize ,12},
+	{"rasterize","Rasterize plot and save to background","rasterize", mgls_rasterize ,12},
 	{"ray","Solve Hamiltonian ODE (find GO ray or trajectory)","ray Res 'ham' x0 y0 z0 px0 py0 pz0 [dz=0.1 tmax=10]", mgls_ray ,4},
 	{"read","Read data from file","read Dat 'file' [nx ny nz] | ReDat ImDat 'file' [nx ny nz]", mgls_read ,4},
 	{"readall","Read and join data from several files","readall Dat 'templ' [slice]", mgls_readall ,4},
@@ -3694,8 +3716,8 @@ mglCommand mgls_base_cmd[] = {
 	{"rotate","Rotate plot","rotate tetz tetx [tety] | tet x y z", mgls_rotate ,5},
 	{"rotatetext","Set to auto rotate text or not","rotatetext val", mgls_rotatetext ,15},
 	{"save","Save data to file","save Dat 'file'|'str' 'file'|'str' 'file' 'how'", mgls_save ,3},
-	{"savehdf","Save data to HDF5 file","savehdf Dat 'file' 'id'", mgls_savehdf ,3},
-	{"scanfile","Get fromated data from file","scanfile Dat 'fname 'templ'", mgls_scanfile ,4},
+	{"savehdf","Save data to HDF5 file","savehdf Dat 'file' 'id' [rewrite]", mgls_savehdf ,3},
+	{"scanfile","Get formated data from file","scanfile Dat 'fname 'templ'", mgls_scanfile ,4},
 	{"setsize","Set picture size","setsize width height", mgls_setsize ,2},
 	{"setsizescl","Set scaling factor for further setsize","setsizescl val", mgls_setsizescl ,2},
 	{"sew","Remove jump into the data, like phase jumps","sew Dat ['dir' da]", mgls_sew ,16},

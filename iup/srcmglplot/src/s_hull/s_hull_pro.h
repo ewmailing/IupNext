@@ -7,6 +7,7 @@
 #include <vector>
 #include <set>
 #include <limits>
+#include <mgl2/define.h>
 
 /*
 	for use in s_hull_pro.cpp

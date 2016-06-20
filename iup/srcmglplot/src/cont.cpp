@@ -789,7 +789,7 @@ void MGL_EXPORT mgl_contd_xy_val(HMGL gr, HCDT v, HCDT x, HCDT y, HCDT z, const 
 		if(z->GetNz()>1)
 			z0 = gr->Min.z+(gr->Max.z-gr->Min.z)*mreal(j)/(z->GetNz()-1);
 		mglDataV zz(n, m);	zz.Fill(z0,z0);
-		mgl_contf_gen(gr,v0,v->v(i+1),z,x,y,&zz,s+i*dc,j);
+		mgl_contf_gen(gr,v0,v->v(i+1),z,x,y,&zz,s+(i%nc)*dc,j);
 	}
 	gr->EndGroup();
 }

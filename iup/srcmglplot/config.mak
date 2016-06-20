@@ -25,7 +25,7 @@ SRCMGLPLOT = addon.cpp complex.cpp data_gr.cpp evalp.cpp fit.cpp pde.cpp vect.cp
              base.cpp cont.cpp data_png.cpp export.cpp obj.cpp plot.cpp window.cpp \
              base_cf.cpp crust.cpp export_2d.cpp opengl.cpp prim.cpp \
              canvas.cpp data.cpp eval.cpp export_3d.cpp other.cpp surf.cpp \
-             canvas_cf.cpp data_ex.cpp evalc.cpp fft.cpp parser.cpp tex_table.cpp \
+             canvas_cf.cpp data_ex.cpp evalc.cpp fft.cpp parser.cpp f\
              complex_ex.cpp fractal.cpp s_hull/s_hull_pro.cpp
 SRCMGLPLOT := $(addprefix src/, $(SRCMGLPLOT))
 

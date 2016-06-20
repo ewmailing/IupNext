@@ -216,8 +216,8 @@ void mglCanvas::SetTickTime(char dir, mreal d, const char *t)
 	UpdateAxis();
 
 	time_t tt;	tm t1,t2;
-	tt=aa.v1;	mgl_localtime(&tt, &t1, get(MGL_USE_GMTIME));
-	tt=aa.v2;	mgl_localtime(&tt, &t2, get(MGL_USE_GMTIME));
+	tt=(time_t)aa.v1;	mgl_localtime(&tt, &t1, get(MGL_USE_GMTIME));
+	tt=(time_t)aa.v2;	mgl_localtime(&tt, &t2, get(MGL_USE_GMTIME));
 	if(aa.v1<aa.v2)	// adjust periodic values
 	{
 		if(abs(t1.tm_year-t2.tm_year)==1)	t2.tm_yday += 365;
@@ -273,7 +273,7 @@ void mglCanvas::SetTickTime(char dir, mreal d, const char *t)
 	if(v0+aa.dv!=v0 && v1+aa.dv!=v1)	for(v=v0;v<=v1;v+=aa.dv)
 	{
 		wchar_t buf[64];
-		tt = v;	tm tp;		mgl_localtime(&tt, &tp, get(MGL_USE_GMTIME));
+		tt = (time_t)v;	tm tp;		mgl_localtime(&tt, &tp, get(MGL_USE_GMTIME));
 		wcsftime(buf,64,aa.t.c_str(),&tp);	aa.AddLabel(buf,v);
 	}
 }
@@ -305,7 +305,7 @@ void mglCanvas::AdjustTicks(mglAxis &aa, bool ff)
 	else
 	{
 		d /= -aa.d;
-		long n = floor(log10(d));
+		long n = lrint(floor(log10(d)));
 		aa.dv = pow(10.,n)*mgl_int(d*pow(10.,-n));
 		aa.o=0;	aa.ds = pow(10.,n);
 	}

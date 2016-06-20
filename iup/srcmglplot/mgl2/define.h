@@ -20,8 +20,17 @@
 #ifndef _MGL_DEFINE_H_
 #define _MGL_DEFINE_H_
 //-----------------------------------------------------------------------------
+// Disable warnings for MSVC:
+// 4190 - C-linkage of std::complex,
+// 4996 - deprecated abi functions
+// 4786 - disable warnings on 255 char debug symbols
+// 4231 - disable warnings on extern before template instantiation
+// 4800	- "int,uint32_t,etc" forcing value to bool 'true' or 'false' (performance warning)
+// 4244 - conversion from 'mreal,double' to 'float', possible loss of data
+// 4267	- conversion from 'size_t' to 'long,int,etc', possible loss of data
+// 4305	- truncation from 'double' to 'float'
 #if defined(_MSC_VER)
-#pragma warning(disable: 4996)
+#pragma warning(disable: 4996 4190 4786 4231 4800 4244 4267 4305)
 #endif
 
 #include "mgl2/config.h"
@@ -32,6 +41,11 @@
 #endif
 
 #include "mgl2/dllexport.h"
+#if defined(_MSC_VER)
+#define MGL_OBSOLETE	MGL_NO_EXPORT
+#else
+#define MGL_OBSOLETE	MGL_EXPORT
+#endif
 
 #if MGL_HAVE_ATTRIBUTE
 #define MGL_FUNC_CONST	__attribute__((const))
@@ -97,8 +111,8 @@ typedef unsigned long uintptr_t;
 #include <wchar.h>
 
 #if defined(_MSC_VER)
-#if (_MSC_VER<=1800)
 #define collapse(a)	// MSVS don't support OpenMP 3.*
+#if (_MSC_VER<=1800)
 #define strtoull _strtoui64
 //#define hypot	_hypot
 #define getcwd	_getcwd
@@ -290,7 +304,7 @@ const mdual mgl_I=_Complex_I;
 #ifdef __cplusplus
 #include <string>
 #include <vector>
-#if defined(X_MSC_VER)
+#if defined(_MSC_VER)
 template class MGL_EXPORT std::allocator<char>;
 template class MGL_EXPORT std::allocator<wchar_t>;
 template struct MGL_EXPORT std::char_traits<char>;
@@ -304,7 +318,7 @@ template class MGL_EXPORT std::vector<mreal>;
 extern float mgl_cos[360];	///< contain cosine with step 1 degree
 //-----------------------------------------------------------------------------
 #include <complex>
-#if defined(X_MSC_VER)
+#if defined(_MSC_VER)
 template class MGL_EXPORT std::complex<float>;
 template class MGL_EXPORT std::complex<double>;
 #endif

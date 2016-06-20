@@ -1533,7 +1533,7 @@ void MGL_EXPORT mgl_data_put_val(HMDT d, mreal val, long xx, long yy, long zz)
 	if(xx>=nx || yy>=ny || zz>=nz)	return;
 	mreal *a=d->a;
 	if(xx>=0 && yy>=0 && zz>=0)	a[xx+nx*(yy+zz*ny)] = val;
-	if(xx<0 && yy<0 && zz<0)
+	else if(xx<0 && yy<0 && zz<0)
 #pragma omp parallel for
 		for(long i=0;i<nx*ny*nz;i++)	a[i] = val;
 	else if(xx<0 && yy<0)

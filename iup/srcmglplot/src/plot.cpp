@@ -752,12 +752,13 @@ void MGL_EXPORT mgl_step_xyz(HMGL gr, HCDT x, HCDT y, HCDT z, const char *pen, c
 void MGL_EXPORT mgl_step_xy(HMGL gr, HCDT x, HCDT y, const char *pen, const char *opt)
 {
 	long m,n=y->GetNx(), pal;
-	if(mgl_check_dim1(gr,x,y,0,0,"Step"))	return;
+	if(mgl_check_dim1(gr,x,y,0,0,"Step",true))	return;
 
 	gr->SaveState(opt);
 	static int cgid=1;	gr->StartGroup("Step",cgid++);
 	m = x->GetNy() > y->GetNy() ? x->GetNy() : y->GetNy();
 	bool sh = mglchr(pen,'!');
+	bool same = x->GetNx()==n;
 
 	mreal zVal =gr->AdjustZMin();
 	char mk=gr->SetPenPal(pen,&pal);	gr->Reserve(2*n*m);
@@ -767,21 +768,33 @@ void MGL_EXPORT mgl_step_xy(HMGL gr, HCDT x, HCDT y, const char *pen, const char
 		if(gr->NeedStop())	break;
 		long mx = j<x->GetNy() ? j:0, my = j<y->GetNy() ? j:0;
 		gr->NextColor(pal);
-		long n1 = gr->AddPnt(mglPoint(x->v(0,mx), y->v(0,my), zVal));
+		mreal xx = x->v(0,mx);
+		long n1 = gr->AddPnt(mglPoint(same?xx:(xx+x->v(1,mx))/2, y->v(0,my), zVal));
 		if(mk)	gr->mark_plot(n1,mk);
+		if(!same)	n1 = gr->AddPnt(mglPoint(xx, y->v(0,my), zVal));
 		for(long i=1;i<n;i++)
 		{
 			long n2 = n1;	// horizontal
-			p.Set(x->v(i,mx), y->v(i-1,my), zVal);
+			xx = x->v(i,mx);
+			p.Set(xx, y->v(i-1,my), zVal);
 			mreal c = sh ? gr->NextColor(pal,i):gr->CDef;
 			n1 = gr->AddPnt(p,c);	gr->line_plot(n1,n2);
 			if(i==1)	gr->arrow_plot(n2,n1,gr->Arrow1);
 
 			n2 = n1;	// vertical
 			p.y = y->v(i,my);		n1 = gr->AddPnt(p,c);
-			if(mk)	gr->mark_plot(n1,mk);
 			gr->line_plot(n1,n2);
-			if(i==n-1)	gr->arrow_plot(n1,n2,gr->Arrow2);
+			if(same && i==n-1)	gr->arrow_plot(n1,n2,gr->Arrow2);
+			long nn = n1;
+			if(!same)	nn = gr->AddPnt(mglPoint((xx+x->v(i+1,mx))/2, y->v(i,my), zVal));
+			if(mk)	gr->mark_plot(nn,mk);
+		}
+		if(!same)
+		{
+			p.Set(x->v(n,mx), y->v(n-1,my), zVal);
+			mreal c = sh ? gr->NextColor(pal,n-1):gr->CDef;
+			long n2 = gr->AddPnt(p,c);	gr->line_plot(n1,n2);
+			gr->arrow_plot(n2,n1,gr->Arrow2);
 		}
 	}
 	gr->EndGroup();

@@ -922,13 +922,13 @@ long MGL_EXPORT mgl_check_tex_table()
 	size_t i=0;	while(mgl_tex_symb[i].tex[0])	i++;
 	long res = 0;
 	if(mgl_tex_num!=i)
-	{	printf("real=%lu, set=%lu\n",i,mgl_tex_num);	res = -1;	}
+	{	printf("real=%zu, set=%zu\n",i,mgl_tex_num);	res = -1;	}
 	for(i=0;mgl_tex_symb[i].tex[0];i++)
 	{
 		mglTeXsymb tst, *rts;	tst.tex = mgl_tex_symb[i].tex;
 		rts = (mglTeXsymb *) bsearch(&tst, mgl_tex_symb, mgl_tex_num, sizeof(mglTeXsymb), mgl_tex_symb_cmp);
 		if(!rts)
-		{	printf("Bad '%ls' at %lu\n",mgl_tex_symb[i].tex,i);	res = 1+i;	}
+		{	printf("Bad '%ls' at %zu\n",mgl_tex_symb[i].tex,i);	res = 1+i;	}
 	}
 	return res;
 }

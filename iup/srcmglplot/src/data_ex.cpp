@@ -286,9 +286,10 @@ HMDT MGL_EXPORT mgl_data_sum(HCDT dat, const char *dir)
 	{
 		mglStartThread(mgl_sum_x,0,p[1]*p[2],b,c,0,p);
 		p[0] = p[1];	p[1] = p[2];	p[2] = 1;
+		memcpy(c,b,p[0]*p[1]*sizeof(mreal));
 	}
 	mglData *r=new mglData(p[0],p[1],p[2]);
-	memcpy(r->a,b,p[0]*p[1]*p[2]*sizeof(mreal));
+	memcpy(r->a,c,p[0]*p[1]*p[2]*sizeof(mreal));
 	delete []b;	delete []c;	return r;
 }
 uintptr_t MGL_EXPORT mgl_data_sum_(uintptr_t *d, const char *dir,int l)
@@ -371,9 +372,10 @@ HMDT MGL_EXPORT mgl_data_max_dir(HCDT dat, const char *dir)
 	{
 		mglStartThread(mgl_max_x,0,p[1]*p[2],b,c,0,p);
 		p[0] = p[1];	p[1] = p[2];	p[2] = 1;
+		memcpy(c,b,p[0]*p[1]*sizeof(mreal));
 	}
 	mglData *r=new mglData(p[0],p[1],p[2]);
-	memcpy(r->a,b,p[0]*p[1]*p[2]*sizeof(mreal));
+	memcpy(r->a,c,p[0]*p[1]*p[2]*sizeof(mreal));
 	delete []b;	delete []c;	return r;
 }
 uintptr_t MGL_EXPORT mgl_data_max_dir_(uintptr_t *d, const char *dir,int l)
@@ -456,9 +458,10 @@ HMDT MGL_EXPORT mgl_data_min_dir(HCDT dat, const char *dir)
 	{
 		mglStartThread(mgl_min_x,0,p[1]*p[2],b,c,0,p);
 		p[0] = p[1];	p[1] = p[2];	p[2] = 1;
+		memcpy(c,b,p[0]*p[1]*sizeof(mreal));
 	}
 	mglData *r=new mglData(p[0],p[1],p[2]);
-	memcpy(r->a,b,p[0]*p[1]*p[2]*sizeof(mreal));
+	memcpy(r->a,c,p[0]*p[1]*p[2]*sizeof(mreal));
 	delete []b;	delete []c;	return r;
 }
 uintptr_t MGL_EXPORT mgl_data_min_dir_(uintptr_t *d, const char *dir,int l)
