@@ -599,8 +599,17 @@ void SampleTest(void)
       NULL)), "HTTRANSPARENT=Yes, BGCOLOR=\"100 150 255\"");
     IupInsert(_vbox_1, NULL, caption_bar);
 
+#ifdef WIN32
     IupSetAttribute(dlg, "CUSTOMFRAMEEX", "YES");
     IupSetAttribute(dlg, "CUSTOMFRAMECAPTIONLIMITS", "0:150");
+#else
+    IupSetAttribute(dlg, "BORDER", "YES");
+    IupSetAttribute(dlg, "RESIZE", "YES");
+    IupSetAttribute(dlg, "MENUBOX", "NO");
+    IupSetAttribute(dlg, "MAXBOX", "NO");
+    IupSetAttribute(dlg, "MINBOX", "NO");
+    IupSetAttribute(dlg, "TITLE", NULL);
+#endif
   }
 #endif
 
