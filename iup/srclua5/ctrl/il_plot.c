@@ -19,12 +19,13 @@ static int plot_deleteend_cb(Ihandle *self)
   return iuplua_call(L, 0);
 }
 
-static int plot_plotmotion_cb(Ihandle *self, double p0, double p1)
+static int plot_plotmotion_cb(Ihandle *self, double p0, double p1, char * p2)
 {
   lua_State *L = iuplua_call_start(self, "plotmotion_cb");
   lua_pushnumber(L, p0);
   lua_pushnumber(L, p1);
-  return iuplua_call(L, 2);
+  lua_pushstring(L, p2);
+  return iuplua_call(L, 3);
 }
 
 static int plot_drawsample_cb(Ihandle *self, int p0, int p1, double p2, double p3, int p4)
