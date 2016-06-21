@@ -154,7 +154,6 @@
     <ClCompile Include="..\srcmglplot\src\prim.cpp" />
     <ClCompile Include="..\srcmglplot\src\surf.cpp" />
     <ClCompile Include="..\srcmglplot\src\s_hull\s_hull_pro.cpp" />
-    <ClCompile Include="..\srcmglplot\src\tex_table.cpp" />
     <ClCompile Include="..\srcmglplot\src\vect.cpp" />
     <ClCompile Include="..\srcmglplot\src\volume.cpp" />
     <ClCompile Include="..\srcmglplot\src\window.cpp" />

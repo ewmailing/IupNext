@@ -342,6 +342,8 @@ void MenuTest(void)
     IupSetAttributes(IupItem("Item && Acc\tCtrl+A", "item_cb"), "IMAGE=dummy"), 
     IupSeparator(), 
     IupSetAttributes(IupSubmenu("Create", menu_create), "IMAGE=image_tec"), 
+    IupSeparator(),
+    IupItem(IupGetInt(NULL, "UTF8MODE") ? "Test(Γ§Γ£ΓµΓ΅Γ³Γ©)" : "dlg2(ηγυασι)", NULL),
     NULL);
   menu_help = IupMenu(
     IupSetCallbacks(IupItem("Append", NULL), "ACTION", item_add_cb, "HELP_CB", item_help_cb, NULL),

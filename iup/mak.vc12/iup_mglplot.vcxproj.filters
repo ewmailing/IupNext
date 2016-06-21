@@ -212,9 +212,6 @@
     <ClCompile Include="..\srcmglplot\src\surf.cpp">
       <Filter>mgl</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcmglplot\src\tex_table.cpp">
-      <Filter>mgl</Filter>
-    </ClCompile>
     <ClCompile Include="..\srcmglplot\src\vect.cpp">
       <Filter>mgl</Filter>
     </ClCompile>

@@ -328,6 +328,11 @@ static void new_dialog(int test, char* tip)
     IupSetAttribute(dlg, "ICON", "DLG_ICON");
 //    IupSetAttribute(dlg, "FONTSIZE", "20");
 
+    if (IupGetInt(NULL, "UTF8MODE"))
+      IupSetAttribute(dlg, "TITLE", "dlg2(Γ§Γ£ΓµΓ΅Γ³Γ©)");
+    else
+      IupSetAttribute(dlg, "TITLE", "dlg2(ηγυασι)");
+
     {
       static int count = 0;
       if (count == 0)
