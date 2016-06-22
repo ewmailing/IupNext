@@ -19,10 +19,16 @@
  ***************************************************************************/
 #include <time.h>
 #include <ctype.h>
+#include <math.h>
 #include "mgl2/data.h"
 #include "mgl2/canvas.h"
 #include "mgl2/prim.h"
 #include "mgl2/eval.h"
+
+#if _MSVC_VER < 1800
+#define lrint(_x) (int)(_x + 0.5)
+#endif
+
 std::wstring MGL_EXPORT mgl_ftoa(double v, const char *fmt);
 //-----------------------------------------------------------------------------
 MGL_NO_EXPORT inline struct tm *mgl_localtime (const time_t *clock, tm *result, bool use_utc)

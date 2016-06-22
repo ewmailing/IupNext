@@ -304,7 +304,7 @@ const mdual mgl_I=_Complex_I;
 #ifdef __cplusplus
 #include <string>
 #include <vector>
-#if defined(_MSC_VER)
+#if defined(IUP_MSC_VER)
 template class MGL_EXPORT std::allocator<char>;
 template class MGL_EXPORT std::allocator<wchar_t>;
 template struct MGL_EXPORT std::char_traits<char>;
@@ -318,7 +318,7 @@ template class MGL_EXPORT std::vector<mreal>;
 extern float mgl_cos[360];	///< contain cosine with step 1 degree
 //-----------------------------------------------------------------------------
 #include <complex>
-#if defined(_MSC_VER)
+#if defined(IUP_MSC_VER)
 template class MGL_EXPORT std::complex<float>;
 template class MGL_EXPORT std::complex<double>;
 #endif
