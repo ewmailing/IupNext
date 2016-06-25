@@ -13,6 +13,8 @@ ifdef DBG
   endif  
 endif  
 
+DEF_FILE = iup_mglplot.def
+
 INCLUDES = ../include ../src . 
 LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
 LIBS := iup iupgl $(LIBS)

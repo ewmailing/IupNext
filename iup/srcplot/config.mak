@@ -14,6 +14,8 @@ ifdef DBG
   endif  
 endif  
 
+DEF_FILE = iup_plot.def
+
 INCLUDES = ../include ../src ../srccd
 LDIR = ../lib/$(TEC_UNAME)  
 LIBS = iup iupgl iupcd cdgl cdcontextplus

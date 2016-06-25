@@ -11,6 +11,8 @@ ifdef DBG
   endif
 endif  
 
+DEF_FILE = iup_scintilla.def
+
 INCLUDES =  ../include ../src .
 LDIR = ../lib/$(TEC_UNAME)
 LIBS = iup
