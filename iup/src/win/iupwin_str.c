@@ -24,7 +24,7 @@
 
 - The standard file I/O functions, like fopen, use ANSI file names. 
   But if your files have Unicode names, then you may consider using UTF-8 
-  so later the aplication can recover the original Unicode version.
+  so later the application can recover the original Unicode version.
 */
 static int iupwin_utf8mode = 0;    /* default is NOT using UTF-8 */
 static int iupwin_utf8mode_file = 0;  
@@ -93,7 +93,7 @@ static void* winStrGetMemory(int size)
       buffers_index = 0;
     }
 
-    /* first alocation */
+    /* first allocation */
     if (!(buffers[buffers_index]))
     {
       buffers_sizes[buffers_index] = size+1;

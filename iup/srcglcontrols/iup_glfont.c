@@ -507,7 +507,7 @@ static void iGLFontCheckUtf8Buffer(int len)
 
 static void iGLFontConvertToUTF8(const char* str, int len)
 {
-  /* FTGL multibute strings are always UTF-8 */
+  /* FTGL multibyte strings are always UTF-8 */
   int utf8mode = IupGetInt(NULL, "UTF8MODE");
 
   if (utf8mode || iupStrIsAscii(str))
