@@ -38,11 +38,8 @@ typedef struct _IglFont
 } IglFont;
 
 
-static char* utf8_buffer = NULL;
-static int utf8_buffer_len = 0;
-#ifndef WIN32
-iconv_t gl_iconv = (iconv_t)-1;
-#endif
+static char* gl_utf8_buffer = NULL;
+static int gl_utf8_buffer_len = 0;
 
 
 #ifdef WIN32
@@ -491,80 +488,14 @@ static IglFont* iGLFontGet(Ihandle *ih)
   return glfont;
 }
 
-static void iGLFontCheckUtf8Buffer(int len)
-{
-  if (!utf8_buffer)
-  {
-    utf8_buffer = malloc(len + 1);
-    utf8_buffer_len = len;
-  }
-  else if (utf8_buffer_len < len)
-  {
-    utf8_buffer = realloc(utf8_buffer, len + 1);
-    utf8_buffer_len = len;
-  }
-}
+char* iupStrConvertToUTF8(const char* str, int len, char* utf8_buffer, int *utf8_buffer_max, int utf8mode);
 
 static void iGLFontConvertToUTF8(const char* str, int len)
 {
   /* FTGL multibyte strings are always UTF-8 */
   int utf8mode = IupGetInt(NULL, "UTF8MODE");
 
-  if (utf8mode || iupStrIsAscii(str))
-  {
-    iGLFontCheckUtf8Buffer(len);
-    memcpy(utf8_buffer, str, len);
-    utf8_buffer[len] = 0;
-    return;
-  }
-
-#ifdef WIN32
-  {
-    wchar_t* wstr;
-    int wlen = MultiByteToWideChar(CP_ACP, 0, str, len, NULL, 0);
-    if (!wlen)
-    {
-      iGLFontCheckUtf8Buffer(1);
-      utf8_buffer[0] = 0;
-      return;
-    }
-
-    wstr = (wchar_t*)calloc((wlen + 1), sizeof(wchar_t));
-    MultiByteToWideChar(CP_ACP, 0, str, len, wstr, wlen);
-    wstr[wlen] = 0;
-
-    len = WideCharToMultiByte(CP_UTF8, 0, wstr, wlen, NULL, 0, NULL, NULL);
-    if (!len)
-    {
-      iGLFontCheckUtf8Buffer(1);
-      utf8_buffer[0] = 0;
-      free(wstr);
-      return;
-    }
-
-    iGLFontCheckUtf8Buffer(len);
-    WideCharToMultiByte(CP_UTF8, 0, wstr, wlen, utf8_buffer, len, NULL, NULL);
-    utf8_buffer[len] = 0;
-
-    free(wstr);
-  }
-#else
-  {
-    if (gl_iconv == (iconv_t)-1)
-    {
-      iGLFontCheckUtf8Buffer(1);
-      utf8_buffer[0] = 0;
-      return;
-    }
-
-    size_t ulen = (size_t)len;
-    size_t utf8len = ulen * 2;
-    iGLFontCheckUtf8Buffer(utf8len);
-    char* utf8 = utf8_buffer;
-
-    iconv(gl_iconv, (char**)&str, &ulen, &utf8, &utf8len);
-  }
-#endif
+  gl_utf8_buffer = iupStrConvertToUTF8(str, len, gl_utf8_buffer, &gl_utf8_buffer_len, utf8mode);
 }
 
 static int iGLFontGetFontAveWidth(FTGLfont* ftgl_font)
@@ -584,8 +515,8 @@ static int iGLFontGetFontAveWidth(FTGLfont* ftgl_font)
     iGLFontConvertToUTF8(sample, 256 - 32);
     if (utf8mode) IupSetGlobal("UTF8MODE", "Yes");
 
-    i = (int)strlen(utf8_buffer);
-    memcpy(sample, utf8_buffer, i + 1);
+    i = (int)strlen(gl_utf8_buffer);
+    memcpy(sample, gl_utf8_buffer, i + 1);
     first = 0;
   }
 
@@ -604,7 +535,7 @@ int iupGLFontGetStringWidth(Ihandle* ih, const char* str, int len)
     return 0;
 
   iGLFontConvertToUTF8(str, len);
-  return iupRound(ftglGetFontAdvance(glfont->ftgl_font, utf8_buffer));
+  return iupRound(ftglGetFontAdvance(glfont->ftgl_font, gl_utf8_buffer));
 }
 
 void iupGLFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
@@ -646,7 +577,7 @@ void iupGLFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *
       if (len)
       {
         iGLFontConvertToUTF8(curstr, len);
-        size = iupRound(ftglGetFontAdvance(glfont->ftgl_font, utf8_buffer));
+        size = iupRound(ftglGetFontAdvance(glfont->ftgl_font, gl_utf8_buffer));
         max_w = iupMAX(max_w, size);
       }
 
@@ -731,7 +662,7 @@ void iupGLFontRenderString(Ihandle* ih, const char* str, int len)
 
   iGLFontConvertToUTF8(str, len);
   /* render always at baseline */
-  ftglRenderFont(glfont->ftgl_font, utf8_buffer, FTGL_RENDER_ALL);
+  ftglRenderFont(glfont->ftgl_font, gl_utf8_buffer, FTGL_RENDER_ALL);
 }
 
 void iupGLFontInit(void)
@@ -739,9 +670,6 @@ void iupGLFontInit(void)
 #ifdef WIN32
   if (!win_fonts)
     winInitFontNames();
-#else
-  if (gl_iconv == (iconv_t)-1)
-    gl_iconv = iconv_open("UTF-8", "ISO-8859-1");
 #endif
 }
 
@@ -764,11 +692,11 @@ void iupGLFontRelease(Ihandle* gl_parent)
 
 void iupGLFontFinish(void)
 {
-  if (utf8_buffer)
+  if (gl_utf8_buffer)
   {
-    free(utf8_buffer);
-    utf8_buffer = NULL;
-    utf8_buffer_len = 0;
+    free(gl_utf8_buffer);
+    gl_utf8_buffer = NULL;
+    gl_utf8_buffer_len = 0;
   }
 
 #ifdef WIN32
@@ -776,9 +704,5 @@ void iupGLFontFinish(void)
     free(win_fonts);
   win_fonts = NULL;
   win_fonts_count = 0;
-#else
-  if (gl_iconv != (iconv_t)-1)
-    iconv_close(gl_iconv);
-  gl_iconv = (iconv_t)-1;
 #endif
 }

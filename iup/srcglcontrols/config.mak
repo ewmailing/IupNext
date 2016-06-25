@@ -22,10 +22,10 @@ ifneq ($(findstring dll, $(TEC_UNAME)), )
 endif
 
 ifneq ($(findstring cygw, $(TEC_UNAME)), )
-  LIBS += fontconfig iconv
+  LIBS += fontconfig
 endif
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
-  LIBS += fontconfig iconv
+  LIBS += fontconfig
 endif
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )

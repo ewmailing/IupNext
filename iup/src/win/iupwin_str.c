@@ -11,6 +11,7 @@
 #include <string.h>             
 
 #include "iupwin_str.h"
+#include "iup_str.h"
 
 
 /* From MSDN:
@@ -262,5 +263,63 @@ TCHAR* iupwinStrToSystemLen(const char* str, int *len)
   (void)len;
   return (char*)str;
 #endif
+}
+
+static char* iupCheckUtf8Buffer(char* utf8_buffer, int *utf8_buffer_max, int len)
+{
+  if (!utf8_buffer)
+  {
+    utf8_buffer = malloc(len + 1);
+    *utf8_buffer_max = len;
+  }
+  else if (*utf8_buffer_max < len)
+  {
+    utf8_buffer = realloc(utf8_buffer, len + 1);
+    *utf8_buffer_max = len;
+  }
+
+  return utf8_buffer;
+}
+
+static char* iupStrCopyToUtf8Buffer(const char* str, int len, char* utf8_buffer, int *utf8_buffer_max)
+{
+  utf8_buffer = iupCheckUtf8Buffer(utf8_buffer, utf8_buffer_max, len);
+  memcpy(utf8_buffer, str, len);
+  utf8_buffer[len] = 0;
+  return utf8_buffer;
+}
+
+char* iupStrConvertToUTF8(const char* str, int len, char* utf8_buffer, int *utf8_buffer_max, int utf8mode)
+{
+  if (utf8mode || iupStrIsAscii(str)) /* string is already utf8 or is ascii */
+    return iupStrCopyToUtf8Buffer(str, len, utf8_buffer, utf8_buffer_max);
+
+  {
+    int mlen;
+    wchar_t* wstr;
+    int wlen = MultiByteToWideChar(CP_ACP, 0, str, len, NULL, 0);
+    if (!wlen)
+      return iupStrCopyToUtf8Buffer(str, len, utf8_buffer, utf8_buffer_max);
+
+    wstr = (wchar_t*)calloc((wlen + 1), sizeof(wchar_t));
+    MultiByteToWideChar(CP_ACP, 0, str, len, wstr, wlen);
+    wstr[wlen] = 0;
+
+    mlen = WideCharToMultiByte(CP_UTF8, 0, wstr, wlen, NULL, 0, NULL, NULL);
+    if (!mlen)
+    {
+      free(wstr);
+      return iupStrCopyToUtf8Buffer(str, len, utf8_buffer, utf8_buffer_max);
+    }
+
+    utf8_buffer = iupCheckUtf8Buffer(utf8_buffer, utf8_buffer_max, mlen);
+
+    WideCharToMultiByte(CP_UTF8, 0, wstr, wlen, utf8_buffer, mlen, NULL, NULL);
+    utf8_buffer[mlen] = 0;
+
+    free(wstr);
+  }
+
+  return utf8_buffer;
 }
 

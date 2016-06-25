@@ -534,6 +534,7 @@ iupLineFileReadLine
 iupLineFileGetBuffer
 iupLineFileClose
 iupLineFileEOF
+iupStrConvertToUTF8
 
 IupConfig
 IupConfigLoad
