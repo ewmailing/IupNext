@@ -76,7 +76,7 @@ static int predraw_cb(Ihandle* ih, cdCanvas* cnv)
 static void InitPlots(void)
 {
   int theI;
-  double x, y, theFac, Mult = 1;
+  double x, y, theFac, Mult = 1, count;
 
   /************************************************************************/
   /* PLOT 0 - MakeExamplePlot1 */
@@ -445,7 +445,7 @@ static void InitPlots(void)
     IupPlotAdd(plot[10], x, y);
   }
   IupPlotEnd(plot[10]);
-  int count = 0;
+  count = 0;
   for (theI = 0; theI <= 360; theI = theI + 10) {
     IupPlotSetSampleExtra(plot[10], 0, count++, 0.1 * (double)rand() / (double)RAND_MAX);
   }

@@ -36,19 +36,19 @@ static int mouseclick_cb(Ihandle* ih, int b, char* m, int i, int j, int x, int y
   return IUP_DEFAULT;
 }
 
-static int draw_cb(Ihandle* ih, int i, int j, int xmin, int xmax, int ymin, int ymax)
+static int draw_cb(Ihandle* ih, int i, int j, int xmin, int xmax, int ymin, int ymax, cdCanvas* canvas)
 {
   static char buffer[64];
   int xm = (xmax + xmin) / 2;
   int ym = (ymax + ymin) / 2;
 
-  cdForeground(cdEncodeColor((unsigned char)(i*20), (unsigned char)(j*100), (unsigned char)(i+100)));
+  cdCanvasForeground(canvas, cdEncodeColor((unsigned char)(i*20), (unsigned char)(j*100), (unsigned char)(i+100)));
 
-  cdBox(xmin, xmax, ymin, ymax);
-  cdTextAlignment(CD_CENTER);
-  cdForeground(CD_BLACK);
+  cdCanvasBox(canvas, xmin, xmax, ymin, ymax);
+  cdCanvasTextAlignment(canvas, CD_CENTER);
+  cdCanvasForeground(canvas, CD_BLACK);
   sprintf(buffer, "(%02d, %02d)", i, j);
-  cdText(xm, ym, buffer);
+  cdCanvasText(canvas, xm, ym, buffer);
 
   return IUP_DEFAULT;
 }
