@@ -14,6 +14,16 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   DEFINES = _MBCS
 else
   ifdef GTK_DEFAULT
+    ifdef GTK_BASE
+      GTK := $(GTK_BASE)
+    else
+      ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+        GTK = /sw
+      else
+        GTK = /usr
+      endif
+    endif
+  
     SRC  += iupgtk_webbrowser.c
     USE_GTK = Yes
     INCLUDES += ../src/gtk
