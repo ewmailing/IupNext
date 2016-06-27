@@ -1005,15 +1005,6 @@ static int StoreGlobal(lua_State *L)
   return 0;
 }
 
-static int UnMapFont (lua_State *L)
-{
-  const char *s = luaL_checkstring(L,1);
-  const char *n = IupUnMapFont(s);
-  lua_pushstring(L,n);
-  return 1;
-}
-
-
 /*****************************************************************************
 * iupluaapi_open                                                               *
 ****************************************************************************/
