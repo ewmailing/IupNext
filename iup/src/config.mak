@@ -107,7 +107,7 @@ ifdef USE_GTK
   
   ifdef USE_HILDON
     DEFINES += HILDON
-    INCLUDES += /usr/include/hildon-1
+    STDINCS += /usr/include/hildon-1
     LIBS += hildon-1
   endif
 else
