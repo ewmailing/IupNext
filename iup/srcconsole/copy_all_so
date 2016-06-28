@@ -16,6 +16,7 @@ Copy_SOs()
   cp -f ../lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/cd/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/im/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+  cp -f $BASE_TEC/ftgl/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f ../lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/cd/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/im/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
@@ -26,7 +27,7 @@ Copy_SOs()
 
 # MacOS1010
 
-for plat in Linux26g4_64 Linux32 Linux32_64 Linux35_64 Linux313_64 Linux319_64 SunOS511x86 
+for plat in Linux26g4_64 Linux32 Linux32_64 Linux35_64 Linux313_64 Linux319_64 Linux44_64 SunOS511x86 
 do
   Copy_SOs $plat 51 so
   Copy_SOs $plat 52 so
