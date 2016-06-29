@@ -1235,7 +1235,13 @@ static int iMatrixSetFontAttrib(Ihandle* ih, int lin, int col, const char* value
 static char* iMatrixGetFontAttrib(Ihandle* ih, int lin, int col)
 {
   if (lin == IUP_INVALID_ID && col == IUP_INVALID_ID)  /* empty id */
-    return iupAttribGetInherit(ih, "FONT");
+  {
+    char* value = iupAttribGetInherit(ih, "FONT");
+    if (!value)
+      return IupGetGlobal("DEFAULTFONT");
+    else
+      return value;
+  }
   return NULL;
 }
 
