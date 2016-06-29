@@ -78,6 +78,12 @@ static unsigned char image_data_32 [TEST_IMAGE_SIZE*TEST_IMAGE_SIZE*4] =
   000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,000,000,000,255,
 };
 
+static int button_cb(Ihandle *ih, int but, int pressed, int x, int y, char* status)
+{
+  printf("BUTTON_CB(but=%c (%d), x=%d, y=%d [%s])\n", (char)but, pressed, x, y, status);
+  return IUP_DEFAULT;
+}
+
 static int enter_cb(Ihandle *ih)
 {
   Ihandle *box = IupGetChild(ih, 0);
@@ -215,6 +221,7 @@ void LabelTest(void)
   IupSetAttributeHandle(label, "IMAGE", image3);
   IupSetAttribute(label, "RASTERSIZE", "150x50");
   IupSetAttribute(label, "ALIGNMENT", "ARIGHT");
+  IupSetCallback(label, "BUTTON_CB", (Icallback)button_cb);
   IupAppend(box2, label);
 
   label = IupAnimatedLabel(NULL);
