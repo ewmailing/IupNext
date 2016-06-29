@@ -484,7 +484,7 @@ static IglFont* iGLFontGet(Ihandle *ih)
 {
   IglFont* glfont = (IglFont*)iupAttribGet(ih, "_IUP_GLFONT");
   if (!glfont)
-    glfont = iGLFontCreateNativeFont(ih, iupAttribGetStr(ih, "FONT"));
+    glfont = iGLFontCreateNativeFont(ih, IupGetAttribute(ih, "FONT"));
   return glfont;
 }
 

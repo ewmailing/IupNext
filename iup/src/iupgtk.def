@@ -229,6 +229,7 @@ IupDrawGetSize
 
 iupdrvSetVisible
 iupdrvSetFontAttrib
+iupGetFontValue
 iupdrvSetActive
 iupdrvScreenToClient
 iupdrvClientToScreen

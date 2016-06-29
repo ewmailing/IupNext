@@ -166,7 +166,7 @@ static IgtkFont* gtkFontGet(Ihandle *ih)
 {
   IgtkFont* gtkfont = (IgtkFont*)iupAttribGet(ih, "_IUP_GTKFONT");
   if (!gtkfont)
-    gtkfont = gtkFontCreateNativeFont(ih, iupAttribGetStr(ih, "FONT"));
+    gtkfont = gtkFontCreateNativeFont(ih, iupGetFontValue(ih));
   return gtkfont;
 }
 

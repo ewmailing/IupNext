@@ -48,6 +48,10 @@ int iupdrvSetFontAttrib(Ihandle* ih, const char* value);
 
 
 
+/** Compensates IupMatrix limitation in Get FONT.
+  * \ingroup drvfont */
+char* iupGetFontValue(Ihandle* ih);
+
 /** Parse the font format description.
  * Returns a non zero value if successful.
  * \ingroup drvfont */

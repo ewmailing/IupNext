@@ -15,6 +15,8 @@
 #include "iup_assert.h"
 #include "iup_attrib.h"
 #include "iup_class.h"
+#include "iup_object.h"
+
 
 typedef struct _IfontNameMap {
   const char* pango;
@@ -82,9 +84,24 @@ const char* iupFontGetXName(const char* name)
   return NULL;
 }
 
+char* iupGetFontValue(Ihandle* ih)
+{
+  char* value = iupAttribGetStr(ih, "FONT");
+
+  /* compensate the fact that FONT in IupMatrix is used with Id2 (lin,col) and does NOT have a default value. */
+  if (!value && ih->iclass->nativetype == IUP_TYPECANVAS)
+  {
+    value = iupAttribGetInherit(ih, "FONT");
+    if (!value)
+      return IupGetGlobal("DEFAULTFONT");
+  }
+
+  return value;
+}
+
 void iupUpdateFontAttrib(Ihandle* ih)
 {
-  iupAttribSetClassObject(ih, "FONT", iupAttribGetStr(ih, "FONT"));
+  iupAttribSetClassObject(ih, "FONT", iupGetFontValue(ih));
 }
 
 int iupGetFontInfo(const char* font, char *typeface, int *size, int *is_bold, int *is_italic, int *is_underline, int *is_strikeout)
@@ -119,7 +136,7 @@ char* iupGetFontFaceAttrib(Ihandle* ih)
   char typeface[1024];
   char* font; 
   
-  font = iupAttribGetStr(ih, "FONT");
+  font = iupGetFontValue(ih);
 
   if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return NULL;
@@ -140,7 +157,7 @@ int iupSetFontFaceAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  font = iupAttribGetStr(ih, "FONT");
+  font = iupGetFontValue(ih);
 
   if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return 0;
@@ -159,7 +176,7 @@ char* iupGetFontSizeAttrib(Ihandle* ih)
   char typeface[1024];
   char* font; 
   
-  font = iupAttribGetStr(ih, "FONT");
+  font = iupGetFontValue(ih);
 
   if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return NULL;
@@ -180,7 +197,7 @@ int iupSetFontSizeAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
   
-  font = iupAttribGetStr(ih, "FONT");
+  font = iupGetFontValue(ih);
 
   if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return 0;
@@ -317,7 +334,7 @@ char* iupGetFontStyleAttrib(Ihandle* ih)
     is_underline = 0,
     is_strikeout = 0;
   char typeface[1024];
-  char* font = iupAttribGetStr(ih, "FONT");
+  char* font = iupGetFontValue(ih);
 
   if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return NULL;
@@ -338,7 +355,7 @@ int iupSetFontStyleAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
   
-  font = iupAttribGetStr(ih, "FONT");
+  font = iupGetFontValue(ih);
 
   if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return 0;

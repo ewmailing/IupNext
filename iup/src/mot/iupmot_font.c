@@ -315,7 +315,7 @@ static ImotFont* motGetFont(Ihandle *ih)
 {
   ImotFont* motfont = (ImotFont*)iupAttribGet(ih, "_IUPMOT_FONT");
   if (!motfont)
-    motfont = motFontCreateNativeFont(ih, iupAttribGetStr(ih, "FONT"));
+    motfont = motFontCreateNativeFont(ih, iupGetFontValue(ih));
   return motfont;
 }
 

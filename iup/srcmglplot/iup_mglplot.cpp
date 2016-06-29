@@ -1712,7 +1712,7 @@ static void iMglPlotDrawPlot(Ihandle* ih, mglGraph *gr)
 
   iMglPlotConfigView(ih, gr);
 
-  iMglPlotConfigFontDef(ih, gr, iupAttribGetStr(ih, "FONT"));
+  iMglPlotConfigFontDef(ih, gr, IupGetAttribute(ih, "FONT"));
 
   iMglPlotConfigAxesRange(ih, gr);
 

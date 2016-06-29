@@ -1434,7 +1434,7 @@ static int winTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
   charformat.cbSize = sizeof(CHARFORMAT2);
   charformat.dwMask = CFM_DISABLED|CFM_OFFSET|CFM_PROTECTED;
 
-  winTextUpdateFontFormat(&charformat, iupAttribGetStr(ih, "FONT"));
+  winTextUpdateFontFormat(&charformat, IupGetAttribute(ih, "FONT"));
 
   if (iupwinGetColorRef(ih, "FGCOLOR", &colorref))
   {
