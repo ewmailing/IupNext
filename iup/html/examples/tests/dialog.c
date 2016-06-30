@@ -357,9 +357,10 @@ static void new_dialog(int test, char* tip)
       }
       if (count == 2)
       {
+        IupSetAttribute(dlg, "OPACITY", "128");
+
         // Windows Only  
         IupSetAttribute(dlg, "TOPMOST", "YES");
-        IupSetAttribute(dlg, "OPACITY", "128");
         IupSetAttribute(dlg, "TOOLBOX", "YES");  // NOT working in Windows 8
       }
       count++;
