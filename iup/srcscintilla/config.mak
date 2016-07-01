@@ -40,14 +40,14 @@ ifdef USE_GTK
   ifdef USE_GTK3
     DEFINES += GDK_DISABLE_DEPRECATED GSEAL_ENABLE G_HAVE_ISO_VARARGS
   endif
-  INCLUDES += ../src/gtk ../srcscintilla/lexlib ../srcscintilla/src ../srcscintilla/include ../srcscintilla/gtk
+  INCLUDES += ../src/gtk lexlib src include gtk
   INCLUDES += gtk
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
     INCLUDES += $(GTK)/include/cairo
     LIBS += pangocairo-1.0 cairo
   endif
 else
-  INCLUDES += ../src/win ../srcscintilla/lexlib ../srcscintilla/src ../srcscintilla/include ../srcscintilla/win32
+  INCLUDES += ../src/win lexlib src include win32
   INCLUDES += win
   LIBS += imm32
   DEFINES += UNICODE
