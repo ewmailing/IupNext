@@ -7,7 +7,7 @@
 #include <iup.h>
 #include <iupcontrols.h>
 
-static int param_action(Ihandle* dialog, int param_index, void* user_data)
+static int param_action(Ihandle* param_box, int param_index, void* user_data)
 {                
   switch (param_index)
   {
@@ -17,14 +17,17 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
     break;
   case IUP_GETPARAM_INIT:
     {
-      Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", param_index);
-      IupSetfAttribute(param, "MAXSTR", "%d", 30);
+      Ihandle* param = (Ihandle*)IupGetAttributeId(param_box, "PARAM", 6);
+      IupSetfAttribute(param, "MAXSTR", "%d", 5);
+
+      param = (Ihandle*)IupGetAttributeId(param_box, "PARAM", 3);
+      printf("PARAM3 = %s\n", IupGetAttribute(param, "INDEX"));
 
       printf("IupGetParam - Init\n");
 
       if (0)
       {
-        Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", 1);
+        Ihandle* param = (Ihandle*)IupGetAttributeId(param_box, "PARAM", 1);
         Ihandle* control = (Ihandle*)IupGetAttribute(param, "CONTROL");
         IupSetAttribute(control, "SELECTION", "ALL");
       }
@@ -43,7 +46,7 @@ static int param_action(Ihandle* dialog, int param_index, void* user_data)
 //    return 0;
   default:
     {
-      Ihandle* param = (Ihandle*)IupGetAttributeId(dialog, "PARAM", param_index);
+      Ihandle* param = (Ihandle*)IupGetAttributeId(param_box, "PARAM", param_index);
       printf("PARAM%d = %s\n", param_index, IupGetAttribute(param, "VALUE"));
       break;
     }
