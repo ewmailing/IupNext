@@ -53,16 +53,16 @@ else
   DEFINES += UNICODE
   
   ifneq ($(findstring gcc, $(TEC_UNAME)), )
-    DEFINES += _WIN32 DISABLE_D2D
+    DEFINES += _WIN32 DISABLE_D2D NO_CXX11_REGEX
   endif
   ifneq ($(findstring dllg, $(TEC_UNAME)), )
-    DEFINES += _WIN32 DISABLE_D2D
+    DEFINES += _WIN32 DISABLE_D2D NO_CXX11_REGEX
   endif
   ifneq ($(findstring mingw, $(TEC_UNAME)), )
-    DEFINES += _WIN32 DISABLE_D2D
+    DEFINES += _WIN32 DISABLE_D2D NO_CXX11_REGEX
   endif
   ifneq ($(findstring dllw, $(TEC_UNAME)), )
-    DEFINES += _WIN32 DISABLE_D2D
+    DEFINES += _WIN32 DISABLE_D2D NO_CXX11_REGEX
   endif
 endif
 
