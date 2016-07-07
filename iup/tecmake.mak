@@ -1178,7 +1178,7 @@ endif
 ifdef USE_FREETYPE
   LINK_FREETYPE = Yes
   
-  INCLUDES += $(FREETYPE_INC)
+  STDINCS += $(FREETYPE_INC)
 endif
 
 ifdef LINK_FREETYPE
