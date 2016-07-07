@@ -778,13 +778,16 @@ iupPlot::iupPlot(Ihandle* _ih, int inDefaultFontStyle, int inDefaultFontSize)
   mGrid(true), mGridMinor(false), mViewportSquare(false), mScaleEqual(false),
   mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle), 
   mAxisX(inDefaultFontStyle, inDefaultFontSize), mAxisY(inDefaultFontStyle, inDefaultFontSize),
-  mCrossHairX(0), mCrossHairY(0), mShowSelectionBand(false)
+  mCrossHairX(0), mCrossHairY(0), mShowSelectionBand(false), mDataSetListMax(20)
 {
+  mDataSetList = (iupPlotDataSet**)malloc(sizeof(iupPlotDataSet*) * mDataSetListMax);
+  memset(mDataSetList, 0, sizeof(iupPlotDataSet*) * mDataSetListMax);
 }
 
 iupPlot::~iupPlot()
 {
   RemoveAllDataSets();
+  free(mDataSetList);
 }
 
 void iupPlot::SetViewport(int x, int y, int w, int h)
@@ -900,7 +903,15 @@ long iupPlot::GetNextDataSetColor()
 
 void iupPlot::AddDataSet(iupPlotDataSet* inDataSet)
 {
-  if (mDataSetListCount < IUP_PLOT_MAX_DS)
+  if (mDataSetListCount >= mDataSetListMax)
+  {
+    int old_max = mDataSetListMax;
+    mDataSetListMax += 20;
+    mDataSetList = (iupPlotDataSet**)realloc(mDataSetList, sizeof(iupPlotDataSet*) * mDataSetListMax);
+    memset(mDataSetList + old_max, 0, sizeof(iupPlotDataSet*) * (mDataSetListMax - old_max));
+  }
+
+  if (mDataSetListCount < mDataSetListMax)
   {
     long theColor = GetNextDataSetColor();
 

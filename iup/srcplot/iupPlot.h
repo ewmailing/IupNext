@@ -564,7 +564,6 @@ protected:
   char* mImage;
 };
 
-#define IUP_PLOT_MAX_DS 20
 
 class iupPlot
 {
@@ -654,8 +653,9 @@ public:
 
   /***********************************/
 
-  iupPlotDataSet* mDataSetList[IUP_PLOT_MAX_DS];
+  iupPlotDataSet* *mDataSetList;
   int mDataSetListCount;
+  int mDataSetListMax;
   int mCurrentDataSet;
 
   void AddDataSet(iupPlotDataSet* inDataSet);
