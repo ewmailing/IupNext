@@ -431,6 +431,7 @@ static iPlotAttribParam iplot_axisY_attribs[] = {
 static iPlotAttribParam iplot_axisXlabel_attribs[] = {
   { "AXS_XLABEL", NULL, "_@IUP_TEXT", "s", "", "", NULL },
   { "AXS_XLABELCENTERED", NULL, "_@IUP_CENTERED", "b", "", "", NULL },
+  { "AXS_XLABELSPACING", NULL, "_@IUP_SPACING", "i", "[-1,,]", "", NULL },
   { "AXS_XFONTSTYLE", NULL, "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "AXS_XFONTSIZE", NULL, "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
@@ -439,6 +440,7 @@ static iPlotAttribParam iplot_axisXlabel_attribs[] = {
 static iPlotAttribParam iplot_axisYlabel_attribs[] = {
   { "AXS_YLABEL", NULL, "_@IUP_TEXT", "s", "", "", NULL },
   { "AXS_YLABELCENTERED", NULL, "_@IUP_CENTERED", "b", "", "", NULL },
+  { "AXS_YLABELSPACING", NULL, "_@IUP_SPACING", "i", "[-1,,]", "", NULL },
   { "AXS_YFONTSTYLE", NULL, "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "AXS_YFONTSIZE", NULL, "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }

@@ -386,7 +386,7 @@ public:
     : mShow(true), mMin(0), mMax(0), mAutoScaleMin(true), mAutoScaleMax(true),
       mReverse(false), mLogScale(false), mCrossOrigin(false), mColor(CD_BLACK),
       mMaxDecades(-1), mLogBase(10), mLabelCentered(false), mHasZoom(false),
-      mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1),
+      mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1), mLabelSpacing(-1),
       mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize), 
       mTrafo(NULL), mTickIter(NULL), mDefaultFontStyle(inDefaultFontStyle)
     { strcpy(mTipFormatString, "%.2f"); }
@@ -428,6 +428,7 @@ public:
   bool mLabelCentered;
   int mDefaultFontSize;
   int mDefaultFontStyle;
+  int mLabelSpacing;
 
   bool mLogScale;
   int mMaxDecades;// property for auto logscale

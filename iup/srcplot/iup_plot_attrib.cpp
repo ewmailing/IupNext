@@ -1933,6 +1933,62 @@ static char* iPlotGetAxisYLineWidthAttrib(Ihandle* ih)
   return iupStrReturnInt(axis->mLineWidth);
 }
 
+static int iPlotSetAxisXLabelSpacingAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "AUTO"))
+  {
+    ih->data->current_plot->mAxisX.mLabelSpacing = -1;
+    ih->data->current_plot->mRedraw = true;
+  }
+  else
+  {
+    int ii;
+    if (iupStrToInt(value, &ii))
+    {
+      ih->data->current_plot->mAxisX.mLabelSpacing = ii;
+      ih->data->current_plot->mRedraw = true;
+    }
+  }
+  return 0;
+}
+
+static char* iPlotGetAxisXLabelSpacingAttrib(Ihandle* ih)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisX;
+  if (axis->mLabelSpacing == -1)
+    return "AUTO";
+  else
+    return iupStrReturnInt(axis->mLabelSpacing);
+}
+
+static int iPlotSetAxisYLabelSpacingAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "AUTO"))
+  {
+    ih->data->current_plot->mAxisY.mLabelSpacing = -1;
+    ih->data->current_plot->mRedraw = true;
+  }
+  else
+  {
+    int ii;
+    if (iupStrToInt(value, &ii))
+    {
+      ih->data->current_plot->mAxisY.mLabelSpacing = ii;
+      ih->data->current_plot->mRedraw = true;
+    }
+  }
+  return 0;
+}
+
+static char* iPlotGetAxisYLabelSpacingAttrib(Ihandle* ih)
+{
+  iupPlotAxis* axis = &ih->data->current_plot->mAxisY;
+  if (axis->mLabelSpacing == -1)
+    return "AUTO";
+  else
+    return iupStrReturnInt(axis->mLabelSpacing);
+}
+
 static int iPlotSetViewportSquareAttrib(Ihandle* ih, const char* value)
 {
   iupPlotResetZoom(ih, 0);
@@ -3144,6 +3200,8 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "AXS_YLABEL", iPlotGetAxisYLabelAttrib, iPlotSetAxisYLabelAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XLABELCENTERED", iPlotGetAxisXLabelCenteredAttrib, iPlotSetAxisXLabelCenteredAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YLABELCENTERED", iPlotGetAxisYLabelCenteredAttrib, iPlotSetAxisYLabelCenteredAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_XLABELSPACING", iPlotGetAxisXLabelSpacingAttrib, iPlotSetAxisXLabelSpacingAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AXS_YLABELSPACING", iPlotGetAxisYLabelSpacingAttrib, iPlotSetAxisYLabelSpacingAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XFONTSIZE", iPlotGetAxisXFontSizeAttrib, iPlotSetAxisXFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_YFONTSIZE", iPlotGetAxisYFontSizeAttrib, iPlotSetAxisYFontSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_XFONTSTYLE", iPlotGetAxisXFontStyleAttrib, iPlotSetAxisXFontStyleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

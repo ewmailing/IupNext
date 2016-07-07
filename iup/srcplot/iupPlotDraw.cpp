@@ -226,11 +226,16 @@ bool iupPlotAxis::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPl
 
   if (GetLabel())
   {
-    int theXFontHeight;
     SetFont(canvas, mFontStyle, mFontSize);
-    cdCanvasGetFontDim(canvas, NULL, &theXFontHeight, NULL, NULL);
 
-    theScreenY -= theXFontHeight / 10;  // spacing
+    if (mLabelSpacing == -1)
+    {
+      int theXFontHeight;
+      cdCanvasGetFontDim(canvas, NULL, &theXFontHeight, NULL, NULL);
+      theScreenY -= theXFontHeight / 10;  // default spacing
+    }
+    else
+      theScreenY -= mLabelSpacing;
 
     if (mLabelCentered)
     {
@@ -346,11 +351,16 @@ bool iupPlotAxis::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPl
 
   if (GetLabel())
   {
-    int theYFontHeight;
     SetFont(canvas, mFontStyle, mFontSize);
-    cdCanvasGetFontDim(canvas, NULL, &theYFontHeight, NULL, NULL);
 
-    theScreenX -= theYFontHeight / 10;  // spacing
+    if (mLabelSpacing == -1)
+    {
+      int theYFontHeight;
+      cdCanvasGetFontDim(canvas, NULL, &theYFontHeight, NULL, NULL);
+      theScreenX -= theYFontHeight / 10;  // default spacing
+    }
+    else
+      theScreenX -= mLabelSpacing;
 
     if (mLabelCentered)
     {
