@@ -19,21 +19,32 @@ them. You may then choose to build specific libraries.</p>
 So first the GNU <strong>make</strong> must be installed, and it must be in the 
 PATH before other makes. <a href="http://www.mingw.org/">MingW</a>,
 <a href="http://www.cygwin.com/">Cygwin</a> and
-<a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distributions have GNU
-<strong>make</strong> binaries ready for download. Some utilities are also 
-necessary, specially to build the dependencies file: <strong>mkdir</strong>,
-<strong>rm </strong>(both in CoreUtils)<strong> [</strong>, <strong>which, sed</strong> and <strong>g++]</strong>. If 
-you don't need the dependencies or some other options just ignore them. Also 
-some features will work best if <strong>bash</strong> is installed.</p>
-<p>When installing <strong>Cygwin</strong> unmark all pre-selected items. This is easier to do in 
+<a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distributions have the GNU
+<strong>make</strong> binaries ready for download. </p>
+<p>The <strong>mkdir </strong>and
+<strong>rm </strong>utilities are also necessary. And some features will work 
+best if <strong>bash</strong> is installed. </p>
+<p>To build the dependencies file<strong> </strong>you will need:<strong> which </strong>
+and<strong> sed</strong>. If you don't need the dependencies or some other 
+options just ignore them. </p>
+<p><strong>Cygwin</strong> and <strong>MingW</strong> (with MSYS) have all these 
+tools. </p>
+<p>When installing <strong>Cygwin</strong> un-select all pre-selected items. This is easier to do in 
 &quot;Partial&quot; mode view. Then select only &quot;<strong>make</strong>&quot;, it will 
 automatically select other packages that &quot;<strong>make</strong>&quot; depends on. And 
 select the <strong>mkdir</strong>, <strong>rm</strong>, <strong>which, sed</strong> 
 and <strong>g++</strong> packages. Change PATH in &quot;Control Panel/System/Advanced/Environment 
-Variables&quot; and add &quot;<a href="file:///c:/cygwin/bin;">c:\cygwin\bin;</a>&quot;.</p>
-<p>When installing <strong>MingW</strong> mark C Compiler, C++ Compiler, MSYS 
+Variables&quot; and add &quot;<a href="file:///c:/cygwin/bin;">c:\cygwin\bin;</a>&quot;. 
+The MSYS package in MingW has all these tools also.</p>
+<p>When installing <strong>MingW</strong> select: C Compiler, C++ Compiler, MSYS 
 Basic System, and MinGW Developer Toolkit. Change PATH in &quot;Control 
 Panel/System/Advanced/Environment Variables&quot; and add &quot;<a href="file:///C:/mingw4/msys/1.0/bin;C:/mingw4/bin;">C:\mingw4\msys\1.0\bin;C:\mingw4\bin;</a>&quot;.</p>
+<p>Notice that in alternative distributions of <strong>MingW</strong>, like
+<font face="verdana, helvetica" size="3">
+	<a href="http://tdm-gcc.tdragon.net/">TDM-gcc</a> or
+	<a href="http://mingw-w64.org/">Mingw-w64</a>, make is named &quot;mingw32-make&quot; 
+and most of the tools are not available. So we recommend installing MSYS from 
+the standard distribution.</font></p>
 <p>For <strong>GnuWin32</strong> it is faster to manually download and install the selected tools 
 packages. But it does not include a compiler and does not include bash.</p>
 <p><a href="http://win-bash.sourceforge.net/">Win-Bash</a> contains a &quot;<a href="http://sourceforge.net/projects/win-bash/files/shell-complete/latest/shell.w32-ix86.zip/download">Shell-Complete</a>&quot; 
@@ -44,7 +55,9 @@ compilers:</p>
 <ul>
 	<li><a href="http://www.microsoft.com/express/vc/">Visual C++</a> or just 
 	the <a href="http://www.microsoft.com/download/en/details.aspx?id=8279">Windows SDK</a>.</li>
-	<li>Gnu gcc (<a href="http://www.mingw.org/">MingW</a> or
+	<li>Gnu gcc (<a href="http://www.mingw.org/">MingW</a>,
+	<a href="http://tdm-gcc.tdragon.net/">TDM-gcc</a>,
+	<a href="http://mingw-w64.org/">Mingw-w64</a> or
 	<a href="http://www.cygwin.com/">Cygwin</a>)</li>
 	<li><a href="http://www.openwatcom.org/">Open Watcom C++</a></li>
 	<li><a href="https://downloads.embarcadero.com/free/c_builder">Embarcadero 
