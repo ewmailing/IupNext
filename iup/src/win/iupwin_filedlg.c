@@ -599,16 +599,25 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
 
         char* dir = iupwinStrFromSystemFilename(openfilename.lpstrFile);  /* already is the directory, but without the last separator */
         iupAttribSetStrf(ih, "DIRECTORY", "%s\\", dir);  /* add the last separator */
+        dir = iupAttribGet(ih, "DIRECTORY");
 
         /* first the path */
-        iupAttribSetStrId(ih, "MULTIVALUE", count, iupAttribGet(ih, "DIRECTORY"));  /* here count=0 always */
+        iupAttribSetStrId(ih, "MULTIVALUE", count, dir);  /* here count=0 always */
         count++;
 
         while (openfilename.lpstrFile[i] != 0 || openfilename.lpstrFile[i + 1] != 0)
         {
           if (openfilename.lpstrFile[i] == 0)
           {
-            iupAttribSetStrId(ih, "MULTIVALUE", count, iupwinStrFromSystemFilename(openfilename.lpstrFile + i + 1));
+            char* filename = iupwinStrFromSystemFilename(openfilename.lpstrFile + i + 1);
+            if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
+            {
+              char nameid[100];
+              sprintf(nameid, "MULTIVALUE%d", count);
+              iupAttribSetStrf(ih, nameid, "%s%s", dir, filename);
+            }
+            else
+              iupAttribSetStrId(ih, "MULTIVALUE", count, filename);
             count++;
 
             openfilename.lpstrFile[i] = TEXT('|');
@@ -632,7 +641,10 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
         iupAttribSetStr(ih, "DIRECTORY", dir);
 
         iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);
-        iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
+        if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
+          iupAttribSetStrId(ih, "MULTIVALUE", 1, filename);
+        else
+          iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
 
         iupAttribSetStr(ih, "VALUE", filename);  /* here value is not separated by '|' */
 
@@ -685,9 +697,6 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
 void iupdrvFileDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = winFileDlgPopup;
-
-  iupClassRegisterAttribute(ic, "EXTDEFAULT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MULTIPLEFILES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupFileDialog Windows and GTK Only */
   iupClassRegisterAttribute(ic, "EXTFILTER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

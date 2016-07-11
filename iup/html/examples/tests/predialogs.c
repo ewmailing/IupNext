@@ -338,6 +338,7 @@ static void new_file(char* dialogtype, int preview)
 //  IupSetAttribute(dlg, "RASTERSIZE", "800x600");
   IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
   IupSetAttribute(dlg, "EXTDEFAULT", "txt");
+//  IupSetAttribute(dlg, "MULTIVALUEPATH", "Yes");
 
   if (preview)
   {

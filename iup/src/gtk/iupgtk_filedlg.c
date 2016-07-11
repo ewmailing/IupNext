@@ -73,7 +73,10 @@ static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
   if (!list->next)
   {
     iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);
-    iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
+    if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
+      iupAttribSetStrId(ih, "MULTIVALUE", 1, filename);
+    else
+      iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
 
     iupAttribSetStr(ih, "VALUE", filename);  /* here value is not separated by '|' */
 
@@ -108,7 +111,10 @@ static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
       memcpy(all_names + cur_len, filename + dir_len, len);
       all_names[cur_len + len] = '|';
 
-      iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
+      if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
+        iupAttribSetStrId(ih, "MULTIVALUE", count, filename);
+      else
+        iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
       count++;
 
       g_free(list->data);  /* must release also the list item */
@@ -669,9 +675,6 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 void iupdrvFileDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = gtkFileDlgPopup;
-
-  iupClassRegisterAttribute(ic, "EXTDEFAULT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MULTIPLEFILES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupFileDialog Windows and GTK Only */
   iupClassRegisterAttribute(ic, "EXTFILTER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

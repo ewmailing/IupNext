@@ -169,7 +169,10 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
     if (filename)
     {
       iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);
-      iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
+      if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
+        iupAttribSetStrId(ih, "MULTIVALUE", 1, filename);
+      else
+        iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
 
       iupAttribSetStr(ih, "VALUE", filename);  /* here value is not separated by '|' */
 
@@ -207,7 +210,10 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
         memcpy(all_names + cur_len, filename + dir_len, len);
         all_names[cur_len + len] = '|';
 
-        iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
+        if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
+          iupAttribSetStrId(ih, "MULTIVALUE", count, filename);
+        else
+          iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
         count++;
 
         XtFree(filename);
@@ -768,7 +774,4 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
 void iupdrvFileDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = motFileDlgPopup;
-
-  iupClassRegisterAttribute(ic, "EXTDEFAULT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MULTIPLEFILES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }
