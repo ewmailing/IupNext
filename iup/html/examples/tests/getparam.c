@@ -11,9 +11,11 @@ static int param_action(Ihandle* param_box, int param_index, void* user_data)
 {                
   switch (param_index)
   {
+  case IUP_GETPARAM_CLOSE:
+    printf("IupGetParam - Close\n");
+    break;
   case IUP_GETPARAM_BUTTON1:
     printf("IupGetParam - Button1 (OK)\n");
-
     break;
   case IUP_GETPARAM_INIT:
     {

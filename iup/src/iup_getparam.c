@@ -1014,7 +1014,7 @@ static void iParamBoxNormalizeSize(Ihandle** params, int count)
   }
 }
 
-static Ihandle* iupParamBoxDlg(Ihandle *param_box)
+static Ihandle* iupParamBoxDlg(Ihandle *param_box, const char* title)
 {
   Ihandle* button1, *button2;
   Ihandle* dlg = IupDialog(param_box);
@@ -1037,6 +1037,12 @@ static Ihandle* iupParamBoxDlg(Ihandle *param_box)
 
   IupSetAttributeHandle(dlg, "DEFAULTENTER", button1);
   IupSetAttributeHandle(dlg, "DEFAULTESC", button2);
+
+  IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+  IupSetStrAttribute(dlg, "TITLE", (char*)title);
+  IupSetCallback(dlg, "CLOSE_CB", (Icallback)iParamDlgClose_CB);
+  iupAttribSet(dlg, "PARAMBOX", (char*)param_box);  /* found by inheritance */
 
   return dlg;
 }
@@ -1673,11 +1679,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   IupSetCallback(param_box, "PARAM_CB", (Icallback)action);
   iupAttribSet(param_box, "USERDATA", (char*)user_data);
 
-  dlg = iupParamBoxDlg(param_box);
-  IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
-  IupSetStrAttribute(dlg, "TITLE", (char*)title);
-  IupSetCallback(dlg, "CLOSE_CB", (Icallback)iParamDlgClose_CB);
+  dlg = iupParamBoxDlg(param_box, title);
 
   if (action)
   {
