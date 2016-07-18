@@ -566,7 +566,7 @@ static void init_tree(void)
   //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
   IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
   IupSetCallback(tree, "TOGGLEVALUE_CB", (Icallback)togglevalue_cb);
-  IupSetCallback(tree, "TIPS_CB", (Icallback)tips_cb);
+//  IupSetCallback(tree, "TIPS_CB", (Icallback)tips_cb);
 
   IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
 
