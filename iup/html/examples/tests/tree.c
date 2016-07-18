@@ -339,6 +339,14 @@ static int selectnode(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int marknode(Ihandle* ih)
+{
+  Ihandle* tree = IupGetHandle("tree");
+  int id = IupGetInt(tree, "VALUE");
+  IupSetAttributeId(tree, "MARKED", id, IupGetAttribute(ih, "TITLE"));
+  return IUP_DEFAULT;
+}
+
 static int nodeinfo(Ihandle* ih)
 {
   char attr[50], *kind;
@@ -398,7 +406,10 @@ static int rightclick_cb(Ihandle* ih, int id)
       IupItem ("PREVIOUS", "selectnode"),
       NULL)),
     IupSubmenu("Mark", IupMenu(
-      IupItem ("INVERT", "selectnode"),
+      IupItem("Yes", "marknode"),
+      IupItem("No", "marknode"),
+      IupSeparator(),
+      IupItem("INVERT", "selectnode"),
       IupItem ("BLOCK", "selectnode"),
       IupItem ("CLEARALL", "selectnode"),
       IupItem ("MARKALL", "selectnode"),
@@ -408,7 +419,8 @@ static int rightclick_cb(Ihandle* ih, int id)
     
   IupSetFunction("nodeinfo", (Icallback) nodeinfo);
   IupSetFunction("selectnode", (Icallback) selectnode);
-  IupSetFunction("addleaf",    (Icallback) addleaf);
+  IupSetFunction("marknode", (Icallback)marknode);
+  IupSetFunction("addleaf", (Icallback)addleaf);
   IupSetFunction("addbranch",  (Icallback) addbranch);
   IupSetFunction("insertleaf",    (Icallback) insertleaf);
   IupSetFunction("insertbranch",  (Icallback) insertbranch);
