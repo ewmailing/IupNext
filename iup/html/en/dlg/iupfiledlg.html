@@ -186,10 +186,10 @@ It always includes the path, so if only 1 file is selected its value is 2. (Sinc
 sequence returned in VALUE when MULTIPLEFILES=Yes but split in several 
 attributes. VALUE0 contains the path (same value returned in DIRECTORY), and VALUE1,VALUE2,... 
 contains each file name without the path. (Since 3.14)</p>
-<p><strong>MULTIVALUEPATH</strong>: force a full path in MULTIVALUE attribute. 
-id=0 will still contains the path of the first file. In Windows and Motif, only 
+<p><strong>MULTIVALUEPATH</strong>: force a full path in MULTIVALUE and VALUE attributes 
+when MULTIPLEFILES=Yes (id=0 will still contains the path of the first file). In Windows and Motif, only 
 files in the same folder may be selected, but in GTK when using the &quot;Recent 
-Files&quot; files from different folders can be selected. (since 3.13.2)</p>
+Files&quot; files from different folders can be selected. (since 3.19.2)</p>
   
 
 <h3><a name="Callbacks">Callbacks</a></h3>

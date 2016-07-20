@@ -168,11 +168,12 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
     filename = iupmotGetXmString(items[pos[0] - 1]);  /* XmListGetSelectedPos starts at 1 */
     if (filename)
     {
-      iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);
+      iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);  /* same as directory, includes last separator */
+
       if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
-        iupAttribSetStrId(ih, "MULTIVALUE", 1, filename);
-      else
-        iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
+        dir_len = 0;
+
+      iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
 
       iupAttribSetStr(ih, "VALUE", filename);  /* here value is not separated by '|' */
 
@@ -194,8 +195,11 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
     memcpy(all_names, dir, len);  /* does NOT includes last separator */
     all_names[len] = '|';
 
-    iupAttribSetStrId(ih, "MULTIVALUE", count, dir);  /* here count=0 always */  /* same as directory, includes last separator */
+    iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);  /* same as directory, includes last separator */
     count++;
+
+    if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
+      dir_len = 0;
 
     for (i = 0; i < sel_count; i++)
     {
@@ -210,10 +214,7 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
         memcpy(all_names + cur_len, filename + dir_len, len);
         all_names[cur_len + len] = '|';
 
-        if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
-          iupAttribSetStrId(ih, "MULTIVALUE", count, filename);
-        else
-          iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
+        iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
         count++;
 
         XtFree(filename);

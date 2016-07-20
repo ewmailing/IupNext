@@ -598,11 +598,14 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
         int count = 0;
 
         char* dir = iupwinStrFromSystemFilename(openfilename.lpstrFile);  /* already is the directory, but without the last separator */
+
+        if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
+          iupAttribSetStrf(ih, "VALUE", "%s|", dir);
+
         iupAttribSetStrf(ih, "DIRECTORY", "%s\\", dir);  /* add the last separator */
         dir = iupAttribGet(ih, "DIRECTORY");
 
-        /* first the path */
-        iupAttribSetStrId(ih, "MULTIVALUE", count, dir);  /* here count=0 always */
+        iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);  /* same as directory, includes last separator */
         count++;
 
         while (openfilename.lpstrFile[i] != 0 || openfilename.lpstrFile[i + 1] != 0)
@@ -612,9 +615,12 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
             char* filename = iupwinStrFromSystemFilename(openfilename.lpstrFile + i + 1);
             if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
             {
+              char* value = iupAttribGet(ih, "VALUE");
               char nameid[100];
               sprintf(nameid, "MULTIVALUE%d", count);
               iupAttribSetStrf(ih, nameid, "%s%s", dir, filename);
+
+              iupAttribSetStrf(ih, "VALUE", "%s%s|", value, iupAttribGetId(ih, "MULTIVALUE", count));
             }
             else
               iupAttribSetStrId(ih, "MULTIVALUE", count, filename);
@@ -629,7 +635,8 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
         iupAttribSetInt(ih, "MULTIVALUECOUNT", count);
         openfilename.lpstrFile[i] = TEXT('|');  /* one last at the end */
 
-        iupAttribSetStr(ih, "VALUE", iupwinStrFromSystemFilename(openfilename.lpstrFile));  /* here file was already modified to match the IUP format */
+        if (!iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
+          iupAttribSetStr(ih, "VALUE", iupwinStrFromSystemFilename(openfilename.lpstrFile));  /* here file was already modified to match the IUP format */
       }
       else
       {
@@ -640,11 +647,12 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
         int dir_len = (int)strlen(dir);
         iupAttribSetStr(ih, "DIRECTORY", dir);
 
-        iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);
+        iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);  /* same as directory, includes last separator */
+
         if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
-          iupAttribSetStrId(ih, "MULTIVALUE", 1, filename);
-        else
-          iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
+          dir_len = 0;
+
+        iupAttribSetStrId(ih, "MULTIVALUE", 1, filename + dir_len);
 
         iupAttribSetStr(ih, "VALUE", filename);  /* here value is not separated by '|' */
 

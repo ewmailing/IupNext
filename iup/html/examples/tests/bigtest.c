@@ -88,6 +88,12 @@ void HelpTest(void)
   //IupHelp("..\\html\\index.html");
 }
 
+void ExecuteTest(void)
+{
+  IupExecute("zip", "-D test.zip *.*");
+  //IupHelp("..\\html\\index.html");
+}
+
 typedef struct _TestItems{
   char* title;
   void (*func)(void);
@@ -110,7 +116,8 @@ static TestItems test_list[] = {
   {"Colorbar", ColorbarTest},
   {"Dial", DialTest},
   {"Dialog", DialogTest},
-  {"Expander", ExpanderTest},
+  { "Execute", ExecuteTest },
+  { "Expander", ExpanderTest },
   { "FlatButton", FlatButtonTest },
   { "Frame", FrameTest },
 #ifdef USE_OPENGL
