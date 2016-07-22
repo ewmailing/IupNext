@@ -560,6 +560,8 @@ void iupBaseRegisterVisualAttrib(Iclass* ic)
 
 void iupBaseRegisterCommonCallbacks(Iclass* ic)
 {
+  iupClassRegisterCallback(ic, "DESTROY_CB", "");
+  iupClassRegisterCallback(ic, "LDESTROY_CB", "");
   iupClassRegisterCallback(ic, "MAP_CB", "");
   iupClassRegisterCallback(ic, "UNMAP_CB", "");
   iupClassRegisterCallback(ic, "GETFOCUS_CB", "");
