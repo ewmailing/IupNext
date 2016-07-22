@@ -958,6 +958,50 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
                     Creates the Dialog and Normalize Sizes
 *******************************************************************************************/
 
+static int iParamBoxSetLabelAlignAttrib(Ihandle* param_box, const char* value)
+{
+  int i, count = iupAttribGetInt(param_box, "PARAMCOUNT");
+
+  for (i = 0; i < count; i++)
+  {
+    Ihandle* param = (Ihandle*)iupAttribGetId(param_box, "PARAM", i);
+    Ihandle* label = (Ihandle*)iupAttribGet(param, "LABEL");
+    IupSetStrAttribute(label, "ALIGNMENT", value);
+  }
+
+  return 1;
+}
+
+static int iParamBoxSetModifiableAttrib(Ihandle* param_box, const char* value)
+{
+  int i, count = iupAttribGetInt(param_box, "PARAMCOUNT");
+
+  for (i = 0; i < count; i++)
+  {
+    Ihandle* param = (Ihandle*)iupAttribGetId(param_box, "PARAM", i);
+    Ihandle* label = (Ihandle*)iupAttribGet(param, "LABEL");
+    Ihandle* ctrl = (Ihandle*)iupAttribGet(param, "CONTROL");
+    Ihandle* aux = (Ihandle*)iupAttribGet(param, "AUXCONTROL");
+
+    IupSetStrAttribute(label, "ACTIVE", value);
+
+    if (IupClassMatch(ctrl, "text"))
+    {
+      if (iupStrBoolean(value))
+        IupSetStrAttribute(ctrl, "READONLY", "No");
+      else
+        IupSetStrAttribute(ctrl, "READONLY", "Yes");
+    }
+    else
+      IupSetStrAttribute(ctrl, "ACTIVE", value);
+
+    if (aux)
+      IupSetStrAttribute(aux, "ACTIVE", value);
+  }
+
+  return 1;
+}
+
 static void iParamBoxNormalizeSize(Ihandle** params, int count)
 {
   int i, lbl_width;
@@ -1915,6 +1959,8 @@ Iclass* iupParamBoxNewClass(void)
   iupClassRegisterAttribute(ic, "BUTTON2", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BUTTON3", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "USERDATA", NULL, NULL, NULL, NULL, IUPAF_NO_STRING | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LABELALIGN", NULL, iParamBoxSetLabelAlignAttrib, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MODIFIABLE", NULL, iParamBoxSetModifiableAttrib, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* ATTENTION: can NOT set IUPAF_READONLY if get is not defined when attribute is used before map. 
      In iupAttribUpdate (called by IupMap) store will be 0 for read-only attributes, then attribute will be removed from the hash table.
