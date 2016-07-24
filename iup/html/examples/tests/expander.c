@@ -653,7 +653,7 @@ void ExpanderTest(void)
   //dlg = IupDialog(IupScrollBox(_vbox_1));
   IupSetHandle("dlg",dlg);
   IupSetAttribute(dlg,"MENU","mnu");
-  IupSetAttribute(dlg,"TITLE","IupDialog Title");
+  IupSetAttribute(dlg,"TITLE","Iup Sample Dialog Title");
 //  IupSetAttribute(dlg,"COMPOSITED","YES");   /* Windows Only */
 //  IupSetAttribute(dlg, "OPACITY", "192");
 //  IupSetAttribute(dlg, "RESIZE", "NO");
@@ -703,7 +703,7 @@ int main(int argc, char* argv[])
   IupOpen(&argc, &argv);
   IupControlsOpen();
 
-  IupSetGlobal("SINGLEINSTANCE", "Iup Sample");
+  IupSetGlobal("SINGLEINSTANCE", "Iup Sample");  /* must partially match dialog title so COPYDATA_CB can work */
   if (!IupGetGlobal("SINGLEINSTANCE"))
   {
     IupClose();  

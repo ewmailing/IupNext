@@ -441,7 +441,7 @@ void SampleTest(void)
   dlg = IupDialog(_vbox_1);
   IupSetHandle("dlg",dlg);
   IupSetAttribute(dlg,"MENU","mnu");
-  IupSetAttribute(dlg,"TITLE","IupDialog Title");
+  IupSetAttribute(dlg,"TITLE","Iup Sample Dialog Title");
 //  IupSetAttribute(dlg,"COMPOSITED","YES");   /* Windows Only */
 //  IupSetAttribute(dlg, "OPACITY", "192");
 
@@ -488,7 +488,7 @@ int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
 
-  IupSetGlobal("SINGLEINSTANCE", "Iup Sample");
+  IupSetGlobal("SINGLEINSTANCE", "Iup Sample");  /* must partially match dialog title so COPYDATA_CB can work */
   if (!IupGetGlobal("SINGLEINSTANCE"))
   {
     IupClose();  
