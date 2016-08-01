@@ -1869,6 +1869,10 @@ wb_usr.tree =
           link= "func/iupexecute.html"
         },
         {
+          name= {nl= "IupExecuteWait"},
+          link= "func/iupexecutewait.html"
+        },
+        {
           name= {nl= "IupHelp"},
           link= "func/iuphelp.html"
         },

@@ -112,9 +112,6 @@
     <ClCompile Include="..\src\iup_table.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\win\iupwindows_help.c">
-      <Filter>windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\win\iupwindows_info.c">
       <Filter>windows</Filter>
     </ClCompile>

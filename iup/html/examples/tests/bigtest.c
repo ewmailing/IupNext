@@ -88,10 +88,18 @@ void HelpTest(void)
   //IupHelp("..\\html\\index.html");
 }
 
+int IupExecuteWait(const char *filename, const char* parameters);
+
 void ExecuteTest(void)
 {
-  IupExecute("zip", "-D test.zip *.*");
-  //IupHelp("..\\html\\index.html");
+  IupExecute("zip", "-D test.zip *");
+//  IupExecute("MSPaint", "");
+}
+
+void ExecuteWaitTest(void)
+{
+  IupExecuteWait("zip", "-D test.zip *");
+//  IupExecuteWait("MSPaint", "");
 }
 
 typedef struct _TestItems{
@@ -117,6 +125,7 @@ static TestItems test_list[] = {
   {"Dial", DialTest},
   {"Dialog", DialogTest},
   { "Execute", ExecuteTest },
+  { "ExecuteWait", ExecuteWaitTest },
   { "Expander", ExpanderTest },
   { "FlatButton", FlatButtonTest },
   { "Frame", FrameTest },

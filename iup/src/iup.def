@@ -37,6 +37,7 @@ IupGetName
 IupHbox
 IupHelp
 IupExecute
+IupExecuteWait
 IupImage
 IupHide
 IupItem
