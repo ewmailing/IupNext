@@ -129,9 +129,10 @@ static int drawcb(Ihandle *h, int lin, int col,int x1, int x2, int y1, int y2)
   return IUP_DEFAULT;
 }
 
-static int actioncb(Ihandle *h, int c, int lin, int col, int active, char* after)
+static int actioncb(Ihandle *h, int key, int lin, int col, int active, char* after)
 {
-  printf("action_cb(lin=%d, col=%d, active=%d, after=%s)\n", lin, col, active, after);
+  printf("action_cb(key=%d, lin=%d, col=%d, active=%d, after=%s)\n", key, lin, col, active, after);
+
   if (lin == 2 && col == 3 && active && after)
   {
     char str[100];
@@ -143,6 +144,18 @@ static int actioncb(Ihandle *h, int c, int lin, int col, int active, char* after
 
     IupSetAttribute(h,"REDRAW","ALL");
   }
+
+  /*
+  if (key == 45 || (key >= 48 && key <= 57) || (key >= 65 && key <= 90) ||
+      (key >= 97 && key <= 122) || key == 95 || key == 8 || key > 255 || key == 13)
+  {
+    printf("DEFAULT\n");
+    return IUP_DEFAULT;
+  }
+
+  printf("IGNORE\n");
+  return IUP_IGNORE;
+  */
 
   return IUP_DEFAULT;
 }
