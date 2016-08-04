@@ -17,6 +17,9 @@
 .style3 {
 	font-size: large;
 }
+.auto-style2 {
+	background-color: #CEE7FF;
+}
 </style>
 </head>
 <body>
@@ -135,7 +138,10 @@ also accepted.</p>
 
 
 <p><strong>GL_ACTION</strong>: Action generated when the 
-sub-canvas needs to be redrawn.</p>
+sub-canvas needs to be redrawn. The transformation matrix is already set to the 
+subcanvas rectangular region. Also, do not call <strong>IupGLMakeCurrent</strong> 
+nor <strong>IupGLSwapBuffers</strong>, the <strong>IupCanvasBox</strong> 
+management will take care of that.</p>
 
   
     
@@ -190,13 +196,52 @@ supported.</p>
 
   
 
+<h3>Utilities (since 3.20)</h3>
+<p>Since there is no high quality text rendering in OpenGL we use FTGL and 
+Freetype to load fonts and render using OpenGL. So we also export the same 
+function used internally so the applications can have the same functionality for 
+other purposes, among with other utilities for text and images.</p>
+<pre>void IupGLDrawText(Ihandle* <strong>ih</strong>, const char* <strong>str</strong>, int <strong>len</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
+iup.GLDraw<span class="auto-style2">Text(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, str</strong>: string, <strong>x</strong>, <strong>y</strong>: number)</span> [in Lua]
+<strong>ih</strong>:GLDrawText(<span class="auto-style2"><strong>str</strong>: string, <strong>x</strong>, <strong>y</strong>: number</span>) [in Lua]</pre>
+<p>Draws a text in the given position using the current
+<a href="../attrib/iup_font.html">FONT</a>. The size of the string is used only 
+in C. Can be 0 so <strong>strlen</strong> is used internally. The coordinates 
+are relative the top-left corner of the text. <strong>ATTENTION</strong>: 
+Different from the <strong>IupDrawText</strong> function, the color of the text 
+uses the current color set in the OpenGL context.</p>
+<pre>void IupGLDrawImage(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>make_inactive</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
+iup.GLDraw<span class="auto-style2">Image(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, name</strong>: string or <strong>image</strong>: ihandle, <strong>make_inactive, x</strong>, <strong>y</strong>: number)</span> [in Lua]
+<strong>ih</strong>:GLDrawImage(<strong>name</strong><span class="auto-style2">: string or <strong>image</strong>: ihandle, <strong>make_inactive, x</strong>, <strong>y</strong>: number</span>) [in Lua]</pre>
+<p>Draws an image given its name. The coordinates are relative the top-left 
+corner of the image. The image name follows the same behavior as the IMAGE 
+attribute used by many controls.
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
+Use<span class="Apple-converted-space">&nbsp;</span></span><a href="../func/iupsethandle.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupSetHandle</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">&nbsp;</span>or<span class="Apple-converted-space">&nbsp;</span></span><a href="../func/iupsetattributehandle.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupSetAttributeHandle</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">&nbsp;</span>to 
+associate an image to a name. See also<span class="Apple-converted-space">&nbsp;</span></span><a href="../elem/iupimage.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupImage</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">.<span class="Apple-converted-space">&nbsp;In 
+Lua, the name parameter can be the actual image handle. The make_inactive 
+parameter will draw the same image in inactive state.</span></span></p>
+<pre>void IupGLDrawGetTextSize(Ihandle* <strong>ih</strong>, const char* <strong>str</strong>, int *<strong>w</strong>, int *<strong>h</strong>); [in C]
+iup.GLDrawGetTextSize<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>str</strong>: string) -&gt; <strong>w</strong>, <strong>h</strong>: number</span> [in Lua]
+<strong>ih</strong>:GLDrawGetTextSize(<span class="auto-style2"><strong>str</strong>: string</span>)<span class="auto-style2"> -&gt; <strong>w</strong>, <strong>h</strong>: number</span> [in Lua]</pre>
+<p>Returns the given text size using the current
+<a href="../attrib/iup_font.html">FONT</a>.&nbsp; In C unwanted values can be 
+NULL.</p>
+<pre>void IupGLDrawGetImageInfo(const char* <strong>name</strong>, int *<strong>w</strong>, int *<strong>h</strong>, int *<strong>bpp</strong>); [in C]
+iup.GLDrawGetImageInfo<span class="auto-style2">(<strong>name</strong>: string) -&gt; <strong>w</strong>, <strong>h, bpp</strong>: number</span> [in Lua]
+<strong>ih</strong>:GLDrawGetImageInfo(<strong>name</strong><span class="auto-style2">: string</span>)<span class="auto-style2"> -&gt; <strong>w</strong>, <strong>h, bpp</strong>: number</span> [in Lua]</pre>
+<p>Returns the given image size and bits per pixel. bpp can be 8, 24 or 32.&nbsp; 
+In C unwanted values can be NULL.</p>
+
+  
+
 <h3><a name="Notes">Notes</a></h3>
 
 
 <p>
-  &nbsp;FTGL is used to draw text in OpenGL.
+  FTGL is
   <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
-  This is a third party library not developed at Tecgraf. But its license is 
+  a third party library not developed at Tecgraf. But its license is 
   also free and have the same freedom as the<span class="Apple-converted-space">&nbsp;</span></span><a href="../copyright.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">Tecgraf 
   Library License</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">. 
   You can read the FTGL license and copyright in the file<span class="Apple-converted-space">&nbsp;</span></span><a href="../ftgl.txt" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">ftgl.txt</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">. 
