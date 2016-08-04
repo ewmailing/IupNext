@@ -143,10 +143,11 @@ In Windows UNDO is also available, and REDO is available when FORMATTING=YES.
 <p><strong>COUNT</strong> (read-only): returns the number of <strong>characters</strong> in the 
 text, including the line breaks. (since 3.5)</p>
 
-<p><strong>CUEBANNER</strong> [Windows Only] (<font size="3">non inheritable</font>): 
+<p><strong>CUEBANNER</strong> [Windows and GTK Only] (<font size="3">non inheritable</font>): 
 a text that is displayed when there is no text at the control. It works as a 
 textual cue, or tip to prompt the user for input. Valid only for MULTILINE=NO, 
-and works only when Visual Styles are enabled. (since 3.0)</p>
+and works only when Visual Styles are enabled. (since 3.0) [GTK 3.2] (GTK 
+support added in IUP 3.20)</p>
 
   
 <p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drop of 
