@@ -362,14 +362,23 @@ static gboolean gtkDialogWindowStateEvent(GtkWidget *widget, GdkEventWindowState
   int state = -1;
   (void)widget;
 
+  iupAttribSet(ih, "MAXIMIZED", NULL);
+  iupAttribSet(ih, "MINIMIZED", NULL);
+
   if ((evt->changed_mask & GDK_WINDOW_STATE_MAXIMIZED) &&        /* if flag changed and  */
       (evt->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) &&    /* is now set           */
       !(evt->new_window_state & GDK_WINDOW_STATE_WITHDRAWN))     /* is visible           */
+  {
     state = IUP_MAXIMIZE;
+    iupAttribSet(ih, "MAXIMIZED", "Yes");
+  }
   else if ((evt->changed_mask & GDK_WINDOW_STATE_ICONIFIED) &&
            (evt->new_window_state & GDK_WINDOW_STATE_ICONIFIED) &&
            !(evt->new_window_state & GDK_WINDOW_STATE_WITHDRAWN))
+  {
     state = IUP_MINIMIZE;
+    iupAttribSet(ih, "MINIMIZED", "Yes");
+  }
   else if ((evt->changed_mask & GDK_WINDOW_STATE_ICONIFIED) &&
            (evt->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) &&
            !(evt->new_window_state & GDK_WINDOW_STATE_WITHDRAWN))
@@ -506,6 +515,11 @@ static int gtkDialogMapMethod(Ihandle* ih)
   if (iupAttribGetBoolean(ih, "DIALOGHINT")) 
     gtk_window_set_type_hint(GTK_WINDOW(ih->handle), GDK_WINDOW_TYPE_HINT_DIALOG);
 
+#if GTK_CHECK_VERSION(3, 10, 0)
+  if (iupAttribGetBoolean(ih, "HIDETITLEBAR"))
+    gtk_window_set_titlebar(GTK_WINDOW(ih->handle), gtk_fixed_new());
+#endif
+
   /* the container that will receive the child element. */
   inner_parent = iupgtkNativeContainerNew(0);
   gtk_container_add((GtkContainer*)ih->handle, inner_parent);
@@ -554,7 +568,7 @@ static int gtkDialogMapMethod(Ihandle* ih)
 
   if (decorations == 0)
     gtk_window_set_decorated((GtkWindow*)ih->handle, FALSE);
-  else
+  else if (!iupAttribGetBoolean(ih, "HIDETITLEBAR"))
   {
     GdkWindow* window = iupgtkGetWindow(ih->handle);
     if (window)
@@ -1057,6 +1071,17 @@ static int gtkDialogSetTrayImageAttrib(Ihandle *ih, const char *value)
 }
 #endif  /* GTK_CHECK_VERSION(2, 10, 0) */
 
+#if GTK_CHECK_VERSION(3, 4, 0)
+static int gtkDialogSetHideTitleBarAttrib(Ihandle *ih, const char *value)
+{
+  gtk_window_set_hide_titlebar_when_maximized(GTK_WINDOW(ih->handle), iupStrBoolean(value));
+  return 1;
+}
+#endif  /* GTK_CHECK_VERSION(3, 4, 0) */
+
+/****************************************************************************************************************/
+
+
 void iupdrvDialogInitClass(Iclass* ic)
 {
   /* Driver Dependent Class methods */
@@ -1109,6 +1134,10 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TRAYIMAGE", NULL, gtkDialogSetTrayImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYTIP", NULL, gtkDialogSetTrayTipAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYTIPMARKUP", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+#endif
+
+#if GTK_CHECK_VERSION(3, 4, 0)
+  iupClassRegisterAttribute(ic, "HIDETITLEBAR", NULL, gtkDialogSetHideTitleBarAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 #endif
 
   /* Not Supported */

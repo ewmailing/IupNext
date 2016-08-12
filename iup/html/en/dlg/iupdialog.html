@@ -65,37 +65,7 @@ offsets, respectively, in pixels. Default: 0x0. (since 3.14)</p>
 
 <p><a href="../attrib/iup_cursor.html">CURSOR</a> (<font SIZE="3">non 
 inheritable</font>): Defines a cursor for the dialog.</p>
-<p>
-<font SIZE="3">
-	<strong>CUSTOMFRAME</strong> [Windows Only] (non 
-inheritable): allows the application to customize the frame elements by drawing 
-them with the CUSTOMFRAME_CB callback. Can be Yes or No. The Window client area 
-is expanded to include the whole window. Notice that the dialog attributes like 
-BORDER, RESIZE, MAXBOX, MINBOX and TITLE must still be defined. But maximize, 
-minimize and close buttons must be manually implemented. One drawback is that 
-menu bars will not work. (since 3.18)</font></p>
-<p><font SIZE="3">
-	<strong>CUSTOMFRAMEEX</strong> [Windows Only] (non 
-inheritable): Same as CUSTOMFRAME but used when the application use controls for 
-frame elements like caption, minimize button, maximize button, and close 
-buttons. The application is responsible for leaving space for the borders. The 
-CUSTOMFRAME_CB callback will also work. (since 3.18)</font></p>
-<p><font SIZE="3">
-	<strong>CUSTOMFRAMECAPTION</strong> [Windows Only] (non 
-inheritable): height of the caption area. If not defined it will use the system 
-size. (since 3.18)</font></p>
-<p><font SIZE="3">
-	<strong>CUSTOMFRAMECAPTIONLIMITS</strong> [Windows Only] (non 
-inheritable): limits of the caption area at left and at right. The caption area 
-is always expanded inside the limits when the dialog is resized. Format is &quot;left:right&quot; 
-or in C &quot;%d:%d&quot;. Default: &quot;0:0&quot;. This will allow the dialog to be moved by the 
-system when the user click and drag the caption area. (since 3.18)</font></p>
-
-<p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): 
-Enable or disable the drop of files. Default: NO, but if DROPFILES_CB is 
-defined when the element is mapped then it will be automatically enabled.</p>
-
-  <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non 
+<p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non 
 	inheritable</font>): The default value is &quot;YES&quot;.</p>
 <p><strong>NACTIVE</strong> (<font SIZE="3">non 
 	inheritable</font>): same as <a href="../attrib/iup_active.html">ACTIVE</a> 
@@ -184,13 +154,9 @@ is defined then the MENUBOX is also removed, but the Close button remains.</p>
 <p><strong>FULLSCREEN: </strong>Makes the dialog occupy the whole screen over 
 any system bars in the main monitor. All dialog details, such as title bar, 
 borders, maximize button, etc, are removed. Possible values: YES, NO. In Motif 
-you may have to click in the dialog to set its focus.<br>
+you may have to click in the dialog to set its focus.
       In Motif if set to YES when the dialog is hidden, then it can not be 
 changed after it is visible.</p>
-
-<p><strong>HWND</strong> [Windows Only] (<font size="3">non inheritable, 
-read-only</font>): Returns the Windows Window handle. Available in the Windows 
-driver or in the GTK driver in Windows.</p>
 
 <p><strong>MAXBOX</strong> (creation only): Requires a maximize button from the 
 window manager. If RESIZE=NO then MAXBOX will be set to NO. Default: YES. In 
@@ -241,12 +207,6 @@ top-level window in the Z order when minimizing (since 3.15).</p>
 <p><strong>RESIZE</strong> (creation only): Allows interactively changing the 
 dialog’s size. Default: YES. If RESIZE=NO then MAXBOX will be set to NO. In Motif the decorations are controlled by the 
 Window Manager and may not be possible to be changed from IUP.</p>
-<p><strong>SAVEUNDER</strong> [Windows and Motif Only] (creation only): When 
-this attribute is true (YES), the dialog stores the original image of the 
-desktop region it occupies (if the system has enough memory to store the image). 
-In this case, when the dialog is closed or moved, a redrawing event is not 
-generated for the windows that were shadowed by it. Its default value is YES. To 
-save memory disable it for your main dialog. Not available in GTK.</p>
 <p><a href="../attrib/iup_shrink.html">SHRINK</a>: Allows changing the elements’ 
 distribution when the dialog is smaller than the minimum size. Default: NO.</p>
 <p><strong>STARTFOCUS</strong>: Name of the element that must receive the focus 
@@ -256,14 +216,37 @@ focus is selected (same effect of calling
 <a href="../func/iupnextfield.html">IupNextField</a> for the dialog). Updated 
 after SHOW_CB is called and only if the focus was not changed during the 
 callback.</p>
+<h4>Exclusive [System Dependent]</h4>
+
+<p><strong>HWND</strong> [Windows Only] (<font size="3">non inheritable, 
+read-only</font>): Returns the Windows Window handle. Available in the Windows 
+driver or in the GTK driver in Windows.</p>
+
+<p><strong>SAVEUNDER</strong> [Windows and Motif Only] (creation only): When 
+this attribute is true (YES), the dialog stores the original image of the 
+desktop region it occupies (if the system has enough memory to store the image). 
+In this case, when the dialog is closed or moved, a redrawing event is not 
+generated for the windows that were shadowed by it. Its default value is YES. To 
+save memory disable it for your main dialog. Not available in GTK.</p>
 <p><strong>XWINDOW</strong> [UNIX Only] (<font size="3">non inheritable, 
 read-only</font>): Returns the X-Windows Window (Drawable). Available in the 
 Motif driver or in the GTK driver in UNIX.</p>
+
+<h4>&nbsp;</h4>
 
 <h4>Exclusive [Windows and GTK Only]</h4>
 <p><strong>ACTIVEWINDOW</strong> [Windows and GTK Only] (read-only): informs if 
 the dialog is the active window (the window with focus). Can be Yes or No. 
 (since 3.4)</p>
+
+<p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): 
+Enable or disable the drop of files. Default: NO, but if DROPFILES_CB is 
+defined when the element is mapped then it will be automatically enabled.</p>
+
+<p><strong>MAXIMIZED</strong> [Windows and GTK Only] (read-only): indicates if the 
+dialog is maximized. Can be YES or NO. (since 3.12)</p>
+<p><strong>MINIMIZED</strong> [Windows and GTK Only] (read-only): indicates if the 
+dialog is minimized. Can be YES or NO. (since 3.15)</p>
 <p><strong>OPACITY</strong> [Windows and GTK Only]: sets the dialog transparency 
 alpha value. Valid values range from 0 (completely transparent) to 255 (opaque). 
 In Windows must be set before map so the native window would be properly 
@@ -279,6 +262,58 @@ mask, to view a color image must also use a label. (GTK 2.12)
 <p><strong>TOPMOST</strong> [Windows and GTK Only]:&nbsp; puts the dialog always 
 in front of all other dialogs in all applications. Default: NO.</p>
 
+<h4>Exclusive [Windows Only]</h4>
+<p><strong>BRINGFRONT</strong> [Windows Only] (write-only): makes the dialog the 
+foreground window. Use &quot;YES&quot; to activate it. Useful for multithreaded 
+applications.</p>
+<p><strong>COMPOSITED</strong> [Windows Only] (creation only): controls if the 
+window will have an automatic double buffer for all children. Default is &quot;NO&quot;. 
+In Windows Vista it is NOT working as expected.</p>
+<p><a href="../attrib/iup_control.html">CONTROL</a> [Windows Only] (creation 
+only): Embeds the dialog inside another window.</p>
+<p>
+<font SIZE="3">
+	<strong>CUSTOMFRAME</strong> [Windows Only] (non 
+inheritable): allows the application to customize the frame elements by drawing 
+them with the CUSTOMFRAME_CB callback. Can be Yes or No. The Window client area 
+is expanded to include the whole window. Notice that the dialog attributes like 
+BORDER, RESIZE, MAXBOX, MINBOX and TITLE must still be defined. But maximize, 
+minimize and close buttons must be manually implemented. One drawback is that 
+menu bars will not work. (since 3.18)</font></p>
+<p><font SIZE="3">
+	<strong>CUSTOMFRAMEEX</strong> [Windows Only] (non 
+inheritable): Same as CUSTOMFRAME but used when the application use controls for 
+frame elements like caption, minimize button, maximize button, and close 
+buttons. The application is responsible for leaving space for the borders. The 
+CUSTOMFRAME_CB callback will also work. (since 3.18)</font></p>
+<p><font SIZE="3">
+	<strong>CUSTOMFRAMECAPTION</strong> [Windows Only] (non 
+inheritable): height of the caption area. If not defined it will use the system 
+size. (since 3.18)</font></p>
+<p><font SIZE="3">
+	<strong>CUSTOMFRAMECAPTIONLIMITS</strong> [Windows Only] (non 
+inheritable): limits of the caption area at left and at right. The caption area 
+is always expanded inside the limits when the dialog is resized. Format is &quot;left:right&quot; 
+or in C &quot;%d:%d&quot;. Default: &quot;0:0&quot;. This will allow the dialog to be moved by the 
+system when the user click and drag the caption area. (since 3.18)</font></p>
+<p><strong>HELPBUTTON</strong> [Windows Only] (creation only): Inserts a help 
+button in the same place of the maximize button. It can only be used for dialogs 
+without the minimize and maximize buttons, and with the menu box. For the next 
+interaction of the user with a control in the dialog, the callback&nbsp; 
+	<a href="../call/iup_help_cb.html">HELP_CB</a> will be called instead of the 
+control defined ACTION callback. Possible values: YES, NO. Default: NO.</p>
+<p><strong>TOOLBOX</strong> [Windows Only] (creation only): makes the dialog 
+look like a toolbox with a smaller title bar. It is only valid if the PARENTDIALOG or NATIVEPARENT 
+attribute is also defined. Default: NO.</p>
+      
+<h4>Exclusive [GTK Only]</h4>
+<p><strong>DIALOGHINT</strong> [GTK Only] (creation-only): if enabled sets the window type 
+hint to a dialog hint.</p>
+      
+<p><strong>HIDETITLEBAR</strong> [GTK Only]<font SIZE="3">
+	(non inheritable): hides the title bar with al its elements. (since 3.20) 
+(GTK 3.10)</font></p>
+
 <h4>Exclusive Taskbar and Tray/Status Area [Windows and GTK Only]</h4>
 <p><strong>HIDETASKBAR</strong> [Windows and GTK Only] (write-only): Action 
 attribute that when set to &quot;YES&quot;, hides the dialog, but does not decrement the 
@@ -288,6 +323,19 @@ working without closing the main loop. It has the same effect as setting
 LOCKLOOP=Yes and normally hiding the dialog. IMPORTANT:
 <font SIZE="3">when you hide using HIDETASKBAR, you must show using HIDETASKBAR 
 also. </font>Possible values: YES, NO. </p>
+
+<p><strong>TASKBARPROGRESS</strong> [Windows Only] (write-only): this 
+functionality enables the use of progress bar on a taskbar button (Windows 7 or 
+earlier version) (Available only for Visual C++ 10 and above). Default: NO (since 3.10).</p>
+      
+<p><strong>TASKBARPROGRESSSTATE</strong> [Windows Only] (write-only): sets the 
+type and state of the progress indicator displayed on a taskbar button. Possible 
+values: NORMAL (a green bar), PAUSED (a yellow bar), ERROR (a red bar), 
+INDETERMINATE (a green marquee) and NOPROGRESS (no bar). Default: NORMAL (since 
+3.10).</p>
+<p><strong>TASKBARPROGRESSVALUE</strong> [Windows Only] (write-only): updates a 
+progress bar hosted in a taskbar button to show the specific percentage 
+completed of the full operation. The value must be between 0 and 100 (since 3.10).</p>
 
 <p><b>TRAY</b> [Windows and GTK Only]: When set to &quot;YES&quot;, displays an icon on 
 the system tray. (GTK 2.10)</p>
@@ -317,45 +365,6 @@ setting the TRAYTIP attribute. (since 3.6) </p>
     &quot;1&quot; - Info icon <br>
     &quot;2&quot; - Warning icon<br>
     &quot;3&quot; - Error Icon</p>
-      
-<h4>Exclusive [GTK Only]</h4>
-<p><strong>DIALOGHINT</strong> (creation-only): if enabled sets the window type 
-hint to a dialog hint.</p>
-      
-<h4>Exclusive [Windows Only]</h4>
-<p><strong>BRINGFRONT</strong> [Windows Only] (write-only): makes the dialog the 
-foreground window. Use &quot;YES&quot; to activate it. Useful for multithreaded 
-applications.</p>
-<p><strong>COMPOSITED</strong> [Windows Only] (creation only): controls if the 
-window will have an automatic double buffer for all children. Default is &quot;NO&quot;. 
-In Windows Vista it is NOT working as expected.</p>
-<p><a href="../attrib/iup_control.html">CONTROL</a> [Windows Only] (creation 
-only): Embeds the dialog inside another window.</p>
-<p><strong>HELPBUTTON</strong> [Windows Only] (creation only): Inserts a help 
-button in the same place of the maximize button. It can only be used for dialogs 
-without the minimize and maximize buttons, and with the menu box. For the next 
-interaction of the user with a control in the dialog, the callback&nbsp; 
-	<a href="../call/iup_help_cb.html">HELP_CB</a> will be called instead of the 
-control defined ACTION callback. Possible values: YES, NO. Default: NO.</p>
-<p><strong>MAXIMIZED</strong> [Windows Only] (read-only): indicates if the 
-dialog is maximized. Can be YES or NO. (since 3.12)</p>
-<p><strong>MINIMIZED</strong> [Windows Only] (read-only): indicates if the 
-dialog is minimized. Can be YES or NO. (since 3.15)</p>
-<p><strong>TASKBARPROGRESS</strong> [Windows Only] (write-only): this 
-functionality enables the use of progress bar on a taskbar button (Windows 7 or 
-earlier version) (Available only for Visual C++ 10 and above). Default: NO (since 3.10).</p>
-      
-<p><strong>TASKBARPROGRESSSTATE</strong> [Windows Only] (write-only): sets the 
-type and state of the progress indicator displayed on a taskbar button. Possible 
-values: NORMAL (a green bar), PAUSED (a yellow bar), ERROR (a red bar), 
-INDETERMINATE (a green marquee) and NOPROGRESS (no bar). Default: NORMAL (since 
-3.10).</p>
-<p><strong>TASKBARPROGRESSVALUE</strong> [Windows Only] (write-only): updates a 
-progress bar hosted in a taskbar button to show the specific percentage 
-completed of the full operation. The value must be between 0 and 100 (since 3.10).</p>
-<p><strong>TOOLBOX</strong> [Windows Only] (creation only): makes the dialog 
-look like a toolbox with a smaller title bar. It is only valid if the PARENTDIALOG or NATIVEPARENT 
-attribute is also defined. Default: NO.</p>
       
 <h4>Exclusive MDI [Windows Only]</h4>
 <p><strong><em>--- For the MDI Frame ---</em></strong></p>

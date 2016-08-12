@@ -152,6 +152,7 @@ static unsigned char img_bits2[] =
 
 static int copydata_cb(Ihandle* ih, char* value, int size)
 {
+  (void)ih;
   printf("COPYDATA(%s, %d)\n", value, size);
   return IUP_DEFAULT;
 }
@@ -250,6 +251,7 @@ static int action2_cb(Ihandle* ih)
 
 static int action3_cb(Ihandle* ih)
 {
+  (void)ih;
   printf("ACTION3\n");
 //  IupSetAttribute(IupGetChild(IupGetDialog(ih), 0), "BGCOLOR", "128 0 0");
   return IUP_DEFAULT;
@@ -399,9 +401,100 @@ static int drawbg_cb(Ihandle* ih)
 }
 
 //#define IupFrame myFrame
-Ihandle* myFrame(Ihandle* child)
+static Ihandle* myFrame(Ihandle* child)
 {
   return IupVbox(child, NULL);
+}
+
+#ifndef WIN32
+static int dialog_move_motion(Ihandle* ih, int x, int y, char *status)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  int is_moving = IupGetInt(dlg, "_IUP_MOVING");
+
+  if (is_moving)
+  {
+    if (iup_isbutton1(status))  /* DRAG MOVE */
+    {
+      int cur_end_x, cur_end_y, cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
+
+      IupGetIntInt(NULL, "CURSORPOS", &cur_end_x, &cur_end_y);
+      dlg_start_x = IupGetInt(dlg, "_IUP_DLG_START_X");
+      dlg_start_y = IupGetInt(dlg, "_IUP_DLG_START_Y");
+      cur_start_x = IupGetInt(dlg, "_IUP_CUR_START_X");
+      cur_start_y = IupGetInt(dlg, "_IUP_CUR_START_Y");
+
+      x = dlg_start_x + (cur_end_x - cur_start_x);
+      y = dlg_start_y + (cur_end_y - cur_start_y);
+
+      IupShowXY(dlg, x, y);
+    }
+    else
+      IupSetAttribute(dlg, "_IUP_MOVING", NULL);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int dialog_move_button(Ihandle* ih, int button, int pressed)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  int is_moving = IupGetInt(dlg, "_IUP_MOVING");
+
+  if (button!=IUP_BUTTON1)
+    return IUP_DEFAULT;
+
+  if (!is_moving && pressed)  /* DRAG BEGIN */
+  {
+    int cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
+
+    IupSetAttribute(dlg, "_IUP_MOVING", "1");
+
+    IupGetIntInt(NULL, "CURSORPOS", &cur_start_x, &cur_start_y);
+    dlg_start_x = IupGetInt(dlg, "X");
+    dlg_start_y = IupGetInt(dlg, "Y");
+
+    IupSetInt(dlg, "_IUP_DLG_START_X", dlg_start_x);
+    IupSetInt(dlg, "_IUP_DLG_START_Y", dlg_start_y);
+    IupSetInt(dlg, "_IUP_CUR_START_X", cur_start_x);
+    IupSetInt(dlg, "_IUP_CUR_START_Y", cur_start_y);
+  }
+  else if (is_moving)  /* DRAG END */
+  {
+    IupSetAttribute(dlg, "_IUP_MOVING", NULL);
+  }
+
+  return IUP_DEFAULT;
+}
+#endif
+
+static int dialog_minimize(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  if (IupGetInt(dlg, "MINIMIZED"))
+    IupSetAttribute(dlg, "PLACEMENT", NULL);
+  else
+    IupSetAttribute(dlg, "PLACEMENT", "MINIMIZED");
+  IupShow(dlg);
+  return IUP_DEFAULT;
+}
+
+static int dialog_maximize(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  if (IupGetInt(dlg, "MAXIMIZED"))            
+    IupSetAttribute(dlg, "PLACEMENT", NULL);
+  else
+    IupSetAttribute(dlg, "PLACEMENT", "MAXIMIZED");
+  IupShow(dlg);
+  return IUP_DEFAULT;
+}
+
+static int dialog_close(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  IupHide(dlg);
+  return IUP_DEFAULT;
 }
 
 void SampleTest(void)
@@ -589,13 +682,14 @@ void SampleTest(void)
 //  IupSetAttribute(dlg, "OPACITY", "192");
 //  IupSetAttribute(dlg, "RESIZE", "NO");
 
-#if 0
+#if 1
   {
+    Ihandle* label;
     Ihandle* caption_bar = IupSetAttributes(IupBackgroundBox(IupHbox(
-      IupSetAttributes(IupLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, HTTRANSPARENT=Yes"),
-      IupSetAttributes(IupButton("_", NULL), "RASTERSIZE=50, FLAT=Yes, CANFOCUS=NO, FONTSTYLE=Bold"),
-      IupSetAttributes(IupButton("Max", NULL), "RASTERSIZE=50"),
-      IupSetAttributes(IupButton(" X ", NULL), "RASTERSIZE=50"),
+      label = IupSetAttributes(IupLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, HTTRANSPARENT=Yes"), 
+      IupSetCallbacks(IupSetAttributes(IupButton("_", NULL), "RASTERSIZE=50, FLAT=Yes, CANFOCUS=NO, FONTSTYLE=Bold"), "ACTION", dialog_minimize, NULL),
+      IupSetCallbacks(IupSetAttributes(IupButton("Max", NULL), "RASTERSIZE=50"), "ACTION", dialog_maximize, NULL),
+      IupSetCallbacks(IupSetAttributes(IupButton(" X ", NULL), "RASTERSIZE=50"), "ACTION", dialog_close, NULL),
       NULL)), "HTTRANSPARENT=Yes, BGCOLOR=\"100 150 255\"");
     IupInsert(_vbox_1, NULL, caption_bar);
 
@@ -603,12 +697,9 @@ void SampleTest(void)
     IupSetAttribute(dlg, "CUSTOMFRAMEEX", "YES");
     IupSetAttribute(dlg, "CUSTOMFRAMECAPTIONLIMITS", "0:150");
 #else
-    IupSetAttribute(dlg, "BORDER", "YES");
-    IupSetAttribute(dlg, "RESIZE", "YES");
-    IupSetAttribute(dlg, "MENUBOX", "NO");
-    IupSetAttribute(dlg, "MAXBOX", "NO");
-    IupSetAttribute(dlg, "MINBOX", "NO");
-    IupSetAttribute(dlg, "TITLE", NULL);
+    IupSetCallbacks(label, "BUTTON_CB", dialog_move_button, "MOTION_CB", dialog_move_motion, NULL);
+//    IupSetAttribute(dlg, "MENUBOX", "NO");
+    IupSetAttribute(dlg, "HIDETITLEBAR", "Yes");
 #endif
   }
 #endif
