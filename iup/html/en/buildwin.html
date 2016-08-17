@@ -151,7 +151,7 @@ cd xxxx
 
 [copy the downloaded files, to the xxxx directory]
 
-tar -xpvzf lua5_1_4_Sources.tar.gz    [optional, see note below]
+tar -xpvzf lua-5.3.3_Sources.tar.gz    [optional, see note below]
 tar -xpvzf im-3.6.2_Sources.tar.gz
 tar -xpvzf cd-5.4_Sources.tar.gz
 tar -xpvzf iup-3.2_Sources.tar.gz
@@ -169,7 +169,7 @@ expect the following directory tree:</p>
 
 <p>If you unpack all the source packages in the same directory, that structure will 
 be automatically created.</p>
-<p>By default the Makfiles and Tecmake files will build for Lua 5.1. To build 
+<p>By default the Makefiles and Tecmake files will build for Lua 5.1. To build 
 for other Lua versions define USE_LUA_VERSION=52 or USE_LUA_VERSION=53 in the environment.</p>
 <h3>Building</h3>
 
@@ -179,13 +179,11 @@ and CD depends on IM. So start by build IM, then CD, then IUP.</p>
 many &quot;srcxxx&quot; folders, so go to the up directory &quot;iup&quot; and type 
 &quot;<strong>make</strong>&quot; that all the 
 sub folders will be built. For example:</p>
-<pre>cd im/src
+<pre>cd lua53/src
 make
 cd ../..
 
-cd cd/src
-make
-cd ../..
+// repeat for FTGL, Freetype, zlib, IM and CD
 
 cd iup
 make
@@ -203,7 +201,12 @@ in <strong>Source Forge</strong>, with <strong>&quot;xxx-X.X_Win32_xx_lib</stron
 and <strong>&quot;xxx-X.X_Win64_xx_lib.tar.gz&quot;</strong> names.</p>
 <p>Do not extract different pre-compiled binaries in the same directory, create a 
 subdirectory for each one, for example:</p>
-<pre>mkdir im
+<pre>mkdir lua53
+cd lua53
+tar -xpvzf ../lua-5.3.3_Win32_vc10_lib.tar.gz
+cd ..
+
+mkdir im
 cd im
 tar -xpvzf ../im-3.6.2_Win32_vc10_lib.tar.gz
 cd ..
@@ -220,9 +223,9 @@ cd ..
 </pre>
 <h3><a name="usage">Usage</a></h3>
 <p>For makefiles use:</p>
-<pre>1) &quot;-I/xxxx/iup/include&quot; to find include files
-2) &quot;-L/xxxx/iup/lib/vc10&quot; to find library files
-3) &quot;-liup&quot; to specify the library files</pre>
+<pre>1) &quot;-I/xxxx/iup/include&quot; and so on, to find include files when compiling
+2) &quot;-L/xxxx/iup/lib/vc10&quot; and so on, to find library files when linking
+3) &quot;-liup&quot; and so on, to specify the library files when linking </pre>
 <p>For IDEs the configuration involves the same 3 steps above, but each IDE has a different dialog. The IUP toolkit 
   has a Guide for some IDEs:</p>
 <p class="info">

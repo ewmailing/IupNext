@@ -68,7 +68,7 @@ cd xxxx
 
 [copy the downloaded files, to the xxxx directory]
 
-tar -xpvzf lua5_1_4_Sources.tar.gz    [optional, see note below]
+tar -xpvzf lua-5.3.3_Sources.tar.gz    [optional, see note below]
 tar -xpvzf im-3.6.2_Sources.tar.gz
 tar -xpvzf cd-5.4_Sources.tar.gz
 tar -xpvzf iup-3.2_Sources.tar.gz
@@ -118,13 +118,11 @@ and CD depends on IM. So start by build IM, then CD, then IUP.</p>
 many &quot;srcxxx&quot; folders, so go to the up directory &quot;iup&quot; and type 
 &quot;<strong>make</strong>&quot; that all the 
 sub folders will be built. For example:</p>
-<pre>cd im/src
+<pre>cd lua53/src
 make
 cd ../..
 
-cd cd/src
-make
-cd ../..
+// repeat for FTGL, IM and CD
 
 cd iup
 make
@@ -149,7 +147,12 @@ in <strong>Source Forge</strong>, with <strong>&quot;xxx-X.X_Linux26g4_lib</stro
 and <strong>&quot;xxx-X.X_Linux26g4_64_lib.tar.gz&quot;</strong> names.</p>
 <p>Do not extract different pre-compiled binaries in the same directory, create a 
 subdirectory for each one, for example:</p>
-<pre>mkdir im
+<pre>mkdir lua53
+cd lua53
+tar -xpvzf ../lua-5.3.3_Linux26g4_lib.tar.gz    (if not using Lua from the system)
+cd ..
+
+mkdir im
 cd im
 tar -xpvzf ../im-3.6.2_Linux26g4_lib.tar.gz
 cd ..
