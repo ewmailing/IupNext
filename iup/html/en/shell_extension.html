@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>System Guide</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link rel="stylesheet" type="text/css" href="../style.css">
+<style type="text/css">
+.auto-style1 {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+
+<h2 align="center" style="text-align:center">Windows Shell Extensions Handlers</h2>
+<h3>Description</h3>
+<p>When the user is using the Microsoft Windows Explorer to navigate along the 
+files on the file system there are some opportunities for developers to provide 
+visual information for custom file formats.</p>
+<p>In Windows XP was introduced <strong>Thumbnail Handlers</strong> and in 
+Windows Vista was introduced <strong>Preview Handlers</strong>.</p>
+<p>Thumbnail Handlers allow the developer to provide thumbnail visualization 
+for their custom file formats. The thumbnails are static images with small size 
+and no interaction. The image bellow show thumbnails for JPEG images in Windows 
+XP.</p>
+<p class="auto-style1">
+<img height="412" src="images/shell_thumbnails.png" width="557">&nbsp;</p>
+<p>Preview Handlers allow the developer to provide a preview visualization for 
+their custom file formats. The preview can have larger sizes and interaction 
+because they are show in a separate are on the Windows Explorer window. The image bellow show 
+the preview pane for a JPEG image in Windows 7.</p>
+<p class="auto-style1">
+<img height="448" src="images/shell_preview.png" width="749">&nbsp;</p>
+<p>The MSDN documentation describing this process in at &quot;<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ff521657(v=vs.85).aspx">Implementing 
+a Custom File Format</a>&quot;. The two samples that helped us to create this 
+tutorial are &quot;<a href="https://code.msdn.microsoft.com/windowsapps/CppShellExtThumbnailHandler-32399b35">C++ 
+Windows Shell thumbnail handler (CppShellExtThumbnailHandler)</a>&quot; and &quot;<a href="https://code.msdn.microsoft.com/windowsapps/CppShellExtPreviewHandler-58db53b8">C++ 
+Windows Shell preview handler (CppShellExtPreviewHandler)</a>&quot;.</p>
+<h3>Implementation</h3>
+<p>Both handlers are implemented as DLLs that exports 4 functions with known 
+names and behavior. Here is a DLL def file need by the project: &quot;<a href="shell_extensions/GlobalExportFunctions.def">GlobalExportFunctions.def</a>&quot;.</p>
+<p>The 4 functions are implemented in the module &quot;<a href="shell_extensions/dllmain.cpp">dllmain.cpp</a>&quot;. 
+They use the definitions declared in the &quot;<a href="shell_extensions/Config.h">Config.h</a>&quot;. 
+Every custom file format must define its own values in this header, the &quot;seh_main.cpp&quot; 
+file does not need to be modified.</p>
+<p>The first thing to do is to generate two GUID codes to uniquely identify the 
+handler. These codes are generated with the Microsoft ® GUIDGEN Application (guidgen.exe) 
+option 3, included in <strong>Windows SDK</strong> and <strong>Visual Studio</strong> 
+distributions. It can also be launched from inside Visual Studio in the menu 
+&quot;Tools / Create GUID&quot;.</p>
+<h3>Setup</h3>
+<p>The DLL and its dependencies do not need to be installed on the system. They 
+can be placed in any folder to be used from there. That folder also does not 
+need to be in the PATH. But it is necessary to register the handler in the 
+system.</p>
+<p>The command:</p>
+<pre>regsvr32 my_seh.dll </pre>
+<p>will register the shell extension handler. This command can be executed as a 
+post operation during an application setup for instance.</p>
+<p>To uninstall the handler the command is:</p>
+<pre>regsvr32 /u my_seh.dll </pre>
+<p>&nbsp;</p>
+
+</body>
+
+</html>
