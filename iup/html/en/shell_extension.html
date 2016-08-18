@@ -39,16 +39,18 @@ Windows Shell thumbnail handler (CppShellExtThumbnailHandler)</a>&quot; and &quo
 Windows Shell preview handler (CppShellExtPreviewHandler)</a>&quot;.</p>
 <h3>Implementation</h3>
 <p>Both handlers are implemented as DLLs that exports 4 functions with known 
-names and behavior. Here is a DLL def file need by the project: &quot;<a href="shell_extensions/GlobalExportFunctions.def">GlobalExportFunctions.def</a>&quot;.</p>
-<p>The 4 functions are implemented in the module &quot;<a href="shell_extensions/dllmain.cpp">dllmain.cpp</a>&quot;. 
-They use the definitions declared in the &quot;<a href="shell_extensions/Config.h">Config.h</a>&quot;. 
+names and behavior. Here is a DLL def file need by the project: &quot;<a href="../examples/shell_extensions/GlobalExportFunctions.def">GlobalExportFunctions.def</a>&quot;.</p>
+<p>The 4 functions are implemented in the module &quot;<a href="../examples/shell_extensions/dllmain.cpp">dllmain.cpp</a>&quot;. 
+They use the definitions declared in the &quot;<a href="../examples/shell_extensions/Config.h">Config.h</a>&quot;. 
 Every custom file format must define its own values in this header, the &quot;seh_main.cpp&quot; 
 file does not need to be modified.</p>
 <p>The first thing to do is to generate two GUID codes to uniquely identify the 
 handler. These codes are generated with the Microsoft ® GUIDGEN Application (guidgen.exe) 
 option 3, included in <strong>Windows SDK</strong> and <strong>Visual Studio</strong> 
 distributions. It can also be launched from inside Visual Studio in the menu 
-&quot;Tools / Create GUID&quot;.</p>
+&quot;Tools / Create GUID&quot;. Then define a few strings that describe your 
+file format and finally define if you are building a thumbnail handler or a 
+preview handler.</p>
 <h3>Setup</h3>
 <p>The DLL and its dependencies do not need to be installed on the system. They 
 can be placed in any folder to be used from there. That folder also does not 
