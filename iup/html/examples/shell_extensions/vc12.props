@@ -9,7 +9,7 @@
     <ZLIB>d:\tecgraf\zlib</ZLIB>
   </PropertyGroup>
   <PropertyGroup>
-    <_PropertySheetDisplayName>Tecgraf vc12 Properties</_PropertySheetDisplayName>
+    <_PropertySheetDisplayName>Tecgraf dll12 Properties</_PropertySheetDisplayName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -18,7 +18,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>comctl32.lib;iup.lib;cd.lib;iupcd.lib;im.lib;freetype6.lib;zlib1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(IUP)\lib\vc12;$(CD)\lib\vc12;$(IM)\lib\vc12;$(FREETYPE)\lib\vc12;$(ZLIB)\lib\vc12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(IUP)\lib\dll12;$(CD)\lib\dll12;$(IM)\lib\dll12;$(FREETYPE)\lib\dll12;$(ZLIB)\lib\dll12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

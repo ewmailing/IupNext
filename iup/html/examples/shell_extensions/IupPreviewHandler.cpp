@@ -12,14 +12,10 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 \***************************************************************************/
 
 #include "IupPreviewHandler.h"
+#include "IupPreviewCanvas.h"
 
 #include <Shlwapi.h>
-//#include <WindowsX.h>
 
-#include <cd.h>
-#include <cdiup.h>
-//#include <cdcgm.h>
-//#include <cdnative.h>
 
 #pragma comment(lib, "Shlwapi.lib")
 
@@ -39,11 +35,10 @@ inline int RECTHEIGHT(const RECT &rc)
 }
 
 
-IupPreviewHandler::IupPreviewHandler() : m_cRef(1), m_pPathFile(NULL),
-m_hwndParent(NULL), m_punkSite(NULL)
+IupPreviewHandler::IupPreviewHandler() 
+  : m_cRef(1), m_pPathFile(NULL), m_hwndParent(NULL), m_punkSite(NULL), dialog(NULL)
 {
   InterlockedIncrement(&g_cRefDll);
-  dialog = NULL;
 }
 
 IupPreviewHandler::~IupPreviewHandler()
@@ -53,6 +48,7 @@ IupPreviewHandler::~IupPreviewHandler()
     m_punkSite->Release();
     m_punkSite = NULL;
   }
+
   if (m_pPathFile)
   {
     m_pPathFile = NULL;
@@ -63,6 +59,7 @@ IupPreviewHandler::~IupPreviewHandler()
     IupDestroy(dialog);
     dialog = NULL;
   }
+
   InterlockedDecrement(&g_cRefDll);
 }
 
@@ -125,6 +122,14 @@ IFACEMETHODIMP IupPreviewHandler::Initialize(LPCWSTR pszFilePath, DWORD grfMode)
 
     m_pPathFile = pszFilePath;
     hr = S_OK;
+
+    if (dialog)
+    {
+      char str[10240];
+      size_t size;
+      wcstombs_s(&size, str, 10240, m_pPathFile, 10240);
+      IupSetStrAttribute(dialog, "PATHFILE", str);
+    }
   }
   return hr;
 }
@@ -203,7 +208,7 @@ IFACEMETHODIMP IupPreviewHandler::QueryFocus(HWND *phwnd)
 
 // Directs the preview handler to handle a keystroke passed up from the 
 // message pump of the process in which the preview handler is running.
-HRESULT IupPreviewHandler::TranslateAccelerator(MSG *pmsg)
+IFACEMETHODIMP IupPreviewHandler::TranslateAccelerator(MSG *pmsg)
 {
   HRESULT hr = S_FALSE;
   IPreviewHandlerFrame *pFrame = NULL;
@@ -283,7 +288,7 @@ Cleanup:
 // preview handler to cease rendering a preview and to release all resources 
 // that have been allocated based on the item passed in during the 
 // initialization.
-HRESULT IupPreviewHandler::Unload()
+IFACEMETHODIMP IupPreviewHandler::Unload()
 {
   if (m_pPathFile)
   {
@@ -378,37 +383,12 @@ IFACEMETHODIMP IupPreviewHandler::GetSite(REFIID riid, void **ppv)
 
 #pragma region Helper Functions
 
-static int canvas_redraw(Ihandle* ih)
-{
-  cdCanvas* canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
-
-  /* Implemete aqui a renderização do Preview da sua aplicação */
-
-  return IUP_DEFAULT;
-}
-
-static int canvas_map(Ihandle* ih)
-{
-  cdCreateCanvas(CD_IUP, ih);
-  return IUP_DEFAULT;
-}
-
-static int canvas_unmap(Ihandle* ih)
-{
-  cdCanvas* canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
-  cdKillCanvas(canvas);
-  return IUP_DEFAULT;
-}
-
 // Create the preview window based on the recipe information.
 HRESULT IupPreviewHandler::CreatePreviewWindow()
 {
   HRESULT hr = S_OK;
 
-  Ihandle* cnv = IupCanvas(NULL);
-  IupSetCallback(cnv, "ACTION", canvas_redraw);
-  IupSetCallback(cnv, "MAP_CB", canvas_map);
-  IupSetCallback(cnv, "UNMAP_CB", canvas_unmap);
+  Ihandle* cnv = IupPreviewCanvasCreate();
 
   dialog = IupDialog(cnv);
   IupSetAttribute(dialog, "BORDER", "NO");
@@ -418,8 +398,9 @@ HRESULT IupPreviewHandler::CreatePreviewWindow()
   IupSetAttribute(dialog, "RESIZE", "NO");
   IupSetAttribute(dialog, "CONTROL", "YES");
 
-  char str[1024];
-  size_t size = wcstombs(str, m_pPathFile, sizeof(str));
+  char str[10240];
+  size_t size;
+  wcstombs_s(&size, str, 10240, m_pPathFile, 10240);
   IupSetStrAttribute(dialog, "PATHFILE", str);
 
   IupSetAttribute(dialog, "NATIVEPARENT", (char*)m_hwndParent);

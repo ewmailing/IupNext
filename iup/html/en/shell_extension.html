@@ -51,18 +51,24 @@ distributions. It can also be launched from inside Visual Studio in the menu
 &quot;Tools / Create GUID&quot;. Then define a few strings that describe your 
 file format and finally define if you are building a thumbnail handler or a 
 preview handler.</p>
+<p>&nbsp;</p>
+<p>The package xxx.zip contains all the files necessary to build both handlers. 
+It includes a Visual Studio 2013 project already configured to use IUP and CD. 
+Change the name of the project to change the name of the DLL. By default it will 
+generate a DLL called &quot;ShellExtensionHandler.dll&quot;.</p>
 <h3>Setup</h3>
 <p>The DLL and its dependencies do not need to be installed on the system. They 
 can be placed in any folder to be used from there. That folder also does not 
 need to be in the PATH. But it is necessary to register the handler in the 
 system.</p>
 <p>The command:</p>
-<pre>regsvr32 my_seh.dll </pre>
+<pre>regsvr32 ShellExtensionHandler.dll</pre>
 <p>will register the shell extension handler. This command can be executed as a 
 post operation during an application setup for instance.</p>
 <p>To uninstall the handler the command is:</p>
-<pre>regsvr32 /u my_seh.dll </pre>
-<p>&nbsp;</p>
+<pre>regsvr32 /u ShellExtensionHandler.dll</pre>
+<p>IMPORTANT: the command must be executed with administrator privileges or it 
+will fail.</p>
 
 </body>
 

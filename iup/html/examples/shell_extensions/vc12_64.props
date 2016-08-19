@@ -9,7 +9,7 @@
     <ZLIB>d:\tecgraf\zlib</ZLIB>
   </PropertyGroup>
   <PropertyGroup>
-    <_PropertySheetDisplayName>Tecgraf vc12_64 Properties</_PropertySheetDisplayName>
+    <_PropertySheetDisplayName>Tecgraf dll12_64 Properties</_PropertySheetDisplayName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -18,7 +18,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>comctl32.lib;iup.lib;cd.lib;iupcd.lib;im.lib;freetype6.lib;zlib1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(IUP)\lib\vc12_64;$(CD)\lib\vc12_64;$(IM)\lib\vc12_64;$(FREETYPE)\lib\vc12_64;$(ZLIB)\lib\vc12_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(IUP)\lib\dll12_64;$(CD)\lib\dll12_64;$(IM)\lib\dll12_64;$(FREETYPE)\lib\dll12_64;$(ZLIB)\lib\dll12_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>TEC_64</PreprocessorDefinitions>
