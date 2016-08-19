@@ -13,7 +13,18 @@ static int canvas_redraw(Ihandle* ih)
   cdCanvas* canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
   char* filename = IupGetAttribute(ih, "PATHFILE");
 
-  cdCanvasPlay(canvas, CD_CGM, 0, 0, 0, 0, 0);
+  cdCanvasActivate(canvas);
+  cdCanvasBackground(canvas, CD_WHITE);
+  cdCanvasClear(canvas);
+
+  int w, h;
+  cdCanvasGetSize(canvas, &w, &h, 0, 0);
+
+  cdCanvasForeground(canvas, CD_RED);
+  cdCanvasLine(canvas, 0, 0, w - 1, h - 1);
+  cdCanvasLine(canvas, 0, h - 1, w - 1, 0);
+
+  cdCanvasPlay(canvas, CD_CGM, 0, w - 1, 0, h - 1, filename);
 
   return IUP_DEFAULT;
 }
