@@ -75,10 +75,10 @@ private:
     HWND m_hwndParent;
 
     // Bounding rect of the parent window.
-    int width, height;
-    int x, y;
+    int m_width, m_height;
+    int m_x, m_y;
 
-    Ihandle* dialog;
+    Ihandle* m_dialog;
 
     // Site pointer from host, used to get IPreviewHandlerFrame.
     IUnknown *m_punkSite;

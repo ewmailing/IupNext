@@ -34,13 +34,10 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 
 #include "Config.h"
 
-#ifdef DEFINE_PREVIEWHANDLER
-#include <iup.h>
-#endif
 
+static HINSTANCE  g_hInstDll = NULL;
 
-HINSTANCE   g_hInstDll     = NULL;
-long        g_cRefDll   = 0;
+long  g_cRefDll   = 0;
 
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
@@ -48,11 +45,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
   switch (dwReason)
   {
   case DLL_PROCESS_ATTACH:
-#ifdef DEFINE_PREVIEWHANDLER
-    if (!g_hInstDll)
-      IupOpen(NULL, NULL);
-#endif
-
     // Hold the instance of this DLL module, we will use it to get the 
     // path of the DLL to register the component.
     g_hInstDll = hModule;
@@ -63,9 +55,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
     // and whose DLLs do not need these thread-level notifications of attachment/detachment.
     DisableThreadLibraryCalls(hModule);
     break;
-  case DLL_THREAD_ATTACH:
-  case DLL_THREAD_DETACH:
   case DLL_PROCESS_DETACH:
+    g_hInstDll = NULL;
     break;
   }
   return TRUE;

@@ -20,7 +20,6 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 #pragma comment(lib, "Shlwapi.lib")
 
 
-extern HINSTANCE   g_hInstDll;
 extern long        g_cRefDll;
 
 
@@ -36,7 +35,7 @@ inline int RECTHEIGHT(const RECT &rc)
 
 
 IupPreviewHandler::IupPreviewHandler() 
-  : m_cRef(1), m_pPathFile(NULL), m_hwndParent(NULL), m_punkSite(NULL), dialog(NULL)
+  : m_cRef(1), m_pPathFile(NULL), m_hwndParent(NULL), m_punkSite(NULL), m_dialog(NULL)
 {
   InterlockedIncrement(&g_cRefDll);
 }
@@ -54,10 +53,12 @@ IupPreviewHandler::~IupPreviewHandler()
     m_pPathFile = NULL;
   }
 
-  if (dialog)
+  if (m_dialog)
   {
-    IupDestroy(dialog);
-    dialog = NULL;
+    IupDestroy(m_dialog);
+    m_dialog = NULL;
+
+    IupClose();
   }
 
   InterlockedDecrement(&g_cRefDll);
@@ -123,12 +124,12 @@ IFACEMETHODIMP IupPreviewHandler::Initialize(LPCWSTR pszFilePath, DWORD grfMode)
     m_pPathFile = pszFilePath;
     hr = S_OK;
 
-    if (dialog)
+    if (m_dialog)
     {
       char str[10240];
       size_t size;
       wcstombs_s(&size, str, 10240, m_pPathFile, 10240);
-      IupSetStrAttribute(dialog, "PATHFILE", str);
+      IupSetStrAttribute(m_dialog, "PATHFILE", str);
     }
   }
   return hr;
@@ -149,26 +150,28 @@ IFACEMETHODIMP IupPreviewHandler::SetWindow(HWND hwnd, const RECT *prc)
     m_hwndParent = hwnd;  // Cache the HWND for later use
     RECT m_rcParent = *prc;    // Cache the RECT for later use
 
-    width = RECTWIDTH(m_rcParent);
-    height = RECTHEIGHT(m_rcParent);
+    m_width = RECTWIDTH(m_rcParent);
+    m_height = RECTHEIGHT(m_rcParent);
     POINT pt;
     pt.x = m_rcParent.left;
     pt.y = m_rcParent.top;
     ClientToScreen(m_hwndParent, &pt);
-    x = pt.x;
-    y = pt.y;
+    m_x = pt.x;
+    m_y = pt.y;
 
-    x = 0;
-    y = 0;
+    m_x = 0;
+    m_y = 0;
 
-    if (dialog)
+    if (m_dialog)
     {
-      IupUnmap(dialog);
+      IupUnmap(m_dialog);
 
-      IupSetAttribute(dialog, "NATIVEPARENT", (char*)m_hwndParent);
+      MessageBox(NULL, L"SetWindow-IupUnmap", L"IUP", MB_OK);
 
-      IupSetStrf(dialog, "RASTERSIZE", "%dx%d", width, height);
-      IupShowXY(dialog, x, y);
+      IupSetAttribute(m_dialog, "NATIVEPARENT", (char*)m_hwndParent);
+
+      IupSetStrf(m_dialog, "RASTERSIZE", "%dx%d", m_width, m_height);
+      IupShowXY(m_dialog, m_x, m_y);
     }
   }
   return S_OK;
@@ -178,9 +181,9 @@ IFACEMETHODIMP IupPreviewHandler::SetWindow(HWND hwnd, const RECT *prc)
 IFACEMETHODIMP IupPreviewHandler::SetFocus()
 {
   HRESULT hr = S_FALSE;
-  if (dialog)
+  if (m_dialog)
   {
-    IupSetFocus(IupGetChild(dialog, 0));
+    IupSetFocus(IupGetChild(m_dialog, 0));
     hr = S_OK;
   }
   return hr;
@@ -234,23 +237,23 @@ IFACEMETHODIMP IupPreviewHandler::SetRect(const RECT *prc)
   {
     RECT m_rcParent = *prc;
 
-    width = RECTWIDTH(m_rcParent);
-    height = RECTHEIGHT(m_rcParent);
+    m_width = RECTWIDTH(m_rcParent);
+    m_height = RECTHEIGHT(m_rcParent);
     POINT pt;
     pt.x = m_rcParent.left;
     pt.y = m_rcParent.top;
     ClientToScreen(m_hwndParent, &pt);
-    x = pt.x;
-    y = pt.y;
+    m_x = pt.x;
+    m_y = pt.y;
 
-    x = 0;
-    y = 0;
+    m_x = 0;
+    m_y = 0;
 
-    if (dialog)
+    if (m_dialog)
     {
       // Preview window is already created, so set its size and position.
-      IupSetStrf(dialog, "RASTERSIZE", "%dx%d", width, height);
-      IupShowXY(dialog, x, y);
+      IupSetStrf(m_dialog, "RASTERSIZE", "%dx%d", m_width, m_height);
+      IupShowXY(m_dialog, m_x, m_y);
     }
     hr = S_OK;
   }
@@ -264,8 +267,9 @@ IFACEMETHODIMP IupPreviewHandler::DoPreview()
 {
   // Cannot call more than once.
   // (Unload should be called before another DoPreview)
-  if (dialog != NULL || !m_pPathFile)
+  if (m_dialog != NULL || !m_pPathFile)
   {
+    MessageBox(NULL, L"DoPreview-Abort", L"IUP", MB_OK);
     return E_FAIL;
   }
 
@@ -295,12 +299,14 @@ IFACEMETHODIMP IupPreviewHandler::Unload()
     m_pPathFile = NULL;
   }
 
-  if (dialog)
+  if (m_dialog)
   {
-    IupUnmap(dialog);
+    IupDestroy(m_dialog);
+    m_dialog = NULL;
 
-    IupDestroy(dialog);
-    dialog = NULL;
+    MessageBox(NULL, L"IupDestroy", L"IUP", MB_OK);
+
+    IupClose();
   }
 
   return S_OK;
@@ -388,25 +394,31 @@ HRESULT IupPreviewHandler::CreatePreviewWindow()
 {
   HRESULT hr = S_OK;
 
+  IupOpen(NULL, NULL);          
+
+  MessageBox(NULL, L"IupOpen", L"IUP", MB_OK);
+
   Ihandle* cnv = IupPreviewCanvasCreate();
 
-  dialog = IupDialog(cnv);
-  IupSetAttribute(dialog, "BORDER", "NO");
-  IupSetAttribute(dialog, "MAXBOX", "NO");
-  IupSetAttribute(dialog, "MINBOX", "NO");
-  IupSetAttribute(dialog, "MENUBOX", "NO");
-  IupSetAttribute(dialog, "RESIZE", "NO");
-  IupSetAttribute(dialog, "CONTROL", "YES");
+  m_dialog = IupDialog(cnv);
+  IupSetAttribute(m_dialog, "BORDER", "NO");
+  IupSetAttribute(m_dialog, "MAXBOX", "NO");
+  IupSetAttribute(m_dialog, "MINBOX", "NO");
+  IupSetAttribute(m_dialog, "MENUBOX", "NO");
+  IupSetAttribute(m_dialog, "RESIZE", "NO");
+  IupSetAttribute(m_dialog, "CONTROL", "YES");
 
   char str[10240];
   size_t size;
   wcstombs_s(&size, str, 10240, m_pPathFile, 10240);
-  IupSetStrAttribute(dialog, "PATHFILE", str);
+  IupSetStrAttribute(m_dialog, "PATHFILE", str);
 
-  IupSetAttribute(dialog, "NATIVEPARENT", (char*)m_hwndParent);
+  IupSetAttribute(m_dialog, "NATIVEPARENT", (char*)m_hwndParent);
 
-  IupSetStrf(dialog, "RASTERSIZE", "%dx%d", width, height);
-  IupShowXY(dialog, x, y);
+  IupSetStrf(m_dialog, "RASTERSIZE", "%dx%d", m_width, m_height);
+  IupShowXY(m_dialog, m_x, m_y);
+
+  IupFlush();
 
   return hr;
 }

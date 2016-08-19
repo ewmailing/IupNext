@@ -13,11 +13,14 @@ const GUID APPID_ShelExtensionHandler =
 { 0x8b403b0, 0xbce3, 0x4e8e, { 0x9e, 0x60, 0xc9, 0x29, 0xeb, 0x69, 0xa4, 0x5f } };
 
 
-#define FORMAT_EXTENSION L".cgm"
+//#define FORMAT_EXTENSION L".cgm"
+//#define FORMAT_DESCRIPTION L"CgmShelExtPreviewHandler"
+//#define FORMAT_EXTENSION L".emf"
+//#define FORMAT_DESCRIPTION L"EmfShelExtPreviewHandler"
+#define FORMAT_EXTENSION L".tga"
+#define FORMAT_DESCRIPTION L"TgaShelExtPreviewHandler"
 
-#define FORMAT_DESCRIPTION L"CgmShelExtPreviewHandler"
-
-#define APPICATION_DESCRIPTION L"IupCdCgmShellExtPreviewHandler"
+#define APPICATION_DESCRIPTION L"IupCdShellExtPreviewHandler"
 
 /* Define to implement a preview handler */
 #define DEFINE_PREVIEWHANDLER
