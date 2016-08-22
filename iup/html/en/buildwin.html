@@ -151,21 +151,25 @@ cd xxxx
 
 [copy the downloaded files, to the xxxx directory]
 
-tar -xpvzf lua-5.3.3_Sources.tar.gz    [optional, see note below]
-tar -xpvzf im-3.6.2_Sources.tar.gz
-tar -xpvzf cd-5.4_Sources.tar.gz
-tar -xpvzf iup-3.2_Sources.tar.gz
+unzip lua-5.3.3_Sources.zip    [optional, see note below]
+unzip zlib-1.2.8_Sources.zip
+unzip freetype-2.6.3_Sources.zip
+unzip ftgl-2.1.4_Sources.zip
+unzip im-3.11_Sources.zip
+unzip cd-5.10_Sources.zip
+unzip iup-3.19_Sources.zip
 </pre>
 <p>If you are going to build all the libraries, the makefiles and projects 
 expect the following directory tree:</p>
 <pre>/xxxx/
-      iup/
       cd/
-      im/
-      ftgl/      (included in CD)
       freetype/  (included in CD)
+      ftgl/      (included in CD)
+      im/
+      iup/
+      lua53/      
       zlib/      (included in IM)
-      lua53/      </pre>
+</pre>
 
 <p>If you unpack all the source packages in the same directory, that structure will 
 be automatically created.</p>
@@ -183,7 +187,7 @@ sub folders will be built. For example:</p>
 make
 cd ../..
 
-// repeat for FTGL, Freetype, zlib, IM and CD
+// repeat for zlib, Freetype, FTGL, IM and CD
 
 cd iup
 make
