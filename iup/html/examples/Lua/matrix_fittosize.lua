@@ -1,5 +1,5 @@
---require( "iuplua" )
---require( "iupluacontrols" )
+require( "iuplua" )
+require( "iupluacontrols" )
 
 mat = iup.matrix {
     numcol=5, 

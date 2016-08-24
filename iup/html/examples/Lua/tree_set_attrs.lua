@@ -1,5 +1,9 @@
 require"iuplua"
 
+if (not loadstring) then
+  loadstring = load
+end
+
 local nodes = {
 	branchname = "root (0)",
 	state = "EXPANDED",

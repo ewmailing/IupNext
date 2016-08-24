@@ -1,5 +1,9 @@
 require ("iuplua")
 
+if (not loadstring) then
+  loadstring = load
+end
+
 console = {}
 
 console.prompt = iup.text{expand="Horizontal", dragdrop = "Yes"}
