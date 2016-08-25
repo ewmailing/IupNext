@@ -15,7 +15,7 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 
 #include "ClassFactory.h"
 
-#include "IupPreviewHandler.h"
+#include "PreviewHandler.h"
 #include "ThumbnailProvider.h"
 
 #include <new>
@@ -84,7 +84,7 @@ IFACEMETHODIMP ClassFactory::CreateInstance(IUnknown *pUnkOuter, REFIID riid, vo
 
         // Create the COM component.
 #if defined(DEFINE_PREVIEWHANDLER)
-        IupPreviewHandler *pExt = new (std::nothrow) IupPreviewHandler();
+        PreviewHandler *pExt = new (std::nothrow) PreviewHandler();
 #elif defined( DEFINE_THUMBNAILHANDLER)
         ThumbnailProvider *pExt = new (std::nothrow) ThumbnailProvider();
 #endif

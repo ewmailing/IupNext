@@ -178,16 +178,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ClassFactory.h" />
-    <ClInclude Include="IupPreviewCanvas.h" />
-    <ClInclude Include="IupPreviewHandler.h" />
+    <ClInclude Include="PreviewHandler.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Reg.h" />
     <ClInclude Include="ThumbnailProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClassFactory.cpp" />
-    <ClCompile Include="IupPreviewCanvas.cpp" />
-    <ClCompile Include="IupPreviewHandler.cpp" />
+    <ClCompile Include="IupPreviewWindow.cpp" />
+    <ClCompile Include="PreviewHandler.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Reg.cpp" />
     <ClCompile Include="ThumbnailProvider.cpp">

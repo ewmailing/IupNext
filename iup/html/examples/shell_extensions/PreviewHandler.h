@@ -1,5 +1,5 @@
 /****************************** Module Header ******************************\
-Module Name:  IupPreviewHandler.h
+Module Name:  PreviewHandler.h
 Copyright (c) Microsoft Corporation.
 
 This source is subject to the Microsoft Public License.
@@ -18,7 +18,7 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <thumbcache.h>
 
 
-class IupPreviewHandler : 
+class PreviewHandler : 
     public IInitializeWithFile,
     public IPreviewHandler, 
     public IPreviewHandlerVisuals, 
@@ -56,10 +56,10 @@ public:
     IFACEMETHODIMP SetSite(IUnknown *punkSite);
     IFACEMETHODIMP GetSite(REFIID riid, void **ppv);
 
-    IupPreviewHandler();
+    PreviewHandler();
 
 protected:
-    ~IupPreviewHandler();
+    ~PreviewHandler();
 
 private:
     // Reference count of component.
@@ -81,5 +81,5 @@ private:
     // Site pointer from host, used to get IPreviewHandlerFrame.
     IUnknown *m_punkSite;
 
-    HRESULT CreatePreviewWindow();
+    HRESULT CreatePreviewWindow(HINSTANCE g_hInstDll, int width, int height);
 };

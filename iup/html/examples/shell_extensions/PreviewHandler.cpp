@@ -11,7 +11,7 @@ EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 \***************************************************************************/
 
-#include "IupPreviewHandler.h"
+#include "PreviewHandler.h"
 
 #include <Shlwapi.h>
 
@@ -34,14 +34,14 @@ inline int RECTHEIGHT(const RECT &rc)
 }
 
 
-IupPreviewHandler::IupPreviewHandler() 
+PreviewHandler::PreviewHandler() 
   : m_cRef(1), m_pPathFile(NULL), m_hwndPreview(NULL), 
     m_hwndParent(NULL), m_punkSite(NULL)
 {
   InterlockedIncrement(&g_cRefDll);
 }
 
-IupPreviewHandler::~IupPreviewHandler()
+PreviewHandler::~PreviewHandler()
 {
   if (m_punkSite)
   {
@@ -68,28 +68,28 @@ IupPreviewHandler::~IupPreviewHandler()
 #pragma region IUnknown
 
 // Query to the interface the component supported.
-IFACEMETHODIMP IupPreviewHandler::QueryInterface(REFIID riid, void **ppv)
+IFACEMETHODIMP PreviewHandler::QueryInterface(REFIID riid, void **ppv)
 {
   static const QITAB qit[] =
   {
-    QITABENT(IupPreviewHandler, IPreviewHandler),
-    QITABENT(IupPreviewHandler, IInitializeWithFile),
-    QITABENT(IupPreviewHandler, IPreviewHandlerVisuals),
-    QITABENT(IupPreviewHandler, IOleWindow),
-    QITABENT(IupPreviewHandler, IObjectWithSite),
+    QITABENT(PreviewHandler, IPreviewHandler),
+    QITABENT(PreviewHandler, IInitializeWithFile),
+    QITABENT(PreviewHandler, IPreviewHandlerVisuals),
+    QITABENT(PreviewHandler, IOleWindow),
+    QITABENT(PreviewHandler, IObjectWithSite),
     { 0 },
   };
   return QISearch(this, qit, riid, ppv);
 }
 
 // Increase the reference count for an interface on an object.
-IFACEMETHODIMP_(ULONG) IupPreviewHandler::AddRef()
+IFACEMETHODIMP_(ULONG) PreviewHandler::AddRef()
 {
   return InterlockedIncrement(&m_cRef);
 }
 
 // Decrease the reference count for an interface on an object.
-IFACEMETHODIMP_(ULONG) IupPreviewHandler::Release()
+IFACEMETHODIMP_(ULONG) PreviewHandler::Release()
 {
   ULONG cRef = InterlockedDecrement(&m_cRef);
   if (0 == cRef)
@@ -109,7 +109,7 @@ IFACEMETHODIMP_(ULONG) IupPreviewHandler::Release()
 // Store the path and mode parameters so that you can read the item's data 
 // when you are ready to preview the item. Do not load the data in Initialize. 
 // Load the data in IPreviewHandler::DoPreview just before you render.
-IFACEMETHODIMP IupPreviewHandler::Initialize(LPCWSTR pszFilePath, DWORD grfMode)
+IFACEMETHODIMP PreviewHandler::Initialize(LPCWSTR pszFilePath, DWORD grfMode)
 {
   HRESULT hr = E_INVALIDARG;
   if (pszFilePath)
@@ -136,7 +136,7 @@ IFACEMETHODIMP IupPreviewHandler::Initialize(LPCWSTR pszFilePath, DWORD grfMode)
 // This method gets called when the previewer gets created. It sets the parent 
 // window of the previewer window, as well as the area within the parent to be 
 // used for the previewer window.
-IFACEMETHODIMP IupPreviewHandler::SetWindow(HWND hwnd, const RECT *prc)
+IFACEMETHODIMP PreviewHandler::SetWindow(HWND hwnd, const RECT *prc)
 {
   if (hwnd && prc)
   {
@@ -156,7 +156,7 @@ IFACEMETHODIMP IupPreviewHandler::SetWindow(HWND hwnd, const RECT *prc)
 }
 
 // Directs the preview handler to set focus to itself.
-IFACEMETHODIMP IupPreviewHandler::SetFocus()
+IFACEMETHODIMP PreviewHandler::SetFocus()
 {
   HRESULT hr = S_FALSE;
   if (m_hwndPreview)
@@ -169,7 +169,7 @@ IFACEMETHODIMP IupPreviewHandler::SetFocus()
 
 // Directs the preview handler to return the HWND from calling the GetFocus 
 // function.
-IFACEMETHODIMP IupPreviewHandler::QueryFocus(HWND *phwnd)
+IFACEMETHODIMP PreviewHandler::QueryFocus(HWND *phwnd)
 {
   HRESULT hr = E_INVALIDARG;
   if (phwnd)
@@ -189,7 +189,7 @@ IFACEMETHODIMP IupPreviewHandler::QueryFocus(HWND *phwnd)
 
 // Directs the preview handler to handle a keystroke passed up from the 
 // message pump of the process in which the preview handler is running.
-IFACEMETHODIMP IupPreviewHandler::TranslateAccelerator(MSG *pmsg)
+IFACEMETHODIMP PreviewHandler::TranslateAccelerator(MSG *pmsg)
 {
   HRESULT hr = S_FALSE;
   IPreviewHandlerFrame *pFrame = NULL;
@@ -208,7 +208,7 @@ IFACEMETHODIMP IupPreviewHandler::TranslateAccelerator(MSG *pmsg)
 // This method gets called when the size of the previewer window changes 
 // (user resizes the Reading Pane). It directs the preview handler to change 
 // the area within the parent hwnd that it draws into.
-IFACEMETHODIMP IupPreviewHandler::SetRect(const RECT *prc)
+IFACEMETHODIMP PreviewHandler::SetRect(const RECT *prc)
 {
   HRESULT hr = E_INVALIDARG;
   if (prc != NULL)
@@ -230,7 +230,7 @@ IFACEMETHODIMP IupPreviewHandler::SetRect(const RECT *prc)
 // The method directs the preview handler to load data from the source 
 // specified in an earlier Initialize method call, and to begin rendering to 
 // the previewer window.
-IFACEMETHODIMP IupPreviewHandler::DoPreview()
+IFACEMETHODIMP PreviewHandler::DoPreview()
 {
   // Cannot call more than once.
   // (Unload should be called before another DoPreview)
@@ -238,7 +238,7 @@ IFACEMETHODIMP IupPreviewHandler::DoPreview()
     return E_FAIL;
 
   // Create the preview window.
-  CreatePreviewWindow();
+  CreatePreviewWindow(g_hInstDll, RECTWIDTH(m_rcParent), RECTHEIGHT(m_rcParent));
 
   return S_OK;
 }
@@ -247,7 +247,7 @@ IFACEMETHODIMP IupPreviewHandler::DoPreview()
 // preview handler to cease rendering a preview and to release all resources 
 // that have been allocated based on the item passed in during the 
 // initialization.
-IFACEMETHODIMP IupPreviewHandler::Unload()
+IFACEMETHODIMP PreviewHandler::Unload()
 {
   if (m_pPathFile)
   {
@@ -269,19 +269,19 @@ IFACEMETHODIMP IupPreviewHandler::Unload()
 #pragma region IPreviewHandlerVisuals (Optional)
 
 // Sets the background color of the preview handler.
-IFACEMETHODIMP IupPreviewHandler::SetBackgroundColor(COLORREF color)
+IFACEMETHODIMP PreviewHandler::SetBackgroundColor(COLORREF color)
 {
   return S_OK;
 }
 
 // Sets the font attributes to be used for text within the preview handler.
-IFACEMETHODIMP IupPreviewHandler::SetFont(const LOGFONTW *plf)
+IFACEMETHODIMP PreviewHandler::SetFont(const LOGFONTW *plf)
 {
   return S_OK;
 }
 
 // Sets the color of the text within the preview handler.
-IFACEMETHODIMP IupPreviewHandler::SetTextColor(COLORREF color)
+IFACEMETHODIMP PreviewHandler::SetTextColor(COLORREF color)
 {
   return S_OK;
 }
@@ -293,7 +293,7 @@ IFACEMETHODIMP IupPreviewHandler::SetTextColor(COLORREF color)
 
 // Retrieves a handle to one of the windows participating in in-place 
 // activation (frame, document, parent, or in-place object window).
-IFACEMETHODIMP IupPreviewHandler::GetWindow(HWND *phwnd)
+IFACEMETHODIMP PreviewHandler::GetWindow(HWND *phwnd)
 {
   HRESULT hr = E_INVALIDARG;
   if (phwnd)
@@ -306,7 +306,7 @@ IFACEMETHODIMP IupPreviewHandler::GetWindow(HWND *phwnd)
 
 // Determines whether context-sensitive help mode should be entered during an 
 // in-place activation session
-IFACEMETHODIMP IupPreviewHandler::ContextSensitiveHelp(BOOL fEnterMode)
+IFACEMETHODIMP PreviewHandler::ContextSensitiveHelp(BOOL fEnterMode)
 {
   return E_NOTIMPL;
 }
@@ -317,7 +317,7 @@ IFACEMETHODIMP IupPreviewHandler::ContextSensitiveHelp(BOOL fEnterMode)
 #pragma region IObjectWithSite
 
 // Provides the site's IUnknown pointer to the object.
-IFACEMETHODIMP IupPreviewHandler::SetSite(IUnknown *punkSite)
+IFACEMETHODIMP PreviewHandler::SetSite(IUnknown *punkSite)
 {
   if (m_punkSite)
   {
@@ -329,7 +329,7 @@ IFACEMETHODIMP IupPreviewHandler::SetSite(IUnknown *punkSite)
 
 // Gets the last site set with IObjectWithSite::SetSite. If there is no known 
 // site, the object returns a failure code.
-IFACEMETHODIMP IupPreviewHandler::GetSite(REFIID riid, void **ppv)
+IFACEMETHODIMP PreviewHandler::GetSite(REFIID riid, void **ppv)
 {
   *ppv = NULL;
   return m_punkSite ? m_punkSite->QueryInterface(riid, ppv) : E_FAIL;
@@ -338,55 +338,3 @@ IFACEMETHODIMP IupPreviewHandler::GetSite(REFIID riid, void **ppv)
 #pragma endregion
 
 
-#pragma region Helper Functions
-
-#include <iup.h>
-#include "IupPreviewCanvas.h"
-
-extern "C" void iupwinSetInstance(HINSTANCE hInstance);
-
-// Create the preview window based on the recipe information.
-HRESULT IupPreviewHandler::CreatePreviewWindow()
-{
-  HRESULT hr = S_OK;
-
-  iupwinSetInstance(g_hInstDll);
-
-  IupOpen(NULL, NULL);
-
-  Ihandle* cnv = IupPreviewCanvasCreate();
-
-  Ihandle* m_dialog = IupDialog(cnv);
-  IupSetAttribute(m_dialog, "BORDER", "NO");
-  IupSetAttribute(m_dialog, "MAXBOX", "NO");
-  IupSetAttribute(m_dialog, "MINBOX", "NO");
-  IupSetAttribute(m_dialog, "MENUBOX", "NO");
-  IupSetAttribute(m_dialog, "RESIZE", "NO");
-  IupSetAttribute(m_dialog, "CONTROL", "YES");
-
-  char str[10240];
-  size_t size;
-  wcstombs_s(&size, str, 10240, m_pPathFile, 10240);
-  IupSetStrAttribute(m_dialog, "PATHFILE", str);
-
-  IupSetAttribute(m_dialog, "NATIVEPARENT", (char*)m_hwndParent);
-
-  IupSetStrf(m_dialog, "RASTERSIZE", "%dx%d", RECTWIDTH(m_rcParent), RECTHEIGHT(m_rcParent));
-  IupMap(m_dialog);
-  IupSetAttribute(m_dialog, "RASTERSIZE", NULL);
-
-  m_hwndPreview = (HWND)IupGetAttribute(m_dialog, "HWND");
-
-  // Set the preview window position.
-  SetWindowPos(m_hwndPreview, NULL, m_rcParent.left, m_rcParent.top,
-               RECTWIDTH(m_rcParent), RECTHEIGHT(m_rcParent),
-               SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
-
-  ShowWindow(m_hwndPreview, SW_SHOW);
-
-  return hr;
-}
-
-// MessageBox(NULL, L"ShowWindow-Fail", L"IUP", MB_OK);
-
-#pragma endregion
