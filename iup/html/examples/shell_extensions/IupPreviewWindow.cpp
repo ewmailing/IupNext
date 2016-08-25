@@ -53,7 +53,6 @@ static void imImageViewFitRect(int cnv_width, int cnv_height, int img_width, int
     *h = (int)(cnv_width * rImage);
 }
 
-
 static int canvas_redraw(Ihandle* ih)
 {
   char* filename = IupGetAttribute(ih, "PATHFILE");
@@ -89,9 +88,16 @@ static int canvas_redraw(Ihandle* ih)
 #ifdef USE_IM
   int error;
   imImage* image = imFileImageLoadBitmap(filename, 0, &error);
+  if (!image)
+    return IUP_DEFAULT;
 
   int glformat;
   void* glImage = imImageGetOpenGLData(image, &glformat);
+  if (!glImage)
+  {
+    imImageDestroy(image);
+    return IUP_DEFAULT;
+  }
 
   int x, y, w, h;
   imImageViewFitRect(cnv_w, cnv_h, image->width, image->height, &w, &h);
@@ -107,7 +113,6 @@ static int canvas_redraw(Ihandle* ih)
 
   IupGLSwapBuffers(ih);
 #else
-//  cdCanvas* canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
   cdCanvas* canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS_DBUFFER");
 
   cdCanvasActivate(canvas);
@@ -138,7 +143,6 @@ static int canvas_redraw(Ihandle* ih)
   cdCanvasPlay(canvas, CD_EMF, 0, cnv_w - 1, 0, cnv_h - 1, filename);
 #endif
 
-//  cdCanvasText(canvas, 0, 0, "CD_IUP");
   cdCanvasText(canvas, 0, 0, "CD_IUPDBUFFER");
 
   cdCanvasFlush(canvas);
@@ -149,21 +153,19 @@ static int canvas_redraw(Ihandle* ih)
 #ifndef USE_OPEN_GL
 static int canvas_map(Ihandle* ih)
 {
-//  cdCreateCanvas(CD_IUP, ih);
   cdCreateCanvas(CD_IUPDBUFFER, ih);
   return IUP_DEFAULT;
 }
 
 static int canvas_unmap(Ihandle* ih)
 {
-//  cdCanvas* canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");
   cdCanvas* canvas = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS_DBUFFER");
   cdKillCanvas(canvas);
   return IUP_DEFAULT;
 }
 #endif
 
-static Ihandle* IupPreviewCanvasCreate()
+static Ihandle* canvas_create()
 {
 #ifdef USE_OPEN_GL
   IupGLCanvasOpen();
@@ -181,9 +183,9 @@ static Ihandle* IupPreviewCanvasCreate()
   return cnv;
 }
 
-void* CreatePreviewWindow(void* hParent, int width, int height, const char* filename)
+void* CreatePreviewWindow(void* hNativeParent, int width, int height, const char* filename)
 {
-  Ihandle* cnv = IupPreviewCanvasCreate();
+  Ihandle* cnv = canvas_create();
 
   Ihandle* dialog = IupDialog(cnv);
   IupSetAttribute(dialog, "BORDER", "NO");
@@ -195,13 +197,13 @@ void* CreatePreviewWindow(void* hParent, int width, int height, const char* file
 
   IupSetStrAttribute(dialog, "PATHFILE", filename);
 
-  IupSetAttribute(dialog, "NATIVEPARENT", (char*)hParent);
+  IupSetAttribute(dialog, "NATIVEPARENT", (char*)hNativeParent);
 
-  IupSetStrf(dialog, "RASTERSIZE", "%dx%d", width, height);
+  if (width && height) IupSetStrf(dialog, "RASTERSIZE", "%dx%d", width, height);
   IupMap(dialog);
-  IupSetAttribute(dialog, "RASTERSIZE", NULL);
+  if (width && height) IupSetAttribute(dialog, "RASTERSIZE", NULL);
 
-  printf("CreatePreviewWindow(%d, %d)\n", width, height);
+  // printf("CreatePreviewWindow(%d, %d)\n", width, height);
   // MessageBox(NULL, L"ShowWindow", L"IUP", MB_OK);
 
   return IupGetAttribute(dialog, "HWND");

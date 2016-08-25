@@ -50,7 +50,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
     // path of the DLL to register the component.
     g_hInstDll = hModule;
 
-#ifdef _DEBUG
+#ifdef XXX_DEBUG
     AllocConsole();
     AttachConsole(GetCurrentProcessId());
     freopen("CON", "w", stdout);
