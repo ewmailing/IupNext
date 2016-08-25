@@ -34,10 +34,9 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 
 #include "Config.h"
 
-
-static HINSTANCE  g_hInstDll = NULL;
-
+HINSTANCE  g_hInstDll = NULL;
 long  g_cRefDll   = 0;
+
 
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
@@ -48,15 +47,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
     // Hold the instance of this DLL module, we will use it to get the 
     // path of the DLL to register the component.
     g_hInstDll = hModule;
-    
+
     // disable the DLL_THREAD_ATTACH and DLL_THREAD_DETACH notification calls. 
-    // This can be a useful optimization for multithreaded applications 
+    // This can be a useful optimization for multi-threaded applications 
     // that have many DLLs, frequently create and delete threads, 
     // and whose DLLs do not need these thread-level notifications of attachment/detachment.
     DisableThreadLibraryCalls(hModule);
     break;
   case DLL_PROCESS_DETACH:
-    g_hInstDll = NULL;
     break;
   }
   return TRUE;

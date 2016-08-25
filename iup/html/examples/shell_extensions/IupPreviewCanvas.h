@@ -1,3 +1,0 @@
-
-
-Ihandle* IupPreviewCanvasCreate();

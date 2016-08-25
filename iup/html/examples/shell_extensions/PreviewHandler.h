@@ -17,8 +17,6 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <shlobj.h>
 #include <thumbcache.h>
 
-#include <iup.h>
-
 
 class IupPreviewHandler : 
     public IInitializeWithFile,
@@ -68,17 +66,17 @@ private:
     long m_cRef;
 
     // Provided during initialization.
-    LPCWSTR m_pPathFile;
+    LPWSTR m_pPathFile;
 
     // Parent window that hosts the previewer window.
     // Note: do NOT DestroyWindow this.
     HWND m_hwndParent;
 
     // Bounding rect of the parent window.
-    int m_width, m_height;
-    int m_x, m_y;
+    RECT m_rcParent;
 
-    Ihandle* m_dialog;
+    // The actual previewer window.
+    HWND m_hwndPreview;
 
     // Site pointer from host, used to get IPreviewHandlerFrame.
     IUnknown *m_punkSite;

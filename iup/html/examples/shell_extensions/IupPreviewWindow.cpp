@@ -3,7 +3,7 @@
 
 #include "IupPreviewCanvas.h"
 
-#define USE_OPEN_GL
+//#define USE_OPEN_GL
 #define USE_IM
 
 #ifdef USE_OPEN_GL
@@ -181,3 +181,56 @@ Ihandle* IupPreviewCanvasCreate()
 
   return cnv;
 }
+
+#pragma region Helper Functions
+
+#include <iup.h>
+#include "IupPreviewCanvas.h"
+
+extern "C" void iupwinSetInstance(HINSTANCE hInstance);
+
+// Create the preview window based on the recipe information.
+HRESULT IupPreviewHandler::CreatePreviewWindow()
+{
+  HRESULT hr = S_OK;
+
+  iupwinSetInstance(g_hInstDll);
+
+  IupOpen(NULL, NULL);
+
+  Ihandle* cnv = IupPreviewCanvasCreate();
+
+  Ihandle* m_dialog = IupDialog(cnv);
+  IupSetAttribute(m_dialog, "BORDER", "NO");
+  IupSetAttribute(m_dialog, "MAXBOX", "NO");
+  IupSetAttribute(m_dialog, "MINBOX", "NO");
+  IupSetAttribute(m_dialog, "MENUBOX", "NO");
+  IupSetAttribute(m_dialog, "RESIZE", "NO");
+  IupSetAttribute(m_dialog, "CONTROL", "YES");
+
+  char str[10240];
+  size_t size;
+  wcstombs_s(&size, str, 10240, m_pPathFile, 10240);
+  IupSetStrAttribute(m_dialog, "PATHFILE", str);
+
+  IupSetAttribute(m_dialog, "NATIVEPARENT", (char*)m_hwndParent);
+
+  IupSetStrf(m_dialog, "RASTERSIZE", "%dx%d", RECTWIDTH(m_rcParent), RECTHEIGHT(m_rcParent));
+  IupMap(m_dialog);
+  IupSetAttribute(m_dialog, "RASTERSIZE", NULL);
+
+  m_hwndPreview = (HWND)IupGetAttribute(m_dialog, "HWND");
+
+  // Set the preview window position.
+  SetWindowPos(m_hwndPreview, NULL, m_rcParent.left, m_rcParent.top,
+               RECTWIDTH(m_rcParent), RECTHEIGHT(m_rcParent),
+               SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+
+  ShowWindow(m_hwndPreview, SW_SHOW);
+
+  return hr;
+}
+
+// MessageBox(NULL, L"ShowWindow-Fail", L"IUP", MB_OK);
+
+#pragma endregion
