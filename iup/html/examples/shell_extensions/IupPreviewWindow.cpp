@@ -2,7 +2,7 @@
 #include <iup.h>
 #include <stdio.h>
 
-#define USE_OPEN_GL
+//#define USE_OPEN_GL
 #define USE_IM
 
 #ifdef USE_OPEN_GL
@@ -203,8 +203,10 @@ void* CreatePreviewWindow(void* hNativeParent, int width, int height, const char
   IupMap(dialog);
   if (width && height) IupSetAttribute(dialog, "RASTERSIZE", NULL);
 
+#ifdef XXX_DEBUG
   // printf("CreatePreviewWindow(%d, %d)\n", width, height);
   // MessageBox(NULL, L"ShowWindow", L"IUP", MB_OK);
+#endif
 
   return IupGetAttribute(dialog, "HWND");
 }
