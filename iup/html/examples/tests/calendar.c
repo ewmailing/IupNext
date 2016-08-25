@@ -25,6 +25,8 @@ void CalendarTest(void)
 //  IupSetAttribute(date, "FORMAT", "ddd', 'd' of 'MMMM' ('yy')'");
   IupSetAttribute(date, "ZEROPRECED", "Yes");
   IupSetAttribute(date, "MONTHSHORTNAMES", "Yes");
+  IupSetAttribute(date, "VALUE", "2016/09/01");
+//  IupSetAttribute(date, "VALUE", "TODAY");
 
   box = IupVbox(
     IupSetCallbacks(IupButton("Set Value", NULL), "ACTION", set_value, NULL),
