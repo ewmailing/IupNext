@@ -237,8 +237,19 @@ IFACEMETHODIMP PreviewHandler::DoPreview()
   if (m_hwndPreview != NULL || !m_pPathFile)
     return E_FAIL;
 
+  char filename[10240];
+  size_t size;
+  wcstombs_s(&size, filename, 10240, m_pPathFile, 10240);
+
   // Create the preview window.
-  CreatePreviewWindow(g_hInstDll, RECTWIDTH(m_rcParent), RECTHEIGHT(m_rcParent));
+  m_hwndPreview = (HWND)CreatePreviewWindow(m_hwndParent, RECTWIDTH(m_rcParent), RECTHEIGHT(m_rcParent), filename);
+
+  // Set the preview window position.
+  SetWindowPos(m_hwndPreview, NULL, m_rcParent.left, m_rcParent.top,
+                RECTWIDTH(m_rcParent), RECTHEIGHT(m_rcParent),
+                SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+
+  ShowWindow(m_hwndPreview, SW_SHOW);
 
   return S_OK;
 }

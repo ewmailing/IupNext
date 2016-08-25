@@ -1,9 +1,8 @@
 
-#include "PreviewHandler.h"
-
 #include <iup.h>
+#include <stdio.h>
 
-//#define USE_OPEN_GL
+#define USE_OPEN_GL
 #define USE_IM
 
 #ifdef USE_OPEN_GL
@@ -182,49 +181,28 @@ static Ihandle* IupPreviewCanvasCreate()
   return cnv;
 }
 
-
-extern "C" void iupwinSetInstance(HINSTANCE hInstance);
-
-// Create the preview window based on the recipe information.
-HRESULT PreviewHandler::CreatePreviewWindow(HINSTANCE hInstance, int width, int height)
+void* CreatePreviewWindow(void* hParent, int width, int height, const char* filename)
 {
-  HRESULT hr = S_OK;
-
-  iupwinSetInstance(hInstance);
-
-  IupOpen(NULL, NULL);
-
   Ihandle* cnv = IupPreviewCanvasCreate();
 
-  Ihandle* m_dialog = IupDialog(cnv);
-  IupSetAttribute(m_dialog, "BORDER", "NO");
-  IupSetAttribute(m_dialog, "MAXBOX", "NO");
-  IupSetAttribute(m_dialog, "MINBOX", "NO");
-  IupSetAttribute(m_dialog, "MENUBOX", "NO");
-  IupSetAttribute(m_dialog, "RESIZE", "NO");
-  IupSetAttribute(m_dialog, "CONTROL", "YES");
+  Ihandle* dialog = IupDialog(cnv);
+  IupSetAttribute(dialog, "BORDER", "NO");
+  IupSetAttribute(dialog, "MAXBOX", "NO");
+  IupSetAttribute(dialog, "MINBOX", "NO");
+  IupSetAttribute(dialog, "MENUBOX", "NO");
+  IupSetAttribute(dialog, "RESIZE", "NO");
+  IupSetAttribute(dialog, "CONTROL", "YES");
 
-  char str[10240];
-  size_t size;
-  wcstombs_s(&size, str, 10240, m_pPathFile, 10240);
-  IupSetStrAttribute(m_dialog, "PATHFILE", str);
+  IupSetStrAttribute(dialog, "PATHFILE", filename);
 
-  IupSetAttribute(m_dialog, "NATIVEPARENT", (char*)m_hwndParent);
+  IupSetAttribute(dialog, "NATIVEPARENT", (char*)hParent);
 
-  IupSetStrf(m_dialog, "RASTERSIZE", "%dx%d", width, height);
-  IupMap(m_dialog);
-  IupSetAttribute(m_dialog, "RASTERSIZE", NULL);
+  IupSetStrf(dialog, "RASTERSIZE", "%dx%d", width, height);
+  IupMap(dialog);
+  IupSetAttribute(dialog, "RASTERSIZE", NULL);
 
-  m_hwndPreview = (HWND)IupGetAttribute(m_dialog, "HWND");
+  printf("CreatePreviewWindow(%d, %d)\n", width, height);
+  // MessageBox(NULL, L"ShowWindow", L"IUP", MB_OK);
 
-  // Set the preview window position.
-  SetWindowPos(m_hwndPreview, NULL, m_rcParent.left, m_rcParent.top,
-               width, height,
-               SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
-
-  ShowWindow(m_hwndPreview, SW_SHOW);
-
-  return hr;
+  return IupGetAttribute(dialog, "HWND");
 }
-
-// MessageBox(NULL, L"ShowWindow-Fail", L"IUP", MB_OK);

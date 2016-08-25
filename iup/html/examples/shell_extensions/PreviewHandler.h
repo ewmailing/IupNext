@@ -80,6 +80,6 @@ private:
 
     // Site pointer from host, used to get IPreviewHandlerFrame.
     IUnknown *m_punkSite;
-
-    HRESULT CreatePreviewWindow(HINSTANCE g_hInstDll, int width, int height);
 };
+
+void* CreatePreviewWindow(void* hParent, int width, int height, const char* filename);

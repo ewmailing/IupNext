@@ -28,15 +28,17 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <windows.h>
 #include <Guiddef.h>
 #include <shlobj.h>
+#include <stdio.h>
 
 #include "ClassFactory.h"
 #include "Reg.h"
 
 #include "Config.h"
 
+#include <iup.h>
+
 HINSTANCE  g_hInstDll = NULL;
 long  g_cRefDll   = 0;
-
 
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
@@ -48,6 +50,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
     // path of the DLL to register the component.
     g_hInstDll = hModule;
 
+#ifdef _DEBUG
+    AllocConsole();
+    AttachConsole(GetCurrentProcessId());
+    freopen("CON", "w", stdout);
+#endif
+
+    IupOpen(NULL, NULL);
+
     // disable the DLL_THREAD_ATTACH and DLL_THREAD_DETACH notification calls. 
     // This can be a useful optimization for multi-threaded applications 
     // that have many DLLs, frequently create and delete threads, 
@@ -55,6 +65,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
     DisableThreadLibraryCalls(hModule);
     break;
   case DLL_PROCESS_DETACH:
+    IupClose();
     break;
   }
   return TRUE;
