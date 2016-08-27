@@ -35,7 +35,9 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 
 #include "Config.h"
 
+#if defined(DEFINE_PREVIEWHANDLER)
 #include <iup.h>
+#endif
 
 HINSTANCE  g_hInstDll = NULL;
 long  g_cRefDll   = 0;
@@ -50,13 +52,15 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
     // path of the DLL to register the component.
     g_hInstDll = hModule;
 
-#ifdef XXX_DEBUG
+#ifdef _DEBUG
     AllocConsole();
     AttachConsole(GetCurrentProcessId());
     freopen("CON", "w", stdout);
 #endif
 
+#if defined(DEFINE_PREVIEWHANDLER)
     IupOpen(NULL, NULL);
+#endif
 
     // disable the DLL_THREAD_ATTACH and DLL_THREAD_DETACH notification calls. 
     // This can be a useful optimization for multi-threaded applications 
@@ -65,7 +69,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
     DisableThreadLibraryCalls(hModule);
     break;
   case DLL_PROCESS_DETACH:
+#if defined(DEFINE_PREVIEWHANDLER)
     IupClose();
+#endif
     break;
   }
   return TRUE;
@@ -137,13 +143,13 @@ STDAPI DllRegisterServer(void)
 
   // Register the component.
   hr = RegisterInprocServer(szModule, CLSID_ShelExtensionHandler, 
-                            APPICATION_DESCRIPTION L"." FORMAT_DESCRIPTION L" Class", 
+                            APPICATION_DESCRIPTION L"." HANDLER_DESCRIPTION L" Class", 
                             L"Apartment", APPID_ShelExtensionHandler);
   if (SUCCEEDED(hr))
   {
 #if defined(DEFINE_PREVIEWHANDLER)
     // Register the shell extension handler.
-    hr = RegisterShellExtPreviewHandler(FORMAT_EXTENSION, CLSID_ShelExtensionHandler, FORMAT_DESCRIPTION);
+    hr = RegisterShellExtPreviewHandler(FORMAT_EXTENSION, CLSID_ShelExtensionHandler, HANDLER_DESCRIPTION);
 #elif defined( DEFINE_THUMBNAILHANDLER)
     hr = RegisterShellExtThumbnailHandler(FORMAT_EXTENSION, CLSID_ShelExtensionHandler);
     if (SUCCEEDED(hr))
@@ -172,7 +178,11 @@ STDAPI DllUnregisterServer(void)
   if (SUCCEEDED(hr))
   {
     // Unregister the shell extension handler.
+#if defined(DEFINE_PREVIEWHANDLER)
     hr = UnregisterShellExtPreviewHandler(FORMAT_EXTENSION, CLSID_ShelExtensionHandler);
+#elif defined(DEFINE_THUMBNAILHANDLER)
+    hr = UnregisterShellExtThumbnailHandler(FORMAT_EXTENSION);
+#endif
   }
 
   return hr;

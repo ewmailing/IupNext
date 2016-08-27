@@ -1,5 +1,5 @@
 /****************************** Module Header ******************************\
-Module Name:  RecipePreviewHandler.cpp
+Module Name:  PreviewHandler.cpp
 Copyright (c) Microsoft Corporation.
 
 This source is subject to the Microsoft Public License.
@@ -14,7 +14,6 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 #include "PreviewHandler.h"
 
 #include <Shlwapi.h>
-
 
 #pragma comment(lib, "Shlwapi.lib")
 

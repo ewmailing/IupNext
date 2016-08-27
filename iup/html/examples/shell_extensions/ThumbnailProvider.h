@@ -23,57 +23,34 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 #pragma once
 
 #include <windows.h>
-#include <thumbcache.h>     // For IThumbnailProvider
+#include <thumbcache.h>
 
 
 class ThumbnailProvider : 
-    public IInitializeWithStream, 
-    public IThumbnailProvider
+  public IInitializeWithFile, 
+  public IThumbnailProvider
 {
 public:
-    // IUnknown
-    IFACEMETHODIMP QueryInterface(REFIID riid, void **ppv);
-    IFACEMETHODIMP_(ULONG) AddRef();
-    IFACEMETHODIMP_(ULONG) Release();
+  // IUnknown
+  IFACEMETHODIMP QueryInterface(REFIID riid, void **ppv);
+  IFACEMETHODIMP_(ULONG) AddRef();
+  IFACEMETHODIMP_(ULONG) Release();
 
-    // IInitializeWithStream
-    IFACEMETHODIMP Initialize(IStream *pStream, DWORD grfMode);
+  // IInitializeWithFile
+  IFACEMETHODIMP Initialize(LPCWSTR pszFilePath, DWORD grfMode);
 
-    // IThumbnailProvider
-    IFACEMETHODIMP GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlpha);
+  // IThumbnailProvider
+  IFACEMETHODIMP GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlpha);
 
-    ThumbnailProvider();
+  ThumbnailProvider();
 
 protected:
-    ~ThumbnailProvider();
+  ~ThumbnailProvider();
 
 private:
-    // Reference count of component.
-    long m_cRef;
+  // Reference count of component.
+  long m_cRef;
 
-    // Provided during initialization.
-    IStream *m_pStream;
-
-    //HRESULT LoadXMLDocument(IXMLDOMDocument **ppXMLDoc);
-
-    //HRESULT GetRecipeImage(
-    //    IXMLDOMDocument *pXMLDoc, 
-    //    UINT cx, 
-    //    HBITMAP *phbmp, 
-    //    WTS_ALPHATYPE *pdwAlpha);
-
-    //HRESULT GetBase64EncodedImageString(
-    //    IXMLDOMDocument *pXMLDoc, 
-    //    UINT cx, 
-    //    PWSTR *ppszResult);
-
-    //HRESULT GetStreamFromString(PCWSTR pszImageString, IStream **ppStream);
-
-    //HRESULT ConvertBitmapSourceTo32bppHBITMAP(
-    //    IWICBitmapSource *pBitmapSource, 
-    //    IWICImagingFactory *pImagingFactory, 
-    //    HBITMAP *phbmp);
-
-    //HRESULT WICCreate32bppHBITMAP(IStream *pstm, HBITMAP *phbmp, 
-    //    WTS_ALPHATYPE *pdwAlpha);
+  // Provided during initialization.
+  LPWSTR m_pPathFile;
 };

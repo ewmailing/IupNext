@@ -22,20 +22,20 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 class ClassFactory : public IClassFactory
 {
 public:
-    // IUnknown
-    IFACEMETHODIMP QueryInterface(REFIID riid, void **ppv);
-    IFACEMETHODIMP_(ULONG) AddRef();
-    IFACEMETHODIMP_(ULONG) Release();
+  // IUnknown
+  IFACEMETHODIMP QueryInterface(REFIID riid, void **ppv);
+  IFACEMETHODIMP_(ULONG) AddRef();
+  IFACEMETHODIMP_(ULONG) Release();
 
-    // IClassFactory
-    IFACEMETHODIMP CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppv);
-    IFACEMETHODIMP LockServer(BOOL fLock);
+  // IClassFactory
+  IFACEMETHODIMP CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppv);
+  IFACEMETHODIMP LockServer(BOOL fLock);
 
-    ClassFactory();
+  ClassFactory();
 
 protected:
-    ~ClassFactory();
+  ~ClassFactory();
 
 private:
-    long m_cRef;
+  long m_cRef;
 };
