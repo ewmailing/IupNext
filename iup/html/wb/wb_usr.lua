@@ -208,6 +208,7 @@ wb_usr.tree =
             },
           }
         },
+        { link= "", name= {en= "" } },
         {
           name= {en= "Samples"},
           link= "samples.html",
@@ -231,6 +232,15 @@ wb_usr.tree =
             },
           }
         },
+        {
+          name= {nl= "Windows Shell Extensions Handlers"},
+          link= "shell_extensions.html"
+        },
+        {
+          name= {nl= "Custom Controls"},
+          link= "cpi.html"
+        },
+        { link= "", name= {en= "" } },
         {
           name= {en= "Lua Binding"},
           link= "iuplua.html",
@@ -287,10 +297,6 @@ wb_usr.tree =
               link= "iuplua_adv.html"
             }
           }
-        },
-        {
-          name= {nl= "Custom Controls"},
-          link= "cpi.html"
         },
       }
     },
