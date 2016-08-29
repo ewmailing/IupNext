@@ -23,12 +23,6 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 
 #include "ThumbnailProvider.h"
 
-#include <im.h>
-#include <im_image.h>
-#include <im_process.h>
-#include <im_convert.h>
-#include <im_dib.h>
-
 #include <Shlwapi.h>
 #include <stdio.h>
 
@@ -120,36 +114,6 @@ IFACEMETHODIMP ThumbnailProvider::Initialize(LPCWSTR pszFilePath, DWORD grfMode)
 
 #pragma region IThumbnailProvider
 
-static void imImageViewFitRect(int cnv_width, int cnv_height, int img_width, int img_height, int *w, int *h)
-{
-  double rView, rImage;
-  int correct = 0;
-
-  *w = cnv_width;
-  *h = cnv_height;
-
-  rView = ((double)cnv_height) / cnv_width;
-  rImage = ((double)img_height) / img_width;
-
-  if ((rView <= 1 && rImage <= 1) || (rView >= 1 && rImage >= 1)) /* view and image are horizontal rectangles */
-  {
-    if (rView > rImage)
-      correct = 2;
-    else
-      correct = 1;
-  }
-  else if (rView < 1 && rImage > 1) /* view is a horizontal rectangle and image is a vertical rectangle */
-    correct = 1;
-  else if (rView > 1 && rImage < 1) /* view is a vertical rectangle and image is a horizontal rectangle */
-    correct = 2;
-
-  if (correct == 1)
-    *w = (int)(cnv_height / rImage);
-  else if (correct == 2)
-    *h = (int)(cnv_width * rImage);
-}
-
-
 // Gets a thumbnail image and alpha type. The GetThumbnail is called with the 
 // largest desired size of the image, in pixels. Although the parameter is 
 // called cx, this is used as the maximum size of both the x and y dimensions. 
@@ -164,37 +128,15 @@ IFACEMETHODIMP ThumbnailProvider::GetThumbnail(UINT thumb_size, HBITMAP *phbmp, 
   size_t size;
   wcstombs_s(&size, filename, 10240, m_pPathFile, 10240);
 
-  int error;
-  imImage* image = imFileImageLoadBitmap(filename, 0, &error);
-  if (!image)
+  BOOL has_alpha;
+  *phbmp = CreateThumbnail(filename, thumb_size, has_alpha);
+  if (!(*phbmp))
     return E_FAIL;
 
-  if (image->color_space != IM_RGB)
-  {
-    imImage* rgb_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
-    imConvertColorSpace(image, rgb_image);
-    imImageDestroy(image);
-    image = rgb_image;
-  }
-
-  int thumb_width, thumb_height;
-  imImageViewFitRect(thumb_size, thumb_size, image->width, image->height, &thumb_width, &thumb_height);
-
-  imImage* thumb_image = imImageCreateBased(image, thumb_width, thumb_height, -1, -1);
-  imProcessResize(image, thumb_image, 1);
-  imImageDestroy(image);
-
-  HDC hDC = GetDC(NULL);
-  imDib* dib = imDibSectionFromImage(hDC, phbmp, thumb_image);
-  ReleaseDC(NULL, hDC);
-
-  if (image->has_alpha)
+  if (has_alpha)
     *pdwAlpha = WTSAT_ARGB;
   else
     *pdwAlpha = WTSAT_RGB;
-
-  imDibDestroy(dib);
-  imImageDestroy(thumb_image);
 
   return S_OK;
 }

@@ -1,3 +1,4 @@
+#include <windows.h>
 
 #include <iup.h>
 #include <stdio.h>
@@ -6,9 +7,6 @@
 #define USE_IM
 
 #ifdef USE_OPEN_GL
-#ifdef WIN32
-#include <windows.h>
-#endif
 #include <GL/gl.h> 
 #include <iupgl.h>
 #else
@@ -183,7 +181,7 @@ static Ihandle* canvas_create()
   return cnv;
 }
 
-void* CreatePreviewWindow(void* hNativeParent, int width, int height, const char* filename)
+HWND CreatePreviewWindow(HWND hNativeParent, int width, int height, const char* filename)
 {
   Ihandle* cnv = canvas_create();
 

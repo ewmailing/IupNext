@@ -82,4 +82,4 @@ private:
   IUnknown *m_punkSite;
 };
 
-void* CreatePreviewWindow(void* hParent, int width, int height, const char* filename);
+HWND CreatePreviewWindow(HWND hParent, int width, int height, const char* filename);

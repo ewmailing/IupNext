@@ -54,3 +54,5 @@ private:
   // Provided during initialization.
   LPWSTR m_pPathFile;
 };
+
+HBITMAP CreateThumbnail(const char* filename, UINT thumb_size, BOOL &has_alpha);
