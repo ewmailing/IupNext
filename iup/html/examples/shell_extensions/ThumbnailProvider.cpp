@@ -99,8 +99,6 @@ IFACEMETHODIMP ThumbnailProvider::Initialize(LPCWSTR pszFilePath, DWORD grfMode)
 {
   HRESULT hr = E_INVALIDARG;
 
-  printf("passou22\n");
-
   if (pszFilePath)
   {
     // Initialize can be called more than once, so release existing valid 
@@ -166,14 +164,10 @@ IFACEMETHODIMP ThumbnailProvider::GetThumbnail(UINT thumb_size, HBITMAP *phbmp, 
   size_t size;
   wcstombs_s(&size, filename, 10240, m_pPathFile, 10240);
 
-  printf("GetThumbnail-1\n");
-
   int error;
   imImage* image = imFileImageLoadBitmap(filename, 0, &error);
   if (!image)
     return E_FAIL;
-
-  printf("GetThumbnail-2\n");
 
   if (image->color_space != IM_RGB)
   {
@@ -183,24 +177,16 @@ IFACEMETHODIMP ThumbnailProvider::GetThumbnail(UINT thumb_size, HBITMAP *phbmp, 
     image = rgb_image;
   }
 
-  printf("GetThumbnail-3\n");
-
   int thumb_width, thumb_height;
   imImageViewFitRect(thumb_size, thumb_size, image->width, image->height, &thumb_width, &thumb_height);
-
-  printf("GetThumbnail-4\n");
 
   imImage* thumb_image = imImageCreateBased(image, thumb_width, thumb_height, -1, -1);
   imProcessResize(image, thumb_image, 1);
   imImageDestroy(image);
 
-  printf("GetThumbnail-5\n");
-
   HDC hDC = GetDC(NULL);
   imDib* dib = imDibSectionFromImage(hDC, phbmp, thumb_image);
   ReleaseDC(NULL, hDC);
-
-  printf("GetThumbnail-6 (%p)\n", *phbmp);
 
   if (image->has_alpha)
     *pdwAlpha = WTSAT_ARGB;

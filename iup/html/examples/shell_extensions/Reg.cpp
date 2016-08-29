@@ -72,6 +72,30 @@ HRESULT SetHKCRRegistryKeyAndValue(PCWSTR pszSubKey, PCWSTR pszValueName,
   return hr;
 }
 
+HRESULT SetHKCRRegistryKeyAndValueDWord(PCWSTR pszSubKey, PCWSTR pszValueName,
+                                   DWORD pszData, DWORD dwType = REG_DWORD)
+{
+  HRESULT hr;
+  HKEY hKey = NULL;
+
+  // Creates the specified registry key. If the key already exists, the 
+  // function opens it. 
+  hr = HRESULT_FROM_WIN32(RegCreateKeyEx(HKEY_CLASSES_ROOT, pszSubKey, 0,
+    NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, NULL));
+
+  if (SUCCEEDED(hr))
+  {
+    // Set the specified value of the key.
+    hr = HRESULT_FROM_WIN32(RegSetValueEx(hKey, pszValueName, 0,
+      dwType, reinterpret_cast<const BYTE *>(&pszData), sizeof(pszData)));
+
+    RegCloseKey(hKey);
+  }
+
+  return hr;
+}
+
+
 
 //
 //   FUNCTION: GetHKCRRegistryKeyAndValue
@@ -407,9 +431,7 @@ HRESULT UnregisterShellExtPreviewHandler(PCWSTR pszFileType,
                                          const CLSID& clsid)
 {
   if (pszFileType == NULL)
-  {
     return E_INVALIDARG;
-  }
 
   HRESULT hr;
 
@@ -424,25 +446,19 @@ HRESULT UnregisterShellExtPreviewHandler(PCWSTR pszFileType,
   if (*pszFileType == L'.')
   {
     wchar_t szDefaultVal[260];
-    hr = GetHKCRRegistryKeyAndValue(pszFileType, NULL, szDefaultVal,
-                                    sizeof(szDefaultVal));
+    hr = GetHKCRRegistryKeyAndValue(pszFileType, NULL, szDefaultVal, sizeof(szDefaultVal));
 
     // If the key exists and its default value is not empty, use the 
     // ProgID as the file type.
     if (SUCCEEDED(hr) && szDefaultVal[0] != L'\0')
-    {
       pszFileType = szDefaultVal;
-    }
   }
 
   // Remove the registry key: 
   // HKCR\<File Type>\shellex\{8895b1c6-b41f-4c1c-a562-0d564250836f}
-  hr = StringCchPrintf(szSubkey, ARRAYSIZE(szSubkey),
-                       L"%s\\shellex\\{8895b1c6-b41f-4c1c-a562-0d564250836f}", pszFileType);
+  hr = StringCchPrintf(szSubkey, ARRAYSIZE(szSubkey), L"%s\\shellex\\{8895b1c6-b41f-4c1c-a562-0d564250836f}", pszFileType);
   if (SUCCEEDED(hr))
-  {
     hr = HRESULT_FROM_WIN32(RegDeleteTree(HKEY_CLASSES_ROOT, szSubkey));
-  }
 
   // Remove the preview handler from the list of all preview handlers in the 
   // HKLM or HKCU\Software\Microsoft\Windows\CurrentVersion\PreviewHandlers 
@@ -453,24 +469,18 @@ HRESULT UnregisterShellExtPreviewHandler(PCWSTR pszFileType,
 
     // Open the registry key:
     // HKCU\Software\Microsoft\Windows\CurrentVersion\PreviewHandlers 
-    hr = HRESULT_FROM_WIN32(RegOpenKeyEx(HKEY_CURRENT_USER,
-      L"Software\\Microsoft\\Windows\\CurrentVersion\\PreviewHandlers",
-      0, KEY_WRITE, &hKey));
+    hr = HRESULT_FROM_WIN32(RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\PreviewHandlers", 0, KEY_WRITE, &hKey));
     if (SUCCEEDED(hr))
     {
       // Remove the {<CLSID>} registry value. 
       hr = HRESULT_FROM_WIN32(RegDeleteValue(hKey, szCLSID));
       if (hr == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))
-      {
         hr = S_OK;
-      }
 
       RegCloseKey(hKey);
     }
     else if (hr == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))
-    {
       hr = S_OK;
-    }
   }
 
   return hr;
@@ -504,9 +514,7 @@ HRESULT UnregisterShellExtPreviewHandler(PCWSTR pszFileType,
 HRESULT RegisterShellExtThumbnailHandler(PCWSTR pszFileType, const CLSID& clsid)
 {
   if (pszFileType == NULL)
-  {
     return E_INVALIDARG;
-  }
 
   HRESULT hr;
 
@@ -521,33 +529,31 @@ HRESULT RegisterShellExtThumbnailHandler(PCWSTR pszFileType, const CLSID& clsid)
   if (*pszFileType == L'.')
   {
     wchar_t szDefaultVal[260];
-    hr = GetHKCRRegistryKeyAndValue(pszFileType, NULL, szDefaultVal,
-                                    sizeof(szDefaultVal));
+    hr = GetHKCRRegistryKeyAndValue(pszFileType, NULL, szDefaultVal, sizeof(szDefaultVal));
 
     // If the key exists and its default value is not empty, use the 
     // ProgID as the file type.
     if (SUCCEEDED(hr) && szDefaultVal[0] != L'\0')
-    {
       pszFileType = szDefaultVal;
-    }
   }
 
   // Create the registry key 
   // HKCR\<File Type>\shellex\{e357fccd-a995-4576-b01f-234630154e96}
-  hr = StringCchPrintf(szSubkey, ARRAYSIZE(szSubkey),
-                       L"%s\\shellex\\{e357fccd-a995-4576-b01f-234630154e96}", pszFileType);
+  hr = StringCchPrintf(szSubkey, ARRAYSIZE(szSubkey), L"%s\\shellex\\{e357fccd-a995-4576-b01f-234630154e96}", pszFileType);
   if (SUCCEEDED(hr))
   {
     // Set the default value of the key.
     hr = SetHKCRRegistryKeyAndValue(szSubkey, NULL, szCLSID);
   }
 
-#if 0
-  HKEY_CLASSES_ROOT
-    CLSID
-  { The CLSID of your thumbnail handler }
-  DisableProcessIsolation = 1
-#endif
+  // Create the registry key 
+  // HKCR\CLSID\{<CLSID>}\DisableProcessIsolation = 1
+  hr = StringCchPrintf(szSubkey, ARRAYSIZE(szSubkey), L"CLSID\\%s", szCLSID);
+  if (SUCCEEDED(hr))
+  {
+    // Set the DisableProcessIsolation registry value.
+    hr = SetHKCRRegistryKeyAndValueDWord(szSubkey, L"DisableProcessIsolation", 1);
+  }
 
   return hr;
 }
@@ -569,9 +575,7 @@ HRESULT RegisterShellExtThumbnailHandler(PCWSTR pszFileType, const CLSID& clsid)
 HRESULT UnregisterShellExtThumbnailHandler(PCWSTR pszFileType)
 {
   if (pszFileType == NULL)
-  {
     return E_INVALIDARG;
-  }
 
   HRESULT hr;
 
@@ -583,25 +587,19 @@ HRESULT UnregisterShellExtThumbnailHandler(PCWSTR pszFileType)
   if (*pszFileType == L'.')
   {
     wchar_t szDefaultVal[260];
-    hr = GetHKCRRegistryKeyAndValue(pszFileType, NULL, szDefaultVal,
-                                    sizeof(szDefaultVal));
+    hr = GetHKCRRegistryKeyAndValue(pszFileType, NULL, szDefaultVal, sizeof(szDefaultVal));
 
     // If the key exists and its default value is not empty, use the 
     // ProgID as the file type.
     if (SUCCEEDED(hr) && szDefaultVal[0] != L'\0')
-    {
       pszFileType = szDefaultVal;
-    }
   }
 
   // Remove the registry key: 
   // HKCR\<File Type>\shellex\{e357fccd-a995-4576-b01f-234630154e96}
-  hr = StringCchPrintf(szSubkey, ARRAYSIZE(szSubkey),
-                       L"%s\\shellex\\{e357fccd-a995-4576-b01f-234630154e96}", pszFileType);
+  hr = StringCchPrintf(szSubkey, ARRAYSIZE(szSubkey), L"%s\\shellex\\{e357fccd-a995-4576-b01f-234630154e96}", pszFileType);
   if (SUCCEEDED(hr))
-  {
     hr = HRESULT_FROM_WIN32(RegDeleteTree(HKEY_CLASSES_ROOT, szSubkey));
-  }
 
   return hr;
 }
