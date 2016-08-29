@@ -59,11 +59,11 @@ IM with or without OpenGL.
 Change the name of the project to change the name of the DLL. By default it will 
 generate a DLL called &quot;ShellExtensionHandler.dll&quot;.</p>
 <p>A sample thumbnail handler is provided in the file &quot;<a href="../examples/shell_extensions/imThumbnail.cpp">imThumbnail.cpp</a>&quot; 
-implemented using IM only, and another file &quot;<a href="../examples/shell_extensions/cdThumbnail.cpp">cdThumbnail.cpp</a>&quot; 
-implemented using CD only.</p>
+implemented using IM only to load a TGA image file contents, resize it to the 
+thumbnail size and return the proper handle.</p>
 <p>A sample preview handler is provided in the file &quot;<a href="../examples/shell_extensions/IupPreviewWindow.cpp">IupPreviewWindow.cpp</a>&quot;. 
 This is the second file you need to edit to implement your own preview handler. The 
-sample code is very easy to understand. It will use IUP, and CD or OpenGL, to 
+sample code is very easy to understand. It will use IUP and, CD or OpenGL, to 
 draw a TGA image file loaded using IM. Take a look and change it according to 
 your needs. But it is recommended that the creation of the <strong>IupDialog</strong> 
 should not be changed. </p>
