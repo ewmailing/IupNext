@@ -73,3 +73,37 @@ HBITMAP CreateThumbnail(const char* filename, UINT thumb_size, BOOL &has_alpha)
 
   return hbmp;
 }
+
+
+#if 0
+/* sample code using IM just to create the HBTIMAP */
+
+HBITMAP CreateThumbnail(const char* filename, UINT thumb_size, BOOL &has_alpha)
+{
+  int plane_size = thumb_size*thumb_size;
+  unsigned char *data = (unsigned char *)malloc(sizeof(unsigned char)*plane_size*4);
+  unsigned char *red = data;
+  unsigned char *green = red + plane_size;
+  unsigned char *blue = green + plane_size;
+  unsigned char *alpha = blue + plane_size;
+  has_alpha = TRUE;
+
+  // Fill data here
+  // or use your own image data
+
+  HBITMAP hbmp;
+  HDC hDC = GetDC(NULL);
+  imDib* dib = imDibCreateSection(hDC, &hbmp, thumb_size, thumb_size, 32);
+  ReleaseDC(NULL, hDC);
+
+  imDibEncodeFromRGBA(dib, red, green, blue, alpha);
+
+  //imDibEncodeFromBitmap(dib, data); /* when data is packed (RGBARGBARGBA...) */
+
+  imDibDestroy(dib);
+
+  free(data);
+
+  return hbmp;
+}
+#endif
