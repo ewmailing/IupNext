@@ -198,6 +198,24 @@ static int help_cb(Ihandle* ih)
   return IUP_DEFAULT; 
 }
 
+static int button_cb(Ihandle *ih, int but, int pressed, int x, int y, char* status)
+{
+  printf("BUTTON_CB(but=%c (%d), x=%d, y=%d [%s])\n", (char)but, pressed, x, y, status);
+  return IUP_DEFAULT;
+}
+
+static int wheel_cb(Ihandle *ih, float delta, int x, int y, char* status)
+{
+  printf("WHEEL_CB(delta=%.2f, x=%d, y=%d [%s])\n", delta, x, y, status);
+  return IUP_DEFAULT;
+}
+
+static int motion_cb(Ihandle *ih, int x, int y, char* status)
+{
+  printf("MOTION_CB(x=%d, y=%d [%s])\n", x, y, status);
+  return IUP_DEFAULT;
+}
+
 static int file_cb(Ihandle* ih, const char* filename, const char* status)
 {
   (void)ih;
@@ -344,6 +362,11 @@ static void new_file(char* dialogtype, int preview)
   {
     IupSetAttribute(dlg, "SHOWPREVIEW", "YES");
     IupSetAttribute(dlg, "PREVIEWATRIGHT", "Yes");
+//    IupSetAttribute(dlg, "PREVIEWWIDTH", "600");  /* work only in GTK */
+
+    IupSetCallback(dlg, "BUTTON_CB", (Icallback)button_cb);
+    IupSetCallback(dlg, "MOTION_CB", (Icallback)motion_cb);
+    IupSetCallback(dlg, "WHEEL_CB", (Icallback)wheel_cb);
 
 #ifdef USE_OPENGL
     if (preview==2)

@@ -159,7 +159,7 @@ static void gtkFileDlgUpdatePreviewGLCanvas(Ihandle* ih)
       iupAttribSet(glcanvas, "XWINDOW", iupAttribGet(ih, "XWINDOW"));
   #endif
 #endif
-    glcanvas->iclass->Map(glcanvas);
+    glcanvas->iclass->Map(glcanvas);  /* this will call Map only for the IupGLCanvas, NOT for the IupCanvas */
   }
 }
 
@@ -463,8 +463,12 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
     if (iupAttribGetBoolean(ih, "SHOWPREVIEW"))
     {
       GtkWidget* frame = gtk_frame_new(NULL);
+      int preview_width = iupAttribGetInt(ih, "PREVIEWWIDTH");
+      int preview_height = iupAttribGetInt(ih, "PREVIEWHEIGHT");
+      if (preview_width <= 0) preview_width = 200;
+      if (preview_height <= 0) preview_height = 150;
       gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_ETCHED_IN);
-      gtk_widget_set_size_request(frame, 180, 150);
+      gtk_widget_set_size_request(frame, preview_width, preview_height);
 
       preview_canvas = gtk_drawing_area_new();
       gtk_widget_set_double_buffered(preview_canvas, FALSE);
@@ -478,6 +482,18 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       g_signal_connect(preview_canvas, "expose-event", G_CALLBACK(gtkFileDlgPreviewExposeEvent), ih);
 #endif
       g_signal_connect(preview_canvas, "realize", G_CALLBACK(gtkFileDlgPreviewRealize), ih);
+      g_signal_connect(G_OBJECT(preview_canvas), "button-press-event", G_CALLBACK(iupgtkButtonEvent), ih);
+      g_signal_connect(G_OBJECT(preview_canvas), "button-release-event", G_CALLBACK(iupgtkButtonEvent), ih);
+      g_signal_connect(G_OBJECT(preview_canvas), "motion-notify-event", G_CALLBACK(iupgtkMotionNotifyEvent), ih);
+
+      /* To receive mouse events on a drawing area, you will need to enable them. */
+      gtk_widget_add_events(preview_canvas, GDK_EXPOSURE_MASK |
+                            GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK |
+                            GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_BUTTON_MOTION_MASK |
+                            GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
+                            GDK_SCROLL_MASK |  /* Added for GTK3, but it seems to work ok for GTK2 */
+                            GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK |
+                            GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK);
 
       iupAttribSet(ih, "_IUPDLG_FILE_CHOOSER", (char*)dialog);
 
@@ -677,6 +693,9 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 void iupdrvFileDlgInitClass(Iclass* ic)
 {
   ic->DlgPopup = gtkFileDlgPopup;
+
+  iupClassRegisterAttribute(ic, "PREVIEWWIDTH", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PREVIEWHEIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupFileDialog Windows and GTK Only */
   iupClassRegisterAttribute(ic, "EXTFILTER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

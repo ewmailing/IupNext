@@ -17,6 +17,7 @@
 #include "iup_str.h"
 #include "iup_dialog.h"
 #include "iup_drvinfo.h"
+#include "iup_key.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_str.h"
@@ -308,9 +309,11 @@ static void winFileDlgSetPreviewCanvasPos(HWND hWnd, HWND hWndPreview)
   y = rect.top - dlgrect.top;   /* at first time this is 0, else use system positioned value (not the same as RC) */
   height = rect.bottom - rect.top; /* keep the same height */
 
-  /* position the child window that contains the template, must have room for the preview canvas */
-  if (y) /* first time does nothing */
+  if (y != 0) /* not first time */
+  {
+    /* position the child window that contains the template, must have room for the preview canvas */
     SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, (dlgrect.right - dlgrect.left), (dlgrect.bottom - dlgrect.top), SWP_NOMOVE | SWP_NOZORDER);
+  }
 
   GetWindowRect(hWndFileList, &rect);
   x = rect.left - dlgrect.left;   /* horizontally align with file list at left */
@@ -327,8 +330,137 @@ static void winFileDlgUpdatePreviewGLCanvas(Ihandle* ih)
   if (glcanvas)
   {
     iupAttribSet(glcanvas, "HWND", iupAttribGet(ih, "HWND"));
-    glcanvas->iclass->Map(glcanvas);
+    glcanvas->iclass->Map(glcanvas);  /* this will call Map only for the IupGLCanvas, NOT for the IupCanvas */
   }
+}
+
+static int winFileCheckPreviewCanvas(HWND hWnd, LPARAM lParam, int *x, int *y)
+{
+  HWND hWndPreview = GetDlgItem(hWnd, IUP_PREVIEWCANVAS);
+  POINT pt;
+  RECT rect;
+
+  pt.x = GET_X_LPARAM(lParam);
+  pt.y = GET_Y_LPARAM(lParam);
+  if (!MapWindowPoints(hWnd, hWndPreview, &pt, 1))
+  {
+    pt.x = 0;
+    pt.y = 0;
+    MapWindowPoints(hWndPreview, hWnd, &pt, 1);
+    pt.x = -pt.x;
+    pt.y = -pt.y;
+  }
+  *x = pt.x;
+  *y = pt.y;
+
+  GetClientRect(hWndPreview, &rect);
+  if (pt.x >= rect.left && pt.y >= rect.top &&
+      pt.x <= rect.right && pt.y <= rect.bottom)
+    return 1;
+  return 0;
+}
+
+static int iupwinButtonDownXY(Ihandle* ih, UINT msg, WPARAM wp, int x, int y)
+{
+  char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+  int ret, doubleclick = 0;
+  int b = 0;
+
+  IFniiiis cb = (IFniiiis)IupGetCallback(ih, "BUTTON_CB");
+  if (!cb)
+    return 0;
+
+  if (msg == WM_XBUTTONDBLCLK ||
+      msg == WM_LBUTTONDBLCLK ||
+      msg == WM_MBUTTONDBLCLK ||
+      msg == WM_RBUTTONDBLCLK)
+      doubleclick = 1;
+
+  iupwinButtonKeySetStatus(LOWORD(wp), status, doubleclick);
+
+  if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONDBLCLK)
+    b = IUP_BUTTON1;
+  else if (msg == WM_MBUTTONDOWN || msg == WM_MBUTTONDBLCLK)
+    b = IUP_BUTTON2;
+  else if (msg == WM_RBUTTONDOWN || msg == WM_RBUTTONDBLCLK)
+    b = IUP_BUTTON3;
+  else if (msg == WM_XBUTTONDOWN || msg == WM_XBUTTONDBLCLK)
+  {
+    if (HIWORD(wp) == XBUTTON1)
+      b = IUP_BUTTON4;
+    else
+      b = IUP_BUTTON5;
+  }
+
+  ret = cb(ih, b, 1, x, y, status);
+  if (ret == IUP_CLOSE)
+    IupExitLoop();
+  else if (ret == IUP_IGNORE)
+    return -1;
+
+  return 1;
+}
+
+static int iupwinButtonUpXY(Ihandle* ih, UINT msg, WPARAM wp, int x, int y)
+{
+  char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+  int ret, b = 0;
+  IFniiiis cb = (IFniiiis)IupGetCallback(ih, "BUTTON_CB");
+  if (!cb)
+    return 0;
+
+  iupwinButtonKeySetStatus(LOWORD(wp), status, 0);
+
+  /* also updates the button status, since wp could not have the flag */
+  if (msg == WM_LBUTTONUP)
+  {
+    b = IUP_BUTTON1;
+    iupKEY_SETBUTTON1(status);
+  }
+  else if (msg == WM_MBUTTONUP)
+  {
+    b = IUP_BUTTON2;
+    iupKEY_SETBUTTON2(status);
+  }
+  else if (msg == WM_RBUTTONUP)
+  {
+    b = IUP_BUTTON3;
+    iupKEY_SETBUTTON3(status);
+  }
+  else if (msg == WM_XBUTTONUP)
+  {
+    if (HIWORD(wp) == XBUTTON1)
+    {
+      b = IUP_BUTTON4;
+      iupKEY_SETBUTTON4(status);
+    }
+    else
+    {
+      b = IUP_BUTTON5;
+      iupKEY_SETBUTTON5(status);
+    }
+  }
+
+  ret = cb(ih, b, 0, x, y, status);
+  if (ret == IUP_CLOSE)
+    IupExitLoop();
+  else if (ret == IUP_IGNORE)
+    return -1;
+
+  return 1;
+}
+
+static int iupwinMouseMoveXY(Ihandle* ih, WPARAM wp, int x, int y)
+{
+  IFniis cb = (IFniis)IupGetCallback(ih, "MOTION_CB");
+  if (cb)
+  {
+    char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+    iupwinButtonKeySetStatus(LOWORD(wp), status, 0);
+    cb(ih, x, y, status);
+    return 1;
+  }
+  return 0;
 }
 
 static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
@@ -402,6 +534,7 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
 
         GetClientRect(hWndPreview, &rect);
         iupAttribSetInt(ih, "PREVIEWWIDTH", rect.right-rect.left);
+        iupAttribSetInt(ih, "PREVIEWHEIGHT", rect.bottom - rect.top);
 
         RedrawWindow(hWndPreview, NULL, NULL, RDW_INVALIDATE|RDW_UPDATENOW);
       }
@@ -415,6 +548,66 @@ static UINT_PTR CALLBACK winFileDlgPreviewHook(HWND hWnd, UINT uiMsg, WPARAM wPa
       cb(ih, NULL, "FINISH");
       break;
     }
+  case WM_XBUTTONDBLCLK:
+  case WM_LBUTTONDBLCLK:
+  case WM_MBUTTONDBLCLK:
+  case WM_RBUTTONDBLCLK:
+  case WM_XBUTTONDOWN:
+  case WM_LBUTTONDOWN:
+  case WM_MBUTTONDOWN:
+  case WM_RBUTTONDOWN:
+  {
+    int x, y;
+    if (winFileCheckPreviewCanvas(hWnd, lParam, &x, &y))
+    {
+      Ihandle* ih = (Ihandle*)GetWindowLongPtr(hWnd, DWLP_USER);
+      iupwinButtonDownXY(ih, uiMsg, wParam, x, y);
+    }
+    break;
+  }
+  case WM_MOUSEMOVE:
+  {
+    int x, y;
+    Ihandle* ih = (Ihandle*)GetWindowLongPtr(hWnd, DWLP_USER);
+    winFileCheckPreviewCanvas(hWnd, lParam, &x, &y); /* allow outside window values */
+    iupwinMouseMoveXY(ih, wParam, x, y);
+    break;
+  }
+  case WM_MOUSEWHEEL:
+  {
+    Ihandle* ih = (Ihandle*)GetWindowLongPtr(hWnd, DWLP_USER);
+    IFnfiis cb = (IFnfiis)IupGetCallback(ih, "WHEEL_CB");
+    short delta = (short)HIWORD(wParam);
+    if (cb)
+    {
+      HWND hWndPreview = GetDlgItem(hWnd, IUP_PREVIEWCANVAS);
+      char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+      POINT p;
+      p.x = GET_X_LPARAM(lParam);
+      p.y = GET_Y_LPARAM(lParam);
+
+      ScreenToClient(hWndPreview, &p); /* allow outside window values */
+
+      iupwinButtonKeySetStatus(LOWORD(wParam), status, 0);
+
+      cb(ih, (float)delta / 120.0f, p.x, p.y, status);
+    }
+
+    return 1;
+  }
+  case WM_XBUTTONUP:
+  case WM_LBUTTONUP:
+  case WM_MBUTTONUP:
+  case WM_RBUTTONUP:
+  {
+    int x, y;
+    if (winFileCheckPreviewCanvas(hWnd, lParam, &x, &y))
+    {
+      Ihandle* ih = (Ihandle*)GetWindowLongPtr(hWnd, DWLP_USER);
+      iupwinButtonUpXY(ih, uiMsg, wParam, x, y);
+    }
+    break;
+  }
   case WM_NOTIFY:
       return winFileDlgWmNotify(hWnd, (LPOFNOTIFY)lParam);
   }

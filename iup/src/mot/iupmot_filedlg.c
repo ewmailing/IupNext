@@ -34,6 +34,7 @@
 #include "iup_drvinfo.h"
 #include "iup_array.h"
 #include "iup_predialogs.h"
+#include "iup_key.h"
 
 #include "iupmot_drv.h"
 
@@ -449,6 +450,40 @@ static void motFileDlgNewFolderCallback(Widget w, Widget filebox, XtPointer call
   (void)w;
 }
 
+static void motFileDlgPreviewCanvasInputCallback(Widget w, Ihandle *ih, XtPointer call_data)
+{
+  XEvent *evt = ((XmDrawingAreaCallbackStruct*)call_data)->event;
+
+  if (!XtWindow(w) || !ih) return;
+
+  switch (evt->type)
+  {
+  case ButtonPress:
+  case ButtonRelease:
+  {
+    XButtonEvent *but_evt = (XButtonEvent*)evt;
+    Boolean cont = True;
+    iupmotButtonPressReleaseEvent(w, ih, evt, &cont);
+    if (cont == False)
+      return;
+
+    if ((evt->type == ButtonPress) && (but_evt->button == Button4 || but_evt->button == Button5))
+    {
+      IFnfiis wcb = (IFnfiis)IupGetCallback(ih, "WHEEL_CB");
+      if (wcb)
+      {
+        char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
+        int delta = but_evt->button == Button4 ? 1 : -1;
+        iupmotButtonKeySetStatus(but_evt->state, but_evt->button, status, 0);
+
+        wcb(ih, (float)delta, but_evt->x, but_evt->y, status);
+      }
+    }
+  }
+  break;
+  }
+}
+
 static void motFileDlgPreviewCanvasResizeCallback(Widget w, Ihandle *ih, XtPointer call_data)
 {
   Dimension width, height;
@@ -701,6 +736,8 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
 
         XtAddCallback(preview_canvas, XmNexposeCallback, (XtCallbackProc)motFileDlgPreviewCanvasExposeCallback, (XtPointer)ih);
         XtAddCallback(preview_canvas, XmNresizeCallback, (XtCallbackProc)motFileDlgPreviewCanvasResizeCallback,  (XtPointer)ih);
+        XtAddCallback(preview_canvas, XmNinputCallback, (XtCallbackProc)motFileDlgPreviewCanvasInputCallback, (XtPointer)ih);
+        XtAddEventHandler(preview_canvas, PointerMotionMask, False, (XtEventHandler)iupmotPointerMotionEvent, (XtPointer)ih);
 
         iupAttribSet(ih, "_IUPDLG_FILEBOX", (char*)filebox);
       }
