@@ -206,5 +206,5 @@ HWND CreatePreviewWindow(HWND hNativeParent, int width, int height, const char* 
   // MessageBox(NULL, L"ShowWindow", L"IUP", MB_OK);
 #endif
 
-  return IupGetAttribute(dialog, "HWND");
+  return (HWND)IupGetAttribute(dialog, "HWND");
 }
