@@ -15,8 +15,6 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 
 #include <Shlwapi.h>
 
-#pragma comment(lib, "Shlwapi.lib")
-
 
 extern HINSTANCE  g_hInstDll;
 extern long        g_cRefDll;

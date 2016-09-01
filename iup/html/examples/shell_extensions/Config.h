@@ -23,7 +23,7 @@ const GUID APPID_ShelExtensionHandler =
 #define HANDLER_DESCRIPTION L"TecgrafPreviewTGA"
 #define APPICATION_DESCRIPTION L"TecgrafPreviewHandlerTGA"
 
-#elif defined( DEFINE_THUMBNAILHANDLER)
+#elif defined(DEFINE_THUMBNAILHANDLER)
 
 // {2222E1A8-048B-4911-B64A-4A882BE64799}
 const GUID CLSID_ShelExtensionHandler =

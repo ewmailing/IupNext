@@ -20,7 +20,6 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 
 #include <new>
 #include <Shlwapi.h>
-#pragma comment(lib, "shlwapi.lib")
 
 #include "Config.h"
 
