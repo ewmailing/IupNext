@@ -3,12 +3,15 @@
 
 /* IMPORTANT: Don't use the same definitions for Preview and Thumbnail handlers */
 
+#if !defined(DEFINE_PREVIEWHANDLER) && !defined(DEFINE_THUMBNAILHANDLER)
+
 /* Define to implement a preview handler */
 //#define DEFINE_PREVIEWHANDLER
 
 /* Define to implement a thumbnail handler */
 #define DEFINE_THUMBNAILHANDLER
 
+#endif
 
 #if defined(DEFINE_PREVIEWHANDLER)
 

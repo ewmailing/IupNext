@@ -1,8 +1,8 @@
 PROJNAME = ShellExtensionHandler
 OPT = YES
 
-DEFINE_THUMBNAILHANDLER = Yes
-#DEFINE_PREVIEWHANDLER = Yes
+#DEFINE_THUMBNAILHANDLER = Yes
+DEFINE_PREVIEWHANDLER = Yes
 
 SRC = ClassFactory.cpp dllmain.cpp Reg.cpp
 DEF_FILE = GlobalExportFunctions.def
