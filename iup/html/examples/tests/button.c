@@ -297,7 +297,7 @@ void ButtonTest(void)
 
   button = IupButton(NULL, NULL);
   if (IupGetInt(NULL, "UTF8MODE"))
-    IupSetAttribute(button, "TITLE", "&Text && Test(çãõáóé)");
+    IupSetAttribute(button, "TITLE", "&Text && Test(çãõáóé)[UTF-8]");
   else
     IupSetAttribute(button, "TITLE", "&Text && Test(������)");
   IupSetAttribute(button, "TIP", "Button & Tip");
