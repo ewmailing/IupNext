@@ -132,6 +132,14 @@ element, one for custom attributes set at the hash table, and one for the
 callbacks. The callbacks are just for inspection, and custom attribute should be 
 handled carefully because they may be not strings. Registered attributes values 
 are shown in red when they were changed by the application. It uses the <a href="iupelementpropdialog.html">IupElementPropertiesDialog</a>.</p>
+<h4>Inspecting Native Controls</h4>
+<p>The <strong>Spy++</strong> tool distributed with Microsoft Visual Studio is 
+very useful to inspect windows controls position, size and visibility. It can be 
+found in the Visual Studio "Tools" menu.</p>
+<p>The <strong>GTK+ Inspector</strong> tool included in GTK is very useful to 
+inspect GTK controls position, size and visibility. To enable the GTK+ 
+inspector, you can use the Control-Shift-I or Control-Shift-D keyboard 
+shortcuts, or set the GTK_DEBUG=interactive&nbsp;environment variable. </p>
 <h3><a name="Examples">Examples</a></h3>
 <p>This will create an empty layout with a new dialog.</p>
 <pre>IupShow(IupLayoutDialog(NULL));   [in C]
