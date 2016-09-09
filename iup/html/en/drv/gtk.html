@@ -143,6 +143,14 @@ export GTK_BASE=/sw              # For Fink
 export GTK_BASE=/opt/local       # For MacPorts
 export GTK_MAC=Yes               # For Quartz instead of X11</pre>
 
+<h4>Native Code</h4>
+<p>The GTK driver is not pure GTK and GDK code. It uses Win32 and X11 calls in 
+some parts, specifically in "iupgtk_open.c". And it depends on some Win32 and 
+X11 modules, such as: "iup*_info.c", "iup_glcanvas*.c". Also the CD library has 
+some native code in the "cdcaironative_gdk.c" that affects the CD_IUP driver. 
+These are the files that need to be changed for a fully functional <strong>MacOSX-Quartz</strong> 
+driver. </p>
+
 </body>
 
 </html>
