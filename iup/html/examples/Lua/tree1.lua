@@ -5,7 +5,6 @@
 -- opens a menu with options.
 
 require( "iuplua" )
-require( "iupluacontrols" )
 
 tree = iup.tree{}
 
@@ -17,7 +16,7 @@ text   = iup.text{border="YES",expand="YES"}
 dlg_rename = iup.dialog{iup.vbox{text,iup.hbox{ok,cancel}}; 
    defaultenter=ok,
    defaultesc=cancel,
-   title="Enter node's name",
+   title="Enter node's title",
    size="QUARTER",
    startfocus=text}
 
@@ -35,7 +34,7 @@ end
 
 -- Callback called when a node will be renamed
 function tree:executeleaf_cb(id)
-  text.value = tree.name
+  text.value = tree.title
 
   dlg_rename:popup(iup.CENTER, iup.CENTER)
   iup.SetFocus(tree)
@@ -48,7 +47,7 @@ end
 
 -- Callback called when the rename operation is confirmed
 function ok:action()
-  tree.name = text.value
+  tree.title = text.value
 
   return iup.CLOSE
 end
@@ -73,7 +72,7 @@ function renamenode:action()
 end
 
 function init_tree_nodes()
-  tree.name = "Figures"
+  tree.title = "Figures"
   tree.addbranch = "3D"
   tree.addbranch = "2D"
   tree.addbranch1 = "parallelogram"

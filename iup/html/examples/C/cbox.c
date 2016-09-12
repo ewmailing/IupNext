@@ -111,7 +111,7 @@ static Ihandle *createtree(void)
 {
   Ihandle *tree = IupTree();
   IupSetAttributes(tree, "FONT=COURIER_NORMAL_10, \
-                          NAME=Figures, \
+                          TITLE=Figures, \
                           ADDBRANCH=3D, \
                           ADDBRANCH=2D, \
                           ADDLEAF1=trapeze, \

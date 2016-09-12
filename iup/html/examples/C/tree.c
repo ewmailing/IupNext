@@ -179,7 +179,7 @@ void init_tree_atributes(void)
 {
   Ihandle* tree = IupGetHandle("tree");
 
-  IupSetAttribute(tree, "NAME","Figures");
+  IupSetAttribute(tree, "TITLE","Figures");
   IupSetAttribute(tree, "ADDBRANCH","3D");
   IupSetAttribute(tree, "ADDBRANCH","2D");
   IupSetAttribute(tree, "ADDLEAF","test");

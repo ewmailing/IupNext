@@ -9,7 +9,7 @@ Ihandle *createtree()
   Ihandle *tree = IupTree();
   IupSetAttribute(tree, "SIZE", "80x80");
   IupSetAttributes(tree, "FONT=COURIER_NORMAL_10, \
-                          NAME=Figures, \
+                          TITLE=Figures, \
                           ADDBRANCH=3D, \
                           ADDBRANCH=2D, \
                           ADDLEAF1=trapeze, \

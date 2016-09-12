@@ -19,7 +19,7 @@ void init_tree2_atributes(void)
 {
   Ihandle* tree2 = IupGetHandle("tree2");
 
-  IupSetAttribute(tree2, "NAME", "Frutas");
+  IupSetAttribute(tree2, "TITLE", "Frutas");
   IupSetAttribute(tree2, "ADDBRANCH", "Outras");
   IupSetAttribute(tree2, "ADDLEAF", "morango");
   IupSetAttribute(tree2, "ADDLEAF", "maçã");
@@ -35,7 +35,7 @@ void init_tree1_atributes(void)
 {
   Ihandle* tree1 = IupGetHandle("tree1");
 
-  IupSetAttribute(tree1, "NAME", "Figures");
+  IupSetAttribute(tree1, "TITLE", "Figures");
   IupSetAttribute(tree1, "ADDBRANCH", "3D");
   IupSetAttribute(tree1, "ADDBRANCH", "2D");
   IupSetAttribute(tree1, "ADDLEAF", "test");

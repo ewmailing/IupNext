@@ -2,7 +2,6 @@
 --Creates a tree with some branches and leaves. Uses a Lua Table to define the IupTree structure.
 
 require( "iuplua" )
-require( "iupluacontrols" )
 
 tree = iup.tree{}
 dlg = iup.dialog{tree ; title = "TableTree result", size = "200x200"}

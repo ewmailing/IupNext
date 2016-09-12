@@ -3,7 +3,6 @@
 -- dynamically fills subdirectories in the tree
 
 require 'iuplua'
-require 'iupluacontrols'
 require 'lfs'
 require "imlua"
 require "cdlua"

@@ -5,7 +5,6 @@
 -- opens a menu with options. 
 
 require( "iuplua" )
-require( "iupluacontrols" )
 
 tree = iup.tree{}
 
@@ -29,7 +28,7 @@ function init_tree_atributes()
 end
 
 function init_tree_nodes()
-  tree.name = "Figures"
+  tree.title = "Figures"
   tree.addbranch = "3D"
   tree.addbranch = "2D"
   tree.addbranch1 = "parallelogram"
