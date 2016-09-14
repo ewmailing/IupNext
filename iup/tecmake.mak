@@ -294,6 +294,10 @@ ifdef GTK_DEFAULT
     ifneq ($(findstring cygw, $(TEC_UNAME)), )
       USE_GTK3 = Yes
     endif
+    #Homebrew
+    #ifneq ($(findstring MacOS10, $(TEC_UNAME)), )
+    #  USE_GTK3 = Yes
+    #endif
   endif
 endif
 
@@ -557,6 +561,12 @@ MOTIFGL_LIB := GLw              #include <GL/GLwMDrawA.h>
 
 # Definitions for Freetype
 FREETYPE_INC := /usr/include/freetype2
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  #Homebrew
+  #FREETYPE_INC := /usr/local/include/freetype2
+  #Fink
+  FREETYPE_INC := /sw/include/freetype2
+endif
 
 # Definitions for GTK
 ifdef GTK_BASE
@@ -564,6 +574,8 @@ ifdef GTK_BASE
 else
   ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   # Prefer using GTK_BASE then changing this
+  # Homebrew GTK port
+  #  GTK = /usr/local
   # Fink GTK port
     GTK = /sw
   # MacPorts GTK
@@ -710,6 +722,13 @@ ifneq ($(findstring SunOS, $(TEC_UNAME)), )
 endif
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+  #Homebrew
+  #STDINCS += /usr/local/include
+  #LDIR += /usr/local/lib
+  #Fink
+  STDINCS += /sw/include
+  LDIR += /sw/lib
+  
   UNIX_BSD = Yes
   X11_LIBS := Xp Xext X11
   X11_LIB := /usr/X11R6/lib /usr/X11/lib
