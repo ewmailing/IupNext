@@ -164,6 +164,7 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
 
   XtVaGetValues(wList, XmNitems, &items, NULL);
 
+  /* check if just one file is selected */
   if (sel_count == 1)
   {
     filename = iupmotGetXmString(items[pos[0] - 1]);  /* XmListGetSelectedPos starts at 1 */
