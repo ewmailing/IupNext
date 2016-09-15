@@ -80,7 +80,7 @@ static void iBackgroundBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, 
 {
   if (ih->firstchild)
   {
-    /* update child natural size only, when not canvas box */
+    /* update child natural size first */
     iupBaseComputeNaturalSize(ih->firstchild);
 
     if (iupAttribGetBoolean(ih, "CANVASBOX"))
