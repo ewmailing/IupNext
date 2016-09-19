@@ -111,6 +111,9 @@ static void winFileDlgGetFolder(Ihandle *ih)
   browseinfo.ulFlags = IupGetGlobal("_IUPWIN_COINIT_MULTITHREADED")? 0: BIF_NEWDIALOGSTYLE;
   browseinfo.hwndOwner = parent;
 
+  if (iupAttribGetBoolean(ih, "SHOWEDITBOX"))
+    browseinfo.ulFlags |= BIF_EDITBOX;
+
   selecteditem = SHBrowseForFolder(&browseinfo);
   if (!selecteditem)
   {
