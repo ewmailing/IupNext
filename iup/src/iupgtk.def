@@ -208,6 +208,7 @@ IupSetStrAttributeId2
 IupSetStrfId2
 IupSetStrGlobal
 IupFlatButton
+IupFlatFrame
 IupAnimatedLabel
 IupDatePick
 IupCalendar

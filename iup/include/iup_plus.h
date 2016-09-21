@@ -490,6 +490,12 @@ namespace iup
     Frame() : Container(IupFrame(0)) {}
     Frame(const Control& child) : Container(IupFrame(child.GetHandle())) {}
   };
+  class FlatFrame : public Container
+  {
+  public:
+    FlatFrame() : Container(IupFlatFrame(0)) {}
+    FlatFrame(const Control& child) : Container(IupFlatFrame(child.GetHandle())) {}
+  };
   class Spinbox : public Container
   {
   public:

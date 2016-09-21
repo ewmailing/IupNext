@@ -153,6 +153,7 @@
     <ClCompile Include="..\html\examples\tests\dialog.c" />
     <ClCompile Include="..\html\examples\tests\expander.c" />
     <ClCompile Include="..\html\examples\tests\flatbutton.c" />
+    <ClCompile Include="..\html\examples\tests\flatframe.c" />
     <ClCompile Include="..\html\examples\tests\frame.c" />
     <ClCompile Include="..\html\examples\tests\gauge.c" />
     <ClCompile Include="..\html\examples\tests\getcolor.c" />

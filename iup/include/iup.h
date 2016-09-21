@@ -208,6 +208,7 @@ Ihandle*  IupDetachBox  (Ihandle *child);
 Ihandle*  IupBackgroundBox(Ihandle *child);
 
 Ihandle*  IupFrame      (Ihandle* child);
+Ihandle*  IupFlatFrame  (Ihandle* child);
 
 Ihandle*  IupImage      (int width, int height, const unsigned char *pixmap);
 Ihandle*  IupImageRGB   (int width, int height, const unsigned char *pixmap);

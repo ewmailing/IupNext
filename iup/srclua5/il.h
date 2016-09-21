@@ -58,6 +58,7 @@ int iupprogressdlglua_open(lua_State * L);
 int iupdetachboxlua_open(lua_State * L);
 int iupbackgroundboxlua_open(lua_State * L);
 int iupflatbuttonlua_open(lua_State * L);
+int iupflatframelua_open(lua_State * L);
 int iupanimatedlabellua_open(lua_State * L);
 int iupcalendarlua_open(lua_State * L);
 int iupdatepicklua_open(lua_State * L);
