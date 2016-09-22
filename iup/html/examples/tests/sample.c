@@ -682,7 +682,7 @@ void SampleTest(void)
 //  IupSetAttribute(dlg, "OPACITY", "192");
 //  IupSetAttribute(dlg, "RESIZE", "NO");
 
-#if 1
+#if 0
   {
     Ihandle* label;
     Ihandle* caption_bar = IupSetAttributes(IupBackgroundBox(IupHbox(
