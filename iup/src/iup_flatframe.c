@@ -92,8 +92,8 @@ static int iFlatFrameGetTitleHeight(Ihandle* ih)
   int width, height;
   iFlatFrameGetIconSize(ih, &width, &height);
 
-  if (iupAttribGetBoolean(ih, "TITLELINE"))
-    height += iupAttribGetInt(ih, "TITLELINEWIDTH") + iupAttribGetInt(ih, "FRAMESPACE");
+  if (height && iupAttribGetBoolean(ih, "TITLELINE"))
+    height += iupAttribGetInt(ih, "TITLELINEWIDTH");
 
   return height;
 }
@@ -132,7 +132,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int title_height = iFlatFrameGetTitleHeight(ih);
 
-//  iupdrvDrawParentBackground(dc);
+  iupdrvDrawParentBackground(dc);
 
   if (!backcolor)
     backcolor = iupBaseNativeParentGetBgColorAttrib(ih);
@@ -169,17 +169,19 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
 
     /* draw title background */
     iupFlatDrawBox(dc, frame_width, ih->currentwidth - 1 - frame_width,
-                       frame_width, frame_width + title_height - 1 - title_line, titlebgcolor, NULL, 1);
+                       frame_width, frame_width + title_height - title_line, titlebgcolor, NULL, 1);
 
     if (iupAttribGetBoolean(ih, "TITLELINE"))
     {
+      int i;
       char* title_line_color = iupAttribGetStr(ih, "TITLELINECOLOR");
       unsigned char r = 0, g = 0, b = 0;
       iupStrToRGB(title_line_color, &r, &g, &b);
 
-      iupdrvDrawLine(dc, frame_width, ih->currentwidth - 1 - frame_width,
-                         frame_width + title_height - 1, frame_width + title_height - 1,
-                         r, g, b, IUP_DRAW_STROKE);
+      for (i = 0; i < title_line; i++)
+        iupdrvDrawLine(dc, frame_width, frame_width + title_height - i, 
+                           ih->currentwidth - 1 - frame_width, frame_width + title_height - i,
+                           r, g, b, IUP_DRAW_STROKE);
     }
 
     iupFlatDrawIcon(ih, dc, frame_width, frame_width,

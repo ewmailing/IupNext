@@ -33,19 +33,13 @@ void FlatFrameTest(void)
 //  IupSetAttribute(frame1, "FGCOLOR", "255 0 0");
   IupSetAttribute(frame1, "BACKCOLOR", "0 128 0");
   IupSetAttribute(frame1, "FRAMECOLOR", "255 0 0");
-
-  //iupClassRegisterAttribute(ic, "TITLECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "TITLEBGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "TITLELINE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "TITLELINECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "TITLELINEWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "TITLEIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "TITLEIMAGEPOSITION", NULL, NULL, IUPAF_SAMEASSYSTEM, "LEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "TITLEIMAGESPACING", NULL, NULL, IUPAF_SAMEASSYSTEM, "2", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "TITLEALIGNMENT", NULL, NULL, "ACENTER", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "TITLEPADDING", NULL, NULL, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "FRAMEWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
-  //iupClassRegisterAttribute(ic, "FRAMESPACE", NULL, NULL, IUPAF_SAMEASSYSTEM, "2", IUPAF_NO_INHERIT);
+  IupSetAttribute(frame1, "TITLELINECOLOR", "128 0 0");
+  IupSetAttribute(frame1, "TITLEBGCOLOR", "0 200 0");
+  IupSetAttribute(frame1, "TITLECOLOR", "0 0 255");
+//  IupSetAttribute(frame1, "TITLELINE", "No");
+  IupSetAttribute(frame1, "TITLELINEWIDTH", "5");
+  IupSetAttribute(frame1, "FRAMEWIDTH", "5");
+  IupSetAttribute(frame1, "FRAMESPACE", "10");
 
   IupSetAttribute(frame2, "MARGIN", "0x0");
   //IupSetAttribute(frame2, "BACKCOLOR", "0 128 0");

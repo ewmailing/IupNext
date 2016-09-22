@@ -290,6 +290,7 @@ void IupDrawFocusRect(Ihandle* ih, int x1, int y1, int x2, int y2)
 
 /***********************************************************************************************/
 
+
 void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, int border_width, const char* color, char* bgcolor, int active)
 {
   unsigned char r = 0, g = 0, b = 0;
