@@ -43,6 +43,8 @@ void FlatFrameTest(void)
 
   IupSetAttribute(frame2, "MARGIN", "0x0");
   //IupSetAttribute(frame2, "BACKCOLOR", "0 128 0");
+  IupSetAttribute(frame2, "BACKCOLOR", "0 128 0");
+
   dlg = IupDialog(IupHbox(frame1, frame2, NULL));
 
   IupSetAttribute(dlg, "TITLE", "IupFlatFrame Test");

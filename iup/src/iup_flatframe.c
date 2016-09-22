@@ -98,32 +98,6 @@ static int iFlatFrameGetTitleHeight(Ihandle* ih)
   return height;
 }
 
-static void iFlatFrameGetDecorSize(Ihandle* ih, int *width, int *height)
-{
-  *height = 0;
-  *width = 0;
-
-  if (iupAttribGetBoolean(ih, "FRAME"))
-  {
-    *height = *width = 2 * iupAttribGetInt(ih, "FRAMEWIDTH") + 2 * iupAttribGetInt(ih, "FRAMESPACE");
-  }
-
-  (*height) += iFlatFrameGetTitleHeight(ih);
-}
-
-static void iFlatFrameGetDecorOffset(Ihandle* ih, int *dx, int *dy)
-{
-  *dx = 0;
-  *dy = 0;
-
-  if (iupAttribGetBoolean(ih, "FRAME"))
-  {
-    *dx = *dy = iupAttribGetInt(ih, "FRAMEWIDTH") + iupAttribGetInt(ih, "FRAMESPACE");
-  }
-
-  dy += iFlatFrameGetTitleHeight(ih);
-}
-
 static int iFlatFrameRedraw_CB(Ihandle* ih)
 {
   char* backcolor = iupAttribGetStr(ih, "BACKCOLOR");
@@ -203,16 +177,34 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
 
 static char* iFlatFrameGetDecorSizeAttrib(Ihandle* ih)
 {
-  int decorwidth, decorheight;
-  iFlatFrameGetDecorSize(ih, &decorwidth, &decorheight);
-  return iupStrReturnIntInt(decorwidth, decorheight, 'x');
+  int height = 0;
+  int width = 0;
+
+  if (iupAttribGetBoolean(ih, "FRAME"))
+  {
+    width = 2 * iupAttribGetInt(ih, "FRAMEWIDTH") + 2 * iupAttribGetInt(ih, "FRAMESPACE");
+    height = width;
+  }
+
+  height += iFlatFrameGetTitleHeight(ih);
+
+  return iupStrReturnIntInt(width, height, 'x');
 }
 
 static char* iFlatFrameGetDecorOffsetAttrib(Ihandle* ih)
 {
-  int decor_x, decor_y;
-  iFlatFrameGetDecorSize(ih, &decor_x, &decor_y);
-  return iupStrReturnIntInt(decor_x, decor_y, 'x');
+  int dx = 0;
+  int dy = 0;
+
+  if (iupAttribGetBoolean(ih, "FRAME"))
+  {
+    dx = iupAttribGetInt(ih, "FRAMEWIDTH") + iupAttribGetInt(ih, "FRAMESPACE");
+    dy = dx;
+  }
+
+  dy += iFlatFrameGetTitleHeight(ih);
+
+  return iupStrReturnIntInt(dx, dy, 'x');
 }
 
 static int iFlatFrameCreateMethod(Ihandle* ih, void** params)
