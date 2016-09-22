@@ -47,7 +47,7 @@ void iupBaseUpdateAttribFromFont(Ihandle* ih)
     iupBaseSetSizeAttrib(ih, value);
 
   {
-    Icallback cb = IupGetCallback(ih, "UPDATEATTRIBFROMFONT");
+    Icallback cb = IupGetCallback(ih, "UPDATEATTRIBFROMFONT_CB");
     if (cb)
       cb(ih);
   }

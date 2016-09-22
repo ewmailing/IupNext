@@ -963,7 +963,7 @@ static int iGridBoxCreateMethod(Ihandle* ih, void** params)
 
   ih->data->num_div = -1; /* default is auto */
 
-  IupSetCallback(ih, "UPDATEATTRIBFROMFONT", iGridBoxUpdateAttribFromFont);
+  IupSetCallback(ih, "UPDATEATTRIBFROMFONT_CB", iGridBoxUpdateAttribFromFont);
 
   return IUP_NOERROR;
 }
@@ -1010,6 +1010,9 @@ Iclass* iupGridBoxNewClass(void)
   ic->ComputeNaturalSize = iGridBoxComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iGridBoxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iGridBoxSetChildrenPositionMethod;
+
+  /* Internal Callback */
+  iupClassRegisterCallback(ic, "UPDATEATTRIBFROMFONT_CB", "");
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
