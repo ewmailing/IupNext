@@ -39,7 +39,7 @@ typedef struct _iLayoutDialog {
 
 static char* iLayoutGetTitle(Ihandle* ih)
 {
-  char* title = IupGetAttribute(ih, "TITLE");
+  char* title = iupAttribGetLocal(ih, "TITLE");
   char* name = IupGetName(ih);
   char* str = iupStrGetMemory(200);
   if (title)
@@ -1148,7 +1148,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
       }
     }
     if (!title) 
-      title = IupGetAttribute(ih, "TITLE");
+      title = iupAttribGetLocal(ih, "TITLE");
     if (title)
     {
       int len;
