@@ -1180,6 +1180,10 @@ wb_usr.tree =
               link= "elem/iupframe.html"
             },
             {
+              name= {nl= "IupFlatFrame"},
+              link= "elem/iupflatframe.html"
+            },
+            {
               name= {nl= "IupTabs"},
               link= "elem/iuptabs.html"
             },
@@ -1222,6 +1226,10 @@ wb_usr.tree =
             {
               name= {nl= "IupButton"},
               link= "elem/iupbutton.html"
+            },
+            {
+              name= {nl= "IupFlatButton"},
+              link= "elem/iupflatbutton.html"
             },
             {
               name= {nl= "IupCalendar"},
@@ -1330,10 +1338,6 @@ wb_usr.tree =
             {
               name= {nl= "IupDatePick"},
               link= "elem/iupdatepick.html"
-            },
-            {
-              name= {nl= "IupFlatButton"},
-              link= "elem/iupflatbutton.html"
             },
             {
               name= {nl= "IupLabel"},
