@@ -120,6 +120,8 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
                           0, ih->currentheight - 1,
                           frame_width, frame_color, NULL, 1);
   }
+  else
+    frame_width = 0;
 
   /* draw child area background */
   iupFlatDrawBox(dc, frame_width, ih->currentwidth - 1 - frame_width,
