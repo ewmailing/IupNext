@@ -121,7 +121,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
                           frame_width, frame_color, NULL, 1);
   }
 
-  /* draw background */
+  /* draw child area background */
   iupFlatDrawBox(dc, frame_width, ih->currentwidth - 1 - frame_width,
                      frame_width + title_height, ih->currentheight - 1 - frame_width, backcolor, NULL, 1);
 
@@ -143,7 +143,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
 
     /* draw title background */
     iupFlatDrawBox(dc, frame_width, ih->currentwidth - 1 - frame_width,
-                       frame_width, frame_width + title_height - title_line, titlebgcolor, NULL, 1);
+                       frame_width, frame_width + title_height - 1 - title_line, titlebgcolor, NULL, 1);
 
     if (iupAttribGetBoolean(ih, "TITLELINE"))
     {
@@ -153,8 +153,8 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
       iupStrToRGB(title_line_color, &r, &g, &b);
 
       for (i = 0; i < title_line; i++)
-        iupdrvDrawLine(dc, frame_width, frame_width + title_height - i, 
-                           ih->currentwidth - 1 - frame_width, frame_width + title_height - i,
+        iupdrvDrawLine(dc, frame_width, frame_width + title_height - 1 - i,
+                           ih->currentwidth - 1 - frame_width, frame_width + title_height - 1 - i,
                            r, g, b, IUP_DRAW_STROKE);
     }
 
