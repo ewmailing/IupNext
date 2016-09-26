@@ -4,7 +4,7 @@
 
 void FlatFrameTest(void)
 {
-  Ihandle *dlg, *frame1, *frame2;
+  Ihandle *dlg, *frame1, *frame2, *frame3;
 
   frame1 = IupFlatFrame
           (
@@ -28,27 +28,47 @@ void FlatFrameTest(void)
             )
           );
 
+  frame3 = IupFlatFrame
+          (
+            IupVbox
+            (
+              IupLabel("Label7"),
+              IupSetAttributes(IupLabel("Label8"), "SIZE=70x"),
+              IupLabel("Label9"),
+              NULL
+            )
+          );
+
   IupSetAttribute(frame1, "TITLE", "Title Text");
-  IupSetAttribute(frame1, "MARGIN", "0x0");
 //  IupSetAttribute(frame1, "FGCOLOR", "255 0 0");
-  IupSetAttribute(frame1, "BACKCOLOR", "0 128 0");
-  IupSetAttribute(frame1, "FRAMECOLOR", "255 0 0");
-  IupSetAttribute(frame1, "TITLELINECOLOR", "128 0 0");
-  IupSetAttribute(frame1, "TITLEBGCOLOR", "0 200 0");
-  IupSetAttribute(frame1, "TITLECOLOR", "0 0 255");
+//  IupSetAttribute(frame1, "BGCOLOR", "0 128 0");
+  IupSetAttribute(frame1, "BGCOLOR", "64 192 255");
+  IupSetAttribute(frame1, "FRAMECOLOR", "255 255 255");
+  IupSetAttribute(frame1, "TITLELINECOLOR", "255 255 255");
+  IupSetAttribute(frame1, "TITLEBGCOLOR", "64 128 255");
+  IupSetAttribute(frame1, "TITLECOLOR", "255 255 255");
 //  IupSetAttribute(frame1, "TITLELINE", "No");
-  IupSetAttribute(frame1, "TITLELINEWIDTH", "5");
-  IupSetAttribute(frame1, "FRAMEWIDTH", "5");
-  IupSetAttribute(frame1, "FRAMESPACE", "10");
+  IupSetAttribute(frame1, "TITLELINEWIDTH", "2");
+  IupSetAttribute(frame1, "FRAMEWIDTH", "2");
+  IupSetAttribute(frame1, "FRAMESPACE", "5");
 
-  IupSetAttribute(frame2, "MARGIN", "0x0");
-  //IupSetAttribute(frame2, "BACKCOLOR", "0 128 0");
-  IupSetAttribute(frame2, "BACKCOLOR", "0 128 0");
+  //IupSetAttribute(frame2, "BGCOLOR", "0 128 0");
+  IupSetAttribute(frame2, "BGCOLOR", "0 128 0");
+  IupSetAttribute(frame2, "FRAMEWIDTH", "5");
+  IupSetAttribute(frame2, "FRAMESPACE", "20");
+  IupSetAttribute(frame2, "FGCOLOR", "255 128 128");  /* recursive set for labels */
+  IupSetAttribute(frame2, "FONTSTYLE", "Bold");
+  IupSetAttribute(frame2, "FONTSIZE", "14");
 
-  dlg = IupDialog(IupHbox(frame1, frame2, NULL));
+  IupSetAttribute(frame3, "FRAME", "No");
+  IupSetAttribute(frame3, "TITLE", "Title Text");
+  IupSetAttribute(frame3, "TITLEPADDING", "10x10");
+  IupSetAttribute(frame3, "TITLELINE", "No");
+  IupSetAttribute(frame3, "TITLEBGCOLOR", "64 128 255");
+
+  dlg = IupDialog(IupSetAttributes(IupHbox(frame1, frame2, frame3, NULL), "NMARGIN=10x10"));
 
   IupSetAttribute(dlg, "TITLE", "IupFlatFrame Test");
-  IupSetAttribute(dlg, "MARGIN", "10x10");
   IupSetAttribute(dlg, "GAP", "5");
   IupSetAttribute(dlg, "FONTSIZE", "14");
 //  IupSetAttribute(dlg, "RASTERSIZE", "300x200");
