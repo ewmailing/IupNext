@@ -454,6 +454,13 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
       IupRefresh(ih);
     }
   }
+  else if (iup_isCtrlXkey(code) && (iup_XkeyBase(code) >= K_F1 && iup_XkeyBase(code) <= K_F12))
+  {
+    /* Ctrl+'F?' */
+    IFi cb = (IFi)IupGetFunction("GLOBALCTRLFUNC_CB");
+    if (cb)
+      cb(code);
+  }
 
   return 0;
 }

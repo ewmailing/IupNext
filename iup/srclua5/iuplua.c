@@ -1038,6 +1038,13 @@ static void globalkeypress_cb(int key, int pressed)
   iuplua_call_global(L, 2);
 }
 
+static void globalctrlfunc_cb(int key)
+{
+  lua_State *L = iuplua_call_global_start("globalctrlfunc_cb");
+  lua_pushinteger(L, key);
+  iuplua_call_global(L, 1);
+}
+
 static int globalidle_cb(void)
 {
   lua_State *L = iuplua_call_global_start("idle_action");
@@ -1274,6 +1281,7 @@ int iuplua_open(lua_State * L)
   iuplua_register_cb(L, "GLOBALBUTTON_CB", (lua_CFunction)globalbutton_cb, NULL);
   iuplua_register_cb(L, "GLOBALMOTION_CB", (lua_CFunction)globalmotion_cb, NULL);
   iuplua_register_cb(L, "GLOBALKEYPRESS_CB", (lua_CFunction)globalkeypress_cb, NULL);
+  iuplua_register_cb(L, "GLOBALCTRLFUNC_CB", (lua_CFunction)globalctrlfunc_cb, NULL);
   iuplua_register_cb(L, "IDLE_ACTION", (lua_CFunction)globalidle_cb, NULL);
 
   /* Register Keys */
