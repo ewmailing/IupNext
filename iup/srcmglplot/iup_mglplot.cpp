@@ -3971,8 +3971,11 @@ int IupMglPlotEnd(Ihandle* ih)
     int count = iupArrayCount(inXData);
     IupMglPlotSet1D(ih, ds_index, (const char**)names, x, count);
 
-    for (j = 0; j<count; j++)
-      free(names[j]);
+    if (names)
+    {
+      for (j = 0; j < count; j++)
+        free(names[j]);
+    }
   }
   else if (dim==2)
   {
