@@ -814,6 +814,10 @@ wb_usr.tree =
               name= {nl= "IDLE_ACTION"},
               link= "call/iup_idle_action.html"
             },
+            {
+              name= {nl= "GLOBALCTRLFUNC_CB"},
+              link= "call/iup_globalctrlfunc_cb.html"
+            },
             { link= "", name= {en= "" } },
             {
               name= {nl= "MAP_CB"},
