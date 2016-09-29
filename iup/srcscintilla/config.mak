@@ -54,6 +54,7 @@ else
   
   ifneq ($(findstring gcc, $(TEC_UNAME)), )
     DEFINES += _WIN32 DISABLE_D2D NO_CXX11_REGEX
+    #FLAGS = -std=c++11
   endif
   ifneq ($(findstring dllg, $(TEC_UNAME)), )
     DEFINES += _WIN32 DISABLE_D2D NO_CXX11_REGEX
