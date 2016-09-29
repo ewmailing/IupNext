@@ -1365,6 +1365,13 @@ static void iMatrixDrawMatrix(Ihandle* ih)
     ih->data->lines.num_noscroll - 1, ih->data->columns.last);
   iupMatrixDrawCells(ih, ih->data->lines.first, ih->data->columns.first,
                      ih->data->lines.last, ih->data->columns.last);
+
+  if (iupAttribGetBoolean(ih, "FRAMEBORDER"))
+  {
+    long framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
+    cdCanvasForeground(ih->data->cd_canvas, framecolor);
+    iupMATRIX_RECT(ih, 0, ih->data->w - 1, 0, ih->data->h - 1);
+  }
 }
 
 void iupMatrixDraw(Ihandle* ih, int update)

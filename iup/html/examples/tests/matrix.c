@@ -218,6 +218,8 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat,"TYPECOLORINACTIVE","No");
 //  IupSetAttribute(mat, "ACTIVE", "No");
 
+//  IupSetAttribute(mat, "FRAMEBORDER", "Yes");
+
   /* test for custom matrix attributes */
   //{
   //  char* v;
