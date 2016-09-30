@@ -58,3 +58,16 @@ ifneq ($(findstring MacOS, $(TEC_UNAME)), )
     BUILD_DYLIB=Yes
   endif
 endif
+
+ifneq ($(findstring mingw, $(TEC_UNAME)), )
+  $(error No support for WebBrowser in MingW)
+endif
+ifneq ($(findstring dllw, $(TEC_UNAME)), )
+  $(error No support for WebBrowser in MingW)
+endif
+ifneq ($(findstring owc, $(TEC_UNAME)), )
+  $(error No support for WebBrowser in OpenWatcom)
+endif
+ifneq ($(findstring bc, $(TEC_UNAME)), )
+  $(error No support for WebBrowser in BorlandC)
+endif
