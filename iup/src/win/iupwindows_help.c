@@ -12,6 +12,10 @@
 
 #include "iup.h"
 
+#ifndef SEE_MASK_NOASYNC
+#define SEE_MASK_NOASYNC 0x00000100
+#endif
+
 int IupExecute(const char *filename, const char* parameters)
 {
   /* no need to convert from UTF8 here */
