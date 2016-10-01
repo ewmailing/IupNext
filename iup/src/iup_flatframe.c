@@ -137,11 +137,12 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
     int img_position = iFlatFrameGetImagePosition(ih);
     int spacing = iupAttribGetInt(ih, "TITLEIMAGESPACING");
     int horiz_padding, vert_padding;
-    IupGetIntInt(ih, "TITLEPADDING", &horiz_padding, &vert_padding);
 
     int title_line = 0;
     if (iupAttribGetBoolean(ih, "TITLELINE"))
       title_line = iupAttribGetInt(ih, "TITLELINEWIDTH");
+    
+    IupGetIntInt(ih, "TITLEPADDING", &horiz_padding, &vert_padding);
 
     /* draw title background */
     iupFlatDrawBox(dc, frame_width, ih->currentwidth - 1 - frame_width,
