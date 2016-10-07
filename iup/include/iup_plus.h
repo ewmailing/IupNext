@@ -29,15 +29,6 @@
 
 #if 0 //TODO
 
-#ifdef _STRING_
-std::string
-#endif
-void cdCanvasSetfAttribute(cdCanvas* canvas, const char* name, const char* format, ...);
-void IupSetStrf(Ihandle* ih, const char* name, const char* format, ...);
-void IupSetStrfId(Ihandle *ih, const char* name, int id, const char* format, ...);
-void IupSetStrfId2(Ihandle* ih, const char* name, int lin, int col, const char* format, ...);
-void IupMessagef(const char *title, const char *format, ...);
-
 int IupScanf(const char *format, ...);
 int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format, ...);
 int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
@@ -47,7 +38,9 @@ Icallback IupSetCallback(Ihandle* ih, const char *name, Icallback func);
 
 void IupTreeSetAttributeHandle(Ihandle* ih, const char* name, int id, Ihandle* ih_named);
 
-#endif
+#endif //TODO
+
+
 
 /** \brief Name space for C++ high level API
  *
