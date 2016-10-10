@@ -36,8 +36,6 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
 Icallback IupGetCallback(Ihandle* ih, const char *name);
 Icallback IupSetCallback(Ihandle* ih, const char *name, Icallback func);
 
-void IupTreeSetAttributeHandle(Ihandle* ih, const char* name, int id, Ihandle* ih_named);
-
 #endif //TODO
 
 
@@ -390,6 +388,8 @@ namespace iup
     int SetUserId(int id, void* userid) { return IupTreeSetUserId(ih, id, userid); }
     void* GetUserId(int id) { return IupTreeGetUserId(ih, id); }
     int GetId(void *userid) { return IupTreeGetId(ih, userid); }
+
+    void SetAttributeHandle(const char* name, int id, const Handle& handle) { IupTreeSetAttributeHandle(ih, name, id, handle.GetHandle()); }
   };
   class Val : public Control
   {
