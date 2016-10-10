@@ -24,15 +24,6 @@
 #include "iupweb.h"
 #include "iup_scintilla.h"
 #include "iuptuio.h"
-#include <string>
-
-
-#if 0 //TODO
-
-int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format, ...);
-int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
-
-#endif //TODO
 
 
 
@@ -88,6 +79,8 @@ namespace iup
   inline int ListDialog(int type, const char *title, int size, const char** list, int op, int max_col, int max_lin, int* marks) { return IupListDialog(type, title, size, list, op, max_col, max_lin, marks); }
   inline int GetText(const char* title, char* text, int maxsize = 10240) { return IupGetText(title, text, maxsize); }
   inline int GetColor(int x, int y, unsigned char &r, unsigned char &g, unsigned char &b) { return IupGetColor(x, y, &r, &g, &b); }
+  inline int GetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data)
+    { return IupGetParamv(title, action, user_data, format, param_count, param_extra, param_data); }
 
   inline int GetAllNames(char** names, int n) { return IupGetAllNames(names, n); }
   inline int GetAllDialogs(char** names, int n) { return IupGetAllDialogs(names, n); }
