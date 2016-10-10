@@ -449,28 +449,35 @@ public:
   {
     sample_count = 0;
     
-    Ihandle* button = IupButton("Inc", NULL);
+    Ihandle* button1 = IupButton("Inc", NULL);
+    Ihandle* button2 = IupButton("Dec", NULL);
+    Ihandle* dialog = IupDialog(IupHbox(button1, button2, NULL));
+
+    // 1) Register "this" object as a callback receiver (need only once)
+    IUP_CLASS_INITCALLBACK(dialog, SampleClass);
 
     // 2) Associate the callback with the button
-    IUP_CLASS_SETCALLBACK(button, "ACTION", ButtonAction);
-
-    Ihandle* dialog = IupDialog(button);
-
-    // 1) Register "this" object as a callback receiver (only once)
-    IUP_CLASS_INITCALLBACK(dialog, SampleClass);
+    IUP_CLASS_SETCALLBACK(button1, "ACTION", ButtonAction1);
+    IUP_CLASS_SETCALLBACK(button2, "ACTION", ButtonAction2);
 
     IupShow(dialog);
   };
 
 protected:
   // 3) Declare the callback as a member function
-  IUP_CLASS_DECLARECALLBACK_IFn(SampleClass, ButtonAction);
+  IUP_CLASS_DECLARECALLBACK_IFn(SampleClass, ButtonAction1);
+  IUP_CLASS_DECLARECALLBACK_IFn(SampleClass, ButtonAction2);
 };
 
 // 4) Define the callback as a member function
-int SampleClass::ButtonAction(Ihandle*)
+int SampleClass::ButtonAction1(Ihandle*)
 {
   sample_count++;
+  return IUP_DEFAULT;
+}
+int SampleClass::ButtonAction2(Ihandle*)
+{
+  sample_count--;
   return IUP_DEFAULT;
 }
 

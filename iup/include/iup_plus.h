@@ -29,7 +29,6 @@
 
 #if 0 //TODO
 
-int IupScanf(const char *format, ...);
 int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format, ...);
 int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
 
