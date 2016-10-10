@@ -450,11 +450,13 @@ public:
     sample_count = 0;
     
     Ihandle* button = IupButton("Inc", NULL);
+
     // 2) Associate the callback with the button
     IUP_CLASS_SETCALLBACK(button, "ACTION", ButtonAction);
 
     Ihandle* dialog = IupDialog(button);
-    // 1) Register this object as a callback receiver (only once)
+
+    // 1) Register "this" object as a callback receiver (only once)
     IUP_CLASS_INITCALLBACK(dialog, SampleClass);
 
     IupShow(dialog);

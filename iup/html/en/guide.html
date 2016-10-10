@@ -21,6 +21,9 @@
 .style6 {
 	text-align: center;
 }
+.auto-style1 {
+	background-color: #CEE7FF;
+}
 </style>
 </head>
 <body>
@@ -338,10 +341,18 @@ Contributions</strong>.</p>
 <p>To help the creation of callbacks as methods in C++ Classes we provide (since 
 3.15) a header file called &quot;iup_class_cbs.hpp&quot; that has some macros for that 
 usage. There are 3 macros that need to be called:</p>
-<pre>IUP_CLASS_INITCALLBACK - to register the object as a callback receiver (called only once)
-IUP_CLASS_SETCALLBACK - to associate the callback for a given element
-IUP_CLASS_DECLARECALLBACK_IFn* - to declare the callback as a member function 
-                                (defined as the typedefs in &quot;iupcbs.h&quot; for all callbacks)</pre>
+<pre>IUP_CLASS_INITCALLBACK(<strong>ih</strong>, <strong>class</strong>) - to register the object as a callback receiver 
+                                    (called only once for a dialog, usually in the constructor, but can be called for children)
+                                    (it can be called several times with the same class name to handle more than one dialog)
+IUP_CLASS_SETCALLBACK(<strong>ih</strong>, <strong>name</strong>, <strong>function</strong>)  - to associate the callback for a given element
+IUP_CLASS_DECLARECALLBACK_IFn*(<strong>class</strong>, <strong>function</strong>) - to declare the callback as a member function 
+                                    (defined as the typedefs in &quot;iupcbs.h&quot; for all callbacks)</pre>
+<p>There is no order when calling the macros. The function name must match in 
+SETCALLBACK and DECLARECALLBAK or it will not work. The class name must match in 
+INITCALLBACK and DECLARECALLBAK or it will not work. The macros will not work 
+for a hierarchy of classes, all 3 macros must be set on the same class. For a 
+class that inherits from another class where the macros where use, the macros 
+must be called again and they will not affect the inherited class behavior.</p>
 <p>This allows an application to define callbacks as methods of any class it is 
 using in the application. The method will have exactly the same definition as 
 the callback. And it will not be a static method, so there will be no need to 
@@ -355,28 +366,36 @@ public:
   {
     sample_count = 0;
 
-    Ihandle* button = IupButton("Test", NULL);
-    // 2) Associate the callback with the button
-    <strong>IUP_CLASS_SETCALLBACK</strong>(button, "ACTION", ButtonAction);
+    Ihandle* button1 = IupButton("Inc", NULL);
+    Ihandle* button2 = IupButton("Dec", NULL);
+    Ihandle* dialog = IupDialog(IupHbox(button1, button2, NULL));
 
-    Ihandle* dialog = IupDialog(button);
-    // 1) Register this object as a callback receiver (only once)
+    // 1) Register &quot;this&quot; object as a callback receiver (needed only once for the dialog)
     <strong>IUP_CLASS_INITCALLBACK</strong>(dialog, SampleClass);
+
+    // 2) Associate the callback with the button
+    <strong>IUP_CLASS_SETCALLBACK</strong>(button1, "ACTION", ButtonAction1);
+    <strong>IUP_CLASS_SETCALLBACK</strong>(button2, "ACTION", ButtonAction2);
 
     IupShow(dialog);
   };
 
 protected:
   // 3) Declare the callback as a member function
-  <strong>IUP_CLASS_DECLARECALLBACK_IFn</strong>(SampleClass, ButtonAction);
+  <strong>IUP_CLASS_DECLARECALLBACK_IFn</strong>(SampleClass, ButtonAction1);
+  <strong>IUP_CLASS_DECLARECALLBACK_IFn</strong>(SampleClass, ButtonAction2);
 };
 
 // 4) Define the callback as a member function
-int SampleClass::ButtonAction(Ihandle*)
+int SampleClass::ButtonAction1(Ihandle*)
 {
   sample_count++;
+  return IUP_DEFAULT;
+}
 
-  IupExitLoop();
+int SampleClass::ButtonAction2(Ihandle*)
+{
+  sample_count<span class="auto-style1">--</span>;
   return IUP_DEFAULT;
 }
 </pre>
