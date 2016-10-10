@@ -25,6 +25,9 @@
     <Filter Include="Tutorial\CPP1">
       <UniqueIdentifier>{c1f94234-878f-408a-ae05-c3bbaf8eb98a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CPP">
+      <UniqueIdentifier>{78b2e9e2-f43b-441f-b287-57053de8a2e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\html\examples\C\alarm.c">
@@ -314,6 +317,9 @@
     </ClCompile>
     <ClCompile Include="..\html\examples\C\plot.c">
       <Filter>C</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\C\alarm.cpp">
+      <Filter>CPP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
