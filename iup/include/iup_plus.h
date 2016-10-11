@@ -34,7 +34,7 @@
  *
  * See \ref iup_plus.h
  */
-namespace iup
+namespace Iup
 {
   inline char* Version() { return IupVersion(); }
   inline char* VersionDate() { return IupVersionDate(); }
@@ -96,9 +96,9 @@ namespace iup
 
   public:
     Handle(Ihandle* ref_ih) { ih = ref_ih; }
-    // There is no destructor because all iup::Handle are just a reference to the Ihandle*,
-    // since several IUP elements are automatically destroyed when the dialog is destroyed
-    // So, to force an element to be destructed call the Destroy method
+    // There is no destructor because all Iup::Handle are just a reference to the Ihandle*,
+    // since several IUP elements are automatically destroyed when the dialog is destroyed.
+    // So to force an element to be destructed call the Destroy method.
 
     Ihandle* GetHandle() const { return ih; }
 
@@ -893,19 +893,19 @@ namespace cd
   class CanvasIup : public Canvas
   {
   public:
-    CanvasIup(iup::Canvas& iup_canvas)
+    CanvasIup(Iup::Canvas& iup_canvas)
       : Canvas() { canvas = cdCreateCanvas(CD_IUP, iup_canvas.GetHandle()); }
   };
   class CanvasIupDoubleBuffer : public Canvas
   {
   public:
-    CanvasIupDoubleBuffer(iup::Canvas& iup_canvas)
+    CanvasIupDoubleBuffer(Iup::Canvas& iup_canvas)
       : Canvas() { canvas = cdCreateCanvas(CD_IUPDBUFFER, iup_canvas.GetHandle()); }
   };
   class CanvasIupDoubleBufferRGB : public Canvas
   {
   public:
-    CanvasIupDoubleBufferRGB(iup::Canvas& iup_canvas)
+    CanvasIupDoubleBufferRGB(Iup::Canvas& iup_canvas)
       : Canvas() { canvas = cdCreateCanvas(CD_IUPDBUFFERRGB, iup_canvas.GetHandle()); }
   };
 }
