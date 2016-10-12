@@ -95,12 +95,28 @@ namespace Iup
     Element() { ih = 0; };
 
   public:
-    Element(Ihandle* ref_ih) { ih = ref_ih; }
-    // There is no destructor because all Iup::Element are just a reference to the Ihandle*,
-    // since several IUP elements are automatically destroyed when the dialog is destroyed.
-    // So to force an element to be destructed call the Destroy method.
+    Element(Ihandle* ref_ih) 
+    { 
+      ih = ref_ih; 
+
+      // So the Element can be retrieved from an IHandle*
+      // MULTIPLE elements pointing to a single Ihandle* ?????
+      SetAttribute("_IUP_PLUS_ELEMENT", (const char*)this);  
+    }
+
+    virtual ~Element() 
+    {
+      // The destructor does not destroy the element because all Iup::Element are just a reference to the Ihandle*,
+      // since several IUP elements are automatically destroyed when the dialog is destroyed.
+      // So to force an element to be destroyed explicitly call the Destroy method.
+      SetAttribute("_IUP_PLUS_ELEMENT", 0);
+    }
 
     Ihandle* GetHandle() const { return ih; }
+
+    bool Failed() const {
+      return ih == 0;
+    }
 
     void SetAttribute(const char* name, const char* value) { IupSetAttribute(ih, name, value); }
     char* GetAttribute(const char* name) { return IupGetAttribute(ih, name); }

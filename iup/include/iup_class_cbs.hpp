@@ -17,6 +17,20 @@
 
 
 
+#ifdef __IUP_PLUS_H
+
+#define IUP_PLUS_GET_OBJECT(__elem, __class) dynamic_cast<__class*>((__class*)IupGetAttribute(__elem.GetHandle(), #__class "->this"))
+
+#define IUP_PLUS_INITCALLBACK(__elem, __class)  \
+  IupSetAttribute(__elem.GetHandle(), #__class "->this", (char*)this)
+
+#define IUP_PLUS_SETCALLBACK(__elem, __name, __cb)  \
+  IupSetCallback(__elem.GetHandle(), __name, (Icallback)CB_##__cb)
+
+#endif
+
+
+
 #define IUP_CLASS_DECLARECALLBACK_IFn(__class, __cb)  \
        int      __cb(Ihandle* ih);         \
 static int CB_##__cb(Ihandle* ih)          \
