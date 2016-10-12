@@ -52,7 +52,7 @@ namespace Iup
   inline void ExitLoop() { IupExitLoop(); }
 
   inline int RecordInput(const char* filename, int mode) { return IupRecordInput(filename, mode); }
-  inline int  PlayInput(const char* filename) { return IupPlayInput(filename); }
+  inline int PlayInput(const char* filename) { return IupPlayInput(filename); }
 
   inline int Help(const char* url) { return IupHelp(url); }
   inline const char* Load(const char *filename) { return IupLoad(filename); }
@@ -86,17 +86,17 @@ namespace Iup
   inline int GetAllDialogs(char** names, int n) { return IupGetAllDialogs(names, n); }
 
 
-  class Handle
+  class Element
   {
   protected:
     Ihandle* ih;
 
     /* forbidden */
-    Handle() { ih = 0; };
+    Element() { ih = 0; };
 
   public:
-    Handle(Ihandle* ref_ih) { ih = ref_ih; }
-    // There is no destructor because all Iup::Handle are just a reference to the Ihandle*,
+    Element(Ihandle* ref_ih) { ih = ref_ih; }
+    // There is no destructor because all Iup::Element are just a reference to the Ihandle*,
     // since several IUP elements are automatically destroyed when the dialog is destroyed.
     // So to force an element to be destructed call the Destroy method.
 
@@ -144,8 +144,8 @@ namespace Iup
 
     void ResetAttribute(const char* name) { IupResetAttribute(ih, name); }
     int GetAllAttributes(char** names, int n) { return IupGetAllAttributes(ih, names, n); }
-    void SetAttributeHandle(const char* name, const  Handle& handle) { IupSetAttributeHandle(ih, name, handle.GetHandle()); }
-    Handle GetAttributeHandle(const char* name) { return IupGetAttributeHandle(ih, name); }
+    void SetAttributeHandle(const char* name, const  Element& elem) { IupSetAttributeHandle(ih, name, elem.GetHandle()); }
+    Element GetAttributeHandle(const char* name) { return IupGetAttributeHandle(ih, name); }
 
     void Destroy() { IupDestroy(ih); }
 
@@ -157,22 +157,22 @@ namespace Iup
     char* GetClassName() { return IupGetClassName(ih); }
     char* GetClassType() { return IupGetClassType(ih); }
     void SaveClassAttributes() { IupSaveClassAttributes(ih); }
-    void CopyClassAttributesTo(const Handle& dst) { IupCopyClassAttributes(ih, dst.ih); }
+    void CopyClassAttributesTo(const Element& dst) { IupCopyClassAttributes(ih, dst.ih); }
     int ClassMatch(const char* classname) { return IupClassMatch(ih, classname); }
 
   };
 
-  inline Handle GetHandle(const char *name) { return Handle(IupGetHandle(name)); }
-  inline Handle SetHandle(const char *name, const Handle& handle) { return Handle(IupSetHandle(name, handle.GetHandle())); }
-  inline void SetLanguagePack(const Handle& handle) { IupSetLanguagePack(handle.GetHandle()); }
+  inline Element GetHandle(const char *name) { return Element(IupGetHandle(name)); }
+  inline Element SetHandle(const char *name, const Element& elem) { return Element(IupSetHandle(name, elem.GetHandle())); }
+  inline void SetLanguagePack(const Element& elem) { IupSetLanguagePack(elem.GetHandle()); }
 
   class Dialog;
   class Container;
 
-  class Control : public Handle
+  class Control : public Element
   {
   public:
-    Control(Ihandle* _ih) : Handle(_ih) {}
+    Control(Ihandle* _ih) : Element(_ih) {}
 
     void Update() { IupUpdate(ih); }
     void Redraw() { IupRedraw(ih, 0); }
@@ -254,6 +254,7 @@ namespace Iup
   {
   public:
     Menu() : Container(IupMenu(0)) {}
+    Menu(Ihandle* _ih) : Container(_ih) {}
     Menu(const Control& child) : Container(IupMenu(child.GetHandle(), 0)) {}
     Menu(const Control* child0, const Control* child1 = 0, const Control* child2 = 0, const Control* child3 = 0, const Control* child4 = 0, const Control* child5 = 0, const Control* child6 = 0, const Control* child7 = 0, const Control* child8 = 0, const Control* child9 = 0)
       : Container(IupMenu(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
@@ -263,39 +264,39 @@ namespace Iup
   };
 
 #ifdef __IM_PLUS_H
-  class Image : public Handle
+  class Image : public Element
   {
   public:
-    Image(const char* filename) : Handle(IupLoadImage(filename)) {}
-    Image(const im::Image& image) : Handle(IupImageFromImImage(image.GetHandle())) {}
+    Image(const char* filename) : Element(IupLoadImage(filename)) {}
+    Image(const im::Image& image) : Element(IupImageFromImImage(image.GetHandle())) {}
 
     int Save(const char* filename, const char* im_format) { return IupSaveImage(ih, filename, im_format); }
     int SaveAsText(const char* filename, const char* iup_format, const char* name) { return IupSaveImageAsText(ih, filename, iup_format, name); }
   };
-  class Clipboard : public Handle
+  class Clipboard : public Element
   {
   public:
-    Clipboard() : Handle(IupClipboard()) {}
+    Clipboard() : Element(IupClipboard()) {}
 
     void SetImage(const im::Image& image) { SetUserData("NATIVEIMAGE", IupGetImageNativeHandle(image.GetHandle())); }
 
     im::Image GetImage(void) { return im::Image(IupGetNativeHandleImage(GetUserData("NATIVEIMAGE"))); }
   };
 #endif
-  class User : public Handle
+  class User : public Element
   {
   public:
-    User() : Handle(IupUser()) {}
+    User() : Element(IupUser()) {}
   };
-  class Param : public Handle
+  class Param : public Element
   {
   public:
-    Param(const char* format) : Handle(IupParam(format)) {}
+    Param(const char* format) : Element(IupParam(format)) {}
   };
-  class Timer : public Handle
+  class Timer : public Element
   {
   public:
-    Timer() : Handle(IupTimer()) {}
+    Timer() : Element(IupTimer()) {}
   };
   class MenuSeparator : public Control
   {
@@ -311,7 +312,8 @@ namespace Iup
   {
   public:
     Canvas() : Control(IupCanvas(0)) {}
-                   
+    Canvas(Ihandle* _ih) : Control(_ih) {}
+
     void DrawBegin() { IupDrawBegin(ih); }
     void DrawEnd() { IupDrawEnd(ih); }
     void DrawSetClipRect(int x1, int y1, int x2, int y2) { IupDrawSetClipRect(ih, x1, y1, x2, y2); }
@@ -378,7 +380,7 @@ namespace Iup
     void* GetUserId(int id) { return IupTreeGetUserId(ih, id); }
     int GetId(void *userid) { return IupTreeGetId(ih, userid); }
 
-    void SetAttributeHandle(const char* name, int id, const Handle& handle) { IupTreeSetAttributeHandle(ih, name, id, handle.GetHandle()); }
+    void SetAttributeHandle(const char* name, int id, const Element& elem) { IupTreeSetAttributeHandle(ih, name, id, elem.GetHandle()); }
   };
   class Val : public Control
   {
@@ -842,18 +844,18 @@ namespace Iup
 
     static void Open() { IupScintillaOpen(); }
   };
-  class TuioClient : public Handle
+  class TuioClient : public Element
   {
   public:
-    TuioClient(int port) : Handle(IupTuioClient(port)) {}
+    TuioClient(int port) : Element(IupTuioClient(port)) {}
 
     static void Open() { IupTuioOpen(); }
   };
 
-  class Config: public Handle
+  class Config: public Element
   {
   public:
-    Config(): Handle(IupConfig()) { }
+    Config(): Element(IupConfig()) { }
 
     int LoadConfig() { return IupConfigLoad(ih); }
     int SaveConfig() { return IupConfigSave(ih); }
