@@ -15,9 +15,13 @@
 <h3>
 Parameters/Return</h3>
 <pre>void IupSetAttributeHandle(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, Ihandle *<strong>ih_named</strong>); [in C]
+void IupSetAttributeHandleId(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>id</strong>, Ihandle *<strong>ih_named</strong>); [in C]
+void IupSetAttributeHandleId2(Ihandle *<strong>ih</strong>, const char *<strong>name</strong>, int <strong>lin</strong>, int <strong>col</strong>, Ihandle *<strong>ih_named</strong>); [in C]
 [There is no equivalent in Lua] </pre>
 <p><strong>ih</strong>: identifier of the interface element.<br>
   <strong>name</strong>: name of the attribute.<br>
+<strong>id, lin, col</strong>: used when the attribute has additional ids. 
+(since 3.21)<br>
 <b>ih_named</b>: element to associate using a name</p>
 <p>The function will not check for inheritance since all the attributes that 
 associate handles are not inheritable.</p>

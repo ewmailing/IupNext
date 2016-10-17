@@ -165,6 +165,10 @@ char*     IupGetName      (Ihandle* ih);
 
 void      IupSetAttributeHandle(Ihandle* ih, const char* name, Ihandle* ih_named);
 Ihandle*  IupGetAttributeHandle(Ihandle* ih, const char* name);
+void      IupSetAttributeHandleId(Ihandle* ih, const char* name, int id, Ihandle* ih_named);
+Ihandle*  IupGetAttributeHandleId(Ihandle *ih, const char* name, int id);
+void      IupSetAttributeHandleId2(Ihandle* ih, const char* name, int lin, int col, Ihandle* ih_named);
+Ihandle*  IupGetAttributeHandleId2(Ihandle *ih, const char* name, int lin, int col);
 
 char*     IupGetClassName(Ihandle* ih);
 char*     IupGetClassType(Ihandle* ih);
@@ -277,7 +281,7 @@ void IupSetfAttributeId2(Ihandle* ih, const char* name, int lin, int col, const 
 int   IupTreeSetUserId(Ihandle* ih, int id, void* userid);
 void* IupTreeGetUserId(Ihandle* ih, int id);
 int   IupTreeGetId(Ihandle* ih, void *userid);
-void  IupTreeSetAttributeHandle(Ihandle* ih, const char* name, int id, Ihandle* ih_named);
+void  IupTreeSetAttributeHandle(Ihandle* ih, const char* name, int id, Ihandle* ih_named); /* deprecated, use IupSetAttributeHandleId */
 
 
 /************************************************************************/

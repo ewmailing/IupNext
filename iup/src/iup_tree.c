@@ -968,7 +968,5 @@ void* IupTreeGetUserId(Ihandle* ih, int id)
 
 void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
 {
-  char attr[50];
-  sprintf(attr, "%s%d", a, id);
-  IupSetAttributeHandle(ih, attr, ih_named);
+  IupSetAttributeHandleId(ih, a, id, ih_named);
 }

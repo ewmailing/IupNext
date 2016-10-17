@@ -123,6 +123,10 @@ IupGetChildCount
 IupGetAllAttributes
 IupSetAttributeHandle
 IupGetAttributeHandle
+IupSetAttributeHandleId
+IupGetAttributeHandleId
+IupSetAttributeHandleId2
+IupGetAttributeHandleId2
 IupExitLoop
 IupUpdate
 IupRedraw
