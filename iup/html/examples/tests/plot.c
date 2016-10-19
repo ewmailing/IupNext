@@ -26,7 +26,7 @@
 
 #ifdef PLOT_TEST
 
-#define MAXPLOT 11  /* room for examples */
+#define MAXPLOT 12  /* room for examples */
 
 
 static Ihandle *plot[MAXPLOT] = { NULL }; /* Plot controls */
@@ -453,6 +453,38 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[10], "DS_LINEWIDTH", "3");
   IupSetAttribute(plot[10], "DS_LEGEND", "Error Bar");
   IupSetAttribute(plot[10], "DS_MODE", "ERRORBAR");
+
+  /************************************************************************/
+  /* PLOT 11 */
+  IupSetAttribute(plot[11], "TITLE", "Pie Chart");
+  //  IupSetAttribute(plot[3], "TITLEFONTSIZE", "16");
+  //IupSetAttribute(plot[3], "MARGINTOP", "40");
+  //IupSetAttribute(plot[3], "MARGINLEFT", "30");
+  //IupSetAttribute(plot[3], "MARGINBOTTOM", "30");
+  IupSetAttribute(plot[11], "AXS_XCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[11], "AXS_YCROSSORIGIN", "Yes");
+  IupSetAttribute(plot[11], "AXS_XAUTOMIN", "NO");
+  IupSetAttribute(plot[11], "AXS_XAUTOMAX", "NO");
+  IupSetAttribute(plot[11], "AXS_YAUTOMIN", "NO");
+  IupSetAttribute(plot[11], "AXS_YAUTOMAX", "NO");
+  IupSetAttribute(plot[11], "AXS_XMIN", "-1");
+  IupSetAttribute(plot[11], "AXS_XMAX", "1");
+  IupSetAttribute(plot[11], "AXS_YMIN", "-1");
+  IupSetAttribute(plot[11], "AXS_YMAX", "1");
+  IupSetAttribute(plot[11], "VIEWPORTSQUARE", "Yes");
+   IupSetAttribute(plot[11], "AXS_X", "NO");
+  IupSetAttribute(plot[11], "AXS_Y", "NO");
+
+  {
+    const char * kLables[12] = { "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" };
+    const double kData[12] = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 0, 10, 20 };
+    IupPlotBegin(plot[11], 1);
+    for (theI = 0; theI < 12; theI++)
+      IupPlotAddStr(plot[11], kLables[theI], kData[theI]);
+  }
+  IupPlotEnd(plot[11]);
+  IupSetAttribute(plot[11], "DS_COLOR", "100 100 200");
+  IupSetAttribute(plot[11], "DS_MODE", "PIECHART");
 }
 
 static int tabs_get_index(void)

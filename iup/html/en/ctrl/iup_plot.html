@@ -290,7 +290,7 @@ or <b>ih:SetSampleSelection</b>(<b>ds_index, sample_index, <strong>selected</str
 <p>Changes the sample selected state in a dataset at the given <strong>sample_index</strong>. 
 Can be used only after the dataset is added to the plot. </p>
 <hr>
-<pre>void <strong>IupPlotSetSampleExtra</strong>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, double <b>extra</b>); [in C]
+<pre>void <strong><a name="IupPlotSetSampleExtra">IupPlotSetSampleExtra</a></strong>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, double <b>extra</b>); [in C]
 <b>iup.PlotSetSampleExtra</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index, <strong>extra</strong></b>: number) [in Lua]
 or <b>ih:SetSampleExtra</b>(<b>ds_index, sample_index, <strong>extra</strong></b>: number) [in Lua]</pre>
 <p>Changes the sample extra value in a dataset at the given <strong>sample_index</strong>. 
@@ -418,7 +418,7 @@ accordingly. (since 3.13)</p>
 <p><strong>VIEWPORTSQUARE</strong>: force the plot area to be a square. (since 
 3.14)</p>
 <hr class="auto-style4">
-<p class="info">All color attributes accept and 
+<p class="info">All color attributes accept an 
 extra component for alpha. The default alpha is always 255 (opaque). </p>
 <p><b><a href="../attrib/iup_bgcolor.html">BGCOLOR</a></b> (inheritable):  the 
 default background color. Default: "255 255 255". When set BACKCOLOR and LEGENDBOXBACKCOLOR<b> </b>of all 
@@ -569,6 +569,9 @@ dataset.</p>
 "BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP", "ERRORBAR". Default: "LINE". When BAR modes 
 are set, <b>AXS_XDISCRETE</b> or <b>AXS_YDISCRETE </b> is 
 also set. (STEM to STEP since 3.18)</p>
+<p class="info">ERRORBAR depends on the "Extra" value to be set (see
+<a href="#IupPlotSetSampleExtra">IupPlotSetSampleExtra</a>). This extra value is 
+the "error" of each sample. </p>
 <p><b>DS_LINESTYLE</b>: line style of the current dataset. Can be: &quot;CONTINUOUS&quot;, 
 &quot;DASHED&quot;, &quot;DOTTED&quot;, &quot;DASH_DOT&quot;, &quot;DASH_DOT_DOT&quot;. Default is &quot;CONTINUOUS&quot;.</p>
 <p><b>DS_LINEWIDTH</b>: line width of the current dataset. Default: 1.</p>
@@ -576,7 +579,8 @@ also set. (STEM to STEP since 3.18)</p>
 &quot;STAR&quot;, &quot;CIRCLE&quot;, &quot;X&quot;, &quot;BOX&quot;, &quot;DIAMOND&quot;, &quot;HOLLOW_CIRCLE&quot;, &quot;HOLLOW_BOX&quot;, 
 &quot;HOLLOW_DIAMOND&quot;. Default is &quot;X&quot;.</p>
 <p><b>DS_MARKSIZE</b>: mark size of the current dataset in pixels. Default: 7. 
-If a sample extra value is set then it will ignore this value and use the sample 
+If a sample "Extra" value is set (see <a href="#IupPlotSetSampleExtra">
+IupPlotSetSampleExtra</a>) then it will ignore this value and use the sample 
 extra value as mark size, except for ERRORBAR mode (since 3.18).</p>
 <p><strong>DS_BAROUTLINE</strong>: draws an outline when mode is BAR, 
 HORIZONTALBAR or MULTIBAR. (since 3.18)</p>

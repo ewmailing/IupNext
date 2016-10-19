@@ -1139,6 +1139,17 @@ void iupPlot::ConfigureAxis()
     mAxisX.mCrossOrigin = false;   // change at the other axis
 }
 
+iupPlotDataSet* iupPlot::HasPieChart()
+{
+  for (int ds = 0; ds < mDataSetListCount; ds++)
+  {
+    iupPlotDataSet* dataset = mDataSetList[ds];
+    if (dataset->mMode == IUP_PLOT_PIECHART)
+      return dataset;
+  }
+  return NULL;
+}
+
 bool iupPlot::Render(cdCanvas* canvas)
 {
   if (!mRedraw)
@@ -1230,17 +1241,22 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   IFniiddi drawsample_cb = (IFniiddi)IupGetCallback(ih, "DRAWSAMPLE_CB");
 
-  for (int ds = 0; ds < mDataSetListCount; ds++) 
+  iupPlotDataSet* piechart_dataset = HasPieChart();
+
+  for (int ds = 0; ds < mDataSetListCount; ds++)
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
+
+    if (piechart_dataset && dataset != piechart_dataset)
+      continue;
 
     if (drawsample_cb)
     {
       iupPlotSampleNotify inNotify = { ih, ds, drawsample_cb };
-      dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, &inNotify);
+      dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, &inNotify, ih);
     }
     else
-      dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, NULL);
+      dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, NULL, ih);
   }
 
   if (mCrossHairH)
@@ -1272,7 +1288,9 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (post_cb)
     post_cb(ih, canvas);
 
-  if (!DrawLegend(theDatasetArea, canvas, mLegend.mPos))
+  if (piechart_dataset)
+    DrawChartLegend(piechart_dataset, theDatasetArea, canvas, mLegend.mPos);
+  else if (!DrawLegend(theDatasetArea, canvas, mLegend.mPos))
     return false;
 
   // Draw title restricted only by the viewport

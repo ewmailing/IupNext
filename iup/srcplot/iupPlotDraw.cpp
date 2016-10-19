@@ -50,6 +50,11 @@ static inline void iPlotDrawBox(cdCanvas* canvas, double inX, double inY, double
   cdfCanvasBox(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
 }
 
+static inline void iPlotDrawSector(cdCanvas* canvas, double inX, double inY, double inW, double inH, double inStartAngle, double inEndAngle)
+{
+  cdfCanvasSector(canvas, inX, inY, inW, inH, inStartAngle, inEndAngle);
+}
+
 static void iPlotFillArrow(cdCanvas* canvas, int inX1, int inY1, int inX2, int inY2, int inX3, int inY3)
 {
   cdCanvasBegin(canvas, CD_FILL);
@@ -688,6 +693,130 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRec
   return true;
 }
 
+int iupStrToColor(const char* str, long *color);
+
+static long iPlotGetChartColorTable(Ihandle* ih, int index)
+{
+  char* value = IupGetAttributeId(ih, "SAMPLECOLOR", index);
+  long color;
+  if (iupStrToColor(value, &color))
+    return color;                          
+
+  //TODO-CAMILO: extra index for sorted values (por ultimo)
+
+  switch (index % 24)
+  {
+  case 0: return cdEncodeColor(255, 0, 0);
+  case 1: return cdEncodeColor(0, 255, 0);
+  case 2: return cdEncodeColor(0, 0, 255);
+  case 3: return cdEncodeColor(0, 255, 255);
+  case 4: return cdEncodeColor(255, 0, 255);
+  case 5: return cdEncodeColor(255, 255, 0);
+  case 6: return cdEncodeColor(128, 0, 0);
+  case 7: return cdEncodeColor(0, 128, 0);
+  case 8: return cdEncodeColor(0, 0, 128);
+  case 9: return cdEncodeColor(0, 128, 128);
+  case 10: return cdEncodeColor(128, 0, 128);
+  case 11: return cdEncodeColor(128, 128, 0);
+  case 12: return cdEncodeColor(192, 0, 0);
+  case 13: return cdEncodeColor(0, 192, 0);
+  case 14: return cdEncodeColor(0, 0, 192);
+  case 15: return cdEncodeColor(0, 192, 192);
+  case 16: return cdEncodeColor(192, 0, 192);
+  case 17: return cdEncodeColor(192, 192, 0);
+  case 18: return cdEncodeColor(64, 0, 0);
+  case 19: return cdEncodeColor(0, 64, 0);
+  case 20: return cdEncodeColor(0, 0, 64);
+  case 21: return cdEncodeColor(0, 64, 64);
+  case 22: return cdEncodeColor(64, 0, 64);
+  case 23: return cdEncodeColor(64, 64, 0);
+  }
+
+  return 0;
+}
+
+bool iupPlot::DrawChartLegend(iupPlotDataSet *dataset, const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const
+{
+  if (mLegend.mShow)
+  {
+    int theFontHeight;
+
+    //SetFont(canvas, mLegend.mFontStyle, mLegend.mFontSize);
+    cdCanvasGetFontDim(canvas, NULL, &theFontHeight, NULL, NULL);
+
+    int theMargin = theFontHeight / 2;
+    if (mLegend.mPosition == IUP_PLOT_BOTTOMCENTER)
+      theMargin = 0;
+    int theCount = dataset->GetCount();
+    int theTotalHeight = theCount*theFontHeight + 2 * theMargin;
+    int theLineSpace = 20;
+
+    int theWidth, theMaxWidth = 0;
+    for (int i = 0; i < theCount; i++)
+    {
+      cdCanvasGetTextSize(canvas, ((iupPlotDataString *)dataset->GetDataX())->GetSampleString(i), &theWidth, NULL);
+
+      theWidth += theLineSpace;
+
+      if (theWidth > theMaxWidth)
+        theMaxWidth = theWidth;
+    }
+
+    if (theMaxWidth == 0)
+      return false;
+
+    theMaxWidth += 2 * theMargin;
+
+    int theScreenX, theScreenY;
+
+    theScreenX = inRect.mX;
+    theScreenY = inRect.mY;
+
+    theScreenX += 2;
+    theScreenY += inRect.mHeight - theTotalHeight - 2;
+
+    ioPos.mX = theScreenX;
+    ioPos.mY = cdCanvasInvertYAxis(canvas, theScreenY);
+
+    ioPos.mWidth = theMaxWidth;
+    ioPos.mHeight = theTotalHeight;
+
+    // Clip to the legend box
+    cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1,
+                     theScreenY, theScreenY + theTotalHeight - 1);
+
+    if (mLegend.mBoxShow)
+    {
+      cdCanvasSetForeground(canvas, mLegend.mBoxBackColor);
+      iPlotDrawBox(canvas, theScreenX + 1, theScreenY + 1, theMaxWidth - 2, theTotalHeight - 2);
+
+      cdCanvasSetForeground(canvas, mLegend.mBoxColor);
+      iPlotSetLine(canvas, mLegend.mBoxLineStyle, mLegend.mBoxLineWidth);
+      iPlotDrawRect(canvas, theScreenX, theScreenY, theMaxWidth, theTotalHeight);
+    }
+
+    for (int i = 0; i < theCount; i++)
+    {
+      cdCanvasSetForeground(canvas, iPlotGetChartColorTable(ih, i));
+
+      int theLegendX = theScreenX + theMargin;
+      int theLegendY = theScreenY + (theCount - 1 - i)*theFontHeight + theMargin;
+
+      theLegendY += theFontHeight / 2;
+
+      //TODO-CAMILO: desenhar pequenos box em vez de linha
+
+      iPlotSetLine(canvas, dataset->mLineStyle, dataset->mLineWidth * 3);
+      cdCanvasLine(canvas, theLegendX, theLegendY - theFontHeight / 8,
+                   theLegendX + theLineSpace - 3, theLegendY - theFontHeight / 8);
+
+      iPlotDrawText(canvas, theLegendX + theLineSpace, theLegendY, CD_WEST, ((iupPlotDataString *)dataset->GetDataX())->GetSampleString(i));
+    }
+  }
+
+  return true;
+}
+
 
 /************************************************************************************/
 
@@ -746,7 +875,7 @@ void iupPlotDataSet::DrawErrorBar(const iupPlotTrafoBase *inTrafoY, cdCanvas* ca
   cdfCanvasLine(canvas, theScreenX - theBarWidth, theScreenErrorY2, theScreenX + theBarWidth, theScreenErrorY2);
 }
 
-void iupPlotDataSet::SetSampleExtraMarkSize(const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, int inSampleIndex) const 
+void iupPlotDataSet::SetSampleExtraMarkSize(const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, int inSampleIndex) const
 {
   double theMarkSize = mExtra->GetSample(inSampleIndex);
   int theScreenSize = 1;
@@ -851,7 +980,7 @@ void iupPlotDataSet::DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlot
   double theScreenMaxX = inTrafoX->Transform(theMaxX);
 
   double theBarWidth = (theScreenMaxX - theScreenMinX) / (theCount - 1);
-  theBarWidth *= 1 - (double)mBarSpacingPercent/100.0;
+  theBarWidth *= 1 - (double)mBarSpacingPercent / 100.0;
 
   for (int i = 0; i < theCount; i++)
   {
@@ -972,6 +1101,66 @@ void iupPlotDataSet::DrawDataStep(const iupPlotTrafoBase *inTrafoX, const iupPlo
   cdCanvasEnd(canvas);
 }
 
+void iupPlotDataSet::DrawDataPieChart(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih) const
+{
+  double x, y, w, h;
+
+  int theCount = mDataX->GetCount();
+  double sum = 0;
+
+  for (int i = 0; i < theCount; i++)
+    sum += mDataY->GetSample(i);
+
+  x = 0;
+  y = 0;
+
+  w = 1.;
+  h = 1.;
+
+  x = inTrafoX->Transform(x);
+  y = inTrafoY->Transform(y);
+  w *= ((iupPlotTrafoLinear *)inTrafoX)->mSlope;
+  h *= ((iupPlotTrafoLinear *)inTrafoY)->mSlope;
+
+  double startAngle = 0.;
+  double endAngle = 0.;
+
+  int interiorStyle = cdCanvasInteriorStyle(canvas, CD_QUERY);
+
+  for (int i = 0; i < theCount; i++)
+  {
+    double theX = mDataX->GetSample(i);
+    double theY = mDataY->GetSample(i);
+
+    //TODO-CAMILO: STARTANGLE
+
+    endAngle = (theY*360.) / sum;
+
+    if (inNotify)
+      inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
+
+    cdCanvasInteriorStyle(canvas, CD_SOLID);
+
+    cdCanvasForeground(canvas, iPlotGetChartColorTable(ih, i));
+
+    //TODO-CAMILO: PIECONTOUR
+
+    cdfCanvasSector(canvas, x, y, w, h, startAngle, startAngle + endAngle);
+
+    cdCanvasInteriorStyle(canvas, CD_HOLLOW);
+
+    cdfCanvasSector(canvas, x, y, w, h, startAngle, startAngle + endAngle);
+
+    //TODO-CAMILO: SHOWSLICETEXT (%, value, label (X), None)
+
+    startAngle += endAngle;
+  }
+
+  //TODO-CAMILO: PIEHOLE
+
+  cdCanvasInteriorStyle(canvas, interiorStyle);
+}
+
 void iupPlotDataSet::DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
 {
   int theCount = mDataX->GetCount();
@@ -1005,7 +1194,7 @@ void iupPlotDataSet::DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPl
   }
 }
 
-void iupPlotDataSet::DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
+void iupPlotDataSet::DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih) const
 {
   int theXCount = mDataX->GetCount();
   int theYCount = mDataY->GetCount();
@@ -1042,6 +1231,9 @@ void iupPlotDataSet::DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTra
     break;
   case IUP_PLOT_BAR:
     DrawDataBar(inTrafoX, inTrafoY, canvas, inNotify);
+    break;
+  case IUP_PLOT_PIECHART:
+    DrawDataPieChart(inTrafoX, inTrafoY, canvas, inNotify, ih);
     break;
   case IUP_PLOT_HORIZONTALBAR:
     DrawDataHorizontalBar(inTrafoX, inTrafoY, canvas, inNotify);
