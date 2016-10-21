@@ -8,7 +8,8 @@
 
 int main(int argc, char **argv)
 {
-  char file[256];
+  char file[10240];
+
   IupOpen(&argc, &argv);
   IupSetLanguage("ENGLISH");
 
@@ -18,28 +19,22 @@ int main(int argc, char **argv)
   {
     case 1: 
       IupMessage("New file",file);	    
-    break;	    
-    
+      break;	    
     case 0 : 
       IupMessage("File already exists",file);
-    break;	    
-    
+      break;	    
     case -1 : 
       IupMessage("IupFileDlg","Operation canceled");
-      return 1;
-      
+      break;
     case -2 : 
       IupMessage("IupFileDlg","Allocation error");
-      return 1;
-      
+      break;
     case -3 : 
       IupMessage("IupFileDlg","Invalid parameter");
-      return 1;
-    break;	    
+      break;	    
   }
 
   IupClose();
 
   return EXIT_SUCCESS;
-
 }

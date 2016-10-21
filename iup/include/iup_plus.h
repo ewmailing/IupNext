@@ -160,6 +160,9 @@ namespace Iup
     void SetAttributeHandleId2(const char* name, int lin, int col, const Element& elem) { IupSetAttributeHandleId2(ih, name, lin, col, elem.GetHandle()); }
     Element GetAttributeHandleId2(const char* name, int lin, int col) { return IupGetAttributeHandleId2(ih, name, lin, col); }
 
+    Icallback GetCallback(const char *name) { return IupGetCallback(ih, name); }
+    Icallback SetCallback(const char *name, Icallback func) { return IupSetCallback(ih, name, func); }
+
     void Destroy() { IupDestroy(ih); }
 
     int Map() { return IupMap(ih); }

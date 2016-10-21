@@ -1,7 +1,5 @@
 /* IupBackgroundBox Example in C */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <iup_plus.h>
 
 int main(int argc, char **argv)
@@ -23,5 +21,5 @@ int main(int argc, char **argv)
 
   Iup::MainLoop();
   Iup::Close();
-  return EXIT_SUCCESS;
+  return 0;
 }

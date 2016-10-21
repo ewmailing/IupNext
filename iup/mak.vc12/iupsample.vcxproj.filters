@@ -330,6 +330,30 @@
     <ClCompile Include="..\html\examples\CPP\getcolor.cpp">
       <Filter>CPP</Filter>
     </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\sbox.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\mgllabel.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\mask.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\getfile.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\filedlg.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\multiline1.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\split1.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\dialog2.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua">
