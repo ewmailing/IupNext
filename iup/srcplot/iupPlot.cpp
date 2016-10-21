@@ -792,6 +792,11 @@ iupPlot::~iupPlot()
 
 void iupPlot::SetViewport(int x, int y, int w, int h)
 {
+  mViewportBack.mX = x;
+  mViewportBack.mY = y;
+  mViewportBack.mWidth = w;
+  mViewportBack.mHeight = h;
+
   if (mViewportSquare && w != h)
   {
     /* take the smallest length */
@@ -1155,6 +1160,9 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (!mRedraw)
     return true;
 
+  // draw entire plot viewport
+  DrawBackground(canvas);
+
   // Shift the drawing area to the plot viewport
   cdCanvasOrigin(canvas, mViewport.mX, mViewport.mY);
 
@@ -1163,11 +1171,8 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   cdCanvasClip(canvas, CD_CLIPAREA);
 
-  // Draw the background, axis and grid restricted only by the viewport
+  // Draw axis and grid restricted only by the viewport
   cdCanvasClipArea(canvas, 0, mViewport.mWidth - 1, 0, mViewport.mHeight - 1);
-
-  // draw entire plot viewport
-  DrawBackground(canvas);
 
   if (!mDataSetListCount)
     return true;

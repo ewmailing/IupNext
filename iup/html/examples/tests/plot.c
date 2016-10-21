@@ -472,7 +472,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[11], "AXS_YMIN", "-1");
   IupSetAttribute(plot[11], "AXS_YMAX", "1");
   IupSetAttribute(plot[11], "VIEWPORTSQUARE", "Yes");
-   IupSetAttribute(plot[11], "AXS_X", "NO");
+  IupSetAttribute(plot[11], "AXS_X", "NO");
   IupSetAttribute(plot[11], "AXS_Y", "NO");
 
   {

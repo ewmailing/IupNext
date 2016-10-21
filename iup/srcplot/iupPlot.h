@@ -578,6 +578,7 @@ public:
   Ihandle* ih;
   bool mRedraw;
   iupPlotRect mViewport;
+  iupPlotRect mViewportBack;
   bool mViewportSquare;
   bool mScaleEqual;
   int mDefaultFontSize;

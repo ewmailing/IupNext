@@ -1997,22 +1997,6 @@ static int iPlotSetViewportSquareAttrib(Ihandle* ih, const char* value)
 
   ih->data->current_plot->mViewportSquare = iupStrBoolean(value) ? true : false;
 
-  if (ih->data->current_plot->mViewportSquare)
-    ih->data->clear = 1;
-  else
-  {
-    ih->data->clear = 0;
-
-    for (int i = 0; i < ih->data->plot_list_count; i++)
-    {
-      if (ih->data->plot_list[i]->mViewportSquare)
-      {
-        ih->data->clear = 1;
-        break;
-      }
-    }
-  }
-
   ih->data->current_plot->mRedraw = true;
   return 0;
 }

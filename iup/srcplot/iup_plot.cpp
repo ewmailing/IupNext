@@ -1003,16 +1003,6 @@ void iupPlotRedraw(Ihandle* ih, int flush, int only_current, int reset_redraw)
 
   cdCanvasActivate(ih->data->cd_canvas);
 
-  if (ih->data->clear)
-  {
-    only_current = 0;
-
-    long bgcolor;
-    iupStrToColor(iupAttribGetStr(ih, "BGCOLOR"), &bgcolor);
-    cdCanvasBackground(ih->data->cd_canvas, bgcolor);
-    cdCanvasClear(ih->data->cd_canvas);
-  }
-
   if (only_current)
   {
     if (reset_redraw)
