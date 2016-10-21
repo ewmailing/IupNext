@@ -218,6 +218,7 @@ namespace Iup
   public:
     Container(Ihandle* _ih) : Control(_ih) {}
     Container(const Container& container) : Control(container.ih) {}
+    Container(const Control& control) : Control(control.GetHandle()) {}
 
     Container(Ihandle* _ih, const Control* child_array, int count) : Control(_ih) {
       for (int i = 0; i < count; i++)
@@ -254,9 +255,10 @@ namespace Iup
   class Dialog : public Container
   {
   public:
-    Dialog(Ihandle* _ih) : Container(_ih) {}
+    Dialog(const Dialog& dialog) : Container(dialog.GetHandle()) {}
     Dialog(Control child) : Container(IupDialog(child.GetHandle())) { }
     Dialog(Container child) : Container(IupDialog(child.GetHandle())) { }
+    Dialog(Ihandle* _ih) : Container(_ih) {}
 
     int Popup(int x, int y) { return IupPopup(ih, x, y); }
     int Show() { return IupShow(ih); }
@@ -274,11 +276,10 @@ namespace Iup
   {
   public:
     Menu() : Container(IupMenu(0)) {}
-    Menu(Ihandle* _ih) : Container(_ih) {}
-    Menu(Control child) : Container(IupMenu(child.GetHandle(), 0)) {}
     Menu(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupMenu(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Menu(const Control *child_array, int count) : Container(IupMenu(0), child_array, count) {}
+    Menu(const Menu& menu) : Container(menu.GetHandle()) {}
 
     int Popup(int x, int y) { return IupPopup(ih, x, y); }
   };
@@ -332,7 +333,6 @@ namespace Iup
   {
   public:
     Canvas() : Control(IupCanvas(0)) {}
-    Canvas(Ihandle* _ih) : Control(_ih) {}
 
     void DrawBegin() { IupDrawBegin(ih); }
     void DrawEnd() { IupDrawEnd(ih); }
@@ -375,7 +375,7 @@ namespace Iup
   class AnimatedLabel : public Control
   {
   public:
-    AnimatedLabel(Ihandle* animation = 0) : Control(IupAnimatedLabel(animation)) {}
+    AnimatedLabel(Element animation = (Ihandle*)0) : Control(IupAnimatedLabel(animation.GetHandle())) {}
   };
   class Toggle : public Control
   {
@@ -416,7 +416,6 @@ namespace Iup
   public:
     List() : Control(IupList(0)) {}
   };
-  //  Control* Text() { return new Control(IupText(0)); }
   class Text : public Control
   {
   public:
@@ -429,40 +428,47 @@ namespace Iup
     Split() : Container(IupSplit(0, 0)) {}
     Split(Control child) : Container(IupSplit(child.GetHandle(), 0)) {}
     Split(Control child1, Control child2) : Container(IupSplit(child1.GetHandle(), child2.GetHandle())) {}
+    Split(const Split& split) : Container(split.GetHandle()) {}
   };
   class Submenu : public Container
   {
   public:
     Submenu(const char* title = 0) : Container(IupSubmenu(title, 0)) {}
     Submenu(const char* title, Control child) : Container(IupSubmenu(title, child.GetHandle())) {}
+    Submenu(const Submenu& container) : Container(container.GetHandle()) {}
   };
   class Radio : public Container
   {
   public:
     Radio() : Container(IupRadio(0)) {}
     Radio(Control child) : Container(IupRadio(child.GetHandle())) {}
+    Radio(const Radio& container) : Container(container.GetHandle()) {}
   };
   class Sbox : public Container
   {
   public:
     Sbox() : Container(IupSbox(0)) {}
     Sbox(Control child) : Container(IupSbox(child.GetHandle())) {}
+    Sbox(const Sbox& container) : Container(container.GetHandle()) {}
   };
   class ScrollBox : public Container
   {
   public:
     ScrollBox() : Container(IupScrollBox(0)) {}
     ScrollBox(Control child) : Container(IupScrollBox(child.GetHandle())) {}
+    ScrollBox(const ScrollBox& container) : Container(container.GetHandle()) {}
   };
   class Expander : public Container
   {
   public:
+    Expander(const Expander& container) : Container(container.GetHandle()) {}
     Expander() : Container(IupExpander(0)) {}
     Expander(Control child) : Container(IupExpander(child.GetHandle())) {}
   };
   class DetachBox : public Container
   {
   public:
+    DetachBox(const DetachBox& container) : Container(container.GetHandle()) {}
     DetachBox() : Container(IupDetachBox(0)) {}
     DetachBox(Control child) : Container(IupDetachBox(child.GetHandle())) {}
   };
@@ -471,6 +477,7 @@ namespace Iup
   public:
     BackgroundBox() : Container(IupBackgroundBox(0)) {}
     BackgroundBox(Control child) : Container(IupBackgroundBox(child.GetHandle())) {}
+    BackgroundBox(const BackgroundBox& container) : Container(container.GetHandle()) {}
 
     void DrawBegin() { IupDrawBegin(ih); }
     void DrawEnd() { IupDrawEnd(ih); }
@@ -490,96 +497,99 @@ namespace Iup
     void DrawGetImageInfo(const char* name, int &w, int &h, int &bpp) { IupDrawGetImageInfo(name, &w, &h, &bpp); }
   };
 
-//  Control* Frame(Control child = 0) { return new Container(IupFrame(child ? child->GetHandle() : 0)); }
-
   class Frame : public Container
   {
   public:
     Frame() : Container(IupFrame(0)) {}
     Frame(Control child) : Container(IupFrame(child.GetHandle())) {}
+    Frame(const Frame& container) : Container(container.GetHandle()) {}
   };
   class FlatFrame : public Container
   {
   public:
     FlatFrame() : Container(IupFlatFrame(0)) {}
     FlatFrame(Control child) : Container(IupFlatFrame(child.GetHandle())) {}
+    FlatFrame(const FlatFrame& container) : Container(container.GetHandle()) {}
   };
   class Spinbox : public Container
   {
   public:
     Spinbox() : Container(IupSpinbox(0)) {}
     Spinbox(Control child) : Container(IupSpinbox(child.GetHandle())) {}
+    Spinbox(const Spinbox& container) : Container(container.GetHandle()) {}
   };
 
   class Vbox : public Container
   {
-    Vbox(const Vbox& box) : Container(box.GetHandle()) {}
   public:
     Vbox() : Container(IupVbox(0)) {}
     Vbox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupVbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Vbox(const Control *child_array, int count) : Container(IupVbox(0), child_array, count) {}
+    Vbox(const Vbox& box) : Container(box.GetHandle()) {}
   };
   class Hbox : public Container
   {
-    Hbox(const Hbox& box) : Container(box.GetHandle()) {}
   public:
     Hbox() : Container(IupHbox(0)) {}
     Hbox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupHbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Hbox(const Control *child_array, int count) : Container(IupHbox(0), child_array, count) {}
+    Hbox(const Hbox& box) : Container(box.GetHandle()) {}
   };
   class Zbox : public Container
   {
-    Zbox(const Zbox& box) : Container(box.GetHandle()) {}
   public:
     Zbox() : Container(IupZbox(0)) {}
     Zbox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupZbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Zbox(const Control *child_array, int count) : Container(IupZbox(0), child_array, count) {}
+    Zbox(const Zbox& box) : Container(box.GetHandle()) {}
   };
   class Cbox : public Container
   {
-    Cbox(const Cbox& box) : Container(box.GetHandle()) {}
   public:
     Cbox() : Container(IupCbox(0)) {}
     Cbox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupCbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Cbox(const Control *child_array, int count) : Container(IupCbox(0), child_array, count) {}
+    Cbox(const Cbox& box) : Container(box.GetHandle()) {}
   };
   class Tabs : public Container
   {
-    Tabs(const Tabs& tabs) : Container(tabs.GetHandle()) {}
   public:
     Tabs() : Container(IupTabs(0)) {}
     Tabs(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupTabs(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Tabs(const Control *child_array, int count) : Container(IupTabs(0), child_array, count) {}
+    Tabs(const Tabs& tabs) : Container(tabs.GetHandle()) {}
   };
   class GridBox : public Container
   {
-    GridBox(const GridBox& box) : Container(box.GetHandle()) {}
   public:
     GridBox() : Container(IupGridBox(0)) {}
     GridBox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupGridBox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     GridBox(const Control *child_array, int count) : Container(IupGridBox(0), child_array, count) {}
+    GridBox(const GridBox& box) : Container(box.GetHandle()) {}
   };
   class ParamBox : public Container
   {
-    ParamBox() : Container(IupParamBox(0)) {}
   public:
+    ParamBox() : Container(IupParamBox(0)) {}
     ParamBox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupParamBox(child0.GetHandle(), child1.GetHandle(), child2.GetHandle(), child3.GetHandle(), child4.GetHandle(), child5.GetHandle(), child6.GetHandle(), child7.GetHandle(), child8.GetHandle(), child9.GetHandle(), 0)) {}
+    ParamBox(const Control *child_array, int count) : Container(IupParamBox(0), child_array, count) {}
+    ParamBox(const ParamBox& box) : Container(box.GetHandle()) {}
   };
   class Normalizer : public Container
   {
-    Normalizer(const Normalizer& elem) : Container(elem.GetHandle()) {}
   public:
     Normalizer() : Container(IupNormalizer(0)) {}
     Normalizer(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupNormalizer(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Normalizer(const Control *child_array, int count) : Container(IupNormalizer(0), child_array, count) {}
+    Normalizer(const Normalizer& elem) : Container(elem.GetHandle()) {}
   };
 
 
@@ -628,6 +638,7 @@ namespace Iup
   public:
     GLBackgroundBox() : Container(IupGLBackgroundBox(0)) {}
     GLBackgroundBox(Control child) : Container(IupGLBackgroundBox(child.GetHandle())) {}
+    GLBackgroundBox(const GLBackgroundBox& container) : Container(container.GetHandle()) {}
   };
 
   class Controls
@@ -666,7 +677,7 @@ namespace Iup
     Matrix() : Control(IupMatrix(0)) {}
 
     void SetFormula(int col, const char* formula, const char* init = 0) { IupMatrixSetFormula(ih, col, formula, init); }
-    void SetDynamic(Ihandle* ih, const char* init = 0) { IupMatrixSetDynamic(ih, init); }
+    void SetDynamic(const char* init = 0) { IupMatrixSetDynamic(ih, init); }
   };
   class MatrixList : public Control
   {
@@ -730,24 +741,28 @@ namespace Iup
   public:
     GLFrame(Control child) : Container(IupGLFrame(child.GetHandle())) {}
     GLFrame() : Container(IupGLFrame(0)) {}
+    GLFrame(const GLFrame& container) : Container(container.GetHandle()) {}
   };
   class GLExpander : public Container
   {
   public:
     GLExpander(Control child) : Container(IupGLExpander(child.GetHandle())) {}
     GLExpander() : Container(IupGLExpander(0)) {}
+    GLExpander(const GLExpander& container) : Container(container.GetHandle()) {}
   };
   class GLScrollBox : public Container
   {
   public:
     GLScrollBox(Control child) : Container(IupGLScrollBox(child.GetHandle())) {}
     GLScrollBox() : Container(IupGLScrollBox(0)) {}
+    GLScrollBox(const GLScrollBox& container) : Container(container.GetHandle()) {}
   };
   class GLSizeBox : public Container
   {
   public:
     GLSizeBox(Control child) : Container(IupGLSizeBox(child.GetHandle())) {}
     GLSizeBox() : Container(IupGLSizeBox(0)) {}
+    GLSizeBox(const GLSizeBox& container) : Container(container.GetHandle()) {}
   };
   class GLCanvasBox : public Container
   {
@@ -756,6 +771,7 @@ namespace Iup
     GLCanvasBox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0) 
       : Container(IupGLCanvasBox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     GLCanvasBox(const Control *child_array, int count) : Container(IupGLCanvasBox(0), child_array, count) {}
+    GLCanvasBox(const GLCanvasBox& container) : Container(container.GetHandle()) {}
   };
   class Plot : public Control
   {
@@ -768,7 +784,7 @@ namespace Iup
     void Add(double x, double y) { IupPlotAdd(ih, x, y); }
     void AddStr(const char* x, double y) { IupPlotAddStr(ih, x, y); }
     void AddSegment(double x, double y) { IupPlotAddSegment(ih, x, y); }
-    int End(Ihandle *ih) { return IupPlotEnd(ih); }
+    int End() { return IupPlotEnd(ih); }
 
     int LoadData(const char* filename, int strXdata) { return IupPlotLoadData(ih, filename, strXdata); }
 
@@ -904,11 +920,11 @@ namespace Iup
     int GetVariableIntIdDef(const char* group, const char* key, int id, int def) { return IupConfigGetVariableIntIdDef(ih, group, key, id, def); }
     double GetVariableDoubleIdDef(const char* group, const char* key, int id, double def) { return IupConfigGetVariableDoubleIdDef(ih, group, key, id, def); }
 
-    void RecentInit(Ihandle* menu, Icallback recent_cb, int max_recent) { IupConfigRecentInit(ih, menu, recent_cb, max_recent); }
+    void RecentInit(Menu menu, Icallback recent_cb, int max_recent) { IupConfigRecentInit(ih, menu.GetHandle(), recent_cb, max_recent); }
     void RecentUpdate(const char* filename) { IupConfigRecentUpdate(ih, filename); }
 
-    void DialogShow(Ihandle* dialog, const char* name) { IupConfigDialogShow(ih, dialog, name); }
-    void DialogClosed(Ihandle* dialog, const char* name) { IupConfigDialogClosed(ih, dialog, name); }
+    void DialogShow(Dialog dialog, const char* name) { IupConfigDialogShow(ih, dialog.GetHandle(), name); }
+    void DialogClosed(Dialog dialog, const char* name) { IupConfigDialogClosed(ih, dialog.GetHandle(), name); }
   };
 }
 
