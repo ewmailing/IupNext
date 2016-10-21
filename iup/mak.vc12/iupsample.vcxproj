@@ -136,11 +136,14 @@ cdim.lib;cd.lib
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\html\examples\CPP\alarm.cpp" />
+    <ClCompile Include="..\html\examples\CPP\backgroundbox.cpp" />
+    <ClCompile Include="..\html\examples\CPP\getcolor.cpp" />
+    <ClCompile Include="..\html\examples\CPP\message.cpp" />
     <ClCompile Include="..\html\examples\C\alarm.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\html\examples\C\alarm.cpp" />
     <ClCompile Include="..\html\examples\C\backgroundbox.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

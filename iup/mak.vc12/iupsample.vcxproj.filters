@@ -318,7 +318,16 @@
     <ClCompile Include="..\html\examples\C\plot.c">
       <Filter>C</Filter>
     </ClCompile>
-    <ClCompile Include="..\html\examples\C\alarm.cpp">
+    <ClCompile Include="..\html\examples\CPP\alarm.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\backgroundbox.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\message.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\getcolor.cpp">
       <Filter>CPP</Filter>
     </ClCompile>
   </ItemGroup>
