@@ -156,6 +156,13 @@ else
   SLIB += $(IUP_LIB)/libiup_mglplot.a
 endif
 
+SRC += scintilla.c
+ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  LIBS += iup_scintilla imm32
+else
+  SLIB += $(IUP_LIB)/libiup_scintilla.a
+endif
+
 USE_IM = Yes
 ifdef USE_IM
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )

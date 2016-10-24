@@ -81,6 +81,7 @@ void CharacTest(void);
 void LinkTest(void);
 void ExpanderTest(void);
 void CalendarTest(void);
+void ScintillaTest(void);
 
 
 void HelpTest(void)
@@ -159,6 +160,7 @@ static TestItems test_list[] = {
   {"ProgressDlg", ProgressDlgTest},
   {"Sample", SampleTest},
   {"Sbox", SboxTest},
+  { "Scintilla", ScintillaTest },
   {"ScrollBox", ScrollBoxTest},
   {"Split", SplitTest},
   {"Scanf", ScanfTest},
