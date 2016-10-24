@@ -363,6 +363,18 @@
     <ClCompile Include="..\html\examples\CPP\frame.cpp">
       <Filter>CPP</Filter>
     </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\listdialog.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\expander.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\radio.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\tabs.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua">
