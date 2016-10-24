@@ -524,21 +524,21 @@ namespace Iup
 
   class Vbox : public Container
   {
+    Vbox(const Vbox& box) : Container(box.GetHandle()) {}  /* to avoid hierarchy construction problems */
   public:
     Vbox() : Container(IupVbox(0)) {}
     Vbox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupVbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Vbox(const Control *child_array, int count) : Container(IupVbox(0), child_array, count) {}
-    Vbox(const Vbox& box) : Container(box.GetHandle()) {}
   };
   class Hbox : public Container
   {
+    Hbox(const Hbox& box) : Container(box.GetHandle()) {}  /* to avoid hierarchy construction problems */
   public:
     Hbox() : Container(IupHbox(0)) {}
     Hbox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupHbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Hbox(const Control *child_array, int count) : Container(IupHbox(0), child_array, count) {}
-    Hbox(const Hbox& box) : Container(box.GetHandle()) {}
   };
   class Zbox : public Container
   {
