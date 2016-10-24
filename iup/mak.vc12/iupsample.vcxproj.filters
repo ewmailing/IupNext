@@ -354,6 +354,15 @@
     <ClCompile Include="..\html\examples\CPP\dialog2.cpp">
       <Filter>CPP</Filter>
     </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\timer.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\ole_browser.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\html\examples\CPP\frame.cpp">
+      <Filter>CPP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua">

@@ -283,6 +283,7 @@ namespace Iup
       : Container(IupMenu(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Menu(const Control *child_array, int count) : Container(IupMenu(0), child_array, count) {}
     Menu(const Menu& menu) : Container(menu.GetHandle()) {}
+    Menu(Ihandle* _ih) : Container(_ih) {}
 
     int Popup(int x, int y) { return IupPopup(ih, x, y); }
   };
@@ -293,6 +294,7 @@ namespace Iup
   public:
     Image(const char* filename) : Element(IupLoadImage(filename)) {}
     Image(const im::Image& image) : Element(IupImageFromImImage(image.GetHandle())) {}
+    Image(Ihandle* _ih) : Element(_ih) {}
 
     int Save(const char* filename, const char* im_format) { return IupSaveImage(ih, filename, im_format); }
     int SaveAsText(const char* filename, const char* iup_format, const char* name) { return IupSaveImageAsText(ih, filename, iup_format, name); }
@@ -301,6 +303,7 @@ namespace Iup
   {
   public:
     Clipboard() : Element(IupClipboard()) {}
+    Clipboard(Ihandle* _ih) : Element(_ih) {}
 
     void SetImage(const im::Image& image) { SetUserData("NATIVEIMAGE", IupGetImageNativeHandle(image.GetHandle())); }
 
@@ -311,31 +314,37 @@ namespace Iup
   {
   public:
     User() : Element(IupUser()) {}
+    User(Ihandle* _ih) : Element(_ih) {}
   };
   class Param : public Element
   {
   public:
     Param(const char* format) : Element(IupParam(format)) {}
+    Param(Ihandle* _ih) : Element(_ih) {}
   };
   class Timer : public Element
   {
   public:
     Timer() : Element(IupTimer()) {}
+    Timer(Ihandle* _ih) : Element(_ih) {}
   };
   class MenuSeparator : public Control
   {
   public:
     MenuSeparator() : Control(IupSeparator()) {}
+    MenuSeparator(Ihandle* _ih) : Control(_ih) {}
   };
   class MenuItem : public Control
   {
   public:
     MenuItem(const char* title = 0) : Control(IupItem(title, 0)) {}
+    MenuItem(Ihandle* _ih) : Control(_ih) {}
   };
   class Canvas : public Control
   {
   public:
     Canvas() : Control(IupCanvas(0)) {}
+    Canvas(Ihandle* _ih) : Control(_ih) {}
 
     void DrawBegin() { IupDrawBegin(ih); }
     void DrawEnd() { IupDrawEnd(ih); }
@@ -358,48 +367,57 @@ namespace Iup
   {
   public:
     Link(const char* url = 0, const char* title = 0) : Control(IupLink(url, title)) {}
+    Link(Ihandle* _ih) : Control(_ih) {}
   };
   class Label : public Control
   {
   public:
     Label(const char* title = 0) : Control(IupLabel(title)) {}
+    Label(Ihandle* _ih) : Control(_ih) {}
   };
 
   class Button : public Control
   {
   public:
     Button(const char* title = 0) : Control(IupButton(title, 0)) {}
+    Button(Ihandle* _ih) : Control(_ih) {}
   };
   class FlatButton : public Control
   {
   public:
     FlatButton(const char* title = 0) : Control(IupFlatButton(title)) {}
+    FlatButton(Ihandle* _ih) : Control(_ih) {}
   };
   class AnimatedLabel : public Control
   {
   public:
     AnimatedLabel(Element animation = (Ihandle*)0) : Control(IupAnimatedLabel(animation.GetHandle())) {}
+    AnimatedLabel(Ihandle* _ih) : Control(_ih) {}
   };
   class Toggle : public Control
   {
   public:
     Toggle(const char* title = 0) : Control(IupToggle(title, 0)) {}
+    Toggle(Ihandle* _ih) : Control(_ih) {}
   };
   class Fill: public Control
   {
   public:
     Fill() : Control(IupFill()) {}
+    Fill(Ihandle* _ih) : Control(_ih) {}
   };
   class Spin: public Control
   {
   public:
     Spin() : Control(IupSpin()) {}
+    Spin(Ihandle* _ih) : Control(_ih) {}
   };
   class Tree: public Control
   {
   public:
     Tree() : Control(IupTree()) {}
-    
+    Tree(Ihandle* _ih) : Control(_ih) {}
+
     int SetUserId(int id, void* userid) { return IupTreeSetUserId(ih, id, userid); }
     void* GetUserId(int id) { return IupTreeGetUserId(ih, id); }
     int GetId(void *userid) { return IupTreeGetId(ih, userid); }
@@ -408,21 +426,25 @@ namespace Iup
   {
   public:
     Val(const char* orientation = 0) : Control(IupVal(orientation)) {}
+    Val(Ihandle* _ih) : Control(_ih) {}
   };
   class ProgressBar: public Control
   {
   public:
     ProgressBar() : Control(IupProgressBar()) {}
+    ProgressBar(Ihandle* _ih) : Control(_ih) {}
   };
   class List: public Control
   {
   public:
     List() : Control(IupList(0)) {}
+    List(Ihandle* _ih) : Control(_ih) {}
   };
   class Text : public Control
   {
   public:
     Text() : Control(IupText(0)) {}
+    Text(Ihandle* _ih) : Control(_ih) {}
   };
 
   class Split : public Container
@@ -432,6 +454,7 @@ namespace Iup
     Split(Control child) : Container(IupSplit(child.GetHandle(), 0)) {}
     Split(Control child1, Control child2) : Container(IupSplit(child1.GetHandle(), child2.GetHandle())) {}
     Split(const Split& split) : Container(split.GetHandle()) {}
+    Split(Ihandle* _ih) : Container(_ih) {}
   };
   class Submenu : public Container
   {
@@ -439,6 +462,7 @@ namespace Iup
     Submenu(const char* title = 0) : Container(IupSubmenu(title, 0)) {}
     Submenu(const char* title, Control child) : Container(IupSubmenu(title, child.GetHandle())) {}
     Submenu(const Submenu& container) : Container(container.GetHandle()) {}
+    Submenu(Ihandle* _ih) : Container(_ih) {}
   };
   class Radio : public Container
   {
@@ -446,6 +470,7 @@ namespace Iup
     Radio() : Container(IupRadio(0)) {}
     Radio(Control child) : Container(IupRadio(child.GetHandle())) {}
     Radio(const Radio& container) : Container(container.GetHandle()) {}
+    Radio(Ihandle* _ih) : Container(_ih) {}
   };
   class Sbox : public Container
   {
@@ -453,6 +478,7 @@ namespace Iup
     Sbox() : Container(IupSbox(0)) {}
     Sbox(Control child) : Container(IupSbox(child.GetHandle())) {}
     Sbox(const Sbox& container) : Container(container.GetHandle()) {}
+    Sbox(Ihandle* _ih) : Container(_ih) {}
   };
   class ScrollBox : public Container
   {
@@ -460,6 +486,7 @@ namespace Iup
     ScrollBox() : Container(IupScrollBox(0)) {}
     ScrollBox(Control child) : Container(IupScrollBox(child.GetHandle())) {}
     ScrollBox(const ScrollBox& container) : Container(container.GetHandle()) {}
+    ScrollBox(Ihandle* _ih) : Container(_ih) {}
   };
   class Expander : public Container
   {
@@ -467,6 +494,7 @@ namespace Iup
     Expander(const Expander& container) : Container(container.GetHandle()) {}
     Expander() : Container(IupExpander(0)) {}
     Expander(Control child) : Container(IupExpander(child.GetHandle())) {}
+    Expander(Ihandle* _ih) : Container(_ih) {}
   };
   class DetachBox : public Container
   {
@@ -474,6 +502,7 @@ namespace Iup
     DetachBox(const DetachBox& container) : Container(container.GetHandle()) {}
     DetachBox() : Container(IupDetachBox(0)) {}
     DetachBox(Control child) : Container(IupDetachBox(child.GetHandle())) {}
+    DetachBox(Ihandle* _ih) : Container(_ih) {}
   };
   class BackgroundBox : public Container
   {
@@ -481,6 +510,7 @@ namespace Iup
     BackgroundBox() : Container(IupBackgroundBox(0)) {}
     BackgroundBox(Control child) : Container(IupBackgroundBox(child.GetHandle())) {}
     BackgroundBox(const BackgroundBox& container) : Container(container.GetHandle()) {}
+    BackgroundBox(Ihandle* _ih) : Container(_ih) {}
 
     void DrawBegin() { IupDrawBegin(ih); }
     void DrawEnd() { IupDrawEnd(ih); }
@@ -506,6 +536,7 @@ namespace Iup
     Frame() : Container(IupFrame(0)) {}
     Frame(Control child) : Container(IupFrame(child.GetHandle())) {}
     Frame(const Frame& container) : Container(container.GetHandle()) {}
+    Frame(Ihandle* _ih) : Container(_ih) {}
   };
   class FlatFrame : public Container
   {
@@ -513,6 +544,7 @@ namespace Iup
     FlatFrame() : Container(IupFlatFrame(0)) {}
     FlatFrame(Control child) : Container(IupFlatFrame(child.GetHandle())) {}
     FlatFrame(const FlatFrame& container) : Container(container.GetHandle()) {}
+    FlatFrame(Ihandle* _ih) : Container(_ih) {}
   };
   class Spinbox : public Container
   {
@@ -520,6 +552,7 @@ namespace Iup
     Spinbox() : Container(IupSpinbox(0)) {}
     Spinbox(Control child) : Container(IupSpinbox(child.GetHandle())) {}
     Spinbox(const Spinbox& container) : Container(container.GetHandle()) {}
+    Spinbox(Ihandle* _ih) : Container(_ih) {}
   };
 
   class Vbox : public Container
@@ -530,6 +563,7 @@ namespace Iup
     Vbox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupVbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Vbox(const Control *child_array, int count) : Container(IupVbox(0), child_array, count) {}
+    Vbox(Ihandle* _ih) : Container(_ih) {}
   };
   class Hbox : public Container
   {
@@ -539,6 +573,7 @@ namespace Iup
     Hbox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
       : Container(IupHbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Hbox(const Control *child_array, int count) : Container(IupHbox(0), child_array, count) {}
+    Hbox(Ihandle* _ih) : Container(_ih) {}
   };
   class Zbox : public Container
   {
@@ -548,6 +583,7 @@ namespace Iup
       : Container(IupZbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Zbox(const Control *child_array, int count) : Container(IupZbox(0), child_array, count) {}
     Zbox(const Zbox& box) : Container(box.GetHandle()) {}
+    Zbox(Ihandle* _ih) : Container(_ih) {}
   };
   class Cbox : public Container
   {
@@ -557,6 +593,7 @@ namespace Iup
       : Container(IupCbox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Cbox(const Control *child_array, int count) : Container(IupCbox(0), child_array, count) {}
     Cbox(const Cbox& box) : Container(box.GetHandle()) {}
+    Cbox(Ihandle* _ih) : Container(_ih) {}
   };
   class Tabs : public Container
   {
@@ -566,6 +603,7 @@ namespace Iup
       : Container(IupTabs(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Tabs(const Control *child_array, int count) : Container(IupTabs(0), child_array, count) {}
     Tabs(const Tabs& tabs) : Container(tabs.GetHandle()) {}
+    Tabs(Ihandle* _ih) : Container(_ih) {}
   };
   class GridBox : public Container
   {
@@ -575,6 +613,7 @@ namespace Iup
       : Container(IupGridBox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     GridBox(const Control *child_array, int count) : Container(IupGridBox(0), child_array, count) {}
     GridBox(const GridBox& box) : Container(box.GetHandle()) {}
+    GridBox(Ihandle* _ih) : Container(_ih) {}
   };
   class ParamBox : public Container
   {
@@ -584,6 +623,7 @@ namespace Iup
       : Container(IupParamBox(child0.GetHandle(), child1.GetHandle(), child2.GetHandle(), child3.GetHandle(), child4.GetHandle(), child5.GetHandle(), child6.GetHandle(), child7.GetHandle(), child8.GetHandle(), child9.GetHandle(), 0)) {}
     ParamBox(const Control *child_array, int count) : Container(IupParamBox(0), child_array, count) {}
     ParamBox(const ParamBox& box) : Container(box.GetHandle()) {}
+    ParamBox(Ihandle* _ih) : Container(_ih) {}
   };
   class Normalizer : public Container
   {
@@ -593,6 +633,7 @@ namespace Iup
       : Container(IupNormalizer(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     Normalizer(const Control *child_array, int count) : Container(IupNormalizer(0), child_array, count) {}
     Normalizer(const Normalizer& elem) : Container(elem.GetHandle()) {}
+    Normalizer(Ihandle* _ih) : Container(_ih) {}
   };
 
 
@@ -625,6 +666,7 @@ namespace Iup
   {
   public:
     GLCanvas() : Control(IupGLCanvas(0)) {}
+    GLCanvas(Ihandle* _ih) : Control(_ih) {}
 
     static void Open() { IupGLCanvasOpen(); }
 
@@ -642,6 +684,7 @@ namespace Iup
     GLBackgroundBox() : Container(IupGLBackgroundBox(0)) {}
     GLBackgroundBox(Control child) : Container(IupGLBackgroundBox(child.GetHandle())) {}
     GLBackgroundBox(const GLBackgroundBox& container) : Container(container.GetHandle()) {}
+    GLBackgroundBox(Ihandle* _ih) : Container(_ih) {}
   };
 
   class Controls
@@ -653,31 +696,37 @@ namespace Iup
   {
   public:
     Dial(const char* orientation = 0) : Control(IupDial(orientation)) {}
+    Dial(Ihandle* _ih) : Control(_ih) {}
   };
   class Gauge : public Control
   {
   public:
     Gauge() : Control(IupGauge()) {}
+    Gauge(Ihandle* _ih) : Control(_ih) {}
   };
   class ColorBrowser : public Control
   {
   public:
     ColorBrowser() : Control(IupColorBrowser()) {}
+    ColorBrowser(Ihandle* _ih) : Control(_ih) {}
   };
   class Cells : public Control
   {
   public:
     Cells() : Control(IupCells()) {}
+    Cells(Ihandle* _ih) : Control(_ih) {}
   };
   class Colorbar : public Control
   {
   public:
     Colorbar() : Control(IupColorbar()) {}
+    Colorbar(Ihandle* _ih) : Control(_ih) {}
   };
   class Matrix : public Control
   {
   public:
     Matrix() : Control(IupMatrix(0)) {}
+    Matrix(Ihandle* _ih) : Control(_ih) {}
 
     void SetFormula(int col, const char* formula, const char* init = 0) { IupMatrixSetFormula(ih, col, formula, init); }
     void SetDynamic(const char* init = 0) { IupMatrixSetDynamic(ih, init); }
@@ -686,11 +735,13 @@ namespace Iup
   {
   public:
     MatrixList() : Control(IupMatrixList()) {}
+    MatrixList(Ihandle* _ih) : Control(_ih) {}
   };
   class MatrixEx : public Control
   {
   public:
     MatrixEx() : Control(IupMatrixEx()) {}
+    MatrixEx(Ihandle* _ih) : Control(_ih) {}
 
     static void Open() { IupMatrixExOpen(); }
   };
@@ -703,41 +754,49 @@ namespace Iup
   {
   public:
     GLSubCanvas() : Control(IupGLSubCanvas()) {}
+    GLSubCanvas(Ihandle* _ih) : Control(_ih) {}
   };
   class GLSeparator : public Control
   {
   public:
     GLSeparator() : Control(IupGLSeparator()) {}
+    GLSeparator(Ihandle* _ih) : Control(_ih) {}
   };
   class GLProgressBar : public Control
   {
   public:
     GLProgressBar() : Control(IupGLProgressBar()) {}
+    GLProgressBar(Ihandle* _ih) : Control(_ih) {}
   };
   class GLVal : public Control
   {
   public:
     GLVal() : Control(IupGLVal()) {}
+    GLVal(Ihandle* _ih) : Control(_ih) {}
   };
   class GLLabel : public Control
   {
   public:
     GLLabel(const char* title = 0) : Control(IupGLLabel(title)) {}
+    GLLabel(Ihandle* _ih) : Control(_ih) {}
   };
   class GLButton : public Control
   {
   public:
     GLButton(const char* title = 0) : Control(IupGLButton(title)) {}
+    GLButton(Ihandle* _ih) : Control(_ih) {}
   };
   class GLToggle : public Control
   {
   public:
     GLToggle(const char* title = 0) : Control(IupGLToggle(title)) {}
+    GLToggle(Ihandle* _ih) : Control(_ih) {}
   };
   class GLLink : public Control
   {
   public:
     GLLink(const char *url = 0, const char* title = 0) : Control(IupGLLink(url, title)) {}
+    GLLink(Ihandle* _ih) : Control(_ih) {}
   };
   class GLFrame : public Container
   {
@@ -745,6 +804,7 @@ namespace Iup
     GLFrame(Control child) : Container(IupGLFrame(child.GetHandle())) {}
     GLFrame() : Container(IupGLFrame(0)) {}
     GLFrame(const GLFrame& container) : Container(container.GetHandle()) {}
+    GLFrame(Ihandle* _ih) : Container(_ih) {}
   };
   class GLExpander : public Container
   {
@@ -752,6 +812,7 @@ namespace Iup
     GLExpander(Control child) : Container(IupGLExpander(child.GetHandle())) {}
     GLExpander() : Container(IupGLExpander(0)) {}
     GLExpander(const GLExpander& container) : Container(container.GetHandle()) {}
+    GLExpander(Ihandle* _ih) : Container(_ih) {}
   };
   class GLScrollBox : public Container
   {
@@ -759,6 +820,7 @@ namespace Iup
     GLScrollBox(Control child) : Container(IupGLScrollBox(child.GetHandle())) {}
     GLScrollBox() : Container(IupGLScrollBox(0)) {}
     GLScrollBox(const GLScrollBox& container) : Container(container.GetHandle()) {}
+    GLScrollBox(Ihandle* _ih) : Container(_ih) {}
   };
   class GLSizeBox : public Container
   {
@@ -766,6 +828,7 @@ namespace Iup
     GLSizeBox(Control child) : Container(IupGLSizeBox(child.GetHandle())) {}
     GLSizeBox() : Container(IupGLSizeBox(0)) {}
     GLSizeBox(const GLSizeBox& container) : Container(container.GetHandle()) {}
+    GLSizeBox(Ihandle* _ih) : Container(_ih) {}
   };
   class GLCanvasBox : public Container
   {
@@ -775,11 +838,13 @@ namespace Iup
       : Container(IupGLCanvasBox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
     GLCanvasBox(const Control *child_array, int count) : Container(IupGLCanvasBox(0), child_array, count) {}
     GLCanvasBox(const GLCanvasBox& container) : Container(container.GetHandle()) {}
+    GLCanvasBox(Ihandle* _ih) : Container(_ih) {}
   };
   class Plot : public Control
   {
   public:
     Plot() : Control(IupPlot()) {}
+    Plot(Ihandle* _ih) : Control(_ih) {}
 
     static void Open() { IupPlotOpen(); }
 
@@ -825,6 +890,7 @@ namespace Iup
   {
   public:
     MglPlot() : Control(IupMglPlot()) {}
+    MglPlot(Ihandle* _ih) : Control(_ih) {}
 
     static void Open() { IupMglPlotOpen(); }
 
@@ -864,11 +930,13 @@ namespace Iup
   {
   public:
     MglLabel(const char* title) : Control(IupMglLabel(title)) {}
+    MglLabel(Ihandle* _ih) : Control(_ih) {}
   };
   class OleControl : public Control
   {
   public:
     OleControl(const char* progid) : Control(IupOleControl(progid)) {}
+    OleControl(Ihandle* _ih) : Control(_ih) {}
 
     static void Open() { IupOleControlOpen(); }
   };
@@ -876,6 +944,7 @@ namespace Iup
   {
   public:
     WebBrowser() : Control(IupWebBrowser()) {}
+    WebBrowser(Ihandle* _ih) : Control(_ih) {}
 
     static void Open() { IupWebBrowserOpen(); }
   };
@@ -883,6 +952,7 @@ namespace Iup
   {
   public:
     Scintilla(): Control(IupScintilla()) {}
+    Scintilla(Ihandle* _ih) : Control(_ih) {}
 
     static void Open() { IupScintillaOpen(); }
   };
@@ -890,6 +960,7 @@ namespace Iup
   {
   public:
     TuioClient(int port) : Element(IupTuioClient(port)) {}
+    TuioClient(Ihandle* _ih) : Element(_ih) {}
 
     static void Open() { IupTuioOpen(); }
   };
@@ -898,6 +969,7 @@ namespace Iup
   {
   public:
     Config(): Element(IupConfig()) { }
+    Config(Ihandle* _ih) : Element(_ih) {}
 
     int LoadConfig() { return IupConfigLoad(ih); }
     int SaveConfig() { return IupConfigSave(ih); }
