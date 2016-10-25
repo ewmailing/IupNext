@@ -7,7 +7,7 @@ int main(int argc, char **argv)
   Iup::Open(argc, argv);
   Iup::SetLanguage("ENGLISH");
   
-  Iup::FileDialog filedlg;
+  Iup::FileDlg filedlg;
  
   filedlg.SetAttributes("DIALOGTYPE = SAVE, TITLE = \"File Save\"");
   filedlg.SetAttributes("FILTER = \"*.bmp\", FILTERINFO = \"Bitmap Files\"");
