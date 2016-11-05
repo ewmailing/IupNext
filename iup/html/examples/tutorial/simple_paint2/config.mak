@@ -50,11 +50,11 @@ endif
 
 ifdef USE_OPENGL
   DEFINES = USE_OPENGL
+  LINK_FTGL = Yes
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-    LIBS += iupgl cdgl ftgl
+    LIBS += iupgl cdgl
   else
     SLIB += $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupgl.a \
-            $(CD)/lib/$(TEC_UNAME)$(SFX)/libcdgl.a \
-            $(CD)/lib/$(TEC_UNAME)$(SFX)/libftgl.a
+            $(CD)/lib/$(TEC_UNAME)$(SFX)/libcdgl.a
   endif
 endif
