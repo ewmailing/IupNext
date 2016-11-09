@@ -448,6 +448,27 @@ as <a href="../call/iup_button_cb.html">BUTTON_CB</a> and <a href="../call/iup_m
 <p><strong>ih</strong>: identifier of the element that activated the event.</p>
 </blockquote>
 
+  
+<p><b><a name="FOCUS_CB">FOCUS_CB</a></b>: Called when the dialog or any of its 
+children gets the focus, or when another dialog or any control in another dialog 
+gets the focus. It is called 
+  after the common callbacks GETFOCUS_CB and KILL_FOCUS_CB. (since 3.21)</p>
+
+  
+    
+<pre>int function(Ihandle *<b>ih</b>, int <b>focus</b>); [in C]<br><b>ih</b>:focus_cb(<b>focus</b>: number) -&gt; (ret: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+    <strong>focus</strong>: is non zero if the dialog or any of its children is getting the focus, is zero 
+    if it is loosing the focus.</p>
+
+  
+
+  
 <p><strong>MDIACTIVATE_CB</strong>
   [Windows Only]: Called when a MDI child window is activated. Only the MDI 
 child receive this message. It is not called when the child is shown for the 

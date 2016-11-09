@@ -163,6 +163,12 @@ static int valuechanged_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
+static int focus_cb(Ihandle *ih, int focus)
+{
+  printf("FOCUS_CB(%s, %d)\n", IupGetClassName(ih), focus);
+  return IUP_DEFAULT;
+}
+
 static int getfocus_cb(Ihandle *ih)
 {
   printf("GETFOCUS_CB(%s)\n", IupGetClassName(ih));
@@ -261,8 +267,8 @@ static Ihandle* set_callbacks(Ihandle* ih)
 {
   IupSetCallback(ih, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
 
-//  IupSetCallback(ih, "GETFOCUS_CB", (Icallback)getfocus_cb);
-//  IupSetCallback(ih, "KILLFOCUS_CB", (Icallback)killfocus_cb);
+  IupSetCallback(ih, "GETFOCUS_CB", (Icallback)getfocus_cb);
+  IupSetCallback(ih, "KILLFOCUS_CB", (Icallback)killfocus_cb);
 
 //  IupSetCallback(ih, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
 //  IupSetCallback(ih, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
@@ -681,6 +687,7 @@ void SampleTest(void)
 //  IupSetAttribute(dlg,"COMPOSITED","YES");   /* Windows Only */
 //  IupSetAttribute(dlg, "OPACITY", "192");
 //  IupSetAttribute(dlg, "RESIZE", "NO");
+  IupSetCallback(dlg, "FOCUS_CB", (Icallback)focus_cb);
 
 #if 0
   {
