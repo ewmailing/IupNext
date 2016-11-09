@@ -19,6 +19,7 @@
 
 enum iupPlotMode { IUP_PLOT_LINE, IUP_PLOT_MARK, IUP_PLOT_MARKLINE, IUP_PLOT_AREA, IUP_PLOT_BAR, IUP_PLOT_STEM, IUP_PLOT_MARKSTEM, IUP_PLOT_HORIZONTALBAR, IUP_PLOT_MULTIBAR, IUP_PLOT_STEP, IUP_PLOT_ERRORBAR, IUP_PLOT_PIECHART };
 enum iupPlotLegendPosition { IUP_PLOT_TOPRIGHT, IUP_PLOT_TOPLEFT, IUP_PLOT_BOTTOMRIGHT, IUP_PLOT_BOTTOMLEFT, IUP_PLOT_BOTTOMCENTER, IUP_PLOT_XY };
+enum iupPlotSliceLabel { IUP_PLOT_NONE, IUP_PLOT_X, IUP_PLOT_Y, IUP_PLOT_PERCENT };
 
 const double kFloatSmall = 1e-20;
 const double kLogMinClipValue = 1e-10;  // pragmatism to avoid problems with small values in log plot
@@ -211,7 +212,8 @@ public:
   bool FindSample(double inX, double inY, double tolX, double tolY,
                   int &outSampleIndex, double &outX, double &outY) const;
 
-  void DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih) const;
+  void DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataPieChart(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih, const iupPlotAxis& inAxisY, long inBackColor) const;
 
   int GetCount();
   void AddSample(double inX, double inY);
@@ -235,6 +237,7 @@ public:
   const iupPlotDataBool* GetSelection() const { return mSelection; }
   const iupPlotDataBool* GetSegment() const { return mSegment; }
   const iupPlotDataReal* GetExtra() const { return mExtra; }
+  int* iupPlotDataSet::GetSortedDataIndex() const;
 
   bool SelectSamples(double inMinX, double inMaxX, double inMinY, double inMaxY, const iupPlotSampleNotify* inNotify);
   bool ClearSelection(const iupPlotSampleNotify* inNotify);
@@ -244,6 +247,7 @@ public:
   iupPlotMode mMode;
   int mLineStyle;
   int mLineWidth;
+  char mAreaTransparency;
   int mMarkStyle;
   int mMarkSize;
   int mMultibarIndex;
@@ -251,6 +255,11 @@ public:
   long mBarOutlineColor;
   bool mBarShowOutline;
   int mBarSpacingPercent;
+  double mPieRadius;
+  double mPieStartAngle;
+  bool mPieContour;
+  double mPieHoleRadius;
+  iupPlotSliceLabel mPieSliceLabel;
   void* mUserData;
 
 protected:
@@ -275,10 +284,8 @@ protected:
   void DrawDataMultiBar(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
   void DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
   void DrawDataStep(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
-  void DrawDataPieChart(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih) const;
 
   void DrawErrorBar(const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, int index, double theY, double theScreenX) const;
-
   void SetSampleExtraMarkSize(const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, int inSampleIndex) const;
 };
 
@@ -386,7 +393,7 @@ public:
   iupPlotAxis(int inDefaultFontStyle, int inDefaultFontSize)
     : mShow(true), mMin(0), mMax(0), mAutoScaleMin(true), mAutoScaleMax(true),
       mReverse(false), mLogScale(false), mCrossOrigin(false), mColor(CD_BLACK),
-      mMaxDecades(-1), mLogBase(10), mLabelCentered(false), mHasZoom(false),
+      mMaxDecades(-1), mLogBase(10), mLabelCentered(true), mHasZoom(false),
       mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1), mLabelSpacing(-1),
       mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize), 
       mTrafo(NULL), mTickIter(NULL), mDefaultFontStyle(inDefaultFontStyle)
@@ -412,6 +419,8 @@ public:
   bool Pan(double inOffset);
   bool Scroll(double inDelta, bool inFullPage);
   bool ScrollTo(double inMin);
+
+  void SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const;
 
   bool mShow;
   long mColor;
@@ -445,8 +454,6 @@ public:
 
 protected:
   char* mLabel;
-
-  void SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const;
 
   bool DrawXTick(double inX, double inScreenY, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;
   bool DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;

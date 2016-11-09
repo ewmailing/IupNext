@@ -417,6 +417,8 @@ sample values converted to strings using <a href="#AXS_XTIPFORMAT">AXS_XTIPFORMA
 accordingly. (since 3.13)</p>
 <p><strong>VIEWPORTSQUARE</strong>: force the plot area to be a square. (since 
 3.14)</p>
+<p><strong>ZOOM</strong> (write-only): controls the zoom in a simple way. Can be 
+set to "+" (zoom in), "-" (zoom out), or "0" (reset). (since 3.21)</p>
 <hr class="auto-style4">
 <p class="info">All color attributes accept an 
 extra component for alpha. The default alpha is always 255 (opaque). </p>
@@ -564,14 +566,15 @@ it is used as the new default. If all defaults are in use then black is used "0 
 0".</p>
 <p><strong>DS_COUNT</strong>: returns the number of samples of the current 
 dataset.</p>
-<p><b>DS_MODE</b>: drawing mode of the current dataset. Can be: "LINE", "MARK", "MARKLINE", 
-"AREA", 
-"BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP", "ERRORBAR". Default: "LINE". When BAR modes 
-are set, <b>AXS_XDISCRETE</b> or <b>AXS_YDISCRETE </b> is 
-also set. (STEM to STEP since 3.18)</p>
-<p class="info">ERRORBAR depends on the "Extra" value to be set (see
+<p><b>DS_MODE</b>: drawing mode of the current dataset. Can be: "LINE", "MARK", 
+"MARKLINE", "AREA", "BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", 
+"STEP", "ERRORBAR", "PIECHART". Default: "LINE". (STEM to ERRORBAR since 3.18) 
+(PIECHART since 3.21)</p>
+<p class="info">ERRORBAR mode depends on the "Extra" value to be set (see
 <a href="#IupPlotSetSampleExtra">IupPlotSetSampleExtra</a>). This extra value is 
-the "error" of each sample. </p>
+the "error" of each sample. <br>When BAR, HORIZONTALBAR and MULTIBAR modes are 
+set, <b>AXS_XDISCRETE</b> or <b>AXS_YDISCRETE </b> is also set.<br>When PIECHART 
+mode is set only the first dataset is drawn.</p>
 <p><b>DS_LINESTYLE</b>: line style of the current dataset. Can be: &quot;CONTINUOUS&quot;, 
 &quot;DASHED&quot;, &quot;DOTTED&quot;, &quot;DASH_DOT&quot;, &quot;DASH_DOT_DOT&quot;. Default is &quot;CONTINUOUS&quot;.</p>
 <p><b>DS_LINEWIDTH</b>: line width of the current dataset. Default: 1.</p>
@@ -591,10 +594,20 @@ is BAR, HORIZONTALBAR or MULTIBAR. Can be 0 to 100. Default: 10. (since 3.18)</p
 <p><b>DS_REMOVE</b> (write-only): removes a sample from the current dataset given its index.</p>
 <p><strong>DS_USERDATA</strong>: user data associated with the dataset. (since 
 3.13)</p>
+<p><strong>DS_AREATRANSPARENCY</strong>: transparency for the AREA mode. It will 
+be added to the dataset color. Can be 0 (fully transparent) to 255 (opaque). Used only for AREA mode. 
+When different then 255 a line with dataset line attributes and using the 
+regular dataset color will be drawn as an outline of the area. Default: 255. (since 3.21)</p>
+<p><strong>DS_PIERADIUS</strong>: Used only for PIECHART mode. (since 3.21)</p>
+<p><strong>DS_PIESTARTANGLE</strong>: Used only for PIECHART mode. (since 3.21)</p>
+<p><strong>DS_PIECONTOUR</strong>: Used only for PIECHART mode. (since 3.21)</p>
+<p><strong>DS_PIEHOLE</strong>: Used only for PIECHART mode. (since 3.21)</p>
+<p><strong>DS_PIEHOLERADIUS</strong>: Used only for PIECHART mode. (since 3.21)</p>
+<p><strong>DS_PIESLICELABEL</strong>: Used only for PIECHART mode. (since 3.21)</p>
 <h4>Axis Configuration&nbsp; </h4>
 <p><b>AXS_SCALEEQUAL</b>: force the auto scale to use a single minimum and 
 maximum values for X and Y. It will combine AXS_XMAX/AXS_XMIN with 
-AXS_XMAX/AXS_XMIN to obtain s single minimum and maximum values. (since 3.14) It 
+AXS_XMAX/AXS_XMIN to obtain a single minimum and maximum values. (since 3.14) It 
 does not need that automatic scaling is enabled (since 3.16).</p>
 <p><b>AXS_X, AXS_Y</b>: enable or disable the axis display. Can be YES or NO. 
 Default: YES.</p>

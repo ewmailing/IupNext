@@ -44,6 +44,7 @@ void iupPlotRegisterAttributes(Iclass* ic);
 void iupPlotUpdateViewports(Ihandle* ih);
 void iupPlotRedraw(Ihandle* ih, int flush, int only_current, int reset_redraw);
 void iupPlotResetZoom(Ihandle *ih, int redraw);
+void iupPlotSetZoom(Ihandle *ih, int dir);
 
 void iupPlotSetPlotCurrent(Ihandle* ih, int p);
 void iupPlotShowMenuContext(Ihandle* ih, int screen_x, int screen_y, int x, int y);

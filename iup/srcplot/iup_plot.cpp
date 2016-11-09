@@ -850,7 +850,7 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
   strcpy(color, ds_color);
 
   const char* ds_mode = IupGetAttribute(ih, "DS_MODE");
-  const char* mode_list[] = { "LINE", "MARK", "MARKLINE", "AREA", "BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP", "ERRORBAR", NULL };
+  const char* mode_list[] = { "LINE", "MARK", "MARKLINE", "AREA", "BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP", "ERRORBAR", "PIECHART", NULL };
   int mode = iPlotGetListIndex(mode_list, ds_mode);
 
   const char* ds_linestyle = IupGetAttribute(ih, "DS_LINESTYLE");
@@ -872,6 +872,8 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
 
   int barSpacing = IupGetInt(ih, "DS_BARSPACING");
 
+  int areaTransparency = IupGetInt(ih, "DS_AREATRANSPARENCY");
+
   char format[1024] =
     "_@IUP_NAME%s\n"
     "_@IUP_COLOR%c\n"
@@ -882,10 +884,19 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
     "_@IUP_MARKSIZE%i[1,,]\n"
     "_@IUP_BARSPACING%i[0,100]\n"
     "_@IUP_BAROUTLINE%b[false,true]\n"
-    "_@IUP_BAROUTLINECOLOR%c\n";
+    "_@IUP_BAROUTLINECOLOR%c\n"
+    "_@IUP_AREATRANSPARENCY%i[0,255]\n";
+
+/*  TODO 
+  DS_PIERADIUS
+  DS_PIESTARTANGLE
+  DS_PIECONTOUR
+  DS_PIEHOLERADIUS
+  DS_PIESLICELABEL
+*/
 
   if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", NULL, NULL, format, 
-                   name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize, &barSpacing, &barOutline, barOutlineColor, NULL))
+                   name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize, &barSpacing, &barOutline, barOutlineColor, &areaTransparency, NULL))
     return IUP_DEFAULT;
 
   IupSetStrAttribute(ih, "DS_NAME", name);
@@ -912,6 +923,8 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
   IupSetInt(ih, "DS_BARSPACING", barSpacing);
 
   IupSetStrAttribute(ih, "DS_BAROUTLINECOLOR", barOutlineColor);
+
+  IupSetInt(ih, "DS_AREATRANSPARENCY", areaTransparency);
 
   IupSetAttribute(ih, "REDRAW", NULL);
 
@@ -1207,6 +1220,24 @@ static void iPlotZoom(Ihandle *ih, int x, int y, float delta)
   }
 
   iPlotRedrawInteract(ih);
+}
+
+void iupPlotSetZoom(Ihandle *ih, int dir)
+{
+  if (dir > 0)
+  {
+    int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth / 2;
+    int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight / 2;
+    iPlotZoom(ih, x, y, 1);
+  }
+  else if (dir < 0)
+  {
+    int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth / 2;
+    int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight / 2;
+    iPlotZoom(ih, x, y, -1);
+  }
+  else
+    iupPlotResetZoom(ih, 1);
 }
 
 static void iPlotZoomTo(Ihandle *ih, int x1, int y1, int x2, int y2)

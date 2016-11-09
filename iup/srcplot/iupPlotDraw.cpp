@@ -9,6 +9,7 @@
 #include "iup_image.h"
 
 
+
 static inline void iPlotSetLine(cdCanvas* canvas, int inLineStyle, int inLineWidth)
 {
   cdCanvasLineStyle(canvas, inLineStyle);
@@ -271,6 +272,7 @@ bool iupPlotAxis::DrawXTick(double inX, double inScreenY, bool inMajor, const ch
       iupStrPrintfDoubleLocale(theBuf, inFormatString, inX, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
 
       double theScreenY = inScreenY - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
+      // SetFont called in DrawX
       if (mTick.mRotateNumber)
         iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, CD_EAST, theBuf);
       else
@@ -396,6 +398,7 @@ bool iupPlotAxis::DrawYTick(double inY, double inScreenX, bool inMajor, const ch
       iupStrPrintfDoubleLocale(theBuf, inFormatString, inY, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
 
       double theScreenX = inScreenX - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
+      // SetFont called in DrawX
       if (mTick.mRotateNumber)
         iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, CD_SOUTH, theBuf);
       else
@@ -533,6 +536,7 @@ void iupPlot::DrawTitle(cdCanvas* canvas) const
 
 void iupPlot::DrawBackground(cdCanvas* canvas) const
 {
+  cdCanvasOrigin(canvas, 0, 0);
   cdCanvasClip(canvas, CD_CLIPOFF);
   cdCanvasSetForeground(canvas, mBack.mColor);
   cdCanvasBox(canvas, mViewportBack.mX, mViewportBack.mX + mViewportBack.mWidth - 1, mViewportBack.mY, mViewportBack.mY + mViewportBack.mHeight - 1);
@@ -540,6 +544,7 @@ void iupPlot::DrawBackground(cdCanvas* canvas) const
 
 void iupPlot::DrawInactive(cdCanvas* canvas) const
 {
+  cdCanvasOrigin(canvas, 0, 0);
   cdCanvasClip(canvas, CD_CLIPOFF);
   long inactive_color = cdEncodeAlpha(CD_GRAY, 96);
   cdCanvasSetForeground(canvas, inactive_color);
@@ -653,7 +658,7 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRec
 
     // Clip to the legend box
     cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1,
-                     theScreenY, theScreenY + theTotalHeight - 1);
+                             theScreenY, theScreenY + theTotalHeight - 1);
 
     if (mLegend.mBoxShow)
     {
@@ -697,16 +702,14 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRec
 
 int iupStrToColor(const char* str, long *color);
 
-static long iPlotGetChartColorTable(Ihandle* ih, int index)
+static long iPlotGetChartColorTable(Ihandle* ih, int index, int sorted_index)
 {
   char* value = IupGetAttributeId(ih, "SAMPLECOLOR", index);
   long color;
   if (iupStrToColor(value, &color))
-    return color;                          
+    return color;
 
-  //TODO-CAMILO: extra index for sorted values (por ultimo)
-
-  switch (index % 24)
+  switch (sorted_index % 24)
   {
   case 0: return cdEncodeColor(255, 0, 0);
   case 1: return cdEncodeColor(0, 255, 0);
@@ -743,7 +746,7 @@ bool iupPlot::DrawChartLegend(iupPlotDataSet *dataset, const iupPlotRect &inRect
   {
     int theFontHeight;
 
-    //SetFont(canvas, mLegend.mFontStyle, mLegend.mFontSize);
+    SetFont(canvas, mLegend.mFontStyle, mLegend.mFontSize);
     cdCanvasGetFontDim(canvas, NULL, &theFontHeight, NULL, NULL);
 
     int theMargin = theFontHeight / 2;
@@ -751,7 +754,7 @@ bool iupPlot::DrawChartLegend(iupPlotDataSet *dataset, const iupPlotRect &inRect
       theMargin = 0;
     int theCount = dataset->GetCount();
     int theTotalHeight = theCount*theFontHeight + 2 * theMargin;
-    int theLineSpace = 20;
+    int theLineSpace = theFontHeight/2 + 3;
 
     int theWidth, theMaxWidth = 0;
     for (int i = 0; i < theCount; i++)
@@ -771,21 +774,50 @@ bool iupPlot::DrawChartLegend(iupPlotDataSet *dataset, const iupPlotRect &inRect
 
     int theScreenX, theScreenY;
 
-    theScreenX = inRect.mX;
-    theScreenY = inRect.mY;
+    if (mLegend.mPosition == IUP_PLOT_XY)
+    {
+      theScreenX = ioPos.mX;
+      theScreenY = cdCanvasInvertYAxis(canvas, ioPos.mY);
+    }
+    else
+    {
+      theScreenX = inRect.mX;
+      theScreenY = inRect.mY;
 
-    theScreenX += 2;
-    theScreenY += inRect.mHeight - theTotalHeight - 2;
+      switch (mLegend.mPosition)
+      {
+      case IUP_PLOT_TOPLEFT:
+        theScreenX += 2;
+        theScreenY += inRect.mHeight - theTotalHeight - 2;
+        break;
+      case IUP_PLOT_BOTTOMLEFT:
+        theScreenX += 2;
+        theScreenY += 2;
+        break;
+      case IUP_PLOT_BOTTOMRIGHT:
+        theScreenX += inRect.mWidth - theMaxWidth - 2;
+        theScreenY += 2;
+        break;
+      case IUP_PLOT_BOTTOMCENTER:
+        theScreenX += (inRect.mWidth - theMaxWidth) / 2;
+        theScreenY = theFontHeight / 4;
+        break;
+      default: // IUP_PLOT_TOPRIGHT
+        theScreenX += inRect.mWidth - theMaxWidth - 2;
+        theScreenY += inRect.mHeight - theTotalHeight - 2;
+        break;
+      }
 
-    ioPos.mX = theScreenX;
-    ioPos.mY = cdCanvasInvertYAxis(canvas, theScreenY);
+      ioPos.mX = theScreenX;
+      ioPos.mY = cdCanvasInvertYAxis(canvas, theScreenY);
+    }
 
     ioPos.mWidth = theMaxWidth;
     ioPos.mHeight = theTotalHeight;
 
     // Clip to the legend box
     cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1,
-                     theScreenY, theScreenY + theTotalHeight - 1);
+                             theScreenY, theScreenY + theTotalHeight - 1);
 
     if (mLegend.mBoxShow)
     {
@@ -796,24 +828,24 @@ bool iupPlot::DrawChartLegend(iupPlotDataSet *dataset, const iupPlotRect &inRect
       iPlotSetLine(canvas, mLegend.mBoxLineStyle, mLegend.mBoxLineWidth);
       iPlotDrawRect(canvas, theScreenX, theScreenY, theMaxWidth, theTotalHeight);
     }
+    
+    int *sortedIndex = dataset->GetSortedDataIndex();
 
     for (int i = 0; i < theCount; i++)
     {
-      cdCanvasSetForeground(canvas, iPlotGetChartColorTable(ih, i));
+      cdCanvasSetForeground(canvas, iPlotGetChartColorTable(ih, i, sortedIndex[i]));
 
       int theLegendX = theScreenX + theMargin;
       int theLegendY = theScreenY + (theCount - 1 - i)*theFontHeight + theMargin;
 
-      theLegendY += theFontHeight / 2;
+      int boxSize = theLineSpace - 3;
 
-      //TODO-CAMILO: desenhar pequenos box em vez de linha
+      cdCanvasBox(canvas, theLegendX, theLegendX + boxSize, theLegendY, theLegendY + boxSize);
 
-      iPlotSetLine(canvas, dataset->mLineStyle, dataset->mLineWidth * 3);
-      cdCanvasLine(canvas, theLegendX, theLegendY - theFontHeight / 8,
-                   theLegendX + theLineSpace - 3, theLegendY - theFontHeight / 8);
-
-      iPlotDrawText(canvas, theLegendX + theLineSpace, theLegendY, CD_WEST, ((iupPlotDataString *)dataset->GetDataX())->GetSampleString(i));
+      iPlotDrawText(canvas, theLegendX + theLineSpace, theLegendY + boxSize/2, CD_WEST, ((iupPlotDataString *)dataset->GetDataX())->GetSampleString(i));
     }
+
+    delete[] sortedIndex;
   }
 
   return true;
@@ -852,7 +884,7 @@ void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlo
       cdfCanvasMark(canvas, theScreenX, theScreenY);
     }
 
-    if (mSegment && mSegment->GetSampleBool(i))
+    if (i > 0 && mSegment && mSegment->GetSampleBool(i))
     {
       cdCanvasEnd(canvas);
       cdCanvasBegin(canvas, CD_OPEN_LINES);
@@ -938,8 +970,12 @@ void iupPlotDataSet::DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlo
 {
   int theCount = mDataX->GetCount();
   cdCanvasBegin(canvas, CD_FILL);
+
   double theScreenY0 = inTrafoY->Transform(0);
-  double theLastX = 0;
+  double theLastScreenX = 0;
+
+  if (mAreaTransparency != 255)
+    cdCanvasSetForeground(canvas, cdEncodeAlpha(mColor, mAreaTransparency));
 
   for (int i = 0; i < theCount; i++)
   {
@@ -954,9 +990,9 @@ void iupPlotDataSet::DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlo
     if (i == 0)
       cdfCanvasVertex(canvas, theScreenX, theScreenY0);
 
-    if (mSegment && mSegment->GetSampleBool(i))
+    if (i > 0 && mSegment && mSegment->GetSampleBool(i))
     {
-      cdfCanvasVertex(canvas, theLastX, theScreenY0);
+      cdfCanvasVertex(canvas, theLastScreenX, theScreenY0);
       cdfCanvasVertex(canvas, theScreenX, theScreenY0);
     }
 
@@ -965,10 +1001,35 @@ void iupPlotDataSet::DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlo
     if (i == theCount - 1)
       cdfCanvasVertex(canvas, theScreenX, theScreenY0);
 
-    theLastX = theScreenX;
+    theLastScreenX = theScreenX;
   }
 
   cdCanvasEnd(canvas);
+
+  if (mAreaTransparency != 255)
+  {
+    cdCanvasSetForeground(canvas, mColor);
+
+    cdCanvasBegin(canvas, CD_OPEN_LINES);
+
+    for (int i = 0; i < theCount; i++)
+    {
+      double theX = mDataX->GetSample(i);
+      double theY = mDataY->GetSample(i);
+      double theScreenX = inTrafoX->Transform(theX);
+      double theScreenY = inTrafoY->Transform(theY);
+
+      if (i > 0 && mSegment && mSegment->GetSampleBool(i))
+      {
+        cdCanvasEnd(canvas);
+        cdCanvasBegin(canvas, CD_OPEN_LINES);
+      }
+
+      cdfCanvasVertex(canvas, theScreenX, theScreenY);
+    }
+
+    cdCanvasEnd(canvas);
+  }
 }
 
 void iupPlotDataSet::DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
@@ -1001,9 +1062,9 @@ void iupPlotDataSet::DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlot
 
     if (mBarShowOutline)
     {
-      long oldColor = cdCanvasForeground(canvas, mBarOutlineColor);
+      cdCanvasSetForeground(canvas, mBarOutlineColor);
       iPlotDrawRect(canvas, theBarX, theScreenY0, theBarWidth, theBarHeight);
-      cdCanvasForeground(canvas, oldColor);
+      cdCanvasSetForeground(canvas, mColor);
     }
   }
 }
@@ -1074,7 +1135,7 @@ void iupPlotDataSet::DrawDataStep(const iupPlotTrafoBase *inTrafoX, const iupPlo
 {
   int theCount = mDataX->GetCount();
   cdCanvasBegin(canvas, CD_OPEN_LINES);
-  double thePreviousScreenX = 0.;
+  double theLastScreenX = 0.;
 
   for (int i = 0; i < theCount; i++)
   {
@@ -1086,81 +1147,200 @@ void iupPlotDataSet::DrawDataStep(const iupPlotTrafoBase *inTrafoX, const iupPlo
     if (inNotify)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
-    if (mSegment && mSegment->GetSampleBool(i))
+    if (i > 0 && mSegment && mSegment->GetSampleBool(i))
     {
       cdCanvasEnd(canvas);
       cdCanvasBegin(canvas, CD_OPEN_LINES);
     }
 
     if (i > 0)
-      cdfCanvasVertex(canvas, thePreviousScreenX, theScreenY);
+      cdfCanvasVertex(canvas, theLastScreenX, theScreenY);
 
     cdfCanvasVertex(canvas, theScreenX, theScreenY);
 
-    thePreviousScreenX = theScreenX;
+    theLastScreenX = theScreenX;
   }
 
   cdCanvasEnd(canvas);
 }
 
-void iupPlotDataSet::DrawDataPieChart(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih) const
+struct IsortedData
 {
-  double x, y, w, h;
+  double value;
+  int index;
+};
+
+static int valueComparator(const void *elem1, const void *elem2)
+{
+  IsortedData *f = (IsortedData *)elem1;
+  IsortedData *s = (IsortedData *)elem2;
+  if (f->value > s->value) return -1; /* descending */
+  if (f->value < s->value) return 1;
+  if (f->value == s->value)
+  {
+    if (f->index > s->index) return -1; /* descending */
+    if (f->index < s->index) return 1;
+  }
+  return 0;
+}
+
+int* iupPlotDataSet::GetSortedDataIndex() const
+{
+  int i, theCount = mDataX->GetCount();
+  IsortedData *sortedData = new IsortedData[theCount];
+
+  for (i = 0; i < theCount; i++)
+  {
+    sortedData[i].value = mDataY->GetSample(i);
+    sortedData[i].index = i;
+  }
+
+  // sort descending by value (biggest values first)
+  qsort(sortedData, theCount, sizeof(IsortedData), valueComparator);
+
+  int *sortedIndex = new int[theCount];
+
+  for (i = 0; i < theCount; i++)
+  {
+    sortedIndex[sortedData[i].index] = i;
+  }
+
+  delete[] sortedData;
+
+  return sortedIndex;
+}
+
+void iupPlotDataSet::DrawDataPieChart(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih, const iupPlotAxis& inAxisY, long inBackColor) const
+{
+  int theXCount = mDataX->GetCount();
+  int theYCount = mDataY->GetCount();
+
+  if ((theXCount == 0) || (theYCount == 0))
+    return;
+
+  if (theXCount != theYCount)
+    return;
+
+  double xc, yc, w, h;
 
   int theCount = mDataX->GetCount();
   double sum = 0;
 
+  int* sortedIndex = GetSortedDataIndex();
+
   for (int i = 0; i < theCount; i++)
     sum += mDataY->GetSample(i);
 
-  x = 0;
-  y = 0;
+  xc = 0;
+  yc = 0;
+  xc = inTrafoX->Transform(xc);
+  yc = inTrafoY->Transform(yc);
 
-  w = 1.;
-  h = 1.;
-
-  x = inTrafoX->Transform(x);
-  y = inTrafoY->Transform(y);
+  w = 2.0 * mPieRadius;
+  h = 2.0 * mPieRadius;
   w *= ((iupPlotTrafoLinear *)inTrafoX)->mSlope;
   h *= ((iupPlotTrafoLinear *)inTrafoY)->mSlope;
 
-  double startAngle = 0.;
-  double endAngle = 0.;
+  double startAngle = mPieStartAngle;
 
-  int interiorStyle = cdCanvasInteriorStyle(canvas, CD_QUERY);
+  if (mPieContour)
+    iPlotSetLine(canvas, mLineStyle, mLineWidth);
+
+  double spacing = inAxisY.mLabelSpacing;
+
+  if (mPieSliceLabel != IUP_PLOT_NONE)
+  {
+    inAxisY.SetFont(canvas, inAxisY.mFontStyle, inAxisY.mFontSize);
+
+    if (inAxisY.mLabelSpacing == -1)
+    {
+      int theXFontHeight;
+      cdCanvasGetFontDim(canvas, NULL, &theXFontHeight, NULL, NULL);
+      spacing = theXFontHeight / 10;  // default spacing
+    }
+  }
 
   for (int i = 0; i < theCount; i++)
   {
     double theX = mDataX->GetSample(i);
     double theY = mDataY->GetSample(i);
 
-    //TODO-CAMILO: STARTANGLE
-
-    endAngle = (theY*360.) / sum;
+    double angle = (theY*360.) / sum;
 
     if (inNotify)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
-    cdCanvasInteriorStyle(canvas, CD_SOLID);
+    cdCanvasForeground(canvas, iPlotGetChartColorTable(ih, i, sortedIndex[i]));
 
-    cdCanvasForeground(canvas, iPlotGetChartColorTable(ih, i));
+    cdfCanvasSector(canvas, xc, yc, w, h, startAngle, startAngle + angle);
 
-    //TODO-CAMILO: PIECONTOUR
+    if (mPieContour)
+    {
+      cdCanvasSetForeground(canvas, mColor);
 
-    cdfCanvasSector(canvas, x, y, w, h, startAngle, startAngle + endAngle);
+      cdCanvasInteriorStyle(canvas, CD_HOLLOW);
+      cdfCanvasSector(canvas, xc, yc, w, h, startAngle, startAngle + angle);
+      cdCanvasInteriorStyle(canvas, CD_SOLID);
+    }
 
-    cdCanvasInteriorStyle(canvas, CD_HOLLOW);
+    if (mPieSliceLabel != IUP_PLOT_NONE)
+    {
+      double bisectrix = (startAngle + startAngle + angle) / 2;
 
-    cdfCanvasSector(canvas, x, y, w, h, startAngle, startAngle + endAngle);
+      double px = xc + (((w / 2.)*spacing) * cos(bisectrix * CD_DEG2RAD));
+      double py = yc + (((h / 2.)*spacing) * sin(bisectrix * CD_DEG2RAD));
 
-    //TODO-CAMILO: SHOWSLICETEXT (%, value, label (X), None)
+      cdCanvasSetForeground(canvas, inAxisY.mColor);
 
-    startAngle += endAngle;
+      char theBuf[128];
+      switch (mPieSliceLabel)
+      {
+      case IUP_PLOT_X:
+        if (mDataX->IsString())
+          iPlotDrawText(canvas, px, py, CD_CENTER, ((iupPlotDataString *)mDataX)->GetSampleString(i));
+        else
+        {
+          sprintf(theBuf, "%d", (int)theX);
+          iPlotDrawText(canvas, px, py, CD_CENTER, theBuf);
+        }
+        break;
+      case IUP_PLOT_Y:
+        iupStrPrintfDoubleLocale(theBuf, inAxisY.mTick.mFormatString, theY, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
+        iPlotDrawText(canvas, px, py, CD_CENTER, theBuf);
+        break;
+      case IUP_PLOT_PERCENT:
+        double percent = (theY*100.) / sum;
+        iupStrPrintfDoubleLocale(theBuf, inAxisY.mTick.mFormatString, percent, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
+        iPlotDrawText(canvas, px, py, CD_CENTER, theBuf);
+        break;
+      }
+    }
+
+    startAngle += angle;
   }
 
-  //TODO-CAMILO: PIEHOLE
+  if (mPieHoleRadius > 0)
+  {
+    double hw = mPieHoleRadius;
+    double hh = mPieHoleRadius;
+    hw *= ((iupPlotTrafoLinear *)inTrafoX)->mSlope;
+    hh *= ((iupPlotTrafoLinear *)inTrafoY)->mSlope;
 
-  cdCanvasInteriorStyle(canvas, interiorStyle);
+    cdCanvasForeground(canvas, inBackColor);
+
+    cdfCanvasSector(canvas, xc, yc, hw, hh, 0., 360.);
+
+    if (mPieContour)
+    {
+      cdCanvasForeground(canvas, mColor);
+
+      cdCanvasInteriorStyle(canvas, CD_HOLLOW);
+      cdfCanvasSector(canvas, xc, yc, hw, hh, 0., 360.);
+      cdCanvasInteriorStyle(canvas, CD_SOLID);
+    }
+  }
+
+  delete[] sortedIndex;
 }
 
 void iupPlotDataSet::DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
@@ -1196,7 +1376,7 @@ void iupPlotDataSet::DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPl
   }
 }
 
-void iupPlotDataSet::DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih) const
+void iupPlotDataSet::DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
 {
   int theXCount = mDataX->GetCount();
   int theYCount = mDataY->GetCount();
@@ -1234,8 +1414,7 @@ void iupPlotDataSet::DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTra
   case IUP_PLOT_BAR:
     DrawDataBar(inTrafoX, inTrafoY, canvas, inNotify);
     break;
-  case IUP_PLOT_PIECHART:
-    DrawDataPieChart(inTrafoX, inTrafoY, canvas, inNotify, ih);
+  case IUP_PLOT_PIECHART: /* handled outside DrawData */
     break;
   case IUP_PLOT_HORIZONTALBAR:
     DrawDataHorizontalBar(inTrafoX, inTrafoY, canvas, inNotify);

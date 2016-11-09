@@ -159,8 +159,10 @@ bool iupPlotDataBool::CalculateRange(double &outMin, double &outMax) const
 
 
 iupPlotDataSet::iupPlotDataSet(bool strXdata)
-  :mColor(CD_BLACK), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mMarkStyle(CD_X), mMarkSize(7),
-  mMultibarIndex(-1), mMultibarCount(0), mBarOutlineColor(0), mBarShowOutline(false), mBarSpacingPercent(10), mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false)
+:mColor(CD_BLACK), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mAreaTransparency(255), mMarkStyle(CD_X), mMarkSize(7),
+  mMultibarIndex(-1), mMultibarCount(0), mBarOutlineColor(0), mBarShowOutline(false), mBarSpacingPercent(10),
+  mPieStartAngle(0.), mPieRadius(0.9), mPieContour(false), mPieHoleRadius(0),
+  mPieSliceLabel(IUP_PLOT_NONE), mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false)
 {
   if (strXdata)
     mDataX = (iupPlotDataBase*)(new iupPlotDataString());
@@ -780,14 +782,14 @@ iupPlot::iupPlot(Ihandle* _ih, int inDefaultFontStyle, int inDefaultFontSize)
   mAxisX(inDefaultFontStyle, inDefaultFontSize), mAxisY(inDefaultFontStyle, inDefaultFontSize),
   mCrossHairX(0), mCrossHairY(0), mShowSelectionBand(false), mDataSetListMax(20)
 {
-  mDataSetList = (iupPlotDataSet**)malloc(sizeof(iupPlotDataSet*) * mDataSetListMax);
+  mDataSetList = (iupPlotDataSet**)malloc(sizeof(iupPlotDataSet*) * mDataSetListMax); /* use malloc because we will use realloc */
   memset(mDataSetList, 0, sizeof(iupPlotDataSet*) * mDataSetListMax);
 }
 
 iupPlot::~iupPlot()
 {
   RemoveAllDataSets();
-  free(mDataSetList);
+  free(mDataSetList);  /* use free because we used malloc */
 }
 
 void iupPlot::SetViewport(int x, int y, int w, int h)
@@ -1251,17 +1253,20 @@ bool iupPlot::Render(cdCanvas* canvas)
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
-
-    if (piechart_dataset && dataset != piechart_dataset)
-      continue;
-
+    iupPlotSampleNotify localNotify = { ih, ds, drawsample_cb };
+    iupPlotSampleNotify* inNotify = NULL;
     if (drawsample_cb)
+      inNotify = &localNotify;
+
+    if (piechart_dataset)
     {
-      iupPlotSampleNotify inNotify = { ih, ds, drawsample_cb };
-      dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, &inNotify, ih);
+      if (dataset != piechart_dataset)
+        continue;
+      else
+        dataset->DrawDataPieChart(mAxisX.mTrafo, mAxisY.mTrafo, canvas, inNotify, ih, mAxisY, mBack.mColor);
     }
-    else
-      dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, NULL, ih);
+
+    dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, inNotify);
   }
 
   if (mCrossHairH)
