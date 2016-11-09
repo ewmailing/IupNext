@@ -777,6 +777,29 @@ static int iDialogSetHideTaskbarAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
+static int iDialogSetSimulateModalAttrib(Ihandle *ih, const char *value)
+{
+  Ihandle *ih_dlg;
+
+  int sim_modal = iupStrBoolean(value);
+
+  /* disable all visible dialogs different than this one */
+  for (ih_dlg = iupDlgListFirst(); ih_dlg; ih_dlg = iupDlgListNext())
+  {
+    if (ih_dlg != ih &&
+        ih_dlg->handle &&
+        iupdrvDialogIsVisible(ih_dlg))
+    {
+      if (sim_modal)
+        iupdrvSetActive(ih_dlg, 0);
+      else
+        iupdrvSetActive(ih_dlg, 1);
+    }
+  }
+
+  return 0;
+}
+
 static int iDialogSetDialogFrameAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
@@ -955,6 +978,8 @@ Iclass* iupDialogNewClass(void)
   iupClassRegisterAttribute(ic, "STARTFOCUS",   NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MODAL",        NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PLACEMENT",    NULL, NULL, "NORMAL", NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "SIMULATEMODAL", NULL, iDialogSetSimulateModalAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "NATIVEPARENT", NULL, NULL, NULL, NULL, IUPAF_NO_STRING);
 
