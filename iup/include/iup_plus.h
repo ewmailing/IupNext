@@ -179,8 +179,8 @@ namespace Iup
 
   };
 
-  Icallback GetFunction(const char *name) { return IupGetFunction(name); }
-  Icallback SetFunction(const char *name, Icallback func) { return IupSetFunction(name, func); }
+  inline Icallback GetFunction(const char *name) { return IupGetFunction(name); }
+  inline Icallback SetFunction(const char *name, Icallback func) { return IupSetFunction(name, func); }
   inline Element GetHandle(const char *name) { return Element(IupGetHandle(name)); }
   inline Element SetHandle(const char *name, const Element& elem) { return Element(IupSetHandle(name, elem.GetHandle())); }
   inline void SetLanguagePack(const Element& elem) { IupSetLanguagePack(elem.GetHandle()); }
