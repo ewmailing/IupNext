@@ -891,7 +891,7 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
   DS_PIERADIUS
   DS_PIESTARTANGLE
   DS_PIECONTOUR
-  DS_PIEHOLERADIUS
+  DS_PIEHOLE
   DS_PIESLICELABEL
 */
 

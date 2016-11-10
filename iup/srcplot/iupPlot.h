@@ -247,7 +247,7 @@ public:
   iupPlotMode mMode;
   int mLineStyle;
   int mLineWidth;
-  char mAreaTransparency;
+  unsigned char mAreaTransparency;
   int mMarkStyle;
   int mMarkSize;
   int mMultibarIndex;
@@ -258,7 +258,7 @@ public:
   double mPieRadius;
   double mPieStartAngle;
   bool mPieContour;
-  double mPieHoleRadius;
+  double mPieHole;
   iupPlotSliceLabel mPieSliceLabel;
   void* mUserData;
 

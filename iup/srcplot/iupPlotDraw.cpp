@@ -1319,10 +1319,10 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
     startAngle += angle;
   }
 
-  if (mPieHoleRadius > 0)
+  if (mPieHole > 0)
   {
-    double hw = mPieHoleRadius;
-    double hh = mPieHoleRadius;
+    double hw = mPieHole * mPieRadius;
+    double hh = mPieHole * mPieRadius;
     hw *= ((iupPlotTrafoLinear *)inTrafoX)->mSlope;
     hh *= ((iupPlotTrafoLinear *)inTrafoY)->mSlope;
 

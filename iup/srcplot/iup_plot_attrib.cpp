@@ -1465,7 +1465,7 @@ static int iPlotSetDSAreaTransparencyAttrib(Ihandle* ih, const char* value)
   if (iupStrToInt(value, &ii))
   {
     iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
-    dataset->mAreaTransparency = (char)ii;
+    dataset->mAreaTransparency = (unsigned char)ii;
     ih->data->current_plot->mRedraw = true;
   }
   return 0;
@@ -1860,7 +1860,7 @@ static char* iPlotGetDSPieStartAngleAttrib(Ihandle* ih)
   return iupStrReturnDouble(dataset->mPieStartAngle);
 }
 
-static int iPlotSetDSPieHoleRadiusAttrib(Ihandle* ih, const char* value)
+static int iPlotSetDSPieHoleAttrib(Ihandle* ih, const char* value)
 {
   double ii;
 
@@ -1870,21 +1870,23 @@ static int iPlotSetDSPieHoleRadiusAttrib(Ihandle* ih, const char* value)
 
   if (iupStrToDouble(value, &ii))
   {
+    if (ii < 0) ii = 0;
+    if (ii > 1) ii = 1;
     iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
-    dataset->mPieHoleRadius = ii;
+    dataset->mPieHole = ii;
     ih->data->current_plot->mRedraw = true;
   }
   return 0;
 }
 
-static char* iPlotGetDSPieHoleRadiusAttrib(Ihandle* ih)
+static char* iPlotGetDSPieHoleAttrib(Ihandle* ih)
 {
   if (ih->data->current_plot->mCurrentDataSet < 0 ||
       ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
       return NULL;
 
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
-  return iupStrReturnDouble(dataset->mPieHoleRadius);
+  return iupStrReturnDouble(dataset->mPieHole);
 }
 
 static int iPlotSetDSPieContourAttrib(Ihandle* ih, const char* value)
@@ -3389,7 +3391,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "DS_PIERADIUS", iPlotGetDSPieRadiusAttrib, iPlotSetDSPieRadiusAttrib, IUPAF_SAMEASSYSTEM, "0.9", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_PIESTARTANGLE", iPlotGetDSPieStartAngleAttrib, iPlotSetDSPieStartAngleAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_PIECONTOUR", iPlotGetDSPieContourAttrib, iPlotSetDSPieContourAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_PIEHOLERADIUS", iPlotGetDSPieHoleRadiusAttrib, iPlotSetDSPieHoleRadiusAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_PIEHOLE", iPlotGetDSPieHoleAttrib, iPlotSetDSPieHoleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_PIESLICELABEL", iPlotGetDSPieSliceLabelAttrib, iPlotSetDSPieSliceLabelAttrib, IUPAF_SAMEASSYSTEM, "NONE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "VIEWPORTSQUARE", iPlotGetViewportSquareAttrib, iPlotSetViewportSquareAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
