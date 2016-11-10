@@ -458,7 +458,7 @@ static void InitPlots(void)
 
   /************************************************************************/
   /* PLOT 11 */
-  IupSetAttribute(plot[11], "TITLE", "Pie Chart");
+  IupSetAttribute(plot[11], "TITLE", "Pie");
   //  IupSetAttribute(plot[3], "TITLEFONTSIZE", "16");
   //IupSetAttribute(plot[3], "MARGINTOP", "40");
   //IupSetAttribute(plot[3], "MARGINLEFT", "30");
@@ -484,7 +484,7 @@ static void InitPlots(void)
   //IupSetAttribute(plot[11], "AXS_YLABELSPACING", "8");
   //IupSetAttribute(plot[11], "AXS_YCOLOR", "0 0 0");
   IupSetAttribute(plot[11], "DS_COLOR", "100 100 200"); // contour and hole color
-  IupSetAttribute(plot[11], "DS_MODE", "PIECHART");
+  IupSetAttribute(plot[11], "DS_MODE", "PIE");
 
   IupSetAttribute(plot[11], "VIEWPORTSQUARE", "Yes");
 

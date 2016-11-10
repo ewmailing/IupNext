@@ -702,7 +702,7 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRec
 
 int iupStrToColor(const char* str, long *color);
 
-static long iPlotGetChartColorTable(Ihandle* ih, int index, int sorted_index)
+static long iPlotGetSampleColorTable(Ihandle* ih, int index, int sorted_index)
 {
   char* value = IupGetAttributeId(ih, "SAMPLECOLOR", index);
   long color;
@@ -740,7 +740,7 @@ static long iPlotGetChartColorTable(Ihandle* ih, int index, int sorted_index)
   return 0;
 }
 
-bool iupPlot::DrawChartLegend(iupPlotDataSet *dataset, const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const
+bool iupPlot::DrawSampleColorLegend(iupPlotDataSet *dataset, const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const
 {
   if (mLegend.mShow)
   {
@@ -833,7 +833,7 @@ bool iupPlot::DrawChartLegend(iupPlotDataSet *dataset, const iupPlotRect &inRect
 
     for (int i = 0; i < theCount; i++)
     {
-      cdCanvasSetForeground(canvas, iPlotGetChartColorTable(ih, i, sortedIndex[i]));
+      cdCanvasSetForeground(canvas, iPlotGetSampleColorTable(ih, i, sortedIndex[i]));
 
       int theLegendX = theScreenX + theMargin;
       int theLegendY = theScreenY + (theCount - 1 - i)*theFontHeight + theMargin;
@@ -1210,7 +1210,7 @@ int* iupPlotDataSet::GetSortedDataIndex() const
   return sortedIndex;
 }
 
-void iupPlotDataSet::DrawDataPieChart(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih, const iupPlotAxis& inAxisY, long inBackColor) const
+void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih, const iupPlotAxis& inAxisY, long inBackColor) const
 {
   int theXCount = mDataX->GetCount();
   int theYCount = mDataY->GetCount();
@@ -1270,7 +1270,7 @@ void iupPlotDataSet::DrawDataPieChart(const iupPlotTrafoBase *inTrafoX, const iu
     if (inNotify)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
-    cdCanvasForeground(canvas, iPlotGetChartColorTable(ih, i, sortedIndex[i]));
+    cdCanvasForeground(canvas, iPlotGetSampleColorTable(ih, i, sortedIndex[i]));
 
     cdfCanvasSector(canvas, xc, yc, w, h, startAngle, startAngle + angle);
 
@@ -1414,7 +1414,7 @@ void iupPlotDataSet::DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTra
   case IUP_PLOT_BAR:
     DrawDataBar(inTrafoX, inTrafoY, canvas, inNotify);
     break;
-  case IUP_PLOT_PIECHART: /* handled outside DrawData */
+  case IUP_PLOT_PIE: /* handled outside DrawData */
     break;
   case IUP_PLOT_HORIZONTALBAR:
     DrawDataHorizontalBar(inTrafoX, inTrafoY, canvas, inNotify);

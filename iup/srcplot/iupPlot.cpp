@@ -1146,12 +1146,12 @@ void iupPlot::ConfigureAxis()
     mAxisX.mCrossOrigin = false;   // change at the other axis
 }
 
-iupPlotDataSet* iupPlot::HasPieChart()
+iupPlotDataSet* iupPlot::HasPie()
 {
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
-    if (dataset->mMode == IUP_PLOT_PIECHART)
+    if (dataset->mMode == IUP_PLOT_PIE)
       return dataset;
   }
   return NULL;
@@ -1248,7 +1248,7 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   IFniiddi drawsample_cb = (IFniiddi)IupGetCallback(ih, "DRAWSAMPLE_CB");
 
-  iupPlotDataSet* piechart_dataset = HasPieChart();
+  iupPlotDataSet* pie_dataset = HasPie();
 
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
@@ -1258,12 +1258,12 @@ bool iupPlot::Render(cdCanvas* canvas)
     if (drawsample_cb)
       inNotify = &localNotify;
 
-    if (piechart_dataset)
+    if (pie_dataset)
     {
-      if (dataset != piechart_dataset)
+      if (dataset != pie_dataset)
         continue;
       else
-        dataset->DrawDataPieChart(mAxisX.mTrafo, mAxisY.mTrafo, canvas, inNotify, ih, mAxisY, mBack.mColor);
+        dataset->DrawDataPie(mAxisX.mTrafo, mAxisY.mTrafo, canvas, inNotify, ih, mAxisY, mBack.mColor);
     }
 
     dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, inNotify);
@@ -1298,8 +1298,8 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (post_cb)
     post_cb(ih, canvas);
 
-  if (piechart_dataset)
-    DrawChartLegend(piechart_dataset, theDatasetArea, canvas, mLegend.mPos);
+  if (pie_dataset)
+    DrawSampleColorLegend(pie_dataset, theDatasetArea, canvas, mLegend.mPos);
   else if (!DrawLegend(theDatasetArea, canvas, mLegend.mPos))
     return false;
 

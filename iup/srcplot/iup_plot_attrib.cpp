@@ -1605,7 +1605,7 @@ static char* iPlotGetDSColorAttrib(Ihandle* ih)
   return iupStrReturnColor(dataset->mColor);
 }
 
-static void iPlotSetPieChartDefaults(Ihandle* ih)
+static void iPlotSetPieDefaults(Ihandle* ih)
 {
   IupSetAttribute(ih, "AXS_XAUTOMIN", "NO");
   IupSetAttribute(ih, "AXS_XAUTOMAX", "NO");
@@ -1617,10 +1617,10 @@ static void iPlotSetPieChartDefaults(Ihandle* ih)
   IupSetAttribute(ih, "AXS_YMAX", "1");
   IupSetAttribute(ih, "AXS_X", "NO");
   IupSetAttribute(ih, "AXS_Y", "NO");
-  iupAttribSet(ih, "_IUP_PIECHART_DEFAULTS", "1");
+  iupAttribSet(ih, "_IUP_PIE_DEFAULTS", "1");
 }
 
-static void iPlotResetPieChartDefaults(Ihandle* ih)
+static void iPlotResetPieDefaults(Ihandle* ih)
 {
   IupSetAttribute(ih, "AXS_XAUTOMIN", NULL);
   IupSetAttribute(ih, "AXS_XAUTOMAX", NULL);
@@ -1632,7 +1632,7 @@ static void iPlotResetPieChartDefaults(Ihandle* ih)
   IupSetAttribute(ih, "AXS_YMAX", NULL);
   IupSetAttribute(ih, "AXS_X", NULL);
   IupSetAttribute(ih, "AXS_Y", NULL);
-  iupAttribSet(ih, "_IUP_PIECHART_DEFAULTS", NULL);
+  iupAttribSet(ih, "_IUP_PIE_DEFAULTS", NULL);
 }
 
 static int iPlotSetDSModeAttrib(Ihandle* ih, const char* value)
@@ -1673,15 +1673,15 @@ static int iPlotSetDSModeAttrib(Ihandle* ih, const char* value)
     dataset->mMode = IUP_PLOT_STEP;
   else if (iupStrEqualNoCase(value, "ERRORBAR"))
     dataset->mMode = IUP_PLOT_ERRORBAR;
-  else if (iupStrEqualNoCase(value, "PIECHART"))
-    dataset->mMode = IUP_PLOT_PIECHART;
+  else if (iupStrEqualNoCase(value, "PIE"))
+    dataset->mMode = IUP_PLOT_PIE;
   else  /* LINE */
     dataset->mMode = IUP_PLOT_LINE;
 
-  if (dataset->mMode == IUP_PLOT_PIECHART && !iupAttribGet(ih, "_IUP_PIECHART_DEFAULTS"))
-    iPlotSetPieChartDefaults(ih);
-  if (dataset->mMode != IUP_PLOT_PIECHART && iupAttribGet(ih, "_IUP_PIECHART_DEFAULTS"))
-    iPlotResetPieChartDefaults(ih);
+  if (dataset->mMode == IUP_PLOT_PIE && !iupAttribGet(ih, "_IUP_PIE_DEFAULTS"))
+    iPlotSetPieDefaults(ih);
+  if (dataset->mMode != IUP_PLOT_PIE && iupAttribGet(ih, "_IUP_PIE_DEFAULTS"))
+    iPlotResetPieDefaults(ih);
 
   ih->data->current_plot->mRedraw = true;
   return 0;
@@ -1693,7 +1693,7 @@ static char* iPlotGetDSModeAttrib(Ihandle* ih)
       ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
       return NULL;
 
-  const char* mode_str[] = { "LINE", "MARK", "MARKLINE", "AREA", "BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP", "ERRORBAR", "PIECHART" };
+  const char* mode_str[] = { "LINE", "MARK", "MARKLINE", "AREA", "BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP", "ERRORBAR", "PIE" };
 
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
   return (char*)mode_str[dataset->mMode];

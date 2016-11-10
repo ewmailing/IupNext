@@ -850,7 +850,7 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
   strcpy(color, ds_color);
 
   const char* ds_mode = IupGetAttribute(ih, "DS_MODE");
-  const char* mode_list[] = { "LINE", "MARK", "MARKLINE", "AREA", "BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP", "ERRORBAR", "PIECHART", NULL };
+  const char* mode_list[] = { "LINE", "MARK", "MARKLINE", "AREA", "BAR", "STEM", "MARKSTEM", "HORIZONTALBAR", "MULTIBAR", "STEP", "ERRORBAR", "PIE", NULL };
   int mode = iPlotGetListIndex(mode_list, ds_mode);
 
   const char* ds_linestyle = IupGetAttribute(ih, "DS_LINESTYLE");

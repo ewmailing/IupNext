@@ -316,7 +316,7 @@ bool iupPlot::CalculateXRange(double &outXMin, double &outXMax)
 
     double theXMin;
     double theXMax;
-    if (mDataSetList[ds]->mMode == IUP_PLOT_PIECHART)
+    if (mDataSetList[ds]->mMode == IUP_PLOT_PIE)
     {
       theXMin = -1;
       theXMax = 1;
@@ -354,7 +354,7 @@ bool iupPlot::CalculateYRange(double &outYMin, double &outYMax)
 
     double theYMin;
     double theYMax;
-    if (mDataSetList[ds]->mMode == IUP_PLOT_PIECHART)
+    if (mDataSetList[ds]->mMode == IUP_PLOT_PIE)
     {
       theYMin = -1;
       theYMax = 1;
