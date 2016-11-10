@@ -237,7 +237,6 @@ public:
   const iupPlotDataBool* GetSelection() const { return mSelection; }
   const iupPlotDataBool* GetSegment() const { return mSegment; }
   const iupPlotDataReal* GetExtra() const { return mExtra; }
-  int* iupPlotDataSet::GetSortedDataIndex() const;
 
   bool SelectSamples(double inMinX, double inMaxX, double inMinY, double inMaxY, const iupPlotSampleNotify* inNotify);
   bool ClearSelection(const iupPlotSampleNotify* inNotify);
@@ -260,6 +259,7 @@ public:
   bool mPieContour;
   double mPieHole;
   iupPlotSliceLabel mPieSliceLabel;
+  double mPieSliceLabelPos;
   void* mUserData;
 
 protected:

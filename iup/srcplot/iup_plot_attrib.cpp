@@ -1944,6 +1944,33 @@ static char* iPlotGetDSPieSliceLabelAttrib(Ihandle* ih)
   return (char*)mode_str[dataset->mPieSliceLabel];
 }
 
+static char* iPlotGetDSPieSliceLabelPosAttrib(Ihandle* ih)
+{
+  if (ih->data->current_plot->mCurrentDataSet < 0 ||
+      ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
+      return NULL;
+
+  iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
+  return iupStrReturnDouble(dataset->mPieSliceLabelPos);
+}
+
+static int iPlotSetDSPieSliceLabelPosAttrib(Ihandle* ih, const char* value)
+{
+  double ii;
+
+  if (ih->data->current_plot->mCurrentDataSet < 0 ||
+      ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
+      return 0;
+
+  if (iupStrToDouble(value, &ii))
+  {
+    iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
+    dataset->mPieSliceLabelPos = ii;
+    ih->data->current_plot->mRedraw = true;
+  }
+  return 0;
+}
+
 
 /* ========== */
 /* axis props */
@@ -3388,11 +3415,12 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "DS_BAROUTLINE", iPlotGetDSBarOutlineAttrib, iPlotSetDSBarOutlineAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_BAROUTLINECOLOR", iPlotGetDSBarOutlineColorAttrib, iPlotSetDSBarOutlineColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_BARSPACING", iPlotGetDSBarSpacingAttrib, iPlotSetDSBarSpacingAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DS_PIERADIUS", iPlotGetDSPieRadiusAttrib, iPlotSetDSPieRadiusAttrib, IUPAF_SAMEASSYSTEM, "0.9", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_PIERADIUS", iPlotGetDSPieRadiusAttrib, iPlotSetDSPieRadiusAttrib, IUPAF_SAMEASSYSTEM, "0.95", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_PIESTARTANGLE", iPlotGetDSPieStartAngleAttrib, iPlotSetDSPieStartAngleAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_PIECONTOUR", iPlotGetDSPieContourAttrib, iPlotSetDSPieContourAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_PIEHOLE", iPlotGetDSPieHoleAttrib, iPlotSetDSPieHoleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_PIESLICELABEL", iPlotGetDSPieSliceLabelAttrib, iPlotSetDSPieSliceLabelAttrib, IUPAF_SAMEASSYSTEM, "NONE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_PIESLICELABELPOS", iPlotGetDSPieSliceLabelPosAttrib, iPlotSetDSPieSliceLabelPosAttrib, IUPAF_SAMEASSYSTEM, "0.95", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "VIEWPORTSQUARE", iPlotGetViewportSquareAttrib, iPlotSetViewportSquareAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_SCALEEQUAL", iPlotGetAxisScaleEqualAttrib, iPlotSetAxisScaleEqualAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

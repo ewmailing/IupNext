@@ -702,39 +702,30 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRec
 
 int iupStrToColor(const char* str, long *color);
 
-static long iPlotGetSampleColorTable(Ihandle* ih, int index, int sorted_index)
+static long iPlotGetSampleColorTable(Ihandle* ih, int index)
 {
   char* value = IupGetAttributeId(ih, "SAMPLECOLOR", index);
   long color;
   if (iupStrToColor(value, &color))
     return color;
 
-  switch (sorted_index % 24)
-  {
-  case 0: return cdEncodeColor(255, 0, 0);
-  case 1: return cdEncodeColor(0, 255, 0);
-  case 2: return cdEncodeColor(0, 0, 255);
-  case 3: return cdEncodeColor(0, 255, 255);
-  case 4: return cdEncodeColor(255, 0, 255);
-  case 5: return cdEncodeColor(255, 255, 0);
-  case 6: return cdEncodeColor(128, 0, 0);
-  case 7: return cdEncodeColor(0, 128, 0);
-  case 8: return cdEncodeColor(0, 0, 128);
-  case 9: return cdEncodeColor(0, 128, 128);
-  case 10: return cdEncodeColor(128, 0, 128);
-  case 11: return cdEncodeColor(128, 128, 0);
-  case 12: return cdEncodeColor(192, 0, 0);
-  case 13: return cdEncodeColor(0, 192, 0);
-  case 14: return cdEncodeColor(0, 0, 192);
-  case 15: return cdEncodeColor(0, 192, 192);
-  case 16: return cdEncodeColor(192, 0, 192);
-  case 17: return cdEncodeColor(192, 192, 0);
-  case 18: return cdEncodeColor(64, 0, 0);
-  case 19: return cdEncodeColor(0, 64, 0);
-  case 20: return cdEncodeColor(0, 0, 64);
-  case 21: return cdEncodeColor(0, 64, 64);
-  case 22: return cdEncodeColor(64, 0, 64);
-  case 23: return cdEncodeColor(64, 64, 0);
+  switch (index % 12)
+  {                                                                           
+  case  0: return cdEncodeColor(220, 60, 20);  
+  case  1: return cdEncodeColor(0, 128, 0);    
+  case  2: return cdEncodeColor(20, 100, 220); 
+
+  case  3: return cdEncodeColor(220, 128, 0);  
+  case  4: return cdEncodeColor(128, 0, 128);  
+  case  5: return cdEncodeColor(0, 128, 220);  
+
+  case  6: return cdEncodeColor(220, 60, 128); 
+  case  7: return cdEncodeColor(128, 220, 0);  
+  case  8: return cdEncodeColor(192, 60, 60);  
+
+  case  9: return cdEncodeColor(60, 60, 128);  
+  case 10: return cdEncodeColor(220, 60, 220); 
+  case 11: return cdEncodeColor(60, 128, 128); 
   }
 
   return 0;
@@ -829,11 +820,9 @@ bool iupPlot::DrawSampleColorLegend(iupPlotDataSet *dataset, const iupPlotRect &
       iPlotDrawRect(canvas, theScreenX, theScreenY, theMaxWidth, theTotalHeight);
     }
     
-    int *sortedIndex = dataset->GetSortedDataIndex();
-
     for (int i = 0; i < theCount; i++)
     {
-      cdCanvasSetForeground(canvas, iPlotGetSampleColorTable(ih, i, sortedIndex[i]));
+      cdCanvasSetForeground(canvas, iPlotGetSampleColorTable(ih, i));
 
       int theLegendX = theScreenX + theMargin;
       int theLegendY = theScreenY + (theCount - 1 - i)*theFontHeight + theMargin;
@@ -844,8 +833,6 @@ bool iupPlot::DrawSampleColorLegend(iupPlotDataSet *dataset, const iupPlotRect &
 
       iPlotDrawText(canvas, theLegendX + theLineSpace, theLegendY + boxSize/2, CD_WEST, ((iupPlotDataString *)dataset->GetDataX())->GetSampleString(i));
     }
-
-    delete[] sortedIndex;
   }
 
   return true;
@@ -1164,50 +1151,31 @@ void iupPlotDataSet::DrawDataStep(const iupPlotTrafoBase *inTrafoX, const iupPlo
   cdCanvasEnd(canvas);
 }
 
-struct IsortedData
+static int iPlotGetPieTextAligment(double bisectrix, double inPieSliceLabelPos)
 {
-  double value;
-  int index;
-};
+  if (inPieSliceLabelPos < 0)
+    bisectrix += 180;
 
-static int valueComparator(const void *elem1, const void *elem2)
-{
-  IsortedData *f = (IsortedData *)elem1;
-  IsortedData *s = (IsortedData *)elem2;
-  if (f->value > s->value) return -1; /* descending */
-  if (f->value < s->value) return 1;
-  if (f->value == s->value)
-  {
-    if (f->index > s->index) return -1; /* descending */
-    if (f->index < s->index) return 1;
-  }
-  return 0;
-}
+  bisectrix = fmod(bisectrix, 360);
 
-int* iupPlotDataSet::GetSortedDataIndex() const
-{
-  int i, theCount = mDataX->GetCount();
-  IsortedData *sortedData = new IsortedData[theCount];
-
-  for (i = 0; i < theCount; i++)
-  {
-    sortedData[i].value = mDataY->GetSample(i);
-    sortedData[i].index = i;
-  }
-
-  // sort descending by value (biggest values first)
-  qsort(sortedData, theCount, sizeof(IsortedData), valueComparator);
-
-  int *sortedIndex = new int[theCount];
-
-  for (i = 0; i < theCount; i++)
-  {
-    sortedIndex[sortedData[i].index] = i;
-  }
-
-  delete[] sortedData;
-
-  return sortedIndex;
+  if (bisectrix < 22.5)
+    return CD_EAST;
+  else if (bisectrix < 67.5)
+    return  CD_NORTH_EAST;
+  else if (bisectrix < 112.5)
+    return CD_NORTH;
+  else if (bisectrix < 157.5)
+    return CD_NORTH_WEST;
+  else if (bisectrix < 202.5)
+    return CD_WEST;
+  else if (bisectrix < 247.5)
+    return CD_SOUTH_WEST;
+  else if (bisectrix < 292.5)
+    return CD_SOUTH;
+  else if (bisectrix < 337.5)
+    return CD_SOUTH_EAST;
+  else
+    return CD_EAST;
 }
 
 void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih, const iupPlotAxis& inAxisY, long inBackColor) const
@@ -1226,10 +1194,15 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
   int theCount = mDataX->GetCount();
   double sum = 0;
 
-  int* sortedIndex = GetSortedDataIndex();
-
   for (int i = 0; i < theCount; i++)
-    sum += mDataY->GetSample(i);
+  {
+    double theY = mDataY->GetSample(i);
+
+    if (theY <= 0)
+      continue;
+
+    sum += theY;
+  }
 
   xc = 0;
   yc = 0;
@@ -1246,31 +1219,23 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
   if (mPieContour)
     iPlotSetLine(canvas, mLineStyle, mLineWidth);
 
-  double spacing = inAxisY.mLabelSpacing;
-
   if (mPieSliceLabel != IUP_PLOT_NONE)
-  {
     inAxisY.SetFont(canvas, inAxisY.mFontStyle, inAxisY.mFontSize);
-
-    if (inAxisY.mLabelSpacing == -1)
-    {
-      int theXFontHeight;
-      cdCanvasGetFontDim(canvas, NULL, &theXFontHeight, NULL, NULL);
-      spacing = theXFontHeight / 10;  // default spacing
-    }
-  }
 
   for (int i = 0; i < theCount; i++)
   {
     double theX = mDataX->GetSample(i);
     double theY = mDataY->GetSample(i);
 
+    if (theY <= 0)
+      continue;
+
     double angle = (theY*360.) / sum;
 
     if (inNotify)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
-    cdCanvasForeground(canvas, iPlotGetSampleColorTable(ih, i, sortedIndex[i]));
+    cdCanvasForeground(canvas, iPlotGetSampleColorTable(ih, i));
 
     cdfCanvasSector(canvas, xc, yc, w, h, startAngle, startAngle + angle);
 
@@ -1287,8 +1252,10 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
     {
       double bisectrix = (startAngle + startAngle + angle) / 2;
 
-      double px = xc + (((w / 2.)*spacing) * cos(bisectrix * CD_DEG2RAD));
-      double py = yc + (((h / 2.)*spacing) * sin(bisectrix * CD_DEG2RAD));
+      int text_alignment = iPlotGetPieTextAligment(bisectrix, mPieSliceLabelPos);
+
+      double px = xc + (((w / 2.)*fabs(mPieSliceLabelPos)) * cos(bisectrix * CD_DEG2RAD));
+      double py = yc + (((h / 2.)*fabs(mPieSliceLabelPos)) * sin(bisectrix * CD_DEG2RAD));
 
       cdCanvasSetForeground(canvas, inAxisY.mColor);
 
@@ -1297,21 +1264,22 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
       {
       case IUP_PLOT_X:
         if (mDataX->IsString())
-          iPlotDrawText(canvas, px, py, CD_CENTER, ((iupPlotDataString *)mDataX)->GetSampleString(i));
+          iPlotDrawText(canvas, px, py, text_alignment, ((iupPlotDataString *)mDataX)->GetSampleString(i));
         else
         {
           sprintf(theBuf, "%d", (int)theX);
-          iPlotDrawText(canvas, px, py, CD_CENTER, theBuf);
+          iPlotDrawText(canvas, px, py, text_alignment, theBuf);
         }
         break;
       case IUP_PLOT_Y:
         iupStrPrintfDoubleLocale(theBuf, inAxisY.mTick.mFormatString, theY, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
-        iPlotDrawText(canvas, px, py, CD_CENTER, theBuf);
+        iPlotDrawText(canvas, px, py, text_alignment, theBuf);
         break;
       case IUP_PLOT_PERCENT:
         double percent = (theY*100.) / sum;
         iupStrPrintfDoubleLocale(theBuf, inAxisY.mTick.mFormatString, percent, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
-        iPlotDrawText(canvas, px, py, CD_CENTER, theBuf);
+        strcat(theBuf, " %");
+        iPlotDrawText(canvas, px, py, text_alignment, theBuf);
         break;
       }
     }
@@ -1339,8 +1307,6 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
       cdCanvasInteriorStyle(canvas, CD_SOLID);
     }
   }
-
-  delete[] sortedIndex;
 }
 
 void iupPlotDataSet::DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const

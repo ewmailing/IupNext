@@ -893,6 +893,7 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
   DS_PIECONTOUR
   DS_PIEHOLE
   DS_PIESLICELABEL
+  DS_PIESLICELABELPOS
 */
 
   if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", NULL, NULL, format, 

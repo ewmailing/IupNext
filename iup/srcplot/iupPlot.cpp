@@ -161,7 +161,7 @@ bool iupPlotDataBool::CalculateRange(double &outMin, double &outMax) const
 iupPlotDataSet::iupPlotDataSet(bool strXdata)
   : mColor(CD_BLACK), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mAreaTransparency(255), mMarkStyle(CD_X), mMarkSize(7),
     mMultibarIndex(-1), mMultibarCount(0), mBarOutlineColor(0), mBarShowOutline(false), mBarSpacingPercent(10),
-    mPieStartAngle(0), mPieRadius(0.9), mPieContour(false), mPieHole(0),
+    mPieStartAngle(0), mPieRadius(0.95), mPieContour(false), mPieHole(0), mPieSliceLabelPos(0.95),
     mPieSliceLabel(IUP_PLOT_NONE), mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false)
 {
   if (strXdata)
