@@ -41,7 +41,7 @@ struct _IcontrolData
 
   /* aux */
   int has_focus,
-    highlight,
+    highlighted,
     pressed;
 };
 
@@ -71,7 +71,7 @@ static const char* iFlatButtonGetImageName(Ihandle* ih, const char* baseattrib, 
         new_imagename = iFlatButtonMakeImageName(ih, baseattrib, "PRESS");
       else
       {
-        if (ih->data->highlight)
+        if (ih->data->highlighted)
           new_imagename = iFlatButtonMakeImageName(ih, baseattrib, "HIGHLIGHT");
       }
     }
@@ -128,7 +128,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
     if (!ih->data->pressed && (bgimage || image))
       ih->data->pressed = 1;
   }
-  else if (ih->data->highlight)
+  else if (ih->data->highlighted)
   {
     char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
     if (hlcolor)
@@ -147,7 +147,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
       if (presscolor)
         bordercolor = presscolor;
     }
-    else if (ih->data->highlight)
+    else if (ih->data->highlighted)
     {
       char* hlcolor = iupAttribGetStr(ih, "BORDERHLCOLOR");
       if (hlcolor)
@@ -330,7 +330,7 @@ static int iFlatButtonEnterWindow_CB(Ihandle* ih)
       return IUP_DEFAULT;
   }
 
-  ih->data->highlight = 1;
+  ih->data->highlighted = 1;
   iupdrvRedrawNow(ih);
 
   return IUP_DEFAULT;
@@ -345,7 +345,7 @@ static int iFlatButtonLeaveWindow_CB(Ihandle* ih)
       return IUP_DEFAULT;
   }
 
-  ih->data->highlight = 0;
+  ih->data->highlighted = 0;
   iupdrvRedrawNow(ih);
 
   return IUP_DEFAULT;
@@ -534,6 +534,21 @@ static char* iFlatButtonGetRadioAttrib(Ihandle* ih)
     return NULL;
 }
 
+static char* iFlatButtonGetHighlightedAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->highlighted);
+}
+
+static char* iFlatButtonGetPressedAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->pressed);
+}
+
+static char* iFlatButtonGetHasFocusAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->has_focus);
+}
+
 
 /*****************************************************************************************/
 
@@ -682,6 +697,9 @@ Iclass* iupFlatButtonNewClass(void)
   iupClassRegisterAttribute(ic, "PADDING", iFlatButtonGetPaddingAttrib, iFlatButtonSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "SPACING", iFlatButtonGetSpacingAttrib, iFlatButtonSetSpacingAttrib, IUPAF_SAMEASSYSTEM, "2", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IGNORERADIO", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIGHLIGHTED", iFlatButtonGetHighlightedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRESSED", iFlatButtonGetPressedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HASFOCUS", iFlatButtonGetHasFocusAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERPSCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */

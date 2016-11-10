@@ -171,11 +171,12 @@ then the FRONTIMAGE is used.</p>
 <p><strong>FRONTIMAGEPRESS </strong> (<font size="3">non inheritable</font>): 
 foreground image name of the element in pressed state. If it is not defined then 
 the FRONTIMAGE is used.</p>
+<p><strong>HASFOCUS </strong> (read-only): returns the button state if has 
+focus. Can be Yes or No. (since 3.21)</p>
 <p><strong>HLCOLOR</strong>: color used to indicate a highlight state. Default: &quot;200 225 245&quot;.</p>
-<p><strong>PSCOLOR</strong>: color used to indicate a press state. Default: &quot;150 200 235&quot;.</p>
-
-
-  <p><strong>IMAGE</strong> (<font SIZE="3">non inheritable</font>):
+<p><strong>HIGHLIGHTED </strong> (read-only): returns the button state if 
+highlighted. Can be Yes or No. (since 3.21)</p>
+<p><strong>IMAGE</strong> (<font SIZE="3">non inheritable</font>):
   Image name. Use
 	<a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
@@ -202,6 +203,10 @@ LEFT, RIGHT, TOP, BOTTOM. Default: LEFT.</p>
 <p><b>PADDING</b>: internal margin. Works just like the MARGIN attribute of 
   the <strong>IupHbox</strong> and <strong>IupVbox</strong> containers, but uses 
 a different name to avoid inheritance problems. Default value: &quot;0x0&quot;.</p>
+<p><strong>PRESSED </strong> (read-only): returns the button state if pressed. 
+Can be Yes or No. (since 3.21)</p>
+<p><strong>PSCOLOR</strong>: color used to indicate a press state. Default: &quot;150 200 235&quot;.</p>
+
 
 <p><strong>RADIO</strong> (read-only): returns if the toggle is inside a radio. 
 Can be &quot;YES&quot; or &quot;NO&quot;. Valid only after the element is mapped and TOGGLE=Yes, 
