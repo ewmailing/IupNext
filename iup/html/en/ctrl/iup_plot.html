@@ -607,7 +607,7 @@ other wise it will be an ellipse. Used only for PIE mode. Default: 0.95 (since 3
 <p><strong>DS_PIESTARTANGLE</strong>: The angle where the first sample sector 
 starts in degrees. Used only for PIE mode. Default: 0º (since 3.21)</p>
 <p><strong>DS_PIECONTOUR</strong>: enable a contour separating each sector, the 
-external ring and the internal ring (when there is a hole). Used only for PIE mode. 
+external ring and the internal ring (when there is a hole). Can be Yes or No. Used only for PIE mode. 
 The line is drawn with DS_COLOR, DS_LINEWIDTH and DS_LINESTYLE. (since 3.21)</p>
 <p><strong>DS_PIEHOLE</strong>: size of the hole as a factor of DS_PIERADIUS. 
 Can be 0.0 to 1.0. Used only for PIE mode. If not zero the pie will look like a 
@@ -616,7 +616,11 @@ donut. The hole is filled with the plot background color given by BACKCOLOR. (si
 NONE, X, Y or PERCENT. Text is drawn using AXS_YCOLOR, AXS_YFONTSIZE, 
 AXS_YFONTSTYLE and AXS_YTICKFORMAT (for Y and PERCENT). When X is set the string 
 value is used or the index of the sample. Used only for PIE mode. Default: NONE. (since 3.21)</p>
-<p><strong>DS_PIESLICELABELPOS</strong>: Used only for PIE mode. Default: 0.95 (since 3.21)</p>
+<p><strong>DS_PIESLICELABELPOS</strong>: position of the text as a factor of the 
+radius. The text reference point is at the bisectrix of the slice. The value of 
+1 position the reference point at the border. The value can be greater than 1, 
+the text will be oriented inwards. The value can be negative to orient the text 
+outwards. Used only for PIE mode. Default: 0.95 (since 3.21)</p>
 <h4>Axis Configuration&nbsp; </h4>
 <p><b>AXS_SCALEEQUAL</b>: force the auto scale to use a single minimum and 
 maximum values for X and Y. It will combine AXS_XMAX/AXS_XMIN with 

@@ -874,10 +874,19 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
 
   int areaTransparency = IupGetInt(ih, "DS_AREATRANSPARENCY");
 
+  double pieRadius = IupGetDouble(ih, "DS_PIERADIUS");
+  double pieStartAngle = IupGetDouble(ih, "DS_PIESTARTANGLE");
+  int pieContour = IupGetInt(ih, "DS_PIECONTOUR");
+  double pieHole = IupGetDouble(ih, "DS_PIEHOLE");
+  const char* pieSliceLabel = IupGetAttribute(ih, "DS_PIESLICELABEL");
+  const char* pieSliceLabel_list[] = { "NONE", "X", "Y", "PERCENT", NULL };
+  int pieSliceLabel_index = iPlotGetListIndex(pieSliceLabel_list, pieSliceLabel);
+  double pieSliceLabelPos = IupGetDouble(ih, "DS_PIESLICELABELPOS");
+
   char format[1024] =
     "_@IUP_NAME%s\n"
     "_@IUP_COLOR%c\n"
-    "_@IUP_MODE%l|_@IUP_LINES|_@IUP_MARKS|_@IUP_MARKSLINES|_@IUP_AREA|_@IUP_BARS|_@IUP_STEMS|_@IUP_MARKSSTEMS|_@IUP_HORIZONTALBARS|_@IUP_MULTIBARS|_@IUP_STEPS|_@IUP_ERRORBARS|\n"
+    "_@IUP_MODE%l|_@IUP_LINES|_@IUP_MARKS|_@IUP_MARKSLINES|_@IUP_AREA|_@IUP_BARS|_@IUP_STEMS|_@IUP_MARKSSTEMS|_@IUP_HORIZONTALBARS|_@IUP_MULTIBARS|_@IUP_STEPS|_@IUP_ERRORBARS|_@IUP_PIE|\n"
     "_@IUP_LINESTYLE%l|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|\n"
     "_@IUP_LINEWIDTH%i[1,,]\n"
     "_@IUP_MARKSTYLE%l|_@IUP_PLUS|_@IUP_STAR|_@IUP_CIRCLE|_@IUP_X|_@IUP_BOX|_@IUP_DIAMOND|_@IUP_HOLLOW_CIRCLE|_@IUP_HOLLOW_BOX|_@IUP_HOLLOW_DIAMOND|\n"
@@ -885,19 +894,20 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
     "_@IUP_BARSPACING%i[0,100]\n"
     "_@IUP_BAROUTLINE%b[false,true]\n"
     "_@IUP_BAROUTLINECOLOR%c\n"
-    "_@IUP_AREATRANSPARENCY%i[0,255]\n";
-
-/*  TODO 
-  DS_PIERADIUS
-  DS_PIESTARTANGLE
-  DS_PIECONTOUR
-  DS_PIEHOLE
-  DS_PIESLICELABEL
-  DS_PIESLICELABELPOS
-*/
+    "_@IUP_AREATRANSPARENCY%i[0,255]\n"
+    "_@IUP_PIERADIUS%R[0,,]\n"
+    "_@IUP_PIESTARTANGLE%R[0,360,]\n"
+    "_@IUP_PIECONTOUR%b[false,true]\n"
+    "_@IUP_PIEHOLE%R[0,1,]\n"
+    "_@IUP_PIESLICELABEL%l|_@IUP_NONE|X|Y|_@IUP_PERCENT|\n"
+    "_@IUP_PIESLICELABELPOS%R[0,1,]\n";
 
   if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", NULL, NULL, format, 
-                   name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize, &barSpacing, &barOutline, barOutlineColor, &areaTransparency, NULL))
+                   name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize, 
+                   &barSpacing, &barOutline, barOutlineColor, 
+                   &areaTransparency, 
+                   &pieRadius, &pieStartAngle, &pieContour, &pieHole, &pieSliceLabel_index, &pieSliceLabelPos,
+                   NULL))
     return IUP_DEFAULT;
 
   IupSetStrAttribute(ih, "DS_NAME", name);
@@ -920,12 +930,18 @@ static int iPlotDatasetProperties_CB(Ihandle* ih_item)
     IupSetAttribute(ih, "DS_BAROUTLINE", "Yes");
   else
     IupSetAttribute(ih, "DS_BAROUTLINE", "No");
-
   IupSetInt(ih, "DS_BARSPACING", barSpacing);
-
   IupSetStrAttribute(ih, "DS_BAROUTLINECOLOR", barOutlineColor);
 
   IupSetInt(ih, "DS_AREATRANSPARENCY", areaTransparency);
+
+  IupSetDouble(ih, "DS_PIERADIUS", pieRadius);
+  IupSetDouble(ih, "DS_PIESTARTANGLE", pieStartAngle);
+  IupSetInt(ih, "DS_PIECONTOUR", pieContour);
+  IupSetDouble(ih, "DS_PIEHOLE", pieHole);
+  pieSliceLabel = pieSliceLabel_list[pieSliceLabel_index];
+  IupSetStrAttribute(ih, "DS_PIESLICELABEL", pieSliceLabel);
+  IupSetDouble(ih, "DS_PIESLICELABELPOS", pieSliceLabelPos);
 
   IupSetAttribute(ih, "REDRAW", NULL);
 
@@ -968,11 +984,12 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
     IupAppend(menu, IupSetCallbacks(item = IupItem("_@IUP_DATASETPROPERTIESDLG", NULL), "ACTION", iPlotDatasetProperties_CB, NULL));
     IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_PROPERTIESDLG", NULL), "ACTION", iPlotProperties_CB, NULL));
 
-    int ds, sample;
+    int ds = IupGetInt(ih, "CURRENT"), sample;
     double rx, ry;
     const char* ds_name;
     const char* strX;
-    if (ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample, rx, ry, strX))
+    int has_pie = iupStrEqualNoCase(IupGetAttribute(ih, "DS_MODE"), "PIE");
+    if (has_pie || ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample, rx, ry, strX))
     {
       IupSetInt(item, "DS", ds);
       IupSetAttribute(item, "ACTIVE", "YES");
@@ -2459,6 +2476,7 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_MULTIBARS", "Multiple Bars");
     IupSetLanguageString("IUP_ERRORBARS", "Error Bars");
     IupSetLanguageString("IUP_STEPS", "Steps");
+    IupSetLanguageString("IUP_PIE", "Pie");
     IupSetLanguageString("IUP_LINESTYLE", "Line Style:");
     IupSetLanguageString("IUP_CONTINUOUS", "Continuous");
     IupSetLanguageString("IUP_DASHED", "Dashed");
@@ -2480,6 +2498,15 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_HOLLOW_BOX", "Hollow Box");
     IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Hollow Diamond");
     IupSetLanguageString("IUP_MARKSIZE", "Mark Size:");
+    IupSetLanguageString("IUP_AREATRANSPARENCY", "Area Transparency:");
+    IupSetLanguageString("IUP_PIERADIUS", "Pie Radius:");
+    IupSetLanguageString("IUP_PIESTARTANGLE", "Pie Start Angle:");
+    IupSetLanguageString("IUP_PIECONTOUR", "Pie Contour:");
+    IupSetLanguageString("IUP_PIEHOLE", "Pie Hole:");
+    IupSetLanguageString("IUP_PIESLICELABEL", "Pie Slice Label:");
+    IupSetLanguageString("IUP_PIESLICELABELPOS", "Pie Slice Label Pos.:");
+    IupSetLanguageString("IUP_PERCENT", "Percent");
+    IupSetLanguageString("IUP_NONE", "None");
 
     IupSetLanguageString("IUP_CLOSE", "Close");
 
@@ -2583,6 +2610,7 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_MULTIBARS", "Barras M˙ltiplas");
     IupSetLanguageString("IUP_ERRORBARS", "Barras de Erro");
     IupSetLanguageString("IUP_STEPS", "Degraus");
+    IupSetLanguageString("IUP_PIE", "Torta");
     IupSetLanguageString("IUP_LINESTYLE", "Estilo de Linha:");
     IupSetLanguageString("IUP_CONTINUOUS", "ContÌnuo");
     IupSetLanguageString("IUP_DASHED", "Tracejada");
@@ -2604,6 +2632,15 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_HOLLOW_BOX", "Caixa Oca");
     IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Diamante Oco");
     IupSetLanguageString("IUP_MARKSIZE", "Tamanho de Marca:");
+    IupSetLanguageString("IUP_AREATRANSPARENCY", "TransparÍncia de ¡rea:");
+    IupSetLanguageString("IUP_PIERADIUS", "Raio da Torta:");
+    IupSetLanguageString("IUP_PIESTARTANGLE", "¬ngulo de InÌcio da Torta:");
+    IupSetLanguageString("IUP_PIECONTOUR", "Contorno da Torta:");
+    IupSetLanguageString("IUP_PIEHOLE", "Buraco da Torta:");
+    IupSetLanguageString("IUP_PIESLICELABEL", "Etiqueta da Fatia da Torta:");
+    IupSetLanguageString("IUP_PIESLICELABELPOS", "Pos. da Etiqueta da Fatia da Torta:");
+    IupSetLanguageString("IUP_PERCENT", "Percentual");
+    IupSetLanguageString("IUP_NONE", "Nenhum");
 
     IupSetLanguageString("IUP_CLOSE", "Fechar");
 
@@ -2703,6 +2740,8 @@ static void iPlotSetClassUpdate(Iclass* ic)
       IupSetLanguageString("IUP_ROTATE", "Rota√ß√£o:");
       IupSetLanguageString("IUP_ANGLE", "√Çngulo:");
       IupSetLanguageString("IUP_BARSPACING", "Espa√ßamento da Barra:");
+      IupSetLanguageString("IUP_AREATRANSPARENCY", "Transpar√™ncia de √Årea:");
+      IupSetLanguageString("IUP_PIESTARTANGLE", "√Çngulo de In√≠cio da Torta:");
     }
   }
 }
