@@ -574,7 +574,10 @@ dataset.</p>
 <a href="#IupPlotSetSampleExtra">IupPlotSetSampleExtra</a>). This extra value is 
 the "error" of each sample. <br>When BAR, HORIZONTALBAR and MULTIBAR modes are 
 set, <b>AXS_XDISCRETE</b> or <b>AXS_YDISCRETE </b> is also set.<br>When PIE 
-mode is set only the first dataset is drawn.</p>
+mode is set only the first dataset is drawn. Also attributes AXS_*AUTOMIN and 
+AXS_* are set to NO, AXS_*MIN are set to -1, and AXS_*MAX are set to 1. And 
+Legend displays the sample colors not the list of datasets. Only non-zero, 
+positive values, are drawn.</p>
 <p><b>DS_LINESTYLE</b>: line style of the current dataset. Can be: &quot;CONTINUOUS&quot;, 
 &quot;DASHED&quot;, &quot;DOTTED&quot;, &quot;DASH_DOT&quot;, &quot;DASH_DOT_DOT&quot;. Default is &quot;CONTINUOUS&quot;.</p>
 <p><b>DS_LINEWIDTH</b>: line width of the current dataset. Default: 1.</p>
@@ -598,12 +601,22 @@ is BAR, HORIZONTALBAR or MULTIBAR. Can be 0 to 100. Default: 10. (since 3.18)</p
 be added to the dataset color. Can be 0 (fully transparent) to 255 (opaque). Used only for AREA mode. 
 When different then 255 a line with dataset line attributes and using the 
 regular dataset color will be drawn as an outline of the area. Default: 255. (since 3.21)</p>
-<p><strong>DS_PIERADIUS</strong>: Used only for PIE mode. (since 3.21)</p>
-<p><strong>DS_PIESTARTANGLE</strong>: Used only for PIE mode. (since 3.21)</p>
-<p><strong>DS_PIECONTOUR</strong>: Used only for PIE mode. (since 3.21)</p>
-<p><strong>DS_PIEHOLE</strong>: Used only for PIE mode. (since 3.21)</p>
-<p><strong>DS_PIESLICELABEL</strong>: Used only for PIE mode. (since 3.21)</p>
-<p><strong>DS_PIESLICELABELPOS</strong>: Used only for PIE mode. (since 3.21)</p>
+<p><strong>DS_PIERADIUS</strong>: radius of the pie. Notice that the pie will be 
+a circle only if the viewport area is a perfect square or if VIEWPORTSQUARE=Yes, 
+other wise it will be an ellipse. Used only for PIE mode. Default: 0.95 (since 3.21)</p>
+<p><strong>DS_PIESTARTANGLE</strong>: The angle where the first sample sector 
+starts in degrees. Used only for PIE mode. Default: 0º (since 3.21)</p>
+<p><strong>DS_PIECONTOUR</strong>: enable a contour separating each sector, the 
+external ring and the internal ring (when there is a hole). Used only for PIE mode. 
+The line is drawn with DS_COLOR, DS_LINEWIDTH and DS_LINESTYLE. (since 3.21)</p>
+<p><strong>DS_PIEHOLE</strong>: size of the hole as a factor of DS_PIERADIUS. 
+Can be 0.0 to 1.0. Used only for PIE mode. If not zero the pie will look like a 
+donut. The hole is filled with the plot background color given by BACKCOLOR. (since 3.21)</p>
+<p><strong>DS_PIESLICELABEL</strong>: show a text inside each slice. Can be 
+NONE, X, Y or PERCENT. Text is drawn using AXS_YCOLOR, AXS_YFONTSIZE, 
+AXS_YFONTSTYLE and AXS_YTICKFORMAT (for Y and PERCENT). When X is set the string 
+value is used or the index of the sample. Used only for PIE mode. Default: NONE. (since 3.21)</p>
+<p><strong>DS_PIESLICELABELPOS</strong>: Used only for PIE mode. Default: 0.95 (since 3.21)</p>
 <h4>Axis Configuration&nbsp; </h4>
 <p><b>AXS_SCALEEQUAL</b>: force the auto scale to use a single minimum and 
 maximum values for X and Y. It will combine AXS_XMAX/AXS_XMIN with 

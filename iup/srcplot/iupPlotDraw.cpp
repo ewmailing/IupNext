@@ -1267,7 +1267,7 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
           iPlotDrawText(canvas, px, py, text_alignment, ((iupPlotDataString *)mDataX)->GetSampleString(i));
         else
         {
-          sprintf(theBuf, "%d", (int)theX);
+          sprintf(theBuf, "%d", i);
           iPlotDrawText(canvas, px, py, text_alignment, theBuf);
         }
         break;
@@ -1289,8 +1289,8 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
 
   if (mPieHole > 0)
   {
-    double hw = mPieHole * mPieRadius;
-    double hh = mPieHole * mPieRadius;
+    double hw = mPieHole * 2.0 * mPieRadius;
+    double hh = mPieHole * 2.0 * mPieRadius;
     hw *= ((iupPlotTrafoLinear *)inTrafoX)->mSlope;
     hh *= ((iupPlotTrafoLinear *)inTrafoY)->mSlope;
 
