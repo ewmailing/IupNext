@@ -485,6 +485,9 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[11], "DS_COLOR", "100 100 200"); // contour color
   IupSetAttribute(plot[11], "DS_COLOR", "255 255 255"); // contour color
   IupSetAttribute(plot[11], "DS_MODE", "PIE");
+  //IupSetAttribute(plot[11], "GRAPHICSMODE", "OPENGL");
+  //IupSetAttribute(plot[11], "GRAPHICSMODE", "NATIVE");
+  //IupSetAttribute(plot[11], "GRAPHICSMODE", "IMAGERGB");
 
   IupSetAttribute(plot[11], "VIEWPORTSQUARE", "Yes");
 
