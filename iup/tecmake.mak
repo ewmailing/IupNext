@@ -929,6 +929,25 @@ ifdef USE_IUPGLCONTROLS
   endif
 endif
 
+ifdef USE_IUPWEB
+  override USE_IUP = Yes
+  override LINK_WEBKIT = Yes
+  
+  ifdef USE_IUPLUA
+    ifdef USE_STATIC
+      SLIB += $(IUPLUA_LIB)/libiupluaweb$(LIBLUA_SFX).a
+    else
+      LIBS += iupluaweb$(LIBLUA_SFX)
+    endif
+  endif
+  
+  ifdef USE_STATIC
+    SLIB += $(IUP_LIB)/libiupweb.a
+  else
+    LIBS += iupweb
+  endif
+endif
+
 ifdef USE_IMLUA
   override USE_IM = Yes
   IMLUA_LIB ?= $(IM)/lib/$(TEC_UNAME_LIBLUA_DIR)
@@ -1172,6 +1191,22 @@ ifdef USE_IM
 
   IM_INC ?= $(IM)/include
   INCLUDES += $(IM_INC)
+endif
+
+ifdef LINK_WEBKIT
+  ifneq ($(findstring Linux4, $(TEC_UNAME)), )
+    LIBS += webkitgtk-3.0
+  else 
+    ifneq ($(findstring Linux3, $(TEC_UNAME)), )
+      ifneq ($(findstring Linux31, $(TEC_UNAME)), )
+        LIBS += webkitgtk-3.0
+      else
+        LIBS += webkitgtk-1.0
+      endif
+    else
+      LIBS += webkit-1.0
+    endif
+  endif
 endif
 
 ifdef USE_FTGL

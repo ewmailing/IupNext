@@ -161,12 +161,7 @@ else
 endif
 
 SRC += webbrowser.c
-ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += iupweb iupole
-else
-  SLIB += $(IUP_LIB)/libiupweb.a
-endif
-
+USE_IUPWEB = Yes
 
 SRC += scintilla.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )

@@ -82,7 +82,6 @@ void LinkTest(void);
 void ExpanderTest(void);
 void CalendarTest(void);
 void ScintillaTest(void);
-
 void DetachBoxTest(void);
 void CboxTest(void);
 void WebBrowserTest(void);
