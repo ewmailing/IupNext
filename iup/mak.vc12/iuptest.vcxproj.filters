@@ -79,5 +79,11 @@
     <ClCompile Include="..\html\examples\tests\calendar.c" />
     <ClCompile Include="..\html\examples\tests\flatframe.c" />
     <ClCompile Include="..\html\examples\tests\scintilla.c" />
+    <ClCompile Include="..\html\examples\tests\cbox.c" />
+    <ClCompile Include="..\html\examples\tests\detachbox.c" />
+    <ClCompile Include="..\html\examples\tests\mathglsamples.c" />
+    <ClCompile Include="..\html\examples\tests\matrixlist.c" />
+    <ClCompile Include="..\html\examples\tests\mgllabel.c" />
+    <ClCompile Include="..\html\examples\tests\webbrowser.c" />
   </ItemGroup>
 </Project>
