@@ -81,7 +81,8 @@ SRC += split.c
 SRC += link.c
 SRC += gridbox.c
 SRC += expander.c
-
+SRC += cbox.c
+SRC += detachbox.c
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iupimglib
@@ -129,6 +130,7 @@ SRC += gauge.c
 SRC += matrix.c
 SRC += matrix_cbs.c
 SRC += matrix_cbmode.c
+SRC += matrixlist.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iupmatrixex
 else
@@ -150,11 +152,21 @@ endif
 
 DEFINES += MGLPLOT_TEST
 SRC += mglplot.c
+SRC += mathglsamples.c
+SRC += mgllabel.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iup_mglplot
 else
   SLIB += $(IUP_LIB)/libiup_mglplot.a
 endif
+
+SRC += webbrowser.c
+ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  LIBS += iupweb iupole
+else
+  SLIB += $(IUP_LIB)/libiupweb.a
+endif
+
 
 SRC += scintilla.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )

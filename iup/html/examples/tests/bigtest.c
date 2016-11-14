@@ -83,6 +83,13 @@ void ExpanderTest(void);
 void CalendarTest(void);
 void ScintillaTest(void);
 
+void DetachBoxTest(void);
+void CboxTest(void);
+void WebBrowserTest(void);
+void MglLabelTest(void);
+void MatrixListTest(void);
+void MglPlotModesTest(void);
+
 
 void HelpTest(void)
 {
@@ -116,7 +123,8 @@ static TestItems test_list[] = {
   {"CanvasCDSimpleTest", CanvasCDSimpleTest},
   {"CanvasCDDBuffer", CanvasCDDBufferTest},
   {"CanvasScrollbar", CanvasScrollbarTest},
-  {"CellsCheckboard", CellsCheckboardTest},
+  { "Cbox", CboxTest },
+  { "CellsCheckboard", CellsCheckboardTest },
   {"CellsDegrade", CellsDegradeTest},
   {"CellsNumbering", CellsNumberingTest},
   {"CharacTest", CharacTest},
@@ -124,7 +132,8 @@ static TestItems test_list[] = {
   {"Clipboard", ClipboardTest},
   {"ColorBrowser", ColorBrowserTest},
   {"Colorbar", ColorbarTest},
-  {"Dial", DialTest},
+  { "DetachBox", DetachBoxTest },
+  { "Dial", DialTest },
   {"Dialog", DialogTest},
   { "Execute", ExecuteTest },
   { "ExecuteWait", ExecuteWaitTest },
@@ -149,10 +158,13 @@ static TestItems test_list[] = {
   {"Matrix", MatrixTest},
   {"MatrixCbMode", MatrixCbModeTest},
   {"MatrixCbs", MatrixCbsTest},
-  {"Mdi", MdiTest},
+  { "MatrixList", MatrixListTest },
+  { "Mdi", MdiTest },
   {"Menu", MenuTest},
 #ifdef MGLPLOT_TEST
   {"MglPlot", MglPlotTest},
+  { "MglPlotModes", MglPlotModesTest },
+  { "MglLabel", MglLabelTest },
 #endif
   { "Plot", PlotTest },
   {"PreDialogs", PreDialogsTest},
@@ -176,6 +188,7 @@ static TestItems test_list[] = {
   {"Val", ValTest},
   {"Vbox", VboxTest},
   {"Zbox", ZboxTest},
+  { "WebBrowser", WebBrowserTest },
 };
 
 static int k_enter_cb(Ihandle*ih)
