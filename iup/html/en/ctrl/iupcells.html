@@ -145,9 +145,8 @@ pixels). Default is 30 pixels.</p>
 <p class="info"><u>Returns</u>: an integer that specifies the desired span. 
 Default is 1 (no span).</p>
 
-<p><strong>MOUSECLICK_CB</strong><tt>:</tt> called when a color is selected. The primary color is
-  selected with the left mouse button, and if existent the secondary is
-  selected with the right mouse button.</p>
+<p><strong>MOUSECLICK_CB</strong><tt>:</tt> called when the mouse is clicked 
+over a cell.</p>
 <pre>int function(Ihandle* <b>ih</b>, int <b>button</b>, int <b>pressed</b>, int <b>line</b>, int <b>column</b>, int <b>x</b>, int <b>y</b>, char* <b>status</b>);  [in C]<strong>
 ih</strong>:mouseclick_cb(<strong>button, pressed, line, column, x, y</strong>: number, <b>string: </b>status) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info">Same as the <a href="../call/iup_button_cb.html">BUTTON_CB</a> 
