@@ -104,6 +104,12 @@ static int winDialogSetTaskBarProgressStateAttrib(Ihandle *ih, const char *value
 /****************************************************************
                      Utilities
 ****************************************************************/
+
+void iupdrvDialogSetParent(Ihandle* ih, InativeHandle* parent)
+{
+  SetParent(ih->handle, parent);
+}
+
 int iupdrvDialogIsVisible(Ihandle* ih)
 {
   return iupdrvIsVisible(ih);

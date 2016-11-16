@@ -45,6 +45,30 @@ static void gtkDialogSetMinMax(Ihandle* ih, int min_w, int min_h, int max_w, int
                      Utilities
 ****************************************************************/
 
+static gboolean gtkDialogChildDestroyEvent(GtkWidget *widget, Ihandle *ih)
+{
+  /* It seems that the documentation for this callback is not correct */
+  /* The second parameter must be the user_data or it will fail. */
+  (void)widget;
+
+  /* If the IUP dialog was not destroyed, destroy it here. */
+  if (iupObjectCheck(ih))
+    IupDestroy(ih);
+
+  /* this callback is useful to destroy children dialogs when the parent is destroyed. */
+  /* The application is responsible for destroying the children before this happen. */
+
+  return FALSE;
+}
+
+void iupdrvDialogSetParent(Ihandle* ih, InativeHandle* parent)
+{
+  gtk_window_set_transient_for((GtkWindow*)ih->handle, (GtkWindow*)parent);
+
+  /* manually remove child windows when parent is destroyed */
+  g_signal_connect(G_OBJECT(parent), "destroy", G_CALLBACK(gtkDialogChildDestroyEvent), ih);
+}
+
 int iupdrvDialogIsVisible(Ihandle* ih)
 {
   return iupdrvIsVisible(ih);
@@ -410,21 +434,6 @@ static gboolean gtkDialogWindowStateEvent(GtkWidget *widget, GdkEventWindowState
   return FALSE;
 }
 
-static gboolean gtkDialogChildDestroyEvent(GtkWidget *widget, Ihandle *ih)
-{
-  /* It seems that the documentation for this callback is not correct */
-  /* The second parameter must be the user_data or it will fail. */
-  (void)widget;
-
-  /* If the IUP dialog was not destroyed, destroy it here. */
-  if (iupObjectCheck(ih))
-    IupDestroy(ih);
-
-  /* this callback is useful to destroy children dialogs when the parent is destroyed. */
-  /* The application is responsible for destroying the children before this happen. */
-
-  return FALSE;
-}
 
 
 /****************************************************************

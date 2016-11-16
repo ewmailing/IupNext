@@ -442,6 +442,7 @@ void ButtonTest(void)
 //  IupSetAttributeHandle(dlg, "BACKGROUND", image2);
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
 //  IupSetAttribute(dlg, "SAVEUNDER", "NO");
+  IupSetAttribute(dlg, "PARENTDIALOG", "BIGTEST");
 
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 
@@ -450,7 +451,6 @@ void ButtonTest(void)
 
   IupShow(dlg);
 
-//  IupSetAttribute(dlg, "PARENTDIALOG", "BIGTEST");
 //  IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   //  IupShowXY(dlg,IUP_LEFT,IUP_TOP);
 //  IupShowXY(dlg, IUP_RIGHT, IUP_BOTTOM);
