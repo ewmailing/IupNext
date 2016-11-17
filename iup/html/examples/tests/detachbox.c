@@ -2,6 +2,16 @@
 #include <stdio.h>
 #include <iup.h>
 
+static int restored_cb(Ihandle *ih, Ihandle* old_parent)
+{
+  IupSetAttribute(IupGetHandle("restore"), "ACTIVE", "NO");
+  IupSetAttribute(IupGetHandle("detach"), "ACTIVE", "YES");
+  printf("Restored!\n");
+
+  (void)ih;
+  (void)old_parent;
+  return IUP_DEFAULT;
+}
 
 static int detached_cb(Ihandle *ih, Ihandle* new_parent, int x, int y)
 {
@@ -70,6 +80,8 @@ void DetachBoxTest(void)
   //IupSetAttribute(dbox, "SHOWGRIP", "NO");
   //IupSetAttribute(dbox, "BARSIZE", "0");
   //IupSetAttribute(dbox, "COLOR", "255 0 0");
+  IupSetAttribute(dbox, "RESTOREWHENCLOSED", "Yes");
+  IupSetCallback(dbox, "RESTORED_CB", (Icallback)restored_cb);
   IupSetCallback(dbox, "DETACHED_CB", (Icallback)detached_cb);
   IupSetHandle("dbox", dbox);
 
@@ -89,7 +101,7 @@ void DetachBoxTest(void)
   IupSetAttribute(dlg, "TITLE", "IupDetachBox Example");
   IupSetAttribute(dlg, "MARGIN", "10x10");
   IupSetAttribute(dlg, "GAP", "10");
-  IupSetAttribute(dlg, "RASTERSIZE", "300x300");
+//  IupSetAttribute(dlg, "RASTERSIZE", "300x300");
 
   IupShow(dlg);
 }

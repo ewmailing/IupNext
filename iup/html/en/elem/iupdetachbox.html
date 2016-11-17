@@ -85,6 +85,9 @@ the name of a new parent when the control will be appended. Use <a href="../func
 associate an Ihandle* to a name (since 3.16). The handler is shown (if restored 
 to inside a zbox, the application must update the zbox child visibility 
 manually).</p>
+<p><strong>RESTOREWHENCLOSED</strong>: automatically restore the box to its 
+original position when the new dialog is closed. Can be Yes or No. Default: No. 
+(since 3.21)</p>
 
   <p><strong>SHOWGRIP</strong> (<font SIZE="3">non inheritable</font>): Shows the 
 bar grip affordance. Default: YES. When set to NO, the BARSIZE is set to 5 (if 
@@ -117,6 +120,17 @@ also accepted.</p>
 the event.<br><strong>new_parent</strong>: identifier of the future parent of 
 the box. At this point only the PARENTDIALOG attribute was set.<br>
 <strong>x, y</strong>: dropped position.</p>
+<p class="info"><u>Returns</u>: IUP_IGNORE will be processed, in order to cancel 
+the detach action.</p>
+
+<p><strong>RESTORED_CB</strong>: Callback called when the box is restored if 
+RESTOREWHENCLOSED=Yes. (since 3.21)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, Ihandle *<strong>old_parent</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
+<strong>ih</strong>:restored_cb(<strong>old_parent: </strong>ihandle, <strong>x, y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event.<br><strong>old_parent</strong>: identifier of the original parent of 
+the box.<br>
+<strong>x, y</strong>: always 0,0.</p>
 <p class="info"><u>Returns</u>: IUP_IGNORE will be processed, in order to cancel 
 the detach action.</p>
 
