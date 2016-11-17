@@ -1370,7 +1370,30 @@ static void iMatrixDrawMatrix(Ihandle* ih)
   {
     long framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
     cdCanvasForeground(ih->data->cd_canvas, framecolor);
-    iupMATRIX_RECT(ih, 0, ih->data->w - 1, 0, ih->data->h - 1);
+
+    if (!iupAttribGetBoolean(ih, "YHIDDEN"))
+    {
+      int width = ih->data->w;
+      if (width > ih->data->columns.total_size)
+        width = ih->data->columns.total_size;
+
+      if (ih->data->lines.first_offset != 0)
+        iupMATRIX_LINE(ih, 0, 0, width - 1, 0);  /* top horizontal line */
+
+      iupMATRIX_LINE(ih, 0, ih->data->h - 1, width - 1, ih->data->h - 1);  /* bottom horizontal line */
+    }
+
+    if (!iupAttribGetBoolean(ih, "XHIDDEN"))
+    {
+      int height = ih->data->h;
+      if (height > ih->data->lines.total_size)
+        height = ih->data->lines.total_size;
+
+      if (ih->data->columns.first_offset != 0)
+        iupMATRIX_LINE(ih, 0, 0, 0, height - 1);  /* left vertical line */
+
+      iupMATRIX_LINE(ih, ih->data->w - 1, 0, ih->data->w - 1, height - 1);  /* right vertical line */
+    }
   }
 }
 
