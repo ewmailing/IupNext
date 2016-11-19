@@ -1397,6 +1397,8 @@ static int iMatrixResize_CB(Ihandle* ih)
 
   if (old_w != ih->data->w || old_h != ih->data->h)
   {
+    ih->data->need_calcsize = 1;
+
     if (ih->data->edit_hide_onfocus)
     {
       ih->data->edit_hidden_byfocus = 1;
@@ -1404,8 +1406,6 @@ static int iMatrixResize_CB(Ihandle* ih)
       ih->data->edit_hidden_byfocus = 0;
     }
   }
-
-  ih->data->need_calcsize = 1;
 
   if (ih->data->columns.num > 0 && ih->data->lines.num > 0)
   {
