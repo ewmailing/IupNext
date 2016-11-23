@@ -256,7 +256,7 @@ static int active_cb(Ihandle *ih)
 static void set_callbacks(Ihandle* button)
 {
   IupSetCallback(button, "FLAT_ACTION",       action_cb);
-  IupSetCallback(button, "FLAT_BUTTON_CB",    (Icallback)button_cb);
+//  IupSetCallback(button, "FLAT_BUTTON_CB",    (Icallback)button_cb);
 
   //IupSetCallback(button, "K_ANY",        (Icallback)k_any);
   IupSetCallback(button, "HELP_CB",      (Icallback)help_cb);
