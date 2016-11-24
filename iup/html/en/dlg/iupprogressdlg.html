@@ -55,7 +55,8 @@ the dialog.</span></p>
   be always in front of the parent dialog. </p>
 <p><a href="../attrib/iup_title.html">TITLE</a>:
   Dialog title.</p>
-<p>Other attributes were set to values different than the default value:</p>
+<p>Other attributes were set to values different than the default value (but can 
+still be changed):</p>
 <p><strong>RESIZE</strong>=NO, <strong>MAXBOX</strong>=NO, <strong>MINBOX</strong>=NO,
 <strong>MENUBOX</strong>=NO</p>
 <hr>
@@ -74,6 +75,8 @@ bar will display an undefined state animation (same as setting MARQUEE=Yes in
 <a href="../elem/iupprogressbar.html">IupProgressBar</a>), to resume processing 
 set the state attribute to PROCESSING.</p>
 <p><strong>DESCRIPTION</strong>: text description to be shown at the dialog.</p>
+<p><strong>PROGRESSHEIGHT</strong>: height in pixels of the progress bar. 
+Default: 30 (since 3.21)</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 <p>Supports all the <a href="iupdialog.html#Callbacks">IupDialog</a> callbacks.</p>
 
@@ -95,7 +98,9 @@ set the state attribute to PROCESSING.</p>
   event.</p>
 
 <p class="info"><u>Returns</u>: if different from IUP_CONTINUE then STATE will 
-be changed to ABORTED, same behavior as if the callback does not exist. </p>
+be changed to ABORTED, same behavior as if the callback does not exist. The 
+returned value will also be returned in the "Cancel" button callback (since 
+3.21).</p>
 
   
 <h3><a name="Notes">Notes</a></h3>

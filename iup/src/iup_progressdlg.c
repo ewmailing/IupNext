@@ -22,7 +22,7 @@
 #include "iup_childtree.h"
 
 
-#define MIN_CLOCK 250   /* aprox in milliseconds */
+#define MIN_CLOCK 250   /* approx. in milliseconds */
        
 typedef struct _IprogressDlgData
 {
@@ -182,6 +182,15 @@ static char* iProgressDlgGetPercentAttrib(Ihandle* ih)
   return iupStrReturnInt(progress_data->percent);
 }
 
+static int iProgressDlgSetProgressHeightAttrib(Ihandle* ih, const char* value)
+{
+  IprogressDlgData* progress_data = (IprogressDlgData*)iupAttribGet(ih, "_IUP_PDLG_DATA");
+  Ihandle* marquee = IupGetBrother(progress_data->progress);
+  IupSetStrf(progress_data->progress, "RASTERSIZE", "250x%s", value);
+  IupSetStrf(marquee, "RASTERSIZE", "250x%s", value);
+  return 1;
+}
+
 static int iProgressDlgSetDescriptionAttrib(Ihandle* ih, const char* value)
 {
   IprogressDlgData* progress_data = (IprogressDlgData*)iupAttribGet(ih, "_IUP_PDLG_DATA");
@@ -204,11 +213,15 @@ static int iProgressDlgCancel_CB(Ihandle* button)
 {
   Ihandle* ih = IupGetDialog(button);
   Icallback cb = IupGetCallback(ih, "CANCEL_CB");
+  int ret = IUP_CONTINUE;
 
-  if (!cb || cb(ih) != IUP_CONTINUE)
+  if (cb)
+    ret = cb(ih);
+
+  if (ret != IUP_CONTINUE)
     iProgressDlgSetStateAttrib(ih, "ABORTED");
 
-  return IUP_DEFAULT;
+  return ret;
 }
 
 /**************************************************************************************************************/
@@ -289,6 +302,7 @@ Iclass* iupProgressDlgNewClass(void)
   iupClassRegisterAttribute(ic, "COUNT", iProgressDlgGetCountAttrib, iProgressDlgSetCountAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "INC", NULL, iProgressDlgSetIncAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PERCENT", iProgressDlgGetPercentAttrib, iProgressDlgSetPercentAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PROGRESSHEIGHT", NULL, iProgressDlgSetProgressHeightAttrib, IUPAF_SAMEASSYSTEM, "30", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "STATE", iProgressDlgGetStateAttrib, iProgressDlgSetStateAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DESCRIPTION", iProgressDlgGetDescriptionAttrib, iProgressDlgSetDescriptionAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

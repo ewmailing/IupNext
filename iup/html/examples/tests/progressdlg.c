@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 
 #include "iup.h"
 
@@ -13,18 +14,21 @@ static int time_cb(Ihandle* timer)
   if (IupGetInt(ih, "COUNT")==IupGetInt(ih, "TOTALCOUNT"))
   {
     IupSetAttribute(timer, "RUN", "NO");
-    IupExitLoop();
+#ifdef TIMER
+    IupDestroy(timer);
+#endif
+
     return IUP_DEFAULT;
   }
   return IUP_DEFAULT;
 }
 #else
-static int show_cb(Ihandle* dlg, int state)
+static int show_cb(Ihandle* ih, int state)
 {
   if (state == IUP_SHOW)
   {
     int i, j;
-    printf("Begin\n");
+    printf("Start\n");
     for (i = 0; i < 10000; i++)
     {
       for (j = 0; j < 10000; j++)
@@ -33,13 +37,16 @@ static int show_cb(Ihandle* dlg, int state)
         x = sqrt(x * x);
       }
 
-      IupSetAttribute(dlg, "INC", NULL);
+      IupSetAttribute(ih, "INC", NULL);
+
+      if (strcmp(IupGetAttribute(ih, "STATE"), "ABORTED") == 0)
+        return IUP_DEFAULT;
 
       IupLoopStep();
 
       printf("Step(%d)\n", i);
     }
-    printf("End\n");
+    printf("Stop\n");
   }
   return IUP_DEFAULT;
 }
@@ -47,28 +54,36 @@ static int show_cb(Ihandle* dlg, int state)
 
 static int cancel_cb(Ihandle* ih)
 {
-  int ret;
+  int ret = 1;
+#ifdef TIMER
   Ihandle* timer = (Ihandle*)IupGetAttribute(ih, "TIMER");
   IupSetAttribute(timer, "RUN", "NO");
+#endif
   ret = IupAlarm("Warning!", "Interrupt Processing?", "Yes", "No", NULL);
   if (ret == 1) /* Yes Interrupt */
   {
-    if (IupGetInt(ih, "COUNT")<IupGetInt(ih, "TOTALCOUNT")/2)
+    if (IupGetInt(ih, "COUNT")>IupGetInt(ih, "TOTALCOUNT")/2)
     {
-//      IupSetAttribute(ih, "STATE", "UNDEFINED");
-  //    return IUP_CONTINUE;
-      IupExitLoop();
-      return IUP_DEFAULT;
+      if (strcmp(IupGetAttribute(ih, "STATE"), "UNDEFINED") == 0)
+      {
+        // IupHide(ih);
+        IupExitLoop();
+        return IUP_DEFAULT;
+      }
+
+      IupSetAttribute(ih, "STATE", "UNDEFINED");
+      return IUP_CONTINUE;
     }
-    else
-    {
-      IupExitLoop();
-      return IUP_DEFAULT;
-    }
+
+//    IupHide(ih);
+    IupExitLoop();
+    return IUP_DEFAULT;
   }
   
   IupSetAttribute(ih, "STATE", "PROCESSING");
+#ifdef TIMER
   IupSetAttribute(timer, "RUN", "Yes");
+#endif
   return IUP_CONTINUE;
 }
 
@@ -83,6 +98,7 @@ void ProgressDlgTest(void)
   IupSetAttribute(dlg, "DESCRIPTION", "Description first line\nSecond Line");
   IupSetCallback(dlg, "CANCEL_CB", cancel_cb);
   IupSetAttribute(dlg, "TOTALCOUNT", "10000");
+  IupSetAttribute(dlg, "RESIZE", "YES");
 
 #ifdef TIMER
   timer = IupTimer();
@@ -92,14 +108,11 @@ void ProgressDlgTest(void)
   IupSetAttribute(timer, "DIALOG", (char*)dlg);
   IupSetAttribute(dlg, "TIMER", (char*)timer);
 #else
-  IupSetCallback(dlg, "SHOW_CB", show_cb);
+  IupSetCallback(dlg, "SHOW_CB", (Icallback)show_cb);
 #endif
 
+  //IupShow(dlg);
   IupPopup(dlg, IUP_CENTER, IUP_CENTER);
-
-#ifdef TIMER
-  IupDestroy(timer);
-#endif
 }
 
 #ifndef BIG_TEST
