@@ -35,8 +35,9 @@ struct _IcontrolData
       last_pos_y,
       last_pos_moving;
 
-  int last_tip_ds,
-    last_tip_sample;
+  int last_cursor_plot,
+      last_cursor_ds,
+      last_cursor_sample;
 };
 
 void iupPlotRegisterAttributes(Iclass* ic);

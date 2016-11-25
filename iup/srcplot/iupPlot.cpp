@@ -9,20 +9,20 @@
 
 inline static void iPlotCheckMinMax(double &inoutMin, double &inoutMax)
 {
-  if (inoutMin > inoutMax) 
-  { 
+  if (inoutMin > inoutMax)
+  {
     double theTmp = inoutMin;
     inoutMin = inoutMax;
     inoutMax = theTmp;
   }
 }
 
-double iupPlotTrafoLinear::Transform(double inValue) const 
+double iupPlotTrafoLinear::Transform(double inValue) const
 {
   return inValue * mSlope + mOffset;
 }
 
-double iupPlotTrafoLinear::TransformBack(double inValue) const 
+double iupPlotTrafoLinear::TransformBack(double inValue) const
 {
   if (mSlope != 0)
     return (inValue - mOffset) / mSlope;
@@ -64,11 +64,11 @@ bool iupPlotTrafoLinear::Calculate(int inBegin, int inEnd, const iupPlotAxis& in
 
 double iupPlotTrafoLog::Transform(double inValue) const
 {
-  if (inValue<kLogMinClipValue) inValue = kLogMinClipValue;
+  if (inValue < kLogMinClipValue) inValue = kLogMinClipValue;
   return iupPlotLog(inValue, mBase)*mSlope + mOffset;
 }
 
-double iupPlotTrafoLog::TransformBack(double inValue) const 
+double iupPlotTrafoLog::TransformBack(double inValue) const
 {
   if (mSlope != 0)
     return iupPlotExp((inValue - mOffset) / mSlope, mBase);
@@ -126,7 +126,7 @@ bool iupPlotDataReal::CalculateRange(double &outMin, double &outMax) const
 
 iupPlotDataString::~iupPlotDataString()
 {
-  for (int i = 0; i < mCount; i++) 
+  for (int i = 0; i < mCount; i++)
     free(mData[i]);
 }
 
@@ -159,10 +159,11 @@ bool iupPlotDataBool::CalculateRange(double &outMin, double &outMax) const
 
 
 iupPlotDataSet::iupPlotDataSet(bool strXdata)
-  : mColor(CD_BLACK), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mAreaTransparency(255), mMarkStyle(CD_X), mMarkSize(7),
-    mMultibarIndex(-1), mMultibarCount(0), mBarOutlineColor(0), mBarShowOutline(false), mBarSpacingPercent(10),
-    mPieStartAngle(0), mPieRadius(0.95), mPieContour(false), mPieHole(0), mPieSliceLabelPos(0.95),
-    mPieSliceLabel(IUP_PLOT_NONE), mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false)
+: mColor(CD_BLACK), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mAreaTransparency(255), mMarkStyle(CD_X), mMarkSize(7),
+  mMultibarIndex(-1), mMultibarCount(0), mBarOutlineColor(0), mBarShowOutline(false), mBarSpacingPercent(10),
+  mPieStartAngle(0), mPieRadius(0.95), mPieContour(false), mPieHole(0), mPieSliceLabelPos(0.95),
+  mHighlightedSample(-1), mHighlightedCurve(false), 
+  mPieSliceLabel(IUP_PLOT_NONE), mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false)
 {
   if (strXdata)
     mDataX = (iupPlotDataBase*)(new iupPlotDataString());
@@ -189,8 +190,22 @@ iupPlotDataSet::~iupPlotDataSet()
     delete mExtra;
 }
 
-bool iupPlotDataSet::FindSample(double inX, double inY, double tolX, double tolY,
+bool iupPlotDataSet::FindSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inX, double inY, double tolX, double tolY, double tolScreenX, double tolScreenY,
                                 int &outSampleIndex, double &outX, double &outY) const
+{
+  switch (mMode)
+  {
+  case IUP_PLOT_MULTIBAR:
+    return this->FindMultipleBarSample(inTrafoX, inTrafoY, inX, inY, tolScreenX, tolScreenY, outSampleIndex, outX, outY);
+  case IUP_PLOT_PIE:
+    return this->FindPieSample(inX, inY, outSampleIndex, outX, outY);
+  default:
+    return this->FindPointSample(inX, inY, tolX, tolY, outSampleIndex, outX, outY);
+  }
+}
+
+bool iupPlotDataSet::FindPointSample(double inX, double inY, double tolX, double tolY,
+                                     int &outSampleIndex, double &outX, double &outY) const
 {
   int theCount = mDataX->GetCount();
   for (int i = 0; i < theCount; i++)
@@ -204,6 +219,193 @@ bool iupPlotDataSet::FindSample(double inX, double inY, double tolX, double tolY
       outSampleIndex = i;
       return true;
     }
+  }
+
+  return false;
+}
+
+bool iupPlotDataSet::FindMultipleBarSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inX, double inY, double tolScreenX, double tolScreenY,
+                                           int &outSampleIndex, double &outX, double &outY) const
+{
+  int theCount = mDataX->GetCount();
+
+  double theMinX = mDataX->GetSample(0);
+  double theScreenMinX = inTrafoX->Transform(theMinX);
+  double theMaxX = mDataX->GetSample(theCount - 1);
+  double theScreenMaxX = inTrafoX->Transform(theMaxX);
+
+  double theTotalBarWidth = (theScreenMaxX - theScreenMinX) / (theCount - 1);
+  theTotalBarWidth *= 1 - (double)mBarSpacingPercent / 100.0;
+  double theBarWidth = theTotalBarWidth / mMultibarCount;
+
+  double theScreenInX = inTrafoX->Transform(inX);
+  double theScreenInY = inTrafoY->Transform(inY);
+
+  for (int i = 0; i < theCount; i++)
+  {
+    outX = mDataX->GetSample(i);
+    outY = mDataY->GetSample(i);
+    double theScreenOutX = inTrafoX->Transform(outX);
+    double theScreenOutY = inTrafoY->Transform(outY);
+
+    double theBarX = (theScreenOutX - theTotalBarWidth / 2) + (mMultibarIndex*theBarWidth) + theBarWidth / 2;
+
+    if (fabs(theBarX - theScreenInX) < tolScreenX &&
+        fabs(theScreenOutY - theScreenInY) < tolScreenY)
+    {
+      outSampleIndex = i;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool iupPlotDataSet::FindPieSample(double inX, double inY, int &outSampleIndex, double &outX, double &outY) const
+{
+  int theCount = mDataX->GetCount();
+  double sum = 0;
+
+  for (int i = 0; i < theCount; i++)
+  {
+    double theY = mDataY->GetSample(i);
+
+    if (theY <= 0)
+      continue;
+
+    sum += theY;
+  }
+
+  double inRadius = sqrt(inX*inX + inY*inY);
+
+  double holeRadius = mPieHole * mPieRadius;
+
+  double inAngle = atan2(inY, inX);
+
+  inAngle = CD_RAD2DEG*inAngle;
+
+  if (inAngle<0)
+    inAngle += 360.;
+
+  if (inRadius < holeRadius || inRadius > mPieRadius)
+    return false;
+
+  double startAngle = mPieStartAngle;
+
+  for (int i = 0; i < theCount; i++)
+  {
+    outX = mDataX->GetSample(i);
+    outY = mDataY->GetSample(i);
+
+    if (outY <= 0)
+      continue;
+
+    double angle = (outY*360.) / sum;
+
+    if (inAngle > startAngle  &&
+        inAngle < startAngle + angle)
+    {
+      outSampleIndex = i;
+      return true;
+    }
+
+    startAngle += angle;
+  }
+
+  return false;
+}
+
+bool iupPlotDataSet::FindSegment(iupPlotTrafoBase *mTrafoX, iupPlotTrafoBase *mTrafoY, double inX, double inY, double tolScreenX, double tolScreenY,
+                                 int &outSampleIndex1, int &outSampleIndex2, double &outX1, double &outY1, double &outX2, double &outY2) const
+{
+  if (!mTrafoX || !mTrafoY)
+    return false;
+
+  double lowestDist = 0;
+  int tmpId = -1;
+  double tmpx1 = 0, tmpy1 = 0, tmpx2 = 0, tmpy2 = 0;
+  bool found = false;
+
+  double ox1 = mDataX->GetSample(0);
+  double oy1 = mDataY->GetSample(0);
+  double x1 = mTrafoX->Transform(ox1);
+  double y1 = mTrafoY->Transform(oy1);
+
+  int theCount = mDataX->GetCount();
+  for (int i = 0; i < theCount - 1; i++)
+  {
+    double ox2 = mDataX->GetSample(i + 1);
+    double oy2 = mDataY->GetSample(i + 1);
+    double x2 = mTrafoX->Transform(ox2);
+    double y2 = mTrafoY->Transform(oy2);
+
+    // TODO inX,inY must be inside box x1,y1 - x2,y2
+
+    double v1x = x2 - x1;
+    double v1y = y2 - y1;
+
+    double v1 = v1x*v1x + v1y*v1y;
+
+    double v2x = inX - x1;
+    double v2y = inY - y1;
+
+//    double v2 = v2x*v2x + v2y*v2y;   unused????
+
+    double prod = v1x*v2x + v1y*v2y;
+
+    if (v1 == 0.)
+    {
+      ox1 = ox2;
+      oy1 = oy2;
+      x1 = x2;
+      y1 = y2;
+      continue;
+    }
+
+    double p1 = prod / v1;
+
+    if (p1<0. || p1>1.)
+    {
+      ox1 = ox2;
+      oy1 = oy2;
+      x1 = x2;
+      y1 = y2;
+      continue;
+    }
+
+    double px = x1 + (x2 - x1)*p1;
+    double py = y1 + (y2 - y1)*p1;
+
+    double d = sqrt((inX - px)*(inX - px) + (inY - py)*(inY - py));
+
+    if (!found || fabs(d) < lowestDist)
+    {
+      lowestDist = fabs(d);
+      tmpId = i;
+      tmpx1 = ox1;
+      tmpx2 = ox2;
+      tmpy1 = oy1;
+      tmpy2 = oy2;
+      found = true;
+    }
+
+    ox1 = ox2;
+    oy1 = oy2;
+    x1 = x2;
+    y1 = y2;
+  }
+
+  if (found && 
+      fabs(lowestDist) < tolScreenX &&
+      fabs(lowestDist) < tolScreenY)
+  {
+    outSampleIndex1 = tmpId;
+    outSampleIndex2 = tmpId + 1;
+    outX1 = tmpx1;
+    outY1 = tmpy1;
+    outX2 = tmpx2;
+    outY2 = tmpy2;
+    return true;
   }
 
   return false;
@@ -301,7 +503,7 @@ bool iupPlotDataSet::DeleteSelectedSamples(const iupPlotSampleNotify* inNotify)
   mHasSelected = false;
 
   int theCount = mDataX->GetCount();
-  for (int i = theCount-1; i >= 0; i--)
+  for (int i = theCount - 1; i >= 0; i--)
   {
     bool theSelected = mSelection->GetSampleBool(i);
     if (theSelected)
@@ -777,13 +979,13 @@ void iupPlotAxis::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) con
 
 iupPlot::iupPlot(Ihandle* _ih, int inDefaultFontStyle, int inDefaultFontSize)
   :ih(_ih), mCurrentDataSet(-1), mRedraw(true), mDataSetListCount(0), mCrossHairH(false), mCrossHairV(false),
-  mGrid(true), mGridMinor(false), mViewportSquare(false), mScaleEqual(false),
-  mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle), 
-  mAxisX(inDefaultFontStyle, inDefaultFontSize), mAxisY(inDefaultFontStyle, inDefaultFontSize),
-  mCrossHairX(0), mCrossHairY(0), mShowSelectionBand(false), mDataSetListMax(20)
+   mGrid(true), mGridMinor(false), mViewportSquare(false), mScaleEqual(false), mHighlightMode(IUP_PLOT_HIGHLIGHT_NONE),
+   mDefaultFontSize(inDefaultFontSize), mDefaultFontStyle(inDefaultFontStyle),
+   mAxisX(inDefaultFontStyle, inDefaultFontSize), mAxisY(inDefaultFontStyle, inDefaultFontSize),
+   mCrossHairX(0), mCrossHairY(0), mShowSelectionBand(false), mDataSetListMax(20)
 {
-  mDataSetList = (iupPlotDataSet**)malloc(sizeof(iupPlotDataSet*) * mDataSetListMax); /* use malloc because we will use realloc */
-  memset(mDataSetList, 0, sizeof(iupPlotDataSet*) * mDataSetListMax);
+  mDataSetList = (iupPlotDataSet**)malloc(sizeof(iupPlotDataSet*)* mDataSetListMax); /* use malloc because we will use realloc */
+  memset(mDataSetList, 0, sizeof(iupPlotDataSet*)* mDataSetListMax);
 }
 
 iupPlot::~iupPlot()
@@ -838,7 +1040,7 @@ void iupPlot::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const
 void iupPlot::UpdateMultibarCount()
 {
   int i, count = 0, index = 0;
-  
+
   for (i = 0; i < mDataSetListCount; i++)
   {
     if (mDataSetList[i]->mMode == IUP_PLOT_MULTIBAR)
@@ -890,12 +1092,12 @@ long iupPlot::GetNextDataSetColor()
   {
     theColor = iPlotGetDefaultColor(def_color);
 
-    for (i = 0; i<mDataSetListCount; i++)
+    for (i = 0; i < mDataSetListCount; i++)
     {
       // already used, get another
       long theDataSetColor = cdEncodeAlpha(mDataSetList[i]->mColor, 255);
       if (theDataSetColor == theColor)
-          break;
+        break;
     }
 
     // not found, use it
@@ -903,7 +1105,7 @@ long iupPlot::GetNextDataSetColor()
       break;
 
     def_color++;
-  } while (def_color<12);
+  } while (def_color < 12);
 
   return theColor;
 }
@@ -914,8 +1116,8 @@ void iupPlot::AddDataSet(iupPlotDataSet* inDataSet)
   {
     int old_max = mDataSetListMax;
     mDataSetListMax += 20;
-    mDataSetList = (iupPlotDataSet**)realloc(mDataSetList, sizeof(iupPlotDataSet*) * mDataSetListMax);
-    memset(mDataSetList + old_max, 0, sizeof(iupPlotDataSet*) * (mDataSetListMax - old_max));
+    mDataSetList = (iupPlotDataSet**)realloc(mDataSetList, sizeof(iupPlotDataSet*)* mDataSetListMax);
+    memset(mDataSetList + old_max, 0, sizeof(iupPlotDataSet*)* (mDataSetListMax - old_max));
   }
 
   if (mDataSetListCount < mDataSetListMax)
@@ -929,7 +1131,7 @@ void iupPlot::AddDataSet(iupPlotDataSet* inDataSet)
     sprintf(theLegend, "plot %d", mCurrentDataSet);
 
     mDataSetList[mCurrentDataSet] = inDataSet;
-    
+
     inDataSet->SetName(theLegend);
     inDataSet->mColor = theColor;
   }
@@ -942,7 +1144,7 @@ void iupPlot::RemoveDataSet(int inIndex)
 
   delete mDataSetList[inIndex];
 
-  for (int i = inIndex; i<mDataSetListCount; i++)
+  for (int i = inIndex; i < mDataSetListCount; i++)
     mDataSetList[i] = mDataSetList[i + 1];
 
   mDataSetList[mDataSetListCount - 1] = NULL;
@@ -969,6 +1171,16 @@ void iupPlot::RemoveAllDataSets()
   mDataSetListCount = 0;
 }
 
+void iupPlot::ClearHighlight()
+{
+  for (int ds = 0; ds < mDataSetListCount; ds++)
+  {
+    iupPlotDataSet* dataset = mDataSetList[ds];
+    dataset->mHighlightedCurve = false;
+    dataset->mHighlightedSample = -1;
+  }
+}
+
 bool iupPlot::FindDataSetSample(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const
 {
   if (!mAxisX.mTrafo || !mAxisY.mTrafo)
@@ -976,14 +1188,16 @@ bool iupPlot::FindDataSetSample(double inX, double inY, int &outIndex, const cha
 
   double theX = mAxisX.mTrafo->TransformBack(inX);
   double theY = mAxisY.mTrafo->TransformBack(inY);
-  double tolX = (fabs(mAxisX.mMax - mAxisX.mMin) / mViewport.mWidth) * 5.0;  // 5 pixels tolerance
-  double tolY = (fabs(mAxisY.mMax - mAxisY.mMin) / mViewport.mHeight) * 5.0;
+  double tolScreenX = 5.0;  // 5 pixels tolerance
+  double tolScreenY = 5.0;
+  double tolX = (fabs(mAxisX.mMax - mAxisX.mMin) / mViewport.mWidth) * tolScreenX;
+  double tolY = (fabs(mAxisY.mMax - mAxisY.mMin) / mViewport.mHeight) * tolScreenY;
 
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
 
-    if (dataset->FindSample(theX, theY, tolX, tolY, outSampleIndex, outX, outY))
+    if (dataset->FindSample(mAxisX.mTrafo, mAxisY.mTrafo, theX, theY, tolX, tolY, tolScreenX, tolScreenY, outSampleIndex, outX, outY))
     {
       const iupPlotDataBase *theXData = dataset->GetDataX();
       if (theXData->IsString())
@@ -994,6 +1208,36 @@ bool iupPlot::FindDataSetSample(double inX, double inY, int &outIndex, const cha
       else
         outStrX = NULL;
 
+      outIndex = ds;
+      outName = dataset->GetName();
+
+      return true;
+    }
+  }
+  return false;
+}
+
+bool iupPlot::FindDataSetSegment(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex1, int &outSampleIndex2, double &outX1, double &outY1, double &outX2, double &outY2) const
+{
+  if (!mAxisX.mTrafo || !mAxisY.mTrafo)
+    return false;
+
+  double tolScreenX = 5.0;  // 5 pixels tolerance
+  double tolScreenY = 5.0;
+
+  for (int ds = 0; ds < mDataSetListCount; ds++)
+  {
+    iupPlotDataSet* dataset = mDataSetList[ds];
+
+    // only for modes that have lines connecting the samples.
+    if (dataset->mMode != IUP_PLOT_LINE && 
+        dataset->mMode != IUP_PLOT_MARKLINE && 
+        dataset->mMode != IUP_PLOT_AREA &&
+        dataset->mMode != IUP_PLOT_ERRORBAR)
+      continue;
+
+    if (dataset->FindSegment(mAxisX.mTrafo, mAxisY.mTrafo, inX, inY, tolScreenX, tolScreenY, outSampleIndex1, outSampleIndex2, outX1, outY1, outX2, outY2))
+    {
       outIndex = ds;
       outName = dataset->GetName();
       return true;
@@ -1276,14 +1520,14 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   if (mShowSelectionBand)
   {
-    if (mSelectionBand.mX < theDatasetArea.mX) 
-    { 
-      mSelectionBand.mWidth = mSelectionBand.mX + mSelectionBand.mWidth - theDatasetArea.mX; 
-      mSelectionBand.mX = theDatasetArea.mX; 
-    }
-    if (mSelectionBand.mY < theDatasetArea.mY) 
+    if (mSelectionBand.mX < theDatasetArea.mX)
     {
-      mSelectionBand.mHeight = mSelectionBand.mY + mSelectionBand.mHeight - theDatasetArea.mY; 
+      mSelectionBand.mWidth = mSelectionBand.mX + mSelectionBand.mWidth - theDatasetArea.mX;
+      mSelectionBand.mX = theDatasetArea.mX;
+    }
+    if (mSelectionBand.mY < theDatasetArea.mY)
+    {
+      mSelectionBand.mHeight = mSelectionBand.mY + mSelectionBand.mHeight - theDatasetArea.mY;
       mSelectionBand.mY = theDatasetArea.mY;
     }
     if (mSelectionBand.mX + mSelectionBand.mWidth > theDatasetArea.mX + theDatasetArea.mWidth)

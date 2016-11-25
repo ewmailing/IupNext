@@ -3,7 +3,7 @@
 
    This is a re-write of the PPlot library,
    directly using CD for drawing and IUP callback for interaction.
-*/
+   */
 
 #include "iup.h"
 #include "iupcbs.h"
@@ -20,6 +20,7 @@
 enum iupPlotMode { IUP_PLOT_LINE, IUP_PLOT_MARK, IUP_PLOT_MARKLINE, IUP_PLOT_AREA, IUP_PLOT_BAR, IUP_PLOT_STEM, IUP_PLOT_MARKSTEM, IUP_PLOT_HORIZONTALBAR, IUP_PLOT_MULTIBAR, IUP_PLOT_STEP, IUP_PLOT_ERRORBAR, IUP_PLOT_PIE };
 enum iupPlotLegendPosition { IUP_PLOT_TOPRIGHT, IUP_PLOT_TOPLEFT, IUP_PLOT_BOTTOMRIGHT, IUP_PLOT_BOTTOMLEFT, IUP_PLOT_BOTTOMCENTER, IUP_PLOT_XY };
 enum iupPlotSliceLabel { IUP_PLOT_NONE, IUP_PLOT_X, IUP_PLOT_Y, IUP_PLOT_PERCENT };
+enum iupPlotHighlight { IUP_PLOT_HIGHLIGHT_NONE, IUP_PLOT_HIGHLIGHT_SAMPLE, IUP_PLOT_HIGHLIGHT_CURVE, IUP_PLOT_HIGHLIGHT_BOTH };
 
 const double kFloatSmall = 1e-20;
 const double kLogMinClipValue = 1e-10;  // pragmatism to avoid problems with small values in log plot
@@ -28,7 +29,7 @@ int iupPlotCalcPrecision(double inValue);
 
 inline int iupPlotRound(double inFloat)
 {
-  return (int)(inFloat>0 ? inFloat + 0.5 : inFloat - 0.5);
+  return (int)(inFloat > 0 ? inFloat + 0.5 : inFloat - 0.5);
 }
 
 inline double iupPlotLog(double inFloat, double inBase)
@@ -45,7 +46,7 @@ inline double iupPlotExp(double inFloat, double inBase)
   return pow(inBase, inFloat);
 }
 
-class iupPlotRect 
+class iupPlotRect
 {
 public:
   iupPlotRect() :mX(0), mY(0), mWidth(0), mHeight(0) {}
@@ -58,7 +59,7 @@ public:
   int mHeight;
 };
 
-class iupPlotMargin 
+class iupPlotMargin
 {
 public:
   iupPlotMargin() :mLeft(0), mRight(0), mTop(0), mBottom(0) {}
@@ -95,7 +96,7 @@ public:
   double mSlope;
 };
 
-class iupPlotTrafoLog : public iupPlotTrafoBase 
+class iupPlotTrafoLog : public iupPlotTrafoBase
 {
 public:
   iupPlotTrafoLog() :mOffset(0), mSlope(0), mBase(10) {}
@@ -121,9 +122,10 @@ public:
   virtual bool CalculateRange(double &outMin, double &outMax) const = 0;
   virtual double GetSample(int inSampleIndex) const = 0;
 
-  void RemoveSample(int inSampleIndex) { 
-    if (inSampleIndex < 0) inSampleIndex = 0; if (inSampleIndex > mCount) inSampleIndex = mCount; 
-    iupArrayRemove(mArray, inSampleIndex, 1); mCount--; }
+  void RemoveSample(int inSampleIndex) {
+    if (inSampleIndex < 0) inSampleIndex = 0; if (inSampleIndex > mCount) inSampleIndex = mCount;
+    iupArrayRemove(mArray, inSampleIndex, 1); mCount--;
+  }
 
 protected:
   int mCount;
@@ -142,7 +144,8 @@ public:
   void AddSample(double inReal) { mData = (double*)iupArrayInc(mArray); mData[mCount] = inReal; mCount++; }
   void InsertSample(int inSampleIndex, double inReal) {
     if (inSampleIndex < 0) inSampleIndex = 0; if (inSampleIndex > mCount) inSampleIndex = mCount;
-    mData = (double*)iupArrayInsert(mArray, inSampleIndex, 1); mData[inSampleIndex] = inReal; mCount++; }
+    mData = (double*)iupArrayInsert(mArray, inSampleIndex, 1); mData[inSampleIndex] = inReal; mCount++;
+  }
 
   bool CalculateRange(double &outMin, double &outMax) const;
 
@@ -154,7 +157,7 @@ class iupPlotDataString : public iupPlotDataBase
 {
 public:
   iupPlotDataString() :iupPlotDataBase(sizeof(char*)) { mIsString = true; mData = (char**)iupArrayGetData(mArray); }
-  ~iupPlotDataString(); 
+  ~iupPlotDataString();
 
   double GetSample(int inSampleIndex) const { return inSampleIndex; }
 
@@ -162,9 +165,10 @@ public:
   void SetSampleString(int inSampleIndex, const char *inString) const { free(mData[inSampleIndex]); mData[inSampleIndex] = iupStrDup(inString); }
 
   void AddSample(const char *inString) { mData = (char**)iupArrayInc(mArray); mData[mCount] = iupStrDup(inString); mCount++; }
-  void InsertSample(int inSampleIndex, const char *inString) { 
-    if (inSampleIndex < 0) inSampleIndex = 0; if (inSampleIndex > mCount) inSampleIndex = mCount; 
-    mData = (char**)iupArrayInsert(mArray, inSampleIndex, 1); mData[inSampleIndex] = iupStrDup(inString); mCount++; }
+  void InsertSample(int inSampleIndex, const char *inString) {
+    if (inSampleIndex < 0) inSampleIndex = 0; if (inSampleIndex > mCount) inSampleIndex = mCount;
+    mData = (char**)iupArrayInsert(mArray, inSampleIndex, 1); mData[inSampleIndex] = iupStrDup(inString); mCount++;
+  }
 
   bool CalculateRange(double &outMin, double &outMax) const;
 
@@ -183,9 +187,10 @@ public:
   void SetSampleBool(int inSampleIndex, bool inBool) { mData[inSampleIndex] = inBool; }
 
   void AddSample(bool inBool) { mData = (bool*)iupArrayInc(mArray); mData[mCount] = inBool; mCount++; }
-  void InsertSample(int inSampleIndex, bool inBool) { 
-    if (inSampleIndex < 0) inSampleIndex = 0; if (inSampleIndex > mCount) inSampleIndex = mCount; 
-    mData = (bool*)iupArrayInsert(mArray, inSampleIndex, 1); mData[inSampleIndex] = inBool; mCount++; }
+  void InsertSample(int inSampleIndex, bool inBool) {
+    if (inSampleIndex < 0) inSampleIndex = 0; if (inSampleIndex > mCount) inSampleIndex = mCount;
+    mData = (bool*)iupArrayInsert(mArray, inSampleIndex, 1); mData[inSampleIndex] = inBool; mCount++;
+  }
 
   bool CalculateRange(double &outMin, double &outMax) const;
 
@@ -207,10 +212,18 @@ public:
   ~iupPlotDataSet();
 
   void SetName(const char* inName) { if (mName) free(mName); mName = iupStrDup(inName); }
-  const char* GetName() {return mName; }
+  const char* GetName() { return mName; }
 
-  bool FindSample(double inX, double inY, double tolX, double tolY,
+  bool FindSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inX, double inY, double tolX, double tolY, double tolScreenX, double tolScreenY,
                   int &outSampleIndex, double &outX, double &outY) const;
+  bool FindPointSample(double inX, double inY, double tolX, double tolY,
+                       int &outSampleIndex, double &outX, double &outY) const;
+  bool FindMultipleBarSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inX, double inY, double tolScreenX, double tolScreenY,
+                             int &outSampleIndex, double &outX, double &outY) const;
+  bool FindPieSample(double inX, double inY, 
+                     int &outSampleIndex, double &outX, double &outY) const;
+  bool FindSegment(iupPlotTrafoBase *mTrafoX, iupPlotTrafoBase *mTrafoY, double inX, double inY, double tolScreenX, double tolScreenY,
+                   int &outSampleIndex1, int &outSampleIndex2, double &outX1, double &outY1, double &outX2, double &outY2) const;
 
   void DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
   void DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih, const iupPlotAxis& inAxisY, long inBackColor) const;
@@ -260,6 +273,8 @@ public:
   double mPieHole;
   iupPlotSliceLabel mPieSliceLabel;
   double mPieSliceLabelPos;
+  int mHighlightedSample;
+  bool mHighlightedCurve;
   void* mUserData;
 
 protected:
@@ -291,7 +306,7 @@ protected:
 
 class iupPlotTick;
 
-class iupPlotTickIterBase 
+class iupPlotTickIterBase
 {
 public:
   iupPlotTickIterBase() :mAxis(NULL){}
@@ -309,7 +324,7 @@ protected:
   const iupPlotAxis *mAxis;
 };
 
-class iupPlotTickIterLinear : public iupPlotTickIterBase 
+class iupPlotTickIterLinear : public iupPlotTickIterBase
 {
 public:
   iupPlotTickIterLinear() :mCurrentTick(0), mDelta(0){}
@@ -325,7 +340,7 @@ protected:
   double mDelta;
 };
 
-class iupPlotTickIterLog : public iupPlotTickIterBase 
+class iupPlotTickIterLog : public iupPlotTickIterBase
 {
 public:
   iupPlotTickIterLog() :mCurrentTick(0), mDelta(0){}
@@ -345,7 +360,7 @@ protected:
   double mDelta;
 };
 
-class iupPlotTickIterNamed : public iupPlotTickIterLinear 
+class iupPlotTickIterNamed : public iupPlotTickIterLinear
 {
 public:
   iupPlotTickIterNamed(){}
@@ -359,14 +374,16 @@ protected:
   const iupPlotDataString* mStringData;
 };
 
-class iupPlotTick 
+class iupPlotTick
 {
 public:
-  iupPlotTick() 
+  iupPlotTick()
     :mAutoSpacing(true), mAutoSize(true), mMinorDivision(1), mShowNumber(true),
     mMajorSpan(1), mMajorSize(1), mMinorSize(1), mShow(true), mRotateNumberAngle(90),
     mFontSize(0), mFontStyle(-1), mRotateNumber(false), mFormatAuto(true)
-  { strcpy(mFormatString, "%.0f"); }
+  {
+    strcpy(mFormatString, "%.0f");
+  }
 
   bool mShow;
 
@@ -392,12 +409,14 @@ class iupPlotAxis
 public:
   iupPlotAxis(int inDefaultFontStyle, int inDefaultFontSize)
     : mShow(true), mMin(0), mMax(0), mAutoScaleMin(true), mAutoScaleMax(true),
-      mReverse(false), mLogScale(false), mCrossOrigin(false), mColor(CD_BLACK),
-      mMaxDecades(-1), mLogBase(10), mLabelCentered(true), mHasZoom(false),
-      mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1), mLabelSpacing(-1),
-      mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize), 
-      mTrafo(NULL), mTickIter(NULL), mDefaultFontStyle(inDefaultFontStyle)
-    { strcpy(mTipFormatString, "%.2f"); }
+    mReverse(false), mLogScale(false), mCrossOrigin(false), mColor(CD_BLACK),
+    mMaxDecades(-1), mLogBase(10), mLabelCentered(true), mHasZoom(false),
+    mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1), mLabelSpacing(-1),
+    mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize),
+    mTrafo(NULL), mTickIter(NULL), mDefaultFontStyle(inDefaultFontStyle)
+  {
+    strcpy(mTipFormatString, "%.2f");
+  }
   ~iupPlotAxis() { SetLabel(NULL); }
 
   void SetLabel(const char* inLabel) { if (mLabel) free(mLabel); mLabel = iupStrDup(inLabel); }
@@ -476,12 +495,12 @@ protected:
   double mPanMin;
 };
 
-class iupPlotGrid 
+class iupPlotGrid
 {
 public:
   iupPlotGrid(bool inMajor)
-    : mShowX(false), mShowY(false), mColor(cdEncodeColor(200, 200, 200)), 
-      mLineStyle(CD_CONTINUOUS), mLineWidth(1), mMajor(inMajor) {}
+    : mShowX(false), mShowY(false), mColor(cdEncodeColor(200, 200, 200)),
+    mLineStyle(CD_CONTINUOUS), mLineWidth(1), mMajor(inMajor) {}
 
   bool DrawX(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const;
   bool DrawY(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const;
@@ -499,7 +518,7 @@ class iupPlotBox
 public:
   iupPlotBox()
     : mShow(false), mColor(CD_BLACK),
-      mLineStyle(CD_CONTINUOUS), mLineWidth(1) {}
+    mLineStyle(CD_CONTINUOUS), mLineWidth(1) {}
 
   void Draw(const iupPlotRect &inRect, cdCanvas* canvas) const;
 
@@ -512,9 +531,9 @@ public:
 class iupPlotLegend
 {
 public:
-  iupPlotLegend() 
-    : mShow(false), mBoxShow(true), mFontSize(0), mFontStyle(-1), mPosition(IUP_PLOT_TOPRIGHT), 
-      mBoxLineStyle(CD_CONTINUOUS), mBoxLineWidth(1), mBoxColor(CD_BLACK), mBoxBackColor(CD_WHITE)
+  iupPlotLegend()
+    : mShow(false), mBoxShow(true), mFontSize(0), mFontStyle(-1), mPosition(IUP_PLOT_TOPRIGHT),
+    mBoxLineStyle(CD_CONTINUOUS), mBoxLineWidth(1), mBoxColor(CD_BLACK), mBoxBackColor(CD_WHITE)
   {}
 
   bool mShow;
@@ -533,9 +552,9 @@ public:
 class iupPlotTitle
 {
 public:
-  iupPlotTitle() 
-    : mColor(CD_BLACK), mText(NULL), mFontSize(0), mFontStyle(-1), 
-      mAutoPos(true), mPosX(0), mPosY(0) {}
+  iupPlotTitle()
+    : mColor(CD_BLACK), mText(NULL), mFontSize(0), mFontStyle(-1),
+    mAutoPos(true), mPosX(0), mPosY(0) {}
   ~iupPlotTitle() { if (mText) free(mText); }
 
   void SetText(const char* inValue) { if (mText) free(mText); mText = iupStrDup(inValue); }
@@ -561,13 +580,13 @@ public:
   void SetImage(const char* inValue) { if (mImage) free(mImage); mImage = iupStrDup(inValue); }
   const char* GetImage() const { return mImage; }
 
-  iupPlotMargin mMargin, 
-                mMarginAuto;
+  iupPlotMargin mMargin,
+    mMarginAuto;
   long mColor;
-  double mImageMinX, 
-         mImageMaxX, 
-         mImageMinY, 
-         mImageMaxY;
+  double mImageMinX,
+    mImageMaxX,
+    mImageMinY,
+    mImageMaxY;
 
 protected:
   char* mImage;
@@ -600,15 +619,15 @@ public:
   /*********************************/
 
   void DrawTitle(cdCanvas* canvas) const;
-    void SetTitleFont(cdCanvas* canvas) const;
+  void SetTitleFont(cdCanvas* canvas) const;
   void DrawBackground(cdCanvas* canvas) const;
   void DrawBackgroundImage(cdCanvas* canvas) const;
   bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const;
   bool DrawSampleColorLegend(iupPlotDataSet *inData, const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const;
   void DrawCrossHairH(const iupPlotRect &inRect, cdCanvas* canvas) const;
-    void DrawCrossSamplesH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
+  void DrawCrossSamplesH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
   void DrawCrossHairV(const iupPlotRect &inRect, cdCanvas* canvas) const;
-    void DrawCrossSamplesV(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
+  void DrawCrossSamplesV(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
   void DrawInactive(cdCanvas* canvas) const;
 
   /*********************************/
@@ -618,13 +637,13 @@ public:
   bool CheckInsideLegend(cdCanvas* canvas, int x, int y);
   void CalculateMargins(cdCanvas* canvas);
   bool CalculateAxisRange();
-    bool CalculateXRange(double &outXMin, double &outXMax);
-    bool CalculateYRange(double &outYMin, double &outYMax);
+  bool CalculateXRange(double &outXMin, double &outXMax);
+  bool CalculateYRange(double &outYMin, double &outYMax);
   bool CheckRange(const iupPlotAxis &inAxis);
   bool CalculateYTransformation(const iupPlotRect &inRect);
   bool CalculateXTransformation(const iupPlotRect &inRect);
-    bool CalculateLinTransformation(int inBegin, int inEnd, const iupPlotAxis& inAxis, iupPlotTrafoLinear* outTrafo);
-    bool CalculateLogTransformation(int inBegin, int inEnd, const iupPlotAxis& inAxis, iupPlotTrafoLog* outTrafo);
+  bool CalculateLinTransformation(int inBegin, int inEnd, const iupPlotAxis& inAxis, iupPlotTrafoLinear* outTrafo);
+  bool CalculateLogTransformation(int inBegin, int inEnd, const iupPlotAxis& inAxis, iupPlotTrafoLog* outTrafo);
   bool CalculateTickSpacing(const iupPlotRect &inRect, cdCanvas* canvas);
   void CalculateTickSize(cdCanvas* canvas, iupPlotTick &ioTick);
 
@@ -640,8 +659,10 @@ public:
   void Scroll(double inDelta, bool inFullPage, bool inVertical) { if (inVertical) { if (mAxisY.Scroll(inDelta, inFullPage)) mRedraw = true; } else { if (mAxisX.Scroll(inDelta, inFullPage)) mRedraw = true; } }
   void ScrollTo(double inMinX, double inMinY) { if (mAxisX.ScrollTo(inMinX)) mRedraw = true; if (mAxisY.ScrollTo(inMinY)) mRedraw = true; }
 
-  void TransformBack(int inX, int inY, double &outX, double &outY) { outX = mAxisX.mTrafo->TransformBack((double)inX);
-                                                                     outY = mAxisY.mTrafo->TransformBack((double)inY); }
+  void TransformBack(int inX, int inY, double &outX, double &outY) {
+    outX = mAxisX.mTrafo->TransformBack((double)inX);
+    outY = mAxisY.mTrafo->TransformBack((double)inY);
+  }
 
   /*********************************/
 
@@ -650,6 +671,8 @@ public:
 
   bool mShowSelectionBand;
   iupPlotRect mSelectionBand;
+
+  iupPlotHighlight mHighlightMode;
 
   /*********************************/
 
@@ -677,9 +700,11 @@ public:
   iupPlotDataSet* HasPie();
 
   bool FindDataSetSample(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const;
+  bool FindDataSetSegment(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex1, int &outSampleIndex2, double &outX1, double &outY1, double &outX2, double &outY2) const;
   void SelectDataSetSamples(double inMinX, double inMaxX, double inMinY, double inMaxY);
   void DeleteSelectedDataSetSamples();
   void ClearDataSetSelection();
+  void ClearHighlight();
 };
 
 #endif

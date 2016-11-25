@@ -1971,6 +1971,26 @@ static int iPlotSetDSPieSliceLabelPosAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iPlotGetHighlightModeAttrib(Ihandle* ih)
+{
+  const char* mode_str[] = { "NONE", "SAMPLE", "CURVE", "BOTH" };
+  return (char*)mode_str[ih->data->current_plot->mHighlightMode];
+}
+
+static int iPlotSetHighlightModeAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "SAMPLE"))
+    ih->data->current_plot->mHighlightMode = IUP_PLOT_HIGHLIGHT_SAMPLE;
+  else if (iupStrEqualNoCase(value, "CURVE"))
+    ih->data->current_plot->mHighlightMode = IUP_PLOT_HIGHLIGHT_CURVE;
+  else if (iupStrEqualNoCase(value, "BOTH"))
+    ih->data->current_plot->mHighlightMode = IUP_PLOT_HIGHLIGHT_BOTH;
+  else  /* NONE */
+    ih->data->current_plot->mHighlightMode = IUP_PLOT_HIGHLIGHT_NONE;
+
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
 
 /* ========== */
 /* axis props */
@@ -3366,6 +3386,8 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "BACKIMAGE_YMIN", iPlotGetBackImageYMinAttrib, iPlotSetBackImageYMinAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGE_XMAX", iPlotGetBackImageXMaxAttrib, iPlotSetBackImageXMaxAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGE_YMAX", iPlotGetBackImageYMaxAttrib, iPlotSetBackImageYMaxAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "HIGHLIGHTMODE", iPlotGetHighlightModeAttrib, iPlotSetHighlightModeAttrib, IUPAF_SAMEASSYSTEM, "NONE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TITLE", iPlotGetTitleAttrib, iPlotSetTitleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLECOLOR", iPlotGetTitleColorAttrib, iPlotSetTitleColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

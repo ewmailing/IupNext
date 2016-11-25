@@ -75,6 +75,28 @@ static int predraw_cb(Ihandle* ih, cdCanvas* cnv)
   return IUP_DEFAULT;
 }
 
+static int clicksegment_cb(Ihandle* ih, int ds, int sample1, int sample2, double rx1, double ry1, double rx2, double ry2)
+{
+  char mess[200];
+
+  Ihandle* dlg = IupMessageDlg();
+
+  IupSetAttribute(dlg, "DIALOGTYPE", "WARNING");
+  IupSetAttribute(dlg, "TITLE", "IupMessageDlg Test");
+  IupSetAttribute(dlg, "BUTTONS", "OK");
+
+  sprintf(mess, "Curve = %d\nSample1 = %d\nSample2 = %d\nrx1 = %.4f\nry1 = %.4f\nrx12 = %.4f\nry2 = %.4f",
+          ds, sample1, sample2, rx1, ry1, rx2, ry2);
+
+  IupSetAttribute(dlg, "VALUE", mess);
+
+  IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
+
+  printf("BUTTONRESPONSE(%s)\n", IupGetAttribute(dlg, "BUTTONRESPONSE"));
+
+  IupDestroy(dlg);    return IUP_DEFAULT;
+}
+
 static void InitPlots(void)
 {
   int theI;
@@ -265,6 +287,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[3], "DS_BAROUTLINECOLOR", "70 70 160");
   IupSetAttribute(plot[3], "DS_BARSPACING", "0");
   IupSetAttribute(plot[3], "DS_MODE", "BAR");
+  IupSetAttribute(plot[3], "HIGHLIGHTMODE", "SAMPLE");
 
   /************************************************************************/
   /* PLOT 4 */
@@ -295,6 +318,8 @@ static void InitPlots(void)
   }
   IupPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARKLINE");
+  IupSetAttribute(plot[4], "HIGHLIGHTMODE", "BOTH");
+  IupSetCallback(plot[4], "CLICKSEGMENT_CB", (Icallback)clicksegment_cb);
 
   IupPlotBegin(plot[4], 0);
   for (theI = 0; theI <= 10; theI++)
@@ -306,6 +331,7 @@ static void InitPlots(void)
   IupPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARK");
   IupSetAttribute(plot[4], "DS_MARKSTYLE", "HOLLOW_CIRCLE");
+  IupSetAttribute(plot[4], "HIGHLIGHTMODE", "SAMPLE");
 
   /************************************************************************/
   /* PLOT 5 */
@@ -349,6 +375,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[6], "DS_LINEWIDTH", "3");
   IupSetAttribute(plot[6], "DS_LEGEND", "Line");
   IupSetAttribute(plot[6], "DS_MODE", "STEP");
+  IupSetAttribute(plot[6], "HIGHLIGHTMODE", "SAMPLE");
 
   /************************************************************************/
   /* PLOT 7 */
@@ -378,6 +405,7 @@ static void InitPlots(void)
   IupPlotEnd(plot[7]);
   IupSetAttribute(plot[7], "DS_MODE", "MARKSTEM");
   IupSetAttribute(plot[7], "DS_MARKSTYLE", "HOLLOW_CIRCLE");
+  IupSetAttribute(plot[7], "HIGHLIGHTMODE", "SAMPLE");
 
   /************************************************************************/
   /* PLOT 8 */
@@ -399,6 +427,9 @@ static void InitPlots(void)
   IupSetAttribute(plot[8], "AXS_YMIN", "0");
   IupSetAttribute(plot[8], "DS_COLOR", "100 100 200");
   IupSetAttribute(plot[8], "DS_MODE", "HORIZONTALBAR");
+  IupSetAttribute(plot[8], "DS_BAROUTLINE", "Yes");
+  IupSetAttribute(plot[8], "DS_BAROUTLINECOLOR", "70 70 160");
+  IupSetAttribute(plot[8], "HIGHLIGHTMODE", "SAMPLE");
 
   /************************************************************************/
   /* PLOT 9 */
@@ -417,6 +448,9 @@ static void InitPlots(void)
   }
   IupPlotEnd(plot[9]);
   IupSetAttribute(plot[9], "DS_MODE", "MULTIBAR");
+  IupSetAttribute(plot[9], "DS_BAROUTLINE", "Yes");
+  IupSetAttribute(plot[9], "DS_BAROUTLINECOLOR", "70 70 160");
+  IupSetAttribute(plot[9], "HIGHLIGHTMODE", "SAMPLE");
 
   {
     const char * kLables[12] = { "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" };
@@ -427,6 +461,9 @@ static void InitPlots(void)
   }
   IupPlotEnd(plot[9]);
   IupSetAttribute(plot[9], "DS_MODE", "MULTIBAR");
+  IupSetAttribute(plot[9], "DS_BAROUTLINE", "Yes");
+  IupSetAttribute(plot[9], "DS_BAROUTLINECOLOR", "70 70 160");
+  IupSetAttribute(plot[9], "HIGHLIGHTMODE", "SAMPLE");
 
   {
     const char * kLables[12] = { "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" };
@@ -437,6 +474,9 @@ static void InitPlots(void)
   }
   IupPlotEnd(plot[9]);
   IupSetAttribute(plot[9], "DS_MODE", "MULTIBAR");
+  IupSetAttribute(plot[9], "DS_BAROUTLINE", "Yes");
+  IupSetAttribute(plot[9], "DS_BAROUTLINECOLOR", "70 70 160");
+  IupSetAttribute(plot[9], "HIGHLIGHTMODE", "SAMPLE");
 
   /************************************************************************/
   /* PLOT 10 */
@@ -455,6 +495,7 @@ static void InitPlots(void)
   //  IupSetAttribute(plot[10], "DS_LINEWIDTH", "3");
   IupSetAttribute(plot[10], "DS_LEGEND", "Error Bar");
   IupSetAttribute(plot[10], "DS_MODE", "ERRORBAR");
+  IupSetAttribute(plot[10], "HIGHLIGHTMODE", "BOTH");
 
   /************************************************************************/
   /* PLOT 11 */
@@ -474,7 +515,8 @@ static void InitPlots(void)
   IupPlotEnd(plot[11]);
   //IupSetAttribute(plot[11], "DS_PIESTARTANGLE", "90");
   IupSetAttribute(plot[11], "DS_PIECONTOUR", "YES");
-//  IupSetAttribute(plot[11], "DS_PIERADIUS", "0.9");
+  IupSetAttribute(plot[11], "HIGHLIGHTMODE", "SAMPLE");
+  //  IupSetAttribute(plot[11], "DS_PIERADIUS", "0.9");
   IupSetAttribute(plot[11], "DS_PIEHOLE", "0.3"); // factor of radius
   IupSetAttribute(plot[11], "DS_PIESLICELABEL", "X");
 //  IupSetAttribute(plot[11], "DS_PIESLICELABEL", "PERCENT");
@@ -519,6 +561,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[12], "DS_MODE", "AREA");
   IupSetAttribute(plot[12], "DS_AREATRANSPARENCY", "64");
   IupSetAttribute(plot[12], "DS_LINEWIDTH", "3");
+  IupSetAttribute(plot[12], "HIGHLIGHTMODE", "BOTH");
 
   {
     const double kData[4] = { 400, 460, 1120, 540 };
@@ -530,6 +573,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[12], "DS_MODE", "AREA");
   IupSetAttribute(plot[12], "DS_AREATRANSPARENCY", "64");
   IupSetAttribute(plot[12], "DS_LINEWIDTH", "3");
+  IupSetAttribute(plot[12], "HIGHLIGHTMODE", "BOTH");
 }
 
 static int tabs_get_index(void)
