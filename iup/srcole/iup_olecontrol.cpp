@@ -128,7 +128,7 @@ static int iOleControlMapMethod(Ihandle* ih)
 
 static int iOleControlCreateMethod(Ihandle* ih, void **params)
 {
-  /* free the data alocated by IupCanvas */
+  /* free the data allocated by IupCanvas */
   free(ih->data);
   ih->data = iupALLOCCTRLDATA();
   ih->data->olehandler = new tOleHandler();
