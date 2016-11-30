@@ -125,6 +125,7 @@ static void InitPlots(void)
   //  IupSetAttribute(plot[0], "AXS_AUTOSCALEEQUAL", "Yes");
   //  Mult = 80;
   //  IupSetAttribute(plot[0], "VIEWPORTSQUARE", "Yes");
+  IupSetAttribute(plot[0], "HIGHLIGHTMODE", "CURVE");
 
   if (0)
   {
@@ -331,7 +332,6 @@ static void InitPlots(void)
   IupPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARK");
   IupSetAttribute(plot[4], "DS_MARKSTYLE", "HOLLOW_CIRCLE");
-  IupSetAttribute(plot[4], "HIGHLIGHTMODE", "SAMPLE");
 
   /************************************************************************/
   /* PLOT 5 */

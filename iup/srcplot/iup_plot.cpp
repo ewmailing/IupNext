@@ -1661,6 +1661,10 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
           if (ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_SAMPLE ||
               ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_BOTH)
             ih->data->current_plot->mDataSetList[ih->data->last_cursor_ds]->mHighlightedSample = ih->data->last_cursor_sample;
+
+          // highlight a curve
+          if (ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_CURVE)
+              ih->data->current_plot->mDataSetList[ih->data->last_cursor_ds]->mHighlightedCurve = true;
         }
         else
         {
