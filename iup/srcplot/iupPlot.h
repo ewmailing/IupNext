@@ -226,7 +226,7 @@ public:
                    int &outSampleIndex1, int &outSampleIndex2, double &outX1, double &outY1, double &outX2, double &outY2) const;
 
   void DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
-  void DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih, const iupPlotAxis& inAxisY, long inBackColor) const;
+  void DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, const iupPlotAxis& inAxisY, long inBackColor) const;
 
   int GetCount();
   void AddSample(double inX, double inY);
@@ -266,6 +266,7 @@ public:
   int mMultibarCount;
   long mBarOutlineColor;
   bool mBarShowOutline;
+  bool mBarMulticolor;
   int mBarSpacingPercent;
   double mPieRadius;
   double mPieStartAngle;

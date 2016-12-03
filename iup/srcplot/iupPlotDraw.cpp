@@ -928,7 +928,7 @@ void iupPlotDataSet::DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlo
     double theScreenX = inTrafoX->Transform(theX);
     double theScreenY = inTrafoY->Transform(theY);
 
-    if (inNotify)
+    if (inNotify->cb)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
     if (inShowMark)
@@ -1030,7 +1030,7 @@ void iupPlotDataSet::DrawDataMark(const iupPlotTrafoBase *inTrafoX, const iupPlo
     double theScreenX = inTrafoX->Transform(theX);
     double theScreenY = inTrafoY->Transform(theY);
 
-    if (inNotify)
+    if (inNotify->cb)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
     if (mExtra)
@@ -1054,7 +1054,7 @@ void iupPlotDataSet::DrawDataStem(const iupPlotTrafoBase *inTrafoX, const iupPlo
     double theScreenY = inTrafoY->Transform(theY);
     double theScreenY0 = inTrafoY->Transform(0.0);
 
-    if (inNotify)
+    if (inNotify->cb)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
     if (inShowMark)
@@ -1093,7 +1093,7 @@ void iupPlotDataSet::DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlo
     double theScreenX = inTrafoX->Transform(theX);
     double theScreenY = inTrafoY->Transform(theY);
 
-    if (inNotify)
+    if (inNotify->cb)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
     if (i == 0)
@@ -1203,8 +1203,11 @@ void iupPlotDataSet::DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlot
     double theBarX = theScreenX - theBarWidth / 2;
     double theBarHeight = theScreenY - theScreenY0;
 
-    if (inNotify)
+    if (inNotify->cb)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
+
+    if (mBarMulticolor)
+      cdCanvasSetForeground(canvas, iPlotGetSampleColorTable(inNotify->ih, i));
 
     iPlotDrawBox(canvas, theBarX, theScreenY0, theBarWidth, theBarHeight);
 
@@ -1212,11 +1215,13 @@ void iupPlotDataSet::DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlot
     {
       cdCanvasSetForeground(canvas, mBarOutlineColor);
       iPlotDrawRect(canvas, theBarX, theScreenY0, theBarWidth, theBarHeight);
-      cdCanvasSetForeground(canvas, mColor);
     }
 
     if (i == mHighlightedSample)
       iPlotDrawHighlightedBar(canvas, theBarX, theScreenY0, theBarWidth, theBarHeight);
+
+    if (mBarShowOutline && !mBarMulticolor)
+      cdCanvasSetForeground(canvas, mColor); // restore curve color
   }
 }
 
@@ -1244,8 +1249,11 @@ void iupPlotDataSet::DrawDataHorizontalBar(const iupPlotTrafoBase *inTrafoX, con
     double theBarY = theScreenY - theBarHeight / 2;
     double theBarWidth = theScreenX - theScreenX0;
 
-    if (inNotify)
+    if (inNotify->cb)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
+
+    if (mBarMulticolor)
+      cdCanvasSetForeground(canvas, iPlotGetSampleColorTable(inNotify->ih, i));
 
     iPlotDrawBox(canvas, theScreenX0, theBarY, theBarWidth, theBarHeight);
 
@@ -1253,11 +1261,13 @@ void iupPlotDataSet::DrawDataHorizontalBar(const iupPlotTrafoBase *inTrafoX, con
     {
       cdCanvasSetForeground(canvas, mBarOutlineColor);
       iPlotDrawRect(canvas, theScreenX0, theBarY, theBarWidth, theBarHeight);
-      cdCanvasSetForeground(canvas, mColor);
     }
 
     if (i == mHighlightedSample)
       iPlotDrawHighlightedBar(canvas, theScreenX0, theBarY, theBarWidth, theBarHeight);
+
+    if (mBarShowOutline && !mBarMulticolor)
+      cdCanvasSetForeground(canvas, mColor); // restore curve color
   }
 }
 
@@ -1285,7 +1295,7 @@ void iupPlotDataSet::DrawDataMultiBar(const iupPlotTrafoBase *inTrafoX, const iu
     double theBarX = (theScreenX - theTotalBarWidth / 2) + (mMultibarIndex*theBarWidth);
     double theBarHeight = theScreenY - theScreenY0;
 
-    if (inNotify)
+    if (inNotify->cb)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
     iPlotDrawBox(canvas, theBarX, theScreenY0, theBarWidth, theBarHeight);
@@ -1294,11 +1304,13 @@ void iupPlotDataSet::DrawDataMultiBar(const iupPlotTrafoBase *inTrafoX, const iu
     {
       cdCanvasSetForeground(canvas, mBarOutlineColor);
       iPlotDrawRect(canvas, theBarX, theScreenY0, theBarWidth, theBarHeight);
-      cdCanvasSetForeground(canvas, mColor);
     }
 
     if (i == mHighlightedSample)
       iPlotDrawHighlightedBar(canvas, theBarX, theScreenY0, theBarWidth, theBarHeight);
+
+    if (mBarShowOutline)
+      cdCanvasSetForeground(canvas, mColor); // restore curve color
   }
 }
 
@@ -1315,7 +1327,7 @@ void iupPlotDataSet::DrawDataStep(const iupPlotTrafoBase *inTrafoX, const iupPlo
     double theScreenX = inTrafoX->Transform(theX);
     double theScreenY = inTrafoY->Transform(theY);
 
-    if (inNotify)
+    if (inNotify->cb)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
     if (i > 0 && mSegment && mSegment->GetSampleBool(i))
@@ -1407,7 +1419,7 @@ static int iPlotGetPieTextAligment(double bisectrix, double inPieSliceLabelPos)
     return CD_EAST;
 }
 
-void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, Ihandle* ih, const iupPlotAxis& inAxisY, long inBackColor) const
+void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, const iupPlotAxis& inAxisY, long inBackColor) const
 {
   int theXCount = mDataX->GetCount();
   int theYCount = mDataY->GetCount();
@@ -1466,10 +1478,10 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
 
     double angle = (theY*360.) / sum;
 
-    if (inNotify)
+    if (inNotify->cb)
       inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
 
-    cdCanvasForeground(canvas, iPlotGetSampleColorTable(ih, i));
+    cdCanvasSetForeground(canvas, iPlotGetSampleColorTable(inNotify->ih, i));
 
     cdfCanvasSector(canvas, xc, yc, w, h, startAngle, startAngle + angle);
 
@@ -1533,13 +1545,13 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
     hw *= ((iupPlotTrafoLinear *)inTrafoX)->mSlope;
     hh *= ((iupPlotTrafoLinear *)inTrafoY)->mSlope;
 
-    cdCanvasForeground(canvas, inBackColor);
+    cdCanvasSetForeground(canvas, inBackColor);
 
     cdfCanvasSector(canvas, xc, yc, hw, hh, 0., 360.);
 
     if (mPieContour)
     {
-      cdCanvasForeground(canvas, mColor);
+      cdCanvasSetForeground(canvas, mColor);
 
       cdCanvasInteriorStyle(canvas, CD_HOLLOW);
       cdfCanvasSector(canvas, xc, yc, hw, hh, 0., 360.);
@@ -1563,7 +1575,7 @@ void iupPlotDataSet::DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPl
       double theScreenX = inTrafoX->Transform(theX);
       double theScreenY = inTrafoY->Transform(theY);
 
-      if (inNotify)
+      if (inNotify->cb)
       {
         int ret = inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)mSelection->GetSampleBool(i));
         if (ret == IUP_IGNORE)

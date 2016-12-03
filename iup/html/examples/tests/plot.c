@@ -264,6 +264,7 @@ static void InitPlots(void)
   //IupSetAttribute(plot[3], "MARGINTOP", "40");
   //IupSetAttribute(plot[3], "MARGINLEFT", "30");
   //IupSetAttribute(plot[3], "MARGINBOTTOM", "30");
+  IupSetAttribute(plot[3], "HIGHLIGHTMODE", "SAMPLE");
 
   {
     const char * kLables[12] = { "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" };
@@ -278,7 +279,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[3], "DS_BAROUTLINECOLOR", "70 70 160");
   IupSetAttribute(plot[3], "DS_BARSPACING", "0");
   IupSetAttribute(plot[3], "DS_MODE", "BAR");
-  IupSetAttribute(plot[3], "HIGHLIGHTMODE", "SAMPLE");
+//  IupSetAttribute(plot[3], "DS_BARMULTICOLOR", "Yes");
 
   /************************************************************************/
   /* PLOT 4 */

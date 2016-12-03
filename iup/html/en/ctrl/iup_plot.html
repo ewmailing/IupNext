@@ -581,7 +581,9 @@ per sample. ERRORBAR mode depends on the "Extra" value to be set (see
 <a href="#IupPlotSetSampleExtra">IupPlotSetSampleExtra</a>). This extra value is 
 the "error" of each sample. <br>When BAR, HORIZONTALBAR and MULTIBAR modes are 
 set, AXS_XDISCRETE or AXS_YDISCRETE<b> </b> is also set.<br>When PIE 
-mode is set only the first dataset is drawn. Also attributes AXS_*AUTOMIN and 
+mode is set only the first dataset is drawn. Each sample is drawn with a 
+different color automatically set, but a custom color can be set using 
+SAMPLECOLORid attribute. Also attributes AXS_*AUTOMIN and 
 AXS_* are set to NO, AXS_*MIN are set to -1, and AXS_*MAX are set to 1. And 
 Legend displays the sample colors not the list of datasets. Only non-zero, 
 positive values, are drawn.</p>
@@ -601,6 +603,9 @@ HORIZONTALBAR or MULTIBAR. (since 3.18)</p>
 (since 3.18)</p>
 <p><strong>DS_BARSPACING</strong>: blank spacing percent between bars when mode 
 is BAR, HORIZONTALBAR or MULTIBAR. Can be 0 to 100. Default: 10. (since 3.18)</p>
+<p><strong>DS_BARMULTICOLOR</strong>: enable the use of one color for each 
+sample when mode is BAR or HORIZONTALBAR. The color is automatically set, but a 
+custom color can be set using SAMPLECOLORid attribute. Default: No. (since 3.21)</p>
 <p><b>DS_REMOVE</b> (write-only): removes a sample from the current dataset given its index.</p>
 <p><strong>DS_USERDATA</strong>: user data associated with the dataset. (since 
 3.13)</p>

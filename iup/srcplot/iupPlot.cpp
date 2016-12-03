@@ -162,7 +162,7 @@ iupPlotDataSet::iupPlotDataSet(bool strXdata)
 : mColor(CD_BLACK), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mAreaTransparency(255), mMarkStyle(CD_X), mMarkSize(7),
   mMultibarIndex(-1), mMultibarCount(0), mBarOutlineColor(0), mBarShowOutline(false), mBarSpacingPercent(10),
   mPieStartAngle(0), mPieRadius(0.95), mPieContour(false), mPieHole(0), mPieSliceLabelPos(0.95),
-  mHighlightedSample(-1), mHighlightedCurve(false), 
+  mHighlightedSample(-1), mHighlightedCurve(false), mBarMulticolor(false),
   mPieSliceLabel(IUP_PLOT_NONE), mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false)
 {
   if (strXdata)
@@ -465,7 +465,7 @@ bool iupPlotDataSet::SelectSamples(double inMinX, double inMaxX, double inMinY, 
 
       if (!theSelected)
       {
-        if (inNotify)
+        if (inNotify->cb)
         {
           int ret = inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)theSelected);
           if (ret == IUP_IGNORE)
@@ -480,7 +480,7 @@ bool iupPlotDataSet::SelectSamples(double inMinX, double inMaxX, double inMinY, 
     {
       if (theSelected)
       {
-        if (inNotify)
+        if (inNotify->cb)
         {
           int ret = inNotify->cb(inNotify->ih, inNotify->ds, i, theX, theY, (int)theSelected);
           if (ret == IUP_IGNORE)
@@ -511,7 +511,7 @@ bool iupPlotDataSet::ClearSelection(const iupPlotSampleNotify* inNotify)
     bool theSelected = mSelection->GetSampleBool(i);
     if (theSelected)
     {
-      if (inNotify)
+      if (inNotify->cb)
       {
         double theX = mDataX->GetSample(i);
         double theY = mDataY->GetSample(i);
@@ -543,7 +543,7 @@ bool iupPlotDataSet::DeleteSelectedSamples(const iupPlotSampleNotify* inNotify)
     bool theSelected = mSelection->GetSampleBool(i);
     if (theSelected)
     {
-      if (inNotify)
+      if (inNotify->cb)
       {
         double theX = mDataX->GetSample(i);
         double theY = mDataY->GetSample(i);
@@ -1294,18 +1294,9 @@ void iupPlot::SelectDataSetSamples(double inMinX, double inMaxX, double inMinY, 
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
-
-    if (select_cb)
-    {
-      iupPlotSampleNotify inNotify = { ih, ds, select_cb };
-      if (dataset->SelectSamples(inMinX, inMaxX, inMinY, inMaxY, &inNotify))
-        theChanged = true;
-    }
-    else
-    {
-      if (dataset->SelectSamples(inMinX, inMaxX, inMinY, inMaxY, NULL))
-        theChanged = true;
-    }
+    iupPlotSampleNotify theNotify = { ih, ds, select_cb };
+    if (dataset->SelectSamples(inMinX, inMaxX, inMinY, inMaxY, &theNotify))
+      theChanged = true;
   }
 
   if (select_cb)
@@ -1334,18 +1325,9 @@ void iupPlot::ClearDataSetSelection()
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
-
-    if (select_cb)
-    {
-      iupPlotSampleNotify inNotify = { ih, ds, select_cb };
-      if (dataset->ClearSelection(&inNotify))
-        theChanged = true;
-    }
-    else
-    {
-      if (dataset->ClearSelection(NULL))
-        theChanged = true;
-    }
+    iupPlotSampleNotify theNotify = { ih, ds, select_cb };
+    if (dataset->ClearSelection(&theNotify))
+      theChanged = true;
   }
 
   if (select_cb)
@@ -1363,8 +1345,8 @@ void iupPlot::DeleteSelectedDataSetSamples()
 {
   bool theChanged = false;
 
-  IFniiddi select_cb = (IFniiddi)IupGetCallback(ih, "DELETE_CB");
-  if (select_cb)
+  IFniiddi delete_cb = (IFniiddi)IupGetCallback(ih, "DELETE_CB");
+  if (delete_cb)
   {
     Icallback cb = IupGetCallback(ih, "DELETEBEGIN_CB");
     if (cb && cb(ih) == IUP_IGNORE)
@@ -1374,21 +1356,12 @@ void iupPlot::DeleteSelectedDataSetSamples()
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
-
-    if (select_cb)
-    {
-      iupPlotSampleNotify inNotify = { ih, ds, select_cb };
-      if (dataset->DeleteSelectedSamples(&inNotify))
-        theChanged = true;
-    }
-    else
-    {
-      if (dataset->DeleteSelectedSamples(NULL))
-        theChanged = true;
-    }
+    iupPlotSampleNotify theNotify = { ih, ds, delete_cb };
+    if (dataset->DeleteSelectedSamples(&theNotify))
+      theChanged = true;
   }
 
-  if (select_cb)
+  if (delete_cb)
   {
     Icallback cb = IupGetCallback(ih, "DELETEEND_CB");
     if (cb)
@@ -1527,20 +1500,17 @@ bool iupPlot::Render(cdCanvas* canvas)
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
-    iupPlotSampleNotify localNotify = { ih, ds, drawsample_cb };
-    iupPlotSampleNotify* inNotify = NULL;
-    if (drawsample_cb)
-      inNotify = &localNotify;
+    iupPlotSampleNotify theNotify = { ih, ds, drawsample_cb };
 
     if (pie_dataset)
     {
       if (dataset != pie_dataset)
         continue;
       else
-        dataset->DrawDataPie(mAxisX.mTrafo, mAxisY.mTrafo, canvas, inNotify, ih, mAxisY, mBack.mColor);
+        dataset->DrawDataPie(mAxisX.mTrafo, mAxisY.mTrafo, canvas, &theNotify, mAxisY, mBack.mColor);
     }
 
-    dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, inNotify);
+    dataset->DrawData(mAxisX.mTrafo, mAxisY.mTrafo, canvas, &theNotify);
   }
 
   if (mCrossHairH)
