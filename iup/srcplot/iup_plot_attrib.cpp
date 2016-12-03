@@ -1996,6 +1996,22 @@ static int iPlotSetHighlightModeAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iPlotGetScreenToleranceAttrib(Ihandle* ih)
+{
+  return iupStrReturnDouble(ih->data->current_plot->mScreenTolerance);
+}
+
+static int iPlotSetScreenToleranceAttrib(Ihandle* ih, const char* value)
+{
+  double xx;
+  if (iupStrToDouble(value, &xx))
+  {
+    ih->data->current_plot->mScreenTolerance = xx;
+  }
+
+  return 0;
+}
+
 /* ========== */
 /* axis props */
 /* ========== */
@@ -3392,6 +3408,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "BACKIMAGE_YMAX", iPlotGetBackImageYMaxAttrib, iPlotSetBackImageYMaxAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "HIGHLIGHTMODE", iPlotGetHighlightModeAttrib, iPlotSetHighlightModeAttrib, IUPAF_SAMEASSYSTEM, "NONE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCREENTOLERANCE", iPlotGetScreenToleranceAttrib, iPlotSetScreenToleranceAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TITLE", iPlotGetTitleAttrib, iPlotSetTitleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLECOLOR", iPlotGetTitleColorAttrib, iPlotSetTitleColorAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

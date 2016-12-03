@@ -214,15 +214,15 @@ public:
   void SetName(const char* inName) { if (mName) free(mName); mName = iupStrDup(inName); }
   const char* GetName() { return mName; }
 
-  bool FindSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inX, double inY, double tolX, double tolY, double tolScreenX, double tolScreenY,
+  bool FindSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inX, double inY, double inTolX, double inTolY, double inScreenTolerance,
                   int &outSampleIndex, double &outX, double &outY) const;
-  bool FindPointSample(double inX, double inY, double tolX, double tolY,
+  bool FindPointSample(double inX, double inY, double inTolX, double inTolY,
                        int &outSampleIndex, double &outX, double &outY) const;
-  bool FindMultipleBarSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inX, double inY, double tolScreenX, double tolScreenY,
+  bool FindMultipleBarSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inX, double inY, double inScreenTolerance,
                              int &outSampleIndex, double &outX, double &outY) const;
   bool FindPieSample(double inX, double inY, 
                      int &outSampleIndex, double &outX, double &outY) const;
-  bool FindSegment(iupPlotTrafoBase *mTrafoX, iupPlotTrafoBase *mTrafoY, double inX, double inY, double tolScreenX, double tolScreenY,
+  bool FindSegment(iupPlotTrafoBase *mTrafoX, iupPlotTrafoBase *mTrafoY, double inX, double inY, double inScreenTolerance,
                    int &outSampleIndex1, int &outSampleIndex2, double &outX1, double &outY1, double &outX2, double &outY2) const;
 
   void DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
@@ -673,6 +673,8 @@ public:
   iupPlotRect mSelectionBand;
 
   iupPlotHighlight mHighlightMode;
+
+  double mScreenTolerance;
 
   /*********************************/
 

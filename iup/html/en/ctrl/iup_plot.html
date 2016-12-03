@@ -474,6 +474,12 @@ existing plot. </p>
 <h4><span class="style1">IMPORTANT:</span> All the following attributes and 
 callbacks are dependent 
 on the <strong>PLOT_CURRENT</strong> attribute.</h4>
+<h4>Interaction Configuration </h4>
+<p><strong>HIGHLIGHTMODE</strong>: enable the highlight of a curve and/or sample 
+when cursor is over it. Can be: NONE, SAMPLE, CURVE or BOTH. CURVE highlight 
+only works when DS_MODE is LINE, MARKLINE, AREA, STEP and ERRORBAR. (since 3.21)</p>
+<p><strong>SCREENTOLERANCE</strong>: tolerance in pixels for highlight and 
+click. Default: 5 (since 3.21)</p>
 <h4>Background Configuration </h4>
 <p><b>MARGINLEFT, MARGINRIGHT, MARGINTOP, MARGINBOTTOM:</b> 
 margin of the dataset area in pixels. If set to AUTO the margins are 
@@ -491,9 +497,6 @@ scale. (since 3.13)</p>
 <p><strong>BACKIMAGE_XMIN, BACKIMAGE_XMAX, BACKIMAGE_YMIN, BACKIMAGE_YMAX</strong>: 
 coordinates in plot scale to position the background image. The anchors in the 
 image are the left-bottom and the top-right corners. (since 3.13) </p>
-<p><strong>HIGHLIGHTMODE</strong>: enable the highlight of a curve and/or sample 
-when cursor is over it. Can be: NONE, SAMPLE, CURVE or BOTH. CURVE highlight 
-only works when DS_MODE is LINE, MARKLINE, AREA, STEP and ERRORBAR. (since 3.21)</p>
 <h4>Title Configuration </h4>
 <p><b>TITLE:</b> the title. If NULL will not be displayed.</p>
 <p><b>TITLECOLOR</b>: title color. Default: FGCOLOR.</p>
