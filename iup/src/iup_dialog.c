@@ -802,7 +802,7 @@ static int iDialogSetSimulateModalAttrib(Ihandle *ih, const char *value)
 
 static int iDialogSetParentDialogAttrib(Ihandle *ih, const char *value)
 {
-  Ihandle* parent = (char*)IupGetHandle(value);
+  Ihandle* parent = IupGetHandle(value);
   InativeHandle* native_parent;
   if (parent && parent->handle)
     native_parent = parent->handle;
