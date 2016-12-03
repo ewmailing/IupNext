@@ -315,6 +315,37 @@ bool iupPlotDataSet::FindPieSample(double inX, double inY, int &outSampleIndex, 
   return false;
 }
 
+static bool iPlotCheckInsideBox(double x1, double y1, double x2, double y2, double inX, double inY, double inScreenTolerance)
+{
+  if (x1 > x2)
+  {
+    double tmp = x1;
+    x1 = x2;
+    x2 = tmp;
+  }
+
+  if (y1 > y2)
+  {
+    double tmp = y1;
+    y1 = y2;
+    y2 = tmp;
+  }
+
+  x1 -= inScreenTolerance;
+  x2 += inScreenTolerance;
+
+  y1 -= inScreenTolerance;
+  y2 += inScreenTolerance;
+
+  if (inX < x1 || inX > x2)
+    return false;
+
+  if (inY < y1 || inY > y2)
+    return false;
+
+  return true;
+}
+
 bool iupPlotDataSet::FindSegment(iupPlotTrafoBase *mTrafoX, iupPlotTrafoBase *mTrafoY, double inX, double inY, double inScreenTolerance,
                                  int &outSampleIndex1, int &outSampleIndex2, double &outX1, double &outY1, double &outX2, double &outY2) const
 {
@@ -339,9 +370,15 @@ bool iupPlotDataSet::FindSegment(iupPlotTrafoBase *mTrafoX, iupPlotTrafoBase *mT
     double x2 = mTrafoX->Transform(ox2);
     double y2 = mTrafoY->Transform(oy2);
 
-    // TODO inX,inY must be inside box x1,y1 - x2,y2
-//    if (!iPlotCheckInsideBox(x1, y1, x2, y1, inX, inY, inScreenTolerance))
-  //    continue;
+    // inX,inY must be inside box x1,y1 - x2,y2
+    if (!iPlotCheckInsideBox(x1, y1, x2, y2, inX, inY, inScreenTolerance))
+    {
+      ox1 = ox2;
+      oy1 = oy2;
+      x1 = x2;
+      y1 = y2;
+      continue;
+    }
 
     double v1x = x2 - x1;
     double v1y = y2 - y1;
