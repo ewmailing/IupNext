@@ -313,10 +313,18 @@ coordinates is in CD bottom to top orientation.</p>
 <pre>int <b>IupPlotFindSample</b>(Ihandle* <b>ih</b>, double <b>cnv_x</b>, double <b>cnv_y</b>, int <b>*ds_index</b>, int <b>*sample_index</b>); [in C]
 <b>iup.PlotFindSample</b>(<b>ih</b>: ihandle, <b>cnv_x, cnv_y</b>: number) -&gt; (<strong>ret, ds_index</strong>, <strong>sample_index</strong>: number) [in Lua]
 or <b>ih:FindSample</b>(<b>cnv_x, cnv_y</b>: number) -&gt; (<strong>ret, ds_index</strong>, <strong>sample_index</strong>: number) [in Lua]</pre>
-<p>Returns the nearest sample of the nearest dataset within a 5 pixels tolerance 
-neiborhood. Returns a non zero value is successful, or a zero value if failed. 
+<p>Returns the nearest sample of the nearest dataset within a tolerance 
+neighborhood. Tolerance can be set in SCREENTOLERANCE attribute. Returns a non zero value is successful, or a zero value if failed. 
 It should be used inside callbacks only. Output variables can be NULL if not used. Y canvas 
 coordinates is in CD bottom to top orientation. (since 3.13)</p>
+<hr>
+<pre>int <b>IupPlotFindSegment</b>(Ihandle* <b>ih</b>, double <b>cnv_x</b>, double <b>cnv_y</b>, int <b>*ds_index</b>, int <b>*sample_index1, </b>int *<b>sample_index2</b>); [in C]
+<b>iup.PlotFindSegment</b>(<b>ih</b>: ihandle, <b>cnv_x, cnv_y</b>: number) -&gt; (<strong>ret, ds_index</strong>, <strong>sample_index1, sample_index2</strong>: number) [in Lua]
+or <b>ih:FindSegment</b>(<b>cnv_x, cnv_y</b>: number) -&gt; (<strong>ret, ds_index</strong>, <strong>sample_index1, sample_index2</strong>: number) [in Lua]</pre>
+<p>Returns the nearest segment of the nearest dataset within a tolerance 
+neighborhood. Tolerance can be set in SCREENTOLERANCE attribute. Returns a non zero value is successful, or a zero value if failed. 
+It should be used inside callbacks only. Output variables can be NULL if not used. Y canvas 
+coordinates is in CD bottom to top orientation. (since 3.21)</p>
 <hr>
 <pre>void <b>IupPlotPaintTo</b>(Ihandle* <b>ih</b>, cdCanvas* <b>cnv</b>); [in C]
 <b>iup.PlotPaintTo</b>(<b>ih</b>: ihandle, <b>cnv</b>: cdCanvas) [in Lua]

@@ -1473,7 +1473,7 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
       IFniiddiddi clicksegment_cb = (IFniiddiddi)IupGetCallback(ih, "CLICKSEGMENT_CB");
       if (clicksample_cb && ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample1, rx1, ry1, strX))
         clicksample_cb(ih, ds, sample1, rx1, ry1, button);
-      else if (clicksegment_cb && ih->data->current_plot->FindDataSetSegment((double)x, (double)y, ds, ds_name, sample1, sample2, rx1, ry1, rx2, ry2))
+      else if (clicksegment_cb && ih->data->current_plot->FindDataSetSegment((double)x, (double)y, ds, ds_name, sample1, rx1, ry1, sample2, rx2, ry2))
         clicksegment_cb(ih, ds, sample1, rx1, ry1, sample2, rx2, ry2, button);
     }
   }
@@ -1611,7 +1611,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
   {
     if (ih->data->current_plot->mHighlightMode != IUP_PLOT_HIGHLIGHT_NONE)
     {
-      if (ih->data->current_plot->FindDataSetSegment((double)x, (double)y, ds, ds_name, segment1, segment2, rx1, ry1, rx2, ry2))
+      if (ih->data->current_plot->FindDataSetSegment((double)x, (double)y, ds, ds_name, segment1, rx1, ry1, segment2, rx2, ry2))
       {
         found = true;
 
@@ -2433,6 +2433,31 @@ int IupPlotFindSample(Ihandle* ih, double cnv_x, double cnv_y, int *ds_index, in
   {
     if (ds_index) *ds_index = ds;
     if (sample_index) *sample_index = sample;
+    return 1;
+  }
+
+  return 0;
+}
+
+int  IupPlotFindSegment(Ihandle* ih, double cnv_x, double cnv_y, int *ds_index, int *sample_index1, int *sample_index2)
+{
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return 0;
+
+  if (ih->iclass->nativetype != IUP_TYPECANVAS ||
+      !IupClassMatch(ih, "plot"))
+      return 0;
+
+  int ds, sample1, sample2;
+  double rx1, ry1;
+  double rx2, ry2;
+  const char* ds_name;
+  if (ih->data->current_plot->FindDataSetSegment(cnv_x, cnv_y, ds, ds_name, sample1, rx1, ry1, sample2, rx2, ry2))
+  {
+    if (ds_index) *ds_index = ds;
+    if (sample_index1) *sample_index1 = sample1;
+    if (sample_index2) *sample_index2 = sample2;
     return 1;
   }
 

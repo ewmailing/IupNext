@@ -1250,7 +1250,7 @@ bool iupPlot::FindDataSetSample(double inX, double inY, int &outIndex, const cha
   return false;
 }
 
-bool iupPlot::FindDataSetSegment(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex1, int &outSampleIndex2, double &outX1, double &outY1, double &outX2, double &outY2) const
+bool iupPlot::FindDataSetSegment(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex1, double &outX1, double &outY1, int &outSampleIndex2, double &outX2, double &outY2) const
 {
   if (!mAxisX.mTrafo || !mAxisY.mTrafo)
     return false;

@@ -703,7 +703,7 @@ public:
   iupPlotDataSet* HasPie();
 
   bool FindDataSetSample(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const;
-  bool FindDataSetSegment(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex1, int &outSampleIndex2, double &outX1, double &outY1, double &outX2, double &outY2) const;
+  bool FindDataSetSegment(double inX, double inY, int &outIndex, const char* &outName, int &outSampleIndex1, double &outX1, double &outY1, int &outSampleIndex2, double &outX2, double &outY2) const;
   void SelectDataSetSamples(double inMinX, double inMaxX, double inMinY, double inMaxY);
   void DeleteSelectedDataSetSamples();
   void ClearDataSetSelection();
