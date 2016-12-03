@@ -28,7 +28,7 @@
 
 #ifdef PLOT_TEST
 
-#define MAXPLOT 13  /* room for examples */
+#define MAXPLOT 10  /* room for examples */
 
 
 static Ihandle *plot[MAXPLOT] = { NULL }; /* Plot controls */
@@ -124,7 +124,7 @@ static void InitPlots(void)
 
   //  IupSetAttribute(plot[0], "AXS_AUTOSCALEEQUAL", "Yes");
   //  Mult = 80;
-  //  IupSetAttribute(plot[0], "VIEWPORTSQUARE", "Yes");
+  IupSetAttribute(plot[0], "VIEWPORTSQUARE", "Yes");
   IupSetAttribute(plot[0], "HIGHLIGHTMODE", "CURVE");
 
   if (0)
@@ -433,6 +433,10 @@ static void InitPlots(void)
 
   /************************************************************************/
   /* PLOT 9 */
+  IupSetAttribute(plot[9], "PLOT_COUNT", "4");
+  IupSetAttribute(plot[9], "PLOT_NUMCOL", "2");
+
+  IupSetAttribute(plot[9], "PLOT_CURRENT", "0");
   IupSetAttribute(plot[9], "TITLE", "Multi Bar Mode");
   //  IupSetAttribute(plot[3], "TITLEFONTSIZE", "16");
   //IupSetAttribute(plot[3], "MARGINTOP", "40");
@@ -480,100 +484,99 @@ static void InitPlots(void)
 
   /************************************************************************/
   /* PLOT 10 */
-  IupPlotBegin(plot[10], 0);
+  IupSetAttribute(plot[9], "PLOT_CURRENT", "1");
+  IupPlotBegin(plot[9], 0);
   for (theI = 0; theI <= 360; theI = theI + 10) {
     x = theI;
     y = sin(x*M_PI / 180.);
-    IupPlotAdd(plot[10], x, y);
+    IupPlotAdd(plot[9], x, y);
   }
-  IupPlotEnd(plot[10]);
+  IupPlotEnd(plot[9]);
   count = 0;
   for (theI = 0; theI <= 360; theI = theI + 10) {
-    IupPlotSetSampleExtra(plot[10], 0, count++, 0.1 * (double)rand() / (double)RAND_MAX);
+    IupPlotSetSampleExtra(plot[9], 0, count++, 0.1 * (double)rand() / (double)RAND_MAX);
   }
-  IupSetAttribute(plot[10], "TITLE", "Error Bar");
-  //  IupSetAttribute(plot[10], "DS_LINEWIDTH", "3");
-  IupSetAttribute(plot[10], "DS_LEGEND", "Error Bar");
-  IupSetAttribute(plot[10], "DS_MODE", "ERRORBAR");
-  IupSetAttribute(plot[10], "HIGHLIGHTMODE", "BOTH");
+  IupSetAttribute(plot[9], "TITLE", "Error Bar");
+  //  IupSetAttribute(plot[9], "DS_LINEWIDTH", "3");
+  IupSetAttribute(plot[9], "DS_LEGEND", "Error Bar");
+  IupSetAttribute(plot[9], "DS_MODE", "ERRORBAR");
+  IupSetAttribute(plot[9], "HIGHLIGHTMODE", "BOTH");
 
   /************************************************************************/
   /* PLOT 11 */
-  IupSetAttribute(plot[11], "TITLE", "Pie");
-  //  IupSetAttribute(plot[3], "TITLEFONTSIZE", "16");
-  //IupSetAttribute(plot[3], "MARGINTOP", "40");
-  //IupSetAttribute(plot[3], "MARGINLEFT", "30");
-  //IupSetAttribute(plot[3], "MARGINBOTTOM", "30");
+  IupSetAttribute(plot[9], "PLOT_CURRENT", "2");
+  IupSetAttribute(plot[9], "TITLE", "Pie");
 
   {
     const char * kLables[12] = { "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" };
     const double kData[12] = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 0, 10, 20 };
-    IupPlotBegin(plot[11], 1);
+    IupPlotBegin(plot[9], 1);
     for (theI = 0; theI < 12; theI++)
-      IupPlotAddStr(plot[11], kLables[theI], kData[theI]);
+      IupPlotAddStr(plot[9], kLables[theI], kData[theI]);
   }
-  IupPlotEnd(plot[11]);
-  //IupSetAttribute(plot[11], "DS_PIESTARTANGLE", "90");
-  IupSetAttribute(plot[11], "DS_PIECONTOUR", "YES");
-  IupSetAttribute(plot[11], "HIGHLIGHTMODE", "SAMPLE");
-  //  IupSetAttribute(plot[11], "DS_PIERADIUS", "0.9");
-  IupSetAttribute(plot[11], "DS_PIEHOLE", "0.3"); // factor of radius
-  IupSetAttribute(plot[11], "DS_PIESLICELABEL", "X");
-//  IupSetAttribute(plot[11], "DS_PIESLICELABEL", "PERCENT");
-//  IupSetAttribute(plot[11], "DS_PIESLICELABELPOS", "-1");
-  IupSetAttribute(plot[11], "AXS_YFONTSIZE", "12"); // label font
-  IupSetAttribute(plot[11], "AXS_YCOLOR", "255 255 255"); // label color
-  IupSetAttribute(plot[11], "DS_LINEWIDTH", "3"); // contour line width
-//  IupSetAttribute(plot[11], "DS_COLOR", "100 100 200"); // contour color
-  IupSetAttribute(plot[11], "DS_COLOR", "255 255 255"); // contour color
-  IupSetAttribute(plot[11], "DS_MODE", "PIE");
-  //IupSetAttribute(plot[11], "GRAPHICSMODE", "OPENGL");
-  //IupSetAttribute(plot[11], "GRAPHICSMODE", "NATIVE");
-  //IupSetAttribute(plot[11], "GRAPHICSMODE", "IMAGERGB");
+  IupPlotEnd(plot[9]);
+  //IupSetAttribute(plot[9], "DS_PIESTARTANGLE", "90");
+  IupSetAttribute(plot[9], "DS_PIECONTOUR", "YES");
+  IupSetAttribute(plot[9], "HIGHLIGHTMODE", "SAMPLE");
+  //  IupSetAttribute(plot[9], "DS_PIERADIUS", "0.9");
+  IupSetAttribute(plot[9], "DS_PIEHOLE", "0.3"); // factor of radius
+  IupSetAttribute(plot[9], "DS_PIESLICELABEL", "X");
+//  IupSetAttribute(plot[9], "DS_PIESLICELABEL", "PERCENT");
+//  IupSetAttribute(plot[9], "DS_PIESLICELABELPOS", "-1");
+  IupSetAttribute(plot[9], "AXS_YFONTSIZE", "12"); // label font
+  IupSetAttribute(plot[9], "AXS_YCOLOR", "255 255 255"); // label color
+  IupSetAttribute(plot[9], "DS_LINEWIDTH", "3"); // contour line width
+//  IupSetAttribute(plot[9], "DS_COLOR", "100 100 200"); // contour color
+  IupSetAttribute(plot[9], "DS_COLOR", "255 255 255"); // contour color
+  IupSetAttribute(plot[9], "DS_MODE", "PIE");
+  //IupSetAttribute(plot[9], "GRAPHICSMODE", "OPENGL");
+  //IupSetAttribute(plot[9], "GRAPHICSMODE", "NATIVE");
+  //IupSetAttribute(plot[9], "GRAPHICSMODE", "IMAGERGB");
 
-  IupSetAttribute(plot[11], "VIEWPORTSQUARE", "Yes");
+  IupSetAttribute(plot[9], "VIEWPORTSQUARE", "Yes");
 
 
   /************************************************************************/
   /* PLOT 12 */
-  IupSetAttribute(plot[12], "TITLE", "Área");
-  IupSetAttribute(plot[12], "FONT", "Helvetica, 10");
-  IupSetAttribute(plot[12], "LEGENDSHOW", "YES");
-  IupSetAttribute(plot[12], "AXS_XLABEL", "Year");
-  IupSetAttribute(plot[12], "AXS_YLABEL", "Company Performance");
-  IupSetAttribute(plot[12], "AXS_XMIN", "2013");
-  IupSetAttribute(plot[12], "AXS_XMAX", "2016");
-  IupSetAttribute(plot[12], "AXS_YMIN", "0");
-  IupSetAttribute(plot[12], "AXS_YMAX", "1200");
-  IupSetAttribute(plot[12], "AXS_XAUTOMIN", "NO");
-  IupSetAttribute(plot[12], "AXS_XAUTOMAX", "NO");
-  IupSetAttribute(plot[12], "AXS_YAUTOMIN", "NO");
-  IupSetAttribute(plot[12], "AXS_YAUTOMAX", "NO");
+  IupSetAttribute(plot[9], "PLOT_CURRENT", "3");
+  IupSetAttribute(plot[9], "TITLE", "Área");
+  IupSetAttribute(plot[9], "FONT", "Helvetica, 10");
+  IupSetAttribute(plot[9], "LEGENDSHOW", "YES");
+  IupSetAttribute(plot[9], "AXS_XLABEL", "Year");
+  IupSetAttribute(plot[9], "AXS_YLABEL", "Company Performance");
+  IupSetAttribute(plot[9], "AXS_XMIN", "2013");
+  IupSetAttribute(plot[9], "AXS_XMAX", "2016");
+  IupSetAttribute(plot[9], "AXS_YMIN", "0");
+  IupSetAttribute(plot[9], "AXS_YMAX", "1200");
+  IupSetAttribute(plot[9], "AXS_XAUTOMIN", "NO");
+  IupSetAttribute(plot[9], "AXS_XAUTOMAX", "NO");
+  IupSetAttribute(plot[9], "AXS_YAUTOMIN", "NO");
+  IupSetAttribute(plot[9], "AXS_YAUTOMAX", "NO");
 
   const double kLables[4] = { 2013, 2014, 2015, 2016 };
   {
     const double kData[4] = { 1000, 1170, 660, 1030 };
-    IupPlotBegin(plot[12], 0);
+    IupPlotBegin(plot[9], 0);
     for (theI = 0; theI < 4; theI++)
-      IupPlotAdd(plot[12], kLables[theI], kData[theI]);
+      IupPlotAdd(plot[9], kLables[theI], kData[theI]);
   }
-  IupPlotEnd(plot[12]);
-  IupSetAttribute(plot[12], "DS_MODE", "AREA");
-  IupSetAttribute(plot[12], "DS_AREATRANSPARENCY", "64");
-  IupSetAttribute(plot[12], "DS_LINEWIDTH", "3");
-  IupSetAttribute(plot[12], "HIGHLIGHTMODE", "BOTH");
+  IupPlotEnd(plot[9]);
+  IupSetAttribute(plot[9], "DS_MODE", "AREA");
+  IupSetAttribute(plot[9], "DS_AREATRANSPARENCY", "64");
+  IupSetAttribute(plot[9], "DS_LINEWIDTH", "3");
+  IupSetAttribute(plot[9], "HIGHLIGHTMODE", "BOTH");
 
   {
     const double kData[4] = { 400, 460, 1120, 540 };
-    IupPlotBegin(plot[12], 0);
+    IupPlotBegin(plot[9], 0);
     for (theI = 0; theI < 4; theI++)
-      IupPlotAdd(plot[12], kLables[theI], kData[theI]);
+      IupPlotAdd(plot[9], kLables[theI], kData[theI]);
   }
-  IupPlotEnd(plot[12]);
-  IupSetAttribute(plot[12], "DS_MODE", "AREA");
-  IupSetAttribute(plot[12], "DS_AREATRANSPARENCY", "64");
-  IupSetAttribute(plot[12], "DS_LINEWIDTH", "3");
-  IupSetAttribute(plot[12], "HIGHLIGHTMODE", "BOTH");
+  IupPlotEnd(plot[9]);
+  IupSetAttribute(plot[9], "DS_MODE", "AREA");
+  IupSetAttribute(plot[9], "DS_AREATRANSPARENCY", "64");
+  IupSetAttribute(plot[9], "DS_LINEWIDTH", "3");
+  IupSetAttribute(plot[9], "HIGHLIGHTMODE", "BOTH");
 }
 
 static int tabs_get_index(void)

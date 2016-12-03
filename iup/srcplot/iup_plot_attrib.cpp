@@ -46,7 +46,8 @@ static void iPlotPlotInsert(Ihandle* ih, int p)
 
   ih->data->plot_list_count++;
 
-  iupPlotUpdateViewports(ih);
+  if (ih->data->cd_canvas)
+    iupPlotUpdateViewports(ih);
 }
 
 static void iPlotPlotRemove(Ihandle* ih, int p)
@@ -65,7 +66,8 @@ static void iPlotPlotRemove(Ihandle* ih, int p)
 
   iupPlotSetPlotCurrent(ih, ih->data->current_plot_index);
 
-  iupPlotUpdateViewports(ih);
+  if (ih->data->cd_canvas)
+    iupPlotUpdateViewports(ih);
 }
 
 static char* iupStrReturnColor(long color)
@@ -1169,7 +1171,8 @@ static int iPlotSetPlotCountAttrib(Ihandle* ih, const char* value)
 
       ih->data->plot_list_count = count;
 
-      iupPlotUpdateViewports(ih);
+      if (ih->data->cd_canvas)
+        iupPlotUpdateViewports(ih);
     }
   }
   return 0;
@@ -1229,7 +1232,8 @@ static int iPlotSetPlotNumColAttrib(Ihandle* ih, const char* value)
     {
       ih->data->numcol = numcol;
 
-      iupPlotUpdateViewports(ih);
+      if (ih->data->cd_canvas)
+        iupPlotUpdateViewports(ih);
     }
   }
   return 0;

@@ -1331,6 +1331,8 @@ static int iPlotFindPlot(Ihandle* ih, int x, int &y)
   cdCanvasActivate(ih->data->cd_canvas);
   cdCanvasGetSize(ih->data->cd_canvas, &w, &h, NULL, NULL);
 
+  // Notice that this change is returned to the callback
+  cdCanvasOrigin(ih->data->cd_canvas, 0, 0);
   y = cdCanvasInvertYAxis(ih->data->cd_canvas, y);
 
   int numcol = ih->data->numcol;
@@ -2469,6 +2471,8 @@ static int iPlotMapMethod(Ihandle* ih)
 
   for (int p = 0; p < ih->data->plot_list_count; p++)
     ih->data->plot_list[p]->mRedraw = true;
+
+  iupPlotUpdateViewports(ih);
 
   return IUP_NOERROR;
 }
