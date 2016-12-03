@@ -109,12 +109,12 @@ static void InitPlots(void)
   //  IupSetAttribute(plot[0], "AXS_YFONTSIZE", "10");
   IupSetAttribute(plot[0], "AXS_XCROSSORIGIN", "Yes");
   IupSetAttribute(plot[0], "AXS_YCROSSORIGIN", "Yes");
-  //IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
+//  IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
   //  IupSetAttribute(plot[0], "ACTIVE", "No");
 
   //  IupSetAttribute(plot[0], "AXS_AUTOSCALEEQUAL", "Yes");
   //  Mult = 80;
-  IupSetAttribute(plot[0], "VIEWPORTSQUARE", "Yes");
+//  IupSetAttribute(plot[0], "VIEWPORTSQUARE", "Yes");
   IupSetAttribute(plot[0], "HIGHLIGHTMODE", "CURVE");
 
   if (0)
@@ -520,7 +520,7 @@ static void InitPlots(void)
 //  IupSetAttribute(plot[9], "DS_COLOR", "100 100 200"); // contour color
   IupSetAttribute(plot[9], "DS_COLOR", "255 255 255"); // contour color
   IupSetAttribute(plot[9], "DS_MODE", "PIE");
-  //IupSetAttribute(plot[9], "GRAPHICSMODE", "OPENGL");
+//  IupSetAttribute(plot[9], "GRAPHICSMODE", "OPENGL");
   //IupSetAttribute(plot[9], "GRAPHICSMODE", "NATIVE");
   //IupSetAttribute(plot[9], "GRAPHICSMODE", "IMAGERGB");
 

@@ -2508,7 +2508,7 @@ static int iPlotCreateMethod(Ihandle* ih, void **params)
   ih->data->last_click_plot = -1;
   ih->data->graphics_mode = IUP_PLOT_NATIVEPLUS;
 
-  ih->data->plot_list[0] = new iupPlot(ih, 0, 0);   // font style/size will be initialized bt stardardfont initialization
+  ih->data->plot_list[0] = new iupPlot(ih, 0, 0);   // font style/size will be initialized by font initialization
   ih->data->current_plot = ih->data->plot_list[ih->data->current_plot_index];
 
   /* IupCanvas callbacks */
