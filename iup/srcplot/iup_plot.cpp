@@ -1616,7 +1616,8 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
         found = true;
 
         if (ih->data->last_cursor_plot != index ||
-            ih->data->last_cursor_ds != ds)
+            ih->data->last_cursor_ds != ds ||
+            ih->data->last_cursor_sample != -1)
         {
           ih->data->last_cursor_plot = index;
           ih->data->last_cursor_ds = ds;
