@@ -1469,18 +1469,12 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
       double rx1, ry1, rx2, ry2;
       const char* ds_name;
       const char* strX;
-      if (ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample1, rx1, ry1, strX))
-      {
-        IFniiddi clicksample_cb = (IFniiddi)IupGetCallback(ih, "CLICKSAMPLE_CB");
-        if (clicksample_cb)
-          clicksample_cb(ih, ds, sample1, rx1, ry1, button);
-      }
-      else if (ih->data->current_plot->FindDataSetSegment((double)x, (double)y, ds, ds_name, sample1, sample2, rx1, ry1, rx2, ry2))
-      {
-        IFniiidddd clicksegment_cb = (IFniiidddd)IupGetCallback(ih, "CLICKSEGMENT_CB");
-        if (clicksegment_cb)
-          clicksegment_cb(ih, ds, sample1, sample2, rx1, ry1, rx2, ry2);
-      }
+      IFniiddi clicksample_cb = (IFniiddi)IupGetCallback(ih, "CLICKSAMPLE_CB");
+      IFniiddiddi clicksegment_cb = (IFniiddiddi)IupGetCallback(ih, "CLICKSEGMENT_CB");
+      if (clicksample_cb && ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample1, rx1, ry1, strX))
+        clicksample_cb(ih, ds, sample1, rx1, ry1, button);
+      else if (clicksegment_cb && ih->data->current_plot->FindDataSetSegment((double)x, (double)y, ds, ds_name, sample1, sample2, rx1, ry1, rx2, ry2))
+        clicksegment_cb(ih, ds, sample1, rx1, ry1, sample2, rx2, ry2, button);
     }
   }
 

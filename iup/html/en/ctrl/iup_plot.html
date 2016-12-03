@@ -785,6 +785,32 @@ conflict with zoom and context menu situations.</p>
 	&nbsp;&nbsp;&nbsp;&nbsp;IUP_BUTTON3 - right mouse button (button 3)<br>
     </p>
   
+  
+    
+<p><b>CLICKSEGMENT_CB</b>:
+  Action generated when  a segment is clicked. The segment is identified by the 
+two samples that connects the segment. Called when the mouse button is 
+released, with no Ctrl key and IUP_BUTTON3 only when Shift is pressed, to avoid 
+conflict with zoom and context menu situations. If a sample is clicked this 
+callback is ignored. (since 3.21)</p>
+  
+    <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index1</b>, double <strong>x1</strong>, double <strong>y1, int <b>sample_index2</b>, double x2, double y2, </strong>int <strong>button</strong>); [in C]
+<strong>ih</strong>:clicksample_cb(<b>ds_index, sample_index1, x1, y1, <strong>sample_index2, x2, y2, button</strong></b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br> <b>ds_index</b>: index of the dataset<br>
+    <b>sample_index1</b>: index of the sample in the dataset<strong><br>
+    x1</strong>: X coordinate value of the sample<br>
+    <strong>y1</strong>: Y coordinate value of the sample<br>
+<strong>
+    <b>sample_index2</b>:</strong> index of the sample in the dataset<strong><br>
+    x2:</strong> X coordinate value of the sample<strong><br>
+    y2:</strong> Y coordinate value of the sample<strong><br>
+	button</strong>: identifies the activated mouse button<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;IUP_BUTTON1 - left mouse button (button 1)<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;IUP_BUTTON2 - middle mouse button (button 2)<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;IUP_BUTTON3 - right mouse button (button 3)</p>
+  
 <p><b>DRAWSAMPLE_CB</b>:
   Action generated when  a sample is drawn. When the plot is redraw, it is called for 
 each sample, then 

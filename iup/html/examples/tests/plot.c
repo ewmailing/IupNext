@@ -75,26 +75,16 @@ static int predraw_cb(Ihandle* ih, cdCanvas* cnv)
   return IUP_DEFAULT;
 }
 
-static int clicksegment_cb(Ihandle* ih, int ds, int sample1, int sample2, double rx1, double ry1, double rx2, double ry2)
+static int clicksample_cb(Ihandle* ih, int ds, int sample, double rx, double ry, int button)
 {
-  char mess[200];
+  printf("CLICKSAMPLE_CB(ds=%d, sample=%d, rx=%.4f, ry=%.4f, button=%d)\n", ds, sample, rx, ry, button);
+  return IUP_DEFAULT;
+}
 
-  Ihandle* dlg = IupMessageDlg();
-
-  IupSetAttribute(dlg, "DIALOGTYPE", "WARNING");
-  IupSetAttribute(dlg, "TITLE", "IupMessageDlg Test");
-  IupSetAttribute(dlg, "BUTTONS", "OK");
-
-  sprintf(mess, "Curve = %d\nSample1 = %d\nSample2 = %d\nrx1 = %.4f\nry1 = %.4f\nrx12 = %.4f\nry2 = %.4f",
-          ds, sample1, sample2, rx1, ry1, rx2, ry2);
-
-  IupSetAttribute(dlg, "VALUE", mess);
-
-  IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
-
-  printf("BUTTONRESPONSE(%s)\n", IupGetAttribute(dlg, "BUTTONRESPONSE"));
-
-  IupDestroy(dlg);    return IUP_DEFAULT;
+static int clicksegment_cb(Ihandle* ih, int ds, int sample1, double rx1, double ry1, int sample2, double rx2, double ry2, int button)
+{
+  printf("CLICKSEGMENT_CB(ds=%d, sample1=%d, rx1=%.4f, ry1=%.4f, sample2=%d, rx12=%.4f, ry2=%.4f, button=%d)\n", ds, sample1, rx1, ry1, sample2, rx2, ry2, button);
+  return IUP_DEFAULT;
 }
 
 static void InitPlots(void)
@@ -321,6 +311,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[4], "DS_MODE", "MARKLINE");
   IupSetAttribute(plot[4], "HIGHLIGHTMODE", "BOTH");
   IupSetCallback(plot[4], "CLICKSEGMENT_CB", (Icallback)clicksegment_cb);
+  IupSetCallback(plot[4], "CLICKSAMPLE_CB", (Icallback)clicksample_cb);
 
   IupPlotBegin(plot[4], 0);
   for (theI = 0; theI <= 10; theI++)

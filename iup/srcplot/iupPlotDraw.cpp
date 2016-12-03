@@ -9,6 +9,8 @@
 #include "iup_image.h"
 
 
+#define HIGHTLIGHT_ALPHA 64
+#define HIGHTLIGHT_OFFSET 12
 
 static inline void iPlotSetLine(cdCanvas* canvas, int inLineStyle, int inLineWidth)
 {
@@ -94,9 +96,6 @@ static void iPlotDrawArrow(cdCanvas* canvas, double inX, double inY, int inVerti
                    theX2, theY + theSizeDir);
   }
 }
-
-#define HIGHTLIGHT_ALPHA 96
-#define HIGHTLIGHT_OFFSET 6
 
 static void iPlotDrawHighlightedBar(cdCanvas *canvas, double x, double y, double barWidth, double barHeight)
 {
