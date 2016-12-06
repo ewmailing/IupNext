@@ -1218,6 +1218,50 @@ static int iMatrixSetTypeAttrib(Ihandle* ih, int lin, int col, const char* value
   return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_TYPE);
 }
 
+static int iMatrixSetFontStyleAttrib(Ihandle* ih, int lin, int col, const char* value)
+{
+  int size = 0;
+  int is_bold = 0,
+    is_italic = 0,
+    is_underline = 0,
+    is_strikeout = 0;
+  char typeface[1024];
+  char* font;
+
+  if (!value)
+    return 0;
+
+  font = IupGetAttributeId2(ih, "FONT", lin, col);
+  if (!font)
+    return 0;
+
+  if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return 0;
+
+  IupSetfAttributeId2(ih, "FONT", lin, col, "%s, %s %d", typeface, value, size);
+
+  return 0;
+}
+
+static char* iMatrixGetFontStyleAttrib(Ihandle* ih, int lin, int col)
+{
+  int size = 0;
+  int is_bold = 0,
+    is_italic = 0,
+    is_underline = 0,
+    is_strikeout = 0;
+  char typeface[1024];
+
+  char* font = IupGetAttributeId2(ih, "FONT", lin, col);
+  if (!font)
+    return NULL;
+
+  if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return NULL;
+
+  return iupStrReturnStrf("%s%s%s%s", is_bold ? "Bold " : "", is_italic ? "Italic " : "", is_underline ? "Underline " : "", is_strikeout ? "Strikeout " : "");
+}
+
 static int iMatrixSetFontAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
   if (lin == IUP_INVALID_ID && col == IUP_INVALID_ID)  /* empty id */
@@ -1774,6 +1818,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId2(ic, "FGCOLOR", NULL, iMatrixSetFgColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "TYPE", NULL, iMatrixSetTypeAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FONT", iMatrixGetFontAttrib, iMatrixSetFontAttrib, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttributeId2(ic, "FONTSTYLE", iMatrixGetFontStyleAttrib, iMatrixSetFontStyleAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NO_INHERIT);
