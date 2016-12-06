@@ -419,7 +419,6 @@ iupClassObjectSetChildrenCurrentSize
 iupClassObjectSetAttribute
 iupClassObjectMap
 iupClassObjectLayoutUpdate
-iupClassObjectGetInnerContainer
 iupClassObjectGetAttribute
 iupClassObjectGetAttributeInfo
 iupClassObjectAttribIsNotString

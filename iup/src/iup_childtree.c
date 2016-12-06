@@ -195,8 +195,6 @@ static int iChildCount(Ihandle* ih)
 
 Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
 {
-  Ihandle* top_parent = parent;
-
   /* ref_child can be NULL */
 
   iupASSERT(iupObjectCheck(parent));
@@ -215,11 +213,6 @@ Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
   }
 #endif
 
-
-  /* this will return the actual parent */
-  parent = iupClassObjectGetInnerContainer(top_parent);
-  if (!parent)
-    return NULL;
 
   if (parent->iclass->childtype == IUP_CHILDNONE)
     return NULL;
@@ -243,8 +236,6 @@ Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
 
     iupChildTreeInsert(parent, ref_child, child);
     iupClassObjectChildAdded(parent, child);
-    if (top_parent != parent)
-      iupClassObjectChildAdded(top_parent, child);
   }
 
   return parent;
@@ -267,8 +258,6 @@ void iupChildTreeAppend(Ihandle* parent, Ihandle* child)
 
 Ihandle* IupAppend(Ihandle* parent, Ihandle* child)
 {
-  Ihandle* top_parent = parent;
-
   iupASSERT(iupObjectCheck(parent));
   if (!iupObjectCheck(parent))
     return NULL;
@@ -284,11 +273,6 @@ Ihandle* IupAppend(Ihandle* parent, Ihandle* child)
     return NULL;
   }
 #endif
-
-  /* this will return the actual parent */
-  parent = iupClassObjectGetInnerContainer(top_parent);
-  if (!parent)
-    return NULL;
 
   if (parent->iclass->childtype == IUP_CHILDNONE)
     return NULL;
@@ -312,8 +296,6 @@ Ihandle* IupAppend(Ihandle* parent, Ihandle* child)
 
     iupChildTreeAppend(parent, child);
     iupClassObjectChildAdded(parent, child);
-    if (top_parent != parent)
-      iupClassObjectChildAdded(top_parent, child);
   }
 
   return parent;
@@ -336,7 +318,6 @@ static void iChildReparent(Ihandle* child, Ihandle* new_parent)
 
 int IupReparent(Ihandle* child, Ihandle* parent, Ihandle* ref_child)
 {
-  Ihandle* top_parent = parent;
   Ihandle* old_parent;
   int pos;
 
@@ -355,11 +336,6 @@ int IupReparent(Ihandle* child, Ihandle* parent, Ihandle* ref_child)
     if (!iupObjectCheck(ref_child))
       return IUP_ERROR;
   }
-
-  /* this will return the actual parent */
-  parent = iupClassObjectGetInnerContainer(top_parent);
-  if (!parent)
-    return IUP_ERROR;
 
   if (parent->iclass->childtype == IUP_CHILDNONE)
     return IUP_ERROR;
@@ -389,8 +365,6 @@ int IupReparent(Ihandle* child, Ihandle* parent, Ihandle* ref_child)
   else
     iupChildTreeAppend(parent, child);
   iupClassObjectChildAdded(parent, child);
-  if (top_parent != parent)
-    iupClassObjectChildAdded(top_parent, child);
 
 
   /* no need to remap, just notify the native system */
