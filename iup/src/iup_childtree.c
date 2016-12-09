@@ -144,7 +144,7 @@ static int iChildFind(Ihandle* parent, Ihandle* child)
   return 0;
 }
 
-static void iupChildTreeInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
+static void iChildTreeInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
 {
   Ihandle *c, 
           *c_prev = NULL;
@@ -226,7 +226,7 @@ Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
       iChildFind(parent, child))
   {
     iChildDetach(parent, child);
-    iupChildTreeInsert(parent, ref_child, child);
+    iChildTreeInsert(parent, ref_child, child);
   }
   else
   {
@@ -234,7 +234,7 @@ Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
     if (child->handle)
       return NULL;
 
-    iupChildTreeInsert(parent, ref_child, child);
+    iChildTreeInsert(parent, ref_child, child);
     iupClassObjectChildAdded(parent, child);
   }
 
@@ -361,7 +361,7 @@ int IupReparent(Ihandle* child, Ihandle* parent, Ihandle* ref_child)
  
   /* attach to new parent */
   if (ref_child)
-    iupChildTreeInsert(parent, ref_child, child);
+    iChildTreeInsert(parent, ref_child, child);
   else
     iupChildTreeAppend(parent, child);
   iupClassObjectChildAdded(parent, child);
