@@ -500,3 +500,35 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
   }
 }
 
+int iupFlatGetHorizontalAlignment(const char* value)
+{
+  int horiz_alignment = IUP_ALIGN_ACENTER;  /* default always "ACENTER" */
+  if (iupStrEqualNoCase(value, "ARIGHT"))
+    horiz_alignment = IUP_ALIGN_ARIGHT;
+  else if (iupStrEqualNoCase(value, "ALEFT"))
+    horiz_alignment = IUP_ALIGN_ALEFT;
+  return horiz_alignment;
+}
+
+int iupFlatGetVerticalAlignment(const char* value)
+{
+  int vert_alignment = IUP_ALIGN_ACENTER;  /* default always "ACENTER" */
+  if (iupStrEqualNoCase(value, "ABOTTOM"))
+    vert_alignment = IUP_ALIGN_ABOTTOM;
+  else if (iupStrEqualNoCase(value, "ATOP"))
+    vert_alignment = IUP_ALIGN_ATOP;
+  return vert_alignment;
+}
+
+int iupFlatGetImagePosition(const char* value)
+{
+  int img_position = IUP_IMGPOS_LEFT; /* default always "LEFT" */
+  if (iupStrEqualNoCase(value, "RIGHT"))
+    img_position = IUP_IMGPOS_RIGHT;
+  else if (iupStrEqualNoCase(value, "BOTTOM"))
+    img_position = IUP_IMGPOS_BOTTOM;
+  else if (iupStrEqualNoCase(value, "TOP"))
+    img_position = IUP_IMGPOS_TOP;
+  return img_position;
+}
+

@@ -98,6 +98,10 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
 
 enum{ IUP_IMGPOS_LEFT, IUP_IMGPOS_RIGHT, IUP_IMGPOS_TOP, IUP_IMGPOS_BOTTOM };
 
+int iupFlatGetHorizontalAlignment(const char* value);
+int iupFlatGetVerticalAlignment(const char* value);
+int iupFlatGetImagePosition(const char* value);
+
 void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, int border_width, const char* color, char* bgcolor, int active);
 
 void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* color, char* bgcolor, int active);

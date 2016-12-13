@@ -22,30 +22,6 @@
 #include "iup_image.h"
 
 
-static int iFlatFrameGetAlignment(Ihandle* ih)
-{
-  int horiz_alignment = IUP_ALIGN_ACENTER;  /* "ACENTER" */
-  const char* value = iupAttribGetStr(ih, "TITLEALIGNMENT");
-  if (iupStrEqualNoCase(value, "ARIGHT"))
-    horiz_alignment = IUP_ALIGN_ARIGHT;
-  else if (iupStrEqualNoCase(value, "ALEFT"))
-    horiz_alignment = IUP_ALIGN_ALEFT;
-  return horiz_alignment;
-}
-
-static int iFlatFrameGetImagePosition(Ihandle* ih)
-{
-  int img_position = IUP_IMGPOS_LEFT; /* "LEFT" */
-  const char* value = iupAttribGetStr(ih, "TITLEIMAGEPOSITION");
-  if (iupStrEqualNoCase(value, "RIGHT"))
-    img_position = IUP_IMGPOS_RIGHT;
-  else if (iupStrEqualNoCase(value, "BOTTOM"))
-    img_position = IUP_IMGPOS_BOTTOM;
-  else if (iupStrEqualNoCase(value, "TOP"))
-    img_position = IUP_IMGPOS_TOP;
-  return img_position;
-}
-
 static void iFlatFrameGetIconSize(Ihandle* ih, int *w, int *h)
 {
   char* image = iupAttribGet(ih, "IMAGE");
@@ -53,7 +29,7 @@ static void iFlatFrameGetIconSize(Ihandle* ih, int *w, int *h)
   int horiz_padding = 0, vert_padding = 0;
   IupGetIntInt(ih, "TITLEPADDING", &horiz_padding, &vert_padding);
 
-  *w = 0,
+  *w = 0;
   *h = 0;
 
   if (image)
@@ -62,7 +38,7 @@ static void iFlatFrameGetIconSize(Ihandle* ih, int *w, int *h)
 
     if (title)
     {
-      int img_position = iFlatFrameGetImagePosition(ih);
+      int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TITLEIMAGEPOSITION"));
       int spacing = iupAttribGetInt(ih, "TITLEIMAGESPACING");
       int text_w, text_h;
       iupdrvFontGetMultiLineStringSize(ih, title, &text_w, &text_h);
@@ -133,8 +109,8 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
     char* title = iupAttribGet(ih, "TITLE");
     char* titlecolor = iupAttribGetStr(ih, "TITLECOLOR");
     char* titlebgcolor = iupAttribGetStr(ih, "TITLEBGCOLOR");
-    int title_alignment = iFlatFrameGetAlignment(ih);
-    int img_position = iFlatFrameGetImagePosition(ih);
+    int title_alignment = iupFlatGetHorizontalAlignment(iupAttribGetStr(ih, "TITLEALIGNMENT"));
+    int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TITLEIMAGEPOSITION"));
     int spacing = iupAttribGetInt(ih, "TITLEIMAGESPACING");
     int horiz_padding, vert_padding;
 

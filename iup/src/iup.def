@@ -150,6 +150,8 @@ IupVal
 IupProgressBar
 IupTabs
 IupTabsv
+IupFlatTabs
+IupFlatTabsv
 IupGetClassAttributes
 IupSetClassDefaultAttribute
 IupSaveClassAttributes

@@ -88,6 +88,7 @@ void WebBrowserTest(void);
 void MglLabelTest(void);
 void MatrixListTest(void);
 void MglPlotModesTest(void);
+void FlatTabsTest(void);
 
 
 void HelpTest(void)
@@ -117,7 +118,8 @@ typedef struct _TestItems{
 
 static TestItems test_list[] = {
   {"Button", ButtonTest},
-  {"Calendar", CalendarTest},
+  { "FlatButton", FlatButtonTest },
+  { "Calendar", CalendarTest },
   {"Canvas", CanvasTest},
   {"CanvasCDSimpleTest", CanvasCDSimpleTest},
   {"CanvasCDDBuffer", CanvasCDDBufferTest},
@@ -137,7 +139,6 @@ static TestItems test_list[] = {
   { "Execute", ExecuteTest },
   { "ExecuteWait", ExecuteWaitTest },
   { "Expander", ExpanderTest },
-  { "FlatButton", FlatButtonTest },
   { "Frame", FrameTest },
   { "FlatFrame", FlatFrameTest },
 #ifdef USE_OPENGL
@@ -178,7 +179,8 @@ static TestItems test_list[] = {
   {"Spin", SpinTest},
   {"SysInfo", SysInfoTest},
   {"Tabs", TabsTest},
-  {"Text", TextTest},
+  { "FlatTabs", FlatTabsTest },
+  { "Text", TextTest },
   {"TextSpin", TextSpinTest},
   {"Timer", TimerTest},
   {"Toggle", ToggleTest},

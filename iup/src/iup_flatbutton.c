@@ -368,19 +368,8 @@ static int iFlatButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
 
   iupStrToStrStr(value, value1, value2, ':');
 
-  if (iupStrEqualNoCase(value1, "ARIGHT"))
-    ih->data->horiz_alignment = IUP_ALIGN_ARIGHT;
-  else if (iupStrEqualNoCase(value1, "ALEFT"))
-    ih->data->horiz_alignment = IUP_ALIGN_ALEFT;
-  else /* "ACENTER" */
-    ih->data->horiz_alignment = IUP_ALIGN_ACENTER;
-
-  if (iupStrEqualNoCase(value2, "ABOTTOM"))
-    ih->data->vert_alignment = IUP_ALIGN_ABOTTOM;
-  else if (iupStrEqualNoCase(value2, "ATOP"))
-    ih->data->vert_alignment = IUP_ALIGN_ATOP;
-  else /* "ACENTER" */
-    ih->data->vert_alignment = IUP_ALIGN_ACENTER;
+ ih->data->horiz_alignment = iupFlatGetHorizontalAlignment(value1);
+ ih->data->vert_alignment = iupFlatGetVerticalAlignment(value2);
 
   if (ih->handle)
     iupdrvRedrawNow(ih);
@@ -427,14 +416,7 @@ static char* iFlatButtonGetPaddingAttrib(Ihandle* ih)
 
 static int iFlatButtonSetImagePositionAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "RIGHT"))
-    ih->data->img_position = IUP_IMGPOS_RIGHT;
-  else if (iupStrEqualNoCase(value, "BOTTOM"))
-    ih->data->img_position = IUP_IMGPOS_BOTTOM;
-  else if (iupStrEqualNoCase(value, "TOP"))
-    ih->data->img_position = IUP_IMGPOS_TOP;
-  else /* "LEFT" */
-    ih->data->img_position = IUP_IMGPOS_LEFT;
+  ih->data->img_position = iupFlatGetImagePosition(value);
 
   if (ih->handle)
     iupdrvRedrawNow(ih);

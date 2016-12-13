@@ -201,7 +201,7 @@ static int cbAddTab(Ihandle* ih)
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
   Ihandle *vbox;
 
-  vbox = IupFrame(IupVbox(IupLabel("Label XXX"), IupButton("Button XXX", "cbChildButton"), NULL));
+  vbox = IupBackgroundBox(IupVbox(IupLabel("Label XXX"), IupButton("Button XXX", "cbChildButton"), NULL));
   IupSetAttribute(vbox, "TABTITLE", "XXX");
   IupSetAttribute(vbox, "TITLE", "TABS XXX");
 
@@ -219,7 +219,7 @@ static int cbInsertTab(Ihandle* ih)
   Ihandle* ref_vbox = IupGetHandle(IupGetAttribute(tabs, "VALUE"));
   Ihandle *vbox;
 
-  vbox = IupFrame(IupVbox(IupLabel("Label YYY"), IupButton("Button YYY", "cbChildButton"), NULL));
+  vbox = IupBackgroundBox(IupVbox(IupLabel("Label YYY"), IupButton("Button YYY", "cbChildButton"), NULL));
   IupSetAttribute(vbox, "TABTITLE", "YYY");
   IupSetAttribute(vbox, "TITLE", "TABS YYY");
 
@@ -340,8 +340,6 @@ static int enterwindow_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-//#define IupFrame(_x) (_x)
-
 static Ihandle* CreateTabs(int tab)
 {
   Ihandle *vboxA, *vboxB, *vboxG, *text, *button,
@@ -356,18 +354,18 @@ static Ihandle* CreateTabs(int tab)
 //  if (tab)  // to test Tabs inside Tabs
   //  vboxA = IupVbox(CreateTabs(0), NULL);
 //  else
-    vboxA = IupFrame(IupVbox(IupFill(), IupLabel("Label AAA"), IupButton("Button AAA", "cbChildButton"), //NULL));
-                     text, IupToggle("Button TTTT", "cbChildButton"), 
-                     IupVal(NULL), IupSetAttributes(IupProgressBar(), "VALUE=0.5"), NULL));
-  vboxB = IupFrame(IupVbox(IupLabel("Label BBB"), IupButton("Button BBB", "cbChildButton"), NULL));
-  vboxC = IupFrame(IupVbox(IupLabel("Label CCC"), IupButton("Button CCC", "cbChildButton"), NULL));
-  vboxD = IupFrame(IupVbox(IupLabel("Label DDD"), IupButton("Button DDD", "cbChildButton"), NULL));
-  vboxE = IupVbox(IupFill(), IupLabel("Label EEE"), IupButton("Button EEE", "cbChildButton"), 
-                  button, IupButton("Button EEE", "cbChildButton"), NULL);
-  vboxF = IupVbox(IupLabel("Label FFF"), IupButton("Button FFF", "cbChildButton"), NULL);
-  vboxG = IupVbox(IupLabel("Label GGG"), IupButton("Button GGG", "cbChildButton"), NULL);
-  vboxH = IupVbox(IupLabel("Label HHH"), IupButton("Button HHH", "cbChildButton"), NULL);
-  vboxI = IupVbox(IupLabel("Canvas"), IupCanvas(NULL), NULL);
+  vboxA = IupBackgroundBox(IupVbox(IupFill(), IupLabel("Label AAA"), IupButton("Button AAA", "cbChildButton"), //NULL));
+                             text, IupToggle("Button TTTT", "cbChildButton"), 
+                             IupVal(NULL), IupSetAttributes(IupProgressBar(), "VALUE=0.5"), NULL));
+  vboxB = IupBackgroundBox(IupVbox(IupLabel("Label BBB"), IupButton("Button BBB", "cbChildButton"), NULL));
+  vboxC = IupBackgroundBox(IupVbox(IupLabel("Label CCC"), IupButton("Button CCC", "cbChildButton"), NULL));
+  vboxD = IupBackgroundBox(IupVbox(IupLabel("Label DDD"), IupButton("Button DDD", "cbChildButton"), NULL));
+  vboxE = IupBackgroundBox(IupVbox(IupFill(), IupLabel("Label EEE"), IupButton("Button EEE", "cbChildButton"), 
+                                   button, IupButton("Button EEE", "cbChildButton"), NULL));
+  vboxF = IupBackgroundBox(IupVbox(IupLabel("Label FFF"), IupButton("Button FFF", "cbChildButton"), NULL));
+  vboxG = IupBackgroundBox(IupVbox(IupLabel("Label GGG"), IupButton("Button GGG", "cbChildButton"), NULL));
+  vboxH = IupBackgroundBox(IupVbox(IupLabel("Label HHH"), IupButton("Button HHH", "cbChildButton"), NULL));
+  vboxI = IupBackgroundBox(IupVbox(IupLabel("Canvas"), IupCanvas(NULL), NULL));
 
   IupSetAttribute(vboxA, "TABTITLE", "A");
   IupSetAttributeHandle(vboxA, "TABIMAGE", load_image_LogoTecgraf());
@@ -387,7 +385,7 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(vboxF, "TABSIZE", "100");
   IupSetAttribute(vboxI, "BGCOLOR", "32 192 32");
 
-  tabs = IupTabs(vboxA, vboxB, vboxC, vboxD, vboxE, vboxF, vboxG, vboxH, vboxI, NULL);
+  tabs = IupFlatTabs(vboxA, vboxB, vboxC, vboxD, vboxE, vboxF, vboxG, vboxH, vboxI, NULL);
 
   IupSetAttribute(tabs, "TABTITLE1", "&BB");
 
@@ -421,7 +419,7 @@ static Ihandle* CreateTabs(int tab)
 //  IupSetAttribute(tabs, "FGCOLOR", "250 0 0");
 //  IupSetAttribute(tabs, "FONT", "Helvetica, Italic 16");
 
-  IupSetAttribute(tabs, "TIP", "IupTabs Tip");
+  IupSetAttribute(tabs, "TIP", "IupFlatTabs Tip");
 //  IupSetAttribute(tabs, "TIPFONT", "SYSTEM");
 //  IupSetAttribute(tabs, "TIPBGCOLOR", "255 128 128");
 //  IupSetAttribute(tabs, "TIPFGCOLOR", "0 92 255");
@@ -447,7 +445,7 @@ static Ihandle* CreateTabs(int tab)
   return tabs;
 }
 
-void TabsTest(void)
+void FlatTabsTest(void)
 {
   Ihandle *box, *frm1, *frm2, *dlg, *tabs;
 
@@ -482,15 +480,13 @@ void TabsTest(void)
   IupSetAttribute(box, "GAP", "10");
   dlg = IupDialog(box);
 
-  IupSetAttribute(dlg, "TITLE", "IupTabs Test");
+  IupSetAttribute(dlg, "TITLE", "IupFlatTabs Test");
   IupSetAttribute(dlg, "APP_TABS", (char*)tabs);
 //  IupSetAttribute(box, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
 //  IupSetAttributeHandle(dlg, "BACKGROUND", load_image_LogoTecgraf());
 //  IupSetAttribute(dlg, "FGCOLOR", "10 200 80");
-//  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
-//  IupSetAttribute(dlg,"COMPOSITED","NO");
 
   IupMap(dlg);
   IupSetAttribute(dlg, "SIZE", NULL);
@@ -514,7 +510,7 @@ int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
 
-  TabsTest();
+  FlatTabsTest();
 
   IupMainLoop();
 
