@@ -84,6 +84,25 @@ static int cbUnHideAllTabs(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int cbEnableAllTabs(Ihandle* ih)
+{
+  Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
+  int i, count = IupGetInt(tabs, "COUNT");
+
+  for (i = 0; i < count; i++)
+  {
+    if (!IupGetIntId(tabs, "TABACTIVE", i))
+    {
+      IupSetAttributeId(tabs, "TABACTIVE", i, "Yes");
+      printf("tab %d = was inactive\n", i);
+    }
+    else
+      printf("tab %d = is active\n", i);
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int cbRemoveThisTab(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
@@ -104,6 +123,14 @@ static int cbHideThisTab(Ihandle* ih)
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
   int pos = IupGetInt(ih, "APP_THISTAB");
   IupSetAttributeId(tabs, "TABVISIBLE", pos, "No");
+  return IUP_DEFAULT;
+}
+
+static int cbDisableThisTab(Ihandle* ih)
+{
+  Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
+  int pos = IupGetInt(ih, "APP_THISTAB");
+  IupSetAttributeId(tabs, "TABINACTIVE", pos, "No");
   return IUP_DEFAULT;
 }
 
@@ -280,6 +307,7 @@ static int cbTabRightButton(Ihandle* ih, int pos)
                           IupItem("Remove Current Tab", "cbRemoveTab"),
                           IupItem("Remove This", "cbRemoveThisTab"), 
                           IupItem("Hide This", "cbHideThisTab"),
+                          IupItem("Disable This", "cbDisableThisTab"),
                           NULL);
   
   IupSetAttribute(menu, "APP_TABS", IupGetAttribute(ih, "APP_TABS"));
@@ -397,6 +425,7 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttributeHandle(tabs, "TABIMAGE1", load_image_TestImage());
 
   IupSetAttribute(tabs, "TABVISIBLE2", "NO");
+  IupSetAttribute(tabs, "TABACTIVE3", "NO");
 
   // In Windows, must be set before map
 //  IupSetAttribute(tabs, "MULTILINE", "YES");
@@ -464,6 +493,7 @@ void FlatTabsTest(void)
                         IupButton("Insert Tab", "cbInsertTab"),
                         IupButton("Remove Tab", "cbRemoveTab"),
                         IupButton("UnHide All Tabs", "cbUnHideAllTabs"),
+                        IupButton("Enable All Tabs", "cbEnableAllTabs"),
                         IupToggle("Inactive", "cbInactive"),
                         IupButton("Test", "cbTest"),
                         NULL), 
@@ -502,7 +532,9 @@ void FlatTabsTest(void)
   IupSetFunction("cbTest", (Icallback)cbTest);
   IupSetFunction("cbRemoveThisTab", (Icallback)cbRemoveThisTab);
   IupSetFunction("cbUnHideAllTabs", (Icallback)cbUnHideAllTabs);
+  IupSetFunction("cbEnableAllTabs", (Icallback)cbEnableAllTabs);
   IupSetFunction("cbHideThisTab", (Icallback)cbHideThisTab);
+  IupSetFunction("cbDisableThisTab", (Icallback)cbDisableThisTab);
 }
 
 #ifndef BIG_TEST
