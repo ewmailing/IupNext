@@ -1793,7 +1793,7 @@ static Ihandle* iLayoutPropertiesCreateDialog(iLayoutDialog* layoutdlg, Ihandle*
           *tabs, *box1, *box11, *box2, *box22, *box3, *box33, *set, *showidlist;
 
   close = IupButton("Close", NULL);
-  IupSetAttribute(close,"PADDING" ,IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetStrAttribute(close, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(close, "ACTION", (Icallback)iLayoutPropertiesClose_CB);
 
   button_box = IupHbox(
@@ -1825,7 +1825,7 @@ static Ihandle* iLayoutPropertiesCreateDialog(iLayoutDialog* layoutdlg, Ihandle*
 
   set = IupButton("Set", NULL);
   IupSetCallback(set, "ACTION", iLayoutPropertiesSet_CB);
-  IupSetAttribute(set, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetStrAttribute(set, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetAttribute(set, "NAME", "SETBUT");
 
   showidlist = IupList(NULL);
