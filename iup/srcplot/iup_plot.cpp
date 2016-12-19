@@ -218,13 +218,27 @@ static int iPlotPrint_CB(Ihandle* self)
   return IUP_DEFAULT;
 }
 
-static double iPlotDataSetValuesNumericGetValue_CB(Ihandle *self, int lin, int col)
+static double iPlotDataSetValuesNumericGetValue_CB(Ihandle *ih_matrix, int lin, int col)
 {
-  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
-  int ds = IupGetInt(self, "CURRENT");
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
+  int plot_current = IupGetInt(ih_matrix, "PLOT_CURRENT");
+  int ds = IupGetInt(ih_matrix, "DS");
 
-  if (col == 1 && IupGetInt(ih, "DS_STRXDATA"))
-    return 0;
+  IupSetInt(ih, "PLOT_CURRENT", plot_current);
+  IupSetInt(ih, "CURRENT", ds);
+
+  if (IupGetInt(ih, "DS_STRXDATA"))
+  {
+    if (col == 1)
+      return 0;
+    else
+    {
+      char* s;
+      double y;
+      IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&s, &y);
+      return y;
+    }
+  }
 
   double x, y;
   IupPlotGetSample(ih, ds, lin - 1, &x, &y);
@@ -235,10 +249,14 @@ static double iPlotDataSetValuesNumericGetValue_CB(Ihandle *self, int lin, int c
     return y;
 }
 
-static char* iPlotDataSetValuesValue_CB(Ihandle *self, int lin, int col)
+static char* iPlotDataSetValuesValue_CB(Ihandle *ih_matrix, int lin, int col)
 {
-  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
-  int ds = IupGetInt(self, "CURRENT");
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
+  int plot_current = IupGetInt(ih_matrix, "PLOT_CURRENT");
+  int ds = IupGetInt(ih_matrix, "DS");
+
+  IupSetInt(ih, "PLOT_CURRENT", plot_current);
+  IupSetInt(ih, "CURRENT", ds);
 
   if (lin == 0 && col == 0)
     return "";
@@ -282,8 +300,12 @@ static int iPlotDataSetValuesButton_CB(Ihandle*)
 static int iPlotDataSetValues_CB(Ihandle* ih_item)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
+  int plot_current = IupGetInt(ih_item, "PLOT_CURRENT");
   int ds = IupGetInt(ih_item, "DS");
   char name[100];
+
+  IupSetInt(ih, "PLOT_CURRENT", plot_current);
+  IupSetInt(ih, "CURRENT", ds);
 
   char* ds_name = IupGetAttribute(ih, "DS_NAME");
   strcpy(name, ds_name);
@@ -316,21 +338,25 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   IupSetStrAttribute(button, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
   IupSetAttribute(matrix, "USETITLESIZE", "YES");
+  IupSetAttribute(matrix, "MARKMODE", "CELL");
+  IupSetAttribute(matrix, "MARKMULTIPLE", "Yes");
 
+  int count = IupGetInt(ih, "DS_COUNT");
   IupSetAttribute(matrix, "NUMCOL", "2");
-
-  IupSetStrAttribute(matrix, "NUMLIN", IupGetAttribute(ih, "DS_COUNT"));
-
+  IupSetInt(matrix, "NUMLIN", count);
   IupSetAttribute(matrix, "NUMCOL_VISIBLE", "2");
-  IupSetAttribute(matrix, "NUMLIN_VISIBLE", "10");
+  if (count > 10)
+    IupSetAttribute(matrix, "NUMLIN_VISIBLE", "10");
+  else
+    IupSetInt(matrix, "NUMLIN_VISIBLE", count);
+
   if (!IupGetInt(ih, "DS_STRXDATA"))
   {
     IupSetAttribute(matrix, "NUMERICQUANTITY1", "NONE");
-    IupSetAttribute(matrix, "NUMERICFORMAT1", "%.5lf");
+    IupSetStrAttribute(matrix, "NUMERICFORMAT1", IupGetAttribute(ih, "AXS_XTICKFORMAT"));
   }
   IupSetAttribute(matrix, "NUMERICQUANTITY2", "NONE");
-  IupSetAttribute(matrix, "NUMERICFORMAT2", "%.5lf");
-  IupSetAttribute(matrix, "NUMERICDECIMALSYMBOL", ",");
+  IupSetStrAttribute(matrix, "NUMERICFORMAT2", IupGetAttribute(ih, "AXS_YTICKFORMAT"));
   IupSetCallback(matrix, "NUMERICGETVALUE_CB", (Icallback)iPlotDataSetValuesNumericGetValue_CB);
   IupSetCallback(matrix, "RESIZEMATRIX_CB", (Icallback)iPlotDataSetValuesResize_CB);
   IupSetCallback(matrix, "VALUE_CB", (Icallback)iPlotDataSetValuesValue_CB);
@@ -338,7 +364,8 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   IupSetCallback(button, "ACTION", (Icallback)iPlotDataSetValuesButton_CB);
 
   IupSetAttribute(matrix, "PLOT", (char *)ih);
-  IupSetInt(matrix, "CURRENT", ds);
+  IupSetInt(matrix, "PLOT_CURRENT", plot_current);
+  IupSetInt(matrix, "DS", ds);
 
   IupPopup(dlg, IUP_CENTER, IUP_CENTER);
 
@@ -968,9 +995,11 @@ static int iPlotProperties_CB(Ihandle* ih_item)
 static int iPlotDataSetProperties_CB(Ihandle* ih_item)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
+  int plot_current = IupGetInt(ih_item, "PLOT_CURRENT");
   int ds = IupGetInt(ih_item, "DS");
   char name[100];
 
+  IupSetInt(ih, "PLOT_CURRENT", plot_current);
   IupSetInt(ih, "CURRENT", ds);
 
   char* ds_name = IupGetAttribute(ih, "DS_NAME");
@@ -1117,17 +1146,19 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
     IupAppend(menu, IupSetCallbacks(itemProp = IupItem("_@IUP_DATASETPROPERTIESDLG", NULL), "ACTION", iPlotDataSetProperties_CB, NULL));
     IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_PROPERTIESDLG", NULL), "ACTION", iPlotProperties_CB, NULL));
 
-    int ds = IupGetInt(ih, "CURRENT"), sample;
-    double rx, ry;
+    int ds = IupGetInt(ih, "CURRENT");
+    int sample1, sample2;
+    double rx1, ry1, rx2, ry2;
     const char* ds_name;
     const char* strX;
-    int has_pie = iupStrEqualNoCase(IupGetAttribute(ih, "DS_MODE"), "PIE");
-    if (has_pie || ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample, rx, ry, strX))
+    if (ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample1, rx1, ry1, strX) ||
+        ((ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_CURVE || ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_BOTH) && ih->data->current_plot->FindDataSetSegment((double)x, (double)y, ds, ds_name, sample1, rx1, ry1, sample2, rx2, ry2)))
     {
-      IupSetInt(itemProp, "DS", ds);
+      IupSetInt(menu, "PLOT_CURRENT", ih->data->current_plot_index);
+      IupSetInt(menu, "DS", ds);
+
       IupSetAttribute(itemProp, "ACTIVE", "YES");
-      if (itemVal) IupSetInt(itemVal, "DS", ds);
-      IupSetAttribute(itemVal, "ACTIVE", "YES");
+      if (itemVal) IupSetAttribute(itemVal, "ACTIVE", "YES");
     }
     else
     {
@@ -1711,7 +1742,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
   bool changed = false;
   bool found = false;
   bool redraw = false;
-  int ds, sample, segment1, segment2;
+  int ds, sample, sample1, sample2;
   double rx, ry, rx1, ry1, rx2, ry2;
   const char* ds_name;
   const char* strX;
@@ -1747,9 +1778,9 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
   }
   else
   {
-    if (ih->data->current_plot->mHighlightMode != IUP_PLOT_HIGHLIGHT_NONE)
+    if (ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_CURVE || ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_BOTH)
     {
-      if (ih->data->current_plot->FindDataSetSegment((double)x, (double)y, ds, ds_name, segment1, rx1, ry1, segment2, rx2, ry2))
+      if (ih->data->current_plot->FindDataSetSegment((double)x, (double)y, ds, ds_name, sample1, rx1, ry1, sample2, rx2, ry2))
       {
         found = true;
 
