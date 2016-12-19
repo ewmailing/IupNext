@@ -218,25 +218,24 @@ static int iPlotPrint_CB(Ihandle* self)
   return IUP_DEFAULT;
 }
 
-static double iPlotDataSetValuesGetValue_CB(Ihandle *self, int lin, int col)
+static double iPlotDataSetValuesNumericGetValue_CB(Ihandle *self, int lin, int col)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
   int ds = IupGetInt(self, "CURRENT");
 
-  char* s;
+  if (col == 1 && IupGetInt(ih, "DS_STRXDATA"))
+    return 0;
+
   double x, y;
-  if (IupGetInt(ih, "DS_STRXDATA"))
-    IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&s, &y);
-  else
-    IupPlotGetSample(ih, ds, lin - 1, &x, &y);
+  IupPlotGetSample(ih, ds, lin - 1, &x, &y);
 
   if (col == 1)
     return x;
-
-  return y;
+  else
+    return y;
 }
 
-static char *iPlotDataSetValuesValue_CB(Ihandle *self, int lin, int col)
+static char* iPlotDataSetValuesValue_CB(Ihandle *self, int lin, int col)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
   int ds = IupGetInt(self, "CURRENT");
@@ -247,25 +246,25 @@ static char *iPlotDataSetValuesValue_CB(Ihandle *self, int lin, int col)
   if (lin == 0)
     return (col == 1) ? IupGetAttribute(ih, "AXS_XLABEL") : IupGetAttribute(ih, "AXS_YLABEL");
 
-  if (col == 2 || (col == 1 && !IupGetInt(ih, "DS_STRXDATA")))
-    return NULL;
+  if (col == 1 && IupGetInt(ih, "DS_STRXDATA"))
+  {
+    char* s;
+    double y;
+    IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&s, &y);
+    return s;
+  }
 
-  static char str[50];
-
-  double x, y;
-  char* s;
   if (col == 0)
   {
-    sprintf(str, "%d", lin);
+    static char str[30];
+    sprintf(str, "%d", lin - 1);
     return str;
   }
 
-  IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&s, &y);
-
-  return s;
+  return NULL;
 }
 
-static int iPlotDataSetValuesResize_CB(Ihandle *ih, int width, int height)
+static int iPlotDataSetValuesResize_CB(Ihandle *ih, int, int)
 {
   IupSetAttribute(ih, "RASTERWIDTH1", NULL);
   IupSetAttribute(ih, "RASTERWIDTH2", NULL);
@@ -275,7 +274,7 @@ static int iPlotDataSetValuesResize_CB(Ihandle *ih, int width, int height)
   return IUP_DEFAULT;
 }
 
-static int iPlotDataSetValuesButton_CB(Ihandle *ih)
+static int iPlotDataSetValuesButton_CB(Ihandle*)
 {
   return IUP_CLOSE;
 }
@@ -289,10 +288,7 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   char* ds_name = IupGetAttribute(ih, "DS_NAME");
   strcpy(name, ds_name);
 
-  int count = IupGetInt(ih, "DS_COUNT");
-
   Ihandle *matrix = IupCreate("matrixex");
-
   if (!matrix)
     return IUP_DEFAULT;
 
@@ -335,7 +331,7 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   IupSetAttribute(matrix, "NUMERICQUANTITY2", "NONE");
   IupSetAttribute(matrix, "NUMERICFORMAT2", "%.5lf");
   IupSetAttribute(matrix, "NUMERICDECIMALSYMBOL", ",");
-  IupSetCallback(matrix, "NUMERICGETVALUE_CB", (Icallback)iPlotDataSetValuesGetValue_CB);
+  IupSetCallback(matrix, "NUMERICGETVALUE_CB", (Icallback)iPlotDataSetValuesNumericGetValue_CB);
   IupSetCallback(matrix, "RESIZEMATRIX_CB", (Icallback)iPlotDataSetValuesResize_CB);
   IupSetCallback(matrix, "VALUE_CB", (Icallback)iPlotDataSetValuesValue_CB);
 
@@ -1114,9 +1110,10 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
 
   if (IupGetInt(ih, "MENUITEMPROPERTIES"))
   {
-    Ihandle* itemProp, *itemVal;
+    Ihandle* itemProp, *itemVal = NULL;
     IupAppend(menu, IupSeparator());
-    IupAppend(menu, IupSetCallbacks(itemVal = IupItem("_@IUP_DATASETVALUESDLG", NULL), "ACTION", iPlotDataSetValues_CB, NULL));
+    if (iupRegisterFindClass("matrixex"))
+      IupAppend(menu, IupSetCallbacks(itemVal = IupItem("_@IUP_DATASETVALUESDLG", NULL), "ACTION", iPlotDataSetValues_CB, NULL));
     IupAppend(menu, IupSetCallbacks(itemProp = IupItem("_@IUP_DATASETPROPERTIESDLG", NULL), "ACTION", iPlotDataSetProperties_CB, NULL));
     IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_PROPERTIESDLG", NULL), "ACTION", iPlotProperties_CB, NULL));
 
@@ -1129,13 +1126,13 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
     {
       IupSetInt(itemProp, "DS", ds);
       IupSetAttribute(itemProp, "ACTIVE", "YES");
-      IupSetInt(itemVal, "DS", ds);
+      if (itemVal) IupSetInt(itemVal, "DS", ds);
       IupSetAttribute(itemVal, "ACTIVE", "YES");
     }
     else
     {
       IupSetAttribute(itemProp, "ACTIVE", "NO");
-      IupSetAttribute(itemVal, "ACTIVE", "NO");
+      if (itemVal) IupSetAttribute(itemVal, "ACTIVE", "NO");
     }
   }
 
