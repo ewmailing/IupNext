@@ -24,6 +24,8 @@
 #include <cdclipbd.h>
 #include <cdps.h>
 
+//#include "iupcontrols.h"
+//#include "iupmatrixex.h"
 #include "iup_class.h"
 #include "iup_register.h"
 #include "iup_object.h"
@@ -213,6 +215,139 @@ static int iPlotPrint_CB(Ihandle* self)
   cdCanvas* cd_canvas = cdCreateCanvas(CD_PRINTER, (void*)"Plot -d");
   IupPlotPaintTo(ih, cd_canvas);
   cdKillCanvas(cd_canvas);
+  return IUP_DEFAULT;
+}
+
+static double iPlotDataSetValuesGetValue_CB(Ihandle *self, int lin, int col)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  int ds = IupGetInt(self, "CURRENT");
+
+  char* s;
+  double x, y;
+  if (IupGetInt(ih, "DS_STRXDATA"))
+    IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&s, &y);
+  else
+    IupPlotGetSample(ih, ds, lin - 1, &x, &y);
+
+  if (col == 1)
+    return x;
+
+  return y;
+}
+
+static char *iPlotDataSetValuesValue_CB(Ihandle *self, int lin, int col)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
+  int ds = IupGetInt(self, "CURRENT");
+
+  if (lin == 0 && col == 0)
+    return "";
+
+  if (lin == 0)
+    return (col == 1) ? IupGetAttribute(ih, "AXS_XLABEL") : IupGetAttribute(ih, "AXS_YLABEL");
+
+  if (col == 2 || (col == 1 && !IupGetInt(ih, "DS_STRXDATA")))
+    return NULL;
+
+  static char str[50];
+
+  double x, y;
+  char* s;
+  if (col == 0)
+  {
+    sprintf(str, "%d", lin);
+    return str;
+  }
+
+  IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&s, &y);
+
+  return s;
+}
+
+static int iPlotDataSetValuesResize_CB(Ihandle *ih, int width, int height)
+{
+  IupSetAttribute(ih, "RASTERWIDTH1", NULL);
+  IupSetAttribute(ih, "RASTERWIDTH2", NULL);
+
+  IupSetAttribute(ih, "FITTOSIZE", "COLUMNS");
+
+  return IUP_DEFAULT;
+}
+
+static int iPlotDataSetValuesButton_CB(Ihandle *ih)
+{
+  return IUP_CLOSE;
+}
+
+static int iPlotDataSetValues_CB(Ihandle* ih_item)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
+  int ds = IupGetInt(ih_item, "DS");
+  char name[100];
+
+  char* ds_name = IupGetAttribute(ih, "DS_NAME");
+  strcpy(name, ds_name);
+
+  int count = IupGetInt(ih, "DS_COUNT");
+
+  Ihandle *matrix = IupCreate("matrixex");
+
+  if (!matrix)
+    return IUP_DEFAULT;
+
+  Ihandle *button = IupButton("Close", NULL);
+
+  Ihandle *vbox = IupVbox(matrix, button, NULL);
+  IupSetAttribute(vbox, "ALIGNMENT", "ACENTER");
+  IupSetAttribute(vbox, "MARGIN", "10x10");
+  IupSetAttribute(vbox, "GAP", "10");
+
+  Ihandle* dlg = IupDialog(vbox);
+
+  Ihandle *parent = IupGetDialog(ih_item);
+
+  IupSetStrAttribute(dlg, "TITLE", "_@IUP_DATASETVALUESDLG");
+  IupSetAttribute(dlg, "MINBOX", "NO");
+  IupSetAttribute(dlg, "MAXBOX", "NO");
+  IupSetAttribute(dlg, "SHRINK", "YES");
+
+  if (IupGetAttribute(parent, "ICON"))
+    IupSetStrAttribute(dlg, "ICON", IupGetAttribute(parent, "ICON"));
+  else
+    IupSetStrAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+
+  IupSetStrAttribute(button, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+
+  IupSetAttribute(matrix, "USETITLESIZE", "YES");
+
+  IupSetAttribute(matrix, "NUMCOL", "2");
+
+  IupSetStrAttribute(matrix, "NUMLIN", IupGetAttribute(ih, "DS_COUNT"));
+
+  IupSetAttribute(matrix, "NUMCOL_VISIBLE", "2");
+  IupSetAttribute(matrix, "NUMLIN_VISIBLE", "10");
+  if (!IupGetInt(ih, "DS_STRXDATA"))
+  {
+    IupSetAttribute(matrix, "NUMERICQUANTITY1", "NONE");
+    IupSetAttribute(matrix, "NUMERICFORMAT1", "%.5lf");
+  }
+  IupSetAttribute(matrix, "NUMERICQUANTITY2", "NONE");
+  IupSetAttribute(matrix, "NUMERICFORMAT2", "%.5lf");
+  IupSetAttribute(matrix, "NUMERICDECIMALSYMBOL", ",");
+  IupSetCallback(matrix, "NUMERICGETVALUE_CB", (Icallback)iPlotDataSetValuesGetValue_CB);
+  IupSetCallback(matrix, "RESIZEMATRIX_CB", (Icallback)iPlotDataSetValuesResize_CB);
+  IupSetCallback(matrix, "VALUE_CB", (Icallback)iPlotDataSetValuesValue_CB);
+
+  IupSetCallback(button, "ACTION", (Icallback)iPlotDataSetValuesButton_CB);
+
+  IupSetAttribute(matrix, "PLOT", (char *)ih);
+  IupSetInt(matrix, "CURRENT", ds);
+
+  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+
+  IupDestroy(dlg);
+
   return IUP_DEFAULT;
 }
 
@@ -834,7 +969,7 @@ static int iPlotProperties_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int iPlotDatasetProperties_CB(Ihandle* ih_item)
+static int iPlotDataSetProperties_CB(Ihandle* ih_item)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
   int ds = IupGetInt(ih_item, "DS");
@@ -979,9 +1114,10 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
 
   if (IupGetInt(ih, "MENUITEMPROPERTIES"))
   {
-    Ihandle* item;
+    Ihandle* itemProp, *itemVal;
     IupAppend(menu, IupSeparator());
-    IupAppend(menu, IupSetCallbacks(item = IupItem("_@IUP_DATASETPROPERTIESDLG", NULL), "ACTION", iPlotDatasetProperties_CB, NULL));
+    IupAppend(menu, IupSetCallbacks(itemVal = IupItem("_@IUP_DATASETVALUESDLG", NULL), "ACTION", iPlotDataSetValues_CB, NULL));
+    IupAppend(menu, IupSetCallbacks(itemProp = IupItem("_@IUP_DATASETPROPERTIESDLG", NULL), "ACTION", iPlotDataSetProperties_CB, NULL));
     IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_PROPERTIESDLG", NULL), "ACTION", iPlotProperties_CB, NULL));
 
     int ds = IupGetInt(ih, "CURRENT"), sample;
@@ -991,11 +1127,16 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
     int has_pie = iupStrEqualNoCase(IupGetAttribute(ih, "DS_MODE"), "PIE");
     if (has_pie || ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample, rx, ry, strX))
     {
-      IupSetInt(item, "DS", ds);
-      IupSetAttribute(item, "ACTIVE", "YES");
+      IupSetInt(itemProp, "DS", ds);
+      IupSetAttribute(itemProp, "ACTIVE", "YES");
+      IupSetInt(itemVal, "DS", ds);
+      IupSetAttribute(itemVal, "ACTIVE", "YES");
     }
     else
-      IupSetAttribute(item, "ACTIVE", "NO");
+    {
+      IupSetAttribute(itemProp, "ACTIVE", "NO");
+      IupSetAttribute(itemVal, "ACTIVE", "NO");
+    }
   }
 
   IupSetAttribute(menu, "PLOT", (char*)ih);
@@ -1515,10 +1656,10 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
 
   if (!ih->data->current_plot->mTitle.mAutoPos &&
       ih->data->current_plot->CheckInsideTitle(ih->data->cd_canvas, x, y))
-    IupSetAttribute(ih, "CURSOR", "HAND");
+      IupSetAttribute(ih, "CURSOR", "HAND");
   else if (ih->data->current_plot->mLegend.mPosition == IUP_PLOT_XY &&
            ih->data->current_plot->CheckInsideLegend(ih->data->cd_canvas, x, y))
-    IupSetAttribute(ih, "CURSOR", "HAND");
+           IupSetAttribute(ih, "CURSOR", "HAND");
 
   /////////////// SELECTION, TITLE MOVE and LEGEND MOVE
 
@@ -1582,7 +1723,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
     found = true;
 
     if (ih->data->last_cursor_plot != index ||
-        ih->data->last_cursor_ds != ds || 
+        ih->data->last_cursor_ds != ds ||
         ih->data->last_cursor_sample != sample)
     {
       char* tipformat = iupAttribGetStr(ih, "TIPFORMAT");
@@ -1657,18 +1798,18 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
           // priority for sample highlight when sample is found
           if (ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_SAMPLE ||
               ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_BOTH)
-            ih->data->current_plot->mDataSetList[ih->data->last_cursor_ds]->mHighlightedSample = ih->data->last_cursor_sample;
+              ih->data->current_plot->mDataSetList[ih->data->last_cursor_ds]->mHighlightedSample = ih->data->last_cursor_sample;
 
           // highlight a curve
           if (ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_CURVE)
-              ih->data->current_plot->mDataSetList[ih->data->last_cursor_ds]->mHighlightedCurve = true;
+            ih->data->current_plot->mDataSetList[ih->data->last_cursor_ds]->mHighlightedCurve = true;
         }
         else
         {
           // highlight a curve
           if (ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_CURVE ||
               ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_BOTH)
-            ih->data->current_plot->mDataSetList[ih->data->last_cursor_ds]->mHighlightedCurve = true;
+              ih->data->current_plot->mDataSetList[ih->data->last_cursor_ds]->mHighlightedCurve = true;
         }
       }
     }
@@ -2566,7 +2707,8 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Invalid Formula.");
 
     IupSetLanguageString("IUP_PROPERTIESDLG", "Properties...");
-    IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "Dataset Properties...");
+    IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "DataSet Properties...");
+    IupSetLanguageString("IUP_DATASETVALUESDLG", "DataSet Values...");
 
     IupSetLanguageString("IUP_NAME", "Name:");
     IupSetLanguageString("IUP_COLOR", "Color:");
@@ -2700,7 +2842,8 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Fórmula Inválida.");
 
     IupSetLanguageString("IUP_PROPERTIESDLG", "Properties...");
-    IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "Dataset Properties...");
+    IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "Properties dos Dados...");
+    IupSetLanguageString("IUP_DATASETVALUESDLG", "Valores dos Dados...");
 
     IupSetLanguageString("IUP_NAME", "Nome:");
     IupSetLanguageString("IUP_COLOR", "Cor:");

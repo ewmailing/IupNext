@@ -17,6 +17,7 @@
 #include "iupcontrols.h"
 #include "iup_plot.h"
 #include "iupim.h"
+#include "iupmatrixex.h"
 
 #include <cd.h>
 #include <cdiup.h>
@@ -179,6 +180,7 @@ static void InitPlots(void)
   }
   IupPlotEnd(plot[0]);
   IupSetAttribute(plot[0], "DS_LEGEND", "Curve 2");
+  IupSetAttribute(plot[0], "DS_ORDEREDX", "No");
 
   /************************************************************************/
   /* PLOT 1 */
@@ -209,6 +211,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[1], "AXS_XLABELCENTERED", "Yes");
   IupSetAttribute(plot[1], "AXS_YLABELCENTERED", "Yes");
   IupSetAttribute(plot[1], "GRAPHICSMODE", "IMAGERGB");
+  IupSetAttribute(plot[1], "HIGHLIGHTMODE", "CURVE");
 
   theFac = 1.0 / (100 * 100 * 100);
   IupPlotBegin(plot[1], 0);
@@ -219,6 +222,7 @@ static void InitPlots(void)
     IupPlotAdd(plot[1], x, y);
   }
   IupPlotEnd(plot[1]);
+  IupSetAttribute(plot[1], "DS_ORDEREDX", "No");
 
   theFac = 2.0 / 100;
   IupPlotBegin(plot[1], 0);
@@ -229,6 +233,7 @@ static void InitPlots(void)
     IupPlotAdd(plot[1], x, y);
   }
   IupPlotEnd(plot[1]);
+  IupSetAttribute(plot[1], "DS_ORDEREDX", "No");
 
   /************************************************************************/
   /* PLOT 2 */
@@ -244,6 +249,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[2], "AXS_YLABEL", "Tg (Y)");
   IupSetAttribute(plot[2], "AXS_XFONTSTYLE", "BOLD");
   IupSetAttribute(plot[2], "AXS_YFONTSTYLE", "BOLD");
+  IupSetAttribute(plot[2], "HIGHLIGHTMODE", "CURVE");
 
   theFac = 100.0 / (100 * 100 * 100);
   IupPlotBegin(plot[2], 0);
@@ -310,7 +316,6 @@ static void InitPlots(void)
   }
   IupPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARKLINE");
-  IupSetAttribute(plot[4], "HIGHLIGHTMODE", "BOTH");
   IupSetCallback(plot[4], "CLICKSEGMENT_CB", (Icallback)clicksegment_cb);
   IupSetCallback(plot[4], "CLICKSAMPLE_CB", (Icallback)clicksample_cb);
 
@@ -324,6 +329,7 @@ static void InitPlots(void)
   IupPlotEnd(plot[4]);
   IupSetAttribute(plot[4], "DS_MODE", "MARK");
   IupSetAttribute(plot[4], "DS_MARKSTYLE", "HOLLOW_CIRCLE");
+  IupSetAttribute(plot[4], "HIGHLIGHTMODE", "BOTH");
 
   /************************************************************************/
   /* PLOT 5 */
@@ -854,6 +860,7 @@ void PlotTest(void)
   int ii;
 
   IupPlotOpen();     /* init IupPlot library */
+  IupMatrixExOpen();
 
   /* create plots */
   for (ii = 0; ii < MAXPLOT; ii++)

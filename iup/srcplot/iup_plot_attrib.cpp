@@ -1919,7 +1919,7 @@ static int iPlotSetDSPieContourAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->current_plot->mCurrentDataSet < 0 ||
       ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
-      return NULL;
+      return 0;
 
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
   dataset->mPieContour = iupStrBoolean(value) ? true : false;
@@ -1941,7 +1941,7 @@ static int iPlotSetDSPieSliceLabelAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->current_plot->mCurrentDataSet < 0 ||
       ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
-      return NULL;
+      return 0;
 
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
 
@@ -1979,6 +1979,49 @@ static char* iPlotGetDSPieSliceLabelPosAttrib(Ihandle* ih)
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
   return iupStrReturnDouble(dataset->mPieSliceLabelPos);
 }
+
+static char* iPlotGetDSStrXDataAttrib(Ihandle* ih)
+{
+  if (ih->data->current_plot->mCurrentDataSet < 0 ||
+      ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
+      return NULL;
+
+  iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
+  return iupStrReturnBoolean(dataset->GetDataX()->IsString() ? 1 : 0);
+}
+
+static char* iPlotGetDSExtraAttrib(Ihandle* ih)
+{
+  if (ih->data->current_plot->mCurrentDataSet < 0 ||
+      ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
+      return NULL;
+
+  iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
+  return iupStrReturnBoolean(dataset->GetExtra() ? 1 : 0);
+}
+
+static int iPlotSetDSOrderedXAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->current_plot->mCurrentDataSet < 0 ||
+      ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
+      return 0;
+
+  iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
+  dataset->mOrderedX = iupStrBoolean(value) ? true : false;
+  ih->data->current_plot->mRedraw = true;
+  return 0;
+}
+
+static char* iPlotGetDSOrderedXAttrib(Ihandle* ih)
+{
+  if (ih->data->current_plot->mCurrentDataSet < 0 ||
+      ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
+      return NULL;
+
+  iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
+  return iupStrReturnBoolean(dataset->mOrderedX ? 1 : 0);
+}
+
 
 static int iPlotSetDSPieSliceLabelPosAttrib(Ihandle* ih, const char* value)
 {
@@ -3487,6 +3530,9 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "DS_PIEHOLE", iPlotGetDSPieHoleAttrib, iPlotSetDSPieHoleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_PIESLICELABEL", iPlotGetDSPieSliceLabelAttrib, iPlotSetDSPieSliceLabelAttrib, IUPAF_SAMEASSYSTEM, "NONE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DS_PIESLICELABELPOS", iPlotGetDSPieSliceLabelPosAttrib, iPlotSetDSPieSliceLabelPosAttrib, IUPAF_SAMEASSYSTEM, "0.95", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_STRXDATA", iPlotGetDSStrXDataAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_EXTRA", iPlotGetDSExtraAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DS_ORDEREDX", iPlotGetDSOrderedXAttrib, iPlotSetDSOrderedXAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "VIEWPORTSQUARE", iPlotGetViewportSquareAttrib, iPlotSetViewportSquareAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AXS_SCALEEQUAL", iPlotGetAxisScaleEqualAttrib, iPlotSetAxisScaleEqualAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
