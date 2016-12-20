@@ -161,7 +161,11 @@ public:
   double GetSample(int inSampleIndex) const { return inSampleIndex; }
 
   const char* GetSampleString(int inSampleIndex) const { return mData[inSampleIndex]; }
-  void SetSampleString(int inSampleIndex, const char *inString) const { free(mData[inSampleIndex]); mData[inSampleIndex] = iupStrDup(inString); }
+  void SetSampleString(int inSampleIndex, const char *inString) const { 
+    if (inString == mData[inSampleIndex]) return; // set for the same pointer does nothing
+    free(mData[inSampleIndex]); 
+    mData[inSampleIndex] = iupStrDup(inString); 
+  }
 
   void AddSample(const char *inString) { mData = (char**)iupArrayInc(mArray); mData[mCount] = iupStrDup(inString); mCount++; }
   void InsertSample(int inSampleIndex, const char *inString) {
@@ -210,7 +214,7 @@ public:
   iupPlotDataSet(bool strXdata);
   ~iupPlotDataSet();
 
-  void SetName(const char* inName) { if (mName) free(mName); mName = iupStrDup(inName); }
+  void SetName(const char* inName) { if (inName == mName) return; if (mName) free(mName); mName = iupStrDup(inName); }
   const char* GetName() { return mName; }
 
   bool FindSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inScreenX, double inScreenY, double inScreenTolerance, int &outSampleIndex, double &outX, double &outY) const;
@@ -417,7 +421,7 @@ public:
   }
   ~iupPlotAxis() { SetLabel(NULL); }
 
-  void SetLabel(const char* inLabel) { if (mLabel) free(mLabel); mLabel = iupStrDup(inLabel); }
+  void SetLabel(const char* inLabel) { if (inLabel == mLabel) return; if (mLabel) free(mLabel); mLabel = iupStrDup(inLabel); }
   const char* GetLabel() const { return mLabel; }
 
   void Init();
@@ -555,7 +559,7 @@ public:
     mAutoPos(true), mPosX(0), mPosY(0) {}
   ~iupPlotTitle() { if (mText) free(mText); }
 
-  void SetText(const char* inValue) { if (mText) free(mText); mText = iupStrDup(inValue); }
+  void SetText(const char* inText) { if (inText == mText) return; if (mText) free(mText); mText = iupStrDup(inText); }
   const char* GetText() const { return mText; }
 
   long mColor;
@@ -575,16 +579,16 @@ public:
     : mColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mImage(NULL) {}
   ~iupPlotBackground() { if (mImage) free(mImage); }
 
-  void SetImage(const char* inValue) { if (mImage) free(mImage); mImage = iupStrDup(inValue); }
+  void SetImage(const char* inImage) { if (inImage == mImage) return; if (mImage) free(mImage); mImage = iupStrDup(inImage); }
   const char* GetImage() const { return mImage; }
 
   iupPlotMargin mMargin,
     mMarginAuto;
   long mColor;
   double mImageMinX,
-    mImageMaxX,
-    mImageMinY,
-    mImageMaxY;
+         mImageMaxX,
+         mImageMinY,
+         mImageMaxY;
 
 protected:
   char* mImage;

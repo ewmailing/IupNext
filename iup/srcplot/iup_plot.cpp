@@ -224,6 +224,7 @@ static double iPlotDataSetValuesNumericGetValue_CB(Ihandle *ih_matrix, int lin, 
   int plot_current = IupGetInt(ih_matrix, "PLOT_CURRENT");
   int ds = IupGetInt(ih_matrix, "DS");
 
+  // make sure we are changing the right plot
   IupSetInt(ih, "PLOT_CURRENT", plot_current);
   IupSetInt(ih, "CURRENT", ds);
 
@@ -233,9 +234,9 @@ static double iPlotDataSetValuesNumericGetValue_CB(Ihandle *ih_matrix, int lin, 
       return 0;
     else
     {
-      char* s;
+      char* str_x;
       double y;
-      IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&s, &y);
+      IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&str_x, &y);
       return y;
     }
   }
@@ -266,10 +267,10 @@ static char* iPlotDataSetValuesValue_CB(Ihandle *ih_matrix, int lin, int col)
 
   if (col == 1 && IupGetInt(ih, "DS_STRXDATA"))
   {
-    char* s;
+    char* str_x;
     double y;
-    IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&s, &y);
-    return s;
+    IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&str_x, &y);
+    return str_x;
   }
 
   if (col == 0)
@@ -280,6 +281,58 @@ static char* iPlotDataSetValuesValue_CB(Ihandle *ih_matrix, int lin, int col)
   }
 
   return NULL;
+}
+
+static int iPlotDataSetValuesNumericSetValue_CB(Ihandle* ih_matrix, int lin, int col, double new_value)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
+  int plot_current = IupGetInt(ih_matrix, "PLOT_CURRENT");
+  int ds = IupGetInt(ih_matrix, "DS");
+
+  IupSetInt(ih, "PLOT_CURRENT", plot_current);
+  IupSetInt(ih, "CURRENT", ds);
+
+  if (col == 2 && IupGetInt(ih, "DS_STRXDATA"))
+  {
+    char* str_x;
+    double y;
+    IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&str_x, &y);
+
+    IupPlotSetSampleStr(ih, ds, lin - 1, str_x, new_value);
+  }
+  else
+  {
+    double x, y;
+    IupPlotGetSample(ih, ds, lin - 1, &x, &y);
+
+    if (col == 1)
+      IupPlotSetSample(ih, ds, lin - 1, new_value, y);
+    else
+      IupPlotSetSample(ih, ds, lin - 1, x, new_value);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iPlotDataSetValuesValueEdit_CB(Ihandle* ih_matrix, int lin, int col, char* new_value)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
+  int plot_current = IupGetInt(ih_matrix, "PLOT_CURRENT");
+  int ds = IupGetInt(ih_matrix, "DS");
+
+  IupSetInt(ih, "PLOT_CURRENT", plot_current);
+  IupSetInt(ih, "CURRENT", ds);
+
+  if (col == 1 && IupGetInt(ih, "DS_STRXDATA"))
+  {
+    char* s;
+    double y;
+    IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&s, &y);
+
+    IupPlotSetSampleStr(ih, ds, lin - 1, new_value, y);
+  }
+
+  return IUP_DEFAULT;
 }
 
 static int iPlotDataSetValuesResize_CB(Ihandle *ih, int, int)
@@ -302,13 +355,12 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
   int plot_current = IupGetInt(ih_item, "PLOT_CURRENT");
   int ds = IupGetInt(ih_item, "DS");
-  char name[100];
 
   IupSetInt(ih, "PLOT_CURRENT", plot_current);
   IupSetInt(ih, "CURRENT", ds);
 
   char* ds_name = IupGetAttribute(ih, "DS_NAME");
-  strcpy(name, ds_name);
+  Ihandle* label = IupLabel(ds_name);
 
   Ihandle *matrix = IupCreate("matrixex");
   if (!matrix)
@@ -316,7 +368,7 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
 
   Ihandle *button = IupButton("Close", NULL);
 
-  Ihandle *vbox = IupVbox(matrix, button, NULL);
+  Ihandle *vbox = IupVbox(label, matrix, button, NULL);
   IupSetAttribute(vbox, "ALIGNMENT", "ACENTER");
   IupSetAttribute(vbox, "MARGIN", "10x10");
   IupSetAttribute(vbox, "GAP", "10");
@@ -354,12 +406,21 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   {
     IupSetAttribute(matrix, "NUMERICQUANTITY1", "NONE");
     IupSetStrAttribute(matrix, "NUMERICFORMAT1", IupGetAttribute(ih, "AXS_XTICKFORMAT"));
+    IupSetAttribute(matrix, "MASK*:1", IUP_MASK_FLOAT);
   }
   IupSetAttribute(matrix, "NUMERICQUANTITY2", "NONE");
   IupSetStrAttribute(matrix, "NUMERICFORMAT2", IupGetAttribute(ih, "AXS_YTICKFORMAT"));
+  IupSetAttribute(matrix, "MASK*:2", IUP_MASK_FLOAT);
+
   IupSetCallback(matrix, "NUMERICGETVALUE_CB", (Icallback)iPlotDataSetValuesNumericGetValue_CB);
   IupSetCallback(matrix, "RESIZEMATRIX_CB", (Icallback)iPlotDataSetValuesResize_CB);
   IupSetCallback(matrix, "VALUE_CB", (Icallback)iPlotDataSetValuesValue_CB);
+
+  if (IupGetInt(ih, "EDITABLEVALUES"))
+  {
+    IupSetCallback(matrix, "NUMERICSETVALUE_CB", (Icallback)iPlotDataSetValuesNumericSetValue_CB);
+    IupSetCallback(matrix, "VALUE_EDIT_CB", (Icallback)iPlotDataSetValuesValueEdit_CB);
+  }
 
   IupSetCallback(button, "ACTION", (Icallback)iPlotDataSetValuesButton_CB);
 
@@ -368,6 +429,8 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   IupSetInt(matrix, "DS", ds);
 
   IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+
+  IupSetAttribute(ih, "REDRAW", NULL);
 
   IupDestroy(dlg);
 
@@ -987,6 +1050,8 @@ static int iPlotProperties_CB(Ihandle* ih_item)
 
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
+  IupSetAttribute(ih, "REDRAW", NULL);
+
   IupDestroy(dlg);
 
   return IUP_DEFAULT;
@@ -1069,6 +1134,10 @@ static int iPlotDataSetProperties_CB(Ihandle* ih_item)
     &pieRadius, &pieStartAngle, &pieContour, &pieHole, &pieSliceLabel_index, &pieSliceLabelPos,
     NULL))
     return IUP_DEFAULT;
+
+  // make sure we are changing the right plot
+  IupSetInt(ih, "PLOT_CURRENT", plot_current);
+  IupSetInt(ih, "CURRENT", ds);
 
   IupSetStrAttribute(ih, "DS_NAME", name);
   IupSetStrAttribute(ih, "DS_COLOR", color);
@@ -1154,6 +1223,7 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
     if (ih->data->current_plot->FindDataSetSample((double)x, (double)y, ds, ds_name, sample1, rx1, ry1, strX) ||
         ((ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_CURVE || ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_BOTH) && ih->data->current_plot->FindDataSetSegment((double)x, (double)y, ds, ds_name, sample1, rx1, ry1, sample2, rx2, ry2)))
     {
+      // save plot info because it may have changed by the time the callback is called
       IupSetInt(menu, "PLOT_CURRENT", ih->data->current_plot_index);
       IupSetInt(menu, "DS", ds);
 
@@ -2735,8 +2805,8 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Invalid Formula.");
 
     IupSetLanguageString("IUP_PROPERTIESDLG", "Properties...");
-    IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "DataSet Properties...");
-    IupSetLanguageString("IUP_DATASETVALUESDLG", "DataSet Values...");
+    IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "Data Set Properties...");
+    IupSetLanguageString("IUP_DATASETVALUESDLG", "Data Set Values...");
 
     IupSetLanguageString("IUP_NAME", "Name:");
     IupSetLanguageString("IUP_COLOR", "Color:");
