@@ -24,8 +24,6 @@
 #include <cdclipbd.h>
 #include <cdps.h>
 
-//#include "iupcontrols.h"
-//#include "iupmatrixex.h"
 #include "iup_class.h"
 #include "iup_register.h"
 #include "iup_object.h"
@@ -392,6 +390,7 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   IupSetAttribute(matrix, "USETITLESIZE", "YES");
   IupSetAttribute(matrix, "MARKMODE", "CELL");
   IupSetAttribute(matrix, "MARKMULTIPLE", "Yes");
+  IupSetAttribute(matrix, "SCROLLBAR", "VERTICAL");
 
   int count = IupGetInt(ih, "DS_COUNT");
   IupSetAttribute(matrix, "NUMCOL", "2");

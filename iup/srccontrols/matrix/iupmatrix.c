@@ -1437,7 +1437,7 @@ static int iMatrixResize_CB(Ihandle* ih)
       old_h = ih->data->h;
 
   cdCanvasActivate(ih->data->cd_canvas);
-  cdCanvasGetSize(ih->data->cd_canvas, &ih->data->w, &ih->data->h, NULL, NULL);
+  cdCanvasGetSize(ih->data->cd_canvas, &(ih->data->w), &(ih->data->h), NULL, NULL);
 
   if (old_w != ih->data->w || old_h != ih->data->h)
   {
