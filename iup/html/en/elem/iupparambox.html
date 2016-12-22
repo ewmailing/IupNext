@@ -104,7 +104,9 @@ also accepted.</p>
 	(-4) = if the user pressed the button 3, if any;<br>&nbsp;&nbsp;&nbsp; 
   IUP_GETPARAM_CLOSE (-5) = if the user clicked on the <strong>IupGetParam</strong> 
   dialog close button. Not called when <strong>IupParamBox</strong> is directly 
-  used; (since 3.13)<br>
+  used; (since 3.13)<br>&nbsp;&nbsp;&nbsp; IUP_GETPARAM_MAP (-5) = before the<strong>
+  IupGetParam</strong> dialog is mapped. Not called when <strong>IupParamBox</strong> is directly used; 
+  (since 3.21) <br>
   <b>user_data</b>: a user pointer that is passed in the function call.</p>
   <p><span class="style1">Returns:</span> You can reject the change or the 
   button action by returning 0 in the callback, otherwise you must return 1. By 

@@ -15,6 +15,9 @@ int param_action(Ihandle* dialog, int param_index, void* user_data)
   case IUP_GETPARAM_BUTTON1:
     printf("Button1 (OK)\n");
     break;
+  case IUP_GETPARAM_MAP:
+    printf("Map\n");
+    break;
   case IUP_GETPARAM_INIT:
     printf("Init\n");
     break;
@@ -23,6 +26,9 @@ int param_action(Ihandle* dialog, int param_index, void* user_data)
     break;
   case IUP_GETPARAM_BUTTON3:
     printf("Button3 (Help)\n");
+    break;
+  case IUP_GETPARAM_CLOSE:
+    printf("Close\n");
     break;
   default:
     {

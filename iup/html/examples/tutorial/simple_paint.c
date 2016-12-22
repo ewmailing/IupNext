@@ -1974,7 +1974,7 @@ static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data
     IupSetAttribute(canvas, "IMAGE", (char*)new_image);
     IupUpdate(canvas);
   }
-  else if (param_index != IUP_GETPARAM_INIT)
+  else if (param_index != IUP_GETPARAM_INIT && param_index != IUP_GETPARAM_MAP)
   {
     /* restore original configuration */
     imImage* image = (imImage*)IupGetAttribute(canvas, "ORIGINAL_IMAGE");

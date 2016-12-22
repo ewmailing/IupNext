@@ -1727,6 +1727,8 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
 
   if (action)
   {
+    action(param_box, IUP_GETPARAM_MAP, user_data);
+
     IupMap(dlg);
 
     action(param_box, IUP_GETPARAM_INIT, user_data);
