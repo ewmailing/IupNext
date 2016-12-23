@@ -30,10 +30,6 @@
 <p>This is an additional control that depends on the CD library. It is included 
 in the 
 <a href="../iupcontrols.html">IupControls</a> library.</p>
-<p class="style2"><span class="style2">It is recommended that new 
-applications use the </span>
-<a href="../elem/iupprogressbar.html">IupProgressBar</a> 
-control of the main library.</p>
 <h3><a name="Creation">Creation</a></h3>
 
 <pre>Ihandle* IupGauge(void); [in C]
@@ -50,6 +46,10 @@ gauge() [in LED] </pre>
   Default is &quot;NO&quot;.</p>
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Controls the gauge and text color. The default is
   &quot;64 96 192&quot;.</p>
+<p><strong>FLAT</strong>: use a 1 pixel flat border instead of the default 3 
+pixels sunken border. Can be Yes or No. Default: No. (since 3.21)</p>
+<p><strong>FLATCOLOR:</strong> color of the border when FLAT=Yes. Default: &quot;164 
+164 164&quot;. (since 3.21)</p>
 <p><strong>MAX </strong>(<font SIZE="3">non inheritable</font>):
   Contains the maximum value. Default 
   is &quot;1&quot;.</p>
