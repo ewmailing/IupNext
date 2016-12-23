@@ -77,6 +77,14 @@ set the state attribute to PROCESSING.</p>
 <p><strong>DESCRIPTION</strong>: text description to be shown at the dialog.</p>
 <p><strong>PROGRESSHEIGHT</strong>: height in pixels of the progress bar. 
 Default: 30 (since 3.21)</p>
+<p><strong>MINCLOCK</strong>: minimum time between counts to an actual screen 
+update in milliseconds. So if each count increment is too fast this avoids 
+updating the screen too often. Default: 250 (since 3.21)</p>
+<p><strong>MINPERCENT</strong>: minimum percent between counts to an actual 
+screen update. So if each count increment is too fast and the minimum clock has 
+not reached yet, but the application would like to update the screen anyway 
+after the percent of the total progress has passed this minimum value. So at 
+least some screen updates will occur. Default: 10 (since 3.21)</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
 <p>Supports all the <a href="iupdialog.html#Callbacks">IupDialog</a> callbacks.</p>
 
