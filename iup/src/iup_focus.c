@@ -237,7 +237,7 @@ void iupSetCurrentFocus(Ihandle *ih)
     {
       IFni cb;
 
-      if (iup_current_focus_dialog) /* can be NULL at start */
+      if (iupObjectCheck(iup_current_focus_dialog)) /* can be NULL at start or can be destroyed */
       {
         cb = (IFni)IupGetCallback(iup_current_focus_dialog, "FOCUS_CB");
         if (cb) cb(iup_current_focus_dialog, 0);
