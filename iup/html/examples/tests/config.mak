@@ -83,6 +83,7 @@ SRC += gridbox.c
 SRC += expander.c
 SRC += cbox.c
 SRC += detachbox.c
+SRC += flattabs.c
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iupimglib
