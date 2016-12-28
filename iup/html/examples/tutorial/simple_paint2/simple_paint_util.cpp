@@ -161,12 +161,12 @@ void show_file_error(int error)
 
 void image_flood_fill(imImage* image, int start_x, int start_y, long replace_color, double tol_percent)
 {
-  float color[3];
+  double color[3];
   double tol;
 
-  color[0] = (float)cdRed(replace_color);
-  color[1] = (float)cdGreen(replace_color);
-  color[2] = (float)cdBlue(replace_color);
+  color[0] = (double)cdRed(replace_color);
+  color[1] = (double)cdGreen(replace_color);
+  color[2] = (double)cdBlue(replace_color);
 
   /* max value = 255*255*3 = 195075 */
   /* sqrt(195075) = 441 */
@@ -175,5 +175,5 @@ void image_flood_fill(imImage* image, int start_x, int start_y, long replace_col
   /* still too high */
   tol = tol / 5;  /* empirical reduce. TODO: What is the best formula? */
 
-  imProcessRenderFloodFill(image, start_x, start_y, color, (float)tol);
+  imProcessRenderFloodFill(image, start_x, start_y, color, tol);
 }

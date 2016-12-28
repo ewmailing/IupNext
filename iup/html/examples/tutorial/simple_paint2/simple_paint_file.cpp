@@ -106,7 +106,7 @@ bool SimplePaintFile::SaveAsFile(const char* new_filename)
 
 static void image_fill_white(imImage* image)
 {
-  float color[3];
+  double color[3];
 
   color[0] = 255;
   color[1] = 255;

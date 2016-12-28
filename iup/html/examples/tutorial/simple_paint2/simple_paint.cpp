@@ -608,9 +608,9 @@ static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data
     Ihandle* brightness_shift_param = (Ihandle*)IupGetAttribute(dialog, "PARAM0");
     Ihandle* contrast_factor_param = (Ihandle*)IupGetAttribute(dialog, "PARAM1");
 
-    float param[2] = { 0, 0 };
-    param[0] = IupGetFloat(brightness_shift_param, "VALUE");
-    param[1] = IupGetFloat(contrast_factor_param, "VALUE");
+    double param[2] = { 0, 0 };
+    param[0] = IupGetDouble(brightness_shift_param, "VALUE");
+    param[1] = IupGetDouble(contrast_factor_param, "VALUE");
 
     imProcessToneGamut(image, new_image, IM_GAMUT_BRIGHTCONT, param);
 
@@ -653,11 +653,11 @@ int SimplePaint::ItemBrightcontActionCallback(Ihandle*)
   IupSetAttribute(dlg, "PAINT_FILE", (char*)&file);
   IupSetAttribute(dlg, "PAINT_CANVAS", (char*)&canvas);
 
-  float param[2] = { 0, 0 };
+  double param[2] = { 0, 0 };
 
   if (!IupGetParam("Brightness and Contrast", brightcont_param_cb, dlg,
-                   "Brightness Shift: %r[-100,100]\n"
-                   "Contrast Factor: %r[-100,100]\n",
+                   "Brightness Shift: %R[-100,100]\n"
+                   "Contrast Factor: %R[-100,100]\n",
                    &param[0], &param[1], NULL))
   {
     imImageDestroy(new_image);
