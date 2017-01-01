@@ -37,8 +37,8 @@
 #define ICB_RAD2DEG  57.2957795131  /* degrees to radians (deg = ICB_RAD2DEG * rad) */
 #define ICB_DEFAULTSIZE   181  /* default size */
 #define ICB_SPACE  4           /* size of the spacing */
-#define ICB_HUEWIDTH  18       /* width of the hue ring */
-#define ICB_MARKSIZE  6        /* size of the cursor mark */
+#define ICB_HUEWIDTH  20       /* width of the hue ring */
+#define ICB_MARKSIZE  8        /* size of the cursor mark */
 enum {ICB_INSIDE_NONE, ICB_INSIDE_HUE, ICB_INSIDE_SI};
 
 
