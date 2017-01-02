@@ -19,38 +19,6 @@ static const double rad360 = 6.2831853;
 static const double sqrt3 = 1.7320508;
 static const double rad2deg = 57.2957795131;
 
-static double costab[361];
-static double sintab[361];
-static int init_tab = 0;
-
-static void iColorBuildTables(void)
-{
-  int theta;
-  for (theta=0; theta<=360; theta++)
-  {
-    double th = ((double)theta)/rad2deg;
-    costab[theta] = cos(th);
-    sintab[theta] = sin(th);
-  }
-  init_tab = 1;
-}
-
-static void iColorSinCos(double H, double *sinH, double *cosH)
-{
-  int theta;
-
-  H *= rad2deg;
-  theta = (int)(H + 0.5);  /* Round */
-
-  if (!init_tab)
-    iColorBuildTables();
-
-  if (theta<0) theta = 0;
-  if (theta>360) theta = 360;
-
-  *cosH = costab[theta];
-  *sinH = sintab[theta];
-}
 
 static double iColorNormHue(double H)
 {
@@ -94,7 +62,6 @@ static void iColorSmax01(double h, double hr, double hb, double hg, double *h0, 
     *h1 = hb;
 }
 
-/* Given H and I, returns S max, but s is in u,v space. */
 static double iColorHSI_Smax(double h, double cosH, double sinH, double i)
 {
   double hr, hb, hg, imax, h0, h1;
@@ -104,10 +71,10 @@ static double iColorHSI_Smax(double h, double cosH, double sinH, double i)
   if (i == 0.0 || i == 1.0)
     return 0.0;
 
-  /* Making r=0, g=0, b=0, r=1, g=1 or b=1 in the parametric equations and 
-     writing s in function of H and I. */
+  /* Making r=0, g=0, b=0, r=1, g=1 or b=1 in the parametric equations and
+  writing s in function of H and I. */
 
-  hr = cosH / 1.5;
+  hr = (2.0 * cosH) / 3.0;
   hg = (-cosH + sinH*sqrt3) / 3.0;
   hb = (-cosH - sinH*sqrt3) / 3.0;
 
@@ -116,14 +83,14 @@ static double iColorHSI_Smax(double h, double cosH, double sinH, double i)
   {
     /* face B=0 */
     if (h < rad120)
-      return i / fabs(hb);
+      return fabs(-i / hb);
 
     /* face R=0 */
     if (h < rad240)
-      return i / fabs(hr);
+      return fabs(-i / hr);
 
     /* face G=0 */
-    return i / fabs(hg);
+    return fabs(-i / hg);
   }
 
   /* at top */
@@ -131,14 +98,14 @@ static double iColorHSI_Smax(double h, double cosH, double sinH, double i)
   {
     /* face R=1 */
     if (h < rad60 || h > rad300)
-      return (1.0 - i) / fabs(hr);
+      return fabs((1.0 - i) / hr);
 
     /* face G=1 */
     if (h < rad180)
-      return (1.0 - i) / fabs(hg);
+      return fabs((1.0 - i) / hg);
 
     /* face B=1 */
-    return (1.0 - i) / fabs(hb);
+    return fabs((1.0 - i) / hb);
   }
 
   /* in the middle */
@@ -150,38 +117,38 @@ static double iColorHSI_Smax(double h, double cosH, double sinH, double i)
   else if (h == rad60 || h == rad180 || h == rad300)
     imax = 2.0 / 3.0;
   else
-    imax = h0 / (h0 - h1);
+    imax = fabs(h0 / (h0 - h1));
 
   if (i < imax)
-    return i / fabs(h0);
+    return fabs(-i / h0);
   else
-    return (1.0 - i) / fabs(h1);
+    return fabs((1.0 - i) / h1);
 }
 
 /* Given H, returns I where S is max,
-   BUT the maximum S here is 1 at the corners of the cube. */
+The maximum S is where top meets bottom.
+- i / h0 = (1 - i) / h1
+*/
 static double iColorHSI_ImaxS(double h, double cosH, double sinH)
 {
   double i, h0, h1;
   double hr, hb, hg;
 
-  /* i here is normalized between 0-1 */
-
   if (h == 0.0 || h == rad120 || h == rad240)
-    return 1.0/3.0;
+    return 1.0 / 3.0;
 
   if (h == rad60 || h == rad180 || h == rad300)
-    return 2.0/3.0;
+    return 2.0 / 3.0;
 
-  hr = cosH / 1.5;
+  hr = (2.0 * cosH) / 3.0;
   hg = (-cosH + sinH*sqrt3) / 3.0;
   hb = (-cosH - sinH*sqrt3) / 3.0;
 
   iColorSmax01(h, hr, hb, hg, &h0, &h1);
 
-  i = h0/(h0 - h1);
+  i = h0 / (h0 - h1);
 
-  return i;
+  return fabs(i);
 }
 
 static void iColorRGB2HSI(double r, double g, double b, double *h, double *s, double *i)
@@ -192,7 +159,7 @@ static void iColorRGB2HSI(double r, double g, double b, double *h, double *s, do
   v = r - (g + b)/2.0;
   u = (g - b) * (sqrt3/2.0);
 
-  *i = (r + g + b)/3;  /* already normalized to 0-1 */
+  *i = (r + g + b) / 3.0;  /* already normalized to 0-1 */
 
   *s = sqrt(v*v + u*u);  /* s is between 0-1, BUT it is linear in the cube and it is in u,v space. */
 
@@ -203,25 +170,27 @@ static void iColorRGB2HSI(double r, double g, double b, double *h, double *s, do
   }
   else
   {
-    double Smax; 
     double H, cosH, sinH;
 
     H = atan2(u, v);
     H = iColorNormHue(H);
-    *h = H * rad2deg;
 
-    iColorSinCos(H, &sinH, &cosH);
+    cosH = cos(H);
+    sinH = sin(H);
 
     /* must scale S from 0-Smax to 0-1 */
-    Smax = iColorHSI_Smax(H, cosH, sinH, *i);
-    if (Smax == 0.0)
-      *s = 0.0;
+    if (*i == 0.0 || *i == 1.0)
+      *s = 0.0;  /* by definition */
     else
     {
+      /* must scale S from 0-Smax to 0-1 */
+      double Smax = iColorHSI_Smax(H, cosH, sinH, *i);
       *s /= Smax;
       if (*s > 1.0) /* because of round problems when calculating s and Smax */
         *s = 1.0;
     }
+
+    *h = H * rad2deg;
 
     ImaxS = iColorHSI_ImaxS((double)H, cosH, sinH);
   }
@@ -238,11 +207,11 @@ static void iColorHSI2RGB(double h, double s, double i, double *r, double *g, do
   double cosH, sinH, H, v, u;
   double Smax, ImaxS; 
 
-  if (i < 0) i = 0;
-  else if (i > 1) i = 1;
+  if (i < 0.0) i = 0.0;
+  else if (i > 1.0) i = 1.0;
 
-  if (s < 0) s = 0;
-  else if (s > 1) s = 1;
+  if (s < 0.0) s = 0.0;
+  else if (s > 1.0) s = 1.0;
 
   if (s == 0.0 || i == 1.0 || i == 0.0 || h == 360.0)
   {
@@ -255,8 +224,9 @@ static void iColorHSI2RGB(double h, double s, double i, double *r, double *g, do
   H = h/rad2deg;
   H = iColorNormHue(H);
 
-  iColorSinCos(H, &sinH, &cosH);
-    
+  cosH = cos(H);
+  sinH = sin(H);
+
   /* must convert I from non-linear scale to linear scale. USED ONLY FOR THE COLORBROWSER */
   ImaxS = iColorHSI_ImaxS(H, cosH, sinH);
   if (i < 0.5) /* half I is I=ImaxS, not I=0.5 */
@@ -274,14 +244,14 @@ static void iColorHSI2RGB(double h, double s, double i, double *r, double *g, do
   u = s * sinH;
 
   /* Inverse of the Parametric equations, using i normalized to 0-1 */
-  *r = i + v/1.5;
+  *r = i + (2.0 * v)/3.0;
   *g = i - (v - u*sqrt3)/3.0;
   *b = i - (v + u*sqrt3)/3.0;
 
   /* fix round errors */
-  if (*r < 0.0) *r = 0;
-  if (*g < 0.0) *g = 0;
-  if (*b < 0.0) *b = 0;
+  if (*r < 0.0) *r = 0.0;
+  if (*g < 0.0) *g = 0.0;
+  if (*b < 0.0) *b = 0.0;
     
   if (*r > 1.0) *r = 1.0;
   if (*g > 1.0) *g = 1.0;
@@ -315,8 +285,8 @@ int iupStrToHSI(const char *str, double *h, double *s, double *i)
   double fh, fs, fi;
   if (!str) return 0;
   if (sscanf(str, "%lf %lf %lf", &fh, &fs, &fi) != 3) return 0;
-  if (fh > 359 || fs > 1 || fi > 1) return 0;
-  if (fh < 0 || fs < 0 || fi < 0) return 0;
+  if (fh > 359.0 || fs > 1.0 || fi > 1.0) return 0;
+  if (fh < 0.0 || fs < 0.0 || fi < 0.0) return 0;
   *h = fh;
   *s = fs;
   *i = fi;
