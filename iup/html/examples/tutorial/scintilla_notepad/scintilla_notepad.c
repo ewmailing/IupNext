@@ -1012,7 +1012,7 @@ int item_help_action_cb(void)
 
 int item_about_action_cb(void)
 {
-  IupMessage("About", "   Scintilla Notepad\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
+  IupMessage("About", "   Scintilla Notepad\n\nAutors:\n   Camilo Freire\n   Antonio Scuri");
   return IUP_DEFAULT;
 }
 
@@ -1172,15 +1172,12 @@ Ihandle* create_main_dialog(Ihandle *config)
 
   item_zoomin = IupItem("Zoom In\tCtrl_Num +", NULL);
   IupSetCallback(item_zoomin, "ACTION", (Icallback)item_zoomin_action_cb);
-  IupSetAttribute(item_zoomin, "VALUE", "ON");
 
   item_zoomout = IupItem("Zoom Out\tCtrl_Num -", NULL);
   IupSetCallback(item_zoomout, "ACTION", (Icallback)item_zoomout_action_cb);
-  IupSetAttribute(item_zoomout, "VALUE", "ON");
 
   item_restorezoom = IupItem("Restore Default Zoom\tCtrl_Num /", NULL);
   IupSetCallback(item_restorezoom, "ACTION", (Icallback)item_restorezoom_action_cb);
-  IupSetAttribute(item_restorezoom, "VALUE", "ON");
 
   item_toolbar = IupItem("&Toobar", NULL);
   IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
@@ -1378,19 +1375,12 @@ int main(int argc, char **argv)
 }
 
 /* If instead of using IupText we use IupScintilla, then we can add:
-   - more find/replace options
-   - zoom
    - show white spaces
    - margins
    - word wrap
    - tab size
    - auto replace tabs by spaces
-   - undo & redo
    - markers
    - line numbers
    and much more.
-   Hot keys for:
-   - match braces
-   - to lower case
-   - to upper case
    */
