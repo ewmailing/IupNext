@@ -484,6 +484,25 @@ int item_goto_action_cb(Ihandle* item_goto)
   return IUP_DEFAULT;
 }
 
+int item_gotombrace_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  int pos = IupGetInt(multitext, "CARETPOS");
+
+  int newpos = IupGetIntId(multitext, "BRACEMATCH", pos);
+
+  if (newpos != -1)
+  {
+    IupSetStrf(multitext, "BRACEHIGHLIGHT", "%d:%d", pos, newpos);
+
+    IupSetInt(multitext, "CARETPOS", newpos);
+    IupSetInt(multitext, "SCROLLTOPOS", newpos);
+  }
+
+  return IUP_IGNORE;
+}
+
 int find_next_action_cb(Ihandle* ih)
 {
   /* this callback can be called from the main dialog also */
@@ -832,7 +851,82 @@ int item_select_all_action_cb(Ihandle* item_select_all)
 {
   Ihandle* multitext = IupGetDialogChild(item_select_all, "MULTITEXT");
   IupSetFocus(multitext);
-  IupSetAttribute(multitext, "SELECTION", "ALL");
+  int count = IupGetInt(multitext, "COUNT");
+  IupSetStrf(multitext, "SELECTIONPOS", "%d:%d", 0, count-1);
+  return IUP_DEFAULT;
+}
+
+int item_undo_action_cb(Ihandle* item_select_all)
+{
+  Ihandle* multitext = IupGetDialogChild(item_select_all, "MULTITEXT");
+  IupSetAttribute(multitext, "UNDO", "YES");
+  return IUP_DEFAULT;
+}
+
+int item_redo_action_cb(Ihandle* item_select_all)
+{
+  Ihandle* multitext = IupGetDialogChild(item_select_all, "MULTITEXT");
+  IupSetAttribute(multitext, "REDO", "YES");
+  return IUP_DEFAULT;
+}
+
+static void StrUpper(char* dstr, const char* sstr)
+{
+  if (!sstr || sstr[0] == 0) return;
+  for (; *sstr; sstr++, dstr++)
+    *dstr = (char)toupper(*sstr);
+  *dstr = 0;
+}
+
+static void StrLower(char* dstr, const char* sstr)
+{
+  if (!sstr || sstr[0] == 0) return;
+  for (; *sstr; sstr++, dstr++)
+    *dstr = (char)tolower(*sstr);
+  *dstr = 0;
+}
+
+int item_uppercase_action_cb(Ihandle* item)
+{
+  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+
+  int start, end;
+  IupGetIntInt(multitext, "SELECTIONPOS", &start, &end);
+  char *text = IupGetAttribute(multitext, "SELECTEDTEXT");
+  text = strupr(text);
+  IupSetInt(multitext, "TARGETSTART", start);
+  IupSetInt(multitext, "TARGETEND", end);
+  IupSetAttribute(multitext, "REPLACETARGET", text);
+  IupSetStrf(multitext, "SELECTIONPOS", "%d:%d", start, end);
+
+  return IUP_DEFAULT;
+}
+
+int item_lowercase_action_cb(Ihandle* item)
+{
+  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+
+  int start, end;
+  IupGetIntInt(multitext, "SELECTIONPOS", &start, &end);
+  char *text = IupGetAttribute(multitext, "SELECTEDTEXT");
+  text = strlwr(text);
+  IupSetInt(multitext, "TARGETSTART", start);
+  IupSetInt(multitext, "TARGETEND", end);
+  IupSetAttribute(multitext, "REPLACETARGET", text);
+  IupSetStrf(multitext, "SELECTIONPOS", "%d:%d", start, end);
+
+  return IUP_DEFAULT;
+}
+
+int item_case_action_cb(Ihandle* item)
+{
+  char* shift = IupGetGlobal("SHIFTKEY");
+
+  if (strcmp(shift, "ON") == 0)
+    item_uppercase_action_cb(item);
+  else
+    item_lowercase_action_cb(item);
+
   return IUP_DEFAULT;
 }
 
@@ -856,6 +950,33 @@ int item_font_action_cb(Ihandle* item_font)
   }
 
   IupDestroy(fontdlg);
+  return IUP_DEFAULT;
+}
+
+int item_zoomin_action_cb(Ihandle* item_toolbar)
+{
+  Ihandle* multitext = IupGetDialogChild(item_toolbar, "MULTITEXT");
+
+  IupSetAttribute(multitext, "ZOOMIN", "10");
+
+  return IUP_DEFAULT;
+}
+
+int item_zoomout_action_cb(Ihandle* item_toolbar)
+{
+  Ihandle* multitext = IupGetDialogChild(item_toolbar, "MULTITEXT");
+
+  IupSetAttribute(multitext, "ZOOMOUT", "10");
+
+  return IUP_DEFAULT;
+}
+
+int item_restorezoom_action_cb(Ihandle* item_toolbar)
+{
+  Ihandle* multitext = IupGetDialogChild(item_toolbar, "MULTITEXT");
+
+  IupSetAttribute(multitext, "ZOOM", "0");
+
   return IUP_DEFAULT;
 }
 
@@ -903,11 +1024,14 @@ Ihandle* create_main_dialog(Ihandle *config)
 {
   Ihandle *dlg, *vbox, *multitext, *menu;
   Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
-  Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_find_next, *item_goto, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
+  Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_find_next, *item_goto, *item_gotombrace, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
+  Ihandle *item_undo, *item_redo;
+  Ihandle *case_menu, *item_uppercase, *item_lowercase;
   Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_format, *format_menu, *item_font, *item_replace;
   Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
+  Ihandle *zoom_menu, *item_zoomin, *item_zoomout, *item_restorezoom;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
   const char* font;
 
@@ -919,6 +1043,9 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(multitext, "CARET_CB", (Icallback)multitext_caret_cb);
   IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
   IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
+
+  IupSetAttribute(multitext, "STYLEFGCOLOR34", "255 0 0");
+  IupSetInt(multitext, "MARGINWIDTH0", 50);
 
   lbl_statusbar = IupLabel("Lin 1, Col 1");
   IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");
@@ -1025,8 +1152,35 @@ Ihandle* create_main_dialog(Ihandle *config)
   item_select_all = IupItem("Select &All\tCtrl+A", NULL);
   IupSetCallback(item_select_all, "ACTION", (Icallback)item_select_all_action_cb);
 
+  item_undo = IupItem("Undo\tCtrl+Z", NULL);
+  IupSetCallback(item_undo, "ACTION", (Icallback)item_undo_action_cb);
+
+  item_redo = IupItem("Redo\tCtrl+Y", NULL);
+  IupSetCallback(item_redo, "ACTION", (Icallback)item_redo_action_cb);
+
+  item_uppercase = IupItem("UPPERCASE\tCtrl+Shift+U", NULL);
+  IupSetCallback(item_uppercase, "ACTION", (Icallback)item_uppercase_action_cb);
+
+  item_lowercase = IupItem("lowercase\tCtrl+U", NULL);
+  IupSetCallback(item_lowercase, "ACTION", (Icallback)item_lowercase_action_cb);
+
   item_goto = IupItem("&Go To...\tCtrl+G", NULL);
   IupSetCallback(item_goto, "ACTION", (Icallback)item_goto_action_cb);
+
+  item_gotombrace = IupItem("Go To Matching Brace\tCtrl+B", NULL);
+  IupSetCallback(item_gotombrace, "ACTION", (Icallback)item_gotombrace_action_cb);
+
+  item_zoomin = IupItem("Zoom In\tCtrl_Num +", NULL);
+  IupSetCallback(item_zoomin, "ACTION", (Icallback)item_zoomin_action_cb);
+  IupSetAttribute(item_zoomin, "VALUE", "ON");
+
+  item_zoomout = IupItem("Zoom Out\tCtrl_Num -", NULL);
+  IupSetCallback(item_zoomout, "ACTION", (Icallback)item_zoomout_action_cb);
+  IupSetAttribute(item_zoomout, "VALUE", "ON");
+
+  item_restorezoom = IupItem("Restore Default Zoom\tCtrl_Num /", NULL);
+  IupSetCallback(item_restorezoom, "ACTION", (Icallback)item_restorezoom_action_cb);
+  IupSetAttribute(item_restorezoom, "VALUE", "ON");
 
   item_toolbar = IupItem("&Toobar", NULL);
   IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
@@ -1058,6 +1212,9 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_exit,
     NULL);
   edit_menu = IupMenu(
+    item_undo,
+    item_redo,
+    IupSeparator(),
     item_cut,
     item_copy,
     item_paste,
@@ -1067,13 +1224,25 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_find_next,
     item_replace,
     item_goto,
+    item_gotombrace,
     IupSeparator(),
     item_select_all,
+    IupSeparator(),
+    IupSubmenu("Convert Case to", case_menu = IupMenu(
+    item_uppercase,
+    item_lowercase,
+    NULL)),
     NULL);
   format_menu = IupMenu(
     item_font,
     NULL);
   view_menu = IupMenu(
+    IupSubmenu("Zoom", zoom_menu = IupMenu(
+    item_zoomin,
+    item_zoomout,
+    item_restorezoom,
+    NULL)),
+    IupSeparator(),
     item_toolbar,
     item_statusbar,
     NULL);
@@ -1131,9 +1300,14 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(dlg, "K_cF", (Icallback)item_find_action_cb);
   IupSetCallback(dlg, "K_cH", (Icallback)item_replace_action_cb);  /* replace system processing */
   IupSetCallback(dlg, "K_cG", (Icallback)item_goto_action_cb);
+  IupSetCallback(dlg, "K_cB", (Icallback)item_gotombrace_action_cb);
   IupSetCallback(dlg, "K_F3", (Icallback)find_next_action_cb);
   IupSetCallback(dlg, "K_cF3", (Icallback)selection_find_next_action_cb);
   IupSetCallback(dlg, "K_cV", (Icallback)item_paste_action_cb);  /* replace system processing */
+  IupSetCallback(dlg, "K_c+", (Icallback)item_zoomin_action_cb);
+  IupSetCallback(dlg, "K_c-", (Icallback)item_zoomout_action_cb);
+  IupSetCallback(dlg, "K_c/", (Icallback)item_restorezoom_action_cb);
+  IupSetCallback(dlg, "K_cU", (Icallback)item_case_action_cb);
   /* Ctrl+C, Ctrl+X, Ctrl+A, Del, already implemented inside IupText */
 
   /* parent for pre-defined dialogs in closed functions (IupMessage and IupAlarm) */
