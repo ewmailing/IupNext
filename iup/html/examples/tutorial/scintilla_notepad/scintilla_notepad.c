@@ -870,51 +870,59 @@ int item_redo_action_cb(Ihandle* item_select_all)
   return IUP_DEFAULT;
 }
 
-static void StrUpper(char* dstr, const char* sstr)
+void StrUpper(char* sstr)
 {
   if (!sstr || sstr[0] == 0) return;
-  for (; *sstr; sstr++, dstr++)
-    *dstr = (char)toupper(*sstr);
-  *dstr = 0;
+  for (; *sstr; sstr++)
+    *sstr = (char)toupper(*sstr);
 }
 
-static void StrLower(char* dstr, const char* sstr)
+void StrLower(char* sstr)
 {
   if (!sstr || sstr[0] == 0) return;
-  for (; *sstr; sstr++, dstr++)
-    *dstr = (char)tolower(*sstr);
-  *dstr = 0;
+  for (; *sstr; sstr++)
+    *sstr = (char)tolower(*sstr);
+}
+
+char* StrDup(const char *str)
+{
+  if (str)
+  {
+    int size = (int)strlen(str) + 1;
+    char *newstr = malloc(size);
+    if (newstr) memcpy(newstr, str, size);
+    return newstr;
+  }
+  return NULL;
 }
 
 int item_uppercase_action_cb(Ihandle* item)
 {
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
-
+  char *text;
   int start, end;
+  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
   IupGetIntInt(multitext, "SELECTIONPOS", &start, &end);
-  char *text = IupGetAttribute(multitext, "SELECTEDTEXT");
-  text = strupr(text);
-  IupSetInt(multitext, "TARGETSTART", start);
-  IupSetInt(multitext, "TARGETEND", end);
-  IupSetAttribute(multitext, "REPLACETARGET", text);
+  text = IupGetAttribute(multitext, "SELECTEDTEXT");
+  text = StrDup(text);
+  StrUpper(text);
+  IupSetAttribute(multitext, "SELECTEDTEXT", text);
   IupSetStrf(multitext, "SELECTIONPOS", "%d:%d", start, end);
-
+  free(text);
   return IUP_DEFAULT;
 }
 
 int item_lowercase_action_cb(Ihandle* item)
 {
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
-
+  char *text;
   int start, end;
+  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
   IupGetIntInt(multitext, "SELECTIONPOS", &start, &end);
-  char *text = IupGetAttribute(multitext, "SELECTEDTEXT");
-  text = strlwr(text);
-  IupSetInt(multitext, "TARGETSTART", start);
-  IupSetInt(multitext, "TARGETEND", end);
-  IupSetAttribute(multitext, "REPLACETARGET", text);
+  text = IupGetAttribute(multitext, "SELECTEDTEXT");
+  text = StrDup(text);
+  StrLower(text);
+  IupSetAttribute(multitext, "SELECTEDTEXT", text);
   IupSetStrf(multitext, "SELECTIONPOS", "%d:%d", start, end);
-
+  free(text);
   return IUP_DEFAULT;
 }
 
