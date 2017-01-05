@@ -318,20 +318,22 @@ or <b>ih:TransformTo</b>(<b>cnv_x, cnv_y</b>: number) -&gt; (<b>x</b>, <b>y</b>:
 inside callbacks only. Output variables can be NULL if not used. Y canvas 
 coordinates is in CD bottom to top orientation.</p>
 <hr>
-<pre>int <b>IupPlotFindSample</b>(Ihandle* <b>ih</b>, double <b>cnv_x</b>, double <b>cnv_y</b>, int <b>*ds_index</b>, int <b>*sample_index</b>); [in C]
+<pre>int <b><a name="IupPlotFindSample">IupPlotFindSample</a></b>(Ihandle* <b>ih</b>, double <b>cnv_x</b>, double <b>cnv_y</b>, int <b>*ds_index</b>, int <b>*sample_index</b>); [in C]
 <b>iup.PlotFindSample</b>(<b>ih</b>: ihandle, <b>cnv_x, cnv_y</b>: number) -&gt; (<strong>ret, ds_index</strong>, <strong>sample_index</strong>: number) [in Lua]
 or <b>ih:FindSample</b>(<b>cnv_x, cnv_y</b>: number) -&gt; (<strong>ret, ds_index</strong>, <strong>sample_index</strong>: number) [in Lua]</pre>
 <p>Returns the nearest sample of the nearest dataset within a tolerance 
 neighborhood. Tolerance can be set in SCREENTOLERANCE attribute. Returns a non zero value is successful, or a zero value if failed. 
-It should be used inside callbacks only. Output variables can be NULL if not used. Y canvas 
+It should be used inside callbacks only. Output variables can be NULL if not used. 
+The datasets are searched in reverse order they are drawn. Y canvas 
 coordinates is in CD bottom to top orientation. (since 3.13)</p>
 <hr>
-<pre>int <b>IupPlotFindSegment</b>(Ihandle* <b>ih</b>, double <b>cnv_x</b>, double <b>cnv_y</b>, int <b>*ds_index</b>, int <b>*sample_index1, </b>int *<b>sample_index2</b>); [in C]
+<pre>int <b><a name="IupPlotFindSegment">IupPlotFindSegment</a></b>(Ihandle* <b>ih</b>, double <b>cnv_x</b>, double <b>cnv_y</b>, int <b>*ds_index</b>, int <b>*sample_index1, </b>int *<b>sample_index2</b>); [in C]
 <b>iup.PlotFindSegment</b>(<b>ih</b>: ihandle, <b>cnv_x, cnv_y</b>: number) -&gt; (<strong>ret, ds_index</strong>, <strong>sample_index1, sample_index2</strong>: number) [in Lua]
 or <b>ih:FindSegment</b>(<b>cnv_x, cnv_y</b>: number) -&gt; (<strong>ret, ds_index</strong>, <strong>sample_index1, sample_index2</strong>: number) [in Lua]</pre>
 <p>Returns the nearest segment of the nearest dataset within a tolerance 
 neighborhood. Tolerance can be set in SCREENTOLERANCE attribute. Returns a non zero value is successful, or a zero value if failed. 
-It should be used inside callbacks only. Output variables can be NULL if not used. Y canvas 
+It should be used inside callbacks only. Output variables can be NULL if not used. 
+The datasets are searched in reverse order they are drawn. Y canvas 
 coordinates is in CD bottom to top orientation. Only works when DS_MODE is LINE, 
 MARKLINE, AREA, STEP or ERRORBAR.(since 3.21)</p>
 <hr>
@@ -497,7 +499,9 @@ on the <strong>PLOT_CURRENT</strong> attribute.</h4>
 <h4>Interaction Configuration </h4>
 <p><strong>HIGHLIGHTMODE</strong>: enable the highlight of a curve and/or sample 
 when cursor is over it. Can be: NONE, SAMPLE, CURVE or BOTH. CURVE highlight 
-only works when DS_MODE is LINE, MARKLINE, AREA, STEP or ERRORBAR. (since 3.21)</p>
+only works when DS_MODE is LINE, MARKLINE, AREA, STEP or ERRORBAR. Sample and 
+curves are searched using <a href="#IupPlotFindSample">IupPlotFindSample</a> and
+<a href="#IupPlotFindSegment">IupPlotFindSegment</a>. (since 3.21)</p>
 <p><strong>SCREENTOLERANCE</strong>: tolerance in pixels for highlight and 
 click. Default: 5 (since 3.21)</p>
 <h4>Background Configuration </h4>
@@ -807,7 +811,8 @@ will begin or end. But they are called only if DELETE_CB is also defined.</p>
 <p><b>CLICKSAMPLE_CB</b>:
   Action generated when  a sample is clicked. Called when the mouse button is 
 released, with no Ctrl key and IUP_BUTTON3 only when Shift is pressed, to avoid 
-conflict with zoom and context menu situations.</p>
+conflict with zoom and context menu situations. The sample is searched using
+<a href="#IupPlotFindSample">IupPlotFindSample</a>.</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index</b>, double <strong>x</strong>, double <strong>y, </strong>int <strong>button</strong>); [in C]
 <strong>ih</strong>:clicksample_cb(<b>ds_index, sample_index, x, y, <strong>button</strong></b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -830,7 +835,7 @@ conflict with zoom and context menu situations.</p>
 two samples that connects the segment. Called when the mouse button is 
 released, with no Ctrl key and IUP_BUTTON3 only when Shift is pressed, to avoid 
 conflict with zoom and context menu situations. If a sample is clicked this 
-callback is ignored. (since 3.21)</p>
+callback is ignored. The segment is searched using <a href="#IupPlotFindSegment">IupPlotFindSegment</a>. (since 3.21)</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>, int <b>sample_index1</b>, double <strong>x1</strong>, double <strong>y1, int <b>sample_index2</b>, double x2, double y2, </strong>int <strong>button</strong>); [in C]
 <strong>ih</strong>:clicksample_cb(<b>ds_index, sample_index1, x1, y1, <strong>sample_index2, x2, y2, button</strong></b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>

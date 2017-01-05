@@ -1354,7 +1354,8 @@ bool iupPlot::FindDataSetSample(double inScreenX, double inScreenY, int &outInde
   if (!mAxisX.mTrafo || !mAxisY.mTrafo)
     return false;
 
-  for (int ds = 0; ds < mDataSetListCount; ds++)
+  /* search for datasets in the inverse order they are drawn */
+  for (int ds = mDataSetListCount - 1; ds >= 0; ds--)
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
 
@@ -1383,7 +1384,8 @@ bool iupPlot::FindDataSetSegment(double inScreenX, double inScreenY, int &outInd
   if (!mAxisX.mTrafo || !mAxisY.mTrafo)
     return false;
 
-  for (int ds = 0; ds < mDataSetListCount; ds++)
+  /* search for datasets in the inverse order they are drawn */
+  for (int ds = mDataSetListCount - 1; ds >= 0; ds--)
   {
     iupPlotDataSet* dataset = mDataSetList[ds];
 
