@@ -25,15 +25,21 @@
 #include "iup_drvdraw.h"
 
 
-static void iFlatTabsSetCurrentTab(Ihandle* ih, Ihandle* child)
-{
-  iupAttribSet(ih, "_IUPFLATTABS_VALUE_HANDLE", (char*)child);
-  IupUpdate(ih);
-}
-
 static Ihandle* iFlatTabsGetCurrentTab(Ihandle* ih)
 {
   return (Ihandle*)iupAttribGet(ih, "_IUPFLATTABS_VALUE_HANDLE");
+}
+
+static void iFlatTabsSetCurrentTab(Ihandle* ih, Ihandle* child)
+{
+  Ihandle* current_child = iFlatTabsGetCurrentTab(ih);
+  if (current_child)
+    IupSetAttribute(current_child, "VISIBLE", "No");
+
+  iupAttribSet(ih, "_IUPFLATTABS_VALUE_HANDLE", (char*)child);
+  IupSetAttribute(child, "VISIBLE", "Yes");
+
+  IupUpdate(ih);
 }
 
 static void iFlatTabsGetIconSize(Ihandle* ih, int pos, int *w, int *h)
@@ -104,7 +110,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
 {
   Ihandle* current_child = iFlatTabsGetCurrentTab(ih);
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
-  char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
+  char* forecolor = iupAttribGetStr(ih, "FORECOLOR");
   char* tab_bgcolor = iupAttribGetStr(ih, "TABBGCOLOR");
   char* tab_fgcolor = iupAttribGetStr(ih, "TABFGCOLOR");
   int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TABIMAGEPOSITION"));
@@ -164,14 +170,30 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       if (current_child == child)
       {
         tabbackcolor = bgcolor;
-        tabforecolor = fgcolor;
+        tabforecolor = forecolor;
       }
       else
       {
+        int tab_highlighted;
+
         if (back_color)
           tabbackcolor = back_color;
         if (fore_color)
           tabforecolor = fore_color;
+
+        tab_highlighted = iupAttribGetInt(ih, "TABHIGHLIGHTED");
+        if (pos == tab_highlighted)
+        {
+          char* highcolor = iupAttribGetStr(ih, "HIGHCOLOR");
+          if (highcolor)
+            tabforecolor = highcolor;
+          else
+            tabforecolor = forecolor;
+
+          highcolor = iupAttribGetStr(ih, "TABHGCOLOR");
+          if (highcolor)
+            tabbackcolor = highcolor;
+        }
       }
 
       /* draw title background */
@@ -206,10 +228,12 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   {
     iupFlatDrawBox(dc, x, ih->currentwidth - 1, 0, title_height, tab_bgcolor, NULL, 1);
 
+    /* free area bottom line */
     if (tabline)
       iupdrvDrawLine(dc, x, title_height - 1, ih->currentwidth - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE);
   }
 
+  /* lines around children */
   if (tabline)
   {
     iupdrvDrawLine(dc, 0, title_height, 0, ih->currentheight - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* left vertical */
@@ -257,23 +281,171 @@ static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos,
   }
 }
 
+static int iFlatTabsFindTab(Ihandle* ih, int cur_x, int cur_y)
+{
+  int title_height = iFlatTabsGetTitleHeight(ih);
+  if (cur_y < title_height)
+  {
+    Ihandle* child;
+    int pos, horiz_padding, vert_padding, x = 0;
+    int fixedwidth = iupAttribGetInt(ih, "FIXEDWIDTH");
+
+    IupGetIntInt(ih, "TABPADDING", &horiz_padding, &vert_padding);
+
+    for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
+    {
+      int tabvisible = iupAttribGetBooleanId(ih, "TABVISIBLE", pos);
+      if (tabvisible)
+      {
+        int w;
+
+        if (fixedwidth)
+          w = fixedwidth;
+        else
+        {
+          int h;
+          iFlatTabsGetIconSize(ih, pos, &w, &h);
+          w += 2 * horiz_padding;
+        }
+
+        if (cur_x > x && cur_x < x + w)
+          return pos;
+
+        x += w;
+
+        if (x > ih->currentwidth)
+          break;
+      }
+    }
+  }
+
+  return -1;
+}
+
+
+/*****************************************************************************************/
+
+static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
+{
+  IFniiiis cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
+  if (cb)
+  {
+    if (cb(ih, button, pressed, x, y, status) == IUP_IGNORE)
+      return IUP_DEFAULT;
+  }
+
+  if (button == IUP_BUTTON1 && pressed)
+  {
+    int tab_found = iFlatTabsFindTab(ih, x, y);
+    if (tab_found != -1 && iupAttribGetBooleanId(ih, "TABACTIVE", tab_found))
+    {
+      Ihandle* child = IupGetChild(ih, tab_found);
+      Ihandle* prev_child = iFlatTabsGetCurrentTab(ih);
+      if (prev_child != child)
+      {
+        IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
+        int ret = IUP_DEFAULT;
+
+        if (cb)
+          ret = cb(ih, child, prev_child);
+        else
+        {
+          IFnii cb2 = (IFnii)IupGetCallback(ih, "TABCHANGEPOS_CB");
+          if (cb2)
+          {
+            int pos = tab_found;
+            int prev_pos = IupGetChildPos(ih, prev_child);
+            ret = cb2(ih, pos, prev_pos);
+          }
+        }
+
+        if (ret == IUP_DEFAULT)
+          iFlatTabsSetCurrentTab(ih, child);
+      }
+    }
+  }
+  else if (button == IUP_BUTTON3 && pressed)
+  {
+    IFni cb = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
+    if (cb)
+    {
+      int tab_found = iFlatTabsFindTab(ih, x, y);
+      if (tab_found != -1 && iupAttribGetBooleanId(ih, "TABACTIVE", tab_found))
+        cb(ih, tab_found);
+    }
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iFlatTabsMotion_CB(Ihandle *ih, int x, int y, char *status)
+{
+  int tab_found, tab_highlighted;
+
+  IFniis cb = (IFniis)IupGetCallback(ih, "FLAT_MOTION_CB");
+  if (cb)
+  {
+    if (cb(ih, x, y, status) == IUP_IGNORE)
+      return IUP_DEFAULT;
+  }
+
+  tab_highlighted = iupAttribGetInt(ih, "TABHIGHLIGHTED");
+  tab_found = iFlatTabsFindTab(ih, x, y);
+  if (tab_found != tab_highlighted)
+  {
+    int tabactive = 1;
+    if (tab_found != -1)
+      tabactive = iupAttribGetBooleanId(ih, "TABACTIVE", tab_found);
+
+    if (tabactive)
+      iupAttribSetInt(ih, "TABHIGHLIGHTED", tab_found);
+
+    iupdrvRedrawNow(ih);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iFlatTabsLeaveWindow_CB(Ihandle* ih)
+{
+  int tab_highlighted;
+
+  IFn cb = (IFn)IupGetCallback(ih, "FLAT_LEAVEWINDOW_CB");
+  if (cb)
+  {
+    if (cb(ih) == IUP_IGNORE)
+      return IUP_DEFAULT;
+  }
+
+  tab_highlighted = iupAttribGetInt(ih, "TABHIGHLIGHTED");
+  if (tab_highlighted != -1)
+  {
+    iupAttribSetInt(ih, "TABHIGHLIGHTED", -1);
+    iupdrvRedrawNow(ih);
+  }
+
+  return IUP_DEFAULT;
+}
+
 
 /*****************************************************************************************/
 
 
 static int iFlatTabsSetValueHandleAttrib(Ihandle* ih, const char* value)
 {
-  int pos;
-  Ihandle *child;
-
-  child = (Ihandle*)value;
+  Ihandle* current_child;
+  Ihandle *child = (Ihandle*)value;
 
   if (!iupObjectCheck(child))
     return 0;
 
-  pos = IupGetChildPos(ih, child);
-  if (pos != -1) /* found child */
-    iFlatTabsSetCurrentTab(ih, child);
+  current_child = iFlatTabsGetCurrentTab(ih);
+  if (current_child != child)
+  {
+    int pos = IupGetChildPos(ih, child);
+    if (pos != -1) /* found child */
+      iFlatTabsSetCurrentTab(ih, child);
+  }
 
   return 0;
 }
@@ -290,14 +462,15 @@ static char* iFlatTabsGetCountAttrib(Ihandle* ih)
 
 static int iFlatTabsSetValuePosAttrib(Ihandle* ih, const char* value)
 {
-  Ihandle* child;
+  Ihandle* child, *current_child;
   int pos;
 
   if (!iupStrToInt(value, &pos))
     return 0;
 
   child = IupGetChild(ih, pos);
-  if (child) /* found child */
+  current_child = iFlatTabsGetCurrentTab(ih);
+  if (child && current_child != child)  /* found child and NOT current */
     iFlatTabsSetCurrentTab(ih, child);
 
   return 0;
@@ -427,6 +600,8 @@ static void iFlatTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
   current_child = iFlatTabsGetCurrentTab(ih);
   if (!current_child)
     iFlatTabsSetCurrentTab(ih, child);
+  else
+    IupSetAttribute(child, "VISIBLE", "No");
 }
 
 static void iFlatTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
@@ -524,7 +699,12 @@ static int iFlatTabsCreateMethod(Ihandle* ih, void **params)
     }
   }
 
+  iupAttribSetInt(ih, "TABHIGHLIGHTED", -1);
+
   IupSetCallback(ih, "ACTION", (Icallback)iFlatTabsRedraw_CB);
+  IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatTabsButton_CB);
+  IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatTabsMotion_CB);
+  IupSetCallback(ih, "LEAVEWINDOW_CB", iFlatTabsLeaveWindow_CB);
 
   return IUP_NOERROR;
 }
@@ -555,7 +735,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterCallback(ic, "TABCHANGE_CB", "nn");
   iupClassRegisterCallback(ic, "TABCHANGEPOS_CB", "ii");
   iupClassRegisterCallback(ic, "RIGHTCLICK_CB", "i");
-  iupClassRegisterCallback(ic, "TABCLOSE_CB", "i");
+//  iupClassRegisterCallback(ic, "TABCLOSE_CB", "i");
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -592,10 +772,12 @@ Iclass* iupFlatTabsNewClass(void)
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", iFlatTabsGetBgColorAttrib, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TABBGCOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABFGCOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABHGCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "TABLINE", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABLINECOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "180 180 180", IUPAF_NO_INHERIT);

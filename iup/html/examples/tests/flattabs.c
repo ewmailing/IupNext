@@ -427,22 +427,18 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(tabs, "TABVISIBLE2", "NO");
   IupSetAttribute(tabs, "TABACTIVE3", "NO");
 
-  // In Windows, must be set before map
-//  IupSetAttribute(tabs, "MULTILINE", "YES");
-//  IupSetAttribute(tabs, "TABTYPE", "LEFT");
-//  IupSetAttribute(tabs, "TABTYPE", "RIGHT");
-//  IupSetAttribute(tabs, "TABTYPE", "BOTTOM");
-//  IupSetAttribute(tabs, "TABORIENTATION", "VERTICAL");
+  /* like Office 2016 */
+  if (0)
+  {
+    IupSetAttribute(tabs, "FORECOLOR", "192 0 0");
+    IupSetAttribute(tabs, "TABBGCOLOR", "192 0 0");
+    IupSetAttribute(tabs, "HIGHCOLOR", "255 128 128");
+    IupSetAttribute(tabs, "TABFGCOLOR", "255 255 255");
+    IupSetAttribute(tabs, "TABLINE", "NO");
+  }
 
 //  IupSetAttribute(tabs, "SHOWCLOSE", "YES");
   
-//  IupSetAttribute(tabs, "ALIGNMENT", "NW");
-//  IupSetAttribute(tabs, "ALIGNMENT", "NORTH");
-//  IupSetAttribute(tabs, "ALIGNMENT", "WEST");
-//  IupSetAttribute(tabs, "ALIGNMENT", "EAST");
-//  IupSetAttribute(tabs, "ALIGNMENT", "SOUTH");
-//  IupSetAttribute(tabs, "ALIGNMENT", "SE");
-
 //  IupSetAttribute(tabs, "BACKGROUND", "10 150 200");
 //  IupSetAttribute(tabs, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(tabs, "FGCOLOR", "250 0 0");
