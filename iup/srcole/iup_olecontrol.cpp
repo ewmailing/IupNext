@@ -159,7 +159,12 @@ static void iOleControlDestroyMethod(Ihandle* ih)
 static void iOleControlRelease(Iclass* ic)
 {
   (void)ic;
-  OleUninitialize();
+
+  if (IupGetGlobal("_IUPWIN_OLEINITIALIZE"))
+  {
+    OleUninitialize();
+    IupSetGlobal("_IUPWIN_OLEINITIALIZE", NULL);
+  }
 }
 
 static Iclass* iOleControlNewClass(void)
