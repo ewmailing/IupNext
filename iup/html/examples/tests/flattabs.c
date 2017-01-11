@@ -395,17 +395,17 @@ static Ihandle* CreateTabs(int tab)
   vboxH = IupBackgroundBox(IupVbox(IupLabel("Label HHH"), IupButton("Button HHH", "cbChildButton"), NULL));
   vboxI = IupBackgroundBox(IupVbox(IupLabel("Canvas"), IupCanvas(NULL), NULL));
 
-  IupSetAttribute(vboxA, "TABTITLE", "A");
+  IupSetAttribute(vboxA, "TABTITLE", "Aj");
   IupSetAttributeHandle(vboxA, "TABIMAGE", load_image_LogoTecgraf());
 //  IupSetAttribute(vboxB, "TABTITLE", "&BB");
   //  IupSetAttribute(vboxC, "TABTITLE", "CCC");
   IupStoreAttribute(vboxC, "TABIMAGE", IupGetAttribute(vboxA, "TABIMAGE"));
   IupSetAttribute(vboxD, "TABTITLE", "DDDD");
-  IupSetAttribute(vboxE, "TABTITLE", "&EEEEE");
-  IupSetAttribute(vboxF, "TABTITLE", "FFFFFF");
-  IupSetAttribute(vboxG, "TABTITLE", "GGGGGGG");
+  IupSetAttribute(vboxE, "TABTITLE", "&EEEjj");
+  IupSetAttribute(vboxF, "TABTITLE", "FFFFff");
+  IupSetAttribute(vboxG, "TABTITLE", "GGGG ggg");
   IupSetAttribute(vboxH, "TABTITLE", "HHHHHHHH");
-  IupSetAttribute(vboxI, "TABTITLE", "Canvas");
+  IupSetAttribute(vboxI, "TABTITLE", "Canvas (зг)");
   IupSetAttribute(vboxA, "TITLE", "TABS A");
   IupSetAttribute(vboxB, "TITLE", "TABS BB");
   IupSetAttribute(vboxC, "TITLE", "TABS CCC");
@@ -431,14 +431,16 @@ static Ihandle* CreateTabs(int tab)
   if (0)
   {
     IupSetAttribute(tabs, "FORECOLOR", "192 0 0");
-    IupSetAttribute(tabs, "TABBGCOLOR", "192 0 0");
+    IupSetAttribute(tabs, "TABSBACKCOLOR", "192 0 0");
     IupSetAttribute(tabs, "HIGHCOLOR", "255 128 128");
-    IupSetAttribute(tabs, "TABFGCOLOR", "255 255 255");
-    IupSetAttribute(tabs, "TABLINE", "NO");
+    IupSetAttribute(tabs, "TABSFORECOLOR", "255 255 255");
+    IupSetAttribute(tabs, "SHOWLINES", "NO");
   }
 
   IupSetAttribute(tabs, "SHOWCLOSE", "YES");
-  
+  IupSetAttribute(tabs, "TABSPADDING", "10x50");
+  IupSetAttribute(tabs, "FONTSIZE", "36");
+
 //  IupSetAttribute(tabs, "BACKGROUND", "10 150 200");
 //  IupSetAttribute(tabs, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(tabs, "FGCOLOR", "250 0 0");
@@ -453,12 +455,6 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(tabs, "MARGIN", "0x0");  /* for children */
   IupSetAttribute(tabs, "RASTERSIZE", "300x200");  /* initial size */
   
-  // Windows Only  
-  //IupSetAttribute(tabs, "TIPBALLOON", "YES");
-  //IupSetAttribute(tabs, "TIPBALLOONTITLE", "Tip Title");
-  //IupSetAttribute(tabs, "TIPBALLOONTITLEICON", "2");
-  //IupSetAttribute(tabs, "TIPDELAY", "5000");
-
   //IupSetCallback(tabs, "K_ANY",        (Icallback)k_any);
   //IupSetCallback(tabs, "HELP_CB",      (Icallback)help_cb);
 
