@@ -437,7 +437,7 @@ static Ihandle* CreateTabs(int tab)
     IupSetAttribute(tabs, "TABLINE", "NO");
   }
 
-//  IupSetAttribute(tabs, "SHOWCLOSE", "YES");
+  IupSetAttribute(tabs, "SHOWCLOSE", "YES");
   
 //  IupSetAttribute(tabs, "BACKGROUND", "10 150 200");
 //  IupSetAttribute(tabs, "BGCOLOR", "92 92 255");
