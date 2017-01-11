@@ -70,11 +70,6 @@ static void winTabsInitializeCloseImage(void)
 
   image_close = IupImage(ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, img_close);
   IupSetAttribute(image_close, "0", "BGCOLOR");
-  IupSetAttribute(image_close, "1", "128 128 128");
-  IupSetHandle("IMGCLOSEPRESS", image_close);
-
-  image_close = IupImage(ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, img_close);
-  IupSetAttribute(image_close, "0", "BGCOLOR");
   IupSetStrAttribute(image_close, "1", IupGetGlobal("TXTHLCOLOR"));
   IupSetHandle("IMGCLOSEHIGH", image_close);
 }
