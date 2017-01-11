@@ -813,6 +813,50 @@ static char* iTreeGetTitleFontStyleAttrib(Ihandle* ih, int id)
   return iupStrReturnStrf("%s%s%s%s", is_bold ? "Bold " : "", is_italic ? "Italic " : "", is_underline ? "Underline " : "", is_strikeout ? "Strikeout " : "");
 }
 
+static int iTreeSetTitleFontSizeAttrib(Ihandle* ih, int id, const char* value)
+{
+  int size = 0;
+  int is_bold = 0,
+    is_italic = 0,
+    is_underline = 0,
+    is_strikeout = 0;
+  char typeface[1024];
+  char* font;
+
+  if (!value)
+    return 0;
+
+  font = IupGetAttributeId(ih, "TITLEFONT", id);
+  if (!font)
+    font = IupGetAttribute(ih, "FONT");
+
+  if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return 0;
+
+  IupSetfAttributeId(ih, "TITLEFONT", id, "%s, %s %d", typeface, is_bold ? "Bold " : "", is_italic ? "Italic " : "", is_underline ? "Underline " : "", is_strikeout ? "Strikeout " : "", value);
+
+  return 0;
+}
+
+static char* iTreeGetTitleFontSizeAttrib(Ihandle* ih, int id)
+{
+  int size = 0;
+  int is_bold = 0,
+    is_italic = 0,
+    is_underline = 0,
+    is_strikeout = 0;
+  char typeface[1024];
+
+  char* font = IupGetAttributeId(ih, "TITLEFONT", id);
+  if (!font)
+    font = IupGetAttribute(ih, "FONT");
+
+  if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
+    return NULL;
+
+  return iupStrReturnInt(size);
+}
+
 
 /*************************************************************************/
 
@@ -916,6 +960,7 @@ Iclass* iupTreeNewClass(void)
   iupClassRegisterAttributeId(ic, "TOTALCHILDCOUNT", iTreeGetTotalChildCountAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "USERDATA", iTreeGetUserDataAttrib, iTreeSetUserDataAttrib, IUPAF_NO_STRING|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLEFONTSTYLE", iTreeGetTitleFontStyleAttrib, iTreeSetTitleFontStyleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TITLEFONTSIZE", iTreeGetTitleFontSizeAttrib, iTreeSetTitleFontSizeAttrib, IUPAF_NO_INHERIT);
 
   /* Default node images */
   if (!IupGetHandle("IMGLEAF") || !IupGetHandle("IMGBLANK") || !IupGetHandle("IMGPAPER"))
