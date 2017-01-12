@@ -439,7 +439,9 @@ static Ihandle* CreateTabs(int tab)
 
   IupSetAttribute(tabs, "SHOWCLOSE", "YES");
   IupSetAttribute(tabs, "TABSPADDING", "10x50");
-  IupSetAttribute(tabs, "FONTSIZE", "36");
+  IupSetAttribute(tabs, "TABSFONTSIZE", "36");
+
+  IupSetAttribute(tabs, "TABFONTSTYLE4", "Bold");
 
 //  IupSetAttribute(tabs, "BACKGROUND", "10 150 200");
 //  IupSetAttribute(tabs, "BGCOLOR", "92 92 255");

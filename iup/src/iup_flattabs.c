@@ -120,11 +120,63 @@ static void iFlatTabsGetIconSize(Ihandle* ih, int pos, int *w, int *h)
     iupdrvFontGetMultiLineStringSize(ih, title, w, h);
 }
 
+static void iFlatTabsSetFont(Ihandle* ih)
+{
+  char* tabs_font = iupAttribGet(ih, "TABSFONT");
+  if (tabs_font)
+  {
+    char* old_font = IupGetAttribute(ih, "FONT");
+    iupAttribSetStr(ih, "_IUP_OLDFONT", old_font);
+
+    iupAttribSetStr(ih, "FONT", tabs_font);
+    iupdrvSetFontAttrib(ih, tabs_font);
+  }
+}
+
+static void iFlatTabsResetFont(Ihandle* ih)
+{
+  char* old_font = iupAttribGet(ih, "_IUP_OLDFONT");
+  if (old_font)
+  {
+    iupAttribSetStr(ih, "FONT", old_font);
+    iupdrvSetFontAttrib(ih, old_font);
+
+    iupAttribSet(ih, "_IUP_OLDFONT", NULL);
+  }
+}
+
+static void iFlatTabsSetTabFont(Ihandle* ih, int pos)
+{
+  char* font = iupAttribGetId(ih, "TABFONT", pos);
+  if (font)
+  {
+    char* old_font = IupGetAttribute(ih, "FONT");
+    iupAttribSetStr(ih, "_IUP_OLDTABFONT", old_font);
+
+    iupAttribSetStr(ih, "FONT", font);
+    iupdrvSetFontAttrib(ih, font);
+  }
+}
+
+static void iFlatTabsResetTabFont(Ihandle* ih)
+{
+  char* old_font = iupAttribGet(ih, "_IUP_OLDTABFONT");
+  if (old_font)
+  {
+    iupAttribSetStr(ih, "FONT", old_font);
+    iupdrvSetFontAttrib(ih, old_font);
+
+    iupAttribSet(ih, "_IUP_OLDTABFONT", NULL);
+  }
+}
+
 static int iFlatTabsGetTitleHeight(Ihandle* ih)
 {
   int vert_padding = IupGetInt2(ih, "TABSPADDING");
   int max_height = 0, w, h, pos;
   Ihandle* child;
+
+  iFlatTabsSetFont(ih);
 
   for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
   {
@@ -133,6 +185,8 @@ static int iFlatTabsGetTitleHeight(Ihandle* ih)
     if (h > max_height)
       max_height = h;
   }
+
+  iFlatTabsResetFont(ih);
 
   return max_height + 2 * vert_padding;
 }
@@ -182,6 +236,8 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
     char* title_line_color = iupAttribGetStr(ih, "TABSLINECOLOR");
     iupStrToRGB(title_line_color, &line_r, &line_g, &line_b);
   }
+
+  iFlatTabsSetFont(ih);
 
   for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
   {
@@ -262,10 +318,14 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       if (show_close)
         icon_width -= ITABS_CLOSE_SIZE + ITABS_CLOSE_SPACING + ITABS_CLOSE_BORDER;
 
+      iFlatTabsSetTabFont(ih, pos);
+
       iupFlatDrawIcon(ih, dc, x, 0,
                       icon_width, title_height,
                       img_position, spacing, horiz_alignment, vert_alignment, horiz_padding, vert_padding,
                       image, 0, title, tabforecolor, tabbackcolor, tabactive);
+
+      iFlatTabsResetTabFont(ih);
 
       if (show_close)
       {
@@ -289,6 +349,8 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         break;
     }
   }
+
+  iFlatTabsResetFont(ih);
 
   /* draw title free background */
   if (x < ih->currentwidth)
@@ -362,6 +424,8 @@ static int iFlatTabsFindTab(Ihandle* ih, int cur_x, int cur_y, int show_close, i
 
     IupGetIntInt(ih, "TABSPADDING", &horiz_padding, &vert_padding);
 
+    iFlatTabsSetFont(ih);
+
     for (pos = 0, child = ih->firstchild; child; child = child->brother, pos++)
     {
       int tabvisible = iupAttribGetBooleanId(ih, "TABVISIBLE", pos);
@@ -391,6 +455,7 @@ static int iFlatTabsFindTab(Ihandle* ih, int cur_x, int cur_y, int show_close, i
               *inside_close = 1;
           }
 
+          iFlatTabsResetFont(ih);
           return pos;
         }
 
@@ -400,6 +465,8 @@ static int iFlatTabsFindTab(Ihandle* ih, int cur_x, int cur_y, int show_close, i
           break;
       }
     }
+
+    iFlatTabsResetFont(ih);
   }
 
   return -1;
@@ -736,7 +803,7 @@ static int iFlatTabsUpdateSetAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static int iFlatTabsSetTitleFontStyleAttrib(Ihandle* ih, int id, const char* value)
+static int iFlatTabsSetTabFontStyleAttrib(Ihandle* ih, int id, const char* value)
 {
   int size = 0;
   int is_bold = 0,
@@ -749,7 +816,9 @@ static int iFlatTabsSetTitleFontStyleAttrib(Ihandle* ih, int id, const char* val
   if (!value)
     return 0;
 
-  font = IupGetAttributeId(ih, "TABFONT", id);
+  font = iupAttribGetId(ih, "TABFONT", id);
+  if (!font)
+    font = iupAttribGet(ih, "TABSFONT");
   if (!font)
     font = IupGetAttribute(ih, "FONT");
 
@@ -761,7 +830,7 @@ static int iFlatTabsSetTitleFontStyleAttrib(Ihandle* ih, int id, const char* val
   return 0;
 }
 
-static char* iFlatTabsGetTitleFontStyleAttrib(Ihandle* ih, int id)
+static char* iFlatTabsGetTabFontStyleAttrib(Ihandle* ih, int id)
 {
   int size = 0;
   int is_bold = 0,
@@ -770,7 +839,9 @@ static char* iFlatTabsGetTitleFontStyleAttrib(Ihandle* ih, int id)
     is_strikeout = 0;
   char typeface[1024];
 
-  char* font = IupGetAttributeId(ih, "TABFONT", id);
+  char* font = iupAttribGetId(ih, "TABFONT", id);
+  if (!font)
+    font = iupAttribGet(ih, "TABSFONT");
   if (!font)
     font = IupGetAttribute(ih, "FONT");
 
@@ -780,7 +851,7 @@ static char* iFlatTabsGetTitleFontStyleAttrib(Ihandle* ih, int id)
   return iupStrReturnStrf("%s%s%s%s", is_bold ? "Bold " : "", is_italic ? "Italic " : "", is_underline ? "Underline " : "", is_strikeout ? "Strikeout " : "");
 }
 
-static int iFlatTabsSetTitleFontSizeAttrib(Ihandle* ih, int id, const char* value)
+static int iFlatTabsSetTabFontSizeAttrib(Ihandle* ih, int id, const char* value)
 {
   int size = 0;
   int is_bold = 0,
@@ -793,7 +864,9 @@ static int iFlatTabsSetTitleFontSizeAttrib(Ihandle* ih, int id, const char* valu
   if (!value)
     return 0;
 
-  font = IupGetAttributeId(ih, "TABFONT", id);
+  font = iupAttribGetId(ih, "TABFONT", id);
+  if (!font)
+    font = iupAttribGet(ih, "TABSFONT");
   if (!font)
     font = IupGetAttribute(ih, "FONT");
 
@@ -805,7 +878,7 @@ static int iFlatTabsSetTitleFontSizeAttrib(Ihandle* ih, int id, const char* valu
   return 0;
 }
 
-static char* iFlatTabsGetTitleFontSizeAttrib(Ihandle* ih, int id)
+static char* iFlatTabsGetTabFontSizeAttrib(Ihandle* ih, int id)
 {
   int size = 0;
   int is_bold = 0,
@@ -814,7 +887,9 @@ static char* iFlatTabsGetTitleFontSizeAttrib(Ihandle* ih, int id)
     is_strikeout = 0;
   char typeface[1024];
 
-  char* font = IupGetAttributeId(ih, "TABFONT", id);
+  char* font = iupAttribGetId(ih, "TABFONT", id);
+  if (!font)
+    font = iupAttribGet(ih, "TABSFONT");
   if (!font)
     font = IupGetAttribute(ih, "FONT");
 
@@ -824,7 +899,7 @@ static char* iFlatTabsGetTitleFontSizeAttrib(Ihandle* ih, int id)
   return iupStrReturnInt(size);
 }
 
-static char* iFlatTabsGetFontSizeAttrib(Ihandle* ih)
+static char* iFlatTabsGetTabsFontSizeAttrib(Ihandle* ih)
 {
   int size = 0;
   int is_bold = 0,
@@ -833,7 +908,7 @@ static char* iFlatTabsGetFontSizeAttrib(Ihandle* ih)
     is_strikeout = 0;
   char typeface[1024];
 
-  char* font = IupGetAttribute(ih, "TABSFONT");
+  char* font = iupAttribGet(ih, "TABSFONT");
   if (!font)
     font = IupGetAttribute(ih, "FONT");
 
@@ -843,7 +918,7 @@ static char* iFlatTabsGetFontSizeAttrib(Ihandle* ih)
   return iupStrReturnInt(size);
 }
 
-static int iFlatTabsSetFontSizeAttrib(Ihandle* ih, const char* value)
+static int iFlatTabsSetTabsFontSizeAttrib(Ihandle* ih, const char* value)
 {
   int size = 0;
   int is_bold = 0,
@@ -856,7 +931,7 @@ static int iFlatTabsSetFontSizeAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  font = IupGetAttribute(ih, "TABSFONT");
+  font = iupAttribGet(ih, "TABSFONT");
   if (!font)
     font = IupGetAttribute(ih, "FONT");
 
@@ -867,7 +942,7 @@ static int iFlatTabsSetFontSizeAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static char* iFlatTabsGetFontStyleAttrib(Ihandle* ih)
+static char* iFlatTabsGetTabsFontStyleAttrib(Ihandle* ih)
 {
   int size = 0;
   int is_bold = 0,
@@ -876,7 +951,7 @@ static char* iFlatTabsGetFontStyleAttrib(Ihandle* ih)
     is_strikeout = 0;
   char typeface[1024];
 
-  char* font = IupGetAttribute(ih, "TABSFONT");
+  char* font = iupAttribGet(ih, "TABSFONT");
   if (!font)
     font = IupGetAttribute(ih, "FONT");
 
@@ -886,7 +961,7 @@ static char* iFlatTabsGetFontStyleAttrib(Ihandle* ih)
   return iupStrReturnStrf("%s%s%s%s", is_bold ? "Bold " : "", is_italic ? "Italic " : "", is_underline ? "Underline " : "", is_strikeout ? "Strikeout " : "");
 }
 
-static int iFlatTabsSetFontStyleAttrib(Ihandle* ih, const char* value)
+static int iFlatTabsSetTabsFontStyleAttrib(Ihandle* ih, const char* value)
 {
   int size = 0;
   int is_bold = 0,
@@ -899,7 +974,7 @@ static int iFlatTabsSetFontStyleAttrib(Ihandle* ih, const char* value)
   if (!value)
     return 0;
 
-  font = IupGetAttribute(ih, "TABSFONT");
+  font = iupAttribGet(ih, "TABSFONT");
   if (!font)
     font = IupGetAttribute(ih, "FONT");
 
@@ -911,7 +986,7 @@ static int iFlatTabsSetFontStyleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iFlatTabsSetFontAttrib(Ihandle* ih, const char* value)
+static int iFlatTabsSetTabsFontAttrib(Ihandle* ih, const char* value)
 {
   iupdrvSetFontAttrib(ih, value);
   return 1;
@@ -1132,8 +1207,8 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttributeId(ic, "TABFORECOLOR", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABBACKCOLOR", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABFONT", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABFONTSTYLE", iFlatTabsGetTitleFontStyleAttrib, iFlatTabsSetTitleFontStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABFONTSIZE", iFlatTabsGetTitleFontSizeAttrib, iFlatTabsSetTitleFontSizeAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABFONTSTYLE", iFlatTabsGetTabFontStyleAttrib, iFlatTabsSetTabFontStyleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABFONTSIZE", iFlatTabsGetTabFontSizeAttrib, iFlatTabsSetTabFontSizeAttrib, IUPAF_NO_INHERIT);
 
   /* Visual for active TAB */
   iupClassRegisterAttribute(ic, "BGCOLOR", iFlatTabsGetBgColorAttrib, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_DEFAULT);   /* inherited */
@@ -1143,9 +1218,9 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "TABSFORECOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSBACKCOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSHIGHCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TABSFONT", NULL, iFlatTabsSetFontAttrib, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TABSFONTSTYLE", iFlatTabsGetFontStyleAttrib, iFlatTabsSetFontStyleAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TABSFONTSIZE", iFlatTabsGetFontSizeAttrib, iFlatTabsSetFontSizeAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSFONT", NULL, iFlatTabsSetTabsFontAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSFONTSTYLE", iFlatTabsGetTabsFontStyleAttrib, iFlatTabsSetTabsFontStyleAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSFONTSIZE", iFlatTabsGetTabsFontSizeAttrib, iFlatTabsSetTabsFontSizeAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWLINES", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSLINECOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "180 180 180", IUPAF_NO_INHERIT);
