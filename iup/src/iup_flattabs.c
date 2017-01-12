@@ -62,7 +62,7 @@ static void iFlatTabsInitializeCloseImage(void)
 
   image_close = IupImage(ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, img_close);
   IupSetAttribute(image_close, "0", "BGCOLOR");
-  IupSetStrAttribute(image_close, "1", IupGetGlobal("TXTHLCOLOR"));
+  IupSetAttribute(image_close, "1", "50 150 255");
   IupSetHandle("IMGFLATCLOSEHIGH", image_close);
 }
 
@@ -207,8 +207,10 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   Ihandle* current_child = iFlatTabsGetCurrentTab(ih);
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   char* forecolor = iupAttribGetStr(ih, "FORECOLOR");
+  char* highcolor = iupAttribGetStr(ih, "HIGHCOLOR");
   char* tabs_bgcolor = iupAttribGetStr(ih, "TABSBACKCOLOR");
-  char* tabs_fgcolor = iupAttribGetStr(ih, "TABSFORECOLOR");
+  char* tabs_forecolor = iupAttribGetStr(ih, "TABSFORECOLOR");
+  char* tabs_highcolor = iupAttribGetStr(ih, "TABSHIGHCOLOR");
   int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TABSIMAGEPOSITION"));
   int active = IupGetInt(ih, "ACTIVE");  /* native implementation */
   int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
@@ -244,19 +246,20 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
     int tabvisible = iupAttribGetBooleanId(ih, "TABVISIBLE", pos);
     if (tabvisible)
     {
-      char* image = iupAttribGetId(ih, "TABIMAGE", pos);
-      char* title = iupAttribGetId(ih, "TABTITLE", pos);
-      char* back_color = iupAttribGetId(ih, "TABBACKCOLOR", pos);
-      char* fore_color = iupAttribGetId(ih, "TABFORECOLOR", pos);
-      int w, tabactive;
-      char* tabbackcolor = tabs_bgcolor;
-      char* tabforecolor = tabs_fgcolor;
+      char* tab_image = iupAttribGetId(ih, "TABIMAGE", pos);
+      char* tab_title = iupAttribGetId(ih, "TABTITLE", pos);
+      char* tab_backcolor = iupAttribGetId(ih, "TABBACKCOLOR", pos);
+      char* tab_forecolor = iupAttribGetId(ih, "TABFORECOLOR", pos);
+      char* tab_highcolor = iupAttribGetId(ih, "TABHIGHCOLOR", pos);
+      int w, tab_active;
+      char* background_color;
+      char* foreground_color;
       int icon_width;
 
       if (!active)
-        tabactive = active;
+        tab_active = active;
       else
-        tabactive = iupAttribGetBooleanId(ih, "TABACTIVE", pos);
+        tab_active = iupAttribGetBooleanId(ih, "TABACTIVE", pos);
 
       if (fixedwidth)
         w = fixedwidth;
@@ -272,35 +275,42 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
 
       if (current_child == child)
       {
-        tabbackcolor = bgcolor;
-        tabforecolor = forecolor;
+        /* current tab is always drawn with these colors */
+        background_color = bgcolor;
+        foreground_color = forecolor;
       }
       else
       {
-        int tab_highlighted;
+        int tab_highlighted = iupAttribGetInt(ih, "_IUPTABS_HIGHLIGHTED");
 
-        if (back_color)
-          tabbackcolor = back_color;
-        if (fore_color)
-          tabforecolor = fore_color;
+        /* other tabs are drawn with these colors */
+        background_color = tabs_bgcolor;
+        if (tab_backcolor)
+          background_color = tab_backcolor;
 
-        tab_highlighted = iupAttribGetInt(ih, "_IUPTABS_HIGHLIGHTED");
+        foreground_color = tabs_forecolor;
+        if (tab_forecolor)
+          foreground_color = tab_forecolor;
+
         if (pos == tab_highlighted)
         {
-          char* highcolor = iupAttribGetStr(ih, "HIGHCOLOR");
           if (highcolor)
-            tabforecolor = highcolor;
+            foreground_color = highcolor;
           else
-            tabforecolor = forecolor;
+            foreground_color = forecolor;
 
-          highcolor = iupAttribGetStr(ih, "TABSHIGHCOLOR");
-          if (highcolor)
-            tabbackcolor = highcolor;
+          if (tabs_highcolor || tab_highcolor)
+          {
+            if (tab_highcolor)
+              background_color = tab_highcolor;
+            else
+              background_color = tabs_highcolor;
+          }
         }
       }
 
       /* draw title background */
-      iupFlatDrawBox(dc, x, x + w, 0, title_height, tabbackcolor, NULL, 1);
+      iupFlatDrawBox(dc, x, x + w, 0, title_height, background_color, NULL, 1);
 
       if (show_lines)
       {
@@ -323,7 +333,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       iupFlatDrawIcon(ih, dc, x, 0,
                       icon_width, title_height,
                       img_position, spacing, horiz_alignment, vert_alignment, horiz_padding, vert_padding,
-                      image, 0, title, tabforecolor, tabbackcolor, tabactive);
+                      tab_image, 0, tab_title, foreground_color, background_color, tab_active);
 
       iFlatTabsResetTabFont(ih);
 
@@ -338,9 +348,22 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         if (pos == tab_close_press)
           imagename = iupAttribGetStr(ih, "CLOSEIMAGEPRESS");
         else if (pos == tab_close_high)
-          imagename = iupAttribGetStr(ih, "CLOSEIMAGEHIGH");
+        {
+          if (tabs_highcolor || tab_highcolor)
+          {
+            if (tab_highcolor)
+              background_color = tab_highcolor;
+            else
+              background_color = tabs_highcolor;
+          }
+          else
+            background_color = iupAttribGetStr(ih, "CLOSEHIGHCOLOR");
 
-        iupdrvDrawImage(dc, imagename, !tabactive, close_x, close_y);
+          iupFlatDrawBox(dc, close_x - ITABS_CLOSE_BORDER, close_x + ITABS_CLOSE_SIZE + ITABS_CLOSE_BORDER, close_y - ITABS_CLOSE_BORDER, close_y + ITABS_CLOSE_SIZE + ITABS_CLOSE_BORDER, background_color, NULL, 1);
+          imagename = iupAttribGetStr(ih, "CLOSEIMAGEHIGH");
+        }
+
+        iupdrvDrawImage(dc, imagename, !tab_active, close_x, close_y);
       }
 
       // goto next tab area
@@ -578,7 +601,7 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
 static int iFlatTabsMotion_CB(Ihandle *ih, int x, int y, char *status)
 {
   int tab_found, tab_highlighted, redraw = 0;
-  int inside_close, show_close, tabactive;
+  int inside_close, show_close, tab_active;
 
   IFniis cb = (IFniis)IupGetCallback(ih, "FLAT_MOTION_CB");
   if (cb)
@@ -591,19 +614,19 @@ static int iFlatTabsMotion_CB(Ihandle *ih, int x, int y, char *status)
   tab_highlighted = iupAttribGetInt(ih, "_IUPTABS_HIGHLIGHTED");
   tab_found = iFlatTabsFindTab(ih, x, y, show_close, &inside_close);
 
-  tabactive = 1;
+  tab_active = 1;
   if (tab_found != -1)
-    tabactive = iupAttribGetBooleanId(ih, "TABACTIVE", tab_found);
+    tab_active = iupAttribGetBooleanId(ih, "TABACTIVE", tab_found);
 
   if (tab_found != tab_highlighted)
   {
-    if (tabactive)
+    if (tab_active)
       iupAttribSetInt(ih, "_IUPTABS_HIGHLIGHTED", tab_found);
 
     redraw = 1;
   }
 
-  if (show_close && tabactive)
+  if (show_close && tab_active)
   {
     int tab_close_high, tab_close_press;
 
@@ -1206,18 +1229,21 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttributeId(ic, "TABACTIVE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABFORECOLOR", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABBACKCOLOR", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABHIGHCOLOR", NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABFONT", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABFONTSTYLE", iFlatTabsGetTabFontStyleAttrib, iFlatTabsSetTabFontStyleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABFONTSIZE", iFlatTabsGetTabFontSizeAttrib, iFlatTabsSetTabFontSizeAttrib, IUPAF_NO_INHERIT);
 
-  /* Visual for active TAB */
+  /* Visual for current TAB */
   iupClassRegisterAttribute(ic, "BGCOLOR", iFlatTabsGetBgColorAttrib, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_DEFAULT);   /* inherited */
   iupClassRegisterAttribute(ic, "FORECOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
+  /* Visual for other TABS */
   iupClassRegisterAttribute(ic, "TABSFORECOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSBACKCOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSHIGHCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "TABSFONT", NULL, iFlatTabsSetTabsFontAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSFONTSTYLE", iFlatTabsGetTabsFontStyleAttrib, iFlatTabsSetTabsFontStyleAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSFONTSIZE", iFlatTabsGetTabsFontSizeAttrib, iFlatTabsSetTabsFontSizeAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -1233,6 +1259,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "CLOSEIMAGE", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEIMAGEHIGH", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSEHIGH", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEIMAGEPRESS", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSEPRESS", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLOSEHIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 220 245", IUPAF_NO_INHERIT);
 
   /* Default node images */
   if (!IupGetHandle("IMGFLATCLOSE"))

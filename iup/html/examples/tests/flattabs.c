@@ -397,11 +397,11 @@ static Ihandle* CreateTabs(int tab)
 
   IupSetAttribute(vboxA, "TABTITLE", "Aj");
   IupSetAttributeHandle(vboxA, "TABIMAGE", load_image_LogoTecgraf());
-//  IupSetAttribute(vboxB, "TABTITLE", "&BB");
+//  IupSetAttribute(vboxB, "TABTITLE", "BB");
   //  IupSetAttribute(vboxC, "TABTITLE", "CCC");
   IupStoreAttribute(vboxC, "TABIMAGE", IupGetAttribute(vboxA, "TABIMAGE"));
   IupSetAttribute(vboxD, "TABTITLE", "DDDD");
-  IupSetAttribute(vboxE, "TABTITLE", "&EEEjj");
+  IupSetAttribute(vboxE, "TABTITLE", "EEEjj");
   IupSetAttribute(vboxF, "TABTITLE", "FFFFff");
   IupSetAttribute(vboxG, "TABTITLE", "GGGG ggg");
   IupSetAttribute(vboxH, "TABTITLE", "HHHHHHHH");
@@ -415,7 +415,7 @@ static Ihandle* CreateTabs(int tab)
 
   tabs = IupFlatTabs(vboxA, vboxB, vboxC, vboxD, vboxE, vboxF, vboxG, vboxH, vboxI, NULL);
 
-  IupSetAttribute(tabs, "TABTITLE1", "&BB");
+  IupSetAttribute(tabs, "TABTITLE1", "BB");
 
   //IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)cbTabChange);
   IupSetCallback(tabs, "TABCHANGEPOS_CB", (Icallback)cbTabChangePos);
@@ -433,13 +433,14 @@ static Ihandle* CreateTabs(int tab)
     IupSetAttribute(tabs, "FORECOLOR", "192 0 0");
     IupSetAttribute(tabs, "TABSBACKCOLOR", "192 0 0");
     IupSetAttribute(tabs, "HIGHCOLOR", "255 128 128");
+    IupSetAttribute(tabs, "CLOSEHIGHCOLOR", "255 128 128");
     IupSetAttribute(tabs, "TABSFORECOLOR", "255 255 255");
     IupSetAttribute(tabs, "SHOWLINES", "NO");
   }
 
   IupSetAttribute(tabs, "SHOWCLOSE", "YES");
-  IupSetAttribute(tabs, "TABSPADDING", "10x50");
-  IupSetAttribute(tabs, "TABSFONTSIZE", "36");
+//  IupSetAttribute(tabs, "TABSPADDING", "10x50");
+//  IupSetAttribute(tabs, "TABSFONTSIZE", "36");
 
   IupSetAttribute(tabs, "TABFONTSTYLE4", "Bold");
 

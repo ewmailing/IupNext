@@ -133,17 +133,17 @@ BOTTOM then
 TABORIENTATION<strong>=</strong>HORIZONTAL is set. In Windows, 
 when not TOP, then visual style is removed from tabs.</p>
 <p><strong>VALUE </strong>(<font SIZE="3">non inheritable</font>): Changes the 
-active tab by its name. The value passed must be the name of one of the elements 
+current tab by its name. The value passed must be the name of one of the elements 
 contained in the tabs. Use <a href="../func/iupsethandle.html">
 IupSetHandle</a> or <a href="../func/iupsetattributehandle.html">
 IupSetAttributeHandle</a> to associate a child to a name. In Lua you can also 
 use the element reference directly.</p>
 <p><b>VALUE_HANDLE</b> (<font SIZE="3">non inheritable</font>): Changes the 
-active tab by its handle. The value passed must be the handle of a child 
+current tab by its handle. The value passed must be the handle of a child 
 contained in the tabs. When the tabs is created, the first element inserted is 
 set as the visible child. (since 3.0)</p>
 <p><strong>VALUEPOS </strong>(<font SIZE="3">non inheritable</font>): Changes 
-the active tab by its position, starting at 0. When the tabs is created, the 
+the current tab by its position, starting at 0. When the tabs is created, the 
 first element inserted is set as the visible child. In GTK, inside the callback 
 the returned value is still the previous one. (since 3.0)</p>
   <blockquote>
@@ -175,8 +175,8 @@ child. Works only if set before the child is added to the tabs.</p>
 
 <h3><a name="Callbacks">Callbacks</a></h3>
 
-<p><strong>TABCHANGE_CB</strong>: Callback called when the user shifts the 
-active tab.</p>
+<p><strong>TABCHANGE_CB</strong>: Callback called when the user changes the 
+current tab.</p>
 <div align="left">
   <pre>int function(Ihandle* <strong>ih</strong>, Ihandle* <strong>new_tab</strong>, Ihandle* <strong>old_tab</strong>); [in C]
 <strong>ih</strong>:tabchange_cb(<strong>new_tab, old_tab</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -186,8 +186,8 @@ the event.<br>
     <strong>new_tab</strong>: the new tab selected by the user 
   <br>
 <strong>old_tab</strong>: the previously selected tab </p>
-<p><strong>TABCHANGEPOS_CB</strong>: Callback called when the user shifts the 
-active tab. Called only when TABCHANGE_CB is not defined. (since 3.3)</p>
+<p><strong>TABCHANGEPOS_CB</strong>: Callback called when the user changes the 
+current tab. Called only when TABCHANGE_CB is not defined. (since 3.3)</p>
 <div align="left">
   <pre>int function(Ihandle* <strong>ih</strong>, int <strong>new_pos</strong>, int <strong>old_pos</strong>); [in C]
 <strong>ih</strong>:tabchange_cb(<strong>new_pos, old_pos</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
@@ -245,8 +245,8 @@ mouse enter or leaves the tabs buttons area.</p>
 inserted into the tabs. 
 </p>
 <p>Differently from <strong>IupZbox</strong>, <strong>IupTabs</strong> does NOT depends on the VISIBLE attribute.</p>
-<p>In GTK, when the tabs buttons are scrolled, the active tab is also changed.</p>
-<p>When you change the active tab the focus is usually not changed. If you want 
+<p>In GTK, when the tabs buttons are scrolled, the current tab is also changed.</p>
+<p>When you change the current tab the focus is usually not changed. If you want 
 to control the focus behavior call 
 <strong>IupSetFocus</strong> 
   in the TABCHANGE_CB callback. Unfortunately this does not works in GTK and in 
