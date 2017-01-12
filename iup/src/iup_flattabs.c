@@ -281,7 +281,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       }
       else
       {
-        int tab_highlighted = iupAttribGetInt(ih, "_IUPTABS_HIGHLIGHTED");
+        int tab_highlighted = iupAttribGetInt(ih, "_IUPFTABS_HIGHLIGHTED");
 
         /* other tabs are drawn with these colors */
         background_color = tabs_bgcolor;
@@ -342,8 +342,8 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         int close_x = x + w - ITABS_CLOSE_BORDER - ITABS_CLOSE_SIZE;
         int close_y = (title_height - (ITABS_CLOSE_SIZE)) / 2;
         char* imagename = iupAttribGetStr(ih, "CLOSEIMAGE");
-        int tab_close_high = iupAttribGetInt(ih, "_IUPTABS_CLOSEHIGH");
-        int tab_close_press = iupAttribGetInt(ih, "_IUPTABS_CLOSEPRESS");
+        int tab_close_high = iupAttribGetInt(ih, "_IUPFTABS_CLOSEHIGH");
+        int tab_close_press = iupAttribGetInt(ih, "_IUPFTABS_CLOSEPRESS");
 
         if (pos == tab_close_press)
           imagename = iupAttribGetStr(ih, "CLOSEIMAGEPRESS");
@@ -516,7 +516,7 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
     {
       if (show_close && inside_close)
       {
-        iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", tab_found);  /* used for press feedback */
+        iupAttribSetInt(ih, "_IUPFTABS_CLOSEPRESS", tab_found);  /* used for press feedback */
         iupdrvRedrawNow(ih);
       }
       else
@@ -545,7 +545,7 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
             iFlatTabsSetCurrentTab(ih, child);
         }
 
-        iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", -1);
+        iupAttribSetInt(ih, "_IUPFTABS_CLOSEPRESS", -1);
       }
     }
   }
@@ -554,11 +554,11 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
     int show_close = iupAttribGetBoolean(ih, "SHOWCLOSE");
     if (show_close)
     {
-      int tab_close_press = iupAttribGetInt(ih, "_IUPTABS_CLOSEPRESS");
+      int tab_close_press = iupAttribGetInt(ih, "_IUPFTABS_CLOSEPRESS");
       int inside_close;
       int tab_found = iFlatTabsFindTab(ih, x, y, show_close, &inside_close);
 
-      iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", -1);
+      iupAttribSetInt(ih, "_IUPFTABS_CLOSEPRESS", -1);
 
       if (tab_found != -1 && iupAttribGetBooleanId(ih, "TABACTIVE", tab_found) && inside_close && tab_close_press == tab_found)
       {
@@ -611,31 +611,33 @@ static int iFlatTabsMotion_CB(Ihandle *ih, int x, int y, char *status)
   }
 
   show_close = iupAttribGetBoolean(ih, "SHOWCLOSE");
-  tab_highlighted = iupAttribGetInt(ih, "_IUPTABS_HIGHLIGHTED");
+  tab_highlighted = iupAttribGetInt(ih, "_IUPFTABS_HIGHLIGHTED");
   tab_found = iFlatTabsFindTab(ih, x, y, show_close, &inside_close);
 
   tab_active = 1;
   if (tab_found != -1)
     tab_active = iupAttribGetBooleanId(ih, "TABACTIVE", tab_found);
 
-  if (tab_found != tab_highlighted)
-  {
-    if (tab_active)
-      iupAttribSetInt(ih, "_IUPTABS_HIGHLIGHTED", tab_found);
+  if (!tab_active)
+    return IUP_DEFAULT;
 
+  if (tab_found != tab_highlighted && !inside_close)
+  {
+    iupAttribSetInt(ih, "_IUPFTABS_HIGHLIGHTED", tab_found);
     redraw = 1;
   }
 
-  if (show_close && tab_active)
+  if (show_close)
   {
     int tab_close_high, tab_close_press;
 
-    tab_close_high = iupAttribGetInt(ih, "_IUPTABS_CLOSEHIGH");
+    tab_close_high = iupAttribGetInt(ih, "_IUPFTABS_CLOSEHIGH");
     if (inside_close)
     {
       if (tab_close_high != tab_found)
       {
-        iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", tab_found);
+        iupAttribSetInt(ih, "_IUPFTABS_HIGHLIGHTED", -1);
+        iupAttribSetInt(ih, "_IUPFTABS_CLOSEHIGH", tab_found);
         redraw = 1;
       }
     }
@@ -643,15 +645,15 @@ static int iFlatTabsMotion_CB(Ihandle *ih, int x, int y, char *status)
     {
       if (tab_close_high != -1)
       {
-        iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", -1);
+        iupAttribSetInt(ih, "_IUPFTABS_CLOSEHIGH", -1);
         redraw = 1;
       }
     }
 
-    tab_close_press = iupAttribGetInt(ih, "_IUPTABS_CLOSEPRESS");
+    tab_close_press = iupAttribGetInt(ih, "_IUPFTABS_CLOSEPRESS");
     if (tab_close_press != -1 && !inside_close)
     {
-      iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", -1);
+      iupAttribSetInt(ih, "_IUPFTABS_CLOSEPRESS", -1);
       redraw = 1;
     }
   }
@@ -673,17 +675,17 @@ static int iFlatTabsLeaveWindow_CB(Ihandle* ih)
       return IUP_DEFAULT;
   }
 
-  tab_highlighted = iupAttribGetInt(ih, "_IUPTABS_HIGHLIGHTED");
+  tab_highlighted = iupAttribGetInt(ih, "_IUPFTABS_HIGHLIGHTED");
   if (tab_highlighted != -1)
   {
-    iupAttribSetInt(ih, "_IUPTABS_HIGHLIGHTED", -1);
+    iupAttribSetInt(ih, "_IUPFTABS_HIGHLIGHTED", -1);
     redraw = 1;
   }
 
-  tab_close_high = iupAttribGetInt(ih, "_IUPTABS_CLOSEHIGH");
+  tab_close_high = iupAttribGetInt(ih, "_IUPFTABS_CLOSEHIGH");
   if (tab_close_high != -1)
   {
-    iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", -1);
+    iupAttribSetInt(ih, "_IUPFTABS_CLOSEHIGH", -1);
     redraw = 1;
   }
 
@@ -1159,9 +1161,9 @@ static int iFlatTabsCreateMethod(Ihandle* ih, void **params)
     }
   }
 
-  iupAttribSetInt(ih, "_IUPTABS_HIGHLIGHTED", -1);
-  iupAttribSetInt(ih, "_IUPTABS_CLOSEHIGH", -1);
-  iupAttribSetInt(ih, "_IUPTABS_CLOSEPRESS", -1);
+  iupAttribSetInt(ih, "_IUPFTABS_HIGHLIGHTED", -1);
+  iupAttribSetInt(ih, "_IUPFTABS_CLOSEHIGH", -1);
+  iupAttribSetInt(ih, "_IUPFTABS_CLOSEPRESS", -1);
 
   IupSetCallback(ih, "ACTION", (Icallback)iFlatTabsRedraw_CB);
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatTabsButton_CB);
