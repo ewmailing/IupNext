@@ -69,7 +69,7 @@ static void iFlatTabsInitializeCloseImage(void)
 
 static Ihandle* iFlatTabsGetCurrentTab(Ihandle* ih)
 {
-  return (Ihandle*)iupAttribGet(ih, "_IUPFLATTABS_VALUE_HANDLE");
+  return (Ihandle*)iupAttribGet(ih, "_IUPFTABS_VALUE_HANDLE");
 }
 
 static void iFlatTabsSetCurrentTab(Ihandle* ih, Ihandle* child)
@@ -78,7 +78,7 @@ static void iFlatTabsSetCurrentTab(Ihandle* ih, Ihandle* child)
   if (current_child)
     IupSetAttribute(current_child, "VISIBLE", "No");
 
-  iupAttribSet(ih, "_IUPFLATTABS_VALUE_HANDLE", (char*)child);
+  iupAttribSet(ih, "_IUPFTABS_VALUE_HANDLE", (char*)child);
   IupSetAttribute(child, "VISIBLE", "Yes");
 
   IupUpdate(ih);
@@ -170,11 +170,19 @@ static void iFlatTabsResetTabFont(Ihandle* ih)
   }
 }
 
-static int iFlatTabsGetTitleHeight(Ihandle* ih)
+static int iFlatTabsGetTitleHeight(Ihandle* ih, int *title_width)
 {
-  int vert_padding = IupGetInt2(ih, "TABSPADDING");
-  int max_height = 0, w, h, pos;
+  int vert_padding, horiz_padding;
+  int title_height = 0, w, h, pos, show_close = 0;
   Ihandle* child;
+
+  IupGetIntInt(ih, "TABSPADDING", &horiz_padding, &vert_padding);
+
+  if (title_width)
+  {
+    *title_width = 0;
+    show_close = iupAttribGetBoolean(ih, "SHOWCLOSE");
+  }
 
   iFlatTabsSetFont(ih);
 
@@ -182,13 +190,21 @@ static int iFlatTabsGetTitleHeight(Ihandle* ih)
   {
     iFlatTabsGetIconSize(ih, pos, &w, &h);
 
-    if (h > max_height)
-      max_height = h;
+    if (h > title_height)
+      title_height = h;
+
+    if (title_width)
+    {
+      *title_width += w + 2 * horiz_padding;
+
+      if (show_close)
+        *title_width += ITABS_CLOSE_SIZE + ITABS_CLOSE_SPACING + ITABS_CLOSE_BORDER;
+    }
   }
 
   iFlatTabsResetFont(ih);
 
-  return max_height + 2 * vert_padding;
+  return title_height + 2 * vert_padding;
 }
 
 static void iFlatGetAlignment(Ihandle* ih, int *horiz_alignment, int *vert_alignment)
@@ -217,7 +233,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   int horiz_padding, vert_padding;
   int show_lines = iupAttribGetBoolean(ih, "SHOWLINES");
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
-  int title_height = iFlatTabsGetTitleHeight(ih);
+  int title_height = iFlatTabsGetTitleHeight(ih, NULL);
   int fixedwidth = iupAttribGetInt(ih, "FIXEDWIDTH");
   Ihandle* child;
   int pos, horiz_alignment, vert_alignment, x = 0;
@@ -435,7 +451,7 @@ static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos,
 
 static int iFlatTabsFindTab(Ihandle* ih, int cur_x, int cur_y, int show_close, int *inside_close)
 {
-  int title_height = iFlatTabsGetTitleHeight(ih);
+  int title_height = iFlatTabsGetTitleHeight(ih, NULL);
 
   *inside_close = 0;
 
@@ -720,7 +736,7 @@ static int iFlatTabsSetValueHandleAttrib(Ihandle* ih, const char* value)
 
 static char* iFlatTabsGetValueHandleAttrib(Ihandle* ih)
 {
-  return iupAttribGet(ih, "_IUPFLATTABS_VALUE_HANDLE");
+  return iupAttribGet(ih, "_IUPFTABS_VALUE_HANDLE");
 }
 
 static char* iFlatTabsGetCountAttrib(Ihandle* ih)
@@ -775,6 +791,17 @@ static char* iFlatTabsGetValueAttrib(Ihandle* ih)
   return IupGetName(child);
 }
 
+static char* iFlatTabsGetExtraBoxHandleAttrib(Ihandle* ih)
+{
+  return iupAttribGet(ih, "_IUPFTABS_EXTRABOX");
+}
+
+static char* iFlatTabsGetExtraBoxAttrib(Ihandle* ih)
+{
+  Ihandle* child = (Ihandle*)iFlatTabsGetExtraBoxHandleAttrib(ih);
+  return IupGetName(child);
+}
+
 static int iFlatTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
 {
   Ihandle* child = IupGetChild(ih, pos);
@@ -793,7 +820,7 @@ static char* iFlatTabsGetClientSizeAttrib(Ihandle* ih)
   int width = ih->currentwidth;
   int height = ih->currentheight;
 
-  height -= iFlatTabsGetTitleHeight(ih);
+  height -= iFlatTabsGetTitleHeight(ih, NULL);
 
   if (iupAttribGetBoolean(ih, "SHOWLINES"))
   {
@@ -1073,7 +1100,7 @@ static void iFlatTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
 
 static void iFlatTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
-  Ihandle* child;
+  Ihandle* child, *extra_box;
   int children_naturalwidth, children_naturalheight;
 
   /* calculate total children natural size (even for hidden children) */
@@ -1091,21 +1118,26 @@ static void iFlatTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
   }
 
   *w = children_naturalwidth;
-  *h = children_naturalheight + iFlatTabsGetTitleHeight(ih);
+  *h = children_naturalheight + iFlatTabsGetTitleHeight(ih, NULL);
 
   if (iupAttribGetBoolean(ih, "SHOWLINES"))
   {
     *h += 1;
     *w += 2;
   }
+
+  /* computed but not included in natural size */
+  extra_box = (Ihandle*)iupAttribGet(ih, "_IUPFTABS_EXTRABOX");
+  iupBaseComputeNaturalSize(extra_box);
 }
 
 static void iFlatTabsSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  Ihandle* child;
-
+  Ihandle* child, *extra_box;
+  int title_width;
+  int title_height = iFlatTabsGetTitleHeight(ih, &title_width);
   int width = ih->currentwidth;
-  int height = ih->currentheight - iFlatTabsGetTitleHeight(ih);
+  int height = ih->currentheight - title_height;
 
   if (iupAttribGetBoolean(ih, "SHOWLINES"))
   {
@@ -1124,14 +1156,21 @@ static void iFlatTabsSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     if (child->firstchild)
       iupClassObjectSetChildrenCurrentSize(child, shrink);
   }
+
+  extra_box = (Ihandle*)iupAttribGet(ih, "_IUPFTABS_EXTRABOX");
+  width = ih->currentwidth - title_width;
+  if (width < 0) width = 0;
+  height = title_height;
+  iupBaseSetCurrentSize(extra_box, width, height, shrink);
 }
 
 static void iFlatTabsSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   /* In all systems, each tab is a native window covering the client area.
      Child coordinates are relative to client left-top corner of the tab page. */
-  Ihandle* child;
+  Ihandle* child, *extra_box;
   char* offset = iupAttribGet(ih, "CHILDOFFSET");
+  int title_width;
 
   /* Native container, position is reset */
   x = 0;
@@ -1139,17 +1178,22 @@ static void iFlatTabsSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   if (offset) iupStrToIntInt(offset, &x, &y, 'x');
 
-  y += iFlatTabsGetTitleHeight(ih);
+  y += iFlatTabsGetTitleHeight(ih, &title_width);
 
   if (iupAttribGetBoolean(ih, "SHOWLINES"))
     x += 1;
 
   for (child = ih->firstchild; child; child = child->brother)
     iupBaseSetPosition(child, x, y);
+
+  extra_box = (Ihandle*)iupAttribGet(ih, "_IUPFTABS_EXTRABOX");
+  iupBaseSetPosition(extra_box, title_width, 0);
 }
 
 static int iFlatTabsCreateMethod(Ihandle* ih, void **params)
 {
+  Ihandle* extra_box;
+
   /* add children */
   if(params)
   {
@@ -1169,6 +1213,10 @@ static int iFlatTabsCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatTabsButton_CB);
   IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatTabsMotion_CB);
   IupSetCallback(ih, "LEAVEWINDOW_CB", iFlatTabsLeaveWindow_CB);
+
+  extra_box = IupHbox(NULL);
+  iupAttribSet(ih, "_IUPFTABS_EXTRABOX", (char*)extra_box);
+  iupAttribSetHandleName(extra_box);
 
   return IUP_NOERROR;
 }
@@ -1223,6 +1271,8 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "VALUE_HANDLE", iFlatTabsGetValueHandleAttrib, iFlatTabsSetValueHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_IHANDLE | IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "COUNT", iFlatTabsGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIXEDWIDTH", NULL, iFlatTabsUpdateSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXTRABOX", iFlatTabsGetExtraBoxAttrib, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXTRABOX_HANDLE", iFlatTabsGetExtraBoxHandleAttrib, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* IupFlatTabs Child only */
   iupClassRegisterAttributeId(ic, "TABTITLE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
@@ -1258,9 +1308,9 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "TABSPADDING", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "10x10", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWCLOSE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLOSEIMAGE", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSE", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLOSEIMAGEHIGH", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSEHIGH", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLOSEIMAGEPRESS", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSEPRESS", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLOSEIMAGE", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSE", IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLOSEIMAGEHIGH", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSEHIGH", IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLOSEIMAGEPRESS", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSEPRESS", IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEHIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 220 245", IUPAF_NO_INHERIT);
 
   /* Default node images */
